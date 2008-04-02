@@ -234,63 +234,40 @@ void TriangleSetTopologyModifier<DataTypes>::removeTrianglesProcess(const sofa::
             // first check that the triangle vertex shell array has been initialized
             if (container->m_triangleVertexShell.size()>0)
             {
-
                 sofa::helper::vector< unsigned int > &shell0 = container->m_triangleVertexShell[ t[0] ];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell0.begin(), shell0.end(), indices[i] ) !=shell0.end());
-                shell0.erase( std::find( shell0.begin(), shell0.end(), indices[i] ) );
+                shell0.erase(remove(shell0.begin(), shell0.end(), indices[i]), shell0.end());
                 if ((removeIsolatedPoints) && (shell0.size()==0))
-                {
                     vertexToBeRemoved.push_back(t[0]);
-                }
-
 
                 sofa::helper::vector< unsigned int > &shell1 = container->m_triangleVertexShell[ t[1] ];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell1.begin(), shell1.end(), indices[i] ) !=shell1.end());
-                shell1.erase( std::find( shell1.begin(), shell1.end(), indices[i] ) );
+                shell1.erase(remove(shell1.begin(), shell1.end(), indices[i]), shell1.end());
                 if ((removeIsolatedPoints) && (shell1.size()==0))
-                {
                     vertexToBeRemoved.push_back(t[1]);
-                }
-
 
                 sofa::helper::vector< unsigned int > &shell2 = container->m_triangleVertexShell[ t[2] ];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell2.begin(), shell2.end(), indices[i] ) !=shell2.end());
-                shell2.erase( std::find( shell2.begin(), shell2.end(), indices[i] ) );
+                shell2.erase(remove(shell2.begin(), shell2.end(), indices[i]), shell2.end());
                 if ((removeIsolatedPoints) && (shell2.size()==0))
-                {
                     vertexToBeRemoved.push_back(t[2]);
-                }
-
             }
 
             /** first check that the triangle edge shell array has been initialized */
             if (container->m_triangleEdgeShell.size()>0)
             {
                 sofa::helper::vector< unsigned int > &shell0 = container->m_triangleEdgeShell[ container->m_triangleEdge[indices[i]][0]];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell0.begin(), shell0.end(), indices[i] ) !=shell0.end());
-                shell0.erase( std::find( shell0.begin(), shell0.end(), indices[i] ) );
+                shell0.erase(remove(shell0.begin(), shell0.end(), indices[i]), shell0.end());
                 if ((removeIsolatedEdges) && (shell0.size()==0))
                     edgeToBeRemoved.push_back(container->m_triangleEdge[indices[i]][0]);
 
                 sofa::helper::vector< unsigned int > &shell1 = container->m_triangleEdgeShell[ container->m_triangleEdge[indices[i]][1]];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell1.begin(), shell1.end(), indices[i] ) !=shell1.end());
-                shell1.erase( std::find( shell1.begin(), shell1.end(), indices[i] ) );
+                shell1.erase(remove(shell1.begin(), shell1.end(), indices[i]), shell1.end());
                 if ((removeIsolatedEdges) && (shell1.size()==0))
                     edgeToBeRemoved.push_back(container->m_triangleEdge[indices[i]][1]);
 
 
                 sofa::helper::vector< unsigned int > &shell2 = container->m_triangleEdgeShell[ container->m_triangleEdge[indices[i]][2]];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell2.begin(), shell2.end(), indices[i] ) !=shell2.end());
-                shell2.erase( std::find( shell2.begin(), shell2.end(), indices[i] ) );
+                shell2.erase(remove(shell2.begin(), shell2.end(), indices[i]), shell2.end());
                 if ((removeIsolatedEdges) && (shell2.size()==0))
                     edgeToBeRemoved.push_back(container->m_triangleEdge[indices[i]][2]);
-
             }
 
 
@@ -313,49 +290,32 @@ void TriangleSetTopologyModifier<DataTypes>::removeTrianglesProcess(const sofa::
                 t = container->m_triangle[ indices[i] ];
                 if (container->m_triangleVertexShell.size()>0)
                 {
-
                     sofa::helper::vector< unsigned int > &shell0 = container->m_triangleVertexShell[ t[0] ];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell0.begin(), shell0.end(), oldTriangleIndex ) !=shell0.end());
-                    sofa::helper::vector< unsigned int >::iterator it=std::find( shell0.begin(), shell0.end(), oldTriangleIndex );
-                    (*it)=indices[i];
+                    replace(shell0.begin(), shell0.end(), oldTriangleIndex, indices[i]);
+                    sort(shell0.begin(), shell0.end());
 
                     sofa::helper::vector< unsigned int > &shell1 = container->m_triangleVertexShell[ t[1] ];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell1.begin(), shell1.end(), oldTriangleIndex ) !=shell1.end());
-                    it=std::find( shell1.begin(), shell1.end(), oldTriangleIndex );
-                    (*it)=indices[i];
-
+                    replace(shell1.begin(), shell1.end(), oldTriangleIndex, indices[i]);
+                    sort(shell1.begin(), shell1.end());
 
                     sofa::helper::vector< unsigned int > &shell2 = container->m_triangleVertexShell[ t[2] ];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell2.begin(), shell2.end(), oldTriangleIndex ) !=shell2.end());
-                    it=std::find( shell2.begin(), shell2.end(), oldTriangleIndex );
-                    (*it)=indices[i];
-
+                    replace(shell2.begin(), shell2.end(), oldTriangleIndex, indices[i]);
+                    sort(shell2.begin(), shell2.end());
 
                 }
                 if (container->m_triangleEdgeShell.size()>0)
                 {
-
                     sofa::helper::vector< unsigned int > &shell0 =  container->m_triangleEdgeShell[ container->m_triangleEdge[indices[i]][0]];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell0.begin(), shell0.end(), oldTriangleIndex ) !=shell0.end());
-                    sofa::helper::vector< unsigned int >::iterator it=std::find( shell0.begin(), shell0.end(), oldTriangleIndex );
-                    (*it)=indices[i];
+                    replace(shell0.begin(), shell0.end(), oldTriangleIndex, indices[i]);
+                    sort(shell0.begin(), shell0.end());
 
                     sofa::helper::vector< unsigned int > &shell1 =  container->m_triangleEdgeShell[ container->m_triangleEdge[indices[i]][1]];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell1.begin(), shell1.end(), oldTriangleIndex ) !=shell1.end());
-                    it=std::find( shell1.begin(), shell1.end(), oldTriangleIndex );
-                    (*it)=indices[i];
+                    replace(shell1.begin(), shell1.end(), oldTriangleIndex, indices[i]);
+                    sort(shell1.begin(), shell1.end());
 
                     sofa::helper::vector< unsigned int > &shell2 =  container->m_triangleEdgeShell[ container->m_triangleEdge[indices[i]][2]];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell2.begin(), shell2.end(), oldTriangleIndex) !=shell2.end());
-                    it=std::find( shell2.begin(), shell2.end(), oldTriangleIndex );
-                    (*it)=indices[i];
-
+                    replace(shell2.begin(), shell2.end(), oldTriangleIndex, indices[i]);
+                    sort(shell2.begin(), shell2.end());
                 }
 
             }

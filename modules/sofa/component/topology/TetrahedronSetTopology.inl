@@ -244,36 +244,28 @@ void TetrahedronSetTopologyModifier<DataTypes>::removeTetrahedraProcess( const s
             {
 
                 sofa::helper::vector< unsigned int > &shell0 = container->m_tetrahedronVertexShell[ t[0] ];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell0.begin(), shell0.end(), indices[i] ) !=shell0.end());
-                shell0.erase( std::find( shell0.begin(), shell0.end(), indices[i] ) );
+                shell0.erase(remove(shell0.begin(), shell0.end(), indices[i]), shell0.end());
                 if ((removeIsolatedItems) && (shell0.size()==0))
                 {
                     vertexToBeRemoved.push_back(t[0]);
                 }
 
                 sofa::helper::vector< unsigned int > &shell1 = container->m_tetrahedronVertexShell[ t[1] ];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell1.begin(), shell1.end(), indices[i] ) !=shell1.end());
-                shell1.erase( std::find( shell1.begin(), shell1.end(), indices[i] ) );
+                shell1.erase(remove(shell1.begin(), shell1.end(), indices[i]), shell1.end());
                 if ((removeIsolatedItems) && (shell1.size()==0))
                 {
                     vertexToBeRemoved.push_back(t[1]);
                 }
 
                 sofa::helper::vector< unsigned int > &shell2 = container->m_tetrahedronVertexShell[ t[2] ];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell2.begin(), shell2.end(), indices[i] ) !=shell2.end());
-                shell2.erase( std::find( shell2.begin(), shell2.end(), indices[i] ) );
+                shell2.erase(remove(shell2.begin(), shell2.end(), indices[i]), shell2.end());
                 if ((removeIsolatedItems) && (shell2.size()==0))
                 {
                     vertexToBeRemoved.push_back(t[2]);
                 }
 
                 sofa::helper::vector< unsigned int > &shell3 = container->m_tetrahedronVertexShell[ t[3] ];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell3.begin(), shell3.end(), indices[i] ) !=shell3.end());
-                shell3.erase( std::find( shell3.begin(), shell3.end(), indices[i] ) );
+                shell3.erase(remove(shell3.begin(), shell3.end(), indices[i]), shell3.end());
                 if ((removeIsolatedItems) && (shell3.size()==0))
                 {
                     vertexToBeRemoved.push_back(t[3]);
@@ -287,45 +279,32 @@ void TetrahedronSetTopologyModifier<DataTypes>::removeTetrahedraProcess( const s
             {
 
                 sofa::helper::vector< unsigned int > &shell0 = container->m_tetrahedronEdgeShell[ container->m_tetrahedronEdge[indices[i]][0]];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-
-                assert(std::find( shell0.begin(), shell0.end(), indices[i] ) !=shell0.end());
-                shell0.erase( std::find( shell0.begin(), shell0.end(), indices[i] ) );
+                shell0.erase(remove(shell0.begin(), shell0.end(), indices[i]), shell0.end());
                 if ((removeIsolatedItems) && (shell0.size()==0))
                     edgeToBeRemoved.push_back(container->m_tetrahedronEdge[indices[i]][0]);
 
                 sofa::helper::vector< unsigned int > &shell1 = container->m_tetrahedronEdgeShell[ container->m_tetrahedronEdge[indices[i]][1]];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell1.begin(), shell1.end(), indices[i] ) !=shell1.end());
-                shell1.erase( std::find( shell1.begin(), shell1.end(), indices[i] ) );
+                shell1.erase(remove(shell1.begin(), shell1.end(), indices[i]), shell1.end());
                 if ((removeIsolatedItems) && (shell1.size()==0))
                     edgeToBeRemoved.push_back(container->m_tetrahedronEdge[indices[i]][1]);
 
                 sofa::helper::vector< unsigned int > &shell2 = container->m_tetrahedronEdgeShell[ container->m_tetrahedronEdge[indices[i]][2]];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell2.begin(), shell2.end(), indices[i] ) !=shell2.end());
-                shell2.erase( std::find( shell2.begin(), shell2.end(), indices[i] ) );
+                shell2.erase(remove(shell2.begin(), shell2.end(), indices[i]), shell2.end());
                 if ((removeIsolatedItems) && (shell2.size()==0))
                     edgeToBeRemoved.push_back(container->m_tetrahedronEdge[indices[i]][2]);
 
                 sofa::helper::vector< unsigned int > &shell3 = container->m_tetrahedronEdgeShell[ container->m_tetrahedronEdge[indices[i]][3]];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell3.begin(), shell3.end(), indices[i] ) !=shell3.end());
-                shell3.erase( std::find( shell3.begin(), shell3.end(), indices[i] ) );
+                shell3.erase(remove(shell3.begin(), shell3.end(), indices[i]), shell3.end());
                 if ((removeIsolatedItems) && (shell3.size()==0))
                     edgeToBeRemoved.push_back(container->m_tetrahedronEdge[indices[i]][3]);
 
                 sofa::helper::vector< unsigned int > &shell4 = container->m_tetrahedronEdgeShell[ container->m_tetrahedronEdge[indices[i]][4]];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell4.begin(), shell4.end(), indices[i] ) !=shell4.end());
-                shell4.erase( std::find( shell4.begin(), shell4.end(), indices[i] ) );
+                shell4.erase(remove(shell4.begin(), shell4.end(), indices[i]), shell4.end());
                 if ((removeIsolatedItems) && (shell4.size()==0))
                     edgeToBeRemoved.push_back(container->m_tetrahedronEdge[indices[i]][4]);
 
                 sofa::helper::vector< unsigned int > &shell5 = container->m_tetrahedronEdgeShell[ container->m_tetrahedronEdge[indices[i]][5]];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell5.begin(), shell5.end(), indices[i] ) !=shell5.end());
-                shell5.erase( std::find( shell5.begin(), shell5.end(), indices[i] ) );
+                shell5.erase(remove(shell5.begin(), shell5.end(), indices[i]), shell5.end());
                 if ((removeIsolatedItems) && (shell5.size()==0))
                     edgeToBeRemoved.push_back(container->m_tetrahedronEdge[indices[i]][5]);
 
@@ -336,30 +315,22 @@ void TetrahedronSetTopologyModifier<DataTypes>::removeTetrahedraProcess( const s
             if (container->m_tetrahedronTriangleShell.size()>0)
             {
                 sofa::helper::vector< unsigned int > &shell0 = container->m_tetrahedronTriangleShell[ container->m_tetrahedronTriangle[indices[i]][0]];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell0.begin(), shell0.end(), indices[i] ) !=shell0.end());
-                shell0.erase( std::find( shell0.begin(), shell0.end(), indices[i] ) );
+                shell0.erase(remove(shell0.begin(), shell0.end(), indices[i]), shell0.end());
                 if ((removeIsolatedItems) && (shell0.size()==0))
                     triangleToBeRemoved.push_back(container->m_tetrahedronTriangle[indices[i]][0]);
 
                 sofa::helper::vector< unsigned int > &shell1 = container->m_tetrahedronTriangleShell[ container->m_tetrahedronTriangle[indices[i]][1]];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell1.begin(), shell1.end(), indices[i] ) !=shell1.end());
-                shell1.erase( std::find( shell1.begin(), shell1.end(), indices[i] ) );
+                shell1.erase(remove(shell1.begin(), shell1.end(), indices[i]), shell1.end());
                 if ((removeIsolatedItems) && (shell1.size()==0))
                     triangleToBeRemoved.push_back(container->m_tetrahedronTriangle[indices[i]][1]);
 
                 sofa::helper::vector< unsigned int > &shell2 = container->m_tetrahedronTriangleShell[ container->m_tetrahedronTriangle[indices[i]][2]];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell2.begin(), shell2.end(), indices[i] ) !=shell2.end());
-                shell2.erase( std::find( shell2.begin(), shell2.end(), indices[i] ) );
+                shell2.erase(remove(shell2.begin(), shell2.end(), indices[i]), shell2.end());
                 if ((removeIsolatedItems) && (shell2.size()==0))
                     triangleToBeRemoved.push_back(container->m_tetrahedronTriangle[indices[i]][2]);
 
                 sofa::helper::vector< unsigned int > &shell3 = container->m_tetrahedronTriangleShell[ container->m_tetrahedronTriangle[indices[i]][3]];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell3.begin(), shell3.end(), indices[i] ) !=shell3.end());
-                shell3.erase( std::find( shell3.begin(), shell3.end(), indices[i] ) );
+                shell3.erase(remove(shell3.begin(), shell3.end(), indices[i]), shell3.end());
                 if ((removeIsolatedItems) && (shell3.size()==0))
                     triangleToBeRemoved.push_back(container->m_tetrahedronTriangle[indices[i]][3]);
 
@@ -393,102 +364,67 @@ void TetrahedronSetTopologyModifier<DataTypes>::removeTetrahedraProcess( const s
                 t = container->m_tetrahedron[ indices[i] ];
                 if (container->m_tetrahedronVertexShell.size()>0)
                 {
-
                     sofa::helper::vector< unsigned int > &shell0 = container->m_tetrahedronVertexShell[ t[0] ];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell0.begin(), shell0.end(), oldTetrahedronIndex ) !=shell0.end());
-                    sofa::helper::vector< unsigned int >::iterator it=std::find( shell0.begin(), shell0.end(), oldTetrahedronIndex );
-                    (*it)=indices[i];
+                    replace(shell0.begin(), shell0.end(), oldTetrahedronIndex, indices[i]);
+                    sort(shell0.begin(), shell0.end());
 
                     sofa::helper::vector< unsigned int > &shell1 = container->m_tetrahedronVertexShell[ t[1] ];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell1.begin(), shell1.end(), oldTetrahedronIndex ) !=shell1.end());
-                    it=std::find( shell1.begin(), shell1.end(), oldTetrahedronIndex );
-                    (*it)=indices[i];
+                    replace(shell1.begin(), shell1.end(), oldTetrahedronIndex, indices[i]);
+                    sort(shell1.begin(), shell1.end());
 
                     sofa::helper::vector< unsigned int > &shell2 = container->m_tetrahedronVertexShell[ t[2] ];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell2.begin(), shell2.end(), oldTetrahedronIndex ) !=shell2.end());
-                    it=std::find( shell2.begin(), shell2.end(), oldTetrahedronIndex );
-                    (*it)=indices[i];
+                    replace(shell2.begin(), shell2.end(), oldTetrahedronIndex, indices[i]);
+                    sort(shell2.begin(), shell2.end());
 
                     sofa::helper::vector< unsigned int > &shell3 = container->m_tetrahedronVertexShell[ t[3] ];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell3.begin(), shell3.end(), oldTetrahedronIndex ) !=shell3.end());
-                    it=std::find( shell3.begin(), shell3.end(), oldTetrahedronIndex );
-                    (*it)=indices[i];
-
-
+                    replace(shell3.begin(), shell3.end(), oldTetrahedronIndex, indices[i]);
+                    sort(shell3.begin(), shell3.end());
                 }
 
                 if (container->m_tetrahedronEdgeShell.size()>0)
                 {
-
                     sofa::helper::vector< unsigned int > &shell0 =  container->m_tetrahedronEdgeShell[ container->m_tetrahedronEdge[indices[i]][0]];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell0.begin(), shell0.end(), oldTetrahedronIndex) !=shell0.end());
-                    sofa::helper::vector< unsigned int >::iterator it=std::find( shell0.begin(), shell0.end(), oldTetrahedronIndex );
-                    (*it)=indices[i];
+                    replace(shell0.begin(), shell0.end(), oldTetrahedronIndex, indices[i]);
+                    sort(shell0.begin(), shell0.end());
 
                     sofa::helper::vector< unsigned int > &shell1 =  container->m_tetrahedronEdgeShell[ container->m_tetrahedronEdge[indices[i]][1]];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell1.begin(), shell1.end(), oldTetrahedronIndex ) !=shell1.end());
-                    it=std::find( shell1.begin(), shell1.end(), oldTetrahedronIndex );
-                    (*it)=indices[i];
+                    replace(shell1.begin(), shell1.end(), oldTetrahedronIndex, indices[i]);
+                    sort(shell1.begin(), shell1.end());
 
                     sofa::helper::vector< unsigned int > &shell2 =  container->m_tetrahedronEdgeShell[ container->m_tetrahedronEdge[indices[i]][2]];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell2.begin(), shell2.end(), oldTetrahedronIndex ) !=shell2.end());
-                    it=std::find( shell2.begin(), shell2.end(), oldTetrahedronIndex );
-                    (*it)=indices[i];
+                    replace(shell2.begin(), shell2.end(), oldTetrahedronIndex, indices[i]);
+                    sort(shell2.begin(), shell2.end());
 
                     sofa::helper::vector< unsigned int > &shell3 =  container->m_tetrahedronEdgeShell[ container->m_tetrahedronEdge[indices[i]][3]];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell3.begin(), shell3.end(), oldTetrahedronIndex ) !=shell3.end());
-                    it=std::find( shell3.begin(), shell3.end(), oldTetrahedronIndex );
-                    (*it)=indices[i];
+                    replace(shell3.begin(), shell3.end(), oldTetrahedronIndex, indices[i]);
+                    sort(shell3.begin(), shell3.end());
 
                     sofa::helper::vector< unsigned int > &shell4 =  container->m_tetrahedronEdgeShell[ container->m_tetrahedronEdge[indices[i]][4]];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell4.begin(), shell4.end(), oldTetrahedronIndex ) !=shell4.end());
-                    it=std::find( shell4.begin(), shell4.end(), oldTetrahedronIndex );
-                    (*it)=indices[i];
+                    replace(shell4.begin(), shell4.end(), oldTetrahedronIndex, indices[i]);
+                    sort(shell4.begin(), shell4.end());
 
                     sofa::helper::vector< unsigned int > &shell5 =  container->m_tetrahedronEdgeShell[ container->m_tetrahedronEdge[indices[i]][5]];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell5.begin(), shell5.end(), oldTetrahedronIndex ) !=shell5.end());
-                    it=std::find( shell5.begin(), shell5.end(), oldTetrahedronIndex );
-                    (*it)=indices[i];
-
-
+                    replace(shell5.begin(), shell5.end(), oldTetrahedronIndex, indices[i]);
+                    sort(shell5.begin(), shell5.end());
                 }
 
                 if (container->m_tetrahedronTriangleShell.size()>0)
                 {
-
                     sofa::helper::vector< unsigned int > &shell0 =  container->m_tetrahedronTriangleShell[ container->m_tetrahedronTriangle[indices[i]][0]];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell0.begin(), shell0.end(), oldTetrahedronIndex ) !=shell0.end());
-                    sofa::helper::vector< unsigned int >::iterator it=std::find( shell0.begin(), shell0.end(), oldTetrahedronIndex );
-                    (*it)=indices[i];
+                    replace(shell0.begin(), shell0.end(), oldTetrahedronIndex, indices[i]);
+                    sort(shell0.begin(), shell0.end());
 
                     sofa::helper::vector< unsigned int > &shell1 =  container->m_tetrahedronTriangleShell[ container->m_tetrahedronTriangle[indices[i]][1]];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell1.begin(), shell1.end(), oldTetrahedronIndex ) !=shell1.end());
-                    it=std::find( shell1.begin(), shell1.end(), oldTetrahedronIndex );
-                    (*it)=indices[i];
+                    replace(shell1.begin(), shell1.end(), oldTetrahedronIndex, indices[i]);
+                    sort(shell1.begin(), shell1.end());
 
                     sofa::helper::vector< unsigned int > &shell2 =  container->m_tetrahedronTriangleShell[ container->m_tetrahedronTriangle[indices[i]][2]];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell2.begin(), shell2.end(), oldTetrahedronIndex ) !=shell2.end());
-                    it=std::find( shell2.begin(), shell2.end(), oldTetrahedronIndex );
-                    (*it)=indices[i];
+                    replace(shell2.begin(), shell2.end(), oldTetrahedronIndex, indices[i]);
+                    sort(shell2.begin(), shell2.end());
 
                     sofa::helper::vector< unsigned int > &shell3 =  container->m_tetrahedronTriangleShell[ container->m_tetrahedronTriangle[indices[i]][3]];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell3.begin(), shell3.end(), oldTetrahedronIndex ) !=shell3.end());
-                    it=std::find( shell3.begin(), shell3.end(), oldTetrahedronIndex );
-                    (*it)=indices[i];
+                    replace(shell3.begin(), shell3.end(), oldTetrahedronIndex, indices[i]);
+                    sort(shell3.begin(), shell3.end());
 
                 }
 

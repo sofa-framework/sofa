@@ -236,80 +236,51 @@ void QuadSetTopologyModifier<DataTypes>::removeQuadsProcess(const sofa::helper::
             // first check that the quad vertex shell array has been initialized
             if (container->m_quadVertexShell.size()>0)
             {
-
                 sofa::helper::vector< unsigned int > &shell0 = container->m_quadVertexShell[ t[0] ];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell0.begin(), shell0.end(), indices[i] ) !=shell0.end());
-                shell0.erase( std::find( shell0.begin(), shell0.end(), indices[i] ) );
+                shell0.erase(remove(shell0.begin(), shell0.end(), indices[i]), shell0.end());
                 if ((removeIsolatedPoints) && (shell0.size()==0))
-                {
                     vertexToBeRemoved.push_back(t[0]);
-                }
-
 
                 sofa::helper::vector< unsigned int > &shell1 = container->m_quadVertexShell[ t[1] ];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell1.begin(), shell1.end(), indices[i] ) !=shell1.end());
-                shell1.erase( std::find( shell1.begin(), shell1.end(), indices[i] ) );
+                shell1.erase(remove(shell1.begin(), shell1.end(), indices[i]), shell1.end());
                 if ((removeIsolatedPoints) && (shell1.size()==0))
-                {
                     vertexToBeRemoved.push_back(t[1]);
-                }
-
 
                 sofa::helper::vector< unsigned int > &shell2 = container->m_quadVertexShell[ t[2] ];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell2.begin(), shell2.end(), indices[i] ) !=shell2.end());
-                shell2.erase( std::find( shell2.begin(), shell2.end(), indices[i] ) );
+                shell2.erase(remove(shell2.begin(), shell2.end(), indices[i]), shell2.end());
                 if ((removeIsolatedPoints) && (shell2.size()==0))
-                {
                     vertexToBeRemoved.push_back(t[2]);
-                }
 
                 sofa::helper::vector< unsigned int > &shell3 = container->m_quadVertexShell[ t[3] ];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell3.begin(), shell3.end(), indices[i] ) !=shell3.end());
-                shell3.erase( std::find( shell3.begin(), shell3.end(), indices[i] ) );
+                shell3.erase(remove(shell3.begin(), shell3.end(), indices[i]), shell3.end());
                 if ((removeIsolatedPoints) && (shell3.size()==0))
-                {
                     vertexToBeRemoved.push_back(t[3]);
-                }
-
             }
 
             /** first check that the quad edge shell array has been initialized */
             if (container->m_quadEdgeShell.size()>0)
             {
                 sofa::helper::vector< unsigned int > &shell0 = container->m_quadEdgeShell[ container->m_quadEdge[indices[i]][0]];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell0.begin(), shell0.end(), indices[i] ) !=shell0.end());
-                shell0.erase( std::find( shell0.begin(), shell0.end(), indices[i] ) );
+                shell0.erase(remove(shell0.begin(), shell0.end(), indices[i]), shell0.end());
                 if ((removeIsolatedEdges) && (shell0.size()==0))
                     edgeToBeRemoved.push_back(container->m_quadEdge[indices[i]][0]);
 
                 sofa::helper::vector< unsigned int > &shell1 = container->m_quadEdgeShell[ container->m_quadEdge[indices[i]][1]];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell1.begin(), shell1.end(), indices[i] ) !=shell1.end());
-                shell1.erase( std::find( shell1.begin(), shell1.end(), indices[i] ) );
+                shell1.erase(remove(shell1.begin(), shell1.end(), indices[i]), shell1.end());
                 if ((removeIsolatedEdges) && (shell1.size()==0))
                     edgeToBeRemoved.push_back(container->m_quadEdge[indices[i]][1]);
 
 
                 sofa::helper::vector< unsigned int > &shell2 = container->m_quadEdgeShell[ container->m_quadEdge[indices[i]][2]];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell2.begin(), shell2.end(), indices[i] ) !=shell2.end());
-                shell2.erase( std::find( shell2.begin(), shell2.end(), indices[i] ) );
+                shell2.erase(remove(shell2.begin(), shell2.end(), indices[i]), shell2.end());
                 if ((removeIsolatedEdges) && (shell2.size()==0))
                     edgeToBeRemoved.push_back(container->m_quadEdge[indices[i]][2]);
 
 
                 sofa::helper::vector< unsigned int > &shell3 = container->m_quadEdgeShell[ container->m_quadEdge[indices[i]][3]];
-                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell3.begin(), shell3.end(), indices[i] ) !=shell3.end());
-                shell3.erase( std::find( shell3.begin(), shell3.end(), indices[i] ) );
+                shell3.erase(remove(shell3.begin(), shell3.end(), indices[i]), shell3.end());
                 if ((removeIsolatedEdges) && (shell3.size()==0))
                     edgeToBeRemoved.push_back(container->m_quadEdge[indices[i]][3]);
-
             }
 
 
@@ -332,61 +303,39 @@ void QuadSetTopologyModifier<DataTypes>::removeQuadsProcess(const sofa::helper::
                 t = container->m_quad[ indices[i] ];
                 if (container->m_quadVertexShell.size()>0)
                 {
-
                     sofa::helper::vector< unsigned int > &shell0 = container->m_quadVertexShell[ t[0] ];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell0.begin(), shell0.end(), oldQuadIndex ) !=shell0.end());
-                    sofa::helper::vector< unsigned int >::iterator it=std::find( shell0.begin(), shell0.end(), oldQuadIndex );
-                    (*it)=indices[i];
+                    replace(shell0.begin(), shell0.end(), oldQuadIndex, indices[i]);
+                    sort(shell0.begin(), shell0.end());
 
                     sofa::helper::vector< unsigned int > &shell1 = container->m_quadVertexShell[ t[1] ];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell1.begin(), shell1.end(), oldQuadIndex ) !=shell1.end());
-                    it=std::find( shell1.begin(), shell1.end(), oldQuadIndex );
-                    (*it)=indices[i];
-
+                    replace(shell1.begin(), shell1.end(), oldQuadIndex, indices[i]);
+                    sort(shell1.begin(), shell1.end());
 
                     sofa::helper::vector< unsigned int > &shell2 = container->m_quadVertexShell[ t[2] ];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell2.begin(), shell2.end(), oldQuadIndex ) !=shell2.end());
-                    it=std::find( shell2.begin(), shell2.end(), oldQuadIndex );
-                    (*it)=indices[i];
+                    replace(shell2.begin(), shell2.end(), oldQuadIndex, indices[i]);
+                    sort(shell2.begin(), shell2.end());
 
                     sofa::helper::vector< unsigned int > &shell3 = container->m_quadVertexShell[ t[3] ];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell3.begin(), shell3.end(), oldQuadIndex ) !=shell3.end());
-                    it=std::find( shell3.begin(), shell3.end(), oldQuadIndex );
-                    (*it)=indices[i];
-
-
+                    replace(shell3.begin(), shell3.end(), oldQuadIndex, indices[i]);
+                    sort(shell3.begin(), shell3.end());
                 }
                 if (container->m_quadEdgeShell.size()>0)
                 {
-
                     sofa::helper::vector< unsigned int > &shell0 =  container->m_quadEdgeShell[ container->m_quadEdge[indices[i]][0]];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell0.begin(), shell0.end(), oldQuadIndex ) !=shell0.end());
-                    sofa::helper::vector< unsigned int >::iterator it=std::find( shell0.begin(), shell0.end(), oldQuadIndex );
-                    (*it)=indices[i];
+                    replace(shell0.begin(), shell0.end(), oldQuadIndex, indices[i]);
+                    sort(shell0.begin(), shell0.end());
 
                     sofa::helper::vector< unsigned int > &shell1 =  container->m_quadEdgeShell[ container->m_quadEdge[indices[i]][1]];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell1.begin(), shell1.end(), oldQuadIndex ) !=shell1.end());
-                    it=std::find( shell1.begin(), shell1.end(), oldQuadIndex );
-                    (*it)=indices[i];
+                    replace(shell1.begin(), shell1.end(), oldQuadIndex, indices[i]);
+                    sort(shell1.begin(), shell1.end());
 
                     sofa::helper::vector< unsigned int > &shell2 =  container->m_quadEdgeShell[ container->m_quadEdge[indices[i]][2]];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell2.begin(), shell2.end(), oldQuadIndex) !=shell2.end());
-                    it=std::find( shell2.begin(), shell2.end(), oldQuadIndex );
-                    (*it)=indices[i];
+                    replace(shell2.begin(), shell2.end(), oldQuadIndex, indices[i]);
+                    sort(shell2.begin(), shell2.end());
 
                     sofa::helper::vector< unsigned int > &shell3 =  container->m_quadEdgeShell[ container->m_quadEdge[indices[i]][3]];
-                    // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                    assert(std::find( shell3.begin(), shell3.end(), oldQuadIndex) !=shell3.end());
-                    it=std::find( shell3.begin(), shell3.end(), oldQuadIndex );
-                    (*it)=indices[i];
-
+                    replace(shell3.begin(), shell3.end(), oldQuadIndex, indices[i]);
+                    sort(shell3.begin(), shell3.end());
                 }
 
             }
