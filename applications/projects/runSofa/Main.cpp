@@ -85,7 +85,9 @@ int main(int argc, char** argv)
         sofa::helper::system::DataRepository.findFile(fileName);
     }
 
-    groot = sofa::simulation::tree::getSimulation()->load(fileName.c_str());
+    std::string in_filename(fileName);
+    if (in_filename.rfind(".simu") == std::string::npos)
+        groot = sofa::simulation::tree::getSimulation()->load(fileName.c_str());
 
     if (groot==NULL)
     {
