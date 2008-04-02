@@ -304,7 +304,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     record                 = new QPushButton( statusBar(), "Record");  	record->setToggleButton(true);
     backward_record        = new QPushButton( statusBar(), "Backward");
     stepbackward_record    = new QPushButton( statusBar(), "Step Backward");
-// 	playbackward_record    = new QPushButton( statusBar(), "Play Backward");playbackward_record->setToggleButton(true);
     playforward_record     = new QPushButton( statusBar(), "Play Forward"); playforward_record->setToggleButton(true);
     stepforward_record     = new QPushButton( statusBar(), "Step Forward");
     forward_record         = new QPushButton( statusBar(), "Forward");
@@ -312,7 +311,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     QToolTip::add(record               , tr( "Record" ) );
     QToolTip::add(backward_record      , tr( "Load Initial Time" ) );
     QToolTip::add(stepbackward_record  , tr( "Make one step backward" ) );
-// 	QToolTip::add(playbackward_record  , tr( "Continuous play backward" ) );
     QToolTip::add(playforward_record   , tr( "Continuous play forward" ) );
     QToolTip::add(stepforward_record   , tr( "Make one step forward" ) );
     QToolTip::add(forward_record       , tr( "Load Final Time" ) );
@@ -321,7 +319,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     setPixmap("textures/media-record.png", record);
     setPixmap("textures/media-seek-backward.png", backward_record);
     setPixmap("textures/media-skip-backward.png", stepbackward_record);
-    //setPixmap("textures/media-back-start.png", playbackward_record);
     setPixmap("textures/media-playback-start.png", playforward_record);
     setPixmap("textures/media-skip-forward.png", stepforward_record);
     setPixmap("textures/media-seek-forward.png", forward_record);
@@ -338,7 +335,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     statusBar()->addWidget( record);
     statusBar()->addWidget( backward_record);
     statusBar()->addWidget( stepbackward_record);
-// 	statusBar()->addWidget( playbackward_record);
     statusBar()->addWidget( playforward_record);
     statusBar()->addWidget( stepforward_record);
     statusBar()->addWidget( forward_record);
@@ -367,7 +363,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect ( record, SIGNAL (toggled (bool) ),              this, SLOT( slot_recordSimulation( bool) ) );
     connect ( backward_record, SIGNAL (clicked () ),         this, SLOT( slot_backward( ) ) );
     connect ( stepbackward_record, SIGNAL (clicked () ),     this, SLOT( slot_stepbackward( ) ) );
-// 	connect ( playbackward_record, SIGNAL (clicked () ),     this, SLOT( slot_playbackward( ) ) );
     connect ( playforward_record,  SIGNAL (clicked () ),     this, SLOT( slot_playforward( ) ) );
     connect ( stepforward_record,  SIGNAL (clicked () ),     this, SLOT( slot_stepforward( ) ) );
     connect ( this,      SIGNAL (insideStepForward () ),     this, SLOT( slot_stepforward( ) ) );
@@ -382,7 +377,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect ( tabs, SIGNAL ( currentChanged ( QWidget* ) ), this, SLOT ( currentTabChanged ( QWidget* ) ) );
 
     addViewer();
-
     currentTabChanged ( tabs->currentPage() );
 
 
@@ -527,9 +521,6 @@ void RealGUI::addViewer()
     viewer->getQWidget()->setFocusPolicy ( QWidget::StrongFocus );
 #endif
 
-
-
-
     viewer->setup();
 
     connect ( ResetViewButton, SIGNAL ( clicked() ), viewer->getQWidget(), SLOT ( resetView() ) );
@@ -556,7 +547,6 @@ void RealGUI::addViewer()
     viewer->getQWidget()->show();
     viewer->getQWidget()->update();
     setGUI();
-
 
 }
 
@@ -619,6 +609,18 @@ bool RealGUI::setViewer ( const char* name )
 
 
     std::string filename = viewer->getSceneFileName();
+
+    if ( viewer->getScene() !=NULL )
+    {
+        getSimulation()->unload ( viewer->getScene() );
+        if ( graphListener!=NULL )
+        {
+            delete graphListener;
+            graphListener = NULL;
+        }
+        graphView->clear();
+    }
+
 // 	fileOpen(filename);
 // 	GNode* groot = new GNode; // empty scene to do the transition
 // 	setScene ( groot,filename.c_str() ); // keep the current display flags
@@ -673,10 +675,6 @@ bool RealGUI::setViewer ( const char* name )
 
     viewerName = name;
 
-
-// 	if ( graphListener )
-// 	  graphListener->removeChild ( NULL, groot );
-
     addViewer();
 
     if (filename.rfind(".simu") != std::string::npos)
@@ -702,10 +700,6 @@ void RealGUI::fileOpen ( const char* filename )
     //Hide all the dialogs to modify the graph
     emit ( newScene() );
 
-    //Clear the list of modified dialog opened
-    current_Id_modifyDialog=0;
-    map_modifyDialogOpened.clear();
-
 
     if ( viewer->getScene() !=NULL )
     {
@@ -717,6 +711,10 @@ void RealGUI::fileOpen ( const char* filename )
         }
         graphView->clear();
     }
+
+    //Clear the list of modified dialog opened
+    current_Id_modifyDialog=0;
+    map_modifyDialogOpened.clear();
 
     GNode* groot = getSimulation()->load ( filename );
 
@@ -791,6 +789,7 @@ void RealGUI::setScene ( GNode* groot, const char* filename )
     //getSimulation()->updateVisualContext ( groot );
     startButton->setOn ( groot->getContext()->getAnimate() );
     dtEdit->setText ( QString::number ( groot->getDt() ) );
+    record->setOn(false);
 }
 
 void RealGUI::changeInstrument(int id)
