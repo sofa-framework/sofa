@@ -245,11 +245,27 @@ SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& 
     }
     // show the gui
     gui->show();
+
     return gui;
 }
 
 int RealGUI::mainLoop()
 {
+
+#ifdef QT_MODULE_QT3SUPPORT
+    QString title = windowTitle();
+#else
+    QString title = caption();
+#endif
+    title.remove(QString("Sofa - "), true);
+    std::string title_str(title.ascii());
+    if ( sofa::helper::system::DataRepository.findFile (title_str) )
+    {
+        title = sofa::helper::system::DataRepository.getFile ( title_str );
+
+        if (title_str.rfind(".simu") != std::string::npos)
+            fileOpenSimu(title_str.c_str() );
+    }
     return application->exec();
 }
 
@@ -411,6 +427,7 @@ RealGUI::~RealGUI()
 
 void RealGUI::init()
 {
+
     frameCounter = 0;
     node_clicked = NULL;
     item_clicked = NULL;
@@ -547,6 +564,7 @@ void RealGUI::addViewer()
     viewer->getQWidget()->show();
     viewer->getQWidget()->update();
     setGUI();
+
 
 }
 
