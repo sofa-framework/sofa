@@ -48,10 +48,16 @@ using namespace core::componentmodel::behavior;
 int BeamLinearMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
         .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > > >()
         .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3fTypes> > > >()
+        .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3dTypes> > > >()
+        .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > > >()
         .add< BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > > >()
         .add< BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3fTypes> > > >()
         .add< BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > > >()
         .add< BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3dTypes> > > >()
+        .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > > >()
+        .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3dTypes> > > >()
+        .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > > >()
 // .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3dTypes> > > >()
 // .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > > >()
 // .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3dTypes> > > >()
@@ -66,12 +72,17 @@ int BeamLinearMappingClass = core::RegisterObject("Set the positions and velocit
 
 template class BeamLinearMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > >;
 template class BeamLinearMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3fTypes> > >;
+template class BeamLinearMapping< MechanicalMapping<MechanicalState<Rigid3fTypes>, MechanicalState<Vec3dTypes> > >;
+template class BeamLinearMapping< MechanicalMapping<MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > >;
 
 template class BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > >;
 template class BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3fTypes> > >;
-
 template class BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > >;
 template class BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > >;
+template class BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3dTypes> > >;
+template class BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > >;
+template class BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3dTypes> > >;
+template class BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > >;
 
 
 /// Template specialization for 2D rigids

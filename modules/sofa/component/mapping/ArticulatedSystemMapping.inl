@@ -88,7 +88,7 @@ void ArticulatedSystemMapping<BasicMapping>::apply( typename Out::VecCoord& out,
         for (; a != aEnd; a++)
         {
             InCoord value = in[(*a)->articulationIndex.getValue()];
-            Vector3 axis = out[child].getOrientation().rotate((*a)->axis.getValue());
+            Vec<3,Real> axis = out[child].getOrientation().rotate((*a)->axis.getValue());
 
             if ((*a)->rotation.getValue())
             {
@@ -124,7 +124,7 @@ void ArticulatedSystemMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out
         int child = (*ac)->childIndex.getValue();
 
         out[child].getVOrientation() += out[parent].getVOrientation();
-        Vector3 P = xto[parent].getCenter(); Vector3 C = xto[child].getCenter();
+        Vec<3,OutReal> P = xto[parent].getCenter(); Vec<3,OutReal> C = xto[child].getCenter();
         out[child].getVCenter() = out[parent].getVCenter() + cross(P-C, out[parent].getVOrientation());
 
         vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*> articulations = (*ac)->getArticulations();
@@ -135,9 +135,9 @@ void ArticulatedSystemMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out
         for (; a != aEnd; a++)
         {
             InCoord value = in[(*a)->articulationIndex.getValue()];
-            Vector3 axis = xto[parent].getOrientation().rotate((*a)->axis.getValue());
+            Vec<3,OutReal> axis = xto[parent].getOrientation().rotate((*a)->axis.getValue());
 
-            Vector3 A = (*ac)->globalPosition.getValue();
+            Vec<3,OutReal> A = (*ac)->globalPosition.getValue();
 
             if ((*a)->rotation.getValue())
             {
@@ -170,10 +170,10 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecDeriv& out
         int child = (*ac)->childIndex.getValue();
 
         fObjects6DBuf[parent].getVCenter() += fObjects6DBuf[child].getVCenter();
-        Vector3 P = xto[parent].getCenter(); Vector3 C = xto[child].getCenter();
+        Vec<3,OutReal> P = xto[parent].getCenter(); Vec<3,OutReal> C = xto[child].getCenter();
         fObjects6DBuf[parent].getVOrientation() += fObjects6DBuf[child].getVOrientation() + cross(C-P,  fObjects6DBuf[child].getVCenter());
 
-        Vector3 A = (*ac)->globalPosition.getValue();
+        Vec<3,Real> A = (*ac)->globalPosition.getValue();
         OutDeriv T;
         T.getVCenter() = fObjects6DBuf[child].getVCenter();
         T.getVOrientation() = fObjects6DBuf[child].getVOrientation() + cross(C-A, fObjects6DBuf[child].getVCenter());
@@ -186,7 +186,7 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecDeriv& out
         while (a != aBegin)
         {
             a--;
-            Vector3 axis = xto[parent].getOrientation().rotate((*a)->axis.getValue());
+            Vec<3,OutReal> axis = xto[parent].getOrientation().rotate((*a)->axis.getValue());
 
             if ((*a)->rotation.getValue())
             {
@@ -214,7 +214,7 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out
             const OutSparseDeriv cIn = in[i][j];
             int childIndex = cIn.index;
             const OutDeriv valueConst = (OutDeriv) cIn.data;
-            Vector3 posConst = xto[childIndex].getCenter();
+            Vec<3,OutReal> posConst = xto[childIndex].getCenter();
             vector<ArticulatedHierarchyContainer::ArticulationCenter*> ACList = ahc->getAcendantList(childIndex);
 
             vector<ArticulatedHierarchyContainer::ArticulationCenter*>::const_iterator ac = ACList.begin();
@@ -222,7 +222,7 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out
 
             for (; ac != acEnd; ac++)
             {
-                Vector3 posAc = (*ac)->globalPosition.getValue();
+                Vec<3,OutReal> posAc = (*ac)->globalPosition.getValue();
                 OutDeriv T;
                 T.getVCenter() = valueConst.getVCenter();
                 T.getVOrientation() = valueConst.getVOrientation() + cross(posConst - posAc, valueConst.getVCenter());
@@ -236,7 +236,7 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out
 
                 for (; a != aEnd; a++)
                 {
-                    Vector3 axis = xto[parent].getOrientation().rotate((*a)->axis.getValue());
+                    Vec<3,OutReal> axis = xto[parent].getOrientation().rotate((*a)->axis.getValue());
 
                     InSparseDeriv constArt;
                     constArt.index = (*a)->articulationIndex.getValue();
