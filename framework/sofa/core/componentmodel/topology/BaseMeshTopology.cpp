@@ -22,12 +22,15 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#include <sofa/component/topology/BaseMeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
 
-namespace component
+namespace core
+{
+
+namespace componentmodel
 {
 
 namespace topology
@@ -193,6 +196,8 @@ void BaseMeshTopology::addHexa(int, int, int, int, int, int, int, int)
 
 } // namespace topology
 
-} // namespace component
+} // namespace componentmodel
+
+} // namespace core
 
 } // namespace sofa
