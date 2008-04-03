@@ -318,12 +318,12 @@ void MeshTopology::createEdgeVertexShellArray ()
     for (unsigned int i = 0; i < seqEdges.getValue().size(); ++i)
     {
         // adding edge i in the edge shell of both points
-        m_edgeVertexShell[ seqEdges.getValue()[i][0]  ].push_back( i );
+        m_edgeVertexShell[ seqEdges.getValue()[i][0] ].push_back( i );
         m_edgeVertexShell[ seqEdges.getValue()[i][1] ].push_back( i );
     }
 }
 
-const vector<MeshTopology::EdgeID>& MeshTopology::getEdgeVertexShell(PointID i)
+const MeshTopology::VertexEdges& MeshTopology::getEdgeVertexShell(PointID i)
 {
     if (!m_edgeVertexShell.size())
         createEdgeVertexShellArray();
@@ -337,34 +337,27 @@ void MeshTopology::createTriangleVertexShellArray ()
 
     for (unsigned int i = 0; i < seqTriangles.getValue().size(); ++i)
     {
-        // adding edge i in the edge shell of both points
+        // adding triangle i in the triangle shell of all points
         for (j=0; j<3; ++j)
             m_triangleVertexShell[ seqTriangles.getValue()[i][j]  ].push_back( i );
     }
 }
 
-const vector<MeshTopology::EdgeID>& MeshTopology::getEdgeTriangleShell(TriangleID i)
+const MeshTopology::TriangleEdges& MeshTopology::getEdgeTriangleShell(TriangleID i)
 {
-    const vector< TriangleEdges > &tea = getTriangleEdgeArray();
-    static vector< EdgeID > triangleEdge;
-    triangleEdge[0] = tea[i][0];
-    triangleEdge[1] = tea[i][1];
-    triangleEdge[2] = tea[i][2];
-    return triangleEdge;
+    if (m_edgeTriangleShell.empty())
+        createEdgeTriangleShellArray();
+    return m_edgeTriangleShell[i];
 }
 
-const vector<MeshTopology::EdgeID>& MeshTopology::getEdgeQuadShell(QuadID i)
+const MeshTopology::QuadEdges& MeshTopology::getEdgeQuadShell(QuadID i)
 {
-    const vector< QuadEdges > &qea = getQuadEdgeArray();
-    static vector< EdgeID > quadEdge;
-    quadEdge[0] = qea[i][0];
-    quadEdge[1] = qea[i][1];
-    quadEdge[2] = qea[i][2];
-    quadEdge[3] = qea[i][3];
-    return quadEdge;
+    if (m_edgeQuadShell.empty())
+        createEdgeQuadShellArray();
+    return m_edgeQuadShell[i];
 }
 
-const vector<MeshTopology::TriangleID>& MeshTopology::getTriangleVertexShell(PointID i)
+const MeshTopology::VertexTriangles& MeshTopology::getTriangleVertexShell(PointID i)
 {
     if (!m_triangleVertexShell.size())
         createTriangleVertexShellArray();
@@ -373,8 +366,8 @@ const vector<MeshTopology::TriangleID>& MeshTopology::getTriangleVertexShell(Poi
 
 int MeshTopology::getEdgeIndex(PointID v1, PointID v2)
 {
-    const vector< EdgeID > &es1=getEdgeVertexShell(v1) ;
-    const vector<MeshTopology::Edge> &ea=seqEdges.getValue();
+    const VertexEdges &es1 = getEdgeVertexShell(v1) ;
+    const SeqEdges &ea = getEdges();
     unsigned int i=0;
     int result= -1;
     while ((i<es1.size()) && (result== -1))
@@ -388,9 +381,9 @@ int MeshTopology::getEdgeIndex(PointID v1, PointID v2)
     return result;
 }
 
-void MeshTopology::createTriangleEdgeArray ()
+void MeshTopology::createEdgeTriangleShellArray ()
 {
-    m_triangleEdge.resize( getNbTriangles());
+    m_edgeTriangleShell.resize( getNbTriangles());
     unsigned int j;
     int edgeIndex;
 
@@ -405,7 +398,7 @@ void MeshTopology::createTriangleEdgeArray ()
             {
                 edgeIndex=getEdgeIndex(t[(j+1)%3],t[(j+2)%3]);
                 assert(edgeIndex!= -1);
-                m_triangleEdge[i][j]=edgeIndex;
+                m_edgeTriangleShell[i][j]=edgeIndex;
             }
         }
     }
@@ -447,29 +440,23 @@ void MeshTopology::createTriangleEdgeArray ()
                 {
                     edgeIndex=(*ite).second;
                 }
-                m_triangleEdge[i][j]=edgeIndex;
+                m_edgeTriangleShell[i][j]=edgeIndex;
             }
         }
     }
 }
 
-const vector< MeshTopology::TriangleEdges >& MeshTopology::getTriangleEdgeArray()
-{
-    if (!m_triangleEdge.size())
-        createTriangleEdgeArray();
-    return m_triangleEdge;
-}
-
 void MeshTopology::createTriangleEdgeShellArray ()
 {
+    if (m_edgeTriangleShell.empty())
+        createEdgeTriangleShellArray();
     m_triangleEdgeShell.resize( getNbEdges());
+    const vector< TriangleEdges > &tea=m_edgeTriangleShell;
     unsigned int j;
-    const vector< TriangleEdges > &tea=getTriangleEdgeArray();
-
 
     for (unsigned int i = 0; i < seqTriangles.getValue().size(); ++i)
     {
-        // adding edge i in the edge shell of both points
+        // adding triangle i in the triangle shell of all edges
         for (j=0; j<3; ++j)
         {
             m_triangleEdgeShell[ tea[i][j] ].push_back( i );
@@ -477,9 +464,9 @@ void MeshTopology::createTriangleEdgeShellArray ()
     }
 }
 
-const vector<MeshTopology::TriangleID>& MeshTopology::getTriangleEdgeShell(EdgeID i)
+const MeshTopology::EdgeTriangles& MeshTopology::getTriangleEdgeShell(EdgeID i)
 {
-    if (!m_triangleEdgeShell.size())
+    if (m_triangleEdgeShell.empty())
         createTriangleEdgeShellArray();
     return m_triangleEdgeShell[i];
 }
@@ -491,23 +478,22 @@ void MeshTopology::createQuadVertexShellArray ()
 
     for (unsigned int i = 0; i < seqQuads.size(); ++i)
     {
-        // adding edge i in the edge shell of both points
+        // adding quad i in the quad shell of all points
         for (j=0; j<4; ++j)
             m_quadVertexShell[ seqQuads[i][j]  ].push_back( i );
     }
 }
 
-const vector<MeshTopology::QuadID>& MeshTopology::getQuadVertexShell(PointID i)
+const MeshTopology::VertexQuads& MeshTopology::getQuadVertexShell(PointID i)
 {
-    if (!m_quadVertexShell.size())
+    if (m_quadVertexShell.empty())
         createQuadVertexShellArray();
     return m_quadVertexShell[i];
 }
 
-
-void MeshTopology::createQuadEdgeArray ()
+void MeshTopology::createEdgeQuadShellArray ()
 {
-    m_quadEdge.resize( getNbQuads());
+    m_edgeQuadShell.resize( getNbQuads());
     unsigned int j;
     int edgeIndex;
 
@@ -517,12 +503,11 @@ void MeshTopology::createQuadEdgeArray ()
         for (unsigned int i = 0; i < seqQuads.size(); ++i)
         {
             Quad &t=seqQuads[i];
-            // adding edge i in the edge shell of both points
             for (j=0; j<4; ++j)
             {
                 edgeIndex=getEdgeIndex(t[(j+1)%4],t[(j+2)%4]);
                 assert(edgeIndex!= -1);
-                m_quadEdge[i][j]=edgeIndex;
+                m_edgeQuadShell[i][j]=edgeIndex;
             }
         }
     }
@@ -564,32 +549,24 @@ void MeshTopology::createQuadEdgeArray ()
                 {
                     edgeIndex=(*ite).second;
                 }
-                m_quadEdge[i][j]=edgeIndex;
+                m_edgeQuadShell[i][j]=edgeIndex;
             }
         }
     }
 }
 
-const vector< MeshTopology::QuadEdges>& MeshTopology::getQuadEdgeArray()
-{
-    if (!m_quadEdge.size())
-        createQuadEdgeArray();
-    return m_quadEdge;
-}
-
 void MeshTopology::createQuadEdgeShellArray ()
 {
+    if (m_edgeQuadShell.empty())
+        createEdgeQuadShellArray();
     m_quadEdgeShell.resize( getNbEdges() );
     unsigned int j;
-    const vector< QuadEdges > &qea=getQuadEdgeArray();
-
-
     for (unsigned int i = 0; i < seqQuads.size(); ++i)
     {
         // adding edge i in the edge shell of both points
         for (j=0; j<4; ++j)
         {
-            m_quadEdgeShell[ qea[i][j] ].push_back( i );
+            m_quadEdgeShell[ m_edgeQuadShell[i][j] ].push_back( i );
         }
     }
 }

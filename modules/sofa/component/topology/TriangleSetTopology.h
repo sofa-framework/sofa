@@ -34,17 +34,27 @@
 
 namespace sofa
 {
+
 namespace component
 {
 
 namespace topology
 {
+
 using namespace sofa::defaulttype; // typing "Vec"
 
+using core::componentmodel::topology::BaseMeshTopology;
+typedef BaseMeshTopology::TriangleID TriangleID;
+
 /// defining Triangles as 3 DOFs indices
-typedef helper::fixed_array<unsigned int,3> Triangle;
+//typedef helper::fixed_array<unsigned int,3> Triangle;
 /// defining TriangleEdges as 3 Edge indices
-typedef helper::fixed_array<unsigned int,3> TriangleEdges;
+//typedef helper::fixed_array<unsigned int,3> TriangleEdges;
+typedef BaseMeshTopology::Triangle Triangle;
+typedef BaseMeshTopology::SeqTriangles SeqTriangles;
+typedef BaseMeshTopology::VertexTriangles VertexTriangles;
+typedef BaseMeshTopology::EdgeTriangles EdgeTriangles;
+typedef BaseMeshTopology::TriangleEdges TriangleEdges;
 
 /////////////////////////////////////////////////////////
 /// TopologyChange subclasses
@@ -628,6 +638,19 @@ public:
     {
         return (TriangleSetGeometryAlgorithms<DataTypes> *)this->m_geometryAlgorithms;
     }
+
+    /// BaseMeshTopology API
+    /// @{
+
+    const SeqTriangles& getTriangles()   { return getTriangleSetTopologyContainer()->getTriangleArray(); }
+    /// Returns the set of edges adjacent to a given triangle.
+    const TriangleEdges& getEdgeTriangleShell(TriangleID i) { return getTriangleSetTopologyContainer()->getTriangleEdge(i); }
+    /// Returns the set of triangles adjacent to a given vertex.
+    const VertexTriangles& getTriangleVertexShell(PointID i) { return getTriangleSetTopologyContainer()->getTriangleVertexShell(i); }
+    /// Returns the set of triangles adjacent to a given edge.
+    const EdgeTriangles& getTriangleEdgeShell(EdgeID i) { return getTriangleSetTopologyContainer()->getTriangleEdgeShell(i); }
+
+    /// @}
 
 };
 

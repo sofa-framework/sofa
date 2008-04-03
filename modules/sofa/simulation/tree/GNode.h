@@ -41,6 +41,7 @@
 #include <sofa/core/componentmodel/behavior/Constraint.h>
 #include <sofa/core/componentmodel/topology/Topology.h>
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
 #include <sofa/core/componentmodel/behavior/MasterSolver.h>
 #include <sofa/core/componentmodel/collision/Pipeline.h>
@@ -141,10 +142,13 @@ public:
     virtual core::objectmodel::BaseObject* getMechanicalState() const;
 
     /// Topology
-    virtual core::objectmodel::BaseObject* getTopology() const;
+    virtual core::componentmodel::topology::Topology* getTopology() const;
 
     /// Dynamic Topology
-    virtual core::objectmodel::BaseObject* getMainTopology() const;
+    virtual core::componentmodel::topology::BaseTopology* getMainTopology() const;
+
+    /// Mesh Topology (unified interface for both static and dynamic topologies)
+    virtual core::componentmodel::topology::BaseMeshTopology* getMeshTopology() const;
 
     /// Shader
     virtual core::objectmodel::BaseObject* getShader() const;
@@ -399,6 +403,7 @@ public:
     Single<core::componentmodel::behavior::BaseMechanicalMapping> mechanicalMapping;
     Single<core::componentmodel::behavior::BaseMass> mass;
     Single<core::componentmodel::topology::Topology> topology;
+    Single<core::componentmodel::topology::BaseMeshTopology> meshTopology;
     Single<sofa::core::Shader> shader;
 
     //warning : basic topology are not yet used in the release version

@@ -5,6 +5,7 @@
 #include <vector>
 //#include <string>
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/helper/fixed_array.h>
 
@@ -16,6 +17,9 @@ namespace component
 
 namespace topology
 {
+
+using core::componentmodel::topology::BaseMeshTopology;
+typedef BaseMeshTopology::PointID PointID;
 
 /////////////////////////////////////////////////////////
 /// TopologyChange subclasses
@@ -393,7 +397,7 @@ public:
 /** Describes a topological object that only consists as a set of points :
 it is a base class for all topological objects */
 template<class DataTypes>
-class PointSetTopology : public core::componentmodel::topology::BaseTopology
+class PointSetTopology : public core::componentmodel::topology::BaseTopology, public core::componentmodel::topology::BaseMeshTopology
 {
 
 public:
@@ -466,6 +470,17 @@ public:
      *
      */
     virtual unsigned int getDOFNumber() const { return object->getSize(); }
+
+
+    /// BaseMeshTopology API
+    /// @{
+    virtual void clear()                       { }
+    virtual const SeqEdges& getEdges()         { static SeqEdges     empty; return empty; }
+    virtual const SeqTriangles& getTriangles() { static SeqTriangles empty; return empty; }
+    virtual const SeqQuads& getQuads()         { static SeqQuads     empty; return empty; }
+    virtual const SeqTetras& getTetras()       { static SeqTetras    empty; return empty; }
+    virtual const SeqHexas& getHexas()         { static SeqHexas     empty; return empty; }
+    /// @}
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalObject.

@@ -118,7 +118,7 @@ public:
  * The class also holds an array of TopologyChange objects needed by Topologies linked to this one to know
  * what happened and how to take it into account (or ignore it).
  */
-class BaseTopology : public objectmodel::BaseObject
+class BaseTopology : public virtual core::objectmodel::BaseObject
 {
 
 public :

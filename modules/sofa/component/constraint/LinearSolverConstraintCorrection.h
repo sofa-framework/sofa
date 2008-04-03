@@ -50,11 +50,11 @@ using namespace sofa::defaulttype;
 
 
 /// to avoid compilation problem under gcc3.3
-behavior::OdeSolver* getOdeSolver(objectmodel::BaseContext* context)
+extern inline behavior::OdeSolver* getOdeSolver(objectmodel::BaseContext* context)
 {
     return context->get<behavior::OdeSolver>();
 }
-behavior::LinearSolver* getLinearSolver(objectmodel::BaseContext* context)
+extern inline behavior::LinearSolver* getLinearSolver(objectmodel::BaseContext* context)
 {
     return context->get<behavior::LinearSolver>();
 }

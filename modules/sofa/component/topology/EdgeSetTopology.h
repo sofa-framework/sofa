@@ -14,8 +14,14 @@ namespace component
 namespace topology
 {
 
+using core::componentmodel::topology::BaseMeshTopology;
+typedef BaseMeshTopology::EdgeID EdgeID;
+
 /// defining Edges as the pair of the DOFs indices
-typedef helper::fixed_array<unsigned int,2> Edge;
+//typedef helper::fixed_array<unsigned int,2> Edge;
+typedef BaseMeshTopology::Edge Edge;
+typedef BaseMeshTopology::SeqEdges SeqEdges;
+typedef BaseMeshTopology::VertexEdges VertexEdges;
 
 /////////////////////////////////////////////////////////
 /// TopologyChange subclasses
@@ -405,8 +411,8 @@ public:
 template<class DataTypes>
 class EdgeSetTopology : public PointSetTopology <DataTypes>
 {
-
 public:
+
     EdgeSetTopology(component::MechanicalObject<DataTypes> *obj);
 
     DataPtr< EdgeSetTopologyContainer > *f_m_topologyContainer;
@@ -436,6 +442,15 @@ public:
     {
         return (EdgeSetGeometryAlgorithms<DataTypes> *)this->m_geometryAlgorithms;
     }
+
+    /// BaseMeshTopology API
+    /// @{
+
+    virtual const SeqEdges& getEdges()         { return getEdgeSetTopologyContainer()->getEdgeArray(); }
+    /// Returns the set of edges adjacent to a given vertex.
+    virtual const VertexEdges& getEdgeVertexShell(PointID i) { return getEdgeSetTopologyContainer()->getEdgeVertexShell(i); }
+
+    /// @}
 
 };
 
