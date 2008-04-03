@@ -1,11 +1,12 @@
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/tree/Simulation.h>
-#include <sofa/component/mass/UniformMass.h>
 #include <sofa/component/contextobject/Gravity.h>
 #include <sofa/component/contextobject/CoordinateSystem.h>
 #include <sofa/component/odesolver/EulerSolver.h>
-#include <sofa/component/MechanicalObject.h>
 #include <sofa/core/objectmodel/Context.h>
+
+#include <sofa/component/typedef/Mass_double.h>
+#include <sofa/component/typedef/MechanicalObject_double.h>
 
 #include <iostream>
 #include <fstream>
@@ -47,7 +48,7 @@ int main(int argc, char** argv)
     groot->addChild( particule_node );
 
     // The particule, i.e, its degrees of freedom : a point with a velocity
-    sofa::component::MechanicalObject<MyTypes>* particle = new sofa::component::MechanicalObject<MyTypes>;
+    MechanicalObject3d* particle = new MechanicalObject3d;
     particle->setName("particle");
     particule_node->addObject(particle);
     particle->resize(1);
@@ -57,7 +58,7 @@ int main(int argc, char** argv)
     (*particle->getV())[0] = Vec3(0,0,0);
 
     // Its properties, i.e, a simple mass node
-    sofa::component::mass::UniformMass<MyTypes,double>* mass = new sofa::component::mass::UniformMass<MyTypes,double>;
+    UniformMass3d* mass = new UniformMass3d;
     mass->setName("mass");
     particule_node->addObject(mass);
     mass->setMass( 1 );

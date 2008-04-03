@@ -3,31 +3,22 @@
 
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/tree/Simulation.h>
-#include <sofa/component/mass/UniformMass.h>
 #include <sofa/component/contextobject/Gravity.h>
 #include <sofa/component/contextobject/CoordinateSystem.h>
-#include <sofa/component/MechanicalObject.h>
 #include <sofa/core/objectmodel/Context.h>
-#include <sofa/component/visualmodel/OglModel.h>
-#include <sofa/component/constraint/FixedConstraint.h>
-#include <sofa/component/forcefield/TetrahedronFEMForceField.h>
-#include <sofa/component/mapping/BarycentricMapping.h>
 #include <sofa/component/odesolver/CGImplicitSolver.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/gui/SofaGUI.h>
 
+
+#include <sofa/component/typedef/Constraint_double.h>
+#include <sofa/component/typedef/Mass_double.h>
+#include <sofa/component/typedef/MechanicalObject_double.h>
+#include <sofa/component/typedef/Forcefield_double.h>
+#include <sofa/component/typedef/Mapping.h>
+
 typedef sofa::defaulttype::Vec3Types MyTypes;
 typedef MyTypes::Deriv Vec3;
-typedef sofa::component::visualmodel::GLExtVec3fTypes OglTypes;
-
-typedef sofa::core::componentmodel::behavior::State<MyTypes> MyState;
-typedef sofa::core::componentmodel::behavior::MappedModel<OglTypes> OglMappedModel;
-
-using sofa::core::Mapping;
-using sofa::component::mapping::BarycentricMapping;
-
-typedef BarycentricMapping< Mapping< MyState, OglMappedModel > > MyMapping;
-
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
@@ -53,7 +44,7 @@ int main(int argc, char** argv)
     groot->addObject(gravity);
 
     // Tetrahedron degrees of freedom
-    sofa::component::MechanicalObject<MyTypes>* DOF = new sofa::component::MechanicalObject<MyTypes>;
+    MechanicalObject3d* DOF = new MechanicalObject3d;
     groot->addObject(DOF);
     DOF->resize(4);
     DOF->setName("DOF");
@@ -65,7 +56,7 @@ int main(int argc, char** argv)
     x[3] = Vec3(-10*0.5,0,-10*0.866);
 
     // Tetrahedron uniform mass
-    sofa::component::mass::UniformMass<MyTypes,double>* mass = new sofa::component::mass::UniformMass<MyTypes,double>;
+    UniformMass3d* mass = new UniformMass3d;
     groot->addObject(mass);
     mass->setMass(2);
     mass->setName("mass");
@@ -77,13 +68,13 @@ int main(int argc, char** argv)
     topology->addTetrahedron(0,1,2,3);
 
     // Tetrahedron constraints
-    sofa::component::constraint::FixedConstraint<MyTypes>* constraints = new sofa::component::constraint::FixedConstraint<MyTypes>;
+    FixedConstraint3d* constraints = new FixedConstraint3d;
     groot->addObject(constraints);
     constraints->setName("constraints");
     constraints->addConstraint(0);
 
     // Tetrahedron force field
-    sofa::component::forcefield::TetrahedronFEMForceField<MyTypes>* spring = new  sofa::component::forcefield::TetrahedronFEMForceField<MyTypes>;
+    TetrahedronFEMForceField3d* spring = new  TetrahedronFEMForceField3d;
     groot->addObject(spring);
     spring->setUpdateStiffnessMatrix(true);
     spring->setYoungModulus(1);
@@ -102,7 +93,7 @@ int main(int argc, char** argv)
     skin->addObject(visual);
 
     // The mapping between the tetrahedron (DOF) and the liver (visual)
-    MyMapping* mapping = new MyMapping(DOF, visual);
+    BarycentricMapping3d_to_Ext3f* mapping = new BarycentricMapping3d_to_Ext3f(DOF, visual);
     mapping->setName( "mapping" );
     skin->addObject(mapping);
 
