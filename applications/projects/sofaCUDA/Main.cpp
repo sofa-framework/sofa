@@ -22,7 +22,7 @@ using namespace sofa::gpu::cuda;
 // --- MAIN
 // ---------------------------------------------------------------------
 
-//#define EXECUTION 4
+//#define EXECUTION 5
 
 #ifndef EXECUTION
 
@@ -125,7 +125,7 @@ using sofa::helper::system::thread::CTime;
 
 static int sz = 2048;
 #define DIM 512
-#define STEP_IT 16
+//#define STEP_IT 16
 
 static float ** read_m;
 static float * read_q;
@@ -597,7 +597,7 @@ int main(int argc, char** argv)
 
 int main(int argc, char** argv)
 {
-    int itMax = 1000;
+    int itMax = 200;
     int dim = DIM;
     float tol = -0.001;
 
