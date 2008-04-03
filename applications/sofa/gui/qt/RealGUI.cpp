@@ -261,7 +261,7 @@ int RealGUI::mainLoop()
     std::string title_str(title.ascii());
     if ( sofa::helper::system::DataRepository.findFile (title_str) )
     {
-        title = sofa::helper::system::DataRepository.getFile ( title_str );
+        title_str = sofa::helper::system::DataRepository.getFile ( title_str );
 
         if (title_str.rfind(".simu") != std::string::npos)
             fileOpenSimu(title_str.c_str() );
