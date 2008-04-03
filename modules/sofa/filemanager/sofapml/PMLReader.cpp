@@ -29,7 +29,8 @@
 
 #include "sofa/component/collision/DefaultPipeline.h"
 #include "sofa/component/collision/DefaultContactManager.h"
-#include "sofa/component/collision/MinProximityIntersection.h"
+#include "sofa/component/collision/NewProximityIntersection.h"
+#include "sofa/component/collision/DefaultCollisionGroupManager.h"
 #include "sofa/component/collision/BruteForceDetection.h"
 #include "sofa/simulation/tree/VisualVisitor.h"
 #include "sofa/simulation/tree/Simulation.h"
@@ -117,7 +118,7 @@ void PMLReader::BuildStructure(GNode* root)
     {
         DefaultPipeline * ps = new DefaultPipeline;
         BruteForceDetection * bfd = new BruteForceDetection;
-        MinProximityIntersection * mpi = new MinProximityIntersection;
+        NewProximityIntersection * mpi = new NewProximityIntersection;
         //computes the distance contact from the bounding box
         VisualComputeBBoxVisitor act;
         getSimulation()->init(root);
@@ -130,11 +131,13 @@ void PMLReader::BuildStructure(GNode* root)
         mpi->setAlarmDistance(dmax/30);
         mpi->setContactDistance(dmax/40);
         DefaultContactManager * contactManager = new DefaultContactManager;
+        DefaultCollisionGroupManager * cgm = new DefaultCollisionGroupManager;
 
         root->addObject(ps);
         root->addObject(bfd);
         root->addObject(mpi);
         root->addObject(contactManager);
+        root->addObject(cgm);
     }
 
     //if there is 2 bodies with the same type and some nodes in common, we merge them

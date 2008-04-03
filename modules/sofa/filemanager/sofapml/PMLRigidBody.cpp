@@ -30,8 +30,8 @@
 #include "sofa/component/mass/DiagonalMass.h"
 #include "sofa/component/topology/MeshTopology.h"
 #include "sofa/component/collision/TriangleModel.h"
-#include "sofa/component/collision/LineModel.h"
-#include "sofa/component/collision/PointModel.h"
+//#include "sofa/component/collision/LineModel.h"
+//#include "sofa/component/collision/PointModel.h"
 //using namespace sofa::component::GL;
 using namespace sofa::component;
 using namespace sofa::component::mapping;
@@ -421,16 +421,16 @@ void PMLRigidBody::createCollisionModel()
         CollisionNode->addObject(topology);
         CollisionNode->addObject(mapping);*/
 
-        TriangleModel * cmodel = new TriangleModel;
-        LineModel *lmodel = new LineModel;
-        PointModel *pmodel = new PointModel;
+        TriangleMeshModel * cmodel = new TriangleMeshModel;
+        //LineModel *lmodel = new LineModel;
+        //PointModel *pmodel = new PointModel;
         VisualNode->addObject(cmodel);
-        VisualNode->addObject(lmodel);
-        VisualNode->addObject(pmodel);
+        //VisualNode->addObject(lmodel);
+        //VisualNode->addObject(pmodel);
 
         cmodel->init();
-        lmodel->init();
-        pmodel->init();
+        //lmodel->init();
+        //pmodel->init();
     }
 }
 

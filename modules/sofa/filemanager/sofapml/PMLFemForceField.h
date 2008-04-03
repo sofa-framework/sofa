@@ -33,8 +33,8 @@
 #include <StructuralComponent.h>
 #include "sofa/component/topology/MeshTopology.h"
 #include "sofa/component/collision/TriangleModel.h"
-#include "sofa/component/collision/LineModel.h"
-#include "sofa/component/collision/PointModel.h"
+//#include "sofa/component/collision/LineModel.h"
+//#include "sofa/component/collision/PointModel.h"
 
 
 
@@ -65,8 +65,8 @@ public :
 
     ///accessors
     TriangleModel * getTriangleModel() { return tmodel; }
-    LineModel * getLineModel() { return lmodel; }
-    PointModel * getPointModel() { return pmodel; }
+    //LineModel * getLineModel() { return lmodel; }
+    //PointModel * getPointModel() { return pmodel; }
 
     ///merge a body with current object
     bool FusionBody(PMLBody*);
@@ -94,8 +94,8 @@ private :
 
     //structure
     TriangleModel * tmodel;
-    LineModel * lmodel;
-    PointModel * pmodel;
+    //LineModel * lmodel;
+    //PointModel * pmodel;
 
     //members for the mass (only one of the 2 vectors is filled)
     std::vector<double> massList;
