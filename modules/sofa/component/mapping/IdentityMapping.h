@@ -21,11 +21,23 @@ public:
     typedef BasicMapping Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;
+
+    typedef typename In::DataTypes InDataTypes;
+    typedef typename InDataTypes::Real Real;
+    typedef typename InDataTypes::VecCoord InVecCoord;
+    typedef typename InDataTypes::VecDeriv InVecDeriv;
+
     typedef typename Out::VecCoord VecCoord;
     typedef typename Out::VecDeriv VecDeriv;
     typedef typename Out::SparseDeriv OutSparseDeriv;
     typedef typename Out::Coord Coord;
     typedef typename Out::Deriv Deriv;
+    typedef typename Out::DataTypes OutDataTypes;
+    typedef typename OutDataTypes::Real OutReal;
+    typedef typename OutDataTypes::VecCoord OutVecCoord;
+    typedef typename OutDataTypes::VecDeriv OutVecDeriv;
+
+    enum { N=Coord::static_size };
 
     IdentityMapping(In* from, Out* to)
         : Inherit(from, to)

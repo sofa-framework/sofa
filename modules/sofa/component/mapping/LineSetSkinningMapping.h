@@ -152,12 +152,12 @@ private:
     /*!
     	Compute the perpendicular distance from a vertice to a line
     */
-    Vector3 projectToSegment(Vector3& first, Vector3& last, OutCoord& vertice);
+    Vec<3,double> projectToSegment(Vec<3,Real>& first, Vec<3,Real>& last, OutCoord& vertice);
 
     /*!
     	Compute the weight betwewen a vertice and a line
     */
-    double convolutionSegment(Vector3& first, Vector3& last, OutCoord& vertice);
+    double convolutionSegment(Vec<3,Real>& first, Vec<3,Real>& last, OutCoord& vertice);
 
     /*!
     	Stores the lines influenced by each vertice

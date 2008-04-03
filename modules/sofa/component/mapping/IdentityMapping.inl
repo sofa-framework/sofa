@@ -22,7 +22,8 @@ void IdentityMapping<BasicMapping>::apply( typename Out::VecCoord& out, const ty
     //	this->toModel->getContext()->setTopology(this->fromModel->getContext()->getTopology());
     for(unsigned int i=0; i<out.size(); i++)
     {
-        out[i] = in[i];
+        for (unsigned int j=0; j < N; ++j)
+            out[i][j] = (OutReal)in[i][j];
     }
 }
 
@@ -32,7 +33,8 @@ void IdentityMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const t
     out.resize(in.size());
     for(unsigned int i=0; i<out.size(); i++)
     {
-        out[i] = in[i];
+        for (unsigned int j=0; j < N; ++j)
+            out[i][j] = (OutReal)in[i][j];
     }
 }
 
@@ -41,7 +43,8 @@ void IdentityMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const t
 {
     for(unsigned int i=0; i<out.size(); i++)
     {
-        out[i] += in[i];
+        for (unsigned int j=0; j < N; ++j)
+            out[i][j] = (OutReal)in[i][j];
     }
 }
 
@@ -58,7 +61,11 @@ void IdentityMapping<BaseMapping>::applyJT( typename In::VecConst& out, const ty
         for(unsigned int j=0; j<in[i].size(); j++)
         {
             const typename Out::SparseDeriv& cIn = in[i][j];
-            o.push_back( typename In::SparseDeriv(cIn.index, (typename In::Deriv)cIn.data) );
+            typename In::Deriv value;
+            for (unsigned int k=0; k<N; ++k)
+                value[k] = cIn.data[k];
+
+            o.push_back( typename In::SparseDeriv(cIn.index, value) );
         }
     }
 }

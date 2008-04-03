@@ -38,7 +38,7 @@ namespace mapping
 {
 
 template <class BasicMapping>
-Vector3 LineSetSkinningMapping<BasicMapping>::projectToSegment(Vector3& first, Vector3& last, OutCoord& vertice)
+Vec<3,double> LineSetSkinningMapping<BasicMapping>::projectToSegment( Vec<3,Real>& first, Vec<3,Real>& last, OutCoord& vertice)
 {
     Vec3d segment,v_f,v_l;
 
@@ -61,11 +61,11 @@ Vector3 LineSetSkinningMapping<BasicMapping>::projectToSegment(Vector3& first, V
 }
 
 template <class BasicMapping>
-double LineSetSkinningMapping<BasicMapping>::convolutionSegment(Vector3& first, Vector3& last, OutCoord& vertice)
+double LineSetSkinningMapping<BasicMapping>::convolutionSegment(Vec<3,Real>& first, Vec<3,Real>& last, OutCoord& vertice)
 {
     int steps = 1000;
     double sum = 0.0;
-    Vector3 dist, line;
+    Vec<3,Real> dist, line;
 
     line=last-first;
 
@@ -213,7 +213,7 @@ void LineSetSkinningMapping<BasicMapping>::draw()
     //for(unsigned int verticeIndex=0; verticeIndex<xto.size(); verticeIndex++)
     //{
     //	const topology::MeshTopology::Line& line = t->getLine(linesInfluencedByVertice[verticeIndex][0].lineIndex);
-    //	Vector3 v = projectToSegment(xfrom[line[0]].getCenter(), xfrom[line[1]].getCenter(), xto[verticeIndex]);
+    //	Vec<3,Real> v = projectToSegment(xfrom[line[0]].getCenter(), xfrom[line[1]].getCenter(), xto[verticeIndex]);
 
     //	glColor3f (1,0,0);
     //	helper::gl::glVertexT(xto[verticeIndex]);
@@ -222,7 +222,7 @@ void LineSetSkinningMapping<BasicMapping>::draw()
     //	for(unsigned int i=1; i<linesInfluencedByVertice[verticeIndex].size(); i++)
     //	{
     //		const topology::MeshTopology::Line& l = t->getLine(linesInfluencedByVertice[verticeIndex][i].lineIndex);
-    //		Vector3 v = projectToSegment(xfrom[l[0]].getCenter(), xfrom[l[1]].getCenter(), xto[verticeIndex]);
+    //		Vec<3,Real> v = projectToSegment(xfrom[l[0]].getCenter(), xfrom[l[1]].getCenter(), xto[verticeIndex]);
 
     //		glColor3f (0,0,1);
     //		helper::gl::glVertexT(xto[verticeIndex]);
@@ -265,7 +265,7 @@ void LineSetSkinningMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, 
         for (unsigned int lineInfluencedIndex=0; lineInfluencedIndex<linesInfluencedByVertice[verticeIndex].size(); lineInfluencedIndex++)
         {
             influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
-            Vector3 IP = xfrom[t->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
+            Vec<3,Real> IP = xfrom[t->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
             out[verticeIndex] += (in[t->getLine(iline.lineIndex)[0]].getVCenter() - IP.cross(in[t->getLine(iline.lineIndex)[0]].getVOrientation())) * iline.weight;
         }
     }
@@ -285,7 +285,7 @@ void LineSetSkinningMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, 
         for (unsigned int verticeInfluencedIndex=0; verticeInfluencedIndex<verticesInfluencedByLine[lineIndex].size(); verticeInfluencedIndex++)
         {
             influencedVerticeType vertice = verticesInfluencedByLine[lineIndex][verticeInfluencedIndex];
-            Vector3 IP = xfrom[t->getLine(lineIndex)[0]].getOrientation().rotate(vertice.position);
+            Vec<3,Real> IP = xfrom[t->getLine(lineIndex)[0]].getOrientation().rotate(vertice.position);
             out[vertice.verticeIndex].getVCenter() += in[vertice.verticeIndex] * vertice.weight;
             out[vertice.verticeIndex].getVOrientation() += IP.cross(in[vertice.verticeIndex]) * vertice.weight;
         }
@@ -314,7 +314,7 @@ void LineSetSkinningMapping<BasicMapping>::applyJT( typename In::VecConst& out, 
             for(unsigned int lineInfluencedIndex=0; lineInfluencedIndex<linesInfluencedByVertice[verticeIndex].size(); lineInfluencedIndex++)
             {
                 influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
-                Vector3 IP = xfrom[t->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
+                Vec<3,Real> IP = xfrom[t->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
                 InDeriv direction;
                 direction.getVCenter() = d * iline.weight;
                 //printf("\n Weighted normale : %f %f %f",direction.getVCenter().x(), direction.getVCenter().y(), direction.getVCenter().z());
