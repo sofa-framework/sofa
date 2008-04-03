@@ -74,8 +74,8 @@ PMLStiffSpringForceField::~PMLStiffSpringForceField()
     if(mmodel) delete mmodel;
     if(Sforcefield) delete Sforcefield;
     if(tmodel) delete tmodel;
-    if(pmodel) delete pmodel;
-    if(lmodel) delete lmodel;
+    //if(pmodel) delete pmodel;
+    //if(lmodel) delete lmodel;
 }
 
 //read the mass parameter
@@ -485,17 +485,17 @@ void PMLStiffSpringForceField::createCollisionModel()
 {
     if (collisionsON)
     {
-        tmodel = new TriangleModel;
-        lmodel = new LineModel;
-        pmodel = new PointModel;
+        tmodel = new TriangleMeshModel;
+        //lmodel = new LineModel;
+        //pmodel = new PointModel;
 
         parentNode->addObject( tmodel);
-        parentNode->addObject( lmodel );
-        parentNode->addObject( pmodel );
+        //parentNode->addObject( lmodel );
+        //parentNode->addObject( pmodel );
 
         tmodel->init();
-        lmodel->init();
-        pmodel->init();
+        //lmodel->init();
+        //pmodel->init();
     }
 }
 
@@ -600,8 +600,8 @@ bool PMLStiffSpringForceField::FusionBody(PMLBody* body)
     if (!collisionsON && femBody->collisionsON)
     {
         tmodel = femBody->getTriangleModel();
-        lmodel = femBody->getLineModel();
-        pmodel = femBody->getPointModel();
+        //lmodel = femBody->getLineModel();
+        //pmodel = femBody->getPointModel();
     }
 
     return true;

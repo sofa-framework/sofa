@@ -760,6 +760,16 @@ void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
         std::cerr << "File " << scene << " not found " << std::endl;
         return;
     }
+    if ( viewer->getScene() !=NULL )
+    {
+        getSimulation()->unload ( viewer->getScene() );
+        if ( graphListener!=NULL )
+        {
+            delete graphListener;
+            graphListener = NULL;
+        }
+        graphView->clear();
+    }
     groot = getSimulation()->load ( scene.c_str() );
     if ( groot )
     {

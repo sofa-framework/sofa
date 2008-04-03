@@ -76,8 +76,8 @@ PMLFemForceField::PMLFemForceField(StructuralComponent* body, GNode * parent)
 PMLFemForceField::~PMLFemForceField()
 {
     if(mmodel) delete mmodel;
-    if(pmodel) delete pmodel;
-    if(lmodel) delete lmodel;
+    //if(pmodel) delete pmodel;
+    //if(lmodel) delete lmodel;
     if(tmodel) delete tmodel;
 }
 
@@ -397,17 +397,17 @@ void PMLFemForceField::createCollisionModel()
 {
     if (collisionsON)
     {
-        tmodel = new TriangleModel;
-        lmodel = new LineModel;
-        pmodel = new PointModel;
+        tmodel = new TriangleMeshModel;
+        //lmodel = new LineModel;
+        //pmodel = new PointModel;
 
         parentNode->addObject( tmodel);
-        parentNode->addObject( lmodel );
-        parentNode->addObject( pmodel );
+        //parentNode->addObject( lmodel );
+        //parentNode->addObject( pmodel );
 
         tmodel->init();
-        lmodel->init();
-        pmodel->init();
+        //lmodel->init();
+        //pmodel->init();
     }
 }
 
@@ -512,8 +512,8 @@ bool PMLFemForceField::FusionBody(PMLBody* body)
     if (!collisionsON && femBody->collisionsON)
     {
         tmodel = femBody->getTriangleModel();
-        lmodel = femBody->getLineModel();
-        pmodel = femBody->getPointModel();
+        //lmodel = femBody->getLineModel();
+        //pmodel = femBody->getPointModel();
     }
 
     return true;
