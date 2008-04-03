@@ -50,6 +50,7 @@ HEADERS += \
           componentmodel/collision/Intersection.inl \
           componentmodel/collision/NarrowPhaseDetection.h \
           componentmodel/collision/Pipeline.h \
+          componentmodel/topology/BaseMeshTopology.h \
           componentmodel/topology/BaseTopology.h \
           componentmodel/topology/TopologicalMapping.h \
           componentmodel/topology/Topology.h \
@@ -85,6 +86,7 @@ SOURCES +=  \
           componentmodel/collision/Contact.cpp \
           componentmodel/collision/Intersection.cpp \
           componentmodel/collision/Pipeline.cpp \
+          componentmodel/topology/BaseMeshTopology.cpp \
           componentmodel/topology/BaseTopology.cpp \
           objectmodel/Base.cpp \
           objectmodel/BaseContext.cpp \

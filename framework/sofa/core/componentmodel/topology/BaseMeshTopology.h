@@ -22,8 +22,8 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_BASEMESHTOPOLOGY_H
-#define SOFA_COMPONENT_TOPOLOGY_BASEMESHTOPOLOGY_H
+#ifndef SOFA_CORE_COMPONENTMODEL_TOPOLOGY_BASEMESHTOPOLOGY_H
+#define SOFA_CORE_COMPONENTMODEL_TOPOLOGY_BASEMESHTOPOLOGY_H
 
 #include <stdlib.h>
 #include <vector>
@@ -36,7 +36,10 @@
 namespace sofa
 {
 
-namespace component
+namespace core
+{
+
+namespace componentmodel
 {
 
 namespace topology
@@ -192,7 +195,9 @@ public:
 
 } // namespace topology
 
-} // namespace component
+} // namespace componentmodel
+
+} // namespace core
 
 } // namespace sofa
 

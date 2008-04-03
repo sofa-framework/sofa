@@ -30,7 +30,7 @@
 #include <string>
 #include <iostream>
 #include <sofa/core/componentmodel/topology/Topology.h>
-#include <sofa/component/topology/BaseMeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
 
@@ -47,7 +47,7 @@ using namespace sofa::defaulttype;
 using helper::vector;
 using helper::fixed_array;
 
-class MeshTopology : public BaseMeshTopology
+class MeshTopology : public core::componentmodel::topology::BaseMeshTopology
 {
 public:
     MeshTopology();
