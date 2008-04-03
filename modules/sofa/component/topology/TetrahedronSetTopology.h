@@ -38,14 +38,26 @@ namespace component
 namespace topology
 {
 
+using core::componentmodel::topology::BaseMeshTopology;
+typedef BaseMeshTopology::TetraID TetraID;
+
 /// defining Tetrahedra as 4 DOFs indices
-typedef helper::fixed_array<unsigned int,4> Tetrahedron;
+//typedef helper::fixed_array<unsigned int,4> Tetrahedron;
 /// defining TetrahedronTriangles as 4 Triangles indices
-typedef helper::fixed_array<unsigned int,4> TetrahedronTriangles;
+//typedef helper::fixed_array<unsigned int,4> TetrahedronTriangles;
 /// defining TetrahedronEdges as 6 Edge indices
-typedef helper::fixed_array<unsigned int,6> TetrahedronEdges;
+//typedef helper::fixed_array<unsigned int,6> TetrahedronEdges;
+typedef BaseMeshTopology::Tetra Tetra;
+typedef BaseMeshTopology::SeqTetras SeqTetras;
+typedef BaseMeshTopology::VertexTetras VertexTetras;
+typedef BaseMeshTopology::EdgeTetras EdgeTetras;
+typedef BaseMeshTopology::TriangleTetras TriangleTetras;
+typedef BaseMeshTopology::TetraEdges TetraEdges;
+typedef BaseMeshTopology::TetraTriangles TetraTriangles;
 
-
+typedef Tetra Tetrahedron;
+typedef TetraEdges TetrahedronEdges;
+typedef TetraTriangles TetrahedronTriangles;
 
 /////////////////////////////////////////////////////////
 /// TopologyChange subclasses
@@ -590,6 +602,23 @@ public:
     {
         return (TetrahedronSetGeometryAlgorithms<DataTypes> *)this->m_geometryAlgorithms;
     }
+
+    /// BaseMeshTopology API
+    /// @{
+
+    const SeqTetras& getTetras()   { return getTetrahedronSetTopologyContainer()->getTetrahedronArray(); }
+    /// Returns the set of edges adjacent to a given tetrahedron.
+    const TetraEdges& getEdgeTetraShell(TetraID i) { return getTetrahedronSetTopologyContainer()->getTetrahedronEdges(i); }
+    /// Returns the set of triangles adjacent to a given tetrahedron.
+    const TetraTriangles& getTriangleTetraShell(TetraID i) { return getTetrahedronSetTopologyContainer()->getTetrahedronTriangles(i); }
+    /// Returns the set of tetrahedra adjacent to a given vertex.
+    const VertexTetras& getTetraVertexShell(PointID i) { return getTetrahedronSetTopologyContainer()->getTetrahedronVertexShell(i); }
+    /// Returns the set of tetrahedra adjacent to a given edge.
+    const EdgeTetras& getTetraEdgeShell(EdgeID i) { return getTetrahedronSetTopologyContainer()->getTetrahedronEdgeShell(i); }
+    /// Returns the set of tetrahedra adjacent to a given triangle.
+    const TriangleTetras& getTetraTriangleShell(TriangleID i) { return getTetrahedronSetTopologyContainer()->getTetrahedronTriangleShell(i); }
+
+    /// @}
 
 };
 

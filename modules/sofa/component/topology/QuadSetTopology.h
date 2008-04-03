@@ -39,12 +39,21 @@ namespace component
 
 namespace topology
 {
+
 using namespace sofa::defaulttype; // typing "Vec"
 
+using core::componentmodel::topology::BaseMeshTopology;
+typedef BaseMeshTopology::QuadID QuadID;
+
 /// defining Quads as 4 DOFs indices
-typedef helper::fixed_array<unsigned int,4> Quad;
+//typedef helper::fixed_array<unsigned int,4> Quad;
 /// defining QuadEdges as 4 Edge indices
-typedef helper::fixed_array<unsigned int,4> QuadEdges;
+//typedef helper::fixed_array<unsigned int,4> QuadEdges;
+typedef BaseMeshTopology::Quad Quad;
+typedef BaseMeshTopology::SeqQuads SeqQuads;
+typedef BaseMeshTopology::VertexQuads VertexQuads;
+typedef BaseMeshTopology::EdgeQuads EdgeQuads;
+typedef BaseMeshTopology::QuadEdges QuadEdges;
 
 /////////////////////////////////////////////////////////
 /// TopologyChange subclasses
@@ -572,6 +581,20 @@ public:
     {
         return (QuadSetGeometryAlgorithms<DataTypes> *)this->m_geometryAlgorithms;
     }
+
+    /// BaseMeshTopology API
+    /// @{
+
+    const SeqQuads& getQuads()   { return getQuadSetTopologyContainer()->getQuadArray(); }
+    /// Returns the set of edges adjacent to a given quad.
+    const QuadEdges& getEdgeQuadShell(QuadID i) { return getQuadSetTopologyContainer()->getQuadEdge(i); }
+    /// Returns the set of quads adjacent to a given vertex.
+    const VertexQuads& getQuadVertexShell(PointID i) { return getQuadSetTopologyContainer()->getQuadVertexShell(i); }
+    /// Returns the set of quads adjacent to a given edge.
+    const EdgeQuads& getQuadEdgeShell(EdgeID i) { return getQuadSetTopologyContainer()->getQuadEdgeShell(i); }
+
+    /// @}
+
 
 };
 

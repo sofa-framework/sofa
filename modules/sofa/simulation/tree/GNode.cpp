@@ -320,7 +320,7 @@ core::objectmodel::BaseObject* GNode::getMechanicalState() const
 }
 
 /// Topology
-core::objectmodel::BaseObject* GNode::getTopology() const
+core::componentmodel::topology::Topology* GNode::getTopology() const
 {
     // return this->topology;
     // CHANGE 12/01/06 (Jeremie A.): Inherit parent topology if no local topology is defined
@@ -333,7 +333,7 @@ core::objectmodel::BaseObject* GNode::getTopology() const
 }
 
 /// Dynamic Topology
-core::objectmodel::BaseObject* GNode::getMainTopology() const
+core::componentmodel::topology::BaseTopology* GNode::getMainTopology() const
 {
     core::componentmodel::topology::BaseTopology *main=0;
     unsigned int i;
@@ -348,6 +348,17 @@ core::objectmodel::BaseObject* GNode::getMainTopology() const
         return main;
     else if (parent)
         return parent->getMainTopology();
+    else
+        return NULL;
+}
+
+/// Mesh Topology (unified interface for both static and dynamic topologies)
+core::componentmodel::topology::BaseMeshTopology* GNode::getMeshTopology() const
+{
+    if (this->meshTopology)
+        return this->meshTopology;
+    else if (parent)
+        return parent->getMeshTopology();
     else
         return NULL;
 }
@@ -393,6 +404,7 @@ void GNode::doAddObject(BaseObject* obj)
     mass.add(dynamic_cast< core::componentmodel::behavior::BaseMass* >(obj));
     topology.add(dynamic_cast< core::componentmodel::topology::Topology* >(obj));
     basicTopology.add(dynamic_cast< core::componentmodel::topology::BaseTopology* >(obj));
+    meshTopology.add(dynamic_cast< core::componentmodel::topology::BaseMeshTopology* >(obj));
     shader.add(dynamic_cast< sofa::core::Shader* >(obj));
 
     if (!interactionForceField.add(dynamic_cast< core::componentmodel::behavior::InteractionForceField* >(obj)))
@@ -421,6 +433,7 @@ void GNode::doRemoveObject(BaseObject* obj)
     mass.remove(dynamic_cast< core::componentmodel::behavior::BaseMass* >(obj));
     topology.remove(dynamic_cast< core::componentmodel::topology::Topology* >(obj));
     basicTopology.remove(dynamic_cast< core::componentmodel::topology::BaseTopology* >(obj));
+    meshTopology.remove(dynamic_cast< core::componentmodel::topology::BaseMeshTopology* >(obj));
     shader.remove(dynamic_cast<sofa::core::Shader* >(obj));
 
     forceField.remove(dynamic_cast< core::componentmodel::behavior::BaseForceField* >(obj));

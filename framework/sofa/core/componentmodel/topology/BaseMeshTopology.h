@@ -54,7 +54,8 @@ class BaseMeshTopology : public core::componentmodel::topology::Topology
 public:
 
     //typedef int index_type;
-    typedef unsigned index_type;
+    typedef unsigned int index_type;
+    enum { InvalidID = (unsigned)-1 };
     typedef index_type PointID;
     typedef index_type EdgeID;
     typedef index_type TriangleID;
@@ -67,11 +68,6 @@ public:
     typedef fixed_array<PointID,4> Quad;
     typedef fixed_array<PointID,4> Tetra;
     typedef fixed_array<PointID,8> Hexa;
-
-    /// defining TriangleEdges as 3 Edge indices
-    typedef fixed_array<EdgeID,3> TriangleEdges;
-    /// defining QuadEdges as 4 Edge indices
-    typedef fixed_array<QuadID,4> QuadEdges;
 
     typedef vector<Edge> SeqEdges;
     typedef vector<Triangle> SeqTriangles;
@@ -89,13 +85,37 @@ public:
     typedef SeqHexas SeqCubes;
     /// @}
 
-    BaseMeshTopology();
+    /// fixed-size neighbors arrays
+    /// @{
+    typedef fixed_array<EdgeID,3> TriangleEdges;
+    typedef fixed_array<QuadID,4> QuadEdges;
+    typedef fixed_array<TriangleID,4> TetraTriangles;
+    typedef fixed_array<EdgeID,6> TetraEdges;
+    typedef fixed_array<QuadID,6> HexaQuads;
+    typedef fixed_array<EdgeID,12> HexaEdges;
+    /// @}
 
-    virtual void clear() = 0;
+    /// dynamic-size neighbors arrays
+    /// @{
+    typedef vector<EdgeID> VertexEdges;
+    typedef vector<TriangleID> VertexTriangles;
+    typedef vector<QuadID> VertexQuads;
+    typedef vector<TetraID> VertexTetras;
+    typedef vector<HexaID> VertexHexas;
+    typedef vector<TriangleID> EdgeTriangles;
+    typedef vector<QuadID> EdgeQuads;
+    typedef vector<TetraID> EdgeTetras;
+    typedef vector<HexaID> EdgeHexas;
+    typedef vector<TetraID> TriangleTetras;
+    typedef vector<HexaID> QuadHexas;
+    /// @}
+
+    BaseMeshTopology();
 
     virtual bool load(const char* filename) = 0;
 
-    virtual int getNbPoints() const = 0;
+    // defined in Topology
+    //virtual int getNbPoints() const = 0;
 
     /// Complete sequence accessors
     /// @{
@@ -124,39 +144,39 @@ public:
     /// @name neighbors queries
     /// @{
     /// Returns the set of edges adjacent to a given vertex.
-    virtual const vector<EdgeID> &getEdgeVertexShell(PointID i);
+    virtual const VertexEdges& getEdgeVertexShell(PointID i);
     /// Returns the set of edges adjacent to a given triangle.
-    virtual const vector<EdgeID> &getEdgeTriangleShell(TriangleID i);
+    virtual const TriangleEdges& getEdgeTriangleShell(TriangleID i);
     /// Returns the set of edges adjacent to a given quad.
-    virtual const vector<EdgeID> &getEdgeQuadShell(QuadID i);
+    virtual const QuadEdges& getEdgeQuadShell(QuadID i);
     /// Returns the set of edges adjacent to a given tetrahedron.
-    virtual const vector<EdgeID> &getEdgeTetraShell(TetraID i);
+    virtual const TetraEdges& getEdgeTetraShell(TetraID i);
     /// Returns the set of edges adjacent to a given hexahedron.
-    virtual const vector<EdgeID> &getEdgeHexaShell(HexaID i);
-    /// Returns the set of triangle adjacent to a given vertex.
-    virtual const vector<TriangleID> &getTriangleVertexShell(PointID i);
-    /// Returns the set of triangle adjacent to a given edge.
-    virtual const vector<TriangleID> &getTriangleEdgeShell(EdgeID i);
-    /// Returns the set of triangle adjacent to a given tetrahedron.
-    virtual const vector<TriangleID> &getTriangleTetraShell(TetraID i);
-    /// Returns the set of quad adjacent to a given vertex.
-    virtual const vector<QuadID> &getQuadVertexShell(PointID i);
-    /// Returns the set of quad adjacent to a given edge.
-    virtual const vector<QuadID> &getQuadEdgeShell(EdgeID i);
-    /// Returns the set of quad adjacent to a given hexahedron.
-    virtual const vector<QuadID> &getQuadHexaShell(HexaID i);
+    virtual const HexaEdges& getEdgeHexaShell(HexaID i);
+    /// Returns the set of triangles adjacent to a given vertex.
+    virtual const VertexTriangles& getTriangleVertexShell(PointID i);
+    /// Returns the set of triangles adjacent to a given edge.
+    virtual const EdgeTriangles& getTriangleEdgeShell(EdgeID i);
+    /// Returns the set of triangles adjacent to a given tetrahedron.
+    virtual const TetraTriangles& getTriangleTetraShell(TetraID i);
+    /// Returns the set of quads adjacent to a given vertex.
+    virtual const VertexQuads& getQuadVertexShell(PointID i);
+    /// Returns the set of quads adjacent to a given edge.
+    virtual const EdgeQuads& getQuadEdgeShell(EdgeID i);
+    /// Returns the set of quads adjacent to a given hexahedron.
+    virtual const HexaQuads& getQuadHexaShell(HexaID i);
     /// Returns the set of tetrahedra adjacent to a given vertex.
-    virtual const vector<TetraID> &getTetraVertexShell(PointID i);
+    virtual const VertexTetras& getTetraVertexShell(PointID i);
     /// Returns the set of tetrahedra adjacent to a given edge.
-    virtual const vector<TetraID> &getTetraEdgeShell(EdgeID i);
+    virtual const EdgeTetras& getTetraEdgeShell(EdgeID i);
     /// Returns the set of tetrahedra adjacent to a given triangle.
-    virtual const vector<TetraID> &getTetraTriangleShell(TriangleID i);
+    virtual const TriangleTetras& getTetraTriangleShell(TriangleID i);
     /// Returns the set of hexahedra adjacent to a given vertex.
-    virtual const vector<HexaID> &getHexaVertexShell(PointID i);
+    virtual const VertexHexas& getHexaVertexShell(PointID i);
     /// Returns the set of hexahedra adjacent to a given edge.
-    virtual const vector<HexaID> &getHexaEdgeShell(EdgeID i);
+    virtual const EdgeHexas& getHexaEdgeShell(EdgeID i);
     /// Returns the set of hexahedra adjacent to a given quad.
-    virtual const vector<HexaID> &getHexaQuadShell(QuadID i);
+    virtual const QuadHexas& getHexaQuadShell(QuadID i);
     /// @}
 
     /// @name Deprecated names, for backward-compatibility
@@ -176,6 +196,7 @@ public:
     virtual double getPZ(int) const { return 0.0; }
 
     // for procedural creation without file loader
+    virtual void clear();
     virtual void addPoint(double px, double py, double pz);
     virtual void addEdge( int a, int b );
     void addLine( int a, int b ) { addEdge(a,b); }

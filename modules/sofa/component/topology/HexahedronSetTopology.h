@@ -38,12 +38,26 @@ namespace component
 namespace topology
 {
 
+using core::componentmodel::topology::BaseMeshTopology;
+typedef BaseMeshTopology::HexaID HexaID;
+
 /// defining Hexahedra as 8 DOFs indices
-typedef helper::fixed_array<unsigned int,8> Hexahedron;
+//typedef helper::fixed_array<unsigned int,8> Hexahedron;
 /// defining HexahedronQuads as 6 Quads indices
-typedef helper::fixed_array<unsigned int,6> HexahedronQuads;
+//typedef helper::fixed_array<unsigned int,6> HexahedronQuads;
 /// defining HexahedronEdges as 12 Edge indices
-typedef helper::fixed_array<unsigned int,12> HexahedronEdges;
+//typedef helper::fixed_array<unsigned int,12> HexahedronEdges;
+typedef BaseMeshTopology::Hexa Hexa;
+typedef BaseMeshTopology::SeqHexas SeqHexas;
+typedef BaseMeshTopology::VertexHexas VertexHexas;
+typedef BaseMeshTopology::EdgeHexas EdgeHexas;
+typedef BaseMeshTopology::QuadHexas QuadHexas;
+typedef BaseMeshTopology::HexaEdges HexaEdges;
+typedef BaseMeshTopology::HexaQuads HexaQuads;
+
+typedef Hexa Hexahedron;
+typedef HexaEdges HexahedronEdges;
+typedef HexaQuads HexahedronQuads;
 
 
 
@@ -597,6 +611,23 @@ public:
     {
         return (HexahedronSetGeometryAlgorithms<DataTypes> *)this->m_geometryAlgorithms;
     }
+
+    /// BaseMeshTopology API
+    /// @{
+
+    const SeqHexas& getHexas()   { return getHexahedronSetTopologyContainer()->getHexahedronArray(); }
+    /// Returns the set of edges adjacent to a given hexahedron.
+    const HexaEdges& getEdgeHexaShell(HexaID i) { return getHexahedronSetTopologyContainer()->getHexahedronEdges(i); }
+    /// Returns the set of quads adjacent to a given hexahedron.
+    const HexaQuads& getQuadHexaShell(HexaID i) { return getHexahedronSetTopologyContainer()->getHexahedronQuads(i); }
+    /// Returns the set of hexahedra adjacent to a given vertex.
+    const VertexHexas& getHexaVertexShell(PointID i) { return getHexahedronSetTopologyContainer()->getHexahedronVertexShell(i); }
+    /// Returns the set of hexahedra adjacent to a given edge.
+    const EdgeHexas& getHexaEdgeShell(EdgeID i) { return getHexahedronSetTopologyContainer()->getHexahedronEdgeShell(i); }
+    /// Returns the set of hexahedra adjacent to a given quad.
+    const QuadHexas& getHexaQuadShell(QuadID i) { return getHexahedronSetTopologyContainer()->getHexahedronQuadShell(i); }
+
+    /// @}
 
 };
 

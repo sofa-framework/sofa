@@ -28,6 +28,7 @@
 #include <sofa/core/componentmodel/behavior/BaseMass.h>
 #include <sofa/core/componentmodel/topology/Topology.h>
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/core/Shader.h>
 #include <iostream>
 using std::cerr;
@@ -245,15 +246,21 @@ BaseObject* BaseContext::getMass() const
 
 
 /// Topology
-BaseObject* BaseContext::getTopology() const
+core::componentmodel::topology::Topology* BaseContext::getTopology() const
 {
     return this->get<sofa::core::componentmodel::topology::Topology>();
 }
-/// Topology
-BaseObject* BaseContext::getMainTopology() const
+/// Dynamic Topology
+core::componentmodel::topology::BaseTopology* BaseContext::getMainTopology() const
 {
     return this->get<sofa::core::componentmodel::topology::BaseTopology>();
 }
+/// Mesh Topology (unified interface for both static and dynamic topologies)
+core::componentmodel::topology::BaseMeshTopology* BaseContext::getMeshTopology() const
+{
+    return this->get<sofa::core::componentmodel::topology::BaseMeshTopology>();
+}
+
 /// Shader
 BaseObject* BaseContext::getShader() const
 {

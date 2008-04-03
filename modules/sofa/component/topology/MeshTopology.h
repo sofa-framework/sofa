@@ -83,19 +83,19 @@ public:
     /// @name neighbors queries
     /// @{
     /// Returns the set of edges adjacent to a given vertex.
-    virtual const vector<EdgeID> &getEdgeVertexShell(PointID i);
+    virtual const VertexEdges &getEdgeVertexShell(PointID i);
     /// Returns the set of edges adjacent to a given triangle.
-    virtual const vector<EdgeID> &getEdgeTriangleShell(TriangleID i);
+    virtual const TriangleEdges &getEdgeTriangleShell(TriangleID i);
     /// Returns the set of edges adjacent to a given quad.
-    virtual const vector<EdgeID> &getEdgeQuadShell(QuadID i);
+    virtual const QuadEdges &getEdgeQuadShell(QuadID i);
     /// Returns the set of triangle adjacent to a given vertex.
-    virtual const vector<TriangleID> &getTriangleVertexShell(PointID i);
+    virtual const VertexTriangles &getTriangleVertexShell(PointID i);
     /// Returns the set of triangle adjacent to a given edge.
-    virtual const vector<TriangleID> &getTriangleEdgeShell(EdgeID i);
+    virtual const EdgeTriangles &getTriangleEdgeShell(EdgeID i);
     /// Returns the set of quad adjacent to a given vertex.
-    virtual const vector<QuadID> &getQuadVertexShell(PointID i);
+    virtual const VertexQuads &getQuadVertexShell(PointID i);
     /// Returns the set of quad adjacent to a given edge.
-    virtual const vector<QuadID> &getQuadEdgeShell(EdgeID i);
+    virtual const EdgeQuads &getQuadEdgeShell(EdgeID i);
     /// @}
 
     // Points accessors (not always available)
@@ -149,28 +149,25 @@ protected:
     bool         validHexas;
 
     /** the array that stores the set of edge-vertex shells, ie for each vertex gives the set of adjacent edges */
-    vector< vector< EdgeID > > m_edgeVertexShell;
+    vector< VertexEdges > m_edgeVertexShell;
 
-    /** the array that stores the set of edge-triangle shells, ie for each triangle gives the set of adjacent edges */
-    vector< vector< EdgeID > > m_edgeTriangleShell;
+    /** the array that stores the set of edge-triangle shells, ie for each triangle gives the 3 adjacent edges */
+    vector< TriangleEdges > m_edgeTriangleShell;
 
     /// for each vertex provides the set of triangles adjacent to that vertex
-    vector< vector< TriangleID > > m_triangleVertexShell;
-
-    /// provides the 3 edges in each triangle
-    vector<TriangleEdges> m_triangleEdge;
+    vector< VertexTriangles > m_triangleVertexShell;
 
     /// for each edge provides the set of triangles adjacent to that edge
-    vector< vector< TriangleID > > m_triangleEdgeShell;
+    vector< EdgeTriangles > m_triangleEdgeShell;
 
     /// for each vertex provides the set of quads adjacent to that vertex
-    vector< vector< QuadID > > m_quadVertexShell;
+    vector< VertexQuads > m_quadVertexShell;
 
     /// for each edge provides the set of quads adjacent to that edge
-    vector< vector< QuadID > > m_quadEdgeShell;
+    vector< EdgeQuads > m_quadEdgeShell;
 
     /// provides the 4 edges in each quad
-    sofa::helper::vector<QuadEdges> m_quadEdge;
+    vector< QuadEdges > m_edgeQuadShell;
 
     /** \brief Creates the EdgeSetIndex.
      *
@@ -197,12 +194,7 @@ protected:
      * This function is only called if the TriangleEdge array is required.
      * m_triangleEdge[i] contains the 3 indices of the 3 edges opposite to the ith vertex
      */
-    void createTriangleEdgeArray();
-
-    /** \brief Returns the TriangleEdges array (ie provide the 3 edge indices for each triangle)
-     *
-     */
-    const vector< TriangleEdges > &getTriangleEdgeArray() ;
+    void createEdgeTriangleShellArray();
 
     /** \brief Creates the Triangle Edge Shell Array
      *
@@ -223,12 +215,7 @@ protected:
      * This function is only called if the QuadEdge array is required.
      * m_quadEdge[i] contains the 4 indices of the 4 edges opposite to the ith vertex
      */
-    void createQuadEdgeArray();
-
-    /** \brief Returns the QuadEdges array (ie provide the 4 edge indices for each quad)
-     *
-     */
-    const vector< QuadEdges > &getQuadEdgeArray();
+    void createEdgeQuadShellArray();
 
     /** \brief Creates the Quad Edge Shell Array
      *

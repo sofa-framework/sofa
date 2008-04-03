@@ -43,6 +43,17 @@ class Visitor;
 namespace core
 {
 
+// forward declaration of classes accessible from the context
+namespace componentmodel
+{
+namespace topology
+{
+class Topology;
+class BaseTopology;
+class BaseMeshTopology;
+}
+}
+
 namespace objectmodel
 {
 
@@ -189,10 +200,13 @@ public:
     virtual BaseObject* getMechanicalState() const;
 
     /// Topology
-    virtual BaseObject* getTopology() const;
+    virtual core::componentmodel::topology::Topology* getTopology() const;
 
     /// Dynamic Topology
-    virtual BaseObject* getMainTopology() const;
+    virtual core::componentmodel::topology::BaseTopology* getMainTopology() const;
+
+    /// Mesh Topology (unified interface for both static and dynamic topologies)
+    virtual core::componentmodel::topology::BaseMeshTopology* getMeshTopology() const;
 
     /// Mass
     virtual BaseObject* getMass() const;
