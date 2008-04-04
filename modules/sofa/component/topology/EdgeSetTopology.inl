@@ -97,8 +97,13 @@ void EdgeSetTopologyModifier<DataTypes>::addEdgesProcess(const sofa::helper::vec
             if (sa.size()>0)
             {
 
-                container->getEdgeVertexShellForModification( e[0] ).push_back( container->m_edge.size() - 1 );
-                container->getEdgeVertexShellForModification( e[1] ).push_back( container->m_edge.size() - 1 );
+                sofa::helper::vector< unsigned int > &shell0 = container->getEdgeVertexShellForModification( e[0] );
+                shell0.push_back( container->m_edge.size() - 1 );
+                sort(shell0.begin(), shell0.end());
+
+                sofa::helper::vector< unsigned int > &shell1 = container->getEdgeVertexShellForModification( e[1] );
+                shell1.push_back( container->m_edge.size() - 1 );
+                sort(shell1.begin(), shell1.end());
             }
         }
     }
@@ -152,27 +157,27 @@ void EdgeSetTopologyModifier<DataTypes>::removeEdgesProcess(const sofa::helper::
         for (unsigned int i = 0; i < indices.size(); ++i)
         {
             Edge *e = &container->m_edge[ indices[i] ];
-            unsigned int point1 = (*e)[0], point2 = (*e)[1];
+            unsigned int point0 = (*e)[0], point1 = (*e)[1];
             // first check that the edge shell array has been initialized
             if (container->m_edgeVertexShell.size()>0)
             {
 
-                sofa::helper::vector< unsigned int > &shell = container->m_edgeVertexShell[ point1 ];
+                sofa::helper::vector< unsigned int > &shell0 = container->m_edgeVertexShell[ point0 ];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-                assert(std::find( shell.begin(), shell.end(), indices[i] ) !=shell.end());
-                shell.erase( std::find( shell.begin(), shell.end(), indices[i] ) );
-                if ((removeIsolatedItems) && (shell.size()==0))
+                //assert(std::find( shell0.begin(), shell0.end(), indices[i] ) !=shell0.end());
+                shell0.erase( std::find( shell0.begin(), shell0.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell0.size()==0))
                 {
-                    vertexToBeRemoved.push_back(point1);
+                    vertexToBeRemoved.push_back(point0);
                 }
 
-                sofa::helper::vector< unsigned int > &shell2 = container->m_edgeVertexShell[ point2 ];
+                sofa::helper::vector< unsigned int > &shell1 = container->m_edgeVertexShell[ point1 ];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the other point
-                assert(std::find( shell2.begin(), shell2.end(), indices[i] ) !=shell2.end());
-                shell2.erase( std::find( shell2.begin(), shell2.end(), indices[i] ) );
-                if ((removeIsolatedItems) && (shell2.size()==0))
+                //assert(std::find( shell1.begin(), shell1.end(), indices[i] ) !=shell1.end());
+                shell1.erase( std::find( shell1.begin(), shell1.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell1.size()==0))
                 {
-                    vertexToBeRemoved.push_back(point2);
+                    vertexToBeRemoved.push_back(point1);
                 }
             }
 
@@ -188,19 +193,17 @@ void EdgeSetTopologyModifier<DataTypes>::removeEdgesProcess(const sofa::helper::
 
                 unsigned int oldEdgeIndex=container->m_edge.size();
                 e = &container->m_edge[ indices[i] ];
-                point1 = (*e)[0]; point2 = (*e)[1];
+                point0 = (*e)[0]; point1 = (*e)[1];
 
                 //replaces the edge index oldEdgeIndex with indices[i] for the first vertex
-                sofa::helper::vector< unsigned int > &shell3 = container->m_edgeVertexShell[ point1 ];
-                assert(std::find( shell3.begin(), shell3.end(), oldEdgeIndex ) !=shell3.end());
-                sofa::helper::vector< unsigned int >::iterator it=std::find( shell3.begin(), shell3.end(), oldEdgeIndex );
-                (*it)=indices[i];
+                sofa::helper::vector< unsigned int > &shell0 = container->m_edgeVertexShell[ point0 ];
+                replace(shell0.begin(), shell0.end(), oldEdgeIndex, indices[i]);
+                sort(shell0.begin(), shell0.end());
 
                 //replaces the edge index oldEdgeIndex with indices[i] for the second vertex
-                sofa::helper::vector< unsigned int > &shell4 = container->m_edgeVertexShell[ point2 ];
-                assert(std::find( shell4.begin(), shell4.end(), oldEdgeIndex ) !=shell4.end());
-                it=std::find( shell4.begin(), shell4.end(), oldEdgeIndex );
-                (*it)=indices[i];
+                sofa::helper::vector< unsigned int > &shell1 = container->m_edgeVertexShell[ point1 ];
+                replace(shell1.begin(), shell1.end(), oldEdgeIndex, indices[i]);
+                sort(shell1.begin(), shell1.end());
             }
         }
         if (vertexToBeRemoved.size()>0)

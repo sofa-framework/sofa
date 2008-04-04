@@ -184,6 +184,8 @@ public:
      */
     virtual bool checkTopology() const;
 
+    // Return the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
+    int getNumberConnectedComponents(sofa::helper::vector<int>& components);
 
     EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top=NULL,
             /* const sofa::helper::vector< unsigned int > &DOFIndex = (const sofa::helper::vector< unsigned int >)0, */
@@ -363,6 +365,9 @@ public:
      */
     virtual void splitEdges( sofa::helper::vector<unsigned int> &indices,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0 );
+
+    // Give the optimal vertex permutation according to the Reverse CuthillMckee algorithm (use BOOST GRAPH LIBRAIRY)
+    void resortCuthillMckee(sofa::helper::vector<int>& inverse_permutation);
 
 
     EdgeSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top) : PointSetTopologyAlgorithms<DataTypes>(top)

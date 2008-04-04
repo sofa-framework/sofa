@@ -10,7 +10,7 @@
 #include <functional>
 
 
-#include <sofa/defaulttype/Vec.h> // typing "Vec"
+#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
@@ -111,11 +111,12 @@ void TriangleSetTopologyModifier<DataTypes>::addTrianglesProcess(const sofa::hel
             if (tvsa.size()>0)
             {
 
-                container->getTriangleVertexShellForModification( t[0] ).push_back( triangleIndex );
-
-                container->getTriangleVertexShellForModification( t[1] ).push_back( triangleIndex );
-
-                container->getTriangleVertexShellForModification( t[2] ).push_back( triangleIndex );
+                for (j=0; j<3; ++j)
+                {
+                    sofa::helper::vector< unsigned int > &shell = container->getTriangleVertexShellForModification( t[j] );
+                    shell.push_back( triangleIndex );
+                    sort(shell.begin(), shell.end());
+                }
 
             }
             if (container->m_triangleEdge.size()>0)
@@ -156,7 +157,9 @@ void TriangleSetTopologyModifier<DataTypes>::addTrianglesProcess(const sofa::hel
 
                 for (j=0; j<3; ++j)
                 {
-                    container->m_triangleEdgeShell[container->m_triangleEdge[triangleIndex][j]].push_back( triangleIndex );
+                    sofa::helper::vector< unsigned int > &shell = container->m_triangleEdgeShell[container->m_triangleEdge[triangleIndex][j]];
+                    shell.push_back( triangleIndex );
+                    sort(shell.begin(), shell.end());
                 }
 
                 sofa::helper::vector< Triangle > current_triangle;
@@ -704,6 +707,38 @@ double TriangleSetTopologyAlgorithms< DataTypes >::Prepare_InciseAlongPointsList
 
 }
 
+// Move and fix the two closest points of two triangles to their median point
+template<class DataTypes>
+bool TriangleSetTopologyAlgorithms< DataTypes >::Suture2Points(unsigned int ind_ta, unsigned int ind_tb, unsigned int &ind1, unsigned int &ind2)
+{
+
+    // Access the topology
+    TriangleSetTopology<DataTypes> *topology = dynamic_cast<TriangleSetTopology<DataTypes> *>(this->m_basicTopology);
+    assert (topology != 0);
+
+    topology->getTriangleSetGeometryAlgorithms()->closestIndexPair(ind_ta, ind_tb, ind1, ind2);
+
+    //std::cout << "INFO_print : ind1 = " << ind1 << std::endl;
+    //std::cout << "INFO_print : ind2 = " << ind2 << std::endl;
+
+    sofa::helper::vector< unsigned int > indices;
+    indices.push_back(ind1); indices.push_back(ind2);
+
+    Vec<3,Real> point_created=(Vec<3,double>) topology->getTriangleSetGeometryAlgorithms()->computeBaryEdgePoint(indices, (double) 0.5);
+
+    sofa::helper::vector< double > x_created;
+    x_created.push_back((double) point_created[0]);
+    x_created.push_back((double) point_created[1]);
+    x_created.push_back((double) point_created[2]);
+
+    PointSetTopology<DataTypes> *point_topology = dynamic_cast<PointSetTopology<DataTypes> *>(topology);
+    assert (point_topology != 0);
+
+    point_topology->object->forcePointPosition(ind1, x_created);
+    point_topology->object->forcePointPosition(ind2, x_created);
+
+    return true;
+}
 
 
 
@@ -2815,6 +2850,63 @@ sofa::helper::vector< double > TriangleSetGeometryAlgorithms< DataTypes >::compu
     baryCoefs.push_back(coef_a); baryCoefs.push_back(coef_b); baryCoefs.push_back(coef_c);
 
     return baryCoefs;
+}
+
+// Find the two closest points from two triangles (each of the point belonging to one triangle)
+template<class DataTypes>
+void TriangleSetGeometryAlgorithms< DataTypes >::closestIndexPair(unsigned int ind_ta, unsigned int ind_tb, unsigned int &ind1, unsigned int &ind2)
+{
+
+    TriangleSetTopology< DataTypes > *topology = static_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
+    assert (topology != 0);
+    TriangleSetTopologyContainer * container = static_cast< TriangleSetTopologyContainer* >(topology->getTopologyContainer());
+    const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
+
+    const Triangle &ta=container->getTriangle(ind_ta);
+    const Triangle &tb=container->getTriangle(ind_tb);
+
+    Real min_value;
+    bool is_init = false;
+
+    for(unsigned int i=0; i<3; i++)
+    {
+
+        const typename DataTypes::Coord& ca=vect_c[ta[i]];
+        Vec<3,Real> pa;
+        pa[0] = (Real) (ca[0]); pa[1] = (Real) (ca[1]); pa[2] = (Real) (ca[2]);
+
+        for(unsigned int j=0; j!=i && j<3; j++)
+        {
+
+            const typename DataTypes::Coord& cb=vect_c[tb[i]];
+            Vec<3,Real> pb;
+            pb[0] = (Real) (cb[0]); pb[1] = (Real) (cb[1]); pb[2] = (Real) (cb[2]);
+
+            Real norm_v_normal = (pa-pb)*(pa-pb);
+            if(!is_init)
+            {
+
+                min_value = norm_v_normal;
+                ind1 = ta[i];
+                ind2 = tb[j];
+                is_init = true;
+
+            }
+            else
+            {
+                if(norm_v_normal<min_value)
+                {
+                    min_value = norm_v_normal;
+                    ind1 = ta[i];
+                    ind2 = tb[j];
+                }
+            }
+        }
+
+    }
+
+    return;
+
 }
 
 // test if a point is included in the triangle indexed by ind_t

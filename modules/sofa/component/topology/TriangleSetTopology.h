@@ -513,6 +513,9 @@ public:
     // and the triangular mesh
     double Prepare_InciseAlongPointsList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb, unsigned int new_ind_ta, unsigned int newind_tb);
 
+    // Move and fix the two closest points of two triangles to their median point
+    bool Suture2Points(unsigned int ind_ta, unsigned int ind_tb, unsigned int &ind1, unsigned int &ind2);
+
     // Incises along the list of points (ind_edge,coord) intersected by the vector from point a to point b
     // and the triangular mesh
     bool InciseAlongPointsList(bool is_first_cut, const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb,
@@ -564,6 +567,9 @@ public:
 
     // barycentric coefficients of point p in triangle whose vertices are indexed by (ind_p1,ind_p2,ind_p3)
     sofa::helper::vector< double > compute3PointsBarycoefs( const Vec<3,double> &p, unsigned int ind_p1, unsigned int ind_p2, unsigned int ind_p3);
+
+    // Find the two closest points from two triangles (each of the point belonging to one triangle)
+    void closestIndexPair(unsigned int ind_ta, unsigned int ind_tb, unsigned int &ind1, unsigned int &ind2);
 
     // test if a point is included in the triangle indexed by ind_t
     bool is_PointinTriangle(bool is_tested, const Vec<3,Real>& p, unsigned int ind_t, unsigned int &ind_t_test);

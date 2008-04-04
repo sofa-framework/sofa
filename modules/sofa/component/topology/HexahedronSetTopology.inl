@@ -110,14 +110,14 @@ void HexahedronSetTopologyModifier<DataTypes>::addHexahedraProcess(const sofa::h
             hexahedronIndex=container->m_hexahedron.size() - 1 ;
             if (tvsa.size()>0)
             {
-                container->getHexahedronVertexShellForModification( t[0] ).push_back( hexahedronIndex );
-                container->getHexahedronVertexShellForModification( t[1] ).push_back( hexahedronIndex );
-                container->getHexahedronVertexShellForModification( t[2] ).push_back( hexahedronIndex );
-                container->getHexahedronVertexShellForModification( t[3] ).push_back( hexahedronIndex );
-                container->getHexahedronVertexShellForModification( t[4] ).push_back( hexahedronIndex );
-                container->getHexahedronVertexShellForModification( t[5] ).push_back( hexahedronIndex );
-                container->getHexahedronVertexShellForModification( t[6] ).push_back( hexahedronIndex );
-                container->getHexahedronVertexShellForModification( t[7] ).push_back( hexahedronIndex );
+
+                for (j=0; j<8; ++j)
+                {
+
+                    sofa::helper::vector< unsigned int > &shell = container->getHexahedronVertexShellForModification( t[j] );
+                    shell.push_back( hexahedronIndex );
+                    sort(shell.begin(), shell.end());
+                }
 
             }
             if (container->m_hexahedronEdge.size()>0)
@@ -165,14 +165,18 @@ void HexahedronSetTopologyModifier<DataTypes>::addHexahedraProcess(const sofa::h
             {
                 for (j=0; j<12; ++j)
                 {
-                    container->m_hexahedronEdgeShell[container->m_hexahedronEdge[hexahedronIndex][j]].push_back( hexahedronIndex );
+                    sofa::helper::vector< unsigned int > &shell = container->m_hexahedronEdgeShell[container->m_hexahedronEdge[hexahedronIndex][j]];
+                    shell.push_back( hexahedronIndex );
+                    sort(shell.begin(), shell.end());
                 }
             }
             if (ttsa.size()>0)
             {
                 for (j=0; j<6; ++j)
                 {
-                    container->m_hexahedronQuadShell[container->m_hexahedronQuad[hexahedronIndex][j]].push_back( hexahedronIndex );
+                    sofa::helper::vector< unsigned int > &shell = container->m_hexahedronQuadShell[container->m_hexahedronQuad[hexahedronIndex][j]];
+                    shell.push_back( hexahedronIndex );
+                    sort(shell.begin(), shell.end());
                 }
 
                 sofa::helper::vector< Hexahedron > current_hexahedron;

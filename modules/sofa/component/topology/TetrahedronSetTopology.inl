@@ -106,13 +106,15 @@ void TetrahedronSetTopologyModifier<DataTypes>::addTetrahedraProcess(const sofa:
             assert(container->getTetrahedronIndex(t[0],t[1],t[2],t[3])== -1);
             container->m_tetrahedron.push_back(t);
             tetrahedronIndex=container->m_tetrahedron.size() - 1 ;
+
             if (tvsa.size()>0)
             {
-                container->getTetrahedronVertexShellForModification( t[0] ).push_back( tetrahedronIndex );
-                container->getTetrahedronVertexShellForModification( t[1] ).push_back( tetrahedronIndex );
-                container->getTetrahedronVertexShellForModification( t[2] ).push_back( tetrahedronIndex );
-                container->getTetrahedronVertexShellForModification( t[3] ).push_back( tetrahedronIndex );
-
+                for (j=0; j<4; ++j)
+                {
+                    sofa::helper::vector< unsigned int > &shell = container->getTetrahedronVertexShellForModification( t[j] );
+                    shell.push_back( tetrahedronIndex );
+                    sort(shell.begin(), shell.end());
+                }
             }
             if (container->m_tetrahedronEdge.size()>0)
             {
@@ -144,14 +146,18 @@ void TetrahedronSetTopologyModifier<DataTypes>::addTetrahedraProcess(const sofa:
             {
                 for (j=0; j<6; ++j)
                 {
-                    container->m_tetrahedronEdgeShell[container->m_tetrahedronEdge[tetrahedronIndex][j]].push_back( tetrahedronIndex );
+                    sofa::helper::vector< unsigned int > &shell = container->m_tetrahedronEdgeShell[container->m_tetrahedronEdge[tetrahedronIndex][j]];
+                    shell.push_back( tetrahedronIndex );
+                    sort(shell.begin(), shell.end());
                 }
             }
             if (ttsa.size()>0)
             {
                 for (j=0; j<3; ++j)
                 {
-                    container->m_tetrahedronTriangleShell[container->m_tetrahedronTriangle[tetrahedronIndex][j]].push_back( tetrahedronIndex );
+                    sofa::helper::vector< unsigned int > &shell = container->m_tetrahedronTriangleShell[container->m_tetrahedronTriangle[tetrahedronIndex][j]];
+                    shell.push_back( tetrahedronIndex );
+                    sort(shell.begin(), shell.end());
                 }
 
                 sofa::helper::vector< Tetrahedron > current_tetrahedron;

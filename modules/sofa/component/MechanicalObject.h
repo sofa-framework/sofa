@@ -211,6 +211,9 @@ public:
      */
     void computeNewPoint( const unsigned int i, const sofa::helper::vector< double >& m_x);
 
+    // Force the position of a point (and force its velocity to zero value)
+    void forcePointPosition( const unsigned int i, const sofa::helper::vector< double >& m_x);
+
     virtual void applyTranslation (const double dx,const double dy,const double dz);
 
     virtual void applyRotation (const defaulttype::Quat q);

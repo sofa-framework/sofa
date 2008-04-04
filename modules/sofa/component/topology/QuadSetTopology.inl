@@ -111,13 +111,12 @@ void QuadSetTopologyModifier<DataTypes>::addQuadsProcess(const sofa::helper::vec
             if (tvsa.size()>0)
             {
 
-                container->getQuadVertexShellForModification( t[0] ).push_back( quadIndex );
-
-                container->getQuadVertexShellForModification( t[1] ).push_back( quadIndex );
-
-                container->getQuadVertexShellForModification( t[2] ).push_back( quadIndex );
-
-                container->getQuadVertexShellForModification( t[3] ).push_back( quadIndex );
+                for (j=0; j<4; ++j)
+                {
+                    sofa::helper::vector< unsigned int > &shell = container->getQuadVertexShellForModification( t[j] );
+                    shell.push_back( quadIndex );
+                    sort(shell.begin(), shell.end());
+                }
 
             }
             if (container->m_quadEdge.size()>0)
@@ -158,7 +157,9 @@ void QuadSetTopologyModifier<DataTypes>::addQuadsProcess(const sofa::helper::vec
 
                 for (j=0; j<4; ++j)
                 {
-                    container->m_quadEdgeShell[container->m_quadEdge[quadIndex][j]].push_back( quadIndex );
+                    sofa::helper::vector< unsigned int > &shell = container->m_quadEdgeShell[container->m_quadEdge[quadIndex][j]];
+                    shell.push_back( quadIndex );
+                    sort(shell.begin(), shell.end());
                 }
 
                 sofa::helper::vector< Quad > current_quad;
