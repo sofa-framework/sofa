@@ -188,7 +188,8 @@ public :
           m_topologyModifier(0),
           m_topologyAlgorithms(0),
           m_geometryAlgorithms(0),
-          m_mainTopology(isMainTopology)
+          m_mainTopology(isMainTopology),
+          filename(initData(&filename,"filename","Filename of the object"))
     {
     }
 
@@ -226,6 +227,8 @@ public :
      */
     virtual unsigned int getDOFNumber() const { return 0; }
 
+    virtual std::string getFilename() const {return filename.getValue();}
+
 protected :
     /// Contains the actual topology data and give acces to it (nature of these data heavily depends on the kind of topology).
     TopologyContainer *m_topologyContainer;
@@ -254,6 +257,8 @@ protected:
      *
      */
     void resetTopologyChangeList() const;
+
+    Data< std::string > filename;
 
 };
 

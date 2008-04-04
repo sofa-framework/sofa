@@ -591,6 +591,14 @@ void MechanicalObject<DataTypes>::computeNewPoint( const unsigned int i, const s
         DataTypes::set((*reset_position)[i], m_x[0]*scale+translation[0], m_x[1]*scale+translation[1], m_x[2]*scale+translation[2]);
 }
 
+// Force the position of a point (and force its velocity to zero value)
+template <class DataTypes>
+void MechanicalObject<DataTypes>::forcePointPosition( const unsigned int i, const sofa::helper::vector< double >& m_x)
+{
+    DataTypes::set((*getX())[i], m_x[0], m_x[1], m_x[2]);
+    DataTypes::set((*getV())[i], (double) 0.0, (double) 0.0, (double) 0.0);
+}
+
 template <class DataTypes>
 void MechanicalObject<DataTypes>::contributeToMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol)
 {
