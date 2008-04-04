@@ -54,25 +54,21 @@ using namespace sofa::defaulttype;
 class TopologicalChangeManager
 {
 public:
-
-
-protected:
-
-
-public:
     TopologicalChangeManager();
-
     ~TopologicalChangeManager();
 
     // Handle Removing of topological element (from any type of topology)
     void removeItemsFromCollisionModel(sofa::core::CollisionElementIterator) const;
+    // Handle Cutting (activated only for a triangular topology), using global variables to register the two last input points
+    bool incisionCollisionModel(sofa::core::CollisionElementIterator, Vector3&, bool, bool);
 
+protected:
+
+private:
+    bool incisionTriangleModel(sofa::core::CollisionElementIterator, Vector3&, bool, bool);
     // Intermediate method to handle cutting
     bool incisionTriangleSetTopology(topology::TriangleSetTopology< Vec3Types >*);
-
-    // Handle Cutting (activated only for a triangular topology), using global variables to register the two last input points
-    bool incisionTriangleModel(sofa::core::CollisionElementIterator, Vector3&, bool, bool);
-
+    void removeItemsFromTriangleModel(sofa::core::CollisionElementIterator) const;
 
 private:
     // Global variables to register the two last input points (for incision along one segment in a triangular mesh)
@@ -93,7 +89,6 @@ private:
         sofa::helper::vector< unsigned int >  a_p12_last_init;
         sofa::helper::vector< unsigned int >  a_i123_last_init;
     }	incision;
-
 };
 
 } // namespace collision
