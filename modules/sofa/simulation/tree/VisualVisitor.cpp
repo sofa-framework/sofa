@@ -42,16 +42,32 @@ Visitor::Result VisualDrawVisitor::processNodeTopDown(GNode* node)
 
     hasShader = (node->getShader()!=NULL);
 
+    for_each(this, node, node->visualModel,     &VisualDrawVisitor::fwdVisualModel);
     this->VisualVisitor::processNodeTopDown(node);
 
     glPopMatrix();
     return RESULT_CONTINUE;
 }
 
+void VisualDrawVisitor::processNodeBottomUp(GNode* node)
+{
+    for_each(this, node, node->visualModel,     &VisualDrawVisitor::bwdVisualModel);
+}
+
 void VisualDrawVisitor::processObject(GNode* /*node*/, core::objectmodel::BaseObject* o)
 {
-    if (pass == Std)
+    if (pass == core::VisualModel::Std || pass == core::VisualModel::Shadow)
         o->draw();
+}
+
+void VisualDrawVisitor::fwdVisualModel(GNode* node, core::VisualModel* vm)
+{
+    vm->fwdDraw(pass);
+}
+
+void VisualDrawVisitor::bwdVisualModel(GNode* node, core::VisualModel* vm)
+{
+    vm->bwdDraw(pass);
 }
 
 void VisualDrawVisitor::processVisualModel(GNode* node, core::VisualModel* vm)
@@ -63,7 +79,7 @@ void VisualDrawVisitor::processVisualModel(GNode* node, core::VisualModel* vm)
 
     switch(pass)
     {
-    case Std:
+    case core::VisualModel::Std:
     {
         if (shader)
             shader->start();
@@ -72,7 +88,7 @@ void VisualDrawVisitor::processVisualModel(GNode* node, core::VisualModel* vm)
             shader->stop();
         break;
     }
-    case Transparent:
+    case core::VisualModel::Transparent:
     {
         if (shader)
             shader->start();
@@ -81,7 +97,7 @@ void VisualDrawVisitor::processVisualModel(GNode* node, core::VisualModel* vm)
             shader->stop();
         break;
     }
-    case Shadow:
+    case core::VisualModel::Shadow:
         vm->drawShadow();
         break;
     }
