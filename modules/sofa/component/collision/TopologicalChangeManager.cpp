@@ -268,6 +268,8 @@ bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionEleme
     {
         return incisionTriangleModel(elem2, pos, firstInput, isCut);
     }
+
+    return false;
 }
 
 bool TopologicalChangeManager::incisionTriangleModel(sofa::core::CollisionElementIterator elem2, Vector3& pos,
