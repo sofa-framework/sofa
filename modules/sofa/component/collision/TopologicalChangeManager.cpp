@@ -262,7 +262,7 @@ bool TopologicalChangeManager::incisionTriangleModel(sofa::core::CollisionElemen
     // Test if a TopologicalMapping (by default from TetrahedronSetTopology to TriangleSetTopology) exists :
 
     bool is_TopologicalMapping = false;
-    bool is_FixedConstraint = false;
+    //bool is_FixedConstraint = false;
     sofa::core::componentmodel::topology::BaseTopology *topo_curr = dynamic_cast<sofa::core::componentmodel::topology::BaseTopology *>(elem2.getCollisionModel()->getContext()->getMainTopology());
 
     simulation::tree::GNode* parent2 = dynamic_cast<simulation::tree::GNode*>(model2->getContext());
@@ -317,12 +317,20 @@ bool TopologicalChangeManager::incisionTriangleModel(sofa::core::CollisionElemen
                     sofa::helper::vector<int> components_init;
                     sofa::helper::vector<int>& components = components_init;
                     int num = tsp->getEdgeSetTopologyContainer()->getNumberConnectedComponents(components);
+                    std::cout << "Number of connected components : " << num << endl;
+                    //sofa::helper::vector<int>::size_type i;
+                    //for (i = 0; i != components.size(); ++i)
+                    //  std::cout << "Vertex " << i <<" is in component " << components[i] << endl;
                 }
                 else
                 {
                     sofa::helper::vector<int> components_init;
                     sofa::helper::vector<int>& components = components_init;
                     int num = tsp->getEdgeSetTopologyContainer()->getNumberConnectedComponents(components);
+                    std::cout << "Number of connected components : " << num << endl;
+                    //sofa::helper::vector<int>::size_type i;
+                    //for (i = 0; i != components.size(); ++i)
+                    //  std::cout << "Vertex " << i <<" is in component " << components[i] << endl;
                     return true; // change state to ATTACHED;
                 }
             }

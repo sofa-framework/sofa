@@ -2865,7 +2865,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::closestIndexPair(unsigned int i
     const Triangle &ta=container->getTriangle(ind_ta);
     const Triangle &tb=container->getTriangle(ind_tb);
 
-    Real min_value;
+    Real min_value=(Real) 0.0;
     bool is_init = false;
 
     for(unsigned int i=0; i<3; i++)

@@ -138,12 +138,6 @@ int EdgeSetTopologyContainer::getNumberConnectedComponents(sofa::helper::vector<
     components.resize(num_vertices(G));
     int num = connected_components(G, &components[0]);
 
-    //sofa::helper::vector<int>::size_type i;
-    std::cout << "Total number of components: " << num << endl;
-    //for (i = 0; i != components.size(); ++i)
-    //  std::cout << "Vertex " << i <<" is in component " << components[i] << endl;
-    std::cout << endl;
-
     return num;
 }
 

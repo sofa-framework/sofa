@@ -60,12 +60,12 @@ void VisualDrawVisitor::processObject(GNode* /*node*/, core::objectmodel::BaseOb
         o->draw();
 }
 
-void VisualDrawVisitor::fwdVisualModel(GNode* node, core::VisualModel* vm)
+void VisualDrawVisitor::fwdVisualModel(GNode* /*node*/, core::VisualModel* vm)
 {
     vm->fwdDraw(pass);
 }
 
-void VisualDrawVisitor::bwdVisualModel(GNode* node, core::VisualModel* vm)
+void VisualDrawVisitor::bwdVisualModel(GNode* /*node*/, core::VisualModel* vm)
 {
     vm->bwdDraw(pass);
 }
