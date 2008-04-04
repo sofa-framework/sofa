@@ -281,10 +281,10 @@ void Simulation::updateVisualContext ( GNode* root, int FILTER)
 void Simulation::draw ( GNode* root )
 {
     if ( !root ) return;
-    VisualDrawVisitor act ( VisualDrawVisitor::Std );
+    VisualDrawVisitor act ( core::VisualModel::Std );
     root->execute ( &act );
 
-    VisualDrawVisitor act2 ( VisualDrawVisitor::Transparent );
+    VisualDrawVisitor act2 ( core::VisualModel::Transparent );
     root->execute ( &act2 );
 }
 
@@ -293,7 +293,7 @@ void Simulation::drawShadows ( GNode* root )
 {
     if ( !root ) return;
     //std::cout << "drawShadows\n";
-    VisualDrawVisitor act ( VisualDrawVisitor::Shadow );
+    VisualDrawVisitor act ( core::VisualModel::Shadow );
     root->execute ( &act );
 }
 

@@ -66,16 +66,19 @@ public:
 class VisualDrawVisitor : public VisualVisitor
 {
 public:
-    enum Pass { Std, Transparent, Shadow };
+    typedef core::VisualModel::Pass Pass;
     Pass pass;
     bool hasShader;
-    VisualDrawVisitor(Pass pass = Std)
+    VisualDrawVisitor(Pass pass = core::VisualModel::Std)
         : pass(pass)
     {
     }
     virtual Result processNodeTopDown(GNode* node);
+    virtual void processNodeBottomUp(GNode* node);
+    virtual void fwdVisualModel(GNode* node, core::VisualModel* vm);
     virtual void processVisualModel(GNode* node, core::VisualModel* vm);
     virtual void processObject(GNode* node, core::objectmodel::BaseObject* o);
+    virtual void bwdVisualModel(GNode* node, core::VisualModel* vm);
 };
 
 class VisualUpdateVisitor : public VisualVisitor
