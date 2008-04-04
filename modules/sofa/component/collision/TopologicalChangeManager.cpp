@@ -54,8 +54,7 @@ TopologicalChangeManager::~TopologicalChangeManager()
 {
 }
 
-// Handle Removing of topological element (from any type of topology)
-void TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::CollisionElementIterator elem2) const
+void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::core::CollisionElementIterator elem2) const
 {
     TriangleSetModel* my_triangle_model = (dynamic_cast<TriangleSetModel*>(elem2.getCollisionModel()));
     if (my_triangle_model)
@@ -208,6 +207,15 @@ void TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::Collisi
     }
 }
 
+// Handle Removing of topological element (from any type of topology)
+void TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::CollisionElementIterator elem2) const
+{
+    if(dynamic_cast<TriangleModel*>(elem2.getCollisionModel())!= NULL)
+    {
+        removeItemsFromTriangleModel(elem2);
+    }
+}
+
 
 // Intermediate method to handle cutting
 bool TopologicalChangeManager::incisionTriangleSetTopology(topology::TriangleSetTopology< Vec3Types >* tsp)
@@ -253,6 +261,15 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(topology::TriangleSet
 }
 
 // Handle Cutting (activated only for a triangular topology), using global variables to register the two last input points
+bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionElementIterator elem2, Vector3& pos,
+        const bool firstInput, const bool isCut)
+{
+    if(dynamic_cast<TriangleModel*>(elem2.getCollisionModel())!= NULL)
+    {
+        return incisionTriangleModel(elem2, pos, firstInput, isCut);
+    }
+}
+
 bool TopologicalChangeManager::incisionTriangleModel(sofa::core::CollisionElementIterator elem2, Vector3& pos,
         const bool firstInput, const bool isCut)
 {
@@ -336,8 +353,9 @@ bool TopologicalChangeManager::incisionTriangleModel(sofa::core::CollisionElemen
             }
         }
     }
-    else   // there is a TetrahedronSetTopology over the TriangleSetTopology
+    else
     {
+        // there is a TetrahedronSetTopology over the TriangleSetTopology
 
         /*
         //// For APPLICATION 2 : handle two points suturing from a tetrahedral mesh
@@ -362,8 +380,8 @@ bool TopologicalChangeManager::incisionTriangleModel(sofa::core::CollisionElemen
         		incision.ind_tb_init = elem2.getIndex();
 
         		unsigned int ind1_init = 0; unsigned int ind2_init = 0;
-        	    unsigned int &ind1 = ind1_init;
-        	    unsigned int &ind2 = ind2_init;
+        		unsigned int &ind1 = ind1_init;
+        		unsigned int &ind2 = ind2_init;
 
         		bool is_fully_cut = tsp->getTriangleSetTopologyAlgorithms()->Suture2Points(incision.ind_ta_init, incision.ind_tb_init, ind1, ind2);
 
