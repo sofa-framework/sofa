@@ -80,10 +80,7 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     {
         obj->applyScale(atof(arg->getAttribute("scale","1.0")));
     }
-    if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
-    {
-        obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
-    }
+
     if (arg->getAttribute("rx")!=NULL)
     {
         obj->applyRotation(Quat(Vec3d(1,0,0), atof(arg->getAttribute("rx","0.0"))*R_PI/180));
@@ -95,6 +92,11 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     if (arg->getAttribute("rz")!=NULL)
     {
         obj->applyRotation(Quat(Vec3d(0,0,1), atof(arg->getAttribute("rz","0.0"))*R_PI/180));
+    }
+
+    if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
+    {
+        obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
     }
 
 }
