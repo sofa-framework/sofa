@@ -5,11 +5,7 @@
 #include <sofa/component/odesolver/CGImplicitSolver.h>
 #include <sofa/component/odesolver/EulerSolver.h>
 #include <sofa/component/odesolver/StaticSolver.h>
-
-#include <sofa/component/mapping/BarycentricMapping.h>
 #include <sofa/component/visualmodel/OglModel.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/component/mapping/RigidMapping.h>
 // gui
 #include <sofa/gui/SofaGUI.h>
 
@@ -19,16 +15,9 @@
 #include <sofa/component/typedef/Forcefield_double.h>
 #include <sofa/component/typedef/Mapping.h>
 
-using sofa::simulation::tree::GNode;
-typedef sofa::component::odesolver::EulerSolver OdeSolver;
+using namespace sofa::simulation::tree;
+using sofa::component::odesolver::EulerSolver;
 using sofa::component::contextobject::Gravity;
-
-// deformable body
-typedef sofa::defaulttype::Vec3Types ParticleTypes;
-typedef ParticleTypes::Deriv Vec3;
-// rigid body
-typedef sofa::defaulttype::StdRigidTypes<3,double>::Coord RigidCoord;
-typedef sofa::defaulttype::StdRigidTypes<3,double>::Quat Quaternion;
 
 int main(int, char** argv)
 {
@@ -39,11 +28,11 @@ int main(int, char** argv)
     double splength = 1.;
 
     //-------------------- The graph root node
-    GNode* groot = new sofa::simulation::tree::GNode;
+    GNode* groot = new GNode;
     groot->setName( "root" );
 
     // One solver for all the graph
-    OdeSolver* solver = new OdeSolver;
+    EulerSolver* solver = new EulerSolver;
     groot->addObject(solver);
     solver->setName("S");
 
@@ -57,9 +46,9 @@ int main(int, char** argv)
     deformableBody->addObject(DOF);
     DOF->resize(2);
     DOF->setName("Dof1");
-    ParticleTypes::VecCoord& x = *DOF->getX();
-    x[0] = Vec3(0,0,0);
-    x[1] = Vec3(endPos,0,0);
+    Particles3d::VecCoord& x = *DOF->getX();
+    x[0] = Coord3d(0,0,0);
+    x[1] = Coord3d(endPos,0,0);
 
     // mass
     //    ParticleMasses* mass = new ParticleMasses;
@@ -91,9 +80,9 @@ int main(int, char** argv)
     rigidBody->addObject(rigidDOF);
     rigidDOF->resize(1);
     rigidDOF->setName("Dof2");
-    sofa::defaulttype::StdRigidTypes<3,double>::VecCoord& rigid_x = *rigidDOF->getX();
-    rigid_x[0] = sofa::defaulttype::StdRigidTypes<3,double>::Coord( Vec3(endPos-attach+splength,0,0),
-            sofa::defaulttype::StdRigidTypes<3,double>::Quat::identity() );
+    Rigid3d::VecCoord& rigid_x = *rigidDOF->getX();
+    rigid_x[0] = CoordRigid3d( Coord3d(endPos-attach+splength,0,0),
+            Quat3d::identity() );
 
     // mass
     UniformMassRigid3d* rigidMass = new UniformMassRigid3d;
@@ -111,8 +100,8 @@ int main(int, char** argv)
     rigidParticles->addObject(rigidParticleDOF);
     rigidParticleDOF->resize(1);
     rigidParticleDOF->setName("Dof3");
-    ParticleTypes::VecCoord& rp_x = *rigidParticleDOF->getX();
-    rp_x[0] = Vec3(attach,0,0);
+    Particles3d::VecCoord& rp_x = *rigidParticleDOF->getX();
+    rp_x[0] = Coord3d(attach,0,0);
 
     // mapping from the rigid body DOF to the skin DOF, to rigidly attach the skin to the body
     RigidMechanicalMappingRigid3d_to_3d* rigidMapping = new RigidMechanicalMappingRigid3d_to_3d(rigidDOF,rigidParticleDOF);
@@ -129,12 +118,12 @@ int main(int, char** argv)
     // Set gravity for the whole graph
     Gravity* gravity =  new Gravity;
     groot->addObject(gravity);
-    gravity->f_gravity.setValue( Vec3(0,-10,0) );
+    gravity->f_gravity.setValue( Coord3d(0,-10,0) );
 
 
 
     //=========================== Init the scene
-    sofa::simulation::tree::getSimulation()->init(groot);
+    getSimulation()->init(groot);
     groot->setAnimate(false);
     groot->setShowNormals(false);
     groot->setShowInteractionForceFields(true);

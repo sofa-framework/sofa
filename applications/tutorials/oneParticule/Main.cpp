@@ -8,15 +8,11 @@
 #include <sofa/component/typedef/Mass_double.h>
 #include <sofa/component/typedef/MechanicalObject_double.h>
 
-#include <iostream>
-#include <fstream>
-
 #include <sofa/gui/SofaGUI.h>
-//typedef Sofa::Components::Common::Vec3Types MyTypes;
-typedef sofa::defaulttype::Vec3Types MyTypes;
-typedef MyTypes::Deriv Vec3;
 
-
+using namespace sofa::simulation::tree;
+using sofa::component::odesolver::EulerSolver;
+using sofa::component::contextobject::Gravity;
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
@@ -27,23 +23,23 @@ int main(int argc, char** argv)
     sofa::gui::SofaGUI::Init(argv[0]);
 
     // The graph root node
-    sofa::simulation::tree::GNode* groot = new sofa::simulation::tree::GNode;
+    GNode* groot = new GNode;
     groot->setName( "root" );
 
     // One solver for all the graph
-    sofa::component::odesolver::EulerSolver* solver = new sofa::component::odesolver::EulerSolver;
+    EulerSolver* solver = new EulerSolver;
     solver->setName("solver");
     solver->f_printLog.setValue(false);
     groot->addObject(solver);
 
     // Set gravity for all the graph
-    sofa::component::contextobject::Gravity* gravity =  new sofa::component::contextobject::Gravity;
+    Gravity* gravity =  new Gravity;
     gravity->setName("gravity");
-    gravity->f_gravity.setValue( Vec3(0,-10,0) );
+    gravity->f_gravity.setValue( Coord3d(0,-10,0) );
     groot->addObject(gravity);
 
     // One node to define the particle
-    sofa::simulation::tree::GNode* particule_node = new sofa::simulation::tree::GNode;
+    GNode* particule_node = new GNode;
     particule_node->setName("particle_node");
     groot->addChild( particule_node );
 
@@ -53,9 +49,9 @@ int main(int argc, char** argv)
     particule_node->addObject(particle);
     particle->resize(1);
     // The point
-    (*particle->getX())[0] = Vec3(0,0,0);
+    (*particle->getX())[0] = Coord3d(0,0,0);
     // The velocity
-    (*particle->getV())[0] = Vec3(0,0,0);
+    (*particle->getV())[0] = Coord3d(0,0,0);
 
     // Its properties, i.e, a simple mass node
     UniformMass3d* mass = new UniformMass3d;
@@ -63,7 +59,7 @@ int main(int argc, char** argv)
     particule_node->addObject(mass);
     mass->setMass( 1 );
 
-    sofa::simulation::tree::getSimulation()->init(groot);
+    getSimulation()->init(groot);
     groot->setAnimate(false);
 
     //=======================================
