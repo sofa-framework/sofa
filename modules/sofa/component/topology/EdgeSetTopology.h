@@ -17,8 +17,6 @@ namespace topology
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::EdgeID EdgeID;
 
-/// defining Edges as the pair of the DOFs indices
-//typedef helper::fixed_array<unsigned int,2> Edge;
 typedef BaseMeshTopology::Edge Edge;
 typedef BaseMeshTopology::SeqEdges SeqEdges;
 typedef BaseMeshTopology::VertexEdges VertexEdges;
@@ -184,11 +182,12 @@ public:
      */
     virtual bool checkTopology() const;
 
-    // Return the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
+    /** \brief Returns the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
+    @param components the array containing the optimal vertex permutation according to the Reverse CuthillMckee algorithm
+    */
     int getNumberConnectedComponents(sofa::helper::vector<int>& components);
 
     EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top=NULL,
-            /* const sofa::helper::vector< unsigned int > &DOFIndex = (const sofa::helper::vector< unsigned int >)0, */
             const sofa::helper::vector< Edge >         &edges    = (const sofa::helper::vector< Edge >)        0 );
 
     template< typename DataTypes >
@@ -264,9 +263,9 @@ public:
 
     /** \brief Effectively Remove a subset of edges. Eventually remove isolated vertices
      *
-     * Elements corresponding to these points are removed form the mechanical object's state vectors.
+     * Elements corresponding to these edges are removed form the mechanical object's state vectors.
      *
-     * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
+     * Important : some structures might need to be warned BEFORE the edges are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
      * \sa removeEdgesWarning
      *
      * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
@@ -275,7 +274,7 @@ public:
      */
     virtual void removeEdgesProcess(const sofa::helper::vector<unsigned int> &indices,const bool removeIsolatedItems=false);
 
-    /** \brief Add some edges to this topology.
+    /** \brief Add some points to this topology.
      *
      * Use a list of ancestors to create the new points.
      * Last parameter baryCoefs defines the coefficient used for the creation of the new edges.
@@ -289,6 +288,10 @@ public:
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0 );
 
 
+    /** \brief Add a new point (who has no ancestors) to this topology.
+     *
+     * \sa addPointsWarning
+     */
     virtual void addNewPoint( const sofa::helper::vector< double >& x) {PointSetTopologyModifier< DataTypes >::addNewPoint(x);};
 
 
@@ -319,7 +322,8 @@ public:
     virtual void splitEdgesProcess( sofa::helper::vector<unsigned int> &indices,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = sofa::helper::vector< sofa::helper::vector< double > >(0));
 
-    //protected:
+    /** \brief Load an edge.
+     */
     void addEdge(Edge e);
 
 public:
@@ -342,6 +346,8 @@ public:
         */
     virtual void removeEdges(sofa::helper::vector< unsigned int >& edges);
 
+    /** \brief Generic method to remove a list of items.
+     */
     virtual void removeItems(sofa::helper::vector< unsigned int >& items);
 
     /** \brief add a set  of edges
@@ -366,7 +372,8 @@ public:
     virtual void splitEdges( sofa::helper::vector<unsigned int> &indices,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0 );
 
-    // Give the optimal vertex permutation according to the Reverse CuthillMckee algorithm (use BOOST GRAPH LIBRAIRY)
+    /** \brief Gives the optimal vertex permutation according to the Reverse CuthillMckee algorithm (use BOOST GRAPH LIBRAIRY)
+    */
     void resortCuthillMckee(sofa::helper::vector<int>& inverse_permutation);
 
 
@@ -436,6 +443,8 @@ public:
         return (EdgeSetTopologyAlgorithms<DataTypes> *)this->m_topologyAlgorithms;
     }
 
+    /** \brief Generic method returning the TopologyAlgorithms object
+     */
     virtual core::componentmodel::topology::TopologyAlgorithms *getTopologyAlgorithms() const
     {
         return getEdgeSetTopologyAlgorithms();

@@ -411,6 +411,8 @@ public:
         addTopologyChange(e);
     }
 
+    /** \brief Generic method to remove a list of items.
+     */
     virtual void removeItems(sofa::helper::vector< unsigned int >& /*items*/)
     {
     }

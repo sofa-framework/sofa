@@ -41,12 +41,6 @@ namespace topology
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::TetraID TetraID;
 
-/// defining Tetrahedra as 4 DOFs indices
-//typedef helper::fixed_array<unsigned int,4> Tetrahedron;
-/// defining TetrahedronTriangles as 4 Triangles indices
-//typedef helper::fixed_array<unsigned int,4> TetrahedronTriangles;
-/// defining TetrahedronEdges as 6 Edge indices
-//typedef helper::fixed_array<unsigned int,6> TetrahedronEdges;
 typedef BaseMeshTopology::Tetra Tetra;
 typedef BaseMeshTopology::SeqTetras SeqTetras;
 typedef BaseMeshTopology::VertexTetras VertexTetras;
@@ -62,7 +56,6 @@ typedef TetraTriangles TetrahedronTriangles;
 /////////////////////////////////////////////////////////
 /// TopologyChange subclasses
 /////////////////////////////////////////////////////////
-
 
 
 /** indicates that some tetrahedra were added */
@@ -94,7 +87,6 @@ public:
     }
 
 };
-
 
 
 /** indicates that some tetrahedra are about to be removed */
@@ -352,7 +344,6 @@ public:
     virtual bool checkTopology() const;
 
     TetrahedronSetTopologyContainer(core::componentmodel::topology::BaseTopology *top=NULL,
-            /* const sofa::helper::vector< unsigned int > &DOFIndex = (const sofa::helper::vector< unsigned int >)0,  */
             const sofa::helper::vector< Tetrahedron >         &tetrahedra    = (const sofa::helper::vector< Tetrahedron >)        0 );
 
 
@@ -484,6 +475,10 @@ public:
             const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = (const sofa::helper::vector< sofa::helper::vector< unsigned int > >)0,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0 );
 
+    /** \brief Add a new point (who has no ancestors) to this topology.
+     *
+     * \sa addPointsWarning
+     */
     virtual void addNewPoint( const sofa::helper::vector< double >& x) {TriangleSetTopologyModifier< DataTypes >::addNewPoint(x);};
 
 
@@ -507,6 +502,8 @@ public:
 
 
 protected:
+    /** \brief Load a tetrahedron.
+     */
     void addTetrahedron(Tetrahedron e);
 
 public:
@@ -538,6 +535,8 @@ public:
       */
     virtual void removeTetrahedra(sofa::helper::vector< unsigned int >& tetrahedra);
 
+    /** \brief Generic method to remove a list of items.
+     */
     virtual void removeItems(sofa::helper::vector< unsigned int >& items);
 
 };
@@ -591,6 +590,8 @@ public:
         return (TetrahedronSetTopologyAlgorithms<DataTypes> *)this->m_topologyAlgorithms;
     }
 
+    /** \brief Returns the TriangleSetTopologyAlgorithms object of this TriangleSetTopology.
+     */
     virtual core::componentmodel::topology::TopologyAlgorithms *getTopologyAlgorithms() const
     {
         return getTetrahedronSetTopologyAlgorithms();

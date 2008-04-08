@@ -148,9 +148,6 @@ void TriangularBendingSprings<DataTypes>::TriangularBSTriangleCreationFunction (
                         }
                     }
 
-                    container->getTriangleEdgeShellArray();
-                    container->getTriangleVertexShellArray();
-
                     const sofa::helper::vector< unsigned int > shell = tstc->getTriangleEdgeShell(edgeIndex);
                     if (shell.size()==2)
                     {
@@ -254,9 +251,6 @@ void TriangularBendingSprings<DataTypes>::TriangularBSTriangleDestructionFunctio
                 {
 
                     unsigned int edgeIndex = te[j];
-
-                    container->getTriangleEdgeShellArray();
-                    container->getTriangleVertexShellArray();
 
                     const sofa::helper::vector< unsigned int > shell = tstc->getTriangleEdgeShell(edgeIndex);
                     if (shell.size()==3)
