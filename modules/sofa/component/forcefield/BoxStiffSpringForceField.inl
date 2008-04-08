@@ -64,9 +64,9 @@ BoxStiffSpringForceField<DataTypes>::BoxStiffSpringForceField(double ks, double 
 }
 
 template <class DataTypes>
-void BoxStiffSpringForceField<DataTypes>::init()
+void BoxStiffSpringForceField<DataTypes>::bwdInit()
 {
-    Inherit::init();
+    Inherit::bwdInit();
     sofa::helper::vector <unsigned int> indices1;
     const Vec6& b1=box_object1.getValue();
     this->mstate1->getIndicesInSpace( indices1, b1[0],b1[3],b1[1],b1[4],b1[2],b1[5] );
@@ -79,7 +79,7 @@ void BoxStiffSpringForceField<DataTypes>::init()
     const VecCoord& x1 = *this->mstate1->getX();
     const VecCoord& x2 = *this->mstate2->getX();
 
-
+    //Attach springs using with priority the shortest distance between points
     float min_dist=0.0f;
     if (indices1.size() < indices2.size())
     {
