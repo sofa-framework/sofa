@@ -68,7 +68,7 @@ public:
     BoxStiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks=100.0, double kd=5.0);
     BoxStiffSpringForceField(double ks=100.0, double kd=5.0);
 
-    void init();
+    void bwdInit();
 
     //virtual const char* getTypeName() const { return "Boxstiffspringforcefield"; }
     Data<Vec6> box_object1;
