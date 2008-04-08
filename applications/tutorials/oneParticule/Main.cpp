@@ -12,7 +12,6 @@
 
 using namespace sofa::simulation::tree;
 using sofa::component::odesolver::EulerSolver;
-using sofa::component::contextobject::Gravity;
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
@@ -25,18 +24,13 @@ int main(int argc, char** argv)
     // The graph root node
     GNode* groot = new GNode;
     groot->setName( "root" );
+    groot->setGravityInWorld( Coord3d(0,-10,0) );
 
     // One solver for all the graph
     EulerSolver* solver = new EulerSolver;
     solver->setName("solver");
     solver->f_printLog.setValue(false);
     groot->addObject(solver);
-
-    // Set gravity for all the graph
-    Gravity* gravity =  new Gravity;
-    gravity->setName("gravity");
-    gravity->f_gravity.setValue( Coord3d(0,-10,0) );
-    groot->addObject(gravity);
 
     // One node to define the particle
     GNode* particule_node = new GNode;

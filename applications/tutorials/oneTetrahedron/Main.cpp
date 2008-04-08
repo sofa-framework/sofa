@@ -20,7 +20,6 @@
 
 using namespace sofa::simulation::tree;
 using sofa::component::odesolver::CGImplicitSolver;
-using sofa::component::contextobject::Gravity;
 using sofa::component::topology::MeshTopology;
 using sofa::component::visualmodel::OglModel;
 // ---------------------------------------------------------------------
@@ -49,7 +48,7 @@ int main(int argc, char** argv)
     groot->addObject(DOF);
     DOF->resize(4);
     DOF->setName("DOF");
-    Particles3f::VecCoord& x = *DOF->getX();
+    VecCoord3f& x = *DOF->getX();
 
     x[0] = Coord3f(0,10,0);
     x[1] = Coord3f(10,0,0);
