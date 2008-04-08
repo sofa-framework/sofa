@@ -17,7 +17,6 @@
 
 using namespace sofa::simulation::tree;
 using sofa::component::odesolver::EulerSolver;
-using sofa::component::contextobject::Gravity;
 
 int main(int, char** argv)
 {
@@ -30,6 +29,7 @@ int main(int, char** argv)
     //-------------------- The graph root node
     GNode* groot = new GNode;
     groot->setName( "root" );
+    groot->setGravityInWorld( Coord3d(0,-10,0) );
 
     // One solver for all the graph
     EulerSolver* solver = new EulerSolver;
@@ -46,7 +46,7 @@ int main(int, char** argv)
     deformableBody->addObject(DOF);
     DOF->resize(2);
     DOF->setName("Dof1");
-    Particles3d::VecCoord& x = *DOF->getX();
+    VecCoord3d& x = *DOF->getX();
     x[0] = Coord3d(0,0,0);
     x[1] = Coord3d(endPos,0,0);
 
@@ -80,7 +80,7 @@ int main(int, char** argv)
     rigidBody->addObject(rigidDOF);
     rigidDOF->resize(1);
     rigidDOF->setName("Dof2");
-    Rigid3d::VecCoord& rigid_x = *rigidDOF->getX();
+    VecCoordRigid3d& rigid_x = *rigidDOF->getX();
     rigid_x[0] = CoordRigid3d( Coord3d(endPos-attach+splength,0,0),
             Quat3d::identity() );
 
@@ -100,7 +100,7 @@ int main(int, char** argv)
     rigidParticles->addObject(rigidParticleDOF);
     rigidParticleDOF->resize(1);
     rigidParticleDOF->setName("Dof3");
-    Particles3d::VecCoord& rp_x = *rigidParticleDOF->getX();
+    VecCoord3d& rp_x = *rigidParticleDOF->getX();
     rp_x[0] = Coord3d(attach,0,0);
 
     // mapping from the rigid body DOF to the skin DOF, to rigidly attach the skin to the body
@@ -115,10 +115,6 @@ int main(int, char** argv)
     iff->setName("F13");
     iff->addSpring( 1,0, 10., 1., splength );
 
-    // Set gravity for the whole graph
-    Gravity* gravity =  new Gravity;
-    groot->addObject(gravity);
-    gravity->f_gravity.setValue( Coord3d(0,-10,0) );
 
 
 
