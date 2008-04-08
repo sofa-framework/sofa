@@ -28,9 +28,7 @@
 #include <sofa/component/topology/EdgeSetTopology.h>
 #include <vector>
 #include <map>
-#include <sofa/defaulttype/Vec.h> // typing "Vec"
-
-//#include <sofa/component/mapping/Tetra2TriangleTopologicalMapping.h>
+#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
@@ -41,15 +39,11 @@ namespace component
 namespace topology
 {
 
-using namespace sofa::defaulttype; // typing "Vec"
+using namespace sofa::defaulttype;
 
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::TriangleID TriangleID;
 
-/// defining Triangles as 3 DOFs indices
-//typedef helper::fixed_array<unsigned int,3> Triangle;
-/// defining TriangleEdges as 3 Edge indices
-//typedef helper::fixed_array<unsigned int,3> TriangleEdges;
 typedef BaseMeshTopology::Triangle Triangle;
 typedef BaseMeshTopology::SeqTriangles SeqTriangles;
 typedef BaseMeshTopology::VertexTriangles VertexTriangles;
@@ -316,12 +310,11 @@ public:
 
     /** \brief Checks if the Triangle Set Topology is coherent
      *
-     * Check if the Edge and the Edhe Shell arrays are coherent
+     * Check if the Triangle and the Triangle Shell arrays are coherent
      */
     virtual bool checkTopology() const;
 
     TriangleSetTopologyContainer(core::componentmodel::topology::BaseTopology *top=NULL,
-            /* const sofa::helper::vector< unsigned int > &DOFIndex = (const sofa::helper::vector< unsigned int >)0,   */
             const sofa::helper::vector< Triangle >         &triangles    = (const sofa::helper::vector< Triangle >)        0 );
 
     template< typename DataTypes >
@@ -385,6 +378,10 @@ public:
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors= (const sofa::helper::vector< sofa::helper::vector<unsigned int > >) 0 ,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs= (const sofa::helper::vector< sofa::helper::vector< double > >)0) ;
 
+    /** \brief Sends a message to warn that some edges were added in this topology.
+     *
+     * \sa addEdgesProcess
+     */
     void addEdgesWarning(const unsigned int nEdges,
             const sofa::helper::vector< Edge >& edgesList,
             const sofa::helper::vector< unsigned int >& edgesIndexList,
@@ -450,6 +447,10 @@ public:
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0 );
 
 
+    /** \brief Add a new point (who has no ancestors) to this topology.
+     *
+     * \sa addPointsWarning
+     */
     virtual void addNewPoint( const sofa::helper::vector< double >& x) {EdgeSetTopologyModifier< DataTypes >::addNewPoint(x);};
 
     /** \brief Remove a subset of points
@@ -472,7 +473,8 @@ public:
 
 
     //protected:
-    //public: // must actually be protected (has to be fixed)
+    /** \brief Load a triangle.
+     */
     void addTriangle(Triangle e);
 
 public:
@@ -507,30 +509,34 @@ public:
         */
     virtual void removeTriangles(sofa::helper::vector< unsigned int >& triangles, const bool removeIsolatedEdges, const bool removeIsolatedPoints);
 
+    /** \brief Generic method to remove a list of items.
+     */
     virtual void removeItems(sofa::helper::vector< unsigned int >& items);
 
-    // Prepares the incision along the list of points (ind_edge,coord) intersected by the vector from point a to point b
-    // and the triangular mesh
+    /** \brief Prepares the incision along the list of points (ind_edge,coord) intersected by the vector from point a to point b and the triangular mesh
+    */
     double Prepare_InciseAlongPointsList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb, unsigned int new_ind_ta, unsigned int newind_tb);
 
-    // Move and fix the two closest points of two triangles to their median point
+    /** \brief  Moves and fixes the two closest points of two triangles to their median point
+    */
     bool Suture2Points(unsigned int ind_ta, unsigned int ind_tb, unsigned int &ind1, unsigned int &ind2);
 
-    // Incises along the list of points (ind_edge,coord) intersected by the vector from point a to point b
-    // and the triangular mesh
+    /** \brief  Incises along the list of points (ind_edge,coord) intersected by the vector from point a to point b and the triangular mesh
+    */
     bool InciseAlongPointsList(bool is_first_cut, const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb,
             unsigned int& a_last, sofa::helper::vector< unsigned int > &a_p12_last, sofa::helper::vector< unsigned int > &a_i123_last,
             unsigned int& b_last, sofa::helper::vector< unsigned int > &b_p12_last, sofa::helper::vector< unsigned int > &b_i123_last,
             sofa::helper::vector< sofa::helper::vector<unsigned int> > &new_points, sofa::helper::vector< sofa::helper::vector<unsigned int> > &closest_vertices);
 
-    // Removes triangles along the list of points (ind_edge,coord) intersected by the vector from point a to point b
-    // and the triangular mesh
+    /** \brief Removes triangles along the list of points (ind_edge,coord) intersected by the vector from point a to point b and the triangular mesh
+    */
     void RemoveAlongTrianglesList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb);
 
-    // Incises along the list of points (ind_edge,coord) intersected by the sequence of input segments (list of input points) and the triangular mesh
+    /** \brief Incises along the list of points (ind_edge,coord) intersected by the sequence of input segments (list of input points) and the triangular mesh
+    */
     void InciseAlongLinesList(const sofa::helper::vector< Vec<3,double> >& input_points, const sofa::helper::vector< unsigned int > &input_triangles);
 
-    /** \brief Duplicate the given edge. Only works of at least one of its points is adjacent to a border.
+    /** \brief Duplicates the given edge. Only works of at least one of its points is adjacent to a border.
      * @returns the number of newly created points, or -1 if the incision failed.
      */
     virtual int InciseAlongEdge(unsigned int edge);
@@ -553,6 +559,7 @@ public:
     {
     }
 
+    /// returns spatial position of point indexed by i
     const Coord& getPositionPoint(unsigned int i);
 
     /// computes the area of triangle no i and returns it
@@ -562,48 +569,45 @@ public:
     /// computes the initial area  of triangle no i and returns it
     Real computeRestTriangleArea(const unsigned int i) const;
 
-    // barycentric coefficients of point p in triangle (a,b,c) indexed by ind_t
+    /// computes barycentric coefficients of point p in triangle (a,b,c) indexed by ind_t
     sofa::helper::vector< double > computeTriangleBarycoefs( const Vec<3,double> &p, unsigned int ind_t);
 
-    // barycentric coefficients of point p in triangle whose vertices are indexed by (ind_p1,ind_p2,ind_p3)
+    /// computes barycentric coefficients of point p in triangle whose vertices are indexed by (ind_p1,ind_p2,ind_p3)
     sofa::helper::vector< double > compute3PointsBarycoefs( const Vec<3,double> &p, unsigned int ind_p1, unsigned int ind_p2, unsigned int ind_p3);
 
-    // Find the two closest points from two triangles (each of the point belonging to one triangle)
+    /// finds the two closest points from two triangles (each of the point belonging to one triangle)
     void closestIndexPair(unsigned int ind_ta, unsigned int ind_tb, unsigned int &ind1, unsigned int &ind2);
 
-    // test if a point is included in the triangle indexed by ind_t
+    /// tests if a point is included in the triangle indexed by ind_t
     bool is_PointinTriangle(bool is_tested, const Vec<3,Real>& p, unsigned int ind_t, unsigned int &ind_t_test);
 
-    // Computes the point defined by 2 indices of vertex and 1 barycentric coordinate
+    /// computes the point defined by 2 indices of vertex and 1 barycentric coordinate
     Vec<3,double> computeBaryEdgePoint(sofa::helper::vector< unsigned int>& indices, const double &coord_p);
 
-    // Computes the normal vector of a triangle indexed by ind_t (not normed)
+    /// computes the normal vector of a triangle indexed by ind_t (not normed)
     Vec<3,double> computeTriangleNormal(const unsigned int ind_t);
 
-    // Tests how to triangularize a quad whose vertices are defined by (p_q1, p_q2, ind_q3, ind_q4) according to the Delaunay criterion
+    /// tests how to triangularize a quad whose vertices are defined by (p_q1, p_q2, ind_q3, ind_q4) according to the Delaunay criterion
     bool isQuadDeulaunayOriented(const Vec<3,double>& p_q1, const Vec<3,double>& p_q2, unsigned int ind_q3, unsigned int ind_q4);
 
-    // Computes the opposite point to ind_p
+    /// computes the opposite point to ind_p
     Vec<3,double> getOppositePoint(unsigned int ind_p, sofa::helper::vector< unsigned int>& indices, const double &coord_p);
 
-    // Test if a triangle indexed by ind_t (and incident to the vertex indexed by ind_p) is included or not in the plane defined by (ind_p, plane_vect)
+    /// tests if a triangle indexed by ind_t (and incident to the vertex indexed by ind_p) is included or not in the plane defined by (ind_p, plane_vect)
     bool is_triangle_in_plane(const unsigned int ind_t, const unsigned int ind_p, const Vec<3,Real>& plane_vect);
 
-
-    // Prepares the duplication of a vertex
+    /// prepares the duplication of a vertex
     void Prepare_VertexDuplication(const unsigned int ind_p, const unsigned int ind_t_from, const unsigned int ind_t_to,
             const sofa::helper::vector< unsigned int>& indices_from, const double &coord_from, const sofa::helper::vector< unsigned int>& indices_to, const double &coord_to,
             sofa::helper::vector< unsigned int > &triangles_list_1, sofa::helper::vector< unsigned int > &triangles_list_2);
 
 
-
-    // Computes the intersection of the vector from point a to point b and the triangle indexed by t
+    /// computes the intersection of the vector from point a to point b and the triangle indexed by t
     bool computeSegmentTriangleIntersection(bool is_entered, const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_t,
             sofa::helper::vector<unsigned int> &indices,
             double &baryCoef, double& coord_kmin);
 
-    // Computes the list of points (ind_edge,coord) intersected by the segment from point a to point b
-    // and the triangular mesh
+    /// computes the list of points (ind_edge,coord) intersected by the segment from point a to point b and the triangular mesh
     bool computeIntersectedPointsList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, unsigned int& ind_tb,
             sofa::helper::vector< unsigned int > &triangles_list, sofa::helper::vector< sofa::helper::vector< unsigned int> > &indices_list, sofa::helper::vector< double >& coords_list, bool& is_on_boundary);
 };
@@ -633,6 +637,8 @@ public:
         return (TriangleSetTopologyAlgorithms<DataTypes> *)this->m_topologyAlgorithms;
     }
 
+    /** \brief Generic method returning the TopologyAlgorithms object
+     */
     virtual core::componentmodel::topology::TopologyAlgorithms *getTopologyAlgorithms() const
     {
         return getTriangleSetTopologyAlgorithms();

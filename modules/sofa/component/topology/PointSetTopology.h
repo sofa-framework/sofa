@@ -121,115 +121,37 @@ to each point. This set of point may be a subset of the DOF of the mechanical mo
 class PointSetTopologyContainer : public core::componentmodel::topology::TopologyContainer
 {
 
-private:
-    /** \brief Creates the PointSetIndex.
-     *
-     * This function is only called if the PointSetIndex member is required.
-     * PointSetIndex[i] contains -1 if the ith DOF is not part of this topology,
-     * and its index in this topology otherwise.
-     */
-    void createPointSetIndex();
-
-protected:
-    /** an array that gives the DOF index of a subset of DOFs */
-    //sofa::helper::vector<unsigned int> m_DOFIndex;
-
-    /** an array that takes as input the index a DOF and as an ouput the index in the m_DOFIndex array */
-    //sofa::helper::vector<int> m_PointSetIndex;
-
-
 public:
-    /** \brief Returns the PointSetIndex.
-     *
-     * See getPointSetIndex(const unsigned int i) for more explanation.
-     */
-    //const sofa::helper::vector<int>& getPointSetIndexArray();
 
     inline friend std::ostream& operator<< (std::ostream& out, const PointSetTopologyContainer& /*t*/)
     {
-
-        /*
-          out << t.m_DOFIndex.size() << " " <<t.m_DOFIndex << " "
-              << t.m_PointSetIndex.size() << " " << t.m_PointSetIndex;
-        */
         return out;
     }
 
     /// Needed to be compliant with Datas.
     inline friend std::istream& operator>>(std::istream& in, PointSetTopologyContainer& /*t*/)
     {
-        /*
-          unsigned int s;
-          in >> s;
-          for (unsigned int i=0;i<s;i++)
-            {
-              unsigned int value;
-              in >> value;
-              t.m_DOFIndex.push_back(value);
-            }
-          in >> s;
-          for (unsigned int i=0;i<s;i++)
-            {
-              unsigned int value;
-              in >> value;
-              t.m_PointSetIndex.push_back(value);
-            }
-          */
         return in;
     }
-
-
-    /** \brief Returns the index in this topology of the point corresponding to the ith DOF of the mechanical object, or -1 if the ith DOF is not in this topology.
-     *
-     */
-    //int getPointSetIndex(const unsigned int i);
-
-    /** \brief Returns the number of vertices in this index array
-     *
-     */
-    //unsigned int getPointSetIndexSize() const;
 
     /** \brief Returns the number of vertices in this topology.
      *
      */
     unsigned int getNumberOfVertices() const;
 
-    /** \brief Returns the DOFIndex.
-     *
-     * See getDOFIndex(const int i) for more explanation.
-     */
-    //const sofa::helper::vector<unsigned int>& getDOFIndexArray() const;
-
-    /** \brief Returns the index in the mechanical object of the DOF corresponding to the ith point of this topology.
-     *
-     */
-    //unsigned int getDOFIndex(const int i) const;
-
     /** \brief Constructor from a a Base Topology.
      */
     PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top=NULL);
 
-    /** \brief Constructor from a a Base Topology and a set of DOF indices
-     */
-    //PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const sofa::helper::vector<unsigned int>& );
 
     /** \brief Checks if the Topology is coherent
      *
-     * Check if the PointSetIndex and the DOFIndex are coherent
      */
     virtual bool checkTopology() const;
 
     template <typename DataTypes>
     friend class PointSetTopologyModifier;
-protected:
-    /** \brief Returns the DOFIndex.
-     *
-     * See getDOFIndex(const int i) for more explanation.
-     */
-    sofa::helper::vector<unsigned int>& getDOFIndexArrayForModification();
-    /** \brief Returns the PointSetIndex array for modification.
-     */
-    sofa::helper::vector<int>& getPointSetIndexArrayForModification();
+
 };
 
 // forward declaration
@@ -309,6 +231,7 @@ public:
 
     /** \brief Add a new point (who has no ancestors) to this topology.
      *
+     * \sa addPointsWarning
      */
     virtual void addNewPoint( const sofa::helper::vector< double >& x);
 
@@ -326,8 +249,8 @@ public:
      * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
      * \sa removePointsWarning
      *
-     * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
-     * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
+     * @param indices is not const because it is actually sorted from the highest index to the lowest one.
+     * @param removeDOF if true the points are actually deleted from the mechanical object's state vectors
      */
     virtual void removePointsProcess( sofa::helper::vector<unsigned int> &indices, const bool removeDOF = true);
 
@@ -357,6 +280,8 @@ public:
     {
     }
 
+    /** \brief Generic method to remove a list of items.
+    */
     virtual void removeItems(sofa::helper::vector< unsigned int >& /*items*/) {return;}
 
 };
@@ -415,11 +340,14 @@ public:
         return (PointSetTopologyAlgorithms<DataTypes> *)this->m_topologyAlgorithms;
     }
 
+    /** \brief Generic method returning the TopologyAlgorithms object
+     */
     virtual core::componentmodel::topology::TopologyAlgorithms *getTopologyAlgorithms() const
     {
         return getPointSetTopologyAlgorithms();
     }
 
+    /** \brief Returns the object where the mechanical DOFs are stored */
     component::MechanicalObject<DataTypes> *getDOF() const
     {
         return object;

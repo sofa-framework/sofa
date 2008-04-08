@@ -29,7 +29,7 @@
 #include <vector>
 #include <map>
 
-#include <sofa/defaulttype/Vec.h> // typing "Vec"
+#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
@@ -40,15 +40,11 @@ namespace component
 namespace topology
 {
 
-using namespace sofa::defaulttype; // typing "Vec"
+using namespace sofa::defaulttype;
 
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::QuadID QuadID;
 
-/// defining Quads as 4 DOFs indices
-//typedef helper::fixed_array<unsigned int,4> Quad;
-/// defining QuadEdges as 4 Edge indices
-//typedef helper::fixed_array<unsigned int,4> QuadEdges;
 typedef BaseMeshTopology::Quad Quad;
 typedef BaseMeshTopology::SeqQuads SeqQuads;
 typedef BaseMeshTopology::VertexQuads VertexQuads;
@@ -334,12 +330,11 @@ public:
 
     /** \brief Checks if the Quad Set Topology is coherent
      *
-     * Check if the Edge and the Edhe Shell arrays are coherent
+     * Check if the Quad and the Quad Shell arrays are coherent
      */
     virtual bool checkTopology() const;
 
     QuadSetTopologyContainer(core::componentmodel::topology::BaseTopology *top=NULL,
-            /* const sofa::helper::vector< unsigned int > &DOFIndex = (const sofa::helper::vector< unsigned int >)0, */
             const sofa::helper::vector< Quad >         &quads    = (const sofa::helper::vector< Quad >)        0 );
 
     template< typename DataTypes >
@@ -391,6 +386,10 @@ public:
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors= (const sofa::helper::vector< sofa::helper::vector<unsigned int > >) 0 ,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs= (const sofa::helper::vector< sofa::helper::vector< double > >)0) ;
 
+    /** \brief Sends a message to warn that some edges were added in this topology.
+     *
+     * \sa addEdgesProcess
+     */
     void addEdgesWarning(const unsigned int nEdges,
             const sofa::helper::vector< Edge >& edgesList,
             const sofa::helper::vector< unsigned int >& edgesIndexList,
@@ -456,7 +455,11 @@ public:
             const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = (const sofa::helper::vector< sofa::helper::vector< unsigned int > >)0,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0 );
 
-
+    /** \brief Add a new point (who has no ancestors) to this topology.
+     *
+     * \sa addPointsWarning
+     */
+    virtual void addNewPoint( const sofa::helper::vector< double >& x) {EdgeSetTopologyModifier< DataTypes >::addNewPoint(x);};
 
     /** \brief Remove a subset of points
      *
@@ -478,6 +481,8 @@ public:
 
 
     //protected:
+    /** \brief Load a quad.
+     */
     void addQuad(Quad e);
 
 public:
@@ -512,6 +517,8 @@ public:
         */
     virtual void removeQuads(sofa::helper::vector< unsigned int >& quads, const bool removeIsolatedEdges, const bool removeIsolatedPoints);
 
+    /** \brief Generic method to remove a list of items.
+     */
     virtual void removeItems(sofa::helper::vector< unsigned int >& items);
 };
 
@@ -537,10 +544,10 @@ public:
     /// computes the initial area  of quad no i and returns it
     Real computeRestQuadArea(const unsigned int i) const;
 
-    // Computes the normal vector of a quad indexed by ind_q (not normed)
+    /// computes the normal vector of a quad indexed by ind_q (not normed)
     Vec<3,double> computeQuadNormal(const unsigned int ind_q);
 
-    // Test if a quad indexed by ind_q (and incident to the vertex indexed by ind_p) is included or not in the plane defined by (ind_p, plane_vect)
+    /// tests if a quad indexed by ind_q (and incident to the vertex indexed by ind_p) is included or not in the plane defined by (ind_p, plane_vect)
     bool is_quad_in_plane(const unsigned int ind_q, const unsigned int ind_p, const Vec<3,Real>& plane_vect);
 
 };
@@ -570,6 +577,8 @@ public:
         return (QuadSetTopologyAlgorithms<DataTypes> *)this->m_topologyAlgorithms;
     }
 
+    /** \brief Returns the TriangleSetTopologyAlgorithms object of this TriangleSetTopology.
+     */
     virtual core::componentmodel::topology::TopologyAlgorithms *getTopologyAlgorithms() const
     {
         return getQuadSetTopologyAlgorithms();
