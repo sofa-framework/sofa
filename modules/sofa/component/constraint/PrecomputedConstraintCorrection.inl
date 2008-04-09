@@ -57,14 +57,18 @@ PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(beha
     , _restRotations(false)
     , f_restRotations(initDataPtr(&f_restRotations,&_restRotations,"restDeformations",""))
     , mstate(mm)
+    , appCompliance(NULL)
+    , _indexNodeSparseCompliance(NULL)
 {
 }
 
 template<class DataTypes>
 PrecomputedConstraintCorrection<DataTypes>::~PrecomputedConstraintCorrection()
 {
-    delete(appCompliance);
-    delete(_indexNodeSparseCompliance);
+    if(appCompliance != NULL)
+        delete [] appCompliance;
+    if(_indexNodeSparseCompliance != NULL)
+        delete [] _indexNodeSparseCompliance;
 }
 
 

@@ -63,7 +63,7 @@ public:
     EdgePressureForceField():
         est(0)
         , pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
-        , edgeList(initData(&edgeList,std::string(0),"edgeList", "Indices of edges separated with commas where a pressure is applied"))
+        , edgeList(initData(&edgeList,std::string(""),"edgeList", "Indices of edges separated with commas where a pressure is applied"))
         , normal(initData(&normal,"normal", "Normal direction for the plane selection of edges"))
         , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
         , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
