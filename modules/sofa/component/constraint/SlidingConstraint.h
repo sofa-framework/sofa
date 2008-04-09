@@ -1,5 +1,5 @@
-#ifndef SOFA_COMPONENT_CONSTRAINT_BILATERALINTERACTIONCONSTRAINT_H
-#define SOFA_COMPONENT_CONSTRAINT_BILATERALINTERACTIONCONSTRAINT_H
+#ifndef SOFA_COMPONENT_CONSTRAINT_SLIDINGCONSTRAINT_H
+#define SOFA_COMPONENT_CONSTRAINT_SLIDINGCONSTRAINT_H
 
 #include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
