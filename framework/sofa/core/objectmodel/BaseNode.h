@@ -62,6 +62,12 @@ public:
     /// Get parent node (or NULL if no hierarchy or for root node)
     virtual const BaseNode* getParent() const = 0;
 
+    /// Get a list of child node
+    virtual sofa::helper::vector< BaseNode* > getChildren() = 0;
+
+    /// Get a list of child node
+    virtual const sofa::helper::vector< BaseNode* > getChildren() const = 0;
+
     /// Add a child node
     virtual void addChild(BaseNode* node) = 0;
 

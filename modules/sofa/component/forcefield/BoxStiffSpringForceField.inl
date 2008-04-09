@@ -45,7 +45,6 @@ namespace component
 namespace forcefield
 {
 
-
 template <class DataTypes>
 BoxStiffSpringForceField<DataTypes>::BoxStiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks, double kd)
     : StiffSpringForceField<DataTypes>(object1, object2, ks, kd),

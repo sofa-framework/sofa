@@ -74,6 +74,12 @@ public:
     MechanicalState<DataTypes>* getMState2() { return mstate2; }
     BaseMechanicalState* getMechModel2() { return mstate2; }
 
+
+
+
+    /// Retrieve the associated MechanicalState given the path
+    BaseMechanicalState* getMState(sofa::core::objectmodel::BaseContext* context, std::string path);
+
     /// @name Vector operations
     /// @{
 
@@ -167,15 +173,11 @@ public:
     {
         if (arg->getAttribute("object1") || arg->getAttribute("object2"))
         {
-            if (dynamic_cast<MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1",".."))) == NULL)
-                return false;
-            if (dynamic_cast<MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
-                return false;
+            return InteractionForceField::canCreate(obj, context, arg);
         }
         else
         {
-            if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
-                return false;
+            if (context->getMechanicalState() == NULL) return false;
         }
         return InteractionForceField::canCreate(obj, context, arg);
     }
@@ -187,8 +189,9 @@ public:
         core::componentmodel::behavior::InteractionForceField::create(obj, context, arg);
         if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
         {
-            obj->mstate1 = dynamic_cast<MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1","..")));
-            obj->mstate2 = dynamic_cast<MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object2","..")));
+            obj->_object1.setValue(arg->getAttribute("object1",".."));
+            obj->_object2.setValue(arg->getAttribute("object2",".."));
+            obj->mstate1 = obj->mstate2 = NULL;
         }
         else if (context)
         {

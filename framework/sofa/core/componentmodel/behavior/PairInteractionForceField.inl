@@ -55,42 +55,102 @@ PairInteractionForceField<DataTypes>::~PairInteractionForceField()
 {
 }
 
+
+template<class DataTypes>
+BaseMechanicalState*  PairInteractionForceField<DataTypes>::getMState(sofa::core::objectmodel::BaseContext* context, std::string path)
+{
+    std::string::size_type pos_slash = path.find("/");
+
+    sofa::core::objectmodel::BaseNode* currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(context);
+    if (pos_slash == std::string::npos)
+    {
+        if (path.empty()) return context->get< BaseMechanicalState >(sofa::core::objectmodel::BaseContext::SearchDown);
+        sofa::helper::vector< sofa::core::objectmodel::BaseNode* > list_child = currentNode->getChildren();
+
+        for (unsigned int i=0; i< list_child.size(); ++i)
+        {
+            if (list_child[i]->getName() == path)
+            {
+                std::cout << list_child[i]->getContext()->get< BaseMechanicalState >(sofa::core::objectmodel::BaseContext::SearchDown);
+                if (list_child[i]->getContext()->get< BaseMechanicalState >(sofa::core::objectmodel::BaseContext::SearchDown) != NULL) std::cout << list_child[i]->getContext()->get< BaseMechanicalState >(sofa::core::objectmodel::BaseContext::SearchDown)->getName();
+                return list_child[i]->getContext()->get< BaseMechanicalState >(sofa::core::objectmodel::BaseContext::SearchDown);
+            }
+        }
+    }
+    else
+    {
+        std::string name_expected = path.substr(0,pos_slash);
+        path = path.substr(pos_slash+1);
+        sofa::helper::vector< sofa::core::objectmodel::BaseNode* > list_child = currentNode->getChildren();
+
+        for (unsigned int i=0; i< list_child.size(); ++i)
+        {
+            if (list_child[i]->getName() == name_expected)
+                return getMState(list_child[i]->getContext(), path);
+        }
+    }
+    return NULL;
+}
+
 template<class DataTypes>
 void PairInteractionForceField<DataTypes>::init()
 {
     InteractionForceField::init();
     if (mstate1 == NULL || mstate2 == NULL)
     {
-        mstate1 = mstate2 = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
+        std::string path_object1 = _object1.getValue();
+        std::string path_object2 = _object2.getValue();
+
+        mstate1 =  dynamic_cast< MechanicalState<DataTypes>* >( getMState(getContext(), path_object1));
+        mstate2 =  dynamic_cast< MechanicalState<DataTypes>* >( getMState(getContext(), path_object2));
+        if (mstate1 == NULL || mstate2 == NULL)
+        {
+            std::cerr<< "Init of PairInteractionForceField " << getContext()->getName() << " failed!\n";
+            getContext()->removeObject(this);
+            return;
+        }
+    }
+    else
+    {
+        //Interaction created by passing Mechanical State directly, need to find the name of the path to be able to save the scene eventually
+
+
+        if (mstate1->getContext() != getContext())
+        {
+            sofa::core::objectmodel::BaseContext *context = NULL;
+            sofa::core::objectmodel::BaseNode*    currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(mstate1->getContext());
+
+            std::string object_name=currentNode->getContext()->getName();
+            currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(currentNode->getParent());
+            while (currentNode != NULL)
+            {
+                context = currentNode->getContext();
+                if (context == this->getContext()) break;
+                object_name = context->getName() + "/" + object_name;
+                currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(currentNode->getParent());
+            }
+            if (context != NULL) _object1.setValue(object_name);
+        }
+
+
+        if (mstate2->getContext() != getContext())
+        {
+            sofa::core::objectmodel::BaseContext *context = NULL;
+            sofa::core::objectmodel::BaseNode*    currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(mstate2->getContext());
+
+            std::string object_name=currentNode->getContext()->getName();
+            currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(currentNode->getParent());
+            while (currentNode != NULL)
+            {
+                context = currentNode->getContext();
+                if (context == this->getContext()) break;
+                object_name = context->getName() + "/" + object_name;
+                currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(currentNode->getParent());
+            }
+            if (context != NULL) _object2.setValue(object_name);
+        }
     }
 
-    {
-        std::string object_name=mstate1->getName();
-        sofa::core::objectmodel::BaseContext *context = NULL;
-        sofa::core::objectmodel::BaseNode*    currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(mstate1->getContext());
-        while (currentNode != NULL)
-        {
-            context = currentNode->getContext();
-            if (context == this->getContext()) break;
-            object_name = context->getName() + "/" + object_name;
-            currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(currentNode->getParent());
-        }
-        if (context != NULL) _object1.setValue(object_name);
-    }
-
-    {
-        std::string object_name=mstate2->getName();
-        sofa::core::objectmodel::BaseContext *context = NULL;
-        sofa::core::objectmodel::BaseNode*    currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(mstate2->getContext());
-        while (currentNode != NULL)
-        {
-            context = currentNode->getContext();
-            if (context == this->getContext()) break;
-            object_name = context->getName() + "/" + object_name;
-            currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(currentNode->getParent());
-        }
-        if (context != NULL) _object2.setValue(object_name);
-    }
 }
 
 template<class DataTypes>
