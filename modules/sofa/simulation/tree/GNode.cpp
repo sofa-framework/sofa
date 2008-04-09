@@ -531,6 +531,29 @@ const core::objectmodel::BaseNode* GNode::getParent() const
     return parent;
 }
 
+/// Get parent node (or NULL if no hierarchy or for root node)
+sofa::helper::vector< core::objectmodel::BaseNode* > GNode::getChildren()
+{
+    sofa::helper::vector< core::objectmodel::BaseNode* > list_children;
+    for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
+    {
+        list_children.push_back((*it));
+    }
+    return list_children;
+}
+
+/// Get parent node (or NULL if no hierarchy or for root node)
+const sofa::helper::vector< core::objectmodel::BaseNode* > GNode::getChildren() const
+{
+    sofa::helper::vector< core::objectmodel::BaseNode* > list_children;
+    for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
+    {
+        list_children.push_back((*it));
+    }
+    return list_children;
+}
+
+
 void GNode::updateContext()
 {
     if( getParent() != NULL )

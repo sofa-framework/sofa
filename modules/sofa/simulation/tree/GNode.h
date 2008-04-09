@@ -120,6 +120,12 @@ public:
     /// Get parent node (or NULL if no hierarchy or for root node)
     virtual const core::objectmodel::BaseNode* getParent() const;
 
+    /// Get a list of child node
+    virtual sofa::helper::vector< core::objectmodel::BaseNode* >  getChildren();
+
+    /// Get a list of child node
+    virtual const sofa::helper::vector< core::objectmodel::BaseNode* >  getChildren() const;
+
     /// @name Containers
     /// @{
 
@@ -239,6 +245,7 @@ public:
 
     /// Find a child node given its name
     GNode* getChild(const std::string& name) const;
+
 
     /// Get a descendant node given its name
     GNode* getTreeNode(const std::string& name) const;
