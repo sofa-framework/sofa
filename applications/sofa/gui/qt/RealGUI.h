@@ -274,8 +274,7 @@ protected:
     void init();
     void keyPressEvent ( QKeyEvent * e );
 
-    enum DIRECTION {BACKWARD, FORWARD};
-    void loadSimulation(DIRECTION, bool one_step=false);
+    void loadSimulation(bool one_step=false);
 
     //Graph Stats
     bool graphCreateStats(GNode *groot,QListViewItem *parent);
