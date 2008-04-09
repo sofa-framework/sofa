@@ -93,7 +93,11 @@ private:
     bool incisionTriangleModel(sofa::core::CollisionElementIterator, Vector3&, bool, bool);
     /// Intermediate method to handle cutting
     bool incisionTriangleSetTopology(topology::TriangleSetTopology< Vec3Types >*);
+    bool incisionTriangleSetTopology(sofa::core::CollisionElementIterator, Vector3&, bool, bool, topology::TriangleSetTopology< Vec3Types >*);
+
     void removeItemsFromTriangleModel(sofa::core::CollisionElementIterator) const;
+    void removeItemsFromTriangleSetModel(sofa::core::CollisionElementIterator) const;
+    void removeItemsFromTriangleMeshModel(sofa::core::CollisionElementIterator) const;
 
 private:
     /// Global variables to register the two last input points (for incision along one segment in a triangular mesh)
