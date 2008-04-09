@@ -71,9 +71,8 @@ BaseMechanicalState*  PairInteractionForceField<DataTypes>::getMState(sofa::core
         {
             if (list_child[i]->getName() == path)
             {
-                std::cout << list_child[i]->getContext()->get< BaseMechanicalState >(sofa::core::objectmodel::BaseContext::SearchDown);
-                if (list_child[i]->getContext()->get< BaseMechanicalState >(sofa::core::objectmodel::BaseContext::SearchDown) != NULL) std::cout << list_child[i]->getContext()->get< BaseMechanicalState >(sofa::core::objectmodel::BaseContext::SearchDown)->getName();
-                return list_child[i]->getContext()->get< BaseMechanicalState >(sofa::core::objectmodel::BaseContext::SearchDown);
+                sofa::core::objectmodel::BaseContext *c = list_child[i]->getContext();
+                return c->get< BaseMechanicalState >(sofa::core::objectmodel::BaseContext::SearchDown);
             }
         }
     }
