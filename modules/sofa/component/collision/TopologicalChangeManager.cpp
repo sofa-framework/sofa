@@ -54,7 +54,7 @@ TopologicalChangeManager::~TopologicalChangeManager()
 {
 }
 
-void TopologicalChangeManager::removeItemsFromTriangleMeshModel(sofa::core::CollisionElementIterator elem2) const
+void TopologicalChangeManager::removeItemsFromTriangleMeshModel(sofa::core::CollisionElementIterator /*elem2*/) const
 {
     cout << "TopologicalChangeManager::removeItemsFromTriangleMeshModel not yet implemented." << endl;
 }
