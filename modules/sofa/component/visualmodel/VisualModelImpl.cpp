@@ -23,6 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/component/visualmodel/VisualModelImpl.h>
+#include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/gl/RAII.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Quat.h>
@@ -56,10 +57,22 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     if (arg->getAttribute("castshadow")!=NULL)
         obj->setCastShadow(atoi(arg->getAttribute("castshadow"))!=0);
 
-    std::string filename = arg->getAttribute("filename","");
+
     std::string loader = arg->getAttribute("loader","");
-    texturename.setValue( arg->getAttribute("texturename",""));
-    obj->load(filename, loader, texturename.getValue());
+
+    std::string file;
+    file=(arg->getAttribute("texturename",""));
+    if (!file.empty() && sofa::helper::system::DataRepository.findFile (file))
+        texturename.setValue( sofa::helper::system::DataRepository.getFile ( file ));
+
+
+    file=(arg->getAttribute("filename",""));
+    if (!file.empty() && sofa::helper::system::DataRepository.findFile (file))
+    {
+        filename.setValue( sofa::helper::system::DataRepository.getFile ( file ));
+        obj->load(filename.getValue(), loader, texturename.getValue());
+    }
+
     if (arg->getAttribute("flip")!=NULL)
     {
         obj->flipFaces();
@@ -70,7 +83,8 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     }
     if (arg->getAttribute("scaleTex")!=NULL)
     {
-        obj->applyUVScale(atof(arg->getAttribute("scaleTex","1.0")), atof(arg->getAttribute("scaleTex","1.0")));
+        scaleTex=(atof(arg->getAttribute("scaleTex","1.0")));
+        obj->applyUVScale(scaleTex, scaleTex);
     }
     if (arg->getAttribute("du")!=NULL || arg->getAttribute("dv")!=NULL)
     {
@@ -110,19 +124,15 @@ int VisualModelImplClass = core::RegisterObject("Generic visual model. If a view
 
 VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filename, std::string loader, std::string textureName)
     :  useTopology(false), lastMeshRev(-1), useNormals(true), castShadow(true),
-       field_vertices    (DataPtr< ResizableExtVector<Coord>    >(&vertices,    "vertices of the model") ),
-       field_vnormals    (DataPtr< ResizableExtVector<Coord>    >(&vnormals,    "normals of the model") ),
-       field_vtexcoords  (DataPtr< ResizableExtVector<TexCoord> >(&vtexcoords,  "coordinates of the texture") ),
-       field_triangles   (DataPtr< ResizableExtVector<Triangle> >(&triangles,   "triangles of the model") ),
-       field_quads       (DataPtr< ResizableExtVector<Quad>     >(&quads,       "quads of the model") ),
-       texturename       (initData                            (&texturename, "texturename","Name of the Texture")),
-       material(initData(&material,"material","Material")) //, tex(NULL)
+       field_vertices    (initDataPtr(&field_vertices, &vertices,    "position","vertices of the model") ),
+       field_vnormals    (initDataPtr(&field_vnormals,&vnormals,    "normals","normals of the model") ),
+       field_vtexcoords  (initDataPtr(&field_vtexcoords,&vtexcoords,  "texcoord","coordinates of the texture") ),
+       field_triangles   (initDataPtr(&field_triangles, &triangles,   "triangles","triangles of the model") ),
+       field_quads       (initDataPtr(&field_quads, &quads,       "quads","quads of the model") ),
+       filename          (initData   (&filename,    "filename","Path to the model")),
+       texturename       (initData   (&texturename, "texturename","Path to the Texture")),
+       material          (initData   (&material,    "material","Material")) //, tex(NULL)
 {
-    this->addField(&field_vertices,"position");       field_vertices.beginEdit();
-    this->addField(&field_vnormals,"normals");        field_vnormals.beginEdit();
-    this->addField(&field_vtexcoords,"texcoord");     field_vtexcoords.beginEdit();
-    this->addField(&field_triangles,"triangles");     field_triangles.beginEdit();
-    this->addField(&field_quads,"quads");             field_quads.beginEdit();
     inputVertices = &vertices;
 }
 
@@ -308,12 +318,12 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
 
 bool VisualModelImpl::load(const std::string& filename, const std::string& loader, const std::string& textureName)
 {
-    bool tex = false;
+    bool tex = !textureName.empty();
     if (!textureName.empty())
     {
         tex = loadTexture(textureName);
     }
-
+    tex = !textureName.empty();
     if (!filename.empty())
     {
         //name = filename;
@@ -682,7 +692,7 @@ void VisualModelImpl::computeMesh(topology::MeshTopology* topology)
             std::cout << "VisualModel: getting marching cube mesh from topology : ";
             sofa::helper::io::Mesh m;
             spTopo->getMesh(m);
-            setMesh(m);
+            setMesh(m, !texturename.getValue().empty());
             std::cout
                     <<m.getVertices().size()<<" points, "
                             <<m.getFacets().size()  << " triangles."<<std::endl;

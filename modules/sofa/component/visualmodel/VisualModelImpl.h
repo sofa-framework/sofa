@@ -119,6 +119,7 @@ protected:
     bool useNormals; ///< True if normals should be read from file
     bool castShadow; ///< True if object cast shadows
 
+
     /*     Data< ResizableExtVector<Coord> > vertices; */
     DataPtr< ResizableExtVector<Coord> > field_vertices;
     ResizableExtVector<Coord> vertices;
@@ -145,6 +146,8 @@ protected:
     /// If it is empty then each vertex correspond to one normal
     ResizableExtVector<int> vertNormIdx;
 
+    float scaleTex;
+    Data< std::string > filename;
     Data< std::string > texturename;
 
     Vec3f bbox[2];

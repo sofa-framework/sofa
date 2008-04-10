@@ -154,7 +154,6 @@ public:
 public slots:
     void resetView();
     virtual void saveView();
-    virtual void screenshot(const std::string filename);
     virtual void setSizeW(int);
     virtual void setSizeH(int);
 

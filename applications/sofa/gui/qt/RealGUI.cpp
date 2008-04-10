@@ -257,15 +257,17 @@ int RealGUI::mainLoop()
 #else
     QString title = caption();
 #endif
+
     title.remove(QString("Sofa - "), true);
     std::string title_str(title.ascii());
-    if ( sofa::helper::system::DataRepository.findFile (title_str) )
+
+    if ( (title_str.rfind(".simu") != std::string::npos) && sofa::helper::system::DataRepository.findFile (title_str) )
     {
         title_str = sofa::helper::system::DataRepository.getFile ( title_str );
 
-        if (title_str.rfind(".simu") != std::string::npos)
-            fileOpenSimu(title_str.c_str() );
+        fileOpenSimu(title_str.c_str() );
     }
+
     return application->exec();
 }
 
@@ -381,12 +383,10 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect ( stepbackward_record, SIGNAL (clicked () ),     this, SLOT( slot_stepbackward( ) ) );
     connect ( playforward_record,  SIGNAL (clicked () ),     this, SLOT( slot_playforward( ) ) );
     connect ( stepforward_record,  SIGNAL (clicked () ),     this, SLOT( slot_stepforward( ) ) );
-    connect ( this,      SIGNAL (insideStepForward () ),     this, SLOT( slot_stepforward( ) ) );
     connect ( forward_record, SIGNAL (clicked () ),          this, SLOT( slot_forward( ) ) );
-
     connect (loadRecordTime, SIGNAL(returnPressed ()),       this, SLOT( slot_loadrecord_timevalue()));
-
     connect ( timeSlider, SIGNAL (sliderMoved (int) ),   this, SLOT( slot_sliderValue( int) ) );
+
 
     //Dialog Add Object
 

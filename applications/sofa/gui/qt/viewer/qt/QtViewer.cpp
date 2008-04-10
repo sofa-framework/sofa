@@ -2151,10 +2151,6 @@ void QtViewer::saveView()
     }
 }
 
-void QtViewer::screenshot(const std::string filename)
-{
-    capture.saveScreen(filename);
-}
 
 
 void QtViewer::setScene(sofa::simulation::tree::GNode* scene, const char* filename, bool keepParams)
