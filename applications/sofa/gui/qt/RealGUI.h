@@ -260,12 +260,10 @@ public slots:
     void setExportGnuplot(bool);
     void currentTabChanged(QWidget*);
 
-
 signals:
     void reload();
     void newScene();
     void newStep();
-    void insideStepForward();
 
 protected:
 

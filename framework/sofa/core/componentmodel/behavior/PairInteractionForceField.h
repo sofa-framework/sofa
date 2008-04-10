@@ -191,7 +191,8 @@ public:
         {
             obj->_object1.setValue(arg->getAttribute("object1",".."));
             obj->_object2.setValue(arg->getAttribute("object2",".."));
-            obj->mstate1 = obj->mstate2 = NULL;
+            obj->mstate1 = dynamic_cast<MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1","..")));
+            obj->mstate2 = dynamic_cast<MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object2","..")));
         }
         else if (context)
         {

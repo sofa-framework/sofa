@@ -1570,11 +1570,6 @@ void QtGLViewer::saveView()
 }
 
 
-void QtGLViewer::screenshot(const std::string filename)
-{
-    capture.saveScreen(filename);
-}
-
 /// Render Scene called during multiThread simulation using automate
 void QtGLViewer::drawFromAutomate()
 {

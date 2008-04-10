@@ -203,7 +203,6 @@ protected:
 public slots:
     void resetView();
     void saveView();
-    virtual void screenshot(const std::string filename);
     void setSizeW(int);
     void setSizeH(int);
 
