@@ -11,6 +11,7 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/gui/SofaGUI.h>
+#include <sofa/helper/system/glut.h>
 
 using sofa::helper::system::thread::CTime;
 using sofa::helper::system::thread::ctime_t;
@@ -28,6 +29,9 @@ using namespace sofa::gpu::cuda;
 
 int main(int argc, char** argv)
 {
+
+    glutInit(&argc,argv);
+
     //std::string fileName = "beam10x10x46-spring-rk4-CUDA.scn";
     std::string fileName = "quadSpringSphereCUDA.scn";
 
