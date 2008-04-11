@@ -55,9 +55,6 @@ public:
     const Vector3& p() const;
     const Vector3& pFree() const;
     const Vector3& v() const;
-
-    void getLineNeighbors(std::vector<Vector3> &) const;
-    void getTriangleNeighbors(std::vector<std::pair<Vector3, Vector3> > &) const;
 };
 
 class PointModel : public core::CollisionModel
@@ -73,9 +70,6 @@ public:
     friend class Point;
 
     PointModel();
-
-    std::vector< std::vector<int> > lineNeighbors;
-    std::vector< std::vector< std::pair<int, int> > > triangleNeighbors;
 
     virtual void init();
 
@@ -100,6 +94,7 @@ public:
 protected:
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
+
 };
 
 inline Point::Point(PointModel* model, int index)
@@ -116,37 +111,6 @@ inline const Vector3& Point::p() const { return (*model->mstate->getX())[index];
 inline const Vector3& Point::pFree() const { return (*model->mstate->getXfree())[index]; }
 
 inline const Vector3& Point::v() const { return (*model->mstate->getV())[index]; }
-
-class PointMeshModel : public PointModel
-{
-public:
-    typedef topology::MeshTopology Topology;
-
-    PointMeshModel();
-
-    virtual void init();
-
-    Topology* getTopology() { return mesh; }
-
-protected:
-    Topology* mesh;
-};
-
-class PointSetModel : public PointModel
-{
-public:
-    typedef topology::PointSetTopology<DataTypes> Topology;
-
-    PointSetModel();
-
-    ///\Todo
-    virtual void init();
-
-    Topology* getTopology() { return mesh; }
-
-protected:
-    Topology* mesh;
-};
 
 } // namespace collision
 

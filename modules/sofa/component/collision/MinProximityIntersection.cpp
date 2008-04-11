@@ -854,29 +854,35 @@ bool MinProximityIntersection::testValidity(Point &p, const Vector3 &PQ)
 {
     Vector3 pt = p.p();
 
+    BaseMeshTopology* topology = p.getCollisionModel()->getTopology();
+    helper::vector<Vector3> X = *(p.getCollisionModel()->getMechanicalState()->getX());
+
+    helper::vector <unsigned int> triangleVertexShell;
+    triangleVertexShell = topology->getTriangleVertexShell(p.getIndex());
+    helper::vector <unsigned int> edgeVertexShell;
+    edgeVertexShell = topology->getEdgeVertexShell(p.getIndex());
+
+
 #ifdef DYNAMIC_CONE_ANGLE_COMPUTATION
 
-    std::vector< std::pair <Vector3, Vector3> > neighborsTri;
-    p.getTriangleNeighbors(neighborsTri);
-    std::vector<Vector3> neighborsPt;
-    p.getLineNeighbors(neighborsPt);
-
     Vector3 nMean;
-    nMean.clear();
 
-    for (unsigned int i=0; i<neighborsTri.size(); i++)
+    for (unsigned int i=0; i<triangleVertexShell.size(); i++)
     {
-        Vector3 nCur = cross((neighborsTri[i].first) - pt, (neighborsTri[i].second) - pt);
+        unsigned int t = triangleVertexShell[i];
+        fixed_array<unsigned int,3> ptr = topology->getTriangle(t);
+        Vector3 nCur = (X[ptr[1]]-X[ptr[0]]).cross(X[ptr[2]]-X[ptr[0]]);
         nCur.normalize();
         nMean += nCur;
     }
 
-    if (neighborsTri.size()==0)
+    if (triangleVertexShell.size()==0)
     {
-
-        for (unsigned int i=0; i<neighborsPt.size(); i++)
+        for (unsigned int i=0; i<edgeVertexShell.size(); i++)
         {
-            Vector3 l = pt - neighborsPt[i];
+            unsigned int e = edgeVertexShell[i];
+            fixed_array<unsigned int,2> ped = topology->getEdge(e);
+            Vector3 l = (X[ped[0]]-pt) + (X[ped[1]]-pt);
             l.normalize();
             nMean += l;
         }
@@ -886,9 +892,11 @@ bool MinProximityIntersection::testValidity(Point &p, const Vector3 &PQ)
         nMean.normalize();
 
 
-    for (unsigned int i=0; i<neighborsPt.size(); i++)
+    for (unsigned int i=0; i<edgeVertexShell.size(); i++)
     {
-        Vector3 l = pt - neighborsPt[i];
+        unsigned int e = edgeVertexShell[i];
+        fixed_array<unsigned int,2> ped = topology->getEdge(e);
+        Vector3 l = (X[ped[0]]-pt) + (X[ped[1]]-pt);
         l.normalize();
         double computedAngleCone = (nMean * l) / 2;
         if (computedAngleCone<0)
@@ -903,29 +911,24 @@ bool MinProximityIntersection::testValidity(Point &p, const Vector3 &PQ)
 
 #else
 
-    std::vector<Vector3> neighborsPt;
-    p.getLineNeighbors(neighborsPt);
-
-    for (unsigned int i=0; i<neighborsPt.size(); i++)
+    for (unsigned int i=0; i<edgeVertexShell.size(); i++)
     {
-        Vector3 l = pt - neighborsPt[i];
+        unsigned int e = edgeVertexShell[i];
+        fixed_array<unsigned int,2> ped = topology->getEdge(e);
+        Vector3 l = (X[ped[0]]-pt) + (X[ped[1]]-pt);
         if (l * PQ < -angleCone.getValue()*PQ.norm()*l.norm())
         {
             return false;
         }
     }
 
-//	return true;
-
-    std::vector< std::pair <Vector3, Vector3> > neighborsTri;
-    p.getTriangleNeighbors(neighborsTri);
-
     Vector3 nMean;
-    nMean.clear();
 
-    for (unsigned int i=0; i<neighborsTri.size(); i++)
+    for (unsigned int i=0; i<triangleVertexShell.size(); i++)
     {
-        Vector3 nCur = cross((neighborsTri[i].first) - pt, (neighborsTri[i].second) - pt);
+        unsigned int t = triangleVertexShell[i];
+        fixed_array<unsigned int,3> ptr = topology->getTriangle(t);
+        Vector3 nCur = (X[ptr[1]]-X[ptr[0]]).cross(X[ptr[2]]-X[ptr[0]]);
         nCur.normalize();
         nMean += nCur;
     }

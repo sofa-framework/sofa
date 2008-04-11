@@ -30,7 +30,6 @@
 #include <sofa/core/CollisionElement.h>
 
 
-
 namespace sofa
 {
 
@@ -289,6 +288,9 @@ public:
     std::string getContactResponse() { return contactResponse.getValue(); }
 
     /// @}
+
+    /// Topology associated to the collision model
+    componentmodel::topology::BaseMeshTopology* getTopology() { return getContext()->getMeshTopology(); }
 
     /// Get a color that can be used to display this CollisionModel
     const float* getColor4f();
