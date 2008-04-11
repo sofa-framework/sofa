@@ -307,9 +307,10 @@ public:
 
     /** \brief Reorder this topology.
      *
+     * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
      * \see MechanicalObject::renumberValues
      */
-    virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index );
+    virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index, const sofa::helper::vector<unsigned int> &/*inv_index*/, const bool renumberDOF = true);
 
     /** \brief Fuse the edges.
      *
@@ -349,6 +350,10 @@ public:
     /** \brief Generic method to remove a list of items.
      */
     virtual void removeItems(sofa::helper::vector< unsigned int >& items);
+
+    /** \brief Generic method for points renumbering
+    */
+    virtual void renumberPoints( const sofa::helper::vector<unsigned int> &/*index*/, const sofa::helper::vector<unsigned int> &/*inv_index*/);
 
     /** \brief add a set  of edges
         @param edges an array of pair of vertex indices describing the edge to be created

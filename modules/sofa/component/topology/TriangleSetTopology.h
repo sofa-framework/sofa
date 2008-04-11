@@ -464,12 +464,12 @@ public:
     virtual void removePointsProcess(sofa::helper::vector<unsigned int> &indices, const bool removeDOF = true);
 
 
-
     /** \brief Reorder this topology.
      *
+     * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
      * \see MechanicalObject::renumberValues
      */
-    virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index );
+    virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index, const sofa::helper::vector<unsigned int> &/*inv_index*/, const bool renumberDOF = true);
 
 
     //protected:
@@ -512,6 +512,10 @@ public:
     /** \brief Generic method to remove a list of items.
      */
     virtual void removeItems(sofa::helper::vector< unsigned int >& items);
+
+    /** \brief Generic method for points renumbering
+      */
+    virtual void renumberPoints( const sofa::helper::vector<unsigned int> &/*index*/, const sofa::helper::vector<unsigned int> &/*inv_index*/);
 
     /** \brief Prepares the incision along the list of points (ind_edge,coord) intersected by the vector from point a to point b and the triangular mesh
     */

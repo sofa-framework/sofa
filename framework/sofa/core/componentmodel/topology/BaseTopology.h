@@ -417,6 +417,12 @@ public:
     {
     }
 
+    /** \brief Generic method for points renumbering
+     */
+    virtual void renumberPoints( const sofa::helper::vector<unsigned int> &/*index*/, const sofa::helper::vector<unsigned int> &/*inv_index*/)
+    {
+    }
+
 };
 
 

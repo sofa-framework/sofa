@@ -284,16 +284,18 @@ void EdgeSetTopologyModifier< DataTypes >::removePointsProcess( sofa::helper::ve
 
 
 template< class DataTypes >
-void EdgeSetTopologyModifier< DataTypes >::renumberPointsProcess( const sofa::helper::vector<unsigned int> &index)
+void EdgeSetTopologyModifier< DataTypes >::renumberPointsProcess( const sofa::helper::vector<unsigned int> &index, const sofa::helper::vector<unsigned int> &inv_index, const bool renumberDOF)
 {
-    // start by calling the standard method
-    PointSetTopologyModifier< DataTypes >::renumberPointsProcess( index );
 
     // now update the local container structures.
     EdgeSetTopology<DataTypes> *topology = dynamic_cast<EdgeSetTopology<DataTypes> *>(this->m_basicTopology);
     assert (topology != 0);
     EdgeSetTopologyContainer * container = static_cast<EdgeSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
+
+    container->getEdgeVertexShellArray();
+    // start by calling the standard method
+    PointSetTopologyModifier< DataTypes >::renumberPointsProcess( index, inv_index, renumberDOF );
 
     sofa::helper::vector< sofa::helper::vector< unsigned int > > EdgeVertexShell_cp = container->m_edgeVertexShell;
     for (unsigned int i = 0; i < index.size(); ++i)
@@ -303,8 +305,8 @@ void EdgeSetTopologyModifier< DataTypes >::renumberPointsProcess( const sofa::he
 
     for (unsigned int i = 0; i < container->m_edge.size(); ++i)
     {
-        container->m_edge[i][0]  = index[ container->m_edge[i][0]  ];
-        container->m_edge[i][1] = index[ container->m_edge[i][1] ];
+        container->m_edge[i][0]  = inv_index[ container->m_edge[i][0]  ];
+        container->m_edge[i][1] = inv_index[ container->m_edge[i][1] ];
     }
 
 
@@ -475,6 +477,25 @@ template<class DataTypes>
 void EdgeSetTopologyAlgorithms< DataTypes >::removeItems(sofa::helper::vector< unsigned int >& items)
 {
     removeEdges(items);
+}
+
+template<class DataTypes>
+void  EdgeSetTopologyAlgorithms<DataTypes>::renumberPoints( const sofa::helper::vector<unsigned int> &index, const sofa::helper::vector<unsigned int> &inv_index)
+{
+
+    EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(this->m_basicTopology);
+    assert (topology != 0);
+    EdgeSetTopologyModifier< DataTypes >* modifier  = static_cast< EdgeSetTopologyModifier< DataTypes >* >(topology->getTopologyModifier());
+    assert(modifier != 0);
+    /// add the topological changes in the queue
+    modifier->renumberPointsWarning(index, inv_index);
+    // inform other objects that the triangles are going to be removed
+    topology->propagateTopologicalChanges();
+    // now renumber the points
+    modifier->renumberPointsProcess(index, inv_index);
+
+    //assert(topology->getTriangleSetTopologyContainer()->checkTopology());
+    topology->getEdgeSetTopologyContainer()->checkTopology();
 }
 
 template<class DataTypes>

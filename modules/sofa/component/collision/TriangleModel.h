@@ -207,19 +207,9 @@ public:
     // handle topological changes
     virtual void handleTopologyChange();
 
-    const std::map<unsigned int, unsigned int>& getGlob2LocMap() { return Glob2LocMap;}
-    const sofa::helper::vector<unsigned int>& getLoc2GlobVec() { return Loc2GlobVec;}
-
-    unsigned convertGlob2Loc(int index) { if (Glob2LocMap.empty()) return index; else return Glob2LocMap[index]; }
-    unsigned convertLoc2Glob(int index) { if (Loc2GlobVec.empty()) return index; else return Loc2GlobVec[index]; }
-
 protected:
 
     Topology* mesh;
-
-    sofa::helper::vector<unsigned int> Loc2GlobVec;
-    std::map<unsigned int, unsigned int> Glob2LocMap;
-
     void updateFromTopology();
 };
 
