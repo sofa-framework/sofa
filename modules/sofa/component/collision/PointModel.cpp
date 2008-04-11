@@ -39,30 +39,16 @@ namespace collision
 
 SOFA_DECL_CLASS(Point)
 
-int PointMeshModelClass = core::RegisterObject("Collision model which represents a set of points")
-        .add< PointMeshModel >()
+int PointModelClass = core::RegisterObject("Collision model which represents a set of points")
+        .add< PointModel >()
         .addAlias("Point")
-        .addAlias("PointMesh")
         .addAlias("PointModel")
-        ;
-
-int PointSetModelClass = core::RegisterObject("Collision model which represents a set of points")
-        .add< PointSetModel >()
+        .addAlias("PointMesh")
         .addAlias("PointSet")
         ;
 
 PointModel::PointModel()
     : mstate(NULL)
-{
-}
-
-PointMeshModel::PointMeshModel()
-    : mesh(NULL)
-{
-}
-
-PointSetModel::PointSetModel()
-    : mesh(NULL)
 {
 }
 
@@ -84,91 +70,6 @@ void PointModel::init()
 
     const int npoints = mstate->getX()->size();
     resize(npoints);
-}
-
-void PointMeshModel::init()
-{
-    PointModel::init();
-    const int npoints = mstate->getX()->size();
-
-    // If the CollisionDetection Method uses the filtration method based on cones
-    if (this->isFiltered())
-    {
-        topology::MeshTopology *mesh = dynamic_cast< topology::MeshTopology* > (getContext()->getTopology());
-
-        if (mesh != NULL)
-        {
-            // Line neighborhood construction
-            const int nLines = mesh->getNbLines();
-            if (nLines != 0)
-            {
-                lineNeighbors.resize(npoints);
-
-                for (int i=0; i<npoints; i++)
-                {
-                    lineNeighbors[i].clear();
-                    Point p(this,i);
-
-                    const Vector3& pt = p.p();
-
-                    for (int j=0; j<nLines; j++)
-                    {
-                        topology::MeshTopology::Line idx = mesh->getLine(j);
-                        Vector3 a = (*mstate->getX())[idx[0]];
-                        Vector3 b = (*mstate->getX())[idx[1]];
-
-                        if (a == pt)
-                            lineNeighbors[i].push_back(idx[1]);
-                        else if (b == pt)
-                            lineNeighbors[i].push_back(idx[0]);
-                    }
-                }
-            }
-
-            // Triangles neighborhood construction
-            const int nTriangles = mesh->getNbTriangles();
-            if (nTriangles != 0)
-            {
-                triangleNeighbors.resize(npoints);
-
-                for (int i=0; i<npoints; i++)
-                {
-                    triangleNeighbors[i].clear();
-                    Point p(this,i);
-
-                    const Vector3& pt = p.p();
-
-                    for (int j=0; j<nTriangles; j++)
-                    {
-                        topology::MeshTopology::Triangle t = mesh->getTriangle(j);
-                        Vector3 a = (*mstate->getX())[t[0]];
-                        Vector3 b = (*mstate->getX())[t[1]];
-                        Vector3 c = (*mstate->getX())[t[2]];
-
-                        if (a == pt)
-                        {
-                            //	std::cout << "Point " << pt << " voisin du triangle " << pt << ", " << t[1] << ", " << t[2] << std::endl;
-                            triangleNeighbors[i].push_back(std::make_pair(t[1], t[2]));
-                        }
-                        else if (b == pt)
-                        {
-                            //	std::cout << "Point " << pt << " voisin du triangle " << pt << ", " << t[2] << ", " << t[0] << std::endl;
-                            triangleNeighbors[i].push_back(std::make_pair(t[2], t[0]));
-                        }
-                        else if (c == pt)
-                        {
-                            //	std::cout << "Point " << pt << " voisin du triangle " << pt << ", " << t[0] << ", " << t[1] << std::endl;
-                            triangleNeighbors[i].push_back(std::make_pair(t[0], t[1]));
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-void PointSetModel::init()
-{
-    PointModel::init();
 }
 
 void PointModel::draw(int index)
@@ -280,43 +181,6 @@ void PointModel::computeContinuousBoundingTree(double dt, int maxDepth)
             cubeModel->setParentOf(i, minElem, maxElem);
         }
         cubeModel->computeBoundingTree(maxDepth);
-    }
-}
-
-void Point::getLineNeighbors(std::vector< Vector3> &nV) const
-{
-    std::vector<int> v = model->lineNeighbors[index];
-
-    std::vector<int>::iterator it = v.begin();
-    std::vector<int>::iterator itEnd = v.end();
-
-    nV.clear();
-//	nV.resize(v.size());
-
-    while(it != itEnd)
-    {
-        nV.push_back((*model->mstate->getX())[*it]);
-        ++it;
-    }
-}
-
-void Point::getTriangleNeighbors(std::vector< std::pair< Vector3, Vector3 > > &nV) const
-{
-    if (!model->triangleNeighbors.size())
-        return;
-
-    std::vector< std::pair<int, int> > v = model->triangleNeighbors[index];
-
-    std::vector< std::pair<int, int> >::iterator it = v.begin();
-    std::vector< std::pair<int, int> >::iterator itEnd = v.end();
-
-    nV.clear();
-//	nV.resize(v.size());
-
-    while(it != itEnd)
-    {
-        nV.push_back(std::make_pair((*model->mstate->getX())[it->first], (*model->mstate->getX())[it->second]));
-        ++it;
     }
 }
 
