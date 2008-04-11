@@ -115,7 +115,6 @@ void TriangleSetModel::init()
         std::cerr << "ERROR: TriangleSetModel requires a TriangleSetTopology.\n";
         return;
     }
-    sofa::core::componentmodel::topology::BaseTopology* bt = mesh;
 
     //std::cout << "INFO_print : Col - init TRIANGLE " << std::endl;
     sofa::component::topology::TriangleSetTopologyContainer *tstc= mesh->getTriangleSetTopologyContainer();
