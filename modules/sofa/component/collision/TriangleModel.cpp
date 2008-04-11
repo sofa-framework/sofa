@@ -117,8 +117,6 @@ void TriangleSetModel::init()
     }
     sofa::core::componentmodel::topology::BaseTopology* bt = mesh;
 
-    sofa::core::componentmodel::topology::TopologyContainer *container=bt->getTopologyContainer();
-
     //std::cout << "INFO_print : Col - init TRIANGLE " << std::endl;
     sofa::component::topology::TriangleSetTopologyContainer *tstc= mesh->getTriangleSetTopologyContainer();
 

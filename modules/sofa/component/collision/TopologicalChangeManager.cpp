@@ -7,7 +7,7 @@
 
 #include <sofa/core/componentmodel/topology/TopologicalMapping.h>
 
-
+/*
 // Includes to distinghuish specific topologies
 
 #include <sofa/component/topology/TetrahedronSetTopology.h>
@@ -31,7 +31,7 @@
 // See APPLICATION 2
 #include <sofa/component/constraint/FixedConstraint.h>
 
-
+*/
 
 
 namespace sofa
@@ -97,7 +97,7 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::core::Collisio
         topo_curr->getTopologyAlgorithms()->notifyEndingEvent();
         topo_curr->propagateTopologicalChanges();
 
-
+        /*
         //// For APPLICATION 1 : generate, from the input file mesh, the ouptut file mesh with the optimal vertex permutation according to the Reverse CuthillMckee algorithm
 
         sofa::helper::vector<int> init_inverse_permutation;
@@ -108,49 +108,22 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::core::Collisio
         //std::cout << "inverse_permutation : " << std::endl;
         sofa::helper::vector<int> permutation;
         permutation.resize(inverse_permutation.size());
-        for (unsigned int i=0; i<inverse_permutation.size(); ++i)
-        {
-            permutation[inverse_permutation[i]]=i;
-            //std::cout << i << " -> " << inverse_permutation[i] << std::endl;
+        for (unsigned int i=0; i<inverse_permutation.size(); ++i){
+        	permutation[inverse_permutation[i]]=i;
+        	//std::cout << i << " -> " << inverse_permutation[i] << std::endl;
         }
 
         //std::cout << "permutation : " << std::endl;
-        for (unsigned int i=0; i<permutation.size(); ++i)
-        {
-            //std::cout << i << " -> " << permutation[i] << std::endl;
-        }
+        //for (unsigned int i=0; i<permutation.size(); ++i){
+        	//std::cout << i << " -> " << permutation[i] << std::endl;
+        //}
 
-        topology::TriangleSetTopology< Vec3Types >* tsp = dynamic_cast< topology::TriangleSetTopology< Vec3Types >* >( topo_curr );
-        topology::PointSetTopology< Vec3Types >* psp = dynamic_cast< topology::PointSetTopology< Vec3Types >* >( topo_curr );
 
-        //sofa::core::componentmodel::topology::TopologyModifier *modifier=topo_curr->getTopologyModifier();
 
-        if(tsp)
-        {
+        topo_curr->getTopologyAlgorithms()->renumberPoints((const sofa::helper::vector<unsigned int> &) inverse_permutation, (const sofa::helper::vector<unsigned int> &) permutation);
 
-            TriangleSetTopologyModifier< Vec3Types >* t_modifier  = static_cast< TriangleSetTopologyModifier< Vec3Types >* >(tsp->getTopologyModifier());
-            PointSetTopologyModifier< Vec3Types >* p_modifier  = static_cast< PointSetTopologyModifier< Vec3Types >* >(psp->getTopologyModifier());
 
-            std::cout << "DO renumberPointsWarning" << std::endl;
-            p_modifier->renumberPointsWarning((const sofa::helper::vector<unsigned int> &) inverse_permutation, (const sofa::helper::vector<unsigned int> &) permutation);
-            std::cout << "DONE renumberPointsWarning" << std::endl;
 
-            std::cout << "DO propagate 1" << std::endl;
-            topo_curr->getTopologyAlgorithms()->notifyEndingEvent();
-            topo_curr->propagateTopologicalChanges();
-            std::cout << "DONE propagate 1" << std::endl;
-
-            std::cout << "DO renumberPointsProcess" << std::endl;
-            t_modifier->renumberPointsProcess((const sofa::helper::vector<unsigned int> &) inverse_permutation, (const sofa::helper::vector<unsigned int> &) permutation);
-            std::cout << "DONE renumberPointsProcess" << std::endl;
-
-            std::cout << "DO propagate 2" << std::endl;
-            topo_curr->getTopologyAlgorithms()->notifyEndingEvent();
-            topo_curr->propagateTopologicalChanges();
-            std::cout << "DONE propagate 2" << std::endl;
-        }
-
-        /*
         std::ofstream myfile;
         myfile.open ((const char *) "D:/PROJ/trunk/Sofa/scenes/Topology/outputMesh.msh");
 
@@ -233,8 +206,8 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::core::Collisio
         myfile << "$ENDELM\n";
 
         myfile.close();
-        */
 
+        */
 
 
     }
@@ -314,7 +287,7 @@ bool TopologicalChangeManager::incisionTriangleModel(sofa::core::CollisionElemen
     // Test if a TopologicalMapping (by default from TetrahedronSetTopology to TriangleSetTopology) exists :
 
     bool is_TopologicalMapping = false;
-    bool is_FixedConstraint = false;
+    //bool is_FixedConstraint = false; // for Application 2
     sofa::core::componentmodel::topology::BaseTopology *topo_curr = dynamic_cast<sofa::core::componentmodel::topology::BaseTopology *>(elem2.getCollisionModel()->getContext()->getMainTopology());
 
     simulation::tree::GNode* parent2 = dynamic_cast<simulation::tree::GNode*>(model2->getContext());
@@ -392,58 +365,61 @@ bool TopologicalChangeManager::incisionTriangleModel(sofa::core::CollisionElemen
     {
         // there is a TetrahedronSetTopology over the TriangleSetTopology
 
-
+        /*
         //// For APPLICATION 2 : handle two points suturing from a tetrahedral mesh
 
         if (tsp) // TriangleSetTopology
         {
-            if (firstInput)
-            {
-                incision.a_init[0] = pos[0];
-                incision.a_init[1] = pos[1];
-                incision.a_init[2] = pos[2];
-                incision.ind_ta_init = elem2.getIndex();
+        	if (firstInput)
+        	{
+        		incision.a_init[0] = pos[0];
+        		incision.a_init[1] = pos[1];
+        		incision.a_init[2] = pos[2];
+        		incision.ind_ta_init = elem2.getIndex();
 
-                incision.is_first_cut = true;
-            }
-            else if (isCut)
-            {
-                incision.b_init[0] = pos[0];
-                incision.b_init[1] = pos[1];
-                incision.b_init[2] = pos[2];
+        		incision.is_first_cut = true;
+        	}
+        	else if (isCut)
+        	{
+        		incision.b_init[0] = pos[0];
+        		incision.b_init[1] = pos[1];
+        		incision.b_init[2] = pos[2];
 
-                incision.ind_tb_init = elem2.getIndex();
+        		incision.ind_tb_init = elem2.getIndex();
 
-                unsigned int ind1_init = 0; unsigned int ind2_init = 0;
-                unsigned int &ind1 = ind1_init;
-                unsigned int &ind2 = ind2_init;
+        		unsigned int ind1_init = 0; unsigned int ind2_init = 0;
+        		unsigned int &ind1 = ind1_init;
+        		unsigned int &ind2 = ind2_init;
 
-                bool is_fully_cut = tsp->getTriangleSetTopologyAlgorithms()->Suture2Points(incision.ind_ta_init, incision.ind_tb_init, ind1, ind2);
+        		bool is_fully_cut = tsp->getTriangleSetTopologyAlgorithms()->Suture2Points(incision.ind_ta_init, incision.ind_tb_init, ind1, ind2);
 
-                parent2 = dynamic_cast<simulation::tree::GNode*>(topo_curr->getContext());
-                for (simulation::tree::GNode::ObjectIterator it = parent2->object.begin(); it != parent2->object.end(); ++it)
-                {
-                    //std::cout << "INFO : name of GNode = " << (*it)->getName() <<  std::endl;
+        		parent2 = dynamic_cast<simulation::tree::GNode*>(topo_curr->getContext());
+        		for (simulation::tree::GNode::ObjectIterator it = parent2->object.begin(); it != parent2->object.end(); ++it)
+        		{
+        			//std::cout << "INFO : name of GNode = " << (*it)->getName() <<  std::endl;
 
-                    if (dynamic_cast<sofa::component::constraint::FixedConstraint<Vec3Types> *>(*it)!= NULL)
-                    {
+        			if (dynamic_cast<sofa::component::constraint::FixedConstraint<Vec3Types> *>(*it)!= NULL)
+        			{
 
-                        is_FixedConstraint=true;
-                        sofa::component::constraint::FixedConstraint<Vec3Types> *fixConstraint = dynamic_cast<sofa::component::constraint::FixedConstraint<Vec3Types> *>(*it);
+        				is_FixedConstraint=true;
+        				sofa::component::constraint::FixedConstraint<Vec3Types> *fixConstraint = dynamic_cast<sofa::component::constraint::FixedConstraint<Vec3Types> *>(*it);
 
-                        fixConstraint->addConstraint(ind1);
-                        tsp->getTriangleSetTopologyAlgorithms()->notifyEndingEvent();
-                        tsp->propagateTopologicalChanges();
+        				fixConstraint->addConstraint(ind1);
+        				tsp->getTriangleSetTopologyAlgorithms()->notifyEndingEvent();
+        				tsp->propagateTopologicalChanges();
 
-                        fixConstraint->addConstraint(ind2);
-                        tsp->getTriangleSetTopologyAlgorithms()->notifyEndingEvent();
-                        tsp->propagateTopologicalChanges();
+        				fixConstraint->addConstraint(ind2);
+        				tsp->getTriangleSetTopologyAlgorithms()->notifyEndingEvent();
+        				tsp->propagateTopologicalChanges();
 
-                    }
-                }
+        			}
+        		}
 
-            }
+        	}
         }
+
+        */
+
 
 
     }

@@ -773,10 +773,10 @@ void HexahedronSetTopologyModifier< DataTypes >::removeQuadsProcess(  const sofa
 
 
 template< class DataTypes >
-void HexahedronSetTopologyModifier< DataTypes >::renumberPointsProcess( const sofa::helper::vector<unsigned int> &index)
+void HexahedronSetTopologyModifier< DataTypes >::renumberPointsProcess( const sofa::helper::vector<unsigned int> &index, const sofa::helper::vector<unsigned int> &inv_index, const bool renumberDOF)
 {
     // start by calling the standard method
-    QuadSetTopologyModifier< DataTypes >::renumberPointsProcess( index );
+    QuadSetTopologyModifier< DataTypes >::renumberPointsProcess( index, inv_index, renumberDOF );
 
     // now update the local container structures.
     HexahedronSetTopology<DataTypes> *topology = dynamic_cast<HexahedronSetTopology<DataTypes> *>(this->m_basicTopology);
@@ -792,14 +792,14 @@ void HexahedronSetTopologyModifier< DataTypes >::renumberPointsProcess( const so
 
     for (unsigned int i = 0; i < container->m_hexahedron.size(); ++i)
     {
-        container->m_hexahedron[i][0]  = index[ container->m_hexahedron[i][0]  ];
-        container->m_hexahedron[i][1]  = index[ container->m_hexahedron[i][1]  ];
-        container->m_hexahedron[i][2]  = index[ container->m_hexahedron[i][2]  ];
-        container->m_hexahedron[i][3]  = index[ container->m_hexahedron[i][3]  ];
-        container->m_hexahedron[i][4]  = index[ container->m_hexahedron[i][4]  ];
-        container->m_hexahedron[i][5]  = index[ container->m_hexahedron[i][5]  ];
-        container->m_hexahedron[i][6]  = index[ container->m_hexahedron[i][6]  ];
-        container->m_hexahedron[i][7]  = index[ container->m_hexahedron[i][7]  ];
+        container->m_hexahedron[i][0]  = inv_index[ container->m_hexahedron[i][0]  ];
+        container->m_hexahedron[i][1]  = inv_index[ container->m_hexahedron[i][1]  ];
+        container->m_hexahedron[i][2]  = inv_index[ container->m_hexahedron[i][2]  ];
+        container->m_hexahedron[i][3]  = inv_index[ container->m_hexahedron[i][3]  ];
+        container->m_hexahedron[i][4]  = inv_index[ container->m_hexahedron[i][4]  ];
+        container->m_hexahedron[i][5]  = inv_index[ container->m_hexahedron[i][5]  ];
+        container->m_hexahedron[i][6]  = inv_index[ container->m_hexahedron[i][6]  ];
+        container->m_hexahedron[i][7]  = inv_index[ container->m_hexahedron[i][7]  ];
 
     }
 
@@ -844,6 +844,25 @@ template<class DataTypes>
 void HexahedronSetTopologyAlgorithms< DataTypes >::removeItems(sofa::helper::vector< unsigned int >& items)
 {
     removeHexahedra(items);
+}
+
+template<class DataTypes>
+void  HexahedronSetTopologyAlgorithms<DataTypes>::renumberPoints( const sofa::helper::vector<unsigned int> &index, const sofa::helper::vector<unsigned int> &inv_index)
+{
+
+    HexahedronSetTopology< DataTypes > *topology = dynamic_cast<HexahedronSetTopology< DataTypes >* >(this->m_basicTopology);
+    assert (topology != 0);
+    HexahedronSetTopologyModifier< DataTypes >* modifier  = static_cast< HexahedronSetTopologyModifier< DataTypes >* >(topology->getTopologyModifier());
+    assert(modifier != 0);
+    /// add the topological changes in the queue
+    modifier->renumberPointsWarning(index, inv_index);
+    // inform other objects that the triangles are going to be removed
+    topology->propagateTopologicalChanges();
+    // now renumber the points
+    modifier->renumberPointsProcess(index, inv_index);
+
+    //assert(topology->getTriangleSetTopologyContainer()->checkTopology());
+    topology->getHexahedronSetTopologyContainer()->checkTopology();
 }
 
 /// Cross product for 3-elements vectors.
