@@ -477,16 +477,19 @@ void TriangleSetTopologyModifier< DataTypes >::removeEdgesProcess( const sofa::h
 
 
 template< class DataTypes >
-void TriangleSetTopologyModifier< DataTypes >::renumberPointsProcess( const sofa::helper::vector<unsigned int> &index)
+void TriangleSetTopologyModifier< DataTypes >::renumberPointsProcess( const sofa::helper::vector<unsigned int> &index, const sofa::helper::vector<unsigned int> &inv_index, const bool renumberDOF)
 {
-    // start by calling the standard method
-    EdgeSetTopologyModifier< DataTypes >::renumberPointsProcess( index );
 
     // now update the local container structures.
     TriangleSetTopology<DataTypes> *topology = dynamic_cast<TriangleSetTopology<DataTypes> *>(this->m_basicTopology);
     assert (topology != 0);
     TriangleSetTopologyContainer * container = static_cast<TriangleSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
+
+    container->getTriangleEdgeShellArray();
+
+    // start by calling the standard method
+    EdgeSetTopologyModifier< DataTypes >::renumberPointsProcess( index, inv_index, renumberDOF );
 
     sofa::helper::vector< sofa::helper::vector< unsigned int > > triangleVertexShell_cp = container->m_triangleVertexShell;
     for (unsigned int i = 0; i < index.size(); ++i)
@@ -496,9 +499,9 @@ void TriangleSetTopologyModifier< DataTypes >::renumberPointsProcess( const sofa
 
     for (unsigned int i = 0; i < container->m_triangle.size(); ++i)
     {
-        container->m_triangle[i][0]  = index[ container->m_triangle[i][0]  ];
-        container->m_triangle[i][1]  = index[ container->m_triangle[i][1]  ];
-        container->m_triangle[i][2]  = index[ container->m_triangle[i][2]  ];
+        container->m_triangle[i][0]  = inv_index[ container->m_triangle[i][0]  ];
+        container->m_triangle[i][1]  = inv_index[ container->m_triangle[i][1]  ];
+        container->m_triangle[i][2]  = inv_index[ container->m_triangle[i][2]  ];
     }
 
 
@@ -529,6 +532,25 @@ template<class DataTypes>
 void TriangleSetTopologyAlgorithms< DataTypes >::removeItems(sofa::helper::vector< unsigned int >& items)
 {
     removeTriangles(items, true, true);
+}
+
+template<class DataTypes>
+void  TriangleSetTopologyAlgorithms<DataTypes>::renumberPoints( const sofa::helper::vector<unsigned int> &index, const sofa::helper::vector<unsigned int> &inv_index)
+{
+
+    TriangleSetTopology< DataTypes > *topology = dynamic_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
+    assert (topology != 0);
+    TriangleSetTopologyModifier< DataTypes >* modifier  = static_cast< TriangleSetTopologyModifier< DataTypes >* >(topology->getTopologyModifier());
+    assert(modifier != 0);
+    /// add the topological changes in the queue
+    modifier->renumberPointsWarning(index, inv_index);
+    // inform other objects that the triangles are going to be removed
+    topology->propagateTopologicalChanges();
+    // now renumber the points
+    modifier->renumberPointsProcess(index, inv_index);
+
+    //assert(topology->getTriangleSetTopologyContainer()->checkTopology());
+    topology->getTriangleSetTopologyContainer()->checkTopology();
 }
 
 // Preparation of "InciseAlongPointsList" :

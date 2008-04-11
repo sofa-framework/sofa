@@ -695,10 +695,10 @@ void TetrahedronSetTopologyModifier< DataTypes >::removeTrianglesProcess(  const
 
 
 template< class DataTypes >
-void TetrahedronSetTopologyModifier< DataTypes >::renumberPointsProcess( const sofa::helper::vector<unsigned int> &index)
+void TetrahedronSetTopologyModifier< DataTypes >::renumberPointsProcess( const sofa::helper::vector<unsigned int> &index, const sofa::helper::vector<unsigned int> &inv_index, const bool renumberDOF)
 {
     // start by calling the standard method
-    TriangleSetTopologyModifier< DataTypes >::renumberPointsProcess( index );
+    TriangleSetTopologyModifier< DataTypes >::renumberPointsProcess( index, inv_index, renumberDOF );
 
     // now update the local container structures.
     TetrahedronSetTopology<DataTypes> *topology = dynamic_cast<TetrahedronSetTopology<DataTypes> *>(this->m_basicTopology);
@@ -714,10 +714,10 @@ void TetrahedronSetTopologyModifier< DataTypes >::renumberPointsProcess( const s
 
     for (unsigned int i = 0; i < container->m_tetrahedron.size(); ++i)
     {
-        container->m_tetrahedron[i][0]  = index[ container->m_tetrahedron[i][0]  ];
-        container->m_tetrahedron[i][1]  = index[ container->m_tetrahedron[i][1]  ];
-        container->m_tetrahedron[i][2]  = index[ container->m_tetrahedron[i][2]  ];
-        container->m_tetrahedron[i][3]  = index[ container->m_tetrahedron[i][3]  ];
+        container->m_tetrahedron[i][0]  = inv_index[ container->m_tetrahedron[i][0]  ];
+        container->m_tetrahedron[i][1]  = inv_index[ container->m_tetrahedron[i][1]  ];
+        container->m_tetrahedron[i][2]  = inv_index[ container->m_tetrahedron[i][2]  ];
+        container->m_tetrahedron[i][3]  = inv_index[ container->m_tetrahedron[i][3]  ];
     }
 
 
@@ -762,6 +762,25 @@ template<class DataTypes>
 void TetrahedronSetTopologyAlgorithms< DataTypes >::removeItems(sofa::helper::vector< unsigned int >& items)
 {
     removeTetrahedra(items);
+}
+
+template<class DataTypes>
+void  TetrahedronSetTopologyAlgorithms<DataTypes>::renumberPoints( const sofa::helper::vector<unsigned int> &index, const sofa::helper::vector<unsigned int> &inv_index)
+{
+
+    TetrahedronSetTopology< DataTypes > *topology = dynamic_cast<TetrahedronSetTopology< DataTypes >* >(this->m_basicTopology);
+    assert (topology != 0);
+    TetrahedronSetTopologyModifier< DataTypes >* modifier  = static_cast< TetrahedronSetTopologyModifier< DataTypes >* >(topology->getTopologyModifier());
+    assert(modifier != 0);
+    /// add the topological changes in the queue
+    modifier->renumberPointsWarning(index, inv_index);
+    // inform other objects that the triangles are going to be removed
+    topology->propagateTopologicalChanges();
+    // now renumber the points
+    modifier->renumberPointsProcess(index, inv_index);
+
+    //assert(topology->getTriangleSetTopologyContainer()->checkTopology());
+    topology->getTetrahedronSetTopologyContainer()->checkTopology();
 }
 
 /// Cross product for 3-elements vectors.

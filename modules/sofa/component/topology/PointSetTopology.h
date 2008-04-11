@@ -97,14 +97,20 @@ class PointsRenumbering : public core::componentmodel::topology::TopologyChange
 
 public:
     sofa::helper::vector<unsigned int> indexArray;
+    sofa::helper::vector<unsigned int> inv_indexArray;
 
-    PointsRenumbering(const sofa::helper::vector< unsigned int >& indices = (const sofa::helper::vector< unsigned int >)0)
-        : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::POINTSRENUMBERING), indexArray(indices)
+    PointsRenumbering(const sofa::helper::vector< unsigned int >& indices = (const sofa::helper::vector< unsigned int >)0, const sofa::helper::vector< unsigned int >& inv_indices = (const sofa::helper::vector< unsigned int >)0)
+        : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::POINTSRENUMBERING), indexArray(indices), inv_indexArray(inv_indices)
     { }
 
     const sofa::helper::vector<unsigned int> &getIndexArray() const
     {
         return indexArray;
+    }
+
+    const sofa::helper::vector<unsigned int> &getinv_IndexArray() const
+    {
+        return inv_indexArray;
     }
 
 };
@@ -255,12 +261,18 @@ public:
     virtual void removePointsProcess( sofa::helper::vector<unsigned int> &indices, const bool removeDOF = true);
 
 
+    /** \brief Sends a message to warn that points are about to be reordered.
+     *
+     * \sa renumberPointsProcess
+     */
+    void renumberPointsWarning( const sofa::helper::vector<unsigned int> &index, const sofa::helper::vector<unsigned int> &inv_index);
 
     /** \brief Reorder this topology.
      *
+     * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
      * \see MechanicalObject::renumberValues
      */
-    virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index );
+    virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index, const sofa::helper::vector<unsigned int> &/*inv_index*/, const bool renumberDOF = true);
 
 protected:
     /// modifies the mechanical object and creates the point set container
@@ -283,6 +295,10 @@ public:
     /** \brief Generic method to remove a list of items.
     */
     virtual void removeItems(sofa::helper::vector< unsigned int >& /*items*/) {return;}
+
+    /** \brief Generic method for points renumbering
+    */
+    virtual void renumberPoints( const sofa::helper::vector<unsigned int> &/*index*/, const sofa::helper::vector<unsigned int> &/*inv_index*/) {return;}
 
 };
 

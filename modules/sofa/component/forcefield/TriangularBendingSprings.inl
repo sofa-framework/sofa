@@ -468,6 +468,30 @@ template <class DataTypes> void TriangularBendingSprings<DataTypes>::handleTopol
             }
 
         }
+        else
+        {
+
+            if(tstc && changeType == core::componentmodel::topology::POINTSRENUMBERING)
+            {
+
+                sofa::component::topology::EdgeSetTopologyContainer *estc= dynamic_cast<sofa::component::topology::EdgeSetTopologyContainer *>(container);
+
+                const sofa::helper::vector<sofa::component::topology::Edge> &ea=estc->getEdgeArray();
+                unsigned int i;
+
+                const sofa::helper::vector<unsigned int> tab = ( dynamic_cast< const sofa::component::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
+
+                for ( i = 0; i < ea.size(); ++i)
+                {
+                    if(edgeInfo[i].is_activated)
+                    {
+                        edgeInfo[i].m1  = tab[edgeInfo[i].m1];
+                        edgeInfo[i].m2  = tab[edgeInfo[i].m2];
+                    }
+                }
+            }
+        }
+
         ++itBegin;
     }
 }

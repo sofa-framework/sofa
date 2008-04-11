@@ -226,14 +226,24 @@ void PointSetTopologyModifier<DataTypes>::removePointsProcess( sofa::helper::vec
 
 
 template<class DataTypes>
-void PointSetTopologyModifier<DataTypes>::renumberPointsProcess( const sofa::helper::vector<unsigned int> &index)
+void PointSetTopologyModifier<DataTypes>::renumberPointsWarning( const sofa::helper::vector<unsigned int> &index, const sofa::helper::vector<unsigned int> &inv_index)
 {
-
-    PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
-    assert (topology != 0);
-    topology->object->renumberValues( index );
+    // Warning that these vertices will be deleted
+    PointsRenumbering *e=new PointsRenumbering(index, inv_index);
+    addTopologyChange(e);
 }
 
+template<class DataTypes>
+void PointSetTopologyModifier<DataTypes>::renumberPointsProcess( const sofa::helper::vector<unsigned int> &index, const sofa::helper::vector<unsigned int> &/*inv_index*/, const bool renumberDOF)
+{
+
+    if(renumberDOF)
+    {
+        PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
+        assert (topology != 0);
+        topology->object->renumberValues( index );
+    }
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -294,8 +304,6 @@ template<class DataTypes>
 void  PointSetGeometryAlgorithms<DataTypes>::getAABB(typename DataTypes::Real /*bb*/[6] ) const
 {
 }
-
-
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

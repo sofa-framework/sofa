@@ -386,11 +386,13 @@ void MechanicalObject<DataTypes>::renumberValues( const sofa::helper::vector< un
     // temporary state vectors
     sofa::helper::vector< VecCoord > vecCoord_cp;
     vecCoord_cp.resize( vectorsCoord.size() );
+
     for (unsigned int i = 0; i < vectorsCoord.size(); ++i)
     {
         if(vectorsCoord[i] != NULL)
             vecCoord_cp[i] = *(vectorsCoord[i]);
     }
+
     sofa::helper::vector< VecDeriv > vecDeriv_cp;
     vecDeriv_cp.resize( vectorsDeriv.size() );
     for (unsigned int i = 0; i < vectorsDeriv.size(); ++i)
@@ -414,16 +416,29 @@ void MechanicalObject<DataTypes>::renumberValues( const sofa::helper::vector< un
         for (unsigned j = 0; j < vectorsCoord.size(); ++j)
         {
             if(vectorsCoord[j] != NULL)
-                (*vectorsCoord[j])[i] = vecCoord_cp[j][ index[i] ];
+            {
+                VecCoord& vector = *vectorsCoord[j];
+                if(vector.size() > i && vector.size() > index[i])
+                {
+                    (*vectorsCoord[j])[i] = vecCoord_cp[j][ index[i] ];
+                }
+            }
         }
 
         for (unsigned j = 0; j < vectorsDeriv.size(); ++j)
         {
             if(vectorsDeriv[j] != NULL)
-                (*vectorsDeriv[j])[i] = vecDeriv_cp[j][ index[i] ];
+            {
+                VecDeriv& vector = *vectorsDeriv[j];
+                if(vector.size() > i && vector.size() > index[i])
+                {
+                    (*vectorsDeriv[j])[i] = vecDeriv_cp[j][ index[i] ];
+                }
+            }
         }
 
     }
+
     if (externalForces->size()>0)
         for (unsigned int i = 0; i < index.size(); ++i)
             (*externalForces)[i] = extern_cp[ index[i] ];

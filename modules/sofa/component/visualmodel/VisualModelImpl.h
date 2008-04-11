@@ -134,9 +134,6 @@ protected:
     DataPtr< ResizableExtVector<Quad> > field_quads;
     ResizableExtVector<Quad> quads;
 
-    sofa::helper::vector<unsigned int> Loc2GlobVec;
-    std::map<unsigned int, unsigned int> Glob2LocMap;
-
     /// If vertices have multiple normals/texcoords, then we need to separate them
     /// This vector store which input position is used for each vertice
     /// If it is empty then each vertex correspond to one position
