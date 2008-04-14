@@ -41,7 +41,7 @@ using std::set;
 
 
 
-// WARNING: indices ordering is different than in topology node
+// indices ordering  (same as in HexahedronSetTopology):
 //
 // 	   Y  7---------6
 //     ^ /	       /|
@@ -52,8 +52,6 @@ using std::set;
 //     | / 	     | /
 //     |/	     |/
 //     0---------1-->X
-
-
 
 
 
@@ -95,10 +93,6 @@ void HexahedralFEMForceField<DataTypes>::FHexahedronCreationFunction (int hexahe
         }
     }
 }
-
-template<class DataTypes> const int HexahedralFEMForceField<DataTypes>::_indices[8] = {3,2,6,7,0,1,5,4}; //{5,1,0,4,7,3,2,6}; // OK : {0,1,5,4,3,2,6,7}; // {5,1,6,2,4,0,7,3};
-// template<class DataTypes> const int HexahedralFEMForceField<DataTypes>::_indices[8] = {4,5,7,6,0,1,3,2};
-
 
 template<class DataTypes>
 void HexahedralFEMForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
@@ -345,7 +339,7 @@ void HexahedralFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv&
         for(int w=0; w<8; ++w)
         {
             Coord x_2;
-            x_2 = R_0_2 * x[hexahedronArray[i][_indices[w]]]; //x_2 = R_0_2 * x[(*it)[_indices[w]]];
+            x_2 = R_0_2 * x[hexahedronArray[i][w]];
             X[w*3] = x_2[0];
             X[w*3+1] = x_2[1];
             X[w*3+2] = x_2[2];
@@ -356,7 +350,7 @@ void HexahedralFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv&
 
 
         for(int w=0; w<8; ++w)
-            v[hexahedronArray[i][_indices[w]]] -= hexahedronInfo[i].rotation * Deriv( F[w*3],  F[w*3+1],  F[w*3+2]  );
+            v[hexahedronArray[i][w]] -= hexahedronInfo[i].rotation * Deriv( F[w*3],  F[w*3+1],  F[w*3+2]  );
     }
 
 }
@@ -655,7 +649,7 @@ void HexahedralFEMForceField<DataTypes>::initLarge(int i)
 
     Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
-        nodes[w] = (*X0)[hexahedronArray[i][_indices[w]]];
+        nodes[w] = (*X0)[hexahedronArray[i][w]];
 
 
     Coord horizontal;
@@ -666,7 +660,7 @@ void HexahedralFEMForceField<DataTypes>::initLarge(int i)
     computeRotationLarge( R_0_1, horizontal,vertical);
 
     for(int w=0; w<8; ++w)
-        hexahedronInfo[i].rotatedInitialElements[_indices[w]] = R_0_1*(*X0)[hexahedronArray[i][w]];
+        hexahedronInfo[i].rotatedInitialElements[w] = R_0_1*(*X0)[hexahedronArray[i][w]];
 
 
     computeElementStiffness( hexahedronInfo[i].stiffness, hexahedronInfo[i].materialMatrix, nodes, i );//computeElementStiffness( hexahedronInfo[i].stiffness, hexahedronInfo[i].materialMatrix, nodes, i );
@@ -720,7 +714,7 @@ void HexahedralFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const 
 
     Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
-        nodes[w] = p[hexahedronArray[i][_indices[w]]];
+        nodes[w] = p[hexahedronArray[i][w]];
 
     Coord horizontal;
     horizontal = (nodes[1]-nodes[0] + nodes[2]-nodes[3] + nodes[5]-nodes[4] + nodes[6]-nodes[7])*.25;
@@ -756,7 +750,7 @@ void HexahedralFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const 
     computeForce( F, D, hexahedronInfo[i].stiffness ); // computeForce( F, D, hexahedronInfo[i].stiffness ); // compute force on element
 
     for(int w=0; w<8; ++w)
-        f[hexahedronArray[i][_indices[w]]] += hexahedronInfo[i].rotation * Deriv( F[w*3],  F[w*3+1],   F[w*3+2]  );
+        f[hexahedronArray[i][w]] += hexahedronInfo[i].rotation * Deriv( F[w*3],  F[w*3+1],   F[w*3+2]  );
 }
 
 
@@ -782,7 +776,7 @@ void HexahedralFEMForceField<DataTypes>::initPolar(int i)
 
     Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
-        nodes[j] = (*X0)[hexahedronArray[i][_indices[j]]];
+        nodes[j] = (*X0)[hexahedronArray[i][j]];
 
     Transformation R_0_1; // Rotation matrix (deformed and displaced Hexahedron/world)
     computeRotationPolar( R_0_1, nodes );
@@ -836,7 +830,7 @@ void HexahedralFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const 
 
     Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
-        nodes[j] = p[hexahedronArray[i][_indices[j]]];
+        nodes[j] = p[hexahedronArray[i][j]];
 
 
     Transformation R_0_2; // Rotation matrix (deformed and displaced Hexahedron/world)
@@ -872,7 +866,7 @@ void HexahedralFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const 
 
 
     for(int j=0; j<8; ++j)
-        f[hexahedronArray[i][_indices[j]]] += hexahedronInfo[i].rotation * Deriv( F[j*3],  F[j*3+1],   F[j*3+2]  );
+        f[hexahedronArray[i][j]] += hexahedronInfo[i].rotation * Deriv( F[j*3],  F[j*3+1],   F[j*3+2]  );
 }
 
 

@@ -63,7 +63,7 @@ using namespace sofa::component::topology;
  *   url          = "http://www-evasion.imag.fr/Publications/2005/NMPCPF05"
  * }
  *
- * WARNING: indices ordering is different than in topology node
+ * indices ordering (same as in HexahedronSetTopology):
  *
  *     Y  7---------6
  *     ^ /         /|
@@ -150,7 +150,6 @@ protected:
 
 
     Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix
-    static const int _indices[8]; ///< indices ordering is different than in topology node
 
 public:
 
