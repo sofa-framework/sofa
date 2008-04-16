@@ -37,7 +37,7 @@ typedef sofa::defaulttype::Rigid3fTypes Rigid3f;
 typedef Rigid3f::VecDeriv           VecDerivRigid3f;
 typedef Rigid3f::VecCoord           VecCoordRigid3f;
 typedef Rigid3f::Quat                   Quat3f;
-typedef Rigid3f::Quat                   DerivRigid3f;
+typedef Rigid3f::Deriv                   DerivRigid3f;
 typedef Rigid3f::Coord                  CoordRigid3f;
 
 //Mechanical Object
