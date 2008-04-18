@@ -175,7 +175,7 @@ void SkinningMapping<BasicMapping>::init()
                 m_coefs[nbRefs.getValue()*i+m] = minDists[m]*minDists[m];
                 m_reps[nbRefs.getValue()*i+m] = minInds[m];
 
-                initPos[nbRefs.getValue()*i+m].getCenter() = (posTo - xfrom[minInds[m]].getCenter());
+                initPos[nbRefs.getValue()*i+m].getCenter() = xfrom[minInds[m]].getOrientation().inverseRotate(posTo - xfrom[minInds[m]].getCenter());
                 initPos[nbRefs.getValue()*i+m].getOrientation() = xfrom[minInds[m]].getOrientation();
             }
         }
@@ -198,7 +198,7 @@ void SkinningMapping<BasicMapping>::init()
             posTo = xto[i];
             for (unsigned int m=0; m<nbRefs.getValue(); m++)
             {
-                initPos[nbRefs.getValue()*i+m].getCenter() = (posTo - xfrom[m_reps[nbRefs.getValue()*i+m]].getCenter());
+                initPos[nbRefs.getValue()*i+m].getCenter() = xfrom[m_reps[nbRefs.getValue()*i+m]].getOrientation().inverseRotate(posTo - xfrom[m_reps[nbRefs.getValue()*i+m]].getCenter());
                 initPos[nbRefs.getValue()*i+m].getOrientation() = xfrom[m_reps[nbRefs.getValue()*i+m]].getOrientation();
             }
         }
@@ -252,7 +252,7 @@ void SkinningMapping<BasicMapping>::apply( typename Out::VecCoord& out, const ty
             relativeRot.toMatrix(rotation);
             rotatedPoints[nbRefs.getValue()*i+m] = rotation * (initPos[nbRefs.getValue()*i+m].getCenter());
 
-            out[i] += rotatedPoints[nbRefs.getValue()*i+m] * m_coefs[nbRefs.getValue()*i+m];
+            out[i] += initPos[nbRefs.getValue()*i+m].getOrientation().rotate(rotatedPoints[nbRefs.getValue()*i+m] * m_coefs[nbRefs.getValue()*i+m]);
             out[i] += translation * m_coefs[nbRefs.getValue()*i+m];
         }
     }
