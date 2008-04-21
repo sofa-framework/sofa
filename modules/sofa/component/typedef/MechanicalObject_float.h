@@ -29,15 +29,15 @@ typedef Particles6f::Deriv              Deriv6f;
 typedef Particles6f::Coord              Coord6f;
 
 typedef sofa::defaulttype::Rigid2fTypes Rigid2f;
-typedef Rigid2f::VecDeriv           VecDerivRigid2f;
-typedef Rigid2f::VecCoord           VecCoordRigid2f;
+typedef Rigid2f::VecDeriv               VecDerivRigid2f;
+typedef Rigid2f::VecCoord               VecCoordRigid2f;
 typedef Rigid2f::Deriv                  DerivRigid2f;
 typedef Rigid2f::Coord                  CoordRigid2f;
 typedef sofa::defaulttype::Rigid3fTypes Rigid3f;
-typedef Rigid3f::VecDeriv           VecDerivRigid3f;
-typedef Rigid3f::VecCoord           VecCoordRigid3f;
+typedef Rigid3f::VecDeriv               VecDerivRigid3f;
+typedef Rigid3f::VecCoord               VecCoordRigid3f;
 typedef Rigid3f::Quat                   Quat3f;
-typedef Rigid3f::Deriv                   DerivRigid3f;
+typedef Rigid3f::Deriv                  DerivRigid3f;
 typedef Rigid3f::Coord                  CoordRigid3f;
 
 //Mechanical Object
@@ -54,5 +54,50 @@ typedef sofa::component::MechanicalObject<sofa::defaulttype::Rigid3fTypes> Mecha
 //---------------------
 //Laparoscopic
 //Not defined for float
+
+#ifdef SOFA_FLOAT
+typedef MechanicalObject1f MechanicalObject1;
+typedef MechanicalObject2f MechanicalObject2;
+typedef MechanicalObject3f MechanicalObject3;
+typedef MechanicalObject6f MechanicalObject6;
+
+typedef MechanicalObjectRigid2f MechanicalObjectRigid2;
+typedef MechanicalObjectRigid3f MechanicalObjectRigid3;
+
+
+typedef Particles1f          Particles1;
+typedef VecDeriv1f	     VecDeriv1;
+typedef VecCoord1f	     VecCoord1;
+typedef Deriv1f	     	     Deriv1;
+typedef Coord1f	     	     Coord1;
+typedef Particles2f	     Particles2;
+typedef VecDeriv2f	     VecDeriv2;
+typedef VecCoord2f	     VecCoord2;
+typedef Deriv2f	     	     Deriv2;
+typedef Coord2f	     	     Coord2;
+typedef Particles3f	     Particles3;
+typedef VecDeriv3f	     VecDeriv3;
+typedef VecCoord3f	     VecCoord3;
+typedef Deriv3f	     	     Deriv3;
+typedef Coord3f	     	     Coord3;
+typedef Particles6f	     Particles6;
+typedef VecDeriv6f	     VecDeriv6;
+typedef VecCoord6f	     VecCoord6;
+typedef Deriv6f	     	     Deriv6;
+typedef Coord6f	     	     Coord6;
+
+typedef Rigid2f	     	     Rigid2;
+typedef VecDerivRigid2f      VecDerivRigid2;
+typedef VecCoordRigid2f      VecCoordRigid2;
+typedef DerivRigid2f	     DerivRigid2;
+typedef CoordRigid2f	     CoordRigid2;
+typedef Rigid3f	     	     Rigid3;
+typedef VecDerivRigid3f      VecDerivRigid3;
+typedef VecCoordRigid3f      VecCoordRigid3;
+typedef Quat3f		     Quat3;
+typedef DerivRigid3f	     DerivRigid3;
+typedef CoordRigid3f	     CoordRigid3;
+
+#endif
 
 #endif
