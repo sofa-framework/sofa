@@ -47,4 +47,22 @@ typedef sofa::component::mass::UniformMass<sofa::defaulttype::Rigid2fTypes,sofa:
 typedef sofa::component::mass::UniformMass<sofa::defaulttype::Rigid3fTypes,sofa::defaulttype::Rigid3fMass> UniformMassRigid3f;
 //Not defined for 1D, and 6D
 
+
+#ifdef SOFA_FLOAT
+
+typedef DiagonalMass1f        DiagonalMass1;
+typedef DiagonalMass2f 	      DiagonalMass2;
+typedef DiagonalMass3f 	      DiagonalMass3;
+typedef DiagonalMassRigid2f   DiagonalMassRigid2;
+typedef DiagonalMassRigid3f   DiagonalMassRigid3;
+typedef MatrixMass2f 	      MatrixMass2;
+typedef MatrixMass3f 	      MatrixMass3;
+typedef UniformMass1f 	      UniformMass1;
+typedef UniformMass2f 	      UniformMass2;
+typedef UniformMass3f 	      UniformMass3;
+typedef UniformMass6f 	      UniformMass6;
+typedef UniformMassRigid2f    UniformMassRigid2;
+typedef UniformMassRigid3f    UniformMassRigid3;
+#endif
+
 #endif

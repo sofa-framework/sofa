@@ -11,12 +11,7 @@
 #include <sofa/gui/SofaGUI.h>
 
 
-#include <sofa/component/typedef/Constraint_float.h>
-#include <sofa/component/typedef/Mass_float.h>
-#include <sofa/component/typedef/MechanicalObject_float.h>
-#include <sofa/component/typedef/Forcefield_float.h>
-#include <sofa/component/typedef/Mapping.h>
-
+#include <sofa/component/typedef/Sofa_typedef.h>
 
 using namespace sofa::simulation::tree;
 using sofa::component::odesolver::CGImplicitSolver;
@@ -93,7 +88,7 @@ int main(int argc, char** argv)
     skin->addObject(visual);
 
     // The mapping between the tetrahedron (DOF) and the liver (visual)
-    BarycentricMapping3f_to_Ext3f* mapping = new BarycentricMapping3f_to_Ext3f(DOF, visual);
+    BarycentricMapping3f_to_Ext3* mapping = new BarycentricMapping3f_to_Ext3(DOF, visual);
     mapping->setName( "mapping" );
     skin->addObject(mapping);
 
