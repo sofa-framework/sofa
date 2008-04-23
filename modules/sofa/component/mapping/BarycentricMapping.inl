@@ -432,8 +432,8 @@ int BarycentricMapperEdgeSetTopology<In,Out>::createPointInLine(const typename O
 template <class In, class Out>
 void BarycentricMapperEdgeSetTopology<In,Out>::init(const typename Out::VecCoord& /*out*/, const typename In::VecCoord& /*in*/)
 {
-    int outside = 0;
-    const sofa::helper::vector<topology::Edge>& edges = this->topology->getEdgeSetTopologyContainer()->getEdgeArray();
+//	int outside = 0;
+//	const sofa::helper::vector<topology::Edge>& edges = this->topology->getEdgeSetTopologyContainer()->getEdgeArray();
     //TODO: implementation of BarycentricMapperEdgeSetTopology::init
 }
 
@@ -528,7 +528,7 @@ template <class In, class Out>
 int BarycentricMapperQuadSetTopology<In,Out>::addPointInQuad(int quadIndex, const Real* baryCoords)
 {
     map.resize(map.size()+1);
-    MappingData2D& data = *map.rbegin();
+    MappingData& data = *map.rbegin();
     data.in_index = quadIndex + topology->getNbTriangles();
     data.baryCoords[0] = baryCoords[0];
     data.baryCoords[1] = baryCoords[1];
@@ -2280,6 +2280,8 @@ void BarycentricMapperEdgeSetTopology<In,Out>::handleTopologyChange()
             break;
         case core::componentmodel::topology::EDGESRENUMBERING:    ///< For EdgesRenumbering class.
             break;
+        default:
+            break;
         }
     }
 }
@@ -2312,6 +2314,8 @@ void BarycentricMapperTriangleSetTopology<In,Out>::handleTopologyChange()
         case core::componentmodel::topology::TRIANGLESREMOVED:   ///< For TrianglesRemoved class.
             break;
         case core::componentmodel::topology::TRIANGLESRENUMBERING: ///< For TrianglesRenumbering class.
+            break;
+        default:
             break;
         }
     }
@@ -2346,6 +2350,8 @@ void BarycentricMapperQuadSetTopology<In,Out>::handleTopologyChange()
             break;
         case core::componentmodel::topology::QUADSRENUMBERING: ///< For QuadsRenumbering class.
             break;
+        default:
+            break;
         }
     }
 }
@@ -2379,6 +2385,8 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::handleTopologyChange()
             break;
         case core::componentmodel::topology::TETRAHEDRARENUMBERING: ///< For TrianglesRenumbering class.
             break;
+        default:
+            break;
         }
     }
 }
@@ -2411,6 +2419,8 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
         case core::componentmodel::topology::HEXAHEDRAREMOVED:   ///< For TrianglesRemoved class.
             break;
         case core::componentmodel::topology::HEXAHEDRARENUMBERING: ///< For TrianglesRenumbering class.
+            break;
+        default:
             break;
         }
     }
@@ -2462,7 +2472,7 @@ void BarycentricMapping<BasicMapping>::handleTopologyChange()
         topoMapper->handleTopologyChange();
 
         // handle changes in the To topology
-        core::componentmodel::topology::BaseTopology* topology = dynamic_cast<core::componentmodel::topology::BaseTopology*> (toModel->getContext()->getTopology());
+        core::componentmodel::topology::BaseTopology* topology = dynamic_cast<core::componentmodel::topology::BaseTopology*> (this->toModel->getContext()->getTopology());
         if (topology != NULL)
         {
             const std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = topology->firstChange();
