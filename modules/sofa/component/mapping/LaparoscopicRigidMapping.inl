@@ -128,7 +128,7 @@ void LaparoscopicRigidMapping<BasicMapping>::processGrab()
             if(TriangleMeshModel* tmodel = dynamic_cast<TriangleMeshModel*>(model))
             {
                 typedef mapping::BarycentricMapping<core::componentmodel::behavior::MechanicalMapping<core::componentmodel::behavior::MechanicalState<TriangleModel::DataTypes>, core::componentmodel::behavior::MechanicalState<Vec3Types> > > TriangleMapping;
-                typedef mapping::TopologyBarycentricMapper<TriangleMeshModel::Topology,TriangleMeshModel::DataTypes, Vec3Types> TriangleMapper;
+                typedef mapping::BarycentricMapperMeshTopology<TriangleMeshModel::DataTypes, Vec3Types> TriangleMapper;
                 TriangleMapper* mapper = new TriangleMapper(tmodel->getTopology());
                 TriangleMapping* mapping = new TriangleMapping(tmodel->getMechanicalState(),mstate2,mapper);
                 child->addObject(mapping);
@@ -152,7 +152,7 @@ void LaparoscopicRigidMapping<BasicMapping>::processGrab()
             {
                 TriangleSetModel::Topology* t = tmodel->getTopology();
                 typedef mapping::BarycentricMapping<core::componentmodel::behavior::MechanicalMapping<core::componentmodel::behavior::MechanicalState<TriangleModel::DataTypes>, core::componentmodel::behavior::MechanicalState<Vec3Types> > > TriangleMapping;
-                typedef mapping::TopologyBarycentricMapper<TriangleSetModel::Topology, TriangleSetModel::DataTypes, Vec3Types> TriangleMapper;
+                typedef mapping::BarycentricMapperTriangleSetTopology<TriangleSetModel::DataTypes, Vec3Types> TriangleMapper;
                 TriangleMapper* mapper = new TriangleMapper(t);
                 TriangleMapping* mapping = new TriangleMapping(model->getMechanicalState(),mstate2,mapper);
                 child->addObject(mapping);

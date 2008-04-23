@@ -46,14 +46,14 @@ using namespace gpu::cuda;
 
 
 template <typename VecIn, typename VecOut>
-void TopologyBarycentricMapper<topology::RegularGridTopology,gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::clear(int reserve)
+void BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::clear(int reserve)
 {
     map.clear();
     if (reserve>0) map.reserve(reserve);
 }
 
 template <typename VecIn, typename VecOut>
-int TopologyBarycentricMapper<topology::RegularGridTopology,gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::addPointInCube(int cubeIndex, const Real* baryCoords)
+int BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::addPointInCube(int cubeIndex, const Real* baryCoords)
 {
     map.resize(map.size()+1);
     CubeData& data = map[map.size()-1];
@@ -67,7 +67,7 @@ int TopologyBarycentricMapper<topology::RegularGridTopology,gpu::cuda::CudaVecto
 }
 
 template <typename VecIn, typename VecOut>
-void TopologyBarycentricMapper<topology::RegularGridTopology,gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::init(const typename Out::VecCoord& out, const typename In::VecCoord& /*in*/)
+void BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::init(const typename Out::VecCoord& out, const typename In::VecCoord& /*in*/)
 {
     int outside = 0;
 
@@ -87,7 +87,7 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,gpu::cuda::CudaVect
 }
 
 template <typename VecIn, typename VecOut>
-void TopologyBarycentricMapper<topology::RegularGridTopology,gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::calcMapT()
+void BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::calcMapT()
 {
     if (!map.empty() && maxNOut == 0)
     {
@@ -133,7 +133,7 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,gpu::cuda::CudaVect
 }
 
 template<>
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3fTypes>::apply( Out::VecCoord& out, const In::VecCoord& in )
+void BarycentricMapperRegularGridTopology<CudaVec3fTypes,CudaVec3fTypes>::apply( Out::VecCoord& out, const In::VecCoord& in )
 {
     unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
     out.fastResize(map.size());
@@ -141,7 +141,7 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,Cuda
 }
 
 template<>
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3fTypes>::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+void BarycentricMapperRegularGridTopology<CudaVec3fTypes,CudaVec3fTypes>::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
 {
     unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
     out.fastResize(map.size());
@@ -149,7 +149,7 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,Cuda
 }
 
 template<>
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3fTypes>::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+void BarycentricMapperRegularGridTopology<CudaVec3fTypes,CudaVec3fTypes>::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
 {
     if (map.size() == 0) return;
     calcMapT();
@@ -160,12 +160,12 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,Cuda
 }
 
 template<>
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3fTypes>::applyJT( In::VecConst& /*out*/, const Out::VecConst& /*in*/ )
+void BarycentricMapperRegularGridTopology<CudaVec3fTypes,CudaVec3fTypes>::applyJT( In::VecConst& /*out*/, const Out::VecConst& /*in*/ )
 {
 }
 
 template<>
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3fTypes>::draw( const Out::VecCoord& /*out*/, const In::VecCoord& /*in*/)
+void BarycentricMapperRegularGridTopology<CudaVec3fTypes,CudaVec3fTypes>::draw( const Out::VecCoord& /*out*/, const In::VecCoord& /*in*/)
 {
 }
 
@@ -173,7 +173,7 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,Cuda
 
 
 template<>
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,CudaVec3f1Types>::apply( Out::VecCoord& out, const In::VecCoord& in )
+void BarycentricMapperRegularGridTopology<CudaVec3f1Types,CudaVec3f1Types>::apply( Out::VecCoord& out, const In::VecCoord& in )
 {
     unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
     out.fastResize(map.size());
@@ -181,7 +181,7 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,Cud
 }
 
 template<>
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,CudaVec3f1Types>::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+void BarycentricMapperRegularGridTopology<CudaVec3f1Types,CudaVec3f1Types>::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
 {
     unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
     out.fastResize(map.size());
@@ -189,7 +189,7 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,Cud
 }
 
 template<>
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,CudaVec3f1Types>::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+void BarycentricMapperRegularGridTopology<CudaVec3f1Types,CudaVec3f1Types>::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
 {
     calcMapT();
     if (map.size() == 0) return;
@@ -200,12 +200,12 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,Cud
 }
 
 template<>
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,CudaVec3f1Types>::applyJT( In::VecConst& /*out*/, const Out::VecConst& /*in*/ )
+void BarycentricMapperRegularGridTopology<CudaVec3f1Types,CudaVec3f1Types>::applyJT( In::VecConst& /*out*/, const Out::VecConst& /*in*/ )
 {
 }
 
 template<>
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,CudaVec3f1Types>::draw( const Out::VecCoord& /*out*/, const In::VecCoord& /*in*/)
+void BarycentricMapperRegularGridTopology<CudaVec3f1Types,CudaVec3f1Types>::draw( const Out::VecCoord& /*out*/, const In::VecCoord& /*in*/)
 {
 }
 
@@ -213,7 +213,7 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,Cud
 
 
 template<>
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,CudaVec3fTypes>::apply( Out::VecCoord& out, const In::VecCoord& in )
+void BarycentricMapperRegularGridTopology<CudaVec3f1Types,CudaVec3fTypes>::apply( Out::VecCoord& out, const In::VecCoord& in )
 {
     unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
     out.fastResize(map.size());
@@ -221,7 +221,7 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,Cud
 }
 
 template<>
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,CudaVec3fTypes>::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+void BarycentricMapperRegularGridTopology<CudaVec3f1Types,CudaVec3fTypes>::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
 {
     unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
     out.fastResize(map.size());
@@ -229,7 +229,7 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,Cud
 }
 
 template<>
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,CudaVec3fTypes>::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+void BarycentricMapperRegularGridTopology<CudaVec3f1Types,CudaVec3fTypes>::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
 {
     calcMapT();
     if (map.size() == 0) return;
@@ -240,19 +240,19 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,Cud
 }
 
 template<>
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,CudaVec3fTypes>::applyJT( In::VecConst& /*out*/, const Out::VecConst& /*in*/ )
+void BarycentricMapperRegularGridTopology<CudaVec3f1Types,CudaVec3fTypes>::applyJT( In::VecConst& /*out*/, const Out::VecConst& /*in*/ )
 {
 }
 
 template<>
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,CudaVec3fTypes>::draw( const Out::VecCoord& /*out*/, const In::VecCoord& /*in*/)
+void BarycentricMapperRegularGridTopology<CudaVec3f1Types,CudaVec3fTypes>::draw( const Out::VecCoord& /*out*/, const In::VecCoord& /*in*/)
 {
 }
 
 
 
 template<>
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3f1Types>::apply( Out::VecCoord& out, const In::VecCoord& in )
+void BarycentricMapperRegularGridTopology<CudaVec3fTypes,CudaVec3f1Types>::apply( Out::VecCoord& out, const In::VecCoord& in )
 {
     unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
     out.fastResize(map.size());
@@ -260,7 +260,7 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,Cuda
 }
 
 template<>
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3f1Types>::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+void BarycentricMapperRegularGridTopology<CudaVec3fTypes,CudaVec3f1Types>::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
 {
     unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
     out.fastResize(map.size());
@@ -268,7 +268,7 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,Cuda
 }
 
 template<>
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3f1Types>::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+void BarycentricMapperRegularGridTopology<CudaVec3fTypes,CudaVec3f1Types>::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
 {
     calcMapT();
     if (map.size() == 0) return;
@@ -279,12 +279,12 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,Cuda
 }
 
 template<>
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3f1Types>::applyJT( In::VecConst& /*out*/, const Out::VecConst& /*in*/ )
+void BarycentricMapperRegularGridTopology<CudaVec3fTypes,CudaVec3f1Types>::applyJT( In::VecConst& /*out*/, const Out::VecConst& /*in*/ )
 {
 }
 
 template<>
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3f1Types>::draw( const Out::VecCoord& /*out*/, const In::VecCoord& /*in*/)
+void BarycentricMapperRegularGridTopology<CudaVec3fTypes,CudaVec3f1Types>::draw( const Out::VecCoord& /*out*/, const In::VecCoord& /*in*/)
 {
 }
 

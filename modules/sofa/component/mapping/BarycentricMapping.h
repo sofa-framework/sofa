@@ -26,10 +26,22 @@
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_H
 
 #include <sofa/helper/vector.h>
+#include <sofa/component/topology/PointData.h>
 
 // forward declarations
 namespace sofa
 {
+namespace core
+{
+namespace componentmodel
+{
+namespace topology
+{
+class BaseTopology;
+}
+}
+}
+
 namespace component
 {
 namespace topology
@@ -37,10 +49,17 @@ namespace topology
 class MeshTopology;
 class RegularGridTopology;
 class SparseGridTopology;
+
+template<class T>
+class EdgeSetTopology;
 template<class T>
 class TriangleSetTopology;
 template<class T>
-class EdgeSetTopology;
+class QuadSetTopology;
+template<class T>
+class TetrahedronSetTopology;
+template<class T>
+class HexahedronSetTopology;
 }
 }
 }
@@ -106,21 +125,43 @@ public:
     virtual void applyJT( typename In::VecConst& out, const typename Out::VecConst& in ) = 0;
     virtual void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in) = 0;
 
+    virtual void clear( int reserve=0 ) =0;
+
     //Nothing to do
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapper< In, Out > & ) {return in;}
     inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapper< In, Out > &  ) { return out; }
 };
 
-/// Template class for barycentric mapping topology-specific mappers
-template<class Topology, class In, class Out>
-class TopologyBarycentricMapper;
+/// Template class for barycentric mapping topology-specific mappers.
+template<class In, class Out>
+class TopologyBarycentricMapper : public BarycentricMapper<In,Out>
+{
+public:
+    virtual int addPointInLine(int lineIndex, const Real* baryCoords) {return 0;}
+    virtual int createPointInLine(const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points) {return 0;}
+
+    virtual int addPointInTriangle(int triangleIndex, const Real* baryCoords) {return 0;}
+    virtual int createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points) {return 0;}
+
+    virtual int addPointInQuad(int quadIndex, const Real* baryCoords) {return 0;}
+    virtual int createPointInQuad(const typename Out::Coord& p, int quadIndex, const typename In::VecCoord* points) {return 0;}
+
+    virtual int addPointInTetra(int tetraIndex, const Real* baryCoords) {return 0;}
+    virtual int createPointInTetra(const typename Out::Coord& p, int tetraIndex, const typename In::VecCoord* points) {return 0;}
+
+    virtual int addPointInCube(int cubeIndex, const Real* baryCoords) {return 0;}
+    virtual int createPointInCube(const typename Out::Coord& p, int cubeIndex, const typename In::VecCoord* points) {return 0;}
+
+protected:
+    TopologyBarycentricMapper(core::componentmodel::topology::Topology* topology) {}
+};
 
 /// Class allowing barycentric mapping computation on a RegularGridTopology
 template<class In, class Out>
-class TopologyBarycentricMapper<topology::RegularGridTopology, In, Out> : public BarycentricMapper<In,Out>
+class BarycentricMapperRegularGridTopology : public TopologyBarycentricMapper<In,Out>
 {
 public:
-    typedef BarycentricMapper<In,Out> Inherit;
+    typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::CubeData CubeData;
@@ -128,12 +169,10 @@ protected:
     sofa::helper::vector<CubeData> map;
     topology::RegularGridTopology* topology;
 public:
-    TopologyBarycentricMapper(topology::RegularGridTopology* topology) : topology(topology)
+    BarycentricMapperRegularGridTopology(topology::RegularGridTopology* topology)
+        : TopologyBarycentricMapper(topology),
+          topology(topology)
     {}
-
-    bool empty() const {return map.size()==0;}
-
-    void setTopology( topology::RegularGridTopology* t ) { topology = t; }
 
     void clear(int reserve=0);
 
@@ -147,13 +186,13 @@ public:
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
-    inline friend std::istream& operator >> ( std::istream& in, TopologyBarycentricMapper<topology::RegularGridTopology, In, Out> &b )
+    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperRegularGridTopology<In, Out> &b )
     {
         in >> b.map;
         return in;
     }
 
-    inline friend std::ostream& operator << ( std::ostream& out, const TopologyBarycentricMapper<topology::RegularGridTopology, In, Out> & b )
+    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperRegularGridTopology<In, Out> & b )
     {
         out << b.map;
         return out;
@@ -163,10 +202,10 @@ public:
 
 /// Class allowing barycentric mapping computation on a SparseGridTopology
 template<class In, class Out>
-class TopologyBarycentricMapper<topology::SparseGridTopology, In, Out> : public BarycentricMapper<In,Out>
+class BarycentricMapperSparseGridTopology : public TopologyBarycentricMapper<In,Out>
 {
 public:
-    typedef BarycentricMapper<In,Out> Inherit;
+    typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::CubeData CubeData;
@@ -174,12 +213,10 @@ protected:
     sofa::helper::vector<CubeData> map;
     topology::SparseGridTopology* topology;
 public:
-    TopologyBarycentricMapper(topology::SparseGridTopology* topology) : topology(topology)
+    BarycentricMapperSparseGridTopology(topology::SparseGridTopology* topology)
+        : TopologyBarycentricMapper(topology),
+          topology(topology)
     {}
-
-    bool empty() const {return map.size()==0;}
-
-    void setTopology( topology::SparseGridTopology* t ) { topology = t; }
 
     void clear(int reserve=0);
 
@@ -193,13 +230,13 @@ public:
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
-    inline friend std::istream& operator >> ( std::istream& in, TopologyBarycentricMapper<topology::SparseGridTopology, In, Out> &b )
+    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperSparseGridTopology<In, Out> &b )
     {
         in >> b.map;
         return in;
     }
 
-    inline friend std::ostream& operator << ( std::ostream& out, const TopologyBarycentricMapper<topology::SparseGridTopology, In, Out> & b )
+    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperSparseGridTopology<In, Out> & b )
     {
         out << b.map;
         return out;
@@ -210,10 +247,10 @@ public:
 
 /// Class allowing barycentric mapping computation on a MeshTopology
 template<class In, class Out>
-class TopologyBarycentricMapper<topology::MeshTopology, In, Out> : public BarycentricMapper<In,Out>
+class BarycentricMapperMeshTopology : public TopologyBarycentricMapper<In,Out>
 {
 public:
-    typedef BarycentricMapper<In,Out> Inherit;
+    typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::MappingData1D MappingData1D;
@@ -226,12 +263,12 @@ protected:
     topology::MeshTopology* topology;
 
 public:
-    TopologyBarycentricMapper(topology::MeshTopology* topology) : topology(topology)
+    BarycentricMapperMeshTopology(topology::MeshTopology* topology)
+        : TopologyBarycentricMapper(topology),
+          topology(topology)
     {}
 
-    bool empty() const {return map1d.size()==0 && map2d.size()==0 && map3d.size()==0;}
-    void setTopology( topology::MeshTopology* t ) { topology = t; }
-    void clear(int reserve3d=0, int reserve2d=0, int reserve1d=0);
+    void clear(int reserve=0);
 
     int addPointInLine(int lineIndex, const Real* baryCoords);
     int createPointInLine(const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points);
@@ -254,7 +291,7 @@ public:
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
-    inline friend std::istream& operator >> ( std::istream& in, TopologyBarycentricMapper<topology::MeshTopology, In, Out> &b )
+    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperMeshTopology<In, Out> &b )
     {
         unsigned int size_vec;
         in >> size_vec;
@@ -286,7 +323,7 @@ public:
         return in;
     }
 
-    inline friend std::ostream& operator << ( std::ostream& out, const TopologyBarycentricMapper<topology::MeshTopology, In, Out> & b )
+    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperMeshTopology<In, Out> & b )
     {
 
         out << b.map1d.size();
@@ -304,34 +341,51 @@ public:
         return out;
     }
 
+private:
+    void clear1d(int reserve=0);
+    void clear2d(int reserve=0);
+    void clear3d(int reserve=0);
 
+};
+
+/// Template class for barycentric mapping topology-specific mappers. Enables topological changes.
+class BarycentricMapperBaseTopology
+{
+public:
+    // handle topology changes in the From topology
+    virtual void handleTopologyChange()=0;
+    // handle topology changes in the To topology
+    virtual void handlePointEvents(std::list< const core::componentmodel::topology::TopologyChange *>::const_iterator,
+            std::list< const core::componentmodel::topology::TopologyChange *>::const_iterator )=0;
+protected:
+    BarycentricMapperBaseTopology(core::componentmodel::topology::BaseTopology* topology)
+    {}
 };
 
 
 /// Class allowing barycentric mapping computation on a EdgeSetTopology
 template<class In, class Out>
-class TopologyBarycentricMapper<topology::EdgeSetTopology<In>, In, Out> : public BarycentricMapper<In,Out>
-    //class TriangleSetTopologyBarycentricMapper : public BarycentricMapper<In,Out>
+class BarycentricMapperEdgeSetTopology : public BarycentricMapperBaseTopology, public TopologyBarycentricMapper<In,Out>
 {
 public:
-    typedef BarycentricMapper<In,Out> Inherit;
+    typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::MappingData1D MappingData;
 protected:
-    sofa::helper::vector< MappingData >  map;
+    topology::PointData< MappingData >  map;
     topology::EdgeSetTopology<In>* topology;
 
 public:
-    TopologyBarycentricMapper(topology::EdgeSetTopology<In>* topology) : topology(topology)
+    BarycentricMapperEdgeSetTopology(topology::EdgeSetTopology<In>* topology)
+        : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper(topology),
+          topology(topology)
     {}
 
-    bool empty() const {return map.size()==0;}
-    void setTopology( topology::EdgeSetTopology<In>* t ) { topology = t; }
     void clear(int reserve=0);
 
-    int addPointInEdge(int edgeIndex, const Real* baryCoords);
-    int createPointInEdge(const typename Out::Coord& p, int edgeIndex, const typename In::VecCoord* points);
+    int addPointInLine(int edgeIndex, const Real* baryCoords);
+    int createPointInLine(const typename Out::Coord& p, int edgeIndex, const typename In::VecCoord* points);
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
@@ -341,7 +395,13 @@ public:
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
-    inline friend std::istream& operator >> ( std::istream& in, TopologyBarycentricMapper<topology::EdgeSetTopology<In>, In, Out> &b )
+    // handle topology changes in the From topology
+    virtual void handleTopologyChange();
+    // handle topology changes in the To topology
+    virtual void handlePointEvents(std::list< const core::componentmodel::topology::TopologyChange *>::const_iterator,
+            std::list< const core::componentmodel::topology::TopologyChange *>::const_iterator);
+
+    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperEdgeSetTopology<In, Out> &b )
     {
         unsigned int size_vec;
 
@@ -356,7 +416,7 @@ public:
         return in;
     }
 
-    inline friend std::ostream& operator << ( std::ostream& out, const TopologyBarycentricMapper<topology::EdgeSetTopology<In>, In, Out> & b )
+    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperEdgeSetTopology<In, Out> & b )
     {
 
         out << b.map.size();
@@ -372,28 +432,23 @@ public:
 
 /// Class allowing barycentric mapping computation on a TriangleSetTopology
 template<class In, class Out>
-class TopologyBarycentricMapper<topology::TriangleSetTopology<In>, In, Out> : public BarycentricMapper<In,Out>
-    //class TriangleSetTopologyBarycentricMapper : public BarycentricMapper<In,Out>
+class BarycentricMapperTriangleSetTopology : public BarycentricMapperBaseTopology, public TopologyBarycentricMapper<In,Out>
 {
 public:
-    typedef BarycentricMapper<In,Out> Inherit;
+    typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
-    //typedef typename Inherit::MappingData1D MappingData;
     typedef typename Inherit::MappingData2D MappingData;
-    //typedef typename Inherit::MappingData3D MappingData;
 protected:
-    //sofa::helper::vector< MappingData1D >  map;
-    sofa::helper::vector< MappingData >  map;
-    //sofa::helper::vector< MappingData3D >  map;
+    topology::PointData< MappingData >  map;
     topology::TriangleSetTopology<In>* topology;
 
 public:
-    TopologyBarycentricMapper(topology::TriangleSetTopology<In>* topology) : topology(topology)
+    BarycentricMapperTriangleSetTopology(topology::TriangleSetTopology<In>* topology)
+        : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper(topology),
+          topology(topology)
     {}
 
-    bool empty() const {return map.size()==0;}
-    void setTopology( topology::TriangleSetTopology<In>* t ) { topology = t; }
     void clear(int reserve=0);
 
     int addPointInTriangle(int triangleIndex, const Real* baryCoords);
@@ -407,7 +462,13 @@ public:
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
-    inline friend std::istream& operator >> ( std::istream& in, TopologyBarycentricMapper<topology::TriangleSetTopology<In>, In, Out> &b )
+    // handle topology changes in the From topology
+    virtual void handleTopologyChange();
+    // handle topology changes in the To topology
+    virtual void handlePointEvents(std::list< const core::componentmodel::topology::TopologyChange *>::const_iterator,
+            std::list< const core::componentmodel::topology::TopologyChange *>::const_iterator);
+
+    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperTriangleSetTopology<In, Out> &b )
     {
         unsigned int size_vec;
 
@@ -422,7 +483,7 @@ public:
         return in;
     }
 
-    inline friend std::ostream& operator << ( std::ostream& out, const TopologyBarycentricMapper<topology::TriangleSetTopology<In>, In, Out> & b )
+    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperTriangleSetTopology<In, Out> & b )
     {
 
         out << b.map.size();
@@ -435,6 +496,202 @@ public:
 
 };
 
+
+/// Class allowing barycentric mapping computation on a QuadSetTopology
+template<class In, class Out>
+class BarycentricMapperQuadSetTopology : public BarycentricMapperBaseTopology, public TopologyBarycentricMapper<In,Out>
+{
+public:
+    typedef TopologyBarycentricMapper<In,Out> Inherit;
+    typedef typename Inherit::Real Real;
+    typedef typename Inherit::OutReal OutReal;
+    typedef typename Inherit::MappingData2D MappingData;
+protected:
+    topology::PointData< MappingData >  map;
+    topology::QuadSetTopology<In>* topology;
+
+public:
+    BarycentricMapperQuadSetTopology(topology::QuadSetTopology<In>* topology)
+        : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper(topology),
+          topology(topology)
+    {}
+
+    void clear(int reserve=0);
+
+    int addPointInQuad(int index, const Real* baryCoords);
+    int createPointInQuad(const typename Out::Coord& p, int index, const typename In::VecCoord* points);
+
+    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
+
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
+
+    // handle topology changes in the From topology
+    virtual void handleTopologyChange();
+    // handle topology changes in the To topology
+    virtual void handlePointEvents(std::list< const core::componentmodel::topology::TopologyChange *>::const_iterator,
+            std::list< const core::componentmodel::topology::TopologyChange *>::const_iterator);
+
+    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperQuadSetTopology<In, Out> &b )
+    {
+        unsigned int size_vec;
+
+        in >> size_vec;
+        b.map.clear();
+        MappingData value;
+        for (unsigned int i=0; i<size_vec; i++)
+        {
+            in >> value;
+            b.map.push_back(value);
+        }
+        return in;
+    }
+
+    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperQuadSetTopology<In, Out> & b )
+    {
+
+        out << b.map.size();
+        out << " " ;
+        out << b.map;
+
+        return out;
+    }
+
+};
+
+/// Class allowing barycentric mapping computation on a TetrehedronSetTopology
+template<class In, class Out>
+class BarycentricMapperTetrahedronSetTopology : public BarycentricMapperBaseTopology, public TopologyBarycentricMapper<In,Out>
+{
+public:
+    typedef TopologyBarycentricMapper<In,Out> Inherit;
+    typedef typename Inherit::Real Real;
+    typedef typename Inherit::OutReal OutReal;
+    typedef typename Inherit::MappingData3D MappingData;
+protected:
+    topology::PointData< MappingData >  map;
+    topology::TetrahedronSetTopology<In>* topology;
+
+public:
+    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopology<In>* topology)
+        : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper(topology),
+          topology(topology)
+    {}
+
+    void clear(int reserve=0);
+
+    int addPointInTetra(int index, const Real* baryCoords);
+//		  int createPointInTetra(const typename Out::Coord& p, int index, const typename In::VecCoord* points);
+
+    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
+
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
+
+    // handle topology changes in the From topology
+    virtual void handleTopologyChange();
+    // handle topology changes in the To topology
+    virtual void handlePointEvents(std::list< const core::componentmodel::topology::TopologyChange *>::const_iterator,
+            std::list< const core::componentmodel::topology::TopologyChange *>::const_iterator);
+
+    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperTetrahedronSetTopology<In, Out> &b )
+    {
+        unsigned int size_vec;
+
+        in >> size_vec;
+        b.map.clear();
+        MappingData value;
+        for (unsigned int i=0; i<size_vec; i++)
+        {
+            in >> value;
+            b.map.push_back(value);
+        }
+        return in;
+    }
+
+    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperTetrahedronSetTopology<In, Out> & b )
+    {
+
+        out << b.map.size();
+        out << " " ;
+        out << b.map;
+
+        return out;
+    }
+};
+
+
+/// Class allowing barycentric mapping computation on a HexahedronSetTopology
+template<class In, class Out>
+class BarycentricMapperHexahedronSetTopology : public BarycentricMapperBaseTopology, public TopologyBarycentricMapper<In,Out>
+{
+public:
+    typedef TopologyBarycentricMapper<In,Out> Inherit;
+    typedef typename Inherit::Real Real;
+    typedef typename Inherit::OutReal OutReal;
+    typedef typename Inherit::MappingData3D MappingData;
+protected:
+    topology::PointData< MappingData >  map;
+    topology::HexahedronSetTopology<In>* topology;
+
+public:
+    BarycentricMapperHexahedronSetTopology(topology::HexahedronSetTopology<In>* topology)
+        : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper(topology),
+          topology(topology)
+    {}
+
+    void clear(int reserve=0);
+
+    int addPointInCube(int index, const Real* baryCoords);
+//		  int createPointInCube(const typename Out::Coord& p, int index, const typename In::VecCoord* points);
+
+    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
+
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
+
+    // handle topology changes in the From topology
+    virtual void handleTopologyChange();
+    // handle topology changes in the To topology
+    virtual void handlePointEvents(std::list< const core::componentmodel::topology::TopologyChange *>::const_iterator,
+            std::list< const core::componentmodel::topology::TopologyChange *>::const_iterator);
+
+    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperHexahedronSetTopology<In, Out> &b )
+    {
+        unsigned int size_vec;
+
+        in >> size_vec;
+        b.map.clear();
+        MappingData value;
+        for (unsigned int i=0; i<size_vec; i++)
+        {
+            in >> value;
+            b.map.push_back(value);
+        }
+        return in;
+    }
+
+    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperHexahedronSetTopology<In, Out> & b )
+    {
+
+        out << b.map.size();
+        out << " " ;
+        out << b.map;
+
+        return out;
+    }
+
+
+};
 
 template <class BasicMapping>
 class BarycentricMapping : public BasicMapping
@@ -462,7 +719,7 @@ public:
 
 protected:
 
-    typedef BarycentricMapper<InDataTypes,OutDataTypes> Mapper;
+    typedef TopologyBarycentricMapper<InDataTypes,OutDataTypes> Mapper;
 
     Mapper* mapper;
 
@@ -493,6 +750,10 @@ public:
 
     void draw();
 
+    // handle topological changes
+    virtual void handleTopologyChange();
+
+    TopologyBarycentricMapper<InDataTypes,OutDataTypes>*	getMapper() {return mapper;}
 };
 
 } // namespace mapping
