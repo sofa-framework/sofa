@@ -17,12 +17,12 @@ namespace mapping
 {
 
 template <typename VecIn, typename VecOut>
-class TopologyBarycentricMapper<topology::RegularGridTopology,gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> > : public BarycentricMapper< gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >
+class BarycentricMapperRegularGridTopology< gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> > : public TopologyBarycentricMapper< gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >
 {
 public:
     typedef gpu::cuda::CudaVectorTypes<VecIn,VecIn,float> In;
     typedef gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> Out;
-    typedef BarycentricMapper<In,Out> Inherit;
+    typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::CubeData CubeData;
@@ -33,12 +33,10 @@ protected:
     topology::RegularGridTopology* topology;
     void calcMapT();
 public:
-    TopologyBarycentricMapper(topology::RegularGridTopology* topology) : maxNOut(0), topology(topology)
+    BarycentricMapperRegularGridTopology(topology::RegularGridTopology* topology)
+        : TopologyBarycentricMapper(topology),
+          maxNOut(0), topology(topology)
     {}
-
-    bool empty() const {return map.size()==0;}
-
-    void setTopology( topology::RegularGridTopology* t ) { topology = t; }
 
     void clear(int reserve=0);
 
@@ -51,13 +49,13 @@ public:
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
-    inline friend std::istream& operator >> ( std::istream& in, TopologyBarycentricMapper<topology::RegularGridTopology, In, Out> &b )
+    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperRegularGridTopology<In, Out> &b )
     {
         in >> b.map;
         return in;
     }
 
-    inline friend std::ostream& operator << ( std::ostream& out, const TopologyBarycentricMapper<topology::RegularGridTopology, In, Out> & b )
+    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperRegularGridTopology<In, Out> & b )
     {
         out << b.map;
         return out;

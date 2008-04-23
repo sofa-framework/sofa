@@ -70,7 +70,7 @@ public:
     typedef core::componentmodel::behavior::MechanicalState<DataTypes> MMechanicalState;
     typedef component::MechanicalObject<DataTypes> MMechanicalObject;
     typedef mapping::BarycentricMapping< core::componentmodel::behavior::MechanicalMapping< InMechanicalState, MMechanicalState > > MMapping;
-    typedef mapping::TopologyBarycentricMapper<InTopology,InDataTypes, DataTypes> MMapper;
+    typedef mapping::TopologyBarycentricMapper<InDataTypes, DataTypes> MMapper;
     MCollisionModel* model;
     MMapping* mapping;
     MMapper* mapper;
@@ -109,8 +109,9 @@ public:
         }
         simulation::tree::GNode* child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateSimulationContext();
         MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
-        mapper = new MMapper(model->getTopology());
-        mapping = new MMapping(model->getMechanicalState(), mstate, mapper); child->addObject(mapping);
+//        mapper = new MMapper(model->getTopology());
+        mapping = new MMapping(model->getMechanicalState(), mstate /*, mapper*/); child->addObject(mapping);
+        mapper = mapping->getMapper();
         return mstate;
     }
 
@@ -156,7 +157,7 @@ class ContactMapper<LineSetModel, DataTypes> : public BarycentricContactMapper<L
 public:
     int addPoint(const Vector3& P, int index)
     {
-        return this->mapper->createPointInEdge(P, index, this->model->getMechanicalState()->getX());
+        return this->mapper->createPointInLine(P, index, this->model->getMechanicalState()->getX());
     }
 
 };
