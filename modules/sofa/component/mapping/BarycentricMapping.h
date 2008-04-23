@@ -137,6 +137,9 @@ template<class In, class Out>
 class TopologyBarycentricMapper : public BarycentricMapper<In,Out>
 {
 public:
+    typedef BarycentricMapper<In,Out> Inherit;
+    typedef typename Inherit::Real Real;
+
     virtual int addPointInLine(int lineIndex, const Real* baryCoords) {return 0;}
     virtual int createPointInLine(const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points) {return 0;}
 
@@ -170,7 +173,7 @@ protected:
     topology::RegularGridTopology* topology;
 public:
     BarycentricMapperRegularGridTopology(topology::RegularGridTopology* topology)
-        : TopologyBarycentricMapper(topology),
+        : TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}
 
@@ -214,7 +217,7 @@ protected:
     topology::SparseGridTopology* topology;
 public:
     BarycentricMapperSparseGridTopology(topology::SparseGridTopology* topology)
-        : TopologyBarycentricMapper(topology),
+        : TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}
 
@@ -264,7 +267,7 @@ protected:
 
 public:
     BarycentricMapperMeshTopology(topology::MeshTopology* topology)
-        : TopologyBarycentricMapper(topology),
+        : TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}
 
@@ -378,7 +381,7 @@ protected:
 
 public:
     BarycentricMapperEdgeSetTopology(topology::EdgeSetTopology<In>* topology)
-        : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper(topology),
+        : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}
 
@@ -445,7 +448,7 @@ protected:
 
 public:
     BarycentricMapperTriangleSetTopology(topology::TriangleSetTopology<In>* topology)
-        : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper(topology),
+        : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}
 
@@ -512,7 +515,7 @@ protected:
 
 public:
     BarycentricMapperQuadSetTopology(topology::QuadSetTopology<In>* topology)
-        : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper(topology),
+        : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}
 
@@ -577,7 +580,7 @@ protected:
 
 public:
     BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopology<In>* topology)
-        : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper(topology),
+        : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}
 
@@ -642,7 +645,7 @@ protected:
 
 public:
     BarycentricMapperHexahedronSetTopology(topology::HexahedronSetTopology<In>* topology)
-        : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper(topology),
+        : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}
 
