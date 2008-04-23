@@ -140,23 +140,25 @@ public:
     typedef BarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
 
-    virtual int addPointInLine(int lineIndex, const Real* baryCoords) {return 0;}
-    virtual int createPointInLine(const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points) {return 0;}
+    virtual ~TopologyBarycentricMapper() {}
 
-    virtual int addPointInTriangle(int triangleIndex, const Real* baryCoords) {return 0;}
-    virtual int createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points) {return 0;}
+    virtual int addPointInLine(int /*lineIndex*/, const Real* /*baryCoords*/) {return 0;}
+    virtual int createPointInLine(const typename Out::Coord& /*p*/, int /*lineIndex*/, const typename In::VecCoord* /*points*/) {return 0;}
 
-    virtual int addPointInQuad(int quadIndex, const Real* baryCoords) {return 0;}
-    virtual int createPointInQuad(const typename Out::Coord& p, int quadIndex, const typename In::VecCoord* points) {return 0;}
+    virtual int addPointInTriangle(int /*triangleIndex*/, const Real* /*baryCoords*/) {return 0;}
+    virtual int createPointInTriangle(const typename Out::Coord& /*p*/, int /*triangleIndex*/, const typename In::VecCoord* /*points*/) {return 0;}
 
-    virtual int addPointInTetra(int tetraIndex, const Real* baryCoords) {return 0;}
-    virtual int createPointInTetra(const typename Out::Coord& p, int tetraIndex, const typename In::VecCoord* points) {return 0;}
+    virtual int addPointInQuad(int /*quadIndex*/, const Real* /*baryCoords*/) {return 0;}
+    virtual int createPointInQuad(const typename Out::Coord& /*p*/, int /*quadIndex*/, const typename In::VecCoord* /*points*/) {return 0;}
 
-    virtual int addPointInCube(int cubeIndex, const Real* baryCoords) {return 0;}
-    virtual int createPointInCube(const typename Out::Coord& p, int cubeIndex, const typename In::VecCoord* points) {return 0;}
+    virtual int addPointInTetra(int /*tetraIndex*/, const Real* /*baryCoords*/) {return 0;}
+    virtual int createPointInTetra(const typename Out::Coord& /*p*/, int /*tetraIndex*/, const typename In::VecCoord* /*points*/) {return 0;}
+
+    virtual int addPointInCube(int /*cubeIndex*/, const Real* /*baryCoords*/) {return 0;}
+    virtual int createPointInCube(const typename Out::Coord& /*p*/, int /*cubeIndex*/, const typename In::VecCoord* /*points*/) {return 0;}
 
 protected:
-    TopologyBarycentricMapper(core::componentmodel::topology::Topology* topology) {}
+    TopologyBarycentricMapper(core::componentmodel::topology::Topology* /*topology*/) {}
 };
 
 /// Class allowing barycentric mapping computation on a RegularGridTopology
@@ -176,6 +178,8 @@ public:
         : TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}
+
+    virtual ~BarycentricMapperRegularGridTopology() {}
 
     void clear(int reserve=0);
 
@@ -220,6 +224,8 @@ public:
         : TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}
+
+    virtual ~BarycentricMapperSparseGridTopology() {}
 
     void clear(int reserve=0);
 
@@ -270,6 +276,8 @@ public:
         : TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}
+
+    virtual ~BarycentricMapperMeshTopology() {}
 
     void clear(int reserve=0);
 
@@ -355,13 +363,15 @@ private:
 class BarycentricMapperBaseTopology
 {
 public:
+    virtual ~BarycentricMapperBaseTopology() {}
+
     // handle topology changes in the From topology
     virtual void handleTopologyChange()=0;
     // handle topology changes in the To topology
     virtual void handlePointEvents(std::list< const core::componentmodel::topology::TopologyChange *>::const_iterator,
             std::list< const core::componentmodel::topology::TopologyChange *>::const_iterator )=0;
 protected:
-    BarycentricMapperBaseTopology(core::componentmodel::topology::BaseTopology* topology)
+    BarycentricMapperBaseTopology(core::componentmodel::topology::BaseTopology* /*topology*/)
     {}
 };
 
@@ -384,6 +394,8 @@ public:
         : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}
+
+    virtual ~BarycentricMapperEdgeSetTopology() {}
 
     void clear(int reserve=0);
 
@@ -452,6 +464,8 @@ public:
           topology(topology)
     {}
 
+    virtual ~BarycentricMapperTriangleSetTopology() {}
+
     void clear(int reserve=0);
 
     int addPointInTriangle(int triangleIndex, const Real* baryCoords);
@@ -519,6 +533,8 @@ public:
           topology(topology)
     {}
 
+    virtual ~BarycentricMapperQuadSetTopology() {}
+
     void clear(int reserve=0);
 
     int addPointInQuad(int index, const Real* baryCoords);
@@ -584,6 +600,8 @@ public:
           topology(topology)
     {}
 
+    virtual ~BarycentricMapperTetrahedronSetTopology() {}
+
     void clear(int reserve=0);
 
     int addPointInTetra(int index, const Real* baryCoords);
@@ -648,6 +666,8 @@ public:
         : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}
+
+    virtual ~BarycentricMapperHexahedronSetTopology() {}
 
     void clear(int reserve=0);
 
