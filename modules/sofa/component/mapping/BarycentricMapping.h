@@ -749,6 +749,8 @@ public:
     typedef typename OutDataTypes::SparseDeriv OutSparseDeriv;
     typedef typename OutDataTypes::Real OutReal;
 
+    typedef core::componentmodel::topology::Topology Topology;
+
 protected:
 
     typedef TopologyBarycentricMapper<InDataTypes,OutDataTypes> Mapper;
@@ -763,6 +765,8 @@ public:
     BarycentricMapping(In* from, Out* to, Mapper* mapper)
         : Inherit(from, to), mapper(mapper)
     {}
+
+    BarycentricMapping(In* from, Out* to, Topology * topology );
 
     virtual ~BarycentricMapping()
     {
@@ -786,6 +790,9 @@ public:
     virtual void handleTopologyChange();
 
     TopologyBarycentricMapper<InDataTypes,OutDataTypes>*	getMapper() {return mapper;}
+
+private:
+    void createMapperFromTopology(Topology * topology);
 };
 
 } // namespace mapping
