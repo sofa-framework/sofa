@@ -60,6 +60,13 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
+template <class BasicMapping>
+BarycentricMapping<BasicMapping>::BarycentricMapping(In* from, Out* to, Topology * topology )
+    : Inherit(from, to), mapper(NULL)
+{
+    createMapperFromTopology(topology);
+}
+
 template <class In, class Out>
 void BarycentricMapperRegularGridTopology<In,Out>::clear(int reserve)
 {
@@ -738,6 +745,85 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::init(const typename Out::Ve
     }
 }
 
+template <class BasicMapping>
+void BarycentricMapping<BasicMapping>::createMapperFromTopology(Topology * topology)
+{
+    mapper = NULL;
+
+    topology::MeshTopology* t3 = dynamic_cast<topology::MeshTopology*>(topology);
+    if (t3!=NULL)
+    {
+        topology::RegularGridTopology* t2 = dynamic_cast<topology::RegularGridTopology*>(topology);
+        if (t2!=NULL)
+        {
+            typedef BarycentricMapperRegularGridTopology<InDataTypes, OutDataTypes> RegularGridMapper;
+            mapper = new RegularGridMapper(t2);
+        }
+        else
+        {
+            topology::SparseGridTopology* t4 = dynamic_cast<topology::SparseGridTopology*>(topology);
+            if (t4!=NULL)
+            {
+                typedef BarycentricMapperSparseGridTopology<InDataTypes, OutDataTypes> SparseGridMapper;
+                mapper = new SparseGridMapper(t4);
+            }
+            else // generic MeshTopology
+            {
+                typedef BarycentricMapperMeshTopology<InDataTypes, OutDataTypes> MeshMapper;
+                mapper = new MeshMapper(t3);
+            }
+        }
+    }
+    else // no MeshTopology
+    {
+        core::componentmodel::topology::BaseTopology* topology2 = dynamic_cast<core::componentmodel::topology::BaseTopology*>(this->fromModel->getContext()->getMainTopology());
+        if (topology2!=NULL)
+        {
+            topology::HexahedronSetTopology<InDataTypes>* t1 = dynamic_cast<topology::HexahedronSetTopology<InDataTypes>*>(topology2);
+            if(t1 != NULL)
+            {
+                typedef BarycentricMapperHexahedronSetTopology<InDataTypes, OutDataTypes> HexahedronSetMapper;
+                mapper = new HexahedronSetMapper(t1);
+            }
+            else
+            {
+                topology::TetrahedronSetTopology<InDataTypes>* t2 = dynamic_cast<topology::TetrahedronSetTopology<InDataTypes>*>(topology2);
+                if(t2 != NULL)
+                {
+                    typedef BarycentricMapperTetrahedronSetTopology<InDataTypes, OutDataTypes> TetrahedronSetMapper;
+                    mapper = new TetrahedronSetMapper(t2);
+                }
+                else
+                {
+                    topology::QuadSetTopology<InDataTypes>* t3 = dynamic_cast<topology::QuadSetTopology<InDataTypes>*>(topology2);
+                    if(t3 != NULL)
+                    {
+                        typedef BarycentricMapperQuadSetTopology<InDataTypes, OutDataTypes> QuadSetMapper;
+                        mapper = new QuadSetMapper(t3);
+                    }
+                    else
+                    {
+                        topology::TriangleSetTopology<InDataTypes>* t4 = dynamic_cast<topology::TriangleSetTopology<InDataTypes>*>(topology2);
+                        if (t4 != NULL)
+                        {
+                            typedef BarycentricMapperTriangleSetTopology<InDataTypes, OutDataTypes> TriangleSetMapper;
+                            mapper = new TriangleSetMapper(t4);
+                        }
+                        else
+                        {
+                            topology::EdgeSetTopology<InDataTypes>* t5 = dynamic_cast<topology::EdgeSetTopology<InDataTypes>*>(topology2);
+                            if(t5 != NULL)
+                            {
+                                typedef BarycentricMapperEdgeSetTopology<InDataTypes, OutDataTypes> EdgeSetMapper;
+                                mapper = new EdgeSetMapper(t5);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::init()
@@ -747,81 +833,9 @@ void BarycentricMapping<BasicMapping>::init()
         core::componentmodel::topology::Topology* topology = dynamic_cast<core::componentmodel::topology::Topology*>(this->fromModel->getContext()->getTopology());
         if (topology!=NULL)
         {
-            topology::MeshTopology* t3 = dynamic_cast<topology::MeshTopology*>(topology);
-            if (t3!=NULL)
-            {
-                topology::RegularGridTopology* t2 = dynamic_cast<topology::RegularGridTopology*>(topology);
-                if (t2!=NULL)
-                {
-                    typedef BarycentricMapperRegularGridTopology<InDataTypes, OutDataTypes> RegularGridMapper;
-                    mapper = new RegularGridMapper(t2);
-                }
-                else
-                {
-                    topology::SparseGridTopology* t4 = dynamic_cast<topology::SparseGridTopology*>(topology);
-                    if (t4!=NULL)
-                    {
-                        typedef BarycentricMapperSparseGridTopology<InDataTypes, OutDataTypes> SparseGridMapper;
-                        mapper = new SparseGridMapper(t4);
-                    }
-                    else // generic MeshTopology
-                    {
-                        typedef BarycentricMapperMeshTopology<InDataTypes, OutDataTypes> MeshMapper;
-                        mapper = new MeshMapper(t3);
-                    }
-                }
-            }
-            else // no MeshTopology
-            {
-                core::componentmodel::topology::BaseTopology* topology2 = dynamic_cast<core::componentmodel::topology::BaseTopology*>(this->fromModel->getContext()->getMainTopology());
-                if (topology2!=NULL)
-                {
-                    topology::HexahedronSetTopology<InDataTypes>* t1 = dynamic_cast<topology::HexahedronSetTopology<InDataTypes>*>(topology2);
-                    if(t1 != NULL)
-                    {
-                        typedef BarycentricMapperHexahedronSetTopology<InDataTypes, OutDataTypes> HexahedronSetMapper;
-                        mapper = new HexahedronSetMapper(t1);
-                    }
-                    else
-                    {
-                        topology::TetrahedronSetTopology<InDataTypes>* t2 = dynamic_cast<topology::TetrahedronSetTopology<InDataTypes>*>(topology2);
-                        if(t2 != NULL)
-                        {
-                            typedef BarycentricMapperTetrahedronSetTopology<InDataTypes, OutDataTypes> TetrahedronSetMapper;
-                            mapper = new TetrahedronSetMapper(t2);
-                        }
-                        else
-                        {
-                            topology::QuadSetTopology<InDataTypes>* t3 = dynamic_cast<topology::QuadSetTopology<InDataTypes>*>(topology2);
-                            if(t3 != NULL)
-                            {
-                                typedef BarycentricMapperQuadSetTopology<InDataTypes, OutDataTypes> QuadSetMapper;
-                                mapper = new QuadSetMapper(t3);
-                            }
-                            else
-                            {
-                                topology::TriangleSetTopology<InDataTypes>* t4 = dynamic_cast<topology::TriangleSetTopology<InDataTypes>*>(topology2);
-                                if (t4 != NULL)
-                                {
-                                    typedef BarycentricMapperTriangleSetTopology<InDataTypes, OutDataTypes> TriangleSetMapper;
-                                    mapper = new TriangleSetMapper(t4);
-                                }
-                                else
-                                {
-                                    topology::EdgeSetTopology<InDataTypes>* t5 = dynamic_cast<topology::EdgeSetTopology<InDataTypes>*>(topology2);
-                                    if(t5 != NULL)
-                                    {
-                                        typedef BarycentricMapperEdgeSetTopology<InDataTypes, OutDataTypes> EdgeSetMapper;
-                                        mapper = new EdgeSetMapper(t5);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } // if (topology != NULL)
-    } // if(mapper == NULL)
+            createMapperFromTopology(topology);
+        }
+    }
 
     if (mapper != NULL)
     {

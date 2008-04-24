@@ -109,9 +109,9 @@ public:
         }
         simulation::tree::GNode* child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateSimulationContext();
         MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
-//        mapper = new MMapper(model->getTopology());
-        mapping = new MMapping(model->getMechanicalState(), mstate /*, mapper*/); child->addObject(mapping);
+        mapping = new MMapping(model->getMechanicalState(), mstate, model->getTopology());
         mapper = mapping->getMapper();
+        child->addObject(mapping);
         return mstate;
     }
 
