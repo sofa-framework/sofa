@@ -43,50 +43,54 @@ using namespace defaulttype;
 SOFA_DECL_CLASS(MechanicalObject)
 
 int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
+#ifdef SOFA_FLOAT
+        .add< MechanicalObject<Vec3fTypes> >(true) // default template
+#else
         .add< MechanicalObject<Vec3dTypes> >(true) // default template
-        .add< MechanicalObject<Vec3fTypes> >()
-        .add< MechanicalObject<Rigid3dTypes> >()
-        .add< MechanicalObject<Rigid3fTypes> >()
-        .add< MechanicalObject<LaparoscopicRigid3Types> >()
+#ifndef SOFA_DOUBLE
+        .add< MechanicalObject<Vec3fTypes> >() // default template
+#endif
+#endif
+#ifndef SOFA_FLOAT
         .add< MechanicalObject<Vec2dTypes> >()
-        .add< MechanicalObject<Vec2fTypes> >()
-        .add< MechanicalObject<Rigid2dTypes> >()
-        .add< MechanicalObject<Rigid2fTypes> >()
         .add< MechanicalObject<Vec1dTypes> >()
-        .add< MechanicalObject<Vec1fTypes> >()
         .add< MechanicalObject<Vec6dTypes> >()
+        .add< MechanicalObject<Rigid3dTypes> >()
+        .add< MechanicalObject<Rigid2dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< MechanicalObject<Vec2fTypes> >()
+        .add< MechanicalObject<Vec1fTypes> >()
         .add< MechanicalObject<Vec6fTypes> >()
+        .add< MechanicalObject<Rigid3fTypes> >()
+        .add< MechanicalObject<Rigid2fTypes> >()
+#endif
+        .add< MechanicalObject<LaparoscopicRigid3Types> >()
         ;
 
 // template specialization must be in the same namespace as original namespace for GCC 4.1
 // g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
-
-template class MechanicalObject<defaulttype::Vec3fTypes>;
-template class MechanicalObject<defaulttype::Vec3dTypes>;
-template class MechanicalObject<defaulttype::Vec2fTypes>;
-template class MechanicalObject<defaulttype::Vec2dTypes>;
-template class MechanicalObject<defaulttype::Vec1fTypes>;
-template class MechanicalObject<defaulttype::Vec1dTypes>;
-
-template class MechanicalObject<defaulttype::Rigid3dTypes>;
-template class MechanicalObject<defaulttype::Rigid3fTypes>;
-template class MechanicalObject<defaulttype::Rigid2dTypes>;
-template class MechanicalObject<defaulttype::Rigid2fTypes>;
-
-template class MechanicalObject<defaulttype::LaparoscopicRigid3Types>;
-
-template<>
-void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaulttype::Quat q)
-{
-    VecCoord& x = *this->getX();
-    for (unsigned int i = 0; i < x.size(); i++)
-    {
-        x[i].getCenter() = q.rotate(x[i].getCenter());
-        x[i].getOrientation() *= q;
-    }
-}
+#ifndef SOFA_FLOAT
+template class MechanicalObject<Vec3dTypes>;
+template class MechanicalObject<Vec2dTypes>;
+template class MechanicalObject<Vec1dTypes>;
+template class MechanicalObject<Vec6dTypes>;
+template class MechanicalObject<Rigid3dTypes>;
+template class MechanicalObject<Rigid2dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class MechanicalObject<Vec3fTypes>;
+template class MechanicalObject<Vec2fTypes>;
+template class MechanicalObject<Vec1fTypes>;
+template class MechanicalObject<Vec6fTypes>;
+template class MechanicalObject<Rigid3fTypes>;
+template class MechanicalObject<Rigid2fTypes>;
+#endif
+template class MechanicalObject<LaparoscopicRigid3Types>;
 
 
+
+#ifndef SOFA_FLOAT
 template<>
 void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaulttype::Quat q)
 {
@@ -99,17 +103,30 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaultty
 }
 
 template <>
-bool MechanicalObject<Vec1dTypes>::addBBox(double* /*minBBox*/, double* /*maxBBox*/)
+bool MechanicalObject<Vec1dTypes>::addBBox(Real_Sofa* /*minBBox*/, Real_Sofa* /*maxBBox*/)
 {
     return false; // ignore 1D DOFs for 3D bbox
+}
+#endif
+
+#ifndef SOFA_DOUBLE
+template<>
+void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaulttype::Quat q)
+{
+    VecCoord& x = *this->getX();
+    for (unsigned int i = 0; i < x.size(); i++)
+    {
+        x[i].getCenter() = q.rotate(x[i].getCenter());
+        x[i].getOrientation() *= q;
+    }
 }
 
 template <>
-bool MechanicalObject<Vec1fTypes>::addBBox(double* /*minBBox*/, double* /*maxBBox*/)
+bool MechanicalObject<Vec1fTypes>::addBBox(Real_Sofa* /*minBBox*/, Real_Sofa* /*maxBBox*/)
 {
     return false; // ignore 1D DOFs for 3D bbox
 }
-
+#endif
 
 
 } // namespace component

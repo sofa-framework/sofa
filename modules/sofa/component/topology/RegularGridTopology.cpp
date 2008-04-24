@@ -60,8 +60,8 @@ void RegularGridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
         const char* xmax = arg->getAttribute("xmax");
         const char* ymax = arg->getAttribute("ymax");
         const char* zmax = arg->getAttribute("zmax");
-        min.setValue(Vec3(atof(xmin)*scale,atof(ymin)*scale,atof(zmin)*scale));
-        max.setValue(Vec3(atof(xmax)*scale,atof(ymax)*scale,atof(zmax)*scale));
+        min.setValue(Vector3(atof(xmin)*scale,atof(ymin)*scale,atof(zmin)*scale));
+        max.setValue(Vector3(atof(xmax)*scale,atof(ymax)*scale,atof(zmax)*scale));
     }
     this->setPos(min.getValue()[0],max.getValue()[0],min.getValue()[1],max.getValue()[1],min.getValue()[2],max.getValue()[2]);
 
@@ -76,34 +76,34 @@ int RegularGridTopologyClass = core::RegisterObject("Regular grid in 3D")
 
 RegularGridTopology::RegularGridTopology(int nx, int ny, int nz)
     : GridTopology(nx, ny, nz),
-      min(initData(&min,Vec3(0.0f,0.0f,0.0f),"min", "Min")),
-      max(initData(&max,Vec3(1.0f,1.0f,1.0f),"max", "Max"))
+      min(initData(&min,Vector3(0.0f,0.0f,0.0f),"min", "Min")),
+      max(initData(&max,Vector3(1.0f,1.0f,1.0f),"max", "Max"))
 {
 }
 
 RegularGridTopology::RegularGridTopology()
-    : min(initData(&min,Vec3(0.0f,0.0f,0.0f),"min", "Min")),
-      max(initData(&max,Vec3(1.0f,1.0f,1.0f),"max", "Max"))
+    : min(initData(&min,Vector3(0.0f,0.0f,0.0f),"min", "Min")),
+      max(initData(&max,Vector3(1.0f,1.0f,1.0f),"max", "Max"))
 {
 }
 
-void RegularGridTopology::setPos(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax)
+void RegularGridTopology::setPos(Real_Sofa xmin, Real_Sofa xmax, Real_Sofa ymin, Real_Sofa ymax, Real_Sofa zmin, Real_Sofa zmax)
 {
-    min.setValue(Vec3(xmin,ymin,zmin));
-    max.setValue(Vec3(xmax,ymax,zmax));
-    setP0(Vec3(xmin,ymin,zmin));
+    min.setValue(Vector3(xmin,ymin,zmin));
+    max.setValue(Vector3(xmax,ymax,zmax));
+    setP0(Vector3(xmin,ymin,zmin));
     if (n.getValue()[0]>1)
-        setDx(Vec3((xmax-xmin)/(n.getValue()[0]-1),0,0));
+        setDx(Vector3((xmax-xmin)/(n.getValue()[0]-1),0,0));
     else
-        setDx(Vec3(0,0,0));
+        setDx(Vector3(0,0,0));
     if (n.getValue()[1]>1)
-        setDy(Vec3(0,(ymax-ymin)/(n.getValue()[1]-1),0));
+        setDy(Vector3(0,(ymax-ymin)/(n.getValue()[1]-1),0));
     else
-        setDy(Vec3(0,0,0));
+        setDy(Vector3(0,0,0));
     if (n.getValue()[2]>1)
-        setDz(Vec3(0,0,(zmax-zmin)/(n.getValue()[2]-1)));
+        setDz(Vector3(0,0,(zmax-zmin)/(n.getValue()[2]-1)));
     else
-        setDz(Vec3(0,0,0));
+        setDz(Vector3(0,0,0));
 }
 
 unsigned RegularGridTopology::getIndex( int i, int j, int k ) const
@@ -111,7 +111,7 @@ unsigned RegularGridTopology::getIndex( int i, int j, int k ) const
     return n.getValue()[0]* ( n.getValue()[1]*k + j ) + i;
 }
 
-RegularGridTopology::Vec3 RegularGridTopology::getPoint(int i) const
+Vector3 RegularGridTopology::getPoint(int i) const
 {
     int x = i%n.getValue()[0]; i/=n.getValue()[0];
     int y = i%n.getValue()[1]; i/=n.getValue()[1];
@@ -119,21 +119,21 @@ RegularGridTopology::Vec3 RegularGridTopology::getPoint(int i) const
     return getPoint(x,y,z);
 }
 
-RegularGridTopology::Vec3 RegularGridTopology::getPoint(int x, int y, int z) const
+Vector3 RegularGridTopology::getPoint(int x, int y, int z) const
 {
     return p0+dx*x+dy*y+dz*z;
 }
 
 /// return the cube containing the given point (or -1 if not found).
-int RegularGridTopology::findCube(const Vec3& pos)
+int RegularGridTopology::findCube(const Vector3& pos)
 {
     if (n.getValue()[0]<2 || n.getValue()[1]<2 || n.getValue()[2]<2)
         return -1;
 
-    Vec3 p = pos-p0;
-    double x = p*dx*inv_dx2;
-    double y = p*dy*inv_dy2;
-    double z = p*dz*inv_dz2;
+    Vector3 p = pos-p0;
+    Real_Sofa x = p*dx*inv_dx2;
+    Real_Sofa y = p*dy*inv_dy2;
+    Real_Sofa z = p*dz*inv_dz2;
     int ix = int(x+1000000)-1000000; // Do not round toward 0...
     int iy = int(y+1000000)-1000000;
     int iz = int(z+1000000)-1000000;
@@ -150,13 +150,13 @@ int RegularGridTopology::findCube(const Vec3& pos)
 }
 
 /// return the nearest cube (or -1 if not found).
-int RegularGridTopology::findNearestCube(const Vec3& pos)
+int RegularGridTopology::findNearestCube(const Vector3& pos)
 {
     if (n.getValue()[0]<2 || n.getValue()[1]<2 || n.getValue()[2]<2) return -1;
-    Vec3 p = pos-p0;
-    double x = p*dx*inv_dx2;
-    double y = p*dy*inv_dy2;
-    double z = p*dz*inv_dz2;
+    Vector3 p = pos-p0;
+    Real_Sofa x = p*dx*inv_dx2;
+    Real_Sofa y = p*dy*inv_dy2;
+    Real_Sofa z = p*dz*inv_dz2;
     int ix = int(x+1000000)-1000000; // Do not round toward 0...
     int iy = int(y+1000000)-1000000;
     int iz = int(z+1000000)-1000000;
@@ -168,13 +168,13 @@ int RegularGridTopology::findNearestCube(const Vec3& pos)
 
 /// return the cube containing the given point (or -1 if not found),
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-int RegularGridTopology::findCube(const Vec3& pos, double& fx, double &fy, double &fz)
+int RegularGridTopology::findCube(const Vector3& pos, Real_Sofa& fx, Real_Sofa &fy, Real_Sofa &fz)
 {
     if (n.getValue()[0]<2 || n.getValue()[1]<2 || n.getValue()[2]<2) return -1;
-    Vec3 p = pos-p0;
-    double x = p*dx*inv_dx2;
-    double y = p*dy*inv_dy2;
-    double z = p*dz*inv_dz2;
+    Vector3 p = pos-p0;
+    Real_Sofa x = p*dx*inv_dx2;
+    Real_Sofa y = p*dy*inv_dy2;
+    Real_Sofa z = p*dz*inv_dz2;
     int ix = int(x+1000000)-1000000; // Do not round toward 0...
     int iy = int(y+1000000)-1000000;
     int iz = int(z+1000000)-1000000;
@@ -193,13 +193,13 @@ int RegularGridTopology::findCube(const Vec3& pos, double& fx, double &fy, doubl
 
 /// return the cube containing the given point (or -1 if not found),
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-int RegularGridTopology::findNearestCube(const Vec3& pos, double& fx, double &fy, double &fz)
+int RegularGridTopology::findNearestCube(const Vector3& pos, Real_Sofa& fx, Real_Sofa &fy, Real_Sofa &fz)
 {
     if (n.getValue()[0]<2 || n.getValue()[1]<2 || n.getValue()[2]<2) return -1;
-    Vec3 p = pos-p0;
-    double x = p*dx*inv_dx2;
-    double y = p*dy*inv_dy2;
-    double z = p*dz*inv_dz2;
+    Vector3 p = pos-p0;
+    Real_Sofa x = p*dx*inv_dx2;
+    Real_Sofa y = p*dy*inv_dy2;
+    Real_Sofa z = p*dz*inv_dz2;
     int ix = int(x+1000000)-1000000; // Do not round toward 0...
     int iy = int(y+1000000)-1000000;
     int iz = int(z+1000000)-1000000;

@@ -42,7 +42,7 @@ using namespace sofa::defaulttype;
 class CubeTopology : public MeshTopology
 {
 public:
-    typedef Vec3d Vec3;
+    typedef Vector3::value_type Real_Sofa;
 
     CubeTopology(int nx, int ny, int nz);
     CubeTopology();
@@ -77,27 +77,27 @@ public:
 
     int point(int x, int y, int z, Plane p = PLANE_UNKNOWN) const; // { return x+nx.getValue()*(y+ny.getValue()*z); }
 
-    void setP0(const Vec3& val) { p0 = val; }
-    void setDx(const Vec3& val) { dx = val; inv_dx2 = 1/(dx*dx); }
-    void setDy(const Vec3& val) { dy = val; inv_dy2 = 1/(dy*dy); }
-    void setDz(const Vec3& val) { dz = val; inv_dz2 = 1/(dz*dz); }
+    void setP0(const Vector3& val) { p0 = val; }
+    void setDx(const Vector3& val) { dx = val; inv_dx2 = 1/(dx*dx); }
+    void setDy(const Vector3& val) { dy = val; inv_dy2 = 1/(dy*dy); }
+    void setDz(const Vector3& val) { dz = val; inv_dz2 = 1/(dz*dz); }
 
-    void setPos(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
+    void setPos(Real_Sofa xmin, Real_Sofa xmax, Real_Sofa ymin, Real_Sofa ymax, Real_Sofa zmin, Real_Sofa zmax);
 
-    const Vec3& getP0() const { return p0; }
-    const Vec3& getDx() const { return dx; }
-    const Vec3& getDy() const { return dy; }
-    const Vec3& getDz() const { return dz; }
+    const Vector3& getP0() const { return p0; }
+    const Vector3& getDx() const { return dx; }
+    const Vector3& getDy() const { return dy; }
+    const Vector3& getDz() const { return dz; }
 
-    Vec3   getMin() const { return min.getValue();}
-    Vec3   getMax() const { return max.getValue();}
+    Vector3   getMin() const { return min.getValue();}
+    Vector3   getMax() const { return max.getValue();}
 
-    Vec3 getPoint(int i) const;
-    Vec3 getPoint(int x, int y, int z) const;
+    Vector3 getPoint(int i) const;
+    Vector3 getPoint(int x, int y, int z) const;
     bool hasPos()  const { return true; }
-    double getPX(int i)  const { return getPoint(i)[0]; }
-    double getPY(int i) const { return getPoint(i)[1]; }
-    double getPZ(int i) const { return getPoint(i)[2]; }
+    Real_Sofa getPX(int i)  const { return getPoint(i)[0]; }
+    Real_Sofa getPY(int i) const { return getPoint(i)[1]; }
+    Real_Sofa getPZ(int i) const { return getPoint(i)[2]; }
 
     void setSplitNormals(bool b) {splitNormals.setValue(b);}
 
@@ -108,12 +108,12 @@ protected:
     Data<bool> internalPoints;
     Data<bool> splitNormals;
 
-    Data< Vec3 > min, max;
+    Data< Vector3 > min, max;
     /// Position of point 0
-    Vec3 p0;
+    Vector3 p0;
     /// Distance between points in the grid. Must be perpendicular to each other
-    Vec3 dx,dy,dz;
-    double inv_dx2, inv_dy2, inv_dz2;
+    Vector3 dx,dy,dz;
+    Real_Sofa inv_dx2, inv_dy2, inv_dz2;
 
     virtual void setSize();
     void updateEdges();

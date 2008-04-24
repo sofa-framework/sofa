@@ -543,10 +543,17 @@ void TriangleModel::draw(int index)
 {
     Triangle t(this,index);
     glBegin(GL_TRIANGLES);
+#ifdef SOFA_FLOAT
+    glNormal3fv(t.n().ptr());
+    glVertex3fv(t.p1().ptr());
+    glVertex3fv(t.p2().ptr());
+    glVertex3fv(t.p3().ptr());
+#else
     glNormal3dv(t.n().ptr());
     glVertex3dv(t.p1().ptr());
     glVertex3dv(t.p2().ptr());
     glVertex3dv(t.p3().ptr());
+#endif
     glEnd();
 }
 

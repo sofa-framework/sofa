@@ -187,6 +187,20 @@ public:
         }
     }
 
+    /// Create a quaternion from Euler
+    static Quater createQuaterFromEuler( defaulttype::Vec3d v)
+    {
+        double quat[4];      double a0 = v.elems[0];
+        double a1 = v.elems[1];
+        double a2 = v.elems[2];
+        quat[3] = cos(a0/2)*cos(a1/2)*cos(a2/2) + sin(a0/2)*sin(a1/2)*sin(a2/2);
+        quat[0] = sin(a0/2)*cos(a1/2)*cos(a2/2) - cos(a0/2)*sin(a1/2)*sin(a2/2);
+        quat[1] = cos(a0/2)*sin(a1/2)*cos(a2/2) + sin(a0/2)*cos(a1/2)*sin(a2/2);
+        quat[2] = cos(a0/2)*cos(a1/2)*sin(a2/2) - sin(a0/2)*sin(a1/2)*cos(a2/2);
+        Quater quatResult( quat[0], quat[1], quat[2], quat[3] );
+        return quatResult;
+    }
+
     /// Create using the entries of a rotation vector (axis*angle) given in parent coordinates
     template<class T>
     static Quater createFromRotationVector(T a0, T a1, T a2 )

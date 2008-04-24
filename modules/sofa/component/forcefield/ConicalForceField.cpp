@@ -24,28 +24,25 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-template class ConicalForceField<Vec3dTypes>;
-template class ConicalForceField<Vec3fTypes>;
-//template class ConicalForceField<Vec2dTypes>;
-//template class ConicalForceField<Vec2fTypes>;
-//template class ConicalForceField<Vec1dTypes>;
-//template class ConicalForceField<Vec1fTypes>;
-//template class ConicalForceField<Vec6dTypes>;
-//template class ConicalForceField<Vec6fTypes>;
-
 
 SOFA_DECL_CLASS(ConicalForceField)
 
 int ConicalForceFieldClass = core::RegisterObject("Repulsion applied by a cone toward the exterior")
+#ifndef SOFA_FLOAT
         .add< ConicalForceField<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
         .add< ConicalForceField<Vec3fTypes> >()
-//.add< ConicalForceField<Vec2dTypes> >()
-//.add< ConicalForceField<Vec2fTypes> >()
-//.add< ConicalForceField<Vec1dTypes> >()
-//.add< ConicalForceField<Vec1fTypes> >()
-//.add< ConicalForceField<Vec6dTypes> >()
-//.add< ConicalForceField<Vec6fTypes> >()
+#endif
         ;
+
+#ifndef SOFA_FLOAT
+template class ConicalForceField<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class ConicalForceField<Vec3fTypes>;
+#endif
+
 
 } // namespace forcefield
 

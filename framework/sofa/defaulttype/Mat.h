@@ -650,10 +650,15 @@ typedef Mat<3,4,double> Mat3x4d;
 typedef Mat<4,4,float> Mat4x4f;
 typedef Mat<4,4,double> Mat4x4d;
 
+#ifdef SOFA_FLOAT
+typedef Mat2x2f Matrix2;
+typedef Mat3x3f Matrix3;
+typedef Mat4x4f Matrix4;
+#else
 typedef Mat2x2d Matrix2;
 typedef Mat3x3d Matrix3;
 typedef Mat4x4d Matrix4;
-
+#endif
 
 
 template <int L, int C, typename real>

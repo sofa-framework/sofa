@@ -45,7 +45,7 @@ using namespace sofa::defaulttype;
 static void skipToEOL(FILE* f)
 {
     int	ch;
-    while ((ch = fgetc(f)) != EOF && ch != '\n');
+    while ((ch = fgetc(f)) != EOF && ch != '\n') ;
 }
 
 bool MassSpringLoader::load(const char *filename)
@@ -103,7 +103,7 @@ bool MassSpringLoader::load(const char *filename)
 
 // 	std::cout << "Model contains "<< totalNumMasses <<" masses and "<< totalNumSprings <<" springs"<<std::endl;
 
-    std::vector<Vec3d> masses;
+    std::vector<Vector3> masses;
     if (totalNumMasses>0)
         masses.reserve(totalNumMasses);
 
@@ -128,7 +128,7 @@ bool MassSpringLoader::load(const char *filename)
                 fixed = true;
             }
             addMass(px,py,pz,vx,vy,vz,mass,elastic,fixed,surface);
-            masses.push_back(Vec3d(px,py,pz));
+            masses.push_back(Vector3(px,py,pz));
         }
         else if (!strcmp(cmd,"lspg"))	// linear springs connector
         {

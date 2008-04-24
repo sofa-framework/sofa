@@ -99,15 +99,15 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
 
     if (arg->getAttribute("rx")!=NULL)
     {
-        obj->applyRotation(Quat(Vec3d(1,0,0), atof(arg->getAttribute("rx","0.0"))*R_PI/180));
+        obj->applyRotation(Quat(Vector3(1,0,0), atof(arg->getAttribute("rx","0.0"))*R_PI/180));
     }
     if (arg->getAttribute("ry")!=NULL)
     {
-        obj->applyRotation(Quat(Vec3d(0,1,0), atof(arg->getAttribute("ry","0.0"))*R_PI/180));
+        obj->applyRotation(Quat(Vector3(0,1,0), atof(arg->getAttribute("ry","0.0"))*R_PI/180));
     }
     if (arg->getAttribute("rz")!=NULL)
     {
-        obj->applyRotation(Quat(Vec3d(0,0,1), atof(arg->getAttribute("rz","0.0"))*R_PI/180));
+        obj->applyRotation(Quat(Vector3(0,0,1), atof(arg->getAttribute("rz","0.0"))*R_PI/180));
     }
 
     if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
@@ -539,7 +539,7 @@ void VisualModelImpl::computeBBox()
     bbox[1] = maxBBox;
 }
 
-bool VisualModelImpl::addBBox(double* minBBox, double* maxBBox)
+bool VisualModelImpl::addBBox(Real_Sofa* minBBox, Real_Sofa* maxBBox)
 {
     if (bbox[0][0] > bbox[1][0]) return false;
     for (unsigned int i=0; i<xforms.size(); i++)

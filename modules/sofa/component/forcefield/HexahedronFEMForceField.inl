@@ -268,7 +268,7 @@ void HexahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv&
 }
 
 template <class DataTypes>
-double HexahedronFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
+sofa::defaulttype::Vector3::value_type HexahedronFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 {
     std::cerr<<"HexahedronFEMForceField::getPotentialEnergy-not-implemented !!!"<<std::endl;
     return 0;
@@ -1043,7 +1043,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const 
 
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, double k, unsigned int &offset)
+void HexahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, Real_Sofa k, unsigned int &offset)
 {
     // Build Matrix Block for this ForceField
     int i,j,n1, n2, e;

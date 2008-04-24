@@ -60,6 +60,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
+    typedef typename sofa::defaulttype::Vector3::value_type Real_Sofa;
 
     typedef helper::vector<MassType> VecMass;
 
@@ -95,7 +96,7 @@ public:
 
 
     // -- Mass interface
-    void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
+    void addMDx(VecDeriv& f, const VecDeriv& dx, Real_Sofa factor = 1.0);
 
     void accFromF(VecDeriv& a, const VecDeriv& f);
 
@@ -103,14 +104,14 @@ public:
 
     void addGravityToV(double dt/*, defaulttype::BaseVector& v*/);
 
-    double getKineticEnergy(const VecDeriv& v);  ///< vMv/2 using dof->getV()
+    sofa::defaulttype::Vector3::value_type getKineticEnergy(const VecDeriv& v);  ///< vMv/2 using dof->getV()
 
-    double getPotentialEnergy(const VecCoord& x);   ///< Mgx potential in a uniform gravity field, null at origin
+    sofa::defaulttype::Vector3::value_type getPotentialEnergy(const VecCoord& x);   ///< Mgx potential in a uniform gravity field, null at origin
 
     /// Add Mass contribution to global Matrix assembling
     void addMToMatrix(defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset);
 
-    double getElementMass(unsigned int index);
+    sofa::defaulttype::Vector3::value_type getElementMass(unsigned int index);
 
 protected:
     MassType diagonalMass( const Real& m ); ///< return a diagonal matrix mass with value m on all the diagonal

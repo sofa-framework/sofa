@@ -48,7 +48,7 @@ int RayModelClass = core::RegisterObject("Collision model representing a ray in 
 
 using namespace sofa::defaulttype;
 
-RayModel::RayModel(double length)
+RayModel::RayModel(Real length)
     : defaultLength(initData(&defaultLength, length, "", "TODO"))
 {
     this->contactResponse.setValue("ray"); // use RayContact response class
@@ -70,7 +70,7 @@ void RayModel::resize(int size)
     }
 }
 
-int RayModel::addRay(const Vector3& origin, const Vector3& direction, double length)
+int RayModel::addRay(const Vector3& origin, const Vector3& direction, Real length)
 {
     int i = size;
     resize(2*(i+1));
@@ -87,8 +87,13 @@ void RayModel::draw(int index)
     const Vector3& p1 = r.origin();
     const Vector3 p2 = p1 + r.direction()*r.l();
     glBegin(GL_LINES);
+#ifdef SOFA_FLOAT
+    glVertex3fv(p1.ptr());
+    glVertex3fv(p2.ptr());
+#else
     glVertex3dv(p1.ptr());
     glVertex3dv(p2.ptr());
+#endif
     glEnd();
 }
 
@@ -122,7 +127,7 @@ void RayModel::computeBoundingTree(int maxDepth)
             Ray r(this, i);
             const Vector3& o = r.origin();
             const Vector3& d = r.direction();
-            const double l = r.l();
+            const Real l = r.l();
             for (int c=0; c<3; c++)
             {
                 if (d[c]<0)

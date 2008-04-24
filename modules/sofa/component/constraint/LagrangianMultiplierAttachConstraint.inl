@@ -112,13 +112,6 @@ void LagrangianMultiplierAttachConstraint<DataTypes>::addDForce(VecDeriv& f1, Ve
     }
 }
 
-template <class DataTypes>
-double LagrangianMultiplierAttachConstraint<DataTypes>::getPotentialEnergy(const VecCoord&, const VecCoord&)
-{
-    cerr<<"LagrangianMultiplierAttachConstraint::getPotentialEnergy-not-implemented !!!"<<endl;
-    return 0;
-}
-
 
 template<class DataTypes>
 void LagrangianMultiplierAttachConstraint<DataTypes>::draw()

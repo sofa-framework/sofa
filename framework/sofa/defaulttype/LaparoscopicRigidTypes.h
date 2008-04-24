@@ -25,8 +25,10 @@
 #ifndef SOFA_DEFAULTTYPE_LAPAROSCOPICRIGIDTYPES_H
 #define SOFA_DEFAULTTYPE_LAPAROSCOPICRIGIDTYPES_H
 
+
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
+#include <sofa/defaulttype/Vec.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/componentmodel/behavior/Mass.h>
 #include <sofa/helper/vector.h>
@@ -43,18 +45,20 @@ using sofa::helper::vector;
 class LaparoscopicRigid3Types
 {
 public:
-    typedef Vec3d Vec3;
-    typedef Vec3::value_type Real;
+
+    typedef Vector3::value_type Real_Sofa;
+    typedef Real_Sofa Real;
 
     class Deriv
     {
     private:
-        Real vTranslation;
-        Vec3 vOrientation;
+        Real_Sofa vTranslation;
+        Vector3 vOrientation;
     public:
+        typedef Real_Sofa value_type;
         friend class Coord;
 
-        Deriv (const Real &velTranslation, const Vec3 &velOrient)
+        Deriv (const Real_Sofa &velTranslation, const Vector3 &velOrient)
             : vTranslation(velTranslation), vOrientation(velOrient) {}
         Deriv () { clear(); }
 
@@ -74,13 +78,13 @@ public:
             return d;
         }
 
-        void operator*=(double a)
+        void operator*=(Real_Sofa a)
         {
             vTranslation *= a;
             vOrientation *= a;
         }
 
-        Deriv operator*(double a) const
+        Deriv operator*(Real_Sofa a) const
         {
             Deriv r = *this;
             r*=a;
@@ -93,17 +97,17 @@ public:
         }
 
         /// dot product
-        double operator*(const Deriv& a) const
+        Real_Sofa operator*(const Deriv& a) const
         {
             return vTranslation*a.vTranslation
                     +vOrientation[0]*a.vOrientation[0]+vOrientation[1]*a.vOrientation[1]
                     +vOrientation[2]*a.vOrientation[2];
         }
 
-        Real& getVTranslation (void) { return vTranslation; }
-        Vec3& getVOrientation (void) { return vOrientation; }
-        const Real& getVTranslation (void) const { return vTranslation; }
-        const Vec3& getVOrientation (void) const { return vOrientation; }
+        Real_Sofa& getVTranslation (void) { return vTranslation; }
+        Vector3& getVOrientation (void) { return vOrientation; }
+        const Real_Sofa& getVTranslation (void) const { return vTranslation; }
+        const Vector3& getVOrientation (void) const { return vOrientation; }
         inline friend std::ostream& operator << (std::ostream& out, const Deriv& v )
         {
             out<<v.getVTranslation();
@@ -120,11 +124,13 @@ public:
 
     class Coord
     {
+
     private:
-        Real translation;
+        Real_Sofa translation;
         Quat orientation;
     public:
-        Coord (const Real &posTranslation, const Quat &orient)
+        typedef Real_Sofa value_type;
+        Coord (const Real_Sofa &posTranslation, const Quat &orient)
             : translation(posTranslation), orientation(orient) {}
         Coord () { clear(); }
 
@@ -160,14 +166,14 @@ public:
             //orientation.normalize();
         }
 
-        void operator*=(double a)
+        void operator*=(Real_Sofa a)
         {
 // 			std::cout << "*="<<std::endl;
             translation *= a;
             //orientation *= a;
         }
 
-        Coord operator*(double a) const
+        Coord operator*(Real_Sofa a) const
         {
             Coord r = *this;
             r*=a;
@@ -175,16 +181,16 @@ public:
         }
 
         /// dot product (FF: WHAT????  )
-        double operator*(const Coord& a) const
+        Real_Sofa operator*(const Coord& a) const
         {
             return translation*a.translation
                     +orientation[0]*a.orientation[0]+orientation[1]*a.orientation[1]
                     +orientation[2]*a.orientation[2]+orientation[3]*a.orientation[3];
         }
 
-        Real& getTranslation () { return translation; }
+        Real_Sofa& getTranslation () { return translation; }
         Quat& getOrientation () { return orientation; }
-        const Real& getTranslation () const { return translation; }
+        const Real_Sofa& getTranslation () const { return translation; }
         const Quat& getOrientation () const { return orientation; }
         inline friend std::ostream& operator << (std::ostream& out, const Coord& c )
         {
@@ -221,7 +227,7 @@ public:
             return r;
         }
         /// compute the projection of a vector from the parent frame to the child
-        Vec3 vectorToChild( const Vec3& v ) const
+        Vector3 vectorToChild( const Vector3& v ) const
         {
             return orientation.inverseRotate(v);
         }
@@ -247,44 +253,44 @@ public:
 
     typedef vector<Coord> VecCoord;
     typedef vector<Deriv> VecDeriv;
-    typedef vector<Real> VecReal;
+    typedef vector<Real_Sofa> VecReal;
 
-    static void set(Coord& c, double x, double, double)
+    static void set(Coord& c, Real_Sofa x, Real_Sofa, Real_Sofa)
     {
         c.getTranslation() = x;
         //c.getTranslation()[1] = y;
         //c.getTranslation()[2] = z;
     }
 
-    static void get(double& x, double&, double&, const Coord& c)
+    static void get(Real_Sofa& x, Real_Sofa&, Real_Sofa&, const Coord& c)
     {
         x = c.getTranslation();
         //y = c.getTranslation();
         //z = c.getTranslation()[2];
     }
 
-    static void add(Coord& c, double x, double, double)
+    static void add(Coord& c, Real_Sofa x, Real_Sofa, Real_Sofa)
     {
         c.getTranslation() += x;
         //c.getTranslation()[1] += y;
         //c.getTranslation()[2] += z;
     }
 
-    static void set(Deriv& c, double x, double, double)
+    static void set(Deriv& c, Real_Sofa x, Real_Sofa, Real_Sofa)
     {
         c.getVTranslation() = x;
         //c.getVTranslation()[1] = y;
         //c.getVTranslation()[2] = z;
     }
 
-    static void get(double& x, double& y, double& z, const Deriv& c)
+    static void get(Real_Sofa& x, Real_Sofa& y, Real_Sofa& z, const Deriv& c)
     {
         x = c.getVTranslation();
         y = 0; //c.getVTranslation()[1];
         z = 0; //c.getVTranslation()[2];
     }
 
-    static void add(Deriv& c, double x, double, double)
+    static void add(Deriv& c, Real_Sofa x, Real_Sofa, Real_Sofa)
     {
         c.getVTranslation() += x;
         //c.getVTranslation()[1] += y;
@@ -333,9 +339,9 @@ public:
     static void setValue(LaparoscopicRigidTypes::Coord &type, unsigned int index, const T& value )
     {
         if (index < 1)
-            type.getTranslation() = static_cast<double>(value);
+            type.getTranslation() = static_cast<LaparoscopicRigidTypes::Coord::value_type>(value);
         else
-            type.getOrientation()[index-1] = static_cast<double>(value);
+            type.getOrientation()[index-1] = static_cast<LaparoscopicRigidTypes::Coord::value_type>(value);
     }
 };
 
@@ -358,9 +364,9 @@ public:
     static void setValue(LaparoscopicRigidTypes::Deriv &type, unsigned int index, const T& value )
     {
         if (index < 1)
-            type.getVTranslation() = static_cast<double>(value);
+            type.getVTranslation() = static_cast<LaparoscopicRigidTypes::Deriv::value_type>(value);
         else
-            type.getVOrientation()[index-1] = static_cast<double>(value);
+            type.getVOrientation()[index-1] = static_cast<LaparoscopicRigidTypes::Deriv::value_type>(value);
     }
 };
 
@@ -382,22 +388,22 @@ template <>
 inline defaulttype::LaparoscopicRigid3Types::Deriv inertiaForce<
 defaulttype::LaparoscopicRigid3Types::Coord,
             defaulttype::LaparoscopicRigid3Types::Deriv,
-            objectmodel::BaseContext::Vec3,
+            defaulttype::Vector3,
             defaulttype::Rigid3Mass,
             objectmodel::BaseContext::SpatialVector
             >
             (
                     const objectmodel::BaseContext::SpatialVector& vframe,
-                    const objectmodel::BaseContext::Vec3& aframe,
+                    const defaulttype::Vector3& aframe,
                     const defaulttype::Rigid3Mass& mass,
                     const defaulttype::LaparoscopicRigid3Types::Coord& x,
                     const defaulttype::LaparoscopicRigid3Types::Deriv& v )
 {
-    defaulttype::Rigid3Types::Vec3 omega( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
-    defaulttype::Rigid3Types::Vec3 origin, finertia, zero(0,0,0);
+    defaulttype::Vector3 omega( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
+    defaulttype::Vector3 origin, finertia, zero(0,0,0);
     origin[0] = x.getTranslation();
 
-    finertia = -( aframe + omega.cross( omega.cross(origin) + defaulttype::Rigid3Types::Vec3(v.getVTranslation()*2,0,0) ))*mass.mass;
+    finertia = -( aframe + omega.cross( omega.cross(origin) + defaulttype::Vector3(v.getVTranslation()*2,0,0) ))*mass.mass;
     return defaulttype::LaparoscopicRigid3Types::Deriv( finertia[0], zero );
     /// \todo replace zero by Jomega.cross(omega)
 }

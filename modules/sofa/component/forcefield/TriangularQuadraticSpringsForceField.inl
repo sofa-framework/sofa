@@ -236,7 +236,7 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
 
 
 template <class DataTypes>
-double TriangularQuadraticSpringsForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
+sofa::defaulttype::Vector3::value_type TriangularQuadraticSpringsForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
 {
     std::cerr<<"TriangularQuadraticSpringsForceField::getPotentialEnergy-not-implemented !!!"<<endl;
     return 0;

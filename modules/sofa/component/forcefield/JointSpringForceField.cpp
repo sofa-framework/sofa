@@ -19,16 +19,26 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-template class JointSpringForceField<Rigid3dTypes>;
-template class JointSpringForceField<Rigid3fTypes>;
 
 SOFA_DECL_CLASS(JointSpringForceField)
 
 // Register in the Factory
 int JointSpringForceFieldClass = core::RegisterObject("Springs for Rigids")
+#ifndef SOFA_FLOAT
         .add< JointSpringForceField<Rigid3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
         .add< JointSpringForceField<Rigid3fTypes> >()
+#endif
         ;
+
+#ifndef SOFA_FLOAT
+template class JointSpringForceField<Rigid3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class JointSpringForceField<Rigid3fTypes>;
+#endif
+
 
 } // namespace forcefield
 

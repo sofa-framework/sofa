@@ -16,8 +16,8 @@ namespace component
 namespace topology
 {
 
-using sofa::defaulttype::Vec3f;
 using sofa::defaulttype::Vec;
+using sofa::defaulttype::Vector3;
 using sofa::helper::vector;
 
 class MarchingCubeUtility
@@ -27,13 +27,12 @@ class MarchingCubeUtility
     struct GridCell
     {
         float val[8];
-        Vec3f pos[8];
+        Vector3 pos[8];
     };
 
-
 public:
-    MarchingCubeUtility():sizeVoxel(Vec3f(1.0f,1.0f,1.0f)) {};
-    MarchingCubeUtility(const Vec<3,int> &_size, const Vec<3,int>  &_gridSize):size(_size), gridSize(_gridSize), sizeVoxel(Vec3f(1.0f,1.0f,1.0f)) {};
+    MarchingCubeUtility():sizeVoxel(Vector3(1.0f,1.0f,1.0f)) {};
+    MarchingCubeUtility(const Vec<3,int> &_size, const Vec<3,int>  &_gridSize):size(_size), gridSize(_gridSize), sizeVoxel(Vector3(1.0f,1.0f,1.0f)) {};
     ~MarchingCubeUtility() {};
 
     void setSize     (const Vec<3,int>   &_size)     {size      = _size;     };
@@ -45,7 +44,7 @@ public:
     /// map_indices gives the correspondance between an indice and a 3d position in space
     void RenderMarchCube( const unsigned char *data,  const float isolevel,
             sofa::helper::vector< IdVertex >   &mesh,
-            std::map< IdVertex, Vec3f>  &map_indices,
+            std::map< IdVertex, Vector3>  &map_indices,
             unsigned int CONVOLUTION_LENGTH=0) const ;
 
     /// given a set of data (size of the data and size of the marching cube beeing defined previously), we construct a Sofa mesh.
@@ -53,18 +52,18 @@ public:
             unsigned int CONVOLUTION_LENGTH=0) const;
 
     void createMesh( const sofa::helper::vector< IdVertex >   &mesh,
-            std::map< IdVertex, Vec3f>  &map_indices,
+            std::map< IdVertex, Vector3>  &map_indices,
             sofa::helper::io::Mesh &m) const ;
 
 protected:
 
-    inline void VertexInterp(const float isolevel, const Vec3f &p1, const Vec3f &p2, const float valp1, const float valp2, Vec3f &p) const ;
+    inline void VertexInterp(const float isolevel, const Vector3 &p1, const Vector3 &p2, const float valp1, const float valp2, Vector3 &p) const ;
     inline bool testGrid(const float v, const float isolevel) const;
 
     int Polygonise(const GridCell &grid, const float isolevel,
             sofa::helper::vector< IdVertex > &triangles,
-            std::map< Vec3f, IdVertex> &map_vertices,
-            std::map< IdVertex, Vec3f> &map_indices,
+            std::map< Vector3, IdVertex> &map_vertices,
+            std::map< IdVertex, Vector3> &map_indices,
             unsigned int &ID) const ;
 
     bool getVoxel(unsigned int index, const unsigned char *dataVoxels) const
@@ -79,7 +78,7 @@ protected:
 
     Vec<3,int> size;
     Vec<3,int> gridSize;
-    Vec<3,float> sizeVoxel;
+    Vector3 sizeVoxel;
 
 };
 

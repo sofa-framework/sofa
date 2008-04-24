@@ -399,10 +399,10 @@ void Fluid2D::updateVisual()
         points[i].n.normalize();
 }
 
-bool Fluid2D::addBBox(double* minBBox, double* maxBBox)
+bool Fluid2D::addBBox(Real_Sofa* minBBox, Real_Sofa* maxBBox)
 {
-    double size[3] = { (nx-1)*cellwidth, (ny-1)*cellwidth, cellwidth/2 };
-    double pos[3] = { -size[0]/2, -size[1]/2, 0 };
+    Real_Sofa size[3] = { (nx-1)*cellwidth, (ny-1)*cellwidth, cellwidth/2 };
+    Real_Sofa pos[3] = { -size[0]/2, -size[1]/2, 0 };
     for (int c=0; c<3; c++)
     {
         if (minBBox[c] > pos[c]        ) minBBox[c] = pos[c];

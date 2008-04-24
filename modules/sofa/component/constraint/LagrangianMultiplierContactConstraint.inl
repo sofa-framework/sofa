@@ -108,12 +108,6 @@ void LagrangianMultiplierContactConstraint<DataTypes>::addDForce(VecDeriv& f1, V
     }
 }
 
-template <class DataTypes>
-double LagrangianMultiplierContactConstraint<DataTypes>::getPotentialEnergy(const VecCoord&, const VecCoord&)
-{
-    cerr<<"LagrangianMultiplierContactConstraint::getPotentialEnergy-not-implemented !!!"<<endl;
-    return 0;
-}
 
 template<class DataTypes>
 void LagrangianMultiplierContactConstraint<DataTypes>::draw()

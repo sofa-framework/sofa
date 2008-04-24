@@ -57,6 +57,7 @@ void UncoupledConstraintCorrection<DataTypes>::init()
     mstate = dynamic_cast< behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
 }
 
+#ifndef SOFA_FLOAT
 template<>
 void UncoupledConstraintCorrection<defaulttype::Rigid3dTypes>::getCompliance(defaulttype::BaseMatrix*W)
 {
@@ -64,7 +65,7 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3dTypes>::getCompliance(def
     Deriv weighedNormal;
     Deriv InvM_wN;
 
-    const sofa::defaulttype::Rigid3dMass* massValue;
+    const sofa::defaulttype::Rigid3Mass* massValue;
 
     simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
 
@@ -77,74 +78,6 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3dTypes>::getCompliance(def
     else
     {
         massValue = new sofa::defaulttype::Rigid3dMass();
-        printf("\n WARNING : node is not found => massValue could be false in getCompliance function");
-    }
-
-    unsigned int numConstraints = constraints.size();
-
-    double dt = this->getContext()->getDt();
-
-    for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
-    {
-        int sizeCurRowConst = constraints[curRowConst].size();
-        int indexCurRowConst = mstate->getConstraintId()[curRowConst];
-
-        for(int i = 0; i < sizeCurRowConst; i++)
-        {
-            weighedNormal.getVCenter() = constraints[curRowConst][i].data.getVCenter(); // weighed normal
-            weighedNormal.getVOrientation() = constraints[curRowConst][i].data.getVOrientation();
-
-            InvM_wN = weighedNormal / (*massValue);
-            InvM_wN *= dt*dt;
-
-            int indexCurColConst;
-
-            for(unsigned int curColConst = curRowConst; curColConst < numConstraints; curColConst++)
-            {
-                int sizeCurColConst = constraints[curColConst].size();
-                indexCurColConst = mstate->getConstraintId()[curColConst];
-
-                for(int j = 0; j < sizeCurColConst; j++)
-                {
-                    //W[indexCurRowConst][indexCurColConst] +=  constraints[curColConst][j].data * InvM_wN;
-                    double w =  constraints[curColConst][j].data * InvM_wN;
-                    W->add(indexCurRowConst, indexCurColConst, w);
-                    if (indexCurRowConst != indexCurColConst)
-                        W->add(indexCurColConst, indexCurRowConst, w);
-                }
-            }
-            /*
-            			for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
-            			{
-            				indexCurColConst = mstate->getConstraintId()[curColConst];
-            				W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
-            			}
-            */
-        }
-    }
-}
-
-
-template<>
-void UncoupledConstraintCorrection<defaulttype::Rigid3fTypes>::getCompliance(defaulttype::BaseMatrix*W)
-{
-    const VecConst& constraints = *mstate->getC();
-    Deriv weighedNormal;
-    Deriv InvM_wN;
-
-    const sofa::defaulttype::Rigid3fMass* massValue;
-
-    simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
-
-    if (node != NULL)
-    {
-        core::componentmodel::behavior::BaseMass*_m = node->mass;
-        component::mass::UniformMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass> *m = dynamic_cast<component::mass::UniformMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>*> (_m);
-        massValue = &( m->getMass());
-    }
-    else
-    {
-        massValue = new sofa::defaulttype::Rigid3fMass();
         printf("\n WARNING : node is not found => massValue could be false in getCompliance function");
     }
 
@@ -264,139 +197,9 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3dTypes>::applyContactForce
 //	simulation::tree::MechanicalPropagateAndAddDxVisitor(dx).execute(this->getContext());
 
 }
-template<>
-void UncoupledConstraintCorrection<defaulttype::Rigid3fTypes>::applyContactForce(const defaulttype::BaseVector *f)
-{
-    VecDeriv& force = *mstate->getExternalForces();
-    const VecConst& constraints = *mstate->getC();
-    Deriv weighedNormal;
-
-    const sofa::defaulttype::Rigid3fMass* massValue;
-
-    simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
-
-    if (node != NULL)
-    {
-        core::componentmodel::behavior::BaseMass*_m = node->mass;
-        component::mass::UniformMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass> *m = dynamic_cast<component::mass::UniformMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>*> (_m);
-        massValue = &( m->getMass());
-    }
-    else
-    {
-        massValue = new sofa::defaulttype::Rigid3fMass();
-        printf("\n WARNING : node is not found => massValue could be false in getCompliance function");
-    }
-
-
-    double dt = this->getContext()->getDt();
-
-    force.resize(0);
-    force.resize(1);
-    force[0] = Deriv();
-
-    int numConstraints = constraints.size();
-
-    for(int c1 = 0; c1 < numConstraints; c1++)
-    {
-        int indexC1 = mstate->getConstraintId()[c1];
-        double fC1 = f->element(indexC1);
-
-        if (fC1 != 0.0)
-        {
-            int sizeC1 = constraints[c1].size();
-            for(int i = 0; i < sizeC1; i++)
-            {
-                weighedNormal = constraints[c1][i].data; // weighted normal
-                force[0].getVCenter() += weighedNormal.getVCenter() * fC1;
-                force[0].getVOrientation() += weighedNormal.getVOrientation() * fC1;
-            }
-        }
-    }
-
-
-    VecDeriv& dx = *mstate->getDx();
-    VecCoord& x = *mstate->getX();
-    VecDeriv& v = *mstate->getV();
-    VecDeriv& v_free = *mstate->getVfree();
-    VecCoord& x_free = *mstate->getXfree();
-
-
-//	mstate->setX(x_free);
-//	mstate->setV(v_free);
-    x[0]=x_free[0];
-    v[0]=v_free[0];
-
-    // Euler integration... will be done in the "integrator" as soon as it exists !
-    dx.resize(v.size());
-    dx[0] = force[0] / (*massValue);
-    dx[0] *= dt;
-    v[0] += dx[0];
-    dx[0] *= dt;
-    x[0] += dx[0];
-//	simulation::tree::MechanicalPropagateAndAddDxVisitor(dx).execute(this->getContext());
-
-}
 
 template<>
 void UncoupledConstraintCorrection<defaulttype::Vec1dTypes>::getCompliance(defaulttype::BaseMatrix *W)
-{
-    const VecConst& constraints = *mstate->getC();
-    unsigned int numConstraints = constraints.size();
-
-    for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
-    {
-        int sizeCurRowConst = constraints[curRowConst].size();
-        int indexCurRowConst = mstate->getConstraintId()[curRowConst];
-
-        for(int i = 0; i < sizeCurRowConst; i++)
-        {
-            int indexCurColConst;
-
-            for(unsigned int curColConst = curRowConst; curColConst < numConstraints; curColConst++)
-            {
-                int sizeCurColConst = constraints[curColConst].size();
-                indexCurColConst = mstate->getConstraintId()[curColConst];
-
-                for(int j = 0; j < sizeCurColConst; j++)
-                {
-                    if (constraints[curRowConst][i].index == constraints[curColConst][j].index)
-                    {
-                        //W[indexCurRowConst][indexCurColConst] += (1.0/10000.0) * constraints[curRowConst][i].data.x() * constraints[curColConst][j].data.x();
-                        double w = (1.0/10000.0) * constraints[curRowConst][i].data.x() * constraints[curColConst][j].data.x();
-                        W->add(indexCurRowConst, indexCurColConst, w);
-                        if (indexCurRowConst != indexCurColConst)
-                            W->add(indexCurColConst, indexCurRowConst, w);
-                    }
-                }
-            }
-            /*
-            			for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
-            			{
-            				indexCurColConst = mstate->getConstraintId()[curColConst];
-            				W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
-            			}
-            */
-        }
-    }
-
-// debug : verifie qu'il n'y a pas de 0 sur la diagonale de W
-    //printf("\n index : ");
-    //for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
-    //{
-    //	int indexCurRowConst = mstate->getConstraintId()[curRowConst];
-    //	printf(" %d ",indexCurRowConst);
-    //	if(abs(W[indexCurRowConst][indexCurRowConst]) < 0.000000001)
-    //		printf("\n WARNING : there is a 0 on the diagonal of matrix W");
-
-    //	if(abs(W[curRowConst][curRowConst]) <0.000000001)
-    //		printf("\n stop");
-    //}
-
-
-}
-
-template<>
-void UncoupledConstraintCorrection<defaulttype::Vec1fTypes>::getCompliance(defaulttype::BaseMatrix *W)
 {
     const VecConst& constraints = *mstate->getC();
     unsigned int numConstraints = constraints.size();
@@ -498,6 +301,207 @@ void UncoupledConstraintCorrection<defaulttype::Vec1dTypes>::applyContactForce(c
     }
 }
 
+#endif
+#ifndef SOFA_DOUBLE
+template<>
+void UncoupledConstraintCorrection<defaulttype::Rigid3fTypes>::getCompliance(defaulttype::BaseMatrix*W)
+{
+    const VecConst& constraints = *mstate->getC();
+    Deriv weighedNormal;
+    Deriv InvM_wN;
+
+    const sofa::defaulttype::Rigid3fMass* massValue;
+
+    simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
+
+    if (node != NULL)
+    {
+        core::componentmodel::behavior::BaseMass*_m = node->mass;
+        component::mass::UniformMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass> *m = dynamic_cast<component::mass::UniformMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>*> (_m);
+        massValue = &( m->getMass());
+    }
+    else
+    {
+        massValue = new sofa::defaulttype::Rigid3fMass();
+        printf("\n WARNING : node is not found => massValue could be false in getCompliance function");
+    }
+
+    unsigned int numConstraints = constraints.size();
+
+    double dt = this->getContext()->getDt();
+
+    for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
+    {
+        int sizeCurRowConst = constraints[curRowConst].size();
+        int indexCurRowConst = mstate->getConstraintId()[curRowConst];
+
+        for(int i = 0; i < sizeCurRowConst; i++)
+        {
+            weighedNormal.getVCenter() = constraints[curRowConst][i].data.getVCenter(); // weighed normal
+            weighedNormal.getVOrientation() = constraints[curRowConst][i].data.getVOrientation();
+
+            InvM_wN = weighedNormal / (*massValue);
+            InvM_wN *= dt*dt;
+
+            int indexCurColConst;
+
+            for(unsigned int curColConst = curRowConst; curColConst < numConstraints; curColConst++)
+            {
+                int sizeCurColConst = constraints[curColConst].size();
+                indexCurColConst = mstate->getConstraintId()[curColConst];
+
+                for(int j = 0; j < sizeCurColConst; j++)
+                {
+                    //W[indexCurRowConst][indexCurColConst] +=  constraints[curColConst][j].data * InvM_wN;
+                    double w =  constraints[curColConst][j].data * InvM_wN;
+                    W->add(indexCurRowConst, indexCurColConst, w);
+                    if (indexCurRowConst != indexCurColConst)
+                        W->add(indexCurColConst, indexCurRowConst, w);
+                }
+            }
+            /*
+                  for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
+                  {
+                  indexCurColConst = mstate->getConstraintId()[curColConst];
+                  W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
+                }
+            */
+        }
+    }
+}
+
+template<>
+void UncoupledConstraintCorrection<defaulttype::Rigid3fTypes>::applyContactForce(const defaulttype::BaseVector *f)
+{
+    VecDeriv& force = *mstate->getExternalForces();
+    const VecConst& constraints = *mstate->getC();
+    Deriv weighedNormal;
+
+    const sofa::defaulttype::Rigid3fMass* massValue;
+
+    simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
+
+    if (node != NULL)
+    {
+        core::componentmodel::behavior::BaseMass*_m = node->mass;
+        component::mass::UniformMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass> *m = dynamic_cast<component::mass::UniformMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>*> (_m);
+        massValue = &( m->getMass());
+    }
+    else
+    {
+        massValue = new sofa::defaulttype::Rigid3fMass();
+        printf("\n WARNING : node is not found => massValue could be false in getCompliance function");
+    }
+
+
+    double dt = this->getContext()->getDt();
+
+    force.resize(0);
+    force.resize(1);
+    force[0] = Deriv();
+
+    int numConstraints = constraints.size();
+
+    for(int c1 = 0; c1 < numConstraints; c1++)
+    {
+        int indexC1 = mstate->getConstraintId()[c1];
+        double fC1 = f->element(indexC1);
+
+        if (fC1 != 0.0)
+        {
+            int sizeC1 = constraints[c1].size();
+            for(int i = 0; i < sizeC1; i++)
+            {
+                weighedNormal = constraints[c1][i].data; // weighted normal
+                force[0].getVCenter() += weighedNormal.getVCenter() * fC1;
+                force[0].getVOrientation() += weighedNormal.getVOrientation() * fC1;
+            }
+        }
+    }
+
+
+    VecDeriv& dx = *mstate->getDx();
+    VecCoord& x = *mstate->getX();
+    VecDeriv& v = *mstate->getV();
+    VecDeriv& v_free = *mstate->getVfree();
+    VecCoord& x_free = *mstate->getXfree();
+
+
+//	mstate->setX(x_free);
+//	mstate->setV(v_free);
+    x[0]=x_free[0];
+    v[0]=v_free[0];
+
+    // Euler integration... will be done in the "integrator" as soon as it exists !
+    dx.resize(v.size());
+    dx[0] = force[0] / (*massValue);
+    dx[0] *= dt;
+    v[0] += dx[0];
+    dx[0] *= dt;
+    x[0] += dx[0];
+//	simulation::tree::MechanicalPropagateAndAddDxVisitor(dx).execute(this->getContext());
+
+}
+
+template<>
+void UncoupledConstraintCorrection<defaulttype::Vec1fTypes>::getCompliance(defaulttype::BaseMatrix *W)
+{
+    const VecConst& constraints = *mstate->getC();
+    unsigned int numConstraints = constraints.size();
+
+    for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
+    {
+        int sizeCurRowConst = constraints[curRowConst].size();
+        int indexCurRowConst = mstate->getConstraintId()[curRowConst];
+
+        for(int i = 0; i < sizeCurRowConst; i++)
+        {
+            int indexCurColConst;
+
+            for(unsigned int curColConst = curRowConst; curColConst < numConstraints; curColConst++)
+            {
+                int sizeCurColConst = constraints[curColConst].size();
+                indexCurColConst = mstate->getConstraintId()[curColConst];
+
+                for(int j = 0; j < sizeCurColConst; j++)
+                {
+                    if (constraints[curRowConst][i].index == constraints[curColConst][j].index)
+                    {
+                        //W[indexCurRowConst][indexCurColConst] += (1.0/10000.0) * constraints[curRowConst][i].data.x() * constraints[curColConst][j].data.x();
+                        double w = (1.0/10000.0) * constraints[curRowConst][i].data.x() * constraints[curColConst][j].data.x();
+                        W->add(indexCurRowConst, indexCurColConst, w);
+                        if (indexCurRowConst != indexCurColConst)
+                            W->add(indexCurColConst, indexCurRowConst, w);
+                    }
+                }
+            }
+            /*
+                  for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
+                  {
+                  indexCurColConst = mstate->getConstraintId()[curColConst];
+                  W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
+                }
+            */
+        }
+    }
+
+// debug : verifie qu'il n'y a pas de 0 sur la diagonale de W
+    //printf("\n index : ");
+    //for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
+    //{
+    //	int indexCurRowConst = mstate->getConstraintId()[curRowConst];
+    //	printf(" %d ",indexCurRowConst);
+    //	if(abs(W[indexCurRowConst][indexCurRowConst]) < 0.000000001)
+    //		printf("\n WARNING : there is a 0 on the diagonal of matrix W");
+
+    //	if(abs(W[curRowConst][curRowConst]) <0.000000001)
+    //		printf("\n stop");
+    //}
+
+
+}
+
+
 template<>
 void UncoupledConstraintCorrection<defaulttype::Vec1fTypes>::applyContactForce(const defaulttype::BaseVector *f)
 {
@@ -542,6 +546,9 @@ void UncoupledConstraintCorrection<defaulttype::Vec1fTypes>::applyContactForce(c
         v[i] += dx[i]/dt;
     }
 }
+
+#endif
+
 
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::resetContactForce()

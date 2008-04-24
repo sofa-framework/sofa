@@ -343,7 +343,7 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
 
 
 template <class DataTypes>
-double TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
+sofa::defaulttype::Vector3::value_type TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
 {
     std::cerr<<"TetrahedralTensorMassForceField::getPotentialEnergy-not-implemented !!!"<<endl;
     return 0;

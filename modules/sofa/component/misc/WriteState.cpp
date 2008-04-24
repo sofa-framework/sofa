@@ -17,15 +17,26 @@ SOFA_DECL_CLASS(WriteState)
 
 using namespace defaulttype;
 
-template class WriteState<Vec3dTypes>;
-template class WriteState<Vec3fTypes>;
-template class WriteState<RigidTypes>;
+
 
 int WriteStateVec3fClass = core::RegisterObject("Write State vectors to file at each timestep")
+#ifndef SOFA_FLOAT
         .add< WriteState<Vec3dTypes> >()
+        .add< WriteState<Rigid3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
         .add< WriteState<Vec3fTypes> >()
-        .add< WriteState<RigidTypes> >()
+        .add< WriteState<Rigid3fTypes> >()
+#endif
         ;
+#ifndef SOFA_FLOAT
+template class WriteState<Vec3dTypes>;
+template class WriteState<Rigid3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class WriteState<Vec3fTypes>;
+template class WriteState<Rigid3fTypes>;
+#endif
 
 } // namespace misc
 

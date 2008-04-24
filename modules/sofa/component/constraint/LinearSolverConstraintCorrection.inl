@@ -130,7 +130,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getCompliance(defaulttype::Bas
         J.resize(numDOFReals,numDOFReals);
         for (unsigned int i=0; i<numDOFReals; ++i)
             J.set(i,i,1);
-        linearsolver::FullMatrix<double> Minv;
+        linearsolver::FullMatrix<Real> Minv;
         Minv.resize(numDOFReals,numDOFReals);
         // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
         linearsolver->addJMInvJt(&Minv, &J, factor);
@@ -212,7 +212,7 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     const unsigned int N = Deriv::size();
     const unsigned int numDOFReals = numDOFs*N;
     F.resize(numDOFReals);
-    const linearsolver::FullVector<double>* fcast = dynamic_cast< const linearsolver::FullVector<double>* >(f);
+    const linearsolver::FullVector<Real>* fcast = dynamic_cast< const linearsolver::FullVector<Real>* >(f);
     if (fcast)
         J.mulTranspose(F, *fcast); // fast
     else
@@ -227,7 +227,7 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     for(unsigned int c1 = 0; c1 < numConstraints; c1++)
     {
         int indexC1 = mstate->getConstraintId()[c1];
-        double fC1 = f->element(indexC1);
+        Real fC1 = f->element(indexC1);
         //std::cout << "fC("<<indexC1<<")="<<fC1<<std::endl;
         if (fC1 != 0.0)
         {

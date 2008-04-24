@@ -63,7 +63,7 @@ void WashingMachineForceField<DataTypes>::addDForce(VecDeriv& f1, const VecDeriv
 
 
 template <class DataTypes>
-double WashingMachineForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
+sofa::defaulttype::Vector3::value_type WashingMachineForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 {
     cerr<<"WashingMachineForceField::getPotentialEnergy-not-implemented !!!"<<endl;
     return 0;
@@ -81,7 +81,7 @@ void WashingMachineForceField<DataTypes>::draw()
 }
 
 template<class DataTypes>
-bool WashingMachineForceField<DataTypes>::addBBox(double* minBBox, double* maxBBox)
+bool WashingMachineForceField<DataTypes>::addBBox(Real_Sofa* minBBox, Real_Sofa* maxBBox)
 {
     Deriv corner0 = _center.getValue() - _size.getValue() * .5;
     Deriv corner1 = _center.getValue() + _size.getValue() * .5;

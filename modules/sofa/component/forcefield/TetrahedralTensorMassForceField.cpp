@@ -53,15 +53,23 @@ SOFA_DECL_CLASS(TetrahedralTensorMassForceField)
 
 using namespace sofa::defaulttype;
 
-template class TetrahedralTensorMassForceField<Vec3dTypes>;
-template class TetrahedralTensorMassForceField<Vec3fTypes>;
-
 
 // Register in the Factory
 int TetrahedralTensorMassForceFieldClass = core::RegisterObject("Linear Elastic Tetrahedral Mesh")
+#ifndef SOFA_FLOAT
         .add< TetrahedralTensorMassForceField<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
         .add< TetrahedralTensorMassForceField<Vec3fTypes> >()
+#endif
         ;
+
+#ifndef SOFA_FLOAT
+template class TetrahedralTensorMassForceField<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class TetrahedralTensorMassForceField<Vec3fTypes>;
+#endif
 
 
 

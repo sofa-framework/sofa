@@ -68,9 +68,9 @@ void MeshOBJ::readOBJ (FILE* file, const char* filename)
     vector<int>vIndices, nIndices, tIndices;
     int vtn[3];
     char buf[128], matName[1024];
-    Vector3 result;
-    Vector3 texCoord;
-    Vector3 normal;
+    Vec3d result;
+    Vec3d texCoord;
+    Vec3d normal;
     const char *token;
 
     std::string face, tmp;
@@ -93,21 +93,21 @@ void MeshOBJ::readOBJ (FILE* file, const char* filename)
                 /* eat up rest of line */
                 fgets(buf, sizeof(buf), file);
                 sscanf(buf, "%lf %lf %lf", &result[0], &result[1], &result[2]);
-                vertices.push_back(result);
+                vertices.push_back(Vector3(result[0],result[1], result[2]));
                 break;
             case 'n':
                 /* normal */
                 /* eat up rest of line */
                 fgets(buf, sizeof(buf), file);
                 sscanf(buf, "%lf %lf %lf", &result[0], &result[1], &result[2]);
-                normals.push_back(result);
+                normals.push_back(Vector3(result[0],result[1], result[2]));
                 break;
             case 't':
                 /* texcoord */
                 /* eat up rest of line */
                 fgets(buf, sizeof(buf), file);
                 sscanf (buf, "%lf %lf", &result[0], &result[1]);
-                texCoords.push_back(result);
+                texCoords.push_back(Vector3(result[0],result[1], result[2]));
                 break;
             default:
                 printf("readObj : Unknown token \"%s\".\n", buf);

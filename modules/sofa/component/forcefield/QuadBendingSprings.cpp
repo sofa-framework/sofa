@@ -37,21 +37,30 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-template class QuadBendingSprings<Vec3fTypes>;
-template class QuadBendingSprings<Vec3dTypes>;
-template class QuadBendingSprings<Vec2fTypes>;
-template class QuadBendingSprings<Vec2dTypes>;
-
 
 SOFA_DECL_CLASS(QuadBendingSprings)
 
 // Register in the Factory
 int QuadBendingSpringsClass = core::RegisterObject("Springs added to a quad mesh to prevent bending")
+#ifndef SOFA_FLOAT
         .add< QuadBendingSprings<Vec3dTypes> >()
-        .add< QuadBendingSprings<Vec3fTypes> >()
         .add< QuadBendingSprings<Vec2dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< QuadBendingSprings<Vec3fTypes> >()
         .add< QuadBendingSprings<Vec2fTypes> >()
+#endif
         ;
+
+#ifndef SOFA_FLOAT
+template class QuadBendingSprings<Vec3dTypes>;
+template class QuadBendingSprings<Vec2dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class QuadBendingSprings<Vec3fTypes>;
+template class QuadBendingSprings<Vec2fTypes>;
+#endif
+
 
 } // namespace forcefield
 

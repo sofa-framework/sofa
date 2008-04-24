@@ -101,11 +101,11 @@ const int SparseGridTopology::cornerIndicesFromFineToCoarse[8][8]=
 SparseGridTopology::SparseGridTopology(bool _isVirtual)
     :
     n(initData(&n,Vec<3,int>(2,2,2),"n","grid resolution")),
-    min(initData(&min,Vec3d(0,0,0),"min","Min")),
-    max(initData(&max,Vec3d(0,0,0),"max","Max")),
+    min(initData(&min,Vector3(0,0,0),"min","Min")),
+    max(initData(&max,Vector3(0,0,0),"max","Max")),
     _nbVirtualFinerLevels( initData(&_nbVirtualFinerLevels, 0, "nbVirtualFinerLevels", "create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)")),
     dim_voxels(initData(&dim_voxels,Vec<3,unsigned int>(512,512,246),"dim_voxels","Dimension of the voxel File")),
-    size_voxel(initData(&size_voxel,Vec3f(1.0f,1.0f,1.0f),"size_voxel","Dimension of one voxel")),
+    size_voxel(initData(&size_voxel,Vector3(1.0f,1.0f,1.0f),"size_voxel","Dimension of one voxel")),
     resolution(initData(&resolution, (unsigned int) 128, "resolution", "Resolution of the Marching Cube")),
     smoothData(initData(&smoothData, (unsigned int) 0, "smoothData", "Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required."))
 {
@@ -286,8 +286,8 @@ void SparseGridTopology::buildFromVoxelFile(const std::string& filename)
         zmax =(int)( dz * fileNz);
 
         n.setValue(Vec<3,int>(nx,ny,nz));
-        min.setValue(Vec3d(xmin, ymin, zmin));
-        max.setValue(Vec3d(xmax, ymax, zmax));
+        min.setValue(Vector3(xmin, ymin, zmin));
+        max.setValue(Vector3(xmax, ymax, zmax));
 
 
 
@@ -345,7 +345,7 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
         dataVoxels.beginEdit()->resize(dim_voxels.getValue()[0]*dim_voxels.getValue()[1]*dim_voxels.getValue()[2]/8, (unsigned char)0);
 
         unsigned char value;
-        const Vec3d transform(                (getNx()-1)/(float)dim_voxels.getValue()[0],
+        const Vector3 transform(                (getNx()-1)/(float)dim_voxels.getValue()[0],
                 (getNy()-1)/(float)dim_voxels.getValue()[1],
                 (getNz()-1)/(float)dim_voxels.getValue()[2]);
 
@@ -372,7 +372,7 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
         }
         fclose(file);
     }
-    double s = std::max(dim_voxels.getValue()[0],std::max(dim_voxels.getValue()[1],dim_voxels.getValue()[2]));
+    Real_Sofa s = std::max(dim_voxels.getValue()[0],std::max(dim_voxels.getValue()[1],dim_voxels.getValue()[2]));
     min.setValue(size_voxel.getValue()*s*(-0.5)); //Centered on 0
     max.setValue(size_voxel.getValue()*s*0.5);
 
@@ -395,7 +395,7 @@ void SparseGridTopology::updateMesh()
     using sofa::simulation::tree::GNode;
 
     sofa::helper::vector< sofa::component::topology::MeshTopology * > list_mesh;
-    sofa::helper::vector< sofa::helper::vector< Vec3d >* > list_X;
+    sofa::helper::vector< sofa::helper::vector< Vector3 >* > list_X;
 
     const GNode *context = static_cast< GNode* >(this->getContext());
     for (GNode::ChildIterator it= context->child.begin(); it != context->child.end(); ++it)
@@ -407,22 +407,33 @@ void SparseGridTopology::updateMesh()
                 && m_temp != this
                 && m_temp->getFilename() == "")
         {
-
-            MechanicalObject< Vec3Types > *mecha_temp = static_cast< GNode *>(m_temp->getContext())->get< MechanicalObject< Vec3Types > >();
-
-            if (mecha_temp != NULL && mecha_temp->getX()->size() < 2) //a triangle mesh has minimum 3elements
+#ifndef SOFA_FLOAT
+            MechanicalObject< Vec3dTypes > *mecha_tempf = static_cast< GNode *>(m_temp->getContext())->get< MechanicalObject< Vec3dTypes > >();
+            if (mecha_tempf != NULL && mecha_tempf->getX()->size() < 2) //a triangle mesh has minimum 3elements
             {
 
                 list_mesh.push_back(m_temp);
-                list_X.push_back(mecha_temp->getX());
+                list_X.push_back(mecha_tempf->getX());
             }
+#endif
+#ifndef SOFA_DOUBLE
+            //HACK : to fix!!!
+// 		MechanicalObject< Vec3fTypes > *mecha_tempd = static_cast< GNode *>(m_temp->getContext())->get< MechanicalObject< Vec3fTypes > >();
+// 		if (mecha_tempd != NULL && mecha_tempd->getX()->size() < 2) //a triangle mesh has minimum 3elements
+// 		{
+//
+// 		  list_mesh.push_back(m_temp);
+// 		  list_X.push_back(mecha_tempd->getX());
+// 		}
+#endif
+
         }
 
     }
     if (list_mesh.size() == 0) return;
     //No Marching Cube to run
     sofa::helper::vector< unsigned int> mesh_MC;
-    std::map< unsigned int, Vec3f >     map_indices;
+    std::map< unsigned int, Vector3 >     map_indices;
     //Configuration of the Marching Cubes algorithm
     MC.setSize(Vec<3,int>(dim_voxels.getValue()[0],dim_voxels.getValue()[1],dim_voxels.getValue()[2]));
     //Cubic voxels
@@ -441,9 +452,9 @@ void SparseGridTopology::getMesh(sofa::helper::io::Mesh &m)
 }
 
 void SparseGridTopology::constructCollisionModels(const sofa::helper::vector< sofa::component::topology::MeshTopology * > &list_mesh,
-        const sofa::helper::vector< sofa::helper::vector< Vec3d >* >            &list_X,
+        const sofa::helper::vector< sofa::helper::vector< Vector3 >* >            &list_X,
         const sofa::helper::vector< unsigned int> mesh_MC,
-        std::map< unsigned int, Vec3f >     map_indices) const
+        std::map< unsigned int, Vector3 >     map_indices) const
 {
     for (unsigned int i=0; i<list_mesh.size(); ++i)
     {
@@ -453,7 +464,7 @@ void SparseGridTopology::constructCollisionModels(const sofa::helper::vector< so
     //Fill the dofs : WARNING mesh from Marching Cube has indices starting from ID 1, a sofa mesh begins with ID 0
     for (unsigned int id_point=0; id_point<map_indices.size(); ++id_point)
     {
-        const Vec3f point(map_indices[id_point+1]);
+        const Vector3 point(map_indices[id_point+1]);
         for (unsigned int j=0; j<list_mesh.size(); ++j)
         {
             (*list_X[j])[id_point] = point;
@@ -482,16 +493,16 @@ void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
     }
 
     // if not given sizes -> bounding box
-    if( min.getValue()== Vec3d() && max.getValue()== Vec3d())
+    if( min.getValue()== Vector3() && max.getValue()== Vector3())
     {
-        double xMin, xMax, yMin, yMax, zMin, zMax;
+        Real_Sofa xMin, xMax, yMin, yMax, zMin, zMax;
         computeBoundingBox(mesh->getVertices(), xMin, xMax, yMin, yMax, zMin, zMax);
 
         // increase the box a little
-        Vec3 diff ( xMax-xMin, yMax - yMin, zMax - zMin );
+        Vector3 diff ( xMax-xMin, yMax - yMin, zMax - zMin );
         diff /= 100.0;
-        min.setValue(Vec3d( xMin - diff[0], yMin - diff[1], zMin - diff[2] ));
-        max.setValue(Vec3d( xMax + diff[0], yMax + diff[1], zMax + diff[2] ));
+        min.setValue(Vector3( xMin - diff[0], yMin - diff[1], zMin - diff[2] ));
+        max.setValue(Vector3( xMax + diff[0], yMax + diff[1], zMax + diff[2] ));
     }
 
     _regularGrid.setSize(getNx(),getNy(),getNz());
@@ -552,22 +563,22 @@ void SparseGridTopology::voxelizeTriangleMesh(helper::io::Mesh* mesh,
         //                   }
         //                 }
 
-        Vec3 cubeDiagonal = corners[7] - corners[0];
-        Vec3 cubeCenter = corners[0] + cubeDiagonal*.5;
+        Vector3 cubeDiagonal = corners[7] - corners[0];
+        Vector3 cubeCenter = corners[0] + cubeDiagonal*.5;
 
 
         bool notAlreadyIntersected = true;
 
         const helper::vector< helper::vector < helper::vector <int> > >& facets = mesh->getFacets();
-        const helper::vector<Vec3>& vertices = mesh->getVertices();
+        const helper::vector<Vector3>& vertices = mesh->getVertices();
         for (unsigned int f=0; f<facets.size() && notAlreadyIntersected; f++)
         {
             const helper::vector<int>& facet = facets[f][0];
             for (unsigned int j=2; j<facet.size()&& notAlreadyIntersected; j++) // Triangularize
             {
-                const Vec3& A = vertices[facet[0]];
-                const Vec3& B = vertices[facet[j-1]];
-                const Vec3& C = vertices[facet[j]];
+                const Vector3& A = vertices[facet[0]];
+                const Vector3& B = vertices[facet[j-1]];
+                const Vector3& C = vertices[facet[j]];
 
                 // Scale the triangle to the unit cube matching
                 float points[3][3];
@@ -681,10 +692,10 @@ void SparseGridTopology::buildFromRegularGridTypes(RegularGridTopology& regularG
     }
 }
 
-void SparseGridTopology::computeBoundingBox(const helper::vector<Vec3>& vertices,
-        double& xmin, double& xmax,
-        double& ymin, double& ymax,
-        double& zmin, double& zmax) const
+void SparseGridTopology::computeBoundingBox(const helper::vector<Vector3>& vertices,
+        Real_Sofa& xmin, Real_Sofa& xmax,
+        Real_Sofa& ymin, Real_Sofa& ymax,
+        Real_Sofa& zmin, Real_Sofa& zmax) const
 {
     // bounding box computation
     xmin = vertices[0][0];
@@ -729,9 +740,9 @@ void SparseGridTopology::buildFromFiner(  )
     // the cube size of the coarser mesh is twice the cube size of the finer mesh
     // if the finer mesh contains an odd number of cubes in any direction,
     // the coarser mesh will be a half cube size larger in that direction
-    Vec3 dx = _finerSparseGrid->_regularGrid.getDx();
-    Vec3 dy = _finerSparseGrid->_regularGrid.getDy();
-    Vec3 dz = _finerSparseGrid->_regularGrid.getDz();
+    Vector3 dx = _finerSparseGrid->_regularGrid.getDx();
+    Vector3 dy = _finerSparseGrid->_regularGrid.getDy();
+    Vector3 dz = _finerSparseGrid->_regularGrid.getDz();
     setXmax(getXmin() + (getNx()-1) * 2.0 * dx[0]);
     setYmax(getYmin() + (getNy()-1) * 2.0 * dy[1]);
     setZmax(getZmin() + (getNz()-1) * 2.0 * dz[2]);
@@ -1016,7 +1027,7 @@ void SparseGridTopology::buildVirtualFinerLevels()
 
 /// return the cube containing the given point (or -1 if not found),
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-int SparseGridTopology::findCube(const Vec3& pos, double& fx, double &fy, double &fz)
+int SparseGridTopology::findCube(const Vector3& pos, Real_Sofa& fx, Real_Sofa &fy, Real_Sofa &fz)
 {
     int indiceInRegularGrid = _regularGrid.findCube( pos,fx,fy,fz);
     if( indiceInRegularGrid == -1 )
@@ -1027,7 +1038,7 @@ int SparseGridTopology::findCube(const Vec3& pos, double& fx, double &fy, double
 
 /// return the cube containing the given point (or -1 if not found),
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-int SparseGridTopology::findNearestCube(const Vec3& pos, double& fx, double &fy, double &fz)
+int SparseGridTopology::findNearestCube(const Vector3& pos, Real_Sofa& fx, Real_Sofa &fy, Real_Sofa &fz)
 {
     int indice = 0;
     float lgmin = 99999999.0f;
@@ -1039,10 +1050,10 @@ int SparseGridTopology::findNearestCube(const Vec3& pos, double& fx, double &fy,
         const Hexa& c = getHexa( w );
         int c0 = c[0];
         int c7 = c[7];
-        Vec3 p0(getPX(c0),getPY(c0),getPZ(c0));
-        Vec3 p7(getPX(c7),getPY(c7),getPZ(c7));
+        Vector3 p0(getPX(c0),getPY(c0),getPZ(c0));
+        Vector3 p7(getPX(c7),getPY(c7),getPZ(c7));
 
-        Vec3 barycenter = (p0+p7) * .5;
+        Vector3 barycenter = (p0+p7) * .5;
 
         float lg = (float)((pos-barycenter).norm());
         if( lg < lgmin )
@@ -1055,11 +1066,11 @@ int SparseGridTopology::findNearestCube(const Vec3& pos, double& fx, double &fy,
     const Hexa& c = getHexa( indice );
     int c0 = c[0];
     int c7 = c[7];
-    Vec3 p0(getPX(c0),getPY(c0),getPZ(c0));
-    Vec3 p7(getPX(c7),getPY(c7),getPZ(c7));
+    Vector3 p0(getPX(c0),getPY(c0),getPZ(c0));
+    Vector3 p7(getPX(c7),getPY(c7),getPZ(c7));
 
-    Vec3 relativePos = pos-p0;
-    Vec3 diagonal = p7 - p0;
+    Vector3 relativePos = pos-p0;
+    Vector3 diagonal = p7 - p0;
 
     fx = relativePos[0] / diagonal[0];
     fy = relativePos[1] / diagonal[1];
@@ -1160,11 +1171,11 @@ void SparseGridTopology::updateHexas()
 
 //     bool SparseGridTopology::intersectionSegmentBox( const SegmentForIntersection& seg, const CubeForIntersection& cube  )
 //     {
-//       Vec3 afAWdU, afADdU, afAWxDdU;
-//       Real fRhs;
+//       Vector3 afAWdU, afADdU, afAWxDdU;
+//       Real_Sofa fRhs;
 //
 //
-//       Vec3 kDiff = seg.center - cube.center;
+//       Vector3 kDiff = seg.center - cube.center;
 //
 //       afAWdU[0] = fabs( seg.dir* cube.dir[0]);
 //       afADdU[0] = fabs( kDiff * cube.dir[0] );
@@ -1190,7 +1201,7 @@ void SparseGridTopology::updateHexas()
 //         return false;
 //       }
 //
-//       Vec3 kWxD = seg.dir.cross(kDiff);
+//       Vector3 kWxD = seg.dir.cross(kDiff);
 //
 //       afAWxDdU[0] = fabs(kWxD*cube.dir[0]);
 //       fRhs = cube.norm[1]*afAWdU[2] + cube.norm[2]*afAWdU[1];

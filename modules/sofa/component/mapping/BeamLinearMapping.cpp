@@ -46,23 +46,33 @@ using namespace core::componentmodel::behavior;
 
 // Register in the Factory
 int BeamLinearMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
+
+#ifndef SOFA_FLOAT
         .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > > >()
+        .add< BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > > >()
+// .add< BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > > >()
+        .add< BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > > >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > > >()
+        .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > > >()
+// .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3dTypes> > > >()
+        .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > > >()
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
         .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3fTypes> > > >()
         .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3dTypes> > > >()
-        .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > > >()
         .add< BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3fTypes> > > >()
-        .add< BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > > >()
-        .add< BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > > >()
         .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3dTypes> > > >()
-        .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > > >()
-        .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3dTypes> > > >()
-        .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > > >()
+#endif
+#endif
 // .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3dTypes> > > >()
 // .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > > >()
 // .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3dTypes> > > >()
 // .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > > >()
-// .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3dTypes> > > >()
+// // .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3dTypes> > > >()
 // .add< BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > > >()
 // .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Vec2dTypes> > > >()
 // .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Vec2fTypes> > > >()
@@ -70,170 +80,30 @@ int BeamLinearMappingClass = core::RegisterObject("Set the positions and velocit
 // .add< BeamLinearMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Vec2fTypes> > > >()
         ;
 
+#ifndef SOFA_FLOAT
 template class BeamLinearMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > >;
+template class BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > >;
+// template class BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > >;
+template class BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > >;
+#endif
+#ifndef SOFA_DOUBLE
+template class BeamLinearMapping< MechanicalMapping<MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > >;
+template class BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > >;
+// template class BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3dTypes> > >;
+template class BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > >;
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
 template class BeamLinearMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3fTypes> > >;
 template class BeamLinearMapping< MechanicalMapping<MechanicalState<Rigid3fTypes>, MechanicalState<Vec3dTypes> > >;
-template class BeamLinearMapping< MechanicalMapping<MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > >;
-
-template class BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > >;
 template class BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3fTypes> > >;
-template class BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > >;
-template class BeamLinearMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > >;
 template class BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3dTypes> > >;
-template class BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > >;
-template class BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3dTypes> > >;
-template class BeamLinearMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > >;
-
-
-/// Template specialization for 2D rigids
-/// \TODO Find a clean way not to replicate the code 4 times...
-/*
-template<>
-void BeamLinearMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
-{
-    Deriv v;
-    Real omega;
-    v = in[0].getVCenter();
-    omega = (Real)in[0].getVOrientation();
-    out.resize(points.size());
-    for(unsigned int i=0;i<points.size();i++)
-    {
-        out[i] =  v + Deriv(-rotatedPoints[i][1],rotatedPoints[i][0])*omega;
-    }
-}
-
-template<>
-void BeamLinearMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
-{
-    Deriv v;
-    Real omega;
-    v = in[0].getVCenter();
-    omega = (Real)in[0].getVOrientation();
-    out.resize(points.size());
-    for(unsigned int i=0;i<points.size();i++)
-    {
-        out[i] =  v + Deriv(-rotatedPoints[i][1],rotatedPoints[i][0])*omega;
-    }
-}
-
-template<>
-void BeamLinearMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
-{
-    Deriv v;
-    Real omega;
-    v = in[0].getVCenter();
-    omega = (Real)in[0].getVOrientation();
-    out.resize(points.size());
-    for(unsigned int i=0;i<points.size();i++)
-    {
-        out[i] =  v + Deriv(-rotatedPoints[i][1],rotatedPoints[i][0])*omega;
-    }
-}
-
-template<>
-void BeamLinearMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
-{
-    Deriv v;
-    Real omega;
-    v = in[0].getVCenter();
-    omega = (Real)in[0].getVOrientation();
-    out.resize(points.size());
-    for(unsigned int i=0;i<points.size();i++)
-    {
-        out[i] =  v + Deriv(-rotatedPoints[i][1],rotatedPoints[i][0])*omega;
-    }
-}
-
-
-template<>
-void BeamLinearMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
-{
-    Deriv v;
-    Real omega = (Real)0;
-    for(unsigned int i=0;i<points.size();i++)
-    {
-        Deriv f = in[i];
-        v += f;
-        omega += cross(rotatedPoints[i],f);
-    }
-    out[0].getVCenter() += v;
-    out[0].getVOrientation() += (In::Real)omega;
-}
-
-template<>
-void BeamLinearMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
-{
-    Deriv v;
-    Real omega = (Real)0;
-    for(unsigned int i=0;i<points.size();i++)
-    {
-        Deriv f = in[i];
-        v += f;
-        omega += cross(rotatedPoints[i],f);
-    }
-    out[0].getVCenter() += v;
-    out[0].getVOrientation() += (In::Real)omega;
-}
-
-template<>
-void BeamLinearMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
-{
-    Deriv v;
-    Real omega = (Real)0;
-    for(unsigned int i=0;i<points.size();i++)
-    {
-        Deriv f = in[i];
-        v += f;
-        omega += cross(rotatedPoints[i],f);
-    }
-    out[0].getVCenter() += v;
-    out[0].getVOrientation() += (In::Real)omega;
-}
-
-template<>
-void BeamLinearMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
-{
-    Deriv v;
-    Real omega = (Real)0;
-    for(unsigned int i=0;i<points.size();i++)
-    {
-        Deriv f = in[i];
-        v += f;
-        omega += cross(rotatedPoints[i],f);
-    }
-    out[0].getVCenter() += v;
-    out[0].getVOrientation() += (In::Real)omega;
-}
+#endif
+#endif
 
 
 
-template<>
-void BeamLinearMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecConst& out, const Out::VecConst& in )
-{
-    out.resize(in.size());
-    /// \TODO !!!
-}
-
-template<>
-void BeamLinearMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecConst& out, const Out::VecConst& in )
-{
-    out.resize(in.size());
-    /// \TODO !!!
-}
-
-template<>
-void BeamLinearMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecConst& out, const Out::VecConst& in )
-{
-    out.resize(in.size());
-    /// \TODO !!!
-}
-
-template<>
-void BeamLinearMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecConst& out, const Out::VecConst& in )
-{
-    out.resize(in.size());
-    /// \TODO !!!
-}*/
 
 } // namespace mapping
 

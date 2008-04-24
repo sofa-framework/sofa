@@ -302,7 +302,7 @@ public:
 
     virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2);
 
-    virtual double getPotentialEnergy(const VecCoord&, const VecCoord&) { return m_potentialEnergy; }
+    virtual sofa::defaulttype::Vector3::value_type getPotentialEnergy(const VecCoord&, const VecCoord&) { return m_potentialEnergy; }
 
     sofa::helper::vector<Spring> * getSprings() { return springs.beginEdit(); }
 

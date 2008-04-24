@@ -15,14 +15,23 @@ SOFA_DECL_CLASS(SparseGridSpringForceField)
 
 using namespace sofa::defaulttype;
 
-template class SparseGridSpringForceField<Vec3dTypes>;
-template class SparseGridSpringForceField<Vec3fTypes>;
 
 // Register in the Factory
 int SparseGridSpringForceFieldClass = core::RegisterObject("Springs acting on the cells of a sparse grid")
+#ifndef SOFA_FLOAT
         .add< SparseGridSpringForceField<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
         .add< SparseGridSpringForceField<Vec3fTypes> >()
+#endif
         ;
+
+#ifndef SOFA_FLOAT
+template class SparseGridSpringForceField<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class SparseGridSpringForceField<Vec3fTypes>;
+#endif
 
 } // namespace forcefield
 

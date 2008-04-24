@@ -96,8 +96,9 @@ public:
 class VisualComputeBBoxVisitor : public Visitor
 {
 public:
-    double minBBox[3];
-    double maxBBox[3];
+    typedef sofa::defaulttype::Vector3::value_type Real_Sofa;
+    Real_Sofa minBBox[3];
+    Real_Sofa maxBBox[3];
     VisualComputeBBoxVisitor();
 
     virtual void processMechanicalState(GNode*, core::componentmodel::behavior::BaseMechanicalState* vm);

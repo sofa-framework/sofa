@@ -47,27 +47,29 @@ class RayModel;
 class Ray : public core::TCollisionElementIterator<RayModel>
 {
 public:
+    typedef Vector3::value_type Real_Sofa;
     Ray(RayModel* model, int index);
 
     explicit Ray(core::CollisionElementIterator& i);
 
     const Vector3& origin() const;
     const Vector3& direction() const;
-    double l() const;
+    Real_Sofa l() const;
 
     Vector3& origin();
     Vector3& direction();
-    double& l();
+    Real_Sofa& l();
 };
 
 class BaseRayContact;
 
 class RayModel : public component::MechanicalObject<Vec3Types>, public core::CollisionModel
 {
+    typedef Vector3::value_type Real_Sofa;
 protected:
-    sofa::helper::vector<double> length;
+    sofa::helper::vector<Real_Sofa> length;
 
-    Data<double> defaultLength;
+    Data<Real_Sofa> defaultLength;
 
     std::set<BaseRayContact*> contacts;
 public:
@@ -76,9 +78,9 @@ public:
     typedef Ray Element;
     friend class Ray;
 
-    RayModel(double defaultLength=1);
+    RayModel(Real_Sofa defaultLength=1);
 
-    int addRay(const Vector3& origin, const Vector3& direction, double length);
+    int addRay(const Vector3& origin, const Vector3& direction, Real_Sofa length);
 
     int getNbRay() const { return size; }
 
@@ -122,7 +124,7 @@ inline const Vector3& Ray::direction() const
     return (*model->getX())[2*index+1];
 }
 
-inline double Ray::l() const
+inline Vector3::value_type Ray::l() const
 {
     return model->length[index];
 }
@@ -137,7 +139,7 @@ inline Vector3& Ray::direction()
     return (*model->getX())[2*index+1];
 }
 
-inline double& Ray::l()
+inline Vector3::value_type& Ray::l()
 {
     return model->length[index];
 }

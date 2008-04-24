@@ -90,7 +90,7 @@ void LMLReader::BuildStructure(PMLReader * pmlreader)
     while(it!=pmlreader->bodiesList.end())
     {
         //find forces and constraints in the loads list
-        LMLConstraint<Vec3dTypes> *constraints = new LMLConstraint<Vec3dTypes>(loadsList, (*it)->AtomsToDOFsIndexes, (MechanicalState<Vec3dTypes>*)(*it)->getMechanicalState());
+        LMLConstraint<Vec3Types> *constraints = new LMLConstraint<Vec3Types>(loadsList, (*it)->AtomsToDOFsIndexes, (MechanicalState<Vec3Types>*)(*it)->getMechanicalState());
         if (constraints->getTargets().size() >0)
             if( (*it)->isTypeOf() == "rigid")
             {
@@ -106,7 +106,7 @@ void LMLReader::BuildStructure(PMLReader * pmlreader)
         else
             delete constraints;
 
-        LMLForce<Vec3dTypes> *forces = new LMLForce<Vec3dTypes>(loadsList, (*it)->AtomsToDOFsIndexes, (MechanicalState<Vec3dTypes>*)(*it)->getMechanicalState());
+        LMLForce<Vec3Types> *forces = new LMLForce<Vec3Types>(loadsList, (*it)->AtomsToDOFsIndexes, (MechanicalState<Vec3Types>*)(*it)->getMechanicalState());
         if (forces->getTargets().size() >0)
             (*it)->getPointsNode()->addObject(forces);
         else
@@ -133,7 +133,7 @@ void LMLReader::updateStructure(Loads * loads, PMLReader * pmlreader)
                 pointsNode->removeObject ( pointsNode->constraint[i] );
             //delete ?
         }
-        LMLConstraint<Vec3dTypes> *constraints = new LMLConstraint<Vec3dTypes>(loadsList, (*it)->AtomsToDOFsIndexes, (MechanicalState<Vec3dTypes>*)(*it)->getMechanicalState());
+        LMLConstraint<Vec3Types> *constraints = new LMLConstraint<Vec3Types>(loadsList, (*it)->AtomsToDOFsIndexes, (MechanicalState<Vec3Types>*)(*it)->getMechanicalState());
         if (constraints->getTargets().size() >0)
         {
             if( (*it)->isTypeOf() == "rigid")
@@ -158,7 +158,7 @@ void LMLReader::updateStructure(Loads * loads, PMLReader * pmlreader)
                 pointsNode->removeObject ( pointsNode->forceField[i] );
             //delete ?
         }
-        LMLForce<Vec3dTypes> *forces = new LMLForce<Vec3dTypes>(loadsList, (*it)->AtomsToDOFsIndexes, (MechanicalState<Vec3dTypes>*)(*it)->getMechanicalState());
+        LMLForce<Vec3Types> *forces = new LMLForce<Vec3Types>(loadsList, (*it)->AtomsToDOFsIndexes, (MechanicalState<Vec3Types>*)(*it)->getMechanicalState());
         if (forces->getTargets().size() >0)
             (*it)->getPointsNode()->addObject(forces);
         else

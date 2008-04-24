@@ -255,7 +255,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addDForce(VecDeriv1
 }
 
 template <class DataTypes1, class DataTypes2>
-double InteractionEllipsoidForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const VecCoord1& /* x1 */, const VecCoord2& /* x2 */)
+sofa::defaulttype::Vector3::value_type InteractionEllipsoidForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const VecCoord1& /* x1 */, const VecCoord2& /* x2 */)
 {
     std::cerr<<"InteractionEllipsoidForceField::getPotentialEnergy-not-implemented !!!"<<std::endl;
     return 0;
@@ -267,8 +267,8 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw()
     if (!getContext()->getShowForceFields()) return;
     if (!bDraw.getValue()) return;
 
-    double cx1=0, cy1=0, cz1=0;
-    double cx2=0, cy2=0, cz2=0;
+    Real1 cx1=0, cy1=0, cz1=0;
+    Real1 cx2=0, cy2=0, cz2=0;
     DataTypes1::get(cx1, cy1, cz1, vars.center );
 
     //cx1 -=vars.pos6D.getCenter()[0];
@@ -280,7 +280,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw()
     cz2=vars.pos6D.getCenter()[2];
 
 
-    double rx=1, ry=1, rz=1;
+    Real1 rx=1, ry=1, rz=1;
     DataTypes1::get(rx, ry, rz, vradius.getValue());
     glEnable(GL_CULL_FACE);
     glEnable(GL_LIGHTING);
@@ -289,17 +289,26 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw()
 
 
     Quat q=vars.pos6D.getOrientation();
+#ifdef SOFA_FLOAT
+    GLfloat R[4][4];
+#else
     GLdouble R[4][4];
+#endif
     Quat q1=q.inverse();
     q1.buildRotationMatrix(R);
 
     glPushMatrix();
-
+#ifdef SOFA_FLOAT
+    glTranslatef(cx2, cy2, cz2);
+    glMultMatrixf( &(R[0][0]) );
+    glTranslatef(cx1, cy1, cz1);
+    glScalef(rx, ry, (stiffness.getValue()>0?rz:-rz));
+#else
     glTranslated(cx2, cy2, cz2);
     glMultMatrixd( &(R[0][0]) );
     glTranslated(cx1, cy1, cz1);
     glScaled(rx, ry, (stiffness.getValue()>0?rz:-rz));
-
+#endif
     glutSolidSphere(1,32,16);
     //glTranslated(-cx2, -cy2, -cz2);
 

@@ -39,16 +39,24 @@ namespace forcefield
 using namespace sofa::defaulttype;
 using namespace core::componentmodel::behavior;
 
-// Each instance of our class must be compiled
-template class LennardJonesForceField<Vec3fTypes>;
-template class LennardJonesForceField<Vec3dTypes>;
-
 SOFA_DECL_CLASS(LennardJonesForceField)
 
 int LennardJonesForceFieldClass = core::RegisterObject("Lennard-Jones forces for fluids")
+#ifndef SOFA_FLOAT
         .add< LennardJonesForceField<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
         .add< LennardJonesForceField<Vec3fTypes> >()
+#endif
         ;
+
+#ifndef SOFA_FLOAT
+template class LennardJonesForceField<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class LennardJonesForceField<Vec3fTypes>;
+#endif
+
 
 } // namespace forcefield
 

@@ -67,7 +67,7 @@ void ConstantForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, c
 
 
 template <class DataTypes>
-double ConstantForceField<DataTypes>::getPotentialEnergy(const VecCoord& x)
+sofa::defaulttype::Vector3::value_type ConstantForceField<DataTypes>::getPotentialEnergy(const VecCoord& x)
 {
     const VecIndex& indices = points.getValue();
     const VecDeriv& f = forces.getValue();
@@ -94,7 +94,7 @@ void ConstantForceField<DataTypes>::draw()
     glColor3f(0,1,0);
     for (unsigned int i=0; i<indices.size(); i++)
     {
-        double xx,xy,xz,fx,fy,fz;
+        Real xx,xy,xz,fx,fy,fz;
         DataTypes::get(xx,xy,xz,x[indices[i]]);
         DataTypes::get(fx,fy,fz,f[i]);
         glVertex3f( (GLfloat)xx, (GLfloat)xy, (GLfloat)xz );
@@ -105,7 +105,7 @@ void ConstantForceField<DataTypes>::draw()
 
 
 template <class DataTypes>
-bool ConstantForceField<DataTypes>::addBBox(double*, double* )
+bool ConstantForceField<DataTypes>::addBBox(Real_Sofa*, Real_Sofa* )
 {
     return false;
 }

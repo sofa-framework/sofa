@@ -66,9 +66,13 @@ void MeshTrian::readTrian (FILE* file)
     fscanf(file, "%d\n", &nbp);
 
     vertices.resize(nbp);
+    Vec3d fromFile;
     for (int p=0; p<nbp; p++)
     {
-        fscanf(file, "%lf %lf %lf\n", &vertices[p][0], &vertices[p][1], &vertices[p][2]);
+        fscanf(file, "%lf %lf %lf\n", &fromFile[0], &fromFile[1], &fromFile[2]);
+        vertices[p][0] = fromFile[0];
+        vertices[p][1] = fromFile[1];
+        vertices[p][2] = fromFile[2];
     }
 
     int nbf=0;

@@ -52,7 +52,7 @@ public:
     {
     }
 
-    virtual double getPotentialEnergy();
+    virtual sofa::defaulttype::Vector3::value_type getPotentialEnergy();
 
 
     Real getStiffness() const { return linesStiffness.getValue(); }

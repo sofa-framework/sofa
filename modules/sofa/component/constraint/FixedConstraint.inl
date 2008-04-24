@@ -230,14 +230,20 @@ void FixedConstraint<DataTypes>::draw()
 }
 
 // Specialization for rigids
+#ifndef SOFA_FLOAT
 template <>
 void FixedConstraint<Rigid3dTypes >::draw();
 template <>
+void FixedConstraint<Rigid2dTypes >::draw();
+#endif
+#ifndef SOFA_DOUBLE
+template <>
 void FixedConstraint<Rigid3fTypes >::draw();
 template <>
-void FixedConstraint<Rigid2dTypes >::draw();
-template <>
 void FixedConstraint<Rigid2fTypes >::draw();
+#endif
+
+
 
 } // namespace constraint
 

@@ -605,8 +605,6 @@ SOFA_DECL_CLASS(TensorForceField)
 
 using namespace sofa::defaulttype;
 
-template class TensorForceField<Vec3dTypes>;
-template class TensorForceField<Vec3fTypes>; // doesn't work for now
 
 template<class DataTypes>
 void create(TensorForceField<DataTypes>*& obj,
@@ -617,12 +615,16 @@ void create(TensorForceField<DataTypes>*& obj,
     > (obj, arg);
 }
 
+#ifndef SOFA_FLOAT
 Creator<simulation::tree::xml::ObjectFactory, TensorForceField<Vec3dTypes> >
 TensorForceFieldVec3dClass("TensorForceField", true);
-
+template class TensorForceField<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
 Creator<simulation::tree::xml::ObjectFactory, TensorForceField<Vec3fTypes> >
 TensorForceFieldVec3fClass("TensorForceField", true);
-
+template class TensorForceField<Vec3fTypes>; // doesn't work for now
+#endif
 
 } // namespace  forcefield
 

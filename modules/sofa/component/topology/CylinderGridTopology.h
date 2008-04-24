@@ -42,24 +42,23 @@ using namespace sofa::defaulttype;
 class CylinderGridTopology : public GridTopology
 {
 public:
-    typedef Vec3d Vec3;
-    typedef double Real;
+    typedef Vector3::value_type Real_Sofa;
 
     CylinderGridTopology(int nx, int ny, int nz);
     CylinderGridTopology();
 
     unsigned getIndex( int i, int j, int k ) const; ///< one-dimensional index of a grid point
-    Vec3 getPoint(int i) const;
-    Vec3 getPoint(int x, int y, int z) const;
+    Vector3 getPoint(int i) const;
+    Vector3 getPoint(int x, int y, int z) const;
     bool hasPos()  const { return true; }
-    double getPX(int i)  const { return getPoint(i)[0]; }
-    double getPY(int i) const { return getPoint(i)[1]; }
-    double getPZ(int i) const { return getPoint(i)[2]; }
+    Real_Sofa getPX(int i)  const { return getPoint(i)[0]; }
+    Real_Sofa getPY(int i) const { return getPoint(i)[1]; }
+    Real_Sofa getPZ(int i) const { return getPoint(i)[2]; }
 
 protected:
-    Data< Vec3 > center;
-    Data< Vec3 > axis;
-    Data< Real > radius, length;
+    Data< Vector3 > center;
+    Data< Vector3 > axis;
+    Data< Real_Sofa > radius, length;
 };
 
 } // namespace topology

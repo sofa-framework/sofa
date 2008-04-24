@@ -50,16 +50,23 @@ int MatrixMassClass = core::RegisterObject("Define a specific mass for each part
 // .add< MatrixMass<Vec3fTypes,float> >()
 // .add< MatrixMass<Vec2dTypes,double> >()
 // .add< MatrixMass<Vec2fTypes,float> >()
+#ifndef SOFA_FLOAT
         .add< MatrixMass<Vec3dTypes,Mat3x3d> >()
-        .add< MatrixMass<Vec3fTypes,Mat3x3f> >()
         .add< MatrixMass<Vec2dTypes,Mat2x2d> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< MatrixMass<Vec3fTypes,Mat3x3f> >()
         .add< MatrixMass<Vec2fTypes,Mat2x2f> >()
+#endif
         ;
-
+#ifndef SOFA_FLOAT
 template class MatrixMass<Vec3dTypes,Mat3x3d>;
-template class MatrixMass<Vec3fTypes,Mat3x3f>;
 template class MatrixMass<Vec2dTypes,Mat2x2d>;
+#endif
+#ifndef SOFA_DOUBLE
+template class MatrixMass<Vec3fTypes,Mat3x3f>;
 template class MatrixMass<Vec2fTypes,Mat2x2f>;
+#endif
 
 } // namespace mass
 

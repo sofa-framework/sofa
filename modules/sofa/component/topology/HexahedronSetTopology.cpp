@@ -18,42 +18,57 @@ using namespace sofa::defaulttype;
 SOFA_DECL_CLASS(HexahedronSetTopology)
 
 int HexahedronSetTopologyClass = core::RegisterObject("Hexahedron set topology")
-        .add< HexahedronSetTopology<Vec3dTypes> >()
-        .add< HexahedronSetTopology<Vec3fTypes> >()
-        .add< HexahedronSetTopology<Vec2dTypes> >()
-        .add< HexahedronSetTopology<Vec2fTypes> >()
-        .add< HexahedronSetTopology<Vec1dTypes> >()
-        .add< HexahedronSetTopology<Vec1fTypes> >();
 
+#ifndef SOFA_FLOAT
+        .add< HexahedronSetTopology<Vec3dTypes> >()
+        .add< HexahedronSetTopology<Vec2dTypes> >()
+        .add< HexahedronSetTopology<Vec1dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< HexahedronSetTopology<Vec3fTypes> >()
+        .add< HexahedronSetTopology<Vec2fTypes> >()
+        .add< HexahedronSetTopology<Vec1fTypes> >()
+#endif
+        ;
+
+
+#ifndef SOFA_FLOAT
 template class HexahedronSetTopology<Vec3dTypes>;
-template class HexahedronSetTopology<Vec3fTypes>;
 template class HexahedronSetTopology<Vec2dTypes>;
-template class HexahedronSetTopology<Vec2fTypes>;
 template class HexahedronSetTopology<Vec1dTypes>;
+
+
+template class HexahedronSetTopologyAlgorithms<Vec3dTypes>;
+template class HexahedronSetTopologyAlgorithms<Vec2dTypes>;
+template class HexahedronSetTopologyAlgorithms<Vec1dTypes>;
+
+template class HexahedronSetGeometryAlgorithms<Vec3dTypes>;
+template class HexahedronSetGeometryAlgorithms<Vec2dTypes>;
+template class HexahedronSetGeometryAlgorithms<Vec1dTypes>;
+
+
+template class HexahedronSetTopologyModifier<Vec3dTypes>;
+template class HexahedronSetTopologyModifier<Vec2dTypes>;
+template class HexahedronSetTopologyModifier<Vec1dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class HexahedronSetTopology<Vec3fTypes>;
+template class HexahedronSetTopology<Vec2fTypes>;
 template class HexahedronSetTopology<Vec1fTypes>;
 
 template class HexahedronSetTopologyAlgorithms<Vec3fTypes>;
-template class HexahedronSetTopologyAlgorithms<Vec3dTypes>;
 template class HexahedronSetTopologyAlgorithms<Vec2fTypes>;
-template class HexahedronSetTopologyAlgorithms<Vec2dTypes>;
 template class HexahedronSetTopologyAlgorithms<Vec1fTypes>;
-template class HexahedronSetTopologyAlgorithms<Vec1dTypes>;
+
 
 template class HexahedronSetGeometryAlgorithms<Vec3fTypes>;
-template class HexahedronSetGeometryAlgorithms<Vec3dTypes>;
 template class HexahedronSetGeometryAlgorithms<Vec2fTypes>;
-template class HexahedronSetGeometryAlgorithms<Vec2dTypes>;
 template class HexahedronSetGeometryAlgorithms<Vec1fTypes>;
-template class HexahedronSetGeometryAlgorithms<Vec1dTypes>;
 
 template class HexahedronSetTopologyModifier<Vec3fTypes>;
-template class HexahedronSetTopologyModifier<Vec3dTypes>;
 template class HexahedronSetTopologyModifier<Vec2fTypes>;
-template class HexahedronSetTopologyModifier<Vec2dTypes>;
 template class HexahedronSetTopologyModifier<Vec1fTypes>;
-template class HexahedronSetTopologyModifier<Vec1dTypes>;
-
-
+#endif
 // implementation HexahedronSetTopologyContainer
 
 

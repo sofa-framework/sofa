@@ -104,7 +104,7 @@ void SphereForceField<DataTypes>::updateStiffness( const VecCoord& x )
 }
 
 template <class DataTypes>
-double SphereForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
+sofa::defaulttype::Vector3::value_type SphereForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 {
     std::cerr<<"SphereForceField::getPotentialEnergy-not-implemented !!!"<<std::endl;
     return 0;

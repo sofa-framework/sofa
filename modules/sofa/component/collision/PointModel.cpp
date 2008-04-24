@@ -76,7 +76,11 @@ void PointModel::draw(int index)
 {
     Point t(this,index);
     glBegin(GL_POINTS);
+#ifdef SOFA_FLOAT
+    glVertex3fv(t.p().ptr());
+#else
     glVertex3dv(t.p().ptr());
+#endif
     glEnd();
 }
 

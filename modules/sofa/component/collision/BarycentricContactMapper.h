@@ -504,7 +504,7 @@ public:
                 {
                     DistanceGrid::Coord coefs;
                     int i = prevGrid->index(P, coefs);
-                    DistanceGrid::Real d = prevGrid->interp(i,coefs);
+                    DistanceGrid::Real_Sofa d = prevGrid->interp(i,coefs);
                     if (rabs(d) < 0.3) // todo : control threshold
                     {
                         DistanceGrid::Coord n = prevGrid->grad(i,coefs);

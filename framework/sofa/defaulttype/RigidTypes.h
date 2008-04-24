@@ -115,13 +115,13 @@ public:
         return d;
     }
 
-    void operator*=(double a)
+    void operator*=(Real a)
     {
         vCenter *= a;
         vOrientation *= a;
     }
 
-    RigidDeriv<3,real> operator*(double a) const
+    RigidDeriv<3,real> operator*(Real a) const
     {
         RigidDeriv r = *this;
         r*=a;
@@ -140,7 +140,7 @@ public:
 
 
     /// dot product, mostly used to compute residuals as sqrt(x*x)
-    double operator*(const RigidDeriv<3,real>& a) const
+    Real operator*(const RigidDeriv<3,real>& a) const
     {
         return vCenter[0]*a.vCenter[0]+vCenter[1]*a.vCenter[1]+vCenter[2]*a.vCenter[2]
                 +vOrientation[0]*a.vOrientation[0]+vOrientation[1]*a.vOrientation[1]
@@ -273,14 +273,14 @@ public:
         //orientation.normalize();
     }
 
-    void operator*=(double a)
+    void operator*=(Real a)
     {
         //std::cout << "*="<<std::endl;
         center *= a;
         //orientation *= a;
     }
 
-    RigidCoord<3,real> operator*(double a) const
+    RigidCoord<3,real> operator*(Real a) const
     {
         RigidCoord r = *this;
         r*=a;
@@ -292,7 +292,7 @@ public:
 
 
     /// dot product, mostly used to compute residuals as sqrt(x*x)
-    double operator*(const RigidCoord<3,real>& a) const
+    Real operator*(const RigidCoord<3,real>& a) const
     {
         return center[0]*a.center[0]+center[1]*a.center[1]+center[2]*a.center[2]
                 +orientation[0]*a.orientation[0]+orientation[1]*a.orientation[1]
@@ -536,42 +536,42 @@ public:
     typedef vector<Deriv> VecDeriv;
     typedef vector<Real> VecReal;
 
-    static void set(Coord& c, double x, double y, double z)
+    static void set(Coord& c, Real x, Real y, Real z)
     {
         c.getCenter()[0] = (Real)x;
         c.getCenter()[1] = (Real)y;
         c.getCenter()[2] = (Real)z;
     }
 
-    static void get(double& x, double& y, double& z, const Coord& c)
+    static void get(Real& x, Real& y, Real& z, const Coord& c)
     {
         x = c.getCenter()[0];
         y = c.getCenter()[1];
         z = c.getCenter()[2];
     }
 
-    static void add(Coord& c, double x, double y, double z)
+    static void add(Coord& c, Real x, Real y, Real z)
     {
         c.getCenter()[0] += (Real)x;
         c.getCenter()[1] += (Real)y;
         c.getCenter()[2] += (Real)z;
     }
 
-    static void set(Deriv& c, double x, double y, double z)
+    static void set(Deriv& c, Real x, Real y, Real z)
     {
         c.getVCenter()[0] = (Real)x;
         c.getVCenter()[1] = (Real)y;
         c.getVCenter()[2] = (Real)z;
     }
 
-    static void get(double& x, double& y, double& z, const Deriv& c)
+    static void get(Real& x, Real& y, Real& z, const Deriv& c)
     {
         x = c.getVCenter()[0];
         y = c.getVCenter()[1];
         z = c.getVCenter()[2];
     }
 
-    static void add(Deriv& c, double x, double y, double z)
+    static void add(Deriv& c, Real x, Real y, Real z)
     {
         c.getVCenter()[0] += (Real)x;
         c.getVCenter()[1] += (Real)y;
@@ -583,19 +583,23 @@ public:
 
 typedef StdRigidTypes<3,double> Rigid3dTypes;
 typedef StdRigidTypes<3,float> Rigid3fTypes;
-typedef Rigid3dTypes Rigid3Types;
-typedef Rigid3Types RigidTypes;
 
 typedef RigidMass<3,double> Rigid3dMass;
 typedef RigidMass<3,float> Rigid3fMass;
-typedef Rigid3dMass Rigid3Mass;
 //typedef Rigid3Mass RigidMass;
 
 /// Note: Many scenes use Rigid as template for 3D double-precision rigid type. Changing it to Rigid3d would break backward compatibility.
 template<> inline const char* Rigid3dTypes::Name() { return "Rigid"; }
 template<> inline const char* Rigid3fTypes::Name() { return "Rigid3f"; }
 
-
+#ifdef SOFA_FLOAT
+typedef Rigid3fTypes Rigid3Types;
+typedef Rigid3fMass Rigid3Mass;
+#else
+typedef Rigid3dTypes Rigid3Types;
+typedef Rigid3dMass Rigid3Mass;
+#endif
+typedef Rigid3Types RigidTypes;
 //=============================================================================
 // 2D Rigids
 //=============================================================================
@@ -633,13 +637,13 @@ public:
         return d;
     }
 
-    void operator*=(double a)
+    void operator*=(Real a)
     {
         vCenter *= (Real)a;
         vOrientation *= (Real)a;
     }
 
-    RigidDeriv<2,real> operator*(double a) const
+    RigidDeriv<2,real> operator*(Real a) const
     {
         RigidDeriv<2,real> r = *this;
         r *= (Real)a;
@@ -652,7 +656,7 @@ public:
     }
 
     /// dot product, mostly used to compute residuals as sqrt(x*x)
-    double operator*(const RigidDeriv<2,real>& a) const
+    Real operator*(const RigidDeriv<2,real>& a) const
     {
         return vCenter[0]*a.vCenter[0]+vCenter[1]*a.vCenter[1]
                 +vOrientation*a.vOrientation;
@@ -744,14 +748,14 @@ public:
         orientation += a.getOrientation();
     }
 
-    void operator*=(double a)
+    void operator*=(Real a)
     {
 //         std::cout << "*="<<std::endl;
         center *= (Real)a;
         orientation *= (Real)a;
     }
 
-    RigidCoord<2,real> operator*(double a) const
+    RigidCoord<2,real> operator*(Real a) const
     {
         RigidCoord<2,real> r = *this;
         r *= (Real)a;
@@ -759,7 +763,7 @@ public:
     }
 
     /// dot product, mostly used to compute residuals as sqrt(x*x)
-    double operator*(const RigidCoord<2,real>& a) const
+    Real operator*(const RigidCoord<2,real>& a) const
     {
         return center[0]*a.center[0]+center[1]*a.center[1]
                 +orientation*a.orientation;
@@ -1025,39 +1029,39 @@ public:
 
     typedef	vector<SparseVecDeriv> VecConst;
 
-    static void set(Coord& c, double x, double y, double)
+    static void set(Coord& c, Real x, Real y, Real)
     {
         c.getCenter()[0] = (Real)x;
         c.getCenter()[1] = (Real)y;
     }
 
-    static void get(double& x, double& y, double& z, const Coord& c)
+    static void get(Real& x, Real& y, Real& z, const Coord& c)
     {
         x = c.getCenter()[0];
         y = c.getCenter()[1];
         z = 0;
     }
 
-    static void add(Coord& c, double x, double y, double)
+    static void add(Coord& c, Real x, Real y, Real)
     {
         c.getCenter()[0] += (Real)x;
         c.getCenter()[1] += (Real)y;
     }
 
-    static void set(Deriv& c, double x, double y, double)
+    static void set(Deriv& c, Real x, Real y, Real)
     {
         c.getVCenter()[0] = (Real)x;
         c.getVCenter()[1] = (Real)y;
     }
 
-    static void get(double& x, double& y, double& z, const Deriv& c)
+    static void get(Real& x, Real& y, Real& z, const Deriv& c)
     {
         x = c.getVCenter()[0];
         y = c.getVCenter()[1];
         z = 0;
     }
 
-    static void add(Deriv& c, double x, double y, double)
+    static void add(Deriv& c, Real x, Real y, Real)
     {
         c.getVCenter()[0] += (Real)x;
         c.getVCenter()[1] += (Real)y;
@@ -1067,15 +1071,20 @@ public:
 
 typedef StdRigidTypes<2,double> Rigid2dTypes;
 typedef StdRigidTypes<2,float> Rigid2fTypes;
-typedef Rigid2dTypes Rigid2Types;
 
 typedef RigidMass<2,double> Rigid2dMass;
 typedef RigidMass<2,float> Rigid2fMass;
-typedef Rigid2dMass Rigid2Mass;
 
 template<> inline const char* Rigid2dTypes::Name() { return "Rigid2d"; }
 template<> inline const char* Rigid2fTypes::Name() { return "Rigid2f"; }
 
+#ifdef SOFA_FLOAT
+typedef Rigid2fTypes Rigid2Types;
+typedef Rigid2fMass Rigid2Mass;
+#else
+typedef Rigid2dTypes Rigid2Types;
+typedef Rigid2dMass Rigid2Mass;
+#endif
 } // namespace defaulttype
 
 namespace core
@@ -1158,13 +1167,13 @@ namespace objectmodel
 /// \cond TEMPLATE_OVERRIDES
 
 template<>
-inline std::string BaseData::typeName< defaulttype::Quat >(const defaulttype::Quat *) { return "Quat"; }
+inline std::string BaseData::typeName< defaulttype::Quatd >(const defaulttype::Quatd *) { return "Quatd"; }
 
 template<>
-inline std::string BaseData::typeName< std::vector< defaulttype::Quat > >(const std::vector< defaulttype::Quat > *) { return "vector<Quat>"; }
+inline std::string BaseData::typeName< std::vector< defaulttype::Quatd > >(const std::vector< defaulttype::Quatd > *) { return "vector<Quatd>"; }
 
 template<>
-inline std::string BaseData::typeName< helper::vector< defaulttype::Quat > >(const helper::vector< defaulttype::Quat > *) { return "vector<Quat>"; }
+inline std::string BaseData::typeName< helper::vector< defaulttype::Quatd > >(const helper::vector< defaulttype::Quatd > *) { return "vector<Quatd>"; }
 
 template<>
 inline std::string BaseData::typeName< defaulttype::Quatf >(const defaulttype::Quatf *) { return "Quatf"; }

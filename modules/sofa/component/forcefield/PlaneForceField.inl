@@ -98,7 +98,7 @@ void PlaneForceField<DataTypes>::updateStiffness( const VecCoord& x )
 
 
 template <class DataTypes>
-double PlaneForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
+sofa::defaulttype::Vector3::value_type PlaneForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 {
     std::cerr<<"PlaneForceField::getPotentialEnergy-not-implemented !!!"<<std::endl;
     return 0;
@@ -190,7 +190,7 @@ void PlaneForceField<DataTypes>::draw2(float size)
 }
 
 template <class DataTypes>
-bool PlaneForceField<DataTypes>::addBBox(double* minBBox, double* maxBBox)
+bool PlaneForceField<DataTypes>::addBBox(Real_Sofa* minBBox, Real_Sofa* maxBBox)
 {
     if (!bDraw.getValue()) return false;
 

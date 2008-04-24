@@ -25,6 +25,8 @@
 #ifndef SOFA_HELPER_GL_TRANSFORMATION_H
 #define SOFA_HELPER_GL_TRANSFORMATION_H
 
+#include <sofa/defaulttype/Vec.h>
+
 namespace sofa
 {
 
@@ -36,13 +38,14 @@ namespace gl
 
 class   		Transformation
 {
+    typedef sofa::defaulttype::Vector3::value_type Real_Sofa;
 public:
 
-    double			translation[3];
-    double			scale[3];
-    double			rotation[4][4];
+    Real_Sofa			translation[3];
+    Real_Sofa			scale[3];
+    Real_Sofa			rotation[4][4];
 
-    double			objectCenter[3];
+    Real_Sofa			objectCenter[3];
 
 private:
 
@@ -72,9 +75,9 @@ public:
         return r;
     }
 
-private:void		InvertTransRotMatrix(double matrix[4][4]);
-    void			InvertTransRotMatrix(double sMatrix[4][4],
-            double dMatrix[4][4]);
+private:void		InvertTransRotMatrix(Real_Sofa matrix[4][4]);
+    void			InvertTransRotMatrix(Real_Sofa sMatrix[4][4],
+            Real_Sofa dMatrix[4][4]);
 };
 
 } // namespace gl

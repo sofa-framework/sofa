@@ -56,17 +56,27 @@ SOFA_DECL_CLASS(Quad2TriangleTopologicalMapping)
 
 // Register in the Factory
 int Quad2TriangleTopologicalMappingClass = core::RegisterObject("Special case of mapping where QuadSetTopology is converted to TriangleSetTopology")
+#ifndef SOFA_FLOAT
         .add< Quad2TriangleTopologicalMapping< QuadSetTopology<Vec3dTypes>, TriangleSetTopology<Vec3dTypes> > >()
-        .add< Quad2TriangleTopologicalMapping< QuadSetTopology<Vec3fTypes>, TriangleSetTopology<Vec3fTypes> > >()
         .add< Quad2TriangleTopologicalMapping< QuadSetTopology<Vec2dTypes>, TriangleSetTopology<Vec2dTypes> > >()
         .add< Quad2TriangleTopologicalMapping< QuadSetTopology<Vec1dTypes>, TriangleSetTopology<Vec1dTypes> > >()
-        .add< Quad2TriangleTopologicalMapping< QuadSetTopology<Vec1fTypes>, TriangleSetTopology<Vec1fTypes> > >();
-
+#endif
+#ifndef SOFA_DOUBLE
+        .add< Quad2TriangleTopologicalMapping< QuadSetTopology<Vec3fTypes>, TriangleSetTopology<Vec3fTypes> > >()
+        .add< Quad2TriangleTopologicalMapping< QuadSetTopology<Vec2fTypes>, TriangleSetTopology<Vec2fTypes> > >()
+        .add< Quad2TriangleTopologicalMapping< QuadSetTopology<Vec1fTypes>, TriangleSetTopology<Vec1fTypes> > >()
+#endif
+        ;
+#ifndef SOFA_FLOAT
 template class Quad2TriangleTopologicalMapping< QuadSetTopology<Vec3dTypes>, TriangleSetTopology<Vec3dTypes> >;
-template class Quad2TriangleTopologicalMapping< QuadSetTopology<Vec3fTypes>, TriangleSetTopology<Vec3fTypes> >;
 template class Quad2TriangleTopologicalMapping< QuadSetTopology<Vec2dTypes>, TriangleSetTopology<Vec2dTypes> >;
 template class Quad2TriangleTopologicalMapping< QuadSetTopology<Vec1dTypes>, TriangleSetTopology<Vec1dTypes> >;
+#endif
+template class Quad2TriangleTopologicalMapping< QuadSetTopology<Vec3fTypes>, TriangleSetTopology<Vec3fTypes> >;
+template class Quad2TriangleTopologicalMapping< QuadSetTopology<Vec2fTypes>, TriangleSetTopology<Vec2fTypes> >;
 template class Quad2TriangleTopologicalMapping< QuadSetTopology<Vec1fTypes>, TriangleSetTopology<Vec1fTypes> >;
+#ifndef SOFA_DOUBLE
+#endif
 
 ;
 

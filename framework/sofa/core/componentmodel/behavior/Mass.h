@@ -28,7 +28,7 @@
 #include <sofa/core/componentmodel/behavior/BaseMass.h>
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-
+#include <sofa/defaulttype/Vec.h>
 namespace sofa
 {
 
@@ -58,6 +58,7 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
+    typedef typename sofa::defaulttype::Vector3::value_type Real_Sofa;
 
     Mass(MechanicalState<DataTypes> *mm = NULL);
 
@@ -70,7 +71,7 @@ public:
     ///
     /// This method retrieves the force and dx vector and call the internal
     /// addMDx(VecDeriv&,const VecDeriv&) method implemented by the component.
-    virtual void addMDx(double factor = 1.0);
+    virtual void addMDx(Real_Sofa factor = 1.0);
 
     /// dx = M^-1 f
     ///
@@ -81,7 +82,7 @@ public:
     /// f += factor M dx
     ///
     /// This method must be implemented by the component.
-    virtual void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0) = 0;
+    virtual void addMDx(VecDeriv& f, const VecDeriv& dx, Real_Sofa factor = 1.0) = 0;
 
     /// dx = M^-1 f
     ///
@@ -96,29 +97,29 @@ public:
     ///
     /// This method retrieves the velocity vector and call the internal
     /// getKineticEnergy(const VecDeriv&) method implemented by the component.
-    virtual double getKineticEnergy();
+    virtual Real_Sofa getKineticEnergy();
 
-    //virtual double getPotentialEnergy();
+    //virtual Real_Sofa getPotentialEnergy();
 
     /// vMv/2
     ///
     /// This method must be implemented by the component.
-    virtual double getKineticEnergy( const VecDeriv& v )=0;
+    virtual Real_Sofa getKineticEnergy( const VecDeriv& v )=0;
 
 
     /// Mat += mFact * M
     ///
     /// This method must be implemented by the component. Offset parameter gives the current Matrix block starting point.
-    virtual void addMToMatrix(defaulttype::BaseMatrix * /*mat*/, double /*mFact*/, unsigned int &/*offset*/) {};
+    virtual void addMToMatrix(defaulttype::BaseMatrix * /*mat*/, Real_Sofa /*mFact*/, unsigned int &/*offset*/) {};
 
     /// This method retrieves dx vector and call the internal
-    /// addMDxToVector(defaulttype::BaseVector *,const VecDeriv&, double, unsigned int&) method implemented by the component.
-    virtual void addMDxToVector(defaulttype::BaseVector * resVect, double mFact, unsigned int& offset, bool dxNull);
+    /// addMDxToVector(defaulttype::BaseVector *,const VecDeriv&, Real_Sofa, unsigned int&) method implemented by the component.
+    virtual void addMDxToVector(defaulttype::BaseVector * resVect, Real_Sofa mFact, unsigned int& offset, bool dxNull);
 
     /// V += mFact * M * dx
     ///
     /// This method must be implemented by the component. Offset parameter gives the current Vector starting point.
-    virtual void addMDxToVector(defaulttype::BaseVector * /*resVect*/, const VecDeriv * /*dx*/, double /*mFact*/, unsigned int& /*offset*/) {};
+    virtual void addMDxToVector(defaulttype::BaseVector * /*resVect*/, const VecDeriv * /*dx*/, Real_Sofa /*mFact*/, unsigned int& /*offset*/) {};
 
     /// initialization to export kinetic and potential energy to gnuplot files format
     virtual void initGnuplot(const std::string path);

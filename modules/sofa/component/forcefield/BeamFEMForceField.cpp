@@ -17,17 +17,26 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-template class BeamFEMForceField<Rigid3dTypes>;
-template class BeamFEMForceField<Rigid3fTypes>;
 
 
 SOFA_DECL_CLASS(BeamFEMForceField)
 
 // Register in the Factory
 int BeamFEMForceFieldClass = core::RegisterObject("Beam finite elements")
+#ifndef SOFA_FLOAT
         .add< BeamFEMForceField<Rigid3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
         .add< BeamFEMForceField<Rigid3fTypes> >()
+#endif
         ;
+
+#ifndef SOFA_FLOAT
+template class BeamFEMForceField<Rigid3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class BeamFEMForceField<Rigid3fTypes>;
+#endif
 
 } // namespace forcefield
 

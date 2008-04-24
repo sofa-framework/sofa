@@ -439,17 +439,16 @@ void Fluid3D::updateVisual()
         points[i].n.normalize();
 }
 
-bool Fluid3D::addBBox(double* minBBox, double* maxBBox)
+bool Fluid3D::addBBox(Real_Sofa* minBBox, Real_Sofa* maxBBox)
 {
     vec3 center = f_center.getValue();
-    double size[3] = { (nx-1)*cellwidth, (ny-1)*cellwidth, (nz-1)*cellwidth };
-    double pos[3] = { center[0]-size[0]/2, center[1]-size[1]/2, center[2]-size[2]/2 };
+    Real_Sofa size[3] = { (nx-1)*cellwidth, (ny-1)*cellwidth, (nz-1)*cellwidth };
+    Real_Sofa pos[3] = { center[0]-size[0]/2, center[1]-size[1]/2, center[2]-size[2]/2 };
     for (int c=0; c<3; c++)
     {
         if (minBBox[c] > pos[c]        ) minBBox[c] = pos[c];
         if (maxBBox[c] < pos[c]+size[c]) maxBBox[c] = pos[c]+size[c];
     }
-    std::cout << minBBox << " " << maxBBox << " #####~#\n";
     return true;
 }
 

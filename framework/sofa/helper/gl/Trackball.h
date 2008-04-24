@@ -89,14 +89,14 @@ namespace gl
 class   Trackball
 {
 public:
-    typedef Quater<double> Quaternion;
+// 	typedef Quater<double> Quaternion;
 
     Trackball();
     ~Trackball();
 
     // Accessors
-    void SetQuaternion(Quaternion Q);
-    Quaternion GetQuaternion(void);
+    void SetQuaternion(sofa::defaulttype::Quaternion Q);
+    sofa::defaulttype::Quaternion GetQuaternion(void);
 
     // Pass the x and y coordinates of the last and current positions of
     // the mouse, scaled so they are from (-1.0 ... 1.0).
@@ -110,7 +110,7 @@ public:
     void AxisToQuat(double a[3], double phi, double q[4]);
 
 private:
-    Quaternion	_quat;
+    sofa::defaulttype::Quaternion	_quat;
 };
 
 } // namespace gl

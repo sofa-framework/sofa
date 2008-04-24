@@ -40,36 +40,51 @@ using namespace defaulttype;
 SOFA_DECL_CLASS(MappedObject)
 
 int MappedObjectClass = core::RegisterObject("Mapped state vectors")
-        .add< MappedObject<Vec3dTypes> >(true) // default template
-        .add< MappedObject<Vec3fTypes> >()
-        .add< MappedObject<Rigid3dTypes> >()
-        .add< MappedObject<Rigid3fTypes> >()
-        .add< MappedObject<LaparoscopicRigid3Types> >()
+#ifndef SOFA_FLOAT
         .add< MappedObject<Vec2dTypes> >()
-        .add< MappedObject<Vec2fTypes> >()
-        .add< MappedObject<Rigid2dTypes> >()
-        .add< MappedObject<Rigid2fTypes> >()
         .add< MappedObject<Vec1dTypes> >()
-        .add< MappedObject<Vec1fTypes> >()
         .add< MappedObject<Vec6dTypes> >()
+        .add< MappedObject<Rigid3dTypes> >()
+        .add< MappedObject<Rigid2dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< MappedObject<Vec2fTypes> >()
+        .add< MappedObject<Vec1fTypes> >()
         .add< MappedObject<Vec6fTypes> >()
+        .add< MappedObject<Rigid3fTypes> >()
+        .add< MappedObject<Rigid2fTypes> >()
+#endif
+
+#ifdef SOFA_FLOAT
+        .add< MappedObject<Vec3fTypes> >(true) // default template
+#else
+#ifndef SOFA_DOUBLE
+        .add< MappedObject<Vec3fTypes> >() // default template
+#endif
+        .add< MappedObject<Vec3dTypes> >(true) // default template
+#endif
+        .add< MappedObject<LaparoscopicRigid3Types> >()
         ;
 
+// template specialization must be in the same namespace as original namespace for GCC 4.1
 // g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
-
-template class MappedObject<defaulttype::Vec3fTypes>;
-template class MappedObject<defaulttype::Vec3dTypes>;
-template class MappedObject<defaulttype::Vec2fTypes>;
-template class MappedObject<defaulttype::Vec2dTypes>;
-template class MappedObject<defaulttype::Vec1fTypes>;
-template class MappedObject<defaulttype::Vec1dTypes>;
-
-template class MappedObject<defaulttype::Rigid3dTypes>;
-template class MappedObject<defaulttype::Rigid3fTypes>;
-template class MappedObject<defaulttype::Rigid2dTypes>;
-template class MappedObject<defaulttype::Rigid2fTypes>;
-
-template class MappedObject<defaulttype::LaparoscopicRigid3Types>;
+#ifndef SOFA_FLOAT
+template class MappedObject<Vec3dTypes>;
+template class MappedObject<Vec2dTypes>;
+template class MappedObject<Vec1dTypes>;
+template class MappedObject<Vec6dTypes>;
+template class MappedObject<Rigid3dTypes>;
+template class MappedObject<Rigid2dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class MappedObject<Vec3fTypes>;
+template class MappedObject<Vec2fTypes>;
+template class MappedObject<Vec1fTypes>;
+template class MappedObject<Vec6fTypes>;
+template class MappedObject<Rigid3fTypes>;
+template class MappedObject<Rigid2fTypes>;
+#endif
+template class MappedObject<LaparoscopicRigid3Types>;
 
 } // namespace component
 
