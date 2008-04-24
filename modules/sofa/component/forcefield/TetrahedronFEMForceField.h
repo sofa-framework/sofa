@@ -80,6 +80,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+    typedef typename Vector3::value_type Real_Sofa;
 
     typedef topology::MeshTopology::index_type Index;
     typedef topology::MeshTopology::Tetra Element;
@@ -130,7 +131,7 @@ protected:
     CompressedMatrix _stiffnesses;
     /// @}
 
-    double m_potentialEnergy;
+    Real_Sofa m_potentialEnergy;
 
     topology::MeshTopology* _mesh;
     topology::FittedRegularGridTopology* _trimgrid;
@@ -193,9 +194,9 @@ public:
 
     virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
 
-    virtual double getPotentialEnergy(const VecCoord& x);
+    virtual sofa::defaulttype::Vector3::value_type getPotentialEnergy(const VecCoord& x);
 
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *, double, unsigned int &);
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *, Real_Sofa, unsigned int &);
 
     void draw();
 

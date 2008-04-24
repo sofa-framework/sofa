@@ -467,7 +467,7 @@ const float NonUniformHexahedronFEMForceFieldAndMass<T>::FINE_TO_COARSE[8][8][8]
 /////////////////////////////////////////////////
 
 template<class T>
-void NonUniformHexahedronFEMForceFieldAndMass<T>::addMDx(VecDeriv& f, const VecDeriv& dx, double factor)
+void NonUniformHexahedronFEMForceFieldAndMass<T>::addMDx(VecDeriv& f, const VecDeriv& dx, Real_Sofa factor)
 {
     if(_useMass.getValue())
         HexahedronFEMForceFieldAndMassT::addMDx(f,dx,factor);
@@ -488,9 +488,9 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::addGravityToV(double dt)
     else
     {
         VecDeriv& v = *this->mstate->getV();
-        const double* g = this->getContext()->getLocalGravity().ptr();
+        const Real_Sofa* g = this->getContext()->getLocalGravity().ptr();
         Deriv theGravity;
-        T::set( theGravity, g[0], g[1], g[2]);
+        T::set( theGravity, (Real)g[0], (Real)g[1], (Real)g[2]);
         Deriv hg = theGravity * dt;
         for (unsigned int i=0; i<v.size(); i++)
         {
@@ -508,7 +508,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::addForce(VecDeriv& f, const Ve
     {
         HexahedronFEMForceFieldT::addForce(f,x,v);
 
-        const double* g = this->getContext()->getLocalGravity().ptr();
+        const Real_Sofa* g = this->getContext()->getLocalGravity().ptr();
         Deriv theGravity;
         T::set( theGravity, g[0], g[1], g[2]);
 

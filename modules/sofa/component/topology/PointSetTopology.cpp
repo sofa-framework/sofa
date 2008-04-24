@@ -19,13 +19,6 @@ using namespace sofa::defaulttype;
 SOFA_DECL_CLASS(PointSetTopology)
 
 
-template class PointSetTopologyModifier<Vec3dTypes>;
-template class PointSetTopologyModifier<Vec3fTypes>;
-template class PointSetTopology<Vec3dTypes>;
-template class PointSetTopology<Vec3fTypes>;
-template class PointSetGeometryAlgorithms<Vec3fTypes>;
-template class PointSetGeometryAlgorithms<Vec3dTypes>;
-
 PointSetTopologyContainer::PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top)
     : core::componentmodel::topology::TopologyContainer(top)
 {
@@ -46,9 +39,25 @@ bool PointSetTopologyContainer::checkTopology() const
 }
 
 int PointSetTopologyClass = core::RegisterObject("Topology consisting of a set of points")
+
+#ifndef SOFA_FLOAT
         .add< PointSetTopology<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
         .add< PointSetTopology<Vec3fTypes> >()
+#endif
         ;
+
+#ifndef SOFA_FLOAT
+template class PointSetTopologyModifier<Vec3dTypes>;
+template class PointSetTopology<Vec3dTypes>;
+template class PointSetGeometryAlgorithms<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class PointSetTopologyModifier<Vec3fTypes>;
+template class PointSetTopology<Vec3fTypes>;
+template class PointSetGeometryAlgorithms<Vec3fTypes>;
+#endif
 
 
 

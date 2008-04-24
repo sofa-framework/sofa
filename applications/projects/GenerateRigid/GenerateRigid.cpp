@@ -26,7 +26,7 @@ bool GenerateRigid(sofa::defaulttype::Rigid3Mass& mass, sofa::defaulttype::Vec3d
             (double)0.0, (double)0.0, (double)0.0, (double)0.0, (double)0.0, (double)0.0
                             };
 
-    const vector<Vec3d>& points = mesh->getVertices();
+    const vector<Vector3>& points = mesh->getVertices();
     const vector< vector< vector<int> > >& facets = mesh->getFacets();
     for (unsigned int i = 0; i < facets.size(); i++)
     {
@@ -34,14 +34,14 @@ bool GenerateRigid(sofa::defaulttype::Rigid3Mass& mass, sofa::defaulttype::Vec3d
         for (unsigned int j = 2; j < v.size(); j++)
         {
             // get vertices of current triangle
-            const Vec3d kV0 = points[v[0  ]];
-            const Vec3d kV1 = points[v[j-1]];
-            const Vec3d kV2 = points[v[j  ]];
+            const Vector3 kV0 = points[v[0  ]];
+            const Vector3 kV1 = points[v[j-1]];
+            const Vector3 kV2 = points[v[j  ]];
 
             // get cross product of edges
-            Vec3d kV1mV0 = kV1 - kV0;
-            Vec3d kV2mV0 = kV2 - kV0;
-            Vec3d kN = cross(kV1mV0,kV2mV0);
+            Vector3 kV1mV0 = kV1 - kV0;
+            Vector3 kV2mV0 = kV2 - kV0;
+            Vector3 kN = cross(kV1mV0,kV2mV0);
 
             // compute integral terms
             double fTmp0, fTmp1, fTmp2;
@@ -107,7 +107,7 @@ bool GenerateRigid(sofa::defaulttype::Rigid3Mass& mass, sofa::defaulttype::Vec3d
     mass.mass = mass.volume = afIntegral[0];
 
     // center of mass
-    center = Vec3d(afIntegral[1]/afIntegral[0],afIntegral[2]/afIntegral[0],afIntegral[3]/afIntegral[0]);
+    center = Vector3(afIntegral[1]/afIntegral[0],afIntegral[2]/afIntegral[0],afIntegral[3]/afIntegral[0]);
 
     // inertia relative to world origin
     mass.inertiaMatrix[0][0] = afIntegral[5] + afIntegral[6];

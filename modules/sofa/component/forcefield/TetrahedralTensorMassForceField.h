@@ -113,7 +113,7 @@ public:
 
     virtual ~TetrahedralTensorMassForceField();
 
-    virtual double getPotentialEnergy(const VecCoord& x);
+    virtual sofa::defaulttype::Vector3::value_type getPotentialEnergy(const VecCoord& x);
 
     virtual void init();
     virtual void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);

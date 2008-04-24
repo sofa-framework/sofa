@@ -26,6 +26,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+    typedef typename sofa::defaulttype::Vector3::value_type Real_Sofa;
     typedef helper::vector<unsigned> VecIndex;
 
 public:
@@ -42,11 +43,11 @@ public:
     virtual void addDForce (VecDeriv& , const VecDeriv& ) {}
 
 
-    virtual double getPotentialEnergy(const VecCoord& x);
+    virtual sofa::defaulttype::Vector3::value_type getPotentialEnergy(const VecCoord& x);
 
 
     void draw();
-    bool addBBox(double* minBBox, double* maxBBox);
+    bool addBBox(Real_Sofa* minBBox, Real_Sofa* maxBBox);
 
 };
 

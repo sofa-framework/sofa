@@ -28,7 +28,7 @@
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
-
+#include <sofa/defaulttype/Vec.h>
 namespace sofa
 {
 
@@ -45,7 +45,7 @@ Derives from BaseObject in order to model the parameters as Datas, which makes t
 class Simulation: public virtual sofa::core::objectmodel::BaseObject
 {
 public:
-
+    typedef sofa::defaulttype::Vector3::value_type Real_Sofa;
     /** Load a scene from a file.
     Static method because at this point, the Simulation component is not yet created.
     If a Simulation component is found in the graph, then it is used.
@@ -84,7 +84,7 @@ public:
     virtual void updateVisualContext(GNode* root,int FILTER=0);
 
     /// Compute the bounding box of the scene.
-    virtual void computeBBox(GNode* root, double* minBBox, double* maxBBox);
+    virtual void computeBBox(GNode* root, Real_Sofa* minBBox, Real_Sofa* maxBBox);
 
     /// Render the scene
     virtual void draw(GNode* root);

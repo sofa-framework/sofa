@@ -56,17 +56,17 @@ public:
         typedef	helper::vector<SparseVecDeriv> VecConst;
 
 
-        static void set(Coord& c, double x, double , double )
+        static void set(Coord& c, Real x, Real , Real )
         {
             c = (Real)x;
         }
 
-        static void get(double &x, double &, double &, const Coord& c)
+        static void get(Real &x, Real &, Real &, const Coord& c)
         {
-            x = (double)c;
+            x = (Real)c;
         }
 
-        static void add(Coord& c, double x, double , double )
+        static void add(Coord& c, Real x, Real , Real )
         {
             c += (Real)x;
         }

@@ -79,8 +79,8 @@ public:
     Data<bool> f_freeRotations;
     Data<bool> f_lastFreeRotation;
     Data<bool> f_restRotations;
-    Data<defaulttype::Vec3d> f_lastPos;
-    Data<defaulttype::Vec3d> f_lastDir;
+    Data<defaulttype::Vector3> f_lastPos;
+    Data<defaulttype::Vector3> f_lastDir;
     Data<bool> f_clamp;
 
     helper::vector<bool> activeFlags;

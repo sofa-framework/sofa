@@ -10,6 +10,12 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/gui/SofaGUI.h>
 
+#ifndef SOFA_DOUBLE
+#ifndef SOFA_FLOAT
+
+#define SOFA_DOUBLE //only using float
+#endif
+#endif
 
 #include <sofa/component/typedef/Sofa_typedef.h>
 
@@ -30,7 +36,7 @@ int main(int argc, char** argv)
     // The graph root node : gravity already exists in a GNode by default
     GNode* groot = new GNode;
     groot->setName( "root" );
-    groot->setGravityInWorld( Coord3f(0,-10,0) );
+    groot->setGravityInWorld( Coord3(0,-10,0) );
 
 
     // One solver for all the graph
@@ -39,19 +45,19 @@ int main(int argc, char** argv)
     groot->addObject(solver);
 
     // Tetrahedron degrees of freedom
-    MechanicalObject3f* DOF = new MechanicalObject3f;
+    MechanicalObject3* DOF = new MechanicalObject3;
     groot->addObject(DOF);
     DOF->resize(4);
     DOF->setName("DOF");
-    VecCoord3f& x = *DOF->getX();
+    VecCoord3& x = *DOF->getX();
 
-    x[0] = Coord3f(0,10,0);
-    x[1] = Coord3f(10,0,0);
-    x[2] = Coord3f(-10*0.5,0,10*0.866);
-    x[3] = Coord3f(-10*0.5,0,-10*0.866);
+    x[0] = Coord3(0,10,0);
+    x[1] = Coord3(10,0,0);
+    x[2] = Coord3(-10*0.5,0,10*0.866);
+    x[3] = Coord3(-10*0.5,0,-10*0.866);
 
     // Tetrahedron uniform mass
-    UniformMass3f* mass = new UniformMass3f;
+    UniformMass3* mass = new UniformMass3;
     groot->addObject(mass);
     mass->setMass(2);
     mass->setName("mass");
@@ -63,13 +69,13 @@ int main(int argc, char** argv)
     topology->addTetrahedron(0,1,2,3);
 
     // Tetrahedron constraints
-    FixedConstraint3f* constraints = new FixedConstraint3f;
+    FixedConstraint3* constraints = new FixedConstraint3;
     groot->addObject(constraints);
     constraints->setName("constraints");
     constraints->addConstraint(0);
 
     // Tetrahedron force field
-    TetrahedronFEMForceField3f* spring = new  TetrahedronFEMForceField3f;
+    TetrahedronFEMForceField3* spring = new  TetrahedronFEMForceField3;
     groot->addObject(spring);
     spring->setUpdateStiffnessMatrix(true);
     spring->setYoungModulus(1);
@@ -88,7 +94,7 @@ int main(int argc, char** argv)
     skin->addObject(visual);
 
     // The mapping between the tetrahedron (DOF) and the liver (visual)
-    BarycentricMapping3f_to_Ext3* mapping = new BarycentricMapping3f_to_Ext3(DOF, visual);
+    BarycentricMapping3_to_Ext3* mapping = new BarycentricMapping3_to_Ext3(DOF, visual);
     mapping->setName( "mapping" );
     skin->addObject(mapping);
 

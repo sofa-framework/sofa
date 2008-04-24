@@ -32,46 +32,76 @@ using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(EdgeSetTopology)
 
+// factory related stuff
 
+int EdgeSetTopologyClass = core::RegisterObject("Dynamic topology handling point sets")
+#ifndef SOFA_FLOAT
+        .add< EdgeSetTopology<Vec3dTypes> >()
+        .add< EdgeSetTopology<Vec2dTypes> >()
+        .add< EdgeSetTopology<Vec1dTypes> >()
+        .add< EdgeSetTopology<Rigid3dTypes> >()
+        .add< EdgeSetTopology<Rigid2dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< EdgeSetTopology<Vec3fTypes> >()
+        .add< EdgeSetTopology<Vec2fTypes> >()
+        .add< EdgeSetTopology<Vec1fTypes> >()
+        .add< EdgeSetTopology<Rigid3fTypes> >()
+        .add< EdgeSetTopology<Rigid2fTypes> >()
+#endif
+        ;
+
+
+#ifndef SOFA_FLOAT
 template class EdgeSetTopology<Vec3dTypes>;
-template class EdgeSetTopology<Vec3fTypes>;
 template class EdgeSetTopology<Vec2dTypes>;
-template class EdgeSetTopology<Vec2fTypes>;
 template class EdgeSetTopology<Vec1dTypes>;
-template class EdgeSetTopology<Vec1fTypes>;
 template class EdgeSetTopology<Rigid3dTypes>;
-template class EdgeSetTopology<Rigid3fTypes>;
 template class EdgeSetTopology<Rigid2dTypes>;
+
+
+template class EdgeSetTopologyAlgorithms<Vec3dTypes>;
+template class EdgeSetTopologyAlgorithms<Vec2dTypes>;
+template class EdgeSetTopologyAlgorithms<Vec1dTypes>;
+template class EdgeSetTopologyAlgorithms<Rigid3dTypes>;
+template class EdgeSetTopologyAlgorithms<Rigid2dTypes>;
+
+template class EdgeSetGeometryAlgorithms<Vec3dTypes>;
+template class EdgeSetGeometryAlgorithms<Vec2dTypes>;
+template class EdgeSetGeometryAlgorithms<Vec1dTypes>;
+
+template class EdgeSetGeometryAlgorithms<Rigid3dTypes>;
+template class EdgeSetGeometryAlgorithms<Rigid2dTypes>;
+
+template class EdgeSetTopologyModifier<Vec3dTypes>;
+template class EdgeSetTopologyModifier<Vec2dTypes>;
+template class EdgeSetTopologyModifier<Vec1dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class EdgeSetTopology<Vec3fTypes>;
+template class EdgeSetTopology<Vec2fTypes>;
+template class EdgeSetTopology<Vec1fTypes>;
+template class EdgeSetTopology<Rigid3fTypes>;
 template class EdgeSetTopology<Rigid2fTypes>;
 
 template class EdgeSetTopologyAlgorithms<Vec3fTypes>;
-template class EdgeSetTopologyAlgorithms<Vec3dTypes>;
-template class EdgeSetTopologyAlgorithms<Vec2dTypes>;
 template class EdgeSetTopologyAlgorithms<Vec2fTypes>;
-template class EdgeSetTopologyAlgorithms<Vec1dTypes>;
 template class EdgeSetTopologyAlgorithms<Vec1fTypes>;
-template class EdgeSetTopologyAlgorithms<Rigid3dTypes>;
 template class EdgeSetTopologyAlgorithms<Rigid3fTypes>;
-template class EdgeSetTopologyAlgorithms<Rigid2dTypes>;
 template class EdgeSetTopologyAlgorithms<Rigid2fTypes>;
 
+
 template class EdgeSetGeometryAlgorithms<Vec3fTypes>;
-template class EdgeSetGeometryAlgorithms<Vec3dTypes>;
-template class EdgeSetGeometryAlgorithms<Vec2dTypes>;
 template class EdgeSetGeometryAlgorithms<Vec2fTypes>;
-template class EdgeSetGeometryAlgorithms<Vec1dTypes>;
 template class EdgeSetGeometryAlgorithms<Vec1fTypes>;
-template class EdgeSetGeometryAlgorithms<Rigid3dTypes>;
+
 template class EdgeSetGeometryAlgorithms<Rigid3fTypes>;
-template class EdgeSetGeometryAlgorithms<Rigid2dTypes>;
 template class EdgeSetGeometryAlgorithms<Rigid2fTypes>;
 
 template class EdgeSetTopologyModifier<Vec3fTypes>;
-template class EdgeSetTopologyModifier<Vec3dTypes>;
 template class EdgeSetTopologyModifier<Vec2fTypes>;
-template class EdgeSetTopologyModifier<Vec2dTypes>;
 template class EdgeSetTopologyModifier<Vec1fTypes>;
-template class EdgeSetTopologyModifier<Vec1dTypes>;
+#endif
 
 // implementation EdgeSetTopologyContainer
 
@@ -294,20 +324,6 @@ EdgeSetTopologyContainer::EdgeSetTopologyContainer(core::componentmodel::topolog
 
 
 
-// factory related stuff
-
-int EdgeSetTopologyClass = core::RegisterObject("Dynamic topology handling point sets")
-        .add< EdgeSetTopology<Vec3dTypes> >()
-        .add< EdgeSetTopology<Vec3fTypes> >()
-        .add< EdgeSetTopology<Vec2dTypes> >()
-        .add< EdgeSetTopology<Vec2fTypes> >()
-        .add< EdgeSetTopology<Vec1dTypes> >()
-        .add< EdgeSetTopology<Vec1fTypes> >()
-        .add< EdgeSetTopology<Rigid3dTypes> >()
-        .add< EdgeSetTopology<Rigid3fTypes> >()
-        .add< EdgeSetTopology<Rigid2dTypes> >()
-        .add< EdgeSetTopology<Rigid2fTypes> >()
-        ;
 
 
 } // namespace topology

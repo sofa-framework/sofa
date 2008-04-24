@@ -80,6 +80,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+    typedef typename sofa::defaulttype::Vector3::value_type Real_Sofa;
 
     typedef unsigned int Index;
     typedef topology::Edge Element;
@@ -165,9 +166,9 @@ public:
 
     virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
 
-    virtual double getPotentialEnergy(const VecCoord&) { return 0; }
+    virtual sofa::defaulttype::Vector3::value_type getPotentialEnergy(const VecCoord&) { return 0; }
 
-    void addKToMatrix(sofa::defaulttype::BaseMatrix *mat, double k, unsigned int &offset);
+    void addKToMatrix(sofa::defaulttype::BaseMatrix *mat, Real_Sofa k, unsigned int &offset);
 
     void draw();
 

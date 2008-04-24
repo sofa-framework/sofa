@@ -23,15 +23,24 @@ using std::cerr;
 using std::cout;
 using std::endl;
 
-template class EdgePressureForceField<Vec3dTypes>;
-template class EdgePressureForceField<Vec3fTypes>;
-
 SOFA_DECL_CLASS(EdgePressureForceField)
 
 int EdgePressureForceFieldClass = core::RegisterObject("EdgePressure")
+#ifndef SOFA_FLOAT
         .add< EdgePressureForceField<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
         .add< EdgePressureForceField<Vec3fTypes> >()
+#endif
         ;
+
+#ifndef SOFA_FLOAT
+template class EdgePressureForceField<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class EdgePressureForceField<Vec3fTypes>;
+#endif
+
 
 } // namespace forcefield
 

@@ -231,8 +231,13 @@ void LineModel::draw(int index)
 {
     Line t(this,index);
     glBegin(GL_LINES);
+#ifdef SOFA_FLOAT
+    glVertex3fv(t.p1().ptr());
+    glVertex3fv(t.p2().ptr());
+#else
     glVertex3dv(t.p1().ptr());
     glVertex3dv(t.p2().ptr());
+#endif
     glEnd();
 }
 

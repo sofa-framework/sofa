@@ -1,6 +1,8 @@
 #ifndef SOFA_GPU_CUDA_CUDAUNIFORMMASS_H
 #define SOFA_GPU_CUDA_CUDAUNIFORMMASS_H
 
+#ifndef SOFA_DOUBLE //cuda only operates with float
+
 #include "CudaTypes.h"
 #include <sofa/component/mass/UniformMass.h>
 
@@ -27,10 +29,10 @@ template <>
 bool UniformMass<gpu::cuda::CudaVec3fTypes, float>::addBBox(double* minBBox, double* maxBBox);
 
 template <>
-double UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getPotentialEnergy( const VecCoord& x );
+sofa::defaulttype::Vector3::value_type UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getPotentialEnergy( const VecCoord& x );
 
 template <>
-double UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getElementMass(unsigned int );
+sofa::defaulttype::Vector3::value_type UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getElementMass(unsigned int );
 
 template <>
 void UniformMass<gpu::cuda::CudaRigid3fTypes, Rigid3fMass>::draw();
@@ -53,5 +55,7 @@ bool UniformMass<gpu::cuda::CudaVec3f1Types, float>::addBBox(double* minBBox, do
 } // namespace component
 
 } // namespace sofa
+
+#endif
 
 #endif

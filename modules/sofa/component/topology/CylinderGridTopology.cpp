@@ -48,18 +48,18 @@ int CylinderGridTopologyClass = core::RegisterObject("Cylinder grid in 3D")
 
 CylinderGridTopology::CylinderGridTopology(int nx, int ny, int nz)
     : GridTopology(nx, ny, nz),
-      center(initData(&center,Vec3(0.0f,0.0f,0.0f),"center", "Center of the cylinder")),
-      axis(initData(&axis,Vec3(0.0f,0.0f,1.0f),"axis", "Main direction of the cylinder")),
-      radius(initData(&radius,(Real)1.0,"radius", "Radius of the cylinder")),
-      length(initData(&length,(Real)1.0,"length", "Length of the cylinder along its axis"))
+      center(initData(&center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the cylinder")),
+      axis(initData(&axis,Vector3(0.0f,0.0f,1.0f),"axis", "Main direction of the cylinder")),
+      radius(initData(&radius,(Real_Sofa)1.0,"radius", "Radius of the cylinder")),
+      length(initData(&length,(Real_Sofa)1.0,"length", "Length of the cylinder along its axis"))
 {
 }
 
 CylinderGridTopology::CylinderGridTopology()
-    : center(initData(&center,Vec3(0.0f,0.0f,0.0f),"center", "Center of the cylinder")),
-      axis(initData(&axis,Vec3(0.0f,0.0f,1.0f),"axis", "Main direction of the cylinder")),
-      radius(initData(&radius,(Real)1.0,"radius", "Radius of the cylinder")),
-      length(initData(&length,(Real)1.0,"length", "Length of the cylinder along its axis"))
+    : center(initData(&center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the cylinder")),
+      axis(initData(&axis,Vector3(0.0f,0.0f,1.0f),"axis", "Main direction of the cylinder")),
+      radius(initData(&radius,(Real_Sofa)1.0,"radius", "Radius of the cylinder")),
+      length(initData(&length,(Real_Sofa)1.0,"length", "Length of the cylinder along its axis"))
 {
 }
 
@@ -68,7 +68,7 @@ unsigned CylinderGridTopology::getIndex( int i, int j, int k ) const
     return n.getValue()[0]* ( n.getValue()[1]*k + j ) + i;
 }
 
-CylinderGridTopology::Vec3 CylinderGridTopology::getPoint(int i) const
+Vector3 CylinderGridTopology::getPoint(int i) const
 {
     int x = i%n.getValue()[0]; i/=n.getValue()[0];
     int y = i%n.getValue()[1]; i/=n.getValue()[1];
@@ -76,15 +76,15 @@ CylinderGridTopology::Vec3 CylinderGridTopology::getPoint(int i) const
     return getPoint(x,y,z);
 }
 
-CylinderGridTopology::Vec3 CylinderGridTopology::getPoint(int x, int y, int z) const
+Vector3 CylinderGridTopology::getPoint(int x, int y, int z) const
 {
     //return p0+dx*x+dy*y+dz*z;
-    Real r = radius.getValue();
-    Real l = length.getValue();
-    Vec3 axisZ = axis.getValue();
+    Real_Sofa r = radius.getValue();
+    Real_Sofa l = length.getValue();
+    Vector3 axisZ = axis.getValue();
     axisZ.normalize();
-    Vec3 axisX = ((axisZ-Vec3(1,0,0)).norm() < 0.000001 ? Vec3(0,1,0) : Vec3(1,0,0));
-    Vec3 axisY = cross(axisZ,axisX);
+    Vector3 axisX = ((axisZ-Vector3(1,0,0)).norm() < 0.000001 ? Vector3(0,1,0) : Vector3(1,0,0));
+    Vector3 axisY = cross(axisZ,axisX);
     axisX = cross(axisY,axisZ);
     axisX.normalize();
     axisY.normalize();
@@ -93,7 +93,7 @@ CylinderGridTopology::Vec3 CylinderGridTopology::getPoint(int x, int y, int z) c
     int ny = getNy();
     int nz = getNz();
     // coordonate on a square
-    Vec3 p(x*2*r/(nx-1) - r, y*2*r/(ny-1) - r, 0);
+    Vector3 p(x*2*r/(nx-1) - r, y*2*r/(ny-1) - r, 0);
     // scale it to be on a circle
     if (p.norm() > 0.0000001)
         p *= helper::rmax(helper::rabs(p[0]),helper::rabs(p[1]))/p.norm();

@@ -30,7 +30,7 @@ public:
     typedef typename LMTypes::VecCoord LMVecCoord;
     typedef typename LMTypes::VecDeriv LMVecDeriv;
     typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
-
+    typedef typename sofa::defaulttype::Vector3::value_type Real_Sofa;
 protected:
 
     struct Contact
@@ -71,7 +71,11 @@ public:
 
     virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2);
 
-    virtual double getPotentialEnergy(const VecCoord&, const VecCoord&);
+    virtual Real_Sofa getPotentialEnergy(const VecCoord&, const VecCoord&)
+    {
+        std::cerr<<"LagrangianMultiplierContactConstraint::getPotentialEnergy-not-implemented !!!"<<std::endl;
+        return 0;
+    }
 
     void draw();
 

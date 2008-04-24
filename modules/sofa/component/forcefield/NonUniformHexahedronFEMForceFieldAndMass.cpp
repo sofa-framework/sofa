@@ -40,17 +40,24 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-template class NonUniformHexahedronFEMForceFieldAndMass<Vec3dTypes>;
-template class NonUniformHexahedronFEMForceFieldAndMass<Vec3fTypes>;
-
-
 SOFA_DECL_CLASS(NonUniformHexahedronFEMForceFieldAndMass)
 
 // Register in the Factory
 int NonUniformHexahedronFEMForceFieldAndMassClass = core::RegisterObject("Non uniform Hexahedral finite elements")
+#ifndef SOFA_FLOAT
         .add< NonUniformHexahedronFEMForceFieldAndMass<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
         .add< NonUniformHexahedronFEMForceFieldAndMass<Vec3fTypes> >()
+#endif
         ;
+
+#ifndef SOFA_FLOAT
+template class NonUniformHexahedronFEMForceFieldAndMass<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class NonUniformHexahedronFEMForceFieldAndMass<Vec3fTypes>;
+#endif
 
 } // namespace forcefield
 

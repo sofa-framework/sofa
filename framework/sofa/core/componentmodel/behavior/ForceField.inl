@@ -81,7 +81,7 @@ void ForceField<DataTypes>::addDForceV()
 
 
 template<class DataTypes>
-double ForceField<DataTypes>::getPotentialEnergy()
+sofa::defaulttype::Vector3::value_type ForceField<DataTypes>::getPotentialEnergy()
 {
     if (mstate)
         return getPotentialEnergy(*mstate->getX());
@@ -89,7 +89,7 @@ double ForceField<DataTypes>::getPotentialEnergy()
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addKDxToVector(defaulttype::BaseVector *resVect, double kFact, unsigned int& offset)
+void ForceField<DataTypes>::addKDxToVector(defaulttype::BaseVector *resVect, Real_Sofa kFact, unsigned int& offset)
 {
     if (mstate)
     {

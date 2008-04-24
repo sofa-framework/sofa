@@ -65,7 +65,7 @@ inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectPosition(Coord& 
             {
                 // gradually set the velocity along the direction axis
                 Real fact = -lastDist[index] / (lastDist[index+1]-lastDist[index]);
-                Vec3d axis(restRotations[index][0], restRotations[index][1], restRotations[index][2]);
+                Vector3 axis(restRotations[index][0], restRotations[index][1], restRotations[index][2]);
                 Real angle = acos(restRotations[index][3])*2;
                 //restRotations[index].toAngleAxis(angle,axis);
                 x2.getOrientation() = x1.getOrientation()*Quat(axis,angle*fact);
@@ -417,13 +417,13 @@ void AttachConstraint<Rigid3dTypes>::calcRestRotations()
         Quat q(0,0,0,1);
         if (indices2[i] < x0.size()-1)
         {
-            Vec3d dp0 = x0[indices2[i]].vectorToChild(x0[indices2[i]+1].getCenter()-x0[indices2[i]].getCenter());
+            Vector3 dp0 = x0[indices2[i]].vectorToChild(x0[indices2[i]+1].getCenter()-x0[indices2[i]].getCenter());
             dp0.normalize();
-            Vec3d y = cross(dp0, Vec3d(1,0,0));
+            Vector3 y = cross(dp0, Vector3(1,0,0));
             y.normalize();
             double alpha = acos(dp0[0]);
             q = Quat(y,alpha);
-            std::cout << "restRotations x2["<<indices2[i]<<"]="<<q<<" dp0="<<dp0<<" qx="<<q.rotate(Vec3d(1,0,0))<<std::endl;
+            std::cout << "restRotations x2["<<indices2[i]<<"]="<<q<<" dp0="<<dp0<<" qx="<<q.rotate(Vector3(1,0,0))<<std::endl;
         }
         restRotations[i] = q;
     }
@@ -452,7 +452,7 @@ void AttachConstraint<DataTypes>::projectPosition(VecCoord& res1, VecCoord& res2
         if (last)
         {
             Coord p = res1[indices1[i]];
-            defaulttype::Vec3d p3d;
+            Vec<3,Real> p3d;
             DataTypes::get(p3d[0],p3d[1],p3d[2],p);
             lastDist[i] = (Real)( (p3d-f_lastPos.getValue())*f_lastDir.getValue());
             if (lastDist[i] > 0.0)

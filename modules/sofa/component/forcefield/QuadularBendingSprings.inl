@@ -619,7 +619,7 @@ void QuadularBendingSprings<DataTypes>::init()
 }
 
 template <class DataTypes>
-double QuadularBendingSprings<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
+sofa::defaulttype::Vector3::value_type QuadularBendingSprings<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
 {
     std::cerr<<"QuadularBendingSprings::getPotentialEnergy-not-implemented !!!"<<endl;
     return 0;

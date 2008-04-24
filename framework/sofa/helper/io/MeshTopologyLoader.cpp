@@ -196,7 +196,6 @@ bool MeshTopologyLoader::load(const char *filename)
 
         int nelems = 0;
         fscanf(file, "%d\n", &nelems);
-
         for (int i=0; i<nelems; ++i)
         {
             int index, etype, rphys, relem, nnodes, ntags, tag;
@@ -248,7 +247,6 @@ bool MeshTopologyLoader::load(const char *filename)
                 nodes[n] = (((unsigned int)t)<pmap.size())?pmap[t]:0;
                 //std::cout << "nodes[" << n << "] = " << nodes[n] << std::endl;
             }
-
             switch (etype)
             {
             case 1: // Line

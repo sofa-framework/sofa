@@ -88,7 +88,7 @@ void EdgePressureForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& /*
 }
 
 template <class DataTypes>
-double EdgePressureForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
+sofa::defaulttype::Vector3::value_type EdgePressureForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
 {
     cerr<<"EdgePressureForceField::getPotentialEnergy-not-implemented !!!"<<endl;
     return 0;

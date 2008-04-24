@@ -49,7 +49,7 @@ class Fluid3D : public sofa::core::BehaviorModel, public sofa::core::VisualModel
 public:
     typedef Grid3D::real real;
     typedef Grid3D::vec3 vec3;
-
+    typedef sofa::defaulttype::Vector3::value_type Real_Sofa;
 protected:
     int nx,ny,nz;
     real cellwidth;
@@ -95,7 +95,7 @@ public:
 
     virtual void updateVisual();
 
-    virtual bool addBBox(double* minBBox, double* maxBBox);
+    virtual bool addBBox(Real_Sofa* minBBox, Real_Sofa* maxBBox);
 
 protected:
     // marching cube

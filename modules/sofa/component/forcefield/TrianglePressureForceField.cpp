@@ -30,15 +30,24 @@ using std::endl;
 
 using namespace sofa::defaulttype;
 
-template class TrianglePressureForceField<Vec3dTypes>;
-template class TrianglePressureForceField<Vec3fTypes>;
-
 SOFA_DECL_CLASS(TrianglePressureForceField)
 
 int TrianglePressureForceFieldClass = core::RegisterObject("TrianglePressure")
+#ifndef SOFA_FLOAT
         .add< TrianglePressureForceField<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
         .add< TrianglePressureForceField<Vec3fTypes> >()
+#endif
         ;
+
+#ifndef SOFA_FLOAT
+template class TrianglePressureForceField<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class TrianglePressureForceField<Vec3fTypes>;
+#endif
+
 
 } // namespace forcefield
 

@@ -61,19 +61,23 @@ using std::endl;
 
 SOFA_DECL_CLASS(TriangularBendingSprings)
 
-template class TriangularBendingSprings<Vec3fTypes>;
-template class TriangularBendingSprings<Vec3dTypes>;
-//template class TriangularBendingSprings<Vec2fTypes>;
-//template class TriangularBendingSprings<Vec2dTypes>;
-
-
 // Register in the Factory
 int TriangularBendingSpringsClass = core::RegisterObject("Springs added to a triangular mesh to prevent bending")
+#ifndef SOFA_FLOAT
         .add< TriangularBendingSprings<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
         .add< TriangularBendingSprings<Vec3fTypes> >()
-//.add< TriangularBendingSprings<Vec2dTypes> >()
-//.add< TriangularBendingSprings<Vec2fTypes> >()
+#endif
         ;
+
+#ifndef SOFA_FLOAT
+template class TriangularBendingSprings<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class TriangularBendingSprings<Vec3fTypes>;
+#endif
+
 
 } // namespace forcefield
 

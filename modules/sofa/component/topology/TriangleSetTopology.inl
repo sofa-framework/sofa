@@ -639,7 +639,7 @@ double TriangleSetTopologyAlgorithms< DataTypes >::Prepare_InciseAlongPointsList
         if(is_validated)  // localize the sub_triangles indexed by new_ind_ta and new_ind_tb
         {
 
-            const Vec<3,double> p_mid(0.5*(a+b));
+            const Vec<3,double> p_mid((a+b)*0.5);
 
             /*
               double is_a_0_01 = 0.5*a[0]*a[2]-p_mid[0]*p_mid[2];
@@ -3508,7 +3508,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
         v_normal/=norm_v_normal;
 
         Vec<3,Real> v_ab = pb-pa;
-        Vec<3,Real> v_ab_proj = v_ab - v_ab*(v_normal)*v_normal; // projection
+        Vec<3,Real> v_ab_proj = v_ab - v_ab.linearProduct(v_normal).linearProduct(v_normal); // projection
         Vec<3,Real> pb_proj = v_ab_proj + pa;
 
         Vec<3,Real> v_01 = p1-p0;

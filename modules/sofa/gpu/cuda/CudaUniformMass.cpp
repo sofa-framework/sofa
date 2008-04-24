@@ -26,9 +26,9 @@ double UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::
 }
 
 template <>
-double UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getElementMass(unsigned int )
+sofa::defaulttype::Vector3::value_type UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getElementMass(unsigned int )
 {
-    return (double)(mass.getValue().mass);
+    return (sofa::defaulttype::Vector3::value_type)(mass.getValue().mass);
 }
 
 template <>

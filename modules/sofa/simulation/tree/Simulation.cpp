@@ -250,7 +250,7 @@ void Simulation::initTextures ( GNode* root )
 
 
 /// Compute the bounding box of the scene.
-void Simulation::computeBBox ( GNode* root, double* minBBox, double* maxBBox )
+void Simulation::computeBBox ( GNode* root, Real_Sofa* minBBox, Real_Sofa* maxBBox )
 {
     VisualComputeBBoxVisitor act;
     if ( root )

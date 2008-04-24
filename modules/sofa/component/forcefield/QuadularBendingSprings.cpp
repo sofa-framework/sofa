@@ -48,19 +48,22 @@ using std::endl;
 
 SOFA_DECL_CLASS(QuadularBendingSprings)
 
-template class QuadularBendingSprings<Vec3fTypes>;
-template class QuadularBendingSprings<Vec3dTypes>;
-//template class QuadularBendingSprings<Vec2fTypes>;
-//template class QuadularBendingSprings<Vec2dTypes>;
-
-
 // Register in the Factory
 int QuadularBendingSpringsClass = core::RegisterObject("Springs added to a quad mesh to prevent bending")
+#ifndef SOFA_FLOAT
         .add< QuadularBendingSprings<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
         .add< QuadularBendingSprings<Vec3fTypes> >()
-//.add< QuadularBendingSprings<Vec2dTypes> >()
-//.add< QuadularBendingSprings<Vec2fTypes> >()
+#endif
         ;
+
+#ifndef SOFA_FLOAT
+template class QuadularBendingSprings<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class QuadularBendingSprings<Vec3fTypes>;
+#endif
 
 } // namespace forcefield
 

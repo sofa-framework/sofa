@@ -13,28 +13,31 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-template class EllipsoidForceField<Vec3dTypes>;
-template class EllipsoidForceField<Vec3fTypes>;
-template class EllipsoidForceField<Vec2dTypes>;
-template class EllipsoidForceField<Vec2fTypes>;
-template class EllipsoidForceField<Vec1dTypes>;
-template class EllipsoidForceField<Vec1fTypes>;
-//template class EllipsoidForceField<Vec6dTypes>;
-//template class EllipsoidForceField<Vec6fTypes>;
-
-
 SOFA_DECL_CLASS(EllipsoidForceField)
 
 int EllipsoidForceFieldClass = core::RegisterObject("Repulsion applied by an ellipsoid toward the exterior or the interior")
+
+#ifndef SOFA_FLOAT
         .add< EllipsoidForceField<Vec3dTypes> >()
-        .add< EllipsoidForceField<Vec3fTypes> >()
         .add< EllipsoidForceField<Vec2dTypes> >()
-        .add< EllipsoidForceField<Vec2fTypes> >()
         .add< EllipsoidForceField<Vec1dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< EllipsoidForceField<Vec3fTypes> >()
+        .add< EllipsoidForceField<Vec2fTypes> >()
         .add< EllipsoidForceField<Vec1fTypes> >()
-//.add< EllipsoidForceField<Vec6dTypes> >()
-//.add< EllipsoidForceField<Vec6fTypes> >()
+#endif
         ;
+#ifndef SOFA_FLOAT
+template class EllipsoidForceField<Vec3dTypes>;
+template class EllipsoidForceField<Vec2dTypes>;
+template class EllipsoidForceField<Vec1dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class EllipsoidForceField<Vec3fTypes>;
+template class EllipsoidForceField<Vec2fTypes>;
+template class EllipsoidForceField<Vec1fTypes>;
+#endif
 
 } // namespace forcefield
 

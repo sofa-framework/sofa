@@ -46,117 +46,112 @@ SOFA_DECL_CLASS(BarycentricMapping)
 
 // Register in the Factory
 int BarycentricMappingClass = core::RegisterObject("Mapping using barycentric coordinates of the child with respect to cells of its parent")
+#ifndef SOFA_FLOAT
         .add< BarycentricMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > > >()
+        .add< BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > > >()
+// .add< BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > > >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< BarycentricMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > > >()
+        .add< BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > > >()
+// .add< BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > > >()
+#endif
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
         .add< BarycentricMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > > >()
         .add< BarycentricMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< BarycentricMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > > >()
         .add< BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > > >()
         .add< BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > > >()
-        .add< BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > > >()
-        .add< BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > > >()
-        .add< BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > > >()
-        .add< BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > > >()
-        .add< BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
+#endif
+#endif
         ;
-
-// Mech -> Mech
+#ifndef SOFA_FLOAT
 template class BarycentricMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > >;
+template class BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > >;
+// template class BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > >;
+template class BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >;
+template class BarycentricMapperRegularGridTopology<Vec3dTypes, Vec3dTypes >;
+// template class BarycentricMapperRegularGridTopology<Vec3dTypes, ExtVec3dTypes >;
+template class BarycentricMapperRegularGridTopology<Vec3dTypes, ExtVec3fTypes >;
+template class BarycentricMapperSparseGridTopology<Vec3dTypes, Vec3dTypes >;
+// template class BarycentricMapperSparseGridTopology<Vec3dTypes, ExtVec3dTypes >;
+template class BarycentricMapperSparseGridTopology<Vec3dTypes, ExtVec3fTypes >;
+template class BarycentricMapperMeshTopology<Vec3dTypes, Vec3dTypes >;
+// template class BarycentricMapperMeshTopology<Vec3dTypes, ExtVec3dTypes >;
+template class BarycentricMapperMeshTopology<Vec3dTypes, ExtVec3fTypes >;
+template class BarycentricMapperEdgeSetTopology<Vec3dTypes, Vec3dTypes >;
+// template class BarycentricMapperEdgeSetTopology<Vec3dTypes, ExtVec3dTypes >;
+template class BarycentricMapperEdgeSetTopology<Vec3dTypes, ExtVec3fTypes >;
+template class BarycentricMapperTriangleSetTopology<Vec3dTypes, Vec3dTypes >;
+// template class BarycentricMapperTriangleSetTopology<Vec3dTypes, ExtVec3dTypes >;
+template class BarycentricMapperTriangleSetTopology<Vec3dTypes, ExtVec3fTypes >;
+template class BarycentricMapperQuadSetTopology<Vec3dTypes, Vec3dTypes >;
+// template class BarycentricMapperQuadSetTopology<Vec3dTypes, ExtVec3dTypes >;
+template class BarycentricMapperQuadSetTopology<Vec3dTypes, ExtVec3fTypes >;
+template class BarycentricMapperTetrahedronSetTopology<Vec3dTypes, Vec3dTypes >;
+// template class BarycentricMapperTetrahedronSetTopology<Vec3dTypes, ExtVec3dTypes >;
+template class BarycentricMapperTetrahedronSetTopology<Vec3dTypes, ExtVec3fTypes >;
+template class BarycentricMapperHexahedronSetTopology<Vec3dTypes, Vec3dTypes >;
+// template class BarycentricMapperHexahedronSetTopology<Vec3dTypes, ExtVec3dTypes >;
+template class BarycentricMapperHexahedronSetTopology<Vec3dTypes, ExtVec3fTypes >;
+#endif
+#ifndef SOFA_DOUBLE
 template class BarycentricMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > >;
+template class BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > >;
+template class BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >;
+// template class BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > >;
+template class BarycentricMapperRegularGridTopology<Vec3fTypes, Vec3fTypes >;
+template class BarycentricMapperRegularGridTopology<Vec3fTypes, ExtVec3fTypes >;
+// template class BarycentricMapperRegularGridTopology<Vec3fTypes, ExtVec3dTypes >;
+template class BarycentricMapperSparseGridTopology<Vec3fTypes, Vec3fTypes >;
+template class BarycentricMapperSparseGridTopology<Vec3fTypes, ExtVec3fTypes >;
+// template class BarycentricMapperSparseGridTopology<Vec3fTypes, ExtVec3dTypes >;
+template class BarycentricMapperMeshTopology<Vec3fTypes, Vec3fTypes >;
+template class BarycentricMapperMeshTopology<Vec3fTypes, ExtVec3fTypes >;
+// template class BarycentricMapperMeshTopology<Vec3fTypes, ExtVec3dTypes >;
+template class BarycentricMapperEdgeSetTopology<Vec3fTypes, Vec3fTypes >;
+template class BarycentricMapperEdgeSetTopology<Vec3fTypes, ExtVec3fTypes >;
+// template class BarycentricMapperEdgeSetTopology<Vec3fTypes, ExtVec3dTypes >;
+template class BarycentricMapperTriangleSetTopology<Vec3fTypes, Vec3fTypes >;
+template class BarycentricMapperTriangleSetTopology<Vec3fTypes, ExtVec3fTypes >;
+// template class BarycentricMapperTriangleSetTopology<Vec3fTypes, ExtVec3dTypes >;
+template class BarycentricMapperQuadSetTopology<Vec3fTypes, Vec3fTypes >;
+template class BarycentricMapperQuadSetTopology<Vec3fTypes, ExtVec3fTypes >;
+// template class BarycentricMapperQuadSetTopology<Vec3fTypes, ExtVec3dTypes >;
+template class BarycentricMapperTetrahedronSetTopology<Vec3fTypes, Vec3fTypes >;
+template class BarycentricMapperTetrahedronSetTopology<Vec3fTypes, ExtVec3fTypes >;
+// template class BarycentricMapperTetrahedronSetTopology<Vec3fTypes, ExtVec3dTypes >;
+template class BarycentricMapperHexahedronSetTopology<Vec3fTypes, Vec3fTypes >;
+template class BarycentricMapperHexahedronSetTopology<Vec3fTypes, ExtVec3fTypes >;
+// template class BarycentricMapperHexahedronSetTopology<Vec3fTypes, ExtVec3dTypes >;
+#endif
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
 template class BarycentricMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > >;
 template class BarycentricMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > >;
-
-// Mech -> Mapped
-template class BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > >;
-template class BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > >;
 template class BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > >;
 template class BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > >;
-
-// Mech -> ExtMapped
-template class BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > >;
-template class BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >;
-template class BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >;
-template class BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > >;
-
-// RegularGridMapper
-template class BarycentricMapperRegularGridTopology<Vec3dTypes, Vec3dTypes >;
-template class BarycentricMapperRegularGridTopology<Vec3fTypes, Vec3fTypes >;
 template class BarycentricMapperRegularGridTopology<Vec3dTypes, Vec3fTypes >;
 template class BarycentricMapperRegularGridTopology<Vec3fTypes, Vec3dTypes >;
-template class BarycentricMapperRegularGridTopology<Vec3dTypes, ExtVec3dTypes >;
-template class BarycentricMapperRegularGridTopology<Vec3fTypes, ExtVec3fTypes >;
-template class BarycentricMapperRegularGridTopology<Vec3dTypes, ExtVec3fTypes >;
-template class BarycentricMapperRegularGridTopology<Vec3fTypes, ExtVec3dTypes >;
-
-// SparseGridMapper
-template class BarycentricMapperSparseGridTopology<Vec3dTypes, Vec3dTypes >;
-template class BarycentricMapperSparseGridTopology<Vec3fTypes, Vec3fTypes >;
 template class BarycentricMapperSparseGridTopology<Vec3dTypes, Vec3fTypes >;
 template class BarycentricMapperSparseGridTopology<Vec3fTypes, Vec3dTypes >;
-template class BarycentricMapperSparseGridTopology<Vec3dTypes, ExtVec3dTypes >;
-template class BarycentricMapperSparseGridTopology<Vec3fTypes, ExtVec3fTypes >;
-template class BarycentricMapperSparseGridTopology<Vec3dTypes, ExtVec3fTypes >;
-template class BarycentricMapperSparseGridTopology<Vec3fTypes, ExtVec3dTypes >;
-
-// MeshMapper
-template class BarycentricMapperMeshTopology<Vec3dTypes, Vec3dTypes >;
-template class BarycentricMapperMeshTopology<Vec3fTypes, Vec3fTypes >;
 template class BarycentricMapperMeshTopology<Vec3dTypes, Vec3fTypes >;
 template class BarycentricMapperMeshTopology<Vec3fTypes, Vec3dTypes >;
-template class BarycentricMapperMeshTopology<Vec3dTypes, ExtVec3dTypes >;
-template class BarycentricMapperMeshTopology<Vec3fTypes, ExtVec3fTypes >;
-template class BarycentricMapperMeshTopology<Vec3dTypes, ExtVec3fTypes >;
-template class BarycentricMapperMeshTopology<Vec3fTypes, ExtVec3dTypes >;
-
-// EdgeSetTopologyMapper
-template class BarycentricMapperEdgeSetTopology<Vec3dTypes, Vec3dTypes >;
-template class BarycentricMapperEdgeSetTopology<Vec3fTypes, Vec3fTypes >;
 template class BarycentricMapperEdgeSetTopology<Vec3dTypes, Vec3fTypes >;
 template class BarycentricMapperEdgeSetTopology<Vec3fTypes, Vec3dTypes >;
-template class BarycentricMapperEdgeSetTopology<Vec3dTypes, ExtVec3dTypes >;
-template class BarycentricMapperEdgeSetTopology<Vec3fTypes, ExtVec3fTypes >;
-template class BarycentricMapperEdgeSetTopology<Vec3dTypes, ExtVec3fTypes >;
-template class BarycentricMapperEdgeSetTopology<Vec3fTypes, ExtVec3dTypes >;
-
-// TriangleSetTopologyMapper
-template class BarycentricMapperTriangleSetTopology<Vec3dTypes, Vec3dTypes >;
-template class BarycentricMapperTriangleSetTopology<Vec3fTypes, Vec3fTypes >;
 template class BarycentricMapperTriangleSetTopology<Vec3dTypes, Vec3fTypes >;
 template class BarycentricMapperTriangleSetTopology<Vec3fTypes, Vec3dTypes >;
-template class BarycentricMapperTriangleSetTopology<Vec3dTypes, ExtVec3dTypes >;
-template class BarycentricMapperTriangleSetTopology<Vec3fTypes, ExtVec3fTypes >;
-template class BarycentricMapperTriangleSetTopology<Vec3dTypes, ExtVec3fTypes >;
-template class BarycentricMapperTriangleSetTopology<Vec3fTypes, ExtVec3dTypes >;
-
-// QuadSetTopologyMapper
-template class BarycentricMapperQuadSetTopology<Vec3dTypes, Vec3dTypes >;
-template class BarycentricMapperQuadSetTopology<Vec3fTypes, Vec3fTypes >;
 template class BarycentricMapperQuadSetTopology<Vec3dTypes, Vec3fTypes >;
 template class BarycentricMapperQuadSetTopology<Vec3fTypes, Vec3dTypes >;
-template class BarycentricMapperQuadSetTopology<Vec3dTypes, ExtVec3dTypes >;
-template class BarycentricMapperQuadSetTopology<Vec3fTypes, ExtVec3fTypes >;
-template class BarycentricMapperQuadSetTopology<Vec3dTypes, ExtVec3fTypes >;
-template class BarycentricMapperQuadSetTopology<Vec3fTypes, ExtVec3dTypes >;
-
-// TetrahedronSetTopologyMapper
-template class BarycentricMapperTetrahedronSetTopology<Vec3dTypes, Vec3dTypes >;
-template class BarycentricMapperTetrahedronSetTopology<Vec3fTypes, Vec3fTypes >;
 template class BarycentricMapperTetrahedronSetTopology<Vec3dTypes, Vec3fTypes >;
 template class BarycentricMapperTetrahedronSetTopology<Vec3fTypes, Vec3dTypes >;
-template class BarycentricMapperTetrahedronSetTopology<Vec3dTypes, ExtVec3dTypes >;
-template class BarycentricMapperTetrahedronSetTopology<Vec3fTypes, ExtVec3fTypes >;
-template class BarycentricMapperTetrahedronSetTopology<Vec3dTypes, ExtVec3fTypes >;
-template class BarycentricMapperTetrahedronSetTopology<Vec3fTypes, ExtVec3dTypes >;
-
-// HexahedronSetTopologyMapper
-template class BarycentricMapperHexahedronSetTopology<Vec3dTypes, Vec3dTypes >;
-template class BarycentricMapperHexahedronSetTopology<Vec3fTypes, Vec3fTypes >;
 template class BarycentricMapperHexahedronSetTopology<Vec3dTypes, Vec3fTypes >;
 template class BarycentricMapperHexahedronSetTopology<Vec3fTypes, Vec3dTypes >;
-template class BarycentricMapperHexahedronSetTopology<Vec3dTypes, ExtVec3dTypes >;
-template class BarycentricMapperHexahedronSetTopology<Vec3fTypes, ExtVec3fTypes >;
-template class BarycentricMapperHexahedronSetTopology<Vec3dTypes, ExtVec3fTypes >;
-template class BarycentricMapperHexahedronSetTopology<Vec3fTypes, ExtVec3dTypes >;
+#endif
+#endif
+
 
 } // namespace mapping
 

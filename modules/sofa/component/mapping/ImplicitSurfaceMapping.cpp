@@ -45,27 +45,47 @@ SOFA_DECL_CLASS(ImplicitSurfaceMapping)
 
 // Register in the Factory
 int ImplicitSurfaceMappingClass = core::RegisterObject("Compute an iso-surface from a set of particles")
+#ifndef SOFA_FLOAT
         .add< ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3dTypes> > >()
+// .add< ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3dTypes> > >()
+        .add< ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3fTypes> > >()
+// .add< ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3dTypes> > >()
+        .add< ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >()
+#endif
+
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
         .add< ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3dTypes> > >()
         .add< ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3fTypes> > >()
-        .add< ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3fTypes> > >()
-        .add< ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3dTypes> > >()
-        .add< ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3dTypes> > >()
-        .add< ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >()
-        .add< ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >()
+#endif
+#endif
         ;
 
-// Mech -> Mapped
+
+#ifndef SOFA_FLOAT
 template class ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3dTypes> >;
+// template class ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3dTypes> >;
+template class ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3fTypes> >;
+#endif
+#ifndef SOFA_DOUBLE
 template class ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3fTypes> >;
+template class ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3fTypes> >;
+// template class ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3dTypes> >;
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
 template class ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3fTypes> >;
 template class ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3dTypes> >;
+#endif
+#endif
+// Mech -> Mapped
 
 // Mech -> ExtMapped
-template class ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3dTypes> >;
-template class ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3fTypes> >;
-template class ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3fTypes> >;
-template class ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3dTypes> >;
 
 const int MarchingCubeEdgeTable[256] =
 {

@@ -228,7 +228,7 @@ public:
         /// Project a spatial vector from parent to child (the inverse of operator *). This method computes (*this).inversed()*sv without inverting (*this).
         SpatialVector operator / (const SpatialVector& sv ) const;
         /// Write an OpenGL matrix encoding the transformation of the coordinate system of the child wrt the coordinate system of the parent.
-        void writeOpenGlMatrix( Real *m ) const;
+        void writeOpenGlMatrix( double *m ) const;
         /// Draw the axes of the child coordinate system in the parent coordinate system
         void glDraw() const;
         /// Print the origin of the child in the parent coordinate system and the quaternion defining the orientation of the child wrt the parent

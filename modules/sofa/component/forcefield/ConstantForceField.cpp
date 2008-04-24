@@ -36,28 +36,36 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-template class ConstantForceField<Vec3dTypes>;
-template class ConstantForceField<Vec3fTypes>;
-template class ConstantForceField<Vec2dTypes>;
-template class ConstantForceField<Vec2fTypes>;
-template class ConstantForceField<Vec1dTypes>;
-template class ConstantForceField<Vec1fTypes>;
-template class ConstantForceField<Vec6dTypes>;
-template class ConstantForceField<Vec6fTypes>;
-
 
 SOFA_DECL_CLASS(ConstantForceField)
 
 int ConstantForceFieldClass = core::RegisterObject("Constant forces applied to given degrees of freedom")
+#ifndef SOFA_FLOAT
         .add< ConstantForceField<Vec3dTypes> >()
-        .add< ConstantForceField<Vec3fTypes> >()
         .add< ConstantForceField<Vec2dTypes> >()
-        .add< ConstantForceField<Vec2fTypes> >()
         .add< ConstantForceField<Vec1dTypes> >()
-        .add< ConstantForceField<Vec1fTypes> >()
         .add< ConstantForceField<Vec6dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< ConstantForceField<Vec3fTypes> >()
+        .add< ConstantForceField<Vec2fTypes> >()
+        .add< ConstantForceField<Vec1fTypes> >()
         .add< ConstantForceField<Vec6fTypes> >()
+#endif
         ;
+#ifndef SOFA_FLOAT
+template class ConstantForceField<Vec3dTypes>;
+template class ConstantForceField<Vec2dTypes>;
+template class ConstantForceField<Vec1dTypes>;
+template class ConstantForceField<Vec6dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class ConstantForceField<Vec3fTypes>;
+template class ConstantForceField<Vec2fTypes>;
+template class ConstantForceField<Vec1fTypes>;
+template class ConstantForceField<Vec6fTypes>;
+#endif
+
 
 } // namespace forcefield
 

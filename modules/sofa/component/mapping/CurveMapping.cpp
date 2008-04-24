@@ -35,17 +35,35 @@ SOFA_DECL_CLASS(CurveMapping)
 
 // Register in the Factory
 int CurveMappingClass = core::RegisterObject("")
+
+#ifndef SOFA_FLOAT
         .add< CurveMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Rigid3dTypes> > > >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< CurveMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Rigid3fTypes> > > >()
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
         .add< CurveMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Rigid3fTypes> > > >()
         .add< CurveMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Rigid3dTypes> > > >()
-        .add< CurveMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Rigid3fTypes> > > >()
+#endif
+#endif
         ;
 
-// Mech -> Mech
+#ifndef SOFA_FLOAT
 template class CurveMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Rigid3dTypes> > >;
+#endif
+#ifndef SOFA_DOUBLE
+template class CurveMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Rigid3fTypes> > >;
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
 template class CurveMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Rigid3fTypes> > >;
 template class CurveMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Rigid3dTypes> > >;
-template class CurveMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Rigid3fTypes> > >;
+#endif
+#endif
 
 } // namespace mapping
 

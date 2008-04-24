@@ -40,16 +40,17 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
     typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef typename Vector3::value_type Real_Sofa;
 
     class Spring
     {
     public:
         int     m1, m2;  ///< the two extremities of the spring: masses m1 and m2
-        double  ks;      ///< spring stiffness
-        double  kd;      ///< damping factor
-        double  initpos; ///< rest length of the spring
+        Real_Sofa  ks;      ///< spring stiffness
+        Real_Sofa  kd;      ///< damping factor
+        Real_Sofa  initpos; ///< rest length of the spring
 
-        Spring(int m1=0, int m2=0, double ks=0.0, double kd=0.0, double initpos=0.0)
+        Spring(int m1=0, int m2=0, Real_Sofa ks=0.0, Real_Sofa kd=0.0, Real_Sofa initpos=0.0)
             : m1(m1), m2(m2), ks(ks), kd(kd), initpos(initpos)
         {
         }
@@ -69,19 +70,19 @@ public:
     };
 protected:
 
-    double m_potentialEnergy;
-    Data<double> ks;
-    Data<double> kd;
+    Real_Sofa m_potentialEnergy;
+    Data<Real_Sofa> ks;
+    Data<Real_Sofa> kd;
     Data<sofa::helper::vector<Spring> > springs;
     class Loader;
 
     SpringForceFieldInternalData<DataTypes> data;
 
-    void addSpringForce(double& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int i, const Spring& spring);
+    void addSpringForce(Real_Sofa& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int i, const Spring& spring);
 
 public:
-    SpringForceField(MechanicalState* object1, MechanicalState* object2, double _ks=100.0, double _kd=5.0);
-    SpringForceField(double _ks=100.0, double _kd=5.0);
+    SpringForceField(MechanicalState* object1, MechanicalState* object2, Real_Sofa _ks=100.0, Real_Sofa _kd=5.0);
+    SpringForceField(Real_Sofa _ks=100.0, Real_Sofa _kd=5.0);
 
     virtual void parse(core::objectmodel::BaseObjectDescription* arg);
 
@@ -94,11 +95,11 @@ public:
 
     virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
     virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2);
-    virtual double getPotentialEnergy(const VecCoord&, const VecCoord&) { return m_potentialEnergy; }
-    double getStiffness() { return ks.getValue(); }
-    double getDamping() { return kd.getValue(); }
-    void setStiffness(double _ks) { ks.setValue(_ks); }
-    void setDamping(double _kd) { kd.setValue(_kd); }
+    virtual sofa::defaulttype::Vector3::value_type getPotentialEnergy(const VecCoord&, const VecCoord&) { return m_potentialEnergy; }
+    Real_Sofa getStiffness() { return ks.getValue(); }
+    Real_Sofa getDamping() { return kd.getValue(); }
+    void setStiffness(Real_Sofa _ks) { ks.setValue(_ks); }
+    void setDamping(Real_Sofa _kd) { kd.setValue(_kd); }
 
     void draw();
 
@@ -112,7 +113,7 @@ public:
         this->springs.endEdit();
     }
 
-    void addSpring(int m1, int m2, double ks, double kd, double initlen)
+    void addSpring(int m1, int m2, Real_Sofa ks, Real_Sofa kd, Real_Sofa initlen)
     {
         springs.beginEdit()->push_back(Spring(m1,m2,ks,kd,initlen));
         springs.endEdit();

@@ -24,6 +24,7 @@
 *******************************************************************************/
 #ifndef SOFA_HELPER_IO_MESHTOPOLOGYLOADER_H
 #define SOFA_HELPER_IO_MESHTOPOLOGYLOADER_H
+#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
@@ -37,6 +38,7 @@ namespace io
 class MeshTopologyLoader
 {
 public:
+    typedef sofa::defaulttype::Vector3::value_type Real_Sofa;
     virtual ~MeshTopologyLoader() {}
     bool load(const char *filename);
     virtual void setNbPoints(int /*n*/) {}
@@ -46,7 +48,7 @@ public:
     virtual void setNbQuads(int /*n*/) {}
     virtual void setNbTetras(int /*n*/) {}
     virtual void setNbCubes(int /*n*/) {}
-    virtual void addPoint(double /*px*/, double /*py*/, double /*pz*/) {}
+    virtual void addPoint(Real_Sofa /*px*/, Real_Sofa /*py*/, Real_Sofa /*pz*/) {}
     virtual void addLine(int /*p1*/, int /*p2*/) {}
     virtual void addTriangle(int /*p1*/, int /*p2*/, int /*p3*/) {}
     virtual void addQuad(int /*p1*/, int /*p2*/, int /*p3*/, int /*p4*/) {}

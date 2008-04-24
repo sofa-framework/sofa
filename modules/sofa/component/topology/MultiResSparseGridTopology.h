@@ -24,7 +24,6 @@ namespace topology
 
 using namespace sofa::defaulttype;
 using helper::vector;
-typedef defaulttype::Vec3f Vec3;
 
 class MultiResSparseGridTopology : public core::componentmodel::topology::Topology
 {
@@ -46,7 +45,7 @@ public:
 
     This is a sparse voxel grid:
 
-    -vertexMap contains all vertices without repeating. It consists of Index3D(int i,j,k), vertex(SbVec3f,int)
+    -vertexMap contains all vertices without repeating. It consists of Index3D(int i,j,k), vertex(SbVector3f,int)
 
     -voxelsMap contains all voxels with the indices of each one. It consists of Index3D which represent the voxel center,
     and of int[8] which leads to the 8 vertices of that voxel in vertices array or in the map
@@ -60,7 +59,7 @@ public:
         ///to represent vertices of voxels
         struct Vertex
         {
-            //Vec3 vertexPosition;
+            //Vector3 vertexPosition;
             int index;
             /*            Vertex(float x=0, float y=0, float z=0)
                         {
@@ -108,7 +107,7 @@ public:
         /// Grid's scale
         float scale;
         /// array of vertices
-        vector<Vec3> vertices;
+        vector<Vector3> vertices;
         /// contains centers of the voxels of the surface
         vector<Index3D> surfaceSparseGrid;
         /// number and array of the 6 faces corresponding to each voxels
@@ -162,11 +161,11 @@ public:
             return numSurfaceIndices;
         }
         /// returns the array of vertices
-        vector< Vec3>& getVertices()
+        vector< Vector3>& getVertices()
         {
             return vertices;
         }
-        const vector<Vec3>& getVertices() const
+        const vector<Vector3>& getVertices() const
         {
             return vertices;
         }
@@ -311,8 +310,7 @@ public:
 
 
     typedef GridTopology::Cube Cube;
-    typedef Vec3d Vec3;
-
+    typedef Vector3::value_type Real_Sofa;
     MultiResSparseGridTopology();
     MultiResSparseGridTopology(const char* filevoxel, int resol,float scale);
 
@@ -326,13 +324,13 @@ public:
     int dimx,dimy,dimz,px,py,pz;
 
     /// get the postion of the voxel i
-    double getPX(int i) const ;
-    double getPY(int i) const ;
-    double getPZ(int i) const ;
+    Real_Sofa getPX(int i) const ;
+    Real_Sofa getPY(int i) const ;
+    Real_Sofa getPZ(int i) const ;
 
     ///  get the vertex's psotion with its indice or its index
-    Vec3 getPoint(int i) const ;
-    //Vec3 getPoint(int ,int ,int );
+    Vector3 getPoint(int i) const ;
+    //Vector3 getPoint(int ,int ,int );
 
     /// ??????
     bool hasPos() const;
@@ -345,55 +343,55 @@ public:
     /// get the cube of the voxel i for the mapping
     GridTopology::Cube getCube (int i);
     /// get the indice of the cube at the coordinates pos and the barycentric coordinates
-    int findCube(const Vec3& pos, double& fx, double &fy, double &fz) const;
+    int findCube(const Vector3& pos, Real_Sofa& fx, Real_Sofa &fy, Real_Sofa &fz) const;
     /// get the indice of the nearest cube of the coordinates pos and the barycentric coordinates
-    int findNearestCube(const Vec3& pos, double& fx, double &fy, double &fz) const;
+    int findNearestCube(const Vector3& pos, Real_Sofa& fx, Real_Sofa &fy, Real_Sofa &fz) const;
     /// set the position (not used)
-    void setP0(const Vec3& val)
+    void setP0(const Vector3& val)
     {
         p0 = val;
     }
     /// set the interval between voxels
-    void setDx(const Vec3& val)
+    void setDx(const Vector3& val)
     {
         dx = val;
         inv_dx2 = 1/(dx*dx);
     }
-    void setDy(const Vec3& val)
+    void setDy(const Vector3& val)
     {
         dy = val;
         inv_dy2 = 1/(dy*dy);
     }
-    void setDz(const Vec3& val)
+    void setDz(const Vector3& val)
     {
         dz = val;
         inv_dz2 = 1/(dz*dz);
     }
     /// get the position (not used)
-    const Vec3& getP0() const
+    const Vector3& getP0() const
     {
         return p0;
     }
     /// get the interval between voxels
-    const Vec3& getDx() const
+    const Vector3& getDx() const
     {
         return dx;
     }
-    const Vec3& getDy() const
+    const Vector3& getDy() const
     {
         return dy;
     }
-    const Vec3& getDz() const
+    const Vector3& getDz() const
     {
         return dz;
     }
 
 protected:
     /// Position of point 0
-    Vec3 p0;
+    Vector3 p0;
     /// Distance between points in the grid. Must be perpendicular to each other
-    Vec3 dx,dy,dz;
-    double inv_dx2, inv_dy2, inv_dz2;
+    Vector3 dx,dy,dz;
+    Real_Sofa inv_dx2, inv_dy2, inv_dz2;
 
 };
 

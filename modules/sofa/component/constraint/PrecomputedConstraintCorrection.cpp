@@ -37,24 +37,34 @@ using namespace sofa::defaulttype;
 SOFA_DECL_CLASS(PrecomputedConstraintCorrection)
 
 int ContactCorrectionClass = core::RegisterObject("")
-        .add< PrecomputedConstraintCorrection<Vec1dTypes> >()
-        .add< PrecomputedConstraintCorrection<Vec1fTypes> >()
+#ifndef SOFA_FLOAT
         .add< PrecomputedConstraintCorrection<Vec3dTypes> >()
-        .add< PrecomputedConstraintCorrection<Vec3fTypes> >()
+//     .add< PrecomputedConstraintCorrection<Vec2dTypes> >()
+        .add< PrecomputedConstraintCorrection<Vec1dTypes> >()
         .add< PrecomputedConstraintCorrection<Rigid3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< PrecomputedConstraintCorrection<Vec3fTypes> >()
+//     .add< PrecomputedConstraintCorrection<Vec2fTypes> >()
+        .add< PrecomputedConstraintCorrection<Vec1fTypes> >()
         .add< PrecomputedConstraintCorrection<Rigid3fTypes> >()
+#endif
         ;
 
-template class PrecomputedConstraintCorrection<Vec1dTypes>;
-template class PrecomputedConstraintCorrection<Vec1fTypes>;
+#ifndef SOFA_FLOAT
 template class PrecomputedConstraintCorrection<Vec3dTypes>;
-template class PrecomputedConstraintCorrection<Vec3fTypes>;
+//     template class PrecomputedConstraintCorrection<Vec2dTypes>;
+template class PrecomputedConstraintCorrection<Vec1dTypes>;
 template class PrecomputedConstraintCorrection<Rigid3dTypes>;
+//     template class PrecomputedConstraintCorrection<Rigid2dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class PrecomputedConstraintCorrection<Vec3fTypes>;
+//     template class PrecomputedConstraintCorrection<Vec2fTypes>;
+template class PrecomputedConstraintCorrection<Vec1fTypes>;
 template class PrecomputedConstraintCorrection<Rigid3fTypes>;
-//template class PrecomputedConstraintCorrection<Vec2dTypes>;
-//template class PrecomputedConstraintCorrection<Vec2fTypes>;
-//template class PrecomputedConstraintCorrection<Rigid2dTypes>;
-//template class PrecomputedConstraintCorrection<Rigid2fTypes>;
+//     template class PrecomputedConstraintCorrection<Rigid2fTypes>;
+#endif
 
 
 } // namespace collision

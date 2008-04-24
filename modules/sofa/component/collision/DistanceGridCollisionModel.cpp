@@ -204,12 +204,16 @@ void RigidDistanceGridCollisionModel::draw(int index)
         // float m[16];
         // (*rigid->getX())[index].writeOpenGlMatrix( m );
         // glMultMatrixf(m);
-        Mat4x4d m;
+        Matrix4 m;
         m.identity();
         m = elems[index].rotation;
         m.transpose();
-        m[3] = Vec4d(elems[index].translation,1.0);
+        m[3] = Vector4(elems[index].translation,1.0);
+#ifdef SOFA_FLOAT
+        glMultMatrixf(m.ptr());
+#else
         glMultMatrixd(m.ptr());
+#endif
     }
 
     DistanceGrid* grid = getGrid(index);
@@ -224,6 +228,7 @@ void RigidDistanceGridCollisionModel::draw(int index)
         glColor4f(0.5f, 0.5f, 0.5f, 0.1f);
     glBegin(GL_LINES);
     {
+#ifdef SOFA_FLOAT
         glVertex3fv(corners[0].ptr()); glVertex3fv(corners[4].ptr());
         glVertex3fv(corners[1].ptr()); glVertex3fv(corners[5].ptr());
         glVertex3fv(corners[2].ptr()); glVertex3fv(corners[6].ptr());
@@ -236,6 +241,20 @@ void RigidDistanceGridCollisionModel::draw(int index)
         glVertex3fv(corners[2].ptr()); glVertex3fv(corners[3].ptr());
         glVertex3fv(corners[4].ptr()); glVertex3fv(corners[5].ptr());
         glVertex3fv(corners[6].ptr()); glVertex3fv(corners[7].ptr());
+#else
+        glVertex3dv(corners[0].ptr()); glVertex3dv(corners[4].ptr());
+        glVertex3dv(corners[1].ptr()); glVertex3dv(corners[5].ptr());
+        glVertex3dv(corners[2].ptr()); glVertex3dv(corners[6].ptr());
+        glVertex3dv(corners[3].ptr()); glVertex3dv(corners[7].ptr());
+        glVertex3dv(corners[0].ptr()); glVertex3dv(corners[2].ptr());
+        glVertex3dv(corners[1].ptr()); glVertex3dv(corners[3].ptr());
+        glVertex3dv(corners[4].ptr()); glVertex3dv(corners[6].ptr());
+        glVertex3dv(corners[5].ptr()); glVertex3dv(corners[7].ptr());
+        glVertex3dv(corners[0].ptr()); glVertex3dv(corners[1].ptr());
+        glVertex3dv(corners[2].ptr()); glVertex3dv(corners[3].ptr());
+        glVertex3dv(corners[4].ptr()); glVertex3dv(corners[5].ptr());
+        glVertex3dv(corners[6].ptr()); glVertex3dv(corners[7].ptr());
+#endif
     }
     glEnd();
     glDisable(GL_BLEND);
@@ -251,6 +270,7 @@ void RigidDistanceGridCollisionModel::draw(int index)
         glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
     glBegin(GL_LINES);
     {
+#ifdef SOFA_FLOAT
         glVertex3fv(corners[0].ptr()); glVertex3fv(corners[4].ptr());
         glVertex3fv(corners[1].ptr()); glVertex3fv(corners[5].ptr());
         glVertex3fv(corners[2].ptr()); glVertex3fv(corners[6].ptr());
@@ -263,6 +283,20 @@ void RigidDistanceGridCollisionModel::draw(int index)
         glVertex3fv(corners[2].ptr()); glVertex3fv(corners[3].ptr());
         glVertex3fv(corners[4].ptr()); glVertex3fv(corners[5].ptr());
         glVertex3fv(corners[6].ptr()); glVertex3fv(corners[7].ptr());
+#else
+        glVertex3dv(corners[0].ptr()); glVertex3dv(corners[4].ptr());
+        glVertex3dv(corners[1].ptr()); glVertex3dv(corners[5].ptr());
+        glVertex3dv(corners[2].ptr()); glVertex3dv(corners[6].ptr());
+        glVertex3dv(corners[3].ptr()); glVertex3dv(corners[7].ptr());
+        glVertex3dv(corners[0].ptr()); glVertex3dv(corners[2].ptr());
+        glVertex3dv(corners[1].ptr()); glVertex3dv(corners[3].ptr());
+        glVertex3dv(corners[4].ptr()); glVertex3dv(corners[6].ptr());
+        glVertex3dv(corners[5].ptr()); glVertex3dv(corners[7].ptr());
+        glVertex3dv(corners[0].ptr()); glVertex3dv(corners[1].ptr());
+        glVertex3dv(corners[2].ptr()); glVertex3dv(corners[3].ptr());
+        glVertex3dv(corners[4].ptr()); glVertex3dv(corners[5].ptr());
+        glVertex3dv(corners[6].ptr()); glVertex3dv(corners[7].ptr());
+#endif
     }
     glEnd();
 
@@ -278,14 +312,18 @@ void RigidDistanceGridCollisionModel::draw(int index)
                     for (int x=0; x<grid->getNx(); x++, ind++)
                     {
                         DistanceGrid::Coord p = grid->coord(x,y,z);
-                        DistanceGrid::Real d = (*grid)[ind];
+                        DistanceGrid::Real_Sofa d = (*grid)[ind];
                         if (d < mindist || d > maxdist) continue;
                         d /= maxdist;
                         if (d<0)
                             glColor3d(1+d*0.25, 0, 1+d);
                         else
                             glColor3d(0, 1-d*0.25, 1-d);
+#ifdef SOFA_FLOAT
                         glVertex3fv(p.ptr());
+#else
+                        glVertex3dv(p.ptr());
+#endif
                     }
         }
         glEnd();
@@ -297,7 +335,11 @@ void RigidDistanceGridCollisionModel::draw(int index)
         for (unsigned int i=0; i<grid->meshPts.size(); i++)
         {
             DistanceGrid::Coord p = grid->meshPts[i];
+#ifdef SOFA_FLOAT
             glVertex3fv(p.ptr());
+#else
+            glVertex3dv(p.ptr());
+#endif
         }
         glEnd();
         glBegin(GL_LINES);
@@ -310,16 +352,24 @@ void RigidDistanceGridCollisionModel::draw(int index)
             for (int j = -2; j <= 2; j++)
             {
                 DistanceGrid::Coord p2 = p + grad * (j*maxdist/2);
-                DistanceGrid::Real d = grid->eval(p2);
+                DistanceGrid::Real_Sofa d = grid->eval(p2);
                 //if (rabs(d) > maxdist) continue;
                 d /= maxdist;
                 if (d<0)
                     glColor3d(1+d*0.25, 0, 1+d);
                 else
                     glColor3d(0, 1-d*0.25, 1-d);
+#ifdef SOFA_FLOAT
                 glVertex3fv(p2.ptr());
+#else
+                glVertex3dv(p2.ptr());
+#endif
                 if (j>-2 && j < 2)
+#ifdef SOFA_FLOAT
                     glVertex3fv(p2.ptr());
+#else
+                    glVertex3dv(p2.ptr());
+#endif
             }
         }
         glEnd();
@@ -488,10 +538,10 @@ void FFDDistanceGridCollisionModel::updateGrid()
                 center += cube.corners[j];
             }
             cube.center = center * 0.125f;
-            DistanceGrid::Real radius2 = 0.0f;
+            DistanceGrid::Real_Sofa radius2 = 0.0f;
             for (int j=0; j<8; j++)
             {
-                DistanceGrid::Real r2 = (cube.corners[j] - cube.center).norm2();
+                DistanceGrid::Real_Sofa r2 = (cube.corners[j] - cube.center).norm2();
                 if (r2 > radius2) radius2 = r2;
             }
             cube.radius = rsqrt(radius2);
@@ -589,6 +639,7 @@ void FFDDistanceGridCollisionModel::draw(int index)
         glColor4f(0.0f*cscale, 1.0f*cscale, 0.5f*cscale, 1.0f);
     glBegin(GL_LINES);
     {
+#ifdef SOFA_FLOAT
         glVertex3fv(cube.corners[0].ptr()); glVertex3fv(cube.corners[4].ptr());
         glVertex3fv(cube.corners[1].ptr()); glVertex3fv(cube.corners[5].ptr());
         glVertex3fv(cube.corners[2].ptr()); glVertex3fv(cube.corners[6].ptr());
@@ -601,6 +652,20 @@ void FFDDistanceGridCollisionModel::draw(int index)
         glVertex3fv(cube.corners[2].ptr()); glVertex3fv(cube.corners[3].ptr());
         glVertex3fv(cube.corners[4].ptr()); glVertex3fv(cube.corners[5].ptr());
         glVertex3fv(cube.corners[6].ptr()); glVertex3fv(cube.corners[7].ptr());
+#else
+        glVertex3dv(cube.corners[0].ptr()); glVertex3dv(cube.corners[4].ptr());
+        glVertex3dv(cube.corners[1].ptr()); glVertex3dv(cube.corners[5].ptr());
+        glVertex3dv(cube.corners[2].ptr()); glVertex3dv(cube.corners[6].ptr());
+        glVertex3dv(cube.corners[3].ptr()); glVertex3dv(cube.corners[7].ptr());
+        glVertex3dv(cube.corners[0].ptr()); glVertex3dv(cube.corners[2].ptr());
+        glVertex3dv(cube.corners[1].ptr()); glVertex3dv(cube.corners[3].ptr());
+        glVertex3dv(cube.corners[4].ptr()); glVertex3dv(cube.corners[6].ptr());
+        glVertex3dv(cube.corners[5].ptr()); glVertex3dv(cube.corners[7].ptr());
+        glVertex3dv(cube.corners[0].ptr()); glVertex3dv(cube.corners[1].ptr());
+        glVertex3dv(cube.corners[2].ptr()); glVertex3dv(cube.corners[3].ptr());
+        glVertex3dv(cube.corners[4].ptr()); glVertex3dv(cube.corners[5].ptr());
+        glVertex3dv(cube.corners[6].ptr()); glVertex3dv(cube.corners[7].ptr());
+#endif
     }
     glEnd();
     glLineWidth(2);
@@ -622,7 +687,12 @@ void FFDDistanceGridCollisionModel::draw(int index)
         }
         glBegin(GL_POINTS);
         {
+#ifdef SOFA_FLOAT
             glVertex3fv(cube.center.ptr());
+#else
+            glVertex3dv(cube.center.ptr());
+#endif
+
         }
         glEnd();
     }
@@ -633,7 +703,11 @@ void FFDDistanceGridCollisionModel::draw(int index)
         glColor4f(1.0f, 0.5f, 0.5f, 1.0f);
         glBegin(GL_POINTS);
         for (unsigned int j=0; j<cube.deformedPoints.size(); j++)
+#ifdef SOFA_FLOAT
             glVertex3fv(cube.deformedPoints[j].ptr());
+#else
+            glVertex3dv(cube.deformedPoints[j].ptr());
+#endif
         glEnd();
     }
     glPointSize(1);
@@ -644,7 +718,7 @@ void FFDDistanceGridCollisionModel::draw(int index)
 ////////////////////////////////////////////////////////////////////////////////
 
 DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax)
-    : meshPts(new defaulttype::DefaultAllocator<Coord>), nbRef(1), dists(nx*ny*nz, new defaulttype::DefaultAllocator<Real>), nx(nx), ny(ny), nz(nz), nxny(nx*ny), nxnynz(nx*ny*nz)
+    : meshPts(new defaulttype::DefaultAllocator<Coord>), nbRef(1), dists(nx*ny*nz, new defaulttype::DefaultAllocator<Real_Sofa>), nx(nx), ny(ny), nz(nz), nxny(nx*ny), nxnynz(nx*ny*nz)
     , pmin(pmin), pmax(pmax)
     , cellWidth   ((pmax[0]-pmin[0])/(nx-1), (pmax[1]-pmin[1])/(ny-1),(pmax[2]-pmin[2])/(nz-1))
     , invCellWidth((nx-1)/(pmax[0]-pmin[0]), (ny-1)/(pmax[1]-pmin[1]),(nz-1)/(pmax[2]-pmin[2]))
@@ -652,7 +726,7 @@ DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax)
 {
 }
 
-DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax, defaulttype::ExtVectorAllocator<Real>* alloc)
+DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax, defaulttype::ExtVectorAllocator<Real_Sofa>* alloc)
     : meshPts(new defaulttype::DefaultAllocator<Coord>), nbRef(1), dists(nx*ny*nz, alloc), nx(nx), ny(ny), nz(nz), nxny(nx*ny), nxnynz(nx*ny*nz)
     , pmin(pmin), pmax(pmax)
     , cellWidth   ((pmax[0]-pmin[0])/(nx-1), (pmax[1]-pmin[1])/(ny-1),(pmax[2]-pmin[2])/(nz-1))
@@ -720,7 +794,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, int 
     {
         DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
         std::ifstream in(filename.c_str(), std::ios::in | std::ios::binary);
-        in.read((char*)&(grid->dists[0]), grid->nxnynz*sizeof(Real));
+        in.read((char*)&(grid->dists[0]), grid->nxnynz*sizeof(Real_Sofa));
         if (scale != 1.0)
         {
             for (int i=0; i< grid->nxnynz; i++)
@@ -802,8 +876,8 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, int 
             for(unsigned int i=1; i<vertices.size(); i++)
             {
                 for (int c=0; c<3; c++)
-                    if (vertices[i][c] < bbmin[c]) bbmin[c] = (Real)vertices[i][c];
-                    else if (vertices[i][c] > bbmax[c]) bbmax[c] = (Real)vertices[i][c];
+                    if (vertices[i][c] < bbmin[c]) bbmin[c] = (Real_Sofa)vertices[i][c];
+                    else if (vertices[i][c] > bbmax[c]) bbmax[c] = (Real_Sofa)vertices[i][c];
             }
             bbmin *= scale;
             bbmax *= scale;
@@ -852,7 +926,7 @@ bool DistanceGrid::save(const std::string& filename)
     if (filename.length()>4 && filename.substr(filename.length()-4) == ".raw")
     {
         std::ofstream out(filename.c_str(), std::ios::out | std::ios::binary);
-        out.write((char*)&(dists[0]), nxnynz*sizeof(Real));
+        out.write((char*)&(dists[0]), nxnynz*sizeof(Real_Sofa));
     }
     else
     {
@@ -866,10 +940,10 @@ bool DistanceGrid::save(const std::string& filename)
 template<int U, int V>
 bool pointInTriangle(const DistanceGrid::Coord& p, const DistanceGrid::Coord& p0, const DistanceGrid::Coord& p1, const DistanceGrid::Coord& p2)
 {
-    DistanceGrid::Real u0 = p [U] - p0[U], v0 = p [V] - p0[V];
-    DistanceGrid::Real u1 = p1[U] - p0[U], v1 = p1[V] - p0[V];
-    DistanceGrid::Real u2 = p2[U] - p0[U], v2 = p2[V] - p0[V];
-    DistanceGrid::Real alpha, beta;
+    DistanceGrid::Real_Sofa u0 = p [U] - p0[U], v0 = p [V] - p0[V];
+    DistanceGrid::Real_Sofa u1 = p1[U] - p0[U], v1 = p1[V] - p0[V];
+    DistanceGrid::Real_Sofa u2 = p2[U] - p0[U], v2 = p2[V] - p0[V];
+    DistanceGrid::Real_Sofa alpha, beta;
     //return true;
     if (u1 == 0)
     {
@@ -897,22 +971,22 @@ void DistanceGrid::computeBBox()
         for(unsigned int i=1; i<meshPts.size(); i++)
         {
             for (int c=0; c<3; c++)
-                if (meshPts[i][c] < bbmin[c]) bbmin[c] = (Real)meshPts[i][c];
-                else if (meshPts[i][c] > bbmax[c]) bbmax[c] = (Real)meshPts[i][c];
+                if (meshPts[i][c] < bbmin[c]) bbmin[c] = (Real_Sofa)meshPts[i][c];
+                else if (meshPts[i][c] > bbmax[c]) bbmax[c] = (Real_Sofa)meshPts[i][c];
         }
     }
     else
     {
         bbmin = pmin;
         bbmax = pmax;
-        /// \TODO compute the real bbox from the grid content
+        /// \TODO compute the Real_Sofa bbox from the grid content
     }
 }
 
 
 /// Compute distance field for a cube of the given half-size.
 /// Also create a mesh of points using np points per axis
-void DistanceGrid::calcCubeDistance(Real dim, int np)
+void DistanceGrid::calcCubeDistance(Real_Sofa dim, int np)
 {
     cubeDim = dim;
     if (np > 1)
@@ -930,7 +1004,7 @@ void DistanceGrid::calcCubeDistance(Real dim, int np)
 
     //std::cout << "Computing distance field."<<std::endl;
 
-    Real dim2 = dim; //*0.75f; // add some 'roundness' to the cubes corner
+    Real_Sofa dim2 = dim; //*0.75f; // add some 'roundness' to the cubes corner
 
     for (int i=0,z=0; z<nz; z++)
         for (int y=0; y<ny; y++)
@@ -944,7 +1018,7 @@ void DistanceGrid::calcCubeDistance(Real dim, int np)
                     if (s[c] < -dim2) { s[c] = -dim2; out = true; }
                     else if (s[c] >  dim2) { s[c] =  dim2; out = true; }
                 }
-                Real d;
+                Real_Sofa d;
                 if (out)
                     d = (p - s).norm();
                 else
@@ -993,7 +1067,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
 
             Coord normal = (p1-p0).cross(p2-p0);
             normal.normalize();
-            Real d = -(p0*normal);
+            Real_Sofa d = -(p0*normal);
             int nedges = 0;
             int ix0 = ix(bbmin)-1; if (ix0 < 0) ix0 = 0;
             int iy0 = iy(bbmin)-1; if (iy0 < 0) iy0 = 0;
@@ -1007,13 +1081,13 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                     {
                         Coord pos = coord(x,y,z);
                         int ind = index(x,y,z);
-                        Real dist = pos*normal + d;
+                        Real_Sofa dist = pos*normal + d;
                         //if (rabs(dist) > cellWidth) continue; // no edge from this point can cross the plane
 
                         // X edge
                         if (rabs(normal[0]) > 1e-6)
                         {
-                            Real dist1 = -dist / normal[0];
+                            Real_Sofa dist1 = -dist / normal[0];
                             int ind2 = ind+1;
                             if (dist1 >= -0.01*cellWidth[0] && dist1 <= 1.01*cellWidth[0])
                             {
@@ -1022,7 +1096,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                                 {
                                     // edge crossed triangle
                                     ++nedges;
-                                    Real dist2 = cellWidth[0] - dist1;
+                                    Real_Sofa dist2 = cellWidth[0] - dist1;
                                     if (normal[0]<0)
                                     {
                                         // p1 is in outside, p2 inside
@@ -1062,7 +1136,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                         // Y edge
                         if (rabs(normal[1]) > 1e-6)
                         {
-                            Real dist1 = -dist / normal[1];
+                            Real_Sofa dist1 = -dist / normal[1];
                             int ind2 = ind+nx;
                             if (dist1 >= -0.01*cellWidth[1] && dist1 <= 1.01*cellWidth[1])
                             {
@@ -1071,7 +1145,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                                 {
                                     // edge crossed triangle
                                     ++nedges;
-                                    Real dist2 = cellWidth[1] - dist1;
+                                    Real_Sofa dist2 = cellWidth[1] - dist1;
                                     if (normal[1]<0)
                                     {
                                         // p1 is in outside, p2 inside
@@ -1111,7 +1185,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                         // Z edge
                         if (rabs(normal[2]) > 1e-6)
                         {
-                            Real dist1 = -dist / normal[2];
+                            Real_Sofa dist1 = -dist / normal[2];
                             int ind2 = ind+nxny;
                             if (dist1 >= -0.01*cellWidth[2] && dist1 <= 1.01*cellWidth[2])
                             {
@@ -1120,7 +1194,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                                 {
                                     // edge crossed triangle
                                     ++nedges;
-                                    Real dist2 = cellWidth[2] - dist1;
+                                    Real_Sofa dist2 = cellWidth[2] - dist1;
                                     if (normal[2]<0)
                                     {
                                         // p1 is in outside, p2 inside
@@ -1171,8 +1245,8 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                 if (fmm_status[ind] < FMM_FAR)
                 {
                     int ind2;
-                    Real dist1 = dists[ind];
-                    Real dist2 = dist1+cellWidth[0];
+                    Real_Sofa dist1 = dists[ind];
+                    Real_Sofa dist2 = dist1+cellWidth[0];
                     // X-1
                     if (x>0)
                     {
@@ -1249,8 +1323,8 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
         int z = ind/nxny;
 
         int ind2;
-        Real dist1 = dists[ind];
-        Real dist2 = dist1+cellWidth[0];
+        Real_Sofa dist1 = dists[ind];
+        Real_Sofa dist2 = dist1+cellWidth[0];
         // X-1
         if (x>0)
         {
@@ -1388,13 +1462,13 @@ int DistanceGrid::fmm_pop()
     {
         fmm_swap(0, fmm_heap_size);
         int i=0;
-        Real phi = (dists[fmm_heap[i]]);
+        Real_Sofa phi = (dists[fmm_heap[i]]);
         while (i*2+1 < fmm_heap_size)
         {
-            Real phi1 = (dists[fmm_heap[i*2+1]]);
+            Real_Sofa phi1 = (dists[fmm_heap[i*2+1]]);
             if (i*2+2 < fmm_heap_size)
             {
-                Real phi2 = (dists[fmm_heap[i*2+2]]);
+                Real_Sofa phi2 = (dists[fmm_heap[i*2+2]]);
                 if (phi1 < phi)
                 {
                     if (phi1 < phi2)
@@ -1435,7 +1509,7 @@ int DistanceGrid::fmm_pop()
 
 void DistanceGrid::fmm_push(int index)
 {
-    Real phi = (dists[index]);
+    Real_Sofa phi = (dists[index]);
     int i;
     if (fmm_status[index] >= FMM_FRONT0)
     {
@@ -1450,10 +1524,10 @@ void DistanceGrid::fmm_push(int index)
         }
         while (i*2+1 < fmm_heap_size)
         {
-            Real phi1 = (dists[fmm_heap[i*2+1]]);
+            Real_Sofa phi1 = (dists[fmm_heap[i*2+1]]);
             if (i*2+2 < fmm_heap_size)
             {
-                Real phi2 = (dists[fmm_heap[i*2+2]]);
+                Real_Sofa phi2 = (dists[fmm_heap[i*2+2]]);
                 if (phi1 < phi)
                 {
                     if (phi1 < phi2)

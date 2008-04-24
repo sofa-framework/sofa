@@ -80,17 +80,26 @@ using namespace sofa::helper;
 
 SOFA_DECL_CLASS(OscillatorConstraint)
 
-template class OscillatorConstraint<Vec3dTypes>;
-template class OscillatorConstraint<Vec3fTypes>;
-template class OscillatorConstraint<Rigid3dTypes>;
-template class OscillatorConstraint<Rigid3fTypes>;
 
 int OscillatorConstraintClass = core::RegisterObject("Apply a sinusoidal trajectory to given points")
+#ifndef SOFA_FLOAT
         .add< OscillatorConstraint<Vec3dTypes> >()
-        .add< OscillatorConstraint<Vec3fTypes> >()
         .add< OscillatorConstraint<Rigid3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< OscillatorConstraint<Vec3fTypes> >()
         .add< OscillatorConstraint<Rigid3fTypes> >()
+#endif
         ;
+
+#ifndef SOFA_FLOAT
+template class OscillatorConstraint<Rigid3dTypes>;
+template class OscillatorConstraint<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class OscillatorConstraint<Rigid3fTypes>;
+template class OscillatorConstraint<Vec3fTypes>;
+#endif
 
 } // namespace constraint
 

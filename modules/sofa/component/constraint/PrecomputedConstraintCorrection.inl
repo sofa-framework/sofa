@@ -1,27 +1,27 @@
 /*******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 1       *
-*                (c) 2006-2007 MGH, INRIA, USTL, UJF, CNRS                     *
-*                                                                              *
-* This library is free software; you can redistribute it and/or modify it      *
-* under the terms of the GNU Lesser General Public License as published by the *
-* Free Software Foundation; either version 2.1 of the License, or (at your     *
-* option) any later version.                                                   *
-*                                                                              *
-* This library is distributed in the hope that it will be useful, but WITHOUT  *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or        *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License  *
-* for more details.                                                            *
-*                                                                              *
-* You should have received a copy of the GNU Lesser General Public License     *
-* along with this library; if not, write to the Free Software Foundation,      *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.           *
-*                                                                              *
-* Contact information: contact@sofa-framework.org                              *
-*                                                                              *
-* Authors: J. Allard, P-J. Bensoussan, S. Cotin, C. Duriez, H. Delingette,     *
-* F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
-* and F. Poyer                                                                 *
-*******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 1       *
+ *                (c) 2006-2007 MGH, INRIA, USTL, UJF, CNRS                     *
+ *                                                                              *
+ * This library is free software; you can redistribute it and/or modify it      *
+ * under the terms of the GNU Lesser General Public License as published by the *
+ * Free Software Foundation; either version 2.1 of the License, or (at your     *
+ * option) any later version.                                                   *
+ *                                                                              *
+ * This library is distributed in the hope that it will be useful, but WITHOUT  *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or        *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License  *
+ * for more details.                                                            *
+ *                                                                              *
+ * You should have received a copy of the GNU Lesser General Public License     *
+ * along with this library; if not, write to the Free Software Foundation,      *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.           *
+ *                                                                              *
+ * Contact information: contact@sofa-framework.org                              *
+ *                                                                              *
+ * Authors: J. Allard, P-J. Bensoussan, S. Cotin, C. Duriez, H. Delingette,     *
+ * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
+ * and F. Poyer                                                                 *
+ *******************************************************************************/
 #ifndef SOFA_CORE_COMPONENTMODEL_COLLISION_CONTACTCORRECTION_INL
 #define SOFA_CORE_COMPONENTMODEL_COLLISION_CONTACTCORRECTION_INL
 
@@ -295,7 +295,7 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::Base
     //std::cout<< "numNodes : avant = "<<numNodes1;
     activeDof.sort();
     activeDof.unique();
-//	unsigned int numNodes = activeDof.size();
+    //	unsigned int numNodes = activeDof.size();
     //std::cout<< " apres = "<<numNodes<<std::endl;
 
 
@@ -367,12 +367,12 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::Base
             }
         }
         /*
-        		//Compliance matrix is symetric ?
-        		for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
-        		{
-        			int indexCurColConst = mstate->getConstraintId()[curColConst];
-        			W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
-        		}
+        //Compliance matrix is symetric ?
+        for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
+        {
+        int indexCurColConst = mstate->getConstraintId()[curColConst];
+        W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
+        }
         */
     }
 }
@@ -402,7 +402,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
 
     std::list<int> activeDof;
 
-//	std::cout<<"First list:"<<std::endl;
+    //	std::cout<<"First list:"<<std::endl;
     for(unsigned int c1 = 0; c1 < numConstraints; c1++)
     {
         int indexC1 = mstate->getConstraintId()[c1];
@@ -483,71 +483,71 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
 template<>
 void PrecomputedConstraintCorrection<defaulttype::Rigid3Types>::applyContactForce(double *f)
 {
-	VecDeriv& force = *mstate->getExternalForces();
-	const VecConst& constraints = *mstate->getC();
-	Deriv weighedNormal;
+VecDeriv& force = *mstate->getExternalForces();
+const VecConst& constraints = *mstate->getC();
+Deriv weighedNormal;
 
-	const sofa::defaulttype::Rigid3Mass* massValue;
+const sofa::defaulttype::Rigid3Mass* massValue;
 
-	simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
+simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
 
-	if (node != NULL)
-	{
-		core::componentmodel::behavior::BaseMass*_m = node->mass;
-		component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass> *m = dynamic_cast<component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>*> (_m);
-		massValue = &( m->getMass());
-	}
-	else
-	{
-		massValue = new sofa::defaulttype::Rigid3Mass();
-		printf("\n WARNING : node is not found => massValue could be false in getCompliance function");
-	}
-
-
-	double dt = this->getContext()->getDt();
-
-	force.resize(0);
-	force.resize(1);
-	force[0] = Deriv();
-
-	int numConstraints = constraints.size();
-
-	for(int c1 = 0; c1 < numConstraints; c1++)
-	{
-		int indexC1 = mstate->getConstraintId()[c1];
-
-		if (f[indexC1] != 0.0)
-		{
-			int sizeC1 = constraints[c1].size();
-			for(int i = 0; i < sizeC1; i++)
-			{
-				weighedNormal = constraints[c1][i].data; // weighted normal
-				force[0].getVCenter() += weighedNormal.getVCenter() * f[indexC1];
-				force[0].getVOrientation() += weighedNormal.getVOrientation() * f[indexC1];
-			}
-		}
-	}
+if (node != NULL)
+{
+core::componentmodel::behavior::BaseMass*_m = node->mass;
+component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass> *m = dynamic_cast<component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>*> (_m);
+massValue = &( m->getMass());
+}
+else
+{
+massValue = new sofa::defaulttype::Rigid3Mass();
+printf("\n WARNING : node is not found => massValue could be false in getCompliance function");
+}
 
 
-	VecDeriv& dx = *mstate->getDx();
-	VecCoord& x = *mstate->getX();
-	VecDeriv& v = *mstate->getV();
-	VecDeriv& v_free = *mstate->getVfree();
-	VecCoord& x_free = *mstate->getXfree();
+double dt = this->getContext()->getDt();
+
+force.resize(0);
+force.resize(1);
+force[0] = Deriv();
+
+int numConstraints = constraints.size();
+
+for(int c1 = 0; c1 < numConstraints; c1++)
+{
+int indexC1 = mstate->getConstraintId()[c1];
+
+if (f[indexC1] != 0.0)
+{
+int sizeC1 = constraints[c1].size();
+for(int i = 0; i < sizeC1; i++)
+{
+weighedNormal = constraints[c1][i].data; // weighted normal
+force[0].getVCenter() += weighedNormal.getVCenter() * f[indexC1];
+force[0].getVOrientation() += weighedNormal.getVOrientation() * f[indexC1];
+}
+}
+}
+
+
+VecDeriv& dx = *mstate->getDx();
+VecCoord& x = *mstate->getX();
+VecDeriv& v = *mstate->getV();
+VecDeriv& v_free = *mstate->getVfree();
+VecCoord& x_free = *mstate->getXfree();
 
 
 //	mstate->setX(x_free);
 //	mstate->setV(v_free);
-	x[0]=x_free[0];
-	v[0]=v_free[0];
+x[0]=x_free[0];
+v[0]=v_free[0];
 
-	// Euler integration... will be done in the "integrator" as soon as it exists !
-	dx.resize(v.size());
-	dx[0] = force[0] / (*massValue);
-	dx[0] *= dt;
-	v[0] += dx[0];
-	dx[0] *= dt;
-	x[0] += dx[0];
+// Euler integration... will be done in the "integrator" as soon as it exists !
+dx.resize(v.size());
+dx[0] = force[0] / (*massValue);
+dx[0] *= dt;
+v[0] += dx[0];
+dx[0] *= dt;
+x[0] += dx[0];
 //	simulation::tree::MechanicalPropagateAndAddDxVisitor(dx).execute(this->getContext());
 
 }
@@ -557,49 +557,49 @@ template<>
 void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::applyContactForce(double *f){
 
 
-	VecDeriv& force = *mstate->getExternalForces();
-	const VecConst& constraints = *mstate->getC();
-	unsigned int numConstraints = constraints.size();
+VecDeriv& force = *mstate->getExternalForces();
+const VecConst& constraints = *mstate->getC();
+unsigned int numConstraints = constraints.size();
 
-	force.resize((*mstate->getX()).size());
+force.resize((*mstate->getX()).size());
 
-	for(unsigned int c1 = 0; c1 < numConstraints; c1++)
-	{
-		int indexC1 = mstate->getConstraintId()[c1];
+for(unsigned int c1 = 0; c1 < numConstraints; c1++)
+{
+int indexC1 = mstate->getConstraintId()[c1];
 
-		if (f[indexC1] != 0.0)
-		{
-			int sizeC1 = constraints[c1].size();
-			for(int i = 0; i < sizeC1; i++)
-			{
-				force[constraints[c1][i].index] += constraints[c1][i].data * f[indexC1];
-			}
-		}
-	}
+if (f[indexC1] != 0.0)
+{
+int sizeC1 = constraints[c1].size();
+for(int i = 0; i < sizeC1; i++)
+{
+force[constraints[c1][i].index] += constraints[c1][i].data * f[indexC1];
+}
+}
+}
 
-	VecDeriv& dx = *mstate->getDx();
-	VecCoord& x = *mstate->getX();
-	VecDeriv& v = *mstate->getV();
-	VecDeriv& v_free = *mstate->getVfree();
-	VecCoord& x_free = *mstate->getXfree();
-	double dt = this->getContext()->getDt();
+VecDeriv& dx = *mstate->getDx();
+VecCoord& x = *mstate->getX();
+VecDeriv& v = *mstate->getV();
+VecDeriv& v_free = *mstate->getVfree();
+VecCoord& x_free = *mstate->getXfree();
+double dt = this->getContext()->getDt();
 
 
-	// Euler integration... will be done in the "integrator" as soon as it exists !
-	dx.resize(v.size());
+// Euler integration... will be done in the "integrator" as soon as it exists !
+dx.resize(v.size());
 
-	for (unsigned int i=0; i<dx.size(); i++)
-	{
-		x[i] = x_free[i];
-		v[i] = v_free[i];
-		dx[i] = force[i]/10000.0;
-		x[i] += dx[i];
-		v[i] += dx[i]/dt;
-	}
+for (unsigned int i=0; i<dx.size(); i++)
+{
+x[i] = x_free[i];
+v[i] = v_free[i];
+dx[i] = force[i]/10000.0;
+x[i] += dx[i];
+v[i] += dx[i]/dt;
+}
 }
 
 
-*/
+     */
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::resetContactForce()
 {
@@ -613,20 +613,21 @@ void PrecomputedConstraintCorrection<DataTypes>::parse(core::objectmodel::BaseOb
 {
     this->Inherit::parse(arg);
 }
+#ifndef SOFA_FLOAT
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateConstraints()
+void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints()
 {
     VecConst& constraints = *mstate->getC();
     unsigned int numConstraints = constraints.size();
 
     simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
 
-    sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes>* forceField = NULL;
+    sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3dTypes>* forceField = NULL;
     if (node != NULL)
     {
-//		core::componentmodel::behavior::BaseForceField* _forceField = node->forceField[1];
-        forceField = node->get<component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes> > ();
+        //		core::componentmodel::behavior::BaseForceField* _forceField = node->forceField[1];
+        forceField = node->get<component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3dTypes> > ();
     }
     else
     {
@@ -636,8 +637,8 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateConstraints
 
 
     //std::cout << "start rotating normals " << g_timer_elapsed(timer, &micro) << std::endl;
-//	int sizemax=0;
-//	int index_const = -1;
+    //	int sizemax=0;
+    //	int index_const = -1;
     // on fait tourner les normales (en les ramenant dans le "pseudo" repere initial) //
     for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
     {
@@ -667,58 +668,6 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateConstraints
     }
 }
 
-template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints()
-{
-    VecConst& constraints = *mstate->getC();
-    unsigned int numConstraints = constraints.size();
-
-    simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
-
-    sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3dTypes>* forceField = NULL;
-    if (node != NULL)
-    {
-//		core::componentmodel::behavior::BaseForceField* _forceField = node->forceField[1];
-        forceField = node->get<component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3dTypes> > ();
-    }
-    else
-    {
-        cout << "No rotation defined : only defined for TetrahedronFEMForceField !";
-        return;
-    }
-
-
-    //std::cout << "start rotating normals " << g_timer_elapsed(timer, &micro) << std::endl;
-//	int sizemax=0;
-//	int index_const = -1;
-    // on fait tourner les normales (en les ramenant dans le "pseudo" repere initial) //
-    for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
-    {
-        int sizeCurRowConst = constraints[curRowConst].size(); //number of nodes in constraint
-
-        //Rmk : theres is one constraint for each contact direction, i.e. normal, tangent1, tangent2.
-        for(int i = 0; i < sizeCurRowConst; i++)
-        {
-            const int localRowNodeIdx = constraints[curRowConst][i].index;
-            Transformation Ri;
-            forceField->getRotation(Ri, localRowNodeIdx);
-            Ri.transpose();
-            // on passe les normales du repere global au repere local
-            const Deriv& n_i = Ri * constraints[curRowConst][i].data;
-            constraints[curRowConst][i].data.x() =  n_i.x();
-            constraints[curRowConst][i].data.y() =  n_i.y();
-            constraints[curRowConst][i].data.z() =  n_i.z();
-        }
-        /*
-        // test pour voir si on peut reduire le nombre de contrainte
-        if (sizeCurRowConst > sizemax)
-        {
-        	sizemax = sizeCurRowConst;
-        	index_const = curRowConst;
-        }
-        */
-    }
-}
 
 template<>
 void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateConstraints()
@@ -728,8 +677,8 @@ void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateConstrain
     VecCoord& x0 = *mstate->getX0();
 
     unsigned int numConstraints = constraints.size();
-//	int sizemax=0;
-//	int index_const = -1;
+    //	int sizemax=0;
+    //	int index_const = -1;
     // on fait tourner les normales (en les ramenant dans le "pseudo" repere initial) //
     for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
     {
@@ -756,48 +705,10 @@ void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateConstrain
     }
 }
 
-template<>
-void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateConstraints()
-{
-    VecCoord& x = *mstate->getX();
-    VecConst& constraints = *mstate->getC();
-    VecCoord& x0 = *mstate->getX0();
 
-    unsigned int numConstraints = constraints.size();
-//	int sizemax=0;
-//	int index_const = -1;
-    // on fait tourner les normales (en les ramenant dans le "pseudo" repere initial) //
-    for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
-    {
-        int sizeCurRowConst = constraints[curRowConst].size(); //number of nodes in constraint
-
-        for(int i = 0; i < sizeCurRowConst; i++)
-        {
-            const int localRowNodeIdx = constraints[curRowConst][i].index;
-            Quat q;
-            if (_restRotations)
-                q = x[localRowNodeIdx].getOrientation() * x0[localRowNodeIdx].getOrientation().inverse();
-            else
-                q = x[localRowNodeIdx].getOrientation();
-
-
-            Vec3d n_i = q.inverseRotate(constraints[curRowConst][i].data.getVCenter());
-            Vec3d wn_i= q.inverseRotate(constraints[curRowConst][i].data.getVOrientation());
-
-            // on passe les normales du repere global au repere local
-            constraints[curRowConst][i].data.getVCenter() = n_i;
-            constraints[curRowConst][i].data.getVOrientation() = wn_i;
-
-        }
-    }
-}
 
 template<>
 void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateConstraints()
-{
-}
-template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateConstraints()
 {
 }
 
@@ -810,34 +721,8 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateResponse()
     sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3dTypes>* forceField = NULL;
     if (node != NULL)
     {
-//		core::componentmodel::behavior::BaseForceField* _forceField = node->forceField[1];
+        //		core::componentmodel::behavior::BaseForceField* _forceField = node->forceField[1];
         forceField = node->get<component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3dTypes> > ();
-    }
-    else
-    {
-        cout << "No rotation defined  !";
-        return;
-    }
-    VecDeriv& dx = *mstate->getDx();
-    for(unsigned int j = 0; j < dx.size(); j++)
-    {
-        Transformation Rj;
-        forceField->getRotation(Rj, j);
-        // on passe les deplacements du repere local au repere global
-        const Deriv& toto = Rj * dx[j];
-        dx[j] = toto;
-    }
-}
-template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateResponse()
-{
-    simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
-
-    sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes>* forceField = NULL;
-    if (node != NULL)
-    {
-//		core::componentmodel::behavior::BaseForceField* _forceField = node->forceField[1];
-        forceField = node->get<component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes> > ();
     }
     else
     {
@@ -881,6 +766,135 @@ void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateResponse(
 }
 
 template<>
+void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateResponse()
+{
+}
+#endif
+#ifndef SOFA_DOUBLE
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateConstraints()
+{
+    VecConst& constraints = *mstate->getC();
+    unsigned int numConstraints = constraints.size();
+
+    simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
+
+    sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes>* forceField = NULL;
+    if (node != NULL)
+    {
+        //		core::componentmodel::behavior::BaseForceField* _forceField = node->forceField[1];
+        forceField = node->get<component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes> > ();
+    }
+    else
+    {
+        cout << "No rotation defined : only defined for TetrahedronFEMForceField !";
+        return;
+    }
+
+
+    //std::cout << "start rotating normals " << g_timer_elapsed(timer, &micro) << std::endl;
+    //	int sizemax=0;
+    //	int index_const = -1;
+    // on fait tourner les normales (en les ramenant dans le "pseudo" repere initial) //
+    for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
+    {
+        int sizeCurRowConst = constraints[curRowConst].size(); //number of nodes in constraint
+
+        //Rmk : theres is one constraint for each contact direction, i.e. normal, tangent1, tangent2.
+        for(int i = 0; i < sizeCurRowConst; i++)
+        {
+            const int localRowNodeIdx = constraints[curRowConst][i].index;
+            Transformation Ri;
+            forceField->getRotation(Ri, localRowNodeIdx);
+            Ri.transpose();
+            // on passe les normales du repere global au repere local
+            const Deriv& n_i = Ri * constraints[curRowConst][i].data;
+            constraints[curRowConst][i].data.x() =  n_i.x();
+            constraints[curRowConst][i].data.y() =  n_i.y();
+            constraints[curRowConst][i].data.z() =  n_i.z();
+        }
+        /*
+        // test pour voir si on peut reduire le nombre de contrainte
+        if (sizeCurRowConst > sizemax)
+        {
+        sizemax = sizeCurRowConst;
+        index_const = curRowConst;
+        }
+        */
+    }
+}
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateConstraints()
+{
+    VecCoord& x = *mstate->getX();
+    VecConst& constraints = *mstate->getC();
+    VecCoord& x0 = *mstate->getX0();
+
+    unsigned int numConstraints = constraints.size();
+    //	int sizemax=0;
+    //	int index_const = -1;
+    // on fait tourner les normales (en les ramenant dans le "pseudo" repere initial) //
+    for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
+    {
+        int sizeCurRowConst = constraints[curRowConst].size(); //number of nodes in constraint
+
+        for(int i = 0; i < sizeCurRowConst; i++)
+        {
+            const int localRowNodeIdx = constraints[curRowConst][i].index;
+            Quat q;
+            if (_restRotations)
+                q = x[localRowNodeIdx].getOrientation() * x0[localRowNodeIdx].getOrientation().inverse();
+            else
+                q = x[localRowNodeIdx].getOrientation();
+
+
+            Vec3d n_i = q.inverseRotate(constraints[curRowConst][i].data.getVCenter());
+            Vec3d wn_i= q.inverseRotate(constraints[curRowConst][i].data.getVOrientation());
+
+            // on passe les normales du repere global au repere local
+            constraints[curRowConst][i].data.getVCenter() = n_i;
+            constraints[curRowConst][i].data.getVOrientation() = wn_i;
+
+        }
+    }
+}
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateConstraints()
+{
+}
+
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateResponse()
+{
+    simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
+
+    sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes>* forceField = NULL;
+    if (node != NULL)
+    {
+        //		core::componentmodel::behavior::BaseForceField* _forceField = node->forceField[1];
+        forceField = node->get<component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes> > ();
+    }
+    else
+    {
+        cout << "No rotation defined  !";
+        return;
+    }
+    VecDeriv& dx = *mstate->getDx();
+    for(unsigned int j = 0; j < dx.size(); j++)
+    {
+        Transformation Rj;
+        forceField->getRotation(Rj, j);
+        // on passe les deplacements du repere local au repere global
+        const Deriv& toto = Rj * dx[j];
+        dx[j] = toto;
+    }
+}
+
+
+template<>
 void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateResponse()
 {
 
@@ -904,13 +918,13 @@ void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateResponse(
 }
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateResponse()
-{
-}
-template<>
 void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateResponse()
 {
 }
+
+#endif
+
+
 
 } // namespace collision
 

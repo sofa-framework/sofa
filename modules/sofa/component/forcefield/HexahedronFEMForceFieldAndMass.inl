@@ -204,7 +204,7 @@ std::string HexahedronFEMForceFieldAndMass<DataTypes>::getTemplateName() const
 
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(VecDeriv& f, const VecDeriv& dx, double factor)
+void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(VecDeriv& f, const VecDeriv& dx, Real_Sofa factor)
 {
     unsigned int i=0;
     typename VecElement::const_iterator it;
@@ -252,7 +252,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addGravityToV(double dt)
         VecDeriv& v = *this->mstate->getV();
         for (unsigned int i=0; i<_particleMasses.size(); i++)
         {
-            v[i] += dt*this->getContext()->getLocalGravity();
+            v[i] +=this->getContext()->getLocalGravity()*dt;
         }
     }
 }
@@ -297,7 +297,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addDForce(VecDeriv& df, const Ve
 
 
 template<class DataTypes>
-double  HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass(unsigned int /*index*/)
+sofa::defaulttype::Vector3::value_type  HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass(unsigned int /*index*/)
 {
     std::cerr<<"HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass not yet implemented\n"; return 0.0;
 }
@@ -326,13 +326,13 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::draw()
 
 
 template<class DataTypes>
-bool HexahedronFEMForceFieldAndMass<DataTypes>::addBBox(double* minBBox, double* maxBBox)
+bool HexahedronFEMForceFieldAndMass<DataTypes>::addBBox(Real_Sofa* minBBox, Real_Sofa* maxBBox)
 {
     const VecCoord& x = *this->mstate->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {
         //const Coord& p = x[i];
-        double p[3] = {0.0, 0.0, 0.0};
+        Real p[3] = {0.0, 0.0, 0.0};
         DataTypes::get(p[0],p[1],p[2],x[i]);
         for (int c=0; c<3; c++)
         {

@@ -37,24 +37,24 @@ using namespace sofa::defaulttype;
 SOFA_DECL_CLASS(UncoupledConstraintCorrection)
 
 int UncoupledConstraintCorrectionClass = core::RegisterObject("")
+#ifndef SOFA_FLOAT
         .add< UncoupledConstraintCorrection<Vec1dTypes> >()
-        .add< UncoupledConstraintCorrection<Vec1fTypes> >()
-//     .add< UncoupledConstraintCorrection<Vec3dTypes> >()
-//     .add< UncoupledConstraintCorrection<Vec3fTypes> >()
         .add< UncoupledConstraintCorrection<Rigid3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< UncoupledConstraintCorrection<Vec1fTypes> >()
         .add< UncoupledConstraintCorrection<Rigid3fTypes> >()
+#endif
         ;
 
-//     template class UncoupledConstraintCorrection<Vec3dTypes>;
-//     template class UncoupledConstraintCorrection<Vec3fTypes>;
-//template class UncoupledConstraintCorrection<Vec2dTypes>;
-//template class UncoupledConstraintCorrection<Vec2fTypes>;
+#ifndef SOFA_FLOAT
 template class UncoupledConstraintCorrection<Vec1dTypes>;
-template class UncoupledConstraintCorrection<Vec1fTypes>;
 template class UncoupledConstraintCorrection<Rigid3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class UncoupledConstraintCorrection<Vec1fTypes>;
 template class UncoupledConstraintCorrection<Rigid3fTypes>;
-//template class UncoupledConstraintCorrection<Rigid2dTypes>;
-//template class UncoupledConstraintCorrection<Rigid2fTypes>;
+#endif
 
 
 } // namespace constraint

@@ -37,6 +37,7 @@
 #define SOFA_SIMULATION_TREE_MECHANICALCOMPUTEENERGYACTION_H
 
 #include <sofa/simulation/tree/MechanicalVisitor.h>
+#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
@@ -54,17 +55,18 @@ Compute the amount of mechanical energy
 */
 class MechanicalComputeEnergyVisitor : public sofa::simulation::tree::MechanicalVisitor
 {
-    double m_kineticEnergy;
-    double m_potentialEnergy;
+    typedef sofa::defaulttype::Vector3::value_type Real_Sofa;
+    Real_Sofa m_kineticEnergy;
+    Real_Sofa m_potentialEnergy;
 
 public:
     MechanicalComputeEnergyVisitor();
 
     ~MechanicalComputeEnergyVisitor();
 
-    double getKineticEnergy();
+    Real_Sofa getKineticEnergy();
 
-    double getPotentialEnergy();
+    Real_Sofa getPotentialEnergy();
 
     /// Process the BaseMass
     virtual Result fwdMass(GNode* /*node*/, core::componentmodel::behavior::BaseMass* mass)

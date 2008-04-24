@@ -462,35 +462,9 @@ public:
             const float scale = mod->f_scale.getValue();
 
             BaseObject* mmodel = getContext()->getMechanicalState();
-            sofa::core::componentmodel::behavior::MechanicalState<Vec3fTypes>* mmodel3f;
+#ifndef SOFA_FLOAT
             sofa::core::componentmodel::behavior::MechanicalState<Vec3dTypes>* mmodel3d;
-            if ((mmodel3f = dynamic_cast<sofa::core::componentmodel::behavior::MechanicalState<Vec3fTypes>*>(mmodel))!=NULL)
-            {
-                //std::cout << "Copying "<<nbv<<" vertices to mmodel3f"<<std::endl;
-                mmodel3f->resize(nbv);
-                Vec3fTypes::VecCoord& x = *mmodel3f->getX();
-                if (matrixLastIt==-20)
-                {
-                    for (unsigned int i=0; i<nbv; i++)
-                    {
-                        x[i] = vertices[i]*scale;
-                        x[i] += trans;
-                    }
-                }
-                else
-                {
-                    float scale2 = 1.0;
-                    if (matrix[3][3] != 0) scale2 = 1/matrix[3][3];
-                    for (unsigned int i=0; i<nbv; i++)
-                    {
-                        Vec3f v = vertices[i]*scale;
-                        v += trans;
-                        Vec4f tv = matrix * Vec4f(v[0],v[1],v[2],1.0f);
-                        x[i] = Vec3f(tv[0],tv[1],tv[2])*scale2;
-                    }
-                }
-            }
-            else if ((mmodel3d = dynamic_cast<sofa::core::componentmodel::behavior::MechanicalState<Vec3dTypes>*>(mmodel))!=NULL)
+            if ((mmodel3d = dynamic_cast<sofa::core::componentmodel::behavior::MechanicalState<Vec3dTypes>*>(mmodel))!=NULL)
             {
                 bool doComputeV = (computeV.getValue() && newPoints != NULL && motionLastTime != -1000);
 
@@ -594,8 +568,39 @@ public:
 #endif
                 motionLastTime = time;
             }
-        }
 
+#endif
+#ifndef SOFA_DOUBLE
+            sofa::core::componentmodel::behavior::MechanicalState<Vec3fTypes>* mmodel3f;
+
+            if ((mmodel3f = dynamic_cast<sofa::core::componentmodel::behavior::MechanicalState<Vec3fTypes>*>(mmodel))!=NULL)
+            {
+                //std::cout << "Copying "<<nbv<<" vertices to mmodel3f"<<std::endl;
+                mmodel3f->resize(nbv);
+                Vec3fTypes::VecCoord& x = *mmodel3f->getX();
+                if (matrixLastIt==-20)
+                {
+                    for (unsigned int i=0; i<nbv; i++)
+                    {
+                        x[i] = vertices[i]*scale;
+                        x[i] += trans;
+                    }
+                }
+                else
+                {
+                    float scale2 = 1.0;
+                    if (matrix[3][3] != 0) scale2 = 1/matrix[3][3];
+                    for (unsigned int i=0; i<nbv; i++)
+                    {
+                        Vec3f v = vertices[i]*scale;
+                        v += trans;
+                        Vec4f tv = matrix * Vec4f(v[0],v[1],v[2],1.0f);
+                        x[i] = Vec3f(tv[0],tv[1],tv[2])*scale2;
+                    }
+                }
+            }
+#endif
+        }
         int facetsIt = -1;
         facets.stamps.read(pInFacets->stamps->it,facetsIt);
         if (facetsIt != facetsLastIt)

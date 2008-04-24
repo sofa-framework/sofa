@@ -98,9 +98,15 @@ Transformation& Transformation::operator=(const Transformation& transform)
 // --------------------------------------------------------------------------------------
 void Transformation::Apply()
 {
+#ifdef SOFA_FLOAT
+    glTranslatef(translation[0], translation[1], translation[2]);
+    glMultMatrixf((Real_Sofa *) rotation);
+    glScalef(scale[0], scale[1], scale[2]);
+#else
     glTranslated(translation[0], translation[1], translation[2]);
-    glMultMatrixd((double *) rotation);
+    glMultMatrixd((Real_Sofa *) rotation);
     glScaled(scale[0], scale[1], scale[2]);
+#endif
 }
 
 
@@ -110,7 +116,11 @@ void Transformation::Apply()
 void Transformation::ApplyWithCentring()
 {
     Apply();
+#ifdef SOFA_FLOAT
+    glTranslatef(-objectCenter[0], -objectCenter[1], -objectCenter[2]);
+#else
     glTranslated(-objectCenter[0], -objectCenter[1], -objectCenter[2]);
+#endif
 }
 
 
@@ -119,13 +129,19 @@ void Transformation::ApplyWithCentring()
 // --------------------------------------------------------------------------------------
 void Transformation::ApplyInverse()
 {
-    double	iRotation[4][4];
+    Real_Sofa	iRotation[4][4];
 
     InvertTransRotMatrix(rotation, iRotation);
 
+#ifdef SOFA_FLOAT
+    glScalef(1.0 / scale[0], 1.0 / scale[1], 1.0 / scale[2]);
+    glMultMatrixf((Real_Sofa *) iRotation);
+    glTranslatef(-translation[0], -translation[1], -translation[2]);
+#else
     glScaled(1.0 / scale[0], 1.0 / scale[1], 1.0 / scale[2]);
-    glMultMatrixd((double *) iRotation);
+    glMultMatrixd((Real_Sofa *) iRotation);
     glTranslated(-translation[0], -translation[1], -translation[2]);
+#endif
 }
 
 
@@ -133,9 +149,9 @@ void Transformation::ApplyInverse()
 //--- Inversion for 4x4 matrix only containing rotations and translations
 //--- Transpose rotation matrix and mutiple by -1 translation row
 //----------------------------------------------------------------------------
-void Transformation::InvertTransRotMatrix(double matrix[4][4])
+void Transformation::InvertTransRotMatrix(Real_Sofa matrix[4][4])
 {
-    double	tmp;
+    Real_Sofa	tmp;
 
     tmp = matrix[0][1];
     matrix[0][1] = matrix[1][0];
@@ -160,8 +176,8 @@ void Transformation::InvertTransRotMatrix(double matrix[4][4])
 //--- Inversion for 4x4 matrix only containing rotations and translations
 //--- Transpose rotation matrix and mutiple by -1 translation row
 //----------------------------------------------------------------------------
-void Transformation::InvertTransRotMatrix(double sMatrix[4][4],
-        double dMatrix[4][4])
+void Transformation::InvertTransRotMatrix(Real_Sofa sMatrix[4][4],
+        Real_Sofa dMatrix[4][4])
 {
     register int	i, j;
 

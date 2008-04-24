@@ -207,7 +207,7 @@ void TriangleFEMForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& d
 }
 
 template <class DataTypes>
-double TriangleFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
+sofa::defaulttype::Vector3::value_type TriangleFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
 {
     cerr<<"TriangleFEMForceField::getPotentialEnergy-not-implemented !!!"<<endl;
     return 0;
@@ -685,16 +685,24 @@ SOFA_DECL_CLASS(TriangleFEMForceField)
 
 using namespace sofa::defaulttype;
 
-template class TriangleFEMForceField<Vec3dTypes>;
-template class TriangleFEMForceField<Vec3fTypes>;
 
 
 // Register in the Factory
 int TriangleFEMForceFieldClass = core::RegisterObject("Triangular finite elements")
+#ifndef SOFA_FLOAT
         .add< TriangleFEMForceField<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
         .add< TriangleFEMForceField<Vec3fTypes> >()
+#endif
         ;
 
+#ifndef SOFA_FLOAT
+template class TriangleFEMForceField<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class TriangleFEMForceField<Vec3fTypes>;
+#endif
 
 } // namespace forcefield
 

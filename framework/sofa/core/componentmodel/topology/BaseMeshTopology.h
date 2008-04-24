@@ -52,7 +52,7 @@ using helper::fixed_array;
 class BaseMeshTopology : public core::componentmodel::topology::Topology
 {
 public:
-
+    typedef Vector3::value_type Real_Sofa;
     //typedef int index_type;
     typedef unsigned int index_type;
     enum { InvalidID = (unsigned)-1 };
@@ -191,13 +191,13 @@ public:
 
     // Points accessors (not always available)
     virtual bool hasPos() const { return false; }
-    virtual double getPX(int) const { return 0.0; }
-    virtual double getPY(int) const { return 0.0; }
-    virtual double getPZ(int) const { return 0.0; }
+    virtual Real_Sofa getPX(int) const { return 0.0; }
+    virtual Real_Sofa getPY(int) const { return 0.0; }
+    virtual Real_Sofa getPZ(int) const { return 0.0; }
 
     // for procedural creation without file loader
     virtual void clear();
-    virtual void addPoint(double px, double py, double pz);
+    virtual void addPoint(Real_Sofa px, Real_Sofa py, Real_Sofa pz);
     virtual void addEdge( int a, int b );
     void addLine( int a, int b ) { addEdge(a,b); }
     virtual void addTriangle( int a, int b, int c );

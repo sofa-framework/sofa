@@ -13,23 +13,24 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-template class VectorSpringForceField<Vec3dTypes>;
-template class VectorSpringForceField<Vec3fTypes>;
-//template class VectorSpringForceField<Vec2dTypes>;
-//template class VectorSpringForceField<Vec2fTypes>;
-//template class VectorSpringForceField<Vec1dTypes>;
-//template class VectorSpringForceField<Vec1fTypes>;
-
 SOFA_DECL_CLASS(VectorSpringForceField)
 
 int VectorSpringForceFieldClass = core::RegisterObject("Spring force field acting along the edges of a mesh")
+#ifndef SOFA_FLOAT
         .add< VectorSpringForceField<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
         .add< VectorSpringForceField<Vec3fTypes> >()
-//.add< VectorSpringForceField<Vec2dTypes> >()
-//.add< VectorSpringForceField<Vec2fTypes> >()
-//.add< VectorSpringForceField<Vec1dTypes> >()
-//.add< VectorSpringForceField<Vec1fTypes> >()
+#endif
         ;
+
+#ifndef SOFA_FLOAT
+template class VectorSpringForceField<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class VectorSpringForceField<Vec3fTypes>;
+#endif
+
 
 } // namespace forcefield
 

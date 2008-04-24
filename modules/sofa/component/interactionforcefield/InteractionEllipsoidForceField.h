@@ -41,7 +41,6 @@ public:
     typedef typename DataTypes2::Deriv Deriv2;
     typedef typename Coord2::value_type Real2;
 
-
     enum { N=Coord1::static_size };
     typedef defaulttype::Mat<N,N,Real1> Mat;
 
@@ -121,7 +120,7 @@ public:
 
     virtual void addDForce(VecDeriv1& df1, VecDeriv2& df2, const VecDeriv1& dx1, const VecDeriv2& dx2);
 
-    virtual double getPotentialEnergy(const VecCoord1& x1, const VecCoord2& x2);
+    virtual sofa::defaulttype::Vector3::value_type getPotentialEnergy(const VecCoord1& x1, const VecCoord2& x2);
 
     void reinit() {_update_pos_relative = true;}
 
@@ -149,5 +148,6 @@ protected:
 } // namespace component
 
 } // namespace sofa
+
 
 #endif

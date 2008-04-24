@@ -51,7 +51,7 @@ public:
     typedef Grid2D::real real;
     typedef Grid2D::vec2 vec2;
     typedef Vec<3,real> vec3;
-
+    typedef sofa::defaulttype::Vector3::value_type Real_Sofa;
 protected:
     int nx,ny;
     real cellwidth;
@@ -86,7 +86,7 @@ public:
 
     virtual void drawVisual();
 
-    virtual bool addBBox(double* minBBox, double* maxBBox);
+    virtual bool addBBox(Real_Sofa* minBBox, Real_Sofa* maxBBox);
 
     virtual void initVisual() {}
 

@@ -40,15 +40,20 @@ using namespace sofa::helper;
 
 SOFA_DECL_CLASS(FixedPlaneConstraint)
 
-template class FixedPlaneConstraint<Vec3dTypes>;
-template class FixedPlaneConstraint<Vec3fTypes>;
-
-
 int FixedPlaneConstraintClass = core::RegisterObject("FixedPlaneConstraint")
+#ifndef SOFA_FLOAT
         .add< FixedPlaneConstraint<Vec3dTypes> >()
+#endif
+#ifndef DOUBLE
         .add< FixedPlaneConstraint<Vec3fTypes> >()
+#endif
         ;
-
+#ifndef SOFA_FLOAT
+template class FixedPlaneConstraint<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class FixedPlaneConstraint<Vec3fTypes>;
+#endif
 } // namespace constraint
 
 } // namespace component

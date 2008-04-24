@@ -39,11 +39,31 @@ namespace forcefield
 SOFA_DECL_CLASS(BoxStiffSpringForceField)
 
 int BoxStiffSpringForceFieldClass = core::RegisterObject("Set Spring between the points inside a given box")
+#ifndef SOFA_FLOAT
         .add< BoxStiffSpringForceField<Vec3dTypes> >()
+        .add< BoxStiffSpringForceField<Vec2dTypes> >()
+        .add< BoxStiffSpringForceField<Vec1dTypes> >()
+        .add< BoxStiffSpringForceField<Vec6dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
         .add< BoxStiffSpringForceField<Vec3fTypes> >()
+        .add< BoxStiffSpringForceField<Vec2fTypes> >()
+        .add< BoxStiffSpringForceField<Vec1fTypes> >()
+        .add< BoxStiffSpringForceField<Vec6fTypes> >()
+#endif
         ;
-
-
+#ifndef SOFA_FLOAT
+template class BoxStiffSpringForceField<Vec3dTypes>;
+template class BoxStiffSpringForceField<Vec2dTypes>;
+template class BoxStiffSpringForceField<Vec1dTypes>;
+template class BoxStiffSpringForceField<Vec6dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class BoxStiffSpringForceField<Vec3fTypes>;
+template class BoxStiffSpringForceField<Vec2fTypes>;
+template class BoxStiffSpringForceField<Vec1fTypes>;
+template class BoxStiffSpringForceField<Vec6fTypes>;
+#endif
 } // namespace forcefield
 
 } // namespace component

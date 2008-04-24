@@ -53,15 +53,23 @@ SOFA_DECL_CLASS(TriangularBiquadraticSpringsForceField)
 
 using namespace sofa::defaulttype;
 
-template class TriangularBiquadraticSpringsForceField<Vec3dTypes>;
-template class TriangularBiquadraticSpringsForceField<Vec3fTypes>;
-
 
 // Register in the Factory
 int TriangularBiquadraticSpringsForceFieldClass = core::RegisterObject("Biquadratic Springs on a Triangular Mesh")
+#ifndef SOFA_FLOAT
         .add< TriangularBiquadraticSpringsForceField<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
         .add< TriangularBiquadraticSpringsForceField<Vec3fTypes> >()
+#endif
         ;
+
+#ifndef SOFA_FLOAT
+template class TriangularBiquadraticSpringsForceField<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class TriangularBiquadraticSpringsForceField<Vec3fTypes>;
+#endif
 
 
 

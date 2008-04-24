@@ -40,17 +40,25 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-template class TetrahedralCorotationalFEMForceField<Vec3dTypes>;
-template class TetrahedralCorotationalFEMForceField<Vec3fTypes>;
-
 
 SOFA_DECL_CLASS(TetrahedralCorotationalFEMForceField)
 
 // Register in the Factory
 int TetrahedralCorotationalFEMForceFieldClass = core::RegisterObject("Corotational FEM Tetrahedral finite elements")
+#ifndef SOFA_FLOAT
         .add< TetrahedralCorotationalFEMForceField<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
         .add< TetrahedralCorotationalFEMForceField<Vec3fTypes> >()
+#endif
         ;
+
+#ifndef SOFA_FLOAT
+template class TetrahedralCorotationalFEMForceField<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class TetrahedralCorotationalFEMForceField<Vec3fTypes>;
+#endif
 
 } // namespace forcefield
 

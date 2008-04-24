@@ -29,6 +29,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
@@ -58,7 +59,7 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-
+    typedef sofa::defaulttype::Vector3::value_type Real_Sofa;
 //     using sofa::core::objectmodel::Data;
 
     PairInteractionForceField(MechanicalState<DataTypes> *mm1 = NULL, MechanicalState<DataTypes> *mm2 = NULL);
@@ -128,7 +129,7 @@ public:
     /// This method retrieves the x vector from the MechanicalState and call
     /// the internal getPotentialEnergy(const VecCoord&,const VecCoord&) method implemented by
     /// the component.
-    virtual double getPotentialEnergy();
+    virtual Real_Sofa getPotentialEnergy();
 
     /// Given the current position and velocity states, update the current force
     /// vector by computing and adding the forces associated with this
@@ -162,7 +163,7 @@ public:
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic ForceField::getPotentialEnergy() method.
-    virtual double getPotentialEnergy(const VecCoord& x1, const VecCoord& x2) =0;
+    virtual Real_Sofa getPotentialEnergy(const VecCoord& x1, const VecCoord& x2) =0;
 
     /// @}
 

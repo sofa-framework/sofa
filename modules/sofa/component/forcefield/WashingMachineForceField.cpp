@@ -38,16 +38,26 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-template class WashingMachineForceField<Vec3dTypes>;
-template class WashingMachineForceField<Vec3fTypes>;
 
 SOFA_DECL_CLASS(WashingMachineForceField)
 
 // Register in the Factory
 int WashingMachineForceFieldClass = core::RegisterObject("A custom force field")
+#ifndef SOFA_FLOAT
         .add< WashingMachineForceField<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
         .add< WashingMachineForceField<Vec3fTypes> >()
+#endif
         ;
+
+#ifndef SOFA_FLOAT
+template class WashingMachineForceField<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class WashingMachineForceField<Vec3fTypes>;
+#endif
+;
 
 } // namespace forcefield
 

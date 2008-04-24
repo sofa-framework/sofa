@@ -48,150 +48,107 @@ SOFA_DECL_CLASS(IdentityMapping)
 
 // Register in the Factory
 int IdentityMappingClass = core::RegisterObject("Special case of mapping where the child points are the same as the parent points")
+#ifndef SOFA_FLOAT
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec2dTypes>, MechanicalState<Vec2dTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1dTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec6dTypes>, MechanicalState<Vec6dTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Rigid2dTypes> > > >()
+        .add< IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > > >()
+// .add< IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > > >()
+        .add< IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<Rigid3dTypes> > > >()
+        .add< IdentityMapping< Mapping< State<Rigid2dTypes>, MappedModel<Rigid2dTypes> > > >()
+
+#endif
+#ifndef SOFA_DOUBLE
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec2fTypes>, MechanicalState<Vec2fTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1fTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec6fTypes>, MechanicalState<Vec6fTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3fTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Rigid2fTypes> > > >()
+        .add< IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > > >()
+// .add< IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > > >()
+        .add< IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< IdentityMapping< Mapping< State<Rigid3fTypes>, MappedModel<Rigid3fTypes> > > >()
+        .add< IdentityMapping< Mapping< State<Rigid2fTypes>, MappedModel<Rigid2fTypes> > > >()
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > > >()
-
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec2dTypes>, MechanicalState<Vec2dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec2fTypes>, MechanicalState<Vec2dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec2dTypes>, MechanicalState<Vec2fTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec2fTypes>, MechanicalState<Vec2fTypes> > > >()
-
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1fTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1fTypes> > > >()
-
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec6dTypes>, MechanicalState<Vec6dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec6fTypes>, MechanicalState<Vec6dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec6dTypes>, MechanicalState<Vec6fTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec6fTypes>, MechanicalState<Vec6fTypes> > > >()
-
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3fTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3dTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3fTypes> > > >()
-
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Rigid2dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Rigid2fTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Rigid2dTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Rigid2fTypes> > > >()
-
-        .add< IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > > >()
         .add< IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > > >()
         .add< IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > > >()
-        .add< IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > > >()
-
-        .add< IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > > >()
-        .add< IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > > >()
-        .add< IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > > >()
-        .add< IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
-
-        .add< IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<Rigid3dTypes> > > >()
         .add< IdentityMapping< Mapping< State<Rigid3fTypes>, MappedModel<Rigid3dTypes> > > >()
         .add< IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<Rigid3fTypes> > > >()
-        .add< IdentityMapping< Mapping< State<Rigid3fTypes>, MappedModel<Rigid3fTypes> > > >()
-
-        .add< IdentityMapping< Mapping< State<Rigid2dTypes>, MappedModel<Rigid2dTypes> > > >()
         .add< IdentityMapping< Mapping< State<Rigid2dTypes>, MappedModel<Rigid2fTypes> > > >()
         .add< IdentityMapping< Mapping< State<Rigid2fTypes>, MappedModel<Rigid2dTypes> > > >()
-        .add< IdentityMapping< Mapping< State<Rigid2fTypes>, MappedModel<Rigid2fTypes> > > >()
+#endif
+#endif
         ;
 
 
-// Mech -> Mech
+#ifndef SOFA_FLOAT
 template class IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > >;
+template class IdentityMapping< MechanicalMapping< MechanicalState<Vec2dTypes>, MechanicalState<Vec2dTypes> > >;
+template class IdentityMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1dTypes> > >;
+template class IdentityMapping< MechanicalMapping< MechanicalState<Vec6dTypes>, MechanicalState<Vec6dTypes> > >;
+template class IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > >;
+// template class IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > >;
+template class IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >;
+template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > >;
+template class IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<Rigid3dTypes> > >;
+template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Rigid2dTypes> > >;
+template class IdentityMapping< Mapping< State<Rigid2dTypes>, MappedModel<Rigid2dTypes> > >;
+#endif
+#ifndef SOFA_DOUBLE
 template class IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > >;
+template class IdentityMapping< MechanicalMapping< MechanicalState<Vec2fTypes>, MechanicalState<Vec2fTypes> > >;
+template class IdentityMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1fTypes> > >;
+template class IdentityMapping< MechanicalMapping< MechanicalState<Vec6fTypes>, MechanicalState<Vec6fTypes> > >;
+template class IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > >;
+template class IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >;
+// template class IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > >;
+template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3fTypes> > >;
+template class IdentityMapping< Mapping< State<Rigid3fTypes>, MappedModel<Rigid3fTypes> > >;
+template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Rigid2fTypes> > >;
+template class IdentityMapping< Mapping< State<Rigid2fTypes>, MappedModel<Rigid2fTypes> > >;
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
 template class IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > >;
 template class IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > >;
-
-// Mech -> Mech
-template class IdentityMapping< MechanicalMapping< MechanicalState<Vec2dTypes>, MechanicalState<Vec2dTypes> > >;
-template class IdentityMapping< MechanicalMapping< MechanicalState<Vec2fTypes>, MechanicalState<Vec2fTypes> > >;
 template class IdentityMapping< MechanicalMapping< MechanicalState<Vec2dTypes>, MechanicalState<Vec2fTypes> > >;
 template class IdentityMapping< MechanicalMapping< MechanicalState<Vec2fTypes>, MechanicalState<Vec2dTypes> > >;
-
-// Mech -> Mech
-template class IdentityMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1dTypes> > >;
-template class IdentityMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1fTypes> > >;
 template class IdentityMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1fTypes> > >;
 template class IdentityMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1dTypes> > >;
-
-// Mech -> Mech
-template class IdentityMapping< MechanicalMapping< MechanicalState<Vec6dTypes>, MechanicalState<Vec6dTypes> > >;
-template class IdentityMapping< MechanicalMapping< MechanicalState<Vec6fTypes>, MechanicalState<Vec6fTypes> > >;
 template class IdentityMapping< MechanicalMapping< MechanicalState<Vec6dTypes>, MechanicalState<Vec6fTypes> > >;
 template class IdentityMapping< MechanicalMapping< MechanicalState<Vec6fTypes>, MechanicalState<Vec6dTypes> > >;
-
-// Mech -> Mapped
-template class IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > >;
-template class IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > >;
 template class IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > >;
 template class IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > >;
-
-// Mech -> ExtMapped
-template class IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > >;
-template class IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >;
-template class IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >;
-template class IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > >;
-
-
-// Rigid3
-template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > >;
 template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3dTypes> > >;
 template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3fTypes> > >;
-template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3fTypes> > >;
-template class IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<Rigid3dTypes> > >;
 template class IdentityMapping< Mapping< State<Rigid3fTypes>, MappedModel<Rigid3dTypes> > >;
 template class IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<Rigid3fTypes> > >;
-template class IdentityMapping< Mapping< State<Rigid3fTypes>, MappedModel<Rigid3fTypes> > >;
-
-// Rigid2
-template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Rigid2dTypes> > >;
-template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Rigid2fTypes> > >;
-template class IdentityMapping< Mapping< State<Rigid2dTypes>, MappedModel<Rigid2dTypes> > >;
-template class IdentityMapping< Mapping< State<Rigid2fTypes>, MappedModel<Rigid2fTypes> > >;
 template class IdentityMapping< Mapping< State<Rigid2dTypes>, MappedModel<Rigid2fTypes> > >;
 template class IdentityMapping< Mapping< State<Rigid2fTypes>, MappedModel<Rigid2dTypes> > >;
+#endif
+#endif
 
-// // Mech -> Mapped
-// template class IdentityMapping< Mapping< State<Vec2dTypes>, MappedModel<Vec2dTypes> > >;
-// template class IdentityMapping< Mapping< State<Vec2fTypes>, MappedModel<Vec2fTypes> > >;
-// template class IdentityMapping< Mapping< State<Vec2dTypes>, MappedModel<Vec2fTypes> > >;
-// template class IdentityMapping< Mapping< State<Vec2fTypes>, MappedModel<Vec2dTypes> > >;
-//
-// // Mech -> ExtMapped
-// template class IdentityMapping< Mapping< State<Vec2dTypes>, MappedModel<ExtVec2dTypes> > >;
-// template class IdentityMapping< Mapping< State<Vec2fTypes>, MappedModel<ExtVec2fTypes> > >;
-// template class IdentityMapping< Mapping< State<Vec2dTypes>, MappedModel<ExtVec2fTypes> > >;
-// template class IdentityMapping< Mapping< State<Vec2fTypes>, MappedModel<ExtVec2dTypes> > >;
-
-
-// // Mech -> Mapped
-// template class IdentityMapping< Mapping< State<Vec1dTypes>, MappedModel<Vec1dTypes> > >;
-// template class IdentityMapping< Mapping< State<Vec1fTypes>, MappedModel<Vec1fTypes> > >;
-// template class IdentityMapping< Mapping< State<Vec1dTypes>, MappedModel<Vec1fTypes> > >;
-// template class IdentityMapping< Mapping< State<Vec1fTypes>, MappedModel<Vec1dTypes> > >;
-//
-// // Mech -> ExtMapped
-// template class IdentityMapping< Mapping< State<Vec1dTypes>, MappedModel<ExtVec1dTypes> > >;
-// template class IdentityMapping< Mapping< State<Vec1fTypes>, MappedModel<ExtVec1fTypes> > >;
-// template class IdentityMapping< Mapping< State<Vec1dTypes>, MappedModel<ExtVec1fTypes> > >;
-// template class IdentityMapping< Mapping< State<Vec1fTypes>, MappedModel<ExtVec1dTypes> > >;
-
-
-// // Mech -> Mapped
-// template class IdentityMapping< Mapping< State<Vec6dTypes>, MappedModel<Vec6dTypes> > >;
-// template class IdentityMapping< Mapping< State<Vec6fTypes>, MappedModel<Vec6fTypes> > >;
-// template class IdentityMapping< Mapping< State<Vec6dTypes>, MappedModel<Vec6fTypes> > >;
-// template class IdentityMapping< Mapping< State<Vec6fTypes>, MappedModel<Vec6dTypes> > >;
-//
-// // Mech -> ExtMapped
-// template class IdentityMapping< Mapping< State<Vec6dTypes>, MappedModel<ExtVec6dTypes> > >;
-// template class IdentityMapping< Mapping< State<Vec6fTypes>, MappedModel<ExtVec6fTypes> > >;
-// template class IdentityMapping< Mapping< State<Vec6dTypes>, MappedModel<ExtVec6fTypes> > >;
-// template class IdentityMapping< Mapping< State<Vec6fTypes>, MappedModel<ExtVec6dTypes> > >;
 
 } // namespace mapping
 

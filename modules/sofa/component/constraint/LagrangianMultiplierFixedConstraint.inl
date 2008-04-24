@@ -107,7 +107,7 @@ void LagrangianMultiplierFixedConstraint<DataTypes>::addDForce(VecDeriv& df, con
 }
 
 template <class DataTypes>
-double LagrangianMultiplierFixedConstraint<DataTypes>::getPotentialEnergy(const VecCoord& )
+sofa::defaulttype::Vector3::value_type LagrangianMultiplierFixedConstraint<DataTypes>::getPotentialEnergy(const VecCoord& )
 {
     cerr<<"LagrangianMultiplierFixedConstraint::getPotentialEnergy-not-implemented !!!"<<endl;
     return 0;

@@ -38,17 +38,27 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-template class PenalityContactForceField<Vec3dTypes>;
-template class PenalityContactForceField<Vec3fTypes>;
 
 
 SOFA_DECL_CLASS(PenalityContactForceField)
 
 // Register in the Factory
 int PenalityContactForceFieldClass = core::RegisterObject("Contact using repulsive springs")
+#ifndef SOFA_FLOAT
         .add< PenalityContactForceField<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
         .add< PenalityContactForceField<Vec3fTypes> >()
+#endif
         ;
+
+#ifndef SOFA_FLOAT
+template class PenalityContactForceField<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class PenalityContactForceField<Vec3fTypes>;
+#endif
+
 } // namespace forcefield
 
 } // namespace component

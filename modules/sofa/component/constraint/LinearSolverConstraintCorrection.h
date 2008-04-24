@@ -68,6 +68,7 @@ class LinearSolverConstraintCorrection : public componentmodel::behavior::BaseCo
 {
 public:
     typedef TDataTypes DataTypes;
+    typedef typename DataTypes::Real Real;
     typedef typename componentmodel::behavior::BaseConstraintCorrection Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -124,9 +125,9 @@ protected:
     behavior::OdeSolver* odesolver;
     behavior::LinearSolver* linearsolver;
 
-    linearsolver::SparseMatrix<double> J; ///< constraint matrix
-    linearsolver::FullVector<double> F; ///< forces computed from the constraints
-    linearsolver::FullMatrix<double> refMinv; ///< reference inverse matrix
+    linearsolver::SparseMatrix<Real> J; ///< constraint matrix
+    linearsolver::FullVector<Real> F; ///< forces computed from the constraints
+    linearsolver::FullMatrix<Real> refMinv; ///< reference inverse matrix
 };
 
 

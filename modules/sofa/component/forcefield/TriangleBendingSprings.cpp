@@ -48,22 +48,29 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-template class TriangleBendingSprings<Vec3fTypes>;
-template class TriangleBendingSprings<Vec3dTypes>;
-template class TriangleBendingSprings<Vec2fTypes>;
-template class TriangleBendingSprings<Vec2dTypes>;
 
 
 SOFA_DECL_CLASS(TriangleBendingSprings)
 
 // Register in the Factory
 int TriangleBendingSpringsClass = core::RegisterObject("Springs added to a traingular mesh to prevent bending")
+#ifndef SOFA_FLOAT
         .add< TriangleBendingSprings<Vec3dTypes> >()
-        .add< TriangleBendingSprings<Vec3fTypes> >()
         .add< TriangleBendingSprings<Vec2dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< TriangleBendingSprings<Vec3fTypes> >()
         .add< TriangleBendingSprings<Vec2fTypes> >()
+#endif
         ;
-
+#ifndef SOFA_FLOAT
+template class TriangleBendingSprings<Vec3dTypes>;
+template class TriangleBendingSprings<Vec2dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class TriangleBendingSprings<Vec3fTypes>;
+template class TriangleBendingSprings<Vec2fTypes>;
+#endif
 } // namespace forcefield
 
 } // namespace component

@@ -549,28 +549,36 @@ inline real dot(const Vec<N,real>& a, const Vec<N,real>& b)
 typedef Vec<1,float> Vec1f;
 typedef Vec<1,double> Vec1d;
 
-typedef Vec1d Vector1; ///< alias
 
 typedef Vec<2,float> Vec2f;
 typedef Vec<2,double> Vec2d;
 
-typedef Vec2d Vector2; ///< alias
 
 typedef Vec<3,float> Vec3f;
 typedef Vec<3,double> Vec3d;
 
-typedef Vec3d Vector3; ///< alias
 
 typedef Vec<4,float> Vec4f;
 typedef Vec<4,double> Vec4d;
 
-typedef Vec4d Vector4; ///< alias
 
 typedef Vec<6,float> Vec6f;
 typedef Vec<6,double> Vec6d;
 
-typedef Vec6d Vector6; ///< alias
 
+#ifdef SOFA_FLOAT
+typedef Vec1f Vector1; ///< alias
+typedef Vec2f Vector2; ///< alias
+typedef Vec3f Vector3; ///< alias
+typedef Vec4f Vector4; ///< alias
+typedef Vec6f Vector6; ///< alias
+#else
+typedef Vec1d Vector1; ///< alias
+typedef Vec2d Vector2; ///< alias
+typedef Vec3d Vector3; ///< alias
+typedef Vec4d Vector4; ///< alias
+typedef Vec6d Vector6; ///< alias
+#endif
 } // namespace defaulttype
 
 } // namespace sofa

@@ -54,8 +54,11 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , f_Xfree ( new XDataPtr<DataTypes>(&xfree,  "free position coordinates of the degrees of freedom") )
     , f_Vfree ( new VDataPtr<DataTypes>(&vfree,  "free velocity coordinates of the degrees of freedom") )
     , f_X0( new XDataPtr<DataTypes>(&x0, "rest position coordinates of the degrees of freedom") )
-    , restScale(initData(&restScale, (Real)1, "restScale","optional scaling of rest position coordinates (to simulated pre-existing internal tension)"))
+//       , restScale(initData(&restScale, (Real_Sofa)1.0, "restScale","optional scaling of rest position coordinates (to simulated pre-existing internal tension)"))
 {
+    //HACK
+    if (!restScale.isSet())
+        restScale.setValue(1);
     initialized = false;
     this->addField(f_X, "position");
     f_X->beginEdit();
@@ -110,7 +113,7 @@ void MechanicalObject<DataTypes>::initGnuplot(const std::string path)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::exportGnuplot(double time)
+void MechanicalObject<DataTypes>::exportGnuplot(Real time)
 {
     if( m_gnuplotFileX!=NULL )
     {
@@ -188,7 +191,7 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
     }
     if (arg->getAttribute("rx")!=NULL || arg->getAttribute("ry")!=NULL || arg->getAttribute("rz")!=NULL)
     {
-        Vec<3, double> rotationVector = Vec<3,double>(atof(arg->getAttribute("rx","0.0")),atof(arg->getAttribute("ry","0.0")),atof(arg->getAttribute("rz","0.0")))*3.141592653/180.0;
+        Vec<3, Real> rotationVector = Vec<3,Real>(atof(arg->getAttribute("rx","0.0")),atof(arg->getAttribute("ry","0.0")),atof(arg->getAttribute("rz","0.0")))*3.141592653/180.0;
         rotation[0] = rotationVector[0];
         rotation[1] = rotationVector[1];
         rotation[2] = rotationVector[2];
@@ -500,18 +503,26 @@ void MechanicalObject<DataTypes>::applyRotation (const defaulttype::Quat q)
     VecCoord& x = *this->getX();
     for (unsigned int i = 0; i < x.size(); i++)
     {
-        Vec3d pos;
+        Vec<3,Real> pos;
         DataTypes::get(pos[0],pos[1],pos[2],x[i]);
-        Vec3d newposition = q.rotate(pos);
+        Vec<3,Real> newposition = q.rotate(pos);
         DataTypes::set(x[i],newposition[0],newposition[1],newposition[2]);
     }
     //TODO: special case of rigid bodies. need to update the orientation
 }
 
+#ifndef SOFA_FLOAT
 template<>
 void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaulttype::Quat q);
+template <>
+bool MechanicalObject<Vec1dTypes>::addBBox(Real_Sofa* minBBox, Real_Sofa* maxBBox);
+#endif
+#ifndef SOFA_Real
 template<>
 void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaulttype::Quat q);
+template <>
+bool MechanicalObject<Vec1fTypes>::addBBox(Real_Sofa* minBBox, Real_Sofa* maxBBox);
+#endif
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyScale(const double s)
@@ -530,7 +541,7 @@ void MechanicalObject<DataTypes>::getIndicesInSpace(sofa::helper::vector<unsigne
     const VecCoord& X = *getX();
     for( unsigned i=0; i<X.size(); ++i )
     {
-        double x=0.0,y=0.0,z=0.0;
+        Real x=0.0,y=0.0,z=0.0;
         DataTypes::get(x,y,z,X[i]);
         if( x >= xmin && x <= xmax && y >= ymin && y <= ymax && z >= zmin && z <= zmax )
         {
@@ -611,7 +622,7 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::forcePointPosition( const unsigned int i, const sofa::helper::vector< double >& m_x)
 {
     DataTypes::set((*getX())[i], m_x[0], m_x[1], m_x[2]);
-    DataTypes::set((*getV())[i], (double) 0.0, (double) 0.0, (double) 0.0);
+    DataTypes::set((*getV())[i], (Real) 0.0, (Real) 0.0, (Real) 0.0);
 }
 
 template <class DataTypes>
@@ -737,7 +748,7 @@ void MechanicalObject<DataTypes>::init()
             }
 
             if (rotation[0]!=0.0 || rotation[1]!=0.0 || rotation[2]!=0.0)
-                this->applyRotation(defaulttype::Quat::createFromRotationVector( Vec<3,double>(rotation[0],rotation[1],rotation[2])));
+                this->applyRotation(defaulttype::Quat::createFromRotationVector( Vec<3,Real>(rotation[0],rotation[1],rotation[2])));
 
             if (translation[0]!=0.0 || translation[1]!=0.0 || translation[2]!=0.0)
                 this->applyTranslation( translation[0],translation[1],translation[2]);
@@ -797,13 +808,13 @@ void MechanicalObject<DataTypes>::writeState( std::ostream& out )
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::beginIntegration(double /*dt*/)
+void MechanicalObject<DataTypes>::beginIntegration(Real /*dt*/)
 {
     this->f = this->internalForces;
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::endIntegration(double /*dt*/)
+void MechanicalObject<DataTypes>::endIntegration(Real /*dt*/)
 {
     this->f = this->externalForces;
     this->externalForces->clear();
@@ -916,7 +927,7 @@ void MechanicalObject<DataTypes>::vFree(VecId v)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
+void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, Real_Sofa f)
 {
     if(v.isNull())
     {
@@ -1274,12 +1285,12 @@ template<> inline void clear( double& t )
 
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vThreshold(VecId v, double t)
+void MechanicalObject<DataTypes>::vThreshold(VecId v, Real_Sofa t)
 {
     if( v.type==VecId::V_DERIV)
     {
         VecDeriv* vv = getVecDeriv(v.index);
-        double t2 = t*t;
+        Real t2 = t*t;
         for (unsigned int i=0; i<vv->size(); i++)
         {
             if( (*vv)[i]*(*vv)[i] < t2 )
@@ -1293,9 +1304,9 @@ void MechanicalObject<DataTypes>::vThreshold(VecId v, double t)
 }
 
 template <class DataTypes>
-double MechanicalObject<DataTypes>::vDot(VecId a, VecId b)
+sofa::defaulttype::Vector3::value_type MechanicalObject<DataTypes>::vDot(VecId a, VecId b)
 {
-    double r = 0.0;
+    Real r = 0.0;
     if (a.type == VecId::V_COORD && b.type == VecId::V_COORD)
     {
         VecCoord* va = getVecCoord(a.index);
@@ -1486,11 +1497,11 @@ sofa::helper::vector<unsigned int>& MechanicalObject<DataTypes>::getConstraintId
 
 
 template <class DataTypes>
-bool MechanicalObject<DataTypes>::addBBox(double* minBBox, double* maxBBox)
+bool MechanicalObject<DataTypes>::addBBox(Real_Sofa* minBBox, Real_Sofa* maxBBox)
 {
     const VecCoord& x = *getX();
     if (x.size() <= 0) return false;
-    double p[3] = {0,0,0};
+    Real p[3] = {0,0,0};
     for (unsigned int i=0; i<x.size(); i++)
     {
         DataTypes::get(p[0], p[1], p[2], x[i]);
@@ -1506,12 +1517,6 @@ bool MechanicalObject<DataTypes>::addBBox(double* minBBox, double* maxBBox)
 //
 // Template specializations
 
-
-template <>
-bool MechanicalObject<Vec1dTypes>::addBBox(double* minBBox, double* maxBBox);
-
-template <>
-bool MechanicalObject<Vec1fTypes>::addBBox(double* minBBox, double* maxBBox);
 
 
 } // namespace component

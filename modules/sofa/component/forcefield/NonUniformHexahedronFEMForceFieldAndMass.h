@@ -67,6 +67,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+    typedef typename sofa::defaulttype::Vector3::value_type Real_Sofa;
 
     typedef topology::MeshTopology::SeqCubes VecElement;
 
@@ -119,7 +120,7 @@ protected:
 
 
 
-    virtual  void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
+    virtual  void addMDx(VecDeriv& f, const VecDeriv& dx, Real_Sofa factor = 1.0);
     virtual void addGravityToV(double dt);
     virtual  void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 

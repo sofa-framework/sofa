@@ -38,8 +38,14 @@ namespace collision
 SOFA_DECL_CLASS(Sphere)
 
 int SphereModelClass = core::RegisterObject("Collision model representing a set of spheres")
-        .add< TSphereModel<Vec3Types> >(true)
-        .add< TSphereModel<Vec3fTypes> >()
+#ifdef SOFA_FLOAT
+        .add< TSphereModel<Vec3fTypes> >(true) // default template
+#else
+#ifndef SOFA_DOUBLE
+        .add< TSphereModel<Vec3fTypes> >() // default template
+#endif
+        .add< TSphereModel<Vec3dTypes> >(true) // default template
+#endif
         .addAlias("Sphere")
         .addAlias("SphereModel")
         ;

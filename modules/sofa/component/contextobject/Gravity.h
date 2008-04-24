@@ -50,11 +50,10 @@ using namespace sofa::defaulttype;
 /** Override the default gravity */
 class Gravity : public core::objectmodel::ContextObject
 {
-    typedef defaulttype::Vec3d Vec3;
 public:
     Gravity();
 
-    Data<Vec3> f_gravity; ///< Gravity in the world coordinate system
+    Data<Vector3> f_gravity; ///< Gravity in the world coordinate system
 
     /// Modify the context of the GNode
     void apply();

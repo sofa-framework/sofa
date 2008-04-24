@@ -32,10 +32,14 @@ namespace sofa
 
 namespace defaulttype
 {
-
-typedef helper::Quater<double> Quat; ///< alias
+typedef helper::Quater<double> Quatd; ///< alias
 typedef helper::Quater<float>  Quatf; ///< alias
-typedef helper::Quater<double> Quaternion; ///< alias
+#ifdef SOFA_FLOAT
+typedef Quatf Quat; ///< alias
+#else
+typedef Quatd Quat; ///< alias
+#endif
+typedef Quat Quaternion; ///< alias
 
 } // namespace defaulttype
 

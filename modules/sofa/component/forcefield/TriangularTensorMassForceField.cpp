@@ -53,15 +53,24 @@ SOFA_DECL_CLASS(TriangularTensorMassForceField)
 
 using namespace sofa::defaulttype;
 
-template class TriangularTensorMassForceField<Vec3dTypes>;
-template class TriangularTensorMassForceField<Vec3fTypes>;
-
 
 // Register in the Factory
 int TriangularTensorMassForceFieldClass = core::RegisterObject("Linear Elastic Membrane on a Triangular Mesh")
+#ifndef SOFA_FLOAT
         .add< TriangularTensorMassForceField<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
         .add< TriangularTensorMassForceField<Vec3fTypes> >()
+#endif
         ;
+
+#ifndef SOFA_FLOAT
+template class TriangularTensorMassForceField<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class TriangularTensorMassForceField<Vec3fTypes>;
+#endif
+
 
 
 

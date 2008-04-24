@@ -17,13 +17,22 @@ SOFA_DECL_CLASS(LagrangianMultiplierContactConstraint)
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-template class LagrangianMultiplierContactConstraint<Vec3dTypes>;
-template class LagrangianMultiplierContactConstraint<Vec3fTypes>;
-
 int LagrangianMultiplierContactConstraintClass = core::RegisterObject("TODO-LagrangianMultiplierContactConstraintClass")
+#ifndef SOFA_FLOAT
         .add< LagrangianMultiplierContactConstraint<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
         .add< LagrangianMultiplierContactConstraint<Vec3fTypes> >()
+#endif
         ;
+
+#ifndef SOFA_FLOAT
+template class LagrangianMultiplierContactConstraint<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class LagrangianMultiplierContactConstraint<Vec3fTypes>;
+#endif
+
 
 } // namespace constraint
 

@@ -54,9 +54,8 @@ class SparseGridTopology : public MeshTopology
 {
 public:
 
-    typedef Vec3d Vec3;
-    typedef double Real;
-    typedef fixed_array<Vec3d,8> CubeCorners;
+    typedef Vector3::value_type Real_Sofa;
+    typedef fixed_array<Vector3,8> CubeCorners;
     typedef enum {OUTSIDE,INSIDE,BOUNDARY} Type; ///< each cube has a type depending on its filling ratio
 
 
@@ -75,7 +74,7 @@ public:
     void buildFromFiner(); ///< building by condensating a finer sparse grid (used if setFinerSparseGrid has initializated _finerSparseGrid before calling init() )
     void buildVirtualFinerLevels(); ///< building eventual virtual finer levels (cf _nbVirtualFinerLevels)
 
-    typedef std::map<Vec3,int> MapBetweenCornerPositionAndIndice;///< a vertex indice for a given vertex position in space
+    typedef std::map<Vector3,int> MapBetweenCornerPositionAndIndice;///< a vertex indice for a given vertex position in space
 
     /// connexion between several coarsened levels
     typedef std::vector<fixed_array<int,8> > HierarchicalCubeMap; ///< a cube indice -> corresponding 8 child indices on the potential _finerSparseGrid
@@ -119,37 +118,37 @@ public:
     int getNbVirtualFinerLevels() const { return _nbVirtualFinerLevels.getValue();}
     void setNbVirtualFinerLevels(int n) {_nbVirtualFinerLevels.setValue(n);}
 
-    void setMin(Vec3d _min) {min.setValue(_min);}
-    void setXmin(double _min) { min.setValue(Vec3d(_min             ,min.getValue()[1],min.getValue()[2])); }
-    void setYmin(double _min) { min.setValue(Vec3d(min.getValue()[0],_min             ,min.getValue()[2])); }
-    void setZmin(double _min) { min.setValue(Vec3d(min.getValue()[0],min.getValue()[1],_min)             ); }
+    void setMin(Vector3 _min) {min.setValue(_min);}
+    void setXmin(Real_Sofa _min) { min.setValue(Vector3(_min             ,min.getValue()[1],min.getValue()[2])); }
+    void setYmin(Real_Sofa _min) { min.setValue(Vector3(min.getValue()[0],_min             ,min.getValue()[2])); }
+    void setZmin(Real_Sofa _min) { min.setValue(Vector3(min.getValue()[0],min.getValue()[1],_min)             ); }
 
 
-    void setMax(Vec3d _max) {min.setValue(_max);}
+    void setMax(Vector3 _max) {min.setValue(_max);}
 
-    void setXmax(double _max) { max.setValue(Vec3d(_max             ,max.getValue()[1],max.getValue()[2])); }
-    void setYmax(double _max) { max.setValue(Vec3d(max.getValue()[0],_max             ,max.getValue()[2])); }
-    void setZmax(double _max) { max.setValue(Vec3d(max.getValue()[0],max.getValue()[1],_max)             ); }
+    void setXmax(Real_Sofa _max) { max.setValue(Vector3(_max             ,max.getValue()[1],max.getValue()[2])); }
+    void setYmax(Real_Sofa _max) { max.setValue(Vector3(max.getValue()[0],_max             ,max.getValue()[2])); }
+    void setZmax(Real_Sofa _max) { max.setValue(Vector3(max.getValue()[0],max.getValue()[1],_max)             ); }
 
-    Vec3d getMin() {return min.getValue();}
-    double getXmin() { return min.getValue()[0]; }
-    double getYmin() { return min.getValue()[1]; }
-    double getZmin() { return min.getValue()[2]; }
+    Vector3 getMin() {return min.getValue();}
+    Real_Sofa getXmin() { return min.getValue()[0]; }
+    Real_Sofa getYmin() { return min.getValue()[1]; }
+    Real_Sofa getZmin() { return min.getValue()[2]; }
 
-    Vec3d getMax() {return max.getValue();}
-    double getXmax() { return max.getValue()[0]; }
-    double getYmax() { return max.getValue()[1]; }
-    double getZmax() { return max.getValue()[2]; }
+    Vector3 getMax() {return max.getValue();}
+    Real_Sofa getXmax() { return max.getValue()[0]; }
+    Real_Sofa getYmax() { return max.getValue()[1]; }
+    Real_Sofa getZmax() { return max.getValue()[2]; }
 
     bool hasPos()  const { return true; }
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-    virtual int findCube(const Vec3& pos, double& fx, double &fy, double &fz);
+    virtual int findCube(const Vector3& pos, Real_Sofa& fx, Real_Sofa &fy, Real_Sofa &fz);
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-    virtual int findNearestCube(const Vec3& pos, double& fx, double &fy, double &fz);
+    virtual int findNearestCube(const Vector3& pos, Real_Sofa& fx, Real_Sofa &fy, Real_Sofa &fz);
 
     /// return the type of the i-th cube
     virtual Type getType( int i );
@@ -164,7 +163,7 @@ public:
     RegularGridTopology _regularGrid; ///< based on a corresponding RegularGrid
     vector< int > _indicesOfRegularCubeInSparseGrid; ///< to redirect an indice of a cube in the regular grid to its indice in the sparse grid
 
-    Vec3 getPointPos( int i ) { return Vec3( seqPoints[i][0],seqPoints[i][1],seqPoints[i][2] ); }
+    Vector3 getPointPos( int i ) { return Vector3( seqPoints[i][0],seqPoints[i][1],seqPoints[i][2] ); }
 
     void getMesh( sofa::helper::io::Mesh &m);
 
@@ -172,14 +171,14 @@ protected:
     bool isVirtual;
     /// cutting number in all directions
     Data< Vec<3, int>    > n;
-    Data< Vec<3, double> > min;
-    Data< Vec<3, double> > max;
+    Data< Vector3 > min;
+    Data< Vector3 > max;
 
     Data< int > _nbVirtualFinerLevels; ///< create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)
 
 
     Data< Vec<3, unsigned int>  > dim_voxels;
-    Data< Vec3f >                 size_voxel;
+    Data< Vector3 >                 size_voxel;
     Data< unsigned int >          resolution;
     Data< unsigned int >          smoothData;
 
@@ -200,10 +199,10 @@ protected:
             vector<Type>& regularGridTypes,
             vector<bool>& alreadyTested  ) const;
 
-    void computeBoundingBox(const helper::vector<Vec3>& vertices,
-            double& xmin, double& xmax,
-            double& ymin, double& ymax,
-            double& zmin, double& zmax) const;
+    void computeBoundingBox(const helper::vector<Vector3>& vertices,
+            Real_Sofa& xmin, Real_Sofa& xmax,
+            Real_Sofa& ymin, Real_Sofa& ymax,
+            Real_Sofa& zmin, Real_Sofa& zmax) const;
 
     void voxelizeTriangleMesh(helper::io::Mesh* mesh,
             RegularGridTopology& regularGrid,
@@ -227,9 +226,9 @@ protected:
     void buildFromRawVoxelFile(const std::string& filename);
 
     void constructCollisionModels(const sofa::helper::vector< sofa::component::topology::MeshTopology * > &list_mesh,
-            const sofa::helper::vector< sofa::helper::vector< Vec3d >* >            &list_X,
+            const sofa::helper::vector< sofa::helper::vector< Vector3 >* >            &list_X,
             const sofa::helper::vector< unsigned int> mesh_MC,
-            std::map< unsigned int, Vec3f >     map_indices) const;
+            std::map< unsigned int, Vector3 >     map_indices) const;
 
     SparseGridTopology* _finerSparseGrid; ///< an eventual finer sparse grid that can be used to built this coarser sparse grid
     SparseGridTopology* _coarserSparseGrid; ///< an eventual coarser sparse grid
@@ -258,10 +257,10 @@ protected:
 
     /*	/// to compute valid cubes (intersection between mesh segments and cubes)
     typedef struct segmentForIntersection{
-    	Vec3 center;
-    	Vec3 dir;
-    	Real norm;
-    	segmentForIntersection(const Vec3& s0, const Vec3& s1)
+    	Vector3 center;
+    	Vector3 dir;
+    	Real_Sofa norm;
+    	segmentForIntersection(const Vector3& s0, const Vector3& s1)
     	{
     		center = (s0+s1)*.5;
     		dir = center-s0;
@@ -277,21 +276,21 @@ protected:
     	}
     };
     typedef struct cubeForIntersection{
-    	Vec3 center;
-    	fixed_array<Vec3,3> dir;
-    	Vec3 norm;
+    	Vector3 center;
+    	fixed_array<Vector3,3> dir;
+    	Vector3 norm;
     	cubeForIntersection( const CubeCorners&  corners )
     	{
     		center = (corners[7] + corners[0]) * .5;
 
     		norm[0] = (center[0] - corners[0][0]);
-    		dir[0] = Vec3(1,0,0);
+    		dir[0] = Vector3(1,0,0);
 
     		norm[1] = (center[1] - corners[0][1]);
-    		dir[1] = Vec3(0,1,0);
+    		dir[1] = Vector3(0,1,0);
 
     		norm[2] = (center[2] - corners[0][2]);
-    		dir[2] = Vec3(0,0,1);
+    		dir[2] = Vector3(0,0,1);
     	}
     } CubeForIntersection;
     /// return true if there is an intersection between a SegmentForIntersection and a CubeForIntersection

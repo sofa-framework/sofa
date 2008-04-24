@@ -124,7 +124,7 @@ void ConicalForceField<DataTypes>::updateStiffness( const VecCoord&  )
 }
 
 template <class DataTypes>
-double ConicalForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
+sofa::defaulttype::Vector3::value_type ConicalForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 {
     std::cerr<<"ConicalForceField::getPotentialEnergy-not-implemented !!!"<<std::endl;
     return 0;

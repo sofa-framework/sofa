@@ -702,7 +702,7 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos,
 // ---
 // ---
 // ---------------------------------------------------
-void QtViewer::DrawBox(double* minBBox, double* maxBBox, double r)
+void QtViewer::DrawBox(Real_Sofa* minBBox, Real_Sofa* maxBBox, Real_Sofa r)
 {
     //std::cout << "box = < " << minBBox[0] << ' ' << minBBox[1] << ' ' << minBBox[2] << " >-< " << maxBBox[0] << ' ' << maxBBox[1] << ' ' << maxBBox[2] << " >"<< std::endl;
     if (r==0.0)
@@ -2051,7 +2051,7 @@ void QtViewer::mouseEvent ( QMouseEvent * e )
 
 void QtViewer::moveRayPickInteractor(int eventX, int eventY)
 {
-    Vector3 p0, px, py, pz;
+    Vec3d p0, px, py, pz;
     gluUnProject(eventX, lastViewport[3]-1-(eventY), 0, lastModelviewMatrix, lastProjectionMatrix, lastViewport, &(p0[0]), &(p0[1]), &(p0[2]));
     gluUnProject(eventX+1, lastViewport[3]-1-(eventY), 0, lastModelviewMatrix, lastProjectionMatrix, lastViewport, &(px[0]), &(px[1]), &(px[2]));
     gluUnProject(eventX, lastViewport[3]-1-(eventY+1), 0, lastModelviewMatrix, lastProjectionMatrix, lastViewport, &(py[0]), &(py[1]), &(py[2]));
