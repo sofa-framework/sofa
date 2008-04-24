@@ -178,13 +178,13 @@ typedef sofa::component::mapping::RigidMapping< sofa::core::componentmodel::beha
 sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Rigid3fTypes>,
      sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Vec3fTypes> > > RigidMechanicalMappingRigid3f_to_3f;
 
+typedef sofa::component::mapping::RigidMapping< sofa::core::componentmodel::behavior::MechanicalMapping<
+sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Rigid2fTypes>,
+     sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Vec2fTypes> > > RigidMechanicalMappingRigid2f_to_2f;
+
 typedef sofa::component::mapping::RigidMapping< sofa::core::Mapping<
 sofa::core::componentmodel::behavior::State<sofa::defaulttype::Rigid3fTypes>,
      sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Vec3fTypes> > > RigidMappingRigid3f_to_Mechanical3f;
-
-typedef sofa::component::mapping::RigidMapping< sofa::core::Mapping<
-sofa::core::componentmodel::behavior::State<sofa::defaulttype::Rigid2fTypes>,
-     sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Vec2fTypes> > > RigidMappingRigid2f_to_Mechanical2f;
 
 typedef sofa::component::mapping::RigidMapping< sofa::core::Mapping<
 sofa::core::componentmodel::behavior::State<sofa::defaulttype::Rigid3fTypes>,
@@ -296,10 +296,8 @@ typedef        LineSetSkinningMechanicalMappingRigid3f_to_3f	       LineSetSkinn
 typedef        LineSetSkinningMappingRigid3f_to_3f		       LineSetSkinningMappingRigid3_to_3;
 typedef        LineSetSkinningMappingRigid3f_to_Ext3		       LineSetSkinningMappingRigid3_to_Ext3;
 typedef        RigidMechanicalMappingRigid3f_to_3f		       RigidMechanicalMappingRigid3_to_3;
-
 typedef        RigidMechanicalMappingRigid2f_to_2f		       RigidMechanicalMappingRigid2_to_2;
 typedef        RigidMappingRigid3f_to_3f			       RigidMappingRigid3_to_3;
-
 typedef        RigidMappingRigid3f_to_Mechanical3f		       RigidMappingRigid3_to_Mechanical3;
 typedef        RigidMappingRigid3f_to_Ext3			       RigidMappingRigid3_to_Ext3;
 typedef        RigidRigidMechanicalMappingRigid3f_to_Rigid3f	       RigidRigidMechanicalMappingRigid3_to_Rigid3;
