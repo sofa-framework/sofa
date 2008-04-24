@@ -589,8 +589,14 @@ typedef RigidMass<3,float> Rigid3fMass;
 //typedef Rigid3Mass RigidMass;
 
 /// Note: Many scenes use Rigid as template for 3D double-precision rigid type. Changing it to Rigid3d would break backward compatibility.
+#ifdef SOFA_FLOAT
+template<> inline const char* Rigid3fTypes::Name() { return "Rigid"; }
+#else
 template<> inline const char* Rigid3dTypes::Name() { return "Rigid"; }
+#ifndef SOFA_DOUBLE
 template<> inline const char* Rigid3fTypes::Name() { return "Rigid3f"; }
+#endif
+#endif
 
 #ifdef SOFA_FLOAT
 typedef Rigid3fTypes Rigid3Types;
