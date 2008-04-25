@@ -47,26 +47,59 @@ namespace core
 namespace objectmodel
 {
 
+/**
+ * @brief MouseEvent Class
+ *
+ * Implements an Event that notifies about a Mouse Interaction.
+ */
 class MouseEvent : public sofa::core::objectmodel::Event
 {
 public:
-    enum EventType { Move=0, LeftPressed, LeftReleased, RightPressed, RightReleased, Wheel, Reset };
 
-    MouseEvent(EventType mouseEvent, int mouseWheelDelta=0);
-    MouseEvent(EventType mouseEvent, int posX, int posY);
+    /**
+     * @brief Defines possible Mouse states.
+     */
+    typedef enum
+    {
+        Move=0,
+        LeftPressed,
+        LeftReleased,
+        RightPressed,
+        RightReleased,
+        Wheel,
+        Reset
+    } State;
 
+    /**
+     * @brief Wheel Mouse Event constructor.
+     */
+    MouseEvent(State state, int wheelDelta = 0);
+
+    /**
+     * @brief Default constructor.
+     */
+    MouseEvent(State state, int posX, int posY);
+
+    /**
+     * @brief Default destructor.
+     */
     virtual ~MouseEvent();
 
-    int getPosX(void) const {return _posX;};
-    int getPosY(void) const {return _posY;};
-    int getWheelDelta(void) const {return _mouseWheelDelta;};
-    EventType getEventType(void) const {return _eventType;};
+    /**
+     * @name Accessors
+     */
+    //@{
+    int getPosX(void) const {return m_posX;};
+    int getPosY(void) const {return m_posY;};
+    int getWheelDelta(void) const {return m_wheelDelta;};
+    State getState(void) const {return m_state;};
+    //}@
 
 private:
 
-    EventType _eventType;
-    int _mouseWheelDelta;
-    int _posX, _posY;
+    State m_state; ///< Mouse State on the event propagation.
+    int m_wheelDelta; ///< Mouse wheel delta.
+    int m_posX, m_posY; ///< Mouse coordinates.
 };
 
 } // namespace objectmodel

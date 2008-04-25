@@ -1,0 +1,172 @@
+/*******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 1       *
+*                (c) 2006-2007 MGH, INRIA, USTL, UJF, CNRS                     *
+*                                                                              *
+* This library is free software; you can redistribute it and/or modify it      *
+* under the terms of the GNU Lesser General Public License as published by the *
+* Free Software Foundation; either version 2.1 of the License, or (at your     *
+* option) any later version.                                                   *
+*                                                                              *
+* This library is distributed in the hope that it will be useful, but WITHOUT  *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or        *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License  *
+* for more details.                                                            *
+*                                                                              *
+* You should have received a copy of the GNU Lesser General Public License     *
+* along with this library; if not, write to the Free Software Foundation,      *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.           *
+*                                                                              *
+* Contact information: contact@sofa-framework.org                              *
+*                                                                              *
+* Authors: J. Allard, P-J. Bensoussan, S. Cotin, C. Duriez, H. Delingette,     *
+* F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
+* and F. Poyer                                                                 *
+*******************************************************************************/
+//
+// C++ Interface: ArticulatedHierarchyController
+//
+// Description:
+//
+//
+// Author: Pierre-Jean Bensoussan, Digital Trainers (2008)
+//
+// Copyright: See COPYING file that comes with this distribution
+//
+//
+
+#ifndef SOFA_COMPONENT_CONTROLLER_ARTICULATEDHIERARCHYCONTROLLER_H
+#define SOFA_COMPONENT_CONTROLLER_ARTICULATEDHIERARCHYCONTROLLER_H
+
+#include <sofa/component/controller/BaseController.h>
+
+#include <sofa/component/container/ArticulatedHierarchyContainer.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/helper/vector.h>
+
+#include <map>
+
+namespace sofa
+{
+
+namespace component
+{
+
+namespace controller
+{
+
+using sofa::component::container::ArticulatedHierarchyContainer;
+
+/**
+ * @brief ArticulatedHierarchyController Class.
+ *
+ * Implements an user interaction handler that controls the values of the
+ * articulations of an articulated hierarchy container.
+ * Mouse Buttons and Wheel are controlling the value.
+ * Keyboard is used to select the controlled articulation.
+ */
+class ArticulatedHierarchyController : public BaseController
+{
+public:
+    typedef std::vector< ArticulatedHierarchyContainer::ArticulationCenter * > ArtCenterVec;
+    typedef ArtCenterVec::iterator ArtCenterVecIt;
+    typedef std::vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation * > ArtVec;
+    typedef ArtVec::iterator ArtVecIt;
+
+    /**
+     * @brief Default Constructor.
+     */
+    ArticulatedHierarchyController();
+
+    /**
+     * @brief Default Destructor.
+     */
+    virtual ~ArticulatedHierarchyController() {};
+
+    /**
+     * @brief Init method called during the scene graph initialization.
+     */
+    virtual void init();
+
+    /**
+     * @name BaseController Interface
+     */
+    //@{
+
+    /**
+     * @brief Mouse event callback.
+     */
+    void onMouseEvent(core::objectmodel::MouseEvent *);
+
+    /**
+     * @brief Key press event callback.
+     */
+    void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
+
+    /**
+     * @brief begin animation callback. Called at the beginning of each time step.
+     */
+    void onBeginAnimationStep(void);
+    //@}
+
+    /**
+     * @brief Apply the controller current modifications to its controled component.
+     */
+    virtual void applyController(void);
+
+protected:
+    Data<sofa::helper::vector< int > > articulationsIndices; ///< Stores controlled articulations indices.
+    Data<sofa::helper::vector< char > > bindingKeys; ///< Stores controlled articulations keyboard keys.
+    Data< double > angleDelta; ///< Angle step added at each event reception.
+    Data< bool > propagateUserInteraction; ///< Says wether or not to apportion the articulation modification to its children in the hierarchy.
+
+    sofa::helper::vector< bool > activeArticulations; ///< Stores activated articulations information.
+    std::map<int, sofa::helper::vector< int > > articulationsPropagationChains;
+
+    /**
+     * @brief Build the articulations list related to each controlled articulation.
+     */
+    void buildPropagationArticulationsChain(void);
+
+    /**
+     * @brief Build the articulations indices list according to an Articulation and its ArticulationCenter.
+     */
+    void buildArray(std::vector< int > &, ArticulatedHierarchyContainer::ArticulationCenter::Articulation* , ArticulatedHierarchyContainer::ArticulationCenter* );
+
+    /**
+     * @brief Set the active articulation from a Key Input.
+     */
+    void updateActiveArticulationsIndices(const char);
+
+    /**
+     * @name Debugging methods.
+     */
+    //@{
+    void dumpActiveArticulations(void) const ;
+    void dumpArticulationsAndBindingKeys(void) const;
+    //}@
+
+    /**
+     * @brief Set the controller in its initial state.
+     */
+    void resetControler(void);
+
+
+    /**
+     * Current MouseMode buffered.
+     */
+    enum MouseMode { None=0, BtLeft, BtRight, BtMiddle, Wheel };
+    MouseMode mouseMode;
+
+    double signFactor;
+    bool propagationChain;
+
+    ArtCenterVec m_artCenterVec; ///< List of ArticulationCenters controlled by the controller.
+};
+
+} // namespace controller
+
+} // namespace component
+
+} // namespace sofa
+
+#endif //SOFA_COMPONENT_CONTROLLER_ARTICULATEDHIERARCHYCONTROLLER_H
