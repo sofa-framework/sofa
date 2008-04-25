@@ -75,10 +75,6 @@ template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     this->core::componentmodel::behavior::ForceField<DataTypes>::parse(arg);
-    if (f_method == "large")
-        this->setMethod(LARGE);
-    else if (f_method == "polar")
-        this->setMethod(POLAR);
 
 }
 
@@ -160,6 +156,11 @@ void HexahedronFEMForceField<DataTypes>::init()
 template <class DataTypes>
 void HexahedronFEMForceField<DataTypes>::reinit()
 {
+    if (f_method.getValue() == "large")
+        this->setMethod(LARGE);
+    else if (f_method.getValue() == "polar")
+        this->setMethod(POLAR);
+
     switch(method)
     {
     case LARGE :

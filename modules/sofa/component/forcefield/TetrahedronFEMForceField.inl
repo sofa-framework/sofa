@@ -873,19 +873,13 @@ template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     this->core::componentmodel::behavior::ForceField<DataTypes>::parse(arg);
-    if (f_method == "small")
-        this->setMethod(SMALL);
-    else if (f_method == "large")
-        this->setMethod(LARGE);
-    else if (f_method == "polar")
-        this->setMethod(POLAR);
-
     this->setComputeGlobalMatrix(std::string(arg->getAttribute("computeGlobalMatrix","false"))=="true");
 }
 
 template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::init()
 {
+
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
     _mesh = dynamic_cast<sofa::component::topology::MeshTopology*>(this->getContext()->getTopology());
     if (_mesh==NULL || (_mesh->getTetras().empty() && _mesh->getNbCubes()<=0))
@@ -984,6 +978,12 @@ template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::reinit()
 {
 
+    if (f_method.getValue() == "small")
+        this->setMethod(SMALL);
+    else if (f_method.getValue()  == "polar")
+        this->setMethod(POLAR);
+    else 	this->setMethod(LARGE);
+
     _strainDisplacements.resize( _indexedElements->size() );
     _materialsStiffnesses.resize(_indexedElements->size() );
     if(_assembling)
@@ -1053,6 +1053,7 @@ template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& p, const VecDeriv& /*v*/)
 {
 
+    std::cout <<" Add Force" <<  _indexedElements->size() << " df" << method << "\n";
     f.resize(p.size());
 
     unsigned int i;
@@ -1072,6 +1073,7 @@ void TetrahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord&
     {
         for(it=_indexedElements->begin(), i = 0 ; it!=_indexedElements->end(); ++it,++i)
         {
+
             if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
             accumulateForceLarge( f, p, it, i );
         }
@@ -1124,6 +1126,7 @@ void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv
 
             applyStiffnessLarge( v,x, i, a,b,c,d );
         }
+
         break;
     }
     case POLAR :

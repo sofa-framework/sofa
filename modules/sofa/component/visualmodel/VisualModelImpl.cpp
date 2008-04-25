@@ -82,6 +82,7 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     {
         obj->setColor(arg->getAttribute("color"));
     }
+    scaleTex= 1.0f;
     if (arg->getAttribute("scaleTex")!=NULL)
     {
         //obj->applyUVScale(atof(arg->getAttribute("scaleTex","1.0")), atof(arg->getAttribute("scaleTex","1.0")));
@@ -251,6 +252,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
                 vnormals[j] = normalsImport[n];
             if ((unsigned)t < texCoordsImport.size())
                 vtexcoords[j] = texCoordsImport[t];
+
             if (vsplit)
             {
                 vertPosIdx[j] = i;

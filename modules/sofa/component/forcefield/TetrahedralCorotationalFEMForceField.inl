@@ -96,12 +96,6 @@ template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     this->core::componentmodel::behavior::ForceField<DataTypes>::parse(arg);
-    if (f_method == "small")
-        this->setMethod(SMALL);
-    else if (f_method == "large")
-        this->setMethod(LARGE);
-    else if (f_method == "polar")
-        this->setMethod(POLAR);
 
     this->setComputeGlobalMatrix(std::string(arg->getAttribute("computeGlobalMatrix","false"))=="true");
 }
@@ -140,6 +134,12 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::init()
 template <class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::reinit()
 {
+    if (f_method.getValue() == "small")
+        this->setMethod(SMALL);
+    else if (f_method.getValue() == "polar")
+        this->setMethod(POLAR);
+    else this->setMethod(LARGE);
+
     TetrahedronSetTopologyContainer *container=_mesh->getTetrahedronSetTopologyContainer();
     unsigned int i;
 

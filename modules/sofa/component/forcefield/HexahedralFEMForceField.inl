@@ -98,11 +98,6 @@ template<class DataTypes>
 void HexahedralFEMForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     this->core::componentmodel::behavior::ForceField<DataTypes>::parse(arg);
-    if (f_method == "large")
-        this->setMethod(LARGE);
-    else if (f_method == "polar")
-        this->setMethod(POLAR);
-
     //this->setComputeGlobalMatrix(std::string(arg->getAttribute("computeGlobalMatrix","false"))=="true"); // necessary ?
 
 }
@@ -211,6 +206,11 @@ void HexahedralFEMForceField<DataTypes>::init()
 template <class DataTypes>
 void HexahedralFEMForceField<DataTypes>::reinit()
 {
+    if (f_method.getValue() == "large")
+        this->setMethod(LARGE);
+    else if (f_method.getValue()  == "polar")
+        this->setMethod(POLAR);
+
     HexahedronSetTopologyContainer *container=_mesh->getHexahedronSetTopologyContainer();
     unsigned int i;
 
