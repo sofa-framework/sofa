@@ -10,13 +10,6 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/gui/SofaGUI.h>
 
-#ifndef SOFA_DOUBLE
-#ifndef SOFA_FLOAT
-
-#define SOFA_DOUBLE //only using float
-#endif
-#endif
-
 #include <sofa/component/typedef/Sofa_typedef.h>
 
 using namespace sofa::simulation::tree;

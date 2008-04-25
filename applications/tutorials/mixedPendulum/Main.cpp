@@ -9,17 +9,6 @@
 // gui
 #include <sofa/gui/SofaGUI.h>
 
-
-//SOFA_DOUBLE (if you want to use only double in sofa), or
-//SOFA_FLOAT  (if you want to use only float in sofa)
-//can be set in sofa-default.cfg
-#ifndef SOFA_DOUBLE
-#ifndef SOFA_FLOAT
-#define SOFA_FLOAT //only using double 
-#endif
-#endif
-
-
 #include <sofa/component/typedef/Sofa_typedef.h>
 
 using namespace sofa::simulation::tree;

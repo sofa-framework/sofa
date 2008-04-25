@@ -142,7 +142,7 @@ Quater<Real> Quater<Real>::operator*(const Quater<Real>& q1) const
 }
 
 template<class Real>
-Quater<Real> Quater<Real>::quatVectMult(const defaulttype::Vec3d& vect)
+Quater<Real> Quater<Real>::quatVectMult(const defaulttype::Vec<3,Real>& vect)
 {
     Quater<Real>	ret;
 
@@ -155,7 +155,7 @@ Quater<Real> Quater<Real>::quatVectMult(const defaulttype::Vec3d& vect)
 }
 
 template<class Real>
-Quater<Real> Quater<Real>::vectQuatMult(const defaulttype::Vec3d& vect)
+Quater<Real> Quater<Real>::vectQuatMult(const defaulttype::Vec<3,Real>& vect)
 {
     Quater<Real>	ret;
 
@@ -214,7 +214,7 @@ void Quater<Real>::normalize()
 }
 
 template<class Real>
-void Quater<Real>::fromMatrix(const defaulttype::Mat3x3d &m)
+void Quater<Real>::fromMatrix(const defaulttype::Matrix3 &m)
 {
     Real tr, s;
 
@@ -391,7 +391,7 @@ void Quater<Real>::writeOpenGlMatrix(float *m) const
 
 /// Given an axis and angle, compute quaternion.
 template<class Real>
-Quater<Real> Quater<Real>::axisToQuat(defaulttype::Vec3d a, Real phi)
+Quater<Real> Quater<Real>::axisToQuat(defaulttype::Vec<3,Real> a, Real phi)
 {
     a = a / a.norm();
     _q[0] = (Real)a.x();

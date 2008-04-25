@@ -24,7 +24,7 @@
 *******************************************************************************/
 #ifndef SOFA_HELPER_IO_SPHERELOADER_H
 #define SOFA_HELPER_IO_SPHERELOADER_H
-
+#include <sofa/defaulttype/Vec.h>
 namespace sofa
 {
 
@@ -37,10 +37,11 @@ namespace io
 class SphereLoader
 {
 public:
+    typedef sofa::defaulttype::Vector3::value_type Real_Sofa;
     virtual ~SphereLoader() {}
     bool load(const char *filename);
     virtual void setNumSpheres(int /*n*/) {}
-    virtual void addSphere(double /*px*/, double /*py*/, double /*pz*/, double /*r*/) {}
+    virtual void addSphere(Real_Sofa /*px*/, Real_Sofa /*py*/, Real_Sofa /*pz*/, Real_Sofa /*r*/) {}
 };
 
 } // namespace io
