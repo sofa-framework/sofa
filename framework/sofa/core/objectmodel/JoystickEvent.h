@@ -81,7 +81,7 @@ public:
          *
          * @pre		(value >= -1.f) && (value <= 1.f)
          */
-        AxisEvent( const int index, const float value );
+        AxisEvent( const int /*index*/, const float /*value*/ );
 
         /**
          * @brief Default destructor.
@@ -220,7 +220,7 @@ public:
      */
     //@{
 
-    const AxisEvent *getAxisEvent(const unsigned int /*index*/) const;
+    const AxisEvent *getAxisEvent(const int /*index*/) const;
 
     const std::vector<AxisEvent*> &getAxisEvents(void) const;
 
@@ -248,7 +248,7 @@ public:
      */
     //@{
 
-    const HatEvent *getHatEvent(const unsigned int /*index*/) const;
+    const HatEvent *getHatEvent(const int /*index*/) const;
 
     const std::vector<HatEvent*> &getHatEvents(void) const;
 
