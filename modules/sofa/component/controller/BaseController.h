@@ -23,57 +23,106 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 //
-// C++ Implementation: MouseEvent
+// C++ Interface: Controller
 //
 // Description:
 //
 //
-// Author: Pierre-Jean Bensoussan, Digtal Trainers, (C) 2008
+// Author: Pierre-Jean Bensoussan, Digital Trainers (2008)
 //
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include <sofa/core/objectmodel/MouseEvent.h>
+
+#ifndef SOFA_COMPONENT_CONTROLLER_BASECONTROLLER_H
+#define SOFA_COMPONENT_CONTROLLER_BASECONTROLLER_H
+
+#include <sofa/core/objectmodel/BaseObject.h>
+
+namespace sofa
+{
+namespace core
+{
+namespace objectmodel
+{
+
+class Event;
+class MouseEvent;
+class KeypressedEvent;
+class KeyreleasedEvent;
+class JoystickEvent;
+
+}
+}
+}
 
 namespace sofa
 {
 
-namespace core
+namespace component
 {
 
-namespace objectmodel
+namespace controller
 {
 
-
-MouseEvent::MouseEvent(State state, int wheelDelta)
-    : sofa::core::objectmodel::Event()
-    , m_state(state)
-    , m_wheelDelta(wheelDelta)
-{
-    m_posX = 0;
-    m_posY = 0;
-}
-
-
-
-MouseEvent::MouseEvent(State state, int posX, int posY)
-    : sofa::core::objectmodel::Event()
-    , m_state(state)
-    , m_posX(posX)
-    , m_posY(posY)
+/**
+ * @brief BaseController Class.
+ * Interface of user interaction on SOFA Components.
+ * Provides also an interface for BeginAnimation and EndAnimation events
+ * launched at the beginning and the end of a time step.
+ */
+class BaseController : public virtual core::objectmodel::BaseObject
 {
 
-}
+public:
+    /**
+    * @brief Default constructor.
+    */
+    BaseController();
 
+    /**
+    * @brief Mouse event callback.
+    */
+    virtual void onMouseEvent(core::objectmodel::MouseEvent *) {};
 
+    /**
+    * @brief Key Press event callback.
+    */
+    virtual void onKeyPressedEvent(core::objectmodel::KeypressedEvent *) {};
 
-MouseEvent::~MouseEvent()
-{
+    /**
+    * @brief Key Release event callback.
+    */
+    virtual void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *) {};
 
-}
+    /**
+    * @brief Joystick event callback.
+    */
+    virtual void onJoystickEvent(core::objectmodel::JoystickEvent *) {};
 
-} // namespace tree
+    /**
+    * @brief Begin Animation event callback.
+    */
+    virtual void onBeginAnimationStep(void) {};
 
-} // namespace simulation
+    /**
+    * @brief End Animation event callback.
+    */
+    virtual void onEndAnimationStep(void) {};
+
+protected:
+
+    Data< bool > handleEventTriggersUpdate; ///< Event reception triggers object update ?
+
+private:
+
+    void handleEvent(core::objectmodel::Event *);
+};
+
+} // namespace controller
+
+} // namespace component
 
 } // namespace sofa
+
+#endif // SOFA_COMPONENT_CONTROLLER_BASECONTROLLER_H

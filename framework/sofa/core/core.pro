@@ -69,6 +69,7 @@ HEADERS += \
           objectmodel/Event.h \
           objectmodel/DataPtr.h \
           objectmodel/BaseData.h \
+	  objectmodel/JoystickEvent.h \
           objectmodel/KeypressedEvent.h \
 	  objectmodel/KeyreleasedEvent.h \
 	  objectmodel/MouseEvent.h \
@@ -97,6 +98,7 @@ SOURCES +=  \
           objectmodel/DetachNodeEvent.cpp \
           objectmodel/Event.cpp \
           objectmodel/DataPtr.cpp \
+	  objectmodel/JoystickEvent.cpp \
           objectmodel/KeypressedEvent.cpp \
           objectmodel/KeyreleasedEvent.cpp \
 	  objectmodel/MouseEvent.cpp \

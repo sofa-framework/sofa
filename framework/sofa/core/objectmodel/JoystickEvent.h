@@ -1,0 +1,289 @@
+/*******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 1       *
+*                (c) 2006-2007 MGH, INRIA, USTL, UJF, CNRS                     *
+*                                                                              *
+* This library is free software; you can redistribute it and/or modify it      *
+* under the terms of the GNU Lesser General Public License as published by the *
+* Free Software Foundation; either version 2.1 of the License, or (at your     *
+* option) any later version.                                                   *
+*                                                                              *
+* This library is distributed in the hope that it will be useful, but WITHOUT  *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or        *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License  *
+* for more details.                                                            *
+*                                                                              *
+* You should have received a copy of the GNU Lesser General Public License     *
+* along with this library; if not, write to the Free Software Foundation,      *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.           *
+*                                                                              *
+* Contact information: contact@sofa-framework.org                              *
+*                                                                              *
+* Authors: J. Allard, P-J. Bensoussan, S. Cotin, C. Duriez, H. Delingette,     *
+* F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
+* and F. Poyer                                                                 *
+*******************************************************************************/
+//
+// C++ Interface: JoystickEvent
+//
+// Description:
+//
+//
+// Author: Pierre-Jean Bensoussan, Digital Trainers (2008)
+//
+// Copyright: See COPYING file that comes with this distribution
+//
+//
+// This file is a work based on the open source release of VGSDK.
+//
+// VGSDK - Copyright (C) 2008, Nicolas Papier.
+// Distributed under the terms of the GNU Library General Public License (LGPL)
+// as published by the Free Software Foundation.
+// Author Nicolas Papier
+// Author Guillaume Brocker
+//
+
+#ifndef SOFA_CORE_OBJECTMODEL_JOYSTICKEVENT_H
+#define SOFA_CORE_OBJECTMODEL_JOYSTICKEVENT_H
+
+#include <sofa/core/objectmodel/Event.h>
+#include <vector>
+
+namespace sofa
+{
+
+namespace core
+{
+
+namespace objectmodel
+{
+
+/**
+* @brief JoystickEvent Class
+*
+*
+*/
+class JoystickEvent : public sofa::core::objectmodel::Event
+{
+public:
+
+    /**
+     * @brief	Implements an event that notifies about axis positions (like analog controls of a joystick).
+     * 			The axis position is normalized so values are always in the range [-1, 1].
+     */
+    class AxisEvent
+    {
+    public:
+        /**
+         * @brief	Constructor
+         *
+         * @param	index			axis' index
+         * @param	value			axis' value (must be in the range [-1, 1])
+         *
+         * @pre		(value >= -1.f) && (value <= 1.f)
+         */
+        AxisEvent( const int index, const float value );
+
+        /**
+         * @brief Default destructor.
+         */
+        virtual ~AxisEvent() {};
+
+        /**
+         * @name	Accessors
+         */
+        //@{
+        /**
+         * @brief	Retrieves the index of the axis.
+         *
+         * @return	the axis' index
+         */
+        const int getIndex() const;
+
+        /**
+         * @brief	Retrieves the value of the axis.
+         *
+         * @remark	Values are always in the range [-1, 1].
+         *
+         * @return	the axis' value
+         */
+        const float getValue() const;
+        //@}
+
+    private:
+        const int	m_index;	///< The index of the axis
+        const float	m_value;	///< The value of the xais
+    };
+
+
+
+    /**
+     * @brief Implements the button event for joysticks
+     */
+    class ButtonEvent
+    {
+    public:
+        /**
+         * @brief	Default constructor
+         */
+        ButtonEvent( const int  buttonStates = 0 );
+
+        /**
+         * @brief	Default destructor
+         */
+        virtual ~ButtonEvent() {};
+
+        /**
+         * @brief
+         */
+        void setButtons(const int);
+
+        /**
+         * @brief
+         */
+        bool getButton(const int) const;
+
+
+    private:
+        bool m_buttons[32]; ///< Current State of the whole Joystick Buttons
+    };
+
+
+
+    /**
+     * @brief Implements an event notifiying changes about a directionnal hat on a device (like a joystick).
+     */
+    class HatEvent
+    {
+    public:
+        /**
+         * @brief	Defines possible hat states.
+         */
+        typedef enum
+        {
+            CENTERED	= 0,
+            UP			= 1 << 0,
+            RIGHT		= 1 << 1,
+            DOWN		= 1 << 2,
+            LEFT		= 1 << 3,
+            UP_RIGHT	= UP|RIGHT,
+            DOWN_RIGHT	= DOWN|RIGHT,
+            DOWN_LEFT	= DOWN|LEFT,
+            UP_LEFT		= UP|LEFT
+        } State;
+
+
+        /**
+         * @brief	Constructor
+         *
+         * @param	index			the hat's index
+         * @param	state			the hat's state
+         */
+        HatEvent( const int /*index*/, const State /*state*/ );
+
+        /**
+         * @brief Default destructor.
+         */
+        virtual ~HatEvent() {};
+
+        /**
+         * @name	Accessors
+         */
+        //@{
+        /**
+         * @brief	Retrieves the index of the hat.
+         *
+         * @return	the hat's index
+         */
+        const int getIndex() const;
+
+        /**
+         * @brief	Retrieves the state of the hat.
+         *
+         * @return	the hat's state
+         */
+        const State getState() const;
+        //@}
+
+    private:
+
+        const int	m_index;	///< The index of the hat
+        const State	m_state;	///< The state of the hat
+    };
+
+    /**
+     * @name	Accessors
+     */
+    //@{
+
+    /**
+     * @name Axis
+     */
+    //@{
+
+    const AxisEvent *getAxisEvent(const unsigned int /*index*/) const;
+
+    const std::vector<AxisEvent*> &getAxisEvents(void) const;
+
+    const unsigned int getAxisEventsSize(void) const;
+
+    void addAxisEvent( AxisEvent * );
+
+    //@}
+
+    /**
+     * @name	Button
+     */
+    //@{
+
+    ButtonEvent *getButtonEvent(void) const;
+
+    bool getButton(unsigned int /*index*/) const;
+
+    void setButtonEvent( ButtonEvent * );
+
+    //@}
+
+    /**
+     * @name Hat
+     */
+    //@{
+
+    const HatEvent *getHatEvent(const unsigned int /*index*/) const;
+
+    const std::vector<HatEvent*> &getHatEvents(void) const;
+
+    const unsigned int getHatEventsSize(void) const;
+
+    void addHatEvent( HatEvent * );
+
+    //@}
+
+    //@}
+
+    /**
+     * @brief default constructor.
+     */
+    JoystickEvent();
+
+    /**
+     * @brief default destructor.
+     */
+    virtual ~JoystickEvent();
+
+protected:
+
+    std::vector< AxisEvent* > axisEvents; ///< State of the Analogic Pad
+    ButtonEvent *buttonEvent; ///< State of the Joystick Buttons
+    std::vector< HatEvent* > hatEvents; ///< State of the directional cross
+
+private:
+
+};
+
+} // namespace objectmodel
+
+} // namespace core
+
+} // namespace sofa
+
+#endif // SOFA_CORE_OBJECTMODEL_JOYSTICKEVENT_H

@@ -23,57 +23,84 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 //
-// C++ Implementation: MouseEvent
+// C++ Implementation : Controller
 //
 // Description:
 //
 //
-// Author: Pierre-Jean Bensoussan, Digtal Trainers, (C) 2008
+// Author: Pierre-Jean Bensoussan, Digital Trainers (2008)
 //
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+
+#include <sofa/component/controller/BaseController.h>
+
+#include <sofa/core/objectmodel/Event.h>
+#include <sofa/core/objectmodel/JoystickEvent.h>
+#include <sofa/core/objectmodel/KeypressedEvent.h>
+#include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
+
+#include <sofa/simulation/tree/AnimateBeginEvent.h>
+#include <sofa/simulation/tree/AnimateEndEvent.h>
+
+#include <iostream>
+
 
 namespace sofa
 {
 
-namespace core
+namespace component
 {
 
-namespace objectmodel
+namespace controller
 {
 
 
-MouseEvent::MouseEvent(State state, int wheelDelta)
-    : sofa::core::objectmodel::Event()
-    , m_state(state)
-    , m_wheelDelta(wheelDelta)
-{
-    m_posX = 0;
-    m_posY = 0;
-}
-
-
-
-MouseEvent::MouseEvent(State state, int posX, int posY)
-    : sofa::core::objectmodel::Event()
-    , m_state(state)
-    , m_posX(posX)
-    , m_posY(posY)
+BaseController::BaseController()
+    : handleEventTriggersUpdate( initData(&handleEventTriggersUpdate, "handleEventTriggersUpdate", "Event handling frequency controls the controller update frequency" ) )
 {
 
 }
 
 
 
-MouseEvent::~MouseEvent()
+void BaseController::handleEvent(core::objectmodel::Event *event)
 {
-
+    if (dynamic_cast<sofa::simulation::tree::AnimateBeginEvent *>(event))
+    {
+        onBeginAnimationStep();
+    }
+    else if (dynamic_cast<sofa::simulation::tree::AnimateEndEvent *>(event))
+    {
+        onEndAnimationStep();
+    }
+    else if (dynamic_cast<sofa::core::objectmodel::KeypressedEvent *>(event))
+    {
+        sofa::core::objectmodel::KeypressedEvent *kpev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
+        onKeyPressedEvent(kpev);
+    }
+    else if (dynamic_cast<sofa::core::objectmodel::KeyreleasedEvent *>(event))
+    {
+        sofa::core::objectmodel::KeyreleasedEvent *krev = dynamic_cast<sofa::core::objectmodel::KeyreleasedEvent *>(event);
+        onKeyReleasedEvent(krev);
+    }
+    else if (dynamic_cast<sofa::core::objectmodel::MouseEvent *>(event))
+    {
+        sofa::core::objectmodel::MouseEvent *mev = dynamic_cast<sofa::core::objectmodel::MouseEvent *>(event);
+        onMouseEvent(mev);
+    }
+    else if (dynamic_cast<sofa::core::objectmodel::JoystickEvent *>(event))
+    {
+        sofa::core::objectmodel::JoystickEvent *jev = dynamic_cast<sofa::core::objectmodel::JoystickEvent *>(event);
+        onJoystickEvent(jev);
+    }
 }
 
-} // namespace tree
+} // namespace controller
 
-} // namespace simulation
+} // namepace component
 
 } // namespace sofa
+

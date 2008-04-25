@@ -23,57 +23,65 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 //
-// C++ Implementation: MouseEvent
+// C++ Implementation : MechanicalStateController
 //
 // Description:
 //
 //
-// Author: Pierre-Jean Bensoussan, Digtal Trainers, (C) 2008
+// Author: Pierre-Jean Bensoussan, Digital Trainers (2008)
 //
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include <sofa/core/objectmodel/MouseEvent.h>
+
+#include <sofa/component/controller/MechanicalStateController.inl>
+
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+
 
 namespace sofa
 {
 
-namespace core
+namespace component
 {
 
-namespace objectmodel
+namespace controller
 {
 
+using namespace sofa::defaulttype;
 
-MouseEvent::MouseEvent(State state, int wheelDelta)
-    : sofa::core::objectmodel::Event()
-    , m_state(state)
-    , m_wheelDelta(wheelDelta)
-{
-    m_posX = 0;
-    m_posY = 0;
-}
+SOFA_DECL_CLASS(MechanicalStateController)
+
+// Register in the Factory
+int MechanicalStateControllerClass = core::RegisterObject("")
+//.add< MechanicalStateController<Vec3dTypes> >()
+//.add< MechanicalStateController<Vec3fTypes> >()
+//.add< MechanicalStateController<Vec2dTypes> >()
+//.add< MechanicalStateController<Vec2fTypes> >()
+//.add< MechanicalStateController<Vec1dTypes> >()
+//.add< MechanicalStateController<Vec1fTypes> >()
+        .add< MechanicalStateController<Rigid3dTypes> >()
+        .add< MechanicalStateController<Rigid3fTypes> >()
+//.add< MechanicalStateController<Rigid2dTypes> >()
+//.add< MechanicalStateController<Rigid2fTypes> >()
+        ;
+
+//template class MechanicalStateController<Vec3dTypes>;
+//template class MechanicalStateController<Vec3fTypes>;
+//template class MechanicalStateController<Vec2dTypes>;
+//template class MechanicalStateController<Vec2fTypes>;
+//template class MechanicalStateController<Vec1dTypes>;
+//template class MechanicalStateController<Vec1fTypes>;
+template class MechanicalStateController<Rigid3dTypes>;
+template class MechanicalStateController<Rigid3fTypes>;
+//template class MechanicalStateController<Rigid2dTypes>;
+//template class MechanicalStateController<Rigid2fTypes>;
 
 
+} // namespace controller
 
-MouseEvent::MouseEvent(State state, int posX, int posY)
-    : sofa::core::objectmodel::Event()
-    , m_state(state)
-    , m_posX(posX)
-    , m_posY(posY)
-{
-
-}
-
-
-
-MouseEvent::~MouseEvent()
-{
-
-}
-
-} // namespace tree
-
-} // namespace simulation
+} // namespace component
 
 } // namespace sofa

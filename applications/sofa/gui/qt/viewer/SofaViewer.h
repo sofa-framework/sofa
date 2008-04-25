@@ -46,8 +46,7 @@
 #include <sofa/component/collision/RayPickInteractor.h>
 
 //instruments handling
-#include <sofa/component/container/ArticulatedHierarchyController.h>
-#include <sofa/component/forcefield/JointSpringController.h>
+#include <sofa/component/controller/BaseController.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/simulation/tree/GrabVisitor.h>
 #include <sofa/simulation/tree/MechanicalVisitor.h>
@@ -431,12 +430,10 @@ protected:
         }
         else
         {
-            std::vector< component::container::ArticulatedHierarchyController* > ahc;
-            std::vector< component::forcefield::JointSpringController* > jsc;
-            instrument->getTreeObjects<component::container::ArticulatedHierarchyController, std::vector< component::container::ArticulatedHierarchyController* > >(&ahc);
-            instrument->getTreeObjects<component::forcefield::JointSpringController, std::vector< component::forcefield::JointSpringController* > >(&jsc);
+            std::vector< component::controller::BaseController* > bc;
+            instrument->getTreeObjects<component::controller::BaseController, std::vector< component::controller::BaseController* > >(&bc);
 
-            if ((!ahc.empty())||(!jsc.empty()))
+            if (!bc.empty())
             {
                 switch (e->type())
                 {
