@@ -266,7 +266,7 @@ sofa::core::componentmodel::behavior::State<sofa::defaulttype::Vec3dTypes>,
 
 
 
-#ifdef SOFA_DOUBLE
+#ifndef SOFA_FLOAT
 typedef        ArticulatedSystemMapping1d_to_Rigid3d                   ArticulatedSystemMapping1d_to_Rigid3;
 typedef        BarycentricMechanicalMapping3d_to_3d		       BarycentricMechanicalMapping3_to_3;
 typedef        BarycentricMapping3d_to_3d			       BarycentricMapping3_to_3;

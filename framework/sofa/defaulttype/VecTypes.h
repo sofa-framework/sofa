@@ -85,9 +85,9 @@ public:
 
     static void get(Real& x, Real& y, Real& z, const Coord& c)
     {
-        x = (c.size() > 0) ? (Real) c[0] : 0.0;
-        y = (c.size() > 1) ? (Real) c[1] : 0.0;
-        z = (c.size() > 2) ? (Real) c[2] : 0.0;
+        x = (c.size() > 0) ? (Real) c[0] : (Real) 0.0;
+        y = (c.size() > 1) ? (Real) c[1] : (Real) 0.0;
+        z = (c.size() > 2) ? (Real) c[2] : (Real) 0.0;
     }
 
     static void add(Coord& c, Real x, Real y, Real z)
@@ -311,9 +311,9 @@ public:
 
     static void get(Real& x, Real& y, Real& z, const Coord& c)
     {
-        x = (c.size() > 0) ? (Real) c[0] : 0.0;
-        y = (c.size() > 1) ? (Real) c[1] : 0.0;
-        z = (c.size() > 2) ? (Real) c[2] : 0.0;
+        x = (c.size() > 0) ? (Real) c[0] : (Real)0.0;
+        y = (c.size() > 1) ? (Real) c[1] : (Real)0.0;
+        z = (c.size() > 2) ? (Real) c[2] : (Real)0.0;
     }
 
     static void add(Coord& c, Real x, Real y, Real z)

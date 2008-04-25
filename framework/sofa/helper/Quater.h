@@ -82,7 +82,7 @@ public:
         _q[3]=1.0;
     }
 
-    void fromMatrix(const defaulttype::Mat3x3d &m);
+    void fromMatrix(const defaulttype::Matrix3 &m);
 
     template<class Mat33>
     void toMatrix(Mat33 &m) const
@@ -136,9 +136,9 @@ public:
     //template <class T>
     //friend Quater<T> operator*(const Quater<T>& q1, const Quater<T>& q2);
 
-    Quater quatVectMult(const defaulttype::Vec3d& vect);
+    Quater quatVectMult(const defaulttype::Vec<3,Real>& vect);
 
-    Quater vectQuatMult(const defaulttype::Vec3d& vect);
+    Quater vectQuatMult(const defaulttype::Vec<3,Real>& vect);
 
     Real& operator[](int index)
     {
@@ -170,7 +170,7 @@ public:
     // This function computes a quaternion based on an axis (defined by
     // the given vector) and an angle about which to rotate.  The angle is
     // expressed in radians.
-    Quater axisToQuat(defaulttype::Vec3d a, Real phi);
+    Quater axisToQuat(defaulttype::Vec<3,Real> a, Real phi);
 
     /// Create using rotation vector (axis*angle) given in parent coordinates
     template<class V>
@@ -188,11 +188,11 @@ public:
     }
 
     /// Create a quaternion from Euler
-    static Quater createQuaterFromEuler( defaulttype::Vec3d v)
+    static Quater createQuaterFromEuler( defaulttype::Vector3 v)
     {
-        double quat[4];      double a0 = v.elems[0];
-        double a1 = v.elems[1];
-        double a2 = v.elems[2];
+        Real quat[4];      Real a0 = v.elems[0];
+        Real a1 = v.elems[1];
+        Real a2 = v.elems[2];
         quat[3] = cos(a0/2)*cos(a1/2)*cos(a2/2) + sin(a0/2)*sin(a1/2)*sin(a2/2);
         quat[0] = sin(a0/2)*cos(a1/2)*cos(a2/2) - cos(a0/2)*sin(a1/2)*sin(a2/2);
         quat[1] = cos(a0/2)*sin(a1/2)*cos(a2/2) + sin(a0/2)*cos(a1/2)*sin(a2/2);
@@ -211,8 +211,8 @@ public:
         else
         {
             Real nor = 1/phi;
-            Real s = (Real)sin(phi/2);
-            return Quater( a0*s*nor, a1*s*nor,a2*s*nor, (Real)cos(phi/2) );
+            Real s = (Real)sin(phi/2.0);
+            return Quater( a0*s*nor, a1*s*nor,a2*s*nor, (Real)cos(phi/2.0) );
         }
     }
     /// Create using rotation vector (axis*angle) given in parent coordinates

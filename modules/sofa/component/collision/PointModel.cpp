@@ -42,7 +42,7 @@ SOFA_DECL_CLASS(Point)
 int PointModelClass = core::RegisterObject("Collision model which represents a set of points")
         .add< PointModel >()
         .addAlias("Point")
-        .addAlias("PointModel")
+// .addAlias("PointModel")
         .addAlias("PointMesh")
         .addAlias("PointSet")
         ;

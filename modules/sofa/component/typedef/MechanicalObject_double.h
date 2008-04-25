@@ -59,7 +59,7 @@ typedef sofa::component::MechanicalObject<sofa::defaulttype::Rigid3dTypes> Mecha
 typedef sofa::component::MechanicalObject<sofa::defaulttype::LaparoscopicRigid3Types> MechanicalObjectLaparoscopicRigid3d;
 
 
-#ifdef SOFA_DOUBLE
+#ifndef SOFA_FLOAT
 typedef MechanicalObject1d MechanicalObject1;
 typedef MechanicalObject2d MechanicalObject2;
 typedef MechanicalObject3d MechanicalObject3;
@@ -103,15 +103,6 @@ typedef Quat3d		     Quat3;
 typedef DerivRigid3d	     DerivRigid3;
 typedef CoordRigid3d	     CoordRigid3;
 #endif
-
-
-
-
-
-
-
-
-
 
 
 #endif

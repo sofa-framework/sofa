@@ -48,7 +48,7 @@ typedef sofa::component::mass::UniformMass<sofa::defaulttype::Rigid3dTypes,sofa:
 //Not defined for 1D, and 6D
 
 
-#ifdef SOFA_DOUBLE
+#ifndef SOFA_FLOAT
 
 typedef DiagonalMass1d        DiagonalMass1;
 typedef DiagonalMass2d 	      DiagonalMass2;

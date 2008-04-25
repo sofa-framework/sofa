@@ -10,17 +10,7 @@ using namespace sofa::simulation::tree;
 using sofa::component::odesolver::EulerSolver;
 
 
-//SOFA_DOUBLE (if you want to use only double in sofa), or
-//SOFA_FLOAT  (if you want to use only float in sofa)
-//can be set in sofa-default.cfg, and you only need to include <sofa/component/typedef/Sofa_typedef.h>
-#ifndef SOFA_DOUBLE
-#ifndef SOFA_FLOAT
-
-#define SOFA_FLOAT //only using float
-#endif
-#endif
-
-
+//Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
 // ---------------------------------------------------------------------
 // ---
