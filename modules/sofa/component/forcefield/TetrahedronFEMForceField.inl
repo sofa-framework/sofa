@@ -1052,8 +1052,6 @@ void TetrahedronFEMForceField<DataTypes>::reinit()
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& p, const VecDeriv& /*v*/)
 {
-
-    std::cout <<" Add Force" <<  _indexedElements->size() << " df" << method << "\n";
     f.resize(p.size());
 
     unsigned int i;
