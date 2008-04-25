@@ -1562,8 +1562,8 @@ void RealGUI::transformObject ( GNode *node, double dx, double dy, double dz,  d
 {
     if ( node == NULL ) return;
     GNode::ObjectIterator obj_it = node->object.begin();
-    const double conversionDegRad = 3.141592653/180.0;
-    Vec<3, double> rotationVector = Vec<3,double>(rx,ry,rz)*conversionDegRad;
+    const Real_Sofa conversionDegRad = 3.141592653/180.0;
+    Vector3 rotationVector = Vector3(rx,ry,rz)*conversionDegRad;
     //We translate the elements
 
     while ( obj_it != node->object.end() )
@@ -1580,7 +1580,9 @@ void RealGUI::transformObject ( GNode *node, double dx, double dy, double dz,  d
         {
             core::componentmodel::behavior::BaseMechanicalState *mechanical = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *> ( *obj_it );
             mechanical->applyTranslation ( dx, dy, dz );
-            mechanical->applyRotation(defaulttype::Quat::createFromRotationVector( rotationVector));
+            mechanical->applyRotation(defaulttype::Quat::createQuaterFromEuler( rotationVector));
+            //mechanical->applyRotation(defaulttype::Quat::createFromRotationVector( rotationVector));
+
             mechanical->applyScale ( scale );
             // 		mechanical_object = true;
         }

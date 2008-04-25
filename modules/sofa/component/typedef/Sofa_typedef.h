@@ -18,4 +18,9 @@
 #endif
 #endif
 
+
+//---------------------
+//Laparoscopic
+typedef sofa::component::MechanicalObject<sofa::defaulttype::LaparoscopicRigid3Types> MechanicalObjectLaparoscopicRigid3;
+
 #endif
