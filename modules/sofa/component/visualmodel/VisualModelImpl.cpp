@@ -690,34 +690,56 @@ void VisualModelImpl::computeMesh(topology::MeshTopology* topology)
 {
     if (vertices.empty())
     {
-        if (!topology->hasPos()) return;
-
-        if (sofa::component::topology::SparseGridTopology * spTopo = dynamic_cast< sofa::component::topology::SparseGridTopology *>(topology))
+        if (topology->hasPos())
         {
-            std::cout << "VisualModel: getting marching cube mesh from topology : ";
-            sofa::helper::io::Mesh m;
-            spTopo->getMesh(m);
-            setMesh(m, !texturename.getValue().empty());
-            std::cout
-                    <<m.getVertices().size()<<" points, "
-                            <<m.getFacets().size()  << " triangles."<<std::endl;
-            useTopology = false; //visual model needs to be created only once at initial time
-            return;
+
+            if (sofa::component::topology::SparseGridTopology * spTopo = dynamic_cast< sofa::component::topology::SparseGridTopology *>(topology))
+            {
+                std::cout << "VisualModel: getting marching cube mesh from topology : ";
+                sofa::helper::io::Mesh m;
+                spTopo->getMesh(m);
+                setMesh(m, !texturename.getValue().empty());
+                std::cout
+                        <<m.getVertices().size()<<" points, "
+                                <<m.getFacets().size()  << " triangles."<<std::endl;
+                useTopology = false; //visual model needs to be created only once at initial time
+                return;
+            }
+            if (this->f_printLog.getValue())
+                std::cout << "VisualModel: copying "<<topology->getNbPoints()<<" points from topology."<<std::endl;
+            vertices.resize(topology->getNbPoints());
+
+            for (unsigned int i=0; i<vertices.size(); i++)
+            {
+                vertices[i][0] = (Real)topology->getPX(i);
+                vertices[i][1] = (Real)topology->getPY(i);
+                vertices[i][2] = (Real)topology->getPZ(i);
+            }
+
         }
-        std::cout << "VisualModel: copying "<<topology->getNbPoints()<<" points from topology."<<std::endl;
-        vertices.resize(topology->getNbPoints());
-
-        for (unsigned int i=0; i<vertices.size(); i++)
+        else
         {
-            vertices[i][0] = (Real)topology->getPX(i);
-            vertices[i][1] = (Real)topology->getPY(i);
-            vertices[i][2] = (Real)topology->getPZ(i);
+            core::componentmodel::behavior::BaseMechanicalState* mstate = dynamic_cast<core::componentmodel::behavior::BaseMechanicalState*>(topology->getContext()->getMechanicalState());
+            if (mstate)
+            {
+                if (this->f_printLog.getValue())
+                    std::cout << "VisualModel: copying "<<mstate->getSize()<<" points from mechanical state."<<std::endl;
+                vertices.resize(mstate->getSize());
+
+                for (unsigned int i=0; i<vertices.size(); i++)
+                {
+                    vertices[i][0] = (Real)mstate->getPX(i);
+                    vertices[i][1] = (Real)mstate->getPY(i);
+                    vertices[i][2] = (Real)mstate->getPZ(i);
+                }
+            }
         }
     }
 
     lastMeshRev = topology->getRevision();
     const vector<topology::MeshTopology::Triangle>& inputTriangles = topology->getTriangles();
-    std::cout << "VisualModel: copying "<<inputTriangles.size()<<" triangles from topology."<<std::endl;
+    if (this->f_printLog.getValue())
+        std::cout << "VisualModel: copying "<<inputTriangles.size()<<" triangles from topology."<<std::endl;
 
     triangles.resize(inputTriangles.size());
 
@@ -727,7 +749,8 @@ void VisualModelImpl::computeMesh(topology::MeshTopology* topology)
     }
 
     const vector<topology::MeshTopology::Quad>& inputQuads = topology->getQuads();
-    std::cout << "VisualModel: copying "<<inputQuads.size()<<" quads from topology."<<std::endl;
+    if (this->f_printLog.getValue())
+        std::cout << "VisualModel: copying "<<inputQuads.size()<<" quads from topology."<<std::endl;
     quads.resize(inputQuads.size());
     for (unsigned int i=0; i<quads.size(); ++i)
         quads[i] = inputQuads[i];

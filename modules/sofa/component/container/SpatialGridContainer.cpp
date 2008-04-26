@@ -22,7 +22,8 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#include <sofa/component/behaviormodel/eulerianfluid/SpatialGridContainer.h>
+#include <sofa/component/container/SpatialGridContainer.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -30,18 +31,34 @@ namespace sofa
 namespace component
 {
 
-namespace behaviormodel
+namespace container
 {
 
-namespace eulerianfluid
-{
+using namespace sofa::defaulttype;
+using namespace core::componentmodel::behavior;
 
-//template class SpatialGridContainer<Vec3f>;
-//template class SpatialGridContainer<Vec3d>;
 
-} // namespace eulerianfluid
+SOFA_DECL_CLASS(SpatialGridContainer)
 
-} // namespace behaviormodel
+int SpatialGridContainerClass = core::RegisterObject("Hashing spatial grid container, used for SPH fluids for instance.")
+#ifndef SOFA_FLOAT
+        .add< SpatialGridContainer<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< SpatialGridContainer<Vec3fTypes> >()
+#endif
+        ;
+
+#ifndef SOFA_FLOAT
+template class SpatialGridContainer< Vec3dTypes >;
+template class SpatialGrid< SpatialGridTypes< Vec3d > >;
+#endif
+#ifndef SOFA_DOUBLE
+template class SpatialGridContainer< Vec3fTypes >;
+template class SpatialGrid< SpatialGridTypes< Vec3f > >;
+#endif
+
+} // namespace container
 
 } // namespace component
 

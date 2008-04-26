@@ -1,25 +1,57 @@
-<Node dt="0.005" showBehaviorModels="1" showCollisionModels="1" showMappings="1" showForceFields="1" gravity="0 -10 0" >
+<Node dt="0.005" showBehaviorModels="1" showCollisionModels="1" showMappings="0" showForceFields="1" gravity="0 -10 0" >
 	<Node>
 		<Object type="RungeKutta4"/>
 		<Object type="MechanicalObject" name="MModel" />
-		<!-- A topology is used here just to set initial particles positions. It is a bad idea because this object has no real topology, but it works... -->
-		<Object type="RegularGrid"
-			nx="5" ny="40" nz="5"
-			xmin="-1.5" xmax="0"
-			ymin="-3" ymax="12"
-			zmin="-1.5" zmax="0"
-		/>
+		<Object type="ParticleSource" name="Source" center="
+-0.375 0 -0.75
+ 0.0   0 -0.75
+ 0.375 0 -0.75
+-0.75  0 -0.375
+-0.375 0 -0.375
+ 0.0   0 -0.375
+ 0.375 0 -0.375
+ 0.75  0 -0.375
+-0.75  0  0.0
+-0.375 0  0.0
+ 0.0   0  0.0
+ 0.375 0  0.0
+ 0.75  0  0.0
+-0.75  0  0.375
+-0.375 0  0.375
+ 0.0   0  0.375
+ 0.375 0  0.375
+ 0.75  0  0.375
+-0.375 0  0.75
+ 0.0   0  0.75
+ 0.375 0  0.75
+ " translation="0 3 0" radius="0.01 0.1 0.01" velocity="0 -20 0" delay="0.01875" start="-0.1" stop="2" />
+   		/>
+		<Object type="PointSetTopology" />
 		<Object type="UniformMass" name="M1" mass="1" />
+		<Object type="SpatialGridContainer" cellWidth="0.75" />
 		<Object type="SPHFluidForceField" radius="0.75" density="15" viscosity="10" pressure="1000" surfaceTension="-1000" />
 		<!-- The following force fields handle collision with walls and an inclined floor -->
-		<Object type="PlaneForceField" normal="1 0 0" d="-4"/>
-		<Object type="PlaneForceField" normal="-1 0 0" d="-4"/>
-		<Object type="PlaneForceField" normal="0.5 1 0.1" d="-4"/>
-		<Object type="PlaneForceField" normal="0 0 1" d="-4"/>
-		<Object type="PlaneForceField" normal="0 0 -1" d="-4"/>
+		<Object type="PlaneForceField" normal="1 0 0" d="-4" stiffness="10000" />
+		<Object type="PlaneForceField" normal="-1 0 0" d="-4" stiffness="10000"/>
+		<Object type="PlaneForceField" normal="0.5 1 0.1" d="-4" stiffness="10000"/>
+		<Object type="PlaneForceField" normal="0 0 1" d="-4" stiffness="10000"/>
+		<Object type="PlaneForceField" normal="0 0 -1" d="-4" stiffness="10000"/>
 		<Node id="Visual">
 			<Object type="OglModel" name="VModel" color="blue" />
 			<Object type="SPHFluidSurfaceMapping" name="MarchingCube" object1="../../MModel" object2="VModel" isoValue="0.5" radius="0.75" step="0.25"/>
 		</Node>
+	</Node>
+	<Node name="World">
+<!--		<Object type="MechanicalObject" position="-4 -1.6 -4    4 -5.6 -4    4 -6.4 4    -4 -2.4 4    -4 -1 -4    4 -1 -4    4 -1 4    -4 -1 4" scale="1.075" />
+		<Object type="Mesh" triangles="0 1 2  0 2 3  0 4 1  1 4 5  1 5 2  2 5 6  2 6 3  3 6 7  3 7 0  0 7 4" /> -->
+		<Object type="MechanicalObject" position="
+-4 -1.6 -4    4 -5.6 -4    4 -6.4 4    -4 -2.4 4
+-4 -1.6 -4    -4 -1 -4    4 -1 -4    4 -5.6 -4
+4 -5.6 -4    4 -1 -4    4 -1 4    4 -6.4 4
+4 -6.4 4    4 -1 4    -4 -1 4    -4 -2.4 4
+-4 -2.4 4    -4 -1 4    -4 -1 -4    -4 -1.6 -4
+" scale="1.075" />
+		<Object type="Mesh" triangles="0 1 2  0 2 3    4 5 6  4 6 7    8 9 10  8 10 11    12 13 14  12 14 15    16 17 18  16 18 19" />
+		<Object type="OglModel" name="VModel" color="0.95 1.0 0.95 0.25" printLog="true" />
 	</Node>
 </Node>
