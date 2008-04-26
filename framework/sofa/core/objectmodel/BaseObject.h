@@ -135,8 +135,6 @@ public:
 
     /**
      *  \brief Render internal data of this object, for debugging purposes.
-     *
-     *  Calls BaseObject::draw() unless overriden.
      */
     virtual void draw() {}
 

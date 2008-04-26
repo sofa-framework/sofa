@@ -247,11 +247,25 @@ public:
         return reinterpret_cast<T*>(this->getObject(classid(T), dir));
     }
 
+    /// Generic object access template wrapper, possibly searching up or down from the current context
+    template<class T>
+    void get(T*& ptr, SearchDirection dir = SearchUp) const
+    {
+        ptr = this->get<T>(dir);
+    }
+
     /// Generic object access template wrapper, given a path from the current context
     template<class T>
     T* get(const std::string& path) const
     {
         return reinterpret_cast<T*>(this->getObject(classid(T), path));
+    }
+
+    /// Generic object access template wrapper, given a path from the current context
+    template<class T>
+    void get(T*& ptr, const std::string& path) const
+    {
+        ptr = this->get<T>(path);
     }
 
     template<class T, class Container>
