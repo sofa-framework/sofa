@@ -52,13 +52,13 @@ public:
     class Deriv
     {
     private:
-        Real_Sofa vTranslation;
+        Real vTranslation;
         Vector3 vOrientation;
     public:
-        typedef Real_Sofa value_type;
+        typedef Real value_type;
         friend class Coord;
 
-        Deriv (const Real_Sofa &velTranslation, const Vector3 &velOrient)
+        Deriv (const Real &velTranslation, const Vector3 &velOrient)
             : vTranslation(velTranslation), vOrientation(velOrient) {}
         Deriv () { clear(); }
 
@@ -78,13 +78,13 @@ public:
             return d;
         }
 
-        void operator*=(Real_Sofa a)
+        void operator*=(Real a)
         {
             vTranslation *= a;
             vOrientation *= a;
         }
 
-        Deriv operator*(Real_Sofa a) const
+        Deriv operator*(Real a) const
         {
             Deriv r = *this;
             r*=a;
@@ -97,16 +97,16 @@ public:
         }
 
         /// dot product
-        Real_Sofa operator*(const Deriv& a) const
+        Real operator*(const Deriv& a) const
         {
             return vTranslation*a.vTranslation
                     +vOrientation[0]*a.vOrientation[0]+vOrientation[1]*a.vOrientation[1]
                     +vOrientation[2]*a.vOrientation[2];
         }
 
-        Real_Sofa& getVTranslation (void) { return vTranslation; }
+        Real& getVTranslation (void) { return vTranslation; }
         Vector3& getVOrientation (void) { return vOrientation; }
-        const Real_Sofa& getVTranslation (void) const { return vTranslation; }
+        const Real& getVTranslation (void) const { return vTranslation; }
         const Vector3& getVOrientation (void) const { return vOrientation; }
         inline friend std::ostream& operator << (std::ostream& out, const Deriv& v )
         {
@@ -126,11 +126,11 @@ public:
     {
 
     private:
-        Real_Sofa translation;
+        Real translation;
         Quat orientation;
     public:
-        typedef Real_Sofa value_type;
-        Coord (const Real_Sofa &posTranslation, const Quat &orient)
+        typedef Real value_type;
+        Coord (const Real &posTranslation, const Quat &orient)
             : translation(posTranslation), orientation(orient) {}
         Coord () { clear(); }
 
@@ -166,14 +166,14 @@ public:
             //orientation.normalize();
         }
 
-        void operator*=(Real_Sofa a)
+        void operator*=(Real a)
         {
 // 			std::cout << "*="<<std::endl;
             translation *= a;
             //orientation *= a;
         }
 
-        Coord operator*(Real_Sofa a) const
+        Coord operator*(Real a) const
         {
             Coord r = *this;
             r*=a;
@@ -181,16 +181,16 @@ public:
         }
 
         /// dot product (FF: WHAT????  )
-        Real_Sofa operator*(const Coord& a) const
+        Real operator*(const Coord& a) const
         {
             return translation*a.translation
                     +orientation[0]*a.orientation[0]+orientation[1]*a.orientation[1]
                     +orientation[2]*a.orientation[2]+orientation[3]*a.orientation[3];
         }
 
-        Real_Sofa& getTranslation () { return translation; }
+        Real& getTranslation () { return translation; }
         Quat& getOrientation () { return orientation; }
-        const Real_Sofa& getTranslation () const { return translation; }
+        const Real& getTranslation () const { return translation; }
         const Quat& getOrientation () const { return orientation; }
         inline friend std::ostream& operator << (std::ostream& out, const Coord& c )
         {
@@ -253,48 +253,44 @@ public:
 
     typedef vector<Coord> VecCoord;
     typedef vector<Deriv> VecDeriv;
-    typedef vector<Real_Sofa> VecReal;
+    typedef vector<Real> VecReal;
 
-    static void set(Coord& c, Real_Sofa x, Real_Sofa, Real_Sofa)
+    template<typename T>
+    static void set(Coord& c, T x, T, T)
     {
-        c.getTranslation() = x;
-        //c.getTranslation()[1] = y;
-        //c.getTranslation()[2] = z;
+        c.getTranslation() = (Real)x;
     }
 
-    static void get(Real_Sofa& x, Real_Sofa&, Real_Sofa&, const Coord& c)
+    template<typename T>
+    static void get(T& x, T&, T&, const Coord& c)
     {
-        x = c.getTranslation();
-        //y = c.getTranslation();
-        //z = c.getTranslation()[2];
+        x = (T)c.getTranslation();
     }
 
-    static void add(Coord& c, Real_Sofa x, Real_Sofa, Real_Sofa)
+    template<typename T>
+    static void add(Coord& c, T x, T, T)
     {
-        c.getTranslation() += x;
-        //c.getTranslation()[1] += y;
-        //c.getTranslation()[2] += z;
+        c.getTranslation() += (Real)x;
     }
 
-    static void set(Deriv& c, Real_Sofa x, Real_Sofa, Real_Sofa)
+    template<typename T>
+    static void set(Deriv& c, T x, T, T)
     {
-        c.getVTranslation() = x;
-        //c.getVTranslation()[1] = y;
-        //c.getVTranslation()[2] = z;
+        c.getVTranslation() = (Real)x;
     }
 
-    static void get(Real_Sofa& x, Real_Sofa& y, Real_Sofa& z, const Deriv& c)
+    template<typename T>
+    static void get(T& x, T& y, T& z, const Deriv& c)
     {
-        x = c.getVTranslation();
-        y = 0; //c.getVTranslation()[1];
-        z = 0; //c.getVTranslation()[2];
+        x = (T)c.getVTranslation();
+        y = (T)0;
+        z = (T)0;
     }
 
-    static void add(Deriv& c, Real_Sofa x, Real_Sofa, Real_Sofa)
+    template<typename T>
+    static void add(Deriv& c, T x, T, T)
     {
-        c.getVTranslation() += x;
-        //c.getVTranslation()[1] += y;
-        //c.getVTranslation()[2] += z;
+        c.getVTranslation() += (T)x;
     }
     static const char* Name()
     {

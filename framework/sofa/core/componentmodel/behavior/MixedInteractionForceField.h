@@ -196,7 +196,7 @@ public:
 
     static std::string templateName(const MixedInteractionForceField<DataTypes1,DataTypes2>* = NULL)
     {
-        return DataTypes1::Name();
+        return DataTypes1::Name()+std::string(",")+DataTypes2::Name();
     }
 
 protected:

@@ -74,12 +74,12 @@ void BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn
     clear(out.size());
     for (unsigned int i=0; i<out.size(); i++)
     {
-        Vec3d coefs;
-        int cube = topology->findCube(topology::RegularGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
+        Vector3 coefs;
+        int cube = topology->findCube(Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
         if (cube==-1)
         {
             ++outside;
-            cube = topology->findNearestCube(topology::RegularGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
+            cube = topology->findNearestCube(Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
         }
         Vec<3,Real> baryCoords = coefs;
         addPointInCube(cube, baryCoords.ptr());

@@ -536,42 +536,48 @@ public:
     typedef vector<Deriv> VecDeriv;
     typedef vector<Real> VecReal;
 
-    static void set(Coord& c, Real x, Real y, Real z)
+    template<typename T>
+    static void set(Coord& c, T x, T y, T z)
     {
         c.getCenter()[0] = (Real)x;
         c.getCenter()[1] = (Real)y;
         c.getCenter()[2] = (Real)z;
     }
 
-    static void get(Real& x, Real& y, Real& z, const Coord& c)
+    template<typename T>
+    static void get(T& x, T& y, T& z, const Coord& c)
     {
-        x = c.getCenter()[0];
-        y = c.getCenter()[1];
-        z = c.getCenter()[2];
+        x = (T)c.getCenter()[0];
+        y = (T)c.getCenter()[1];
+        z = (T)c.getCenter()[2];
     }
 
-    static void add(Coord& c, Real x, Real y, Real z)
+    template<typename T>
+    static void add(Coord& c, T x, T y, T z)
     {
         c.getCenter()[0] += (Real)x;
         c.getCenter()[1] += (Real)y;
         c.getCenter()[2] += (Real)z;
     }
 
-    static void set(Deriv& c, Real x, Real y, Real z)
+    template<typename T>
+    static void set(Deriv& c, T x, T y, T z)
     {
         c.getVCenter()[0] = (Real)x;
         c.getVCenter()[1] = (Real)y;
         c.getVCenter()[2] = (Real)z;
     }
 
-    static void get(Real& x, Real& y, Real& z, const Deriv& c)
+    template<typename T>
+    static void get(T& x, T& y, T& z, const Deriv& c)
     {
-        x = c.getVCenter()[0];
-        y = c.getVCenter()[1];
-        z = c.getVCenter()[2];
+        x = (T)c.getVCenter()[0];
+        y = (T)c.getVCenter()[1];
+        z = (T)c.getVCenter()[2];
     }
 
-    static void add(Deriv& c, Real x, Real y, Real z)
+    template<typename T>
+    static void add(Deriv& c, T x, T y, T z)
     {
         c.getVCenter()[0] += (Real)x;
         c.getVCenter()[1] += (Real)y;
@@ -1035,39 +1041,45 @@ public:
 
     typedef	vector<SparseVecDeriv> VecConst;
 
-    static void set(Coord& c, Real x, Real y, Real)
+    template<typename T>
+    static void set(Coord& c, T x, T y, T)
     {
         c.getCenter()[0] = (Real)x;
         c.getCenter()[1] = (Real)y;
     }
 
-    static void get(Real& x, Real& y, Real& z, const Coord& c)
+    template<typename T>
+    static void get(T& x, T& y, T& z, const Coord& c)
     {
-        x = c.getCenter()[0];
-        y = c.getCenter()[1];
-        z = 0;
+        x = (T)c.getCenter()[0];
+        y = (T)c.getCenter()[1];
+        z = (T)0;
     }
 
-    static void add(Coord& c, Real x, Real y, Real)
+    template<typename T>
+    static void add(Coord& c, T x, T y, T)
     {
         c.getCenter()[0] += (Real)x;
         c.getCenter()[1] += (Real)y;
     }
 
-    static void set(Deriv& c, Real x, Real y, Real)
+    template<typename T>
+    static void set(Deriv& c, T x, T y, T)
     {
         c.getVCenter()[0] = (Real)x;
         c.getVCenter()[1] = (Real)y;
     }
 
-    static void get(Real& x, Real& y, Real& z, const Deriv& c)
+    template<typename T>
+    static void get(T& x, T& y, T& z, const Deriv& c)
     {
-        x = c.getVCenter()[0];
-        y = c.getVCenter()[1];
-        z = 0;
+        x = (T)c.getVCenter()[0];
+        y = (T)c.getVCenter()[1];
+        z = (T)0;
     }
 
-    static void add(Deriv& c, Real x, Real y, Real)
+    template<typename T>
+    static void add(Deriv& c, T x, T y, T)
     {
         c.getVCenter()[0] += (Real)x;
         c.getVCenter()[1] += (Real)y;

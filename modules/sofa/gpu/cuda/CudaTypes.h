@@ -90,6 +90,7 @@ public:
         allocSize = ( allocSize+BSIZE-1 ) &-BSIZE;
 
         void* prevDevicePointer = devicePointer;
+        std::cout << "CudaVector<"<<sofa::core::objectmodel::Base::className((T*)NULL)<<"> : reserve("<<s<<")"<<std::endl;
         mycudaMalloc ( &devicePointer, allocSize*sizeof ( T ) );
         if ( vectorSize > 0 && deviceIsValid )
             mycudaMemcpyDeviceToDevice ( devicePointer, prevDevicePointer, vectorSize*sizeof ( T ) );
@@ -537,31 +538,34 @@ public:
     //! All the Constraints applied to a state Vector
     typedef    sofa::helper::vector<SparseVecDeriv> VecConst;
 
-    static void set ( Coord& c, double x, double y, double z )
+    template<class C, typename T>
+    static void set( C& c, T x, T y, T z )
     {
         if ( c.size() >0 )
-            c[0] = ( typename Coord::value_type ) x;
+            c[0] = (Real) x;
         if ( c.size() >1 )
-            c[1] = ( typename Coord::value_type ) y;
+            c[1] = (Real) y;
         if ( c.size() >2 )
-            c[2] = ( typename Coord::value_type ) z;
+            c[2] = (Real) z;
     }
 
-    static void get ( double& x, double& y, double& z, const Coord& c )
+    template<class C, typename T>
+    static void get( T& x, T& y, T& z, const C& c )
     {
-        x = ( c.size() >0 ) ? ( double ) c[0] : 0.0;
-        y = ( c.size() >1 ) ? ( double ) c[1] : 0.0;
-        z = ( c.size() >2 ) ? ( double ) c[2] : 0.0;
+        x = ( c.size() >0 ) ? (T) c[0] : (T) 0.0;
+        y = ( c.size() >1 ) ? (T) c[1] : (T) 0.0;
+        z = ( c.size() >2 ) ? (T) c[2] : (T) 0.0;
     }
 
-    static void add ( Coord& c, double x, double y, double z )
+    template<class C, typename T>
+    static void add( C& c, T x, T y, T z )
     {
         if ( c.size() >0 )
-            c[0] += ( typename Coord::value_type ) x;
+            c[0] += (Real) x;
         if ( c.size() >1 )
-            c[1] += ( typename Coord::value_type ) y;
+            c[1] += (Real) y;
         if ( c.size() >2 )
-            c[2] += ( typename Coord::value_type ) z;
+            c[2] += (Real) z;
     }
 
     static const char* Name();
@@ -822,64 +826,70 @@ public:
     //! All the Constraints applied to a state Vector
     typedef    sofa::helper::vector<SparseVecDeriv> VecConst;
 
-    static void set ( Coord& r, double x, double y, double z )
+    template<typename T>
+    static void set(Coord& r, T x, T y, T z)
     {
         Vec3& c = r.getCenter();
         if ( c.size() >0 )
-            c[0] = ( typename Coord::value_type ) x;
+            c[0] = (Real) x;
         if ( c.size() >1 )
-            c[1] = ( typename Coord::value_type ) y;
+            c[1] = (Real) y;
         if ( c.size() >2 )
-            c[2] = ( typename Coord::value_type ) z;
+            c[2] = (Real) z;
     }
 
-    static void get ( double& x, double& y, double& z, const Coord& r )
+    template<typename T>
+    static void get(T& x, T& y, T& z, const Coord& r)
     {
         const Vec3& c = r.getCenter();
-        x = ( c.size() >0 ) ? ( double ) c[0] : 0.0;
-        y = ( c.size() >1 ) ? ( double ) c[1] : 0.0;
-        z = ( c.size() >2 ) ? ( double ) c[2] : 0.0;
+        x = ( c.size() >0 ) ? (T) c[0] : (T) 0.0;
+        y = ( c.size() >1 ) ? (T) c[1] : (T) 0.0;
+        z = ( c.size() >2 ) ? (T) c[2] : (T) 0.0;
     }
 
-    static void add ( Coord& r, double x, double y, double z )
+    template<typename T>
+    static void add(Coord& r, T x, T y, T z)
     {
         Vec3& c = r.getCenter();
         if ( c.size() >0 )
-            c[0] += ( typename Coord::value_type ) x;
+            c[0] += (Real) x;
         if ( c.size() >1 )
-            c[1] += ( typename Coord::value_type ) y;
+            c[1] += (Real) y;
         if ( c.size() >2 )
-            c[2] += ( typename Coord::value_type ) z;
+            c[2] += (Real) z;
     }
 
-    static void set ( Deriv& r, double x, double y, double z )
+    template<typename T>
+    static void set(Deriv& r, T x, T y, T z)
     {
         Vec3& c = r.getVCenter();
         if ( c.size() >0 )
-            c[0] = ( typename Coord::value_type ) x;
+            c[0] = (Real) x;
         if ( c.size() >1 )
-            c[1] = ( typename Coord::value_type ) y;
+            c[1] = (Real) y;
         if ( c.size() >2 )
-            c[2] = ( typename Coord::value_type ) z;
+            c[2] = (Real) z;
     }
 
-    static void get ( double& x, double& y, double& z, const Deriv& r )
+    template<typename T>
+    static void get(T& x, T& y, T& z, const Deriv& r)
     {
         const Vec3& c = r.getVCenter();
-        x = ( c.size() >0 ) ? ( double ) c[0] : 0.0;
-        y = ( c.size() >1 ) ? ( double ) c[1] : 0.0;
-        z = ( c.size() >2 ) ? ( double ) c[2] : 0.0;
+        x = ( c.size() >0 ) ? (T) c[0] : (T) 0.0;
+        y = ( c.size() >1 ) ? (T) c[1] : (T) 0.0;
+        z = ( c.size() >2 ) ? (T) c[2] : (T) 0.0;
     }
 
-    static void add ( Deriv& r, double x, double y, double z )
+    template<typename T>
+    static void add(Deriv& r, T x, T y, T z)
     {
         Vec3& c = r.getVCenter();
         if ( c.size() >0 )
-            c[0] += ( typename Coord::value_type ) x;
+            c[0] += (Real) x;
         if ( c.size() >1 )
-            c[1] += ( typename Coord::value_type ) y;
+            c[1] += (Real) y;
         if ( c.size() >2 )
-            c[2] += ( typename Coord::value_type ) z;
+            c[2] += (Real) z;
     }
 
     static const char* Name();

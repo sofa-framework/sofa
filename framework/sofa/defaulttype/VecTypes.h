@@ -72,32 +72,35 @@ public:
     //! All the Constraints applied to a state Vector
     typedef	vector<SparseVecDeriv> VecConst;
 
-    static void set(Coord& c, Real x, Real y, Real z)
+    template<typename T>
+    static void set(Coord& c, T x, T y, T z)
     {
 
         if (c.size() > 0)
-            c[0] = (typename Coord::value_type)x;
+            c[0] = (Real)x;
         if (c.size() > 1)
-            c[1] = (typename Coord::value_type)y;
+            c[1] = (Real)y;
         if (c.size() > 2)
-            c[2] = (typename Coord::value_type)z;
+            c[2] = (Real)z;
     }
 
-    static void get(Real& x, Real& y, Real& z, const Coord& c)
+    template<typename T>
+    static void get(T& x, T& y, T& z, const Coord& c)
     {
-        x = (c.size() > 0) ? (Real) c[0] : (Real) 0.0;
-        y = (c.size() > 1) ? (Real) c[1] : (Real) 0.0;
-        z = (c.size() > 2) ? (Real) c[2] : (Real) 0.0;
+        x = (c.size() > 0) ? (T) c[0] : (T) 0.0;
+        y = (c.size() > 1) ? (T) c[1] : (T) 0.0;
+        z = (c.size() > 2) ? (T) c[2] : (T) 0.0;
     }
 
-    static void add(Coord& c, Real x, Real y, Real z)
+    template<typename T>
+    static void add(Coord& c, T x, T y, T z)
     {
         if (c.size() > 0)
-            c[0] += (typename Coord::value_type)x;
+            c[0] += (Real)x;
         if (c.size() > 1)
-            c[1] += (typename Coord::value_type)y;
+            c[1] += (Real)y;
         if (c.size() > 2)
-            c[2] += (typename Coord::value_type)z;
+            c[2] += (Real)z;
     }
 
     static const char* Name();
@@ -297,33 +300,35 @@ public:
     //! All the Constraints applied to a state Vector
     typedef	vector<SparseVecDeriv> VecConst;
 
-
-    static void set(Coord& c, Real x, Real y, Real z)
+    template<typename T>
+    static void set(Coord& c, T x, T y, T z)
     {
 
         if (c.size() > 0)
-            c[0] = (typename Coord::value_type)x;
+            c[0] = (Real)x;
         if (c.size() > 1)
-            c[1] = (typename Coord::value_type)y;
+            c[1] = (Real)y;
         if (c.size() > 2)
-            c[2] = (typename Coord::value_type)z;
+            c[2] = (Real)z;
     }
 
-    static void get(Real& x, Real& y, Real& z, const Coord& c)
+    template<typename T>
+    static void get(T& x, T& y, T& z, const Coord& c)
     {
-        x = (c.size() > 0) ? (Real) c[0] : (Real)0.0;
-        y = (c.size() > 1) ? (Real) c[1] : (Real)0.0;
-        z = (c.size() > 2) ? (Real) c[2] : (Real)0.0;
+        x = (c.size() > 0) ? (T) c[0] : (T) 0.0;
+        y = (c.size() > 1) ? (T) c[1] : (T) 0.0;
+        z = (c.size() > 2) ? (T) c[2] : (T) 0.0;
     }
 
-    static void add(Coord& c, Real x, Real y, Real z)
+    template<typename T>
+    static void add(Coord& c, T x, T y, T z)
     {
         if (c.size() > 0)
-            c[0] += (typename Coord::value_type)x;
+            c[0] += (Real)x;
         if (c.size() > 1)
-            c[1] += (typename Coord::value_type)y;
+            c[1] += (Real)y;
         if (c.size() > 2)
-            c[2] += (typename Coord::value_type)z;
+            c[2] += (Real)z;
     }
 
     static const char* Name();

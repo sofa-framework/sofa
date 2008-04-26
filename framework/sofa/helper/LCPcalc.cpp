@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <functional>
 #include <iostream>
+#include <cmath>
 
 namespace sofa
 {
@@ -1126,7 +1127,19 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, d
 
             fn=f_1[0]; ft=f_1[1]; fs=f_1[2];
             W33[index1]->GS_State(mu,dn,dt,ds,fn,ft,fs);
-            error += absError(dn,dt,ds,d_1[0],d_1[1],d_1[2]);
+            if (isnan(fn) || isnan(ft) || isnan(fs) || isnan(dn) || isnan(dt) || isnan(ds))
+            {
+                printf("LCP dim = %d iteration %d: NaN found at constraint %d: fn = %f ft = %f fs = %f dn = %f dt = %f ds = %f\n",dim,it,c1,fn,ft,fs,dn,dt,ds);
+                break; // no point to continue
+            }
+            //error += absError(dn,dt,ds,d_1[0],d_1[1],d_1[2]);
+            double e = absError(dn,dt,ds,d_1[0],d_1[1],d_1[2]);
+            if (e > 10.0)
+            {
+                printf("LCP dim = %d iteration %d: error %f found at constraint %d: fn = %f ft = %f fs = %f dn = %f dt = %f ds = %f\n",dim,it,e,c1,fn,ft,fs,dn,dt,ds);
+                //break; // no point to continue
+            }
+            error += e;
 
 
 
@@ -1167,14 +1180,20 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, d
 
         if (error < tol)
         {
-            //printf("Convergence after %d iteration(s)\n",it);
+            printf("Convergence after %d iteration(s)\n",it);
             //afficheLCP(dfree,W,f,dim);
             return it;
         }
+        else printf("LCP dim = %d iteration %d: error = %f\n",dim,it,error);
+        if (isnan(error))
+        {
+            break; // no point to continue
+        }
     }
 
-    printf("\n No convergence in nlcp_gaussseidel function : error =%f", error);
-    //afficheLCP(dfree,W,f,dim);
+    printf("\n No convergence in nlcp_gaussseidel function : dim = %d, iteration = %d, error = %f\n", dim, it, error);
+    afficheLCP(dfree,W,f,dim);
+    fflush(NULL);
     return it;
 
 }
