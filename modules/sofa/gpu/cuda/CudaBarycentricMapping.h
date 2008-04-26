@@ -34,8 +34,8 @@ protected:
     void calcMapT();
 public:
     BarycentricMapperRegularGridTopology(topology::RegularGridTopology* topology)
-        : TopologyBarycentricMapper(topology),
-          maxNOut(0), topology(topology)
+        : Inherit(topology)
+        , maxNOut(0), topology(topology)
     {}
 
     void clear(int reserve=0);
