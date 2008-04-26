@@ -28,7 +28,7 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/component/behaviormodel/eulerianfluid/SpatialGridContainer.h>
+#include <sofa/component/container/SpatialGridContainer.h>
 #include <sofa/helper/rmath.h>
 #include <vector>
 #include <math.h>
@@ -44,8 +44,7 @@ namespace component
 namespace forcefield
 {
 
-// TODO: move SpatialGridContainer to another namespace?
-using namespace sofa::component::behaviormodel::eulerianfluid;
+using namespace sofa::component::container;
 
 template<class DataTypes>
 class SPHFluidForceField : public sofa::core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
@@ -83,17 +82,12 @@ protected:
 
     sofa::helper::vector<Particle> particles;
 
-    class GridTypes : public SpatialGridContainerTypes<Coord>
-    {
-    public:
-        typedef SPHFluidForceField<DataTypes> NeighborListener;
-    };
-
-    typedef SpatialGridContainer<GridTypes> Grid;
-    friend class SpatialGridContainer<GridTypes>;
+    typedef SpatialGridContainer<DataTypes> Grid;
 
     Grid* grid;
 
+public:
+    /// this method is called by the SpatialGrid when w connection between two particles is detected
     void addNeighbor(int i1, int i2, Real r2, Real h2)
     {
         Real r_h = (Real)sqrt(r2/h2);
@@ -103,7 +97,7 @@ protected:
             particles[i2].neighbors.push_back(std::make_pair(i1,r_h));
     }
 
-
+protected:
     /// Density Smoothing Kernel:  W = 315 / 64pih9 * (h2 - r2)3 = 315 / 64pih3 * (1 - (r/h)2)3
     Real  constWd(Real h) const
     {

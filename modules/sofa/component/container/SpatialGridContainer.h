@@ -34,12 +34,15 @@
 //
 //
 
-#ifndef SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_SPATIALGRIDCONTAINER_H
-#define SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_SPATIALGRIDCONTAINER_H
+#ifndef SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_H
+#define SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_H
 
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/helper/rmath.h>
 #include <sofa/helper/system/config.h>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/Event.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/helper/rmath.h>
 #include <list>
 
 
@@ -69,10 +72,7 @@ namespace sofa
 namespace component
 {
 
-namespace behaviormodel
-{
-
-namespace eulerianfluid
+namespace container
 {
 
 using namespace sofa::defaulttype;
@@ -84,7 +84,7 @@ public:
 };
 
 template<class TCoord>
-class SpatialGridContainerTypes
+class SpatialGridTypes
 {
 public:
     typedef TCoord                     Coord;
@@ -102,30 +102,31 @@ public:
         {
         }
     };
-    class NeighborListener
-    {
-    public:
-        void addNeighbor(int /*i1*/, int /*i2*/, Real /*r2*/, Real /*h2*/)
-        {
-        }
-    };
+
+//	class NeighborListener
+//	{
+//		public:
+//			void addNeighbor(int /*i1*/, int /*i2*/, Real /*r2*/, Real /*h2*/)
+//			{
+//			}
+//	};
 
     enum { GRIDDIM_LOG2 = 2 };
 };
 
 template<class DataTypes>
-class SpatialGridContainer
+class SpatialGrid
 {
 public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::CellData CellData;
     typedef typename DataTypes::GridData GridData;
-    typedef typename DataTypes::NeighborListener NeighborListener;
+    //typedef typename DataTypes::NeighborListener NeighborListener;
     typedef typename DataTypes::ParticleField ParticleField;
 
 public:
-    SpatialGridContainer(Real cellWidth);
+    SpatialGrid(Real cellWidth);
 
     void begin();
 
@@ -135,9 +136,15 @@ public:
 
     void draw();
 
+    template<class NeighborListener>
     void findNeighbors(NeighborListener* dest, Real dist);
 
     void computeField(ParticleField* field, Real dist);
+
+    /// Change particles ordering inside a given cell have contiguous indices
+    ///
+    /// Fill the old2new and new2old arrays giving the permutation to apply
+    void reorderIndices(helper::vector<unsigned int>* old2new, helper::vector<unsigned int>* new2old);
 
     enum { GRIDDIM_LOG2 = DataTypes::GRIDDIM_LOG2, GRIDDIM = 1<<GRIDDIM_LOG2 };
     enum { NCELL = GRIDDIM*GRIDDIM*GRIDDIM };
@@ -195,7 +202,11 @@ public:
 
     static std::size_t hash(const Key& x)
     {
-        return x[0]^x[1]^x[2];
+//		return x[0]^x[1]^x[2];
+        const unsigned int p0 = 73856093; // large prime numbers
+        const unsigned int p1 = 19349663;
+        const unsigned int p2 = 83492791;
+        return (p0*x[0])^(p1*x[1])^(p2*x[2]);
     }
 
     class key_hash_fun
@@ -236,6 +247,9 @@ public:
     iterator gridBegin() { return map.begin(); }
     iterator gridEnd() { return map.end(); }
 
+    Real getCellWidth() const { return cellWidth; }
+    Real getInvCellWidth() const { return invCellWidth; }
+
 protected:
     Map map;
     const Real cellWidth;
@@ -249,13 +263,65 @@ protected:
 
     const Cell* getCell(const Grid* g, int x, int y, int z);
 
+    template<class NeighborListener>
     void findNeighbors(NeighborListener* dest, const Real dist2, const Cell** cellsBegin, const Cell** cellsEnd);
 
 };
 
-} // namespace eulerianfluid
+template<class DataTypes>
+class SpatialGridContainer : public virtual core::objectmodel::BaseObject
+{
+public:
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef SpatialGridTypes<Coord> GridTypes;
+    typedef SpatialGrid< GridTypes > Grid;
+    Grid* grid;
+    Data<Real> d_cellWidth;
+    Data<bool> d_showGrid;
+    Data<bool> d_sortPoints;
 
-} // namespace behaviormodel
+    /// Pre-construction check method called by ObjectFactory.
+    /// Check that DataTypes matches the MechanicalState.
+    template<class T>
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        if (dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            return false;
+        return core::objectmodel::BaseObject::canCreate(obj, context, arg);
+    }
+
+    SpatialGridContainer();
+    virtual ~SpatialGridContainer();
+
+    virtual void init();
+    virtual void reinit();
+    virtual void draw();
+    virtual void handleEvent(sofa::core::objectmodel::Event* event);
+
+    Grid* getGrid() { return grid; }
+    void updateGrid(const VecCoord& x)
+    {
+        grid->begin();
+        for (unsigned int i=0; i<x.size(); i++)
+        {
+            grid->add(i, x[i]);
+        }
+        grid->end();
+    }
+    template<class NeighborListener>
+    void findNeighbors(NeighborListener* listener, Real r)
+    {
+        grid->findNeighbors(listener, r);
+    }
+    bool sortPoints();
+
+protected:
+    core::componentmodel::behavior::MechanicalState<DataTypes>* mstate;
+};
+
+} // namespace container
 
 } // namespace component
 

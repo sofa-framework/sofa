@@ -12,11 +12,18 @@
 #ifndef ParticleSource_H
 #define ParticleSource_H
 
-#include <sofa/core/VisualModel.h>
-#include "sofa/core/objectmodel/Event.h"
-#include "sofa/simulation/tree/AnimateBeginEvent.h"
+#include <sofa/core/componentmodel/behavior/Constraint.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/objectmodel/Event.h>
+#include <sofa/simulation/tree/AnimateBeginEvent.h>
 #include <sofa/simulation/tree/AnimateEndEvent.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/component/topology/PointSubset.h>
+#include <sofa/component/topology/PointSetTopology.h>
+#include <vector>
+#include <iterator>
+#include <iostream>
+#include <ostream>
+#include <algorithm>
 
 namespace sofa
 {
@@ -66,7 +73,8 @@ public:
 
     int N;
     Real lasttime;
-    int lastparticle;
+    //int lastparticle;
+    topology::PointSubset lastparticles;
     helper::vector<Coord> lastpos;
 
     virtual void init()
@@ -75,15 +83,22 @@ public:
         if (!this->mstate) return;
         N = f_center.getValue().size();
         lasttime = f_start.getValue()-f_delay.getValue();
-        lastparticle = -1;
+        //lastparticle = -1;
         lastpos.resize(N);
+
+        lastparticles.setTestFunction(PSTestNewPointFunction);
+        lastparticles.setRemovalFunction(PSRemovalFunction);
+
+        lastparticles.setTestParameter( (void *) this );
+        lastparticles.setRemovalParameter( (void *) this );
+
         std::cout << "ParticleSource: center="<<f_center.getValue()<<" radius="<<f_radius.getValue()<<" delay="<<f_delay.getValue()<<" start="<<f_start.getValue()<<" stop="<<f_stop.getValue()<<std::endl;
     }
 
     virtual void reset()
     {
         lasttime = f_start.getValue()-f_delay.getValue();
-        lastparticle = -1;
+        lastparticles.clear();
     }
 
     Real rrand()
@@ -102,13 +117,25 @@ public:
         if (nparticles>0)
         {
             //std::cout << "ParticleSource: Creating "<<nparticles<<" particles, total "<<i0+nparticles<<" particles."<<std::endl;
-            this->mstate->resize(i0+nparticles*N);
+            topology::PointSetTopology<DataTypes>* t = dynamic_cast<topology::PointSetTopology<DataTypes>*>(this->getContext()->getMainTopology());
+            if (t != NULL)
+            {
+                int n = i0+nparticles*N - this->mstate->getX()->size();
+                ((topology::PointSetTopologyModifier<DataTypes>*)t->getTopologyModifier())->addPointsWarning(n);
+                ((topology::PointSetTopologyModifier<DataTypes>*)t->getTopologyModifier())->addPointsProcess(n);
+                t->propagateTopologicalChanges();
+            }
+            else
+            {
+                this->mstate->resize(i0+nparticles*N);
+            }
             VecCoord& x = *this->mstate->getX();
             VecDeriv& v = *this->mstate->getV();
             for (int i=0; i<nparticles; i++)
             {
                 lasttime += f_delay.getValue();
-                lastparticle = i0+i*N;
+                int lastparticle = i0+i*N;
+                lastparticles.resize(N);
                 for (int s=0; s<N; s++)
                 {
                     lastpos[s] = f_center.getValue()[s] + f_translation.getValue();
@@ -117,7 +144,37 @@ public:
                     x[lastparticle+s] = lastpos[s];
                     v[lastparticle+s] = f_velocity.getValue();
                     x[lastparticle+s] += v[lastparticle+s]*(time - lasttime); // account for particle initial motion
+                    lastparticles[s] = lastparticle+s;
                 }
+            }
+        }
+    }
+
+/// Handle topological changes
+    void handleTopologyChange()
+    {
+        sofa::core::componentmodel::topology::BaseTopology *topology = (getContext()->getMainTopology());
+        std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=topology->firstChange();
+        std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=topology->lastChange();
+        if (itBegin != itEnd)
+        {
+            if (this->f_printLog.getValue())
+            {
+                std::cout << "ParticleSource: handleTopologyChange()"<<std::endl;
+                std::cout << "lastparticles = ";
+                std::copy(lastparticles.begin(),lastparticles.end(),std::ostream_iterator<unsigned int>(std::cout," "));
+                std::cout << std::endl;
+            }
+            int s1 = lastparticles.size();
+            lastparticles.handleTopologyEvents(itBegin, itEnd, this->mstate->getSize());
+            int s2 = lastparticles.size();
+            if (s2 > s1) std::cout << "ParticleSource: handleTopologyChange(): "<<s2-s1<<" points added!"<<std::endl;
+            if (s2 < s1) std::cout << "ParticleSource: handleTopologyChange(): "<<s1-s2<<" points removed!"<<std::endl;
+            if (this->f_printLog.getValue())
+            {
+                std::cout << "NEW lastparticles = ";
+                std::copy(lastparticles.begin(),lastparticles.end(),std::ostream_iterator<unsigned int>(std::cout," "));
+                std::cout << std::endl;
             }
         }
     }
@@ -125,37 +182,37 @@ public:
     virtual void projectResponse(VecDeriv& res) ///< project dx to constrained space
     {
         if (!this->mstate) return;
-        if (lastparticle == -1) return;
+        if (lastparticles.empty()) return;
         //std::cout << "ParticleSource: projectResponse of last particle ("<<lastparticle<<")."<<std::endl;
         double time = getContext()->getTime();
         if (time < f_start.getValue() || time > f_stop.getValue()) return;
         // constraint the last value
-        for (int s=0; s<N; s++)
-            res[lastparticle+s] = Deriv();
+        for (unsigned int s=0; s<lastparticles.size(); s++)
+            res[lastparticles[s]] = Deriv();
     }
 
     virtual void projectVelocity(VecDeriv& res) ///< project dx to constrained space (dx models a velocity)
     {
         if (!this->mstate) return;
-        if (lastparticle == -1) return;
+        if (lastparticles.empty()) return;
         double time = getContext()->getTime();
         if (time < f_start.getValue() || time > f_stop.getValue()) return;
         // constraint the last value
-        for (int s=0; s<N; s++)
-            res[lastparticle+s] = f_velocity.getValue();
+        for (unsigned int s=0; s<lastparticles.size(); s++)
+            res[lastparticles[s]] = f_velocity.getValue();
     }
 
     virtual void projectPosition(VecCoord& x) ///< project x to constrained space (x models a position)
     {
         if (!this->mstate) return;
-        if (lastparticle == -1) return;
+        if (lastparticles.empty()) return;
         double time = getContext()->getTime();
         if (time < f_start.getValue() || time > f_stop.getValue()) return;
         // constraint the last value
-        for (int s=0; s<N; s++)
+        for (unsigned int s=0; s<lastparticles.size(); s++)
         {
-            x[lastparticle+s] = lastpos[s];
-            x[lastparticle+s] += f_velocity.getValue()*(time - lasttime); // account for particle initial motion
+            x[lastparticles[s]] = lastpos[s];
+            x[lastparticles[s]] += f_velocity.getValue()*(time - lasttime); // account for particle initial motion
         }
     }
 
@@ -171,6 +228,26 @@ public:
         if (simulation::tree::AnimateEndEvent* ev = dynamic_cast<simulation::tree::AnimateEndEvent*>(event))
             animateEnd(ev->getDt(), getContext()->getTime());
     }
+
+
+protected :
+    static bool PSTestNewPointFunction(int, void*, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
+    {
+        return false;
+    }
+
+    static void PSRemovalFunction (int index, void* p)
+    {
+        ParticleSource* ps = (ParticleSource*)p;
+        topology::PointSubset::const_iterator it = std::find(ps->lastparticles.begin(),ps->lastparticles.end(), (unsigned int)index);
+        if (it != ps->lastparticles.end())
+        {
+            ps->lastpos.erase( ps->lastpos.begin()+(it-ps->lastparticles.begin()) );
+            //ps->lastparticles.getArray().erase(it);
+            helper::removeValue(ps->lastparticles,index);
+        }
+    }
+
 };
 
 

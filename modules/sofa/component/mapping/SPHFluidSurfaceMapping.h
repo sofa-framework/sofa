@@ -45,11 +45,10 @@ namespace component
 namespace mapping
 {
 
-// TODO: move SpatialGridContainer to another namespace?
-using namespace sofa::component::behaviormodel::eulerianfluid;
+using namespace sofa::component::container;
 
 template <class InDataTypes, class OutDataTypes>
-class SPHFluidSurfaceMappingGridTypes : public SpatialGridContainerTypes<typename InDataTypes::Coord>
+class SPHFluidSurfaceMappingGridTypes : public SpatialGridTypes<typename InDataTypes::Coord>
 {
 public:
     typedef forcefield::SPHFluidForceField<InDataTypes> ParticleField;
@@ -170,7 +169,7 @@ protected:
 
     typedef SPHFluidSurfaceMappingGridTypes<typename In::DataTypes, typename Out::DataTypes> GridTypes;
 
-    typedef SpatialGridContainer<GridTypes> Grid;
+    typedef SpatialGrid<GridTypes> Grid;
     typedef typename Grid::Cell Cell;
     enum { GRIDDIM = Grid::GRIDDIM };
     enum { DX = Grid::DX };

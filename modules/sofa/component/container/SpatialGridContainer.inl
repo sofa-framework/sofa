@@ -34,11 +34,15 @@
 //
 //
 
-#ifndef SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_SPATIALGRIDCONTAINER_INL
-#define SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_SPATIALGRIDCONTAINER_INL
+#ifndef SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_INL
+#define SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_INL
 
-#include <sofa/component/behaviormodel/eulerianfluid/SpatialGridContainer.h>
+#include <sofa/component/container/SpatialGridContainer.h>
+#include <sofa/component/topology/PointSetTopology.h>
+#include <sofa/simulation/tree/AnimateBeginEvent.h>
+#include <sofa/simulation/tree/AnimateEndEvent.h>
 #include <sofa/helper/system/gl.h>
+#include <sofa/component/MechanicalObject.h>
 
 
 namespace sofa
@@ -47,25 +51,22 @@ namespace sofa
 namespace component
 {
 
-namespace behaviormodel
-{
-
-namespace eulerianfluid
+namespace container
 {
 
 using namespace sofa::helper;
 
 template<class DataTypes>
-typename SpatialGridContainer<DataTypes>::Grid SpatialGridContainer<DataTypes>::emptyGrid;
+typename SpatialGrid<DataTypes>::Grid SpatialGrid<DataTypes>::emptyGrid;
 
 template<class DataTypes>
-SpatialGridContainer<DataTypes>::SpatialGridContainer(Real cellWidth)
+SpatialGrid<DataTypes>::SpatialGrid(Real cellWidth)
     : cellWidth(cellWidth), invCellWidth(1/cellWidth)
 {
 }
 
 template<class DataTypes>
-const typename SpatialGridContainer<DataTypes>::Grid* SpatialGridContainer<DataTypes>::findGrid(const Key& k) const
+const typename SpatialGrid<DataTypes>::Grid* SpatialGrid<DataTypes>::findGrid(const Key& k) const
 {
     typename Map::const_iterator it = map.find(k);
     if (it == map.end()) return &emptyGrid;
@@ -73,7 +74,7 @@ const typename SpatialGridContainer<DataTypes>::Grid* SpatialGridContainer<DataT
 }
 
 template<class DataTypes>
-typename SpatialGridContainer<DataTypes>::Grid* SpatialGridContainer<DataTypes>::getGrid(const Key& k)
+typename SpatialGrid<DataTypes>::Grid* SpatialGrid<DataTypes>::getGrid(const Key& k)
 {
     Grid* & g = map[k];
     if (g == NULL)
@@ -135,7 +136,7 @@ typename SpatialGridContainer<DataTypes>::Grid* SpatialGridContainer<DataTypes>:
 }
 
 template<class DataTypes>
-typename SpatialGridContainer<DataTypes>::Cell* SpatialGridContainer<DataTypes>::getCell(const Coord& x)
+typename SpatialGrid<DataTypes>::Cell* SpatialGrid<DataTypes>::getCell(const Coord& x)
 {
     int ix = rfloor(x[0]*invCellWidth);
     int iy = rfloor(x[1]*invCellWidth);
@@ -149,7 +150,7 @@ typename SpatialGridContainer<DataTypes>::Cell* SpatialGridContainer<DataTypes>:
 }
 
 template<class DataTypes>
-const typename SpatialGridContainer<DataTypes>::Cell* SpatialGridContainer<DataTypes>::getCell(const Grid* g, int x, int y, int z)
+const typename SpatialGrid<DataTypes>::Cell* SpatialGrid<DataTypes>::getCell(const Grid* g, int x, int y, int z)
 {
     if (x<0)
     {
@@ -184,8 +185,8 @@ const typename SpatialGridContainer<DataTypes>::Cell* SpatialGridContainer<DataT
     return g->cell + (x*DX + y*DY + z*DZ);
 }
 
-template<class DataTypes>
-void SpatialGridContainer<DataTypes>::findNeighbors(NeighborListener* dest, const Real dist2, const Cell** cellsBegin, const Cell** cellsEnd)
+template<class DataTypes> template<class NeighborListener>
+void SpatialGrid<DataTypes>::findNeighbors(NeighborListener* dest, const Real dist2, const Cell** cellsBegin, const Cell** cellsEnd)
 {
     const Cell* c0 = *cellsBegin;
     const typename std::list<Entry>::const_iterator end = c0->plist.end();
@@ -217,8 +218,8 @@ void SpatialGridContainer<DataTypes>::findNeighbors(NeighborListener* dest, cons
     }
 }
 
-template<class DataTypes>
-void SpatialGridContainer<DataTypes>::findNeighbors(NeighborListener* dest, Real dist)
+template<class DataTypes> template<class NeighborListener>
+void SpatialGrid<DataTypes>::findNeighbors(NeighborListener* dest, Real dist)
 {
     const Real dist2 = dist*dist;
     for (typename Map::iterator itg = map.begin(); itg != map.end(); itg++)
@@ -278,7 +279,7 @@ void SpatialGridContainer<DataTypes>::findNeighbors(NeighborListener* dest, Real
 }
 
 template<class DataTypes>
-void SpatialGridContainer<DataTypes>::computeField(ParticleField* field, Real dist)
+void SpatialGrid<DataTypes>::computeField(ParticleField* field, Real dist)
 {
     //dist /= cellWidth;
     const Real dist2 = dist*dist;
@@ -287,7 +288,7 @@ void SpatialGridContainer<DataTypes>::computeField(ParticleField* field, Real di
     int x2,y2,z2;
     if (r > GRIDDIM)
     {
-        std::cerr << "Distance too large in SpatialGridContainer::computeField ("<<r<<" > "<<GRIDDIM<<")\n";
+        std::cerr << "Distance too large in SpatialGrid::computeField ("<<r<<" > "<<GRIDDIM<<")\n";
         return;
     }
     //std::cout << "accumulate particles with radius "<<dist<<std::endl;
@@ -435,7 +436,7 @@ void SpatialGridContainer<DataTypes>::computeField(ParticleField* field, Real di
 }
 
 template<class DataTypes>
-void SpatialGridContainer<DataTypes>::begin()
+void SpatialGrid<DataTypes>::begin()
 {
     for (typename Map::iterator itg = map.begin(); itg != map.end(); itg++)
     {
@@ -447,7 +448,7 @@ void SpatialGridContainer<DataTypes>::begin()
 }
 
 template<class DataTypes>
-void SpatialGridContainer<DataTypes>::add(int i, const Coord& pos, bool allNeighbors)
+void SpatialGrid<DataTypes>::add(int i, const Coord& pos, bool allNeighbors)
 {
     int ix = rfloor(pos[0]*invCellWidth);
     int iy = rfloor(pos[1]*invCellWidth);
@@ -497,7 +498,7 @@ void SpatialGridContainer<DataTypes>::add(int i, const Coord& pos, bool allNeigh
 }
 
 template<class DataTypes>
-void SpatialGridContainer<DataTypes>::end()
+void SpatialGrid<DataTypes>::end()
 {
     //for (typename Map::iterator itg = map.begin();itg != map.end(); itg++)
     //{
@@ -517,8 +518,43 @@ void SpatialGridContainer<DataTypes>::end()
     //}
 }
 
+/// Change particles ordering inside a given cell have contiguous indices
+///
+/// Fill the old2new and new2old arrays giving the permutation to apply
 template<class DataTypes>
-void SpatialGridContainer<DataTypes>::draw()
+void SpatialGrid<DataTypes>::reorderIndices(helper::vector<unsigned int>* old2new, helper::vector<unsigned int>* new2old)
+{
+    unsigned int next = 0;
+    for (typename Map::iterator itg = map.begin(); itg != map.end(); itg++)
+    {
+        Key k = itg->first;
+        Grid* g = itg->second;
+        if (g->empty) continue;
+        for (int i=0; i<NCELL; ++i)
+        {
+            Cell* c = g->cell+i;
+            for (typename std::list<Entry>::iterator it = c->plist.begin(), itend = c->plist.end(); it != itend; ++it)
+            {
+                unsigned int old = it->index;
+                if (old2new != NULL)
+                {
+                    if (old >= old2new->size()) old2new->resize(old+1);
+                    (*old2new)[old] = next;
+                }
+                if (new2old != NULL)
+                {
+                    if (next >= new2old->size()) new2old->resize(next+1);
+                    (*new2old)[next] = old;
+                }
+                it->index = next;
+                ++next;
+            }
+        }
+    }
+}
+
+template<class DataTypes>
+void SpatialGrid<DataTypes>::draw()
 {
     const float cscale = (float)(cellWidth);
     const float gscale = (float)(cellWidth*GRIDDIM);
@@ -633,9 +669,124 @@ void SpatialGridContainer<DataTypes>::draw()
     glEnd();
 }
 
-} // namespace eulerianfluid
+template<class DataTypes>
+SpatialGridContainer<DataTypes>::SpatialGridContainer()
+    : grid(NULL)
+    , d_cellWidth(initData(&d_cellWidth, (Real)1.0, "cellWidth", "Width each cell in the grid. If it is used to compute neighboors, it should be greater that the max radius considered."))
+    , d_showGrid(initData(&d_showGrid, false, "showGrid", "activate rendering of the grid"))
+    , d_sortPoints(initData(&d_sortPoints, false, "sortPoints", "Sort points depending on which cell they are in the grid. This is required for efficient collision detection."))
+    , mstate(NULL)
+{
+    this->f_listening.setValue(true);
+}
 
-} // namespace behaviormodel
+template<class DataTypes>
+SpatialGridContainer<DataTypes>::~SpatialGridContainer()
+{
+    if (grid != NULL)
+        delete grid;
+}
+
+template<class DataTypes>
+void SpatialGridContainer<DataTypes>::init()
+{
+    mstate = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState());
+    grid = new Grid(d_cellWidth.getValue());
+}
+
+template<class DataTypes>
+void SpatialGridContainer<DataTypes>::reinit()
+{
+    if (grid == NULL || grid->getCellWidth() != d_cellWidth.getValue())
+    {
+        if (grid != NULL)
+            delete grid;
+        grid = new Grid(d_cellWidth.getValue());
+    }
+}
+template<class DataTypes>
+bool SpatialGridContainer<DataTypes>::sortPoints()
+{
+    if (mstate)
+        updateGrid(*mstate->getX());
+    if (this->f_printLog.getValue())
+        std::cout << "SpatialGridContainer::sortPoints(): sorting..."<<std::endl;
+    helper::vector<unsigned int> old2new, new2old;
+    grid->reorderIndices(&old2new, &new2old);
+    // check if the mapping actually changed something
+    bool identity = true;
+    for (unsigned int i=0; i<old2new.size(); ++i)
+        if (old2new[i] != i)
+        {
+            identity = false;
+            break;
+        }
+    if (identity)
+    {
+        if(this->f_printLog.getValue())
+            std::cout << "SpatialGridContainer::sortPoints(): no changes."<<std::endl;
+        return false;
+    }
+    if(this->f_printLog.getValue())
+    {
+        std::cout << "map:";
+        for (unsigned int i=0; i<new2old.size(); ++i)
+            std::cout << " "<<new2old[i]<<"->"<<i;
+        std::cout << std::endl;
+        std::cout << "invmap:";
+        for (unsigned int i=0; i<old2new.size(); ++i)
+            std::cout << " "<<i<<"->"<<old2new[i];
+        std::cout << std::endl;
+    }
+    topology::PointSetTopology<DataTypes>* t = dynamic_cast<topology::PointSetTopology<DataTypes>*>(this->getContext()->getMainTopology());
+    if (t)
+    {
+        if(this->f_printLog.getValue())
+            std::cout << "SpatialGridContainer::sortPoints(): renumber using PointSetTopology."<<std::endl;
+        //topology->getPointSetTopologyAlgorithms()->renumberPoints(map,invmap);
+        ((topology::PointSetTopologyModifier<DataTypes>*)t->getTopologyModifier())->renumberPointsWarning(new2old,old2new);
+        ((topology::PointSetTopologyModifier<DataTypes>*)t->getTopologyModifier())->renumberPointsProcess(new2old,old2new);
+        t->propagateTopologicalChanges();
+    }
+    else
+    {
+        MechanicalObject<DataTypes>* object = dynamic_cast<MechanicalObject<DataTypes>*>(this->mstate);
+        if (object != NULL)
+        {
+            if(this->f_printLog.getValue())
+                std::cout << "SpatialGridContainer::sortPoints(): renumber using MechanicalObject."<<std::endl;
+            object->renumberValues(new2old);
+        }
+        else
+        {
+            std::cout << "SpatialGridContainer::sortPoints(): no external object supporting renumbering!"<<std::endl;
+        }
+    }
+    return true;
+}
+template<class DataTypes>
+void SpatialGridContainer<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
+{
+    if (/* simulation::tree::AnimateBeginEvent* ev = */ dynamic_cast<simulation::tree::AnimateBeginEvent*>(event))
+        //if (simulation::tree::AnimateEndEvent* ev = dynamic_cast<simulation::tree::AnimateEndEvent*>(event))
+    {
+        if (d_sortPoints.getValue())
+        {
+            sortPoints();
+        }
+    }
+}
+
+template<class DataTypes>
+void SpatialGridContainer<DataTypes>::draw()
+{
+    if (!d_showGrid.getValue())
+        return;
+    if (grid != NULL)
+        grid->draw();
+}
+
+} // namespace container
 
 } // namespace component
 

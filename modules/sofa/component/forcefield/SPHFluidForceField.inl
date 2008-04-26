@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_INL
 
 #include <sofa/component/forcefield/SPHFluidForceField.h>
-#include <sofa/component/behaviormodel/eulerianfluid/SpatialGridContainer.inl>
+#include <sofa/component/container/SpatialGridContainer.inl>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/gl/template.h>
 #include <math.h>
@@ -61,7 +61,9 @@ template<class DataTypes>
 void SPHFluidForceField<DataTypes>::init()
 {
     this->Inherit::init();
-    grid = new Grid(particleRadius.getValue());
+    this->getContext()->get(grid); //new Grid(particleRadius.getValue());
+    if (grid==NULL)
+        std::cout << "WARNING: SpatialGridContainer not found by SPHFluidForceField, slow O(n2) method will be used !!!" << std::endl;
     int n = (*this->mstate->getX()).size();
     particles.resize(n);
     for (int i=0; i<n; i++)
@@ -123,7 +125,7 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
     }
 
     // First compute the neighbors
-    // This is the only O(n2) step, and should be optimized later
+    // This is an O(n2) step, except if a hash-grid is used to optimize it
     if (grid == NULL)
     {
         for (int i=0; i<n; i++)
@@ -144,12 +146,7 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
     }
     else
     {
-        grid->begin();
-        for (int i=0; i<n; i++)
-        {
-            grid->add(i, x[i]);
-        }
-        grid->end();
+        grid->updateGrid(x);
         grid->findNeighbors(this, h);
 #ifdef SOFA_DEBUG_SPATIALGRIDCONTAINER
         // Check grid
