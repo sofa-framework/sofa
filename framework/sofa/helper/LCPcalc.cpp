@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <functional>
 #include <iostream>
-#include <cmath>
+#include <math.h>
 
 namespace sofa
 {
