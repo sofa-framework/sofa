@@ -581,8 +581,8 @@ void CudaRigidDistanceGridCollisionModel::draw()
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
-    if (getPrevious()!=NULL && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
-        dynamic_cast<core::VisualModel*>(getPrevious())->draw();
+    if (getPrevious()!=NULL)
+        getPrevious()->draw();
 }
 
 void CudaRigidDistanceGridCollisionModel::draw(int index)

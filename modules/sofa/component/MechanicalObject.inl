@@ -366,85 +366,39 @@ void MechanicalObject<DataTypes>::swapValues (const int idx1, const int idx2)
     }
 }
 
+template<class V>
+void renumber(V* v, V* tmp, const sofa::helper::vector< unsigned int > &index )
+{
+    if (v==NULL) return;
+    if (v->empty()) return;
+    *tmp = *v;
+    for (unsigned int i = 0; i < v->size(); ++i)
+        (*v)[i] = (*tmp)[ index[i] ];
+}
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::renumberValues( const sofa::helper::vector< unsigned int > &index )
 {
+    VecDeriv dtmp;
+    VecCoord ctmp;
     // standard state vectors
     // Note that the x,v,x0,f,dx,xfree,vfree and internalForces vectors (but
     // not v0, reset_position, and externalForces) are present in the
     // array of all vectors, so then don't need to be processed separatly.
-    //VecCoord x_cp  = (*x);
-    //VecCoord x0_cp = (*x0);
-    //VecDeriv v_cp  = (*v);
-    VecDeriv v0_cp = (*v0);
-    //VecDeriv f_cp  = (*f);
-    //VecDeriv dx_cp = (*dx);
-    // forces
-    //VecDeriv intern_cp = (*internalForces);
-    VecDeriv extern_cp = (*externalForces);
+    //renumber(x, &ctmp, index);
+    //renumber(x0, &ctmp, index);
+    //renumber(v, &dtmp, index);
+    renumber(v0, &dtmp, index);
+    //renumber(f, &dtmp, index);
+    //renumber(dx, &dtmp, index);
+    //renumber(internalForces, &dtmp, index);
+    renumber(externalForces, &dtmp, index);
     // Note: the following assumes that topological changes won't be reset
-    VecCoord reset_position_cp = (*reset_position);
-
-    // temporary state vectors
-    sofa::helper::vector< VecCoord > vecCoord_cp;
-    vecCoord_cp.resize( vectorsCoord.size() );
-
+    renumber(reset_position, &ctmp, index);
     for (unsigned int i = 0; i < vectorsCoord.size(); ++i)
-    {
-        if(vectorsCoord[i] != NULL)
-            vecCoord_cp[i] = *(vectorsCoord[i]);
-    }
-
-    sofa::helper::vector< VecDeriv > vecDeriv_cp;
-    vecDeriv_cp.resize( vectorsDeriv.size() );
+        renumber(vectorsCoord[i], &ctmp, index);
     for (unsigned int i = 0; i < vectorsDeriv.size(); ++i)
-    {
-        if(vectorsDeriv[i] != NULL)
-            vecDeriv_cp[i] = *(vectorsDeriv[i]);
-    }
-
-    for (unsigned int i = 0; i < index.size(); ++i)
-    {
-        //(*x )[i] = x_cp [ index[i] ];
-        //(*x0)[i] = x0_cp[ index[i] ];
-        //(*v )[i] = v_cp [ index[i] ];
-        (*v0)[i] = v0_cp[ index[i] ];
-        //(*f )[i] = f_cp [ index[i] ];
-        //(*dx)[i] = dx_cp[ index[i] ];
-        (*reset_position)[i] = reset_position_cp[ index[i] ];
-
-        //(*internalForces)[i] = intern_cp[ index[i] ];
-
-        for (unsigned j = 0; j < vectorsCoord.size(); ++j)
-        {
-            if(vectorsCoord[j] != NULL)
-            {
-                VecCoord& vector = *vectorsCoord[j];
-                if(vector.size() > i && vector.size() > index[i])
-                {
-                    (*vectorsCoord[j])[i] = vecCoord_cp[j][ index[i] ];
-                }
-            }
-        }
-
-        for (unsigned j = 0; j < vectorsDeriv.size(); ++j)
-        {
-            if(vectorsDeriv[j] != NULL)
-            {
-                VecDeriv& vector = *vectorsDeriv[j];
-                if(vector.size() > i && vector.size() > index[i])
-                {
-                    (*vectorsDeriv[j])[i] = vecDeriv_cp[j][ index[i] ];
-                }
-            }
-        }
-
-    }
-
-    if (externalForces->size()>0)
-        for (unsigned int i = 0; i < index.size(); ++i)
-            (*externalForces)[i] = extern_cp[ index[i] ];
+        renumber(vectorsDeriv[i], &dtmp, index);
 }
 
 

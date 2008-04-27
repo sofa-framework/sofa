@@ -201,8 +201,8 @@ void CubeModel::draw()
         glDisable(GL_BLEND);
         glDepthMask(1);
     }
-    if (getPrevious()!=NULL && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
-        dynamic_cast<core::VisualModel*>(getPrevious())->draw();
+    if (getPrevious()!=NULL)
+        getPrevious()->draw();
 }
 
 std::pair<core::CollisionElementIterator,core::CollisionElementIterator> CubeModel::getInternalChildren(int index) const

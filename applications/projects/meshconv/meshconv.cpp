@@ -128,6 +128,7 @@ int main(int argc, char** argv)
         qz.fromDegreeAngAxis(rotation[2],Vec3f(0,0,1));
         Quat q = qx*qy*qz;
         q.toMatrix(&mat);
+        std::cout << "mat = "<<mat<<std::endl;
         for (int i=0; i<obj.nbp(); i++)
         {
             obj.PP(i) = mat*obj.getPP(i);

@@ -532,7 +532,11 @@ void SpatialGrid<DataTypes>::reorderIndices(helper::vector<unsigned int>* old2ne
         if (g->empty) continue;
         for (int i=0; i<NCELL; ++i)
         {
-            Cell* c = g->cell+i;
+            int j=0;
+            for (int s=0; s<GRIDDIM_LOG2; ++s)
+                for(int c=0; c<3; ++c)
+                    j += ((i>>3*s+c)&1)<<(GRIDDIM_LOG2*c+s);
+            Cell* c = g->cell+j;
             for (typename std::list<Entry>::iterator it = c->plist.begin(), itend = c->plist.end(); it != itend; ++it)
             {
                 unsigned int old = it->index;
@@ -704,6 +708,7 @@ void SpatialGridContainer<DataTypes>::reinit()
         grid = new Grid(d_cellWidth.getValue());
     }
 }
+
 template<class DataTypes>
 bool SpatialGridContainer<DataTypes>::sortPoints()
 {

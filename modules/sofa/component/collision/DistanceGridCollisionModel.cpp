@@ -192,8 +192,8 @@ void RigidDistanceGridCollisionModel::draw()
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
-    if (getPrevious()!=NULL && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
-        dynamic_cast<core::VisualModel*>(getPrevious())->draw();
+    if (getPrevious()!=NULL)
+        getPrevious()->draw();
 }
 
 void RigidDistanceGridCollisionModel::draw(int index)
@@ -614,8 +614,8 @@ void FFDDistanceGridCollisionModel::draw()
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
-    if (getPrevious()!=NULL && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
-        dynamic_cast<core::VisualModel*>(getPrevious())->draw();
+    if (getPrevious()!=NULL)
+        getPrevious()->draw();
 }
 
 void FFDDistanceGridCollisionModel::draw(int index)
