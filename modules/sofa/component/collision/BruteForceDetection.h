@@ -43,7 +43,6 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-// inherit of VisualModel for debugging, then we can see the voxel grid
 class BruteForceDetection :
     public core::componentmodel::collision::BroadPhaseDetection,
     public core::componentmodel::collision::NarrowPhaseDetection

@@ -121,8 +121,6 @@ public:
 
     void draw();
 
-protected:
-
     int addCube(Cube subcellsBegin, Cube subcellsEnd);
     void updateCube(int index);
     void updateCubes();

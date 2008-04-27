@@ -9,7 +9,7 @@
 *                                                                              *
 * This library is distributed in the hope that it will be useful, but WITHOUT  *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or        *
-	* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License  *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License  *
 * for more details.                                                            *
 *                                                                              *
 * You should have received a copy of the GNU Lesser General Public License     *
@@ -22,16 +22,13 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_TRIANGLEOCTREEMDEL_H
-#define SOFA_COMPONENT_COLLISION_TRIANGLEOCTREEMDEL_H
+#ifndef SOFA_COMPONENT_COLLISION_SPATIALGRIDPOINTMODEL_H
+#define SOFA_COMPONENT_COLLISION_SPATIALGRIDPOINTMODEL_H
 
-#include <sofa/core/CollisionModel.h>
-#include <sofa/component/MechanicalObject.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/component/collision/PointModel.h>
+#include <sofa/component/container/SpatialGridContainer.h>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/collision/TriangleOctree.h>
-
+#include <vector>
 
 namespace sofa
 {
@@ -44,56 +41,52 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-class TriangleOctree;
-class TriangleModel;
-
-class TriangleOctreeModel:public  TriangleMeshModel
+class SpatialGridPointModel : public PointModel
 {
 public:
-    TriangleOctreeModel();
-    /*the triangles assiciated to a point*/
-    vector<vector<int> > pTri;
-    /*the normals for each point*/
-    vector<Vector3> pNorms;
-    /*the size of the octree cube*/
-    int cubeSize;
-    /*the first node of the octree*/
-    TriangleOctree *octreeRoot;
-    //vector < Vector4 > octreeVec;
-    void	draw();
+    typedef container::SpatialGridContainer<Vec3Types> GridContainer;
+    typedef GridContainer::Grid Grid;
+
+    Data<int> d_leafScale;
+
+    SpatialGridPointModel();
+
+    virtual void init();
+
+    // -- CollisionModel interface
+
     virtual void computeBoundingTree(int maxDepth=0);
-    virtual void computeContinuousBoundingTree(double dt, int maxDepth=0);
-    /*init the octree creation*/
-    void buildOctree ();
 protected:
-    /*used to add a triangle  to the octree*/
-    int fillOctree (int t, int d = 0, Vector3 v = Vector3 (0, 0, 0));
-};
-/*class used to manage the Bounding Box for each triangle*/
-class TriangleAABB
-{
 
-
-
-    double bb[6];
-
-    double m_size;
-public:
-    double *getAABB ()
+    GridContainer* grid;
+    class OctreeCell
     {
-        return bb;
-    }
-    double size ()
+    public:
+        Grid::Key k;
+        int pfirst;
+        int plast;
+        OctreeCell( Grid::Key k = Grid::Key(), int pfirst = 0, int plast = -1)
+            : k(k), pfirst(pfirst), plast(plast)
+        {
+        }
+    };
+    class OctreeSorter
     {
-        return m_size;
-    }
-    TriangleAABB (Triangle & t);
+    public:
+        int root_shift;
+        OctreeSorter(int root_shift=8) : root_shift(root_shift) {}
+        bool operator()(const Grid::Key& k1, const Grid::Key &k2);
+        bool operator()(const OctreeCell& c1, const OctreeCell &c2)
+        {
+            return (*this)(c1.k,c2.k);
+        }
+    };
 };
 
-}				// namespace collision
+} // namespace collision
 
-}				// namespace component
+} // namespace component
 
-}				// namespace sofa
+} // namespace sofa
 
 #endif

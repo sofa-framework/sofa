@@ -1,0 +1,201 @@
+//
+// C++ Interface: ParticleSink
+//
+// Description:
+//
+//
+// Author: Jeremie Allard, (C) 2008
+//
+// Copyright: See COPYING file that comes with this distribution
+//
+//
+#ifndef SOFA_COMPONENT_MISC_PARTICLESINK_H
+#define SOFA_COMPONENT_MISC_PARTICLESINK_H
+
+#include <sofa/helper/system/config.h>
+#include <sofa/helper/gl/template.h>
+#include <sofa/core/componentmodel/behavior/Constraint.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/objectmodel/Event.h>
+#include <sofa/simulation/tree/AnimateBeginEvent.h>
+#include <sofa/simulation/tree/AnimateEndEvent.h>
+#include <sofa/component/topology/PointSetTopology.h>
+#include <sofa/component/MechanicalObject.h>
+#include <vector>
+#include <iterator>
+#include <iostream>
+#include <ostream>
+#include <algorithm>
+
+namespace sofa
+{
+
+namespace component
+{
+
+template<class TDataTypes>
+class ParticleSink : public core::componentmodel::behavior::Constraint<TDataTypes>, public virtual core::objectmodel::BaseObject
+{
+public:
+    typedef TDataTypes DataTypes;
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef helper::vector<Real> VecDensity;
+
+    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalModel;
+
+    Data<Deriv> planeNormal;
+    Data<Real> planeD;
+    Data<defaulttype::Vec3f> color;
+    Data<bool> showPlane;
+
+    ParticleSink()
+        : planeNormal(initData(&planeNormal, "normal", "plane normal"))
+        , planeD(initData(&planeD, (Real)0, "d", "plane d coef"))
+        , color(initData(&color, defaulttype::Vec3f(0.0f,.5f,.2f), "color", "plane color"))
+        , showPlane(initData(&showPlane, false, "showPlane", "enable/disable drawing of plane"))
+    {
+        f_listening.setValue(true);
+        Deriv n;
+        DataTypes::set(n, 0, 1, 0);
+        planeNormal.setValue(n);
+    }
+
+    virtual ~ParticleSink()
+    {
+    }
+
+    virtual void init()
+    {
+        this->core::componentmodel::behavior::Constraint<TDataTypes>::init();
+        if (!this->mstate) return;
+
+        std::cout << "ParticleSink: normal="<<planeNormal.getValue()<<" dist="<<planeD.getValue()<<std::endl;
+    }
+
+    virtual void animateBegin(double /*dt*/, double time)
+    {
+        //std::cout << "ParticleSink: animate begin time="<<time<<std::endl;
+        if (!this->mstate) return;
+        const VecCoord& x = *this->mstate->getX();
+        const VecDeriv& v = *this->mstate->getV();
+        int n = x.size();
+        helper::vector<unsigned int> remove;
+        const bool log = this->f_printLog.getValue();
+        for (int i=n-1; i>=0; --i) // always remove points in reverse order
+        {
+            Real d = x[i]*planeNormal.getValue()-planeD.getValue();
+            if (d<0)
+            {
+                if (log)
+                    std::cout << "SINK particle "<<i<<" time "<<time<<" position "<<x[i]<<" velocity "<<v[i]<<std::endl;
+                remove.push_back(i);
+            }
+        }
+        if (!remove.empty())
+        {
+            topology::PointSetTopology<DataTypes>* t = dynamic_cast<topology::PointSetTopology<DataTypes>*>(this->getContext()->getMainTopology());
+            if (t != NULL)
+            {
+                std::cout << "ParticleSink: remove "<<remove.size()<<" particles using PointSetTopology."<<std::endl;
+                ((topology::PointSetTopologyModifier<DataTypes>*)t->getTopologyModifier())->removePointsWarning(remove);
+                t->propagateTopologicalChanges();
+                ((topology::PointSetTopologyModifier<DataTypes>*)t->getTopologyModifier())->removePointsProcess(remove);
+            }
+            else if(MechanicalObject<DataTypes>* object = dynamic_cast<MechanicalObject<DataTypes>*>(this->mstate))
+            {
+                std::cout << "ParticleSink: remove "<<remove.size()<<" particles using MechanicalObject."<<std::endl;
+                // deleting the vertices
+                for (unsigned int i = 0; i < remove.size(); ++i)
+                {
+                    --n;
+                    object->replaceValue(n, remove[i] );
+                }
+                // resizing the state vectors
+                this->mstate->resize(n);
+            }
+            else
+            {
+                std::cout << "ERROR(ParticleSink): no external object supporting removing points!"<<std::endl;
+            }
+        }
+    }
+
+    virtual void projectResponse(VecDeriv&) ///< project dx to constrained space
+    {
+    }
+
+    virtual void projectVelocity(VecDeriv&) ///< project dx to constrained space (dx models a velocity)
+    {
+    }
+
+    virtual void projectPosition(VecCoord&) ///< project x to constrained space (x models a position)
+    {
+    }
+
+    virtual void animateEnd(double /*dt*/, double /*time*/)
+    {
+
+    }
+
+    virtual void handleEvent(sofa::core::objectmodel::Event* event)
+    {
+        if (simulation::tree::AnimateBeginEvent* ev = dynamic_cast<simulation::tree::AnimateBeginEvent*>(event))
+            animateBegin(ev->getDt(), getContext()->getTime());
+        if (simulation::tree::AnimateEndEvent* ev = dynamic_cast<simulation::tree::AnimateEndEvent*>(event))
+            animateEnd(ev->getDt(), getContext()->getTime());
+    }
+
+    virtual void draw()
+    {
+        if (!showPlane.getValue()) return;
+        defaulttype::Vec3d normal; normal = planeNormal.getValue();
+
+        // find a first vector inside the plane
+        defaulttype::Vec3d v1;
+        if( 0.0 != normal[0] ) v1 = defaulttype::Vec3d(-normal[1]/normal[0], 1.0, 0.0);
+        else if ( 0.0 != normal[1] ) v1 = defaulttype::Vec3d(1.0, -normal[0]/normal[1],0.0);
+        else if ( 0.0 != normal[2] ) v1 = defaulttype::Vec3d(1.0, 0.0, -normal[0]/normal[2]);
+        v1.normalize();
+        // find a second vector inside the plane and orthogonal to the first
+        defaulttype::Vec3d v2;
+        v2 = v1.cross(normal);
+        v2.normalize();
+        const float size=10.0f;
+        defaulttype::Vec3d center = normal*planeD.getValue();
+        defaulttype::Vec3d corners[4];
+        corners[0] = center-v1*size-v2*size;
+        corners[1] = center+v1*size-v2*size;
+        corners[2] = center+v1*size+v2*size;
+        corners[3] = center-v1*size+v2*size;
+
+        // glEnable(GL_LIGHTING);
+        glDisable(GL_LIGHTING);
+        glEnable(GL_CULL_FACE);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glCullFace(GL_FRONT);
+
+        glColor3f(color.getValue()[0],color.getValue()[1],color.getValue()[2]);
+
+        glBegin(GL_QUADS);
+        helper::gl::glVertexT(corners[0]);
+        helper::gl::glVertexT(corners[1]);
+        helper::gl::glVertexT(corners[2]);
+        helper::gl::glVertexT(corners[3]);
+        glEnd();
+
+        glDisable(GL_CULL_FACE);
+
+        glColor4f(1,0,0,1);
+    }
+};
+
+} // namespace component
+
+} // namespace sofa
+
+#endif
+

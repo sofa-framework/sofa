@@ -9,8 +9,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef ParticleSource_H
-#define ParticleSource_H
+#ifndef SOFA_COMPONENT_MISC_PARTICLESOURCE_H
+#define SOFA_COMPONENT_MISC_PARTICLESOURCE_H
 
 #include <sofa/core/componentmodel/behavior/Constraint.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
@@ -30,7 +30,6 @@ namespace sofa
 
 namespace component
 {
-
 
 template<class TDataTypes>
 class ParticleSource : public core::componentmodel::behavior::Constraint<TDataTypes>, public virtual core::objectmodel::BaseObject
@@ -97,8 +96,10 @@ public:
 
     virtual void reset()
     {
+        this->mstate->resize(1);
         lasttime = f_start.getValue()-f_delay.getValue();
         lastparticles.clear();
+        lastpos.clear();
     }
 
     Real rrand()
@@ -244,16 +245,16 @@ protected :
         {
             ps->lastpos.erase( ps->lastpos.begin()+(it-ps->lastparticles.begin()) );
             //ps->lastparticles.getArray().erase(it);
-            helper::removeValue(ps->lastparticles,index);
+            helper::removeValue(ps->lastparticles,(unsigned int)index);
         }
     }
 
 };
 
 
-}
+} // namespace component
 
-}
+} // namespace sofa
 
 #endif
 

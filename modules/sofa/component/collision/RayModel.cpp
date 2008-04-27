@@ -108,8 +108,8 @@ void RayModel::draw()
             draw(i);
         }
     }
-    if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
-        dynamic_cast<core::VisualModel*>(getPrevious())->draw();
+    if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
+        getPrevious()->draw();
 }
 
 void RayModel::computeBoundingTree(int maxDepth)

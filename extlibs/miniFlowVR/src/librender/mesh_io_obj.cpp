@@ -229,6 +229,10 @@ public:
       { // dissolve
 	mat.alpha = (float)strtod(skip(c),(char**)&c);
       }
+      else if (t == "Ni")
+      { // optical density
+	mat.optical_density = (float)strtod(skip(c),(char**)&c);
+      }
       else if (t == "illum")
       {
 	int i = atoi(skip(c));

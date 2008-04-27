@@ -152,8 +152,8 @@ void DefaultContactManager::draw()
 {
     for (sofa::helper::vector<core::componentmodel::collision::Contact*>::iterator it = contacts.begin(); it!=contacts.end(); it++)
     {
-        if (dynamic_cast<core::VisualModel*>(*it)!=NULL)
-            dynamic_cast<core::VisualModel*>(*it)->draw();
+        if ((*it)!=NULL)
+            (*it)->draw();
     }
 }
 

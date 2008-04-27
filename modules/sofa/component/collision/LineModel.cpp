@@ -262,8 +262,8 @@ void LineModel::draw()
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
-    if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
-        dynamic_cast<core::VisualModel*>(getPrevious())->draw();
+    if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
+        getPrevious()->draw();
 }
 
 bool LineModel::canCollideWithElement(int index, CollisionModel* model2, int index2)

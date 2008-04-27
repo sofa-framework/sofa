@@ -123,8 +123,8 @@ void BarycentricLagrangianMultiplierContact<TCollisionModel1,TCollisionModel2>::
 template < class TCollisionModel1, class TCollisionModel2 >
 void BarycentricLagrangianMultiplierContact<TCollisionModel1,TCollisionModel2>::draw()
 {
-//	if (dynamic_cast<core::VisualModel*>(ff)!=NULL)
-//		dynamic_cast<core::VisualModel*>(ff)->draw();
+//	if (ff!=NULL)
+//		ff->draw();
 }
 
 } // namespace collision

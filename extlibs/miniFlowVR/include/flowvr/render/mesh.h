@@ -233,11 +233,12 @@ public:
     Vec3f ambient, diffuse, specular, emmisive;
     float alpha;
     float shininess;
+    float optical_density;
     std::string map_ambient, map_diffuse, map_specular, map_emmisive, map_alpha;
     std::string map_bump;
 
     Material()
-    : alpha(1), shininess(0)
+    : alpha(1), shininess(0), optical_density(1)
     {
     }
   };
