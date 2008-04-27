@@ -115,7 +115,7 @@ bool BaseContext::getShowBoundingCollisionModels() const
 /// Display flags: Behavior Models
 bool BaseContext::getShowBehaviorModels() const
 {
-    return false;
+    return true;
 }
 
 /// Display flags: Visual Models
@@ -277,6 +277,7 @@ void BaseContext::propagateEvent( Event* )
 void BaseContext::executeVisitor( simulation::tree::Visitor* )
 {
     cerr<<"WARNING !!! BaseContext::executeVisitor not overloaded, does nothing"<<endl;
+    //assert(false);
 }
 
 

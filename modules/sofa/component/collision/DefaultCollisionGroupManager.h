@@ -53,6 +53,12 @@ public:
 
     virtual void clearGroups(core::objectmodel::BaseContext* scene);
 
+    /** Overload this if yo want to design your collision group, e.g. with a MasterSolver.
+    Otherwise, an empty GNode is returned.
+    The OdeSolver is added afterwards.
+    */
+    virtual simulation::tree::GNode* buildCollisionGroup();
+
 protected:
     virtual simulation::tree::GNode* getIntegrationNode(core::CollisionModel* model);
 
@@ -64,6 +70,7 @@ protected:
         storedGroupSet[instance].swap(groupSet);
         groupSet.swap(storedGroupSet[inst]);
     }
+
 };
 
 } // namespace collision

@@ -244,8 +244,10 @@ sofa::defaulttype::Vector3::value_type UniformMass<DataTypes, MassType>::getElem
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::draw()
 {
+    cerr<<"UniformMass<DataTypes, MassType>::draw() 1"<<endl;
     if (!getContext()->getShowBehaviorModels())
         return;
+    cerr<<"UniformMass<DataTypes, MassType>::draw() 2"<<endl;
     const VecCoord& x = *this->mstate->getX();
     Coord gravityCenter;
     glDisable (GL_LIGHTING);

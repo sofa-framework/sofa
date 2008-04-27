@@ -166,25 +166,22 @@ void MechanicalPropagatePositionAndVelocityVisitor::processNodeBottomUp(GNode* n
 }
 
 
+Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(GNode* node, core::componentmodel::behavior::OdeSolver* obj)
+{
+    double nextTime = node->getTime() + dt;
+    MechanicalBeginIntegrationVisitor beginVisitor(dt);
+    node->execute(&beginVisitor);
 
-// void MechanicalVOpVisitor::processNodeBottomUp(GNode* node)
-// {
-//    MechanicalVisitor::processNodeBottomUp(node);
-//    if( node->getDebug() && node->mechanicalModel ) {
-//       cerr<<"MechanicalVopVisitor::processNodeBottomUp, node "<<node->getName()<<", x=";
-//       (*node->mechanicalModel).printX(cerr);
-//       cerr<<endl;
-//       cerr<<"MechanicalVopVisitor::processNodeBottomUp, node "<<node->getName()<<", v=";
-//       (*node->mechanicalModel).printV(cerr);
-//       cerr<<endl;
-//       cerr<<"MechanicalVopVisitor::processNodeBottomUp, node "<<node->getName()<<", f=";
-//       (*node->mechanicalModel).printF(cerr);
-//       cerr<<endl;
-//       cerr<<"MechanicalVopVisitor::processNodeBottomUp, node "<<node->getName()<<", dx=";
-//       (*node->mechanicalModel).printDx(cerr);
-//       cerr<<endl;
-//    }
-// }
+    cerr<<"MechanicalIntegrationVisitor::fwdOdeSolver start solve obj"<<endl;
+    obj->solve(dt);
+    cerr<<"MechanicalIntegrationVisitor::fwdOdeSolver end solve obj"<<endl;
+    obj->propagatePositionAndVelocity(nextTime,core::componentmodel::behavior::OdeSolver::VecId::position(),core::componentmodel::behavior::OdeSolver::VecId::velocity());
+
+    MechanicalEndIntegrationVisitor endVisitor(dt);
+    node->execute(&endVisitor);
+    return RESULT_PRUNE;
+}
+
 
 } // namespace tree
 
