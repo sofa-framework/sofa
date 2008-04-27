@@ -51,7 +51,7 @@ using namespace sofa::helper;
 using namespace core::componentmodel::behavior;
 using namespace core::componentmodel::collision;
 
-SOFA_DECL_CLASS(DefaultCollisionGroupManager)
+SOFA_DECL_CLASS(DefaultCollisionGroupManager);
 
 int DefaultCollisionGroupManagerClass = core::RegisterObject("Responsible for gathering colliding objects in the same group, for consistent time integration")
         .add< DefaultCollisionGroupManager >()
@@ -76,6 +76,11 @@ DefaultCollisionGroupManager::DefaultCollisionGroupManager()
 
 DefaultCollisionGroupManager::~DefaultCollisionGroupManager()
 {
+}
+
+simulation::tree::GNode* DefaultCollisionGroupManager::buildCollisionGroup()
+{
+    return new simulation::tree::GNode;
 }
 
 void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<Contact*>& contacts)
@@ -128,7 +133,8 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                     char groupName[32];
                     snprintf(groupName,sizeof(groupName),"collision%d",groupIndex++);
                     // create a new group
-                    group = new simulation::tree::GNode(groupName);
+                    group = buildCollisionGroup();
+                    group->setName(groupName);
                     parent->addChild(group);
 
                     core::objectmodel::Context *current_context = dynamic_cast< core::objectmodel::Context *>(parent->getContext());

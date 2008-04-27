@@ -26,6 +26,7 @@
 // #include <sofa/simulation/tree/Visitor.h>
 // #include <sofa/simulation/tree/Visitor.h>
 
+
 namespace sofa
 {
 
@@ -430,6 +431,7 @@ std::ostream& operator << (std::ostream& out, const Context& c )
     out<<std::endl<<"acceleration of the origin = "<<c.getVelocityBasedLinearAccelerationInWorld();
     return out;
 }
+
 
 
 

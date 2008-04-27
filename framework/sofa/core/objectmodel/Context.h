@@ -25,11 +25,14 @@
 #ifndef SOFA_CORE_OBJECTMODEL_CONTEXT_H
 #define SOFA_CORE_OBJECTMODEL_CONTEXT_H
 
+#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Data.h>
 
 #include <iostream>
 #include <map>
+
+
 
 namespace sofa
 {
@@ -85,6 +88,7 @@ public:
     Context();
     virtual ~Context()
     {}
+
 
     /// @name Parameters
     /// @{
@@ -236,6 +240,8 @@ public:
     void copyVisualContext(const Context& c);
 
     friend std::ostream& operator << (std::ostream& out, const Context& c );
+
+
 
 };
 

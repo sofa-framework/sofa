@@ -994,19 +994,7 @@ public:
     MechanicalIntegrationVisitor (double dt)
         : dt(dt)
     {}
-    virtual Result fwdOdeSolver(GNode* node, core::componentmodel::behavior::OdeSolver* obj)
-    {
-        double nextTime = node->getTime() + dt;
-        MechanicalBeginIntegrationVisitor beginVisitor(dt);
-        node->execute(&beginVisitor);
-
-        obj->solve(dt);
-        obj->propagatePositionAndVelocity(nextTime,core::componentmodel::behavior::OdeSolver::VecId::position(),core::componentmodel::behavior::OdeSolver::VecId::velocity());
-
-        MechanicalEndIntegrationVisitor endVisitor(dt);
-        node->execute(&endVisitor);
-        return RESULT_PRUNE;
-    }
+    virtual Result fwdOdeSolver(GNode* node, core::componentmodel::behavior::OdeSolver* obj);
     virtual void bwdOdeSolver(GNode* /*node*/, core::componentmodel::behavior::OdeSolver* /*obj*/)
     {
     }

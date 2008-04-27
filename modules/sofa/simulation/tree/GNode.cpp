@@ -97,6 +97,16 @@ void GNode::removeChild(GNode* node)
     doRemoveChild(node);
 }
 
+void GNode::removeControllers()
+{
+    removeObject(masterSolver);
+    typedef Sequence<core::componentmodel::behavior::OdeSolver> Solvers;
+    Solvers solverRemove = solver;
+    for( Solvers::iterator i=solverRemove.begin(), iend=solverRemove.end(); i!=iend; i++ )
+        removeObject( *i );
+}
+
+
 /// Add a child node
 void GNode::addChild(core::objectmodel::BaseNode* node)
 {
@@ -125,23 +135,6 @@ void GNode::moveChild(GNode* node)
     }
 }
 
-/// Move an object from another node
-void GNode::moveObject(BaseObject* obj)
-{
-    GNode* prev = dynamic_cast<GNode*>(obj->getContext());
-    if (prev==NULL)
-    {
-        obj->getContext()->removeObject(obj);
-        addObject(obj);
-    }
-    else
-    {
-        notifyMoveObject(obj,prev);
-        prev->doRemoveObject(obj);
-        doAddObject(obj);
-    }
-}
-
 core::objectmodel::BaseContext* GNode::getContext()
 {
     return this;
@@ -150,6 +143,7 @@ const core::objectmodel::BaseContext* GNode::getContext() const
 {
     return this;
 }
+
 
 
 /// Generic object access, possibly searching up or down from the current context
@@ -211,15 +205,15 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
         std::string newpath = std::string(path, 2);
         while (!newpath.empty() && path[0] == '/')
             newpath.erase(0);
-        return getObject(newpath);
+        return component::System::getObject(newpath);
     }
     else if (std::string(path,0,3)==std::string("../"))
     {
         std::string newpath = std::string(path, 3);
         while (!newpath.empty() && path[0] == '/')
             newpath.erase(0);
-        if (parent) return parent->getObject(newpath);
-        else return getObject(newpath);
+        if (parent) return parent->component::System::getObject(newpath);
+        else return component::System::getObject(newpath);
     }
     else
     {
@@ -240,7 +234,7 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
         }
         else
         {
-            core::objectmodel::BaseObject* obj = getObject(name);
+            core::objectmodel::BaseObject* obj = component::System::getObject(name);
             if (obj == NULL)
             {
                 std::cerr << "ERROR: object "<<name<<" not found in "<<getPathName()<<std::endl;
@@ -306,155 +300,7 @@ void GNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, Get
     }
 }
 
-/// Mechanical Degrees-of-Freedom
-core::objectmodel::BaseObject* GNode::getMechanicalState() const
-{
-    // return this->mechanicalModel;
-    // CHANGE 12/01/06 (Jeremie A.): Inherit parent mechanical model if no local model is defined
-    if (this->mechanicalState)
-        return this->mechanicalState;
-    else if (parent)
-        return parent->getMechanicalState();
-    else
-        return NULL;
-}
 
-/// Topology
-core::componentmodel::topology::Topology* GNode::getTopology() const
-{
-    // return this->topology;
-    // CHANGE 12/01/06 (Jeremie A.): Inherit parent topology if no local topology is defined
-    if (this->topology)
-        return this->topology;
-    else if (parent)
-        return parent->getTopology();
-    else
-        return NULL;
-}
-
-/// Dynamic Topology
-core::componentmodel::topology::BaseTopology* GNode::getMainTopology() const
-{
-    core::componentmodel::topology::BaseTopology *main=0;
-    unsigned int i;
-    for (i=0; i<basicTopology.size(); ++i)
-    {
-        if (basicTopology[i]->isMainTopology()==true)
-            main=basicTopology[i];
-    }
-    // return main;
-    // CHANGE 12/01/06 (Jeremie A.): Inherit parent topology if no local topology is defined
-    if (main)
-        return main;
-    else if (parent)
-        return parent->getMainTopology();
-    else
-        return NULL;
-}
-
-/// Mesh Topology (unified interface for both static and dynamic topologies)
-core::componentmodel::topology::BaseMeshTopology* GNode::getMeshTopology() const
-{
-    if (this->meshTopology)
-        return this->meshTopology;
-    else if (parent)
-        return parent->getMeshTopology();
-    else
-        return NULL;
-}
-
-/// Shader
-core::objectmodel::BaseObject* GNode::getShader() const
-{
-    if (shader)
-        return shader;
-    else if (parent)
-        return parent->getShader();
-    else
-        return NULL;
-}
-
-/// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
-bool GNode::addObject(BaseObject* obj)
-{
-    notifyAddObject(obj);
-    doAddObject(obj);
-    return true;
-}
-
-/// Remove an object
-bool GNode::removeObject(BaseObject* obj)
-{
-    notifyRemoveObject(obj);
-    doRemoveObject(obj);
-    return true;
-}
-
-/// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
-void GNode::doAddObject(BaseObject* obj)
-{
-    notifyAddObject(obj);
-    obj->setContext(this);
-    object.add(obj);
-    masterSolver.add(dynamic_cast< core::componentmodel::behavior::MasterSolver* >(obj));
-    solver.add(dynamic_cast< core::componentmodel::behavior::OdeSolver* >(obj));
-    mechanicalState.add(dynamic_cast< core::componentmodel::behavior::BaseMechanicalState* >(obj));
-    if (!mechanicalMapping.add(dynamic_cast< core::componentmodel::behavior::BaseMechanicalMapping* >(obj)))
-        mapping.add(dynamic_cast< core::BaseMapping* >(obj));
-    mass.add(dynamic_cast< core::componentmodel::behavior::BaseMass* >(obj));
-    topology.add(dynamic_cast< core::componentmodel::topology::Topology* >(obj));
-    basicTopology.add(dynamic_cast< core::componentmodel::topology::BaseTopology* >(obj));
-    meshTopology.add(dynamic_cast< core::componentmodel::topology::BaseMeshTopology* >(obj));
-    shader.add(dynamic_cast< sofa::core::Shader* >(obj));
-
-    if (!interactionForceField.add(dynamic_cast< core::componentmodel::behavior::InteractionForceField* >(obj)))
-        forceField.add(dynamic_cast< core::componentmodel::behavior::BaseForceField* >(obj));
-    constraint.add(dynamic_cast< core::componentmodel::behavior::BaseConstraint* >(obj));
-    behaviorModel.add(dynamic_cast< core::BehaviorModel* >(obj));
-    visualModel.add(dynamic_cast< core::VisualModel* >(obj));
-    collisionModel.add(dynamic_cast< core::CollisionModel* >(obj));
-    contextObject.add(dynamic_cast< core::objectmodel::ContextObject* >(obj));
-    collisionPipeline.add(dynamic_cast< core::componentmodel::collision::Pipeline* >(obj));
-    actionScheduler.add(dynamic_cast< VisitorScheduler* >(obj));
-}
-
-/// Remove an object
-void GNode::doRemoveObject(BaseObject* obj)
-{
-    if (obj->getContext()==this)
-    {
-        obj->setContext(NULL);
-    }
-    object.remove(obj);
-    masterSolver.remove(dynamic_cast< core::componentmodel::behavior::MasterSolver* >(obj));
-    solver.remove(dynamic_cast< core::componentmodel::behavior::OdeSolver* >(obj));
-    mechanicalState.remove(dynamic_cast< core::componentmodel::behavior::BaseMechanicalState* >(obj));
-    mechanicalMapping.remove(dynamic_cast< core::componentmodel::behavior::BaseMechanicalMapping* >(obj));
-    mass.remove(dynamic_cast< core::componentmodel::behavior::BaseMass* >(obj));
-    topology.remove(dynamic_cast< core::componentmodel::topology::Topology* >(obj));
-    basicTopology.remove(dynamic_cast< core::componentmodel::topology::BaseTopology* >(obj));
-    meshTopology.remove(dynamic_cast< core::componentmodel::topology::BaseMeshTopology* >(obj));
-    shader.remove(dynamic_cast<sofa::core::Shader* >(obj));
-
-    forceField.remove(dynamic_cast< core::componentmodel::behavior::BaseForceField* >(obj));
-    interactionForceField.remove(dynamic_cast< core::componentmodel::behavior::InteractionForceField* >(obj));
-    constraint.remove(dynamic_cast< core::componentmodel::behavior::BaseConstraint* >(obj));
-    mapping.remove(dynamic_cast< core::BaseMapping* >(obj));
-    behaviorModel.remove(dynamic_cast< core::BehaviorModel* >(obj));
-    visualModel.remove(dynamic_cast< core::VisualModel* >(obj));
-    collisionModel.remove(dynamic_cast< core::CollisionModel* >(obj));
-    contextObject.remove(dynamic_cast<core::objectmodel::ContextObject* >(obj));
-    collisionPipeline.remove(dynamic_cast< core::componentmodel::collision::Pipeline* >(obj));
-    actionScheduler.remove(dynamic_cast< VisitorScheduler* >(obj));
-    // Remove references to this object in time log tables
-    if (!objectTime.empty())
-    {
-        for (std::map<std::string, std::map<core::objectmodel::BaseObject*, simulation::tree::GNode::ObjectTimer> >::iterator it = objectTime.begin(); it != objectTime.end(); ++it)
-        {
-            it->second.erase(obj);
-        }
-    }
-}
 
 void GNode::initVisualContext()
 {
@@ -736,14 +582,6 @@ void GNode::doExecuteVisitor(Visitor* action)
     }
 }
 
-/// Find an object given its name
-core::objectmodel::BaseObject* GNode::getObject(const std::string& name) const
-{
-    for (ObjectIterator it = object.begin(), itend = object.end(); it != itend; ++it)
-        if ((*it)->getName() == name)
-            return *it;
-    return NULL;
-}
 
 /// Find a child node given its name
 GNode* GNode::getChild(const std::string& name) const
@@ -872,6 +710,37 @@ void GNode::notifyRemoveChild(GNode* node)
         (*it)->removeChild(this, node);
 }
 
+void GNode::notifyMoveChild(GNode* node, GNode* prev)
+{
+    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
+        (*it)->moveChild(prev, this, node);
+}
+
+/// Return the full path name of this node
+std::string GNode::getPathName() const
+{
+    std::string str;
+    if (parent!=NULL) str = parent->getPathName();
+    str += '/';
+    str += getName();
+    return str;
+}
+
+/// Remove an object
+void GNode::doRemoveObject(BaseObject* obj)
+{
+    System::doRemoveObject(obj);
+    actionScheduler.remove(dynamic_cast< VisitorScheduler* >(obj));
+    // Remove references to this object in time log tables
+    if (!objectTime.empty())
+    {
+        for (std::map<std::string, std::map<core::objectmodel::BaseObject*, simulation::tree::GNode::ObjectTimer> >::iterator it = objectTime.begin(); it != objectTime.end(); ++it)
+        {
+            it->second.erase(obj);
+        }
+    }
+}
+
 void GNode::notifyAddObject(core::objectmodel::BaseObject* obj)
 {
     for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
@@ -884,27 +753,116 @@ void GNode::notifyRemoveObject(core::objectmodel::BaseObject* obj)
         (*it)->removeObject(this, obj);
 }
 
-void GNode::notifyMoveChild(GNode* node, GNode* prev)
-{
-    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->moveChild(prev, this, node);
-}
-
 void GNode::notifyMoveObject(core::objectmodel::BaseObject* obj, GNode* prev)
 {
     for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
         (*it)->moveObject(prev, this, obj);
 }
 
-/// Return the full path name of this node
-std::string GNode::getPathName() const
+
+
+/// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
+void GNode::doAddObject(BaseObject* obj)
 {
-    std::string str;
-    if (parent!=NULL) str = parent->getPathName();
-    str += '/';
-    str += getName();
-    return str;
+    notifyAddObject(obj);
+    System::doAddObject(obj);
+    actionScheduler.add(dynamic_cast< VisitorScheduler* >(obj));
 }
+/// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
+bool GNode::addObject(BaseObject* obj)
+{
+    notifyAddObject(obj);
+    return System::removeObject(obj);
+}
+
+/// Remove an object
+bool GNode::removeObject(BaseObject* obj)
+{
+    notifyRemoveObject(obj);
+    return System::removeObject(obj);
+}
+
+/// Move an object from another node
+void GNode::moveObject(BaseObject* obj)
+{
+    GNode* prev = dynamic_cast<GNode*>(obj->getContext());
+    if (prev!=NULL)
+    {
+        notifyMoveObject(obj,prev);
+    }
+    System::moveObject(obj);
+}
+
+/// Topology
+core::componentmodel::topology::Topology* GNode::getTopology() const
+{
+    // return this->topology;
+    // CHANGE 12/01/06 (Jeremie A.): Inherit parent topology if no local topology is defined
+    if (this->topology)
+        return this->topology;
+    else if (parent)
+        return parent->getTopology();
+    else
+        return NULL;
+}
+
+/// Dynamic Topology
+core::componentmodel::topology::BaseTopology* GNode::getMainTopology() const
+{
+    core::componentmodel::topology::BaseTopology *main=0;
+    unsigned int i;
+    for (i=0; i<basicTopology.size(); ++i)
+    {
+        if (basicTopology[i]->isMainTopology()==true)
+            main=basicTopology[i];
+    }
+    // return main;
+    // CHANGE 12/01/06 (Jeremie A.): Inherit parent topology if no local topology is defined
+    if (main)
+        return main;
+    else if (parent)
+        return parent->getMainTopology();
+    else
+        return NULL;
+}
+
+/// Mesh Topology (unified interface for both static and dynamic topologies)
+core::componentmodel::topology::BaseMeshTopology* GNode::getMeshTopology() const
+{
+    if (this->meshTopology)
+        return this->meshTopology;
+    else if (parent)
+        return parent->getMeshTopology();
+    else
+        return NULL;
+}
+
+/// Shader
+core::objectmodel::BaseObject* GNode::getShader() const
+{
+    if (shader)
+        return shader;
+    else if (parent)
+        return parent->getShader();
+    else
+        return NULL;
+}
+
+/// Mechanical Degrees-of-Freedom
+core::objectmodel::BaseObject* GNode::getMechanicalState() const
+{
+    // return this->mechanicalModel;
+    // CHANGE 12/01/06 (Jeremie A.): Inherit parent mechanical model if no local model is defined
+    if (this->mechanicalState)
+        return this->mechanicalState;
+    else if (parent)
+        return parent->getMechanicalState();
+    else
+        return NULL;
+}
+
+
+
 void create(GNode*& obj, xml::Element<core::objectmodel::BaseNode>* arg)
 {
     obj = new GNode();

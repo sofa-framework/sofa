@@ -71,7 +71,7 @@ int main(int argc, char** argv)
     TetrahedronFEMForceField3* spring = new  TetrahedronFEMForceField3;
     groot->addObject(spring);
     spring->setUpdateStiffnessMatrix(true);
-    spring->setYoungModulus(1);
+    spring->setYoungModulus(6);
 
     // Tetrahedron skin
     GNode* skin = new GNode;
