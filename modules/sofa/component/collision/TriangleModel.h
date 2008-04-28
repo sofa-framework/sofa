@@ -78,25 +78,6 @@ public:
 
 class TriangleModel : public core::CollisionModel
 {
-protected:
-    struct TriangleInfo
-    {
-        //int i1,i2,i3;
-        int flags;
-        Vector3 normal;
-    };
-
-    sofa::helper::vector<TriangleInfo> elems;
-    const sofa::helper::vector<topology::Triangle>* triangles;
-
-    sofa::helper::vector<topology::Triangle> mytriangles;
-
-    int meshRevision;
-    bool needsUpdate;
-    virtual void updateFromTopology();
-    virtual void updateFlags(int ntri=-1);
-    virtual void updateNormals();
-
 public:
     typedef Vec3Types InDataTypes;
     typedef Vec3Types DataTypes;
@@ -105,7 +86,7 @@ public:
     typedef DataTypes::Coord Coord;
     typedef DataTypes::Deriv Deriv;
     typedef Triangle Element;
-    //typedef topology::MeshTopology Topology;
+    typedef topology::TriangleSetTopology<DataTypes> SetTopology;
     friend class Triangle;
 
     enum TriangleFlag
@@ -119,6 +100,33 @@ public:
         FLAG_POINTS  = FLAG_P1|FLAG_P2|FLAG_P3,
         FLAG_EDGES   = FLAG_E12|FLAG_E23|FLAG_E31,
     };
+
+protected:
+    struct TriangleInfo
+    {
+        //int i1,i2,i3;
+        int flags;
+        Vector3 normal;
+    };
+
+    sofa::helper::vector<TriangleInfo> elems;
+    const sofa::helper::vector<topology::Triangle>* triangles;
+
+    sofa::helper::vector<topology::Triangle> mytriangles;
+
+    Topology* topology;
+    SetTopology* setTopology;
+
+    int meshRevision;
+    bool needsUpdate;
+    virtual void updateFromTopology();
+    virtual void updateFlags(int ntri=-1);
+    virtual void updateNormals();
+
+    core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
+    Data<bool> computeNormals;
+
+public:
 
     TriangleModel();
 
@@ -136,13 +144,11 @@ public:
 
     void draw();
 
+    void handleTopologyChange();
+
     core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
 
     void buildOctree();
-
-protected:
-    core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
-    Data<bool> computeNormals;
 };
 
 inline Triangle::Triangle(TriangleModel* model, int index)
@@ -174,38 +180,38 @@ inline       Vector3& Triangle::n()       { return model->elems[index].normal; }
 
 inline int            Triangle::flags() const { return model->elems[index].flags; }
 
-class TriangleMeshModel : public TriangleModel
-{
-public:
-    typedef topology::MeshTopology Topology;
-    TriangleMeshModel();
-    virtual void init();
-    Topology* getTopology() { return mesh; }
-protected:
-    int meshRevision;
-    void updateFromTopology();
-    Topology* mesh;
-};
+//class TriangleMeshModel : public TriangleModel
+//{
+//public:
+//	typedef topology::MeshTopology Topology;
+//    TriangleMeshModel();
+//    virtual void init();
+//    Topology* getTopology() { return mesh; }
+//protected:
+//    int meshRevision;
+//    void updateFromTopology();
+//	Topology* mesh;
+//};
 
-class TriangleSetModel : public TriangleModel
-{
-public:
-    typedef topology::TriangleSetTopology<DataTypes> Topology;
-
-    TriangleSetModel();
-
-    virtual void init();
-
-    Topology* getTopology() { return mesh; }
-
-    // handle topological changes
-    virtual void handleTopologyChange();
-
-protected:
-
-    Topology* mesh;
-    void updateFromTopology();
-};
+//class TriangleSetModel : public TriangleModel
+//{
+//public:
+//    typedef topology::TriangleSetTopology<DataTypes> Topology;
+//
+//    TriangleSetModel();
+//
+//    virtual void init();
+//
+//    Topology* getTopology() { return mesh; }
+//
+//    // handle topological changes
+//    virtual void handleTopologyChange();
+//
+//protected:
+//
+//    Topology* mesh;
+//    void updateFromTopology();
+//};
 
 } // namespace collision
 

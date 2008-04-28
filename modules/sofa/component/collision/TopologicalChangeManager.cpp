@@ -56,7 +56,7 @@ TopologicalChangeManager::~TopologicalChangeManager()
 
 void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::core::CollisionElementIterator elem2) const
 {
-    TriangleSetModel* my_triangle_model = (dynamic_cast<TriangleSetModel*>(elem2.getCollisionModel()));
+    TriangleModel* my_triangle_model = (dynamic_cast<TriangleModel*>(elem2.getCollisionModel()));
     if (my_triangle_model)
     {
         sofa::core::componentmodel::topology::BaseTopology *topo_curr = dynamic_cast<sofa::core::componentmodel::topology::BaseTopology *>(elem2.getCollisionModel()->getContext()->getMainTopology());

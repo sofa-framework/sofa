@@ -22,7 +22,7 @@ namespace collision
 class GraspingManager : public core::objectmodel::BaseObject
 {
 public:
-    typedef TriangleSetModel::DataTypes DataTypes;
+    typedef TriangleModel::DataTypes DataTypes;
     typedef DataTypes::Coord Coord;
     typedef DataTypes::Real Real;
 

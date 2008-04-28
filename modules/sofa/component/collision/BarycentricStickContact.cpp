@@ -38,35 +38,26 @@ SOFA_DECL_CLASS(BarycentricStickContact)
 Creator<Contact::Factory, BarycentricStickContact<SphereModel, SphereModel> > SphereSphereStickContactClass("stick",true);
 Creator<Contact::Factory, BarycentricStickContact<SphereModel, PointModel> > SpherePointStickContactClass("stick",true);
 Creator<Contact::Factory, BarycentricStickContact<SphereTreeModel, SphereTreeModel> > SphereTreeSphereTreeStickContactClass("stick", true);
-Creator<Contact::Factory, BarycentricStickContact<SphereTreeModel, TriangleMeshModel> > SphereTreeTriangleMeshStickContactClass("stick", true);
-Creator<Contact::Factory, BarycentricStickContact<SphereTreeModel, TriangleSetModel> > SphereTreeTriangleSetStickContactClass("stick", true);
+Creator<Contact::Factory, BarycentricStickContact<SphereTreeModel, TriangleModel> > SphereTreeTriangleStickContactClass("stick", true);
 Creator<Contact::Factory, BarycentricStickContact<PointModel, PointModel> > PointPointStickContactClass("stick",true);
 Creator<Contact::Factory, BarycentricStickContact<LineModel, PointModel> > LinePointStickContactClass("stick",true);
 Creator<Contact::Factory, BarycentricStickContact<LineModel, LineModel> > LineLineStickContactClass("stick",true);
 Creator<Contact::Factory, BarycentricStickContact<LineModel, SphereModel> > LineSphereStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<TriangleMeshModel, SphereModel> > TriangleMeshSphereStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<TriangleMeshModel, PointModel> > TriangleMeshPointStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<TriangleMeshModel, LineModel> > TriangleMeshLineStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<TriangleMeshModel, TriangleMeshModel> > TriangleMeshTriangleMeshStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<TriangleMeshModel, TriangleSetModel> > TriangleMeshTriangleSetStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<TriangleSetModel, SphereModel> > TriangleSetSphereStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<TriangleSetModel, PointModel> > TriangleSetPointStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<TriangleSetModel, LineModel> > TriangleSetLineStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<TriangleSetModel, TriangleMeshModel> > TriangleSetTriangleMeshStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<TriangleSetModel, TriangleSetModel> > TriangleSetTriangleSetStickContactClass("stick",true);
+Creator<Contact::Factory, BarycentricStickContact<TriangleModel, SphereModel> > TriangleSphereStickContactClass("stick",true);
+Creator<Contact::Factory, BarycentricStickContact<TriangleModel, PointModel> > TrianglePointStickContactClass("stick",true);
+Creator<Contact::Factory, BarycentricStickContact<TriangleModel, LineModel> > TriangleLineStickContactClass("stick",true);
+Creator<Contact::Factory, BarycentricStickContact<TriangleModel, TriangleModel> > TriangleTriangleStickContactClass("stick",true);
 
 Creator<Contact::Factory, BarycentricStickContact<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > DistanceGridDistanceGridStickContactClass("stick", true);
 Creator<Contact::Factory, BarycentricStickContact<RigidDistanceGridCollisionModel, PointModel> > DistanceGridPointStickContactClass("stick", true);
 Creator<Contact::Factory, BarycentricStickContact<RigidDistanceGridCollisionModel, SphereModel> > DistanceGridSphereStickContactClass("stick", true);
-Creator<Contact::Factory, BarycentricStickContact<RigidDistanceGridCollisionModel, TriangleMeshModel> > DistanceGridTriangleMeshStickContactClass("stick", true);
-Creator<Contact::Factory, BarycentricStickContact<RigidDistanceGridCollisionModel, TriangleSetModel> > DistanceGridTriangleSetStickContactClass("stick", true);
+Creator<Contact::Factory, BarycentricStickContact<RigidDistanceGridCollisionModel, TriangleModel> > DistanceGridTriangleStickContactClass("stick", true);
 
 Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, FFDDistanceGridCollisionModel> > FFDDistanceGridStickContactClass("stick", true);
 Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > FFDDistanceGridRigidDistanceGridStickContactClass("stick", true);
 Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, PointModel> > FFDDistanceGridPointStickContactClass("stick", true);
 Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, SphereModel> > FFDDistanceGridSphereStickContactClass("stick", true);
-Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, TriangleMeshModel> > FFDDistanceGridTriangleMeshStickContactClass("stick", true);
-Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, TriangleSetModel> > FFDDistanceGridTriangleSetStickContactClass("stick", true);
+Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, TriangleModel> > FFDDistanceGridTriangleStickContactClass("stick", true);
 
 
 } // namespace collision

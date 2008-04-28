@@ -125,10 +125,10 @@ void LaparoscopicRigidMapping<BasicMapping>::processGrab()
             child->updateContext();
             mstate2 = new component::MechanicalObject<Vec3Types>;
             child->addObject(mstate2);
-            if(TriangleMeshModel* tmodel = dynamic_cast<TriangleMeshModel*>(model))
+            if(TriangleModel* tmodel = dynamic_cast<TriangleModel*>(model))
             {
                 typedef mapping::BarycentricMapping<core::componentmodel::behavior::MechanicalMapping<core::componentmodel::behavior::MechanicalState<TriangleModel::DataTypes>, core::componentmodel::behavior::MechanicalState<Vec3Types> > > TriangleMapping;
-                typedef mapping::BarycentricMapperMeshTopology<TriangleMeshModel::DataTypes, Vec3Types> TriangleMapper;
+                typedef mapping::BarycentricMapperMeshTopology<TriangleModel::DataTypes, Vec3Types> TriangleMapper;
                 TriangleMapper* mapper = new TriangleMapper(tmodel->getTopology());
                 TriangleMapping* mapping = new TriangleMapping(tmodel->getMechanicalState(),mstate2,mapper);
                 child->addObject(mapping);
@@ -148,11 +148,11 @@ void LaparoscopicRigidMapping<BasicMapping>::processGrab()
                     }
                 }
             }
-            else if(TriangleSetModel* tmodel = dynamic_cast<TriangleSetModel*>(model))
+            else if(TriangleModel* tmodel = dynamic_cast<TriangleModel*>(model))
             {
-                TriangleSetModel::Topology* t = tmodel->getTopology();
+                TriangleModel::Topology* t = tmodel->getTopology();
                 typedef mapping::BarycentricMapping<core::componentmodel::behavior::MechanicalMapping<core::componentmodel::behavior::MechanicalState<TriangleModel::DataTypes>, core::componentmodel::behavior::MechanicalState<Vec3Types> > > TriangleMapping;
-                typedef mapping::BarycentricMapperTriangleSetTopology<TriangleSetModel::DataTypes, Vec3Types> TriangleMapper;
+                typedef mapping::BarycentricMapperTriangleSetTopology<TriangleModel::DataTypes, Vec3Types> TriangleMapper;
                 TriangleMapper* mapper = new TriangleMapper(t);
                 TriangleMapping* mapping = new TriangleMapping(model->getMechanicalState(),mstate2,mapper);
                 child->addObject(mapping);
