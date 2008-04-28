@@ -71,6 +71,8 @@ public:
     {
     }
 
+    virtual void init();
+
     virtual void parse(core::objectmodel::BaseObjectDescription* arg);
 
     double getStep() const { return mStep.getValue(); }

@@ -58,6 +58,23 @@ MeshTopology::MeshTopology()
 {
 }
 
+void MeshTopology::init()
+{
+    // compute the number of points if if the topology is charged from the scene.
+    unsigned int maxIndex = 0;
+    if (nbPoints==0)
+    {
+        for (unsigned int i=0; i<seqEdges.getValue().size(); i++)
+        {
+            for (unsigned int j=0; j<seqEdges.getValue()[i].size(); j++)
+            {
+                if (maxIndex < seqEdges.getValue()[i][j])
+                    maxIndex = seqEdges.getValue()[i][j];
+            }
+        }
+        nbPoints = maxIndex + 1;
+    }
+}
 
 class MeshTopology::Loader : public helper::io::MeshTopologyLoader
 {
@@ -607,10 +624,14 @@ void MeshTopology::createTriangleEdgeShellArray ()
 
     for (unsigned int i = 0; i < seqTriangles.getValue().size(); ++i)
     {
+        const Triangle &t=seqTriangles.getValue()[i];
         // adding triangle i in the triangle shell of all edges
         for (j=0; j<3; ++j)
         {
-            m_triangleEdgeShell[ tea[i][j] ].push_back( i );
+            if (seqEdges.getValue()[tea[i][j]][0] == t[(j+1)%3])
+                m_triangleEdgeShell[ tea[i][j] ].insert(m_triangleEdgeShell[ tea[i][j] ].begin(), i); // triangle is on the left of the edge
+            else
+                m_triangleEdgeShell[ tea[i][j] ].push_back( i ); // triangle is on the right of the edge
         }
     }
 }
@@ -937,7 +958,7 @@ void MeshTopology::createQuadHexaShellArray ()
 
 void MeshTopology::createTetraVertexShellArray ()
 {
-    m_tetraVertexShell.resize( getNbPoints() );
+    m_tetraVertexShell.resize( nbPoints );
     unsigned int j;
 
     for (unsigned int i = 0; i < seqTetras.size(); ++i)
@@ -987,7 +1008,7 @@ void MeshTopology::createTetraTriangleShellArray ()
 
 void MeshTopology::createHexaVertexShellArray ()
 {
-    m_hexaVertexShell.resize( getNbPoints() );
+    m_hexaVertexShell.resize( nbPoints );
     unsigned int j;
 
     for (unsigned int i = 0; i < seqHexas.size(); ++i)

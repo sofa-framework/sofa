@@ -176,20 +176,14 @@ inline int            Triangle::flags() const { return model->elems[index].flags
 
 class TriangleMeshModel : public TriangleModel
 {
+public:
+    typedef topology::MeshTopology Topology;
+    TriangleMeshModel();
+    virtual void init();
+    Topology* getTopology() { return mesh; }
 protected:
     int meshRevision;
     void updateFromTopology();
-
-public:
-    typedef topology::MeshTopology Topology;
-
-    TriangleMeshModel();
-
-    virtual void init();
-
-    Topology* getTopology() { return mesh; }
-
-protected:
     Topology* mesh;
 };
 

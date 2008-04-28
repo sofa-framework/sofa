@@ -53,6 +53,8 @@ public:
     typedef Vector3::value_type Real_Sofa;
     MeshTopology();
 
+    virtual void init();
+
     virtual void clear();
 
     virtual bool load(const char* filename);
