@@ -46,6 +46,13 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 template <class In, class Out>
+void ImplicitSurfaceMapping<In,Out>::init()
+{
+    core::Mapping<In,Out>::init();
+    topology::MeshTopology::init();
+}
+
+template <class In, class Out>
 void ImplicitSurfaceMapping<In,Out>::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     this->Inherit::parse(arg);

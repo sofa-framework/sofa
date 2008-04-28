@@ -42,31 +42,31 @@ namespace collision
 
 SOFA_DECL_CLASS(Line)
 
-int LineMeshModelClass = core::RegisterObject("collision model using a linear mesh, as described in MeshTopology")
-        .add< LineMeshModel >()
-        .addAlias("LineModel")
+int LineModelClass = core::RegisterObject("collision model using a linear mesh, as described in MeshTopology")
+        .add< LineModel >()
         .addAlias("Line")
-        ;
-
-int LineSetModelClass = core::RegisterObject("collision model using a linear mesh, as described in MeshTopology")
-        .add< LineSetModel >()
+        .addAlias("LineMesh")
         .addAlias("LineSet")
         ;
 
+//int LineSetModelClass = core::RegisterObject("collision model using a linear mesh, as described in MeshTopology")
+//.add< LineSetModel >()
+//;
+
 LineModel::LineModel()
-    : mstate(NULL)
+    : mstate(NULL), topology(NULL), meshRevision(-1)
 {
 }
 
-LineMeshModel::LineMeshModel()
-    : meshRevision(-1), mesh(NULL)
-{
-}
+//LineMeshModel::LineMeshModel()
+//: meshRevision(-1), mesh(NULL)
+//{
+//}
 
-LineSetModel::LineSetModel()
-    : mesh(NULL)
-{
-}
+//LineSetModel::LineSetModel()
+//: mesh(NULL)
+//{
+//}
 
 void LineModel::resize(int size)
 {
@@ -86,88 +86,92 @@ void LineModel::init()
         return;
     }
 
-}
+    topology = this->getTopology();
 
-void LineMeshModel::init()
-{
-    LineModel::init();
-    mesh = dynamic_cast< MeshTopology* > (getContext()->getTopology());
-    if (mesh==NULL)
+    if (topology==NULL)
     {
-        std::cerr << "ERROR: LineModel requires a Mesh Topology.\n";
+        std::cerr << "ERROR: LineModel requires a BaseMeshTopology.\n";
         return;
     }
+
     updateFromTopology();
-
-    // If the CollisionDetection Method uses the filtration method based on cones
-    if (this->isFiltered())
-    {
-        // Triangle neighborhood construction
-        if (mesh != NULL)
-        {
-            const int nTriangles = mesh->getNbTriangles();
-//			if (nTriangles != 0)
-//			{
-            for (int i=0; i<size; i++)
-            {
-                Line l(this,i);
-                elems[i].tRight = -1;
-                elems[i].tLeft = -1;
-
-                const Vector3& pt1 = l.p1();
-                const Vector3& pt2 = l.p2();
-
-                for (int j=0; j<nTriangles; j++)
-                {
-                    MeshTopology::Triangle idx = mesh->getTriangle(j);
-                    Vector3 a = (*mstate->getX())[idx[0]];
-                    Vector3 b = (*mstate->getX())[idx[1]];
-                    Vector3 c = (*mstate->getX())[idx[2]];
-
-                    if ((a == pt1) && (b == pt2))
-                        elems[i].tLeft = idx[2];
-                    else if ((b == pt1) && (c == pt2))
-                        elems[i].tLeft = idx[0];
-                    else if ((c == pt1) && (a == pt2))
-                        elems[i].tLeft = idx[1];
-                    else if ((a == pt2) && (b == pt1))
-                        elems[i].tRight = idx[2];
-                    else if ((b == pt2) && (c == pt1))
-                        elems[i].tRight = idx[0];
-                    else if ((c == pt2) && (a == pt1))
-                        elems[i].tRight = idx[1];
-                }
-            }
-//			}
-        }
-    }
 }
+
+//void LineMeshModel::init()
+//{
+//	LineModel::init();
+//	mesh = dynamic_cast< MeshTopology* > (getContext()->getTopology());
+//	if (mesh==NULL)
+//	{
+//		std::cerr << "ERROR: LineModel requires a Mesh Topology.\n";
+//		return;
+//	}
+//	updateFromTopology();
+
+//	// If the CollisionDetection Method uses the filtration method based on cones
+//	if (this->isFiltered())
+//	{
+//		// Triangle neighborhood construction
+//		if (mesh != NULL)
+//		{
+//			const int nTriangles = mesh->getNbTriangles();
+////			if (nTriangles != 0)
+////			{
+//				for (int i=0;i<size;i++)
+//				{
+//					Line l(this,i);
+//					elems[i].tRight = -1;
+//					elems[i].tLeft = -1;
+//
+//					const Vector3& pt1 = l.p1();
+//					const Vector3& pt2 = l.p2();
+//
+//					for (int j=0; j<nTriangles; j++)
+//					{
+//						MeshTopology::Triangle idx = mesh->getTriangle(j);
+//						Vector3 a = (*mstate->getX())[idx[0]];
+//						Vector3 b = (*mstate->getX())[idx[1]];
+//						Vector3 c = (*mstate->getX())[idx[2]];
+//
+//						if ((a == pt1) && (b == pt2))
+//							elems[i].tLeft = idx[2];
+//						else if ((b == pt1) && (c == pt2))
+//							elems[i].tLeft = idx[0];
+//						else if ((c == pt1) && (a == pt2))
+//							elems[i].tLeft = idx[1];
+//						else if ((a == pt2) && (b == pt1))
+//							elems[i].tRight = idx[2];
+//						else if ((b == pt2) && (c == pt1))
+//							elems[i].tRight = idx[0];
+//						else if ((c == pt2) && (a == pt1))
+//							elems[i].tRight = idx[1];
+//					}
+//				}
+////			}
+//		}
+//	}
+//}
 ///\Todo
-void LineSetModel::init()
-{
-    LineModel::init();
-    needsUpdate = true;
-// 	mesh = dynamic_cast< Topology* > (getContext()->getMainTopology());
-    sofa::simulation::tree::GNode* context = dynamic_cast<sofa::simulation::tree::GNode*>(this->getContext());
-    mesh = context->get< sofa::component::topology::EdgeSetTopology<DataTypes> >();
-    if (mesh==NULL)
-    {
-        std::cerr << "ERROR: LineSetModel requires a EdgeSetTopology.\n";
-        return;
-    }
-    updateFromTopology();
-    ///...
-}
+//void LineSetModel::init()
+//{
+//	LineModel::init();
+//	needsUpdate = true;
+//// 	mesh = dynamic_cast< Topology* > (getContext()->getMainTopology());
+//	sofa::simulation::tree::GNode* context = dynamic_cast<sofa::simulation::tree::GNode*>(this->getContext());
+//	mesh = context->get< sofa::component::topology::EdgeSetTopology<DataTypes> >();
+//	if (mesh==NULL)
+//	{
+//		std::cerr << "ERROR: LineSetModel requires a EdgeSetTopology.\n";
+//		return;
+//	}
+//	updateFromTopology();
+//	///...
+//}
 
 void LineModel::updateFromTopology()
 {
-    needsUpdate = false;
-}
-
-void LineMeshModel::updateFromTopology()
-{
     needsUpdate=true;
-    int revision = mesh->getRevision();
+    int revision = topology->getRevision();
     if (revision == meshRevision)
     {
         needsUpdate=false;
@@ -175,14 +179,14 @@ void LineMeshModel::updateFromTopology()
     }
 
     const unsigned int npoints = mstate->getX()->size();
-    const unsigned int nlines = mesh->getNbLines();
+    const unsigned int nlines = topology->getNbLines();
     resize(nlines);
     int index = 0;
     //VecCoord& x = *mstate->getX();
     //VecDeriv& v = *mstate->getV();
     for (unsigned int i=0; i<nlines; i++)
     {
-        MeshTopology::Line idx = mesh->getLine(i);
+        Topology::Line idx = topology->getLine(i);
         if (idx[0] >= npoints || idx[1] >= npoints)
         {
             std::cerr << "ERROR: Out of range index in Line "<<i<<": "<<idx[0]<<" "<<idx[1]<<" ( total points="<<npoints<<")\n";
@@ -196,36 +200,68 @@ void LineMeshModel::updateFromTopology()
     return;
 }
 
-void LineSetModel::updateFromTopology()
-{
-    //sofa::core::componentmodel::topology::BaseTopology* bt = mesh;
-    sofa::component::topology::EdgeSetTopologyContainer *container = mesh->getEdgeSetTopologyContainer();
-    //needsUpdate=true;
-    if (needsUpdate)
-    {
-        const unsigned int npoints = mstate->getX()->size();
-        const unsigned int nlines = container->getNumberOfEdges();
+//void LineMeshModel::updateFromTopology()
+//{
+//	needsUpdate=true;
+//	int revision = mesh->getRevision();
+//	if (revision == meshRevision)
+//	{
+//	        needsUpdate=false;
+//		return;
+//	}
+//
+//	const unsigned int npoints = mstate->getX()->size();
+//	const unsigned int nlines = mesh->getNbLines();
+//	resize(nlines);
+//	int index = 0;
+//	//VecCoord& x = *mstate->getX();
+//	//VecDeriv& v = *mstate->getV();
+//	for (unsigned int i=0; i<nlines; i++)
+//	{
+//		MeshTopology::Line idx = mesh->getLine(i);
+//		if (idx[0] >= npoints || idx[1] >= npoints)
+//		{
+//			std::cerr << "ERROR: Out of range index in Line "<<i<<": "<<idx[0]<<" "<<idx[1]<<" ( total points="<<npoints<<")\n";
+//			continue;
+//		}
+//		elems[index].i1 = idx[0];
+//		elems[index].i2 = idx[1];
+//		++index;
+//	}
+//	meshRevision = revision;
+//	return;
+//}
 
-        resize(nlines);
-        int index = 0;
-        //VecCoord& x = *mstate->getX();
-        //VecDeriv& v = *mstate->getV();
-        for (unsigned int i=0; i<nlines; i++)
-        {
-            sofa::component::topology::Edge idx = container->getEdge(i);
-            if (idx[0] >= npoints || idx[1] >= npoints)
-            {
-                std::cerr << "ERROR: Out of range index in Line "<<i<<": "<<idx[0]<<" "<<idx[1]<<" ( total points="<<npoints<<")\n";
-                continue;
-            }
-
-            elems[index].i1 = idx[0];
-            elems[index].i2 = idx[1];
-            ++index;
-        }
-    }
-    needsUpdate=false;
-}
+//void LineSetModel::updateFromTopology()
+//{
+//	//sofa::core::componentmodel::topology::BaseTopology* bt = mesh;
+//    	sofa::component::topology::EdgeSetTopologyContainer *container = mesh->getEdgeSetTopologyContainer();
+//	//needsUpdate=true;
+//	if (needsUpdate)
+//	{
+//		const unsigned int npoints = mstate->getX()->size();
+//		const unsigned int nlines = container->getNumberOfEdges();
+//
+//		resize(nlines);
+//		int index = 0;
+//		//VecCoord& x = *mstate->getX();
+//		//VecDeriv& v = *mstate->getV();
+//		for (unsigned int i=0; i<nlines; i++)
+//		{
+//			sofa::component::topology::Edge idx = container->getEdge(i);
+//			if (idx[0] >= npoints || idx[1] >= npoints)
+//			{
+//				std::cerr << "ERROR: Out of range index in Line "<<i<<": "<<idx[0]<<" "<<idx[1]<<" ( total points="<<npoints<<")\n";
+//				continue;
+//			}
+//
+//			elems[index].i1 = idx[0];
+//			elems[index].i2 = idx[1];
+//			++index;
+//		}
+//	}
+//	needsUpdate=false;
+//}
 
 void LineModel::draw(int index)
 {

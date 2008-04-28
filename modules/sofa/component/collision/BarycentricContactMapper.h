@@ -138,21 +138,9 @@ public:
     }
 };
 
-/// Mapper for LineMeshModel
+/// Mapper for LineModel
 template<class DataTypes>
-class ContactMapper<LineMeshModel, DataTypes> : public BarycentricContactMapper<LineMeshModel, DataTypes>
-{
-public:
-    int addPoint(const Vector3& P, int index)
-    {
-        return this->mapper->createPointInLine(P, index, this->model->getMechanicalState()->getX());
-    }
-
-};
-
-/// Mapper for LineSetModel
-template<class DataTypes>
-class ContactMapper<LineSetModel, DataTypes> : public BarycentricContactMapper<LineSetModel, DataTypes>
+class ContactMapper<LineModel, DataTypes> : public BarycentricContactMapper<LineModel, DataTypes>
 {
 public:
     int addPoint(const Vector3& P, int index)

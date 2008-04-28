@@ -66,8 +66,8 @@ public:
     const Vector3& v2() const;
 
     // Return respectively the Vertex composing the neighbor Rigt and Left Triangle
-    const Vector3* tRight() const;
-    const Vector3* tLeft() const;
+//	const Vector3* tRight() const;
+//	const Vector3* tLeft() const;
 };
 
 class LineModel : public core::CollisionModel
@@ -77,7 +77,7 @@ protected:
     {
         int i1,i2;
         // Triangles neighborhood
-        int tRight, tLeft;
+//		int tRight, tLeft;
     };
 
     sofa::helper::vector<LineData> elems;
@@ -120,8 +120,9 @@ public:
 protected:
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
+    Topology* topology;
     PointModel* mpoints;
-
+    int meshRevision;
 };
 
 inline Line::Line(LineModel* model, int index)
@@ -145,59 +146,57 @@ inline const Vector3& Line::p2Free() const { return (*model->mstate->getXfree())
 inline const Vector3& Line::v1() const { return (*model->mstate->getV())[model->elems[index].i1]; }
 inline const Vector3& Line::v2() const { return (*model->mstate->getV())[model->elems[index].i2]; }
 
-inline const Vector3* Line::tRight() const
-{
-    if (model->elems[index].tRight != -1)
-        return &(*model->mstate->getX())[model->elems[index].tRight];
-    else
-        return NULL;
-}
+//inline const Vector3* Line::tRight() const {
+//	if (model->elems[index].tRight != -1)
+//		return &(*model->mstate->getX())[model->elems[index].tRight];
+//	else
+//		return NULL;
+//}
 
-inline const Vector3* Line::tLeft() const
-{
-    if (model->elems[index].tLeft != -1)
-        return &(*model->mstate->getX())[model->elems[index].tLeft];
-    else
-        return NULL;
-}
+//inline const Vector3* Line::tLeft() const {
+//	if (model->elems[index].tLeft != -1)
+//		return &(*model->mstate->getX())[model->elems[index].tLeft];
+//	else
+//		return NULL;
+//}
 
-class LineMeshModel : public LineModel
-{
-protected:
-    int meshRevision;
-    void updateFromTopology();
+//class LineMeshModel : public LineModel
+//{
+//protected:
+//    int meshRevision;
+//    void updateFromTopology();
+//
+//public:
+//    typedef topology::MeshTopology Topology;
+//
+//    LineMeshModel();
+//
+//    virtual void init();
+//
+//    Topology* getTopology() { return mesh; }
+//
+//protected:
+//    Topology* mesh;
+//};
 
-public:
-    typedef topology::MeshTopology Topology;
-
-    LineMeshModel();
-
-    virtual void init();
-
-    Topology* getTopology() { return mesh; }
-
-protected:
-    Topology* mesh;
-};
-
-class LineSetModel : public LineModel
-{
-public:
-    typedef topology::EdgeSetTopology<DataTypes> Topology;
-
-    LineSetModel();
-
-    ///\Todo
-    virtual void init();
-
-    Topology* getTopology() { return mesh; }
-
-protected:
-
-    Topology* mesh;
-
-    void updateFromTopology();
-};
+//class LineSetModel : public LineModel
+//{
+//public:
+//    typedef topology::EdgeSetTopology<DataTypes> Topology;
+//
+//    LineSetModel();
+//
+//    ///\Todo
+//    virtual void init();
+//
+//    Topology* getTopology() { return mesh; }
+//
+//protected:
+//
+//    Topology* mesh;
+//
+//    void updateFromTopology();
+//};
 
 } // namespace collision
 

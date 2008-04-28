@@ -63,6 +63,7 @@ class CollisionModel : public virtual objectmodel::BaseObject
 public:
 
     typedef CollisionElementIterator Iterator;
+    typedef componentmodel::topology::BaseMeshTopology Topology;
 
     CollisionModel()
         : bActive(initData(&bActive, true, "active", "flag indicating if this collision model is active and should be included in default collision detections"))
@@ -310,7 +311,7 @@ public:
     /// @}
 
     /// Topology associated to the collision model
-    componentmodel::topology::BaseMeshTopology* getTopology() { return getContext()->getMeshTopology(); }
+    virtual Topology* getTopology() { return getContext()->getMeshTopology(); }
 
     /// Get a color that can be used to display this CollisionModel
     const float* getColor4f();
