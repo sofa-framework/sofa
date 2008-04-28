@@ -5,6 +5,10 @@
 #include <iostream>
 #include <math.h>
 
+#ifdef WIN32
+#define isnan(x) ((x) != (x))
+#endif
+
 namespace sofa
 {
 
