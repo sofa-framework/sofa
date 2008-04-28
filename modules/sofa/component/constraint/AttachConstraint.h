@@ -111,10 +111,12 @@ public:
 protected :
     void projectPosition(Coord& x1, Coord& x2, bool /*freeRotations*/, unsigned /*index*/) { x2 = x1; }
     void projectVelocity(Deriv& x1, Deriv& x2, bool /*freeRotations*/, unsigned /*index*/) { x2 = x1; }
-    void projectResponse(Deriv& dx1, Deriv& dx2, bool /*freeRotations*/, bool oneway, unsigned /*index*/)
+    void projectResponse(Deriv& dx1, Deriv& dx2, bool /*freeRotations*/, bool twoway, unsigned /*index*/)
     {
-        if (oneway)
+        if (!twoway)
+        {
             dx2 = Deriv();
+        }
         else
         {
             dx1 += dx2;

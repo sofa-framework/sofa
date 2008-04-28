@@ -134,9 +134,9 @@ inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectVelocity(Deriv& 
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool oneway, unsigned /*index*/)
+inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned /*index*/)
 {
-    if (oneway)
+    if (!twoway)
     {
         if (!freeRotations)
             dx2 = Deriv();
@@ -159,9 +159,9 @@ inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectResponse(Deriv& 
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool oneway, unsigned /*index*/)
+inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned /*index*/)
 {
-    if (oneway)
+    if (!twoway)
     {
         if (!freeRotations)
             dx2 = Deriv();
@@ -184,9 +184,9 @@ inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectResponse(Deriv& 
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool oneway, unsigned /*index*/)
+inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned /*index*/)
 {
-    if (oneway)
+    if (!twoway)
     {
         if (!freeRotations)
             dx2 = Deriv();
@@ -209,9 +209,9 @@ inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectResponse(Deriv& 
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool oneway, unsigned /*index*/)
+inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned /*index*/)
 {
-    if (oneway)
+    if (!twoway)
     {
         if (!freeRotations)
             dx2 = Deriv();
@@ -542,12 +542,17 @@ void AttachConstraint<DataTypes>::projectResponse(VecDeriv& res1, VecDeriv& res2
                 else        std::cout << "AttachConstraint: r2["<<indices2[i]<<"] = 0\n";
             }
             projectResponse(res1[indices1[i]], res2[indices2[i]], freeRotations || (lastFreeRotation && (i>=activeFlags.size() || !activeFlags[i+1])), twoway, i);
+            //res2[indices2[i]] = Deriv();
+            if (log)
+                std::cout << "AttachConstraint: final r2["<<indices2[i]<<"] = "<<res2[indices2[i]]<<"\n";
         }
         else if (clamp)
         {
             if (log) std::cout << "AttachConstraint: r2["<<indices2[i]<<"] = 0\n";
             Deriv v = Deriv();
             projectResponse(v, res2[indices2[i]], freeRotations, false, i);
+            if (log)
+                std::cout << "AttachConstraint: final r2["<<indices2[i]<<"] = "<<res2[indices2[i]]<<"\n";
         }
     }
 }
@@ -592,7 +597,7 @@ void AttachConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, 
 template <class DataTypes>
 void AttachConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int &offset)
 {
-    //std::cout << "applyConstraint in Vector with offset = " << offset << std::endl;
+    std::cout << "applyConstraint in Vector with offset = " << offset << std::endl;
 
     const SetIndexArray & indices = f_indices2.getValue().getArray();
     const unsigned int N = Deriv::size();
