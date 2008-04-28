@@ -191,7 +191,7 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
     }
     if (arg->getAttribute("rx")!=NULL || arg->getAttribute("ry")!=NULL || arg->getAttribute("rz")!=NULL)
     {
-        Vec<3, Real> rotationVector = Vec<3,Real>(atof(arg->getAttribute("rx","0.0")),atof(arg->getAttribute("ry","0.0")),atof(arg->getAttribute("rz","0.0")))*3.141592653/180.0;
+        Vec<3, Real> rotationVector = Vec<3,Real>((Real)(atof(arg->getAttribute("rx","0.0"))),(Real)(atof(arg->getAttribute("ry","0.0"))),(Real)(atof(arg->getAttribute("rz","0.0"))))*3.141592653/180.0;
         rotation[0] = rotationVector[0];
         rotation[1] = rotationVector[1];
         rotation[2] = rotationVector[2];
@@ -702,7 +702,7 @@ void MechanicalObject<DataTypes>::init()
             }
 
             if (rotation[0]!=0.0 || rotation[1]!=0.0 || rotation[2]!=0.0)
-                this->applyRotation(defaulttype::Quat::createFromRotationVector( Vec<3,Real>(rotation[0],rotation[1],rotation[2])));
+                this->applyRotation(helper::Quater<Real_Sofa>::createFromRotationVector( Vec<3,Real_Sofa>(rotation[0],rotation[1],rotation[2])));
 
             if (translation[0]!=0.0 || translation[1]!=0.0 || translation[2]!=0.0)
                 this->applyTranslation( translation[0],translation[1],translation[2]);
@@ -720,7 +720,7 @@ void MechanicalObject<DataTypes>::init()
         *x0 = *x;
         if (restScale.getValue() != (Real)1)
         {
-            Real s = restScale.getValue();
+            Real s = (Real)restScale.getValue();
             for (unsigned int i=0; i<x0->size(); i++)
                 (*x0)[i] *= s;
         }
@@ -1235,10 +1235,10 @@ void MechanicalObject<DataTypes>::vMultiOp(const VMultiOp& ops)
         VecDeriv& vv = *getVecDeriv(ops[0].first.index);
         VecCoord& vx = *getVecCoord(ops[1].first.index);
         const unsigned int n = vx.size();
-        const double f_v_v = ops[0].second[0].second;
-        const double f_v_a = ops[0].second[1].second;
-        const double f_x_x = ops[1].second[0].second;
-        const double f_x_v = ops[1].second[1].second;
+        const Real_Sofa f_v_v = ops[0].second[0].second;
+        const Real_Sofa f_v_a = ops[0].second[1].second;
+        const Real_Sofa f_x_x = ops[1].second[0].second;
+        const Real_Sofa f_x_v = ops[1].second[1].second;
         if (f_v_v == 1.0 && f_x_x == 1.0) // very common case
         {
             if (f_v_a == 1.0) // used by euler implicit and other integrators that directly computes a*dt
@@ -1302,7 +1302,7 @@ void MechanicalObject<DataTypes>::vThreshold(VecId v, Real_Sofa t)
     if( v.type==VecId::V_DERIV)
     {
         VecDeriv* vv = getVecDeriv(v.index);
-        Real t2 = t*t;
+        Real t2 = (Real)(t*t);
         for (unsigned int i=0; i<vv->size(); i++)
         {
             if( (*vv)[i]*(*vv)[i] < t2 )

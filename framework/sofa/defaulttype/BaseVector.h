@@ -25,6 +25,11 @@
 #ifndef SOFA_DEFAULTTYPE_BASEVECTOR_H
 #define SOFA_DEFAULTTYPE_BASEVECTOR_H
 
+#ifdef SOFA_FLOAT
+typedef float Real_Sofa;
+#else
+typedef double Real_Sofa;
+#endif
 
 namespace sofa
 {
@@ -44,7 +49,7 @@ public:
     /// Number of elements
     virtual int size(void) const = 0;
     /// Read the value of element i
-    virtual double element(int i) const = 0;
+    virtual Real_Sofa element(int i) const = 0;
 
     /// Resize the vector, and reset all values to 0
     virtual void resize(int dim) = 0;
@@ -52,15 +57,15 @@ public:
     virtual void clear() = 0;
 
     /// Write the value of element i
-    virtual void set(int i, double v) = 0;
+    virtual void set(int i, Real_Sofa v) = 0;
     /// Add v to the existing value of element i
-    virtual void add(int i, double v) = 0;
-
-    /// Write the value of element i
-    virtual void set(int i, float v) { set(i,(double)v); }
-    /// Add v to the existing value of element i
-    virtual void add(int i, float v) { add(i,(double)v); }
-
+    virtual void add(int i, Real_Sofa v) = 0;
+    /*
+        /// Write the value of element i
+        virtual void set(int i, Real_Sofa v) { set(i,(Real_Sofa)v); }
+        /// Add v to the existing value of element i
+        virtual void add(int i, Real_Sofa v) { add(i,(Real_Sofa)v); }
+    */
     /// Reset the value of element i to 0
     virtual void clear(int i) { set(i,0.0); }
 };

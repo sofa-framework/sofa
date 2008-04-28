@@ -96,7 +96,7 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
     nbRows = nbNodes*dof_on_node;
     nbCols = nbNodes*dof_on_node;
     std::cout << "size : " << nbRows << " " << nbCols << std::endl;
-    appCompliance = new double[nbRows * nbCols];
+    appCompliance = new Real[nbRows * nbCols];
 
 
     double dt = this->getContext()->getDt();
@@ -407,7 +407,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
     {
         int indexC1 = mstate->getConstraintId()[c1];
 
-        double fC1 = f->element(indexC1);
+        Real fC1 = f->element(indexC1);
         //std::cout << "fC("<<indexC1<<")="<<fC1<<std::endl;
 
         if (fC1 != 0.0)

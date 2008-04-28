@@ -59,8 +59,8 @@ public:
     EvalPointsDistance();
     virtual ~EvalPointsDistance();
 
-    virtual double eval();
-    virtual double doEval(const VecCoord& x1, const VecCoord& x2);
+    virtual Real_Sofa eval();
+    virtual Real_Sofa doEval(const VecCoord& x1, const VecCoord& x2);
 
     virtual void init();
     virtual void reset();

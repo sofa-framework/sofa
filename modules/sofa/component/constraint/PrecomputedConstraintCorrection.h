@@ -114,7 +114,7 @@ public:
 protected:
     behavior::MechanicalState<DataTypes> *mstate;
     //Vec3DTypes specific menber !
-    double* appCompliance;
+    Real* appCompliance;
     unsigned int nbRows, nbCols, dof_on_node, nbNodes;
     int *_indexNodeSparseCompliance;
     std::vector<Deriv> _sparseCompliance;

@@ -432,7 +432,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
                     continue;
                 }
 
-                float d = grid2->interp(p2);
+                Real_Sofa d = grid2->interp(p2);
                 if (d >= margin) continue;
 
                 Vector3 grad = grid2->grad(p2); // note that there are some redundant computations between interp() and grad()
@@ -673,7 +673,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
                     continue;
                 }
 
-                float d = grid1->interp(p1);
+                Real_Sofa d = grid1->interp(p1);
                 if (d >= margin) continue;
 
                 Vector3 grad = grid1->grad(p1); // note that there are some redundant computations between interp() and grad()
@@ -729,7 +729,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
         return 0;
     }
 
-    float d = grid1->interp(p1);
+    Real_Sofa d = grid1->interp(p1);
     if (d >= margin) return 0;
 
     Vector3 grad = grid1->grad(p1); // note that there are some redundant computations between interp() and grad()
@@ -786,7 +786,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
             }
             else
             {
-                float d = grid1->interp(p1);
+                Real_Sofa d = grid1->interp(p1);
                 if (d >= margin) return 0;
 
                 Vector3 grad = grid1->grad(p1); // note that there are some redundant computations between interp() and grad()
@@ -827,7 +827,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
             }
             else
             {
-                float d = grid1->interp(p1);
+                Real_Sofa d = grid1->interp(p1);
                 if (d >= margin) return 0;
 
                 Vector3 grad = grid1->grad(p1); // note that there are some redundant computations between interp() and grad()
@@ -868,7 +868,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
             }
             else
             {
-                float d = grid1->interp(p1);
+                Real_Sofa d = grid1->interp(p1);
                 if (d >= margin) return 0;
 
                 Vector3 grad = grid1->grad(p1); // note that there are some redundant computations between interp() and grad()
@@ -1066,7 +1066,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                     continue;
                 }
 
-                float d = grid2->interp(p2);
+                Real_Sofa d = grid2->interp(p2);
                 if (d >= margin) continue;
 
                 Vector3 grad = grid2->grad(p2); // note that there are some redundant computations between interp() and grad()

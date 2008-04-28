@@ -25,6 +25,12 @@
 #ifndef SOFA_DEFAULTTYPE_BASEMATRIX_H
 #define SOFA_DEFAULTTYPE_BASEMATRIX_H
 
+#ifdef SOFA_FLOAT
+typedef float Real_Sofa;
+#else
+typedef double Real_Sofa;
+#endif
+
 namespace sofa
 {
 
@@ -51,15 +57,15 @@ public:
     /// Reset all values to 0
     virtual void clear() = 0;
     /// Write the value of the element at row i, column j (using 0-based indices)
-    virtual void set(int i, int j, double v) = 0;
+    virtual void set(int i, int j, Real_Sofa v) = 0;
     /// Add v to the existing value of the element at row i, column j (using 0-based indices)
-    virtual void add(int i, int j, double v) = 0;
-    /// Write the value of the element at row i, column j (using 0-based indices)
-    virtual void set(int i, int j, float v) { set(i,j,(double)v); }
-    /// Add v to the existing value of the element at row i, column j (using 0-based indices)
-    virtual void add(int i, int j, float v) { add(i,j,(double)v); }
-    /// Reset the value of element i,j to 0
-    virtual void clear(int i, int j) { set(i,j,0.0); }
+    virtual void add(int i, int j, Real_Sofa v) = 0;
+    /*    /// Write the value of the element at row i, column j (using 0-based indices)
+        virtual void set(int i, int j, float v) { set(i,j,(double)v); }
+        /// Add v to the existing value of the element at row i, column j (using 0-based indices)
+        virtual void add(int i, int j, float v) { add(i,j,(double)v); }
+        /// Reset the value of element i,j to 0
+    */    virtual void clear(int i, int j) { set(i,j,0.0); }
     /// Reset the value of row i to 0
     virtual void clearRow(int i) { for (int j=0,n=colSize(); j<n; ++j) clear(i,j); }
     /// Reset the value of column j to 0

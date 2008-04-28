@@ -300,8 +300,8 @@ void RigidDistanceGridCollisionModel::draw(int index)
     }
     glEnd();
 
-    const float mindist = -(grid->getPMax()-grid->getPMin()).norm()*0.1f;
-    const float maxdist = (grid->getPMax()-grid->getPMin()).norm()*0.025f;
+    const Real_Sofa mindist = (Real_Sofa)( -(grid->getPMax()-grid->getPMin()).norm()*0.1);
+    const Real_Sofa maxdist = (Real_Sofa)(  (grid->getPMax()-grid->getPMin()).norm()*0.025);
 
     if (grid->meshPts.empty())
     {
@@ -676,12 +676,12 @@ void FFDDistanceGridCollisionModel::draw(int index)
             glBegin(GL_LINE_STRIP);
             for (int r=0; r<=16; r++)
             {
-                float c = cube.radius*(float)cos(r*M_PI/8);
-                float s = cube.radius*(float)sin(r*M_PI/8);
-                Vec3f p = cube.center;
+                Real_Sofa c = cube.radius*(Real_Sofa)cos(r*M_PI/8);
+                Real_Sofa s = cube.radius*(Real_Sofa)sin(r*M_PI/8);
+                sofa::defaulttype::Vec<3, Real_Sofa> p = cube.center;
                 p[j] += c;
                 p[(j+1)%3] += s;
-                glVertex3fv(p.ptr());
+                glVertex3fv((GLfloat *)p.ptr());
             }
             glEnd();
         }
