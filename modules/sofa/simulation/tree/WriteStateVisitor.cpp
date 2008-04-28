@@ -105,10 +105,12 @@ template< class DataTypes >
 void WriteStateCreator::addWriteState(sofa::core::componentmodel::behavior::MechanicalState< DataTypes > *ms, GNode* gnode)
 {
     sofa::core::objectmodel::BaseContext* context = gnode->getContext();
-    sofa::core::BaseMapping *mapping = context->get<sofa::core::BaseMapping >();
+    sofa::core::BaseMapping *mapping;
+    context->get(mapping);
     if ( mapping == NULL)
     {
-        sofa::component::misc::WriteState<DataTypes> *ws=context->get< sofa::component::misc::WriteState<DataTypes> >();
+        sofa::component::misc::WriteState<DataTypes> *ws;
+        context->get(ws);
         if ( ws == NULL )
         {
             ws = new sofa::component::misc::WriteState<DataTypes>(); gnode->addObject(ws);
@@ -168,10 +170,10 @@ void ReadStateCreator::addReadState(sofa::core::componentmodel::behavior::Mechan
 {
 
     sofa::core::objectmodel::BaseContext* context = gnode->getContext();
-    sofa::core::BaseMapping *mapping = context->get< sofa::core::BaseMapping >();
+    sofa::core::BaseMapping *mapping; context->get(mapping);
     if (mapping== NULL)
     {
-        sofa::component::misc::ReadState<DataTypes> *rs = context->get< sofa::component::misc::ReadState<DataTypes> >();
+        sofa::component::misc::ReadState<DataTypes> *rs; context->get(rs);
         if (  rs == NULL )
         {
             rs = new sofa::component::misc::ReadState <DataTypes>(); gnode->addObject(rs);

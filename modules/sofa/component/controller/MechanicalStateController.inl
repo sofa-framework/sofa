@@ -167,9 +167,9 @@ void MechanicalStateController<DataTypes>::applyController()
                 (*mState->getX())[i].getOrientation() = (*mState->getX())[i].getOrientation() * Quat(x, dx * 0.001);
             }
         }
-
-        static_cast<sofa::simulation::tree::GNode*>(this->getContext())->execute<sofa::simulation::tree::MechanicalPropagatePositionAndVelocityVisitor>();
-        static_cast<sofa::simulation::tree::GNode*>(this->getContext())->execute<sofa::simulation::tree::UpdateMappingVisitor>();
+        sofa::simulation::tree::GNode *node = static_cast<sofa::simulation::tree::GNode*> (this->getContext());
+        sofa::simulation::tree::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
+        sofa::simulation::tree::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
     }
 }
 

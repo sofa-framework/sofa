@@ -103,7 +103,7 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintType(bool* type, un
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::draw()
 {
-    if (!getContext()->getShowInteractionForceFields()) return;
+    if (!this->getContext()->getShowInteractionForceFields()) return;
 
     glDisable(GL_LIGHTING);
     glPointSize(10);

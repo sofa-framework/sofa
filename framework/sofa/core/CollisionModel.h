@@ -270,6 +270,26 @@ public:
     }
 
 
+    /// Helper method to get or create the previous model in the hierarchy.
+    template<class DerivedModel>
+    DerivedModel* createPrevious()
+    {
+        DerivedModel* pmodel = dynamic_cast<DerivedModel*>(previous);
+        if (pmodel == NULL)
+        {
+            if (previous != NULL)
+                delete previous;
+            pmodel = new DerivedModel();
+            pmodel->setContext(getContext());
+            pmodel->setMoving(isMoving());
+            pmodel->setSimulated(isSimulated());
+            pmodel->proximity.setValue(proximity.getValue());
+            previous = pmodel;
+            pmodel->setNext(this);
+        }
+        return pmodel;
+    }
+
     /// @name Experimental methods
     /// @{
 
@@ -326,25 +346,6 @@ protected:
     /// Pointer to the next (finer / lower / child level) CollisionModel in the hierarchy.
     CollisionModel* next;
 
-    /// Helper method to get or create the previous model in the hierarchy.
-    template<class DerivedModel>
-    DerivedModel* createPrevious()
-    {
-        DerivedModel* pmodel = dynamic_cast<DerivedModel*>(previous);
-        if (pmodel == NULL)
-        {
-            if (previous != NULL)
-                delete previous;
-            pmodel = new DerivedModel();
-            pmodel->setContext(getContext());
-            pmodel->setMoving(isMoving());
-            pmodel->setSimulated(isSimulated());
-            pmodel->proximity.setValue(proximity.getValue());
-            previous = pmodel;
-            pmodel->setNext(this);
-        }
-        return pmodel;
-    }
 };
 
 } // namespace core

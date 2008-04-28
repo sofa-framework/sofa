@@ -187,7 +187,7 @@ void SlidingConstraint<DataTypes>::getConstraintType(bool* type, unsigned int &o
 template<class DataTypes>
 void SlidingConstraint<DataTypes>::draw()
 {
-    if (!getContext()->getShowInteractionForceFields()) return;
+    if (!this->getContext()->getShowInteractionForceFields()) return;
 
     glDisable(GL_LIGHTING);
     glPointSize(10);

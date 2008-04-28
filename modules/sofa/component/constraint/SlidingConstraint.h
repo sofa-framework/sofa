@@ -48,25 +48,25 @@ public:
 
     SlidingConstraint(MechanicalState* object1, MechanicalState* object2)
         : object1(object1), object2(object2), yetIntegrated(false)
-        , m1(initData(&m1, 0, "sliding_point","index of the spliding point on the first model"))
-        , m2a(initData(&m2a, 0, "axis_1","index of one end of the sliding axis"))
-        , m2b(initData(&m2b, 0, "axis_2","index of the other end of the sliding axis"))
+        , m1(this->initData(&m1, 0, "sliding_point","index of the spliding point on the first model"))
+        , m2a(this->initData(&m2a, 0, "axis_1","index of one end of the sliding axis"))
+        , m2b(this->initData(&m2b, 0, "axis_2","index of the other end of the sliding axis"))
     {
     }
 
     SlidingConstraint(MechanicalState* object)
         : object1(object), object2(object), yetIntegrated(false)
-        , m1(initData(&m1, 0, "sliding_point","index of the spliding point on the first model"))
-        , m2a(initData(&m2a, 0, "axis_1","index of one end of the sliding axis"))
-        , m2b(initData(&m2b, 0, "axis_2","index of the other end of the sliding axis"))
+        , m1(this->initData(&m1, 0, "sliding_point","index of the spliding point on the first model"))
+        , m2a(this->initData(&m2a, 0, "axis_1","index of one end of the sliding axis"))
+        , m2b(this->initData(&m2b, 0, "axis_2","index of the other end of the sliding axis"))
     {
     }
 
     SlidingConstraint()
         : object1(NULL), object2(NULL), yetIntegrated(false)
-        , m1(initData(&m1, 0, "sliding_point","index of the spliding point on the first model"))
-        , m2a(initData(&m2a, 0, "axis_1","index of one end of the sliding axis"))
-        , m2b(initData(&m2b, 0, "axis_2","index of the other end of the sliding axis"))
+        , m1(this->initData(&m1, 0, "sliding_point","index of the spliding point on the first model"))
+        , m2a(this->initData(&m2a, 0, "axis_1","index of one end of the sliding axis"))
+        , m2b(this->initData(&m2b, 0, "axis_2","index of the other end of the sliding axis"))
     {
     }
 
