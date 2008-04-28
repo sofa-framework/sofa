@@ -46,33 +46,36 @@ namespace collision
 
 SOFA_DECL_CLASS(Triangle)
 
-int TriangleMeshModelClass = core::RegisterObject("collision model using a triangular mesh, as described in MeshTopology")
-        .add< TriangleMeshModel >()
-        .addAlias("TriangleModel")
+int TriangleModelClass = core::RegisterObject("collision model using a triangular mesh, as described in BaseMeshTopology")
+        .add< TriangleModel >()
+        .addAlias("TriangleMesh")
+        .addAlias("TriangleSet")
         .addAlias("Triangle")
         ;
 
-int TriangleSetModelClass = core::RegisterObject("collision model using a triangular mesh, as described in TriangleSetTopology")
-        .add< TriangleSetModel >()
-        .addAlias("TriangleSet")
-        ;
+//int TriangleSetModelClass = core::RegisterObject("collision model using a triangular mesh, as described in TriangleSetTopology")
+//.add< TriangleSetModel >()
+//.addAlias("TriangleSet")
+//;
 
 TriangleModel::TriangleModel()
     : mstate(NULL)
     , computeNormals(initData(&computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
+    , meshRevision(-1)
+    , topology(NULL)
 {
     triangles = &mytriangles;
 }
 
-TriangleMeshModel::TriangleMeshModel()
-    : meshRevision(-1), mesh(NULL)
-{
-}
+//TriangleMeshModel::TriangleMeshModel()
+//: meshRevision(-1), mesh(NULL)
+//{
+//}
 
-TriangleSetModel::TriangleSetModel()
-    : mesh(NULL)
-{
-}
+//TriangleSetModel::TriangleSetModel()
+//: mesh(NULL)
+//{
+//}
 
 void TriangleModel::resize(int size)
 {
@@ -90,45 +93,55 @@ void TriangleModel::init()
         std::cerr << "ERROR: TriangleModel requires a Vec3 Mechanical Model.\n";
         return;
     }
-}
 
-void TriangleMeshModel::init()
-{
-    TriangleModel::init();
-    mesh = dynamic_cast<Topology *>(getContext()->getTopology());
-    if (!mesh)
+    topology = dynamic_cast<Topology *>(getContext()->getTopology());
+    if (!topology)
     {
-        std::cerr << "ERROR: TriangleMeshModel requires a MeshTopology.\n";
+        std::cerr << "ERROR: TriangleModel requires a BaseMeshTopology.\n";
         return;
     }
+
+    setTopology = dynamic_cast<SetTopology*>(getContext()->getTopology());
+
     updateFromTopology();
     updateNormals();
 }
 
-void TriangleSetModel::init()
-{
-    TriangleModel::init();
+//void TriangleMeshModel::init()
+//{
+//    TriangleModel::init();
+//    mesh = dynamic_cast<Topology *>(getContext()->getTopology());
+//    if (!mesh) {
+//        std::cerr << "ERROR: TriangleMeshModel requires a MeshTopology.\n";
+//        return;
+//    }
+//    updateFromTopology();
+//    updateNormals();
+//}
 
-    mesh = dynamic_cast<Topology *>(getContext()->getMainTopology());
-    if (!mesh)
-    {
-        std::cerr << "ERROR: TriangleSetModel requires a TriangleSetTopology.\n";
-        return;
-    }
-
-    //std::cout << "INFO_print : Col - init TRIANGLE " << std::endl;
-    sofa::component::topology::TriangleSetTopologyContainer *tstc= mesh->getTriangleSetTopologyContainer();
-
-    const sofa::helper::vector<sofa::component::topology::Triangle> &ta=tstc->getTriangleArray();
-
-    triangles = &ta;
-
-    resize(ta.size());
-
-    updateFlags();
-    updateNormals();
-    updateFromTopology();
-}
+//void TriangleSetModel::init()
+//{
+//    TriangleModel::init();
+//
+//    mesh = dynamic_cast<Topology *>(getContext()->getMainTopology());
+//    if (!mesh) {
+//        std::cerr << "ERROR: TriangleSetModel requires a TriangleSetTopology.\n";
+//        return;
+//    }
+//
+//    //std::cout << "INFO_print : Col - init TRIANGLE " << std::endl;
+//    sofa::component::topology::TriangleSetTopologyContainer *tstc= mesh->getTriangleSetTopologyContainer();
+//
+//    const sofa::helper::vector<sofa::component::topology::Triangle> &ta=tstc->getTriangleArray();
+//
+//    triangles = &ta;
+//
+//    resize(ta.size());
+//
+//    updateFlags();
+//    updateNormals();
+//    updateFromTopology();
+//}
 
 void TriangleModel::updateNormals()
 {
@@ -146,18 +159,14 @@ void TriangleModel::updateNormals()
 
 void TriangleModel::updateFromTopology()
 {
-    needsUpdate = false;
-}
-
-void TriangleMeshModel::updateFromTopology()
-{
+//    needsUpdate = false;
     const unsigned npoints = mstate->getX()->size();
-    const unsigned ntris = mesh->getNbTriangles();
-    const unsigned nquads = mesh->getNbQuads();
+    const unsigned ntris = topology->getNbTriangles();
+    const unsigned nquads = topology->getNbQuads();
     const unsigned newsize = ntris+2*nquads;
     needsUpdate=true;
 
-    int revision = mesh->getRevision();
+    int revision = topology->getRevision();
     if (revision == meshRevision && newsize==(unsigned)size)
     {
         needsUpdate=false;
@@ -169,7 +178,7 @@ void TriangleMeshModel::updateFromTopology()
     if (newsize == ntris)
     {
         // no need to copy the triangle indices
-        triangles = & mesh->getTriangles();
+        triangles = & topology->getTriangles();
     }
     else
     {
@@ -178,7 +187,7 @@ void TriangleMeshModel::updateFromTopology()
         int index = 0;
         for (unsigned i=0; i<ntris; i++)
         {
-            topology::MeshTopology::Triangle idx = mesh->getTriangle(i);
+            topology::BaseMeshTopology::Triangle idx = topology->getTriangle(i);
             if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints)
             {
                 std::cerr << "ERROR: Out of range index in triangle "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" ( total points="<<npoints<<")\n";
@@ -191,7 +200,7 @@ void TriangleMeshModel::updateFromTopology()
         }
         for (unsigned i=0; i<nquads; i++)
         {
-            topology::MeshTopology::Quad idx = mesh->getQuad(i);
+            topology::BaseMeshTopology::Quad idx = topology->getQuad(i);
             if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints || idx[3] >= npoints)
             {
                 std::cerr << "ERROR: Out of range index in quad "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" "<<idx[3]<<" ( total points="<<npoints<<")\n";
@@ -213,6 +222,69 @@ void TriangleMeshModel::updateFromTopology()
     updateFlags();
     meshRevision = revision;
 }
+
+//void TriangleMeshModel::updateFromTopology()
+//{
+//    const unsigned npoints = mstate->getX()->size();
+//    const unsigned ntris = mesh->getNbTriangles();
+//    const unsigned nquads = mesh->getNbQuads();
+//    const unsigned newsize = ntris+2*nquads;
+//    needsUpdate=true;
+//
+//    int revision = mesh->getRevision();
+//    if (revision == meshRevision && newsize==(unsigned)size) {
+//        needsUpdate=false;
+//        return;
+//    }
+//
+//    resize(newsize);
+//
+//    if (newsize == ntris)
+//    { // no need to copy the triangle indices
+//        triangles = & mesh->getTriangles();
+//    }
+//    else
+//    {
+//        triangles = &mytriangles;
+//        mytriangles.resize(newsize);
+//        int index = 0;
+//        for (unsigned i=0; i<ntris; i++)
+//        {
+//            topology::MeshTopology::Triangle idx = mesh->getTriangle(i);
+//            if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints)
+//            {
+//                std::cerr << "ERROR: Out of range index in triangle "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" ( total points="<<npoints<<")\n";
+//                if (idx[0] >= npoints) idx[0] = npoints-1;
+//                if (idx[1] >= npoints) idx[1] = npoints-1;
+//                if (idx[2] >= npoints) idx[2] = npoints-1;
+//            }
+//            mytriangles[index] = idx;
+//            ++index;
+//        }
+//        for (unsigned i=0; i<nquads; i++)
+//        {
+//            topology::MeshTopology::Quad idx = mesh->getQuad(i);
+//            if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints || idx[3] >= npoints)
+//            {
+//                std::cerr << "ERROR: Out of range index in quad "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" "<<idx[3]<<" ( total points="<<npoints<<")\n";
+//                if (idx[0] >= npoints) idx[0] = npoints-1;
+//                if (idx[1] >= npoints) idx[1] = npoints-1;
+//                if (idx[2] >= npoints) idx[2] = npoints-1;
+//                if (idx[3] >= npoints) idx[3] = npoints-1;
+//            }
+//            mytriangles[index][0] = idx[1];
+//            mytriangles[index][1] = idx[2];
+//            mytriangles[index][2] = idx[0];
+//            ++index;
+//            mytriangles[index][0] = idx[3];
+//            mytriangles[index][1] = idx[0];
+//            mytriangles[index][2] = idx[2];
+//            ++index;
+//        }
+//    }
+//    updateFlags();
+//    meshRevision = revision;
+//}
 
 void TriangleModel::updateFlags(int ntri)
 {
@@ -256,18 +328,18 @@ void TriangleModel::updateFlags(int ntri)
     }
 }
 
-void TriangleSetModel::updateFromTopology()
-{
-}
+//void TriangleSetModel::updateFromTopology()
+//{
+//}
 
-void TriangleSetModel::handleTopologyChange()
+void TriangleModel::handleTopologyChange()
 {
     bool debug_mode = false;
 
     if (triangles != &mytriangles)
     {
         // We use the same triangle array as the topology -> only resize and recompute flags
-        resize(mesh->getTriangleSetTopologyContainer()->getNumberOfTriangles());
+        resize(setTopology->getTriangleSetTopologyContainer()->getNumberOfTriangles());
         needsUpdate = true;
         updateFlags();
         updateNormals(); // not strictly necessary but useful if we display the model before the next collision iteration
@@ -275,7 +347,7 @@ void TriangleSetModel::handleTopologyChange()
         return;
     }
 
-    sofa::core::componentmodel::topology::BaseTopology* bt = mesh;
+    sofa::core::componentmodel::topology::BaseTopology* bt = setTopology;
     if (bt)
     {
 

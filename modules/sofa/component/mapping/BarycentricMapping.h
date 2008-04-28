@@ -273,10 +273,10 @@ protected:
     sofa::helper::vector< MappingData1D >  map1d;
     sofa::helper::vector< MappingData2D >  map2d;
     sofa::helper::vector< MappingData3D >  map3d;
-    topology::MeshTopology* topology;
+    topology::BaseMeshTopology* topology;
 
 public:
-    BarycentricMapperMeshTopology(topology::MeshTopology* topology)
+    BarycentricMapperMeshTopology(topology::BaseMeshTopology* topology)
         : TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}

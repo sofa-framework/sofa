@@ -152,7 +152,7 @@ public:
 
 /// Mapper for TriangleMeshModel
 template<class DataTypes>
-class ContactMapper<TriangleMeshModel, DataTypes> : public BarycentricContactMapper<TriangleMeshModel, DataTypes>
+class ContactMapper<TriangleModel, DataTypes> : public BarycentricContactMapper<TriangleModel, DataTypes>
 {
 public:
     int addPoint(const Vector3& P, int index)
@@ -176,16 +176,16 @@ public:
     }
 };
 
-/// Mapper for TriangleSetModel
-template<class DataTypes>
-class ContactMapper<TriangleSetModel, DataTypes> : public BarycentricContactMapper<TriangleSetModel, DataTypes>
-{
-public:
-    int addPoint(const Vector3& P, int index)
-    {
-        return this->mapper->createPointInTriangle(P, index, this->model->getMechanicalState()->getX());
-    }
-};
+///// Mapper for TriangleSetModel
+//template<class DataTypes>
+//class ContactMapper<TriangleSetModel, DataTypes> : public BarycentricContactMapper<TriangleSetModel, DataTypes>
+//{
+//public:
+//    int addPoint(const Vector3& P, int index)
+//    {
+//        return this->mapper->createPointInTriangle(P, index, this->model->getMechanicalState()->getX());
+//    }
+//};
 
 /// Base class for IdentityMapping based mappers
 template<class TCollisionModel, class DataTypes>
