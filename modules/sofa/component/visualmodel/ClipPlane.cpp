@@ -40,7 +40,7 @@ void ClipPlane::reinit()
 
 void ClipPlane::fwdDraw(Pass)
 {
-    wasActive = glIsEnabled(GL_CLIP_PLANE0+id.getValue());
+    wasActive = (bool)glIsEnabled(GL_CLIP_PLANE0+id.getValue());
     if (active.getValue())
     {
         glGetClipPlane(GL_CLIP_PLANE0+id.getValue(), saveEq);

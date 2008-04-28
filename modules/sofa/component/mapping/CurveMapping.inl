@@ -42,12 +42,12 @@ typename CurveMapping<BasicMapping>::Real CurveMapping<BasicMapping>::advanceAbs
     double fraction = ab - integer;
     while (integer < (int)this->lengthElements.size()-1 && lengthElements[integer] * (1-fraction) < dist)
     {
-        dist -= lengthElements[integer] * (1-fraction);
+        dist -= (Real) (lengthElements[integer] * (1-fraction));
         ++integer;
         fraction = 0;
     }
     fraction += dist / lengthElements[integer];
-    return integer + fraction;
+    return (Real) (integer + fraction);
 }
 
 inline Quat computeOrientation(const Vec3d& AB, const Quat& Q)
@@ -93,7 +93,7 @@ void CurveMapping<BasicMapping>::init()
 
     for (int i=0; i<nin-1; i++)
     {
-        lengthElements[i] = (x0[i+1]-x0[i]).norm();
+        lengthElements[i] = (Real)(x0[i+1]-x0[i]).norm();
         //std::cout << "l["<<i<<"] = "<<lengthElements[i]<<std::endl;
     }
 
@@ -366,7 +366,7 @@ void CurveMapping<BaseMapping>::handleEvent(sofa::core::objectmodel::Event* even
             {
                 ab[i] += step.getValue();
                 if (ab[i] > this->fromModel->getSize())
-                    ab[i] = this->fromModel->getSize();
+                    ab[i] = (Real)this->fromModel->getSize();
             }
             abscissa.setValue(ab);
             break;

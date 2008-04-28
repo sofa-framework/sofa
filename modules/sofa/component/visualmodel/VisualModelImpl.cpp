@@ -86,7 +86,7 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     if (arg->getAttribute("scaleTex")!=NULL)
     {
         //obj->applyUVScale(atof(arg->getAttribute("scaleTex","1.0")), atof(arg->getAttribute("scaleTex","1.0")));
-        scaleTex=(atof(arg->getAttribute("scaleTex","1.0")));
+        scaleTex=(float)(atof(arg->getAttribute("scaleTex","1.0")));
         obj->applyUVScale(scaleTex, scaleTex);
     }
     if (arg->getAttribute("du")!=NULL || arg->getAttribute("dv")!=NULL)

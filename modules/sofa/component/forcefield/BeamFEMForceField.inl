@@ -213,46 +213,46 @@ typename BeamFEMForceField<DataTypes>::Real BeamFEMForceField<DataTypes>::peudo_
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::computeStiffness(int i, Index , Index )
 {
-    double   phiy, phiz;
-    double _L = beamsData[i]._L;
-    double _A = beamsData[i]._A;
-    double _nu = beamsData[i]._nu;
-    double _E = beamsData[i]._E;
-    double _Iy = beamsData[i]._Iy;
-    double _Iz = beamsData[i]._Iz;
-    double _Asy = beamsData[i]._Asy;
-    double _Asz = beamsData[i]._Asz;
-    double _G = beamsData[i]._G;
-    double _J = beamsData[i]._J;
-    double   L2 = _L * _L;
-    double   L3 = L2 * _L;
-    double   EIy = _E * _Iy;
-    double   EIz = _E * _Iz;
+    Real   phiy, phiz;
+    Real _L = (Real)beamsData[i]._L;
+    Real _A = (Real)beamsData[i]._A;
+    Real _nu = (Real)beamsData[i]._nu;
+    Real _E = (Real)beamsData[i]._E;
+    Real _Iy = (Real)beamsData[i]._Iy;
+    Real _Iz = (Real)beamsData[i]._Iz;
+    Real _Asy = (Real)beamsData[i]._Asy;
+    Real _Asz = (Real)beamsData[i]._Asz;
+    Real _G = (Real)beamsData[i]._G;
+    Real _J = (Real)beamsData[i]._J;
+    Real L2 = (Real) (_L * _L);
+    Real L3 = (Real) (L2 * _L);
+    Real EIy = (Real)(_E * _Iy);
+    Real EIz = (Real)(_E * _Iz);
 
     // Find shear-deformation parameters
     if (_Asy == 0)
         phiy = 0.0;
     else
-        phiy = 24.0*(1.0+_nu)*_Iz/(_Asy*L2);
+        phiy = (Real)(24.0*(1.0+_nu)*_Iz/(_Asy*L2));
 
     if (_Asz == 0)
         phiz = 0.0;
     else
-        phiz = 24.0*(1.0+_nu)*_Iy/(_Asz*L2);
+        phiz = (Real)(24.0*(1.0+_nu)*_Iy/(_Asz*L2));
 
     StiffnessMatrix& k_loc = _stiffnessMatrices[i];
 
     // Define stiffness matrix 'k' in local coordinates
     k_loc.clear();
     k_loc[6][6]   = k_loc[0][0]   = _E*_A/_L;
-    k_loc[7][7]   = k_loc[1][1]   = 12.0*EIz/(L3*(1.0+phiy));
-    k_loc[8][8]   = k_loc[2][2]   = 12.0*EIy/(L3*(1.0+phiz));
+    k_loc[7][7]   = k_loc[1][1]   = (Real)(12.0*EIz/(L3*(1.0+phiy)));
+    k_loc[8][8]   = k_loc[2][2]   = (Real)(12.0*EIy/(L3*(1.0+phiz)));
     k_loc[9][9]   = k_loc[3][3]   = _G*_J/_L;
-    k_loc[10][10] = k_loc[4][4]   = (4.0+phiz)*EIy/(_L*(1.0+phiz));
-    k_loc[11][11] = k_loc[5][5]   = (4.0+phiy)*EIz/(_L*(1.0+phiy));
+    k_loc[10][10] = k_loc[4][4]   = (Real)((4.0+phiz)*EIy/(_L*(1.0+phiz)));
+    k_loc[11][11] = k_loc[5][5]   = (Real)((4.0+phiy)*EIz/(_L*(1.0+phiy)));
 
-    k_loc[4][2]   = -6.0*EIy/(L2*(1.0+phiz));
-    k_loc[5][1]   =  6.0*EIz/(L2*(1.0+phiy));
+    k_loc[4][2]   = (Real)(-6.0*EIy/(L2*(1.0+phiz)));
+    k_loc[5][1]   = (Real)( 6.0*EIz/(L2*(1.0+phiy)));
     k_loc[6][0]   = -k_loc[0][0];
     k_loc[7][1]   = -k_loc[1][1];
     k_loc[7][5]   = -k_loc[5][1];
@@ -260,10 +260,10 @@ void BeamFEMForceField<DataTypes>::computeStiffness(int i, Index , Index )
     k_loc[8][4]   = -k_loc[4][2];
     k_loc[9][3]   = -k_loc[3][3];
     k_loc[10][2]  = k_loc[4][2];
-    k_loc[10][4]  = (2.0-phiz)*EIy/(_L*(1.0+phiz));
+    k_loc[10][4]  = (Real)((2.0-phiz)*EIy/(_L*(1.0+phiz)));
     k_loc[10][8]  = -k_loc[4][2];
     k_loc[11][1]  = k_loc[5][1];
-    k_loc[11][5]  = (2.0-phiy)*EIz/(_L*(1.0+phiy));
+    k_loc[11][5]  = (Real)((2.0-phiy)*EIz/(_L*(1.0+phiy)));
     k_loc[11][7]  = -k_loc[5][1];
 
     for (int i=0; i<=10; i++)
@@ -374,7 +374,7 @@ void BeamFEMForceField<DataTypes>::applyStiffnessLarge( VecDeriv& df, const VecD
     //const VecCoord& x = *this->mstate->getX();
 
     Displacement local_depl;
-    Vec3d u;
+    sofa::defaulttype::Vec<3,Real> u;
     const Quat& q = _beamQuat[i]; //x[a].getOrientation();
 
     u = q.inverseRotate(dx[a].getVCenter());

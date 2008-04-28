@@ -190,11 +190,11 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecDeriv& out
 
             if ((*a)->rotation.getValue())
             {
-                out[(*a)->articulationIndex.getValue()].x() += dot(axis, T.getVOrientation());
+                out[(*a)->articulationIndex.getValue()].x() += (Real)dot(axis, T.getVOrientation());
             }
             if ((*a)->translation.getValue())
             {
-                out[(*a)->articulationIndex.getValue()].x() += dot(axis, T.getVCenter());
+                out[(*a)->articulationIndex.getValue()].x() += (Real)dot(axis, T.getVCenter());
             }
         }
     }
@@ -242,11 +242,11 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out
                     constArt.index = (*a)->articulationIndex.getValue();
                     if ((*a)->rotation.getValue())
                     {
-                        constArt.data = dot(axis, T.getVOrientation());
+                        constArt.data = (Real)dot(axis, T.getVOrientation());
                     }
                     if ((*a)->translation.getValue())
                     {
-                        constArt.data = dot(axis, T.getVCenter());
+                        constArt.data = (Real)dot(axis, T.getVCenter());
                         //printf("\n weightedNormalArticulation : %f", constArt.data);
                     }
                     out[i].push_back(constArt);

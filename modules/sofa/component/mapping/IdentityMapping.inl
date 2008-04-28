@@ -44,7 +44,7 @@ void IdentityMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const t
     for(unsigned int i=0; i<out.size(); i++)
     {
         for (unsigned int j=0; j < N; ++j)
-            out[i][j] = (OutReal)in[i][j];
+            out[i][j] = (Real)in[i][j];
     }
 }
 
@@ -63,7 +63,7 @@ void IdentityMapping<BaseMapping>::applyJT( typename In::VecConst& out, const ty
             const typename Out::SparseDeriv& cIn = in[i][j];
             typename In::Deriv value;
             for (unsigned int k=0; k<N; ++k)
-                value[k] = cIn.data[k];
+                value[k] = (Real) cIn.data[k];
 
             o.push_back( typename In::SparseDeriv(cIn.index, value) );
         }

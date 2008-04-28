@@ -314,7 +314,7 @@ void DiagonalMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx
     {
         for (unsigned int i=0; i<dx.size(); i++)
         {
-            res[i] += (dx[i] * masses[i]) * factor;
+            res[i] += (dx[i] * masses[i]) * (Real)factor;
         }
     }
 }
@@ -548,7 +548,7 @@ void DiagonalMass<DataTypes, MassType>::addGravityToV(double dt)
         Vec3d g ( this->getContext()->getLocalGravity() );
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2]);
-        Deriv hg = theGravity * dt;
+        Deriv hg = theGravity * (Real)dt;
 
         for (unsigned int i=0; i<v.size(); i++)
         {
