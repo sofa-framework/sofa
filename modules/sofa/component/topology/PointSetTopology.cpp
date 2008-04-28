@@ -42,21 +42,29 @@ int PointSetTopologyClass = core::RegisterObject("Topology consisting of a set o
 
 #ifndef SOFA_FLOAT
         .add< PointSetTopology<Vec3dTypes> >()
+        .add< PointSetTopology<Vec2dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< PointSetTopology<Vec3fTypes> >()
+        .add< PointSetTopology<Vec2fTypes> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
 template class PointSetTopologyModifier<Vec3dTypes>;
+template class PointSetTopologyModifier<Vec2dTypes>;
 template class PointSetTopology<Vec3dTypes>;
+template class PointSetTopology<Vec2dTypes>;
 template class PointSetGeometryAlgorithms<Vec3dTypes>;
+template class PointSetGeometryAlgorithms<Vec2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 template class PointSetTopologyModifier<Vec3fTypes>;
+template class PointSetTopologyModifier<Vec2fTypes>;
 template class PointSetTopology<Vec3fTypes>;
+template class PointSetTopology<Vec2fTypes>;
 template class PointSetGeometryAlgorithms<Vec3fTypes>;
+template class PointSetGeometryAlgorithms<Vec2fTypes>;
 #endif
 
 
