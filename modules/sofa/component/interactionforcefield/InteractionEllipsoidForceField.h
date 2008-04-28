@@ -43,14 +43,14 @@ public:
 
     enum { N=Coord1::static_size };
     typedef defaulttype::Mat<N,N,Real1> Mat;
-
+    typedef Vector3::value_type Real_Sofa;
 protected:
     class Contact
     {
     public:
         int index;
         Deriv1 pos;
-        Vec3d bras_levier;
+        Vec<3,Real_Sofa> bras_levier;
         Mat m;
         Contact( int index=0, const Mat& m=Mat())
             : index(index), m(m)

@@ -79,7 +79,7 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
         std::cout << "Creating BarycentricStickContact springs"<<std::endl;
         MechanicalState1* mstate1 = mapper1.createMapping(model1);
         MechanicalState2* mstate2 = mapper2.createMapping(model2);
-        ff = new ResponseForceField(mstate1,mstate2);
+        ff = new ResponseForceField(mstate1,mstate2); ff->setName( getName());
     }
 
     int insize = outputs.size();

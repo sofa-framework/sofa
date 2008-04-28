@@ -15,12 +15,9 @@
 #ifndef SOFA_DOUBLE
 #ifndef SOFA_FLOAT
 #include <sofa/component/typedef/Mapping_combination.h>
+#include <sofa/component/typedef/InteractionForcefield_combination.h>
 #endif
 #endif
 
-
-//---------------------
-//Laparoscopic
-typedef sofa::component::MechanicalObject<sofa::defaulttype::LaparoscopicRigid3Types> MechanicalObjectLaparoscopicRigid3;
 
 #endif
