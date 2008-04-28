@@ -43,14 +43,14 @@ void EvalSurfaceDistance<DataTypes>::init()
     if (!this->mstate1 || !this->mstate2)
         return;
     sofa::core::objectmodel::BaseContext* c1 = this->mstate1->getContext();
-    pointsCM = c1->get<sofa::component::collision::PointModel>();
+    c1->get(pointsCM);
     if (pointsCM == NULL)
     {
         std::cerr << "EvalSurfaceDistance ERROR: object1 PointModel not found."<<std::endl;
         return;
     }
     sofa::core::objectmodel::BaseContext* c2 = this->mstate2->getContext();
-    surfaceCM = c2->get<sofa::component::collision::TriangleModel>();
+    c2->get(surfaceCM);
     if (surfaceCM == NULL)
     {
         std::cerr << "EvalSurfaceDistance ERROR: object2 TriangleModel not found."<<std::endl;

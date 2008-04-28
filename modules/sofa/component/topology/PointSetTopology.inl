@@ -341,7 +341,7 @@ void PointSetTopology<DataTypes>::propagateTopologicalChanges()
 
     sofa::simulation::tree::TopologyChangeVisitor a;
     a.resetNbIter();
-    getContext()->executeVisitor(&a);
+    this->getContext()->executeVisitor(&a);
     // BUGFIX (Jeremie A. 06/12/07): remove the changes we just propagated, so that we don't send then again next time
     this->resetTopologyChangeList();
 }

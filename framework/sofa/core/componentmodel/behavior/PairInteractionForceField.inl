@@ -64,7 +64,12 @@ BaseMechanicalState*  PairInteractionForceField<DataTypes>::getMState(sofa::core
     sofa::core::objectmodel::BaseNode* currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(context);
     if (pos_slash == std::string::npos)
     {
-        if (path.empty()) return context->get< BaseMechanicalState >(sofa::core::objectmodel::BaseContext::SearchDown);
+        if (path.empty())
+        {
+            BaseMechanicalState *result;
+            context->get(result, sofa::core::objectmodel::BaseContext::SearchDown);
+            return result;
+        }
         sofa::helper::vector< sofa::core::objectmodel::BaseNode* > list_child = currentNode->getChildren();
 
         for (unsigned int i=0; i< list_child.size(); ++i)
@@ -72,7 +77,9 @@ BaseMechanicalState*  PairInteractionForceField<DataTypes>::getMState(sofa::core
             if (list_child[i]->getName() == path)
             {
                 sofa::core::objectmodel::BaseContext *c = list_child[i]->getContext();
-                return c->get< BaseMechanicalState >(sofa::core::objectmodel::BaseContext::SearchDown);
+                BaseMechanicalState *result;
+                c->get(result, sofa::core::objectmodel::BaseContext::SearchDown);
+                return result;
             }
         }
     }
