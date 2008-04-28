@@ -772,7 +772,7 @@ void GNode::doAddObject(BaseObject* obj)
 bool GNode::addObject(BaseObject* obj)
 {
     notifyAddObject(obj);
-    return System::removeObject(obj);
+    return System::addObject(obj);
 }
 
 /// Remove an object

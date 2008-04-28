@@ -131,8 +131,6 @@ void System::doRemoveObject(BaseObject* obj)
 /// Topology
 core::componentmodel::topology::Topology* System::getTopology() const
 {
-    // return this->topology;
-    // CHANGE 12/01/06 (Jeremie A.): Inherit parent topology if no local topology is defined
     if (this->topology)
         return this->topology;
     else
@@ -149,8 +147,6 @@ core::componentmodel::topology::BaseTopology* System::getMainTopology() const
         if (basicTopology[i]->isMainTopology()==true)
             main=basicTopology[i];
     }
-    // return main;
-    // CHANGE 12/01/06 (Jeremie A.): Inherit parent topology if no local topology is defined
     if (main)
         return main;
     else
@@ -178,8 +174,6 @@ core::objectmodel::BaseObject* System::getShader() const
 /// Mechanical Degrees-of-Freedom
 core::objectmodel::BaseObject* System::getMechanicalState() const
 {
-    // return this->mechanicalModel;
-    // CHANGE 12/01/06 (Jeremie A.): Inherit parent mechanical model if no local model is defined
     if (this->mechanicalState)
         return this->mechanicalState;
     else
