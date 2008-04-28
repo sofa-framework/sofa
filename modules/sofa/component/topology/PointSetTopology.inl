@@ -6,7 +6,7 @@
 #include <sofa/simulation/tree/TopologyChangeVisitor.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/helper/io/MeshTopologyLoader.h>
-
+#include <sofa/defaulttype/VecTypes.h>
 namespace sofa
 {
 
@@ -173,8 +173,6 @@ void PointSetTopologyModifier<DataTypes>::addPointsWarning(const unsigned int nP
     PointsAdded *e=new PointsAdded(nPoints, ancestors, coefs);
     addTopologyChange(e);
 }
-
-
 
 
 template<class DataTypes>
