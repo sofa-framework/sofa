@@ -34,7 +34,7 @@ public:
     virtual void bwdDraw(Pass);
 
 protected:
-    bool wasActive;
+    GLboolean wasActive;
     double saveEq[4];
 };
 

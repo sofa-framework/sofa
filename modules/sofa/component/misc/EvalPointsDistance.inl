@@ -75,7 +75,7 @@ void EvalPointsDistance<DataTypes>::reset()
 }
 
 template<class DataTypes>
-double EvalPointsDistance<DataTypes>::eval()
+Real_Sofa EvalPointsDistance<DataTypes>::eval()
 {
     if (!mstate1 || !mstate2)
         return 0.0;
@@ -85,23 +85,23 @@ double EvalPointsDistance<DataTypes>::eval()
 }
 
 template<class DataTypes>
-double EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoord& x2)
+Real_Sofa EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoord& x2)
 {
     const int n = (x1.size()<x2.size())?x1.size():x2.size();
-    double dsum = 0;
-    double dmin = 0;
-    double dmax = 0;
-    double d2 = 0;
+    Real dsum = 0.0;
+    Real dmin = 0.0;
+    Real dmax = 0.0;
+    Real d2 = 0.0;
     for (int i=0; i<n; ++i)
     {
-        double d = (x1[i]-x2[i]).norm();
+        Real d = (Real)(x1[i]-x2[i]).norm();
         dsum += d;
         d2 += d*d;
         if (i==0 || d < dmin) dmin = d;
         if (i==0 || d > dmax) dmax = d;
     }
-    double dmean = (n>0)?dsum/n : 0.0;
-    double ddev = ((n>1)?sqrtf((float)(d2/n - (dsum/n)*(dsum/n))) : 0.0);
+    Real dmean = (Real)(n>0)?dsum/n : 0.0;
+    Real ddev = (Real)((n>1)?sqrtf((float)(d2/n - (dsum/n)*(dsum/n))) : 0.0);
     distMean.setValue(dmean);
     distMin.setValue(dmin);
     distMax.setValue(dmax);

@@ -143,7 +143,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
                 finer->_initialPoints.beginEdit()->resize(nbp);
                 for (int j=0; j<nbp; j++)
                 {
-                    (*finer->_initialPoints.beginEdit())[j] = Coord( finer->_sparseGrid->getPX(j)*scale, finer->_sparseGrid->getPY(j)*scale, finer->_sparseGrid->getPZ(j)*scale);
+                    (*finer->_initialPoints.beginEdit())[j] = Coord( (Real)(finer->_sparseGrid->getPX(j)*scale), (Real)(finer->_sparseGrid->getPY(j)*scale), (Real)(finer->_sparseGrid->getPZ(j)*scale));
                 }
 // 				cerr<<finer->_initialPoints.getValue()<<endl;
                 finer->reinit();

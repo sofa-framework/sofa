@@ -82,12 +82,12 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
     float min_dist=0.0f;
     if (indices1.size() < indices2.size())
     {
-        sofa::helper::vector< std::map<float, unsigned int> > distance_spring(indices1.size());
+        sofa::helper::vector< std::map<Real, unsigned int> > distance_spring(indices1.size());
         for(unsigned int i = 0; i < indices1.size(); ++i)
         {
             for(unsigned int j = 0; j < indices2.size(); ++j)
             {
-                distance_spring[i][sqrt((x1[indices1[i]] - x2[indices2[j]]).norm2())] = j;
+                distance_spring[i][(Real)sqrt((x1[indices1[i]] - x2[indices2[j]]).norm2())] = j;
             }
             if (i==0 || min_dist> distance_spring[i].begin()->first) min_dist = distance_spring[i].begin()->first;
 
@@ -96,7 +96,7 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
 
         for(unsigned int i = 0; i<indices1.size(); ++i)
         {
-            std::map<float, unsigned int>::const_iterator it = distance_spring[i].begin();
+            std::map<Real, unsigned int>::const_iterator it = distance_spring[i].begin();
             for (; it!=distance_spring[i].end(); it++)
             {
                 if (indice_unused[it->second])
@@ -110,12 +110,12 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
     }
     else
     {
-        sofa::helper::vector< std::map<float, unsigned int> > distance_spring(indices2.size());
+        sofa::helper::vector< std::map<Real, unsigned int> > distance_spring(indices2.size());
         for(unsigned int i = 0; i < indices2.size(); ++i)
         {
             for(unsigned int j = 0; j < indices1.size(); ++j)
             {
-                distance_spring[i][sqrt((x1[indices1[j]] - x2[indices2[i]]).norm2())] = j;
+                distance_spring[i][(Real)sqrt((x1[indices1[j]] - x2[indices2[i]]).norm2())] = j;
             }
 
             if (i==0 || min_dist> distance_spring[i].begin()->first) min_dist = distance_spring[i].begin()->first;
@@ -124,7 +124,7 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
 
         for(unsigned int i = 0; i<indices2.size(); ++i)
         {
-            std::map<float, unsigned int>::const_iterator it = distance_spring[i].begin();
+            std::map<Real, unsigned int>::const_iterator it = distance_spring[i].begin();
             for (; it!=distance_spring[i].end(); it++)
             {
                 if (indice_unused[it->second])

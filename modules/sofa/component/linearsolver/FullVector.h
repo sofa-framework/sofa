@@ -147,14 +147,14 @@ public:
         return data[i];
     }
 
-    void set(int i, double v)
+    void set(int i, Real_Sofa v)
     {
-        data[i] = (T)v;
+        data[i] = v;
     }
 
-    void add(int i, double v)
+    void add(int i, Real_Sofa v)
     {
-        data[i] += (T)v;
+        data[i] += v;
     }
 
     int size() const

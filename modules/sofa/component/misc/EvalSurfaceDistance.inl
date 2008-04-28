@@ -67,7 +67,7 @@ void EvalSurfaceDistance<DataTypes>::init()
 }
 
 template<class DataTypes>
-double EvalSurfaceDistance<DataTypes>::eval()
+Real_Sofa EvalSurfaceDistance<DataTypes>::eval()
 {
     if (!this->mstate1 || !this->mstate2 || !surfaceCM || !pointsCM || !intersection || !detection) return 0.0;
     const VecCoord& x1 = *this->mstate1->getX();

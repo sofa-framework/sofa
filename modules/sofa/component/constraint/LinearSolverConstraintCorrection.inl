@@ -247,10 +247,10 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     linearsolver->solveSystem(); //TODO: tell the solver not to recompute the matrix
 
     // use the OdeSolver to get the position integration factor
-    const double positionFactor = odesolver->getPositionIntegrationFactor();
+    const Real positionFactor = odesolver->getPositionIntegrationFactor();
 
     // use the OdeSolver to get the position integration factor
-    const double velocityFactor = odesolver->getVelocityIntegrationFactor();
+    const Real velocityFactor = odesolver->getVelocityIntegrationFactor();
 
     for (unsigned int i=0; i< numDOFs; i++)
     {

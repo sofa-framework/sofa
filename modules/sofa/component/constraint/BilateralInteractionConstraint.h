@@ -44,22 +44,22 @@ public:
 
     BilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
         : object1(object1), object2(object2), yetIntegrated(false)
-        , m1(this->initData(&m1, 0, "first_point","index of the constraint on the first model"))
-        , m2(this->initData(&m2, 0, "second_point","index of the constraint on the second model"))
+        , m1(initData(&m1, 0, "first_point","index of the constraint on the first model"))
+        , m2(initData(&m2, 0, "second_point","index of the constraint on the second model"))
     {
     }
 
     BilateralInteractionConstraint(MechanicalState* object)
         : object1(object), object2(object), yetIntegrated(false)
-        , m1(this->initData(&m1, 0, "first_point","index of the constraint on the first model"))
-        , m2(this->initData(&m2, 0, "second_point","index of the constraint on the second model"))
+        , m1(initData(&m1, 0, "first_point","index of the constraint on the first model"))
+        , m2(initData(&m2, 0, "second_point","index of the constraint on the second model"))
     {
     }
 
     BilateralInteractionConstraint()
         : object1(NULL), object2(NULL), yetIntegrated(false)
-        , m1(this->initData(&m1, 0, "first_point","index of the constraint on the first model"))
-        , m2(this->initData(&m2, 0, "second_point","index of the constraint on the second model"))
+        , m1(initData(&m1, 0, "first_point","index of the constraint on the first model"))
+        , m2(initData(&m2, 0, "second_point","index of the constraint on the second model"))
     {
     }
 
