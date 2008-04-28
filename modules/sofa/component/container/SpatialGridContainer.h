@@ -111,7 +111,7 @@ public:
 //			}
 //	};
 
-    enum { GRIDDIM_LOG2 = 2 };
+    enum { GRIDDIM_LOG2 = 3 };
 };
 
 template<class DataTypes>

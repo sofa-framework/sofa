@@ -9,11 +9,12 @@ namespace cuda
 {
 #endif
 
-void cudaCheck(cudaError_t err, const char* src="?")
+bool cudaCheck(cudaError_t err, const char* src="?")
 {
-    if (err == cudaSuccess) return;
+    if (err == cudaSuccess) return true;
     //fprintf(stderr, "CUDA: Error %d returned from %s.\n",(int)err,src);
     mycudaLogError(err, src);
+    return false;
 }
 
 bool cudaInitCalled = false;
@@ -53,6 +54,7 @@ void mycudaMalloc(void **devPtr, size_t size)
     if (!cudaInitCalled) mycudaInit(0);
     myprintf("CUDA: malloc(%d).\n",size);
     cudaCheck(cudaMalloc(devPtr, size),"cudaMalloc");
+    myprintf("CUDA: malloc(%d) -> 0x%x.\n",size, *devPtr);
 }
 
 void mycudaMallocPitch(void **devPtr, size_t* pitch, size_t width, size_t height)
@@ -60,11 +62,12 @@ void mycudaMallocPitch(void **devPtr, size_t* pitch, size_t width, size_t height
     if (!cudaInitCalled) mycudaInit(0);
     myprintf("CUDA: mallocPitch(%d,%d).\n",width,height);
     cudaCheck(cudaMallocPitch(devPtr, pitch, width, height),"cudaMalloc2D");
+    myprintf("CUDA: mallocPitch(%d,%d) -> 0x%x at pitch %d.\n",width,height, *devPtr, (int)*pitch);
 }
 
 void mycudaFree(void *devPtr)
 {
-    myprintf("CUDA: free().\n");
+    myprintf("CUDA: free(0x%x).\n",devPtr);
     cudaCheck(cudaFree(devPtr),"cudaFree");
 }
 
@@ -73,17 +76,19 @@ void mycudaMallocHost(void **hostPtr, size_t size)
     if (!cudaInitCalled) mycudaInit(0);
     myprintf("CUDA: mallocHost(%d).\n",size);
     cudaCheck(cudaMallocHost(hostPtr, size),"cudaMallocHost");
+    myprintf("CUDA: mallocHost(%d) -> 0x%x.\n",size, *hostPtr);
 }
 
 void mycudaFreeHost(void *hostPtr)
 {
-    myprintf("CUDA: freeHost().\n");
+    myprintf("CUDA: freeHost(0x%x).\n",hostPtr);
     cudaCheck(cudaFreeHost(hostPtr),"cudaFreeHost");
 }
 
 void mycudaMemcpyHostToDevice(void *dst, const void *src, size_t count)
 {
-    cudaCheck(cudaMemcpy(dst, src, count, cudaMemcpyHostToDevice),"cudaMemcpyHostToDevice");
+    if (!cudaCheck(cudaMemcpy(dst, src, count, cudaMemcpyHostToDevice),"cudaMemcpyHostToDevice"))
+        myprintf("in mycudaMemcpyHostToDevice(0x%x, 0x%x, %d)\n",dst,src,count);
 }
 
 void mycudaMemcpyDeviceToDevice(void *dst, const void *src, size_t count)

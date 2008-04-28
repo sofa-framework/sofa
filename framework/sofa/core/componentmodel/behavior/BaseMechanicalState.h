@@ -153,7 +153,7 @@ public:
         static VecId freePosition() { return VecId(V_COORD,2); }
         static VecId freeVelocity() { return VecId(V_DERIV,2); }
         /// Test if two VecId identify the same vector
-        bool operator==(const VecId& v)
+        bool operator==(const VecId& v) const
         {
             return type == v.type && index == v.index;
         }
@@ -176,6 +176,52 @@ public:
     /// \li v = a + b
     /// \li v = b * f
     virtual void vOp(VecId v, VecId a = VecId::null(), VecId b = VecId::null(), Real_Sofa f=1.0) = 0; // {}
+
+    /// Data structure describing a set of linear operation on vectors
+    /// \see vMultiOp
+    typedef helper::vector< std::pair< VecId, helper::vector< std::pair< VecId, double > > > > VMultiOp;
+
+    /// Perform a sequence of linear vector accumulation operation $r_i = sum_j (v_j*f_{ij})$
+    ///
+    /// This is used to compute in on steps operations such as $v = v + a*dt, x = x + v*dt$.
+    /// Note that if the result vector appears inside the expression, it must be the first operand.
+    /// By default this method decompose the computation into multiple vOp calls.
+    virtual void vMultiOp(const VMultiOp& ops)
+    {
+        for(VMultiOp::const_iterator it = ops.begin(), itend = ops.end(); it != itend; ++it)
+        {
+            VecId r = it->first;
+            const helper::vector< std::pair< VecId, double > >& operands = it->second;
+            int nop = operands.size();
+            if (nop==0)
+            {
+                vOp(r);
+            }
+            else if (nop==1)
+            {
+                if (operands[0].second == 1.0)
+                    vOp(r, operands[0].first);
+                else
+                    vOp(r, VecId::null(), operands[0].first, operands[0].second);
+            }
+            else
+            {
+                int i;
+                if (operands[0].second == 1.0)
+                {
+                    vOp(r, operands[0].first, operands[1].first, operands[1].second);
+                    i = 2;
+                }
+                else
+                {
+                    vOp(r, VecId::null(), operands[0].first, operands[0].second);
+                    i = 1;
+                }
+                for (; i<nop; ++i)
+                    vOp(r, r, operands[i].first, operands[i].second);
+            }
+        }
+    }
 
     /// Compute the scalar products between two vectors.
     virtual Real_Sofa vDot(VecId a, VecId b) = 0; //{ return 0; }

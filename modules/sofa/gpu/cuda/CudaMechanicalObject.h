@@ -25,6 +25,9 @@ template <>
 void MechanicalObject<gpu::cuda::CudaVec3fTypes>::vOp(VecId v, VecId a, VecId b, double f);
 
 template <>
+void MechanicalObject<gpu::cuda::CudaVec3fTypes>::vMultiOp(const VMultiOp& ops);
+
+template <>
 double MechanicalObject<gpu::cuda::CudaVec3fTypes>::vDot(VecId a, VecId b);
 
 template <>
@@ -46,6 +49,9 @@ void MechanicalObject<gpu::cuda::CudaVec3f1Types>::accumulateForce();
 
 template <>
 void MechanicalObject<gpu::cuda::CudaVec3f1Types>::vOp(VecId v, VecId a, VecId b, double f);
+
+template <>
+void MechanicalObject<gpu::cuda::CudaVec3f1Types>::vMultiOp(const VMultiOp& ops);
 
 template <>
 double MechanicalObject<gpu::cuda::CudaVec3f1Types>::vDot(VecId a, VecId b);
