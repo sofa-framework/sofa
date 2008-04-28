@@ -153,7 +153,7 @@ void LaparoscopicRigidMapping<BasicMapping>::processGrab()
                 TriangleModel::Topology* t = tmodel->getTopology();
                 typedef mapping::BarycentricMapping<core::componentmodel::behavior::MechanicalMapping<core::componentmodel::behavior::MechanicalState<TriangleModel::DataTypes>, core::componentmodel::behavior::MechanicalState<Vec3Types> > > TriangleMapping;
                 typedef mapping::BarycentricMapperTriangleSetTopology<TriangleModel::DataTypes, Vec3Types> TriangleMapper;
-                TriangleMapper* mapper = new TriangleMapper(t);
+                TriangleMapper* mapper = new TriangleMapper(dynamic_cast<TriangleModel::SetTopology*>(t));
                 TriangleMapping* mapping = new TriangleMapping(model->getMechanicalState(),mstate2,mapper);
                 child->addObject(mapping);
                 mstate2->resize(1);

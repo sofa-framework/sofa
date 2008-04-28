@@ -114,10 +114,6 @@ protected:
 
     sofa::helper::vector<topology::Triangle> mytriangles;
 
-    Topology* topology;
-    SetTopology* setTopology;
-
-    int meshRevision;
     bool needsUpdate;
     virtual void updateFromTopology();
     virtual void updateFlags(int ntri=-1);
@@ -125,6 +121,9 @@ protected:
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
     Data<bool> computeNormals;
+    int meshRevision;
+    Topology* topology;
+    SetTopology* setTopology;
 
 public:
 
