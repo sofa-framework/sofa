@@ -188,7 +188,7 @@ public:
     }
 
     /// Create a quaternion from Euler
-    static Quater createQuaterFromEuler( defaulttype::Vector3 v)
+    static Quater createQuaterFromEuler( defaulttype::Vec<3,Real> v)
     {
         Real quat[4];      Real a0 = v.elems[0];
         Real a1 = v.elems[1];

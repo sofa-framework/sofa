@@ -125,7 +125,7 @@ void UniformMass<DataTypes, MassType>::addGravityToV(double dt)
         const Real_Sofa* g = this->getContext()->getLocalGravity().ptr();
         Deriv theGravity;
         DataTypes::set( theGravity, g[0], g[1], g[2]);
-        Deriv hg = theGravity * dt;
+        Deriv hg = theGravity * (Real)dt;
         if (this->f_printLog.getValue())
             std::cerr << "UniformMass::addGravityToV hg = "<<theGravity<<"*"<<dt<<"="<<hg<<std::endl;
         for (unsigned int i=0; i<v.size(); i++)

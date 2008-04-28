@@ -80,9 +80,9 @@ int BarycentricMapperRegularGridTopology<In,Out>::addPointInCube(int cubeIndex, 
     map.resize(map.size()+1);
     CubeData& data = *map.rbegin();
     data.in_index = cubeIndex;
-    data.baryCoords[0] = baryCoords[0];
-    data.baryCoords[1] = baryCoords[1];
-    data.baryCoords[2] = baryCoords[2];
+    data.baryCoords[0] = (Real)baryCoords[0];
+    data.baryCoords[1] = (Real)baryCoords[1];
+    data.baryCoords[2] = (Real)baryCoords[2];
     return map.size()-1;
 }
 
@@ -119,9 +119,9 @@ int BarycentricMapperSparseGridTopology<In,Out>::addPointInCube(int cubeIndex, c
     map.resize(map.size()+1);
     CubeData& data = *map.rbegin();
     data.in_index = cubeIndex;
-    data.baryCoords[0] = baryCoords[0];
-    data.baryCoords[1] = baryCoords[1];
-    data.baryCoords[2] = baryCoords[2];
+    data.baryCoords[0] = (Real)baryCoords[0];
+    data.baryCoords[1] = (Real)baryCoords[1];
+    data.baryCoords[2] = (Real)baryCoords[2];
     return map.size()-1;
 }
 
@@ -177,7 +177,7 @@ int BarycentricMapperMeshTopology<In,Out>::addPointInLine(int lineIndex, const R
     map1d.resize(map1d.size()+1);
     MappingData1D& data = *map1d.rbegin();
     data.in_index = lineIndex;
-    data.baryCoords[0] = baryCoords[0];
+    data.baryCoords[0] = (Real)baryCoords[0];
     return map1d.size()-1;
 }
 
@@ -187,8 +187,8 @@ int BarycentricMapperMeshTopology<In,Out>::addPointInTriangle(int triangleIndex,
     map2d.resize(map2d.size()+1);
     MappingData2D& data = *map2d.rbegin();
     data.in_index = triangleIndex;
-    data.baryCoords[0] = baryCoords[0];
-    data.baryCoords[1] = baryCoords[1];
+    data.baryCoords[0] = (Real)baryCoords[0];
+    data.baryCoords[1] = (Real)baryCoords[1];
     return map2d.size()-1;
 }
 
@@ -198,8 +198,8 @@ int BarycentricMapperMeshTopology<In,Out>::addPointInQuad(int quadIndex, const R
     map2d.resize(map2d.size()+1);
     MappingData2D& data = *map2d.rbegin();
     data.in_index = quadIndex + topology->getNbTriangles();
-    data.baryCoords[0] = baryCoords[0];
-    data.baryCoords[1] = baryCoords[1];
+    data.baryCoords[0] = (Real)baryCoords[0];
+    data.baryCoords[1] = (Real)baryCoords[1];
     return map2d.size()-1;
 }
 
@@ -209,9 +209,9 @@ int BarycentricMapperMeshTopology<In,Out>::addPointInTetra(int tetraIndex, const
     map3d.resize(map3d.size()+1);
     MappingData3D& data = *map3d.rbegin();
     data.in_index = tetraIndex;
-    data.baryCoords[0] = baryCoords[0];
-    data.baryCoords[1] = baryCoords[1];
-    data.baryCoords[2] = baryCoords[2];
+    data.baryCoords[0] = (Real)baryCoords[0];
+    data.baryCoords[1] = (Real)baryCoords[1];
+    data.baryCoords[2] = (Real)baryCoords[2];
     return map3d.size()-1;
 }
 
@@ -221,9 +221,9 @@ int BarycentricMapperMeshTopology<In,Out>::addPointInCube(int cubeIndex, const R
     map3d.resize(map3d.size()+1);
     MappingData3D& data = *map3d.rbegin();
     data.in_index = cubeIndex + topology->getNbTetras();
-    data.baryCoords[0] = baryCoords[0];
-    data.baryCoords[1] = baryCoords[1];
-    data.baryCoords[2] = baryCoords[2];
+    data.baryCoords[0] = (Real)baryCoords[0];
+    data.baryCoords[1] = (Real)baryCoords[1];
+    data.baryCoords[2] = (Real)baryCoords[2];
     return map3d.size()-1;
 }
 
@@ -420,7 +420,7 @@ int BarycentricMapperEdgeSetTopology<In,Out>::addPointInLine(int edgeIndex, cons
     map.resize(map.size()+1);
     MappingData& data = *map.rbegin();
     data.in_index = edgeIndex;
-    data.baryCoords[0] = baryCoords[0];
+    data.baryCoords[0] = (Real)baryCoords[0];
     return map.size()-1;
 }
 
@@ -456,8 +456,8 @@ int BarycentricMapperTriangleSetTopology<In,Out>::addPointInTriangle(int triangl
     map.resize(map.size()+1);
     MappingData& data = *map.rbegin();
     data.in_index = triangleIndex;
-    data.baryCoords[0] = baryCoords[0];
-    data.baryCoords[1] = baryCoords[1];
+    data.baryCoords[0] = (Real)baryCoords[0];
+    data.baryCoords[1] = (Real)baryCoords[1];
     return map.size()-1;
 }
 
@@ -537,8 +537,8 @@ int BarycentricMapperQuadSetTopology<In,Out>::addPointInQuad(int quadIndex, cons
     map.resize(map.size()+1);
     MappingData& data = *map.rbegin();
     data.in_index = quadIndex + topology->getNbTriangles();
-    data.baryCoords[0] = baryCoords[0];
-    data.baryCoords[1] = baryCoords[1];
+    data.baryCoords[0] = (Real)baryCoords[0];
+    data.baryCoords[1] = (Real)baryCoords[1];
     return map.size()-1;
 }
 
@@ -621,9 +621,9 @@ int BarycentricMapperTetrahedronSetTopology<In,Out>::addPointInTetra(int tetraIn
     map.resize(map.size()+1);
     MappingData& data = *map.rbegin();
     data.in_index = tetraIndex;
-    data.baryCoords[0] = baryCoords[0];
-    data.baryCoords[1] = baryCoords[1];
-    data.baryCoords[2] = baryCoords[2];
+    data.baryCoords[0] = (Real)baryCoords[0];
+    data.baryCoords[1] = (Real)baryCoords[1];
+    data.baryCoords[2] = (Real)baryCoords[2];
     return map.size()-1;
 }
 
@@ -689,9 +689,9 @@ int BarycentricMapperHexahedronSetTopology<In,Out>::addPointInCube(int cubeIndex
     map.resize(map.size()+1);
     MappingData& data = *map.rbegin();
     data.in_index = cubeIndex + topology->getNbTetras();
-    data.baryCoords[0] = baryCoords[0];
-    data.baryCoords[1] = baryCoords[1];
-    data.baryCoords[2] = baryCoords[2];
+    data.baryCoords[0] = (Real)baryCoords[0];
+    data.baryCoords[1] = (Real)baryCoords[1];
+    data.baryCoords[2] = (Real)baryCoords[2];
     return map.size()-1;
 }
 
