@@ -32,7 +32,7 @@ void BarycentricPenalityContact<CudaPointModel,CudaRigidDistanceGridCollisionMod
     {
         MechanicalState1* mstate1 = mapper1.createMapping(model1);
         MechanicalState2* mstate2 = mapper2.createMapping(model2);
-        ff = new ResponseForceField(mstate1,mstate2);
+        ff = new ResponseForceField(mstate1,mstate2); ff->setName( getName());
     }
 
     mapper1.setPoints1(&outputs);
@@ -82,7 +82,7 @@ void BarycentricPenalityContact<CudaSphereModel,CudaRigidDistanceGridCollisionMo
     {
         MechanicalState1* mstate1 = mapper1.createMapping(model1);
         MechanicalState2* mstate2 = mapper2.createMapping(model2);
-        ff = new ResponseForceField(mstate1,mstate2);
+        ff = new ResponseForceField(mstate1,mstate2); ff->setName( getName());
     }
 
     mapper1.setPoints1(&outputs);

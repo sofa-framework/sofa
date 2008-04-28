@@ -3,7 +3,7 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-
+#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/component/MechanicalObject.h>
 
 typedef sofa::defaulttype::Vec1fTypes   Particles1f;
@@ -50,6 +50,11 @@ typedef sofa::component::MechanicalObject<sofa::defaulttype::Vec6fTypes> Mechani
 //Rigid
 typedef sofa::component::MechanicalObject<sofa::defaulttype::Rigid2fTypes> MechanicalObjectRigid2f;
 typedef sofa::component::MechanicalObject<sofa::defaulttype::Rigid3fTypes> MechanicalObjectRigid3f;
+//---------------------
+//Laparoscopic
+#ifdef SOFA_FLOAT
+typedef sofa::component::MechanicalObject<sofa::defaulttype::LaparoscopicRigid3Types> MechanicalObjectLaparoscopicRigid3;
+#endif
 
 #ifdef SOFA_FLOAT
 typedef MechanicalObject1f MechanicalObject1;
