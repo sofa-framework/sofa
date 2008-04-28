@@ -36,11 +36,11 @@ using namespace gpu::cuda;
 template <>
 void FixedConstraint<CudaVec3fTypes>::init()
 {
-    this->core::componentmodel::behavior::Constraint<CudaVec3fTypes>::init();
-    const SetIndex& indices = f_indices.getValue();
     data.minIndex = -1;
     data.maxIndex = -1;
     data.cudaIndices.clear();
+    this->core::componentmodel::behavior::Constraint<CudaVec3fTypes>::init();
+    const SetIndex& indices = f_indices.getValue();
     if (!indices.empty())
     {
         // put indices in a set to sort them and remove duplicates
@@ -52,9 +52,11 @@ void FixedConstraint<CudaVec3fTypes>::init()
         {
             data.minIndex = *sortedIndices.begin();
             data.maxIndex = *sortedIndices.rbegin();
+            //std::cout << "CudaFixedConstraint: "<<sortedIndices.size()<<" contiguous fixed indices, "<<data.minIndex<<" - "<<data.maxIndex<<std::endl;
         }
         else
         {
+            //std::cout << "CudaFixedConstraint: "<<sortedIndices.size()<<" non-contiguous fixed indices"<<std::endl;
             data.cudaIndices.reserve(sortedIndices.size());
             for (std::set<int>::const_iterator it = sortedIndices.begin(); it!=sortedIndices.end(); it++)
                 data.cudaIndices.push_back(*it);
@@ -76,6 +78,10 @@ void FixedConstraint<gpu::cuda::CudaVec3fTypes>::addConstraint(unsigned int inde
             data.minIndex = index;
             data.maxIndex = index;
         }
+        else if ((int)index >= data.minIndex && (int)index <= data.maxIndex)
+        {
+            // point already fixed
+        }
         else if (data.minIndex == (int)index+1)
         {
             data.minIndex = index;
@@ -94,7 +100,7 @@ void FixedConstraint<gpu::cuda::CudaVec3fTypes>::addConstraint(unsigned int inde
             data.cudaIndices.push_back(index);
             data.minIndex = -1;
             data.maxIndex = -1;
-            //std::cout << "CudaFixedConstraint: new indices array size "<<data.cudaIndices.size()<<"\n";
+            std::cout << "CudaFixedConstraint: new indices array size "<<data.cudaIndices.size()<<"\n";
         }
     }
     else

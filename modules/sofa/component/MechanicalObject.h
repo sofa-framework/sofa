@@ -57,6 +57,7 @@ class MechanicalObject : public MechanicalState<DataTypes>
 public:
     typedef MechanicalState<DataTypes> Inherited;
     typedef typename Inherited::VecId VecId;
+    typedef typename Inherited::VMultiOp VMultiOp;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -268,6 +269,8 @@ public:
     virtual void vFree(VecId v);
 
     virtual void vOp(VecId v, VecId a = VecId::null(), VecId b = VecId::null(), Real_Sofa f=1.0);
+
+    virtual void vMultiOp(const VMultiOp& ops);
 
     virtual void vThreshold( VecId a, Real_Sofa threshold );
 

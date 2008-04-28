@@ -21,6 +21,7 @@ extern "C"
     void MechanicalObjectCudaVec3f_vPEqBF(unsigned int size, void* res, const void* b, float f);
     void MechanicalObjectCudaVec3f_vAdd(unsigned int size, void* res, const void* a, const void* b);
     void MechanicalObjectCudaVec3f_vOp(unsigned int size, void* res, const void* a, const void* b, float f);
+    void MechanicalObjectCudaVec3f_vIntegrate(unsigned int size, const void* a, void* v, void* x, float f_v_v, float f_v_a, float f_x_x, float f_x_v);
     int MechanicalObjectCudaVec3f_vDotTmpSize(unsigned int size);
     void MechanicalObjectCudaVec3f_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* cputmp);
 
@@ -32,6 +33,7 @@ extern "C"
     void MechanicalObjectCudaVec3f1_vPEqBF(unsigned int size, void* res, const void* b, float f);
     void MechanicalObjectCudaVec3f1_vAdd(unsigned int size, void* res, const void* a, const void* b);
     void MechanicalObjectCudaVec3f1_vOp(unsigned int size, void* res, const void* a, const void* b, float f);
+    void MechanicalObjectCudaVec3f1_vIntegrate(unsigned int size, const void* a, void* v, void* x, float f_v_v, float f_v_a, float f_x_x, float f_x_v);
     int MechanicalObjectCudaVec3f1_vDotTmpSize(unsigned int size);
     void MechanicalObjectCudaVec3f1_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* cputmp);
 }
@@ -309,6 +311,57 @@ __global__ void MechanicalObjectCudaVec3f1_vOp_kernel(int size, float4* res, con
     }
 }
 
+__global__ void MechanicalObjectCudaVec1f_vIntegrate_kernel(int size, const float* a, float* v, float* x, float f_v_v, float f_v_a, float f_x_x, float f_x_v)
+{
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    //if (index < size)
+    {
+        float vi = v[index]*f_v_v + a[index] * f_v_a;
+        v[index] = vi;
+        x[index] = x[index]*f_x_x + vi * f_x_v;
+    }
+}
+
+__global__ void MechanicalObjectCudaVec3f_vIntegrate_kernel(int size, const float* a, float* v, float* x, float f_v_v, float f_v_a, float f_x_x, float f_x_v)
+{
+    int index = umul24(blockIdx.x,BSIZE*3)+threadIdx.x;
+    //if (index < size)
+    {
+        float vi;
+        vi = v[index]*f_v_v + a[index] * f_v_a;
+        v[index] = vi;
+        x[index] = x[index]*f_x_x + vi * f_x_v;
+        index += BSIZE;
+        vi = v[index]*f_v_v + a[index] * f_v_a;
+        v[index] = vi;
+        x[index] = x[index]*f_x_x + vi * f_x_v;
+        index += BSIZE;
+        vi = v[index]*f_v_v + a[index] * f_v_a;
+        v[index] = vi;
+        x[index] = x[index]*f_x_x + vi * f_x_v;
+    }
+}
+
+__global__ void MechanicalObjectCudaVec3f1_vIntegrate_kernel(int size, const float4* a, float4* v, float4* x, float f_v_v, float f_v_a, float f_x_x, float f_x_v)
+{
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    //if (index < size)
+    {
+        //res[index] = a[index] + b[index] * f;
+        float4 ai = a[index];
+        float4 vi = v[index];
+        float4 xi = x[index];
+        vi.x = vi.x*f_v_v + ai.x*f_v_a;
+        vi.y = vi.y*f_v_v + ai.y*f_v_a;
+        vi.z = vi.z*f_v_v + ai.z*f_v_a;
+        xi.x = xi.x*f_x_x + vi.x*f_x_v;
+        xi.y = xi.y*f_x_x + vi.y*f_x_v;
+        xi.z = xi.z*f_x_x + vi.z*f_x_v;
+        v[index] = vi;
+        x[index] = xi;
+    }
+}
+
 #define RED_BSIZE 128
 #define blockSize RED_BSIZE
 //template<unsigned int blockSize>
@@ -318,21 +371,54 @@ __global__ void MechanicalObjectCudaVecf_vDot_kernel(unsigned int n, float* res,
     unsigned int tid = threadIdx.x;
 
     unsigned int i = blockIdx.x*(blockSize) + tid;
-    unsigned int gridSize = blockSize*gridDim.x;
+    unsigned int gridSize = gridDim.x*(blockSize);
     sdata[tid] = 0;
     while (i < n) { sdata[tid] += a[i] * b[i]; i += gridSize; }
     __syncthreads();
-    if (blockSize >= 512) { if (tid < 256) { sdata[tid] += sdata[tid + 256]; } __syncthreads(); }
-    if (blockSize >= 256) { if (tid < 128) { sdata[tid] += sdata[tid + 128]; } __syncthreads(); }
-    if (blockSize >= 128) { if (tid < 64) { sdata[tid] += sdata[tid + 64]; } __syncthreads(); }
+#if blockSize >= 512
+    //if (blockSize >= 512)
+    {
+        if (tid < 256) { sdata[tid] += sdata[tid + 256]; } __syncthreads();
+    }
+#endif
+#if blockSize >= 256
+    //if (blockSize >= 256)
+    {
+        if (tid < 128) { sdata[tid] += sdata[tid + 128]; } __syncthreads();
+    }
+#endif
+#if blockSize >= 128
+    //if (blockSize >= 128)
+    {
+        if (tid < 64) { sdata[tid] += sdata[tid + 64]; } __syncthreads();
+    }
+#endif
     if (tid < 32)
     {
-        if (blockSize >= 64) sdata[tid] += sdata[tid + 32];
-        if (blockSize >= 32) sdata[tid] += sdata[tid + 16];
-        if (blockSize >= 16) sdata[tid] += sdata[tid + 8];
-        if (blockSize >= 8) sdata[tid] += sdata[tid + 4];
-        if (blockSize >= 4) sdata[tid] += sdata[tid + 2];
-        if (blockSize >= 2) sdata[tid] += sdata[tid + 1];
+#if blockSize >= 64
+        //if (blockSize >= 64)
+        sdata[tid] += sdata[tid + 32];
+#endif
+#if blockSize >= 32
+        //if (blockSize >= 32)
+        sdata[tid] += sdata[tid + 16];
+#endif
+#if blockSize >= 16
+        //if (blockSize >= 16)
+        sdata[tid] += sdata[tid + 8];
+#endif
+#if blockSize >= 8
+        //if (blockSize >= 8)
+        sdata[tid] += sdata[tid + 4];
+#endif
+#if blockSize >= 4
+        //if (blockSize >= 4)
+        sdata[tid] += sdata[tid + 2];
+#endif
+#if blockSize >= 2
+        //if (blockSize >= 2)
+        sdata[tid] += sdata[tid + 1];
+#endif
     }
     if (tid == 0) res[blockIdx.x] = sdata[0];
 }
@@ -348,17 +434,50 @@ __global__ void MechanicalObjectCudaVecf_vSum_kernel(int n, float* res, const fl
     sdata[tid] = 0;
     while (i < n) { sdata[tid] += a[i]; i += gridSize; }
     __syncthreads();
-    if (blockSize >= 512) { if (tid < 256) { sdata[tid] += sdata[tid + 256]; } __syncthreads(); }
-    if (blockSize >= 256) { if (tid < 128) { sdata[tid] += sdata[tid + 128]; } __syncthreads(); }
-    if (blockSize >= 128) { if (tid < 64) { sdata[tid] += sdata[tid + 64]; } __syncthreads(); }
+#if blockSize >= 512
+    //if (blockSize >= 512)
+    {
+        if (tid < 256) { sdata[tid] += sdata[tid + 256]; } __syncthreads();
+    }
+#endif
+#if blockSize >= 256
+    //if (blockSize >= 256)
+    {
+        if (tid < 128) { sdata[tid] += sdata[tid + 128]; } __syncthreads();
+    }
+#endif
+#if blockSize >= 128
+    //if (blockSize >= 128)
+    {
+        if (tid < 64) { sdata[tid] += sdata[tid + 64]; } __syncthreads();
+    }
+#endif
     if (tid < 32)
     {
-        if (blockSize >= 64) sdata[tid] += sdata[tid + 32];
-        if (blockSize >= 32) sdata[tid] += sdata[tid + 16];
-        if (blockSize >= 16) sdata[tid] += sdata[tid + 8];
-        if (blockSize >= 8) sdata[tid] += sdata[tid + 4];
-        if (blockSize >= 4) sdata[tid] += sdata[tid + 2];
-        if (blockSize >= 2) sdata[tid] += sdata[tid + 1];
+#if blockSize >= 64
+        //if (blockSize >= 64)
+        sdata[tid] += sdata[tid + 32];
+#endif
+#if blockSize >= 32
+        //if (blockSize >= 32)
+        sdata[tid] += sdata[tid + 16];
+#endif
+#if blockSize >= 16
+        //if (blockSize >= 16)
+        sdata[tid] += sdata[tid + 8];
+#endif
+#if blockSize >= 8
+        //if (blockSize >= 8)
+        sdata[tid] += sdata[tid + 4];
+#endif
+#if blockSize >= 4
+        //if (blockSize >= 4)
+        sdata[tid] += sdata[tid + 2];
+#endif
+#if blockSize >= 2
+        //if (blockSize >= 2)
+        sdata[tid] += sdata[tid + 1];
+#endif
     }
     if (tid == 0) res[blockIdx.x] = sdata[0];
 }
@@ -513,13 +632,31 @@ void MechanicalObjectCudaVec3f1_vOp(unsigned int size, void* res, const void* a,
     //MechanicalObjectCudaVec1f_vOp_kernel<<< grid, threads >>>(4*size, (float*)res, (const float*)a, (const float*)b, f);
 }
 
+void MechanicalObjectCudaVec3f_vIntegrate(unsigned int size, const void* a, void* v, void* x, float f_v_v, float f_v_a, float f_x_x, float f_x_v)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    MechanicalObjectCudaVec3f_vIntegrate_kernel<<< grid, threads >>>(size, (const float*)a, (float*)v, (float*)x, f_v_v, f_v_a, f_x_x, f_x_v);
+    //dim3 grid((3*size+BSIZE-1)/BSIZE,1);
+    //MechanicalObjectCudaVec1f_vIntegrate_kernel<<< grid, threads >>>(3*size, (const float*)a, (float*)v, (float*)x, f_v_v, f_v_a, f_x_x, f_x_v);
+}
+
+void MechanicalObjectCudaVec3f1_vIntegrate(unsigned int size, const void* a, void* v, void* x, float f_v_v, float f_v_a, float f_x_x, float f_x_v)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    MechanicalObjectCudaVec3f1_vIntegrate_kernel<<< grid, threads >>>(size, (const float4*)a, (float4*)v, (float4*)x, f_v_v, f_v_a, f_x_x, f_x_v);
+    //dim3 grid((4*size+BSIZE-1)/BSIZE,1);
+    //MechanicalObjectCudaVec1f_vIntegrate_kernel<<< grid, threads >>>(4*size, (const float*)a, (float*)v, (float*)x, f_v_v, f_v_a, f_x_x, f_x_v);
+}
+
 
 int MechanicalObjectCudaVec3f_vDotTmpSize(unsigned int size)
 {
     size *= 3;
     int nblocs = (size+RED_BSIZE-1)/RED_BSIZE;
     if (nblocs > 256) nblocs = 256;
-    return (nblocs+2)/3;
+    return nblocs;
 }
 
 void MechanicalObjectCudaVec3f_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* rtmp)
@@ -564,7 +701,7 @@ int MechanicalObjectCudaVec3f1_vDotTmpSize(unsigned int size)
     size *= 4;
     int nblocs = (size+RED_BSIZE-1)/RED_BSIZE;
     if (nblocs > 256) nblocs = 256;
-    return (nblocs+3)/4;
+    return nblocs; //(nblocs+3)/4;
 }
 
 void MechanicalObjectCudaVec3f1_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* rtmp)

@@ -6,6 +6,7 @@
 #include "mycuda.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
+//#include <sofa/helper/BackTrace.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
@@ -90,7 +91,7 @@ public:
         allocSize = ( allocSize+BSIZE-1 ) &-BSIZE;
 
         void* prevDevicePointer = devicePointer;
-        std::cout << "CudaVector<"<<sofa::core::objectmodel::Base::className((T*)NULL)<<"> : reserve("<<s<<")"<<std::endl;
+        if (mycudaVerboseLevel>=LOG_INFO) std::cout << "CudaVector<"<<sofa::core::objectmodel::Base::className((T*)NULL)<<"> : reserve("<<s<<")"<<std::endl;
         mycudaMalloc ( &devicePointer, allocSize*sizeof ( T ) );
         if ( vectorSize > 0 && deviceIsValid )
             mycudaMemcpyDeviceToDevice ( devicePointer, prevDevicePointer, vectorSize*sizeof ( T ) );
@@ -257,18 +258,22 @@ protected:
     void copyToHost() const
     {
         if ( hostIsValid ) return;
-#ifndef NDEBUG
-        std::cout << "CUDA: GPU->CPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<vectorSize*sizeof ( T ) <<" B"<<std::endl;
-#endif
+//#ifndef NDEBUG
+        if (mycudaVerboseLevel>=LOG_TRACE)
+        {
+            std::cout << "CUDA: GPU->CPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<vectorSize*sizeof ( T ) <<" B"<<std::endl;
+            //sofa::helper::BackTrace::dump();
+        }
+//#endif
         mycudaMemcpyDeviceToHost ( hostPointer, devicePointer, vectorSize*sizeof ( T ) );
         hostIsValid = true;
     }
     void copyToDevice() const
     {
         if ( deviceIsValid ) return;
-#ifndef NDEBUG
-        std::cout << "CUDA: CPU->GPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<vectorSize*sizeof ( T ) <<" B"<<std::endl;
-#endif
+//#ifndef NDEBUG
+        if (mycudaVerboseLevel>=LOG_TRACE) std::cout << "CUDA: CPU->GPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<vectorSize*sizeof ( T ) <<" B"<<std::endl;
+//#endif
         mycudaMemcpyHostToDevice ( devicePointer, hostPointer, vectorSize*sizeof ( T ) );
         deviceIsValid = true;
     }
@@ -479,18 +484,18 @@ protected:
     void copyToHost() const
     {
         if ( hostIsValid ) return;
-#ifndef NDEBUG
-        std::cout << "CUDA: GPU->CPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<sizeX*sizeof(T) <<" B"<<std::endl;
-#endif
+//#ifndef NDEBUG
+        if (mycudaVerboseLevel>=LOG_TRACE) std::cout << "CUDA: GPU->CPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<sizeX*sizeof(T) <<" B"<<std::endl;
+//#endif
         mycudaMemcpyDeviceToHost2D ( hostPointer, sizeX*sizeof(T), devicePointer, pitch, sizeX*sizeof(T), sizeY);
         hostIsValid = true;
     }
     void copyToDevice() const
     {
         if ( deviceIsValid ) return;
-#ifndef NDEBUG
-        std::cout << "CUDA: CPU->GPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<sizeX*sizeof(T) <<" B"<<std::endl;
-#endif
+//#ifndef NDEBUG
+        if (mycudaVerboseLevel>=LOG_TRACE) std::cout << "CUDA: CPU->GPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<sizeX*sizeof(T) <<" B"<<std::endl;
+//#endif
         mycudaMemcpyHostToDevice2D ( devicePointer, pitch, hostPointer, sizeX*sizeof(T),  sizeX*sizeof(T), sizeY);
         deviceIsValid = true;
     }

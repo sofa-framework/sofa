@@ -20,6 +20,7 @@
 #include <sofa/simulation/tree/AnimateBeginEvent.h>
 #include <sofa/simulation/tree/AnimateEndEvent.h>
 #include <sofa/component/topology/PointSetTopology.h>
+#include <sofa/component/topology/PointSubset.h>
 #include <sofa/component/MechanicalObject.h>
 #include <vector>
 #include <iterator>
@@ -48,13 +49,17 @@ public:
     typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalModel;
 
     Data<Deriv> planeNormal;
-    Data<Real> planeD;
+    Data<Real> planeD0;
+    Data<Real> planeD1;
     Data<defaulttype::Vec3f> color;
     Data<bool> showPlane;
 
+    topology::PointSubset fixed;
+
     ParticleSink()
         : planeNormal(initData(&planeNormal, "normal", "plane normal"))
-        , planeD(initData(&planeD, (Real)0, "d", "plane d coef"))
+        , planeD0(initData(&planeD0, (Real)0, "d0", "plane d coef at which particles acceleration is constrained to 0"))
+        , planeD1(initData(&planeD1, (Real)0, "d1", "plane d coef at which particles are removed"))
         , color(initData(&color, defaulttype::Vec3f(0.0f,.5f,.2f), "color", "plane color"))
         , showPlane(initData(&showPlane, false, "showPlane", "enable/disable drawing of plane"))
     {
@@ -73,7 +78,7 @@ public:
         this->core::componentmodel::behavior::Constraint<TDataTypes>::init();
         if (!this->mstate) return;
 
-        std::cout << "ParticleSink: normal="<<planeNormal.getValue()<<" dist="<<planeD.getValue()<<std::endl;
+        std::cout << "ParticleSink: normal="<<planeNormal.getValue()<<" d0="<<planeD0.getValue()<<" d1="<<planeD1.getValue()<<std::endl;
     }
 
     virtual void animateBegin(double /*dt*/, double time)
@@ -87,7 +92,7 @@ public:
         const bool log = this->f_printLog.getValue();
         for (int i=n-1; i>=0; --i) // always remove points in reverse order
         {
-            Real d = x[i]*planeNormal.getValue()-planeD.getValue();
+            Real d = x[i]*planeNormal.getValue()-planeD1.getValue();
             if (d<0)
             {
                 if (log)
@@ -124,16 +129,44 @@ public:
         }
     }
 
-    virtual void projectResponse(VecDeriv&) ///< project dx to constrained space
+    /// Handle topological changes
+    void handleTopologyChange()
     {
+        sofa::core::componentmodel::topology::BaseTopology *topology = (getContext()->getMainTopology());
+        std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=topology->firstChange();
+        std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=topology->lastChange();
+        if (itBegin != itEnd)
+        {
+            fixed.handleTopologyEvents(itBegin, itEnd, this->mstate->getSize());
+        }
+    }
+
+    virtual void projectResponse(VecDeriv& res) ///< project dx to constrained space
+    {
+        if (!this->mstate) return;
+        if (fixed.empty()) return;
+        // constraint the last value
+        for (unsigned int s=0; s<fixed.size(); s++)
+            res[fixed[s]] = Deriv();
     }
 
     virtual void projectVelocity(VecDeriv&) ///< project dx to constrained space (dx models a velocity)
     {
     }
 
-    virtual void projectPosition(VecCoord&) ///< project x to constrained space (x models a position)
+    virtual void projectPosition(VecCoord& x) ///< project x to constrained space (x models a position)
     {
+        if (!this->mstate) return;
+        fixed.clear();
+        // constraint the last value
+        for (unsigned int i=0; i<x.size(); i++)
+        {
+            Real d = x[i]*planeNormal.getValue()-planeD0.getValue();
+            if (d<0)
+            {
+                fixed.push_back(i);
+            }
+        }
     }
 
     virtual void animateEnd(double /*dt*/, double /*time*/)
@@ -165,7 +198,7 @@ public:
         v2 = v1.cross(normal);
         v2.normalize();
         const float size=10.0f;
-        defaulttype::Vec3d center = normal*planeD.getValue();
+        defaulttype::Vec3d center = normal*planeD0.getValue();
         defaulttype::Vec3d corners[4];
         corners[0] = center-v1*size-v2*size;
         corners[1] = center+v1*size-v2*size;

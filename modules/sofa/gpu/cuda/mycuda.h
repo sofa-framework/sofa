@@ -35,8 +35,17 @@ extern "C" {
 
     extern void mycudaGLMapBufferObject(void** ptr, int id);
     extern void mycudaGLUnmapBufferObject(int id);
-
 }
+
+enum MycudaVerboseLevel
+{
+    LOG_NONE = 0,
+    LOG_ERR = 1,
+    LOG_INFO = 2,
+    LOG_TRACE = 3
+};
+
+extern MycudaVerboseLevel mycudaVerboseLevel;
 
 #if defined(__cplusplus)
 } // namespace cuda

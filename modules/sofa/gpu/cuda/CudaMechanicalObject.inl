@@ -24,6 +24,7 @@ extern "C"
     void MechanicalObjectCudaVec3f_vPEqBF(unsigned int size, void* res, const void* b, float f);
     void MechanicalObjectCudaVec3f_vAdd(unsigned int size, void* res, const void* a, const void* b);
     void MechanicalObjectCudaVec3f_vOp(unsigned int size, void* res, const void* a, const void* b, float f);
+    void MechanicalObjectCudaVec3f_vIntegrate(unsigned int size, const void* a, void* v, void* x, float f_v_v, float f_v_a, float f_x_x, float f_x_v);
     int MechanicalObjectCudaVec3f_vDotTmpSize(unsigned int size);
     void MechanicalObjectCudaVec3f_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* cputmp);
     void MechanicalObjectCudaVec3f1_vAssign(unsigned int size, void* res, const void* a);
@@ -34,6 +35,7 @@ extern "C"
     void MechanicalObjectCudaVec3f1_vPEqBF(unsigned int size, void* res, const void* b, float f);
     void MechanicalObjectCudaVec3f1_vAdd(unsigned int size, void* res, const void* a, const void* b);
     void MechanicalObjectCudaVec3f1_vOp(unsigned int size, void* res, const void* a, const void* b, float f);
+    void MechanicalObjectCudaVec3f1_vIntegrate(unsigned int size, const void* a, void* v, void* x, float f_v_v, float f_v_a, float f_x_x, float f_x_v);
     int MechanicalObjectCudaVec3f1_vDotTmpSize(unsigned int size);
     void MechanicalObjectCudaVec3f1_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* cputmp);
 }
@@ -591,6 +593,48 @@ void MechanicalObject<CudaVec3f1Types>::vOp(VecId v, VecId a, VecId b, double f)
         }
     }
     //std::cout << "< vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+}
+
+template <>
+void MechanicalObject<gpu::cuda::CudaVec3fTypes>::vMultiOp(const VMultiOp& ops)
+{
+    // optimize common integration case: v += a*dt, x += v*dt
+    if (ops.size() == 2 && ops[0].second.size() == 2 && ops[0].first == ops[0].second[0].first && ops[0].first.type == VecId::V_DERIV && ops[0].second[1].first.type == VecId::V_DERIV
+        && ops[1].second.size() == 2 && ops[1].first == ops[1].second[0].first && ops[0].first == ops[1].second[1].first && ops[1].first.type == VecId::V_COORD)
+    {
+        VecDeriv* va = getVecDeriv(ops[0].second[1].first.index);
+        VecDeriv* vv = getVecDeriv(ops[0].first.index);
+        VecCoord* vx = getVecCoord(ops[1].first.index);
+        const unsigned int n = vx->size();
+        const double f_v_v = ops[0].second[0].second;
+        const double f_v_a = ops[0].second[1].second;
+        const double f_x_x = ops[1].second[0].second;
+        const double f_x_v = ops[1].second[1].second;
+        gpu::cuda::MechanicalObjectCudaVec3f_vIntegrate(n, va->deviceRead(), vv->deviceWrite(), vx->deviceWrite(), (float)f_v_v, (float)f_v_a, (float)f_x_x, (float)f_x_v);
+    }
+    else // no optimization for now for other cases
+        Inherited::vMultiOp(ops);
+}
+
+template <>
+void MechanicalObject<gpu::cuda::CudaVec3f1Types>::vMultiOp(const VMultiOp& ops)
+{
+    // optimize common integration case: v += a*dt, x += v*dt
+    if (ops.size() == 2 && ops[0].second.size() == 2 && ops[0].first == ops[0].second[0].first && ops[0].first.type == VecId::V_DERIV && ops[0].second[1].first.type == VecId::V_DERIV
+        && ops[1].second.size() == 2 && ops[1].first == ops[1].second[0].first && ops[0].first == ops[1].second[1].first && ops[1].first.type == VecId::V_COORD)
+    {
+        VecDeriv* va = getVecDeriv(ops[0].second[1].first.index);
+        VecDeriv* vv = getVecDeriv(ops[0].first.index);
+        VecCoord* vx = getVecCoord(ops[1].first.index);
+        const unsigned int n = vx->size();
+        const double f_v_v = ops[0].second[0].second;
+        const double f_v_a = ops[0].second[1].second;
+        const double f_x_x = ops[1].second[0].second;
+        const double f_x_v = ops[1].second[1].second;
+        gpu::cuda::MechanicalObjectCudaVec3f1_vIntegrate(n, va->deviceRead(), vv->deviceWrite(), vx->deviceWrite(), (float)f_v_v, (float)f_v_a, (float)f_x_x, (float)f_x_v);
+    }
+    else // no optimization for now for other cases
+        Inherited::vMultiOp(ops);
 }
 
 template <>

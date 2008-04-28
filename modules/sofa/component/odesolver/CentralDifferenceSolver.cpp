@@ -23,6 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/component/odesolver/CentralDifferenceSolver.h>
+#include <sofa/simulation/tree/MechanicalVisitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
@@ -93,7 +94,7 @@ void CentralDifferenceSolver::solve(double dt)
 
     addSeparateGravity(dt);                // v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
-    projectResponse(vel);                  // initial velocities are projected to the constrained space
+    //projectVelocity(vel);                  // initial velocities are projected to the constrained space
 
     // compute the current force
     computeForce(f);                       // f = P_n - K u_n
@@ -104,13 +105,42 @@ void CentralDifferenceSolver::solve(double dt)
 
     // apply the solution
     if (r==0)
+    {
+#if 0 // unoptimized version
         vel.peq( dx, dt );                  // vel = vel + dt M^{-1} ( P_n - K u_n )
+        pos.peq( vel, dt );                    // pos = pos + h vel
+#else // single-operation optimization
+        simulation::tree::MechanicalVMultiOpVisitor v;
+        v.ops.resize(2);
+        // vel += dx * dt
+        v.ops[0].first = (VecId)vel;
+        v.ops[0].second.push_back(std::make_pair((VecId)vel,1.0));
+        v.ops[0].second.push_back(std::make_pair((VecId)dx,dt));
+        // pos += vel * dt
+        v.ops[1].first = (VecId)pos;
+        v.ops[1].second.push_back(std::make_pair((VecId)pos,1.0));
+        v.ops[1].second.push_back(std::make_pair((VecId)vel,dt));
+        v.execute(getContext());
+#endif
+    }
     else
     {
+#if 0 // unoptimized version
         vel.teq( (1/dt - r/2)/(1/dt + r/2) );
         vel.peq( dx, 1/(1/dt + r/2) );     // vel = \frac{\frac{1}{dt} - \frac{r}{2}}{\frac{1}{dt} + \frac{r}{2}} vel + \frac{1}{\frac{1}{dt} + \frac{r}{2}} M^{-1} ( P_n - K u_n )
+        pos.peq( vel, dt );                    // pos = pos + h vel
+#else // single-operation optimization
+        simulation::tree::MechanicalVMultiOpVisitor v;
+        v.ops.resize(2);
+        v.ops[0].first = (VecId)vel;
+        v.ops[0].second.push_back(std::make_pair((VecId)vel,(1/dt - r/2)/(1/dt + r/2)));
+        v.ops[0].second.push_back(std::make_pair((VecId)dx,1/(1/dt + r/2)));
+        v.ops[1].first = (VecId)pos;
+        v.ops[1].second.push_back(std::make_pair((VecId)pos,1.0));
+        v.ops[1].second.push_back(std::make_pair((VecId)vel,dt));
+        v.execute(getContext());
+#endif
     }
-    pos.peq( vel, dt );                    // pos = pos + h vel
 }
 
 SOFA_DECL_CLASS(CentralDifferenceSolver)

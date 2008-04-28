@@ -305,6 +305,51 @@ public:
     }
 };
 
+/** Perform a sequence of linear vector accumulation operation $r_i = sum_j (v_j*f_{ij})
+ *
+ *  This is used to compute in on steps operations such as $v = v + a*dt, x = x + v*dt$.
+ *  Note that if the result vector appears inside the expression, it must be the first operand.
+ */
+class MechanicalVMultiOpVisitor : public MechanicalVisitor
+{
+public:
+    typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+    VMultiOp ops;
+    MechanicalVMultiOpVisitor()
+    {}
+    MechanicalVMultiOpVisitor(const VMultiOp& o)
+        : ops(o)
+    {}
+
+    virtual Result fwdMechanicalState(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    {
+        //cerr<<"    MechanicalVOpVisitor::fwdMechanicalState, model "<<mm->getName()<<endl;
+        mm->vMultiOp(ops);
+        return RESULT_CONTINUE;
+    }
+    virtual Result fwdMappedMechanicalState(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
+    {
+        //cerr<<"    MechanicalVOpVisitor::fwdMappedMechanicalState, model "<<mm->getName()<<endl;
+        //mm->vMultiOp(ops);
+        return RESULT_CONTINUE;
+    }
+    virtual Result fwdConstraint(GNode* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    {
+        core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
+        if (mm)
+            mm->vMultiOp(ops);
+        return RESULT_CONTINUE;
+    }
+
+    //virtual void processNodeBottomUp(GNode* node);
+
+    /// Specify whether this action can be parallelized.
+    virtual bool isThreadSafe() const
+    {
+        return true;
+    }
+};
+
 /** Compute the dot product of two vectors */
 class MechanicalVDotVisitor : public MechanicalVisitor
 {
