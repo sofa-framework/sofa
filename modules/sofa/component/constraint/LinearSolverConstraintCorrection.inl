@@ -107,11 +107,6 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
     }
 }
 
-template<>
-LinearSolverConstraintCorrection<defaulttype::Vec3Types>::~LinearSolverConstraintCorrection()
-{
-}
-
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::getCompliance(defaulttype::BaseMatrix* W)
 {

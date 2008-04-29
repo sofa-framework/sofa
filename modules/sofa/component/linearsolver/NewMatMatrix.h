@@ -74,7 +74,7 @@ public:
         return M::Ncols();
     }
 
-    double element(int i, int j) const
+    Real_Sofa element(int i, int j) const
     {
 #ifdef NEWMAT_CHECK
         if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
@@ -334,7 +334,7 @@ inline void TNewMatMatrix<NewMAT::SymmetricMatrix>::add(int i, int j, double v)
 }
 
 template<>
-inline double TNewMatMatrix<NewMAT::BandMatrix>::element(int i, int j) const
+inline Real_Sofa TNewMatMatrix<NewMAT::BandMatrix>::element(int i, int j) const
 {
 #ifdef NEWMAT_CHECK
     if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
@@ -348,6 +348,7 @@ inline double TNewMatMatrix<NewMAT::BandMatrix>::element(int i, int j) const
     else
         return M::element(i,j);
 }
+
 
 template<>
 inline void TNewMatMatrix<NewMAT::BandMatrix>::set(int i, int j, double v)
@@ -392,7 +393,7 @@ inline void TNewMatMatrix<NewMAT::BandMatrix>::add(int i, int j, double v)
 }
 
 template<>
-inline double TNewMatMatrix<NewMAT::SymmetricBandMatrix>::element(int i, int j) const
+inline Real_Sofa TNewMatMatrix<NewMAT::SymmetricBandMatrix>::element(int i, int j) const
 {
 #ifdef NEWMAT_CHECK
     if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())

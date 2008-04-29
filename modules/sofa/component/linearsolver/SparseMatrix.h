@@ -113,7 +113,7 @@ public:
         return nCol;
     }
 
-    double element(int i, int j) const
+    Real_Sofa element(int i, int j) const
     {
 #ifdef SPARSEMATRIX_CHECK
         if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())

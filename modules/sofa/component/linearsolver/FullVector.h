@@ -142,7 +142,7 @@ public:
         return data[i];
     }
 
-    double element(int i) const
+    Real_Sofa element(int i) const
     {
         return data[i];
     }

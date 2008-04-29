@@ -28,8 +28,11 @@
 
 //#define DO_FREE_CHECK                   // check news and deletes balance
 
+#ifdef SOFA_FLOAT
+#define USING_FLOAT                   // elements of type float
+#else
 #define USING_DOUBLE                    // elements of type double
-//#define USING_FLOAT                   // elements of type float
+#endif
 
 #define bool_LIB 0                      // for compatibility with my older libraries
 
@@ -291,6 +294,7 @@
 namespace NewMAT {
 namespace RBD_COMMON {
 #endif
+
 
 
 #ifdef USING_FLOAT                      // set precision type to float
