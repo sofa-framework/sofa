@@ -28,6 +28,10 @@ EvalPointsDistance<DataTypes>::EvalPointsDistance()
     , distMin( initData(&distMin, 1.0, "distMin", "min distance (OUTPUT)"))
     , distMax( initData(&distMax, 1.0, "distMax", "max distance (OUTPUT)"))
     , distDev( initData(&distDev, 1.0, "distDev", "distance standard deviation (OUTPUT)"))
+    , rdistMean( initData(&rdistMean, 1.0, "rdistMean", "mean relative distance (OUTPUT)"))
+    , rdistMin( initData(&rdistMin, 1.0, "rdistMin", "min relative distance (OUTPUT)"))
+    , rdistMax( initData(&rdistMax, 1.0, "rdistMax", "max relative distance (OUTPUT)"))
+    , rdistDev( initData(&rdistDev, 1.0, "rdistDev", "relative distance standard deviation (OUTPUT)"))
     , mstate1(NULL)
     , mstate2(NULL)
     , outfile(NULL)
@@ -63,7 +67,7 @@ void EvalPointsDistance<DataTypes>::init()
             outfile = NULL;
         }
         else
-            (*outfile) << "# time\tmean\tmin\tmax\tdev" << std::endl;
+            (*outfile) << "# name\ttime\tmean\tmin\tmax\tdev\tmean(%)\tmin(%)\tmax(%)\tdev(%)" << std::endl;
     }
 
 }
@@ -79,19 +83,25 @@ Real_Sofa EvalPointsDistance<DataTypes>::eval()
 {
     if (!mstate1 || !mstate2)
         return 0.0;
+    const VecCoord& x0 = *mstate1->getX0();
     const VecCoord& x1 = *mstate1->getX();
     const VecCoord& x2 = *mstate2->getX();
-    return this->doEval(x1, x2);
+    return this->doEval(x1, x2, x0);
 }
 
 template<class DataTypes>
-Real_Sofa EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoord& x2)
+Real_Sofa EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoord& x2, const VecCoord& x0)
 {
     const int n = (x1.size()<x2.size())?x1.size():x2.size();
     Real dsum = 0.0;
     Real dmin = 0.0;
     Real dmax = 0.0;
     Real d2 = 0.0;
+    Real rdsum = 0.0;
+    Real rdmin = 0.0;
+    Real rdmax = 0.0;
+    Real rd2 = 0.0;
+    int rn=0;
     for (int i=0; i<n; ++i)
     {
         Real d = (Real)(x1[i]-x2[i]).norm();
@@ -99,6 +109,16 @@ Real_Sofa EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoo
         d2 += d*d;
         if (i==0 || d < dmin) dmin = d;
         if (i==0 || d > dmax) dmax = d;
+        Real d0 = (Real)(x1[i]-x0[i]).norm();
+        if (d0 > 1.0e-6)
+        {
+            Real rd = d/d0;
+            rdsum += rd;
+            rd2 += rd*rd;
+            if (rn==0 || rd < rdmin) rdmin = rd;
+            if (rn==0 || rd > rdmax) rdmax = rd;
+            ++rn;
+        }
     }
     Real dmean = (Real)(n>0)?dsum/n : 0.0;
     Real ddev = (Real)((n>1)?sqrtf((float)(d2/n - (dsum/n)*(dsum/n))) : 0.0);
@@ -106,6 +126,14 @@ Real_Sofa EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoo
     distMin.setValue(dmin);
     distMax.setValue(dmax);
     distDev.setValue(ddev);
+
+    Real rdmean = (Real)(rn>0)?rdsum/rn : 0.0;
+    Real rddev = (Real)((rn>1)?sqrtf((float)(rd2/rn - (rdsum/rn)*(rdsum/rn))) : 0.0);
+    rdistMean.setValue(rdmean);
+    rdistMin.setValue(rdmin);
+    rdistMax.setValue(rdmax);
+    rdistDev.setValue(rddev);
+
     return dmean;
 }
 
@@ -151,7 +179,12 @@ void EvalPointsDistance<DataTypes>::handleEvent(sofa::core::objectmodel::Event* 
         if (time+getContext()->getDt()/2 >= (lastTime + f_period.getValue()))
         {
             eval();
-            (*out) << time << "\t" << distMean.getValue() << "\t" << distMin.getValue() << "\t" << distMax.getValue() << "\t" << distDev.getValue() << std::endl;
+            if (outfile==NULL)
+                std::cout << "# name\ttime\tmean\tmin\tmax\tdev\tmean(%)\tmin(%)\tmax(%)\tdev(%)" << std::endl;
+            (*out) << this->getName() << "\t" << time
+                    << "\t" << distMean.getValue() << "\t" << distMin.getValue() << "\t" << distMax.getValue() << "\t" << distDev.getValue()
+                    << "\t" << 100*rdistMean.getValue() << "\t" << 100*rdistMin.getValue() << "\t" << 100*rdistMax.getValue() << "\t" << 100*rdistDev.getValue()
+                    << std::endl;
             lastTime += f_period.getValue();
         }
     }

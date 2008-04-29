@@ -46,6 +46,7 @@ public:
     typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalModel;
 
     Data<Coord> f_translation;
+    Data<Real> f_scale;
     Data< helper::vector<Coord> > f_center;
     Data<Coord> f_radius;
     Data<Deriv> f_velocity;
@@ -54,7 +55,8 @@ public:
     Data<Real> f_stop;
 
     ParticleSource()
-        : f_translation(initData(&f_translation,Coord(),"translation","translation") )
+        : f_translation(initData(&f_translation,Coord(),"translation","translation applied to center(s)") )
+        , f_scale(initData(&f_scale,(Real)1.0,"scale","scale applied to center(s)") )
         , f_center(initData(&f_center, "center","Source center(s)") )
         , f_radius(initData(&f_radius, Coord(), "radius", "Source radius"))
         , f_velocity(initData(&f_velocity, Deriv(), "velocity", "Particle initial velocity"))
@@ -139,7 +141,7 @@ public:
                 lastparticles.resize(N);
                 for (int s=0; s<N; s++)
                 {
-                    lastpos[s] = f_center.getValue()[s] + f_translation.getValue();
+                    lastpos[s] = f_center.getValue()[s]*f_scale.getValue() + f_translation.getValue();
                     for (unsigned int c = 0; c < lastpos[s].size(); c++)
                         lastpos[s][c] += f_radius.getValue()[c] * rrand();
                     x[lastparticle+s] = lastpos[s];
