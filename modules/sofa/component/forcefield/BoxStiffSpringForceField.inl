@@ -96,7 +96,7 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
 
         for(unsigned int i = 0; i<indices1.size(); ++i)
         {
-            std::map<Real, unsigned int>::const_iterator it = distance_spring[i].begin();
+            typename std::map<Real, unsigned int>::const_iterator it = distance_spring[i].begin();
             for (; it!=distance_spring[i].end(); it++)
             {
                 if (indice_unused[it->second])
@@ -124,7 +124,7 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
 
         for(unsigned int i = 0; i<indices2.size(); ++i)
         {
-            std::map<Real, unsigned int>::const_iterator it = distance_spring[i].begin();
+            typename std::map<Real, unsigned int>::const_iterator it = distance_spring[i].begin();
             for (; it!=distance_spring[i].end(); it++)
             {
                 if (indice_unused[it->second])
