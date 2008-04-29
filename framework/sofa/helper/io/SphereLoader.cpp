@@ -42,7 +42,7 @@ namespace io
 static void skipToEOL(FILE* f)
 {
     int	ch;
-    while ((ch = fgetc(f)) != EOF && ch != '\n');
+    while ((ch = fgetc(f)) != EOF && ch != '\n') ;
 }
 
 bool SphereLoader::load(const char *filename)

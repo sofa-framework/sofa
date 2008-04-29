@@ -178,11 +178,14 @@ public:
         // still need to appear after the affected objects...
         if (arg->getAttribute("object1") || arg->getAttribute("object2"))
         {
-            //return InteractionForceField::canCreate(obj, context, arg);
-            if (dynamic_cast<MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1",".."))) == NULL)
-                return false;
-            if (dynamic_cast<MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
-                return false;
+            if (!arg->getAttribute("template")) //if a template is specified, the interaction forcefield can be created. If during init, no corresponding MechanicalState is found, it will be erased. It allows the saving of scenes containing PairInteractionForceField
+            {
+                //return InteractionForceField::canCreate(obj, context, arg);
+                if (dynamic_cast<MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1",".."))) == NULL)
+                    return false;
+                if (dynamic_cast<MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
+                    return false;
+            }
         }
         else
         {
