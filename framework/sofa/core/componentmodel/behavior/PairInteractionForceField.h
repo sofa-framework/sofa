@@ -172,13 +172,23 @@ public:
     template<class T>
     static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
+        // BUGFIX(Jeremie A.): We need to test dynamic casts with the right
+        // DataTypes otherwise the factory don't know which template to
+        // instanciate. This means that InteractionForceFields in scene files
+        // still need to appear after the affected objects...
         if (arg->getAttribute("object1") || arg->getAttribute("object2"))
         {
-            return InteractionForceField::canCreate(obj, context, arg);
+            //return InteractionForceField::canCreate(obj, context, arg);
+            if (dynamic_cast<MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1",".."))) == NULL)
+                return false;
+            if (dynamic_cast<MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
+                return false;
         }
         else
         {
-            if (context->getMechanicalState() == NULL) return false;
+            //if (context->getMechanicalState() == NULL) return false;
+            if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+                return false;
         }
         return InteractionForceField::canCreate(obj, context, arg);
     }
