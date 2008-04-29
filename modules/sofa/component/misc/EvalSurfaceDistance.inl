@@ -70,6 +70,7 @@ template<class DataTypes>
 Real_Sofa EvalSurfaceDistance<DataTypes>::eval()
 {
     if (!this->mstate1 || !this->mstate2 || !surfaceCM || !pointsCM || !intersection || !detection) return 0.0;
+    const VecCoord& x0 = *this->mstate1->getX0();
     const VecCoord& x1 = *this->mstate1->getX();
     //const VecCoord& x2 = *this->mstate2->getX();
     surfaceCM->computeBoundingTree(6);
@@ -132,7 +133,7 @@ Real_Sofa EvalSurfaceDistance<DataTypes>::eval()
         }
         it++;
     }
-    return this->doEval(x1, xproj);
+    return this->doEval(x1, xproj, x0);
 }
 
 template<class DataTypes>

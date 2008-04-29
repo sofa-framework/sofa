@@ -52,18 +52,39 @@ using namespace sofa::defaulttype;
 template <class BasicMapping>
 void BeamLinearMapping<BasicMapping>::init()
 {
+    bool local = localCoord.getValue();
     if (this->points.empty() && this->toModel!=NULL)
     {
-        VecCoord& x = *this->toModel->getX();
-        std::cout << "BeamLinearMapping: init "<<x.size()<<" points."<<std::endl;
-        points.resize(x.size());
-        for (unsigned int i=0; i<x.size(); i++)
-            points[i] = x[i];
         typename In::VecCoord& xfrom = *this->fromModel->getX();
         beamLength.resize(xfrom.size());
         for (unsigned int i=0; i<xfrom.size()-1; i++)
             beamLength[i] = (Real)((xfrom[i]-xfrom[i+1]).norm());
-
+        if (xfrom.size()>=2)
+            beamLength[xfrom.size()-1] = beamLength[xfrom.size()-2];
+        VecCoord& x = *this->toModel->getX();
+        std::cout << "BeamLinearMapping: init "<<x.size()<<" points."<<std::endl;
+        points.resize(x.size());
+        if (local)
+        {
+            for (unsigned int i=0; i<x.size(); i++)
+                points[i] = x[i];
+        }
+        else
+        {
+            for (unsigned int i=0; i<x.size(); i++)
+            {
+                Coord p = xfrom[0].getOrientation().inverseRotate(x[i]-xfrom[0].getCenter());
+                unsigned int j=0;
+                while(j<beamLength.size() && p[0]>=beamLength[j])
+                {
+                    p[0] -= beamLength[j];
+                    ++j;
+                }
+                p/=beamLength[j];
+                p[0]+=j;
+                points[i] = p;
+            }
+        }
     }
     this->BasicMapping::init();
 }
