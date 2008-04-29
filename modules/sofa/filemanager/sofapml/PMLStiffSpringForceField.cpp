@@ -485,7 +485,7 @@ void PMLStiffSpringForceField::createCollisionModel()
 {
     if (collisionsON)
     {
-        tmodel = new TriangleMeshModel;
+        tmodel = new TriangleModel;
         //lmodel = new LineModel;
         //pmodel = new PointModel;
 
