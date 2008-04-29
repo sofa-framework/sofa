@@ -737,7 +737,7 @@ void svddcmp(Mat<m,n,Real> &a, Vec<n,Real> &w, Mat<n,m,Real> &v)
     int i,its,j,jj,k,l,nm;
     Real anorm,c,f,g,h,s,scale,x,y,z;
 
-    Vec<n,Real> rv1(n);
+    Vec<n,Real> rv1;
     g=scale=anorm=0.0;
     for (i=0; i<n; i++)
     {
