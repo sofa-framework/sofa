@@ -25,6 +25,8 @@
 #include <sofa/simulation/tree/XMLPrintVisitor.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/simulation/tree/GNode.h>
+#include <sofa/core/componentmodel/behavior/InteractionForceField.h>
+#include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
 
 namespace sofa
 {
@@ -105,13 +107,28 @@ Visitor::Result XMLPrintVisitor::processNodeTopDown(GNode* node)
     if (node->mechanicalMapping != NULL)
         (*(node->mechanicalMapping.begin()))->disable();
 
-    processObjects(node->object);
+    //processObjects(node->object);
+    // BUGFIX(Jeremie A.): filter objects to output interactions classes after the children nodes to resolve dependencies at creation time
+    for (GNode::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+    {
+        sofa::core::objectmodel::BaseObject* obj = *it;
+        if (   dynamic_cast<sofa::core::componentmodel::behavior::InteractionForceField*> (obj) == NULL
+                && dynamic_cast<sofa::core::componentmodel::behavior::InteractionConstraint*> (obj) == NULL )
+            this->processObject(obj);
+    }
 
     return RESULT_CONTINUE;
 }
 
-void XMLPrintVisitor::processNodeBottomUp(GNode* /*node*/)
+void XMLPrintVisitor::processNodeBottomUp(GNode* node)
 {
+    for (GNode::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+    {
+        sofa::core::objectmodel::BaseObject* obj = *it;
+        if (   dynamic_cast<sofa::core::componentmodel::behavior::InteractionForceField*> (obj) != NULL
+                || dynamic_cast<sofa::core::componentmodel::behavior::InteractionConstraint*> (obj) != NULL )
+            this->processObject(obj);
+    }
     --level;
 
     for (int i=0; i<level; i++)
