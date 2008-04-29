@@ -421,7 +421,7 @@ void PMLRigidBody::createCollisionModel()
         CollisionNode->addObject(topology);
         CollisionNode->addObject(mapping);*/
 
-        TriangleMeshModel * cmodel = new TriangleMeshModel;
+        TriangleModel * cmodel = new TriangleModel;
         //LineModel *lmodel = new LineModel;
         //PointModel *pmodel = new PointModel;
         VisualNode->addObject(cmodel);
