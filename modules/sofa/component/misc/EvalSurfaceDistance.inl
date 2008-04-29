@@ -19,7 +19,7 @@ namespace misc
 
 template<class DataTypes>
 EvalSurfaceDistance<DataTypes>::EvalSurfaceDistance()
-    : maxDist( initData(&maxDist, 1.0, "maxDist", "alarm distance for proximity detection"))
+    : maxDist( initData(&maxDist, (Real_Sofa)1.0, "maxDist", "alarm distance for proximity detection"))
     , surfaceCM(NULL)
     , pointsCM(NULL)
     , intersection(NULL)

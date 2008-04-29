@@ -44,7 +44,11 @@ namespace component
 
 namespace collision
 {
-
+#ifdef SOFA_FLOAT
+typedef float Real_Sofa;
+#else
+typedef double Real_Sofa;
+#endif
 class DiscreteIntersection : public core::componentmodel::collision::Intersection
 {
 public:

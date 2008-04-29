@@ -46,10 +46,14 @@ The product F1F2 can be seen as a frame displacement F1 starting from the refere
 class Frame
 {
 public:
-    typedef double Real;
-    typedef Vec<3,Real> Vec3;
-    typedef helper::Quater<Real> Quat;
-    typedef Mat<3,3,Real> Mat33;
+#ifdef SOFA_FLOAT
+    typedef float Real_Sofa;
+#else
+    typedef double Real_Sofa;
+#endif
+    typedef Vec<3,Real_Sofa> Vec3;
+    typedef helper::Quater<Real_Sofa> Quat;
+    typedef Mat<3,3,Real_Sofa> Mat33;
 private:
     Vec3 origin_;
     Mat33 basis_;

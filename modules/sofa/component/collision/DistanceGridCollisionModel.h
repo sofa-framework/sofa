@@ -388,6 +388,8 @@ class RigidDistanceGridCollisionModel;
 class RigidDistanceGridCollisionElement : public core::TCollisionElementIterator<RigidDistanceGridCollisionModel>
 {
 public:
+
+    typedef Vector3::value_type Real_Sofa;
     RigidDistanceGridCollisionElement(RigidDistanceGridCollisionModel* model, int index);
 
     explicit RigidDistanceGridCollisionElement(core::CollisionElementIterator& i);
@@ -417,6 +419,7 @@ class RigidDistanceGridCollisionModel : public core::CollisionModel
 {
 protected:
 
+    typedef Vector3::value_type Real_Sofa;
     class ElementData
     {
     public:
@@ -559,6 +562,8 @@ class FFDDistanceGridCollisionModel;
 class FFDDistanceGridCollisionElement : public core::TCollisionElementIterator<FFDDistanceGridCollisionModel>
 {
 public:
+
+    typedef Vector3::value_type Real_Sofa;
     FFDDistanceGridCollisionElement(FFDDistanceGridCollisionModel* model, int index);
 
     explicit FFDDistanceGridCollisionElement(core::CollisionElementIterator& i);
@@ -572,6 +577,7 @@ class FFDDistanceGridCollisionModel : public core::CollisionModel
 {
 public:
     typedef DistanceGrid::Real_Sofa GReal_Sofa;
+    typedef DistanceGrid::Real_Sofa Real_Sofa;
     typedef DistanceGrid::Coord GCoord;
     class DeformedCube
     {

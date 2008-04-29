@@ -7,6 +7,7 @@ include($${SOFA_DIR}/sofa.cfg)
 TARGET = NewMAT$${LIBSUFFIX}
 CONFIG += $${CONFIGLIBRARIES}
 
+
 #DEFINES += use_namespace 
 
 SOURCES = \    

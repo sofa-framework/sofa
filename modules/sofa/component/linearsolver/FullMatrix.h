@@ -181,7 +181,7 @@ public:
         return nCol;
     }
 
-    double element(int i, int j) const
+    Real_Sofa element(int i, int j) const
     {
 #ifdef FULLMATRIX_CHECK
         if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
@@ -193,7 +193,7 @@ public:
         return data[i*pitch+j];
     }
 
-    void set(int i, int j, Real_Sofa v)
+    void set(int i, int j, double v)
     {
 #ifdef FULLMATRIX_VERBOSE
         std::cout << this->Name() << "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
@@ -208,7 +208,7 @@ public:
         data[i*pitch+j] = v;
     }
 
-    void add(int i, int j, Real_Sofa v)
+    void add(int i, int j, double v)
     {
 #ifdef FULLMATRIX_VERBOSE
         std::cout << this->Name() << "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;

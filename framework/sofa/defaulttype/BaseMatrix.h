@@ -51,15 +51,15 @@ public:
     /// Number of columns
     virtual int colSize(void) const = 0;
     /// Read the value of the element at row i, column j (using 0-based indices)
-    virtual double element(int i, int j) const = 0;
+    virtual Real_Sofa element(int i, int j) const = 0;
     /// Resize the matrix and reset all values to 0
     virtual void resize(int nbRow, int nbCol) = 0;
     /// Reset all values to 0
     virtual void clear() = 0;
     /// Write the value of the element at row i, column j (using 0-based indices)
-    virtual void set(int i, int j, Real_Sofa v) = 0;
+    virtual void set(int i, int j, double v) = 0;
     /// Add v to the existing value of the element at row i, column j (using 0-based indices)
-    virtual void add(int i, int j, Real_Sofa v) = 0;
+    virtual void add(int i, int j, double v) = 0;
     /*    /// Write the value of the element at row i, column j (using 0-based indices)
         virtual void set(int i, int j, float v) { set(i,j,(double)v); }
         /// Add v to the existing value of the element at row i, column j (using 0-based indices)

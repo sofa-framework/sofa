@@ -125,9 +125,9 @@ protected:
     behavior::OdeSolver* odesolver;
     behavior::LinearSolver* linearsolver;
 
-    linearsolver::SparseMatrix<Real> J; ///< constraint matrix
-    linearsolver::FullVector<Real> F; ///< forces computed from the constraints
-    linearsolver::FullMatrix<Real> refMinv; ///< reference inverse matrix
+    linearsolver::SparseMatrix<Real_Sofa> J; ///< constraint matrix
+    linearsolver::FullVector<Real_Sofa> F; ///< forces computed from the constraints
+    linearsolver::FullMatrix<Real_Sofa> refMinv; ///< reference inverse matrix
 };
 
 

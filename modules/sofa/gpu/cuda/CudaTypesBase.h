@@ -49,7 +49,7 @@ public :
         return m.getSizeX();
     }
 
-    double element(int i, int j) const
+    Real_Sofa element(int i, int j) const
     {
         return m[i][j];
     }
@@ -109,7 +109,7 @@ public :
         return v.size();
     }
 
-    double element(int i) const
+    Real_Sofa element(int i) const
     {
         return v[i];
     }

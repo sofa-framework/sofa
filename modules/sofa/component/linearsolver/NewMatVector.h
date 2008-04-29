@@ -59,27 +59,27 @@ public:
         (*this) = 0.0;
     }
 
-    virtual double element(int i) const
+    virtual Real_Sofa element(int i) const
     {
         return NewMAT::ColumnVector::element(i);
     }
 
-    void set(int i, double v)
+    void set(int i, Real_Sofa v)
     {
         NewMAT::ColumnVector::element(i) = v;
     }
 
-    void add(int i, double v)
+    void add(int i, Real_Sofa v)
     {
         NewMAT::ColumnVector::element(i) += v;
     }
 
-    double& operator[](int i)
+    Real_Sofa& operator[](int i)
     {
         return NewMAT::ColumnVector::element(i);
     }
 
-    double operator[](int i) const
+    Real_Sofa operator[](int i) const
     {
         return NewMAT::ColumnVector::element(i);
     }
