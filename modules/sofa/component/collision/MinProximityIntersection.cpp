@@ -880,7 +880,7 @@ bool MinProximityIntersection::testValidity(Point &p, const Vector3 &PQ)
         {
             unsigned int e = edgeVertexShell[i];
             const fixed_array<unsigned int,2>& ped = topology->getEdge(e);
-            Vector3 l = (x[ped[0]]-pt) + (x[ped[1]]-pt);
+            Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
             l.normalize();
             nMean += l;
         }
