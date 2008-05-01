@@ -25,7 +25,7 @@
 #ifndef SOFA_SIMULATION_TREE_FINDBYTYPE_VISITOR_H
 #define SOFA_SIMULATION_TREE_FINDBYTYPE_VISITOR_H
 
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/component/System.h>
 #include <sofa/simulation/tree/Visitor.h>
 #include <sofa/core/VisualModel.h>
 #include <sofa/helper/system/gl.h>
@@ -52,9 +52,9 @@ public:
     std::vector<T*> found; ///< The result of the search: contains pointers to all components of the given type found.
 
     /// For each component, if it is of the given type, then put it in the list
-    virtual Result processNodeTopDown(GNode* node)
+    virtual Result processNodeTopDown(component::System* node)
     {
-        for( GNode::Sequence<core::objectmodel::BaseObject>::iterator i=node->object.begin(), iend=node->object.end(); i!=iend; i++ )
+        for( component::System::Sequence<core::objectmodel::BaseObject>::iterator i=node->object.begin(), iend=node->object.end(); i!=iend; i++ )
         {
             if( T* obj= dynamic_cast<T*>(*i) )
                 found.push_back(obj);

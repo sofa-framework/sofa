@@ -41,7 +41,7 @@ class UpdateContextVisitor : public Visitor
 {
 public:
 
-    virtual Result processNodeTopDown(GNode* node);
+    virtual Result processNodeTopDown(component::System* node);
 
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
@@ -54,7 +54,7 @@ public:
 class UpdateSimulationContextVisitor : public UpdateContextVisitor
 {
 public:
-    virtual Result processNodeTopDown(GNode* node);
+    virtual Result processNodeTopDown(component::System* node);
 };
 
 class UpdateVisualContextVisitor : public UpdateContextVisitor
@@ -64,7 +64,7 @@ public:
     int filter;
     UpdateVisualContextVisitor(int FILTER=0):filter(FILTER)
     {};
-    virtual Result processNodeTopDown(GNode* node);
+    virtual Result processNodeTopDown(component::System* node);
 
 };
 

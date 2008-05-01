@@ -26,6 +26,7 @@
 #define SOFA_SIMULATION_TREE_PARALLELACTIONSCHEDULER_H
 
 #include <sofa/simulation/tree/VisitorScheduler.h>
+#include <sofa/simulation/tree/GNode.h>
 
 namespace sofa
 {

@@ -45,7 +45,7 @@ public:
 
     virtual void processTopologyChange(core::objectmodel::BaseObject* obj);
 
-    virtual Result processNodeTopDown(GNode* node);
+    virtual Result processNodeTopDown(component::System* node);
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const { return true; }

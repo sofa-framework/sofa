@@ -61,7 +61,7 @@ public:
     WriteStateVisitor( std::ostream& out );
     virtual ~WriteStateVisitor();
 
-    virtual Result processNodeTopDown( GNode*  );
+    virtual Result processNodeTopDown( component::System*  );
 
 protected:
     std::ostream& m_out;
@@ -73,13 +73,13 @@ class WriteStateCreator: public Visitor
 public:
     WriteStateCreator():sceneName(""), counterWriteState(0) {};
     WriteStateCreator(std::string &n, int c=0) {sceneName=n; counterWriteState=c;};
-    virtual Result processNodeTopDown( GNode*  );
+    virtual Result processNodeTopDown( component::System*  );
 
     void setSceneName(std::string &n) { sceneName = n;}
     void setCounter(int c) {counterWriteState = c;};
 protected:
     template< class DataTypes >
-    void addWriteState(sofa::core::componentmodel::behavior::MechanicalState< DataTypes > *ms, GNode* gnode);
+    void addWriteState(sofa::core::componentmodel::behavior::MechanicalState< DataTypes > *ms, component::System* gnode);
 
     std::string sceneName;
     int counterWriteState; //avoid to have two same files if two mechanical objects has the same name
@@ -91,13 +91,13 @@ class ReadStateCreator: public Visitor
 public:
     ReadStateCreator():sceneName(""), counterReadState(0) {};
     ReadStateCreator(std::string &n, bool i=true, int c=0 ) {sceneName=n; init=i; counterReadState=c;};
-    virtual Result processNodeTopDown( GNode*  );
+    virtual Result processNodeTopDown( component::System*  );
 
     void setSceneName(std::string &n) { sceneName = n;}
     void setCounter(int c) {counterReadState = c;};
 protected:
     template< class DataTypes >
-    void addReadState(sofa::core::componentmodel::behavior::MechanicalState< DataTypes > *ms, GNode* gnode);
+    void addReadState(sofa::core::componentmodel::behavior::MechanicalState< DataTypes > *ms, component::System* gnode);
     bool init;
     std::string sceneName;
     int counterReadState; //avoid to have two same files if two mechanical objects has the same name
@@ -108,7 +108,7 @@ class WriteStateActivator: public Visitor
 {
 public:
     WriteStateActivator( bool active):state(active) {};
-    virtual Result processNodeTopDown( GNode*  );
+    virtual Result processNodeTopDown( component::System*  );
 
     bool getState() const {return state;};
     void setState(bool active) {state=active;};
@@ -124,7 +124,7 @@ class ReadStateModifier: public Visitor
 {
 public:
     ReadStateModifier( double _time):time(_time) {};
-    virtual Result processNodeTopDown( GNode*  );
+    virtual Result processNodeTopDown( component::System*  );
 
     double getTime() const {return time;};
     void setTime(double _time) {time=_time;};

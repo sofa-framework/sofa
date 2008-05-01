@@ -35,7 +35,7 @@ namespace simulation
 namespace tree
 {
 
-Visitor::Result InitVisitor::processNodeTopDown(GNode* node)
+Visitor::Result InitVisitor::processNodeTopDown(component::System* node)
 {
     node->initialize();
 
@@ -47,7 +47,7 @@ Visitor::Result InitVisitor::processNodeTopDown(GNode* node)
     return RESULT_CONTINUE;
 }
 
-void InitVisitor::processNodeBottomUp(GNode* node)
+void InitVisitor::processNodeBottomUp(component::System* node)
 {
     // init all the components in reverse order
     node->setDefaultVisualContextValue();

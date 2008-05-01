@@ -56,9 +56,9 @@ namespace tree
 using namespace sofa::defaulttype;
 /** Base class for easily creating new actions for mechanical matrix manipulation
 
-During the first traversal (top-down), method processNodeTopDown(GNode*) is applied to each GNode. Each component attached to this node is processed using the appropriate method, prefixed by fwd.
+During the first traversal (top-down), method processNodeTopDown(component::System*) is applied to each component::System. Each component attached to this node is processed using the appropriate method, prefixed by fwd.
 
-During the second traversal (bottom-up), method processNodeBottomUp(GNode*) is applied to each GNode. Each component attached to this node is processed using the appropriate method, prefixed by bwd.
+During the second traversal (bottom-up), method processNodeBottomUp(component::System*) is applied to each component::System. Each component attached to this node is processed using the appropriate method, prefixed by bwd.
 
 The default behavior of the fwd* and bwd* is to do nothing. Derived actions typically overload these methods to implement the desired processing.
 
@@ -70,66 +70,66 @@ public:
 
     /**@name Forward processing
     Methods called during the forward (top-down) traversal of the data structure.
-    Method processNodeTopDown(GNode*) calls the fwd* methods in the order given here. When there is a mapping, it is processed first, then method fwdMappedMechanicalState is applied to the BaseMechanicalState.
+    Method processNodeTopDown(component::System*) calls the fwd* methods in the order given here. When there is a mapping, it is processed first, then method fwdMappedMechanicalState is applied to the BaseMechanicalState.
     When there is no mapping, the BaseMechanicalState is processed first using method fwdMechanicalState.
     Then, the other fwd* methods are applied in the given order.
      */
     ///@{
 
     /// This method calls the fwd* methods during the forward traversal. You typically do not overload it.
-    virtual Result processNodeTopDown(GNode* node);
+    virtual Result processNodeTopDown(component::System* node);
 
     /// Process the OdeSolver
-    virtual Result fwdOdeSolver(GNode* /*node*/, core::componentmodel::behavior::OdeSolver* /*solver*/)
+    virtual Result fwdOdeSolver(component::System* /*node*/, core::componentmodel::behavior::OdeSolver* /*solver*/)
     {
         return RESULT_CONTINUE;
     }
 
     /// Process the BaseMechanicalMapping
-    virtual Result fwdMechanicalMapping(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual Result fwdMechanicalMapping(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
     {
         return RESULT_CONTINUE;
     }
 
     /// Process the BaseMechanicalState if it is mapped from the parent level
-    virtual Result fwdMappedMechanicalState(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
+    virtual Result fwdMappedMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
     {
         return RESULT_PRUNE;
     }
 
     /// Process the BaseMechanicalState if it is not mapped from the parent level
-    virtual Result fwdMechanicalState(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
+    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
     {
         return RESULT_CONTINUE;
     }
 
     /// Process the BaseMass
-    virtual Result fwdMass(GNode* /*node*/, core::componentmodel::behavior::BaseMass* /*mass*/)
+    virtual Result fwdMass(component::System* /*node*/, core::componentmodel::behavior::BaseMass* /*mass*/)
     {
         return RESULT_CONTINUE;
     }
 
     /// Process all the BaseForceField
-    virtual Result fwdForceField(GNode* /*node*/, core::componentmodel::behavior::BaseForceField* /*ff*/)
+    virtual Result fwdForceField(component::System* /*node*/, core::componentmodel::behavior::BaseForceField* /*ff*/)
     {
         return RESULT_CONTINUE;
     }
 
 
     /// Process all the InteractionForceField
-    virtual Result fwdInteractionForceField(GNode* node, core::componentmodel::behavior::InteractionForceField* ff)
+    virtual Result fwdInteractionForceField(component::System* node, core::componentmodel::behavior::InteractionForceField* ff)
     {
         return fwdForceField(node, ff);
     }
 
     /// Process all the BaseConstraint
-    virtual Result fwdConstraint(GNode* /*node*/, core::componentmodel::behavior::BaseConstraint* /*c*/)
+    virtual Result fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* /*c*/)
     {
         return RESULT_CONTINUE;
     }
 
     /// Process all the InteractionConstraint
-    virtual Result fwdInteractionConstraint(GNode* node, core::componentmodel::behavior::InteractionConstraint* c)
+    virtual Result fwdInteractionConstraint(component::System* node, core::componentmodel::behavior::InteractionConstraint* c)
     {
         return fwdConstraint(node, c);
     }
@@ -138,7 +138,7 @@ public:
 
     /**@name Backward processing
     Methods called during the backward (bottom-up) traversal of the data structure.
-    Method processNodeBottomUp(GNode*) calls the bwd* methods.
+    Method processNodeBottomUp(component::System*) calls the bwd* methods.
     When there is a mapping, method bwdMappedMechanicalState is applied to the BaseMechanicalState.
     When there is no mapping, the BaseMechanicalState is processed using method bwdMechanicalState.
     Finally, the mapping (if any) is processed using method bwdMechanicalMapping.
@@ -146,22 +146,22 @@ public:
     ///@{
 
     /// This method calls the bwd* methods during the backward traversal. You typically do not overload it.
-    virtual void processNodeBottomUp(GNode* node);
+    virtual void processNodeBottomUp(component::System* node);
 
     /// Process the BaseMechanicalState when it is not mapped from parent level
-    virtual void bwdMechanicalState(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
+    virtual void bwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
     {}
 
     /// Process the BaseMechanicalState when it is mapped from parent level
-    virtual void bwdMappedMechanicalState(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
+    virtual void bwdMappedMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
     {}
 
     /// Process the BaseMechanicalMapping
-    virtual void bwdMechanicalMapping(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual void bwdMechanicalMapping(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
     {}
 
     /// Process the OdeSolver
-    virtual void bwdOdeSolver(GNode* /*node*/, core::componentmodel::behavior::OdeSolver* /*solver*/)
+    virtual void bwdOdeSolver(component::System* /*node*/, core::componentmodel::behavior::OdeSolver* /*solver*/)
     {}
 
     ///@}
@@ -188,7 +188,7 @@ public:
         : nbRow(_nbRow), nbCol(_nbCol)
     {}
 
-    virtual Result fwdMechanicalState(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms)
+    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms)
     {
         ms->contributeToMatrixDimension(nbRow, nbCol);
         return RESULT_CONTINUE;
@@ -211,13 +211,13 @@ public:
         offsetOnExit = _offset;
     }
 
-    virtual Result fwdMechanicalState(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms)
+    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms)
     {
         ms->setOffset(offsetOnExit);
         return RESULT_CONTINUE;
     }
 
-    virtual Result fwdForceField(GNode* /*node*/, core::componentmodel::behavior::BaseForceField* ff)
+    virtual Result fwdForceField(component::System* /*node*/, core::componentmodel::behavior::BaseForceField* ff)
     {
         if ((mat != NULL)&&(k!=0.0))
         {
@@ -228,7 +228,7 @@ public:
         return RESULT_CONTINUE;
     }
 
-    virtual Result fwdMass(GNode* /*node*/, core::componentmodel::behavior::BaseMass* mass)
+    virtual Result fwdMass(component::System* /*node*/, core::componentmodel::behavior::BaseMass* mass)
     {
         if ((mat != NULL)&&(m!=0.0))
         {
@@ -239,7 +239,7 @@ public:
         return RESULT_CONTINUE;
     }
 
-    virtual Result fwdConstraint(GNode* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         if (mat != NULL)
         {
@@ -268,7 +268,7 @@ public:
         offsetOnExit = _offset;
     }
 
-    virtual Result fwdMechanicalState(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         mm->setOffset(offsetOnExit);
 
@@ -277,7 +277,7 @@ public:
         return RESULT_CONTINUE;
     }
 
-    virtual Result fwdForceField(GNode* /*node*/, core::componentmodel::behavior::BaseForceField* ff)
+    virtual Result fwdForceField(component::System* /*node*/, core::componentmodel::behavior::BaseForceField* ff)
     {
         if ((vect != NULL)&&(k != 0.0))
         {
@@ -288,7 +288,7 @@ public:
         return RESULT_CONTINUE;
     }
 
-    virtual Result fwdMass(GNode* /*node*/, core::componentmodel::behavior::BaseMass* mass)
+    virtual Result fwdMass(component::System* /*node*/, core::componentmodel::behavior::BaseMass* mass)
     {
         if ((vect != NULL)&&(m != 0.0))
         {
@@ -304,7 +304,7 @@ public:
         return RESULT_CONTINUE;
     }
 
-    virtual Result fwdConstraint(GNode* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         if (vect != NULL)
         {
@@ -328,7 +328,7 @@ public:
     {
     }
 
-    virtual Result fwdMechanicalState(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         if (vect!= NULL)
         {
@@ -351,7 +351,7 @@ public:
     {
     }
 
-    virtual Result fwdMechanicalState(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         if (src!= NULL)
         {

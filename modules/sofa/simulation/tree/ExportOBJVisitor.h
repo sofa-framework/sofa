@@ -25,7 +25,7 @@
 #ifndef SOFA_SIMULATION_TREE_EXPORTOBJACTION_H
 #define SOFA_SIMULATION_TREE_EXPORTOBJACTION_H
 
-#include <sofa/simulation/tree/Visitor.h>
+#include <sofa/simulation/tree/GNodeVisitor.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <string>
 #include <iostream>
@@ -40,7 +40,7 @@ namespace simulation
 namespace tree
 {
 
-class ExportOBJVisitor : public Visitor
+class ExportOBJVisitor : public GNodeVisitor
 {
 public:
     std::ostream* out;

@@ -69,13 +69,13 @@ public:
     Real_Sofa getPotentialEnergy();
 
     /// Process the BaseMass
-    virtual Result fwdMass(GNode* /*node*/, core::componentmodel::behavior::BaseMass* mass)
+    virtual Result fwdMass(component::System* /*node*/, core::componentmodel::behavior::BaseMass* mass)
     {
         m_kineticEnergy += mass->getKineticEnergy();
         return RESULT_CONTINUE;
     }
     /// Process the BaseForceField
-    virtual Result fwdForceField(GNode* /*node*/, core::componentmodel::behavior::BaseForceField* f)
+    virtual Result fwdForceField(component::System* /*node*/, core::componentmodel::behavior::BaseForceField* f)
     {
         m_potentialEnergy += f->getPotentialEnergy();
         return RESULT_CONTINUE;

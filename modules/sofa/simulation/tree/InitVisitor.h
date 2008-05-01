@@ -45,7 +45,7 @@ namespace tree
 
 /** Initialize a newly created (or modified) scene graph.
 
-    Forward: GNode::initialize() This method puts the OdeSolver, if any, first in the list of components. Then BaseObject::init() for all components.
+    Forward: component::System::initialize() This method puts the OdeSolver, if any, first in the list of components. Then BaseObject::init() for all components.
 
     Backward: OdeSolver::bwdInit()
 
@@ -57,8 +57,8 @@ public:
     InitVisitor() {}
 
 
-    virtual Result processNodeTopDown(GNode* node);
-    virtual void processNodeBottomUp(GNode* node);
+    virtual Result processNodeTopDown(component::System* node);
+    virtual void processNodeBottomUp(component::System* node);
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const { return true; }

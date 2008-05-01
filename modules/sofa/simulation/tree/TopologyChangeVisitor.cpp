@@ -24,7 +24,7 @@
 *******************************************************************************/
 #include <sofa/simulation/tree/TopologyChangeVisitor.h>
 #include <sofa/helper/Factory.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/component/System.h>
 
 #include <sofa/core/componentmodel/topology/TopologicalMapping.h>
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
@@ -54,11 +54,11 @@ void TopologyChangeVisitor::processTopologyChange(core::objectmodel::BaseObject*
     obj->handleTopologyChange();
 }
 
-Visitor::Result TopologyChangeVisitor::processNodeTopDown(GNode* node)
+Visitor::Result TopologyChangeVisitor::processNodeTopDown(component::System* node)
 {
     bool is_TopologicalMapping = false;
 
-    for (GNode::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+    for (component::System::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         if (dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping*>(*it)!= NULL)  // find a TopologicalMapping node among the brothers (it must be the first one written)
         {
@@ -82,7 +82,7 @@ Visitor::Result TopologyChangeVisitor::processNodeTopDown(GNode* node)
         return RESULT_PRUNE; // stop the propagation of topological changes
     }
 
-    for (GNode::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+    for (component::System::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         this->processTopologyChange(*it);
     }

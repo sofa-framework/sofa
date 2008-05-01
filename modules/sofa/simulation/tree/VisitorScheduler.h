@@ -26,6 +26,7 @@
 #define SOFA_SIMULATION_TREE_ACTIONSCHEDULER_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
+#include "ClassSystem.h"
 
 namespace sofa
 {
@@ -36,7 +37,6 @@ namespace simulation
 namespace tree
 {
 
-class GNode;
 class Visitor;
 
 /// Abstract class defining custom schedule of action execution through the graph.
@@ -45,7 +45,7 @@ class VisitorScheduler : public virtual core::objectmodel::BaseObject
 public:
     virtual ~VisitorScheduler() {}
 
-    virtual void executeVisitor(GNode* node, Visitor* act) = 0;
+    virtual void executeVisitor(component::System* node, Visitor* act) = 0;
 
     /// Specify whether this scheduler is multi-threaded.
     virtual bool isMultiThreaded() const { return false; }
@@ -53,7 +53,7 @@ public:
 protected:
 
     /// Execute the given action recursively
-    void doExecuteVisitor(GNode* node, Visitor* act);
+    void doExecuteVisitor(component::System* node, Visitor* act);
 };
 
 } // namespace tree

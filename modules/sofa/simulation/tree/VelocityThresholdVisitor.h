@@ -44,7 +44,7 @@ class VelocityThresholdVisitor : public Visitor
 public:
     typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
 
-    virtual Visitor::Result processNodeTopDown(GNode* node);
+    virtual Visitor::Result processNodeTopDown(component::System* node);
 
     VelocityThresholdVisitor( VecId v, double threshold );
 

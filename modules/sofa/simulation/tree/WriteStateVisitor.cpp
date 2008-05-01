@@ -53,9 +53,9 @@ WriteStateVisitor::WriteStateVisitor( std::ostream& out )
 WriteStateVisitor::~WriteStateVisitor()
 {}
 
-Visitor::Result WriteStateVisitor::processNodeTopDown( GNode* gnode )
+Visitor::Result WriteStateVisitor::processNodeTopDown( component::System* gnode )
 {
-    for( GNode::ObjectIterator i=gnode->object.begin(), iend=gnode->object.end(); i!=iend; i++ )
+    for( component::System::ObjectIterator i=gnode->object.begin(), iend=gnode->object.end(); i!=iend; i++ )
     {
         (*i)->writeState(m_out);
     }
@@ -64,7 +64,7 @@ Visitor::Result WriteStateVisitor::processNodeTopDown( GNode* gnode )
 
 
 //Create a Write State component each time a mechanical state is found
-Visitor::Result WriteStateCreator::processNodeTopDown( GNode* gnode)
+Visitor::Result WriteStateCreator::processNodeTopDown( component::System* gnode)
 {
     using namespace sofa::defaulttype;
 
@@ -102,7 +102,7 @@ Visitor::Result WriteStateCreator::processNodeTopDown( GNode* gnode)
 }
 
 template< class DataTypes >
-void WriteStateCreator::addWriteState(sofa::core::componentmodel::behavior::MechanicalState< DataTypes > *ms, GNode* gnode)
+void WriteStateCreator::addWriteState(sofa::core::componentmodel::behavior::MechanicalState< DataTypes > *ms, component::System* gnode)
 {
     sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     sofa::core::BaseMapping *mapping;
@@ -128,7 +128,7 @@ void WriteStateCreator::addWriteState(sofa::core::componentmodel::behavior::Mech
 
 
 //Create a Read State component each time a mechanical state is found
-Visitor::Result ReadStateCreator::processNodeTopDown( GNode* gnode)
+Visitor::Result ReadStateCreator::processNodeTopDown( component::System* gnode)
 {
     using namespace sofa::defaulttype;
 
@@ -166,7 +166,7 @@ Visitor::Result ReadStateCreator::processNodeTopDown( GNode* gnode)
 
 
 template< class DataTypes >
-void ReadStateCreator::addReadState(sofa::core::componentmodel::behavior::MechanicalState< DataTypes > *ms, GNode* gnode)
+void ReadStateCreator::addReadState(sofa::core::componentmodel::behavior::MechanicalState< DataTypes > *ms, component::System* gnode)
 {
 
     sofa::core::objectmodel::BaseContext* context = gnode->getContext();
@@ -190,7 +190,7 @@ void ReadStateCreator::addReadState(sofa::core::componentmodel::behavior::Mechan
 }
 
 //if state is true, we activate all the write states present in the scene.
-Visitor::Result WriteStateActivator::processNodeTopDown( GNode* gnode)
+Visitor::Result WriteStateActivator::processNodeTopDown( component::System* gnode)
 {
     using namespace sofa::defaulttype;
 
@@ -257,7 +257,7 @@ void WriteStateActivator::changeStateWriter(sofa::component::misc::WriteState< D
 
 
 //if state is true, we activate all the write states present in the scene. If not, we activate all the readers.
-Visitor::Result ReadStateModifier::processNodeTopDown( GNode* gnode)
+Visitor::Result ReadStateModifier::processNodeTopDown( component::System* gnode)
 {
     using namespace sofa::defaulttype;
 

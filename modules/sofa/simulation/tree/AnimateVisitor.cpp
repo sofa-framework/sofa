@@ -36,28 +36,28 @@ namespace simulation
 namespace tree
 {
 
-void AnimateVisitor::processMasterSolver(GNode*, core::componentmodel::behavior::MasterSolver* obj)
+void AnimateVisitor::processMasterSolver(component::System*, core::componentmodel::behavior::MasterSolver* obj)
 {
     obj->step(getDt());
 }
 
-void AnimateVisitor::processBehaviorModel(GNode*, core::BehaviorModel* obj)
+void AnimateVisitor::processBehaviorModel(component::System*, core::BehaviorModel* obj)
 {
     obj->updatePosition(getDt());
 }
 
-void AnimateVisitor::fwdInteractionForceField(GNode*, core::componentmodel::behavior::InteractionForceField* obj)
+void AnimateVisitor::fwdInteractionForceField(component::System*, core::componentmodel::behavior::InteractionForceField* obj)
 {
     obj->addForce();
 }
 
-void AnimateVisitor::processCollisionPipeline(GNode* node, core::componentmodel::collision::Pipeline*)
+void AnimateVisitor::processCollisionPipeline(component::System* node, core::componentmodel::collision::Pipeline*)
 {
     CollisionVisitor act;
     node->execute(&act);
 }
 
-void AnimateVisitor::processOdeSolver(GNode* /*node*/, core::componentmodel::behavior::OdeSolver* solver)
+void AnimateVisitor::processOdeSolver(component::System* /*node*/, core::componentmodel::behavior::OdeSolver* solver)
 {
     /*    MechanicalIntegrationVisitor act(getDt());
         node->execute(&act);*/
@@ -65,7 +65,7 @@ void AnimateVisitor::processOdeSolver(GNode* /*node*/, core::componentmodel::beh
     solver->solve(getDt());
 }
 
-Visitor::Result AnimateVisitor::processNodeTopDown(GNode* node)
+Visitor::Result AnimateVisitor::processNodeTopDown(component::System* node)
 {
     if (!node->is_activated.getValue()) return Visitor::RESULT_PRUNE;
     if (dt == 0) setDt(node->getDt());
@@ -123,7 +123,7 @@ Visitor::Result AnimateVisitor::processNodeTopDown(GNode* node)
     }
 }
 
-// void AnimateVisitor::processNodeBottomUp(GNode* node)
+// void AnimateVisitor::processNodeBottomUp(component::System* node)
 // {
 //     node->setTime( node->getTime() + node->getDt() );
 // }
