@@ -24,7 +24,6 @@
 *******************************************************************************/
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/tree/Visitor.h>
-#include <sofa/simulation/tree/PropagateEventVisitor.h>
 #include <sofa/simulation/tree/MutationListener.h>
 #include <sofa/simulation/tree/xml/NodeElement.h>
 #include <iostream>
@@ -45,29 +44,14 @@ using helper::system::thread::CTime;
 using namespace sofa::core::objectmodel;
 
 GNode::GNode(const std::string& name, GNode* parent)
-    : debug_(false), logTime_(false)
+    : component::System(name)
 {
-    totalTime.nVisit = 0;
-    totalTime.tNode = 0;
-    totalTime.tTree = 0;
-    setName(name);
     if( parent )
         parent->addChild(this);
 }
 
 GNode::~GNode()
 {}
-
-/// Update the parameters of the GNode
-void GNode::reinit()
-{
-    GNode *context = static_cast<GNode *>(getContext());
-    for (GNode::ChildIterator it= context->child.begin(); it != context->child.end(); ++it)
-    {
-        (*it)->is_activated.setValue(is_activated.getValue());
-        (*it)->reinit();
-    }
-}
 
 /// Add a child node
 void GNode::doAddChild(GNode* node)
@@ -97,16 +81,6 @@ void GNode::removeChild(GNode* node)
     doRemoveChild(node);
 }
 
-void GNode::removeControllers()
-{
-    removeObject(masterSolver);
-    typedef Sequence<core::componentmodel::behavior::OdeSolver> Solvers;
-    Solvers solverRemove = solver;
-    for( Solvers::iterator i=solverRemove.begin(), iend=solverRemove.end(); i!=iend; i++ )
-        removeObject( *i );
-}
-
-
 /// Add a child node
 void GNode::addChild(core::objectmodel::BaseNode* node)
 {
@@ -133,15 +107,6 @@ void GNode::moveChild(GNode* node)
         prev->doRemoveChild(node);
         doAddChild(node);
     }
-}
-
-core::objectmodel::BaseContext* GNode::getContext()
-{
-    return this;
-}
-const core::objectmodel::BaseContext* GNode::getContext() const
-{
-    return this;
 }
 
 
@@ -302,68 +267,6 @@ void GNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, Get
 
 
 
-void GNode::initVisualContext()
-{
-    if (getParent() != NULL)
-    {
-        if (showVisualModels_.getValue() == -1)            showVisualModels_.setValue(static_cast<GNode *>(getParent())->showVisualModels_.getValue());
-        if (showBehaviorModels_.getValue() == -1)          showBehaviorModels_.setValue(static_cast<GNode *>(getParent())->showBehaviorModels_.getValue());
-        if (showCollisionModels_.getValue() == -1)         showCollisionModels_.setValue(static_cast<GNode *>(getParent())->showCollisionModels_.getValue());
-        if (showBoundingCollisionModels_.getValue() == -1) showBoundingCollisionModels_.setValue(static_cast<GNode *>(getParent())->showBoundingCollisionModels_.getValue());
-        if (showMappings_.getValue() == -1)                showMappings_.setValue(static_cast<GNode *>(getParent())->showMappings_.getValue());
-        if (showMechanicalMappings_.getValue() == -1)      showMechanicalMappings_.setValue(static_cast<GNode *>(getParent())->showMechanicalMappings_.getValue());
-        if (showForceFields_.getValue() == -1)             showForceFields_.setValue(static_cast<GNode *>(getParent())->showForceFields_.getValue());
-        if (showInteractionForceFields_.getValue() == -1)  showInteractionForceFields_.setValue(static_cast<GNode *>(getParent())->showInteractionForceFields_.getValue());
-        if (showWireFrame_.getValue() == -1)               showWireFrame_.setValue(static_cast<GNode *>(getParent())->showWireFrame_.getValue());
-        if (showNormals_.getValue() == -1)                 showNormals_.setValue(static_cast<GNode *>(getParent())->showNormals_.getValue());
-    }
-}
-
-void GNode::setDefaultVisualContextValue()
-{
-    if (showVisualModels_.getValue() == -1)            showVisualModels_.setValue(true);
-    if (showBehaviorModels_.getValue() == -1)          showBehaviorModels_.setValue(false);
-    if (showCollisionModels_.getValue() == -1)         showCollisionModels_.setValue(false);
-    if (showBoundingCollisionModels_.getValue() == -1) showBoundingCollisionModels_.setValue(false);
-    if (showMappings_.getValue() == -1)                showMappings_.setValue(false);
-    if (showMechanicalMappings_.getValue() == -1)      showMechanicalMappings_.setValue(false);
-    if (showForceFields_.getValue() == -1)             showForceFields_.setValue(false);
-    if (showInteractionForceFields_.getValue() == -1)  showInteractionForceFields_.setValue(false);
-    if (showWireFrame_.getValue() == -1)               showWireFrame_.setValue(false);
-    if (showNormals_.getValue() == -1)                 showNormals_.setValue(false);
-}
-
-void GNode::initialize()
-{
-    //cerr<<"GNode::initialize()"<<endl;
-
-    initVisualContext();
-    // Put the OdeSolver, if any, in first position. This makes sure that the OdeSolver component is initialized only when all its sibling and children components are already initialized.
-    /// @todo Putting the solver first means that it will be initialized *before* any sibling or childrens. Is that what we want? -- Jeremie A.
-    Sequence<BaseObject>::iterator i=object.begin(), iend=object.end();
-    for( ; i!=iend && dynamic_cast<core::componentmodel::behavior::OdeSolver*>(*i)==NULL; i++ ) // find the OdeSolver
-    {}
-    if( i!=iend && !object.empty() ) // found
-    {
-        // put it first
-        // BUGFIX 01/12/06 (Jeremie A.): do not modify the order of the other objects
-        // object.swap( i, object.begin() );
-        while (i!=object.begin())
-        {
-            Sequence<BaseObject>::iterator i2 = i;
-            --i;
-            object.swap(i, i2);
-        }
-    }
-
-    //
-    updateSimulationContext();
-
-    // this is now done by the InitVisitor
-    //for (Sequence<GNode>::iterator it = child.begin(); it != child.end(); it++) {
-    //    (*it)->init();
-    //}
-}
 
 /// Get parent node (or NULL if no hierarchy or for root node)
 core::objectmodel::BaseNode* GNode::getParent()
@@ -400,133 +303,6 @@ const sofa::helper::vector< core::objectmodel::BaseNode* > GNode::getChildren() 
 }
 
 
-void GNode::updateContext()
-{
-    if( getParent() != NULL )
-    {
-        copyContext(*parent);
-        //cerr<<"node "<<getName()<<", copy context, time = "<<getTime()<<endl;
-    }
-    //else
-    //	cerr<<"node "<<getName()<<", time = "<<getTime()<<endl;
-    //else {
-    //	*static_cast<Core::Context*>(this) = Core::Context() ;
-    //	//cerr<<"node "<<getName()<<", apply default context"<<endl;
-    //}
-
-
-    //if( debug_ ) cerr<<"GNode::updateContext, node = "<<getName()<<", incoming context = "<< *this->getContext() << endl;
-
-    // Apply local modifications to the context
-    if (getLogTime())
-    {
-        for( unsigned i=0; i<contextObject.size(); ++i )
-        {
-            contextObject[i]->init();
-            contextObject[i]->apply();
-            //cerr<<"GNode::updateContext, modified by node = "<<contextObject[i]->getName()<< endl;
-        }
-    }
-    else
-    {
-        for( unsigned i=0; i<contextObject.size(); ++i )
-        {
-            contextObject[i]->init();
-            contextObject[i]->apply();
-            //cerr<<"GNode::updateContext, modified by node = "<<contextObject[i]->getName()<<endl;
-        }
-    }
-//	if( !mechanicalModel.empty() ) {
-//		mechanicalModel->updateContext(&context_);
-//	}
-
-
-    // project the gravity to the local coordinate system
-    /*        getContext()->setGravity( getContext()->getLocalFrame().backProjectVector(getContext()->getWorldGravity()) );*/
-
-    if( debug_ ) std::cerr<<"GNode::updateContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) << endl;
-}
-
-void GNode::updateSimulationContext()
-{
-    if( getParent() != NULL )
-    {
-        copySimulationContext(*parent);
-    }
-
-    // Apply local modifications to the context
-    if (getLogTime())
-    {
-        for( unsigned i=0; i<contextObject.size(); ++i )
-        {
-            contextObject[i]->init();
-            contextObject[i]->apply();
-        }
-    }
-    else
-    {
-        for( unsigned i=0; i<contextObject.size(); ++i )
-        {
-            contextObject[i]->init();
-            contextObject[i]->apply();
-        }
-    }
-    if( debug_ ) std::cerr<<"GNode::updateSimulationContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) << endl;
-}
-
-void GNode::updateVisualContext(int FILTER)
-{
-    if( getParent() != NULL )
-    {
-        if (!FILTER)
-            copyVisualContext(*parent);
-        else
-        {
-            switch(FILTER)
-            {
-            case 1:  showVisualModels_.setValue((*parent).showVisualModels_.getValue());  break;
-            case 2:  showBehaviorModels_.setValue((*parent).showBehaviorModels_.getValue());  break;
-            case 3:  showCollisionModels_.setValue((*parent).showCollisionModels_.getValue());  break;
-            case 4:  showBoundingCollisionModels_.setValue((*parent).showBoundingCollisionModels_.getValue());  break;
-            case 5:  showMappings_.setValue((*parent).showMappings_.getValue());  break;
-            case 6:  showMechanicalMappings_.setValue((*parent).showMechanicalMappings_.getValue());  break;
-            case 7:  showForceFields_.setValue((*parent).showForceFields_.getValue());  break;
-            case 8:  showInteractionForceFields_.setValue((*parent).showInteractionForceFields_.getValue()); break;
-            case 9:  showWireFrame_.setValue((*parent).showWireFrame_.getValue()); break;
-            case 10: showNormals_.setValue((*parent).showNormals_.getValue()); break;
-            }
-        }
-    }
-    // Apply local modifications to the context
-    if (getLogTime())
-    {
-        for( unsigned i=0; i<contextObject.size(); ++i )
-        {
-            contextObject[i]->init();
-            contextObject[i]->apply();
-        }
-    }
-    else
-    {
-        for( unsigned i=0; i<contextObject.size(); ++i )
-        {
-            contextObject[i]->init();
-            contextObject[i]->apply();
-        }
-    }
-    if( debug_ ) std::cerr<<"GNode::updateVisualContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) << endl;
-}
-
-
-/// Execute a recursive action starting from this node
-void GNode::executeVisitor(Visitor* action)
-{
-    if (!this->is_activated.getValue()) return;
-    if (actionScheduler)
-        actionScheduler->executeVisitor(this,action);
-    else
-        doExecuteVisitor(action);
-}
 
 /// Execute a recursive action starting from this node
 /// This method bypass the actionScheduler of this node if any.
@@ -602,102 +378,6 @@ GNode* GNode::getTreeNode(const std::string& name) const
     return result;
 }
 
-/// Propagate an event
-void GNode::propagateEvent( Event* event )
-{
-    PropagateEventVisitor act(event);
-    this->executeVisitor(&act);
-}
-
-GNode* GNode::setDebug(bool b)
-{
-    debug_=b;
-    return this;
-}
-
-bool GNode::getDebug() const
-{
-    return debug_;
-}
-
-void GNode::setLogTime(bool b)
-{
-    logTime_=b;
-}
-
-GNode::ctime_t GNode::getTimeFreq() const
-{
-    return CTime::getTicksPerSec();
-}
-
-void GNode::resetTime()
-{
-    totalTime.nVisit = 0;
-    totalTime.tNode = 0;
-    totalTime.tTree = 0;
-    actionTime.clear();
-    objectTime.clear();
-}
-
-/// Log time spent on an action category, and the concerned object, plus remove the computed time from the parent caller object
-void GNode::addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* parent)
-{
-    ObjectTimer& timer = objectTime[s][obj];
-    timer.tObject += t;
-    ++ timer.nVisit;
-    objectTime[s][parent].tObject -= t;
-}
-
-/// Log time spent on an action category and the concerned object
-void GNode::addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObject* obj)
-{
-    ObjectTimer& timer = objectTime[s][obj];
-    timer.tObject += t;
-    ++ timer.nVisit;
-}
-
-/// Measure start time
-GNode::ctime_t GNode::startTime() const
-{
-    if (!getLogTime()) return 0;
-    return CTime::getTime();
-}
-
-/// Log time spent given a start time, an action category, and the concerned object
-GNode::ctime_t GNode::endTime(ctime_t t0, const std::string& s, core::objectmodel::BaseObject* obj)
-{
-    if (!getLogTime()) return 0;
-    const ctime_t t1 = CTime::getTime();
-    const ctime_t t = t1 - t0;
-    addTime(t, s, obj);
-    return t1;
-}
-
-/// Log time spent given a start time, an action category, and the concerned object
-GNode::ctime_t GNode::endTime(ctime_t t0, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* parent)
-{
-    if (!getLogTime()) return 0;
-    const ctime_t t1 = CTime::getTime();
-    const ctime_t t = t1 - t0;
-    addTime(t, s, obj, parent);
-    return t1;
-}
-
-void GNode::addListener(MutationListener* obj)
-{
-    // make sure we don't add the same listener twice
-    Sequence< MutationListener >::iterator it = listener.begin();
-    while (it != listener.end() && (*it)!=obj)
-        ++it;
-    if (it == listener.end())
-        listener.add(obj);
-}
-
-void GNode::removeListener(MutationListener* obj)
-{
-    listener.remove(obj);
-}
-
 void GNode::notifyAddChild(GNode* node)
 {
     for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
@@ -724,73 +404,6 @@ std::string GNode::getPathName() const
     str += '/';
     str += getName();
     return str;
-}
-
-/// Remove an object
-void GNode::doRemoveObject(BaseObject* obj)
-{
-    System::doRemoveObject(obj);
-    actionScheduler.remove(dynamic_cast< VisitorScheduler* >(obj));
-    // Remove references to this object in time log tables
-    if (!objectTime.empty())
-    {
-        for (std::map<std::string, std::map<core::objectmodel::BaseObject*, simulation::tree::GNode::ObjectTimer> >::iterator it = objectTime.begin(); it != objectTime.end(); ++it)
-        {
-            it->second.erase(obj);
-        }
-    }
-}
-
-void GNode::notifyAddObject(core::objectmodel::BaseObject* obj)
-{
-    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->addObject(this, obj);
-}
-
-void GNode::notifyRemoveObject(core::objectmodel::BaseObject* obj)
-{
-    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->removeObject(this, obj);
-}
-
-void GNode::notifyMoveObject(core::objectmodel::BaseObject* obj, GNode* prev)
-{
-    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->moveObject(prev, this, obj);
-}
-
-
-
-/// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
-void GNode::doAddObject(BaseObject* obj)
-{
-    notifyAddObject(obj);
-    System::doAddObject(obj);
-    actionScheduler.add(dynamic_cast< VisitorScheduler* >(obj));
-}
-/// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
-bool GNode::addObject(BaseObject* obj)
-{
-    notifyAddObject(obj);
-    return System::addObject(obj);
-}
-
-/// Remove an object
-bool GNode::removeObject(BaseObject* obj)
-{
-    notifyRemoveObject(obj);
-    return System::removeObject(obj);
-}
-
-/// Move an object from another node
-void GNode::moveObject(BaseObject* obj)
-{
-    GNode* prev = dynamic_cast<GNode*>(obj->getContext());
-    if (prev!=NULL)
-    {
-        notifyMoveObject(obj,prev);
-    }
-    System::moveObject(obj);
 }
 
 /// Topology
@@ -859,6 +472,180 @@ core::objectmodel::BaseObject* GNode::getMechanicalState() const
         return parent->getMechanicalState();
     else
         return NULL;
+}
+
+/// Update the parameters of the System
+void GNode::reinit()
+{
+    GNode *context = static_cast<GNode *>(getContext());
+    for (GNode::ChildIterator it= context->child.begin(); it != context->child.end(); ++it)
+    {
+        (*it)->is_activated.setValue(is_activated.getValue());
+        (*it)->reinit();
+    }
+}
+
+
+void GNode::initVisualContext()
+{
+    if (getParent() != NULL)
+    {
+        if (showVisualModels_.getValue() == -1)
+            showVisualModels_.setValue(static_cast<GNode *>(getParent())->showVisualModels_.getValue());
+        if (showBehaviorModels_.getValue() == -1)
+            showBehaviorModels_.setValue(static_cast<GNode *>(getParent())->showBehaviorModels_.getValue());
+        if (showCollisionModels_.getValue() == -1)
+            showCollisionModels_.setValue(static_cast<GNode *>(getParent())->showCollisionModels_.getValue());
+        if (showBoundingCollisionModels_.getValue() == -1)
+            showBoundingCollisionModels_.setValue(static_cast<GNode *>(getParent())->showBoundingCollisionModels_.getValue());
+        if (showMappings_.getValue() == -1)
+            showMappings_.setValue(static_cast<GNode *>(getParent())->showMappings_.getValue());
+        if (showMechanicalMappings_.getValue() == -1)
+            showMechanicalMappings_.setValue(static_cast<GNode *>(getParent())->showMechanicalMappings_.getValue());
+        if (showForceFields_.getValue() == -1)
+            showForceFields_.setValue(static_cast<GNode *>(getParent())->showForceFields_.getValue());
+        if (showInteractionForceFields_.getValue() == -1)
+            showInteractionForceFields_.setValue(static_cast<GNode *>(getParent())->showInteractionForceFields_.getValue());
+        if (showWireFrame_.getValue() == -1)
+            showWireFrame_.setValue(static_cast<GNode *>(getParent())->showWireFrame_.getValue());
+        if (showNormals_.getValue() == -1)
+            showNormals_.setValue(static_cast<GNode *>(getParent())->showNormals_.getValue());
+    }
+}
+
+void GNode::updateContext()
+{
+    if ( getParent() != NULL )
+    {
+        copyContext(*parent);
+        //cerr<<"node "<<getName()<<", copy context, time = "<<getTime()<<endl;
+    }
+    component::System::updateContext();
+}
+
+void GNode::updateSimulationContext()
+{
+    if ( getParent() != NULL )
+    {
+        copySimulationContext(*parent);
+    }
+    component::System::updateSimulationContext();
+}
+
+void GNode::updateVisualContext(int FILTER)
+{
+    if ( getParent() != NULL )
+    {
+        if (!FILTER)
+            copyVisualContext(*parent);
+        else
+        {
+            switch (FILTER)
+            {
+            case 1:
+                showVisualModels_.setValue((*parent).showVisualModels_.getValue());
+                break;
+            case 2:
+                showBehaviorModels_.setValue((*parent).showBehaviorModels_.getValue());
+                break;
+            case 3:
+                showCollisionModels_.setValue((*parent).showCollisionModels_.getValue());
+                break;
+            case 4:
+                showBoundingCollisionModels_.setValue((*parent).showBoundingCollisionModels_.getValue());
+                break;
+            case 5:
+                showMappings_.setValue((*parent).showMappings_.getValue());
+                break;
+            case 6:
+                showMechanicalMappings_.setValue((*parent).showMechanicalMappings_.getValue());
+                break;
+            case 7:
+                showForceFields_.setValue((*parent).showForceFields_.getValue());
+                break;
+            case 8:
+                showInteractionForceFields_.setValue((*parent).showInteractionForceFields_.getValue());
+                break;
+            case 9:
+                showWireFrame_.setValue((*parent).showWireFrame_.getValue());
+                break;
+            case 10:
+                showNormals_.setValue((*parent).showNormals_.getValue());
+                break;
+            }
+        }
+    }
+    component::System::updateVisualContext(FILTER);
+}
+
+/// Log time spent on an action category, and the concerned object, plus remove the computed time from the parent caller object
+void GNode::addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* parent)
+{
+    ObjectTimer& timer = objectTime[s][obj];
+    timer.tObject += t;
+    ++ timer.nVisit;
+    objectTime[s][parent].tObject -= t;
+}
+
+/// Log time spent given a start time, an action category, and the concerned object
+GNode::ctime_t GNode::endTime(ctime_t t0, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* parent)
+{
+    if (!getLogTime()) return 0;
+    const ctime_t t1 = CTime::getTime();
+    const ctime_t t = t1 - t0;
+    addTime(t, s, obj, parent);
+    return t1;
+}
+
+/// Log time spent on an action category and the concerned object
+void GNode::addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObject* obj)
+{
+    ObjectTimer& timer = objectTime[s][obj];
+    timer.tObject += t;
+    ++ timer.nVisit;
+}
+
+/// Log time spent given a start time, an action category, and the concerned object
+GNode::ctime_t GNode::endTime(ctime_t t0, const std::string& s, core::objectmodel::BaseObject* obj)
+{
+    if (!getLogTime()) return 0;
+    const ctime_t t1 = CTime::getTime();
+    const ctime_t t = t1 - t0;
+    addTime(t, s, obj);
+    return t1;
+}
+
+void GNode::addListener(MutationListener* obj)
+{
+    // make sure we don't add the same listener twice
+    Sequence< MutationListener >::iterator it = listener.begin();
+    while (it != listener.end() && (*it)!=obj)
+        ++it;
+    if (it == listener.end())
+        listener.add(obj);
+}
+
+void GNode::removeListener(MutationListener* obj)
+{
+    listener.remove(obj);
+}
+
+void GNode::notifyAddObject(core::objectmodel::BaseObject* obj)
+{
+    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
+        (*it)->addObject(this, obj);
+}
+
+void GNode::notifyRemoveObject(core::objectmodel::BaseObject* obj)
+{
+    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
+        (*it)->removeObject(this, obj);
+}
+
+void GNode::notifyMoveObject(core::objectmodel::BaseObject* obj, GNode* prev)
+{
+    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
+        (*it)->moveObject(prev, this, obj);
 }
 
 

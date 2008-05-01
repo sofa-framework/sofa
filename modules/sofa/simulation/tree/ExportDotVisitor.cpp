@@ -25,7 +25,7 @@
 #include <sofa/simulation/tree/ExportDotVisitor.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/Factory.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/component/System.h>
 #include <sofa/simulation/tree/Colors.h>
 
 namespace sofa

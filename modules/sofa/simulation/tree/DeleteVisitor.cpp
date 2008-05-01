@@ -23,7 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/simulation/tree/DeleteVisitor.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/component/System.h>
 
 namespace sofa
 {
@@ -66,7 +66,7 @@ void DeleteVisitor::processNodeBottomUp(GNode* node)
     while (!node->object.empty())
     {
         core::objectmodel::BaseObject* object = *node->object.begin();
-        node->removeObject(object);
+        node->component::System::removeObject(object);
         delete object;
     }
 }

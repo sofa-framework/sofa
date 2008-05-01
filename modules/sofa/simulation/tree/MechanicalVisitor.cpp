@@ -23,7 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/simulation/tree/MechanicalVisitor.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/component/System.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -37,7 +37,7 @@ namespace simulation
 namespace tree
 {
 
-Visitor::Result MechanicalVisitor::processNodeTopDown(GNode* node)
+Visitor::Result MechanicalVisitor::processNodeTopDown(component::System* node)
 {
     Result res = RESULT_CONTINUE;
     /*    if (node->solver != NULL) {
@@ -106,7 +106,7 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(GNode* node)
     return res;
 }
 
-void MechanicalVisitor::processNodeBottomUp(GNode* node)
+void MechanicalVisitor::processNodeBottomUp(component::System* node)
 {
     for_each(this, node, node->constraint, &MechanicalVisitor::bwdConstraint);
     if (node->mechanicalState != NULL)
@@ -149,7 +149,7 @@ MechanicalPropagatePositionAndVelocityVisitor::MechanicalPropagatePositionAndVel
 }
 
 
-Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::processNodeTopDown(GNode* node)
+Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::processNodeTopDown(component::System* node)
 {
     //cerr<<" MechanicalPropagatePositionAndVelocityVisitor::processNodeTopDown "<<node->getName()<<endl;
     node->setTime(t);
@@ -157,7 +157,7 @@ Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::processNodeTopDow
     return MechanicalVisitor::processNodeTopDown( node);
 }
 
-void MechanicalPropagatePositionAndVelocityVisitor::processNodeBottomUp(GNode* node)
+void MechanicalPropagatePositionAndVelocityVisitor::processNodeBottomUp(component::System* node)
 {
     //cerr<<" MechanicalPropagatePositionAndVelocityVisitor::processNodeBottomUp "<<node->getName()<<endl;
     //for_each(this, node, node->constraint, &MechanicalPropagatePositionAndVelocityVisitor::bwdConstraint);
@@ -166,7 +166,7 @@ void MechanicalPropagatePositionAndVelocityVisitor::processNodeBottomUp(GNode* n
 }
 
 
-Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(GNode* node, core::componentmodel::behavior::OdeSolver* obj)
+Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(component::System* node, core::componentmodel::behavior::OdeSolver* obj)
 {
     double nextTime = node->getTime() + dt;
     MechanicalBeginIntegrationVisitor beginVisitor(dt);

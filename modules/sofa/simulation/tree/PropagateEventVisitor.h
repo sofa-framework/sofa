@@ -61,8 +61,8 @@ public:
 
     ~PropagateEventVisitor();
 
-    Visitor::Result processNodeTopDown(GNode* node);
-    void processObject(GNode*, core::objectmodel::BaseObject* obj);
+    Visitor::Result processNodeTopDown(component::System* node);
+    void processObject(component::System*, core::objectmodel::BaseObject* obj);
 
 protected:
     sofa::core::objectmodel::Event* m_event;

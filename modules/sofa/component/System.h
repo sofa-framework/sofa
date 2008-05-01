@@ -33,6 +33,25 @@
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
 #include <sofa/core/componentmodel/behavior/MasterSolver.h>
 #include <sofa/core/componentmodel/collision/Pipeline.h>
+#include <sofa/core/objectmodel/Event.h>
+
+#include <sofa/simulation/tree/VisitorScheduler.h>
+using sofa::simulation::tree::VisitorScheduler;
+namespace sofa
+{
+namespace simulation
+{
+namespace tree
+{
+class Visitor;
+}
+}
+}
+using sofa::simulation::tree::Visitor;
+
+#include <sofa/helper/system/thread/CTime.h>
+#include <string>
+#include <stack>
 
 namespace sofa
 {
@@ -47,14 +66,53 @@ The other systems are not visible (unknown scene graph).
 
 	@author The SOFA team </www.sofa-framework.org>
 */
-class System : public sofa::core::objectmodel::Context, public core::objectmodel::BaseNode
+class System : public sofa::core::objectmodel::Context
 {
+
 public:
-    System();
+    System(const std::string& name="");
 
     virtual ~System();
 
-    /// @name Component (=Object)
+    /// @name High-level interface
+    /// @{
+
+    /// Initialize the components, forward traversal
+    void init();
+    /// Initialize the components, backward traversal
+    void bwdInit();
+
+    /// Do one step forward in time, forward traversal.
+    void animate( double dt );
+    /// Draw the objects in an OpenGl context
+    void glDraw();
+    /// @}
+
+    void executeVisitor( simulation::tree::Visitor* action);
+
+    /// Execute a recursive action starting from this node
+    void execute(simulation::tree::Visitor& action)
+    {
+        simulation::tree::Visitor* p = &action;
+        executeVisitor(p);
+    }
+
+    /// Execute a recursive action starting from this node
+    void execute(simulation::tree::Visitor* p)
+    {
+        executeVisitor(p);
+    }
+
+    /// Execute a recursive action starting from this node
+    template<class Act>
+    void execute()
+    {
+        Act action;
+        simulation::tree::Visitor* p = &action;
+        executeVisitor(p);
+    }
+
+    /// @name Component containers
     /// @{
     // methods moved from GNode (27/04/08)
 
@@ -226,6 +284,11 @@ public:
     Sequence<core::CollisionModel> collisionModel;
 
     Single<core::componentmodel::collision::Pipeline> collisionPipeline;
+    /// @}
+
+
+    /// @name Set/get objects
+    /// @{
 
 
     /// Add an object and return this. Detect the implemented interfaces and add the object to the corresponding lists.
@@ -261,9 +324,6 @@ public:
         return this->get<Object>(Local);
     }
 
-    /// Mechanical Degrees-of-Freedom
-    virtual core::objectmodel::BaseObject* getMechanicalState() const;
-
     /// Topology
     virtual core::componentmodel::topology::Topology* getTopology() const;
 
@@ -273,14 +333,155 @@ public:
     /// Mesh Topology (unified interface for both static and dynamic topologies)
     virtual core::componentmodel::topology::BaseMeshTopology* getMeshTopology() const;
 
+    /// Mechanical Degrees-of-Freedom
+    virtual core::objectmodel::BaseObject* getMechanicalState() const;
+
     /// Shader
     virtual core::objectmodel::BaseObject* getShader() const;
 
     /// @}
 
+    /// @name Time management
+    /// @{
+
+    void setLogTime(bool);
+    bool getLogTime() const { return logTime_; }
+
+    typedef helper::system::thread::ctime_t ctime_t;
+
+    struct NodeTimer
+    {
+        ctime_t tNode; ///< total time elapsed in the node
+        ctime_t tTree; ///< total time elapsed in the branch (node and children)
+        int nVisit;    ///< number of visit
+    };
+
+    struct ObjectTimer
+    {
+        ctime_t tObject; ///< total time elapsed in the object
+        int nVisit;    ///< number of visit
+    };
+
+    /// Reset time logs
+    void resetTime();
+
+    /// Get total time log
+    const NodeTimer& getTotalTime() const { return totalTime; }
+
+    /// Get time log of all categories
+    const std::map<std::string, NodeTimer>& getVisitorTime() const { return actionTime; }
+
+    /// Get time log of a given category
+    const NodeTimer& getVisitorTime(const std::string& s) { return actionTime[s]; }
+
+    /// Get time log of a given category
+    const NodeTimer& getVisitorTime(const char* s) { return actionTime[s]; }
+
+    /// Get time log of all objects
+    const std::map<std::string, std::map<core::objectmodel::BaseObject*, ObjectTimer> >& getObjectTime() const { return objectTime; }
+
+    /// Get time log of all objects of a given category
+    const std::map<core::objectmodel::BaseObject*, ObjectTimer>& getObjectTime(const std::string& s) { return objectTime[s]; }
+
+    /// Get time log of all objects of a given category
+    const std::map<core::objectmodel::BaseObject*, ObjectTimer>& getObjectTime(const char* s) { return objectTime[s]; }
+
+    /// Get timer frequency
+    ctime_t getTimeFreq() const;
+
+    /// Measure start time
+    ctime_t startTime() const;
+
+    /// Log time spent on an action category and the concerned object
+    virtual void addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObject* obj);
+
+    /// Log time spent given a start time, an action category, and the concerned object
+    virtual ctime_t endTime(ctime_t t0, const std::string& s, core::objectmodel::BaseObject* obj);
+
+    /// Log time spent on an action category, and the concerned object, plus remove the computed time from the parent caller object
+    virtual void addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* parent);
+
+    /// Log time spent given a start time, an action category, and the concerned object, plus remove the computed time from the parent caller object
+    virtual ctime_t endTime(ctime_t t0, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* parent);
+    /// @}
+
+    System* setDebug(bool);
+    bool getDebug() const;
+
 protected:
+    bool debug_;
+    bool logTime_;
+
+    /// @name Performance Timing Log
+    /// @{
+
+    NodeTimer totalTime;
+    std::map<std::string, NodeTimer> actionTime;
+    std::map<std::string, std::map<core::objectmodel::BaseObject*, ObjectTimer> > objectTime;
+
+    /// @}
+
     virtual void doAddObject(core::objectmodel::BaseObject* obj);
     virtual void doRemoveObject(core::objectmodel::BaseObject* obj);
+
+
+public:
+    /// Remove odesolvers and mastercontroler
+    virtual void removeControllers();
+
+    const BaseContext* getContext() const;
+    BaseContext* getContext();
+
+    /// Must be called after each graph modification. Do not call it directly, apply an InitVisitor instead.
+    virtual void initialize();
+
+    /// Called after initialization of the GNode to set the default value of the visual context.
+    virtual void setDefaultVisualContextValue();
+
+    /*
+    /// Get parent node (or NULL if no hierarchy or for root node)
+    virtual core::objectmodel::BaseNode* getParent();
+
+    /// Get parent node (or NULL if no hierarchy or for root node)
+    virtual const core::objectmodel::BaseNode* getParent() const;
+
+    /// Get a list of child node
+    virtual sofa::helper::vector< core::objectmodel::BaseNode* >  getChildren();
+
+    /// Get a list of child node
+    virtual const sofa::helper::vector< core::objectmodel::BaseNode* >  getChildren() const;
+    */
+
+    /// Update the whole context values, based on parent and local ContextObjects
+    virtual void updateContext();
+
+    /// Update the simulation context values(gravity, time...), based on parent and local ContextObjects
+    virtual void updateSimulationContext();
+
+    /// Called during initialization to corectly propagate the visual context to the children
+    virtual void initVisualContext() {}
+
+    /// Propagate an event
+    virtual void propagateEvent( core::objectmodel::Event* event );
+
+    /// Update the visual context values, based on parent and local ContextObjects
+    virtual void updateVisualContext(int FILTER=0);
+
+    Single<VisitorScheduler> actionScheduler;
+
+    // VisitorScheduler can use doExecuteVisitor() method
+    friend class VisitorScheduler;
+
+    /// Execute a recursive action starting from this node.
+    /// This method bypass the actionScheduler of this node if any.
+    virtual void doExecuteVisitor(Visitor* action)=0;
+
+protected:
+    std::stack<Visitor*> actionStack;
+    virtual void notifyAddObject(core::objectmodel::BaseObject* ) {}
+    virtual void notifyRemoveObject(core::objectmodel::BaseObject* ) {}
+    virtual void notifyMoveObject(core::objectmodel::BaseObject* , System* /*prev*/) {}
+
 };
 
 }

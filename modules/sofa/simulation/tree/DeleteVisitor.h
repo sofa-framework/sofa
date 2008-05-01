@@ -25,7 +25,8 @@
 #ifndef SOFA_SIMULATION_TREE_DELETEACTION_H
 #define SOFA_SIMULATION_TREE_DELETEACTION_H
 
-#include <sofa/simulation/tree/Visitor.h>
+#include <sofa/simulation/tree/GNodeVisitor.h>
+//#include <sofa/simulation/tree/GNode.h>
 
 namespace sofa
 {
@@ -36,7 +37,7 @@ namespace simulation
 namespace tree
 {
 
-class DeleteVisitor : public Visitor
+class DeleteVisitor : public GNodeVisitor
 {
 public:
     DeleteVisitor() {}

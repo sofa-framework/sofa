@@ -23,7 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/simulation/tree/Visitor.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/component/System.h>
 
 namespace sofa
 {

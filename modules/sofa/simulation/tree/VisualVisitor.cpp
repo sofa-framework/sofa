@@ -33,7 +33,7 @@ namespace simulation
 namespace tree
 {
 
-Visitor::Result VisualDrawVisitor::processNodeTopDown(GNode* node)
+Visitor::Result VisualDrawVisitor::processNodeTopDown(component::System* node)
 {
     glPushMatrix();
     double glMatrix[16];
@@ -49,28 +49,28 @@ Visitor::Result VisualDrawVisitor::processNodeTopDown(GNode* node)
     return RESULT_CONTINUE;
 }
 
-void VisualDrawVisitor::processNodeBottomUp(GNode* node)
+void VisualDrawVisitor::processNodeBottomUp(component::System* node)
 {
     for_each(this, node, node->visualModel,     &VisualDrawVisitor::bwdVisualModel);
 }
 
-void VisualDrawVisitor::processObject(GNode* /*node*/, core::objectmodel::BaseObject* o)
+void VisualDrawVisitor::processObject(component::System* /*node*/, core::objectmodel::BaseObject* o)
 {
     if (pass == core::VisualModel::Std || pass == core::VisualModel::Shadow)
         o->draw();
 }
 
-void VisualDrawVisitor::fwdVisualModel(GNode* /*node*/, core::VisualModel* vm)
+void VisualDrawVisitor::fwdVisualModel(component::System* /*node*/, core::VisualModel* vm)
 {
     vm->fwdDraw(pass);
 }
 
-void VisualDrawVisitor::bwdVisualModel(GNode* /*node*/, core::VisualModel* vm)
+void VisualDrawVisitor::bwdVisualModel(component::System* /*node*/, core::VisualModel* vm)
 {
     vm->bwdDraw(pass);
 }
 
-void VisualDrawVisitor::processVisualModel(GNode* node, core::VisualModel* vm)
+void VisualDrawVisitor::processVisualModel(component::System* node, core::VisualModel* vm)
 {
     //cerr<<"VisualDrawVisitor::processVisualModel "<<vm->getName()<<endl;
     sofa::core::Shader* shader = NULL;
@@ -103,12 +103,12 @@ void VisualDrawVisitor::processVisualModel(GNode* node, core::VisualModel* vm)
     }
 }
 
-void VisualUpdateVisitor::processVisualModel(GNode*, core::VisualModel* vm)
+void VisualUpdateVisitor::processVisualModel(component::System*, core::VisualModel* vm)
 {
     vm->updateVisual();
 }
 
-void VisualInitVisitor::processVisualModel(GNode*, core::VisualModel* vm)
+void VisualInitVisitor::processVisualModel(component::System*, core::VisualModel* vm)
 {
     vm->initVisual();
 }
@@ -119,11 +119,11 @@ VisualComputeBBoxVisitor::VisualComputeBBoxVisitor()
     maxBBox[0] = maxBBox[1] = maxBBox[2] = -1e10;
 }
 
-void VisualComputeBBoxVisitor::processMechanicalState(GNode*, core::componentmodel::behavior::BaseMechanicalState* vm)
+void VisualComputeBBoxVisitor::processMechanicalState(component::System*, core::componentmodel::behavior::BaseMechanicalState* vm)
 {
     vm->addBBox(minBBox, maxBBox);
 }
-void VisualComputeBBoxVisitor::processVisualModel(GNode*, core::VisualModel* vm)
+void VisualComputeBBoxVisitor::processVisualModel(component::System*, core::VisualModel* vm)
 {
     vm->addBBox(minBBox, maxBBox);
 }
