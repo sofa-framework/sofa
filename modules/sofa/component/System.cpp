@@ -11,6 +11,10 @@
 //
 #include "System.h"
 #include <sofa/simulation/tree/PropagateEventVisitor.h>
+#include <sofa/simulation/tree/AnimateVisitor.h>
+#include <sofa/simulation/tree/InitVisitor.h>
+#include <sofa/simulation/tree/VisualVisitor.h>
+#include <sofa/simulation/tree/UpdateMappingVisitor.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -38,38 +42,30 @@ System::~System()
 {
 }
 
-/// Initialize the components, forward traversal
+/// Initialize the components
 void System::init()
 {
+    execute<simulation::tree::InitVisitor>();
     //cerr<<"System::init()"<<endl;
-    for ( Sequence<BaseObject>::iterator i=object.begin(), iend=object.end(); i!=iend; i++ )
-    {
-        (*i)->init();
-    }
-}
-/// Initialize the components, backward traversal
-void System::bwdInit()
-{
-    for ( Sequence<BaseObject>::iterator i=object.begin(), iend=object.end(); i!=iend; i++ )
-    {
-        (*i)->bwdInit();
-    }
 }
 
-/// Do one step forward in time, forward traversal
+/// Do one step forward in time
 void System::animate( double dt )
 {
-    for ( Sequence<core::componentmodel::behavior::OdeSolver>::iterator i=solver.begin(), iend=solver.end(); i!=iend; i++ )
-    {
-        (*i)->solve(dt);
-    }
+    simulation::tree::AnimateVisitor vis(dt);
+    execute(vis);
+    execute<simulation::tree::UpdateMappingVisitor>();
 }
 
 void System::glDraw()
 {
-    for (ObjectIterator it = object.begin(), itend = object.end(); it != itend; ++it)
-        (*it)->draw();
+    execute<simulation::tree::VisualUpdateVisitor>();
+    execute<simulation::tree::VisualDrawVisitor>();
 }
+
+
+
+
 
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
 bool System::addObject(BaseObject* obj)

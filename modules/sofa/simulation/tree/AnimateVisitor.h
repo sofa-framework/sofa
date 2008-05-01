@@ -46,7 +46,7 @@ class AnimateVisitor : public Visitor
 protected:
     double dt;
 public:
-    AnimateVisitor() : dt(0) {}
+    AnimateVisitor(double dt=0.0) : dt(dt) {}
 
     void setDt(double v) { dt = v; }
     double getDt() const { return dt; }

@@ -592,6 +592,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f
     Displacement F;
     if(_updateStiffnessMatrix)
     {
+        //cerr<<"TetrahedronFEMForceField<DataTypes>::accumulateForceLarge, update stiffness matrix"<<endl;
         _strainDisplacements[elementIndex][0][0]   = ( - deforme[2][1]*deforme[3][2] );
         _strainDisplacements[elementIndex][1][1] = ( deforme[2][0]*deforme[3][2] - deforme[1][0]*deforme[3][2] );
         _strainDisplacements[elementIndex][2][2]   = ( deforme[2][1]*deforme[3][0] - deforme[2][0]*deforme[3][1] + deforme[1][0]*deforme[3][1] - deforme[1][0]*deforme[2][1] );
