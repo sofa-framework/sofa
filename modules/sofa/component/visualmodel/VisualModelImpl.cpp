@@ -345,6 +345,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
         else
         {
             setMesh(*objLoader,tex);
+            //std::cout << "VisualModel::load, vertices.size = "<< vertices.size() <<std::endl;
         }
     }
     else

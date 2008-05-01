@@ -12,6 +12,8 @@
 
 #include <sofa/component/typedef/Sofa_typedef.h>
 
+#include <GL/glut.h>
+
 using namespace sofa::simulation::tree;
 using sofa::component::odesolver::CGImplicitSolver;
 using sofa::component::topology::MeshTopology;
@@ -21,6 +23,7 @@ using sofa::component::visualmodel::OglModel;
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
+    glutInit(&argc,argv);
     sofa::helper::parse("This is a SOFA application.")
     (argc,argv);
 

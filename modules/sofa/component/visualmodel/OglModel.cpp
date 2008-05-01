@@ -29,7 +29,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sstream>
-
+#include <GL/glut.h>
 namespace sofa
 {
 
@@ -101,6 +101,7 @@ void OglModel::internalDraw()
     glVertexPointer (3, GL_FLOAT, 0, vertices.getData());
     glNormalPointer (GL_FLOAT, 0, vnormals.getData());
     glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_VERTEX_ARRAY);
     if (tex)
     {
         glEnable(GL_TEXTURE_2D);
@@ -135,11 +136,14 @@ void OglModel::internalDraw()
 
     for (unsigned int i=0; i<xforms.size(); i++)
     {
+        //std::cerr<<"OglModel::internalDraw() 4, quads.size() = "<<quads.size()<<endl;
         float matrix[16];
         xforms[i].writeOpenGlMatrix(matrix);
+        //for( int k=0; k<16; k++ ) std::cerr<<matrix[k]<<" "; std::cerr<<endl;
         glPushMatrix();
         glMultMatrixf(matrix);
 
+        //glutWireCube( 3 );
         if (!triangles.empty())
             glDrawElements(GL_TRIANGLES, triangles.size() * 3, GL_UNSIGNED_INT, triangles.getData());
         if (!quads.empty())

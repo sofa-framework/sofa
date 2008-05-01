@@ -247,6 +247,7 @@ void UniformMass<DataTypes, MassType>::draw()
     if (!getContext()->getShowBehaviorModels())
         return;
     const VecCoord& x = *this->mstate->getX();
+    //cerr<<"UniformMass<DataTypes, MassType>::draw() "<<x<<endl;
     Coord gravityCenter;
     glDisable (GL_LIGHTING);
     glPointSize(2);

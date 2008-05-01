@@ -76,18 +76,22 @@ public:
 
     /// @name High-level interface
     /// @{
-
-    /// Initialize the components, forward traversal
+    /// Initialize the components
     void init();
-    /// Initialize the components, backward traversal
-    void bwdInit();
-
-    /// Do one step forward in time, forward traversal.
+    /// Do one step forward in time
     void animate( double dt );
     /// Draw the objects in an OpenGl context
     void glDraw();
     /// @}
 
+    /// @name Visitor handling
+    /// @{
+
+    /// Execute a recursive action starting from this node.
+    /// This method bypasses the actionScheduler of this node if any.
+    virtual void doExecuteVisitor(Visitor* action)=0;
+
+    /// Execute a recursive action starting from this node
     void executeVisitor( simulation::tree::Visitor* action);
 
     /// Execute a recursive action starting from this node
@@ -111,6 +115,7 @@ public:
         simulation::tree::Visitor* p = &action;
         executeVisitor(p);
     }
+    /// @}
 
     /// @name Component containers
     /// @{
@@ -339,6 +344,9 @@ public:
     /// Shader
     virtual core::objectmodel::BaseObject* getShader() const;
 
+    /// Remove odesolvers and mastercontroler
+    virtual void removeControllers();
+
     /// @}
 
     /// @name Time management
@@ -408,36 +416,6 @@ public:
     System* setDebug(bool);
     bool getDebug() const;
 
-protected:
-    bool debug_;
-    bool logTime_;
-
-    /// @name Performance Timing Log
-    /// @{
-
-    NodeTimer totalTime;
-    std::map<std::string, NodeTimer> actionTime;
-    std::map<std::string, std::map<core::objectmodel::BaseObject*, ObjectTimer> > objectTime;
-
-    /// @}
-
-    virtual void doAddObject(core::objectmodel::BaseObject* obj);
-    virtual void doRemoveObject(core::objectmodel::BaseObject* obj);
-
-
-public:
-    /// Remove odesolvers and mastercontroler
-    virtual void removeControllers();
-
-    const BaseContext* getContext() const;
-    BaseContext* getContext();
-
-    /// Must be called after each graph modification. Do not call it directly, apply an InitVisitor instead.
-    virtual void initialize();
-
-    /// Called after initialization of the GNode to set the default value of the visual context.
-    virtual void setDefaultVisualContextValue();
-
     /*
     /// Get parent node (or NULL if no hierarchy or for root node)
     virtual core::objectmodel::BaseNode* getParent();
@@ -451,6 +429,9 @@ public:
     /// Get a list of child node
     virtual const sofa::helper::vector< core::objectmodel::BaseNode* >  getChildren() const;
     */
+
+    const BaseContext* getContext() const;
+    BaseContext* getContext();
 
     /// Update the whole context values, based on parent and local ContextObjects
     virtual void updateContext();
@@ -472,15 +453,34 @@ public:
     // VisitorScheduler can use doExecuteVisitor() method
     friend class VisitorScheduler;
 
-    /// Execute a recursive action starting from this node.
-    /// This method bypass the actionScheduler of this node if any.
-    virtual void doExecuteVisitor(Visitor* action)=0;
+    /// Must be called after each graph modification. Do not call it directly, apply an InitVisitor instead.
+    virtual void initialize();
+
+    /// Called after initialization to set the default value of the visual context.
+    virtual void setDefaultVisualContextValue();
 
 protected:
+    bool debug_;
+    bool logTime_;
+
+    /// @name Performance Timing Log
+    /// @{
+
+    NodeTimer totalTime;
+    std::map<std::string, NodeTimer> actionTime;
+    std::map<std::string, std::map<core::objectmodel::BaseObject*, ObjectTimer> > objectTime;
+
+    /// @}
+
+    virtual void doAddObject(core::objectmodel::BaseObject* obj);
+    virtual void doRemoveObject(core::objectmodel::BaseObject* obj);
+
+
     std::stack<Visitor*> actionStack;
     virtual void notifyAddObject(core::objectmodel::BaseObject* ) {}
     virtual void notifyRemoveObject(core::objectmodel::BaseObject* ) {}
     virtual void notifyMoveObject(core::objectmodel::BaseObject* , System* /*prev*/) {}
+
 
 };
 
