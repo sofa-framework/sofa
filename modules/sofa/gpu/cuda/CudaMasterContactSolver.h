@@ -3,6 +3,7 @@
 
 #include <sofa/simulation/tree/MasterSolverImpl.h>
 #include <sofa/simulation/tree/MechanicalVisitor.h>
+#include <sofa/simulation/tree/GNode.h>
 #include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
 #include <sofa/gpu/cuda/CudaLCP.h>
 #include "CudaTypesBase.h"
