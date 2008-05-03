@@ -182,6 +182,12 @@ Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(component::System* no
     return RESULT_PRUNE;
 }
 
+Visitor::Result MechanicalComputeForceVisitor::fwdForceField(component::System* /*node*/, core::componentmodel::behavior::BaseForceField* ff)
+{
+    //cerr<<"MechanicalComputeForceVisitor::fwdForceField "<<ff->getName()<<endl;
+    ff->addForce();
+    return RESULT_CONTINUE;
+}
 
 } // namespace tree
 
