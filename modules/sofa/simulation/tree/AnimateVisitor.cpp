@@ -67,6 +67,7 @@ void AnimateVisitor::processOdeSolver(component::System* /*node*/, core::compone
 
 Visitor::Result AnimateVisitor::processNodeTopDown(component::System* node)
 {
+    //cerr<<"AnimateVisitor::process Node  "<<node->getName()<<endl;
     if (!node->is_activated.getValue()) return Visitor::RESULT_PRUNE;
     if (dt == 0) setDt(node->getDt());
     for_each(this, node, node->behaviorModel, &AnimateVisitor::processBehaviorModel);
@@ -96,9 +97,11 @@ Visitor::Result AnimateVisitor::processNodeTopDown(component::System* node)
         MechanicalBeginIntegrationVisitor beginVisitor(dt);
         node->execute(&beginVisitor);
 
+
         for( unsigned i=0; i<node->solver.size(); i++ )
         {
             ctime_t t0 = begin(node, node->solver[i]);
+            //cerr<<"AnimateVisitor::processNodeTpDown  solver  "<<node->solver[i]->getName()<<endl;
             node->solver[i]->solve(getDt());
             end(node, node->solver[i], t0);
         }

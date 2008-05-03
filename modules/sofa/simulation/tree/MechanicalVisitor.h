@@ -776,12 +776,8 @@ public:
     //	mass->computeForce();
     //	return RESULT_CONTINUE;
     //}
-    virtual Result fwdForceField(component::System* /*node*/, core::componentmodel::behavior::BaseForceField* ff)
-    {
-        //cerr<<"MechanicalComputeForceVisitor::fwdForceField "<<ff->getName()<<endl;
-        ff->addForce();
-        return RESULT_CONTINUE;
-    }
+    virtual Result fwdForceField(component::System* /*node*/, core::componentmodel::behavior::BaseForceField* ff);
+
     virtual void bwdMechanicalMapping(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
     {
         //cerr<<"MechanicalComputeForceVisitor::bwdMechanicalMapping "<<map->getName()<<endl;
