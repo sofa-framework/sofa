@@ -51,14 +51,14 @@ public:
     void setDt(double v) { dt = v; }
     double getDt() const { return dt; }
 
-    virtual void processCollisionPipeline(component::System* node, core::componentmodel::collision::Pipeline* obj);
-    virtual void processBehaviorModel(component::System* node, core::BehaviorModel* obj);
-    virtual void fwdInteractionForceField(component::System* node, core::componentmodel::behavior::InteractionForceField* obj);
-    virtual void processMasterSolver(component::System* node, core::componentmodel::behavior::MasterSolver* obj);
-    virtual void processOdeSolver(component::System* node, core::componentmodel::behavior::OdeSolver* obj);
+    virtual void processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::Pipeline* obj);
+    virtual void processBehaviorModel(simulation::Node* node, core::BehaviorModel* obj);
+    virtual void fwdInteractionForceField(simulation::Node* node, core::componentmodel::behavior::InteractionForceField* obj);
+    virtual void processMasterSolver(simulation::Node* node, core::componentmodel::behavior::MasterSolver* obj);
+    virtual void processOdeSolver(simulation::Node* node, core::componentmodel::behavior::OdeSolver* obj);
 
-    virtual Result processNodeTopDown(component::System* node);
-    //virtual void processNodeBottomUp(component::System* node);
+    virtual Result processNodeTopDown(simulation::Node* node);
+    //virtual void processNodeBottomUp(simulation::Node* node);
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const { return true; }

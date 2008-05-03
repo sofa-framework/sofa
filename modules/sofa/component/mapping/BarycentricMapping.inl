@@ -1047,6 +1047,8 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::apply( typename Out::VecCo
                 + in[tetra[2]] * fy
                 + in[tetra[3]] * fz;
     }
+    //cerr<<"BarycentricMapperTetrahedronSetTopology<In,Out>::apply, in = "<<in<<endl;
+    //cerr<<"BarycentricMapperTetrahedronSetTopology<In,Out>::apply, out = "<<out<<endl;
 }
 
 template <class In, class Out>

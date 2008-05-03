@@ -44,7 +44,7 @@ using helper::system::thread::CTime;
 using namespace sofa::core::objectmodel;
 
 GNode::GNode(const std::string& name, GNode* parent)
-    : component::System(name)
+    : simulation::Node(name)
 {
     if( parent )
         parent->addChild(this);
@@ -170,15 +170,15 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
         std::string newpath = std::string(path, 2);
         while (!newpath.empty() && path[0] == '/')
             newpath.erase(0);
-        return component::System::getObject(newpath);
+        return simulation::Node::getObject(newpath);
     }
     else if (std::string(path,0,3)==std::string("../"))
     {
         std::string newpath = std::string(path, 3);
         while (!newpath.empty() && path[0] == '/')
             newpath.erase(0);
-        if (parent) return parent->component::System::getObject(newpath);
-        else return component::System::getObject(newpath);
+        if (parent) return parent->simulation::Node::getObject(newpath);
+        else return simulation::Node::getObject(newpath);
     }
     else
     {
@@ -199,7 +199,7 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
         }
         else
         {
-            core::objectmodel::BaseObject* obj = component::System::getObject(name);
+            core::objectmodel::BaseObject* obj = simulation::Node::getObject(name);
             if (obj == NULL)
             {
                 std::cerr << "ERROR: object "<<name<<" not found in "<<getPathName()<<std::endl;
@@ -520,7 +520,7 @@ void GNode::updateContext()
         copyContext(*parent);
         //cerr<<"node "<<getName()<<", copy context, time = "<<getTime()<<endl;
     }
-    component::System::updateContext();
+    simulation::Node::updateContext();
 }
 
 void GNode::updateSimulationContext()
@@ -529,7 +529,7 @@ void GNode::updateSimulationContext()
     {
         copySimulationContext(*parent);
     }
-    component::System::updateSimulationContext();
+    simulation::Node::updateSimulationContext();
 }
 
 void GNode::updateVisualContext(int FILTER)
@@ -575,7 +575,7 @@ void GNode::updateVisualContext(int FILTER)
             }
         }
     }
-    component::System::updateVisualContext(FILTER);
+    simulation::Node::updateVisualContext(FILTER);
 }
 
 /// Log time spent on an action category, and the concerned object, plus remove the computed time from the parent caller object

@@ -25,7 +25,7 @@
 #ifndef SOFA_SIMULATION_TREE_GNODE_H
 #define SOFA_SIMULATION_TREE_GNODE_H
 
-#include <sofa/component/System.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/tree/MutationListener.h>
 #include <stdlib.h>
 #include <vector>
@@ -50,7 +50,7 @@ class MutationListener;
 
 /** Define the structure of the scene. Contains (as pointer lists) Component objects and children GNode objects.
 */
-class GNode : public component::System, public core::objectmodel::BaseNode
+class GNode : public simulation::Node, public core::objectmodel::BaseNode
 {
 public:
     GNode( const std::string& name="", GNode* parent=NULL  );
@@ -128,13 +128,13 @@ public:
     /// @{
 
     /// Add an object and return this. Detect the implemented interfaces and add the object to the corresponding lists.
-    virtual bool addObject(core::objectmodel::BaseObject* obj) { return component::System::addObject(obj); }
+    virtual bool addObject(core::objectmodel::BaseObject* obj) { return simulation::Node::addObject(obj); }
 
     /// Remove an object
-    virtual bool removeObject(core::objectmodel::BaseObject* obj) { return component::System::removeObject(obj); }
+    virtual bool removeObject(core::objectmodel::BaseObject* obj) { return simulation::Node::removeObject(obj); }
 
     /// Import an object
-    virtual void moveObject(core::objectmodel::BaseObject* obj) { component::System::moveObject(obj); }
+    virtual void moveObject(core::objectmodel::BaseObject* obj) { simulation::Node::moveObject(obj); }
 
     /// Mechanical Degrees-of-Freedom
     virtual core::objectmodel::BaseObject* getMechanicalState() const;
@@ -151,8 +151,8 @@ public:
     /// Shader
     virtual core::objectmodel::BaseObject* getShader() const;
 
-    const BaseContext* getContext() const { return component::System::getContext(); }
-    BaseContext* getContext() { return component::System::getContext(); }
+    const BaseContext* getContext() const { return simulation::Node::getContext(); }
+    BaseContext* getContext() { return simulation::Node::getContext(); }
 
 
     /// @}

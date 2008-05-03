@@ -23,7 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/simulation/tree/UpdateMappingVisitor.h>
-#include <sofa/component/System.h>
+//#include <sofa/component/System.h>
 
 namespace sofa
 {
@@ -34,12 +34,12 @@ namespace simulation
 namespace tree
 {
 
-void UpdateMappingVisitor::processMapping(component::System*, core::BaseMapping* obj)
+void UpdateMappingVisitor::processMapping(simulation::Node*, core::BaseMapping* obj)
 {
     obj->updateMapping();
 }
 
-void UpdateMappingVisitor::processMechanicalMapping(component::System*, core::componentmodel::behavior::BaseMechanicalMapping* obj)
+void UpdateMappingVisitor::processMechanicalMapping(simulation::Node*, core::componentmodel::behavior::BaseMechanicalMapping* obj)
 {
     if (!obj->isMechanical())
     {
@@ -48,7 +48,7 @@ void UpdateMappingVisitor::processMechanicalMapping(component::System*, core::co
     }
 }
 
-Visitor::Result UpdateMappingVisitor::processNodeTopDown(component::System* node)
+Visitor::Result UpdateMappingVisitor::processNodeTopDown(simulation::Node* node)
 {
     for_each(this, node, node->mapping, &UpdateMappingVisitor::processMapping);
     for_each(this, node, node->mechanicalMapping, &UpdateMappingVisitor::processMechanicalMapping);

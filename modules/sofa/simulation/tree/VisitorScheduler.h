@@ -45,7 +45,7 @@ class VisitorScheduler : public virtual core::objectmodel::BaseObject
 public:
     virtual ~VisitorScheduler() {}
 
-    virtual void executeVisitor(component::System* node, Visitor* act) = 0;
+    virtual void executeVisitor(simulation::Node* node, Visitor* act) = 0;
 
     /// Specify whether this scheduler is multi-threaded.
     virtual bool isMultiThreaded() const { return false; }
@@ -53,7 +53,7 @@ public:
 protected:
 
     /// Execute the given action recursively
-    void doExecuteVisitor(component::System* node, Visitor* act);
+    void doExecuteVisitor(simulation::Node* node, Visitor* act);
 };
 
 } // namespace tree

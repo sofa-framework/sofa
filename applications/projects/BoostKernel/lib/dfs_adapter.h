@@ -13,12 +13,19 @@
 #define dfs_adapter_h
 
 #include <boost/graph/depth_first_search.hpp>
-#include "BoostSceneGraph.h"
-#include "BoostSystem.h"
+#include "BglScene.h"
+#include "BglSystem.h"
 #include <sofa/simulation/tree/Visitor.h>
 
+namespace sofa
+{
+namespace simulation
+{
+namespace bgl
+{
+
 /**
-Adapt a sofa visitor to depth-first search in a bgl scene graph.
+Adapt a sofa visitor to depth-first search in a bgl mapping graph.
 
 	@author The SOFA team </www.sofa-framework.org>
 */
@@ -27,10 +34,10 @@ class dfs_adapter : public boost::dfs_visitor<>
 public:
     sofa::simulation::tree::Visitor* visitor;
 
-    typedef BoostSceneGraph::BoostGraph Graph; ///< BGL graph to traverse
-    BoostSceneGraph::SystemMap& systemMap;      ///< access the System*
+    typedef BglScene::MappingGraph Graph; ///< BGL graph to traverse
+    BglScene::SystemMap& systemMap;      ///< access the System*
 
-    dfs_adapter( sofa::simulation::tree::Visitor* v, BoostSceneGraph::SystemMap& s );
+    dfs_adapter( sofa::simulation::tree::Visitor* v, BglScene::SystemMap& s );
 
     ~dfs_adapter();
 
@@ -38,5 +45,9 @@ public:
     void finish_vertex(Graph::vertex_descriptor u, const Graph &) const;
 
 };
+}
+}
+}
+
 
 #endif

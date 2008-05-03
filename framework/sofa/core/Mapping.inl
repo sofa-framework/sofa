@@ -26,6 +26,9 @@
 #define SOFA_CORE_MAPPING_INL
 
 #include <sofa/core/Mapping.h>
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace sofa
 {
@@ -97,6 +100,8 @@ void Mapping<In,Out>::updateMapping()
     if (this->toModel->getX()!=NULL && this->fromModel->getX()!=NULL)
     {
         apply(*this->toModel->getX(), *this->fromModel->getX());
+        //cerr<<"Mapping<In,Out>::updateMapping(), *this->fromModel->getX() = "<<*this->fromModel->getX()<<endl;
+        //cerr<<"Mapping<In,Out>::updateMapping(), *this->toModel->getX() = "<<*this->toModel->getX()<<endl;
     }
     if (this->toModel->getV()!=NULL && this->fromModel->getV()!=NULL)
     {

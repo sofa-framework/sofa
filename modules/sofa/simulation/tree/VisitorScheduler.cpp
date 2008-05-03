@@ -23,7 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/simulation/tree/VisitorScheduler.h>
-#include <sofa/component/System.h>
+#include <sofa/simulation/common/Node.h>
 
 namespace sofa
 {
@@ -35,7 +35,7 @@ namespace tree
 {
 
 /// Execute the given action recursively
-void VisitorScheduler::doExecuteVisitor(component::System* node, Visitor* act)
+void VisitorScheduler::doExecuteVisitor(simulation::Node* node, Visitor* act)
 {
     node->doExecuteVisitor(act);
 }

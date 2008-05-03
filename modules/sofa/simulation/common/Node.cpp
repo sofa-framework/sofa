@@ -1,5 +1,5 @@
 //
-// C++ Implementation: System
+// C++ Implementation: Node
 //
 // Description:
 //
@@ -9,7 +9,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "System.h"
+#include "Node.h"
 #include <sofa/simulation/tree/PropagateEventVisitor.h>
 #include <sofa/simulation/tree/AnimateVisitor.h>
 #include <sofa/simulation/tree/InitVisitor.h>
@@ -22,14 +22,14 @@ using std::endl;
 namespace sofa
 {
 
-namespace component
+namespace simulation
 {
 using core::objectmodel::BaseObject;
 using helper::system::thread::CTime;
 
-System::System(const std::string& name)
+Node::Node(const std::string& name)
     : sofa::core::objectmodel::Context()
-    , debug_(false), logTime_(false)
+    , debug_(false), logTime_(false), _context(this)
 {
     totalTime.nVisit = 0;
     totalTime.tNode = 0;
@@ -38,29 +38,29 @@ System::System(const std::string& name)
 }
 
 
-System::~System()
+Node::~Node()
 {
 }
 
 /// Initialize the components
-void System::init()
+void Node::init()
 {
-    //cerr<<"System::init() begin node "<<getName()<<endl;
+    //cerr<<"Node::init() begin node "<<getName()<<endl;
     execute<simulation::tree::InitVisitor>();
-    //cerr<<"System::init() end node "<<getName()<<endl;
+    //cerr<<"Node::init() end node "<<getName()<<endl;
 }
 
 /// Do one step forward in time
-void System::animate( double dt )
+void Node::animate( double dt )
 {
     simulation::tree::AnimateVisitor vis(dt);
-    //cerr<<"System::animate, start execute"<<endl;
+    //cerr<<"Node::animate, start execute"<<endl;
     execute(vis);
-    //cerr<<"System::animate, end execute"<<endl;
+    //cerr<<"Node::animate, end execute"<<endl;
     execute<simulation::tree::UpdateMappingVisitor>();
 }
 
-void System::glDraw()
+void Node::glDraw()
 {
     execute<simulation::tree::VisualUpdateVisitor>();
     execute<simulation::tree::VisualDrawVisitor>();
@@ -71,7 +71,7 @@ void System::glDraw()
 
 
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
-bool System::addObject(BaseObject* obj)
+bool Node::addObject(BaseObject* obj)
 {
     notifyAddObject(obj);
     doAddObject(obj);
@@ -79,7 +79,7 @@ bool System::addObject(BaseObject* obj)
 }
 
 /// Remove an object
-bool System::removeObject(BaseObject* obj)
+bool Node::removeObject(BaseObject* obj)
 {
     notifyRemoveObject(obj);
     doRemoveObject(obj);
@@ -87,9 +87,9 @@ bool System::removeObject(BaseObject* obj)
 }
 
 /// Move an object from another node
-void System::moveObject(BaseObject* obj)
+void Node::moveObject(BaseObject* obj)
 {
-    System* prev = dynamic_cast<System*>(obj->getContext());
+    Node* prev = dynamic_cast<Node*>(obj->getContext());
     if (prev==NULL)
     {
         obj->getContext()->removeObject(obj);
@@ -104,7 +104,7 @@ void System::moveObject(BaseObject* obj)
 }
 
 /// Find an object given its name
-core::objectmodel::BaseObject* System::getObject(const std::string& name) const
+core::objectmodel::BaseObject* Node::getObject(const std::string& name) const
 {
     for (ObjectIterator it = object.begin(), itend = object.end(); it != itend; ++it)
         if ((*it)->getName() == name)
@@ -115,7 +115,7 @@ core::objectmodel::BaseObject* System::getObject(const std::string& name) const
 
 
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
-void System::doAddObject(BaseObject* obj)
+void Node::doAddObject(BaseObject* obj)
 {
     notifyAddObject(obj);
     obj->setContext(this);
@@ -144,7 +144,7 @@ void System::doAddObject(BaseObject* obj)
 }
 
 /// Remove an object
-void System::doRemoveObject(BaseObject* obj)
+void Node::doRemoveObject(BaseObject* obj)
 {
     if (obj->getContext()==this)
     {
@@ -185,13 +185,13 @@ void System::doRemoveObject(BaseObject* obj)
 
 
 /// Topology
-core::componentmodel::topology::Topology* System::getTopology() const
+core::componentmodel::topology::Topology* Node::getTopology() const
 {
     return this->topology;
 }
 
 /// Dynamic Topology
-core::componentmodel::topology::BaseTopology* System::getMainTopology() const
+core::componentmodel::topology::BaseTopology* Node::getMainTopology() const
 {
     core::componentmodel::topology::BaseTopology *main=0;
     unsigned int i;
@@ -204,35 +204,35 @@ core::componentmodel::topology::BaseTopology* System::getMainTopology() const
 }
 
 /// Mesh Topology (unified interface for both static and dynamic topologies)
-core::componentmodel::topology::BaseMeshTopology* System::getMeshTopology() const
+core::componentmodel::topology::BaseMeshTopology* Node::getMeshTopology() const
 {
     return this->meshTopology;
 }
 
 /// Shader
-core::objectmodel::BaseObject* System::getShader() const
+core::objectmodel::BaseObject* Node::getShader() const
 {
     return shader;
 }
 
 /// Mechanical Degrees-of-Freedom
-core::objectmodel::BaseObject* System::getMechanicalState() const
+core::objectmodel::BaseObject* Node::getMechanicalState() const
 {
     return this->mechanicalState;
 }
 
 
-void System::setLogTime(bool b)
+void Node::setLogTime(bool b)
 {
     logTime_=b;
 }
 
-System::ctime_t System::getTimeFreq() const
+Node::ctime_t Node::getTimeFreq() const
 {
     return CTime::getTicksPerSec();
 }
 
-void System::resetTime()
+void Node::resetTime()
 {
     totalTime.nVisit = 0;
     totalTime.tNode = 0;
@@ -242,14 +242,14 @@ void System::resetTime()
 }
 
 /// Measure start time
-System::ctime_t System::startTime() const
+Node::ctime_t Node::startTime() const
 {
     if (!getLogTime()) return 0;
     return CTime::getTime();
 }
 
 /// Log time spent on an action category and the concerned object
-void System::addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObject* obj)
+void Node::addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObject* obj)
 {
     ObjectTimer& timer = objectTime[s][obj];
     timer.tObject += t;
@@ -257,7 +257,7 @@ void System::addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObj
 }
 
 /// Log time spent given a start time, an action category, and the concerned object
-System::ctime_t System::endTime(ctime_t t0, const std::string& s, core::objectmodel::BaseObject* obj)
+Node::ctime_t Node::endTime(ctime_t t0, const std::string& s, core::objectmodel::BaseObject* obj)
 {
     if (!getLogTime()) return 0;
     const ctime_t t1 = CTime::getTime();
@@ -267,33 +267,33 @@ System::ctime_t System::endTime(ctime_t t0, const std::string& s, core::objectmo
 }
 
 /// Log time spent on an action category, and the concerned object, plus remove the computed time from the parent caller object
-void System::addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* /*parent*/)
+void Node::addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* /*parent*/)
 {
     ObjectTimer& timer = objectTime[s][obj];
     timer.tObject += t;
     ++ timer.nVisit;
     //objectTime[s][parent].tObject -= t;
-    cerr<<"Warning: System::addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* parent) does not remove the computed time from the parent caller object (parent is ndefined)"<<endl;
+    cerr<<"Warning: Node::addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* parent) does not remove the computed time from the parent caller object (parent is ndefined)"<<endl;
 }
 
 /// Log time spent given a start time, an action category, and the concerned object
-System::ctime_t System::endTime(ctime_t /*t0*/, const std::string& /*s*/, core::objectmodel::BaseObject* /*obj*/, core::objectmodel::BaseObject* /*parent*/)
+Node::ctime_t Node::endTime(ctime_t /*t0*/, const std::string& /*s*/, core::objectmodel::BaseObject* /*obj*/, core::objectmodel::BaseObject* /*parent*/)
 {
     if (!getLogTime()) return 0;
     const ctime_t t1 = CTime::getTime();
     //const ctime_t t = t1 - t0;
     //addTime(t, s, obj, parent);
-    cerr<<"Warning: System::endTime(ctime_t t0, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* parent) does not add parent time (parent is ndefined)"<<endl;
+    cerr<<"Warning: Node::endTime(ctime_t t0, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* parent) does not add parent time (parent is ndefined)"<<endl;
     return t1;
 }
 
-System* System::setDebug(bool b)
+Node* Node::setDebug(bool b)
 {
     debug_=b;
     return this;
 }
 
-bool System::getDebug() const
+bool Node::getDebug() const
 {
     return debug_;
 }
@@ -301,7 +301,7 @@ bool System::getDebug() const
 
 
 
-void System::removeControllers()
+void Node::removeControllers()
 {
     removeObject(masterSolver);
     typedef Sequence<core::componentmodel::behavior::OdeSolver> Solvers;
@@ -311,17 +311,22 @@ void System::removeControllers()
 }
 
 
-core::objectmodel::BaseContext* System::getContext()
+core::objectmodel::BaseContext* Node::getContext()
 {
-    return this;
+    return _context;
 }
-const core::objectmodel::BaseContext* System::getContext() const
+const core::objectmodel::BaseContext* Node::getContext() const
 {
-    return this;
+    return _context;
+}
+
+void Node::setContext( core::objectmodel::BaseContext* c )
+{
+    _context=c;
 }
 
 
-void System::setDefaultVisualContextValue()
+void Node::setDefaultVisualContextValue()
 {
     if (showVisualModels_.getValue() == -1)            showVisualModels_.setValue(true);
     if (showBehaviorModels_.getValue() == -1)          showBehaviorModels_.setValue(false);
@@ -335,9 +340,9 @@ void System::setDefaultVisualContextValue()
     if (showNormals_.getValue() == -1)                 showNormals_.setValue(false);
 }
 
-void System::initialize()
+void Node::initialize()
 {
-    //cerr<<"System::initialize()"<<endl;
+    //cerr<<"Node::initialize()"<<endl;
 
     initVisualContext();
     // Put the OdeSolver, if any, in first position. This makes sure that the OdeSolver component is initialized only when all its sibling and children components are already initialized.
@@ -362,14 +367,14 @@ void System::initialize()
     updateSimulationContext();
 
     // this is now done by the InitVisitor
-    //for (Sequence<System>::iterator it = child.begin(); it != child.end(); it++) {
+    //for (Sequence<Node>::iterator it = child.begin(); it != child.end(); it++) {
     //    (*it)->init();
     //}
 }
 
-void System::updateContext()
+void Node::updateContext()
 {
-    //if( debug_ ) cerr<<"System::updateContext, node = "<<getName()<<", incoming context = "<< *this->getContext() << endl;
+    //if( debug_ ) cerr<<"Node::updateContext, node = "<<getName()<<", incoming context = "<< *this->getContext() << endl;
 
     // Apply local modifications to the context
     if (getLogTime())
@@ -378,7 +383,7 @@ void System::updateContext()
         {
             contextObject[i]->init();
             contextObject[i]->apply();
-            //cerr<<"System::updateContext, modified by node = "<<contextObject[i]->getName()<< endl;
+            //cerr<<"Node::updateContext, modified by node = "<<contextObject[i]->getName()<< endl;
         }
     }
     else
@@ -387,7 +392,7 @@ void System::updateContext()
         {
             contextObject[i]->init();
             contextObject[i]->apply();
-            //cerr<<"System::updateContext, modified by node = "<<contextObject[i]->getName()<<endl;
+            //cerr<<"Node::updateContext, modified by node = "<<contextObject[i]->getName()<<endl;
         }
     }
 //	if( !mechanicalModel.empty() ) {
@@ -398,10 +403,10 @@ void System::updateContext()
     // project the gravity to the local coordinate system
     /*        getContext()->setGravity( getContext()->getLocalFrame().backProjectVector(getContext()->getWorldGravity()) );*/
 
-    if ( debug_ ) std::cerr<<"System::updateContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) << endl;
+    if ( debug_ ) std::cerr<<"Node::updateContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) << endl;
 }
 
-void System::updateSimulationContext()
+void Node::updateSimulationContext()
 {
     // Apply local modifications to the context
     if (getLogTime())
@@ -420,10 +425,10 @@ void System::updateSimulationContext()
             contextObject[i]->apply();
         }
     }
-    if ( debug_ ) std::cerr<<"System::updateSimulationContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) << endl;
+    if ( debug_ ) std::cerr<<"Node::updateSimulationContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) << endl;
 }
 
-void System::updateVisualContext(int/* FILTER*/)
+void Node::updateVisualContext(int/* FILTER*/)
 {
     // Apply local modifications to the context
     if (getLogTime())
@@ -442,11 +447,11 @@ void System::updateVisualContext(int/* FILTER*/)
             contextObject[i]->apply();
         }
     }
-    if ( debug_ ) std::cerr<<"System::updateVisualContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) << endl;
+    if ( debug_ ) std::cerr<<"Node::updateVisualContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) << endl;
 }
 
 /// Execute a recursive action starting from this node
-void System::executeVisitor(Visitor* action)
+void Node::executeVisitor(Visitor* action)
 {
     if (!this->is_activated.getValue()) return;
     if (actionScheduler)
@@ -456,7 +461,7 @@ void System::executeVisitor(Visitor* action)
 }
 
 /// Propagate an event
-void System::propagateEvent( core::objectmodel::Event* event )
+void Node::propagateEvent( core::objectmodel::Event* event )
 {
     simulation::tree::PropagateEventVisitor act(event);
     this->executeVisitor(&act);

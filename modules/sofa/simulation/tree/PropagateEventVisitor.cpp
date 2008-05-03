@@ -53,7 +53,7 @@ PropagateEventVisitor::PropagateEventVisitor(sofa::core::objectmodel::Event* e)
 PropagateEventVisitor::~PropagateEventVisitor()
 {}
 
-Visitor::Result PropagateEventVisitor::processNodeTopDown(component::System* node)
+Visitor::Result PropagateEventVisitor::processNodeTopDown(simulation::Node* node)
 {
     for_each(this, node, node->object, &PropagateEventVisitor::processObject);
     if( m_event->isHandled() )
@@ -62,7 +62,7 @@ Visitor::Result PropagateEventVisitor::processNodeTopDown(component::System* nod
         return Visitor::RESULT_CONTINUE;
 }
 
-void PropagateEventVisitor::processObject(component::System*, core::objectmodel::BaseObject* obj)
+void PropagateEventVisitor::processObject(simulation::Node*, core::objectmodel::BaseObject* obj)
 {
     if( obj->f_listening.getValue()==true )
         obj->handleEvent( m_event );

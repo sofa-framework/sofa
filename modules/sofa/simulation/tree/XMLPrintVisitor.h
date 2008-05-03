@@ -56,8 +56,8 @@ public:
     template<class Seq>
     void processObjects(Seq& list);
 
-    virtual Result processNodeTopDown(component::System* node);
-    virtual void processNodeBottomUp(component::System* node);
+    virtual Result processNodeTopDown(simulation::Node* node);
+    virtual void processNodeBottomUp(simulation::Node* node);
 };
 
 } // namespace tree

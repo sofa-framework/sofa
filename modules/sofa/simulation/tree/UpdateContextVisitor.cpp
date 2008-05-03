@@ -23,7 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/simulation/tree/UpdateContextVisitor.h>
-#include <sofa/component/System.h>
+#include <sofa/simulation/common/Node.h>
 
 namespace sofa
 {
@@ -34,19 +34,19 @@ namespace simulation
 namespace tree
 {
 
-Visitor::Result UpdateContextVisitor::processNodeTopDown(component::System* node)
+Visitor::Result UpdateContextVisitor::processNodeTopDown(simulation::Node* node)
 {
     node->updateContext();
     return RESULT_CONTINUE;
 }
 
-Visitor::Result UpdateSimulationContextVisitor::processNodeTopDown(component::System* node)
+Visitor::Result UpdateSimulationContextVisitor::processNodeTopDown(simulation::Node* node)
 {
     node->updateSimulationContext();
     return RESULT_CONTINUE;
 }
 
-Visitor::Result UpdateVisualContextVisitor::processNodeTopDown(component::System* node)
+Visitor::Result UpdateVisualContextVisitor::processNodeTopDown(simulation::Node* node)
 {
     node->updateVisualContext(filter);
     return RESULT_CONTINUE;

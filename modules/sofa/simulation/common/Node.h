@@ -1,5 +1,5 @@
 //
-// C++ Interface: System
+// C++ Interface: Node
 //
 // Description:
 //
@@ -9,8 +9,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef sofa_componentSystem_h
-#define sofa_componentSystem_h
+#ifndef sofa_componentNode_h
+#define sofa_componentNode_h
 
 #include <sofa/core/objectmodel/Context.h>
 // moved from GNode (27/04/08)
@@ -56,7 +56,7 @@ using sofa::simulation::tree::Visitor;
 namespace sofa
 {
 
-namespace component
+namespace simulation
 {
 
 /**
@@ -66,13 +66,13 @@ The other systems are not visible (unknown scene graph).
 
 	@author The SOFA team </www.sofa-framework.org>
 */
-class System : public sofa::core::objectmodel::Context
+class Node : public sofa::core::objectmodel::Context
 {
 
 public:
-    System(const std::string& name="");
+    Node(const std::string& name="");
 
-    virtual ~System();
+    virtual ~Node();
 
     /// @name High-level interface
     /// @{
@@ -169,7 +169,7 @@ public:
             wa = *b;
             wb = tmp;
         }
-        //friend class System;
+        //friend class Node;
         bool add
         (T* elem)
         {
@@ -239,7 +239,7 @@ public:
         {
             return elems[0];
         }
-        //friend class System;
+        //friend class Node;
         bool add
         (T* elem)
         {
@@ -413,7 +413,7 @@ public:
     virtual ctime_t endTime(ctime_t t0, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* parent);
     /// @}
 
-    System* setDebug(bool);
+    Node* setDebug(bool);
     bool getDebug() const;
 
     /*
@@ -432,6 +432,9 @@ public:
 
     const BaseContext* getContext() const;
     BaseContext* getContext();
+    /** Set the context, ad the context of all component, to the given Node. This can be used to apply the algorithm components to other scene nodes.
+    */
+    void setContext( BaseContext* );
 
     /// Update the whole context values, based on parent and local ContextObjects
     virtual void updateContext();
@@ -479,8 +482,9 @@ protected:
     std::stack<Visitor*> actionStack;
     virtual void notifyAddObject(core::objectmodel::BaseObject* ) {}
     virtual void notifyRemoveObject(core::objectmodel::BaseObject* ) {}
-    virtual void notifyMoveObject(core::objectmodel::BaseObject* , System* /*prev*/) {}
+    virtual void notifyMoveObject(core::objectmodel::BaseObject* , Node* /*prev*/) {}
 
+    BaseContext* _context;
 
 };
 

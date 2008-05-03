@@ -24,7 +24,7 @@
 *******************************************************************************/
 #include <sofa/simulation/tree/XMLPrintVisitor.h>
 #include <sofa/helper/Factory.h>
-#include <sofa/component/System.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/core/componentmodel/behavior/InteractionForceField.h>
 #include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
 
@@ -91,7 +91,7 @@ void XMLPrintVisitor::processObjects(Seq& list)
     }
 }
 
-Visitor::Result XMLPrintVisitor::processNodeTopDown(component::System* node)
+Visitor::Result XMLPrintVisitor::processNodeTopDown(simulation::Node* node)
 {
     for (int i=0; i<level; i++)
         m_out << "\t";
@@ -109,7 +109,7 @@ Visitor::Result XMLPrintVisitor::processNodeTopDown(component::System* node)
 
     //processObjects(node->object);
     // BUGFIX(Jeremie A.): filter objects to output interactions classes after the children nodes to resolve dependencies at creation time
-    for (component::System::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         sofa::core::objectmodel::BaseObject* obj = *it;
         if (   dynamic_cast<sofa::core::componentmodel::behavior::InteractionForceField*> (obj) == NULL
@@ -120,9 +120,9 @@ Visitor::Result XMLPrintVisitor::processNodeTopDown(component::System* node)
     return RESULT_CONTINUE;
 }
 
-void XMLPrintVisitor::processNodeBottomUp(component::System* node)
+void XMLPrintVisitor::processNodeBottomUp(simulation::Node* node)
 {
-    for (component::System::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         sofa::core::objectmodel::BaseObject* obj = *it;
         if (   dynamic_cast<sofa::core::componentmodel::behavior::InteractionForceField*> (obj) != NULL

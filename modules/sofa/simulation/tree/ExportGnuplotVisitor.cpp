@@ -1,5 +1,5 @@
 #include <sofa/simulation/tree/ExportGnuplotVisitor.h>
-#include <sofa/component/System.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
 #include <iostream>
@@ -15,7 +15,7 @@ namespace simulation
 namespace tree
 {
 
-Visitor::Result InitGnuplotVisitor::processNodeTopDown(component::System* node)
+Visitor::Result InitGnuplotVisitor::processNodeTopDown(simulation::Node* node)
 {
     if (node->mechanicalState != NULL )
     {
@@ -32,7 +32,7 @@ ExportGnuplotVisitor::ExportGnuplotVisitor( double time )
     : m_time(time)
 {}
 
-Visitor::Result ExportGnuplotVisitor::processNodeTopDown(component::System* node)
+Visitor::Result ExportGnuplotVisitor::processNodeTopDown(simulation::Node* node)
 {
     if (node->mechanicalState != NULL )
     {

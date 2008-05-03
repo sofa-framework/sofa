@@ -24,7 +24,7 @@
 *******************************************************************************/
 #include <sofa/simulation/tree/PrintVisitor.h>
 #include <sofa/helper/Factory.h>
-#include <sofa/component/System.h>
+#include <sofa/simulation/common/Node.h>
 
 namespace sofa
 {
@@ -58,7 +58,7 @@ void PrintVisitor::processObjects(Seq& list, const char* name)
     std::cout << std::endl;
 }
 
-Visitor::Result PrintVisitor::processNodeTopDown(component::System* node)
+Visitor::Result PrintVisitor::processNodeTopDown(simulation::Node* node)
 {
     for (int i=0; i<level; i++)
         std::cout << "| ";
@@ -83,7 +83,7 @@ Visitor::Result PrintVisitor::processNodeTopDown(component::System* node)
     return RESULT_CONTINUE;
 }
 
-void PrintVisitor::processNodeBottomUp(component::System* /*node*/)
+void PrintVisitor::processNodeBottomUp(simulation::Node* /*node*/)
 {
     --level;
 }

@@ -11,12 +11,12 @@
     </keywords>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description></description>
+    <description/>
     <ignoreparts/>
     <secondaryLanguages/>
     <versioncontrol>kdevsubversion</versioncontrol>
     <projectname>mixedPendulum</projectname>
-    <defaultencoding></defaultencoding>
+    <defaultencoding/>
   </general>
   <kdevfileview>
     <groups>
@@ -81,12 +81,12 @@
   </kdevdoctreeview>
   <kdevdebugger>
     <general>
-      <dbgshell></dbgshell>
+      <dbgshell/>
       <programargs>-f Data/demo6.scn</programargs>
-      <gdbpath></gdbpath>
-      <configGdbScript></configGdbScript>
-      <runShellScript></runShellScript>
-      <runGdbScript></runGdbScript>
+      <gdbpath/>
+      <configGdbScript/>
+      <runShellScript/>
+      <runGdbScript/>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
@@ -100,17 +100,17 @@
   </kdevdebugger>
   <kdevtrollproject>
     <run>
-      <mainprogram>/home/ffaure/sofa-dev/trunk/Sofa/bin/mixedPendulum-latest</mainprogram>
-      <programargs></programargs>
+      <mainprogram>../../../bin/mixedPendulum-latest</mainprogram>
+      <programargs/>
       <directoryradio>build</directoryradio>
       <customdirectory>/</customdirectory>
-      <terminal>false</terminal>
+      <terminal>true</terminal>
       <autocompile>true</autocompile>
       <envvars>
         <envvar value="../../../lib/linux:../lib/linux:$LD_LIBRARY_PATH" name="LD_LIBRARY_PATH" />
       </envvars>
-      <globaldebugarguments></globaldebugarguments>
-      <globalcwd>/home/ffaure/sofa-dev/trunk/Sofa/applications/tutorials/mixedPendulum</globalcwd>
+      <globaldebugarguments/>
+      <globalcwd>/home/ffaure/Documents/sofa-dev/trunk/Sofa/applications/tutorials/mixedPendulum</globalcwd>
       <useglobalprogram>true</useglobalprogram>
       <autoinstall>false</autoinstall>
       <autokdesu>false</autokdesu>
@@ -122,7 +122,7 @@
       <abortonerror>false</abortonerror>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
-      <makebin></makebin>
+      <makebin/>
       <envvars/>
       <prio>0</prio>
       <runmultiplejobs>false</runmultiplejobs>
@@ -174,7 +174,7 @@
       <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
-      <prefixGet></prefixGet>
+      <prefixGet/>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>

@@ -36,28 +36,28 @@ namespace simulation
 namespace tree
 {
 
-void AnimateVisitor::processMasterSolver(component::System*, core::componentmodel::behavior::MasterSolver* obj)
+void AnimateVisitor::processMasterSolver(simulation::Node*, core::componentmodel::behavior::MasterSolver* obj)
 {
     obj->step(getDt());
 }
 
-void AnimateVisitor::processBehaviorModel(component::System*, core::BehaviorModel* obj)
+void AnimateVisitor::processBehaviorModel(simulation::Node*, core::BehaviorModel* obj)
 {
     obj->updatePosition(getDt());
 }
 
-void AnimateVisitor::fwdInteractionForceField(component::System*, core::componentmodel::behavior::InteractionForceField* obj)
+void AnimateVisitor::fwdInteractionForceField(simulation::Node*, core::componentmodel::behavior::InteractionForceField* obj)
 {
     obj->addForce();
 }
 
-void AnimateVisitor::processCollisionPipeline(component::System* node, core::componentmodel::collision::Pipeline*)
+void AnimateVisitor::processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::Pipeline*)
 {
     CollisionVisitor act;
     node->execute(&act);
 }
 
-void AnimateVisitor::processOdeSolver(component::System* /*node*/, core::componentmodel::behavior::OdeSolver* solver)
+void AnimateVisitor::processOdeSolver(simulation::Node* /*node*/, core::componentmodel::behavior::OdeSolver* solver)
 {
     /*    MechanicalIntegrationVisitor act(getDt());
         node->execute(&act);*/
@@ -65,7 +65,7 @@ void AnimateVisitor::processOdeSolver(component::System* /*node*/, core::compone
     solver->solve(getDt());
 }
 
-Visitor::Result AnimateVisitor::processNodeTopDown(component::System* node)
+Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
 {
     //cerr<<"AnimateVisitor::process Node  "<<node->getName()<<endl;
     if (!node->is_activated.getValue()) return Visitor::RESULT_PRUNE;
@@ -126,7 +126,7 @@ Visitor::Result AnimateVisitor::processNodeTopDown(component::System* node)
     }
 }
 
-// void AnimateVisitor::processNodeBottomUp(component::System* node)
+// void AnimateVisitor::processNodeBottomUp(simulation::Node* node)
 // {
 //     node->setTime( node->getTime() + node->getDt() );
 // }

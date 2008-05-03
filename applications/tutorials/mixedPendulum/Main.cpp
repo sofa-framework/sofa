@@ -127,6 +127,7 @@ int main(int, char** argv)
     groot->setShowForceFields(true);
     groot->setShowWireFrame(false);
     groot->setShowVisualModels(true);
+    groot->setShowBehaviorModels(true);
 
 
 

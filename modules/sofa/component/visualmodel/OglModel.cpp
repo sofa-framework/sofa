@@ -69,7 +69,7 @@ void OglModel::internalDraw()
             std::cerr << "nbp mismatch: "<<nbp<<" "<<nbv<<std::endl;
         }
     }*/
-    //std::cerr<<" OglModel::draw()"<<std::endl;
+    //std::cerr<<" OglModel::internalDraw()"<<std::endl;
     if (!getContext()->getShowVisualModels()) return;
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

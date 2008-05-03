@@ -21,7 +21,7 @@ class InitGnuplotVisitor : public Visitor
 {
 public:
     /// This method calls the fwd* methods during the forward traversal. You typically do not overload it.
-    virtual Result processNodeTopDown(component::System* node);
+    virtual Result processNodeTopDown(simulation::Node* node);
 
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
@@ -36,7 +36,7 @@ class ExportGnuplotVisitor : public Visitor
 public:
     ExportGnuplotVisitor( double time );
     /// This method calls the fwd* methods during the forward traversal. You typically do not overload it.
-    virtual Result processNodeTopDown(component::System* node);
+    virtual Result processNodeTopDown(simulation::Node* node);
 
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes

@@ -25,7 +25,7 @@
 #include <sofa/simulation/tree/ExportOBJVisitor.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/Factory.h>
-#include <sofa/component/System.h>
+#include <sofa/simulation/common/Node.h>
 
 namespace sofa
 {
@@ -71,7 +71,7 @@ void ExportOBJVisitor::processVisualModel(GNode* node, core::VisualModel* vm)
 
 Visitor::Result ExportOBJVisitor::processNodeTopDown(GNode* node)
 {
-    //component::System* node = static_cast<component::System*>(n);
+    //simulation::Node* node = static_cast<simulation::Node*>(n);
     for_each(this, node, node->visualModel, &ExportOBJVisitor::processVisualModel);
 
     return RESULT_CONTINUE;

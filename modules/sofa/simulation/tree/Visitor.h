@@ -25,7 +25,7 @@
 #ifndef SOFA_SIMULATION_TREE_ACTION_H
 #define SOFA_SIMULATION_TREE_ACTION_H
 
-#include <sofa/component/System.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/tree/LocalStorage.h>
 
 namespace sofa
@@ -37,7 +37,6 @@ namespace simulation
 namespace tree
 {
 
-class component::System;
 class LocalStorage;
 
 /// Base class for actions propagated recursively through the scenegraph
@@ -49,10 +48,10 @@ public:
     enum Result { RESULT_CONTINUE, RESULT_PRUNE };
 
     /// Callback method called when decending to a new node. Recursion will stop if this method returns RESULT_PRUNE
-    virtual Result processNodeTopDown(component::System* /*node*/) { return RESULT_CONTINUE; }
+    virtual Result processNodeTopDown(simulation::Node* /*node*/) { return RESULT_CONTINUE; }
 
     /// Callback method called after child node have been processed and before going back to the parent node.
-    virtual void processNodeBottomUp(component::System* /*node*/) {}
+    virtual void processNodeBottomUp(simulation::Node* /*node*/) {}
 
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
@@ -60,7 +59,7 @@ public:
 
     /// Helper method to enumerate objects in the given list. The callback gets the pointer to node
     template < class Act, class Container, class Object >
-    void for_each(Act* action, component::System* node, const Container& list, void (Act::*fn)(component::System*, Object*))
+    void for_each(Act* action, simulation::Node* node, const Container& list, void (Act::*fn)(simulation::Node*, Object*))
     {
         if (node->getLogTime())
         {
@@ -83,7 +82,7 @@ public:
 
     /// Helper method to enumerate objects in the given list. The callback gets the pointer to node
     template < class Act, class Container, class Object >
-    Visitor::Result for_each_r(Act* action, component::System* node, const Container& list, Visitor::Result (Act::*fn)(component::System*, Object*))
+    Visitor::Result for_each_r(Act* action, simulation::Node* node, const Container& list, Visitor::Result (Act::*fn)(simulation::Node*, Object*))
     {
         Visitor::Result res = Visitor::RESULT_CONTINUE;
         if (node->getLogTime())
@@ -115,18 +114,18 @@ public:
     //	}
     //}
 
-    typedef component::System::ctime_t ctime_t;
+    typedef simulation::Node::ctime_t ctime_t;
 
     /// Optional helper method to call before handling an object if not using the for_each method.
     /// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
-    ctime_t begin(component::System* node, core::objectmodel::BaseObject* /*obj*/)
+    ctime_t begin(simulation::Node* node, core::objectmodel::BaseObject* /*obj*/)
     {
         return node->startTime();
     }
 
     /// Optional helper method to call after handling an object if not using the for_each method.
     /// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
-    void end(component::System* node, core::objectmodel::BaseObject* obj, ctime_t t0)
+    void end(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t t0)
     {
         node->endTime(t0, getCategoryName(), obj);
     }
@@ -140,11 +139,11 @@ public:
 
     /// Callback method called when decending to a new node. Recursion will stop if this method returns RESULT_PRUNE
     /// This version is offered a LocalStorage to store temporary data
-    virtual Result processNodeTopDown(component::System* node, LocalStorage*) { return processNodeTopDown(node); }
+    virtual Result processNodeTopDown(simulation::Node* node, LocalStorage*) { return processNodeTopDown(node); }
 
     /// Callback method called after child node have been processed and before going back to the parent node.
     /// This version is offered a LocalStorage to store temporary data
-    virtual void processNodeBottomUp(component::System* node, LocalStorage*) { processNodeBottomUp(node); }
+    virtual void processNodeBottomUp(simulation::Node* node, LocalStorage*) { processNodeBottomUp(node); }
 };
 
 } // namespace tree
