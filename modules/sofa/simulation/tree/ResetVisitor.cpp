@@ -24,7 +24,7 @@
 *******************************************************************************/
 #include <sofa/simulation/tree/ResetVisitor.h>
 #include <sofa/helper/Factory.h>
-#include <sofa/component/System.h>
+#include <sofa/simulation/common/Node.h>
 
 namespace sofa
 {
@@ -40,16 +40,16 @@ void ResetVisitor::processObject(core::objectmodel::BaseObject* obj)
     obj->reset();
 }
 
-Visitor::Result ResetVisitor::processNodeTopDown(component::System* node)
+Visitor::Result ResetVisitor::processNodeTopDown(simulation::Node* node)
 {
-    for (component::System::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         this->processObject(*it);
     }
     return RESULT_CONTINUE;
 }
 
-void ResetVisitor::processNodeBottomUp(component::System* /*node*/)
+void ResetVisitor::processNodeBottomUp(simulation::Node* /*node*/)
 {
 }
 
@@ -58,16 +58,16 @@ void StoreResetStateVisitor::processObject(core::objectmodel::BaseObject* obj)
     obj->storeResetState();
 }
 
-Visitor::Result StoreResetStateVisitor::processNodeTopDown(component::System* node)
+Visitor::Result StoreResetStateVisitor::processNodeTopDown(simulation::Node* node)
 {
-    for (component::System::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         this->processObject(*it);
     }
     return RESULT_CONTINUE;
 }
 
-void StoreResetStateVisitor::processNodeBottomUp(component::System* /*node*/)
+void StoreResetStateVisitor::processNodeBottomUp(simulation::Node* /*node*/)
 {
 }
 

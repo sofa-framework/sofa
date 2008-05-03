@@ -13,13 +13,20 @@
 #define bfs_adapter_h
 
 #include <boost/graph/breadth_first_search.hpp>
-#include "BoostSystem.h"
-#include "BoostSceneGraph.h"
+#include "BglSystem.h"
+#include "BglScene.h"
 #include <sofa/component/System.h>
 #include <sofa/simulation/tree/Visitor.h>
 
+namespace sofa
+{
+namespace simulation
+{
+namespace bgl
+{
+
 /**
-Adapt a sofa visitor to breadth-first search in a bgl scene graph.
+Adapt a sofa visitor to breadth-first search in a bgl mapping scene graph.
 
 	@author The SOFA team </www.sofa-framework.org>
 */
@@ -28,10 +35,10 @@ class bfs_adapter : public boost::bfs_visitor<>
 public:
     sofa::simulation::tree::Visitor* visitor;
 
-    typedef BoostSceneGraph::BoostGraph Graph; ///< BGL graph to traverse
-    BoostSceneGraph::SystemMap& systemMap;      ///< access the System*
+    typedef BglScene::MappingGraph Graph; ///< BGL graph to traverse
+    BglScene::SystemMap& systemMap;      ///< access the System*
 
-    bfs_adapter( sofa::simulation::tree::Visitor* v, BoostSceneGraph::SystemMap& s );
+    bfs_adapter( sofa::simulation::tree::Visitor* v, BglScene::SystemMap& s );
 
     ~bfs_adapter();
 
@@ -39,5 +46,9 @@ public:
 
     void finish_vertex(Graph::vertex_descriptor u, const Graph &) const;
 };
+
+}
+}
+}
 
 #endif

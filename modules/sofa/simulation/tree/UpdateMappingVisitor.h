@@ -42,10 +42,10 @@ class UpdateMappingVisitor : public Visitor
 {
 public:
 
-    void processMapping(component::System* node, core::BaseMapping* obj);
-    void processMechanicalMapping(component::System*, core::componentmodel::behavior::BaseMechanicalMapping* obj);
+    void processMapping(simulation::Node* node, core::BaseMapping* obj);
+    void processMechanicalMapping(simulation::Node*, core::componentmodel::behavior::BaseMechanicalMapping* obj);
 
-    virtual Result processNodeTopDown(component::System* node);
+    virtual Result processNodeTopDown(simulation::Node* node);
 
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes

@@ -56,9 +56,9 @@ namespace tree
 using namespace sofa::defaulttype;
 /** Base class for easily creating new actions for mechanical simulation.
 
-During the first traversal (top-down), method processNodeTopDown(component::System*) is applied to each component::System. Each component attached to this node is processed using the appropriate method, prefixed by fwd.
+During the first traversal (top-down), method processNodeTopDown(simulation::Node*) is applied to each simulation::Node. Each component attached to this node is processed using the appropriate method, prefixed by fwd.
 
-During the second traversal (bottom-up), method processNodeBottomUp(component::System*) is applied to each component::System. Each component attached to this node is processed using the appropriate method, prefixed by bwd.
+During the second traversal (bottom-up), method processNodeBottomUp(simulation::Node*) is applied to each simulation::Node. Each component attached to this node is processed using the appropriate method, prefixed by bwd.
 
 The default behavior of the fwd* and bwd* is to do nothing. Derived actions typically overload these methods to implement the desired processing.
 
@@ -70,66 +70,66 @@ public:
 
     /**@name Forward processing
     Methods called during the forward (top-down) traversal of the data structure.
-    Method processNodeTopDown(component::System*) calls the fwd* methods in the order given here. When there is a mapping, it is processed first, then method fwdMappedMechanicalState is applied to the BaseMechanicalState.
+    Method processNodeTopDown(simulation::Node*) calls the fwd* methods in the order given here. When there is a mapping, it is processed first, then method fwdMappedMechanicalState is applied to the BaseMechanicalState.
     When there is no mapping, the BaseMechanicalState is processed first using method fwdMechanicalState.
     Then, the other fwd* methods are applied in the given order.
      */
     ///@{
 
     /// This method calls the fwd* methods during the forward traversal. You typically do not overload it.
-    virtual Result processNodeTopDown(component::System* node);
+    virtual Result processNodeTopDown(simulation::Node* node);
 
     /// Process the OdeSolver
-    virtual Result fwdOdeSolver(component::System* /*node*/, core::componentmodel::behavior::OdeSolver* /*solver*/)
+    virtual Result fwdOdeSolver(simulation::Node* /*node*/, core::componentmodel::behavior::OdeSolver* /*solver*/)
     {
         return RESULT_CONTINUE;
     }
 
     /// Process the BaseMechanicalMapping
-    virtual Result fwdMechanicalMapping(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
     {
         return RESULT_CONTINUE;
     }
 
     /// Process the BaseMechanicalState if it is mapped from the parent level
-    virtual Result fwdMappedMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
     {
         return RESULT_CONTINUE;
     }
 
     /// Process the BaseMechanicalState if it is not mapped from the parent level
-    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
     {
         return RESULT_CONTINUE;
     }
 
     /// Process the BaseMass
-    virtual Result fwdMass(component::System* /*node*/, core::componentmodel::behavior::BaseMass* /*mass*/)
+    virtual Result fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* /*mass*/)
     {
         return RESULT_CONTINUE;
     }
 
     /// Process all the BaseForceField
-    virtual Result fwdForceField(component::System* /*node*/, core::componentmodel::behavior::BaseForceField* /*ff*/)
+    virtual Result fwdForceField(simulation::Node* /*node*/, core::componentmodel::behavior::BaseForceField* /*ff*/)
     {
         return RESULT_CONTINUE;
     }
 
 
     /// Process all the InteractionForceField
-    virtual Result fwdInteractionForceField(component::System* node, core::componentmodel::behavior::InteractionForceField* ff)
+    virtual Result fwdInteractionForceField(simulation::Node* node, core::componentmodel::behavior::InteractionForceField* ff)
     {
         return fwdForceField(node, ff);
     }
 
     /// Process all the BaseConstraint
-    virtual Result fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* /*c*/)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* /*c*/)
     {
         return RESULT_CONTINUE;
     }
 
     /// Process all the InteractionConstraint
-    virtual Result fwdInteractionConstraint(component::System* node, core::componentmodel::behavior::InteractionConstraint* c)
+    virtual Result fwdInteractionConstraint(simulation::Node* node, core::componentmodel::behavior::InteractionConstraint* c)
     {
         return fwdConstraint(node, c);
     }
@@ -138,7 +138,7 @@ public:
 
     /**@name Backward processing
     Methods called during the backward (bottom-up) traversal of the data structure.
-    Method processNodeBottomUp(component::System*) calls the bwd* methods.
+    Method processNodeBottomUp(simulation::Node*) calls the bwd* methods.
     When there is a mapping, method bwdMappedMechanicalState is applied to the BaseMechanicalState.
     When there is no mapping, the BaseMechanicalState is processed using method bwdMechanicalState.
     Finally, the mapping (if any) is processed using method bwdMechanicalMapping.
@@ -146,27 +146,27 @@ public:
     ///@{
 
     /// This method calls the bwd* methods during the backward traversal. You typically do not overload it.
-    virtual void processNodeBottomUp(component::System* node);
+    virtual void processNodeBottomUp(simulation::Node* node);
 
     /// Process the BaseMechanicalState when it is not mapped from parent level
-    virtual void bwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
+    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
     {}
 
     /// Process the BaseMechanicalState when it is mapped from parent level
-    virtual void bwdMappedMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
+    virtual void bwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
     {}
 
     /// Process the BaseMechanicalMapping
-    virtual void bwdMechanicalMapping(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
     {}
 
     /// Process the OdeSolver
-    virtual void bwdOdeSolver(component::System* /*node*/, core::componentmodel::behavior::OdeSolver* /*solver*/)
+    virtual void bwdOdeSolver(simulation::Node* /*node*/, core::componentmodel::behavior::OdeSolver* /*solver*/)
     {}
 
 
     /// Process all the BaseConstraint
-    virtual void bwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* /*c*/)
+    virtual void bwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* /*c*/)
     {}
 
     ///@}
@@ -188,12 +188,12 @@ public:
     VecId& v;
     MechanicalVAvailVisitor(VecId& v) : v(v)
     {}
-    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         mm->vAvail(v);
         return RESULT_CONTINUE;
     }
-    virtual Result fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
         if (mm)
@@ -216,12 +216,12 @@ public:
     VecId v;
     MechanicalVAllocVisitor(VecId v) : v(v)
     {}
-    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         mm->vAlloc(v);
         return RESULT_CONTINUE;
     }
-    virtual Result fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
         if (mm)
@@ -243,12 +243,12 @@ public:
     VecId v;
     MechanicalVFreeVisitor(VecId v) : v(v)
     {}
-    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         mm->vFree(v);
         return RESULT_CONTINUE;
     }
-    virtual Result fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
         if (mm)
@@ -276,19 +276,19 @@ public:
         : v(v), a(a), b(b), f(f)
     {}
 
-    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         //cerr<<"    MechanicalVOpVisitor::fwdMechanicalState, model "<<mm->getName()<<endl;
         mm->vOp(v,a,b,f);
         return RESULT_CONTINUE;
     }
-    virtual Result fwdMappedMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
     {
         //cerr<<"    MechanicalVOpVisitor::fwdMappedMechanicalState, model "<<mm->getName()<<endl;
         //mm->vOp(v,a,b,f);
         return RESULT_CONTINUE;
     }
-    virtual Result fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
         if (mm)
@@ -296,7 +296,7 @@ public:
         return RESULT_CONTINUE;
     }
 
-    //virtual void processNodeBottomUp(component::System* node);
+    //virtual void processNodeBottomUp(simulation::Node* node);
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -321,19 +321,19 @@ public:
         : ops(o)
     {}
 
-    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         //cerr<<"    MechanicalVOpVisitor::fwdMechanicalState, model "<<mm->getName()<<endl;
         mm->vMultiOp(ops);
         return RESULT_CONTINUE;
     }
-    virtual Result fwdMappedMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
     {
         //cerr<<"    MechanicalVOpVisitor::fwdMappedMechanicalState, model "<<mm->getName()<<endl;
         //mm->vMultiOp(ops);
         return RESULT_CONTINUE;
     }
-    virtual Result fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
         if (mm)
@@ -341,7 +341,7 @@ public:
         return RESULT_CONTINUE;
     }
 
-    //virtual void processNodeBottomUp(component::System* node);
+    //virtual void processNodeBottomUp(simulation::Node* node);
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -360,13 +360,13 @@ public:
     MechanicalVDotVisitor(VecId a, VecId b, double* t) : a(a), b(b), total(t)
     {}
     /// Sequential code
-    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         *total += mm->vDot(a,b);
         return RESULT_CONTINUE;
     }
     /// Sequential code
-    virtual Result fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
         if (mm)
@@ -380,7 +380,7 @@ public:
         return true;
     }
     /// Parallel code
-    virtual Result processNodeTopDown(component::System* node, LocalStorage* stack)
+    virtual Result processNodeTopDown(simulation::Node* node, LocalStorage* stack)
     {
         double* localTotal = new double(0.0);
         stack->push(localTotal);
@@ -389,7 +389,7 @@ public:
             core::componentmodel::behavior::BaseMechanicalState* mm = node->mechanicalState;
             *localTotal += mm->vDot(a,b);
         }
-        for (component::System::Sequence<core::componentmodel::behavior::BaseConstraint>::iterator it = node->
+        for (simulation::Node::Sequence<core::componentmodel::behavior::BaseConstraint>::iterator it = node->
                 constraint.begin();
                 it != node->constraint.end();
                 ++it)
@@ -402,7 +402,7 @@ public:
         return RESULT_CONTINUE;
     }
     /// Parallel code
-    virtual void processNodeBottomUp(component::System* /*node*/, LocalStorage* stack)
+    virtual void processNodeBottomUp(simulation::Node* /*node*/, LocalStorage* stack)
     {
         double* localTotal = static_cast<double*>(stack->pop());
         double* parentTotal = static_cast<double*>(stack->top());
@@ -425,17 +425,17 @@ public:
     VecId dx;
     MechanicalPropagateDxVisitor(VecId dx) : dx(dx)
     {}
-    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         mm->setDx(dx);
         return RESULT_CONTINUE;
     }
-    virtual Result fwdMechanicalMapping(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
     {
         map->propagateDx();
         return RESULT_CONTINUE;
     }
-    virtual Result fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
         if (mm)
@@ -458,23 +458,23 @@ public:
     MechanicalPropagateAndAddDxVisitor(VecId dx = VecId::dx()) : dx(dx)
     {}
 
-    //virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    //virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     //{
     //    mm->setDx(dx);
     //    return RESULT_CONTINUE;
     //}
-    virtual Result fwdMechanicalMapping(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
     {
         map->propagateDx();
         return RESULT_CONTINUE;
     }
-    virtual Result fwdMappedMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         //mm->printDOF(VecId::dx());
         mm->addDxToCollisionModel();
         return RESULT_CONTINUE;
     }
-    virtual Result fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
         if (mm)
@@ -504,14 +504,14 @@ public:
     MechanicalAddMDxVisitor(VecId res, VecId dx=VecId(), double factor = 1.0)
         : res(res), dx(dx), factor(factor)
     {}
-    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         mm->setF(res);
         if (!dx.isNull())
             mm->setDx(dx);
         return RESULT_CONTINUE;
     }
-    virtual Result fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
         if (mm)
@@ -522,39 +522,39 @@ public:
         }
         return RESULT_CONTINUE;
     }
-    virtual Result fwdMass(component::System* /*node*/, core::componentmodel::behavior::BaseMass* mass)
+    virtual Result fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* mass)
     {
         mass->addMDx(factor);
         return RESULT_PRUNE;
     }
 
 #ifdef SOFA_SUPPORT_MAPPED_MASS
-    virtual Result fwdMechanicalMapping(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
     {
         if (!dx.isNull())
             map->propagateDx();
         return RESULT_CONTINUE;
     }
 #else
-    virtual Result fwdMechanicalMapping(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
     {
         return RESULT_PRUNE;
     }
 #endif
 #ifdef SOFA_SUPPORT_MAPPED_MASS
-    virtual Result fwdMappedMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         mm->resetForce();
         return RESULT_CONTINUE;
     }
 #else
-    virtual Result fwdMappedMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
     {
         return RESULT_PRUNE;
     }
 #endif
 #ifdef SOFA_SUPPORT_MAPPED_MASS
-    virtual void bwdMechanicalMapping(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
     {
         map->accumulateForce();
     }
@@ -576,19 +576,19 @@ public:
     VecId f;
     MechanicalAccFromFVisitor(VecId a, VecId f) : a(a), f(f)
     {}
-    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         mm->setDx(a);
         mm->setF(f);
         /// \todo Check presence of Mass
         return RESULT_CONTINUE;
     }
-    virtual Result fwdMass(component::System* /*node*/, core::componentmodel::behavior::BaseMass* mass)
+    virtual Result fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* mass)
     {
         mass->accFromF();
         return RESULT_CONTINUE;
     }
-    virtual Result fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
         if (mm)
@@ -618,22 +618,22 @@ public:
     VecId x;
     VecId v;
     MechanicalPropagatePositionAndVelocityVisitor(double time=0, VecId x = VecId::position(), VecId v = VecId::velocity());
-    virtual Result processNodeTopDown(component::System* node);
-    virtual void processNodeBottomUp(component::System* node);
+    virtual Result processNodeTopDown(simulation::Node* node);
+    virtual void processNodeBottomUp(simulation::Node* node);
 
-    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         mm->setX(x);
         mm->setV(v);
         return RESULT_CONTINUE;
     }
-    virtual Result fwdMechanicalMapping(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
     {
         map->propagateX();
         map->propagateV();
         return RESULT_CONTINUE;
     }
-    virtual Result fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         // FF, 14/07/06: I do not understand the purpose of this method
         core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
@@ -672,24 +672,24 @@ public:
     MechanicalPropagateFreePositionVisitor(double time=0, VecId x = VecId::position(), VecId v = VecId::velocity()): t(time), x(x), v(v)
     {
     }
-    virtual Result processNodeTopDown(component::System* node)
+    virtual Result processNodeTopDown(simulation::Node* node)
     {
         node->setTime(t);
         node->updateSimulationContext();
         return MechanicalVisitor::processNodeTopDown( node);
     }
-    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         mm->setXfree(x);
         mm->setVfree(v);
         return RESULT_CONTINUE;
     }
-    virtual Result fwdMechanicalMapping(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
     {
         map->propagateXfree();
         return RESULT_CONTINUE;
     }
-    virtual Result fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         c->projectFreePosition();
         c->projectFreeVelocity();
@@ -712,18 +712,18 @@ public:
     VecId res;
     MechanicalResetForceVisitor(VecId res) : res(res)
     {}
-    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         mm->setF(res);
         mm->resetForce();
         return RESULT_CONTINUE;
     }
-    virtual Result fwdMappedMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         mm->resetForce();
         return RESULT_CONTINUE;
     }
-    virtual Result fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
         if (mm)
@@ -750,18 +750,18 @@ public:
     VecId res;
     MechanicalComputeForceVisitor(VecId res) : res(res)
     {}
-    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         mm->setF(res);
         mm->accumulateForce();
         return RESULT_CONTINUE;
     }
-    virtual Result fwdMappedMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         mm->accumulateForce();
         return RESULT_CONTINUE;
     }
-    virtual Result fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
         if (mm)
@@ -771,14 +771,14 @@ public:
         }
         return RESULT_CONTINUE;
     }
-    //virtual Result fwdMass(component::System* /*node*/, core::componentmodel::behavior::BaseMass* mass)
+    //virtual Result fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* mass)
     //{
     //	mass->computeForce();
     //	return RESULT_CONTINUE;
     //}
-    virtual Result fwdForceField(component::System* /*node*/, core::componentmodel::behavior::BaseForceField* ff);
+    virtual Result fwdForceField(simulation::Node* /*node*/, core::componentmodel::behavior::BaseForceField* ff);
 
-    virtual void bwdMechanicalMapping(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
     {
         //cerr<<"MechanicalComputeForceVisitor::bwdMechanicalMapping "<<map->getName()<<endl;
         map->accumulateForce();
@@ -801,18 +801,18 @@ public:
     bool useV;
     MechanicalComputeDfVisitor(VecId res, bool useV=false) : res(res), useV(useV)
     {}
-    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         mm->setF(res);
         mm->accumulateDf();
         return RESULT_CONTINUE;
     }
-    virtual Result fwdMappedMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         mm->accumulateDf();
         return RESULT_CONTINUE;
     }
-    virtual Result fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
         if (mm)
@@ -822,12 +822,12 @@ public:
         }
         return RESULT_CONTINUE;
     }
-    //virtual Result fwdMass(component::System* /*node*/, core::componentmodel::behavior::BaseMass* mass)
+    //virtual Result fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* mass)
     //{
     //	mass->computeDf();
     //	return RESULT_CONTINUE;
     //}
-    virtual Result fwdForceField(component::System* /*node*/, core::componentmodel::behavior::BaseForceField* ff)
+    virtual Result fwdForceField(simulation::Node* /*node*/, core::componentmodel::behavior::BaseForceField* ff)
     {
         if (useV)
             ff->addDForceV();
@@ -835,7 +835,7 @@ public:
             ff->addDForce();
         return RESULT_CONTINUE;
     }
-    virtual void bwdMechanicalMapping(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
     {
         map->accumulateDf();
     }
@@ -855,14 +855,14 @@ public:
     MechanicalResetConstraintVisitor(/*VecId res*/) //: res(res)
     {}
 
-    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         // mm->setC(res);
         mm->resetConstraint();
         return RESULT_CONTINUE;
     }
 
-    virtual Result fwdMappedMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         mm->resetConstraint();
         return RESULT_CONTINUE;
@@ -883,13 +883,13 @@ public:
         :contactId(_contactId), mu(_mu)
     {}
 
-    virtual Result fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         c->applyConstraint(contactId, mu);
         return RESULT_CONTINUE;
     }
 
-    virtual void bwdMechanicalMapping(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
     {
         map->accumulateConstraint();
     }
@@ -914,19 +914,19 @@ public:
     double **W;
     MechanicalApplyConstraintsVisitor(VecId res, double **W = NULL) : res(res), W(W)
     {}
-    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         mm->setDx(res);
         //mm->projectResponse();
         return RESULT_CONTINUE;
     }
-    virtual Result fwdMappedMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
     {
         //mm->projectResponse();
         return RESULT_CONTINUE;
     }
 
-    virtual Result fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
         if (mm)
@@ -937,7 +937,7 @@ public:
         return RESULT_CONTINUE;
     }
 
-    virtual void bwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual void bwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         c->projectResponse();
 
@@ -963,17 +963,17 @@ public:
     MechanicalBeginIntegrationVisitor (double dt)
         : dt(dt)
     {}
-    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         mm->beginIntegration(dt);
         return RESULT_CONTINUE;
     }
-    virtual Result fwdMappedMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         mm->beginIntegration(dt);
         return RESULT_CONTINUE;
     }
-    virtual Result fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
         if (mm)
@@ -999,17 +999,17 @@ public:
     MechanicalEndIntegrationVisitor (double dt)
         : dt(dt)
     {}
-    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         mm->endIntegration(dt);
         return RESULT_CONTINUE;
     }
-    virtual Result fwdMappedMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         mm->endIntegration(dt);
         return RESULT_CONTINUE;
     }
-    virtual Result fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
         if (mm)
@@ -1035,8 +1035,8 @@ public:
     MechanicalIntegrationVisitor (double dt)
         : dt(dt)
     {}
-    virtual Result fwdOdeSolver(component::System* node, core::componentmodel::behavior::OdeSolver* obj);
-    virtual void bwdOdeSolver(component::System* /*node*/, core::componentmodel::behavior::OdeSolver* /*obj*/)
+    virtual Result fwdOdeSolver(simulation::Node* node, core::componentmodel::behavior::OdeSolver* obj);
+    virtual void bwdOdeSolver(simulation::Node* /*node*/, core::componentmodel::behavior::OdeSolver* /*obj*/)
     {
     }
 
@@ -1057,12 +1057,12 @@ public:
     MechanicalComputeComplianceVisitor( Real_Sofa **W):_W(W)
     {
     }
-    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms)
     {
         ms->getCompliance(_W);
         return RESULT_PRUNE;
     }
-    virtual Result fwdMappedMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms)
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms)
     {
         ms->getCompliance(_W);
         return RESULT_CONTINUE;
@@ -1081,20 +1081,20 @@ public:
     VecId res;
     MechanicalComputeContactForceVisitor(VecId res) : res(res)
     {}
-    virtual Result fwdMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         mm->setF(res);
         mm->accumulateForce();
         return RESULT_PRUNE;
     }
 
-    virtual Result fwdMappedMechanicalState(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
         mm->accumulateForce();
         return RESULT_CONTINUE;
     }
 
-    virtual Result fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
         if (mm)
@@ -1105,7 +1105,7 @@ public:
         return RESULT_CONTINUE;
     }
 
-    virtual void bwdMechanicalMapping(component::System* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
     {
         map->accumulateForce();
     }
@@ -1129,7 +1129,7 @@ public:
     {}
 
     /// Process the BaseMass
-    virtual Result fwdMass(component::System* /*node*/, core::componentmodel::behavior::BaseMass* mass)
+    virtual Result fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* mass)
     {
         if( mass->m_separateGravity.getValue() )
             mass->addGravityToV(dt);

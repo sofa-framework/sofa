@@ -143,6 +143,7 @@ int RigidMapping<BasicMapping>::addPoint(const Coord& c, int indexFrom)
 template <class BasicMapping>
 void RigidMapping<BasicMapping>::init()
 {
+    //cerr<<"RigidMapping<BasicMapping>::init begin "<<getName()<<endl;
     if (this->points.getValue().empty() && this->toModel!=NULL)
     {
         VecCoord& x = *this->toModel->getX();
@@ -151,7 +152,9 @@ void RigidMapping<BasicMapping>::init()
         for (unsigned int i=0; i<x.size(); i++)
             (*points.beginEdit())[i] = x[i];
     }
+    //cerr<<"RigidMapping<BasicMapping>::init now doing  BasicMapping::init()"<<getName()<<endl;
     this->BasicMapping::init();
+    //cerr<<"RigidMapping<BasicMapping>::init end "<<getName()<<endl;
 }
 /*
 template <class BasicMapping>
@@ -204,6 +207,7 @@ void RigidMapping<BasicMapping>::setRepartition(sofa::helper::vector<unsigned in
 template <class BasicMapping>
 void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
+    //cerr<<"RigidMapping<BasicMapping>::apply "<<getName()<<endl;
     unsigned int cptOut;
     unsigned int val;
     Coord translation;

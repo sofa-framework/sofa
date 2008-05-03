@@ -3,9 +3,9 @@
 
 namespace sofa
 {
-namespace component
+namespace simulation
 {
-class System;
+class Node;
 }
 }
 

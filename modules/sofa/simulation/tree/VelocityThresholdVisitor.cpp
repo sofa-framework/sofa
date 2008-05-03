@@ -44,7 +44,7 @@ VelocityThresholdVisitor::VelocityThresholdVisitor( VecId v, double t )
 {
 }
 
-Visitor::Result VelocityThresholdVisitor::processNodeTopDown(component::System* node)
+Visitor::Result VelocityThresholdVisitor::processNodeTopDown(simulation::Node* node)
 {
     if (node->mechanicalState != NULL)
     {

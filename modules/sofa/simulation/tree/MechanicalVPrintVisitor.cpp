@@ -23,7 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/simulation/tree/MechanicalVPrintVisitor.h>
-#include <sofa/component/System.h>
+#include <sofa/simulation/common/Node.h>
 
 namespace sofa
 {
@@ -39,7 +39,7 @@ MechanicalVPrintVisitor::MechanicalVPrintVisitor( VecId v, std::ostream& out )
     , out_(out)
 {}
 
-Visitor::Result MechanicalVPrintVisitor::processNodeTopDown(component::System* node)
+Visitor::Result MechanicalVPrintVisitor::processNodeTopDown(simulation::Node* node)
 {
     if( ! node->mechanicalState.empty() )
     {
@@ -50,7 +50,7 @@ Visitor::Result MechanicalVPrintVisitor::processNodeTopDown(component::System* n
     for_each(this, node, node->constraint, &MechanicalVPrintVisitor::fwdConstraint);
     return Visitor::RESULT_CONTINUE;
 }
-void MechanicalVPrintVisitor::fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+void MechanicalVPrintVisitor::fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
 {
     core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
     if (mm)
@@ -72,7 +72,7 @@ MechanicalVPrintWithElapsedTimeVisitor::MechanicalVPrintWithElapsedTimeVisitor( 
     , out_(out)
 {}
 
-Visitor::Result MechanicalVPrintWithElapsedTimeVisitor::processNodeTopDown(component::System* node)
+Visitor::Result MechanicalVPrintWithElapsedTimeVisitor::processNodeTopDown(simulation::Node* node)
 {
     if( ! node->mechanicalState.empty() )
     {
@@ -81,7 +81,7 @@ Visitor::Result MechanicalVPrintWithElapsedTimeVisitor::processNodeTopDown(compo
     for_each(this, node, node->constraint, &MechanicalVPrintWithElapsedTimeVisitor::fwdConstraint);
     return Visitor::RESULT_CONTINUE;
 }
-void MechanicalVPrintWithElapsedTimeVisitor::fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+void MechanicalVPrintWithElapsedTimeVisitor::fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
 {
     core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
     if (mm)

@@ -46,8 +46,8 @@ public:
 
     void processObject(core::objectmodel::BaseObject* obj);
 
-    virtual Result processNodeTopDown(component::System* node);
-    virtual void processNodeBottomUp(component::System* node);
+    virtual Result processNodeTopDown(simulation::Node* node);
+    virtual void processNodeBottomUp(simulation::Node* node);
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const { return true; }
@@ -60,8 +60,8 @@ public:
 
     void processObject(core::objectmodel::BaseObject* obj);
 
-    virtual Result processNodeTopDown(component::System* node);
-    virtual void processNodeBottomUp(component::System* node);
+    virtual Result processNodeTopDown(simulation::Node* node);
+    virtual void processNodeBottomUp(simulation::Node* node);
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const { return true; }

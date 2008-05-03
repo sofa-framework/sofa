@@ -23,7 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/simulation/tree/ParallelVisitorScheduler.h>
-#include <sofa/component/System.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/tree/Visitor.h>
 
 namespace sofa

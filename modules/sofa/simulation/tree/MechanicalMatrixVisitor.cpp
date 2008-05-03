@@ -23,7 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/simulation/tree/MechanicalMatrixVisitor.h>
-#include <sofa/component/System.h>
+#include <sofa/simulation/common/Node.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -37,7 +37,7 @@ namespace simulation
 namespace tree
 {
 
-Visitor::Result MechanicalMatrixVisitor::processNodeTopDown(component::System* node)
+Visitor::Result MechanicalMatrixVisitor::processNodeTopDown(simulation::Node* node)
 {
     Result res = RESULT_CONTINUE;
 
@@ -100,7 +100,7 @@ Visitor::Result MechanicalMatrixVisitor::processNodeTopDown(component::System* n
     return res;
 }
 
-void MechanicalMatrixVisitor::processNodeBottomUp(component::System* node)
+void MechanicalMatrixVisitor::processNodeBottomUp(simulation::Node* node)
 {
     if (node->mechanicalState != NULL)
     {

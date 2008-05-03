@@ -29,6 +29,9 @@
 #include "PairInteractionForceField.h"
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseNode.h>
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace sofa
 {
@@ -166,6 +169,7 @@ void PairInteractionForceField<DataTypes>::addForce()
         addForce(*mstate1->getF(), *mstate2->getF(),
                 *mstate1->getX(), *mstate2->getX(),
                 *mstate1->getV(), *mstate2->getV());
+    else cerr<<"PairInteractionForceField<DataTypes>::addForce(), mstate missing"<<endl;
 }
 
 template<class DataTypes>

@@ -23,7 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/simulation/tree/CollisionVisitor.h>
-#include <sofa/component/System.h>
+#include <sofa/simulation/common/Node.h>
 
 namespace sofa
 {
@@ -34,28 +34,28 @@ namespace simulation
 namespace tree
 {
 
-Visitor::Result CollisionVisitor::processNodeTopDown(component::System* node)
+Visitor::Result CollisionVisitor::processNodeTopDown(simulation::Node* node)
 {
     for_each(this, node, node->collisionPipeline, &CollisionVisitor::processCollisionPipeline);
     return RESULT_CONTINUE;
 }
 
-void CollisionVisitor::processCollisionPipeline(component::System*, core::componentmodel::collision::Pipeline* obj)
+void CollisionVisitor::processCollisionPipeline(simulation::Node*, core::componentmodel::collision::Pipeline* obj)
 {
     obj->computeCollisions();
 }
 
-void CollisionResetVisitor::processCollisionPipeline(component::System*, core::componentmodel::collision::Pipeline* obj)
+void CollisionResetVisitor::processCollisionPipeline(simulation::Node*, core::componentmodel::collision::Pipeline* obj)
 {
     obj->computeCollisionReset();
 }
 
-void CollisionDetectionVisitor::processCollisionPipeline(component::System*, core::componentmodel::collision::Pipeline* obj)
+void CollisionDetectionVisitor::processCollisionPipeline(simulation::Node*, core::componentmodel::collision::Pipeline* obj)
 {
     obj->computeCollisionDetection();
 }
 
-void CollisionResponseVisitor::processCollisionPipeline(component::System*, core::componentmodel::collision::Pipeline* obj)
+void CollisionResponseVisitor::processCollisionPipeline(simulation::Node*, core::componentmodel::collision::Pipeline* obj)
 {
     obj->computeCollisionResponse();
 }

@@ -41,9 +41,9 @@ namespace tree
 class CollisionVisitor : public Visitor
 {
 public:
-    virtual void processCollisionPipeline(component::System* node, core::componentmodel::collision::Pipeline* obj);
+    virtual void processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::Pipeline* obj);
 
-    virtual Result processNodeTopDown(component::System* node);
+    virtual Result processNodeTopDown(simulation::Node* node);
 
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
@@ -54,21 +54,21 @@ public:
 class CollisionResetVisitor : public CollisionVisitor
 {
 public:
-    void processCollisionPipeline(component::System* node, core::componentmodel::collision::Pipeline* obj);
+    void processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::Pipeline* obj);
 };
 
 /// Compute collision detection
 class CollisionDetectionVisitor : public CollisionVisitor
 {
 public:
-    void processCollisionPipeline(component::System* node, core::componentmodel::collision::Pipeline* obj);
+    void processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::Pipeline* obj);
 };
 
 /// Compute collision response
 class CollisionResponseVisitor : public CollisionVisitor
 {
 public:
-    void processCollisionPipeline(component::System* node, core::componentmodel::collision::Pipeline* obj);
+    void processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::Pipeline* obj);
 };
 
 } // namespace tree

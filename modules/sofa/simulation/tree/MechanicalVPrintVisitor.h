@@ -45,8 +45,8 @@ public:
     typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
 
     MechanicalVPrintVisitor( VecId v, std::ostream& =std::cerr );
-    virtual Result processNodeTopDown(component::System* node);
-    virtual void fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
+    virtual Result processNodeTopDown(simulation::Node* node);
+    virtual void fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
 
 protected:
     VecId v_;
@@ -65,8 +65,8 @@ protected:
     std::ostream& out_;
 public:
     MechanicalVPrintWithElapsedTimeVisitor( VecId v, unsigned time, std::ostream& =std::cerr );
-    virtual Result processNodeTopDown(component::System* node);
-    virtual void fwdConstraint(component::System* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
+    virtual Result processNodeTopDown(simulation::Node* node);
+    virtual void fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
 };
 
 } // namespace tree
