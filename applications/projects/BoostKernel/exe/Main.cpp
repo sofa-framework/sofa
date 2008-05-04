@@ -14,7 +14,7 @@ typedef BglModeler MyModeler;
 
 Scene scene;
 
-bool animating = true;
+bool animating = false;
 bool step_by_step = true;
 
 

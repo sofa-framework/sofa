@@ -45,19 +45,21 @@ void BglNode::doExecuteVisitor( Visitor* vis )
     boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(scene->hgraph) );
     boost::queue<BglScene::Hvertex> queue;
 
-    boost::breadth_first_search(
+    /*    boost::breadth_first_search(
+            scene->hgraph,
+            boost::vertex(this->vertexId, scene->hgraph),
+            queue,
+            bfs_adapter(vis,scene->h_vertex_node_map),
+            colors
+        );*/
+    dfs_adapter dfs(vis,scene->h_vertex_node_map);
+    boost::depth_first_visit(
         scene->hgraph,
         boost::vertex(this->vertexId, scene->hgraph),
-        queue,
-        bfs_adapter(vis,scene->h_vertex_node_map),
-        colors
+        dfs,
+        colors,
+        dfs
     );
-    /*	boost::depth_first_search(
-    		scene->hgraph,
-    		dfs_adapter(vis,scene->h_vertex_node_map),
-    		colors,
-    		boost::vertex(this->vertexId, scene->hgraph)
-    	);*/
 }
 
 void BglNode::clearInteractionForceFields()
