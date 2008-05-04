@@ -94,26 +94,6 @@ public:
     /// Get parent node (or NULL if no hierarchy or for root node)
     const sofa::helper::vector< core::objectmodel::BaseNode* > getChildren() const;
 
-    /// List all objects of this node and sub-nodes deriving from a given class
-    template<class Object, class Container>
-    void getTreeObjects(Container* list)
-    {
-        this->get<Object, Container>(list, SearchDown);
-    }
-
-    /// Return an object of this node and sub-nodes deriving from a given class, or NULL if not found.
-    /// Note that only the first object is returned.
-    template<class Object>
-    void getTreeObject(Object*& result)
-    {
-        result = this->get<Object>(SearchDown);
-    }
-
-    template<class Object>
-    Object* getTreeObject()
-    {
-        return this->get<Object>(SearchDown);
-    }
 
     /// Find a child node given its name
     GNode* getChild(const std::string& name) const;

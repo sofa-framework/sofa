@@ -79,6 +79,8 @@ Visitor::Result PrintVisitor::processNodeTopDown(simulation::Node* node)
     processObjects(node->behaviorModel,"BehaviorModel");
     processObjects(node->visualModel,"VisualModel");
     processObjects(node->collisionModel,"CollisionModel");
+    processObjects(node->collisionPipeline,"CollisionPipeline");
+    processObjects(node->unsorted,"unsorted");
 
     return RESULT_CONTINUE;
 }

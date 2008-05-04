@@ -120,26 +120,37 @@ void Node::doAddObject(BaseObject* obj)
     notifyAddObject(obj);
     obj->setContext(this);
     object.add(obj);
-    masterSolver.add(dynamic_cast< core::componentmodel::behavior::MasterSolver* >(obj));
-    solver.add(dynamic_cast< core::componentmodel::behavior::OdeSolver* >(obj));
-    mechanicalState.add(dynamic_cast< core::componentmodel::behavior::BaseMechanicalState* >(obj));
-    if (!mechanicalMapping.add(dynamic_cast< core::componentmodel::behavior::BaseMechanicalMapping* >(obj)))
-        mapping.add(dynamic_cast< core::BaseMapping* >(obj));
-    mass.add(dynamic_cast< core::componentmodel::behavior::BaseMass* >(obj));
-    topology.add(dynamic_cast< core::componentmodel::topology::Topology* >(obj));
-    basicTopology.add(dynamic_cast< core::componentmodel::topology::BaseTopology* >(obj));
-    meshTopology.add(dynamic_cast< core::componentmodel::topology::BaseMeshTopology* >(obj));
-    shader.add(dynamic_cast< sofa::core::Shader* >(obj));
+    int inserted=0;
+    inserted+= masterSolver.add(dynamic_cast< core::componentmodel::behavior::MasterSolver* >(obj));
+    inserted+= solver.add(dynamic_cast< core::componentmodel::behavior::OdeSolver* >(obj));
+    inserted+= mechanicalState.add(dynamic_cast< core::componentmodel::behavior::BaseMechanicalState* >(obj));
+    bool isMechanicalMapping = mechanicalMapping.add(dynamic_cast< core::componentmodel::behavior::BaseMechanicalMapping* >(obj));
+    inserted+= isMechanicalMapping;
+    if (!isMechanicalMapping)
+        inserted+= mapping.add(dynamic_cast< core::BaseMapping* >(obj));
+    inserted+= mass.add(dynamic_cast< core::componentmodel::behavior::BaseMass* >(obj));
+    inserted+= topology.add(dynamic_cast< core::componentmodel::topology::Topology* >(obj));
+    inserted+= basicTopology.add(dynamic_cast< core::componentmodel::topology::BaseTopology* >(obj));
+    inserted+= meshTopology.add(dynamic_cast< core::componentmodel::topology::BaseMeshTopology* >(obj));
+    inserted+= shader.add(dynamic_cast< sofa::core::Shader* >(obj));
 
-    if (!interactionForceField.add(dynamic_cast< core::componentmodel::behavior::InteractionForceField* >(obj)))
+    bool isInteractionForceField = interactionForceField.add(dynamic_cast< core::componentmodel::behavior::InteractionForceField* >(obj));
+    inserted+= isInteractionForceField;
+    if (!isInteractionForceField)
         forceField.add(dynamic_cast< core::componentmodel::behavior::BaseForceField* >(obj));
-    constraint.add(dynamic_cast< core::componentmodel::behavior::BaseConstraint* >(obj));
-    behaviorModel.add(dynamic_cast< core::BehaviorModel* >(obj));
-    visualModel.add(dynamic_cast< core::VisualModel* >(obj));
-    collisionModel.add(dynamic_cast< core::CollisionModel* >(obj));
-    contextObject.add(dynamic_cast< core::objectmodel::ContextObject* >(obj));
-    collisionPipeline.add(dynamic_cast< core::componentmodel::collision::Pipeline* >(obj));
-    actionScheduler.add(dynamic_cast< VisitorScheduler* >(obj));
+    inserted+= constraint.add(dynamic_cast< core::componentmodel::behavior::BaseConstraint* >(obj));
+    inserted+= behaviorModel.add(dynamic_cast< core::BehaviorModel* >(obj));
+    inserted+= visualModel.add(dynamic_cast< core::VisualModel* >(obj));
+    inserted+= collisionModel.add(dynamic_cast< core::CollisionModel* >(obj));
+    inserted+= contextObject.add(dynamic_cast< core::objectmodel::ContextObject* >(obj));
+    inserted+= collisionPipeline.add(dynamic_cast< core::componentmodel::collision::Pipeline* >(obj));
+    inserted+= actionScheduler.add(dynamic_cast< VisitorScheduler* >(obj));
+
+    if( inserted==0 )
+    {
+        //cerr<<"Node::doAddObject, object "<<obj->getName()<<" is unsorted"<<endl;
+        unsorted.add(obj);
+    }
 
 }
 
@@ -473,6 +484,76 @@ void Node::propagateEvent( core::objectmodel::Event* event )
 
 
 
+void Node::printComponents()
+{
+    using namespace sofa::core::componentmodel::behavior;
+    using core::BaseMapping;
+    using core::componentmodel::topology::Topology;
+    using core::componentmodel::topology::BaseTopology;
+    using core::componentmodel::topology::BaseMeshTopology;
+    using core::Shader;
+    using core::BehaviorModel;
+    using core::VisualModel;
+    using core::CollisionModel;
+    using core::objectmodel::ContextObject;
+    using core::componentmodel::collision::Pipeline;
+
+    cerr<<"MasterSolver: ";
+    for ( Single<MasterSolver>::iterator i=masterSolver.begin(), iend=masterSolver.end(); i!=iend; i++ )
+        cerr<<(*i)->getName()<<" ";
+    cerr<<endl<<"OdeSolver: ";
+    for ( Sequence<OdeSolver>::iterator i=solver.begin(), iend=solver.end(); i!=iend; i++ )
+        cerr<<(*i)->getName()<<" ";
+    cerr<<endl<<"InteractionForceField: ";
+    for ( Sequence<InteractionForceField>::iterator i=interactionForceField.begin(), iend=interactionForceField.end(); i!=iend; i++ )
+        cerr<<(*i)->getName()<<" ";
+    cerr<<endl<<"ForceField: ";
+    for ( Sequence<BaseForceField>::iterator i=forceField.begin(), iend=forceField.end(); i!=iend; i++ )
+        cerr<<(*i)->getName()<<" ";
+    cerr<<endl<<"State: ";
+    for ( Single<BaseMechanicalState>::iterator i=mechanicalState.begin(), iend=mechanicalState.end(); i!=iend; i++ )
+        cerr<<(*i)->getName()<<" ";
+    cerr<<endl<<"Mechanical Mapping: ";
+    for ( Single<BaseMechanicalMapping>::iterator i=mechanicalMapping.begin(), iend=mechanicalMapping.end(); i!=iend; i++ )
+        cerr<<(*i)->getName()<<" ";
+    cerr<<endl<<"Mapping: ";
+    for ( Sequence<BaseMapping>::iterator i=mapping.begin(), iend=mapping.end(); i!=iend; i++ )
+        cerr<<(*i)->getName()<<" ";
+    cerr<<endl<<"Topology: ";
+    for ( Single<Topology>::iterator i=topology.begin(), iend=topology.end(); i!=iend; i++ )
+        cerr<<(*i)->getName()<<" ";
+    cerr<<endl<<"BaseTopology: ";
+    for ( Sequence<BaseTopology>::iterator i=basicTopology.begin(), iend=basicTopology.end(); i!=iend; i++ )
+        cerr<<(*i)->getName()<<" ";
+    cerr<<endl<<"MeshTopology: ";
+    for ( Single<BaseMeshTopology>::iterator i=meshTopology.begin(), iend=meshTopology.end(); i!=iend; i++ )
+        cerr<<(*i)->getName()<<" ";
+    cerr<<endl<<"Shader: ";
+    for ( Single<Shader>::iterator i=shader.begin(), iend=shader.end(); i!=iend; i++ )
+        cerr<<(*i)->getName()<<" ";
+    cerr<<endl<<"Constraint: ";
+    for ( Sequence<BaseConstraint>::iterator i=constraint.begin(), iend=constraint.end(); i!=iend; i++ )
+        cerr<<(*i)->getName()<<" ";
+    cerr<<endl<<"BehaviorModel: ";
+    for ( Sequence<BehaviorModel>::iterator i=behaviorModel.begin(), iend=behaviorModel.end(); i!=iend; i++ )
+        cerr<<(*i)->getName()<<" ";
+    cerr<<endl<<"VisualModel: ";
+    for ( Sequence<VisualModel>::iterator i=visualModel.begin(), iend=visualModel.end(); i!=iend; i++ )
+        cerr<<(*i)->getName()<<" ";
+    cerr<<endl<<"CollisionModel: ";
+    for ( Sequence<CollisionModel>::iterator i=collisionModel.begin(), iend=collisionModel.end(); i!=iend; i++ )
+        cerr<<(*i)->getName()<<" ";
+    cerr<<endl<<"ContextObject: ";
+    for ( Sequence<ContextObject>::iterator i=contextObject.begin(), iend=contextObject.end(); i!=iend; i++ )
+        cerr<<(*i)->getName()<<" ";
+    cerr<<endl<<"Pipeline: ";
+    for ( Single<Pipeline>::iterator i=collisionPipeline.begin(), iend=collisionPipeline.end(); i!=iend; i++ )
+        cerr<<(*i)->getName()<<" ";
+    cerr<<endl<<"VisitorScheduler: ";
+    for ( Single<VisitorScheduler>::iterator i=actionScheduler.begin(), iend=actionScheduler.end(); i!=iend; i++ )
+        cerr<<(*i)->getName()<<" ";
+    cerr<<endl;
+}
 
 
 

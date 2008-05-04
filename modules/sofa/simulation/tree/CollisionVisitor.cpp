@@ -42,6 +42,7 @@ Visitor::Result CollisionVisitor::processNodeTopDown(simulation::Node* node)
 
 void CollisionVisitor::processCollisionPipeline(simulation::Node*, core::componentmodel::collision::Pipeline* obj)
 {
+    //std::cerr<<"CollisionVisitor::processCollisionPipeline"<<std::endl;
     obj->computeCollisions();
 }
 

@@ -172,9 +172,9 @@ Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(simulation::Node* nod
     MechanicalBeginIntegrationVisitor beginVisitor(dt);
     node->execute(&beginVisitor);
 
-    cerr<<"MechanicalIntegrationVisitor::fwdOdeSolver start solve obj"<<endl;
+    //cerr<<"MechanicalIntegrationVisitor::fwdOdeSolver start solve obj"<<endl;
     obj->solve(dt);
-    cerr<<"MechanicalIntegrationVisitor::fwdOdeSolver end solve obj"<<endl;
+    //cerr<<"MechanicalIntegrationVisitor::fwdOdeSolver end solve obj"<<endl;
     obj->propagatePositionAndVelocity(nextTime,core::componentmodel::behavior::OdeSolver::VecId::position(),core::componentmodel::behavior::OdeSolver::VecId::velocity());
 
     MechanicalEndIntegrationVisitor endVisitor(dt);
