@@ -71,7 +71,8 @@ void DefaultContactManager::clear()
 
 void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
 {
-    cerr<<"DefaultContactManager::createContacts"<<endl;
+    //cerr<<"DefaultContactManager::createContacts"<<endl;
+
     //outputsMap.clear();
     //for (sofa::helper::vector<core::componentmodel::collision::DetectionOutput*>::const_iterator it = outputs.begin(); it!=outputs.end(); ++it)
     //{
