@@ -90,7 +90,8 @@ void DefaultPipeline::doCollisionReset()
 
 void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::CollisionModel*>& collisionModels)
 {
-    std::cerr<<"DefaultPipeline::doCollisionDetection"<<std::endl;
+    //std::cerr<<"DefaultPipeline::doCollisionDetection"<<std::endl;
+
     core::objectmodel::BaseContext* scene = getContext();
     simulation::Node* node = dynamic_cast<simulation::Node*>(scene);
     if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
