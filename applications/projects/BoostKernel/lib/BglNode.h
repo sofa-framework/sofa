@@ -15,6 +15,7 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/tree/Visitor.h>
 #include "BglScene.h"
+#include <sofa/core/objectmodel/ClassInfo.h>
 
 namespace sofa
 {
@@ -46,11 +47,16 @@ public:
     */
     void doExecuteVisitor( Visitor* action);
 
-    // debug
-    void printComponents();
 
     // to move to simulation::Node
     void clearInteractionForceFields();
+
+    /// Generic list of objects access, possibly searching up or down from the current context
+    ///
+    /// Note that the template wrapper method should generally be used to have the correct return type,
+    virtual void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, SearchDirection dir = SearchUp) const;
+
+
 
 protected:
     BglScene* scene;

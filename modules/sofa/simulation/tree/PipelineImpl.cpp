@@ -51,7 +51,7 @@ PipelineImpl::~PipelineImpl()
 
 void PipelineImpl::init()
 {
-    simulation::tree::GNode* root = dynamic_cast<simulation::tree::GNode*>(getContext());
+    simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
     if(root == NULL) return;
     intersectionMethods.clear();
     root->getTreeObjects<Intersection>(&intersectionMethods);
@@ -85,7 +85,7 @@ void PipelineImpl::reset()
 
 void PipelineImpl::computeCollisionReset()
 {
-    simulation::tree::GNode* root = dynamic_cast<simulation::tree::GNode*>(getContext());
+    simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
     if(root == NULL) return;
     if (broadPhaseDetection!=NULL && broadPhaseDetection->getIntersectionMethod()!=intersectionMethod)
         broadPhaseDetection->setIntersectionMethod(intersectionMethod);
@@ -98,7 +98,7 @@ void PipelineImpl::computeCollisionReset()
 
 void PipelineImpl::computeCollisionDetection()
 {
-    simulation::tree::GNode* root = dynamic_cast<simulation::tree::GNode*>(getContext());
+    simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
     if(root == NULL) return;
     std::vector<CollisionModel*> collisionModels;
     root->getTreeObjects<CollisionModel>(&collisionModels);
@@ -107,7 +107,7 @@ void PipelineImpl::computeCollisionDetection()
 
 void PipelineImpl::computeCollisionResponse()
 {
-    simulation::tree::GNode* root = dynamic_cast<simulation::tree::GNode*>(getContext());
+    simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
     if(root == NULL) return;
     doCollisionResponse();
 }

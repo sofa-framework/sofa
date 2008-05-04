@@ -117,14 +117,17 @@ int main(int argc, char** argv)
 
     glutInit(&argc, argv);
 
+
     MyModeler modeler(&scene);
-    modeler.buildOneTetrahedron();
-    modeler.buildMixedPendulum();
+    /*    modeler.buildOneTetrahedron();
+        modeler.buildMixedPendulum();*/
+    scene.load("chain2.xml");
     scene.init();
     scene.setShowBehaviorModels(true);
-    scene.setShowVisualModels(true);
-    scene.setShowMappings(true);
-    scene.setShowMechanicalMappings(true);
+    scene.setShowVisualModels(false);
+    scene.setShowCollisionModels(true);
+    //scene.setShowMappings(true);
+    //scene.setShowMechanicalMappings(true);
     scene.setShowNormals(false);
 
     // couches du framebuffer utilisees par l'application

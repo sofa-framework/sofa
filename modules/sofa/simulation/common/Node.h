@@ -290,6 +290,7 @@ public:
     Sequence<core::CollisionModel> collisionModel;
 
     Single<core::componentmodel::collision::Pipeline> collisionPipeline;
+    Sequence<core::objectmodel::BaseObject> unsorted;
     /// @}
 
 
@@ -328,6 +329,27 @@ public:
     Object* getNodeObject()
     {
         return this->get<Object>(Local);
+    }
+
+    /// List all objects of this node and sub-nodes deriving from a given class
+    template<class Object, class Container>
+    void getTreeObjects(Container* list)
+    {
+        this->get<Object, Container>(list, SearchDown);
+    }
+
+    /// Return an object of this node and sub-nodes deriving from a given class, or NULL if not found.
+    /// Note that only the first object is returned.
+    template<class Object>
+    void getTreeObject(Object*& result)
+    {
+        result = this->get<Object>(SearchDown);
+    }
+
+    template<class Object>
+    Object* getTreeObject()
+    {
+        return this->get<Object>(SearchDown);
     }
 
     /// Topology
@@ -416,6 +438,8 @@ public:
 
     Node* setDebug(bool);
     bool getDebug() const;
+    // debug
+    void printComponents();
 
     /*
     /// Get parent node (or NULL if no hierarchy or for root node)

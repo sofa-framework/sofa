@@ -162,6 +162,7 @@ void Simulation::printXML ( GNode* root, const char* fileName )
 /// Initialize the scene.
 void Simulation::init ( GNode* root )
 {
+    cerr<<"Simulation::init"<<endl;
     if ( !root ) return;
     root->execute<InitVisitor>();
     // Save reset state for later uses in reset()
