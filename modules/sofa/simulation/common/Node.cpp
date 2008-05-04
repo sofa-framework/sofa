@@ -320,10 +320,12 @@ const core::objectmodel::BaseContext* Node::getContext() const
     return _context;
 }
 
-void Node::setContext( core::objectmodel::BaseContext* c )
-{
-    _context=c;
-}
+// void Node::setContext( core::objectmodel::BaseContext* c )
+// {
+//     _context=c;
+// 	for( ObjectIterator i=object.begin(), iend=object.end(); i!=iend; i++ )
+// 		(*i)->setContext(c);
+// }
 
 
 void Node::setDefaultVisualContextValue()

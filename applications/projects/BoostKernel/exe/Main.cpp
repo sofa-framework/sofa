@@ -2,18 +2,19 @@
 #include "traqueboule.h"
 #include <sofa/helper/ArgumentParser.h>
 #include "BglModeler.h"
+#include "../lib/BglNode.h"
 #include <iostream>
 using std::cerr;
 using std::endl;
 
 
 typedef sofa::simulation::bgl::BglScene Scene;
-typedef Scene::System System;
+typedef sofa::simulation::bgl::BglNode Node;
 typedef BglModeler MyModeler;
 
 Scene scene;
 
-bool animating = false;
+bool animating = true;
 bool step_by_step = true;
 
 
@@ -77,18 +78,22 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
         exit(0);
     case 32:     // touche SPACE
         animating = !animating;
+        break;
+    case 's':
+        step_by_step = !step_by_step;
+        break;
     }
 }
 
 void animate();
 void animate()
 {
-    if( animating )
+    if ( animating )
     {
-        cerr<<"-----one step ------"<<endl;
+        //cerr<<"-----one step ------"<<endl;
         scene.animate(0.04);
         glutPostRedisplay();
-        if( step_by_step )
+        if ( step_by_step )
             animating = false;
     }
 }
@@ -107,10 +112,13 @@ int main(int argc, char** argv)
     .option(&H_fen,'H',"Hauteur","hauteur de la fenêtre en pixels")
     (argc,argv);
 
+    tbHelp();                      // affiche l'aide sur la traqueboule
+    cout<<endl<<"Press SPACE to animate. Press S to toggle step-by-step mode"<<endl;
+
     glutInit(&argc, argv);
 
     MyModeler modeler(&scene);
-    //modeler.buildOneTetrahedron();
+    modeler.buildOneTetrahedron();
     modeler.buildMixedPendulum();
     scene.init();
     scene.setShowBehaviorModels(true);
@@ -133,7 +141,6 @@ int main(int argc, char** argv)
     glLoadIdentity();
     glTranslatef(0,0,-20);
     tbInitTransform();     // initialisation du point de vue
-    tbHelp();                      // affiche l'aide sur la traqueboule
 
     // cablage des callback
     glutReshapeFunc(reshape);

@@ -13,9 +13,8 @@
 #define bfs_adapter_h
 
 #include <boost/graph/breadth_first_search.hpp>
-#include "BglSystem.h"
+#include "BglNode.h"
 #include "BglScene.h"
-#include <sofa/component/System.h>
 #include <sofa/simulation/tree/Visitor.h>
 
 namespace sofa
@@ -35,10 +34,10 @@ class bfs_adapter : public boost::bfs_visitor<>
 public:
     sofa::simulation::tree::Visitor* visitor;
 
-    typedef BglScene::MappingGraph Graph; ///< BGL graph to traverse
-    BglScene::SystemMap& systemMap;      ///< access the System*
+    typedef BglScene::Hgraph Graph; ///< BGL graph to traverse
+    BglScene::H_vertex_node_map& systemMap;      ///< access the System*
 
-    bfs_adapter( sofa::simulation::tree::Visitor* v, BglScene::SystemMap& s );
+    bfs_adapter( sofa::simulation::tree::Visitor* v, BglScene::H_vertex_node_map& s );
 
     ~bfs_adapter();
 

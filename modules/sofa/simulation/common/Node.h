@@ -194,6 +194,7 @@ public:
             else
                 return false;
         }
+        void clear() { elems.clear(); }
     };
 
     /// Class to hold 0-or-1 object. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end), plus an automatic convertion to one pointer.
@@ -432,9 +433,6 @@ public:
 
     const BaseContext* getContext() const;
     BaseContext* getContext();
-    /** Set the context, ad the context of all component, to the given Node. This can be used to apply the algorithm components to other scene nodes.
-    */
-    void setContext( BaseContext* );
 
     /// Update the whole context values, based on parent and local ContextObjects
     virtual void updateContext();

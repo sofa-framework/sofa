@@ -14,7 +14,7 @@
 
 #include <boost/graph/depth_first_search.hpp>
 #include "BglScene.h"
-#include "BglSystem.h"
+#include "BglNode.h"
 #include <sofa/simulation/tree/Visitor.h>
 
 namespace sofa
@@ -34,10 +34,10 @@ class dfs_adapter : public boost::dfs_visitor<>
 public:
     sofa::simulation::tree::Visitor* visitor;
 
-    typedef BglScene::MappingGraph Graph; ///< BGL graph to traverse
-    BglScene::SystemMap& systemMap;      ///< access the System*
+    typedef BglScene::Hgraph Graph; ///< BGL graph to traverse
+    BglScene::H_vertex_node_map& systemMap;      ///< access the System*
 
-    dfs_adapter( sofa::simulation::tree::Visitor* v, BglScene::SystemMap& s );
+    dfs_adapter( sofa::simulation::tree::Visitor* v, BglScene::H_vertex_node_map& s );
 
     ~dfs_adapter();
 
