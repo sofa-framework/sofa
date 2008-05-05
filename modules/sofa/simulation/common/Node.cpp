@@ -42,7 +42,7 @@ Node::~Node()
 {
 }
 
-/// Initialize the components
+/// Initialize the components of this node and all the nodes which depend on it.
 void Node::init()
 {
     //cerr<<"Node::init() begin node "<<getName()<<endl;

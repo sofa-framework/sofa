@@ -116,7 +116,7 @@
       <autokdesu>false</autokdesu>
     </run>
     <general>
-      <activedir>lib</activedir>
+      <activedir>exe</activedir>
     </general>
     <make>
       <abortonerror>false</abortonerror>
