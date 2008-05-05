@@ -69,7 +69,7 @@ void DefaultPipeline::doCollisionReset()
     ctime_t t0 = 0;
     const std::string category = "collision";
 
-    VERBOSE(std::cout << "Reset collisions"<<std::endl);
+    VERBOSE(std::cout << "DefaultPipeline::doCollisionReset, Reset collisions"<<std::endl);
     // clear all contacts
     if (contactManager!=NULL)
     {
@@ -98,7 +98,7 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
     ctime_t t0 = 0;
     const std::string category = "collision";
 
-    VERBOSE(std::cout << "Compute Bounding Trees"<<std::endl);
+    VERBOSE(std::cout << "DefaultPipeline::doCollisionDetection, Compute Bounding Trees"<<std::endl);
     // First, we compute a bounding volume for the collision model (for example bounding sphere)
     // or we have loaded a collision model that knows its other model
 
@@ -113,6 +113,7 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
         int nActive = 0;
         for (; it != itEnd; it++)
         {
+            VERBOSE(std::cout << "DefaultPipeline::doCollisionDetection, consider model "<<(*it)->getName()<<std::endl);
             if (!(*it)->isActive()) continue;
             if (continuous)
                 (*it)->computeContinuousBoundingTree(dt, depth.getValue());
@@ -122,11 +123,11 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
             ++nActive;
         }
         if (node) t0 = node->endTime(t0, "collision/bbox", this);
-        VERBOSE(std::cout << "Computed "<<nActive<<" BBoxs"<<std::endl);
+        VERBOSE(std::cout << "DefaultPipeline::doCollisionDetection, Computed "<<nActive<<" BBoxs"<<std::endl);
     }
     // then we start the broad phase
     if (broadPhaseDetection==NULL) return; // can't go further
-    VERBOSE(std::cout << "BroadPhaseDetection "<<broadPhaseDetection->getName()<<std::endl);
+    VERBOSE(std::cout << "DefaultPipeline::doCollisionDetection, BroadPhaseDetection "<<broadPhaseDetection->getName()<<std::endl);
     if (node) t0 = node->startTime();
     broadPhaseDetection->beginBroadPhase();
     broadPhaseDetection->addCollisionModels(vectBoundingVolume);  // detection is done there
@@ -135,11 +136,11 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
 
     // then we start the narrow phase
     if (narrowPhaseDetection==NULL) return; // can't go further
-    VERBOSE(std::cout << "NarrowPhaseDetection "<<narrowPhaseDetection->getName()<<std::endl);
+    VERBOSE(std::cout << "DefaultPipeline::doCollisionDetection, NarrowPhaseDetection "<<narrowPhaseDetection->getName()<<std::endl);
     if (node) t0 = node->startTime();
     narrowPhaseDetection->beginNarrowPhase();
     sofa::helper::vector<std::pair<CollisionModel*, CollisionModel*> >& vectCMPair = broadPhaseDetection->getCollisionModelPairs();
-    VERBOSE(std::cout << vectCMPair.size()<<" colliding model pairs"<<std::endl);
+    VERBOSE(std::cout << "DefaultPipeline::doCollisionDetection, "<< vectCMPair.size()<<" colliding model pairs"<<std::endl);
     narrowPhaseDetection->addCollisionPairs(vectCMPair);
     narrowPhaseDetection->endNarrowPhase();
     if (node) t0 = node->endTime(t0, category, narrowPhaseDetection, this);

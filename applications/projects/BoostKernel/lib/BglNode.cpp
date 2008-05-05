@@ -28,8 +28,8 @@ namespace simulation
 namespace bgl
 {
 
-BglNode::BglNode(BglScene* g, BglScene::Hvertex n, const std::string& name)
-    : sofa::simulation::Node(name), scene(g), vertexId(n)
+BglNode::BglNode(BglScene* s, BglScene::Hgraph *g,  BglScene::Hvertex n, const std::string& name)
+    : sofa::simulation::Node(name), scene(s), graph(g), vertexId(n)
 {
 }
 
@@ -43,20 +43,20 @@ void BglNode::doExecuteVisitor( Visitor* vis )
 {
     //cerr<<"BglNode::doExecuteVisitor( simulation::tree::Visitor* action)"<<endl;
 
-    boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(scene->hgraph) );
+    boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(*graph) );
     //boost::queue<BglScene::Hvertex> queue;
 
     /*    boost::breadth_first_search(
-            scene->hgraph,
-            boost::vertex(this->vertexId, scene->hgraph),
+            graph,
+            boost::vertex(this->vertexId, *graph),
             queue,
             bfs_adapter(vis,scene->h_vertex_node_map),
             colors
         );*/
     dfv_adapter dfv(vis,scene->h_vertex_node_map);
     boost::depth_first_visit(
-        scene->hgraph,
-        boost::vertex(this->vertexId, scene->hgraph),
+        *graph,
+        boost::vertex(this->vertexId, *graph),
         dfv,
         colors,
         dfv
@@ -73,7 +73,6 @@ namespace
 struct GetObjectsVisitor: public Visitor
 {
     typedef sofa::core::objectmodel::ClassInfo ClassInfo;
-    //typedef sofa::core::objectmodel::BaseContext BaseContext;
     typedef sofa::core::objectmodel::BaseContext::GetObjectsCallBack GetObjectsCallBack;
 
     const ClassInfo& class_info;
@@ -101,23 +100,45 @@ struct GetObjectsVisitor: public Visitor
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void BglNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, SearchDirection dir) const
 {
-    /*    if( dir == SearchDown )
-    	{
-    		GetObjectsVisitor getobjs(class_info, container);
-
-
-    		//scene->dfv( scene->h_node_vertex_map[this], getobjs );
-    	}
-    	else if (dir== SearchUp )
-    	{
-    	}
-    	else if (dir== SearchRoot )
-    	{
-    	}
-    	else {  // Local
-    	}*/
-
-    cerr<<"BglNode::getObjects not yet implemented !!!"<<endl;
+    GetObjectsVisitor getobjs(class_info, container);
+    if ( dir == SearchDown )
+    {
+        boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(scene->hgraph) );
+        dfv_adapter dfv( &getobjs, scene->h_vertex_node_map );
+        boost::depth_first_visit(
+            scene->hgraph,
+            boost::vertex(this->vertexId, scene->hgraph),
+            dfv,
+            colors,
+            dfv
+        );
+    }
+    else if (dir== SearchUp )
+    {
+        boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(scene->rgraph) );
+        dfv_adapter dfv( &getobjs, scene->r_vertex_node_map );
+        BglScene::Rvertex thisvertex = scene->r_node_vertex_map[scene->h_vertex_node_map[this->vertexId]];
+        boost::depth_first_visit(
+            scene->rgraph,
+            boost::vertex(thisvertex, scene->rgraph),
+            dfv,
+            colors,
+            dfv
+        );
+    }
+    else if (dir== SearchRoot )
+    {
+        scene->dfv( scene->masterVertex, getobjs );
+    }
+    else    // Local
+    {
+        for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
+        {
+            void* result = class_info.dynamicCast(*it);
+            if (result != NULL)
+                container(result);
+        }
+    }
 }
 
 }
