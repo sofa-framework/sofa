@@ -180,6 +180,18 @@ public:
 
     void setYoungModulus(Real val) { this->f_youngModulus.setValue(val); }
 
+    void setMethod(std::string methodName)
+    {
+        if (methodName == "small")	this->setMethod(SMALL);
+        else if (methodName  == "polar")	this->setMethod(POLAR);
+        else
+        {
+            if (methodName != "large")
+                std::cerr << "unknown method: large method will be used. Remark: Available method are \"small\", \"polar\", \"large\" \n";
+            this->setMethod(LARGE);
+        }
+    }
+
     void setMethod(int val) { method = val; }
 
     void setUpdateStiffnessMatrix(bool val) { this->f_updateStiffnessMatrix.setValue(val); }
