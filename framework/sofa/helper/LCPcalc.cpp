@@ -1184,7 +1184,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, d
 
         if (error < tol)
         {
-            printf("Convergence after %d iteration(s)\n",it);
+            printf("Convergence after %d iteration(s): error = %f\n",it,error);
             //afficheLCP(dfree,W,f,dim);
             return it;
         }

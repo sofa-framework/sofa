@@ -43,6 +43,7 @@ namespace gl
 
 //using namespace std;
 
+#ifndef SOFA_HAVE_GLEW
 
 #if defined (WIN32)
 PROC glewGetProcAddress(const char* name);
@@ -134,6 +135,8 @@ extern PFNGLGETINFOLOGARBPROC glGetInfoLogARB;
 */
 extern PFNGLMULTITEXCOORD2FARBPROC glMultiTexCoord2fARB;
 extern PFNGLACTIVETEXTUREARBPROC glActiveTextureARB;
+
+#endif
 
 // This is our very basic shader class that we will use
 class CShader

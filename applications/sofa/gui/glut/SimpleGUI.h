@@ -36,26 +36,15 @@
 #include <sofa/helper/gl/Capture.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/component/collision/RayPickInteractor.h>
+#include <sofa/helper/system/gl.h>
+#include <sofa/helper/system/glu.h>
+#include <sofa/helper/system/glut.h>
 
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <fstream>
-
-#ifdef __APPLE__
-# include <OpenGL/glu.h>
-# include <GLUT/glut.h>
-#else //__APPLE__
-# ifndef GLAPIENTRY
-#  define GLAPIENTRY
-# endif
-# include <GL/glu.h>
-# ifdef _MSC_VER
-#  include <GL/glaux.h>
-# endif
-# include <GL/glut.h>
-#endif //__APPLE__
 
 namespace sofa
 {
