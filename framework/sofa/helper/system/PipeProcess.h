@@ -1,3 +1,4 @@
+#ifndef WIN32
 #ifndef PIPEPROCESS_H_
 #define PIPEPROCESS_H_
 
@@ -30,3 +31,4 @@ private:
 }
 }
 #endif /*PIPEPROCESS_H_*/
+#endif
