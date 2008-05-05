@@ -2,7 +2,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_H
 
 #include <sofa/component/topology/EdgeSetTopology.h>
-#include <sofa/component/topology/EdgeData.h>
+#include <sofa/component/topology/EdgeData.inl>
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/component/topology/FittedRegularGridTopology.h>
@@ -31,44 +31,6 @@ using sofa::helper::vector;
 
 /** Compute Finite Element forces based on 6D beam elements.
 */
-
-struct BeamInfo
-{
-// 	static const double FLEXIBILITY=1.00000; // was 1.00001
-    double _E0,_E; //Young
-    double _nu;//Poisson
-    double _L; //length
-    double _r; //radius of the section
-    double _G; //shear modulus
-    double _Iy;
-    double _Iz; //Iz is the cross-section moment of inertia (assuming mass ratio = 1) about the z axis;
-    double _J;  //Polar moment of inertia (J = Iy + Iz)
-    double _A; // A is the cross-sectional area;
-    double _Asy; //_Asy is the y-direction effective shear area =  10/9 (for solid circular section) or 0 for a non-Timoshenko beam
-    double _Asz; //_Asz is the z-direction effective shear area;
-
-    //new: k_loc is the stiffness in the local frame... to compute Ke we only change lambda
-    NewMAT::Matrix  _k_loc;
-    // _eigenvalue_loc are 4 diagonal matrices (6x6) representing the eigenvalues of each
-    // 6x6 block of _k_loc. _eigenvalue_loc[1] = _eigenvalue_loc[2] since _k_loc[1] = _k_loc[2]
-    NewMAT::DiagonalMatrix  _eigenvalue_loc[4], _inv_eigenvalue_loc[4];
-    // k_flex is the stiffness matrix + reinforcement of diagonal (used in gauss-seidel process)
-    NewMAT::Matrix  _k_flex;
-    //lambda is a matrix that contains the direction of the local frame in the global frame
-    NewMAT::Matrix  _lambda;
-    //non-linear value of the internal forces (computed with previous time step positions) (based on k_loc)
-    NewMAT::ColumnVector  _f_k;
-    //initial deformation of the beam (gives the curvature) on the local frame
-    NewMAT::ColumnVector _u_init;
-    //actual deformation of the beam on the local frame
-    NewMAT::ColumnVector _u_actual;
-
-    NewMAT::Matrix _Ke;
-
-    void localStiffness();
-    void init(double E, double L, double nu, double r);
-};
-
 template<class DataTypes>
 class BeamFEMForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
 {
@@ -92,8 +54,8 @@ protected:
 
     typedef Vec<12, Real> Displacement;        ///< the displacement vector
 
-    typedef Mat<6, 6, Real> MaterialStiffness;    ///< the matrix of material stiffness
-    typedef vector<MaterialStiffness> VecMaterialStiffness;         ///< a vector of material stiffness matrices
+    //typedef Mat<6, 6, Real> MaterialStiffness;    ///< the matrix of material stiffness
+    //typedef vector<MaterialStiffness> VecMaterialStiffness;         ///< a vector of material stiffness matrices
     //VecMaterialStiffness _materialsStiffnesses;                    ///< the material stiffness matrices vector
 
     //typedef Mat<12, 6, Real> StrainDisplacement;    ///< the strain-displacement matrix
@@ -104,24 +66,52 @@ protected:
 
 
     typedef Mat<12, 12, Real> StiffnessMatrix;
-    typedef vector<StiffnessMatrix> VecStiffnessMatrixs;         ///< a vector of stiffness matrices
-    VecStiffnessMatrixs _stiffnessMatrices;                    ///< the material stiffness matrices vector
-    //typedef typename matrix<Real,rectangle<>,compressed<>,row_major >::type CompressedMatrix;
-    //CompressedMatrix *_stiffnesses;
+    //typedef topology::EdgeData<StiffnessMatrix> VecStiffnessMatrices;         ///< a vector of stiffness matrices
+    //VecStiffnessMatrices _stiffnessMatrices;                    ///< the material stiffness matrices vector
 
+    struct BeamInfo
+    {
+        // 	static const double FLEXIBILITY=1.00000; // was 1.00001
+        double _E0,_E; //Young
+        double _nu;//Poisson
+        double _L; //length
+        double _r; //radius of the section
+        double _G; //shear modulus
+        double _Iy;
+        double _Iz; //Iz is the cross-section moment of inertia (assuming mass ratio = 1) about the z axis;
+        double _J;  //Polar moment of inertia (J = Iy + Iz)
+        double _A; // A is the cross-sectional area;
+        double _Asy; //_Asy is the y-direction effective shear area =  10/9 (for solid circular section) or 0 for a non-Timoshenko beam
+        double _Asz; //_Asz is the z-direction effective shear area;
+        StiffnessMatrix _k_loc;
+        //new: k_loc is the stiffness in the local frame... to compute Ke we only change lambda
+        //NewMAT::Matrix  _k_loc;
 
-    typedef std::pair<int,Real> Col_Value;
-    typedef vector< Col_Value > CompressedValue;
-    typedef vector< CompressedValue > CompressedMatrix;
-    CompressedMatrix _stiffnesses;
+        // _eigenvalue_loc are 4 diagonal matrices (6x6) representing the eigenvalues of each
+        // 6x6 block of _k_loc. _eigenvalue_loc[1] = _eigenvalue_loc[2] since _k_loc[1] = _k_loc[2]
+        //NewMAT::DiagonalMatrix  _eigenvalue_loc[4], _inv_eigenvalue_loc[4];
+        // k_flex is the stiffness matrix + reinforcement of diagonal (used in gauss-seidel process)
+        //NewMAT::Matrix  _k_flex;
+        //lambda is a matrix that contains the direction of the local frame in the global frame
+        //NewMAT::Matrix  _lambda;
+        //non-linear value of the internal forces (computed with previous time step positions) (based on k_loc)
+        //NewMAT::ColumnVector  _f_k;
+        //initial deformation of the beam (gives the curvature) on the local frame
+        //NewMAT::ColumnVector _u_init;
+        //actual deformation of the beam on the local frame
+        //NewMAT::ColumnVector _u_actual;
+
+        //NewMAT::Matrix _Ke;
+
+        //void localStiffness();
+        void init(double E, double L, double nu, double r);
+    };
 
     //just for draw forces
     VecDeriv _forces;
 
-    topology::EdgeSetTopology<DataTypes>* _topology;
     topology::EdgeData<BeamInfo> beamsData;
 
-    topology::FittedRegularGridTopology* _trimgrid;
     const VecElement *_indexedElements;
     Data< VecCoord > _initialPoints; ///< the intial positions of the points
     int _method; ///< the computation method of the displacements
@@ -139,8 +129,7 @@ protected:
 
 public:
     BeamFEMForceField()
-        : _topology(NULL), _trimgrid(NULL)
-        , _indexedElements(NULL)
+        : _indexedElements(NULL)
         , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
         , _method(0)
         , _poissonRatio(initData(&_poissonRatio,(Real)0.49f,"poissonRatio","Potion Ratio"))
@@ -161,6 +150,8 @@ public:
 
     virtual void init();
     virtual void reinit();
+    virtual void reinitBeam(unsigned int i);
+    virtual void handleTopologyChange();
 
     virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
@@ -199,6 +190,10 @@ protected:
     void applyStiffnessLarge( VecDeriv& f, const VecDeriv& x, int i, Index a, Index b );
 
     //sofa::helper::vector< sofa::helper::vector <Real> > subMatrix(unsigned int fr, unsigned int lr, unsigned int fc, unsigned int lc);
+
+    static void BeamFEMEdgeCreationFunction(int edgeIndex, void* param, BeamInfo &ei,
+            const topology::Edge& ,  const sofa::helper::vector< unsigned int > &,
+            const sofa::helper::vector< double >&);
 
 };
 

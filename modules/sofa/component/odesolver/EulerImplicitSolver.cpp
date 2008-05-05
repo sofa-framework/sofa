@@ -104,8 +104,8 @@ void EulerImplicitSolver::solve(double dt)
     MultiMatrix matrix(this);
     matrix = MechanicalMatrix::K * (-h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::M * (1+h*f_rayleighMass.getValue());
 
-    if( verbose )
-        cerr<<"EulerImplicitSolver, matrix = "<< (MechanicalMatrix::K * (-h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::M * (1+h*f_rayleighMass.getValue())) << " = " << matrix <<endl;
+    //if( verbose )
+//	cerr<<"EulerImplicitSolver, matrix = "<< (MechanicalMatrix::K * (-h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::M * (1+h*f_rayleighMass.getValue())) << " = " << matrix <<endl;
 
     matrix.solve(x, b);
     // projectResponse(x);
