@@ -133,7 +133,7 @@ std::string SetDirectory::GetFileName(const char* filename)
         return s.substr(pos+1);
 }
 
-static std::string SetDirectory::GetExtension(const char* filename)
+std::string SetDirectory::GetExtension(const char* filename)
 {
     std::string s = filename;
     std::string::size_type pos = s.find_last_of('.');

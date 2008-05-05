@@ -70,10 +70,10 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
 
     //char eol = '\n';
     char** cargs;
-    cargs = new char*[args.size()+2];
-    cargs[0] = command.c_str();
+    cargs = new char* [args.size()+2];
+    cargs[0] = (char*)command.c_str();
     for (unsigned int i=1 ; i< args.size() + 1 ; i++)
-        cargs[i] = args[i].c_str();
+        cargs[i] = (char*)args[i].c_str();
     cargs[args.size() + 1] = NULL;
 
 
