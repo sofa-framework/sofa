@@ -98,7 +98,8 @@ void UnilateralInteractionConstraint<DataTypes>::applyConstraint(unsigned int &c
     {
         Contact& c = contacts[i];
 
-        mu = c.mu;
+        //mu = c.mu;
+        c.mu = mu;
         c.id = contactId++;
 
         SparseVecDeriv svd1;
@@ -141,6 +142,7 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintValue(double* v)
     {
         Contact& c = contacts[i]; // get each contact detected
         v[c.id] = c.dfree;
+        std::cout << "constraint value "<<c.id<<" = "<<c.dfree<<std::endl;
         if (c.mu > 0.0)
         {
             v[c.id+1] = c.dfree_t; // dfree_t & dfree_s are added to v to compute the friction
