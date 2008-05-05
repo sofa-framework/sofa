@@ -46,6 +46,7 @@ namespace tree
 {
 
 class Visitor;
+class VisitorScheduler;
 class MutationListener;
 
 /** Define the structure of the scene. Contains (as pointer lists) Component objects and children GNode objects.

@@ -476,7 +476,7 @@ public:
     Single<VisitorScheduler> actionScheduler;
 
     // VisitorScheduler can use doExecuteVisitor() method
-    friend class VisitorScheduler;
+    friend class tree::VisitorScheduler;
 
     /// Must be called after each graph modification. Do not call it directly, apply an InitVisitor instead.
     virtual void initialize();
