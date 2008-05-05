@@ -133,6 +133,16 @@ std::string SetDirectory::GetFileName(const char* filename)
         return s.substr(pos+1);
 }
 
+static std::string SetDirectory::GetExtension(const char* filename)
+{
+    std::string s = filename;
+    std::string::size_type pos = s.find_last_of('.');
+    if (pos == std::string::npos)
+        return ""; // no extension
+    else
+        return s.substr(pos+1);
+}
+
 std::string SetDirectory::GetRelativeFromDir(const char* filename, const char* basename)
 {
     if (!filename || !filename[0]) return "";

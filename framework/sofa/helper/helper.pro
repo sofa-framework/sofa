@@ -64,6 +64,7 @@ HEADERS += \
           system/FileRepository.h \
           system/thread/CTime.h \
           system/thread/debug.h \
+          system/PipeProcess.h \
           vector.h \
 	  polygon_cube_intersection/vec.h \
 	  polygon_cube_intersection/polygon_cube_intersection.h
@@ -99,5 +100,6 @@ SOURCES += \
           system/FileRepository.cpp \
           system/thread/CTime.cpp \
           system/thread/debug.cpp \
+          system/PipeProcess.cpp \
 	  polygon_cube_intersection/polygon_cube_intersection.cpp \
 	  polygon_cube_intersection/fast_polygon_cube_intersection.cpp 

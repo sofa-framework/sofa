@@ -60,6 +60,9 @@ public:
     /// Get the filename from an absolute path description, i.e. if given"a/b/c", return "c"
     static std::string GetFileName(const char* filename);
 
+    /// Get the extension of a file from an absolute path description, i.e. if given"a/b/c.d", return "d"
+    static std::string GetExtension(const char* filename);
+
     /// Get the full path of the current process. The given filename should be the value of argv[0].
     static std::string GetProcessFullPath(const char* filename);
 
@@ -71,6 +74,7 @@ public:
 
     /// Get the file relative to current process path, i.e. if given "../e" and "a/b/c", return "a/e".
     static std::string GetRelativeFromProcess(const char* filename, const char* basename=NULL);
+
 };
 
 } // namespace system
