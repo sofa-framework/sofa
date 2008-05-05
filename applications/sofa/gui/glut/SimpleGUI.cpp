@@ -413,8 +413,12 @@ void SimpleGUI::initializeGL(void)
         specref[1] = 1.0f;
         specref[2] = 1.0f;
         specref[3] = 1.0f;
-
         // Here we initialize our multi-texturing functions
+#ifdef SOFA_HAVE_GLEW
+        glewInit();
+        if (!GLEW_ARB_multitexture)
+            std::cerr << "Error: GL_ARB_multitexture not supported\n";
+#else
         glActiveTextureARB        = (PFNGLACTIVETEXTUREARBPROC)        glewGetProcAddress("glActiveTextureARB");
         glMultiTexCoord2fARB    = (PFNGLMULTITEXCOORD2FARBPROC)        glewGetProcAddress("glMultiTexCoord2fARB");
 
@@ -425,6 +429,7 @@ void SimpleGUI::initializeGL(void)
             //    MessageBox(g_hWnd, "Your current setup does not support multitexturing", "Error", MB_OK);
             //PostQuitMessage(0);
         }
+#endif
 
         _clearBuffer = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
         _lightModelTwoSides = false;

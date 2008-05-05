@@ -23,7 +23,6 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include "viewer/qt/QtViewer.h"
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
@@ -36,14 +35,11 @@
 #include <string.h>
 #include <math.h>
 
-#ifdef _MSC_VER
-#include <GL/glaux.h>
-#endif
-#include <sofa/helper/system/glut.h>
 #include <qevent.h>
 #include "GenGraphForm.h"
 #include "Main.h"
 
+#include <sofa/helper/system/glut.h>
 #include <sofa/helper/gl/glfont.h>
 #include <sofa/helper/gl/RAII.h>
 #include <sofa/helper/gl/GLshader.h>
@@ -306,16 +302,22 @@ void QtViewer::initializeGL(void)
         specref[3] = 1.0f;
 
         // Here we initialize our multi-texturing functions
-        glActiveTextureARB		= (PFNGLACTIVETEXTUREARBPROC)		glewGetProcAddress("glActiveTextureARB");
-        glMultiTexCoord2fARB	= (PFNGLMULTITEXCOORD2FARBPROC)		glewGetProcAddress("glMultiTexCoord2fARB");
+#ifdef SOFA_HAVE_GLEW
+        glewInit();
+        if (!GLEW_ARB_multitexture)
+            std::cerr << "Error: GL_ARB_multitexture not supported\n";
+#else
+        glActiveTextureARB        = (PFNGLACTIVETEXTUREARBPROC)        glewGetProcAddress("glActiveTextureARB");
+        glMultiTexCoord2fARB    = (PFNGLMULTITEXCOORD2FARBPROC)        glewGetProcAddress("glMultiTexCoord2fARB");
 
         // Make sure our multi-texturing extensions were loaded correctly
         if(!glActiveTextureARB || !glMultiTexCoord2fARB)
         {
             // Print an error message and quit.
-            //	MessageBox(g_hWnd, "Your current setup does not support multitexturing", "Error", MB_OK);
+            //    MessageBox(g_hWnd, "Your current setup does not support multitexturing", "Error", MB_OK);
             //PostQuitMessage(0);
         }
+#endif
 
         _clearBuffer = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
         _lightModelTwoSides = false;

@@ -33,6 +33,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <fstream>
+
+#ifndef SOFA_HAVE_GLEW
 #if !defined(_WIN32) && !defined(__APPLE__)
 #  include <GL/glx.h>
 #endif
@@ -41,7 +43,7 @@
 //#include "mach-o/dyld.h"
 #include <dlfcn.h>
 #endif
-
+#endif
 
 namespace sofa
 {
@@ -51,6 +53,8 @@ namespace helper
 
 namespace gl
 {
+
+#ifndef SOFA_HAVE_GLEW
 
 // The function pointers for shaders
 PFNGLCREATESHADEROBJECTARBPROC	glCreateShaderObjectARB = NULL;
@@ -136,22 +140,50 @@ void (*glewGetProcAddress(const char* name))(void)
 #endif
 }
 
+#endif
+
 bool CShader::InitGLSL()
 {
+#ifdef SOFA_HAVE_GLEW
+    GLenum err = glewInit();
+    if (GLEW_OK != err)
+    {
+        /* Problem: glewInit failed, something is seriously wrong. */
+        fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+        return false;
+    }
+    fprintf(stdout, "CShader: Using GLEW %s\n", glewGetString(GLEW_VERSION));
+
+    // Make sure find the GL_ARB_shader_objects extension so we can use shaders.
+    if(!GLEW_ARB_shader_objects)
+    {
+        fprintf(stderr, "Error: GL_ARB_shader_objects extension not supported!\n");
+        return false;
+    }
+
+    // Make sure we support the GLSL shading language 1.0
+    if(!GLEW_ARB_shading_language_100)
+    {
+        fprintf(stderr, "Error: GL_ARB_shading_language_100 extension not supported!\n");
+        return false;
+    }
+
+
+#else
     // This grabs a list of all the video card's extensions it supports
     char *szGLExtensions = (char*)glGetString(GL_EXTENSIONS);
 
     // Make sure find the GL_ARB_shader_objects extension so we can use shaders.
     if(!strstr(szGLExtensions, "GL_ARB_shader_objects"))
     {
-        printf("GL_ARB_shader_objects extension not supported!\n");
+        fprintf(stderr, "Error: GL_ARB_shader_objects extension not supported!\n");
         return false;
     }
 
     // Make sure we support the GLSL shading language 1.0
     if(!strstr(szGLExtensions, "GL_ARB_shading_language_100"))
     {
-        printf("GL_ARB_shading_language_100 extension not supported!\n");
+        fprintf(stderr, "Error: GL_ARB_shading_language_100 extension not supported!\n");
         return false;
     }
 
@@ -175,7 +207,7 @@ bool CShader::InitGLSL()
     glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC)glewGetProcAddress("glMultiTexCoord2fARB");
     glGetObjectParameterivARB = (PFNGLGETOBJECTPARAMETERIV)glewGetProcAddress("glGetObjectParameterivARB");
     glGetInfoLogARB = (PFNGLGETINFOLOGARBPROC)glewGetProcAddress("glGetInfoLogARB");
-
+#endif
     // Return a success!
     return true;
 }
@@ -358,11 +390,4 @@ void CShader::Release()
 
 } // namespace sofa
 
-/////////////////////////////////////////////////////////////////////////////////
-//
-// * QUICK NOTES *
-//
-// Nothing new was added to this file for this tutorial.
-//
-//
 // (C) 2000-2005 GameTutorials

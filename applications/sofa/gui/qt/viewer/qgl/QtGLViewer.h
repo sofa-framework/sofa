@@ -25,6 +25,7 @@
 #ifndef SOFA_GUI_QGLVIEWER_QTVIEWER_H
 #define SOFA_GUI_QGLVIEWER_QTVIEWER_H
 
+#include <sofa/helper/system/gl.h>
 #include <qgl.h>
 #include <qtimer.h>
 #include <math.h>
