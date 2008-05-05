@@ -197,7 +197,7 @@ public:
         defaulttype::Vec3d v2;
         v2 = v1.cross(normal);
         v2.normalize();
-        const float size=10.0f;
+        const float size=1.0f;
         defaulttype::Vec3d center = normal*planeD0.getValue();
         defaulttype::Vec3d corners[4];
         corners[0] = center-v1*size-v2*size;

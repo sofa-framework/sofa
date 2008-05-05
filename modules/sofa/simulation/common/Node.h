@@ -62,7 +62,7 @@ namespace simulation
 /**
 Implements the object (component) management of the core::Context.
 Contains objects in lists and provides accessors.
-The other systems are not visible (unknown scene graph).
+The other nodes are not visible (unknown scene graph).
 
 	@author The SOFA team </www.sofa-framework.org>
 */

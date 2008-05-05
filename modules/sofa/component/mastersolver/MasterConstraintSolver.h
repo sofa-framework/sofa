@@ -31,7 +31,7 @@ public:
     {
     }
 
-    virtual Result fwdConstraint(simulation::tree::GNode* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         c->getConstraintType(_type, _offset);
         return RESULT_CONTINUE;

@@ -146,12 +146,12 @@ void IdentityMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const t
 template <class BaseMapping>
 void IdentityMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
 {
-    out.clear();
-    out.resize(in.size());
+    unsigned int outSize = out.size();
+    out.resize(in.size() + outSize); // we can accumulate in "out" constraints from several mappings
     //const unsigned int N = Deriv::size() < InDeriv::size() ? Deriv::size() : InDeriv::size();
     for(unsigned int i=0; i<in.size(); i++)
     {
-        typename In::SparseVecDeriv& o = out[i];
+        typename In::SparseVecDeriv& o = out[i+outSize];
         o.reserve(in[i].size());
         for(unsigned int j=0; j<in[i].size(); j++)
         {
@@ -160,6 +160,7 @@ void IdentityMapping<BaseMapping>::applyJT( typename In::VecConst& out, const ty
             //for (unsigned int k=0;k<N;++k)
             //    value[k] = (Real) cIn.data[k];
             eq(value, cIn.data);
+            //std::cout << "n= "<<cIn.data<<" -> "<<value<<std::endl;
             o.push_back( typename In::SparseDeriv(cIn.index, value) );
         }
     }
