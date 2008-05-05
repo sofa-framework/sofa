@@ -1,3 +1,4 @@
+#ifndef WIN32
 #include "PipeProcess.h"
 
 #include <sys/types.h>
@@ -276,3 +277,5 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
 }
 }
 }
+
+#endif
