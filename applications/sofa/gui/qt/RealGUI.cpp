@@ -1561,7 +1561,7 @@ void RealGUI::transformObject ( GNode *node, double dx, double dy, double dz,  d
 {
     if ( node == NULL ) return;
     GNode::ObjectIterator obj_it = node->object.begin();
-    const Real_Sofa conversionDegRad = 3.141592653/180.0;
+    const SReal conversionDegRad = 3.141592653/180.0;
     Vector3 rotationVector = Vector3(rx,ry,rz)*conversionDegRad;
     //We translate the elements
 

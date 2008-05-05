@@ -547,7 +547,7 @@ void TriangularBendingSprings<DataTypes>::init()
 }
 
 template <class DataTypes>
-sofa::defaulttype::Vector3::value_type TriangularBendingSprings<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
+double TriangularBendingSprings<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
 {
     std::cerr<<"TriangularBendingSprings::getPotentialEnergy-not-implemented !!!"<<endl;
     return 0;

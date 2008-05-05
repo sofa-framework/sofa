@@ -137,25 +137,24 @@ template<class In, class Out>
 class TopologyBarycentricMapper : public BarycentricMapper<In,Out>
 {
 public:
-    typedef  sofa::defaulttype::Vector3::value_type Real_Sofa;
     typedef BarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
 
     virtual ~TopologyBarycentricMapper() {}
 
-    virtual int addPointInLine(int /*lineIndex*/, const Real_Sofa* /*baryCoords*/) {return 0;}
+    virtual int addPointInLine(int /*lineIndex*/, const SReal* /*baryCoords*/) {return 0;}
     virtual int createPointInLine(const typename Out::Coord& /*p*/, int /*lineIndex*/, const typename In::VecCoord* /*points*/) {return 0;}
 
-    virtual int addPointInTriangle(int /*triangleIndex*/, const Real_Sofa* /*baryCoords*/) {return 0;}
+    virtual int addPointInTriangle(int /*triangleIndex*/, const SReal* /*baryCoords*/) {return 0;}
     virtual int createPointInTriangle(const typename Out::Coord& /*p*/, int /*triangleIndex*/, const typename In::VecCoord* /*points*/) {return 0;}
 
-    virtual int addPointInQuad(int /*quadIndex*/, const Real_Sofa* /*baryCoords*/) {return 0;}
+    virtual int addPointInQuad(int /*quadIndex*/, const SReal* /*baryCoords*/) {return 0;}
     virtual int createPointInQuad(const typename Out::Coord& /*p*/, int /*quadIndex*/, const typename In::VecCoord* /*points*/) {return 0;}
 
-    virtual int addPointInTetra(int /*tetraIndex*/, const Real_Sofa* /*baryCoords*/) {return 0;}
+    virtual int addPointInTetra(int /*tetraIndex*/, const SReal* /*baryCoords*/) {return 0;}
     virtual int createPointInTetra(const typename Out::Coord& /*p*/, int /*tetraIndex*/, const typename In::VecCoord* /*points*/) {return 0;}
 
-    virtual int addPointInCube(int /*cubeIndex*/, const Real_Sofa* /*baryCoords*/) {return 0;}
+    virtual int addPointInCube(int /*cubeIndex*/, const SReal* /*baryCoords*/) {return 0;}
     virtual int createPointInCube(const typename Out::Coord& /*p*/, int /*cubeIndex*/, const typename In::VecCoord* /*points*/) {return 0;}
 
 protected:
@@ -171,7 +170,6 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::CubeData CubeData;
-    typedef typename sofa::defaulttype::Vector3::value_type Real_Sofa;
 protected:
     sofa::helper::vector<CubeData> map;
     topology::RegularGridTopology* topology;
@@ -185,7 +183,7 @@ public:
 
     void clear(int reserve=0);
 
-    int addPointInCube(int cubeIndex, const Real_Sofa* baryCoords);
+    int addPointInCube(int cubeIndex, const SReal* baryCoords);
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
@@ -218,7 +216,6 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::CubeData CubeData;
-    typedef  sofa::defaulttype::Vector3::value_type Real_Sofa;
 protected:
     sofa::helper::vector<CubeData> map;
     topology::SparseGridTopology* topology;
@@ -232,7 +229,7 @@ public:
 
     void clear(int reserve=0);
 
-    int addPointInCube(int cubeIndex, const Real_Sofa* baryCoords);
+    int addPointInCube(int cubeIndex, const SReal* baryCoords);
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
@@ -268,7 +265,6 @@ public:
     typedef typename Inherit::MappingData1D MappingData1D;
     typedef typename Inherit::MappingData2D MappingData2D;
     typedef typename Inherit::MappingData3D MappingData3D;
-    typedef typename sofa::defaulttype::Vector3::value_type Real_Sofa;
 protected:
     sofa::helper::vector< MappingData1D >  map1d;
     sofa::helper::vector< MappingData2D >  map2d;
@@ -285,18 +281,18 @@ public:
 
     void clear(int reserve=0);
 
-    int addPointInLine(int lineIndex, const Real_Sofa* baryCoords);
+    int addPointInLine(int lineIndex, const SReal* baryCoords);
     int createPointInLine(const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points);
 
-    int addPointInTriangle(int triangleIndex, const Real_Sofa* baryCoords);
+    int addPointInTriangle(int triangleIndex, const SReal* baryCoords);
     int createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points);
 
-    int addPointInQuad(int quadIndex, const Real_Sofa* baryCoords);
+    int addPointInQuad(int quadIndex, const SReal* baryCoords);
     int createPointInQuad(const typename Out::Coord& p, int quadIndex, const typename In::VecCoord* points);
 
-    int addPointInTetra(int tetraIndex, const Real_Sofa* baryCoords);
+    int addPointInTetra(int tetraIndex, const SReal* baryCoords);
 
-    int addPointInCube(int cubeIndex, const Real_Sofa* baryCoords);
+    int addPointInCube(int cubeIndex, const SReal* baryCoords);
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
@@ -389,7 +385,6 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::MappingData1D MappingData;
-    typedef typename sofa::defaulttype::Vector3::value_type Real_Sofa;
 protected:
     topology::PointData< MappingData >  map;
     topology::EdgeSetTopology<In>* topology;
@@ -404,7 +399,7 @@ public:
 
     void clear(int reserve=0);
 
-    int addPointInLine(int edgeIndex, const Real_Sofa* baryCoords);
+    int addPointInLine(int edgeIndex, const SReal* baryCoords);
     int createPointInLine(const typename Out::Coord& p, int edgeIndex, const typename In::VecCoord* points);
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
@@ -459,7 +454,6 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::MappingData2D MappingData;
-    typedef  sofa::defaulttype::Vector3::value_type Real_Sofa;
 protected:
     topology::PointData< MappingData >  map;
     topology::TriangleSetTopology<In>* topology;
@@ -474,7 +468,7 @@ public:
 
     void clear(int reserve=0);
 
-    int addPointInTriangle(int triangleIndex, const Real_Sofa* baryCoords);
+    int addPointInTriangle(int triangleIndex, const SReal* baryCoords);
     int createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points);
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
@@ -529,7 +523,6 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::MappingData2D MappingData;
-    typedef typename sofa::defaulttype::Vector3::value_type Real_Sofa;
 protected:
     topology::PointData< MappingData >  map;
     topology::QuadSetTopology<In>* topology;
@@ -544,7 +537,7 @@ public:
 
     void clear(int reserve=0);
 
-    int addPointInQuad(int index, const Real_Sofa* baryCoords);
+    int addPointInQuad(int index, const SReal* baryCoords);
     int createPointInQuad(const typename Out::Coord& p, int index, const typename In::VecCoord* points);
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
@@ -597,7 +590,6 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::MappingData3D MappingData;
-    typedef typename sofa::defaulttype::Vector3::value_type Real_Sofa;
 protected:
     topology::PointData< MappingData >  map;
     topology::TetrahedronSetTopology<In>* topology;
@@ -612,7 +604,7 @@ public:
 
     void clear(int reserve=0);
 
-    int addPointInTetra(int index, const Real_Sofa* baryCoords);
+    int addPointInTetra(int index, const SReal* baryCoords);
 //		  int createPointInTetra(const typename Out::Coord& p, int index, const typename In::VecCoord* points);
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
@@ -665,7 +657,6 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::MappingData3D MappingData;
-    typedef  sofa::defaulttype::Vector3::value_type Real_Sofa;
 protected:
     topology::PointData< MappingData >  map;
     topology::HexahedronSetTopology<In>* topology;
@@ -680,7 +671,7 @@ public:
 
     void clear(int reserve=0);
 
-    int addPointInCube(int index, const Real_Sofa* baryCoords);
+    int addPointInCube(int index, const SReal* baryCoords);
 //		  int createPointInCube(const typename Out::Coord& p, int index, const typename In::VecCoord* points);
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);

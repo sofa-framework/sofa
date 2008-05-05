@@ -76,7 +76,6 @@ class BaseMechanicalMapping;
 class BaseMechanicalState : public virtual objectmodel::BaseObject
 {
 public:
-    typedef sofa::defaulttype::Vector3::value_type Real_Sofa;
     BaseMechanicalState()
     {}
     virtual ~BaseMechanicalState()
@@ -87,18 +86,18 @@ public:
 
     /// functions that allows to have access to the geometry without a template class : not efficient
     virtual int getSize() const { return 0; }
-    virtual Real_Sofa getPX(int /*i*/) const { return 0.0; }
-    virtual Real_Sofa getPY(int /*i*/) const { return 0.0; }
-    virtual Real_Sofa getPZ(int /*i*/) const { return 0.0; }
+    virtual double getPX(int /*i*/) const { return 0.0; }
+    virtual double getPY(int /*i*/) const { return 0.0; }
+    virtual double getPZ(int /*i*/) const { return 0.0; }
 
     /// @name Integration related methods
     /// @{
 
     /// Called at the beginning of each integration step.
-    virtual void beginIntegration(Real_Sofa /*dt*/) { }
+    virtual void beginIntegration(double /*dt*/) { }
 
     /// Called at the end of each iteration step.
-    virtual void endIntegration(Real_Sofa /*dt*/) { }
+    virtual void endIntegration(double /*dt*/) { }
 
     /// Set F = 0
     virtual void resetForce() =0;//{ vOp( VecId::force() ); }
@@ -122,7 +121,7 @@ public:
     virtual void applyScale(const double s)=0;
 
 
-    virtual bool addBBox(Real_Sofa* /*minBBox*/, Real_Sofa* /*maxBBox*/)
+    virtual bool addBBox(double* /*minBBox*/, double* /*maxBBox*/)
     {
         return false;
     }
@@ -175,7 +174,7 @@ public:
     /// \li v = a
     /// \li v = a + b
     /// \li v = b * f
-    virtual void vOp(VecId v, VecId a = VecId::null(), VecId b = VecId::null(), Real_Sofa f=1.0) = 0; // {}
+    virtual void vOp(VecId v, VecId a = VecId::null(), VecId b = VecId::null(), double f=1.0) = 0; // {}
 
     /// Data structure describing a set of linear operation on vectors
     /// \see vMultiOp
@@ -224,10 +223,10 @@ public:
     }
 
     /// Compute the scalar products between two vectors.
-    virtual Real_Sofa vDot(VecId a, VecId b) = 0; //{ return 0; }
+    virtual double vDot(VecId a, VecId b) = 0; //{ return 0; }
 
     /// Apply a threshold to all entries
-    virtual void vThreshold( VecId a, Real_Sofa threshold )=0;
+    virtual void vThreshold( VecId a, double threshold )=0;
 
     /// Make the position vector point to the identified vector.
     ///
@@ -260,9 +259,9 @@ public:
     virtual void setDx(VecId v) = 0; //{}
 
     /// new : get compliance on the constraints
-    virtual void getCompliance(Real_Sofa ** /*w*/) { }
+    virtual void getCompliance(double ** /*w*/) { }
     /// apply contact force AND compute the subsequent dX
-    virtual void applyContactForce(Real_Sofa * /*f*/) { }
+    virtual void applyContactForce(double * /*f*/) { }
 
     virtual void resetContactForce(void) {}
 
@@ -286,7 +285,7 @@ public:
     /// @{
     virtual void printDOF( VecId, std::ostream& =std::cerr ) = 0;
     virtual void initGnuplot(const std::string) {}
-    virtual void exportGnuplot(Real_Sofa) {}
+    virtual void exportGnuplot(double) {}
     virtual unsigned printDOFWithElapsedTime(VecId, unsigned =0, unsigned =0, std::ostream& =std::cerr ) {return 0;};
     /// @}
 

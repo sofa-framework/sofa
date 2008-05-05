@@ -50,6 +50,12 @@ typedef unsigned __int64	uint64_t;
 #include <stdint.h>
 #endif
 
+#ifdef SOFA_FLOAT
+typedef float SReal;
+#else
+typedef double SReal;
+#endif
+
 #define sofa_concat(a,b) sofa_do_concat(a,b)
 #define sofa_do_concat(a,b) sofa_do_concat2(a,b)
 #define sofa_do_concat2(a,b) a##b

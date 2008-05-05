@@ -37,16 +37,15 @@ namespace io
 class MassSpringLoader
 {
 public:
-    typedef sofa::defaulttype::Vector3::value_type Real_Sofa;
     virtual ~MassSpringLoader() {}
     bool load(const char *filename);
     virtual void setNumMasses(int /*n*/) {}
     virtual void setNumSprings(int /*n*/) {}
     virtual void addMass(double /*px*/, double /*py*/, double /*pz*/, double /*vx*/, double /*vy*/, double /*vz*/, double /*mass*/, double /*elastic*/, bool /*fixed*/, bool /*surface*/) {}
-    virtual void addSpring(int /*m1*/, int /*m2*/, Real_Sofa /*ks*/, Real_Sofa /*kd*/, Real_Sofa /*initpos*/) {}
-    virtual void addVectorSpring(int m1, int m2, Real_Sofa ks, Real_Sofa kd, Real_Sofa initpos, Real_Sofa /*restx*/, Real_Sofa /*resty*/, Real_Sofa /*restz*/) { addSpring(m1, m2, ks, kd, initpos); }
-    virtual void setGravity(Real_Sofa /*gx*/, Real_Sofa /*gy*/, Real_Sofa /*gz*/) {}
-    virtual void setViscosity(Real_Sofa /*visc*/) {}
+    virtual void addSpring(int /*m1*/, int /*m2*/, SReal /*ks*/, SReal /*kd*/, SReal /*initpos*/) {}
+    virtual void addVectorSpring(int m1, int m2, SReal ks, SReal kd, SReal initpos, SReal /*restx*/, SReal /*resty*/, SReal /*restz*/) { addSpring(m1, m2, ks, kd, initpos); }
+    virtual void setGravity(SReal /*gx*/, SReal /*gy*/, SReal /*gz*/) {}
+    virtual void setViscosity(SReal /*visc*/) {}
 };
 
 } // namespace io

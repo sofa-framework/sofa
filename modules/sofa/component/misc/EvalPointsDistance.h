@@ -60,8 +60,8 @@ public:
     EvalPointsDistance();
     virtual ~EvalPointsDistance();
 
-    virtual Real_Sofa eval();
-    virtual Real_Sofa doEval(const VecCoord& x1, const VecCoord& x2, const VecCoord& x0);
+    virtual SReal eval();
+    virtual SReal doEval(const VecCoord& x1, const VecCoord& x2, const VecCoord& x0);
 
     virtual void init();
     virtual void reset();

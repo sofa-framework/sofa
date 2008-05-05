@@ -40,7 +40,7 @@ public:
 
     virtual void addDForce();
 
-    virtual sofa::defaulttype::Vector3::value_type getPotentialEnergy();
+    virtual double getPotentialEnergy();
 
     void draw();
 

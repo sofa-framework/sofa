@@ -29,10 +29,10 @@ template <>
 bool UniformMass<gpu::cuda::CudaVec3fTypes, float>::addBBox(double* minBBox, double* maxBBox);
 
 template <>
-sofa::defaulttype::Vector3::value_type UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getPotentialEnergy( const VecCoord& x );
+double UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getPotentialEnergy( const VecCoord& x );
 
 template <>
-sofa::defaulttype::Vector3::value_type UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getElementMass(unsigned int );
+double UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getElementMass(unsigned int );
 
 template <>
 void UniformMass<gpu::cuda::CudaRigid3fTypes, Rigid3fMass>::draw();

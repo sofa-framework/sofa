@@ -76,13 +76,13 @@ double DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const VecCoo
 
 
 template <>
-sofa::defaulttype::Vector3::value_type DiagonalMass<Rigid3dTypes, Rigid3dMass>::getElementMass(unsigned int index)
+double DiagonalMass<Rigid3dTypes, Rigid3dMass>::getElementMass(unsigned int index)
 {
     return (f_mass.getValue()[index].mass);
 }
 
 template <>
-sofa::defaulttype::Vector3::value_type DiagonalMass<Rigid2dTypes, Rigid2dMass>::getElementMass(unsigned int index)
+double DiagonalMass<Rigid2dTypes, Rigid2dMass>::getElementMass(unsigned int index)
 {
     return (f_mass.getValue()[index].mass);
 }
@@ -182,7 +182,7 @@ void DiagonalMass<Rigid2dTypes, Rigid2dMass>::draw()
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-sofa::defaulttype::Vector3::value_type DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const VecCoord& x )
+double DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const VecCoord& x )
 {
     double e = 0;
     const MassVector &masses= f_mass.getValue();
@@ -199,7 +199,7 @@ sofa::defaulttype::Vector3::value_type DiagonalMass<Rigid3fTypes, Rigid3fMass>::
 }
 
 template <>
-sofa::defaulttype::Vector3::value_type DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const VecCoord& x )
+double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const VecCoord& x )
 {
     double e = 0;
 
@@ -219,14 +219,14 @@ sofa::defaulttype::Vector3::value_type DiagonalMass<Rigid2fTypes, Rigid2fMass>::
 
 
 template <>
-sofa::defaulttype::Vector3::value_type DiagonalMass<Rigid3fTypes, Rigid3fMass>::getElementMass(unsigned int index)
+double DiagonalMass<Rigid3fTypes, Rigid3fMass>::getElementMass(unsigned int index)
 {
     return (double)(f_mass.getValue()[index].mass);
 }
 
 
 template <>
-sofa::defaulttype::Vector3::value_type DiagonalMass<Rigid2fTypes, Rigid2fMass>::getElementMass(unsigned int index)
+double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getElementMass(unsigned int index)
 {
     return (double)(f_mass.getValue()[index].mass);
 }

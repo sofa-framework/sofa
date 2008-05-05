@@ -56,12 +56,12 @@ MechanicalComputeEnergyVisitor::~MechanicalComputeEnergyVisitor()
 {
 }
 
-sofa::defaulttype::Vector3::value_type MechanicalComputeEnergyVisitor::getKineticEnergy()
+double MechanicalComputeEnergyVisitor::getKineticEnergy()
 {
     return m_kineticEnergy;
 }
 
-sofa::defaulttype::Vector3::value_type MechanicalComputeEnergyVisitor::getPotentialEnergy()
+double MechanicalComputeEnergyVisitor::getPotentialEnergy()
 {
     return m_potentialEnergy;
 }

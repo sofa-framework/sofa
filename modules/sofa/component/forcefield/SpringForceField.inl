@@ -26,7 +26,7 @@ using std::cerr;
 using std::endl;
 
 template<class DataTypes>
-SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, MechanicalState* mstate2, Real_Sofa _ks, Real_Sofa _kd)
+SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, MechanicalState* mstate2, SReal _ks, SReal _kd)
     : Inherit(mstate1, mstate2)
     , ks(initData(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
     , kd(initData(&kd,_kd,"damping","uniform damping for the all springs"))
@@ -35,7 +35,7 @@ SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, Mechanic
 }
 
 template<class DataTypes>
-SpringForceField<DataTypes>::SpringForceField(Real_Sofa _ks, Real_Sofa _kd)
+SpringForceField<DataTypes>::SpringForceField(SReal _ks, SReal _kd)
     : ks(initData(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
     , kd(initData(&kd,_kd,"damping","uniform damping for the all springs"))
     , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
@@ -57,7 +57,7 @@ class SpringForceField<DataTypes>::Loader : public helper::io::MassSpringLoader
 public:
     SpringForceField<DataTypes>* dest;
     Loader(SpringForceField<DataTypes>* dest) : dest(dest) {}
-    virtual void addSpring(int m1, int m2, Real_Sofa ks, Real_Sofa kd, Real_Sofa initpos)
+    virtual void addSpring(int m1, int m2, SReal ks, SReal kd, SReal initpos)
     {
         helper::vector<Spring>& springs = *dest->springs.beginEdit();
         springs.push_back(Spring(m1,m2,ks,kd,initpos));
@@ -83,7 +83,7 @@ void SpringForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::addSpringForce(Real_Sofa& ener, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int /*i*/, const Spring& spring)
+void SpringForceField<DataTypes>::addSpringForce(SReal& ener, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int /*i*/, const Spring& spring)
 {
     int a = spring.m1;
     int b = spring.m2;

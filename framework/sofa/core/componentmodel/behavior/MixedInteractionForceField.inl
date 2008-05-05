@@ -84,7 +84,7 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForceV()
 
 
 template<class DataTypes1, class DataTypes2>
-sofa::defaulttype::Vector3::value_type MixedInteractionForceField<DataTypes1, DataTypes2>::getPotentialEnergy()
+double MixedInteractionForceField<DataTypes1, DataTypes2>::getPotentialEnergy()
 {
     if (mstate1 && mstate2)
         return getPotentialEnergy(*mstate1->getX(), *mstate2->getX());

@@ -271,7 +271,7 @@ double UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy( const Rigid2dT
 }
 
 template <>
-sofa::defaulttype::Vector3::value_type UniformMass<Rigid3dTypes,Rigid3dMass>::getElementMass(unsigned int )
+double UniformMass<Rigid3dTypes,Rigid3dMass>::getElementMass(unsigned int )
 {
     return (mass.getValue().mass);
 }
@@ -508,7 +508,7 @@ void UniformMass<Rigid2fTypes, Rigid2fMass>::draw()
 }
 
 template <>
-sofa::defaulttype::Vector3::value_type UniformMass<Rigid3fTypes,Rigid3fMass>::getPotentialEnergy( const Rigid3fTypes::VecCoord& x )
+double UniformMass<Rigid3fTypes,Rigid3fMass>::getPotentialEnergy( const Rigid3fTypes::VecCoord& x )
 {
     double e = 0;
     // gravity
@@ -521,7 +521,7 @@ sofa::defaulttype::Vector3::value_type UniformMass<Rigid3fTypes,Rigid3fMass>::ge
 }
 
 template <>
-sofa::defaulttype::Vector3::value_type UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy( const Rigid2fTypes::VecCoord& x )
+double UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy( const Rigid2fTypes::VecCoord& x )
 {
     double e = 0;
     // gravity
@@ -534,16 +534,16 @@ sofa::defaulttype::Vector3::value_type UniformMass<Rigid2fTypes,Rigid2fMass>::ge
 }
 
 template <>
-sofa::defaulttype::Vector3::value_type UniformMass<Rigid3fTypes,Rigid3fMass>::getElementMass(unsigned int )
+double UniformMass<Rigid3fTypes,Rigid3fMass>::getElementMass(unsigned int )
 {
-    return (sofa::defaulttype::Vector3::value_type)(mass.getValue().mass);
+    return (double)(mass.getValue().mass);
 }
 
 
 template <>
-sofa::defaulttype::Vector3::value_type UniformMass<Rigid2fTypes,Rigid2fMass>::getElementMass(unsigned int )
+double UniformMass<Rigid2fTypes,Rigid2fMass>::getElementMass(unsigned int )
 {
-    return (sofa::defaulttype::Vector3::value_type)(mass.getValue().mass);
+    return (double)(mass.getValue().mass);
 }
 
 template <>
@@ -582,14 +582,14 @@ void UniformMass<Vec6fTypes, float>::draw()
 
 
 template <>
-void UniformMass<Vec3fTypes, float>::addMDxToVector(defaulttype::BaseVector *resVect, const VecDeriv* dx, Real_Sofa mFact, unsigned int& offset)
+void UniformMass<Vec3fTypes, float>::addMDxToVector(defaulttype::BaseVector *resVect, const VecDeriv* dx, SReal mFact, unsigned int& offset)
 {
     unsigned int derivDim = Deriv::size();
     float m = mass.getValue();
 
     unsigned int vecDim = mstate->getX()->size();
 
-    const Real_Sofa* g = this->getContext()->getLocalGravity().ptr();
+    const SReal* g = this->getContext()->getLocalGravity().ptr();
 
     for (unsigned int i=0; i<vecDim; i++)
         for (unsigned int j=0; j<derivDim; j++)

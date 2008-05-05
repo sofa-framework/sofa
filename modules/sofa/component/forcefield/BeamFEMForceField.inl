@@ -413,7 +413,7 @@ void BeamFEMForceField<DataTypes>::applyStiffnessLarge( VecDeriv& df, const VecD
 }
 
 template<class DataTypes>
-void BeamFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, Real_Sofa k, unsigned int &offset)
+void BeamFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
 {
     //const VecCoord& x = *this->mstate->getX();
 

@@ -46,8 +46,7 @@ class LaparoscopicRigid3Types
 {
 public:
 
-    typedef Vector3::value_type Real_Sofa;
-    typedef Real_Sofa Real;
+    typedef SReal Real;
 
     class Deriv
     {

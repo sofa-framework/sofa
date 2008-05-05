@@ -74,7 +74,6 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef typename sofa::defaulttype::Vector3::value_type Real_Sofa;
 
 
     enum { SMALL = 0,   ///< Symbol of small displacements tetrahedron solver
@@ -189,9 +188,9 @@ public:
 
     virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
 
-    virtual sofa::defaulttype::Vector3::value_type getPotentialEnergy(const VecCoord& x);
+    virtual double getPotentialEnergy(const VecCoord& x);
 
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *, Real_Sofa, unsigned int &);
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *, SReal, unsigned int &);
 
     // handle topological changes
     virtual void handleTopologyChange();

@@ -24,15 +24,14 @@ using namespace sofa::helper;
 class DistanceGrid
 {
 public:
-    typedef Vector3::value_type Real_Sofa;
-    static Real_Sofa maxDist() { return (Real_Sofa)1e10; }
+    static SReal maxDist() { return (SReal)1e10; }
     typedef Vector3 Coord;
-    typedef defaulttype::ExtVector<Real_Sofa> VecReal_Sofa;
+    typedef defaulttype::ExtVector<SReal> VecSReal;
     typedef defaulttype::ExtVector<Coord> VecCoord;
 
     DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax);
 
-    DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax, defaulttype::ExtVectorAllocator<Real_Sofa>* alloc);
+    DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax, defaulttype::ExtVectorAllocator<SReal>* alloc);
 
 protected:
     ~DistanceGrid();
@@ -58,7 +57,7 @@ public:
 
     /// Compute distance field for a cube of the given half-size.
     /// Also create a mesh of points using np points per axis
-    void calcCubeDistance(Real_Sofa dim=1, int np=5);
+    void calcCubeDistance(SReal dim=1, int np=5);
 
     /// Update bbox
     void computeBBox();
@@ -75,7 +74,7 @@ public:
     void setBBMin(const Coord& val) { bbmin = val; }
     void setBBMax(const Coord& val) { bbmax = val; }
     Coord getBBCorner(int i) const { return Coord((i&1)?bbmax[0]:bbmin[0],(i&2)?bbmax[1]:bbmin[1],(i&4)?bbmax[2]:bbmin[2]); }
-    bool inBBox(const Coord& p, Real_Sofa margin=0.0f) const
+    bool inBBox(const Coord& p, SReal margin=0.0f) const
     {
         for (int c=0; c<3; ++c)
             if (p[c] < bbmin[c]-margin || p[c] > bbmax[c]+margin) return false;
@@ -87,7 +86,7 @@ public:
     Coord getCorner(int i) const { return Coord((i&1)?pmax[0]:pmin[0],(i&2)?pmax[1]:pmin[1],(i&4)?pmax[2]:pmin[2]); }
 
     bool isCube() const { return cubeDim != 0; }
-    Real_Sofa getCubeDim() const { return cubeDim; }
+    SReal getCubeDim() const { return cubeDim; }
 
     bool inGrid(const Coord& p) const
     {
@@ -153,15 +152,15 @@ public:
         return pmin+Coord(x*cellWidth[0], y*cellWidth[1], z*cellWidth[2]);
     }
 
-    Real_Sofa operator[](int index) const { return dists[index]; }
-    Real_Sofa& operator[](int index) { return dists[index]; }
+    SReal operator[](int index) const { return dists[index]; }
+    SReal& operator[](int index) { return dists[index]; }
 
-    static Real_Sofa interp(Real_Sofa coef, Real_Sofa a, Real_Sofa b)
+    static SReal interp(SReal coef, SReal a, SReal b)
     {
         return a+coef*(b-a);
     }
 
-    Real_Sofa interp(int index, const Coord& coefs) const
+    SReal interp(int index, const Coord& coefs) const
     {
         return interp(coefs[2],interp(coefs[1],interp(coefs[0],dists[index          ],dists[index+1        ]),
                 interp(coefs[0],dists[index  +nx     ],dists[index+1+nx     ])),
@@ -169,7 +168,7 @@ public:
                         interp(coefs[0],dists[index  +nx+nxny],dists[index+1+nx+nxny])));
     }
 
-    Real_Sofa interp(const Coord& p) const
+    SReal interp(const Coord& p) const
     {
         Coord coefs;
         int i = index(p, coefs);
@@ -190,14 +189,14 @@ public:
         //           + (dist[1][1][0]-dist[0][1][0]) * (  y) * (1-z)
         //           + (dist[1][0][1]-dist[0][0][1]) * (1-y) * (  z)
         //           + (dist[1][1][1]-dist[0][1][1]) * (  y) * (  z)
-        const Real_Sofa dist000 = dists[index          ];
-        const Real_Sofa dist100 = dists[index+1        ];
-        const Real_Sofa dist010 = dists[index  +nx     ];
-        const Real_Sofa dist110 = dists[index+1+nx     ];
-        const Real_Sofa dist001 = dists[index     +nxny];
-        const Real_Sofa dist101 = dists[index+1   +nxny];
-        const Real_Sofa dist011 = dists[index  +nx+nxny];
-        const Real_Sofa dist111 = dists[index+1+nx+nxny];
+        const SReal dist000 = dists[index          ];
+        const SReal dist100 = dists[index+1        ];
+        const SReal dist010 = dists[index  +nx     ];
+        const SReal dist110 = dists[index+1+nx     ];
+        const SReal dist001 = dists[index     +nxny];
+        const SReal dist101 = dists[index+1   +nxny];
+        const SReal dist011 = dists[index  +nx+nxny];
+        const SReal dist111 = dists[index+1+nx+nxny];
         return Coord(
                 interp(coefs[2],interp(coefs[1],dist100-dist000,dist110-dist010),interp(coefs[1],dist101-dist001,dist111-dist011)), //*invCellWidth[0],
                 interp(coefs[2],interp(coefs[0],dist010-dist000,dist110-dist100),interp(coefs[0],dist011-dist001,dist111-dist101)), //*invCellWidth[1],
@@ -211,9 +210,9 @@ public:
         return grad(i, coefs);
     }
 
-    Real_Sofa eval(const Coord& x) const
+    SReal eval(const Coord& x) const
     {
-        Real_Sofa d;
+        SReal d;
         if (inGrid(x))
         {
             d = interp(x);
@@ -227,9 +226,9 @@ public:
         return d;
     }
 
-    Real_Sofa quickeval(const Coord& x) const
+    SReal quickeval(const Coord& x) const
     {
-        Real_Sofa d;
+        SReal d;
         if (inGrid(x))
         {
             d = dists[index(x)] - cellWidth[0]; // we underestimate the distance
@@ -243,35 +242,35 @@ public:
         return d;
     }
 
-    Real_Sofa eval2(const Coord& x) const
+    SReal eval2(const Coord& x) const
     {
-        Real_Sofa d2;
+        SReal d2;
         if (inGrid(x))
         {
-            Real_Sofa d = interp(x);
+            SReal d = interp(x);
             d2 = d*d;
         }
         else
         {
             Coord xclamp = clamp(x);
-            Real_Sofa d = interp(xclamp);
+            SReal d = interp(xclamp);
             d2 = ((x-xclamp).norm2() + d*d); // we underestimate the distance
         }
         return d2;
     }
 
-    Real_Sofa quickeval2(const Coord& x) const
+    SReal quickeval2(const Coord& x) const
     {
-        Real_Sofa d2;
+        SReal d2;
         if (inGrid(x))
         {
-            Real_Sofa d = dists[index(x)] - cellWidth[0]; // we underestimate the distance
+            SReal d = dists[index(x)] - cellWidth[0]; // we underestimate the distance
             d2 = d*d;
         }
         else
         {
             Coord xclamp = clamp(x);
-            Real_Sofa d = dists[index(xclamp)] - cellWidth[0]; // we underestimate the distance
+            SReal d = dists[index(xclamp)] - cellWidth[0]; // we underestimate the distance
             d2 = ((x-xclamp).norm2() + d*d);
         }
         return d2;
@@ -281,13 +280,13 @@ public:
 
 protected:
     int nbRef;
-    VecReal_Sofa dists;
+    VecSReal dists;
     const int nx,ny,nz, nxny, nxnynz;
     const Coord pmin, pmax;
     const Coord cellWidth, invCellWidth;
     Coord bbmin, bbmax; ///< bounding box of the object, smaller than the grid
 
-    Real_Sofa cubeDim; ///< Cube dimension (!=0 if this is actually a cube
+    SReal cubeDim; ///< Cube dimension (!=0 if this is actually a cube
 
     // Fast Marching Method Update
     enum Status { FMM_FRONT0 = 0, FMM_FAR = -1, FMM_KNOWN_OUT = -2, FMM_KNOWN_IN = -3 };
@@ -389,7 +388,6 @@ class RigidDistanceGridCollisionElement : public core::TCollisionElementIterator
 {
 public:
 
-    typedef Vector3::value_type Real_Sofa;
     RigidDistanceGridCollisionElement(RigidDistanceGridCollisionModel* model, int index);
 
     explicit RigidDistanceGridCollisionElement(core::CollisionElementIterator& i);
@@ -419,7 +417,6 @@ class RigidDistanceGridCollisionModel : public core::CollisionModel
 {
 protected:
 
-    typedef Vector3::value_type Real_Sofa;
     class ElementData
     {
     public:
@@ -563,7 +560,6 @@ class FFDDistanceGridCollisionElement : public core::TCollisionElementIterator<F
 {
 public:
 
-    typedef Vector3::value_type Real_Sofa;
     FFDDistanceGridCollisionElement(FFDDistanceGridCollisionModel* model, int index);
 
     explicit FFDDistanceGridCollisionElement(core::CollisionElementIterator& i);
@@ -576,8 +572,7 @@ public:
 class FFDDistanceGridCollisionModel : public core::CollisionModel
 {
 public:
-    typedef DistanceGrid::Real_Sofa GReal_Sofa;
-    typedef DistanceGrid::Real_Sofa Real_Sofa;
+    typedef SReal GSReal;
     typedef DistanceGrid::Coord GCoord;
     class DeformedCube
     {
@@ -602,7 +597,7 @@ public:
                 C011 = 0+2+4,
                 C111 = 1+2+4
              };
-        typedef Vec<4,GReal_Sofa> Plane; ///< plane equation as defined by Plane.(x y z 1) = 0
+        typedef Vec<4,GSReal> Plane; ///< plane equation as defined by Plane.(x y z 1) = 0
         Plane faces[6]; ///< planes corresponding to the six faces (FX0,FX1,FY0,FY1,FZ0,FZ1)
         enum {FX0 = 0+0,
                 FX1 = 0+1,
@@ -629,7 +624,7 @@ public:
         void updateDeform();
 
         GCoord center; ///< current center;
-        GReal_Sofa radius; ///< radius of enclosing sphere
+        GSReal radius; ///< radius of enclosing sphere
         vector<GCoord> deformedPoints; ///< deformed points
         bool pointsUpdated; ///< true the deformedPoints vector has been updated with the latest positions
         void updatePoints(); ///< Update the deformedPoints position if not done yet (i.e. if pointsUpdated==false)
@@ -655,7 +650,7 @@ public:
             return corners[C000] + Dx*b[0] + (Dy + Dxy*b[0])*b[1] + (Dz + Dxz*b[0] + (Dyz + Dxyz*b[0])*b[1])*b[2];
         }
 
-        static GReal_Sofa interp(GReal_Sofa coef, GReal_Sofa a, GReal_Sofa b)
+        static GSReal interp(GSReal coef, GSReal a, GSReal b)
         {
             return a+coef*(b-a);
         }
@@ -695,8 +690,8 @@ public:
             GCoord b;
             for (int i=0; i<3; i++)
             {
-                GReal_Sofa b0 = faces[2*i+0]*Plane(p,1);
-                GReal_Sofa b1 = faces[2*i+1]*Plane(p,1);
+                GSReal b0 = faces[2*i+0]*Plane(p,1);
+                GSReal b1 = faces[2*i+1]*Plane(p,1);
                 b[i] = b0 / (b0 + b1);
             }
             return b;

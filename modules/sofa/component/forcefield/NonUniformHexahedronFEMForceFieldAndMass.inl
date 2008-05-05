@@ -279,16 +279,58 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
+/*
+template<class DataTypes>
+    void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::computeCoarseElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const helper::fixed_array<Coord,8> &nodes, const int elementIndice,  int level)
+{
+  if (level == 0)
+  {
+    for ( int i=0;i<8;++i)
+    {
+      HexahedronFEMForceFieldT::computeElementStiffness(K,M,nodes,i); // classical stiffness
+    }
+  }
+  else
+  {
+    //compute the finer 8 elements
+    ElementStiffness coarseElement[8];
+   for ( int i=0;i<8;++i)
+   {
+	helper::fixed_array<Coord,8> coarserNodes;
+	helper::fixed_array<int,8> coarserChildren;
+	computeCoarseElementStiffness(coarseElement[i], M, coarserNodes, i, level-1);
 
+	computeElementStiffnessFromFiner( coarseElement[i],coarserChildren, i);
+   }
+  }
+}*/
 
 template<class DataTypes>
 void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const helper::fixed_array<Coord,8> &nodes, const int elementIndice)
 {
+//   std::cout << elementIndice << " ! ";
+//   for (unsigned int i=0;i<8;++i)
+//     std::cout << nodes[i] << " " ;
+//   std::cout << "\t " << _finerLevel << "\n";
     if( _finerLevel )
         computeElementStiffnessFromFiner(K,elementIndice); // non-uniform stiffness
     else
     {
         HexahedronFEMForceFieldT::computeElementStiffness(K,M,nodes,elementIndice); // classical stiffness
+    }
+}
+
+template<class DataTypes>
+void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::computeElementStiffnessFromFiner( ElementStiffness &K,  const helper::fixed_array<int,8>& children, const int /*elementIndice*/)
+{
+    K.fill(0.0);
+
+    for(int i=0; i<8; ++i)
+    {
+        if( children[i] == -1 ) continue; // outside == void
+
+        const ElementStiffness &Kchild = _finerLevel->_elementStiffnesses.getValue()[children[i]];
+        addFineToCoarse(K, Kchild, i);
     }
 }
 
@@ -312,6 +354,9 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::computeElementStiffnes
 
 
 }
+
+
+
 
 
 
@@ -467,7 +512,7 @@ const float NonUniformHexahedronFEMForceFieldAndMass<T>::FINE_TO_COARSE[8][8][8]
 /////////////////////////////////////////////////
 
 template<class T>
-void NonUniformHexahedronFEMForceFieldAndMass<T>::addMDx(VecDeriv& f, const VecDeriv& dx, Real_Sofa factor)
+void NonUniformHexahedronFEMForceFieldAndMass<T>::addMDx(VecDeriv& f, const VecDeriv& dx, double factor)
 {
     if(_useMass.getValue())
         HexahedronFEMForceFieldAndMassT::addMDx(f,dx,factor);
@@ -488,7 +533,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::addGravityToV(double dt)
     else
     {
         VecDeriv& v = *this->mstate->getV();
-        const Real_Sofa* g = this->getContext()->getLocalGravity().ptr();
+        const SReal* g = this->getContext()->getLocalGravity().ptr();
         Deriv theGravity;
         T::set( theGravity, (Real)g[0], (Real)g[1], (Real)g[2]);
         Deriv hg = theGravity * dt;
@@ -508,7 +553,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::addForce(VecDeriv& f, const Ve
     {
         HexahedronFEMForceFieldT::addForce(f,x,v);
 
-        const Real_Sofa* g = this->getContext()->getLocalGravity().ptr();
+        const SReal* g = this->getContext()->getLocalGravity().ptr();
         Deriv theGravity;
         T::set( theGravity, g[0], g[1], g[2]);
 

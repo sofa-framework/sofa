@@ -54,7 +54,6 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
     typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
-    typedef typename sofa::defaulttype::Vector3::value_type Real_Sofa;
 protected:
 
     class Contact
@@ -115,7 +114,7 @@ public:
 
     virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2);
 
-    virtual Real_Sofa getPotentialEnergy(const VecCoord&, const VecCoord&);
+    virtual double getPotentialEnergy(const VecCoord&, const VecCoord&);
 
     // -- tool grabing utility
     void grabPoint( const core::componentmodel::behavior::MechanicalState<defaulttype::Vec3Types> *tool,

@@ -93,7 +93,6 @@ class RealGUI : public ::GUI, public SofaGUI
 
     /// @name SofaGUI Interface
     /// @{
-    typedef sofa::defaulttype::Vector3::value_type Real_Sofa;
 public:
 
     static int InitGUI(const char* name, const std::vector<std::string>& options);

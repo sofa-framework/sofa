@@ -55,18 +55,17 @@ Compute the amount of mechanical energy
 */
 class MechanicalComputeEnergyVisitor : public sofa::simulation::tree::MechanicalVisitor
 {
-    typedef sofa::defaulttype::Vector3::value_type Real_Sofa;
-    Real_Sofa m_kineticEnergy;
-    Real_Sofa m_potentialEnergy;
+    SReal m_kineticEnergy;
+    SReal m_potentialEnergy;
 
 public:
     MechanicalComputeEnergyVisitor();
 
     ~MechanicalComputeEnergyVisitor();
 
-    Real_Sofa getKineticEnergy();
+    double getKineticEnergy();
 
-    Real_Sofa getPotentialEnergy();
+    double getPotentialEnergy();
 
     /// Process the BaseMass
     virtual Result fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* mass)

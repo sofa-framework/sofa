@@ -96,7 +96,7 @@ public:
     {
 #ifdef SPARSEMATRIX_VERBOSE
         if (nbRow != rowSize() || nbCol != colSize())
-            std::cout << this->Name() << ": resize("<<nbRow<<","<<nbCol<<")"<<std::endl;
+            std::cout << /* this->Name()  <<  */": resize("<<nbRow<<","<<nbCol<<")"<<std::endl;
 #endif
         data.clear();
         nRow = nbRow;
@@ -113,12 +113,12 @@ public:
         return nCol;
     }
 
-    Real_Sofa element(int i, int j) const
+    SReal element(int i, int j) const
     {
 #ifdef SPARSEMATRIX_CHECK
         if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
         {
-            std::cerr << "ERROR: invalid read access to element ("<<i<<","<<j<<") in "<<this->Name()<<" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            std::cerr << "ERROR: invalid read access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return 0.0;
         }
 #endif
@@ -134,12 +134,12 @@ public:
     void set(int i, int j, double v)
     {
 #ifdef SPARSEMATRIX_VERBOSE
-        std::cout << this->Name() << "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
+        std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
 #endif
 #ifdef SPARSEMATRIX_CHECK
         if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
         {
-            std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<<this->Name()<<" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
         }
 #endif
@@ -149,12 +149,12 @@ public:
     void add(int i, int j, double v)
     {
 #ifdef SPARSEMATRIX_VERBOSE
-        std::cout << this->Name() << "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
+        std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
 #endif
 #ifdef SPARSEMATRIX_CHECK
         if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
         {
-            std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<<this->Name()<<" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
         }
 #endif
@@ -164,12 +164,12 @@ public:
     void clear(int i, int j)
     {
 #ifdef SPARSEMATRIX_VERBOSE
-        std::cout << this->Name() << "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0"<<std::endl;
+        std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0"<<std::endl;
 #endif
 #ifdef SPARSEMATRIX_CHECK
         if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
         {
-            std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<<this->Name()<<" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
         }
 #endif
@@ -187,12 +187,12 @@ public:
     void clearRow(int i)
     {
 #ifdef SPARSEMATRIX_VERBOSE
-        std::cout << this->Name() << "("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0"<<std::endl;
+        std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0"<<std::endl;
 #endif
 #ifdef SPARSEMATRIX_CHECK
         if ((unsigned)i >= (unsigned)rowSize())
         {
-            std::cerr << "ERROR: invalid write access to row "<<i<<" in "<<this->Name()<<" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            std::cerr << "ERROR: invalid write access to row "<<i<<" in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
         }
 #endif
@@ -205,12 +205,12 @@ public:
     void clearCol(int j)
     {
 #ifdef SPARSEMATRIX_VERBOSE
-        std::cout << this->Name() << "("<<rowSize()<<","<<colSize()<<"): col("<<j<<") = 0"<<std::endl;
+        std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): col("<<j<<") = 0"<<std::endl;
 #endif
 #ifdef SPARSEMATRIX_CHECK
         if ((unsigned)j >= (unsigned)colSize())
         {
-            std::cerr << "ERROR: invalid write access to column "<<j<<" in "<<this->Name()<<" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            std::cerr << "ERROR: invalid write access to column "<<j<<" in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
         }
 #endif
@@ -225,12 +225,12 @@ public:
     void clearRowCol(int i)
     {
 #ifdef SPARSEMATRIX_VERBOSE
-        std::cout << this->Name() << "("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0 and col("<<i<<") = 0"<<std::endl;
+        std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0 and col("<<i<<") = 0"<<std::endl;
 #endif
 #ifdef SPARSEMATRIX_CHECK
         if ((unsigned)i >= (unsigned)rowSize() || (unsigned)i >= (unsigned)colSize())
         {
-            std::cerr << "ERROR: invalid write access to row and column "<<i<<" in "<<this->Name()<<" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            std::cerr << "ERROR: invalid write access to row and column "<<i<<" in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
             return;
         }
 #endif

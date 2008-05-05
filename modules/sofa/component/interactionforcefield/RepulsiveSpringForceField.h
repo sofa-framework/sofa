@@ -61,7 +61,7 @@ public:
     }
 
     virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
-    virtual sofa::defaulttype::Vector3::value_type getPotentialEnergy();
+    virtual double getPotentialEnergy();
 };
 
 } // namespace interactionforcefield

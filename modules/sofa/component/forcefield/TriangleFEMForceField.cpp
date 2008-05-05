@@ -207,7 +207,7 @@ void TriangleFEMForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& d
 }
 
 template <class DataTypes>
-sofa::defaulttype::Vector3::value_type TriangleFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
+double TriangleFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
 {
     cerr<<"TriangleFEMForceField::getPotentialEnergy-not-implemented !!!"<<endl;
     return 0;

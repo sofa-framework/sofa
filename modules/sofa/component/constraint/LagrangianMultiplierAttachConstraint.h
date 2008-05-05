@@ -59,7 +59,7 @@ public:
 
     virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2);
 
-    virtual sofa::defaulttype::Vector3::value_type getPotentialEnergy(const VecCoord&, const VecCoord&)
+    virtual double getPotentialEnergy(const VecCoord&, const VecCoord&)
     {
         std::cerr<<"LagrangianMultiplierAttachConstraint::getPotentialEnergy-not-implemented !!!"<<std::endl;
         return 0;

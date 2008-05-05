@@ -66,7 +66,6 @@ public:
     typedef typename DataTypes::SparseDeriv SparseDeriv;
     typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
     typedef typename DataTypes::VecConst VecConst;
-    typedef typename sofa::defaulttype::Vector3::value_type Real_Sofa;
 
 protected:
     VecCoord* x;
@@ -89,9 +88,9 @@ protected:
     sofa::helper::vector<unsigned int> constraintId;
 
     bool initialized;
-    Real_Sofa translation[3];
-    Real_Sofa rotation[3];
-    Real_Sofa scale;
+    SReal translation[3];
+    SReal rotation[3];
+    SReal scale;
 
     /// @name Integration-related data
     /// @{
@@ -132,7 +131,7 @@ public:
 
     XDataPtr<DataTypes>* const f_X0;
 
-    Data<Real_Sofa> restScale;
+    Data<SReal> restScale;
 
     virtual VecCoord* getX()  { f_X->beginEdit(); return x;  }
     virtual VecDeriv* getV()  { f_V->beginEdit(); return v;  }
@@ -155,7 +154,7 @@ public:
     virtual const VecCoord* getXfree() const { return xfree; }
     virtual const VecDeriv* getVfree()  const { return vfree;  }
 
-    Real_Sofa getScale() {return scale;};
+    SReal getScale() {return scale;};
 
     virtual void init();
     virtual void storeResetState();
@@ -169,15 +168,15 @@ public:
 
     virtual void resize( int vsize);
 
-    virtual bool addBBox(Real_Sofa* minBBox, Real_Sofa* maxBBox);
+    virtual bool addBBox(double* minBBox, double* maxBBox);
 
     int getSize() const
     {
         return vsize;
     }
-    Real_Sofa getPX(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(*getX())[i]); return (Real_Sofa)x; }
-    Real_Sofa getPY(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(*getX())[i]); return (Real_Sofa)y; }
-    Real_Sofa getPZ(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(*getX())[i]); return (Real_Sofa)z; }
+    double getPX(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(*getX())[i]); return (SReal)x; }
+    double getPY(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(*getX())[i]); return (SReal)y; }
+    double getPZ(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(*getX())[i]); return (SReal)z; }
 
     /** \brief Overwrite values at index outputIndex by the ones at inputIndex.
      *
@@ -268,13 +267,13 @@ public:
 
     virtual void vFree(VecId v);
 
-    virtual void vOp(VecId v, VecId a = VecId::null(), VecId b = VecId::null(), Real_Sofa f=1.0);
+    virtual void vOp(VecId v, VecId a = VecId::null(), VecId b = VecId::null(), double f=1.0);
 
     virtual void vMultiOp(const VMultiOp& ops);
 
-    virtual void vThreshold( VecId a, Real_Sofa threshold );
+    virtual void vThreshold( VecId a, double threshold );
 
-    virtual Real_Sofa vDot(VecId a, VecId b);
+    virtual double vDot(VecId a, VecId b);
 
     virtual void setX(VecId v);
 

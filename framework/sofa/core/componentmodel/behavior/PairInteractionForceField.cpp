@@ -39,20 +39,19 @@ namespace behavior
 {
 
 using namespace sofa::defaulttype;
-#ifndef SOFA_FLOAT
+
 template class PairInteractionForceField<Vec3dTypes>;
 template class PairInteractionForceField<Vec2dTypes>;
 template class PairInteractionForceField<Vec1dTypes>;
 template class PairInteractionForceField<Rigid3dTypes>;
 template class PairInteractionForceField<Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
+
 template class PairInteractionForceField<Vec3fTypes>;
 template class PairInteractionForceField<Vec2fTypes>;
 template class PairInteractionForceField<Vec1fTypes>;
 template class PairInteractionForceField<Rigid3fTypes>;
 template class PairInteractionForceField<Rigid2fTypes>;
-#endif
+
 
 
 } // namespace behavior

@@ -88,7 +88,7 @@ void RepulsiveSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, 
 }
 
 template <class DataTypes>
-sofa::defaulttype::Vector3::value_type RepulsiveSpringForceField<DataTypes>::getPotentialEnergy()
+double RepulsiveSpringForceField<DataTypes>::getPotentialEnergy()
 {
     cerr<<"RepulsiveSpringForceField::getPotentialEnergy-not-implemented !!!"<<endl;
     return 0;

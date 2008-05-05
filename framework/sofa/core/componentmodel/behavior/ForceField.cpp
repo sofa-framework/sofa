@@ -39,22 +39,21 @@ namespace behavior
 {
 
 using namespace sofa::defaulttype;
-#ifndef SOFA_FLOAT
+
 template class ForceField<Vec3dTypes>;
 template class ForceField<Vec2dTypes>;
 template class ForceField<Vec1dTypes>;
 template class ForceField<Vec6dTypes>;
 template class ForceField<Rigid3dTypes>;
 template class ForceField<Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
+
 template class ForceField<Vec3fTypes>;
 template class ForceField<Vec2fTypes>;
 template class ForceField<Vec1fTypes>;
 template class ForceField<Vec6fTypes>;
 template class ForceField<Rigid3fTypes>;
 template class ForceField<Rigid2fTypes>;
-#endif
+
 
 
 } // namespace behavior

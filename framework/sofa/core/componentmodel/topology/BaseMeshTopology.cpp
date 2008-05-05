@@ -192,7 +192,7 @@ void BaseMeshTopology::clear()
     std::cerr << "WARNING: "<<this->getClassName()<<"::clear() not supported." << std::endl;
 }
 
-void BaseMeshTopology::addPoint(Real_Sofa, Real_Sofa, Real_Sofa)
+void BaseMeshTopology::addPoint(double, double, double)
 {
     std::cerr << "WARNING: "<<this->getClassName()<<"::addPoint() not supported." << std::endl;
 }

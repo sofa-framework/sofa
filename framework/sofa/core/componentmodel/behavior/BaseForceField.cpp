@@ -36,12 +36,12 @@ namespace componentmodel
 namespace behavior
 {
 
-void BaseForceField::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, Real_Sofa /*kFact*/, unsigned int &/*offset*/)
+void BaseForceField::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*kFact*/, unsigned int &/*offset*/)
 {
 
 }
 
-void BaseForceField::addKDxToVector(sofa::defaulttype::BaseVector *, Real_Sofa, unsigned int &)
+void BaseForceField::addKDxToVector(sofa::defaulttype::BaseVector *, double, unsigned int &)
 {
 
 }

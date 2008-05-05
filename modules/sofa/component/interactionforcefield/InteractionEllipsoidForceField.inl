@@ -255,7 +255,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addDForce(VecDeriv1
 }
 
 template <class DataTypes1, class DataTypes2>
-sofa::defaulttype::Vector3::value_type InteractionEllipsoidForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const VecCoord1& /* x1 */, const VecCoord2& /* x2 */)
+double InteractionEllipsoidForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const VecCoord1& /* x1 */, const VecCoord2& /* x2 */)
 {
     std::cerr<<"InteractionEllipsoidForceField::getPotentialEnergy-not-implemented !!!"<<std::endl;
     return 0;

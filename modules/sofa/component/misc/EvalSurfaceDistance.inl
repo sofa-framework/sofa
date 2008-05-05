@@ -19,7 +19,7 @@ namespace misc
 
 template<class DataTypes>
 EvalSurfaceDistance<DataTypes>::EvalSurfaceDistance()
-    : maxDist( initData(&maxDist, (Real_Sofa)1.0, "maxDist", "alarm distance for proximity detection"))
+    : maxDist( initData(&maxDist, (SReal)1.0, "maxDist", "alarm distance for proximity detection"))
     , surfaceCM(NULL)
     , pointsCM(NULL)
     , intersection(NULL)
@@ -67,7 +67,7 @@ void EvalSurfaceDistance<DataTypes>::init()
 }
 
 template<class DataTypes>
-Real_Sofa EvalSurfaceDistance<DataTypes>::eval()
+SReal EvalSurfaceDistance<DataTypes>::eval()
 {
     if (!this->mstate1 || !this->mstate2 || !surfaceCM || !pointsCM || !intersection || !detection) return 0.0;
     const VecCoord& x0 = *this->mstate1->getX0();

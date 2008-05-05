@@ -32,14 +32,13 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
-    typedef Vector3::value_type Real_Sofa;
 
     VecCoord pointArray;
 
     PointSetTopologyLoader()
     {
     }
-    virtual void addPoint(Real_Sofa px, Real_Sofa py, Real_Sofa pz)
+    virtual void addPoint(SReal px, SReal py, SReal pz)
     {
         //BUGFIX(Jeremie A.): The following does not work for 1D/2D datatypes
         //pointArray.push_back(Coord((Real)px,(Real)py,(Real)pz));

@@ -53,7 +53,7 @@ Mass<DataTypes>::~Mass()
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addMDx(Real_Sofa factor)
+void Mass<DataTypes>::addMDx(double factor)
 {
     if (this->mstate)
         addMDx(*this->mstate->getF(), *this->mstate->getDx(), factor);
@@ -67,7 +67,7 @@ void Mass<DataTypes>::accFromF()
 }
 
 template<class DataTypes>
-sofa::defaulttype::Vector3::value_type Mass<DataTypes>::getKineticEnergy()
+double Mass<DataTypes>::getKineticEnergy()
 {
     if (this->mstate)
         return getKineticEnergy(*this->mstate->getV());
@@ -75,7 +75,7 @@ sofa::defaulttype::Vector3::value_type Mass<DataTypes>::getKineticEnergy()
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addMDxToVector(defaulttype::BaseVector *resVect, Real_Sofa mFact, unsigned int& offset, bool dxNull)
+void Mass<DataTypes>::addMDxToVector(defaulttype::BaseVector *resVect, double mFact, unsigned int& offset, bool dxNull)
 {
     if (this->mstate)
     {

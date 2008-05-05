@@ -37,11 +37,10 @@ namespace io
 class SphereLoader
 {
 public:
-    typedef sofa::defaulttype::Vector3::value_type Real_Sofa;
     virtual ~SphereLoader() {}
     bool load(const char *filename);
     virtual void setNumSpheres(int /*n*/) {}
-    virtual void addSphere(Real_Sofa /*px*/, Real_Sofa /*py*/, Real_Sofa /*pz*/, Real_Sofa /*r*/) {}
+    virtual void addSphere(SReal /*px*/, SReal /*py*/, SReal /*pz*/, SReal /*r*/) {}
 };
 
 } // namespace io

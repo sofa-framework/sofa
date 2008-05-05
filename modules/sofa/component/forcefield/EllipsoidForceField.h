@@ -31,7 +31,6 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef typename sofa::defaulttype::Vector3::value_type Real_Sofa;
     enum { N=Coord::static_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
 
@@ -98,7 +97,7 @@ public:
 
     virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
 
-    virtual sofa::defaulttype::Vector3::value_type getPotentialEnergy(const VecCoord& x);
+    virtual double getPotentialEnergy(const VecCoord& x);
 
     void draw();
 };

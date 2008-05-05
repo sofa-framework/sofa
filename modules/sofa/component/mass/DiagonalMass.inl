@@ -299,7 +299,7 @@ void DiagonalMass<DataTypes, MassType>::resize(int vsize)
 
 // -- Mass interface
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx, Real_Sofa factor)
+void DiagonalMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
 {
 
     const MassVector &masses= f_mass.getValue();
@@ -331,11 +331,11 @@ void DiagonalMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
 }
 
 template <class DataTypes, class MassType>
-sofa::defaulttype::Vector3::value_type DiagonalMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
+double DiagonalMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
 {
 
     const MassVector &masses= f_mass.getValue();
-    Real_Sofa e = 0;
+    double e = 0;
     for (unsigned int i=0; i<masses.size(); i++)
     {
         e += v[i]*masses[i]*v[i]; // v[i]*v[i]*masses[i] would be more efficient but less generic
@@ -344,11 +344,11 @@ sofa::defaulttype::Vector3::value_type DiagonalMass<DataTypes, MassType>::getKin
 }
 
 template <class DataTypes, class MassType>
-sofa::defaulttype::Vector3::value_type DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x )
+double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x )
 {
 
     const MassVector &masses= f_mass.getValue();
-    Real_Sofa e = 0;
+    SReal e = 0;
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );
     Deriv theGravity;
@@ -361,7 +361,7 @@ sofa::defaulttype::Vector3::value_type DiagonalMass<DataTypes, MassType>::getPot
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addMToMatrix(defaulttype::BaseMatrix * mat, Real_Sofa mFact, unsigned int &offset)
+void DiagonalMass<DataTypes, MassType>::addMToMatrix(defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset)
 {
     const MassVector &masses= f_mass.getValue();
     const int N = defaulttype::DataTypeInfo<Deriv>::size();
@@ -372,9 +372,9 @@ void DiagonalMass<DataTypes, MassType>::addMToMatrix(defaulttype::BaseMatrix * m
 
 
 template <class DataTypes, class MassType>
-sofa::defaulttype::Vector3::value_type DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index)
+double DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index)
 {
-    return (Real_Sofa)(f_mass.getValue()[index]);
+    return (SReal)(f_mass.getValue()[index]);
 }
 
 
@@ -623,7 +623,7 @@ void DiagonalMass<DataTypes, MassType>::draw()
 }
 
 template <class DataTypes, class MassType>
-bool DiagonalMass<DataTypes, MassType>::addBBox(Real_Sofa* minBBox, Real_Sofa* maxBBox)
+bool DiagonalMass<DataTypes, MassType>::addBBox(double* minBBox, double* maxBBox)
 {
     const VecCoord& x = *this->mstate->getX();
     for (unsigned int i=0; i<x.size(); i++)
@@ -675,9 +675,9 @@ template <>
     void* , vector<Rigid3dMass> &);*/
 
 template <>
-sofa::defaulttype::Vector3::value_type DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const VecCoord& x );
+double DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const VecCoord& x );
 template <>
-sofa::defaulttype::Vector3::value_type DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const VecCoord& x );
+double DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const VecCoord& x );
 template <>
 void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw();
 template <>
@@ -685,9 +685,9 @@ void DiagonalMass<Rigid2dTypes, Rigid2dMass>::draw();
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-sofa::defaulttype::Vector3::value_type DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const VecCoord& x );
+double DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const VecCoord& x );
 template <>
-sofa::defaulttype::Vector3::value_type DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const VecCoord& x );
+double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const VecCoord& x );
 
 template <>
 void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw();

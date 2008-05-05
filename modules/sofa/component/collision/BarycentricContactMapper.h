@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_H
 #define SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_H
 
+#include <sofa/helper/system/config.h>
 #include <sofa/component/mapping/BarycentricMapping.h>
 #include <sofa/component/mapping/IdentityMapping.h>
 #include <sofa/component/mapping/RigidMapping.h>
@@ -494,7 +495,7 @@ public:
                 {
                     DistanceGrid::Coord coefs;
                     int i = prevGrid->index(P, coefs);
-                    DistanceGrid::Real_Sofa d = prevGrid->interp(i,coefs);
+                    SReal d = prevGrid->interp(i,coefs);
                     if (rabs(d) < 0.3) // todo : control threshold
                     {
                         DistanceGrid::Coord n = prevGrid->grad(i,coefs);

@@ -204,7 +204,7 @@ std::string HexahedronFEMForceFieldAndMass<DataTypes>::getTemplateName() const
 
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(VecDeriv& f, const VecDeriv& dx, Real_Sofa factor)
+void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(VecDeriv& f, const VecDeriv& dx, double factor)
 {
     unsigned int i=0;
     typename VecElement::const_iterator it;
@@ -297,7 +297,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addDForce(VecDeriv& df, const Ve
 
 
 template<class DataTypes>
-sofa::defaulttype::Vector3::value_type  HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass(unsigned int /*index*/)
+double HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass(unsigned int /*index*/)
 {
     std::cerr<<"HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass not yet implemented\n"; return 0.0;
 }
@@ -326,7 +326,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::draw()
 
 
 template<class DataTypes>
-bool HexahedronFEMForceFieldAndMass<DataTypes>::addBBox(Real_Sofa* minBBox, Real_Sofa* maxBBox)
+bool HexahedronFEMForceFieldAndMass<DataTypes>::addBBox(double* minBBox, double* maxBBox)
 {
     const VecCoord& x = *this->mstate->getX();
     for (unsigned int i=0; i<x.size(); i++)

@@ -67,7 +67,7 @@ void ConstantForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, c
 
 
 template <class DataTypes>
-sofa::defaulttype::Vector3::value_type ConstantForceField<DataTypes>::getPotentialEnergy(const VecCoord& x)
+double ConstantForceField<DataTypes>::getPotentialEnergy(const VecCoord& x)
 {
     const VecIndex& indices = points.getValue();
     const VecDeriv& f = forces.getValue();
@@ -105,7 +105,7 @@ void ConstantForceField<DataTypes>::draw()
 
 
 template <class DataTypes>
-bool ConstantForceField<DataTypes>::addBBox(Real_Sofa*, Real_Sofa* )
+bool ConstantForceField<DataTypes>::addBBox(double*, double* )
 {
     return false;
 }

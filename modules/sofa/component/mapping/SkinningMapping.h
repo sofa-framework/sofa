@@ -57,7 +57,6 @@ public:
     typedef typename Coord::value_type Real;
     enum { N=Coord::static_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef sofa::defaulttype::Vector3::value_type Real_Sofa;
 
 protected:
     sofa::helper::vector<InCoord> initPos;

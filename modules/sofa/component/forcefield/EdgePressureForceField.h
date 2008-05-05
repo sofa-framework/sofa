@@ -76,7 +76,7 @@ public:
 
     virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
     virtual void addDForce (VecDeriv& /*df*/, const VecDeriv& /*dx*/) {}
-    virtual sofa::defaulttype::Vector3::value_type getPotentialEnergy(const VecCoord& x);
+    virtual double getPotentialEnergy(const VecCoord& x);
 
     // Handle topological changes
     virtual void handleTopologyChange();

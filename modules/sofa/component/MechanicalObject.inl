@@ -54,7 +54,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , f_Xfree ( new XDataPtr<DataTypes>(&xfree,  "free position coordinates of the degrees of freedom") )
     , f_Vfree ( new VDataPtr<DataTypes>(&vfree,  "free velocity coordinates of the degrees of freedom") )
     , f_X0( new XDataPtr<DataTypes>(&x0, "rest position coordinates of the degrees of freedom") )
-//       , restScale(initData(&restScale, (Real_Sofa)1.0, "restScale","optional scaling of rest position coordinates (to simulated pre-existing internal tension)"))
+//       , restScale(initData(&restScale, (SReal)1.0, "restScale","optional scaling of rest position coordinates (to simulated pre-existing internal tension)"))
 {
     //HACK
     if (!restScale.isSet())
@@ -469,13 +469,13 @@ void MechanicalObject<DataTypes>::applyRotation (const defaulttype::Quat q)
 template<>
 void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaulttype::Quat q);
 template <>
-bool MechanicalObject<Vec1dTypes>::addBBox(Real_Sofa* minBBox, Real_Sofa* maxBBox);
+bool MechanicalObject<Vec1dTypes>::addBBox(double* minBBox, double* maxBBox);
 #endif
 #ifndef SOFA_Real
 template<>
 void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaulttype::Quat q);
 template <>
-bool MechanicalObject<Vec1fTypes>::addBBox(Real_Sofa* minBBox, Real_Sofa* maxBBox);
+bool MechanicalObject<Vec1fTypes>::addBBox(double* minBBox, double* maxBBox);
 #endif
 
 template <class DataTypes>
@@ -702,7 +702,7 @@ void MechanicalObject<DataTypes>::init()
             }
 
             if (rotation[0]!=0.0 || rotation[1]!=0.0 || rotation[2]!=0.0)
-                this->applyRotation(helper::Quater<Real_Sofa>::createFromRotationVector( Vec<3,Real_Sofa>(rotation[0],rotation[1],rotation[2])));
+                this->applyRotation(helper::Quater<SReal>::createFromRotationVector( Vec<3,SReal>(rotation[0],rotation[1],rotation[2])));
 
             if (translation[0]!=0.0 || translation[1]!=0.0 || translation[2]!=0.0)
                 this->applyTranslation( translation[0],translation[1],translation[2]);
@@ -881,7 +881,7 @@ void MechanicalObject<DataTypes>::vFree(VecId v)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, Real_Sofa f)
+void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
 {
     if(v.isNull())
     {
@@ -1235,10 +1235,10 @@ void MechanicalObject<DataTypes>::vMultiOp(const VMultiOp& ops)
         VecDeriv& vv = *getVecDeriv(ops[0].first.index);
         VecCoord& vx = *getVecCoord(ops[1].first.index);
         const unsigned int n = vx.size();
-        const Real_Sofa f_v_v = ops[0].second[0].second;
-        const Real_Sofa f_v_a = ops[0].second[1].second;
-        const Real_Sofa f_x_x = ops[1].second[0].second;
-        const Real_Sofa f_x_v = ops[1].second[1].second;
+        const SReal f_v_v = ops[0].second[0].second;
+        const SReal f_v_a = ops[0].second[1].second;
+        const SReal f_x_x = ops[1].second[0].second;
+        const SReal f_x_v = ops[1].second[1].second;
         if (f_v_v == 1.0 && f_x_x == 1.0) // very common case
         {
             if (f_v_a == 1.0) // used by euler implicit and other integrators that directly computes a*dt
@@ -1297,7 +1297,7 @@ template<> inline void clear( double& t )
 
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vThreshold(VecId v, Real_Sofa t)
+void MechanicalObject<DataTypes>::vThreshold(VecId v, double t)
 {
     if( v.type==VecId::V_DERIV)
     {
@@ -1316,7 +1316,7 @@ void MechanicalObject<DataTypes>::vThreshold(VecId v, Real_Sofa t)
 }
 
 template <class DataTypes>
-sofa::defaulttype::Vector3::value_type MechanicalObject<DataTypes>::vDot(VecId a, VecId b)
+double MechanicalObject<DataTypes>::vDot(VecId a, VecId b)
 {
     Real r = 0.0;
     if (a.type == VecId::V_COORD && b.type == VecId::V_COORD)
@@ -1509,7 +1509,7 @@ sofa::helper::vector<unsigned int>& MechanicalObject<DataTypes>::getConstraintId
 
 
 template <class DataTypes>
-bool MechanicalObject<DataTypes>::addBBox(Real_Sofa* minBBox, Real_Sofa* maxBBox)
+bool MechanicalObject<DataTypes>::addBBox(double* minBBox, double* maxBBox)
 {
     const VecCoord& x = *getX();
     if (x.size() <= 0) return false;

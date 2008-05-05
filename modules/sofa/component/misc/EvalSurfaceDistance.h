@@ -59,11 +59,11 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
 
-    Data < Real_Sofa > maxDist;
+    Data < SReal > maxDist;
     EvalSurfaceDistance();
     virtual ~EvalSurfaceDistance();
 
-    virtual Real_Sofa  eval();
+    virtual SReal  eval();
     virtual void init();
     virtual void draw();
 

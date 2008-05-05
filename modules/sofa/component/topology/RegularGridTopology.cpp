@@ -87,7 +87,7 @@ RegularGridTopology::RegularGridTopology()
 {
 }
 
-void RegularGridTopology::setPos(Real_Sofa xmin, Real_Sofa xmax, Real_Sofa ymin, Real_Sofa ymax, Real_Sofa zmin, Real_Sofa zmax)
+void RegularGridTopology::setPos(SReal xmin, SReal xmax, SReal ymin, SReal ymax, SReal zmin, SReal zmax)
 {
     min.setValue(Vector3(xmin,ymin,zmin));
     max.setValue(Vector3(xmax,ymax,zmax));
@@ -131,9 +131,9 @@ int RegularGridTopology::findCube(const Vector3& pos)
         return -1;
 
     Vector3 p = pos-p0;
-    Real_Sofa x = p*dx*inv_dx2;
-    Real_Sofa y = p*dy*inv_dy2;
-    Real_Sofa z = p*dz*inv_dz2;
+    SReal x = p*dx*inv_dx2;
+    SReal y = p*dy*inv_dy2;
+    SReal z = p*dz*inv_dz2;
     int ix = int(x+1000000)-1000000; // Do not round toward 0...
     int iy = int(y+1000000)-1000000;
     int iz = int(z+1000000)-1000000;
@@ -154,9 +154,9 @@ int RegularGridTopology::findNearestCube(const Vector3& pos)
 {
     if (n.getValue()[0]<2 || n.getValue()[1]<2 || n.getValue()[2]<2) return -1;
     Vector3 p = pos-p0;
-    Real_Sofa x = p*dx*inv_dx2;
-    Real_Sofa y = p*dy*inv_dy2;
-    Real_Sofa z = p*dz*inv_dz2;
+    SReal x = p*dx*inv_dx2;
+    SReal y = p*dy*inv_dy2;
+    SReal z = p*dz*inv_dz2;
     int ix = int(x+1000000)-1000000; // Do not round toward 0...
     int iy = int(y+1000000)-1000000;
     int iz = int(z+1000000)-1000000;
@@ -168,13 +168,13 @@ int RegularGridTopology::findNearestCube(const Vector3& pos)
 
 /// return the cube containing the given point (or -1 if not found),
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-int RegularGridTopology::findCube(const Vector3& pos, Real_Sofa& fx, Real_Sofa &fy, Real_Sofa &fz)
+int RegularGridTopology::findCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
 {
     if (n.getValue()[0]<2 || n.getValue()[1]<2 || n.getValue()[2]<2) return -1;
     Vector3 p = pos-p0;
-    Real_Sofa x = p*dx*inv_dx2;
-    Real_Sofa y = p*dy*inv_dy2;
-    Real_Sofa z = p*dz*inv_dz2;
+    SReal x = p*dx*inv_dx2;
+    SReal y = p*dy*inv_dy2;
+    SReal z = p*dz*inv_dz2;
     int ix = int(x+1000000)-1000000; // Do not round toward 0...
     int iy = int(y+1000000)-1000000;
     int iz = int(z+1000000)-1000000;
@@ -193,13 +193,13 @@ int RegularGridTopology::findCube(const Vector3& pos, Real_Sofa& fx, Real_Sofa &
 
 /// return the cube containing the given point (or -1 if not found),
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-int RegularGridTopology::findNearestCube(const Vector3& pos, Real_Sofa& fx, Real_Sofa &fy, Real_Sofa &fz)
+int RegularGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
 {
     if (n.getValue()[0]<2 || n.getValue()[1]<2 || n.getValue()[2]<2) return -1;
     Vector3 p = pos-p0;
-    Real_Sofa x = p*dx*inv_dx2;
-    Real_Sofa y = p*dy*inv_dy2;
-    Real_Sofa z = p*dz*inv_dz2;
+    SReal x = p*dx*inv_dx2;
+    SReal y = p*dy*inv_dy2;
+    SReal z = p*dz*inv_dz2;
     int ix = int(x+1000000)-1000000; // Do not round toward 0...
     int iy = int(y+1000000)-1000000;
     int iz = int(z+1000000)-1000000;

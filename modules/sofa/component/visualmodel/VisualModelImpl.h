@@ -101,7 +101,6 @@ protected:
     // use types from ExtVec3fTypes
 
     typedef ExtVec3fTypes::Real Real;
-    typedef Vector3::value_type Real_Sofa;
     typedef ExtVec3fTypes::Coord Coord;
     typedef ExtVec3fTypes::VecCoord VecCoord;
     typedef ExtVec3fTypes::Deriv Deriv;
@@ -212,7 +211,7 @@ public:
 
     void initVisual();
 
-    bool addBBox(Real_Sofa* minBBox, Real_Sofa* maxBBox);
+    bool addBBox(double* minBBox, double* maxBBox);
 
     //const VecCoord* getX()  const; // { return &x;   }
     //const VecDeriv* getV()  const { return NULL; }
