@@ -39,10 +39,11 @@ namespace tree
 namespace xml
 {
 
-
 BaseElement* load(const char *filename);
 
 bool save(const char *filename, BaseElement* root);
+
+extern int numDefault;
 
 } // namespace xml
 

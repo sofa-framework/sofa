@@ -36,10 +36,8 @@
 #include <sofa/gui/qt/viewer/qgl/QtGLViewer.h>
 #endif
 
-
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/simulation/tree/InitVisitor.h>
-
 
 #include <sofa/simulation/automatescheduler/ThreadSimulation.h>
 #include <sofa/simulation/automatescheduler/ExecBus.h>
@@ -47,8 +45,9 @@
 
 #include <sofa/component/visualmodel/VisualModelImpl.h>
 
-#include <sofa/simulation/tree/xml/XML.cpp> //--> static int num defined. If the same scene is reloaded, num has to be set to zero
+#include <sofa/simulation/tree/xml/XML.h>
 
+#include <sofa/helper/system/FileRepository.h>
 
 namespace sofa
 {
@@ -705,7 +704,7 @@ bool RealGUI::setViewer ( const char* name )
 void RealGUI::fileOpen ( const char* filename )
 {
     frameCounter = 0;
-    sofa::simulation::tree::xml::num = 0;
+    sofa::simulation::tree::xml::numDefault = 0;
     list_object_added.clear();
     list_object_removed.clear();
     list_object_initial.clear();

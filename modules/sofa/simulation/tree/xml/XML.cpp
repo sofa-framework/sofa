@@ -85,7 +85,7 @@ BaseElement* includeNode  (xmlNodePtr root,const char *basefilename);
 BaseElement* attributeNode(xmlNodePtr root,const char *basefilename);
 
 
-static int num=0;
+int numDefault=0;
 
 BaseElement* createNode(xmlNodePtr root, const char *basefilename, bool isRoot = false)
 {
@@ -114,10 +114,8 @@ BaseElement* createNode(xmlNodePtr root, const char *basefilename, bool isRoot =
         name = "default";
 // 		static int num = 0;
         char buf[16];
-        // added by Sylvere F.
-        sprintf(buf, "%d", num);
-        // snprintf(buf,sizeof(buf),"%d",num);
-        ++num;
+        sprintf(buf, "%d", numDefault);
+        ++numDefault;
         name += buf;
     }
     if (ptype != NULL)

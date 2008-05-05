@@ -22,8 +22,8 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_ACTIONSCHEDULER_H
-#define SOFA_SIMULATION_TREE_ACTIONSCHEDULER_H
+#ifndef SOFA_SIMULATION_TREE_VISITORSCHEDULER_H
+#define SOFA_SIMULATION_TREE_VISITORSCHEDULER_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include "ClassSystem.h"
