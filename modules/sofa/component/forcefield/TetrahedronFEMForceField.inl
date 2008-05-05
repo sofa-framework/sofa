@@ -978,13 +978,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
 template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::reinit()
 {
-
-    if (f_method.getValue() == "small")
-        this->setMethod(SMALL);
-    else if (f_method.getValue()  == "polar")
-        this->setMethod(POLAR);
-    else 	this->setMethod(LARGE);
-
+    setMethod(f_method.getValue() );
     _strainDisplacements.resize( _indexedElements->size() );
     _materialsStiffnesses.resize(_indexedElements->size() );
     if(_assembling)

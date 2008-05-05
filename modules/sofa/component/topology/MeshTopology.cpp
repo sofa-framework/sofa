@@ -193,6 +193,7 @@ bool MeshTopology::load(const char* filename)
         if (!loader.load(filename))
             return false;
     }
+    this->filename.setValue(filename);
     return true;
 }
 
