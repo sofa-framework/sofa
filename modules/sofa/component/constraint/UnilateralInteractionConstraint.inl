@@ -142,7 +142,7 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintValue(double* v)
     {
         Contact& c = contacts[i]; // get each contact detected
         v[c.id] = c.dfree;
-        std::cout << "constraint value "<<c.id<<" = "<<c.dfree<<std::endl;
+        //std::cout << "constraint value "<<c.id<<" = "<<c.dfree<<std::endl;
         if (c.mu > 0.0)
         {
             v[c.id+1] = c.dfree_t; // dfree_t & dfree_s are added to v to compute the friction
@@ -196,6 +196,11 @@ void UnilateralInteractionConstraint<DataTypes>::draw()
         const Contact& c = contacts[i];
         helper::gl::glVertexT(c.P);
         helper::gl::glVertexT(c.Q);
+        glColor4f(1,1,0,1);
+        helper::gl::glVertexT(c.P);
+        helper::gl::glVertexT(c.P+c.norm*(c.dfree));
+        helper::gl::glVertexT(c.Q);
+        helper::gl::glVertexT(c.Q-c.norm*(c.dfree));
 
         if (c.dfree < 0)
         {

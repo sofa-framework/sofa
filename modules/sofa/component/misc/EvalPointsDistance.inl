@@ -93,6 +93,8 @@ template<class DataTypes>
 SReal EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoord& x2, const VecCoord& x0)
 {
     const int n = (x1.size()<x2.size())?x1.size():x2.size();
+    int s1 = x1.size()-n;
+    int s2 = x2.size()-n;
     Real dsum = 0.0;
     Real dmin = 0.0;
     Real dmax = 0.0;
@@ -102,14 +104,16 @@ SReal EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoord& 
     Real rdmax = 0.0;
     Real rd2 = 0.0;
     int rn=0;
+    Coord dx0 = x2[s2]-x0[s1];
     for (int i=0; i<n; ++i)
     {
-        Real d = (Real)(x1[i]-x2[i]).norm();
+        Real d = (Real)(x1[s1+i]-x2[s2+i]).norm();
         dsum += d;
         d2 += d*d;
         if (i==0 || d < dmin) dmin = d;
         if (i==0 || d > dmax) dmax = d;
-        Real d0 = (Real)(x1[i]-x0[i]).norm();
+        //Real d0 = (Real)(x1[s1+i]-x0[s1+i]).norm();
+        Real d0 = (Real)(x2[s2+i]-x0[s1+i]-dx0).norm();
         if (d0 > 1.0e-6)
         {
             Real rd = d/d0;
@@ -153,13 +157,15 @@ template<class DataTypes>
 void EvalPointsDistance<DataTypes>::doDraw(const VecCoord& x1, const VecCoord& x2)
 {
     const int n = (x1.size()<x2.size())?x1.size():x2.size();
+    int s1 = x1.size()-n;
+    int s2 = x2.size()-n;
     glDisable(GL_LIGHTING);
     glColor3f(1.0f,0.5f,0.5f);
     glBegin(GL_LINES);
     for (int i=0; i<n; ++i)
     {
-        helper::gl::glVertexT(x1[i]);
-        helper::gl::glVertexT(x2[i]);
+        helper::gl::glVertexT(x1[s1+i]);
+        helper::gl::glVertexT(x2[s2+i]);
     }
     glEnd();
 }

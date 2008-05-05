@@ -25,7 +25,7 @@ namespace tree
 {
 
 /**
-Base class for the Visitors which deal with GNodes specifically rather than System.
+Base class for the Visitors which deal with GNodes specifically rather than Node.
 
 	@author The SOFA team </www.sofa-framework.org>
 */
@@ -35,6 +35,49 @@ public:
     GNodeVisitor();
 
     ~GNodeVisitor();
+
+    /// Callback method called when decending to a new node. Recursion will stop if this method returns RESULT_PRUNE
+    virtual Result processNodeTopDown(GNode* /*node*/) { return RESULT_CONTINUE; }
+
+    /// Callback method called after child node have been processed and before going back to the parent node.
+    virtual void processNodeBottomUp(GNode* /*node*/) { }
+
+    /// Callback method called when decending to a new node. Recursion will stop if this method returns RESULT_PRUNE
+    /// This version is offered a LocalStorage to store temporary data
+    virtual Result processNodeTopDown(GNode* node, LocalStorage*) { return processNodeTopDown(node); }
+
+    /// Callback method called after child node have been processed and before going back to the parent node.
+    /// This version is offered a LocalStorage to store temporary data
+    virtual void processNodeBottomUp(GNode* node, LocalStorage*) { processNodeBottomUp(node); }
+
+    /// Callback method called when decending to a new node. Recursion will stop if this method returns RESULT_PRUNE
+    virtual Result processNodeTopDown(simulation::Node* node)
+    {
+        GNode* g = dynamic_cast<GNode*>(node);
+        if (!g)
+        {
+            std::cerr << "GNodeVisitor: node is not a GNode !\n";
+            return RESULT_PRUNE;
+        }
+        else
+        {
+            return processNodeTopDown(g);
+        }
+    }
+
+    /// Callback method called after child node have been processed and before going back to the parent node.
+    virtual void processNodeBottomUp(simulation::Node* node)
+    {
+        GNode* g = dynamic_cast<GNode*>(node);
+        if (!g)
+        {
+            std::cerr << "GNodeVisitor: node is not a GNode !\n";
+        }
+        else
+        {
+            processNodeBottomUp(g);
+        }
+    }
 
     /// Helper method to enumerate objects in the given list. The callback gets the pointer to node
     template < class Act, class Container, class Object >

@@ -1188,7 +1188,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, d
             //afficheLCP(dfree,W,f,dim);
             return it;
         }
-        else printf("LCP dim = %d iteration %d: error = %f\n",dim,it,error);
+        //else printf("LCP dim = %d iteration %d: error = %f\n",dim,it,error);
         if (isnan(error))
         {
             break; // no point to continue

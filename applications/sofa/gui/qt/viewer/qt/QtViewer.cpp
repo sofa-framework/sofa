@@ -1302,7 +1302,7 @@ void QtViewer::calcProjection()
     Vector3 center;
 
     //if (!sceneBBoxIsValid)
-    if (groot && !sceneBBoxIsValid)
+    if (groot && (!sceneBBoxIsValid || _axis))
     {
         getSimulation()->computeBBox(groot, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
         sceneBBoxIsValid = true;

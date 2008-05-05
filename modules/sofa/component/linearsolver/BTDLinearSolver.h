@@ -122,7 +122,7 @@ public:
         while (i0 < n)
         {
             unsigned int j0 = i0+1;
-            double eps = M.element(i0,i0)*1.0e-6;
+            double eps = M.element(i0,i0)*1.0e-10;
             while (j0 < n)
                 if (fabs(M.element(i0,j0)) > eps) break;
                 else ++j0;
