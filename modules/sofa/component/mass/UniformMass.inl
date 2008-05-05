@@ -88,7 +88,7 @@ void UniformMass<DataTypes, MassType>::init()
 
 // -- Mass interface
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx, Real_Sofa factor)
+void UniformMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
 {
     MassType m = mass.getValue();
     if (factor != 1.0)
@@ -111,7 +111,7 @@ void UniformMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
 
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::addMDxToVector(defaulttype::BaseVector * /*resVect*/, const VecDeriv* /*dx*/, Real_Sofa /*mFact*/, unsigned int& /*offset*/)
+void UniformMass<DataTypes, MassType>::addMDxToVector(defaulttype::BaseVector * /*resVect*/, const VecDeriv* /*dx*/, SReal /*mFact*/, unsigned int& /*offset*/)
 {
 
 }
@@ -122,7 +122,7 @@ void UniformMass<DataTypes, MassType>::addGravityToV(double dt)
     if (this->mstate)
     {
         VecDeriv& v = *this->mstate->getV();
-        const Real_Sofa* g = this->getContext()->getLocalGravity().ptr();
+        const SReal* g = this->getContext()->getLocalGravity().ptr();
         Deriv theGravity;
         DataTypes::set( theGravity, g[0], g[1], g[2]);
         Deriv hg = theGravity * (Real)dt;
@@ -147,7 +147,7 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x
         return;
 
     // weight
-    const Real_Sofa* g = this->getContext()->getLocalGravity().ptr();
+    const SReal* g = this->getContext()->getLocalGravity().ptr();
     Deriv theGravity;
     DataTypes::set
     ( theGravity, g[0], g[1], g[2]);
@@ -187,7 +187,7 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x
 }
 
 template <class DataTypes, class MassType>
-sofa::defaulttype::Vector3::value_type UniformMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
+double UniformMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
 {
     double e=0;
     const MassType& m = mass.getValue();
@@ -200,7 +200,7 @@ sofa::defaulttype::Vector3::value_type UniformMass<DataTypes, MassType>::getKine
 }
 
 template <class DataTypes, class MassType>
-sofa::defaulttype::Vector3::value_type UniformMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x )
+double UniformMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x )
 {
     double e = 0;
     const MassType& m = mass.getValue();
@@ -223,7 +223,7 @@ sofa::defaulttype::Vector3::value_type UniformMass<DataTypes, MassType>::getPote
 
 /// Add Mass contribution to global Matrix assembling
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::addMToMatrix(defaulttype::BaseMatrix * mat, Real_Sofa mFact, unsigned int &offset)
+void UniformMass<DataTypes, MassType>::addMToMatrix(defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset)
 {
     const MassType& m = mass.getValue();
     const int N = defaulttype::DataTypeInfo<Deriv>::size();
@@ -235,9 +235,9 @@ void UniformMass<DataTypes, MassType>::addMToMatrix(defaulttype::BaseMatrix * ma
 
 
 template <class DataTypes, class MassType>
-sofa::defaulttype::Vector3::value_type UniformMass<DataTypes, MassType>::getElementMass(unsigned int )
+double UniformMass<DataTypes, MassType>::getElementMass(unsigned int )
 {
-    return (sofa::defaulttype::Vector3::value_type)(mass.getValue());
+    return (double)(mass.getValue());
 }
 
 
@@ -277,7 +277,7 @@ void UniformMass<DataTypes, MassType>::draw()
 }
 
 template <class DataTypes, class MassType>
-bool UniformMass<DataTypes, MassType>::addBBox(Real_Sofa* minBBox, Real_Sofa* maxBBox)
+bool UniformMass<DataTypes, MassType>::addBBox(double* minBBox, double* maxBBox)
 {
     const VecCoord& x = *this->mstate->getX();
     for (unsigned int i=0; i<x.size(); i++)
@@ -321,9 +321,9 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::draw();
 template <>
 void UniformMass<Rigid2dTypes, Rigid2dMass>::draw();
 template <>
-sofa::defaulttype::Vector3::value_type UniformMass<Rigid3dTypes,Rigid3dMass>::getPotentialEnergy( const VecCoord& x );
+double UniformMass<Rigid3dTypes,Rigid3dMass>::getPotentialEnergy( const VecCoord& x );
 template <>
-sofa::defaulttype::Vector3::value_type UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy( const VecCoord& x );
+double UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy( const VecCoord& x );
 template <>
 void UniformMass<Vec6dTypes,double>::draw();
 #endif
@@ -335,9 +335,9 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::draw();
 template <>
 void UniformMass<Rigid2fTypes, Rigid2fMass>::draw();
 template <>
-sofa::defaulttype::Vector3::value_type UniformMass<Rigid3fTypes,Rigid3fMass>::getPotentialEnergy( const VecCoord& x );
+double UniformMass<Rigid3fTypes,Rigid3fMass>::getPotentialEnergy( const VecCoord& x );
 template <>
-sofa::defaulttype::Vector3::value_type UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy( const VecCoord& x );
+double UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy( const VecCoord& x );
 template <>
 void UniformMass<Vec6fTypes,float>::draw();
 #endif

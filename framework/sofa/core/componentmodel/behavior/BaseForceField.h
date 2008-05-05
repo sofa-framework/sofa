@@ -60,7 +60,6 @@ namespace behavior
 class BaseForceField : public virtual objectmodel::BaseObject
 {
 public:
-    typedef sofa::defaulttype::Vector3::value_type Real_Sofa;
     virtual ~BaseForceField() {}
 
     /// @name Vector operations
@@ -95,7 +94,7 @@ public:
     ///
     /// Used to extimate the total energy of the system by some
     /// post-stabilization techniques.
-    virtual Real_Sofa getPotentialEnergy() =0;
+    virtual double getPotentialEnergy() =0;
 
     /// @}
 
@@ -107,10 +106,10 @@ public:
     /// \param matrix matrix to add the result to
     /// \param mFact coefficient for mass values
     /// \param offset current row/column offset
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, Real_Sofa kFact, unsigned int &offset);
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset);
 
     /// Compute the right-hand side vector of the system matrix.
-    virtual void addKDxToVector(sofa::defaulttype::BaseVector * vect, Real_Sofa kFact, unsigned int &offset);
+    virtual void addKDxToVector(sofa::defaulttype::BaseVector * vect, double kFact, unsigned int &offset);
 
     /// @}
 

@@ -372,7 +372,7 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
         }
         fclose(file);
     }
-    Real_Sofa s = std::max(dim_voxels.getValue()[0],std::max(dim_voxels.getValue()[1],dim_voxels.getValue()[2]));
+    SReal s = std::max(dim_voxels.getValue()[0],std::max(dim_voxels.getValue()[1],dim_voxels.getValue()[2]));
     min.setValue(size_voxel.getValue()*s*(-0.5)); //Centered on 0
     max.setValue(size_voxel.getValue()*s*0.5);
 
@@ -495,7 +495,7 @@ void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
     // if not given sizes -> bounding box
     if( min.getValue()== Vector3() && max.getValue()== Vector3())
     {
-        Real_Sofa xMin, xMax, yMin, yMax, zMin, zMax;
+        SReal xMin, xMax, yMin, yMax, zMin, zMax;
         computeBoundingBox(mesh->getVertices(), xMin, xMax, yMin, yMax, zMin, zMax);
 
         // increase the box a little
@@ -693,9 +693,9 @@ void SparseGridTopology::buildFromRegularGridTypes(RegularGridTopology& regularG
 }
 
 void SparseGridTopology::computeBoundingBox(const helper::vector<Vector3>& vertices,
-        Real_Sofa& xmin, Real_Sofa& xmax,
-        Real_Sofa& ymin, Real_Sofa& ymax,
-        Real_Sofa& zmin, Real_Sofa& zmax) const
+        SReal& xmin, SReal& xmax,
+        SReal& ymin, SReal& ymax,
+        SReal& zmin, SReal& zmax) const
 {
     // bounding box computation
     xmin = vertices[0][0];
@@ -1027,7 +1027,7 @@ void SparseGridTopology::buildVirtualFinerLevels()
 
 /// return the cube containing the given point (or -1 if not found),
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-int SparseGridTopology::findCube(const Vector3& pos, Real_Sofa& fx, Real_Sofa &fy, Real_Sofa &fz)
+int SparseGridTopology::findCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
 {
     int indiceInRegularGrid = _regularGrid.findCube( pos,fx,fy,fz);
     if( indiceInRegularGrid == -1 )
@@ -1038,7 +1038,7 @@ int SparseGridTopology::findCube(const Vector3& pos, Real_Sofa& fx, Real_Sofa &f
 
 /// return the cube containing the given point (or -1 if not found),
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-int SparseGridTopology::findNearestCube(const Vector3& pos, Real_Sofa& fx, Real_Sofa &fy, Real_Sofa &fz)
+int SparseGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
 {
     int indice = 0;
     float lgmin = 99999999.0f;
@@ -1172,7 +1172,7 @@ void SparseGridTopology::updateHexas()
 //     bool SparseGridTopology::intersectionSegmentBox( const SegmentForIntersection& seg, const CubeForIntersection& cube  )
 //     {
 //       Vector3 afAWdU, afADdU, afAWxDdU;
-//       Real_Sofa fRhs;
+//       SReal fRhs;
 //
 //
 //       Vector3 kDiff = seg.center - cube.center;

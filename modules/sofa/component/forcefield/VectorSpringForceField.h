@@ -32,7 +32,6 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef typename Vector3::value_type Real_Sofa;
     typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
     enum { N=Coord::static_size };
 
@@ -99,8 +98,8 @@ public:
     virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2);
     //virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
 
-    //virtual sofa::defaulttype::Vector3::value_type getPotentialEnergy(const VecCoord& )
-    virtual Real_Sofa getPotentialEnergy(const VecCoord&, const VecCoord&)
+    //virtual double getPotentialEnergy(const VecCoord& )
+    virtual double getPotentialEnergy(const VecCoord&, const VecCoord&)
     { return m_potentialEnergy; }
 
     Real getStiffness() const

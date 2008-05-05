@@ -190,7 +190,7 @@ void PairInteractionForceField<DataTypes>::addDForceV()
 
 
 template<class DataTypes>
-sofa::defaulttype::Vector3::value_type PairInteractionForceField<DataTypes>::getPotentialEnergy()
+double PairInteractionForceField<DataTypes>::getPotentialEnergy()
 {
     if (mstate1 && mstate2)
         return getPotentialEnergy(*mstate1->getX(), *mstate2->getX());

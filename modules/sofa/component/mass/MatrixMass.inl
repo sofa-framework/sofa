@@ -95,7 +95,7 @@ void MatrixMass<DataTypes, MassType>::resize(int vsize)
 
 // -- Mass interface
 template <class DataTypes, class MassType>
-void MatrixMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx, Real_Sofa factor)
+void MatrixMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
 {
     const VecMass &masses= *_usedMassMatrices;
 
@@ -121,14 +121,14 @@ void MatrixMass<DataTypes, MassType>::accFromF(VecDeriv& , const VecDeriv& )
 }
 
 template <class DataTypes, class MassType>
-sofa::defaulttype::Vector3::value_type MatrixMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv&  )
+double MatrixMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv&  )
 {
     cerr<<"void MatrixMass<DataTypes, MassType>::getKineticEnergy not yet implemented\n";
     return 0;
 }
 
 template <class DataTypes, class MassType>
-sofa::defaulttype::Vector3::value_type MatrixMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord&  )
+double MatrixMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord&  )
 {
     cerr<<"void MatrixMass<DataTypes, MassType>::getPotentialEnergy not yet implemented\n";
     return 0;
@@ -197,7 +197,7 @@ void MatrixMass<DataTypes, MassType>::addMToMatrix(defaulttype::BaseMatrix * mat
 
 
 template <class DataTypes, class MassType>
-sofa::defaulttype::Vector3::value_type MatrixMass<DataTypes, MassType>::getElementMass(unsigned int /*index*/)
+double MatrixMass<DataTypes, MassType>::getElementMass(unsigned int /*index*/)
 {
     //NOT IMPLEMENTED YET
     return (sofa::defaulttype::Vector3::value_type)(_defaultValue.getValue());

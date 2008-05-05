@@ -39,20 +39,19 @@ namespace behavior
 {
 
 using namespace sofa::defaulttype;
-#ifndef SOFA_FLOAT
+
 template class Mass<Vec3dTypes>;
 template class Mass<Vec2dTypes>;
 template class Mass<Vec1dTypes>;
 template class Mass<Rigid3dTypes>;
 template class Mass<Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
+
 template class Mass<Vec3fTypes>;
 template class Mass<Vec2fTypes>;
 template class Mass<Vec1fTypes>;
 template class Mass<Rigid3fTypes>;
 template class Mass<Rigid2fTypes>;
-#endif
+
 
 
 } // namespace behavior

@@ -18,7 +18,7 @@ namespace forcefield
 {
 
 template <class DataTypes>
-sofa::defaulttype::Vector3::value_type MeshSpringForceField<DataTypes>::getPotentialEnergy()
+double MeshSpringForceField<DataTypes>::getPotentialEnergy()
 {
     cerr<<"MeshSpringForceField::getPotentialEnergy-not-implemented !!!"<<endl;
     return 0;

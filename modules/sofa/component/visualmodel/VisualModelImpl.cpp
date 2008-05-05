@@ -542,7 +542,7 @@ void VisualModelImpl::computeBBox()
     bbox[1] = maxBBox;
 }
 
-bool VisualModelImpl::addBBox(Real_Sofa* minBBox, Real_Sofa* maxBBox)
+bool VisualModelImpl::addBBox(double* minBBox, double* maxBBox)
 {
     if (bbox[0][0] > bbox[1][0]) return false;
     for (unsigned int i=0; i<xforms.size(); i++)

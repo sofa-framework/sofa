@@ -242,7 +242,7 @@ void CubeTopology::updateQuads()
                 seqQuads.push_back(Quad(point(x,y,z,PLANE_X1),point(x,y+1,z,PLANE_X1),point(x,y+1,z+1,PLANE_X1),point(x,y,z+1,PLANE_X1)));
 }
 
-void CubeTopology::setPos(Real_Sofa xmin, Real_Sofa xmax, Real_Sofa ymin, Real_Sofa ymax, Real_Sofa zmin, Real_Sofa zmax)
+void CubeTopology::setPos(SReal xmin, SReal xmax, SReal ymin, SReal ymax, SReal zmin, SReal zmax)
 {
     setP0(Vector3(xmin,ymin,zmin));
     if (nx.getValue()>1)

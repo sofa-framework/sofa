@@ -123,7 +123,7 @@ void PenalityContactForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df
 }
 
 template <class DataTypes>
-sofa::defaulttype::Vector3::value_type PenalityContactForceField<DataTypes>::getPotentialEnergy(const VecCoord&, const VecCoord&)
+double PenalityContactForceField<DataTypes>::getPotentialEnergy(const VecCoord&, const VecCoord&)
 {
     cerr<<"PenalityContactForceField::getPotentialEnergy-not-implemented !!!"<<endl;
     return 0;

@@ -61,7 +61,6 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
     typedef PlaneForceField<DataTypes> PlaneForceFieldT;
-    typedef typename sofa::defaulttype::Vector3::value_type Real_Sofa;
 protected:
     core::objectmodel::Data<Coord> _center;
     core::objectmodel::Data<Deriv> _size;
@@ -124,11 +123,11 @@ public:
 
     virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
 
-    virtual sofa::defaulttype::Vector3::value_type getPotentialEnergy(const VecCoord& x);
+    virtual double getPotentialEnergy(const VecCoord& x);
 
 
     void draw();
-    bool addBBox(Real_Sofa* minBBox, Real_Sofa* maxBBox);
+    bool addBBox(double* minBBox, double* maxBBox);
 };
 
 } // namespace forcefield

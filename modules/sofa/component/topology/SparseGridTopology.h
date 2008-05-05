@@ -54,7 +54,6 @@ class SparseGridTopology : public MeshTopology
 {
 public:
 
-    typedef Vector3::value_type Real_Sofa;
     typedef fixed_array<Vector3,8> CubeCorners;
     typedef enum {OUTSIDE,INSIDE,BOUNDARY} Type; ///< each cube has a type depending on its filling ratio
 
@@ -119,36 +118,36 @@ public:
     void setNbVirtualFinerLevels(int n) {_nbVirtualFinerLevels.setValue(n);}
 
     void setMin(Vector3 _min) {min.setValue(_min);}
-    void setXmin(Real_Sofa _min) { min.setValue(Vector3(_min             ,min.getValue()[1],min.getValue()[2])); }
-    void setYmin(Real_Sofa _min) { min.setValue(Vector3(min.getValue()[0],_min             ,min.getValue()[2])); }
-    void setZmin(Real_Sofa _min) { min.setValue(Vector3(min.getValue()[0],min.getValue()[1],_min)             ); }
+    void setXmin(SReal _min) { min.setValue(Vector3(_min             ,min.getValue()[1],min.getValue()[2])); }
+    void setYmin(SReal _min) { min.setValue(Vector3(min.getValue()[0],_min             ,min.getValue()[2])); }
+    void setZmin(SReal _min) { min.setValue(Vector3(min.getValue()[0],min.getValue()[1],_min)             ); }
 
 
     void setMax(Vector3 _max) {min.setValue(_max);}
 
-    void setXmax(Real_Sofa _max) { max.setValue(Vector3(_max             ,max.getValue()[1],max.getValue()[2])); }
-    void setYmax(Real_Sofa _max) { max.setValue(Vector3(max.getValue()[0],_max             ,max.getValue()[2])); }
-    void setZmax(Real_Sofa _max) { max.setValue(Vector3(max.getValue()[0],max.getValue()[1],_max)             ); }
+    void setXmax(SReal _max) { max.setValue(Vector3(_max             ,max.getValue()[1],max.getValue()[2])); }
+    void setYmax(SReal _max) { max.setValue(Vector3(max.getValue()[0],_max             ,max.getValue()[2])); }
+    void setZmax(SReal _max) { max.setValue(Vector3(max.getValue()[0],max.getValue()[1],_max)             ); }
 
     Vector3 getMin() {return min.getValue();}
-    Real_Sofa getXmin() { return min.getValue()[0]; }
-    Real_Sofa getYmin() { return min.getValue()[1]; }
-    Real_Sofa getZmin() { return min.getValue()[2]; }
+    SReal getXmin() { return min.getValue()[0]; }
+    SReal getYmin() { return min.getValue()[1]; }
+    SReal getZmin() { return min.getValue()[2]; }
 
     Vector3 getMax() {return max.getValue();}
-    Real_Sofa getXmax() { return max.getValue()[0]; }
-    Real_Sofa getYmax() { return max.getValue()[1]; }
-    Real_Sofa getZmax() { return max.getValue()[2]; }
+    SReal getXmax() { return max.getValue()[0]; }
+    SReal getYmax() { return max.getValue()[1]; }
+    SReal getZmax() { return max.getValue()[2]; }
 
     bool hasPos()  const { return true; }
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-    virtual int findCube(const Vector3& pos, Real_Sofa& fx, Real_Sofa &fy, Real_Sofa &fz);
+    virtual int findCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz);
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-    virtual int findNearestCube(const Vector3& pos, Real_Sofa& fx, Real_Sofa &fy, Real_Sofa &fz);
+    virtual int findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz);
 
     /// return the type of the i-th cube
     virtual Type getType( int i );
@@ -200,9 +199,9 @@ protected:
             vector<bool>& alreadyTested  ) const;
 
     void computeBoundingBox(const helper::vector<Vector3>& vertices,
-            Real_Sofa& xmin, Real_Sofa& xmax,
-            Real_Sofa& ymin, Real_Sofa& ymax,
-            Real_Sofa& zmin, Real_Sofa& zmax) const;
+            SReal& xmin, SReal& xmax,
+            SReal& ymin, SReal& ymax,
+            SReal& zmin, SReal& zmax) const;
 
     void voxelizeTriangleMesh(helper::io::Mesh* mesh,
             RegularGridTopology& regularGrid,
@@ -259,7 +258,7 @@ protected:
     typedef struct segmentForIntersection{
     	Vector3 center;
     	Vector3 dir;
-    	Real_Sofa norm;
+    	SReal norm;
     	segmentForIntersection(const Vector3& s0, const Vector3& s1)
     	{
     		center = (s0+s1)*.5;

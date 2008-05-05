@@ -150,7 +150,7 @@ public:
 
     virtual ~TriangularBendingSprings();
 
-    virtual sofa::defaulttype::Vector3::value_type getPotentialEnergy(const VecCoord& x);
+    virtual double getPotentialEnergy(const VecCoord& x);
 
     /// Searches triangle topology and creates the bending springs
     virtual void init();

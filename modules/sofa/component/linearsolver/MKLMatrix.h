@@ -70,7 +70,7 @@ public:
         return impl->columns;
     };
 
-    virtual Real_Sofa &element(int i, int j)
+    virtual SReal &element(int i, int j)
     {
         return *(impl->operator[](j) + i);
     };

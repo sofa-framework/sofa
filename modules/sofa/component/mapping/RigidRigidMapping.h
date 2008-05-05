@@ -61,7 +61,6 @@ public:
     enum { N=Coord::static_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
     typedef Vec<N,Real> Vector ;
-    typedef typename Vector3::value_type Real_Sofa;
 
 protected:
     Data < VecCoord > points;

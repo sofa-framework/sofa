@@ -1053,8 +1053,7 @@ public:
 class MechanicalComputeComplianceVisitor : public MechanicalVisitor
 {
 public:
-    typedef sofa::defaulttype::Vector3::value_type Real_Sofa;
-    MechanicalComputeComplianceVisitor( Real_Sofa **W):_W(W)
+    MechanicalComputeComplianceVisitor( double **W):_W(W)
     {
     }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms)
@@ -1068,7 +1067,7 @@ public:
         return RESULT_CONTINUE;
     }
 private:
-    Real_Sofa **_W;
+    double **_W;
 };
 
 

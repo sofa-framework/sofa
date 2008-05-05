@@ -53,26 +53,25 @@ namespace behavior
 class BaseMass : public virtual objectmodel::BaseObject
 {
 public:
-    typedef sofa::defaulttype::Vector3::value_type Real_Sofa;
     virtual ~BaseMass() { }
 
     /// @name Vector operations
     /// @{
 
     /// f += factor M dx
-    virtual void addMDx(Real_Sofa factor = 1.0) = 0;
+    virtual void addMDx(double factor = 1.0) = 0;
 
     /// dx = M^-1 f
     virtual void accFromF() = 0;
 
     /// vMv/2
-    virtual Real_Sofa getKineticEnergy() = 0;
+    virtual double getKineticEnergy() = 0;
 
     /// Add Mass contribution to global Matrix assembling
-    virtual void addMToMatrix(defaulttype::BaseMatrix * /*mat*/, Real_Sofa /*mFact*/, unsigned int &/*offset*/) = 0;
+    virtual void addMToMatrix(defaulttype::BaseMatrix * /*mat*/, double /*mFact*/, unsigned int &/*offset*/) = 0;
 
     /// Add Mass contribution to global Vector assembling
-    virtual void addMDxToVector(defaulttype::BaseVector * /*resVect*/, Real_Sofa /*mFact*/, unsigned int& /*offset*/, bool /*dxNull*/) = 0;
+    virtual void addMDxToVector(defaulttype::BaseVector * /*resVect*/, double /*mFact*/, unsigned int& /*offset*/, bool /*dxNull*/) = 0;
 
     /// initialization to export kinetic and potential energy to gnuplot files format
     virtual void initGnuplot(const std::string path)=0;
@@ -84,7 +83,7 @@ public:
     virtual void addGravityToV(double dt)=0;
 
     /// return the mass relative to the DOF #index
-    virtual Real_Sofa getElementMass(unsigned int index)=0;
+    virtual double getElementMass(unsigned int index)=0;
 
     /// @}
 

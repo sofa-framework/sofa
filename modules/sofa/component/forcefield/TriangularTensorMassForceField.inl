@@ -341,7 +341,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
 
 
 template <class DataTypes>
-sofa::defaulttype::Vector3::value_type TriangularTensorMassForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
+double TriangularTensorMassForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
 {
     std::cerr<<"TriangularTensorMassForceField::getPotentialEnergy-not-implemented !!!"<<endl;
     return 0;

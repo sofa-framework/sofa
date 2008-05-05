@@ -142,17 +142,17 @@ public:
         return data[i];
     }
 
-    Real_Sofa element(int i) const
+    SReal element(int i) const
     {
         return data[i];
     }
 
-    void set(int i, Real_Sofa v)
+    void set(int i, SReal v)
     {
         data[i] = v;
     }
 
-    void add(int i, Real_Sofa v)
+    void add(int i, SReal v)
     {
         data[i] += v;
     }

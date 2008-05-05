@@ -1146,7 +1146,7 @@ void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv
 }
 
 template <class DataTypes>
-sofa::defaulttype::Vector3::value_type TetrahedronFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
+double TetrahedronFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 {
     cerr<<"TetrahedronFEMForceField::getPotentialEnergy-not-implemented !!!"<<endl;
     return 0;
@@ -1247,7 +1247,7 @@ void TetrahedronFEMForceField<DataTypes>::draw()
 
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, Real_Sofa k, unsigned int &offset)
+void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
 {
     // Build Matrix Block for this ForceField
     int i,j,n1, n2, row, column, ROW, COLUMN , IT;

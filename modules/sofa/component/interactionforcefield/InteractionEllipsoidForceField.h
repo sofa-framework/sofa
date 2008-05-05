@@ -43,14 +43,13 @@ public:
 
     enum { N=Coord1::static_size };
     typedef defaulttype::Mat<N,N,Real1> Mat;
-    typedef Vector3::value_type Real_Sofa;
 protected:
     class Contact
     {
     public:
         int index;
         Deriv1 pos;
-        Vec<3,Real_Sofa> bras_levier;
+        Vec<3,SReal> bras_levier;
         Mat m;
         Contact( int index=0, const Mat& m=Mat())
             : index(index), m(m)
@@ -120,7 +119,7 @@ public:
 
     virtual void addDForce(VecDeriv1& df1, VecDeriv2& df2, const VecDeriv1& dx1, const VecDeriv2& dx2);
 
-    virtual sofa::defaulttype::Vector3::value_type getPotentialEnergy(const VecCoord1& x1, const VecCoord2& x2);
+    virtual double getPotentialEnergy(const VecCoord1& x1, const VecCoord2& x2);
 
     void reinit() {_update_pos_relative = true;}
 

@@ -67,7 +67,6 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef typename sofa::defaulttype::Vector3::value_type Real_Sofa;
 
     typedef topology::MeshTopology::SeqCubes VecElement;
 
@@ -104,6 +103,9 @@ public:
 protected:
 
 
+    void computeCoarseElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const helper::fixed_array<Coord,8> &nodes, const int elementIndice,  int level);
+    void computeElementStiffnessFromFiner( ElementStiffness &K, const helper::fixed_array<int,8>& children, const int elementIndice);
+
     virtual void computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const helper::fixed_array<Coord,8> &nodes, const int elementIndice);
     void computeElementStiffnessFromFiner( ElementStiffness &K,  const int elementIndice); ///< compute stiffness matrix from finer matrices, taking into account matter distribution, to build a non-uniform stiffness
 
@@ -120,7 +122,7 @@ protected:
 
 
 
-    virtual  void addMDx(VecDeriv& f, const VecDeriv& dx, Real_Sofa factor = 1.0);
+    virtual  void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
     virtual void addGravityToV(double dt);
     virtual  void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 

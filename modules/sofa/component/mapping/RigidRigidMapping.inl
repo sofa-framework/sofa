@@ -58,7 +58,6 @@ template <class BasicMapping>
 class RigidRigidMapping<BasicMapping>::Loader : public helper::io::MassSpringLoader, public helper::io::SphereLoader
 {
 public:
-    typedef sofa::defaulttype::Vector3::value_type Real_Sofa;
     RigidRigidMapping<BasicMapping>* dest;
     Loader(RigidRigidMapping<BasicMapping>* dest) : dest(dest) {}
     virtual void addMass(double px, double py, double pz, double, double, double, double, double, bool, bool)
@@ -67,7 +66,7 @@ public:
         Out::DataTypes::set(c,px,py,pz);
         dest->points.beginEdit()->push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
     }
-    virtual void addSphere(Real_Sofa px, Real_Sofa py, Real_Sofa pz, Real_Sofa)
+    virtual void addSphere(SReal px, SReal py, SReal pz, SReal)
     {
         Coord c;
         Out::DataTypes::set(c,px,py,pz);

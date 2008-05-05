@@ -103,7 +103,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaultty
 }
 
 template <>
-bool MechanicalObject<Vec1dTypes>::addBBox(Real_Sofa* /*minBBox*/, Real_Sofa* /*maxBBox*/)
+bool MechanicalObject<Vec1dTypes>::addBBox(double* /*minBBox*/, double* /*maxBBox*/)
 {
     return false; // ignore 1D DOFs for 3D bbox
 }
@@ -122,7 +122,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaultty
 }
 
 template <>
-bool MechanicalObject<Vec1fTypes>::addBBox(Real_Sofa* /*minBBox*/, Real_Sofa* /*maxBBox*/)
+bool MechanicalObject<Vec1fTypes>::addBBox(double* /*minBBox*/, double* /*maxBBox*/)
 {
     return false; // ignore 1D DOFs for 3D bbox
 }

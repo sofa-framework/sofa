@@ -75,7 +75,6 @@ public:
     typedef component::MechanicalObject<InDataTypes> Inherit;
     typedef typename InDataTypes::Real Real;
     typedef typename InDataTypes::VecReal VecReal;
-    typedef sofa::defaulttype::Vector3::value_type Real_Sofa;
 
     typedef TDataTypes DataTypes;
     typedef TSphere<DataTypes> Element;
@@ -84,20 +83,20 @@ public:
 protected:
     VecReal radius;
 
-    Data<Real_Sofa> defaultRadius;
+    Data<SReal> defaultRadius;
 
     class Loader;
 public:
 
     TSphereModel();
 
-    TSphereModel(Real_Sofa radius);
+    TSphereModel(SReal radius);
 
-    int addSphere(const Vector3& pos, Real_Sofa radius);
-    void setSphere(int index, const Vector3& pos, Real_Sofa radius);
+    int addSphere(const Vector3& pos, SReal radius);
+    void setSphere(int index, const Vector3& pos, SReal radius);
 
     virtual bool load(const char* filename);
-    void applyScale (const Real_Sofa s);
+    void applyScale (const SReal s);
 
     sofa::core::componentmodel::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return this; }
 

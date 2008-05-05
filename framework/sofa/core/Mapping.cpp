@@ -38,32 +38,29 @@ using namespace sofa::defaulttype;
 using namespace core;
 using namespace core::componentmodel::behavior;
 
-#ifndef SOFA_FLOAT
+
 template class Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> >;
 template class Mapping< MechanicalState<StdRigidTypes<3,double> >, MechanicalState<Vec3dTypes> >;
 template class Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> >;
 // template class Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> >;
 template class Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> >;
-#endif
-#ifndef SOFA_DOUBLE
+
 template class Mapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> >;
 template class Mapping< MechanicalState<StdRigidTypes<3,float> >, MechanicalState<Vec3fTypes> >;
 template class Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> >;
 template class Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> >;
 // template class Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> >;
-#endif
 
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
+
+
 template class Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> >;
 template class Mapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > ;
 template class Mapping< MechanicalState<StdRigidTypes<3,double> >, MechanicalState<Vec3fTypes> >;
 template class Mapping< MechanicalState<StdRigidTypes<3,float> >, MechanicalState<Vec3dTypes> >;
 template class Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> >;
 template class Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> >;
-#endif
-#endif
+
 
 
 // Mech -> Mapped

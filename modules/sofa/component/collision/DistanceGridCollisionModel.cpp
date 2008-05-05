@@ -300,8 +300,8 @@ void RigidDistanceGridCollisionModel::draw(int index)
     }
     glEnd();
 
-    const Real_Sofa mindist = (Real_Sofa)( -(grid->getPMax()-grid->getPMin()).norm()*0.1);
-    const Real_Sofa maxdist = (Real_Sofa)(  (grid->getPMax()-grid->getPMin()).norm()*0.025);
+    const SReal mindist = (SReal)( -(grid->getPMax()-grid->getPMin()).norm()*0.1);
+    const SReal maxdist = (SReal)(  (grid->getPMax()-grid->getPMin()).norm()*0.025);
 
     if (grid->meshPts.empty())
     {
@@ -312,7 +312,7 @@ void RigidDistanceGridCollisionModel::draw(int index)
                     for (int x=0; x<grid->getNx(); x++, ind++)
                     {
                         DistanceGrid::Coord p = grid->coord(x,y,z);
-                        DistanceGrid::Real_Sofa d = (*grid)[ind];
+                        SReal d = (*grid)[ind];
                         if (d < mindist || d > maxdist) continue;
                         d /= maxdist;
                         if (d<0)
@@ -352,7 +352,7 @@ void RigidDistanceGridCollisionModel::draw(int index)
             for (int j = -2; j <= 2; j++)
             {
                 DistanceGrid::Coord p2 = p + grad * (j*maxdist/2);
-                DistanceGrid::Real_Sofa d = grid->eval(p2);
+                SReal d = grid->eval(p2);
                 //if (rabs(d) > maxdist) continue;
                 d /= maxdist;
                 if (d<0)
@@ -538,10 +538,10 @@ void FFDDistanceGridCollisionModel::updateGrid()
                 center += cube.corners[j];
             }
             cube.center = center * 0.125f;
-            DistanceGrid::Real_Sofa radius2 = 0.0f;
+            SReal radius2 = 0.0f;
             for (int j=0; j<8; j++)
             {
-                DistanceGrid::Real_Sofa r2 = (cube.corners[j] - cube.center).norm2();
+                SReal r2 = (cube.corners[j] - cube.center).norm2();
                 if (r2 > radius2) radius2 = r2;
             }
             cube.radius = rsqrt(radius2);
@@ -676,9 +676,9 @@ void FFDDistanceGridCollisionModel::draw(int index)
             glBegin(GL_LINE_STRIP);
             for (int r=0; r<=16; r++)
             {
-                Real_Sofa c = cube.radius*(Real_Sofa)cos(r*M_PI/8);
-                Real_Sofa s = cube.radius*(Real_Sofa)sin(r*M_PI/8);
-                sofa::defaulttype::Vec<3, Real_Sofa> p = cube.center;
+                SReal c = cube.radius*(SReal)cos(r*M_PI/8);
+                SReal s = cube.radius*(SReal)sin(r*M_PI/8);
+                sofa::defaulttype::Vec<3, SReal> p = cube.center;
                 p[j] += c;
                 p[(j+1)%3] += s;
                 glVertex3fv((GLfloat *)p.ptr());
@@ -718,7 +718,7 @@ void FFDDistanceGridCollisionModel::draw(int index)
 ////////////////////////////////////////////////////////////////////////////////
 
 DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax)
-    : meshPts(new defaulttype::DefaultAllocator<Coord>), nbRef(1), dists(nx*ny*nz, new defaulttype::DefaultAllocator<Real_Sofa>), nx(nx), ny(ny), nz(nz), nxny(nx*ny), nxnynz(nx*ny*nz)
+    : meshPts(new defaulttype::DefaultAllocator<Coord>), nbRef(1), dists(nx*ny*nz, new defaulttype::DefaultAllocator<SReal>), nx(nx), ny(ny), nz(nz), nxny(nx*ny), nxnynz(nx*ny*nz)
     , pmin(pmin), pmax(pmax)
     , cellWidth   ((pmax[0]-pmin[0])/(nx-1), (pmax[1]-pmin[1])/(ny-1),(pmax[2]-pmin[2])/(nz-1))
     , invCellWidth((nx-1)/(pmax[0]-pmin[0]), (ny-1)/(pmax[1]-pmin[1]),(nz-1)/(pmax[2]-pmin[2]))
@@ -726,7 +726,7 @@ DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax)
 {
 }
 
-DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax, defaulttype::ExtVectorAllocator<Real_Sofa>* alloc)
+DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax, defaulttype::ExtVectorAllocator<SReal>* alloc)
     : meshPts(new defaulttype::DefaultAllocator<Coord>), nbRef(1), dists(nx*ny*nz, alloc), nx(nx), ny(ny), nz(nz), nxny(nx*ny), nxnynz(nx*ny*nz)
     , pmin(pmin), pmax(pmax)
     , cellWidth   ((pmax[0]-pmin[0])/(nx-1), (pmax[1]-pmin[1])/(ny-1),(pmax[2]-pmin[2])/(nz-1))
@@ -794,7 +794,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, int 
     {
         DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
         std::ifstream in(filename.c_str(), std::ios::in | std::ios::binary);
-        in.read((char*)&(grid->dists[0]), grid->nxnynz*sizeof(Real_Sofa));
+        in.read((char*)&(grid->dists[0]), grid->nxnynz*sizeof(SReal));
         if (scale != 1.0)
         {
             for (int i=0; i< grid->nxnynz; i++)
@@ -876,8 +876,8 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, int 
             for(unsigned int i=1; i<vertices.size(); i++)
             {
                 for (int c=0; c<3; c++)
-                    if (vertices[i][c] < bbmin[c]) bbmin[c] = (Real_Sofa)vertices[i][c];
-                    else if (vertices[i][c] > bbmax[c]) bbmax[c] = (Real_Sofa)vertices[i][c];
+                    if (vertices[i][c] < bbmin[c]) bbmin[c] = (SReal)vertices[i][c];
+                    else if (vertices[i][c] > bbmax[c]) bbmax[c] = (SReal)vertices[i][c];
             }
             bbmin *= scale;
             bbmax *= scale;
@@ -926,7 +926,7 @@ bool DistanceGrid::save(const std::string& filename)
     if (filename.length()>4 && filename.substr(filename.length()-4) == ".raw")
     {
         std::ofstream out(filename.c_str(), std::ios::out | std::ios::binary);
-        out.write((char*)&(dists[0]), nxnynz*sizeof(Real_Sofa));
+        out.write((char*)&(dists[0]), nxnynz*sizeof(SReal));
     }
     else
     {
@@ -940,10 +940,10 @@ bool DistanceGrid::save(const std::string& filename)
 template<int U, int V>
 bool pointInTriangle(const DistanceGrid::Coord& p, const DistanceGrid::Coord& p0, const DistanceGrid::Coord& p1, const DistanceGrid::Coord& p2)
 {
-    DistanceGrid::Real_Sofa u0 = p [U] - p0[U], v0 = p [V] - p0[V];
-    DistanceGrid::Real_Sofa u1 = p1[U] - p0[U], v1 = p1[V] - p0[V];
-    DistanceGrid::Real_Sofa u2 = p2[U] - p0[U], v2 = p2[V] - p0[V];
-    DistanceGrid::Real_Sofa alpha, beta;
+    SReal u0 = p [U] - p0[U], v0 = p [V] - p0[V];
+    SReal u1 = p1[U] - p0[U], v1 = p1[V] - p0[V];
+    SReal u2 = p2[U] - p0[U], v2 = p2[V] - p0[V];
+    SReal alpha, beta;
     //return true;
     if (u1 == 0)
     {
@@ -971,22 +971,22 @@ void DistanceGrid::computeBBox()
         for(unsigned int i=1; i<meshPts.size(); i++)
         {
             for (int c=0; c<3; c++)
-                if (meshPts[i][c] < bbmin[c]) bbmin[c] = (Real_Sofa)meshPts[i][c];
-                else if (meshPts[i][c] > bbmax[c]) bbmax[c] = (Real_Sofa)meshPts[i][c];
+                if (meshPts[i][c] < bbmin[c]) bbmin[c] = (SReal)meshPts[i][c];
+                else if (meshPts[i][c] > bbmax[c]) bbmax[c] = (SReal)meshPts[i][c];
         }
     }
     else
     {
         bbmin = pmin;
         bbmax = pmax;
-        /// \TODO compute the Real_Sofa bbox from the grid content
+        /// \TODO compute the SReal bbox from the grid content
     }
 }
 
 
 /// Compute distance field for a cube of the given half-size.
 /// Also create a mesh of points using np points per axis
-void DistanceGrid::calcCubeDistance(Real_Sofa dim, int np)
+void DistanceGrid::calcCubeDistance(SReal dim, int np)
 {
     cubeDim = dim;
     if (np > 1)
@@ -1004,7 +1004,7 @@ void DistanceGrid::calcCubeDistance(Real_Sofa dim, int np)
 
     //std::cout << "Computing distance field."<<std::endl;
 
-    Real_Sofa dim2 = dim; //*0.75f; // add some 'roundness' to the cubes corner
+    SReal dim2 = dim; //*0.75f; // add some 'roundness' to the cubes corner
 
     for (int i=0,z=0; z<nz; z++)
         for (int y=0; y<ny; y++)
@@ -1018,7 +1018,7 @@ void DistanceGrid::calcCubeDistance(Real_Sofa dim, int np)
                     if (s[c] < -dim2) { s[c] = -dim2; out = true; }
                     else if (s[c] >  dim2) { s[c] =  dim2; out = true; }
                 }
-                Real_Sofa d;
+                SReal d;
                 if (out)
                     d = (p - s).norm();
                 else
@@ -1067,7 +1067,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
 
             Coord normal = (p1-p0).cross(p2-p0);
             normal.normalize();
-            Real_Sofa d = -(p0*normal);
+            SReal d = -(p0*normal);
             int nedges = 0;
             int ix0 = ix(bbmin)-1; if (ix0 < 0) ix0 = 0;
             int iy0 = iy(bbmin)-1; if (iy0 < 0) iy0 = 0;
@@ -1081,13 +1081,13 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                     {
                         Coord pos = coord(x,y,z);
                         int ind = index(x,y,z);
-                        Real_Sofa dist = pos*normal + d;
+                        SReal dist = pos*normal + d;
                         //if (rabs(dist) > cellWidth) continue; // no edge from this point can cross the plane
 
                         // X edge
                         if (rabs(normal[0]) > 1e-6)
                         {
-                            Real_Sofa dist1 = -dist / normal[0];
+                            SReal dist1 = -dist / normal[0];
                             int ind2 = ind+1;
                             if (dist1 >= -0.01*cellWidth[0] && dist1 <= 1.01*cellWidth[0])
                             {
@@ -1096,7 +1096,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                                 {
                                     // edge crossed triangle
                                     ++nedges;
-                                    Real_Sofa dist2 = cellWidth[0] - dist1;
+                                    SReal dist2 = cellWidth[0] - dist1;
                                     if (normal[0]<0)
                                     {
                                         // p1 is in outside, p2 inside
@@ -1136,7 +1136,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                         // Y edge
                         if (rabs(normal[1]) > 1e-6)
                         {
-                            Real_Sofa dist1 = -dist / normal[1];
+                            SReal dist1 = -dist / normal[1];
                             int ind2 = ind+nx;
                             if (dist1 >= -0.01*cellWidth[1] && dist1 <= 1.01*cellWidth[1])
                             {
@@ -1145,7 +1145,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                                 {
                                     // edge crossed triangle
                                     ++nedges;
-                                    Real_Sofa dist2 = cellWidth[1] - dist1;
+                                    SReal dist2 = cellWidth[1] - dist1;
                                     if (normal[1]<0)
                                     {
                                         // p1 is in outside, p2 inside
@@ -1185,7 +1185,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                         // Z edge
                         if (rabs(normal[2]) > 1e-6)
                         {
-                            Real_Sofa dist1 = -dist / normal[2];
+                            SReal dist1 = -dist / normal[2];
                             int ind2 = ind+nxny;
                             if (dist1 >= -0.01*cellWidth[2] && dist1 <= 1.01*cellWidth[2])
                             {
@@ -1194,7 +1194,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                                 {
                                     // edge crossed triangle
                                     ++nedges;
-                                    Real_Sofa dist2 = cellWidth[2] - dist1;
+                                    SReal dist2 = cellWidth[2] - dist1;
                                     if (normal[2]<0)
                                     {
                                         // p1 is in outside, p2 inside
@@ -1245,8 +1245,8 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                 if (fmm_status[ind] < FMM_FAR)
                 {
                     int ind2;
-                    Real_Sofa dist1 = dists[ind];
-                    Real_Sofa dist2 = dist1+cellWidth[0];
+                    SReal dist1 = dists[ind];
+                    SReal dist2 = dist1+cellWidth[0];
                     // X-1
                     if (x>0)
                     {
@@ -1323,8 +1323,8 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
         int z = ind/nxny;
 
         int ind2;
-        Real_Sofa dist1 = dists[ind];
-        Real_Sofa dist2 = dist1+cellWidth[0];
+        SReal dist1 = dists[ind];
+        SReal dist2 = dist1+cellWidth[0];
         // X-1
         if (x>0)
         {
@@ -1462,13 +1462,13 @@ int DistanceGrid::fmm_pop()
     {
         fmm_swap(0, fmm_heap_size);
         int i=0;
-        Real_Sofa phi = (dists[fmm_heap[i]]);
+        SReal phi = (dists[fmm_heap[i]]);
         while (i*2+1 < fmm_heap_size)
         {
-            Real_Sofa phi1 = (dists[fmm_heap[i*2+1]]);
+            SReal phi1 = (dists[fmm_heap[i*2+1]]);
             if (i*2+2 < fmm_heap_size)
             {
-                Real_Sofa phi2 = (dists[fmm_heap[i*2+2]]);
+                SReal phi2 = (dists[fmm_heap[i*2+2]]);
                 if (phi1 < phi)
                 {
                     if (phi1 < phi2)
@@ -1509,7 +1509,7 @@ int DistanceGrid::fmm_pop()
 
 void DistanceGrid::fmm_push(int index)
 {
-    Real_Sofa phi = (dists[index]);
+    SReal phi = (dists[index]);
     int i;
     if (fmm_status[index] >= FMM_FRONT0)
     {
@@ -1524,10 +1524,10 @@ void DistanceGrid::fmm_push(int index)
         }
         while (i*2+1 < fmm_heap_size)
         {
-            Real_Sofa phi1 = (dists[fmm_heap[i*2+1]]);
+            SReal phi1 = (dists[fmm_heap[i*2+1]]);
             if (i*2+2 < fmm_heap_size)
             {
-                Real_Sofa phi2 = (dists[fmm_heap[i*2+2]]);
+                SReal phi2 = (dists[fmm_heap[i*2+2]]);
                 if (phi1 < phi)
                 {
                     if (phi1 < phi2)

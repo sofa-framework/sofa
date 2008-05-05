@@ -61,7 +61,6 @@ public:
     typedef typename DataTypes2::VecDeriv VecDeriv2;
     typedef typename DataTypes2::Coord Coord2;
     typedef typename DataTypes2::Deriv Deriv2;
-    typedef typename sofa::defaulttype::Vector3::value_type Real_Sofa;
 
     MixedInteractionForceField(MechanicalState<DataTypes1> *mm1 = NULL, MechanicalState<DataTypes2> *mm2 = NULL);
 
@@ -124,7 +123,7 @@ public:
     /// This method retrieves the x vector from the MechanicalState and call
     /// the internal getPotentialEnergy(const VecCoord&,const VecCoord&) method implemented by
     /// the component.
-    virtual Real_Sofa getPotentialEnergy();
+    virtual double getPotentialEnergy();
 
     /// Given the current position and velocity states, update the current force
     /// vector by computing and adding the forces associated with this
@@ -158,7 +157,7 @@ public:
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic ForceField::getPotentialEnergy() method.
-    virtual Real_Sofa getPotentialEnergy(const VecCoord1& x1, const VecCoord2& x2) =0;
+    virtual double getPotentialEnergy(const VecCoord1& x1, const VecCoord2& x2) =0;
 
     /// @}
 

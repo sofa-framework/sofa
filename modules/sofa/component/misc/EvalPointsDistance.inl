@@ -79,7 +79,7 @@ void EvalPointsDistance<DataTypes>::reset()
 }
 
 template<class DataTypes>
-Real_Sofa EvalPointsDistance<DataTypes>::eval()
+SReal EvalPointsDistance<DataTypes>::eval()
 {
     if (!mstate1 || !mstate2)
         return 0.0;
@@ -90,7 +90,7 @@ Real_Sofa EvalPointsDistance<DataTypes>::eval()
 }
 
 template<class DataTypes>
-Real_Sofa EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoord& x2, const VecCoord& x0)
+SReal EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoord& x2, const VecCoord& x0)
 {
     const int n = (x1.size()<x2.size())?x1.size():x2.size();
     Real dsum = 0.0;

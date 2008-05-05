@@ -47,7 +47,6 @@ namespace topology
 class Topology : public virtual core::objectmodel::BaseObject
 {
 public:
-    typedef sofa::defaulttype::Vector3::value_type Real_Sofa;
     virtual ~Topology() { }
 
     // Access to embedded position information (in case the topology is a regular grid for instance)
@@ -55,9 +54,9 @@ public:
 
     virtual bool hasPos() const { return false; }
     virtual int getNbPoints() const { return 0; }
-    virtual Real_Sofa getPX(int /*i*/) const { return 0.0; }
-    virtual Real_Sofa getPY(int /*i*/) const { return 0.0; }
-    virtual Real_Sofa getPZ(int /*i*/) const { return 0.0; }
+    virtual double getPX(int /*i*/) const { return 0.0; }
+    virtual double getPY(int /*i*/) const { return 0.0; }
+    virtual double getPZ(int /*i*/) const { return 0.0; }
 };
 
 } // namespace topology

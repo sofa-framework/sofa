@@ -25,12 +25,6 @@
 #ifndef SOFA_DEFAULTTYPE_BASEMATRIX_H
 #define SOFA_DEFAULTTYPE_BASEMATRIX_H
 
-#ifdef SOFA_FLOAT
-typedef float Real_Sofa;
-#else
-typedef double Real_Sofa;
-#endif
-
 namespace sofa
 {
 
@@ -51,7 +45,7 @@ public:
     /// Number of columns
     virtual int colSize(void) const = 0;
     /// Read the value of the element at row i, column j (using 0-based indices)
-    virtual Real_Sofa element(int i, int j) const = 0;
+    virtual SReal element(int i, int j) const = 0;
     /// Resize the matrix and reset all values to 0
     virtual void resize(int nbRow, int nbCol) = 0;
     /// Reset all values to 0

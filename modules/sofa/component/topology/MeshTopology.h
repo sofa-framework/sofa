@@ -50,7 +50,6 @@ using helper::fixed_array;
 class MeshTopology : public core::componentmodel::topology::BaseMeshTopology
 {
 public:
-    typedef Vector3::value_type Real_Sofa;
     MeshTopology();
 
     virtual void init();
@@ -124,13 +123,13 @@ public:
     // Points accessors (not always available)
 
     virtual bool hasPos() const;
-    virtual Real_Sofa getPX(int i) const;
-    virtual Real_Sofa getPY(int i) const;
-    virtual Real_Sofa getPZ(int i) const;
+    virtual double getPX(int i) const;
+    virtual double getPY(int i) const;
+    virtual double getPZ(int i) const;
     virtual std::string getFilename() const {return filename.getValue();}
 
     // for procedural creation without file loader
-    void addPoint(Real_Sofa px, Real_Sofa py, Real_Sofa pz);
+    void addPoint(SReal px, SReal py, SReal pz);
     void addEdge( int a, int b );
     void addTriangle( int a, int b, int c );
     void addTetrahedron( int a, int b, int c, int d );
@@ -155,7 +154,7 @@ public:
 
 protected:
     int nbPoints;
-    vector< fixed_array<Real_Sofa,3> > seqPoints;
+    vector< fixed_array<SReal,3> > seqPoints;
 
     Data<SeqEdges> seqEdges;
     bool validEdges;

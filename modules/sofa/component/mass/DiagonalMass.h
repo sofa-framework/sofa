@@ -57,7 +57,6 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    typedef typename sofa::defaulttype::Vector3::value_type Real_Sofa;
 
     typedef sofa::component::topology::PointData<MassType> VecMass;
     typedef helper::vector<MassType> MassVector;
@@ -124,26 +123,26 @@ public:
     void resize(int vsize);
 
     // -- Mass interface
-    void addMDx(VecDeriv& f, const VecDeriv& dx, Real_Sofa factor = 1.0);
+    void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
 
     void accFromF(VecDeriv& a, const VecDeriv& f);
 
     void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
-    sofa::defaulttype::Vector3::value_type getKineticEnergy(const VecDeriv& v);  ///< vMv/2 using dof->getV()
+    double getKineticEnergy(const VecDeriv& v);  ///< vMv/2 using dof->getV()
 
-    sofa::defaulttype::Vector3::value_type getPotentialEnergy(const VecCoord& x);   ///< Mgx potential in a uniform gravity field, null at origin
+    double getPotentialEnergy(const VecCoord& x);   ///< Mgx potential in a uniform gravity field, null at origin
 
     void addGravityToV(double dt/*, defaulttype::BaseVector& v*/);
 
     /// Add Mass contribution to global Matrix assembling
-    void addMToMatrix(defaulttype::BaseMatrix * mat, Real_Sofa mFact, unsigned int &offset);
+    void addMToMatrix(defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset);
 
-    sofa::defaulttype::Vector3::value_type getElementMass(unsigned int index);
+    double getElementMass(unsigned int index);
 
     void draw();
 
-    bool addBBox(Real_Sofa* minBBox, Real_Sofa* maxBBox);
+    bool addBBox(double* minBBox, double* maxBBox);
 };
 
 } // namespace mass

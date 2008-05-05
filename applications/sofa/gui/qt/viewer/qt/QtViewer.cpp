@@ -702,7 +702,7 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos,
 // ---
 // ---
 // ---------------------------------------------------
-void QtViewer::DrawBox(Real_Sofa* minBBox, Real_Sofa* maxBBox, Real_Sofa r)
+void QtViewer::DrawBox(SReal* minBBox, SReal* maxBBox, SReal r)
 {
     //std::cout << "box = < " << minBBox[0] << ' ' << minBBox[1] << ' ' << minBBox[2] << " >-< " << maxBBox[0] << ' ' << maxBBox[1] << ' ' << maxBBox[2] << " >"<< std::endl;
     if (r==0.0)

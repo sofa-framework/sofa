@@ -356,7 +356,7 @@ void HexahedralFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv&
 }
 
 template <class DataTypes>
-sofa::defaulttype::Vector3::value_type HexahedralFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
+double HexahedralFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 {
     std::cerr<<"HexahedralFEMForceField::getPotentialEnergy-not-implemented !!!"<<std::endl;
     return 0;

@@ -120,7 +120,7 @@ bool ImageBMP::load(std::string filename)
     /* calculate the size of the image in bytes */
     biSizeImage = width * height * nc;
     // std::cout << "Size of the image data: " << biSizeImage << std::endl;
-    std::cout << "ImageBMP "<<filename<<" "<<width<<"x"<<height<<"x"<<nbBits<<" = "<<biSizeImage<<" bytes"<<std::endl;
+//     std::cout << "ImageBMP "<<filename<<" "<<width<<"x"<<height<<"x"<<nbBits<<" = "<<biSizeImage<<" bytes"<<std::endl;
     data = (unsigned char*) malloc(biSizeImage);
     /* seek to the actual data */
     fseek(file, bfOffBits, SEEK_SET);

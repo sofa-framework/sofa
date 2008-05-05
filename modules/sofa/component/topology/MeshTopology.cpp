@@ -79,10 +79,9 @@ void MeshTopology::init()
 class MeshTopology::Loader : public helper::io::MeshTopologyLoader
 {
 public:
-    typedef Vector3::value_type Real_Sofa;
     MeshTopology* dest;
     Loader(MeshTopology* dest) : dest(dest) {}
-    virtual void addPoint(Real_Sofa px, Real_Sofa py, Real_Sofa pz)
+    virtual void addPoint(SReal px, SReal py, SReal pz)
     {
         dest->seqPoints.push_back(helper::make_array(px, py, pz));
         if (dest->seqPoints.size() > (unsigned)dest->nbPoints)
@@ -198,7 +197,7 @@ bool MeshTopology::load(const char* filename)
 }
 
 
-void MeshTopology::addPoint(Real_Sofa px, Real_Sofa py, Real_Sofa pz)
+void MeshTopology::addPoint(SReal px, SReal py, SReal pz)
 {
     seqPoints.push_back(helper::make_array(px, py, pz));
     if (seqPoints.size() > (unsigned)nbPoints)
@@ -1272,17 +1271,17 @@ bool MeshTopology::hasPos() const
     return !seqPoints.empty();
 }
 
-Vector3::value_type MeshTopology::getPX(int i) const
+double MeshTopology::getPX(int i) const
 {
     return ((unsigned)i<seqPoints.size()?seqPoints[i][0]:0.0);
 }
 
-Vector3::value_type MeshTopology::getPY(int i) const
+double MeshTopology::getPY(int i) const
 {
     return ((unsigned)i<seqPoints.size()?seqPoints[i][1]:0.0);
 }
 
-Vector3::value_type MeshTopology::getPZ(int i) const
+double MeshTopology::getPZ(int i) const
 {
     return ((unsigned)i<seqPoints.size()?seqPoints[i][2]:0.0);
 }

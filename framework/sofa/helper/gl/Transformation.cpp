@@ -100,11 +100,11 @@ void Transformation::Apply()
 {
 #ifdef SOFA_FLOAT
     glTranslatef(translation[0], translation[1], translation[2]);
-    glMultMatrixf((Real_Sofa *) rotation);
+    glMultMatrixf((SReal *) rotation);
     glScalef(scale[0], scale[1], scale[2]);
 #else
     glTranslated(translation[0], translation[1], translation[2]);
-    glMultMatrixd((Real_Sofa *) rotation);
+    glMultMatrixd((SReal *) rotation);
     glScaled(scale[0], scale[1], scale[2]);
 #endif
 }
@@ -129,17 +129,17 @@ void Transformation::ApplyWithCentring()
 // --------------------------------------------------------------------------------------
 void Transformation::ApplyInverse()
 {
-    Real_Sofa	iRotation[4][4];
+    SReal	iRotation[4][4];
 
     InvertTransRotMatrix(rotation, iRotation);
 
 #ifdef SOFA_FLOAT
     glScalef(1.0 / scale[0], 1.0 / scale[1], 1.0 / scale[2]);
-    glMultMatrixf((Real_Sofa *) iRotation);
+    glMultMatrixf((SReal *) iRotation);
     glTranslatef(-translation[0], -translation[1], -translation[2]);
 #else
     glScaled(1.0 / scale[0], 1.0 / scale[1], 1.0 / scale[2]);
-    glMultMatrixd((Real_Sofa *) iRotation);
+    glMultMatrixd((SReal *) iRotation);
     glTranslated(-translation[0], -translation[1], -translation[2]);
 #endif
 }
@@ -149,9 +149,9 @@ void Transformation::ApplyInverse()
 //--- Inversion for 4x4 matrix only containing rotations and translations
 //--- Transpose rotation matrix and mutiple by -1 translation row
 //----------------------------------------------------------------------------
-void Transformation::InvertTransRotMatrix(Real_Sofa matrix[4][4])
+void Transformation::InvertTransRotMatrix(SReal matrix[4][4])
 {
-    Real_Sofa	tmp;
+    SReal	tmp;
 
     tmp = matrix[0][1];
     matrix[0][1] = matrix[1][0];
@@ -176,8 +176,8 @@ void Transformation::InvertTransRotMatrix(Real_Sofa matrix[4][4])
 //--- Inversion for 4x4 matrix only containing rotations and translations
 //--- Transpose rotation matrix and mutiple by -1 translation row
 //----------------------------------------------------------------------------
-void Transformation::InvertTransRotMatrix(Real_Sofa sMatrix[4][4],
-        Real_Sofa dMatrix[4][4])
+void Transformation::InvertTransRotMatrix(SReal sMatrix[4][4],
+        SReal dMatrix[4][4])
 {
     register int	i, j;
 

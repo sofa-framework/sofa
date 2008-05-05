@@ -69,7 +69,6 @@ using namespace sofa::component::collision;
 
 class QtViewer :public QGLWidget,  public sofa::gui::qt::viewer::SofaViewer
 {
-    typedef sofa::defaulttype::Vector3::value_type Real_Sofa;
     Q_OBJECT
 
 private:
@@ -224,7 +223,7 @@ private:
     void	PrintString(void* font, char* string);
     void	Display3DText(float x, float y, float z, char* string);
     void	DrawAxis(double xpos, double ypos, double zpos, double arrowSize);
-    void	DrawBox(Real_Sofa* minBBox, Real_Sofa* maxBBox, Real_Sofa r=0.0);
+    void	DrawBox(SReal* minBBox, SReal* maxBBox, SReal r=0.0);
     void	DrawXYPlane(double zo, double xmin, double xmax, double ymin,
             double ymax, double step);
     void	DrawYZPlane(double xo, double ymin, double ymax, double zmin,
