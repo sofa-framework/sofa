@@ -26,6 +26,8 @@ public:
     typedef typename InDataTypes::Real Real;
     typedef typename InDataTypes::VecCoord InVecCoord;
     typedef typename InDataTypes::VecDeriv InVecDeriv;
+    typedef typename InDataTypes::Coord InCoord;
+    typedef typename InDataTypes::Deriv InDeriv;
 
     typedef typename Out::VecCoord VecCoord;
     typedef typename Out::VecDeriv VecDeriv;
@@ -37,7 +39,7 @@ public:
     typedef typename OutDataTypes::VecCoord OutVecCoord;
     typedef typename OutDataTypes::VecDeriv OutVecDeriv;
 
-    enum { N=Coord::static_size };
+    //enum { N=((int)Deriv::static_size < (int)InDeriv::static_size ? (int)Deriv::static_size : (int)InDeriv::static_size) };
 
     IdentityMapping(In* from, Out* to)
         : Inherit(from, to)
