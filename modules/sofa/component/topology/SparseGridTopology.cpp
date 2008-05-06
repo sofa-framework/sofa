@@ -122,7 +122,6 @@ bool SparseGridTopology::load(const char* filename)
     std::string f(filename);
     if ( sofa::helper::system::DataRepository.findFile ( f ) )
         f = sofa::helper::system::DataRepository.getFile ( f );
-
     this->filename.setValue( f );
 // 		cerr<<"SparseGridTopology::load : "<<filename<<"    "<<this->filename.getValue()<<endl;
     return true;
@@ -243,6 +242,7 @@ void SparseGridTopology::buildAsFinest(  )
     {
         //			std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
         _usingMC = true;
+
         buildFromRawVoxelFile(_filename);
     }
     else if(_filename.length() > 6 && _filename.compare(_filename.length()-6, 6, ".voxel")==0)
@@ -313,16 +313,20 @@ void SparseGridTopology::buildFromVoxelFile(const std::string& filename)
     int nbCubesRG = _regularGrid.getNbHexas();
     _indicesOfRegularCubeInSparseGrid.resize(nbCubesRG, -1); // to redirect an indice of a cube in the regular grid to its indice in the sparse grid
 
+
     vector<Type> regularGridTypes(nbCubesRG, OUTSIDE); // to compute filling types (OUTSIDE, INSIDE, BOUNDARY)
+
     // fill the regularGridTypes vector
     // at the moment, no BOUNDARY type voxels are generated at the finest level
     for(int i=0; i<nbCubesRG; ++i)
     {
         if(dataVoxels.getValue()[i] != 0.0f)
+        {
             regularGridTypes[i] = INSIDE;
+        }
     }
 
-    buildFromRegularGridTypes(_regularGrid, regularGridTypes);
+    buildFromRegularGridTypes(_regularGrid, regularGridTypes );
 }
 
 
@@ -330,12 +334,14 @@ void SparseGridTopology::buildFromVoxelFile(const std::string& filename)
 //Building from a RAW file
 void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
 {
+// 		  cerr<<"SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)\n";
+
+
     _regularGrid.setSize(getNx(),getNy(),getNz());
     const int nbCubesRG = _regularGrid.getNbHexas();
 
     _indicesOfRegularCubeInSparseGrid.resize(nbCubesRG, -1); // to redirect an indice of a cube in the regular grid to its indice in the sparse grid
     vector<Type> regularGridTypes(nbCubesRG, OUTSIDE); // to compute filling types (OUTSIDE, INSIDE, BOUNDARY)
-
 
     //Loading from file
     if (dataVoxels.getValue().size() == 0)
@@ -381,6 +387,8 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
     if (!isVirtual)
         updateMesh();
 }
+
+
 
 void SparseGridTopology::updateMesh()
 {
@@ -501,6 +509,7 @@ void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
         // increase the box a little
         Vector3 diff ( xMax-xMin, yMax - yMin, zMax - zMin );
         diff /= 100.0;
+
         min.setValue(Vector3( xMin - diff[0], yMin - diff[1], zMin - diff[2] ));
         max.setValue(Vector3( xMax + diff[0], yMax + diff[1], zMax + diff[2] ));
     }
@@ -644,6 +653,8 @@ void SparseGridTopology::buildFromRegularGridTypes(RegularGridTopology& regularG
         {
             _types.push_back(BOUNDARY);
             _indicesOfRegularCubeInSparseGrid[w] = cubeCntr++;
+            _indicesOfCubeinRegularGrid.push_back( w );
+
 
             Hexa c = regularGrid.getHexaCopy(w);
             CubeCorners corners;
@@ -661,6 +672,7 @@ void SparseGridTopology::buildFromRegularGridTypes(RegularGridTopology& regularG
         {
             _types.push_back(INSIDE);
             _indicesOfRegularCubeInSparseGrid[w] = cubeCntr++;
+            _indicesOfCubeinRegularGrid.push_back( w );
 
             Hexa c = regularGrid.getHexaCopy(w);
             CubeCorners corners;
@@ -790,8 +802,14 @@ void SparseGridTopology::buildFromFiner(  )
                 }
 
                 if(outside) continue;
-                if( inside ) _types.push_back(INSIDE);
-                else _types.push_back(BOUNDARY);
+                if( inside )
+                {
+                    _types.push_back(INSIDE);
+                }
+                else
+                {
+                    _types.push_back(BOUNDARY);
+                }
 
 
                 int coarseRegularIndice = _regularGrid.cube( i,j,k );
@@ -807,6 +825,7 @@ void SparseGridTopology::buildFromFiner(  )
                 cubeCorners.push_back(corners);
 
                 _indicesOfRegularCubeInSparseGrid[coarseRegularIndice] = cubeCorners.size()-1;
+                _indicesOfCubeinRegularGrid.push_back( coarseRegularIndice );
 
 // 			_hierarchicalCubeMap[cubeCorners.size()-1]=fineIndices;
                 _hierarchicalCubeMap.push_back( fineIndices );
@@ -1080,12 +1099,30 @@ int SparseGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &fy
 }
 
 
+
+
+helper::fixed_array<int,6> SparseGridTopology::findneighboorCubes( int indice )
+{
+    cerr<<"SparseGridTopology::findneighboorCubes : "<<indice<<" -> "<<_indicesOfCubeinRegularGrid[indice]<<endl;
+    cerr<<_indicesOfRegularCubeInSparseGrid[ _indicesOfCubeinRegularGrid[indice] ] <<endl;
+    helper::fixed_array<int,6> result;
+    Vector3 c = _regularGrid.getCubeCoordinate( _indicesOfCubeinRegularGrid[indice] );
+    cerr<<c<<endl;
+    result[0] = c[0]<=0 ? -1 : _indicesOfRegularCubeInSparseGrid[ _regularGrid.getCubeIndex( (int)c[0]-1,(int)c[1],(int)c[2] )];
+    result[1] = c[0]>=getNx()-2 ? -1 : _indicesOfRegularCubeInSparseGrid[ _regularGrid.getCubeIndex( (int)c[0]+1,(int)c[1],(int)c[2] )];
+    result[2] = c[1]<=0 ? -1 : _indicesOfRegularCubeInSparseGrid[ _regularGrid.getCubeIndex( (int)c[0],(int)c[1]-1,(int)c[2] )];
+    result[3] = c[1]>=getNy()-2 ? -1 : _indicesOfRegularCubeInSparseGrid[ _regularGrid.getCubeIndex( (int)c[0],(int)c[1]+1,(int)c[2] )];
+    result[4] = c[2]<=0 ? -1 : _indicesOfRegularCubeInSparseGrid[ _regularGrid.getCubeIndex( (int)c[0],(int)c[1],(int)c[2]-1 )];
+    result[5] = c[2]>=getNz()-2 ? -1 : _indicesOfRegularCubeInSparseGrid[ _regularGrid.getCubeIndex( (int)c[0],(int)c[1],(int)c[2]+1 )];
+    return result;
+}
+
+
+
 SparseGridTopology::Type SparseGridTopology::getType( int i )
 {
     return _types[i];
 }
-
-
 
 ///////////////////////////////////////////
 ///////////////////////////////////////////
