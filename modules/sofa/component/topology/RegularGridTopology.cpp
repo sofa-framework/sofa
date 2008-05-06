@@ -111,6 +111,7 @@ unsigned RegularGridTopology::getIndex( int i, int j, int k ) const
     return n.getValue()[0]* ( n.getValue()[1]*k + j ) + i;
 }
 
+
 Vector3 RegularGridTopology::getPoint(int i) const
 {
     int x = i%n.getValue()[0]; i/=n.getValue()[0];
@@ -211,6 +212,22 @@ int RegularGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &f
     fz = z-iz;
     return cube(ix,iy,iz);
 }
+
+
+unsigned RegularGridTopology::getCubeIndex( int i, int j, int k ) const
+{
+    return (n.getValue()[0]-1)* ( (n.getValue()[1]-1)*k + j ) + i;
+}
+
+Vector3 RegularGridTopology::getCubeCoordinate(int i) const
+{
+    Vector3 result;
+    result[0] = i%(n.getValue()[0]-1); i/=(n.getValue()[0]-1);
+    result[1] = i%(n.getValue()[1]-1); i/=(n.getValue()[1]-1);
+    result[2] = i;
+    return result;
+}
+
 
 } // namespace topology
 

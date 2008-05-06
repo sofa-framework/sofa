@@ -74,8 +74,14 @@ public:
     double getPY(int i) const { return getPoint(i)[1]; }
     double getPZ(int i) const { return getPoint(i)[2]; }
 
+
+    unsigned getCubeIndex( int i, int j, int k ) const; ///< one-dimensional index of a grid cube
+    Vector3 getCubeCoordinate( int i ) const; ///< from the one-dimensional index of a grid cube, give its three-dimensional indices
+
+
     Vector3   getMin() const { return min.getValue();}
     Vector3   getMax() const { return max.getValue();}
+
 
     /// return the cube containing the given point (or -1 if not found).
     virtual int findCube(const Vector3& pos);
