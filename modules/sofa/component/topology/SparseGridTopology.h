@@ -149,6 +149,10 @@ public:
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
     virtual int findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz);
 
+    /// return indices of 6 neighboor cubes
+    virtual helper::fixed_array<int,6> findneighboorCubes( int indice );
+
+
     /// return the type of the i-th cube
     virtual Type getType( int i );
 
@@ -161,10 +165,16 @@ public:
 
     RegularGridTopology _regularGrid; ///< based on a corresponding RegularGrid
     vector< int > _indicesOfRegularCubeInSparseGrid; ///< to redirect an indice of a cube in the regular grid to its indice in the sparse grid
+    vector< int > _indicesOfCubeinRegularGrid; ///< to redirect an indice of a cube in the sparse grid to its indice in the regular grid
 
     Vector3 getPointPos( int i ) { return Vector3( seqPoints[i][0],seqPoints[i][1],seqPoints[i][2] ); }
 
     void getMesh( sofa::helper::io::Mesh &m);
+
+
+    void setDimVoxels( int a, int b, int c) { dim_voxels.setValue(Vec<3, unsigned int>(a,b,c));}
+    void setSizeVoxel( float a, float b, float c) { dim_voxels.setValue(Vec3f(a,b,c));}
+
 
 protected:
     bool isVirtual;
@@ -175,11 +185,11 @@ protected:
 
     Data< int > _nbVirtualFinerLevels; ///< create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)
 
-
     Data< Vec<3, unsigned int>  > dim_voxels;
     Data< Vector3 >                 size_voxel;
     Data< unsigned int >          resolution;
     Data< unsigned int >          smoothData;
+
 
     virtual void updateEdges();
     virtual void updateQuads();
