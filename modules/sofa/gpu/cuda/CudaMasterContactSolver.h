@@ -28,7 +28,7 @@ class CudaMechanicalGetConstraintValueVisitor : public simulation::tree::Mechani
 public:
     CudaMechanicalGetConstraintValueVisitor(defaulttype::BaseVector * v): _v(v) {}
 
-    virtual Result fwdConstraint(simulation::tree::GNode*,core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node*,core::componentmodel::behavior::BaseConstraint* c)
     {
         c->getConstraintValue(_v);
         return RESULT_CONTINUE;
@@ -43,7 +43,7 @@ public:
     CudaMechanicalGetContactIDVisitor(long *id, unsigned int offset = 0)
         : _id(id),_offset(offset) {}
 
-    virtual Result fwdConstraint(simulation::tree::GNode*,core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node*,core::componentmodel::behavior::BaseConstraint* c)
     {
         c->getConstraintId(_id, _offset);
         return RESULT_CONTINUE;
@@ -61,7 +61,7 @@ public:
 
     Data < double > tol_d;
     Data<int> maxIt_d;
-    //Data < double > mu_d;
+    Data < double > mu_d;
 
     Data<int> useGPU_d;
 
@@ -78,8 +78,8 @@ private:
 
     void build_LCP();
 
-    CudaBaseMatrix _W;
-    CudaFullVector _dFree, _f, _res;
+    CudaBaseMatrix<float> _W;
+    CudaBaseVector<float> _dFree, _f, _res;
 
     unsigned int _numConstraints;
     double _mu;

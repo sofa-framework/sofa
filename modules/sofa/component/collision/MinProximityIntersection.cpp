@@ -900,8 +900,8 @@ bool MinProximityIntersection::testValidity(Point &p, const Vector3 &PQ)
         if (computedAngleCone<0)
             computedAngleCone=0.0;
         //std::cout << "Point computedAngleCone = " << computedAngleCone << std::endl;
-        std::cout<< "PQ" <<PQ<< "l"<<l<<std::endl;
-        std::cout<< "index Point=" << p.getIndex()<< "dot(l , PQ) ="<<dot(l , PQ)<<std::endl;
+        //std::cout<< "PQ" <<PQ<< "l"<<l<<std::endl;
+        //std::cout<< "index Point=" << p.getIndex()<< "dot(l , PQ) ="<<dot(l , PQ)<<std::endl;
         if (dot(l , PQ) < -computedAngleCone*PQ.norm())
             return false;
     }
@@ -931,7 +931,7 @@ bool MinProximityIntersection::testValidity(Point &p, const Vector3 &PQ)
     nMean.normalize();
 
 #endif
-    std::cout<< "dot(nMean, PQ) = "<<dot(nMean, PQ)<<std::endl;
+    //std::cout<< "dot(nMean, PQ) = "<<dot(nMean, PQ)<<std::endl;
     return true;
 
     //return (dot(nMean, PQ) >= 0.0);
