@@ -1,0 +1,7 @@
+<Node name="root"  dt="0.005" showBehaviorModels="0" showCollisionModels="1" showMappings="0" showForceFields="0" >
+	<Node name="InstrumentEdgeSet">
+		<Object type="MechanicalObject" template="Rigid"/>
+		<Object type="EdgeSetTopology" filename="BehaviorModels/edgeSet.xs3"/>
+		<Object type="EdgeSetController" listening="true" mainDirection="-1.0 0.0 0.0"/>
+	</Node>
+</Node>
