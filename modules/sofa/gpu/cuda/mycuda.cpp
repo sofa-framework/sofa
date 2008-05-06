@@ -30,10 +30,11 @@ SOFA_LINK_CLASS(CudaCollision)
 SOFA_LINK_CLASS(CudaCollisionDetection)
 SOFA_LINK_CLASS(CudaPointModel)
 SOFA_LINK_CLASS(CudaTestForceField)
+SOFA_LINK_CLASS(CudaMasterContactSolver)
 
 //MycudaVerboseLevel mycudaVerboseLevel = LOG_ERR;
-//MycudaVerboseLevel mycudaVerboseLevel = LOG_INFO;
-MycudaVerboseLevel mycudaVerboseLevel = LOG_TRACE;
+MycudaVerboseLevel mycudaVerboseLevel = LOG_INFO;
+//MycudaVerboseLevel mycudaVerboseLevel = LOG_TRACE;
 
 void mycudaLogError(int err, const char* src)
 {

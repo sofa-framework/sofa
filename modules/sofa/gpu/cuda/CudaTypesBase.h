@@ -4,6 +4,8 @@
 #include "CudaTypes.h"
 #include <sofa/component/linearsolver/FullMatrix.h>
 
+//#define DEBUG_BASE
+
 namespace sofa
 {
 namespace gpu
@@ -13,6 +15,7 @@ namespace cuda
 
 using namespace sofa::defaulttype;
 
+template <class T>
 class CudaBaseMatrix : public BaseMatrix
 {
 public :
@@ -22,21 +25,24 @@ public :
         warp_size = 0;
     }
 
-    CudaMatrix<float>& getCudaMatrix()
+    CudaMatrix<T> & getCudaMatrix()
     {
         return m;
     }
 
-    void resize(int nbRow, int nbCol)
+    void resize(int nbCol, int nbRow)
     {
         m.resize(nbCol,nbRow,warp_size);
-        //this->clear();
     }
 
-    void setwarpsize(double mu)
+    void resize(int nbCol, int nbRow,int ws)
     {
-        if (mu>0.0) warp_size = 96;
-        else warp_size = 64;
+        m.resize(nbCol,nbRow,ws);
+    }
+
+    void setwarpsize(int wp)
+    {
+        warp_size = wp;
     }
 
     int rowSize() const
@@ -60,31 +66,46 @@ public :
         {
             for (unsigned i=0; i<m.getSizeY(); i++)
             {
-                m[i][j] = 0.0;
+                m[j][i] = 0.0;
             }
         }
     }
 
-    void set(int i, int j, double v)
+    void set(int j, int i, double v)
     {
-        m[i][j] = v;
+#ifdef DEBUG_BASE
+        if ((j>=rowSize()) || (i>=colSize()))
+        {
+            printf("forbidden acces %d %d\n",j,i);
+            exit(1);
+        }
+#endif
+        m[j][i] = v;
     }
 
-    void add(int i, int j, double v)
+    void add(int j, int i, double v)
     {
-        m[i][j] += v;
+#ifdef DEBUG_BASE
+        if ((j>=rowSize()) || (i>=colSize()))
+        {
+            printf("forbidden acces %d %d\n",j,i);
+            exit(1);
+        }
+#endif
+        m[j][i] += v;
     }
 
 private :
-    CudaMatrix<float> m;
+    CudaMatrix<T> m;
     int warp_size;
 };
 
-class CudaFullVector : public BaseVector
+template <class T>
+class CudaBaseVector : public BaseVector
 {
 
 public :
-    CudaVector<float>& getCudaVector()
+    CudaVector<T>& getCudaVector()
     {
         return v;
     }
@@ -121,16 +142,16 @@ public :
 
     void set(int i, double val)
     {
-        v[i] = (float) val;
+        v[i] = (T) val;
     }
 
     void add(int i, double val)
     {
-        v[i] += (float)val;
+        v[i] += (T)val;
     }
 
 private :
-    CudaVector<float> v;
+    CudaVector<T> v;
 };
 
 } // namespace cuda

@@ -105,9 +105,9 @@ public:
     /// if M is symmetric (Ai = Ait and Bi+1 = C1t) :
     /// li = invai*Ci = (invai)t*(Bi+1)t = (B(i+1)invai)t
     ///
-    ///                    [ inva0-l0(Minv10)     Minv10t          Minv20t      Minv30t ]
-    /// Minv = Uinv Linv = [  (Minv11)(-l0t)  inva1-l1(Minv21)     Minv21t      Minv31t ]
-    ///                    [  (Minv21)(-l0t)   (Minv22)(-l1t)  inva2-l2(Minv32) Minv32t ]
+    ///                    [ inva0-l0(Minv11)(-l0t)     Minv10t          Minv20t      Minv30t ]
+    /// Minv = Uinv Linv = [  (Minv11)(-l0t)  inva1-l1(Minv22)(-l1t)     Minv21t      Minv31t ]
+    ///                    [  (Minv21)(-l0t)   (Minv22)(-l1t)  inva2-l2(Minv33)(-l2t) Minv32t ]
     ///                    [  (Minv31)(-l0t)   (Minv32)(-l1t)   (Minv33)(-l2t)   inva3  ]
     ///
     template<class T>
@@ -374,6 +374,7 @@ public:
         }
         return false;
     }
+
 };
 
 } // namespace linearsolver

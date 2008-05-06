@@ -136,7 +136,22 @@ void UnilateralInteractionConstraint<DataTypes>::applyConstraint(unsigned int &c
 }
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::getConstraintValue(double* v)
+void UnilateralInteractionConstraint<DataTypes>::getConstraintValue(defaulttype::BaseVector * v)
+{
+    for (unsigned int i=0; i<contacts.size(); i++)
+    {
+        Contact& c = contacts[i]; // get each contact detected
+        v->set(c.id,c.dfree);
+        if (c.mu > 0.0)
+        {
+            v->set(c.id+1,c.dfree_t); // dfree_t & dfree_s are added to v to compute the friction
+            v->set(c.id+2,c.dfree_s);
+        }
+    }
+}
+
+template<class DataTypes>
+void UnilateralInteractionConstraint<DataTypes>::getConstraintValue(double * v)
 {
     for (unsigned int i=0; i<contacts.size(); i++)
     {

@@ -27,8 +27,8 @@ CudaMasterContactSolver::CudaMasterContactSolver()
     initial_guess_d(initData(&initial_guess_d, true, "initial_guess","activate LCP results history to improve its resolution performances."))
     ,tol_d( initData(&tol_d, 0.001, "tolerance", "tolerance"))
     ,maxIt_d(initData(&maxIt_d, 200, "maxIt", "iterations of gauss seidel"))
-    //,mu_d( initData(&mu_d, 0.6, "mu", ""))
-    ,useGPU_d(initData(&useGPU_d, 6, "useGPU", "compute LCP using GPU"))
+    ,mu_d( initData(&mu_d, 0.6, "mu", ""))
+    ,useGPU_d(initData(&useGPU_d, 8, "useGPU", "compute LCP using GPU"))
     ,_mu(0.0)
 {
 
@@ -54,6 +54,7 @@ void CudaMasterContactSolver::build_LCP()
     _numConstraints = 0;
 
     simulation::tree::MechanicalResetConstraintVisitor().execute(context);
+    _mu = mu_d.getValue();
     simulation::tree::MechanicalAccumulateConstraint(_numConstraints, _mu).execute(context);
 
     if (_numConstraints > MAX_NUM_CONSTRAINTS)
@@ -62,7 +63,8 @@ void CudaMasterContactSolver::build_LCP()
         exit(-1);
     }
     _dFree.resize(_numConstraints);
-    _W.setwarpsize(_mu);
+    if (_mu>0.0) _W.setwarpsize(96);
+    else _W.setwarpsize(64);
     _W.resize(_numConstraints,_numConstraints);
     _W.clear();
 
@@ -155,9 +157,6 @@ void CudaMasterContactSolver::step(double dt)
 {
     float _tol = (float) tol_d.getValue();
     int _maxIt = maxIt_d.getValue();
-    //_mu = mu_d.getValue();
-    //float _tol = 0.001;
-    //int _maxIt = 200;
 
     context = dynamic_cast<simulation::tree::GNode *>(this->getContext()); // access to current node
 

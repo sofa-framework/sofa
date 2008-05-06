@@ -95,7 +95,8 @@ public:
 
     virtual void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree = Coord(), Coord Qfree = Coord(), long id=0);
 
-    virtual void getConstraintValue(double* v /*, unsigned int &numContacts */);
+    virtual void getConstraintValue(defaulttype::BaseVector *);
+    virtual void getConstraintValue(double *);
 
     virtual void getConstraintId(long* id, unsigned int &offset);
 
