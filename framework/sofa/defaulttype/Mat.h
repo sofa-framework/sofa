@@ -703,17 +703,30 @@ std::istream& operator>>(std::istream& in, sofa::defaulttype::Mat<L,C,real>& m)
 
 /// return the max of two values
 template<class T1,class T2>
-inline const T1 MAX(const T1 &a, const T2 &b)
-{return b > a ? (b) : (a);}
+inline const T1 S_MAX(const T1 &a, const T2 &b)
+{
+    return b > a ? (b) : (a);
+}
+
 /// return the min of two values
 template<class T1,class T2>
-inline const T1 MIN(const T1 &a, const T2 &b)
-{return b < a ? (b) : (a);}
+inline const T1 S_MIN(const T1 &a, const T2 &b)
+{
+    return b < a ? (b) : (a);
+}
+
 template<class T1,class T2>
-inline const T1 SIGN(const T1 &a, const T2 &b)
-{return b >= 0 ? (a >= 0 ? a : -a) : (a >= 0 ? -a : a);}
+inline const T1 S_SIGN(const T1 &a, const T2 &b)
+{
+    return b >= 0 ? (a >= 0 ? a : -a) : (a >= 0 ? -a : a);
+}
+
 template<class T>
-inline const T SQR(const T a) {return a*a;}
+inline const T S_SQR(const T a)
+{
+    return a*a;
+}
+
 ///Computes sqrt(a² + b²) without destructive underflow or overflow.
 template <class T1, class T2>
 T1 pythag(const T1 a, const T2 b)
@@ -755,7 +768,7 @@ void svddcmp(Mat<m,n,Real> &a, Vec<n,Real> &w, Mat<n,m,Real> &v)
                     s += a[k][i]*a[k][i];
                 }
                 f=a[i][i];
-                g = -SIGN(sqrt(s),f);
+                g = -S_SIGN(sqrt(s),f);
                 h=f*g-s;
                 a[i][i]=f-g;
                 for (j=l-1; j<n; j++)
@@ -780,7 +793,7 @@ void svddcmp(Mat<m,n,Real> &a, Vec<n,Real> &w, Mat<n,m,Real> &v)
                     s += a[i][k]*a[i][k];
                 }
                 f=a[i][l-1];
-                g = -SIGN(sqrt(s),f);
+                g = -S_SIGN(sqrt(s),f);
                 h=f*g-s;
                 a[i][l-1]=f-g;
                 for (k=l-1; k<n; k++) rv1[k]=a[i][k]/h;
@@ -792,7 +805,7 @@ void svddcmp(Mat<m,n,Real> &a, Vec<n,Real> &w, Mat<n,m,Real> &v)
                 for (k=l-1; k<n; k++) a[i][k] *= scale;
             }
         }
-        anorm=MAX(anorm,(fabs(w[i])+fabs(rv1[i])));
+        anorm=S_MAX(anorm,(fabs(w[i])+fabs(rv1[i])));
     }
     for (i=n-1; i>=0; i--)
     {
@@ -894,7 +907,7 @@ void svddcmp(Mat<m,n,Real> &a, Vec<n,Real> &w, Mat<n,m,Real> &v)
             h=rv1[k];
             f=((y-z)*(y+z)+(g-h)*(g+h))/(2.0*h*y);
             g=pythag(f,1.0);
-            f=((x-z)*(x+z)+h*((y/(f+SIGN(g,f)))-h))/x;
+            f=((x-z)*(x+z)+h*((y/(f+S_SIGN(g,f)))-h))/x;
             c=s=1.0;
             for (j=l; j<=nm; j++)
             {
@@ -942,7 +955,6 @@ void svddcmp(Mat<m,n,Real> &a, Vec<n,Real> &w, Mat<n,m,Real> &v)
         }
     }
 }
-
 
 
 

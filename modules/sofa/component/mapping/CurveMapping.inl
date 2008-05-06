@@ -19,6 +19,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
+#include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/simulation/tree/AnimateBeginEvent.h>
 
 
@@ -89,7 +90,8 @@ void CurveMapping<BasicMapping>::init()
     this->toModel->resize(nout);
 
     lengthElements.resize(nin-1);
-    const InVecCoord& x0 = *this->fromModel->getX0();
+//	const InVecCoord& x0 = *this->fromModel->getX0();
+    const InVecCoord& x0 = *this->fromModel->getX();
 
     for (int i=0; i<nin-1; i++)
     {
@@ -346,6 +348,32 @@ void CurveMapping<BaseMapping>::handleEvent(sofa::core::objectmodel::Event* even
                     ab[i] = advanceAbscissa( ab[i-1], distNode.getValue());
             }
             abscissa.setValue(ab);
+        }
+    }
+    else if (sofa::core::objectmodel::MouseEvent* ev = dynamic_cast<sofa::core::objectmodel::MouseEvent*>(event))
+    {
+        switch (ev->getState())
+        {
+        case sofa::core::objectmodel::MouseEvent::Wheel :
+        {
+            helper::vector< Real > ab;
+            ab = abscissa.getValue();
+            for(unsigned int i=0; i<abscissa.getValue().size(); i++)
+            {
+                ab[i] = (ev->getWheelDelta() > 0) ? ab[i] + step.getValue() : ab[i] - step.getValue();
+
+                if (ab[i] > this->fromModel->getSize())
+                    ab[i] = (Real)this->fromModel->getSize();
+
+                if (ab[i] < 0.0)
+                    ab[i] = 0.0;
+            }
+            abscissa.setValue(ab);
+        }
+        break;
+
+        default:
+            break;
         }
     }
     else if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
