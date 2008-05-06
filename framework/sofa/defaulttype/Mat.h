@@ -827,7 +827,7 @@ void svddcmp(Mat<m,n,Real> &a, Vec<n,Real> &w, Mat<n,m,Real> &v)
         g=rv1[i];
         l=i;
     }
-    for (i=MIN(m,n)-1; i>=0; i--)
+    for (i=S_MIN(m,n)-1; i>=0; i--)
     {
         l=i+1;
         g=w[i];
