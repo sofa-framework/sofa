@@ -16,7 +16,7 @@ namespace constraint
 {
 
 template<class DataTypes>
-class SlidingConstraint : public core::componentmodel::behavior::InteractionConstraint, public virtual core::objectmodel::BaseObject
+class SlidingConstraint : public core::componentmodel::behavior::InteractionConstraint
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
