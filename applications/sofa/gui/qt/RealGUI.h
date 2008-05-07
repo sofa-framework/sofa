@@ -338,7 +338,7 @@ protected:
 
     void sleep(unsigned int mseconds, unsigned int init_time)
     {
-        unsigned int t;
+        unsigned int t = 0;
         clock_t goal = mseconds + init_time;
         while (goal > clock()) t++;
     }

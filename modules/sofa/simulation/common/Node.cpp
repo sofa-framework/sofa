@@ -29,8 +29,9 @@ using helper::system::thread::CTime;
 
 Node::Node(const std::string& name)
     : sofa::core::objectmodel::Context()
-    , debug_(false), logTime_(false), _context(this)
+    , debug_(false), logTime_(false)
 {
+    _context = this;
     totalTime.nVisit = 0;
     totalTime.tNode = 0;
     totalTime.tTree = 0;

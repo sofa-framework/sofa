@@ -103,7 +103,7 @@ public:
 protected:
 
 
-    void computeCoarseElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const helper::fixed_array<Coord,8> &nodes, const int elementIndice,  int level);
+//	void computeCoarseElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const helper::fixed_array<Coord,8> &nodes, const int elementIndice,  int level);
     void computeElementStiffnessFromFiner( ElementStiffness &K, const helper::fixed_array<int,8>& children, const int elementIndice);
 
     virtual void computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const helper::fixed_array<Coord,8> &nodes, const int elementIndice, double stiffnessFactor=1.0);

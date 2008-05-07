@@ -79,7 +79,7 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
     const VecCoord& x2 = *this->mstate2->getX();
 
     //Attach springs using with priority the shortest distance between points
-    float min_dist=0.0f;
+    Real min_dist=0;
     if (indices1.size() < indices2.size())
     {
         sofa::helper::vector< std::map<Real, unsigned int> > distance_spring(indices1.size());
