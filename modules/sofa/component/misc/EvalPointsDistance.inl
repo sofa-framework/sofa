@@ -124,14 +124,14 @@ SReal EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoord& 
             ++rn;
         }
     }
-    Real dmean = (Real)(n>0)?dsum/n : 0.0;
+    Real dmean = (n>0)?dsum/n : (Real)0.0;
     Real ddev = (Real)((n>1)?sqrtf((float)(d2/n - (dsum/n)*(dsum/n))) : 0.0);
     distMean.setValue(dmean);
     distMin.setValue(dmin);
     distMax.setValue(dmax);
     distDev.setValue(ddev);
 
-    Real rdmean = (Real)(rn>0)?rdsum/rn : 0.0;
+    Real rdmean = (rn>0)?rdsum/rn : (Real)0.0;
     Real rddev = (Real)((rn>1)?sqrtf((float)(rd2/rn - (rdsum/rn)*(rdsum/rn))) : 0.0);
     rdistMean.setValue(rdmean);
     rdistMin.setValue(rdmin);

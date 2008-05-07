@@ -136,7 +136,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
 }
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass &Mass, const helper::fixed_array<Coord,8> &nodes, const int elementIndice, double stiffnessFactor)
+void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass &Mass, const helper::fixed_array<Coord,8> &nodes, const int /*elementIndice*/, double stiffnessFactor)
 {
     Real vol = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
 
@@ -170,7 +170,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass 
             Mass[j][i] = Mass[i][j];
         }
 
-    Mass *= stiffnessFactor;
+    Mass *= (Real)stiffnessFactor;
 }
 
 
