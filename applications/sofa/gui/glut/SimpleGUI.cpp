@@ -480,7 +480,7 @@ void SimpleGUI::initializeGL(void)
         CreateRenderTexture(g_DepthTexture, SHADOW_WIDTH, SHADOW_HEIGHT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT);
         CreateRenderTexture(ShadowTextureMask, SHADOW_MASK_SIZE, SHADOW_MASK_SIZE, GL_LUMINANCE, GL_LUMINANCE);
 
-        if (_glshadow = CShader::InitGLSL())
+        if (_glshadow == CShader::InitGLSL())
         {
             // Here we pass in our new vertex and fragment shader files to our shader object.
             g_Shader.InitShaders(sofa::helper::system::DataRepository.getFile("shaders/ShadowMappingPCF.vert"), sofa::helper::system::DataRepository.getFile("shaders/ShadowMappingPCF.frag"));
@@ -1084,7 +1084,11 @@ void SimpleGUI::DisplayOBJs(bool shadowPass)
         {
             DrawAxis(0.0, 0.0, 0.0, 10.0);
             if (sceneMinBBox[0] < sceneMaxBBox[0])
-                DrawBox(sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+            {
+                Vec3d minTemp=sceneMinBBox;
+                Vec3d maxTemp=sceneMaxBBox;
+                DrawBox(minTemp.ptr(), maxTemp.ptr());
+            }
         }
     }
 
@@ -2046,7 +2050,7 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
         break;
         default: break;
         }
-        Vector3 p0, px, py, pz;
+        Vec3d p0, px, py, pz;
         gluUnProject(eventX, lastViewport[3]-1-(eventY), 0, lastModelviewMatrix, lastProjectionMatrix, lastViewport, &(p0[0]), &(p0[1]), &(p0[2]));
         gluUnProject(eventX+1, lastViewport[3]-1-(eventY), 0, lastModelviewMatrix, lastProjectionMatrix, lastViewport, &(px[0]), &(px[1]), &(px[2]));
         gluUnProject(eventX, lastViewport[3]-1-(eventY+1), 0, lastModelviewMatrix, lastProjectionMatrix, lastViewport, &(py[0]), &(py[1]), &(py[2]));

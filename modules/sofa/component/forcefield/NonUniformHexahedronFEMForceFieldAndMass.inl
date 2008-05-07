@@ -306,7 +306,7 @@ template<class DataTypes>
 }*/
 
 template<class DataTypes>
-void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const helper::fixed_array<Coord,8> &nodes, const int elementIndice)
+void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const helper::fixed_array<Coord,8> &nodes, const int elementIndice, double stiffnessFactor)
 {
 //   std::cout << elementIndice << " ! ";
 //   for (unsigned int i=0;i<8;++i)
@@ -316,7 +316,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::computeElementStiffnes
         computeElementStiffnessFromFiner(K,elementIndice); // non-uniform stiffness
     else
     {
-        HexahedronFEMForceFieldT::computeElementStiffness(K,M,nodes,elementIndice); // classical stiffness
+        HexahedronFEMForceFieldT::computeElementStiffness(K,M,nodes,elementIndice,stiffnessFactor); // classical stiffness
     }
 }
 
@@ -361,7 +361,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::computeElementStiffnes
 
 
 template<class T>
-void NonUniformHexahedronFEMForceFieldAndMass<T>::computeElementMass( ElementMass &Mass, const helper::fixed_array<Coord,8> &nodes, const int elementIndice)
+void NonUniformHexahedronFEMForceFieldAndMass<T>::computeElementMass( ElementMass &Mass, const helper::fixed_array<Coord,8> &nodes, const int elementIndice, double stiffnessFactor)
 {
     if(_useMass.getValue() )
     {
@@ -369,7 +369,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeElementMass( ElementMas
         if( _finerLevel )
             computeElementMassFromFiner(Mass,elementIndice); // non-uniform stiffness
         else
-            HexahedronFEMForceFieldAndMassT::computeElementMass(Mass,nodes,elementIndice); // classical stiffness
+            HexahedronFEMForceFieldAndMassT::computeElementMass(Mass,nodes,elementIndice,stiffnessFactor); // classical stiffness
     }
 }
 
