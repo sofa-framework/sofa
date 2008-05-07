@@ -95,7 +95,7 @@ SReal EvalSurfaceDistance<DataTypes>::eval()
 
     xproj = x1;
     sofa::helper::vector<Real> dmin(xproj.size());
-    std::fill(dmin.begin(),dmin.end(),2*maxDist.getValue());
+    std::fill(dmin.begin(),dmin.end(),(Real)(2*maxDist.getValue()));
 
     while (it != itend)
     {

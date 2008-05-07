@@ -523,7 +523,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
     K=K1;
 #endif
 
-    K *= stiffnessFactor;
+    K *= (Real)stiffnessFactor;
 
 }
 

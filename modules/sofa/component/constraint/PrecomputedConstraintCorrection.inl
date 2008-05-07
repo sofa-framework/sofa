@@ -407,7 +407,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
     {
         int indexC1 = mstate->getConstraintId()[c1];
 
-        Real fC1 = f->element(indexC1);
+        double fC1 = (Real)f->element(indexC1);
         //std::cout << "fC("<<indexC1<<")="<<fC1<<std::endl;
 
         if (fC1 != 0.0)

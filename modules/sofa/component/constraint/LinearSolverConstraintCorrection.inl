@@ -222,7 +222,7 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     for(unsigned int c1 = 0; c1 < numConstraints; c1++)
     {
         int indexC1 = mstate->getConstraintId()[c1];
-        Real fC1 = f->element(indexC1);
+        double fC1 = f->element(indexC1);
         //std::cout << "fC("<<indexC1<<")="<<fC1<<std::endl;
         if (fC1 != 0.0)
         {
@@ -242,10 +242,10 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     linearsolver->solveSystem(); //TODO: tell the solver not to recompute the matrix
 
     // use the OdeSolver to get the position integration factor
-    const Real positionFactor = odesolver->getPositionIntegrationFactor();
+    const double positionFactor = odesolver->getPositionIntegrationFactor();
 
     // use the OdeSolver to get the position integration factor
-    const Real velocityFactor = odesolver->getVelocityIntegrationFactor();
+    const double velocityFactor = odesolver->getVelocityIntegrationFactor();
 
     for (unsigned int i=0; i< numDOFs; i++)
     {

@@ -56,17 +56,20 @@ public:
         typedef	helper::vector<SparseVecDeriv> VecConst;
 
 
-        static void set(Coord& c, Real x, Real , Real )
+        template<typename real2>
+        static void set(Coord& c, real2 x, real2 , real2 )
         {
             c = (Real)x;
         }
 
-        static void get(Real &x, Real &, Real &, const Coord& c)
+        template<typename real2>
+        static void get(real2 &x, real2 &, real2 &, const Coord& c)
         {
             x = (Real)c;
         }
 
-        static void add(Coord& c, Real x, Real , Real )
+        template<typename real2>
+        static void add(Coord& c, real2 x, real2 , real2 )
         {
             c += (Real)x;
         }

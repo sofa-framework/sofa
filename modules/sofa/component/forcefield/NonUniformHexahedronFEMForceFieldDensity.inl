@@ -271,7 +271,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::computeCoarseElementSt
                     dimensionDensityFile.getValue()[2]/((float)this->_sparseGrid->_virtualFinerLevels[0]->_regularGrid.getNz())
                     );
 
-            grayScale = 1+10*exp(1-256/((float)(voxels[factor[2]*coordinates[2]][factor[0]*coordinates[0]][factor[1]*coordinates[1]])));
+            grayScale = 1+10*exp(1-256/((float)(voxels[(int)(factor[2]*coordinates[2])][(int)(factor[0]*coordinates[0])][(int)(factor[1]*coordinates[1])])));
 //       std::cout << grayScale << " \n";
         }
         computeMaterialStiffness(mat,  this->f_youngModulus.getValue()*grayScale,this->f_poissonRatio.getValue());
@@ -314,15 +314,15 @@ template<class DataTypes>
 void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::computeMaterialStiffness(MaterialStiffness &m, double youngModulus, double poissonRatio)
 {
     m[0][0] = m[1][1] = m[2][2] = 1;
-    m[0][1] = m[0][2] = m[1][0]= m[1][2] = m[2][0] =  m[2][1] = poissonRatio/(1-poissonRatio);
+    m[0][1] = m[0][2] = m[1][0]= m[1][2] = m[2][0] =  m[2][1] = (Real)(poissonRatio/(1-poissonRatio));
     m[0][3] = m[0][4] =	m[0][5] = 0;
     m[1][3] = m[1][4] =	m[1][5] = 0;
     m[2][3] = m[2][4] =	m[2][5] = 0;
     m[3][0] = m[3][1] = m[3][2] = m[3][4] =	m[3][5] = 0;
     m[4][0] = m[4][1] = m[4][2] = m[4][3] =	m[4][5] = 0;
     m[5][0] = m[5][1] = m[5][2] = m[5][3] =	m[5][4] = 0;
-    m[3][3] = m[4][4] = m[5][5] = (1-2*poissonRatio)/(2*(1-poissonRatio));
-    m *= (youngModulus*(1-poissonRatio))/((1+poissonRatio)*(1-2*poissonRatio));
+    m[3][3] = m[4][4] = m[5][5] = (Real)((1-2*poissonRatio)/(2*(1-poissonRatio)));
+    m *= (Real)((youngModulus*(1-poissonRatio))/((1+poissonRatio)*(1-2*poissonRatio)));
     // S = [ U V V 0 0 0 ]
     //     [ V U V 0 0 0 ]
     //     [ V V U 0 0 0 ]
@@ -355,10 +355,10 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::drawSphere(double r, i
             double x = cos(lng);
             double y = sin(lng);
 
-            glNormal3f((float)pos[0] + r*x * zr0, (float)pos[1] + r*y * zr0, (float)pos[2] + r*z0);
-            glVertex3f((float)pos[0] + r*x * zr0, (float)pos[1] + r*y * zr0, (float)pos[2] + r*z0);
-            glNormal3f((float)pos[0] + r*x * zr1, (float)pos[1] + r*y * zr1, (float)pos[2] + r*z1);
-            glVertex3f((float)pos[0] + r*x * zr1, (float)pos[1] + r*y * zr1, (float)pos[2] + r*z1);
+            glNormal3f((float)(pos[0] + r*x * zr0), (float)(pos[1] + r*y * zr0), (float)(pos[2] + r*z0));
+            glVertex3f((float)(pos[0] + r*x * zr0), (float)(pos[1] + r*y * zr0), (float)(pos[2] + r*z0));
+            glNormal3f((float)(pos[0] + r*x * zr1), (float)(pos[1] + r*y * zr1), (float)(pos[2] + r*z1));
+            glVertex3f((float)(pos[0] + r*x * zr1), (float)(pos[1] + r*y * zr1), (float)(pos[2] + r*z1));
         }
         glEnd();
     }
@@ -423,7 +423,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::draw()
 
     for (it_stiff = stiffnessDraw.begin(); it_stiff != stiffnessDraw.end(); ++it_stiff)
     {
-        glColor4f((*it_stiff).second.second/max, 0.0f, 1.0-(*it_stiff).second.second/max,1.0f);
+        glColor4f((float)((*it_stiff).second.second/max), 0.0f, (float)(1.0f-(*it_stiff).second.second/max),1.0f);
         drawSphere(radius,10,10,x[ (*it_stiff).first ]);
     }
     if (this->getContext()->getShowWireFrame())

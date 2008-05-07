@@ -205,7 +205,7 @@ public:
             return;
         }
 #endif
-        data[i*pitch+j] = v;
+        data[i*pitch+j] = (Real)v;
     }
 
     void add(int i, int j, double v)
@@ -220,7 +220,7 @@ public:
             return;
         }
 #endif
-        data[i*pitch+j] += v;
+        data[i*pitch+j] += (Real)v;
     }
 
     void clear(int i, int j)
