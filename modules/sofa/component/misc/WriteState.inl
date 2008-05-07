@@ -2,7 +2,6 @@
 #define SOFA_COMPONENT_MISC_WRITESTATE_INL
 
 #include <sofa/component/misc/WriteState.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/simulation/tree/GNode.h>
 
 #include <fstream>
@@ -55,8 +54,7 @@ void WriteState<DataTypes>::init()
     if (mmodel)
     {
         // test the position DOFs
-        defaulttype::DataTypeInfo<typename DataTypes::Coord> dataInfoX;
-        if (dataInfoX.size() < f_DOFsX.getValue().size())
+        if (DataInfoCoord::size() < f_DOFsX.getValue().size())
         {
             std::cerr << "ERROR: the size of DOFsX must be equal or smaller than the size of the mechanical data type."<<std::endl;
             exit(-1);
@@ -65,16 +63,15 @@ void WriteState<DataTypes>::init()
         {
             for (unsigned int i=0; i<f_DOFsX.getValue().size(); i++)
             {
-                if (dataInfoX.size() < f_DOFsX.getValue()[i])
+                if (DataInfoCoord::size() < f_DOFsX.getValue()[i])
                 {
-                    std::cerr << "ERROR: DOFX index " << f_DOFsX.getValue()[i] << " must contain a value between 0 and " << dataInfoX.size()-1 << std::endl;
+                    std::cerr << "ERROR: DOFX index " << f_DOFsX.getValue()[i] << " must contain a value between 0 and " << DataInfoCoord::size()-1 << std::endl;
                     exit(-1);
                 }
             }
         }
         // test the velocity DOFs
-        defaulttype::DataTypeInfo<typename DataTypes::Deriv> dataInfoV;
-        if (dataInfoV.size() < f_DOFsV.getValue().size())
+        if (DataInfoDeriv::size() < f_DOFsV.getValue().size())
         {
             std::cerr << "ERROR: the size of DOFsV must be equal or smaller than the size of the mechanical data type."<<std::endl;
             exit(-1);
@@ -83,9 +80,9 @@ void WriteState<DataTypes>::init()
         {
             for (unsigned int i=0; i<f_DOFsV.getValue().size(); i++)
             {
-                if (dataInfoV.size() < f_DOFsV.getValue()[i])
+                if (DataInfoDeriv::size() < f_DOFsV.getValue()[i])
                 {
-                    std::cerr << "ERROR: DOFV index " << f_DOFsV.getValue()[i] << " must contain a value between 0 and " << dataInfoV.size()-1 << std::endl;
+                    std::cerr << "ERROR: DOFV index " << f_DOFsV.getValue()[i] << " must contain a value between 0 and " << DataInfoDeriv::size()-1 << std::endl;
                     exit(-1);
                 }
             }

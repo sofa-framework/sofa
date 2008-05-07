@@ -115,13 +115,15 @@ public:
         return d;
     }
 
-    void operator*=(Real a)
+    template<typename real2>
+    void operator*=(real2 a)
     {
         vCenter *= a;
         vOrientation *= a;
     }
 
-    RigidDeriv<3,real> operator*(Real a) const
+    template<typename real2>
+    RigidDeriv<3,real> operator*(real2 a) const
     {
         RigidDeriv r = *this;
         r*=a;
@@ -273,14 +275,16 @@ public:
         //orientation.normalize();
     }
 
-    void operator*=(Real a)
+    template<typename real2>
+    void operator*=(real2 a)
     {
         //std::cout << "*="<<std::endl;
         center *= a;
         //orientation *= a;
     }
 
-    RigidCoord<3,real> operator*(Real a) const
+    template<typename real2>
+    RigidCoord<3,real> operator*(real2 a) const
     {
         RigidCoord r = *this;
         r*=a;
@@ -648,16 +652,18 @@ public:
         return d;
     }
 
-    void operator*=(Real a)
+    template<typename real2>
+    void operator*=(real2 a)
     {
-        vCenter *= (Real)a;
+        vCenter *= a;
         vOrientation *= (Real)a;
     }
 
-    RigidDeriv<2,real> operator*(Real a) const
+    template<typename real2>
+    RigidDeriv<2,real> operator*(real2 a) const
     {
         RigidDeriv<2,real> r = *this;
-        r *= (Real)a;
+        r *= a;
         return r;
     }
 
@@ -759,17 +765,19 @@ public:
         orientation += a.getOrientation();
     }
 
-    void operator*=(Real a)
+    template<typename real2>
+    void operator*=(real2 a)
     {
 //         std::cout << "*="<<std::endl;
-        center *= (Real)a;
+        center *= a;
         orientation *= (Real)a;
     }
 
-    RigidCoord<2,real> operator*(Real a) const
+    template<typename real2>
+    RigidCoord<2,real> operator*(real2 a) const
     {
         RigidCoord<2,real> r = *this;
-        r *= (Real)a;
+        r *= a;
         return r;
     }
 

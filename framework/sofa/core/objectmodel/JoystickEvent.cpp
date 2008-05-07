@@ -155,7 +155,7 @@ JoystickEvent::~JoystickEvent()
 
 const JoystickEvent::AxisEvent *JoystickEvent::getAxisEvent(const int index) const
 {
-    assert( (index < axisEvents.size()) && "AxisEvents index out of range" );
+    assert( (index < (int)axisEvents.size()) && "AxisEvents index out of range" );
 
     for (unsigned int i = 0; i < axisEvents.size(); i++)
     {
@@ -215,7 +215,7 @@ void JoystickEvent::setButtonEvent( JoystickEvent::ButtonEvent * bEvent)
 
 const JoystickEvent::HatEvent *JoystickEvent::getHatEvent(const int index) const
 {
-    assert( (index < hatEvents.size()) && "HatEvents index out of range" );
+    assert( (index < (int)hatEvents.size()) && "HatEvents index out of range" );
 
     for (unsigned int i = 0; i < hatEvents.size(); i++)
     {

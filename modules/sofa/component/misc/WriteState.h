@@ -7,6 +7,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/tree/AnimateBeginEvent.h>
 #include <sofa/simulation/tree/AnimateEndEvent.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
 
 #include <fstream>
 
@@ -34,7 +35,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-
+    typedef defaulttype::DataTypeInfo<Coord> DataInfoCoord;
+    typedef defaulttype::DataTypeInfo<Coord> DataInfoDeriv;
     Data < std::string > f_filename;
     Data < bool > f_writeX;
     Data < bool > f_writeV;
