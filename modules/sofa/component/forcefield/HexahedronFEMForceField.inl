@@ -296,7 +296,7 @@ double HexahedronFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const helper::fixed_array<Coord,8> &nodes, const int elementIndice)
+void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const helper::fixed_array<Coord,8> &nodes, const int elementIndice, double stiffnessFactor)
 {
 // 	cerr<<"HexahedronFEMForceField<DataTypes>::computeElementStiffnessAsFinest\n";
 
@@ -523,9 +523,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
     K=K1;
 #endif
 
-    // if sparseGrid -> the filling ratio is taken into account
-    if( _sparseGrid && _sparseGrid->getType(elementIndice)==topology::SparseGridTopology::BOUNDARY)
-        K *= .5;
+    K *= stiffnessFactor;
 
 }
 
@@ -832,7 +830,7 @@ void HexahedronFEMForceField<DataTypes>::initLarge(int i, const Element &elem)
     if( _elementStiffnesses.getValue().size() <= (unsigned)i )
     {
         _elementStiffnesses.beginEdit()->resize( _elementStiffnesses.getValue().size()+1 );
-        computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], _rotatedInitialElements[i], i );
+        computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], _rotatedInitialElements[i], i, _sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0 );
     }
 
 
@@ -908,7 +906,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const 
 
     if(f_updateStiffnessMatrix.getValue())
 // 		computeElementStiffness( _elementStiffnesses[i], _materialsStiffnesses[i], deformed );
-        computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], deformed, i );
+        computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], deformed, i, _sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0 );
 
 
     Displacement F; //forces
@@ -951,7 +949,7 @@ void HexahedronFEMForceField<DataTypes>::initPolar(int i, const Element& elem)
     if( _elementStiffnesses.getValue().size() <= (unsigned)i )
     {
         _elementStiffnesses.beginEdit()->resize( _elementStiffnesses.getValue().size()+1 );
-        computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], _rotatedInitialElements[i], i );
+        computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], _rotatedInitialElements[i], i, _sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0 );
     }
 }
 
@@ -1024,7 +1022,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const 
 
     if(f_updateStiffnessMatrix.getValue())
 // 		computeElementStiffness( _elementStiffnesses[i], _materialsStiffnesses[i], deformed );
-        computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], deformed, i );
+        computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], deformed, i, _sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0 );
 
     // compute force on element
     computeForce( F, D, _elementStiffnesses.getValue()[i] );

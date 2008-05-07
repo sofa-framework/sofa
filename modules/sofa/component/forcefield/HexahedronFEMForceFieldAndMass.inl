@@ -127,7 +127,8 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
         {
             _elementMasses.beginEdit()->resize( _elementMasses.getValue().size()+1 );
 // 			  computeElementMass( (*_elementMasses.beginEdit())[i], nodes,i );
-            computeElementMass( (*_elementMasses.beginEdit())[i], this->_rotatedInitialElements[i],i );
+            computeElementMass( (*_elementMasses.beginEdit())[i], this->_rotatedInitialElements[i],i,
+                    (this->_sparseGrid && this->_sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY)?.5:1.0 );
         }
 
 
@@ -135,7 +136,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
 }
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass &Mass, const helper::fixed_array<Coord,8> &nodes, const int elementIndice)
+void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass &Mass, const helper::fixed_array<Coord,8> &nodes, const int elementIndice, double stiffnessFactor)
 {
     Real vol = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
 
@@ -169,8 +170,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass 
             Mass[j][i] = Mass[i][j];
         }
 
-    if( this->_sparseGrid && this->_sparseGrid->getType(elementIndice)==topology::SparseGridTopology::BOUNDARY)
-        Mass *= .5;
+    Mass *= stiffnessFactor;
 }
 
 
