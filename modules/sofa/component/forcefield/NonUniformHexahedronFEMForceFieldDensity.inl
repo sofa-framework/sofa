@@ -243,26 +243,6 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
 template<class DataTypes>
 void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::computeCoarseElementStiffness( ElementStiffness &coarseElement, ElementMass &coarseMassElement, const int elementIndice,  int level)
 {
-    /*
-    //  //Get the 8 indices of the coarser Hexa
-      const helper::fixed_array<unsigned int,8>& points = this->_sparseGrid->getHexas()[elementIndice];
-    // //       Get the 8 points of the coarser Hexa
-      helper::fixed_array<Coord,8> nodes;
-      for (unsigned int k=0;k<8;++k) nodes[k] =  this->_sparseGrid->getPointPos(points[this->_indices[k]]);
-
-
-      MaterialStiffness mat;
-      computeMaterialStiffness(mat,  this->f_youngModulus.getValue(),this->f_poissonRatio.getValue());
-
-
-      HexahedronFEMForceFieldT::computeElementStiffness(*coarseElement,mat,nodes,elementIndice); // classical stiffness
-      HexahedronFEMForceFieldAndMassT::computeElementMass(*coarseMassElement,nodes,elementIndice);
-
-
-
-
-      return;*/
-
 
 
     if (level == this->_nbVirtualFinerLevels.getValue())
@@ -279,8 +259,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::computeCoarseElementSt
 //       //compute MaterialStiffness
         MaterialStiffness mat;
 
-        double young = this->f_youngModulus.getValue();
-        double grayScale;
+        double grayScale=1.0;
         if (!densityFile.getValue().empty())
         {
             int indexInRegularGrid = this->_sparseGrid->_virtualFinerLevels[0]->_indicesOfCubeinRegularGrid[elementIndice];
@@ -292,10 +271,10 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::computeCoarseElementSt
                     dimensionDensityFile.getValue()[2]/((float)this->_sparseGrid->_virtualFinerLevels[0]->_regularGrid.getNz())
                     );
 
-            grayScale = 1+(voxels[factor[2]*coordinates[2]][factor[0]*coordinates[0]][factor[1]*coordinates[1]])/256.0;
+            grayScale = 1+10*exp(1-256/((float)(voxels[factor[2]*coordinates[2]][factor[0]*coordinates[0]][factor[1]*coordinates[1]])));
+//       std::cout << grayScale << " \n";
         }
-//       grayScale = 1.0;
-        computeMaterialStiffness(mat,  this->f_youngModulus.getValue(),this->f_poissonRatio.getValue());
+        computeMaterialStiffness(mat,  this->f_youngModulus.getValue()*grayScale,this->f_poissonRatio.getValue());
 
         //Nodes are found using Sparse Grid
         HexahedronFEMForceFieldAndMassT::computeElementStiffness(coarseElement,mat,nodes,elementIndice, this->_sparseGrid->_virtualFinerLevels[0]->getType(elementIndice)==topology::SparseGridTopology::BOUNDARY?.5:1.0); // classical stiffness
@@ -353,6 +332,105 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::computeMaterialStiffne
     // with U = y * (1-p)/( (1+p)(1-2p))
     //      V = y *    p /( (1+p)(1-2p))
     //      W = y *  1   /(2(1+p)) = (U-V)/2
+}
+
+template<class DataTypes>
+void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::drawSphere(double r, int lats, int longs, const Coord &pos)
+{
+    int i, j;
+    for(i = 0; i <= lats; i++)
+    {
+        double lat0 = M_PI * (-0.5 + (double) (i - 1) / lats);
+        double z0  = sin(lat0);
+        double zr0 =  cos(lat0);
+
+        double lat1 = M_PI * (-0.5 + (double) i / lats);
+        double z1 = sin(lat1);
+        double zr1 = cos(lat1);
+
+        glBegin(GL_QUAD_STRIP);
+        for(j = 0; j <= longs; j++)
+        {
+            double lng = 2 * M_PI * (double) (j - 1) / longs;
+            double x = cos(lng);
+            double y = sin(lng);
+
+            glNormal3f((float)pos[0] + r*x * zr0, (float)pos[1] + r*y * zr0, (float)pos[2] + r*z0);
+            glVertex3f((float)pos[0] + r*x * zr0, (float)pos[1] + r*y * zr0, (float)pos[2] + r*z0);
+            glNormal3f((float)pos[0] + r*x * zr1, (float)pos[1] + r*y * zr1, (float)pos[2] + r*z1);
+            glVertex3f((float)pos[0] + r*x * zr1, (float)pos[1] + r*y * zr1, (float)pos[2] + r*z1);
+        }
+        glEnd();
+    }
+}
+
+
+template<class DataTypes>
+void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::draw()
+{
+
+    if (!this->getContext()->getShowForceFields()) return;
+    if (!this->mstate) return;
+    if (this->_indexedElements->size() == 0) return;
+
+
+    const VecCoord& x = *this->mstate->getX();
+
+    if (this->getContext()->getShowWireFrame())
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    glDisable(GL_LIGHTING);
+
+    std::map< unsigned int , std::pair<unsigned int, double> > stiffnessDraw;
+
+    typename VecElement::const_iterator it;
+    int hexa_elem;
+
+    double radius=std::min(
+            (x[ (*this->_indexedElements)[0][1] ][0] - x[ (*this->_indexedElements)[0][0] ][0]) ,
+            std::min( (x[ (*this->_indexedElements)[0][3] ][1] - x[ (*this->_indexedElements)[0][0] ][1]) ,
+                    (x[ (*this->_indexedElements)[0][4] ][2] - x[ (*this->_indexedElements)[0][0] ][2]) )
+            )/8.0;
+
+    for(it = this->_indexedElements->begin(), hexa_elem = 0 ; it != this->_indexedElements->end() ; ++it, ++hexa_elem)
+    {
+        if (this->_trimgrid && !this->_trimgrid->isCubeActive(hexa_elem/6)) continue;
+
+        for (unsigned int elem=0; elem<8; ++elem)
+        {
+            double s=0;
+            const unsigned index = (*it)[elem];
+            for (unsigned int i=0; i<24; ++i)
+            {
+                s+= abs(this->_elementStiffnesses.getValue()[hexa_elem][i][elem+0]) +
+                    abs(this->_elementStiffnesses.getValue()[hexa_elem][i][elem+1]) +
+                    abs(this->_elementStiffnesses.getValue()[hexa_elem][i][elem+2]);
+            }
+            if (stiffnessDraw.find( index ) != stiffnessDraw.end())
+                stiffnessDraw[index]=std::make_pair(stiffnessDraw[index].first+1,s+stiffnessDraw[index].second);
+            else
+                stiffnessDraw[index]=std::make_pair(1,s);
+        }
+    }
+
+    std::map< unsigned int ,  std::pair<unsigned int, double> >::iterator it_stiff;
+    double max=-1;
+    for (it_stiff = stiffnessDraw.begin(); it_stiff != stiffnessDraw.end(); ++it_stiff)
+    {
+        (*it_stiff).second.second /= (*it_stiff).second.first;
+        if (max < 0 || max < (*it_stiff).second.second ) max = (*it_stiff).second.second;
+    }
+
+    for (it_stiff = stiffnessDraw.begin(); it_stiff != stiffnessDraw.end(); ++it_stiff)
+    {
+        glColor4f((*it_stiff).second.second/max, 0.0f, 1.0-(*it_stiff).second.second/max,1.0f);
+        drawSphere(radius,10,10,x[ (*it_stiff).first ]);
+    }
+    if (this->getContext()->getShowWireFrame())
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+//   if(this->_sparseGrid )
+//     glDisable(GL_BLEND);
 }
 
 } // namespace forcefield

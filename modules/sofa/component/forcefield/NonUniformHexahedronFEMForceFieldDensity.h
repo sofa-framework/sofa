@@ -89,7 +89,9 @@ public:
     }
 
     void init();
-// 	virtual void reinit();
+    void draw();
+// 	virtual void rein
+    void drawSphere(double r, int lats, int longs, const Coord &pos);
 
 protected:
     Data< std::string > densityFile;
