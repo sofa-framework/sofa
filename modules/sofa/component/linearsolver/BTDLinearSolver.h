@@ -52,6 +52,7 @@ class BTDLinearSolver : public sofa::simulation::tree::MatrixLinearSolver<Matrix
 {
 public:
     Data<bool> f_verbose;
+    Data<bool> problem;
 
     typedef typename Matrix::SubMatrixType SubMatrix;
 
@@ -67,6 +68,7 @@ public:
 
     BTDLinearSolver()
         : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
+        , problem(initData(&problem, false,"showProblem", "Suppress the computation of all elements of the inverse") )
         , f_blockSize( initData(&f_blockSize,6,"blockSize","dimension of the blocks in the matrix") )
     {
     }
@@ -302,6 +304,52 @@ public:
             std::cerr << "BTDLinearSolver::addJMInvJt ERROR: incompatible J matrix size." << std::endl;
             return false;
         }
+
+
+
+// WARNING !!!
+        //Getting all elements of Minv modifies the obtained Matrix "result"!!
+        // It seems that result is computed more accurately.
+        // There is a BUG to find here...
+        if (!problem.getValue())
+        {
+            for  (int mr=0; mr<Minv.rowSize(); mr++)
+            {
+                for (int mc=0; mc<Minv.colSize(); mc++)
+                {
+                    double toto=getMinvElement(mr,mc);
+                }
+            }
+        }
+////////////////////////////////////////////
+
+        if (f_verbose.getValue())
+        {
+// debug christian: print of the inverse matrix:
+            std::cout<< "C = ["<<std::endl;
+            for  (int mr=0; mr<Minv.rowSize(); mr++)
+            {
+                std::cout<<" "<<std::endl;
+                for (int mc=0; mc<Minv.colSize(); mc++)
+                {
+                    std::cout<<" "<< getMinvElement(mr,mc);
+                }
+            }
+            std::cout<< "];"<<std::endl;
+
+// debug christian: print of matrix J:
+            std::cout<< "J = ["<<std::endl;
+            for  (int jr=0; jr<J.rowSize(); jr++)
+            {
+                std::cout<<" "<<std::endl;
+                for (int jc=0; jc<J.colSize(); jc++)
+                {
+                    std::cout<<" "<< J.element(jr, jc) ;
+                }
+            }
+            std::cout<< "];"<<std::endl;
+        }
+
 
         const typename JMatrix::LineConstIterator jitend = J.end();
         for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != jitend; ++jit1)
