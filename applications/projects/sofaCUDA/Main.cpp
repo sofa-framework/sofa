@@ -48,7 +48,7 @@ int main(int argc, char** argv)
 
     sofa::helper::system::DataRepository.findFile(fileName);
 
-    mycudaInit(0);
+    mycudaInit();
 
     GNode* groot = NULL;
     ctime_t t0, t1;

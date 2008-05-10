@@ -1,4 +1,5 @@
 #include "mycuda.h"
+#include <cuda.h>
 #include <cuda_gl_interop.h>
 #if defined(__cplusplus)
 namespace sofa
@@ -24,18 +25,28 @@ int mycudaInit(int device)
     int deviceCount = 0;
     cudaInitCalled = true;
     cudaCheck(cudaGetDeviceCount(&deviceCount));
-    myprintf("CUDA: %d devices found.\n", deviceCount);
+    myprintf("CUDA: %d device(s) found.\n", deviceCount);
     for (int i=0; i<deviceCount; i++)
     {
         cudaDeviceProp dev;
-        memset(&dev,0,sizeof(dev));
+        //memset(&dev,0,sizeof(dev));
         //dev.name=NULL;
         //dev.bytes=0;
         //dev.major=0;
         //dev.minor=0;
         cudaCheck(cudaGetDeviceProperties(&dev,i));
-        //myprintf("CUDA:  %d : \"%s\", %d MB, revision %d.%d\n",i,(dev.name==NULL?"":dev.name), dev.bytes/(1024*1024), dev.major, dev.minor);
-        myprintf("CUDA:  %d : \"%s\", %d MB, revision %d.%d\n",i,dev.name, dev.totalGlobalMem/(1024*1024), dev.major, dev.minor);
+#if CUDA_VERSION >= 2000
+        myprintf("CUDA:  %d : \"%s\", %d MB, %d cores at %.3f GHz, revision %d.%d\n",i,dev.name, dev.totalGlobalMem/(1024*1024), dev.multiProcessorCount*8, dev.clockRate * 1e-6f, dev.major, dev.minor);
+#elif CUDA_VERSION >= 1000
+        myprintf("CUDA:  %d : \"%s\", %d MB, cores at %.3f GHz, revision %d.%d\n",i,dev.name, dev.totalGlobalMem/(1024*1024), dev.clockRate * 1e-6f, dev.major, dev.minor);
+#else
+        myprintf("CUDA:  %d : \"%s\", %d MB, revision %d.%d\n",i,(dev.name==NULL?"":dev.name), dev.bytes/(1024*1024), dev.major, dev.minor);
+#endif
+    }
+    if (device==-1)
+    {
+        const char* var = mygetenv("CUDA_DEVICE");
+        device = (var && *var) ? atoi(var):0;
     }
     if (device >= deviceCount)
     {
@@ -44,6 +55,9 @@ int mycudaInit(int device)
     }
     else
     {
+        cudaDeviceProp dev;
+        cudaCheck(cudaGetDeviceProperties(&dev,device));
+        myprintf("CUDA: Using device %d : \"%s\"\n",device,dev.name);
         cudaCheck(cudaSetDevice(device));
         return 1;
     }
@@ -51,7 +65,7 @@ int mycudaInit(int device)
 
 void mycudaMalloc(void **devPtr, size_t size)
 {
-    if (!cudaInitCalled) mycudaInit(0);
+    if (!cudaInitCalled) mycudaInit();
     myprintf("CUDA: malloc(%d).\n",size);
     cudaCheck(cudaMalloc(devPtr, size),"cudaMalloc");
     myprintf("CUDA: malloc(%d) -> 0x%x.\n",size, *devPtr);
@@ -59,7 +73,7 @@ void mycudaMalloc(void **devPtr, size_t size)
 
 void mycudaMallocPitch(void **devPtr, size_t* pitch, size_t width, size_t height)
 {
-    if (!cudaInitCalled) mycudaInit(0);
+    if (!cudaInitCalled) mycudaInit();
     myprintf("CUDA: mallocPitch(%d,%d).\n",width,height);
     cudaCheck(cudaMallocPitch(devPtr, pitch, width, height),"cudaMalloc2D");
     myprintf("CUDA: mallocPitch(%d,%d) -> 0x%x at pitch %d.\n",width,height, *devPtr, (int)*pitch);
@@ -73,7 +87,7 @@ void mycudaFree(void *devPtr)
 
 void mycudaMallocHost(void **hostPtr, size_t size)
 {
-    if (!cudaInitCalled) mycudaInit(0);
+    if (!cudaInitCalled) mycudaInit();
     myprintf("CUDA: mallocHost(%d).\n",size);
     cudaCheck(cudaMallocHost(hostPtr, size),"cudaMallocHost");
     myprintf("CUDA: mallocHost(%d) -> 0x%x.\n",size, *hostPtr);
@@ -118,7 +132,7 @@ void mycudaMemcpyDeviceToHost2D(void *dst, size_t dpitch, const void *src, size_
 
 void mycudaGLRegisterBufferObject(int id)
 {
-    if (!cudaInitCalled) mycudaInit(0);
+    if (!cudaInitCalled) mycudaInit();
     cudaCheck(cudaGLRegisterBufferObject((GLuint)id),"cudaGLRegisterBufferObject");
 }
 
