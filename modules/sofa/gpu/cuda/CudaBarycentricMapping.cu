@@ -1,7 +1,8 @@
 #include "CudaCommon.h"
 #include "CudaMath.h"
+#include "cuda.h"
 
-#if defined(__cplusplus)
+#if defined(__cplusplus) && CUDA_VERSION != 2000
 namespace sofa
 {
 namespace gpu
@@ -284,7 +285,7 @@ void RegularGridMapperCuda3f1_3f_applyJT(unsigned int insize, unsigned int maxNO
     RegularGridMapperCuda3f1_applyJT_kernel<float3><<< grid, threads >>>(insize, maxNOut, (const GPULinearMap*)mapT, (float4*)out, (const float3*)in);
 }
 
-#if defined(__cplusplus)
+#if defined(__cplusplus) && CUDA_VERSION != 2000
 } // namespace cuda
 } // namespace gpu
 } // namespace sofa
