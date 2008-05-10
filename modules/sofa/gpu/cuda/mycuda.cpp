@@ -1,9 +1,10 @@
+#include <sofa/helper/system/config.h>
 #include <iostream>
 #include <fstream>
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 
-#include <sofa/helper/system/config.h>
 #include "mycuda.h"
 
 namespace sofa
@@ -48,6 +49,11 @@ int myprintf(const char* fmt, ...)
     int r = vprintf( fmt, args );
     va_end( args );
     return r;
+}
+
+const char* mygetenv(const char* name)
+{
+    return getenv(name);
 }
 
 } // namespace cuda
