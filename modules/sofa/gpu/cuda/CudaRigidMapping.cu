@@ -1,7 +1,8 @@
 #include "CudaCommon.h"
 #include "CudaMath.h"
+#include "cuda.h"
 
-#if defined(__cplusplus)
+#if defined(__cplusplus) && CUDA_VERSION != 2000
 namespace sofa
 {
 namespace gpu
@@ -195,7 +196,7 @@ void RigidMappingCuda3f_applyJT(unsigned int size, void* out, const void* rotate
     RigidMappingCuda3f_applyJT_kernel<<< grid, threads, BSIZE*6*sizeof(float) >>>(size, (float*)out, (const float*)rotated, (const float*)in);
 }
 
-#if defined(__cplusplus)
+#if defined(__cplusplus) && CUDA_VERSION != 2000
 } // namespace cuda
 } // namespace gpu
 } // namespace sofa

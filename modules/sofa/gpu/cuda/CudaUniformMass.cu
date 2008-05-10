@@ -1,7 +1,8 @@
 #include "CudaCommon.h"
 #include "CudaMath.h"
+#include "cuda.h"
 
-#if defined(__cplusplus)
+#if defined(__cplusplus) && CUDA_VERSION != 2000
 namespace sofa
 {
 namespace gpu
@@ -203,7 +204,7 @@ void UniformMassCuda3f1_addForce(unsigned int size, const float *mg, void* f)
     UniformMassCuda3f1_addForce_kernel<<< grid, threads >>>(size, make_float3(mg[0],mg[1],mg[2]), (float4*)f);
 }
 
-#if defined(__cplusplus)
+#if defined(__cplusplus) && CUDA_VERSION != 2000
 } // namespace cuda
 } // namespace gpu
 } // namespace sofa

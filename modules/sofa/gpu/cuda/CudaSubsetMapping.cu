@@ -1,7 +1,8 @@
 #include "CudaCommon.h"
 #include "CudaMath.h"
+#include "cuda.h"
 
-#if defined(__cplusplus)
+#if defined(__cplusplus) && CUDA_VERSION != 2000
 namespace sofa
 {
 namespace gpu
@@ -314,7 +315,7 @@ void SubsetMappingCuda3f_3f1_applyJT1(unsigned int size, const void* map, void* 
     SubsetMappingCuda3f1_applyJT1_kernel<float3><<< grid, threads >>>(size, (const int*)map, (float3*)out, (const float4*)in);
 }
 
-#if defined(__cplusplus)
+#if defined(__cplusplus) && CUDA_VERSION != 2000
 } // namespace cuda
 } // namespace gpu
 } // namespace sofa

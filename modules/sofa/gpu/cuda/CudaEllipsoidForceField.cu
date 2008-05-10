@@ -1,7 +1,8 @@
 #include "CudaCommon.h"
 #include "CudaMath.h"
+#include "cuda.h"
 
-#if defined(__cplusplus)
+#if defined(__cplusplus) && CUDA_VERSION != 2000
 namespace sofa
 {
 namespace gpu
@@ -318,7 +319,7 @@ void EllipsoidForceFieldCuda3f1_addDForce(unsigned int size, GPUEllipsoid* ellip
     EllipsoidForceFieldCuda3f1_addDForce_kernel<<< grid, threads >>>(size, *ellipsoid, tmp, (float4*)df, (const float4*)dx);
 }
 
-#if defined(__cplusplus)
+#if defined(__cplusplus) && CUDA_VERSION != 2000
 } // namespace cuda
 } // namespace gpu
 } // namespace sofa

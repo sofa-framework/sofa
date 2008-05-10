@@ -1,7 +1,8 @@
 #include "CudaCommon.h"
 #include "CudaMath.h"
+#include "cuda.h"
 
-#if defined(__cplusplus)
+#if defined(__cplusplus) && CUDA_VERSION != 2000
 namespace sofa
 {
 namespace gpu
@@ -223,7 +224,7 @@ void PlaneForceFieldCuda3f1_addDForce(unsigned int size, GPUPlane* plane, const 
     PlaneForceFieldCuda3f1_addDForce_kernel<<< grid, threads >>>(size, *plane, penetration, (float4*)df, (const float4*)dx);
 }
 
-#if defined(__cplusplus)
+#if defined(__cplusplus) && CUDA_VERSION != 2000
 } // namespace cuda
 } // namespace gpu
 } // namespace sofa

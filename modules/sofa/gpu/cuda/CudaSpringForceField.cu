@@ -1,7 +1,8 @@
 #include "CudaCommon.h"
 #include "CudaMath.h"
+#include "cuda.h"
 
-#if defined(__cplusplus)
+#if defined(__cplusplus) && CUDA_VERSION != 2000
 namespace sofa
 {
 namespace gpu
@@ -1006,7 +1007,7 @@ void StiffSpringForceFieldCuda3f1_addExternalDForce(unsigned int size, unsigned 
     StiffSpringForceFieldCuda3f1_addDForce_kernel<<< grid, threads >>>(nbSpringPerVertex, (const GPUSpring*)springs, (float4*)f1, (const float4*)dx1, (const float4*)x1, (const float*)dfdx);
 }
 
-#if defined(__cplusplus)
+#if defined(__cplusplus) && CUDA_VERSION != 2000
 } // namespace cuda
 } // namespace gpu
 } // namespace sofa

@@ -1,7 +1,8 @@
 #include "CudaCommon.h"
 #include "CudaMath.h"
+#include "cuda.h"
 
-#if defined(__cplusplus)
+#if defined(__cplusplus) && CUDA_VERSION != 2000
 namespace sofa
 {
 namespace gpu
@@ -102,7 +103,7 @@ void FixedConstraintCuda3f1_projectResponseIndexed(unsigned int size, const void
     FixedConstraintCuda3f1_projectResponseIndexed_kernel<<< grid, threads >>>(size, (const int*)indices, (float4*)dx);
 }
 
-#if defined(__cplusplus)
+#if defined(__cplusplus) && CUDA_VERSION != 2000
 } // namespace cuda
 } // namespace gpu
 } // namespace sofa
