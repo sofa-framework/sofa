@@ -46,7 +46,7 @@ int myprintf(const char* fmt, ...)
 {
     va_list args;
     va_start( args, fmt );
-    int r = vprintf( fmt, args );
+    int r = vfprintf( stderr, fmt, args );
     va_end( args );
     return r;
 }
