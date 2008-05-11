@@ -223,6 +223,16 @@ public:
     /// The number of vertices position, normal, and texture coordinates already written is given as parameters
     /// This method should update them
     virtual void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex);
+
+    virtual std::string getTemplateName() const
+    {
+        return ExtVec3fMappedModel::getTemplateName();
+    }
+
+    static std::string templateName(const VisualModelImpl* p = NULL)
+    {
+        return ExtVec3fMappedModel::templateName(p);
+    }
 };
 
 //typedef Vec<3,GLfloat> GLVec3f;
