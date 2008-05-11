@@ -22,9 +22,6 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-// Author: François Faure, INRIA-UJF, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
 #ifndef SOFA_COMPONENT_ODESOLVER_CENTRALDIFFERENCESOLVER_H
 #define SOFA_COMPONENT_ODESOLVER_CENTRALDIFFERENCESOLVER_H
 

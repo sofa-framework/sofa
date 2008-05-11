@@ -1,4 +1,5 @@
 #include <sofa/component/odesolver/RungeKutta2Solver.h>
+#include <sofa/simulation/tree/MechanicalVisitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
@@ -45,17 +46,45 @@ void RungeKutta2Solver::solve(double dt)
     computeAcc (startTime, acc, pos, vel); // acc is the derivative of vel
 
     // Perform a dt/2 step along the derivative
+#ifdef SOFA_NO_VMULTIOP // unoptimized version
     newX = pos;
     newX.peq(vel, dt/2.); // newX = pos + vel dt/2
     newV = vel;
     newV.peq(acc, dt/2.); // newV = vel + acc dt/2
+#else // single-operation optimization
+    {
+        simulation::tree::MechanicalVMultiOpVisitor vmop;
+        vmop.ops.resize(2);
+        vmop.ops[0].first = (VecId)newX;
+        vmop.ops[0].second.push_back(std::make_pair((VecId)pos,1.0));
+        vmop.ops[0].second.push_back(std::make_pair((VecId)vel,dt/2));
+        vmop.ops[1].first = (VecId)newV;
+        vmop.ops[1].second.push_back(std::make_pair((VecId)vel,1.0));
+        vmop.ops[1].second.push_back(std::make_pair((VecId)acc,dt/2));
+        vmop.execute(this->getContext());
+    }
+#endif
 
     // Compute the derivative at newX, newV
     computeAcc ( startTime+dt/2., acc, newX, newV);
 
     // Use the derivative at newX, newV to update the state
+#ifdef SOFA_NO_VMULTIOP // unoptimized version
     pos.peq(newV,dt);
     vel.peq(acc,dt);
+#else // single-operation optimization
+    {
+        simulation::tree::MechanicalVMultiOpVisitor vmop;
+        vmop.ops.resize(2);
+        vmop.ops[0].first = (VecId)pos;
+        vmop.ops[0].second.push_back(std::make_pair((VecId)pos,1.0));
+        vmop.ops[0].second.push_back(std::make_pair((VecId)newV,dt));
+        vmop.ops[1].first = (VecId)vel;
+        vmop.ops[1].second.push_back(std::make_pair((VecId)vel,1.0));
+        vmop.ops[1].second.push_back(std::make_pair((VecId)acc,dt));
+        vmop.execute(this->getContext());
+    }
+#endif
 }
 
 
