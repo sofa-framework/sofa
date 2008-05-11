@@ -367,7 +367,7 @@ public:
         {
             hostAllocSize = ( s>2*hostAllocSize ) ? s : 2*hostAllocSize;
             // always allocate multiples of BSIZE values
-            hostAllocSize = ( hostAllocSize+BSIZE-1 ) &-BSIZE;
+            hostAllocSize = ( hostAllocSize+BSIZE-1 )/BSIZE * BSIZE;
             T* prevHostPointer = hostPointer;
 
             if ( prevHostPointer != NULL ) mycudaFreeHost ( prevHostPointer );
@@ -378,14 +378,16 @@ public:
 
         if (WARP_SIZE==0) pitch = x*sizeof(T);
         else pitch = ((x+WARP_SIZE-1)/WARP_SIZE)*WARP_SIZE*sizeof(T);
-
-        if (y*pitch > deviceAllocSize)
+        int ypitch;
+        if (WARP_SIZE==0) ypitch = y;
+        else ypitch = ((y+WARP_SIZE-1)/WARP_SIZE)*WARP_SIZE;
+        if (ypitch*pitch > deviceAllocSize)
         {
             void* prevDevicePointer = devicePointer;
             if (prevDevicePointer != NULL ) mycudaFree ( prevDevicePointer );
 
-            mycudaMallocPitch(&devicePointer, &pitch, pitch, y);
-            deviceAllocSize = y*pitch;
+            mycudaMallocPitch(&devicePointer, &pitch, pitch, ypitch);
+            deviceAllocSize = ypitch*pitch;
         }
 
         sizeX = x;

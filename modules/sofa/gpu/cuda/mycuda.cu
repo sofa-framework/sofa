@@ -66,36 +66,36 @@ int mycudaInit(int device)
 void mycudaMalloc(void **devPtr, size_t size)
 {
     if (!cudaInitCalled) mycudaInit();
-    myprintf("CUDA: malloc(%d).\n",size);
+    if (mycudaVerboseLevel>=LOG_INFO) myprintf("CUDA: malloc(%d).\n",size);
     cudaCheck(cudaMalloc(devPtr, size),"cudaMalloc");
-    myprintf("CUDA: malloc(%d) -> 0x%x.\n",size, *devPtr);
+    if (mycudaVerboseLevel>=LOG_TRACE) myprintf("CUDA: malloc(%d) -> 0x%x.\n",size, *devPtr);
 }
 
 void mycudaMallocPitch(void **devPtr, size_t* pitch, size_t width, size_t height)
 {
     if (!cudaInitCalled) mycudaInit();
-    myprintf("CUDA: mallocPitch(%d,%d).\n",width,height);
+    if (mycudaVerboseLevel>=LOG_INFO) myprintf("CUDA: mallocPitch(%d,%d).\n",width,height);
     cudaCheck(cudaMallocPitch(devPtr, pitch, width, height),"cudaMalloc2D");
-    myprintf("CUDA: mallocPitch(%d,%d) -> 0x%x at pitch %d.\n",width,height, *devPtr, (int)*pitch);
+    if (mycudaVerboseLevel>=LOG_TRACE) myprintf("CUDA: mallocPitch(%d,%d) -> 0x%x at pitch %d.\n",width,height, *devPtr, (int)*pitch);
 }
 
 void mycudaFree(void *devPtr)
 {
-    myprintf("CUDA: free(0x%x).\n",devPtr);
+    if (mycudaVerboseLevel>=LOG_TRACE) myprintf("CUDA: free(0x%x).\n",devPtr);
     cudaCheck(cudaFree(devPtr),"cudaFree");
 }
 
 void mycudaMallocHost(void **hostPtr, size_t size)
 {
     if (!cudaInitCalled) mycudaInit();
-    myprintf("CUDA: mallocHost(%d).\n",size);
+    if (mycudaVerboseLevel>=LOG_TRACE) myprintf("CUDA: mallocHost(%d).\n",size);
     cudaCheck(cudaMallocHost(hostPtr, size),"cudaMallocHost");
-    myprintf("CUDA: mallocHost(%d) -> 0x%x.\n",size, *hostPtr);
+    if (mycudaVerboseLevel>=LOG_TRACE) myprintf("CUDA: mallocHost(%d) -> 0x%x.\n",size, *hostPtr);
 }
 
 void mycudaFreeHost(void *hostPtr)
 {
-    myprintf("CUDA: freeHost(0x%x).\n",hostPtr);
+    if (mycudaVerboseLevel>=LOG_TRACE) myprintf("CUDA: freeHost(0x%x).\n",hostPtr);
     cudaCheck(cudaFreeHost(hostPtr),"cudaFreeHost");
 }
 

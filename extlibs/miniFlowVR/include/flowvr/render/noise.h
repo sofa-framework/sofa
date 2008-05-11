@@ -41,16 +41,22 @@
 
 inline int rfloor(double r)
 {
-  static const double FLOATTOINTCONST=(1.5*(1LL<<(52-16)));
-  r+=FLOATTOINTCONST;
-  return ((((int*)&r)[0])>>16);
+    static const double FLOATTOINTCONST=(1.5*(1LL<<(52-16)));
+    union { double d;
+        int i;
+    } temp;
+    temp.d = r+FLOATTOINTCONST;
+    return ((temp.i)>>16);
 }
 
 inline int rnear(double r)
 {
-  static const double FLOATTOINTCONST_0_5=(1.5*(1LL<<(52-16)))+0.5;
-  r+=FLOATTOINTCONST_0_5;
-  return ((((int*)&r)[0])>>16);
+    static const double FLOATTOINTCONST_0_5=(1.5*(1LL<<(52-16)))+0.5;
+    union { double d;
+        int i;
+    } temp;
+    temp.d = r+FLOATTOINTCONST_0_5;
+    return ((temp.i)>>16);
 }
 
 inline int rceil(double r)

@@ -150,7 +150,7 @@ public:
 };
 
 /// Input stream
-/// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B
+/// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B, optionnally specifying a step using "A-B-step" notation.
 template<>
 inline std::istream& vector<int, std::allocator<int> >::read( std::istream& in )
 {
@@ -167,17 +167,40 @@ inline std::istream& vector<int, std::allocator<int> >::read( std::istream& in )
         }
         else
         {
+            int t1,t2,tinc;
             std::string s1(s,0,hyphen);
-            std::string s2(s,hyphen+1);
-            int t1,t2;
             t1 = atoi(s1.c_str());
-            t2 = atoi(s2.c_str());
-            std::cout << s << " = "<<t1 << " -> " << t2 << std::endl;
-            if (t1<=t2)
-                for (t=t1; t<=t2; ++t)
+            std::string::size_type hyphen2 = s.find_first_of('-',hyphen+2);
+            if (hyphen2 == std::string::npos)
+            {
+                std::string s2(s,hyphen+1);
+                t2 = atoi(s2.c_str());
+                tinc = (t1<t2) ? 1 : -1;
+            }
+            else
+            {
+                std::string s2(s,hyphen+1,hyphen2);
+                std::string s3(s,hyphen2+1);
+                t2 = atoi(s2.c_str());
+                tinc = atoi(s3.c_str());
+                if (tinc == 0)
+                {
+                    std::cerr << "ERROR parsing \""<<s<<"\": increment is 0\n";
+                    tinc = (t1<t2) ? 1 : -1;
+                }
+                if ((t2-t1)*tinc < 0)
+                {
+                    // increment not of the same sign as t2-t1 : swap t1<->t2
+                    t = t1;
+                    t1 = t2;
+                    t2 = t;
+                }
+            }
+            if (tinc < 0)
+                for (t=t1; t>=t2; t+=tinc)
                     this->push_back(t);
             else
-                for (t=t1; t>=t2; --t)
+                for (t=t1; t<=t2; t+=tinc)
                     this->push_back(t);
         }
     }
@@ -203,17 +226,41 @@ inline std::istream& vector<unsigned int, std::allocator<unsigned int> >::read( 
         }
         else
         {
-            std::string s1(s,0,hyphen);
-            std::string s2(s,hyphen+1);
             unsigned int t1,t2;
-            t1 = atoi(s1.c_str());
-            t2 = atoi(s2.c_str());
-            std::cout << s << " = "<<t1 << " -> " << t2 << std::endl;
-            if (t1<=t2)
-                for (t=t1; t<=t2; ++t)
+            int tinc;
+            std::string s1(s,0,hyphen);
+            t1 = (unsigned int)atoi(s1.c_str());
+            std::string::size_type hyphen2 = s.find_first_of('-',hyphen+2);
+            if (hyphen2 == std::string::npos)
+            {
+                std::string s2(s,hyphen+1);
+                t2 = (unsigned int)atoi(s2.c_str());
+                tinc = (t1<t2) ? 1 : -1;
+            }
+            else
+            {
+                std::string s2(s,hyphen+1,hyphen2);
+                std::string s3(s,hyphen2+1);
+                t2 = (unsigned int)atoi(s2.c_str());
+                tinc = atoi(s3.c_str());
+                if (tinc == 0)
+                {
+                    std::cerr << "ERROR parsing \""<<s<<"\": increment is 0\n";
+                    tinc = (t1<t2) ? 1 : -1;
+                }
+                if (((int)(t2-t1))*tinc < 0)
+                {
+                    // increment not of the same sign as t2-t1 : swap t1<->t2
+                    t = t1;
+                    t1 = t2;
+                    t2 = t;
+                }
+            }
+            if (tinc < 0)
+                for (t=t1; t>=t2; t=(unsigned int)((int)t+tinc))
                     this->push_back(t);
             else
-                for (t=t1; t>=t2; --t)
+                for (t=t1; t<=t2; t=(unsigned int)((int)t+tinc))
                     this->push_back(t);
         }
     }
