@@ -26,6 +26,7 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
+#include <sofa/simulation/tree/MechanicalVisitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
@@ -112,8 +113,22 @@ void EulerImplicitSolver::solve(double dt)
     // x is the solution of the system
 
     // apply the solution
+#ifdef SOFA_NO_VMULTIOP // unoptimized version
     vel.peq( x );                       // vel = vel + x
     pos.peq( vel, h );                  // pos = pos + h vel
+#else // single-operation optimization
+    {
+        simulation::tree::MechanicalVMultiOpVisitor vmop;
+        vmop.ops.resize(2);
+        vmop.ops[0].first = (VecId)vel;
+        vmop.ops[0].second.push_back(std::make_pair((VecId)vel,1.0));
+        vmop.ops[0].second.push_back(std::make_pair((VecId)x,1.0));
+        vmop.ops[1].first = (VecId)pos;
+        vmop.ops[1].second.push_back(std::make_pair((VecId)pos,1.0));
+        vmop.ops[1].second.push_back(std::make_pair((VecId)vel,h));
+        vmop.execute(this->getContext());
+    }
+#endif
     if (f_velocityDamping.getValue()!=0.0)
         vel *= exp(-h*f_velocityDamping.getValue());
 

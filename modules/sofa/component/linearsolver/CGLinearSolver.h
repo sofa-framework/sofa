@@ -27,6 +27,7 @@
 
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
 #include <sofa/simulation/tree/MatrixLinearSolver.h>
+#include <sofa/simulation/tree/MechanicalVisitor.h>
 #include <math.h>
 
 namespace sofa
@@ -39,11 +40,12 @@ namespace linearsolver
 {
 
 /// Linear system solver using the conjugate gradient iterative algorithm
-template<class Matrix, class Vector>
-class CGLinearSolver : public sofa::simulation::tree::MatrixLinearSolver<Matrix,Vector>, public virtual sofa::core::objectmodel::BaseObject
+template<class TMatrix, class TVector>
+class CGLinearSolver : public sofa::simulation::tree::MatrixLinearSolver<TMatrix,TVector>, public virtual sofa::core::objectmodel::BaseObject
 {
 public:
-
+    typedef TMatrix Matrix;
+    typedef TVector Vector;
     Data<unsigned> f_maxIter;
     Data<double> f_tolerance;
     Data<double> f_smallDenominatorThreshold;
@@ -56,7 +58,15 @@ public:
         , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     {
     }
+protected:
+    /// This method is separated from the rest to be able to use custom/optimized versions depending on the types of vectors.
+    /// It computes: p = p*beta + r
+    inline void cgstep_beta(Vector& p, Vector& r, double beta);
+    /// This method is separated from the rest to be able to use custom/optimized versions depending on the types of vectors.
+    /// It computes: x += p*alpha, r -= q*alpha
+    inline void cgstep_alpha(Vector& x, Vector& r, Vector& p, Vector& q, double alpha);
 
+public:
     /// Solve Mx=b
     void solve (Matrix& M, Vector& x, Vector& b)
     {
@@ -108,9 +118,8 @@ public:
             else
             {
                 beta = rho / rho_1;
-                p *= beta;
-                p += r; //z;
-                //v_op(p,r,p,beta); // p = p*beta + r
+                //p = p*beta + r; //z;
+                cgstep_beta(p,r,beta);
             }
 
             if( verbose )
@@ -139,8 +148,9 @@ public:
                 break;
             }
             alpha = rho/den;
-            x.peq(p,alpha);                 // x = x + alpha p
-            r.peq(q,-alpha);                // r = r - alpha q
+            //x.peq(p,alpha);                 // x = x + alpha p
+            //r.peq(q,-alpha);                // r = r - alpha q
+            cgstep_alpha(x,r,p,q,alpha);
             if( verbose )
             {
                 cerr<<"den = "<<den<<", alpha = "<<alpha<<endl;
@@ -164,6 +174,45 @@ public:
         this->deleteVector(&r);
     }
 };
+
+template<class TMatrix, class TVector>
+inline void CGLinearSolver<TMatrix,TVector>::cgstep_beta(Vector& p, Vector& r, double beta)
+{
+    p *= beta;
+    p += r; //z;
+}
+
+template<class TMatrix, class TVector>
+inline void CGLinearSolver<TMatrix,TVector>::cgstep_alpha(Vector& x, Vector& r, Vector& p, Vector& q, double alpha)
+{
+    x.peq(p,alpha);                 // x = x + alpha p
+    r.peq(q,-alpha);                // r = r - alpha q
+}
+
+template<>
+inline void CGLinearSolver<simulation::tree::GraphScatteredMatrix,simulation::tree::GraphScatteredVector>::cgstep_beta(Vector& p, Vector& r, double beta)
+{
+    this->v_op(p,r,p,beta); // p = p*beta + r
+}
+
+template<>
+inline void CGLinearSolver<simulation::tree::GraphScatteredMatrix,simulation::tree::GraphScatteredVector>::cgstep_alpha(Vector& x, Vector& r, Vector& p, Vector& q, double alpha)
+{
+#if 1 //SOFA_NO_VMULTIOP // unoptimized version
+    x.peq(p,alpha);                 // x = x + alpha p
+    r.peq(q,-alpha);                // r = r - alpha q
+#else // single-operation optimization
+    simulation::tree::MechanicalVMultiOpVisitor vmop;
+    vmop.ops.resize(2);
+    vmop.ops[0].first = (VecId)x;
+    vmop.ops[0].second.push_back(std::make_pair((VecId)x,1.0));
+    vmop.ops[0].second.push_back(std::make_pair((VecId)p,alpha));
+    vmop.ops[1].first = (VecId)r;
+    vmop.ops[1].second.push_back(std::make_pair((VecId)r,1.0));
+    vmop.ops[1].second.push_back(std::make_pair((VecId)q,-alpha));
+    vmop.execute(this->getContext());
+#endif
+}
 
 } // namespace linearsolver
 

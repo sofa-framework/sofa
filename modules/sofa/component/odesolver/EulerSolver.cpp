@@ -1,4 +1,5 @@
 #include <sofa/component/odesolver/EulerSolver.h>
+#include <sofa/simulation/tree/MechanicalVisitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
@@ -50,6 +51,7 @@ void EulerSolver::solve(double dt)
     projectResponse(acc);
 
     // update state
+#ifdef SOFA_NO_VMULTIOP // unoptimized version
     if( symplectic.getValue() )
     {
         vel.peq(acc,dt);
@@ -60,6 +62,22 @@ void EulerSolver::solve(double dt)
         pos.peq(vel,dt);
         vel.peq(acc,dt);
     }
+#else // single-operation optimization
+    {
+        simulation::tree::MechanicalVMultiOpVisitor vmop;
+        vmop.ops.resize(2);
+        // change order of operations depending on the sympletic flag
+        int op_vel = (symplectic.getValue()?0:1);
+        int op_pos = (symplectic.getValue()?1:0);
+        vmop.ops[op_vel].first = (VecId)vel;
+        vmop.ops[op_vel].second.push_back(std::make_pair((VecId)vel,1.0));
+        vmop.ops[op_vel].second.push_back(std::make_pair((VecId)acc,dt));
+        vmop.ops[op_pos].first = (VecId)pos;
+        vmop.ops[op_pos].second.push_back(std::make_pair((VecId)pos,1.0));
+        vmop.ops[op_pos].second.push_back(std::make_pair((VecId)vel,dt));
+        vmop.execute(this->getContext());
+    }
+#endif
 
     if( printLog )
     {

@@ -1,4 +1,5 @@
 #include <sofa/component/odesolver/RungeKutta4Solver.h>
+#include <sofa/simulation/tree/MechanicalVisitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
 
@@ -32,12 +33,13 @@ void RungeKutta4Solver::solve(double dt)
     MultiVector k2a(this, VecId::V_DERIV);
     MultiVector k3a(this, VecId::V_DERIV);
     MultiVector k4a(this, VecId::V_DERIV);
-    MultiVector k1v(this, VecId::V_DERIV);
+    MultiVector& k1v = vel; //(this, VecId::V_DERIV);
     MultiVector k2v(this, VecId::V_DERIV);
     MultiVector k3v(this, VecId::V_DERIV);
     MultiVector k4v(this, VecId::V_DERIV);
     MultiVector newX(this, VecId::V_COORD);
-    MultiVector newV(this, VecId::V_DERIV);
+    //MultiVector newV(this, VecId::V_DERIV);
+    const bool log = this->f_printLog.getValue();
 
     double stepBy2 = double(dt / 2.0);
     double stepBy3 = double(dt / 3.0);
@@ -48,43 +50,81 @@ void RungeKutta4Solver::solve(double dt)
     addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
     //First step
-    //std::cout << "RK4 Step 1\n";
-    k1v = vel;
+    if (log) std::cout << "RK4 Step 1\n";
+    //k1v = vel;
     computeAcc (startTime, k1a, pos, vel);
 
     //Step 2
-    //std::cout << "RK4 Step 2\n";
+    if (log) std::cout << "RK4 Step 2\n";
+#ifdef SOFA_NO_VMULTIOP // unoptimized version
     newX = pos;
-    newV = vel;
-
+    k2v = vel;
     newX.peq(k1v, stepBy2);
-    newV.peq(k1a, stepBy2);
+    k2v.peq(k1a, stepBy2);
+#else // single-operation optimization
+    {
+        simulation::tree::MechanicalVMultiOpVisitor vmop;
+        vmop.ops.resize(2);
+        vmop.ops[0].first = (VecId)newX;
+        vmop.ops[0].second.push_back(std::make_pair((VecId)pos,1.0));
+        vmop.ops[0].second.push_back(std::make_pair((VecId)k1v,stepBy2));
+        vmop.ops[1].first = (VecId)k2v;
+        vmop.ops[1].second.push_back(std::make_pair((VecId)vel,1.0));
+        vmop.ops[1].second.push_back(std::make_pair((VecId)k1a,stepBy2));
+        vmop.execute(this->getContext());
+    }
+#endif
 
-    k2v = newV;
-    computeAcc ( startTime+stepBy2, k2a, newX, newV);
+    computeAcc ( startTime+stepBy2, k2a, newX, k2v );
 
     // step 3
-    //std::cout << "RK4 Step 3\n";
+    if (log) std::cout << "RK4 Step 3\n";
+#ifdef SOFA_NO_VMULTIOP // unoptimized version
     newX = pos;
-    newV = vel;
-
+    k3v = vel;
     newX.peq(k2v, stepBy2);
-    newV.peq(k2a, stepBy2);
+    k3v.peq(k2a, stepBy2);
+#else // single-operation optimization
+    {
+        simulation::tree::MechanicalVMultiOpVisitor vmop;
+        vmop.ops.resize(2);
+        vmop.ops[0].first = (VecId)newX;
+        vmop.ops[0].second.push_back(std::make_pair((VecId)pos,1.0));
+        vmop.ops[0].second.push_back(std::make_pair((VecId)k2v,stepBy2));
+        vmop.ops[1].first = (VecId)k3v;
+        vmop.ops[1].second.push_back(std::make_pair((VecId)vel,1.0));
+        vmop.ops[1].second.push_back(std::make_pair((VecId)k2a,stepBy2));
+        vmop.execute(this->getContext());
+    }
+#endif
 
-    k3v = newV;
-    computeAcc ( startTime+stepBy2, k3a, newX, newV);
+    computeAcc ( startTime+stepBy2, k3a, newX, k3v );
 
     // step 4
-    //std::cout << "RK4 Step 4\n";
+    if (log) std::cout << "RK4 Step 4\n";
+#ifdef SOFA_NO_VMULTIOP // unoptimized version
     newX = pos;
-    newV = vel;
+    k4v = vel;
     newX.peq(k3v, dt);
-    newV.peq(k3a, dt);
+    k4v.peq(k3a, dt);
+#else // single-operation optimization
+    {
+        simulation::tree::MechanicalVMultiOpVisitor vmop;
+        vmop.ops.resize(2);
+        vmop.ops[0].first = (VecId)newX;
+        vmop.ops[0].second.push_back(std::make_pair((VecId)pos,1.0));
+        vmop.ops[0].second.push_back(std::make_pair((VecId)k3v,dt));
+        vmop.ops[1].first = (VecId)k4v;
+        vmop.ops[1].second.push_back(std::make_pair((VecId)vel,1.0));
+        vmop.ops[1].second.push_back(std::make_pair((VecId)k3a,dt));
+        vmop.execute(this->getContext());
+    }
+#endif
 
-    k4v = newV;
-    computeAcc( startTime+dt, k4a, newX, newV);
+    computeAcc( startTime+dt, k4a, newX, k4v);
 
-    //std::cout << "RK4 Final\n";
+    if (log) std::cout << "RK4 Final\n";
+#ifdef SOFA_NO_VMULTIOP // unoptimized version
     pos.peq(k1v,stepBy6);
     vel.peq(k1a,stepBy6);
     pos.peq(k2v,stepBy3);
@@ -93,6 +133,25 @@ void RungeKutta4Solver::solve(double dt)
     vel.peq(k3a,stepBy3);
     pos.peq(k4v,stepBy6);
     vel.peq(k4a,stepBy6);
+#else // single-operation optimization
+    {
+        simulation::tree::MechanicalVMultiOpVisitor vmop;
+        vmop.ops.resize(2);
+        vmop.ops[0].first = (VecId)pos;
+        vmop.ops[0].second.push_back(std::make_pair((VecId)pos,1.0));
+        vmop.ops[0].second.push_back(std::make_pair((VecId)k1v,stepBy6));
+        vmop.ops[0].second.push_back(std::make_pair((VecId)k2v,stepBy3));
+        vmop.ops[0].second.push_back(std::make_pair((VecId)k3v,stepBy3));
+        vmop.ops[0].second.push_back(std::make_pair((VecId)k4v,stepBy6));
+        vmop.ops[1].first = (VecId)vel;
+        vmop.ops[1].second.push_back(std::make_pair((VecId)vel,1.0));
+        vmop.ops[1].second.push_back(std::make_pair((VecId)k1a,stepBy6));
+        vmop.ops[1].second.push_back(std::make_pair((VecId)k2a,stepBy3));
+        vmop.ops[1].second.push_back(std::make_pair((VecId)k3a,stepBy3));
+        vmop.ops[1].second.push_back(std::make_pair((VecId)k4a,stepBy6));
+        vmop.execute(this->getContext());
+    }
+#endif
 }
 
 

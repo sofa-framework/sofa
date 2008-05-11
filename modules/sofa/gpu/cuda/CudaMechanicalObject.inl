@@ -25,6 +25,10 @@ extern "C"
     void MechanicalObjectCudaVec3f_vAdd(unsigned int size, void* res, const void* a, const void* b);
     void MechanicalObjectCudaVec3f_vOp(unsigned int size, void* res, const void* a, const void* b, float f);
     void MechanicalObjectCudaVec3f_vIntegrate(unsigned int size, const void* a, void* v, void* x, float f_v_v, float f_v_a, float f_x_x, float f_x_v);
+    void MechanicalObjectCudaVec3f_vPEqBF2(unsigned int size, void* res1, const void* b1, float f1, void* res2, const void* b2, float f2);
+    void MechanicalObjectCudaVec3f_vPEq4BF2(unsigned int size, void* res1, const void* b11, float f11, const void* b12, float f12, const void* b13, float f13, const void* b14, float f14,
+            void* res2, const void* b21, float f21, const void* b22, float f22, const void* b23, float f23, const void* b24, float f24);
+    void MechanicalObjectCudaVec3f_vOp2(unsigned int size, void* res1, const void* a1, const void* b1, float f1, void* res2, const void* a2, const void* b2, float f2);
     int MechanicalObjectCudaVec3f_vDotTmpSize(unsigned int size);
     void MechanicalObjectCudaVec3f_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* cputmp);
     void MechanicalObjectCudaVec3f1_vAssign(unsigned int size, void* res, const void* a);
@@ -36,6 +40,10 @@ extern "C"
     void MechanicalObjectCudaVec3f1_vAdd(unsigned int size, void* res, const void* a, const void* b);
     void MechanicalObjectCudaVec3f1_vOp(unsigned int size, void* res, const void* a, const void* b, float f);
     void MechanicalObjectCudaVec3f1_vIntegrate(unsigned int size, const void* a, void* v, void* x, float f_v_v, float f_v_a, float f_x_x, float f_x_v);
+    void MechanicalObjectCudaVec3f1_vPEqBF2(unsigned int size, void* res1, const void* b1, float f1, void* res2, const void* b2, float f2);
+    void MechanicalObjectCudaVec3f1_vPEq4BF2(unsigned int size, void* res1, const void* b11, float f11, const void* b12, float f12, const void* b13, float f13, const void* b14, float f14,
+            void* res2, const void* b21, float f21, const void* b22, float f22, const void* b23, float f23, const void* b24, float f24);
+    void MechanicalObjectCudaVec3f1_vOp2(unsigned int size, void* res1, const void* a1, const void* b1, float f1, void* res2, const void* a2, const void* b2, float f2);
     int MechanicalObjectCudaVec3f1_vDotTmpSize(unsigned int size);
     void MechanicalObjectCudaVec3f1_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* cputmp);
 }
@@ -612,8 +620,76 @@ void MechanicalObject<gpu::cuda::CudaVec3fTypes>::vMultiOp(const VMultiOp& ops)
         const double f_x_v = ops[1].second[1].second;
         gpu::cuda::MechanicalObjectCudaVec3f_vIntegrate(n, va->deviceRead(), vv->deviceWrite(), vx->deviceWrite(), (float)f_v_v, (float)f_v_a, (float)f_x_x, (float)f_x_v);
     }
+    // optimize common CG step: x += a*p, q -= a*v
+    else if (ops.size() == 2 && ops[0].second.size() == 2 && ops[0].first == ops[0].second[0].first && ops[0].second[0].second == 1.0 && ops[0].first.type == VecId::V_DERIV && ops[0].second[1].first.type == VecId::V_DERIV
+            && ops[1].second.size() == 2 && ops[1].first == ops[1].second[0].first && ops[1].second[0].second == 1.0 && ops[1].first.type == VecId::V_DERIV && ops[1].second[1].first.type == VecId::V_DERIV)
+    {
+        VecDeriv* vv1 = getVecDeriv(ops[0].second[1].first.index);
+        VecDeriv* vres1 = getVecDeriv(ops[0].first.index);
+        VecDeriv* vv2 = getVecDeriv(ops[1].second[1].first.index);
+        VecDeriv* vres2 = getVecDeriv(ops[1].first.index);
+        const unsigned int n = vres1->size();
+        const double f1 = ops[0].second[1].second;
+        const double f2 = ops[1].second[1].second;
+        gpu::cuda::MechanicalObjectCudaVec3f_vPEqBF2(n, vres1->deviceWrite(), vv1->deviceRead(), f1, vres2->deviceWrite(), vv2->deviceRead(), f2);
+    }
+    // optimize a pair of generic vOps
+    else if (ops.size()==2 && ops[0].second.size()==2 && ops[0].second[0].second == 1.0 && ops[1].second.size()==2 && ops[1].second[0].second == 1.0)
+    {
+        const unsigned int n = this->getSize();
+        gpu::cuda::MechanicalObjectCudaVec3f_vOp2(n,
+                (ops[0].first.type == VecId::V_COORD) ? getVecCoord(ops[0].first.index)->deviceWrite() : getVecDeriv(ops[0].first.index)->deviceWrite(),
+                (ops[0].second[0].first.type == VecId::V_COORD) ? getVecCoord(ops[0].second[0].first.index)->deviceRead() : getVecDeriv(ops[0].second[0].first.index)->deviceRead(),
+                (ops[0].second[1].first.type == VecId::V_COORD) ? getVecCoord(ops[0].second[1].first.index)->deviceRead() : getVecDeriv(ops[0].second[1].first.index)->deviceRead(),
+                ops[0].second[1].second,
+                (ops[1].first.type == VecId::V_COORD) ? getVecCoord(ops[1].first.index)->deviceWrite() : getVecDeriv(ops[1].first.index)->deviceWrite(),
+                (ops[1].second[0].first.type == VecId::V_COORD) ? getVecCoord(ops[1].second[0].first.index)->deviceRead() : getVecDeriv(ops[1].second[0].first.index)->deviceRead(),
+                (ops[1].second[1].first.type == VecId::V_COORD) ? getVecCoord(ops[1].second[1].first.index)->deviceRead() : getVecDeriv(ops[1].second[1].first.index)->deviceRead(),
+                ops[1].second[1].second);
+    }
+    // optimize a pair of 4-way accumulations (such as at the end of RK4)
+    else if (ops.size()==2 && ops[0].second.size()==5 && ops[0].second[0].first == ops[0].first && ops[0].second[0].second == 1.0 &&
+            ops[1].second.size()==5 && ops[1].second[0].first == ops[1].first && ops[1].second[0].second == 1.0)
+    {
+        const unsigned int n = this->getSize();
+        gpu::cuda::MechanicalObjectCudaVec3f_vPEq4BF2(n,
+                (ops[0].first.type == VecId::V_COORD) ? getVecCoord(ops[0].first.index)->deviceWrite() : getVecDeriv(ops[0].first.index)->deviceWrite(),
+                (ops[0].second[1].first.type == VecId::V_COORD) ? getVecCoord(ops[0].second[1].first.index)->deviceRead() : getVecDeriv(ops[0].second[1].first.index)->deviceRead(),
+                ops[0].second[1].second,
+                (ops[0].second[2].first.type == VecId::V_COORD) ? getVecCoord(ops[0].second[2].first.index)->deviceRead() : getVecDeriv(ops[0].second[2].first.index)->deviceRead(),
+                ops[0].second[2].second,
+                (ops[0].second[3].first.type == VecId::V_COORD) ? getVecCoord(ops[0].second[3].first.index)->deviceRead() : getVecDeriv(ops[0].second[3].first.index)->deviceRead(),
+                ops[0].second[3].second,
+                (ops[0].second[4].first.type == VecId::V_COORD) ? getVecCoord(ops[0].second[4].first.index)->deviceRead() : getVecDeriv(ops[0].second[4].first.index)->deviceRead(),
+                ops[0].second[4].second,
+                (ops[1].first.type == VecId::V_COORD) ? getVecCoord(ops[1].first.index)->deviceWrite() : getVecDeriv(ops[1].first.index)->deviceWrite(),
+                (ops[1].second[1].first.type == VecId::V_COORD) ? getVecCoord(ops[1].second[1].first.index)->deviceRead() : getVecDeriv(ops[1].second[1].first.index)->deviceRead(),
+                ops[1].second[1].second,
+                (ops[1].second[2].first.type == VecId::V_COORD) ? getVecCoord(ops[1].second[2].first.index)->deviceRead() : getVecDeriv(ops[1].second[2].first.index)->deviceRead(),
+                ops[1].second[2].second,
+                (ops[1].second[3].first.type == VecId::V_COORD) ? getVecCoord(ops[1].second[3].first.index)->deviceRead() : getVecDeriv(ops[1].second[3].first.index)->deviceRead(),
+                ops[1].second[3].second,
+                (ops[1].second[4].first.type == VecId::V_COORD) ? getVecCoord(ops[1].second[4].first.index)->deviceRead() : getVecDeriv(ops[1].second[4].first.index)->deviceRead(),
+                ops[1].second[4].second);
+    }
     else // no optimization for now for other cases
+    {
+        std::cout << "CUDA: unoptimized vMultiOp:"<<std::endl;
+        for (unsigned int i=0; i<ops.size(); ++i)
+        {
+            std::cout << ops[i].first << " =";
+            if (ops[i].second.empty())
+                std::cout << "0";
+            else
+                for (unsigned int j=0; j<ops[i].second.size(); ++j)
+                {
+                    if (j) std::cout << " + ";
+                    std::cout << ops[i].second[j].first << "*" << ops[i].second[j].second;
+                }
+            std::cout << endl;
+        }
         Inherited::vMultiOp(ops);
+    }
 }
 
 template <>
@@ -632,6 +708,58 @@ void MechanicalObject<gpu::cuda::CudaVec3f1Types>::vMultiOp(const VMultiOp& ops)
         const double f_x_x = ops[1].second[0].second;
         const double f_x_v = ops[1].second[1].second;
         gpu::cuda::MechanicalObjectCudaVec3f1_vIntegrate(n, va->deviceRead(), vv->deviceWrite(), vx->deviceWrite(), (float)f_v_v, (float)f_v_a, (float)f_x_x, (float)f_x_v);
+    }
+    // optimize common CG step: x += a*p, q -= a*v
+    else if (ops.size() == 2 && ops[0].second.size() == 2 && ops[0].first == ops[0].second[0].first && ops[0].second[0].second == 1.0 && ops[0].first.type == VecId::V_DERIV && ops[0].second[1].first.type == VecId::V_DERIV
+            && ops[1].second.size() == 2 && ops[1].first == ops[1].second[0].first && ops[1].second[0].second == 1.0 && ops[1].first.type == VecId::V_DERIV && ops[1].second[1].first.type == VecId::V_DERIV)
+    {
+        VecDeriv* vv1 = getVecDeriv(ops[0].second[1].first.index);
+        VecDeriv* vres1 = getVecDeriv(ops[0].first.index);
+        VecDeriv* vv2 = getVecDeriv(ops[1].second[1].first.index);
+        VecDeriv* vres2 = getVecDeriv(ops[1].first.index);
+        const unsigned int n = vres1->size();
+        const double f1 = ops[0].second[1].second;
+        const double f2 = ops[1].second[1].second;
+        gpu::cuda::MechanicalObjectCudaVec3f1_vPEqBF2(n, vres1->deviceWrite(), vv1->deviceRead(), f1, vres2->deviceWrite(), vv2->deviceRead(), f2);
+    }
+    // optimize a pair of generic vOps
+    else if (ops.size()==2 && ops[0].second.size()==2 && ops[0].second[0].second == 1.0 && ops[1].second.size()==2 && ops[1].second[0].second == 1.0)
+    {
+        const unsigned int n = this->getSize();
+        gpu::cuda::MechanicalObjectCudaVec3f1_vOp2(n,
+                (ops[0].first.type == VecId::V_COORD) ? getVecCoord(ops[0].first.index)->deviceWrite() : getVecDeriv(ops[0].first.index)->deviceWrite(),
+                (ops[0].second[0].first.type == VecId::V_COORD) ? getVecCoord(ops[0].second[0].first.index)->deviceRead() : getVecDeriv(ops[0].second[0].first.index)->deviceRead(),
+                (ops[0].second[1].first.type == VecId::V_COORD) ? getVecCoord(ops[0].second[1].first.index)->deviceRead() : getVecDeriv(ops[0].second[1].first.index)->deviceRead(),
+                ops[0].second[1].second,
+                (ops[1].first.type == VecId::V_COORD) ? getVecCoord(ops[1].first.index)->deviceWrite() : getVecDeriv(ops[1].first.index)->deviceWrite(),
+                (ops[1].second[0].first.type == VecId::V_COORD) ? getVecCoord(ops[1].second[0].first.index)->deviceRead() : getVecDeriv(ops[1].second[0].first.index)->deviceRead(),
+                (ops[1].second[1].first.type == VecId::V_COORD) ? getVecCoord(ops[1].second[1].first.index)->deviceRead() : getVecDeriv(ops[1].second[1].first.index)->deviceRead(),
+                ops[1].second[1].second);
+    }
+    // optimize a pair of 4-way accumulations (such as at the end of RK4)
+    else if (ops.size()==2 && ops[0].second.size()==5 && ops[0].second[0].first == ops[0].first && ops[0].second[0].second == 1.0 &&
+            ops[1].second.size()==5 && ops[1].second[0].first == ops[1].first && ops[1].second[0].second == 1.0)
+    {
+        const unsigned int n = this->getSize();
+        gpu::cuda::MechanicalObjectCudaVec3f1_vPEq4BF2(n,
+                (ops[0].first.type == VecId::V_COORD) ? getVecCoord(ops[0].first.index)->deviceWrite() : getVecDeriv(ops[0].first.index)->deviceWrite(),
+                (ops[0].second[1].first.type == VecId::V_COORD) ? getVecCoord(ops[0].second[1].first.index)->deviceRead() : getVecDeriv(ops[0].second[1].first.index)->deviceRead(),
+                ops[0].second[1].second,
+                (ops[0].second[2].first.type == VecId::V_COORD) ? getVecCoord(ops[0].second[2].first.index)->deviceRead() : getVecDeriv(ops[0].second[2].first.index)->deviceRead(),
+                ops[0].second[2].second,
+                (ops[0].second[3].first.type == VecId::V_COORD) ? getVecCoord(ops[0].second[3].first.index)->deviceRead() : getVecDeriv(ops[0].second[3].first.index)->deviceRead(),
+                ops[0].second[3].second,
+                (ops[0].second[4].first.type == VecId::V_COORD) ? getVecCoord(ops[0].second[4].first.index)->deviceRead() : getVecDeriv(ops[0].second[4].first.index)->deviceRead(),
+                ops[0].second[4].second,
+                (ops[1].first.type == VecId::V_COORD) ? getVecCoord(ops[1].first.index)->deviceWrite() : getVecDeriv(ops[1].first.index)->deviceWrite(),
+                (ops[1].second[1].first.type == VecId::V_COORD) ? getVecCoord(ops[1].second[1].first.index)->deviceRead() : getVecDeriv(ops[1].second[1].first.index)->deviceRead(),
+                ops[1].second[1].second,
+                (ops[1].second[2].first.type == VecId::V_COORD) ? getVecCoord(ops[1].second[2].first.index)->deviceRead() : getVecDeriv(ops[1].second[2].first.index)->deviceRead(),
+                ops[1].second[2].second,
+                (ops[1].second[3].first.type == VecId::V_COORD) ? getVecCoord(ops[1].second[3].first.index)->deviceRead() : getVecDeriv(ops[1].second[3].first.index)->deviceRead(),
+                ops[1].second[3].second,
+                (ops[1].second[4].first.type == VecId::V_COORD) ? getVecCoord(ops[1].second[4].first.index)->deviceRead() : getVecDeriv(ops[1].second[4].first.index)->deviceRead(),
+                ops[1].second[4].second);
     }
     else // no optimization for now for other cases
         Inherited::vMultiOp(ops);
