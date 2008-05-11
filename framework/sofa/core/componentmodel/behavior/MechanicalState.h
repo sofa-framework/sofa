@@ -133,16 +133,6 @@ public:
     /// Get the indices of the particles located in the given bounding box
     virtual void getIndicesInSpace(sofa::helper::vector<unsigned>& /*indices*/, Real /*xmin*/, Real /*xmax*/,Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const=0;
 
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const MechanicalState<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
     /// Add a constraint ID
     virtual void setConstraintId(unsigned int ) = 0;
     /// Return the constraint IDs corresponding to the entries in the constraints matrix returned by getC()
