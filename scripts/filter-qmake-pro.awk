@@ -27,7 +27,9 @@ BEGIN {
     }
     if (infilelist) {
 	for(f=f0;f<=NF && !(f==NF && $f~/\\[:space:]*/);f++) {
-	    if ($f != "#") print $f > "/dev/stderr"
+	    fname=$f
+	    gsub(/[\r\n]/,"",fname);
+	    if (fname != "#") print fname > "/dev/stderr";
 	}
 	if (f>NF) { # no "\\" is put at the end of the line -> end of list
 #	    print "end"
