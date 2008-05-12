@@ -25,6 +25,7 @@
 #include "viewer/qgl/QtGLViewer.h"
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/thread/CTime.h>
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/simulation/tree/MechanicalVisitor.h>
 #include <sofa/simulation/tree/UpdateMappingVisitor.h>
@@ -52,13 +53,16 @@
 #include <sofa/helper/gl/GLshader.h>
 #include <sofa/helper/io/ImageBMP.h>
 
+#ifdef SOFA_DEV
+
 #include <sofa/simulation/automatescheduler/Automate.h>
 #include <sofa/simulation/automatescheduler/CPU.h>
 #include <sofa/simulation/automatescheduler/Node.h>
 #include <sofa/simulation/automatescheduler/Edge.h>
-#include <sofa/helper/system/thread/CTime.h>
 #include <sofa/simulation/automatescheduler/ExecBus.h>
 #include <sofa/simulation/automatescheduler/ThreadSimulation.h>
+
+#endif // SOFA_DEV
 
 #include <sofa/defaulttype/RigidTypes.h>
 
@@ -189,7 +193,11 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name)
     sceneBBoxIsValid = false;
     texLogo = NULL;
 
+#ifdef SOFA_DEV
+
     _automateDisplayed = false;
+
+#endif // SOFA_DEV
 
     /*_surfaceModel = NULL;
       _springMassView = NULL;
@@ -977,7 +985,9 @@ void QtGLViewer::DisplayOBJs(bool shadowPass)
         initTexturesDone = true;
     }
 
+#ifdef SOFA_DEV
     if (!groot->getMultiThreadSimulation())
+#endif // SOFA_DEV
     {
         if (shadowPass)
             getSimulation()->drawShadows(groot);
@@ -990,8 +1000,10 @@ void QtGLViewer::DisplayOBJs(bool shadowPass)
                 DrawBox(sceneMinBBox.ptr(), sceneMaxBBox.ptr());
         }
     }
+#ifdef SOFA_DEV
     else
         automateDisplayVM();
+#endif // SOFA_DEV
 
     // glDisable(GL_COLOR_MATERIAL);
 }
@@ -1264,6 +1276,8 @@ void QtGLViewer::viewAll()
     camera()->showEntireScene();
 }
 
+#ifdef SOFA_DEV
+
 void QtGLViewer::DrawAutomate(void)
 {
 
@@ -1293,6 +1307,8 @@ void QtGLViewer::DrawAutomate(void)
 
     update();
 }
+
+#endif // SOFA_DEV
 
 
 // ---------------------------------------------------------
@@ -1346,15 +1362,19 @@ void QtGLViewer::draw()
     glClearDepth(1.0);
     glClear(_clearBuffer);
 
+#ifdef SOFA_DEV
     if (!_automateDisplayed)
     {
+#endif // SOFA_DEV
         // draw the scene
         DrawScene();
+#ifdef SOFA_DEV
     }
     else
     {
         DrawAutomate();
     }
+#endif // SOFA_DEV
 
 
     if (_video)
@@ -1540,6 +1560,7 @@ void QtGLViewer::resetView()
     update();
 }
 
+#ifdef SOFA_DEV
 
 // -------------------------------------------------------------------
 // ---
@@ -1559,6 +1580,7 @@ void QtGLViewer::SwitchToAutomateView()
     camera()->setOrientation(q);
 }
 
+#endif // SOFA_DEV
 
 void QtGLViewer::saveView()
 {
@@ -1576,6 +1598,7 @@ void QtGLViewer::saveView()
     }
 }
 
+#ifdef SOFA_DEV
 
 /// Render Scene called during multiThread simulation using automate
 void QtGLViewer::drawFromAutomate()
@@ -1594,6 +1617,8 @@ void QtGLViewer::automateDisplayVM(void)
         ++it;
     }
 }
+
+#endif // SOFA_DEV
 
 void QtGLViewer::setSizeW( int size )
 {

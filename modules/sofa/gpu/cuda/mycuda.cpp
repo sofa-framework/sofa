@@ -31,7 +31,12 @@ SOFA_LINK_CLASS(CudaCollision)
 SOFA_LINK_CLASS(CudaCollisionDetection)
 SOFA_LINK_CLASS(CudaPointModel)
 SOFA_LINK_CLASS(CudaTestForceField)
+
+#ifdef SOFA_DEV
+
 SOFA_LINK_CLASS(CudaMasterContactSolver)
+
+#endif // SOFA_DEV
 
 //MycudaVerboseLevel mycudaVerboseLevel = LOG_ERR;
 MycudaVerboseLevel mycudaVerboseLevel = LOG_INFO;
@@ -40,6 +45,7 @@ MycudaVerboseLevel mycudaVerboseLevel = LOG_INFO;
 void mycudaLogError(int err, const char* src)
 {
     std::cerr << "CUDA: Error "<<err<<" returned from "<<src<<".\n";
+    std::exit(1);
 }
 
 int myprintf(const char* fmt, ...)

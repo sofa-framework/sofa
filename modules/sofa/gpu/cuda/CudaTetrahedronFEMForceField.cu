@@ -2,6 +2,8 @@
 #include "CudaMath.h"
 #include "cuda.h"
 
+//#define umul24(x,y) ((x)*(y))
+
 #if defined(__cplusplus) && CUDA_VERSION != 2000
 namespace sofa
 {
@@ -65,8 +67,8 @@ public:
 // GPU-side methods //
 //////////////////////
 
-#define USE_TEXTURE
-#define USE_TEXTURE_ELEMENT_FORCE
+//#define USE_TEXTURE
+//#define USE_TEXTURE_ELEMENT_FORCE
 
 #ifdef USE_TEXTURE
 
@@ -140,6 +142,7 @@ static void setElementForce(const void* x)
 }
 
 #define getElementForce(i) make_float3(tex1Dfetch(texElementForce, i));
+#define getElementForce4(i) (tex1Dfetch(texElementForce, i));
 
 #else
 
@@ -148,6 +151,7 @@ static void setElementForce(const void* x)
 }
 
 #define getElementForce(i) make_float3(((const float4*)eforce)[i])
+#define getElementForce4(i) (((const float4*)eforce)[i])
 
 #endif
 
@@ -387,6 +391,10 @@ __global__ void TetrahedronFEMForceFieldCuda3f_addForce_kernel(int nbVertex, uns
             velems+=BSIZE;
             if (i != -1)
             {
+                //float4 ef = getElementForce4(i);
+                //force.x -= ef.x;
+                //force.y -= ef.y;
+                //force.z -= ef.z;
                 force -= getElementForce(i);
 #if 0
                 int eindex = i >> 2;

@@ -4,7 +4,11 @@ TEMPLATE = subdirs
 include($${SOFA_DIR}/sofa.cfg) 
 
 SUBDIRS += extlibs/NewMAT
+
+contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 #SUBDIRS += extlibs/SLC
+} # END SOFA_DEV
+
 SUBDIRS += extlibs/qwt
 
 # PML
@@ -28,6 +32,11 @@ SUBDIRS += applications
 # Print current config
 
 message( "====== SOFA Build Configuration ======")
+
+contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
+message( "==== UNSTABLE DEVELOPMENT VERSION ====")
+} # END SOFA_DEV
+
 win32 {
   message( "|  Platform: Windows")
 }
@@ -105,12 +114,14 @@ else {
   message( "|  GLUT GUI: DISABLED")
 }
 
+contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 contains(DEFINES,SOFA_GUI_FLTK) {
   message( "|  FLTK GUI: ENABLED")
 }
 else {
   message( "|  FLTK GUI: DISABLED")
 }
+} # END SOFA_DEV
 
 !contains(DEFINES,SOFA_GUI_QTVIEWER) {
 !contains(DEFINES,SOFA_GUI_QGLVIEWER) {

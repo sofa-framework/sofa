@@ -38,7 +38,12 @@
 #include <qevent.h>
 #endif
 
+#ifdef SOFA_DEV
+
 #include <sofa/simulation/automatescheduler/Automate.h>
+
+#endif // SOFA_DEV
+
 #include <sofa/helper/gl/Capture.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
@@ -81,9 +86,15 @@ enum
 };
 
 enum {CAMERA_PERSPECTIVE, CAMERA_ORTHOGRAPHIC};
-//      using namespace sofa::simulation::automatescheduler;
 
-class SofaViewer : public sofa::simulation::automatescheduler::Automate::DrawCB
+class SofaViewer
+
+#ifdef SOFA_DEV
+
+    : public sofa::simulation::automatescheduler::Automate::DrawCB
+
+#endif // SOFA_DEV
+
 {
 
 public:

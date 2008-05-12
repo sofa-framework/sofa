@@ -122,9 +122,13 @@
  *  \brief XML I/O classes.
  */
 
+#ifdef SOFA_DEV
+
 /** \namespace sofa::simulation::automatescheduler
  *  \brief Automate-based multithread scheduler.
  */
+
+#endif // SOFA_DEV
 
 /** \} */
 
@@ -140,9 +144,13 @@
  *  \brief Qt-based User Interface.
  */
 
+#ifdef SOFA_DEV
+
 /** \namespace sofa::gui::fltk
  *  \brief FLTK-based User Interface.
  */
+
+#endif // SOFA_DEV
 
 /** \} */
 

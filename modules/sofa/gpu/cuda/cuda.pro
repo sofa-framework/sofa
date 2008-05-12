@@ -47,10 +47,7 @@ HEADERS += mycuda.h \
            CudaSphereModel.h \
            CudaPenalityContactForceField.h \
            CudaPenalityContactForceField.inl \
-	   CudaLCP.h \
-           CudaMasterContactSolver.h \
-           CudaTestForceField.h \
-	   CudaBTDLinearSolver.h
+           CudaTestForceField.h
 
 SOURCES += mycuda.cpp \
            CudaMechanicalObject.cpp \
@@ -70,10 +67,7 @@ SOURCES += mycuda.cpp \
            CudaCollisionDetection.cpp \
            CudaPointModel.cpp \
            CudaPenalityContactForceField.cpp \
-	   CudaLCP.cpp \
-           CudaMasterContactSolver.cpp \
-           CudaTestForceField.cpp \
-	   CudaBTDLinearSolver.cpp
+           CudaTestForceField.cpp
 
 CUDA_SOURCES += mycuda.cu \
            CudaMechanicalObject.cu \
@@ -90,7 +84,22 @@ CUDA_SOURCES += mycuda.cu \
            CudaCollisionDetection.cu \
            CudaContactMapper.cu \
            CudaPenalityContactForceField.cu \
+           CudaTestForceField.cu
+
+contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
+
+HEADERS += \
+	   CudaLCP.h \
+           CudaMasterContactSolver.h \
+	   CudaBTDLinearSolver.h
+
+SOURCES += \
+	   CudaLCP.cpp \
+           CudaMasterContactSolver.cpp \
+	   CudaBTDLinearSolver.cpp
+
+CUDA_SOURCES += \
 	   CudaLCP.cu \
-           CudaTestForceField.cu \
 	   CudaBTDLinearSolver.cu
 
+} # END SOFA_DEV
