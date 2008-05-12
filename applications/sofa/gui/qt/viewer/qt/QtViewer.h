@@ -125,7 +125,13 @@ private:
 
     //GLuint			_logoTexture;
     Texture			*texLogo;
+
+#ifdef SOFA_DEV
+
     bool			_automateDisplayed;
+
+#endif // SOFA_DEV
+
     ctime_t			_beginTime;
 
     double lastProjectionMatrix[16];
@@ -183,7 +189,12 @@ public:
         return groot;
     }
 
+#ifdef SOFA_DEV
+
     void			SwitchToAutomateView();
+
+#endif // SOFA_DEV
+
     //void			reshape(int width, int height);
     int GetWidth()
     {
@@ -215,9 +226,14 @@ public:
     static bool _mouseTrans;
     static bool _mouseRotate;
 
+#ifdef SOFA_DEV
+
     // Display scene from the automate
     void drawFromAutomate();
     static void	automateDisplayVM(void);
+
+#endif // SOFA_DEV
+
     QString helpString();
 private:
 
@@ -239,7 +255,13 @@ private:
     void	DisplayOBJs(bool shadowPass = false);
     void	DisplayMenu(void);
     void	DrawScene();
+
+#ifdef SOFA_DEV
+
     void	DrawAutomate();
+
+#endif // SOFA_DEV
+
     void	ApplySceneTransformation(int x, int y);
     //int		handle(int event);	// required by FLTK
 

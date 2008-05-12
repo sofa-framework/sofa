@@ -42,7 +42,12 @@
 #include <sofa/helper/gl/Texture.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/simulation/tree/xml/Element.h>
+
+#ifdef SOFA_DEV
+
 #include <sofa/simulation/automatescheduler/Automate.h>
+
+#endif // SOFA_DEV
 
 
 #include <viewer/qgl/QGLViewer/qglviewer.h>
@@ -64,7 +69,6 @@ namespace qgl
 using namespace sofa::defaulttype;
 using namespace sofa::helper::gl;
 using namespace sofa::helper::system::thread;
-using namespace sofa::simulation::automatescheduler;
 using namespace sofa::component::collision;
 
 
@@ -102,7 +106,13 @@ private:
     int				_renderingMode;
     //GLuint			_logoTexture;
     Texture			*texLogo;
+
+#ifdef SOFA_DEV
+
     bool			_automateDisplayed;
+
+#endif // SOFA_DEV
+
     ctime_t			_beginTime;
 
 
@@ -143,7 +153,12 @@ protected:
 public:
 // 	      void setScene(sofa::simulation::tree::GNode* scene, const char* filename=NULL, bool keepParams=false);
 
+#ifdef SOFA_DEV
+
     void			SwitchToAutomateView();
+
+#endif // SOFA_DEV
+
     //void			reshape(int width, int height);
     int GetWidth()
     {
@@ -162,9 +177,14 @@ public:
 
     // 	static Quaternion _newQuat;
 
+#ifdef SOFA_DEV
+
     // Display scene from the automate
     void drawFromAutomate();
     static void	automateDisplayVM(void);
+
+#endif // SOFA_DEV
+
     QString helpString();
 
 private:
@@ -187,7 +207,13 @@ private:
     void	DisplayOBJs(bool shadowPass = false);
     void	DisplayMenu(void);
     void	DrawScene();
+
+#ifdef SOFA_DEV
+
     void	DrawAutomate();
+
+#endif // SOFA_DEV
+
     //int		handle(int event);	// required by FLTK
 
 protected:

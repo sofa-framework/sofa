@@ -24,6 +24,7 @@
 *******************************************************************************/
 #include "viewer/qt/QtViewer.h"
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/thread/CTime.h>
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
@@ -45,13 +46,16 @@
 #include <sofa/helper/gl/GLshader.h>
 #include <sofa/helper/io/ImageBMP.h>
 
+#ifdef SOFA_DEV
+
 #include <sofa/simulation/automatescheduler/Automate.h>
 #include <sofa/simulation/automatescheduler/CPU.h>
 #include <sofa/simulation/automatescheduler/Node.h>
 #include <sofa/simulation/automatescheduler/Edge.h>
-#include <sofa/helper/system/thread/CTime.h>
 #include <sofa/simulation/automatescheduler/ExecBus.h>
 #include <sofa/simulation/automatescheduler/ThreadSimulation.h>
+
+#endif // SOFA_DEV
 
 #include <sofa/defaulttype/RigidTypes.h>
 
@@ -78,7 +82,13 @@ using std::cout;
 using std::endl;
 using namespace sofa::defaulttype;
 using namespace sofa::helper::gl;
+
+#ifdef SOFA_DEV
+
 using namespace sofa::simulation::automatescheduler;
+
+#endif // SOFA_DEV
+
 using sofa::simulation::tree::getSimulation;
 
 //extern UserInterface*	GUI;
@@ -195,7 +205,11 @@ QtViewer::QtViewer(QWidget* parent, const char* name)
     sceneBBoxIsValid = false;
     texLogo = NULL;
 
+#ifdef SOFA_DEV
+
     _automateDisplayed = false;
+
+#endif // SOFA_DEV
 
     /*_surfaceModel = NULL;
       _springMassView = NULL;
@@ -962,7 +976,12 @@ void QtViewer::DisplayOBJs(bool shadowPass)
         initTexturesDone = true;
     }
 
+#ifdef SOFA_DEV
+
     if (!groot->getMultiThreadSimulation())
+
+#endif // SOFA_DEV
+
     {
         if (shadowPass)
             getSimulation()->drawShadows(groot);
@@ -975,8 +994,13 @@ void QtViewer::DisplayOBJs(bool shadowPass)
                 DrawBox(sceneMinBBox.ptr(), sceneMaxBBox.ptr());
         }
     }
+
+#ifdef SOFA_DEV
+
     else
         automateDisplayVM();
+
+#endif // SOFA_DEV
 
     // glDisable(GL_COLOR_MATERIAL);
 }
@@ -1234,6 +1258,7 @@ void QtViewer::DrawScene(void)
     }
 }
 
+#ifdef SOFA_DEV
 
 void QtViewer::DrawAutomate(void)
 {
@@ -1268,6 +1293,8 @@ void QtViewer::DrawAutomate(void)
 
     update();
 }
+
+#endif // SOFA_DEV
 
 
 // ---------------------------------------------------------
@@ -1462,15 +1489,19 @@ void QtViewer::paintGL()
     glClearDepth(1.0);
     glClear(_clearBuffer);
 
+#ifdef SOFA_DEV
     if (!_automateDisplayed)
     {
+#endif // SOFA_DEV
         // draw the scene
         DrawScene();
+#ifdef SOFA_DEV
     }
     else
     {
         DrawAutomate();
     }
+#endif // SOFA_DEV
 
     if (_video)
     {
@@ -1640,6 +1671,9 @@ void QtViewer::keyPressEvent ( QKeyEvent * e )
     else  // control the GUI
         switch(e->key())
         {
+
+#ifdef SOFA_DEV
+
         case Qt::Key_A:
             // --- switch automate display mode
         {
@@ -1669,6 +1703,8 @@ void QtViewer::keyPressEvent ( QKeyEvent * e )
             update();
             break;
         }
+
+#endif // SOFA_DEV
 
         case Qt::Key_C:
         {
@@ -2122,6 +2158,7 @@ void QtViewer::resetView()
     //ResetScene();
 }
 
+#ifdef SOFA_DEV
 
 // -------------------------------------------------------------------
 // ---
@@ -2136,6 +2173,8 @@ void QtViewer::SwitchToAutomateView()
     _newQuat[2] = 0.0;
     _newQuat[3] = 0.0;
 }
+
+#endif // SOFA_DEV
 
 void QtViewer::saveView()
 {
@@ -2168,6 +2207,8 @@ void QtViewer::setScene(sofa::simulation::tree::GNode* scene, const char* filena
     }
 }
 
+#ifdef SOFA_DEV
+
 /// Render Scene called during multiThread simulation using automate
 void QtViewer::drawFromAutomate()
 {
@@ -2185,6 +2226,8 @@ void QtViewer::automateDisplayVM(void)
         ++it;
     }
 }
+
+#endif // SOFA_DEV
 
 void QtViewer::setSizeW( int size )
 {

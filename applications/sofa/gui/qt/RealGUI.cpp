@@ -39,15 +39,21 @@
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/simulation/tree/InitVisitor.h>
 
+#ifdef SOFA_DEV
+
 #include <sofa/simulation/automatescheduler/ThreadSimulation.h>
 #include <sofa/simulation/automatescheduler/ExecBus.h>
 #include <sofa/simulation/automatescheduler/Node.h>
+
+#endif // SOFA_DEV
 
 #include <sofa/component/visualmodel/VisualModelImpl.h>
 
 #include <sofa/simulation/tree/xml/XML.h>
 
 #include <sofa/helper/system/FileRepository.h>
+
+#ifdef SOFA_DEV
 
 namespace sofa
 {
@@ -59,6 +65,8 @@ extern simulation::tree::GNode* groot;
 }
 }
 }
+
+#endif // SOFA_DEV
 
 
 #ifdef QT_MODULE_QT3SUPPORT
@@ -134,7 +142,10 @@ using sofa::core::objectmodel::BaseObject;
 using sofa::simulation::tree::GNode;
 using namespace sofa::helper::system::thread;
 using namespace sofa::simulation::tree;
+
+#ifdef SOFA_DEV
 using namespace sofa::simulation::automatescheduler;
+#endif // SOFA_DEV
 
 
 ///////////////////////////////////////////////////////////
@@ -230,18 +241,23 @@ SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& 
 
     application->setMainWidget ( gui );
 
+#ifdef SOFA_DEV
+
     // Threads Management
-    if ( ThreadSimulation::initialized() )
+    if ( sofa::simulation::automatescheduler::ThreadSimulation::initialized() )
     {
-        ThreadSimulation::getInstance()->computeVModelsList ( groot );
+        sofa::simulation::automatescheduler::ThreadSimulation::getInstance()->computeVModelsList ( groot );
         groot->setMultiThreadSimulation ( true );
         sofa::simulation::automatescheduler::groot = groot;
 
-        Automate::setDrawCB ( gui->viewer );
+        sofa::simulation::automatescheduler::Automate::setDrawCB ( gui->viewer );
 
         gui->viewer->getQWidget()->update();
-        ThreadSimulation::getInstance()->start();
+        sofa::simulation::automatescheduler::ThreadSimulation::getInstance()->start();
     }
+
+#endif // SOFA_DEV
+
     // show the gui
     gui->show();
 
@@ -1151,6 +1167,8 @@ void RealGUI::step()
     GNode* groot = viewer->getScene();
     if ( groot == NULL ) return;
 
+#ifdef SOFA_DEV
+
     if ( groot->getContext()->getMultiThreadSimulation() )
     {
         static Node* n = NULL;
@@ -1166,6 +1184,9 @@ void RealGUI::step()
         }
     }
     else
+
+#endif // SOFA_DEV
+
     {
         if ( viewer->ready() ) return;
         //groot->setLogTime(true);
