@@ -89,11 +89,59 @@ public:
 
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
 
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in, const typename InRoot::VecDeriv* inroot );
 
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in, typename InRoot::VecDeriv* outroot );
 
-    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in, typename InRoot::VecConst* outroot );
+
+
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+    {
+        applyJ(out,in, NULL);
+    }
+
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+    {
+        applyJT(out,in, NULL);
+    }
+
+    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+    {
+        applyJT(out,in, NULL);
+    }
+
+    /**
+     * @name
+     */
+    //@{
+
+    /**
+     * @brief
+     */
+    void propagateV();
+
+    /**
+     * @brief
+     */
+    void propagateDx();
+
+    /**
+     * @brief
+     */
+    void accumulateForce();
+
+    /**
+     * @brief
+     */
+    void accumulateDf();
+
+    /**
+     * @brief
+     */
+    void accumulateConstraint();
+
+    //@}
 
     void draw();
 
