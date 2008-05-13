@@ -22,7 +22,8 @@ using namespace core::componentmodel::behavior;
 #define MAX_NUM_CONSTRAINTS 1024
 //#define DISPLAY_TIME
 
-CudaMasterContactSolver::CudaMasterContactSolver()
+template<class real>
+CudaMasterContactSolver<real>::CudaMasterContactSolver()
     :
     initial_guess_d(initData(&initial_guess_d, true, "initial_guess","activate LCP results history to improve its resolution performances."))
     ,tol_d( initData(&tol_d, 0.001, "tolerance", "tolerance"))
@@ -44,12 +45,15 @@ CudaMasterContactSolver::CudaMasterContactSolver()
     _cont_id_list = (long *)malloc(MAX_NUM_CONSTRAINTS * sizeof(long));
 }
 
-void CudaMasterContactSolver::init()
+template<class real>
+void CudaMasterContactSolver<real>::init()
 {
-    getContext()->get<core::componentmodel::behavior::BaseConstraintCorrection>(&constraintCorrections, core::objectmodel::BaseContext::SearchDown);
+    sofa::core::objectmodel::BaseContext* context = this->getContext();
+    context->get<core::componentmodel::behavior::BaseConstraintCorrection>(&constraintCorrections, core::objectmodel::BaseContext::SearchDown);
 }
 
-void CudaMasterContactSolver::build_LCP()
+template<class real>
+void CudaMasterContactSolver<real>::build_LCP()
 {
     _numConstraints = 0;
 
@@ -83,7 +87,8 @@ void CudaMasterContactSolver::build_LCP()
     }
 }
 
-void CudaMasterContactSolver::computeInitialGuess()
+template<class real>
+void CudaMasterContactSolver<real>::computeInitialGuess()
 {
     int numContact = (_mu > 0.0) ? _numConstraints/3 : _numConstraints;
 
@@ -122,7 +127,8 @@ void CudaMasterContactSolver::computeInitialGuess()
     }
 }
 
-void CudaMasterContactSolver::keepContactForcesValue()
+template<class real>
+void CudaMasterContactSolver<real>::keepContactForcesValue()
 {
     _numPreviousContact=0;
 
@@ -153,9 +159,10 @@ void CudaMasterContactSolver::keepContactForcesValue()
     }
 }
 
-void CudaMasterContactSolver::step(double dt)
+template<class real>
+void CudaMasterContactSolver<real>::step(double dt)
 {
-    float _tol = (float) tol_d.getValue();
+    real _tol = (real) tol_d.getValue();
     int _maxIt = maxIt_d.getValue();
 
     context = dynamic_cast<simulation::tree::GNode *>(this->getContext()); // access to current node
@@ -221,11 +228,11 @@ void CudaMasterContactSolver::step(double dt)
 
     if (_mu > 0.0)
     {
-        sofa::gpu::cuda::CudaLCP::CudaNlcp_gaussseidel(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(),_res.getCudaVector(), _mu,_tol, _maxIt);
+        sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(),_res.getCudaVector(), _mu,_tol, _maxIt);
     }
     else
     {
-        sofa::gpu::cuda::CudaLCP::CudaGaussSeidelLCP1(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(),_res.getCudaVector(), _tol, _maxIt);
+        sofa::gpu::cuda::CudaLCP<real>::CudaGaussSeidelLCP1(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(),_res.getCudaVector(), _tol, _maxIt);
 
     }
 
@@ -262,7 +269,8 @@ void CudaMasterContactSolver::step(double dt)
 SOFA_DECL_CLASS(CudaMasterContactSolver)
 
 int CudaMasterContactSolverClass = core::RegisterObject("Cuda Constraint solver")
-        .add< CudaMasterContactSolver >()
+        .add< CudaMasterContactSolver<float> >(true)
+        .add< CudaMasterContactSolver<double> >()
         ;
 
 } // namespace odesolver

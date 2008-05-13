@@ -54,9 +54,11 @@ private:
     unsigned int _offset;
 };
 
-class CudaMasterContactSolver : public sofa::simulation::tree::MasterSolverImpl
+template<class real>
+class CudaMasterContactSolver : public sofa::simulation::tree::MasterSolverImpl, public virtual sofa::core::objectmodel::BaseObject
 {
 public:
+    typedef real Real;
     Data<bool> initial_guess_d;
 
     Data < double > tol_d;
@@ -78,8 +80,8 @@ private:
 
     void build_LCP();
 
-    CudaBaseMatrix<float> _W;
-    CudaBaseVector<float> _dFree, _f, _res;
+    CudaBaseMatrix<real> _W;
+    CudaBaseVector<real> _dFree, _f, _res;
 
     unsigned int _numConstraints;
     double _mu;
