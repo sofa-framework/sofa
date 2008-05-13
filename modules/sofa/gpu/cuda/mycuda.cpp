@@ -45,7 +45,7 @@ MycudaVerboseLevel mycudaVerboseLevel = LOG_INFO;
 void mycudaLogError(int err, const char* src)
 {
     std::cerr << "CUDA: Error "<<err<<" returned from "<<src<<".\n";
-    std::exit(1);
+    exit(1);
 }
 
 int myprintf(const char* fmt, ...)

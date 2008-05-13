@@ -91,6 +91,12 @@ using std::endl;
 using namespace sofa::defaulttype;
 using namespace sofa::helper::gl;
 using sofa::simulation::tree::getSimulation;
+#ifdef SOFA_DEV
+
+using namespace sofa::simulation::automatescheduler;
+
+#endif // SOFA_DEV
+
 //extern UserInterface*	GUI;
 //extern OBJmodel*		cubeModel;
 // Quaternion QtGLViewer::_newQuat;

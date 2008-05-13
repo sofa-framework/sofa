@@ -593,12 +593,16 @@ void CudaRigidDistanceGridCollisionModel::draw(int index)
         // float m[16];
         // (*rigid->getX())[index].writeOpenGlMatrix( m );
         // glMultMatrixf(m);
-        Mat4x4d m;
+        Matrix4 m;
         m.identity();
         m = elems[index].rotation;
         m.transpose();
-        m[3] = Vec4d(elems[index].translation,1.0);
+        m[3] = Vector4(elems[index].translation,1.0);
+#ifdef SOFA_FLOAT
+        glMultMatrixf(m.ptr());
+#else
         glMultMatrixd(m.ptr());
+#endif
     }
 
     CudaDistanceGrid* grid = getGrid(index);
