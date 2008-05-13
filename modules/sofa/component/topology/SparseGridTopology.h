@@ -175,6 +175,18 @@ public:
     void setDimVoxels( int a, int b, int c) { dim_voxels.setValue(Vec<3, unsigned int>(a,b,c));}
     void setSizeVoxel( float a, float b, float c) { dim_voxels.setValue(Vec3f(a,b,c));}
 
+    bool getVoxel(unsigned int x, unsigned int y, unsigned int z)
+    {
+        return getVoxel(dim_voxels.getValue()[0]*dim_voxels.getValue()[1]*z + dim_voxels.getValue()[0]*y + x);
+    }
+
+    bool getVoxel(unsigned int index) const
+    {
+        const int i = index%8;
+        unsigned char c = dataVoxels.getValue()[index>>3];
+        return ((c&((int)(pow(2.0f, i)))) >> i) == 1;
+    };
+
 
 protected:
     bool isVirtual;
@@ -254,13 +266,6 @@ protected:
             const int mask = (int) pow(2.0f, i);
             if (((*dataVoxels.beginEdit())[index>>3]&mask)>>i) (*dataVoxels.beginEdit())[index>>3] -= mask;
         }
-    };
-
-    bool getVoxel(unsigned int index) const
-    {
-        const int i = index%8;
-        unsigned char c = dataVoxels.getValue()[index>>3];
-        return ((c&((int)(pow(2.0f, i)))) >> i) == 1;
     };
 
 

@@ -58,14 +58,14 @@ JoystickEvent::AxisEvent::AxisEvent( const int index, const float value )
 
 
 
-const int JoystickEvent::AxisEvent::getIndex() const
+int JoystickEvent::AxisEvent::getIndex() const
 {
     return m_index;
 }
 
 
 
-const float JoystickEvent::AxisEvent::getValue() const
+float JoystickEvent::AxisEvent::getValue() const
 {
     return m_value;
 }
@@ -115,14 +115,14 @@ JoystickEvent::HatEvent::HatEvent(const int index, const State state )
 
 
 
-const int JoystickEvent::HatEvent::getIndex() const
+int JoystickEvent::HatEvent::getIndex() const
 {
     return m_index;
 }
 
 
 
-const JoystickEvent::HatEvent::State JoystickEvent::HatEvent::getState() const
+JoystickEvent::HatEvent::State JoystickEvent::HatEvent::getState() const
 {
     return m_state;
 }
@@ -175,7 +175,7 @@ const std::vector<JoystickEvent::AxisEvent*> &JoystickEvent::getAxisEvents(void)
 
 
 
-const unsigned int JoystickEvent::getAxisEventsSize(void) const
+unsigned int JoystickEvent::getAxisEventsSize(void) const
 {
     return axisEvents.size();
 }
@@ -235,7 +235,7 @@ const std::vector<JoystickEvent::HatEvent *> &JoystickEvent::getHatEvents(void) 
 
 
 
-const unsigned int JoystickEvent::getHatEventsSize(void) const
+unsigned int JoystickEvent::getHatEventsSize(void) const
 {
     return hatEvents.size();
 }

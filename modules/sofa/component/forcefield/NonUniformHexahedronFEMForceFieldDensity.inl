@@ -53,7 +53,7 @@ using namespace sofa::defaulttype;
 template <class DataTypes>
 void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
 {
-    cerr<<"NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()\n";
+//  	cerr<<"NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()\n";
 
     if(this->_alreadyInit)return;
     else this->_alreadyInit=true;
@@ -263,15 +263,16 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::computeCoarseElementSt
         if (!densityFile.getValue().empty())
         {
             int indexInRegularGrid = this->_sparseGrid->_virtualFinerLevels[0]->_indicesOfCubeinRegularGrid[elementIndice];
-            Vector3 coordinates = this->_sparseGrid->_virtualFinerLevels[0]->_regularGrid.getCubeCoordinate(indexInRegularGrid);
-
-            Vector3 factor = Vector3(
-                    dimensionDensityFile.getValue()[0]/((float)this->_sparseGrid->_virtualFinerLevels[0]->_regularGrid.getNx()),
-                    dimensionDensityFile.getValue()[1]/((float)this->_sparseGrid->_virtualFinerLevels[0]->_regularGrid.getNy()),
-                    dimensionDensityFile.getValue()[2]/((float)this->_sparseGrid->_virtualFinerLevels[0]->_regularGrid.getNz())
+            const Vector3 coordinates = this->_sparseGrid->_virtualFinerLevels[0]->_regularGrid.getCubeCoordinate(indexInRegularGrid);
+            const Vector3 factor = Vector3(
+                    dimensionDensityFile.getValue()[0]/((SReal)this->_sparseGrid->_virtualFinerLevels[0]->_regularGrid.getNx()),
+                    dimensionDensityFile.getValue()[1]/((SReal)this->_sparseGrid->_virtualFinerLevels[0]->_regularGrid.getNy()),
+                    dimensionDensityFile.getValue()[2]/((SReal)this->_sparseGrid->_virtualFinerLevels[0]->_regularGrid.getNz())
                     );
-
-            grayScale = 1+10*exp(1-256/((float)(voxels[(int)(factor[2]*coordinates[2])][(int)(factor[0]*coordinates[0])][(int)(factor[1]*coordinates[1])])));
+            if (this->_sparseGrid->_virtualFinerLevels[0]->getVoxel(factor[0]*coordinates[0], factor[1]*coordinates[1], factor[2]*coordinates[2]))
+            {
+                grayScale = 1+10*exp(1-256/((float)(voxels[(int)(factor[2]*coordinates[2])][(int)(factor[0]*coordinates[0])][(int)(factor[1]*coordinates[1])])));
+            }
 //       std::cout << grayScale << " \n";
         }
         computeMaterialStiffness(mat,  this->f_youngModulus.getValue()*grayScale,this->f_poissonRatio.getValue());
@@ -402,9 +403,9 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::draw()
             const unsigned index = (*it)[elem];
             for (unsigned int i=0; i<24; ++i)
             {
-                s+= abs(this->_elementStiffnesses.getValue()[hexa_elem][i][elem+0]) +
-                    abs(this->_elementStiffnesses.getValue()[hexa_elem][i][elem+1]) +
-                    abs(this->_elementStiffnesses.getValue()[hexa_elem][i][elem+2]);
+                s+= fabs(this->_elementStiffnesses.getValue()[hexa_elem][i][elem+0]) +
+                    fabs(this->_elementStiffnesses.getValue()[hexa_elem][i][elem+1]) +
+                    fabs(this->_elementStiffnesses.getValue()[hexa_elem][i][elem+2]);
             }
             if (stiffnessDraw.find( index ) != stiffnessDraw.end())
                 stiffnessDraw[index]=std::make_pair(stiffnessDraw[index].first+1,s+stiffnessDraw[index].second);
@@ -424,7 +425,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::draw()
     for (it_stiff = stiffnessDraw.begin(); it_stiff != stiffnessDraw.end(); ++it_stiff)
     {
         glColor4f((float)((*it_stiff).second.second/max), 0.0f, (float)(1.0f-(*it_stiff).second.second/max),1.0f);
-        drawSphere(radius,10,10,x[ (*it_stiff).first ]);
+        drawSphere(radius*(1+2*(*it_stiff).second.second/max),10,10,x[ (*it_stiff).first ]);
     }
     if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

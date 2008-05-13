@@ -386,6 +386,7 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
     buildFromRegularGridTypes(_regularGrid, regularGridTypes);
     if (!isVirtual)
         updateMesh();
+
 }
 
 

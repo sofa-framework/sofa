@@ -97,7 +97,7 @@ public:
          *
          * @return	the axis' index
          */
-        const int getIndex() const;
+        int getIndex() const;
 
         /**
          * @brief	Retrieves the value of the axis.
@@ -106,7 +106,7 @@ public:
          *
          * @return	the axis' value
          */
-        const float getValue() const;
+        float getValue() const;
         //@}
 
     private:
@@ -194,14 +194,14 @@ public:
          *
          * @return	the hat's index
          */
-        const int getIndex() const;
+        int getIndex() const;
 
         /**
          * @brief	Retrieves the state of the hat.
          *
          * @return	the hat's state
          */
-        const State getState() const;
+        State getState() const;
         //@}
 
     private:
@@ -224,7 +224,7 @@ public:
 
     const std::vector<AxisEvent*> &getAxisEvents(void) const;
 
-    const unsigned int getAxisEventsSize(void) const;
+    unsigned int getAxisEventsSize(void) const;
 
     void addAxisEvent( AxisEvent * );
 
@@ -252,7 +252,7 @@ public:
 
     const std::vector<HatEvent*> &getHatEvents(void) const;
 
-    const unsigned int getHatEventsSize(void) const;
+    unsigned int getHatEventsSize(void) const;
 
     void addHatEvent( HatEvent * );
 

@@ -8,6 +8,7 @@
 #include <sofa/helper/vector.h>
 //#include <sofa/helper/BackTrace.h>
 #include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 
@@ -19,6 +20,7 @@ namespace gpu
 
 namespace cuda
 {
+
 
 template<class T>
 class CudaVector
@@ -954,8 +956,8 @@ inline const char* CudaRigid3dTypes::Name()
     return "CudaRigid3d";
 }
 
-#endif // SOFA_DEV
 
+#endif // SOFA_DEV
 } // namespace cuda
 
 } // namespace gpu
