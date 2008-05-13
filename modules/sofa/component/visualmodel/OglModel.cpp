@@ -23,13 +23,15 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/component/visualmodel/OglModel.h>
+#include <sofa/helper/system/gl.h>
+#include <sofa/helper/system/glut.h>
 #include <sofa/helper/gl/RAII.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sstream>
-#include <GL/glut.h>
+
 namespace sofa
 {
 
