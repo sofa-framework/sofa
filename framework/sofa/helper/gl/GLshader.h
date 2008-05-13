@@ -41,8 +41,6 @@ namespace helper
 namespace gl
 {
 
-//using namespace std;
-
 #ifndef SOFA_HAVE_GLEW
 
 #if defined (WIN32)
@@ -138,7 +136,6 @@ extern PFNGLACTIVETEXTUREARBPROC glActiveTextureARB;
 
 #endif
 
-// This is our very basic shader class that we will use
 class CShader
 {
 public:
@@ -146,47 +143,77 @@ public:
     CShader();
     ~CShader();
 
-    // This loads our text file for each shader and returns it in a string
-    std::string LoadTextFile(std::string strFile);
+    /// This loads our text file for each shader and returns it in a string
+    std::string LoadTextFile(const std::string& strFile);
 
-    // This is used to load all of the extensions and checks compatibility.
+    /// This is used to load all of the extensions and checks compatibility.
     static bool InitGLSL();
 
-    // This loads a vertex and fragment shader
-    void InitShaders(std::string strVertex, std::string strFragment);
+    /// This loads a vertex, geometry and fragment shader
+    void InitShaders(const std::string& strVertex, const std::string& stdGeometry, const std::string& strFragment);
 
-    // This returns an ID for a variable in our shader
+    /// This loads a vertex and fragment shader
+    void InitShaders(const std::string& strVertex, const std::string& strFragment)
+    {
+        InitShaders(strVertex, std::string(""), strFragment);
+    }
+
+    /// This returns an ID for a variable in our shader
     GLint GetVariable(std::string strVariable);
 
-    // These are our basic get functions for our private data
+    /// These are our basic get functions for our private data
+    /// @{
     GLhandleARB GetProgram()	{	return m_hProgramObject; }
     GLhandleARB GetVertexS()	{	return m_hVertexShader; }
+    GLhandleARB GetGeometryS()	{	return m_hGeometryShader; }
     GLhandleARB GetFragmentS()	{	return m_hFragmentShader; }
 
-    // Below are functions to set an integer or a set of floats
+    /// Below are functions to set an integer or a set of floats
+    /// @{
     void SetInt(GLint variable, int newValue);
     void SetFloat(GLint variable, float newValue);
     void SetFloat2(GLint variable, float v0, float v1);
     void SetFloat3(GLint variable, float v0, float v1, float v2);
     void SetFloat4(GLint variable, float v0, float v1, float v2, float v3);
+    /// @}
 
-    // These 2 functions turn on and off our shader
+    /// These 2 functions turn on and off our shader
+    /// @{
     void TurnOn();
     void TurnOff();
+    /// @}
 
-    // This releases our memory for our shader
+    /// This releases our memory for our shader
     void Release();
 
-private:
+    GLint GetGeometryInputType() { return geometry_input_type; }
+    void  SetGeometryInputType(GLint v) { geometry_input_type = v; }
 
-    // This handle stores our vertex shader information
+    GLint GetGeometryOutputType() { return geometry_output_type; }
+    void  SetGeometryOutputType(GLint v) { geometry_output_type = v; }
+
+    GLint GetGeometryVerticesOut() { return geometry_vertices_out; }
+    void  SetGeometryVerticesOut(GLint v) { geometry_vertices_out = v; }
+
+protected:
+
+    bool CompileShader(GLint target, const std::string& source, GLhandleARB& shader);
+
+    /// This handle stores our vertex shader information
     GLhandleARB m_hVertexShader;
 
-    // This handle stores our fragment shader information
+    /// This handle stores our geometry shader information
+    GLhandleARB m_hGeometryShader;
+
+    /// This handle stores our fragment shader information
     GLhandleARB m_hFragmentShader;
 
-    // This handle stores our program information which encompasses our shader
+    /// This handle stores our program information which encompasses our shader
     GLhandleARB m_hProgramObject;
+
+    GLint geometry_input_type;
+    GLint geometry_output_type;
+    GLint geometry_vertices_out;
 };
 
 } // namespace gl

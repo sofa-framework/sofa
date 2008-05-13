@@ -23,16 +23,17 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 //*******************************************************************//
-//	OpenGL Shader class 											 //
+//    OpenGL Shader class                                            //
 //                                                                   //
-//	Based on code from Ben Humphrey	/ digiben@gametutorilas.com		 //
-//																	 //
+//    Based on code from Ben Humphrey    / digiben@gametutorilas.com //
+//                                                                   //
 //*******************************************************************//
 
 #include <sofa/helper/gl/GLshader.h>
 #include <stdlib.h>
 #include <math.h>
 #include <fstream>
+#include <iostream>
 
 #ifndef SOFA_HAVE_GLEW
 #if !defined(_WIN32) && !defined(__APPLE__)
@@ -215,8 +216,12 @@ bool CShader::InitGLSL()
 CShader::CShader()
 {
     m_hVertexShader = 0; //NULL;
+    m_hGeometryShader = 0; //NULL;
     m_hFragmentShader = 0; //NULL;
     m_hProgramObject = 0; //NULL;
+    geometry_input_type = -1;
+    geometry_output_type = -1;
+    geometry_vertices_out = -1;
 }
 
 CShader::~CShader()
@@ -231,7 +236,7 @@ CShader::~CShader()
 /////
 ///////////////////////////////// LOAD TEXT FILE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-std::string CShader::LoadTextFile(std::string strFile)
+std::string CShader::LoadTextFile(const std::string& strFile)
 {
     // Open the file passed in
     std::ifstream fin(strFile.c_str());
@@ -256,6 +261,43 @@ std::string CShader::LoadTextFile(std::string strFile)
     return strText;
 }
 
+///////////////////////////////// INIT SHADERS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
+/////
+/////	This function compiles a shader and check the log
+/////
+///////////////////////////////// INIT SHADERS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
+
+bool CShader::CompileShader(GLint target, const std::string& source, GLhandleARB& shader)
+{
+    const char* stype = "";
+    if (target == GL_VERTEX_SHADER_ARB) stype = "vertex";
+    else if (target == GL_FRAGMENT_SHADER_ARB) stype = "fragment";
+#ifdef GL_GEOMETRY_SHADER_EXT
+    else if (target == GL_GEOMETRY_SHADER_EXT) stype = "geometry";
+#endif
+
+    shader = glCreateShaderObjectARB(target);
+
+    const char* src = source.c_str();
+
+    glShaderSourceARB(shader, 1, &src, NULL);
+
+    glCompileShaderARB(shader);
+
+    GLint compiled = 0, length = 0, laux = 0;
+    glGetObjectParameterivARB(shader, GL_OBJECT_COMPILE_STATUS_ARB, &compiled);
+    if (!compiled) std::cerr << "ERROR: Compilation of "<<stype<<" shader failed:\n"<<src<<std::endl;
+    else std::cout << "Compilation of "<<stype<<" shader OK" << std::endl;
+    glGetObjectParameterivARB(shader, GL_OBJECT_INFO_LOG_LENGTH_ARB, &length);
+    if (length)
+    {
+        GLcharARB *logString = (GLcharARB *)malloc((length+1) * sizeof(GLcharARB));
+        glGetInfoLogARB(shader, length, &laux, logString);
+        std::cerr << logString << std::endl;
+        free(logString);
+    }
+    return compiled;
+}
 
 ///////////////////////////////// INIT SHADERS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 /////
@@ -263,66 +305,71 @@ std::string CShader::LoadTextFile(std::string strFile)
 /////
 ///////////////////////////////// INIT SHADERS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-void CShader::InitShaders(std::string strVertex, std::string strFragment)
+void CShader::InitShaders(const std::string& strVertex, const std::string& strGeometry, const std::string& strFragment)
 {
-    // These will hold the shader's text file data
-    std::string strVShader, strFShader;
-
-    // Make sure the user passed in a vertex and fragment shader file
+    // Make sure the user passed in at least a vertex and fragment shader file
     if(!strVertex.length() || !strFragment.length())
         return;
 
     // If any of our shader pointers are set, let's free them first.
-    if(m_hVertexShader || m_hFragmentShader || m_hProgramObject)
+    if(m_hVertexShader || m_hGeometryShader || m_hFragmentShader || m_hProgramObject)
         Release();
 
-    // Here we get a pointer to our vertex and fragment shaders
-    m_hVertexShader = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
-    m_hFragmentShader = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
+    bool ready = true;
 
-    // Now we load the shaders from the respective files and store it in a string.
-    strVShader = LoadTextFile(strVertex.c_str());
-    strFShader = LoadTextFile(strFragment.c_str());
+    // Now we load and compile the shaders from their respective files
+    ready &= CompileShader( GL_VERTEX_SHADER_ARB, LoadTextFile(strVertex), m_hVertexShader );
+    if (!strGeometry.empty())
+    {
+#ifdef GL_GEOMETRY_SHADER_EXT
+        ready &= CompileShader( GL_GEOMETRY_SHADER_EXT, LoadTextFile(strGeometry), m_hGeometryShader );
+        if (geometry_input_type != -1) glProgramParameteriEXT(m_hProgramObject, GL_GEOMETRY_INPUT_TYPE_EXT, geometry_input_type );
+        if (geometry_output_type != -1) glProgramParameteriEXT(m_hProgramObject, GL_GEOMETRY_OUTPUT_TYPE_EXT, geometry_output_type );
+        if (geometry_vertices_out != -1) glProgramParameteriEXT(m_hProgramObject, GL_GEOMETRY_VERTICES_OUT_EXT, geometry_vertices_out );
+#else
+        std::cerr << "SHADER ERROR: GL_GEOMETRY_SHADER_EXT not defined. Please use a recent version of GLEW.\n";
+        ready = false;
+#endif
+    }
+    ready &= CompileShader( GL_FRAGMENT_SHADER_ARB, LoadTextFile(strFragment), m_hFragmentShader );
 
-    // Do a quick switch so we can do a double pointer below
-    const char *szVShader = strVShader.c_str();
-    const char *szFShader = strFShader.c_str();
-
-    // Now this assigns the shader text file to each shader pointer
-    glShaderSourceARB(m_hVertexShader, 1, &szVShader, NULL);
-    glShaderSourceARB(m_hFragmentShader, 1, &szFShader, NULL);
-
-    // Now we actually compile the shader's code
-    glCompileShaderARB(m_hVertexShader);
-    glCompileShaderARB(m_hFragmentShader);
+    if (!ready)
+    {
+        std::cerr << "SHADER compilation failed.\n";
+        return;
+    }
 
     // Next we create a program object to represent our shaders
     m_hProgramObject = glCreateProgramObjectARB();
 
     // We attach each shader we just loaded to our program object
     glAttachObjectARB(m_hProgramObject, m_hVertexShader);
+#ifdef GL_GEOMETRY_SHADER_EXT
+    if (m_hGeometryShader)
+        glAttachObjectARB(m_hProgramObject, m_hGeometryShader);
+#endif
     glAttachObjectARB(m_hProgramObject, m_hFragmentShader);
 
     // Our last init function is to link our program object with OpenGL
     glLinkProgramARB(m_hProgramObject);
 
-    GLint logLength = 0;
-    glGetObjectParameterivARB(m_hProgramObject, GL_OBJECT_INFO_LOG_LENGTH_ARB, &logLength);
-
-    if (logLength > 1)
+    GLint linked = 0, length = 0, laux = 0;
+    glGetObjectParameterivARB(m_hProgramObject, GL_OBJECT_LINK_STATUS_ARB, &linked);
+    if (!linked) std::cerr << "ERROR: Link of program shader failed:\n"<<std::endl;
+    else std::cout << "Link of program shader OK" << std::endl;
+    glGetObjectParameterivARB(m_hProgramObject, GL_OBJECT_INFO_LOG_LENGTH_ARB, &length);
+    if (length)
     {
-        GLcharARB *szLog = (GLcharARB*)malloc(logLength+1);
-        GLint writtenLength = 0;
-
-        glGetInfoLogARB(m_hProgramObject, logLength, &writtenLength, szLog);
-        printf("ERROR during shader initialization: %s\n", szLog);
-
-        free(szLog);
+        GLcharARB *logString = (GLcharARB *)malloc((length+1) * sizeof(GLcharARB));
+        glGetInfoLogARB(m_hProgramObject, length, &laux, logString);
+        std::cerr << logString << std::endl;
+        free(logString);
     }
 
     // Now, let's turn off the shader initially.
     glUseProgramObjectARB(0);
 }
+
 
 void CShader::SetInt(GLint variable, int newValue)                              { if (variable!=-1) glUniform1iARB(variable, newValue);       }
 void CShader::SetFloat(GLint variable, float newValue)                          { if (variable!=-1) glUniform1fARB(variable, newValue);       }
@@ -366,6 +413,14 @@ void CShader::Release()
         glDetachObjectARB(m_hProgramObject, m_hVertexShader);
         glDeleteObjectARB(m_hVertexShader);
         m_hVertexShader = 0; //NULL;
+    }
+
+    // If our geometry shader pointer is valid, free it
+    if(m_hGeometryShader)
+    {
+        glDetachObjectARB(m_hProgramObject, m_hGeometryShader);
+        glDeleteObjectARB(m_hGeometryShader);
+        m_hGeometryShader = 0; //NULL;
     }
 
     // If our fragment shader pointer is valid, free it
