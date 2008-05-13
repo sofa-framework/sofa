@@ -58,7 +58,10 @@ void ArticulatedSystemMapping<BasicMapping>::apply( typename Out::VecCoord& out,
 {
     // Copy the root position if a rigid root model is present
     if (rootModel)
-        out[0] = (*rootModel->getX())[0];
+    {
+        //	std::cout << "Root Model Name = " << rootModel->getName() << std::endl;
+        out[0] = (*rootModel->getX())[rootModel->getSize()-1];
+    }
 
     vector<ArticulatedHierarchyContainer::ArticulationCenter*>::const_iterator ac = articulationCenters.begin();
     vector<ArticulatedHierarchyContainer::ArticulationCenter*>::const_iterator acEnd = articulationCenters.end();
@@ -106,11 +109,17 @@ void ArticulatedSystemMapping<BasicMapping>::apply( typename Out::VecCoord& out,
 }
 
 template <class BasicMapping>
-void ArticulatedSystemMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+void ArticulatedSystemMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in, const typename InRoot::VecDeriv* inroot )
 {
     OutVecCoord& xto = *this->toModel->getX();
-
-    out[0] = OutDeriv();
+    // Copy the root position if a rigid root model is present
+    if (inroot)
+    {
+        // std::cout << "Root Model Name = " << rootModel->getName() << std::endl;
+        out[0] = (*inroot)[inroot->size()-1];
+    }
+    else
+        out[0] = OutDeriv();
 
     out.clear();
     out.resize(xto.size());
@@ -154,7 +163,7 @@ void ArticulatedSystemMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out
 }
 
 template <class BasicMapping>
-void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in, typename InRoot::VecDeriv* outroot )
 {
     OutVecCoord& xto = *this->toModel->getX();
 
@@ -198,10 +207,15 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecDeriv& out
             }
         }
     }
+
+    if (outroot)
+    {
+        (*outroot)[outroot->size()-1] += fObjects6DBuf[0];
+    }
 }
 
 template <class BasicMapping>
-void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in, typename InRoot::VecConst* inRoot )
 {
     OutVecCoord& xto = *this->toModel->getX();
 
@@ -254,7 +268,74 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out
             }
         }
     }
+
+    if (inRoot)
+    {
+        for (unsigned int j=0; j<in[0].size(); j++)
+        {
+            (*inRoot)[inRoot->size() - 1].push_back(in[0][j]);
+        }
+    }
 }
+
+
+
+template <class BasicMapping>
+void ArticulatedSystemMapping<BasicMapping>::propagateV()
+{
+    if (this->fromModel!=NULL && this->toModel->getV()!=NULL && this->fromModel->getV()!=NULL)
+        applyJ(*this->toModel->getV(), *this->fromModel->getV(), (rootModel==NULL ? NULL : rootModel->getV()));
+}
+
+
+
+template <class BasicMapping>
+void ArticulatedSystemMapping<BasicMapping>::propagateDx()
+{
+    if (this->fromModel!=NULL && this->toModel->getDx()!=NULL && this->fromModel->getDx()!=NULL)
+        applyJ(*this->toModel->getDx(), *this->fromModel->getDx(), (rootModel==NULL ? NULL : rootModel->getDx()));
+}
+
+
+
+template <class BasicMapping>
+void ArticulatedSystemMapping<BasicMapping>::accumulateForce()
+{
+    if (this->fromModel!=NULL && this->toModel->getF()!=NULL && this->fromModel->getF()!=NULL)
+        applyJT(*this->fromModel->getF(), *this->toModel->getF(), (rootModel==NULL ? NULL : rootModel->getF()));
+}
+
+
+
+template <class BasicMapping>
+void ArticulatedSystemMapping<BasicMapping>::accumulateDf()
+{
+    if (this->fromModel!=NULL && this->toModel->getF()!=NULL && this->fromModel->getF()!=NULL)
+        applyJT(*this->fromModel->getF(), *this->toModel->getF(), (rootModel==NULL ? NULL : rootModel->getF()));
+}
+
+
+
+template <class BasicMapping>
+void ArticulatedSystemMapping<BasicMapping>::accumulateConstraint()
+{
+    if (this->fromModel!=NULL && this->toModel->getC()!=NULL && this->fromModel->getC()!=NULL)
+    {
+        applyJT(*this->fromModel->getC(), *this->toModel->getC(), (rootModel==NULL ? NULL : rootModel->getC()));
+
+        // Accumulate contacts indices through the MechanicalMapping
+        std::vector<unsigned int>::iterator it = this->toModel->getConstraintId().begin();
+        std::vector<unsigned int>::iterator itEnd = this->toModel->getConstraintId().end();
+
+        while (it != itEnd)
+        {
+            this->fromModel->setConstraintId(*it);
+            it++;
+        }
+    }
+}
+
+
 
 template <class BasicMapping>
 void ArticulatedSystemMapping<BasicMapping>::draw()
