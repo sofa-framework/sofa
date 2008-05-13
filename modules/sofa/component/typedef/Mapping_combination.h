@@ -24,7 +24,6 @@
 #include <sofa/component/mapping/SkinningMapping.h>
 #include <sofa/component/mapping/SPHFluidSurfaceMapping.h>
 #include <sofa/component/mapping/SubsetMapping.h>
-#include <sofa/component/mapping/SurfaceIdentityMapping.h>
 #include <sofa/component/mapping/VoidMapping.h>
 
 
@@ -389,34 +388,4 @@ typedef sofa::component::mapping::SubsetMapping< sofa::core::Mapping<
 sofa::core::componentmodel::behavior::State<sofa::defaulttype::Vec3fTypes>,
      sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::Vec3dTypes> > > SubsetMapping3f_to_3d;
 
-
-
-
-
-
-
-//SurfaceIdentityMapping
-//---------------------
-
-typedef sofa::component::mapping::SurfaceIdentityMapping< sofa::core::componentmodel::behavior::MechanicalMapping<
-sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Vec3dTypes>,
-     sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Vec3fTypes> > > SurfaceIdentityMechanicalMapping3d_to_3f;
-
-typedef sofa::component::mapping::SurfaceIdentityMapping< sofa::core::componentmodel::behavior::MechanicalMapping<
-sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Vec3fTypes>,
-     sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Vec3dTypes> > > SurfaceIdentityMechanicalMapping3f_to_3d;
-
-
-
-
-typedef sofa::component::mapping::SurfaceIdentityMapping< sofa::core::Mapping<
-sofa::core::componentmodel::behavior::State<sofa::defaulttype::Vec3dTypes>,
-     sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::Vec3fTypes> > > SurfaceIdentityMapping3d_to_3f;
-
-typedef sofa::component::mapping::SurfaceIdentityMapping< sofa::core::Mapping<
-sofa::core::componentmodel::behavior::State<sofa::defaulttype::Vec3fTypes>,
-     sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::Vec3dTypes> > > SurfaceIdentityMapping3f_to_3d;
-
-
 #endif
-

@@ -44,7 +44,7 @@ int SubsetMappingClass = core::RegisterObject("TODO-SubsetMappingClass")
         .add< SubsetMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > > >()
 #endif
 #endif
-
+        .addAlias("SurfaceIdentityMapping")
         ;
 
 
