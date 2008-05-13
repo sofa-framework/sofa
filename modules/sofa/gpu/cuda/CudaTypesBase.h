@@ -110,12 +110,12 @@ public :
         return v;
     }
 
-    float & operator[](int i)
+    T& operator[](int i)
     {
         return v[i];
     }
 
-    const float & operator[](int i) const
+    const T& operator[](int i) const
     {
         return v[i];
     }

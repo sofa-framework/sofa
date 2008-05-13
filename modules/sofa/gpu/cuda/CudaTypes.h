@@ -585,18 +585,20 @@ using defaulttype::Vec;
 using defaulttype::NoInit;
 using defaulttype::NOINIT;
 
-class Vec3f1 : public Vec3f
+template<class Real>
+class Vec3r1 : public sofa::defaulttype::Vec<3,Real>
 {
 public:
-    typedef float real;
+    typedef sofa::defaulttype::Vec<3,Real> Inherit;
+    typedef Real real;
     enum { N=3 };
-    Vec3f1() : dummy(0.0f) {}
+    Vec3r1() : dummy(0.0f) {}
     template<class real2>
-    Vec3f1(const Vec<N,real2>& v): Vec3f(v), dummy(0.0f) {}
-    Vec3f1(float x, float y, float z) : Vec3f(x,y,z), dummy(0.0f) {}
+    Vec3r1(const Vec<N,real2>& v): Inherit(v), dummy(0.0f) {}
+    Vec3r1(float x, float y, float z) : Inherit(x,y,z), dummy(0.0f) {}
 
     /// Fast constructor: no initialization
-    explicit Vec3f1(NoInit n) : Vec3f(n), dummy(0.0f)
+    explicit Vec3r1(NoInit n) : Inherit(n), dummy(0.0f)
     {
     }
 
@@ -604,9 +606,9 @@ public:
 
     /// Multiplication by a scalar f.
     template<class real2>
-    Vec3f1 operator*(real2 f) const
+    Vec3r1 operator*(real2 f) const
     {
-        Vec3f1 r(NOINIT);
+        Vec3r1 r(NOINIT);
         for (int i=0; i<N; i++)
             r[i] = this->elems[i]*(real)f;
         return r;
@@ -621,9 +623,9 @@ public:
     }
 
     template<class real2>
-    Vec3f1 operator/(real2 f) const
+    Vec3r1 operator/(real2 f) const
     {
-        Vec3f1 r(NOINIT);
+        Vec3r1 r(NOINIT);
         for (int i=0; i<N; i++)
             r[i] = this->elems[i]/(real)f;
         return r;
@@ -648,7 +650,7 @@ public:
     }
 
     /// Dot product.
-    real operator*(const Vec3f1& v) const
+    real operator*(const Vec3r1& v) const
     {
         real r = (real)(this->elems[0]*v[0]);
         for (int i=1; i<N; i++)
@@ -658,18 +660,18 @@ public:
 
     /// linear product.
     template<class real2>
-    Vec3f1 linearProduct(const Vec<N,real2>& v) const
+    Vec3r1 linearProduct(const Vec<N,real2>& v) const
     {
-        Vec3f1 r(NOINIT);
+        Vec3r1 r(NOINIT);
         for (int i=0; i<N; i++)
             r[i]=this->elems[i]*(real)v[i];
         return r;
     }
 
     /// linear product.
-    Vec3f1 linearProduct(const Vec3f1& v) const
+    Vec3r1 linearProduct(const Vec3r1& v) const
     {
-        Vec3f1 r(NOINIT);
+        Vec3r1 r(NOINIT);
         for (int i=0; i<N; i++)
             r[i]=this->elems[i]*(real)v[i];
         return r;
@@ -677,18 +679,18 @@ public:
 
     /// Vector addition.
     template<class real2>
-    Vec3f1 operator+(const Vec<N,real2>& v) const
+    Vec3r1 operator+(const Vec<N,real2>& v) const
     {
-        Vec3f1 r(NOINIT);
+        Vec3r1 r(NOINIT);
         for (int i=0; i<N; i++)
             r[i]=this->elems[i]+(real)v[i];
         return r;
     }
 
     /// Vector addition.
-    Vec3f1 operator+(const Vec3f1& v) const
+    Vec3r1 operator+(const Vec3r1& v) const
     {
-        Vec3f1 r(NOINIT);
+        Vec3r1 r(NOINIT);
         for (int i=0; i<N; i++)
             r[i]=this->elems[i]+(real)v[i];
         return r;
@@ -703,7 +705,7 @@ public:
     }
 
     /// On-place vector addition.
-    void operator+=(const Vec3f1& v)
+    void operator+=(const Vec3r1& v)
     {
         for (int i=0; i<N; i++)
             this->elems[i]+=(real)v[i];
@@ -711,18 +713,18 @@ public:
 
     /// Vector subtraction.
     template<class real2>
-    Vec3f1 operator-(const Vec<N,real2>& v) const
+    Vec3r1 operator-(const Vec<N,real2>& v) const
     {
-        Vec3f1 r(NOINIT);
+        Vec3r1 r(NOINIT);
         for (int i=0; i<N; i++)
             r[i]=this->elems[i]-(real)v[i];
         return r;
     }
 
     /// Vector subtraction.
-    Vec3f1 operator-(const Vec3f1& v) const
+    Vec3r1 operator-(const Vec3r1& v) const
     {
-        Vec3f1 r(NOINIT);
+        Vec3r1 r(NOINIT);
         for (int i=0; i<N; i++)
             r[i]=this->elems[i]-(real)v[i];
         return r;
@@ -737,25 +739,25 @@ public:
     }
 
     /// On-place vector subtraction.
-    void operator-=(const Vec3f1& v)
+    void operator-=(const Vec3r1& v)
     {
         for (int i=0; i<N; i++)
             this->elems[i]-=(real)v[i];
     }
 
     /// Vector negation.
-    Vec3f1 operator-() const
+    Vec3r1 operator-() const
     {
-        Vec3f1 r(NOINIT);
+        Vec3r1 r(NOINIT);
         for (int i=0; i<N; i++)
             r[i]=-this->elems[i];
         return r;
     }
 
-    Vec3f1 cross( const Vec3f1& b ) const
+    Vec3r1 cross( const Vec3r1& b ) const
     {
         BOOST_STATIC_ASSERT(N == 3);
-        return Vec3f1(
+        return Vec3r1(
                 (*this)[1]*b[2] - (*this)[2]*b[1],
                 (*this)[2]*b[0] - (*this)[0]*b[2],
                 (*this)[0]*b[1] - (*this)[1]*b[0]
@@ -766,12 +768,8 @@ protected:
     float dummy;
 };
 
-// GPUs do not support double precision yet
-// ( NVIDIA announced at SuperComputing'06 that it will be supported in 2007... )
-//typedef sofa::defaulttype::Vec3d Vec3d;
-//typedef sofa::defaulttype::Vec2d Vec2d;
+typedef Vec3r1<float> Vec3f1;
 
-//typedef CudaVectorTypes<Vec3d,Vec3d,double> CudaVec3dTypes;
 typedef CudaVectorTypes<Vec3f,Vec3f,float> CudaVec3fTypes;
 typedef CudaVec3fTypes CudaVec3Types;
 
@@ -781,7 +779,6 @@ inline const char* CudaVec3fTypes::Name()
     return "CudaVec3f";
 }
 
-//typedef CudaVectorTypes<Vec2d,Vec2d,double> CudaVec2dTypes;
 typedef CudaVectorTypes<Vec2f,Vec2f,float> CudaVec2fTypes;
 typedef CudaVec2fTypes CudaVec2Types;
 
@@ -902,7 +899,6 @@ public:
     static const char* Name();
 };
 
-//typedef CudaVectorTypes<Vec3d,Vec3d,double> CudaVec3dTypes;
 typedef CudaRigidTypes<3,float> CudaRigid3fTypes;
 typedef CudaRigid3fTypes CudaRigid3Types;
 
@@ -911,6 +907,54 @@ inline const char* CudaRigid3fTypes::Name()
 {
     return "CudaRigid3f";
 }
+
+
+#ifdef SOFA_DEV
+
+// support for double precision
+
+//typedef sofa::defaulttype::Vec3d Vec3d;
+//typedef sofa::defaulttype::Vec2d Vec2d;
+using sofa::defaulttype::Vec3d;
+using sofa::defaulttype::Vec2d;
+typedef Vec3r1<double> Vec3d1;
+
+typedef CudaVectorTypes<Vec3d,Vec3d,double> CudaVec3dTypes;
+//typedef CudaVec3dTypes CudaVec3Types;
+
+template<>
+inline const char* CudaVec3dTypes::Name()
+{
+    return "CudaVec3d";
+}
+
+typedef CudaVectorTypes<Vec2d,Vec2d,double> CudaVec2dTypes;
+//typedef CudaVec2dTypes CudaVec2Types;
+
+template<>
+inline const char* CudaVec2dTypes::Name()
+{
+    return "CudaVec2d";
+}
+
+typedef CudaVectorTypes<Vec3d1,Vec3d1,double> CudaVec3d1Types;
+
+template<>
+inline const char* CudaVec3d1Types::Name()
+{
+    return "CudaVec3d1";
+}
+
+typedef CudaRigidTypes<3,double> CudaRigid3dTypes;
+//typedef CudaRigid3dTypes CudaRigid3Types;
+
+template<>
+inline const char* CudaRigid3dTypes::Name()
+{
+    return "CudaRigid3d";
+}
+
+#endif // SOFA_DEV
 
 } // namespace cuda
 

@@ -4,8 +4,9 @@
 # while files mentionned inside removed parts are output to the standard error.
 # This can be used to remove then from the repository by svn rm'ing them.
 
-# init
+# If you never used awk, a good introduction is available at http://www.cs.hmc.edu/qref/awk.html
 
+# init
 BEGIN {
     # indicate whether the current code is filtered of not
     filtered=0;
