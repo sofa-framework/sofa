@@ -12,7 +12,7 @@
 
 #include <sofa/component/typedef/Sofa_typedef.h>
 
-#include <GL/glut.h>
+#include <sofa/helper/system/glut.h>
 
 using namespace sofa::simulation::tree;
 using sofa::component::odesolver::CGImplicitSolver;
