@@ -24,7 +24,6 @@
 #include <sofa/component/mapping/SkinningMapping.h>
 #include <sofa/component/mapping/SPHFluidSurfaceMapping.h>
 #include <sofa/component/mapping/SubsetMapping.h>
-#include <sofa/component/mapping/SurfaceIdentityMapping.h>
 #include <sofa/component/mapping/VoidMapping.h>
 
 
@@ -250,22 +249,6 @@ sofa::core::componentmodel::behavior::State<sofa::defaulttype::Vec3dTypes>,
 
 
 
-//SurfaceIdentityMapping
-//---------------------
-typedef sofa::component::mapping::SurfaceIdentityMapping< sofa::core::componentmodel::behavior::MechanicalMapping<
-sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Vec3dTypes>,
-     sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Vec3dTypes> > > SurfaceIdentityMechanicalMapping3d_to_3d;
-
-typedef sofa::component::mapping::SurfaceIdentityMapping< sofa::core::Mapping<
-sofa::core::componentmodel::behavior::State<sofa::defaulttype::Vec3dTypes>,
-     sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::Vec3dTypes> > > SurfaceIdentityMapping3d_to_3d;
-
-typedef sofa::component::mapping::SurfaceIdentityMapping< sofa::core::Mapping<
-sofa::core::componentmodel::behavior::State<sofa::defaulttype::Vec3dTypes>,
-     sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::ExtVec3fTypes> > > SurfaceIdentityMapping3d_to_Ext3;
-
-
-
 #ifndef SOFA_FLOAT
 typedef        ArticulatedSystemMapping1d_to_Rigid3d                   ArticulatedSystemMapping1d_to_Rigid3;
 typedef        BarycentricMechanicalMapping3d_to_3d		       BarycentricMechanicalMapping3_to_3;
@@ -309,9 +292,6 @@ typedef        SkinningMappingRigid3d_to_Ext3			       SkinningMappingRigid3_to_
 typedef        SubsetMechanicalMapping3d_to_3d			       SubsetMechanicalMapping3_to_3;
 typedef        SubsetMapping3d_to_3d				       SubsetMapping3_to_3;
 typedef        SubsetMapping3d_to_Ext3				       SubsetMapping3_to_Ext3;
-typedef        SurfaceIdentityMechanicalMapping3d_to_3d	               SurfaceIdentityMechanicalMapping3_to_3;
-typedef        SurfaceIdentityMapping3d_to_3d		 	       SurfaceIdentityMapping3_to_3;
-typedef        SurfaceIdentityMapping3d_to_Ext3		               SurfaceIdentityMapping3_to_Ext3;
 #endif
 
 #endif

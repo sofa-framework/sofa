@@ -114,11 +114,7 @@ SOFA_LINK_CLASS(MeshSpringForceField)
 SOFA_LINK_CLASS(MeshTopology)
 SOFA_LINK_CLASS(MeshTrian)
 SOFA_LINK_CLASS(MinProximityIntersection)
-#ifdef SOFA_HAVE_MKL
-SOFA_LINK_CLASS(MKLSolver)
-#endif
 SOFA_LINK_CLASS(MultiStepMasterSolver)
-SOFA_LINK_CLASS(NewMatSolver)
 SOFA_LINK_CLASS(NewProximityIntersection)
 SOFA_LINK_CLASS(Node)
 SOFA_LINK_CLASS(Object)
@@ -165,7 +161,6 @@ SOFA_LINK_CLASS(SpringForceField)
 //SOFA_LINK_CLASS(SpringEdgeDataForceField)
 SOFA_LINK_CLASS(StaticSolver)
 SOFA_LINK_CLASS(StiffSpringForceField)
-SOFA_LINK_CLASS(SurfaceIdentityMapping)
 SOFA_LINK_CLASS(SubsetMapping)
 //SOFA_LINK_CLASS(TensorForceField)
 SOFA_LINK_CLASS(Quad2TriangleTopologicalMapping)
@@ -176,7 +171,6 @@ SOFA_LINK_CLASS(TetrahedralTensorMassForceField)
 SOFA_LINK_CLASS(TetrahedralBiquadraticSpringsForceField)
 SOFA_LINK_CLASS(TetrahedralCorotationalFEMForceField)
 SOFA_LINK_CLASS(TetrahedralQuadraticSpringsForceField)
-SOFA_LINK_CLASS(ThreadSimulation)
 SOFA_LINK_CLASS(Triangle)
 SOFA_LINK_CLASS(TriangleBendingSprings)
 SOFA_LINK_CLASS(TriangularBendingSprings)
@@ -221,5 +215,9 @@ SOFA_LINK_CLASS(NonUniformHexahedronFEMForceFieldDensity)
 //misc
 SOFA_LINK_CLASS(EvalPointsDistance)
 SOFA_LINK_CLASS(EvalSurfaceDistance)
+
+//simulation
+//automatescheduler
+SOFA_LINK_CLASS(ThreadSimulation)
 
 #endif // SOFA_DEV
