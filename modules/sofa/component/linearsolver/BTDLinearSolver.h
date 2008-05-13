@@ -233,7 +233,7 @@ public:
             --i0;
         }
         int j0 = i-nBlockComputedMinv[i];
-        while (j0 > j)
+        while (j0 >= j)
         {
             // compute bloc (i0,j0)
             Minv.sub((i0  )*bsize,(j0  )*bsize,bsize,bsize) = Minv.sub((i0  )*bsize,(j0+1)*bsize,bsize,bsize)*(-lambda[j0].t());
@@ -306,7 +306,7 @@ public:
         }
 
 
-
+#if 0
 // WARNING !!!
         //Getting all elements of Minv modifies the obtained Matrix "result"!!
         // It seems that result is computed more accurately.
@@ -322,7 +322,7 @@ public:
             }
         }
 ////////////////////////////////////////////
-
+#endif
         if (f_verbose.getValue())
         {
 // debug christian: print of the inverse matrix:
