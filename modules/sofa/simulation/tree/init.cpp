@@ -194,7 +194,13 @@ SOFA_LINK_CLASS(OglShader)
 SOFA_LINK_CLASS(DirectionalLight)
 SOFA_LINK_CLASS(PositionalLight)
 SOFA_LINK_CLASS(SpotLight)
+SOFA_LINK_CLASS(LightManager)
+SOFA_LINK_CLASS(OglTexture2D)
+SOFA_LINK_CLASS(OglFloatVariable)
+SOFA_LINK_CLASS(OglFloat2Variable)
+SOFA_LINK_CLASS(OglFloat3Variable)
 SOFA_LINK_CLASS(VoidMapping)
+
 
 #ifdef SOFA_DEV
 
@@ -221,3 +227,4 @@ SOFA_LINK_CLASS(EvalSurfaceDistance)
 SOFA_LINK_CLASS(ThreadSimulation)
 
 #endif // SOFA_DEV
+

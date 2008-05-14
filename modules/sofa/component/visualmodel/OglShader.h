@@ -25,12 +25,18 @@ namespace sofa
 namespace component
 {
 
+namespace visualmodel
+{
+
 class OglShader : public core::Shader, public core::VisualModel
 {
-private:
+protected:
     Data<std::string> vertFilename;
     Data<std::string> fragFilename;
+    Data<std::string> geoFilename;
     sofa::helper::gl::CShader m_shader;
+
+    bool hasGeometryShader;
 
 public:
     OglShader();
@@ -44,8 +50,37 @@ public:
     void start();
     void stop();
 
+    void setTexture(const char* name, unsigned short unit);
+    void setInt(const char* name, unsigned int i);
+    void setFloat(const char* name, float f1);
+    void setFloat2(const char* name, float f1, float f2);
+    void setFloat3(const char* name, float f1, float f2, float f3);
+    void setFloat4(const char* name, float f1, float f2, float f3, float f4);
+
+    GLint getGeometryInputType() ;
+    void  setGeometryInputType(GLint v) ;
+
+    GLint getGeometryOutputType() ;
+    void  setGeometryOutputType(GLint v) ;
+
+    GLint getGeometryVerticesOut() ;
+    void  setGeometryVerticesOut(GLint v);
 };
 
+class OglShaderElement : public core::ShaderElement
+{
+protected:
+    Data<std::string> id;
+    OglShader* shader;
+public:
+    OglShaderElement();
+    virtual ~OglShaderElement() { };
+    virtual void init();
+
+    //virtual void setInShader(OglShader& s) = 0;
+};
+
+}//namespace visualmodel
 
 } //namespace component
 
