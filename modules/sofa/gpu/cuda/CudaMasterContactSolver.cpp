@@ -28,15 +28,14 @@ CudaMasterContactSolver<real>::CudaMasterContactSolver()
     initial_guess_d(initData(&initial_guess_d, true, "initial_guess","activate LCP results history to improve its resolution performances."))
     ,tol_d( initData(&tol_d, 0.001, "tolerance", "tolerance"))
     ,maxIt_d(initData(&maxIt_d, 200, "maxIt", "iterations of gauss seidel"))
-    ,mu_d( initData(&mu_d, 0.6, "mu", ""))
-    ,useGPU_d(initData(&useGPU_d, 8, "useGPU", "compute LCP using GPU"))
+    ,mu_d( initData(&mu_d, 0.0, "mu", ""))
+    ,useGPU_d(initData(&useGPU_d, 7, "useGPU", "compute LCP using GPU"))
     ,_mu(0.0)
 {
 
     _W.resize(MAX_NUM_CONSTRAINTS,MAX_NUM_CONSTRAINTS);
     _dFree.resize(MAX_NUM_CONSTRAINTS);
     _f.resize(MAX_NUM_CONSTRAINTS+1);
-    _res.resize(MAX_NUM_CONSTRAINTS+1);
     _numConstraints = 0;
     _mu = 0.0;
 
@@ -228,11 +227,11 @@ void CudaMasterContactSolver<real>::step(double dt)
 
     if (_mu > 0.0)
     {
-        sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(),_res.getCudaVector(), _mu,_tol, _maxIt);
+        sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _mu,_tol, _maxIt);
     }
     else
     {
-        sofa::gpu::cuda::CudaLCP<real>::CudaGaussSeidelLCP1(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(),_res.getCudaVector(), _tol, _maxIt);
+        sofa::gpu::cuda::CudaLCP<real>::CudaGaussSeidelLCP1(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _tol, _maxIt);
 
     }
 

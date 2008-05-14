@@ -81,7 +81,7 @@ private:
     void build_LCP();
 
     CudaBaseMatrix<real> _W;
-    CudaBaseVector<real> _dFree, _f, _res;
+    CudaBaseVector<real> _dFree, _f;
 
     unsigned int _numConstraints;
     double _mu;
