@@ -1,6 +1,3 @@
-// Author: The SOFA team </www.sofa-framework.org>, INRIA-UJF, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
 #ifndef SOFA_COMPONENT_LIGHT
 #define SOFA_COMPONENT_LIGHT
 
@@ -15,45 +12,12 @@ namespace sofa
 namespace component
 {
 
+namespace visualmodel
+{
+
 using sofa::defaulttype::Vector3;
 
-//Singleton class
-class LightTable
-{
-private:
-    static const unsigned int MAX_NUMBER_OF_LIGHTS = GL_MAX_LIGHTS;
-    std::map<std::string, GLint> lightTable;
-    static LightTable* instance;
-
-    LightTable() { };
-
-public:
-
-    static LightTable* getInstance()
-    {
-        if (instance == NULL)
-            instance = new LightTable();
-        return instance;
-    }
-
-    GLint getAvailableLightID(const std::string& name)
-    {
-        if (lightTable.size() >= MAX_NUMBER_OF_LIGHTS)
-            return 0;
-
-        GLint temp = GL_LIGHT0 + lightTable.size();
-        lightTable[name] = temp;
-        return lightTable[name];
-    }
-
-    void removeLightID(const std::string& name)
-    {
-        lightTable.erase(name);
-    }
-
-};
-
-class Light : public core::VisualModel
+class Light : public virtual sofa::core::objectmodel::BaseObject
 {
 protected:
     Data<Vector3> color;
@@ -64,11 +28,14 @@ public:
     Light();
     virtual ~Light();
 
-    virtual void initVisual();
+    void setID(const GLint& id);
+
+    virtual void initVisual() ;
     void init();
-    virtual void drawVisual();
+    virtual void drawLight();
+    void draw() { } ;
     virtual void reinit();
-    void updateVisual() {}
+    void update() {} ;
 };
 
 class DirectionalLight : public Light
@@ -80,8 +47,8 @@ public:
 
     DirectionalLight();
     virtual ~DirectionalLight();
-    virtual void initVisual();
-    virtual void drawVisual();
+    virtual void initVisual() ;
+    virtual void drawLight();
     virtual void reinit();
 
 
@@ -97,8 +64,8 @@ public:
 
     PositionalLight();
     virtual ~PositionalLight();
-    virtual void initVisual();
-    virtual void drawVisual();
+    virtual void initVisual() ;
+    virtual void drawLight();
     virtual void reinit();
 
 };
@@ -108,16 +75,19 @@ class SpotLight : public PositionalLight
 protected:
     Data<Vector3> direction;
     Data<float> cutoff;
+    Data<float> exponent;
 
 public:
     SpotLight();
     virtual ~SpotLight();
-    virtual void initVisual();
-    virtual void drawVisual();
+    virtual void initVisual() ;
+    virtual void drawLight();
     virtual void reinit();
 
 
 };
+
+} //namespace visualmodel
 
 } //namespace component
 
