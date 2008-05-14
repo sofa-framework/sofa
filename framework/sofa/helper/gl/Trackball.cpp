@@ -159,8 +159,8 @@ void Trackball::ComputeQuaternion(double p1x, double p1y, double p2x,
     }
 
     // First, figure out z-coordinates for projection of P1 and P2 to deformed sphere
-    Vector3	p1	(p1x, p1y, tb_project_to_sphere(TRACKBALLSIZE, p1x, p1y));
-    Vector3	p2	(p2x, p2y, tb_project_to_sphere(TRACKBALLSIZE, p2x, p2y));
+    Vector3	p1	((SReal)p1x, (SReal)p1y, (SReal)tb_project_to_sphere(TRACKBALLSIZE, p1x, p1y));
+    Vector3	p2	((SReal)p2x, (SReal)p2y, (SReal)tb_project_to_sphere(TRACKBALLSIZE, p2x, p2y));
 
     // Now, we want the cross product of P1 and P2
     Vector3	a = cross(p2,p1);
@@ -180,7 +180,7 @@ void Trackball::ComputeQuaternion(double p1x, double p1y, double p2x,
     }
     phi = 2.0 * asin(t);
 
-    _quat.axisToQuat(a, phi);
+    _quat.axisToQuat(a, (SReal)phi);
 }
 
 

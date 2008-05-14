@@ -60,8 +60,8 @@ void RegularGridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
         const char* xmax = arg->getAttribute("xmax");
         const char* ymax = arg->getAttribute("ymax");
         const char* zmax = arg->getAttribute("zmax");
-        min.setValue(Vector3(atof(xmin)*scale,atof(ymin)*scale,atof(zmin)*scale));
-        max.setValue(Vector3(atof(xmax)*scale,atof(ymax)*scale,atof(zmax)*scale));
+        min.setValue(Vector3((SReal)atof(xmin)*scale, (SReal)atof(ymin)*scale, (SReal)atof(zmin)*scale));
+        max.setValue(Vector3((SReal)atof(xmax)*scale, (SReal)atof(ymax)*scale, (SReal)atof(zmax)*scale));
     }
     this->setPos(min.getValue()[0],max.getValue()[0],min.getValue()[1],max.getValue()[1],min.getValue()[2],max.getValue()[2]);
 
@@ -222,9 +222,9 @@ unsigned RegularGridTopology::getCubeIndex( int i, int j, int k ) const
 Vector3 RegularGridTopology::getCubeCoordinate(int i) const
 {
     Vector3 result;
-    result[0] = i%(n.getValue()[0]-1); i/=(n.getValue()[0]-1);
-    result[1] = i%(n.getValue()[1]-1); i/=(n.getValue()[1]-1);
-    result[2] = i;
+    result[0] = (SReal)(i%(n.getValue()[0]-1)); i/=(n.getValue()[0]-1);
+    result[1] = (SReal)(i%(n.getValue()[1]-1)); i/=(n.getValue()[1]-1);
+    result[2] = (SReal)i;
     return result;
 }
 

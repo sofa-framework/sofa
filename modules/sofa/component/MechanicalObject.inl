@@ -199,7 +199,7 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
     }
     if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
     {
-        this->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
+        this->applyTranslation((Real)atof(arg->getAttribute("dx","0.0")), (Real)atof(arg->getAttribute("dy","0.0")), (Real)atof(arg->getAttribute("dz","0.0")));
     }
 }
 
@@ -440,9 +440,9 @@ void MechanicalObject<DataTypes>::resize(const int size)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyTranslation (const double dx,const double dy,const double dz)
 {
-    this->translation[0]+=dx;
-    this->translation[1]+=dy;
-    this->translation[2]+=dz;
+    this->translation[0]+=(Real)dx;
+    this->translation[1]+=(Real)dy;
+    this->translation[2]+=(Real)dz;
     VecCoord& x = *this->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {
@@ -481,7 +481,7 @@ bool MechanicalObject<Vec1fTypes>::addBBox(double* minBBox, double* maxBBox);
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyScale(const double s)
 {
-    this->scale*=s;
+    this->scale*=(Real)s;
     VecCoord& x = *this->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {
@@ -518,20 +518,20 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
     {
         (*v0)[i]=Deriv();
         for (j=0; j<ancestors.size(); ++j)
-            (*v0)[i]+=(*v0)[ancestors[j]]*coefs[j];
+            (*v0)[i]+=(*v0)[ancestors[j]]*(Real)coefs[j];
     }
     // Note: the following assumes that topological changes won't be reset
     if (reset_position != NULL)
     {
         (*reset_position)[i]=Coord();
         for (j=0; j<ancestors.size(); ++j)
-            (*reset_position)[i]+=(*reset_position)[ancestors[j]]*coefs[j];
+            (*reset_position)[i]+=(*reset_position)[ancestors[j]]*(Real)coefs[j];
     }
     if (externalForces->size()>0)
     {
         (*externalForces)[i]=Deriv();
         for (j=0; j<ancestors.size(); ++j)
-            (*externalForces)[i]+=(*externalForces)[ancestors[j]]*coefs[j];
+            (*externalForces)[i]+=(*externalForces)[ancestors[j]]*(Real)coefs[j];
     }
     for (unsigned int k=0; k<vectorsCoord.size(); k++)
     {
@@ -540,7 +540,7 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
             (*vectorsCoord[k])[i]=Coord();
             for (j=0; j<ancestors.size(); ++j)
             {
-                (*vectorsCoord[k])[i]+= (*vectorsCoord[k])[ancestors[j]]*coefs[j];
+                (*vectorsCoord[k])[i]+= (*vectorsCoord[k])[ancestors[j]]*(Real)coefs[j];
             }
         }
     }
@@ -551,7 +551,7 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
             (*vectorsDeriv[k])[i]=Deriv();
             for (j=0; j<ancestors.size(); ++j)
             {
-                (*vectorsDeriv[k])[i]+= (*vectorsDeriv[k])[ancestors[j]]*coefs[j];
+                (*vectorsDeriv[k])[i]+= (*vectorsDeriv[k])[ancestors[j]]*(Real)coefs[j];
             }
         }
     }
@@ -1235,10 +1235,10 @@ void MechanicalObject<DataTypes>::vMultiOp(const VMultiOp& ops)
         VecDeriv& vv = *getVecDeriv(ops[0].first.index);
         VecCoord& vx = *getVecCoord(ops[1].first.index);
         const unsigned int n = vx.size();
-        const SReal f_v_v = ops[0].second[0].second;
-        const SReal f_v_a = ops[0].second[1].second;
-        const SReal f_x_x = ops[1].second[0].second;
-        const SReal f_x_v = ops[1].second[1].second;
+        const SReal f_v_v = (SReal)(ops[0].second[0].second);
+        const SReal f_v_a = (SReal)(ops[0].second[1].second);
+        const SReal f_x_x = (SReal)(ops[1].second[0].second);
+        const SReal f_x_v = (SReal)(ops[1].second[1].second);
         if (f_v_v == 1.0 && f_x_x == 1.0) // very common case
         {
             if (f_v_a == 1.0) // used by euler implicit and other integrators that directly computes a*dt

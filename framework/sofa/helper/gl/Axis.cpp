@@ -53,18 +53,18 @@ void Axis::initDraw()
     if (quadratic!=NULL) return;
 
     Vector3 L= length;
-    double Lmin = L[0];
+    SReal Lmin = L[0];
     if (L[1]<Lmin) Lmin = L[1];
     if (L[2]<Lmin) Lmin = L[2];
-    double Lmax = L[0];
+    SReal Lmax = L[0];
     if (L[1]>Lmax) Lmax = L[1];
     if (L[2]>Lmax) Lmax = L[2];
     if (Lmax > Lmin*2 && Lmin > 0.0)
         Lmax = Lmin*2;
     if (Lmax > Lmin*2)
-        Lmin = Lmax/1.414;
-    Vector3 l(Lmin / 10, Lmin / 10, Lmin / 10);
-    Vector3 lc(Lmax / 5, Lmax / 5, Lmax / 5); // = L / 5;
+        Lmin = Lmax/(SReal)1.414;
+    Vector3 l(Lmin / (SReal)10, Lmin / (SReal)10, Lmin / (SReal)10);
+    Vector3 lc(Lmax / (SReal)5, Lmax / (SReal)5, Lmax / (SReal)5); // = L / 5;
     Vector3 Lc = lc;
 
     quadratic=gluNewQuadric();
@@ -175,7 +175,7 @@ void Axis::update(const Vector3& center, const Quaternion& orient)
     matTransOpenGL[14] = center[2];
 }
 
-Axis::Axis(double len)
+Axis::Axis(SReal len)
 {
     quadratic = NULL;
     length = Vector3(len,len,len);
@@ -210,20 +210,20 @@ Axis::Axis(const double *mat, const Vector3& len)
     update(mat);
 }
 
-Axis::Axis(const Vector3& center, const Quaternion& orient, double len)
+Axis::Axis(const Vector3& center, const Quaternion& orient, SReal len)
 {
     quadratic = NULL;
     length = Vector3(len,len,len);
     update(center, orient);
 }
-Axis::Axis(const Vector3& center, const double orient[4][4], double len)
+Axis::Axis(const Vector3& center, const double orient[4][4], SReal len)
 {
     quadratic = NULL;
     length = Vector3(len,len,len);
     update(center, orient);
 }
 
-Axis::Axis(const double *mat, double len)
+Axis::Axis(const double *mat, SReal len)
 {
     quadratic = NULL;
     length = Vector3(len,len,len);
@@ -265,21 +265,21 @@ void Axis::draw(const double *mat, const Vector3& len)
     a->draw();
 }
 
-void Axis::draw(const Vector3& center, const Quaternion& orient, double len)
+void Axis::draw(const Vector3& center, const Quaternion& orient, SReal len)
 {
     Axis* a = get(Vector3(len,len,len));
     a->update(center, orient);
     a->draw();
 }
 
-void Axis::draw(const Vector3& center, const double orient[4][4], double len)
+void Axis::draw(const Vector3& center, const double orient[4][4], SReal len)
 {
     Axis* a = get(Vector3(len,len,len));
     a->update(center, orient);
     a->draw();
 }
 
-void Axis::draw(const double *mat, double len)
+void Axis::draw(const double *mat, SReal len)
 {
     Axis* a = get(Vector3(len,len,len));
     a->update(mat);

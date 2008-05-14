@@ -100,20 +100,20 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
 
     if (arg->getAttribute("rx")!=NULL)
     {
-        obj->applyRotation(Quat(Vector3(1,0,0), atof(arg->getAttribute("rx","0.0"))*R_PI/180));
+        obj->applyRotation(Quat(Vector3(1,0,0), (SReal)atof(arg->getAttribute("rx","0.0"))*(SReal)R_PI/(SReal)180));
     }
     if (arg->getAttribute("ry")!=NULL)
     {
-        obj->applyRotation(Quat(Vector3(0,1,0), atof(arg->getAttribute("ry","0.0"))*R_PI/180));
+        obj->applyRotation(Quat(Vector3(0,1,0), (SReal)atof(arg->getAttribute("ry","0.0"))*(SReal)R_PI/(SReal)180));
     }
     if (arg->getAttribute("rz")!=NULL)
     {
-        obj->applyRotation(Quat(Vector3(0,0,1), atof(arg->getAttribute("rz","0.0"))*R_PI/180));
+        obj->applyRotation(Quat(Vector3(0,0,1), (SReal)atof(arg->getAttribute("rz","0.0"))*(SReal)R_PI/(SReal)180));
     }
 
     if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
     {
-        obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
+        obj->applyTranslation((SReal)atof(arg->getAttribute("dx","0.0")), (SReal)atof(arg->getAttribute("dy","0.0")), (SReal)atof(arg->getAttribute("dz","0.0")));
     }
 
 }

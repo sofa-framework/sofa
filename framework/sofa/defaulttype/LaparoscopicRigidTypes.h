@@ -141,7 +141,7 @@ public:
             orientation.normalize();
             Quat qDot = orientation.vectQuatMult(a.getVOrientation());
             for (int i = 0; i < 4; i++)
-                orientation[i] += qDot[i] * 0.5;
+                orientation[i] += qDot[i] * (SReal)0.5;
             orientation.normalize();
         }
 
@@ -152,7 +152,7 @@ public:
             c.orientation.normalize();
             Quat qDot = c.orientation.vectQuatMult(a.getVOrientation());
             for (int i = 0; i < 4; i++)
-                c.orientation[i] += qDot[i] * 0.5;
+                c.orientation[i] += qDot[i] * (SReal)0.5;
             c.orientation.normalize();
             return c;
         }

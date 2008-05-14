@@ -48,14 +48,14 @@ class Axis
 {
 public:
 
-    Axis(double len=1);
+    Axis(SReal len=(SReal)1);
     Axis(const Vector3& len);
     Axis(const Vector3& center, const Quaternion &orient, const Vector3& length);
     Axis(const Vector3& center, const double orient[4][4], const Vector3& length);
     Axis(const double *mat, const Vector3& length);
-    Axis(const Vector3& center, const Quaternion &orient, double length=1);
-    Axis(const Vector3& center, const double orient[4][4], double length=1);
-    Axis(const double *mat, double length=1.0);
+    Axis(const Vector3& center, const Quaternion &orient, SReal length=(SReal)1);
+    Axis(const Vector3& center, const double orient[4][4], SReal length=(SReal)1);
+    Axis(const double *mat, SReal length=(SReal)1.0);
 
     ~Axis();
 
@@ -68,9 +68,9 @@ public:
     static void draw(const Vector3& center, const Quaternion& orient, const Vector3& length);
     static void draw(const Vector3& center, const double orient[4][4], const Vector3& length);
     static void draw(const double *mat, const Vector3& length);
-    static void draw(const Vector3& center, const Quaternion& orient, double length=1);
-    static void draw(const Vector3& center, const double orient[4][4], double length=1);
-    static void draw(const double *mat, double length=1.0);
+    static void draw(const Vector3& center, const Quaternion& orient, SReal length=(SReal)1);
+    static void draw(const Vector3& center, const double orient[4][4], SReal length=(SReal)1);
+    static void draw(const double *mat, SReal length=(SReal)1.0);
 
     //Draw a nice vector (cylinder + cone) given 2 points and a radius (used to draw the cylinder)
     static void draw(const Vector3& center, const Vector3& ext, const double& radius);

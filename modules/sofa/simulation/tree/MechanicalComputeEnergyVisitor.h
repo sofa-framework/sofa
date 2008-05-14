@@ -70,13 +70,13 @@ public:
     /// Process the BaseMass
     virtual Result fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* mass)
     {
-        m_kineticEnergy += mass->getKineticEnergy();
+        m_kineticEnergy += (SReal)mass->getKineticEnergy();
         return RESULT_CONTINUE;
     }
     /// Process the BaseForceField
     virtual Result fwdForceField(simulation::Node* /*node*/, core::componentmodel::behavior::BaseForceField* f)
     {
-        m_potentialEnergy += f->getPotentialEnergy();
+        m_potentialEnergy += (SReal)f->getPotentialEnergy();
         return RESULT_CONTINUE;
     }
 };

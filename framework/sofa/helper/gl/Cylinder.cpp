@@ -148,7 +148,7 @@ void Cylinder::update(const Vector3& center, const Quaternion& orient)
     matTransOpenGL[14] = center[2];
 }
 
-Cylinder::Cylinder(double len)
+Cylinder::Cylinder(SReal len)
 {
     quadratic = NULL;
     length = Vector3(len,len,len);
@@ -183,20 +183,20 @@ Cylinder::Cylinder(const double *mat, const Vector3& len)
     update(mat);
 }
 
-Cylinder::Cylinder(const Vector3& center, const Quaternion& orient, double len)
+Cylinder::Cylinder(const Vector3& center, const Quaternion& orient, SReal len)
 {
     quadratic = NULL;
     length = Vector3(len,len,len);
     update(center, orient);
 }
-Cylinder::Cylinder(const Vector3& center, const double orient[4][4], double len)
+Cylinder::Cylinder(const Vector3& center, const double orient[4][4], SReal len)
 {
     quadratic = NULL;
     length = Vector3(len,len,len);
     update(center, orient);
 }
 
-Cylinder::Cylinder(const double *mat, double len)
+Cylinder::Cylinder(const double *mat, SReal len)
 {
     quadratic = NULL;
     length = Vector3(len,len,len);
@@ -238,21 +238,21 @@ void Cylinder::draw(const double *mat, const Vector3& len)
     a->draw();
 }
 
-void Cylinder::draw(const Vector3& center, const Quaternion& orient, double len)
+void Cylinder::draw(const Vector3& center, const Quaternion& orient, SReal len)
 {
     Cylinder* a = get(Vector3(len,len,len));
     a->update(center, orient);
     a->draw();
 }
 
-void Cylinder::draw(const Vector3& center, const double orient[4][4], double len)
+void Cylinder::draw(const Vector3& center, const double orient[4][4], SReal len)
 {
     Cylinder* a = get(Vector3(len,len,len));
     a->update(center, orient);
     a->draw();
 }
 
-void Cylinder::draw(const double *mat, double len)
+void Cylinder::draw(const double *mat, SReal len)
 {
     Cylinder* a = get(Vector3(len,len,len));
     a->update(mat);
