@@ -152,8 +152,8 @@ void MechanicalStateController<DataTypes>::applyController()
 
             if (mouseMode==BtLeft)
             {
-                (*mState->getXfree())[i].getOrientation() = (*mState->getX())[i].getOrientation() * Quat(y, dx * 0.001) * Quat(z, dy * 0.001);
-                (*mState->getX())[i].getOrientation() = (*mState->getX())[i].getOrientation() * Quat(y, dx * 0.001) * Quat(z, dy * 0.001);
+                (*mState->getXfree())[i].getOrientation() = (*mState->getX())[i].getOrientation() * Quat(y, dx * (Real)0.001) * Quat(z, dy * (Real)0.001);
+                (*mState->getX())[i].getOrientation() = (*mState->getX())[i].getOrientation() * Quat(y, dx * (Real)0.001) * Quat(z, dy * (Real)0.001);
             }
             else
             {
@@ -163,8 +163,8 @@ void MechanicalStateController<DataTypes>::applyController()
                 (*mState->getXfree())[i].getCenter() += vectrans;
                 (*mState->getX())[i].getCenter() += vectrans;
 
-                (*mState->getXfree())[i].getOrientation() = (*mState->getX())[i].getOrientation() * Quat(x, dx * 0.001);
-                (*mState->getX())[i].getOrientation() = (*mState->getX())[i].getOrientation() * Quat(x, dx * 0.001);
+                (*mState->getXfree())[i].getOrientation() = (*mState->getX())[i].getOrientation() * Quat(x, dx * (Real)0.001);
+                (*mState->getX())[i].getOrientation() = (*mState->getX())[i].getOrientation() * Quat(x, dx * (Real)0.001);
             }
         }
         sofa::simulation::tree::GNode *node = static_cast<sofa::simulation::tree::GNode*> (this->getContext());

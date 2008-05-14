@@ -346,7 +346,7 @@ void EdgeSetTopologyModifier< DataTypes >::fuseEdgesProcess(const sofa::helper::
         v.push_back(e1);
         v.push_back(e2);
         edgeIndexList.push_back(nbEdges+i);
-        sofa::helper::vector<unsigned int> ancestors;
+        sofa::helper::vector<unsigned int> ancestors(2);
         ancestors[0]=i1;
         ancestors[1]=i2;
         ancestorsArray.push_back(ancestors);

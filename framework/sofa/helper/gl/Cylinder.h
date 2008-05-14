@@ -48,14 +48,14 @@ class Cylinder
 {
 public:
 
-    Cylinder(double len=1);
+    Cylinder(SReal len=(SReal)1);
     Cylinder(const Vector3& len);
     Cylinder(const Vector3& center, const Quaternion &orient, const Vector3& length);
     Cylinder(const Vector3& center, const double orient[4][4], const Vector3& length);
     Cylinder(const double *mat, const Vector3& length);
-    Cylinder(const Vector3& center, const Quaternion &orient, double length=1);
-    Cylinder(const Vector3& center, const double orient[4][4], double length=1);
-    Cylinder(const double *mat, double length=1.0);
+    Cylinder(const Vector3& center, const Quaternion &orient, SReal length=(SReal)1);
+    Cylinder(const Vector3& center, const double orient[4][4], SReal length=(SReal)1);
+    Cylinder(const double *mat, SReal length=(SReal)1.0);
 
     ~Cylinder();
 
@@ -68,9 +68,9 @@ public:
     static void draw(const Vector3& center, const Quaternion& orient, const Vector3& length);
     static void draw(const Vector3& center, const double orient[4][4], const Vector3& length);
     static void draw(const double *mat, const Vector3& length);
-    static void draw(const Vector3& center, const Quaternion& orient, double length=1);
-    static void draw(const Vector3& center, const double orient[4][4], double length=1);
-    static void draw(const double *mat, double length=1.0);
+    static void draw(const Vector3& center, const Quaternion& orient, SReal length=(SReal)1);
+    static void draw(const Vector3& center, const double orient[4][4], SReal length=(SReal)1);
+    static void draw(const double *mat, SReal length=(SReal)1.0);
 
 private:
 

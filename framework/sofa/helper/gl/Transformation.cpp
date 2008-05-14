@@ -134,7 +134,7 @@ void Transformation::ApplyInverse()
     InvertTransRotMatrix(rotation, iRotation);
 
 #ifdef SOFA_FLOAT
-    glScalef(1.0 / scale[0], 1.0 / scale[1], 1.0 / scale[2]);
+    glScalef((SReal)1.0 / scale[0], (SReal)1.0 / scale[1], (SReal)1.0 / scale[2]);
     glMultMatrixf((SReal *) iRotation);
     glTranslatef(-translation[0], -translation[1], -translation[2]);
 #else

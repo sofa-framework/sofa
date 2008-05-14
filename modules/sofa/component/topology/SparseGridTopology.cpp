@@ -286,8 +286,8 @@ void SparseGridTopology::buildFromVoxelFile(const std::string& filename)
         zmax =(int)( dz * fileNz);
 
         n.setValue(Vec<3,int>(nx,ny,nz));
-        min.setValue(Vector3(xmin, ymin, zmin));
-        max.setValue(Vector3(xmax, ymax, zmax));
+        min.setValue(Vector3((SReal)xmin, (SReal)ymin, (SReal)zmin));
+        max.setValue(Vector3((SReal)xmax, (SReal)ymax, (SReal)zmax));
 
 
 
@@ -378,7 +378,7 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
         }
         fclose(file);
     }
-    SReal s = std::max(dim_voxels.getValue()[0],std::max(dim_voxels.getValue()[1],dim_voxels.getValue()[2]));
+    SReal s = std::max((SReal)dim_voxels.getValue()[0],std::max((SReal)dim_voxels.getValue()[1],(SReal)dim_voxels.getValue()[2]));
     min.setValue(size_voxel.getValue()*s*(-0.5)); //Centered on 0
     max.setValue(size_voxel.getValue()*s*0.5);
 
@@ -756,9 +756,9 @@ void SparseGridTopology::buildFromFiner(  )
     Vector3 dx = _finerSparseGrid->_regularGrid.getDx();
     Vector3 dy = _finerSparseGrid->_regularGrid.getDy();
     Vector3 dz = _finerSparseGrid->_regularGrid.getDz();
-    setXmax(getXmin() + (getNx()-1) * 2.0 * dx[0]);
-    setYmax(getYmin() + (getNy()-1) * 2.0 * dy[1]);
-    setZmax(getZmin() + (getNz()-1) * 2.0 * dz[2]);
+    setXmax(getXmin() + (getNx()-1) * (SReal)2.0 * dx[0]);
+    setYmax(getYmin() + (getNy()-1) * (SReal)2.0 * dy[1]);
+    setZmax(getZmin() + (getNz()-1) * (SReal)2.0 * dz[2]);
 
 
     _regularGrid.setPos(getXmin(), getXmax(), getYmin(), getYmax(), getZmin(), getZmax());
@@ -1070,8 +1070,8 @@ int SparseGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &fy
         const Hexa& c = getHexa( w );
         int c0 = c[0];
         int c7 = c[7];
-        Vector3 p0(getPX(c0),getPY(c0),getPZ(c0));
-        Vector3 p7(getPX(c7),getPY(c7),getPZ(c7));
+        Vector3 p0((SReal)getPX(c0), (SReal)getPY(c0), (SReal)getPZ(c0));
+        Vector3 p7((SReal)getPX(c7), (SReal)getPY(c7), (SReal)getPZ(c7));
 
         Vector3 barycenter = (p0+p7) * .5;
 
@@ -1086,8 +1086,8 @@ int SparseGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &fy
     const Hexa& c = getHexa( indice );
     int c0 = c[0];
     int c7 = c[7];
-    Vector3 p0(getPX(c0),getPY(c0),getPZ(c0));
-    Vector3 p7(getPX(c7),getPY(c7),getPZ(c7));
+    Vector3 p0((SReal)getPX(c0), (SReal)getPY(c0), (SReal)getPZ(c0));
+    Vector3 p7((SReal)getPX(c7), (SReal)getPY(c7), (SReal)getPZ(c7));
 
     Vector3 relativePos = pos-p0;
     Vector3 diagonal = p7 - p0;

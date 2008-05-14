@@ -168,7 +168,7 @@ bool MeshTopologyLoader::load(const char *filename)
         for (int i=0; i<npoints; ++i)
         {
             int index = i;
-            double x,y,z;
+            SReal x,y,z;
             fscanf(file, "%d %lf %lf %lf\n", &index, &x, &y, &z);
             addPoint(x, y, z);
             if ((int)pmap.size() <= index) pmap.resize(index+1);
@@ -331,7 +331,7 @@ bool MeshTopologyLoader::load(const char *filename)
             {
                 int index;
                 char location;
-                double px,py,pz,vx,vy,vz,mass=0.0,elastic=0.0;
+                SReal px,py,pz,vx,vy,vz,mass=(SReal)0.0,elastic=(SReal)0.0;
                 bool fixed=false;
                 fscanf(file, "%d %c %lf %lf %lf %lf %lf %lf %lf %lf\n",
                         &index, &location,
@@ -441,7 +441,7 @@ bool MeshTopologyLoader::load(const char *filename)
             }
             else if (!strcmp(cmd,"point"))
             {
-                double px,py,pz;
+                SReal px,py,pz;
                 fscanf(file, "%lf %lf %lf\n",
                         &px, &py, &pz);
                 addPoint(px, py, pz);
@@ -449,7 +449,7 @@ bool MeshTopologyLoader::load(const char *filename)
             }
             else if (!strcmp(cmd,"v"))
             {
-                double px,py,pz;
+                SReal px,py,pz;
                 fscanf(file, "%lf %lf %lf\n",
                         &px, &py, &pz);
                 addPoint(px, py, pz);
@@ -475,7 +475,7 @@ bool MeshTopologyLoader::load(const char *filename)
             {
                 int index;
                 char location;
-                double px,py,pz,vx,vy,vz,mass=0.0,elastic=0.0;
+                SReal px,py,pz,vx,vy,vz,mass=(SReal)0.0,elastic=(SReal)0.0;
                 fscanf(file, "%d %c %lf %lf %lf %lf %lf %lf %lf %lf\n",
                         &index, &location,
                         &px, &py, &pz, &vx, &vy, &vz,

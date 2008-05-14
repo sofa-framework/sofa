@@ -60,8 +60,8 @@ void CubeTopology::parse(core::objectmodel::BaseObjectDescription* arg)
         const char* xmax = arg->getAttribute("xmax");
         const char* ymax = arg->getAttribute("ymax");
         const char* zmax = arg->getAttribute("zmax");
-        min.setValue(Vector3(atof(xmin)*scale,atof(ymin)*scale,atof(zmin)*scale));
-        max.setValue(Vector3(atof(xmax)*scale,atof(ymax)*scale,atof(zmax)*scale));
+        min.setValue(Vector3((SReal)(atof(xmin)*scale), (SReal)(atof(ymin)*scale), (SReal)(atof(zmin)*scale)));
+        max.setValue(Vector3((SReal)(atof(xmax)*scale), (SReal)(atof(ymax)*scale), (SReal)(atof(zmax)*scale)));
     }
     this->setPos(min.getValue()[0],max.getValue()[0],min.getValue()[1],max.getValue()[1],min.getValue()[2],max.getValue()[2]);
 }

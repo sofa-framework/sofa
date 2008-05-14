@@ -256,12 +256,12 @@ void Simulation::computeBBox ( GNode* root, SReal* minBBox, SReal* maxBBox )
     VisualComputeBBoxVisitor act;
     if ( root )
         root->execute ( act );
-    minBBox[0] = act.minBBox[0];
-    minBBox[1] = act.minBBox[1];
-    minBBox[2] = act.minBBox[2];
-    maxBBox[0] = act.maxBBox[0];
-    maxBBox[1] = act.maxBBox[1];
-    maxBBox[2] = act.maxBBox[2];
+    minBBox[0] = (SReal)(act.minBBox[0]);
+    minBBox[1] = (SReal)(act.minBBox[1]);
+    minBBox[2] = (SReal)(act.minBBox[2]);
+    maxBBox[0] = (SReal)(act.maxBBox[0]);
+    maxBBox[1] = (SReal)(act.maxBBox[1]);
+    maxBBox[2] = (SReal)(act.maxBBox[2]);
 }
 
 /// Update contexts. Required before drawing the scene if root flags are modified.

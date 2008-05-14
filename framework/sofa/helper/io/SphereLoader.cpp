@@ -82,7 +82,7 @@ bool SphereLoader::load(const char *filename)
         else if (!strcmp(cmd,"sphe"))
         {
             int index;
-            double cx=0,cy=0,cz=0,r=1;
+            SReal cx=(SReal)0,cy=(SReal)0,cz=(SReal)0,r=(SReal)1;
             fscanf(file, "%d %lf %lf %lf %lf\n",
                     &index, &cx, &cy, &cz, &r);
             addSphere(cx,cy,cz,r);

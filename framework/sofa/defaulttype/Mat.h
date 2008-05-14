@@ -977,7 +977,7 @@ Real cond(Mat<m,n,Real> &a)
 template< int n, typename Real>
 void ludcmp(Mat<n,n,Real> &a, Vec<n,int> &indx)
 {
-    const Real TINY=1.0e-20;
+    const Real TINY=(Real)1.0e-20;
     int i,imax=0,j,k;
     Real big,dum,sum,temp;
 
@@ -988,7 +988,7 @@ void ludcmp(Mat<n,n,Real> &a, Vec<n,int> &indx)
         for (j=0; j<n; j++)
             if ((temp=fabs(a[i][j])) > big) big=temp;
         assert (big != 0.0);
-        vv[i]=1.0/big;
+        vv[i]=(Real)1.0/big;
     }
     for (j=0; j<n; j++)
     {
@@ -1024,7 +1024,7 @@ void ludcmp(Mat<n,n,Real> &a, Vec<n,int> &indx)
         if (a[j][j] == 0.0) a[j][j]=TINY;
         if (j != n-1)
         {
-            dum=1.0/(a[j][j]);
+            dum=(Real)1.0/(a[j][j]);
             for (i=j+1; i<n; i++) a[i][j] *= dum;
         }
     }
