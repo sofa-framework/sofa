@@ -67,9 +67,9 @@ public:
     typedef typename DataTypes::Coord Coord;
     VectorSpringForceField<DataTypes>* dest;
     Loader(VectorSpringForceField<DataTypes>* dest) : dest(dest) {}
-    virtual void addVectorSpring(int m1, int m2, double ks, double kd, double /*initpos*/, double restx, double resty, double restz)
+    virtual void addVectorSpring(int m1, int m2, SReal ks, SReal kd, SReal /*initpos*/, SReal restx, SReal resty, SReal restz)
     {
-        dest->addSpring(m1,m2,ks,kd,Coord((Real)restx,(Real)resty,(Real)restz));
+        dest->addSpring(m1,m2,ks,kd,Coord(restx,resty,restz));
     }
     virtual void setNumSprings(int /*n*/)
     {
@@ -96,7 +96,7 @@ void VectorSpringForceField<DataTypes>::resizeArray(unsigned int n)
 }
 
 template <class DataTypes>
-void VectorSpringForceField<DataTypes>::addSpring(int m1, int m2, double ks, double kd, Coord restVector)
+void VectorSpringForceField<DataTypes>::addSpring(int m1, int m2, SReal ks, SReal kd, Coord restVector)
 {
     if (useTopology && topology)
     {

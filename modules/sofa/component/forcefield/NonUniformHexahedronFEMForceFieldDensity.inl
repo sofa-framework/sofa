@@ -269,7 +269,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::computeCoarseElementSt
                     dimensionDensityFile.getValue()[1]/((SReal)this->_sparseGrid->_virtualFinerLevels[0]->_regularGrid.getNy()),
                     dimensionDensityFile.getValue()[2]/((SReal)this->_sparseGrid->_virtualFinerLevels[0]->_regularGrid.getNz())
                     );
-            if (this->_sparseGrid->_virtualFinerLevels[0]->getVoxel(factor[0]*coordinates[0], factor[1]*coordinates[1], factor[2]*coordinates[2]))
+            if (this->_sparseGrid->_virtualFinerLevels[0]->getVoxel((unsigned int)(factor[0]*coordinates[0]), (unsigned int)(factor[1]*coordinates[1]), (unsigned int)(factor[2]*coordinates[2])))
             {
                 grayScale = 1+10*exp(1-256/((float)(voxels[(int)(factor[2]*coordinates[2])][(int)(factor[0]*coordinates[0])][(int)(factor[1]*coordinates[1])])));
             }

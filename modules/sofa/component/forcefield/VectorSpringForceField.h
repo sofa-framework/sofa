@@ -125,7 +125,7 @@ public:
         if (reserve) springArray.reserve(reserve);
     }
 
-    void addSpring(int m1, int m2, double ks, double kd, Coord restVector);
+    void addSpring(int m1, int m2, SReal ks, SReal kd, Coord restVector);
 
     /// forward declaration of the loader class used to read spring information from file
     class Loader;

@@ -310,7 +310,6 @@ public:
 
 
     typedef GridTopology::Cube Cube;
-    typedef Vector3::value_type Real_Sofa;
     MultiResSparseGridTopology();
     MultiResSparseGridTopology(const char* filevoxel, int resol,float scale);
 
@@ -324,9 +323,9 @@ public:
     int dimx,dimy,dimz,px,py,pz;
 
     /// get the postion of the voxel i
-    Real_Sofa getPX(int i) const ;
-    Real_Sofa getPY(int i) const ;
-    Real_Sofa getPZ(int i) const ;
+    SReal getPX(int i) const ;
+    SReal getPY(int i) const ;
+    SReal getPZ(int i) const ;
 
     ///  get the vertex's psotion with its indice or its index
     Vector3 getPoint(int i) const ;
@@ -343,9 +342,9 @@ public:
     /// get the cube of the voxel i for the mapping
     GridTopology::Cube getCube (int i);
     /// get the indice of the cube at the coordinates pos and the barycentric coordinates
-    int findCube(const Vector3& pos, Real_Sofa& fx, Real_Sofa &fy, Real_Sofa &fz) const;
+    int findCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz) const;
     /// get the indice of the nearest cube of the coordinates pos and the barycentric coordinates
-    int findNearestCube(const Vector3& pos, Real_Sofa& fx, Real_Sofa &fy, Real_Sofa &fz) const;
+    int findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz) const;
     /// set the position (not used)
     void setP0(const Vector3& val)
     {
@@ -391,7 +390,7 @@ protected:
     Vector3 p0;
     /// Distance between points in the grid. Must be perpendicular to each other
     Vector3 dx,dy,dz;
-    Real_Sofa inv_dx2, inv_dy2, inv_dz2;
+    SReal inv_dx2, inv_dy2, inv_dz2;
 
 };
 

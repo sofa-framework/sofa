@@ -47,7 +47,7 @@ public:
     virtual void setNbQuads(int /*n*/) {}
     virtual void setNbTetras(int /*n*/) {}
     virtual void setNbCubes(int /*n*/) {}
-    virtual void addPoint(SReal /*px*/, SReal /*py*/, SReal /*pz*/) {}
+    virtual void addPoint(double /*px*/, double /*py*/, double /*pz*/) {}
     virtual void addLine(int /*p1*/, int /*p2*/) {}
     virtual void addTriangle(int /*p1*/, int /*p2*/, int /*p3*/) {}
     virtual void addQuad(int /*p1*/, int /*p2*/, int /*p3*/, int /*p4*/) {}

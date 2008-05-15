@@ -82,10 +82,10 @@ bool SphereLoader::load(const char *filename)
         else if (!strcmp(cmd,"sphe"))
         {
             int index;
-            SReal cx=(SReal)0,cy=(SReal)0,cz=(SReal)0,r=(SReal)1;
+            double cx=0,cy=0,cz=0,r=1;
             fscanf(file, "%d %lf %lf %lf %lf\n",
                     &index, &cx, &cy, &cz, &r);
-            addSphere(cx,cy,cz,r);
+            addSphere((SReal)cx,(SReal)cy,(SReal)cz,(SReal)r);
             ++totalNumSpheres;
         }
         else if (cmd[0]=='#')
