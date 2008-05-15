@@ -186,10 +186,10 @@ public:
 
     /// Below are functions to set a vector of integer or float
     /// @{
-    void SetIntVector(GLint variable, GLsizei count, const int *value);
-    void SetIntVector2(GLint variable, GLsizei count, const int *value);
-    void SetIntVector3(GLint variable, GLsizei count, const int *value);
-    void SetIntVector4(GLint variable, GLsizei count, const int *value);
+    void SetIntVector(GLint variable, GLsizei count, const GLint *value);
+    void SetIntVector2(GLint variable, GLsizei count, const GLint *value);
+    void SetIntVector3(GLint variable, GLsizei count, const GLint *value);
+    void SetIntVector4(GLint variable, GLsizei count, const GLint *value);
 
     void SetFloatVector(GLint variable, GLsizei count, const float *value);
     void SetFloatVector2(GLint variable, GLsizei count, const float *value);
