@@ -372,10 +372,24 @@ void CShader::InitShaders(const std::string& strVertex, const std::string& strGe
 
 
 void CShader::SetInt(GLint variable, int newValue)                              { if (variable!=-1) glUniform1iARB(variable, newValue);       }
+void CShader::SetInt2(GLint variable, int i1, int i2)                           { if (variable!=-1) glUniform2iARB(variable, i1, i2);         }
+void CShader::SetInt3(GLint variable, int i1, int i2, int i3)                   { if (variable!=-1) glUniform3iARB(variable, i1, i2, i3);     }
+void CShader::SetInt4(GLint variable, int i1, int i2, int i3, int i4)           { if (variable!=-1) glUniform4iARB(variable, i1, i2, i3, i4); }
 void CShader::SetFloat(GLint variable, float newValue)                          { if (variable!=-1) glUniform1fARB(variable, newValue);       }
 void CShader::SetFloat2(GLint variable, float v0, float v1)                     { if (variable!=-1) glUniform2fARB(variable, v0, v1);         }
 void CShader::SetFloat3(GLint variable, float v0, float v1, float v2)           { if (variable!=-1) glUniform3fARB(variable, v0, v1, v2);     }
 void CShader::SetFloat4(GLint variable, float v0, float v1, float v2, float v3) { if (variable!=-1) glUniform4fARB(variable, v0, v1, v2, v3); }
+
+void CShader::SetIntVector(GLint variable, GLsizei count, const int *value)     { if (variable!=-1) glUniform1ivARB(variable, count, value);   }
+void CShader::SetIntVector2(GLint variable, GLsizei count, const int *value)    { if (variable!=-1) glUniform2ivARB(variable, count, value);   }
+void CShader::SetIntVector3(GLint variable, GLsizei count, const int *value)    { if (variable!=-1) glUniform3ivARB(variable, count, value);   }
+void CShader::SetIntVector4(GLint variable, GLsizei count, const int *value)    { if (variable!=-1) glUniform4ivARB(variable, count, value);   }
+
+void CShader::SetFloatVector(GLint variable, GLsizei count, const float *value) { if (variable!=-1) glUniform1fvARB(variable, count, value);   }
+void CShader::SetFloatVector2(GLint variable, GLsizei count, const float *value) { if (variable!=-1) glUniform2fvARB(variable, count, value);   }
+void CShader::SetFloatVector3(GLint variable, GLsizei count, const float *value) { if (variable!=-1) glUniform3fvARB(variable, count, value);   }
+void CShader::SetFloatVector4(GLint variable, GLsizei count, const float *value) { if (variable!=-1) glUniform4fvARB(variable, count, value);   }
+
 
 // These 2 functions turn on and off our shader
 void CShader::TurnOn()	{ if (m_hProgramObject) glUseProgramObjectARB(m_hProgramObject); }

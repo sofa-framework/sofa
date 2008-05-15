@@ -35,6 +35,9 @@ OglShader::OglShader():
     vertFilename(initData(&vertFilename, (std::string) "toonShading.vert", "vertFilename", "Set the vertex shader filename to load")),
     fragFilename(initData(&fragFilename, (std::string) "toonShading.frag", "fragFilename", "Set the fragment shader filename to load")),
     geoFilename(initData(&geoFilename, (std::string) "", "geoFilename", "Set the geometry shader filename to load")),
+    geometryInputTypes(initData(&geometryInputTypes, (int) -1, "geometryInputTypes", "Set input types for the geometry shader")),
+    geometryOutputTypes(initData(&geometryOutputTypes, (int) -1, "geometryOutputTypes", "Set output types for the geometry shader")),
+    geometryVerticesOut(initData(&geometryVerticesOut, (int) -1, "geometryVerticesOut", "Set max number of vertices in output for the geometry shader")),
     hasGeometryShader(false)
 {
 
@@ -48,10 +51,17 @@ OglShader::~OglShader()
     std::cout << "Shader released." << std::endl;
 }
 
-
 void OglShader::init()
 {
 
+}
+
+void OglShader::reinit()
+{
+    if (hasGeometryShader)
+    {
+
+    }
 }
 
 void OglShader::initVisual()
@@ -86,6 +96,10 @@ void OglShader::initVisual()
                 helper::system::DataRepository.getFile("shaders/" + geoFilename.getValue()),
                 helper::system::DataRepository.getFile("shaders/" + fragFilename.getValue()));
 
+        setGeometryInputType(geometryInputTypes.getValue());
+        setGeometryOutputType(geometryOutputTypes.getValue());
+        setGeometryVerticesOut(geometryVerticesOut.getValue());
+
         hasGeometryShader = true;
     }
 
@@ -117,12 +131,32 @@ void OglShader::setTexture(const char* name, unsigned short unit)
     m_shader.SetInt(m_shader.GetVariable(name), unit);
     stop();
 }
-void OglShader::setInt(const char* name, unsigned int i)
+void OglShader::setInt(const char* name, int i)
 {
     start();
     m_shader.SetInt(m_shader.GetVariable(name), i);
     stop();
 }
+
+void OglShader::setInt2(const char* name, int i1, int i2)
+{
+    start();
+    m_shader.SetInt2(m_shader.GetVariable(name), i1, i2);
+    stop();
+}
+void OglShader::setInt3(const char* name, int i1, int i2, int i3)
+{
+    start();
+    m_shader.SetInt3(m_shader.GetVariable(name), i1, i2, i3);
+    stop();
+}
+void OglShader::setInt4(const char* name, int i1, int i2, int i3, int i4)
+{
+    start();
+    m_shader.SetInt4(m_shader.GetVariable(name), i1, i2, i3, i4);
+    stop();
+}
+
 void OglShader::setFloat(const char* name, float f1)
 {
     start();
@@ -147,6 +181,57 @@ void OglShader::setFloat4(const char* name, float f1, float f2, float f3, float 
     m_shader.SetFloat4(m_shader.GetVariable(name), f1, f2, f3, f4);
     stop();
 }
+
+void OglShader::setIntVector(const char* name, int count, const int* i)
+{
+    start();
+    m_shader.SetIntVector(m_shader.GetVariable(name), count, i);
+    stop();
+}
+void OglShader::setIntVector2(const char* name, int count, const int* i)
+{
+    start();
+    m_shader.SetIntVector2(m_shader.GetVariable(name), count, i);
+    stop();
+}
+void OglShader::setIntVector3(const char* name, int count, const int* i)
+{
+    start();
+    m_shader.SetIntVector3(m_shader.GetVariable(name), count, i);
+    stop();
+}
+void OglShader::setIntVector4(const char* name, int count, const int* i)
+{
+    start();
+    m_shader.SetIntVector4(m_shader.GetVariable(name), count, i);
+    stop();
+}
+
+void OglShader::setFloatVector(const char* name, int count, const float* f)
+{
+    start();
+    m_shader.SetFloatVector(m_shader.GetVariable(name), count, f);
+    stop();
+}
+void OglShader::setFloatVector2(const char* name, int count, const float* f)
+{
+    start();
+    m_shader.SetFloatVector2(m_shader.GetVariable(name), count, f);
+    stop();
+}
+void OglShader::setFloatVector3(const char* name, int count, const float* f)
+{
+    start();
+    m_shader.SetFloatVector3(m_shader.GetVariable(name), count, f);
+    stop();
+}
+void OglShader::setFloatVector4(const char* name, int count, const float* f)
+{
+    start();
+    m_shader.SetFloatVector4(m_shader.GetVariable(name), count, f);
+    stop();
+}
+
 
 GLint OglShader::getGeometryInputType()
 {

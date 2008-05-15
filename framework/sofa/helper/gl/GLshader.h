@@ -168,13 +168,33 @@ public:
     GLhandleARB GetGeometryS()	{	return m_hGeometryShader; }
     GLhandleARB GetFragmentS()	{	return m_hFragmentShader; }
 
-    /// Below are functions to set an integer or a set of floats
+    /// Below are functions to set an integer or a float
     /// @{
     void SetInt(GLint variable, int newValue);
     void SetFloat(GLint variable, float newValue);
+    /// @}
+
+    /// Below are functions to set more than 1 integer or float
+    /// @{
+    void SetInt2(GLint variable, int i1, int i2);
+    void SetInt3(GLint variable, int i1, int i2, int i3);
+    void SetInt4(GLint variable, int i1, int i2, int i3, int i4);
     void SetFloat2(GLint variable, float v0, float v1);
     void SetFloat3(GLint variable, float v0, float v1, float v2);
     void SetFloat4(GLint variable, float v0, float v1, float v2, float v3);
+    /// @}
+
+    /// Below are functions to set a vector of integer or float
+    /// @{
+    void SetIntVector(GLint variable, GLsizei count, const int *value);
+    void SetIntVector2(GLint variable, GLsizei count, const int *value);
+    void SetIntVector3(GLint variable, GLsizei count, const int *value);
+    void SetIntVector4(GLint variable, GLsizei count, const int *value);
+
+    void SetFloatVector(GLint variable, GLsizei count, const float *value);
+    void SetFloatVector2(GLint variable, GLsizei count, const float *value);
+    void SetFloatVector3(GLint variable, GLsizei count, const float *value);
+    void SetFloatVector4(GLint variable, GLsizei count, const float *value);
     /// @}
 
     /// These 2 functions turn on and off our shader
