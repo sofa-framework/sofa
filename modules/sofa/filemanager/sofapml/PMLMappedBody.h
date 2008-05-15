@@ -53,7 +53,7 @@ public :
 
     bool FusionBody(PMLBody*) {return false;}
 
-    Vec3d getDOF(unsigned int );
+    Vector3 getDOF(unsigned int );
 
     GNode* getPointsNode() {return parentNode;}
 

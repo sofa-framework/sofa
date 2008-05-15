@@ -584,7 +584,7 @@ bool PhysicalModel::addGlobalIndexCellPair(std::GlobalIndexStructurePair p) {
 }
 
 // ----------------------- setAtomPosition ------------------
-void PhysicalModel::setAtomPosition(Atom *atom, const double pos[3]) {
+void PhysicalModel::setAtomPosition(Atom *atom, const SReal pos[3]) {
     atom->setPosition(pos);
 }
 
@@ -662,7 +662,7 @@ void PhysicalModel::exportAnsysMesh(std::string filename) {
     }
 
     for(i=0; i<nbPoints; i++) {
-        double pos[3];
+        SReal pos[3];
 
         // WARNING : indexes are in base 1 !!!!
         j = getAtom(i)->getIndex() + 1;
@@ -827,7 +827,7 @@ void PhysicalModel::exportPatran(std::string filename) {
 
     //--- Nodes (atoms)
     for(i=0; i<nbPoints; i++) {
-        double pos[3];
+        SReal pos[3];
 
         // first line
         // WARNING : indexes are in base 1 !!!!

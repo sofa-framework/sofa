@@ -90,10 +90,10 @@ void StructuralComponent::deleteAllStructures() {
 void StructuralComponent::setColor(const StructuralComponentProperties::Color c) {
     ((StructuralComponentProperties *)properties)->setColor(c);
 }
-void StructuralComponent::setColor(const double r, const double g, const double b, const double a) {
+void StructuralComponent::setColor(const SReal r, const SReal g, const SReal b, const SReal a) {
     ((StructuralComponentProperties *)properties)->setRGBA(r,g,b,a);
 }
-void StructuralComponent::setColor(const double r, const double g, const double b) {
+void StructuralComponent::setColor(const SReal r, const SReal g, const SReal b) {
     ((StructuralComponentProperties *)properties)->setRGB(r,g,b);
 }
 

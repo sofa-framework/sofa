@@ -24,6 +24,7 @@
 
 #include "PhysicalModelIO.h"
 #include "StructureProperties.h"
+#include <sofa/helper/system/config.h>
 
 /**
   * This class is the basic Atom Properties class.
@@ -46,12 +47,12 @@ public:
     /** generate an unique index.
      * @param pos the initial position
      */
-    BasicAtomProperties(PhysicalModel *, const double pos[3]);
+    BasicAtomProperties(PhysicalModel *, const SReal pos[3]);
     /** everything is given here
      * @param pos the initial position
      * @param ind an unique index
      */
-    BasicAtomProperties(PhysicalModel *, const unsigned int ind, const double pos[3]);
+    BasicAtomProperties(PhysicalModel *, const unsigned int ind, const SReal pos[3]);
     /** the destructor...
         */
     virtual ~BasicAtomProperties() {};
@@ -64,16 +65,16 @@ public:
         */
     static void resetUniqueIndex();
 
-    /// get the position of the atom (array of 3 doubles)
-    void getPosition(double pos[3]) const;
+    /// get the position of the atom (array of 3 SReals)
+    void getPosition(SReal pos[3]) const;
 
     /// set the position of the atom
-    void setPosition(const double [3]);
+    void setPosition(const SReal [3]);
     /// set the position of the atom
-    void setPosition(const double,const double,const double);
+    void setPosition(const SReal,const SReal,const SReal);
         
     /** Position of the atom */
-    double X[3];
+    SReal X[3];
 
     /// Set the temporary int property
     void setTempProp(const int);
@@ -101,15 +102,15 @@ inline int BasicAtomProperties::getTempProp() const {
     return intTempProp;
 }
 
-inline void BasicAtomProperties::getPosition(double pos[3]) const {
+inline void BasicAtomProperties::getPosition(SReal pos[3]) const {
     pos[0]=X[0]; pos[1]=X[1]; pos[2]=X[2];
 }
 
-inline void BasicAtomProperties::setPosition(const double pos[3]) {
+inline void BasicAtomProperties::setPosition(const SReal pos[3]) {
     X[0]=pos[0]; X[1]=pos[1]; X[2]=pos[2];
 }
 
-inline void BasicAtomProperties::setPosition(const double x,const double y,const double z) {
+inline void BasicAtomProperties::setPosition(const SReal x,const SReal y,const SReal z) {
     X[0]=x; X[1]=y; X[2]=z;
 }
 

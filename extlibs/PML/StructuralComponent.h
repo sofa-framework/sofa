@@ -32,10 +32,13 @@
 // imp includes
 #include "Component.h"
 #include "Structure.h"
+
+#include <sofa/helper/system/config.h>
 class Object3D;
 #include <StructuralComponentProperties.h>
 
 // other includes
+#include <cstring>
 #include <vector>
 #include <algorithm> // for the remove
 
@@ -136,11 +139,11 @@ public:
     /// Set the new color (using a StructuralComponentProperties::Color enum)
     void setColor(const StructuralComponentProperties::Color c);
     /// Set the new RGBA color
-    void setColor(const double r, const double b, const double g, const double a);
+    void setColor(const SReal r, const SReal b, const SReal g, const SReal a);
     /// Set the new RGB color
-    void setColor(const double r, const double b, const double g);
+    void setColor(const SReal r, const SReal b, const SReal g);
     /** Get the color
-    	* @return an array of 4 doubles (red, blue, green and alpha values)
+    	* @return an array of 4 SReals (red, blue, green and alpha values)
     	*/
     double * getColor() const;
     /** Get the color by its 4 componants r,g,b and a */

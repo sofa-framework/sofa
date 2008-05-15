@@ -149,12 +149,12 @@ public:
 
     void set(int i, SReal v)
     {
-        data[i] = v;
+        data[i] = (Real)v;
     }
 
     void add(int i, SReal v)
     {
-        data[i] += v;
+        data[i] +=  (Real)v;
     }
 
     int size() const

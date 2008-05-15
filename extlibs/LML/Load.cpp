@@ -79,7 +79,7 @@ void Load::setAllEvents(std::vector<ValueEvent *>& newList) {
 }
 
 // --------------- isActive ---------------
-bool Load::isActive(const double t) {
+bool Load::isActive(const SReal t) {
     std::vector<ValueEvent *>::iterator currentE;
 
     currentE = eventList.begin();
@@ -95,7 +95,7 @@ bool Load::isActive(const double t) {
 
 // --------------- getValue ---------------
 // the current norm value at time t
-double Load::getValue(const double t) {
+SReal Load::getValue(const SReal t) {
     std::vector<ValueEvent *>::iterator currentE;
     std::vector<ValueEvent *>::iterator nextE;
 
@@ -166,7 +166,7 @@ void Load::addEvent(ValueEvent * ve) {
 }
 
 // --------------- addValueEvent ---------------
-void Load::addValueEvent(const double v, const double d) {
+void Load::addValueEvent(const SReal v, const SReal d) {
     addEvent(new ValueEvent(v,d));
 }
 
@@ -203,7 +203,7 @@ int Load::getTarget(const unsigned int targetIndex) const {
 
 
 // --------------- getDirection ---------------
-void Load::getDirection(double &x, double &y, double &z) const {
+void Load::getDirection(SReal &x, SReal &y, SReal &z) const {
     x = dir.getX();
     y = dir.getY();
     z = dir.getZ();
@@ -214,7 +214,7 @@ Direction Load::getDirection() const {
 }
 
 // --------------- setDirection ---------------
-void Load::setDirection(double x, double y, double z) {
+void Load::setDirection(SReal x, SReal y, SReal z) {
     dir.set(x ,y , z);
 }
 

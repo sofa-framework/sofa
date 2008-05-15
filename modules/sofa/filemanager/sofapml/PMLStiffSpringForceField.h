@@ -72,7 +72,7 @@ public :
     ///merge a body with current object
     bool FusionBody(PMLBody*);
 
-    Vec3d getDOF(unsigned int index);
+    Vector3 getDOF(unsigned int index);
     GNode* getPointsNode() {return parentNode;}
 
 private :
@@ -96,18 +96,18 @@ private :
     void initDensity(string m);
 
     //structure
-    MeshSpringForceField<Vec3dTypes> *Sforcefield;
+    MeshSpringForceField<Vec3Types> *Sforcefield;
     TriangleModel * tmodel;
     //LineModel * lmodel;
     //PointModel * pmodel;
 
     //members for the mass (only one of the 2 vectors is filled)
-    std::vector<double> massList;
-    std::vector<double> density;
+    std::vector<SReal> massList;
+    std::vector<SReal> density;
 
     //properties
-    double  ks;			// spring stiffness
-    double  kd;			// damping factor
+    SReal  ks;			// spring stiffness
+    SReal  kd;			// damping factor
 
 };
 

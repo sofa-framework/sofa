@@ -32,7 +32,7 @@ Atom::Atom(PhysicalModel * p, xmlNodePtr node){
 			properties = new AtomProperties(p, child);
 }
 
-Atom::Atom(PhysicalModel *p, const double pos[3]) {
+Atom::Atom(PhysicalModel *p, const SReal pos[3]) {
     properties = new AtomProperties(p, pos);
 }
 
@@ -40,7 +40,7 @@ Atom::Atom(PhysicalModel *p, const unsigned int ind) {
     properties = new AtomProperties(p, ind);
 }
 
-Atom::Atom(PhysicalModel *p, const unsigned int ind, const double pos[3]) {
+Atom::Atom(PhysicalModel *p, const unsigned int ind, const SReal pos[3]) {
     properties = new AtomProperties(p, ind, pos);
 }
 

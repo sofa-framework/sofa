@@ -58,9 +58,9 @@ PMLMappedBody::~PMLMappedBody()
 }
 
 
-Vec3d PMLMappedBody::getDOF(unsigned int index)
+Vector3 PMLMappedBody::getDOF(unsigned int index)
 {
-    return (*((MechanicalState<Vec3dTypes>*)mmodel)->getX())[index];
+    return (*((MechanicalState<Vec3Types>*)mmodel)->getX())[index];
 }
 
 
@@ -68,22 +68,22 @@ Vec3d PMLMappedBody::getDOF(unsigned int index)
 //each pml atom constituing the body correspond to a DOF
 void PMLMappedBody::createMechanicalState(StructuralComponent* body)
 {
-    mmodel = new MechanicalObject<Vec3dTypes>;
+    mmodel = new MechanicalObject<Vec3Types>;
     StructuralComponent* atoms = body->getAtoms();
     mmodel->resize(atoms->getNumberOfStructures());
     Atom* pAtom;
 
-    double pos[3];
+    SReal pos[3];
     for (unsigned int i(0) ; i<atoms->getNumberOfStructures() ; i++)
     {
         pAtom = (Atom*) (atoms->getStructure(i));
         pAtom->getPosition(pos);
         AtomsToDOFsIndexes.insert(std::pair <unsigned int, unsigned int>(pAtom->getIndex(),i));
-        (*((MechanicalState<Vec3dTypes>*)mmodel)->getX())[i] = Vec3d(pos[0],pos[1],pos[2]);
+        (*((MechanicalState<Vec3Types>*)mmodel)->getX())[i] = Vector3(pos[0],pos[1],pos[2]);
     }
 
     //creation of the mapping
-    mapping = new BarycentricMapping< MechanicalMapping<MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > >((MechanicalState<Vec3Types>*)bodyRef->getMechanicalState(),(MechanicalState<Vec3Types>*) mmodel);
+    mapping = new BarycentricMapping< MechanicalMapping<MechanicalState<Vec3Types>, MechanicalState<Vec3Types> > >((MechanicalState<Vec3Types>*)bodyRef->getMechanicalState(),(MechanicalState<Vec3Types>*) mmodel);
 
     parentNode->addObject(mmodel);
     parentNode->addObject(mapping);
