@@ -22,7 +22,7 @@ LMLConstraint<DataTypes>::LMLConstraint(Loads* loadsList, const map<unsigned int
     mmodel = mm;
     loads = new Loads();
     Load * load;
-    double dirX, dirY, dirZ;
+    SReal dirX, dirY, dirZ;
     this->setName("loads");
 
     //for each load, we search which ones are translations applied on the body nodes
@@ -123,14 +123,14 @@ void LMLConstraint<DataTypes>::projectResponse(VecDeriv& dx)
 {
     //VecCoord& x = *this->mmodel->getX();
     //dx.resize(x.size());
-    double time = this->getContext()->getTime();
-    double prevTime = time - this->getContext()->getDt();
+    SReal time = this->getContext()->getTime();
+    SReal prevTime = time - this->getContext()->getDt();
 
     std::vector<unsigned int>::iterator it1=targets.begin();
     VecDerivIterator it2=translations.begin();
     VecDerivIterator it3=directionsNULLs.begin();
     Load * load;
-    double valTime, prevValTime;
+    SReal valTime, prevValTime;
 
     for (unsigned int i=0 ; i<loads->numberOfLoads() ; i++)
     {
@@ -180,7 +180,7 @@ void LMLConstraint<DataTypes>::projectResponse(VecDeriv& dx)
 template<class DataTypes>
 void LMLConstraint<DataTypes>::projectPosition(VecCoord& x)
 {
-    double time = getContext()->getTime();
+    SReal time = getContext()->getTime();
 
     std::vector<unsigned int>::iterator it1=targets.begin();
     VecDerivIterator it2=translations.begin();

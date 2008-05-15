@@ -224,7 +224,7 @@ public:
     /** Set the new position of an atom.
      *   This method is overloaded in ImpPhysicalModel to update the Objects3D as well.
      */
-    virtual void setAtomPosition(Atom *atom, const double pos[3]);
+    virtual void setAtomPosition(Atom *atom, const SReal pos[3]);
 
     //@}
 

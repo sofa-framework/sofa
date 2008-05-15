@@ -66,15 +66,15 @@ PMLInteractionForceField::~PMLInteractionForceField()
 //create a TetrahedronFEMForceField
 void PMLInteractionForceField::createForceField()
 {
-    Sforcefield = new StiffSpringForceField<Vec3dTypes>((MechanicalObject<Vec3dTypes>*)body1->getMechanicalState(), (MechanicalObject<Vec3dTypes>*)body2->getMechanicalState());
+    Sforcefield = new StiffSpringForceField<Vec3Types>((MechanicalObject<Vec3Types>*)body1->getMechanicalState(), (MechanicalObject<Vec3Types>*)body2->getMechanicalState());
     parentNode->addObject(Sforcefield);
 }
 
 
 void PMLInteractionForceField::createSprings(StructuralComponent * body)
 {
-    Vec3dTypes::VecCoord& P1 = *((MechanicalObject<Vec3dTypes>*)body1->getMechanicalState())->getX();
-    Vec3dTypes::VecCoord& P2 = *((MechanicalObject<Vec3dTypes>*)body2->getMechanicalState())->getX();
+    Vec3Types::VecCoord& P1 = *((MechanicalObject<Vec3Types>*)body1->getMechanicalState())->getX();
+    Vec3Types::VecCoord& P2 = *((MechanicalObject<Vec3Types>*)body2->getMechanicalState())->getX();
     if (kd==0.0)kd=5.0;
     if (ks==0.0)ks=500.0;
     for (unsigned int i=0; i<body->getNumberOfCells() ; i++)
@@ -84,7 +84,7 @@ void PMLInteractionForceField::createSprings(StructuralComponent * body)
         {
             unsigned int dof1 = body1->AtomsToDOFsIndexes[cell->getStructure(0)->getIndex()];
             unsigned int dof2 = body2->AtomsToDOFsIndexes[cell->getStructure(1)->getIndex()];
-            Vec3dTypes::Deriv gap = P1[dof1] - P2[dof2];
+            Vec3Types::Deriv gap = P1[dof1] - P2[dof2];
             Sforcefield->addSpring(dof1, dof2, ks, kd, sqrt(dot(gap,gap)));
         }
     }

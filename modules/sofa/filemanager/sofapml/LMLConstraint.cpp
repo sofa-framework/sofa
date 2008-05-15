@@ -37,7 +37,7 @@ using namespace core::componentmodel::behavior;
 SOFA_DECL_CLASS(LMLConstraint)
 
 
-template class LMLConstraint<Vec3dTypes>;
+template class LMLConstraint<Vec3Types>;
 
 
 

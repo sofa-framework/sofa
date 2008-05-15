@@ -22,6 +22,9 @@
 
 #include "Structure.h"
 #include "StructuralComponent.h"
+
+#include <sofa/helper/system/config.h>
+
 class CellProperties;
 
 /** A cell has an unique index in the physical model object, is composed by atoms, and different basic properties.
@@ -84,7 +87,7 @@ public:
 	/** compute the normal of the facet
 	 *  Warning : Only available for QUAD and TRIANGLE type cells
 	 */
-	double* normal(); 
+	SReal* normal(); 
 
 	/** Return a structural component composed by the facets of the cells.
 	 *  the facets are quads or/and triangles 
@@ -92,10 +95,10 @@ public:
 	StructuralComponent * getFacets();
 
 	///Compute the surface of the cell
-	double surface();
+	SReal surface();
 
 	/// Compute the volume of the cell
-	double volume();
+	SReal volume();
 
 
     

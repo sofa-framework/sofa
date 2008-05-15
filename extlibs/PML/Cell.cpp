@@ -223,13 +223,13 @@ StructuralComponent * Cell::getFacets() {
 }
 
 // ------------------ normal ---------------------
-double * Cell::normal() 
+SReal * Cell::normal() 
 {
 	if (getProperties()->getType()== StructureProperties::QUAD || getProperties()->getType()== StructureProperties::TRIANGLE)
 	{
-		double * N = new double[3];
-		double v1[3], v2[3];
-		double posi[3], posip1[3];
+		SReal * N = new SReal[3];
+		SReal v1[3], v2[3];
+		SReal posi[3], posip1[3];
 		((Atom*)getStructure(0))->getPosition(posip1);
 		((Atom*)getStructure(2))->getPosition(posi);
 		v1[0] = posi[0]-posip1[0]; v1[1] = posi[1]-posip1[1]; v1[2] = posi[2]-posip1[2]; 
@@ -240,7 +240,7 @@ double * Cell::normal()
 		N[1] = v1[2]*v2[0] - v1[0]*v2[2];
 		N[2] = v1[0]*v2[1] - v1[1]*v2[0]; 
 
-		double norm = sqrt(N[0]*N[0] + N[1]*N[1] + N[2]*N[2]);
+		SReal norm = sqrt(N[0]*N[0] + N[1]*N[1] + N[2]*N[2]);
 
 		N[0] /= norm; 
 		N[1] /= norm; 
@@ -252,16 +252,16 @@ double * Cell::normal()
 }
 
 // ------------------ surface ---------------------
-double Cell::surface() 
+SReal Cell::surface() 
 {
 	if (getProperties()->getType()== StructureProperties::QUAD || getProperties()->getType()== StructureProperties::TRIANGLE)
 	{
-		double A[3]={0.0, 0.0, 0.0 };
+		SReal A[3]={0.0, 0.0, 0.0 };
 		unsigned int nbElem;
 
 		nbElem = Cell::getNumberOfStructures();    
 
-		double posi[3], posip1[3];
+		SReal posi[3], posip1[3];
 		((Atom*)getStructure(0))->getPosition(posip1);
 	    
 		for (unsigned int i=0;i<nbElem;i++) {
@@ -277,9 +277,9 @@ double Cell::surface()
 		A[0] /= 2.0; A[1] /= 2.0; A[2] /= 2.0;
 
 		// face normal :
-		double * N = normal();
+		SReal * N = normal();
 
-		double surface = N[0]*A[0] + N[1]*A[1] + N[2]*A[2];
+		SReal surface = N[0]*A[0] + N[1]*A[1] + N[2]*A[2];
 
 		return surface>0?surface:-surface;
 	}
@@ -287,7 +287,7 @@ double Cell::surface()
 		StructuralComponent * facets = getFacets();
 		if (!facets)
 			return 0.0;
-		double surface=0.0;
+		SReal surface=0.0;
 		for (unsigned int i=0 ; i<facets->getNumberOfCells() ; i++) {
 			surface += facets->getCell(i)->surface();
 		}
@@ -297,19 +297,19 @@ double Cell::surface()
 
 
 // ------------------ volume ---------------------
-double Cell::volume() 
+SReal Cell::volume() 
 {
 	StructuralComponent * facets = getFacets();
 	if (!facets || getProperties()->getType()== StructureProperties::QUAD || getProperties()->getType()== StructureProperties::TRIANGLE)
 		return 0.0;
 
-	double vol=0.0;
+	SReal vol=0.0;
 	Cell * face;
 	for (unsigned int i=0;i < facets->getNumberOfCells();i++) {
 		face = facets->getCell(i);
-		double pos[3];
+		SReal pos[3];
 		((Atom*)face->getStructure(0))->getPosition(pos);
-		double * N = face->normal();
+		SReal * N = face->normal();
 		vol += face->surface()* ( pos[0]*N[0] + pos[1]*N[1] + pos[2]*N[2] );
 	}
 

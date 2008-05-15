@@ -60,7 +60,7 @@ public :
     ///Inherit methods
     GNode* getPointsNode() {return NULL;}
     bool FusionBody(PMLBody*) {return false;}
-    Vec3d getDOF(unsigned int ) {return Vec3d();}
+    Vector3 getDOF(unsigned int ) {return Vector3();}
 
 private :
 
@@ -77,13 +77,13 @@ private :
 
 
     //structure
-    StiffSpringForceField<Vec3dTypes> *Sforcefield;
+    StiffSpringForceField<Vec3Types> *Sforcefield;
     PMLBody * body1;
     PMLBody * body2;
 
     //properties
-    double  ks;			// spring stiffness
-    double  kd;			// damping factor
+    SReal  ks;			// spring stiffness
+    SReal  kd;			// damping factor
 };
 
 }

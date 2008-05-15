@@ -71,7 +71,7 @@ public :
     ///merge a body with current object
     bool FusionBody(PMLBody*);
 
-    Vec3d getDOF(unsigned int index);
+    Vector3 getDOF(unsigned int index);
 
     GNode* getPointsNode() {return parentNode;}
 
@@ -98,12 +98,12 @@ private :
     //PointModel * pmodel;
 
     //members for the mass (only one of the 2 vectors is filled)
-    std::vector<double> massList;
-    std::vector<double> density;
+    std::vector<SReal> massList;
+    std::vector<SReal> density;
 
     //members for FEM properties
-    double young;
-    double poisson;
+    SReal young;
+    SReal poisson;
     std::string deformationType;
 
 };

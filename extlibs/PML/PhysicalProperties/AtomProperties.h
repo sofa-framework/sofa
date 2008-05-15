@@ -45,8 +45,8 @@ public:
     AtomProperties(PhysicalModel *p) :  BasicAtomProperties(p) { init(); };
 	AtomProperties(PhysicalModel *p, xmlNodePtr node) :  BasicAtomProperties(p, node) { init(); };
     AtomProperties(PhysicalModel *p, const unsigned int ind) : BasicAtomProperties(p, ind) { init(); };
-    AtomProperties(PhysicalModel *p, const double pos[3]) : BasicAtomProperties(p, pos) { init(); };
-    AtomProperties(PhysicalModel *p, const unsigned int ind, const double pos[3]) : BasicAtomProperties(p, ind, pos) { init(); };
+    AtomProperties(PhysicalModel *p, const SReal pos[3]) : BasicAtomProperties(p, pos) { init(); };
+    AtomProperties(PhysicalModel *p, const unsigned int ind, const SReal pos[3]) : BasicAtomProperties(p, ind, pos) { init(); };
     virtual ~AtomProperties();     
            
     /** Print the properties in xml */

@@ -123,10 +123,10 @@ void PMLReader::BuildStructure(GNode* root)
         VisualComputeBBoxVisitor act;
         getSimulation()->init(root);
         root->execute(act);
-        double dx=(act.maxBBox[0]-act.minBBox[0]);
-        double dy=(act.maxBBox[1]-act.minBBox[1]);
-        double dz=(act.maxBBox[2]-act.minBBox[2]);
-        double dmax = sqrt(dx*dx + dy*dy + dz*dz);
+        SReal dx=(act.maxBBox[0]-act.minBBox[0]);
+        SReal dy=(act.maxBBox[1]-act.minBBox[1]);
+        SReal dz=(act.maxBBox[2]-act.minBBox[2]);
+        SReal dmax = sqrt(dx*dx + dy*dy + dz*dz);
         //maybe the ratio should be changed...
         mpi->setAlarmDistance(dmax/30);
         mpi->setContactDistance(dmax/40);
@@ -267,7 +267,7 @@ void PMLReader::saveAsPML(const char * filename)
         while(itm != (*itb)->AtomsToDOFsIndexes.end() )
         {
             atom = (Atom*) atoms->getStructureByIndex( (*itm).first );
-            Vec3d pos = (*itb)->getDOF((*itm).second);
+            Vector3 pos = (*itb)->getDOF((*itm).second);
             atom->setPosition(pos[0], pos[1], pos[2]);
 
             itm++;
@@ -281,9 +281,9 @@ void PMLReader::saveAsPML(const char * filename)
 
 
 //return a point position giving a physical model atom index
-Vec3d PMLReader::getAtomPos(unsigned int atomindex)
+Vector3 PMLReader::getAtomPos(unsigned int atomindex)
 {
-    Vec3d pos;
+    Vector3 pos;
     std::vector<PMLBody*>::iterator itb = bodiesList.begin();
 
     while (itb != bodiesList.end())
@@ -300,7 +300,7 @@ Vec3d PMLReader::getAtomPos(unsigned int atomindex)
         }
         itb++;
     }
-    return Vec3d();
+    return Vector3();
 }
 
 
@@ -321,7 +321,7 @@ void PMLReader::updatePML()
                 while(itm != (*itb)->AtomsToDOFsIndexes.end() )
                 {
                     atom = (Atom*) atoms->getStructureByIndex( (*itm).first );
-                    Vec3d pos = (*itb)->getDOF((*itm).second);
+                    Vector3 pos = (*itb)->getDOF((*itm).second);
                     atom->setPosition(pos[0], pos[1], pos[2]);
 
                     itm++;

@@ -23,7 +23,9 @@
 
 #include "Structure.h"
 #include "AtomProperties.h"
-#include <RenderingMode.h>
+#include <RenderingMode.h>  
+#include <cstring>
+#include <sofa/helper/system/config.h>
 
 /** An atom has an unique index in the physical model object, a 3D position, and different basic properties.
   * It is the most basic structure composing a physical model.
@@ -37,18 +39,18 @@ public:
 	/** constructor from xml node: try to read and get the parmaters from xml */
     Atom(PhysicalModel *, xmlNodePtr);
     /** constructor : generate a unique index
-     * @param pos the initial position of the created atom (array of 3 double)
+     * @param pos the initial position of the created atom (array of 3 SReal)
      */
-    Atom(PhysicalModel *, const double pos[3]);
+    Atom(PhysicalModel *, const SReal pos[3]);
     /** set the position to the origin
     * @param ind give the unique index
     */
     Atom(PhysicalModel *, const unsigned int ind);
     /** constructor : generate a unique index
     * @param ind give the unique index
-     * @param pos the initial position of the created atom (array of 3 double)
+     * @param pos the initial position of the created atom (array of 3 SReal)
      */
-    Atom(PhysicalModel *, const unsigned int ind, const double pos[3]);
+    Atom(PhysicalModel *, const unsigned int ind, const SReal pos[3]);
     /** std destructor
     */
     ~Atom();
@@ -57,13 +59,13 @@ public:
        */
     void xmlPrint(std::ostream &, const StructuralComponent *);
 
-    /// get the position of the atom (array of 3 doubles)
-    void getPosition(double pos[3]) const;
+    /// get the position of the atom (array of 3 SReals)
+    void getPosition(SReal pos[3]) const;
 
     /// set the position of the atom
-    void setPosition(const double [3]);
+    void setPosition(const SReal [3]);
     /// set the position of the atom
-    void setPosition(const double ,const double ,const double );
+    void setPosition(const SReal ,const SReal ,const SReal );
 
     /** set the index.
      *  The index <b>have to be unique</b> otherwise this method
@@ -81,14 +83,14 @@ public:
 };
 
 // -------------------- inline ---------------------
-inline void Atom::getPosition(double p[3]) const {
+inline void Atom::getPosition(SReal p[3]) const {
     return getProperties()->getPosition(p);
 }
 
-inline void Atom::setPosition(const double pos[3])  {
+inline void Atom::setPosition(const SReal pos[3])  {
     getProperties()->setPosition(pos);    
 }
-inline void Atom::setPosition(const double x, const double y,const double z)  {
+inline void Atom::setPosition(const SReal x, const SReal y,const SReal z)  {
     getProperties()->setPosition(x,y,z);    
 }
 

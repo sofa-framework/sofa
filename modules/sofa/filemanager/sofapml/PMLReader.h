@@ -63,7 +63,7 @@ public :
     void processFusions(GNode * root);
 
     ///return a point position giving its pml's index
-    Vec3d getAtomPos(unsigned int atomindex);
+    Vector3 getAtomPos(unsigned int atomindex);
 
     ///save the structure under a pml file
     void saveAsPML(const char * filename);

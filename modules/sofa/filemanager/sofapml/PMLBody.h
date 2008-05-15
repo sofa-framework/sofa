@@ -80,7 +80,7 @@ public :
     BaseMechanicalState* getMechanicalState() { return mmodel; }
     BaseMass* getMass() { return mass; }
     Topology* getTopology() { return topology; }
-    ForceField<Vec3dTypes>* getForcefield() { return forcefield; }
+    ForceField<Vec3Types>* getForcefield() { return forcefield; }
 
     bool hasCollisions() { return collisionsON; }
     virtual GNode* getPointsNode()=0;
@@ -88,7 +88,7 @@ public :
     ///merge 2 bodies
     virtual bool FusionBody(PMLBody*)=0;
 
-    virtual Vec3d getDOF(unsigned int index)=0;
+    virtual Vector3 getDOF(unsigned int index)=0;
 
     //link between atoms indexes (physical model) and DOFs indexes (sofa)
     map<unsigned int, unsigned int> AtomsToDOFsIndexes;
@@ -117,7 +117,7 @@ protected :
     BaseMechanicalState * mmodel;
     BaseMass * mass;
     Topology * topology;
-    ForceField<Vec3dTypes> * forcefield;
+    ForceField<Vec3Types> * forcefield;
     OdeSolver * solver;
 
     std::string solverName;

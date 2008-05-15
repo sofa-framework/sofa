@@ -24,7 +24,7 @@ LMLForce<DataTypes>::LMLForce(Loads* loadsList, const map<unsigned int, unsigned
     mmodel = mm;
     loads = new Loads();
     Load * load;
-    double dirX, dirY, dirZ;
+    SReal dirX, dirY, dirZ;
     Deriv ve;
     this->setName("loads");
 
@@ -77,17 +77,17 @@ template<class DataTypes>
 void LMLForce<DataTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/)
 {
     //for each points, update the force vector f
-    double time = getContext()->getTime();
+    SReal time = getContext()->getTime();
     f.resize(x.size());
     Load * load;
     std::vector<unsigned int>::iterator it1 = targets.begin();
     VecDerivIterator it2 = forces.begin();
-    double dirX, dirY, dirZ;
+    SReal dirX, dirY, dirZ;
 
     for (unsigned int i=0 ; i<loads->numberOfLoads() ; i++)
     {
         load = loads->getLoad(i);
-        double val = load->getValue(time);
+        SReal val = load->getValue(time);
         for (unsigned int j=0 ; j<load->numberOfTargets() ; j++)
         {
             if ( atomToDOFIndexes.find(load->getTarget(j)) != atomToDOFIndexes.end() )

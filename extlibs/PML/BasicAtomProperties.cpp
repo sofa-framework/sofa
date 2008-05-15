@@ -77,7 +77,7 @@ BasicAtomProperties::BasicAtomProperties(PhysicalModel * p, xmlNodePtr node)  : 
 	domToFields(unknownAttrs);
 }
 
-BasicAtomProperties::BasicAtomProperties(PhysicalModel *p, const double pos[3]) : StructureProperties(p,StructureProperties::ATOM) {
+BasicAtomProperties::BasicAtomProperties(PhysicalModel *p, const SReal pos[3]) : StructureProperties(p,StructureProperties::ATOM) {
     setPosition(pos);
     index = maxUniqueIndex++;
 }
@@ -89,7 +89,7 @@ BasicAtomProperties::BasicAtomProperties(PhysicalModel *p, const unsigned int in
         maxUniqueIndex = ind+1;
 }
 
-BasicAtomProperties::BasicAtomProperties(PhysicalModel *p, const unsigned int ind, const double pos[3]) : StructureProperties(p, StructureProperties::ATOM) {
+BasicAtomProperties::BasicAtomProperties(PhysicalModel *p, const unsigned int ind, const SReal pos[3]) : StructureProperties(p, StructureProperties::ATOM) {
     setPosition(pos);
     index = ind;
     if (ind>=maxUniqueIndex)

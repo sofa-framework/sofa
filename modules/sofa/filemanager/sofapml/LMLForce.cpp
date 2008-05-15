@@ -37,7 +37,7 @@ using namespace core::componentmodel::behavior;
 SOFA_DECL_CLASS(LMLForce)
 
 
-template class LMLForce<Vec3dTypes>;
+template class LMLForce<Vec3Types>;
 }
 }
 }

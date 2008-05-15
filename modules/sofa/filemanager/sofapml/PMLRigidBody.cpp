@@ -95,7 +95,7 @@ void PMLRigidBody::initMass(string m)
         if(pos != 0)
         {
             string s=m.substr(0,pos);
-            double d=atof(s.c_str());
+            SReal d=atof(s.c_str());
             massList.push_back(d);
             m.erase(0,pos);
         }
@@ -113,7 +113,7 @@ void PMLRigidBody::initInertiaMatrix(string m)
         if(pos != 0)
         {
             string s=m.substr(0,pos);
-            double d=atof(s.c_str());
+            SReal d=atof(s.c_str());
             inertiaMatrix.push_back(d);
             m.erase(0,pos);
         }
@@ -125,14 +125,14 @@ void PMLRigidBody::initInertiaMatrix(string m)
 void PMLRigidBody::initPosition(string m)
 {
     int pos;
-    std::vector<double> vec;
+    std::vector<SReal> vec;
     while(!m.empty())
     {
         pos = m.find(' ', 0);
         if(pos != 0)
         {
             string s=m.substr(0,pos);
-            double d=atof(s.c_str());
+            SReal d=atof(s.c_str());
             vec.push_back(d);
             m.erase(0,pos);
         }
@@ -140,37 +140,37 @@ void PMLRigidBody::initPosition(string m)
             m.erase(0,1);
     }
     if (vec.size() >= 3)
-        transPos = Vec3d(vec[0],vec[1],vec[2]);
+        transPos = Vector3(vec[0],vec[1],vec[2]);
     else
-        transPos = Vec3d(0,0,0);
+        transPos = Vector3(0,0,0);
 
     if (vec.size() == 6)
     {
-        rotPos = Quat(Vec3d(1,0,0),vec[3]);
-        rotPos += Quat(Vec3d(0,1,0),vec[4]);
-        rotPos += Quat(Vec3d(0,0,1),vec[5]);
+        rotPos = Quat(Vector3(1,0,0),vec[3]);
+        rotPos += Quat(Vector3(0,1,0),vec[4]);
+        rotPos += Quat(Vector3(0,0,1),vec[5]);
     }
     else if (vec.size() == 7)
         rotPos = Quat(vec[3], vec[4], vec[5], vec[6]);
     else
     {
-        rotPos = Quat(Vec3d(1,0,0),0);
-        rotPos += Quat(Vec3d(0,1,0),0);
-        rotPos += Quat(Vec3d(0,0,1),0);
+        rotPos = Quat(Vector3(1,0,0),0);
+        rotPos += Quat(Vector3(0,1,0),0);
+        rotPos += Quat(Vector3(0,0,1),0);
     }
 }
 
 void PMLRigidBody::initVelocity(string m)
 {
     int pos;
-    std::vector<double> vec;
+    std::vector<SReal> vec;
     while(!m.empty())
     {
         pos = m.find(' ', 0);
         if(pos != 0)
         {
             string s=m.substr(0,pos);
-            double d=atof(s.c_str());
+            SReal d=atof(s.c_str());
             vec.push_back(d);
             m.erase(0,pos);
         }
@@ -178,20 +178,20 @@ void PMLRigidBody::initVelocity(string m)
             m.erase(0,1);
     }
     if (vec.size() >= 3)
-        transVel = Vec3d(vec[0],vec[1],vec[2]);
+        transVel = Vector3(vec[0],vec[1],vec[2]);
     else
-        transVel = Vec3d(0,0,0);
+        transVel = Vector3(0,0,0);
 
     if (vec.size() == 6)
-        rotVel += Vec3d(vec[3],vec[4],vec[5]);
+        rotVel += Vector3(vec[3],vec[4],vec[5]);
     else
-        rotVel = Vec3d(0,0,0);
+        rotVel = Vector3(0,0,0);
 }
 
 
-Vec3d PMLRigidBody::getDOF(unsigned int index)
+Vector3 PMLRigidBody::getDOF(unsigned int index)
 {
-    return (*((MechanicalState<Vec3dTypes>*)mmodel)->getX())[index];
+    return (*((MechanicalState<Vec3Types>*)mmodel)->getX())[index];
 }
 
 
@@ -266,20 +266,20 @@ void PMLRigidBody::createVisualModel(StructuralComponent* body)
     VisualNode = new GNode("points");
     parentNode->addChild(VisualNode);
     //create mechanical object
-    mmodel = new MechanicalObject<Vec3dTypes>;
+    mmodel = new MechanicalObject<Vec3Types>;
     //create visual model
     OglModel * vmodel = new OglModel;
     StructuralComponent* atoms = body->getAtoms();
     mmodel->resize(atoms->getNumberOfStructures());
     Atom* pAtom;
 
-    double pos[3];
+    SReal pos[3];
     for (unsigned int i(0) ; i<atoms->getNumberOfStructures() ; i++)
     {
         pAtom = (Atom*) (atoms->getStructure(i));
         pAtom->getPosition(pos);
         AtomsToDOFsIndexes.insert(std::pair <unsigned int, unsigned int>(pAtom->getIndex(),i));
-        (*((MechanicalState<Vec3dTypes>*)mmodel)->getX())[i] = Vec3d(pos[0]-bary[0],pos[1]-bary[1],pos[2]-bary[2]);
+        (*((MechanicalState<Vec3Types>*)mmodel)->getX())[i] = Vector3(pos[0]-bary[0],pos[1]-bary[1],pos[2]-bary[2]);
     }
 
     VisualNode->addObject(mmodel);
@@ -292,8 +292,8 @@ void PMLRigidBody::createVisualModel(StructuralComponent* body)
     vmodel->load("","","");
 
     //create mappings
-    mapping = new RigidMapping< MechanicalMapping<MechanicalState<RigidTypes>, MechanicalState<Vec3dTypes> > >( (MechanicalState<RigidTypes>*)refDOF, (MechanicalState<Vec3dTypes>*)mmodel);
-    BaseMapping * Vmapping = new IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > > >((MechanicalState<Vec3dTypes>*)mmodel, vmodel);
+    mapping = new RigidMapping< MechanicalMapping<MechanicalState<RigidTypes>, MechanicalState<Vec3Types> > >( (MechanicalState<RigidTypes>*)refDOF, (MechanicalState<Vec3Types>*)mmodel);
+    BaseMapping * Vmapping = new IdentityMapping< Mapping< State<Vec3Types>, MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > > >((MechanicalState<Vec3Types>*)mmodel, vmodel);
 
     VisualNode->addObject(mapping);
     VisualNode->addObject(Vmapping);
@@ -308,10 +308,10 @@ void PMLRigidBody::createMass(StructuralComponent* body)
     {
         StructuralComponent* atoms = body->getAtoms();
         Atom * pAtom;
-        double masse = massList[0], totalMass=0.0;
-        double pos[3];
+        SReal masse = massList[0], totalMass=0.0;
+        SReal pos[3];
         unsigned int nbPoints = atoms->getNumberOfStructures();
-        double A,B,C,D,E,F;
+        SReal A,B,C,D,E,F;
         A = B = C = D = E = F = 0.0;
         bary[0] = bary[1] = bary[2] = 0.0;
 
@@ -344,7 +344,7 @@ void PMLRigidBody::createMass(StructuralComponent* body)
         E -= totalMass* bary[2]*bary[0];
         F -= totalMass* bary[0]*bary[1];
 
-        double coefs[9] = {A,-F, -E, -F, B, -D, -E, -D, C };
+        SReal coefs[9] = {A,-F, -E, -F, B, -D, -E, -D, C };
 
         Mat3x3d iMatrix(coefs);
 
@@ -376,23 +376,23 @@ void PMLRigidBody::createMass(StructuralComponent* body)
             return;
         case 1 : //one value --> isotropic matrix
         {
-            double val1 = inertiaMatrix[0];
-            double coefs1[9] = {val1,0,0, 0,val1,0, 0,0,val1 };
+            SReal val1 = inertiaMatrix[0];
+            SReal coefs1[9] = {val1,0,0, 0,val1,0, 0,0,val1 };
             iMatrix = Mat3x3d(coefs1);
             break;
         }
         case 3 : // 3 values --> diagonal matrix
         {
-            double coefs3[9] = {inertiaMatrix[0],0,0, 0,inertiaMatrix[1],0, 0,0,inertiaMatrix[2] };
+            SReal coefs3[9] = {inertiaMatrix[0],0,0, 0,inertiaMatrix[1],0, 0,0,inertiaMatrix[2] };
             iMatrix = Mat3x3d(coefs3);
             break;
         }
         case 6 : // 6 values --> symetric matrix
         {
-            double coefs9[9] = {inertiaMatrix[0],inertiaMatrix[1],inertiaMatrix[2], \
+            SReal coefs9[9] = {inertiaMatrix[0],inertiaMatrix[1],inertiaMatrix[2], \
                     inertiaMatrix[1],inertiaMatrix[3],inertiaMatrix[4], \
                     inertiaMatrix[2],inertiaMatrix[4],inertiaMatrix[5]
-                               };
+                              };
             iMatrix = Mat3x3d(coefs9);
             break;
         }
