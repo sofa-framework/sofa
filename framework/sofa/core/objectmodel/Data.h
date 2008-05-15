@@ -118,15 +118,10 @@ public:
         this->setValue(value);
     }
 
-protected:
-    /// Value
-    T m_value;
-
-
     /** Try to read argument value from an input stream.
-        Return false if failed
-    */
-    inline bool read( std::string& s )
+    Return false if failed
+     */
+    virtual bool read( std::string& s )
     {
         if (s.empty())
             return false;
@@ -143,6 +138,11 @@ protected:
             return true;
         }
     }
+protected:
+    /// Value
+    T m_value;
+
+
 };
 
 /// Specialization for reading strings

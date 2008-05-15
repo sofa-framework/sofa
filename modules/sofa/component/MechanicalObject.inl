@@ -1235,10 +1235,10 @@ void MechanicalObject<DataTypes>::vMultiOp(const VMultiOp& ops)
         VecDeriv& vv = *getVecDeriv(ops[0].first.index);
         VecCoord& vx = *getVecCoord(ops[1].first.index);
         const unsigned int n = vx.size();
-        const SReal f_v_v = (SReal)(ops[0].second[0].second);
-        const SReal f_v_a = (SReal)(ops[0].second[1].second);
-        const SReal f_x_x = (SReal)(ops[1].second[0].second);
-        const SReal f_x_v = (SReal)(ops[1].second[1].second);
+        const Real f_v_v = (Real)(ops[0].second[0].second);
+        const Real f_v_a = (Real)(ops[0].second[1].second);
+        const Real f_x_x = (Real)(ops[1].second[0].second);
+        const Real f_x_v = (Real)(ops[1].second[1].second);
         if (f_v_v == 1.0 && f_x_x == 1.0) // very common case
         {
             if (f_v_a == 1.0) // used by euler implicit and other integrators that directly computes a*dt
@@ -1246,15 +1246,15 @@ void MechanicalObject<DataTypes>::vMultiOp(const VMultiOp& ops)
                 for (unsigned int i=0; i<n; ++i)
                 {
                     vv[i] += va[i];
-                    vx[i] += vv[i]*(Real)f_x_v;
+                    vx[i] += vv[i]*f_x_v;
                 }
             }
             else
             {
                 for (unsigned int i=0; i<n; ++i)
                 {
-                    vv[i] += va[i]*(Real)f_v_a;
-                    vx[i] += vv[i]*(Real)f_x_v;
+                    vv[i] += va[i]*f_v_a;
+                    vx[i] += vv[i]*f_x_v;
                 }
             }
         }
@@ -1264,7 +1264,7 @@ void MechanicalObject<DataTypes>::vMultiOp(const VMultiOp& ops)
             {
                 vv[i] *= f_v_v;
                 vv[i] += va[i];
-                vx[i] += vv[i]*(Real)f_x_v;
+                vx[i] += vv[i]*f_x_v;
             }
         }
         else // general case
@@ -1272,9 +1272,9 @@ void MechanicalObject<DataTypes>::vMultiOp(const VMultiOp& ops)
             for (unsigned int i=0; i<n; ++i)
             {
                 vv[i] *= f_v_v;
-                vv[i] += va[i]*(Real)f_v_a;
+                vv[i] += va[i]*f_v_a;
                 vx[i] *= f_x_x;
-                vx[i] += vv[i]*(Real)f_x_v;
+                vx[i] += vv[i]*f_x_v;
             }
         }
     }

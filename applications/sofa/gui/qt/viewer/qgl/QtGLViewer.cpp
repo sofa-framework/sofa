@@ -1329,9 +1329,9 @@ void QtGLViewer::resizeGL(int width, int height)
     QGLViewer::resizeGL( width,  height);
     camera()->setScreenWidthAndHeight(_W,_H);
 
+    this->resize(width, height);
     emit( resizeW( _W ) );
     emit( resizeH( _H ) );
-
 }
 
 

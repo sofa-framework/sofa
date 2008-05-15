@@ -810,6 +810,24 @@ void RealGUI::lmlOpen ( const char* filename )
 }
 #endif
 
+void RealGUI::initDesactivatedNode( GNode *node)
+{
+    if (!node->isActive())
+    {
+        node_clicked = node;
+        item_clicked = graphListener->items[node];
+        graphDesactivateNode();
+    }
+    else
+    {
+        for (GNode::ChildIterator it= node->child.begin(); it != node->child.end(); ++it)
+        {
+            initDesactivatedNode((*it));
+        }
+    }
+}
+
+
 void RealGUI::setScene ( GNode* groot, const char* filename )
 {
     if (tabInstrument!= NULL)
@@ -828,6 +846,11 @@ void RealGUI::setScene ( GNode* groot, const char* filename )
     clearRecord();
     clearGraph();
 
+    // find desactivated node
+    for (GNode::ChildIterator it= groot->child.begin(); it != groot->child.end(); ++it)
+    {
+        initDesactivatedNode((*it));
+    }
     eventNewTime();
     //getSimulation()->updateVisualContext ( groot );
     startButton->setOn ( groot->getContext()->getAnimate() );

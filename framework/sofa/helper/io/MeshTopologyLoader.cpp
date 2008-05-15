@@ -321,7 +321,7 @@ bool MeshTopologyLoader::load(const char *filename)
             //		setNumSprings(totalNumSprings);
         }
 
-        std::cout << "Model contains "<< totalNumMasses <<" masses and "<< totalNumSprings <<" springs"<<std::endl;
+// 		std::cout << "Model contains "<< totalNumMasses <<" masses and "<< totalNumSprings <<" springs"<<std::endl;
 
 
 
