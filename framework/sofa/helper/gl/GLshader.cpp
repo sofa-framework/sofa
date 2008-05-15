@@ -380,10 +380,10 @@ void CShader::SetFloat2(GLint variable, float v0, float v1)                     
 void CShader::SetFloat3(GLint variable, float v0, float v1, float v2)           { if (variable!=-1) glUniform3fARB(variable, v0, v1, v2);     }
 void CShader::SetFloat4(GLint variable, float v0, float v1, float v2, float v3) { if (variable!=-1) glUniform4fARB(variable, v0, v1, v2, v3); }
 
-void CShader::SetIntVector(GLint variable, GLsizei count, const int *value)     { if (variable!=-1) glUniform1ivARB(variable, count, value);   }
-void CShader::SetIntVector2(GLint variable, GLsizei count, const int *value)    { if (variable!=-1) glUniform2ivARB(variable, count, value);   }
-void CShader::SetIntVector3(GLint variable, GLsizei count, const int *value)    { if (variable!=-1) glUniform3ivARB(variable, count, value);   }
-void CShader::SetIntVector4(GLint variable, GLsizei count, const int *value)    { if (variable!=-1) glUniform4ivARB(variable, count, value);   }
+void CShader::SetIntVector(GLint variable, GLsizei count, const GLint *value)     { if (variable!=-1) glUniform1ivARB(variable, count, value);   }
+void CShader::SetIntVector2(GLint variable, GLsizei count, const GLint *value)    { if (variable!=-1) glUniform2ivARB(variable, count, value);   }
+void CShader::SetIntVector3(GLint variable, GLsizei count, const GLint *value)    { if (variable!=-1) glUniform3ivARB(variable, count, value);   }
+void CShader::SetIntVector4(GLint variable, GLsizei count, const GLint *value)    { if (variable!=-1) glUniform4ivARB(variable, count, value);   }
 
 void CShader::SetFloatVector(GLint variable, GLsizei count, const float *value) { if (variable!=-1) glUniform1fvARB(variable, count, value);   }
 void CShader::SetFloatVector2(GLint variable, GLsizei count, const float *value) { if (variable!=-1) glUniform2fvARB(variable, count, value);   }

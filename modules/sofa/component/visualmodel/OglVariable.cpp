@@ -289,7 +289,7 @@ int OglFloatVector4VariableClass = core::RegisterObject("OglFloatVector4Variable
         ;
 
 OglFloatVectorVariable::OglFloatVectorVariable()
-    : fv(initData(&fv, (helper::vector<float>) helper::vector<float>(1.0), "values", "Set float array values"))
+    : fv(initData(&fv, (helper::vector<float>) helper::vector<float>((float)1.0), "values", "Set float array values"))
 {
 
 }
