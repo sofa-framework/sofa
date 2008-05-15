@@ -133,7 +133,7 @@ public:
 class OglIntVectorVariable : public OglVariable
 {
 protected:
-    Data<helper::vector<int> > iv;
+    Data<helper::vector<GLint> > iv;
 
 public:
     OglIntVectorVariable();

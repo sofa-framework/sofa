@@ -182,25 +182,25 @@ void OglShader::setFloat4(const char* name, float f1, float f2, float f3, float 
     stop();
 }
 
-void OglShader::setIntVector(const char* name, int count, const int* i)
+void OglShader::setIntVector(const char* name, int count, const GLint* i)
 {
     start();
     m_shader.SetIntVector(m_shader.GetVariable(name), count, i);
     stop();
 }
-void OglShader::setIntVector2(const char* name, int count, const int* i)
+void OglShader::setIntVector2(const char* name, int count, const GLint* i)
 {
     start();
     m_shader.SetIntVector2(m_shader.GetVariable(name), count, i);
     stop();
 }
-void OglShader::setIntVector3(const char* name, int count, const int* i)
+void OglShader::setIntVector3(const char* name, int count, const GLint* i)
 {
     start();
     m_shader.SetIntVector3(m_shader.GetVariable(name), count, i);
     stop();
 }
-void OglShader::setIntVector4(const char* name, int count, const int* i)
+void OglShader::setIntVector4(const char* name, int count, const GLint* i)
 {
     start();
     m_shader.SetIntVector4(m_shader.GetVariable(name), count, i);
