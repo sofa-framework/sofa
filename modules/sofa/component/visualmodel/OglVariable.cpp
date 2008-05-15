@@ -204,35 +204,41 @@ void OglIntVectorVariable::init()
 void OglIntVector2Variable::init()
 {
     OglIntVectorVariable::init();
-
+    helper::vector<int> temp = iv.getValue();
     if (iv.getValue().size() %2 != 0)
     {
         std::cerr << "The number of values is not even ; padding with one zero" << std::endl;
-        iv.getValue().push_back(0);
+        temp.push_back(0);
+        iv.setValue(temp);
+
     }
 }
 
 void OglIntVector3Variable::init()
 {
     OglIntVectorVariable::init();
+    helper::vector<int> temp = iv.getValue();
 
     if (iv.getValue().size() %3 != 0)
     {
         std::cerr << "The number of values is not a multiple of 3 ; padding with zero(s)" << std::endl;
         while (iv.getValue().size() %3 != 0)
-            iv.getValue().push_back(0);
+            temp.push_back(0);
+        iv.setValue(temp);
     }
 }
 
 void OglIntVector4Variable::init()
 {
     OglIntVectorVariable::init();
+    helper::vector<int> temp = iv.getValue();
 
     if (iv.getValue().size() %4 != 0)
     {
         std::cerr << "The number of values is not a multiple of 4 ; padding with zero(s)" << std::endl;
         while (iv.getValue().size() %4 != 0)
-            iv.getValue().push_back(0);
+            temp.push_back(0);
+        iv.setValue(temp);
     }
 }
 
@@ -312,35 +318,40 @@ void OglFloatVectorVariable::init()
 void OglFloatVector2Variable::init()
 {
     OglFloatVectorVariable::init();
-
+    helper::vector<float> temp = fv.getValue();
     if (fv.getValue().size() %2 != 0)
     {
         std::cerr << "The number of values is not even ; padding with one zero" << std::endl;
-        fv.getValue().push_back(0.0);
+        temp.push_back(0.0);
+        fv.setValue(temp);
     }
 }
 
 void OglFloatVector3Variable::init()
 {
     OglFloatVectorVariable::init();
+    helper::vector<float> temp = fv.getValue();
 
     if (fv.getValue().size() %3 != 0)
     {
         std::cerr << "The number of values is not a multiple of 3 ; padding with zero(s)" << std::endl;
         while (fv.getValue().size() %3 != 0)
-            fv.getValue().push_back(0.0);
+            temp.push_back(0.0);
+        fv.setValue(temp);
     }
 }
 
 void OglFloatVector4Variable::init()
 {
     OglFloatVectorVariable::init();
+    helper::vector<float> temp = fv.getValue();
 
     if (fv.getValue().size() %4 != 0)
     {
         std::cerr << "The number of values is not a multiple of 4 ; padding with zero(s)" << std::endl;
         while (fv.getValue().size() %4 != 0)
-            fv.getValue().push_back(0.0);
+            temp.push_back(0.0);
+        fv.setValue(temp);
     }
 }
 
