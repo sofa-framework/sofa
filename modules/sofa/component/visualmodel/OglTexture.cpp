@@ -44,9 +44,9 @@ void OglTexture::init()
 
 void OglTexture::initVisual()
 {
-    int maxTextureUnits[1];
-    glGetIntegerv(GL_MAX_TEXTURE_UNITS, &(maxTextureUnits[0]));
-    MAX_NUMBER_OF_TEXTURE_UNIT = maxTextureUnits[0];
+    GLint maxTextureUnits;
+    glGetIntegerv(GL_MAX_TEXTURE_UNITS, &maxTextureUnits);
+    MAX_NUMBER_OF_TEXTURE_UNIT = maxTextureUnits;
 
     if (textureUnit.getValue() > MAX_NUMBER_OF_TEXTURE_UNIT)
     {
