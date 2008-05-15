@@ -646,7 +646,7 @@ class DiagonalMass<DataTypes, MassType>::Loader : public helper::io::MassSpringL
 public:
     DiagonalMass<DataTypes, MassType>* dest;
     Loader(DiagonalMass<DataTypes, MassType>* dest) : dest(dest) {}
-    virtual void addMass(double /*px*/, double /*py*/, double /*pz*/, double /*vx*/, double /*vy*/, double /*vz*/, double mass, double /*elastic*/, bool /*fixed*/, bool /*surface*/)
+    virtual void addMass(SReal /*px*/, SReal /*py*/, SReal /*pz*/, SReal /*vx*/, SReal /*vy*/, SReal /*vz*/, SReal mass, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/)
     {
         dest->addMass(MassType((Real)mass));
     }

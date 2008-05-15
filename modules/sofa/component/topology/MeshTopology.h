@@ -129,7 +129,7 @@ public:
     virtual std::string getFilename() const {return filename.getValue();}
 
     // for procedural creation without file loader
-    void addPoint(SReal px, SReal py, SReal pz);
+    void addPoint(double px, double py, double pz);
     void addEdge( int a, int b );
     void addTriangle( int a, int b, int c );
     void addTetrahedron( int a, int b, int c, int d );

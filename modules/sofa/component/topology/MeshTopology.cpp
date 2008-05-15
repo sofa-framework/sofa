@@ -81,9 +81,9 @@ class MeshTopology::Loader : public helper::io::MeshTopologyLoader
 public:
     MeshTopology* dest;
     Loader(MeshTopology* dest) : dest(dest) {}
-    virtual void addPoint(SReal px, SReal py, SReal pz)
+    virtual void addPoint(double px, double py, double pz)
     {
-        dest->seqPoints.push_back(helper::make_array(px, py, pz));
+        dest->seqPoints.push_back(helper::make_array((SReal)px, (SReal)py, (SReal)pz));
         if (dest->seqPoints.size() > (unsigned)dest->nbPoints)
             dest->nbPoints = dest->seqPoints.size();
     }
@@ -137,7 +137,7 @@ bool MeshTopology::load(const char* filename)
         loader.setNbPoints(mesh->getVertices().size());
         for (unsigned int i=0; i<mesh->getVertices().size(); i++)
         {
-            loader.addPoint(mesh->getVertices()[i][0],mesh->getVertices()[i][1],mesh->getVertices()[i][2]);
+            loader.addPoint((double)mesh->getVertices()[i][0],(double)mesh->getVertices()[i][1],(double)mesh->getVertices()[i][2]);
         }
 
         std::set< std::pair<int,int> > edges;
@@ -198,9 +198,9 @@ bool MeshTopology::load(const char* filename)
 }
 
 
-void MeshTopology::addPoint(SReal px, SReal py, SReal pz)
+void MeshTopology::addPoint(double px, double py, double pz)
 {
-    seqPoints.push_back(helper::make_array(px, py, pz));
+    seqPoints.push_back(helper::make_array((SReal)px, (SReal)py, (SReal)pz));
     if (seqPoints.size() > (unsigned)nbPoints)
         nbPoints = seqPoints.size();
 

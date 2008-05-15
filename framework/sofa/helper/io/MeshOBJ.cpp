@@ -68,9 +68,9 @@ void MeshOBJ::readOBJ (FILE* file, const char* filename)
     vector<int>vIndices, nIndices, tIndices;
     int vtn[3];
     char buf[128], matName[1024];
-    Vector3 result;
-    Vector3 texCoord;
-    Vector3 normal;
+    Vec3d result;
+    Vec3d texCoord;
+    Vec3d normal;
     const char *token;
 
     std::string face, tmp;

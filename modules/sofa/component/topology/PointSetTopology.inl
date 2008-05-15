@@ -38,7 +38,7 @@ public:
     PointSetTopologyLoader()
     {
     }
-    virtual void addPoint(SReal px, SReal py, SReal pz)
+    virtual void addPoint(double px, double py, double pz)
     {
         //BUGFIX(Jeremie A.): The following does not work for 1D/2D datatypes
         //pointArray.push_back(Coord((Real)px,(Real)py,(Real)pz));

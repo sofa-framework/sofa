@@ -126,7 +126,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::parse(core::objectmodel::BaseObject
                     }
                     else if (!strcmp(cmd,"frme"))
                     {
-                        Quat orient;
+                        Quatd orient;
                         for (int i = 0; i < 4; ++i)
                         {
                             fscanf(file, "%lf", &(orient[i]));

@@ -101,7 +101,7 @@ bool MassSpringLoader::load(const char *filename)
         setNumSprings(totalNumSprings);
     }
 
-// 	std::cout << "Model contains "<< totalNumMasses <<" masses and "<< totalNumSprings <<" springs"<<std::endl;
+    std::cout << "Model contains "<< totalNumMasses <<" masses and "<< totalNumSprings <<" springs"<<std::endl;
 
     std::vector<Vector3> masses;
     if (totalNumMasses>0)
@@ -113,7 +113,7 @@ bool MassSpringLoader::load(const char *filename)
         {
             int index;
             char location;
-            SReal px,py,pz,vx,vy,vz,mass=(SReal)0.0,elastic=(SReal)0.0;
+            double px,py,pz,vx,vy,vz,mass=0.0,elastic=0.0;
             bool fixed=false;
             fscanf(file, "%d %c %lf %lf %lf %lf %lf %lf %lf %lf\n",
                     &index, &location,
@@ -127,16 +127,16 @@ bool MassSpringLoader::load(const char *filename)
                 mass = -mass;
                 fixed = true;
             }
-            addMass(px,py,pz,vx,vy,vz,mass,elastic,fixed,surface);
+            addMass((SReal)px,(SReal)py,(SReal)pz,(SReal)vx,(SReal)vy,(SReal)vz,(SReal)mass,(SReal)elastic,fixed,surface);
             masses.push_back(Vector3(px,py,pz));
         }
         else if (!strcmp(cmd,"lspg"))	// linear springs connector
         {
             int	index;
             int m1,m2;
-            SReal ks=(SReal)0.0,kd=(SReal)0.0,initpos=(SReal)-1;
+            double ks=0.0,kd=0.0,initpos=-1;
             // paul-------------------------------------
-            SReal restx=(SReal)0.0,resty=(SReal)0.0,restz=(SReal)0.0;
+            double restx=0.0,resty=0.0,restz=0.0;
             if (vector_spring)
                 fscanf(file, "%d %d %d %lf %lf %lf %lf %lf %lf\n",
                         &index,&m1,&m2,&ks,&kd,&initpos, &restx,&resty,&restz);
@@ -161,22 +161,22 @@ bool MassSpringLoader::load(const char *filename)
 
                 //paul-----------------------------------------
                 if (vector_spring)
-                    addVectorSpring(m1,m2,ks,kd,initpos,restx,resty,restz);
+                    addVectorSpring(m1,m2,(SReal)ks,(SReal)kd,(SReal)initpos,(SReal)restx,(SReal)resty,(SReal)restz);
                 else
-                    addSpring(m1,m2,ks,kd,initpos);
+                    addSpring(m1,m2,(SReal)ks,(SReal)kd,(SReal)initpos);
             }
         }
         else if (!strcmp(cmd,"grav"))
         {
-            SReal gx,gy,gz;
+            double gx,gy,gz;
             fscanf(file, "%lf %lf %lf\n", &gx, &gy, &gz);
-            setGravity(gx,gy,gz);
+            setGravity((SReal)gx,(SReal)gy,(SReal)gz);
         }
         else if (!strcmp(cmd,"visc"))
         {
-            SReal viscosity;
+            double viscosity;
             fscanf(file, "%lf\n", &viscosity);
-            setViscosity(viscosity);
+            setViscosity((SReal)viscosity);
         }
         else if (!strcmp(cmd,"step"))
         {

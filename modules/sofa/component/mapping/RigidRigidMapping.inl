@@ -60,7 +60,7 @@ class RigidRigidMapping<BasicMapping>::Loader : public helper::io::MassSpringLoa
 public:
     RigidRigidMapping<BasicMapping>* dest;
     Loader(RigidRigidMapping<BasicMapping>* dest) : dest(dest) {}
-    virtual void addMass(double px, double py, double pz, double, double, double, double, double, bool, bool)
+    virtual void addMass(SReal px, SReal py, SReal pz, SReal, SReal, SReal, SReal, SReal, bool, bool)
     {
         Coord c;
         Out::DataTypes::set(c,px,py,pz);
