@@ -296,7 +296,7 @@ bool CShader::CompileShader(GLint target, const std::string& source, GLhandleARB
         std::cerr << logString << std::endl;
         free(logString);
     }
-    return compiled;
+    return (compiled!=0);
 }
 
 ///////////////////////////////// INIT SHADERS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*

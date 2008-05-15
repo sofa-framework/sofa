@@ -273,6 +273,7 @@ protected:
 
     void loadSimulation(bool one_step=false);
 
+    void initDesactivatedNode( GNode *node);
     //Graph Stats
     bool graphCreateStats(GNode *groot,QListViewItem *parent);
     bool graphAddCollisionModelsStat(sofa::helper::vector< sofa::core::CollisionModel* > &v,QListViewItem *parent);

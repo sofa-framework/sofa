@@ -36,6 +36,7 @@
 #include <QTabWidget>
 #include <QGridLayout>
 #include <Q3Grid>
+#include <Q3TextEdit>
 #else
 #include <qlineedit.h>
 #include <qpushbutton.h>
@@ -45,6 +46,7 @@
 #include <qlayout.h>
 #include <qtabwidget.h>
 #include <qgrid.h>
+#include <qtextedit.h>
 #endif
 
 #include <sofa/component/forcefield/JointSpringForceField.h>
@@ -83,6 +85,7 @@ using sofa::core::objectmodel::BaseData;
 #ifndef QT_MODULE_QT3SUPPORT
 typedef QGrid     Q3Grid;
 typedef QScrollView Q3ScrollView;
+typedef QTextEdit   Q3TextEdit;
 #endif
 
 
@@ -161,7 +164,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             //QLabel *label = new QLabel(QString((*it).first.c_str()), box,0);
             //label->setGeometry( 10, i*25+5, 200, 20 );
 
-            const std::string& fieldname = (*it).second->getValueTypeString();
+// 		const std::string& fieldname = (*it).second->getValueTypeString();
             std::string name((*it).first);
             name.resize(4);
             if (name == "show")
@@ -831,14 +834,22 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 }
                 else
                 {
-                    --counterWidget;
-                    //Delete the box
-                    delete box;
-                    box = NULL;
-                    core::objectmodel::BaseData* unknown_datafield = (*it).second;
-                    if (unknown_datafield->getValueString() == "") std::cout << "Empty Data ";
-                    std::cerr<<"not added in the dialog : "<<fieldname<<std::endl;
-                    std::cout << "Name : " << (*it).first.c_str() << " : " <<  (*it).second->help << "\n";
+                    Q3TextEdit* textedit = new Q3TextEdit(box);
+                    list_Object.push_back( (QObject *) textedit);
+
+                    textedit->setText(QString((*it).second->getValueString().c_str()));
+                    //if empty field, we don't display it
+                    if ((*it).second->getValueString().empty())
+                    {
+                        box->hide();
+                        --counterWidget;
+                    }
+                    else
+                    {
+                        std::cerr << (*it).first << " : " << (*it).second->getValueTypeString() << " Not added because empty \n";
+                        ++counterWidget; //count for two classic widgets
+                        connect( textedit, SIGNAL( textChanged() ), this, SLOT( changeValue() ) );
+                    }
                 }
             }
             ++i;
@@ -1760,6 +1771,12 @@ void ModifyObject::updateValues()
                 M.shininess = value->getFloatValue();
 
                 ff->setValue(M);
+            }
+            else
+            {
+                Q3TextEdit* textEdit = dynamic_cast< Q3TextEdit *> ( (*list_it) ); list_it++;
+                std::string value = textEdit->text().ascii();
+                (*it).second->read(value);
             }
             ++i;
         }

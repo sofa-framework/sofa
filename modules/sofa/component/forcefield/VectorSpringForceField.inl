@@ -69,7 +69,7 @@ public:
     Loader(VectorSpringForceField<DataTypes>* dest) : dest(dest) {}
     virtual void addVectorSpring(int m1, int m2, SReal ks, SReal kd, SReal /*initpos*/, SReal restx, SReal resty, SReal restz)
     {
-        dest->addSpring(m1,m2,ks,kd,Coord(restx,resty,restz));
+        dest->addSpring(m1,m2,ks,kd,Coord((Real)restx,(Real)resty,(Real)restz));
     }
     virtual void setNumSprings(int /*n*/)
     {
