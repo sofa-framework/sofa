@@ -175,7 +175,7 @@ int OglIntVector4VariableClass = core::RegisterObject("OglIntVector4Variable")
         ;
 
 OglIntVectorVariable::OglIntVectorVariable()
-    : iv(initData(&iv, (helper::vector<int>) helper::vector<int>(1), "values", "Set int array values"))
+    : iv(initData(&iv, (helper::vector<GLint>) helper::vector<GLint>(1), "values", "Set int array values"))
 {
 
 }
@@ -204,7 +204,7 @@ void OglIntVectorVariable::init()
 void OglIntVector2Variable::init()
 {
     OglIntVectorVariable::init();
-    helper::vector<int> temp = iv.getValue();
+    helper::vector<GLint> temp = iv.getValue();
     if (iv.getValue().size() %2 != 0)
     {
         std::cerr << "The number of values is not even ; padding with one zero" << std::endl;
@@ -217,7 +217,7 @@ void OglIntVector2Variable::init()
 void OglIntVector3Variable::init()
 {
     OglIntVectorVariable::init();
-    helper::vector<int> temp = iv.getValue();
+    helper::vector<GLint> temp = iv.getValue();
 
     if (iv.getValue().size() %3 != 0)
     {
@@ -231,7 +231,7 @@ void OglIntVector3Variable::init()
 void OglIntVector4Variable::init()
 {
     OglIntVectorVariable::init();
-    helper::vector<int> temp = iv.getValue();
+    helper::vector<GLint> temp = iv.getValue();
 
     if (iv.getValue().size() %4 != 0)
     {
@@ -289,7 +289,7 @@ int OglFloatVector4VariableClass = core::RegisterObject("OglFloatVector4Variable
         ;
 
 OglFloatVectorVariable::OglFloatVectorVariable()
-    : fv(initData(&fv, (helper::vector<float>) helper::vector<float>((float)1.0), "values", "Set float array values"))
+    : fv(initData(&fv, (helper::vector<float>) helper::vector<float>(1), "values", "Set float array values"))
 {
 
 }

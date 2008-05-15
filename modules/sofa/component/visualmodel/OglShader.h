@@ -69,10 +69,10 @@ public:
     void setFloat3(const char* name, float f1, float f2, float f3);
     void setFloat4(const char* name, float f1, float f2, float f3, float f4);
 
-    void setIntVector(const char* name, int count, const int* i);
-    void setIntVector2(const char* name, int count, const int* i);
-    void setIntVector3(const char* name, int count, const int* i);
-    void setIntVector4(const char* name, int count, const int* i);
+    void setIntVector(const char* name, int count, const GLint* i);
+    void setIntVector2(const char* name, int count, const GLint* i);
+    void setIntVector3(const char* name, int count, const GLint* i);
+    void setIntVector4(const char* name, int count, const GLint* i);
 
     void setFloatVector(const char* name, int count, const float* f);
     void setFloatVector2(const char* name, int count, const float* f);
