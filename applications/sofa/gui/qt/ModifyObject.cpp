@@ -36,7 +36,6 @@
 #include <QTabWidget>
 #include <QGridLayout>
 #include <Q3Grid>
-#include <Q3TextEdit>
 #else
 #include <qlineedit.h>
 #include <qpushbutton.h>
@@ -46,7 +45,6 @@
 #include <qlayout.h>
 #include <qtabwidget.h>
 #include <qgrid.h>
-#include <qtextedit.h>
 #endif
 
 #include <sofa/component/forcefield/JointSpringForceField.h>
@@ -85,7 +83,6 @@ using sofa::core::objectmodel::BaseData;
 #ifndef QT_MODULE_QT3SUPPORT
 typedef QGrid     Q3Grid;
 typedef QScrollView Q3ScrollView;
-typedef QTextEdit   Q3TextEdit;
 #endif
 
 
@@ -117,7 +114,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
     //Tabulation widget
     dialogTab = new QTabWidget(this);
     generalLayout->addWidget(dialogTab);
-
+    connect(dialogTab, SIGNAL( currentChanged( QWidget*)), this, SLOT( updateTables()));
 
     //Each tab
     counterWidget=0;
@@ -846,6 +843,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     }
                     else
                     {
+                        list_TextEdit.push_back(std::make_pair(textedit, (*it).second));
                         std::cerr << (*it).first << " : " << (*it).second->getValueTypeString() << " Not added because empty \n";
                         ++counterWidget; //count for two classic widgets
                         connect( textedit, SIGNAL( textChanged() ), this, SLOT( changeValue() ) );
@@ -862,6 +860,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     emptyTab = false;
                 }
 
+                dataIndexTab.insert(std::make_pair((*it).second, dialogTab->count()-1));
                 ++counterWidget;
                 currentTabLayout->addWidget( box );
             }
@@ -1913,18 +1912,30 @@ void ModifyObject::changeNumberPoint()
 
 
 
-
+void ModifyObject::updateTextEdit()
+{
+    std::list< std::pair< Q3TextEdit*, BaseData*> >::iterator it_list_TextEdit;
+    for (it_list_TextEdit = list_TextEdit.begin(); it_list_TextEdit != list_TextEdit.end(); it_list_TextEdit++)
+    {
+        if ((dataIndexTab.find((*it_list_TextEdit).second))->second == dialogTab->currentPageIndex())
+        {
+            (*it_list_TextEdit).first->setText( (*it_list_TextEdit).second->getValueString());
+        }
+    }
+}
 //**************************************************************************************************************************************
 //Called each time a new step of the simulation if computed
 void ModifyObject::updateTables()
 {
     updateHistory();
+    updateTextEdit();
     std::list< std::pair< Q3Table*, BaseData*> >::iterator it_list_Table;
     bool skip;
     for (it_list_Table = list_Table.begin(); it_list_Table != list_Table.end(); it_list_Table++)
     {
         skip = false;
-        if ( dialogTab->indexOf((*it_list_Table).first) == dialogTab->currentPageIndex()) skip = true;
+
+        if ((dataIndexTab.find((*it_list_Table).second))->second != dialogTab->currentPageIndex() ) skip = true;
         if ( dynamic_cast<DataPtr< vector<Rigid3Types::Coord> > *> ( (*it_list_Table).second ) ||
                 dynamic_cast<DataPtr< vector<Rigid3Types::Deriv> > *> ( (*it_list_Table).second ) ||
                 dynamic_cast<DataPtr< vector<Rigid2Types::Coord> > *> ( (*it_list_Table).second ) ||
@@ -2236,6 +2247,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
 
             vectorTable = new Q3Table(ff->getValue().size(),3, box);
             vectorTable->setReadOnly(false);
+
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable->setColumnStretchable(1,true);
@@ -2290,6 +2302,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
 
             vectorTable = new Q3Table(ff->getValue().size(),3, box);
             vectorTable->setReadOnly(false);
+
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("X"));	    vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable->setColumnStretchable(1,true);
@@ -2540,6 +2553,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
 
             vectorTable = new Q3Table(ff->getValue().size(),2, box);
             vectorTable->setReadOnly(false);
+
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable->setColumnStretchable(1,true);
@@ -2588,6 +2602,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
 
             vectorTable = new Q3Table(ff->getValue().size(),1, box);
             vectorTable->setReadOnly(false);
+
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("X"));	    vectorTable->setColumnStretchable(0,true);
 
@@ -2638,6 +2653,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
 
             vectorTable = new Q3Table(ff->getValue().size(),1, box);
             vectorTable->setReadOnly(false);
+
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);
 
@@ -2684,6 +2700,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
             if (ff->getValue().size() == 0)  return false;
             box->setColumns(1);
             vectorTable = new Q3Table(ff->getValue().size(),5, box);
+
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("Index 1")); vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Index 2")); vectorTable->setColumnStretchable(1,true);
@@ -2716,6 +2733,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
             if (ff->getValue().size() == 0)  return false;
             box->setColumns(1);
             vectorTable = new Q3Table(ff->getValue().size(),5, box);
+
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("Index 1")); vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Index 2")); vectorTable->setColumnStretchable(1,true);
@@ -2749,6 +2767,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
             if (ff->getValue().size() == 0)  return false;
             box->setColumns(1);
             vectorTable = new Q3Table(ff->getValue().size(),5, box);
+
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("Index 1")); vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Index 2")); vectorTable->setColumnStretchable(1,true);
@@ -2781,6 +2800,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
             if (ff->getValue().size() == 0)  return false;
             box->setColumns(1);
             vectorTable = new Q3Table(ff->getValue().size(),5, box);
+
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("Index 1")); vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Index 2")); vectorTable->setColumnStretchable(1,true);
@@ -2813,6 +2833,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
             if (ff->getValue().size() == 0)  return false;
             box->setColumns(1);
             vectorTable = new Q3Table(ff->getValue().size(),5, box);
+
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("Index 1")); vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Index 2")); vectorTable->setColumnStretchable(1,true);
@@ -2845,6 +2866,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
             if (ff->getValue().size() == 0)  return false;
             box->setColumns(1);
             vectorTable = new Q3Table(ff->getValue().size(),5, box);
+
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("Index 1")); vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Index 2")); vectorTable->setColumnStretchable(1,true);
@@ -2877,6 +2899,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
             if (ff->getValue().size() == 0)  return false;
             box->setColumns(1);
             vectorTable = new Q3Table(ff->getValue().size(),5, box);
+
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("Index 1")); vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Index 2")); vectorTable->setColumnStretchable(1,true);
@@ -2909,6 +2932,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
             if (ff->getValue().size() == 0)  return false;
             box->setColumns(1);
             vectorTable = new Q3Table(ff->getValue().size(),5, box);
+
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("Index 1")); vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Index 2")); vectorTable->setColumnStretchable(1,true);
@@ -2941,6 +2965,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
             if (ff->getValue().size() == 0)  return false;
             box->setColumns(1);
             vectorTable = new Q3Table(ff->getValue().size(),13, box);
+
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("Index 1"));
             vectorTable->horizontalHeader()->setLabel(1,QString("Index 2"));
@@ -2992,6 +3017,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
             if (ff->getValue().size() == 0)  return false;
             box->setColumns(1);
             vectorTable = new Q3Table(ff->getValue().size(),13, box);
+
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("Index 1"));
             vectorTable->horizontalHeader()->setLabel(1,QString("Index 2"));
@@ -3657,6 +3683,7 @@ bool ModifyObject::createQtTable(Data< sofa::helper::vector< T > > *ff, Q3GroupB
         box->setColumns(1);
 
         vectorTable = new Q3Table(ff->getValue().size(),1, box);
+
         list_Table.push_back(std::make_pair(vectorTable, ff));
         vectorTable->setColumnStretchable(0,true);
 
@@ -3664,6 +3691,7 @@ bool ModifyObject::createQtTable(Data< sofa::helper::vector< T > > *ff, Q3GroupB
     }
     vector< T > value = ff->getValue();
 
+    vectorTable->setNumRows(ff->getValue().size());
     for (unsigned int i=0; i<ff->getValue().size(); i++)
     {
         std::ostringstream oss;
@@ -3697,6 +3725,7 @@ bool ModifyObject::createQtTable(DataPtr< sofa::helper::vector< T > > *ff, Q3Gro
         box->setColumns(1);
 
         vectorTable = new Q3Table(ff->getValue().size(),1, box);
+
         list_Table.push_back(std::make_pair(vectorTable, ff));
         vectorTable->setColumnStretchable(0,true);
 
@@ -3704,6 +3733,7 @@ bool ModifyObject::createQtTable(DataPtr< sofa::helper::vector< T > > *ff, Q3Gro
     }
     vector< T > value = ff->getValue();
 
+    vectorTable->setNumRows(ff->getValue().size());
     for (unsigned int i=0; i<ff->getValue().size(); i++)
     {
         std::ostringstream oss;
@@ -3735,6 +3765,7 @@ bool ModifyObject::createQtTable(Data< sofa::helper::vector< Vec<N,T> > > *ff, Q
         if (ff->getValue().size() == 0)  return false;
         box->setColumns(1);
         vectorTable = new Q3Table(ff->getValue().size(),N, box);
+
         list_Table.push_back(std::make_pair(vectorTable, ff));
         if (N>=0) {vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);}
         if (N>=1) {vectorTable->horizontalHeader()->setLabel(1,QString("Y"));   vectorTable->setColumnStretchable(1,true);}
@@ -3744,6 +3775,7 @@ bool ModifyObject::createQtTable(Data< sofa::helper::vector< Vec<N,T> > > *ff, Q
     }
     sofa::helper::vector< Vec<N,T> > value = ff->getValue();
 
+    vectorTable->setNumRows(ff->getValue().size());
 
     for (unsigned int i=0; i<ff->getValue().size(); i++)
     {
@@ -3783,6 +3815,7 @@ bool ModifyObject::createQtTable(DataPtr< sofa::helper::vector< Vec<N,T> > > *ff
         if (ff->getValue().size() == 0)  return false;
         box->setColumns(1);
         vectorTable = new Q3Table(ff->getValue().size(),N, box);
+
         list_Table.push_back(std::make_pair(vectorTable, ff));
         if (N>=0) {vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);}
         if (N>=1) {vectorTable->horizontalHeader()->setLabel(1,QString("Y"));   vectorTable->setColumnStretchable(1,true);}
@@ -3792,6 +3825,7 @@ bool ModifyObject::createQtTable(DataPtr< sofa::helper::vector< Vec<N,T> > > *ff
     }
     sofa::helper::vector< Vec<N,T> > value = ff->getValue();
 
+    vectorTable->setNumRows(ff->getValue().size());
 
     for (unsigned int i=0; i<ff->getValue().size(); i++)
     {
@@ -3834,12 +3868,23 @@ bool ModifyObject::createQtTable(Data< sofa::component::topology::PointData< T >
         box->setColumns(1);
 
         vectorTable = new Q3Table(ff->getValue().size(),1, box);
+
         list_Table.push_back(std::make_pair(vectorTable, ff));
         vectorTable->setColumnStretchable(0,true);
 
         connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
     }
     vector< T > value = ff->getValue();
+    vectorTable->setNumRows(ff->getValue().size());
+    /*
+      if (vectorTable->numRows() < ff->getValue().size())
+      {
+       for (unsigned int i=0;
+      }
+      else if (vectorTable->numRows() > ff->getValue().size())
+      {
+
+      }*/
 
     for (unsigned int i=0; i<ff->getValue().size(); i++)
     {
