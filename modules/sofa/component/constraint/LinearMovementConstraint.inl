@@ -74,7 +74,7 @@ void LinearMovementConstraint<DataTypes>::FCRemovalFunction(int pointIndex, void
     LinearMovementConstraint<DataTypes> *fc= (LinearMovementConstraint<DataTypes> *)param;
     if (fc)
     {
-        fc->removeIndice((unsigned int) pointIndex);
+        fc->removeIndex((unsigned int) pointIndex);
     }
     return;
 }
@@ -82,19 +82,19 @@ void LinearMovementConstraint<DataTypes>::FCRemovalFunction(int pointIndex, void
 template <class DataTypes>
 LinearMovementConstraint<DataTypes>::LinearMovementConstraint()
     : core::componentmodel::behavior::Constraint<DataTypes>(NULL)
-    , f_indices( initData(&f_indices,"indices","Indices of the constrained points") )
-    , f_keyTimes(  initData(&f_keyTimes,"keyTimes","key times for the movements") )
-    , f_keyMovements(  initData(&f_keyMovements,"movements","movements corresponding to the key times") )
+    , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
+    , m_keyTimes(  initData(&m_keyTimes,"keyTimes","key times for the movements") )
+    , m_keyMovements(  initData(&m_keyMovements,"movements","movements corresponding to the key times") )
 {
     // default to indice 0
-    f_indices.beginEdit()->push_back(0);
-    f_indices.endEdit();
+    m_indices.beginEdit()->push_back(0);
+    m_indices.endEdit();
 
     //default valueEvent to 0
-    f_keyTimes.beginEdit()->push_back( 0.0 );
-    f_keyTimes.endEdit();
-    f_keyMovements.beginEdit()->push_back( Deriv() );
-    f_keyMovements.endEdit();
+    m_keyTimes.beginEdit()->push_back( 0.0 );
+    m_keyTimes.endEdit();
+    m_keyMovements.beginEdit()->push_back( Deriv() );
+    m_keyMovements.endEdit();
 }
 
 
@@ -106,7 +106,7 @@ template <class DataTypes> void LinearMovementConstraint<DataTypes>::handleTopol
     std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
     std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
 
-    f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
+    m_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
 
 }
 
@@ -118,40 +118,40 @@ LinearMovementConstraint<DataTypes>::~LinearMovementConstraint()
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::clearIndices()
 {
-    f_indices.beginEdit()->clear();
-    f_indices.endEdit();
+    m_indices.beginEdit()->clear();
+    m_indices.endEdit();
 }
 
 template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::addIndice(unsigned int index)
+void LinearMovementConstraint<DataTypes>::addIndex(unsigned int index)
 {
-    f_indices.beginEdit()->push_back(index);
-    f_indices.endEdit();
+    m_indices.beginEdit()->push_back(index);
+    m_indices.endEdit();
 }
 
 template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::removeIndice(unsigned int index)
+void LinearMovementConstraint<DataTypes>::removeIndex(unsigned int index)
 {
-    removeValue(*f_indices.beginEdit(),index);
-    f_indices.endEdit();
+    removeValue(*m_indices.beginEdit(),index);
+    m_indices.endEdit();
 }
 
 template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::clearTranslations()
+void LinearMovementConstraint<DataTypes>::clearKeyMovements()
 {
-    f_keyTimes.beginEdit()->clear();
-    f_keyTimes.endEdit();
-    f_keyMovements.beginEdit()->clear();
-    f_keyMovements.endEdit();
+    m_keyTimes.beginEdit()->clear();
+    m_keyTimes.endEdit();
+    m_keyMovements.beginEdit()->clear();
+    m_keyMovements.endEdit();
 }
 
 template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::addTranslation(Real time, Deriv movement)
+void LinearMovementConstraint<DataTypes>::addKeyMovement(Real time, Deriv movement)
 {
-    f_keyTimes.beginEdit()->push_back( time );
-    f_keyTimes.endEdit();
-    f_keyMovements.beginEdit()->push_back( movement );
-    f_keyMovements.endEdit();
+    m_keyTimes.beginEdit()->push_back( time );
+    m_keyTimes.endEdit();
+    m_keyMovements.beginEdit()->push_back( movement );
+    m_keyMovements.endEdit();
 }
 
 // -- Constraint interface
@@ -163,7 +163,7 @@ void LinearMovementConstraint<DataTypes>::init()
     this->core::componentmodel::behavior::Constraint<DataTypes>::init();
 
     // Initialize functions and parameters
-    topology::PointSubset my_subset = f_indices.getValue();
+    topology::PointSubset my_subset = m_indices.getValue();
 
     my_subset.setTestFunction(FCTestNewPointFunction);
     my_subset.setRemovalFunction(FCRemovalFunction);
@@ -171,17 +171,62 @@ void LinearMovementConstraint<DataTypes>::init()
     my_subset.setTestParameter( (void *) this );
     my_subset.setRemovalParameter( (void *) this );
 
+    nextM = prevM = Deriv();
+
 }
 
+template <class DataTypes>
+void LinearMovementConstraint<DataTypes>::projectResponse(VecDeriv& )
+{
+
+}
 
 template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::projectResponse(VecDeriv& dx)
+void LinearMovementConstraint<DataTypes>::projectVelocity(VecDeriv& dx)
 {
-    const SetIndexArray & indices = f_indices.getValue().getArray();
-
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    Real cT = (Real) this->getContext()->getTime();
+    if(cT <= *m_keyTimes.getValue().rbegin())
     {
-        dx[*it] = Deriv();
+        const SetIndexArray & indices = m_indices.getValue().getArray();
+
+        bool finished=false;
+
+        typename helper::vector<Real>::const_iterator it_t = m_keyTimes.getValue().begin();
+        typename VecDeriv::const_iterator it_m = m_keyMovements.getValue().begin();
+
+        //WARNING : we consider that the key-events are in chronological order
+        //here we search between which keyTimes we are, to know which are the movements to interpolate
+        while( it_t != m_keyTimes.getValue().end() && !finished)
+        {
+            if( *it_t <= cT)
+            {
+                prevT = *it_t;
+                prevM = *it_m;
+            }
+            else
+            {
+                nextT = *it_t;
+                nextM = *it_m;
+                finished = true;
+            }
+            it_t++;
+            it_m++;
+        }
+
+        //if we found 2 keyTimes, we have to interpolate a movement
+        if(finished)
+        {
+            Real dTsimu = (Real) this->getContext()->getDt();
+            Real dt = (cT - prevT) / (nextT - prevT);
+            Deriv m= (nextM-prevM)*dt;
+            Deriv mPrev= (nextM-prevM)*(((cT-dTsimu) - prevT) / (nextT - prevT));
+
+            //set the movment to the Dofs
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            {
+                dx[*it] = (m - mPrev) * (1/dTsimu);
+            }
+        }
     }
 }
 
@@ -189,60 +234,27 @@ void LinearMovementConstraint<DataTypes>::projectResponse(VecDeriv& dx)
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::projectPosition(VecCoord& x)
 {
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    Real cT = (Real) this->getContext()->getTime();
 
-    Deriv m1, m2;
-    double cT = this->getContext()->getTime();
-    bool finished=false;
+    if (cT==0.0)
+        x0.resize( x.size() );
 
-    if(cT==0.0)
+    if(cT <= *m_keyTimes.getValue().rbegin() && nextT!=prevT)
     {
-        prevMovement = Deriv();
-    }
+        const SetIndexArray & indices = m_indices.getValue().getArray();
 
-
-    typename helper::vector<Real>::const_iterator it_t = f_keyTimes.getValue().begin();
-    typename VecDeriv::const_iterator it_m = f_keyMovements.getValue().begin();
-
-    //WARNING : we consider that the key-events are in chronological order
-    //here we search between which keyTimes we are, to know which are the movements to interpolate
-    while( it_t != f_keyTimes.getValue().end() && !finished)
-    {
-        if( *it_t <= cT)
-        {
-            prevT = *it_t;
-            if(prevT == nextT)
-            {
-                prevMovement = Deriv();
-            }
-            m1 = *it_m;
-        }
-        else
-        {
-            nextT = *it_t;
-            m2 = *it_m;
-            finished = true;
-        }
-        it_t++;
-        it_m++;
-    }
-
-    //if we found 2 keyTimes, we have to interpolate a movement
-    if(finished)
-    {
-        double dt = (cT - prevT) / (nextT - prevT);
-        Deriv m= (m2-m1)*dt;
-
-        m -= prevMovement;
-        prevMovement += m;
+        Real dt = (cT - prevT) / (nextT - prevT);
+        Deriv m = prevM + (nextM-prevM)*dt;
 
         //set the movment to the Dofs
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            x[*it] += m;
+            if (cT == 0.0)
+                x0[*it] = x[*it];
+
+            x[*it] = x0[*it] + m ;
         }
     }
-
 }
 
 // Matrix Integration interface
@@ -250,7 +262,7 @@ void LinearMovementConstraint<DataTypes>::projectPosition(VecCoord& x)
 void LinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int &offset)
 {
     std::cout << "applyConstraint in Matrix with offset = " << offset << std::endl;
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = m_indices.getValue().getArray();
 
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
@@ -290,7 +302,7 @@ void LinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseVecto
 {
 	std::cout << "applyConstraint in Vector with offset = " << offset << std::endl;
 
-	const SetIndexArray & indices = f_indices.getValue().getArray();
+	const SetIndexArray & indices = m_indices.getValue().getArray();
 	for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
 	{
 		vect->element(3 * (*it) + offset) = 0.0;
@@ -309,13 +321,15 @@ void LinearMovementConstraint<DataTypes>::draw()
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);
-    glBegin (GL_POINTS);
-    const SetIndexArray & indices = f_indices.getValue().getArray();
-    for (SetIndexArray::const_iterator it = indices.begin();
-            it != indices.end();
-            ++it)
+    glBegin (GL_LINES);
+    const SetIndexArray & indices = m_indices.getValue().getArray();
+    for (unsigned int i=0 ; i<m_keyMovements.getValue().size()-1 ; i++)
     {
-        gl::glVertexT(x[*it]);
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            gl::glVertexT(x0[*it]+m_keyMovements.getValue()[i]);
+            gl::glVertexT(x0[*it]+m_keyMovements.getValue()[i+1]);
+        }
     }
     glEnd();
 }
