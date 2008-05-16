@@ -32,18 +32,6 @@
 namespace sofa
 {
 
-namespace core
-{
-namespace componentmodel
-{
-namespace behavior
-{
-template class PairInteractionForceField<Rigid3dTypes>;
-template class PairInteractionForceField<Rigid3fTypes>;
-}
-}
-}
-
 namespace component
 {
 
@@ -57,12 +45,20 @@ SOFA_DECL_CLASS ( FrameSpringForceField );
 // Register in the Factory
 
 int FrameSpringForceFieldClass = core::RegisterObject ( "Springs for Flexibles" )
+#ifndef SOFA_FLOAT
         .add< FrameSpringForceField<Rigid3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
         .add< FrameSpringForceField<Rigid3fTypes> >()
+#endif
         ;
 
+#ifndef SOFA_FLOAT
 template class FrameSpringForceField<Rigid3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
 template class FrameSpringForceField<Rigid3fTypes>;
+#endif
 
 } // namespace forcefield
 
