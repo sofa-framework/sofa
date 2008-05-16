@@ -39,11 +39,13 @@
 #include <Q3ListView>
 #include <Q3Table>
 #include <Q3GroupBox>
+#include <Q3TextEdit>
 #else
 #include <qdialog.h>
 #include <qlistview.h>
 #include <qtable.h>
 #include <qgroupbox.h>
+#include <qtextedit.h>
 #endif
 
 
@@ -70,6 +72,7 @@ using sofa::defaulttype::Vec;
 typedef QListViewItem Q3ListViewItem;
 typedef QTable    Q3Table;
 typedef QGroupBox Q3GroupBox;
+typedef QTextEdit   Q3TextEdit;
 #endif
 class ModifyObject : public QDialog
 {
@@ -86,6 +89,7 @@ public:
 
 public slots:
     void updateValues();              //update the node with the values of the field
+    void updateTextEdit();            //update the text fields due to unknown data field
     void updateTables();              //update the tables of value at each step of the simulation
     void saveTables();                //Save in datafield the content of a
     void changeValue();               //each time a field is modified
@@ -169,6 +173,8 @@ protected:
     std::list< QObject* >                         list_Object;
     std::list< std::list< QObject* > * >          list_PointSubset;
     std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> > list_Table;
+    std::list< std::pair< Q3TextEdit*, core::objectmodel::BaseData*> > list_TextEdit;
+    std::map< core::objectmodel::BaseData*, int > dataIndexTab;
     void *Id;
     bool visualContentModified;
     std::vector< double > history;
