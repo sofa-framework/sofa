@@ -22,6 +22,23 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
+
+// CONVENTION : indices ordering for the vertices of an hexahedron :
+//
+// 	   Y  3---------2
+//     ^ /	       /|
+//     |/	      / |
+//     7---------6  |
+//     |    	 |  |
+//     |  0------|--1
+//     | / 	     | /
+//     |/	     |/
+//     4---------5-->X
+//    /
+//   /
+//  Z
+
+
 #ifndef SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETTOPOLOGY_H
 #define SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETTOPOLOGY_H
 
