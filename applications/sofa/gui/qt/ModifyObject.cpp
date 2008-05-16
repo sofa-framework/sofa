@@ -1919,7 +1919,7 @@ void ModifyObject::updateTextEdit()
     {
         if ((dataIndexTab.find((*it_list_TextEdit).second))->second == dialogTab->currentPageIndex())
         {
-            (*it_list_TextEdit).first->setText( (*it_list_TextEdit).second->getValueString());
+            (*it_list_TextEdit).first->setText( QString((*it_list_TextEdit).second->getValueString().c_str()));
         }
     }
 }
