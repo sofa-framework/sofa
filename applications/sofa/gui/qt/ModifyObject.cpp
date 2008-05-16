@@ -839,12 +839,12 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     if ((*it).second->getValueString().empty())
                     {
                         box->hide();
+                        std::cerr << (*it).first << " : " << (*it).second->getValueTypeString() << " Not added because empty \n";
                         --counterWidget;
                     }
                     else
                     {
                         list_TextEdit.push_back(std::make_pair(textedit, (*it).second));
-                        std::cerr << (*it).first << " : " << (*it).second->getValueTypeString() << " Not added because empty \n";
                         ++counterWidget; //count for two classic widgets
                         connect( textedit, SIGNAL( textChanged() ), this, SLOT( changeValue() ) );
                     }
