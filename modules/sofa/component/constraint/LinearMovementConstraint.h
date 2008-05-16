@@ -64,28 +64,29 @@ public:
     typedef helper::vector<unsigned int> SetIndexArray;
 
 public:
-    Data<SetIndex> f_indices;
-    Data<helper::vector<Real> > f_keyTimes;
-    Data<VecDeriv > f_keyMovements;
+    Data<SetIndex> m_indices;
+    Data<helper::vector<Real> > m_keyTimes;
+    Data<VecDeriv > m_keyMovements;
 
-    Deriv prevMovement;
-    double prevT, nextT;
+    Real prevT, nextT;
+    Deriv prevM, nextM;
+    VecCoord x0;
 
     LinearMovementConstraint();
 
     virtual ~LinearMovementConstraint();
 
     void clearIndices();
-    void addIndice(unsigned int index);
-    void removeIndice(unsigned int index);
-    void clearTranslations();
-    void addTranslation(Real time, Deriv movement);
+    void addIndex(unsigned int index);
+    void removeIndex(unsigned int index);
+    void clearKeyMovements();
+    void addKeyMovement(Real time, Deriv movement);
     //void removeTranslation();
 
     // -- Constraint interface
     void init();
     void projectResponse(VecDeriv& dx);
-    virtual void projectVelocity(VecDeriv& /*dx*/) {} ///< project dx to constrained space (dx models a velocity)
+    virtual void projectVelocity(VecDeriv& dx); ///< project dx to constrained space (dx models a velocity)
     virtual void projectPosition(VecCoord& x); ///< project x to constrained space (x models a position)
 
     //void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int &offset);

@@ -22,16 +22,20 @@ using namespace sofa::helper;
 template <>
 void LinearMovementConstraint<Rigid3dTypes>::draw()
 {
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = m_indices.getValue().getArray();
     if (!getContext()->getShowBehaviorModels()) return;
     VecCoord& x = *mstate->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);
-    glBegin (GL_POINTS);
-    for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    glBegin (GL_LINES);
+    for (unsigned int i=0 ; i<m_keyMovements.getValue().size()-1 ; i++)
     {
-        gl::glVertexT(x[0].getCenter());
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            gl::glVertexT(x0[*it].getCenter()+m_keyMovements.getValue()[i].getVCenter());
+            gl::glVertexT(x0[*it].getCenter()+m_keyMovements.getValue()[i+1].getVCenter());
+        }
     }
     glEnd();
 }
@@ -40,16 +44,20 @@ void LinearMovementConstraint<Rigid3dTypes>::draw()
 template <>
 void LinearMovementConstraint<Rigid3fTypes>::draw()
 {
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = m_indices.getValue().getArray();
     if (!getContext()->getShowBehaviorModels()) return;
     VecCoord& x = *mstate->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);
-    glBegin (GL_POINTS);
-    for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    glBegin (GL_LINES);
+    for (unsigned int i=0 ; i<m_keyMovements.getValue().size()-1 ; i++)
     {
-        gl::glVertexT(x[0].getCenter());
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            gl::glVertexT(x0[*it].getCenter()+m_keyMovements.getValue()[i].getVCenter());
+            gl::glVertexT(x0[*it].getCenter()+m_keyMovements.getValue()[i+1].getVCenter());
+        }
     }
     glEnd();
 }
