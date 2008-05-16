@@ -24,7 +24,6 @@ void LinearMovementConstraint<Rigid3dTypes>::draw()
 {
     const SetIndexArray & indices = m_indices.getValue().getArray();
     if (!getContext()->getShowBehaviorModels()) return;
-    VecCoord& x = *mstate->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);
@@ -46,7 +45,6 @@ void LinearMovementConstraint<Rigid3fTypes>::draw()
 {
     const SetIndexArray & indices = m_indices.getValue().getArray();
     if (!getContext()->getShowBehaviorModels()) return;
-    VecCoord& x = *mstate->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);

@@ -317,7 +317,6 @@ void LinearMovementConstraint<DataTypes>::draw()
 {
     if (!getContext()->
         getShowBehaviorModels()) return;
-    const VecCoord& x = *this->mstate->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);
