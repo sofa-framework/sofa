@@ -2693,6 +2693,7 @@ void SimpleGUI::setScene(sofa::simulation::tree::GNode* scene, const char* filen
             interactor = NULL;
     }
     groot = scene;
+    groot->getContext()->get( interactor);
     initTexturesDone = false;
     sceneBBoxIsValid = false;
     redraw();

@@ -113,7 +113,8 @@ public:
     virtual void setScene(sofa::simulation::tree::GNode* scene, const char* filename=NULL, bool /*keepParams*/=false)
     {
 //               if (interactor != NULL) delete interactor;
-        interactor = NULL;
+        //interactor = NULL;
+        scene->getContext()->get( interactor);
         std::ostringstream ofilename;
         std::string screenshot_prefix;
 
