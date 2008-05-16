@@ -329,7 +329,8 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
         tex = loadTexture(textureName);
     }
     tex = !textureName.empty();
-    if (!filename.empty())
+
+    if (!filename.empty() && vertices.size() == 0)
     {
         //name = filename;
         helper::io::Mesh *objLoader;
