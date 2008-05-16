@@ -45,6 +45,8 @@ SOFA_DECL_CLASS(Line)
 int LineModelClass = core::RegisterObject("collision model using a linear mesh, as described in MeshTopology")
         .add< LineModel >()
         .addAlias("Line")
+        .addAlias("LineMeshModel")
+        .addAlias("LineSetModel")
         .addAlias("LineMesh")
         .addAlias("LineSet")
         ;

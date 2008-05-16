@@ -143,7 +143,7 @@ public:
 
     void draw();
 
-    void handleTopologyChange();
+    virtual void handleTopologyChange();
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
 
@@ -178,39 +178,6 @@ inline const Vector3& Triangle::n() const { return model->elems[index].normal; }
 inline       Vector3& Triangle::n()       { return model->elems[index].normal; }
 
 inline int            Triangle::flags() const { return model->elems[index].flags; }
-
-//class TriangleMeshModel : public TriangleModel
-//{
-//public:
-//	typedef topology::MeshTopology Topology;
-//    TriangleMeshModel();
-//    virtual void init();
-//    Topology* getTopology() { return mesh; }
-//protected:
-//    int meshRevision;
-//    void updateFromTopology();
-//	Topology* mesh;
-//};
-
-//class TriangleSetModel : public TriangleModel
-//{
-//public:
-//    typedef topology::TriangleSetTopology<DataTypes> Topology;
-//
-//    TriangleSetModel();
-//
-//    virtual void init();
-//
-//    Topology* getTopology() { return mesh; }
-//
-//    // handle topological changes
-//    virtual void handleTopologyChange();
-//
-//protected:
-//
-//    Topology* mesh;
-//    void updateFromTopology();
-//};
 
 } // namespace collision
 
