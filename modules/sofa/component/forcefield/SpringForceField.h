@@ -76,6 +76,7 @@ protected:
     class Loader;
 
     SpringForceFieldInternalData<DataTypes> data;
+    friend class SpringForceFieldInternalData<DataTypes>;
 
     void addSpringForce(SReal& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int i, const Spring& spring);
 

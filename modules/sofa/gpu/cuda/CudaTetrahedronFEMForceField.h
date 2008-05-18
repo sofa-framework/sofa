@@ -8,6 +8,20 @@
 namespace sofa
 {
 
+namespace gpu
+{
+
+namespace cuda
+{
+
+template<class DataTypes>
+class CudaKernelsTetrahedronFEMForceField;
+
+} // namespace cuda
+
+} // namespace gpu
+
+
 namespace component
 {
 
@@ -16,15 +30,26 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-template <class Coord, class Deriv, class Real>
-class TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<Coord,Deriv,Real> >
+template <class TCoord, class TDeriv, class TReal>
+class TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >
 {
 public:
-    //typedef float Real;
-    //typedef gpu::cuda::CudaVec3fTypes::Coord Coord;
-    typedef topology::MeshTopology::Tetra Element;
+    typedef gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> DataTypes;
+    typedef TetrahedronFEMForceField<DataTypes> Main;
+    typedef TetrahedronFEMForceFieldInternalData<DataTypes> Data;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::Real Real;
+
+    typedef typename Main::Element Element;
+    typedef typename Main::VecElement VecElement;
+    typedef typename Main::Index Index;
     typedef Mat<6, 6, Real> MaterialStiffness;
     typedef Mat<12, 6, Real> StrainDisplacement;
+
+    typedef gpu::cuda::CudaKernelsTetrahedronFEMForceField<DataTypes> Kernels;
 
     /** Static data associated with each element
 
@@ -100,9 +125,7 @@ public:
     The forces will be computed using \f$F = R J K J^t R^t X\f$.
     We can apply a scaling factor to J if we divide K by its square: \f$F = R (1/b_x J) (b_x^2 K) (1/b_x J)^t R^t X\f$.
 
-    This allows us to do all computations from the values \f$\left(b_x \quad c_x \quad c_y \quad d_x \quad d_y \quad d_z \quad \gamma b_x^2 \quad \mu^2 b_x^2 \quad Jb_x/b_x \quad Jb_y/b_x \quad Jb_z/b_x\right)\f$. Including the 4 vertex indices, this represents 15 values, so we have one extra available variable to align the structure to 64 octets.
-
-    To allow for easy coalesced accesses on the GPU, the data could be split in group of 16 bytes, or 4 32-bits values.
+    This allows us to do all computations from the values \f$\left(b_x \quad c_x \quad c_y \quad d_x \quad d_y \quad d_z \quad \gamma b_x^2 \quad \mu^2 b_x^2 \quad Jb_x/b_x \quad Jb_y/b_x \quad Jb_z/b_x\right)\f$. Including the 4 vertex indices, this represents 15 values.
 
     */
     struct GPUElement
@@ -112,33 +135,25 @@ public:
         //Vec<4,int> tetra;
         int ia[BSIZE],ib[BSIZE],ic[BSIZE],id[BSIZE];
         /// @}
-        //};
-        //struct GPUElement2
-        //{
+
         /// @name material stiffness matrix
         /// @{
         //Mat<6,6,Real> K;
-        float gamma_bx2[BSIZE], mu2_bx2[BSIZE];
+        Real gamma_bx2[BSIZE], mu2_bx2[BSIZE];
         /// @}
+
         /// @name initial position of the vertices in the local (rotated) coordinate system
         /// @{
         //Vec3f initpos[4];
-        float bx[BSIZE],cx[BSIZE];
-        //};
-        //struct GPUElement3
-        //{
-        float cy[BSIZE],dx[BSIZE],dy[BSIZE],dz[BSIZE];
+        Real bx[BSIZE],cx[BSIZE];
+        Real cy[BSIZE],dx[BSIZE],dy[BSIZE],dz[BSIZE];
         /// @}
-        //};
-        //struct GPUElement4
-        //{
+
         /// strain-displacement matrix
         /// @{
         //Mat<12,6,Real> J;
-        float Jbx_bx[BSIZE],Jby_bx[BSIZE],Jbz_bx[BSIZE];
+        Real Jbx_bx[BSIZE],Jby_bx[BSIZE],Jbz_bx[BSIZE];
         /// @}
-        /// unused value to align to 64 bytes
-        float dummy[BSIZE];
     };
 
     gpu::cuda::CudaVector<GPUElement> elems;
@@ -147,17 +162,17 @@ public:
     struct GPUElementState
     {
         /// rotation matrix
-        Mat<3,3,float> Rt;
+        Mat<3,3,Real> Rt;
         /// current internal stress
-        Vec<6,float> S;
+        Vec<6,Real> S;
         /// unused value to align to 64 bytes
-        float dummy;
+        Real dummy;
     };
 
     /// Varying data associated with each element
     struct GPUElementForce
     {
-        Vec<4,float> fA,fB,fC,fD;
+        Vec<4,Real> fA,fB,fC,fD;
     };
 
     gpu::cuda::CudaVector<GPUElementState> state;
@@ -213,13 +228,13 @@ public:
         e.bx[i] = b[0];
         e.cx[i] = c[0]; e.cy[i] = c[1];
         e.dx[i] = d[0]; e.dy[i] = d[1]; e.dz[i] = d[2];
-        float bx2 = e.bx[i] * e.bx[i];
+        Real bx2 = e.bx[i] * e.bx[i];
         e.gamma_bx2[i] = K[0][1] * bx2;
         e.mu2_bx2[i] = 2*K[3][3] * bx2;
         e.Jbx_bx[i] = (e.cy[i] * e.dz[i]) / e.bx[i];
         e.Jby_bx[i] = (-e.cx[i] * e.dz[i]) / e.bx[i];
         e.Jbz_bx[i] = (e.cx[i]*e.dy[i] - e.cy[i]*e.dx[i]) / e.bx[i];
-        e.dummy[i] = 0;
+        //e.dummy[i] = 0;
         /*std::cout << "GPU Info:\n b = "<<e.bx<<"\n c = "<<e.cx<<" "<<e.cy<<"\n d = "<<e.dx<<" "<<e.dy<<" "<<e.dz<<"\n K = "
             <<(e.gamma_bx2+e.mu2_bx2)/bx2<<" "<<(e.gamma_bx2)/bx2<<" "<<(e.gamma_bx2)/bx2<<" 0 0 0\n     "
             <<(e.gamma_bx2)/bx2<<" "<<(e.gamma_bx2+e.mu2_bx2)/bx2<<" "<<(e.gamma_bx2)/bx2<<" 0 0 0\n     "
@@ -245,33 +260,35 @@ public:
             <<"0 "<<(0)*e.bx<<" 0 "<<(0)*e.bx<<" "<<(e.cy)*e.bx<<" 0\n     "
             <<"0 0 "<<(e.cy)*e.bx<<" 0 "<<(0)*e.bx<<" "<<(0)*e.bx<<std::endl;*/
     }
+
+    static void reinit(Main* m);
+    static void addForce(Main* m, VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/);
+    static void addDForce (Main* m, VecDeriv& df, const VecDeriv& dx);
 };
 
 //
 // TetrahedronFEMForceField
 //
 
-template <>
-void TetrahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::reinit();
+// I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
+#define CudaTetrahedronFEMForceField_DeclMethods(T) \
+    template<> void TetrahedronFEMForceField< T >::reinit(); \
+    template<> void TetrahedronFEMForceField< T >::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v); \
+    template<> void TetrahedronFEMForceField< T >::addDForce(VecDeriv& df, const VecDeriv& dx);
 
-template <>
-void TetrahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/);
+CudaTetrahedronFEMForceField_DeclMethods(gpu::cuda::CudaVec3fTypes);
+CudaTetrahedronFEMForceField_DeclMethods(gpu::cuda::CudaVec3f1Types);
 
-template <>
-void TetrahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::addDForce (VecDeriv& df, const VecDeriv& dx);
+#ifdef SOFA_DEV
+#ifdef SOFA_GPU_CUDA_DOUBLE
 
+CudaTetrahedronFEMForceField_DeclMethods(gpu::cuda::CudaVec3dTypes);
+CudaTetrahedronFEMForceField_DeclMethods(gpu::cuda::CudaVec3d1Types);
 
-//////// CudaVec3f1
+#endif // SOFA_GPU_CUDA_DOUBLE
+#endif // SOFA_DEV
 
-template <>
-void TetrahedronFEMForceField<gpu::cuda::CudaVec3f1Types>::reinit();
-
-template <>
-void TetrahedronFEMForceField<gpu::cuda::CudaVec3f1Types>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/);
-
-template <>
-void TetrahedronFEMForceField<gpu::cuda::CudaVec3f1Types>::addDForce (VecDeriv& df, const VecDeriv& dx);
-
+#undef CudaTetrahedronFEMForceField_DeclMethods
 
 } // namespace forcefield
 

@@ -106,6 +106,8 @@ protected:
 
     MechanicalObjectInternalData<DataTypes> data;
 
+    friend class MechanicalObjectInternalData<DataTypes>;
+
     std::ofstream* m_gnuplotFileX;
     std::ofstream* m_gnuplotFileV;
 

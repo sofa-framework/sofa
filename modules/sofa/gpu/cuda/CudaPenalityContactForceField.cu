@@ -13,7 +13,7 @@ namespace cuda
 
 extern "C"
 {
-    void PenalityContactForceFieldCuda3f_setContacts(unsigned int size, unsigned int nbTests, unsigned int maxPoints, const void* tests, const void* outputs, void* contacts, float d0, float stiffness, matrix3 xform);
+    void PenalityContactForceFieldCuda3f_setContacts(unsigned int size, unsigned int nbTests, unsigned int maxPoints, const void* tests, const void* outputs, void* contacts, float d0, float stiffness, matrix3<float> xform);
     void PenalityContactForceFieldCuda3f_addForce(unsigned int size, const void* contacts, void* pen, void* f1, const void* x1, const void* v1, void* f2, const void* x2, const void* v2);
     void PenalityContactForceFieldCuda3f_addDForce(unsigned int size, const void* contacts, const void* pen, void* f1, const void* dx1, void* f2, const void* dx2);
 }
@@ -21,9 +21,9 @@ extern "C"
 struct /*__align__(16)*/ GPUContact
 {
     int p1;
-    float3 p2;
+    CudaVec3<float> p2;
     float distance;
-    float3 normal;
+    CudaVec3<float> normal;
 };
 
 struct /*__align__(8)*/ GPUTestEntry
@@ -41,7 +41,7 @@ struct /*__align__(8)*/ GPUTestEntry
 
 __shared__ GPUTestEntry curTestEntry;
 
-__global__ void PenalityContactForceFieldCuda3f_setContacts_kernel(const GPUTestEntry* tests, const GPUContact* outputs, float4* contacts, float d0, float stiffness, matrix3 xform)
+__global__ void PenalityContactForceFieldCuda3f_setContacts_kernel(const GPUTestEntry* tests, const GPUContact* outputs, CudaVec4<float>* contacts, float d0, float stiffness, matrix3<float> xform)
 {
     if (threadIdx.x == 0)
         curTestEntry = tests[blockIdx.x];
@@ -51,19 +51,19 @@ __global__ void PenalityContactForceFieldCuda3f_setContacts_kernel(const GPUTest
     GPUContact c = outputs[curTestEntry.firstIndex + threadIdx.x];
     if (threadIdx.x < curTestEntry.curSize)
     {
-        float3 n = xform * c.normal;
-        //float3 n = xform * make_float3(0,0,-1); //c.normal;
+        CudaVec3<float> n = xform * c.normal;
+        //CudaVec3<float> n = xform * CudaVec3<float>::make(0,0,-1); //c.normal;
         float d = c.distance + d0;
         //float ks = sqrt(stiffness / d);
         float ks = rsqrt(d / stiffness);
         n *= ks;
         d *= ks;
-        contacts[curTestEntry.newIndex + threadIdx.x] =  make_float4(n.x,n.y,n.z,d);
+        contacts[curTestEntry.newIndex + threadIdx.x] =  CudaVec4<float>::make(n.x,n.y,n.z,d);
     }
 }
 
-__global__ void PenalityContactForceFieldCuda3f_addForce_kernel(int size, const float4* contacts, float* pen, float* f1, const float* x1, const float* v1, float* f2, const float* x2, const float* v2)
-//, GPUSphere sphere, float4* penetration, float* f, const float* x, const float* v)
+__global__ void PenalityContactForceFieldCuda3f_addForce_kernel(int size, const CudaVec4<float>* contacts, float* pen, float* f1, const float* x1, const float* v1, float* f2, const float* x2, const float* v2)
+//, GPUSphere sphere, CudaVec4<float>* penetration, float* f, const float* x, const float* v)
 {
     int index0 = umul24(blockIdx.x,BSIZE);
     int index0_3 = umul24(blockIdx.x,BSIZE*3); //index0*3;
@@ -89,11 +89,11 @@ __global__ void PenalityContactForceFieldCuda3f_addForce_kernel(int size, const 
 
     __syncthreads();
 
-    float3 u = make_float3(temp[index_3  ], temp[index_3+1], temp[index_3+2]);
-    float4 c = contacts[index];
+    CudaVec3<float> u = CudaVec3<float>::make(temp[index_3  ], temp[index_3+1], temp[index_3+2]);
+    CudaVec4<float> c = contacts[index];
     float p = c.w - (u.x*c.x+u.y*c.y+u.z*c.z);
     pen[index] = p;
-    float3 force = make_float3(0,0,0);
+    CudaVec3<float> force = CudaVec3<float>::make(0,0,0);
     if (p>0)
     {
         force.x = -c.x*p;
@@ -116,7 +116,7 @@ __global__ void PenalityContactForceFieldCuda3f_addForce_kernel(int size, const 
     f2[index+2*BSIZE] -= temp[index+2*BSIZE];
 }
 
-__global__ void PenalityContactForceFieldCuda3f_addDForce_kernel(int size, const float4* contacts, const float* pen, float* df1, const float* dx1, float* df2, const float* dx2)
+__global__ void PenalityContactForceFieldCuda3f_addDForce_kernel(int size, const CudaVec4<float>* contacts, const float* pen, float* df1, const float* dx1, float* df2, const float* dx2)
 {
     int index0 = umul24(blockIdx.x,BSIZE);
     int index0_3 = umul24(blockIdx.x,BSIZE*3); //index0*3;
@@ -140,9 +140,9 @@ __global__ void PenalityContactForceFieldCuda3f_addDForce_kernel(int size, const
 
     __syncthreads();
 
-    float3 du = make_float3(temp[index_3  ], temp[index_3+1], temp[index_3+2]);
-    float4 c = contacts[index];
-    float3 force = make_float3(0,0,0);
+    CudaVec3<float> du = CudaVec3<float>::make(temp[index_3  ], temp[index_3+1], temp[index_3+2]);
+    CudaVec4<float> c = contacts[index];
+    CudaVec3<float> force = CudaVec3<float>::make(0,0,0);
     if (pen[index]>0)
     {
         float dp = - (du.x*c.x+du.y*c.y+du.z*c.z);
@@ -170,27 +170,27 @@ __global__ void PenalityContactForceFieldCuda3f_addDForce_kernel(int size, const
 // CPU-side methods //
 //////////////////////
 
-void PenalityContactForceFieldCuda3f_setContacts(unsigned int size, unsigned int nbTests, unsigned int maxPoints, const void* tests, const void* outputs, void* contacts, float d0, float stiffness, matrix3 xform)
+void PenalityContactForceFieldCuda3f_setContacts(unsigned int size, unsigned int nbTests, unsigned int maxPoints, const void* tests, const void* outputs, void* contacts, float d0, float stiffness, matrix3<float> xform)
 {
     // round up to 16
     //maxPoints = (maxPoints+15)&-16;
     dim3 threads(maxPoints,1);
     dim3 grid(nbTests,1);
-    PenalityContactForceFieldCuda3f_setContacts_kernel<<< grid, threads >>>((const GPUTestEntry*)tests, (GPUContact*)outputs, (float4*)contacts, d0, stiffness, xform);
+    PenalityContactForceFieldCuda3f_setContacts_kernel<<< grid, threads >>>((const GPUTestEntry*)tests, (GPUContact*)outputs, (CudaVec4<float>*)contacts, d0, stiffness, xform);
 }
 
 void PenalityContactForceFieldCuda3f_addForce(unsigned int size, const void* contacts, void* pen, void* f1, const void* x1, const void* v1, void* f2, const void* x2, const void* v2)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    PenalityContactForceFieldCuda3f_addForce_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const float4*)contacts, (float*)pen, (float*)f1, (const float*)x1, (const float*)v1, (float*)f2, (const float*)x2, (const float*)v2);
+    PenalityContactForceFieldCuda3f_addForce_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const CudaVec4<float>*)contacts, (float*)pen, (float*)f1, (const float*)x1, (const float*)v1, (float*)f2, (const float*)x2, (const float*)v2);
 }
 
 void PenalityContactForceFieldCuda3f_addDForce(unsigned int size, const void* contacts, const void* pen, void* df1, const void* dx1, void* df2, const void* dx2)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    PenalityContactForceFieldCuda3f_addDForce_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const float4*)contacts, (const float*)pen, (float*)df1, (const float*)dx1, (float*)df2, (const float*)dx2);
+    PenalityContactForceFieldCuda3f_addDForce_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const CudaVec4<float>*)contacts, (const float*)pen, (float*)df1, (const float*)dx1, (float*)df2, (const float*)dx2);
 }
 
 #if defined(__cplusplus) && CUDA_VERSION != 2000

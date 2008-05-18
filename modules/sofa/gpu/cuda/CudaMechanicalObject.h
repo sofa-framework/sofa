@@ -7,60 +7,70 @@
 namespace sofa
 {
 
+namespace gpu
+{
+
+namespace cuda
+{
+
+template<class DataTypes>
+class CudaKernelsMechanicalObject;
+
+} // namespace cuda
+
+} // namespace gpu
+
 namespace component
 {
 
-template <>
-class MechanicalObjectInternalData<gpu::cuda::CudaVec3fTypes>
+template<class TCoord, class TDeriv, class TReal>
+class MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >
 {
 public:
+    typedef gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> DataTypes;
+    typedef MechanicalObject<DataTypes> Main;
+    typedef typename Main::VecId VecId;
+    typedef typename Main::VMultiOp VMultiOp;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::Real Real;
+
+    typedef gpu::cuda::CudaKernelsMechanicalObject<DataTypes> Kernels;
+
     /// Temporary storate for dot product operation
-    gpu::cuda::CudaVec3fTypes::VecDeriv tmpdot;
+    VecDeriv tmpdot;
+
+    static void accumulateForce(Main* m);
+    static void vAlloc(Main* m, VecId v);
+    static void vOp(Main* m, VecId v, VecId a, VecId b, double f);
+    static void vMultiOp(Main* m, const VMultiOp& ops);
+    static double vDot(Main* m, VecId a, VecId b);
+    static void resetForce(Main* m);
 };
 
-template <>
-void MechanicalObject<gpu::cuda::CudaVec3fTypes>::accumulateForce();
+// I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
+#define CudaMechanicalObject_DeclMethods(T) \
+    template<> void MechanicalObject< T >::accumulateForce(); \
+    template<> void MechanicalObject< T >::vOp(VecId v, VecId a, VecId b, double f); \
+    template<> void MechanicalObject< T >::vMultiOp(const VMultiOp& ops); \
+    template<> double MechanicalObject< T >::vDot(VecId a, VecId b); \
+    template<> void MechanicalObject< T >::resetForce();
 
-template <>
-void MechanicalObject<gpu::cuda::CudaVec3fTypes>::vOp(VecId v, VecId a, VecId b, double f);
+CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3fTypes);
+CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3f1Types);
 
-template <>
-void MechanicalObject<gpu::cuda::CudaVec3fTypes>::vMultiOp(const VMultiOp& ops);
+#ifdef SOFA_DEV
+#ifdef SOFA_GPU_CUDA_DOUBLE
 
-template <>
-double MechanicalObject<gpu::cuda::CudaVec3fTypes>::vDot(VecId a, VecId b);
+CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3dTypes);
+CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3d1Types);
 
-template <>
-void MechanicalObject<gpu::cuda::CudaVec3fTypes>::resetForce();
+#endif // SOFA_GPU_CUDA_DOUBLE
+#endif // SOFA_DEV
 
-template <>
-void MechanicalObject<gpu::cuda::CudaVec3fTypes>::getIndicesInSpace(helper::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const;
-
-template <>
-class MechanicalObjectInternalData<gpu::cuda::CudaVec3f1Types>
-{
-public:
-    /// Temporary storate for dot product operation
-    gpu::cuda::CudaVec3f1Types::VecDeriv tmpdot;
-};
-
-template <>
-void MechanicalObject<gpu::cuda::CudaVec3f1Types>::accumulateForce();
-
-template <>
-void MechanicalObject<gpu::cuda::CudaVec3f1Types>::vOp(VecId v, VecId a, VecId b, double f);
-
-template <>
-void MechanicalObject<gpu::cuda::CudaVec3f1Types>::vMultiOp(const VMultiOp& ops);
-
-template <>
-double MechanicalObject<gpu::cuda::CudaVec3f1Types>::vDot(VecId a, VecId b);
-
-template <>
-void MechanicalObject<gpu::cuda::CudaVec3f1Types>::resetForce();
-
-template <>
-void MechanicalObject<gpu::cuda::CudaVec3f1Types>::getIndicesInSpace(helper::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const;
+#undef CudaMechanicalObject_DeclMethods
 
 } // namespace component
 

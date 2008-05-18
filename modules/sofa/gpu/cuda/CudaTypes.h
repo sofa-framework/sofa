@@ -914,9 +914,9 @@ inline const char* CudaRigid3fTypes::Name()
 #ifdef SOFA_DEV
 
 // support for double precision
+//#define SOFA_GPU_CUDA_DOUBLE
 
-//typedef sofa::defaulttype::Vec3d Vec3d;
-//typedef sofa::defaulttype::Vec2d Vec2d;
+#ifdef SOFA_GPU_CUDA_DOUBLE
 using sofa::defaulttype::Vec3d;
 using sofa::defaulttype::Vec2d;
 typedef Vec3r1<double> Vec3d1;
@@ -955,7 +955,7 @@ inline const char* CudaRigid3dTypes::Name()
 {
     return "CudaRigid3d";
 }
-
+#endif
 
 #endif // SOFA_DEV
 } // namespace cuda

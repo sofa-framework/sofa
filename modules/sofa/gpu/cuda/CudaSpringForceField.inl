@@ -32,7 +32,107 @@ extern "C"
     void StiffSpringForceFieldCuda3f1_addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* x1, const void* v1, const void* x2, const void* v2, void* dfdx);
     void StiffSpringForceFieldCuda3f1_addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* dx, const void* x, const void* dfdx);
     void StiffSpringForceFieldCuda3f1_addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* dx1, const void* x1, const void* dx2, const void* x2, const void* dfdx);
-}
+
+#ifdef SOFA_DEV
+#ifdef SOFA_GPU_CUDA_DOUBLE
+
+    void SpringForceFieldCuda3d_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* x, const void* v);
+    void SpringForceFieldCuda3d_addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* x1, const void* v1, const void* x2, const void* v2);
+    void StiffSpringForceFieldCuda3d_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* x, const void* v, void* dfdx);
+    void StiffSpringForceFieldCuda3d_addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* x1, const void* v1, const void* x2, const void* v2, void* dfdx);
+    void StiffSpringForceFieldCuda3d_addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* dx, const void* x, const void* dfdx);
+    void StiffSpringForceFieldCuda3d_addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* dx1, const void* x1, const void* dx2, const void* x2, const void* dfdx);
+
+    void SpringForceFieldCuda3d1_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* x, const void* v);
+    void SpringForceFieldCuda3d1_addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* x1, const void* v1, const void* x2, const void* v2);
+    void StiffSpringForceFieldCuda3d1_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* x, const void* v, void* dfdx);
+    void StiffSpringForceFieldCuda3d1_addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* x1, const void* v1, const void* x2, const void* v2, void* dfdx);
+    void StiffSpringForceFieldCuda3d1_addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* dx, const void* x, const void* dfdx);
+    void StiffSpringForceFieldCuda3d1_addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* dx1, const void* x1, const void* dx2, const void* x2, const void* dfdx);
+
+#endif // SOFA_GPU_CUDA_DOUBLE
+#endif // SOFA_DEV
+
+} // extern "C"
+
+
+template<>
+class CudaKernelsSpringForceField<CudaVec3fTypes>
+{
+public:
+    static void addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* x, const void* v)
+    {   SpringForceFieldCuda3f_addForce(nbVertex, nbSpringPerVertex, springs, f, x, v); }
+    static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* x1, const void* v1, const void* x2, const void* v2)
+    {   SpringForceFieldCuda3f_addExternalForce(nbVertex, nbSpringPerVertex, springs, f1, x1, v1, x2, v2); }
+    static void addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* x, const void* v, void* dfdx)
+    {   StiffSpringForceFieldCuda3f_addForce(nbVertex, nbSpringPerVertex, springs, f, x, v, dfdx); }
+    static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* x1, const void* v1, const void* x2, const void* v2, void* dfdx)
+    {   StiffSpringForceFieldCuda3f_addExternalForce(nbVertex, nbSpringPerVertex, springs, f1, x1, v1, x2, v2, dfdx); }
+    static void addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* dx, const void* x, const void* dfdx)
+    {   StiffSpringForceFieldCuda3f_addDForce(nbVertex, nbSpringPerVertex, springs, f, dx, x, dfdx); }
+    static void addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* dx1, const void* x1, const void* dx2, const void* x2, const void* dfdx)
+    {   StiffSpringForceFieldCuda3f_addExternalDForce(nbVertex, nbSpringPerVertex, springs, f1, dx1, x1, dx2, x2, dfdx); }
+};
+
+template<>
+class CudaKernelsSpringForceField<CudaVec3f1Types>
+{
+public:
+    static void addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* x, const void* v)
+    {   SpringForceFieldCuda3f1_addForce(nbVertex, nbSpringPerVertex, springs, f, x, v); }
+    static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* x1, const void* v1, const void* x2, const void* v2)
+    {   SpringForceFieldCuda3f1_addExternalForce(nbVertex, nbSpringPerVertex, springs, f1, x1, v1, x2, v2); }
+    static void addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* x, const void* v, void* dfdx)
+    {   StiffSpringForceFieldCuda3f1_addForce(nbVertex, nbSpringPerVertex, springs, f, x, v, dfdx); }
+    static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* x1, const void* v1, const void* x2, const void* v2, void* dfdx)
+    {   StiffSpringForceFieldCuda3f1_addExternalForce(nbVertex, nbSpringPerVertex, springs, f1, x1, v1, x2, v2, dfdx); }
+    static void addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* dx, const void* x, const void* dfdx)
+    {   StiffSpringForceFieldCuda3f1_addDForce(nbVertex, nbSpringPerVertex, springs, f, dx, x, dfdx); }
+    static void addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* dx1, const void* x1, const void* dx2, const void* x2, const void* dfdx)
+    {   StiffSpringForceFieldCuda3f1_addExternalDForce(nbVertex, nbSpringPerVertex, springs, f1, dx1, x1, dx2, x2, dfdx); }
+};
+
+#ifdef SOFA_DEV
+#ifdef SOFA_GPU_CUDA_DOUBLE
+
+template<>
+class CudaKernelsSpringForceField<CudaVec3dTypes>
+{
+public:
+    static void addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* x, const void* v)
+    {   SpringForceFieldCuda3d_addForce(nbVertex, nbSpringPerVertex, springs, f, x, v); }
+    static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* x1, const void* v1, const void* x2, const void* v2)
+    {   SpringForceFieldCuda3d_addExternalForce(nbVertex, nbSpringPerVertex, springs, f1, x1, v1, x2, v2); }
+    static void addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* x, const void* v, void* dfdx)
+    {   StiffSpringForceFieldCuda3d_addForce(nbVertex, nbSpringPerVertex, springs, f, x, v, dfdx); }
+    static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* x1, const void* v1, const void* x2, const void* v2, void* dfdx)
+    {   StiffSpringForceFieldCuda3d_addExternalForce(nbVertex, nbSpringPerVertex, springs, f1, x1, v1, x2, v2, dfdx); }
+    static void addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* dx, const void* x, const void* dfdx)
+    {   StiffSpringForceFieldCuda3d_addDForce(nbVertex, nbSpringPerVertex, springs, f, dx, x, dfdx); }
+    static void addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* dx1, const void* x1, const void* dx2, const void* x2, const void* dfdx)
+    {   StiffSpringForceFieldCuda3d_addExternalDForce(nbVertex, nbSpringPerVertex, springs, f1, dx1, x1, dx2, x2, dfdx); }
+};
+
+template<>
+class CudaKernelsSpringForceField<CudaVec3d1Types>
+{
+public:
+    static void addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* x, const void* v)
+    {   SpringForceFieldCuda3d1_addForce(nbVertex, nbSpringPerVertex, springs, f, x, v); }
+    static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* x1, const void* v1, const void* x2, const void* v2)
+    {   SpringForceFieldCuda3d1_addExternalForce(nbVertex, nbSpringPerVertex, springs, f1, x1, v1, x2, v2); }
+    static void addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* x, const void* v, void* dfdx)
+    {   StiffSpringForceFieldCuda3d1_addForce(nbVertex, nbSpringPerVertex, springs, f, x, v, dfdx); }
+    static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* x1, const void* v1, const void* x2, const void* v2, void* dfdx)
+    {   StiffSpringForceFieldCuda3d1_addExternalForce(nbVertex, nbSpringPerVertex, springs, f1, x1, v1, x2, v2, dfdx); }
+    static void addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* dx, const void* x, const void* dfdx)
+    {   StiffSpringForceFieldCuda3d1_addDForce(nbVertex, nbSpringPerVertex, springs, f, dx, x, dfdx); }
+    static void addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* dx1, const void* x1, const void* dx2, const void* x2, const void* dfdx)
+    {   StiffSpringForceFieldCuda3d1_addExternalDForce(nbVertex, nbSpringPerVertex, springs, f1, dx1, x1, dx2, x2, dfdx); }
+};
+
+#endif // SOFA_GPU_CUDA_DOUBLE
+#endif // SOFA_DEV
 
 } // namespace cuda
 
@@ -46,14 +146,15 @@ namespace forcefield
 
 using namespace gpu::cuda;
 
-template <>
-void SpringForceField<CudaVec3fTypes>::init()
+template<class TCoord, class TDeriv, class TReal>
+void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::init(Main* m, bool stiff)
 {
-    this->Inherit::init();
-    const sofa::helper::vector<Spring>& springs = this->springs.getValue();
+    Data& data = m->data;
+    m->Inherit::init();
+    const sofa::helper::vector<Spring>& springs = m->springs.getValue();
     if (!springs.empty())
     {
-        bool external = (this->mstate1!=this->mstate2);
+        bool external = (m->mstate1!=m->mstate2);
         if (external)
         {
             std::map<int,int> nsprings1;
@@ -123,13 +224,19 @@ void SpringForceField<CudaVec3fTypes>::init()
             }
         }
     }
+    if (stiff)
+    {
+        data.springs1.dfdx.resize(data.springs1.springs.size());
+        data.springs2.dfdx.resize(data.springs2.springs.size());
+    }
 }
 
 // -- InteractionForceField interface
-template <>
-void SpringForceField<CudaVec3fTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
+template<class TCoord, class TDeriv, class TReal>
+void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addForce(Main* m, bool stiff, VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
 {
-    if (this->mstate1 == this->mstate2)
+    Data& data = m->data;
+    if (m->mstate1 == m->mstate2)
     {
         VecDeriv& f = f1;
         const VecCoord& x = x1;
@@ -138,12 +245,21 @@ void SpringForceField<CudaVec3fTypes>::addForce(VecDeriv& f1, VecDeriv& f2, cons
         int d = data.springs1.vertex0;
         if (data.springs1.nbSpringPerVertex > 0)
         {
-            SpringForceFieldCuda3f_addForce(data.springs1.nbVertex,
-                    data.springs1.nbSpringPerVertex,
-                    data.springs1.springs.deviceRead(),
-                    (      Deriv*)f.deviceWrite() + d,
-                    (const Coord*)x.deviceRead()  + d,
-                    (const Deriv*)v.deviceRead()  + d);
+            if (!stiff)
+                Kernels::addForce(data.springs1.nbVertex,
+                        data.springs1.nbSpringPerVertex,
+                        data.springs1.springs.deviceRead(),
+                        (      Deriv*)f.deviceWrite() + d,
+                        (const Coord*)x.deviceRead()  + d,
+                        (const Deriv*)v.deviceRead()  + d);
+            else
+                Kernels::addForce(data.springs1.nbVertex,
+                        data.springs1.nbSpringPerVertex,
+                        data.springs1.springs.deviceRead(),
+                        (      Deriv*)f.deviceWrite() + d,
+                        (const Coord*)x.deviceRead()  + d,
+                        (const Deriv*)v.deviceRead()  + d,
+                        data.springs1.dfdx.deviceWrite());
         }
     }
     else
@@ -154,105 +270,66 @@ void SpringForceField<CudaVec3fTypes>::addForce(VecDeriv& f1, VecDeriv& f2, cons
         int d2 = data.springs2.vertex0;
         if (data.springs1.nbSpringPerVertex > 0)
         {
-            SpringForceFieldCuda3f_addExternalForce(data.springs1.nbVertex,
-                    data.springs1.nbSpringPerVertex,
-                    data.springs1.springs.deviceRead(),
-                    (      Deriv*)f1.deviceWrite() + d1,
-                    (const Coord*)x1.deviceRead()  + d1,
-                    (const Deriv*)v1.deviceRead()  + d1,
-                    (const Coord*)x2.deviceRead()  + d2,
-                    (const Deriv*)v2.deviceRead()  + d2);
+            if (!stiff)
+                Kernels::addExternalForce(data.springs1.nbVertex,
+                        data.springs1.nbSpringPerVertex,
+                        data.springs1.springs.deviceRead(),
+                        (      Deriv*)f1.deviceWrite() + d1,
+                        (const Coord*)x1.deviceRead()  + d1,
+                        (const Deriv*)v1.deviceRead()  + d1,
+                        (const Coord*)x2.deviceRead()  + d2,
+                        (const Deriv*)v2.deviceRead()  + d2);
+            else
+                Kernels::addExternalForce(data.springs1.nbVertex,
+                        data.springs1.nbSpringPerVertex,
+                        data.springs1.springs.deviceRead(),
+                        (      Deriv*)f1.deviceWrite() + d1,
+                        (const Coord*)x1.deviceRead()  + d1,
+                        (const Deriv*)v1.deviceRead()  + d1,
+                        (const Coord*)x2.deviceRead()  + d2,
+                        (const Deriv*)v2.deviceRead()  + d2,
+                        data.springs1.dfdx.deviceWrite());
         }
         if (data.springs2.nbSpringPerVertex > 0)
         {
-            SpringForceFieldCuda3f_addExternalForce(data.springs2.nbVertex,
-                    data.springs2.nbSpringPerVertex,
-                    data.springs2.springs.deviceRead(),
-                    (      Deriv*)f2.deviceWrite() + d2,
-                    (const Coord*)x2.deviceRead()  + d2,
-                    (const Deriv*)v2.deviceRead()  + d2,
-                    (const Coord*)x1.deviceRead()  + d1,
-                    (const Deriv*)v1.deviceRead()  + d1);
+            if (!stiff)
+                Kernels::addExternalForce(data.springs2.nbVertex,
+                        data.springs2.nbSpringPerVertex,
+                        data.springs2.springs.deviceRead(),
+                        (      Deriv*)f2.deviceWrite() + d2,
+                        (const Coord*)x2.deviceRead()  + d2,
+                        (const Deriv*)v2.deviceRead()  + d2,
+                        (const Coord*)x1.deviceRead()  + d1,
+                        (const Deriv*)v1.deviceRead()  + d1);
+            else
+                Kernels::addExternalForce(data.springs2.nbVertex,
+                        data.springs2.nbSpringPerVertex,
+                        data.springs2.springs.deviceRead(),
+                        (      Deriv*)f2.deviceWrite() + d2,
+                        (const Coord*)x2.deviceRead()  + d2,
+                        (const Deriv*)v2.deviceRead()  + d2,
+                        (const Coord*)x1.deviceRead()  + d1,
+                        (const Deriv*)v1.deviceRead()  + d1,
+                        data.springs2.dfdx.deviceWrite());
         }
     }
 }
 
-template <>
-void StiffSpringForceField<CudaVec3fTypes>::init()
+template<class TCoord, class TDeriv, class TReal>
+void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addDForce(Main* m, bool stiff, VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2)
 {
-    this->SpringForceField<CudaVec3fTypes>::init();
-    data.springs1.dfdx.resize(data.springs1.springs.size());
-    data.springs2.dfdx.resize(data.springs2.springs.size());
-}
-
-// -- InteractionForceField interface
-template <>
-void StiffSpringForceField<CudaVec3fTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
-{
-    if (this->mstate1 == this->mstate2)
-    {
-        VecDeriv& f = f1;
-        const VecCoord& x = x1;
-        const VecDeriv& v = v1;
-        f.resize(x.size());
-        int d = data.springs1.vertex0;
-        if (data.springs1.nbSpringPerVertex > 0)
-        {
-            StiffSpringForceFieldCuda3f_addForce(data.springs1.nbVertex,
-                    data.springs1.nbSpringPerVertex,
-                    data.springs1.springs.deviceRead(),
-                    (      Deriv*)f.deviceWrite() + d,
-                    (const Coord*)x.deviceRead()  + d,
-                    (const Deriv*)v.deviceRead()  + d,
-                    data.springs1.dfdx.deviceWrite());
-        }
-    }
-    else
-    {
-        f1.resize(x1.size());
-        f2.resize(x2.size());
-        int d1 = data.springs1.vertex0;
-        int d2 = data.springs2.vertex0;
-        if (data.springs1.nbSpringPerVertex > 0)
-        {
-            StiffSpringForceFieldCuda3f_addExternalForce(data.springs1.nbVertex,
-                    data.springs1.nbSpringPerVertex,
-                    data.springs1.springs.deviceRead(),
-                    (      Deriv*)f1.deviceWrite() + d1,
-                    (const Coord*)x1.deviceRead()  + d1,
-                    (const Deriv*)v1.deviceRead()  + d1,
-                    (const Coord*)x2.deviceRead()  + d2,
-                    (const Deriv*)v2.deviceRead()  + d2,
-                    data.springs1.dfdx.deviceWrite());
-        }
-        if (data.springs2.nbSpringPerVertex > 0)
-        {
-            StiffSpringForceFieldCuda3f_addExternalForce(data.springs2.nbVertex,
-                    data.springs2.nbSpringPerVertex,
-                    data.springs2.springs.deviceRead(),
-                    (      Deriv*)f2.deviceWrite() + d2,
-                    (const Coord*)x2.deviceRead()  + d2,
-                    (const Deriv*)v2.deviceRead()  + d2,
-                    (const Coord*)x1.deviceRead()  + d1,
-                    (const Deriv*)v1.deviceRead()  + d1,
-                    data.springs2.dfdx.deviceWrite());
-        }
-    }
-}
-
-template <>
-void StiffSpringForceField<CudaVec3fTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2)
-{
-    if (this->mstate1 == this->mstate2)
+    if (!stiff) return;
+    Data& data = m->data;
+    if (m->mstate1 == m->mstate2)
     {
         VecDeriv& df = df1;
         const VecDeriv& dx = dx1;
-        const VecCoord& x = *this->mstate1->getX();
+        const VecCoord& x = *m->mstate1->getX();
         df.resize(x.size());
         int d = data.springs1.vertex0;
         if (data.springs1.nbSpringPerVertex > 0)
         {
-            StiffSpringForceFieldCuda3f_addDForce(data.springs1.nbVertex,
+            Kernels::addDForce(data.springs1.nbVertex,
                     data.springs1.nbSpringPerVertex,
                     data.springs1.springs.deviceRead(),
                     (      Deriv*)df.deviceWrite() + d,
@@ -263,15 +340,15 @@ void StiffSpringForceField<CudaVec3fTypes>::addDForce(VecDeriv& df1, VecDeriv& d
     }
     else
     {
-        const VecCoord& x1 = *this->mstate1->getX();
-        const VecCoord& x2 = *this->mstate2->getX();
+        const VecCoord& x1 = *m->mstate1->getX();
+        const VecCoord& x2 = *m->mstate2->getX();
         df1.resize(x1.size());
         df2.resize(x2.size());
         int d1 = data.springs1.vertex0;
         int d2 = data.springs2.vertex0;
         if (data.springs1.nbSpringPerVertex > 0)
         {
-            StiffSpringForceFieldCuda3f_addExternalDForce(data.springs1.nbVertex,
+            Kernels::addExternalDForce(data.springs1.nbVertex,
                     data.springs1.nbSpringPerVertex,
                     data.springs1.springs.deviceRead(),
                     (      Deriv*)df1.deviceWrite() + d1,
@@ -283,7 +360,7 @@ void StiffSpringForceField<CudaVec3fTypes>::addDForce(VecDeriv& df1, VecDeriv& d
         }
         if (data.springs2.nbSpringPerVertex > 0)
         {
-            StiffSpringForceFieldCuda3f_addExternalDForce(data.springs2.nbVertex,
+            Kernels::addExternalDForce(data.springs2.nbVertex,
                     data.springs2.nbSpringPerVertex,
                     data.springs2.springs.deviceRead(),
                     (      Deriv*)df2.deviceWrite() + d2,
@@ -297,259 +374,32 @@ void StiffSpringForceField<CudaVec3fTypes>::addDForce(VecDeriv& df1, VecDeriv& d
 }
 
 
+// I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
+#define CudaSpringForceField_ImplMethods(T) \
+    template<> void SpringForceField< T >::init() \
+    { data.init(this, false); } \
+    template<> void SpringForceField< T >::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2) \
+    { data.addForce(this, false, f1, f2, x1, x2, v1, v2); } \
+    template<> void StiffSpringForceField< T >::init() \
+    { data.init(this, true); } \
+    template<> void StiffSpringForceField< T >::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2) \
+    { data.addForce(this, true, f1, f2, x1, x2, v1, v2); } \
+    template<> void StiffSpringForceField< T >::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2) \
+    { data.addDForce(this, true, df1, df2, dx1, dx2); }
 
+CudaSpringForceField_ImplMethods(gpu::cuda::CudaVec3fTypes);
+CudaSpringForceField_ImplMethods(gpu::cuda::CudaVec3f1Types);
 
-//////// CudaVec3f1
+#ifdef SOFA_DEV
+#ifdef SOFA_GPU_CUDA_DOUBLE
 
-template <>
-void SpringForceField<CudaVec3f1Types>::init()
-{
-    this->Inherit::init();
-    const sofa::helper::vector<Spring>& springs = this->springs.getValue();
-    if (!springs.empty())
-    {
-        bool external = (this->mstate1!=this->mstate2);
-        if (external)
-        {
-            std::map<int,int> nsprings1;
-            std::map<int,int> nsprings2;
-            for (unsigned int i=0; i<springs.size(); i++)
-            {
-                nsprings1[springs[i].m1]++;
-                nsprings2[springs[i].m2]++;
-            }
+CudaSpringForceField_ImplMethods(gpu::cuda::CudaVec3dTypes);
+CudaSpringForceField_ImplMethods(gpu::cuda::CudaVec3d1Types);
 
-            int nmax1 = 0;
-            for (std::map<int,int>::const_iterator it = nsprings1.begin(); it != nsprings1.end(); ++it)
-                if (it->second > nmax1)
-                    nmax1 = it->second;
-            data.springs1.init(nsprings1.begin()->first, nsprings1.rbegin()->first - nsprings1.begin()->first + 1, nmax1);
+#endif // SOFA_GPU_CUDA_DOUBLE
+#endif // SOFA_DEV
 
-            int nmax2 = 0;
-            for (std::map<int,int>::const_iterator it = nsprings2.begin(); it != nsprings2.end(); ++it)
-                if (it->second > nmax2)
-                    nmax2 = it->second;
-            data.springs2.init(nsprings2.begin()->first, nsprings2.rbegin()->first - nsprings2.begin()->first + 1, nmax2);
-
-            nsprings1.clear();
-            nsprings2.clear();
-            for (unsigned int i=0; i<springs.size(); i++)
-            {
-                int m1 = springs[i].m1 - data.springs1.vertex0;
-                int m2 = springs[i].m2 - data.springs2.vertex0;
-                data.springs1.set(m1, nsprings1[m1]++, m2,
-                        (float)springs[i].initpos,
-                        (float)springs[i].ks,
-                        (float)springs[i].kd);
-                data.springs2.set(m2, nsprings2[m2]++, m1,
-                        (float)springs[i].initpos,
-                        (float)springs[i].ks,
-                        (float)springs[i].kd);
-            }
-        }
-        else
-        {
-            std::map<int,int> nsprings;
-            for (unsigned int i=0; i<springs.size(); i++)
-            {
-                nsprings[springs[i].m1]++;
-                nsprings[springs[i].m2]++;
-            }
-
-            int nmax = 0;
-            for (std::map<int,int>::const_iterator it = nsprings.begin(); it != nsprings.end(); ++it)
-                if (it->second > nmax)
-                    nmax = it->second;
-            data.springs1.init(nsprings.begin()->first, nsprings.rbegin()->first - nsprings.begin()->first + 1, nmax);
-            std::cout << "CUDA SpringForceField: "<<springs.size()<<" springs, "<<data.springs1.nbVertex<<" attached points, max "<<data.springs1.nbSpringPerVertex<<" springs per point."<<std::endl;
-            nsprings.clear();
-            for (unsigned int i=0; i<springs.size(); i++)
-            {
-                int m1 = springs[i].m1 - data.springs1.vertex0;
-                int m2 = springs[i].m2 - data.springs1.vertex0;
-                data.springs1.set(m1, nsprings[m1]++, m2,
-                        (float)springs[i].initpos,
-                        (float)springs[i].ks,
-                        (float)springs[i].kd);
-                data.springs1.set(m2, nsprings[m2]++, m1,
-                        (float)springs[i].initpos,
-                        (float)springs[i].ks,
-                        (float)springs[i].kd);
-            }
-        }
-    }
-}
-
-// -- InteractionForceField interface
-template <>
-void SpringForceField<CudaVec3f1Types>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
-{
-    if (this->mstate1 == this->mstate2)
-    {
-        VecDeriv& f = f1;
-        const VecCoord& x = x1;
-        const VecDeriv& v = v1;
-        f.resize(x.size());
-        int d = data.springs1.vertex0;
-        if (data.springs1.nbSpringPerVertex > 0)
-        {
-            SpringForceFieldCuda3f1_addForce(data.springs1.nbVertex,
-                    data.springs1.nbSpringPerVertex,
-                    data.springs1.springs.deviceRead(),
-                    (      Deriv*)f.deviceWrite() + d,
-                    (const Coord*)x.deviceRead()  + d,
-                    (const Deriv*)v.deviceRead()  + d);
-        }
-    }
-    else
-    {
-        f1.resize(x1.size());
-        f2.resize(x2.size());
-        int d1 = data.springs1.vertex0;
-        int d2 = data.springs2.vertex0;
-        if (data.springs1.nbSpringPerVertex > 0)
-        {
-            SpringForceFieldCuda3f1_addExternalForce(data.springs1.nbVertex,
-                    data.springs1.nbSpringPerVertex,
-                    data.springs1.springs.deviceRead(),
-                    (      Deriv*)f1.deviceWrite() + d1,
-                    (const Coord*)x1.deviceRead()  + d1,
-                    (const Deriv*)v1.deviceRead()  + d1,
-                    (const Coord*)x2.deviceRead()  + d2,
-                    (const Deriv*)v2.deviceRead()  + d2);
-        }
-        if (data.springs2.nbSpringPerVertex > 0)
-        {
-            SpringForceFieldCuda3f1_addExternalForce(data.springs2.nbVertex,
-                    data.springs2.nbSpringPerVertex,
-                    data.springs2.springs.deviceRead(),
-                    (      Deriv*)f2.deviceWrite() + d2,
-                    (const Coord*)x2.deviceRead()  + d2,
-                    (const Deriv*)v2.deviceRead()  + d2,
-                    (const Coord*)x1.deviceRead()  + d1,
-                    (const Deriv*)v1.deviceRead()  + d1);
-        }
-    }
-}
-
-template <>
-void StiffSpringForceField<CudaVec3f1Types>::init()
-{
-    this->SpringForceField<CudaVec3f1Types>::init();
-    data.springs1.dfdx.resize(data.springs1.springs.size());
-    data.springs2.dfdx.resize(data.springs2.springs.size());
-}
-
-// -- InteractionForceField interface
-template <>
-void StiffSpringForceField<CudaVec3f1Types>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
-{
-    if (this->mstate1 == this->mstate2)
-    {
-        VecDeriv& f = f1;
-        const VecCoord& x = x1;
-        const VecDeriv& v = v1;
-        f.resize(x.size());
-        int d = data.springs1.vertex0;
-        if (data.springs1.nbSpringPerVertex > 0)
-        {
-            StiffSpringForceFieldCuda3f1_addForce(data.springs1.nbVertex,
-                    data.springs1.nbSpringPerVertex,
-                    data.springs1.springs.deviceRead(),
-                    (      Deriv*)f.deviceWrite() + d,
-                    (const Coord*)x.deviceRead()  + d,
-                    (const Deriv*)v.deviceRead()  + d,
-                    data.springs1.dfdx.deviceWrite());
-        }
-    }
-    else
-    {
-        f1.resize(x1.size());
-        f2.resize(x2.size());
-        int d1 = data.springs1.vertex0;
-        int d2 = data.springs2.vertex0;
-        if (data.springs1.nbSpringPerVertex > 0)
-        {
-            StiffSpringForceFieldCuda3f1_addExternalForce(data.springs1.nbVertex,
-                    data.springs1.nbSpringPerVertex,
-                    data.springs1.springs.deviceRead(),
-                    (      Deriv*)f1.deviceWrite() + d1,
-                    (const Coord*)x1.deviceRead()  + d1,
-                    (const Deriv*)v1.deviceRead()  + d1,
-                    (const Coord*)x2.deviceRead()  + d2,
-                    (const Deriv*)v2.deviceRead()  + d2,
-                    data.springs1.dfdx.deviceWrite());
-        }
-        if (data.springs2.nbSpringPerVertex > 0)
-        {
-            StiffSpringForceFieldCuda3f1_addExternalForce(data.springs2.nbVertex,
-                    data.springs2.nbSpringPerVertex,
-                    data.springs2.springs.deviceRead(),
-                    (      Deriv*)f2.deviceWrite() + d2,
-                    (const Coord*)x2.deviceRead()  + d2,
-                    (const Deriv*)v2.deviceRead()  + d2,
-                    (const Coord*)x1.deviceRead()  + d1,
-                    (const Deriv*)v1.deviceRead()  + d1,
-                    data.springs2.dfdx.deviceWrite());
-        }
-    }
-}
-
-template <>
-void StiffSpringForceField<CudaVec3f1Types>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2)
-{
-    if (this->mstate1 == this->mstate2)
-    {
-        VecDeriv& df = df1;
-        const VecDeriv& dx = dx1;
-        const VecCoord& x = *this->mstate1->getX();
-        df.resize(x.size());
-        int d = data.springs1.vertex0;
-        if (data.springs1.nbSpringPerVertex > 0)
-        {
-            StiffSpringForceFieldCuda3f1_addDForce(data.springs1.nbVertex,
-                    data.springs1.nbSpringPerVertex,
-                    data.springs1.springs.deviceRead(),
-                    (      Deriv*)df.deviceWrite() + d,
-                    (const Deriv*)dx.deviceRead() + d,
-                    (const Coord*)x.deviceRead()  + d,
-                    data.springs1.dfdx.deviceRead());
-        }
-    }
-    else
-    {
-        const VecCoord& x1 = *this->mstate1->getX();
-        const VecCoord& x2 = *this->mstate2->getX();
-        df1.resize(x1.size());
-        df2.resize(x2.size());
-        int d1 = data.springs1.vertex0;
-        int d2 = data.springs2.vertex0;
-        if (data.springs1.nbSpringPerVertex > 0)
-        {
-            StiffSpringForceFieldCuda3f1_addExternalDForce(data.springs1.nbVertex,
-                    data.springs1.nbSpringPerVertex,
-                    data.springs1.springs.deviceRead(),
-                    (      Deriv*)df1.deviceWrite() + d1,
-                    (const Coord*)x1.deviceRead()  + d1,
-                    (const Deriv*)dx1.deviceRead()  + d1,
-                    (const Coord*)x2.deviceRead()  + d2,
-                    (const Deriv*)dx2.deviceRead()  + d2,
-                    data.springs1.dfdx.deviceRead());
-        }
-        if (data.springs2.nbSpringPerVertex > 0)
-        {
-            StiffSpringForceFieldCuda3f1_addExternalDForce(data.springs2.nbVertex,
-                    data.springs2.nbSpringPerVertex,
-                    data.springs2.springs.deviceRead(),
-                    (      Deriv*)df2.deviceWrite() + d2,
-                    (const Deriv*)dx2.deviceRead() + d2,
-                    (const Coord*)x2.deviceRead()  + d2,
-                    (const Deriv*)dx1.deviceRead() + d1,
-                    (const Coord*)x1.deviceRead()  + d1,
-                    data.springs2.dfdx.deviceRead());
-        }
-    }
-}
+#undef CudaSpringForceField_ImplMethods
 
 } // namespace forcefield
 
