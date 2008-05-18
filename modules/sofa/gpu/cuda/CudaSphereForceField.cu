@@ -13,7 +13,7 @@ namespace cuda
 
 struct GPUSphere
 {
-    float3 center;
+    CudaVec3<float> center;
     float r;
     float stiffness;
     float damping;
@@ -21,18 +21,18 @@ struct GPUSphere
 
 extern "C"
 {
-    void SphereForceFieldCuda3f_addForce(unsigned int size, GPUSphere* sphere, float4* penetration, void* f, const void* x, const void* v);
-    void SphereForceFieldCuda3f_addDForce(unsigned int size, GPUSphere* sphere, const float4* penetration, void* f, const void* dx); //, const void* dfdx);
+    void SphereForceFieldCuda3f_addForce(unsigned int size, GPUSphere* sphere, CudaVec4<float>* penetration, void* f, const void* x, const void* v);
+    void SphereForceFieldCuda3f_addDForce(unsigned int size, GPUSphere* sphere, const CudaVec4<float>* penetration, void* f, const void* dx); //, const void* dfdx);
 
-    void SphereForceFieldCuda3f1_addForce(unsigned int size, GPUSphere* sphere, float4* penetration, void* f, const void* x, const void* v);
-    void SphereForceFieldCuda3f1_addDForce(unsigned int size, GPUSphere* sphere, const float4* penetration, void* f, const void* dx); //, const void* dfdx);
+    void SphereForceFieldCuda3f1_addForce(unsigned int size, GPUSphere* sphere, CudaVec4<float>* penetration, void* f, const void* x, const void* v);
+    void SphereForceFieldCuda3f1_addDForce(unsigned int size, GPUSphere* sphere, const CudaVec4<float>* penetration, void* f, const void* dx); //, const void* dfdx);
 }
 
 //////////////////////
 // GPU-side methods //
 //////////////////////
 
-__global__ void SphereForceFieldCuda3f_addForce_kernel(int size, GPUSphere sphere, float4* penetration, float* f, const float* x, const float* v)
+__global__ void SphereForceFieldCuda3f_addForce_kernel(int size, GPUSphere sphere, CudaVec4<float>* penetration, float* f, const float* x, const float* v)
 {
     int index0 = umul24(blockIdx.x,BSIZE);
     int index0_3 = umul24(blockIdx.x,BSIZE*3); //index0*3;
@@ -54,7 +54,7 @@ __global__ void SphereForceFieldCuda3f_addForce_kernel(int size, GPUSphere spher
 
     __syncthreads();
 
-    float3 dp = make_float3(temp[index_3  ], temp[index_3+1], temp[index_3+2]) - sphere.center;
+    CudaVec3<float> dp = CudaVec3<float>::make(temp[index_3  ], temp[index_3+1], temp[index_3+2]) - sphere.center;
     float d2 = dot(dp,dp);
 
     __syncthreads();
@@ -65,8 +65,8 @@ __global__ void SphereForceFieldCuda3f_addForce_kernel(int size, GPUSphere spher
 
     __syncthreads();
 
-    float3 vi = make_float3(temp[index_3  ], temp[index_3+1], temp[index_3+2]);
-    float3 force = make_float3(0,0,0);
+    CudaVec3<float> vi = CudaVec3<float>::make(temp[index_3  ], temp[index_3+1], temp[index_3+2]);
+    CudaVec3<float> force = CudaVec3<float>::make(0,0,0);
 
     if (d2 < sphere.r*sphere.r)
     {
@@ -81,7 +81,7 @@ __global__ void SphereForceFieldCuda3f_addForce_kernel(int size, GPUSphere spher
         float dampingIntensity = sphere.damping*d;
         force = dp*forceIntensity - vi*dampingIntensity;
     }
-    penetration[index] = make_float4(dp.x,dp.y,dp.z,d2);
+    penetration[index] = CudaVec4<float>::make(dp.x,dp.y,dp.z,d2);
 
     __syncthreads();
 
@@ -102,16 +102,16 @@ __global__ void SphereForceFieldCuda3f_addForce_kernel(int size, GPUSphere spher
     f[index+2*BSIZE] = temp[index+2*BSIZE];
 }
 
-__global__ void SphereForceFieldCuda3f1_addForce_kernel(int size, GPUSphere sphere, float4* penetration, float4* f, const float4* x, const float4* v)
+__global__ void SphereForceFieldCuda3f1_addForce_kernel(int size, GPUSphere sphere, CudaVec4<float>* penetration, CudaVec4<float>* f, const CudaVec4<float>* x, const CudaVec4<float>* v)
 {
     int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
 
-    float4 temp = x[index];
-    float3 dp = make_float3(temp) - sphere.center;
+    CudaVec4<float> temp = x[index];
+    CudaVec3<float> dp = CudaVec3<float>::make(temp) - sphere.center;
     float d2 = dot(dp,dp);
 
-    float4 vi = v[index];
-    float3 force = make_float3(0,0,0);
+    CudaVec4<float> vi = v[index];
+    CudaVec3<float> force = CudaVec3<float>::make(0,0,0);
 
     if (d2 < sphere.r*sphere.r)
     {
@@ -124,9 +124,9 @@ __global__ void SphereForceFieldCuda3f1_addForce_kernel(int size, GPUSphere sphe
 
         float forceIntensity = sphere.stiffness*d;
         float dampingIntensity = sphere.damping*d;
-        force = dp*forceIntensity - make_float3(vi)*dampingIntensity;
+        force = dp*forceIntensity - CudaVec3<float>::make(vi)*dampingIntensity;
     }
-    penetration[index] = make_float4(dp.x,dp.y,dp.z,d2);
+    penetration[index] = CudaVec4<float>::make(dp.x,dp.y,dp.z,d2);
 
     temp = f[index];
     temp.x += force.x;
@@ -135,7 +135,7 @@ __global__ void SphereForceFieldCuda3f1_addForce_kernel(int size, GPUSphere sphe
     f[index] = temp;
 }
 
-__global__ void SphereForceFieldCuda3f_addDForce_kernel(int size, GPUSphere sphere, const float4* penetration, float* df, const float* dx)
+__global__ void SphereForceFieldCuda3f_addDForce_kernel(int size, GPUSphere sphere, const CudaVec4<float>* penetration, float* df, const float* dx)
 {
     int index0 = umul24(blockIdx.x,BSIZE);
     int index0_3 = umul24(blockIdx.x,BSIZE*3); //index0*3;
@@ -156,14 +156,14 @@ __global__ void SphereForceFieldCuda3f_addDForce_kernel(int size, GPUSphere sphe
 
     __syncthreads();
 
-    float3 dxi = make_float3(temp[index_3  ], temp[index_3+1], temp[index_3+2]);
-    float4 d = penetration[index];
+    CudaVec3<float> dxi = CudaVec3<float>::make(temp[index_3  ], temp[index_3+1], temp[index_3+2]);
+    CudaVec4<float> d = penetration[index];
 
-    float3 dforce = make_float3(0,0,0);
+    CudaVec3<float> dforce = CudaVec3<float>::make(0,0,0);
 
     if (d.w<0)
     {
-        float3 dp = make_float3(d.x, d.y, d.z);
+        CudaVec3<float> dp = CudaVec3<float>::make(d.x, d.y, d.z);
         dforce = sphere.stiffness*(dot(dxi,dp)*d.w * dp - (1+d.w) * dxi);
     }
 
@@ -186,24 +186,24 @@ __global__ void SphereForceFieldCuda3f_addDForce_kernel(int size, GPUSphere sphe
     df[index+2*BSIZE] = temp[index+2*BSIZE];
 }
 
-__global__ void SphereForceFieldCuda3f1_addDForce_kernel(int size, GPUSphere sphere, const float4* penetration, float4* df, const float4* dx)
+__global__ void SphereForceFieldCuda3f1_addDForce_kernel(int size, GPUSphere sphere, const CudaVec4<float>* penetration, CudaVec4<float>* df, const CudaVec4<float>* dx)
 {
     int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
 
-    float4 dxi = dx[index];
-    float4 d = penetration[index];
+    CudaVec4<float> dxi = dx[index];
+    CudaVec4<float> d = penetration[index];
 
-    float3 dforce = make_float3(0,0,0);
+    CudaVec3<float> dforce = CudaVec3<float>::make(0,0,0);
 
     if (d.w<0)
     {
-        float3 dp = make_float3(d.x, d.y, d.z);
-        dforce = sphere.stiffness*(dot(make_float3(dxi),dp)*d.w * dp - (1+d.w) * make_float3(dxi));
+        CudaVec3<float> dp = CudaVec3<float>::make(d.x, d.y, d.z);
+        dforce = sphere.stiffness*(dot(CudaVec3<float>::make(dxi),dp)*d.w * dp - (1+d.w) * CudaVec3<float>::make(dxi));
     }
 
     __syncthreads();
 
-    float4 dfi = df[index];
+    CudaVec4<float> dfi = df[index];
     dfi.x += dforce.x;
     dfi.y += dforce.y;
     dfi.y += dforce.z;
@@ -214,32 +214,32 @@ __global__ void SphereForceFieldCuda3f1_addDForce_kernel(int size, GPUSphere sph
 // CPU-side methods //
 //////////////////////
 
-void SphereForceFieldCuda3f_addForce(unsigned int size, GPUSphere* sphere, float4* penetration, void* f, const void* x, const void* v)
+void SphereForceFieldCuda3f_addForce(unsigned int size, GPUSphere* sphere, CudaVec4<float>* penetration, void* f, const void* x, const void* v)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
     SphereForceFieldCuda3f_addForce_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, *sphere, penetration, (float*)f, (const float*)x, (const float*)v);
 }
 
-void SphereForceFieldCuda3f1_addForce(unsigned int size, GPUSphere* sphere, float4* penetration, void* f, const void* x, const void* v)
+void SphereForceFieldCuda3f1_addForce(unsigned int size, GPUSphere* sphere, CudaVec4<float>* penetration, void* f, const void* x, const void* v)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    SphereForceFieldCuda3f1_addForce_kernel<<< grid, threads >>>(size, *sphere, penetration, (float4*)f, (const float4*)x, (const float4*)v);
+    SphereForceFieldCuda3f1_addForce_kernel<<< grid, threads >>>(size, *sphere, penetration, (CudaVec4<float>*)f, (const CudaVec4<float>*)x, (const CudaVec4<float>*)v);
 }
 
-void SphereForceFieldCuda3f_addDForce(unsigned int size, GPUSphere* sphere, const float4* penetration, void* df, const void* dx) //, const void* dfdx)
+void SphereForceFieldCuda3f_addDForce(unsigned int size, GPUSphere* sphere, const CudaVec4<float>* penetration, void* df, const void* dx) //, const void* dfdx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
     SphereForceFieldCuda3f_addDForce_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, *sphere, penetration, (float*)df, (const float*)dx);
 }
 
-void SphereForceFieldCuda3f1_addDForce(unsigned int size, GPUSphere* sphere, const float4* penetration, void* df, const void* dx) //, const void* dfdx)
+void SphereForceFieldCuda3f1_addDForce(unsigned int size, GPUSphere* sphere, const CudaVec4<float>* penetration, void* df, const void* dx) //, const void* dfdx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    SphereForceFieldCuda3f1_addDForce_kernel<<< grid, threads >>>(size, *sphere, penetration, (float4*)df, (const float4*)dx);
+    SphereForceFieldCuda3f1_addDForce_kernel<<< grid, threads >>>(size, *sphere, penetration, (CudaVec4<float>*)df, (const CudaVec4<float>*)dx);
 }
 
 #if defined(__cplusplus) && CUDA_VERSION != 2000

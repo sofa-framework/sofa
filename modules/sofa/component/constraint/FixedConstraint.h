@@ -69,6 +69,7 @@ public:
 
 protected:
     FixedConstraintInternalData<DataTypes> data;
+    friend class FixedConstraintInternalData<DataTypes>;
 
 public:
     Data<SetIndex> f_indices;

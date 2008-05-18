@@ -10,16 +10,42 @@
 namespace sofa
 {
 
+namespace gpu
+{
+
+namespace cuda
+{
+
+template<class DataTypes>
+class CudaKernelsSpringForceField;
+
+} // namespace cuda
+
+} // namespace gpu
+
 namespace component
 {
 
 namespace forcefield
 {
 
-template <>
-class SpringForceFieldInternalData<gpu::cuda::CudaVec3fTypes>
+template <class TCoord, class TDeriv, class TReal>
+class SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >
 {
 public:
+    typedef gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> DataTypes;
+    typedef SpringForceField<DataTypes> Main;
+    typedef typename Main::Inherit Inherit;
+    typedef typename Main::Spring Spring;
+    typedef SpringForceFieldInternalData<DataTypes> Data;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::Real Real;
+
+    typedef gpu::cuda::CudaKernelsSpringForceField<DataTypes> Kernels;
+
     //enum { BSIZE=16 };
     struct GPUSpring
     {
@@ -57,7 +83,7 @@ public:
         int nbVertex; ///< number of vertices to process to compute all springs
         int nbSpringPerVertex; ///< max number of springs connected to a vertex
         gpu::cuda::CudaVector<GPUSpring> springs; ///< springs attached to each points (layout per bloc of NBLOC vertices, with first spring of each vertex, then second spring, etc)
-        gpu::cuda::CudaVector<float> dfdx; ///< only used for StiffSpringForceField
+        gpu::cuda::CudaVector<Real> dfdx; ///< only used for StiffSpringForceField
         GPUSpringSet() : vertex0(0), nbVertex(0), nbSpringPerVertex(0) {}
         void init(int v0, int nbv, int nbsperv)
         {
@@ -83,65 +109,37 @@ public:
     };
     GPUSpringSet springs1; ///< springs from model1 to model2
     GPUSpringSet springs2; ///< springs from model2 to model1 (only used if model1 != model2)
+
+    static void init(Main* m, bool stiff);
+    static void addForce(Main* m, bool stiff, VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
+    static void addDForce (Main* m, bool stiff, VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2);
 };
 
 //
 // SpringForceField
 //
 
-template <>
-void SpringForceField<gpu::cuda::CudaVec3fTypes>::init();
+// I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
+#define CudaSpringForceField_DeclMethods(T) \
+    template<> void SpringForceField< T >::init(); \
+    template<> void SpringForceField< T >::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2); \
+    template<> void StiffSpringForceField< T >::init(); \
+    template<> void StiffSpringForceField< T >::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2); \
+    template<> void StiffSpringForceField< T >::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2);
 
-// -- InteractionForceField interface
-template <>
-void SpringForceField<gpu::cuda::CudaVec3fTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
+CudaSpringForceField_DeclMethods(gpu::cuda::CudaVec3fTypes);
+CudaSpringForceField_DeclMethods(gpu::cuda::CudaVec3f1Types);
 
-//
-// StiffSpringForceField
-//
+#ifdef SOFA_DEV
+#ifdef SOFA_GPU_CUDA_DOUBLE
 
-template <>
-void StiffSpringForceField<gpu::cuda::CudaVec3fTypes>::init();
+CudaSpringForceField_DeclMethods(gpu::cuda::CudaVec3dTypes);
+CudaSpringForceField_DeclMethods(gpu::cuda::CudaVec3d1Types);
 
-// -- InteractionForceField interface
-template <>
-void StiffSpringForceField<gpu::cuda::CudaVec3fTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
+#endif // SOFA_GPU_CUDA_DOUBLE
+#endif // SOFA_DEV
 
-template <>
-void StiffSpringForceField<gpu::cuda::CudaVec3fTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2);
-
-
-
-
-template <>
-class SpringForceFieldInternalData<gpu::cuda::CudaVec3f1Types> : public SpringForceFieldInternalData<gpu::cuda::CudaVec3fTypes>
-{
-};
-
-//
-// SpringForceField
-//
-
-template <>
-void SpringForceField<gpu::cuda::CudaVec3f1Types>::init();
-
-// -- InteractionForceField interface
-template <>
-void SpringForceField<gpu::cuda::CudaVec3f1Types>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
-
-//
-// StiffSpringForceField
-//
-
-template <>
-void StiffSpringForceField<gpu::cuda::CudaVec3f1Types>::init();
-
-// -- InteractionForceField interface
-template <>
-void StiffSpringForceField<gpu::cuda::CudaVec3f1Types>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
-
-template <>
-void StiffSpringForceField<gpu::cuda::CudaVec3f1Types>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2);
+#undef CudaSpringForceField_DeclMethods
 
 } // namespace forcefield
 

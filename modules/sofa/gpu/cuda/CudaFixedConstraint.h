@@ -13,53 +13,53 @@ namespace component
 namespace constraint
 {
 
-template <>
-class FixedConstraintInternalData<gpu::cuda::CudaVec3fTypes>
+template<class TCoord, class TDeriv, class TReal>
+class FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >
 {
 public:
+    typedef FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > Data;
+    typedef gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> DataTypes;
+    typedef FixedConstraint<DataTypes> Main;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::Real Real;
+    typedef typename Main::SetIndex SetIndex;
+
     // min/max fixed indices for contiguous constraints
     int minIndex;
     int maxIndex;
     // vector of indices for general case
     gpu::cuda::CudaVector<int> cudaIndices;
+
+    static void init(Main* m);
+
+    static void addConstraint(Main* m, unsigned int index);
+
+    static void removeConstraint(Main* m, unsigned int index);
+
+    static void projectResponse(Main* m, VecDeriv& dx);
 };
 
-template <>
-void FixedConstraint<gpu::cuda::CudaVec3fTypes>::init();
+// I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
+#define CudaFixedConstraint_DeclMethods(T) \
+    template<> void FixedConstraint< T >::init(); \
+    template<> void FixedConstraint< T >::addConstraint(unsigned int index); \
+    template<> void FixedConstraint< T >::removeConstraint(unsigned int index); \
+    template<> void FixedConstraint< T >::projectResponse(VecDeriv& dx);
 
-template <>
-void FixedConstraint<gpu::cuda::CudaVec3fTypes>::addConstraint(unsigned int index);
+CudaFixedConstraint_DeclMethods(gpu::cuda::CudaVec3fTypes);
+CudaFixedConstraint_DeclMethods(gpu::cuda::CudaVec3f1Types);
 
-template <>
-void FixedConstraint<gpu::cuda::CudaVec3fTypes>::removeConstraint(unsigned int index);
+#ifdef SOFA_DEV
+#ifdef SOFA_GPU_CUDA_DOUBLE
 
-// -- Constraint interface
-template <>
-void FixedConstraint<gpu::cuda::CudaVec3fTypes>::projectResponse(VecDeriv& dx);
+CudaFixedConstraint_DeclMethods(gpu::cuda::CudaVec3dTypes);
+CudaFixedConstraint_DeclMethods(gpu::cuda::CudaVec3d1Types);
 
-template <>
-class FixedConstraintInternalData<gpu::cuda::CudaVec3f1Types>
-{
-public:
-    // min/max fixed indices for contiguous constraints
-    int minIndex;
-    int maxIndex;
-    // vector of indices for general case
-    gpu::cuda::CudaVector<int> cudaIndices;
-};
+#endif // SOFA_GPU_CUDA_DOUBLE
+#endif // SOFA_DEV
 
-template <>
-void FixedConstraint<gpu::cuda::CudaVec3f1Types>::init();
-
-template <>
-void FixedConstraint<gpu::cuda::CudaVec3f1Types>::addConstraint(unsigned int index);
-
-template <>
-void FixedConstraint<gpu::cuda::CudaVec3f1Types>::removeConstraint(unsigned int index);
-
-// -- Constraint interface
-template <>
-void FixedConstraint<gpu::cuda::CudaVec3f1Types>::projectResponse(VecDeriv& dx);
+#undef CudaFixedConstraint_DeclMethods
 
 } // namespace constraint
 

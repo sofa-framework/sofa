@@ -113,8 +113,8 @@ void CoordinateSystem::apply()
 {
     //cerr<<"CoordinateSystem::apply(), frame = "<<   getName() <<", t="<<getContext()->getTime() << endl;
     core::objectmodel::BaseContext* context = getContext();
-    cerr<<"CoordinateSystem::apply, current position = "<<context->getPositionInWorld()<<endl;
-    cerr<<"CoordinateSystem::apply, transform = "<<this->getTransform()<<endl;
+    //cerr<<"CoordinateSystem::apply, current position = "<<context->getPositionInWorld()<<endl;
+    //cerr<<"CoordinateSystem::apply, transform = "<<this->getTransform()<<endl;
 
     // store parent position and velocity
     Frame parentToWorld = context->getPositionInWorld();
@@ -141,7 +141,7 @@ void CoordinateSystem::apply()
     context->setVelocityBasedLinearAccelerationInWorld( newLinearAcceleration );
     context->setPositionInWorld( newLocalToWorld );
     context->setVelocityInWorld( newSpatialVelocity );
-    cerr<<"CoordinateSystem::apply, new position = "<<context->getPositionInWorld()<<endl;
+    //cerr<<"CoordinateSystem::apply, new position = "<<context->getPositionInWorld()<<endl;
 
 }
 

@@ -3,164 +3,318 @@
 
 #include <cuda_runtime.h>
 
-__device__ float3 operator+(float3 a, float3 b)
+template<class real>
+class CudaVec2;
+
+template<class real>
+class CudaVec3;
+
+template<class real>
+class CudaVec4;
+
+template<>
+class CudaVec2<float> : public float2
 {
-    return make_float3(a.x+b.x, a.y+b.y, a.z+b.z);
+public:
+    typedef float Real;
+    static __inline__ __device__ __host__ CudaVec2<float> make(Real x, Real y)
+    {
+        CudaVec2<float> r; r.x = x; r.y = y; return r;
+    }
+    static __inline__ __device__ __host__ CudaVec2<float> make(float2 v)
+    {
+        CudaVec2<float> r; r.x = v.x; r.y = v.y; return r;
+    }
+    static __inline__ __device__ __host__ CudaVec2<float> make(float3 v)
+    {
+        CudaVec2<float> r; r.x = v.x; r.y = v.y; return r;
+    }
+};
+
+template<>
+class CudaVec3<float> : public float3
+{
+public:
+    typedef float Real;
+    static __inline__ __device__ __host__ CudaVec3<float> make(Real x, Real y, Real z=0)
+    {
+        CudaVec3<float> r; r.x = x; r.y = y;  r.z = z; return r;
+    }
+    static __inline__ __device__ __host__ CudaVec3<float> make(float2 v, Real z=0)
+    {
+        CudaVec3<float> r; r.x = v.x; r.y = v.y;  r.z = z; return r;
+    }
+    static __inline__ __device__ __host__ CudaVec3<float> make(float3 v)
+    {
+        CudaVec3<float> r; r.x = v.x; r.y = v.y;  r.z = v.z; return r;
+    }
+    static __inline__ __device__ __host__ CudaVec3<float> make(float4 v)
+    {
+        CudaVec3<float> r; r.x = v.x; r.y = v.y;  r.z = v.z; return r;
+    }
+};
+
+template<>
+class CudaVec4<float> : public float4
+{
+public:
+    typedef float Real;
+    static __inline__ __device__ __host__ CudaVec4<float> make(Real x, Real y, Real z, Real w=0)
+    {
+        CudaVec4<float> r; r.x = x; r.y = y;  r.z = z; r.w = w; return r;
+    }
+    static __inline__ __device__ __host__ CudaVec4<float> make(float3 v, Real w=0)
+    {
+        CudaVec4<float> r; r.x = v.x; r.y = v.y;  r.z = v.z; r.w = w; return r;
+    }
+    static __inline__ __device__ __host__ CudaVec4<float> make(float4 v)
+    {
+        CudaVec4<float> r; r.x = v.x; r.y = v.y;  r.z = v.z; r.w = v.w; return r;
+    }
+};
+
+typedef CudaVec2<float> CudaVec2f;
+typedef CudaVec3<float> CudaVec3f;
+typedef CudaVec4<float> CudaVec4f;
+
+#ifdef SOFA_DEV
+#ifdef SOFA_GPU_CUDA_DOUBLE
+
+class __align__(8) double3
+{
+public:
+    double x, y, z;
+};
+
+class __align__(16) double4
+{
+public:
+    double x, y, z, w;
+};
+
+template<>
+class CudaVec2<double> : public double2
+{
+public:
+    typedef double Real;
+    static __inline__ __device__ __host__ CudaVec2<double> make(Real x, Real y)
+    {
+        CudaVec2<double> r; r.x = x; r.y = y; return r;
+    }
+    static __inline__ __device__ __host__ CudaVec2<double> make(double2 v)
+    {
+        CudaVec2<double> r; r.x = v.x; r.y = v.y; return r;
+    }
+    static __inline__ __device__ __host__ CudaVec2<double> make(double3 v)
+    {
+        CudaVec2<double> r; r.x = v.x; r.y = v.y; return r;
+    }
+};
+
+template<>
+class CudaVec3<double> : public double3
+{
+public:
+    typedef double Real;
+    static __inline__ __device__ __host__ CudaVec3<double> make(Real x, Real y, Real z=0)
+    {
+        CudaVec3<double> r; r.x = x; r.y = y;  r.z = z; return r;
+    }
+    static __inline__ __device__ __host__ CudaVec3<double> make(double2 v, Real z=0)
+    {
+        CudaVec3<double> r; r.x = v.x; r.y = v.y;  r.z = z; return r;
+    }
+    static __inline__ __device__ __host__ CudaVec3<double> make(double3 v)
+    {
+        CudaVec3<double> r; r.x = v.x; r.y = v.y;  r.z = v.z; return r;
+    }
+    static __inline__ __device__ __host__ CudaVec3<double> make(double4 v)
+    {
+        CudaVec3<double> r; r.x = v.x; r.y = v.y;  r.z = v.z; return r;
+    }
+};
+
+template<>
+class CudaVec4<double> : public double4
+{
+public:
+    typedef double Real;
+    static __inline__ __device__ __host__ CudaVec4<double> make(Real x, Real y, Real z, Real w=0)
+    {
+        CudaVec4<double> r; r.x = x; r.y = y;  r.z = z; r.w = w; return r;
+    }
+    static __inline__ __device__ __host__ CudaVec4<double> make(double3 v, Real w=0)
+    {
+        CudaVec4<double> r; r.x = v.x; r.y = v.y;  r.z = v.z; r.w = w; return r;
+    }
+    static __inline__ __device__ __host__ CudaVec4<double> make(double4 v)
+    {
+        CudaVec4<double> r; r.x = v.x; r.y = v.y;  r.z = v.z; r.w = v.w; return r;
+    }
+};
+
+typedef CudaVec2<double> CudaVec2d;
+typedef CudaVec3<double> CudaVec3d;
+typedef CudaVec4<double> CudaVec4d;
+
+#endif // SOFA_GPU_CUDA_DOUBLE
+#endif // SOFA_DEV
+
+template<class real>
+__device__ CudaVec3<real> operator+(CudaVec3<real> a, CudaVec3<real> b)
+{
+    return CudaVec3<real>::make(a.x+b.x, a.y+b.y, a.z+b.z);
 }
 
-__device__ void operator+=(float3& a, float3 b)
+template<class real>
+__device__ void operator+=(CudaVec3<real>& a, CudaVec3<real> b)
 {
     a.x += b.x;
     a.y += b.y;
     a.z += b.z;
 }
 
-__device__ void operator+=(float3& a, float b)
+template<class real>
+__device__ void operator+=(CudaVec3<real>& a, real b)
 {
     a.x += b;
     a.y += b;
     a.z += b;
 }
 
-__device__ float3 operator-(float3 a, float3 b)
+template<class real>
+__device__ CudaVec3<real> operator-(CudaVec3<real> a, CudaVec3<real> b)
 {
-    return make_float3(a.x-b.x, a.y-b.y, a.z-b.z);
+    return CudaVec3<real>::make(a.x-b.x, a.y-b.y, a.z-b.z);
 }
 
-__device__ void operator-=(float3& a, float3 b)
+template<class real>
+__device__ void operator-=(CudaVec3<real>& a, CudaVec3<real> b)
 {
     a.x -= b.x;
     a.y -= b.y;
     a.z -= b.z;
 }
 
-__device__ void operator-=(float3& a, float b)
+template<class real>
+__device__ void operator-=(CudaVec3<real>& a, real b)
 {
     a.x -= b;
     a.y -= b;
     a.z -= b;
 }
 
-__device__ float3 operator-(float3& a)
+template<class real>
+__device__ CudaVec3<real> operator-(CudaVec3<real>& a)
 {
-    return make_float3(-a.x, -a.y, -a.z);
+    return CudaVec3<real>::make(-a.x, -a.y, -a.z);
 }
 
-__device__ float3 operator*(float3 a, float b)
+template<class real>
+__device__ CudaVec3<real> operator*(CudaVec3<real> a, real b)
 {
-    return make_float3(a.x*b, a.y*b, a.z*b);
+    return CudaVec3<real>::make(a.x*b, a.y*b, a.z*b);
 }
 
-__device__ float3 operator/(float3 a, float b)
+template<class real>
+__device__ CudaVec3<real> operator/(CudaVec3<real> a, real b)
 {
-    return make_float3(a.x/b, a.y/b, a.z/b);
+    return CudaVec3<real>::make(a.x/b, a.y/b, a.z/b);
 }
 
-__device__ void operator*=(float3& a, float b)
+template<class real>
+__device__ void operator*=(CudaVec3<real>& a, real b)
 {
     a.x *= b;
     a.y *= b;
     a.z *= b;
 }
 
-__device__ float3 operator*(float a, float3 b)
+template<class real>
+__device__ CudaVec3<real> operator*(real a, CudaVec3<real> b)
 {
-    return make_float3(a*b.x, a*b.y, a*b.z);
+    return CudaVec3<real>::make(a*b.x, a*b.y, a*b.z);
 }
 
-__device__ float3 make_float3(float3 f)
+template<class real>
+__device__ CudaVec3<real> mul(CudaVec3<real> a, CudaVec3<real> b)
 {
-    return f;
+    return CudaVec3<real>::make(a.x*b.x, a.y*b.y, a.z*b.z);
 }
 
-__device__ float3 make_float3(float4 f)
-{
-    return make_float3(f.x,f.y,f.z);
-}
-
-__device__ float4 make_float4(float3 f, float w=0.0)
-{
-    return make_float4(f.x,f.y,f.z,w);
-}
-
-__device__ float4 make_float4(float4 f)
-{
-    return f;
-}
-
-
-__device__ float3 mul(float3 a, float3 b)
-{
-    return make_float3(a.x*b.x, a.y*b.y, a.z*b.z);
-}
-
-__device__ float dot(float3 a, float3 b)
+template<class real>
+__device__ real dot(CudaVec3<real> a, CudaVec3<real> b)
 {
     return a.x*b.x + a.y*b.y + a.z*b.z;
 }
 
-__device__ float3 cross(float3 a, float3 b)
+template<class real>
+__device__ CudaVec3<real> cross(CudaVec3<real> a, CudaVec3<real> b)
 {
-    return make_float3(a.y*b.z-a.z*b.y, a.z*b.x-a.x*b.z, a.x*b.y-a.y*b.x);
+    return CudaVec3<real>::make(a.y*b.z-a.z*b.y, a.z*b.x-a.x*b.z, a.x*b.y-a.y*b.x);
 }
 
-__device__ float norm2(float3 a)
+template<class real>
+__device__ real norm2(CudaVec3<real> a)
 {
     return a.x*a.x+a.y*a.y+a.z*a.z;
 }
 
-__device__ float norm(float3 a)
+template<class real>
+__device__ real norm(CudaVec3<real> a)
 {
     return sqrtf(norm2(a));
 }
 
-__device__ float invnorm(float3 a)
+template<class real>
+__device__ real invnorm(CudaVec3<real> a)
 {
     return rsqrtf(norm2(a));
 }
 
+template<class real>
 class /*__align__(4)*/ matrix3
 {
 public:
-    float3 x,y,z;
+    CudaVec3<real> x,y,z;
     /*
-        float3 getLx() { return x; }
-        float3 getLy() { return y; }
-        float3 getLz() { return z; }
+        CudaVec3<real> getLx() { return x; }
+        CudaVec3<real> getLy() { return y; }
+        CudaVec3<real> getLz() { return z; }
 
-        float3 getCx() { return make_float3(x.x,y.x,z.x); }
-        float3 getCy() { return make_float3(x.y,y.y,z.y); }
-        float3 getCz() { return make_float3(x.z,y.z,z.z); }
+        CudaVec3<real> getCx() { return CudaVec3<real>::make(x.x,y.x,z.x); }
+        CudaVec3<real> getCy() { return CudaVec3<real>::make(x.y,y.y,z.y); }
+        CudaVec3<real> getCz() { return CudaVec3<real>::make(x.z,y.z,z.z); }
 
-        void setLx(float3 v) { x = v; }
-        void setLy(float3 v) { y = v; }
-        void setLz(float3 v) { z = v; }
+        void setLx(CudaVec3<real> v) { x = v; }
+        void setLy(CudaVec3<real> v) { y = v; }
+        void setLz(CudaVec3<real> v) { z = v; }
 
-        void setCx(float3 v) { x.x = v.x; y.x = v.y; z.x = v.z; }
-        void setCy(float3 v) { x.y = v.x; y.y = v.y; z.y = v.z; }
-        void setCz(float3 v) { x.z = v.x; y.z = v.y; z.z = v.z; }
+        void setCx(CudaVec3<real> v) { x.x = v.x; y.x = v.y; z.x = v.z; }
+        void setCy(CudaVec3<real> v) { x.y = v.x; y.y = v.y; z.y = v.z; }
+        void setCz(CudaVec3<real> v) { x.z = v.x; y.z = v.y; z.z = v.z; }
     */
-    __device__ float3 operator*(float3 v)
+    __device__ CudaVec3<real> operator*(CudaVec3<real> v)
     {
-        return make_float3(dot(x,v),dot(y,v),dot(z,v));
+        return CudaVec3<real>::make(dot(x,v),dot(y,v),dot(z,v));
     }
-    __device__ float3 mulT(float3 v)
+    __device__ CudaVec3<real> mulT(CudaVec3<real> v)
     {
         return x*v.x+y*v.y+z*v.z;
     }
-    __device__ float mulX(float3 v)
+    __device__ real mulX(CudaVec3<real> v)
     {
         return dot(x,v);
     }
-    __device__ float mulY(float3 v)
+    __device__ real mulY(CudaVec3<real> v)
     {
         return dot(y,v);
     }
-    __device__ float mulZ(float3 v)
+    __device__ real mulZ(CudaVec3<real> v)
     {
         return dot(z,v);
     }
-    __device__ void readAoS(const float* data)
+    __device__ void readAoS(const real* data)
     {
         x.x=*data; data+=blockDim.x;
         x.y=*data; data+=blockDim.x;
@@ -172,7 +326,7 @@ public:
         z.y=*data; data+=blockDim.x;
         z.z=*data; data+=blockDim.x;
     }
-    __device__ void writeAoS(float* data)
+    __device__ void writeAoS(real* data)
     {
         *data=x.x; data+=blockDim.x;
         *data=x.y; data+=blockDim.x;

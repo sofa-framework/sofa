@@ -138,6 +138,7 @@ protected:
     VecCoord _initialPoints; ///< the intial positions of the points
 
     TetrahedronFEMForceFieldInternalData<DataTypes> data;
+    friend class TetrahedronFEMForceFieldInternalData<DataTypes>;
 
 public:
     //For a faster contact handling with simplified compliance
