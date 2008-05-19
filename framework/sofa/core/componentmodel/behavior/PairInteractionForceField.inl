@@ -173,21 +173,62 @@ void PairInteractionForceField<DataTypes>::addForce()
 }
 
 template<class DataTypes>
-void PairInteractionForceField<DataTypes>::addDForce()
+void PairInteractionForceField<DataTypes>::addDForce(double kFactor, double bFactor)
 {
     if (mstate1 && mstate2)
         addDForce(*mstate1->getF(),  *mstate2->getF(),
-                *mstate1->getDx(), *mstate2->getDx());
+                *mstate1->getDx(), *mstate2->getDx(),
+                kFactor, bFactor);
 }
 
 template<class DataTypes>
-void PairInteractionForceField<DataTypes>::addDForceV()
+void PairInteractionForceField<DataTypes>::addDForceV(double kFactor, double bFactor)
 {
     if (mstate1 && mstate2)
         addDForce(*mstate1->getF(),  *mstate2->getF(),
-                *mstate1->getV(), *mstate2->getV());
+                *mstate1->getV(), *mstate2->getV(),
+                kFactor, bFactor);
 }
 
+template<class DataTypes>
+void PairInteractionForceField<DataTypes>::addDForce(VecDeriv& /*df1*/, VecDeriv& /*df2*/, const VecDeriv& /*dx1*/, const VecDeriv& /*dx2*/)
+{
+    std::cerr << "ERROR("<<getClassName()<<"): addDForce not implemented.\n";
+}
+
+template<class DataTypes>
+void PairInteractionForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double /*bFactor*/)
+{
+    if (kFactor == 1.0)
+        addDForce(df1, df2, dx1, dx2);
+    else if (kFactor != 0.0)
+    {
+        BaseMechanicalState::VecId vtmp1(BaseMechanicalState::VecId::V_DERIV,BaseMechanicalState::VecId::V_FIRST_DYNAMIC_INDEX);
+        mstate1->vAvail(vtmp1);
+        mstate1->vAlloc(vtmp1);
+        BaseMechanicalState::VecId vdx1(BaseMechanicalState::VecId::V_DERIV,0);
+        /// @TODO: Add a better way to get the current VecId of dx
+        for (vdx1.index=0; vdx1.index<vtmp1.index; ++vdx1.index)
+            if (mstate1->getVecDeriv(vdx1.index) == &dx1)
+                break;
+        mstate1->vOp(vtmp1,BaseMechanicalState::VecId::null(),vdx1,kFactor);
+
+        BaseMechanicalState::VecId vtmp2(BaseMechanicalState::VecId::V_DERIV,BaseMechanicalState::VecId::V_FIRST_DYNAMIC_INDEX);
+        mstate2->vAvail(vtmp2);
+        mstate2->vAlloc(vtmp2);
+        BaseMechanicalState::VecId vdx2(BaseMechanicalState::VecId::V_DERIV,0);
+        /// @TODO: Add a better way to get the current VecId of dx
+        for (vdx2.index=0; vdx2.index<vtmp2.index; ++vdx2.index)
+            if (mstate2->getVecDeriv(vdx2.index) == &dx2)
+                break;
+        mstate2->vOp(vtmp2,BaseMechanicalState::VecId::null(),vdx2,kFactor);
+
+        addDForce(df1, df2, *mstate1->getVecDeriv(vtmp1.index), *mstate2->getVecDeriv(vtmp2.index));
+
+        mstate1->vFree(vtmp1);
+        mstate2->vFree(vtmp2);
+    }
+}
 
 template<class DataTypes>
 double PairInteractionForceField<DataTypes>::getPotentialEnergy()

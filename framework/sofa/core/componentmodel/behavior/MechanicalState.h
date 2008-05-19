@@ -129,6 +129,24 @@ public:
     /// Return the initial velocity vector (read-only access).
     virtual const VecDeriv* getV0()  const = 0;
 
+    /// Return a VecCoord given its index
+    virtual VecCoord* getVecCoord(unsigned int index) = 0;
+
+    /// Return a VecCoord given its index, or NULL if it does not exists
+    virtual const VecCoord* getVecCoord(unsigned int index) const = 0;
+
+    /// Return a VecDeriv given its index
+    virtual VecDeriv* getVecDeriv(unsigned int index) = 0;
+
+    /// Return a VecDeriv given its index, or NULL if it does not exists
+    virtual const VecDeriv* getVecDeriv(unsigned int index) const = 0;
+
+    /// Return a VecConst given its index
+    virtual VecConst* getVecConst(unsigned int index) = 0;
+
+    /// Return a VecConst given its index, or NULL if it does not exists
+    virtual const VecConst* getVecConst(unsigned int index) const = 0;
+
 
     /// Get the indices of the particles located in the given bounding box
     virtual void getIndicesInSpace(sofa::helper::vector<unsigned>& /*indices*/, Real /*xmin*/, Real /*xmax*/,Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const=0;

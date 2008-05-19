@@ -36,14 +36,34 @@ namespace componentmodel
 namespace behavior
 {
 
+void BaseForceField::addMBKdx(double /*mFactor*/, double bFactor, double kFactor)
+{
+    if (kFactor != 0.0 || bFactor != 0.0)
+        addDForce(kFactor, bFactor);
+}
+
+void BaseForceField::addMBKv(double /*mFactor*/, double bFactor, double kFactor)
+{
+    if (kFactor != 0.0 || bFactor != 0.0)
+        addDForceV(kFactor, bFactor);
+}
+
 void BaseForceField::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*kFact*/, unsigned int &/*offset*/)
 {
 
 }
 
-void BaseForceField::addKDxToVector(sofa::defaulttype::BaseVector *, double, unsigned int &)
+void BaseForceField::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*bFact*/, unsigned int &/*offset*/)
 {
 
+}
+
+void BaseForceField::addMBKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double /*mFact*/, double bFact, double kFact, unsigned int &offset)
+{
+    if (kFact != 0.0)
+        addKToMatrix(matrix, kFact, offset);
+    if (bFact != 0.0)
+        addBToMatrix(matrix, bFact, offset);
 }
 
 } // namespace behavior

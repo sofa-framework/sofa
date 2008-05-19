@@ -58,6 +58,8 @@ public:
     // -- Mass interface
     virtual  void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
 
+    virtual void addMToMatrix(defaulttype::BaseMatrix * matrix, double mFact, unsigned int &offset);
+
     virtual  void accFromF(VecDeriv& a, const VecDeriv& f);
 
     virtual  void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);

@@ -820,6 +820,16 @@ typename MechanicalObject<DataTypes>::VecCoord* MechanicalObject<DataTypes>::get
 }
 
 template<class DataTypes>
+const typename MechanicalObject<DataTypes>::VecCoord* MechanicalObject<DataTypes>::getVecCoord(unsigned int index) const
+{
+    if (index>=vectorsCoord.size())
+        return NULL;
+    if (vectorsCoord[index]==NULL)
+        return NULL;
+    return vectorsCoord[index];
+}
+
+template<class DataTypes>
 typename MechanicalObject<DataTypes>::VecDeriv* MechanicalObject<DataTypes>::getVecDeriv(unsigned int index)
 {
     if (index>=vectorsDeriv.size())
@@ -831,12 +841,34 @@ typename MechanicalObject<DataTypes>::VecDeriv* MechanicalObject<DataTypes>::get
 }
 
 template<class DataTypes>
+const typename MechanicalObject<DataTypes>::VecDeriv* MechanicalObject<DataTypes>::getVecDeriv(unsigned int index) const
+{
+    if (index>=vectorsDeriv.size())
+        return NULL;
+    if (vectorsDeriv[index]==NULL)
+        return NULL;
+
+    return vectorsDeriv[index];
+}
+
+template<class DataTypes>
 typename MechanicalObject<DataTypes>::VecConst* MechanicalObject<DataTypes>::getVecConst(unsigned int index)
 {
     if (index>=vectorsConst.size())
         vectorsConst.resize(index+1);
     if (vectorsConst[index]==NULL)
         vectorsConst[index] = new VecConst;
+
+    return vectorsConst[index];
+}
+
+template<class DataTypes>
+const typename MechanicalObject<DataTypes>::VecConst* MechanicalObject<DataTypes>::getVecConst(unsigned int index) const
+{
+    if (index>=vectorsConst.size())
+        return NULL;
+    if (vectorsConst[index]==NULL)
+        return NULL;
 
     return vectorsConst[index];
 }

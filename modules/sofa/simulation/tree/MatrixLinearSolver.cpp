@@ -47,6 +47,12 @@ using sofa::core::objectmodel::BaseContext;
 void GraphScatteredMatrix::apply(GraphScatteredVector& res, GraphScatteredVector& x)
 {
     // matrix-vector product
+#if 1
+    // new more powerful visitors
+    parent->propagateDxAndResetDf(x,res);
+    parent->addMBKdx(res,mFact,bFact,kFact); // df = (m M + b B + k K) dx
+
+#else
     parent->propagateDx(x);          // dx = p
     parent->computeDf(res);            // q = K p
 
@@ -65,6 +71,7 @@ void GraphScatteredMatrix::apply(GraphScatteredVector& res, GraphScatteredVector
     // q = (m M + k K) p
 
     /// @TODO: non-rayleigh damping (i.e. the B factor)
+#endif
 
     // filter the product to take the constraints into account
     //

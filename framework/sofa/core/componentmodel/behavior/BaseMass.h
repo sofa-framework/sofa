@@ -68,10 +68,12 @@ public:
     virtual double getKineticEnergy() = 0;
 
     /// Add Mass contribution to global Matrix assembling
-    virtual void addMToMatrix(defaulttype::BaseMatrix * /*mat*/, double /*mFact*/, unsigned int &/*offset*/) = 0;
-
-    /// Add Mass contribution to global Vector assembling
-    virtual void addMDxToVector(defaulttype::BaseVector * /*resVect*/, double /*mFact*/, unsigned int& /*offset*/, bool /*dxNull*/) = 0;
+    ///
+    /// This method must be implemented by the component.
+    /// \param matrix matrix to add the result to
+    /// \param mFact coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
+    /// \param offset current row/column offset
+    virtual void addMToMatrix(defaulttype::BaseMatrix * matrix, double mFact, unsigned int &offset) = 0;
 
     /// initialization to export kinetic and potential energy to gnuplot files format
     virtual void initGnuplot(const std::string path)=0;

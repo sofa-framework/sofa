@@ -75,15 +75,30 @@ double Mass<DataTypes>::getKineticEnergy()
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addMDxToVector(defaulttype::BaseVector *resVect, double mFact, unsigned int& offset, bool dxNull)
+void Mass<DataTypes>::addMBKdx(double mFactor, double bFactor, double kFactor)
 {
-    if (this->mstate)
+    this->ForceField<DataTypes>::addMBKdx(mFactor, bFactor, kFactor);
+    if (mFactor != 0.0)
+        addMDx(mFactor);
+}
+
+template<class DataTypes>
+void Mass<DataTypes>::addMBKv(double mFactor, double bFactor, double kFactor)
+{
+    this->ForceField<DataTypes>::addMBKv(mFactor, bFactor, kFactor);
+    if (mFactor != 0.0)
     {
-        if (!dxNull)
-            addMDxToVector(resVect, this->mstate->getDx(), mFact, offset);
-        else
-            addMDxToVector(resVect, NULL, mFact, offset);
+        if (this->mstate)
+            addMDx(*this->mstate->getF(), *this->mstate->getV(), mFactor);
     }
+}
+
+template<class DataTypes>
+void Mass<DataTypes>::addMBKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double mFact, double bFact, double kFact, unsigned int &offset)
+{
+    this->ForceField<DataTypes>::addMBKToMatrix(matrix, mFact, bFact, kFact, offset);
+    if (mFact != 0.0)
+        addMToMatrix(matrix, mFact, offset);
 }
 
 template<class DataTypes>

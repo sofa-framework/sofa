@@ -262,10 +262,13 @@ public:
     virtual void accumulateForce();
 
     VecCoord* getVecCoord(unsigned int index);
+    const VecCoord* getVecCoord(unsigned int index) const;
 
     VecDeriv* getVecDeriv(unsigned int index);
+    const VecDeriv* getVecDeriv(unsigned int index) const;
 
     VecConst* getVecConst(unsigned int index);
+    const VecConst* getVecConst(unsigned int index) const;
 
     virtual void vAvail(VecId& v);
 

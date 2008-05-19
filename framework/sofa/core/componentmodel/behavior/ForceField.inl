@@ -66,19 +66,44 @@ void ForceField<DataTypes>::addForce()
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addDForce()
+void ForceField<DataTypes>::addDForce(double kFactor, double bFactor)
 {
     if (mstate)
-        addDForce(*mstate->getF(), *mstate->getDx());
+        addDForce(*mstate->getF(), *mstate->getDx(), kFactor, bFactor);
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addDForceV()
+void ForceField<DataTypes>::addDForceV(double kFactor, double bFactor)
 {
     if (mstate)
-        addDForce(*mstate->getF(), *mstate->getV());
+        addDForce(*mstate->getF(), *mstate->getV(), kFactor, bFactor);
+}
+template<class DataTypes>
+void ForceField<DataTypes>::addDForce(VecDeriv& /*df*/, const VecDeriv& /*dx*/)
+{
+    std::cerr << "ERROR("<<getClassName()<<"): addDForce not implemented.\n";
 }
 
+template<class DataTypes>
+void ForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx, double kFactor, double /*bFactor*/)
+{
+    if (kFactor == 1.0)
+        addDForce(df, dx);
+    else if (kFactor != 0.0)
+    {
+        BaseMechanicalState::VecId vtmp(BaseMechanicalState::VecId::V_DERIV,BaseMechanicalState::VecId::V_FIRST_DYNAMIC_INDEX);
+        mstate->vAvail(vtmp);
+        mstate->vAlloc(vtmp);
+        BaseMechanicalState::VecId vdx(BaseMechanicalState::VecId::V_DERIV,0);
+        /// @TODO: Add a better way to get the current VecId of dx
+        for (vdx.index=0; vdx.index<vtmp.index; ++vdx.index)
+            if (mstate->getVecDeriv(vdx.index) == &dx)
+                break;
+        mstate->vOp(vtmp,BaseMechanicalState::VecId::null(),vdx,kFactor);
+        addDForce(df, *mstate->getVecDeriv(vtmp.index));
+        mstate->vFree(vtmp);
+    }
+}
 
 template<class DataTypes>
 double ForceField<DataTypes>::getPotentialEnergy()
@@ -86,15 +111,6 @@ double ForceField<DataTypes>::getPotentialEnergy()
     if (mstate)
         return getPotentialEnergy(*mstate->getX());
     else return 0;
-}
-
-template<class DataTypes>
-void ForceField<DataTypes>::addKDxToVector(defaulttype::BaseVector *resVect, double kFact, unsigned int& offset)
-{
-    if (mstate)
-    {
-        addKDxToVector(resVect, mstate->getDx(), kFact, offset);
-    }
 }
 
 } // namespace behavior

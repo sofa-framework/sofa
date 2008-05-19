@@ -220,22 +220,25 @@ public:
         if ((mat != NULL)&&(k!=0.0))
         {
             //offsetOnExit = offsetOnEnter;
-            ff->addKToMatrix(mat,k,offsetOnEnter);
+            ff->addMBKToMatrix(mat,m,b,k,offsetOnEnter);
         }
 
         return RESULT_CONTINUE;
     }
 
-    virtual Result fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* mass)
+    //Masses are now added in the addMBKToMatrix call for all ForceFields
+    /*
+    virtual Result fwdMass(simulation::Node*, core::componentmodel::behavior::BaseMass* mass)
     {
-        if ((mat != NULL)&&(m!=0.0))
-        {
-            //offsetOnExit = offsetOnEnter;
-            mass->addMToMatrix(mat,m,offsetOnEnter);
-        }
+    if ((mat != NULL)&&(m!=0.0))
+      {
+        //offsetOnExit = offsetOnEnter;
+        mass->addMToMatrix(mat,m,offsetOnEnter);
+      }
 
-        return RESULT_CONTINUE;
-    }
+           return RESULT_CONTINUE;
+         }
+         */
 
     virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
@@ -249,7 +252,7 @@ public:
     }
 };
 
-
+#if 0 // deprecated: as dx is stored in MechanicalState, compute df there and then convert to BaseVector using MechanicalMultiVector2BaseVectorVisitor
 /** Accumulate the entries of a dynamics vector (e.g. force) of the whole scene */
 class MechanicalAddMBKdx_ToVectorVisitor : public MechanicalMatrixVisitor
 {
@@ -313,6 +316,7 @@ public:
         return RESULT_CONTINUE;
     }
 };
+#endif
 
 class MechanicalMultiVector2BaseVectorVisitor : public MechanicalMatrixVisitor
 {

@@ -311,6 +311,35 @@ Visitor::Result MechanicalPropagateDxVisitor::fwdConstraint(simulation::Node* /*
     return RESULT_CONTINUE;
 }
 
+Visitor::Result MechanicalPropagateDxAndResetForceVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+{
+    mm->setDx(dx);
+    mm->setF(f);
+    mm->resetForce();
+    return RESULT_CONTINUE;
+}
+Visitor::Result MechanicalPropagateDxAndResetForceVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
+{
+    map->propagateDx();
+    return RESULT_CONTINUE;
+}
+Visitor::Result MechanicalPropagateDxAndResetForceVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+{
+    mm->resetForce();
+    return RESULT_CONTINUE;
+}
+Visitor::Result MechanicalPropagateDxAndResetForceVisitor::fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+{
+    core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
+    if (mm)
+    {
+        mm->setDx(dx);
+        mm->setF(f);
+        mm->resetForce();
+    }
+    return RESULT_CONTINUE;
+}
+
 Visitor::Result MechanicalPropagateAndAddDxVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
 {
     map->propagateDx();
@@ -549,6 +578,48 @@ Visitor::Result MechanicalComputeDfVisitor::fwdForceField(simulation::Node* /*no
     return RESULT_CONTINUE;
 }
 void MechanicalComputeDfVisitor::bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
+{
+    map->accumulateDf();
+}
+
+
+
+Visitor::Result MechanicalAddMBKdxVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+{
+    mm->setF(res);
+    mm->accumulateDf();
+    return RESULT_CONTINUE;
+}
+Visitor::Result MechanicalAddMBKdxVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+{
+    mm->accumulateDf();
+    return RESULT_CONTINUE;
+}
+Visitor::Result MechanicalAddMBKdxVisitor::fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+{
+    core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
+    if (mm)
+    {
+        mm->setF(res);
+        mm->accumulateDf();
+    }
+    return RESULT_CONTINUE;
+}
+//virtual Result fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* mass)
+//{
+//	mass->computeDf();
+//	return RESULT_CONTINUE;
+//}
+Visitor::Result MechanicalAddMBKdxVisitor::fwdForceField(simulation::Node* /*node*/, core::componentmodel::behavior::BaseForceField* ff)
+{
+    if (useV)
+        ff->addMBKv(mFactor, bFactor, kFactor);
+    else
+        ff->addMBKdx(mFactor, bFactor, kFactor);
+    return RESULT_CONTINUE;
+}
+
+void MechanicalAddMBKdxVisitor::bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
 {
     map->accumulateDf();
 }
