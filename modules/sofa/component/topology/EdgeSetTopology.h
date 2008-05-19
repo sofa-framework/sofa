@@ -315,13 +315,13 @@ public:
     /** \brief Swap the edges.
      *
      */
-    virtual void swapEdgesProcess(const sofa::helper::vector< Edge >& edgesPair);
+    virtual void swapEdgesProcess(const sofa::helper::vector< sofa::helper::vector< unsigned int > >& edgesPairs);
 
     /** \brief Fuse the edges.
      *
      * @param removeIsolatedItems if true isolated vertices are also removed
      */
-    virtual void fuseEdgesProcess(const sofa::helper::vector< Edge >& edgesPair, const bool removeIsolatedPoints = true);
+    virtual void fuseEdgesProcess(const sofa::helper::vector< sofa::helper::vector< unsigned int > >& edgesPairs, const bool removeIsolatedPoints = true);
 
     /** \brief Split the edges.
      *
@@ -377,13 +377,13 @@ public:
     /** \brief Swap a list of pair edges, replacing each edge pair ((p11, p12), (p21, p22)) by the edge pair ((p11, p21), (p12, p22))
      *
      */
-    virtual void swapEdges(const sofa::helper::vector< Edge >& edgesPair);
+    virtual void swapEdges(const sofa::helper::vector< sofa::helper::vector< unsigned int > >& edgesPairs);
 
     /** \brief Fuse a list of pair edges, replacing each edge pair ((p11, p12), (p21, p22)) by one edge (p11, p22)
      *
      * @param removeIsolatedPoints if true isolated vertices are also removed
      */
-    virtual void fuseEdges(const sofa::helper::vector< Edge >& edgesPair, const bool removeIsolatedPoints = true);
+    virtual void fuseEdges(const sofa::helper::vector< sofa::helper::vector< unsigned int > >& edgesPairs, const bool removeIsolatedPoints = true);
 
     /** \brief Split an array of edges, replacing each edge (p1, p2) by two edges (p1, p3) and (p3, p2) where p3 is the new vertex
      * On each edge, a vertex is created based on its barycentric coordinates
