@@ -17,8 +17,8 @@
 #include <sofa/core/componentmodel/behavior/Constraint.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/tree/AnimateBeginEvent.h>
-#include <sofa/simulation/tree/AnimateEndEvent.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/component/topology/PointSetTopology.h>
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/component/MechanicalObject.h>
@@ -176,9 +176,9 @@ public:
 
     virtual void handleEvent(sofa::core::objectmodel::Event* event)
     {
-        if (simulation::tree::AnimateBeginEvent* ev = dynamic_cast<simulation::tree::AnimateBeginEvent*>(event))
+        if (simulation::AnimateBeginEvent* ev = dynamic_cast<simulation::AnimateBeginEvent*>(event))
             animateBegin(ev->getDt(), getContext()->getTime());
-        if (simulation::tree::AnimateEndEvent* ev = dynamic_cast<simulation::tree::AnimateEndEvent*>(event))
+        if (simulation::AnimateEndEvent* ev = dynamic_cast<simulation::AnimateEndEvent*>(event))
             animateEnd(ev->getDt(), getContext()->getTime());
     }
 

@@ -42,8 +42,8 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 
-#include <sofa/simulation/tree/AnimateBeginEvent.h>
-#include <sofa/simulation/tree/AnimateEndEvent.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
 
 #include <iostream>
 
@@ -68,11 +68,11 @@ BaseController::BaseController()
 
 void BaseController::handleEvent(core::objectmodel::Event *event)
 {
-    if (dynamic_cast<sofa::simulation::tree::AnimateBeginEvent *>(event))
+    if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
     {
         onBeginAnimationStep();
     }
-    else if (dynamic_cast<sofa::simulation::tree::AnimateEndEvent *>(event))
+    else if (dynamic_cast<sofa::simulation::AnimateEndEvent *>(event))
     {
         onEndAnimationStep();
     }

@@ -46,8 +46,8 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/simulation/tree/GNode.h>
-#include <sofa/simulation/tree/MechanicalVisitor.h>
-#include <sofa/simulation/tree/UpdateMappingVisitor.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/UpdateMappingVisitor.h>
 
 
 
@@ -133,8 +133,8 @@ void EdgeSetController<DataTypes>::applyController()
         }
 
         sofa::simulation::tree::GNode *node = static_cast<sofa::simulation::tree::GNode*> (this->getContext());
-        sofa::simulation::tree::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
-        sofa::simulation::tree::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
+        sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
+        sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
 
         modifyTopology();
     }

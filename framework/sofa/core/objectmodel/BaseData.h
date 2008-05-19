@@ -22,8 +22,8 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_FIELDBASE_H
-#define SOFA_CORE_OBJECTMODEL_FIELDBASE_H
+#ifndef SOFA_CORE_OBJECTMODEL_BASEDATA_H
+#define SOFA_CORE_OBJECTMODEL_BASEDATA_H
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once

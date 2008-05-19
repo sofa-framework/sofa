@@ -15,7 +15,7 @@
 #include <boost/graph/breadth_first_search.hpp>
 #include "BglNode.h"
 #include "BglScene.h"
-#include <sofa/simulation/tree/Visitor.h>
+#include <sofa/simulation/common/Visitor.h>
 
 namespace sofa
 {
@@ -32,7 +32,7 @@ Adapt a sofa visitor to breadth-first search in a bgl mapping scene graph.
 class bfs_adapter : public boost::bfs_visitor<>
 {
 public:
-    sofa::simulation::tree::Visitor* visitor;
+    sofa::simulation::Visitor* visitor;
 
     typedef BglScene::Hgraph Graph; ///< BGL graph to traverse
     BglScene::H_vertex_node_map& systemMap;      ///< access the System*

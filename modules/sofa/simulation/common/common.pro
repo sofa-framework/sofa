@@ -3,8 +3,60 @@
 # Subdir relative project main directory: ./modules/sofa/simulation
 # Target is a library:  sofasimulation$$LIBSUFFIX
 
-HEADERS += Node.h
-SOURCES += Node.cpp 
+HEADERS += Node.h \
+           AnimateBeginEvent.h \
+           AnimateEndEvent.h \
+           AnimateVisitor.h \   
+           CactusStackStorage.h \  
+           ClassSystem.h \  
+           CollisionVisitor.h \  
+           FindByTypeVisitor.h \
+           GrabVisitor.h \
+           InitVisitor.h \   
+           LocalStorage.h \
+           MechanicalComputeEnergyVisitor.h \
+	   MechanicalMatrixVisitor.h \
+           MechanicalVPrintVisitor.h \
+           MechanicalVisitor.h \  
+           PrintVisitor.h \
+           PropagateEventVisitor.h \
+           ResetVisitor.h \
+           TopologyChangeVisitor.h \
+           UpdateContextVisitor.h \
+           UpdateMappingEndEvent.h \
+           UpdateMappingVisitor.h \
+           VelocityThresholdVisitor.h \
+           Visitor.h \
+           VisitorScheduler.h \
+           VisualVisitor.h \
+           WriteStateVisitor.h \
+           XMLPrintVisitor.h
+SOURCES += Node.cpp \
+           AnimateBeginEvent.cpp \
+           AnimateEndEvent.cpp \
+           AnimateVisitor.cpp \
+           CactusStackStorage.cpp \
+           CollisionVisitor.cpp \
+           GrabVisitor.cpp \
+           InitVisitor.cpp \
+           MechanicalComputeEnergyVisitor.cpp \
+	   MechanicalMatrixVisitor.cpp \
+           MechanicalVPrintVisitor.cpp \
+           MechanicalVisitor.cpp \
+           PrintVisitor.cpp \
+           PropagateEventVisitor.cpp \
+           ResetVisitor.cpp \
+           TopologyChangeVisitor.cpp \
+           UpdateContextVisitor.cpp \
+           UpdateMappingEndEvent.cpp \
+           UpdateMappingVisitor.cpp \
+           VelocityThresholdVisitor.cpp \
+           Visitor.cpp \
+           VisitorScheduler.cpp \
+           VisualVisitor.cpp \
+           WriteStateVisitor.cpp \
+           XMLPrintVisitor.cpp
+
 SOFA_DIR =../../../..
 TEMPLATE = lib
 include($${SOFA_DIR}/sofa.cfg)

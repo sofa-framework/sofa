@@ -39,8 +39,8 @@
 
 #include <sofa/component/container/SpatialGridContainer.h>
 #include <sofa/component/topology/PointSetTopology.h>
-#include <sofa/simulation/tree/AnimateBeginEvent.h>
-#include <sofa/simulation/tree/AnimateEndEvent.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/component/MechanicalObject.h>
 
@@ -772,8 +772,8 @@ bool SpatialGridContainer<DataTypes>::sortPoints()
 template<class DataTypes>
 void SpatialGridContainer<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (/* simulation::tree::AnimateBeginEvent* ev = */ dynamic_cast<simulation::tree::AnimateBeginEvent*>(event))
-        //if (simulation::tree::AnimateEndEvent* ev = dynamic_cast<simulation::tree::AnimateEndEvent*>(event))
+    if (/* simulation::AnimateBeginEvent* ev = */ dynamic_cast<simulation::AnimateBeginEvent*>(event))
+        //if (simulation::AnimateEndEvent* ev = dynamic_cast<simulation::AnimateEndEvent*>(event))
     {
         if (d_sortPoints.getValue())
         {

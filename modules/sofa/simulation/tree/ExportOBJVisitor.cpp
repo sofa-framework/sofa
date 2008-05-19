@@ -69,7 +69,7 @@ void ExportOBJVisitor::processVisualModel(GNode* node, core::VisualModel* vm)
 
 }
 
-Visitor::Result ExportOBJVisitor::processNodeTopDown(GNode* node)
+simulation::Visitor::Result ExportOBJVisitor::processNodeTopDown(GNode* node)
 {
     //simulation::Node* node = static_cast<simulation::Node*>(n);
     for_each(this, node, node->visualModel, &ExportOBJVisitor::processVisualModel);

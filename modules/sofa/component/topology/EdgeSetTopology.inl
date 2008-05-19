@@ -4,7 +4,7 @@
 #include <sofa/component/topology/EdgeSetTopology.h>
 #include <sofa/component/topology/PointSetTopology.inl>
 #include <sofa/component/topology/TopologyChangedEvent.h>
-#include <sofa/simulation/tree/PropagateEventVisitor.h>
+#include <sofa/simulation/common/PropagateEventVisitor.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <algorithm>
 #include <functional>

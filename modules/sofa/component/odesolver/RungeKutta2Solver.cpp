@@ -1,5 +1,5 @@
 #include <sofa/component/odesolver/RungeKutta2Solver.h>
-#include <sofa/simulation/tree/MechanicalVisitor.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
@@ -53,7 +53,7 @@ void RungeKutta2Solver::solve(double dt)
     newV.peq(acc, dt/2.); // newV = vel + acc dt/2
 #else // single-operation optimization
     {
-        simulation::tree::MechanicalVMultiOpVisitor vmop;
+        simulation::MechanicalVMultiOpVisitor vmop;
         vmop.ops.resize(2);
         vmop.ops[0].first = (VecId)newX;
         vmop.ops[0].second.push_back(std::make_pair((VecId)pos,1.0));
@@ -74,7 +74,7 @@ void RungeKutta2Solver::solve(double dt)
     vel.peq(acc,dt);
 #else // single-operation optimization
     {
-        simulation::tree::MechanicalVMultiOpVisitor vmop;
+        simulation::MechanicalVMultiOpVisitor vmop;
         vmop.ops.resize(2);
         vmop.ops[0].first = (VecId)pos;
         vmop.ops[0].second.push_back(std::make_pair((VecId)pos,1.0));

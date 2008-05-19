@@ -9,8 +9,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef sofa_componentNode_h
-#define sofa_componentNode_h
+#ifndef SOFA_COMPONENT_NODE_H
+#define SOFA_COMPONENT_NODE_H
 
 #include <sofa/core/objectmodel/Context.h>
 // moved from GNode (27/04/08)
@@ -35,19 +35,16 @@
 #include <sofa/core/componentmodel/collision/Pipeline.h>
 #include <sofa/core/objectmodel/Event.h>
 
-#include <sofa/simulation/tree/VisitorScheduler.h>
-using sofa::simulation::tree::VisitorScheduler;
+#include <sofa/simulation/common/VisitorScheduler.h>
+using sofa::simulation::VisitorScheduler;
 namespace sofa
 {
 namespace simulation
 {
-namespace tree
-{
 class Visitor;
 }
 }
-}
-using sofa::simulation::tree::Visitor;
+using sofa::simulation::Visitor;
 
 #include <sofa/helper/system/thread/CTime.h>
 #include <string>
@@ -92,17 +89,17 @@ public:
     virtual void doExecuteVisitor(Visitor* action)=0;
 
     /// Execute a recursive action starting from this node
-    void executeVisitor( simulation::tree::Visitor* action);
+    void executeVisitor( simulation::Visitor* action);
 
     /// Execute a recursive action starting from this node
-    void execute(simulation::tree::Visitor& action)
+    void execute(simulation::Visitor& action)
     {
-        simulation::tree::Visitor* p = &action;
+        simulation::Visitor* p = &action;
         executeVisitor(p);
     }
 
     /// Execute a recursive action starting from this node
-    void execute(simulation::tree::Visitor* p)
+    void execute(simulation::Visitor* p)
     {
         executeVisitor(p);
     }
@@ -112,7 +109,7 @@ public:
     void execute()
     {
         Act action;
-        simulation::tree::Visitor* p = &action;
+        simulation::Visitor* p = &action;
         executeVisitor(p);
     }
     /// @}
@@ -476,7 +473,7 @@ public:
     Single<VisitorScheduler> actionScheduler;
 
     // VisitorScheduler can use doExecuteVisitor() method
-    friend class tree::VisitorScheduler;
+    friend class VisitorScheduler;
 
     /// Must be called after each graph modification. Do not call it directly, apply an InitVisitor instead.
     virtual void initialize();

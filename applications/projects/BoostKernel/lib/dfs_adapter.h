@@ -15,7 +15,7 @@
 #include <boost/graph/depth_first_search.hpp>
 #include "BglScene.h"
 #include "BglNode.h"
-#include <sofa/simulation/tree/Visitor.h>
+#include <sofa/simulation/common/Visitor.h>
 
 namespace sofa
 {
@@ -33,7 +33,7 @@ The BglScene::H_vertex_node_map is used to get the sofa::simulation::Node associ
 class dfs_adapter : public boost::dfs_visitor<>
 {
 public:
-    sofa::simulation::tree::Visitor* visitor;
+    sofa::simulation::Visitor* visitor;
 
     typedef BglScene::Hgraph Graph; ///< BGL graph to traverse
     typedef Graph::vertex_descriptor Vertex;

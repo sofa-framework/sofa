@@ -28,7 +28,9 @@
 #define MULTICOMPONENT_H
 
 #include <vector>
-#include <algorithm>
+#include <algorithm>  
+#include <cstring>
+
 //using namespace std;
 
 #include "Component.h"

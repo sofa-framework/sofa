@@ -41,9 +41,9 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
-#include <sofa/simulation/tree/AnimateBeginEvent.h>
-#include <sofa/simulation/tree/MechanicalVisitor.h>
-#include <sofa/simulation/tree/UpdateMappingVisitor.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/UpdateMappingVisitor.h>
 
 #include <sofa/simulation/tree/GNode.h>
 
@@ -407,8 +407,8 @@ void ArticulatedHierarchyController::applyController(void)
                     articulationIndex = articulationPropagationChain[j];
             }
 
-            static_cast<sofa::simulation::tree::GNode*>(this->getContext())->execute<sofa::simulation::tree::MechanicalPropagatePositionAndVelocityVisitor>();
-            static_cast<sofa::simulation::tree::GNode*>(this->getContext())->execute<sofa::simulation::tree::UpdateMappingVisitor>();
+            static_cast<sofa::simulation::tree::GNode*>(this->getContext())->execute<sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor>();
+            static_cast<sofa::simulation::tree::GNode*>(this->getContext())->execute<sofa::simulation::UpdateMappingVisitor>();
         }
     }
 }

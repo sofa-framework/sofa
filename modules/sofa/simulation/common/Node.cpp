@@ -10,11 +10,11 @@
 //
 //
 #include "Node.h"
-#include <sofa/simulation/tree/PropagateEventVisitor.h>
-#include <sofa/simulation/tree/AnimateVisitor.h>
-#include <sofa/simulation/tree/InitVisitor.h>
-#include <sofa/simulation/tree/VisualVisitor.h>
-#include <sofa/simulation/tree/UpdateMappingVisitor.h>
+#include <sofa/simulation/common/PropagateEventVisitor.h>
+#include <sofa/simulation/common/AnimateVisitor.h>
+#include <sofa/simulation/common/InitVisitor.h>
+#include <sofa/simulation/common/VisualVisitor.h>
+#include <sofa/simulation/common/UpdateMappingVisitor.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -47,24 +47,24 @@ Node::~Node()
 void Node::init()
 {
     //cerr<<"Node::init() begin node "<<getName()<<endl;
-    execute<simulation::tree::InitVisitor>();
+    execute<simulation::InitVisitor>();
     //cerr<<"Node::init() end node "<<getName()<<endl;
 }
 
 /// Do one step forward in time
 void Node::animate( double dt )
 {
-    simulation::tree::AnimateVisitor vis(dt);
+    simulation::AnimateVisitor vis(dt);
     //cerr<<"Node::animate, start execute"<<endl;
     execute(vis);
     //cerr<<"Node::animate, end execute"<<endl;
-    execute<simulation::tree::UpdateMappingVisitor>();
+    execute<simulation::UpdateMappingVisitor>();
 }
 
 void Node::glDraw()
 {
-    execute<simulation::tree::VisualUpdateVisitor>();
-    execute<simulation::tree::VisualDrawVisitor>();
+    execute<simulation::VisualUpdateVisitor>();
+    execute<simulation::VisualDrawVisitor>();
 }
 
 
@@ -477,7 +477,7 @@ void Node::executeVisitor(Visitor* action)
 /// Propagate an event
 void Node::propagateEvent( core::objectmodel::Event* event )
 {
-    simulation::tree::PropagateEventVisitor act(event);
+    simulation::PropagateEventVisitor act(event);
     this->executeVisitor(&act);
 }
 

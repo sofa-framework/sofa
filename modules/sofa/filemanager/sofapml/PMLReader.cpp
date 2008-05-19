@@ -32,11 +32,12 @@
 #include "sofa/component/collision/NewProximityIntersection.h"
 #include "sofa/component/collision/DefaultCollisionGroupManager.h"
 #include "sofa/component/collision/BruteForceDetection.h"
-#include "sofa/simulation/tree/VisualVisitor.h"
+#include "sofa/simulation/common/VisualVisitor.h"
 #include "sofa/simulation/tree/Simulation.h"
 
 using namespace sofa::component::collision;
 using namespace sofa::simulation::tree;
+using namespace sofa::simulation;
 
 namespace sofa
 {

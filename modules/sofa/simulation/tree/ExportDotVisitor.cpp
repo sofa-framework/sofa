@@ -309,7 +309,7 @@ void ExportDotVisitor::processObject(GNode* /*node*/, core::objectmodel::BaseObj
     }
 }
 
-Visitor::Result ExportDotVisitor::processNodeTopDown(GNode* node)
+simulation::Visitor::Result ExportDotVisitor::processNodeTopDown(GNode* node)
 {
     const char* color=NULL;
     if (display(node,&color))

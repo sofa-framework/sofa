@@ -5,8 +5,8 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/tree/AnimateBeginEvent.h>
-#include <sofa/simulation/tree/AnimateEndEvent.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
 
 #include <fstream>
 

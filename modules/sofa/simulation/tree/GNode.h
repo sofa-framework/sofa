@@ -41,12 +41,12 @@ namespace sofa
 
 namespace simulation
 {
+class Visitor;
+class VisitorScheduler;
 
 namespace tree
 {
 
-class Visitor;
-class VisitorScheduler;
 class MutationListener;
 
 /** Define the structure of the scene. Contains (as pointer lists) Component objects and children GNode objects.
@@ -208,9 +208,9 @@ protected:
 
     /// Execute a recursive action starting from this node.
     /// This method bypass the actionScheduler of this node if any.
-    void doExecuteVisitor(Visitor* action);
+    void doExecuteVisitor(simulation::Visitor* action);
     // VisitorScheduler can use doExecuteVisitor() method
-    friend class VisitorScheduler;
+    friend class simulation::VisitorScheduler;
 
     Sequence<MutationListener> listener;
 

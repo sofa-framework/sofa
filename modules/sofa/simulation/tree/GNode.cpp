@@ -23,7 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/simulation/tree/GNode.h>
-#include <sofa/simulation/tree/Visitor.h>
+#include <sofa/simulation/common/Visitor.h>
 #include <sofa/simulation/tree/MutationListener.h>
 #include <sofa/simulation/tree/xml/NodeElement.h>
 #include <iostream>
@@ -306,14 +306,14 @@ const sofa::helper::vector< core::objectmodel::BaseNode* > GNode::getChildren() 
 
 /// Execute a recursive action starting from this node
 /// This method bypass the actionScheduler of this node if any.
-void GNode::doExecuteVisitor(Visitor* action)
+void GNode::doExecuteVisitor(simulation::Visitor* action)
 {
     if (getLogTime())
     {
         const ctime_t t0 = CTime::getTime();
         ctime_t tChild = 0;
         actionStack.push(action);
-        if(action->processNodeTopDown(this) != Visitor::RESULT_PRUNE)
+        if(action->processNodeTopDown(this) != simulation::Visitor::RESULT_PRUNE)
         {
             ctime_t ct0 = CTime::getTime();
             for(ChildIterator it = child.begin(); it != child.end(); ++it)
@@ -339,7 +339,7 @@ void GNode::doExecuteVisitor(Visitor* action)
         if (!actionStack.empty())
         {
             // remove time from calling action log
-            Visitor* prev = actionStack.top();
+            simulation::Visitor* prev = actionStack.top();
             NodeTimer& t = actionTime[prev->getCategoryName()];
             t.tNode -= tTree;
             t.tTree -= tTree;
@@ -347,7 +347,7 @@ void GNode::doExecuteVisitor(Visitor* action)
     }
     else
     {
-        if(action->processNodeTopDown(this) != Visitor::RESULT_PRUNE)
+        if(action->processNodeTopDown(this) != simulation::Visitor::RESULT_PRUNE)
         {
             for(ChildIterator it = child.begin(); it != child.end(); ++it)
             {

@@ -20,7 +20,7 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
-#include <sofa/simulation/tree/AnimateBeginEvent.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
 
 
 namespace sofa
@@ -326,7 +326,7 @@ void CurveMapping<BaseMapping>::applyJT( typename In::VecConst& /*out*/, const t
 template <class BaseMapping>
 void CurveMapping<BaseMapping>::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (/*sofa::simulation::tree::AnimateBeginEvent* ev = */dynamic_cast<sofa::simulation::tree::AnimateBeginEvent*>(event))
+    if (/*sofa::simulation::AnimateBeginEvent* ev = */dynamic_cast<sofa::simulation::AnimateBeginEvent*>(event))
     {
         if (fabs(velocity.getValue()) > 0.00001)
         {

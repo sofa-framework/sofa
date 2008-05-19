@@ -7,8 +7,8 @@
 //#include <flowvr/interact/chunkwriter.h>
 
 #include <sofa/simulation/tree/Simulation.h>
-#include <sofa/simulation/tree/Visitor.h>
-#include <sofa/simulation/tree/ParallelVisitorScheduler.h>
+#include <sofa/simulation/common/Visitor.h>
+#include <sofa/simulation/common/ParallelVisitorScheduler.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/Mat.h>
@@ -17,12 +17,12 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/tree/AnimateBeginEvent.h>
-#include <sofa/simulation/tree/AnimateEndEvent.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/component/topology/MeshTopology.h>
 
 #include <sofa/simulation/tree/GNode.h>
-#include <sofa/simulation/tree/InitVisitor.h>
+#include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/tree/DeleteVisitor.h>
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/component/collision/PointModel.h>

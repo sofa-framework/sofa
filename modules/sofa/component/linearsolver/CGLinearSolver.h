@@ -27,7 +27,7 @@
 
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
 #include <sofa/simulation/tree/MatrixLinearSolver.h>
-#include <sofa/simulation/tree/MechanicalVisitor.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
 #include <math.h>
 
 namespace sofa

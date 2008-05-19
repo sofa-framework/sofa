@@ -23,8 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/core/objectmodel/Context.h>
-// #include <sofa/simulation/tree/Visitor.h>
-// #include <sofa/simulation/tree/Visitor.h>
+// #include <sofa/simulation/common/Visitor.h>
 
 
 namespace sofa

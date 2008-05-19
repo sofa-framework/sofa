@@ -23,7 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/component/odesolver/ComplianceEulerSolver.h>
-#include <sofa/simulation/tree/MechanicalVisitor.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
 #include <iostream>

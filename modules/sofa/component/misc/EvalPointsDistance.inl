@@ -3,9 +3,9 @@
 
 #include "EvalPointsDistance.h"
 #include <sofa/defaulttype/DataTypeInfo.h>
-#include <sofa/simulation/tree/AnimateBeginEvent.h>
-#include <sofa/simulation/tree/AnimateEndEvent.h>
-#include <sofa/simulation/tree/UpdateMappingEndEvent.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/simulation/common/UpdateMappingEndEvent.h>
 #include <sofa/helper/gl/template.h>
 
 #include <fstream>
@@ -176,9 +176,9 @@ void EvalPointsDistance<DataTypes>::handleEvent(sofa::core::objectmodel::Event* 
     if (!mstate1 || !mstate2)
         return;
     std::ostream *out = (outfile==NULL)? &std::cout : outfile;
-    //if (/* simulation::tree::AnimateBeginEvent* ev = */ dynamic_cast<simulation::tree::AnimateBeginEvent*>(event))
-    //if (/* simulation::tree::AnimateEndEvent* ev = */ dynamic_cast<simulation::tree::AnimateEndEvent*>(event))
-    if (/* simulation::tree::UpdateMappingEndEvent* ev = */ dynamic_cast<simulation::tree::UpdateMappingEndEvent*>(event))
+    //if (/* simulation::AnimateBeginEvent* ev = */ dynamic_cast<simulation::AnimateBeginEvent*>(event))
+    //if (/* simulation::AnimateEndEvent* ev = */ dynamic_cast<simulation::AnimateEndEvent*>(event))
+    if (/* simulation::UpdateMappingEndEvent* ev = */ dynamic_cast<simulation::UpdateMappingEndEvent*>(event))
     {
         double time = getContext()->getTime();
         // write the state using a period

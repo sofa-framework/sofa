@@ -29,7 +29,6 @@
 #include <sofa/helper/static_assert.h>
 #include <sofa/helper/rmath.h>
 #include <functional>
-//#define SOFA_DEFAULTTYPE_VEC_H
 
 
 #define EQUALITY_THRESHOLD 1e-6
