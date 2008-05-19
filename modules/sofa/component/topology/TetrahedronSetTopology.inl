@@ -746,15 +746,11 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::removeTetrahedra(sofa::helpe
 
     topology->propagateTopologicalChanges();
 
-
     // now destroy the old tetrahedra.
-
 
     modifier->removeTetrahedraProcess(  tetrahedra ,true);
 
-
-    //assert(topology->getTetrahedronSetTopologyContainer()->checkTopology());
-    topology->getTetrahedronSetTopologyContainer()->checkTopology();
+    assert(topology->getTetrahedronSetTopologyContainer()->checkTopology());
 
 }
 
@@ -779,8 +775,7 @@ void  TetrahedronSetTopologyAlgorithms<DataTypes>::renumberPoints( const sofa::h
     // now renumber the points
     modifier->renumberPointsProcess(index, inv_index);
 
-    //assert(topology->getTriangleSetTopologyContainer()->checkTopology());
-    topology->getTetrahedronSetTopologyContainer()->checkTopology();
+    assert(topology->getTetrahedronSetTopologyContainer()->checkTopology());
 }
 
 /// Cross product for 3-elements vectors.

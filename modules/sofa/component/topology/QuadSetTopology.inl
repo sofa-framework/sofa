@@ -566,8 +566,7 @@ void  QuadSetTopologyAlgorithms<DataTypes>::renumberPoints( const sofa::helper::
     // now renumber the points
     modifier->renumberPointsProcess(index, inv_index);
 
-    //assert(topology->getTriangleSetTopologyContainer()->checkTopology());
-    topology->getQuadSetTopologyContainer()->checkTopology();
+    assert(topology->getQuadSetTopologyContainer()->checkTopology());
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

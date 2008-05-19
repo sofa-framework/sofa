@@ -828,15 +828,11 @@ void HexahedronSetTopologyAlgorithms< DataTypes >::removeHexahedra(sofa::helper:
 
     topology->propagateTopologicalChanges();
 
-
     // now destroy the old hexahedra.
-
 
     modifier->removeHexahedraProcess(  hexahedra ,true);
 
-
-    //assert(topology->getHexahedronSetTopologyContainer()->checkTopology());
-    topology->getHexahedronSetTopologyContainer()->checkTopology();
+    assert(topology->getHexahedronSetTopologyContainer()->checkTopology());
 
 }
 
@@ -861,8 +857,7 @@ void  HexahedronSetTopologyAlgorithms<DataTypes>::renumberPoints( const sofa::he
     // now renumber the points
     modifier->renumberPointsProcess(index, inv_index);
 
-    //assert(topology->getTriangleSetTopologyContainer()->checkTopology());
-    topology->getHexahedronSetTopologyContainer()->checkTopology();
+    assert(topology->getHexahedronSetTopologyContainer()->checkTopology());
 }
 
 /// Cross product for 3-elements vectors.
