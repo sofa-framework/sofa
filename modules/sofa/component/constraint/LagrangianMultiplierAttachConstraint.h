@@ -65,6 +65,9 @@ public:
         return 0;
     }
 
+    /// this constraint is holonomic
+    bool isHolonomic() {return true;}
+
     void draw();
 
 };

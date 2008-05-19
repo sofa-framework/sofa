@@ -97,6 +97,9 @@ public:
 
     virtual void draw();
 
+    /// this constraint is holonomic
+    bool isHolonomic() {return true;}
+
 protected :
 
     // Define TestNewPointFunction

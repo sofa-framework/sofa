@@ -135,7 +135,8 @@ public:
         {
             V_NULL=0,
             V_COORD,
-            V_DERIV
+            V_DERIV,
+            V_CONST
         };
         Type type;
         unsigned int index;
@@ -151,6 +152,9 @@ public:
         static VecId dx() { return VecId(V_DERIV,4); }
         static VecId freePosition() { return VecId(V_COORD,2); }
         static VecId freeVelocity() { return VecId(V_DERIV,2); }
+        static VecId holonomicC() {return VecId(V_CONST,0);}
+        static VecId NonHolonomicC() {return VecId(V_CONST,1);}
+
         /// Test if two VecId identify the same vector
         bool operator==(const VecId& v) const
         {
@@ -257,6 +261,14 @@ public:
     ///
     /// To reset it to the default storage use \code setDx(VecId::dx()) \endcode
     virtual void setDx(VecId v) = 0; //{}
+
+    /// Make the holonomic constraint system matrix point to either holonomic Constraints or NonHolonomic Constraints.
+    ///
+    /// To reset it to the default storage or to make it point to holonomicConstraints use \code setDx(VecId::holonomicC()) \endcode
+    /// To make it point to nonNolonomicConstraints use \code setC(VecId::NonHolonomicC()) \endcode
+    virtual void setC(VecId v) = 0;
+
+
 
     /// new : get compliance on the constraints
     virtual void getCompliance(double ** /*w*/) { }

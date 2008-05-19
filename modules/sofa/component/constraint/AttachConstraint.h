@@ -108,6 +108,10 @@ public:
 
     virtual void draw();
 
+
+    // this constraint is holonomic
+    bool isHolonomic() {return true;}
+
 protected :
     void projectPosition(Coord& x1, Coord& x2, bool /*freeRotations*/, unsigned /*index*/) { x2 = x1; }
     void projectVelocity(Deriv& x1, Deriv& x2, bool /*freeRotations*/, unsigned /*index*/) { x2 = x1; }

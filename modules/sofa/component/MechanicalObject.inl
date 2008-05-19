@@ -800,6 +800,14 @@ void MechanicalObject<DataTypes>::setVecDeriv(unsigned int index, VecDeriv* v)
     vectorsDeriv[index] = v;
 }
 
+template <class DataTypes>
+void MechanicalObject<DataTypes>::setVecConst(unsigned int index, VecConst* v)
+{
+    if (index>=vectorsConst.size())
+        vectorsConst.resize(index+1);
+    vectorsConst[index] = v;
+}
+
 
 template<class DataTypes>
 typename MechanicalObject<DataTypes>::VecCoord* MechanicalObject<DataTypes>::getVecCoord(unsigned int index)
@@ -820,6 +828,17 @@ typename MechanicalObject<DataTypes>::VecDeriv* MechanicalObject<DataTypes>::get
         vectorsDeriv[index] = new VecDeriv;
 
     return vectorsDeriv[index];
+}
+
+template<class DataTypes>
+typename MechanicalObject<DataTypes>::VecConst* MechanicalObject<DataTypes>::getVecConst(unsigned int index)
+{
+    if (index>=vectorsConst.size())
+        vectorsConst.resize(index+1);
+    if (vectorsConst[index]==NULL)
+        vectorsConst[index] = new VecConst;
+
+    return vectorsConst[index];
 }
 
 template <class DataTypes>
@@ -1411,6 +1430,20 @@ void MechanicalObject<DataTypes>::setDx(VecId v)
     if (v.type == VecId::V_DERIV)
     {
         this->dx = getVecDeriv(v.index);
+    }
+    else
+    {
+        std::cerr << "Invalid setDx operation ("<<v<<")\n";
+    }
+}
+
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::setC(VecId v)
+{
+    if (v.type == VecId::V_CONST)
+    {
+        this->c = getVecConst(v.index);
     }
     else
     {

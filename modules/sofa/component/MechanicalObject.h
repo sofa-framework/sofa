@@ -97,10 +97,12 @@ protected:
 
     sofa::helper::vector< VecCoord * > vectorsCoord;
     sofa::helper::vector< VecDeriv * > vectorsDeriv;
+    sofa::helper::vector< VecConst * > vectorsConst;
     int vsize; ///< Number of elements to allocate in vectors
 
     void setVecCoord(unsigned int index, VecCoord* v);
     void setVecDeriv(unsigned int index, VecDeriv* v);
+    void setVecConst(unsigned int index, VecConst* v);
 
     /// @}
 
@@ -263,6 +265,8 @@ public:
 
     VecDeriv* getVecDeriv(unsigned int index);
 
+    VecConst* getVecConst(unsigned int index);
+
     virtual void vAvail(VecId& v);
 
     virtual void vAlloc(VecId v);
@@ -288,6 +292,8 @@ public:
     virtual void setF(VecId v);
 
     virtual void setDx(VecId v);
+
+    virtual void setC(VecId v);
 
     virtual void resetForce();
 
