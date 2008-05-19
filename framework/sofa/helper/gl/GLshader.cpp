@@ -323,9 +323,6 @@ void CShader::InitShaders(const std::string& strVertex, const std::string& strGe
     {
 #ifdef GL_GEOMETRY_SHADER_EXT
         ready &= CompileShader( GL_GEOMETRY_SHADER_EXT, LoadTextFile(strGeometry), m_hGeometryShader );
-        if (geometry_input_type != -1) glProgramParameteriEXT(m_hProgramObject, GL_GEOMETRY_INPUT_TYPE_EXT, geometry_input_type );
-        if (geometry_output_type != -1) glProgramParameteriEXT(m_hProgramObject, GL_GEOMETRY_OUTPUT_TYPE_EXT, geometry_output_type );
-        if (geometry_vertices_out != -1) glProgramParameteriEXT(m_hProgramObject, GL_GEOMETRY_VERTICES_OUT_EXT, geometry_vertices_out );
 #else
         std::cerr << "SHADER ERROR: GL_GEOMETRY_SHADER_EXT not defined. Please use a recent version of GLEW.\n";
         ready = false;
@@ -350,6 +347,14 @@ void CShader::InitShaders(const std::string& strVertex, const std::string& strGe
 #endif
     glAttachObjectARB(m_hProgramObject, m_hFragmentShader);
 
+#ifdef GL_GEOMETRY_SHADER_EXT
+    if (m_hGeometryShader)
+    {
+        if (geometry_input_type != -1) glProgramParameteriEXT(m_hProgramObject, GL_GEOMETRY_INPUT_TYPE_EXT, geometry_input_type );
+        if (geometry_output_type != -1) glProgramParameteriEXT(m_hProgramObject, GL_GEOMETRY_OUTPUT_TYPE_EXT, geometry_output_type );
+        if (geometry_vertices_out != -1) glProgramParameteriEXT(m_hProgramObject, GL_GEOMETRY_VERTICES_OUT_EXT, geometry_vertices_out );
+    }
+#endif
     // Our last init function is to link our program object with OpenGL
     glLinkProgramARB(m_hProgramObject);
 
