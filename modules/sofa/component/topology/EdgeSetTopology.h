@@ -312,16 +312,24 @@ public:
      */
     virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index, const sofa::helper::vector<unsigned int> &/*inv_index*/, const bool renumberDOF = true);
 
-    /** \brief Fuse the edges.
+    /** \brief Swap the edges.
      *
      */
-    virtual void fuseEdgesProcess(const sofa::helper::vector< Edge >& edgesPair);
+    virtual void swapEdgesProcess(const sofa::helper::vector< Edge >& edgesPair);
+
+    /** \brief Fuse the edges.
+     *
+     * @param removeIsolatedItems if true isolated vertices are also removed
+     */
+    virtual void fuseEdgesProcess(const sofa::helper::vector< Edge >& edgesPair, const bool removeIsolatedPoints = true);
 
     /** \brief Split the edges.
      *
+     * @param removeIsolatedItems if true isolated vertices are also removed
      */
     virtual void splitEdgesProcess( sofa::helper::vector<unsigned int> &indices,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = sofa::helper::vector< sofa::helper::vector< double > >(0));
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = sofa::helper::vector< sofa::helper::vector< double > >(0),
+            const bool removeIsolatedPoints = true);
 
     /** \brief Load an edge.
      */
@@ -345,7 +353,7 @@ public:
         @param edges an array of edge indices to be removed (note that the array is not const since it needs to be sorted)
         *
         */
-    virtual void removeEdges(sofa::helper::vector< unsigned int >& edges);
+    virtual void removeEdges(sofa::helper::vector< unsigned int >& edges, const bool removeIsolatedPoints = true);
 
     /** \brief Generic method to remove a list of items.
      */
@@ -366,16 +374,25 @@ public:
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs= (const sofa::helper::vector< sofa::helper::vector< double > >)0) ;
 
 
-    /** \brief Fuse a list of pair edges.
+    /** \brief Swap a list of pair edges, replacing each edge pair ((p11, p12), (p21, p22)) by the edge pair ((p11, p21), (p12, p22))
      *
      */
-    virtual void fuseEdges(const sofa::helper::vector< Edge >& edgesPair);
+    virtual void swapEdges(const sofa::helper::vector< Edge >& edgesPair);
 
-    /** \brief Split an array of edges. On each edge, a vertex is created based on its barycentric coordinates
+    /** \brief Fuse a list of pair edges, replacing each edge pair ((p11, p12), (p21, p22)) by one edge (p11, p22)
      *
+     * @param removeIsolatedPoints if true isolated vertices are also removed
+     */
+    virtual void fuseEdges(const sofa::helper::vector< Edge >& edgesPair, const bool removeIsolatedPoints = true);
+
+    /** \brief Split an array of edges, replacing each edge (p1, p2) by two edges (p1, p3) and (p3, p2) where p3 is the new vertex
+     * On each edge, a vertex is created based on its barycentric coordinates
+     *
+     * @param removeIsolatedPoints if true isolated vertices are also removed
      */
     virtual void splitEdges( sofa::helper::vector<unsigned int> &indices,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0 );
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0 ,
+            const bool removeIsolatedPoints = true);
 
     /** \brief Gives the optimal vertex permutation according to the Reverse CuthillMckee algorithm (use BOOST GRAPH LIBRAIRY)
     */

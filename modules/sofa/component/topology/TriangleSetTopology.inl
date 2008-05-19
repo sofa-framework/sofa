@@ -516,6 +516,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::removeTriangles(sofa::helper::v
     assert (topology != 0);
     TriangleSetTopologyModifier< DataTypes >* modifier  = static_cast< TriangleSetTopologyModifier< DataTypes >* >(topology->getTopologyModifier());
     assert(modifier != 0);
+
     /// add the topological changes in the queue
     modifier->removeTrianglesWarning(triangles);
     // inform other objects that the triangles are going to be removed
@@ -524,8 +525,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::removeTriangles(sofa::helper::v
 
     modifier->removeTrianglesProcess(  triangles ,removeIsolatedEdges, removeIsolatedPoints);
 
-    //assert(topology->getTriangleSetTopologyContainer()->checkTopology());
-    topology->getTriangleSetTopologyContainer()->checkTopology();
+    assert(topology->getTriangleSetTopologyContainer()->checkTopology());
 }
 
 template<class DataTypes>
@@ -549,8 +549,7 @@ void  TriangleSetTopologyAlgorithms<DataTypes>::renumberPoints( const sofa::help
     // now renumber the points
     modifier->renumberPointsProcess(index, inv_index);
 
-    //assert(topology->getTriangleSetTopologyContainer()->checkTopology());
-    topology->getTriangleSetTopologyContainer()->checkTopology();
+    assert(topology->getTriangleSetTopologyContainer()->checkTopology());
 }
 
 // Preparation of "InciseAlongPointsList" :
