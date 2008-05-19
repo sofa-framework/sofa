@@ -80,7 +80,10 @@ void EdgeSetController<DataTypes>::init()
     Inherit::init();
 
     if (edges)
+    {
         edge0RestedLength = edges->getEdgeSetGeometryAlgorithms()->computeRestEdgeLength(0);
+        edges->getEdgeSetTopologyContainer()->getEdgeVertexShellArray();
+    }
 }
 
 
@@ -88,7 +91,6 @@ void EdgeSetController<DataTypes>::init()
 template <class DataTypes>
 void EdgeSetController<DataTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)
 {
-    std::cout << "onMouseEvent\n";
     switch (mev->getState())
     {
     case sofa::core::objectmodel::MouseEvent::Wheel :
@@ -106,7 +108,6 @@ void EdgeSetController<DataTypes>::onMouseEvent(core::objectmodel::MouseEvent *m
 template <class DataTypes>
 void EdgeSetController<DataTypes>::onBeginAnimationStep()
 {
-    std::cout << "onBeginAnimationStep\n";
     applyController();
 }
 
@@ -127,7 +128,7 @@ void EdgeSetController<DataTypes>::applyController()
             sofa::helper::Quater<Real>& quatrot = (*this->mState->getX())[0].getOrientation();
             sofa::defaulttype::Vec<3,Real> vectrans(step * this->mainDirection[0] * (Real)0.05, step * this->mainDirection[1] * (Real)0.05, step * this->mainDirection[2] * (Real)0.05);
             vectrans = quatrot.rotate(vectrans);
-            std::cout << "X0 += "<<vectrans<<std::endl;
+            //	std::cout << "X0 += " << vectrans << std::endl;
             (*this->mState->getX0())[0].getCenter() += vectrans;
             (*this->mState->getX())[0].getCenter() += vectrans;
         }
@@ -145,26 +146,119 @@ void EdgeSetController<DataTypes>::applyController()
 template <class DataTypes>
 void EdgeSetController<DataTypes>::modifyTopology(void)
 {
-    if (edges)
+    assert(edges != 0);
+
+    if (step >= 0)
     {
-        if (edges->getEdgeSetGeometryAlgorithms()->computeEdgeLength(0) > ( 2 * edge0RestedLength ))
+        edges->getEdgeSetTopologyContainer()->getEdgeVertexShellArray();
+
+        sofa::helper::vector< unsigned int > baseEdge(0);
+        baseEdge = edges->getEdgeSetTopologyContainer()->getEdgeVertexShell(0);
+
+        if (baseEdge.size() == 1)
         {
-            // First Edge makes two.
-            sofa::helper::vector<unsigned int> indices(0);
-            indices.push_back(0);
-            edges->getEdgeSetTopologyAlgorithms()->splitEdges(indices);
-        }
-        else if (edges->getEdgeSetGeometryAlgorithms()->computeEdgeLength(0) < ( 0.5 * edge0RestedLength ))
-        {
-            // Edges one and two fuse.
-            sofa::helper::vector<topology::Edge> edgesPair(0);
-            edgesPair.push_back(edges->getEdgeSetTopologyContainer()->getEdge(0));
-            edgesPair.push_back(edges->getEdgeSetTopologyContainer()->getEdge(1));
-//			edgesPair.push_back(topology::Edge(0,1));
-            edges->getEdgeSetTopologyAlgorithms()->fuseEdges(edgesPair);
+            if (edges->getEdgeSetGeometryAlgorithms()->computeEdgeLength(baseEdge[0]) > ( 2 * edge0RestedLength ))
+            {
+                // First Edge makes 2
+                sofa::helper::vector<unsigned int> indices(0);
+                indices.push_back(baseEdge[0]);
+
+                edges->getEdgeSetTopologyAlgorithms()->splitEdges(indices);
+
+                edges->propagateTopologicalChanges();
+
+
+                // Renumber Vertices
+
+                unsigned int numPoints = edges->getPointSetTopologyContainer()->getNumberOfVertices();
+
+                sofa::helper::vector<unsigned int> permutations(numPoints);
+                permutations[0] = 0;
+                permutations[numPoints - 1] = 1;
+
+                for (unsigned int i = 1; i < numPoints - 1; i++)
+                    permutations[i] = i + 1;
+
+                /*
+                std::cout << "permutations : ";
+                for (unsigned int i = 0; i < numPoints; i++)
+                	std::cout << permutations[i] << "  ";
+                std::cout << std::endl;
+                */
+
+                sofa::helper::vector<unsigned int> inverse_permutations(numPoints);
+                for (unsigned int i = 0; i < numPoints; i++)
+                    inverse_permutations[permutations[i]] = i;
+
+                /*
+                std::cout << "inverse_permutations : ";
+                for (unsigned int i = 0; i < numPoints; i++)
+                	std::cout << inverse_permutations[i] << "  ";
+                std::cout << std::endl;
+                */
+
+                edges->getEdgeSetTopologyAlgorithms()->renumberPoints((const sofa::helper::vector<unsigned int> &) inverse_permutations, (const sofa::helper::vector<unsigned int> &) permutations);
+            }
         }
     }
+    else
+    {
+        edges->getEdgeSetTopologyContainer()->getEdgeVertexShellArray();
 
+        sofa::helper::vector< unsigned int > baseEdge;
+        baseEdge = edges->getEdgeSetTopologyContainer()->getEdgeVertexShell(1);
+
+        if (baseEdge.size() == 2)
+        {
+
+            if ((edges->getEdgeSetGeometryAlgorithms()->computeEdgeLength(baseEdge[0]) < ( 0.5 * edge0RestedLength ))
+                ||(edges->getEdgeSetGeometryAlgorithms()->computeEdgeLength(baseEdge[1]) < ( 0.5 * edge0RestedLength )))
+
+            {
+                // Fuse Edges (0-1)
+
+                sofa::helper::vector< sofa::helper::vector<unsigned int> > edges_fuse(0);
+                sofa::helper::vector<unsigned int> v(0);
+                v.push_back(baseEdge[0]);
+                v.push_back(baseEdge[1]);
+                edges_fuse.push_back(v);
+                edges->getEdgeSetTopologyAlgorithms()->fuseEdges(edges_fuse, true);
+
+                edges->propagateTopologicalChanges();
+
+                // Renumber Vertices
+
+                unsigned int numPoints = edges->getPointSetTopologyContainer()->getNumberOfVertices();
+
+                sofa::helper::vector<unsigned int> permutations(numPoints);
+                permutations[0] = 0;
+                permutations[1] = numPoints - 1;
+                for (unsigned int i = 2; i < numPoints; i++)
+                    permutations[i] = i-1;
+
+                /*
+                std::cout << "permutations : ";
+                for (unsigned int i = 0; i < numPoints; i++)
+                	std::cout << permutations[i] << "  ";
+                std::cout << std::endl;
+                */
+
+                sofa::helper::vector<unsigned int> inverse_permutations(numPoints);
+                for (unsigned int i = 0; i < numPoints; i++)
+                    inverse_permutations[permutations[i]] = i;
+
+                /*
+                std::cout << "inverse_permutations : ";
+                for (unsigned int i = 0; i < numPoints; i++)
+                	std::cout << inverse_permutations[i] << "  ";
+                std::cout << std::endl;
+                */
+
+                edges->getEdgeSetTopologyAlgorithms()->renumberPoints((const sofa::helper::vector<unsigned int> &) inverse_permutations, (const sofa::helper::vector<unsigned int> &) permutations);
+
+            }
+        }
+    }
 }
 
 
@@ -178,12 +272,22 @@ void EdgeSetController<DataTypes>::draw()
         glBegin(GL_LINES);
         for (unsigned int i=0; i<edges->getEdgeSetTopologyContainer()->getNumberOfEdges(); i++)
         {
-            glColor4f(1.0,0.0,0.0,1.0);
+            glColor4f(1.0,1.0,0.0,1.0);
             helper::gl::glVertexT((*this->mState->getX())[edges->getEdge(i)[0]]);
-            glColor4f(0.0,1.0,0.0,1.0);
             helper::gl::glVertexT((*this->mState->getX())[edges->getEdge(i)[1]]);
         }
         glEnd();
+
+        glPointSize(10);
+        glBegin(GL_POINTS);
+        for (unsigned int i=0; i<edges->getEdgeSetTopologyContainer()->getNumberOfEdges(); i++)
+        {
+            glColor4f(1.0,0.0,0.0,1.0);
+            helper::gl::glVertexT((*this->mState->getX())[edges->getEdge(i)[0]]);
+            helper::gl::glVertexT((*this->mState->getX())[edges->getEdge(i)[1]]);
+        }
+        glEnd();
+        glPointSize(1);
     }
 }
 
