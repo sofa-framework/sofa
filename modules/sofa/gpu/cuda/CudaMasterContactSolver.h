@@ -23,7 +23,7 @@ using namespace helper::system::thread;
 using namespace sofa::gpu::cuda;
 
 
-class CudaMechanicalGetConstraintValueVisitor : public simulation::tree::MechanicalVisitor
+class CudaMechanicalGetConstraintValueVisitor : public simulation::MechanicalVisitor
 {
 public:
     CudaMechanicalGetConstraintValueVisitor(defaulttype::BaseVector * v): _v(v) {}
@@ -37,7 +37,7 @@ private:
     defaulttype::BaseVector * _v;
 };
 
-class CudaMechanicalGetContactIDVisitor : public simulation::tree::MechanicalVisitor
+class CudaMechanicalGetContactIDVisitor : public simulation::MechanicalVisitor
 {
 public:
     CudaMechanicalGetContactIDVisitor(long *id, unsigned int offset = 0)

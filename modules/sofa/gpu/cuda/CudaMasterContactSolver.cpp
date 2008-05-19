@@ -56,9 +56,9 @@ void CudaMasterContactSolver<real>::build_LCP()
 {
     _numConstraints = 0;
 
-    simulation::tree::MechanicalResetConstraintVisitor().execute(context);
+    simulation::MechanicalResetConstraintVisitor().execute(context);
     _mu = mu_d.getValue();
-    simulation::tree::MechanicalAccumulateConstraint(_numConstraints, _mu).execute(context);
+    simulation::MechanicalAccumulateConstraint(_numConstraints, _mu).execute(context);
 
     if (_numConstraints > MAX_NUM_CONSTRAINTS)
     {
@@ -181,7 +181,7 @@ void CudaMasterContactSolver<real>::step(double dt)
         }
     }
 
-    simulation::tree::MechanicalBeginIntegrationVisitor beginVisitor(dt);
+    simulation::MechanicalBeginIntegrationVisitor beginVisitor(dt);
     context->execute(&beginVisitor);
 
     for(simulation::tree::GNode::ChildIterator it=context->child.begin(); it!=context->child.end(); ++it)
@@ -191,12 +191,12 @@ void CudaMasterContactSolver<real>::step(double dt)
             (*it)->solver[i]->solve(dt);
         }
     }
-    simulation::tree::MechanicalPropagateFreePositionVisitor().execute(context);
+    simulation::MechanicalPropagateFreePositionVisitor().execute(context);
 
     core::componentmodel::behavior::BaseMechanicalState::VecId dx_id = core::componentmodel::behavior::BaseMechanicalState::VecId::dx();
-    simulation::tree::MechanicalVOpVisitor(dx_id).execute( context);
-    simulation::tree::MechanicalPropagateDxVisitor(dx_id).execute( context);
-    simulation::tree::MechanicalVOpVisitor(dx_id).execute( context);
+    simulation::MechanicalVOpVisitor(dx_id).execute( context);
+    simulation::MechanicalPropagateDxVisitor(dx_id).execute( context);
+    simulation::MechanicalVOpVisitor(dx_id).execute( context);
 
 #ifdef DISPLAY_TIME
     std::cout<<" Free Motion :        " << ( (double) timer->getTime() - time)*0.001 <<" ms" <<std::endl;
@@ -248,7 +248,7 @@ void CudaMasterContactSolver<real>::step(double dt)
         cc->applyContactForce(&_f);
     }
 
-    simulation::tree::MechanicalPropagateAndAddDxVisitor().execute( context);
+    simulation::MechanicalPropagateAndAddDxVisitor().execute( context);
 
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
@@ -260,7 +260,7 @@ void CudaMasterContactSolver<real>::step(double dt)
     std::cout<<" contactCorrections : " <<( (double) timer->getTime() - time)*0.001 <<" ms" <<std::endl;
 #endif
 
-    simulation::tree::MechanicalEndIntegrationVisitor endVisitor(dt);
+    simulation::MechanicalEndIntegrationVisitor endVisitor(dt);
     context->execute(&endVisitor);
 
 }
