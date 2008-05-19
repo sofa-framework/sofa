@@ -53,9 +53,9 @@
 //instruments handling
 #include <sofa/component/controller/BaseController.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
-#include <sofa/simulation/tree/GrabVisitor.h>
-#include <sofa/simulation/tree/MechanicalVisitor.h>
-#include <sofa/simulation/tree/UpdateMappingVisitor.h>
+#include <sofa/simulation/common/GrabVisitor.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/UpdateMappingVisitor.h>
 #include <sofa/simulation/tree/Simulation.h>
 #ifdef QT_MODULE_QT3SUPPORT
 #include <QEvent>
@@ -393,7 +393,7 @@ protected:
                     if (_mouseInteractorMoving)
                     {
                         _mouseInteractorMoving = false;
-                        static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::tree::GrabVisitor>();
+                        static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::GrabVisitor>();
                     }
                 }
                 break;
@@ -436,8 +436,8 @@ protected:
                 }
             }
 
-            static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::tree::MechanicalPropagatePositionAndVelocityVisitor>();
-            static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::tree::UpdateMappingVisitor>();
+            static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor>();
+            static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::UpdateMappingVisitor>();
             getQWidget()->update();
         }
         else

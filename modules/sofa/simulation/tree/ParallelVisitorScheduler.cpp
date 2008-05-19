@@ -24,7 +24,7 @@
 *******************************************************************************/
 #include <sofa/simulation/tree/ParallelVisitorScheduler.h>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/tree/Visitor.h>
+#include <sofa/simulation/common/Visitor.h>
 
 namespace sofa
 {
@@ -40,7 +40,7 @@ ParallelVisitorScheduler::ParallelVisitorScheduler(bool propagate)
 {
 }
 
-void ParallelVisitorScheduler::executeVisitor(GNode* node, Visitor* action)
+void ParallelVisitorScheduler::executeVisitor(GNode* node, simulation::Visitor* action)
 {
     // first make sure all child nodes have schedulers
     if (propagate)

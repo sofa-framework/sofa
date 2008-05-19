@@ -29,8 +29,8 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/tree/AnimateBeginEvent.h>
-#include <sofa/simulation/tree/AnimateEndEvent.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/NewProximityIntersection.h>

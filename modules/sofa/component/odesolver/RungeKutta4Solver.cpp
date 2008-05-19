@@ -1,5 +1,5 @@
 #include <sofa/component/odesolver/RungeKutta4Solver.h>
-#include <sofa/simulation/tree/MechanicalVisitor.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
 
@@ -63,7 +63,7 @@ void RungeKutta4Solver::solve(double dt)
     k2v.peq(k1a, stepBy2);
 #else // single-operation optimization
     {
-        simulation::tree::MechanicalVMultiOpVisitor vmop;
+        simulation::MechanicalVMultiOpVisitor vmop;
         vmop.ops.resize(2);
         vmop.ops[0].first = (VecId)newX;
         vmop.ops[0].second.push_back(std::make_pair((VecId)pos,1.0));
@@ -86,7 +86,7 @@ void RungeKutta4Solver::solve(double dt)
     k3v.peq(k2a, stepBy2);
 #else // single-operation optimization
     {
-        simulation::tree::MechanicalVMultiOpVisitor vmop;
+        simulation::MechanicalVMultiOpVisitor vmop;
         vmop.ops.resize(2);
         vmop.ops[0].first = (VecId)newX;
         vmop.ops[0].second.push_back(std::make_pair((VecId)pos,1.0));
@@ -109,7 +109,7 @@ void RungeKutta4Solver::solve(double dt)
     k4v.peq(k3a, dt);
 #else // single-operation optimization
     {
-        simulation::tree::MechanicalVMultiOpVisitor vmop;
+        simulation::MechanicalVMultiOpVisitor vmop;
         vmop.ops.resize(2);
         vmop.ops[0].first = (VecId)newX;
         vmop.ops[0].second.push_back(std::make_pair((VecId)pos,1.0));
@@ -135,7 +135,7 @@ void RungeKutta4Solver::solve(double dt)
     vel.peq(k4a,stepBy6);
 #else // single-operation optimization
     {
-        simulation::tree::MechanicalVMultiOpVisitor vmop;
+        simulation::MechanicalVMultiOpVisitor vmop;
         vmop.ops.resize(2);
         vmop.ops[0].first = (VecId)pos;
         vmop.ops[0].second.push_back(std::make_pair((VecId)pos,1.0));

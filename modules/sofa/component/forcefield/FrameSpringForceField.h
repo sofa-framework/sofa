@@ -65,14 +65,14 @@ public:
     typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
     enum { N=Coord::static_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef Vec<N,Real> Vec;
+    typedef Vec<N,Real> VecN;
 
 
     class Spring
     {
     public:
         int  m1, m2;             /// the two extremities of the spring: masses m1 and m2 ( indexes of the DOFs)
-        Vec vec1, vec2;
+        VecN vec1, vec2;
         Real kd;                 /// damping factor
 
         Real stiffnessTrans;  ///stiffness to apply on axis where the translations are free (default 0.0)
@@ -87,13 +87,13 @@ public:
         //accessors
         Real getStiffnessRotation() {return stiffnessRot;}
         Real getStiffnessTranslation() {return stiffnessTrans;}
-        Vec getInitVec1() {return vec1;}
+        VecN getInitVec1() {return vec1;}
 
         //affectors
         void setStiffnessRotation ( Real ksr ) {    stiffnessRot = ksr;  }
         void setStiffnessTranslation ( Real kst ) { stiffnessTrans = kst;  }
-        void setInitVec1 ( const Vec& l ) { vec1=l; }
-        void setInitVec2 ( const Vec& l ) { vec2=l; }
+        void setInitVec1 ( const VecN& l ) { vec1=l; }
+        void setInitVec2 ( const VecN& l ) { vec2=l; }
         void setDamping ( Real _kd ) {  kd = _kd;   }
 
 
@@ -142,9 +142,9 @@ public:
                 out<<"KS_R "<<s.stiffnessRot<<"  ";
             if ( s.kd != 0.0 )
                 out<<"KD "<<s.kd<<"  ";
-            if ( s.vec1!= Vec ( 0, 0, 0 ) )
+            if ( s.vec1!= VecN ( 0, 0, 0 ) )
                 out<<"VEC1 "<<s.vec1<<"  ";
-            if ( s.vec2!= Vec ( 0, 0, 0 ) )
+            if ( s.vec2!= VecN ( 0, 0, 0 ) )
                 out<<"VEC2 "<<s.vec2<<"  ";
 
             out<<"END_SPRING"<<std::endl;

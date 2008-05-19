@@ -274,7 +274,7 @@ void BaseContext::propagateEvent( Event* )
     cerr<<"WARNING !!! BaseContext::propagateEvent not overloaded, does nothing"<<endl;
 }
 
-void BaseContext::executeVisitor( simulation::tree::Visitor* )
+void BaseContext::executeVisitor( simulation::Visitor* )
 {
     cerr<<"WARNING !!! BaseContext::executeVisitor not overloaded, does nothing"<<endl;
     //assert(false);

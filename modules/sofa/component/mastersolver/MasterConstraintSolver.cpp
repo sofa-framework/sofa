@@ -1,8 +1,8 @@
 #include <sofa/component/mastersolver/MasterConstraintSolver.h>
 #include <sofa/component/odesolver/MasterContactSolver.h>
 
-#include <sofa/simulation/tree/AnimateVisitor.h>
-#include <sofa/simulation/tree/MechanicalVisitor.h>
+#include <sofa/simulation/common/AnimateVisitor.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
 
 #include <sofa/helper/LCPcalc.h>
 
@@ -56,7 +56,7 @@ void MasterConstraintSolver::step ( double dt )
             (*it)->behaviorModel[i]->updatePosition(dt);
     }
 
-    simulation::tree::MechanicalBeginIntegrationVisitor beginVisitor(dt);
+    simulation::MechanicalBeginIntegrationVisitor beginVisitor(dt);
     context->execute(&beginVisitor);
 
     // Free Motion
@@ -66,12 +66,12 @@ void MasterConstraintSolver::step ( double dt )
             (*it)->solver[i]->solve(dt);
     }
 
-    simulation::tree::MechanicalPropagateFreePositionVisitor().execute(context);
+    simulation::MechanicalPropagateFreePositionVisitor().execute(context);
 
     core::componentmodel::behavior::BaseMechanicalState::VecId dx_id = core::componentmodel::behavior::BaseMechanicalState::VecId::dx();
-    simulation::tree::MechanicalVOpVisitor(dx_id).execute(context);
-    simulation::tree::MechanicalPropagateDxVisitor(dx_id).execute(context);
-    simulation::tree::MechanicalVOpVisitor(dx_id).execute(context);
+    simulation::MechanicalVOpVisitor(dx_id).execute(context);
+    simulation::MechanicalPropagateDxVisitor(dx_id).execute(context);
+    simulation::MechanicalVOpVisitor(dx_id).execute(context);
 
     computeCollision();
 
@@ -84,10 +84,10 @@ void MasterConstraintSolver::step ( double dt )
     unsigned int numConstraints = 0;
 
     // mechanical action executed from root node to propagate the constraints
-    simulation::tree::MechanicalResetConstraintVisitor().execute(context);
+    simulation::MechanicalResetConstraintVisitor().execute(context);
     double unused=0;
     // calling applyConstraint
-    simulation::tree::MechanicalAccumulateConstraint(numConstraints, unused).execute(context);
+    simulation::MechanicalAccumulateConstraint(numConstraints, unused).execute(context);
 
     _dFree.resize(numConstraints);
     _W.resize(numConstraints,numConstraints);
@@ -115,8 +115,8 @@ void MasterConstraintSolver::step ( double dt )
         cc->applyContactForce(&_result);
     }
 
-    simulation::tree::MechanicalPropagateAndAddDxVisitor().execute(context);
-    simulation::tree::MechanicalPropagatePositionAndVelocityVisitor().execute(context);
+    simulation::MechanicalPropagateAndAddDxVisitor().execute(context);
+    simulation::MechanicalPropagatePositionAndVelocityVisitor().execute(context);
 
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
@@ -124,7 +124,7 @@ void MasterConstraintSolver::step ( double dt )
         cc->resetContactForce();
     }
 
-    simulation::tree::MechanicalEndIntegrationVisitor endVisitor(dt);
+    simulation::MechanicalEndIntegrationVisitor endVisitor(dt);
     context->execute(&endVisitor);
 }
 

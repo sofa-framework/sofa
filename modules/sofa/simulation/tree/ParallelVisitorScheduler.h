@@ -25,7 +25,7 @@
 #ifndef SOFA_SIMULATION_TREE_PARALLELACTIONSCHEDULER_H
 #define SOFA_SIMULATION_TREE_PARALLELACTIONSCHEDULER_H
 
-#include <sofa/simulation/tree/VisitorScheduler.h>
+#include <sofa/simulation/common/VisitorScheduler.h>
 #include <sofa/simulation/tree/GNode.h>
 
 namespace sofa
@@ -38,7 +38,7 @@ namespace tree
 {
 
 /// Specialized VisitorScheduler for parallel implementations.
-class ParallelVisitorScheduler : public VisitorScheduler
+class ParallelVisitorScheduler : public simulation::VisitorScheduler
 {
 public:
     ParallelVisitorScheduler(bool propagate=false);
@@ -46,7 +46,7 @@ public:
     /// Specify whether this scheduler is multi-threaded.
     virtual bool isMultiThreaded() const { return true; }
 
-    virtual void executeVisitor(GNode* node, Visitor* action);
+    virtual void executeVisitor(GNode* node, simulation::Visitor* action);
 
 protected:
     bool propagate;
@@ -54,7 +54,7 @@ protected:
     void recursiveClone(GNode* node);
 
     virtual ParallelVisitorScheduler* clone() = 0;
-    virtual void executeParallelVisitor(GNode* node, Visitor* action) = 0;
+    virtual void executeParallelVisitor(GNode* node, simulation::Visitor* action) = 0;
 };
 
 } // namespace tree

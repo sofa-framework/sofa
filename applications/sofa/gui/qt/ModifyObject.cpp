@@ -54,7 +54,7 @@
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/helper/io/Mesh.h>
 
-#include <sofa/simulation/tree/InitVisitor.h>
+#include <sofa/simulation/common/InitVisitor.h>
 
 #include "WFloatLineEdit.h"
 

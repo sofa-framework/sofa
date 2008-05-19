@@ -4,7 +4,7 @@
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
 #include <sofa/simulation/tree/MasterSolverImpl.h>
 #include <sofa/simulation/tree/GNode.h>
-#include <sofa/simulation/tree/MechanicalVisitor.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
 #include <sofa/simulation/tree/OdeSolverImpl.h>
@@ -23,7 +23,7 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::linearsolver;
 using namespace helper::system::thread;
 
-class MechanicalGetConstraintTypeVisitor : public simulation::tree::MechanicalVisitor
+class MechanicalGetConstraintTypeVisitor : public simulation::MechanicalVisitor
 {
 public:
     MechanicalGetConstraintTypeVisitor(bool *type, unsigned int offset = 0)

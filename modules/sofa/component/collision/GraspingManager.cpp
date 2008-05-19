@@ -3,8 +3,8 @@
 #include <sofa/core/componentmodel/collision/DetectionOutput.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
-#include <sofa/simulation/tree/AnimateBeginEvent.h>
-#include <sofa/simulation/tree/AnimateEndEvent.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/helper/gl/template.h>
 
 namespace sofa
@@ -132,7 +132,7 @@ void GraspingManager::handleEvent(sofa::core::objectmodel::Event* event)
             active.setValue(false);
         }
     }
-    else if (/* simulation::tree::AnimateEndEvent* ev = */ dynamic_cast<simulation::tree::AnimateEndEvent*>(event))
+    else if (/* simulation::AnimateEndEvent* ev = */ dynamic_cast<simulation::AnimateEndEvent*>(event))
     {
 //        if (active.getValue())
         doGrasp();

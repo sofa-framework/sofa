@@ -15,7 +15,7 @@ namespace simulation
 namespace tree
 {
 
-Visitor::Result InitGnuplotVisitor::processNodeTopDown(simulation::Node* node)
+simulation::Visitor::Result InitGnuplotVisitor::processNodeTopDown(simulation::Node* node)
 {
     if (node->mechanicalState != NULL )
     {
@@ -32,7 +32,7 @@ ExportGnuplotVisitor::ExportGnuplotVisitor( double time )
     : m_time(time)
 {}
 
-Visitor::Result ExportGnuplotVisitor::processNodeTopDown(simulation::Node* node)
+simulation::Visitor::Result ExportGnuplotVisitor::processNodeTopDown(simulation::Node* node)
 {
     if (node->mechanicalState != NULL )
     {

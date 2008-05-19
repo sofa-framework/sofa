@@ -23,10 +23,10 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include "MatrixLinearSolver.h"
-#include <sofa/simulation/tree/MechanicalVisitor.h>
-#include <sofa/simulation/tree/MechanicalMatrixVisitor.h>
-#include <sofa/simulation/tree/MechanicalVPrintVisitor.h>
-#include <sofa/simulation/tree/VelocityThresholdVisitor.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/MechanicalMatrixVisitor.h>
+#include <sofa/simulation/common/MechanicalVPrintVisitor.h>
+#include <sofa/simulation/common/VelocityThresholdVisitor.h>
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
 
 #include <stdlib.h>

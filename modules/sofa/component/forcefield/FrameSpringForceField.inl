@@ -86,18 +86,18 @@ void FrameSpringForceField<DataTypes>::addSpringForce ( double& /*potentialEnerg
 
     Deriv Vp1p2 = v2[b] - v1[a];
 
-    Vec damping ( spring.kd, spring.kd, spring.kd );
-    Vec kst ( spring.stiffnessTrans, spring.stiffnessTrans, spring.stiffnessTrans );
-    Vec ksr ( spring.stiffnessRot, spring.stiffnessRot, spring.stiffnessRot );
+    VecN damping ( spring.kd, spring.kd, spring.kd );
+    VecN kst ( spring.stiffnessTrans, spring.stiffnessTrans, spring.stiffnessTrans );
+    VecN ksr ( spring.stiffnessRot, spring.stiffnessRot, spring.stiffnessRot );
 
     //store the referential of the spring (p1) to use it in addSpringDForce()
     springRef[a] = p1[a];
 
-    Vec fT = kst.linearProduct( ( p2[b].getCenter() + Mr02 * ( spring.vec2)) - ( p1[a].getCenter() + Mr01 * ( spring.vec1))) + damping.linearProduct ( Vp1p2.getVCenter());
-    Vec fR = ksr.linearProduct( ( p1[a].getOrientation().inverse() * p2[b].getOrientation()).toEulerVector());
+    VecN fT = kst.linearProduct( ( p2[b].getCenter() + Mr02 * ( spring.vec2)) - ( p1[a].getCenter() + Mr01 * ( spring.vec1))) + damping.linearProduct ( Vp1p2.getVCenter());
+    VecN fR = ksr.linearProduct( ( p1[a].getOrientation().inverse() * p2[b].getOrientation()).toEulerVector());
 
-    Vec C1 = fR + cross( Mr01 * ( spring.vec1), fT) + damping.linearProduct ( Vp1p2.getVOrientation() );
-    Vec C2 = fR + cross( Mr02 * ( spring.vec2), fT) + damping.linearProduct ( -Vp1p2.getVOrientation() );
+    VecN C1 = fR + cross( Mr01 * ( spring.vec1), fT) + damping.linearProduct ( Vp1p2.getVOrientation() );
+    VecN C2 = fR + cross( Mr02 * ( spring.vec2), fT) + damping.linearProduct ( -Vp1p2.getVOrientation() );
 
     f1[a] += Deriv ( fT, C1);
     f2[b] -= Deriv ( fT, C2);
@@ -119,13 +119,13 @@ void FrameSpringForceField<DataTypes>::addSpringDForce ( VecDeriv& f1, const Vec
     springRef[a].writeRotationMatrix ( Mr01 );
     invertMatrix ( Mr10, Mr01 );
 
-    Vec kst ( spring.stiffnessTrans, spring.stiffnessTrans, spring.stiffnessTrans );
-    Vec ksr ( spring.stiffnessRot, spring.stiffnessRot, spring.stiffnessRot );
+    VecN kst ( spring.stiffnessTrans, spring.stiffnessTrans, spring.stiffnessTrans );
+    VecN ksr ( spring.stiffnessRot, spring.stiffnessRot, spring.stiffnessRot );
 
     //compute directional force
-    Vec df0 = Mr01 * ( kst.linearProduct ( Mr10*Mdx1dx2.getVCenter() ) );
+    VecN df0 = Mr01 * ( kst.linearProduct ( Mr10*Mdx1dx2.getVCenter() ) );
     //compute rotational force
-    Vec dR0 = Mr01 * ( ksr.linearProduct ( Mr10* Mdx1dx2.getVOrientation() ) );
+    VecN dR0 = Mr01 * ( ksr.linearProduct ( Mr10* Mdx1dx2.getVOrientation() ) );
 
     const Deriv dforce ( df0,dR0);
 
@@ -201,8 +201,8 @@ void FrameSpringForceField<DataTypes>::draw()
         //Debug: display fT: the virtual displacement of the spring( see the model on top of FrameSpringForceField.h
         /*
         glColor4f ( 1,1,1,1 );
-        helper::gl::glVertexT ( p1[springs[i].m1].getCenter() + p1[springs[i].m1].getOrientation().rotate ( springs[i].initRot1.rotate ( Vec ( springs[i].initLength/2, 0, 0 ) ) ) );
-        helper::gl::glVertexT ( p2[springs[i].m2].getCenter() + p2[springs[i].m2].getOrientation().rotate ( springs[i].initRot2.rotate ( Vec ( -springs[i].initLength/2, 0, 0 ) ) ) );
+        helper::gl::glVertexT ( p1[springs[i].m1].getCenter() + p1[springs[i].m1].getOrientation().rotate ( springs[i].initRot1.rotate ( VecN ( springs[i].initLength/2, 0, 0 ) ) ) );
+        helper::gl::glVertexT ( p2[springs[i].m2].getCenter() + p2[springs[i].m2].getOrientation().rotate ( springs[i].initRot2.rotate ( VecN ( -springs[i].initLength/2, 0, 0 ) ) ) );
         //*/
         glEnd();
     }

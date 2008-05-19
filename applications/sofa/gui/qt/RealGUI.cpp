@@ -37,7 +37,7 @@
 #endif
 
 #include <sofa/simulation/tree/Simulation.h>
-#include <sofa/simulation/tree/InitVisitor.h>
+#include <sofa/simulation/common/InitVisitor.h>
 
 #ifdef SOFA_DEV
 
@@ -141,10 +141,11 @@ typedef QFileDialog Q3FileDialog;
 using sofa::core::objectmodel::BaseObject;
 using sofa::simulation::tree::GNode;
 using namespace sofa::helper::system::thread;
-using namespace sofa::simulation::tree;
+using namespace sofa::simulation;
 
 #ifdef SOFA_DEV
 using namespace sofa::simulation::automatescheduler;
+typedef sofa::simulation::automatescheduler::Node AutomateNode;
 #endif // SOFA_DEV
 
 
@@ -1194,7 +1195,7 @@ void RealGUI::step()
 
     if ( groot->getContext()->getMultiThreadSimulation() )
     {
-        static Node* n = NULL;
+        static AutomateNode* n = NULL;
 
         if ( ExecBus::getInstance() != NULL )
         {

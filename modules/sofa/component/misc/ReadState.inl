@@ -2,8 +2,8 @@
 #define SOFA_COMPONENT_MISC_READSTATE_INL
 
 #include <sofa/component/misc/ReadState.h>
-#include <sofa/simulation/tree/MechanicalVisitor.h>
-#include <sofa/simulation/tree/UpdateMappingVisitor.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/UpdateMappingVisitor.h>
 
 #include <sstream>
 
@@ -65,11 +65,11 @@ void ReadState<DataTypes>::reset()
 template<class DataTypes>
 void ReadState<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (/* simulation::tree::AnimateBeginEvent* ev = */ dynamic_cast<simulation::tree::AnimateBeginEvent*>(event))
+    if (/* simulation::AnimateBeginEvent* ev = */ dynamic_cast<simulation::AnimateBeginEvent*>(event))
     {
         processReadState();
     }
-    if (/* simulation::tree::AnimateEndEvent* ev = */ dynamic_cast<simulation::tree::AnimateEndEvent*>(event))
+    if (/* simulation::AnimateEndEvent* ev = */ dynamic_cast<simulation::AnimateEndEvent*>(event))
     {
     }
 }
@@ -171,9 +171,9 @@ void ReadState<DataTypes>::processReadState()
     if (updated)
     {
         //std::cout<<"update from file"<<std::endl;
-        sofa::simulation::tree::MechanicalPropagatePositionAndVelocityVisitor action1;
+        sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor action1;
         this->getContext()->executeVisitor(&action1);
-        sofa::simulation::tree::UpdateMappingVisitor action2;
+        sofa::simulation::UpdateMappingVisitor action2;
         this->getContext()->executeVisitor(&action2);
     }
 }

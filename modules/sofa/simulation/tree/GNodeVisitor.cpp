@@ -17,11 +17,12 @@ namespace sofa
 namespace simulation
 {
 
+
 namespace tree
 {
 
 GNodeVisitor::GNodeVisitor()
-    : sofa::simulation::tree::Visitor()
+    : sofa::simulation::Visitor()
 {
 }
 

@@ -125,7 +125,7 @@ void WriteState<DataTypes>::reset()
 template<class DataTypes>
 void WriteState<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (/* simulation::tree::AnimateBeginEvent* ev = */ dynamic_cast<simulation::tree::AnimateBeginEvent*>(event))
+    if (/* simulation::AnimateBeginEvent* ev = */ dynamic_cast<simulation::AnimateBeginEvent*>(event))
     {
 
         if (outfile && mmodel)

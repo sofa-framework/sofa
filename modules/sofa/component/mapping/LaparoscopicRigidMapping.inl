@@ -32,7 +32,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
 #include <sofa/component/collision/TriangleModel.h>
-#include <sofa/simulation/tree/GrabVisitor.h>
+#include <sofa/simulation/common/GrabVisitor.h>
 #include <sofa/simulation/tree/DeleteVisitor.h>
 #include <sofa/component/forcefield/VectorSpringForceField.h>
 #include <sofa/component/forcefield/StiffSpringForceField.h>
@@ -52,6 +52,7 @@ namespace mapping
 using namespace sofa::defaulttype;
 using namespace sofa::component::collision;
 using namespace sofa::simulation::tree;
+using namespace sofa::simulation;
 
 template <class BasicMapping>
 void LaparoscopicRigidMapping<BasicMapping>::init()

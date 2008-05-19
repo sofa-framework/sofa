@@ -1,5 +1,5 @@
 #include <sofa/component/odesolver/EulerSolver.h>
-#include <sofa/simulation/tree/MechanicalVisitor.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
@@ -64,7 +64,7 @@ void EulerSolver::solve(double dt)
     }
 #else // single-operation optimization
     {
-        simulation::tree::MechanicalVMultiOpVisitor vmop;
+        simulation::MechanicalVMultiOpVisitor vmop;
         vmop.ops.resize(2);
         // change order of operations depending on the sympletic flag
         int op_vel = (symplectic.getValue()?0:1);

@@ -3,45 +3,21 @@
 # Subdir relative project main directory: ./modules/sofa/simulation
 # Target is a library:  sofasimulation$$LIBSUFFIX
 
-HEADERS += Visitor.h \
-           VisitorScheduler.h \
-           AnimateVisitor.h \
-           AnimateBeginEvent.h \
-           AnimateEndEvent.h \
-           CactusStackStorage.h \
-           CollisionVisitor.h \
-           Colors.h \
+HEADERS += Colors.h \
            DeleteVisitor.h \
            ExportDotVisitor.h \
            ExportGnuplotVisitor.h \
            ExportOBJVisitor.h \
-           FindByTypeVisitor.h \
            GNode.h \
-           GrabVisitor.h \
-           init.h \
-           InitVisitor.h \
-           LocalStorage.h \
-           MechanicalVisitor.h \
-	   MechanicalMatrixVisitor.h \
-           MechanicalComputeEnergyVisitor.h \
-           MechanicalVPrintVisitor.h \
-           MutationListener.h \
-           ParallelVisitorScheduler.h \
-           PrintVisitor.h \
-           PropagateEventVisitor.h \
-           ResetVisitor.h \
-           Simulation.h \
-           TopologyChangeVisitor.h \
-           UpdateContextVisitor.h \
-           UpdateMappingVisitor.h \
-           UpdateMappingEndEvent.h \
-           VisualVisitor.h \
-           VelocityThresholdVisitor.h \
-           WriteStateVisitor.h \
+           GNodeVisitor.h \
            MasterSolverImpl.h \
            MatrixLinearSolver.h \
+           MutationListener.h \
            OdeSolverImpl.h \
+           ParallelVisitorScheduler.h \
            PipelineImpl.h \
+           Simulation.h \
+           init.h \
            xml/BaseElement.h \
            xml/Element.h \
            xml/Element.inl \
@@ -49,53 +25,27 @@ HEADERS += Visitor.h \
            xml/ObjectElement.h \
            xml/AttributeElement.h \
            xml/DataElement.h \
-           xml/XML.h \
-           XMLPrintVisitor.h\
-			GNodeVisitor.h
-SOURCES += Visitor.cpp \
-           VisitorScheduler.cpp \
-           AnimateVisitor.cpp \
-           AnimateBeginEvent.cpp \
-           AnimateEndEvent.cpp \
-           CactusStackStorage.cpp \
-           CollisionVisitor.cpp \
-           DeleteVisitor.cpp \
+           xml/XML.h 
+SOURCES += DeleteVisitor.cpp \
            ExportDotVisitor.cpp \
            ExportGnuplotVisitor.cpp \
            ExportOBJVisitor.cpp \
-           GNode.cpp \
-           GrabVisitor.cpp \
-           init.cpp \
-           InitVisitor.cpp \
-           MechanicalVisitor.cpp \
-	   MechanicalMatrixVisitor.cpp \
-           MechanicalComputeEnergyVisitor.cpp \
-           MechanicalVPrintVisitor.cpp \
-           MutationListener.cpp \
-           ParallelVisitorScheduler.cpp \
-           PrintVisitor.cpp \
-           PropagateEventVisitor.cpp \
-           ResetVisitor.cpp \
-           Simulation.cpp \
-           TopologyChangeVisitor.cpp \
-           UpdateContextVisitor.cpp \
-           UpdateMappingVisitor.cpp \
-           UpdateMappingEndEvent.cpp \
-           VelocityThresholdVisitor.cpp \
-           VisualVisitor.cpp \
-           WriteStateVisitor.cpp \
+           GNode.cpp \   
+           GNodeVisitor.cpp \
            MasterSolverImpl.cpp \
            MatrixLinearSolver.cpp \
+           MutationListener.cpp \
            OdeSolverImpl.cpp \
+           ParallelVisitorScheduler.cpp \
            PipelineImpl.cpp \
+           Simulation.cpp \
+           init.cpp \
            xml/BaseElement.cpp \
            xml/NodeElement.cpp \
            xml/ObjectElement.cpp \
            xml/AttributeElement.cpp \
            xml/DataElement.cpp \
-           xml/XML.cpp \
-           XMLPrintVisitor.cpp\
-			GNodeVisitor.cpp
+           xml/XML.cpp 
 SOFA_DIR =../../../..
 TEMPLATE = lib
 include($${SOFA_DIR}/sofa.cfg)

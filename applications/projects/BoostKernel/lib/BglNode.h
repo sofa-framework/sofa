@@ -13,7 +13,7 @@
 #define BglNode_h
 
 #include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/tree/Visitor.h>
+#include <sofa/simulation/common/Visitor.h>
 #include "BglScene.h"
 #include <sofa/core/objectmodel/ClassInfo.h>
 
@@ -33,7 +33,7 @@ sofa::simulation::Node as a node of a BGL scene graph.
 class BglNode : public sofa::simulation::Node
 {
 public:
-    typedef sofa::simulation::tree::Visitor Visitor;
+    typedef sofa::simulation::Visitor Visitor;
 
     /**
     \param sg the SOFA scene containing a bgl graph

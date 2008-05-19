@@ -34,7 +34,7 @@ namespace simulation
 namespace tree
 {
 
-Visitor::Result DeleteVisitor::processNodeTopDown(GNode* node)
+simulation::Visitor::Result DeleteVisitor::processNodeTopDown(GNode* node)
 {
     // some object will modify the graph during cleanup (removing other nodes or objects)
     // so we cannot assume that the list of object will stay constant

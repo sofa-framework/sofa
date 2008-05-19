@@ -12,7 +12,7 @@
 #ifndef sofa_simulation_treeGNodeVisitor_h
 #define sofa_simulation_treeGNodeVisitor_h
 
-#include <sofa/simulation/tree/Visitor.h>
+#include <sofa/simulation/common/Visitor.h>
 #include <sofa/simulation/tree/GNode.h>
 
 namespace sofa
@@ -29,7 +29,7 @@ Base class for the Visitors which deal with GNodes specifically rather than Node
 
 	@author The SOFA team </www.sofa-framework.org>
 */
-class GNodeVisitor : public sofa::simulation::tree::Visitor
+class GNodeVisitor : public sofa::simulation::Visitor
 {
 public:
     GNodeVisitor();

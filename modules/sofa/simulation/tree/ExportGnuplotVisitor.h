@@ -6,7 +6,7 @@
 #endif
 
 
-#include <sofa/simulation/tree/Visitor.h>
+#include <sofa/simulation/common/Visitor.h>
 
 namespace sofa
 {
@@ -17,7 +17,7 @@ namespace simulation
 namespace tree
 {
 
-class InitGnuplotVisitor : public Visitor
+class InitGnuplotVisitor : public simulation::Visitor
 {
 public:
     /// This method calls the fwd* methods during the forward traversal. You typically do not overload it.
@@ -31,7 +31,7 @@ public:
     }
 };
 
-class ExportGnuplotVisitor : public Visitor
+class ExportGnuplotVisitor : public simulation::Visitor
 {
 public:
     ExportGnuplotVisitor( double time );

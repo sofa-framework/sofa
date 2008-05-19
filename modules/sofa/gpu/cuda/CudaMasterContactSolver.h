@@ -2,7 +2,7 @@
 #define SOFA_COMPONENT_ODESOLVER_CUDAMASTERCONTACTSOLVER_H
 
 #include <sofa/simulation/tree/MasterSolverImpl.h>
-#include <sofa/simulation/tree/MechanicalVisitor.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
 #include <sofa/gpu/cuda/CudaLCP.h>

@@ -2,8 +2,8 @@
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
-#include <sofa/simulation/tree/MechanicalKaapiAction.h>
-#include <sofa/simulation/tree/MechanicalVPrintAction.h>
+#include <sofa/simulation/common/MechanicalKaapiAction.h>
+#include <sofa/simulation/common/MechanicalVPrintAction.h>
 
 
 using
@@ -11,6 +11,7 @@ std::cerr;
 using
 std::endl;
 using namespace sofa::simulation::tree;
+using namespace sofa::simulation;
 
 
 namespace
