@@ -142,6 +142,7 @@ using sofa::core::objectmodel::BaseObject;
 using sofa::simulation::tree::GNode;
 using namespace sofa::helper::system::thread;
 using namespace sofa::simulation;
+using namespace sofa::simulation::tree;
 
 #ifdef SOFA_DEV
 using namespace sofa::simulation::automatescheduler;
