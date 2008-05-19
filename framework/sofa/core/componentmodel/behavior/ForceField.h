@@ -95,22 +95,22 @@ public:
     /// explicitly (i.e. using its value at the beginning of the timestep).
     ///
     /// If the ForceField can be represented as a matrix, this method computes
-    /// $ df += K dx $
+    /// $ df += kFactor K dx + bFactor B dx $
     ///
     /// This method retrieves the force and dx vector from the MechanicalState
-    /// and call the internal addDForce(VecDeriv&,const VecDeriv&) method
-    /// implemented by the component.
-    virtual void addDForce();
+    /// and call the internal addDForce(VecDeriv&,const VecDeriv&,double,double)
+    /// method implemented by the component.
+    virtual void addDForce(double kFactor, double bFactor);
 
     /// Same as addDForce(), except the velocity vector should be used instead of dx.
     ///
     /// If the ForceField can be represented as a matrix, this method computes
-    /// $ df += K V $
+    /// $ df += kFactor K v + bFactor B v $
     ///
     /// This method retrieves the force and velocity vector from the MechanicalState
-    /// and call the internal addDForce(VecDeriv&,const VecDeriv&) method
-    /// implemented by the component.
-    virtual void addDForceV();
+    /// and call the internal addDForce(VecDeriv&,const VecDeriv&,double,double)
+    /// method implemented by the component.
+    virtual void addDForceV(double kFactor, double bFactor);
 
     /// Get the potential energy associated to this ForceField.
     ///
@@ -145,7 +145,29 @@ public:
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic ForceField::addDForce() method.
-    virtual void addDForce(VecDeriv& df, const VecDeriv& dx) = 0;
+    ///
+    /// @deprecated to more efficiently accumulate contributions from all terms
+    ///   of the system equation, a new addDForce method allowing to pass two
+    ///   coefficients for the stiffness and damping terms should now be used.
+    virtual void addDForce(VecDeriv& df, const VecDeriv& dx);
+
+    /// Compute the force derivative given a small displacement from the
+    /// position and velocity used in the previous call to addForce().
+    ///
+    /// The derivative should be directly derived from the computations
+    /// done by addForce. Any forces neglected in addDForce will be integrated
+    /// explicitly (i.e. using its value at the beginning of the timestep).
+    ///
+    /// If the ForceField can be represented as a matrix, this method computes
+    /// $ df += kFactor K dx + bFactor B dx $
+    ///
+    /// This method must be implemented by the component, and is usually called
+    /// by the generic ForceField::addDForce() method.
+    ///
+    /// To support old components that implement the deprecated addForce method
+    /// without scalar coefficients, it defaults to using a temporaty vector to
+    /// compute $ K dx $ and then manually scaling all values by kFactor.
+    virtual void addDForce(VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 
     /// Get the potential energy associated to this ForceField.
     ///
@@ -155,14 +177,6 @@ public:
     /// This method must be implemented by the component, and is usually called
     /// by the generic ForceField::getPotentialEnergy() method.
     virtual double getPotentialEnergy(const VecCoord& x) =0;
-
-    /// This method retrieves dx vector and call the internal
-    /// addKDxToVector(defaulttype::BaseVector *,const VecDeriv&, double, unsigned int&) method implemented by the component.
-    virtual void addKDxToVector(defaulttype::BaseVector * resVect, double kFact, unsigned int& offset);
-
-    /// Compute the right-hand side vector of the system matrix.
-    /// V += kFact * K * dx
-    virtual void addKDxToVector(defaulttype::BaseVector * /*resVect*/, const VecDeriv* /*dx*/, double /*kFact*/, unsigned int& /*offset*/) {};
 
     /// @}
 

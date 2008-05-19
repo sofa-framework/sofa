@@ -89,7 +89,7 @@ public:
     virtual void accFromF(VecDeriv& a, const VecDeriv& f) = 0;
 
     /// Mass forces (gravity) often have null derivative
-    virtual void addDForce(VecDeriv& /*df*/, const VecDeriv& /*dx*/)
+    virtual void addDForce(VecDeriv& /*df*/, const VecDeriv& /*dx*/, double /*kFactor*/, double /*bFactor*/)
     {}
 
     /// vMv/2 using dof->getV()
@@ -105,20 +105,38 @@ public:
     /// This method must be implemented by the component.
     virtual double getKineticEnergy( const VecDeriv& v )=0;
 
-
-    /// Mat += mFact * M
+    /// Accumulate the contribution of M, B, and/or K matrices multiplied
+    /// by the dx vector with the given coefficients.
     ///
-    /// This method must be implemented by the component. Offset parameter gives the current Matrix block starting point.
-    virtual void addMToMatrix(defaulttype::BaseMatrix * /*mat*/, double /*mFact*/, unsigned int &/*offset*/) {};
-
-    /// This method retrieves dx vector and call the internal
-    /// addMDxToVector(defaulttype::BaseVector *,const VecDeriv&, double, unsigned int&) method implemented by the component.
-    virtual void addMDxToVector(defaulttype::BaseVector * resVect, double mFact, unsigned int& offset, bool dxNull);
-
-    /// V += mFact * M * dx
+    /// This method computes
+    /// $ df += mFactor M dx + bFactor B dx + kFactor K dx $
+    /// For masses, it calls both addMdx and addDForce (which is often empty).
     ///
-    /// This method must be implemented by the component. Offset parameter gives the current Vector starting point.
-    virtual void addMDxToVector(defaulttype::BaseVector * /*resVect*/, const VecDeriv * /*dx*/, double /*mFact*/, unsigned int& /*offset*/) {};
+    /// \param mFact coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
+    /// \param bFact coefficient for damping contributions (i.e. first derivatives term in the ODE)
+    /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
+    virtual void addMBKdx(double mFactor, double bFactor, double kFactor);
+
+    /// Accumulate the contribution of M, B, and/or K matrices multiplied
+    /// by the v vector with the given coefficients.
+    ///
+    /// This method computes
+    /// $ df += mFactor M v + bFactor B v + kFactor K v $
+    /// For masses, it calls both addMdx and addDForce (which is often empty).
+    ///
+    /// \param mFact coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
+    /// \param bFact coefficient for damping contributions (i.e. first derivatives term in the ODE)
+    /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
+    virtual void addMBKv(double mFactor, double bFactor, double kFactor);
+
+    /// Compute the system matrix corresponding to m M + b B + k K
+    ///
+    /// \param matrix matrix to add the result to
+    /// \param mFact coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
+    /// \param bFact coefficient for damping contributions (i.e. first derivatives term in the ODE)
+    /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
+    /// \param offset current row/column offset
+    virtual void addMBKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double mFact, double bFact, double kFact, unsigned int &offset);
 
     /// initialization to export kinetic and potential energy to gnuplot files format
     virtual void initGnuplot(const std::string path);

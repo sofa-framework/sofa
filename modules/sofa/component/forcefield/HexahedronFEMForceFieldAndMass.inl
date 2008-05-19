@@ -237,6 +237,12 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(VecDeriv& f, const VecDer
 
 
 template<class DataTypes>
+void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(defaulttype::BaseMatrix * /*matrix*/, double /*mFact*/, unsigned int &/*offset*/)
+{
+    cerr<<"HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix not yet implemented\n";
+}
+
+template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::accFromF(VecDeriv& /*a*/, const VecDeriv& /*f*/)
 {
     cerr<<"HexahedronFEMForceFieldAndMass<DataTypes>::accFromF not yet implemented\n";

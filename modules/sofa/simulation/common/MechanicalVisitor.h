@@ -335,6 +335,26 @@ public:
 };
 
 
+/** Same as MechanicalPropagateDxVisitor followed by MechanicalResetForceVisitor
+ */
+class MechanicalPropagateDxAndResetForceVisitor : public MechanicalVisitor
+{
+public:
+    VecId dx,f;
+    MechanicalPropagateDxAndResetForceVisitor(VecId dx, VecId f) : dx(dx), f(f)
+    {}
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
+    /// Specify whether this action can be parallelized.
+    virtual bool isThreadSafe() const
+    {
+        return true;
+    }
+};
+
+
 class MechanicalPropagateAndAddDxVisitor : public MechanicalVisitor
 {
 public:
@@ -554,11 +574,6 @@ public:
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
-    //virtual Result fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* mass)
-    //{
-    //	mass->computeDf();
-    //	return RESULT_CONTINUE;
-    //}
     virtual Result fwdForceField(simulation::Node* /*node*/, core::componentmodel::behavior::BaseForceField* ff);
     virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
 
@@ -569,6 +584,35 @@ public:
     }
 };
 
+
+/** Accumulate the product of the system matrix by a given vector.
+Typically used in implicit integration solved by a Conjugate Gradient algorithm.
+The current value of the dx vector is used.
+This action is typically called after a MechanicalPropagateDxAndResetForceVisitor.
+*/
+class MechanicalAddMBKdxVisitor : public MechanicalVisitor
+{
+public:
+    VecId res;
+    double mFactor;
+    double bFactor;
+    double kFactor;
+    bool useV;
+    MechanicalAddMBKdxVisitor(VecId res, double mFactor, double bFactor, double kFactor, bool useV=false)
+        : res(res), mFactor(mFactor), bFactor(bFactor), kFactor(kFactor), useV(useV)
+    {}
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
+    virtual Result fwdForceField(simulation::Node* /*node*/, core::componentmodel::behavior::BaseForceField* ff);
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
+
+    /// Specify whether this action can be parallelized.
+    virtual bool isThreadSafe() const
+    {
+        return true;
+    }
+};
 
 class MechanicalResetConstraintVisitor : public MechanicalVisitor
 {

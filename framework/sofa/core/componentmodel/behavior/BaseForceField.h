@@ -81,14 +81,40 @@ public:
     /// explicitly (i.e. using its value at the beginning of the timestep).
     ///
     /// If the ForceField can be represented as a matrix, this method computes
-    /// $ df += K dx $
-    virtual void addDForce() = 0;
+    /// $ df += kFactor K dx + bFactor B dx $
+    virtual void addDForce(double kFactor = 1.0, double bFactor = 0.0) = 0;
 
     /// Same as addDForce(), except the velocity vector should be used instead of dx.
     ///
     /// If the ForceField can be represented as a matrix, this method computes
-    /// $ df += K v $
-    virtual void addDForceV() = 0;
+    /// $ df += kFactor K v + bFactor B v $
+    virtual void addDForceV(double kFactor = 1.0, double bFactor = 0.0) = 0;
+
+    /// Accumulate the contribution of M, B, and/or K matrices multiplied
+    /// by the dx vector with the given coefficients.
+    ///
+    /// This method computes
+    /// $ df += mFactor M dx + bFactor B dx + kFactor K dx $
+    /// In most cases only one of these matrices will be non-null for a given
+    /// component. For forcefields without mass it simply calls addDForce.
+    ///
+    /// \param mFact coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
+    /// \param bFact coefficient for damping contributions (i.e. first derivatives term in the ODE)
+    /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
+    virtual void addMBKdx(double mFactor, double bFactor, double kFactor);
+
+    /// Accumulate the contribution of M, B, and/or K matrices multiplied
+    /// by the v vector with the given coefficients.
+    ///
+    /// This method computes
+    /// $ df += mFactor M v + bFactor B v + kFactor K v $
+    /// In most cases only one of these matrices will be non-null for a given
+    /// component. For forcefields without mass it simply calls addDForceV.
+    ///
+    /// \param mFact coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
+    /// \param bFact coefficient for damping contributions (i.e. first derivatives term in the ODE)
+    /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
+    virtual void addMBKv(double mFactor, double bFactor, double kFactor);
 
     /// Get the potential energy associated to this ForceField.
     ///
@@ -101,15 +127,28 @@ public:
     /// @name Matrix operations
     /// @{
 
-    /// Compute the system matrix corresponding to m M
+    /// Compute the system matrix corresponding to k K
     ///
     /// \param matrix matrix to add the result to
-    /// \param mFact coefficient for mass values
+    /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
     /// \param offset current row/column offset
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset);
 
-    /// Compute the right-hand side vector of the system matrix.
-    virtual void addKDxToVector(sofa::defaulttype::BaseVector * vect, double kFact, unsigned int &offset);
+    /// Compute the system matrix corresponding to b B
+    ///
+    /// \param matrix matrix to add the result to
+    /// \param bFact coefficient for damping contributions (i.e. first derivatives term in the ODE)
+    /// \param offset current row/column offset
+    virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * matrix, double bFact, unsigned int &offset);
+
+    /// Compute the system matrix corresponding to m M + b B + k K
+    ///
+    /// \param matrix matrix to add the result to
+    /// \param mFact coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
+    /// \param bFact coefficient for damping contributions (i.e. first derivatives term in the ODE)
+    /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
+    /// \param offset current row/column offset
+    virtual void addMBKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double mFact, double bFact, double kFact, unsigned int &offset);
 
     /// @}
 

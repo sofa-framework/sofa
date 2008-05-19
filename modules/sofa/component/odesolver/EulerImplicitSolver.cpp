@@ -78,6 +78,13 @@ void EulerImplicitSolver::solve(double dt)
     // compute the right-hand term of the equation system
     computeForce(b);             // b = f0
 
+#if 1
+
+    // new more powerful visitors
+    // b += (h+rs)df/dx v - rd M v
+    addMBKv(b, (f_rayleighMass.getValue() == 0.0 ? 0.0 : -f_rayleighMass.getValue()), 0, h+f_rayleighStiffness.getValue());
+
+#else
     //propagateDx(vel);            // dx = v
     //computeDf(f);                // f = df/dx v
     computeDfV(f);                // f = df/dx v
@@ -91,6 +98,8 @@ void EulerImplicitSolver::solve(double dt)
         //addMdx(b,VecId(),-f_rayleighMass.getValue()); // no need to propagate vel as dx again
         addMdx(b,vel,-f_rayleighMass.getValue()); // no need to propagate vel as dx again
     }
+
+#endif
 
     b.teq(h);                           // b = h(f0 + (h+rs)df/dx v - rd M v)
 
