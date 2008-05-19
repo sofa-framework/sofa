@@ -393,7 +393,7 @@ void EdgeSetTopologyModifier< DataTypes >::swapEdgesProcess(const sofa::helper::
 }
 
 template<class DataTypes>
-void EdgeSetTopologyModifier< DataTypes >::fuseEdgesProcess(const sofa::helper::vector< sofa::helper::vector< unsigned int > >& edgesPairs, const bool removeIsolatedPoints)
+void EdgeSetTopologyModifier< DataTypes >::fuseEdgesProcess(const sofa::helper::vector< topology::Edge >& edgesPairs, const bool removeIsolatedPoints)
 {
     EdgeSetTopology< DataTypes > *topology = dynamic_cast< EdgeSetTopology< DataTypes >* >(this->m_basicTopology);
     assert(topology != 0);
@@ -602,7 +602,7 @@ void EdgeSetTopologyAlgorithms< DataTypes >::swapEdges(const sofa::helper::vecto
 }
 
 template<class DataTypes>
-void EdgeSetTopologyAlgorithms< DataTypes >::fuseEdges(const sofa::helper::vector< sofa::helper::vector< unsigned int > >& edgesPairs, const bool removeIsolatedPoints)
+void EdgeSetTopologyAlgorithms< DataTypes >::fuseEdges(const sofa::helper::vector< topology::Edge >& edgesPairs, const bool removeIsolatedPoints)
 {
     EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
