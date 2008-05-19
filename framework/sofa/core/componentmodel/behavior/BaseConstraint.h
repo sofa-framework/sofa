@@ -107,6 +107,12 @@ public:
     /// \todo Remove it or disable it until we have a working Lagrange Multipliers implementation
     virtual BaseMechanicalState* getDOFs() { return NULL; }
 
+    /// says if the constraint is holonomic or not
+    /// holonomic constraints can be processed using different methods such as :
+    /// projection - reducing the degrees of freedom - simple lagrange multiplier process
+    /// Non-holonomic constraints (like contact, friction...) need more specific treatments
+    virtual bool isHolonomic() {return NULL; }
+
 };
 
 } // namespace behavior

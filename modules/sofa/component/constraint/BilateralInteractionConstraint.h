@@ -127,6 +127,9 @@ public:
     }
 
     void draw();
+
+    /// this constraint is holonomic
+    bool isHolonomic() {return true;}
 };
 } // namespace constraint
 

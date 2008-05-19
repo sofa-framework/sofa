@@ -78,6 +78,12 @@ public:
 
     void draw();
 
+
+    /// The contact law is simplified during using the LagrangeMultiplier constraint to process the contact response:
+    /// When the constraint is set, it can not be removed until the end of the time step
+    /// Thus, during the time step, the constraint is holonomic
+    bool isHolonomic() {return true;}
+
 };
 
 } // namespace constraint

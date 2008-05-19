@@ -80,6 +80,9 @@ public:
     virtual void projectPosition(VecCoord& /*x*/); ///< project x to constrained space (x models a position)
 
     void draw() {}
+
+    /// this constraint is holonomic
+    bool isHolonomic() {return true;}
 };
 
 } // namespace constraint

@@ -63,6 +63,9 @@ public:
     virtual double getPotentialEnergy(const VecCoord& x);
 
     void draw();
+
+    /// this constraint is holonomic
+    bool isHolonomic() {return true;}
 };
 
 } // namespace constraint

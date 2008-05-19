@@ -126,6 +126,10 @@ public:
     {
         return lambda;
     }
+
+    /// this constraint is holonomic
+    bool isHolonomic() {return true;}
+
 };
 
 } // namespace constraint
