@@ -305,8 +305,19 @@ void EdgeSetTopologyModifier< DataTypes >::renumberPointsProcess( const sofa::he
 
     for (unsigned int i = 0; i < container->m_edge.size(); ++i)
     {
-        container->m_edge[i][0]  = inv_index[ container->m_edge[i][0]  ];
-        container->m_edge[i][1] = inv_index[ container->m_edge[i][1] ];
+        unsigned int p0 = inv_index[ container->m_edge[i][0]  ];
+        unsigned int p1 = inv_index[ container->m_edge[i][1]  ];
+
+        if(p0<p1)
+        {
+            container->m_edge[i][0]  = p0;
+            container->m_edge[i][1] = p1;
+        }
+        else
+        {
+            container->m_edge[i][0]  = p1;
+            container->m_edge[i][1] = p0;
+        }
     }
 
 
@@ -345,7 +356,7 @@ void EdgeSetTopologyModifier< DataTypes >::swapEdgesProcess(const sofa::helper::
         v.push_back(e1);
         v.push_back(e2);
         edgeIndexList.push_back(nbEdges+i);
-        sofa::helper::vector<unsigned int> ancestors(2);
+        sofa::helper::vector<unsigned int> ancestors;
         ancestors.push_back(i1);
         ancestors.push_back(i2);
         ancestorsArray.push_back(ancestors);
@@ -405,11 +416,17 @@ void EdgeSetTopologyModifier< DataTypes >::fuseEdgesProcess(const sofa::helper::
         unsigned int p11 = container->getEdge(i1)[0],
                      p22 = container->getEdge(i2)[1];
 
+        if(p11 == p22)
+        {
+            p11 = container->getEdge(i1)[1];
+            p22 = container->getEdge(i2)[0];
+        }
+
         Edge e (p11, p22);
         v.push_back(e);
 
         edgeIndexList.push_back(nbEdges+i);
-        sofa::helper::vector<unsigned int> ancestors(2);
+        sofa::helper::vector<unsigned int> ancestors;
         ancestors.push_back(i1);
         ancestors.push_back(i2);
         ancestorsArray.push_back(ancestors);
