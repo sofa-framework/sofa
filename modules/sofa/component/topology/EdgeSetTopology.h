@@ -321,7 +321,7 @@ public:
      *
      * @param removeIsolatedItems if true isolated vertices are also removed
      */
-    virtual void fuseEdgesProcess(const sofa::helper::vector< topology::Edge >& edgesPairs, const bool removeIsolatedPoints = true);
+    virtual void fuseEdgesProcess(const sofa::helper::vector< sofa::helper::vector< unsigned int > >& edgesPairs, const bool removeIsolatedPoints = true);
 
     /** \brief Split the edges.
      *
@@ -383,7 +383,7 @@ public:
      *
      * @param removeIsolatedPoints if true isolated vertices are also removed
      */
-    virtual void fuseEdges(const sofa::helper::vector< topology::Edge >& edgesPairs, const bool removeIsolatedPoints = true);
+    virtual void fuseEdges(const sofa::helper::vector< sofa::helper::vector< unsigned int > >& edgesPairs, const bool removeIsolatedPoints = true);
 
     /** \brief Split an array of edges, replacing each edge (p1, p2) by two edges (p1, p3) and (p3, p2) where p3 is the new vertex
      * On each edge, a vertex is created based on its barycentric coordinates
