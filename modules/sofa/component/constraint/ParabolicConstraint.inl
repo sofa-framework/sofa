@@ -38,6 +38,7 @@ namespace constraint
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::helper;
 
 template <class DataTypes>
 ParabolicConstraint<DataTypes>::ParabolicConstraint()
