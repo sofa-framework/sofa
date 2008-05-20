@@ -78,9 +78,9 @@ template <class DataTypes>
 void BeamFEMForceField<DataTypes>::reinit()
 {
     unsigned int n = _indexedElements->size();
-    _beamQuat.resize( n );
+    //_beamQuat.resize( n );
     //_stiffnessMatrices.resize( n );
-    _forces.resize( _initialPoints.getValue().size() );
+    _forces.resize( this->mstate->getSize() ); //_initialPoints.getValue().size() );
 
     if (!stiffnessContainer)
     {
@@ -116,14 +116,14 @@ void BeamFEMForceField<DataTypes>::reinitBeam(unsigned int i)
     Index a = (*_indexedElements)[i][0];
     Index b = (*_indexedElements)[i][1];
     const VecCoord& x0 = *this->mstate->getX0();
-    std::cout << "Beam i : ("<<a<<' '<<b<<") : mstate size = "<<this->mstate->getSize()<<" x0 size = "<<x0.size()<<std::endl;
+    std::cout << "Beam "<<i<<" : ("<<a<<' '<<b<<") : beamsData size = "<<beamsData.size()<<" mstate size = "<<this->mstate->getSize()<<" x0 size = "<<x0.size()<<std::endl;
     //if (needInit)
     if (stiffnessContainer)
         stiffness = stiffnessContainer->getStiffness(i) ;
     else stiffness =  _youngModulus.getValue() ;
     if (lengthContainer)
         length = lengthContainer->getLength(i) ;
-    else  length = (_initialPoints.getValue()[a].getCenter()-_initialPoints.getValue()[b].getCenter()).norm() ;
+    else  length = (x0[a].getCenter()-x0[b].getCenter()).norm() ;
     if (radiusContainer)
         radius = radiusContainer->getRadius(i) ;
     else  radius = _radius.getValue() ;
@@ -139,18 +139,22 @@ void BeamFEMForceField<DataTypes>::reinitBeam(unsigned int i)
 }
 
 template<class DataTypes>
-void BeamFEMForceField<DataTypes>::BeamFEMEdgeCreationFunction(int edgeIndex, void* param, BeamInfo &/*ei*/,
+void BeamFEMForceField<DataTypes>::BeamFEMEdgeCreationFunction(int edgeIndex, void* param, BeamInfo &ei,
         const topology::Edge& e,  const sofa::helper::vector< unsigned int > &a,
         const sofa::helper::vector< double >&)
 {
     std::cout << "Create beam "<<edgeIndex<<" ("<<e<<") from "<<a<<std::endl;
+    BeamFEMForceField<DataTypes>* p = static_cast<BeamFEMForceField<DataTypes>*>(param);
+    p->beamsData.resize(edgeIndex+1);
     static_cast<BeamFEMForceField<DataTypes>*>(param)->reinitBeam(edgeIndex);
+    ei = p->beamsData[edgeIndex];
+    p->beamsData.resize(edgeIndex);
 }
 
 template <class DataTypes>
 void BeamFEMForceField<DataTypes>::handleTopologyChange()
 {
-    _beamQuat.resize( _indexedElements->size() );
+    //_beamQuat.resize( _indexedElements->size() );
     sofa::core::componentmodel::topology::BaseTopology *topology = static_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
 
     std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=topology->firstChange();
@@ -163,7 +167,7 @@ template<class DataTypes>
 void BeamFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& p, const VecDeriv& /*v*/)
 {
     f.resize(p.size());
-    _beamQuat.resize( _indexedElements->size() );
+    //_beamQuat.resize( _indexedElements->size() );
 
     // First compute each node rotation
     unsigned int i;
@@ -315,11 +319,11 @@ void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
     {
         dW.normalize();
 
-        _beamQuat[i] = quatA*dQ.axisToQuat(dW, Theta/2);
-        _beamQuat[i].normalize();
+        beamQuat(i) = quatA*dQ.axisToQuat(dW, Theta/2);
+        beamQuat(i).normalize();
     }
     else
-        _beamQuat[i]= quatA;
+        beamQuat(i)= quatA;
 
 }
 
@@ -328,7 +332,7 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
 {
     const VecCoord& x0 = *this->mstate->getX0();
 
-    _beamQuat[i]= x[a].getOrientation();
+    beamQuat(i)= x[a].getOrientation();
 
     Vec<3,Real> u, P1P2, P1P2_0;
     // local displacement
@@ -381,7 +385,7 @@ void BeamFEMForceField<DataTypes>::applyStiffnessLarge( VecDeriv& df, const VecD
 
     Displacement local_depl;
     sofa::defaulttype::Vec<3,Real> u;
-    const Quat& q = _beamQuat[i]; //x[a].getOrientation();
+    const Quat& q = beamQuat(i); //x[a].getOrientation();
 
     u = q.inverseRotate(dx[a].getVCenter());
     local_depl[0] = u[0];
@@ -430,7 +434,7 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *m
 
         Displacement local_depl;
         Vec3d u;
-        const Quat& q = _beamQuat[i]; //x[a].getOrientation();
+        const Quat& q = beamQuat(i); //x[a].getOrientation();
         Transformation R,Rt;
         q.toMatrix(R);
         Rt.transpose(R);
@@ -463,8 +467,9 @@ void BeamFEMForceField<DataTypes>::draw()
 
     const VecCoord& x = *this->mstate->getX();
 
-    glDisable(GL_LIGHTING);
+    //std::cout << 	_indexedElements->size() << " edges, " << x.size() << " points."<<std::endl;
 
+    glDisable(GL_LIGHTING);
     glBegin(GL_LINES);
     typename VecElement::const_iterator it;
     int i;
@@ -472,11 +477,12 @@ void BeamFEMForceField<DataTypes>::draw()
     {
         Index a = (*it)[0];
         Index b = (*it)[1];
+        //std::cout << "edge " << i << " : "<<a<<" "<<b<<" = "<<x[a].getCenter()<<"  -  "<<x[b].getCenter()<<" = "<<beamsData[i]._L<<std::endl;
         defaulttype::Vec3d p; p = (x[a].getCenter()+x[b].getCenter())*0.5;
         Vec3d beamVec;
         beamVec[0]=beamsData[i]._L*0.5; beamVec[1] = 0.0; beamVec[2] = 0.0;
 
-        const Quat& q = _beamQuat[i];
+        const Quat& q = beamQuat(i);
         // axis X
         glColor3f(1,0,0);
         helper::gl::glVertexT(p - q.rotate(beamVec) );
