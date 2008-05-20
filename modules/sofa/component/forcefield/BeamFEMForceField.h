@@ -102,6 +102,8 @@ protected:
 
         //NewMAT::Matrix _Ke;
 
+        Quat quat;
+
         //void localStiffness();
         void init(double E, double L, double nu, double r);
     };
@@ -125,6 +127,8 @@ protected:
     LengthContainer* lengthContainer;
     PoissonContainer* poissonContainer;
     RadiusContainer* radiusContainer;
+
+    Quat& beamQuat(int i) { return beamsData[i].quat; }
 
 public:
     BeamFEMForceField()
@@ -181,7 +185,7 @@ protected:
     //vector<fixed_array<Coord,4> > _rotatedInitialElements;   ///< The initials positions in its frame
     //VecReal _initialLength;
     vector<Transformation> _nodeRotations;
-    vector<Quat> _beamQuat;
+    //vector<Quat> _beamQuat;
     void initLarge(int i, Index a, Index b);
     //void computeRotationLarge( Transformation &r, const Vector &p, Index a, Index b);
     void accumulateForceLarge( VecDeriv& f, const VecCoord& x, int i, Index a, Index b);

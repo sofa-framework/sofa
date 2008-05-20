@@ -94,6 +94,9 @@ public:
      */
     void onMouseEvent(core::objectmodel::MouseEvent *);
 
+    void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
+
+
     /**
      * @brief Begin Animation event callback.
      */

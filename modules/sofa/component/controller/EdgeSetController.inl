@@ -41,6 +41,7 @@
 #include <sofa/component/topology/EdgeSetTopology.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
+#include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/system/gl.h>
@@ -103,7 +104,21 @@ void EdgeSetController<DataTypes>::onMouseEvent(core::objectmodel::MouseEvent *m
     }
 }
 
-
+template <class DataTypes>
+void EdgeSetController<DataTypes>::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kev)
+{
+    switch(kev->getKey())
+    {
+    case '+':
+        this->mouseMode = Inherit::Wheel;
+        step = 4;
+        break;
+    case '-':
+        this->mouseMode = Inherit::Wheel;
+        step = -4;
+        break;
+    }
+}
 
 template <class DataTypes>
 void EdgeSetController<DataTypes>::onBeginAnimationStep()
