@@ -111,7 +111,7 @@ public:
     /// holonomic constraints can be processed using different methods such as :
     /// projection - reducing the degrees of freedom - simple lagrange multiplier process
     /// Non-holonomic constraints (like contact, friction...) need more specific treatments
-    virtual bool isHolonomic() {return NULL; }
+    virtual bool isHolonomic() {return false; }
 
 };
 
