@@ -83,8 +83,13 @@ public:
     typedef typename Coord::value_type Real;
 
     typedef topology::MeshTopology::index_type Index;
+#ifdef SOFA_NEW_HEXA
+    typedef topology::MeshTopology::Hexa Element;
+    typedef topology::MeshTopology::SeqHexas VecElement;
+#else
     typedef topology::MeshTopology::Cube Element;
     typedef topology::MeshTopology::SeqCubes VecElement;
+#endif
 
     static const int LARGE = 0;   ///< Symbol of mean large displacements tetrahedron solver (frame = edges mean on the 3 directions)
     static const int POLAR = 1;   ///< Symbol of polar displacements tetrahedron solver

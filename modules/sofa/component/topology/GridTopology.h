@@ -88,9 +88,10 @@ public:
     Hexa getHexaCopy(int i);
     Hexa getHexa(int x, int y, int z);
 
+#ifndef SOFA_NEW_HEXA
     Cube getCubeCopy(int i) { return getHexaCopy(i); }
     Cube getCube(int x, int y, int z) { return getHexa(x,y,z); }
-
+#endif
 
     Quad getQuadCopy(int i);
     Quad getQuad(int x, int y, int z);

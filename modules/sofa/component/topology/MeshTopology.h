@@ -167,7 +167,11 @@ protected:
 
     SeqTetras      seqTetras;
     bool         validTetras;
+#ifdef SOFA_NEW_HEXA
+    SeqHexas	   seqHexas;
+#else
     SeqCubes       seqHexas;
+#endif
     bool         validHexas;
 
 

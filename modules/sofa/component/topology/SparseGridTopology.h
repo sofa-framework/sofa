@@ -314,13 +314,19 @@ protected:
 
 public :
 
-
+#ifdef SOFA_NEW_HEXA
+    virtual const SeqHexas& getHexas()
+    {
+        if( !_alreadyInit ) init();
+        return MeshTopology::getHexas();
+    }
+#else
     virtual const SeqCubes& getHexas()
     {
         if( !_alreadyInit ) init();
         return MeshTopology::getHexas();
     }
-
+#endif
     virtual int getNbPoints() const
     {
         if( !_alreadyInit ) const_cast<SparseGridTopology*>(this)->init();

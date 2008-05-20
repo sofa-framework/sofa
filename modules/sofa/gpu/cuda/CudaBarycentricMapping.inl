@@ -58,7 +58,11 @@ int BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,
     map.resize(map.size()+1);
     CubeData& data = map[map.size()-1];
     //data.in_index = cubeIndex;
+#ifdef SOFA_NEW_HEXA
+    data.in_index = topology->getHexaCopy(cubeIndex)[0];
+#else
     data.in_index = topology->getCubeCopy(cubeIndex)[0];
+#endif
     data.baryCoords[0] = baryCoords[0];
     data.baryCoords[1] = baryCoords[1];
     data.baryCoords[2] = baryCoords[2];

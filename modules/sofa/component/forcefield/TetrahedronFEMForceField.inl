@@ -883,7 +883,11 @@ void TetrahedronFEMForceField<DataTypes>::init()
 
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
     _mesh = dynamic_cast<sofa::component::topology::MeshTopology*>(this->getContext()->getTopology());
+#ifdef SOFA_NEW_HEXA
+    if (_mesh==NULL || (_mesh->getTetras().empty() && _mesh->getNbHexas()<=0))
+#else
     if (_mesh==NULL || (_mesh->getTetras().empty() && _mesh->getNbCubes()<=0))
+#endif
     {
         std::cerr << "ERROR(TetrahedronFEMForceField): object must have a tetrahedric MeshTopology.\n";
         return;
@@ -896,8 +900,11 @@ void TetrahedronFEMForceField<DataTypes>::init()
     {
         _trimgrid = dynamic_cast<topology::FittedRegularGridTopology*>(_mesh);
         topology::MeshTopology::SeqTetras* tetras = new topology::MeshTopology::SeqTetras;
+#ifdef SOFA_NEW_HEXA
+        int nbcubes = _mesh->getNbHexas();
+#else
         int nbcubes = _mesh->getNbCubes();
-
+#endif
         // These values are only correct if the mesh is a grid topology
         int nx = 2;
         int ny = 1;
@@ -917,7 +924,11 @@ void TetrahedronFEMForceField<DataTypes>::init()
         for (int i=0; i<nbcubes; i++)
         {
             // if (flags && !flags->isCubeActive(i)) continue;
+#ifdef SOFA_NEW_HEXA
+            topology::MeshTopology::Hexa c = _mesh->getHexa(i);
+#else
             topology::MeshTopology::Cube c = _mesh->getCube(i);
+#endif
             int sym = 0;
             if (!((i%nx)&1)) sym+=1;
             if (((i/nx)%ny)&1) sym+=2;

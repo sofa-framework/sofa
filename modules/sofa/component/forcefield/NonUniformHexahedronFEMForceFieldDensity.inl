@@ -74,7 +74,11 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
         std::cerr << "ERROR(NonUniformHexahedronFEMForceFieldDensity): object must have a MeshTopology.\n";
         return;
     }
+#ifdef SOFA_NEW_HEXA
+    else if( this->_mesh->getNbHexas()<=0 )
+#else
     else if( this->_mesh->getNbCubes()<=0 )
+#endif
     {
         std::cerr << "ERROR(NonUniformHexahedronFEMForceFieldDensity): object must have a hexahedric MeshTopology.\n";
         std::cerr << this->_mesh->getName()<<std::endl;
@@ -82,9 +86,11 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
         cerr<<this->_mesh->getNbPoints()<<endl;
         return;
     }
-
+#ifdef SOFA_NEW_HEXA
+    this->_indexedElements = & (this->_mesh->getHexas());
+#else
     this->_indexedElements = & (this->_mesh->getCubes());
-
+#endif
 
     this->_sparseGrid = dynamic_cast<topology::SparseGridTopology*>(this->_mesh);
 
@@ -159,7 +165,11 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
 
         Vec<8,Coord> nodes;
         for(int w=0; w<8; ++w)
+#ifndef SOFA_NEW_HEXA
             nodes[w] = this->_initialPoints.getValue()[(*this->_indexedElements)[i][this->_indices[w]]];
+#else
+            nodes[w] = this->_initialPoints.getValue()[(*this->_indexedElements)[i][w]];
+#endif
 
 
         typename HexahedronFEMForceFieldT::Transformation R_0_1;
@@ -176,7 +186,11 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
             computeRotationPolar( R_0_1, nodes);
 
         for(int w=0; w<8; ++w)
+#ifndef SOFA_NEW_HEXA
             this->_rotatedInitialElements[i][w] = R_0_1*this->_initialPoints.getValue()[(*this->_indexedElements)[i][this->_indices[w]]];
+#else
+            this->_rotatedInitialElements[i][w] = R_0_1*this->_initialPoints.getValue()[(*this->_indexedElements)[i][w]];
+#endif
 
         computeCoarseElementStiffness( (*this->_elementStiffnesses.beginEdit())[i],
                 (*this->_elementMasses.beginEdit())[i],i,0);
@@ -208,8 +222,11 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
         {
             Vec<8,Coord> nodes;
             for(int w=0; w<8; ++w)
+#ifndef SOFA_NEW_HEXA
                 nodes[w] = this->_initialPoints.getValue()[(*it)[this->_indices[w]]];
-
+#else
+                nodes[w] = this->_initialPoints.getValue()[(*it)[w]];
+#endif
             // volume of a element
             Real volume = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
 
@@ -252,7 +269,11 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::computeCoarseElementSt
         const helper::fixed_array<unsigned int,8>& points = this->_sparseGrid->_virtualFinerLevels[0]->getHexas()[elementIndice];
         //Get the 8 points of the coarser Hexa
         helper::fixed_array<Coord,8> nodes;
+#ifndef SOFA_NEW_HEXA
         for (unsigned int k=0; k<8; ++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[0]->getPointPos(points[this->_indices[k]]);
+#else
+        for (unsigned int k=0; k<8; ++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[0]->getPointPos(points[k]);
+#endif
 
 
 //       //given an elementIndice, find the 8 others from the sparse grid
