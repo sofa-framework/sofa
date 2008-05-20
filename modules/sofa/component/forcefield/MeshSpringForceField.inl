@@ -120,11 +120,19 @@ void MeshSpringForceField<DataTypes>::init()
             {
                 s = this->cubesStiffness.getValue();
                 d = this->cubesDamping.getValue();
+#ifdef SOFA_NEW_HEXA
+                n = topology->getNbHexas();
+                for (int i=0; i<n; ++i)
+                {
+                    if (!topology->isCubeActive(i)) continue;
+                    topology::MeshTopology::Hexa e = topology->getHexa(i);
+#else
                 n = topology->getNbCubes();
                 for (int i=0; i<n; ++i)
                 {
                     if (!topology->isCubeActive(i)) continue;
                     topology::MeshTopology::Cube e = topology->getCube(i);
+#endif
                     for (int i=0; i<8; i++)
                         for (int j=i+1; j<8; j++)
                         {

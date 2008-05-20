@@ -117,10 +117,17 @@ void GridTopology::updateHexas()
     for (int z=0; z<n.getValue()[2]-1; z++)
         for (int y=0; y<n.getValue()[1]-1; y++)
             for (int x=0; x<n.getValue()[0]-1; x++)
+#ifdef SOFA_NEW_HEXA
+                seqHexas.push_back(Hexa(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
+                        point(x+1,y+1,z  ),point(x  ,y+1,z  ),
+                        point(x  ,y  ,z+1),point(x+1,y  ,z+1),
+                        point(x+1,y+1,z+1),point(x  ,y+1,z+1)));
+#else
                 seqHexas.push_back(Hexa(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
                         point(x  ,y+1,z  ),point(x+1,y+1,z  ),
                         point(x  ,y  ,z+1),point(x+1,y  ,z+1),
                         point(x  ,y+1,z+1),point(x+1,y+1,z+1)));
+#endif
 }
 
 GridTopology::Hexa GridTopology::getHexaCopy(int i)
@@ -133,10 +140,17 @@ GridTopology::Hexa GridTopology::getHexaCopy(int i)
 
 GridTopology::Hexa GridTopology::getHexa(int x, int y, int z)
 {
+#ifdef SOFA_NEW_HEXA
+    return Hexa(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
+            point(x+1,y+1,z  ),point(x  ,y+1,z  ),
+            point(x  ,y  ,z+1),point(x+1,y  ,z+1),
+            point(x+1,y+1,z+1),point(x  ,y+1,z+1));
+#else
     return Hexa(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
             point(x  ,y+1,z  ),point(x+1,y+1,z  ),
             point(x  ,y  ,z+1),point(x+1,y  ,z+1),
             point(x  ,y+1,z+1),point(x+1,y+1,z+1));
+#endif
 }
 
 GridTopology::Quad GridTopology::getQuadCopy(int i)

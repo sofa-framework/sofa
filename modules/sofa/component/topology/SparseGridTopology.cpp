@@ -1085,7 +1085,11 @@ int SparseGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &fy
 
     const Hexa& c = getHexa( indice );
     int c0 = c[0];
+#ifdef SOFA_NEW_HEXA
+    int c7 = c[6];
+#else
     int c7 = c[7];
+#endif
     Vector3 p0((SReal)getPX(c0), (SReal)getPY(c0), (SReal)getPZ(c0));
     Vector3 p7((SReal)getPX(c7), (SReal)getPY(c7), (SReal)getPZ(c7));
 

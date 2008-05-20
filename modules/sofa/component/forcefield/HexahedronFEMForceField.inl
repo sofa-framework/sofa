@@ -66,10 +66,10 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-
+#ifndef SOFA_NEW_HEXA
 template<class DataTypes> const int HexahedronFEMForceField<DataTypes>::_indices[8] = {0,1,3,2,4,5,7,6};
 // template<class DataTypes> const int HexahedronFEMForceField<DataTypes>::_indices[8] = {4,5,7,6,0,1,3,2};
-
+#endif
 
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
@@ -97,7 +97,11 @@ void HexahedronFEMForceField<DataTypes>::init()
         std::cerr << "ERROR(HexahedronFEMForceField): object must have a MeshTopology.\n";
         return;
     }
+#ifdef SOFA_NEW_HEXA
+    else if( _mesh->getNbHexas()<=0 )
+#else
     else if( _mesh->getNbCubes()<=0 )
+#endif
     {
         std::cerr << "ERROR(HexahedronFEMForceField): object must have a hexahedric MeshTopology.\n";
         std::cerr << _mesh->getName()<<std::endl;
@@ -108,7 +112,11 @@ void HexahedronFEMForceField<DataTypes>::init()
 // 	if (!_mesh->getCubes().empty())
 // 	else
 // 	{
+#ifdef SOFA_NEW_HEXA
+    _indexedElements = & (_mesh->getHexas());
+#else
     _indexedElements = & (_mesh->getCubes());
+#endif
 // 	}
     _trimgrid = dynamic_cast<topology::FittedRegularGridTopology*>(_mesh);
     _sparseGrid = dynamic_cast<topology::SparseGridTopology*>(_mesh);
@@ -253,7 +261,11 @@ void HexahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv&
         for(int w=0; w<8; ++w)
         {
             Coord x_2;
+#ifndef SOFA_NEW_HEXA
             x_2 = R_0_2 * x[(*it)[_indices[w]]];
+#else
+            x_2 = R_0_2 * x[(*it)[w]];
+#endif
             X[w*3] = x_2[0];
             X[w*3+1] = x_2[1];
             X[w*3+2] = x_2[2];
@@ -263,7 +275,11 @@ void HexahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv&
         computeForce( F, X, _elementStiffnesses.getValue()[i] );
 
         for(int w=0; w<8; ++w)
+#ifndef SOFA_NEW_HEXA
             v[(*it)[_indices[w]]] -= _rotations[i] * Deriv( F[w*3],  F[w*3+1],  F[w*3+2]  );
+#else
+            v[(*it)[w]] -= _rotations[i] * Deriv( F[w*3],  F[w*3+1],  F[w*3+2]  );
+#endif
     }
 
 }
@@ -813,8 +829,11 @@ void HexahedronFEMForceField<DataTypes>::initLarge(int i, const Element &elem)
 
     Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
+#ifndef SOFA_NEW_HEXA
         nodes[w] = _initialPoints.getValue()[elem[_indices[w]]];
-
+#else
+        nodes[w] = _initialPoints.getValue()[elem[w]];
+#endif
 
     Coord horizontal;
     horizontal = (nodes[1]-nodes[0] + nodes[2]-nodes[3] + nodes[5]-nodes[4] + nodes[6]-nodes[7])*.25;
@@ -824,8 +843,11 @@ void HexahedronFEMForceField<DataTypes>::initLarge(int i, const Element &elem)
     computeRotationLarge( R_0_1, horizontal,vertical);
 
     for(int w=0; w<8; ++w)
+#ifndef SOFA_NEW_HEXA
         _rotatedInitialElements[i][w] = R_0_1*_initialPoints.getValue()[elem[_indices[w]]];
-
+#else
+        _rotatedInitialElements[i][w] = R_0_1*_initialPoints.getValue()[elem[w]];
+#endif
 
     if( _elementStiffnesses.getValue().size() <= (unsigned)i )
     {
@@ -876,7 +898,11 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const 
 {
     Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
+#ifndef SOFA_NEW_HEXA
         nodes[w] = p[elem[_indices[w]]];
+#else
+        nodes[w] = p[elem[w]];
+#endif
 
     Coord horizontal;
     horizontal = (nodes[1]-nodes[0] + nodes[2]-nodes[3] + nodes[5]-nodes[4] + nodes[6]-nodes[7])*.25;
@@ -913,7 +939,11 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const 
     computeForce( F, D, _elementStiffnesses.getValue()[i] ); // compute force on element
 
     for(int w=0; w<8; ++w)
+#ifndef SOFA_NEW_HEXA
         f[elem[_indices[w]]] += _rotations[i] * Deriv( F[w*3],  F[w*3+1],   F[w*3+2]  );
+#else
+        f[elem[w]] += _rotations[i] * Deriv( F[w*3],  F[w*3+1],   F[w*3+2]  );
+#endif
 }
 
 
@@ -934,7 +964,11 @@ void HexahedronFEMForceField<DataTypes>::initPolar(int i, const Element& elem)
 {
     Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
+#ifndef SOFA_NEW_HEXA
         nodes[j] = _initialPoints.getValue()[elem[_indices[j]]];
+#else
+        nodes[j] = _initialPoints.getValue()[elem[j]];
+#endif
 
     Transformation R_0_1; // Rotation matrix (deformed and displaced Tetrahedron/world)
     computeRotationPolar( R_0_1, nodes );
@@ -992,8 +1026,11 @@ void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const 
 {
     Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
+#ifndef SOFA_NEW_HEXA
         nodes[j] = p[elem[_indices[j]]];
-
+#else
+        nodes[j] = p[elem[j]];
+#endif
 
     Transformation R_0_2; // Rotation matrix (deformed and displaced Tetrahedron/world)
     computeRotationPolar( R_0_2, nodes );
@@ -1029,7 +1066,11 @@ void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const 
 
 
     for(int j=0; j<8; ++j)
+#ifndef SOFA_NEW_HEXA
         f[elem[_indices[j]]] += _rotations[i] * Deriv( F[j*3],  F[j*3+1],   F[j*3+2]  );
+#else
+        f[elem[j]] += _rotations[i] * Deriv( F[j*3],  F[j*3+1],   F[j*3+2]  );
+#endif
 }
 
 
@@ -1060,11 +1101,19 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMat
         // find index of node 1
         for (n1=0; n1<8; n1++)
         {
+#ifndef SOFA_NEW_HEXA
             node1 = (*it)[_indices[n1]];
+#else
+            node1 = (*it)[n1];
+#endif
             // find index of node 2
             for (n2=0; n2<8; n2++)
             {
+#ifndef SOFA_NEW_HEXA
                 node2 = (*it)[_indices[n2]];
+#else
+                node2 = (*it)[n2];
+#endif
                 Mat33 tmp = Rt * Mat33(Coord(Ke[3*n1+0][3*n2+0],Ke[3*n1+0][3*n2+1],Ke[3*n1+0][3*n2+2]),
                         Coord(Ke[3*n1+1][3*n2+0],Ke[3*n1+1][3*n2+1],Ke[3*n1+1][3*n2+2]),
                         Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) * R;

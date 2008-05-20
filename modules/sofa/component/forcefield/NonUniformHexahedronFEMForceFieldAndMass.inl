@@ -70,7 +70,11 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
         std::cerr << "ERROR(NonUniformHexahedronFEMForceFieldAndMass): object must have a MeshTopology.\n";
         return;
     }
+#ifdef SOFA_NEW_HEXA
+    else if( this->_mesh->getNbHexas()<=0 )
+#else
     else if( this->_mesh->getNbCubes()<=0 )
+#endif
     {
         std::cerr << "ERROR(NonUniformHexahedronFEMForceFieldAndMass): object must have a hexahedric MeshTopology.\n";
         std::cerr << this->_mesh->getName()<<std::endl;
@@ -79,8 +83,11 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
         return;
     }
 
+#ifdef SOFA_NEW_HEXA
+    this->_indexedElements = & (this->_mesh->getHexas());
+#else
     this->_indexedElements = & (this->_mesh->getCubes());
-
+#endif
 
     this->_sparseGrid = dynamic_cast<topology::SparseGridTopology*>(this->_mesh);
 
@@ -116,8 +123,11 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
             finer->_sparseGrid = this->_sparseGrid->_virtualFinerLevels[	this->_sparseGrid->getNbVirtualFinerLevels()-_nbVirtualFinerLevels.getValue() + i];
 // 			finer->setName( "virtual" );
 
-
+#ifdef SOFA_NEW_HEXA
+            finer->_indexedElements = & (finer->_sparseGrid->getHexas());
+#else
             finer->_indexedElements = & (finer->_sparseGrid->getCubes());
+#endif
 // 			cerr<<finer->_indexedElements->size()<<endl;
 
 
@@ -214,7 +224,11 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
         {
             Vec<8,Coord> nodes;
             for(int w=0; w<8; ++w)
+#ifndef SOFA_NEW_HEXA
                 nodes[w] = this->_initialPoints.getValue()[(*it)[this->_indices[w]]];
+#else
+                nodes[w] = this->_initialPoints.getValue()[(*it)[w]];
+#endif
 
             // volume of a element
             Real volume = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();

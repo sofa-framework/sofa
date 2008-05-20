@@ -435,8 +435,13 @@ void FFDDistanceGridCollisionModel::init()
     }
     /// place points in ffd elements
     int nbp = grid->meshPts.size();
-    elems.resize(ffdGrid->getNbCubes());
+#ifdef SOFA_NEW_HEXA
+    elems.resize(ffdGrid->getNbHexas());
+    std::cout << "FFDDistanceGridCollisionModel: placing "<<nbp<<" points in "<<ffdGrid->getNbHexas()<<" cubes."<<std::endl;
+#else
+    elems.resize(ffdGrid->getNbHexas());
     std::cout << "FFDDistanceGridCollisionModel: placing "<<nbp<<" points in "<<ffdGrid->getNbCubes()<<" cubes."<<std::endl;
+#endif
     for (int i=0; i<nbp; i++)
     {
         Vec3Types::Coord p0 = grid->meshPts[i];
@@ -456,16 +461,27 @@ void FFDDistanceGridCollisionModel::init()
         }
     }
     /// fill other data and remove inactive elements
+
+#ifdef SOFA_NEW_HEXA
+    std::cout << "FFDDistanceGridCollisionModel: initializing "<<ffdGrid->getNbHexas()<<" cubes."<<std::endl;
+    int c=0;
+    for (int e=0; e<ffdGrid->getNbHexas(); e++)
+#else
     std::cout << "FFDDistanceGridCollisionModel: initializing "<<ffdGrid->getNbCubes()<<" cubes."<<std::endl;
     int c=0;
     for (int e=0; e<ffdGrid->getNbCubes(); e++)
+#endif
     {
         if (ffdGrid->isCubeActive( e ))
         {
             if (c != e)
                 elems[c].points.swap(elems[e].points); // move the list of points to the new
             elems[c].elem = e;
+#ifdef SOFA_NEW_HEXA
+            topology::MeshTopology::Hexa cube = ffdGrid->getHexaCopy(e);
+#else
             topology::MeshTopology::Cube cube = ffdGrid->getCubeCopy(e);
+#endif
             elems[c].initP0 = ffdGrid->getPoint(cube[0]);
             elems[c].initDP = ffdGrid->getPoint(cube[7])-elems[c].initP0;
             elems[c].invDP[0] = 1/elems[c].initDP[0];
@@ -527,7 +543,11 @@ void FFDDistanceGridCollisionModel::updateGrid()
     for (int index=0; index<size; index++)
     {
         DeformedCube& cube = getDeformCube( index );
+#ifdef SOFA_NEW_HEXA
+        const sofa::helper::vector<topology::MeshTopology::Hexa>& cubeCorners = ffdGrid->getHexas();
+#else
         const sofa::helper::vector<topology::MeshTopology::Cube>& cubeCorners = ffdGrid->getCubes();
+#endif
         const Vec3Types::VecCoord& x = *ffd->getX();
         {
             int e = cube.elem;

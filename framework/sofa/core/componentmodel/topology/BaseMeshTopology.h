@@ -49,6 +49,8 @@ using namespace sofa::defaulttype;
 using helper::vector;
 using helper::fixed_array;
 
+//#define SOFA_NEW_HEXA
+
 class BaseMeshTopology : public core::componentmodel::topology::Topology
 {
 public:
@@ -79,9 +81,11 @@ public:
     typedef EdgeID LineID;
     typedef Edge Line;
     typedef SeqEdges SeqLines;
+#ifndef SOFA_NEW_HEXA
     typedef HexaID CubeID;
     typedef Hexa Cube;
     typedef SeqHexas SeqCubes;
+#endif
     /// @}
 
     /// fixed-size neighbors arrays
@@ -131,7 +135,7 @@ public:
     virtual int getNbTriangles() { return getTriangles().size(); }
     virtual int getNbQuads()     { return getQuads().size(); }
     virtual int getNbTetras()    { return getTetras().size(); }
-    virtual int getNbHexas()     { return getHexas().size(); }
+    virtual int getNbHexas()	 { return getHexas().size(); }
 
     virtual Edge getEdge(EdgeID i)             { return getEdges()[i]; }
     virtual Triangle getTriangle(TriangleID i) { return getTriangles()[i]; }
@@ -181,11 +185,13 @@ public:
     /// @name Deprecated names, for backward-compatibility
     /// @{
     const SeqLines& getLines() { return getEdges(); }
-    const SeqCubes& getCubes() { return getHexas(); }
     int getNbLines() { return getNbEdges(); }
-    int getNbCubes() { return getNbHexas(); }
     Line getLine(LineID i) { return getEdge(i); }
+#ifndef SOFA_NEW_HEXA
+    const SeqCubes& getCubes() { return getHexas(); }
+    int getNbCubes() { return getNbHexas(); }
     Cube getCube(CubeID i) { return getHexa(i); }
+#endif
     /// @}
 
     // Points accessors (not always available)

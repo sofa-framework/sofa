@@ -67,9 +67,11 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-
+#ifdef SOFA_NEW_HEXA
+    typedef topology::MeshTopology::SeqHexas VecElement;
+#else
     typedef topology::MeshTopology::SeqCubes VecElement;
-
+#endif
 
     typedef HexahedronFEMForceFieldAndMass<DataTypes> HexahedronFEMForceFieldAndMassT;
     typedef HexahedronFEMForceField<DataTypes> HexahedronFEMForceFieldT;

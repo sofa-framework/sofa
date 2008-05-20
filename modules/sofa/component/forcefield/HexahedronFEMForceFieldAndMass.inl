@@ -70,7 +70,11 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
     {
         Vec<8,Coord> nodes;
         for(int w=0; w<8; ++w)
+#ifndef SOFA_NEW_HEXA
             nodes[w] = this->_initialPoints.getValue()[(*it)[this->_indices[w]]];
+#else
+            nodes[w] = this->_initialPoints.getValue()[(*it)[w]];
+#endif
 
         // volume of a element
         Real volume = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
@@ -121,7 +125,11 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
     {
         Vec<8,Coord> nodes;
         for(int w=0; w<8; ++w)
+#ifndef SOFA_NEW_HEXA
             nodes[w] = this->_initialPoints.getValue()[(*it)[this->_indices[w]]];
+#else
+            nodes[w] = this->_initialPoints.getValue()[(*it)[w]];
+#endif
 
         if( _elementMasses.getValue().size() <= (unsigned)i )
         {
@@ -219,14 +227,23 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(VecDeriv& f, const VecDer
         {
             int indice = k*3;
             for(int j=0 ; j<3 ; ++j )
+#ifndef SOFA_NEW_HEXA
                 actualDx[indice+j] = dx[(*it)[this->_indices[k]]][j];
+#else
+                actualDx[indice+j] = dx[(*it)[k]][j];
+#endif
+
         }
 
         actualF = _elementMasses.getValue()[i] * actualDx;
 
 
         for(int w=0; w<8; ++w)
+#ifndef SOFA_NEW_HEXA
             f[(*it)[this->_indices[w]]] += Deriv( actualF[w*3],  actualF[w*3+1],   actualF[w*3+2]  ) * factor;
+#else
+            f[(*it)[w]] += Deriv( actualF[w*3],  actualF[w*3+1],   actualF[w*3+2]  ) * factor;
+#endif
 
     }
 
