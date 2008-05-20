@@ -36,8 +36,8 @@ protected:
     Data<std::string> geoFilename;
 
     //TODO replace it?
-    Data<int> geometryInputTypes;
-    Data<int> geometryOutputTypes;
+    Data<int> geometryInputType;
+    Data<int> geometryOutputType;
     Data<int> geometryVerticesOut;
 
     sofa::helper::gl::CShader m_shader;
