@@ -12,7 +12,7 @@
 #version 120
 
 // TO the GEOMETRY SHADER
-varying out float field;
+varying float field;
 
 void main(void){
 

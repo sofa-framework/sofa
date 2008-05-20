@@ -12,7 +12,7 @@
 
 //FROM the GEOMETRY SHADER
 
-varying in vec4 dataFragment;
+varying vec2 dataFragment;
 
 // transfer function: post-integration
 uniform sampler1D myLUT;
