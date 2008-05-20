@@ -22,7 +22,7 @@ extern "C"
 // GPU-side methods //
 //////////////////////
 
-__global__ void RigidMappingCuda3f_apply_kernel(unsigned int size, matrix3<float> rotation, CudaVec3<float> translation, float* out, float* rotated, const float* in)
+__global__ void RigidMappingCuda3f_apply_kernel(unsigned int size, CudaVec3<float> rotation_x, CudaVec3<float> rotation_y, CudaVec3<float> rotation_z, CudaVec3<float> translation, float* out, float* rotated, const float* in)
 {
     int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
     int index1 = threadIdx.x;
@@ -45,11 +45,11 @@ __global__ void RigidMappingCuda3f_apply_kernel(unsigned int size, matrix3<float
     CudaVec3<float> p = CudaVec3<float>::make(temp[index3  ],temp[index3+1],temp[index3+2]);
 
     // rotated
-    p = rotation*p;
+    //p = rotation*p;
 
-    temp[index3  ] = dot(rotation.x,p);
-    temp[index3+1] = dot(rotation.y,p);
-    temp[index3+2] = dot(rotation.z,p);
+    temp[index3  ] = dot(rotation_x,p);
+    temp[index3+1] = dot(rotation_y,p);
+    temp[index3+2] = dot(rotation_z,p);
 
     __syncthreads();
 
@@ -179,7 +179,7 @@ void RigidMappingCuda3f_apply(unsigned int size, const matrix3<float>& rotation,
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    RigidMappingCuda3f_apply_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, rotation, translation, (float*)out, (float*)rotated, (const float*)in);
+    RigidMappingCuda3f_apply_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, rotation.x, rotation.y, rotation.z, translation, (float*)out, (float*)rotated, (const float*)in);
 }
 
 void RigidMappingCuda3f_applyJ(unsigned int size, const CudaVec3<float>& v, const CudaVec3<float>& omega, void* out, const void* rotated)
