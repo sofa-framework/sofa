@@ -35,8 +35,8 @@ OglShader::OglShader():
     vertFilename(initData(&vertFilename, (std::string) "toonShading.vert", "vertFilename", "Set the vertex shader filename to load")),
     fragFilename(initData(&fragFilename, (std::string) "toonShading.frag", "fragFilename", "Set the fragment shader filename to load")),
     geoFilename(initData(&geoFilename, (std::string) "", "geoFilename", "Set the geometry shader filename to load")),
-    geometryInputTypes(initData(&geometryInputTypes, (int) -1, "geometryInputTypes", "Set input types for the geometry shader")),
-    geometryOutputTypes(initData(&geometryOutputTypes, (int) -1, "geometryOutputTypes", "Set output types for the geometry shader")),
+    geometryInputType(initData(&geometryInputType, (int) -1, "geometryInputType", "Set input types for the geometry shader")),
+    geometryOutputType(initData(&geometryOutputType, (int) -1, "geometryOutputType", "Set output types for the geometry shader")),
     geometryVerticesOut(initData(&geometryVerticesOut, (int) -1, "geometryVerticesOut", "Set max number of vertices in output for the geometry shader")),
     hasGeometryShader(false)
 {
@@ -92,13 +92,21 @@ void OglShader::initVisual()
 
     else
     {
+        GLint maxV;
+        glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT, &maxV);
+
+        if (geometryInputType.getValue() != -1)
+            setGeometryInputType(geometryInputType.getValue());
+        if (geometryOutputType.getValue() != -1)
+            setGeometryOutputType(geometryOutputType.getValue());
+        if (geometryVerticesOut.getValue() == -1 || geometryVerticesOut.getValue() > maxV)
+            geometryVerticesOut.setValue(3);
+
+        setGeometryVerticesOut(geometryVerticesOut.getValue());
+
         m_shader.InitShaders(helper::system::DataRepository.getFile("shaders/" + vertFilename.getValue()),
                 helper::system::DataRepository.getFile("shaders/" + geoFilename.getValue()),
                 helper::system::DataRepository.getFile("shaders/" + fragFilename.getValue()));
-
-        setGeometryInputType(geometryInputTypes.getValue());
-        setGeometryOutputType(geometryOutputTypes.getValue());
-        setGeometryVerticesOut(geometryVerticesOut.getValue());
 
         hasGeometryShader = true;
     }

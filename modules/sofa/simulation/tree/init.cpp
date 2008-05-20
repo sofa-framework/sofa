@@ -198,6 +198,7 @@ SOFA_LINK_CLASS(PositionalLight)
 SOFA_LINK_CLASS(SpotLight)
 SOFA_LINK_CLASS(LightManager)
 SOFA_LINK_CLASS(OglTexture2D)
+
 SOFA_LINK_CLASS(OglIntVariable)
 SOFA_LINK_CLASS(OglInt2Variable)
 SOFA_LINK_CLASS(OglInt3Variable)
@@ -214,6 +215,7 @@ SOFA_LINK_CLASS(OglFloatVectorVariable)
 SOFA_LINK_CLASS(OglFloatVector2Variable)
 SOFA_LINK_CLASS(OglFloatVector3Variable)
 SOFA_LINK_CLASS(OglFloatVector4Variable)
+SOFA_LINK_CLASS(OglTetrahedralModel)
 SOFA_LINK_CLASS(VoidMapping)
 
 
