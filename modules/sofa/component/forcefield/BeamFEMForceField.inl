@@ -115,7 +115,8 @@ void BeamFEMForceField<DataTypes>::reinitBeam(unsigned int i)
     double stiffness, length, radius, poisson;
     Index a = (*_indexedElements)[i][0];
     Index b = (*_indexedElements)[i][1];
-
+    const VecCoord& x0 = *this->mstate->getX0();
+    std::cout << "Beam i : ("<<a<<' '<<b<<") : mstate size = "<<this->mstate->getSize()<<" x0 size = "<<x0.size()<<std::endl;
     //if (needInit)
     if (stiffnessContainer)
         stiffness = stiffnessContainer->getStiffness(i) ;
@@ -139,15 +140,17 @@ void BeamFEMForceField<DataTypes>::reinitBeam(unsigned int i)
 
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::BeamFEMEdgeCreationFunction(int edgeIndex, void* param, BeamInfo &/*ei*/,
-        const topology::Edge& ,  const sofa::helper::vector< unsigned int > &,
+        const topology::Edge& e,  const sofa::helper::vector< unsigned int > &a,
         const sofa::helper::vector< double >&)
 {
+    std::cout << "Create beam "<<edgeIndex<<" ("<<e<<") from "<<a<<std::endl;
     static_cast<BeamFEMForceField<DataTypes>*>(param)->reinitBeam(edgeIndex);
 }
 
 template <class DataTypes>
 void BeamFEMForceField<DataTypes>::handleTopologyChange()
 {
+    _beamQuat.resize( _indexedElements->size() );
     sofa::core::componentmodel::topology::BaseTopology *topology = static_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
 
     std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=topology->firstChange();
