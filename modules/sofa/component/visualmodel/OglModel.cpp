@@ -87,6 +87,12 @@ void OglModel::internalDraw()
     Vec4f emissive = material.getValue().useEmissive?material.getValue().emissive:Vec4f();
     float shininess = material.getValue().useShininess?material.getValue().shininess:45;
 
+    if (shininess == 0.0f)
+    {
+        specular.clear();
+        shininess = 1;
+    }
+
     if (isTransparent())
     {
         emissive[3] = 0; //diffuse[3];

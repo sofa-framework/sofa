@@ -1,9 +1,9 @@
 #ifdef SOFA_HAVE_GLEW
 #include <GL/glew.h>
 #endif
-#ifdef SOFA_HAVE_FLOWVR
+//#ifdef SOFA_HAVE_FLOWVR
 #include <flowvr/render/mesh.h>
-#endif
+//#endif
 #include "CudaDistanceGridCollisionModel.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/collision/CubeModel.h>
@@ -112,7 +112,7 @@ CudaDistanceGrid* CudaDistanceGrid::load(const std::string& filename, double sca
         grid->computeBBox();
         return grid;
     }
-#ifdef SOFA_HAVE_FLOWVR
+//#ifdef SOFA_HAVE_FLOWVR
     else if (filename.length()>6 && filename.substr(filename.length()-6) == ".fmesh")
     {
         flowvr::render::Mesh mesh;
@@ -170,7 +170,7 @@ CudaDistanceGrid* CudaDistanceGrid::load(const std::string& filename, double sca
         std::cout << "Distance grid creation DONE."<<std::endl;
         return grid;
     }
-#endif
+//#endif
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".obj")
     {
         sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create(filename);

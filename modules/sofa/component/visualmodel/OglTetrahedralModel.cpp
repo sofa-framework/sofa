@@ -64,17 +64,19 @@ void OglTetrahedralModel::drawVisual()
     Vec3fTypes::VecCoord& x = *nodes->getX();
     Vec3f v;
 
+#ifdef GL_LINES_ADJACENCY_EXT
+    glBegin(GL_LINES_ADJACENCY_EXT);
     for(it = vec.begin() ; it != vec.end() ; it++)
     {
 
-        glBegin(GL_LINES_ADJACENCY_EXT);
         for (unsigned int i=0 ; i< 4 ; i++)
         {
             v = x[(*it)[i]];
             glVertex3f(v[0], v[1], v[2]);
         }
-        glEnd();
     }
+    glEnd();
+#endif
     glDisable(GL_BLEND);
 }
 

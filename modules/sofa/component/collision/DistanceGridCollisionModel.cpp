@@ -3,9 +3,10 @@
 #include <sofa/component/collision/CubeModel.h>
 #include <fstream>
 #include <sofa/helper/system/gl.h>
-#ifdef SOFA_HAVE_FLOWVR
+#include <sofa/helper/gl/template.h>
+//#ifdef SOFA_HAVE_FLOWVR
 #include <flowvr/render/mesh.h>
-#endif
+//#endif
 namespace sofa
 {
 
@@ -228,33 +229,18 @@ void RigidDistanceGridCollisionModel::draw(int index)
         glColor4f(0.5f, 0.5f, 0.5f, 0.1f);
     glBegin(GL_LINES);
     {
-#ifdef SOFA_FLOAT
-        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[4].ptr());
-        glVertex3fv(corners[1].ptr()); glVertex3fv(corners[5].ptr());
-        glVertex3fv(corners[2].ptr()); glVertex3fv(corners[6].ptr());
-        glVertex3fv(corners[3].ptr()); glVertex3fv(corners[7].ptr());
-        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[2].ptr());
-        glVertex3fv(corners[1].ptr()); glVertex3fv(corners[3].ptr());
-        glVertex3fv(corners[4].ptr()); glVertex3fv(corners[6].ptr());
-        glVertex3fv(corners[5].ptr()); glVertex3fv(corners[7].ptr());
-        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[1].ptr());
-        glVertex3fv(corners[2].ptr()); glVertex3fv(corners[3].ptr());
-        glVertex3fv(corners[4].ptr()); glVertex3fv(corners[5].ptr());
-        glVertex3fv(corners[6].ptr()); glVertex3fv(corners[7].ptr());
-#else
-        glVertex3dv(corners[0].ptr()); glVertex3dv(corners[4].ptr());
-        glVertex3dv(corners[1].ptr()); glVertex3dv(corners[5].ptr());
-        glVertex3dv(corners[2].ptr()); glVertex3dv(corners[6].ptr());
-        glVertex3dv(corners[3].ptr()); glVertex3dv(corners[7].ptr());
-        glVertex3dv(corners[0].ptr()); glVertex3dv(corners[2].ptr());
-        glVertex3dv(corners[1].ptr()); glVertex3dv(corners[3].ptr());
-        glVertex3dv(corners[4].ptr()); glVertex3dv(corners[6].ptr());
-        glVertex3dv(corners[5].ptr()); glVertex3dv(corners[7].ptr());
-        glVertex3dv(corners[0].ptr()); glVertex3dv(corners[1].ptr());
-        glVertex3dv(corners[2].ptr()); glVertex3dv(corners[3].ptr());
-        glVertex3dv(corners[4].ptr()); glVertex3dv(corners[5].ptr());
-        glVertex3dv(corners[6].ptr()); glVertex3dv(corners[7].ptr());
-#endif
+        helper::gl::glVertexT(corners[0]); helper::gl::glVertexT(corners[4]);
+        helper::gl::glVertexT(corners[1]); helper::gl::glVertexT(corners[5]);
+        helper::gl::glVertexT(corners[2]); helper::gl::glVertexT(corners[6]);
+        helper::gl::glVertexT(corners[3]); helper::gl::glVertexT(corners[7]);
+        helper::gl::glVertexT(corners[0]); helper::gl::glVertexT(corners[2]);
+        helper::gl::glVertexT(corners[1]); helper::gl::glVertexT(corners[3]);
+        helper::gl::glVertexT(corners[4]); helper::gl::glVertexT(corners[6]);
+        helper::gl::glVertexT(corners[5]); helper::gl::glVertexT(corners[7]);
+        helper::gl::glVertexT(corners[0]); helper::gl::glVertexT(corners[1]);
+        helper::gl::glVertexT(corners[2]); helper::gl::glVertexT(corners[3]);
+        helper::gl::glVertexT(corners[4]); helper::gl::glVertexT(corners[5]);
+        helper::gl::glVertexT(corners[6]); helper::gl::glVertexT(corners[7]);
     }
     glEnd();
     glDisable(GL_BLEND);
@@ -270,33 +256,18 @@ void RigidDistanceGridCollisionModel::draw(int index)
         glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
     glBegin(GL_LINES);
     {
-#ifdef SOFA_FLOAT
-        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[4].ptr());
-        glVertex3fv(corners[1].ptr()); glVertex3fv(corners[5].ptr());
-        glVertex3fv(corners[2].ptr()); glVertex3fv(corners[6].ptr());
-        glVertex3fv(corners[3].ptr()); glVertex3fv(corners[7].ptr());
-        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[2].ptr());
-        glVertex3fv(corners[1].ptr()); glVertex3fv(corners[3].ptr());
-        glVertex3fv(corners[4].ptr()); glVertex3fv(corners[6].ptr());
-        glVertex3fv(corners[5].ptr()); glVertex3fv(corners[7].ptr());
-        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[1].ptr());
-        glVertex3fv(corners[2].ptr()); glVertex3fv(corners[3].ptr());
-        glVertex3fv(corners[4].ptr()); glVertex3fv(corners[5].ptr());
-        glVertex3fv(corners[6].ptr()); glVertex3fv(corners[7].ptr());
-#else
-        glVertex3dv(corners[0].ptr()); glVertex3dv(corners[4].ptr());
-        glVertex3dv(corners[1].ptr()); glVertex3dv(corners[5].ptr());
-        glVertex3dv(corners[2].ptr()); glVertex3dv(corners[6].ptr());
-        glVertex3dv(corners[3].ptr()); glVertex3dv(corners[7].ptr());
-        glVertex3dv(corners[0].ptr()); glVertex3dv(corners[2].ptr());
-        glVertex3dv(corners[1].ptr()); glVertex3dv(corners[3].ptr());
-        glVertex3dv(corners[4].ptr()); glVertex3dv(corners[6].ptr());
-        glVertex3dv(corners[5].ptr()); glVertex3dv(corners[7].ptr());
-        glVertex3dv(corners[0].ptr()); glVertex3dv(corners[1].ptr());
-        glVertex3dv(corners[2].ptr()); glVertex3dv(corners[3].ptr());
-        glVertex3dv(corners[4].ptr()); glVertex3dv(corners[5].ptr());
-        glVertex3dv(corners[6].ptr()); glVertex3dv(corners[7].ptr());
-#endif
+        helper::gl::glVertexT(corners[0]); helper::gl::glVertexT(corners[4]);
+        helper::gl::glVertexT(corners[1]); helper::gl::glVertexT(corners[5]);
+        helper::gl::glVertexT(corners[2]); helper::gl::glVertexT(corners[6]);
+        helper::gl::glVertexT(corners[3]); helper::gl::glVertexT(corners[7]);
+        helper::gl::glVertexT(corners[0]); helper::gl::glVertexT(corners[2]);
+        helper::gl::glVertexT(corners[1]); helper::gl::glVertexT(corners[3]);
+        helper::gl::glVertexT(corners[4]); helper::gl::glVertexT(corners[6]);
+        helper::gl::glVertexT(corners[5]); helper::gl::glVertexT(corners[7]);
+        helper::gl::glVertexT(corners[0]); helper::gl::glVertexT(corners[1]);
+        helper::gl::glVertexT(corners[2]); helper::gl::glVertexT(corners[3]);
+        helper::gl::glVertexT(corners[4]); helper::gl::glVertexT(corners[5]);
+        helper::gl::glVertexT(corners[6]); helper::gl::glVertexT(corners[7]);
     }
     glEnd();
 
@@ -319,11 +290,7 @@ void RigidDistanceGridCollisionModel::draw(int index)
                             glColor3d(1+d*0.25, 0, 1+d);
                         else
                             glColor3d(0, 1-d*0.25, 1-d);
-#ifdef SOFA_FLOAT
-                        glVertex3fv(p.ptr());
-#else
-                        glVertex3dv(p.ptr());
-#endif
+                        helper::gl::glVertexT(p);
                     }
         }
         glEnd();
@@ -335,11 +302,7 @@ void RigidDistanceGridCollisionModel::draw(int index)
         for (unsigned int i=0; i<grid->meshPts.size(); i++)
         {
             DistanceGrid::Coord p = grid->meshPts[i];
-#ifdef SOFA_FLOAT
-            glVertex3fv(p.ptr());
-#else
-            glVertex3dv(p.ptr());
-#endif
+            helper::gl::glVertexT(p);
         }
         glEnd();
         glBegin(GL_LINES);
@@ -359,17 +322,9 @@ void RigidDistanceGridCollisionModel::draw(int index)
                     glColor3d(1+d*0.25, 0, 1+d);
                 else
                     glColor3d(0, 1-d*0.25, 1-d);
-#ifdef SOFA_FLOAT
-                glVertex3fv(p2.ptr());
-#else
-                glVertex3dv(p2.ptr());
-#endif
+                helper::gl::glVertexT(p2);
                 if (j>-2 && j < 2)
-#ifdef SOFA_FLOAT
-                    glVertex3fv(p2.ptr());
-#else
-                    glVertex3dv(p2.ptr());
-#endif
+                    helper::gl::glVertexT(p2);
             }
         }
         glEnd();
@@ -659,33 +614,18 @@ void FFDDistanceGridCollisionModel::draw(int index)
         glColor4f(0.0f*cscale, 1.0f*cscale, 0.5f*cscale, 1.0f);
     glBegin(GL_LINES);
     {
-#ifdef SOFA_FLOAT
-        glVertex3fv(cube.corners[0].ptr()); glVertex3fv(cube.corners[4].ptr());
-        glVertex3fv(cube.corners[1].ptr()); glVertex3fv(cube.corners[5].ptr());
-        glVertex3fv(cube.corners[2].ptr()); glVertex3fv(cube.corners[6].ptr());
-        glVertex3fv(cube.corners[3].ptr()); glVertex3fv(cube.corners[7].ptr());
-        glVertex3fv(cube.corners[0].ptr()); glVertex3fv(cube.corners[2].ptr());
-        glVertex3fv(cube.corners[1].ptr()); glVertex3fv(cube.corners[3].ptr());
-        glVertex3fv(cube.corners[4].ptr()); glVertex3fv(cube.corners[6].ptr());
-        glVertex3fv(cube.corners[5].ptr()); glVertex3fv(cube.corners[7].ptr());
-        glVertex3fv(cube.corners[0].ptr()); glVertex3fv(cube.corners[1].ptr());
-        glVertex3fv(cube.corners[2].ptr()); glVertex3fv(cube.corners[3].ptr());
-        glVertex3fv(cube.corners[4].ptr()); glVertex3fv(cube.corners[5].ptr());
-        glVertex3fv(cube.corners[6].ptr()); glVertex3fv(cube.corners[7].ptr());
-#else
-        glVertex3dv(cube.corners[0].ptr()); glVertex3dv(cube.corners[4].ptr());
-        glVertex3dv(cube.corners[1].ptr()); glVertex3dv(cube.corners[5].ptr());
-        glVertex3dv(cube.corners[2].ptr()); glVertex3dv(cube.corners[6].ptr());
-        glVertex3dv(cube.corners[3].ptr()); glVertex3dv(cube.corners[7].ptr());
-        glVertex3dv(cube.corners[0].ptr()); glVertex3dv(cube.corners[2].ptr());
-        glVertex3dv(cube.corners[1].ptr()); glVertex3dv(cube.corners[3].ptr());
-        glVertex3dv(cube.corners[4].ptr()); glVertex3dv(cube.corners[6].ptr());
-        glVertex3dv(cube.corners[5].ptr()); glVertex3dv(cube.corners[7].ptr());
-        glVertex3dv(cube.corners[0].ptr()); glVertex3dv(cube.corners[1].ptr());
-        glVertex3dv(cube.corners[2].ptr()); glVertex3dv(cube.corners[3].ptr());
-        glVertex3dv(cube.corners[4].ptr()); glVertex3dv(cube.corners[5].ptr());
-        glVertex3dv(cube.corners[6].ptr()); glVertex3dv(cube.corners[7].ptr());
-#endif
+        helper::gl::glVertexT(cube.corners[0]); helper::gl::glVertexT(cube.corners[4]);
+        helper::gl::glVertexT(cube.corners[1]); helper::gl::glVertexT(cube.corners[5]);
+        helper::gl::glVertexT(cube.corners[2]); helper::gl::glVertexT(cube.corners[6]);
+        helper::gl::glVertexT(cube.corners[3]); helper::gl::glVertexT(cube.corners[7]);
+        helper::gl::glVertexT(cube.corners[0]); helper::gl::glVertexT(cube.corners[2]);
+        helper::gl::glVertexT(cube.corners[1]); helper::gl::glVertexT(cube.corners[3]);
+        helper::gl::glVertexT(cube.corners[4]); helper::gl::glVertexT(cube.corners[6]);
+        helper::gl::glVertexT(cube.corners[5]); helper::gl::glVertexT(cube.corners[7]);
+        helper::gl::glVertexT(cube.corners[0]); helper::gl::glVertexT(cube.corners[1]);
+        helper::gl::glVertexT(cube.corners[2]); helper::gl::glVertexT(cube.corners[3]);
+        helper::gl::glVertexT(cube.corners[4]); helper::gl::glVertexT(cube.corners[5]);
+        helper::gl::glVertexT(cube.corners[6]); helper::gl::glVertexT(cube.corners[7]);
     }
     glEnd();
     glLineWidth(2);
@@ -701,17 +641,13 @@ void FFDDistanceGridCollisionModel::draw(int index)
                 sofa::defaulttype::Vec<3, SReal> p = cube.center;
                 p[j] += c;
                 p[(j+1)%3] += s;
-                glVertex3fv((GLfloat *)p.ptr());
+                helper::gl::glVertexT(p);
             }
             glEnd();
         }
         glBegin(GL_POINTS);
         {
-#ifdef SOFA_FLOAT
-            glVertex3fv(cube.center.ptr());
-#else
-            glVertex3dv(cube.center.ptr());
-#endif
+            helper::gl::glVertexT(cube.center);
 
         }
         glEnd();
@@ -723,11 +659,7 @@ void FFDDistanceGridCollisionModel::draw(int index)
         glColor4f(1.0f, 0.5f, 0.5f, 1.0f);
         glBegin(GL_POINTS);
         for (unsigned int j=0; j<cube.deformedPoints.size(); j++)
-#ifdef SOFA_FLOAT
-            glVertex3fv(cube.deformedPoints[j].ptr());
-#else
-            glVertex3dv(cube.deformedPoints[j].ptr());
-#endif
+            helper::gl::glVertexT(cube.deformedPoints[j]);
         glEnd();
     }
     glPointSize(1);
@@ -823,7 +755,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, int 
         grid->computeBBox();
         return grid;
     }
-#ifdef SOFA_HAVE_FLOWVR
+//#ifdef SOFA_HAVE_FLOWVR
     else if (filename.length()>6 && filename.substr(filename.length()-6) == ".fmesh")
     {
         flowvr::render::Mesh mesh;
@@ -881,7 +813,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, int 
         std::cout << "Distance grid creation DONE."<<std::endl;
         return grid;
     }
-#endif
+//#endif
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".obj")
     {
         sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create(filename);
