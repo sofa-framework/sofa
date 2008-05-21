@@ -44,7 +44,7 @@ int SofaGUI::Init()
         return 0;
 }
 
-int SofaGUI::MainLoop(sofa::simulation::tree::GNode* groot, const char* filename)
+int SofaGUI::MainLoop(sofa::simulation::Node* groot, const char* filename)
 {
     int ret = 0;
     const char* name = GetGUIName();

@@ -87,7 +87,7 @@ int main(int argc, char** argv)
 
     std::string in_filename(fileName);
     if (in_filename.rfind(".simu") == std::string::npos)
-        groot = sofa::simulation::tree::getSimulation()->load(fileName.c_str());
+        groot = dynamic_cast<sofa::simulation::tree::GNode*>( sofa::simulation::tree::getSimulation()->load(fileName.c_str()));
 
     if (groot==NULL)
     {
@@ -121,7 +121,7 @@ int main(int argc, char** argv)
     {
         if (int err=sofa::gui::SofaGUI::MainLoop(groot,fileName.c_str()))
             return err;
-        groot = sofa::gui::SofaGUI::CurrentSimulation();
+        groot = dynamic_cast<sofa::simulation::tree::GNode*>( sofa::gui::SofaGUI::CurrentSimulation() );
     }
 
     if (groot!=NULL)

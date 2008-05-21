@@ -38,6 +38,7 @@
 
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/simulation/common/InitVisitor.h>
+#include <sofa/simulation/common/DesactivatedNodeVisitor.h>
 
 #ifdef SOFA_DEV
 
@@ -50,7 +51,7 @@
 #include <sofa/component/visualmodel/VisualModelImpl.h>
 
 #include <sofa/simulation/tree/xml/XML.h>
-
+#include <sofa/simulation/common/TransformationVisitor.h>
 #include <sofa/helper/system/FileRepository.h>
 
 #ifdef SOFA_DEV
@@ -225,7 +226,7 @@ protected:
 typedef QApplication QSOFAApplication;
 #endif
 
-SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& options, sofa::simulation::tree::GNode* groot, const char* filename )
+SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& options, sofa::simulation::Node* node, const char* filename )
 {
     {
         int argc=1;
@@ -236,8 +237,11 @@ SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& 
     }
     // create interface
     gui = new RealGUI ( name, options );
+    GNode *groot = dynamic_cast< GNode* >(node);
     if ( groot )
         gui->setScene ( groot, filename );
+    else
+        return NULL;
 
     //gui->viewer->resetView();
 
@@ -299,7 +303,7 @@ int RealGUI::closeGUI()
     return 0;
 }
 
-sofa::simulation::tree::GNode* RealGUI::currentSimulation()
+Node* RealGUI::currentSimulation()
 {
     return viewer->getScene();
 }
@@ -752,7 +756,7 @@ void RealGUI::fileOpen ( const char* filename )
     current_Id_modifyDialog=0;
     map_modifyDialogOpened.clear();
 
-    GNode* groot = getSimulation()->load ( filename );
+    simulation::Node* groot = getSimulation()->load ( filename );
 
     if ( groot == NULL )
     {
@@ -788,12 +792,12 @@ void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
         }
         graphView->clear();
     }
-    groot = getSimulation()->load ( scene.c_str() );
-    if ( groot )
+    GNode *simuNode = dynamic_cast< GNode *> (getSimulation()->load ( scene.c_str() ));
+    if ( simuNode )
     {
         if ( !pmlreader ) pmlreader = new PMLReader;
-        pmlreader->BuildStructure ( filename, groot );
-        setScene ( groot, filename );
+        pmlreader->BuildStructure ( filename, simuNode );
+        setScene ( simuNode, filename );
     }
 }
 
@@ -813,25 +817,24 @@ void RealGUI::lmlOpen ( const char* filename )
 }
 #endif
 
-void RealGUI::initDesactivatedNode( GNode *node)
+void RealGUI::initDesactivatedNode()
 {
-    if (!node->isActive())
+    DesactivatedNodeVisitor desNode;
+    desNode.execute(getSimulation()->getContext());
+    sofa::helper::vector< Node* > &listDesNode=desNode.getDesactivatedNodes();
+    for (unsigned int i=0; i<listDesNode.size(); ++i)
     {
-        node_clicked = node;
-        item_clicked = graphListener->items[node];
-        graphDesactivateNode();
-    }
-    else
-    {
-        for (GNode::ChildIterator it= node->child.begin(); it != node->child.end(); ++it)
+        if (!listDesNode[i]->isActive())
         {
-            initDesactivatedNode((*it));
+            node_clicked = dynamic_cast< GNode *>(listDesNode[i]);
+            item_clicked = graphListener->items[listDesNode[i]];
+            graphDesactivateNode();
         }
     }
 }
 
 
-void RealGUI::setScene ( GNode* groot, const char* filename )
+void RealGUI::setScene ( Node* groot, const char* filename )
 {
     if (tabInstrument!= NULL)
     {
@@ -841,7 +844,8 @@ void RealGUI::setScene ( GNode* groot, const char* filename )
     }
 
     setTitle ( filename );
-    viewer->setScene ( groot, filename );
+
+    viewer->setScene ( dynamic_cast< GNode *>(groot), filename );
     viewer->resetView();
     initial_time = groot->getTime();
 
@@ -849,11 +853,8 @@ void RealGUI::setScene ( GNode* groot, const char* filename )
     clearRecord();
     clearGraph();
 
-    // find desactivated node
-    for (GNode::ChildIterator it= groot->child.begin(); it != groot->child.end(); ++it)
-    {
-        initDesactivatedNode((*it));
-    }
+    initDesactivatedNode();
+
     eventNewTime();
     //getSimulation()->updateVisualContext ( groot );
     startButton->setOn ( groot->getContext()->getAnimate() );
@@ -1024,7 +1025,7 @@ void RealGUI::fileSave()
 }
 
 
-void RealGUI::fileSaveAs(GNode *node)
+void RealGUI::fileSaveAs(Node *node)
 {
     if (node == NULL) node = viewer->getScene();
     QString s;
@@ -1046,7 +1047,7 @@ void RealGUI::fileSaveAs(GNode *node)
 
 }
 
-void RealGUI::fileSaveAs ( GNode *node, const char* filename )
+void RealGUI::fileSaveAs ( Node *node, const char* filename )
 {
     getSimulation()->printXML ( node, filename );
 }
@@ -1604,7 +1605,7 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
 
 /*****************************************************************************************************************/
 //Translate an object
-void RealGUI::transformObject ( GNode *node, double dx, double dy, double dz,  double rx, double ry, double rz, double scale )
+void RealGUI::transformObject ( Node *node, double dx, double dy, double dz,  double rx, double ry, double rz, double scale )
 {
     if ( node == NULL ) return;
     GNode::ObjectIterator obj_it = node->object.begin();
@@ -1612,42 +1613,11 @@ void RealGUI::transformObject ( GNode *node, double dx, double dy, double dz,  d
     Vector3 rotationVector = Vector3(rx,ry,rz)*conversionDegRad;
     //We translate the elements
 
-    while ( obj_it != node->object.end() )
-    {
-        if ( dynamic_cast< sofa::component::visualmodel::VisualModelImpl* > ( *obj_it ) )
-        {
-            sofa::component::visualmodel::VisualModelImpl *visual = dynamic_cast< sofa::component::visualmodel::VisualModelImpl* > ( *obj_it );
-            visual->applyTranslation ( dx, dy, dz );
-            visual->applyRotation(defaulttype::Quat::createFromRotationVector( rotationVector));
-            visual->applyScale ( scale );
-        }
-
-        if ( dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *> ( *obj_it ) )
-        {
-            core::componentmodel::behavior::BaseMechanicalState *mechanical = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *> ( *obj_it );
-            mechanical->applyTranslation ( dx, dy, dz );
-            mechanical->applyRotation(defaulttype::Quat::createQuaterFromEuler( rotationVector));
-            //mechanical->applyRotation(defaulttype::Quat::createFromRotationVector( rotationVector));
-
-            mechanical->applyScale ( scale );
-            // 		mechanical_object = true;
-        }
-
-        obj_it++;
-    }
-    //We don't need to go any further:
-    // 	if (mechanical_object && !mesh_topology)
-    // 	    return;
-
-
-    //We search recursively with the childs of the currend node
-    GNode::ChildIterator it  = node->child.begin();
-    GNode::ChildIterator end = node->child.end();
-    while ( it != end )
-    {
-        transformObject ( *it, dx, dy, dz, rx,ry,rz,scale );
-        it++;
-    }
+    TransformationVisitor transform;
+    transform.setTranslation(dx,dy,dz);
+    transform.setRotation(defaulttype::Quat::createFromRotationVector( rotationVector));
+    transform.setScale(scale);
+    transform.execute(node);
 
 }
 

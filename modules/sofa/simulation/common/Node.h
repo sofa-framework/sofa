@@ -75,6 +75,8 @@ public:
     /// @{
     /// Initialize the components
     void init();
+    /// Apply modifications to the components
+    void reinit();
     /// Do one step forward in time
     void animate( double dt );
     /// Draw the objects in an OpenGl context

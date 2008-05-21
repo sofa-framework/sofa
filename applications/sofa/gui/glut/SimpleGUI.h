@@ -86,7 +86,7 @@ public:
     /// @{
 
     static int InitGUI(const char* name, const std::vector<std::string>& options);
-    static SofaGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::tree::GNode* groot = NULL, const char* filename = NULL);
+    static SofaGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node* groot = NULL, const char* filename = NULL);
 
     /// @}
 
@@ -225,7 +225,7 @@ protected:
     void StoreLightMatrices();
 
 public:
-    void setScene(sofa::simulation::tree::GNode* scene, const char* filename=NULL);
+    void setScene(sofa::simulation::Node* scene, const char* filename=NULL);
     sofa::simulation::tree::GNode* getScene()
     {
         return groot;

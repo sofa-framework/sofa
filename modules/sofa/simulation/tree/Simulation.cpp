@@ -30,6 +30,7 @@
 #include <sofa/simulation/common/FindByTypeVisitor.h>
 #include <sofa/simulation/tree/ExportGnuplotVisitor.h>
 #include <sofa/simulation/common/InitVisitor.h>
+#include <sofa/simulation/common/InstrumentVisitor.h>
 #include <sofa/simulation/common/AnimateVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/CollisionVisitor.h>
@@ -77,6 +78,7 @@ Simulation* getSimulation()
     return theSimulation;
 }
 
+/// Load a scene from a file
 GNode* Simulation::processXML(xml::BaseElement* xml, const char *filename)
 {
     if ( xml==NULL )
@@ -213,14 +215,14 @@ Simulation::~Simulation()
 }
 
 /// Print all object in the graph
-void Simulation::print ( GNode* root )
+void Simulation::print ( Node* root )
 {
     if ( !root ) return;
     root->execute<PrintVisitor>();
 }
 
 /// Print all object in the graph
-void Simulation::printXML ( GNode* root, const char* fileName )
+void Simulation::printXML ( Node* root, const char* fileName )
 {
     if ( !root ) return;
     if ( fileName!=NULL )
@@ -237,9 +239,10 @@ void Simulation::printXML ( GNode* root, const char* fileName )
 }
 
 /// Initialize the scene.
-void Simulation::init ( GNode* root )
+void Simulation::init ( Node* root )
 {
     cerr<<"Simulation::init"<<endl;
+    setContext( root->getContext());
     if ( !root ) return;
     root->execute<InitVisitor>();
     // Save reset state for later uses in reset()
@@ -251,18 +254,16 @@ void Simulation::init ( GNode* root )
     getInstruments(root);
 }
 
-void Simulation::getInstruments( GNode *node)
+void Simulation::getInstruments( Node *node)
 {
-    std::string name = node->getName(); name.resize(10);
-    if (name == "Instrument") instruments.push_back(node);
-    for (GNode::ChildIterator it= node->child.begin(); it != node->child.end(); ++it)
-    {
-        getInstruments((*it));
-    }
+    InstrumentVisitor fetchInstrument;
+    node->execute<InstrumentVisitor>();
+    fetchInstrument.execute(node);
+    instruments = fetchInstrument.getInstruments();
 }
 
 /// Execute one timestep. If dt is 0, the dt parameter in the graph will be used
-void Simulation::animate ( GNode* root, double dt )
+void Simulation::animate ( Node* root, double dt )
 {
     if ( !root ) return;
     if ( root->getMultiThreadSimulation() )
@@ -307,7 +308,7 @@ void Simulation::animate ( GNode* root, double dt )
 }
 
 /// Reset to initial state
-void Simulation::reset ( GNode* root )
+void Simulation::reset ( Node* root )
 {
     if ( !root ) return;
     root->execute<ResetVisitor>();
@@ -317,7 +318,7 @@ void Simulation::reset ( GNode* root )
 }
 
 /// Initialize the textures
-void Simulation::initTextures ( GNode* root )
+void Simulation::initTextures ( Node* root )
 {
     if ( !root ) return;
     root->execute<VisualInitVisitor>();
@@ -328,7 +329,7 @@ void Simulation::initTextures ( GNode* root )
 
 
 /// Compute the bounding box of the scene.
-void Simulation::computeBBox ( GNode* root, SReal* minBBox, SReal* maxBBox )
+void Simulation::computeBBox ( Node* root, SReal* minBBox, SReal* maxBBox )
 {
     VisualComputeBBoxVisitor act;
     if ( root )
@@ -342,21 +343,21 @@ void Simulation::computeBBox ( GNode* root, SReal* minBBox, SReal* maxBBox )
 }
 
 /// Update contexts. Required before drawing the scene if root flags are modified.
-void Simulation::updateContext ( GNode* root )
+void Simulation::updateContext ( Node* root )
 {
     if ( !root ) return;
     root->execute<UpdateContextVisitor>();
 }
 
 /// Update only Visual contexts. Required before drawing the scene if root flags are modified.( can filter by specifying a specific element)
-void Simulation::updateVisualContext ( GNode* root, int FILTER)
+void Simulation::updateVisualContext ( Node* root, int FILTER)
 {
     if ( !root ) return;
     UpdateVisualContextVisitor vis(FILTER);
     vis.execute(root);
 }
 /// Render the scene
-void Simulation::draw ( GNode* root )
+void Simulation::draw ( Node* root )
 {
     if ( !root ) return;
     VisualDrawVisitor act ( core::VisualModel::Std );
@@ -367,7 +368,7 @@ void Simulation::draw ( GNode* root )
 }
 
 /// Render the scene - shadow pass
-void Simulation::drawShadows ( GNode* root )
+void Simulation::drawShadows ( Node* root )
 {
     if ( !root ) return;
     //std::cout << "drawShadows\n";
@@ -423,7 +424,7 @@ void Simulation::exportOBJ ( GNode* root, const char* filename, bool exportMTL )
 }
 
 /// Export a scene to XML
-void Simulation::exportXML ( GNode* root, const char* filename )
+void Simulation::exportXML ( Node* root, const char* filename )
 {
     if ( !root ) return;
     std::ofstream fout ( filename );
@@ -431,7 +432,7 @@ void Simulation::exportXML ( GNode* root, const char* filename )
     root->execute ( &act );
 }
 
-void Simulation::dumpState ( GNode* root, std::ofstream& out )
+void Simulation::dumpState ( Node* root, std::ofstream& out )
 {
     out<<root->getTime() <<" ";
     WriteStateVisitor ( out ).execute ( root );

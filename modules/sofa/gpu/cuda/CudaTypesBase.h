@@ -140,12 +140,12 @@ public :
         for (int i=0; i<size(); i++) v[i]=0.0;
     }
 
-    void set(int i, double val)
+    void set(int i, SReal val)
     {
         v[i] = (T) val;
     }
 
-    void add(int i, double val)
+    void add(int i, SReal val)
     {
         v[i] += (T)val;
     }

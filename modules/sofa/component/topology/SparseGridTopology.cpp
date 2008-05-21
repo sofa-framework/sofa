@@ -406,27 +406,25 @@ void SparseGridTopology::updateMesh()
     sofa::helper::vector< sofa::component::topology::MeshTopology * > list_mesh;
     sofa::helper::vector< sofa::helper::vector< Vector3 >* > list_X;
 
-    const GNode *context = static_cast< GNode* >(this->getContext());
-    for (GNode::ChildIterator it= context->child.begin(); it != context->child.end(); ++it)
+    //Get Collision Model
+    sofa::component::topology::MeshTopology  *m_temp;
+    this->getContext()->get(m_temp, BaseContext::SearchDown);
+
+    if (    m_temp != NULL
+            && m_temp != this
+            && m_temp->getFilename() == "")
     {
-
-        //Get Collision Model
-        sofa::component::topology::MeshTopology  *m_temp = (*it)->get< sofa::component::topology::MeshTopology >();
-        if (    m_temp != NULL
-                && m_temp != this
-                && m_temp->getFilename() == "")
-        {
 #ifndef SOFA_FLOAT
-            MechanicalObject< Vec3dTypes > *mecha_tempf = static_cast< GNode *>(m_temp->getContext())->get< MechanicalObject< Vec3dTypes > >();
-            if (mecha_tempf != NULL && mecha_tempf->getX()->size() < 2) //a triangle mesh has minimum 3elements
-            {
+        MechanicalObject< Vec3dTypes > *mecha_tempf = static_cast< GNode *>(m_temp->getContext())->get< MechanicalObject< Vec3dTypes > >();
+        if (mecha_tempf != NULL && mecha_tempf->getX()->size() < 2) //a triangle mesh has minimum 3elements
+        {
 
-                list_mesh.push_back(m_temp);
-                list_X.push_back(mecha_tempf->getX());
-            }
+            list_mesh.push_back(m_temp);
+            list_X.push_back(mecha_tempf->getX());
+        }
 #endif
 #ifndef SOFA_DOUBLE
-            //HACK : to fix!!!
+        //HACK : to fix!!!
 // 		MechanicalObject< Vec3fTypes > *mecha_tempd = static_cast< GNode *>(m_temp->getContext())->get< MechanicalObject< Vec3fTypes > >();
 // 		if (mecha_tempd != NULL && mecha_tempd->getX()->size() < 2) //a triangle mesh has minimum 3elements
 // 		{
@@ -436,7 +434,6 @@ void SparseGridTopology::updateMesh()
 // 		}
 #endif
 
-        }
 
     }
     if (list_mesh.size() == 0) return;

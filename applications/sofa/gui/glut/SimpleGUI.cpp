@@ -96,7 +96,7 @@ int SimpleGUI::InitGUI(const char* /*name*/, const std::vector<std::string>& /*o
     return 0;
 }
 
-SofaGUI* SimpleGUI::CreateGUI(const char* /*name*/, const std::vector<std::string>& /*options*/, sofa::simulation::tree::GNode* groot, const char* filename)
+SofaGUI* SimpleGUI::CreateGUI(const char* /*name*/, const std::vector<std::string>& /*options*/, sofa::simulation::Node* groot, const char* filename)
 {
 
     glutInitDisplayMode ( GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE );
@@ -1896,7 +1896,7 @@ void SimpleGUI::keyPressEvent ( int k )
                 std::string filename = sceneFileName;
                 Quaternion q = _newQuat;
                 Transformation t = _sceneTransform;
-                simulation::tree::GNode* newroot = getSimulation()->load(filename.c_str());
+                simulation::Node* newroot = getSimulation()->load(filename.c_str());
                 if (newroot == NULL)
                 {
                     std::cerr << "Failed to load "<<filename<<std::endl;
@@ -2669,7 +2669,7 @@ void SimpleGUI::exportOBJ(bool exportMTL)
     getSimulation()->exportOBJ(groot, filename.c_str(),exportMTL);
 }
 
-void SimpleGUI::setScene(sofa::simulation::tree::GNode* scene, const char* filename)
+void SimpleGUI::setScene(sofa::simulation::Node* scene, const char* filename)
 {
     std::ostringstream ofilename;
 
@@ -2692,7 +2692,7 @@ void SimpleGUI::setScene(sofa::simulation::tree::GNode* scene, const char* filen
         if (interactor != NULL)
             interactor = NULL;
     }
-    groot = scene;
+    groot = static_cast< sofa::simulation::tree::GNode *>(scene);
     groot->getContext()->get( interactor);
     initTexturesDone = false;
     sceneBBoxIsValid = false;

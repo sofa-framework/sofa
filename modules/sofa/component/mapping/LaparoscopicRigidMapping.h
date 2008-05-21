@@ -106,15 +106,9 @@ protected:
     //Find the DOFs of the laparascopic object
     core::componentmodel::behavior::MechanicalState< defaulttype::Vec3Types > *getMechanicalState()
     {
-        sofa::simulation::tree::GNode * context = dynamic_cast< sofa::simulation::tree::GNode *>( this->getContext());
-        if (context == NULL) return NULL;
-        for (sofa::simulation::tree::GNode::ChildIterator it= context->child.begin(); it != context->child.end(); ++it)
-        {
-            if (core::componentmodel::behavior::MechanicalState< defaulttype::Vec3Types > *m = dynamic_cast< core::componentmodel::behavior::MechanicalState< defaulttype::Vec3Types > *>((*it)->getMechanicalState()))
-                return m;
-
-        }
-        return NULL;
+        core::componentmodel::behavior::MechanicalState< defaulttype::Vec3Types > *m;
+        this->getContext()->get(m);
+        return m;
     }
 
 

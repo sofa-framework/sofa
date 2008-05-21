@@ -2,6 +2,8 @@
 
 #include <sofa/helper/LCPcalc.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
+#include <sofa/simulation/common/SolveVisitor.h>
 
 using std::cerr;
 using std::endl;
@@ -173,24 +175,17 @@ void CudaMasterContactSolver<real>::step(double dt)
     std::cout<<" ********* Start Iteration *********" <<std::endl;
 #endif
 
-    for(simulation::tree::GNode::ChildIterator it=context->child.begin(); it!=context->child.end(); ++it)
-    {
-        for ( unsigned i=0; i<(*it)->behaviorModel.size(); i++)
-        {
-            (*it)->behaviorModel[i]->updatePosition(dt);
-        }
-    }
+    simulation::BehaviorUpdatePositionVisitor updatePos(dt);
+    context->execute(&updatePos);
 
     simulation::MechanicalBeginIntegrationVisitor beginVisitor(dt);
     context->execute(&beginVisitor);
 
-    for(simulation::tree::GNode::ChildIterator it=context->child.begin(); it!=context->child.end(); ++it)
-    {
-        for ( unsigned i=0; i<(*it)->solver.size(); i++)
-        {
-            (*it)->solver[i]->solve(dt);
-        }
-    }
+
+    // Free Motion
+    simulation::SolveVisitor freeMotion(dt);
+    context->execute(&freeMotion);
+
     simulation::MechanicalPropagateFreePositionVisitor().execute(context);
 
     core::componentmodel::behavior::BaseMechanicalState::VecId dx_id = core::componentmodel::behavior::BaseMechanicalState::VecId::dx();

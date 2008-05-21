@@ -2,6 +2,7 @@
 #define SOFA_GUI_BATCHGUI_H
 
 #include <sofa/gui/SofaGUI.h>
+#include <sofa/simulation/common/Node.h>
 
 namespace sofa
 {
@@ -19,13 +20,13 @@ public:
 
     BatchGUI();
 
-    void setScene(sofa::simulation::tree::GNode* groot, const char* filename="");
+    void setScene(sofa::simulation::Node* groot, const char* filename="");
 
     int mainLoop();
     void redraw();
     int closeGUI();
 
-    sofa::simulation::tree::GNode* currentSimulation();
+    sofa::simulation::Node* currentSimulation();
 
     /// @}
 
@@ -33,7 +34,7 @@ public:
     /// @{
 
     static int InitGUI(const char* name, const std::vector<std::string>& options);
-    static SofaGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::tree::GNode* groot = NULL, const char* filename = NULL);
+    static SofaGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node* groot = NULL, const char* filename = NULL);
 
     /// @}
 
@@ -41,7 +42,7 @@ protected:
     /// The destructor should not be called directly. Use the closeGUI() method instead.
     ~BatchGUI();
 
-    sofa::simulation::tree::GNode* groot;
+    sofa::simulation::Node* groot;
     std::string filename;
     int nbIter;
 };

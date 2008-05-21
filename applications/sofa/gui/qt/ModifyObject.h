@@ -32,6 +32,7 @@
 #include <sofa/component/topology/PointData.h>
 #include <sofa/component/forcefield/SpringForceField.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/simulation/common/Node.h>
 
 #ifdef QT_MODULE_QT3SUPPORT
 #include <QDialog>
@@ -66,7 +67,7 @@ namespace qt
 
 using sofa::helper::Quater;
 using sofa::defaulttype::Vec;
-
+using sofa::simulation::Node;
 
 #ifndef QT_MODULE_QT3SUPPORT
 typedef QListViewItem Q3ListViewItem;
@@ -102,7 +103,7 @@ public slots:
 signals:
     void objectUpdated();              //update done
     void dialogClosed(void *);            //the current window has been closed: we give the Id of the current window
-    void transformObject(GNode * current_node, double translationX, double translationY, double translationZ,
+    void transformObject(Node * current_node, double translationX, double translationY, double translationZ,
             double rotationX, double rotationY, double rotationZ,
             double scale);
 
@@ -110,7 +111,7 @@ signals:
 protected:
 
     virtual void closeEvent ( QCloseEvent * ) {emit(reject());}
-    void updateContext( GNode *node );
+    void updateContext( Node *node );
 
     void createGraphMass(QTabWidget *);
     void updateHistory();
