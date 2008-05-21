@@ -8,7 +8,7 @@
       <Object type="BTDLinearSolver" template="NewMatBand" bandWidth="11" threshold="0.000000001" tolerance="0.0000000001" printLog="false" verbose="false" />
       <Object type="FixedConstraint" name="FixedConstraint" indices="0" />
       <Object type="UniformMass" mass="1 1 0.01 0 0 0 0.1 0 0 0 0.1" printLog="false" />
-      <Object type="BeamFEMForceField" name="FEM" radius="0.1" youngModulus="2000000" />
+      <Object type="BeamFEMForceField" name="FEM" radius="0.1" youngModulus="20000000" />
 
 	</Node>
 </Node>
