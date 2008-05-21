@@ -25,7 +25,6 @@
 #include <string>
 #include <typeinfo>
 #include <stdlib.h>
-#include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <sofa/simulation/tree/xml/XML.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -183,21 +182,10 @@ static void dumpNode(BaseElement* node, std::string prefix0="==", std::string pr
     }
 }
 
-BaseElement* load(const char *filename)
+BaseElement* processXMLLoading(const char *filename, const xmlDocPtr &doc)
 {
-    //
-    // this initialize the library and check potential ABI mismatches
-    // between the version it was compiled for and the actual shared
-    // library used.
-    //
-    LIBXML_TEST_VERSION
-
-    xmlDocPtr doc; // the resulting document tree
     xmlNodePtr root;
 
-    xmlSubstituteEntitiesDefault(1);
-
-    doc = xmlParseFile(filename);
     if (doc == NULL)
     {
         std::cerr << "Failed to open " << filename << std::endl;
@@ -232,6 +220,43 @@ BaseElement* load(const char *filename)
     //dumpNode(graph);
 
     return graph;
+}
+
+BaseElement* loadFromMemory(const char *filename, const char *data, unsigned int size )
+{
+    //
+    // this initialize the library and check potential ABI mismatches
+    // between the version it was compiled for and the actual shared
+    // library used.
+    //
+    LIBXML_TEST_VERSION
+
+    xmlDocPtr doc; // the resulting document tree
+
+    xmlSubstituteEntitiesDefault(1);
+
+    doc = xmlParseMemory(data,size);
+
+    return processXMLLoading(filename, doc);
+}
+
+BaseElement* loadFromFile(const char *filename)
+{
+    //
+    // this initialize the library and check potential ABI mismatches
+    // between the version it was compiled for and the actual shared
+    // library used.
+    //
+    LIBXML_TEST_VERSION
+
+    xmlDocPtr doc; // the resulting document tree
+
+    xmlSubstituteEntitiesDefault(1);
+
+    doc = xmlParseFile(filename);
+
+    return processXMLLoading(filename, doc);
+
 }
 
 

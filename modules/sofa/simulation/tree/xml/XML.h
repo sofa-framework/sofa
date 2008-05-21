@@ -26,6 +26,7 @@
 #define SOFA_SIMULATION_TREE_XML_XML_H
 
 #include <sofa/simulation/tree/xml/Element.h>
+#include <libxml/parser.h>
 
 namespace sofa
 {
@@ -39,7 +40,12 @@ namespace tree
 namespace xml
 {
 
-BaseElement* load(const char *filename);
+BaseElement* processXMLLoading(const char *filename, const xmlDocPtr &doc);
+
+BaseElement* loadFromFile(const char *filename);
+
+BaseElement* loadFromMemory(const char *filename, const char *data, unsigned int size );
+
 
 bool save(const char *filename, BaseElement* root);
 

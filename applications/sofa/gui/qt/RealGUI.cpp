@@ -714,8 +714,10 @@ bool RealGUI::setViewer ( const char* name )
 
     if (filename.rfind(".simu") != std::string::npos)
         fileOpenSimu(filename.c_str() );
-    else
-        fileOpen ( filename.c_str() ); // keep the current display flags
+    //else if (filename.rfind(".pscn") != std::string::npos)
+    //  fileOpenScript(filename.c_str(), PHP );
+    //else
+    fileOpen ( filename.c_str() ); // keep the current display flags
     return true;
 }
 
@@ -734,7 +736,6 @@ void RealGUI::fileOpen ( const char* filename )
     if ( dialog != NULL ) dialog->hide();
     //Hide all the dialogs to modify the graph
     emit ( newScene() );
-
 
     if ( viewer->getScene() !=NULL )
     {
@@ -964,7 +965,7 @@ void RealGUI::fileOpen()
 #ifdef SOFA_PML
             "Scenes (*.scn *.xml *.simu *.pml *.lml)",
 #else
-            "Scenes (*.scn *.xml *.simu)",
+            "Scenes (*.scn *.xml *.simu *.pscn)",
 #endif
             "open file dialog",  "Choose a file to open" );
 
@@ -1685,7 +1686,7 @@ void RealGUI::loadObject ( std::string path, double dx, double dy, double dz,  d
         graphListener->unfreeze ( node_clicked );
 
     //Loading of the xml file
-    xml::BaseElement* xml = xml::load ( path.c_str() );
+    xml::BaseElement* xml = xml::loadFromFile ( path.c_str() );
     if ( xml == NULL ) return;
 
 

@@ -23,8 +23,8 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/simulation/tree/Simulation.h>
-#include <sofa/simulation/tree/xml/XML.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/common/PrintVisitor.h>
 #include <sofa/simulation/common/FindByTypeVisitor.h>
@@ -46,6 +46,8 @@
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/simulation/common/UpdateMappingEndEvent.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PipeProcess.h>
+
 #include <fstream>
 #include <string.h>
 
@@ -75,12 +77,8 @@ Simulation* getSimulation()
     return theSimulation;
 }
 
-/// Load a scene from a file
-GNode* Simulation::load ( const char *filename )
+GNode* Simulation::processXML(xml::BaseElement* xml, const char *filename)
 {
-    ::sofa::simulation::tree::init();
-// 				std::cerr << "Loading simulation XML file "<<filename<<std::endl;
-    xml::BaseElement* xml = xml::load ( filename );
     if ( xml==NULL )
     {
         return NULL;
@@ -118,10 +116,89 @@ GNode* Simulation::load ( const char *filename )
     // BUGFIX (Jeremie A.): disabled as initTexture was not called yet, and the GUI might not even be up yet
     //root->execute<VisualUpdateVisitor>();
 
+    return root;
+}
+
+/// Load from a string in memory
+GNode* Simulation::loadFromMemory ( const char *filename, const char *data, unsigned int size )
+{
+    ::sofa::simulation::tree::init();
+// 				std::cerr << "Loading simulation XML file "<<filename<<std::endl;
+    xml::BaseElement* xml = xml::loadFromMemory (filename, data, size );
+
+    GNode* root = processXML(xml, filename);
+
 // 				std::cout << "load done."<<std::endl;
     delete xml;
 
     return root;
+}
+
+
+/// Load a scene from a file
+GNode* Simulation::loadFromFile ( const char *filename )
+{
+    ::sofa::simulation::tree::init();
+// 				std::cerr << "Loading simulation XML file "<<filename<<std::endl;
+    xml::BaseElement* xml = xml::loadFromFile ( filename );
+
+    GNode* root = processXML(xml, filename);
+
+// 				std::cout << "load done."<<std::endl;
+    delete xml;
+
+    return root;
+}
+
+/// Load a scene
+GNode* Simulation::load ( const char *filename )
+{
+    std::string ext = sofa::helper::system::SetDirectory::GetExtension(filename);
+    if (ext == "php" || ext == "pscn")
+    {
+        std::string out="",error="";
+        std::vector<std::string> args;
+
+
+        //TODO : replace when PipeProcess will get file as stdin
+        //at the moment, the filename is given as an argument
+        args.push_back(std::string("-f" + std::string(filename)));
+        //args.push_back("-w");
+        std::string newFilename="";
+        //std::string newFilename=filename;
+
+        helper::system::FileRepository fp("PATH", ".");
+#ifdef WIN32
+        std::string command = "php.exe";
+#else
+        std::string command = "php";
+#endif
+        if (!fp.findFile(command,""))
+        {
+            std::cerr << "Simulation : Error : php not found in your PATH environment" << std::endl;
+            return NULL;
+        }
+
+        sofa::helper::system::PipeProcess::executeProcess(command.c_str(), args,  newFilename, out, error);
+
+        if(error != "")
+        {
+            std::cerr << "Simulation : load : "<< error << std::endl;
+            if (out == "")
+                return NULL;
+        }
+
+        return loadFromMemory(filename, out.c_str(), out.size());
+    }
+
+    if (ext == "scn" || ext == "xml")
+    {
+        return loadFromFile(filename);
+    }
+
+    std::cerr << "Simulation : Error : extension not handled" << std::endl;
+    return NULL;
+
 }
 
 Simulation::Simulation()
