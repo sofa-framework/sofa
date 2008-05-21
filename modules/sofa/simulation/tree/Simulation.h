@@ -29,6 +29,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/simulation/tree/xml/XML.h>
 namespace sofa
 {
 
@@ -44,11 +45,19 @@ Derives from BaseObject in order to model the parameters as Datas, which makes t
 */
 class Simulation: public virtual sofa::core::objectmodel::BaseObject
 {
+private:
+    ///load a scene from memory (typically : an xml into a string)
+    static GNode* loadFromMemory ( const char *filename, const char *data, unsigned int size );
+    ///load a scene from a file
+    static GNode* loadFromFile ( const char *filename );
+    ///generic function to process xml tree (after loading the xml structure from the 2 previous functions)
+    static GNode* processXML(xml::BaseElement* xml, const char *filename);
 public:
     /** Load a scene from a file.
     Static method because at this point, the Simulation component is not yet created.
     If a Simulation component is found in the graph, then it is used.
     Otherwise, a default Simulation will be created at the first call to method getSimulation()
+    This file can be a xml file or a script file which will generate a xml tree.
     */
     static GNode* load(const char* filename);
 

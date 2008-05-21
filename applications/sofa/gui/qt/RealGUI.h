@@ -66,6 +66,7 @@ namespace qt
 {
 
 //enum TYPE{ NORMAL, PML, LML};
+enum SCRIPT_TYPE { PHP, PERL };
 
 enum
 {

@@ -1,6 +1,17 @@
 #ifndef WIN32
 #include "PipeProcess.h"
 
+#ifdef WIN32
+#include <windows.h>
+#include <process.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <stdio.h>
+typedef int ssize_t;
+typedef HANDLE fd_t;
+typedef SOCKET socket_t;
+#else
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -9,6 +20,10 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+typedef int fd_t;
+typedef int socket_t;
+#endif
+
 #include <cstring>
 #include <iostream>
 #include <sstream>
@@ -31,9 +46,17 @@ ssize_t writeall(int fd, const void* buf, size_t count)
     size_t total = 0;
     while (count > total)
     {
+#ifdef WIN32
+        DWORD r = 0;
+        if (!WriteFile(fd, ((const char*)buf)+total, count-total, &r, NULL))
+            return -1;
+
+        total += r;
+#else
         ssize_t r = write(fd, ((const char*)buf)+total, count-total);
         if (r < 0) return r;
         total += r;
+#endif
     }
     return total;
 }
@@ -63,36 +86,172 @@ PipeProcess::PipeProcess()
 PipeProcess::~PipeProcess()
 {
 }
+/**   File as Stdin for windows does not work (yet)
+  *   So the filename must be given into the args vector
+  *   and argument filenameStdin is currently ignored
+  */
 
-bool PipeProcess::executeProcess(const std::string &command,  const std::vector<std::string> &args, const std::string &filename, std::string & outString, std::string & errorString)
+bool PipeProcess::executeProcess(const std::string &command,  const std::vector<std::string> &args, const std::string &filenameStdin, std::string & outString, std::string & errorString)
 {
-    int fds[2][2];
-    pid_t   pid;
+    std::string fileIN = filenameStdin;
+
+    //Remove this line below when Windows will be able to read file as stdin
+    fileIN = "";
+
+    fd_t fds[2][2];
 
     //char eol = '\n';
     char** cargs;
+    std::string newCommand(command);
+
     cargs = new char* [args.size()+2];
     cargs[0] = (char*)command.c_str();
     for (unsigned int i=1 ; i< args.size() + 1 ; i++)
-        cargs[i] = (char*)args[i].c_str();
+        cargs[i] = (char*)args[i-1].c_str();
     cargs[args.size() + 1] = NULL;
 
+    fd_t fdin;
+    fd_t fdout;
+    fd_t fderr;
 
+#ifdef WIN32
+    fdin = GetStdHandle(STD_INPUT_HANDLE);
 
-    int filefd = open(filename.c_str(),O_RDONLY);
+    fdout = GetStdHandle(STD_OUTPUT_HANDLE);
+    fderr = GetStdHandle(STD_ERROR_HANDLE);
 
-    int fdin = 0;
-    int fdout = 1;
+    for (unsigned int i=0 ; i< args.size() ; i++)
+        newCommand += cargs[i];
+
+#else
+    fdin = 0;
+    fdout = 1;
+    fderr = 2;
+#endif
+
     outString = "";
     errorString = "";
     std::stringstream outStream;
     std::stringstream errorStream;
 
+#ifdef WIN32
+    SECURITY_ATTRIBUTES saAttr;
+    // Set the bInheritHandle flag so pipe handles are inherited.
+    saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
+    saAttr.bInheritHandle = TRUE;
+    saAttr.lpSecurityDescriptor = NULL;
+    if (!CreatePipe(&fds[0][0],&fds[0][1],&saAttr,0) || !CreatePipe(&fds[1][0],&fds[1][1],&saAttr,0))
+#else
     if (pipe(fds[0]) || pipe(fds[1]))
+#endif
     {
         std::cerr << "pipe failed."<<std::endl;
         return false;
     }
+#ifdef WIN32
+    HANDLE hFile = 0;
+    if (fileIN != "")
+        hFile = CreateFileA( (fileIN.c_str()),
+                GENERIC_READ,
+                FILE_SHARE_READ,
+                NULL,
+                OPEN_EXISTING,
+                FILE_ATTRIBUTE_NORMAL,
+                NULL);
+
+    if (hFile == INVALID_HANDLE_VALUE)
+    {
+        std::cerr<<"failed to open file for stdin\n";
+    }
+
+    // Ensure that the read handle to the child process's pipe for STDOUT is not inherited.
+    SetHandleInformation( fds[0][0], HANDLE_FLAG_INHERIT, 0);
+    SetHandleInformation( fds[1][0], HANDLE_FLAG_INHERIT, 0);
+    SetHandleInformation( fdin, HANDLE_FLAG_INHERIT, 1);
+    PROCESS_INFORMATION piProcInfo;
+    STARTUPINFOA siStartInfo;
+    ZeroMemory( &piProcInfo, sizeof(PROCESS_INFORMATION) );
+    ZeroMemory( &siStartInfo, sizeof(STARTUPINFOA) );
+    siStartInfo.cb = sizeof(STARTUPINFOA);
+    if (fileIN != "")
+        siStartInfo.hStdInput = hFile;
+    else siStartInfo.hStdInput = fdin;
+
+    siStartInfo.hStdOutput = fds[0][1];
+    siStartInfo.hStdError = fds[1][1];
+    siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
+    if (!CreateProcessA(NULL,
+            (char*)newCommand.c_str(),       // command line
+            NULL,          // process security attributes
+            NULL,          // primary thread security attributes
+            TRUE,          // handles are inherited
+            0,             // creation flags
+            NULL,          // use parent's environment
+            NULL,          // use parent's current directory
+            &siStartInfo,  // STARTUPINFO pointer
+            &piProcInfo))  // receives PROCESS_INFORMATION
+    {
+        std::cerr << "CreateProcess failed : "<<GetLastError()<<std::endl;
+        return 1;
+    }
+
+    {
+        // parent process
+        //char inbuf[BUFSIZE];
+        char buf[2][BUFSIZE];
+        int nfill[2];
+        CloseHandle(fds[0][1]);
+        CloseHandle(fds[1][1]);
+        unsigned long exit = 0;
+        for (int i=0; i<2; i++)
+            nfill[i] = 0;
+        for(int i=0;; i++)
+        {
+            GetExitCodeProcess(piProcInfo.hProcess,&exit);      //while the process is running
+            if (exit != STILL_ACTIVE)
+                break;
+
+            bool busy = false;
+            for (int i=0; i<2; i++)
+            {
+                DWORD n = BUFSIZE-nfill[i];
+                if (n > STEPSIZE) n = STEPSIZE;
+                DWORD bread = 0;
+                DWORD avail = 0;
+                PeekNamedPipe(fds[i][0],buf[i]+nfill[i],n,&bread,&avail,NULL);
+
+                if (bread>0)
+                {
+                    busy = true;
+                    ReadFile(fds[i][0], buf[i]+nfill[i], n, &n, NULL);
+                    nfill[i] += n;
+                    {
+                        // write line
+                        if (i==0)
+                            outStream << std::string(buf[i],nfill[i]);
+                        else
+                            errorStream << std::string(buf[i],nfill[i]);
+
+                        //std::cout << std::string(buf[i],nfill[i]) << std::endl;
+                        nfill[i] = 0;
+                    }
+                }
+            }
+            if (!busy)
+                Sleep(0);
+        }
+        CloseHandle(fds[0][0]);
+        CloseHandle(fds[1][0]);
+        int status=exit;
+        CloseHandle(piProcInfo.hProcess);
+        CloseHandle(piProcInfo.hThread);
+        //waitpid(pid,&status,0);
+#else
+    int filefd = 0;
+    if (fileIN != "")
+        filefd = open(fileIN.c_str(),O_RDONLY);
+
+    pid_t   pid;
     pid = fork();
     if (pid < 0)
     {
@@ -105,15 +264,14 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
         close(fds[0][0]);
         close(fds[1][0]);
         // Remove standard input
-        //dup2(open("/dev/null",O_RDONLY),0);
-        dup2(filefd, 0);
+        if (fileIN != "")
+            dup2(filefd, 0);
+        else dup2(open("/dev/null",O_RDONLY),0);
+
         dup2(fds[0][1],1);
         dup2(fds[1][1],2);
 
-        //int retexec = execlp("/bin/sh","/bin/sh","-c", command.c_str() ,NULL);
         int retexec = execvp(command.c_str(), cargs);
-        //int retexec = execlp(command.c_str(), command.c_str(), NULL);
-        //int retexec = execlp("wc", "wc", NULL);
         std::cerr << "PipeProcess : ERROR: execlp( "<< command.c_str() << " " ;
         for (unsigned int i=0; i<args.size() + 1 ; i++)
             std::cerr << cargs[i] << " ";
@@ -123,7 +281,7 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
     else
     {
         // parent process
-        char inbuf[BUFSIZE];
+//		char inbuf[BUFSIZE];
         char buf[2][BUFSIZE];
         int nfill[2];
         close(fds[0][1]);
@@ -148,18 +306,19 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
         ready = rfds;
         while (nopen> 0 && select(nfd, &ready, NULL, NULL, NULL)> 0)
         {
-            if (FD_ISSET(fdin, &ready))
-            {
-                int n = read(fdin, inbuf, BUFSIZE);
-                if (n>0)
-                {
-                    writeall(2,inbuf,n);
-                }
-                else if (n==0)
-                {
-                    FD_CLR(fdin, &rfds);
-                }
-            }
+            //read stdin
+//			if (FD_ISSET(fdin, &ready))
+//			{
+//				int n = read(fdin, inbuf, BUFSIZE);
+//				if (n>0)
+//				{
+//					writeall(2,inbuf,n);
+//				}
+//				else if (n==0)
+//				{
+//					FD_CLR(fdin, &rfds);
+//				}
+//			}
             for (int i=0; i<2; i++)
             {
                 if (FD_ISSET(fds[i][0], &ready))
@@ -167,12 +326,12 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
                     int n = BUFSIZE-nfill[i];
                     if (n> STEPSIZE) n = STEPSIZE;
                     n = read(fds[i][0], buf[i]+nfill[i], n);
-                    if (n==0)
+
+                    if (n == 0)
                     {
                         if (nfill[i]> 1)
                         {
                             buf[i][nfill[i]] = '\n';
-                            //writecheck(fdout,buf[i],nfill[i]+1);
                             if (i==0)
                                 outStream << std::string(buf[i],nfill[i]+1);
                             else
@@ -181,75 +340,20 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
                         --nopen;
                         FD_CLR(fds[i][0], &rfds);
                     }
-                    else if (n> 0)
+                    else
                     {
-                        int start = 0;
-                        while (n>0)
-                        {
-                            while (n> 0 && buf[i][nfill[i]] != '\n' && buf[i][nfill[i]] != '\r')
-                            {
-                                ++nfill[i];
-                                --n;
-                            }
-                            if (n> 0 && buf[i][nfill[i]] == '\n')
-                            {
-                                // write line
-                                //writecheck(fdout,buf[i]+start,nfill[i]+1-start);
-                                if (i==0)
-                                    outStream << std::string(buf[i]+start,nfill[i]-start);
-                                else
-                                    errorStream << std::string(buf[i]+start,nfill[i]-start);
-                                if (n> 0 && nfill[i] < BUFSIZE && buf[i][nfill[i]+1] == '\r')
-                                {
-                                    // ignore '\r' after '\n'
-                                    ++nfill[i];
-                                    --n;
-                                }
-                                start = nfill[i];
-                                //buf[i][nfill[i]] = '0'+i;
-                                ++nfill[i];
-                                --n;
-                            }
-                            else if (n> 0 && buf[i][nfill[i]] == '\r')
-                            {
-                                // replace with '\n'								//////buf[i][nfill[i]] = '\n';
-                                // write line
-                                //writecheck(fdout,buf[i]+start,nfill[i]+1-start);
-                                if (i == 0)
-                                    outStream << std::string(buf[i]+start,nfill[i]-start);
-                                else
-                                    errorStream << std::string(buf[i]+start,nfill[i]-start);
-                                if (n> 0 && nfill[i] < BUFSIZE && buf[i][nfill[i]+1] == '\n')
-                                {
-                                    // ignore '\n' after '\r'
-                                    ++nfill[i];
-                                    --n;
-                                }
-                                start = nfill[i];
-                                //buf[i][nfill[i]] = '0'+i;
-                                ++nfill[i];
-                                --n;
-                            }
-                        }
-                        if (start> 0)
-                        {
-                            for (int j=start; j<nfill[i]; j++)
-                                buf[i][j-start] = buf[i][j];
-                            nfill[i] -= start;
-                        }
-                        if (nfill[i] == BUFSIZE)
-                        {
-                            // line too long -> split
-                            //writecheck(fdout,buf[i],nfill[i]);
-                            //writecheck(fdout,&eol,1);
-                            if (i == 0)
-                                outStream << std::string(buf[i],nfill[i]) << std::endl;
-                            else
-                                errorStream << std::string(buf[i],nfill[i]) << std::endl;
-                            //buf[i][0] = '0'+i;
-                            nfill[i] = 1;
-                        }
+                        nfill[i] += n;
+
+                        // write line
+                        if (i==0)
+                            outStream << std::string(buf[i],nfill[i]);
+                        else
+                            errorStream << std::string(buf[i],nfill[i]);
+
+                        //std::cout << std::string(buf[i],nfill[i]) << std::endl;
+                        nfill[i] = 0;
                     }
+
                 }
             }
             ready = rfds;
@@ -259,14 +363,11 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
         int status=0;
         waitpid(pid,&status,0);
 
-//		const char* msg;
-//		if (status == 0) msg = " OK\n";
-//		else msg = " Failed\n";
-//		writeall(fdout,msg,strlen(msg));
-
         if (fdout != 1)
             close(fdout);
         close(filefd);
+#endif
+
 
         outString = outStream.str();
         errorString = errorStream.str();
