@@ -25,6 +25,7 @@
 #ifndef SOFA_SIMULATION_TREE_SIMULATION_H
 #define SOFA_SIMULATION_TREE_SIMULATION_H
 
+#include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
@@ -65,40 +66,40 @@ public:
     virtual ~Simulation();
 
     /// Print all object in the graph
-    virtual void print(GNode* root);
+    virtual void print(Node* root);
 
     /// Print all object in the graph in XML format
-    virtual void printXML(GNode* root, const char* fileName=0);
+    virtual void printXML(Node* root, const char* fileName=0);
 
     /// Initialize the objects
-    virtual void init(GNode* root);
+    virtual void init(Node* root);
 
     /// Find the list of nodes called "Instrument" and keep it in the vector instuments
-    void getInstruments( GNode *node);
+    void getInstruments( Node *node);
 
     /// Execute one timestep. If dt is 0, the dt parameter in the graph will be used
-    virtual void animate(GNode* root, double dt=0.0);
+    virtual void animate(Node* root, double dt=0.0);
 
     /// Reset to initial state
-    virtual void reset(GNode* root);
+    virtual void reset(Node* root);
 
     /// Initialize the textures
-    virtual void initTextures(GNode* root);
+    virtual void initTextures(Node* root);
 
     /// Update contexts. Required before drawing the scene if root flags are modified.
-    virtual void updateContext(GNode* root);
+    virtual void updateContext(Node* root);
 
     /// Update contexts. Required before drawing the scene if root flags are modified.
-    virtual void updateVisualContext(GNode* root,int FILTER=0);
+    virtual void updateVisualContext(Node* root,int FILTER=0);
 
     /// Compute the bounding box of the scene.
-    virtual void computeBBox(GNode* root, SReal* minBBox, SReal* maxBBox);
+    virtual void computeBBox(Node* root, SReal* minBBox, SReal* maxBBox);
 
     /// Render the scene
-    virtual void draw(GNode* root);
+    virtual void draw(Node* root);
 
     /// Render the scene - Shadows pass
-    virtual void drawShadows(GNode* root);
+    virtual void drawShadows(Node* root);
 
     /// Delete a scene from memory. After this call the pointer is invalid
     virtual void unload(GNode* root);
@@ -107,10 +108,10 @@ public:
     virtual void exportOBJ(GNode* root, const char* filename, bool exportMTL = true);
 
     /// Export a scene to XML
-    virtual void exportXML(GNode* root, const char* filename);
+    virtual void exportXML(Node* root, const char* filename);
 
     /// Dump the current state in the given stream
-    virtual void dumpState( GNode* root, std::ofstream& out );
+    virtual void dumpState( Node* root, std::ofstream& out );
 
     /// Initialize gnuplot export (open files)
     virtual void initGnuplot( GNode* root );
@@ -121,7 +122,7 @@ public:
     Data<unsigned> numMechSteps;
     Data<std::string> gnuplotDirectory;
 
-    helper::vector< GNode* > instruments;
+    helper::vector< Node* > instruments;
     Data< int > instrumentInUse;
 };
 

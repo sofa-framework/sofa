@@ -325,7 +325,7 @@ protected:
         int index_instrument = simulation::tree::getSimulation()->instrumentInUse.getValue();
         if (index_instrument < 0 || index_instrument > (int)simulation::tree::getSimulation()->instruments.size()) return;
 
-        simulation::tree::GNode *instrument = simulation::tree::getSimulation()->instruments[index_instrument];
+        simulation::Node *instrument = simulation::tree::getSimulation()->instruments[index_instrument];
         if (instrument == NULL) return;
 
         int eventX = e->x();

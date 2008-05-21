@@ -7,12 +7,15 @@ HEADERS += Node.h \
            AnimateBeginEvent.h \
            AnimateEndEvent.h \
            AnimateVisitor.h \   
+           BehaviorUpdatePositionVisitor.h \
            CactusStackStorage.h \  
            ClassSystem.h \  
            CollisionVisitor.h \  
+           DesactivatedNodeVisitor.h \
            FindByTypeVisitor.h \
            GrabVisitor.h \
-           InitVisitor.h \   
+           InitVisitor.h \  
+           InstrumentVisitor.h \
            LocalStorage.h \
            MechanicalComputeEnergyVisitor.h \
 	   MechanicalMatrixVisitor.h \
@@ -21,7 +24,9 @@ HEADERS += Node.h \
            PrintVisitor.h \
            PropagateEventVisitor.h \
            ResetVisitor.h \
+           SolveVisitor.h \
            TopologyChangeVisitor.h \
+           TransformationVisitor.h \
            UpdateContextVisitor.h \
            UpdateMappingEndEvent.h \
            UpdateMappingVisitor.h \
@@ -35,18 +40,23 @@ SOURCES += Node.cpp \
            AnimateBeginEvent.cpp \
            AnimateEndEvent.cpp \
            AnimateVisitor.cpp \
+           BehaviorUpdatePositionVisitor.cpp \
            CactusStackStorage.cpp \
            CollisionVisitor.cpp \
+           DesactivatedNodeVisitor.cpp \
            GrabVisitor.cpp \
-           InitVisitor.cpp \
+           InitVisitor.cpp \   
+           InstrumentVisitor.cpp \
            MechanicalComputeEnergyVisitor.cpp \
 	   MechanicalMatrixVisitor.cpp \
            MechanicalVPrintVisitor.cpp \
            MechanicalVisitor.cpp \
            PrintVisitor.cpp \
            PropagateEventVisitor.cpp \
-           ResetVisitor.cpp \
-           TopologyChangeVisitor.cpp \
+           ResetVisitor.cpp \     
+           SolveVisitor.cpp \
+           TopologyChangeVisitor.cpp \   
+           TransformationVisitor.cpp \
            UpdateContextVisitor.cpp \
            UpdateMappingEndEvent.cpp \
            UpdateMappingVisitor.cpp \

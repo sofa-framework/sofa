@@ -12,6 +12,7 @@
 #include "Node.h"
 #include <sofa/simulation/common/PropagateEventVisitor.h>
 #include <sofa/simulation/common/AnimateVisitor.h>
+#include <sofa/simulation/common/DesactivatedNodeVisitor.h>
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/VisualVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
@@ -49,6 +50,13 @@ void Node::init()
     //cerr<<"Node::init() begin node "<<getName()<<endl;
     execute<simulation::InitVisitor>();
     //cerr<<"Node::init() end node "<<getName()<<endl;
+}
+
+/// ReInitialize the components of this node and all the nodes which depend on it.
+void Node::reinit()
+{
+    sofa::simulation::DesactivationVisitor desactivate(isActive());
+    desactivate.execute( this );
 }
 
 /// Do one step forward in time

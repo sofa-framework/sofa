@@ -360,40 +360,7 @@ void GraphListenerQListView::freeze(GNode* groot)
     if (!items.count(groot)) return;
     frozen = true;
 }
-/*
-void unfreeze(Q3ListViewItem* parent, GNode* node)
-{
-if (!items.count(node))
-{
-addChild(node->parent, node);
-return;
-}
-Q3ListViewItem* item = items[node];
-if (item->listView() == NULL)
-{
-if (parent)
-parent->insertItem(item);
-else
-widget->insertItem(item);
-}
-for(GNode::ChildIterator it = groot->child.begin(), itend = groot->child.end(); it != itend; ++it)
-{
-unfreeze(item, *it);
-}
-for(GNode::ObjectIterator it = groot->object.begin(), itend = groot->object.end(); it != itend; ++it)
-{
-core::objectmodel::BaseObject* object = *it;
-if (!items.count(object))
-addObject(node, object);
-else
-{
-Q3ListViewItem* itemObject = items[object];
-if (itemObject->listView() == NULL)
-item->insertItem(itemObject);
-}
-}
-}
-     */
+
 
 /*****************************************************************************************************************/
 void GraphListenerQListView::unfreeze(GNode* groot)

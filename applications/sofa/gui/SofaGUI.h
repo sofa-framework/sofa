@@ -1,7 +1,7 @@
 #ifndef SOFA_GUI_SOFAGUI_H
 #define SOFA_GUI_SOFAGUI_H
 
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 
 #include <list>
 //class QWidget;
@@ -40,13 +40,13 @@ public:
         return Init();
     }
 
-    static int MainLoop(sofa::simulation::tree::GNode* groot = NULL, const char* filename = NULL);
+    static int MainLoop(sofa::simulation::Node* groot = NULL, const char* filename = NULL);
 
     static SofaGUI* CurrentGUI();
 
     static void Redraw();
 
-    static sofa::simulation::tree::GNode* CurrentSimulation();
+    static sofa::simulation::Node* CurrentSimulation();
 
     /// @}
 
@@ -61,7 +61,7 @@ public:
     virtual void redraw()=0;
     virtual int closeGUI()=0;
 
-    virtual sofa::simulation::tree::GNode* currentSimulation()=0;
+    virtual sofa::simulation::Node* currentSimulation()=0;
 
     /// @}
 
@@ -69,7 +69,7 @@ public:
     /// @{
 
     typedef int InitGUIFn(const char* name, const std::vector<std::string>& options);
-    typedef SofaGUI* CreateGUIFn(const char* name, const std::vector<std::string>& options, sofa::simulation::tree::GNode* groot, const char* filename);
+    typedef SofaGUI* CreateGUIFn(const char* name, const std::vector<std::string>& options, sofa::simulation::Node* groot, const char* filename);
     static int RegisterGUI(const char* name, CreateGUIFn* creator, InitGUIFn* init=NULL, int priority=0);
 
     /// @}

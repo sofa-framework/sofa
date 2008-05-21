@@ -55,6 +55,7 @@
 #include <sofa/helper/io/Mesh.h>
 
 #include <sofa/simulation/common/InitVisitor.h>
+#include <sofa/simulation/common/UpdateContextVisitor.h>
 
 #include "WFloatLineEdit.h"
 
@@ -98,7 +99,7 @@ ModifyObject::ModifyObject(void *Id_, core::objectmodel::Base* node_clicked, Q3L
     setNode(node_clicked, item_clicked);
     connect ( this, SIGNAL( objectUpdated() ), parent_, SLOT( redraw() ));
     connect ( this, SIGNAL( dialogClosed(void *) ) , parent_, SLOT( modifyUnlock(void *)));
-    connect ( this, SIGNAL( transformObject(GNode *, double, double, double, double, double, double, double)), parent, SLOT(transformObject(GNode *, double, double, double, double, double, double, double)));
+    connect ( this, SIGNAL( transformObject(Node *, double, double, double, double, double, double, double)), parent, SLOT(transformObject(Node *, double, double, double, double, double, double, double)));
 }
 
 
@@ -882,10 +883,10 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                         QString("Properties ") + QString::number(indexTab+1) + QString("/") + QString::number(counterTab));
         }
         //If the current element is a node, we add a box to perform geometric transformation: translation, rotation, scaling
-        if(GNode *gnode = dynamic_cast< GNode *>(node_clicked))
+        if(Node *node = dynamic_cast< Node *>(node_clicked))
         {
 
-            if (gnode->mass!= NULL )
+            if (node->mass!= NULL )
             {
                 createGraphMass(dialogTab);
             }
@@ -1039,7 +1040,7 @@ void ModifyObject::updateValues()
 
         std::list< QObject *>::iterator list_it=list_Object.begin();
         //If the current element is a node of the graph, we first apply the transformations
-        if (GNode* current_node = dynamic_cast< GNode *>(node))
+        if (Node* current_node = dynamic_cast< Node *>(node))
         {
             WFloatLineEdit* editScale        = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
             WFloatLineEdit* editRotationZ    = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
@@ -1056,6 +1057,7 @@ void ModifyObject::updateValues()
                     editRotationZ->getFloatValue()    == 0 &&
                     editScale->getFloatValue() == 1 ))
             {
+
                 emit( transformObject(current_node,
                         editTranslationX->getFloatValue(),editTranslationY->getFloatValue(),editTranslationZ->getFloatValue(),
                         editRotationX->getFloatValue(),editRotationY->getFloatValue(),editRotationZ->getFloatValue(),
@@ -1138,7 +1140,7 @@ void ModifyObject::updateValues()
                 ff->setValue(lineEdit->text().ascii());
 
 
-                if( !dynamic_cast< GNode *>(node) && !strcmp(ff->help,"object name") )
+                if( !dynamic_cast< Node *>(node) && !strcmp(ff->help,"object name") )
                 {
                     std::string name=item->text(0).ascii();
                     std::string::size_type pos = name.find(' ');
@@ -1149,7 +1151,7 @@ void ModifyObject::updateValues()
                     name+=lineEdit->text().ascii();
                     item->setText(0,name.c_str());
                 }
-                else if (dynamic_cast< GNode *>(node))
+                else if (dynamic_cast< Node *>(node))
                     item->setText(0,lineEdit->text().ascii());
 
             }
@@ -1484,7 +1486,7 @@ void ModifyObject::updateValues()
                 ff->setValue(lineEdit->text().ascii());
 
 
-                if( !dynamic_cast< GNode *>(node) && !strcmp(ff->help,"object name") )
+                if( !dynamic_cast< Node *>(node) && !strcmp(ff->help,"object name") )
                 {
                     std::string name=item->text(0).ascii();
                     std::string::size_type pos = name.find(' ');
@@ -1495,7 +1497,7 @@ void ModifyObject::updateValues()
                     name+=lineEdit->text().ascii();
                     item->setText(0,name.c_str());
                 }
-                else if (dynamic_cast< GNode *>(node))
+                else if (dynamic_cast< Node *>(node))
                     item->setText(0,lineEdit->text().ascii());
 
             }
@@ -1781,11 +1783,11 @@ void ModifyObject::updateValues()
         }
         if (sofa::core::objectmodel::BaseObject *obj = dynamic_cast< sofa::core::objectmodel::BaseObject* >(node))
             obj->reinit();
-        else if (GNode *n = dynamic_cast< GNode *>(node)) n->reinit();
+        else if (Node *n = dynamic_cast< Node *>(node)) n->reinit();
     }
 
     saveTables();
-    if (visualContentModified) updateContext(dynamic_cast< GNode *>(node));
+    if (visualContentModified) updateContext(dynamic_cast< Node *>(node));
 
     emit (objectUpdated());
     buttonUpdate->setEnabled(false);
@@ -1795,19 +1797,10 @@ void ModifyObject::updateValues()
 
 //*******************************************************************************************************************
 //Update the Context of a whole node, including its childs
-void ModifyObject::updateContext( GNode *node )
+void ModifyObject::updateContext( Node *node )
 {
     if (node == NULL) return;
-    //Update the context of the childs
-    GNode::ChildIterator it  = node->child.begin();
-    while (it != node->child.end())
-    {
-        core::objectmodel::Context *current_context = dynamic_cast< core::objectmodel::Context *>(node->getContext());
-        (*it)->copyContext( (*current_context));
-        updateContext( (*it) );
-        it++;
-    }
-
+    node->execute< sofa::simulation::UpdateContextVisitor >();
 }
 
 
@@ -1846,11 +1839,11 @@ void  ModifyObject::createGraphMass(QTabWidget *dialogTab)
 
 void ModifyObject::updateHistory()
 {
-    if (GNode *gnode = dynamic_cast<GNode *>(node))
+    if (Node *node = dynamic_cast<Node *>(node))
     {
-        if ( gnode->mass)
+        if ( node->mass)
         {
-            history.push_back(gnode->getTime());
+            history.push_back(node->getTime());
             updateEnergy();
         }
     }
@@ -1859,11 +1852,11 @@ void ModifyObject::updateHistory()
 void ModifyObject::updateEnergy()
 {
 
-    GNode *gnode = dynamic_cast<GNode *>(node);
+    Node *node = dynamic_cast<Node *>(node);
 
     unsigned int index = energy_history[0].size();
-    energy_history[0].push_back(gnode->mass->getKineticEnergy());
-    energy_history[1].push_back(gnode->forceField[0]->getPotentialEnergy()); //The first forcefield is the one associated with the mass
+    energy_history[0].push_back(node->mass->getKineticEnergy());
+    energy_history[1].push_back(node->forceField[0]->getPotentialEnergy()); //The first forcefield is the one associated with the mass
     energy_history[2].push_back(energy_history[0][index] + energy_history[1][index]);
 
     if (dialogTab->currentPageIndex() == 2)

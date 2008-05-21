@@ -56,7 +56,7 @@ int main(int argc, char** argv)
 
     if (!fileName.empty())
     {
-        groot = getSimulation()->load(fileName.c_str());
+        groot = dynamic_cast< GNode* >(getSimulation()->load(fileName.c_str()));
     }
 
     if (groot==NULL)

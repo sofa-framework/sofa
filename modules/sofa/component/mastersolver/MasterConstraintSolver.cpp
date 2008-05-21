@@ -2,7 +2,9 @@
 #include <sofa/component/odesolver/MasterContactSolver.h>
 
 #include <sofa/simulation/common/AnimateVisitor.h>
+#include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/SolveVisitor.h>
 
 #include <sofa/helper/LCPcalc.h>
 
@@ -50,21 +52,15 @@ void MasterConstraintSolver::step ( double dt )
 
     // Update the BehaviorModels
     // Required to allow the RayPickInteractor interaction
-    for (simulation::tree::GNode::ChildIterator it = context->child.begin(); it != context->child.end(); ++it)
-    {
-        for (unsigned i=0; i<(*it)->behaviorModel.size(); i++)
-            (*it)->behaviorModel[i]->updatePosition(dt);
-    }
+    simulation::BehaviorUpdatePositionVisitor updatePos(dt);
+    context->execute(&updatePos);
 
     simulation::MechanicalBeginIntegrationVisitor beginVisitor(dt);
     context->execute(&beginVisitor);
 
     // Free Motion
-    for (simulation::tree::GNode::ChildIterator it = context->child.begin(); it != context->child.end(); ++it)
-    {
-        for (unsigned i=0; i<(*it)->solver.size(); i++)
-            (*it)->solver[i]->solve(dt);
-    }
+    simulation::SolveVisitor freeMotion(dt);
+    context->execute(&freeMotion);
 
     simulation::MechanicalPropagateFreePositionVisitor().execute(context);
 

@@ -109,7 +109,7 @@ void SofaGUI::Redraw()
     if (currentGUI) currentGUI->redraw();
 }
 
-sofa::simulation::tree::GNode* SofaGUI::CurrentSimulation()
+sofa::simulation::Node* SofaGUI::CurrentSimulation()
 {
     if (currentGUI)
         return currentGUI->currentSimulation();

@@ -84,6 +84,7 @@ enum
 };
 
 using sofa::simulation::tree::GNode;
+using sofa::simulation::Node;
 #ifdef SOFA_PML
 using namespace sofa::filemanager::pml;
 #endif
@@ -97,13 +98,13 @@ class RealGUI : public ::GUI, public SofaGUI
 public:
 
     static int InitGUI(const char* name, const std::vector<std::string>& options);
-    static SofaGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::tree::GNode* groot = NULL, const char* filename = NULL);
+    static SofaGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node* groot = NULL, const char* filename = NULL);
 
     int mainLoop();
 
     int closeGUI();
 
-    sofa::simulation::tree::GNode* currentSimulation();
+    Node* currentSimulation();
 
     /// @}
 
@@ -117,16 +118,16 @@ public:
 
     virtual void fileOpen(const char* filename); //, int TYPE=NORMAL);
     virtual void fileOpenSimu(const char* filename); //, int TYPE=NORMAL);
-    virtual void setScene(GNode* groot, const char* filename=NULL);
+    virtual void setScene(Node* groot, const char* filename=NULL);
     virtual void setTitle( const char* windowTitle );
 
     //public slots:
     virtual void fileNew();
     virtual void fileOpen();
     virtual void fileSave();
-    virtual void fileSaveAs() {fileSaveAs((GNode *)NULL);};
-    virtual void fileSaveAs(GNode *node);
-    virtual void fileSaveAs(GNode* node,const char* filename);
+    virtual void fileSaveAs() {fileSaveAs((Node *)NULL);};
+    virtual void fileSaveAs(Node *node);
+    virtual void fileSaveAs(Node* node,const char* filename);
 
     virtual void fileReload();
     //virtual void filePrint();
@@ -187,7 +188,7 @@ public slots:
 
     void showhideElements(int FILTER, bool value)
     {
-        GNode* groot = getScene();
+        Node* groot = getScene();
         if ( groot )
         {
             switch(FILTER)
@@ -249,7 +250,7 @@ public slots:
     void redraw();
     //when a dialog modify object is closed
     void modifyUnlock(void *Id);
-    void transformObject( GNode *node, double dx, double dy, double dz, double rx, double ry, double rz, double scale=1.0);
+    void transformObject( Node *node, double dx, double dy, double dz, double rx, double ry, double rz, double scale=1.0);
 
 
     void exportGraph();
@@ -274,10 +275,10 @@ protected:
 
     void loadSimulation(bool one_step=false);
 
-    void initDesactivatedNode( GNode *node);
+    void initDesactivatedNode();
     //Graph Stats
-    bool graphCreateStats(GNode *groot,QListViewItem *parent);
-    bool graphAddCollisionModelsStat(sofa::helper::vector< sofa::core::CollisionModel* > &v,QListViewItem *parent);
+    bool graphCreateStats(Node *groot,QListViewItem *parent);
+    void graphAddCollisionModelsStat(sofa::helper::vector< sofa::core::CollisionModel* > &v);
     void graphSummary();
 
     bool isErasable(core::objectmodel::Base* element);
@@ -332,10 +333,6 @@ protected:
     AddObject *dialog;
 
 
-    //these are already stored in the viewer
-    //do not duplicate them
-    //sofa::simulation::tree::GNode* groot;
-    //std::string sceneFileName;
     sofa::simulation::tree::GNode* getScene() { if (viewer) return viewer->getScene(); else return NULL; }
 
     void sleep(unsigned int mseconds, unsigned int init_time)

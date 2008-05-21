@@ -24,6 +24,7 @@
 *******************************************************************************/
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/common/Visitor.h>
+#include <sofa/simulation/common/DesactivatedNodeVisitor.h>
 #include <sofa/simulation/tree/MutationListener.h>
 #include <sofa/simulation/tree/xml/NodeElement.h>
 #include <iostream>
@@ -477,12 +478,8 @@ core::objectmodel::BaseObject* GNode::getMechanicalState() const
 /// Update the parameters of the System
 void GNode::reinit()
 {
-    GNode *context = static_cast<GNode *>(getContext());
-    for (GNode::ChildIterator it= context->child.begin(); it != context->child.end(); ++it)
-    {
-        (*it)->is_activated.setValue(is_activated.getValue());
-        (*it)->reinit();
-    }
+    sofa::simulation::DesactivationVisitor desactivate(isActive());
+    desactivate.execute( this );
 }
 
 
