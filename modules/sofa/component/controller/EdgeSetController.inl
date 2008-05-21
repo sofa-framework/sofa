@@ -140,12 +140,12 @@ void EdgeSetController<DataTypes>::applyController()
 
         if (this->mState)
         {
-            sofa::helper::Quater<Real>& quatrot = (*this->mState->getX())[0].getOrientation();
+            sofa::helper::Quater<Real>& quatrot = (*this->mState->getX0())[0].getOrientation();
             sofa::defaulttype::Vec<3,Real> vectrans(step * this->mainDirection[0] * (Real)0.05, step * this->mainDirection[1] * (Real)0.05, step * this->mainDirection[2] * (Real)0.05);
             vectrans = quatrot.rotate(vectrans);
             //	std::cout << "X0 += " << vectrans << std::endl;
             (*this->mState->getX0())[0].getCenter() += vectrans;
-            (*this->mState->getX())[0].getCenter() += vectrans;
+            //	(*this->mState->getX())[0].getCenter() += vectrans;
         }
 
         sofa::simulation::tree::GNode *node = static_cast<sofa::simulation::tree::GNode*> (this->getContext());
@@ -172,7 +172,7 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
 
         if (baseEdge.size() == 1)
         {
-            if (edges->getEdgeSetGeometryAlgorithms()->computeEdgeLength(baseEdge[0]) > ( 2 * edge0RestedLength ))
+            if (edges->getEdgeSetGeometryAlgorithms()->computeRestEdgeLength(baseEdge[0]) > ( 2 * edge0RestedLength ))
             {
                 // First Edge makes 2
                 sofa::helper::vector<unsigned int> indices(0);
@@ -226,8 +226,8 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
         if (baseEdge.size() == 2)
         {
 
-            if ((edges->getEdgeSetGeometryAlgorithms()->computeEdgeLength(baseEdge[0]) < ( 0.5 * edge0RestedLength ))
-                ||(edges->getEdgeSetGeometryAlgorithms()->computeEdgeLength(baseEdge[1]) < ( 0.5 * edge0RestedLength )))
+            if ((edges->getEdgeSetGeometryAlgorithms()->computeRestEdgeLength(baseEdge[0]) < ( 0.5 * edge0RestedLength ))
+                ||(edges->getEdgeSetGeometryAlgorithms()->computeRestEdgeLength(baseEdge[1]) < ( 0.5 * edge0RestedLength )))
 
             {
                 // Fuse Edges (0-1)

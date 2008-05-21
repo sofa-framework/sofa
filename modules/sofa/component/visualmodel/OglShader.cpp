@@ -92,17 +92,18 @@ void OglShader::initVisual()
 
     else
     {
-        GLint maxV;
-        glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT, &maxV);
-
         if (geometryInputType.getValue() != -1)
             setGeometryInputType(geometryInputType.getValue());
         if (geometryOutputType.getValue() != -1)
             setGeometryOutputType(geometryOutputType.getValue());
+#ifdef GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT
+        GLint maxV;
+        glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT, &maxV);
         if (geometryVerticesOut.getValue() == -1 || geometryVerticesOut.getValue() > maxV)
             geometryVerticesOut.setValue(3);
-
-        setGeometryVerticesOut(geometryVerticesOut.getValue());
+#endif
+        if (geometryVerticesOut.getValue() != -1)
+            setGeometryVerticesOut(geometryVerticesOut.getValue());
 
         m_shader.InitShaders(helper::system::DataRepository.getFile("shaders/" + vertFilename.getValue()),
                 helper::system::DataRepository.getFile("shaders/" + geoFilename.getValue()),
