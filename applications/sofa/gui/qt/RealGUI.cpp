@@ -1259,7 +1259,7 @@ void RealGUI::eventNewStep()
 {
     static ctime_t beginTime[10];
     static const ctime_t timeTicks = CTime::getRefTicksPerSec();
-    GNode* groot = getScene();
+    Node* groot = getScene();
     if ( frameCounter==0 )
     {
         ctime_t t = CTime::getRefTime();
@@ -1285,32 +1285,32 @@ void RealGUI::eventNewStep()
     {
 
         std::cout << "========== ITERATION " << frameCounter << " ==========\n";
-        const sofa::simulation::tree::GNode::NodeTimer& total = groot->getTotalTime();
-        const std::map<std::string, sofa::simulation::tree::GNode::NodeTimer>& times = groot->getVisitorTime();
-        const std::map<std::string, std::map<sofa::core::objectmodel::BaseObject*, sofa::simulation::tree::GNode::ObjectTimer> >& objtimes = groot->getObjectTime();
+        const sofa::simulation::Node::NodeTimer& total = groot->getTotalTime();
+        const std::map<std::string, sofa::simulation::Node::NodeTimer>& times = groot->getVisitorTime();
+        const std::map<std::string, std::map<sofa::core::objectmodel::BaseObject*, sofa::simulation::Node::ObjectTimer> >& objtimes = groot->getObjectTime();
         const double fact = 1000000.0 / ( 100*groot->getTimeFreq() );
-        for ( std::map<std::string, sofa::simulation::tree::GNode::NodeTimer>::const_iterator it = times.begin(); it != times.end(); ++it )
+        for ( std::map<std::string, sofa::simulation::Node::NodeTimer>::const_iterator it = times.begin(); it != times.end(); ++it )
         {
             std::cout << "TIME "<<it->first<<": " << ( ( int ) ( fact*it->second.tTree+0.5 ) ) *0.001 << " ms (" << ( 1000*it->second.tTree/total.tTree ) *0.1 << " %).\n";
-            std::map<std::string, std::map<sofa::core::objectmodel::BaseObject*, sofa::simulation::tree::GNode::ObjectTimer> >::const_iterator it1 = objtimes.find ( it->first );
+            std::map<std::string, std::map<sofa::core::objectmodel::BaseObject*, sofa::simulation::Node::ObjectTimer> >::const_iterator it1 = objtimes.find ( it->first );
             if ( it1 != objtimes.end() )
             {
-                for ( std::map<sofa::core::objectmodel::BaseObject*, sofa::simulation::tree::GNode::ObjectTimer>::const_iterator it2 = it1->second.begin(); it2 != it1->second.end(); ++it2 )
+                for ( std::map<sofa::core::objectmodel::BaseObject*, sofa::simulation::Node::ObjectTimer>::const_iterator it2 = it1->second.begin(); it2 != it1->second.end(); ++it2 )
                 {
                     std::cout << "  "<< sofa::helper::gettypename ( typeid ( * ( it2->first ) ) ) <<" "<< it2->first->getName() <<": "
                             << ( ( int ) ( fact*it2->second.tObject+0.5 ) ) *0.001 << " ms (" << ( 1000*it2->second.tObject/it->second.tTree ) *0.1 << " %).\n";
                 }
             }
         }
-        for ( std::map<std::string, std::map<sofa::core::objectmodel::BaseObject*, sofa::simulation::tree::GNode::ObjectTimer> >::const_iterator it = objtimes.begin(); it != objtimes.end(); ++it )
+        for ( std::map<std::string, std::map<sofa::core::objectmodel::BaseObject*, sofa::simulation::Node::ObjectTimer> >::const_iterator it = objtimes.begin(); it != objtimes.end(); ++it )
         {
             if ( times.count ( it->first ) >0 ) continue;
             ctime_t ttotal = 0;
-            for ( std::map<sofa::core::objectmodel::BaseObject*, sofa::simulation::tree::GNode::ObjectTimer>::const_iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2 )
+            for ( std::map<sofa::core::objectmodel::BaseObject*, sofa::simulation::Node::ObjectTimer>::const_iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2 )
                 ttotal += it2->second.tObject;
             std::cout << "TIME "<<it->first<<": " << ( ( int ) ( fact*ttotal+0.5 ) ) *0.001 << " ms (" << ( 1000*ttotal/total.tTree ) *0.1 << " %).\n";
             if ( ttotal > 0 )
-                for ( std::map<sofa::core::objectmodel::BaseObject*, sofa::simulation::tree::GNode::ObjectTimer>::const_iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2 )
+                for ( std::map<sofa::core::objectmodel::BaseObject*, sofa::simulation::Node::ObjectTimer>::const_iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2 )
                 {
                     std::cout << "  "<< sofa::helper::gettypename ( typeid ( * ( it2->first ) ) ) <<" "<< it2->first->getName() <<": "
                             << ( ( int ) ( fact*it2->second.tObject+0.5 ) ) *0.001 << " ms (" << ( 1000*it2->second.tObject/ttotal ) *0.1 << " %).\n";
@@ -1326,7 +1326,7 @@ void RealGUI::eventNewStep()
 
 void RealGUI::eventNewTime()
 {
-    GNode* groot = getScene();
+    Node* groot = getScene();
     if ( groot )
     {
 
@@ -1363,7 +1363,7 @@ void RealGUI::eventNewTime()
 
 void RealGUI::setDt ( double value )
 {
-    GNode* groot = getScene();
+    Node* groot = getScene();
     if ( value > 0.0 )
     {
 
@@ -1489,7 +1489,7 @@ void RealGUI::exportGraph ( sofa::simulation::tree::GNode* root )
 //
 void RealGUI::displayComputationTime ( bool value )
 {
-    GNode* groot = getScene();
+    Node* groot = getScene();
     m_displayComputationTime = value;
     if ( groot )
     {
@@ -1608,10 +1608,8 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
 void RealGUI::transformObject ( Node *node, double dx, double dy, double dz,  double rx, double ry, double rz, double scale )
 {
     if ( node == NULL ) return;
-    GNode::ObjectIterator obj_it = node->object.begin();
     const SReal conversionDegRad = 3.141592653/180.0;
     Vector3 rotationVector = Vector3(rx,ry,rz)*conversionDegRad;
-    //We translate the elements
 
     TransformationVisitor transform;
     transform.setTranslation(dx,dy,dz);
