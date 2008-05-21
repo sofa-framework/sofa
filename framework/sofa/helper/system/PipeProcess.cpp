@@ -82,7 +82,7 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
     fderr = GetStdHandle(STD_ERROR_HANDLE);
 
     for (unsigned int i=0 ; i< args.size() ; i++)
-        newCommand += cargs[i];
+        newCommand += " " + args[i];
 
 #else
     fdin = 0;
