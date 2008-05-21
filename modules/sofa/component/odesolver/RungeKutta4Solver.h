@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_ODESOLVER_RUNGEKUTTA4SOLVER_H
 
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/simulation/tree/OdeSolverImpl.h>
+#include <sofa/simulation/common/OdeSolverImpl.h>
 
 namespace sofa
 {
@@ -38,7 +38,7 @@ namespace odesolver
 {
 
 /** A popular time integration method, much more precise than the EulerSolver */
-class RungeKutta4Solver : public sofa::simulation::tree::OdeSolverImpl
+class RungeKutta4Solver : public sofa::simulation::OdeSolverImpl
 {
 public:
     void solve (double dt);

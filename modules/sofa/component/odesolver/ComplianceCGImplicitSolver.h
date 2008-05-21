@@ -6,7 +6,7 @@
 #define SOFA_COMPONENT_ODESOLVER_COMPLIANCECGIMPLICITSOLVER_H
 
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/simulation/tree/OdeSolverImpl.h>
+#include <sofa/simulation/common/OdeSolverImpl.h>
 
 namespace sofa
 {
@@ -19,7 +19,7 @@ namespace odesolver
 
 using namespace sofa::defaulttype;
 
-class ComplianceCGImplicitSolver : public sofa::simulation::tree::OdeSolverImpl
+class ComplianceCGImplicitSolver : public sofa::simulation::OdeSolverImpl
 {
 public:
     ComplianceCGImplicitSolver();

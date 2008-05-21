@@ -59,7 +59,7 @@ void UncoupledConstraintCorrection<DataTypes>::init()
 
 #ifndef SOFA_FLOAT
 template<>
-void UncoupledConstraintCorrection<defaulttype::Rigid3dTypes>::getCompliance(defaulttype::BaseMatrix*W)
+void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defaulttype::BaseMatrix*W)
 {
     const VecConst& constraints = *mstate->getC();
     Deriv weighedNormal;
@@ -72,12 +72,12 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3dTypes>::getCompliance(def
     if (node != NULL)
     {
         core::componentmodel::behavior::BaseMass*_m = node->mass;
-        component::mass::UniformMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass> *m = dynamic_cast<component::mass::UniformMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>*> (_m);
+        component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass> *m = dynamic_cast<component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>*> (_m);
         massValue = &( m->getMass());
     }
     else
     {
-        massValue = new sofa::defaulttype::Rigid3dMass();
+        massValue = new sofa::defaulttype::Rigid3Mass();
         printf("\n WARNING : node is not found => massValue could be false in getCompliance function");
     }
 
@@ -126,25 +126,25 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3dTypes>::getCompliance(def
 }
 
 template<>
-void UncoupledConstraintCorrection<defaulttype::Rigid3dTypes>::applyContactForce(const defaulttype::BaseVector *f)
+void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::applyContactForce(const defaulttype::BaseVector *f)
 {
     VecDeriv& force = *mstate->getExternalForces();
     const VecConst& constraints = *mstate->getC();
     Deriv weighedNormal;
 
-    const sofa::defaulttype::Rigid3dMass* massValue;
+    const sofa::defaulttype::Rigid3Mass* massValue;
 
     simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
 
     if (node != NULL)
     {
         core::componentmodel::behavior::BaseMass*_m = node->mass;
-        component::mass::UniformMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass> *m = dynamic_cast<component::mass::UniformMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>*> (_m);
+        component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass> *m = dynamic_cast<component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>*> (_m);
         massValue = &( m->getMass());
     }
     else
     {
-        massValue = new sofa::defaulttype::Rigid3dMass();
+        massValue = new sofa::defaulttype::Rigid3Mass();
         printf("\n WARNING : node is not found => massValue could be false in getCompliance function");
     }
 

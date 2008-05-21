@@ -8,8 +8,6 @@ namespace sofa
 namespace simulation
 {
 
-namespace tree
-{
 
 void init()
 {
@@ -25,8 +23,6 @@ void init()
         first = false;
     }
 }
-
-} // namespace tree
 
 } // namespace simulation
 

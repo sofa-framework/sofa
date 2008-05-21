@@ -25,10 +25,10 @@
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/simulation/tree/init.h>
+#include <sofa/simulation/common/init.h>
 #include <sofa/simulation/common/PrintVisitor.h>
 #include <sofa/simulation/common/FindByTypeVisitor.h>
-#include <sofa/simulation/tree/ExportGnuplotVisitor.h>
+#include <sofa/simulation/common/ExportGnuplotVisitor.h>
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/InstrumentVisitor.h>
 #include <sofa/simulation/common/AnimateVisitor.h>
@@ -39,7 +39,7 @@
 #include <sofa/simulation/common/ResetVisitor.h>
 #include <sofa/simulation/common/VisualVisitor.h>
 #include <sofa/simulation/tree/DeleteVisitor.h>
-#include <sofa/simulation/tree/ExportOBJVisitor.h>
+#include <sofa/simulation/common/ExportOBJVisitor.h>
 #include <sofa/simulation/common/WriteStateVisitor.h>
 #include <sofa/simulation/common/XMLPrintVisitor.h>
 #include <sofa/simulation/common/PropagateEventVisitor.h>
@@ -124,7 +124,7 @@ GNode* Simulation::processXML(xml::BaseElement* xml, const char *filename)
 /// Load from a string in memory
 GNode* Simulation::loadFromMemory ( const char *filename, const char *data, unsigned int size )
 {
-    ::sofa::simulation::tree::init();
+    ::sofa::simulation::init();
 // 				std::cerr << "Loading simulation XML file "<<filename<<std::endl;
     xml::BaseElement* xml = xml::loadFromMemory (filename, data, size );
 
@@ -140,7 +140,7 @@ GNode* Simulation::loadFromMemory ( const char *filename, const char *data, unsi
 /// Load a scene from a file
 GNode* Simulation::loadFromFile ( const char *filename )
 {
-    ::sofa::simulation::tree::init();
+    ::sofa::simulation::init();
 // 				std::cerr << "Loading simulation XML file "<<filename<<std::endl;
     xml::BaseElement* xml = xml::loadFromFile ( filename );
 
@@ -389,7 +389,7 @@ void Simulation::unload ( GNode* root )
 }
 
 /// Export a scene to an OBJ 3D Scene
-void Simulation::exportOBJ ( GNode* root, const char* filename, bool exportMTL )
+void Simulation::exportOBJ ( Node* root, const char* filename, bool exportMTL )
 {
     if ( !root ) return;
     std::ofstream fout ( filename );
@@ -440,14 +440,14 @@ void Simulation::dumpState ( Node* root, std::ofstream& out )
 }
 
 /// Initialize gnuplot file output
-void Simulation::initGnuplot ( GNode* root )
+void Simulation::initGnuplot ( Node* root )
 {
     if ( !root ) return;
     root->execute<InitGnuplotVisitor>();
 }
 
 /// Update gnuplot file output
-void Simulation::exportGnuplot ( GNode* root, double time )
+void Simulation::exportGnuplot ( Node* root, double time )
 {
     if ( !root ) return;
     ExportGnuplotVisitor expg ( time );

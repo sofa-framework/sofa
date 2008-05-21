@@ -22,8 +22,8 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_COLORS_H
-#define SOFA_SIMULATION_TREE_COLORS_H
+#ifndef SOFA_SIMULATION_COLORS_H
+#define SOFA_SIMULATION_COLORS_H
 
 #include <stdlib.h>
 #include <string.h>
@@ -34,8 +34,6 @@ namespace sofa
 namespace simulation
 {
 
-namespace tree
-{
 
 namespace Colors
 {
@@ -108,7 +106,6 @@ inline const char* getColor(const char* classname)
 
 }
 
-} // namespace tree
 
 } // namespace simulation
 

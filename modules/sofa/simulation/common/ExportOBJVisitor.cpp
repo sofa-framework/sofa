@@ -22,48 +22,63 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_PIPELINEIMPL_H
-#define SOFA_SIMULATION_TREE_PIPELINEIMPL_H
-
-#include <sofa/core/componentmodel/collision/Pipeline.h>
-
-#include <vector>
-
+#include <sofa/simulation/common/ExportOBJVisitor.h>
+#include <sofa/helper/system/config.h>
+#include <sofa/helper/Factory.h>
+#include <sofa/simulation/common/Node.h>
+#include <sofa/core/objectmodel/BaseContext.h>
 namespace sofa
 {
 
 namespace simulation
 {
 
-namespace tree
+
+ExportOBJVisitor::ExportOBJVisitor(std::ostream* out,std::ostream* mtl)
+    : out(out), mtl(mtl), ID(0), vindex(0), nindex(0), tindex(0)
 {
+}
 
-using namespace sofa::core::componentmodel::collision;
-
-class PipelineImpl : public virtual sofa::core::componentmodel::collision::Pipeline
+ExportOBJVisitor::~ExportOBJVisitor()
 {
+}
 
-public:
-    PipelineImpl();
+void ExportOBJVisitor::processVisualModel(Node* /*node*/, core::VisualModel* vm)
+{
+// 	GL::OglModel* oglmodel = dynamic_cast<GL::OglModel*>(vm);
+// 	if (oglmodel != NULL)
+// 	{
+// 		std::string name = node->getPathName() + "/" + oglmodel->getName();
 
-    virtual ~PipelineImpl();
+    std::ostringstream oname;
+    oname << ++ID << " " << vm->getName();
 
-    virtual void init();
+// 	name += oglmodel->getName();
 
-    virtual void reset();
 
-    /// Remove collision response from last step
-    virtual void computeCollisionReset();
-    /// Detect new collisions. Note that this step must not modify the simulation graph
-    virtual void computeCollisionDetection();
-    /// Add collision response in the simulation graph
-    virtual void computeCollisionResponse();
-};
+    // 		*out << "g "<<name<<"\n";
+    //oglmodel->exportOBJ(out,mtl,vindex,nindex,tindex); // does not compile
+// 	oglmodel->exportOBJ("Which-string-here_?",out,mtl,vindex,nindex,tindex); // changed by FF
 
-} // namespace tree
+
+    vm->exportOBJ(oname.str(),out,mtl,vindex,nindex,tindex);
+// 	}
+
+}
+
+simulation::Visitor::Result ExportOBJVisitor::processNodeTopDown(Node* node)
+{
+    //simulation::Node* node = static_cast<simulation::Node*>(n);
+    for_each(this, node, node->visualModel, &ExportOBJVisitor::processVisualModel);
+
+    return RESULT_CONTINUE;
+}
+
+void ExportOBJVisitor::processNodeBottomUp(Node* /*node*/)
+{
+}
 
 } // namespace simulation
 
 } // namespace sofa
 
-#endif

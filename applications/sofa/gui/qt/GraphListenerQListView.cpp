@@ -26,7 +26,7 @@
 #include <GenGraphForm.h>
 #include "RealGUI.h"
 #include "iconnode.xpm"
-#include <sofa/simulation/tree/Colors.h>
+#include <sofa/simulation/common/Colors.h>
 
 
 #ifdef QT_MODULE_QT3SUPPORT
@@ -65,7 +65,7 @@ static int hexval(char c)
 
 QPixmap* getPixmap(core::objectmodel::Base* obj)
 {
-    using namespace sofa::simulation::tree::Colors;
+    using namespace sofa::simulation::Colors;
     unsigned int flags=0;
 
     if (dynamic_cast<core::objectmodel::BaseNode*>(obj))

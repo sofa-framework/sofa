@@ -14,8 +14,6 @@ namespace sofa
 namespace simulation
 {
 
-namespace tree
-{
 
 class InitGnuplotVisitor : public simulation::Visitor
 {
@@ -47,8 +45,6 @@ public:
 protected:
     double m_time;
 };
-
-} // namespace tree
 
 } // namespace simulation
 

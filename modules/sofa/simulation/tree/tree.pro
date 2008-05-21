@@ -3,21 +3,13 @@
 # Subdir relative project main directory: ./modules/sofa/simulation
 # Target is a library:  sofasimulation$$LIBSUFFIX
 
-HEADERS += Colors.h \
-           DeleteVisitor.h \
+HEADERS += DeleteVisitor.h \
            ExportDotVisitor.h \
-           ExportGnuplotVisitor.h \
-           ExportOBJVisitor.h \
            GNode.h \
            GNodeVisitor.h \
-           MasterSolverImpl.h \
-           MatrixLinearSolver.h \
            MutationListener.h \
-           OdeSolverImpl.h \
            ParallelVisitorScheduler.h \
-           PipelineImpl.h \
            Simulation.h \
-           init.h \
            xml/BaseElement.h \
            xml/Element.h \
            xml/Element.inl \
@@ -28,18 +20,11 @@ HEADERS += Colors.h \
            xml/XML.h 
 SOURCES += DeleteVisitor.cpp \
            ExportDotVisitor.cpp \
-           ExportGnuplotVisitor.cpp \
-           ExportOBJVisitor.cpp \
            GNode.cpp \   
            GNodeVisitor.cpp \
-           MasterSolverImpl.cpp \
-           MatrixLinearSolver.cpp \
            MutationListener.cpp \
-           OdeSolverImpl.cpp \
            ParallelVisitorScheduler.cpp \
-           PipelineImpl.cpp \
            Simulation.cpp \
-           init.cpp \
            xml/BaseElement.cpp \
            xml/NodeElement.cpp \
            xml/ObjectElement.cpp \

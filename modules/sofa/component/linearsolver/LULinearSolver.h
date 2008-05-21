@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_LULINEARSOLVER_H
 
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
-#include <sofa/simulation/tree/MatrixLinearSolver.h>
+#include <sofa/simulation/common/MatrixLinearSolver.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <math.h>
@@ -42,7 +42,7 @@ namespace linearsolver
 
 /// Linear system solver using the default (LU factorization) algorithm
 template<class Matrix, class Vector>
-class LULinearSolver : public sofa::simulation::tree::MatrixLinearSolver<Matrix,Vector>, public virtual sofa::core::objectmodel::BaseObject
+class LULinearSolver : public sofa::simulation::MatrixLinearSolver<Matrix,Vector>, public virtual sofa::core::objectmodel::BaseObject
 {
 public:
     Data<bool> f_verbose;
