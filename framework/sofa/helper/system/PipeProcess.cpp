@@ -1,4 +1,3 @@
-#ifndef WIN32
 #include "PipeProcess.h"
 
 #ifdef WIN32
@@ -40,44 +39,6 @@ namespace helper
 
 namespace system
 {
-
-ssize_t writeall(int fd, const void* buf, size_t count)
-{
-    size_t total = 0;
-    while (count > total)
-    {
-#ifdef WIN32
-        DWORD r = 0;
-        if (!WriteFile(fd, ((const char*)buf)+total, count-total, &r, NULL))
-            return -1;
-
-        total += r;
-#else
-        ssize_t r = write(fd, ((const char*)buf)+total, count-total);
-        if (r < 0) return r;
-        total += r;
-#endif
-    }
-    return total;
-}
-
-ssize_t writecheck(int fd, const void* buf, size_t count)
-{
-    if (count > 5 && ((const char*)buf)[1]=='<' && ((const char*)buf)[2]=='<' && ((const char*)buf)[3]=='>' && ((const char*)buf)[4]=='>')
-    {
-        char space=' ';
-        writeall(fd,&space,1);
-        return writeall(fd,((const char*)buf)+5,count-5);
-    }
-    else if (count > 6 && ((const char*)buf)[1]=='<' && ((const char*)buf)[2]=='<' && ((const char*)buf)[4]=='>' && ((const char*)buf)[5]=='>')
-    {
-        writeall(fd,((const char*)buf)+3,1);
-        return writeall(fd,((const char*)buf)+6,count-6);
-    }
-    else
-        return writeall(fd,buf,count);
-}
-
 
 PipeProcess::PipeProcess()
 {
@@ -379,4 +340,3 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
 }
 }
 
-#endif
