@@ -2,12 +2,12 @@
 #define SOFA_COMPONENT_MASTERSOLVER_MASTERCONSTRAINTSOLVER_H
 
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/simulation/tree/MasterSolverImpl.h>
+#include <sofa/simulation/common/MasterSolverImpl.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/simulation/tree/OdeSolverImpl.h>
+#include <sofa/simulation/common/OdeSolverImpl.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 
 namespace sofa
@@ -42,7 +42,7 @@ private:
     unsigned int _offset;
 };
 
-class MasterConstraintSolver : public sofa::simulation::tree::MasterSolverImpl//, public sofa::simulation::tree::OdeSolverImpl
+class MasterConstraintSolver : public sofa::simulation::MasterSolverImpl//, public sofa::simulation::OdeSolverImpl
 {
 public:
 

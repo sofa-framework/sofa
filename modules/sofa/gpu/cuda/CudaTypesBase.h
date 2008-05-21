@@ -66,7 +66,7 @@ public :
         {
             for (unsigned i=0; i<m.getSizeY(); i++)
             {
-                m[j][i] = 0.0;
+                m[j][i] = (T)(0.0);
             }
         }
     }
@@ -80,7 +80,7 @@ public :
             exit(1);
         }
 #endif
-        m[j][i] = v;
+        m[j][i] = (T)v;
     }
 
     void add(int j, int i, double v)
@@ -92,7 +92,7 @@ public :
             exit(1);
         }
 #endif
-        m[j][i] += v;
+        m[j][i] += (T)v;
     }
 
 private :
@@ -137,7 +137,7 @@ public :
 
     void clear()
     {
-        for (int i=0; i<size(); i++) v[i]=0.0;
+        for (int i=0; i<size(); i++) v[i]=(T)(0.0);
     }
 
     void set(int i, SReal val)

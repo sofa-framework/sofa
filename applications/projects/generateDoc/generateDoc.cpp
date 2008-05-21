@@ -4,7 +4,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/Context.h>
-#include <sofa/simulation/tree/Colors.h>
+#include <sofa/simulation/common/Colors.h>
 
 namespace projects
 {
@@ -158,7 +158,7 @@ bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
     out << "<?php } if ($show) echo '</a>'; ?>";
     for (const char** c = baseClasses; *c; ++c)
     {
-        out << " <span class=\"class-base-name\" style=\"background-color: " << sofa::simulation::tree::Colors::getColor(*c) << ";\">";
+        out << " <span class=\"class-base-name\" style=\"background-color: " << sofa::simulation::Colors::getColor(*c) << ";\">";
         out << "<?php if ($show != '"<<xmlencode(*c)<<"') echo '<a href=\""<<url<<"?show="<<xmlencode(*c)<<"'.($desc?'&desc='.$desc:'').'\">'; ?>";
         out << *c;
         out << "<?php if ($show != '"<<xmlencode(*c)<<"') echo '</a>'; ?>";
@@ -197,7 +197,7 @@ bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
             out << "<tr class=\"sofa-class\">";
             out << "<td class=\"sofa-base\" valign=\"top\">";
             for (std::set<std::string>::iterator it = entry->baseClasses.begin(), itend = entry->baseClasses.end(); it != itend; ++it)
-                out << "<span class=\"class-base\" style=\"background-color: " << sofa::simulation::tree::Colors::getColor((*it).c_str()) << ";\" alt=\"" << xmlencode(*it) << "\" title=\"" << xmlencode(*it) << "\">&nbsp;</span>";
+                out << "<span class=\"class-base\" style=\"background-color: " << sofa::simulation::Colors::getColor((*it).c_str()) << ";\" alt=\"" << xmlencode(*it) << "\" title=\"" << xmlencode(*it) << "\">&nbsp;</span>";
             out << "</td>";
 
             out << "<td class=\"sofa-name\" valign=\"top\"><?php if ($base) echo '<a href=\""<<url<<"?show="<<xmlencode(entry->className)<<"'.($desc?'&desc='.$desc:'').'\" class=\"class-name\">'; else echo '<span class=\"class-name\">'; ?>" << xmlencode(entry->className) <<"<?php if ($base) echo '</a>'; else echo '</span>'; ?>\n";

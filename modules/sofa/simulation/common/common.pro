@@ -11,16 +11,23 @@ HEADERS += Node.h \
            CactusStackStorage.h \  
            ClassSystem.h \  
            CollisionVisitor.h \  
+           Colors.h \
            DesactivatedNodeVisitor.h \
+           ExportGnuplotVisitor.h \
+           ExportOBJVisitor.h \
            FindByTypeVisitor.h \
            GrabVisitor.h \
            InitVisitor.h \  
            InstrumentVisitor.h \
            LocalStorage.h \
+           MasterSolverImpl.h \
+           MatrixLinearSolver.h \
            MechanicalComputeEnergyVisitor.h \
 	   MechanicalMatrixVisitor.h \
            MechanicalVPrintVisitor.h \
            MechanicalVisitor.h \  
+           OdeSolverImpl.h \
+           PipelineImpl.h \
            PrintVisitor.h \
            PropagateEventVisitor.h \
            ResetVisitor.h \
@@ -35,7 +42,8 @@ HEADERS += Node.h \
            VisitorScheduler.h \
            VisualVisitor.h \
            WriteStateVisitor.h \
-           XMLPrintVisitor.h
+           XMLPrintVisitor.h \
+           init.h 
 SOURCES += Node.cpp \
            AnimateBeginEvent.cpp \
            AnimateEndEvent.cpp \
@@ -44,13 +52,19 @@ SOURCES += Node.cpp \
            CactusStackStorage.cpp \
            CollisionVisitor.cpp \
            DesactivatedNodeVisitor.cpp \
+           ExportGnuplotVisitor.cpp \
+           ExportOBJVisitor.cpp \
            GrabVisitor.cpp \
            InitVisitor.cpp \   
            InstrumentVisitor.cpp \
+           MasterSolverImpl.cpp \
+           MatrixLinearSolver.cpp \
            MechanicalComputeEnergyVisitor.cpp \
 	   MechanicalMatrixVisitor.cpp \
            MechanicalVPrintVisitor.cpp \
            MechanicalVisitor.cpp \
+           OdeSolverImpl.cpp \
+           PipelineImpl.cpp \
            PrintVisitor.cpp \
            PropagateEventVisitor.cpp \
            ResetVisitor.cpp \     
@@ -65,7 +79,8 @@ SOURCES += Node.cpp \
            VisitorScheduler.cpp \
            VisualVisitor.cpp \
            WriteStateVisitor.cpp \
-           XMLPrintVisitor.cpp
+           XMLPrintVisitor.cpp \
+           init.cpp 
 
 SOFA_DIR =../../../..
 TEMPLATE = lib

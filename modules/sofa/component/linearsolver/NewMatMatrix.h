@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_NEWMATMATRIX_H
 
 #include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/simulation/tree/MatrixLinearSolver.h>
+#include <sofa/simulation/common/MatrixLinearSolver.h>
 #include "NewMatVector.h"
 
 namespace sofa
@@ -459,9 +459,6 @@ inline void TNewMatMatrix<NewMAT::SymmetricBandMatrix>::add(int i, int j, double
 namespace simulation
 {
 
-namespace tree
-{
-
 template<>
 class MatrixLinearSolverInternalData< component::linearsolver::TNewMatMatrix<NewMAT::SymmetricBandMatrix> , component::linearsolver::NewMatVector >
 {
@@ -494,7 +491,6 @@ inline component::linearsolver::TNewMatMatrix<NewMAT::BandMatrix>* MatrixLinearS
     return new component::linearsolver::TNewMatMatrix<NewMAT::BandMatrix>(this->data->bandWidth.getValue());
 }
 
-} // namespace tree
 
 } // namespace simulation
 

@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_SPARSEMATRIX_H
 
 #include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/simulation/tree/MatrixLinearSolver.h>
+#include <sofa/simulation/common/MatrixLinearSolver.h>
 #include "FullVector.h"
 
 #include <map>

@@ -26,7 +26,7 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/tree/Colors.h>
+#include <sofa/simulation/common/Colors.h>
 
 namespace sofa
 {

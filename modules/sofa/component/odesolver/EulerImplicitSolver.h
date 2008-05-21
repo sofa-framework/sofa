@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_ODESOLVER_EULERIMPLICITSOLVER_H
 
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/simulation/tree/OdeSolverImpl.h>
+#include <sofa/simulation/common/OdeSolverImpl.h>
 
 namespace sofa
 {
@@ -41,7 +41,7 @@ using namespace sofa::defaulttype;
 
 /** Implicit time integrator using backward Euler scheme.
 */
-class EulerImplicitSolver : public sofa::simulation::tree::OdeSolverImpl
+class EulerImplicitSolver : public sofa::simulation::OdeSolverImpl
 {
 public:
 

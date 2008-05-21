@@ -1,4 +1,4 @@
-#include <sofa/simulation/tree/ExportGnuplotVisitor.h>
+#include <sofa/simulation/common/ExportGnuplotVisitor.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
@@ -12,18 +12,15 @@ namespace sofa
 namespace simulation
 {
 
-namespace tree
-{
-
 simulation::Visitor::Result InitGnuplotVisitor::processNodeTopDown(simulation::Node* node)
 {
     if (node->mechanicalState != NULL )
     {
-        node->mechanicalState->initGnuplot(getSimulation()->gnuplotDirectory.getValue());
+        node->mechanicalState->initGnuplot(tree::getSimulation()->gnuplotDirectory.getValue());
     }
     if (node->mass != NULL )
     {
-        node->mass->initGnuplot(getSimulation()->gnuplotDirectory.getValue());
+        node->mass->initGnuplot(tree::getSimulation()->gnuplotDirectory.getValue());
     }
     return RESULT_CONTINUE;
 }
@@ -45,8 +42,6 @@ simulation::Visitor::Result ExportGnuplotVisitor::processNodeTopDown(simulation:
     return RESULT_CONTINUE;
 }
 
-
-} // namespace tree
 
 } // namespace simulation
 

@@ -22,8 +22,14 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_INIT_H
-#define SOFA_SIMULATION_TREE_INIT_H
+#ifndef SOFA_SIMULATION_TREE_EXPORTOBJACTION_H
+#define SOFA_SIMULATION_TREE_EXPORTOBJACTION_H
+
+#include <sofa/simulation/common/Visitor.h>
+#include <sofa/simulation/common/Node.h>
+#include <string>
+#include <iostream>
+
 
 namespace sofa
 {
@@ -31,16 +37,29 @@ namespace sofa
 namespace simulation
 {
 
-namespace tree
+class ExportOBJVisitor : public Visitor
 {
+public:
+    std::ostream* out;
+    std::ostream* mtl;
 
-void init();
+    ExportOBJVisitor(std::ostream* out, std::ostream* mtl=NULL);
+    ~ExportOBJVisitor();
 
-} // namespace tree
+    virtual void processVisualModel(Node* node, core::VisualModel* vm);
+
+    virtual Result processNodeTopDown(Node* node);
+    virtual void processNodeBottomUp(Node* node);
+
+protected:
+    int ID;
+    int vindex;
+    int nindex;
+    int tindex;
+};
 
 } // namespace simulation
 
 } // namespace sofa
 
 #endif
-

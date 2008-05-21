@@ -22,10 +22,10 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_MATRIXLINEARSOLVER_H
-#define SOFA_SIMULATION_TREE_MATRIXLINEARSOLVER_H
+#ifndef SOFA_SIMULATION_MATRIXLINEARSOLVER_H
+#define SOFA_SIMULATION_MATRIXLINEARSOLVER_H
 
-#include <sofa/simulation/tree/OdeSolverImpl.h>
+#include <sofa/simulation/common/OdeSolverImpl.h>
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
 
 namespace sofa
@@ -34,8 +34,6 @@ namespace sofa
 namespace simulation
 {
 
-namespace tree
-{
 
 template<class Matrix, class Vector>
 class MatrixLinearSolverInternalData
@@ -351,8 +349,6 @@ defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredV
 
 template<>
 defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::getSystemLHBaseVector();
-
-} // namespace tree
 
 } // namespace simulation
 

@@ -29,7 +29,7 @@
 #define SOFA_COMPONENT_ODESOLVER_BICGSTABIMPLICITSOLVER_H
 
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/simulation/tree/OdeSolverImpl.h>
+#include <sofa/simulation/common/OdeSolverImpl.h>
 
 namespace sofa
 {
@@ -41,7 +41,7 @@ namespace odesolver
 {
 /** Implicit integration solver able to handle degenerate equation systems.
 */
-class BiCGStabImplicitSolver : public sofa::simulation::tree::OdeSolverImpl
+class BiCGStabImplicitSolver : public sofa::simulation::OdeSolverImpl
 {
 public:
     typedef core::componentmodel::behavior::OdeSolver Inherited;

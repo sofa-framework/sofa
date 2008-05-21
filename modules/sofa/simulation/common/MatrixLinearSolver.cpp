@@ -22,7 +22,7 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#include "MatrixLinearSolver.h"
+#include <sofa/simulation/common/MatrixLinearSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/MechanicalMatrixVisitor.h>
 #include <sofa/simulation/common/MechanicalVPrintVisitor.h>
@@ -38,8 +38,6 @@ namespace sofa
 namespace simulation
 {
 
-namespace tree
-{
 
 using sofa::core::componentmodel::behavior::LinearSolver;
 using sofa::core::objectmodel::BaseContext;
@@ -162,8 +160,6 @@ defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredV
 
 // Force template instantiation
 template class MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>;
-
-} // namespace tree
 
 } // namespace simulation
 

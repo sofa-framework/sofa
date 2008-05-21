@@ -105,7 +105,7 @@ public:
     virtual void unload(GNode* root);
 
     /// Export a scene to an OBJ 3D Scene
-    virtual void exportOBJ(GNode* root, const char* filename, bool exportMTL = true);
+    virtual void exportOBJ(Node* root, const char* filename, bool exportMTL = true);
 
     /// Export a scene to XML
     virtual void exportXML(Node* root, const char* filename);
@@ -114,9 +114,9 @@ public:
     virtual void dumpState( Node* root, std::ofstream& out );
 
     /// Initialize gnuplot export (open files)
-    virtual void initGnuplot( GNode* root );
+    virtual void initGnuplot( Node* root );
     /// Dump the current state in gnuplot files
-    virtual void exportGnuplot( GNode* root, double time );
+    virtual void exportGnuplot( Node* root, double time );
 
     /// Number of mechanical steps within an animation step
     Data<unsigned> numMechSteps;

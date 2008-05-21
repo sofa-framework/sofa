@@ -42,7 +42,7 @@ namespace linearsolver
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::componentmodel::behavior;
-using namespace sofa::simulation::tree;
+using namespace sofa::simulation;
 
 SOFA_DECL_CLASS(LULinearSolver)
 

@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_BTDLINEARSOLVER_H
 
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
-#include <sofa/simulation/tree/MatrixLinearSolver.h>
+#include <sofa/simulation/common/MatrixLinearSolver.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <math.h>
@@ -48,7 +48,7 @@ namespace linearsolver
 /// http://www.cfd-online.com/Wiki/Tridiagonal_matrix_algorithm_-_TDMA_(Thomas_algorithm)
 /// http://www4.ncsu.edu/eos/users/w/white/www/white/ma580/chap2.5.PDF
 template<class Matrix, class Vector>
-class BTDLinearSolver : public sofa::simulation::tree::MatrixLinearSolver<Matrix,Vector>, public virtual sofa::core::objectmodel::BaseObject
+class BTDLinearSolver : public sofa::simulation::MatrixLinearSolver<Matrix,Vector>, public virtual sofa::core::objectmodel::BaseObject
 {
 public:
     Data<bool> f_verbose;

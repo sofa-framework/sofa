@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENT_ODESOLVER_CUDAMASTERCONTACTSOLVER_H
 #define SOFA_COMPONENT_ODESOLVER_CUDAMASTERCONTACTSOLVER_H
 
-#include <sofa/simulation/tree/MasterSolverImpl.h>
+#include <sofa/simulation/common/MasterSolverImpl.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
@@ -55,7 +55,7 @@ private:
 };
 
 template<class real>
-class CudaMasterContactSolver : public sofa::simulation::tree::MasterSolverImpl, public virtual sofa::core::objectmodel::BaseObject
+class CudaMasterContactSolver : public sofa::simulation::MasterSolverImpl, public virtual sofa::core::objectmodel::BaseObject
 {
 public:
     typedef real Real;

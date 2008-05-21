@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_DEFAULTPIPELINE_H
 
 #include <sofa/core/componentmodel/collision/Pipeline.h>
-#include <sofa/simulation/tree/PipelineImpl.h>
+#include <sofa/simulation/common/PipelineImpl.h>
 
 namespace sofa
 {
@@ -37,7 +37,7 @@ namespace component
 namespace collision
 {
 
-class DefaultPipeline : public sofa::simulation::tree::PipelineImpl
+class DefaultPipeline : public sofa::simulation::PipelineImpl
 {
 public:
     Data<bool> bVerbose;

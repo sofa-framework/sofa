@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_CGLINEARSOLVER_H
 
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
-#include <sofa/simulation/tree/MatrixLinearSolver.h>
+#include <sofa/simulation/common/MatrixLinearSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <math.h>
 
@@ -41,7 +41,7 @@ namespace linearsolver
 
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
-class CGLinearSolver : public sofa::simulation::tree::MatrixLinearSolver<TMatrix,TVector>, public virtual sofa::core::objectmodel::BaseObject
+class CGLinearSolver : public sofa::simulation::MatrixLinearSolver<TMatrix,TVector>, public virtual sofa::core::objectmodel::BaseObject
 {
 public:
     typedef TMatrix Matrix;
@@ -190,13 +190,13 @@ inline void CGLinearSolver<TMatrix,TVector>::cgstep_alpha(Vector& x, Vector& r, 
 }
 
 template<>
-inline void CGLinearSolver<simulation::tree::GraphScatteredMatrix,simulation::tree::GraphScatteredVector>::cgstep_beta(Vector& p, Vector& r, double beta)
+inline void CGLinearSolver<simulation::GraphScatteredMatrix,simulation::GraphScatteredVector>::cgstep_beta(Vector& p, Vector& r, double beta)
 {
     this->v_op(p,r,p,beta); // p = p*beta + r
 }
 
 template<>
-inline void CGLinearSolver<simulation::tree::GraphScatteredMatrix,simulation::tree::GraphScatteredVector>::cgstep_alpha(Vector& x, Vector& r, Vector& p, Vector& q, double alpha)
+inline void CGLinearSolver<simulation::GraphScatteredMatrix,simulation::GraphScatteredVector>::cgstep_alpha(Vector& x, Vector& r, Vector& p, Vector& q, double alpha)
 {
 #if 1 //SOFA_NO_VMULTIOP // unoptimized version
     x.peq(p,alpha);                 // x = x + alpha p
