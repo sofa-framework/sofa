@@ -277,7 +277,7 @@ protected:
 
     void initDesactivatedNode();
     //Graph Stats
-    bool graphCreateStats(Node *groot,QListViewItem *parent);
+    bool graphCreateStats(Node *groot);
     void graphAddCollisionModelsStat(sofa::helper::vector< sofa::core::CollisionModel* > &v);
     void graphSummary();
 

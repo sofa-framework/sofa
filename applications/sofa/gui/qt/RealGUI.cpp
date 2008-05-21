@@ -1234,7 +1234,7 @@ void RealGUI::step()
         viewer->getQWidget()->setUpdatesEnabled ( true );
 #endif
         viewer->getQWidget()->update();
-        if (currentTab == TabStats) graphCreateStats(viewer->getScene(),NULL);
+        if (currentTab == TabStats) graphCreateStats(viewer->getScene());
     }
 
 
@@ -1695,7 +1695,7 @@ void RealGUI::loadObject ( std::string path, double dx, double dy, double dz,  d
     }
 
     //update the stats graph
-    graphCreateStats(viewer->getScene(),NULL);
+    graphCreateStats(viewer->getScene());
     //Apply the Transformation
     transformObject ( new_node, dx, dy, dz, rx,ry,rz,scale );
 

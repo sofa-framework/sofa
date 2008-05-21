@@ -1839,11 +1839,11 @@ void  ModifyObject::createGraphMass(QTabWidget *dialogTab)
 
 void ModifyObject::updateHistory()
 {
-    if (Node *node = dynamic_cast<Node *>(node))
+    if (Node *gnode = dynamic_cast<Node *>(node))
     {
-        if ( node->mass)
+        if ( gnode->mass)
         {
-            history.push_back(node->getTime());
+            history.push_back(gnode->getTime());
             updateEnergy();
         }
     }
@@ -1852,11 +1852,11 @@ void ModifyObject::updateHistory()
 void ModifyObject::updateEnergy()
 {
 
-    Node *node = dynamic_cast<Node *>(node);
+    Node *gnode = dynamic_cast<Node *>(node);
 
     unsigned int index = energy_history[0].size();
-    energy_history[0].push_back(node->mass->getKineticEnergy());
-    energy_history[1].push_back(node->forceField[0]->getPotentialEnergy()); //The first forcefield is the one associated with the mass
+    energy_history[0].push_back(gnode->mass->getKineticEnergy());
+    energy_history[1].push_back(gnode->forceField[0]->getPotentialEnergy()); //The first forcefield is the one associated with the mass
     energy_history[2].push_back(energy_history[0][index] + energy_history[1][index]);
 
     if (dialogTab->currentPageIndex() == 2)
