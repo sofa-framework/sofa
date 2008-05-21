@@ -31,7 +31,7 @@ CudaMasterContactSolver<real>::CudaMasterContactSolver()
     ,tol_d( initData(&tol_d, 0.001, "tolerance", "tolerance"))
     ,maxIt_d(initData(&maxIt_d, 200, "maxIt", "iterations of gauss seidel"))
     ,mu_d( initData(&mu_d, 0.0, "mu", ""))
-    ,useGPU_d(initData(&useGPU_d, 6, "useGPU", "compute LCP using GPU"))
+    ,useGPU_d(initData(&useGPU_d, 9, "useGPU", "compute LCP using GPU"))
     ,_mu(0.0)
 {
 
