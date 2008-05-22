@@ -114,6 +114,13 @@ SOURCES +=  \
           componentmodel/behavior/PairInteractionConstraint.cpp \
           componentmodel/behavior/MixedInteractionConstraint.cpp 
 
+contains(DEFINES,SOFA_HAVE_SENSABLE){
+
+    HEADERS +=  objectmodel/OmniEvent.h
+
+    SOURCES +=  objectmodel/OmniEvent.cpp
+}
+
 SOFA_DIR = ../../..
 TEMPLATE = lib
 include($${SOFA_DIR}/sofa.cfg)

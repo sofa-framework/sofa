@@ -23,112 +23,47 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 //
-// C++ Interface: Controller
+// C++ Implementation: OmniEvent
 //
 // Description:
 //
 //
-// Author: Pierre-Jean Bensoussan, Digital Trainers (2008)
+// Author: Pierre-Jean Bensoussan, Digtal Trainers, (C) 2008
 //
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-
-#ifndef SOFA_COMPONENT_CONTROLLER_BASECONTROLLER_H
-#define SOFA_COMPONENT_CONTROLLER_BASECONTROLLER_H
-
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/OmniEvent.h>
 
 namespace sofa
 {
+
 namespace core
 {
+
 namespace objectmodel
 {
 
-class Event;
-class MouseEvent;
-class OmniEvent;
-class KeypressedEvent;
-class KeyreleasedEvent;
-class JoystickEvent;
+
+OmniEvent::OmniEvent(State state, double posX, double posY, double posZ)
+    : sofa::core::objectmodel::Event()
+    , m_state(state)
+    , m_posX(posX)
+    , m_posY(posY)
+    , m_posZ(posZ)
+{
 
 }
+
+
+
+OmniEvent::~OmniEvent()
+{
+
 }
-}
 
-namespace sofa
-{
+} // namespace tree
 
-namespace component
-{
-
-namespace controller
-{
-
-/**
- * @brief BaseController Class.
- * Interface of user interaction on SOFA Components.
- * Provides also an interface for BeginAnimation and EndAnimation events
- * launched at the beginning and the end of a time step.
- */
-class BaseController : public virtual core::objectmodel::BaseObject
-{
-
-public:
-    /**
-    * @brief Default constructor.
-    */
-    BaseController();
-
-    /**
-    * @brief Mouse event callback.
-    */
-    virtual void onMouseEvent(core::objectmodel::MouseEvent *) {};
-
-    /**
-    * @brief Omni event callback.
-    */
-    virtual void onOmniEvent(core::objectmodel::OmniEvent *) {};
-
-    /**
-    * @brief Key Press event callback.
-    */
-    virtual void onKeyPressedEvent(core::objectmodel::KeypressedEvent *) {};
-
-    /**
-    * @brief Key Release event callback.
-    */
-    virtual void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *) {};
-
-    /**
-    * @brief Joystick event callback.
-    */
-    virtual void onJoystickEvent(core::objectmodel::JoystickEvent *) {};
-
-    /**
-    * @brief Begin Animation event callback.
-    */
-    virtual void onBeginAnimationStep(void) {};
-
-    /**
-    * @brief End Animation event callback.
-    */
-    virtual void onEndAnimationStep(void) {};
-
-protected:
-
-    Data< bool > handleEventTriggersUpdate; ///< Event reception triggers object update ?
-
-private:
-
-    void handleEvent(core::objectmodel::Event *);
-};
-
-} // namespace controller
-
-} // namespace component
+} // namespace simulation
 
 } // namespace sofa
-
-#endif // SOFA_COMPONENT_CONTROLLER_BASECONTROLLER_H

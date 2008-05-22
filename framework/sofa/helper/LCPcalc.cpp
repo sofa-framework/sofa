@@ -1184,7 +1184,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, d
 
         if (error < tol)
         {
-            printf("Convergence after %d iteration(s): error = %f\n",it,error);
+//			printf("Convergence after %d iteration(s): error = %f\n",it,error);
             //afficheLCP(dfree,W,f,dim);
             return it;
         }
@@ -1196,7 +1196,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, d
     }
 
     printf("\n No convergence in nlcp_gaussseidel function : dim = %d, iteration = %d, error = %f\n", dim, it, error);
-    afficheLCP(dfree,W,f,dim);
+    //afficheLCP(dfree,W,f,dim);
     fflush(NULL);
     return it;
 
