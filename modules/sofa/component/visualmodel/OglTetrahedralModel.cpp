@@ -19,6 +19,8 @@ int OglTetrahedralModelClass = sofa::core::RegisterObject("Tetrahedral model for
         ;
 
 OglTetrahedralModel::OglTetrahedralModel()
+    :depthTest(initData(&depthTest, (bool) true, "depthTest", "Set Depth Test")),
+     blending(initData(&blending, (bool) true, "blending", "Set Blending"))
 {
 }
 
@@ -55,16 +57,19 @@ void OglTetrahedralModel::drawVisual()
 //		glVertex3f(2.5,-2.5,-3.0);
 //	glEnd();
 
+    if(blending.getValue())
+        glEnable(GL_BLEND);
+    if(depthTest.getValue())
+        glDepthMask(GL_FALSE);
 
-    glEnable(GL_BLEND);
-    glDepthMask(GL_FALSE);
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     helper::vector<topology::Tetrahedron> vec = topo->getTetras();
     helper::vector<topology::Tetrahedron>::iterator it;
+
+#ifdef GL_LINES_ADJACENCY_EXT
     Vec3fTypes::VecCoord& x = *nodes->getX();
     Vec3f v;
 
-#ifdef GL_LINES_ADJACENCY_EXT
     glBegin(GL_LINES_ADJACENCY_EXT);
     for(it = vec.begin() ; it != vec.end() ; it++)
     {
