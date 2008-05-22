@@ -22,17 +22,6 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-//
-// C++ Implementation: OmniEvent
-//
-// Description:
-//
-//
-// Author: Pierre-Jean Bensoussan, Digtal Trainers, (C) 2008
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #include <sofa/core/objectmodel/OmniEvent.h>
 
 namespace sofa
