@@ -150,6 +150,22 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
         contacts.push_back(contactIt->second);
         ++contactIt;
     }
+    // compute number of contacts attached to each collision model
+    std::map<core::CollisionModel*,int> nbContactsMap;
+    for (unsigned int i=0; i<contacts.size(); ++i)
+    {
+        std::pair< core::CollisionModel*, core::CollisionModel* > cms = contacts[i]->getCollisionModels();
+        nbContactsMap[cms.first]++;
+        if (cms.second != cms.first)
+            nbContactsMap[cms.second]++;
+    }
+    sofa::helper::vector<core::CollisionModel*> collisionModels;
+    simulation::tree::GNode* context = dynamic_cast<simulation::tree::GNode*>(getContext());
+    context->getTreeObjects<core::CollisionModel>(&collisionModels);
+    for (unsigned int i=0; i<collisionModels.size(); ++i)
+    {
+        collisionModels[i]->setNumberOfContacts(nbContactsMap[collisionModels[i]]);
+    }
 }
 
 void DefaultContactManager::draw()
