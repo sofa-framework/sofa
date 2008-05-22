@@ -18,6 +18,9 @@ private:
     topology::TetrahedronSetTopology<defaulttype::Vec3fTypes>* topo;
     component::MechanicalObject<defaulttype::Vec3fTypes>* nodes;
 
+    Data<bool> depthTest;
+    Data<bool> blending;
+
 public:
     OglTetrahedralModel();
     virtual ~OglTetrahedralModel();
