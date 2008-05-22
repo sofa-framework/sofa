@@ -73,6 +73,7 @@ HEADERS += \
           objectmodel/KeypressedEvent.h \
 	  objectmodel/KeyreleasedEvent.h \
 	  objectmodel/MouseEvent.h \
+	  	  objectmodel/OmniEvent.h \
           objectmodel/VDataPtr.h \
           objectmodel/XDataPtr.h \
           VisualModel.h \
@@ -102,6 +103,7 @@ SOURCES +=  \
           objectmodel/KeypressedEvent.cpp \
           objectmodel/KeyreleasedEvent.cpp \
 	  objectmodel/MouseEvent.cpp \
+	  	  objectmodel/OmniEvent.cpp \
           ObjectFactory.cpp \
           Mapping.cpp \
           componentmodel/behavior/BaseConstraint.cpp \
@@ -113,13 +115,6 @@ SOURCES +=  \
           componentmodel/behavior/MixedInteractionForceField.cpp \
           componentmodel/behavior/PairInteractionConstraint.cpp \
           componentmodel/behavior/MixedInteractionConstraint.cpp 
-
-contains(DEFINES,SOFA_HAVE_SENSABLE){
-
-    HEADERS +=  objectmodel/OmniEvent.h
-
-    SOURCES +=  objectmodel/OmniEvent.cpp
-}
 
 SOFA_DIR = ../../..
 TEMPLATE = lib
