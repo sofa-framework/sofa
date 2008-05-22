@@ -156,11 +156,11 @@ void MechanicalStateController<DataTypes>::applyController()
             //if(mState->getXfree())
             {
                 //cout << "yoyo" << endl;
-                (*mState->getXfree())[0].getCenter()[0] = omniX;
+                (*mState->getXfree())[0].getCenter()[0] = (Real)omniX;
                 //(*mState->getX())[0].getCenter()[0] = omniX;
-                (*mState->getXfree())[0].getCenter()[1] = omniY;
+                (*mState->getXfree())[0].getCenter()[1] = (Real)omniY;
                 //(*mSt ate->getX())[0].getCenter()[1] = omniY;
-                (*mState->getXfree())[0].getCenter()[2] = omniZ;
+                (*mState->getXfree())[0].getCenter()[2] = (Real)omniZ;
                 //(*mState->getX())[0].getCenter()[2] = omniZ;
 
                 (*mState->getXfree())[0].getOrientation()[0] = 0.0;
