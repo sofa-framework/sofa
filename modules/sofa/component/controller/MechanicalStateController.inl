@@ -40,6 +40,7 @@
 #include <sofa/component/controller/MechanicalStateController.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
+#include <sofa/core/objectmodel/OmniEvent.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/simulation/tree/GNode.h>
@@ -66,8 +67,6 @@ MechanicalStateController<DataTypes>::MechanicalStateController()
     mainDirection.normalize();
 }
 
-
-
 template <class DataTypes>
 void MechanicalStateController<DataTypes>::init()
 {
@@ -77,6 +76,7 @@ void MechanicalStateController<DataTypes>::init()
     mState = dynamic_cast<MechanicalState<DataTypes> *> (this->getContext()->getMechanicalState());
     if (!mState)
         std::cerr << "WARNING - MechanicalStateController has no binding MechanicalState\n";
+    omni = false;
 }
 
 
@@ -84,6 +84,7 @@ void MechanicalStateController<DataTypes>::init()
 template <class DataTypes>
 void MechanicalStateController<DataTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)
 {
+    cout << "mouse event !" << endl;
     eventX = mev->getPosX();
     eventY = mev->getPosY();
 
@@ -119,6 +120,17 @@ void MechanicalStateController<DataTypes>::onMouseEvent(core::objectmodel::Mouse
     }
 }
 
+template <class DataTypes>
+void MechanicalStateController<DataTypes>::onOmniEvent(core::objectmodel::OmniEvent *oev)
+{
+    omni = true;
+    omniX = oev->getPosX();
+    omniY = oev->getPosY();
+    omniZ = oev->getPosZ();
+    applyController();
+    omni = false;
+}
+
 
 
 template <class DataTypes>
@@ -135,6 +147,39 @@ void MechanicalStateController<DataTypes>::applyController()
     using sofa::defaulttype::Quat;
     using sofa::defaulttype::Vec;
 
+    if(omni)
+    {
+        if(mState)
+        {
+
+            //cout << "youyou " << mState << endl;
+            //if(mState->getXfree())
+            {
+                //cout << "yoyo" << endl;
+                (*mState->getXfree())[0].getCenter()[0] = omniX;
+                //(*mState->getX())[0].getCenter()[0] = omniX;
+                (*mState->getXfree())[0].getCenter()[1] = omniY;
+                //(*mSt ate->getX())[0].getCenter()[1] = omniY;
+                (*mState->getXfree())[0].getCenter()[2] = omniZ;
+                //(*mState->getX())[0].getCenter()[2] = omniZ;
+
+                (*mState->getXfree())[0].getOrientation()[0] = 0.0;
+                (*mState->getXfree())[0].getOrientation()[1] = 0.0;
+                (*mState->getXfree())[0].getOrientation()[2] = 0.0;
+                (*mState->getXfree())[0].getOrientation()[3] = 1.0;
+
+                (*mState->getX())[0].getOrientation()[0] = 0.0;
+                (*mState->getX())[0].getOrientation()[1] = 0.0;
+                (*mState->getX())[0].getOrientation()[2] = 0.0;
+                (*mState->getX())[0].getOrientation()[3] = 1.0;
+
+                sofa::simulation::tree::GNode *node = static_cast<sofa::simulation::tree::GNode*> (this->getContext());
+                sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
+                sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
+            }
+        }
+        omni = false;
+    }
     if ((mouseMode==BtLeft) || (mouseMode==BtRight))
     {
         int dx = eventX - mouseSavedPosX;

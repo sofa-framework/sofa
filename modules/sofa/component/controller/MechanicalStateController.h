@@ -93,6 +93,11 @@ public:
     void onMouseEvent(core::objectmodel::MouseEvent *mev);
 
     /**
+     * @brief Omni event callback.
+     */
+    void onOmniEvent(core::objectmodel::OmniEvent *mev);
+
+    /**
      * @brief Begin Animation event callback.
      */
     void onBeginAnimationStep();
@@ -150,9 +155,11 @@ protected:
     DataPtr< sofa::defaulttype::Vec<3,Real> > mainDirectionPtr; ///< Warning ! Only 3d Rigid DOFs can use this mainDirection.
 
     enum MouseMode {	None=0, BtLeft, BtRight, BtMiddle, Wheel }; ///< Mouse current mode.
+    bool omni;
     MouseMode mouseMode;
 
     int eventX, eventY; ///< Mouse current position in pixel
+    double omniX, omniY, omniZ;
     int mouseSavedPosX, mouseSavedPosY; ///< Last recorded mouse position
 };
 
