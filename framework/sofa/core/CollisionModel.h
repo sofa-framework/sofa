@@ -76,7 +76,7 @@ public:
         , contactResponse(initData(&contactResponse, "contactResponse", "if set, indicate to the ContactManager that this model should use the given class of contacts. Note that this is only indicative, and in particular if both collision models specify a different class it is up to the manager to choose."))
         , bFiltered(initData(&bFiltered, false, "filtered", "flag indicating if the model has to build its neighborhood to filter contacts"))
         , color(initData(&color, defaulttype::Vec4f(1,0,0,1), "color", "color used to display the collision model if requested"))
-        , size(0), previous(NULL)  , next(NULL)
+        , size(0), previous(NULL)  , next(NULL), numberOfContacts(0)
     {
     }
 
@@ -93,6 +93,18 @@ public:
     int getSize() const
     {
         return size;
+    }
+
+    /// Get the number of contacts attached to the collision model
+    int getNumberOfContacts() const
+    {
+        return numberOfContacts;
+    }
+
+    /// Set the number of contacts attached to the collision model
+    void setNumberOfContacts(int i)
+    {
+        numberOfContacts = i;
     }
 
     /// Set the number of elements.
@@ -346,6 +358,9 @@ protected:
 
     /// Pointer to the next (finer / lower / child level) CollisionModel in the hierarchy.
     CollisionModel* next;
+
+    /// number of contacts attached to the collision model
+    int numberOfContacts;
 
 };
 

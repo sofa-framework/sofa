@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_DEFAULTCONTACTMANAGER_H
 
 #include <sofa/core/componentmodel/collision/ContactManager.h>
+#include <sofa/simulation/tree/GNode.h>
 #include <vector>
 
 
