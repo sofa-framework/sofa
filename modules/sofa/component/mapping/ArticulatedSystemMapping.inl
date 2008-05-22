@@ -56,6 +56,7 @@ void ArticulatedSystemMapping<BasicMapping>::init()
 template <class BasicMapping>
 void ArticulatedSystemMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
+    std::cout<<"Apply"<<std::endl;
     // Copy the root position if a rigid root model is present
     if (rootModel)
     {
@@ -106,11 +107,13 @@ void ArticulatedSystemMapping<BasicMapping>::apply( typename Out::VecCoord& out,
             }
         }
     }
+    std::cout<<"EndApply"<<std::endl;
 }
 
 template <class BasicMapping>
 void ArticulatedSystemMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in, const typename InRoot::VecDeriv* inroot )
 {
+    std::cout<<"ApplyJ"<<std::endl;
     OutVecCoord& xto = *this->toModel->getX();
     // Copy the root position if a rigid root model is present
     if (inroot)
@@ -160,11 +163,13 @@ void ArticulatedSystemMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out
 
         }
     }
+    std::cout<<"End ApplyJ"<<std::endl;
 }
 
 template <class BasicMapping>
 void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in, typename InRoot::VecDeriv* outroot )
 {
+    std::cout<<"ApplyJT"<<std::endl;
     OutVecCoord& xto = *this->toModel->getX();
 
     OutVecDeriv fObjects6DBuf = in;
@@ -212,14 +217,22 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecDeriv& out
     {
         (*outroot)[outroot->size()-1] += fObjects6DBuf[0];
     }
+    std::cout<<"End ApplyJT"<<std::endl;
+
 }
 
 template <class BasicMapping>
-void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in, typename InRoot::VecConst* inRoot )
+void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in, typename InRoot::VecConst* outRoot )
 {
+    std::cout<<" ApplyJT const"<<std::endl;
+
     OutVecCoord& xto = *this->toModel->getX();
 
     out.resize(in.size());
+
+    if (rootModel!=NULL)
+        outRoot->resize(in.size()); // the constraints are all transmitted to the root
+
 
     for(unsigned int i=0; i<in.size(); i++)
     {
@@ -266,16 +279,28 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out
                     out[i].push_back(constArt);
                 }
             }
+
+            if (rootModel!=NULL)
+            {
+                Vec<3,OutReal> posRoot = xto[0].getCenter();
+                OutDeriv T;
+                T.getVCenter() = valueConst.getVCenter();
+                T.getVOrientation() = valueConst.getVOrientation() + cross(posConst - posRoot, valueConst.getVCenter());
+                unsigned int indexT = 7; //ALLER CHERCHER CETTE INFO!!
+                OutSparseDeriv constraintT(indexT, T);
+
+                (*outRoot)[i].push_back(constraintT);
+                std::cout<< "constraintT = data : "<< T << "index : "<< indexT<<std::endl;
+            }
+
+
+
         }
     }
 
-    if (inRoot)
-    {
-        for (unsigned int j=0; j<in[0].size(); j++)
-        {
-            (*inRoot)[inRoot->size() - 1].push_back(in[0][j]);
-        }
-    }
+
+    std::cout<<"End ApplyJT const"<<std::endl;
+
 }
 
 
@@ -330,6 +355,10 @@ void ArticulatedSystemMapping<BasicMapping>::accumulateConstraint()
         while (it != itEnd)
         {
             this->fromModel->setConstraintId(*it);
+            // in case of a "multi-mapping" (the articulation system is placede on a  simulated object)
+            // the constraints are transmitted to the rootModle (the <rigidtype> object which is the root of the articulated system)
+            if (rootModel!=NULL)
+                rootModel->setConstraintId(*it);
             it++;
         }
     }
