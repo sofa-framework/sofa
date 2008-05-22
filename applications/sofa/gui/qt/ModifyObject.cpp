@@ -67,6 +67,7 @@
 
 
 #define WIDGET_BY_TAB 10
+#define SIZE_TEXT     75
 
 namespace sofa
 {
@@ -231,18 +232,37 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
 
                 std::string label_text=(*it).second->help;
-                if (label_text.size() > 70)
+
+                std::string final_text;
+                unsigned int number_line=0;
+                while (!label_text.empty())
                 {
-                    unsigned int cut = label_text.size()/70;
-                    unsigned int index_cut;
-                    for (index_cut=1; index_cut<=cut; index_cut++)
+                    std::string::size_type pos = label_text.find('\n');
+                    std::string current_sentence;
+                    if (pos != std::string::npos)
+                        current_sentence  = label_text.substr(0,pos+1);
+                    else
+                        current_sentence = label_text;
+
+
+                    if (current_sentence.size() > SIZE_TEXT)
                     {
-                        std::string::size_type numero_char=label_text.rfind(' ',70*index_cut);
-                        label_text = label_text.insert(numero_char+1,1,'\n');
+                        unsigned int index_cut;
+                        unsigned int cut = current_sentence.size()/SIZE_TEXT;
+                        for (index_cut=1; index_cut<=cut; index_cut++)
+                        {
+                            std::string::size_type numero_char=current_sentence.rfind(' ',SIZE_TEXT*index_cut);
+                            current_sentence = current_sentence.insert(numero_char+1,1,'\n');
+                            number_line++;
+                        }
                     }
-                    counterWidget += index_cut/3; //each 3lines, a new widget is counted
+                    if (pos != std::string::npos) label_text = label_text.substr(pos+1);
+                    else label_text = "";
+                    final_text += current_sentence;
+                    number_line++;
                 }
-                if (label_text != "TODO") new QLabel(label_text.c_str(), box);
+                counterWidget += number_line/3; //each 3lines, a new widget is counted
+                if (label_text != "TODO") new QLabel(final_text.c_str(), box);
 
                 //********************************************************************************************************//
                 //int
@@ -1775,9 +1795,14 @@ void ModifyObject::updateValues()
             }
             else
             {
-                Q3TextEdit* textEdit = dynamic_cast< Q3TextEdit *> ( (*list_it) ); list_it++;
-                std::string value = textEdit->text().ascii();
-                (*it).second->read(value);
+
+                Q3TextEdit* textEdit = dynamic_cast< Q3TextEdit *> ( (*list_it) );
+                if (textEdit)
+                {
+                    list_it++;
+                    std::string value = textEdit->text().ascii();
+                    (*it).second->read(value);
+                }
             }
             ++i;
         }
