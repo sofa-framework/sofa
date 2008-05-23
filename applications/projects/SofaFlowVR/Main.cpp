@@ -8,7 +8,6 @@
 
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/simulation/common/ParallelVisitorScheduler.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/Mat.h>
@@ -21,7 +20,7 @@
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/component/topology/MeshTopology.h>
 
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/tree/DeleteVisitor.h>
 #include <sofa/component/MechanicalObject.h>
@@ -84,6 +83,7 @@ namespace SofaFlowVR
 //using namespace Sofa::Abstract;
 //using namespace Sofa::Components;
 using namespace sofa::defaulttype;
+using namespace sofa::simulation;
 
 class FlowVRModule;
 
@@ -423,7 +423,7 @@ public:
             newPointsNode->addObject ( detection = new sofa::component::collision::BruteForceDetection );
             detection->setIntersectionMethod(intersection);
 
-            newPointsNode->execute<sofa::simulation::tree::InitVisitor>();
+            newPointsNode->execute<sofa::simulation::InitVisitor>();
         }
     }
 
@@ -1837,7 +1837,7 @@ int main(int argc, char** argv)
     {
         if (int err=sofa::gui::SofaGUI::MainLoop(groot,fileName.c_str()))
             return err;
-        groot = sofa::gui::SofaGUI::CurrentSimulation();
+        groot = (GNode *)sofa::gui::SofaGUI::CurrentSimulation();
     }
 
     if (groot!=NULL)
