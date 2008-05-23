@@ -24,7 +24,7 @@ int GraspingManagerClass = core::RegisterObject("Manager handling Grasping opera
 
 
 GraspingManager::GraspingManager()
-    : active( initData(&active, false, "active", "Activate this object. Note that this can be dynamically controlled by using a key") )
+    : active( initData(&active, false, "active", "Activate this object.\nNote that this can be dynamically controlled by using a key") )
     , keyEvent( initData(&keyEvent, '1', "key", "key to press to activate this object until the key is released") )
     , keySwitchEvent( initData(&keySwitchEvent, '4', "keySwitch", "key to activate this object until the key is pressed again") )
     , openAngle( initData(&openAngle, 1.0, "openAngle", "angle values to set when tool is opened"))
