@@ -81,23 +81,45 @@ public:
     /// @TODO Why is this necessary in the OdeSolver API ? (Jeremie A. 03/02/2008)
     virtual void propagatePositionAndVelocity(double t, BaseMechanicalState::VecId x, BaseMechanicalState::VecId v) = 0;
 
-    /// Given a displacement as computed by the linear system inversion, how much will it affect the velocity
+    /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
+    /// how much will it affect the output derivative of the given order.
+    ///
+    /// This method is used to compute the compliance for contact corrections.
+    /// For example, a backward-Euler dynamic implicit integrator would use:
+    /// Input:      x_t  v_t  a_{t+dt}
+    /// x_{t+dt}     1    dt  dt^2
+    /// v_{t+dt}     0    1   dt
+    ///
+    /// If the linear system is expressed on s = a_{t+dt} dt, then the final factors are:
+    /// Input:      x_t   v_t    a_t  s
+    /// x_{t+dt}     1    dt     0    dt
+    /// v_{t+dt}     0    1      0    1
+    /// a_{t+dt}     0    0      0    1/dt
+    /// The last column is returned by the getSolutionIntegrationFactor method.
+    virtual double getIntegrationFactor(int inputDerivative, int outputDerivative) const = 0;
+
+    /// Given a solution of the linear system,
+    /// how much will it affect the output derivative of the given order.
+    ///
+    virtual double getSolutionIntegrationFactor(int outputDerivative) const = 0;
+
+
+    /// Given the solution dx of the linear system inversion, how much will it affect the velocity
     ///
     /// This method is used to compute the compliance for contact corrections
-    /// For Euler methods, it is typically 1/dt.
     virtual double getVelocityIntegrationFactor() const
     {
-        return 1.0/getContext()->getDt();
+        return getSolutionIntegrationFactor(1);
     }
 
-    /// Given a displacement as computed by the linear system inversion, how much will it affect the position
+    /// Given the solution dx of the linear system inversion, how much will it affect the position
     ///
     /// This method is used to compute the compliance for contact corrections
-    /// For Euler methods, it is typically 1/dt².
     virtual double getPositionIntegrationFactor() const
     {
-        return 1.0/(getContext()->getDt()*getContext()->getDt());
+        return getSolutionIntegrationFactor(0);
     }
+
 };
 
 } // namespace behavior
