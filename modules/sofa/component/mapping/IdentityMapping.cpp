@@ -55,19 +55,12 @@ int IdentityMappingClass = core::RegisterObject("Special case of mapping where t
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec6dTypes>, MechanicalState<Vec6dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Rigid2dTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Vec2dTypes> > > >()
         .add< IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > > >()
 // .add< IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > > >()
         .add< IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > > >()
         .add< IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<Rigid3dTypes> > > >()
         .add< IdentityMapping< Mapping< State<Rigid2dTypes>, MappedModel<Rigid2dTypes> > > >()
-        .add< IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > > >()
-        .add< IdentityMapping< Mapping< State<Rigid2dTypes>, MappedModel<Vec2dTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > > >()
-        .add< IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > > >()
 #endif
-
 #ifndef SOFA_DOUBLE
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec2fTypes>, MechanicalState<Vec2fTypes> > > >()
@@ -75,17 +68,11 @@ int IdentityMappingClass = core::RegisterObject("Special case of mapping where t
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec6fTypes>, MechanicalState<Vec6fTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3fTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Rigid2fTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Vec2fTypes> > > >()
         .add< IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > > >()
         .add< IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
         .add< IdentityMapping< Mapping< State<Rigid3fTypes>, MappedModel<Rigid3fTypes> > > >()
         .add< IdentityMapping< Mapping< State<Rigid2fTypes>, MappedModel<Rigid2fTypes> > > >()
-        .add< IdentityMapping< Mapping< State<Rigid2fTypes>, MappedModel<Vec2fTypes> > > >()
-        .add< IdentityMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > > >()
-        .add< IdentityMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > > >()
 #endif
-
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > > >()
@@ -107,6 +94,23 @@ int IdentityMappingClass = core::RegisterObject("Special case of mapping where t
         .add< IdentityMapping< Mapping< State<Rigid2dTypes>, MappedModel<Rigid2fTypes> > > >()
         .add< IdentityMapping< Mapping< State<Rigid2fTypes>, MappedModel<Rigid2dTypes> > > >()
 #endif
+#endif
+
+// Rigid -> Vec
+#ifndef SOFA_FLOAT
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Vec2dTypes> > > >()
+        .add< IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > > >()
+        .add< IdentityMapping< Mapping< State<Rigid2dTypes>, MappedModel<Vec2dTypes> > > >()
+// .add< IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > > >()
+        .add< IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > > >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Vec2fTypes> > > >()
+        .add< IdentityMapping< Mapping< State<Rigid2fTypes>, MappedModel<Vec2fTypes> > > >()
+        .add< IdentityMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > > >()
+        .add< IdentityMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > > >()
 #endif
         ;
 
