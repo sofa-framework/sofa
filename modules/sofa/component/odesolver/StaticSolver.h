@@ -50,22 +50,31 @@ public:
 
     void solve (double dt);
 
-    /// Given a displacement as computed by the linear system inversion, how much will it affect the velocity
-    ///
-    /// This method is used to compute the compliance for contact corrections
-    /// For Euler methods, it is typically 1/dt.
-    virtual double getVelocityIntegrationFactor() const
+    /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
+    /// how much will it affect the output derivative of the given order.
+    double getIntegrationFactor(int inputDerivative, int outputDerivative) const
     {
-        return 0.0;
+        double matrix[3][3] =
+        {
+            { 1, 0, 0},
+            { 0, 1, 0},
+            { 0, 0, 0}
+        };
+        if (inputDerivative >= 3 || outputDerivative >= 3)
+            return 0;
+        else
+            return matrix[outputDerivative][inputDerivative];
     }
 
-    /// Given a displacement as computed by the linear system inversion, how much will it affect the position
-    ///
-    /// This method is used to compute the compliance for contact corrections
-    /// For Euler methods, it is typically 1/dt².
-    virtual double getPositionIntegrationFactor() const
+    /// Given a solution of the linear system,
+    /// how much will it affect the output derivative of the given order.
+    double getSolutionIntegrationFactor(int outputDerivative) const
     {
-        return 1.0;
+        double vect[3] = { 1, 0, 0};
+        if (outputDerivative >= 3)
+            return 0;
+        else
+            return vect[outputDerivative];
     }
 
     Data<double> massCoef;
