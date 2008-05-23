@@ -183,10 +183,6 @@ sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Rigid2f
 
 typedef sofa::component::mapping::RigidMapping< sofa::core::Mapping<
 sofa::core::componentmodel::behavior::State<sofa::defaulttype::Rigid3fTypes>,
-     sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Vec3fTypes> > > RigidMappingRigid3f_to_Mechanical3f;
-
-typedef sofa::component::mapping::RigidMapping< sofa::core::Mapping<
-sofa::core::componentmodel::behavior::State<sofa::defaulttype::Rigid3fTypes>,
      sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::Vec3fTypes> > > RigidMappingRigid3f_to_3f;
 
 typedef sofa::component::mapping::RigidMapping< sofa::core::Mapping<
@@ -282,7 +278,6 @@ typedef        LineSetSkinningMappingRigid3f_to_Ext3		       LineSetSkinningMapp
 typedef        RigidMechanicalMappingRigid3f_to_3f		       RigidMechanicalMappingRigid3_to_3;
 typedef        RigidMechanicalMappingRigid2f_to_2f		       RigidMechanicalMappingRigid2_to_2;
 typedef        RigidMappingRigid3f_to_3f			       RigidMappingRigid3_to_3;
-typedef        RigidMappingRigid3f_to_Mechanical3f		       RigidMappingRigid3_to_Mechanical3;
 typedef        RigidMappingRigid3f_to_Ext3			       RigidMappingRigid3_to_Ext3;
 typedef        RigidRigidMechanicalMappingRigid3f_to_Rigid3f	       RigidRigidMechanicalMappingRigid3_to_Rigid3;
 typedef        RigidRigidMappingRigid3f_to_Rigid3f		       RigidRigidMappingRigid3_to_Rigid3;
