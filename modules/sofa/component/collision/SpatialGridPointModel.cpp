@@ -44,7 +44,7 @@ int SpatialGridPointModelClass = core::RegisterObject("Collision model which rep
         ;
 
 SpatialGridPointModel::SpatialGridPointModel()
-    : d_leafScale(initData(&d_leafScale,0,"leafScale","at which level should the first cube layer be constructed. Note that this must not be greater than GRIDDIM_LOG2"))
+    : d_leafScale(initData(&d_leafScale,0,"leafScale","at which level should the first cube layer be constructed.\nNote that this must not be greater than GRIDDIM_LOG2"))
     , grid(NULL)
 {
 }
