@@ -108,7 +108,7 @@ vec2 zcross(in vec4 u0, in vec4 u1, in vec4 u2){
 
  }
  
- // Compute the intersection point between v0va and v2v3 in the plane xy-
+ // Compute the intersection point between v0v1 and v2v3 in the plane xy-
  // i1 is the intersection on v0v1 and i2 on v2v3
  // Only the z coordinates is considered different
  // interp.x = dist(v0, i1)/dist(v0,v1) and interp.y = dist(v2,i2)/dist(v2,v3)
@@ -130,7 +130,7 @@ vec2 zcross(in vec4 u0, in vec4 u1, in vec4 u2){
 
 // Depth of the current vertex (used only for the vertex 0 of the basis graph)
 float compute_depth(in vec4 interp, in vec4 i1, in vec4 i2, in bool test3) {
-	
+	/*
 	 	float depth_i;
 	 	float depth_v1;
 	 	float depth;
@@ -142,7 +142,15 @@ float compute_depth(in vec4 interp, in vec4 i1, in vec4 i2, in bool test3) {
 	 	depth = test3 ? depth_i : depth_v1;
 	 	
  		return depth_i;
-	
+	*/
+	//float depth_i = abs(i1.z-i2.z);
+	float depth_i = abs(i1.w-i2.w);
+	if (interp.x > 1.0)
+	   return depth_i / interp.x;
+	else if (interp.x < 0.0)
+	   return depth_i / (1-interp.x);
+	else
+           return depth_i;
 }
 
 // Compute the position of the vertex 0 of the basis graph
@@ -242,10 +250,10 @@ bool notDegeneratedTriangle(in vec4 u, in vec4 v, in vec4 w)
 
 	//
  	
- 	u0 = gl_PositionIn[0];
- 	u1 = gl_PositionIn[1];
- 	u2 = gl_PositionIn[2];
- 	u3 = gl_PositionIn[3];
+ 	u0 = gl_PositionIn[0]; //u0.xyz *= 1.0/u0.w; u0.w = 1.0;
+ 	u1 = gl_PositionIn[1]; //u1.xyz *= 1.0/u1.w; u1.w = 1.0;
+ 	u2 = gl_PositionIn[2]; //u2.xyz *= 1.0/u2.w; u2.w = 1.0;
+ 	u3 = gl_PositionIn[3]; //u3.xyz *= 1.0/u3.w; u3.w = 1.0;
  	 
  	// Compute the tests 1,2 and 4 to determine the graph basis (according to Wylie et al.)
  	tests = test124(u0, u1, u2, u3);
@@ -264,10 +272,12 @@ bool notDegeneratedTriangle(in vec4 u, in vec4 v, in vec4 w)
 	depth0       = compute_depth(interp, i1, i2, tests.w);
 	scalField[0] = compute_scalarfieldZero(tests, newSField, interp);
 	position[0]  = compute_positionZero(tests.w, w0, w1, w2, w3, i1, i2);
+	position[0].w = 1.0;
 
 	for(int i=1;i<5;i++){
 		scalField[i] = compute_scalarfieldnonZero(tests, newSField, i, interp);
 		position[i]  = compute_positionnonZero(tests.w, w0, w1, w2, w3, i);
+		position[i].w = 1.0;
 	}
  
 	

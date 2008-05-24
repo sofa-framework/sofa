@@ -5,8 +5,8 @@
 
 	<Node name="Lens">
 		<Object type="MechanicalObject" template="Vec3f"/>
-<!--		<Object type="TetrahedronSetTopology" filename="Topology/eye_lens_3.msh" scale="1.0"/>-->
-			<Object type="TetrahedronSetTopology" filename="Topology/single_tetra.msh" scale="1.0"/>
+		<Object type="TetrahedronSetTopology" filename="Topology/eye_lens_3.msh" scale="1.0"/>
+		<NOObject type="TetrahedronSetTopology" filename="Topology/single_tetra.msh" scale="1.0"/>
 		<Node>
 			<Object type="OglShader" geometryVerticesOut="12" geometryInputType="10" geometryOutputType="5" vertFilename="PT.vert" geoFilename="PT.geo" fragFilename="PT.frag"/>
 			<Object type="OglFloatVector4Variable" id="MappingTable" values="
