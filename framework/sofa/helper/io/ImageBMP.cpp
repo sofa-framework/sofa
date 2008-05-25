@@ -53,8 +53,6 @@ bool ImageBMP::load(std::string filename)
     short int biPlanes;
     short int biBitCount;
     long int biSizeImage;
-    int i;
-    unsigned char temp;
     FILE *file;
     /* make sure the file is there and open it read-only (binary) */
     if ((file = fopen(filename.c_str(), "rb")) == NULL)
@@ -151,9 +149,12 @@ bool ImageBMP::load(std::string filename)
             }
         }
     }
-    if (nc == 24 || nc == 32)
+
+    if (nc == 3 || nc == 4)
     {
-        /* swap red and blue (bgr -> rgb) */
+        int i;
+        unsigned char temp;
+        // swap red and blue (bgr -> rgb)
         for (i = 0; i < width*height*nc; i += nc)
         {
             temp = data[i];
@@ -161,6 +162,7 @@ bool ImageBMP::load(std::string filename)
             data[i + 2] = temp;
         }
     }
+
     fclose(file);
     return true;
 }

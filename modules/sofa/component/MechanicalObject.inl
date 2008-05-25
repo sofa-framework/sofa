@@ -748,11 +748,19 @@ void MechanicalObject<DataTypes>::reset()
         return;
     // Back to initial state
     this->resize(reset_position->size());
-    *this->x = *reset_position;
-    *this->v = *v0;
+    //std::cout << this->getName() << ": reset X"<<std::endl;
+    //*this->x = *reset_position;
+    *this->getVecCoord(VecId::position().index) = *this->reset_position;
+    //std::cout << this->getName() << ": reset V"<<std::endl;
+    //*this->v = *v0;
+    *this->getVecDeriv(VecId::velocity().index) = *this->v0;
 
-    *this->xfree = *x;
-    *this->vfree = *v;
+    //std::cout << this->getName() << ": reset Xfree"<<std::endl;
+    //*this->xfree = *x;
+    *this->getVecCoord(VecId::freePosition().index) = *this->getVecCoord(VecId::position().index);
+    //std::cout << this->getName() << ": reset Vfree"<<std::endl;
+    //*this->vfree = *v;
+    *this->getVecDeriv(VecId::freeVelocity().index) = *this->getVecDeriv(VecId::velocity().index);
 }
 
 template <class DataTypes>
