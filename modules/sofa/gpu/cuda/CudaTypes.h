@@ -61,8 +61,14 @@ public:
 
     void operator= ( const CudaVector<T>& v )
     {
+        if (&v == this)
+        {
+            std::cerr << "ERROR: self-assignment of CudaVector< " << core::objectmodel::Base::decodeTypeName(typeid(T)) << ">"<<std::endl;
+            return;
+        }
+        size_type newSize = v.size();
         clear();
-        fastResize ( v.size() );
+        fastResize ( newSize );
         deviceIsValid = v.deviceIsValid;
         hostIsValid = v.hostIsValid;
         if ( vectorSize!=0 && deviceIsValid )

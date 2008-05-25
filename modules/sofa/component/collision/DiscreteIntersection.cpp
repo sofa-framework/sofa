@@ -986,13 +986,14 @@ int DiscreteIntersection::computeIntersection(Ray& e2, RigidDistanceGridCollisio
         Vector3 p = rayOrigin + rayDirection*l0;
         double dist = grid1->interp(p);
         double epsilon = grid1->getCellWidth().norm()*0.1f;
-        while (l0 < l1 && (dist > 0 || dist < -epsilon))
+        while (l0 < l1 && (dist > epsilon || dist < -epsilon))
         {
             l0 += dist;
             p = rayOrigin + rayDirection*l0;
             dist = grid1->interp(p);
+            //std::cout << "p="<<p<<" dist="<<dist<<" l0="<<l0<<" l1="<<l1<<" epsilon="<<epsilon<<std::endl;
         }
-        if (dist < 0)
+        if (dist < epsilon)
         {
             // intersection found
 
