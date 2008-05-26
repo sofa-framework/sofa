@@ -31,7 +31,8 @@ struct GPUTest
     const CudaVec3<float>* points;
     const float* radius;
     const float* grid;
-    matrix3<float> rotation;
+    //matrix3<float> rotation;
+    CudaVec3<float> rotation_x,rotation_y,rotation_z;
     CudaVec3<float> translation;
     float margin;
     int nbPoints;
@@ -65,7 +66,8 @@ __global__ void CudaCollisionDetection_runTests_kernel(const GPUTest* tests, int
     if (threadIdx.x < curTest.nbPoints)
     {
         p = curTest.points[threadIdx.x];
-        p = curTest.rotation * p;
+        //p = curTest.rotation * p;
+        p = CudaVec3<float>::make(dot(curTest.rotation_x, p), dot(curTest.rotation_y, p), dot(curTest.rotation_z, p));
         p += curTest.translation;
 
         CudaVec3<float> coefs = mul(p-curTest.gridp0, curTest.gridinvdp);
