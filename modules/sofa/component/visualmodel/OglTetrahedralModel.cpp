@@ -83,6 +83,7 @@ void OglTetrahedralModel::drawVisual()
     glEnd();
 #endif
     glDisable(GL_BLEND);
+    glDepthMask(GL_TRUE);
 }
 
 bool OglTetrahedralModel::addBBox(double* minBBox, double* maxBBox)
