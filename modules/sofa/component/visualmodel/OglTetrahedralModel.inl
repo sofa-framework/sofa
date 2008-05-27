@@ -31,7 +31,7 @@ void OglTetrahedralModel<DataTypes>::init()
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     topo = context->core::objectmodel::BaseContext::get<topology::TetrahedronSetTopology<DataTypes> >();
-    nodes = context->get< sofa::component::MechanicalObject<DataTypes> >();
+    context->get(nodes);
 
     if (!nodes)
     {
