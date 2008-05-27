@@ -70,7 +70,8 @@ SOURCES += mycuda.cpp \
            CudaPointModel.cpp \
            CudaPenalityContactForceField.cpp \
            CudaVisualModel.cpp \
-           CudaTestForceField.cpp
+           CudaTestForceField.cpp \
+           CudaSetTopology.cpp
 
 CUDA_SOURCES += mycuda.cu \
            CudaMechanicalObject.cu \

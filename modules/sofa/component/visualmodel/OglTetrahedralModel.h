@@ -2,8 +2,13 @@
 #define OGLTETRAHEDRALMODEL_H_
 
 #include <sofa/core/VisualModel.h>
-#include <sofa/component/topology/TetrahedronSetTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/defaulttype/Vec3Types.h>
+
+#ifdef SOFA_GPU_CUDA
+#include <sofa/gpu/cuda/CudaTypes.h>
+#endif
 
 namespace sofa
 {
@@ -18,10 +23,13 @@ class OglTetrahedralModel : public core::VisualModel
 public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
+#ifdef SOFA_GPU_CUDA
+    typedef sofa::gpu::cuda::CudaVec3fTypes CudaVec3fTypes;
+#endif
 
 private:
-    topology::TetrahedronSetTopology<DataTypes>* topo;
-    component::MechanicalObject<DataTypes>* nodes;
+    core::componentmodel::topology::BaseMeshTopology* topo;
+    core::componentmodel::behavior::MechanicalState<DataTypes>* nodes;
 
     Data<bool> depthTest;
     Data<bool> blending;

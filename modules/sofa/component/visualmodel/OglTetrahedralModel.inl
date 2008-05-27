@@ -30,8 +30,9 @@ template<class DataTypes>
 void OglTetrahedralModel<DataTypes>::init()
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
-    topo = context->core::objectmodel::BaseContext::get<topology::TetrahedronSetTopology<DataTypes> >();
+    context->get(topo);
     context->get(nodes);
+
 
     if (!nodes)
     {
@@ -63,8 +64,8 @@ void OglTetrahedralModel<DataTypes>::drawVisual()
         glDepthMask(GL_FALSE);
 
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-    helper::vector<topology::Tetrahedron> vec = topo->getTetras();
-    helper::vector<topology::Tetrahedron>::iterator it;
+    const core::componentmodel::topology::BaseMeshTopology::SeqTetras& vec = topo->getTetras();
+    core::componentmodel::topology::BaseMeshTopology::SeqTetras::const_iterator it;
 
 #ifdef GL_LINES_ADJACENCY_EXT
     VecCoord& x = *nodes->getX();
@@ -89,8 +90,8 @@ void OglTetrahedralModel<DataTypes>::drawVisual()
 template<class DataTypes>
 bool OglTetrahedralModel<DataTypes>::addBBox(double* minBBox, double* maxBBox)
 {
-    helper::vector<topology::Tetrahedron> vec = topo->getTetras();
-    helper::vector<topology::Tetrahedron>::iterator it;
+    const core::componentmodel::topology::BaseMeshTopology::SeqTetras& vec = topo->getTetras();
+    core::componentmodel::topology::BaseMeshTopology::SeqTetras::const_iterator it;
     VecCoord& x = *nodes->getX();
     Coord v;
 
