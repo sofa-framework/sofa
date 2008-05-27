@@ -853,7 +853,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 else
                 {
                     Q3TextEdit* textedit = new Q3TextEdit(box);
-                    list_Object.push_back( (QObject *) textedit);
+// 		      list_Object.push_back( (QObject *) textedit);
 
                     textedit->setText(QString((*it).second->getValueString().c_str()));
                     //if empty field, we don't display it
@@ -1793,17 +1793,6 @@ void ModifyObject::updateValues()
 
                 ff->setValue(M);
             }
-            else
-            {
-
-                Q3TextEdit* textEdit = dynamic_cast< Q3TextEdit *> ( (*list_it) );
-                if (textEdit)
-                {
-                    list_it++;
-                    std::string value = textEdit->text().ascii();
-                    (*it).second->read(value);
-                }
-            }
             ++i;
         }
         if (sofa::core::objectmodel::BaseObject *obj = dynamic_cast< sofa::core::objectmodel::BaseObject* >(node))
@@ -1811,6 +1800,7 @@ void ModifyObject::updateValues()
         else if (Node *n = dynamic_cast< Node *>(node)) n->reinit();
     }
 
+    saveTextEdit();
     saveTables();
     if (visualContentModified) updateContext(dynamic_cast< Node *>(node));
 
@@ -3082,6 +3072,20 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
 }
 
 
+
+
+//**************************************************************************************************************************************
+//save in datafield the values of the text edit
+void ModifyObject::saveTextEdit()
+{
+
+    std::list< std::pair< Q3TextEdit*, core::objectmodel::BaseData*> >::iterator it_list_TextEdit;
+    for (it_list_TextEdit = list_TextEdit.begin(); it_list_TextEdit != list_TextEdit.end(); it_list_TextEdit++)
+    {
+        std::string value = it_list_TextEdit->first->text().ascii();
+        it_list_TextEdit->second->read(value);
+    }
+}
 
 
 //**************************************************************************************************************************************

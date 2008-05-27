@@ -92,7 +92,8 @@ public slots:
     void updateValues();              //update the node with the values of the field
     void updateTextEdit();            //update the text fields due to unknown data field
     void updateTables();              //update the tables of value at each step of the simulation
-    void saveTables();                //Save in datafield the content of a
+    void saveTables();                //Save in datafield the content of a QTalbe
+    void saveTextEdit();                //Save in datafield the content of a QTextEdit
     void changeValue();               //each time a field is modified
     void changeVisualValue();               //each time a field of the Visualization tab is modified
     void changeNumberPoint();         //used to dynamically add points in an object of type pointSubset
