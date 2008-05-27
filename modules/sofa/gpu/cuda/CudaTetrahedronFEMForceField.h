@@ -182,7 +182,7 @@ public:
     int nbVertex; ///< number of vertices to process to compute all elements
     int nbElementPerVertex; ///< max number of elements connected to a vertex
     /// Index of elements attached to each points (layout per bloc of NBLOC vertices, with first element of each vertex, then second element, etc)
-    /// No that each integer is actually equat the the index of the element * 4 + the index of this vertex inside the tetrahedron.
+    /// Note that each integer is actually equat the the index of the element * 4 + the index of this vertex inside the tetrahedron.
     gpu::cuda::CudaVector<int> velems;
     TetrahedronFEMForceFieldInternalData() : nbElement(0), vertex0(0), nbVertex(0), nbElementPerVertex(0) {}
     void init(int nbe, int v0, int nbv, int nbelemperv)
