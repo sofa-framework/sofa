@@ -47,6 +47,8 @@ HEADERS += mycuda.h \
            CudaSphereModel.h \
            CudaPenalityContactForceField.h \
            CudaPenalityContactForceField.inl \
+           CudaVisualModel.h \
+           CudaVisualModel.inl \
            CudaTestForceField.h
 
 SOURCES += mycuda.cpp \
@@ -67,6 +69,7 @@ SOURCES += mycuda.cpp \
            CudaCollisionDetection.cpp \
            CudaPointModel.cpp \
            CudaPenalityContactForceField.cpp \
+           CudaVisualModel.cpp \
            CudaTestForceField.cpp
 
 CUDA_SOURCES += mycuda.cu \
@@ -84,6 +87,7 @@ CUDA_SOURCES += mycuda.cu \
            CudaCollisionDetection.cu \
            CudaContactMapper.cu \
            CudaPenalityContactForceField.cu \
+           CudaVisualModel.cu \
            CudaTestForceField.cu
 
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV

@@ -4,6 +4,7 @@
 //#include "host_runtime.h" // CUDA
 #include "CudaCommon.h"
 #include "mycuda.h"
+#include <sofa/helper/system/gl.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
 //#include <sofa/helper/BackTrace.h>
@@ -30,25 +31,27 @@ public:
     typedef size_t size_type;
 
 protected:
-    size_type    vectorSize;     ///< Current size of the vector
-    size_type    allocSize;      ///< Allocated size
-    void*        devicePointer;  ///< Pointer to the data on the GPU side
-    T*           hostPointer;    ///< Pointer to the data on the CPU side
-    mutable bool deviceIsValid;  ///< True if the data on the GPU is currently valid
-    mutable bool hostIsValid;    ///< True if the data on the CPU is currently valid
+    size_type     vectorSize;     ///< Current size of the vector
+    size_type     allocSize;      ///< Allocated size
+    mutable void* devicePointer;  ///< Pointer to the data on the GPU side
+    T*            hostPointer;    ///< Pointer to the data on the CPU side
+    GLuint        bufferObject;   ///< Optionnal associated OpenGL buffer ID
+    mutable bool  deviceIsValid;  ///< True if the data on the GPU is currently valid
+    mutable bool  hostIsValid;    ///< True if the data on the CPU is currently valid
+    mutable bool  bufferIsRegistered;  ///< True if the OpenGL buffer is registered with CUDA
 
 public:
 
     CudaVector()
-        : vectorSize ( 0 ), allocSize ( 0 ), devicePointer ( NULL ), hostPointer ( NULL ), deviceIsValid ( true ), hostIsValid ( true )
+        : vectorSize ( 0 ), allocSize ( 0 ), devicePointer ( NULL ), hostPointer ( NULL ), bufferObject ( 0 ), deviceIsValid ( true ), hostIsValid ( true ), bufferIsRegistered( false )
     {}
     CudaVector ( size_type n )
-        : vectorSize ( 0 ), allocSize ( 0 ), devicePointer ( NULL ), hostPointer ( NULL ), deviceIsValid ( true ), hostIsValid ( true )
+        : vectorSize ( 0 ), allocSize ( 0 ), devicePointer ( NULL ), hostPointer ( NULL ), bufferObject ( 0 ), deviceIsValid ( true ), hostIsValid ( true ), bufferIsRegistered( false )
     {
         resize ( n );
     }
     CudaVector ( const CudaVector<T>& v )
-        : vectorSize ( 0 ), allocSize ( 0 ), devicePointer ( NULL ), hostPointer ( NULL ), deviceIsValid ( true ), hostIsValid ( true )
+        : vectorSize ( 0 ), allocSize ( 0 ), devicePointer ( NULL ), hostPointer ( NULL ), bufferObject ( 0 ), deviceIsValid ( true ), hostIsValid ( true ), bufferIsRegistered( false )
     {
         *this = v;
     }
@@ -71,8 +74,14 @@ public:
         fastResize ( newSize );
         deviceIsValid = v.deviceIsValid;
         hostIsValid = v.hostIsValid;
-        if ( vectorSize!=0 && deviceIsValid )
+        if ( vectorSize > 0 && deviceIsValid )
+        {
+            if (bufferObject)
+                mapBuffer();
+            if (v.bufferObject)
+                v.mapBuffer();
             mycudaMemcpyDeviceToDevice ( devicePointer, v.devicePointer, vectorSize*sizeof ( T ) );
+        }
         if ( vectorSize!=0 && hostIsValid )
             std::copy ( v.hostPointer, v.hostPointer+vectorSize, hostPointer );
     }
@@ -80,8 +89,16 @@ public:
     {
         if ( hostPointer!=NULL )
             mycudaFreeHost ( hostPointer );
-        if ( devicePointer!=NULL )
-            mycudaFree ( devicePointer );
+        if ( bufferObject )
+        {
+            unregisterBuffer();
+            glDeleteBuffers( 1, &bufferObject);
+        }
+        else
+        {
+            if ( devicePointer!=NULL )
+                mycudaFree ( devicePointer );
+        }
     }
     size_type size() const
     {
@@ -98,13 +115,26 @@ public:
         // always allocate multiples of BSIZE values
         allocSize = ( allocSize+BSIZE-1 ) &-BSIZE;
 
-        void* prevDevicePointer = devicePointer;
-        if (mycudaVerboseLevel>=LOG_INFO) std::cout << "CudaVector<"<<sofa::core::objectmodel::Base::className((T*)NULL)<<"> : reserve("<<s<<")"<<std::endl;
-        mycudaMalloc ( &devicePointer, allocSize*sizeof ( T ) );
-        if ( vectorSize > 0 && deviceIsValid )
-            mycudaMemcpyDeviceToDevice ( devicePointer, prevDevicePointer, vectorSize*sizeof ( T ) );
-        if ( prevDevicePointer != NULL )
-            mycudaFree ( prevDevicePointer );
+        if (bufferObject)
+        {
+            if (mycudaVerboseLevel>=LOG_INFO) std::cout << "CudaVector<"<<sofa::core::objectmodel::Base::className((T*)NULL)<<"> : GL reserve("<<s<<")"<<std::endl;
+            hostRead(); // make sure the host copy is valid
+            unregisterBuffer();
+            glBindBuffer( GL_ARRAY_BUFFER, bufferObject);
+            glBufferData( GL_ARRAY_BUFFER, allocSize*sizeof ( T ), 0, GL_DYNAMIC_DRAW);
+            glBindBuffer( GL_ARRAY_BUFFER, 0);
+            deviceIsValid = false;
+        }
+        else
+        {
+            void* prevDevicePointer = devicePointer;
+            if (mycudaVerboseLevel>=LOG_INFO) std::cout << "CudaVector<"<<sofa::core::objectmodel::Base::className((T*)NULL)<<"> : reserve("<<s<<")"<<std::endl;
+            mycudaMalloc ( &devicePointer, allocSize*sizeof ( T ) );
+            if ( vectorSize > 0 && deviceIsValid )
+                mycudaMemcpyDeviceToDevice ( devicePointer, prevDevicePointer, vectorSize*sizeof ( T ) );
+            if ( prevDevicePointer != NULL )
+                mycudaFree ( prevDevicePointer );
+        }
 
         T* prevHostPointer = hostPointer;
         void* newHostPointer = NULL;
@@ -148,6 +178,8 @@ public:
                 }
                 else
                 {
+                    if (bufferObject)
+                        mapBuffer();
                     mycudaMemcpyHostToDevice ( ( ( T* ) devicePointer ) +vectorSize, hostPointer+vectorSize, ( s-vectorSize ) *sizeof ( T ) );
                 }
             }
@@ -175,8 +207,10 @@ public:
         VSWAP ( size_type, allocSize );
         VSWAP ( void*    , devicePointer );
         VSWAP ( T*       , hostPointer );
+        VSWAP ( GLuint   , bufferObject );
         VSWAP ( bool     , deviceIsValid );
         VSWAP ( bool     , hostIsValid );
+        VSWAP ( bool     , bufferIsRegistered );
 #undef VSWAP
     }
     const void* deviceRead ( int i=0 ) const
@@ -209,6 +243,33 @@ public:
     {
         return deviceIsValid;
     }
+
+    /// Get the OpenGL Buffer Object ID for reading
+    GLuint bufferRead(bool create = false)
+    {
+        if (!bufferObject)
+            if (create)
+                createBuffer();
+            else
+                return 0;
+        copyToDevice();
+        return bufferObject;
+    }
+
+    /// Get the OpenGL Buffer Object ID for writing
+    GLuint bufferWrite(bool create = false)
+    {
+        if (!bufferObject)
+            if (create)
+                createBuffer();
+            else
+                return 0;
+        copyToDevice();
+        unmapBuffer();
+        hostIsValid = false;
+        return bufferObject;
+    }
+
     void push_back ( const T& t )
     {
         size_type i = size();
@@ -262,6 +323,7 @@ public:
         if ( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
         return in;
     }
+
 protected:
     void copyToHost() const
     {
@@ -273,11 +335,15 @@ protected:
             //sofa::helper::BackTrace::dump();
         }
 //#endif
+        if (bufferObject)
+            mapBuffer();
         mycudaMemcpyDeviceToHost ( hostPointer, devicePointer, vectorSize*sizeof ( T ) );
         hostIsValid = true;
     }
     void copyToDevice() const
     {
+        if (bufferObject)
+            mapBuffer();
         if ( deviceIsValid ) return;
 //#ifndef NDEBUG
         if (mycudaVerboseLevel>=LOG_TRACE) std::cout << "CUDA: CPU->GPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<vectorSize*sizeof ( T ) <<" B"<<std::endl;
@@ -295,7 +361,59 @@ protected:
         assert ( i<this->size() );
     }
 #endif
-
+    void registerBuffer() const
+    {
+        if (allocSize > 0 && !bufferIsRegistered)
+        {
+            mycudaGLRegisterBufferObject(bufferObject);
+            bufferIsRegistered = true;
+        }
+    }
+    void mapBuffer() const
+    {
+        registerBuffer();
+        if (allocSize > 0 && devicePointer==NULL)
+        {
+            mycudaGLMapBufferObject(&devicePointer, bufferObject);
+        }
+    }
+    void unmapBuffer() const
+    {
+        if (allocSize > 0 && devicePointer != NULL)
+        {
+            mycudaGLUnmapBufferObject(bufferObject);
+            devicePointer = NULL;
+        }
+    }
+    void unregisterBuffer() const
+    {
+        unmapBuffer();
+        if (allocSize > 0 && bufferIsRegistered)
+        {
+            mycudaGLUnregisterBufferObject(bufferObject);
+            bufferIsRegistered = false;
+        }
+    }
+    void createBuffer()
+    {
+        if (bufferObject) return;
+        glGenBuffers(1, &bufferObject);
+        if (allocSize > 0)
+        {
+            glBindBuffer( GL_ARRAY_BUFFER, bufferObject);
+            glBufferData( GL_ARRAY_BUFFER, allocSize*sizeof ( T ), 0, GL_DYNAMIC_DRAW);
+            glBindBuffer( GL_ARRAY_BUFFER, 0);
+            void* prevDevicePointer = devicePointer;
+            devicePointer = NULL;
+            if ( vectorSize > 0 && deviceIsValid )
+            {
+                mapBuffer();
+                mycudaMemcpyDeviceToDevice ( devicePointer, prevDevicePointer, vectorSize*sizeof ( T ) );
+            }
+            if ( prevDevicePointer != NULL )
+                mycudaFree ( prevDevicePointer );
+        }
+    }
 };
 
 template<class T>

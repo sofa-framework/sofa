@@ -44,7 +44,7 @@ public:
     /// Given a solution of the linear system,
     /// how much will it affect the output derivative of the given order.
     ///
-    virtual double getSolutionIntegrationFactor(int outputDerivative) const
+    virtual double getSolutionIntegrationFactor(int /*outputDerivative*/) const
     {
         return 0;
     }
