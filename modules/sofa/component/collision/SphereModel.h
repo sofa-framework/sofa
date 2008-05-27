@@ -81,10 +81,9 @@ public:
     friend class TSphere<DataTypes>;
 
 protected:
-    VecReal radius;
+    Data< VecReal > radius;
 
-    Data<SReal> defaultRadius;
-
+    SReal defaultRadius;
     class Loader;
 public:
 
@@ -100,10 +99,10 @@ public:
 
     sofa::core::componentmodel::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return this; }
 
-    Real getRadius(int i) const { return this->radius[i]; }
-    void setRadius(int i, Real r) { this->radius[i] = r; }
+    Real getRadius(int i) const { return this->radius.getValue()[i]; }
+    void setRadius(int i, Real r) { (*this->radius.beginEdit())[i] = r; }
 
-    const VecReal& getR() const { return this->radius; }
+    const VecReal& getR() const { return this->radius.getValue(); }
 
     virtual void init();
 

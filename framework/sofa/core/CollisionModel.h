@@ -80,6 +80,10 @@ public:
     {
     }
 
+    virtual void bwdInit()
+    {
+        getColor4f(); //init the color to default value
+    }
 
     virtual ~CollisionModel() { }
 
