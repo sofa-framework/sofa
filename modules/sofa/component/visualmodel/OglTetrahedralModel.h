@@ -12,11 +12,16 @@ namespace component
 namespace visualmodel
 {
 
+template<class DataTypes>
 class OglTetrahedralModel : public core::VisualModel
 {
+public:
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::VecCoord VecCoord;
+
 private:
-    topology::TetrahedronSetTopology<defaulttype::Vec3fTypes>* topo;
-    component::MechanicalObject<defaulttype::Vec3fTypes>* nodes;
+    topology::TetrahedronSetTopology<DataTypes>* topo;
+    component::MechanicalObject<DataTypes>* nodes;
 
     Data<bool> depthTest;
     Data<bool> blending;
