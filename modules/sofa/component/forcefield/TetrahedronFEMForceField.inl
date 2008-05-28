@@ -27,7 +27,6 @@
 
 #include <sofa/core/componentmodel/behavior/ForceField.inl>
 #include <sofa/component/forcefield/TetrahedronFEMForceField.h>
-#include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/topology/GridTopology.h>
 #include <sofa/helper/PolarDecompose.h>
 #include <sofa/helper/gl/template.h>
@@ -990,14 +989,14 @@ void TetrahedronFEMForceField<DataTypes>::init()
 {
 
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
-    _mesh = dynamic_cast<sofa::component::topology::MeshTopology*>(this->getContext()->getTopology());
+    _mesh = dynamic_cast<core::componentmodel::topology::BaseMeshTopology*>(this->getContext()->getTopology());
 #ifdef SOFA_NEW_HEXA
     if (_mesh==NULL || (_mesh->getTetras().empty() && _mesh->getNbHexas()<=0))
 #else
     if (_mesh==NULL || (_mesh->getTetras().empty() && _mesh->getNbCubes()<=0))
 #endif
     {
-        std::cerr << "ERROR(TetrahedronFEMForceField): object must have a tetrahedric MeshTopology.\n";
+        std::cerr << "ERROR(TetrahedronFEMForceField): object must have a tetrahedric BaseMeshTopology.\n";
         return;
     }
     if (!_mesh->getTetras().empty())
@@ -1007,7 +1006,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
     else
     {
         _trimgrid = dynamic_cast<topology::FittedRegularGridTopology*>(_mesh);
-        topology::MeshTopology::SeqTetras* tetras = new topology::MeshTopology::SeqTetras;
+        core::componentmodel::topology::BaseMeshTopology::SeqTetras* tetras = new core::componentmodel::topology::BaseMeshTopology::SeqTetras;
 #ifdef SOFA_NEW_HEXA
         int nbcubes = _mesh->getNbHexas();
 #else
@@ -1033,15 +1032,15 @@ void TetrahedronFEMForceField<DataTypes>::init()
         {
             // if (flags && !flags->isCubeActive(i)) continue;
 #ifdef SOFA_NEW_HEXA
-            topology::MeshTopology::Hexa c = _mesh->getHexa(i);
+            core::componentmodel::topology::BaseMeshTopology::Hexa c = _mesh->getHexa(i);
 #else
-            topology::MeshTopology::Cube c = _mesh->getCube(i);
+            core::componentmodel::topology::BaseMeshTopology::Cube c = _mesh->getCube(i);
 #endif
             int sym = 0;
             if (!((i%nx)&1)) sym+=1;
             if (((i/nx)%ny)&1) sym+=2;
             if ((i/(nx*ny))&1) sym+=4;
-            typedef topology::MeshTopology::Tetra Tetra;
+            typedef core::componentmodel::topology::BaseMeshTopology::Tetra Tetra;
             tetras->push_back(Tetra(c[0^sym],c[5^sym],c[1^sym],c[7^sym]));
             tetras->push_back(Tetra(c[0^sym],c[1^sym],c[2^sym],c[7^sym]));
             tetras->push_back(Tetra(c[1^sym],c[2^sym],c[7^sym],c[3^sym]));
@@ -1069,24 +1068,23 @@ void TetrahedronFEMForceField<DataTypes>::init()
         */
         _indexedElements = tetras;
     }
-    if (_mesh->hasPos())
-    {
-        // use positions from topology
-        VecCoord& p = *f_initialPoints.beginEdit();
+    /*if (_mesh->hasPos())
+    { // use positions from topology
+    VecCoord& p = *f_initialPoints.beginEdit();
         p.resize(_mesh->getNbPoints());
-        for (unsigned int i=0; i<p.size(); i++)
+        for (unsigned int i=0;i<p.size();i++)
         {
             p[i] = Coord((Real)_mesh->getPX(i),(Real)_mesh->getPY(i),(Real)_mesh->getPZ(i));
         }
     }
     else
     {
-        if (f_initialPoints.getValue().size() == 0)
-        {
-            VecCoord& p = *this->mstate->getX();
-            (*f_initialPoints.beginEdit()) = p;
+    if (f_initialPoints.getValue().size() == 0)
+    {
+          VecCoord& p = *this->mstate->getX0();
+          (*f_initialPoints.beginEdit()) = p;
         }
-    }
+    }*/
 
     reinit(); // compute per-element stiffness matrices and other precomputed values
 
@@ -1098,6 +1096,8 @@ template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::reinit()
 {
     setMethod(f_method.getValue() );
+    VecCoord& p = *this->mstate->getX0();
+    (*f_initialPoints.beginEdit()) = p;
     _strainDisplacements.resize( _indexedElements->size() );
     _materialsStiffnesses.resize(_indexedElements->size() );
     if(_assembling)
@@ -1167,6 +1167,12 @@ template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& p, const VecDeriv& /*v*/)
 {
     f.resize(p.size());
+
+    if (needUpdateTopology)
+    {
+        reinit();
+        needUpdateTopology = false;
+    }
 
     unsigned int i;
     typename VecElement::const_iterator it;
