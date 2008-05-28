@@ -66,15 +66,16 @@ void SphereForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, con
 }
 
 template<class DataTypes>
-void SphereForceField<DataTypes>::addDForce(VecDeriv& df1, const VecDeriv& dx1)
+void SphereForceField<DataTypes>::addDForce(VecDeriv& df1, const VecDeriv& dx1, double kFactor, double /*bFactor*/)
 {
     df1.resize(dx1.size());
+    const Real fact = (Real)(-this->stiffness.getValue()*kFactor);
     for (unsigned int i=0; i<this->contacts.getValue().size(); i++)
     {
         const Contact& c = (this->contacts.getValue())[i];
         assert((unsigned)c.index<dx1.size());
         Deriv du = dx1[c.index];
-        Deriv dforce; dforce = -this->stiffness.getValue()*(c.normal * ((du*c.normal)*c.fact) + du * (1 - c.fact));
+        Deriv dforce; dforce = fact*(c.normal * ((du*c.normal)*c.fact) + du * (1 - c.fact));
         df1[c.index] += dforce;
     }
 }

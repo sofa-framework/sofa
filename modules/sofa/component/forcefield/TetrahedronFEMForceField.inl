@@ -319,6 +319,114 @@ inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, 
 #endif
 }
 
+template<class DataTypes>
+inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J, double fact )
+{
+
+    // Unit of K = unit of youngModulus / unit of volume = Pa / m^3 = kg m^-4 s^-2
+    // Unit of J = m^2
+    // Unit of JKJt =  kg s^-2
+    // Unit of displacement = m
+    // Unit of force = kg m s^-2
+
+#if 0
+    F = J*(K*(J.multTranspose(Depl)));
+    F *= fact;
+#else
+    /* We have these zeros
+                                  K[0][3]   K[0][4]   K[0][5]
+                                  K[1][3]   K[1][4]   K[1][5]
+                                  K[2][3]   K[2][4]   K[2][5]
+    K[3][0]   K[3][1]   K[3][2]             K[3][4]   K[3][5]
+    K[4][0]   K[4][1]   K[4][2]   K[4][3]             K[4][5]
+    K[5][0]   K[5][1]   K[5][2]   K[5][3]   K[5][4]
+
+
+              J[0][1]   J[0][2]             J[0][4]
+    J[1][0]             J[1][2]                       J[1][5]
+    J[2][0]   J[2][1]             J[2][3]
+              J[3][1]   J[3][2]             J[3][4]
+    J[4][0]             J[4][2]                       J[4][5]
+    J[5][0]   J[5][1]             J[5][3]
+              J[6][1]   J[6][2]             J[6][4]
+    J[7][0]             J[7][2]                       J[7][5]
+    J[8][0]   J[8][1]             J[8][3]
+              J[9][1]   J[9][2]             J[9][4]
+    J[10][0]            J[10][2]                      J[10][5]
+    J[11][0]  J[11][1]            J[11][3]
+    */
+
+    VecNoInit<6,Real> JtD;
+    JtD[0] =   J[ 0][0]*Depl[ 0]+/*J[ 1][0]*Depl[ 1]+  J[ 2][0]*Depl[ 2]+*/
+            J[ 3][0]*Depl[ 3]+/*J[ 4][0]*Depl[ 4]+  J[ 5][0]*Depl[ 5]+*/
+            J[ 6][0]*Depl[ 6]+/*J[ 7][0]*Depl[ 7]+  J[ 8][0]*Depl[ 8]+*/
+            J[ 9][0]*Depl[ 9] /*J[10][0]*Depl[10]+  J[11][0]*Depl[11]*/;
+    JtD[1] = /*J[ 0][1]*Depl[ 0]+*/J[ 1][1]*Depl[ 1]+/*J[ 2][1]*Depl[ 2]+*/
+            /*J[ 3][1]*Depl[ 3]+*/J[ 4][1]*Depl[ 4]+/*J[ 5][1]*Depl[ 5]+*/
+            /*J[ 6][1]*Depl[ 6]+*/J[ 7][1]*Depl[ 7]+/*J[ 8][1]*Depl[ 8]+*/
+            /*J[ 9][1]*Depl[ 9]+*/J[10][1]*Depl[10] /*J[11][1]*Depl[11]*/;
+    JtD[2] = /*J[ 0][2]*Depl[ 0]+  J[ 1][2]*Depl[ 1]+*/J[ 2][2]*Depl[ 2]+
+            /*J[ 3][2]*Depl[ 3]+  J[ 4][2]*Depl[ 4]+*/J[ 5][2]*Depl[ 5]+
+            /*J[ 6][2]*Depl[ 6]+  J[ 7][2]*Depl[ 7]+*/J[ 8][2]*Depl[ 8]+
+            /*J[ 9][2]*Depl[ 9]+  J[10][2]*Depl[10]+*/J[11][2]*Depl[11]  ;
+    JtD[3] =   J[ 0][3]*Depl[ 0]+  J[ 1][3]*Depl[ 1]+/*J[ 2][3]*Depl[ 2]+*/
+            J[ 3][3]*Depl[ 3]+  J[ 4][3]*Depl[ 4]+/*J[ 5][3]*Depl[ 5]+*/
+            J[ 6][3]*Depl[ 6]+  J[ 7][3]*Depl[ 7]+/*J[ 8][3]*Depl[ 8]+*/
+            J[ 9][3]*Depl[ 9]+  J[10][3]*Depl[10] /*J[11][3]*Depl[11]*/;
+    JtD[4] = /*J[ 0][4]*Depl[ 0]+*/J[ 1][4]*Depl[ 1]+  J[ 2][4]*Depl[ 2]+
+            /*J[ 3][4]*Depl[ 3]+*/J[ 4][4]*Depl[ 4]+  J[ 5][4]*Depl[ 5]+
+            /*J[ 6][4]*Depl[ 6]+*/J[ 7][4]*Depl[ 7]+  J[ 8][4]*Depl[ 8]+
+            /*J[ 9][4]*Depl[ 9]+*/J[10][4]*Depl[10]+  J[11][4]*Depl[11]  ;
+    JtD[5] =   J[ 0][5]*Depl[ 0]+/*J[ 1][5]*Depl[ 1]*/ J[ 2][5]*Depl[ 2]+
+            J[ 3][5]*Depl[ 3]+/*J[ 4][5]*Depl[ 4]*/ J[ 5][5]*Depl[ 5]+
+            J[ 6][5]*Depl[ 6]+/*J[ 7][5]*Depl[ 7]*/ J[ 8][5]*Depl[ 8]+
+            J[ 9][5]*Depl[ 9]+/*J[10][5]*Depl[10]*/ J[11][5]*Depl[11];
+//         cerr<<"TetrahedronFEMForceField<DataTypes>::computeForce, D = "<<Depl<<endl;
+//         cerr<<"TetrahedronFEMForceField<DataTypes>::computeForce, JtD = "<<JtD<<endl;
+
+    VecNoInit<6,Real> KJtD;
+    KJtD[0] =   K[0][0]*JtD[0]+  K[0][1]*JtD[1]+  K[0][2]*JtD[2]
+            /*K[0][3]*JtD[3]+  K[0][4]*JtD[4]+  K[0][5]*JtD[5]*/;
+    KJtD[1] =   K[1][0]*JtD[0]+  K[1][1]*JtD[1]+  K[1][2]*JtD[2]
+            /*K[1][3]*JtD[3]+  K[1][4]*JtD[4]+  K[1][5]*JtD[5]*/;
+    KJtD[2] =   K[2][0]*JtD[0]+  K[2][1]*JtD[1]+  K[2][2]*JtD[2]
+            /*K[2][3]*JtD[3]+  K[2][4]*JtD[4]+  K[2][5]*JtD[5]*/;
+    KJtD[3] = /*K[3][0]*JtD[0]+  K[3][1]*JtD[1]+  K[3][2]*JtD[2]+*/
+        K[3][3]*JtD[3] /*K[3][4]*JtD[4]+  K[3][5]*JtD[5]*/;
+    KJtD[4] = /*K[4][0]*JtD[0]+  K[4][1]*JtD[1]+  K[4][2]*JtD[2]+*/
+        /*K[4][3]*JtD[3]+*/K[4][4]*JtD[4] /*K[4][5]*JtD[5]*/;
+    KJtD[5] = /*K[5][0]*JtD[0]+  K[5][1]*JtD[1]+  K[5][2]*JtD[2]+*/
+        /*K[5][3]*JtD[3]+  K[5][4]*JtD[4]+*/K[5][5]*JtD[5]  ;
+
+    KJtD *= fact;
+
+    F[ 0] =   J[ 0][0]*KJtD[0]+/*J[ 0][1]*KJtD[1]+  J[ 0][2]*KJtD[2]+*/
+            J[ 0][3]*KJtD[3]+/*J[ 0][4]*KJtD[4]+*/J[ 0][5]*KJtD[5]  ;
+    F[ 1] = /*J[ 1][0]*KJtD[0]+*/J[ 1][1]*KJtD[1]+/*J[ 1][2]*KJtD[2]+*/
+            J[ 1][3]*KJtD[3]+  J[ 1][4]*KJtD[4] /*J[ 1][5]*KJtD[5]*/;
+    F[ 2] = /*J[ 2][0]*KJtD[0]+  J[ 2][1]*KJtD[1]+*/J[ 2][2]*KJtD[2]+
+            /*J[ 2][3]*KJtD[3]+*/J[ 2][4]*KJtD[4]+  J[ 2][5]*KJtD[5]  ;
+    F[ 3] =   J[ 3][0]*KJtD[0]+/*J[ 3][1]*KJtD[1]+  J[ 3][2]*KJtD[2]+*/
+            J[ 3][3]*KJtD[3]+/*J[ 3][4]*KJtD[4]+*/J[ 3][5]*KJtD[5]  ;
+    F[ 4] = /*J[ 4][0]*KJtD[0]+*/J[ 4][1]*KJtD[1]+/*J[ 4][2]*KJtD[2]+*/
+            J[ 4][3]*KJtD[3]+  J[ 4][4]*KJtD[4] /*J[ 4][5]*KJtD[5]*/;
+    F[ 5] = /*J[ 5][0]*KJtD[0]+  J[ 5][1]*KJtD[1]+*/J[ 5][2]*KJtD[2]+
+            /*J[ 5][3]*KJtD[3]+*/J[ 5][4]*KJtD[4]+  J[ 5][5]*KJtD[5]  ;
+    F[ 6] =   J[ 6][0]*KJtD[0]+/*J[ 6][1]*KJtD[1]+  J[ 6][2]*KJtD[2]+*/
+            J[ 6][3]*KJtD[3]+/*J[ 6][4]*KJtD[4]+*/J[ 6][5]*KJtD[5]  ;
+    F[ 7] = /*J[ 7][0]*KJtD[0]+*/J[ 7][1]*KJtD[1]+/*J[ 7][2]*KJtD[2]+*/
+            J[ 7][3]*KJtD[3]+  J[ 7][4]*KJtD[4] /*J[ 7][5]*KJtD[5]*/;
+    F[ 8] = /*J[ 8][0]*KJtD[0]+  J[ 8][1]*KJtD[1]+*/J[ 8][2]*KJtD[2]+
+            /*J[ 8][3]*KJtD[3]+*/J[ 8][4]*KJtD[4]+  J[ 8][5]*KJtD[5]  ;
+    F[ 9] =   J[ 9][0]*KJtD[0]+/*J[ 9][1]*KJtD[1]+  J[ 9][2]*KJtD[2]+*/
+            J[ 9][3]*KJtD[3]+/*J[ 9][4]*KJtD[4]+*/J[ 9][5]*KJtD[5]  ;
+    F[10] = /*J[10][0]*KJtD[0]+*/J[10][1]*KJtD[1]+/*J[10][2]*KJtD[2]+*/
+            J[10][3]*KJtD[3]+  J[10][4]*KJtD[4] /*J[10][5]*KJtD[5]*/;
+    F[11] = /*J[11][0]*KJtD[0]+  J[11][1]*KJtD[1]+*/J[11][2]*KJtD[2]+
+            /*J[11][3]*KJtD[3]+*/J[11][4]*KJtD[4]+  J[11][5]*KJtD[5]  ;
+#endif
+}
+
 //////////////////////////////////////////////////////////////////////
 ////////////////////  small displacements method  ////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -431,7 +539,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f
 }
 
 template<class DataTypes>
-inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessSmall( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d )
+inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessSmall( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d, double fact )
 {
     Displacement X;
 
@@ -452,7 +560,7 @@ inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessSmall( Vector& f,
     X[11] = x[d][2];
 
     Displacement F;
-    computeForce( F, X, _materialsStiffnesses[i], _strainDisplacements[i] );
+    computeForce( F, X, _materialsStiffnesses[i], _strainDisplacements[i], fact );
 
     f[a] += Deriv( -F[0], -F[1],  -F[2] );
     f[b] += Deriv( -F[3], -F[4],  -F[5] );
@@ -680,7 +788,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f
 }
 
 template<class DataTypes>
-inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessLarge( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d )
+inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessLarge( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d, double fact )
 {
     Transformation R_0_2;
     R_0_2.transpose(_rotations[i]);
@@ -712,7 +820,7 @@ inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessLarge( Vector& f,
 
     //cerr<<"X : "<<X<<endl;
 
-    computeForce( F, X, _materialsStiffnesses[i], _strainDisplacements[i] );
+    computeForce( F, X, _materialsStiffnesses[i], _strainDisplacements[i], fact );
 
     //cerr<<"F : "<<F<<endl;
 
@@ -812,7 +920,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f
 }
 
 template<class DataTypes>
-inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessPolar( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d )
+inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessPolar( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d, double fact )
 {
     Transformation R_0_2;
     R_0_2.transpose( _rotations[i] );
@@ -844,7 +952,7 @@ inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessPolar( Vector& f,
 
     //cerr<<"X : "<<X<<endl;
 
-    computeForce( F, X, _materialsStiffnesses[i], _strainDisplacements[i] );
+    computeForce( F, X, _materialsStiffnesses[i], _strainDisplacements[i], fact );
 
     //cerr<<"F : "<<F<<endl;
 
@@ -1096,7 +1204,7 @@ void TetrahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord&
 }
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv& x)
+void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv& x, double kFactor, double /*bFactor*/)
 {
     v.resize(x.size());
     unsigned int i;
@@ -1114,7 +1222,7 @@ void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv
             Index c = (*it)[2];
             Index d = (*it)[3];
 
-            applyStiffnessSmall( v,x, i, a,b,c,d );
+            applyStiffnessSmall( v,x, i, a,b,c,d, kFactor );
         }
         break;
     }
@@ -1128,7 +1236,7 @@ void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv
             Index c = (*it)[2];
             Index d = (*it)[3];
 
-            applyStiffnessLarge( v,x, i, a,b,c,d );
+            applyStiffnessLarge( v,x, i, a,b,c,d, kFactor );
         }
 
         break;
@@ -1143,7 +1251,7 @@ void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv
             Index c = (*it)[2];
             Index d = (*it)[3];
 
-            applyStiffnessPolar( v,x, i, a,b,c,d );
+            applyStiffnessPolar( v,x, i, a,b,c,d, kFactor );
         }
         break;
     }

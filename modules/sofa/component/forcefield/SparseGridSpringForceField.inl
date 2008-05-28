@@ -209,10 +209,10 @@ void SparseGridSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2,
 }
 
 template<class DataTypes>
-void SparseGridSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2)
+void SparseGridSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor)
 {
     // Calc any custom springs
-    this->StiffSpringForceField<DataTypes>::addDForce(df1,df2,dx1,dx2);
+    this->StiffSpringForceField<DataTypes>::addDForce(df1,df2,dx1,dx2, kFactor, bFactor);
     // Compute topological springs
     df1.resize(dx1.size());
     df2.resize(dx2.size());
@@ -254,16 +254,16 @@ void SparseGridSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& d
                     /// add the 4th springs
                     spring.m1 = topology->point(i,j,k);
                     spring.m2 = topology->point(i+1,j,k);
-                    this->addSpringDForce(df1,dx1,df2,dx2, index++, spring);
+                    this->addSpringDForce(df1,dx1,df2,dx2, index++, spring, kFactor, bFactor);
                     spring.m1 = topology->point(i,j+1,k);
                     spring.m2 = topology->point(i+1,j+1,k);
-                    this->addSpringDForce(df1,dx1,df2,dx2, index++, spring);
+                    this->addSpringDForce(df1,dx1,df2,dx2, index++, spring, kFactor, bFactor);
                     spring.m1 = topology->point(i,j,k+1);
                     spring.m2 = topology->point(i+1,j,k+1);
-                    this->addSpringDForce(df1,dx1,df2,dx2, index++, spring);
+                    this->addSpringDForce(df1,dx1,df2,dx2, index++, spring, kFactor, bFactor);
                     spring.m1 = topology->point(i,j+1,k+1);
                     spring.m2 = topology->point(i+1,j+1,k+1);
-                    this->addSpringDForce(df1,dx1,df2,dx2, index++, spring);
+                    this->addSpringDForce(df1,dx1,df2,dx2, index++, spring, kFactor, bFactor);
 
                     /// add axis spring y
                     spring.initpos = topology->getDy().norm();
@@ -272,16 +272,16 @@ void SparseGridSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& d
                     /// add the 4th springs
                     spring.m1 = topology->point(i,j,k);
                     spring.m2 = topology->point(i,j+1,k);
-                    this->addSpringDForce(df1,dx1,df2,dx2, index++, spring);
+                    this->addSpringDForce(df1,dx1,df2,dx2, index++, spring, kFactor, bFactor);
                     spring.m1 = topology->point(i+1,j,k);
                     spring.m2 = topology->point(i+1,j+1,k);
-                    this->addSpringDForce(df1,dx1,df2,dx2, index++, spring);
+                    this->addSpringDForce(df1,dx1,df2,dx2, index++, spring, kFactor, bFactor);
                     spring.m1 = topology->point(i,j,k+1);
                     spring.m2 = topology->point(i,j+1,k+1);
-                    this->addSpringDForce(df1,dx1,df2,dx2, index++, spring);
+                    this->addSpringDForce(df1,dx1,df2,dx2, index++, spring, kFactor, bFactor);
                     spring.m1 = topology->point(i+1,j,k+1);
                     spring.m2 = topology->point(i+1,j+1,k+1);
-                    this->addSpringDForce(df1,dx1,df2,dx2, index++, spring);
+                    this->addSpringDForce(df1,dx1,df2,dx2, index++, spring, kFactor, bFactor);
 
                     ///add axis spring z
                     spring.initpos = topology->getDz().norm();
@@ -291,16 +291,16 @@ void SparseGridSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& d
                     /// add the 4th springs
                     spring.m1 = topology->point(i,j,k);
                     spring.m2 = topology->point(i,j,k+1);
-                    this->addSpringDForce(df1,dx1,df2,dx2, index++, spring);
+                    this->addSpringDForce(df1,dx1,df2,dx2, index++, spring, kFactor, bFactor);
                     spring.m1 = topology->point(i+1,j,k);
                     spring.m2 = topology->point(i+1,j,k+1);
-                    this->addSpringDForce(df1,dx1,df2,dx2, index++, spring);
+                    this->addSpringDForce(df1,dx1,df2,dx2, index++, spring, kFactor, bFactor);
                     spring.m1 = topology->point(i,j+1,k);
                     spring.m2 = topology->point(i,j+1,k+1);
-                    this->addSpringDForce(df1,dx1,df2,dx2, index++, spring);
+                    this->addSpringDForce(df1,dx1,df2,dx2, index++, spring, kFactor, bFactor);
                     spring.m1 = topology->point(i+1,j+1,k);
                     spring.m2 = topology->point(i+1,j+1,k+1);
-                    this->addSpringDForce(df1,dx1,df2,dx2, index++, spring);
+                    this->addSpringDForce(df1,dx1,df2,dx2, index++, spring, kFactor, bFactor);
                 }
 
                 if (this->quadsStiffness.getValue() != 0.0 || this->quadsDamping.getValue() != 0.0)

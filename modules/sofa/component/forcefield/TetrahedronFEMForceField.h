@@ -204,7 +204,7 @@ public:
 
     virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
-    virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
+    virtual void addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 
     virtual double getPotentialEnergy(const VecCoord& x);
 
@@ -222,11 +222,12 @@ protected:
     void computeMaterialStiffness(int i, Index&a, Index&b, Index&c, Index&d);
 
     void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J );
+    void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J, double fact );
 
     ////////////// small displacements method
     void initSmall(int i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForceSmall( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
-    void applyStiffnessSmall( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3  );
+    void applyStiffnessSmall( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3, double fact=1.0  );
 
     ////////////// large displacements method
     vector<helper::fixed_array<Coord,4> > _rotatedInitialElements;   ///< The initials positions in its frame
@@ -235,14 +236,14 @@ protected:
     void initLarge(int i, Index&a, Index&b, Index&c, Index&d);
     void computeRotationLarge( Transformation &r, const Vector &p, const Index &a, const Index &b, const Index &c);
     void accumulateForceLarge( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
-    void applyStiffnessLarge( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3 );
+    void applyStiffnessLarge( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3, double fact=1.0 );
 
     ////////////// polar decomposition method
     vector<Transformation>  _initialTransformation;
     vector<unsigned int> _rotationIdx;
     void initPolar(int i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForcePolar( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
-    void applyStiffnessPolar( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3  );
+    void applyStiffnessPolar( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3, double fact=1.0  );
 };
 
 } // namespace forcefield

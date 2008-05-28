@@ -71,14 +71,15 @@ void PlaneForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, cons
 }
 
 template<class DataTypes>
-void PlaneForceField<DataTypes>::addDForce(VecDeriv& f1, const VecDeriv& dx1)
+void PlaneForceField<DataTypes>::addDForce(VecDeriv& f1, const VecDeriv& dx1, double kFactor, double /*bFactor*/)
 {
     f1.resize(dx1.size());
+    const Real fact = (Real)(-this->stiffness.getValue()*kFactor);
     for (unsigned int i=0; i<this->contacts.size(); i++)
     {
         unsigned int p = this->contacts[i];
         assert(p<dx1.size());
-        f1[p] += planeNormal.getValue() * (-this->stiffness.getValue() * (dx1[p]*planeNormal.getValue()));
+        f1[p] += planeNormal.getValue() * (fact * (dx1[p]*planeNormal.getValue()));
     }
 }
 

@@ -54,10 +54,10 @@ void WashingMachineForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord&
 }
 
 template<class DataTypes>
-void WashingMachineForceField<DataTypes>::addDForce(VecDeriv& f1, const VecDeriv& dx1)
+void WashingMachineForceField<DataTypes>::addDForce(VecDeriv& f1, const VecDeriv& dx1, double kFactor, double bFactor)
 {
     for(int i=0; i<6; ++i)
-        _planes[i]->addDForce(f1,dx1);
+        _planes[i]->addDForce(f1, dx1, kFactor, bFactor);
 }
 
 

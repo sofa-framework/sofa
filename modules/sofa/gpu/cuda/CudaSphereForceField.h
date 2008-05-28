@@ -43,7 +43,7 @@ template <>
 void SphereForceField<gpu::cuda::CudaVec3fTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
 template <>
-void SphereForceField<gpu::cuda::CudaVec3fTypes>::addDForce (VecDeriv& df, const VecDeriv& dx);
+void SphereForceField<gpu::cuda::CudaVec3fTypes>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 
 template <>
 class SphereForceFieldInternalData<gpu::cuda::CudaVec3f1Types>
@@ -57,7 +57,7 @@ template <>
 void SphereForceField<gpu::cuda::CudaVec3f1Types>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
 template <>
-void SphereForceField<gpu::cuda::CudaVec3f1Types>::addDForce (VecDeriv& df, const VecDeriv& dx);
+void SphereForceField<gpu::cuda::CudaVec3f1Types>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 
 } // namespace forcefield
 

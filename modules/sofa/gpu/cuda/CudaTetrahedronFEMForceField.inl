@@ -16,19 +16,19 @@ namespace cuda
 extern "C"
 {
     void TetrahedronFEMForceFieldCuda3f_addForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v);
-    void TetrahedronFEMForceFieldCuda3f_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx);
+    void TetrahedronFEMForceFieldCuda3f_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor);
 
     void TetrahedronFEMForceFieldCuda3f1_addForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v);
-    void TetrahedronFEMForceFieldCuda3f1_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx);
+    void TetrahedronFEMForceFieldCuda3f1_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor);
 
 #ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
     void TetrahedronFEMForceFieldCuda3d_addForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v);
-    void TetrahedronFEMForceFieldCuda3d_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx);
+    void TetrahedronFEMForceFieldCuda3d_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor);
 
     void TetrahedronFEMForceFieldCuda3d1_addForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v);
-    void TetrahedronFEMForceFieldCuda3d1_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx);
+    void TetrahedronFEMForceFieldCuda3d1_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 #endif // SOFA_DEV
@@ -41,8 +41,8 @@ class CudaKernelsTetrahedronFEMForceField<CudaVec3fTypes>
 public:
     static void addForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v)
     {   TetrahedronFEMForceFieldCuda3f_addForce(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, f, x, v); }
-    static void addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx)
-    {   TetrahedronFEMForceFieldCuda3f_addDForce(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, df, dx); }
+    static void addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor)
+    {   TetrahedronFEMForceFieldCuda3f_addDForce(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, df, dx, factor); }
 };
 
 template<>
@@ -51,8 +51,8 @@ class CudaKernelsTetrahedronFEMForceField<CudaVec3f1Types>
 public:
     static void addForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v)
     {   TetrahedronFEMForceFieldCuda3f1_addForce(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, f, x, v); }
-    static void addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx)
-    {   TetrahedronFEMForceFieldCuda3f1_addDForce(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, df, dx); }
+    static void addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor)
+    {   TetrahedronFEMForceFieldCuda3f1_addDForce(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, df, dx, factor); }
 };
 
 #ifdef SOFA_DEV
@@ -64,8 +64,8 @@ class CudaKernelsTetrahedronFEMForceField<CudaVec3dTypes>
 public:
     static void addForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v)
     {   TetrahedronFEMForceFieldCuda3d_addForce(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, f, x, v); }
-    static void addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx)
-    {   TetrahedronFEMForceFieldCuda3d_addDForce(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, df, dx); }
+    static void addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor)
+    {   TetrahedronFEMForceFieldCuda3d_addDForce(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, df, dx, factor); }
 };
 
 template<>
@@ -74,8 +74,8 @@ class CudaKernelsTetrahedronFEMForceField<CudaVec3d1Types>
 public:
     static void addForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v)
     {   TetrahedronFEMForceFieldCuda3d1_addForce(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, f, x, v); }
-    static void addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx)
-    {   TetrahedronFEMForceFieldCuda3d1_addDForce(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, df, dx); }
+    static void addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor)
+    {   TetrahedronFEMForceFieldCuda3d1_addDForce(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, df, dx, factor); }
 };
 
 #endif // SOFA_GPU_CUDA_DOUBLE
@@ -252,7 +252,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addDForce (Main* m, VecDeriv& df, const VecDeriv& dx)
+void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addDForce (Main* m, VecDeriv& df, const VecDeriv& dx, double kFactor, double /*bFactor*/)
 {
     Data& data = m->data;
     df.resize(dx.size());
@@ -265,7 +265,8 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
         data.eforce.deviceWrite(),
         data.velems.deviceRead(),
         (      Deriv*)df.deviceWrite() + data.vertex0,
-        (const Deriv*)dx.deviceRead()  + data.vertex0);
+        (const Deriv*)dx.deviceRead()  + data.vertex0,
+        kFactor);
 }
 
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
@@ -274,8 +275,8 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
     { data.reinit(this); } \
     template<> void TetrahedronFEMForceField< T >::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v) \
     { data.addForce(this, f, x, v); } \
-    template<> void TetrahedronFEMForceField< T >::addDForce(VecDeriv& df, const VecDeriv& dx) \
-    { data.addDForce(this, df, dx); }
+    template<> void TetrahedronFEMForceField< T >::addDForce(VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor) \
+    { data.addDForce(this, df, dx, kFactor, bFactor); }
 
 CudaTetrahedronFEMForceField_ImplMethods(gpu::cuda::CudaVec3fTypes);
 CudaTetrahedronFEMForceField_ImplMethods(gpu::cuda::CudaVec3f1Types);

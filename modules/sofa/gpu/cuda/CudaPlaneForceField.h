@@ -45,13 +45,13 @@ template <>
 void PlaneForceField<gpu::cuda::CudaVec3fTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
 template <>
-void PlaneForceField<gpu::cuda::CudaVec3fTypes>::addDForce (VecDeriv& df, const VecDeriv& dx);
+void PlaneForceField<gpu::cuda::CudaVec3fTypes>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 
 template <>
 void PlaneForceField<gpu::cuda::CudaVec3f1Types>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
 template <>
-void PlaneForceField<gpu::cuda::CudaVec3f1Types>::addDForce (VecDeriv& df, const VecDeriv& dx);
+void PlaneForceField<gpu::cuda::CudaVec3f1Types>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 
 #ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -60,13 +60,13 @@ template <>
 void PlaneForceField<gpu::cuda::CudaVec3dTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
 template <>
-void PlaneForceField<gpu::cuda::CudaVec3dTypes>::addDForce (VecDeriv& df, const VecDeriv& dx);
+void PlaneForceField<gpu::cuda::CudaVec3dTypes>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 
 template <>
 void PlaneForceField<gpu::cuda::CudaVec3d1Types>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
 template <>
-void PlaneForceField<gpu::cuda::CudaVec3d1Types>::addDForce (VecDeriv& df, const VecDeriv& dx);
+void PlaneForceField<gpu::cuda::CudaVec3d1Types>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 #endif // SOFA_DEV
