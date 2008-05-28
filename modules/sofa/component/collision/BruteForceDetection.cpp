@@ -87,6 +87,8 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
             continue;
         if (!cm->canCollideWith(cm2))
             continue;
+        if (!cm->getLast()->canCollideWith(cm2->getLast()))
+            continue;
         bool swapModels = false;
         core::componentmodel::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, cm2, swapModels);
         if (intersector == NULL)

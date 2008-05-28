@@ -75,6 +75,7 @@ public:
         , contactFriction(initData(&contactFriction, 0.01, "contactFriction", "Default contact friction (damping) coefficient"))
         , contactResponse(initData(&contactResponse, "contactResponse", "if set, indicate to the ContactManager that this model should use the given class of contacts.\nNote that this is only indicative, and in particular if both collision models specify a different class it is up to the manager to choose."))
         , bFiltered(initData(&bFiltered, false, "filtered", "flag indicating if the model has to build its neighborhood to filter contacts"))
+        , group(initData(&group, 0, "group", "If not zero, ID of a group containing this model. No collision can occur between collision models of the same group (allowing the same object to have multiple collision models)"))
         , color(initData(&color, defaulttype::Vec4f(1,0,0,1), "color", "color used to display the collision model if requested"))
         , size(0), previous(NULL)  , next(NULL), numberOfContacts(0)
     {
@@ -244,7 +245,9 @@ public:
     /// context (i.e. the same node in the scenegraph).
     virtual bool canCollideWith(CollisionModel* model)
     {
-        if (model->getContext() != this->getContext())
+        if (model != this && this->group.getValue() != 0 && this->group.getValue() == model->group.getValue())
+            return false;
+        else if (model->getContext() != this->getContext())
             return true;
         else return bSelfCollision.getValue();
     }
@@ -301,6 +304,7 @@ public:
             pmodel->setMoving(isMoving());
             pmodel->setSimulated(isSimulated());
             pmodel->proximity.setValue(proximity.getValue());
+            pmodel->group.setValue(group.getValue());
             previous = pmodel;
             pmodel->setNext(this);
         }
@@ -351,6 +355,8 @@ protected:
     Data<std::string> contactResponse;
 
     Data<bool> bFiltered;
+
+    Data<int> group;
 
     Data<defaulttype::Vec4f> color;
 
