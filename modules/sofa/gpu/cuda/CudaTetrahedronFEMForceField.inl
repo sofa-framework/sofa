@@ -102,6 +102,9 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 
     const VecElement& elems = *m->_indexedElements;
 
+    VecCoord& p = *m->mstate->getX0();
+    (*m->f_initialPoints.beginEdit()) = p;
+
     m->_rotations.resize( m->_indexedElements->size() );
     m->_initialRotations.resize( m->_indexedElements->size() );
     m->_rotationIdx.resize(m->_indexedElements->size() *4);
@@ -166,6 +169,11 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 template<class TCoord, class TDeriv, class TReal>
 void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addForce(Main* m, VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 {
+    if (m->needUpdateTopology)
+    {
+        reinit(m);
+        m->needUpdateTopology = false;
+    }
     Data& data = m->data;
     // Count active cubes in topology
     if (m->_trimgrid)

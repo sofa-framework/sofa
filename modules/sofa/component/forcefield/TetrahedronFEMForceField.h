@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_H
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/FittedRegularGridTopology.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
@@ -81,9 +81,9 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
 
-    typedef topology::MeshTopology::index_type Index;
-    typedef topology::MeshTopology::Tetra Element;
-    typedef topology::MeshTopology::SeqTetras VecElement;
+    typedef core::componentmodel::topology::BaseMeshTopology::index_type Index;
+    typedef core::componentmodel::topology::BaseMeshTopology::Tetra Element;
+    typedef core::componentmodel::topology::BaseMeshTopology::SeqTetras VecElement;
 
     enum { SMALL = 0,   ///< Symbol of small displacements tetrahedron solver
             LARGE = 1,   ///< Symbol of large displacements tetrahedron solver
@@ -132,10 +132,12 @@ protected:
 
     SReal m_potentialEnergy;
 
-    topology::MeshTopology* _mesh;
+    core::componentmodel::topology::BaseMeshTopology* _mesh;
     topology::FittedRegularGridTopology* _trimgrid;
     const VecElement *_indexedElements;
     VecCoord _initialPoints; ///< the intial positions of the points
+
+    bool needUpdateTopology;
 
     TetrahedronFEMForceFieldInternalData<DataTypes> data;
     friend class TetrahedronFEMForceFieldInternalData<DataTypes>;
@@ -162,6 +164,7 @@ public:
     TetrahedronFEMForceField()
         : _mesh(NULL), _trimgrid(NULL)
         , _indexedElements(NULL)
+        , needUpdateTopology(false)
         , f_initialPoints(initDataPtr(&f_initialPoints, &_initialPoints, "initialPoints", "Initial Position"))
         , f_method(initData(&f_method,std::string("large"),"method","\"small\", \"large\" (by QR) or \"polar\" displacements"))
         ,  _poissonRatio((Real)0.45f)
@@ -244,6 +247,11 @@ protected:
     void initPolar(int i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForcePolar( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
     void applyStiffnessPolar( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3, double fact=1.0  );
+
+    void handleTopologyChange()
+    {
+        needUpdateTopology = true;
+    }
 };
 
 } // namespace forcefield

@@ -187,6 +187,10 @@ public:
     TetrahedronFEMForceFieldInternalData() : nbElement(0), vertex0(0), nbVertex(0), nbElementPerVertex(0) {}
     void init(int nbe, int v0, int nbv, int nbelemperv)
     {
+        elems.clear();
+        state.clear();
+        eforce.clear();
+        velems.clear();
         nbElement = nbe;
         elems.resize((nbe+BSIZE-1)/BSIZE);
         state.resize(nbe);

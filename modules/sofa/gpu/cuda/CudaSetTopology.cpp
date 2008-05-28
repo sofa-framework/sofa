@@ -5,6 +5,8 @@
 #include <sofa/component/topology/EdgeSetTopology.inl>
 #include <sofa/component/topology/TriangleSetTopology.inl>
 #include <sofa/component/topology/PointSetTopology.inl>
+#include <sofa/component/topology/Tetra2TriangleTopologicalMapping.inl>
+
 namespace sofa
 {
 
@@ -222,6 +224,16 @@ template class TetrahedronSetGeometryAlgorithms<CudaVec3fTypes>;
 template class TetrahedronSetTopologyModifier<CudaVec3fTypes>;
 //template class TetrahedronSetTopologyModifier<CudaVec2fTypes>;
 //template class TetrahedronSetTopologyModifier<CudaVec1fTypes>;
+
+
+int Tetra2TriangleTopologicalMappingCudaClass = core::RegisterObject("Special case of mapping where TetrahedronSetTopology is converted to TriangleSetTopology")
+        .add< Tetra2TriangleTopologicalMapping< TetrahedronSetTopology<CudaVec3fTypes>, TriangleSetTopology<Vec3dTypes> > >()
+        .add< Tetra2TriangleTopologicalMapping< TetrahedronSetTopology<CudaVec3fTypes>, TriangleSetTopology<Vec3fTypes> > >()
+        ;
+
+template class Tetra2TriangleTopologicalMapping< TetrahedronSetTopology<CudaVec3fTypes>, TriangleSetTopology<Vec3dTypes> >;
+template class Tetra2TriangleTopologicalMapping< TetrahedronSetTopology<CudaVec3fTypes>, TriangleSetTopology<Vec3fTypes> >;
+
 
 } // namespace topology
 
