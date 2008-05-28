@@ -21,9 +21,9 @@
 		</Node>
 	</Node>
 	<Node name="SquareCloth1">
-		<Object type="CGImplicit" rayleighMass="0.05"  iterations="10" threshold="0.000001"/>
-		<!--<Object type="EulerImplicit" rayleighMass="0.05"/>
-		<Object type="CGLinearSolver" iterations="10" threshold="0.000001"/>-->
+		<!--<Object type="CGImplicit" rayleighMass="0.05"  iterations="10" threshold="0.000001"/>-->
+		<Object type="EulerImplicit" rayleighMass="0.05"/>
+		<Object type="CGLinearSolver" iterations="10" threshold="0.000001"/>
 		<Object type="MechanicalObject" template="CudaVec3f" />
 		<Object type="UniformMass" totalmass="100" />
 		<Object type="RegularGrid"

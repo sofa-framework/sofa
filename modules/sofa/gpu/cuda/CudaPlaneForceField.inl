@@ -62,10 +62,13 @@ void PlaneForceField<gpu::cuda::CudaVec3fTypes>::addForce(VecDeriv& f, const Vec
 }
 
 template <>
-void PlaneForceField<gpu::cuda::CudaVec3fTypes>::addDForce(VecDeriv& df, const VecCoord& dx)
+void PlaneForceField<gpu::cuda::CudaVec3fTypes>::addDForce(VecDeriv& df, const VecCoord& dx, double kFactor, double /*bFactor*/)
 {
     df.resize(dx.size());
+    double stiff = data.plane.stiffness;
+    data.plane.stiffness *= kFactor;
     PlaneForceFieldCuda3f_addDForce(dx.size(), &data.plane, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
+    data.plane.stiffness = stiff;
 }
 
 
@@ -82,10 +85,13 @@ void PlaneForceField<gpu::cuda::CudaVec3f1Types>::addForce(VecDeriv& f, const Ve
 }
 
 template <>
-void PlaneForceField<gpu::cuda::CudaVec3f1Types>::addDForce(VecDeriv& df, const VecCoord& dx)
+void PlaneForceField<gpu::cuda::CudaVec3f1Types>::addDForce(VecDeriv& df, const VecCoord& dx, double kFactor, double /*bFactor*/)
 {
     df.resize(dx.size());
+    double stiff = data.plane.stiffness;
+    data.plane.stiffness *= kFactor;
     PlaneForceFieldCuda3f1_addDForce(dx.size(), &data.plane, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
+    data.plane.stiffness = stiff;
 }
 
 #ifdef SOFA_DEV
@@ -104,10 +110,13 @@ void PlaneForceField<gpu::cuda::CudaVec3dTypes>::addForce(VecDeriv& f, const Vec
 }
 
 template <>
-void PlaneForceField<gpu::cuda::CudaVec3dTypes>::addDForce(VecDeriv& df, const VecCoord& dx)
+void PlaneForceField<gpu::cuda::CudaVec3dTypes>::addDForce(VecDeriv& df, const VecCoord& dx, double kFactor, double /*bFactor*/)
 {
     df.resize(dx.size());
+    double stiff = data.plane.stiffness;
+    data.plane.stiffness *= kFactor;
     PlaneForceFieldCuda3d_addDForce(dx.size(), &data.plane, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
+    data.plane.stiffness = stiff;
 }
 
 
@@ -124,10 +133,13 @@ void PlaneForceField<gpu::cuda::CudaVec3d1Types>::addForce(VecDeriv& f, const Ve
 }
 
 template <>
-void PlaneForceField<gpu::cuda::CudaVec3d1Types>::addDForce(VecDeriv& df, const VecCoord& dx)
+void PlaneForceField<gpu::cuda::CudaVec3d1Types>::addDForce(VecDeriv& df, const VecCoord& dx, double kFactor, double /*bFactor*/)
 {
     df.resize(dx.size());
+    double stiff = data.plane.stiffness;
+    data.plane.stiffness *= kFactor;
     PlaneForceFieldCuda3d1_addDForce(dx.size(), &data.plane, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
+    data.plane.stiffness = stiff;
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE

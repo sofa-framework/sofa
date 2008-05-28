@@ -263,7 +263,7 @@ public:
 
     static void reinit(Main* m);
     static void addForce(Main* m, VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/);
-    static void addDForce (Main* m, VecDeriv& df, const VecDeriv& dx);
+    static void addDForce (Main* m, VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 };
 
 //
@@ -274,7 +274,7 @@ public:
 #define CudaTetrahedronFEMForceField_DeclMethods(T) \
     template<> void TetrahedronFEMForceField< T >::reinit(); \
     template<> void TetrahedronFEMForceField< T >::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v); \
-    template<> void TetrahedronFEMForceField< T >::addDForce(VecDeriv& df, const VecDeriv& dx);
+    template<> void TetrahedronFEMForceField< T >::addDForce(VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 
 CudaTetrahedronFEMForceField_DeclMethods(gpu::cuda::CudaVec3fTypes);
 CudaTetrahedronFEMForceField_DeclMethods(gpu::cuda::CudaVec3f1Types);

@@ -72,12 +72,13 @@ void StiffSpringForceField<DataTypes>::addSpringForce( double& potentialEnergy, 
 }
 
 template<class DataTypes>
-void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDeriv& dx1, VecDeriv& f2, const VecDeriv& dx2, int i, const Spring& spring)
+void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDeriv& dx1, VecDeriv& f2, const VecDeriv& dx2, int i, const Spring& spring, double kFactor, double /*bFactor*/)
 {
     const int a = spring.m1;
     const int b = spring.m2;
     const Coord d = dx2[b]-dx1[a];
-    const Deriv dforce = this->dfdx[i]*d;
+    Deriv dforce = this->dfdx[i]*d;
+    dforce *= kFactor;
     f1[a]+=dforce;
     f2[b]-=dforce;
     //cerr<<"StiffSpringForceField<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", dforce ="<<dforce<<endl;
@@ -100,7 +101,7 @@ void StiffSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, cons
 }
 
 template<class DataTypes>
-void StiffSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2)
+void StiffSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor)
 {
     df1.resize(dx1.size());
     df2.resize(dx2.size());
@@ -109,7 +110,7 @@ void StiffSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, c
     const helper::vector<Spring>& springs = this->springs.getValue();
     for (unsigned int i=0; i<springs.size(); i++)
     {
-        this->addSpringDForce(df1,dx1,df2,dx2, i, springs[i]);
+        this->addSpringDForce(df1,dx1,df2,dx2, i, springs[i], kFactor, bFactor);
     }
     //cerr<<"StiffSpringForceField<DataTypes>::addDForce, df1 = "<<f1<<endl;
     //cerr<<"StiffSpringForceField<DataTypes>::addDForce, df2 = "<<f2<<endl;

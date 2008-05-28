@@ -48,10 +48,13 @@ void SphereForceField<gpu::cuda::CudaVec3fTypes>::addForce(VecDeriv& f, const Ve
 }
 
 template <>
-void SphereForceField<gpu::cuda::CudaVec3fTypes>::addDForce(VecDeriv& df, const VecCoord& dx)
+void SphereForceField<gpu::cuda::CudaVec3fTypes>::addDForce(VecDeriv& df, const VecCoord& dx, double kFactor, double /*bFactor*/)
 {
     df.resize(dx.size());
+    double stiff = data.sphere.stiffness;
+    data.sphere.stiffness *= kFactor;
     SphereForceFieldCuda3f_addDForce(dx.size(), &data.sphere, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
+    data.sphere.stiffness = stiff;
 }
 
 
@@ -68,10 +71,13 @@ void SphereForceField<gpu::cuda::CudaVec3f1Types>::addForce(VecDeriv& f, const V
 }
 
 template <>
-void SphereForceField<gpu::cuda::CudaVec3f1Types>::addDForce(VecDeriv& df, const VecCoord& dx)
+void SphereForceField<gpu::cuda::CudaVec3f1Types>::addDForce(VecDeriv& df, const VecCoord& dx, double kFactor, double /*bFactor*/)
 {
     df.resize(dx.size());
+    double stiff = data.sphere.stiffness;
+    data.sphere.stiffness *= kFactor;
     SphereForceFieldCuda3f1_addDForce(dx.size(), &data.sphere, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
+    data.sphere.stiffness = stiff;
 }
 
 } // namespace forcefield

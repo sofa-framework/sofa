@@ -100,7 +100,7 @@ public:
 
     virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
-    virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
+    virtual void addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 
     virtual double getPotentialEnergy(const VecCoord& x);
 

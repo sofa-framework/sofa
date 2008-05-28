@@ -188,7 +188,7 @@ void CudaVisualModel< TDataTypes >::updateTopology()
 template<class TDataTypes>
 void CudaVisualModel< TDataTypes >::updateNormals()
 {
-    if (!topology || !state) return;
+    if (!topology || !state || !state->getX()->size()) return;
     const VecCoord& x = *state->getX();
     fnormals.resize(nbElement);
     vnormals.resize(x.size());
@@ -231,7 +231,7 @@ void CudaVisualModel< TDataTypes >::drawVisual()
 {
     if (!getContext()->getShowVisualModels()) return;
 
-    if (!topology || !state) return;
+    if (!topology || !state || !state->getX()->size()) return;
 
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
