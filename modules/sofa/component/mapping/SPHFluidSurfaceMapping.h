@@ -48,7 +48,7 @@ namespace mapping
 using namespace sofa::component::container;
 
 template <class InDataTypes, class OutDataTypes>
-class SPHFluidSurfaceMappingGridTypes : public SpatialGridTypes<typename InDataTypes::Coord>
+class SPHFluidSurfaceMappingGridTypes : public SpatialGridTypes<InDataTypes>
 {
 public:
     typedef forcefield::SPHFluidForceField<InDataTypes> ParticleField;

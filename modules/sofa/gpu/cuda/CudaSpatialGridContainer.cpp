@@ -22,7 +22,7 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#include <sofa/component/container/SpatialGridContainer.inl>
+#include <sofa/gpu/cuda/CudaSpatialGridContainer.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -35,32 +35,21 @@ namespace container
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::gpu::cuda;
 using namespace core::componentmodel::behavior;
 
 
-SOFA_DECL_CLASS(SpatialGridContainer)
+SOFA_DECL_CLASS(CudaSpatialGridContainer)
 
-int SpatialGridContainerClass = core::RegisterObject("Hashing spatial grid container, used for SPH fluids for instance.")
-#ifndef SOFA_FLOAT
-        .add< SpatialGridContainer<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< SpatialGridContainer<Vec3fTypes> >()
-#endif
+int SpatialGridContainerCudaClass = core::RegisterObject("GPU support using CUDA.")
+        .add< SpatialGridContainer<CudaVec3fTypes> >()
         ;
 
-#ifndef SOFA_FLOAT
-template class SpatialGridContainer< Vec3dTypes >;
-template class SpatialGrid< SpatialGridTypes< Vec3dTypes > >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SpatialGridContainer< Vec3fTypes >;
-template class SpatialGrid< SpatialGridTypes< Vec3fTypes > >;
-#endif
+template class SpatialGridContainer< CudaVec3fTypes >;
+template class SpatialGrid< SpatialGridTypes< CudaVec3fTypes > >;
 
 } // namespace container
 
 } // namespace component
 
 } // namespace sofa
-

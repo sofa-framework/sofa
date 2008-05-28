@@ -11,7 +11,7 @@ namespace gpu
 namespace cuda
 {
 
-SOFA_DECL_CLASS(CudaCudaVisualModel)
+SOFA_DECL_CLASS(CudaVisualModel)
 
 int CudaVisualModelClass = core::RegisterObject("Rendering of meshes based on CUDA")
         .add< component::visualmodel::CudaVisualModel<CudaVec3fTypes> >()
