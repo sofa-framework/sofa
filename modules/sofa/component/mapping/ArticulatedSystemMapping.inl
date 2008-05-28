@@ -56,7 +56,7 @@ void ArticulatedSystemMapping<BasicMapping>::init()
 template <class BasicMapping>
 void ArticulatedSystemMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    std::cout<<"Apply"<<std::endl;
+    //std::cout<<"Apply"<<std::endl;
     // Copy the root position if a rigid root model is present
     if (rootModel)
     {
@@ -107,13 +107,13 @@ void ArticulatedSystemMapping<BasicMapping>::apply( typename Out::VecCoord& out,
             }
         }
     }
-    std::cout<<"EndApply"<<std::endl;
+    //std::cout<<"EndApply"<<std::endl;
 }
 
 template <class BasicMapping>
 void ArticulatedSystemMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in, const typename InRoot::VecDeriv* inroot )
 {
-    std::cout<<"ApplyJ"<<std::endl;
+    //std::cout<<"ApplyJ"<<std::endl;
     OutVecCoord& xto = *this->toModel->getX();
     // Copy the root position if a rigid root model is present
     if (inroot)
@@ -163,13 +163,13 @@ void ArticulatedSystemMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out
 
         }
     }
-    std::cout<<"End ApplyJ"<<std::endl;
+    //std::cout<<"End ApplyJ"<<std::endl;
 }
 
 template <class BasicMapping>
 void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in, typename InRoot::VecDeriv* outroot )
 {
-    std::cout<<"ApplyJT"<<std::endl;
+    //std::cout<<"ApplyJT"<<std::endl;
     OutVecCoord& xto = *this->toModel->getX();
 
     OutVecDeriv fObjects6DBuf = in;
@@ -217,14 +217,14 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecDeriv& out
     {
         (*outroot)[outroot->size()-1] += fObjects6DBuf[0];
     }
-    std::cout<<"End ApplyJT"<<std::endl;
+    //std::cout<<"End ApplyJT"<<std::endl;
 
 }
 
 template <class BasicMapping>
 void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in, typename InRoot::VecConst* outRoot )
 {
-    std::cout<<" ApplyJT const"<<std::endl;
+    //std::cout<<" ApplyJT const"<<std::endl;
 
     OutVecCoord& xto = *this->toModel->getX();
 
@@ -299,7 +299,7 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out
     }
 
 
-    std::cout<<"End ApplyJT const"<<std::endl;
+    //std::cout<<"End ApplyJT const"<<std::endl;
 
 }
 
