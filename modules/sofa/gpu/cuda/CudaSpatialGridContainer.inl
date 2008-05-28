@@ -51,8 +51,10 @@ namespace cuda
 
 extern "C"
 {
-    void SpatialGridContainer3f_updateGrid(int cellBits, float cellWidth, int nbPoints, void* particleHash, void* sortTmp, void* cellStart, void* x);
-    void SpatialGridContainer3f1_updateGrid(int cellBits, float cellWidth, int nbPoints, void* particleHash, void* sortTmp, void* cellStart, void* x);
+    void SpatialGridContainer3f_updateGrid(int cellBits, float cellWidth, int nbPoints, void* particleHash, void* sortTmp, void* cellStart, const void* x);
+    void SpatialGridContainer3f1_updateGrid(int cellBits, float cellWidth, int nbPoints, void* particleHash, void* sortTmp, void* cellStart, const void* x);
+    void SpatialGridContainer3f_reorderData(int nbPoints, const void* particleHash, void* sorted, const void* x);
+    void SpatialGridContainer3f1_reorderData(int nbPoints, const void* particleHash, void* sorted, const void* x);
 }
 
 } // namespace cuda
@@ -72,7 +74,7 @@ using namespace sofa::helper;
 
 template<class TCoord, class TDeriv, class TReal>
 SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > >::SpatialGrid(Real cellWidth)
-    : cellWidth(cellWidth), invCellWidth(1/cellWidth)
+    : cellWidth(cellWidth), invCellWidth(1/cellWidth), lastX(NULL)
 {
     cellBits = 16;
     nbCells = 1<<cellBits;
@@ -96,20 +98,68 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
     std::cerr << "TODO: SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > >::reorderIndices(helper::vector<unsigned int>* old2new, helper::vector<unsigned int>* new2old)"<<std::endl;
 }
 
+template<>
+void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3fTypes > >::kernel_updateGrid(int cellBits, float cellWidth, int nbPoints, void* particleHash, void* sortTmp, void* cellStart, const void* x)
+{
+    gpu::cuda::SpatialGridContainer3f_updateGrid(cellBits, cellWidth, nbPoints, particleHash, sortTmp, cellStart, x);
+}
+
+template<>
+void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3f1Types > >::kernel_updateGrid(int cellBits, float cellWidth, int nbPoints, void* particleHash, void* sortTmp, void* cellStart, const void* x)
+{
+    gpu::cuda::SpatialGridContainer3f1_updateGrid(cellBits, cellWidth, nbPoints, particleHash, sortTmp, cellStart, x);
+}
+
+template<>
+void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3fTypes > >::kernel_reorderData(int nbPoints, const void* particleHash, void* sorted, const void* x)
+{
+    gpu::cuda::SpatialGridContainer3f_reorderData(nbPoints, particleHash, sorted, x);
+}
+
+template<>
+void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3f1Types > >::kernel_reorderData(int nbPoints, const void* particleHash, void* sorted, const void* x)
+{
+    gpu::cuda::SpatialGridContainer3f1_reorderData(nbPoints, particleHash, sorted, x);
+}
+
 template<class TCoord, class TDeriv, class TReal>
 void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > >::update(const VecCoord& x)
 {
+    lastX = &x;
     data.clear();
     int nbPoints = x.size();
     particleHash.fastResize(nbPoints);
     sortTmp.fastResize(nbPoints);
-    cellStart.resize(nbCells);
-
+    cellStart.fastResize(nbCells);
+    sortedPos.fastResize(nbPoints);
+    kernel_updateGrid(cellBits, cellWidth, nbPoints, particleHash.deviceWrite(), sortTmp.deviceWrite(), cellStart.deviceWrite(), x.deviceRead());
+    kernel_reorderData(nbPoints, particleHash.deviceRead(), sortedPos.deviceWrite(), x.deviceRead());
 }
 
 template<class TCoord, class TDeriv, class TReal>
 void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > >::draw()
 {
+    if (!lastX) return;
+    int nbPoints = particleHash.size();
+    glDisable(GL_LIGHTING);
+    glColor4f(1,1,1,1);
+    glPointSize(3);
+    glBegin(GL_POINTS);
+    for (int i=0; i<nbPoints; i++)
+    {
+        unsigned int cell = particleHash[i][0];
+        //unsigned int p = particleHash[i][1];
+        //if (cell != 0 && cell != 65535)
+        //    std::cout << i << ": "<<p<<" -> "<<cell<<", "<<(*lastX)[p]<<" -> "<<sortedPos[i]<<std::endl;
+        int r = cell&3;
+        int g = (cell>>2)&3;
+        int b = (cell>>4)&3;
+        glColor4ub(63+r*64,63+g*64,63+b*64,255);
+        glVertex3fv(sortedPos[i].ptr());
+        //glVertex3fv((*lastX)[p].ptr());
+    }
+    glEnd();
+    glPointSize(1);
 }
 
 } // namespace container

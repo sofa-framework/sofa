@@ -678,6 +678,7 @@ SpatialGridContainer<DataTypes>::SpatialGridContainer()
     : grid(NULL)
     , d_cellWidth(initData(&d_cellWidth, (Real)1.0, "cellWidth", "Width each cell in the grid. If it is used to compute neighboors, it should be greater that the max radius considered."))
     , d_showGrid(initData(&d_showGrid, false, "showGrid", "activate rendering of the grid"))
+    , d_autoUpdate(initData(&d_autoUpdate, false, "autoUpdate", "Automatically update the grid at each iteration."))
     , d_sortPoints(initData(&d_sortPoints, false, "sortPoints", "Sort points depending on which cell they are in the grid. This is required for efficient collision detection."))
     , mstate(NULL)
 {
@@ -778,6 +779,11 @@ void SpatialGridContainer<DataTypes>::handleEvent(sofa::core::objectmodel::Event
         if (d_sortPoints.getValue())
         {
             sortPoints();
+        }
+        else if (d_autoUpdate.getValue())
+        {
+            if (mstate)
+                updateGrid(*mstate->getX());
         }
     }
 }

@@ -46,8 +46,10 @@ namespace cuda
 
 extern "C"
 {
-    void SpatialGridContainer3f_updateGrid(int cellBits, float cellWidth, int nbPoints, void* particleHash, void* sortTmp, void* cellStart, void* x);
-    void SpatialGridContainer3f1_updateGrid(int cellBits, float cellWidth, int nbPoints, void* particleHash, void* sortTmp, void* cellStart, void* x);
+    void SpatialGridContainer3f_updateGrid(int cellBits, float cellWidth, int nbPoints, void* particleHash, void* sortTmp, void* cellStart, const void* x);
+    void SpatialGridContainer3f1_updateGrid(int cellBits, float cellWidth, int nbPoints, void* particleHash, void* sortTmp, void* cellStart, const void* x);
+    void SpatialGridContainer3f_reorderData(int nbPoints, const void* particleHash, void* sorted, const void* x);
+    void SpatialGridContainer3f1_reorderData(int nbPoints, const void* particleHash, void* sorted, const void* x);
 }
 
 #define USE_TEX  1
@@ -99,12 +101,13 @@ __device__ int3 calcGridPos(float4 p)
 // calculate address in grid from position
 __device__ uint calcGridHash(int3 p)
 {
-    //return (p.x<<20)^(p.y<<10)^(p.z);
-    //return (p.x)^(p.y)^(p.z);
+    //return ((p.x<<10)^(p.y<<5)^(p.z)) & gridParams.cellMask;
+    //return ((p.x)^(p.y)^(p.z)) & gridParams.cellMask;
     const unsigned int p0 = 73856093; // large prime numbers
     const unsigned int p1 = 19349663;
     const unsigned int p2 = 83492791;
     return (__mul24(p0,p.x)^__mul24(p1,p.y)^__mul24(p2,p.z)) & gridParams.cellMask;
+    //return (p.x) & gridParams.cellMask;
 }
 
 // calculate address in grid from position
@@ -119,14 +122,62 @@ __device__ uint calcGridHash(float4 p)
     return calcGridHash(calcGridPos(p));
 }
 
+__device__ __inline__ float3 getPos3(const float4* pos, int index0, int index)
+{
+    float4 p = pos[index];
+    return make_float3(p.x,p.y,p.z);
+}
+
+__shared__ float ftemp[BSIZE*3];
+
+__device__ __inline__ float3 getPos3(const float3* pos, int index0, int index)
+{
+    //return pos[index];
+    int index03 = __umul24(index0,3);
+    int index3 = __umul24(threadIdx.x,3);
+    ftemp[threadIdx.x] = ((const float*)pos)[index03+threadIdx.x];
+    ftemp[threadIdx.x+BSIZE] = ((const float*)pos)[index03+threadIdx.x+BSIZE];
+    ftemp[threadIdx.x+2*BSIZE] = ((const float*)pos)[index03+threadIdx.x+2*BSIZE];
+    __syncthreads();
+    return make_float3(ftemp[index3],ftemp[index3+1],ftemp[index3+2]);
+}
+
+__device__ __inline__ float4 getPos4(const float4* pos, int index0, int index)
+{
+    return pos[index];
+}
+
+__device__ __inline__ float4 getPos4(const float3* pos, int index0, int index)
+{
+    int index3 = __umul24(threadIdx.x,3);
+    pos += index0;
+    ftemp[threadIdx.x] = ((const float*)pos)[threadIdx.x];
+    ftemp[threadIdx.x+BSIZE] = ((const float*)pos)[threadIdx.x+BSIZE];
+    ftemp[threadIdx.x+2*BSIZE] = ((const float*)pos)[threadIdx.x+2*BSIZE];
+    __syncthreads();
+    return make_float4(ftemp[index3],ftemp[index3+1],ftemp[index3+2],0.0f);
+}
+
+__device__ __inline__ float4 getPos4(const float4* pos, int index)
+{
+    return pos[index];
+}
+
+__device__ __inline__ float4 getPos4(const float3* pos, int index)
+{
+    float3 p = pos[index];
+    return make_float4(p.x,p.y,p.z,1.0f);
+}
+
 // calculate grid hash value for each particle
 template<class TIn>
 __global__ void
 calcHashD(const TIn* pos,
-        uint2*  particleHash)
+        uint2*  particleHash, int n)
 {
-    int index = __mul24(blockIdx.x, blockDim.x) + threadIdx.x;
-    TIn p = pos[index];
+    int index0 = __mul24(blockIdx.x, blockDim.x);
+    int index = index0 + threadIdx.x;
+    float3 p = getPos3(pos,index0,index);
 
     // get address in grid
     int3 gridPos = calcGridPos(p);
@@ -140,34 +191,57 @@ calcHashD(const TIn* pos,
 // one thread per particle
 __global__ void
 findCellStartD(const uint2* particleHash,
-        uint * cellStart)
+        uint * cellStart, int n)
 {
     uint i = __mul24(blockIdx.x, blockDim.x) + threadIdx.x;
-
-    volatile uint2 particle = particleHash[i];
-
-    if (i > 0)
+    if (i < n)
     {
-        volatile uint2 prevParticle = particleHash[i-1];
-        if (particle.x != prevParticle.x)
+        volatile uint2 particle = particleHash[i];
+
+        if (i > 0)
+        {
+            volatile uint2 prevParticle = particleHash[i-1];
+            if (particle.x != prevParticle.x)
+            {
+                cellStart[ particle.x ] = i;
+            }
+        }
+        else
         {
             cellStart[ particle.x ] = i;
         }
     }
-    else
+}
+
+// rearrange particle data into sorted order
+template<class TIn>
+__global__ void
+reorderDataD(const uint2*  particleHash,  // particle id sorted by hash
+        const TIn* oldPos,
+        float4* sortedPos, int n
+            )
+{
+    int index0 = __mul24(blockIdx.x, blockDim.x);
+    int index = index0 + threadIdx.x;
+    if (index < n)
     {
-        cellStart[ particle.x ] = i;
+        volatile uint2 sortedData = particleHash[index];
+        //float4 pos = getPos4(oldPos,index0,index);
+        float4 pos = getPos4(oldPos,sortedData.y);
+        sortedPos[index] = pos;
     }
 }
+
+
 //////////////////////
 // CPU-side methods //
 //////////////////////
 
-void SpatialGridContainer3f_updateGrid(int cellBits, float cellWidth, int nbPoints, void* particleHash, void* sortTmp, void* cellStart, void* x)
+void SpatialGridContainer3f_updateGrid(int cellBits, float cellWidth, int nbPoints, void* particleHash, void* sortTmp, void* cellStart, const void* x)
 {
     GridParams p;
     p.cellWidth = cellWidth;
-    p.invCellWidth = 1/cellWidth;
+    p.invCellWidth = 1.0f/cellWidth;
     p.cellMask = (1<<cellBits)-1;
     cudaMemcpyToSymbol(gridParams, &p, sizeof(GridParams));
     cudaMemset(cellStart, -1, (1<<cellBits)*sizeof(int));
@@ -176,26 +250,26 @@ void SpatialGridContainer3f_updateGrid(int cellBits, float cellWidth, int nbPoin
     {
         dim3 threads(BSIZE,1);
         dim3 grid((nbPoints+BSIZE-1)/BSIZE,1);
-        calcHashD<float3><<< grid, threads >>>((const float3*)x, (uint2*)particleHash);
+        calcHashD<float3><<< grid, threads >>>((const float3*)x, (uint2*)particleHash, nbPoints);
     }
 
     // Then sort it
 
-    RadixSort((KeyValuePair*)particleHash, (KeyValuePair*)sortTmp, nbPoints, cellBits);
+    //RadixSort((KeyValuePair*)particleHash, (KeyValuePair*)sortTmp, nbPoints, cellBits);
 
     // Then find the start of each cell
     {
         dim3 threads(BSIZE,1);
         dim3 grid((nbPoints+BSIZE-1)/BSIZE,1);
-        findCellStartD<<< grid, threads >>>((const uint2*)particleHash, (uint*)cellStart);
+        findCellStartD<<< grid, threads >>>((const uint2*)particleHash, (uint*)cellStart, nbPoints);
     }
 }
 
-void SpatialGridContainer3f1_updateGrid(int cellBits, float cellWidth, int nbPoints, void* particleHash, void* sortTmp, void* cellStart, void* x)
+void SpatialGridContainer3f1_updateGrid(int cellBits, float cellWidth, int nbPoints, void* particleHash, void* sortTmp, void* cellStart, const void* x)
 {
     GridParams p;
     p.cellWidth = cellWidth;
-    p.invCellWidth = 1/cellWidth;
+    p.invCellWidth = 1.0f/cellWidth;
     p.cellMask = (1<<cellBits)-1;
     cudaMemcpyToSymbol(gridParams, &p, sizeof(GridParams));
     cudaMemset(cellStart, -1, (1<<cellBits)*sizeof(int));
@@ -204,7 +278,7 @@ void SpatialGridContainer3f1_updateGrid(int cellBits, float cellWidth, int nbPoi
     {
         dim3 threads(BSIZE,1);
         dim3 grid((nbPoints+BSIZE-1)/BSIZE,1);
-        calcHashD<float4><<< grid, threads >>>((const float4*)x, (uint2*)particleHash);
+        calcHashD<float4><<< grid, threads >>>((const float4*)x, (uint2*)particleHash, nbPoints);
     }
 
     // Then sort it
@@ -215,8 +289,22 @@ void SpatialGridContainer3f1_updateGrid(int cellBits, float cellWidth, int nbPoi
     {
         dim3 threads(BSIZE,1);
         dim3 grid((nbPoints+BSIZE-1)/BSIZE,1);
-        findCellStartD<<< grid, threads >>>((const uint2*)particleHash, (uint*)cellStart);
+        findCellStartD<<< grid, threads >>>((const uint2*)particleHash, (uint*)cellStart, nbPoints);
     }
+}
+
+void SpatialGridContainer3f_reorderData(int nbPoints, const void* particleHash, void* sorted, const void* x)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((nbPoints+BSIZE-1)/BSIZE,1);
+    reorderDataD<float3><<< grid, threads >>>((const uint2*)particleHash, (const float3*)x, (float4*)sorted, nbPoints);
+}
+
+void SpatialGridContainer3f1_reorderData(int nbPoints, const void* particleHash, void* sorted, const void* x)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((nbPoints+BSIZE-1)/BSIZE,1);
+    reorderDataD<float4><<< grid, threads >>>((const uint2*)particleHash, (const float4*)x, (float4*)sorted, nbPoints);
 }
 
 #if defined(__cplusplus) && CUDA_VERSION != 2000
