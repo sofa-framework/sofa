@@ -20,9 +20,6 @@ int OglTetrahedralModelClass = sofa::core::RegisterObject("Tetrahedral model for
 #ifndef SOFA_DOUBLE
         .add< OglTetrahedralModel<Vec3fTypes> >()
 #endif
-#ifdef SOFA_GPU_CUDA
-        .add< OglTetrahedralModel<sofa::gpu::cuda::CudaVec3fTypes> >()
-#endif
         ;
 
 #ifndef SOFA_FLOAT
@@ -30,9 +27,6 @@ template class OglTetrahedralModel<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 template class OglTetrahedralModel<Vec3fTypes>;
-#endif
-#ifdef SOFA_GPU_CUDA
-template class OglTetrahedralModel<sofa::gpu::cuda::CudaVec3fTypes>;
 #endif
 
 }

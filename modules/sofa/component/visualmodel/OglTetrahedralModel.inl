@@ -109,8 +109,6 @@ bool OglTetrahedralModel<DataTypes>::addBBox(double* minBBox, double* maxBBox)
             if (maxBBox[2] < v[2]) maxBBox[2] = v[2];
         }
     }
-
-
     return true;
 }
 
