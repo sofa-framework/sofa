@@ -293,6 +293,7 @@ public:
     Grid* grid;
     Data<Real> d_cellWidth;
     Data<bool> d_showGrid;
+    Data<bool> d_autoUpdate;
     Data<bool> d_sortPoints;
 
     /// Pre-construction check method called by ObjectFactory.
