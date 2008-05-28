@@ -49,6 +49,10 @@ int main(int argc, char** argv)
     float dilate = 0.0f;
     int tesselate = 0;
     bool sphere = false;
+    bool dist = false;
+    int res = 16;
+    int rx=0,ry=0,rz=0;
+    float border = 0.25f;
     ftl::CmdLine cmd("Usage: meshconv [options] mesh.input [mesh.output]");
     cmd.opt("normalize",'n',"transform points so that the center is at <0,0,0> and the max coodinate is 1",&normalize);
     cmd.opt("flip",'f',"flip normals",&flip);
@@ -62,6 +66,12 @@ int main(int argc, char** argv)
     cmd.opt("dilate",'d',"dilate (i.e. displace vertices of the given distance along their normals)",&dilate);
     cmd.opt("tesselate",'a',"tesselate (split each edge in 2 resursivly n times)",&tesselate);
     cmd.opt("sphere",'S',"consider the mesh as a sphere for tesselation",&sphere);
+    cmd.opt("dist",'D',"compute distance field",&dist);
+    cmd.opt("res",'R',"resolution of distance field",&res);
+    cmd.opt("rx",'X',"X resolution of distance field",&rx);
+    cmd.opt("ry",'Y',"Y resolution of distance field",&ry);
+    cmd.opt("rz",'Z',"Z resolution of distance field",&rz);
+    cmd.opt("border",'B',"distance field border size relative to the object's BBox size (or negative for exact size)",&border);
     bool error=false;
     if (!cmd.parse(argc,argv,&error))
         return error?1:0;
@@ -156,7 +166,7 @@ int main(int argc, char** argv)
     {
         bool closed = obj.isClosed();
         std::cout << "Mesh is "<<(closed?"":"NOT ")<<"closed."<<std::endl;
-        if (!closed)
+        if (closemesh && !closed)
         {
             obj.calcFlip();
             std::cout << "Closing mesh..."<<std::endl;
@@ -173,6 +183,27 @@ int main(int argc, char** argv)
         std::cout << "Tesselating mesh..."<<std::endl;
         tesselateMesh(obj, tesselate, sphere);
     }
+
+    if (dist)
+    {
+        if (!rx) rx = res;
+        if (!ry) ry = res;
+        if (!rz) rz = res;
+        std::cout << "Flipping mesh..."<<std::endl;
+        obj.calcFlip();
+        obj.calcEdges();
+        bool closed = obj.isClosed();
+        std::cout << "Mesh is "<<(closed?"":"NOT ")<<"closed."<<std::endl;
+        if (!closed)
+        {
+            std::cout << "Closing mesh..."<<std::endl;
+            obj.close();
+            std::cout << "Mesh is "<<(obj.isClosed()?"":"NOT ")<<"closed."<<std::endl;
+        }
+        std::cout << "Computing "<<rx<<'x'<<ry<<'x'<<rz<<" DistMap..."<<std::endl;
+        obj.calcDistMap(rx,ry,rz,(border<0 ? -border : obj.calcBBox().size()*border));
+    }
+
 
     if (wnormals)
         obj.setAttrib(Mesh::MESH_POINTS_NORMAL,true);
