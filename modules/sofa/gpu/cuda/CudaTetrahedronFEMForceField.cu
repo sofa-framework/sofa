@@ -83,8 +83,9 @@ public:
 // GPU-side methods //
 //////////////////////
 
-#define USE_TEXTURE_X false
-#define USE_TEXTURE_ELEMENT_FORCE false
+//#define USE_TEXTURE_X false
+//#define USE_TEXTURE_ELEMENT_FORCE false
+
 /*
 template<typename real, class TIn>
 class CudaTetrahedronFEMForceFieldInputTextures
@@ -186,7 +187,7 @@ public:
     }
 };
 
-#if USE_TEXTURE_X
+#if defined(USE_TEXTURE_X)
 
 static texture<float,1,cudaReadModeElementType> tex_3f_x;
 static texture<float,1,cudaReadModeElementType> tex_3f_dx;
@@ -281,7 +282,7 @@ public:
 #endif
 
 
-#if USE_TEXTURE_ELEMENT_FORCE
+#if defined(USE_TEXTURE_ELEMENT_FORCE)
 
 static texture<float,1,cudaReadModeElementType> tex_3f_eforce;
 

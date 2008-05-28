@@ -37,17 +37,17 @@ extern "C" {
     extern int myprintf(const char* fmt, ...);
     extern const char* mygetenv(const char* name);
 
+    enum MycudaVerboseLevel
+    {
+        LOG_NONE = 0,
+        LOG_ERR = 1,
+        LOG_INFO = 2,
+        LOG_TRACE = 3
+    };
+
+    extern MycudaVerboseLevel mycudaVerboseLevel;
 }
 
-enum MycudaVerboseLevel
-{
-    LOG_NONE = 0,
-    LOG_ERR = 1,
-    LOG_INFO = 2,
-    LOG_TRACE = 3
-};
-
-extern MycudaVerboseLevel mycudaVerboseLevel;
 
 #if defined(__cplusplus)
 } // namespace cuda

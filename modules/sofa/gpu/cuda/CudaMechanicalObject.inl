@@ -611,7 +611,10 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
                 }
             std::cout << endl;
         }
-        m->core::componentmodel::behavior::BaseMechanicalState::vMultiOp(ops);
+        {
+            using namespace sofa::core::componentmodel::behavior;
+            m->BaseMechanicalState::vMultiOp(ops);
+        }
     }
 }
 

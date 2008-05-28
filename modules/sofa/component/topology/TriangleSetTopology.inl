@@ -2587,58 +2587,6 @@ Real areaProduct(const defaulttype::Vec<1,Real>& , const defaulttype::Vec<1,Real
 }
 
 
-void snapping_test_triangle(double epsilon, double alpha0, double alpha1, double alpha2, bool& is_snap_0, bool& is_snap_1, bool& is_snap_2)
-{
-
-    is_snap_0=false;
-    is_snap_1=false;
-    is_snap_2=false;
-
-    if(alpha0>=alpha1 && alpha0>=alpha2)
-    {
-
-        is_snap_0=(alpha1+alpha2<epsilon);
-
-    }
-    else
-    {
-        if(alpha1>=alpha0 && alpha1>=alpha2)
-        {
-
-            is_snap_1=(alpha0+alpha2<epsilon);
-
-        }
-        else   // alpha2>=alpha0 && alpha2>=alpha1
-        {
-
-            is_snap_2=(alpha0+alpha1<epsilon);
-        }
-
-    }
-
-}
-
-void snapping_test_edge(double epsilon, double alpha0, double alpha1, bool& is_snap_0, bool& is_snap_1)
-{
-
-    is_snap_0=false;
-    is_snap_1=false;
-
-    if(alpha0>=alpha1)
-    {
-
-        is_snap_0=(alpha1<epsilon);
-
-    }
-    else   // alpha1>=alpha0
-    {
-
-        is_snap_1=(alpha0<epsilon);
-    }
-
-}
-
-
 template< class DataTypes>
 typename DataTypes::Real TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleArea( const unsigned int i) const
 {

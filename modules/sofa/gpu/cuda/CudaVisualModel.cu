@@ -43,7 +43,10 @@ extern "C"
 // GPU-side methods //
 //////////////////////
 
-#define USE_TEXTURE false
+// #define USE_TEXTURE false
+#ifdef USE_TEXTURE
+#undef USE_TEXTURE
+#endif
 
 // no texture is used unless this template is specialized
 template<typename real, class TIn>
@@ -71,7 +74,7 @@ public:
 };
 
 
-#if USE_TEXTURE
+#ifdef USE_TEXTURE
 
 static texture<float,1,cudaReadModeElementType> tex_3f_x;
 static texture<float,1,cudaReadModeElementType> tex_3f_n;
