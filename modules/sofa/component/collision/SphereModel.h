@@ -83,7 +83,7 @@ public:
 protected:
     Data< VecReal > radius;
 
-    SReal defaultRadius;
+    Data< SReal > defaultRadius;
     class Loader;
 public:
 
