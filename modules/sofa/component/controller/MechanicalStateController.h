@@ -38,6 +38,8 @@
 #define SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_H
 
 #include <sofa/component/controller/BaseController.h>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/Quat.h>
 
 namespace sofa { namespace core { namespace componentmodel { namespace behavior { template<class DataTypes> class MechanicalState; } } } }
 
@@ -50,6 +52,8 @@ namespace component
 
 namespace controller
 {
+
+using namespace sofa::defaulttype;
 
 /**
  * @brief MechanicalStateController Class
@@ -161,6 +165,8 @@ protected:
     int eventX, eventY; ///< Mouse current position in pixel
     double omniX, omniY, omniZ;
     int mouseSavedPosX, mouseSavedPosY; ///< Last recorded mouse position
+    Vector3 position;
+    Quat orientation;
 };
 
 } // namespace controller

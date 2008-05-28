@@ -26,6 +26,8 @@
 #define SOFA_CORE_OBJECTMODEL_OMNIEVENT_H
 
 #include <sofa/core/objectmodel/Event.h>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/Quat.h>
 
 namespace sofa
 {
@@ -35,6 +37,8 @@ namespace core
 
 namespace objectmodel
 {
+
+using namespace sofa::defaulttype;
 
 /**
  * @brief OmniEvent Class
@@ -59,6 +63,7 @@ public:
      * @brief Default constructor.
      */
     OmniEvent(State state, double posX, double posY, double posZ);
+    OmniEvent(State state, Vector3 position, Quat orientation);
 
     /**
      * @brief Default destructor.
@@ -73,12 +78,16 @@ public:
     double getPosY(void) const {return m_posY;};
     double getPosZ(void) const {return m_posZ;};
     State getState(void) const {return m_state;};
+    Vector3 getPosition(void) const {return m_position;}
+    Quat getOrientation(void) const {return m_orientation;}
     //}@
 
 private:
 
     State m_state; ///< Mouse State on the event propagation.
     double m_posX, m_posY, m_posZ; ///< Mouse coordinates.
+    Vector3 m_position;
+    Quat m_orientation;
 };
 
 } // namespace objectmodel
