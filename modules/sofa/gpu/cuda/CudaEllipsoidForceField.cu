@@ -22,10 +22,10 @@ struct GPUEllipsoid
 extern "C"
 {
     void EllipsoidForceFieldCuda3f_addForce(unsigned int size, GPUEllipsoid* ellipsoid, float* tmp, void* f, const void* x, const void* v);
-    void EllipsoidForceFieldCuda3f_addDForce(unsigned int size, GPUEllipsoid* ellipsoid, const float* tmp, void* f, const void* dx); //, const void* dfdx);
+    void EllipsoidForceFieldCuda3f_addDForce(unsigned int size, GPUEllipsoid* ellipsoid, const float* tmp, void* f, const void* dx, double factor); //, const void* dfdx);
 
     void EllipsoidForceFieldCuda3f1_addForce(unsigned int size, GPUEllipsoid* ellipsoid, float* tmp, void* f, const void* x, const void* v);
-    void EllipsoidForceFieldCuda3f1_addDForce(unsigned int size, GPUEllipsoid* ellipsoid, const float* tmp, void* f, const void* dx); //, const void* dfdx);
+    void EllipsoidForceFieldCuda3f1_addDForce(unsigned int size, GPUEllipsoid* ellipsoid, const float* tmp, void* f, const void* dx, double factor); //, const void* dfdx);
 
     int EllipsoidForceFieldCuda3f_getNTmp();
 }
@@ -197,7 +197,7 @@ __global__ void EllipsoidForceFieldCuda3f1_addForce_kernel(int size, GPUEllipsoi
     f[index] = temp;
 }
 
-__global__ void EllipsoidForceFieldCuda3f_addDForce_kernel(int size, GPUEllipsoid ellipsoid, const float* tmp, float* df, const float* dx)
+__global__ void EllipsoidForceFieldCuda3f_addDForce_kernel(int size, const float* tmp, float* df, const float* dx, float factor)
 {
     int index0 = umul24(blockIdx.x,BSIZE);
     int index0_3 = umul24(blockIdx.x,BSIZE*3); //index0*3;
@@ -235,9 +235,9 @@ __global__ void EllipsoidForceFieldCuda3f_addDForce_kernel(int size, GPUEllipsoi
 
     if (d<0)
     {
-        dforce.x = dot(mx,dxi);
-        dforce.y = dot(my,dxi);
-        dforce.z = dot(mz,dxi);
+        dforce.x = dot(mx,dxi)*factor;
+        dforce.y = dot(my,dxi)*factor;
+        dforce.z = dot(mz,dxi)*factor;
     }
 
     __syncthreads();
@@ -253,7 +253,7 @@ __global__ void EllipsoidForceFieldCuda3f_addDForce_kernel(int size, GPUEllipsoi
     df[index+2*BSIZE] += temp[index+2*BSIZE];
 }
 
-__global__ void EllipsoidForceFieldCuda3f1_addDForce_kernel(int size, GPUEllipsoid ellipsoid, const float* tmp, CudaVec4<float>* df, const CudaVec4<float>* dx)
+__global__ void EllipsoidForceFieldCuda3f1_addDForce_kernel(int size, const float* tmp, CudaVec4<float>* df, const CudaVec4<float>* dx, float factor)
 {
     int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
     tmp += umul24(blockIdx.x,BSIZE*NTMP);
@@ -275,9 +275,9 @@ __global__ void EllipsoidForceFieldCuda3f1_addDForce_kernel(int size, GPUEllipso
 
     if (d<0)
     {
-        dforce.x = dot(mx,CudaVec3<float>::make(dxi));
-        dforce.y = dot(my,CudaVec3<float>::make(dxi));
-        dforce.z = dot(mz,CudaVec3<float>::make(dxi));
+        dforce.x = dot(mx,CudaVec3<float>::make(dxi))*factor;
+        dforce.y = dot(my,CudaVec3<float>::make(dxi))*factor;
+        dforce.z = dot(mz,CudaVec3<float>::make(dxi))*factor;
     }
 
     CudaVec4<float> dfi = df[index];
@@ -305,18 +305,18 @@ void EllipsoidForceFieldCuda3f1_addForce(unsigned int size, GPUEllipsoid* ellips
     EllipsoidForceFieldCuda3f1_addForce_kernel<<< grid, threads >>>(size, *ellipsoid, tmp, (CudaVec4<float>*)f, (const CudaVec4<float>*)x, (const CudaVec4<float>*)v);
 }
 
-void EllipsoidForceFieldCuda3f_addDForce(unsigned int size, GPUEllipsoid* ellipsoid, const float* tmp, void* df, const void* dx) //, const void* dfdx)
+void EllipsoidForceFieldCuda3f_addDForce(unsigned int size, GPUEllipsoid* ellipsoid, const float* tmp, void* df, const void* dx, double factor) //, const void* dfdx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    EllipsoidForceFieldCuda3f_addDForce_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, *ellipsoid, tmp, (float*)df, (const float*)dx);
+    EllipsoidForceFieldCuda3f_addDForce_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, /* *ellipsoid, */ tmp, (float*)df, (const float*)dx, (float)factor);
 }
 
-void EllipsoidForceFieldCuda3f1_addDForce(unsigned int size, GPUEllipsoid* ellipsoid, const float* tmp, void* df, const void* dx) //, const void* dfdx)
+void EllipsoidForceFieldCuda3f1_addDForce(unsigned int size, GPUEllipsoid* ellipsoid, const float* tmp, void* df, const void* dx, double factor) //, const void* dfdx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    EllipsoidForceFieldCuda3f1_addDForce_kernel<<< grid, threads >>>(size, *ellipsoid, tmp, (CudaVec4<float>*)df, (const CudaVec4<float>*)dx);
+    EllipsoidForceFieldCuda3f1_addDForce_kernel<<< grid, threads >>>(size, /* *ellipsoid, */ tmp, (CudaVec4<float>*)df, (const CudaVec4<float>*)dx, (float)factor);
 }
 
 #if defined(__cplusplus) && CUDA_VERSION != 2000

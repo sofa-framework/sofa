@@ -91,7 +91,7 @@ void EllipsoidForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, 
 }
 
 template<class DataTypes>
-void EllipsoidForceField<DataTypes>::addDForce(VecDeriv& df1, const VecDeriv& dx1)
+void EllipsoidForceField<DataTypes>::addDForce(VecDeriv& df1, const VecDeriv& dx1, double kFactor, double /*bFactor*/)
 {
     df1.resize(dx1.size());
     const sofa::helper::vector<Contact>& contacts = this->contacts.getValue();
@@ -101,6 +101,7 @@ void EllipsoidForceField<DataTypes>::addDForce(VecDeriv& df1, const VecDeriv& dx
         assert((unsigned)c.index<dx1.size());
         Deriv du = dx1[c.index];
         Deriv dforce = c.m * du;
+        dforce *= kFactor;
         df1[c.index] += dforce;
     }
 }

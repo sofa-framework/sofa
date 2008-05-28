@@ -43,7 +43,7 @@ template <>
 void EllipsoidForceField<gpu::cuda::CudaVec3fTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
 template <>
-void EllipsoidForceField<gpu::cuda::CudaVec3fTypes>::addDForce (VecDeriv& df, const VecDeriv& dx);
+void EllipsoidForceField<gpu::cuda::CudaVec3fTypes>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 
 template <>
 class EllipsoidForceFieldInternalData<gpu::cuda::CudaVec3f1Types>
@@ -57,7 +57,7 @@ template <>
 void EllipsoidForceField<gpu::cuda::CudaVec3f1Types>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
 template <>
-void EllipsoidForceField<gpu::cuda::CudaVec3f1Types>::addDForce (VecDeriv& df, const VecDeriv& dx);
+void EllipsoidForceField<gpu::cuda::CudaVec3f1Types>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 
 } // namespace forcefield
 
