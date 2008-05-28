@@ -39,9 +39,12 @@ SOFA_LINK_CLASS(CudaMasterContactSolver)
 
 #endif // SOFA_DEV
 
+extern "C"
+{
 //MycudaVerboseLevel mycudaVerboseLevel = LOG_ERR;
-MycudaVerboseLevel mycudaVerboseLevel = LOG_INFO;
+    MycudaVerboseLevel mycudaVerboseLevel = LOG_INFO;
 //MycudaVerboseLevel mycudaVerboseLevel = LOG_TRACE;
+}
 
 void mycudaLogError(int err, const char* src)
 {
