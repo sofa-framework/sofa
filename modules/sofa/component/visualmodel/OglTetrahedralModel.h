@@ -6,10 +6,6 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
-#ifdef SOFA_GPU_CUDA
-#include <sofa/gpu/cuda/CudaTypes.h>
-#endif
-
 namespace sofa
 {
 namespace component
@@ -23,9 +19,6 @@ class OglTetrahedralModel : public core::VisualModel
 public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
-#ifdef SOFA_GPU_CUDA
-    typedef sofa::gpu::cuda::CudaVec3fTypes CudaVec3fTypes;
-#endif
 
 private:
     core::componentmodel::topology::BaseMeshTopology* topo;
@@ -44,7 +37,8 @@ public:
 
 };
 
+}
+}
+}
+
 #endif /*OGLTETRAHEDRALMODEL_H_*/
-}
-}
-}

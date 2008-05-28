@@ -49,6 +49,8 @@ HEADERS += mycuda.h \
            CudaPenalityContactForceField.inl \
            CudaVisualModel.h \
            CudaVisualModel.inl \
+           CudaTetrahedralVisualModel.h \
+           CudaTetrahedralVisualModel.inl \
            CudaTestForceField.h
 
 SOURCES += mycuda.cpp \
@@ -70,6 +72,7 @@ SOURCES += mycuda.cpp \
            CudaPointModel.cpp \
            CudaPenalityContactForceField.cpp \
            CudaVisualModel.cpp \
+           CudaTetrahedralVisualModel.cpp \
            CudaTestForceField.cpp \
            CudaSetTopology.cpp
 
