@@ -83,12 +83,14 @@ public:
     void clear() {}
 };
 
-template<class TCoord>
+template<class TDataTypes>
 class SpatialGridTypes
 {
 public:
-    typedef TCoord                     Coord;
-    typedef typename Coord::value_type Real;
+    typedef TDataTypes DataTypes;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Real Real;
     //typedef EmptyClass                 CellData;
     typedef EmptyClass                 GridData;
     typedef EmptyClass                 ParticleField;
@@ -118,8 +120,9 @@ template<class DataTypes>
 class SpatialGrid
 {
 public:
-    typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::CellData CellData;
     typedef typename DataTypes::GridData GridData;
     //typedef typename DataTypes::NeighborListener NeighborListener;
@@ -133,6 +136,16 @@ public:
     void add(int i, const Coord& pos, bool allNeighbors = false);
 
     void end();
+
+    void update(const VecCoord& x)
+    {
+        begin();
+        for (unsigned int i=0; i<x.size(); i++)
+        {
+            add(i, x[i]);
+        }
+        end();
+    }
 
     void draw();
 
@@ -275,7 +288,7 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
-    typedef SpatialGridTypes<Coord> GridTypes;
+    typedef SpatialGridTypes<DataTypes> GridTypes;
     typedef SpatialGrid< GridTypes > Grid;
     Grid* grid;
     Data<Real> d_cellWidth;
@@ -303,12 +316,13 @@ public:
     Grid* getGrid() { return grid; }
     void updateGrid(const VecCoord& x)
     {
-        grid->begin();
-        for (unsigned int i=0; i<x.size(); i++)
-        {
-            grid->add(i, x[i]);
-        }
-        grid->end();
+        grid->update(x);
+        //grid->begin();
+        //for (unsigned int i=0;i<x.size();i++)
+        //{
+        //    grid->add(i, x[i]);
+        //}
+        //grid->end();
     }
     template<class NeighborListener>
     void findNeighbors(NeighborListener* listener, Real r)
