@@ -58,7 +58,7 @@ public:
     typedef typename Out::Coord Coord;
     typedef typename Out::Deriv Deriv;
     //typedef typename Coord::value_type Real;
-
+    defaulttype::Quat currentRotation;
 public:
     Data<defaulttype::Vector3> pivot;
     Data<defaulttype::Quat> rotation;

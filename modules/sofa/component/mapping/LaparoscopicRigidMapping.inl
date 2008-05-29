@@ -217,21 +217,24 @@ template <class BasicMapping>
 void LaparoscopicRigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     out.resize(1);
-    out[0].getOrientation() = in[0].getOrientation() * rotation.getValue();
-    out[0].getCenter() = pivot.getValue() + in[0].getOrientation().rotate(Vector3(in[0].getTranslation(),0,0));
+    out[0].getOrientation() = in[0].getOrientation(); // * rotation.getValue();
+    out[0].getCenter() = pivot.getValue() + in[0].getOrientation().rotate(Vector3(0,0,in[0].getTranslation()));
+    currentRotation = in[0].getOrientation();
 }
 
 template <class BasicMapping>
-void LaparoscopicRigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& /*in*/ )
+void LaparoscopicRigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
     out.resize(1);
-    out[0].getVOrientation() = Vector3(); //rotation * in[0].getVOrientation();
-    out[0].getVCenter() = Vector3(); //in[0].getOrientation().rotate(Vec<3,Real>(in[0].getVTranslation(),0,0));
+    out[0].getVOrientation() = in[0].getVOrientation(); //rotation * in[0].getVOrientation();
+    out[0].getVCenter() = currentRotation.rotate(Vector3(0,0,in[0].getVTranslation()));
 }
 
 template <class BasicMapping>
-void LaparoscopicRigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& /*out*/, const typename Out::VecDeriv& /*in*/ )
+void LaparoscopicRigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
+    out[0].getVOrientation() += in[0].getVOrientation(); //rotation * in[0].getVOrientation();
+    out[0].getVTranslation() += dot(currentRotation.rotate(Vector3(0,0,1)), in[0].getVCenter());
 }
 
 template <class BasicMapping>
