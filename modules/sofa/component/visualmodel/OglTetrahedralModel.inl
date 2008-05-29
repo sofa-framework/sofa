@@ -48,7 +48,7 @@ void OglTetrahedralModel<DataTypes>::init()
 }
 
 template<class DataTypes>
-void OglTetrahedralModel<DataTypes>::drawVisual()
+void OglTetrahedralModel<DataTypes>::drawTransparent()
 {
 //	glDisable(GL_CULL_FACE);
 //	glBegin(GL_LINES_ADJACENCY_EXT);
