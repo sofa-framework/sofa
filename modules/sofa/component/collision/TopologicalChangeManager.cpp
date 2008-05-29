@@ -64,6 +64,28 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::core::Collisio
 
         simulation::tree::GNode *node_curr = dynamic_cast<simulation::tree::GNode*>(topo_curr->getContext());
 
+        std::set< unsigned int > items;
+        items.insert(ind_curr);
+        // also add neighbor triangles
+
+        sofa::core::componentmodel::topology::BaseMeshTopology* mesh = elem2.getCollisionModel()->getContext()->getMeshTopology();
+        if (mesh)
+        {
+            std::cout << "getTriangle("<<ind_curr<<")"<<std::endl;
+            sofa::core::componentmodel::topology::BaseMeshTopology::Triangle t = mesh->getTriangle(ind_curr);
+            for (int i=0; i<3; ++i)
+            {
+                std::cout << "getTriangleVertexShell("<<t[i]<<"):"<<std::flush;
+                const sofa::core::componentmodel::topology::BaseMeshTopology::VertexTriangles& vt = mesh->getTriangleVertexShell(t[i]);
+                for (sofa::core::componentmodel::topology::BaseMeshTopology::VertexTriangles::const_iterator it = vt.begin(); it != vt.end(); ++it)
+                {
+                    std::cout << " "<<*it<<std::flush;
+                    items.insert(*it);
+                }
+                std::cout << std::endl;
+            }
+        }
+
         bool is_topoMap = true;
 
         while(is_topoMap)
@@ -78,8 +100,17 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::core::Collisio
                 {
 
                     is_topoMap = true;
-                    unsigned int ind_glob = topoMap->getGlobIndex(ind_curr);
-                    ind_curr = topoMap->getFromIndex(ind_glob);
+                    //unsigned int ind_glob = topoMap->getGlobIndex(ind_curr);
+                    //ind_curr = topoMap->getFromIndex(ind_glob);
+                    std::set< unsigned int > loc_items = items;
+                    items.clear();
+                    for (std::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
+                    {
+                        unsigned int ind_glob = topoMap->getGlobIndex(*it);
+                        unsigned int ind = topoMap->getFromIndex(ind_glob);
+                        std::cout << *it << " -> "<<ind_glob << " -> "<<ind<<std::endl;
+                        items.insert(ind);
+                    }
 
                     topo_curr = dynamic_cast<sofa::core::componentmodel::topology::BaseTopology *>(topoMap->getFrom());
                     node_curr = dynamic_cast<simulation::tree::GNode*>(topo_curr->getContext());
@@ -88,14 +119,25 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::core::Collisio
                 }
             }
         }
-
-        sofa::helper::vector< unsigned int > items;
-        items.push_back(ind_curr);
-
-        topo_curr->getTopologyAlgorithms()->removeItems(items);
+        sofa::helper::vector<unsigned int> vitems;
+        vitems.reserve(items.size());
+        vitems.insert(vitems.end(), items.rbegin(), items.rend());
+        topo_curr->getTopologyAlgorithms()->removeItems(vitems);
+        /*
+        for (std::set< unsigned int >::const_reverse_iterator it=items.rbegin(); it != items.rend(); ++it)
+        {
+            vitems.clear();
+            vitems.push_back(*it);
+            std::cout << "removeItems("<<vitems<<")"<<std::endl;
+            topo_curr->getTopologyAlgorithms()->removeItems(vitems);
+        topo_curr->getTopologyAlgorithms()->notifyEndingEvent();
+            topo_curr->propagateTopologicalChanges();
+        }
+        */
 
         topo_curr->getTopologyAlgorithms()->notifyEndingEvent();
         topo_curr->propagateTopologicalChanges();
+
 
         /*
         //// For APPLICATION 1 : generate, from the input file mesh, the ouptut file mesh with the optimal vertex permutation according to the Reverse CuthillMckee algorithm

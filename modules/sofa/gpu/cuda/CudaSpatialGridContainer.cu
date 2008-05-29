@@ -82,9 +82,9 @@ __constant__ GridParams gridParams;
 __device__ int3 calcGridPos(float3 p)
 {
     int3 i;
-    i.x = floor(p.x * gridParams.invCellWidth);
-    i.y = floor(p.y * gridParams.invCellWidth);
-    i.z = floor(p.z * gridParams.invCellWidth);
+    i.x = __float2int_rd(p.x * gridParams.invCellWidth);
+    i.y = __float2int_rd(p.y * gridParams.invCellWidth);
+    i.z = __float2int_rd(p.z * gridParams.invCellWidth);
     return i;
 }
 
@@ -92,9 +92,9 @@ __device__ int3 calcGridPos(float3 p)
 __device__ int3 calcGridPos(float4 p)
 {
     int3 i;
-    i.x = floor(p.x * gridParams.invCellWidth);
-    i.y = floor(p.y * gridParams.invCellWidth);
-    i.z = floor(p.z * gridParams.invCellWidth);
+    i.x = __float2int_rd(p.x * gridParams.invCellWidth);
+    i.y = __float2int_rd(p.y * gridParams.invCellWidth);
+    i.z = __float2int_rd(p.z * gridParams.invCellWidth);
     return i;
 }
 
