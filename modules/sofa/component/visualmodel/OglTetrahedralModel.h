@@ -32,7 +32,7 @@ public:
     virtual ~OglTetrahedralModel();
 
     void init();
-    void drawVisual();
+    void drawTransparent();
     bool addBBox(double* minBBox, double* maxBBox);
 
     /// Pre-construction check method called by ObjectFactory.
