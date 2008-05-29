@@ -35,6 +35,11 @@ extern "C"
     void MeshMapperCuda3f1_apply(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in);
     void MeshMapperCuda3f_3f1_apply(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in);
     void MeshMapperCuda3f1_3f_apply(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in);
+
+    void MeshMapperCuda3f_applyPEq(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in);
+    void MeshMapperCuda3f1_applyPEq(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in);
+    void MeshMapperCuda3f_3f1_applyPEq(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in);
+    void MeshMapperCuda3f1_3f_applyPEq(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in);
 }
 
 } // namespace cuda
@@ -48,6 +53,11 @@ namespace mapping
 {
 
 using namespace gpu::cuda;
+
+
+////////////////////////////////////////////////////////////
+//////////          RegularGridTopology           //////////
+////////////////////////////////////////////////////////////
 
 
 template <typename VecIn, typename VecOut>
@@ -298,15 +308,9 @@ void BarycentricMapperRegularGridTopology<CudaVec3fTypes,CudaVec3f1Types>::draw(
 }
 
 
-
-
-
-
-
-
-
-
-
+////////////////////////////////////////////////////////////
+//////////            BaseMeshTopology            //////////
+////////////////////////////////////////////////////////////
 
 
 template <typename VecIn, typename VecOut>
@@ -316,10 +320,19 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
     map.resize(((size2+BSIZE-1)/BSIZE)*maxNIn2);
     if (maxNIn2 > maxNIn)
     {
-        int n = (size2+BSIZE-1)/BSIZE;
-        for (int i=n-1; i>=0; --i)
+        int n = (size+BSIZE-1)/BSIZE;
+        for (int b=n-1; b>0; --b)
             for (int j=maxNIn-1; j>=0; --j)
-                map[i*maxNIn2+j]=map[i*maxNIn+j];
+            {
+                // copy old data
+                map[b*maxNIn2+j]=map[b*maxNIn+j];
+                // clear other data
+                for (int i=0; i<BSIZE; ++i)
+                {
+                    map[b*maxNIn+j].d[i].i = 0;
+                    map[b*maxNIn+j].d[i].val = 0.0f;
+                }
+            }
     }
     size = size2;
     maxNIn = maxNIn2;
@@ -605,6 +618,7 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
                 addPointInCube(index-c0, coefs.ptr());
         }
     }
+    std::cout << "CUDA: BarycentricMapperMeshTopology: map initialized, "<<size<<" output points, max "<<maxNIn<<" inputs points per output, "<<map.size()*BSIZE<<" contributions total."<<std::endl;
 }
 
 
@@ -613,9 +627,8 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
 {
     if (size > 0 && maxNOut == 0)
     {
-        const unsigned int insize = topology->getNbPoints();
         // compute mapT
-        std::vector<int> nout(insize);
+        std::vector<int> nout;
         int nb = (size+BSIZE-1)/BSIZE;
         for (int b=0; b<nb; b++)
         {
@@ -625,12 +638,17 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
                 for (int i=0; i<n; i++)
                 {
                     int index = map[b*maxNIn+j].d[i].i-1;
+                    std::cout << "map["<<b<<"*"<<maxNIn<<"+"<<j<<"].index["<<i<<"]="<<index<<std::endl;
                     if (index >= 0)
+                    {
+                        if ((unsigned)index >= nout.size()) nout.resize(index+1);
                         nout[index]++;
+                    }
                 }
             }
         }
-        for (unsigned int i=0; i<insize; i++)
+        insize = nout.size();
+        for (int i=0; i<insize; i++)
             if (nout[i] > maxNOut) maxNOut = nout[i];
         int nbloc = (insize+BSIZE-1)/BSIZE;
         std::cout << "CudaBarycentricMapping: mapT with "<<maxNOut<<" entries per DOF and "<<nbloc<<" blocs."<<std::endl;
@@ -684,8 +702,7 @@ void BarycentricMapperMeshTopology<CudaVec3fTypes,CudaVec3fTypes>::applyJT( In::
 {
     if (size == 0) return;
     calcMapT();
-    unsigned int insize = out.size();
-    MeshMapperCuda3f_apply(insize, maxNOut, mapT.deviceRead(), out.deviceWrite(), in.deviceRead());
+    MeshMapperCuda3f_applyPEq(insize, maxNOut, mapT.deviceRead(), out.deviceWrite(), in.deviceRead());
 }
 
 template<>
@@ -721,8 +738,7 @@ void BarycentricMapperMeshTopology<CudaVec3f1Types,CudaVec3f1Types>::applyJT( In
 {
     if (size == 0) return;
     calcMapT();
-    unsigned int insize = out.size();
-    MeshMapperCuda3f1_apply(insize, maxNOut, mapT.deviceRead(), out.deviceWrite(), in.deviceRead());
+    MeshMapperCuda3f1_applyPEq(insize, maxNOut, mapT.deviceRead(), out.deviceWrite(), in.deviceRead());
 }
 
 template<>
@@ -759,8 +775,7 @@ void BarycentricMapperMeshTopology<CudaVec3f1Types,CudaVec3fTypes>::applyJT( In:
 {
     if (size == 0) return;
     calcMapT();
-    unsigned int insize = out.size();
-    MeshMapperCuda3f_3f1_apply(insize, maxNOut, mapT.deviceRead(), out.deviceWrite(), in.deviceRead());
+    MeshMapperCuda3f_3f1_applyPEq(insize, maxNOut, mapT.deviceRead(), out.deviceWrite(), in.deviceRead());
 }
 
 template<>
@@ -796,8 +811,7 @@ void BarycentricMapperMeshTopology<CudaVec3fTypes,CudaVec3f1Types>::applyJT( In:
 {
     if (size == 0) return;
     calcMapT();
-    unsigned int insize = out.size();
-    MeshMapperCuda3f1_3f_apply(insize, maxNOut, mapT.deviceRead(), out.deviceWrite(), in.deviceRead());
+    MeshMapperCuda3f1_3f_applyPEq(insize, maxNOut, mapT.deviceRead(), out.deviceWrite(), in.deviceRead());
 }
 
 template<>

@@ -34,6 +34,11 @@ extern "C"
     void MeshMapperCuda3f1_apply(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in);
     void MeshMapperCuda3f_3f1_apply(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in);
     void MeshMapperCuda3f1_3f_apply(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in);
+
+    void MeshMapperCuda3f_applyPEq(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in);
+    void MeshMapperCuda3f1_applyPEq(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in);
+    void MeshMapperCuda3f_3f1_applyPEq(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in);
+    void MeshMapperCuda3f1_3f_applyPEq(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in);
 }
 
 struct __align__(16) GPUCubeData
@@ -234,13 +239,80 @@ __global__ void MeshMapperCuda3f_apply_kernel(unsigned int size, unsigned int ma
     __syncthreads();
 
     out += umul24(index0,3);
+    out[index1        ] = temp[index1        ];
+    out[index1+  BSIZE] = temp[index1+  BSIZE];
+    out[index1+2*BSIZE] = temp[index1+2*BSIZE];
+}
+
+template<class TIn>
+__global__ void MeshMapperCuda3f1_apply_kernel(unsigned int size, unsigned int maxN, const GPULinearMap* map, CudaVec4<float>* out, const TIn* in)
+{
+    const int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    const int index1 = threadIdx.x;
+    const int index = index0+index1;
+
+    CudaVec3<float> res = CudaVec3<float>::make(0,0,0);
+    //res += *in * mapT[index0+index1].f;
+
+    map+=umul24(index0,maxN)+index1;
+    for (int s = 0; s < maxN; s++)
+    {
+        GPULinearMap data = *map;
+        map+=BSIZE;
+        if (data.i != 0)
+            res += CudaVec3<float>::make(in[data.i-1]) * data.f;
+    }
+
+    CudaVec4<float> o;
+    o.x = res.x;
+    o.y = res.y;
+    o.z = res.z;
+    o.w = 0.0f;
+    out[index] = o;
+}
+
+
+
+
+
+
+template<class TIn>
+__global__ void MeshMapperCuda3f_applyPEq_kernel(unsigned int size, unsigned int maxN, const GPULinearMap* map, float* out, const TIn* in)
+{
+    const int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    const int index1 = threadIdx.x;
+
+    //! Dynamically allocated shared memory to reorder global memory access
+    extern  __shared__  float temp[];
+
+    CudaVec3<float> res = CudaVec3<float>::make(0,0,0);
+    //res += *in * mapT[index0+index1].f;
+
+    map+=umul24(index0,maxN)+index1;
+    for (int s = 0; s < maxN; s++)
+    {
+        GPULinearMap data = *map;
+        map+=BSIZE;
+        if (data.i != 0)
+            res += CudaVec3<float>::make(in[data.i-1]) * data.f;
+    }
+
+    const int index3 = umul24(index1,3);
+
+    temp[index3  ] = res.x;
+    temp[index3+1] = res.y;
+    temp[index3+2] = res.z;
+
+    __syncthreads();
+
+    out += umul24(index0,3);
     out[index1        ] += temp[index1        ];
     out[index1+  BSIZE] += temp[index1+  BSIZE];
     out[index1+2*BSIZE] += temp[index1+2*BSIZE];
 }
 
 template<class TIn>
-__global__ void MeshMapperCuda3f1_apply_kernel(unsigned int size, unsigned int maxN, const GPULinearMap* map, CudaVec4<float>* out, const TIn* in)
+__global__ void MeshMapperCuda3f1_applyPEq_kernel(unsigned int size, unsigned int maxN, const GPULinearMap* map, CudaVec4<float>* out, const TIn* in)
 {
     const int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
     const int index1 = threadIdx.x;
@@ -362,7 +434,7 @@ void MeshMapperCuda3f_apply(unsigned int size, unsigned int maxN, const void* ma
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    MeshMapperCuda3f_apply_kernel<CudaVec3<float> ><<< grid, threads >>>(size, maxN, (const GPULinearMap*)map, (float*)out, (const CudaVec3<float>*)in);
+    MeshMapperCuda3f_apply_kernel<CudaVec3<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, maxN, (const GPULinearMap*)map, (float*)out, (const CudaVec3<float>*)in);
 }
 
 void MeshMapperCuda3f1_apply(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in)
@@ -383,7 +455,36 @@ void MeshMapperCuda3f1_3f_apply(unsigned int size, unsigned int maxN, const void
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    MeshMapperCuda3f_apply_kernel<CudaVec4<float> ><<< grid, threads >>>(size, maxN, (const GPULinearMap*)map, (float*)out, (const CudaVec4<float>*)in);
+    MeshMapperCuda3f_apply_kernel<CudaVec4<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, maxN, (const GPULinearMap*)map, (float*)out, (const CudaVec4<float>*)in);
+}
+
+
+void MeshMapperCuda3f_applyPEq(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    MeshMapperCuda3f_applyPEq_kernel<CudaVec3<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, maxN, (const GPULinearMap*)map, (float*)out, (const CudaVec3<float>*)in);
+}
+
+void MeshMapperCuda3f1_applyPEq(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    MeshMapperCuda3f1_applyPEq_kernel<CudaVec4<float> ><<< grid, threads >>>(size, maxN, (const GPULinearMap*)map, (CudaVec4<float>*)out, (const CudaVec4<float>*)in);
+}
+
+void MeshMapperCuda3f_3f1_applyPEq(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    MeshMapperCuda3f1_applyPEq_kernel<CudaVec3<float> ><<< grid, threads >>>(size, maxN, (const GPULinearMap*)map, (CudaVec4<float>*)out, (const CudaVec3<float>*)in);
+}
+
+void MeshMapperCuda3f1_3f_applyPEq(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    MeshMapperCuda3f_applyPEq_kernel<CudaVec4<float> ><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, maxN, (const GPULinearMap*)map, (float*)out, (const CudaVec4<float>*)in);
 }
 
 #if defined(__cplusplus) && CUDA_VERSION != 2000
