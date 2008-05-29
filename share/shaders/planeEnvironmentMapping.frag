@@ -2,7 +2,8 @@ varying vec3 normalVec;
 varying vec3 viewVec;
 
 uniform sampler2D planeTexture;
-uniform float altitudeY;
+uniform float altitude;
+uniform int axis; //0 = +X, 1 = +Y, 2 = +Z, 3 = -X, 4 = -Y, 5 = -Z
 
 varying vec4 diffuse,ambientGlobal, ambient, specular;
 varying vec3 lightDir,halfVector,normalView;
@@ -55,18 +56,39 @@ void main()
 	
 	vec3 reflectVec = reflect(viewVec, normalVec);
 	
-	if (reflectVec.y>0.0)
+	bool testAxis = false;
+	float t = 0.0;
+	
+	vec2 subReflectVec = vec2(0.0,0.0);
+	
+	if (axis == 0){
+		testAxis = (reflectVec.x>0.0);
+		t = altitude/reflectVec.x;
+		subReflectVec = reflectVec.yz;
+	}
+	
+	if (axis == 1){
+		testAxis = (reflectVec.y>0.0);
+		t = altitude/reflectVec.y;
+		subReflectVec = reflectVec.xz;
+	}
+	if (axis == 2){
+		testAxis = (reflectVec.z>0.0);
+		t = altitude/reflectVec.z;
+		subReflectVec = reflectVec.xy;
+	}
+	
+	if (testAxis)
 	{
-	
-		float t = altitudeY/reflectVec.y;
-	
 		// Perform a cube map look up.
-        //cube_color = vec3(reflectVec.xz*t+vec2(0.5,0.5),1.0);
-        cube_color = texture2D(planeTexture, reflectVec.xz*t+vec2(0.5,0.5)).rgb;
+        cube_color = texture2D(planeTexture, subReflectVec*t+vec2(0.5,0.5)).rgb;
         cube_color *= specular.xyz;
 
 	}
+	
+	float alpha_color = color.w + cube_color;
 
 	// Write the final pixel.
-	gl_FragColor = vec4(color.xyz+cube_color,1.0); //vec4( mix(base_color, cube_color, reflect_factor), 1.0);
+	gl_FragColor = vec4(color.xyz+cube_color,alpha_color); //vec4( mix(base_color, cube_color, reflect_factor), 1.0);
+
 }
