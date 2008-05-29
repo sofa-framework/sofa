@@ -87,7 +87,7 @@ public:
 protected:
     int maxNIn;
     int maxNOut;
-    int size;
+    int insize,size;
     gpu::cuda::CudaVector< MapData > map;
     gpu::cuda::CudaVector< MapData > mapT;
     core::componentmodel::topology::BaseMeshTopology* topology;
@@ -97,9 +97,9 @@ protected:
 public:
     BarycentricMapperMeshTopology(core::componentmodel::topology::BaseMeshTopology* topology)
         : Inherit(topology)
-        , maxNOut(0), size(0), topology(topology)
+        , maxNIn(0), maxNOut(0), insize(0), size(0), topology(topology)
     {
-        if (topology->getNbHexas()==0) maxNIn = 4;
+        if (topology==NULL || topology->getNbHexas()==0) maxNIn = 4;
         else maxNIn = 8;
     }
 
