@@ -43,6 +43,7 @@ namespace component
 
 using namespace core::componentmodel::behavior;
 using namespace core::objectmodel;
+using sofa::defaulttype::Vector3;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template<class DataTypes>
@@ -88,9 +89,9 @@ protected:
     sofa::helper::vector<unsigned int> constraintId;
 
     bool initialized;
-    SReal translation[3];
-    SReal rotation[3];
-    SReal scale;
+    Data< Vector3 > translation;
+    Data< Vector3> rotation;
+    Data< SReal > scale;
 
     /// @name Integration-related data
     /// @{
@@ -158,9 +159,11 @@ public:
     virtual const VecCoord* getXfree() const { return xfree; }
     virtual const VecDeriv* getVfree()  const { return vfree;  }
 
-    SReal getScale() {return scale;};
+// 	SReal getScale(){return scale.getValue();};
 
     virtual void init();
+    virtual void reinit();
+
     virtual void storeResetState();
 
     virtual void reset();

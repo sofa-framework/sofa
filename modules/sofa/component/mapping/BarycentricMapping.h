@@ -745,17 +745,20 @@ public:
 protected:
 
     typedef TopologyBarycentricMapper<InDataTypes,OutDataTypes> Mapper;
+    typedef BarycentricMapperRegularGridTopology<InDataTypes, OutDataTypes> RegularGridMapper;
 
     Mapper* mapper;
-
+    DataPtr<  RegularGridMapper >* f_grid;
 public:
     BarycentricMapping(In* from, Out* to)
         : Inherit(from, to), mapper(NULL)
-    {}
+    {
+    }
 
     BarycentricMapping(In* from, Out* to, Mapper* mapper)
         : Inherit(from, to), mapper(mapper)
-    {}
+    {
+    }
 
     BarycentricMapping(In* from, Out* to, Topology * topology );
 

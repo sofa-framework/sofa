@@ -77,13 +77,15 @@ int RegularGridTopologyClass = core::RegisterObject("Regular grid in 3D")
 RegularGridTopology::RegularGridTopology(int nx, int ny, int nz)
     : GridTopology(nx, ny, nz),
       min(initData(&min,Vector3(0.0f,0.0f,0.0f),"min", "Min")),
-      max(initData(&max,Vector3(1.0f,1.0f,1.0f),"max", "Max"))
+      max(initData(&max,Vector3(1.0f,1.0f,1.0f),"max", "Max")),
+      p0(initData(&p0,Vector3(0.0f,0.0f,0.0f),"p0", "p0"))
 {
 }
 
 RegularGridTopology::RegularGridTopology()
     : min(initData(&min,Vector3(0.0f,0.0f,0.0f),"min", "Min")),
-      max(initData(&max,Vector3(1.0f,1.0f,1.0f),"max", "Max"))
+      max(initData(&max,Vector3(1.0f,1.0f,1.0f),"max", "Max")),
+      p0(initData(&p0,Vector3(0.0f,0.0f,0.0f),"p0", "p0"))
 {
 }
 
@@ -91,7 +93,8 @@ void RegularGridTopology::setPos(SReal xmin, SReal xmax, SReal ymin, SReal ymax,
 {
     min.setValue(Vector3(xmin,ymin,zmin));
     max.setValue(Vector3(xmax,ymax,zmax));
-    setP0(Vector3(xmin,ymin,zmin));
+    if (!p0.isSet())
+        setP0(Vector3(xmin,ymin,zmin));
     if (n.getValue()[0]>1)
         setDx(Vector3((xmax-xmin)/(n.getValue()[0]-1),0,0));
     else
@@ -122,7 +125,7 @@ Vector3 RegularGridTopology::getPoint(int i) const
 
 Vector3 RegularGridTopology::getPoint(int x, int y, int z) const
 {
-    return p0+dx*x+dy*y+dz*z;
+    return p0.getValue()+dx*x+dy*y+dz*z;
 }
 
 /// return the cube containing the given point (or -1 if not found).
@@ -130,8 +133,7 @@ int RegularGridTopology::findCube(const Vector3& pos)
 {
     if (n.getValue()[0]<2 || n.getValue()[1]<2 || n.getValue()[2]<2)
         return -1;
-
-    Vector3 p = pos-p0;
+    Vector3 p = pos-p0.getValue();
     SReal x = p*dx*inv_dx2;
     SReal y = p*dy*inv_dy2;
     SReal z = p*dz*inv_dz2;
@@ -154,7 +156,7 @@ int RegularGridTopology::findCube(const Vector3& pos)
 int RegularGridTopology::findNearestCube(const Vector3& pos)
 {
     if (n.getValue()[0]<2 || n.getValue()[1]<2 || n.getValue()[2]<2) return -1;
-    Vector3 p = pos-p0;
+    Vector3 p = pos-p0.getValue();
     SReal x = p*dx*inv_dx2;
     SReal y = p*dy*inv_dy2;
     SReal z = p*dz*inv_dz2;
@@ -172,10 +174,12 @@ int RegularGridTopology::findNearestCube(const Vector3& pos)
 int RegularGridTopology::findCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
 {
     if (n.getValue()[0]<2 || n.getValue()[1]<2 || n.getValue()[2]<2) return -1;
-    Vector3 p = pos-p0;
+    Vector3 p = pos-p0.getValue();
+
     SReal x = p*dx*inv_dx2;
     SReal y = p*dy*inv_dy2;
     SReal z = p*dz*inv_dz2;
+
     int ix = int(x+1000000)-1000000; // Do not round toward 0...
     int iy = int(y+1000000)-1000000;
     int iz = int(z+1000000)-1000000;
@@ -197,7 +201,7 @@ int RegularGridTopology::findCube(const Vector3& pos, SReal& fx, SReal &fy, SRea
 int RegularGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
 {
     if (n.getValue()[0]<2 || n.getValue()[1]<2 || n.getValue()[2]<2) return -1;
-    Vector3 p = pos-p0;
+    Vector3 p = pos-p0.getValue();
     SReal x = p*dx*inv_dx2;
     SReal y = p*dy*inv_dy2;
     SReal z = p*dz*inv_dz2;

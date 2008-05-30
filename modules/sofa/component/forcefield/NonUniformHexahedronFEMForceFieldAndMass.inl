@@ -146,8 +146,8 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
                 finer->_rotations.resize( finer->_indexedElements->size() );
                 finer->_rotatedInitialElements.resize(finer->_indexedElements->size());
 
-                Real scale(0.0);
-                if( MechanicalObject<DataTypes>*mo=dynamic_cast<MechanicalObject<DataTypes>*>(this->mstate)) scale= (Real)mo->getScale();
+                Real scale(1.0);
+// 				if( MechanicalObject<DataTypes>*mo=dynamic_cast<MechanicalObject<DataTypes>*>(this->mstate)) scale= (Real)mo->getScale();
 
                 int nbp = finer->_sparseGrid->getNbPoints();
                 finer->_initialPoints.beginEdit()->resize(nbp);

@@ -27,6 +27,7 @@
 
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/core/componentmodel/topology/Topology.h>
+#include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 
 #include <sofa/defaulttype/VecTypes.h>
@@ -54,7 +55,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , f_Xfree ( new XDataPtr<DataTypes>(&xfree,  "free position coordinates of the degrees of freedom") )
     , f_Vfree ( new VDataPtr<DataTypes>(&vfree,  "free velocity coordinates of the degrees of freedom") )
     , f_X0( new XDataPtr<DataTypes>(&x0, "rest position coordinates of the degrees of freedom") )
-//       , restScale(initData(&restScale, (SReal)1.0, "restScale","optional scaling of rest position coordinates (to simulated pre-existing internal tension)"))
+
 {
     //HACK
     if (!restScale.isSet())
@@ -66,7 +67,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     f_V->beginEdit();
     this->addField(f_F, "force");
     f_F->beginEdit();
-    this->addField(f_Dx, "dx");
+    this->addField(f_Dx, "derivX");
     f_Dx->beginEdit();
     this->addField(f_Xfree, "free_position");
     f_Xfree->beginEdit();
@@ -74,6 +75,12 @@ MechanicalObject<DataTypes>::MechanicalObject()
     f_Vfree->beginEdit();
     this->addField(f_X0,"rest_position");
     f_X0->beginEdit();
+
+    restScale = this->initData(&restScale, (SReal)1.0, "restScale","optional scaling of rest position coordinates (to simulated pre-existing internal tension)");
+    translation=this->initData(&translation, Vector3(), "translation", "Translation of the DOFs");
+    rotation=this->initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs");
+    scale=this->initData(&scale, (SReal)1.0, "scale", "Scale of the DOFs");
+
     /*    x = new VecCoord;
       v = new VecDeriv;*/
     internalForces = f; // = new VecDeriv;
@@ -89,13 +96,6 @@ MechanicalObject<DataTypes>::MechanicalObject()
     setVecCoord(VecId::restPosition().index, this->x0);
     setVecCoord(VecId::freePosition().index, this->xfree);
     setVecDeriv(VecId::freeVelocity().index, this->vfree);
-    translation[0]=0.0;
-    translation[1]=0.0;
-    translation[2]=0.0;
-    rotation[0]=0.0;
-    rotation[1]=0.0;
-    rotation[2]=0.0;
-    scale = 1.0;
     /*    cerr<<"MechanicalObject<DataTypes>::MechanicalObject, x.size() = "<<x->size()<<endl;
       cerr<<"MechanicalObject<DataTypes>::MechanicalObject, v.size() = "<<v->size()<<endl;*/
 }
@@ -188,18 +188,15 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
     if (arg->getAttribute("scale")!=NULL)
     {
         this->applyScale(atof(arg->getAttribute("scale")));
+        scale.setValue((SReal)1.0);
     }
     if (arg->getAttribute("rx")!=NULL || arg->getAttribute("ry")!=NULL || arg->getAttribute("rz")!=NULL)
     {
-        Vec<3, Real> rotationVector = Vec<3,Real>((Real)(atof(arg->getAttribute("rx","0.0"))),(Real)(atof(arg->getAttribute("ry","0.0"))),(Real)(atof(arg->getAttribute("rz","0.0"))))*3.141592653/180.0;
-        rotation[0] = rotationVector[0];
-        rotation[1] = rotationVector[1];
-        rotation[2] = rotationVector[2];
-        this->applyRotation(defaulttype::Quat::createFromRotationVector( rotationVector));
+        rotation.setValue(Vector3((SReal)atof(arg->getAttribute("rx","0.0")), (SReal)atof(arg->getAttribute("ry","0.0")), (SReal)atof(arg->getAttribute("rz","0.0"))));
     }
     if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
     {
-        this->applyTranslation((Real)atof(arg->getAttribute("dx","0.0")), (Real)atof(arg->getAttribute("dy","0.0")), (Real)atof(arg->getAttribute("dz","0.0")));
+        translation.setValue(Vector3((Real)atof(arg->getAttribute("dx","0.0")), (Real)atof(arg->getAttribute("dy","0.0")), (Real)atof(arg->getAttribute("dz","0.0"))));
     }
 }
 
@@ -440,9 +437,6 @@ void MechanicalObject<DataTypes>::resize(const int size)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyTranslation (const double dx,const double dy,const double dz)
 {
-    this->translation[0]+=(Real)dx;
-    this->translation[1]+=(Real)dy;
-    this->translation[2]+=(Real)dz;
     VecCoord& x = *this->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {
@@ -481,7 +475,6 @@ bool MechanicalObject<Vec1fTypes>::addBBox(double* minBBox, double* maxBBox);
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyScale(const double s)
 {
-    this->scale*=(Real)s;
     VecCoord& x = *this->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {
@@ -560,15 +553,14 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
 template <class DataTypes>
 void MechanicalObject<DataTypes>::computeNewPoint( const unsigned int i, const sofa::helper::vector< double >& m_x)
 {
-
     this->resize(i+1);
 
-    DataTypes::set((*getX())[i], m_x[0]*scale+translation[0], m_x[1]*scale+translation[1], m_x[2]*scale+translation[2]);
-    DataTypes::set((*getXfree())[i], m_x[0]*scale+translation[0], m_x[1]*scale+translation[1], m_x[2]*scale+translation[2]);
-    DataTypes::set((*getX0())[i], m_x[0]*scale*restScale.getValue()+translation[0], m_x[1]*scale*restScale.getValue()+translation[1], m_x[2]*scale*restScale.getValue()+translation[2]);
+    DataTypes::set((*getX())[i], m_x[0]*scale.getValue()+translation.getValue()[0], m_x[1]*scale.getValue()+translation.getValue()[1], m_x[2]*scale.getValue()+translation.getValue()[2]);
+    DataTypes::set((*getXfree())[i], m_x[0]*scale.getValue()+translation.getValue()[0], m_x[1]*scale.getValue()+translation.getValue()[1], m_x[2]*scale.getValue()+translation.getValue()[2]);
+    DataTypes::set((*getX0())[i], m_x[0]*scale.getValue()*restScale.getValue()+translation.getValue()[0], m_x[1]*scale.getValue()*restScale.getValue()+translation.getValue()[1], m_x[2]*scale.getValue()*restScale.getValue()+translation.getValue()[2]);
 
     if (reset_position != NULL)
-        DataTypes::set((*reset_position)[i], m_x[0]*scale+translation[0], m_x[1]*scale+translation[1], m_x[2]*scale+translation[2]);
+        DataTypes::set((*reset_position)[i], m_x[0]*scale.getValue()+translation.getValue()[0], m_x[1]*scale.getValue()+translation.getValue()[1], m_x[2]*scale.getValue()+translation.getValue()[2]);
 }
 
 // Force the position of a point (and force its velocity to zero value)
@@ -692,22 +684,18 @@ void MechanicalObject<DataTypes>::init()
         if (topo!=NULL && topo->hasPos() && topo->getContext() == this->getContext())
         {
             int nbp = topo->getNbPoints();
-// 	      std::cout<<"Setting "<<nbp<<" points from topology."<<std::endl;
+//  	      std::cout<<"Setting "<<nbp<<" points from topology. " << this->getName() << " topo : " << topo->getName() <<std::endl;
             this->resize(nbp);
             for (int i=0; i<nbp; i++)
             {
                 (*getX())[i] = Coord();
-                //DataTypes::set((*getX())[i], topo->getPX(i), topo->getPY(i), topo->getPZ(i));
-                DataTypes::set((*getX())[i], topo->getPX(i)*scale, topo->getPY(i)*scale, topo->getPZ(i)*scale);
+                DataTypes::set((*getX())[i], topo->getPX(i), topo->getPY(i), topo->getPZ(i));
             }
-
-            if (rotation[0]!=0.0 || rotation[1]!=0.0 || rotation[2]!=0.0)
-                this->applyRotation(helper::Quater<SReal>::createFromRotationVector( Vec<3,SReal>(rotation[0],rotation[1],rotation[2])));
-
-            if (translation[0]!=0.0 || translation[1]!=0.0 || translation[2]!=0.0)
-                this->applyTranslation( translation[0],translation[1],translation[2]);
         }
     }
+
+    reinit();
+
     if (v0 == NULL) this->v0 = new VecDeriv;
     *this->v0 = *v;
     // free position = position
@@ -729,6 +717,41 @@ void MechanicalObject<DataTypes>::init()
     initialized = true;
 }
 
+
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::reinit()
+{
+    Vector3 p0;
+    sofa::component::topology::RegularGridTopology *grid; this->getContext()->get(grid, BaseContext::Local);
+    if (grid) p0 = grid->getP0();
+
+    if (scale.getValue() != (SReal)1.0)
+    {
+        this->applyScale(scale.getValue());
+        p0 *= scale.getValue();
+    }
+
+    if (rotation.getValue()[0]!=0.0 || rotation.getValue()[1]!=0.0 || rotation.getValue()[2]!=0.0)
+    {
+        Quaternion q=helper::Quater<SReal>::createFromRotationVector( Vec<3,SReal>(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2]));
+        this->applyRotation(q);
+        p0 = q.rotate(p0);
+    }
+
+    if (translation.getValue()[0]!=0.0 || translation.getValue()[1]!=0.0 || translation.getValue()[2]!=0.0)
+    {
+        this->applyTranslation( translation.getValue()[0],translation.getValue()[1],translation.getValue()[2]);
+        p0 += translation.getValue();
+    }
+
+
+    if (grid) grid->setP0(p0);
+
+    translation.setValue(Vector3());
+    rotation.setValue(Vector3());
+    scale.setValue((SReal)1.0);
+}
 template <class DataTypes>
 void MechanicalObject<DataTypes>::storeResetState()
 {
