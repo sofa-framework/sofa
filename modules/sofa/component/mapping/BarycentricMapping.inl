@@ -90,7 +90,6 @@ template <class In, class Out>
 void BarycentricMapperRegularGridTopology<In,Out>::init(const typename Out::VecCoord& out, const typename In::VecCoord& /*in*/)
 {
     int outside = 0;
-
     clear(out.size());
     for (unsigned int i=0; i<out.size(); i++)
     {

@@ -61,7 +61,7 @@ public:
     void setPos(SReal xmin, SReal xmax, SReal ymin, SReal ymax, SReal zmin, SReal zmax);
 
 
-    const Vector3& getP0() const { return p0; }
+    const Vector3& getP0() const { return p0.getValue(); }
     const Vector3& getDx() const { return dx; }
     const Vector3& getDy() const { return dy; }
     const Vector3& getDz() const { return dz; }
@@ -104,7 +104,7 @@ public:
 protected:
     Data< Vector3 > min, max;
     /// Position of point 0
-    Vector3 p0;
+    Data< Vector3 > p0;
     /// Distance between points in the grid. Must be perpendicular to each other
     Vector3 dx,dy,dz;
     SReal inv_dx2, inv_dy2, inv_dz2;

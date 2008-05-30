@@ -1054,6 +1054,10 @@ void ModifyObject::updateValues()
     if (buttonUpdate == NULL // || !buttonUpdate->isEnabled()
        ) return;
 
+
+    saveTextEdit();
+    saveTables();
+
     //Make the update of all the values
     if (node)
     {
@@ -1800,10 +1804,9 @@ void ModifyObject::updateValues()
         else if (Node *n = dynamic_cast< Node *>(node)) n->reinit();
     }
 
-    saveTextEdit();
-    saveTables();
     if (visualContentModified) updateContext(dynamic_cast< Node *>(node));
 
+    updateTables();
     emit (objectUpdated());
     buttonUpdate->setEnabled(false);
     visualContentModified = false;

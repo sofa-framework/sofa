@@ -101,7 +101,7 @@ OglTexture2D::OglTexture2D()
 
 OglTexture2D::~OglTexture2D()
 {
-    delete texture2D;
+    if (!texture2D)delete texture2D;
 }
 
 void OglTexture2D::initVisual()
