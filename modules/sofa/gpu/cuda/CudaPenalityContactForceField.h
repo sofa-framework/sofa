@@ -76,7 +76,7 @@ public:
 
     void addContact(int m1, int m2, const Deriv& norm, Real dist, Real ks, Real mu_s = 0.0f, Real mu_v = 0.0f, int oldIndex = 0);
 
-    void setContacts(Real distance, Real ks, sofa::core::componentmodel::collision::GPUDetectionOutputVector* outputs, defaulttype::Mat3x3f* normXForm = NULL);
+    void setContacts(Real distance, Real ks, sofa::core::componentmodel::collision::GPUDetectionOutputVector* outputs, bool useDistance, defaulttype::Mat3x3f* normXForm = NULL);
 
     virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
 

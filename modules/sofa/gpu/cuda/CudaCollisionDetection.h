@@ -50,7 +50,11 @@ struct GPUDetectionOutput
 {
     int p1;
     Vec3f p2;
-    float distance;
+    union
+    {
+        float distance;
+        int i2;
+    };
     Vec3f normal;
 };
 
