@@ -52,6 +52,7 @@ public:
     Data<double> contactDistance;
     Data<bool> filterIntersection;
     Data<double> angleCone;
+    Data<double> coneFactor;
 
 
     MinProximityIntersection();
