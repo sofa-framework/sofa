@@ -1,5 +1,4 @@
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glut.h>
+#include <GL/glut.h>
 #include "traqueboule.h"
 #include <sofa/helper/ArgumentParser.h>
 #include "BglModeler.h"
@@ -122,7 +121,8 @@ int main(int argc, char** argv)
     MyModeler modeler(&scene);
     /*    modeler.buildOneTetrahedron();
         modeler.buildMixedPendulum();*/
-    scene.load("chain2.xml");
+    modeler.buildSceneWithInitDependencies();
+    //scene.load("chain2.xml");
     scene.init();
     scene.setShowBehaviorModels(true);
     scene.setShowVisualModels(false);

@@ -37,7 +37,7 @@ public:
     typedef BglScene::Hgraph Graph; ///< BGL graph to traverse
     BglScene::H_vertex_node_map& systemMap;      ///< access the System*
 
-    bfs_adapter( sofa::simulation::tree::Visitor* v, BglScene::H_vertex_node_map& s );
+    bfs_adapter( sofa::simulation::Visitor* v, BglScene::H_vertex_node_map& s );
 
     ~bfs_adapter();
 
