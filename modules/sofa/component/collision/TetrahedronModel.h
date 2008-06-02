@@ -71,6 +71,13 @@ public:
     const Vector3& v2() const;
     const Vector3& v3() const;
     const Vector3& v4() const;
+
+    Vector3 getBary(const Vector3& p) const;
+    Vector3 getDBary(const Vector3& v) const;
+
+    Vector3 getCoord(const Vector3& b) const;
+    Vector3 getDCoord(const Vector3& b) const;
+
 };
 
 class TetrahedronModel : public core::CollisionModel
@@ -87,6 +94,14 @@ public:
     friend class Tetrahedron;
 
 protected:
+    struct TetrahedronInfo
+    {
+        Vector3 coord0;
+        Matrix3 coord2bary;
+        Matrix3 bary2coord;
+    };
+
+    sofa::helper::vector<TetrahedronInfo> elems;
     const sofa::helper::vector<topology::Tetrahedron>* tetra;
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
@@ -115,6 +130,7 @@ public:
     virtual void handleTopologyChange();
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
+    Topology* getTopology() { return topology; }
 };
 
 inline Tetrahedron::Tetrahedron(TetrahedronModel* model, int index)
@@ -144,6 +160,11 @@ inline const Vector3& Tetrahedron::v1() const { return (*model->mstate->getV())[
 inline const Vector3& Tetrahedron::v2() const { return (*model->mstate->getV())[(*(model->tetra))[index][1]]; }
 inline const Vector3& Tetrahedron::v3() const { return (*model->mstate->getV())[(*(model->tetra))[index][2]]; }
 inline const Vector3& Tetrahedron::v4() const { return (*model->mstate->getV())[(*(model->tetra))[index][3]]; }
+
+inline Vector3 Tetrahedron::getBary(const Vector3& p) const { return model->elems[index].coord2bary*(p-model->elems[index].coord0); }
+inline Vector3 Tetrahedron::getDBary(const Vector3& v) const { return model->elems[index].coord2bary*(v); }
+inline Vector3 Tetrahedron::getCoord(const Vector3& b) const { return model->elems[index].bary2coord*b + model->elems[index].coord0; }
+inline Vector3 Tetrahedron::getDCoord(const Vector3& b) const { return model->elems[index].bary2coord*b; }
 
 } // namespace collision
 

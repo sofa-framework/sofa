@@ -35,6 +35,7 @@
 #include <sofa/component/collision/RayModel.h>
 #include <sofa/component/collision/SphereTreeModel.h>
 #include <sofa/component/collision/DistanceGridCollisionModel.h>
+#include <sofa/component/collision/TetrahedronModel.h>
 
 namespace sofa
 {
@@ -94,6 +95,7 @@ public:
     //bool testIntersection(Triangle&, Triangle&);
     bool testIntersection(Triangle&, Line&);
     bool testIntersection(Ray&, Triangle&);
+    bool testIntersection(Ray&, Tetrahedron&);
     bool testIntersection(RigidDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&);
     bool testIntersection(RigidDistanceGridCollisionElement&, Point&);
     template<class Sphere>
@@ -120,6 +122,7 @@ public:
     //int computeIntersection(Triangle&, Triangle&, OutputVector*);
     int computeIntersection(Triangle&, Line&, OutputVector*);
     int computeIntersection(Ray&, Triangle&, OutputVector*);
+    int computeIntersection(Ray&, Tetrahedron&, OutputVector*);
     int computeIntersection(RigidDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&, OutputVector*);
     int computeIntersection(RigidDistanceGridCollisionElement&, Point&, OutputVector*);
     template<class Sphere>
