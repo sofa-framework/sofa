@@ -61,7 +61,7 @@ TetrahedronModel::TetrahedronModel()
 void TetrahedronModel::resize(int size)
 {
     this->core::CollisionModel::resize(size);
-    //elems.resize(size);
+    elems.resize(size);
     if (getPrevious() != NULL) getPrevious()->resize(0); // force recomputation of bounding tree
 }
 
@@ -136,7 +136,7 @@ void TetrahedronModel::draw(int index)
 
 void TetrahedronModel::draw()
 {
-    if (getContext()->getShowCollisionModels())
+    if (mstate && topology && getContext()->getShowCollisionModels())
     {
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -169,10 +169,29 @@ void TetrahedronModel::draw()
 void TetrahedronModel::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
+    if (!mstate || !topology) return;
     if (!isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
 
     Vector3 minElem, maxElem;
     const VecCoord& x = *this->mstate->getX();
+
+    for (int i=0; i<size; i++)
+    {
+        Tetrahedron t(this,i);
+        const Vector3& pt1 = x[t.p1Index()];
+        const Vector3& pt2 = x[t.p2Index()];
+        const Vector3& pt3 = x[t.p3Index()];
+        const Vector3& pt4 = x[t.p4Index()];
+        Matrix3 m, minv;
+        m[0] = pt2-pt1;
+        m[1] = pt3-pt1;
+        m[2] = pt4-pt1;
+        m.transpose();
+        minv.invert(m);
+        elems[i].coord0 = pt1;
+        elems[i].bary2coord = m;
+        elems[i].coord2bary = minv;
+    }
 
     if (maxDepth == 0)
     {
