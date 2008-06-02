@@ -42,6 +42,9 @@ public:
 
     int addPointInCube(int cubeIndex, const Real* baryCoords);
 
+    bool isEmpty() { return map.size() == 0; }
+    void setTopology(topology::RegularGridTopology* _topology) { topology = _topology; }
+
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
