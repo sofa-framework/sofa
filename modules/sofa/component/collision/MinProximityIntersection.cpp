@@ -62,6 +62,7 @@ MinProximityIntersection::MinProximityIntersection()
     , contactDistance(initData(&contactDistance, 0.5, "contactDistance","Distance below which a contact is created"))
     , filterIntersection(initData(&filterIntersection, false, "filterIntersection","Intersections are filtered according to their orientation"))
     , angleCone(initData(&angleCone, 0.0, "angleCone","Filtering cone extension angle"))
+    , coneFactor(initData(&coneFactor, 0.5, "coneFactor", "Factor for filtering cone angle computation"))
 {
 }
 
@@ -861,8 +862,6 @@ bool MinProximityIntersection::testValidity(Point &p, const Vector3 &PQ)
     const helper::vector <unsigned int>& edgeVertexShell = topology->getEdgeVertexShell(p.getIndex());
 
 
-#ifdef DYNAMIC_CONE_ANGLE_COMPUTATION
-
     Vector3 nMean;
 
     for (unsigned int i=0; i<triangleVertexShell.size(); i++)
@@ -896,53 +895,22 @@ bool MinProximityIntersection::testValidity(Point &p, const Vector3 &PQ)
         const fixed_array<unsigned int,2>& ped = topology->getEdge(e);
         Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
         l.normalize();
-        double computedAngleCone = dot(nMean , l) / 2;
+        double computedAngleCone = dot(nMean , l) * coneFactor.getValue();
         if (computedAngleCone<0)
             computedAngleCone=0.0;
-        //std::cout << "Point computedAngleCone = " << computedAngleCone << std::endl;
-        //std::cout<< "PQ" <<PQ<< "l"<<l<<std::endl;
-        //std::cout<< "index Point=" << p.getIndex()<< "dot(l , PQ) ="<<dot(l , PQ)<<std::endl;
+        computedAngleCone+=angleCone.getValue();
         if (dot(l , PQ) < -computedAngleCone*PQ.norm())
             return false;
     }
-
-#else
-
-    for (unsigned int i=0; i<edgeVertexShell.size(); i++)
-    {
-        unsigned int e = edgeVertexShell[i];
-        const fixed_array<unsigned int,2>& ped = topology->getEdge(e);
-        Vector3 l = (x[ped[0]]-pt) + (x[ped[1]]-pt);
-        if (dot(l , PQ)< -angleCone.getValue()*PQ.norm()*l.norm())
-            return false;
-    }
-
-    Vector3 nMean;
-
-    for (unsigned int i=0; i<triangleVertexShell.size(); i++)
-    {
-        unsigned int t = triangleVertexShell[i];
-        const fixed_array<unsigned int,3>& ptr = topology->getTriangle(t);
-        Vector3 nCur = (x[ptr[1]]-x[ptr[0]]).cross(x[ptr[2]]-x[ptr[0]]);
-        nCur.normalize();
-        nMean += nCur;
-    }
-
-    nMean.normalize();
-
-#endif
-    //std::cout<< "dot(nMean, PQ) = "<<dot(nMean, PQ)<<std::endl;
     return true;
 
-    //return (dot(nMean, PQ) >= 0.0);
 }
 
 bool MinProximityIntersection::testValidity(Line &l, const Vector3 &PQ)
 {
-//	bool nMeanValue = false;
     Vector3 nMean;
-//	nMean.clear();
     Vector3 n1, n2;
+    Vector3 t1, t2;
 
     const Vector3 &pt1 = l.p1();
     const Vector3 &pt2 = l.p2();
@@ -960,131 +928,47 @@ bool MinProximityIntersection::testValidity(Line &l, const Vector3 &PQ)
     {
         // compute the normal of the triangle situated on the right
         const BaseMeshTopology::Triangle& triangleRight = topology->getTriangle(triangleEdgeShell[0]);
-        n1 = cross(x[triangleRight[1]]-x[triangleRight[0]], x[triangleRight[2]]-x[triangleRight[0]]); n1.normalize();
+        n1 = cross(x[triangleRight[1]]-x[triangleRight[0]], x[triangleRight[2]]-x[triangleRight[0]]);
+        n1.normalize();
         nMean = n1;
+        t1 = -cross(n1, AB);
+        t1.normalize(); // necessary ?
 
         // compute the normal of the triangle situated on the left
         const fixed_array<PointID,3>& triangleLeft = topology->getTriangle(triangleEdgeShell[1]);
-        n2 = cross(x[triangleLeft[1]]-x[triangleLeft[0]], x[triangleLeft[2]]-x[triangleLeft[0]]); n2.normalize();
+        n2 = cross(x[triangleLeft[1]]-x[triangleLeft[0]], x[triangleLeft[2]]-x[triangleLeft[0]]);
+        n2.normalize();
         nMean += n2;
-
-
-#ifdef DYNAMIC_CONE_ANGLE_COMPUTATION
-
-//	// Right triangle
-//	const Vector3* tRight = l.tRight();
-//	if (tRight != NULL)
-//	{
-//		n1 = cross((*tRight)-pt1, pt2-pt1);
-//		nMean += n1;
-//		nMeanValue = true;
-//	}
-//
-//	// Left triangle
-//	const Vector3* tLeft = l.tLeft();
-//	if (tLeft != NULL)
-//	{
-//		n2 = cross(pt2-pt1,(*tLeft)-pt1);
-//		nMean += n2;
-//		nMeanValue = true;
-//	}
-//
-//	if (nMeanValue)
-//	{
-//		nMean.normalize();
-//		if ((nMean*PQ) < 0)
-//			return false;
-//	}
-//
-//	if (!nMeanValue)
-//		return true;
+        t2 = -cross(AB, n2);
+        t2.normalize(); // necessary ?
 
         nMean.normalize();
-        if ((nMean*PQ) < 0)
-            return false;
 
-        // compute the angle for the cone to filter contacts using the normal of the triangle situated on the left
-        double computedAngleCone = (nMean * cross(AB, n1)) / 2;
-        if (computedAngleCone<0)
-            computedAngleCone=0.0;
-        //std::cout << "Left computedAngleCone = " << computedAngleCone << std::endl;
-
-        if (cross(AB, n1)*PQ < -computedAngleCone*PQ.norm()*cross(AB, n1).norm())
+        if ((nMean*PQ) < 0) // test
             return false;
 
         // compute the angle for the cone to filter contacts using the normal of the triangle situated on the right
-        computedAngleCone = (nMean * cross(n2, AB)) / 2;
+        double computedAngleCone = (nMean * t1) * coneFactor.getValue();
         if (computedAngleCone<0)
             computedAngleCone=0.0;
-        //std::cout << "Right computedAngleCone = " << computedAngleCone << std::endl;
+        computedAngleCone+=angleCone.getValue();
 
-        if (cross(n2, AB)*PQ < -computedAngleCone*PQ.norm()*cross(n2, AB).norm())
+        if (t1*PQ < -computedAngleCone*PQ.norm())
             return false;
 
-//	if (tRight != NULL)
-//	{
-//		n1.normalize();
-//		double computedAngleCone = (nMean * cross(n1, AB)) / 2;
-//		if (computedAngleCone<0)
-//			computedAngleCone=0.0;
-//		//std::cout << "Right computedAngleCone = " << computedAngleCone << std::endl;
-//
-//		if (cross(n1, AB)*PQ < -computedAngleCone*PQ.norm()*cross(n1, AB).norm())
-//			return false;
-//	}
-//
-//	if (tLeft != NULL)
-//	{
-//		n2.normalize();
-//		double computedAngleCone = (nMean * cross(AB, n2)) / 2;
-//		if (computedAngleCone<0)
-//			computedAngleCone=0.0;
-//		//std::cout << "Left computedAngleCone = " << computedAngleCone << std::endl;
-//
-//		if (cross(AB, n2)*PQ < -computedAngleCone*PQ.norm()*cross(AB, n2).norm())
-//			return false;
-//	}
-//
-#else // DYNAMIC_CONE_ANGLE_COMPUTATION
+        // compute the angle for the cone to filter contacts using the normal of the triangle situated on the left
+        computedAngleCone = (nMean * t2) * coneFactor.getValue();
+        if (computedAngleCone<0)
+            computedAngleCone=0.0;
+        computedAngleCone+=angleCone.getValue();
 
-        if (cross(AB, n1)*PQ < -angleCone.getValue()*PQ.norm()*cross(AB, n1).norm())
+        if (t2*PQ < -computedAngleCone*PQ.norm())
             return false;
-
-        if (cross(n2, AB)*PQ < -angleCone.getValue()*PQ.norm()*cross(n2, AB).norm())
-            return false;
-
-#endif
 
     }
     return true;
 
-//
-//	// Right triangle
-//	const Vector3* tRight = l.tRight();
-//	if (tRight != NULL)
-//	{
-//		Vector3 n1 = cross((*tRight)-pt1, pt2-pt1);
-//		nMean += n1;
-//
-//		if (cross(n1, AB)*PQ < -angleCone.getValue()*PQ.norm()*cross(n1, AB).norm())
-//		{
-//			return false;
-//		}
-//	}
-//
-//	// Left triangle
-//	const Vector3* tLeft = l.tLeft();
-//	if (tLeft != NULL)
-//	{
-//		Vector3 n2 = cross(pt2-pt1,(*tLeft)-pt1);
-//		nMean += n2;
-//
-//		if (cross(AB, n2)*PQ < -angleCone.getValue()*PQ.norm()*cross(AB, n2).norm())
-//		{
-//			return false;
-//		}
-//	}
-//
+
 }
 
 bool MinProximityIntersection::testValidity(Triangle &t, const Vector3 &PQ)
