@@ -17,12 +17,15 @@
 #include "BglScene.h"
 #include <sofa/core/objectmodel/ClassInfo.h>
 
+
 namespace sofa
 {
 namespace simulation
 {
 namespace bgl
 {
+
+using sofa::core::objectmodel::BaseObject;
 
 /**
 sofa::simulation::Node as a node of a BGL scene graph.
@@ -58,9 +61,9 @@ public:
 
 
 protected:
-    BglScene* scene;
-    BglScene::Hgraph* graph;      ///< the graph it is inserted to
-    BglScene::Hvertex vertexId;  ///< its id in the graph
+    BglScene* scene;              ///< the scene the node belongs to
+    BglScene::Hgraph* graph;      ///< the mechanical graph of the scene it belongs to
+    BglScene::Hvertex vertexId;  ///< its id in the mechanical graph
 
 };
 

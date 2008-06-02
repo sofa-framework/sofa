@@ -20,6 +20,11 @@
 using std::cerr;
 using std::endl;
 
+#include <boost/graph/adjacency_list.hpp>
+//#include <sofa/core/objectmodel/BaseObject.h>
+#include <boost/graph/topological_sort.hpp>
+
+
 namespace sofa
 {
 
@@ -31,6 +36,7 @@ using helper::system::thread::CTime;
 Node::Node(const std::string& name)
     : sofa::core::objectmodel::Context()
     , debug_(false), logTime_(false)
+    , depend(initData(&depend,"depend","dependencies between the nodes. name 1 name 2 name3 name4 means thaht name1 must be initialized befor name2 and name3 before name4"))
 {
     _context = this;
     totalTime.nVisit = 0;
@@ -155,7 +161,7 @@ void Node::doAddObject(BaseObject* obj)
     inserted+= collisionPipeline.add(dynamic_cast< core::componentmodel::collision::Pipeline* >(obj));
     inserted+= actionScheduler.add(dynamic_cast< VisitorScheduler* >(obj));
 
-    if( inserted==0 )
+    if ( inserted==0 )
     {
         //cerr<<"Node::doAddObject, object "<<obj->getName()<<" is unsorted"<<endl;
         unsorted.add(obj);
@@ -367,23 +373,24 @@ void Node::initialize()
     //cerr<<"Node::initialize()"<<endl;
 
     initVisualContext();
-    // Put the OdeSolver, if any, in first position. This makes sure that the OdeSolver component is initialized only when all its sibling and children components are already initialized.
-    /// @todo Putting the solver first means that it will be initialized *before* any sibling or childrens. Is that what we want? -- Jeremie A.
-    Sequence<BaseObject>::iterator i=object.begin(), iend=object.end();
-    for ( ; i!=iend && dynamic_cast<core::componentmodel::behavior::OdeSolver*>(*i)==NULL; i++ ) // find the OdeSolver
-    {}
-    if ( i!=iend && !object.empty() ) // found
-    {
-        // put it first
-        // BUGFIX 01/12/06 (Jeremie A.): do not modify the order of the other objects
-        // object.swap( i, object.begin() );
-        while (i!=object.begin())
-        {
-            Sequence<BaseObject>::iterator i2 = i;
-            --i;
-            object.swap(i, i2);
-        }
-    }
+    sortComponents();
+//     // Put the OdeSolver, if any, in first position. This makes sure that the OdeSolver component is initialized only when all its sibling and children components are already initialized.
+//     /// @todo Putting the solver first means that it will be initialized *before* any sibling or childrens. Is that what we want? -- Jeremie A.
+//     Sequence<BaseObject>::iterator i=object.begin(), iend=object.end();
+//     for ( ; i!=iend && dynamic_cast<core::componentmodel::behavior::OdeSolver*>(*i)==NULL; i++ ) // find the OdeSolver
+//         {}
+//     if ( i!=iend && !object.empty() ) // found
+//     {
+//         // put it first
+//         // BUGFIX 01/12/06 (Jeremie A.): do not modify the order of the other objects
+//         // object.swap( i, object.begin() );
+//         while (i!=object.begin())
+//         {
+//             Sequence<BaseObject>::iterator i2 = i;
+//             --i;
+//             object.swap(i, i2);
+//         }
+//     }
 
     //
     updateSimulationContext();
@@ -564,6 +571,70 @@ void Node::printComponents()
     cerr<<endl;
 }
 
+/** @name Dependency graph
+This graph reflects the dependencies between the components. It is used internally to ensure that the initialization order is comform to the dependencies.
+*/
+/// @{
+// Vertices
+struct component_t
+{
+    typedef boost::vertex_property_tag kind;
+};
+typedef boost::property<component_t, BaseObject*> VertexProperty;
+
+// Graph
+typedef ::boost::adjacency_list < ::boost::vecS, ::boost::vecS, ::boost::bidirectionalS, VertexProperty > DependencyGraph;
+
+void Node::sortComponents()
+{
+    typedef DependencyGraph::vertex_descriptor Vertex;
+    DependencyGraph dependencyGraph;
+    // map vertex->component
+    boost::property_map<DependencyGraph, component_t>::type  component_from_vertex = boost::get( component_t(), dependencyGraph );
+    // map component->vertex
+    std::map<BaseObject*,Vertex> vertex_from_component;
+
+    // build the graph
+    for ( int i=object.size()-1; i>=0; i-- ) // in the reverse order for a final order more similar to the current one
+    {
+        Vertex v = add_vertex( dependencyGraph );
+        component_from_vertex[v] = object[i];
+        vertex_from_component[object[i]] = v;
+    }
+    assert( depend.getValue().size()%2 == 0 ); // must contain only pairs
+    for ( unsigned i=0; i<depend.getValue().size(); i+=2 )
+    {
+        BaseObject* o1 = getObject( depend.getValue()[i] );
+        BaseObject* o2 = getObject( depend.getValue()[i+1] );
+        if ( o1==NULL ) cerr<<"Node::sortComponent, could not fin object called "<<depend.getValue()[i]<<endl;
+        else if ( o2==NULL ) cerr<<"Node::sortComponent, could not fin object called "<<depend.getValue()[i+1]<<endl;
+        else
+        {
+            boost::add_edge( vertex_from_component[o1], vertex_from_component[o2], dependencyGraph );
+            //cerr<<"Node::sortComponents, added edge "<<o1->getName()<<" -> "<<o2->getName()<<endl;
+        }
+    }
+
+    // sort the components according to the dependencies
+    typedef std::vector< Vertex > container;
+    container c;
+    boost::topological_sort(dependencyGraph, std::back_inserter(c));
+
+    // remove all the components
+    for ( container::reverse_iterator ii=c.rbegin(); ii!=c.rend(); ++ii)
+    {
+        removeObject(component_from_vertex[*ii]);
+    }
+
+    // put the components in the right order
+    //cerr << "Node::sortComponents, New component order: ";
+    for ( container::reverse_iterator ii=c.rbegin(); ii!=c.rend(); ++ii)
+    {
+        addObject(component_from_vertex[*ii]);
+        //cerr << component_from_vertex[*ii]->getName() << " ";
+    }
+    //cerr << endl;
+}
 
 
 }

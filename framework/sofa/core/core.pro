@@ -110,6 +110,7 @@ SOURCES +=  \
           componentmodel/behavior/BaseForceField.cpp \
           componentmodel/behavior/ForceField.cpp \
           componentmodel/behavior/Mass.cpp \
+          componentmodel/behavior/Constraint.cpp \
           componentmodel/behavior/MechanicalMapping.cpp \
           componentmodel/behavior/PairInteractionForceField.cpp \
           componentmodel/behavior/MixedInteractionForceField.cpp \

@@ -11,12 +11,12 @@
     </keywords>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description/>
+    <description></description>
     <ignoreparts/>
     <secondaryLanguages/>
     <versioncontrol>kdevsubversion</versioncontrol>
     <projectname>BoostKernel</projectname>
-    <defaultencoding/>
+    <defaultencoding></defaultencoding>
   </general>
   <kdevfileview>
     <groups>
@@ -81,12 +81,12 @@
   </kdevdoctreeview>
   <kdevdebugger>
     <general>
-      <dbgshell/>
+      <dbgshell></dbgshell>
       <programargs>-f Data/demo6.scn</programargs>
-      <gdbpath/>
-      <configGdbScript/>
-      <runShellScript/>
-      <runGdbScript/>
+      <gdbpath></gdbpath>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
@@ -100,8 +100,8 @@
   </kdevdebugger>
   <kdevtrollproject>
     <run>
-      <mainprogram>../../../bin/runBoostKernel-latest</mainprogram>
-      <programargs/>
+      <mainprogram>../../../bin/runBoostKernel</mainprogram>
+      <programargs></programargs>
       <directoryradio>build</directoryradio>
       <customdirectory>/</customdirectory>
       <terminal>true</terminal>
@@ -109,8 +109,8 @@
       <envvars>
         <envvar value="../../../lib/linux:$LD_LIBRARY_PATH" name="LD_LIBRARY_PATH" />
       </envvars>
-      <globaldebugarguments/>
-      <globalcwd>/home/ffaure/Documents/sofa-dev/trunk/Sofa/applications/projects/BoostKernel</globalcwd>
+      <globaldebugarguments></globaldebugarguments>
+      <globalcwd>/scratch/ffaure/sofa-dev/trunk/Sofa/applications/projects/BoostKernel</globalcwd>
       <useglobalprogram>true</useglobalprogram>
       <autoinstall>false</autoinstall>
       <autokdesu>false</autokdesu>
@@ -122,7 +122,7 @@
       <abortonerror>false</abortonerror>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
-      <makebin/>
+      <makebin></makebin>
       <envvars/>
       <prio>0</prio>
       <runmultiplejobs>false</runmultiplejobs>
@@ -132,6 +132,8 @@
       <replacePaths>false</replacePaths>
       <disableDefaultOpts>true</disableDefaultOpts>
       <enableFilenamesOnly>false</enableFilenamesOnly>
+      <showVariablesInTree>true</showVariablesInTree>
+      <showParseErrors>true</showParseErrors>
     </qmake>
     <subclassing/>
   </kdevtrollproject>
@@ -176,7 +178,7 @@
       <resolveIncludePathsUsingMakeExperimental>false</resolveIncludePathsUsingMakeExperimental>
     </codecompletion>
     <creategettersetter>
-      <prefixGet/>
+      <prefixGet></prefixGet>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -186,11 +188,11 @@
     <qt>
       <used>false</used>
       <version>3</version>
-      <root>/usr/share/qt3</root>
+      <root>/usr/lib/qt-3.3/</root>
       <includestyle>3</includestyle>
       <designerintegration>EmbeddedKDevDesigner</designerintegration>
-      <qmake>/usr/bin/qmake</qmake>
-      <designer>/usr/bin/designer-qt3</designer>
+      <qmake>/usr/lib/qt-3.3/bin/qmake</qmake>
+      <designer>/usr/lib/qt-3.3//bin/designer</designer>
       <designerpluginpaths/>
     </qt>
     <designerintegration>

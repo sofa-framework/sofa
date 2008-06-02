@@ -14,12 +14,15 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 //#include "bfs_adapter.h"
 #include "dfv_adapter.h"
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/breadth_first_search.hpp>
+#include <boost/graph/depth_first_search.hpp>
+#include <boost/graph/topological_sort.hpp>
+//#include <boost/property_map.hpp>
 #include <boost/vector_property_map.hpp>
 #include <iostream>
 using std::cerr;
 using std::endl;
+
+
 
 namespace sofa
 {
@@ -140,6 +143,11 @@ void BglNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
         }
     }
 }
+
+
+
+
+
 
 }
 }

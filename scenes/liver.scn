@@ -1,12 +1,12 @@
-<Node name="root" dt="0.02" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0">
+<Node name="root" dt="0.02" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0" >
 	<!-- <Object type="Simulation" name="Simulation" /> -->
 	<Object type="CollisionPipeline" verbose="0" name="CollisionPipeline"/>
 	<Object type="BruteForceDetection" name="N2" />
 	<Object type="CollisionResponse" response="default" name="collision response"/>
 	<!--<Object type="CollisionGroup" />-->
-	<Node name="Liver">
+	<Node name="Liver" depend="meshTopology dofs">
 		<!--<Object type="CGImplicit" iterations="25"/>-->
-		<Object type="EulerImplicit" name="cg odesolver" printLog="false"/>
+		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
 		<Object type="CGLinearSolver" iterations="25" name="linear solver"/>
 		<Object type="MechanicalObject" template="Vec3f" name="dofs" filename="BehaviorModels/liver.xs3"/>
 		<Object type="DiagonalMass" name="mass" filename="BehaviorModels/liver.xs3"/>
