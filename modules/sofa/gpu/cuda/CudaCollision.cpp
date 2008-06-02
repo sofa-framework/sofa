@@ -66,7 +66,7 @@ void BarycentricPenalityContact<CudaPointModel,CudaRigidDistanceGridCollisionMod
 #else
     double distance = d0; // + mapper1.radius(elem1) + mapper2.radius(elem2);
     double stiffness = (model1->getContactStiffness(0) * model1->getContactStiffness(0)); ///distance;
-    ff->setContacts((float)distance, (float)stiffness, &outputs);
+    ff->setContacts((float)distance, (float)stiffness, &outputs, true);
 #endif
     // Update mappings
     mapper1.update();
@@ -116,7 +116,7 @@ void BarycentricPenalityContact<CudaSphereModel,CudaRigidDistanceGridCollisionMo
 #else
     double distance = d0; // + mapper1.radius(elem1) + mapper2.radius(elem2);
     double stiffness = (model1->getContactStiffness(0) * model1->getContactStiffness(0)); ///distance;
-    ff->setContacts((float)distance, (float)stiffness, &outputs);
+    ff->setContacts((float)distance, (float)stiffness, &outputs, true);
 #endif
     // Update mappings
     mapper1.update();

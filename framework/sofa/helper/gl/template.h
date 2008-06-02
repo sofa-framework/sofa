@@ -81,13 +81,70 @@ inline void glVertexT(const Coord& c)
 template<>
 inline void glVertexT<double>(const double& c)
 {
-    glVertex3d(c,0,0);
+    glVertex3d(c,0.0,0.0);
 }
 
 template<>
 inline void glVertexT<float>(const float& c)
 {
-    glVertex3d(c,0,0);
+    glVertex3f(c,0.0f,0.0f);
+}
+
+
+
+
+template<int N>
+inline void glNormalNv(const float* p)
+{
+    glNormal3f(p[0],p[1],p[2]);
+}
+
+template<>
+inline void glNormalNv<2>(const float* p)
+{
+    glNormal3f(p[0],p[1],0.0f);
+}
+
+template<>
+inline void glNormalNv<1>(const float* p)
+{
+    glNormal3f(p[0],0.0f,0.0f);
+}
+
+template<int N>
+inline void glNormalNv(const double* p)
+{
+    glNormal3d(p[0],p[1],p[2]);
+}
+
+template<>
+inline void glNormalNv<2>(const double* p)
+{
+    glNormal3d(p[0],p[1],0.0);
+}
+
+template<>
+inline void glNormalNv<1>(const double* p)
+{
+    glNormal3d(p[0],0.0,0.0);
+}
+
+template<class Coord>
+inline void glNormalT(const Coord& c)
+{
+    glNormalNv<Coord::static_size>(c.ptr());
+}
+
+template<>
+inline void glNormalT<double>(const double& c)
+{
+    glNormal3d(c,0.0,0.0);
+}
+
+template<>
+inline void glNormalT<float>(const float& c)
+{
+    glNormal3f(c,0.0f,0.0f);
 }
 
 } // namespace gl
