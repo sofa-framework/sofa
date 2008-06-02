@@ -657,63 +657,122 @@ __global__ void MechanicalObjectCudaVec3t1_vIntegrate_kernel(int size, const Cud
 #define RED_BSIZE 128
 #define blockSize RED_BSIZE
 //template<unsigned int blockSize>
-template<class real>
-__global__ void MechanicalObjectCudaVec_vDot_kernel(unsigned int n, real* res, const real* a, const real* b)
+__global__ void MechanicalObjectCudaVec_vDot_kernel(unsigned int n, float* res, const float* a, const float* b)
 {
-    __shared__ real sdata[blockSize];
+    extern __shared__ float fdata[];
+//    __shared__ float fdata[blockSize];
     unsigned int tid = threadIdx.x;
 
     unsigned int i = blockIdx.x*(blockSize) + tid;
     unsigned int gridSize = gridDim.x*(blockSize);
-    sdata[tid] = 0;
-    while (i < n) { sdata[tid] += a[i] * b[i]; i += gridSize; }
+    fdata[tid] = 0;
+    while (i < n) { fdata[tid] += a[i] * b[i]; i += gridSize; }
     __syncthreads();
 #if blockSize >= 512
     //if (blockSize >= 512)
     {
-        if (tid < 256) { sdata[tid] += sdata[tid + 256]; } __syncthreads();
+        if (tid < 256) { fdata[tid] += fdata[tid + 256]; } __syncthreads();
     }
 #endif
 #if blockSize >= 256
     //if (blockSize >= 256)
     {
-        if (tid < 128) { sdata[tid] += sdata[tid + 128]; } __syncthreads();
+        if (tid < 128) { fdata[tid] += fdata[tid + 128]; } __syncthreads();
     }
 #endif
 #if blockSize >= 128
     //if (blockSize >= 128)
     {
-        if (tid < 64) { sdata[tid] += sdata[tid + 64]; } __syncthreads();
+        if (tid < 64) { fdata[tid] += fdata[tid + 64]; } __syncthreads();
     }
 #endif
     if (tid < 32)
     {
 #if blockSize >= 64
         //if (blockSize >= 64)
-        sdata[tid] += sdata[tid + 32];
+        fdata[tid] += fdata[tid + 32];
 #endif
 #if blockSize >= 32
         //if (blockSize >= 32)
-        sdata[tid] += sdata[tid + 16];
+        fdata[tid] += fdata[tid + 16];
 #endif
 #if blockSize >= 16
         //if (blockSize >= 16)
-        sdata[tid] += sdata[tid + 8];
+        fdata[tid] += fdata[tid + 8];
 #endif
 #if blockSize >= 8
         //if (blockSize >= 8)
-        sdata[tid] += sdata[tid + 4];
+        fdata[tid] += fdata[tid + 4];
 #endif
 #if blockSize >= 4
         //if (blockSize >= 4)
-        sdata[tid] += sdata[tid + 2];
+        fdata[tid] += fdata[tid + 2];
 #endif
 #if blockSize >= 2
         //if (blockSize >= 2)
-        sdata[tid] += sdata[tid + 1];
+        fdata[tid] += fdata[tid + 1];
 #endif
     }
-    if (tid == 0) res[blockIdx.x] = sdata[0];
+    if (tid == 0) res[blockIdx.x] = fdata[0];
+}
+
+__global__ void MechanicalObjectCudaVec_vDot_kernel(unsigned int n, double* res, const double* a, const double* b)
+{
+    extern __shared__ double ddata[];
+//    __shared__ double ddata[blockSize];
+    unsigned int tid = threadIdx.x;
+
+    unsigned int i = blockIdx.x*(blockSize) + tid;
+    unsigned int gridSize = gridDim.x*(blockSize);
+    ddata[tid] = 0;
+    while (i < n) { ddata[tid] += a[i] * b[i]; i += gridSize; }
+    __syncthreads();
+#if blockSize >= 512
+    //if (blockSize >= 512)
+    {
+        if (tid < 256) { ddata[tid] += ddata[tid + 256]; } __syncthreads();
+    }
+#endif
+#if blockSize >= 256
+    //if (blockSize >= 256)
+    {
+        if (tid < 128) { ddata[tid] += ddata[tid + 128]; } __syncthreads();
+    }
+#endif
+#if blockSize >= 128
+    //if (blockSize >= 128)
+    {
+        if (tid < 64) { ddata[tid] += ddata[tid + 64]; } __syncthreads();
+    }
+#endif
+    if (tid < 32)
+    {
+#if blockSize >= 64
+        //if (blockSize >= 64)
+        ddata[tid] += ddata[tid + 32];
+#endif
+#if blockSize >= 32
+        //if (blockSize >= 32)
+        ddata[tid] += ddata[tid + 16];
+#endif
+#if blockSize >= 16
+        //if (blockSize >= 16)
+        ddata[tid] += ddata[tid + 8];
+#endif
+#if blockSize >= 8
+        //if (blockSize >= 8)
+        ddata[tid] += ddata[tid + 4];
+#endif
+#if blockSize >= 4
+        //if (blockSize >= 4)
+        ddata[tid] += ddata[tid + 2];
+#endif
+#if blockSize >= 2
+        //if (blockSize >= 2)
+        ddata[tid] += ddata[tid + 1];
+#endif
+    }
+    if (tid == 0) res[blockIdx.x] = ddata[0];
 }
 
 //template<unsigned int blockSize>
@@ -1013,7 +1072,7 @@ void MechanicalObjectCudaVec3f_vDot(unsigned int size, float* res, const void* a
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
         //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
-        MechanicalObjectCudaVec_vDot_kernel<float><<< grid, threads /*, RED_BSIZE * sizeof(float)*/ >>>(size, (float*)tmp, (const float*)a, (const float*)b);
+        MechanicalObjectCudaVec_vDot_kernel /*<float>*/ <<< grid, threads , RED_BSIZE * sizeof(float) >>>(size, (float*)tmp, (const float*)a, (const float*)b);
         if (nblocs == 1)
         {
             cudaMemcpy(res,tmp,sizeof(float),cudaMemcpyDeviceToHost);
@@ -1058,7 +1117,7 @@ void MechanicalObjectCudaVec3f1_vDot(unsigned int size, float* res, const void* 
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
         //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
-        MechanicalObjectCudaVec_vDot_kernel<float><<< grid, threads /*, RED_BSIZE * sizeof(float)*/ >>>(size, (float*)tmp, (const float*)a, (const float*)b);
+        MechanicalObjectCudaVec_vDot_kernel /*<float>*/ <<< grid, threads , RED_BSIZE * sizeof(float) >>>(size, (float*)tmp, (const float*)a, (const float*)b);
         if (nblocs == 1)
         {
             cudaMemcpy(res,tmp,sizeof(float),cudaMemcpyDeviceToHost);
@@ -1315,7 +1374,7 @@ void MechanicalObjectCudaVec3d_vDot(unsigned int size, double* res, const void* 
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
         //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
-        MechanicalObjectCudaVec_vDot_kernel<double><<< grid, threads /*, RED_BSIZE * sizeof(double)*/ >>>(size, (double*)tmp, (const double*)a, (const double*)b);
+        MechanicalObjectCudaVec_vDot_kernel /*<double>*/ <<< grid, threads , RED_BSIZE * sizeof(double) >>>(size, (double*)tmp, (const double*)a, (const double*)b);
         if (nblocs == 1)
         {
             cudaMemcpy(res,tmp,sizeof(double),cudaMemcpyDeviceToHost);
@@ -1360,7 +1419,7 @@ void MechanicalObjectCudaVec3d1_vDot(unsigned int size, double* res, const void*
         dim3 threads(RED_BSIZE,1);
         dim3 grid(nblocs,1);
         //myprintf("size=%d, blocs=%dx%d\n",size,nblocs,RED_BSIZE);
-        MechanicalObjectCudaVec_vDot_kernel<double><<< grid, threads /*, RED_BSIZE * sizeof(double)*/ >>>(size, (double*)tmp, (const double*)a, (const double*)b);
+        MechanicalObjectCudaVec_vDot_kernel /*<double>*/ <<< grid, threads , RED_BSIZE * sizeof(double) >>>(size, (double*)tmp, (const double*)a, (const double*)b);
         if (nblocs == 1)
         {
             cudaMemcpy(res,tmp,sizeof(double),cudaMemcpyDeviceToHost);
