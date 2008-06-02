@@ -89,6 +89,7 @@ int BarycentricMapperRegularGridTopology<In,Out>::addPointInCube(int cubeIndex, 
 template <class In, class Out>
 void BarycentricMapperRegularGridTopology<In,Out>::init(const typename Out::VecCoord& out, const typename In::VecCoord& /*in*/)
 {
+    if (map.size() != 0) return;
     int outside = 0;
     clear(out.size());
     for (unsigned int i=0; i<out.size(); i++)
@@ -768,7 +769,16 @@ void BarycentricMapping<BasicMapping>::createMapperFromTopology(Topology * topol
         if (t2!=NULL)
         {
             typedef BarycentricMapperRegularGridTopology<InDataTypes, OutDataTypes> RegularGridMapper;
-            mapper = new RegularGridMapper(t2);
+            if (f_grid->beginEdit()->isEmpty())
+            {
+                f_grid->setValue(RegularGridMapper(t2));
+                mapper = f_grid->beginEdit();
+            }
+            else
+            {
+                f_grid->beginEdit()->setTopology(t2);
+                this->mapper = f_grid->beginEdit();
+            }
         }
         else
         {
@@ -858,6 +868,7 @@ void BarycentricMapping<BasicMapping>::init()
     }
 
     this->BasicMapping::init();
+
 }
 
 template <class BasicMapping>

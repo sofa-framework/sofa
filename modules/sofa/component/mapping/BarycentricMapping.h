@@ -182,7 +182,8 @@ public:
     virtual ~BarycentricMapperRegularGridTopology() {}
 
     void clear(int reserve=0);
-
+    bool isEmpty() {return map.size() == 0;}
+    void setTopology(topology::RegularGridTopology* _topology) {topology = _topology;}
     int addPointInCube(int cubeIndex, const SReal* baryCoords);
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
@@ -752,12 +753,19 @@ protected:
 public:
     BarycentricMapping(In* from, Out* to)
         : Inherit(from, to), mapper(NULL)
+        , f_grid (new DataPtr< RegularGridMapper >( new RegularGridMapper( NULL ),"Regular Grid Mapping"))
     {
+        this->addField( f_grid, "gridmap");	f_grid->beginEdit();
     }
 
     BarycentricMapping(In* from, Out* to, Mapper* mapper)
         : Inherit(from, to), mapper(mapper)
     {
+        if (RegularGridMapper* m = dynamic_cast< RegularGridMapper* >(mapper))
+        {
+            f_grid = new DataPtr< RegularGridMapper >( m,"Regular Grid Mapping");
+            this->addField( f_grid, "gridmap");	f_grid->beginEdit();
+        }
     }
 
     BarycentricMapping(In* from, Out* to, Topology * topology );
