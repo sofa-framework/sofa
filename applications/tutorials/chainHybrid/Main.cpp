@@ -24,7 +24,7 @@
 
 #include <sofa/component/visualmodel/OglModel.h>
 
-
+#include <sofa/simulation/common/TransformationVisitor.h>
 
 using sofa::component::visualmodel::OglModel;
 
@@ -91,17 +91,17 @@ int main(int argc, char** argv)
     //************************************
     //Torus Fixed
     GNode* torusFixed = new GNode;
-    torusFixed->setName("Torus Fixed");
+    torusFixed->setName("Fixed");
     chain->addChild(torusFixed);
 
     MeshTopology* meshTorusFixed = new MeshTopology;
     meshTorusFixed->load(sofa::helper::system::DataRepository.getFile("CollisionModels/torus2_for_collision.obj").c_str());
     torusFixed->addObject(meshTorusFixed);
 
-    MechanicalObject3* dofFixed = new MechanicalObject3;
+    MechanicalObject3* dofFixed = new MechanicalObject3; dofFixed->setName("Fixed Object");
     torusFixed->addObject(dofFixed);
 
-    TriangleModel* triangleFixed = new TriangleModel;
+    TriangleModel* triangleFixed = new TriangleModel; triangleFixed->setName("Collision Fixed");
     triangleFixed->setSimulated(false); //Not simulated, fixed object
     triangleFixed->setMoving(false);    //No extern events
     torusFixed->addObject(triangleFixed);
@@ -116,7 +116,7 @@ int main(int argc, char** argv)
     //************************************
     //Torus FEM
     GNode* torusFEM = new GNode;
-    torusFEM->setName("Torus FEM");
+    torusFEM->setName("FEM");
     chain->addChild(torusFEM);
 
     CGImplicitSolver* solverFEM = new CGImplicitSolver;
@@ -132,8 +132,7 @@ int main(int argc, char** argv)
     meshTorusFEM->load(sofa::helper::system::DataRepository.getFile("Topology/torus_low_res.msh").c_str());
     torusFEM->addObject(meshTorusFEM);
 
-    MechanicalObject3* dofFEM = new MechanicalObject3;
-    dofFEM->applyTranslation(2.5,0,0);
+    MechanicalObject3* dofFEM = new MechanicalObject3; dofFEM->setName("FEM Object");
     torusFEM->addObject(dofFEM);
 
     UniformMass3* uniMassFEM = new UniformMass3;
@@ -157,7 +156,6 @@ int main(int argc, char** argv)
     visualFEM->setName("visual");
     visualFEM->load(sofa::helper::system::DataRepository.getFile("VisualModels/torus.obj"),"","");
     visualFEM->setColor("red");
-    visualFEM->applyTranslation(2.5,0,0);
     FEMVisualNode->addObject(visualFEM);
 
     BarycentricMapping3_to_Ext3* mappingFEM = new BarycentricMapping3_to_Ext3(dofFEM, visualFEM);
@@ -174,11 +172,10 @@ int main(int argc, char** argv)
     meshTorusFEM_surf->load(sofa::helper::system::DataRepository.getFile("CollisionModels/torus_for_collision.obj").c_str());
     FEMCollisionNode->addObject(meshTorusFEM_surf);
 
-    MechanicalObject3* dofFEM_surf = new MechanicalObject3;
-    dofFEM_surf->applyTranslation(2.5,0,0);
+    MechanicalObject3* dofFEM_surf = new MechanicalObject3;  dofFEM_surf->setName("Collision Object FEM");
     FEMCollisionNode->addObject(dofFEM_surf);
 
-    TriangleModel* triangleFEM = new TriangleModel;
+    TriangleModel* triangleFEM = new TriangleModel; triangleFEM->setName("TriangleCollision FEM");
     FEMCollisionNode->addObject(triangleFEM);
 
     BarycentricMechanicalMapping3_to_3* mechaMappingFEM = new BarycentricMechanicalMapping3_to_3(dofFEM, dofFEM_surf);
@@ -188,7 +185,7 @@ int main(int argc, char** argv)
     //************************************
     //Torus Spring
     GNode* torusSpring = new GNode;
-    torusSpring->setName("Torus Spring");
+    torusSpring->setName("Spring");
     chain->addChild(torusSpring);
 
     CGImplicitSolver* solverSpring = new CGImplicitSolver;
@@ -204,8 +201,7 @@ int main(int argc, char** argv)
     meshTorusSpring->load(sofa::helper::system::DataRepository.getFile("Topology/torus2_low_res.msh").c_str());
     torusSpring->addObject(meshTorusSpring);
 
-    MechanicalObject3* dofSpring = new MechanicalObject3;
-    dofSpring->applyTranslation(5,0,0);
+    MechanicalObject3* dofSpring = new MechanicalObject3; dofSpring->setName("Spring Object");
     torusSpring->addObject(dofSpring);
 
     UniformMass3* uniMassSpring = new UniformMass3;
@@ -227,7 +223,6 @@ int main(int argc, char** argv)
     visualSpring->setName("visual");
     visualSpring->load(sofa::helper::system::DataRepository.getFile("VisualModels/torus2.obj"),"","");
     visualSpring->setColor("green");
-    visualSpring->applyTranslation(5,0,0);
     SpringVisualNode->addObject(visualSpring);
 
     BarycentricMapping3_to_Ext3* mappingSpring = new BarycentricMapping3_to_Ext3(dofSpring, visualSpring);
@@ -244,20 +239,20 @@ int main(int argc, char** argv)
     meshTorusSpring_surf->load(sofa::helper::system::DataRepository.getFile("CollisionModels/torus2_for_collision.obj").c_str());
     SpringCollisionNode->addObject(meshTorusSpring_surf);
 
-    MechanicalObject3* dofSpring_surf = new MechanicalObject3;
-    dofSpring_surf->applyTranslation(5,0,0);
+    MechanicalObject3* dofSpring_surf = new MechanicalObject3; dofSpring_surf->setName("Collision Object Spring");
     SpringCollisionNode->addObject(dofSpring_surf);
 
-    TriangleModel* triangleSpring = new TriangleModel;
+    TriangleModel* triangleSpring = new TriangleModel; triangleSpring->setName("TriangleCollision Spring");
     SpringCollisionNode->addObject(triangleSpring);
 
     BarycentricMechanicalMapping3_to_3* mechaMappingSpring = new BarycentricMechanicalMapping3_to_3(dofSpring, dofSpring_surf);
     SpringCollisionNode->addObject(mechaMappingSpring);
 
+
     //************************************
     //Torus FFD
     GNode* torusFFD = new GNode;
-    torusFFD->setName("Torus FFD");
+    torusFFD->setName("FFD");
     chain->addChild(torusFFD);
 
     CGImplicitSolver* solverFFD = new CGImplicitSolver;
@@ -269,8 +264,7 @@ int main(int argc, char** argv)
     solverFFD->f_rayleighMass.setValue(1);
     torusFFD->addObject(solverFFD);
 
-    MechanicalObject3* dofFFD = new MechanicalObject3;
-    dofFFD->applyTranslation(7.5,0,0);
+    MechanicalObject3* dofFFD = new MechanicalObject3; dofFFD->setName("FFD Object");
     torusFFD->addObject(dofFFD);
 
     UniformMass3* uniMassFFD = new UniformMass3;
@@ -316,22 +310,19 @@ int main(int argc, char** argv)
     meshTorusFFD_surf->load(sofa::helper::system::DataRepository.getFile("CollisionModels/torus_for_collision.obj").c_str());
     FFDCollisionNode->addObject(meshTorusFFD_surf);
 
-    MechanicalObject3* dofFFD_surf = new MechanicalObject3;
+    MechanicalObject3* dofFFD_surf = new MechanicalObject3; dofFFD_surf->setName("Collision Object FFD");
     FFDCollisionNode->addObject(dofFFD_surf);
 
-    TriangleModel* triangleFFD = new TriangleModel;
+    TriangleModel* triangleFFD = new TriangleModel;  triangleFFD->setName("TriangleCollision FFD");
     FFDCollisionNode->addObject(triangleFFD);
 
     BarycentricMechanicalMapping3_to_3* mechaMappingFFD = new BarycentricMechanicalMapping3_to_3(dofFFD, dofFFD_surf);
     FFDCollisionNode->addObject(mechaMappingFFD);
 
-
-
-
     //************************************
     //Torus Rigid
     GNode* torusRigid = new GNode;
-    torusRigid->setName("Torus Rigid");
+    torusRigid->setName("Rigid");
     chain->addChild(torusRigid);
 
     CGImplicitSolver* solverRigid = new CGImplicitSolver;
@@ -343,8 +334,7 @@ int main(int argc, char** argv)
     solverRigid->f_rayleighMass.setValue(1);
     torusRigid->addObject(solverRigid);
 
-    MechanicalObjectRigid3* dofRigid = new MechanicalObjectRigid3;
-    dofRigid->applyTranslation(10,0,0);
+    MechanicalObjectRigid3* dofRigid = new MechanicalObjectRigid3; dofRigid->setName("Rigid Object");
     torusRigid->addObject(dofRigid);
 
     UniformMassRigid3* uniMassRigid = new UniformMassRigid3;
@@ -376,18 +366,32 @@ int main(int argc, char** argv)
     meshTorusRigid_surf->load(sofa::helper::system::DataRepository.getFile("CollisionModels/torus2_for_collision.obj").c_str());
     RigidCollisionNode->addObject(meshTorusRigid_surf);
 
-    MechanicalObject3* dofRigid_surf = new MechanicalObject3;
+    MechanicalObject3* dofRigid_surf = new MechanicalObject3; dofRigid_surf->setName("Collision Object Rigid");
     RigidCollisionNode->addObject(dofRigid_surf);
 
-    TriangleModel* triangleRigid = new TriangleModel;
+    TriangleModel* triangleRigid = new TriangleModel;  triangleRigid->setName("TriangleCollision Rigid");
     RigidCollisionNode->addObject(triangleRigid);
 
     RigidMechanicalMappingRigid3_to_3* mechaMappingRigid = new RigidMechanicalMappingRigid3_to_3(dofRigid, dofRigid_surf);
     RigidCollisionNode->addObject(mechaMappingRigid);
 
-
-
     getSimulation()->init(groot);
+
+    //Set the initial position: must be done AFTER the initialization of the scene
+    sofa::simulation::TransformationVisitor transform;
+    transform.setTranslation(2.5,0.0,0.0);
+    transform.execute(torusFEM);
+
+    transform.setTranslation(5.0,0.0,0.0);
+    transform.execute(torusSpring);
+
+    transform.setTranslation(7.5,0.0,0.0);
+    transform.execute(torusFFD);
+
+    transform.setTranslation(10.0,0.0,0.0);
+    transform.execute(torusRigid);
+
+
     groot->setAnimate(false);
 
     //=======================================

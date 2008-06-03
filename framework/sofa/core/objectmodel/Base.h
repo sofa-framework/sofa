@@ -179,7 +179,7 @@ public:
     }
     /// Helper method used to initialize a field containing a value of type T
     template<class T>
-    Data<T> initData( Data<T>* field, const char* name, const char* help )
+    Data<T> initData( Data<T>* field, const char* name, const char* help, bool isDisplayed=true )
     {
         std::string ln(name);
         if( ln.size()>0 && findField(ln)!=m_fieldVec.size() )
@@ -189,12 +189,12 @@ public:
         }
         //field = tmp;
         m_fieldVec.push_back( std::make_pair(ln,field));
-        return Data<T>(help);
+        return Data<T>(help,isDisplayed);
     }
 
     /// Helper method used to initialize a field containing a value of type T
     template<class T>
-    Data<T> initData( Data<T>* field, const T& value, const char* name, const char* help )
+    Data<T> initData( Data<T>* field, const T& value, const char* name, const char* help, bool isDisplayed=true  )
     {
         std::string ln(name);
         if( ln.size()>0 && findField(ln)!=m_fieldVec.size()  )
@@ -204,12 +204,12 @@ public:
         }
         //field = tmp;
         m_fieldVec.push_back( std::make_pair(ln,field));
-        return Data<T>(value,help);
+        return Data<T>(value,help,isDisplayed);
     }
 
     /// Helper method used to initialize a field pointing to a value of type T
     template<class T>
-    DataPtr<T> initDataPtr( DataPtr<T>* field, T* ptr, const char* name, const char* help )
+    DataPtr<T> initDataPtr( DataPtr<T>* field, T* ptr, const char* name, const char* help, bool isDisplayed=true  )
     {
         std::string ln(name);
         if( ln.size()>0 && findField(ln)!=m_fieldVec.size() )
@@ -219,7 +219,7 @@ public:
         }
         //field = tmp;
         m_fieldVec.push_back( std::make_pair(ln,field));
-        return DataPtr<T>(ptr,help);
+        return DataPtr<T>(ptr,help,isDisplayed);
     }
 
 

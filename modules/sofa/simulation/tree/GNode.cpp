@@ -233,8 +233,12 @@ void GNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, Get
     {
         if (parent != NULL)
         {
-            parent->getObjects(class_info, container, dir);
-            return;
+            if (parent->isActive())
+            {
+                parent->getObjects(class_info, container, dir);
+                return;
+            }
+            else return;
         }
         else dir = SearchDown; // we are the root, search down from here.
     }
@@ -254,7 +258,7 @@ void GNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, Get
             if (parent) parent->getObjects(class_info, container, dir);
             break;
         case SearchDown:
-            for(ChildIterator it = child.begin(); it != child.end(); ++it)
+            for(ChildIterator it = child.begin(); it != child.end() && (*it)->isActive(); ++it)
             {
                 (*it)->getObjects(class_info, container, dir);
             }

@@ -838,16 +838,18 @@ void RealGUI::lmlOpen ( const char* filename )
 
 void RealGUI::initDesactivatedNode()
 {
-    DesactivatedNodeVisitor desNode;
-    desNode.execute(getSimulation()->getContext());
-    sofa::helper::vector< Node* > &listDesNode=desNode.getDesactivatedNodes();
-    for (unsigned int i=0; i<listDesNode.size(); ++i)
+
+    std::map<core::objectmodel::Base*, QListViewItem* >::iterator graph_iterator;
+
+    for (graph_iterator = graphListener->items.begin(); graph_iterator != graphListener->items.end(); graph_iterator++)
     {
-        if (!listDesNode[i]->isActive())
+        if ( node_clicked = dynamic_cast< GNode* >(graph_iterator->first) )
         {
-            node_clicked = dynamic_cast< GNode *>(listDesNode[i]);
-            item_clicked = graphListener->items[listDesNode[i]];
-            graphDesactivateNode();
+            if (!node_clicked->isActive() )
+            {
+                item_clicked =  graphListener->items[node_clicked];
+                graphDesactivateNode();
+            }
         }
     }
 }

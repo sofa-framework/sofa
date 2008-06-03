@@ -129,7 +129,7 @@ public:
 
             screenshot_prefix = ofilename.str();
 
-            unsigned int position_scene = screenshot_prefix.rfind("scenes/");
+            std::string::size_type position_scene = screenshot_prefix.rfind("scenes/");
 
             if (position_scene != std::string::npos && position_scene < screenshot_prefix.size()-7)
             {

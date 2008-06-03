@@ -37,29 +37,6 @@ namespace sofa
 namespace simulation
 {
 
-class DesactivatedNodeVisitor : public Visitor
-{
-
-public:
-    DesactivatedNodeVisitor() {}
-
-    virtual Result processNodeTopDown(simulation::Node* node);
-
-    /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const { return true; }
-
-    /// Return a category name for this action.
-    /// Only used for debugging / profiling purposes
-    virtual const char* getCategoryName() const { return "desactivatednode"; }
-
-    sofa::helper::vector< simulation::Node * > &getDesactivatedNodes() {return desactivatedNodes;}
-protected:
-    sofa::helper::vector< simulation::Node * > desactivatedNodes;
-};
-
-
-
-
 class DesactivationVisitor : public Visitor
 {
 

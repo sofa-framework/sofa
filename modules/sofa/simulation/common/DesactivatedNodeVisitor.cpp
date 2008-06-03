@@ -30,14 +30,6 @@ namespace sofa
 namespace simulation
 {
 
-
-Visitor::Result DesactivatedNodeVisitor::processNodeTopDown(simulation::Node* node)
-{
-    if (!node->isActive()) desactivatedNodes.push_back(node);
-    return RESULT_CONTINUE;
-}
-
-
 Visitor::Result DesactivationVisitor::processNodeTopDown(simulation::Node* node)
 {
     node->is_activated.setValue(active);

@@ -78,7 +78,7 @@ void OglTetrahedralModel<DataTypes>::drawTransparent()
         for (unsigned int i=0 ; i< 4 ; i++)
         {
             v = x[(*it)[i]];
-            glVertex3f(v[0], v[1], v[2]);
+            glVertex3f((GLfloat)v[0], (GLfloat)v[1], (GLfloat)v[2]);
         }
     }
     glEnd();
