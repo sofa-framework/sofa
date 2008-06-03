@@ -86,7 +86,7 @@ void main()
 
 	}
 	
-	float alpha_color = color.w + cube_color;
+	float alpha_color = color.w + cube_color.x;
 
 	// Write the final pixel.
 	gl_FragColor = vec4(color.xyz+cube_color,alpha_color); //vec4( mix(base_color, cube_color, reflect_factor), 1.0);
