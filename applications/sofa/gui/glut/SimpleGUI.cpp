@@ -47,6 +47,10 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 
+#ifdef SOFA_HAVE_CHAI3D
+#include <sofa/simulation/common/PropagateEventVisitor.h>
+#include <sofa/core/objectmodel/GLInitializedEvent.h>
+#endif // SOFA_HAVE_CHAI3D
 
 // define this if you want video and OBJ capture to be only done once per N iteration
 //#define CAPTURE_PERIOD 5
@@ -136,6 +140,14 @@ SofaGUI* SimpleGUI::CreateGUI(const char* /*name*/, const std::vector<std::strin
     gui->setScene(groot, filename);
 
     gui->initializeGL();
+
+#ifdef SOFA_HAVE_CHAI3D
+    // Tell nodes that openGl is initialized
+    // especialy the GL_MODELVIEW_MATRIX
+    sofa::core::objectmodel::GLInitializedEvent ev;
+    sofa::simulation::PropagateEventVisitor act(&ev);
+    groot->execute(act);
+#endif // SOFA_HAVE_CHAI3D
 
     return gui;
 }

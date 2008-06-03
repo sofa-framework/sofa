@@ -73,12 +73,13 @@ HEADERS += \
           objectmodel/KeypressedEvent.h \
 	  objectmodel/KeyreleasedEvent.h \
 	  objectmodel/MouseEvent.h \
-	  	  objectmodel/OmniEvent.h \
+	  objectmodel/OmniEvent.h \
+	  objectmodel/GLInitializedEvent.h \
           objectmodel/VDataPtr.h \
           objectmodel/XDataPtr.h \
           VisualModel.h \
           ObjectFactory.h
- 
+
 SOURCES +=  \
           CollisionModel.cpp \
           componentmodel/behavior/LinearSolver.cpp \
@@ -119,7 +120,9 @@ SOURCES +=  \
 
 SOFA_DIR = ../../..
 TEMPLATE = lib
-include($${SOFA_DIR}/sofa.cfg)
+include($${SOFA_DIR}/sofa.cfg){   
+
+}
 TARGET = sofacore$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES
 LIBS += -lsofahelper$$LIBSUFFIX -lsofadefaulttype$$LIBSUFFIX
