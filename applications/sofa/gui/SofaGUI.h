@@ -14,6 +14,7 @@ namespace gui
 
 class SofaGUI
 {
+
 public:
 
     /// @name Static methods for direct access to GUI
@@ -42,11 +43,15 @@ public:
 
     static int MainLoop(sofa::simulation::Node* groot = NULL, const char* filename = NULL);
 
+
+
     static SofaGUI* CurrentGUI();
 
     static void Redraw();
 
     static sofa::simulation::Node* CurrentSimulation();
+
+
 
     /// @}
 

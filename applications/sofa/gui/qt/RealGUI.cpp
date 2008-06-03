@@ -48,6 +48,12 @@
 
 #endif // SOFA_DEV
 
+#ifdef SOFA_HAVE_CHAI3D
+#include <sofa/simulation/common/PropagateEventVisitor.h>
+#include <sofa/core/objectmodel/GLInitializedEvent.h>
+#endif // SOFA_HAVE_CHAI3D
+
+
 #include <sofa/component/visualmodel/VisualModelImpl.h>
 
 #include <sofa/simulation/tree/xml/XML.h>
@@ -240,6 +246,8 @@ SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& 
     GNode *groot = dynamic_cast< GNode* >(node);
     if ( groot )
         gui->setScene ( groot, filename );
+
+
     else
         return NULL;
 
@@ -267,6 +275,15 @@ SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& 
     // show the gui
     gui->show();
 
+
+#ifdef SOFA_HAVE_CHAI3D
+    // Tell nodes that openGl is initialized
+    // especialy the GL_MODELVIEW_MATRIX
+    sofa::core::objectmodel::GLInitializedEvent ev;
+    sofa::simulation::PropagateEventVisitor act(&ev);
+    groot->execute(act);
+#endif // SOFA_HAVE_CHAI3D
+
     return gui;
 }
 
@@ -288,6 +305,8 @@ int RealGUI::mainLoop()
 
         fileOpenSimu(title_str.c_str() );
     }
+
+
 
     return application->exec();
 }
@@ -860,6 +879,16 @@ void RealGUI::setScene ( Node* groot, const char* filename )
     startButton->setOn ( groot->getContext()->getAnimate() );
     dtEdit->setText ( QString::number ( groot->getDt() ) );
     record->setOn(false);
+
+#ifdef SOFA_HAVE_CHAI3D
+    // Tell nodes that openGl is initialized
+    // especialy the GL_MODELVIEW_MATRIX
+    sofa::core::objectmodel::GLInitializedEvent ev;
+    sofa::simulation::PropagateEventVisitor act(&ev);
+    groot->execute(act);
+#endif // SOFA_HAVE_CHAI3D
+
+
 }
 
 void RealGUI::changeInstrument(int id)
