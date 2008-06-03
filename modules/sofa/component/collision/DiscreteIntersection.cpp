@@ -64,6 +64,7 @@ DiscreteIntersection::DiscreteIntersection()
     //intersectors.add<SphereModel,     TriangleModel,     DiscreteIntersection>  (this);
     intersectors.add<TriangleModel,     LineModel,       DiscreteIntersection>  (this);
     //intersectors.add<TriangleModel,   TriangleModel,     DiscreteIntersection> (this);
+    intersectors.add<TetrahedronModel, PointModel,       DiscreteIntersection>  (this);
     intersectors.add<RigidDistanceGridCollisionModel, PointModel,                      DiscreteIntersection>  (this);
     intersectors.add<RigidDistanceGridCollisionModel, SphereModel,                     DiscreteIntersection>  (this);
     intersectors.add<RigidDistanceGridCollisionModel, TriangleModel,                   DiscreteIntersection>  (this);
@@ -244,12 +245,12 @@ int DiscreteIntersection::computeIntersection(Ray& e1, Tetrahedron& e2, OutputVe
     // 4th plane : bx+by+bz = 1
     {
         double bd = bdir[0]+bdir[1]+bdir[2];
-        if (bd > -1.0e-10)
+        if (bd > 1.0e-10)
         {
             double l = (1-(b0[0]+b0[1]+b0[2]))/bd;
             if (l < l1) l1 = l;
         }
-        else if (bd < 1.0e-10)
+        else if (bd < -1.0e-10)
         {
             double l = (1-(b0[0]+b0[1]+b0[2]))/bd;
             if (l > l0) l0 = l;
@@ -273,6 +274,66 @@ int DiscreteIntersection::computeIntersection(Ray& e1, Tetrahedron& e2, OutputVe
     detection->elem.first = e1;
     detection->elem.second = e2;
     detection->id = e1.getIndex();
+    return 1;
+}
+
+bool DiscreteIntersection::testIntersection(Tetrahedron&, Point&)
+{
+    return true;
+}
+
+int DiscreteIntersection::computeIntersection(Tetrahedron& e1, Point& e2, OutputVector* contacts)
+{
+    Vector3 n = e2.n();
+    if (n == Vector3()) return 0; // no normal on point -> either an internal points or normal is not available
+
+    if (e1.getCollisionModel()->getMechanicalState() == e2.getCollisionModel()->getMechanicalState())
+    {
+        // self-collisions: make sure the point is not one of the vertices of the tetrahedron
+        int i = e2.getIndex();
+        if (i == e1.p1Index() || i == e1.p2Index() || i == e1.p3Index() || i == e1.p4Index())
+            return 0;
+    }
+
+    Vector3 P = e2.p();
+    Vector3 b0 = e1.getBary(P);
+    if (b0[0] < 0 || b0[1] < 0 || b0[2] < 0 || (b0[0]+b0[1]+b0[2]) > 1)
+        return 1; // out of tetrahedron
+
+    // Find the point on the surface of the tetrahedron in the direction of -n
+    Vector3 bdir = e1.getDBary(-n);
+    //std::cout << "b0 = "<<b0<<" \tbdir = "<<bdir<<std::endl;
+    double l1 = 1.0e10;
+    for (int c=0; c<3; ++c)
+    {
+        if (bdir[c] < -1.0e-10)
+        {
+            double l = -b0[c]/bdir[c];
+            if (l < l1) l1 = l;
+        }
+    }
+    // 4th plane : bx+by+bz = 1
+    {
+        double bd = bdir[0]+bdir[1]+bdir[2];
+        if (bd > 1.0e-10)
+        {
+            double l = (1-(b0[0]+b0[1]+b0[2]))/bd;
+            if (l < l1) l1 = l;
+        }
+    }
+    if (l1 >= 1.0e9) l1 = 0;
+    double l = l1;
+    Vector3 X = P-n*l;
+
+    contacts->resize(contacts->size()+1);
+    DetectionOutput *detection = &*(contacts->end()-1);
+    detection->point[0] = X;
+    detection->point[1] = P;
+    detection->normal = -n;
+    detection->value = -l;
+    detection->elem.first = e1;
+    detection->elem.second = e2;
+    detection->id = e2.getIndex();
     return 1;
 }
 

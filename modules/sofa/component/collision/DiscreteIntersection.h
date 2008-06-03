@@ -96,6 +96,7 @@ public:
     bool testIntersection(Triangle&, Line&);
     bool testIntersection(Ray&, Triangle&);
     bool testIntersection(Ray&, Tetrahedron&);
+    bool testIntersection(Tetrahedron&, Point&);
     bool testIntersection(RigidDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&);
     bool testIntersection(RigidDistanceGridCollisionElement&, Point&);
     template<class Sphere>
@@ -123,6 +124,7 @@ public:
     int computeIntersection(Triangle&, Line&, OutputVector*);
     int computeIntersection(Ray&, Triangle&, OutputVector*);
     int computeIntersection(Ray&, Tetrahedron&, OutputVector*);
+    int computeIntersection(Tetrahedron&, Point&, OutputVector*);
     int computeIntersection(RigidDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&, OutputVector*);
     int computeIntersection(RigidDistanceGridCollisionElement&, Point&, OutputVector*);
     template<class Sphere>

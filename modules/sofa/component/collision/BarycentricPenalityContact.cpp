@@ -50,6 +50,11 @@ Creator<Contact::Factory, BarycentricPenalityContact<TriangleModel, SphereModel>
 Creator<Contact::Factory, BarycentricPenalityContact<TriangleModel, PointModel> > TrianglePointPenalityContactClass("default",true);
 Creator<Contact::Factory, BarycentricPenalityContact<TriangleModel, LineModel> > TriangleLinePenalityContactClass("default",true);
 Creator<Contact::Factory, BarycentricPenalityContact<TriangleModel, TriangleModel> > TriangleTrianglePenalityContactClass("default",true);
+Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronModel, SphereModel> > TetrahedronSpherePenalityContactClass("default",true);
+Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronModel, PointModel> > TetrahedronPointPenalityContactClass("default",true);
+Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronModel, LineModel> > TetrahedronLinePenalityContactClass("default",true);
+Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronModel, TriangleModel> > TetrahedronTrianglePenalityContactClass("default",true);
+Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronModel, TetrahedronModel> > TetrahedronTetrahedronPenalityContactClass("default",true);
 
 Creator<Contact::Factory, BarycentricPenalityContact<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > DistanceGridDistanceGridContactClass("default", true);
 Creator<Contact::Factory, BarycentricPenalityContact<RigidDistanceGridCollisionModel, PointModel> > DistanceGridPointContactClass("default", true);
