@@ -107,31 +107,49 @@ void TetrahedronModel::draw(int index)
     p2 += (c-p2)*0.1f;
     p3 += (c-p3)*0.1f;
     p4 += (c-p4)*0.1f;
-    Coord n;
-    n = cross(p3-p1,p2-p1); n.normalize();
-    helper::gl::glNormalT(n);
-    helper::gl::glVertexT(p1);
-    helper::gl::glVertexT(p2);
-    helper::gl::glVertexT(p3);
-
-    n = cross(p4-p1,p3-p1); n.normalize();
-    helper::gl::glNormalT(n);
+    Coord n1,n2,n3,n4;
+    n1 = cross(p3-p1,p2-p1); n1.normalize();
+    helper::gl::glNormalT(n1);
     helper::gl::glVertexT(p1);
     helper::gl::glVertexT(p3);
-    helper::gl::glVertexT(p4);
+    helper::gl::glVertexT(p2);
 
-    n = cross(p2-p1,p4-p1); n.normalize();
-    helper::gl::glNormalT(n);
+    n2 = cross(p4-p1,p3-p1); n2.normalize();
+    helper::gl::glNormalT(n2);
     helper::gl::glVertexT(p1);
     helper::gl::glVertexT(p4);
-    helper::gl::glVertexT(p2);
+    helper::gl::glVertexT(p3);
 
-    n = cross(p3-p2,p4-p2); n.normalize();
-    helper::gl::glNormalT(n);
+    n3 = cross(p2-p1,p4-p1); n3.normalize();
+    helper::gl::glNormalT(n3);
+    helper::gl::glVertexT(p1);
     helper::gl::glVertexT(p2);
     helper::gl::glVertexT(p4);
+
+    n4 = cross(p3-p2,p4-p2); n4.normalize();
+    helper::gl::glNormalT(n4);
+    helper::gl::glVertexT(p2);
     helper::gl::glVertexT(p3);
+    helper::gl::glVertexT(p4);
     glEnd();
+    if (getContext()->getShowNormals())
+    {
+        Coord p;
+        glBegin(GL_LINES);
+        p = (p1+p2+p3)*(1.0/3.0);
+        helper::gl::glVertexT(p);
+        helper::gl::glVertexT(p+n1*0.1);
+        p = (p1+p3+p4)*(1.0/3.0);
+        helper::gl::glVertexT(p);
+        helper::gl::glVertexT(p+n2*0.1);
+        p = (p1+p4+p2)*(1.0/3.0);
+        helper::gl::glVertexT(p);
+        helper::gl::glVertexT(p+n3*0.1);
+        p = (p2+p3+p4)*(1.0/3.0);
+        helper::gl::glVertexT(p);
+        helper::gl::glVertexT(p+n4*0.1);
+        glEnd();
+    }
 }
 
 void TetrahedronModel::draw()

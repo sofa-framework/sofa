@@ -36,6 +36,7 @@
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/collision/SphereTreeModel.h>
 #include <sofa/component/collision/TriangleModel.h>
+#include <sofa/component/collision/TetrahedronModel.h>
 #include <sofa/component/collision/LineModel.h>
 #include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/DistanceGridCollisionModel.h>
@@ -153,7 +154,7 @@ public:
 
 };
 
-/// Mapper for TriangleMeshModel
+/// Mapper for TriangleModel
 template<class DataTypes>
 class ContactMapper<TriangleModel, DataTypes> : public BarycentricContactMapper<TriangleModel, DataTypes>
 {
@@ -189,6 +190,19 @@ public:
 //        return this->mapper->createPointInTriangle(P, index, this->model->getMechanicalState()->getX());
 //    }
 //};
+
+/// Mapper for TetrahedronModel
+template<class DataTypes>
+class ContactMapper<TetrahedronModel, DataTypes> : public BarycentricContactMapper<TetrahedronModel, DataTypes>
+{
+public:
+    int addPoint(const Vector3& P, int index)
+    {
+        Tetrahedron t(this->model, index);
+        Vector3 b = t.getBary(P);
+        return this->mapper->addPointInTetra(index, b.ptr());
+    }
+};
 
 /// Base class for IdentityMapping based mappers
 template<class TCollisionModel, class DataTypes>
