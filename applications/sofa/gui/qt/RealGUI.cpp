@@ -843,7 +843,8 @@ void RealGUI::initDesactivatedNode()
 
     for (graph_iterator = graphListener->items.begin(); graph_iterator != graphListener->items.end(); graph_iterator++)
     {
-        if ( node_clicked = dynamic_cast< GNode* >(graph_iterator->first) )
+        node_clicked = dynamic_cast< GNode* >(graph_iterator->first);
+        if (node_clicked!=NULL )
         {
             if (!node_clicked->isActive() )
             {
