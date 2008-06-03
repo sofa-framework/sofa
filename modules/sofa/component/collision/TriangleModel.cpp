@@ -117,6 +117,7 @@ void TriangleModel::updateNormals()
 
 void TriangleModel::updateFromTopology()
 {
+
 //    needsUpdate = false;
     const unsigned npoints = mstate->getX()->size();
     const unsigned ntris = topology->getNbTriangles();

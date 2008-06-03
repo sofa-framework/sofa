@@ -55,7 +55,7 @@ public:
      */
     BaseData( const char* h)
         : help(h)
-        , m_isSet(false)
+        , m_isSet(false), m_isDisplayed(true)
     {}
 
     /// Base destructor: does nothing.
@@ -79,9 +79,16 @@ public:
     /// True if the value has been modified
     inline bool isSet() const { return m_isSet; }
 
+    /// True if the Data has to be displayed in the GUI
+    inline bool isDisplayed() const { return m_isDisplayed; }
+
+    /// Can dynamically change the status of a Data, by making it appear or disappear
+    void setDisplayed(bool b) {m_isDisplayed = b;}
 protected:
-    /// True iff a value has been read on the command line
+    /// True if a value has been read on the command line
     bool m_isSet;
+    /// True if the Data will be displayed in GUI
+    bool m_isDisplayed;
 
     /// Helper method to decode the type name to a more readable form if possible
     static std::string decodeTypeName(const std::type_info& t);

@@ -83,7 +83,7 @@ using sofa::component::topology::PointSubset;
 using sofa::core::objectmodel::BaseData;
 
 #ifndef QT_MODULE_QT3SUPPORT
-typedef QGrid     Q3Grid;
+typedef QGrid       Q3Grid;
 typedef QScrollView Q3ScrollView;
 #endif
 
@@ -120,6 +120,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
     //Each tab
     counterWidget=0;
+    if(dynamic_cast< Node *>(node_clicked)) counterWidget = 2; //Transformation added at the bottom automatically
     unsigned int counterTab=0;
     QWidget *currentTab=NULL;
     QWidget *currentTab_save=NULL;
@@ -225,11 +226,12 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             }
 
             {
+
                 std::string box_name(oss.str());
                 box = new Q3GroupBox(currentTab, QString(box_name.c_str()));
                 box->setColumns(4);
                 box->setTitle(QString((*it).first.c_str()));
-
+                if ( !(*it).second->isDisplayed() ) box->hide();
 
                 std::string label_text=(*it).second->help;
 
@@ -917,7 +919,6 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             //********************************************************************************
             //Translation
             new QLabel(QString("Translation"), box);
-// 		for (int i=0;i<3;i++) box->addSpace(0);
             WFloatLineEdit* editTranslationX = new WFloatLineEdit( box, "editTranslationX" );
             list_Object.push_front( (QObject *) editTranslationX);
 
@@ -1107,6 +1108,7 @@ void ModifyObject::updateValues()
 
         for( std::vector< std::pair<std::string, BaseData*> >::const_iterator it = fields.begin(); it!=fields.end(); ++it)
         {
+
             //*******************************************************************************************************************
             if( Data<int> * ff = dynamic_cast< Data<int> * >( (*it).second )  )
             {
@@ -1201,8 +1203,6 @@ void ModifyObject::updateValues()
                 {
                     storeVector(list_it, ff);
                 }
-
-
             }
             //*******************************************************************************************************************
             else if(  dynamic_cast< Data<Vec4f> * >( (*it).second )           ||
@@ -2144,6 +2144,12 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
         return createQtTable(ff,box,vectorTable);
     }
     //********************************************************************************************************//
+    //vector< std::string >
+    else if(  Data< vector< std::string > >   *ff = dynamic_cast< Data< vector< std::string> >   * >( field))
+    {
+        return createQtTable(ff,box,vectorTable);
+    }
+    //********************************************************************************************************//
     //vector< double >
     else if(  DataPtr< vector< double > >   *ff = dynamic_cast< DataPtr< vector< double> >   * >( field))
     {
@@ -2164,6 +2170,12 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
     //********************************************************************************************************//
     //vector< unsigned int >
     else if(  DataPtr< vector< unsigned int > >   *ff = dynamic_cast< DataPtr< vector< unsigned int> >   * >( field))
+    {
+        return createQtTable(ff,box,vectorTable);
+    }
+    //********************************************************************************************************//
+    //vector< std::string >
+    else if(  DataPtr< vector< std::string > >   *ff = dynamic_cast< DataPtr< vector< std::string> >   * >( field))
     {
         return createQtTable(ff,box,vectorTable);
     }
@@ -3244,6 +3256,11 @@ void ModifyObject::storeTable(Q3Table* table, BaseData* field)
         storeQtTable( table, ff);
     }
     //**************************************************************************************************************************************
+    else if(  Data< vector< std::string > >   *ff = dynamic_cast< Data< vector< std::string > >   * >( field))
+    {
+        storeQtTable( table, ff);
+    }
+    //**************************************************************************************************************************************
     else if(  Data< vector< unsigned int > >   *ff = dynamic_cast< Data< vector< unsigned int> >   * >( field))
     {
         storeQtTable( table, ff);
@@ -3710,6 +3727,7 @@ bool ModifyObject::createQtTable(Data< sofa::helper::vector< T > > *ff, Q3GroupB
         vectorTable = new Q3Table(ff->getValue().size(),1, box);
 
         list_Table.push_back(std::make_pair(vectorTable, ff));
+        vectorTable->horizontalHeader()->setLabel(0,QString("Value"));
         vectorTable->setColumnStretchable(0,true);
 
         connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
@@ -3724,6 +3742,18 @@ bool ModifyObject::createQtTable(Data< sofa::helper::vector< T > > *ff, Q3GroupB
         vectorTable->setText(i,0,std::string(oss.str()).c_str());
     }
     return true;
+}
+//********************************************************************************************************************
+void ModifyObject::storeQtTable( Q3Table* table, Data< sofa::helper::vector< std::string > >* ff )
+{
+    QString vec_value;
+    vector< std::string > new_value;
+    for (unsigned int i=0; i<ff->getValue().size(); i++)
+    {
+        vec_value = table->text(i,0);
+        new_value.push_back( (std::string)(vec_value.ascii()) );
+    }
+    ff->setValue( new_value );
 }
 //********************************************************************************************************************
 template<class T>
@@ -3752,6 +3782,7 @@ bool ModifyObject::createQtTable(DataPtr< sofa::helper::vector< T > > *ff, Q3Gro
         vectorTable = new Q3Table(ff->getValue().size(),1, box);
 
         list_Table.push_back(std::make_pair(vectorTable, ff));
+        vectorTable->horizontalHeader()->setLabel(0,QString("Value"));
         vectorTable->setColumnStretchable(0,true);
 
         connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );

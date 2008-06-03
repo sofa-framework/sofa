@@ -775,7 +775,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, int 
         ny = mesh.distmap->ny;
         nz = mesh.distmap->nz;
         ftl::Vec3f fpmin = ftl::transform(mesh.distmap->mat,ftl::Vec3f(0,0,0))*(float)scale;
-        ftl::Vec3f fpmax = ftl::transform(mesh.distmap->mat,ftl::Vec3f(nx-1,ny-1,nz-1))*(float)scale;
+        ftl::Vec3f fpmax = ftl::transform(mesh.distmap->mat,ftl::Vec3f((float)(nx-1),(float)(ny-1),(float)(nz-1)))*(float)scale;
         pmin = Coord(fpmin.ptr());
         pmax = Coord(fpmax.ptr());
         std::cout << "Copying "<<nx<<"x"<<ny<<"x"<<nz<<" distance grid in <"<<pmin<<">-<"<<pmax<<">"<<std::endl;

@@ -36,7 +36,7 @@ using helper::system::thread::CTime;
 Node::Node(const std::string& name)
     : sofa::core::objectmodel::Context()
     , debug_(false), logTime_(false)
-    , depend(initData(&depend,"depend","dependencies between the nodes. name 1 name 2 name3 name4 means thaht name1 must be initialized befor name2 and name3 before name4"))
+    , depend(initData(&depend,"depend","Dependencies between the nodes.\nname 1 name 2 name3 name4 means that name1 must be initialized before name2 and name3 before name4"))
 {
     _context = this;
     totalTime.nVisit = 0;

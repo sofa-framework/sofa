@@ -144,6 +144,8 @@ protected:
     bool createQtTable(Data< sofa::helper::vector< T > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
     template<class T>
     void storeQtTable( Q3Table* table, Data< sofa::helper::vector< T > >* ff );
+
+    void storeQtTable( Q3Table* table, Data< sofa::helper::vector< std::string > >* ff );
     //*********************************************************
     template< class T>
     bool createQtTable(DataPtr< sofa::helper::vector< T > > *ff, Q3GroupBox *box, Q3Table* vectorTable );

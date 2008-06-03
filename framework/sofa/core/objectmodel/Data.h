@@ -59,19 +59,23 @@ public:
     /** Constructor
     \param helpMsg help on the field
      */
-    Data( const char* helpMsg=0 )
+    Data( const char* helpMsg=0, bool isDisplayed=true )
         : BaseData(helpMsg)
         , m_value(T()) // BUGFIX (Jeremie A.): Force initialization of basic types to 0 (bool, int, float, etc).
-    {}
+    {
+        m_isDisplayed = isDisplayed;
+    }
 
     /** Constructor
     \param value default value
     \param helpMsg help on the field
      */
-    Data( const T& value, const char* helpMsg=0 )
+    Data( const T& value, const char* helpMsg=0, bool isDisplayed=true  )
         : BaseData(helpMsg)
         , m_value(value)
-    {}
+    {
+        m_isDisplayed = isDisplayed;
+    }
 
     virtual ~Data()
     {}
