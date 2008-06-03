@@ -108,25 +108,25 @@ void TetrahedronModel::draw(int index)
     p3 += (c-p3)*0.1f;
     p4 += (c-p4)*0.1f;
     Coord n;
-    n = cross(p2-p1,p3-p1); n.normalize();
+    n = cross(p3-p1,p2-p1); n.normalize();
     helper::gl::glNormalT(n);
     helper::gl::glVertexT(p1);
     helper::gl::glVertexT(p2);
     helper::gl::glVertexT(p3);
 
-    n = cross(p3-p1,p4-p1); n.normalize();
+    n = cross(p4-p1,p3-p1); n.normalize();
     helper::gl::glNormalT(n);
     helper::gl::glVertexT(p1);
     helper::gl::glVertexT(p3);
     helper::gl::glVertexT(p4);
 
-    n = cross(p4-p1,p2-p1); n.normalize();
+    n = cross(p2-p1,p4-p1); n.normalize();
     helper::gl::glNormalT(n);
     helper::gl::glVertexT(p1);
     helper::gl::glVertexT(p4);
     helper::gl::glVertexT(p2);
 
-    n = cross(p4-p2,p3-p2); n.normalize();
+    n = cross(p3-p2,p4-p2); n.normalize();
     helper::gl::glNormalT(n);
     helper::gl::glVertexT(p2);
     helper::gl::glVertexT(p4);
