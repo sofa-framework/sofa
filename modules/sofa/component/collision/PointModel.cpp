@@ -27,6 +27,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <vector>
 #include <sofa/helper/system/gl.h>
+#include <sofa/helper/gl/template.h>
 
 namespace sofa
 {
@@ -49,6 +50,7 @@ int PointModelClass = core::RegisterObject("Collision model which represents a s
 
 PointModel::PointModel()
     : mstate(NULL)
+    , computeNormals( initData(&computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
 {
 }
 
@@ -70,18 +72,22 @@ void PointModel::init()
 
     const int npoints = mstate->getX()->size();
     resize(npoints);
+    if (computeNormals.getValue()) updateNormals();
 }
 
 void PointModel::draw(int index)
 {
     Point t(this,index);
     glBegin(GL_POINTS);
-#ifdef SOFA_FLOAT
-    glVertex3fv(t.p().ptr());
-#else
-    glVertex3dv(t.p().ptr());
-#endif
+    helper::gl::glVertexT(t.p());
     glEnd();
+    if ((unsigned)index < normals.size())
+    {
+        glBegin(GL_LINES);
+        helper::gl::glVertexT(t.p());
+        helper::gl::glVertexT(t.p()+normals[index]*0.1f);
+        glEnd();
+    }
 }
 
 void PointModel::draw()
@@ -136,6 +142,8 @@ void PointModel::computeBoundingTree(int maxDepth)
     if (updated) cubeModel->resize(0);
     if (!isMoving() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
 
+    if (computeNormals.getValue()) updateNormals();
+
     cubeModel->resize(size);
     if (!empty())
     {
@@ -162,6 +170,8 @@ void PointModel::computeContinuousBoundingTree(double dt, int maxDepth)
     }
     if (!isMoving() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
 
+    if (computeNormals.getValue()) updateNormals();
+
     Vector3 minElem, maxElem;
 
     cubeModel->resize(size);
@@ -185,6 +195,107 @@ void PointModel::computeContinuousBoundingTree(double dt, int maxDepth)
             cubeModel->setParentOf(i, minElem, maxElem);
         }
         cubeModel->computeBoundingTree(maxDepth);
+    }
+}
+
+void PointModel::updateNormals()
+{
+    const VecCoord& x = *mstate->getX();
+    int n = x.size();
+    normals.resize(n);
+    for (int i=0; i<n; ++i)
+    {
+        normals[i].clear();
+    }
+    core::componentmodel::topology::BaseMeshTopology* mesh = getContext()->getMeshTopology();
+    if (mesh->getNbTetras()+mesh->getNbHexas() > 0)
+    {
+        if (mesh->getNbTetras()>0)
+        {
+            const core::componentmodel::topology::BaseMeshTopology::SeqTetras &elems = mesh->getTetras();
+            for (unsigned int i=0; i < elems.size(); ++i)
+            {
+                const core::componentmodel::topology::BaseMeshTopology::Tetra &e = elems[i];
+                const Coord& p1 = x[e[0]];
+                const Coord& p2 = x[e[1]];
+                const Coord& p3 = x[e[2]];
+                const Coord& p4 = x[e[3]];
+                Coord& n1 = normals[e[0]];
+                Coord& n2 = normals[e[1]];
+                Coord& n3 = normals[e[2]];
+                Coord& n4 = normals[e[3]];
+                Coord n;
+                n = cross(p3-p1,p2-p1); n.normalize();
+                n1 += n;
+                n2 += n;
+                n3 += n;
+                n = cross(p4-p1,p3-p1); n.normalize();
+                n1 += n;
+                n3 += n;
+                n4 += n;
+                n = cross(p2-p1,p4-p1); n.normalize();
+                n1 += n;
+                n4 += n;
+                n2 += n;
+                n = cross(p3-p2,p4-p2); n.normalize();
+                n2 += n;
+                n4 += n;
+                n3 += n;
+            }
+        }
+        /// @TODO Hexas
+    }
+    else if (mesh->getNbTriangles()+mesh->getNbQuads() > 0)
+    {
+        if (mesh->getNbTriangles()>0)
+        {
+            const core::componentmodel::topology::BaseMeshTopology::SeqTriangles &elems = mesh->getTriangles();
+            for (unsigned int i=0; i < elems.size(); ++i)
+            {
+                const core::componentmodel::topology::BaseMeshTopology::Triangle &e = elems[i];
+                const Coord& p1 = x[e[0]];
+                const Coord& p2 = x[e[1]];
+                const Coord& p3 = x[e[2]];
+                Coord& n1 = normals[e[0]];
+                Coord& n2 = normals[e[1]];
+                Coord& n3 = normals[e[2]];
+                Coord n;
+                n = cross(p2-p1,p3-p1); n.normalize();
+                n1 += n;
+                n2 += n;
+                n3 += n;
+            }
+        }
+        if (mesh->getNbQuads()>0)
+        {
+            const core::componentmodel::topology::BaseMeshTopology::SeqQuads &elems = mesh->getQuads();
+            for (unsigned int i=0; i < elems.size(); ++i)
+            {
+                const core::componentmodel::topology::BaseMeshTopology::Quad &e = elems[i];
+                const Coord& p1 = x[e[0]];
+                const Coord& p2 = x[e[1]];
+                const Coord& p3 = x[e[2]];
+                const Coord& p4 = x[e[3]];
+                Coord& n1 = normals[e[0]];
+                Coord& n2 = normals[e[1]];
+                Coord& n3 = normals[e[2]];
+                Coord& n4 = normals[e[3]];
+                Coord n;
+                n = cross(p3-p1,p4-p2); n.normalize();
+                n1 += n;
+                n2 += n;
+                n3 += n;
+                n4 += n;
+            }
+        }
+    }
+    for (int i=0; i<n; ++i)
+    {
+        SReal l = normals[i].norm();
+        if (l > 1.0e-3)
+            normals[i] *= 1/l;
+        else
+            normals[i].clear();
     }
 }
 

@@ -55,6 +55,7 @@ public:
     const Vector3& p() const;
     const Vector3& pFree() const;
     const Vector3& v() const;
+    Vector3 n() const;
 };
 
 class PointModel : public core::CollisionModel
@@ -95,6 +96,11 @@ protected:
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
 
+    Data<bool> computeNormals;
+
+    VecDeriv normals;
+
+    void updateNormals();
 };
 
 inline Point::Point(PointModel* model, int index)
@@ -111,6 +117,8 @@ inline const Vector3& Point::p() const { return (*model->mstate->getX())[index];
 inline const Vector3& Point::pFree() const { return (*model->mstate->getXfree())[index]; }
 
 inline const Vector3& Point::v() const { return (*model->mstate->getV())[index]; }
+
+inline Vector3 Point::n() const { return ((unsigned)index<model->normals.size()) ? model->normals[index] : Vector3(); }
 
 } // namespace collision
 
