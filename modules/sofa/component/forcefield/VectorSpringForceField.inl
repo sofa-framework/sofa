@@ -155,6 +155,20 @@ void VectorSpringForceField<DataTypes>::init()
         createDefaultSprings();
         f_listening.setValue(true);
     }
+    else if (springArray.size()==0)
+    {
+        int n = this->mstate1->getSize();
+        springArray.resize(n);
+        edgeArray.resize(n);
+        for (int i=0; i<n; ++i)
+        {
+            edgeArray[i][0] = i;
+            edgeArray[i][1] = i;
+            springArray[i].ks=(Real)m_stiffness.getValue();
+            springArray[i].kd=(Real)m_viscosity.getValue();
+            springArray[i].restVector = Coord();
+        }
+    }
 }
 
 template <class DataTypes>
