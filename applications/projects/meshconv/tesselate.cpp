@@ -40,6 +40,15 @@ void tesselateMesh(Mesh& obj, int rec=1, bool onSphere=false)
         center = (bb.b+bb.a)/2;
         radius = (bb.b-bb.a)/2;
     }
+
+    if (rec == 0 && onSphere)
+    {
+        for(int i=0; i<obj.nbp(); i++)
+            projectOnSphere(obj.PP(i),obj.PN(i),center,radius[0]);
+        obj.calcNormals();
+        return;
+    }
+
     bool groups = obj.getAttrib(Mesh::MESH_POINTS_GROUP);
     if (!groups)
     {
