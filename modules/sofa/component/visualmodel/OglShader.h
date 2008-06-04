@@ -31,11 +31,12 @@ namespace visualmodel
 class OglShader : public core::Shader, public core::VisualModel
 {
 protected:
+    Data<bool> turnOn;
+
     Data<std::string> vertFilename;
     Data<std::string> fragFilename;
     Data<std::string> geoFilename;
 
-    //TODO replace it?
     Data<int> geometryInputType;
     Data<int> geometryOutputType;
     Data<int> geometryVerticesOut;

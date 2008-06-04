@@ -51,7 +51,8 @@ int OglModelClass = core::RegisterObject("Generic visual model for OpenGL displa
 
 
 OglModel::OglModel()
-    : tex(NULL)
+    : premultipliedAlpha(initData(&premultipliedAlpha, (bool) false, "premultipliedAlpha", "is alpha premultiplied ?"))
+    , tex(NULL)
 {
 }
 
@@ -138,8 +139,10 @@ void OglModel::internalDraw()
 
             glPopMatrix();
         }
-
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+        if (premultipliedAlpha.getValue())
+            glBlendFunc(GL_ONE, GL_ONE);
+        else
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     }
 
     for (unsigned int i=0; i<xforms.size(); i++)

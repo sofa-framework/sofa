@@ -116,7 +116,7 @@ void DirectionalLight::reinit()
 
 void DirectionalLight::drawLight()
 {
-    Light::draw();
+    Light::drawLight();
     GLfloat dir[4];
 
     dir[0]=(GLfloat)(direction.getValue()[0]);
@@ -153,7 +153,7 @@ void PositionalLight::reinit()
 
 void PositionalLight::drawLight()
 {
-    Light::draw();
+    Light::drawLight();
 
     GLfloat pos[4];
     pos[0]=(GLfloat)(position.getValue()[0]);
@@ -194,12 +194,13 @@ void SpotLight::reinit()
 
 void SpotLight::drawLight()
 {
-    PositionalLight::draw();
+    PositionalLight::drawLight();
 
     GLfloat dir[]= {(GLfloat)(direction.getValue()[0]), (GLfloat)(direction.getValue()[1]), (GLfloat)(direction.getValue()[2])};
     glLightf(lightID, GL_SPOT_CUTOFF, cutoff.getValue());
     glLightfv(lightID, GL_SPOT_DIRECTION, dir);
     glLightf(lightID, GL_SPOT_EXPONENT, exponent.getValue());
+
 }
 
 }

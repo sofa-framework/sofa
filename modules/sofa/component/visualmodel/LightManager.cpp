@@ -75,7 +75,6 @@ void LightManager::initVisual()
 {
     for (std::vector<Light*>::iterator itl = lights.begin(); itl != lights.end() ; itl++)
     {
-        std::cerr << lights.size() << std::endl;
         (*itl)->initVisual();
     }
 
@@ -87,6 +86,14 @@ void LightManager::clear()
     for (unsigned int i=0 ; i<MAX_NUMBER_OF_LIGHTS ; i++)
         glDisable(GL_LIGHT0+i);
     lights.clear();
+}
+
+void LightManager::reinit()
+{
+    for (std::vector<Light*>::iterator itl = lights.begin(); itl != lights.end() ; itl++)
+    {
+        (*itl)->reinit();
+    }
 }
 
 }//namespace visualmodel

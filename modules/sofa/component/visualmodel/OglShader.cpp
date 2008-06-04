@@ -32,6 +32,7 @@ int OglShaderClass = core::RegisterObject("OglShader")
         ;
 
 OglShader::OglShader():
+    turnOn(initData(&turnOn, (bool) true, "turnOn", "Turn On the shader?")),
     vertFilename(initData(&vertFilename, (std::string) "toonShading.vert", "vertFilename", "Set the vertex shader filename to load")),
     fragFilename(initData(&fragFilename, (std::string) "toonShading.frag", "fragFilename", "Set the fragment shader filename to load")),
     geoFilename(initData(&geoFilename, (std::string) "", "geoFilename", "Set the geometry shader filename to load")),
@@ -121,12 +122,14 @@ void OglShader::drawVisual()
 
 void OglShader::stop()
 {
-    m_shader.TurnOff();
+    if(turnOn.getValue())
+        m_shader.TurnOff();
 }
 
 void OglShader::start()
 {
-    m_shader.TurnOn();
+    if(turnOn.getValue())
+        m_shader.TurnOn();
 }
 
 void OglShader::updateVisual()
