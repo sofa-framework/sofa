@@ -1,12 +1,13 @@
 /***************************************************************************
-                          ForceUnit.h  -  description
+                               LoadsVersion.h
                              -------------------
-    begin                : mar f�v 4 2003
-    copyright            : (C) 2003 by Emmanuel Promayon
-    email                : Emmanuel.Promayon@imag.fr
-
+    begin             : Mon Feb 25 2008
+    copyright         : (C) 2008 TIMC (Emmanuel Promayon)
+    email             : Emmanuel.Promayon@imag.fr
+    Date              : $Date: 2008-02-21 11:19:49 +0100 (Thu, 21 Feb 2008) $
+    Version           : $Revision: 103 $
  ***************************************************************************/
-
+ 
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,31 +17,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef FORCEUNIT_H
-#define FORCEUNIT_H
+/* This header is configured by LML's build process.  */
 
-#include "Unit.h"
+#include "Loads.h"
 
-/** Class that defines the different units of a Load 'Force' 
- *
- * This class implements the type-safe design pattern.
- *
- * $Revision: 44 $
- */
-class ForceUnit : public Unit {
-
-public:
-  /// picoNewtons
-  static ForceUnit PN; 
-  /// Newtons
-  static ForceUnit N;
-  /// KiloNewtons
-  static ForceUnit KN; 
-
-private:
-  /// private constructor
-  ForceUnit(char * n) {unitString = n;}
-};
-
-
-#endif //FORCEUNIT_H
+// --------------- static member initialization -----------------
+// Version #
+const std::string Loads::VERSION = "Load Modeling Language (LML) - 0.7.1 - bleeding edge (svn) - (c) 2008 Université J. Fourier, TIMC-IMAG UMR CNRS 5525"; 

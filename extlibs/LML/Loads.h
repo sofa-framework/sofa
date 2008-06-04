@@ -1,7 +1,7 @@
 /***************************************************************************
                           Loads.h  -  description
                              -------------------
-    begin                : mar fév 4 2003
+    begin                : mar fï¿½v 4 2003
     copyright            : (C) 2003 by Emmanuel Promayon
     email                : Emmanuel.Promayon@imag.fr
 
@@ -32,18 +32,47 @@ class Load;
  */
 
 /** This class makes it possible to manage a list of "Load".
- * Remember that a load is either a translation or a rotation or a force or a pressure.
+ *
+ * Remember that Load is an abstract class (concrete instances are in 
+ * instances of Translation, Force...etc)
+ *
+Usage example:
+<pre>
+// reading:
+main() {
+  Loads allLoads("myFile.lml");
+  ...
+  cout << allLoads;
+}
+ 
+// creating and writing:
+main() {
+  Loads allLoads;
+  Translation *t = new Translation();
+  t->setUnit(..);
+  ...
+  allLoads->addLoad(t);
+  ...
+  cout << allLoads;
+}
+</pre>
  *
  * All loads that are added to an object of this class are then taking over by it
  * (i.e. when an object of this class is deleted, it will delete all its loads). 
  *
- * $Revision: 1.10 $
+ * $Revision: 51 $
  */
 class Loads {
 
   public:
-  Loads() {};// constructor
-  ~Loads();// destructor which kills all "Load" objects maintained in the list "Loads"  
+  /// default constructor
+  Loads() {};
+
+  /// build a list of load from an LML file
+  Loads(std::string);
+
+  /// destructor
+  ~Loads(); 
   
   /// add a load to the list
   void addLoad(Load *ld);
@@ -82,10 +111,8 @@ class Loads {
   static const std::string VERSION;
       
   private:
-  // ------------------------------------------------------------------
-  // vector of load : these "Load" are created while the file is parsed
-  //-------------------------------------------------------------------
-    std::vector <Load*> loads;
+  /// vector of loads : these "Load" are created while the file is parsed
+  std::vector <Load*> loads;
     
 };
 

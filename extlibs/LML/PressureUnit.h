@@ -1,7 +1,7 @@
 /***************************************************************************
                           PressureUnit.h  -  description
                              -------------------
-    begin                : mar fév 4 2003
+    begin                : mar fï¿½v 4 2003
     copyright            : (C) 2003 by Emmanuel Promayon
     email                : Emmanuel.Promayon@imag.fr
 
@@ -25,7 +25,7 @@
  *
  * This class implements the type-safe design pattern.
  *
- * $Revision: 1.5 $
+ * $Revision: 44 $
  */
 class PressureUnit : public Unit {
 

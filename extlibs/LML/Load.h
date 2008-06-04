@@ -1,7 +1,7 @@
 /***************************************************************************
                           Load.h  -  description
                              -------------------
-    begin                : mar fév 4 2003
+    begin                : mar fï¿½v 4 2003
     copyright            : (C) 2003 by Emmanuel Promayon
     email                : Emmanuel.Promayon@imag.fr
 
@@ -39,7 +39,7 @@
   * All value events that are added to the load are then taking over by the load
   * (i.e. when the load is deleted, it will delete all its value event.
   *
-  * $Revision: 1.15 $
+  * $Revision: 51 $
   */
 class Load {
 
@@ -112,10 +112,10 @@ public:
     /// get the number of target
     unsigned int numberOfTargets() const;
     /** Get a target by index
-     * @targetIndex the target index in the list
+     * @param target the target index in the list
      * @return the target or -1 if target index is out of bounds.
      */
-    int getTarget(const unsigned int target)const;
+    int getTarget(const unsigned int target) const;
     /// get the complete list
     TargetList getTargetList() const;
     /// set the complete list

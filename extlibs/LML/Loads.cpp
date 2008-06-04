@@ -1,7 +1,7 @@
 /***************************************************************************
                           Loads.cpp  -  description
                              -------------------
-    begin                : mar fév 4 2003
+    begin                : mar fï¿½v 4 2003
     copyright            : (C) 2003 by Emmanuel Promayon
     email                : Emmanuel.Promayon@imag.fr
 
@@ -18,14 +18,25 @@
 
 #include "Loads.h"
 #include "ValueEvent.h"
+#include "XMLLoads.h"
+#include "LoadsVersion.h"
 
-// --------------- static member initialization -----------------
-// Version #
-const std::string Loads::VERSION = "0.5 - 2 august 2005";
-
+// ------------------ constructor ------------------
+Loads::Loads(std::string fileName) {
+  XMLLoads xmlReader(fileName, this);
+}
 
 // ------------------ destructor ------------------
 Loads::~Loads() {
+  // std::vector method clear() does not delete each elements individually
+  // this has to be done manually...
+
+  // ... so here it is...
+
+  // clear all elements from the array
+  for(std::vector<Load*>::iterator it=loads.begin(); it!=loads.end(); it++)
+    delete *it;    // free the element from memory
+  // finally, clear all elements from the array
   loads.clear();
 }
 
@@ -41,10 +52,8 @@ void  Loads::xmlPrint(std::ostream & o) const {
   Load * currentL;
   for (i=0; i<numberOfLoads(); i++) {
     currentL = getLoad(i);
-	if(currentL){
-		currentL->xmlPrint(o); // o << (*currentL) doesn't work !!!;
-		o << std::endl;
-	}
+    currentL->xmlPrint(o); // o << (*currentL) doesn't work !!!;
+    o << std::endl;
   }
 
   o << "</loads>" << std::endl;
@@ -109,32 +118,9 @@ unsigned int Loads::numberOfLoads() const {
 
 // ------------------ deleteLoad ------------------
 void Loads::deleteLoad(const unsigned int index) {
-  std::vector <Load *> newList;
-  unsigned int i;
-  
-  if (index>=loads.size())
-    return;
-
-  // copy everything up to the index
-  for (i=0; i<index; i++) {
-    newList.push_back(loads[i]);
-  }
-  i++; // jump over the load to be deleted
-  //... and copy everything up to the end
-  while (i<loads.size()) {
-    newList.push_back(loads[i]);
-    i++;
-  }
-
-  // delete the load
-  delete loads[index];
-  
-  // erase new list and copy everything
-  loads.clear();
-
-  // copy the new list into the new one
-  for (i=0;i<newList.size();i++)
-    loads.push_back(newList[i]);
+  std::vector <Load *>::iterator it;
+  it = loads.begin()+index;
+  loads.erase(it);  
 }
 
 // ------------------ getFirstEventDate ------------------
