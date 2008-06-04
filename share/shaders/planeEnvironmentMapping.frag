@@ -4,6 +4,7 @@ varying vec3 viewVec;
 uniform sampler2D planeTexture;
 uniform float altitude;
 uniform int axis; //0 = +X, 1 = +Y, 2 = +Z, 3 = -X, 4 = -Y, 5 = -Z
+uniform float border_gamma, border_alpha;
 
 varying vec4 diffuse,ambientGlobal, ambient, specular;
 varying vec3 lightDir,halfVector,normalView;
@@ -47,7 +48,7 @@ void main()
 	}
 	
 	//end phong
-	
+	color = gl_Color;
 	
 	// Perform a simple 2D texture look up.
 	vec3 base_color = gl_Color.xyz;//texture2D(planeTexture, reflectVec.xz).rgb;
@@ -85,10 +86,12 @@ void main()
         cube_color *= specular.xyz;
 
 	}
+	vec3 unitNormalVec = normalize(normalVec);
+	vec3 unitViewVec = normalize(viewVec);
+	float alpha_color = color.w;
+	float alpha_color2 = alpha_color + (border_alpha - alpha_color)* (pow( 1.0 - abs(dot(unitNormalVec,unitViewVec)), border_gamma));
 	
-	float alpha_color = color.w + cube_color.x;
-
 	// Write the final pixel.
-	gl_FragColor = vec4(color.xyz+cube_color,alpha_color); //vec4( mix(base_color, cube_color, reflect_factor), 1.0);
+	gl_FragColor = vec4((color.xyz*alpha_color2)+cube_color,alpha_color2); //vec4( mix(base_color, cube_color, reflect_factor), 1.0);
 
 }
