@@ -52,7 +52,7 @@ namespace visualmodel
 class OglModel : public VisualModelImpl
 {
 private:
-
+    Data<bool> premultipliedAlpha;
     helper::gl::Texture *tex;
 
     void internalDraw();

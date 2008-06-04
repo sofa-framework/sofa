@@ -37,7 +37,7 @@ public:
     virtual ~LightManager();
 
     void init();
-    void reinit() { };
+    void reinit();
     void initVisual();
     void update() { };
     void draw();
