@@ -66,7 +66,7 @@ public :
     ///constructor
     LMLConstraint(Loads* loadsList, const map<unsigned int, unsigned int> &atomIndexToDOFIndex, MechanicalState<DataTypes> *mm);
 
-    ~LMLConstraint() { delete loads;}
+    ~LMLConstraint() { /*delete loads;*/}
 
     /// return the targets list
     std::vector<unsigned int> getTargets() {return targets;}

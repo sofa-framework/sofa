@@ -55,7 +55,8 @@ LMLConstraint<DataTypes>::LMLConstraint(Loads* loadsList, const map<unsigned int
                         addConstraint(result->second, Deriv(dirX-(*mm->getX())[result->second].x(),dirY-(*mm->getX())[result->second].y(),dirZ-(*mm->getX())[result->second].z()) );
                     else
                         addConstraint(result->second, Deriv(dirX,dirY,dirZ) );
-                    if (load->getDirection().isXNull() && load->getValue(0) != 0) // fix targets on the X axe
+                    // fix targets on the X axe
+                    if (load->getDirection().isXNull() && load->getValue(0) != 0)
                         fixDOF(result->second, 0);
                     if (load->getDirection().isYNull() && load->getValue(0) != 0) // fix targets on the Y axe
                         fixDOF(result->second, 1);
