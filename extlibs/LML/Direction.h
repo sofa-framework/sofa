@@ -1,7 +1,7 @@
 /***************************************************************************
                           Direction.h  -  description
                              -------------------
-    begin                : mar fév 4 2003
+    begin                : mar fï¿½v 4 2003
     copyright            : (C) 2003 by Emmanuel Promayon
     email                : Emmanuel.Promayon@imag.fr
  ***************************************************************************/
@@ -24,7 +24,7 @@
 
 /** Class that defines the direction of the Load with x, y and z
  *
- * $Revision: 1.8 $
+ * $Revision: 44 $
  */
 class Direction {
   

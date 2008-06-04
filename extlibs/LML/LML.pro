@@ -30,6 +30,7 @@ HEADERS += Direction.h \
            ForceUnit.h \
            Load.h \
            Loads.h \
+	   LoadsVersion.h \
            Pressure.h \
            PressureUnit.h \
            Rotation.h \

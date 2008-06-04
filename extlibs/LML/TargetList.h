@@ -29,7 +29,7 @@
  *
  * @author Emmanuel Promayon
  *
- * $Revision: 1.6 $
+ * $Revision: 44 $
  */
 class TargetList {
 

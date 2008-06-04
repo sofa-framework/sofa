@@ -20,7 +20,7 @@
 #include "ValueEvent.h"
 
 //--------- isActive ----------
-bool ValueEvent::isActive(const double t) const {
+bool ValueEvent::isActive(const SReal t) const {
     return (t>=date);
 }
 

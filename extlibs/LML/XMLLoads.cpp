@@ -35,19 +35,20 @@
 #include "PressureUnit.h"
 
 //---------------------- constructor --------------------
-XMLLoads::XMLLoads(){
+XMLLoads::XMLLoads() {
     l = NULL;
 }
 
-XMLLoads::XMLLoads(std::string fileName){
-    l = NULL;
+XMLLoads::XMLLoads(std::string fileName) : l(NULL) {
+    xmlRead(fileName);
+}
+
+XMLLoads::XMLLoads(std::string fileName, Loads * allLoads) : l(allLoads){
     xmlRead(fileName);
 }
 
 //---------------------- destructor --------------------
 XMLLoads::~XMLLoads() {
-    delete l;
-    l = NULL;
 }
 
 //---------------------- getLoads --------------------
@@ -161,7 +162,7 @@ void XMLLoads::readLoadAppliedTo(xmlNodePtr elem, Load *currentLoad)
 // ------------------ readLoadValueEvent ------------------
 void XMLLoads::readLoadValueEvent(xmlNodePtr elem, Load *currentLoad)
 {
-	double value = 0.0, date = 0.0;
+	double value=0.0, date=0.0;
 
 	xmlChar * pDate = xmlGetProp(elem, (const xmlChar*)"date");
 	if(pDate)

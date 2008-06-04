@@ -1,7 +1,7 @@
 /***************************************************************************
                           Unit.h  -  description
                              -------------------
-    begin                : mar fév 4 2003
+    begin                : mar fï¿½v 4 2003
     copyright            : (C) 2003 by Emmanuel Promayon
     email                : Emmanuel.Promayon@imag.fr
  ***************************************************************************/
@@ -26,7 +26,7 @@ class Unit;
   *
   * All sub classes implement the (nice) type-safe design pattern.
   *
-  * $Revision: 1.6 $
+  * $Revision: 44 $
   */
 class Unit {
 public:

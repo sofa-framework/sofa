@@ -1,4 +1,4 @@
-// Fucking std io C ..
+// Problematic std io C ..
 #ifndef __XMLIO_H_
 #define __XMLIO_H_
 

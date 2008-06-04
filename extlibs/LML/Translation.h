@@ -1,7 +1,7 @@
 /***************************************************************************
                           Translation.h  -  description
                              -------------------
-    begin                : mar fév 4 2003
+    begin                : mar fï¿½v 4 2003
     copyright            : (C) 2003 by Emmanuel Promayon
     email                : Emmanuel.Promayon@imag.fr
 
@@ -24,7 +24,7 @@
 
 /** Class that defines the type of Load 'Translation'
   *
-  * $Revision: 1.6 $
+  * $Revision: 44 $
   */
 class Translation : public Load {
 public:

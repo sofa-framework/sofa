@@ -23,11 +23,10 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
-
-/** Allows to read loads from an XML file (LML)
- 
+/* old doc
 Usage example:
 <pre>
+// reading
 main() {
   XMLLoads data;
   data.xmlRead("toto.lml");
@@ -36,6 +35,7 @@ main() {
   cout << l;
 }
  
+// writing
 main() {
   Loads *l= new Loads();
   Translation *t = new Translation();
@@ -44,18 +44,32 @@ main() {
   cout << l;
 }
 </pre>
- 
+*/
+
+/** (obsolete) Allows to read loads from an XML file (LML)/
+ *   
+ *  Please use now Loads(std::string) constructor...
+ *
+ * 
   *@author Emmanuel Promayon
   *
-  * $Revision: 1.7 $
+  * $Revision: 51 $
   */
 class XMLLoads {
 public:
 
-    /// create a list of loads from an IML file
-    XMLLoads(std::string);
+    /** create a list of loads from an LML file.
+     * @param fileName the name of the lml file (xml)
+     * @param allLoads the pointer to the Loads instance (to store all loads), if null a new one is instanciated
+     */
+    XMLLoads(std::string fileName, Loads* allLoads);
+
     /// create an empty list of loads
     XMLLoads();
+
+    /// (obsolete) create a list of loads from an LML file (instanciate a new Loads class object)
+    XMLLoads(std::string fileName);
+
     /// destructor (delete all loads)
     ~XMLLoads();
 
