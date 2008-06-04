@@ -43,7 +43,7 @@ public:
     /// return the scalar value of the event
     double getValue() ;
     /// return the scalar value of the event at time t
-    double getValue(const SReal t) ;
+    double getValue(const double t) ;
     /// return the scalar value of the event at time t, knowing that next event is nextE
     double getValue(const double t, ValueEvent * nextE) ;
 
