@@ -67,7 +67,7 @@ public :
     {}
     LMLForce(Loads* loadsList, const map<unsigned int, unsigned int> &atomIndexToDOFIndex, MechanicalState<DataTypes> *mm);
 
-    ~LMLForce() { delete loads;}
+    ~LMLForce() { /*delete loads;*/}
 
     /// return targets list
     std::vector<unsigned int> getTargets() {return targets;}

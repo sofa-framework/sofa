@@ -19,7 +19,7 @@
 
 #include "LMLReader.h"
 
-#include <XMLLoads.h>
+#include <Loads.h>
 
 #include "LMLForce.h"
 #include "LMLConstraint.h"
@@ -65,8 +65,8 @@ void LMLReader::BuildStructure(const char* filename, PMLReader * pmlreader)
 
     if(loadsList) delete loadsList;
     //read the file
-    XMLLoads data(lmlFile);
-    loadsList = data.getLoads();
+    loadsList = new Loads(lmlFile);
+    //loadsList = data.getLoads();
     this->BuildStructure(pmlreader);
 }
 
