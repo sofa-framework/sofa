@@ -178,7 +178,7 @@ int main(int argc, char** argv)
     if (dilate != 0.0f)
         obj.dilate(dilate);
 
-    if (tesselate > 0)
+    if (tesselate > 0 || sphere)
     {
         std::cout << "Tesselating mesh..."<<std::endl;
         tesselateMesh(obj, tesselate, sphere);
