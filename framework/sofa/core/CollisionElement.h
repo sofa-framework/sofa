@@ -37,6 +37,96 @@ class CollisionModel;
 class CollisionElementIterator;
 
 /**
+ *  \brief Base class for reference to an collision element defined by its <i>index</i>
+ *
+ */
+class BaseCollisionElementIterator
+{
+public:
+    typedef std::vector<int>::const_iterator VIterator;
+
+    /// Constructor.
+    /// In most cases it will be used by the CollisionModel to
+    /// create interators to its elements (such as in the begin() and end()
+    /// methods).
+    BaseCollisionElementIterator(int index=0)
+        : index(index), it(emptyVector.begin()), itend(emptyVector.end())
+    {
+    }
+
+    /// Constructor.
+    /// This constructor should be used in case a vector of indices is used.
+    BaseCollisionElementIterator(int index, VIterator it, VIterator itend)
+        : index(index), it(it), itend(itend)
+    {
+    }
+
+    /// Constructor.
+    /// This constructor should be used in case a vector of indices is used.
+    BaseCollisionElementIterator(VIterator it, VIterator itend)
+        : index(-1), it(it), itend(itend)
+    {
+        if (it != itend) index = *it;
+    }
+
+    /// @name Iterator Interface
+    /// @{
+
+    /// Increment this iterator to reference the next element.
+    void next()
+    {
+        if (it == itend)
+            ++index;
+        else
+        {
+            ++it;
+            if (it != itend) index = *it;
+        }
+    }
+
+    /// Increment this iterator to reference the next element.
+    void operator++()
+    {
+        next();
+    }
+
+    /// Increment this iterator to reference the next element.
+    void operator++(int)
+    {
+        next();
+    }
+
+    /// Return the index of the referenced element inside the CollisionModel.
+    ///
+    /// This methods should rarely be used.
+    /// Users should call it.draw() instead of model->draw(it.getIndex()).
+    int getIndex() const
+    {
+        return index;
+    }
+
+    /// Return the current iterator in the vector of indices, in case such a vector is currently used
+    const VIterator& getVIterator() const
+    {
+        return it;
+    }
+
+    /// Return the end iterator in the vector of indices, in case such a vector is currently used
+    const VIterator& getVIteratorEnd() const
+    {
+        return itend;
+    }
+
+    /// @}
+
+protected:
+    int index;      ///< index of the referenced element inside the CollisionModel.
+    VIterator it; ///< current position in a vector of indices, in case this iterator traverse a non-contiguous set of indices
+    VIterator itend; ///< end position in a vector of indices, in case this iterator traverse a non-contiguous set of indices
+    static std::vector<int> emptyVector; ///< empty vector to be able to initialize the iterator to an empty pair
+};
+
+/**
  *  \brief Reference to an collision element defined by its <i>index</i> inside
  *  a given collision <i>model</i>.
  *
@@ -48,18 +138,32 @@ class CollisionElementIterator;
  *
  */
 template<class TModel>
-class TCollisionElementIterator
+class TCollisionElementIterator : public BaseCollisionElementIterator
 {
 public:
     typedef TModel Model;
+    typedef std::vector<int>::const_iterator VIterator;
 
     /// Constructor.
     /// In most cases it will be used by the CollisionModel to
     /// create interators to its elements (such as in the begin() and end()
     /// methods).
-    /// @todo Should this be protected and only available to the CollisionModel?
     TCollisionElementIterator(Model* model=NULL, int index=0)
-        : model(model), index(index)
+        : BaseCollisionElementIterator(index), model(model)
+    {
+    }
+
+    /// Constructor.
+    /// This constructor should be used in case a vector of indices is used.
+    TCollisionElementIterator(Model* model, int index, VIterator it, VIterator itend)
+        : BaseCollisionElementIterator(index, it, itend), model(model)
+    {
+    }
+
+    /// Constructor.
+    /// This constructor should be used in case a vector of indices is used.
+    TCollisionElementIterator(Model* model, VIterator it, VIterator itend)
+        : BaseCollisionElementIterator(it, itend), model(model)
     {
     }
 
@@ -82,38 +186,17 @@ public:
         return this->model != i.getCollisionModel() || this->index != i.getIndex();
     }
 
-    /// Increment this iterator to reference the next element.
-    void operator++()
+    /// Test if this iterator is initialized with a valid CollisionModel.
+    /// Note that it does not test if the referenced element inside the CollisionModel is valid.
+    bool valid() const
     {
-        ++index;
-    }
-
-    /// Increment this iterator to reference the next element.
-    void operator++(int)
-    {
-        ++index;
+        return model!=NULL;
     }
 
     /// Return the CollisionModel containing the referenced element.
     Model* getCollisionModel() const
     {
         return model;
-    }
-
-    /// Return the index of the referenced element inside the CollisionModel.
-    ///
-    /// This methods should rarely be used.
-    /// Users should call it.draw() instead of model->draw(it.getIndex()).
-    int getIndex() const
-    {
-        return index;
-    }
-
-    /// Test if this iterator is initialized with a valid CollisionModel.
-    /// Note that it does not test if the referenced element inside the CollisionModel is valid.
-    bool valid() const
-    {
-        return model!=NULL;
     }
 
     /// @}
@@ -170,7 +253,6 @@ public:
 
 protected:
     Model* model;   ///< CollisionModel containing the referenced element.
-    int index;      ///< index of the referenced element inside the CollisionModel.
 };
 
 /**
@@ -193,16 +275,29 @@ public:
     /// In most cases it will be used by the CollisionModel to
     /// create interators to its elements (such as in the begin() and end()
     /// methods).
-    /// @todo Should this be protected and only available to the CollisionModel?
     CollisionElementIterator(CollisionModel* model=NULL, int index=0)
         : TCollisionElementIterator<CollisionModel>(model, index)
+    {
+    }
+
+    /// Constructor.
+    /// This constructor should be used in case a vector of indices is used.
+    CollisionElementIterator(CollisionModel* model, VIterator it, VIterator itend)
+        : TCollisionElementIterator<CollisionModel>(model, it, itend)
+    {
+    }
+
+    /// Constructor.
+    /// This constructor should be used in case a vector of indices is used.
+    CollisionElementIterator(CollisionModel* model, int index, VIterator it, VIterator itend)
+        : TCollisionElementIterator<CollisionModel>(model, index, it, itend)
     {
     }
 
     /// Automatic conversion from a reference to an element in a derived model.
     template<class DerivedModel>
     CollisionElementIterator(const TCollisionElementIterator<DerivedModel>& i)
-        : TCollisionElementIterator<CollisionModel>(i.getCollisionModel(), i.getIndex())
+        : TCollisionElementIterator<CollisionModel>(i.getCollisionModel(), i.getIndex(), i.getVIterator(), i.getVIteratorEnd())
     {
     }
 
@@ -212,6 +307,8 @@ public:
     {
         this->model = i.getCollisionModel();
         this->index = i.getIndex();
+        this->it = i.getVIterator();
+        this->itend = i.getVIteratorEnd();
     }
 };
 

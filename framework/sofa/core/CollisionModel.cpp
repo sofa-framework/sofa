@@ -30,6 +30,8 @@ namespace sofa
 namespace core
 {
 
+std::vector<int> BaseCollisionElementIterator::emptyVector; ///< empty vector to be able to initialize the iterator to an empty pair
+
 
 /// Get a color that can be used to display this CollisionModel
 const float* CollisionModel::getColor4f()
