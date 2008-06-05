@@ -278,8 +278,8 @@ void ArticulatedSystemMapping<BasicMapping>::apply( typename Out::VecCoord& out,
 
     for (; ac != acEnd; ac++)
     {
-        int parent = (*ac)->parentIndex.getValue();
-        int child = (*ac)->childIndex.getValue();
+//		int parent = (*ac)->parentIndex.getValue();
+//		int child = (*ac)->childIndex.getValue();
 
         vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*> articulations = (*ac)->getArticulations();
 
@@ -388,7 +388,7 @@ void ArticulatedSystemMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out
 
     //std::cout<<"ApplyJ"<<std::endl;
     OutVecCoord& xto = *this->toModel->getX();
-    InVecCoord &xfrom= *this->fromModel->getX();
+//	InVecCoord &xfrom= *this->fromModel->getX();
 
     out.clear();
     out.resize(xto.size());
@@ -456,7 +456,7 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecDeriv& out
 {
 
     OutVecCoord& xto = *this->toModel->getX();
-    InVecCoord &xfrom= *this->fromModel->getX();
+//	InVecCoord &xfrom= *this->fromModel->getX();
 
     //apply(xto,xfrom);
 
@@ -671,8 +671,8 @@ void ArticulatedSystemMapping<BasicMapping>::draw()
     unsigned int i=0;
     for (; ac != acEnd; ac++)
     {
-        int parent = (*ac)->parentIndex.getValue();
-        int child = (*ac)->childIndex.getValue();
+//		int parent = (*ac)->parentIndex.getValue();
+//		int child = (*ac)->childIndex.getValue();
         vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*> articulations = (*ac)->getArticulations();
         vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*>::const_iterator a = articulations.begin();
         vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*>::const_iterator aEnd = articulations.end();
