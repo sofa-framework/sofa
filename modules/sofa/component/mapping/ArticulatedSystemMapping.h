@@ -87,6 +87,10 @@ public:
 
     void init();
 
+    void reset() {init();}
+
+    void applyOld( typename Out::VecCoord& out, const typename In::VecCoord& in );
+
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
 
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in, const typename InRoot::VecDeriv* inroot );
@@ -151,7 +155,16 @@ public:
     vector<ArticulatedHierarchyContainer::ArticulationCenter*> articulationCenters;
 
     ArticulatedHierarchyContainer* ahc;
+
+private:
+    Vec<1,Quat> Buf_Rotation;
+    std::vector< Vec<3,OutReal> > ArticulationAxis;
+    std::vector< Vec<3,OutReal> > ArticulationPos;
+    InVecCoord CoordinateBuf;
+    InVecDeriv dxVec1Buf;
+    OutVecDeriv dxRigidBuf;
 };
+
 
 } // namespace mapping
 
