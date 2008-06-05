@@ -76,11 +76,10 @@ public:
     typedef typename Coord::value_type Real;
 
 
-    enum { SMALL = 0,   ///< Symbol of small displacements tetrahedron solver
-            LARGE = 1,   ///< Symbol of large displacements tetrahedron solver
-            POLAR = 2
-         }; ///< Symbol of polar displacements tetrahedron solver
-
+    enum { SMALL = 0, ///< Symbol of small displacements tetrahedron solver
+            LARGE = 1, ///< Symbol of large displacements tetrahedron solver
+            POLAR = 2  ///< Symbol of polar displacements tetrahedron solver
+         };
 protected:
 
     /// @name Per element (tetrahedron) data
@@ -109,9 +108,9 @@ protected:
     public:
         /// material stiffness matrices of each tetrahedron
         MaterialStiffness materialMatrix;
-        ///< the strain-displacement matrices vector
+        /// the strain-displacement matrices vector
         StrainDisplacement strainDisplacementMatrix;
-        // large displacement method
+        /// large displacement method
         helper::fixed_array<Coord,4> rotatedInitialElements;
         Transformation rotation;
         /// polar method
