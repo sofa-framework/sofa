@@ -204,7 +204,7 @@ void Load::addEvent ( ValueEvent * ve )
 	// !TODO : SORT the <value event *> by date
 	//* sort the list
 #ifdef WIN32
-	std::sort ( eventList.begin(), eventList.end(), std::greater ); // use the greater() method (see above)
+	std::sort ( eventList.begin(), eventList.end(), std::greater<ValueEvent *>() ); // use the greater() method (see above)
 #else
 	std::sort ( eventList.begin(), eventList.end(), std::greater<ValueEvent *>() ); // use the greater() method (see above)
 #endif
