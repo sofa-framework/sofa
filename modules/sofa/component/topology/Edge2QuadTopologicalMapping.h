@@ -87,13 +87,22 @@ public:
      * @param from the topology issuing TopologyChange objects (the "source").
      * @param to   the topology for which the TopologyChange objects must be translated (the "target").
      */
-    Edge2QuadTopologicalMapping(In* from=NULL, Out* to=NULL);
+    Edge2QuadTopologicalMapping(In* from, Out* to)
+        :
+        fromModel(from), toModel(to),
+        m_nbPointsOnEachCircle( initData(&m_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles")),
+        m_radius( initData(&m_radius, "radius", "Radius of created circles")),
+        object1(initData(&object1, std::string("../.."), "object1", "First object to map")),
+        object2(initData(&object2, std::string(".."), "object2", "Second object to map"))
+    {
+    }
 
     /** \brief Destructor.
      *
      * Does nothing.
      */
-    virtual ~Edge2QuadTopologicalMapping();
+    virtual ~Edge2QuadTopologicalMapping()
+    {}
 
     /// Specify the input and output topologies.
     virtual void setModels(In* from, Out* to);
