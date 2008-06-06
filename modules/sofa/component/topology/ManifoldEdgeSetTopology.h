@@ -273,7 +273,7 @@ public:
     /** \brief Returns the number of edges in this topology.
      *
      */
-    virtual int getNumberOfEdges() ;
+    virtual unsigned int getNumberOfEdges() ;
 
     /** \brief Returns the Edge array.
      *
