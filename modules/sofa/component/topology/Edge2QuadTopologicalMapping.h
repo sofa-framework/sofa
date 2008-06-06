@@ -74,6 +74,9 @@ protected:
     /// Output target BaseTopology
     Out* toModel;
 
+    Data<unsigned int> m_nbPointsOnEachCircle; // number of points to create along the circles around each point of the input topology (10 by default)
+    Data<double> m_radius;	// radius of the circles around each point of the input topology (1 by default)
+
     Data< std::string > object1;
     Data< std::string > object2;
 
@@ -100,9 +103,6 @@ public:
      */
     virtual ~Edge2QuadTopologicalMapping()
     {}
-
-    Data<unsigned int> m_nbPointsOnEachCircle; // number of points to create along the circles around each point of the input topology (10 by default)
-    Data<double> m_radius;	// radius of the circles around each point of the input topology (1 by default)
 
     /// Specify the input and output topologies.
     virtual void setModels(In* from, Out* to);
