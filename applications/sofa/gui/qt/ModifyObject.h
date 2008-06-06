@@ -121,24 +121,24 @@ protected:
     bool createTable(core::objectmodel::BaseData* field, Q3GroupBox *box=NULL, Q3Table* vectorTable=NULL, Q3Table* vectorTable2=NULL );
     void storeTable(Q3Table* table, core::objectmodel::BaseData* field);
 
-    void createVector(const Quater<double> &value, Q3GroupBox *box); //will be created as a Vec<4,double>
-    void createVector(const Quater<float>  &value, Q3GroupBox *box); //will be created as a Vec<4,float>
+    void createVector( core::objectmodel::BaseData* object,const Quater<double> &value, Q3GroupBox *box); //will be created as a Vec<4,double>
+    void createVector( core::objectmodel::BaseData* object,const Quater<float>  &value, Q3GroupBox *box); //will be created as a Vec<4,float>
 
     //*********************************************************
     template< int N, class T>
-    void createVector(const Vec<N,T> &value, Q3GroupBox *box);
+    void createVector( core::objectmodel::BaseData* object,const Vec<N,T> &value, Q3GroupBox *box);
     template< int N, class T>
-    void storeVector(std::list< QObject *>::iterator &list_it, Data< Vec<N,T> > *ff);
+    void storeVector( unsigned int &index, Data< Vec<N,T> > *ff);
     template<class T>
-    void storeVector(std::list< QObject *>::iterator &list_it, Data< Quater<T> > *ff);
+    void storeVector( unsigned int &index, Data< Quater<T> > *ff);
     template< int N, class T>
-    void storeVector(std::list< QObject *>::iterator &list_it, DataPtr< Vec<N,T> > *ff);
+    void storeVector( unsigned int &index, DataPtr< Vec<N,T> > *ff);
     template<class T>
-    void storeVector(std::list< QObject *>::iterator &list_it, DataPtr< Quater<T> > *ff);
+    void storeVector( unsigned int &index, DataPtr< Quater<T> > *ff);
     template< int N, class T>
-    void storeVector(std::list< QObject *>::iterator &list_it, Vec<N,T> *ff);
+    void storeVector( unsigned int &index, Vec<N,T> *ff);
     template<class T>
-    void storeVector(std::list< QObject *>::iterator &list_it, Quater<T> *ff);
+    void storeVector(unsigned int &index, Quater<T> *ff);
     //*********************************************************
     template< class T>
     bool createQtTable(Data< sofa::helper::vector< T > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
@@ -174,11 +174,15 @@ protected:
     core::objectmodel::Base* node;
     Q3ListViewItem * item;
     QPushButton *buttonUpdate;
-    std::list< QObject* >                         list_Object;
-    std::list< std::list< QObject* > * >          list_PointSubset;
-    std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> > list_Table;
+    std::vector<std::pair< core::objectmodel::BaseData*,  QObject*> >  objectGUI;  //vector of all the Qt Object added in the window
+    std::set< const QObject* >                                         setUpdates; //set of objects that have ben modified
+    std::list< std::list< QObject* > * >                               list_PointSubset;
+    std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >    list_Table;
     std::list< std::pair< Q3TextEdit*, core::objectmodel::BaseData*> > list_TextEdit;
-    std::map< core::objectmodel::BaseData*, int > dataIndexTab;
+    std::map< core::objectmodel::BaseData*, int >                      dataIndexTab;
+
+    WFloatLineEdit* transformation[7]; //Data added to manage transformation of a whole node
+
     void *Id;
     bool visualContentModified;
     std::vector< double > history;

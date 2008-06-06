@@ -35,18 +35,18 @@ void TransformationVisitor::processVisualModel(simulation::Node* // node
 {
     if (sofa::component::visualmodel::VisualModelImpl *visual = dynamic_cast<sofa::component::visualmodel::VisualModelImpl *>(v))
     {
-        visual->applyTranslation ( translation[0],translation[1],translation[2] );
-        visual->applyRotation(rotation);
         visual->applyScale ( scale );
+        visual->applyRotation(rotation);
+        visual->applyTranslation ( translation[0],translation[1],translation[2] );
     }
 
 }
 void TransformationVisitor::processMechanicalState(simulation::Node* // node
         , core::componentmodel::behavior::BaseMechanicalState* m)
 {
-    m->applyTranslation ( translation[0],translation[1],translation[2] );
-    m->applyRotation(rotation);
     m->applyScale ( scale );
+    m->applyRotation(rotation);
+    m->applyTranslation ( translation[0],translation[1],translation[2] );
 }
 
 Visitor::Result TransformationVisitor::processNodeTopDown(simulation::Node* node)
