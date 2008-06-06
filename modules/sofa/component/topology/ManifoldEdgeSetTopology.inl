@@ -663,7 +663,7 @@ void ManifoldEdgeSetTopologyModifier< DataTypes >::splitEdgesProcess( sofa::help
     this->m_basicTopology->propagateTopologicalChanges();
 
     // Removing the old edges
-    modifier->removeEdgesProcess( indices );
+    modifier->removeEdgesProcess( indices, removeIsolatedPoints );
 
 }
 
@@ -781,7 +781,7 @@ void ManifoldEdgeSetTopologyAlgorithms< DataTypes >::splitEdges( sofa::helper::v
     assert (topology != 0);
     ManifoldEdgeSetTopologyModifier< DataTypes >* modifier  = static_cast< ManifoldEdgeSetTopologyModifier< DataTypes >* >(topology->getTopologyModifier());
     assert(modifier != 0);
-    modifier->splitEdgesProcess(indices,baryCoefs);
+    modifier->splitEdgesProcess(indices,baryCoefs,removeIsolatedPoints);
 
     //assert(topology->getEdgeSetTopologyContainer()->checkTopology());
     topology->getEdgeSetTopologyContainer()->checkTopology();
