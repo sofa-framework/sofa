@@ -187,7 +187,7 @@ protected:
     static void TriangularBSTriangleCreationFunction(const sofa::helper::vector<unsigned int> &triangleAdded,
             void* param, vector<EdgeInformation> &edgeData);
 
-    static void TriangularBSTriangleDestructionFunction ( const sofa::helper::vector<unsigned int> &triangleAdded,
+    static void TriangularBSTriangleDestructionFunction ( const sofa::helper::vector<unsigned int> &triangleRemoved,
             void* param, vector<EdgeInformation> &edgeData);
 
     double m_potentialEnergy;

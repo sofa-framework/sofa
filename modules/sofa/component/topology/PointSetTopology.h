@@ -228,18 +228,21 @@ public:
      * Default value for these coefficient (when none is defined) is 1/n with n being the number of ancestors
      * for the point being created.
      *
+     * @param addDOF if true the points are actually added from the mechanical object's state vectors
+     *
      * \sa addPointsWarning
      */
     virtual void addPointsProcess(const unsigned int nPoints,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = (const sofa::helper::vector< sofa::helper::vector< unsigned int > >)0,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0 );
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0,
+            const bool addDOF = true);
 
 
     /** \brief Add a new point (who has no ancestors) to this topology.
      *
      * \sa addPointsWarning
      */
-    virtual void addNewPoint( const sofa::helper::vector< double >& x);
+    virtual void addNewPoint(unsigned int i,  const sofa::helper::vector< double >& x);
 
     /** \brief Sends a message to warn that some points are about to be deleted.
      *
@@ -295,6 +298,10 @@ public:
     /** \brief Generic method to remove a list of items.
     */
     virtual void removeItems(sofa::helper::vector< unsigned int >& /*items*/) {return;}
+
+    /** \brief Generic method to write the current mesh into a msh file
+    */
+    virtual void writeMSH(const char * /*filename*/) {return;}
 
     /** \brief Generic method for points renumbering
     */

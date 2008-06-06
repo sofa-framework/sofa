@@ -407,6 +407,10 @@ public:
      */
     virtual bool load(const char *filename);
 
+    /** \brief Write the current mesh into a msh file
+     *
+     */
+    virtual void writeMSHfile(const char *filename);
 
     /** \brief Sends a message to warn that some hexahedra were added in this topology.
      *
@@ -484,18 +488,20 @@ public:
      * Last parameter baryCoefs defines the coefficient used for the creation of the new points.
      * Default value for these coefficient (when none is defined) is 1/n with n being the number of ancestors
      * for the point being created.
+     * Important : the points are actually added to the mechanical object's state vectors iff (addDOF == true)
      *
      * \sa addPointsWarning
      */
     virtual void addPointsProcess(const unsigned int nPoints,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = (const sofa::helper::vector< sofa::helper::vector< unsigned int > >)0,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0 );
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0,
+            const bool addDOF = true);
 
     /** \brief Add a new point (who has no ancestors) to this topology.
      *
      * \sa addPointsWarning
      */
-    virtual void addNewPoint( const sofa::helper::vector< double >& x) {QuadSetTopologyModifier< DataTypes >::addNewPoint(x);};
+    virtual void addNewPoint(unsigned int i,  const sofa::helper::vector< double >& x);
 
     /** \brief Remove a subset of points
      *
@@ -506,7 +512,6 @@ public:
      * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
      */
     virtual void removePointsProcess( sofa::helper::vector<unsigned int> &indices, const bool removeDOF = true);
-
 
     /** \brief Reorder this topology.
      *
@@ -554,6 +559,10 @@ public:
     */
     virtual void removeItems(sofa::helper::vector< unsigned int >& items);
 
+    /** \brief Generic method to write the current mesh into a msh file
+     */
+    virtual void writeMSH(const char *filename);
+
     /** \brief Generic method for points renumbering
     */
     virtual void renumberPoints( const sofa::helper::vector<unsigned int> &/*index*/, const sofa::helper::vector<unsigned int> &/*inv_index*/);
@@ -587,8 +596,7 @@ public:
 };
 
 
-/** Describes a topological object that only consists as a set of points :
-it is a base class for all topological objects */
+/** Describes a topological object that consists as a set of points and hexahedra connected these points */
 template<class DataTypes>
 class HexahedronSetTopology : public QuadSetTopology <DataTypes>
 {

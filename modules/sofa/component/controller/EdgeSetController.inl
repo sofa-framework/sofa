@@ -50,7 +50,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 
-
+#include <sofa/component/topology/ManifoldEdgeSetTopology.h>
 
 namespace sofa
 {
@@ -180,9 +180,6 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
 
                 edges->getEdgeSetTopologyAlgorithms()->splitEdges(indices);
 
-                edges->propagateTopologicalChanges();
-
-
                 // Renumber Vertices
 
                 unsigned int numPoints = edges->getPointSetTopologyContainer()->getNumberOfVertices();
@@ -213,6 +210,7 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
                 */
 
                 edges->getEdgeSetTopologyAlgorithms()->renumberPoints((const sofa::helper::vector<unsigned int> &) inverse_permutations, (const sofa::helper::vector<unsigned int> &) permutations);
+
             }
         }
     }
@@ -238,8 +236,6 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
                 v.push_back(baseEdge[1]);
                 edges_fuse.push_back(v);
                 edges->getEdgeSetTopologyAlgorithms()->fuseEdges(edges_fuse, true);
-
-                edges->propagateTopologicalChanges();
 
                 // Renumber Vertices
 

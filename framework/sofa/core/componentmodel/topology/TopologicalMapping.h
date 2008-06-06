@@ -34,6 +34,8 @@
 
 #include <sofa/defaulttype/Vec3Types.h>
 
+#include <sofa/defaulttype/RigidTypes.h>
+
 namespace sofa
 {
 
@@ -52,6 +54,8 @@ using namespace sofa::defaulttype;
 class Tetra2TriangleTopologicalMapping;
 class Quad2TriangleTopologicalMapping;
 class Hexa2QuadTopologicalMapping;
+class Triangle2EdgeTopologicalMapping;
+class Edge2QuadTopologicalMapping;
 
 
 /**

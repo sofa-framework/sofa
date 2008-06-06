@@ -36,7 +36,7 @@ using namespace sofa::core;
  * This class, called Tetra2TriangleTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
  *
  * INPUT TOPOLOGY = TetrahedronSetTopology
- * OUTPUT TOPOLOGY = TriangleSetTopology
+ * OUTPUT TOPOLOGY = TriangleSetTopology, as the boundary of the INPUT TOPOLOGY
  *
  * Tetra2TriangleTopologicalMapping class is templated by the pair (INPUT TOPOLOGY, OUTPUT TOPOLOGY)
  *

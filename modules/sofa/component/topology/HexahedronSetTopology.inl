@@ -76,6 +76,53 @@ bool HexahedronSetTopologyModifier<DataTypes>::load(const char *filename)
 }
 
 template<class DataTypes>
+void HexahedronSetTopologyModifier<DataTypes>::writeMSHfile(const char *filename)
+{
+
+    std::ofstream myfile;
+    myfile.open (filename);
+
+    HexahedronSetTopology<DataTypes> *topology = dynamic_cast<HexahedronSetTopology<DataTypes> *>(this->m_basicTopology);
+
+    PointSetTopology< Vec3Types >* psp = dynamic_cast< PointSetTopology< Vec3Types >* >( topology );
+    PointSetTopologyContainer * c_psp = static_cast< PointSetTopologyContainer* >(psp->getTopologyContainer());
+
+    sofa::helper::vector< sofa::defaulttype::Vec<3,double> > p = *psp->getDOF()->getX();
+
+    myfile << "$NOD\n";
+    myfile << c_psp->getNumberOfVertices() <<"\n";
+
+    for (unsigned int i=0; i<c_psp->getNumberOfVertices(); ++i)
+    {
+
+        double x = (double) p[i][0];
+        double y = (double) p[i][1];
+        double z = (double) p[i][2];
+
+        myfile << i+1 << " " << x << " " << y << " " << z <<"\n";
+    }
+
+    myfile << "$ENDNOD\n";
+    myfile << "$ELM\n";
+
+    HexahedronSetTopologyContainer * container = static_cast< HexahedronSetTopologyContainer* >(topology->getTopologyContainer());
+    const sofa::helper::vector<Hexahedron> hea=container->getHexahedronArray();
+
+    myfile << hea.size() <<"\n";
+
+    for (unsigned int i=0; i<hea.size(); ++i)
+    {
+        myfile << i+1 << " 5 1 1 8 " << hea[i][4]+1 << " " << hea[i][5]+1 << " " << hea[i][1]+1 << " " << hea[i][0]+1
+                << hea[i][7]+1 << " " << hea[i][6]+1 << " " << hea[i][2]+1 << " " << hea[i][3]+1 <<"\n";
+    }
+
+    myfile << "$ENDELM\n";
+
+    myfile.close();
+
+}
+
+template<class DataTypes>
 void HexahedronSetTopologyModifier<DataTypes>::addHexahedraProcess(const sofa::helper::vector< Hexahedron > &hexahedra)
 {
     HexahedronSetTopology<DataTypes> *topology = dynamic_cast<HexahedronSetTopology<DataTypes> *>(this->m_basicTopology);
@@ -120,6 +167,126 @@ void HexahedronSetTopologyModifier<DataTypes>::addHexahedraProcess(const sofa::h
                 }
 
             }
+            if (container->m_hexahedronQuad.size()>0)
+            {
+                int quadIndex;
+
+                // Quad 0 :
+                quadIndex=container->getQuadIndex(t[0],t[3],t[2],t[1]);
+                //assert(quadIndex!= -1);
+                if(quadIndex == -1)
+                {
+                    // first create the quad
+                    sofa::helper::vector< Quad > v;
+                    Quad e1 (t[0],t[3],t[2],t[1]);
+                    v.push_back(e1);
+
+                    addQuadsProcess((const sofa::helper::vector< Quad > &) v);
+
+                    quadIndex=container->getQuadIndex(t[0],t[3],t[2],t[1]);
+                    sofa::helper::vector< unsigned int > quadIndexList;
+                    quadIndexList.push_back(quadIndex);
+                    addQuadsWarning( v.size(), v,quadIndexList);
+                }
+                container->m_hexahedronQuad.resize(quadIndex+1);
+                container->m_hexahedronQuad[hexahedronIndex][0]=quadIndex;
+                // Quad 1 :
+                quadIndex=container->getQuadIndex(t[4],t[5],t[6],t[7]);
+                //assert(quadIndex!= -1);
+                if(quadIndex == -1)
+                {
+                    // first create the quad
+                    sofa::helper::vector< Quad > v;
+                    Quad e1 (t[4],t[5],t[6],t[7]);
+                    v.push_back(e1);
+
+                    addQuadsProcess((const sofa::helper::vector< Quad > &) v);
+
+                    quadIndex=container->getQuadIndex(t[4],t[5],t[6],t[7]);
+                    sofa::helper::vector< unsigned int > quadIndexList;
+                    quadIndexList.push_back(quadIndex);
+                    addQuadsWarning( v.size(), v,quadIndexList);
+                }
+                container->m_hexahedronQuad.resize(quadIndex+1);
+                container->m_hexahedronQuad[hexahedronIndex][1]=quadIndex;
+                // Quad 2 :
+                quadIndex=container->getQuadIndex(t[0],t[1],t[5],t[4]);
+                //assert(quadIndex!= -1);
+                if(quadIndex == -1)
+                {
+                    // first create the quad
+                    sofa::helper::vector< Quad > v;
+                    Quad e1 (t[0],t[1],t[5],t[4]);
+                    v.push_back(e1);
+
+                    addQuadsProcess((const sofa::helper::vector< Quad > &) v);
+
+                    quadIndex=container->getQuadIndex(t[0],t[1],t[5],t[4]);
+                    sofa::helper::vector< unsigned int > quadIndexList;
+                    quadIndexList.push_back(quadIndex);
+                    addQuadsWarning( v.size(), v,quadIndexList);
+                }
+                container->m_hexahedronQuad.resize(quadIndex+1);
+                container->m_hexahedronQuad[hexahedronIndex][2]=quadIndex;
+                // Quad 3 :
+                quadIndex=container->getQuadIndex(t[1],t[2],t[6],t[5]);
+                //assert(quadIndex!= -1);
+                if(quadIndex == -1)
+                {
+                    // first create the quad
+                    sofa::helper::vector< Quad > v;
+                    Quad e1 (t[1],t[2],t[6],t[5]);
+                    v.push_back(e1);
+
+                    addQuadsProcess((const sofa::helper::vector< Quad > &) v);
+
+                    quadIndex=container->getQuadIndex(t[1],t[2],t[6],t[5]);
+                    sofa::helper::vector< unsigned int > quadIndexList;
+                    quadIndexList.push_back(quadIndex);
+                    addQuadsWarning( v.size(), v,quadIndexList);
+                }
+                container->m_hexahedronQuad.resize(quadIndex+1);
+                container->m_hexahedronQuad[hexahedronIndex][3]=quadIndex;
+                // Quad 4 :
+                quadIndex=container->getQuadIndex(t[2],t[3],t[7],t[6]);
+                //assert(quadIndex!= -1);
+                if(quadIndex == -1)
+                {
+                    // first create the quad
+                    sofa::helper::vector< Quad > v;
+                    Quad e1 (t[2],t[3],t[7],t[6]);
+                    v.push_back(e1);
+
+                    addQuadsProcess((const sofa::helper::vector< Quad > &) v);
+
+                    quadIndex=container->getQuadIndex(t[2],t[3],t[7],t[6]);
+                    sofa::helper::vector< unsigned int > quadIndexList;
+                    quadIndexList.push_back(quadIndex);
+                    addQuadsWarning( v.size(), v,quadIndexList);
+                }
+                container->m_hexahedronQuad.resize(quadIndex+1);
+                container->m_hexahedronQuad[hexahedronIndex][4]=quadIndex;
+                // Quad 5 :
+                quadIndex=container->getQuadIndex(t[3],t[0],t[4],t[7]);
+                //assert(quadIndex!= -1);
+                if(quadIndex == -1)
+                {
+                    // first create the quad
+                    sofa::helper::vector< Quad > v;
+                    Quad e1 (t[3],t[0],t[4],t[7]);
+                    v.push_back(e1);
+
+                    addQuadsProcess((const sofa::helper::vector< Quad > &) v);
+
+                    quadIndex=container->getQuadIndex(t[3],t[0],t[4],t[7]);
+                    sofa::helper::vector< unsigned int > quadIndexList;
+                    quadIndexList.push_back(quadIndex);
+                    addQuadsWarning( v.size(), v,quadIndexList);
+                }
+                container->m_hexahedronQuad.resize(quadIndex+1);
+                container->m_hexahedronQuad[hexahedronIndex][5]=quadIndex;
+
+            }
             if (container->m_hexahedronEdge.size()>0)
             {
                 int edgeIndex;
@@ -128,39 +295,11 @@ void HexahedronSetTopologyModifier<DataTypes>::addHexahedraProcess(const sofa::h
                     edgeIndex=container->getEdgeIndex(hexahedronEdgeArray[j][0],
                             hexahedronEdgeArray[j][1]);
                     assert(edgeIndex!= -1);
+                    container->m_hexahedronEdge.resize(edgeIndex+1);
                     container->m_hexahedronEdge[hexahedronIndex][j]= edgeIndex;
                 }
             }
-            if (container->m_hexahedronQuad.size()>0)
-            {
-                int quadIndex;
 
-                // Quad 0 :
-                quadIndex=container->getQuadIndex(t[0],t[3],t[2],t[1]);
-                assert(quadIndex!= -1);
-                container->m_hexahedronQuad[hexahedronIndex][0]=quadIndex;
-                // Quad 1 :
-                quadIndex=container->getQuadIndex(t[4],t[5],t[6],t[7]);
-                assert(quadIndex!= -1);
-                container->m_hexahedronQuad[hexahedronIndex][1]=quadIndex;
-                // Quad 2 :
-                quadIndex=container->getQuadIndex(t[0],t[1],t[5],t[4]);
-                assert(quadIndex!= -1);
-                container->m_hexahedronQuad[hexahedronIndex][2]=quadIndex;
-                // Quad 3 :
-                quadIndex=container->getQuadIndex(t[1],t[2],t[6],t[5]);
-                assert(quadIndex!= -1);
-                container->m_hexahedronQuad[hexahedronIndex][3]=quadIndex;
-                // Quad 4 :
-                quadIndex=container->getQuadIndex(t[2],t[3],t[7],t[6]);
-                assert(quadIndex!= -1);
-                container->m_hexahedronQuad[hexahedronIndex][4]=quadIndex;
-                // Quad 5 :
-                quadIndex=container->getQuadIndex(t[3],t[0],t[4],t[7]);
-                assert(quadIndex!= -1);
-                container->m_hexahedronQuad[hexahedronIndex][5]=quadIndex;
-
-            }
             if (tesa.size()>0)
             {
                 for (j=0; j<12; ++j)
@@ -178,12 +317,6 @@ void HexahedronSetTopologyModifier<DataTypes>::addHexahedraProcess(const sofa::h
                     shell.push_back( hexahedronIndex );
                     sort(shell.begin(), shell.end());
                 }
-
-                sofa::helper::vector< Hexahedron > current_hexahedron;
-                current_hexahedron.push_back(t);
-                sofa::helper::vector< unsigned int > hexahedraIndexList;
-                hexahedraIndexList.push_back((unsigned int) hexahedronIndex);
-                addHexahedraWarning((const unsigned int) 1, current_hexahedron, hexahedraIndexList);
 
             }
 
@@ -596,10 +729,10 @@ void HexahedronSetTopologyModifier<DataTypes>::removeHexahedraProcess( const sof
 template<class DataTypes >
 void HexahedronSetTopologyModifier< DataTypes >::addPointsProcess(const unsigned int nPoints,
         const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
+        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs, const bool addDOF)
 {
     // start by calling the standard method.
-    QuadSetTopologyModifier< DataTypes >::addPointsProcess( nPoints, ancestors, baryCoefs );
+    QuadSetTopologyModifier< DataTypes >::addPointsProcess( nPoints, ancestors, baryCoefs, addDOF );
 
     // now update the local container structures.
     HexahedronSetTopology<DataTypes> *topology = dynamic_cast<HexahedronSetTopology<DataTypes> *>(this->m_basicTopology);
@@ -607,6 +740,20 @@ void HexahedronSetTopologyModifier< DataTypes >::addPointsProcess(const unsigned
     HexahedronSetTopologyContainer * container = static_cast<HexahedronSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
     container->m_hexahedronVertexShell.resize( container->m_hexahedronVertexShell.size() + nPoints );
+}
+
+template<class DataTypes >
+void HexahedronSetTopologyModifier< DataTypes >::addNewPoint(unsigned int i, const sofa::helper::vector< double >& x)
+{
+    // start by calling the standard method.
+    QuadSetTopologyModifier< DataTypes >::addNewPoint(i,x);
+
+    // now update the local container structures.
+    HexahedronSetTopology<DataTypes> *topology = dynamic_cast<HexahedronSetTopology<DataTypes> *>(this->m_basicTopology);
+    assert (topology != 0);
+    HexahedronSetTopologyContainer * container = static_cast<HexahedronSetTopologyContainer *>(topology->getTopologyContainer());
+    assert (container != 0);
+    container->m_hexahedronVertexShell.resize( i+1 );
 }
 
 
@@ -840,6 +987,18 @@ template<class DataTypes>
 void HexahedronSetTopologyAlgorithms< DataTypes >::removeItems(sofa::helper::vector< unsigned int >& items)
 {
     removeHexahedra(items);
+}
+
+template<class DataTypes>
+void HexahedronSetTopologyAlgorithms< DataTypes >::writeMSH(const char *filename)
+{
+
+    HexahedronSetTopology< DataTypes > *topology = dynamic_cast<HexahedronSetTopology< DataTypes >* >(this->m_basicTopology);
+    assert (topology != 0);
+    HexahedronSetTopologyModifier< DataTypes >* modifier  = static_cast< HexahedronSetTopologyModifier< DataTypes >* >(topology->getTopologyModifier());
+    assert(modifier != 0);
+
+    modifier->writeMSHfile(filename);
 }
 
 template<class DataTypes>

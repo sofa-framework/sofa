@@ -107,58 +107,64 @@ void PointSetTopologyModifier<DataTypes>::swapPoints(const int i1,const int i2)
 template<class DataTypes>
 void PointSetTopologyModifier<DataTypes>::addPointsProcess(const unsigned int nPoints,
         const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
+        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs, const bool addDOF)
 {
-    PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
-    assert (topology != 0);
-    unsigned int prevSizeMechObj   = topology->object->getSize();
-
-    // resizing the state vectors
-    topology->object->resize( prevSizeMechObj + nPoints );
-
-    if ( ancestors != (const sofa::helper::vector< sofa::helper::vector< unsigned int > >)0 )
+    if(addDOF)
     {
-        assert( baryCoefs == (const sofa::helper::vector< sofa::helper::vector< double > >)0 || ancestors.size() == baryCoefs.size() );
 
-        sofa::helper::vector< sofa::helper::vector< double > > coefs;
-        coefs.resize(ancestors.size());
+        PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
+        assert (topology != 0);
+        unsigned int prevSizeMechObj   = topology->object->getSize();
 
-        for (unsigned int i = 0; i < ancestors.size(); ++i)
+        // resizing the state vectors
+        topology->object->resize( prevSizeMechObj + nPoints );
+
+        if ( ancestors != (const sofa::helper::vector< sofa::helper::vector< unsigned int > >)0 )
         {
-            assert( baryCoefs == (const sofa::helper::vector< sofa::helper::vector< double > >)0 || baryCoefs[i].size() == 0 || ancestors[i].size() == baryCoefs[i].size() );
-            coefs[i].resize(ancestors[i].size());
+            assert( baryCoefs == (const sofa::helper::vector< sofa::helper::vector< double > >)0 || ancestors.size() == baryCoefs.size() );
 
+            sofa::helper::vector< sofa::helper::vector< double > > coefs;
+            coefs.resize(ancestors.size());
 
-            for (unsigned int j = 0; j < ancestors[i].size(); ++j)
+            for (unsigned int i = 0; i < ancestors.size(); ++i)
             {
-                // constructng default coefs if none were defined
-                if (baryCoefs == (const sofa::helper::vector< sofa::helper::vector< double > >)0 || baryCoefs[i].size() == 0)
-                    coefs[i][j] = 1.0f / ancestors[i].size();
-                else
-                    coefs[i][j] = baryCoefs[i][j];
+                assert( baryCoefs == (const sofa::helper::vector< sofa::helper::vector< double > >)0 || baryCoefs[i].size() == 0 || ancestors[i].size() == baryCoefs[i].size() );
+                coefs[i].resize(ancestors[i].size());
+
+
+                for (unsigned int j = 0; j < ancestors[i].size(); ++j)
+                {
+                    // constructng default coefs if none were defined
+                    if (baryCoefs == (const sofa::helper::vector< sofa::helper::vector< double > >)0 || baryCoefs[i].size() == 0)
+                        coefs[i][j] = 1.0f / ancestors[i].size();
+                    else
+                        coefs[i][j] = baryCoefs[i][j];
+                }
+            }
+
+            for ( unsigned int i = 0; i < nPoints; ++i)
+            {
+                topology->object->computeWeightedValue( prevSizeMechObj + i, ancestors[i], coefs[i] );
             }
         }
 
-        for ( unsigned int i = 0; i < nPoints; ++i)
-        {
-            topology->object->computeWeightedValue( prevSizeMechObj + i, ancestors[i], coefs[i] );
-        }
     }
-
 }
 
 template<class DataTypes>
-void PointSetTopologyModifier<DataTypes>::addNewPoint( const sofa::helper::vector< double >& x)
+void PointSetTopologyModifier<DataTypes>::addNewPoint(unsigned int i, const sofa::helper::vector< double >& x)
 {
     PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
     assert (topology != 0);
-    unsigned int prevSizeMechObj   = topology->object->getSize();
+
+    PointSetTopologyContainer *container=static_cast<PointSetTopologyContainer *>( topology->getTopologyContainer());
+
+    unsigned int prevSizeMechObj   = i;//container->getNumberOfVertices();//topology->object->getSize();
 
     // resizing the state vectors
     topology->object->resize( prevSizeMechObj + 1 );
 
     topology->object->computeNewPoint(prevSizeMechObj, x);
-
 }
 
 

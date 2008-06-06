@@ -22,18 +22,20 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#include <sofa/component/topology/Quad2TriangleTopologicalMapping.inl>
+#include <sofa/component/topology/Edge2QuadTopologicalMapping.inl>
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/topology/TriangleSetTopology.h>
 #include <sofa/component/topology/QuadSetTopology.h>
+#include <sofa/component/topology/EdgeSetTopology.h>
 
 #include <sofa/core/componentmodel/topology/TopologicalMapping.h>
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Vec3Types.h>
+
+#include <sofa/defaulttype/RigidTypes.h>
 
 
 namespace sofa
@@ -52,30 +54,26 @@ using namespace sofa::core::componentmodel::behavior;
 
 using namespace sofa::component::topology;
 
-SOFA_DECL_CLASS(Quad2TriangleTopologicalMapping)
+SOFA_DECL_CLASS(Edge2QuadTopologicalMapping)
 
 // Register in the Factory
-int Quad2TriangleTopologicalMappingClass = core::RegisterObject("Special case of mapping where QuadSetTopology is converted to TriangleSetTopology")
+int Edge2QuadTopologicalMappingClass = core::RegisterObject("Special case of mapping where EdgeSetTopology is converted to QuadSetTopology")
 #ifndef SOFA_FLOAT
-        .add< Quad2TriangleTopologicalMapping< QuadSetTopology<Vec3dTypes>, TriangleSetTopology<Vec3dTypes> > >()
-        .add< Quad2TriangleTopologicalMapping< QuadSetTopology<Vec2dTypes>, TriangleSetTopology<Vec2dTypes> > >()
-        .add< Quad2TriangleTopologicalMapping< QuadSetTopology<Vec1dTypes>, TriangleSetTopology<Vec1dTypes> > >()
+        .add< Edge2QuadTopologicalMapping< EdgeSetTopology<Rigid3dTypes>, QuadSetTopology<Vec3dTypes> > >()
+        .add< Edge2QuadTopologicalMapping< EdgeSetTopology<Rigid2dTypes>, QuadSetTopology<Vec2dTypes> > >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< Quad2TriangleTopologicalMapping< QuadSetTopology<Vec3fTypes>, TriangleSetTopology<Vec3fTypes> > >()
-        .add< Quad2TriangleTopologicalMapping< QuadSetTopology<Vec2fTypes>, TriangleSetTopology<Vec2fTypes> > >()
-        .add< Quad2TriangleTopologicalMapping< QuadSetTopology<Vec1fTypes>, TriangleSetTopology<Vec1fTypes> > >()
+        .add< Edge2QuadTopologicalMapping< EdgeSetTopology<Rigid3fTypes>, QuadSetTopology<Vec3fTypes> > >()
+        .add< Edge2QuadTopologicalMapping< EdgeSetTopology<Rigid2fTypes>, QuadSetTopology<Vec2fTypes> > >()
 #endif
         ;
 #ifndef SOFA_FLOAT
-template class Quad2TriangleTopologicalMapping< QuadSetTopology<Vec3dTypes>, TriangleSetTopology<Vec3dTypes> >;
-template class Quad2TriangleTopologicalMapping< QuadSetTopology<Vec2dTypes>, TriangleSetTopology<Vec2dTypes> >;
-template class Quad2TriangleTopologicalMapping< QuadSetTopology<Vec1dTypes>, TriangleSetTopology<Vec1dTypes> >;
+template class Edge2QuadTopologicalMapping< EdgeSetTopology<Rigid3dTypes>, QuadSetTopology<Vec3dTypes> >;
+template class Edge2QuadTopologicalMapping< EdgeSetTopology<Rigid2dTypes>, QuadSetTopology<Vec2dTypes> >;
 #endif
 #ifndef SOFA_DOUBLE
-template class Quad2TriangleTopologicalMapping< QuadSetTopology<Vec3fTypes>, TriangleSetTopology<Vec3fTypes> >;
-template class Quad2TriangleTopologicalMapping< QuadSetTopology<Vec2fTypes>, TriangleSetTopology<Vec2fTypes> >;
-template class Quad2TriangleTopologicalMapping< QuadSetTopology<Vec1fTypes>, TriangleSetTopology<Vec1fTypes> >;
+template class Edge2QuadTopologicalMapping< EdgeSetTopology<Rigid3fTypes>, QuadSetTopology<Vec3fTypes> >;
+template class Edge2QuadTopologicalMapping< EdgeSetTopology<Rigid2fTypes>, QuadSetTopology<Vec2fTypes> >;
 #endif
 
 ;

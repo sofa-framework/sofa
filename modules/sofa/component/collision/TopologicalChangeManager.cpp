@@ -68,6 +68,7 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::core::Collisio
         items.insert(ind_curr);
         // also add neighbor triangles
 
+
         sofa::core::componentmodel::topology::BaseMeshTopology* mesh = elem2.getCollisionModel()->getContext()->getMeshTopology();
         if (mesh)
         {
@@ -85,6 +86,7 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::core::Collisio
                 std::cout << std::endl;
             }
         }
+
 
         bool is_topoMap = true;
 
@@ -381,8 +383,8 @@ bool TopologicalChangeManager::incisionTriangleModel(sofa::core::CollisionElemen
                     incision.a_init[2] = pos[2];
                     incision.ind_ta_init = elem2.getIndex();
 
-                    sofa::helper::vector<int> components_init;
-                    sofa::helper::vector<int>& components = components_init;
+                    sofa::helper::vector<unsigned int> components_init;
+                    sofa::helper::vector<unsigned int>& components = components_init;
                     int num = tsp->getEdgeSetTopologyContainer()->getNumberConnectedComponents(components);
                     std::cout << "Number of connected components : " << num << endl;
                     //sofa::helper::vector<int>::size_type i;
@@ -391,8 +393,8 @@ bool TopologicalChangeManager::incisionTriangleModel(sofa::core::CollisionElemen
                 }
                 else
                 {
-                    sofa::helper::vector<int> components_init;
-                    sofa::helper::vector<int>& components = components_init;
+                    sofa::helper::vector<unsigned int> components_init;
+                    sofa::helper::vector<unsigned int>& components = components_init;
                     int num = tsp->getEdgeSetTopologyContainer()->getNumberConnectedComponents(components);
                     std::cout << "Number of connected components : " << num << endl;
                     //sofa::helper::vector<int>::size_type i;

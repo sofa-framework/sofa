@@ -78,6 +78,52 @@ bool QuadSetTopologyModifier<DataTypes>::load(const char *filename)
 }
 
 template<class DataTypes>
+void QuadSetTopologyModifier<DataTypes>::writeMSHfile(const char *filename)
+{
+
+    std::ofstream myfile;
+    myfile.open (filename);
+
+    QuadSetTopology<DataTypes> *topology = dynamic_cast<QuadSetTopology<DataTypes> *>(this->m_basicTopology);
+
+    PointSetTopology< Vec3Types >* psp = dynamic_cast< PointSetTopology< Vec3Types >* >( topology );
+    PointSetTopologyContainer * c_psp = static_cast< PointSetTopologyContainer* >(psp->getTopologyContainer());
+
+    sofa::helper::vector< sofa::defaulttype::Vec<3,double> > p = *psp->getDOF()->getX();
+
+    myfile << "$NOD\n";
+    myfile << c_psp->getNumberOfVertices() <<"\n";
+
+    for (unsigned int i=0; i<c_psp->getNumberOfVertices(); ++i)
+    {
+
+        double x = (double) p[i][0];
+        double y = (double) p[i][1];
+        double z = (double) p[i][2];
+
+        myfile << i+1 << " " << x << " " << y << " " << z <<"\n";
+    }
+
+    myfile << "$ENDNOD\n";
+    myfile << "$ELM\n";
+
+    QuadSetTopologyContainer * container = static_cast< QuadSetTopologyContainer* >(topology->getTopologyContainer());
+    const sofa::helper::vector<Quad> qa=container->getQuadArray();
+
+    myfile << qa.size() <<"\n";
+
+    for (unsigned int i=0; i<qa.size(); ++i)
+    {
+        myfile << i+1 << " 3 1 1 4 " << qa[i][0]+1 << " " << qa[i][1]+1 << " " << qa[i][2]+1 << " " << qa[i][3]+1<<"\n";
+    }
+
+    myfile << "$ENDELM\n";
+
+    myfile.close();
+
+}
+
+template<class DataTypes>
 void QuadSetTopologyModifier<DataTypes>::addQuadsProcess(const sofa::helper::vector< Quad > &quads)
 {
     QuadSetTopology<DataTypes> *topology = dynamic_cast<QuadSetTopology<DataTypes> *>(this->m_basicTopology);
@@ -148,6 +194,7 @@ void QuadSetTopologyModifier<DataTypes>::addQuadsProcess(const sofa::helper::vec
                     container->m_quadEdge.resize(quadIndex+1);
 
                     container->m_quadEdge[quadIndex][j]= edgeIndex;
+
                 }
             }
 
@@ -161,14 +208,7 @@ void QuadSetTopologyModifier<DataTypes>::addQuadsProcess(const sofa::helper::vec
                     shell.push_back( quadIndex );
                     sort(shell.begin(), shell.end());
                 }
-
-                sofa::helper::vector< Quad > current_quad;
-                current_quad.push_back(t);
-                sofa::helper::vector< unsigned int > quadsIndexList;
-                quadsIndexList.push_back((unsigned int) quadIndex);
-                addQuadsWarning((const unsigned int) 1, current_quad, quadsIndexList);
             }
-
         }
     }
 }
@@ -377,10 +417,10 @@ void QuadSetTopologyModifier<DataTypes>::removeQuadsProcess(const sofa::helper::
 template<class DataTypes >
 void QuadSetTopologyModifier< DataTypes >::addPointsProcess(const unsigned int nPoints,
         const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
+        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs, const bool addDOF)
 {
     // start by calling the standard method.
-    EdgeSetTopologyModifier< DataTypes >::addPointsProcess( nPoints, ancestors, baryCoefs );
+    EdgeSetTopologyModifier< DataTypes >::addPointsProcess( nPoints, ancestors, baryCoefs, addDOF );
 
     // now update the local container structures.
     QuadSetTopology<DataTypes> *topology = dynamic_cast<QuadSetTopology<DataTypes> *>(this->m_basicTopology);
@@ -388,6 +428,20 @@ void QuadSetTopologyModifier< DataTypes >::addPointsProcess(const unsigned int n
     QuadSetTopologyContainer * container = static_cast<QuadSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
     container->m_quadVertexShell.resize( container->m_quadVertexShell.size() + nPoints );
+}
+
+template<class DataTypes >
+void QuadSetTopologyModifier< DataTypes >::addNewPoint(unsigned int i, const sofa::helper::vector< double >& x)
+{
+    // start by calling the standard method.
+    EdgeSetTopologyModifier< DataTypes >::addNewPoint(i,x);
+
+    // now update the local container structures.
+    QuadSetTopology<DataTypes> *topology = dynamic_cast<QuadSetTopology<DataTypes> *>(this->m_basicTopology);
+    assert (topology != 0);
+    QuadSetTopologyContainer * container = static_cast<QuadSetTopologyContainer *>(topology->getTopologyContainer());
+    assert (container != 0);
+    container->m_quadVertexShell.resize( i+1 );
 }
 
 
@@ -549,6 +603,18 @@ template<class DataTypes>
 void QuadSetTopologyAlgorithms< DataTypes >::removeItems(sofa::helper::vector< unsigned int >& items)
 {
     removeQuads(items, true, true);
+}
+
+template<class DataTypes>
+void QuadSetTopologyAlgorithms< DataTypes >::writeMSH(const char *filename)
+{
+
+    QuadSetTopology< DataTypes > *topology = dynamic_cast<QuadSetTopology< DataTypes >* >(this->m_basicTopology);
+    assert (topology != 0);
+    QuadSetTopologyModifier< DataTypes >* modifier  = static_cast< QuadSetTopologyModifier< DataTypes >* >(topology->getTopologyModifier());
+    assert(modifier != 0);
+
+    modifier->writeMSHfile(filename);
 }
 
 template<class DataTypes>

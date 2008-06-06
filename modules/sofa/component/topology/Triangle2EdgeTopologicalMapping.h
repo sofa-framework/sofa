@@ -1,12 +1,12 @@
-#ifndef SOFA_COMPONENT_TOPOLOGY_HEXA2QUADTOPOLOGICALMAPPING_H
-#define SOFA_COMPONENT_TOPOLOGY_HEXA2QUADTOPOLOGICALMAPPING_H
+#ifndef SOFA_COMPONENT_TOPOLOGY_TRIANGLE2EDGETOPOLOGICALMAPPING_H
+#define SOFA_COMPONENT_TOPOLOGY_TRIANGLE2EDGETOPOLOGICALMAPPING_H
 
 #include <sofa/core/componentmodel/topology/TopologicalMapping.h>
 
 #include <sofa/core/componentmodel/topology/Topology.h>
 
-#include <sofa/component/topology/QuadSetTopology.h>
-#include <sofa/component/topology/HexahedronSetTopology.h>
+#include <sofa/component/topology/EdgeSetTopology.h>
+#include <sofa/component/topology/TriangleSetTopology.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <map>
@@ -33,17 +33,17 @@ using namespace sofa::core::componentmodel::topology;
 using namespace sofa::core;
 
 /**
- * This class, called Hexa2QuadTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
+ * This class, called Triangle2EdgeTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
  *
- * INPUT TOPOLOGY = HexahedronSetTopology
- * OUTPUT TOPOLOGY = QuadSetTopology, as the boundary of the INPUT TOPOLOGY
+ * INPUT TOPOLOGY = TriangleSetTopology
+ * OUTPUT TOPOLOGY = EdgeSetTopology, as the boundary of the INPUT TOPOLOGY
  *
- * Hexa2QuadTopologicalMapping class is templated by the pair (INPUT TOPOLOGY, OUTPUT TOPOLOGY)
+ * Triangle2EdgeTopologicalMapping class is templated by the pair (INPUT TOPOLOGY, OUTPUT TOPOLOGY)
  *
 */
 
 template <class TIn, class TOut>
-class Hexa2QuadTopologicalMapping : public TopologicalMapping
+class Triangle2EdgeTopologicalMapping : public TopologicalMapping
 {
 
 public:
@@ -70,13 +70,13 @@ public:
      * @param from the topology issuing TopologyChange objects (the "source").
      * @param to   the topology for which the TopologyChange objects must be translated (the "target").
      */
-    Hexa2QuadTopologicalMapping(In* from=NULL, Out* to=NULL);
+    Triangle2EdgeTopologicalMapping(In* from=NULL, Out* to=NULL);
 
     /** \brief Destructor.
      *
      * Does nothing.
      */
-    virtual ~Hexa2QuadTopologicalMapping();
+    virtual ~Triangle2EdgeTopologicalMapping();
 
     /// Specify the input and output topologies.
     virtual void setModels(In* from, Out* to);
@@ -157,4 +157,4 @@ public:
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_TOPOLOGY_HEXA2QUADTOPOLOGICALMAPPING_H
+#endif // SOFA_COMPONENT_TOPOLOGY_TETRA2TRIANGLETOPOLOGICALMAPPING_H

@@ -93,6 +93,7 @@ public:
     typedef DataTypes::Coord Coord;
     typedef DataTypes::Deriv Deriv;
     typedef Line Element;
+    typedef topology::EdgeSetTopology<DataTypes> SetTopology;
     friend class Line;
 
     LineModel();
@@ -111,6 +112,8 @@ public:
 
     void draw();
 
+    virtual void handleTopologyChange();
+
     bool canCollideWithElement(int index, CollisionModel* model2, int index2);
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
@@ -121,6 +124,7 @@ protected:
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
     Topology* topology;
+    SetTopology* setTopology;
     PointModel* mpoints;
     int meshRevision;
 };

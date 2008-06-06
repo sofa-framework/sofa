@@ -34,7 +34,7 @@ SOFA_DECL_CLASS(EdgeSetTopology)
 
 // factory related stuff
 
-int EdgeSetTopologyClass = core::RegisterObject("Dynamic topology handling point sets")
+int EdgeSetTopologyClass = core::RegisterObject("Edge set topology")
 #ifndef SOFA_FLOAT
         .add< EdgeSetTopology<Vec3dTypes> >()
         .add< EdgeSetTopology<Vec2dTypes> >()
@@ -76,6 +76,10 @@ template class EdgeSetGeometryAlgorithms<Rigid2dTypes>;
 template class EdgeSetTopologyModifier<Vec3dTypes>;
 template class EdgeSetTopologyModifier<Vec2dTypes>;
 template class EdgeSetTopologyModifier<Vec1dTypes>;
+
+template class EdgeSetTopologyModifier<Rigid3dTypes>;
+template class EdgeSetTopologyModifier<Rigid2dTypes>;
+
 #endif
 #ifndef SOFA_DOUBLE
 template class EdgeSetTopology<Vec3fTypes>;
@@ -101,6 +105,10 @@ template class EdgeSetGeometryAlgorithms<Rigid2fTypes>;
 template class EdgeSetTopologyModifier<Vec3fTypes>;
 template class EdgeSetTopologyModifier<Vec2fTypes>;
 template class EdgeSetTopologyModifier<Vec1fTypes>;
+
+template class EdgeSetTopologyModifier<Rigid3fTypes>;
+template class EdgeSetTopologyModifier<Rigid2fTypes>;
+
 #endif
 
 // implementation EdgeSetTopologyContainer
@@ -129,7 +137,9 @@ const sofa::helper::vector<Edge> &EdgeSetTopologyContainer::getEdgeArray()
 
 int EdgeSetTopologyContainer::getEdgeIndex(const unsigned int v1, const unsigned int v2)
 {
+
     const sofa::helper::vector< unsigned int > &es1=getEdgeVertexShell(v1) ;
+
     const sofa::helper::vector<Edge> &ea=getEdgeArray();
     unsigned int i=0;
     int result= -1;
@@ -152,7 +162,7 @@ const Edge &EdgeSetTopologyContainer::getEdge(const unsigned int i)
 }
 
 // Return the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
-int EdgeSetTopologyContainer::getNumberConnectedComponents(sofa::helper::vector<int>& components)
+int EdgeSetTopologyContainer::getNumberConnectedComponents(sofa::helper::vector<unsigned int>& components)
 {
     using namespace boost;
 
