@@ -157,8 +157,6 @@ void PointSetTopologyModifier<DataTypes>::addNewPoint(unsigned int i, const sofa
     PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
     assert (topology != 0);
 
-    PointSetTopologyContainer *container=static_cast<PointSetTopologyContainer *>( topology->getTopologyContainer());
-
     unsigned int prevSizeMechObj   = i;//container->getNumberOfVertices();//topology->object->getSize();
 
     // resizing the state vectors

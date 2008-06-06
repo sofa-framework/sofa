@@ -67,14 +67,6 @@ public:
         , m_nbPointsOnEachCircle( initData(&m_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles"))
         , m_radius( initData(&m_radius, "radius", "Radius of created circles"))
     {
-        if(m_nbPointsOnEachCircle == NULL)
-        {
-            m_nbPointsOnEachCircle = 10; // number of points along the circles around each point of the input object (10 by default)
-        }
-        if(m_radius == NULL)
-        {
-            m_radius = 1.0; // radius of the circles around each point of the input object (1 by default)
-        }
     }
 
     virtual ~TubularMapping()
@@ -90,8 +82,8 @@ public:
 
     //void applyJT ( typename In::VecConst& out, const typename Out::VecConst& in );
 
-    Data<unsigned int> m_nbPointsOnEachCircle;
-    Data<double> m_radius;
+    Data<unsigned int> m_nbPointsOnEachCircle; // number of points along the circles around each point of the input object (10 by default)
+    Data<double> m_radius; // radius of the circles around each point of the input object (1 by default)
 
 protected:
 

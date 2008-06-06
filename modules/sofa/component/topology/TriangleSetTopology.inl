@@ -221,7 +221,7 @@ void TriangleSetTopologyModifier<DataTypes>::addTrianglesProcess(const sofa::hel
 
 
 template<class DataTypes>
-void TriangleSetTopologyModifier<DataTypes>::addTrianglesWarning(const unsigned int nTriangles, const sofa::helper::vector< Triangle >& trianglesList,
+virtual void TriangleSetTopologyModifier<DataTypes>::addTrianglesWarning(const unsigned int nTriangles, const sofa::helper::vector< Triangle >& trianglesList,
         const sofa::helper::vector< unsigned int >& trianglesIndexList,
         const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
         const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)

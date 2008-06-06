@@ -47,7 +47,7 @@ protected:
 
         unsigned int ccIndex; // index of the connected component stored in the m_ConnectedComponentArray
 
-        ConnectedComponent(unsigned int FirstVertexIndex=-1, unsigned int LastVertexIndex=-1, unsigned int size=0,unsigned int ccIndex=0, bool is_closed=false)
+        ConnectedComponent(unsigned int FirstVertexIndex=-1, unsigned int LastVertexIndex=-1, unsigned int size=0,unsigned int ccIndex=0)
             :FirstVertexIndex(FirstVertexIndex), LastVertexIndex(LastVertexIndex), size(size), ccIndex(ccIndex)
         {
         }

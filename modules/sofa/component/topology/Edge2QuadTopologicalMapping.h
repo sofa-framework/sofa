@@ -79,8 +79,8 @@ protected:
 
 public:
 
-    Data<unsigned int> m_nbPointsOnEachCircle;
-    Data<double> m_radius;
+    Data<unsigned int> m_nbPointsOnEachCircle; // number of points to create along the circles around each point of the input topology (10 by default)
+    Data<double> m_radius;	// radius of the circles around each point of the input topology (1 by default)
 
     /** \brief Constructor.
      *

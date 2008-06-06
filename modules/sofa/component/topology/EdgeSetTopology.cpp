@@ -177,7 +177,7 @@ int EdgeSetTopologyContainer::getNumberConnectedComponents(sofa::helper::vector<
     }
 
     components.resize(num_vertices(G));
-    int num = connected_components(G, &components[0]);
+    int num = (int) connected_components(G, &components[0]);
 
     return num;
 }
