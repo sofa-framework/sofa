@@ -1,9 +1,11 @@
-#ifndef SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGY_H
-#define SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGY_H
+#ifndef SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETTOPOLOGY_H
+#define SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETTOPOLOGY_H
 
-#include <sofa/component/topology/PointSetTopology.h>
+#include <sofa/component/topology/EdgeSetTopology.h>
 #include <vector>
 #include <map>
+
+#include <list>
 
 namespace sofa
 {
@@ -22,81 +24,34 @@ typedef BaseMeshTopology::SeqEdges SeqEdges;
 typedef BaseMeshTopology::VertexEdges VertexEdges;
 
 /////////////////////////////////////////////////////////
-/// TopologyChange subclasses
+/// ManifoldEdgeSetTopology objects
 /////////////////////////////////////////////////////////
 
 
-
-/** indicates that some edges were added */
-class EdgesAdded : public core::componentmodel::topology::TopologyChange
+/** a class that stores a set of edges and provides access to the adjacency between points and edges.
+    this topology is constraint by the manifold property : each vertex is adjacent either to one vertex or to two vertices. */
+class ManifoldEdgeSetTopologyContainer : public EdgeSetTopologyContainer
 {
 
-public:
-    unsigned int nEdges;
+protected:
 
-    sofa::helper::vector< Edge > edgeArray;
-
-    sofa::helper::vector< unsigned int > edgeIndexArray;
-
-    sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestorsList;
-
-    sofa::helper::vector< sofa::helper::vector< double > > coefs;
-
-    EdgesAdded(const unsigned int nE,
-            const sofa::helper::vector< Edge >& edgesList = (const sofa::helper::vector< Edge >)0,
-            const sofa::helper::vector< unsigned int >& edgesIndex = (const sofa::helper::vector< unsigned int >)0,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = (const sofa::helper::vector< sofa::helper::vector< unsigned int > >)0,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0)
-        : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::EDGESADDED), nEdges(nE), edgeArray(edgesList), edgeIndexArray(edgesIndex),ancestorsList(ancestors), coefs(baryCoefs)
-    {   }
-
-    unsigned int getNbAddedEdges() const
+    // Describe each connected component, which can be seen as an oriented line
+    class ConnectedComponent
     {
-        return nEdges;
-    }
+    public:
 
-};
+        unsigned int FirstVertexIndex; // index of the first vertex on the line
+        unsigned int LastVertexIndex; // index of the last vertex on the line
 
+        unsigned int size; // number of the vertices on the line
 
+        unsigned int ccIndex; // index of the connected component stored in the m_ConnectedComponentArray
 
-/** indicates that some edges are about to be removed */
-class EdgesRemoved : public core::componentmodel::topology::TopologyChange
-{
-
-public:
-    sofa::helper::vector<unsigned int> removedEdgesArray;
-
-public:
-    EdgesRemoved(const sofa::helper::vector<unsigned int> _eArray) : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::EDGESREMOVED), removedEdgesArray(_eArray)
-    {
-        //std::cout << "EdgeRemoved("<<removedEdgesArray.size()<<") created"<<std::endl;
-    }
-    ~EdgesRemoved()
-    {
-        //std::cout << "EdgeRemoved("<<removedEdgesArray.size()<<") destroyed"<<std::endl;
-    }
-
-    virtual const sofa::helper::vector<unsigned int> &getArray() const
-    {
-        return removedEdgesArray;
-    }
-    virtual unsigned int getNbRemovedEdges() const
-    {
-        return removedEdgesArray.size();
-    }
-
-};
-
-
-
-/////////////////////////////////////////////////////////
-/// EdgeSetTopology objects
-/////////////////////////////////////////////////////////
-
-
-/** a class that stores a set of edges  and provides access to the adjacency between points and edges */
-class EdgeSetTopologyContainer : public PointSetTopologyContainer
-{
+        ConnectedComponent(unsigned int FirstVertexIndex=-1, unsigned int LastVertexIndex=-1, unsigned int size=0,unsigned int ccIndex=0, bool is_closed=false)
+            :FirstVertexIndex(FirstVertexIndex), LastVertexIndex(LastVertexIndex), size(size), ccIndex(ccIndex)
+        {
+        }
+    };
 
 private:
     /** \brief Creates the EdgeSetIndex.
@@ -108,10 +63,6 @@ private:
     virtual void createEdgeVertexShellArray();
 
 protected:
-    /*** The array that stores the set of edges in the edge set */
-    sofa::helper::vector<Edge> m_edge;
-    /** the array that stores the set of edge-vertex shells, ie for each vertex gives the set of adjacent edges */
-    sofa::helper::vector< sofa::helper::vector< unsigned int > > m_edgeVertexShell;
 
     /** \brief Creates the EdgeSet array.
      *
@@ -119,13 +70,115 @@ protected:
      */
     virtual void createEdgeSetArray() {}
 
-public:
-    /** \brief Returns the Edge array.
+    /*** The array that stores for each vertex index, the connected component the vertex belongs to */
+    sofa::helper::vector< unsigned int > m_ComponentVertexArray;
+
+    /*** The array that stores the connected components */
+    sofa::helper::vector< ConnectedComponent > m_ConnectedComponentArray;
+
+    /** \brief Returns the ComponentVertex array.
      *
      */
-    virtual const sofa::helper::vector<Edge> &getEdgeArray();
+    const sofa::helper::vector< unsigned int > &getComponentVertexArray() const
+    {
+        return m_ComponentVertexArray;
+    }
 
-    inline friend std::ostream& operator<< (std::ostream& out, const EdgeSetTopologyContainer& t)
+    /** \brief Returns the array of connected components.
+     *
+     */
+    const sofa::helper::vector< ConnectedComponent > &getConnectedComponentArray() const
+    {
+        return m_ConnectedComponentArray;
+    }
+
+public:
+
+    /** \brief Resets the array of connected components and the ComponentVertex array (which are not valide anymore).
+     *
+     */
+    void resetConnectedComponent()
+    {
+
+        m_ComponentVertexArray.clear();
+        m_ConnectedComponentArray.clear();
+    }
+
+    /** \brief Returns true iff the array of connected components and the ComponentVertex array are valide (ie : not void)
+     *
+     */
+    bool isvoid_ConnectedComponent()
+    {
+        return m_ConnectedComponentArray.size()==0;
+    }
+
+    /** \brief Computes the array of connected components and the ComponentVertex array (which makes them valide).
+     *
+     */
+    void computeConnectedComponent();
+
+
+    /** \brief Returns the number of connected components.
+     *
+     */
+    virtual int getNumberOfConnectedComponents()
+    {
+        computeConnectedComponent();
+        return m_ConnectedComponentArray.size();
+    }
+
+    /** \brief Returns the FirstVertexIndex of the ith connected component.
+     *
+     */
+    virtual int getFirstVertexIndex(unsigned int i)
+    {
+        computeConnectedComponent();
+        assert(i<m_ConnectedComponentArray.size());
+        return m_ConnectedComponentArray[i].FirstVertexIndex;
+    }
+
+    /** \brief Returns the LastVertexIndex of the ith connected component.
+     *
+     */
+    virtual int getLastVertexIndex(unsigned int i)
+    {
+        computeConnectedComponent();
+        assert(i<m_ConnectedComponentArray.size());
+        return m_ConnectedComponentArray[i].LastVertexIndex;
+    }
+
+    /** \brief Returns the size of the ith connected component.
+     *
+     */
+    virtual int getComponentSize(unsigned int i)
+    {
+        computeConnectedComponent();
+        assert(i<m_ConnectedComponentArray.size());
+        return m_ConnectedComponentArray[i].size;
+    }
+
+    /** \brief Returns the index of the ith connected component.
+     *
+     */
+    virtual int getComponentIndex(unsigned int i)
+    {
+        computeConnectedComponent();
+        assert(i<m_ConnectedComponentArray.size());
+        return m_ConnectedComponentArray[i].ccIndex;
+    }
+
+    /** \brief Returns true iff the ith connected component is closed (ie : iff FirstVertexIndex == LastVertexIndex).
+     *
+     */
+    virtual bool isComponentClosed(unsigned int i)
+    {
+        computeConnectedComponent();
+        assert(i<m_ConnectedComponentArray.size());
+        return (m_ConnectedComponentArray[i].FirstVertexIndex == m_ConnectedComponentArray[i].LastVertexIndex);
+    }
+
+
+    inline friend std::ostream& operator<< (std::ostream& out, const ManifoldEdgeSetTopologyContainer& t)
     {
         out << t.m_edge.size();
         for (unsigned int i=0; i<t.m_edge.size(); i++)
@@ -135,7 +188,7 @@ public:
     }
 
     /// Needed to be compliant with Datas.
-    inline friend std::istream& operator>>(std::istream& in, EdgeSetTopologyContainer& t)
+    inline friend std::istream& operator>>(std::istream& in, ManifoldEdgeSetTopologyContainer& t)
     {
         unsigned int s;
         in >> s;
@@ -145,6 +198,68 @@ public:
             t.m_edge.push_back(T);
         }
         return in;
+    }
+
+
+    /** \brief Returns the indice of the vertex which is next to the vertex indexed by i.
+     */
+    const unsigned int getNextVertex(const unsigned int i)
+    {
+
+        assert(getEdgeVertexShell(i).size()>0);
+        if((getEdgeVertexShell(i)).size()==1 && (getEdge((getEdgeVertexShell(i))[0]))[1]==i)
+        {
+            return -1;
+        }
+        else
+        {
+            return (getEdge((getEdgeVertexShell(i))[0]))[1];
+        }
+
+    }
+
+    /** \brief Returns the indice of the vertex which is previous to the vertex indexed by i.
+     */
+    const unsigned int getPreviousVertex(const unsigned int i)
+    {
+
+        assert(getEdgeVertexShell(i).size()>0);
+        if((getEdgeVertexShell(i)).size()==1 && (getEdge((getEdgeVertexShell(i))[0]))[0]==i)
+        {
+            return -1;
+        }
+        else
+        {
+            return (getEdge((getEdgeVertexShell(i))[0]))[0];
+        }
+    }
+
+    /** \brief Returns the indice of the edge which is next to the edge indexed by i.
+     */
+    const unsigned int getNextEdge(const unsigned int i)
+    {
+        if((getEdgeVertexShell(getEdge(i)[1])).size()==1)
+        {
+            return -1;
+        }
+        else
+        {
+            return (getEdgeVertexShell(getEdge(i)[1]))[1];
+        }
+    }
+
+    /** \brief Returns the indice of the edge which is previous to the edge indexed by i.
+     */
+    const unsigned int getPreviousEdge(const unsigned int i)
+    {
+        if((getEdgeVertexShell(getEdge(i)[0])).size()==1)
+        {
+            return -1;
+        }
+        else
+        {
+            return (getEdgeVertexShell(getEdge(i)[0]))[0];
+        }
     }
 
 
@@ -160,13 +275,28 @@ public:
      */
     virtual unsigned int getNumberOfEdges() ;
 
+    /** \brief Returns the Edge array.
+     *
+     */
+    virtual const sofa::helper::vector<Edge> &getEdgeArray();
 
+
+    /** \brief Checks if the Edge Set Topology is coherent
+     *
+     * Check if the Edge and the Edhe Shell arrays are coherent
+     */
+    virtual bool checkTopology() const;
+
+protected:
 
     /** \brief Returns the Edge Shell array.
      *
      */
     virtual const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getEdgeVertexShellArray() ;
 
+
+
+public:
     /** \brief Returns the edge shell of the ith DOF.
      *
      */
@@ -176,22 +306,17 @@ public:
      */
     virtual int getEdgeIndex(const unsigned int v1, const unsigned int v2);
 
-    /** \brief Checks if the Edge Set Topology is coherent
-     *
-     * Check if the Edge and the Edhe Shell arrays are coherent
-     */
-    virtual bool checkTopology() const;
 
-    /** \brief Returns the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
+    /** \brief Returns the number of connected components
     @param components the array containing the optimal vertex permutation according to the Reverse CuthillMckee algorithm
     */
     virtual int getNumberConnectedComponents(sofa::helper::vector<unsigned int>& components);
 
-    EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top=NULL,
+    ManifoldEdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top=NULL,
             const sofa::helper::vector< Edge >         &edges    = (const sofa::helper::vector< Edge >)        0 );
 
     template< typename DataTypes >
-    friend class EdgeSetTopologyModifier;
+    friend class ManifoldEdgeSetTopologyModifier;
 protected:
     /** \brief Returns a non-const edge shell of the ith DOF for subsequent modification
      *
@@ -202,41 +327,28 @@ protected:
 
 
 template <class DataTypes>
-class EdgeSetTopologyLoader;
+class ManifoldEdgeSetTopologyLoader;
 
 /**
  * A class that can apply basic transformations on a set of points.
  */
 template<class DataTypes>
-class EdgeSetTopologyModifier : public PointSetTopologyModifier <DataTypes>
+class ManifoldEdgeSetTopologyModifier : public EdgeSetTopologyModifier <DataTypes>
 {
 
 public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
 
-    EdgeSetTopologyModifier(core::componentmodel::topology::BaseTopology *top) : PointSetTopologyModifier<DataTypes>(top)
+    ManifoldEdgeSetTopologyModifier(core::componentmodel::topology::BaseTopology *top) : EdgeSetTopologyModifier<DataTypes>(top)
     {
     }
-
-    /*
-    template< typename DataTypes >
-      friend class EdgeSetTopologyAlgorithms;
-
-    friend class sofa::core::componentmodel::topology::TopologicalMapping;
-
-    template< typename In, typename Out >
-      friend class Tetra2TriangleTopologicalMapping;
-      */
 
     //protected:
     /** \brief Build an edge set topology from a file : also modifies the MechanicalObject
      *
      */
     virtual bool load(const char *filename);
-    /** \brief Build a point set topology from a file : also modifies the MechanicalObject
-     *
-     */
 
     /** \brief Sends a message to warn that some edges were added in this topology.
      *
@@ -259,7 +371,7 @@ public:
      *
      * \sa removeEdgesProcess
      */
-    virtual void removeEdgesWarning( sofa::helper::vector<unsigned int> &edges);
+    void removeEdgesWarning( sofa::helper::vector<unsigned int> &edges);
 
     /** \brief Effectively Remove a subset of edges. Eventually remove isolated vertices
      *
@@ -272,7 +384,7 @@ public:
      *
      * @param removeIsolatedItems if true isolated vertices are also removed
      */
-    virtual void removeEdgesProcess(const sofa::helper::vector<unsigned int> &indices,const bool removeIsolatedItems=false);
+    void removeEdgesProcess(const sofa::helper::vector<unsigned int> &indices,const bool removeIsolatedItems=false);
 
     /** \brief Add some points to this topology.
      *
@@ -325,9 +437,9 @@ public:
      */
     virtual void fuseEdgesProcess(const sofa::helper::vector< sofa::helper::vector< unsigned int > >& edgesPairs, const bool removeIsolatedPoints = true);
 
+
     /** \brief Split the edges.
      *
-     * @param removeIsolatedItems if true isolated vertices are also removed
      */
     virtual void splitEdgesProcess( sofa::helper::vector<unsigned int> &indices,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = sofa::helper::vector< sofa::helper::vector< double > >(0),
@@ -335,21 +447,23 @@ public:
 
     /** \brief Load an edge.
      */
-    void addEdge(Edge e);
+    virtual void addEdge(Edge e);
 
 public:
     //template <class DataTypes>
-    friend class EdgeSetTopologyLoader<DataTypes>;
+    friend class ManifoldEdgeSetTopologyLoader<DataTypes>;
 };
 
 /**
  * A class that performs topology algorithms on an EdgeSet.
  */
 template < class DataTypes >
-class EdgeSetTopologyAlgorithms : public PointSetTopologyAlgorithms<DataTypes>
+class ManifoldEdgeSetTopologyAlgorithms : public EdgeSetTopologyAlgorithms<DataTypes>
 {
 
 public:
+
+    typedef typename DataTypes::Real Real;
 
     /** \brief Remove a set  of edges
         @param edges an array of edge indices to be removed (note that the array is not const since it needs to be sorted)
@@ -360,10 +474,6 @@ public:
     /** \brief Generic method to remove a list of items.
      */
     virtual void removeItems(sofa::helper::vector< unsigned int >& items);
-
-    /** \brief Generic method to write the current mesh into a msh file
-     */
-    virtual void writeMSH(const char * /*filename*/) {return;}
 
     /** \brief Generic method for points renumbering
     */
@@ -379,22 +489,18 @@ public:
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors= (const sofa::helper::vector< sofa::helper::vector<unsigned int > >) 0 ,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs= (const sofa::helper::vector< sofa::helper::vector< double > >)0) ;
 
-
     /** \brief Swap a list of pair edges, replacing each edge pair ((p11, p12), (p21, p22)) by the edge pair ((p11, p21), (p12, p22))
      *
      */
     virtual void swapEdges(const sofa::helper::vector< sofa::helper::vector< unsigned int > >& edgesPairs);
 
-    /** \brief Fuse a list of pair edges, replacing each edge pair ((p11, p12), (p21, p22)) by one edge (p11, p22)
+    /** \brief Fuse a list of pair edges.
      *
-     * @param removeIsolatedPoints if true isolated vertices are also removed
      */
-    virtual void fuseEdges(const sofa::helper::vector< sofa::helper::vector< unsigned int > >& edgesPairs, const bool removeIsolatedPoints = true);
+    virtual void fuseEdges(const sofa::helper::vector< sofa::helper::vector< unsigned int > >& edgesPair, const bool removeIsolatedPoints = true);
 
-    /** \brief Split an array of edges, replacing each edge (p1, p2) by two edges (p1, p3) and (p3, p2) where p3 is the new vertex
-     * On each edge, a vertex is created based on its barycentric coordinates
+    /** \brief Split an array of edges. On each edge, a vertex is created based on its barycentric coordinates
      *
-     * @param removeIsolatedPoints if true isolated vertices are also removed
      */
     virtual void splitEdges( sofa::helper::vector<unsigned int> &indices,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0 ,
@@ -402,30 +508,19 @@ public:
 
     /** \brief Gives the optimal vertex permutation according to the Reverse CuthillMckee algorithm (use BOOST GRAPH LIBRAIRY)
     */
-    virtual void resortCuthillMckee(sofa::helper::vector<int>& inverse_permutation);
+    //virtual void resortCuthillMckee(sofa::helper::vector<int>& inverse_permutation);
 
-
-    EdgeSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top) : PointSetTopologyAlgorithms<DataTypes>(top)
+    ManifoldEdgeSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top) : EdgeSetTopologyAlgorithms<DataTypes>(top)
     {
     }
-};
-/** \brief A class used as an interface with an array : Useful to compute geometric information on each edge in an efficient way
- *
- */
-template < class T>
-class BasicArrayInterface
-{
-public:
-    // Access to i-th element.
-    virtual T & operator[](int i)=0;
-    virtual ~BasicArrayInterface() {}
 
 };
+
 /**
  * A class that provides geometry information on an EdgeSet.
  */
 template < class DataTypes >
-class EdgeSetGeometryAlgorithms : public PointSetGeometryAlgorithms<DataTypes>
+class ManifoldEdgeSetGeometryAlgorithms : public EdgeSetGeometryAlgorithms<DataTypes>
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -433,42 +528,36 @@ public:
     typedef typename DataTypes::Coord Coord;
 
 
-    EdgeSetGeometryAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top) : PointSetGeometryAlgorithms<DataTypes>(top)
+    ManifoldEdgeSetGeometryAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top) : EdgeSetGeometryAlgorithms<DataTypes>(top)
     {
     }
-    /// computes the length of edge no i and returns it
-    virtual Real computeEdgeLength(const unsigned int i) const;
-    /// computes the edge length of all edges are store in the array interface
-    virtual void computeEdgeLength( BasicArrayInterface<Real> &ai) const;
-    /// computes the initial length of edge no i and returns it
-    virtual Real computeRestEdgeLength(const unsigned int i) const;
-    /// computes the initial square length of edge no i and returns it
-    virtual Real computeRestSquareEdgeLength(const unsigned int i) const;
 };
 
 
-/** Describes a topological object that consists as a set of points and lines connecting these points */
+/** Describes a topological object that only consists as a set of points and lines connecting these points */
 template<class DataTypes>
-class EdgeSetTopology : public PointSetTopology <DataTypes>
+class ManifoldEdgeSetTopology : public EdgeSetTopology <DataTypes>
 {
 public:
 
-    EdgeSetTopology(component::MechanicalObject<DataTypes> *obj);
+    ManifoldEdgeSetTopology(component::MechanicalObject<DataTypes> *obj);
 
-    DataPtr< EdgeSetTopologyContainer > *f_m_topologyContainer;
+    DataPtr< ManifoldEdgeSetTopologyContainer > *f_m_topologyContainer;
 
     virtual void init();
+
+
     /** \brief Returns the EdgeSetTopologyContainer object of this EdgeSetTopology.
      */
-    virtual EdgeSetTopologyContainer *getEdgeSetTopologyContainer() const
+    virtual ManifoldEdgeSetTopologyContainer *getEdgeSetTopologyContainer() const
     {
-        return (EdgeSetTopologyContainer *)this->m_topologyContainer;
+        return (ManifoldEdgeSetTopologyContainer *)this->m_topologyContainer;
     }
     /** \brief Returns the EdgeSetTopologyAlgorithms object of this EdgeSetTopology.
      */
-    virtual EdgeSetTopologyAlgorithms<DataTypes> *getEdgeSetTopologyAlgorithms() const
+    virtual ManifoldEdgeSetTopologyAlgorithms<DataTypes> *getEdgeSetTopologyAlgorithms() const
     {
-        return (EdgeSetTopologyAlgorithms<DataTypes> *)this->m_topologyAlgorithms;
+        return (ManifoldEdgeSetTopologyAlgorithms<DataTypes> *)this->m_topologyAlgorithms;
     }
 
     /** \brief Generic method returning the TopologyAlgorithms object
@@ -480,9 +569,9 @@ public:
 
     /** \brief Returns the EdgeSetTopologyAlgorithms object of this EdgeSetTopology.
      */
-    virtual EdgeSetGeometryAlgorithms<DataTypes> *getEdgeSetGeometryAlgorithms() const
+    virtual ManifoldEdgeSetGeometryAlgorithms<DataTypes> *getEdgeSetGeometryAlgorithms() const
     {
-        return (EdgeSetGeometryAlgorithms<DataTypes> *)this->m_geometryAlgorithms;
+        return (ManifoldEdgeSetGeometryAlgorithms<DataTypes> *)this->m_geometryAlgorithms;
     }
 
     /// BaseMeshTopology API

@@ -4,7 +4,6 @@
 #include <sofa/component/topology/TriangleSetTopology.h>
 #include <sofa/component/topology/PointSetTopology.inl>
 #include <sofa/component/topology/TopologyChangedEvent.h>
-#include <sofa/simulation/common/PropagateEventVisitor.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <algorithm>
 #include <functional>
@@ -79,6 +78,52 @@ bool TriangleSetTopologyModifier<DataTypes>::load(const char *filename)
 }
 
 template<class DataTypes>
+void TriangleSetTopologyModifier<DataTypes>::writeMSHfile(const char *filename)
+{
+
+    std::ofstream myfile;
+    myfile.open (filename);
+
+    TriangleSetTopology<DataTypes> *topology = dynamic_cast<TriangleSetTopology<DataTypes> *>(this->m_basicTopology);
+
+    PointSetTopology< Vec3Types >* psp = dynamic_cast< PointSetTopology< Vec3Types >* >( topology );
+    PointSetTopologyContainer * c_psp = static_cast< PointSetTopologyContainer* >(psp->getTopologyContainer());
+
+    sofa::helper::vector< sofa::defaulttype::Vec<3,double> > p = *psp->getDOF()->getX();
+
+    myfile << "$NOD\n";
+    myfile << c_psp->getNumberOfVertices() <<"\n";
+
+    for (unsigned int i=0; i<c_psp->getNumberOfVertices(); ++i)
+    {
+
+        double x = (double) p[i][0];
+        double y = (double) p[i][1];
+        double z = (double) p[i][2];
+
+        myfile << i+1 << " " << x << " " << y << " " << z <<"\n";
+    }
+
+    myfile << "$ENDNOD\n";
+    myfile << "$ELM\n";
+
+    TriangleSetTopologyContainer * container = static_cast< TriangleSetTopologyContainer* >(topology->getTopologyContainer());
+    const sofa::helper::vector<Triangle> &ta=container->getTriangleArray();
+
+    myfile << ta.size() <<"\n";
+
+    for (unsigned int i=0; i<ta.size(); ++i)
+    {
+        myfile << i+1 << " 2 6 6 3 " << ta[i][0]+1 << " " << ta[i][1]+1 << " " << ta[i][2]+1 <<"\n";
+    }
+
+    myfile << "$ENDELM\n";
+
+    myfile.close();
+
+}
+
+template<class DataTypes>
 void TriangleSetTopologyModifier<DataTypes>::addTrianglesProcess(const sofa::helper::vector< Triangle > &triangles)
 {
     TriangleSetTopology<DataTypes> *topology = dynamic_cast<TriangleSetTopology<DataTypes> *>(this->m_basicTopology);
@@ -132,7 +177,7 @@ void TriangleSetTopologyModifier<DataTypes>::addTrianglesProcess(const sofa::hel
                     if(edgeIndex == -1)
                     {
 
-                        // first create the edges
+                        // first create the triangles
                         sofa::helper::vector< Edge > v;
                         Edge e1 (t[(j+1)%3], t[(j+2)%3]);
                         v.push_back(e1);
@@ -162,11 +207,11 @@ void TriangleSetTopologyModifier<DataTypes>::addTrianglesProcess(const sofa::hel
                     sort(shell.begin(), shell.end());
                 }
 
-                sofa::helper::vector< Triangle > current_triangle;
-                current_triangle.push_back(t);
-                sofa::helper::vector< unsigned int > trianglesIndexList;
-                trianglesIndexList.push_back((unsigned int) triangleIndex);
-                addTrianglesWarning((const unsigned int) 1, current_triangle, trianglesIndexList);
+                //sofa::helper::vector< Triangle > current_triangle;
+                //current_triangle.push_back(t);
+                //sofa::helper::vector< unsigned int > trianglesIndexList;
+                //trianglesIndexList.push_back((unsigned int) triangleIndex);
+                //addTrianglesWarning((const unsigned int) 1, current_triangle, trianglesIndexList);
             }
 
         }
@@ -358,10 +403,10 @@ void TriangleSetTopologyModifier<DataTypes>::removeTrianglesProcess(const sofa::
 template<class DataTypes >
 void TriangleSetTopologyModifier< DataTypes >::addPointsProcess(const unsigned int nPoints,
         const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
+        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs, const bool addDOF)
 {
     // start by calling the standard method.
-    EdgeSetTopologyModifier< DataTypes >::addPointsProcess( nPoints, ancestors, baryCoefs );
+    EdgeSetTopologyModifier< DataTypes >::addPointsProcess( nPoints, ancestors, baryCoefs, addDOF );
 
     // now update the local container structures.
     TriangleSetTopology<DataTypes> *topology = dynamic_cast<TriangleSetTopology<DataTypes> *>(this->m_basicTopology);
@@ -369,6 +414,20 @@ void TriangleSetTopologyModifier< DataTypes >::addPointsProcess(const unsigned i
     TriangleSetTopologyContainer * container = static_cast<TriangleSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
     container->m_triangleVertexShell.resize( container->m_triangleVertexShell.size() + nPoints );
+}
+
+template<class DataTypes >
+void TriangleSetTopologyModifier< DataTypes >::addNewPoint(unsigned int i, const sofa::helper::vector< double >& x)
+{
+    // start by calling the standard method.
+    EdgeSetTopologyModifier< DataTypes >::addNewPoint(i,x);
+
+    // now update the local container structures.
+    TriangleSetTopology<DataTypes> *topology = dynamic_cast<TriangleSetTopology<DataTypes> *>(this->m_basicTopology);
+    assert (topology != 0);
+    TriangleSetTopologyContainer * container = static_cast<TriangleSetTopologyContainer *>(topology->getTopologyContainer());
+    assert (container != 0);
+    container->m_triangleVertexShell.resize( i+1 );
 }
 
 
@@ -535,6 +594,18 @@ void TriangleSetTopologyAlgorithms< DataTypes >::removeItems(sofa::helper::vecto
 }
 
 template<class DataTypes>
+void TriangleSetTopologyAlgorithms< DataTypes >::writeMSH(const char *filename)
+{
+
+    TriangleSetTopology< DataTypes > *topology = dynamic_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
+    assert (topology != 0);
+    TriangleSetTopologyModifier< DataTypes >* modifier  = static_cast< TriangleSetTopologyModifier< DataTypes >* >(topology->getTopologyModifier());
+    assert(modifier != 0);
+
+    modifier->writeMSHfile(filename);
+}
+
+template<class DataTypes>
 void  TriangleSetTopologyAlgorithms<DataTypes>::renumberPoints( const sofa::helper::vector<unsigned int> &index, const sofa::helper::vector<unsigned int> &inv_index)
 {
 
@@ -552,181 +623,6 @@ void  TriangleSetTopologyAlgorithms<DataTypes>::renumberPoints( const sofa::help
     assert(topology->getTriangleSetTopologyContainer()->checkTopology());
 }
 
-// Preparation of "InciseAlongPointsList" :
-// if the input points a and b are equal, then return false
-// if a and b are distinct but belong to the same triangle indexed by ind_a (= ind_p), then remesh the input triangle (such that a and b belongs to distinct triangles indexed by new_ind_ta and new_ind_tb) and return true
-
-template<class DataTypes>
-double TriangleSetTopologyAlgorithms< DataTypes >::Prepare_InciseAlongPointsList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb, unsigned int new_ind_ta, unsigned int new_ind_tb)
-{
-
-    // Initialization of output variables
-    double is_validated=(!(a[0]==b[0] && a[1]==b[1] && a[2]==b[2]));
-    new_ind_ta=(unsigned int) ind_ta;
-    new_ind_tb=(unsigned int) ind_tb;
-
-    // Access the topology
-    TriangleSetTopology<DataTypes> *topology = dynamic_cast<TriangleSetTopology<DataTypes> *>(this->m_basicTopology);
-    assert (topology != 0);
-    TriangleSetTopologyContainer * container = static_cast< TriangleSetTopologyContainer* >(topology->getTopologyContainer());
-
-    TriangleSetTopologyModifier< DataTypes >* modifier  = static_cast< TriangleSetTopologyModifier< DataTypes >* >(topology->getTopologyModifier());
-    assert(modifier != 0);
-
-    const Triangle &ta=container->getTriangle(ind_ta);
-
-    //const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
-    unsigned int nb_points =  container->getTriangleVertexShellArray().size() - 1; //vect_c.size() -1;
-
-    const sofa::helper::vector<Triangle> &vect_t=container->getTriangleArray();
-    unsigned int nb_triangles =  vect_t.size() -1;
-
-    // Variables to accumulate the number of elements registered to be created (so as to remember their indices)
-    unsigned int acc_nb_points=nb_points;
-    unsigned int acc_nb_triangles=nb_triangles;
-
-    // Variables to accumulate the elements registered to be created or to be removed
-    sofa::helper::vector< sofa::helper::vector< unsigned int > > p_ancestors;
-    sofa::helper::vector< sofa::helper::vector< double > > p_baryCoefs;
-    sofa::helper::vector< Triangle > triangles_to_create;
-    sofa::helper::vector< unsigned int > triangles_to_remove;
-
-    sofa::helper::vector< double > a_baryCoefs = topology->getTriangleSetGeometryAlgorithms()->computeTriangleBarycoefs((const Vec<3,double> &) a, ind_ta);
-    sofa::helper::vector< double > b_baryCoefs = topology->getTriangleSetGeometryAlgorithms()->computeTriangleBarycoefs((const Vec<3,double> &) b, ind_tb);
-
-    /// force the creation of TriangleEdgeShellArray
-    container->getTriangleEdgeShellArray();
-    /// force the creation of TriangleVertexShellArray
-    container->getTriangleVertexShellArray();
-
-    if(ind_ta==ind_tb)  // create the middle point of (a,b), then subdivide the input triangle (indexed by ind_ta = ind_t) into 3 triangles incident to this middle point
-    {
-
-        sofa::helper::vector< unsigned int > mid_ancestors;
-        mid_ancestors.push_back(ta[0]); mid_ancestors.push_back(ta[1]); mid_ancestors.push_back(ta[2]);
-        p_ancestors.push_back(mid_ancestors);
-
-        sofa::helper::vector< double > mid_baryCoefs;
-        mid_baryCoefs.push_back((double) (0.5*(a_baryCoefs[0]+b_baryCoefs[0])));
-        mid_baryCoefs.push_back((double) (0.5*(a_baryCoefs[1]+b_baryCoefs[1])));
-        mid_baryCoefs.push_back((double) (0.5*(a_baryCoefs[2]+b_baryCoefs[2])));
-        p_baryCoefs.push_back(mid_baryCoefs);
-
-        acc_nb_points=acc_nb_points+1;
-
-        Triangle t_01 = Triangle(helper::make_array<unsigned int>((unsigned int)acc_nb_points,(unsigned int)ta[0],(unsigned int) ta[1]));
-        Triangle t_12 = Triangle(helper::make_array<unsigned int>((unsigned int)acc_nb_points,(unsigned int)ta[1],(unsigned int) ta[2]));
-        Triangle t_20 = Triangle(helper::make_array<unsigned int>((unsigned int)acc_nb_points,(unsigned int)ta[2],(unsigned int) ta[0]));
-        triangles_to_create.push_back(t_01); triangles_to_create.push_back(t_12); triangles_to_create.push_back(t_20);
-
-        acc_nb_triangles=acc_nb_triangles+3;
-
-        triangles_to_remove.push_back(ind_ta);
-
-        modifier->addPointsProcess( acc_nb_points - nb_points, p_ancestors, p_baryCoefs);
-
-        modifier->addPointsWarning( acc_nb_points - nb_points, p_ancestors, p_baryCoefs);
-
-        modifier->addTrianglesProcess( triangles_to_create) ; // WARNING included after
-
-        topology->propagateTopologicalChanges();
-
-        removeTriangles(triangles_to_remove, true, true); // WARNING and PROPAGATED included before
-
-        topology->propagateTopologicalChanges();
-
-        if(is_validated)  // localize the sub_triangles indexed by new_ind_ta and new_ind_tb
-        {
-
-            const Vec<3,double> p_mid((a+b)*0.5);
-
-            /*
-              double is_a_0_01 = 0.5*a[0]*a[2]-p_mid[0]*p_mid[2];
-              double is_a_1_01 = 0.5*a[1]*a[2]-p_mid[1]*p_mid[2];
-              bool is_a_in_01 = (is_a_0_01>=0.0) && (is_a_1_01>=0.0);
-
-              double is_a_1_12 = 0.5*a[1]*a[0]-p_mid[1]*p_mid[0];
-              double is_a_2_12 = 0.5*a[2]*a[0]-p_mid[2]*p_mid[0];
-              bool is_a_in_12 = (is_a_1_12>=0.0) && (is_a_2_12>=0.0);
-
-              double is_a_2_20 = 0.5*a[2]*a[1]-p_mid[2]*p_mid[1];
-              double is_a_0_20 = 0.5*a[0]*a[1]-p_mid[0]*p_mid[1];
-              bool is_a_in_20 = (is_a_2_20>=0.0) && (is_a_0_20>=0.0);
-
-              double is_b_0_01 = 0.5*b[0]*b[2]-p_mid[0]*p_mid[2];
-              double is_b_1_01 = 0.5*b[1]*b[2]-p_mid[1]*p_mid[2];
-              bool is_b_in_01 = (is_b_0_01>=0.0) && (is_b_1_01>=0.0);
-
-              double is_b_1_12 = 0.5*b[1]*b[0]-p_mid[1]*p_mid[0];
-              double is_b_2_12 = 0.5*b[2]*b[0]-p_mid[2]*p_mid[0];
-              bool is_b_in_12 = (is_b_1_12>=0.0) && (is_b_2_12>=0.0);
-
-              double is_b_2_20 = 0.5*b[2]*b[1]-p_mid[2]*p_mid[1];
-              double is_b_0_20 = 0.5*b[0]*b[1]-p_mid[0]*p_mid[1];
-              bool is_b_in_20 = (is_b_2_20>=0.0) && (is_b_0_20>=0.0);
-
-            */
-
-            if(is_point_in_triangle(a, p_mid, (const Vec<3,double>& ) ta[0], (const Vec<3,double>& )ta[1])) //is_a_in_01){ // a in (0,1)
-            {
-
-                new_ind_ta=acc_nb_triangles-2;
-
-                if(is_point_in_triangle(b, p_mid,(const Vec<3,double>& )ta[1],(const Vec<3,double>& )ta[2])) //is_b_in_12){ // b in (1,2)
-                {
-                    new_ind_tb=acc_nb_triangles-1;
-
-                }
-                else   // b in (2,0)
-                {
-                    new_ind_tb=acc_nb_triangles;
-                }
-            }
-            else
-            {
-                if(is_point_in_triangle(a, p_mid, (const Vec<3,double>& ) ta[1], (const Vec<3,double>& )ta[2])) //is_a_in_12){ // a in (1,2)
-                {
-
-                    new_ind_ta=acc_nb_triangles-1;
-
-                    if(is_point_in_triangle(b, p_mid,(const Vec<3,double>& )ta[2], (const Vec<3,double>& ) ta[0])) //is_b_in_20){ // b in (2,0)
-                    {
-                        new_ind_tb=acc_nb_triangles;
-
-                    }
-                    else   // b in (0,1)
-                    {
-                        new_ind_tb=acc_nb_triangles-2;
-                    }
-                }
-                else   // a in (2,0)
-                {
-
-                    new_ind_ta=acc_nb_triangles;
-
-                    if(is_point_in_triangle(b, p_mid,(const Vec<3,double>& ) ta[0], (const Vec<3,double>& )ta[1])) //is_b_in_01){ // b in (0,1)
-                    {
-                        new_ind_tb=acc_nb_triangles-2;
-
-                    }
-                    else   // b in (1,2)
-                    {
-                        new_ind_tb=acc_nb_triangles-1;
-                    }
-                }
-            }
-
-            // Call the method "InciseAlongPointsList" on the new parameters
-
-            //InciseAlongPointsList( a,  b,  new_ind_ta, new_ind_tb);
-
-        }
-
-    }
-
-    return is_validated;
-
-}
 
 // Move and fix the two closest points of two triangles to their median point
 template<class DataTypes>
@@ -872,6 +768,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
     sofa::helper::vector< sofa::helper::vector< unsigned int > > p_ancestors;
     sofa::helper::vector< sofa::helper::vector< double > > p_baryCoefs;
     sofa::helper::vector< Triangle > triangles_to_create;
+    sofa::helper::vector< unsigned int > trianglesIndexList;
     sofa::helper::vector< unsigned int > triangles_to_remove;
 
     // Initialization for INTERSECTION method
@@ -1046,6 +943,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
             Triangle t_a20 = Triangle(helper::make_array<unsigned int>((unsigned int)ind_a,(unsigned int)ta[2],(unsigned int) ta[0]));
             triangles_to_create.push_back(t_a01); triangles_to_create.push_back(t_a12); triangles_to_create.push_back(t_a20);
 
+            trianglesIndexList.push_back(acc_nb_triangles); trianglesIndexList.push_back(acc_nb_triangles+1); trianglesIndexList.push_back(acc_nb_triangles+2);
             acc_nb_triangles=acc_nb_triangles+3;
 
             /// Register the removal of triangles incident to point a
@@ -1080,6 +978,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
             Triangle t_pa2 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points + 2,(unsigned int) p2_a, (unsigned int)ind_a));
             triangles_to_create.push_back(t_pa1); triangles_to_create.push_back(t_pa2);
 
+            trianglesIndexList.push_back(acc_nb_triangles); trianglesIndexList.push_back(acc_nb_triangles+1);
             acc_nb_triangles=acc_nb_triangles+2;
 
         }
@@ -1163,6 +1062,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
                 }
             }
 
+            trianglesIndexList.push_back(acc_nb_triangles); trianglesIndexList.push_back(acc_nb_triangles+1);
             acc_nb_triangles+=2;
 
             if(!is_first_cut)
@@ -1324,6 +1224,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
 
                 triangles_to_create.push_back(t_p1); triangles_to_create.push_back(t_p2); triangles_to_create.push_back(t_p3);
 
+                trianglesIndexList.push_back(acc_nb_triangles); trianglesIndexList.push_back(acc_nb_triangles+1); trianglesIndexList.push_back(acc_nb_triangles+2);
                 acc_nb_triangles=acc_nb_triangles+3;
 
             }
@@ -1407,6 +1308,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
                 Triangle t_b20 = Triangle(helper::make_array<unsigned int>((unsigned int)ind_b,(unsigned int)tb[2],(unsigned int) tb[0]));
                 triangles_to_create.push_back(t_b01); triangles_to_create.push_back(t_b12); triangles_to_create.push_back(t_b20);
 
+                trianglesIndexList.push_back(acc_nb_triangles); trianglesIndexList.push_back(acc_nb_triangles+1); trianglesIndexList.push_back(acc_nb_triangles+2);
                 acc_nb_triangles=acc_nb_triangles+3;
 
                 /// Register the removal of triangles incident to point b
@@ -1435,6 +1337,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
                 Triangle t_pb2 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points - 1,(unsigned int)ind_b,(unsigned int) p2_b));
                 triangles_to_create.push_back(t_pb1); triangles_to_create.push_back(t_pb2);
 
+                trianglesIndexList.push_back(acc_nb_triangles); trianglesIndexList.push_back(acc_nb_triangles+1);
                 acc_nb_triangles=acc_nb_triangles+2;
 
             }
@@ -1513,6 +1416,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
                     }
                 }
 
+                trianglesIndexList.push_back(acc_nb_triangles); trianglesIndexList.push_back(acc_nb_triangles+1);
                 acc_nb_triangles+=2;
             }
 
@@ -1605,6 +1509,8 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
                 }
             }
 
+            trianglesIndexList.push_back(acc_nb_triangles); trianglesIndexList.push_back(acc_nb_triangles+1); trianglesIndexList.push_back(acc_nb_triangles+2);
+            trianglesIndexList.push_back(acc_nb_triangles+3); trianglesIndexList.push_back(acc_nb_triangles+4);
             acc_nb_triangles = acc_nb_triangles + 5;
         }
 
@@ -1617,6 +1523,9 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
 
         // Create all the triangles registered to be created
         modifier->addTrianglesProcess((const sofa::helper::vector< Triangle > &) triangles_to_create) ; // WARNING called after the creation process by the method "addTrianglesProcess"
+
+        // Warn for the creation of all the triangles registered to be created
+        modifier->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList);
 
         // Propagate the topological changes *** not necessary
         //topology->propagateTopologicalChanges();
@@ -1765,6 +1674,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
     sofa::helper::vector< sofa::helper::vector< unsigned int > > p_ancestors;
     sofa::helper::vector< sofa::helper::vector< double > > p_baryCoefs;
     sofa::helper::vector< Triangle > triangles_to_create;
+    sofa::helper::vector< unsigned int > trianglesIndexList;
     sofa::helper::vector< unsigned int > triangles_to_remove;
 
     unsigned int ta_to_remove;
@@ -1847,6 +1757,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
             Triangle t_a20 = Triangle(helper::make_array<unsigned int>((unsigned int)ind_a,(unsigned int)ta[2],(unsigned int) ta[0]));
             triangles_to_create.push_back(t_a01); triangles_to_create.push_back(t_a12); triangles_to_create.push_back(t_a20);
 
+            trianglesIndexList.push_back(acc_nb_triangles); trianglesIndexList.push_back(acc_nb_triangles+1); trianglesIndexList.push_back(acc_nb_triangles+2);
             acc_nb_triangles=acc_nb_triangles+3;
 
             /// Register the removal of triangles incident to point a
@@ -1872,6 +1783,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
             Triangle t_pa2 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points + 2,(unsigned int) p2_a, (unsigned int)ind_a));
             triangles_to_create.push_back(t_pa1); triangles_to_create.push_back(t_pa2);
 
+            trianglesIndexList.push_back(acc_nb_triangles); trianglesIndexList.push_back(acc_nb_triangles+1);
             acc_nb_triangles=acc_nb_triangles+2;
 
         }
@@ -1946,6 +1858,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
                 }
             }
 
+            trianglesIndexList.push_back(acc_nb_triangles); trianglesIndexList.push_back(acc_nb_triangles+1);
             acc_nb_triangles+=2;
 
         }
@@ -2099,6 +2012,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
 
                 triangles_to_create.push_back(t_p1); triangles_to_create.push_back(t_p2); triangles_to_create.push_back(t_p3);
 
+                trianglesIndexList.push_back(acc_nb_triangles); trianglesIndexList.push_back(acc_nb_triangles+1); trianglesIndexList.push_back(acc_nb_triangles+2);
                 acc_nb_triangles=acc_nb_triangles+3;
 
             }
@@ -2134,6 +2048,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
             Triangle t_b20 = Triangle(helper::make_array<unsigned int>((unsigned int)ind_b,(unsigned int)tb[2],(unsigned int) tb[0]));
             triangles_to_create.push_back(t_b01); triangles_to_create.push_back(t_b12); triangles_to_create.push_back(t_b20);
 
+            trianglesIndexList.push_back(acc_nb_triangles); trianglesIndexList.push_back(acc_nb_triangles+1); trianglesIndexList.push_back(acc_nb_triangles+2);
             acc_nb_triangles=acc_nb_triangles+3;
 
             /// Register the removal of triangles incident to point b
@@ -2159,6 +2074,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
             Triangle t_pb2 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points - 1,(unsigned int)ind_b,(unsigned int) p2_b));
             triangles_to_create.push_back(t_pb1); triangles_to_create.push_back(t_pb2);
 
+            trianglesIndexList.push_back(acc_nb_triangles); trianglesIndexList.push_back(acc_nb_triangles+1);
             acc_nb_triangles=acc_nb_triangles+2;
 
         }
@@ -2232,6 +2148,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
                 }
             }
 
+            trianglesIndexList.push_back(acc_nb_triangles); trianglesIndexList.push_back(acc_nb_triangles+1);
             acc_nb_triangles+=2;
         }
 
@@ -2243,6 +2160,9 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
 
         // Create all the triangles registered to be created
         modifier->addTrianglesProcess((const sofa::helper::vector< Triangle > &) triangles_to_create) ; // WARNING called after the creation process by the method "addTrianglesProcess"
+
+        // Warn for the creation of all the triangles registered to be created
+        modifier->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList);
 
         // Propagate the topological changes *** not necessary
         //topology->propagateTopologicalChanges();
@@ -2359,14 +2279,18 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
 
     //const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
     unsigned int nb_points =  container->getTriangleVertexShellArray().size() - 1; //vect_c.size();
+    const sofa::helper::vector<Triangle> &vect_t=container->getTriangleArray();
+    unsigned int nb_triangles =  vect_t.size() -1;
 
     // Variables to accumulate the number of elements registered to be created (so as to remember their indices)
     unsigned int acc_nb_points=nb_points;
+    unsigned int acc_nb_triangles=nb_triangles;
 
     // Variables to accumulate the elements registered to be created or to be removed
     sofa::helper::vector< sofa::helper::vector< unsigned int > > p_ancestors;
     sofa::helper::vector< sofa::helper::vector< double > > p_baryCoefs;
     sofa::helper::vector< Triangle > triangles_to_create;
+    sofa::helper::vector< unsigned int > trianglesIndexList;
     sofa::helper::vector< unsigned int > triangles_to_remove;
 
     sofa::helper::vector<double> defaultCoefs; defaultCoefs.push_back(1.0);
@@ -2405,6 +2329,9 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
     ancestors[0] = ind_tri0;
     triangles_to_create.push_back(new_tri0);
 
+    trianglesIndexList.push_back(acc_nb_triangles);
+    acc_nb_triangles+=1;
+
     // recreate list_tria iff pa is new
     if (new_pa != ind_pa)
     {
@@ -2417,6 +2344,9 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
             triangles_to_remove.push_back(ind_tri);
             ancestors[0] = ind_tri;
             triangles_to_create.push_back(new_tri);
+
+            trianglesIndexList.push_back(acc_nb_triangles);
+            acc_nb_triangles+=1;
         }
     }
 
@@ -2432,6 +2362,9 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
             triangles_to_remove.push_back(ind_tri);
             ancestors[0] = ind_tri;
             triangles_to_create.push_back(new_tri);
+
+            trianglesIndexList.push_back(acc_nb_triangles);
+            acc_nb_triangles+=1;
         }
     }
 
@@ -2443,6 +2376,9 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
 
     // Create all the triangles registered to be created
     modifier->addTrianglesProcess((const sofa::helper::vector< Triangle > &) triangles_to_create) ; // WARNING called after the creation process by the method "addTrianglesProcess"
+
+    // Warn for the creation of all the triangles registered to be created
+    modifier->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList);
 
     // Propagate the topological changes *** not necessary
     //topology->propagateTopologicalChanges();

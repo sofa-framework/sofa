@@ -36,7 +36,7 @@ using namespace sofa::core;
  * This class, called Quad2TriangleTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
  *
  * INPUT TOPOLOGY = QuadSetTopology
- * OUTPUT TOPOLOGY = TriangleSetTopology
+ * OUTPUT TOPOLOGY = TriangleSetTopology, as the constitutive elements of the INPUT TOPOLOGY
  *
  * Quad2TriangleTopologicalMapping class is templated by the pair (INPUT TOPOLOGY, OUTPUT TOPOLOGY)
  *

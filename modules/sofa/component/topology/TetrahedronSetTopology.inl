@@ -76,6 +76,52 @@ bool TetrahedronSetTopologyModifier<DataTypes>::load(const char *filename)
 }
 
 template<class DataTypes>
+void TetrahedronSetTopologyModifier<DataTypes>::writeMSHfile(const char *filename)
+{
+
+    std::ofstream myfile;
+    myfile.open (filename);
+
+    TetrahedronSetTopology<DataTypes> *topology = dynamic_cast<TetrahedronSetTopology<DataTypes> *>(this->m_basicTopology);
+
+    PointSetTopology< Vec3Types >* psp = dynamic_cast< PointSetTopology< Vec3Types >* >( topology );
+    PointSetTopologyContainer * c_psp = static_cast< PointSetTopologyContainer* >(psp->getTopologyContainer());
+
+    sofa::helper::vector< sofa::defaulttype::Vec<3,double> > p = *psp->getDOF()->getX();
+
+    myfile << "$NOD\n";
+    myfile << c_psp->getNumberOfVertices() <<"\n";
+
+    for (unsigned int i=0; i<c_psp->getNumberOfVertices(); ++i)
+    {
+
+        double x = (double) p[i][0];
+        double y = (double) p[i][1];
+        double z = (double) p[i][2];
+
+        myfile << i+1 << " " << x << " " << y << " " << z <<"\n";
+    }
+
+    myfile << "$ENDNOD\n";
+    myfile << "$ELM\n";
+
+    TetrahedronSetTopologyContainer * container = static_cast< TetrahedronSetTopologyContainer* >(topology->getTopologyContainer());
+    const sofa::helper::vector<Tetrahedron> &tea=container->getTetrahedronArray();
+
+    myfile << tea.size() <<"\n";
+
+    for (unsigned int i=0; i<tea.size(); ++i)
+    {
+        myfile << i+1 << " 4 1 1 4 " << tea[i][0]+1 << " " << tea[i][1]+1 << " " << tea[i][2]+1 << " " << tea[i][3]+1 <<"\n";
+    }
+
+    myfile << "$ENDELM\n";
+
+    myfile.close();
+
+}
+
+template<class DataTypes>
 void TetrahedronSetTopologyModifier<DataTypes>::addTetrahedraProcess(const sofa::helper::vector< Tetrahedron > &tetrahedra)
 {
     TetrahedronSetTopology<DataTypes> *topology = dynamic_cast<TetrahedronSetTopology<DataTypes> *>(this->m_basicTopology);
@@ -116,6 +162,37 @@ void TetrahedronSetTopologyModifier<DataTypes>::addTetrahedraProcess(const sofa:
                     sort(shell.begin(), shell.end());
                 }
             }
+
+            if (container->m_tetrahedronTriangle.size()>0)
+            {
+                int triangleIndex;
+                for (j=0; j<4; ++j)
+                {
+                    triangleIndex=container->getTriangleIndex(t[(j+1)%4],t[(j+2)%4],
+                            t[(j+3)%4]);
+                    //assert(triangleIndex!= -1);
+
+                    if(triangleIndex == -1)
+                    {
+
+                        // first create the traingle
+                        sofa::helper::vector< Triangle > v;
+                        Triangle e1 (t[(j+1)%4],t[(j+2)%4],t[(j+3)%4]);
+                        v.push_back(e1);
+
+                        addTrianglesProcess((const sofa::helper::vector< Triangle > &) v);
+
+                        triangleIndex=container->getTriangleIndex(t[(j+1)%4],t[(j+2)%4],t[(j+3)%4]);
+                        sofa::helper::vector< unsigned int > triangleIndexList;
+                        triangleIndexList.push_back(triangleIndex);
+                        addTrianglesWarning( v.size(), v,triangleIndexList);
+                    }
+
+                    container->m_tetrahedronTriangle.resize(triangleIndex+1);
+                    container->m_tetrahedronTriangle[tetrahedronIndex][j]= triangleIndex;
+                }
+            }
+
             if (container->m_tetrahedronEdge.size()>0)
             {
                 int edgeIndex;
@@ -129,19 +206,7 @@ void TetrahedronSetTopologyModifier<DataTypes>::addTetrahedraProcess(const sofa:
                     container->m_tetrahedronEdge[tetrahedronIndex][j]= edgeIndex;
                 }
             }
-            if (container->m_tetrahedronTriangle.size()>0)
-            {
-                int triangleIndex;
-                for (j=0; j<4; ++j)
-                {
-                    triangleIndex=container->getTriangleIndex(t[(j+1)%4],t[(j+2)%4],
-                            t[(j+3)%4]);
-                    assert(triangleIndex!= -1);
 
-                    container->m_tetrahedronTriangle.resize(triangleIndex+1);
-                    container->m_tetrahedronTriangle[tetrahedronIndex][j]= triangleIndex;
-                }
-            }
             if (tesa.size()>0)
             {
                 for (j=0; j<6; ++j)
@@ -153,19 +218,12 @@ void TetrahedronSetTopologyModifier<DataTypes>::addTetrahedraProcess(const sofa:
             }
             if (ttsa.size()>0)
             {
-                for (j=0; j<3; ++j)
+                for (j=0; j<4; ++j)
                 {
                     sofa::helper::vector< unsigned int > &shell = container->m_tetrahedronTriangleShell[container->m_tetrahedronTriangle[tetrahedronIndex][j]];
                     shell.push_back( tetrahedronIndex );
                     sort(shell.begin(), shell.end());
                 }
-
-                sofa::helper::vector< Tetrahedron > current_tetrahedron;
-                current_tetrahedron.push_back(t);
-                sofa::helper::vector< unsigned int > tetrahedraIndexList;
-                tetrahedraIndexList.push_back((unsigned int) tetrahedronIndex);
-                addTetrahedraWarning((const unsigned int) 1, current_tetrahedron, tetrahedraIndexList);
-
             }
         }
     }
@@ -501,10 +559,10 @@ void TetrahedronSetTopologyModifier<DataTypes>::removeTetrahedraProcess( const s
 template<class DataTypes >
 void TetrahedronSetTopologyModifier< DataTypes >::addPointsProcess(const unsigned int nPoints,
         const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
+        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs, const bool addDOF)
 {
     // start by calling the standard method.
-    TriangleSetTopologyModifier< DataTypes >::addPointsProcess( nPoints, ancestors, baryCoefs );
+    TriangleSetTopologyModifier< DataTypes >::addPointsProcess( nPoints, ancestors, baryCoefs, addDOF );
 
     // now update the local container structures.
     TetrahedronSetTopology<DataTypes> *topology = dynamic_cast<TetrahedronSetTopology<DataTypes> *>(this->m_basicTopology);
@@ -512,6 +570,20 @@ void TetrahedronSetTopologyModifier< DataTypes >::addPointsProcess(const unsigne
     TetrahedronSetTopologyContainer * container = static_cast<TetrahedronSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
     container->m_tetrahedronVertexShell.resize( container->m_tetrahedronVertexShell.size() + nPoints );
+}
+
+template<class DataTypes >
+void TetrahedronSetTopologyModifier< DataTypes >::addNewPoint(unsigned int i, const sofa::helper::vector< double >& x)
+{
+    // start by calling the standard method.
+    TriangleSetTopologyModifier< DataTypes >::addNewPoint(i,x);
+
+    // now update the local container structures.
+    TetrahedronSetTopology<DataTypes> *topology = dynamic_cast<TetrahedronSetTopology<DataTypes> *>(this->m_basicTopology);
+    assert (topology != 0);
+    TetrahedronSetTopologyContainer * container = static_cast<TetrahedronSetTopologyContainer *>(topology->getTopologyContainer());
+    assert (container != 0);
+    container->m_tetrahedronVertexShell.resize( i+1 );
 }
 
 
@@ -758,6 +830,18 @@ template<class DataTypes>
 void TetrahedronSetTopologyAlgorithms< DataTypes >::removeItems(sofa::helper::vector< unsigned int >& items)
 {
     removeTetrahedra(items);
+}
+
+template<class DataTypes>
+void TetrahedronSetTopologyAlgorithms< DataTypes >::writeMSH(const char *filename)
+{
+
+    TetrahedronSetTopology< DataTypes > *topology = dynamic_cast<TetrahedronSetTopology< DataTypes >* >(this->m_basicTopology);
+    assert (topology != 0);
+    TetrahedronSetTopologyModifier< DataTypes >* modifier  = static_cast< TetrahedronSetTopologyModifier< DataTypes >* >(topology->getTopologyModifier());
+    assert(modifier != 0);
+
+    modifier->writeMSHfile(filename);
 }
 
 template<class DataTypes>

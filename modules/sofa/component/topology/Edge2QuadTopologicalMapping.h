@@ -1,18 +1,25 @@
-#ifndef SOFA_COMPONENT_TOPOLOGY_HEXA2QUADTOPOLOGICALMAPPING_H
-#define SOFA_COMPONENT_TOPOLOGY_HEXA2QUADTOPOLOGICALMAPPING_H
+#ifndef SOFA_COMPONENT_TOPOLOGY_EDGE2QUADTOPOLOGICALMAPPING_H
+#define SOFA_COMPONENT_TOPOLOGY_EDGE2QUADTOPOLOGICALMAPPING_H
 
 #include <sofa/core/componentmodel/topology/TopologicalMapping.h>
 
 #include <sofa/core/componentmodel/topology/Topology.h>
 
 #include <sofa/component/topology/QuadSetTopology.h>
-#include <sofa/component/topology/HexahedronSetTopology.h>
+#include <sofa/component/topology/EdgeSetTopology.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <sofa/core/BaseMapping.h>
+
+#include <sofa/defaulttype/RigidTypes.h>
+
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+
+#include <sofa/defaulttype/Vec.h>
+
 
 namespace sofa
 {
@@ -33,17 +40,17 @@ using namespace sofa::core::componentmodel::topology;
 using namespace sofa::core;
 
 /**
- * This class, called Hexa2QuadTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
+ * This class, called Edge2QuadTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
  *
- * INPUT TOPOLOGY = HexahedronSetTopology
- * OUTPUT TOPOLOGY = QuadSetTopology, as the boundary of the INPUT TOPOLOGY
+ * INPUT TOPOLOGY = EdgeSetTopology
+ * OUTPUT TOPOLOGY = QuadSetTopology based on new DOFs, as the tubular skinning of INPUT TOPOLOGY.
  *
- * Hexa2QuadTopologicalMapping class is templated by the pair (INPUT TOPOLOGY, OUTPUT TOPOLOGY)
+ * Edge2QuadTopologicalMapping class is templated by the pair (INPUT TOPOLOGY, OUTPUT TOPOLOGY)
  *
 */
 
 template <class TIn, class TOut>
-class Hexa2QuadTopologicalMapping : public TopologicalMapping
+class Edge2QuadTopologicalMapping : public TopologicalMapping
 {
 
 public:
@@ -51,6 +58,13 @@ public:
     typedef TIn In;
     /// Output Topology
     typedef TOut Out;
+
+    typedef typename State<Rigid3Types>::VecCoord VecCoord;
+    typedef typename State<Rigid3Types>::Coord Coord;
+    typedef typename Coord::value_type Real;
+    enum { M=Coord::static_size };
+    typedef defaulttype::Mat<M,M,Real> Mat;
+    typedef defaulttype::Vec<M,Real> Vec;
 
     friend class TopologicalMapping;
 
@@ -65,18 +79,21 @@ protected:
 
 public:
 
+    Data<unsigned int> m_nbPointsOnEachCircle;
+    Data<double> m_radius;
+
     /** \brief Constructor.
      *
      * @param from the topology issuing TopologyChange objects (the "source").
      * @param to   the topology for which the TopologyChange objects must be translated (the "target").
      */
-    Hexa2QuadTopologicalMapping(In* from=NULL, Out* to=NULL);
+    Edge2QuadTopologicalMapping(In* from=NULL, Out* to=NULL);
 
     /** \brief Destructor.
      *
      * Does nothing.
      */
-    virtual ~Hexa2QuadTopologicalMapping();
+    virtual ~Edge2QuadTopologicalMapping();
 
     /// Specify the input and output topologies.
     virtual void setModels(In* from, Out* to);
@@ -157,4 +174,4 @@ public:
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_TOPOLOGY_HEXA2QUADTOPOLOGICALMAPPING_H
+#endif // SOFA_COMPONENT_TOPOLOGY_EDGE2QUADTOPOLOGICALMAPPING_H

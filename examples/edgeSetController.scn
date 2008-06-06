@@ -1,14 +1,45 @@
-<Node name="root"  dt="0.005" showBehaviorModels="0" showCollisionModels="1" showMappings="0" showForceFields="1" >
-	<Node name="InstrumentEdgeSet">
-		<Object type="MechanicalObject" template="Rigid"/>
-		<Object type="EdgeSetTopology" filename="BehaviorModels/edgeSet.xs3"/>
-		<Object type="EdgeSetController" listening="true" mainDirection="-1.0 0.0 0.0"/>
+<Node name="root"  dt="0.005" showBehaviorModels="0" showCollisionModels="1"
+showMappings="0" showForceFields="1" >
+        <Node name="InstrumentEdgeSet">
+                <Object type="EulerImplicit" rayleighStiffness="0" printLog="false" />
+                <Object type="BTDLinearSolver" template="NewMatBand" bandWidth="11"
+threshold="0.000000001" tolerance="0.0000000001" printLog="false" verbose="false"
+/>
+                <Object type="MechanicalObject" name="Edges" template="Rigid"/>
+                <Object type="MechanicalStateController" listening="true" mainDirection="-1.0 0.0
+0.0" handleEventTriggersUpdate="true"/>
+                <Object type="EdgeSetController" listening="true" mainDirection="-1.0 0.0 0.0"/>
+                
+                <Object type="EdgeSetTopology" name="topo_Edges" filename="BehaviorModels/edgeSet.xs3"/>
+                <Object type="FixedConstraint" name="FixedConstraint" indices="0" />
+                <Object type="UniformMass" mass="1 1 0.01 0 0 0 0.1 0 0 0 0.1" printLog="false" />
+                <Object type="BeamFEMForceField" name="FEM" radius="0.1" youngModulus="20000000" />
+                        
+		    <Node name="Q">
+				<Object type="MechanicalObject" name="Quads" />
 
-      <Object type="EulerImplicit" rayleighStiffness="0" printLog="false" />
-      <Object type="BTDLinearSolver" template="NewMatBand" bandWidth="11" threshold="0.000000001" tolerance="0.0000000001" printLog="false" verbose="false" />
-      <Object type="FixedConstraint" name="FixedConstraint" indices="0" />
-      <Object type="UniformMass" mass="1 1 0.01 0 0 0 0.1 0 0 0 0.1" printLog="false" />
-      <Object type="BeamFEMForceField" name="FEM" radius="0.1" youngModulus="20000000" />
+                        <Object type="QuadSetTopology" name="topo_Quads" />
 
-	</Node>
+				<Object type="Edge2QuadTopologicalMapping" nbPointsOnEachCircle="10" radius="1.0" object1="../../topo_Edges" object2="topo_Quads"/>
+
+                        <Object type="TubularMapping" nbPointsOnEachCircle="10" radius="1.0" object1="../../Edges" object2="../Quads" />
+
+				<Node name="Visu">
+					<Object type="OglModel" name="Visual" color="1.0 0.0 0.0 0.5" />
+					<Object type="IdentityMapping" object1="../../Quads" object2="Visual" />
+				</Node>	
+
+<!--
+				<Node name="T">
+
+      	           		<Object type="TriangleSetTopology" name="topo_Triangles" />
+					<Object type="Quad2TriangleTopologicalMapping" object1="../../topo_Quads" object2="topo_Triangles"/>			    					
+					<Object type="TriangleSet"/>						
+		
+		  		</Node>
+-->
+
+                </Node>                
+
+        </Node>
 </Node>
