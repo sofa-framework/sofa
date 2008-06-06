@@ -185,7 +185,7 @@ void TetrahedronSetTopologyModifier<DataTypes>::addTetrahedraProcess(const sofa:
                         triangleIndex=container->getTriangleIndex(t[(j+1)%4],t[(j+2)%4],t[(j+3)%4]);
                         sofa::helper::vector< unsigned int > triangleIndexList;
                         triangleIndexList.push_back(triangleIndex);
-                        addTrianglesWarning( v.size(), v,triangleIndexList);
+                        this->addTrianglesWarning( v.size(), v,triangleIndexList);
                     }
 
                     container->m_tetrahedronTriangle.resize(triangleIndex+1);
