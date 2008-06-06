@@ -188,7 +188,7 @@ void QuadSetTopologyModifier<DataTypes>::addQuadsProcess(const sofa::helper::vec
                         edgeIndex=container->getEdgeIndex(t[(j+1)%4],t[(j+2)%4]);
                         sofa::helper::vector< unsigned int > edgeIndexList;
                         edgeIndexList.push_back(edgeIndex);
-                        addEdgesWarning( v.size(), v,edgeIndexList);
+                        this->addEdgesWarning( v.size(), v,edgeIndexList);
                     }
 
                     container->m_quadEdge.resize(quadIndex+1);

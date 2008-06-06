@@ -150,7 +150,7 @@ void ManifoldEdgeSetTopologyContainer::computeConnectedComponent()
         m_ComponentVertexArray.resize(num_vertices(G));
         int num = connected_components(G, &m_ComponentVertexArray[0]);
 
-        std::vector< std::vector<unsigned int> > components(num);
+        std::vector< std::vector<int> > components(num);
         for(int i=0; i<num; i++)
         {
             components[i].resize(4);

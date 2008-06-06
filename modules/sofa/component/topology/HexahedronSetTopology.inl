@@ -186,7 +186,7 @@ void HexahedronSetTopologyModifier<DataTypes>::addHexahedraProcess(const sofa::h
                     quadIndex=container->getQuadIndex(t[0],t[3],t[2],t[1]);
                     sofa::helper::vector< unsigned int > quadIndexList;
                     quadIndexList.push_back(quadIndex);
-                    addQuadsWarning( v.size(), v,quadIndexList);
+                    this->addQuadsWarning( v.size(), v,quadIndexList);
                 }
                 container->m_hexahedronQuad.resize(quadIndex+1);
                 container->m_hexahedronQuad[hexahedronIndex][0]=quadIndex;
@@ -205,7 +205,7 @@ void HexahedronSetTopologyModifier<DataTypes>::addHexahedraProcess(const sofa::h
                     quadIndex=container->getQuadIndex(t[4],t[5],t[6],t[7]);
                     sofa::helper::vector< unsigned int > quadIndexList;
                     quadIndexList.push_back(quadIndex);
-                    addQuadsWarning( v.size(), v,quadIndexList);
+                    this->addQuadsWarning( v.size(), v,quadIndexList);
                 }
                 container->m_hexahedronQuad.resize(quadIndex+1);
                 container->m_hexahedronQuad[hexahedronIndex][1]=quadIndex;
@@ -224,7 +224,7 @@ void HexahedronSetTopologyModifier<DataTypes>::addHexahedraProcess(const sofa::h
                     quadIndex=container->getQuadIndex(t[0],t[1],t[5],t[4]);
                     sofa::helper::vector< unsigned int > quadIndexList;
                     quadIndexList.push_back(quadIndex);
-                    addQuadsWarning( v.size(), v,quadIndexList);
+                    this->addQuadsWarning( v.size(), v,quadIndexList);
                 }
                 container->m_hexahedronQuad.resize(quadIndex+1);
                 container->m_hexahedronQuad[hexahedronIndex][2]=quadIndex;
@@ -243,7 +243,7 @@ void HexahedronSetTopologyModifier<DataTypes>::addHexahedraProcess(const sofa::h
                     quadIndex=container->getQuadIndex(t[1],t[2],t[6],t[5]);
                     sofa::helper::vector< unsigned int > quadIndexList;
                     quadIndexList.push_back(quadIndex);
-                    addQuadsWarning( v.size(), v,quadIndexList);
+                    this->addQuadsWarning( v.size(), v,quadIndexList);
                 }
                 container->m_hexahedronQuad.resize(quadIndex+1);
                 container->m_hexahedronQuad[hexahedronIndex][3]=quadIndex;
@@ -262,7 +262,7 @@ void HexahedronSetTopologyModifier<DataTypes>::addHexahedraProcess(const sofa::h
                     quadIndex=container->getQuadIndex(t[2],t[3],t[7],t[6]);
                     sofa::helper::vector< unsigned int > quadIndexList;
                     quadIndexList.push_back(quadIndex);
-                    addQuadsWarning( v.size(), v,quadIndexList);
+                    this->addQuadsWarning( v.size(), v,quadIndexList);
                 }
                 container->m_hexahedronQuad.resize(quadIndex+1);
                 container->m_hexahedronQuad[hexahedronIndex][4]=quadIndex;
@@ -281,7 +281,7 @@ void HexahedronSetTopologyModifier<DataTypes>::addHexahedraProcess(const sofa::h
                     quadIndex=container->getQuadIndex(t[3],t[0],t[4],t[7]);
                     sofa::helper::vector< unsigned int > quadIndexList;
                     quadIndexList.push_back(quadIndex);
-                    addQuadsWarning( v.size(), v,quadIndexList);
+                    this->addQuadsWarning( v.size(), v,quadIndexList);
                 }
                 container->m_hexahedronQuad.resize(quadIndex+1);
                 container->m_hexahedronQuad[hexahedronIndex][5]=quadIndex;
