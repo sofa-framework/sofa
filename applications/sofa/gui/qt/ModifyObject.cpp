@@ -141,10 +141,13 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
         //If the current element is a node, we add a box to perform geometric transformation: translation, rotation, scaling
         if(dynamic_cast< Node *>(node_clicked))
         {
-            emptyTab = true;
+            emptyTab = false;
             currentTab_save  = currentTab= new QWidget();
             currentTabLayout = tabPropertiesLayout = new QVBoxLayout( currentTab, 0, 1, QString("tabPropertiesLayout") + QString::number(counterWidget));
             counterWidget = 2;
+
+            dialogTab->addTab(currentTab, QString("Properties ") + QString::number(counterWidget/WIDGET_BY_TAB));
+            ++counterTab;
 
             Q3GroupBox *box = new Q3GroupBox(currentTab, QString("Transformation"));
             box->setColumns(4);
@@ -255,7 +258,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     tabVisualizationLayout = new QVBoxLayout( tabVisualization, 0, 1, "tabVisualizationLayout");
                 }
 
-                --counterWidget;
+// 		    --counterWidget;
                 currentTab = tabVisualization;
                 currentTabLayout = tabVisualizationLayout;
                 if( (dynamic_cast< Data<int> * >( (*it).second ) )
@@ -1905,7 +1908,7 @@ void ModifyObject::updateEnergy()
     energy_history[1].push_back(gnode->forceField[0]->getPotentialEnergy()); //The first forcefield is the one associated with the mass
     energy_history[2].push_back(energy_history[0][index] + energy_history[1][index]);
 
-    if (dialogTab->currentPageIndex() == 2)
+    if (dialogTab->currentPageIndex() == dialogTab->count()-1)
     {
         energy_curve[0]->setRawData(&history[0],&(energy_history[0][0]), history.size());
         energy_curve[1]->setRawData(&history[0],&(energy_history[1][0]), history.size());
