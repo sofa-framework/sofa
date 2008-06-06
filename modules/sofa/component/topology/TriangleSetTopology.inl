@@ -187,7 +187,7 @@ void TriangleSetTopologyModifier<DataTypes>::addTrianglesProcess(const sofa::hel
                         edgeIndex=container->getEdgeIndex(t[(j+1)%3],t[(j+2)%3]);
                         sofa::helper::vector< unsigned int > edgeIndexList;
                         edgeIndexList.push_back(edgeIndex);
-                        addEdgesWarning( v.size(), v,edgeIndexList);
+                        this->addEdgesWarning( v.size(), v,edgeIndexList);
                     }
 
                     container->m_triangleEdge.resize(triangleIndex+1);
