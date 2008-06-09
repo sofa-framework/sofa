@@ -164,6 +164,17 @@ public:
             return AP2 - AP1;
         }
 
+        Vector3 correctPosChild(Vector3 object1Pos, Quat object1Rot, Vector3 object2Pos, Quat object2Rot)
+        {
+            Vector3 PAParent = posOnParent.getValue() - Vector3(0,0,0);
+            Vector3 PAChild = posOnChild.getValue() - Vector3(0,0,0);
+            Vector3 A1 = object1Pos + object1Rot.rotate(PAParent);
+            Vector3 A2 = object2Pos + object2Rot.rotate(PAChild);
+
+            return A1 - A2;
+
+        }
+
         vector<Articulation*> getArticulations();
     };
 
