@@ -89,7 +89,7 @@ void TriangleSetTopologyModifier<DataTypes>::writeMSHfile(const char *filename)
     PointSetTopology< Vec3Types >* psp = dynamic_cast< PointSetTopology< Vec3Types >* >( topology );
     PointSetTopologyContainer * c_psp = static_cast< PointSetTopologyContainer* >(psp->getTopologyContainer());
 
-    sofa::helper::vector< sofa::defaulttype::Vec<3,double> > p = *psp->getDOF()->getX();
+    Vec3Types::VecCoord &p = *psp->getDOF()->getX();
 
     myfile << "$NOD\n";
     myfile << c_psp->getNumberOfVertices() <<"\n";
