@@ -51,12 +51,9 @@ void ArticulatedSystemMapping<BasicMapping>::init()
 
     context->parent->getNodeObject(rootModel);
 
-    for (unsigned int c=0; c<xto.size(); c++)
-    {
-        xfrom[c].x() = 0.0;
-    }
-
     applyOld(xto, xfrom);
+
+
 
 }
 
@@ -138,109 +135,6 @@ void ArticulatedSystemMapping<BasicMapping>::applyOld( typename Out::VecCoord& o
     }
 }
 
-/*
-template <class BasicMapping>
-void ArticulatedSystemMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
-{
-	dxRigidBuf.clear();
-	dxRigidBuf.resize(out.size());
-	//InVecCoord &xfrom= *this->fromModel->getX();
-
-    // Copy the root position if a rigid root model is present
-    if (rootModel)
-    {
-		//	std::cout << "Root Model Name = " << rootModel->getName() << std::endl;
-        out[0] = (*rootModel->getX())[rootModel->getSize()-1];
-		std::cout<<"WARNING: dxRigidBuf[0] must be computed"<<std::endl;
-		OutDeriv dx;
-		dxRigidBuf[0] = dx;
-    }
-	else
-	{
-		OutDeriv dx;
-		dxRigidBuf[0] = dx;
-	}
-
-	vector<ArticulatedHierarchyContainer::ArticulationCenter*>::const_iterator ac = articulationCenters.begin();
-	vector<ArticulatedHierarchyContainer::ArticulationCenter*>::const_iterator acEnd = articulationCenters.end();
-	ArticulationAxis.clear();
-
-
-	for (; ac != acEnd; ac++)
-	{
-		int parent = (*ac)->parentIndex.getValue();
-		int child = (*ac)->childIndex.getValue();
-
-
-
-		// The position of the articulation center can be deduced using the 6D position of the parent:
-		// only useful for visualisation of the mapping => NO ! Used in applyJ and applyJT
-		(*ac)->globalPosition.setValue(out[parent].getCenter() +
-			out[parent].getOrientation().rotate((*ac)->posOnParent.getValue()));
-
-		vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*> articulations = (*ac)->getArticulations();
-
-		vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*>::const_iterator a = articulations.begin();
-		vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*>::const_iterator aEnd = articulations.end();
-
-		// the motion imposed previously to the parent has to be applied to the childs
-		dxRigidBuf[child] = dxRigidBuf[parent];
-
-
-
-		Vec<3,OutReal> AngularRotation;
-		Vec<3,OutReal> APos;
-		AngularRotation.clear();
-		APos.clear();
-		unsigned int i=0;
-
-
-		for (; a != aEnd; a++)
-		{
-			InDeriv value = in[(*a)->articulationIndex.getValue()] - CoordinateBuf[(*a)->articulationIndex.getValue()];
-
-			Vec<3,OutReal> axisGlobal = out[parent].getOrientation().rotate((*a)->axis.getValue());
-			ArticulationAxis.push_back(axisGlobal);
-
-			if ((*a)->rotation.getValue())
-			{
-				AngularRotation += axisGlobal * value.x();
-
-			}
-			if ((*a)->translation.getValue())
-			{
-				APos +=  axisGlobal*value.x();
-				out[child].getCenter() += axisGlobal*value.x();
-			}
-			ArticulationPos[i] += APos + dxRigidBuf[parent].getVCenter();
-			i++;
-		}
-
-		double omega=AngularRotation.norm();
-
-		if (omega>0.0){
-			Quat dq;
-			AngularRotation.normalize();
-			dq.axisToQuat(AngularRotation, omega);
-			out[child].getOrientation() += dq;
-		}
-		dxRigidBuf[child].getVCenter() += APos;
-		dxRigidBuf[child].getVOrientation() += AngularRotation;
-
-	}
-	CoordinateBuf.clear();
-	CoordinateBuf.resize(in.size());
-	for (unsigned int c=0; c<in.size(); c++)
-	{
-		CoordinateBuf[c].x() = in[c].x();
-	}
-
-	for (unsigned int c=0; c<out.size(); c++)
-		out[c] += dxRigidBuf[c];
-
-}
-
-*/
 
 template <class BasicMapping>
 void ArticulatedSystemMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
@@ -278,8 +172,8 @@ void ArticulatedSystemMapping<BasicMapping>::apply( typename Out::VecCoord& out,
 
     for (; ac != acEnd; ac++)
     {
-//		int parent = (*ac)->parentIndex.getValue();
-//		int child = (*ac)->childIndex.getValue();
+        int parent = (*ac)->parentIndex.getValue();
+        int child = (*ac)->childIndex.getValue();
 
         vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*> articulations = (*ac)->getArticulations();
 
@@ -299,18 +193,7 @@ void ArticulatedSystemMapping<BasicMapping>::apply( typename Out::VecCoord& out,
 
     ///////////////////// apply dX to the rigid bodies /////////////////////////////////
     for (unsigned int c=0; c<out.size(); c++)
-    {
-        Quat qbuf = out[c].getOrientation();
         out[c] += dxRigidBuf[c];
-
-        if ((qbuf[0]*out[c].getOrientation()[0]+qbuf[1]*out[c].getOrientation()[1]+qbuf[2]*out[c].getOrientation()[2]+qbuf[3]*out[c].getOrientation()[3]) < 0)
-        {
-            for (int i=0; i<4; i++)
-                out[c].getOrientation()[i] *= -1;
-
-            std::cout<<"WARNING 1"<<std::endl;
-        }
-    }
 
     //////////////////// recompute articulatedPos & articulatedAxis ////////////////////
     ac = articulationCenters.begin();
@@ -328,6 +211,12 @@ void ArticulatedSystemMapping<BasicMapping>::apply( typename Out::VecCoord& out,
         vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*>::const_iterator a = articulations.begin();
         vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*>::const_iterator aEnd = articulations.end();
 
+        Vector3 correction;
+        correction =(*ac)->correctPosChild(out[parent].getCenter(), out[parent].getOrientation(),
+                out[child].getCenter(), out[child].getOrientation());
+
+        out[child].getCenter() += correction;
+
         for (; a != aEnd; a++)
         {
             // Articulation Pos and Axis are based on the configuration of the parent
@@ -344,20 +233,9 @@ void ArticulatedSystemMapping<BasicMapping>::apply( typename Out::VecCoord& out,
             //}
             if ((*a)->translation.getValue())
             {
-                Quat qbuf = out[child].getOrientation();
                 out[child].getOrientation() = out[parent].getOrientation();
                 out[child].getCenter() = out[parent].getCenter() + (*ac)->initTranslateChild(out[parent].getOrientation());
                 out[child].getCenter() += axisGlobal*in[(*a)->articulationIndex.getValue()].x();
-
-
-
-                if ((qbuf[0]*out[child].getOrientation()[0]+qbuf[1]*out[child].getOrientation()[1]+qbuf[2]*out[child].getOrientation()[2]+qbuf[3]*out[child].getOrientation()[3]) < 0)
-                {
-                    for (int i=0; i<4; i++)
-                        out[child].getOrientation()[i] *= -1;
-
-                    std::cout<<"WARNING 2"<<std::endl;
-                }
 
                 //APos +=  axisGlobal*value.x();
             }
@@ -388,7 +266,7 @@ void ArticulatedSystemMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out
 
     //std::cout<<"ApplyJ"<<std::endl;
     OutVecCoord& xto = *this->toModel->getX();
-//	InVecCoord &xfrom= *this->fromModel->getX();
+    InVecCoord &xfrom= *this->fromModel->getX();
 
     out.clear();
     out.resize(xto.size());
@@ -456,7 +334,7 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecDeriv& out
 {
 
     OutVecCoord& xto = *this->toModel->getX();
-//	InVecCoord &xfrom= *this->fromModel->getX();
+    InVecCoord &xfrom= *this->fromModel->getX();
 
     //apply(xto,xfrom);
 
@@ -671,8 +549,8 @@ void ArticulatedSystemMapping<BasicMapping>::draw()
     unsigned int i=0;
     for (; ac != acEnd; ac++)
     {
-//		int parent = (*ac)->parentIndex.getValue();
-//		int child = (*ac)->childIndex.getValue();
+        int parent = (*ac)->parentIndex.getValue();
+        int child = (*ac)->childIndex.getValue();
         vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*> articulations = (*ac)->getArticulations();
         vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*>::const_iterator a = articulations.begin();
         vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*>::const_iterator aEnd = articulations.end();
