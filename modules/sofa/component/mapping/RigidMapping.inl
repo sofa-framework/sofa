@@ -34,6 +34,8 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/Mapping.h>
+#include <sofa/core/componentmodel/behavior/MappedModel.h>
 #include <string.h>
 #include <iostream>
 
@@ -143,7 +145,7 @@ template <class BasicMapping>
 void RigidMapping<BasicMapping>::init()
 {
     //cerr<<"RigidMapping<BasicMapping>::init begin "<<getName()<<endl;
-    if (this->points.getValue().empty() && this->toModel!=NULL)
+    if (this->points.getValue().empty() && this->toModel!=NULL && !useX0.getValue())
     {
         VecCoord& x = *this->toModel->getX();
         //std::cout << "RigidMapping: init "<<x.size()<<" points."<<std::endl;
@@ -203,6 +205,30 @@ void RigidMapping<BasicMapping>::setRepartition(sofa::helper::vector<unsigned in
     this->repartition.endEdit();
 }
 
+template<class DataTypes>
+const typename DataTypes::VecCoord* M_getX0(core::componentmodel::behavior::MechanicalState<DataTypes>* model)
+{
+    return model->getX0();
+}
+
+template<class DataTypes>
+const typename DataTypes::VecCoord* M_getX0(core::componentmodel::behavior::MappedModel<DataTypes>* /*model*/)
+{
+    return NULL;
+}
+
+template <class BasicMapping>
+const typename RigidMapping<BasicMapping>::VecCoord & RigidMapping<BasicMapping>::getPoints()
+{
+    if(useX0.getValue())
+    {
+        const VecCoord* v = M_getX0(this->toModel);
+        if (v) return *v;
+        else std::cerr << "RigidMapping: ERROR useX0 can only be used in MechanicalMappings." << std::endl;
+    }
+    return points.getValue();
+}
+
 template <class BasicMapping>
 void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
@@ -212,8 +238,10 @@ void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typen
     Coord translation;
     Mat rotation;
 
-    rotatedPoints.resize(points.getValue().size());
-    out.resize(points.getValue().size());
+    const VecCoord& pts = this->getPoints();
+
+    rotatedPoints.resize(pts.size());
+    out.resize(pts.size());
 
     switch (repartition.getValue().size())
     {
@@ -221,9 +249,9 @@ void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typen
         translation = in[index.getValue()].getCenter();
         in[index.getValue()].writeRotationMatrix(rotation);
 
-        for(unsigned int i=0; i<points.getValue().size(); i++)
+        for(unsigned int i=0; i<pts.size(); i++)
         {
-            rotatedPoints[i] = rotation*points.getValue()[i];
+            rotatedPoints[i] = rotation*pts[i];
             out[i] = rotatedPoints[i];
             out[i] += translation;
         }
@@ -241,7 +269,7 @@ void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typen
 
             for(unsigned int ito=0; ito<val; ito++)
             {
-                rotatedPoints[cptOut] = rotation* points.getValue()[cptOut];
+                rotatedPoints[cptOut] = rotation* pts[cptOut];
                 out[cptOut] = rotatedPoints[cptOut];
                 out[cptOut] += translation;
                 cptOut++;
@@ -264,7 +292,7 @@ void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typen
 
             for(unsigned int ito=0; ito<repartition.getValue()[ifrom]; ito++)
             {
-                rotatedPoints[cptOut] = rotation* points.getValue()[cptOut];
+                rotatedPoints[cptOut] = rotation* pts[cptOut];
                 out[cptOut] = rotatedPoints[cptOut];
                 out[cptOut] += translation;
                 cptOut++;
@@ -278,7 +306,8 @@ template <class BasicMapping>
 void RigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
     Deriv v,omega;
-    out.resize(points.getValue().size());
+    const VecCoord& pts = this->getPoints();
+    out.resize(pts.size());
     unsigned int cptOut;
     unsigned int val;
 
@@ -287,7 +316,7 @@ void RigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const type
     case 0:
         v = in[index.getValue()].getVCenter();
         omega = in[index.getValue()].getVOrientation();
-        for(unsigned int i=0; i<points.getValue().size(); i++)
+        for(unsigned int i=0; i<pts.size(); i++)
         {
             // out = J in
             // J = [ I -OM^ ]
@@ -345,10 +374,11 @@ void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
     Deriv v,omega;
     unsigned int val;
     unsigned int cpt;
+    const VecCoord& pts = this->getPoints();
     switch(repartition.getValue().size())
     {
     case 0 :
-        for(unsigned int i=0; i<points.getValue().size(); i++)
+        for(unsigned int i=0; i<pts.size(); i++)
         {
             // out = Jt in
             // Jt = [ I     ]

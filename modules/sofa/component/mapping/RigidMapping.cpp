@@ -108,12 +108,13 @@ template class RigidMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3dType
 template<>
 void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
 {
+    const VecCoord& pts = this->getPoints();
     Deriv v;
     Real omega;
     v = in[0].getVCenter();
     omega = (Real)in[0].getVOrientation();
-    out.resize(points.getValue().size());
-    for(unsigned int i=0; i<points.getValue().size(); i++)
+    out.resize(pts.size());
+    for(unsigned int i=0; i<pts.size(); i++)
     {
         out[i] =  v + Deriv(-rotatedPoints[i][1],rotatedPoints[i][0])*omega;
     }
@@ -122,9 +123,10 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
 template<>
 void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
 {
+    const VecCoord& pts = this->getPoints();
     Deriv v;
     Real omega = (Real)0;
-    for(unsigned int i=0; i<points.getValue().size(); i++)
+    for(unsigned int i=0; i<pts.size(); i++)
     {
         Deriv f = in[i];
         v += f;
@@ -146,12 +148,13 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
 template<>
 void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
 {
+    const VecCoord& pts = this->getPoints();
     Deriv v;
     Real omega;
     v = in[0].getVCenter();
     omega = (Real)in[0].getVOrientation();
-    out.resize(points.getValue().size());
-    for(unsigned int i=0; i<points.getValue().size(); i++)
+    out.resize(pts.size());
+    for(unsigned int i=0; i<pts.size(); i++)
     {
         out[i] =  v + Deriv(-rotatedPoints[i][1],rotatedPoints[i][0])*omega;
     }
@@ -162,9 +165,10 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
 template<>
 void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
 {
+    const VecCoord& pts = this->getPoints();
     Deriv v;
     Real omega = (Real)0;
-    for(unsigned int i=0; i<points.getValue().size(); i++)
+    for(unsigned int i=0; i<pts.size(); i++)
     {
         Deriv f = in[i];
         v += f;
@@ -189,12 +193,13 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
 template<>
 void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
 {
+    const VecCoord& pts = this->getPoints();
     Deriv v;
     Real omega;
     v = in[0].getVCenter();
     omega = (Real)in[0].getVOrientation();
-    out.resize(points.getValue().size());
-    for(unsigned int i=0; i<points.getValue().size(); i++)
+    out.resize(pts.size());
+    for(unsigned int i=0; i<pts.size(); i++)
     {
         out[i] =  v + Deriv(-rotatedPoints[i][1],rotatedPoints[i][0])*omega;
     }
@@ -204,9 +209,10 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
 template<>
 void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
 {
+    const VecCoord& pts = this->getPoints();
     Deriv v;
     Real omega = (Real)0;
-    for(unsigned int i=0; i<points.getValue().size(); i++)
+    for(unsigned int i=0; i<pts.size(); i++)
     {
         Deriv f = in[i];
         v += f;
@@ -226,12 +232,13 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
 template<>
 void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
 {
+    const VecCoord& pts = this->getPoints();
     Deriv v;
     Real omega;
     v = in[0].getVCenter();
     omega = (Real)in[0].getVOrientation();
-    out.resize(points.getValue().size());
-    for(unsigned int i=0; i<points.getValue().size(); i++)
+    out.resize(pts.size());
+    for(unsigned int i=0; i<pts.size(); i++)
     {
         out[i] =  v + Deriv(-rotatedPoints[i][1],rotatedPoints[i][0])*omega;
     }
@@ -242,9 +249,10 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
 template<>
 void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
 {
+    const VecCoord& pts = this->getPoints();
     Deriv v;
     Real omega = (Real)0;
-    for(unsigned int i=0; i<points.getValue().size(); i++)
+    for(unsigned int i=0; i<pts.size(); i++)
     {
         Deriv f = in[i];
         v += f;
