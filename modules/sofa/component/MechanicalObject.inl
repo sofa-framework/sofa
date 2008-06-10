@@ -188,16 +188,18 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
     if (arg->getAttribute("scale")!=NULL)
     {
         this->applyScale(atof(arg->getAttribute("scale")));
-        scale.setValue((SReal)1.0);
     }
     if (arg->getAttribute("rx")!=NULL || arg->getAttribute("ry")!=NULL || arg->getAttribute("rz")!=NULL)
     {
-        rotation.setValue(Vector3((SReal)atof(arg->getAttribute("rx","0.0")), (SReal)atof(arg->getAttribute("ry","0.0")), (SReal)atof(arg->getAttribute("rz","0.0"))));
+        rotation.setValue(Vector3((SReal)(atof(arg->getAttribute("rx","0.0"))),(SReal)(atof(arg->getAttribute("ry","0.0"))),(SReal)(atof(arg->getAttribute("rz","0.0"))))*3.141592653/180.0);
+        this->applyRotation(defaulttype::Quat::createFromRotationVector( rotation.getValue()));
     }
     if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
     {
         translation.setValue(Vector3((Real)atof(arg->getAttribute("dx","0.0")), (Real)atof(arg->getAttribute("dy","0.0")), (Real)atof(arg->getAttribute("dz","0.0"))));
+        this->applyTranslation(translation.getValue()[0],translation.getValue()[1],translation.getValue()[2]);
     }
+
 }
 
 template <class DataTypes>
@@ -691,10 +693,16 @@ void MechanicalObject<DataTypes>::init()
                 (*getX())[i] = Coord();
                 DataTypes::set((*getX())[i], topo->getPX(i), topo->getPY(i), topo->getPZ(i));
             }
+
+            reinit();
+//             if (rotation.getValue()[0]!=0.0 || rotation.getValue()[1]!=0.0 || rotation.getValue()[2]!=0.0)
+// 		this->applyRotation(helper::Quater<SReal>::createFromRotationVector( Vec<3,SReal>(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2])));
+//
+// 	    if (translation.getValue()[0]!=0.0 || translation.getValue()[1]!=0.0 || translation.getValue()[2]!=0.0)
+// 		this->applyTranslation( translation.getValue()[0],translation.getValue()[1],translation.getValue()[2]);
         }
     }
 
-    reinit();
 
     if (v0 == NULL) this->v0 = new VecDeriv;
     *this->v0 = *v;
