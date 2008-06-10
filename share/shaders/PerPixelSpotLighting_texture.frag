@@ -7,10 +7,12 @@ uniform sampler2D colorTexture;
 
 void main()
 {
+	
+	vec4 ctex = texture2D(colorTexture, gl_TexCoord[0].st);
 
 	vec3 n,halfV;
 	float NdotL,NdotHV;
-	vec4 color = ambientGlobal;
+	vec4 color = ambientGlobal*ctex;
 	float att,spotEffect;
 	
 	/* a fragment shader can't write a verying variable, hence we need
@@ -27,13 +29,13 @@ void main()
 		//temp = lightAxis;
 		
 		spotEffect = dot(normalize(temp), normalize(-lightDir));
-		if (spotEffect > 0) {
+		if (spotEffect > 0.0) {
 			spotEffect = pow(spotEffect, gl_LightSource[0].spotExponent) ;
 			att = spotEffect / (gl_LightSource[0].constantAttenuation +
 					gl_LightSource[0].linearAttenuation * dist +
 					gl_LightSource[0].quadraticAttenuation * dist * dist);
 				
-			color += att * (diffuse * NdotL + ambient) ;
+			color += att * (diffuse * NdotL + ambient) * ctex ;
 			
 			halfV = normalize(halfVector);
 			NdotHV = max(dot(n,halfV),0.0);
@@ -41,7 +43,5 @@ void main()
 		}
 
 	}
-	
-	gl_FragColor =  color * texture2D(colorTexture, gl_TexCoord[0].st);
-
+	gl_FragColor = color;
 }

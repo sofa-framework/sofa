@@ -1,12 +1,7 @@
 varying vec3 normalVec;
 varying vec3 viewVec;
 
-varying vec4 diffuse,ambientGlobal, ambient, specular;
-varying vec3 lightDir,halfVector,normalView;
-varying float dist;
-
 varying vec3 positionW;
-
 
 void main()
 {
@@ -30,20 +25,7 @@ void main()
 	//reflectVec = reflect(I, normalW);
 	normalVec = normalW;
 	viewVec = I;
-	normalView = gl_NormalMatrix * gl_Normal;
-	vec4 ecPos = gl_ModelViewMatrix * gl_Vertex;
-	vec3 aux = vec3(gl_LightSource[0].position-ecPos);
-	lightDir = normalize(aux);
-	
-	dist = length(aux);
-	
-	halfVector = normalize(gl_LightSource[0].halfVector.xyz);
-	
-	/* Compute the diffuse, ambient and globalAmbient terms */
-	diffuse = gl_FrontMaterial.diffuse * gl_LightSource[0].diffuse;
-	ambient = gl_FrontMaterial.ambient * gl_LightSource[0].ambient;
-	ambientGlobal = gl_LightModel.ambient * gl_FrontMaterial.ambient;
-	specular = gl_FrontMaterial.specular * gl_LightSource[0].specular;
+	//normalView = gl_NormalMatrix * gl_Normal;
 	
 	//sphereCenter = (gl_ModelViewProjectionMatrix * vec4(worldSphereCenter,1.0)).xyz;
 	//lightCenter = (gl_ModelViewProjectionMatrix * vec4(lightCenterProj,1.0)).xyz;

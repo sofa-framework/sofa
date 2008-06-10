@@ -46,6 +46,7 @@ class RigidMappingInternalData
 public:
 };
 
+
 template <class BasicMapping>
 class RigidMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
 {
@@ -68,12 +69,14 @@ public:
     RigidMappingInternalData<typename In::DataTypes, typename Out::DataTypes> data;
     Data<unsigned int> index;
     Data< std::string > filename;
+    Data< bool > useX0;
 
     RigidMapping ( In* from, Out* to )
         : Inherit ( from, to ),
           points ( initData ( &points,"initialPoints", "Local Coordinates of the points" ) ),
           index ( initData ( &index, ( unsigned ) 0,"index","input DOF index" ) ),
           filename ( initData ( &filename,"filename","Filename" ) ),
+          useX0( initData ( &useX0,false,"useX0","Use x0 instead of local copy of initial positions (to support topo changes)") ),
           repartition ( initData ( &repartition,"repartition","number of dest dofs per entry dof" ) )
     {
     }
@@ -113,6 +116,7 @@ protected:
     class Loader;
     void load ( const char* filename );
     Data<sofa::helper::vector<unsigned int> >  repartition;
+    const VecCoord& getPoints();
 };
 
 } // namespace mapping
