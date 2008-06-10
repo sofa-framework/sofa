@@ -93,24 +93,35 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     {
         obj->applyUVTranslation(atof(arg->getAttribute("du","0.0")), atof(arg->getAttribute("dv","0.0")));
     }
+
+
+
+    Vector3 p0;
+    Vector3 centerGrid;
+    sofa::component::topology::RegularGridTopology *grid;
+    this->getContext()->get(grid, BaseContext::SearchUp);
+    if (grid) {p0 = grid->getP0(); centerGrid = -(grid->getMax()-grid->getMin())/2.0;}
+
     if (arg->getAttribute("scale")!=NULL)
     {
         obj->applyScale(atof(arg->getAttribute("scale","1.0")));
     }
+    if(!grid)
+    {
+        if (arg->getAttribute("rx")!=NULL || arg->getAttribute("ry")!=NULL || arg->getAttribute("rz")!=NULL)
+        {
 
-    if (arg->getAttribute("rx")!=NULL)
-    {
-        obj->applyRotation(Quat(Vector3(1,0,0), (SReal)atof(arg->getAttribute("rx","0.0"))*(SReal)R_PI/(SReal)180));
+            Quaternion q=helper::Quater<SReal>::createFromRotationVector( Vec<3,SReal>(atof(arg->getAttribute("rx","0.0")),atof(arg->getAttribute("ry","0.0")),atof(arg->getAttribute("rz","0.0"))));
+            if (grid)
+            {
+                this->applyTranslation(centerGrid[0],centerGrid[1],centerGrid[2]);
+                this->applyRotation(q);
+                this->applyTranslation(-centerGrid[0],-centerGrid[1],-centerGrid[2]);
+            }
+            else
+                this->applyRotation(q);
+        }
     }
-    if (arg->getAttribute("ry")!=NULL)
-    {
-        obj->applyRotation(Quat(Vector3(0,1,0), (SReal)atof(arg->getAttribute("ry","0.0"))*(SReal)R_PI/(SReal)180));
-    }
-    if (arg->getAttribute("rz")!=NULL)
-    {
-        obj->applyRotation(Quat(Vector3(0,0,1), (SReal)atof(arg->getAttribute("rz","0.0"))*(SReal)R_PI/(SReal)180));
-    }
-
     if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
     {
         obj->applyTranslation((SReal)atof(arg->getAttribute("dx","0.0")), (SReal)atof(arg->getAttribute("dy","0.0")), (SReal)atof(arg->getAttribute("dz","0.0")));
