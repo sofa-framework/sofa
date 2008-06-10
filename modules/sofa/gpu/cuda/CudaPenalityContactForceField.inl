@@ -3,7 +3,8 @@
 
 #include "CudaPenalityContactForceField.h"
 #include <sofa/component/forcefield/PenalityContactForceField.inl>
-#if 0
+
+
 namespace sofa
 {
 
@@ -15,8 +16,9 @@ namespace cuda
 
 extern "C"
 {
-    void PenalityContactForceFieldCuda3f_addForce(unsigned int size, const void* contacts, void* penetration, void* f, const void* x, const void* v);
-    void PenalityContactForceFieldCuda3f_addDForce(unsigned int size, const void* contacts, const void* penetration, void* f, const void* dx);
+    void PenalityContactForceFieldCuda3f_setContacts(unsigned int size, unsigned int nbTests, unsigned int maxPoints, const void* tests, const void* outputs, void* contacts, float d0, float stiffness, defaulttype::Mat3x3f xform);
+    void PenalityContactForceFieldCuda3f_addForce(unsigned int size, const void* contacts, void* penetration, void* f1, const void* x1, const void* v1, void* f2, const void* x2, const void* v2);
+    void PenalityContactForceFieldCuda3f_addDForce(unsigned int size, const void* contacts, const void* penetration, void* f1, const void* dx1, void* f2, const void* dx2, double factor);
 }
 
 } // namespace cuda
@@ -45,10 +47,10 @@ void PenalityContactForceField<CudaVec3fTypes>::clear(int reserve)
 }
 
 //template<>
-void PenalityContactForceField<CudaVec3fTypes>::addContact(int m1, int m2, const Deriv& norm, Real dist, Real ks, Real mu_s, Real mu_v, int oldIndex)
+void PenalityContactForceField<CudaVec3fTypes>::addContact(int /*m1*/, int /*m2*/, const Deriv& norm, Real dist, Real ks, Real /*mu_s*/, Real /*mu_v*/, int /*oldIndex*/)
 {
-    int i = contacts.size();
     /*
+    int i = contacts.size();
     contacts.resize(i+1);
     Contact& c = contacts[i];
     c.m1 = m1;
@@ -69,17 +71,51 @@ void PenalityContactForceField<CudaVec3fTypes>::addContact(int m1, int m2, const
     }
     */
     sofa::defaulttype::Vec4f c(norm, dist);
-    Real fact = rsqrt(ks);
+    Real fact = helper::rsqrt(ks);
     c *= fact;
     contacts.push_back(c);
     pen.push_back(0);
 }
 
-//template<>
-void PenalityContactForceField<CudaVec3fTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& /*v1*/, const VecDeriv& /*v2*/)
+void PenalityContactForceField<CudaVec3fTypes>::setContacts(Real d0, Real stiffness, sofa::core::componentmodel::collision::GPUDetectionOutputVector* outputs, bool useDistance, defaulttype::Mat3x3f* normXForm)
 {
+#if 1
+    int n = outputs->size();
+    contacts.fastResize(n);
+    pen.fastResize(n);
+    if (!n) return;
+    for (int i=0; i<n; i++)
+    {
+        const sofa::core::componentmodel::collision::GPUDetectionOutput* o = outputs->get(i);
+        Real distance = (useDistance) ? d0 + o->distance : d0;
+        Real ks = (distance > 1.0e-10) ? stiffness / distance : stiffness;
+        Coord n = (normXForm)?(*normXForm)*o->normal : o->normal;
+        defaulttype::Vec4f c(n, distance);
+        c *= helper::rsqrt(ks);
+        contacts[i] = c;
+        pen[i] = 0;
+    }
+#else
+    int n = outputs->size();
+    int nt = outputs->nbTests();
+    int maxp = 0;
+    for (int i=0; i<nt; i++)
+        if (outputs->rtest(i).curSize > maxp) maxp = outputs->rtest(i).curSize;
+    contacts.fastResize(n);
+    pen.fastResize(n);
+    defaulttype::Mat3x3f xform;
+    if (normXForm) xform = *normXForm; else xform.identity();
+    PenalityContactForceFieldCuda3f_setContacts(n, nt, maxp, outputs->tests.deviceRead(), outputs->results.deviceRead(), contacts.deviceWrite(), d0, stiffness, xform);
+#endif
+}
+
+//template<>
+void PenalityContactForceField<CudaVec3fTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
+{
+    pen.resize(contacts.size());
     f1.resize(x1.size());
     f2.resize(x2.size());
+#if 0
     for (unsigned int i=0; i<contacts.size(); i++)
     {
         sofa::defaulttype::Vec4f c = contacts[i];
@@ -97,29 +133,40 @@ void PenalityContactForceField<CudaVec3fTypes>::addForce(VecDeriv& f1, VecDeriv&
             f2[i]-=force;
         }
     }
+#else
+    PenalityContactForceFieldCuda3f_addForce(contacts.size(), contacts.deviceRead(), pen.deviceWrite(),
+            f1.deviceWrite(), x1.deviceRead(), v1.deviceRead(),
+            f2.deviceWrite(), x2.deviceRead(), v2.deviceRead());
+#endif
 }
 
 //template<>
-void PenalityContactForceField<CudaVec3fTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2)
+void PenalityContactForceField<CudaVec3fTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double /*bFactor*/)
 {
     df1.resize(dx1.size());
     df2.resize(dx2.size());
+#if 0
     for (unsigned int i=0; i<contacts.size(); i++)
     {
-        sofa::defaulttype::Vec4f c = contacts[i];
         if (pen[i] > 0) // + dpen > 0)
         {
+            sofa::defaulttype::Vec4f c = contacts[i];
             //Coord du = dx2[c.m2]-dx1[c.m1];
             Coord du = dx2[i]-dx1[i];
             Coord norm(c[0],c[1],c[2]);
             Real dpen = - du*norm;
             //if (c.pen < 0) dpen += c.pen; // start penality at distance 0
             //Real dfN = c.ks * dpen;
-            Deriv dforce = -norm*dpen; //dfN;
+            Deriv dforce = -norm*(dpen*kFactor); //dfN;
             df1[i]+=dforce;
             df2[i]-=dforce;
         }
     }
+#else
+    PenalityContactForceFieldCuda3f_addDForce(contacts.size(), contacts.deviceRead(), pen.deviceWrite(),
+            df1.deviceWrite(), dx1.deviceRead(),
+            df2.deviceWrite(), dx2.deviceRead(), kFactor);
+#endif
 }
 
 //template<>
@@ -159,51 +206,30 @@ void PenalityContactForceField<CudaVec3fTypes>::draw()
         helper::gl::glVertexT(p2[i]); //c.m2]);
     }
     glEnd();
-    /*
-        if (getContext()->getShowNormals())
+
+    //if (getContext()->getShowNormals())
+    {
+        glColor4f(1,1,0,1);
+        glBegin(GL_LINES);
+        for (unsigned int i=0; i<contacts.size(); i++)
         {
-            glColor4f(1,1,0,1);
-            glBegin(GL_LINES);
-            for (unsigned int i=0; i<contacts.size(); i++)
-            {
-                const Contact& c = contacts[i];
-                Coord p = p1[c.m1] - c.norm;
-                helper::gl::glVertexT(p1[c.m1]);
-                helper::gl::glVertexT(p);
-                p = p2[c.m2] + c.norm;
-                helper::gl::glVertexT(p2[c.m2]);
-                helper::gl::glVertexT(p);
-            }
-            glEnd();
-        }*/
+            sofa::defaulttype::Vec4f c = contacts[i];
+            Coord norm(c[0],c[1],c[2]); norm.normalize();
+            Coord p = p1[i] - norm*0.1;
+            helper::gl::glVertexT(p1[i]);
+            helper::gl::glVertexT(p);
+            p = p2[i] + norm*0.1;
+            helper::gl::glVertexT(p2[i]);
+            helper::gl::glVertexT(p);
+        }
+        glEnd();
+    }
 }
-
-
-/*
-template <>
-void PenalityContactForceField<gpu::cuda::CudaVec3fTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
-{
-    data.sphere.center = sphereCenter.getValue();
-    data.sphere.r = sphereRadius.getValue();
-    data.sphere.stiffness = stiffness.getValue();
-    data.sphere.damping = damping.getValue();
-    f.resize(x.size());
-    data.penetration.resize(x.size());
-    PenalityContactForceFieldCuda3f_addForce(x.size(), &data.sphere, data.penetration.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
-}
-
-template <>
-void PenalityContactForceField<gpu::cuda::CudaVec3fTypes>::addDForce(VecDeriv& df, const VecCoord& dx)
-{
-    df.resize(dx.size());
-    PenalityContactForceFieldCuda3f_addDForce(dx.size(), &data.sphere, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
-}
-*/
 
 } // namespace forcefield
 
 } // namespace component
 
 } // namespace sofa
-#endif
+
 #endif
