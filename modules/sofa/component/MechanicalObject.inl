@@ -184,22 +184,43 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
     else if (getX()->size() != size0)
         resize( getX()->size() );
 
+
+    bool updateP0=false;
+    Vector3 p0;
+    Vector3 centerGrid;
+    sofa::component::topology::RegularGridTopology *grid;
+    this->getContext()->get(grid, BaseContext::Local); updateP0 = (grid != NULL);
+    if (!grid) this->getContext()->get(grid, BaseContext::SearchUp);
+    if (grid) {p0 = grid->getP0(); centerGrid = -(grid->getMax()-grid->getMin())/2.0;}
     //obj->parseTransform(arg);
     if (arg->getAttribute("scale")!=NULL)
     {
-        this->applyScale(atof(arg->getAttribute("scale")));
+        scale.setValue(atof(arg->getAttribute("scale")));
+
+        this->applyScale(scale.getValue());
     }
     if (arg->getAttribute("rx")!=NULL || arg->getAttribute("ry")!=NULL || arg->getAttribute("rz")!=NULL)
     {
         rotation.setValue(Vector3((SReal)(atof(arg->getAttribute("rx","0.0"))),(SReal)(atof(arg->getAttribute("ry","0.0"))),(SReal)(atof(arg->getAttribute("rz","0.0"))))*3.141592653/180.0);
-        this->applyRotation(defaulttype::Quat::createFromRotationVector( rotation.getValue()));
+        Quaternion q=helper::Quater<SReal>::createFromRotationVector( Vec<3,SReal>(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2]));
+        if (grid)
+        {
+            this->applyTranslation(centerGrid[0],centerGrid[1],centerGrid[2]);
+            this->applyRotation(q);
+            this->applyTranslation(-centerGrid[0],-centerGrid[1],-centerGrid[2]);
+            rotation.setValue(Vector3());
+        }
+        else
+            this->applyRotation(q);
     }
     if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
     {
         translation.setValue(Vector3((Real)atof(arg->getAttribute("dx","0.0")), (Real)atof(arg->getAttribute("dy","0.0")), (Real)atof(arg->getAttribute("dz","0.0"))));
-        this->applyTranslation(translation.getValue()[0],translation.getValue()[1],translation.getValue()[2]);
+
+        this->applyTranslation( translation.getValue()[0],translation.getValue()[1],translation.getValue()[2]);
     }
 
+    if (grid && updateP0) grid->setP0(p0);
 }
 
 template <class DataTypes>
@@ -695,11 +716,6 @@ void MechanicalObject<DataTypes>::init()
             }
 
             reinit();
-//             if (rotation.getValue()[0]!=0.0 || rotation.getValue()[1]!=0.0 || rotation.getValue()[2]!=0.0)
-// 		this->applyRotation(helper::Quater<SReal>::createFromRotationVector( Vec<3,SReal>(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2])));
-//
-// 	    if (translation.getValue()[0]!=0.0 || translation.getValue()[1]!=0.0 || translation.getValue()[2]!=0.0)
-// 		this->applyTranslation( translation.getValue()[0],translation.getValue()[1],translation.getValue()[2]);
         }
     }
 
@@ -730,9 +746,13 @@ void MechanicalObject<DataTypes>::init()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::reinit()
 {
+    bool updateP0=false;
     Vector3 p0;
-    sofa::component::topology::RegularGridTopology *grid; this->getContext()->get(grid, BaseContext::Local);
-    if (grid) p0 = grid->getP0();
+    Vector3 centerGrid;
+    sofa::component::topology::RegularGridTopology *grid;
+    this->getContext()->get(grid, BaseContext::Local); updateP0 = (grid != NULL);
+    if (!grid) this->getContext()->get(grid, BaseContext::SearchUp);
+    if (grid) {p0 = grid->getP0(); centerGrid = -(grid->getMax()-grid->getMin())/2.0;}
 
     if (scale.getValue() != (SReal)1.0)
     {
@@ -743,7 +763,15 @@ void MechanicalObject<DataTypes>::reinit()
     if (rotation.getValue()[0]!=0.0 || rotation.getValue()[1]!=0.0 || rotation.getValue()[2]!=0.0)
     {
         Quaternion q=helper::Quater<SReal>::createFromRotationVector( Vec<3,SReal>(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2]));
-        this->applyRotation(q);
+        if (grid)
+        {
+            this->applyTranslation(centerGrid[0],centerGrid[1],centerGrid[2]);
+            this->applyRotation(q);
+            this->applyTranslation(-centerGrid[0],-centerGrid[1],-centerGrid[2]);
+        }
+        else
+            this->applyRotation(q);
+
         p0 = q.rotate(p0);
     }
 
@@ -754,7 +782,7 @@ void MechanicalObject<DataTypes>::reinit()
     }
 
 
-    if (grid) grid->setP0(p0);
+    if (grid && updateP0) grid->setP0(p0);
 
     translation.setValue(Vector3());
     rotation.setValue(Vector3());
