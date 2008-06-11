@@ -27,6 +27,7 @@
 
 #include <sofa/helper/vector.h>
 #include <sofa/component/topology/PointData.h>
+#include <sofa/component/topology/HexahedronData.h>
 
 // forward declarations
 namespace sofa
@@ -715,6 +716,15 @@ public:
     }
 
 
+private:
+    struct _BaseAndCenter
+    {
+        Vector3	origin;
+        Matrix3	base;
+        Vector3	center;
+    } ;
+
+    topology::HexahedronData< _BaseAndCenter > hexahedronData;
 };
 
 template <class BasicMapping>

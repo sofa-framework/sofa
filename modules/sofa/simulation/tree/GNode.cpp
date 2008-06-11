@@ -354,9 +354,9 @@ void GNode::doExecuteVisitor(simulation::Visitor* action)
     {
         if(action->processNodeTopDown(this) != simulation::Visitor::RESULT_PRUNE)
         {
-            for(ChildIterator it = child.begin(); it != child.end(); ++it)
+            for(unsigned int i = 0; i<child.size(); ++i)
             {
-                (*it)->executeVisitor(action);
+                child[i]->executeVisitor(action);
             }
         }
         action->processNodeBottomUp(this);
