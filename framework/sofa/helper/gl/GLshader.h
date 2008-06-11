@@ -138,10 +138,18 @@ extern PFNGLACTIVETEXTUREARBPROC glActiveTextureARB;
 
 class CShader
 {
+private:
+    std::string header;
+
 public:
 
     CShader();
     ~CShader();
+
+    /// This builds a header before any shader contents
+    void AddHeader(const std::string& header);
+
+    void AddDefineMacro(const std::string &name, const std::string &value);
 
     /// This loads our text file for each shader and returns it in a string
     std::string LoadTextFile(const std::string& strFile);

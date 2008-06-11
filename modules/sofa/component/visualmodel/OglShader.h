@@ -58,6 +58,8 @@ public:
     void start();
     void stop();
 
+    void addDefineMacro(const std::string &name, const std::string &value);
+
     void setTexture(const char* name, unsigned short unit);
 
     void setInt(const char* name, int i);

@@ -137,6 +137,11 @@ void OglShader::updateVisual()
 
 }
 
+void OglShader::addDefineMacro(const std::string &name, const std::string &value)
+{
+    m_shader.AddDefineMacro(name, value);
+}
+
 void OglShader::setTexture(const char* name, unsigned short unit)
 {
     start();
@@ -286,10 +291,11 @@ void OglShaderElement::init()
 
     if (!shader)
     {
-        std::cerr << "OglTexture: shader not found "<< std::endl;
+        std::cerr << "OglShaderElement: shader not found "<< std::endl;
         return;
     }
 }
+
 
 }//namespace visualmodel
 
