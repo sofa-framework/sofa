@@ -24,6 +24,7 @@
 *******************************************************************************/
 #include <sofa/helper/gl/Transformation.h>
 #include <sofa/helper/system/gl.h>
+#include <sofa/helper/gl/template.h>
 
 namespace sofa
 {
@@ -98,15 +99,9 @@ Transformation& Transformation::operator=(const Transformation& transform)
 // --------------------------------------------------------------------------------------
 void Transformation::Apply()
 {
-#ifdef SOFA_FLOAT
-    glTranslatef(translation[0], translation[1], translation[2]);
-    glMultMatrixf((SReal *) rotation);
-    glScalef(scale[0], scale[1], scale[2]);
-#else
-    glTranslated(translation[0], translation[1], translation[2]);
-    glMultMatrixd((SReal *) rotation);
-    glScaled(scale[0], scale[1], scale[2]);
-#endif
+    helper::gl::glTranslate(translation[0], translation[1], translation[2]);
+    helper::gl::glMultMatrix((SReal *)rotation);
+    helper::gl::glScale(scale[0], scale[1], scale[2]);
 }
 
 
@@ -116,11 +111,8 @@ void Transformation::Apply()
 void Transformation::ApplyWithCentring()
 {
     Apply();
-#ifdef SOFA_FLOAT
-    glTranslatef(-objectCenter[0], -objectCenter[1], -objectCenter[2]);
-#else
-    glTranslated(-objectCenter[0], -objectCenter[1], -objectCenter[2]);
-#endif
+
+    helper::gl::glTranslate(-objectCenter[0], -objectCenter[1], -objectCenter[2]);
 }
 
 
@@ -133,15 +125,11 @@ void Transformation::ApplyInverse()
 
     InvertTransRotMatrix(rotation, iRotation);
 
-#ifdef SOFA_FLOAT
-    glScalef((SReal)1.0 / scale[0], (SReal)1.0 / scale[1], (SReal)1.0 / scale[2]);
-    glMultMatrixf((SReal *) iRotation);
-    glTranslatef(-translation[0], -translation[1], -translation[2]);
-#else
-    glScaled(1.0 / scale[0], 1.0 / scale[1], 1.0 / scale[2]);
-    glMultMatrixd((SReal *) iRotation);
-    glTranslated(-translation[0], -translation[1], -translation[2]);
-#endif
+    helper::gl::glScale((SReal)1.0 / scale[0], (SReal)1.0 / scale[1], (SReal)1.0 / scale[2]);
+    helper::gl::glMultMatrix((SReal *)rotation);
+    helper::gl::glTranslate(-translation[0], -translation[1], -translation[2]);
+
+
 }
 
 

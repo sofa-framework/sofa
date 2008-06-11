@@ -30,7 +30,7 @@
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/ObjectFactory.h>
 #include <vector>
-#include <sofa/helper/system/gl.h>
+#include <sofa/helper/gl/template.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -506,17 +506,10 @@ void TriangleModel::draw(int index)
 {
     Triangle t(this,index);
     glBegin(GL_TRIANGLES);
-#ifdef SOFA_FLOAT
-    glNormal3fv(t.n().ptr());
-    glVertex3fv(t.p1().ptr());
-    glVertex3fv(t.p2().ptr());
-    glVertex3fv(t.p3().ptr());
-#else
-    glNormal3dv(t.n().ptr());
-    glVertex3dv(t.p1().ptr());
-    glVertex3dv(t.p2().ptr());
-    glVertex3dv(t.p3().ptr());
-#endif
+    helper::gl::glNormalT(t.n());
+    helper::gl::glVertexT(t.p1());
+    helper::gl::glVertexT(t.p2());
+    helper::gl::glVertexT(t.p3());
     glEnd();
 }
 

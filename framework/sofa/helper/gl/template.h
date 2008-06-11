@@ -146,6 +146,48 @@ inline void glNormalT<float>(const float& c)
 {
     glNormal3f(c,0.0f,0.0f);
 }
+////////
+inline void glTranslate(const float& c1, const float& c2, const float& c3)
+{
+    glTranslatef(c1, c2, c3);
+}
+
+inline void glTranslate(const double& c1, const double& c2, const double& c3)
+{
+    glTranslated(c1, c2, c3);
+}
+
+inline void glScale(const float& c1, const float& c2, const float& c3)
+{
+    glScalef(c1, c2, c3);
+}
+
+inline void glScale(const double& c1, const double& c2, const double& c3)
+{
+    glScaled(c1, c2, c3);
+}
+
+inline void glRotate(const GLfloat &value, const float& c1, const float& c2, const float& c3)
+{
+    glRotatef(value, c1, c2, c3);
+}
+
+inline void glRotate(const GLdouble &value, const double& c1, const double& c2, const double& c3)
+{
+    glRotated(value, c1, c2, c3);
+}
+
+inline void glMultMatrix(const float* p)
+{
+    glMultMatrixf(p);
+}
+
+inline void glMultMatrix(const double* p)
+{
+    glMultMatrixd(p);
+}
+
+
 
 } // namespace gl
 
