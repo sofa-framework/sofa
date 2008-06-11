@@ -46,6 +46,9 @@
 #include <sofa/component/topology/PointData.h>
 #include <sofa/component/topology/PointData.inl>
 
+#include <sofa/component/topology/HexahedronData.h>
+#include <sofa/component/topology/HexahedronData.inl>
+
 using std::cerr;
 using std::endl;
 
@@ -689,6 +692,7 @@ template <class In, class Out>
 void BarycentricMapperHexahedronSetTopology<In,Out>::clear(int reserve)
 {
     map.clear(); if (reserve>0) map.reserve(reserve);
+    hexahedronData.clear();
 }
 
 template <class In, class Out>
@@ -703,55 +707,52 @@ int BarycentricMapperHexahedronSetTopology<In,Out>::addPointInCube(int cubeIndex
     return map.size()-1;
 }
 
-//template <class In, class Out>
-//int BarycentricMapperHexahedronSetTopology<In,Out>::createPointInCube(const typename Out::Coord& p, int index, const typename In::VecCoord* points)
-//{
-//	//TODO: add implementation
-//}
-
 template <class In, class Out>
 void BarycentricMapperHexahedronSetTopology<In,Out>::init(const typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
-    int outside = 0;
     const sofa::helper::vector<topology::Hexahedron>& cubes = this->topology->getHexahedronSetTopologyContainer()->getHexahedronArray();
 
-    sofa::helper::vector<Matrix3> bases;
-    sofa::helper::vector<Vector3> centers;
-
     clear(out.size());
-    bases.resize(cubes.size());
-    centers.resize(cubes.size());
+
+    hexahedronData.resize(cubes.size());
+
     for (unsigned int c = 0; c < cubes.size(); c++)
     {
         Mat3x3d m,mt;
-        m[0] = in[cubes[c][1]]-in[cubes[c][0]];
+        const Vector3 origin = in[cubes[c][0]];
+        m[0] = in[cubes[c][1]]-origin;
 #ifdef SOFA_NEW_HEXA
-        m[1] = in[cubes[c][2]]-in[cubes[c][0]];
+        m[1] = in[cubes[c][2]]-origin;
 #else
-        m[1] = in[cubes[c][3]]-in[cubes[c][0]];
+        m[1] = in[cubes[c][3]]-origin;
 #endif
-        m[2] = in[cubes[c][4]]-in[cubes[c][0]];
+        m[2] = in[cubes[c][4]]-origin;
         mt.transpose(m);
-        bases[c].invert(mt);
-        centers[c] = (in[cubes[c][0]]+in[cubes[c][1]]+in[cubes[c][2]]+in[cubes[c][3]]+in[cubes[c][4]]+in[cubes[c][5]]+in[cubes[c][6]]+in[cubes[c][7]])*0.125;
+        hexahedronData[c].origin = origin;
+        hexahedronData[c].base.invert(mt);
+        hexahedronData[c].center = (in[cubes[c][0]]+in[cubes[c][1]]+in[cubes[c][2]]+in[cubes[c][3]]
+                +in[cubes[c][4]]+in[cubes[c][5]]+in[cubes[c][6]]+in[cubes[c][7]])*0.125;
     }
 
     for (unsigned int i=0; i<out.size(); i++)
     {
-        Vec3d pos = out[i];
+        // find nearest cell
         Vector3 coefs;
-        int index = -1;
+        int index;
         double distance = 1e10;
+        Vector3 pos = out[i];
         for (unsigned int c = 0; c < cubes.size(); c++)
         {
-            Vec3d v = bases[c] * (pos - in[cubes[c][0]]);
-            double d = std::max(std::max(-v[0],-v[1]),std::max(std::max(-v[2],v[0]-1),std::max(v[1]-1,v[2]-1)));
-            if (d>0) d = (pos-centers[c]).norm2();
-            if (d<distance) { coefs = v; distance = d; index = c; }
-        }
-        if (distance>0)
-        {
-            ++outside;
+            const Vec3d v = hexahedronData[c].base * (pos - hexahedronData[c].origin);
+            double d = std::max(std::max(-v[0],-v[1]), std::max(std::max(-v[2],v[0]-1), std::max(v[1]-1,v[2]-1)));
+            if (d>0)
+                d = (pos-hexahedronData[c].center).norm2();
+            if (d<distance)
+            {
+                coefs = v;
+                distance = d;
+                index = c;
+            }
         }
         addPointInCube(index, coefs.ptr());
     }
@@ -2564,19 +2565,19 @@ void BarycentricMapperEdgeSetTopology<In,Out>::handleTopologyChange()
             //TODO: implementation of BarycentricMapperEdgeSetTopology<In,Out>::handleTopologyChange()
         case core::componentmodel::topology::ENDING_EVENT:       ///< To notify the end for the current sequence of topological change events
             break;
-        case core::componentmodel::topology::POINTSINDICESSWAP:  ///< For PointsIndicesSwap class.
+        case core::componentmodel::topology::POINTSINDICESSWAP:  ///< For PointsIndicesSwap.
             break;
-        case core::componentmodel::topology::POINTSADDED:        ///< For PointsAdded class.
+        case core::componentmodel::topology::POINTSADDED:        ///< For PointsAdded.
             break;
-        case core::componentmodel::topology::POINTSREMOVED:      ///< For PointsRemoved class.
+        case core::componentmodel::topology::POINTSREMOVED:      ///< For PointsRemoved.
             break;
-        case core::componentmodel::topology::POINTSRENUMBERING:  ///< For PointsRenumbering class.
+        case core::componentmodel::topology::POINTSRENUMBERING:  ///< For PointsRenumbering.
             break;
-        case core::componentmodel::topology::EDGESADDED:         ///< For EdgesAdded class.
+        case core::componentmodel::topology::EDGESADDED:         ///< For EdgesAdded.
             break;
-        case core::componentmodel::topology::EDGESREMOVED:       ///< For EdgesRemoved class.
+        case core::componentmodel::topology::EDGESREMOVED:       ///< For EdgesRemoved.
             break;
-        case core::componentmodel::topology::EDGESRENUMBERING:    ///< For EdgesRenumbering class.
+        case core::componentmodel::topology::EDGESRENUMBERING:    ///< For EdgesRenumbering.
             break;
         default:
             break;
@@ -2599,19 +2600,19 @@ void BarycentricMapperTriangleSetTopology<In,Out>::handleTopologyChange()
             //TODO: implementation of BarycentricMapperTriangleSetTopology<In,Out>::handleTopologyChange()
         case core::componentmodel::topology::ENDING_EVENT:       ///< To notify the end for the current sequence of topological change events
             break;
-        case core::componentmodel::topology::POINTSINDICESSWAP:  ///< For PointsIndicesSwap class.
+        case core::componentmodel::topology::POINTSINDICESSWAP:  ///< For PointsIndicesSwap.
             break;
-        case core::componentmodel::topology::POINTSADDED:        ///< For PointsAdded class.
+        case core::componentmodel::topology::POINTSADDED:        ///< For PointsAdded.
             break;
-        case core::componentmodel::topology::POINTSREMOVED:      ///< For PointsRemoved class.
+        case core::componentmodel::topology::POINTSREMOVED:      ///< For PointsRemoved.
             break;
-        case core::componentmodel::topology::POINTSRENUMBERING:  ///< For PointsRenumbering class.
+        case core::componentmodel::topology::POINTSRENUMBERING:  ///< For PointsRenumbering.
             break;
-        case core::componentmodel::topology::TRIANGLESADDED:     ///< For TrianglesAdded class.
+        case core::componentmodel::topology::TRIANGLESADDED:     ///< For TrianglesAdded.
             break;
-        case core::componentmodel::topology::TRIANGLESREMOVED:   ///< For TrianglesRemoved class.
+        case core::componentmodel::topology::TRIANGLESREMOVED:   ///< For TrianglesRemoved.
             break;
-        case core::componentmodel::topology::TRIANGLESRENUMBERING: ///< For TrianglesRenumbering class.
+        case core::componentmodel::topology::TRIANGLESRENUMBERING: ///< For TrianglesRenumbering.
             break;
         default:
             break;
@@ -2634,19 +2635,19 @@ void BarycentricMapperQuadSetTopology<In,Out>::handleTopologyChange()
             //TODO: implementation of BarycentricMapperQuadSetTopology<In,Out>::handleTopologyChange()
         case core::componentmodel::topology::ENDING_EVENT:       ///< To notify the end for the current sequence of topological change events
             break;
-        case core::componentmodel::topology::POINTSINDICESSWAP:  ///< For PointsIndicesSwap class.
+        case core::componentmodel::topology::POINTSINDICESSWAP:  ///< For PointsIndicesSwap.
             break;
-        case core::componentmodel::topology::POINTSADDED:        ///< For PointsAdded class.
+        case core::componentmodel::topology::POINTSADDED:        ///< For PointsAdded.
             break;
-        case core::componentmodel::topology::POINTSREMOVED:      ///< For PointsRemoved class.
+        case core::componentmodel::topology::POINTSREMOVED:      ///< For PointsRemoved.
             break;
-        case core::componentmodel::topology::POINTSRENUMBERING:  ///< For PointsRenumbering class.
+        case core::componentmodel::topology::POINTSRENUMBERING:  ///< For PointsRenumbering.
             break;
-        case core::componentmodel::topology::QUADSADDED:     ///< For QuadsAdded class.
+        case core::componentmodel::topology::QUADSADDED:     ///< For QuadsAdded.
             break;
-        case core::componentmodel::topology::QUADSREMOVED:   ///< For QuadsRemoved class.
+        case core::componentmodel::topology::QUADSREMOVED:   ///< For QuadsRemoved.
             break;
-        case core::componentmodel::topology::QUADSRENUMBERING: ///< For QuadsRenumbering class.
+        case core::componentmodel::topology::QUADSRENUMBERING: ///< For QuadsRenumbering.
             break;
         default:
             break;
@@ -2669,19 +2670,19 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::handleTopologyChange()
             //TODO: implementation of BarycentricMapperTetrahedronSetTopology<In,Out>::handleTopologyChange()
         case core::componentmodel::topology::ENDING_EVENT:       ///< To notify the end for the current sequence of topological change events
             break;
-        case core::componentmodel::topology::POINTSINDICESSWAP:  ///< For PointsIndicesSwap class.
+        case core::componentmodel::topology::POINTSINDICESSWAP:  ///< For PointsIndicesSwap.
             break;
-        case core::componentmodel::topology::POINTSADDED:        ///< For PointsAdded class.
+        case core::componentmodel::topology::POINTSADDED:        ///< For PointsAdded.
             break;
-        case core::componentmodel::topology::POINTSREMOVED:      ///< For PointsRemoved class.
+        case core::componentmodel::topology::POINTSREMOVED:      ///< For PointsRemoved.
             break;
-        case core::componentmodel::topology::POINTSRENUMBERING:  ///< For PointsRenumbering class.
+        case core::componentmodel::topology::POINTSRENUMBERING:  ///< For PointsRenumbering.
             break;
-        case core::componentmodel::topology::TETRAHEDRAADDED:     ///< For TrianglesAdded class.
+        case core::componentmodel::topology::TETRAHEDRAADDED:     ///< For TetrahedraAdded.
             break;
-        case core::componentmodel::topology::TETRAHEDRAREMOVED:   ///< For TrianglesRemoved class.
+        case core::componentmodel::topology::TETRAHEDRAREMOVED:   ///< For TetrahedraRemoved.
             break;
-        case core::componentmodel::topology::TETRAHEDRARENUMBERING: ///< For TrianglesRenumbering class.
+        case core::componentmodel::topology::TETRAHEDRARENUMBERING: ///< For TetrahedraRenumbering.
             break;
         default:
             break;
@@ -2692,6 +2693,9 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::handleTopologyChange()
 template <class In, class Out>
 void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
 {
+    if(topology->getTopologyContainer()->getChangeList().empty())
+        return;
+
     std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = topology->firstChange();
     std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = topology->lastChange();
 
@@ -2704,24 +2708,109 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
             //TODO: implementation of BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
         case core::componentmodel::topology::ENDING_EVENT:       ///< To notify the end for the current sequence of topological change events
             break;
-        case core::componentmodel::topology::POINTSINDICESSWAP:  ///< For PointsIndicesSwap class.
+        case core::componentmodel::topology::POINTSINDICESSWAP:  ///< For PointsIndicesSwap.
             break;
-        case core::componentmodel::topology::POINTSADDED:        ///< For PointsAdded class.
+        case core::componentmodel::topology::POINTSADDED:        ///< For PointsAdded.
             break;
-        case core::componentmodel::topology::POINTSREMOVED:      ///< For PointsRemoved class.
+        case core::componentmodel::topology::POINTSREMOVED:      ///< For PointsRemoved.
             break;
-        case core::componentmodel::topology::POINTSRENUMBERING:  ///< For PointsRenumbering class.
+        case core::componentmodel::topology::POINTSRENUMBERING:  ///< For PointsRenumbering.
             break;
-        case core::componentmodel::topology::HEXAHEDRAADDED:     ///< For TrianglesAdded class.
+        case core::componentmodel::topology::HEXAHEDRAADDED:     ///< For HexahedraAdded.
             break;
-        case core::componentmodel::topology::HEXAHEDRAREMOVED:   ///< For TrianglesRemoved class.
-            break;
-        case core::componentmodel::topology::HEXAHEDRARENUMBERING: ///< For TrianglesRenumbering class.
+        case core::componentmodel::topology::HEXAHEDRAREMOVED:   ///< For HexahedraRemoved.
+        {
+            const sofa::helper::vector<topology::Hexahedron>& cubes = this->topology->getHexahedronSetTopologyContainer()->getHexahedronArray();
+
+#ifndef NDEBUG
+            if(cubes.size() != hexahedronData.size())
+            {
+                std::cout << "Error. BarycentricMapperHexahedronSetTopology::handleTopologyChange() : Topology container size does not match the hexahedron data size.";
+                return;
+            }
+#endif
+
+            const sofa::helper::vector<unsigned int> &tab = (dynamic_cast< const component::topology::HexahedraRemoved *> (*changeIt))->getArray();
+            sofa::helper::vector<unsigned int> hexahedra(tab);
+
+            for(int i=0; i<hexahedra.size(); ++i)
+            {
+                // remove all references to the removed cubes from the mapping data
+                unsigned int cubeId = hexahedra[i];
+                for(unsigned int j=0; j<map.size(); ++j)
+                {
+                    if(map[j].in_index == cubeId) // compute new mapping
+                    {
+                        Vector3 coefs;
+                        coefs[0] = map[j].baryCoords[0];
+                        coefs[1] = map[j].baryCoords[1];
+                        coefs[2] = map[j].baryCoords[2];
+
+                        // barycentricToWorld
+                        Matrix3 m;
+                        m.invert(hexahedronData[cubeId].base);
+                        Vector3 pos = (m * coefs) + hexahedronData[cubeId].origin;
+
+                        // find nearest cell
+                        int index;
+                        double distance = 1e10;
+                        for (unsigned int c = 0; c < cubes.size(); c++)
+                        {
+                            bool validC = true;
+                            // don't search in cubes that are being removed
+                            for(int k=0; k<hexahedra.size(); ++k)
+                            {
+                                if(c == hexahedra[k])
+                                {
+                                    validC = false;
+                                    break;
+                                }
+                            }
+
+                            if(validC)
+                            {
+                                const Vec3d v = hexahedronData[c].base * (pos - hexahedronData[c].origin);
+                                double d = std::max(std::max(-v[0],-v[1]), std::max(std::max(-v[2],v[0]-1), std::max(v[1]-1,v[2]-1)));
+                                if (d>0)
+                                    d = (pos-hexahedronData[c].center).norm2();
+                                if (d<distance)
+                                {
+                                    coefs = v;
+                                    distance = d;
+                                    index = c;
+                                }
+                            }
+                        }
+                        map[j].baryCoords[0] = coefs[0];
+                        map[j].baryCoords[1] = coefs[1];
+                        map[j].baryCoords[2] = coefs[2];
+                        map[j].in_index = index;
+                    }
+                }
+            }
+
+            // renumber
+            unsigned int lastCubeId = cubes.size()-1;
+            for(int i=0; i<hexahedra.size(); ++i)
+            {
+                unsigned int cubeId = hexahedra[i];
+                for(unsigned int j=0; j<map.size(); ++j)
+                {
+                    if(map[j].in_index == lastCubeId)
+                        map[j].in_index = cubeId;
+                }
+                lastCubeId -= 1;
+            }
+        }
+        break;
+        case core::componentmodel::topology::HEXAHEDRARENUMBERING: ///< For HexahedraRenumbering.
             break;
         default:
             break;
         }
     }
+
+    hexahedronData.handleTopologyEvents(itBegin, itEnd);
 }
 
 template <class In, class Out>
@@ -2770,13 +2859,16 @@ void BarycentricMapping<BasicMapping>::handleTopologyChange()
         topoMapper->handleTopologyChange();
 
         // handle changes in the To topology
-        core::componentmodel::topology::BaseTopology* topology = dynamic_cast<core::componentmodel::topology::BaseTopology*> (this->toModel->getContext()->getTopology());
+        core::componentmodel::topology::BaseTopology* topology = dynamic_cast<core::componentmodel::topology::BaseTopology*> (this->toModel->getContext()->getMainTopology());
         if (topology != NULL)
         {
-            const std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = topology->firstChange();
-            const std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = topology->lastChange();
+            if(!topology->getTopologyContainer()->getChangeList().empty())
+            {
+                const std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = topology->firstChange();
+                const std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = topology->lastChange();
 
-            topoMapper->handlePointEvents(itBegin, itEnd);
+                topoMapper->handlePointEvents(itBegin, itEnd);
+            }
         }
     }
 }

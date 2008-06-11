@@ -227,6 +227,11 @@ public :
      */
     virtual unsigned int getDOFNumber() const { return 0; }
 
+    /** \brief Free each Topology changes in the list and remove them from the list
+     *
+     */
+    void resetTopologyChangeList() const;
+
     virtual std::string getFilename() const {return filename.getValue();}
 
 protected :
@@ -251,12 +256,6 @@ protected :
      * MechanicalObject, on which a Constraint or a ForceField applies.
      */
     bool m_mainTopology;
-
-protected:
-    /** \brief Free each Topology changes in the list and remove them from the list
-     *
-     */
-    void resetTopologyChangeList() const;
 
     Data< std::string > filename;
 
