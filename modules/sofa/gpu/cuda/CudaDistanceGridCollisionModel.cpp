@@ -8,7 +8,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <fstream>
-#include <sofa/helper/system/gl.h>
+#include <sofa/helper/gl/template.h>
 
 namespace sofa
 {
@@ -598,11 +598,7 @@ void CudaRigidDistanceGridCollisionModel::draw(int index)
         m = elems[index].rotation;
         m.transpose();
         m[3] = Vector4(elems[index].translation,1.0);
-#ifdef SOFA_FLOAT
-        glMultMatrixf(m.ptr());
-#else
-        glMultMatrixd(m.ptr());
-#endif
+        helper::gl::glMultMatrix(m.ptr());
     }
 
     CudaDistanceGrid* grid = getGrid(index);

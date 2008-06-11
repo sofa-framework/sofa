@@ -3,8 +3,8 @@
 
 #include <sofa/core/componentmodel/behavior/ForceField.inl>
 #include "InteractionEllipsoidForceField.h"
+#include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/config.h>
-#include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
 #include <sofa/helper/rmath.h>
 #include <assert.h>
@@ -19,26 +19,26 @@ namespace component
 namespace interactionforcefield
 {
 
-// v = sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1
-// dv/dxj = xj/rj² * 1/sqrt(x0²/r0²+x1²/r1²+x2²/r2²)
+// v = sqrt(x0ï¿½/r0ï¿½+x1ï¿½/r1ï¿½+x2ï¿½/r2ï¿½)-1
+// dv/dxj = xj/rjï¿½ * 1/sqrt(x0ï¿½/r0ï¿½+x1ï¿½/r1ï¿½+x2ï¿½/r2ï¿½)
 
 // f  = -stiffness * v * (dv/dp) / norm(dv/dp)
 
-// fi = -stiffness * (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1) * (xi/ri²) / sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4)
+// fi = -stiffness * (sqrt(x0ï¿½/r0ï¿½+x1ï¿½/r1ï¿½+x2ï¿½/r2ï¿½)-1) * (xi/riï¿½) / sqrt(x0ï¿½/r0^4+x1ï¿½/r1^4+x2ï¿½/r2^4)
 
-// dfi/dxj = -stiffness * [ d(sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)/dxj *   (xi/ri²) / sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4)
-//                          +  (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)     * d(xi/ri²)/dxj / sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4)
-//                          +  (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)     *  (xi/ri²) * d(1/sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4))/dxj ]
-// dfi/dxj = -stiffness * [ xj/rj² * 1/sqrt(x0²/r0²+x1²/r1²+x2²/r2²) * (xi/ri²) / sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4)
-//                          +  (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)       * (i==j)/ri² / sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4)
-//                          +  (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)       * (xi/ri²) * (-1/2*2xj/rj^4*1/(x0²/r0^4+x1²/r1^4+x2²/r2^4) ]
-// dfi/dxj = -stiffness * [ xj/rj² * 1/sqrt(x0²/r0²+x1²/r1²+x2²/r2²) * (xi/ri²) / sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4)
-//                          +  (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)       * (i==j)/ri² / sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4)
-//                          +  (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)       * (xi/ri²) * (-xj/rj^4*1/(x0²/r0^4+x1²/r1^4+x2²/r2^4) ]
+// dfi/dxj = -stiffness * [ d(sqrt(x0ï¿½/r0ï¿½+x1ï¿½/r1ï¿½+x2ï¿½/r2ï¿½)-1)/dxj *   (xi/riï¿½) / sqrt(x0ï¿½/r0^4+x1ï¿½/r1^4+x2ï¿½/r2^4)
+//                          +  (sqrt(x0ï¿½/r0ï¿½+x1ï¿½/r1ï¿½+x2ï¿½/r2ï¿½)-1)     * d(xi/riï¿½)/dxj / sqrt(x0ï¿½/r0^4+x1ï¿½/r1^4+x2ï¿½/r2^4)
+//                          +  (sqrt(x0ï¿½/r0ï¿½+x1ï¿½/r1ï¿½+x2ï¿½/r2ï¿½)-1)     *  (xi/riï¿½) * d(1/sqrt(x0ï¿½/r0^4+x1ï¿½/r1^4+x2ï¿½/r2^4))/dxj ]
+// dfi/dxj = -stiffness * [ xj/rjï¿½ * 1/sqrt(x0ï¿½/r0ï¿½+x1ï¿½/r1ï¿½+x2ï¿½/r2ï¿½) * (xi/riï¿½) / sqrt(x0ï¿½/r0^4+x1ï¿½/r1^4+x2ï¿½/r2^4)
+//                          +  (sqrt(x0ï¿½/r0ï¿½+x1ï¿½/r1ï¿½+x2ï¿½/r2ï¿½)-1)       * (i==j)/riï¿½ / sqrt(x0ï¿½/r0^4+x1ï¿½/r1^4+x2ï¿½/r2^4)
+//                          +  (sqrt(x0ï¿½/r0ï¿½+x1ï¿½/r1ï¿½+x2ï¿½/r2ï¿½)-1)       * (xi/riï¿½) * (-1/2*2xj/rj^4*1/(x0ï¿½/r0^4+x1ï¿½/r1^4+x2ï¿½/r2^4) ]
+// dfi/dxj = -stiffness * [ xj/rjï¿½ * 1/sqrt(x0ï¿½/r0ï¿½+x1ï¿½/r1ï¿½+x2ï¿½/r2ï¿½) * (xi/riï¿½) / sqrt(x0ï¿½/r0^4+x1ï¿½/r1^4+x2ï¿½/r2^4)
+//                          +  (sqrt(x0ï¿½/r0ï¿½+x1ï¿½/r1ï¿½+x2ï¿½/r2ï¿½)-1)       * (i==j)/riï¿½ / sqrt(x0ï¿½/r0^4+x1ï¿½/r1^4+x2ï¿½/r2^4)
+//                          +  (sqrt(x0ï¿½/r0ï¿½+x1ï¿½/r1ï¿½+x2ï¿½/r2ï¿½)-1)       * (xi/riï¿½) * (-xj/rj^4*1/(x0ï¿½/r0^4+x1ï¿½/r1^4+x2ï¿½/r2^4) ]
 
-// dfi/dxj = -stiffness * [ (xj/rj²) * (xi/ri²) * 1/(sqrt(x0²/r0²+x1²/r1²+x2²/r2²) * sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4))
-//                          +  v       * (i==j) / (ri²*sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4))
-//                          +  v       * (xi/ri²) * (xj/rj²) * 1/(rj²*(x0²/r0^4+x1²/r1^4+x2²/r2^4) ]
+// dfi/dxj = -stiffness * [ (xj/rjï¿½) * (xi/riï¿½) * 1/(sqrt(x0ï¿½/r0ï¿½+x1ï¿½/r1ï¿½+x2ï¿½/r2ï¿½) * sqrt(x0ï¿½/r0^4+x1ï¿½/r1^4+x2ï¿½/r2^4))
+//                          +  v       * (i==j) / (riï¿½*sqrt(x0ï¿½/r0^4+x1ï¿½/r1^4+x2ï¿½/r2^4))
+//                          +  v       * (xi/riï¿½) * (xj/rjï¿½) * 1/(rjï¿½*(x0ï¿½/r0^4+x1ï¿½/r1^4+x2ï¿½/r2^4) ]
 
 
 template<class DataTypes1, class DataTypes2>
@@ -298,17 +298,10 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw()
     q1.buildRotationMatrix(R);
 
     glPushMatrix();
-#ifdef SOFA_FLOAT
-    glTranslatef(cx2, cy2, cz2);
-    glMultMatrixf( &(R[0][0]) );
-    glTranslatef(cx1, cy1, cz1);
-    glScalef(rx, ry, (stiffness.getValue()>0?rz:-rz));
-#else
-    glTranslated(cx2, cy2, cz2);
-    glMultMatrixd( &(R[0][0]) );
-    glTranslated(cx1, cy1, cz1);
-    glScaled(rx, ry, (stiffness.getValue()>0?rz:-rz));
-#endif
+    helper::gl::glTranslate(cx2, cy2, cz2);
+    helper::gl::glMultMatrix( &(R[0][0]) );
+    helper::gl::glTranslate(cx1, cy1, cz1);
+    helper::gl::glScale(rx, ry, (stiffness.getValue()>0?rz:-rz));
     glutSolidSphere(1,32,16);
     //glTranslated(-cx2, -cy2, -cz2);
 

@@ -25,7 +25,7 @@
 #include <sofa/component/collision/RayModel.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/gl.h>
+#include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/glut.h>
 
 
@@ -87,13 +87,8 @@ void RayModel::draw(int index)
     const Vector3& p1 = r.origin();
     const Vector3 p2 = p1 + r.direction()*r.l();
     glBegin(GL_LINES);
-#ifdef SOFA_FLOAT
-    glVertex3fv(p1.ptr());
-    glVertex3fv(p2.ptr());
-#else
-    glVertex3dv(p1.ptr());
-    glVertex3dv(p2.ptr());
-#endif
+    helper::gl::glVertexT(p1);
+    helper::gl::glVertexT(p2);
     glEnd();
 }
 

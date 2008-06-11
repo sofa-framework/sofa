@@ -28,7 +28,7 @@
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/ObjectFactory.h>
 #include <vector>
-#include <sofa/helper/system/gl.h>
+#include <sofa/helper/gl/template.h>
 #include <sofa/simulation/tree/GNode.h>
 
 namespace sofa
@@ -537,13 +537,8 @@ void LineModel::draw(int index)
 {
     Line t(this,index);
     glBegin(GL_LINES);
-#ifdef SOFA_FLOAT
-    glVertex3fv(t.p1().ptr());
-    glVertex3fv(t.p2().ptr());
-#else
-    glVertex3dv(t.p1().ptr());
-    glVertex3dv(t.p2().ptr());
-#endif
+    helper::gl::glVertexT(t.p1());
+    helper::gl::glVertexT(t.p2());
     glEnd();
 }
 

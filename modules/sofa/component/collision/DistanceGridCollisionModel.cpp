@@ -210,11 +210,8 @@ void RigidDistanceGridCollisionModel::draw(int index)
         m = elems[index].rotation;
         m.transpose();
         m[3] = Vector4(elems[index].translation,1.0);
-#ifdef SOFA_FLOAT
-        glMultMatrixf(m.ptr());
-#else
-        glMultMatrixd(m.ptr());
-#endif
+
+        helper::gl::glMultMatrix(m.ptr());
     }
 
     DistanceGrid* grid = getGrid(index);
