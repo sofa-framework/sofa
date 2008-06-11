@@ -222,12 +222,24 @@ CShader::CShader()
     geometry_input_type = -1;
     geometry_output_type = -1;
     geometry_vertices_out = -1;
+    header = "";
 }
 
 CShader::~CShader()
 {
     // BUGFIX: if the GL context is gone, this can crash the application on exit -- Jeremie A.
     //Release();
+}
+
+void CShader::AddHeader(const std::string &header)
+{
+    this->header += header;
+    this->header += "\n";
+}
+
+void CShader::AddDefineMacro(const std::string &name, const std::string &value)
+{
+    AddHeader("#define " + name + " " + value);
 }
 
 ///////////////////////////////// LOAD TEXT FILE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
@@ -318,7 +330,7 @@ void CShader::InitShaders(const std::string& strVertex, const std::string& strGe
     bool ready = true;
 
     // Now we load and compile the shaders from their respective files
-    ready &= CompileShader( GL_VERTEX_SHADER_ARB, LoadTextFile(strVertex), m_hVertexShader );
+    ready &= CompileShader( GL_VERTEX_SHADER_ARB, header + LoadTextFile(strVertex), m_hVertexShader );
     if (!strGeometry.empty())
     {
 #ifdef GL_GEOMETRY_SHADER_EXT
@@ -328,7 +340,7 @@ void CShader::InitShaders(const std::string& strVertex, const std::string& strGe
         ready = false;
 #endif
     }
-    ready &= CompileShader( GL_FRAGMENT_SHADER_ARB, LoadTextFile(strFragment), m_hFragmentShader );
+    ready &= CompileShader( GL_FRAGMENT_SHADER_ARB, header + LoadTextFile(strFragment), m_hFragmentShader );
 
     if (!ready)
     {
