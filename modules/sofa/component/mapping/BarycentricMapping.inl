@@ -2733,7 +2733,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
             const sofa::helper::vector<unsigned int> &tab = (dynamic_cast< const component::topology::HexahedraRemoved *> (*changeIt))->getArray();
             sofa::helper::vector<unsigned int> hexahedra(tab);
 
-            for(int i=0; i<hexahedra.size(); ++i)
+            for(unsigned int i=0; i<hexahedra.size(); ++i)
             {
                 // remove all references to the removed cubes from the mapping data
                 unsigned int cubeId = hexahedra[i];
@@ -2758,7 +2758,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
                         {
                             bool validC = true;
                             // don't search in cubes that are being removed
-                            for(int k=0; k<hexahedra.size(); ++k)
+                            for(unsigned int k=0; k<hexahedra.size(); ++k)
                             {
                                 if(c == hexahedra[k])
                                 {
@@ -2781,9 +2781,9 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
                                 }
                             }
                         }
-                        map[j].baryCoords[0] = coefs[0];
-                        map[j].baryCoords[1] = coefs[1];
-                        map[j].baryCoords[2] = coefs[2];
+                        map[j].baryCoords[0] = (Real) coefs[0];
+                        map[j].baryCoords[1] = (Real) coefs[1];
+                        map[j].baryCoords[2] = (Real) coefs[2];
                         map[j].in_index = index;
                     }
                 }
@@ -2791,7 +2791,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
 
             // renumber
             unsigned int lastCubeId = cubes.size()-1;
-            for(int i=0; i<hexahedra.size(); ++i)
+            for(unsigned int i=0; i<hexahedra.size(); ++i)
             {
                 unsigned int cubeId = hexahedra[i];
                 for(unsigned int j=0; j<map.size(); ++j)
