@@ -25,7 +25,6 @@
 #ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_H
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_H
 
-#include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/vector.h>
 #include <sofa/component/topology/PointData.h>
 #include <sofa/component/topology/HexahedronData.h>
@@ -720,9 +719,9 @@ public:
 private:
     struct _BaseAndCenter
     {
-        Vector3	origin;
-        Matrix3	base;
-        Vector3	center;
+        defaulttype::Vector3	origin;
+        defaulttype::Matrix3	base;
+        defaulttype::Vector3	center;
     } ;
 
     topology::HexahedronData< _BaseAndCenter > hexahedronData;
