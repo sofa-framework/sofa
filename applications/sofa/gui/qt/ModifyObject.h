@@ -90,9 +90,14 @@ public:
     ~ModifyObject()
     {
         delete buttonUpdate;
+        HIDE_FLAG = true;
+        EMPTY_FLAG = false;
     }
 
     void setNode(core::objectmodel::Base* node, Q3ListViewItem* item_clicked=NULL); //create all the widgets of the dialog window
+
+    bool hideData(core::objectmodel::BaseData* data) { return (!data->isDisplayed()) && HIDE_FLAG;};
+    bool addEmptyData() {return EMPTY_FLAG;}
 
 public slots:
     void updateValues();              //update the node with the values of the field
@@ -114,8 +119,8 @@ signals:
             double rotationX, double rotationY, double rotationZ,
             double scale);
 
-
 protected:
+
 
     const core::objectmodel::BaseData* getData(const QObject *object);
     virtual void closeEvent ( QCloseEvent * ) {emit(reject());}
@@ -197,6 +202,9 @@ protected:
     QwtPlot *graphEnergy;
     QwtPlotCurve *energy_curve[3];
     unsigned int counterWidget;
+
+    bool HIDE_FLAG; //if we allow to hide Datas
+    bool EMPTY_FLAG;//if we allow empty datas
 };
 
 } // namespace qt
