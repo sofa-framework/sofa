@@ -36,6 +36,7 @@
 #include <QTabWidget>
 #include <QGridLayout>
 #include <Q3Grid>
+#include <QTabWidget>
 #else
 #include <qlineedit.h>
 #include <qpushbutton.h>
@@ -57,7 +58,6 @@
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/UpdateContextVisitor.h>
 
-#include "WFloatLineEdit.h"
 
 #include <qwt_legend.h>
 
@@ -1035,13 +1035,13 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 //*******************************************************************************************************************
 void ModifyObject::changeValue()
 {
-    setUpdates.insert(sender());
+    setUpdates.insert(getData(sender()));
     if (buttonUpdate == NULL) return;
     buttonUpdate->setEnabled(true);
 }
 void ModifyObject::changeVisualValue()
 {
-    setUpdates.insert(sender());
+    setUpdates.insert(getData(sender()));
     if (buttonUpdate == NULL) return;
     buttonUpdate->setEnabled(true);
     visualContentModified = true;
@@ -1095,7 +1095,7 @@ void ModifyObject::updateValues()
         for (unsigned int index_object=0; index_object < objectGUI.size(); ++index_object)
         {
 
-            if (setUpdates.find(objectGUI[index_object].second ) == setUpdates.end()) continue;
+            if (setUpdates.find(objectGUI[index_object].first ) == setUpdates.end()) continue;
             //*******************************************************************************************************************
             if( Data<int> * ff = dynamic_cast< Data<int> * >( objectGUI[index_object].first )  )
             {
@@ -3143,7 +3143,7 @@ void ModifyObject::saveTables()
     for (it_list_Table = list_Table.begin(); it_list_Table != list_Table.end(); it_list_Table++)
     {
 
-        if (setUpdates.find(it_list_Table->first) == setUpdates.end()) continue;
+        if (setUpdates.find(getData(it_list_Table->first)) == setUpdates.end()) continue;
         storeTable((*it_list_Table).first, (*it_list_Table).second);
     }
 }
@@ -3999,6 +3999,14 @@ void ModifyObject::storeQtTable( Q3Table* table, Data< sofa::component::topology
 //********************************************************************************************************************
 //********************************************************************************************************************
 
+const core::objectmodel::BaseData* ModifyObject::getData(const QObject *object)
+{
+    for (unsigned int i=0; i<objectGUI.size(); ++i)
+    {
+        if (objectGUI[i].second == object) return  objectGUI[i].first;
+    }
+    return false;
+}
 } // namespace qt
 
 } // namespace gui
