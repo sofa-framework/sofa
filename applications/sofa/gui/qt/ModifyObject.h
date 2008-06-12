@@ -34,6 +34,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/simulation/common/Node.h>
 
+#include <qglobal.h>
 #ifdef QT_MODULE_QT3SUPPORT
 #include <QDialog>
 #include <Q3ListViewItem>
@@ -42,6 +43,7 @@
 #include <Q3GroupBox>
 #include <Q3TextEdit>
 #include <QPushButton>
+#include <QTabWidget>
 #else
 #include <qdialog.h>
 #include <qlistview.h>
