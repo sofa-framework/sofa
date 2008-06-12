@@ -12,13 +12,14 @@ SCRIPTS=$PWD
 echo $SCRIPTS
 
 let npro=0
+let npriv=0
 let nsrc=0
 let nrmdir=0
 let nrmfile=0
 let nrmline=0
 
 echo
-echo "STEP 1: Filter project files and removing referenced files"
+echo "STEP 1: Filter project files and remove referenced files"
 echo
 
 function qmake_process_dir {
@@ -42,6 +43,7 @@ function qmake_process_dir {
 		echo "$g already removed."
 	    fi
 	done
+	rm -f $f.dev
     done
     for f in *; do
 	if [ -d "$f" ]; then
@@ -56,7 +58,42 @@ qmake_process_dir $DIR0
 
 
 echo
-echo "STEP 2: Filter source code files"
+echo "STEP 2: Remove files listed in private.txt files"
+echo
+
+function private_process_dir {
+    cd $1
+    echo "Entering $PWD"
+    if [ -f "private.txt" ]; then
+	echo "Processing private.txt"
+	let npriv+=1
+	for g in $(grep -v '^#' "private.txt"); do
+	    if [ -d "$g" ]; then
+		echo "Remove directory $g"
+		let nrmdir+=1
+		svn rm --force $g || (echo "Failed to remove directory $g"; mv -f $f.bak $f ; exit 1)
+	    elif [ -f "$g" ]; then
+		echo "Remove file $g"
+		let nrmfile+=1
+		svn rm --force $g || (echo "Failed to remove directory $g"; mv -f $f.bak $f ; exit 1)
+	    else
+		echo "$g already removed."
+	    fi
+	done
+    fi
+    for f in *; do
+	if [ -d "$f" ]; then
+	    private_process_dir $f
+	fi
+    done
+    echo "Leaving  $PWD"
+    cd ..
+}
+
+private_process_dir $DIR0
+
+echo
+echo "STEP 3: Filter source code files"
 echo
 
 function code_process_dir {
