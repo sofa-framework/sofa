@@ -27,7 +27,7 @@
 
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include "RealGUI.h"
+
 
 #include <sofa/component/topology/PointData.h>
 #include <sofa/component/forcefield/SpringForceField.h>
@@ -41,14 +41,18 @@
 #include <Q3Table>
 #include <Q3GroupBox>
 #include <Q3TextEdit>
+#include <QPushButton>
 #else
 #include <qdialog.h>
 #include <qlistview.h>
 #include <qtable.h>
 #include <qgroupbox.h>
 #include <qtextedit.h>
+#include <qtabwidget.h>
+#include <qpushbutton.h>
 #endif
 
+#include "WFloatLineEdit.h"
 
 #include <qwt_plot.h>
 
@@ -111,6 +115,7 @@ signals:
 
 protected:
 
+    const core::objectmodel::BaseData* getData(const QObject *object);
     virtual void closeEvent ( QCloseEvent * ) {emit(reject());}
     void updateContext( Node *node );
 
@@ -175,7 +180,7 @@ protected:
     Q3ListViewItem * item;
     QPushButton *buttonUpdate;
     std::vector<std::pair< core::objectmodel::BaseData*,  QObject*> >  objectGUI;  //vector of all the Qt Object added in the window
-    std::set< const QObject* >                                         setUpdates; //set of objects that have ben modified
+    std::set< const core::objectmodel::BaseData* >                     setUpdates; //set of objects that have ben modified
     std::list< std::list< QObject* > * >                               list_PointSubset;
     std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >    list_Table;
     std::list< std::pair< Q3TextEdit*, core::objectmodel::BaseData*> > list_TextEdit;
