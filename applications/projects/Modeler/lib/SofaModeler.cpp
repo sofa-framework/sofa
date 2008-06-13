@@ -74,17 +74,18 @@ SofaModeler::SofaModeler()
     {
         itMap = inventory.find( (*it) );
         unsigned int numRows = inventory.count( (*it) );
-        QWidget* gridWidget = new QWidget(SofaComponents, QString((*it)+"Widget"));
+        QString s=QString(it->c_str()) + QString("Widget");
+        QWidget* gridWidget = new QWidget(SofaComponents, s);
         QGridLayout* gridLayout = new QGridLayout( gridWidget, numRows+1,1);
         bool needSpacer = false;
 
 
         //Insert all the components belonging to the same family
-        SofaComponents->addItem( gridWidget ,(*it) );
+        SofaComponents->addItem( gridWidget ,it->c_str() );
         for (unsigned int i=0; i< inventory.count( (*it) ); ++i)
         {
             ClassInfo* entry = itMap->second;
-            QPushButton *button = new QPushButton(gridWidget, QString(entry->className));
+            QPushButton *button = new QPushButton(gridWidget, QString(entry->className.c_str()));
             gridLayout->addWidget(button, i,0);
             button->setFlat(true);
             //Template: Add in a combo box the list of the templates
@@ -100,7 +101,7 @@ SofaModeler::SofaModeler()
                     combo->insertItem(QString(it->first.c_str()));
                 }
             }
-            button->setText(QString(entry->className));
+            button->setText(QString(entry->className.c_str()));
 
             mapComponents.insert(std::make_pair(button, std::make_pair(entry, combo)));
             itMap++;

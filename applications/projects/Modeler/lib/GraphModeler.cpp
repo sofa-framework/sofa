@@ -31,7 +31,7 @@ void GraphModeler::addGNode(GNode *parent, bool saveHistory)
     graphListener->addChild(parent, child);
     if (saveHistory)
     {
-        Operation adding(graphListener->items[child], child, Operation::ADD);
+        Operation adding(graphListener->items[child], child, Operation::ADD_OBJECT);
         historyOperation.push_front(adding);
     }
 }
@@ -56,7 +56,7 @@ void GraphModeler::addComponent(GNode *parent, ClassInfo* entry, std::string tem
 
     if (saveHistory)
     {
-        Operation adding(graphListener->items[object], object, Operation::ADD);
+        Operation adding(graphListener->items[object], object, Operation::ADD_OBJECT);
         historyOperation.push_front(adding);
     }
 }
@@ -283,7 +283,7 @@ void GraphModeler::deleteComponent(QListViewItem* item, bool saveHistory)
 
         if (saveHistory)
         {
-            Operation removal(item, getObject(item),Operation::DELETE);
+            Operation removal(item, getObject(item),Operation::DELETE_OBJECT);
             historyOperation.push_front(removal);
         }
         //OPERATION DELETE: to remove in order to be able to undo operation
@@ -298,7 +298,7 @@ void GraphModeler::deleteComponent(QListViewItem* item, bool saveHistory)
 
         if (saveHistory)
         {
-            Operation removal(item, getGNode(item),Operation::DELETE);
+            Operation removal(item, getGNode(item),Operation::DELETE_OBJECT);
             historyOperation.push_front(removal);
         }
 
