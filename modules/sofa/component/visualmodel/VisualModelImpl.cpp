@@ -95,28 +95,15 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     }
 
 
-
-    Vector3 p0;
-    Vector3 centerGrid;
-    sofa::component::topology::RegularGridTopology *grid;
-    this->getContext()->get(grid, BaseContext::SearchUp);
-    if (grid) {p0 = grid->getP0(); centerGrid = -(grid->getMax()-grid->getMin())/2.0;}
-
     if (arg->getAttribute("scale")!=NULL)
     {
         obj->applyScale(atof(arg->getAttribute("scale","1.0")));
     }
     if (arg->getAttribute("rx")!=NULL || arg->getAttribute("ry")!=NULL || arg->getAttribute("rz")!=NULL)
     {
+        Vector3 rotation=Vector3((SReal)(atof(arg->getAttribute("rx","0.0"))),(SReal)(atof(arg->getAttribute("ry","0.0"))),(SReal)(atof(arg->getAttribute("rz","0.0"))))*3.141592653/180.0;
 
-        Quaternion q=helper::Quater<SReal>::createFromRotationVector( Vec<3,SReal>(atof(arg->getAttribute("rx","0.0")),atof(arg->getAttribute("ry","0.0")),atof(arg->getAttribute("rz","0.0"))));
-// 	    if (grid)
-// 	      {
-// 		this->applyTranslation(centerGrid[0],centerGrid[1],centerGrid[2]);
-// 		this->applyRotation(q);
-// 		this->applyTranslation(-centerGrid[0],-centerGrid[1],-centerGrid[2]);
-// 	      }
-// 	    else
+        Quaternion q=helper::Quater<SReal>::createFromRotationVector( Vec<3,SReal>(rotation[0],rotation[1],rotation[2]));
         this->applyRotation(q);
     }
 

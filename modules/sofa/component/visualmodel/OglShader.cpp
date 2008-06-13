@@ -49,7 +49,6 @@ OglShader::~OglShader()
 {
     m_shader.TurnOff();
     m_shader.Release();
-    std::cout << "Shader released." << std::endl;
 }
 
 void OglShader::init()
