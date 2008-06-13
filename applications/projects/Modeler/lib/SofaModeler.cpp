@@ -24,8 +24,8 @@ namespace gui
 namespace qt
 {
 
-#ifdef SOFA_QT4
-typedef Q3TextDrag QTextDrag;
+#ifndef SOFA_QT4
+typedef QTextDrag Q3TextDrag;
 #endif
 
 
@@ -117,10 +117,10 @@ SofaModeler::SofaModeler()
     graph->setLibrary(mapComponents);
     graph->fileNew();
     connect(graph, SIGNAL(changeNameWindow(std::string)), this, SLOT(changeNameWindow(std::string)));
-    connect(graph, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(changeInformation(QListViewItem *)));
+    connect(graph, SIGNAL(currentChanged(Q3ListViewItem *)), this, SLOT(changeInformation(Q3ListViewItem *)));
 };
 
-void SofaModeler::changeInformation(QListViewItem *item)
+void SofaModeler::changeInformation(Q3ListViewItem *item)
 {
     if (!item) return;
     if (item->childCount() != 0) return;
@@ -142,7 +142,7 @@ void SofaModeler::dragComponent()
     ClassInfo *currentComponent = mapComponents.find(sender)->second.first;
     changeComponent(currentComponent);
 
-    QTextDrag *dragging = new QTextDrag(QString(currentComponent->className.c_str()), (QWidget *)sender);
+    Q3TextDrag *dragging = new Q3TextDrag(QString(currentComponent->className.c_str()), (QWidget *)sender);
     QComboBox *box = (QComboBox *) mapComponents.find(sender)->second.second;
     QString textDragged;
     if (box)  textDragged = box->currentText();
@@ -180,7 +180,7 @@ void SofaModeler::changeComponent(ClassInfo *currentComponent)
 
 void SofaModeler::newGNode()
 {
-    QTextDrag *dragging = new QTextDrag(QString("GNode"), this);
+    Q3TextDrag *dragging = new Q3TextDrag(QString("GNode"), this);
     dragging->setText(QString("GNode"));
     dragging->dragCopy();
 }

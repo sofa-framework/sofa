@@ -27,34 +27,35 @@ namespace gui
 namespace qt
 {
 
-#ifdef SOFA_QT4
-typedef Q3ListView QListView;
-typedef Q3ListViewItem QListViewItem;
-typedef Q3TextDrag QTextDrag;
+#ifndef SOFA_QT4
+typedef QListView Q3ListView;
+typedef QListViewItem Q3ListViewItem;
+typedef QTextDrag Q3TextDrag;
 #endif
 
 typedef sofa::core::ObjectFactory::ClassEntry ClassInfo;
 typedef sofa::core::ObjectFactory::Creator    ClassCreator;
 using sofa::simulation::tree::GNode;
 using namespace sofa::core::objectmodel;
-class GraphModeler : public QListView
+class GraphModeler : public Q3ListView
 {
     typedef std::map< const QObject* , std::pair< ClassInfo*, QObject*> > ComponentMap;
     Q_OBJECT
 public:
-    GraphModeler( QWidget* parent=0, const char* name=0, Qt::WFlags f = 0 ):QListView(parent, name, f), graphListener(NULL)
+    GraphModeler( QWidget* parent=0, const char* name=0, Qt::WFlags f = 0 ):Q3ListView(parent, name, f), graphListener(NULL)
     {
         graphListener = new GraphListenerQListView(this);
         addColumn("Graph");
         header()->hide();
         setSorting ( -1 );
-        connect(this, SIGNAL(doubleClicked ( QListViewItem *, const QPoint &, int )), this, SLOT( doubleClick(QListViewItem *)));
-        connect(this, SIGNAL(rightButtonClicked ( QListViewItem *, const QPoint &, int )),  this, SLOT( rightClick(QListViewItem *, const QPoint &, int )));
+
+        connect(this, SIGNAL(doubleClicked ( Q3ListViewItem *, const QPoint &, int )), this, SLOT( doubleClick(Q3ListViewItem *)));
+        connect(this, SIGNAL(rightButtonClicked ( Q3ListViewItem *, const QPoint &, int )),  this, SLOT( rightClick(Q3ListViewItem *, const QPoint &, int )));
     };
 
     void dragEnterEvent(QDragEnterEvent* event)
     {
-        event->accept(QTextDrag::canDecode(event));
+        event->accept(Q3TextDrag::canDecode(event));
     }
 
     void dropEvent(QDropEvent* event);
@@ -63,8 +64,8 @@ public:
 
 
     GNode *getGNode(const QPoint &pos);
-    GNode *getGNode(QListViewItem *item);
-    BaseObject *getObject(QListViewItem *item);
+    GNode *getGNode(Q3ListViewItem *item);
+    BaseObject *getObject(Q3ListViewItem *item);
 
     void keyPressEvent ( QKeyEvent * e );
 
@@ -73,19 +74,19 @@ signals:
 
 public slots:
     void collapseNode();
-    void collapseNode(QListViewItem* item);
+    void collapseNode(Q3ListViewItem* item);
     void expandNode();
-    void expandNode(QListViewItem* item);
+    void expandNode(Q3ListViewItem* item);
     void saveNode();
-    void saveNode(QListViewItem* item);
+    void saveNode(Q3ListViewItem* item);
     void openModifyObject();
-    void openModifyObject(QListViewItem *);
-    void doubleClick(QListViewItem *);
-    void rightClick(QListViewItem *, const QPoint &, int );
+    void openModifyObject(Q3ListViewItem *);
+    void doubleClick(Q3ListViewItem *);
+    void rightClick(Q3ListViewItem *, const QPoint &, int );
     void addGNode(GNode *parent, bool saveHistory=true);
     void addComponent(GNode *parent, ClassInfo *entry, std::string templateName, bool saveHistory=true );
     void deleteComponent();
-    void deleteComponent(QListViewItem *item, bool saveHistory=true);
+    void deleteComponent(Q3ListViewItem *item, bool saveHistory=true);
     void modifyUnlock ( void *Id );
 
     //File Menu
@@ -105,10 +106,10 @@ protected:
     public:
         Operation() {};
         enum op {DELETE_OBJECT, ADD_OBJECT};
-        Operation(QListViewItem* item_,Base* sofaComponent_,  op ID_):
+        Operation(Q3ListViewItem* item_,Base* sofaComponent_,  op ID_):
             item(item_),sofaComponent(sofaComponent_), ID(ID_)
         {}
-        QListViewItem* item;
+        Q3ListViewItem* item;
         Base* sofaComponent;
         op ID;
     };
