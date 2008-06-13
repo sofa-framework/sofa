@@ -21,8 +21,8 @@ namespace qt
 
 using namespace sofa::simulation::tree;
 
-#ifdef SOFA_QT4
-typedef Q3PopupMenu QPopupMenu;
+#ifndef SOFA_QT4
+typedef QPopupMenu Q3PopupMenu;
 #endif
 void GraphModeler::addGNode(GNode *parent, bool saveHistory)
 {
@@ -65,7 +65,7 @@ void GraphModeler::dropEvent(QDropEvent* event)
 {
 
     QString text;
-    QTextDrag::decode(event, text);
+    Q3TextDrag::decode(event, text);
     if (library.find(event->source()) != library.end())
     {
         std::string templateName =  text.ascii();
@@ -85,9 +85,9 @@ void GraphModeler::dropEvent(QDropEvent* event)
 
 
 
-BaseObject *GraphModeler::getObject(QListViewItem *item)
+BaseObject *GraphModeler::getObject(Q3ListViewItem *item)
 {
-    std::map<core::objectmodel::Base*, QListViewItem* >::iterator it;
+    std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it;
     for (it = graphListener->items.begin(); it != graphListener->items.end(); it++)
     {
         if (it->second == item)
@@ -101,14 +101,14 @@ BaseObject *GraphModeler::getObject(QListViewItem *item)
 
 GNode *GraphModeler::getGNode(const QPoint &pos)
 {
-    QListViewItem *item = itemAt(pos);
+    Q3ListViewItem *item = itemAt(pos);
     if (!item) return NULL;
     return getGNode(item);
 }
 
 
 
-GNode *GraphModeler::getGNode(QListViewItem *item)
+GNode *GraphModeler::getGNode(Q3ListViewItem *item)
 {
     if (!item) return NULL;
     sofa::core::objectmodel::Base *object;
@@ -144,11 +144,11 @@ GNode *GraphModeler::getGNode(QListViewItem *item)
 
 void GraphModeler::openModifyObject()
 {
-    QListViewItem *item = currentItem();
+    Q3ListViewItem *item = currentItem();
     openModifyObject(item);
 }
 
-void GraphModeler::openModifyObject(QListViewItem *item)
+void GraphModeler::openModifyObject(Q3ListViewItem *item)
 {
     if (!item) return;
 
@@ -185,19 +185,19 @@ void GraphModeler::openModifyObject(QListViewItem *item)
     dialogModify->raise();
 }
 
-void GraphModeler::doubleClick(QListViewItem *item)
+void GraphModeler::doubleClick(Q3ListViewItem *item)
 {
     if (!item) return;
     item->setOpen ( !item->isOpen() );
     openModifyObject(item);
 
 }
-void GraphModeler::rightClick(QListViewItem *item, const QPoint &point, int index)
+void GraphModeler::rightClick(Q3ListViewItem *item, const QPoint &point, int index)
 {
     if (!item) return;
 
 
-    QPopupMenu *contextMenu = new QPopupMenu ( this, "ContextMenu" );
+    Q3PopupMenu *contextMenu = new Q3PopupMenu ( this, "ContextMenu" );
     if (item->childCount() != 0)
     {
         contextMenu->insertItem("Collapse", this, SLOT( collapseNode()));
@@ -217,11 +217,11 @@ void GraphModeler::collapseNode()
     collapseNode(currentItem());
 }
 
-void GraphModeler::collapseNode(QListViewItem* item)
+void GraphModeler::collapseNode(Q3ListViewItem* item)
 {
     if (!item) return;
 
-    QListViewItem* child;
+    Q3ListViewItem* child;
     child = item->firstChild();
     while ( child != NULL )
     {
@@ -236,14 +236,14 @@ void GraphModeler::expandNode()
     expandNode(currentItem());
 }
 
-void GraphModeler::expandNode(QListViewItem* item)
+void GraphModeler::expandNode(Q3ListViewItem* item)
 {
     if (!item) return;
 
     item->setOpen ( true );
     if ( item != NULL )
     {
-        QListViewItem* child;
+        Q3ListViewItem* child;
         child = item->firstChild();
         while ( child != NULL )
         {
@@ -260,7 +260,7 @@ void GraphModeler::saveNode()
     saveNode(currentItem());
 }
 
-void GraphModeler::saveNode(QListViewItem* item)
+void GraphModeler::saveNode(Q3ListViewItem* item)
 {
     if (!item) return;
     GNode *node = getGNode(item);
@@ -271,7 +271,7 @@ void GraphModeler::saveNode(QListViewItem* item)
         getSimulation()->printXML(node, s.ascii());
 }
 
-void GraphModeler::deleteComponent(QListViewItem* item, bool saveHistory)
+void GraphModeler::deleteComponent(Q3ListViewItem* item, bool saveHistory)
 {
     if (!item) return;
 
@@ -313,7 +313,7 @@ void GraphModeler::deleteComponent(QListViewItem* item, bool saveHistory)
 }
 void GraphModeler::deleteComponent()
 {
-    QListViewItem *item = currentItem();
+    Q3ListViewItem *item = currentItem();
     deleteComponent(item);
 }
 

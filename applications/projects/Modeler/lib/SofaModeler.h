@@ -34,8 +34,8 @@ namespace gui
 namespace qt
 {
 
-#ifdef SOFA_QT4
-typedef Q3ListView QListView;
+#ifndef SOFA_QT4
+typedef QListView Q3ListView;
 #endif
 
 typedef sofa::core::ObjectFactory::ClassEntry ClassInfo;
@@ -56,7 +56,7 @@ public :
 public slots:
     void dragComponent();
     void changeComponent(ClassInfo *currentComponent);
-    void changeInformation(QListViewItem *);
+    void changeInformation(Q3ListViewItem *);
     void newGNode();
 
     void fileNew() {graph->fileNew();};
