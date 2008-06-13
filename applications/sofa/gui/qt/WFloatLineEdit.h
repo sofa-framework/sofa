@@ -5,7 +5,7 @@
 #include <qvalidator.h>
 #include <qlineedit.h>
 
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
 #include <QKeyEvent>
 #endif
 /* -------------------------------------------------------- */

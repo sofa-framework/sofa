@@ -37,13 +37,14 @@
 
 #include <GUI.h>
 #include <GraphListenerQListView.h>
+#include <sofa/gui/qt/FileManagement.h>
 #include <viewer/SofaViewer.h>
 #include <AddObject.h>
 #include <ModifyObject.h>
 #include <sofa/simulation/tree/xml/XML.h>
 #include <sofa/helper/system/SetDirectory.h>
 
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
 #include <Q3ListViewItem>
 #include <QStackedWidget>
 #include <QSlider>
@@ -51,7 +52,7 @@ typedef Q3ListViewItem QListViewItem;
 typedef QStackedWidget QWidgetStack;
 #else
 #include <qwidgetstack.h>
-#include "qlistview.h"
+#include <qlistview.h>
 #include <qslider.h>
 #endif
 
@@ -88,6 +89,7 @@ using sofa::simulation::Node;
 #ifdef SOFA_PML
 using namespace sofa::filemanager::pml;
 #endif
+
 
 class RealGUI : public ::GUI, public SofaGUI
 {
@@ -379,13 +381,8 @@ private:
     LMLReader *lmlreader;
 #endif
 
-public:
-    static QString getExistingDirectory ( QWidget* parent, const QString & dir = QString(), const char * name = 0, const QString & caption = QString() );
-    static QString getOpenFileName ( QWidget* parent, const QString & startWith = QString(), const QString & filter = QString(), const char * name = 0, const QString & caption = QString(), QString * selectedFilter = 0 );
-    static QString getSaveFileName ( QWidget* parent, const QString & startWith = QString(), const QString & filter = QString(), const char * name = 0, const QString & caption = QString(), QString * selectedFilter = 0 );
 
 };
-
 
 
 

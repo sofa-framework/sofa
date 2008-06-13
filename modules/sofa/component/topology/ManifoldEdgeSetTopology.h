@@ -203,7 +203,7 @@ public:
 
     /** \brief Returns the indice of the vertex which is next to the vertex indexed by i.
      */
-    const int getNextVertex(const unsigned int i)
+    int getNextVertex(const unsigned int i)
     {
 
         assert(getEdgeVertexShell(i).size()>0);
@@ -220,7 +220,7 @@ public:
 
     /** \brief Returns the indice of the vertex which is previous to the vertex indexed by i.
      */
-    const int getPreviousVertex(const unsigned int i)
+    int getPreviousVertex(const unsigned int i)
     {
 
         assert(getEdgeVertexShell(i).size()>0);
@@ -236,7 +236,7 @@ public:
 
     /** \brief Returns the indice of the edge which is next to the edge indexed by i.
      */
-    const int getNextEdge(const unsigned int i)
+    int getNextEdge(const unsigned int i)
     {
         if((getEdgeVertexShell(getEdge(i)[1])).size()==1)
         {
@@ -250,7 +250,7 @@ public:
 
     /** \brief Returns the indice of the edge which is previous to the edge indexed by i.
      */
-    const int getPreviousEdge(const unsigned int i)
+    int getPreviousEdge(const unsigned int i)
     {
         if((getEdgeVertexShell(getEdge(i)[0])).size()==1)
         {

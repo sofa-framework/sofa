@@ -29,7 +29,7 @@
 #include <iostream>
 #include <sstream>
 
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
 #include <Q3FileDialog>
 #include <QLineEdit>
 #include <QLabel>
@@ -57,7 +57,7 @@ namespace qt
 {
 
 
-#ifndef QT_MODULE_QT3SUPPORT
+#ifndef SOFA_QT4
 typedef QFileDialog  Q3FileDialog;
 typedef QButtonGroup Q3ButtonGroup;
 #endif
@@ -88,7 +88,7 @@ AddObject::AddObject( std::vector< std::string > *list_object_, QWidget* parent 
             button = new QRadioButton( buttonGroup, QString(current_name.c_str()) );
             button->setText(current_name.c_str());
 
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
             gridLayout1->addWidget( button, i+1, 0 );
 #else
             buttonGroupLayout->addWidget( button, i+1, 0 );
@@ -124,7 +124,7 @@ void AddObject::accept()
     std::string position[3];
     std::string rotation[3];
     std::string scale;
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
     std::string object_fileName(openFilePath->text().toStdString());
     position[0] = positionX->text().toStdString();
     position[1] = positionY->text().toStdString();
@@ -166,10 +166,10 @@ void AddObject::setPath(const std::string path)
 //Open a file Dialog and set the path of the selected path in the text field.
 void AddObject::fileOpen()
 {
-    QString s  = RealGUI::getOpenFileName(this, QString(fileName.c_str()), "Sofa Element (*.xml *.scn)", "open file dialog",  "Choose a file to open" );
+    QString s  = getOpenFileName(this, QString(fileName.c_str()), "Sofa Element (*.xml *.scn)", "open file dialog",  "Choose a file to open" );
 
     if (s.isNull() ) return;
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
     std::string object_fileName(s.toStdString());
 #else
     std::string object_fileName(s.latin1());

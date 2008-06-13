@@ -31,7 +31,7 @@
 
 #include <fstream>
 
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
 #include "q3filedialog.h"
 #else
 #include "qlistview.h"
@@ -53,7 +53,7 @@ namespace gui
 namespace qt
 {
 
-#ifndef QT_MODULE_QT3SUPPORT
+#ifndef SOFA_QT4
 typedef QListView Q3ListView;
 typedef QListViewItem Q3ListViewItem;
 typedef QFileDialog Q3FileDialog;
@@ -357,7 +357,7 @@ void GenGraphForm::doDisplay()
 #else
     QStringList argv;
     argv << "display" << exportedFile;
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
     QString program = argv.front();
     argv.pop_front();
     //QProcess::startDetached(program, argv); //QString("start \"\"\"")+exportedFile+QString("\"\"\""));
@@ -405,7 +405,7 @@ void GenGraphForm::taskFinished()
 {
     std::cout << "TASK FINISHED" << std::endl;
     if (currentTask == NULL) return;
-//#ifdef QT_MODULE_QT3SUPPORT
+//#ifdef SOFA_QT4
 //	if (currentTask->state() != QProcess::NotRunning) return;
 //#else
 //	if (currentTask->isRunning()) return;
@@ -430,7 +430,7 @@ void GenGraphForm::runTask()
     exportButton->setText("&Kill");
     QString cmd = argv.join(QString(" "));
     std::cout << "STARTING TASK " << (const char*)cmd << std::endl;
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
     QProcess* p = new QProcess(this);
     QString program = argv.front();
     argv.pop_front();

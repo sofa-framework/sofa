@@ -35,7 +35,7 @@
 #include <sofa/simulation/common/Node.h>
 
 #include <qglobal.h>
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
 #include <QDialog>
 #include <Q3ListViewItem>
 #include <Q3ListView>
@@ -44,6 +44,7 @@
 #include <Q3TextEdit>
 #include <QPushButton>
 #include <QTabWidget>
+#include <QSpinBox>
 #else
 #include <qdialog.h>
 #include <qlistview.h>
@@ -52,6 +53,7 @@
 #include <qtextedit.h>
 #include <qtabwidget.h>
 #include <qpushbutton.h>
+#include <qspinbox.h>
 #endif
 
 #include "WFloatLineEdit.h"
@@ -75,7 +77,7 @@ using sofa::helper::Quater;
 using sofa::defaulttype::Vec;
 using sofa::simulation::Node;
 
-#ifndef QT_MODULE_QT3SUPPORT
+#ifndef SOFA_QT4
 typedef QListViewItem Q3ListViewItem;
 typedef QTable    Q3Table;
 typedef QGroupBox Q3GroupBox;
@@ -86,18 +88,17 @@ class ModifyObject : public QDialog
     Q_OBJECT
 public:
 
+    ModifyObject() {};
     ModifyObject( void *Id, core::objectmodel::Base* node, Q3ListViewItem* item_clicked, QWidget* parent, const char* name= 0, bool  modal= FALSE, Qt::WFlags f= 0 );
     ~ModifyObject()
     {
         delete buttonUpdate;
-        HIDE_FLAG = true;
-        EMPTY_FLAG = false;
     }
 
     void setNode(core::objectmodel::Base* node, Q3ListViewItem* item_clicked=NULL); //create all the widgets of the dialog window
 
     bool hideData(core::objectmodel::BaseData* data) { return (!data->isDisplayed()) && HIDE_FLAG;};
-    bool addEmptyData() {return EMPTY_FLAG;}
+
 
 public slots:
     void updateValues();              //update the node with the values of the field
@@ -111,7 +112,7 @@ public slots:
     void closeNow () {emit(reject());} //called from outside to close the current widget
     void reject   () {                 emit(dialogClosed(Id)); deleteLater(); QDialog::reject();} //When closing a window, inform the parent.
     void accept   () { updateValues(); emit(dialogClosed(Id)); deleteLater(); QDialog::accept();} //if closing by using Ok button, update the values
-
+    void resizeTable(int);
 signals:
     void objectUpdated();              //update done
     void dialogClosed(void *);            //the current window has been closed: we give the Id of the current window
@@ -180,6 +181,7 @@ protected:
     void storeQtTable( Q3Table* table, Data< sofa::component::topology::PointData< T > >* ff );
     //*********************************************************
 
+    Q3Table* addResizableTable(Q3GroupBox *box,int size, int column=1);
 
     QWidget *parent;
     QTabWidget *dialogTab;
@@ -192,7 +194,8 @@ protected:
     std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >    list_Table;
     std::list< std::pair< Q3TextEdit*, core::objectmodel::BaseData*> > list_TextEdit;
     std::map< core::objectmodel::BaseData*, int >                      dataIndexTab;
-
+    std::map< QSpinBox*, Q3Table* >                                    resizeMap;
+    std::set< Q3Table* >                                               setResize;
     WFloatLineEdit* transformation[7]; //Data added to manage transformation of a whole node
 
     void *Id;
@@ -205,6 +208,7 @@ protected:
 
     bool HIDE_FLAG; //if we allow to hide Datas
     bool EMPTY_FLAG;//if we allow empty datas
+    bool RESIZABLE_FLAG;
 };
 
 } // namespace qt

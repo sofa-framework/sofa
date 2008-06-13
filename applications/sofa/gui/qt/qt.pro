@@ -12,6 +12,7 @@ HEADERS += viewer/SofaViewer.h \
            AddObject.h \
            ModifyObject.h \
            WFloatLineEdit.h \
+           FileManagement.h
 
 
 SOURCES += Main.cpp \
