@@ -219,9 +219,7 @@ SOFA_LINK_CLASS(OglFloatVector4Variable)
 SOFA_LINK_CLASS(OglTetrahedralModel)
 SOFA_LINK_CLASS(VoidMapping)
 
-#ifdef SOFA_HAVE_CHAI3D
-SOFA_LINK_CLASS(HapticMapping)
-#endif // SOFA_HAVE_CHAI3D
+
 
 #ifdef SOFA_DEV
 
