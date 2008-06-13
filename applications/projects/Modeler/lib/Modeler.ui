@@ -91,7 +91,15 @@
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="QToolBox" row="0" column="0">
+		    <widget class="QPushButton" row="0" column="0">
+		      <property name="name">
+			<cstring>GNodeButton</cstring>
+		      </property>
+		      <property name="text">
+			<string>GNode</string>
+		      </property>
+		    </widget>		    
+                    <widget class="QToolBox" row="1" column="0">
                         <property name="name">
                             <cstring>SofaComponents</cstring>
                         </property>
@@ -144,24 +152,6 @@
         <action name="helpAboutAction"/>
     </item>
 </menubar>
-<toolbars>
-    <toolbar dock="2">
-        <property name="name">
-            <cstring>Toolbar</cstring>
-        </property>
-        <property name="label">
-            <string>Toolbar</string>
-        </property>
-        <widget class="QPushButton">
-            <property name="name">
-                <cstring>GNodeButton</cstring>
-            </property>
-            <property name="text">
-                <string>GNode</string>
-            </property>
-        </widget>
-    </toolbar>
-</toolbars>
 <actions>
     <action>
         <property name="name">
