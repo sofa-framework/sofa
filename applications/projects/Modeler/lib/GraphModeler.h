@@ -30,6 +30,7 @@ namespace qt
 #ifdef SOFA_QT4
 typedef Q3ListView QListView;
 typedef Q3ListViewItem QListViewItem;
+typedef Q3TextDrag QTextDrag;
 #endif
 
 typedef sofa::core::ObjectFactory::ClassEntry ClassInfo;
@@ -41,7 +42,7 @@ class GraphModeler : public QListView
     typedef std::map< const QObject* , std::pair< ClassInfo*, QObject*> > ComponentMap;
     Q_OBJECT
 public:
-    GraphModeler( QWidget* parent=0, const char* name=0, WFlags f = 0 ):QListView(parent, name, f), graphListener(NULL)
+    GraphModeler( QWidget* parent=0, const char* name=0, Qt::WFlags f = 0 ):QListView(parent, name, f), graphListener(NULL)
     {
         graphListener = new GraphListenerQListView(this);
         addColumn("Graph");
@@ -101,9 +102,9 @@ public slots:
 protected:
     class Operation
     {
-
     public:
-        enum op {DELETE, ADD};
+        Operation() {};
+        enum op {DELETE_OBJECT, ADD_OBJECT};
         Operation(QListViewItem* item_,Base* sofaComponent_,  op ID_):
             item(item_),sofaComponent(sofaComponent_), ID(ID_)
         {}
