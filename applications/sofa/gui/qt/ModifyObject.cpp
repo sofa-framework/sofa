@@ -25,11 +25,10 @@
 
 #include "ModifyObject.h"
 #include <iostream>
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
 #include <QLineEdit>
 #include <QPushButton>
 #include <QLabel>
-#include <QSpinBox>
 #include <QCheckBox>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -41,7 +40,6 @@
 #include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qlabel.h>
-#include <qspinbox.h>
 #include <qcheckbox.h>
 #include <qlayout.h>
 #include <qtabwidget.h>
@@ -83,7 +81,7 @@ using namespace  sofa::defaulttype;
 using sofa::component::topology::PointSubset;
 using sofa::core::objectmodel::BaseData;
 
-#ifndef QT_MODULE_QT3SUPPORT
+#ifndef SOFA_QT4
 typedef QGrid       Q3Grid;
 typedef QScrollView Q3ScrollView;
 #endif
@@ -96,12 +94,17 @@ ModifyObject::ModifyObject(void *Id_, core::objectmodel::Base* node_clicked, Q3L
     //Title of the Dialog
     setCaption(name);
 
+    HIDE_FLAG = true;
+    EMPTY_FLAG = false;
+    RESIZABLE_FLAG = false;
+
     energy_curve[0]=NULL;	        energy_curve[1]=NULL;	        energy_curve[2]=NULL;
     //Initialization of the Widget
     setNode(node_clicked, item_clicked);
     connect ( this, SIGNAL( objectUpdated() ), parent_, SLOT( redraw() ));
     connect ( this, SIGNAL( dialogClosed(void *) ) , parent_, SLOT( modifyUnlock(void *)));
 // 	connect ( this, SIGNAL( transformObject(Node *, double, double, double, double, double, double, double)), parent, SLOT(transformObject(Node *, double, double, double, double, double, double, double)));
+
 }
 
 
@@ -110,7 +113,6 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 {
     node = node_clicked;
     item = item_clicked;
-
     //Layout to organize the whole window
     QVBoxLayout *generalLayout = new QVBoxLayout(this, 0, 1, "generalLayout");
 
@@ -136,7 +138,6 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
     QVBoxLayout *tabVisualizationLayout = NULL;
 
     // displayWidget
-
     if (node_clicked)
     {
         //If the current element is a node, we add a box to perform geometric transformation: translation, rotation, scaling
@@ -226,7 +227,6 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
         const std::vector< std::pair<std::string, BaseData*> >& fields = node->getFields();
 
         int i=0;
-
         for( std::vector< std::pair<std::string, BaseData*> >::const_iterator it = fields.begin(); it!=fields.end(); ++it)
         {
             currentTab = currentTab_save; //in case we modified currentTab to the visualTab
@@ -941,7 +941,8 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
                     textedit->setText(QString((*it).second->getValueString().c_str()));
                     //if empty field, we don't display it
-                    if ((*it).second->getValueString().empty() && !addEmptyData())
+
+                    if ((*it).second->getValueString().empty() && !EMPTY_FLAG)
                     {
                         box->hide();
                         std::cerr << (*it).first << " : " << (*it).second->getValueTypeString() << " Not added because empty \n";
@@ -1829,8 +1830,6 @@ void ModifyObject::updateValues()
 
                 ff->setValue(M);
             }
-            else
-                std::cerr<< "Problem in saving Data : \n";
         }
         if (sofa::core::objectmodel::BaseObject *obj = dynamic_cast< sofa::core::objectmodel::BaseObject* >(node))
             obj->reinit();
@@ -1864,7 +1863,7 @@ void  ModifyObject::createGraphMass(QTabWidget *dialogTab)
     QVBoxLayout *tabMassStatsLayout = new QVBoxLayout( tabMassStats, 0, 1, "tabMassStats");
 
 
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
     graphEnergy = new QwtPlot(QwtText("Energy"),tabMassStats);
 #else
     graphEnergy = new QwtPlot(tabMassStats,"Energy");
@@ -2244,7 +2243,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
 
         if (!vectorTable)
         {
-            if (ff->getValue().size() == 0 && !addEmptyData())  return false;
+            if (ff->getValue().size() == 0 && !EMPTY_FLAG)  return false;
             box->setColumns(1);
             new QLabel("Center", box);
 
@@ -2298,7 +2297,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
 
         if (!vectorTable)
         {
-            if (ff->getValue().size() == 0  && !addEmptyData())  return false;
+            if (ff->getValue().size() == 0  && !EMPTY_FLAG)  return false;
             box->setColumns(1);
             new QLabel("Center", box);
 
@@ -2353,7 +2352,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
 
         if (!vectorTable)
         {
-            if (ff->getValue().size() == 0 && !addEmptyData())  return false;
+            if (ff->getValue().size() == 0 && !EMPTY_FLAG)  return false;
             box->setColumns(1);
             new QLabel("Center", box);
 
@@ -2408,7 +2407,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
 
         if (!vectorTable)
         {
-            if (ff->getValue().size() == 0 && !addEmptyData())  return false;
+            if (ff->getValue().size() == 0 && !EMPTY_FLAG)  return false;
             box->setColumns(1);
             new QLabel("Center", box);
 
@@ -2461,7 +2460,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
 
         if (!vectorTable)
         {
-            if (ff->getValue().size() == 0 && !addEmptyData())  return false;
+            if (ff->getValue().size() == 0 && !EMPTY_FLAG)  return false;
             box->setColumns(1);
             new QLabel("Center", box);
 
@@ -2509,7 +2508,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
 
         if (!vectorTable)
         {
-            if (ff->getValue().size() == 0 && !addEmptyData())  return false;
+            if (ff->getValue().size() == 0 && !EMPTY_FLAG)  return false;
             box->setColumns(1);
             new QLabel("Center", box);
 
@@ -2557,7 +2556,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
 
         if (!vectorTable)
         {
-            if (ff->getValue().size() == 0 && !addEmptyData())  return false;
+            if (ff->getValue().size() == 0 && !EMPTY_FLAG)  return false;
             box->setColumns(1);
             new QLabel("Center", box);
 
@@ -2604,7 +2603,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
     {
         if (!vectorTable)
         {
-            if (ff->getValue().size() == 0 && !addEmptyData())  return false;
+            if (ff->getValue().size() == 0 && !EMPTY_FLAG)  return false;
             box->setColumns(1);
             new QLabel("Center", box);
 
@@ -2653,7 +2652,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
 
         if (!vectorTable)
         {
-            if (ff->getValue().size() == 0 && !addEmptyData())  return false;
+            if (ff->getValue().size() == 0 && !EMPTY_FLAG)  return false;
             box->setColumns(1);
             new QLabel("Translation", box);
 
@@ -2704,7 +2703,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
 
         if (!vectorTable)
         {
-            if (ff->getValue().size() == 0 && !addEmptyData())  return false;
+            if (ff->getValue().size() == 0 && !EMPTY_FLAG)  return false;
             box->setColumns(1);
             new QLabel("Translation", box);
 
@@ -2754,7 +2753,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
     {
         if (!vectorTable)
         {
-            if (ff->getValue().size() == 0 && !addEmptyData())  return false;
+            if (ff->getValue().size() == 0 && !EMPTY_FLAG)  return false;
             box->setColumns(1);
             vectorTable = new Q3Table(ff->getValue().size(),5, box);
 
@@ -2787,7 +2786,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
     {
         if (!vectorTable)
         {
-            if (ff->getValue().size() == 0 && !addEmptyData())  return false;
+            if (ff->getValue().size() == 0 && !EMPTY_FLAG)  return false;
             box->setColumns(1);
             vectorTable = new Q3Table(ff->getValue().size(),5, box);
 
@@ -2821,7 +2820,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
     {
         if (!vectorTable)
         {
-            if (ff->getValue().size() == 0 && !addEmptyData())  return false;
+            if (ff->getValue().size() == 0 && !EMPTY_FLAG)  return false;
             box->setColumns(1);
             vectorTable = new Q3Table(ff->getValue().size(),5, box);
 
@@ -2854,7 +2853,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
     {
         if (!vectorTable)
         {
-            if (ff->getValue().size() == 0 && !addEmptyData())  return false;
+            if (ff->getValue().size() == 0 && !EMPTY_FLAG)  return false;
             box->setColumns(1);
             vectorTable = new Q3Table(ff->getValue().size(),5, box);
 
@@ -2887,7 +2886,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
     {
         if (!vectorTable)
         {
-            if (ff->getValue().size() == 0  && !addEmptyData())  return false;
+            if (ff->getValue().size() == 0  && !EMPTY_FLAG)  return false;
             box->setColumns(1);
             vectorTable = new Q3Table(ff->getValue().size(),5, box);
 
@@ -2920,7 +2919,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
     {
         if (!vectorTable)
         {
-            if (ff->getValue().size() == 0  && !addEmptyData())  return false;
+            if (ff->getValue().size() == 0  && !EMPTY_FLAG)  return false;
             box->setColumns(1);
             vectorTable = new Q3Table(ff->getValue().size(),5, box);
 
@@ -2953,7 +2952,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
     {
         if (!vectorTable)
         {
-            if (ff->getValue().size() == 0  && !addEmptyData())  return false;
+            if (ff->getValue().size() == 0  && !EMPTY_FLAG)  return false;
             box->setColumns(1);
             vectorTable = new Q3Table(ff->getValue().size(),5, box);
 
@@ -2986,7 +2985,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
     {
         if (!vectorTable)
         {
-            if (ff->getValue().size() == 0  && !addEmptyData())  return false;
+            if (ff->getValue().size() == 0  && !EMPTY_FLAG)  return false;
             box->setColumns(1);
             vectorTable = new Q3Table(ff->getValue().size(),5, box);
 
@@ -3019,7 +3018,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
     {
         if (!vectorTable)
         {
-            if (ff->getValue().size() == 0  && !addEmptyData())  return false;
+            if (ff->getValue().size() == 0  && !EMPTY_FLAG)  return false;
             box->setColumns(1);
             vectorTable = new Q3Table(ff->getValue().size(),13, box);
 
@@ -3071,7 +3070,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
     {
         if (!vectorTable)
         {
-            if (ff->getValue().size() == 0  && !addEmptyData())  return false;
+            if (ff->getValue().size() == 0  && !EMPTY_FLAG)  return false;
             box->setColumns(1);
             vectorTable = new Q3Table(ff->getValue().size(),13, box);
 
@@ -3756,11 +3755,14 @@ bool ModifyObject::createQtTable(Data< sofa::helper::vector< T > > *ff, Q3GroupB
 {
     if (!vectorTable)
     {
-        if (ff->getValue().size() == 0  && !addEmptyData())  return false;
+
+        if (ff->getValue().size() == 0  && !EMPTY_FLAG)  return false;
 
         box->setColumns(1);
 
-        vectorTable = new Q3Table(ff->getValue().size(),1, box);
+
+        if (RESIZABLE_FLAG) vectorTable = addResizableTable(box,ff->getValue().size(),1);
+        else vectorTable = new Q3Table(ff->getValue().size(),1, box);
 
         list_Table.push_back(std::make_pair(vectorTable, ff));
         objectGUI.push_back(std::make_pair(ff,vectorTable));
@@ -3769,9 +3771,14 @@ bool ModifyObject::createQtTable(Data< sofa::helper::vector< T > > *ff, Q3GroupB
 
         connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
     }
+
+    if (setResize.find(vectorTable) != setResize.end()) ff->beginEdit()->resize(vectorTable->numRows());
+    else	  vectorTable->setNumRows(ff->getValue().size());
+
+
     vector< T > value = ff->getValue();
 
-    vectorTable->setNumRows(ff->getValue().size());
+
     for (unsigned int i=0; i<ff->getValue().size(); i++)
     {
         std::ostringstream oss;
@@ -3812,11 +3819,13 @@ bool ModifyObject::createQtTable(DataPtr< sofa::helper::vector< T > > *ff, Q3Gro
 {
     if (!vectorTable)
     {
-        if (ff->getValue().size() == 0  && !addEmptyData())  return false;
+        if (ff->getValue().size() == 0  && !EMPTY_FLAG)  return false;
 
         box->setColumns(1);
 
-        vectorTable = new Q3Table(ff->getValue().size(),1, box);
+
+        if (RESIZABLE_FLAG) vectorTable = addResizableTable(box,ff->getValue().size(),1);
+        else vectorTable = new Q3Table(ff->getValue().size(),1, box);
 
         list_Table.push_back(std::make_pair(vectorTable, ff));
         objectGUI.push_back(std::make_pair(ff,vectorTable));
@@ -3826,9 +3835,12 @@ bool ModifyObject::createQtTable(DataPtr< sofa::helper::vector< T > > *ff, Q3Gro
 
         connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
     }
+
+    if (setResize.find(vectorTable) != setResize.end()) ff->beginEdit()->resize(vectorTable->numRows());
+    else	  vectorTable->setNumRows(ff->getValue().size());
+
     vector< T > value = ff->getValue();
 
-    vectorTable->setNumRows(ff->getValue().size());
     for (unsigned int i=0; i<ff->getValue().size(); i++)
     {
         std::ostringstream oss;
@@ -3857,9 +3869,12 @@ bool ModifyObject::createQtTable(Data< sofa::helper::vector< Vec<N,T> > > *ff, Q
 {
     if (!vectorTable)
     {
-        if (ff->getValue().size() == 0  && !addEmptyData())  return false;
+        if (ff->getValue().size() == 0  && !EMPTY_FLAG)  return false;
+
         box->setColumns(1);
-        vectorTable = new Q3Table(ff->getValue().size(),N, box);
+
+        if (RESIZABLE_FLAG) vectorTable = addResizableTable(box,ff->getValue().size(),N);
+        else vectorTable = new Q3Table(ff->getValue().size(),N, box);
 
         list_Table.push_back(std::make_pair(vectorTable, ff));
         objectGUI.push_back(std::make_pair(ff,vectorTable));
@@ -3870,9 +3885,12 @@ bool ModifyObject::createQtTable(Data< sofa::helper::vector< Vec<N,T> > > *ff, Q
 
         connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
     }
+
+    if (setResize.find(vectorTable) != setResize.end()) ff->beginEdit()->resize(vectorTable->numRows());
+    else	  vectorTable->setNumRows(ff->getValue().size());
+
     sofa::helper::vector< Vec<N,T> > value = ff->getValue();
 
-    vectorTable->setNumRows(ff->getValue().size());
 
     for (unsigned int i=0; i<ff->getValue().size(); i++)
     {
@@ -3909,22 +3927,27 @@ bool ModifyObject::createQtTable(DataPtr< sofa::helper::vector< Vec<N,T> > > *ff
 {
     if (!vectorTable)
     {
-        if (ff->getValue().size() == 0  && !addEmptyData())  return false;
+        if (ff->getValue().size() == 0  && !EMPTY_FLAG)  return false;
+
         box->setColumns(1);
-        vectorTable = new Q3Table(ff->getValue().size(),N, box);
+
+
+        if (RESIZABLE_FLAG) vectorTable = addResizableTable(box,ff->getValue().size(),N);
+        else vectorTable = new Q3Table(ff->getValue().size(),N, box);
 
         list_Table.push_back(std::make_pair(vectorTable, ff));
         objectGUI.push_back(std::make_pair(ff,vectorTable));
 
-        if (N>=0) {vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);}
+        if (N>=0) {vectorTable->horizontalHeader()->setLabel(0,QString("X"));   vectorTable->setColumnStretchable(0,true);}
         if (N>=1) {vectorTable->horizontalHeader()->setLabel(1,QString("Y"));   vectorTable->setColumnStretchable(1,true);}
         if (N>=2) {vectorTable->horizontalHeader()->setLabel(2,QString("Z"));   vectorTable->setColumnStretchable(2,true);}
 
         connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
     }
-    sofa::helper::vector< Vec<N,T> > value = ff->getValue();
+    if (setResize.find(vectorTable) != setResize.end()) ff->beginEdit()->resize(vectorTable->numRows());
+    else	  vectorTable->setNumRows(ff->getValue().size());
 
-    vectorTable->setNumRows(ff->getValue().size());
+    sofa::helper::vector< Vec<N,T> > value = ff->getValue();
 
     for (unsigned int i=0; i<ff->getValue().size(); i++)
     {
@@ -3962,11 +3985,12 @@ bool ModifyObject::createQtTable(Data< sofa::component::topology::PointData< T >
 {
     if (!vectorTable)
     {
-        if (ff->getValue().size() == 0  && !addEmptyData())  return false;
+        if (ff->getValue().size() == 0  && !EMPTY_FLAG)  return false;
 
         box->setColumns(1);
 
-        vectorTable = new Q3Table(ff->getValue().size(),1, box);
+        if (RESIZABLE_FLAG) vectorTable = addResizableTable(box,ff->getValue().size(),1);
+        else vectorTable = new Q3Table(ff->getValue().size(),1, box);
 
         list_Table.push_back(std::make_pair(vectorTable, ff));
         objectGUI.push_back(std::make_pair(ff,vectorTable));
@@ -3974,8 +3998,10 @@ bool ModifyObject::createQtTable(Data< sofa::component::topology::PointData< T >
 
         connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
     }
+    if (setResize.find(vectorTable) != setResize.end()) ff->beginEdit()->resize(vectorTable->numRows());
+    else	  vectorTable->setNumRows(ff->getValue().size());
+
     vector< T > value = ff->getValue();
-    vectorTable->setNumRows(ff->getValue().size());
     /*
       if (vectorTable->numRows() < ff->getValue().size())
       {
@@ -4010,6 +4036,16 @@ void ModifyObject::storeQtTable( Q3Table* table, Data< sofa::component::topology
 //********************************************************************************************************************
 //********************************************************************************************************************
 
+Q3Table *ModifyObject::addResizableTable(Q3GroupBox *box,int number, int column)
+{
+    box->setColumns(2);
+    QSpinBox *spinBox = new QSpinBox(0,INT_MAX, 1, box);
+    Q3Table* table = new Q3Table(number,column, box);
+    spinBox->setValue(number);
+    resizeMap.insert(std::make_pair(spinBox, table));
+    connect( spinBox, SIGNAL( valueChanged(int) ), this, SLOT( resizeTable(int) ) );	return  table;
+}
+
 const core::objectmodel::BaseData* ModifyObject::getData(const QObject *object)
 {
     for (unsigned int i=0; i<objectGUI.size(); ++i)
@@ -4018,6 +4054,21 @@ const core::objectmodel::BaseData* ModifyObject::getData(const QObject *object)
     }
     return false;
 }
+
+void ModifyObject::resizeTable(int number)
+{
+    QSpinBox *spinBox = (QSpinBox *) sender();
+    Q3Table *table = resizeMap[spinBox];
+    if (number != table->numRows())
+    {
+        table->setNumRows(number);
+        setResize.insert(table);
+    }
+    updateTables();
+    setResize.clear();
+}
+
+
 } // namespace qt
 
 } // namespace gui

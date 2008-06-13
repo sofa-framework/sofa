@@ -29,7 +29,7 @@
 #include <sofa/simulation/common/Colors.h>
 
 
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
 #include <Q3PopupMenu>
 #else
 #include <qpopupmenu.h>
@@ -43,7 +43,7 @@ namespace gui
 
 namespace qt
 {
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
 typedef Q3PopupMenu QPopupMenu;
 #else
 typedef QPopupMenu Q3PopupMenu;
@@ -213,6 +213,7 @@ void GraphListenerQListView::addChild(GNode* parent, GNode* child)
         }
 
         //	    if (std::string(child->getName(),0,7) != "default")
+        item->setDropEnabled(true);
         item->setText(0, child->getName().c_str());
         QPixmap* pix = getPixmap(child);
         if (pix)

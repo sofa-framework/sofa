@@ -22,39 +22,16 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-
-#ifndef GRAPHLISTENERQLISTVIEW_H
-#define GRAPHLISTENERQLISTVIEW_H
-
-
+#ifndef SOFA_GUI_FILEMANAGEMENT_H
+#define SOFA_GUI_FILEMANAGEMENT_H
 
 
 #ifdef SOFA_QT4
-#include <Q3ListViewItem>
-#include <Q3ListView>
-#include <QWidget>
-#include <Q3PopupMenu>
-
+#include <Q3FileDialog>
+#include <QFileDialog>
 #else
-#include <qlistview.h>
-#include <qwidget.h>
-#include <qpopupmenu.h>
-
-
-#include <qlabel.h>
-#include <qcheckbox.h>
-#include <qpushbutton.h>
-#include <qimage.h>
-#include <qspinbox.h>
-
+#include <qfiledialog.h>
 #endif
-
-
-#include <sofa/simulation/tree/Simulation.h>
-#include <sofa/simulation/tree/MutationListener.h>
-
-#include "WFloatLineEdit.h"
-
 
 namespace sofa
 {
@@ -64,46 +41,52 @@ namespace gui
 
 namespace qt
 {
-using sofa::simulation::tree::GNode;
-using sofa::simulation::tree::Simulation;
-using sofa::simulation::tree::MutationListener;
 
-#ifdef SOFA_QT4
-typedef Q3ListView QListView;
-typedef Q3PopupMenu QPopupMenu;
-#else
-typedef QListViewItem Q3ListViewItem;
-typedef QListView Q3ListView;
-typedef QPopupMenu Q3PopupMenu;
+
+#ifndef SOFA_QT4
+typedef QFileDialog Q3FileDialog;
 #endif
 
-QPixmap* getPixmap(core::objectmodel::Base* obj);
-
-class GraphListenerQListView : public MutationListener
+static QString getExistingDirectory ( QWidget* parent, const QString & dir = QString(), const char * name = 0, const QString & caption = QString() )
 {
-public:
-    Q3ListView* widget;
-    bool frozen;
-    std::map<core::objectmodel::Base*, Q3ListViewItem* > items;
-    GraphListenerQListView(Q3ListView* w)
-        : widget(w), frozen(false)
-    {
-    }
-
-
-    /*****************************************************************************************************************/
-    Q3ListViewItem* createItem(Q3ListViewItem* parent);
-    void addChild(GNode* parent, GNode* child);
-    void removeChild(GNode* parent, GNode* child);
-    void moveChild(GNode* previous, GNode* parent, GNode* child);
-    void addObject(GNode* parent, core::objectmodel::BaseObject* object);
-    void removeObject(GNode* /*parent*/, core::objectmodel::BaseObject* object);
-    void moveObject(GNode* previous, GNode* parent, core::objectmodel::BaseObject* object);
-    void freeze(GNode* groot);
-    void unfreeze(GNode* groot);
+#ifdef SOFA_QT4
+    QFileDialog::Options options = QFileDialog::ShowDirsOnly;
+    //	options |= QFileDialog::DontUseNativeDialog;
+    options |= QFileDialog::DontUseSheet;
+    return QFileDialog::getExistingDirectory ( parent, name?QString(name):caption, dir, options );
+#else
+    return Q3FileDialog::getExistingDirectory( dir, parent, name, caption );
+#endif
 };
 
-}
-}
-}
+static QString getOpenFileName ( QWidget* parent, const QString & startWith = QString(), const QString & filter = QString(), const char * name = 0, const QString & caption = QString(), QString * selectedFilter = 0 )
+{
+#ifdef SOFA_QT4
+    QFileDialog::Options options = 0;
+    //	options |= QFileDialog::DontUseNativeDialog;
+    options |= QFileDialog::DontUseSheet;
+    return QFileDialog::getOpenFileName ( parent, name?QString(name):caption, startWith, filter, selectedFilter, options );
+#else
+    return Q3FileDialog::getOpenFileName ( startWith, filter, parent, name, caption, selectedFilter );
 #endif
+};
+
+static QString getSaveFileName ( QWidget* parent, const QString & startWith = QString(), const QString & filter = QString(), const char * name = 0, const QString & caption = QString(), QString * selectedFilter = 0 )
+{
+#ifdef SOFA_QT4
+    QFileDialog::Options options = 0;
+    //	options |= QFileDialog::DontUseNativeDialog;
+    options |= QFileDialog::DontUseSheet;
+    return QFileDialog::getSaveFileName ( parent, name?QString(name):caption, startWith, filter, selectedFilter, options );
+#else
+    return Q3FileDialog::getSaveFileName ( startWith, filter, parent, name, caption, selectedFilter );
+#endif
+};
+
+} // namespace qt
+
+} // namespace gui
+
+} // namespace sofa
+
+#endif // SOFA_GUI_VIEWER_REALGUI_H

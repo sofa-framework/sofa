@@ -28,7 +28,7 @@
 #include "BaseGenGraphForm.h"
 #include <sofa/simulation/tree/GNode.h>
 
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
 #include "QProcess"
 #include "QStringList"
 #else

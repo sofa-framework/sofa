@@ -30,7 +30,7 @@
 
 
 
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
 #include <QEvent>
 #include <QMouseEvent>
 #include <QKeyEvent>
@@ -57,7 +57,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 #include <sofa/simulation/tree/Simulation.h>
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
 #include <QEvent>
 #include <QMouseEvent>
 #include <QKeyEvent>

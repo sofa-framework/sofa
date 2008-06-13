@@ -76,7 +76,7 @@ extern simulation::tree::GNode* groot;
 #endif // SOFA_DEV
 
 
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
 #include <QWidget>
 #include <QStackedWidget>
 #include <QLayout>
@@ -90,8 +90,6 @@ extern simulation::tree::GNode* groot;
 #include <QCursor>
 #include <QAction>
 #include <QMessageBox>
-#include <QFileDialog>
-#include <Q3FileDialog>
 #include <QTabWidget>
 #include <Q3PopupMenu>
 #include <QToolTip>
@@ -104,7 +102,6 @@ extern simulation::tree::GNode* groot;
 #include <qlayout.h>
 #include <qlistview.h>
 #include <qstatusbar.h>
-#include <qfiledialog.h>
 #include <qheader.h>
 #include <qimage.h>
 #include <qsplitter.h>
@@ -134,14 +131,12 @@ namespace gui
 namespace qt
 {
 
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
 typedef Q3ListView QListView;
 typedef Q3DockWindow QDockWindow;
 typedef QStackedWidget QWidgetStack;
 typedef Q3TextEdit QTextEdit;
 typedef Q3PopupMenu QPopupMenu;
-#else
-typedef QFileDialog Q3FileDialog;
 #endif
 
 
@@ -290,7 +285,7 @@ SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& 
 int RealGUI::mainLoop()
 {
 
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
     QString title = windowTitle();
 #else
     QString title = caption();
@@ -557,7 +552,7 @@ void RealGUI::addViewer()
                 std::cerr << "ERROR(QtGUI): unknown or disabled viewer name "<<name<<std::endl;
                 application->exit();
             }
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
     left_stack->addWidget ( viewer->getQWidget() );
     left_stack->setCurrentWidget ( viewer->getQWidget() );
 #else
@@ -567,12 +562,12 @@ void RealGUI::addViewer()
     viewer->getQWidget()->setSizePolicy ( QSizePolicy ( ( QSizePolicy::SizeType ) 7, ( QSizePolicy::SizeType ) 7, 100, 1,
             viewer->getQWidget()->sizePolicy().hasHeightForWidth() ) );
     viewer->getQWidget()->setMinimumSize ( QSize ( 0, 0 ) );
-#ifndef QT_MODULE_QT3SUPPORT
+#ifndef SOFA_QT4
     viewer->getQWidget()->setCursor ( QCursor ( 2 ) );
 #endif
     viewer->getQWidget()->setMouseTracking ( TRUE );
 
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
     viewer->getQWidget()->setFocusPolicy ( Qt::StrongFocus );
 #else
     viewer->getQWidget()->setFocusPolicy ( QWidget::StrongFocus );
@@ -591,7 +586,7 @@ void RealGUI::addViewer()
     QSplitter *splitter_ptr = dynamic_cast<QSplitter *> ( splitter2 );
     splitter_ptr->moveToLast ( left_stack );
     splitter_ptr->setOpaqueResize ( false );
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
     QList<int> list;
 #else
     QValueList<int> list;
@@ -928,7 +923,7 @@ void RealGUI::screenshot()
         ofilename << std::string ( begin, end );
         ofilename << "_";
         viewer->setPrefix ( ofilename.str() );
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
         viewer->screenshot ( filename.toStdString() );
 #else
         viewer->screenshot ( filename );
@@ -1120,41 +1115,6 @@ void RealGUI::editGnuplotDirectory()
     }
 }
 
-QString RealGUI::getExistingDirectory ( QWidget* parent, const QString & dir , const char * name , const QString & caption )
-{
-#ifdef SOFA_QT4
-    QFileDialog::Options options = QFileDialog::ShowDirsOnly;
-    //	options |= QFileDialog::DontUseNativeDialog;
-    options |= QFileDialog::DontUseSheet;
-    return QFileDialog::getExistingDirectory ( parent, name?QString(name):caption, dir, options );
-#else
-    return Q3FileDialog::getExistingDirectory( dir, parent, name, caption );
-#endif
-}
-
-QString RealGUI::getOpenFileName ( QWidget* parent, const QString & startWith, const QString & filter, const char * name, const QString & caption, QString * selectedFilter )
-{
-#ifdef SOFA_QT4
-    QFileDialog::Options options = 0;
-    //	options |= QFileDialog::DontUseNativeDialog;
-    options |= QFileDialog::DontUseSheet;
-    return QFileDialog::getOpenFileName ( parent, name?QString(name):caption, startWith, filter, selectedFilter, options );
-#else
-    return Q3FileDialog::getOpenFileName ( startWith, filter, parent, name, caption, selectedFilter );
-#endif
-}
-
-QString RealGUI::getSaveFileName ( QWidget* parent, const QString & startWith, const QString & filter, const char * name, const QString & caption, QString * selectedFilter )
-{
-#ifdef SOFA_QT4
-    QFileDialog::Options options = 0;
-    //	options |= QFileDialog::DontUseNativeDialog;
-    options |= QFileDialog::DontUseSheet;
-    return QFileDialog::getSaveFileName ( parent, name?QString(name):caption, startWith, filter, selectedFilter, options );
-#else
-    return Q3FileDialog::getSaveFileName ( startWith, filter, parent, name, caption, selectedFilter );
-#endif
-}
 
 void RealGUI::setTitle ( const char* windowTitle )
 {
@@ -1262,7 +1222,7 @@ void RealGUI::step()
         eventNewStep();
         eventNewTime();
 
-#ifdef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
         viewer->getQWidget()->setUpdatesEnabled ( true );
 #endif
         viewer->getQWidget()->update();
