@@ -99,7 +99,7 @@ public:
     {
         _update_pos_relative = true;
         vars.center =center.getValue();
-        printf("\n vars.center : %f %f %f",vars.center.x(),vars.center.y(),vars.center.z());
+// 		printf("\n vars.center : %f %f %f",vars.center.x(),vars.center.y(),vars.center.z());
         _orientation.clear();
     }
 
