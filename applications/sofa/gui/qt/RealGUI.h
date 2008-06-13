@@ -48,6 +48,7 @@
 #include <Q3ListViewItem>
 #include <QStackedWidget>
 #include <QSlider>
+#include <QTimer>
 typedef Q3ListViewItem QListViewItem;
 typedef QStackedWidget QWidgetStack;
 #else
