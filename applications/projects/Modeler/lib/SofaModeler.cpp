@@ -117,7 +117,11 @@ SofaModeler::SofaModeler()
     graph->setLibrary(mapComponents);
     graph->fileNew();
     connect(graph, SIGNAL(changeNameWindow(std::string)), this, SLOT(changeNameWindow(std::string)));
+#ifdef SOFA_QT4
     connect(graph, SIGNAL(currentChanged(Q3ListViewItem *)), this, SLOT(changeInformation(Q3ListViewItem *)));
+#else
+    connect(graph, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(changeInformation(QListViewItem *)));
+#endif
 };
 
 void SofaModeler::changeInformation(Q3ListViewItem *item)

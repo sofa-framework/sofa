@@ -56,7 +56,11 @@ public :
 public slots:
     void dragComponent();
     void changeComponent(ClassInfo *currentComponent);
+#ifdef SOFA_QT4
     void changeInformation(Q3ListViewItem *);
+#else
+    void changeInformation(QListViewItem *);
+#endif
     void newGNode();
 
     void fileNew() {graph->fileNew();};

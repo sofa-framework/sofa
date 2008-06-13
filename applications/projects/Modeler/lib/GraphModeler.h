@@ -49,8 +49,13 @@ public:
         header()->hide();
         setSorting ( -1 );
 
+#ifdef SOFA_QT4
         connect(this, SIGNAL(doubleClicked ( Q3ListViewItem *, const QPoint &, int )), this, SLOT( doubleClick(Q3ListViewItem *)));
         connect(this, SIGNAL(rightButtonClicked ( Q3ListViewItem *, const QPoint &, int )),  this, SLOT( rightClick(Q3ListViewItem *, const QPoint &, int )));
+#else
+        connect(this, SIGNAL(doubleClicked ( QListViewItem *, const QPoint &, int )), this, SLOT( doubleClick(QListViewItem *)));
+        connect(this, SIGNAL(rightButtonClicked ( QListViewItem *, const QPoint &, int )),  this, SLOT( rightClick(QListViewItem *, const QPoint &, int )));
+#endif
     };
 
     void dragEnterEvent(QDragEnterEvent* event)
@@ -81,8 +86,13 @@ public slots:
     void saveNode(Q3ListViewItem* item);
     void openModifyObject();
     void openModifyObject(Q3ListViewItem *);
+#ifdef SOFA_QT4
     void doubleClick(Q3ListViewItem *);
     void rightClick(Q3ListViewItem *, const QPoint &, int );
+#else
+    void doubleClick(QListViewItem *);
+    void rightClick(QListViewItem *, const QPoint &, int );
+#endif
     void addGNode(GNode *parent, bool saveHistory=true);
     void addComponent(GNode *parent, ClassInfo *entry, std::string templateName, bool saveHistory=true );
     void deleteComponent();
