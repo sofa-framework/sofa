@@ -738,7 +738,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::init(const typename Out::Ve
     {
         // find nearest cell
         Vector3 coefs;
-        int index;
+        int index=-1;
         double distance = 1e10;
         Vector3 pos = out[i];
         for (unsigned int c = 0; c < cubes.size(); c++)
@@ -754,7 +754,8 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::init(const typename Out::Ve
                 index = c;
             }
         }
-        addPointInCube(index, coefs.ptr());
+        if(index != -1)
+            addPointInCube(index, coefs.ptr());
     }
 }
 
@@ -2736,7 +2737,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
             for(unsigned int i=0; i<hexahedra.size(); ++i)
             {
                 // remove all references to the removed cubes from the mapping data
-                unsigned int cubeId = hexahedra[i];
+                int cubeId = (int) hexahedra[i];
                 for(unsigned int j=0; j<map.size(); ++j)
                 {
                     if(map[j].in_index == cubeId) // compute new mapping
@@ -2752,7 +2753,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
                         Vector3 pos = (m * coefs) + hexahedronData[cubeId].origin;
 
                         // find nearest cell
-                        int index;
+                        int index=-1;
                         double distance = 1e10;
                         for (unsigned int c = 0; c < cubes.size(); c++)
                         {
@@ -2781,16 +2782,20 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
                                 }
                             }
                         }
-                        map[j].baryCoords[0] = (Real) coefs[0];
-                        map[j].baryCoords[1] = (Real) coefs[1];
-                        map[j].baryCoords[2] = (Real) coefs[2];
-                        map[j].in_index = index;
+
+                        if(index != -1)
+                        {
+                            map[j].baryCoords[0] = (Real) coefs[0];
+                            map[j].baryCoords[1] = (Real) coefs[1];
+                            map[j].baryCoords[2] = (Real) coefs[2];
+                            map[j].in_index = index;
+                        }
                     }
                 }
             }
 
             // renumber
-            unsigned int lastCubeId = cubes.size()-1;
+            int lastCubeId = (int) cubes.size()-1;
             for(unsigned int i=0; i<hexahedra.size(); ++i)
             {
                 unsigned int cubeId = hexahedra[i];
