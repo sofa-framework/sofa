@@ -52,6 +52,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/helper/io/Mesh.h>
+#include <sofa/core/ObjectFactory.h>
 
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/UpdateContextVisitor.h>
@@ -996,6 +997,62 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             }
         }
 
+        // Info tab
+        {
+            emptyTab = false;
+            QWidget* tab = new QWidget();
+            QVBoxLayout* tabLayout = new QVBoxLayout( tab, 0, 1, QString("tabInfoLayout"));
+
+            dialogTab->addTab(tab, QString("Infos"));
+            ++counterTab;
+            {
+                Q3GroupBox *box = new Q3GroupBox(tab, QString("Instance"));
+                box->setColumns(2);
+                box->setTitle(QString("Instance"));
+                new QLabel(QString("Name"), box);
+                new QLabel(QString(node_clicked->getName()), box);
+                new QLabel(QString("Class"), box);
+                new QLabel(QString(node_clicked->getClassName()), box);
+                std::string namespacename = node_clicked->decodeNamespaceName(typeid(*node_clicked));
+                if (!namespacename.empty())
+                {
+                    new QLabel(QString("Namespace"), box);
+                    new QLabel(QString(namespacename), box);
+                }
+                if (!node_clicked->getTemplateName().empty())
+                {
+                    new QLabel(QString("Template"), box);
+                    new QLabel(QString(node_clicked->getTemplateName()), box);
+                }
+
+                tabLayout->addWidget( box );
+            }
+
+            core::ObjectFactory::ClassEntry* entry = core::ObjectFactory::getInstance()->getEntry(node_clicked->getClassName());
+            if (entry != NULL && ! entry->creatorList.empty())
+            {
+                Q3GroupBox *box = new Q3GroupBox(tab, QString("Class"));
+                box->setColumns(2);
+                box->setTitle(QString("Class"));
+                if (!entry->description.empty() && entry->description != std::string("TODO"))
+                {
+                    new QLabel(QString("Description"), box);
+                    new QLabel(QString(entry->description), box);
+                }
+                if (!entry->authors.empty() && entry->authors != std::string("TODO"))
+                {
+                    new QLabel(QString("Authors"), box);
+                    new QLabel(QString(entry->authors), box);
+                }
+                if (!entry->license.empty() && entry->license != std::string("TODO"))
+                {
+                    new QLabel(QString("License"), box);
+                    new QLabel(QString(entry->license), box);
+                }
+                tabLayout->addWidget( box );
+            }
+            tabLayout->addStretch();
+        }
 
         //Adding buttons at the bottom of the dialog
         QHBoxLayout *lineLayout = new QHBoxLayout( 0, 0, 6, "Button Layout");
