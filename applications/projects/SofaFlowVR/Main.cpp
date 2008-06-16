@@ -18,7 +18,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/InitVisitor.h>
@@ -620,8 +620,8 @@ public:
                 }
             }
             BaseObject* topology = getContext()->getTopology();
-            sofa::component::topology::MeshTopology* mesh;
-            if ((mesh = dynamic_cast<sofa::component::topology::MeshTopology*>(topology))!=NULL)
+            sofa::core::componentmodel::topology::BaseMeshTopology* mesh;
+            if ((mesh = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>(topology))!=NULL)
             {
                 mesh->clear();
                 if (valid)
@@ -1317,7 +1317,7 @@ public:
         //normModified = true;
     }
 
-    void computeMesh(sofa::component::topology::MeshTopology* topology)
+    void computeMesh(sofa::core::componentmodel::topology::BaseMeshTopology* topology)
     {
         Inherit::computeMesh(topology);
         meshModified = true;

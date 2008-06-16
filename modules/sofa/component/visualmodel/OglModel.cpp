@@ -29,7 +29,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sstream>
 
 namespace sofa

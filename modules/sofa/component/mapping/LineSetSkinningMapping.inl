@@ -85,8 +85,8 @@ void LineSetSkinningMapping<BasicMapping>::init()
 {
     OutVecCoord& xto = *this->toModel->getX();
     InVecCoord& xfrom = *this->fromModel->getX();
-    core::componentmodel::topology::Topology* topology = dynamic_cast<core::componentmodel::topology::Topology*>(this->fromModel->getContext()->getTopology());
-    topology::MeshTopology* t = dynamic_cast<topology::MeshTopology*>(topology);
+    core::componentmodel::topology::BaseMeshTopology* topology = dynamic_cast<core::componentmodel::topology::BaseMeshTopology*>(this->fromModel->getContext()->getTopology());
+    sofa::core::componentmodel::topology::BaseMeshTopology* t = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>(topology);
     linesInfluencedByVertice.resize(xto.size());
 
     verticesInfluencedByLine.resize(t->getNbLines());
@@ -96,10 +96,10 @@ void LineSetSkinningMapping<BasicMapping>::init()
 
     for(unsigned int line1Index=0; line1Index< (unsigned) t->getNbLines(); line1Index++)
     {
-        const topology::MeshTopology::Line& line1 = t->getLine(line1Index);
+        const sofa::core::componentmodel::topology::BaseMeshTopology::Line& line1 = t->getLine(line1Index);
         for(unsigned int line2Index=0; line2Index< (unsigned) t->getNbLines(); line2Index++)
         {
-            const topology::MeshTopology::Line& line2 = t->getLine(line2Index);
+            const sofa::core::componentmodel::topology::BaseMeshTopology::Line& line2 = t->getLine(line2Index);
             if ((line1[0] == line2[0]) || (line1[0] == line2[1]) || (line1[1] == line2[0]))
             {
                 neighborhoodLinesSet[line1Index].insert(line2Index);
@@ -133,7 +133,7 @@ void LineSetSkinningMapping<BasicMapping>::init()
 
         for(unsigned int lineIndex=0; lineIndex< (unsigned) t->getNbLines(); lineIndex++)
         {
-            const topology::MeshTopology::Line& line = t->getLine(lineIndex);
+            const sofa::core::componentmodel::topology::BaseMeshTopology::Line& line = t->getLine(lineIndex);
             double _weight = convolutionSegment(xfrom[line[0]].getCenter(), xfrom[line[1]].getCenter(), xto[verticeIndex]);
 
             for(unsigned int lineInfluencedIndex=0; lineInfluencedIndex<lines.size(); lineInfluencedIndex++)
@@ -208,11 +208,11 @@ void LineSetSkinningMapping<BasicMapping>::draw()
     //OutVecCoord& xto = *this->toModel->getX();
     //InVecCoord& xfrom = *this->fromModel->getX();
     //core::componentmodel::topology::Topology* topology = dynamic_cast<core::componentmodel::topology::Topology*>(this->fromModel->getContext()->getTopology());
-//   topology::MeshTopology* t = dynamic_cast<topology::MeshTopology*>(topology);
+//   sofa::core::componentmodel::topology::BaseMeshTopology* t = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>(topology);
 
     //for(unsigned int verticeIndex=0; verticeIndex<xto.size(); verticeIndex++)
     //{
-    //	const topology::MeshTopology::Line& line = t->getLine(linesInfluencedByVertice[verticeIndex][0].lineIndex);
+    //	const sofa::core::componentmodel::topology::BaseMeshTopology::Line& line = t->getLine(linesInfluencedByVertice[verticeIndex][0].lineIndex);
     //	Vec<3,Real> v = projectToSegment(xfrom[line[0]].getCenter(), xfrom[line[1]].getCenter(), xto[verticeIndex]);
 
     //	glColor3f (1,0,0);
@@ -221,7 +221,7 @@ void LineSetSkinningMapping<BasicMapping>::draw()
 
     //	for(unsigned int i=1; i<linesInfluencedByVertice[verticeIndex].size(); i++)
     //	{
-    //		const topology::MeshTopology::Line& l = t->getLine(linesInfluencedByVertice[verticeIndex][i].lineIndex);
+    //		const sofa::core::componentmodel::topology::BaseMeshTopology::Line& l = t->getLine(linesInfluencedByVertice[verticeIndex][i].lineIndex);
     //		Vec<3,Real> v = projectToSegment(xfrom[l[0]].getCenter(), xfrom[l[1]].getCenter(), xto[verticeIndex]);
 
     //		glColor3f (0,0,1);
@@ -236,7 +236,7 @@ template <class BasicMapping>
 void LineSetSkinningMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     core::componentmodel::topology::Topology* topology = dynamic_cast<core::componentmodel::topology::Topology*>(this->fromModel->getContext()->getTopology());
-    topology::MeshTopology* t = dynamic_cast<topology::MeshTopology*>(topology);
+    sofa::core::componentmodel::topology::BaseMeshTopology* t = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>(topology);
 
     for (unsigned int verticeIndex=0; verticeIndex<out.size(); verticeIndex++)
     {
@@ -254,7 +254,7 @@ template <class BasicMapping>
 void LineSetSkinningMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
     core::componentmodel::topology::Topology* topology = dynamic_cast<core::componentmodel::topology::Topology*>(this->fromModel->getContext()->getTopology());
-    topology::MeshTopology* t = dynamic_cast<topology::MeshTopology*>(topology);
+    sofa::core::componentmodel::topology::BaseMeshTopology* t = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>(topology);
 
     InVecCoord& xfrom = *this->fromModel->getX();
 
@@ -276,7 +276,7 @@ template <class BasicMapping>
 void LineSetSkinningMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
     core::componentmodel::topology::Topology* topology = dynamic_cast<core::componentmodel::topology::Topology*>(this->fromModel->getContext()->getTopology());
-    topology::MeshTopology* t = dynamic_cast<topology::MeshTopology*>(topology);
+    sofa::core::componentmodel::topology::BaseMeshTopology* t = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>(topology);
 
     InVecCoord& xfrom = *this->fromModel->getX();
 
@@ -299,7 +299,7 @@ void LineSetSkinningMapping<BasicMapping>::applyJT( typename In::VecConst& out, 
     out.resize(in.size());
 
     core::componentmodel::topology::Topology* topology = dynamic_cast<core::componentmodel::topology::Topology*>(this->fromModel->getContext()->getTopology());
-    topology::MeshTopology* t = dynamic_cast<topology::MeshTopology*>(topology);
+    sofa::core::componentmodel::topology::BaseMeshTopology* t = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>(topology);
 
     InVecCoord& xfrom = *this->fromModel->getX();
 

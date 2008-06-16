@@ -31,7 +31,7 @@
 #include "PMLBody.h"
 
 #include <StructuralComponent.h>
-#include "sofa/component/topology/MeshTopology.h"
+#include "sofa/core/componentmodel/topology/BaseMeshTopology.h"
 #include "sofa/component/collision/TriangleModel.h"
 //#include "sofa/component/collision/LineModel.h"
 //#include "sofa/component/collision/PointModel.h"
@@ -49,7 +49,7 @@ namespace filemanager
 
 namespace pml
 {
-using namespace sofa::component::topology;
+using namespace sofa::core::componentmodel::topology;
 using namespace sofa::component::collision;
 using namespace std;
 
@@ -90,7 +90,7 @@ private :
     void initDensity(string m);
 
     //tesselation of hexahedron to 5 tetrahedrons
-    MeshTopology::Tetra * Tesselate(Cell* pCell);
+    BaseMeshTopology::Tetra * Tesselate(Cell* pCell);
 
     //structure
     TriangleModel * tmodel;

@@ -118,9 +118,9 @@ void PMLStiffSpringForceField::initDensity(string m)
 
 // extract hexahedron edges to a list of lines
 // used by createTopology method
-MeshTopology::Line * PMLStiffSpringForceField::hexaToLines(Cell* pCell)
+BaseMeshTopology::Line * PMLStiffSpringForceField::hexaToLines(Cell* pCell)
 {
-    MeshTopology::Line *lines = new MeshTopology::Line[16];
+    BaseMeshTopology::Line *lines = new BaseMeshTopology::Line[16];
     Atom *pAtom;
     int index[8];
 
@@ -152,9 +152,9 @@ MeshTopology::Line * PMLStiffSpringForceField::hexaToLines(Cell* pCell)
 
 // extract tetrahedron edges to a list of lines
 // used by createTopology method
-MeshTopology::Line * PMLStiffSpringForceField::tetraToLines(Cell* pCell)
+BaseMeshTopology::Line * PMLStiffSpringForceField::tetraToLines(Cell* pCell)
 {
-    MeshTopology::Line *lines = new MeshTopology::Line[6];
+    BaseMeshTopology::Line *lines = new BaseMeshTopology::Line[6];
     Atom *pAtom;
     int index[8];
 
@@ -179,9 +179,9 @@ MeshTopology::Line * PMLStiffSpringForceField::tetraToLines(Cell* pCell)
 
 // extract triangle edges to a list of lines
 // used by createTopology method
-MeshTopology::Line * PMLStiffSpringForceField::triangleToLines(Cell* pCell)
+BaseMeshTopology::Line * PMLStiffSpringForceField::triangleToLines(Cell* pCell)
 {
-    MeshTopology::Line *lines = new MeshTopology::Line[3];
+    BaseMeshTopology::Line *lines = new BaseMeshTopology::Line[3];
     Atom *pAtom;
     int index[3];
 
@@ -205,9 +205,9 @@ MeshTopology::Line * PMLStiffSpringForceField::triangleToLines(Cell* pCell)
 
 // extract quad edges to a list of lines
 // used by createTopology method
-MeshTopology::Line * PMLStiffSpringForceField::quadToLines(Cell* pCell)
+BaseMeshTopology::Line * PMLStiffSpringForceField::quadToLines(Cell* pCell)
 {
-    MeshTopology::Line *lines = new MeshTopology::Line[4];
+    BaseMeshTopology::Line *lines = new BaseMeshTopology::Line[4];
     Atom *pAtom;
     int index[4];
 
@@ -261,11 +261,11 @@ void PMLStiffSpringForceField::createMechanicalState(StructuralComponent* body)
 void PMLStiffSpringForceField::createTopology(StructuralComponent* body)
 {
     topology = new MeshTopology();
-    ((MeshTopology*)topology)->clear();
+    ((BaseMeshTopology*)topology)->clear();
 
     unsigned int p, nbCells = body->getNumberOfCells();
-    MeshTopology::Line * lines;
-    MeshTopology::Quad * quad;
+    BaseMeshTopology::Line * lines;
+    BaseMeshTopology::Quad * quad;
     Cell * pCell;
 
     //for each pml cell, build 1 or 5 tetrahedrons
@@ -278,32 +278,32 @@ void PMLStiffSpringForceField::createTopology(StructuralComponent* body)
         case StructureProperties::HEXAHEDRON :
             lines = hexaToLines(pCell);
             for (p=0 ; p<16 ; p++)
-                ((MeshTopology::SeqLines&)((MeshTopology*)topology)->getLines()).push_back(lines[p]);
+                ((BaseMeshTopology::SeqLines&)((BaseMeshTopology*)topology)->getLines()).push_back(lines[p]);
             break;
         case StructureProperties::TETRAHEDRON :
             lines = hexaToLines(pCell);
             for (p=0 ; p<6 ; p++)
-                ((MeshTopology::SeqLines&)((MeshTopology*)topology)->getLines()).push_back(lines[p]);
+                ((BaseMeshTopology::SeqLines&)((BaseMeshTopology*)topology)->getLines()).push_back(lines[p]);
             break;
         case StructureProperties::TRIANGLE :
             lines = triangleToLines(pCell);
             for (p=0 ; p<3 ; p++)
-                ((MeshTopology::SeqLines&)((MeshTopology*)topology)->getLines()).push_back(lines[p]);
+                ((BaseMeshTopology::SeqLines&)((BaseMeshTopology*)topology)->getLines()).push_back(lines[p]);
             break;
         case StructureProperties::QUAD :
             lines = quadToLines(pCell);
             for (p=0 ; p<4 ; p++)
-                ((MeshTopology::SeqLines&)((MeshTopology*)topology)->getLines()).push_back(lines[p]);
-            quad = new MeshTopology::Quad;
+                ((BaseMeshTopology::SeqLines&)((BaseMeshTopology*)topology)->getLines()).push_back(lines[p]);
+            quad = new BaseMeshTopology::Quad;
             for (p=0 ; p<4 ; p++)
                 (*quad)[p] = AtomsToDOFsIndexes[pCell->getStructure(p)->getIndex()];
-            ((MeshTopology::SeqQuads&)((MeshTopology*)topology)->getQuads()).push_back(*quad);
+            ((BaseMeshTopology::SeqQuads&)((BaseMeshTopology*)topology)->getQuads()).push_back(*quad);
             break;
         case StructureProperties::LINE :
-            lines = new MeshTopology::Line;
+            lines = new BaseMeshTopology::Line;
             (*lines)[0] = AtomsToDOFsIndexes[pCell->getStructure(0)->getIndex()];
             (*lines)[1] = AtomsToDOFsIndexes[pCell->getStructure(1)->getIndex()];
-            ((MeshTopology::SeqLines&)((MeshTopology*)topology)->getLines()).push_back(*lines);
+            ((BaseMeshTopology::SeqLines&)((BaseMeshTopology*)topology)->getLines()).push_back(*lines);
             break;
 
         default : break;
@@ -311,20 +311,20 @@ void PMLStiffSpringForceField::createTopology(StructuralComponent* body)
     }
 
     //ELIMINATE DOUBLONS
-    std::vector<MeshTopology::Line>::iterator it1 = ((MeshTopology::SeqLines&)((MeshTopology*)topology)->getLines()).begin();
-    std::vector<MeshTopology::Line>::iterator it2, tmp;
+    std::vector<BaseMeshTopology::Line>::iterator it1 = ((BaseMeshTopology::SeqLines&)((BaseMeshTopology*)topology)->getLines()).begin();
+    std::vector<BaseMeshTopology::Line>::iterator it2, tmp;
 
-    while(it1 != ((MeshTopology::SeqLines&)((MeshTopology*)topology)->getLines()).end() )
+    while(it1 != ((BaseMeshTopology::SeqLines&)((BaseMeshTopology*)topology)->getLines()).end() )
     {
         it2=it1;
         it2++;
-        while(it2 != ((MeshTopology::SeqLines&)((MeshTopology*)topology)->getLines()).end() )
+        while(it2 != ((BaseMeshTopology::SeqLines&)((BaseMeshTopology*)topology)->getLines()).end() )
         {
             if ( ((*it1)[0] == (*it2)[0] && (*it1)[1] == (*it2)[1]) || ((*it1)[0] == (*it2)[1] && (*it1)[1] == (*it2)[0]) )
             {
                 tmp = it2;
                 tmp--;
-                ((MeshTopology::SeqLines&)((MeshTopology*)topology)->getLines()).erase(it2);
+                ((BaseMeshTopology::SeqLines&)((BaseMeshTopology*)topology)->getLines()).erase(it2);
                 it2=tmp;
             }
 
@@ -424,8 +424,8 @@ void PMLStiffSpringForceField::createVisualModel(StructuralComponent* body)
 
     Cell * pCell;
     Atom * pAtom;
-    MeshTopology::Quad * quad;
-    MeshTopology::Triangle * triangle;
+    BaseMeshTopology::Quad * quad;
+    BaseMeshTopology::Triangle * triangle;
 
     for (unsigned int i=0 ; i< extFacets->getNumberOfStructures() ; i++)
     {
@@ -433,23 +433,23 @@ void PMLStiffSpringForceField::createVisualModel(StructuralComponent* body)
         switch(pCell->getProperties()->getType())
         {
         case StructureProperties::QUAD :
-            quad = new MeshTopology::Quad;
+            quad = new BaseMeshTopology::Quad;
             for (unsigned int j(0) ; j<4 ; j++)
             {
                 pAtom = (Atom*)(pCell->getStructure(j));
                 (*quad)[j] = AtomsToDOFsIndexes[pAtom->getIndex()];
             }
-            ((MeshTopology::SeqQuads&)((MeshTopology*)topology)->getQuads()).push_back(*quad);
+            ((BaseMeshTopology::SeqQuads&)((BaseMeshTopology*)topology)->getQuads()).push_back(*quad);
             break;
 
         case StructureProperties::TRIANGLE :
-            triangle = new MeshTopology::Triangle;
+            triangle = new BaseMeshTopology::Triangle;
             for (unsigned int j(0) ; j<3 ; j++)
             {
                 pAtom = (Atom*)(pCell->getStructure(j));
                 (*triangle)[j] = AtomsToDOFsIndexes[pAtom->getIndex()];
             }
-            ((MeshTopology::SeqTriangles&)((MeshTopology*)topology)->getTriangles()).push_back(*triangle);
+            ((BaseMeshTopology::SeqTriangles&)((BaseMeshTopology*)topology)->getTriangles()).push_back(*triangle);
             break;
 
         default : break;
@@ -527,37 +527,37 @@ bool PMLStiffSpringForceField::FusionBody(PMLBody* body)
     }
 
     //------   Fusion Topology
-    MeshTopology * femTopo = (MeshTopology * ) (femBody->getTopology());
+    BaseMeshTopology * femTopo = (BaseMeshTopology * ) (femBody->getTopology());
 
     //fusion lines
     for (int i=0 ; i < femTopo->getNbLines() ; i++)
     {
-        MeshTopology::Line line = femTopo->getLine(i);
+        BaseMeshTopology::Line line = femTopo->getLine(i);
         for (unsigned int j(0) ; j<2 ; j++)
         {
             line[j] = oldToNewIndex[line[j] ];
         }
-        ((MeshTopology::SeqLines&)((MeshTopology*)topology)->getLines()).push_back(line);
+        ((BaseMeshTopology::SeqLines&)((BaseMeshTopology*)topology)->getLines()).push_back(line);
     }
     //fusion triangles
     for (int i=0 ; i < femTopo->getNbTriangles() ; i++)
     {
-        MeshTopology::Triangle tri = femTopo->getTriangle(i);
+        BaseMeshTopology::Triangle tri = femTopo->getTriangle(i);
         for (unsigned int j(0) ; j<3 ; j++)
         {
             tri[j] = oldToNewIndex[tri[j] ];
         }
-        ((MeshTopology::SeqTriangles&)((MeshTopology*)topology)->getTriangles()).push_back(tri);
+        ((BaseMeshTopology::SeqTriangles&)((BaseMeshTopology*)topology)->getTriangles()).push_back(tri);
     }
     //fusion quads
     for (int i=0 ; i < femTopo->getNbQuads() ; i++)
     {
-        MeshTopology::Quad qua = femTopo->getQuad(i);
+        BaseMeshTopology::Quad qua = femTopo->getQuad(i);
         for (unsigned int j(0) ; j<4 ; j++)
         {
             qua[j] = oldToNewIndex[qua[j] ];
         }
-        ((MeshTopology::SeqQuads&)((MeshTopology*)topology)->getQuads()).push_back(qua);
+        ((BaseMeshTopology::SeqQuads&)((BaseMeshTopology*)topology)->getQuads()).push_back(qua);
     }
 
 

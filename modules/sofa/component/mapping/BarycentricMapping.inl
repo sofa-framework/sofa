@@ -33,7 +33,7 @@
 #include <algorithm>
 #include <iostream>
 
-#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/component/topology/SparseGridTopology.h>
 
@@ -234,7 +234,7 @@ template <class In, class Out>
 int BarycentricMapperMeshTopology<In,Out>::createPointInLine(const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points)
 {
     SReal baryCoords[1];
-    const topology::MeshTopology::Line& elem = topology->getLine(lineIndex);
+    const sofa::core::componentmodel::topology::BaseMeshTopology::Line& elem = topology->getLine(lineIndex);
     const typename In::Coord p0 = (*points)[elem[0]];
     const typename In::Coord pA = (*points)[elem[1]] - p0;
     typename In::Coord pos = p - p0;
@@ -246,7 +246,7 @@ template <class In, class Out>
 int BarycentricMapperMeshTopology<In,Out>::createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points)
 {
     SReal baryCoords[2];
-    const topology::MeshTopology::Triangle& elem = topology->getTriangle(triangleIndex);
+    const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& elem = topology->getTriangle(triangleIndex);
     const typename In::Coord p0 = (*points)[elem[0]];
     const typename In::Coord pA = (*points)[elem[1]] - p0;
     const typename In::Coord pB = (*points)[elem[2]] - p0;
@@ -264,7 +264,7 @@ template <class In, class Out>
 int BarycentricMapperMeshTopology<In,Out>::createPointInQuad(const typename Out::Coord& p, int quadIndex, const typename In::VecCoord* points)
 {
     SReal baryCoords[2];
-    const topology::MeshTopology::Quad& elem = topology->getQuad(quadIndex);
+    const sofa::core::componentmodel::topology::BaseMeshTopology::Quad& elem = topology->getQuad(quadIndex);
     const typename In::Coord p0 = (*points)[elem[0]];
     const typename In::Coord pA = (*points)[elem[1]] - p0;
     const typename In::Coord pB = (*points)[elem[3]] - p0;
@@ -287,14 +287,14 @@ void BarycentricMapperMeshTopology<In,Out>::init(const typename Out::VecCoord& o
 {
     int outside = 0;
 
-    const topology::MeshTopology::SeqTetras& tetras = topology->getTetras();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetras& tetras = topology->getTetras();
 #ifdef SOFA_NEW_HEXA
-    const topology::MeshTopology::SeqHexas& cubes = topology->getHexas();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqHexas& cubes = topology->getHexas();
 #else
-    const topology::MeshTopology::SeqCubes& cubes = topology->getCubes();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqCubes& cubes = topology->getCubes();
 #endif
-    const topology::MeshTopology::SeqTriangles& triangles = topology->getTriangles();
-    const topology::MeshTopology::SeqQuads& quads = topology->getQuads();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = topology->getTriangles();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqQuads& quads = topology->getQuads();
     sofa::helper::vector<Matrix3> bases;
     sofa::helper::vector<Vector3> centers;
     if (tetras.empty() && cubes.empty())
@@ -764,7 +764,7 @@ void BarycentricMapping<BasicMapping>::createMapperFromTopology(Topology * topol
 {
     mapper = NULL;
 
-    topology::MeshTopology* t3 = dynamic_cast<topology::MeshTopology*>(topology);
+    sofa::core::componentmodel::topology::BaseMeshTopology* t3 = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>(topology);
     if (t3!=NULL)
     {
         topology::RegularGridTopology* t2 = dynamic_cast<topology::RegularGridTopology*>(topology);
@@ -953,14 +953,14 @@ template <class In, class Out>
 void BarycentricMapperMeshTopology<In,Out>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     out.resize(map1d.size()+map2d.size()+map3d.size());
-    const topology::MeshTopology::SeqLines& lines = this->topology->getLines();
-    const topology::MeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
-    const topology::MeshTopology::SeqQuads& quads = this->topology->getQuads();
-    const topology::MeshTopology::SeqTetras& tetras = this->topology->getTetras();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqLines& lines = this->topology->getLines();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqQuads& quads = this->topology->getQuads();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetras& tetras = this->topology->getTetras();
 #ifdef SOFA_NEW_HEXA
-    const topology::MeshTopology::SeqHexas& cubes = this->topology->getHexas();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqHexas& cubes = this->topology->getHexas();
 #else
-    const topology::MeshTopology::SeqCubes& cubes = this->topology->getCubes();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqCubes& cubes = this->topology->getCubes();
 #endif
     // 1D elements
     {
@@ -969,7 +969,7 @@ void BarycentricMapperMeshTopology<In,Out>::apply( typename Out::VecCoord& out, 
             const Real fx = map1d[i].baryCoords[0];
             int index = map1d[i].in_index;
             {
-                const topology::MeshTopology::Line& line = lines[index];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Line& line = lines[index];
                 out[i] = in[line[0]] * (1-fx)
                         + in[line[1]] * fx;
             }
@@ -986,14 +986,14 @@ void BarycentricMapperMeshTopology<In,Out>::apply( typename Out::VecCoord& out, 
             int index = map2d[i].in_index;
             if (index<c0)
             {
-                const topology::MeshTopology::Triangle& triangle = triangles[index];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& triangle = triangles[index];
                 out[i+i0] = in[triangle[0]] * (1-fx-fy)
                         + in[triangle[1]] * fx
                         + in[triangle[2]] * fy;
             }
             else
             {
-                const topology::MeshTopology::Quad& quad = quads[index-c0];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Quad& quad = quads[index-c0];
                 out[i+i0] = in[quad[0]] * ((1-fx) * (1-fy))
                         + in[quad[1]] * ((  fx) * (1-fy))
                         + in[quad[3]] * ((1-fx) * (  fy))
@@ -1013,7 +1013,7 @@ void BarycentricMapperMeshTopology<In,Out>::apply( typename Out::VecCoord& out, 
             int index = map3d[i].in_index;
             if (index<c0)
             {
-                const topology::MeshTopology::Tetra& tetra = tetras[index];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Tetra& tetra = tetras[index];
                 out[i+i0] = in[tetra[0]] * (1-fx-fy-fz)
                         + in[tetra[1]] * fx
                         + in[tetra[2]] * fy
@@ -1022,9 +1022,9 @@ void BarycentricMapperMeshTopology<In,Out>::apply( typename Out::VecCoord& out, 
             else
             {
 #ifdef SOFA_NEW_HEXA
-                const topology::MeshTopology::Hexa& cube = cubes[index-c0];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Hexa& cube = cubes[index-c0];
 #else
-                const topology::MeshTopology::Cube& cube = cubes[index-c0];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Cube& cube = cubes[index-c0];
 #endif
                 out[i+i0] = in[cube[0]] * ((1-fx) * (1-fy) * (1-fz))
                         + in[cube[1]] * ((  fx) * (1-fy) * (1-fz))
@@ -1224,14 +1224,14 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ( typename Out::VecDeriv& out,
 {
     //cerr<<"    BarycentricMapping<BasicMapping>::MeshMapper::applyJ"<<endl;
     out.resize(map1d.size()+map2d.size()+map3d.size());
-    const topology::MeshTopology::SeqLines& lines = this->topology->getLines();
-    const topology::MeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
-    const topology::MeshTopology::SeqQuads& quads = this->topology->getQuads();
-    const topology::MeshTopology::SeqTetras& tetras = this->topology->getTetras();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqLines& lines = this->topology->getLines();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqQuads& quads = this->topology->getQuads();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetras& tetras = this->topology->getTetras();
 #ifdef SOFA_NEW_HEXA
-    const topology::MeshTopology::SeqHexas& cubes = this->topology->getHexas();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqHexas& cubes = this->topology->getHexas();
 #else
-    const topology::MeshTopology::SeqCubes& cubes = this->topology->getCubes();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqCubes& cubes = this->topology->getCubes();
 #endif
     // 1D elements
     {
@@ -1240,7 +1240,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ( typename Out::VecDeriv& out,
             const Real fx = map1d[i].baryCoords[0];
             int index = map1d[i].in_index;
             {
-                const topology::MeshTopology::Line& line = lines[index];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Line& line = lines[index];
                 out[i] = in[line[0]] * (1-fx)
                         + in[line[1]] * fx;
             }
@@ -1257,14 +1257,14 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ( typename Out::VecDeriv& out,
             int index = map2d[i].in_index;
             if (index<c0)
             {
-                const topology::MeshTopology::Triangle& triangle = triangles[index];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& triangle = triangles[index];
                 out[i+i0] = in[triangle[0]] * (1-fx-fy)
                         + in[triangle[1]] * fx
                         + in[triangle[2]] * fy;
             }
             else
             {
-                const topology::MeshTopology::Quad& quad = quads[index-c0];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Quad& quad = quads[index-c0];
                 out[i+i0] = in[quad[0]] * ((1-fx) * (1-fy))
                         + in[quad[1]] * ((  fx) * (1-fy))
                         + in[quad[3]] * ((1-fx) * (  fy))
@@ -1284,7 +1284,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ( typename Out::VecDeriv& out,
             int index = map3d[i].in_index;
             if (index<c0)
             {
-                const topology::MeshTopology::Tetra& tetra = tetras[index];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Tetra& tetra = tetras[index];
                 out[i+i0] = in[tetra[0]] * (1-fx-fy-fz)
                         + in[tetra[1]] * fx
                         + in[tetra[2]] * fy
@@ -1293,9 +1293,9 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ( typename Out::VecDeriv& out,
             else
             {
 #ifdef SOFA_NEW_HEXA
-                const topology::MeshTopology::Hexa& cube = cubes[index-c0];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Hexa& cube = cubes[index-c0];
 #else
-                const topology::MeshTopology::Cube& cube = cubes[index-c0];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Cube& cube = cubes[index-c0];
 #endif
                 out[i+i0] = in[cube[0]] * ((1-fx) * (1-fy) * (1-fz))
                         + in[cube[1]] * ((  fx) * (1-fy) * (1-fz))
@@ -1491,14 +1491,14 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT( typename In::VecDeriv
 template <class In, class Out>
 void BarycentricMapperMeshTopology<In,Out>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
-    const topology::MeshTopology::SeqLines& lines = this->topology->getLines();
-    const topology::MeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
-    const topology::MeshTopology::SeqQuads& quads = this->topology->getQuads();
-    const topology::MeshTopology::SeqTetras& tetras = this->topology->getTetras();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqLines& lines = this->topology->getLines();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqQuads& quads = this->topology->getQuads();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetras& tetras = this->topology->getTetras();
 #ifdef SOFA_NEW_HEXA
-    const topology::MeshTopology::SeqHexas& cubes = this->topology->getHexas();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqHexas& cubes = this->topology->getHexas();
 #else
-    const topology::MeshTopology::SeqCubes& cubes = this->topology->getCubes();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqCubes& cubes = this->topology->getCubes();
 #endif
     // 1D elements
     {
@@ -1508,7 +1508,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT( typename In::VecDeriv& out,
             const OutReal fx = (OutReal)map1d[i].baryCoords[0];
             int index = map1d[i].in_index;
             {
-                const topology::MeshTopology::Line& line = lines[index];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Line& line = lines[index];
                 out[line[0]] += v * (1-fx);
                 out[line[1]] += v * fx;
             }
@@ -1526,14 +1526,14 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT( typename In::VecDeriv& out,
             int index = map2d[i].in_index;
             if (index<c0)
             {
-                const topology::MeshTopology::Triangle& triangle = triangles[index];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& triangle = triangles[index];
                 out[triangle[0]] += v * (1-fx-fy);
                 out[triangle[1]] += v * fx;
                 out[triangle[2]] += v * fy;
             }
             else
             {
-                const topology::MeshTopology::Quad& quad = quads[index-c0];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Quad& quad = quads[index-c0];
                 out[quad[0]] += v * ((1-fx) * (1-fy));
                 out[quad[1]] += v * ((  fx) * (1-fy));
                 out[quad[3]] += v * ((1-fx) * (  fy));
@@ -1554,7 +1554,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT( typename In::VecDeriv& out,
             int index = map3d[i].in_index;
             if (index<c0)
             {
-                const topology::MeshTopology::Tetra& tetra = tetras[index];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Tetra& tetra = tetras[index];
                 out[tetra[0]] += v * (1-fx-fy-fz);
                 out[tetra[1]] += v * fx;
                 out[tetra[2]] += v * fy;
@@ -1563,9 +1563,9 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT( typename In::VecDeriv& out,
             else
             {
 #ifdef SOFA_NEW_HEXA
-                const topology::MeshTopology::Hexa& cube = cubes[index-c0];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Hexa& cube = cubes[index-c0];
 #else
-                const topology::MeshTopology::Cube& cube = cubes[index-c0];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Cube& cube = cubes[index-c0];
 #endif
                 out[cube[0]] += v * ((1-fx) * (1-fy) * (1-fz));
                 out[cube[1]] += v * ((  fx) * (1-fy) * (1-fz));
@@ -1796,14 +1796,14 @@ void BarycentricMapperSparseGridTopology<In,Out>::draw(const typename Out::VecCo
 template <class In, class Out>
 void BarycentricMapperMeshTopology<In,Out>::draw(const typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
-    const topology::MeshTopology::SeqLines& lines = this->topology->getLines();
-    const topology::MeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
-    const topology::MeshTopology::SeqQuads& quads = this->topology->getQuads();
-    const topology::MeshTopology::SeqTetras& tetras = this->topology->getTetras();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqLines& lines = this->topology->getLines();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqQuads& quads = this->topology->getQuads();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetras& tetras = this->topology->getTetras();
 #ifdef SOFA_NEW_HEXA
-    const topology::MeshTopology::SeqHexas& cubes = this->topology->getHexas();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqHexas& cubes = this->topology->getHexas();
 #else
-    const topology::MeshTopology::SeqCubes& cubes = this->topology->getCubes();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqCubes& cubes = this->topology->getCubes();
 #endif
     glBegin (GL_LINES);
     // 1D elements
@@ -1814,7 +1814,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw(const typename Out::VecCoord& o
             const Real fx = map1d[i].baryCoords[0];
             int index = map1d[i].in_index;
             {
-                const topology::MeshTopology::Line& line = lines[index];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Line& line = lines[index];
                 Real f[2];
                 f[0] = (1-fx);
                 f[1] = fx;
@@ -1841,7 +1841,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw(const typename Out::VecCoord& o
             int index = map2d[i].in_index;
             if (index<c0)
             {
-                const topology::MeshTopology::Triangle& triangle = triangles[index];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& triangle = triangles[index];
                 Real f[3];
                 f[0] = (1-fx-fy);
                 f[1] = fx;
@@ -1858,7 +1858,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw(const typename Out::VecCoord& o
             }
             else
             {
-                const topology::MeshTopology::Quad& quad = quads[index-c0];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Quad& quad = quads[index-c0];
                 Real f[4];
                 f[0] = ((1-fx) * (1-fy));
                 f[1] = ((  fx) * (1-fy));
@@ -1888,7 +1888,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw(const typename Out::VecCoord& o
             int index = map3d[i].in_index;
             if (index<c0)
             {
-                const topology::MeshTopology::Tetra& tetra = tetras[index];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Tetra& tetra = tetras[index];
                 Real f[4];
                 f[0] = (1-fx-fy-fz);
                 f[1] = fx;
@@ -1907,9 +1907,9 @@ void BarycentricMapperMeshTopology<In,Out>::draw(const typename Out::VecCoord& o
             else
             {
 #ifdef SOFA_NEW_HEXA
-                const topology::MeshTopology::Hexa& cube = cubes[index-c0];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Hexa& cube = cubes[index-c0];
 #else
-                const topology::MeshTopology::Cube& cube = cubes[index-c0];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Cube& cube = cubes[index-c0];
 #endif
                 Real f[8];
                 f[0] = (1-fx) * (1-fy) * (1-fz);
@@ -2317,14 +2317,14 @@ template <class In, class Out>
 void BarycentricMapperMeshTopology<In,Out>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
 {
 //    printf("\n applyJT() in BaricentricMapping  [MeshMapper] \n");
-    const topology::MeshTopology::SeqLines& lines = this->topology->getLines();
-    const topology::MeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
-    const topology::MeshTopology::SeqQuads& quads = this->topology->getQuads();
-    const topology::MeshTopology::SeqTetras& tetras = this->topology->getTetras();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqLines& lines = this->topology->getLines();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqQuads& quads = this->topology->getQuads();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetras& tetras = this->topology->getTetras();
 #ifdef SOFA_NEW_HEXA
-    const topology::MeshTopology::SeqHexas& cubes = this->topology->getHexas();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqHexas& cubes = this->topology->getHexas();
 #else
-    const topology::MeshTopology::SeqCubes& cubes = this->topology->getCubes();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqCubes& cubes = this->topology->getCubes();
 #endif
     //const int iLine = lines.size();
     const int iTri = triangles.size();
@@ -2353,7 +2353,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT( typename In::VecConst& out,
                 const OutReal fx = (OutReal)map1d[indexIn].baryCoords[0];
                 int index = map1d[indexIn].in_index;
                 {
-                    const topology::MeshTopology::Line& line = lines[index];
+                    const sofa::core::componentmodel::topology::BaseMeshTopology::Line& line = lines[index];
                     out[i+offset].push_back(typename In::SparseDeriv((unsigned) line[0], (typename In::Deriv) cIn.data * (1-fx)));
                     out[i+offset].push_back(typename In::SparseDeriv(line[1], (typename In::Deriv) cIn.data * fx));
                 }
@@ -2366,14 +2366,14 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT( typename In::VecConst& out,
                 int index = map2d[indexIn].in_index;
                 if (index < iTri) // triangle
                 {
-                    const topology::MeshTopology::Triangle& triangle = triangles[index];
+                    const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& triangle = triangles[index];
                     out[i+offset].push_back(typename In::SparseDeriv(triangle[0], (typename In::Deriv) cIn.data * (1-fx-fy)));
                     out[i+offset].push_back(typename In::SparseDeriv(triangle[1], (typename In::Deriv) cIn.data * fx));
                     out[i+offset].push_back(typename In::SparseDeriv(triangle[2], (typename In::Deriv) cIn.data * fy));
                 }
                 else // 2D element : Quad
                 {
-                    const topology::MeshTopology::Quad& quad = quads[index - iTri];
+                    const sofa::core::componentmodel::topology::BaseMeshTopology::Quad& quad = quads[index - iTri];
                     out[i+offset].push_back(typename In::SparseDeriv(quad[0], (typename In::Deriv) cIn.data * ((1-fx) * (1-fy))));
                     out[i+offset].push_back(typename In::SparseDeriv(quad[1], (typename In::Deriv) cIn.data * ((  fx) * (1-fy))));
                     out[i+offset].push_back(typename In::SparseDeriv(quad[3], (typename In::Deriv) cIn.data * ((1-fx) * (  fy))));
@@ -2389,7 +2389,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT( typename In::VecConst& out,
                 int index = map3d[indexIn].in_index;
                 if (index < iTetra) // tetra
                 {
-                    const topology::MeshTopology::Tetra& tetra = tetras[index];
+                    const sofa::core::componentmodel::topology::BaseMeshTopology::Tetra& tetra = tetras[index];
                     out[i+offset].push_back(typename In::SparseDeriv(tetra[0], (typename In::Deriv) cIn.data * (1-fx-fy-fz)));
                     out[i+offset].push_back(typename In::SparseDeriv(tetra[1], (typename In::Deriv) cIn.data * fx));
                     out[i+offset].push_back(typename In::SparseDeriv(tetra[2], (typename In::Deriv) cIn.data * fy));
@@ -2398,9 +2398,9 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT( typename In::VecConst& out,
                 else // cube
                 {
 #ifdef SOFA_NEW_HEXA
-                    const topology::MeshTopology::Hexa& cube = cubes[index-iTetra];
+                    const sofa::core::componentmodel::topology::BaseMeshTopology::Hexa& cube = cubes[index-iTetra];
 #else
-                    const topology::MeshTopology::Cube& cube = cubes[index-iTetra];
+                    const sofa::core::componentmodel::topology::BaseMeshTopology::Cube& cube = cubes[index-iTetra];
 #endif
                     out[i+offset].push_back(typename In::SparseDeriv(cube[0], (typename In::Deriv) cIn.data * ((1-fx) * (1-fy) * (1-fz))));
                     out[i+offset].push_back(typename In::SparseDeriv(cube[1], (typename In::Deriv) cIn.data * ((  fx) * (1-fy) * (1-fz))));
@@ -2486,7 +2486,7 @@ void BarycentricMapperQuadSetTopology<In,Out>::applyJT( typename In::VecConst& o
             const OutReal fx = (OutReal)map[cIn.index].baryCoords[0];
             const OutReal fy = (OutReal)map[cIn.index].baryCoords[1];
 
-            const topology::MeshTopology::Quad& quad = quads[map[indexIn].in_index];
+            const sofa::core::componentmodel::topology::BaseMeshTopology::Quad& quad = quads[map[indexIn].in_index];
             out[i+offset].push_back(typename In::SparseDeriv(quad[0], (typename In::Deriv) cIn.data * ((1-fx) * (1-fy))));
             out[i+offset].push_back(typename In::SparseDeriv(quad[1], (typename In::Deriv) cIn.data * ((  fx) * (1-fy))));
             out[i+offset].push_back(typename In::SparseDeriv(quad[3], (typename In::Deriv) cIn.data * ((1-fx) * (  fy))));

@@ -27,7 +27,7 @@
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/component/MechanicalObject.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/FittedRegularGridTopology.h>
 #include <sofa/component/topology/SparseGridTopology.h>
 #include <sofa/helper/vector.h>
@@ -82,13 +82,13 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
 
-    typedef topology::MeshTopology::index_type Index;
+    typedef core::componentmodel::topology::BaseMeshTopology::index_type Index;
 #ifdef SOFA_NEW_HEXA
-    typedef topology::MeshTopology::Hexa Element;
-    typedef topology::MeshTopology::SeqHexas VecElement;
+    typedef core::componentmodel::topology::BaseMeshTopology::Hexa Element;
+    typedef core::componentmodel::topology::BaseMeshTopology::SeqHexas VecElement;
 #else
-    typedef topology::MeshTopology::Cube Element;
-    typedef topology::MeshTopology::SeqCubes VecElement;
+    typedef core::componentmodel::topology::BaseMeshTopology::Cube Element;
+    typedef core::componentmodel::topology::BaseMeshTopology::SeqCubes VecElement;
 #endif
 
     static const int LARGE = 0;   ///< Symbol of mean large displacements tetrahedron solver (frame = edges mean on the 3 directions)
@@ -122,7 +122,7 @@ protected:
     double m_potentialEnergy;
 
 
-    topology::MeshTopology* _mesh;
+    sofa::core::componentmodel::topology::BaseMeshTopology* _mesh;
     topology::FittedRegularGridTopology* _trimgrid;
     topology::SparseGridTopology* _sparseGrid;
     const VecElement *_indexedElements;

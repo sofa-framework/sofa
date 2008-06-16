@@ -3,7 +3,7 @@
 
 #include <sofa/core/componentmodel/behavior/ForceField.inl>
 #include <sofa/component/forcefield/BeamFEMForceField.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/GridTopology.h>
 #include <sofa/helper/PolarDecompose.h>
 #include <sofa/helper/gl/template.h>

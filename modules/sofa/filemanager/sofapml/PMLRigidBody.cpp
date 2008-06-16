@@ -28,7 +28,7 @@
 //#include "sofa/componentCore/MappedModel.h"
 #include "sofa/component/mass/UniformMass.h"
 #include "sofa/component/mass/DiagonalMass.h"
-#include "sofa/component/topology/MeshTopology.h"
+#include "sofa/core/componentmodel/topology/BaseMeshTopology.h"
 #include "sofa/component/collision/TriangleModel.h"
 //#include "sofa/component/collision/LineModel.h"
 //#include "sofa/component/collision/PointModel.h"
@@ -221,10 +221,10 @@ void PMLRigidBody::createTopology(StructuralComponent* body)
         return;
 
     topology = new MeshTopology();
-    ((MeshTopology*)topology)->clear();
+    ((BaseMeshTopology*)topology)->clear();
 
-    MeshTopology::Triangle * tri;
-    MeshTopology::Quad * quad;
+    BaseMeshTopology::Triangle * tri;
+    BaseMeshTopology::Quad * quad;
     Cell * pCell;
     Atom * pAtom;
 
@@ -236,23 +236,23 @@ void PMLRigidBody::createTopology(StructuralComponent* body)
         {
 
         case StructureProperties::TRIANGLE :
-            tri = new MeshTopology::Triangle;
+            tri = new BaseMeshTopology::Triangle;
             for (unsigned int p(0) ; p<3 ; p++)
             {
                 pAtom = (Atom*)(pCell->getStructure(p));
                 (*tri)[p] = AtomsToDOFsIndexes[pAtom->getIndex()];
             }
-            ((MeshTopology::SeqTriangles&)((MeshTopology*)topology)->getTriangles()).push_back(*tri);
+            ((BaseMeshTopology::SeqTriangles&)((BaseMeshTopology*)topology)->getTriangles()).push_back(*tri);
             break;
 
         case StructureProperties::QUAD :
-            quad = new MeshTopology::Quad;
+            quad = new BaseMeshTopology::Quad;
             for (unsigned int p(0) ; p<4 ; p++)
             {
                 pAtom = (Atom*)(pCell->getStructure(p));
                 (*quad)[p] = AtomsToDOFsIndexes[pAtom->getIndex()];
             }
-            ((MeshTopology::SeqQuads&)((MeshTopology*)topology)->getQuads()).push_back(*quad);
+            ((BaseMeshTopology::SeqQuads&)((BaseMeshTopology*)topology)->getQuads()).push_back(*quad);
             break;
 
         default : break;

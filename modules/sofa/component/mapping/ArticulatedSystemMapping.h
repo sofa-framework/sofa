@@ -28,7 +28,7 @@
 
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/Axis.h>

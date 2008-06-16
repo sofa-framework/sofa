@@ -37,7 +37,7 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <vector>

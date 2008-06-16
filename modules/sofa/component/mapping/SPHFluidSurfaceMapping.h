@@ -32,7 +32,7 @@
 #include <sofa/component/forcefield/SPHFluidForceField.h>
 #include <sofa/core/Mapping.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/component/mapping/ImplicitSurfaceMapping.h> // for marching cube tables
 #include <vector>
 

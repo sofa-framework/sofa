@@ -30,7 +30,7 @@
 #endif
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/topology/TriangleData.h>
@@ -46,7 +46,7 @@ namespace component
 
 namespace forcefield
 {
-
+using namespace sofa::helper;
 using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 

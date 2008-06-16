@@ -24,7 +24,7 @@
 *******************************************************************************/
 #include <sofa/component/forcefield/TriangleFEMForceField.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/helper/gl/template.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
@@ -83,7 +83,7 @@ void TriangleFEMForceField<DataTypes>::init()
         method = LARGE;
 
     cerr<<"TriangleFEMForceField<DataTypes>::init(), node = "<<this->getContext()->getName()<<endl;
-    _mesh = dynamic_cast<sofa::component::topology::MeshTopology*>(this->getContext()->getTopology());
+    _mesh = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>(this->getContext()->getTopology());
 
     if (_mesh==NULL || (_mesh->getTriangles().empty() && _mesh->getNbQuads()<=0))
     {
@@ -96,12 +96,12 @@ void TriangleFEMForceField<DataTypes>::init()
     }
     else
     {
-        topology::MeshTopology::SeqTriangles* trias = new topology::MeshTopology::SeqTriangles;
+        sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles* trias = new sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles;
         int nbcubes = _mesh->getNbQuads();
         trias->reserve(nbcubes*2);
         for (int i=0; i<nbcubes; i++)
         {
-            topology::MeshTopology::Quad q = _mesh->getQuad(i);
+            sofa::core::componentmodel::topology::BaseMeshTopology::Quad q = _mesh->getQuad(i);
             trias->push_back(Element(q[0],q[1],q[2]));
             trias->push_back(Element(q[0],q[2],q[3]));
         }

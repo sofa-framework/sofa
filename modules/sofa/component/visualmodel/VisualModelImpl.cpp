@@ -651,7 +651,7 @@ void VisualModelImpl::updateVisual()
         {
             /** HD : build also a Ogl description from main Topology. But it needs to be build only once since the topology update
             is taken care of by the handleTopologyChange() routine */
-            topology::MeshTopology* topology = dynamic_cast<topology::MeshTopology*>(getContext()->getTopology());
+            sofa::core::componentmodel::topology::BaseMeshTopology* topology = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>(getContext()->getTopology());
             sofa::core::componentmodel::topology::BaseTopology* pst = dynamic_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
             if (!topology && pst)
             {
@@ -684,7 +684,7 @@ void VisualModelImpl::computePositions()
     }
 }
 
-void VisualModelImpl::computeMesh(topology::MeshTopology* topology)
+void VisualModelImpl::computeMesh(sofa::core::componentmodel::topology::BaseMeshTopology* topology)
 {
     if (vertices.empty())
     {
@@ -735,7 +735,7 @@ void VisualModelImpl::computeMesh(topology::MeshTopology* topology)
     }
 
     lastMeshRev = topology->getRevision();
-    const vector<topology::MeshTopology::Triangle>& inputTriangles = topology->getTriangles();
+    const vector<sofa::core::componentmodel::topology::BaseMeshTopology::Triangle>& inputTriangles = topology->getTriangles();
     if (this->f_printLog.getValue())
         std::cout << "VisualModel: copying "<<inputTriangles.size()<<" triangles from topology."<<std::endl;
 
@@ -746,7 +746,7 @@ void VisualModelImpl::computeMesh(topology::MeshTopology* topology)
         triangles[i] = inputTriangles[i];
     }
 
-    const vector<topology::MeshTopology::Quad>& inputQuads = topology->getQuads();
+    const vector<sofa::core::componentmodel::topology::BaseMeshTopology::Quad>& inputQuads = topology->getQuads();
     if (this->f_printLog.getValue())
         std::cout << "VisualModel: copying "<<inputQuads.size()<<" quads from topology."<<std::endl;
     quads.resize(inputQuads.size());

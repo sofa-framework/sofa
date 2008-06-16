@@ -31,7 +31,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/TriangleSetTopology.h>
 #include <sofa/component/topology/QuadSetTopology.h>
 #include <sofa/component/topology/TetrahedronSetTopology.h>
@@ -197,7 +197,7 @@ public:
     void setTriangles(ResizableExtVector<Triangle> * t) {triangles = *t;}
 
     virtual void computePositions();
-    virtual void computeMesh(sofa::component::topology::MeshTopology* topology);
+    virtual void computeMesh(sofa::core::componentmodel::topology::BaseMeshTopology* topology);
     virtual void computeMeshFromTopology(sofa::core::componentmodel::topology::BaseTopology* topology);
     virtual void computeNormals();
     virtual void computeBBox();

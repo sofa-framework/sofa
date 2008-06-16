@@ -68,9 +68,9 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
 #ifdef SOFA_NEW_HEXA
-    typedef topology::MeshTopology::SeqHexas VecElement;
+    typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqHexas VecElement;
 #else
-    typedef topology::MeshTopology::SeqCubes VecElement;
+    typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqCubes VecElement;
 #endif
 
     typedef HexahedronFEMForceFieldAndMass<DataTypes> HexahedronFEMForceFieldAndMassT;
