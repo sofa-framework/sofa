@@ -354,7 +354,7 @@ void PointSetTopology<DataTypes>::propagateTopologicalChanges()
 template<class DataTypes>
 void PointSetTopology<DataTypes>::init()
 {
-
+    f_m_topologyContainer->beginEdit();
 }
 template<class DataTypes>
 bool PointSetTopology<DataTypes>::load(const char *filename)

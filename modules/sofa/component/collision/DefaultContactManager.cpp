@@ -160,7 +160,7 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
             nbContactsMap[cms.second]++;
     }
     sofa::helper::vector<core::CollisionModel*> collisionModels;
-    simulation::tree::GNode* context = dynamic_cast<simulation::tree::GNode*>(getContext());
+    simulation::Node* context = dynamic_cast<simulation::Node*>(getContext());
     context->getTreeObjects<core::CollisionModel>(&collisionModels);
     for (unsigned int i=0; i<collisionModels.size(); ++i)
     {

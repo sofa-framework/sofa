@@ -72,6 +72,9 @@ Fluid2D::~Fluid2D()
 
 void Fluid2D::init()
 {
+    f_nx.beginEdit();
+    f_ny.beginEdit();
+    f_cellwidth.beginEdit();
     fluid->clear(nx,ny);
     fnext->clear(nx,ny);
     ftemp->clear(nx,ny);

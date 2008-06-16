@@ -11,7 +11,6 @@ namespace collision
 
 using namespace sofa::defaulttype;
 using namespace collision;
-using simulation::tree::GNode;
 
 SOFA_DECL_CLASS(BarycentricLagrangianMultiplierContact)
 

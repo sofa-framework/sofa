@@ -797,6 +797,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeLength( BasicArrayInterfac
 template<class DataTypes>
 void EdgeSetTopology<DataTypes>::init()
 {
+    f_m_topologyContainer->beginEdit();
 }
 template<class DataTypes>
 EdgeSetTopology<DataTypes>::EdgeSetTopology(MechanicalObject<DataTypes> *obj) : PointSetTopology<DataTypes>( obj,(PointSetTopology<DataTypes> *)0),

@@ -815,6 +815,7 @@ bool QuadSetGeometryAlgorithms< DataTypes >::is_quad_in_plane(const unsigned int
 template<class DataTypes>
 void QuadSetTopology<DataTypes>::init()
 {
+    f_m_topologyContainer->beginEdit();
 }
 template<class DataTypes>
 QuadSetTopology<DataTypes>::QuadSetTopology(MechanicalObject<DataTypes> *obj) : EdgeSetTopology<DataTypes>( obj) ,f_m_topologyContainer(new DataPtr< QuadSetTopologyContainer >(new QuadSetTopologyContainer(), "Quad Container"))

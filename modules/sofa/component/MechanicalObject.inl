@@ -62,19 +62,23 @@ MechanicalObject<DataTypes>::MechanicalObject()
         restScale.setValue(1);
     initialized = false;
     this->addField(f_X, "position");
-    f_X->beginEdit();
     this->addField(f_V, "velocity");
-    f_V->beginEdit();
     this->addField(f_F, "force");
-    f_F->beginEdit();
     this->addField(f_Dx, "derivX");
-    f_Dx->beginEdit();
     this->addField(f_Xfree, "free_position");
-    f_Xfree->beginEdit();
     this->addField(f_Vfree, "free_velocity");
-    f_Vfree->beginEdit();
     this->addField(f_X0,"rest_position");
-    f_X0->beginEdit();
+
+
+    f_X->init();
+    f_V->init();
+    f_F->init();
+    f_Dx->init();
+    f_Xfree->init();
+    f_Vfree->init();
+    f_X0->init();
+
+
 
     restScale = this->initData(&restScale, (SReal)1.0, "restScale","optional scaling of rest position coordinates (to simulated pre-existing internal tension)");
     translation=this->initData(&translation, Vector3(), "translation", "Translation of the DOFs");
@@ -678,6 +682,18 @@ void MechanicalObject<DataTypes>::addDxToCollisionModel()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::init()
 {
+
+
+    f_X->beginEdit();
+    f_V->beginEdit();
+    f_F->beginEdit();
+    f_Dx->beginEdit();
+    f_Xfree->beginEdit();
+    f_Vfree->beginEdit();
+    f_X0->beginEdit();
+
+
+
     if (getX()->size() != (std::size_t)vsize || getV()->size() != (std::size_t)vsize)
     {
         // X and/or V where user-specified

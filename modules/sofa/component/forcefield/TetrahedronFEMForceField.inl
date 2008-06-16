@@ -987,6 +987,12 @@ void TetrahedronFEMForceField<DataTypes>::parse(core::objectmodel::BaseObjectDes
 template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::init()
 {
+    f_initialPoints.beginEdit();
+    f_poissonRatio.beginEdit();
+    f_youngModulus.beginEdit();
+    f_localStiffnessFactor.beginEdit();
+    f_updateStiffnessMatrix.beginEdit();
+    f_assembling.beginEdit();
 
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
     _mesh = dynamic_cast<core::componentmodel::topology::BaseMeshTopology*>(this->getContext()->getTopology());

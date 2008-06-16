@@ -14,7 +14,6 @@ namespace collision
 
 using namespace sofa::defaulttype;
 using namespace core::componentmodel::collision;
-using simulation::tree::GNode;
 
 template < class TCollisionModel1, class TCollisionModel2 >
 BarycentricLagrangianMultiplierContact<TCollisionModel1,TCollisionModel2>::BarycentricLagrangianMultiplierContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)

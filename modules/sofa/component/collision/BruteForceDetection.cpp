@@ -29,7 +29,7 @@
 #include <sofa/component/collision/Point.h>
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <map>
 #include <queue>
 #include <stack>
@@ -210,10 +210,10 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
         finalcm2 = NULL;
         finalintersector = NULL;
     }
-    simulation::tree::GNode* node = dynamic_cast<simulation::tree::GNode*>(getContext());
+    simulation::Node* node = dynamic_cast<simulation::Node*>(getContext());
     if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
-    simulation::tree::GNode::ctime_t t0=0, t=0;
-    simulation::tree::GNode::ctime_t ft=0;
+    simulation::Node::ctime_t t0=0, t=0;
+    simulation::Node::ctime_t ft=0;
 
     std::queue< TestPair > externalCells;
 
@@ -268,7 +268,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
         std::stack< TestPair > internalCells;
         internalCells.push(root);
 
-        simulation::tree::GNode::ctime_t it=0,it0=0;
+        simulation::Node::ctime_t it=0,it0=0;
 
         if (node) it0 = node->startTime();
         while (!internalCells.empty())

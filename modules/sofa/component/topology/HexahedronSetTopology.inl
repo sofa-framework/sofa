@@ -1087,6 +1087,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronVolume( BasicA
 template<class DataTypes>
 void HexahedronSetTopology<DataTypes>::init()
 {
+    f_m_topologyContainer->beginEdit();
 }
 template<class DataTypes>
 HexahedronSetTopology<DataTypes>::HexahedronSetTopology(MechanicalObject<DataTypes> *obj) : QuadSetTopology<DataTypes>( obj), f_m_topologyContainer(new DataPtr< HexahedronSetTopologyContainer >(new HexahedronSetTopologyContainer(), "Hexahedron Container"))

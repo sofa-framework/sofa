@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_DEFAULTCOLLISIONGROUPMANAGER_H
 
 #include <sofa/core/componentmodel/collision/CollisionGroupManager.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <set>
 
@@ -54,7 +55,7 @@ public:
     virtual void clearGroups(core::objectmodel::BaseContext* scene);
 
     /** Overload this if yo want to design your collision group, e.g. with a MasterSolver.
-    Otherwise, an empty GNode is returned.
+    Otherwise, an empty Node is returned.
     The OdeSolver is added afterwards.
     */
     virtual simulation::tree::GNode* buildCollisionGroup();

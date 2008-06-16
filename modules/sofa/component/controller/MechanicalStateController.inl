@@ -72,7 +72,7 @@ void MechanicalStateController<DataTypes>::init()
 {
     using sofa::simulation::tree::GNode;
     using core::componentmodel::behavior::MechanicalState;
-
+    mainDirectionPtr.beginEdit();
     mState = dynamic_cast<MechanicalState<DataTypes> *> (this->getContext()->getMechanicalState());
     if (!mState)
         std::cerr << "WARNING - MechanicalStateController has no binding MechanicalState\n";

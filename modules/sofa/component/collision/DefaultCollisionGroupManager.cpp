@@ -34,7 +34,7 @@
 #include <sofa/component/odesolver/StaticSolver.h>
 #include <sofa/core/ObjectFactory.h>
 #include <string.h>
-
+#include <sofa/simulation/tree/GNode.h>
 
 
 namespace sofa
