@@ -2050,6 +2050,15 @@ void ModifyObject::updateTables()
             it_list_Table++;
             if (!skip) createTable((*it_list_Table).second,NULL,(*it_center).first, (*it_list_Table).first);
         }
+        else if ( dynamic_cast < Data<sofa::component::misc::Monitor< Vec3dTypes >::MonitorData > *> ( (*it_list_Table).second ) )
+        {
+            std::list< std::pair< Q3Table*, BaseData*> >::iterator it_center = it_list_Table;
+            it_list_Table++;
+            std::list< std::pair< Q3Table*, BaseData*> >::iterator it_center2 = it_list_Table;
+            it_list_Table++; //two times because a monitor is composed of 3 baseData
+            if (!skip)
+                createTable((*it_list_Table).second,NULL,(*it_center).first,(*it_center2).first, (*it_list_Table).first);
+        }
         else if (!skip) createTable((*it_list_Table).second,NULL,(*it_list_Table).first);
     }
 }
@@ -2057,7 +2066,7 @@ void ModifyObject::updateTables()
 
 //**************************************************************************************************************************************
 //create or update an existing table with the contents of a field
-bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vectorTable, Q3Table* vectorTable2)
+bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vectorTable, Q3Table* vectorTable2, Q3Table* vectorTable3)
 {
     //********************************************************************************************************//
     //vector< Vec3f >
@@ -2294,6 +2303,19 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
         return createQtTable(ff,box,vectorTable);
     }
     //********************************************************************************************************//
+
+    else if(  Data<sofa::component::misc::Monitor< Vec3dTypes >::MonitorData >  *ff = dynamic_cast< Data<sofa::component::misc::Monitor< Vec3dTypes >::MonitorData >   * >( field))
+    {
+        return createQtTable < Vec3dTypes >(ff,box,vectorTable, vectorTable2, vectorTable3);
+    }
+
+    //********************************************************************************************************//
+    else if(  Data<sofa::component::misc::Monitor< Vec3fTypes >::MonitorData >  *ff = dynamic_cast< Data<sofa::component::misc::Monitor< Vec3fTypes >::MonitorData >   * >( field))
+    {
+        return createQtTable < Vec3fTypes >(ff,box,vectorTable, vectorTable2, vectorTable3);
+    }
+    //********************************************************************************************************//
+
     //vector<Rigid3dTypes::Coord>
     else if (DataPtr< vector<Rigid3Types::Coord> >  *ff = dynamic_cast< DataPtr< vector<Rigid3Types::Coord>  >   * >( field ))
     {
@@ -3203,203 +3225,225 @@ void ModifyObject::saveTables()
     {
 
         if (setUpdates.find(getData(it_list_Table->first)) == setUpdates.end()) continue;
-        storeTable((*it_list_Table).first, (*it_list_Table).second);
+        storeTable(it_list_Table);
     }
 }
 
 
 //**************************************************************************************************************************************
 //Read the content of a QTable and store its values in a datafield
-void ModifyObject::storeTable(Q3Table* table, BaseData* field)
+void ModifyObject::storeTable(std::list< std::pair< Q3Table*, BaseData*> >::
+        iterator &it_list_table)
 {
+    ///////////////////////////////////////////
+    //it_list_table->first is a Q3Table* table
+    //it_list_table->second is a BaseData* field
+    ///////////////////////////////////////////
+
     //**************************************************************************************************************************************
-    if (Data< vector< Vec<3,float> > >  *ff = dynamic_cast< Data< vector< Vec<3,float> > >  * >( field ))
+    if (Data< vector< Vec<3,float> > >  *ff = dynamic_cast< Data< vector< Vec<3,float> > >  * >( it_list_table->second ))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if ( Data< vector< Vec<3,double> > >   *ff = dynamic_cast< Data< vector< Vec<3,double> > >   * >( field ) )
+    else if ( Data< vector< Vec<3,double> > >   *ff = dynamic_cast< Data< vector< Vec<3,double> > >   * >( it_list_table->second ) )
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if( Data< vector< Vec< 3, int> > >  *ff = dynamic_cast< Data< vector< Vec< 3, int> > >  * >( field ))
+    else if( Data< vector< Vec< 3, int> > >  *ff = dynamic_cast< Data< vector< Vec< 3, int> > >  * >( it_list_table->second ))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if( Data< vector< Vec< 3, unsigned int> > >   *ff = dynamic_cast< Data< vector< Vec< 3, unsigned int> > >   * >( field ))
+    else if( Data< vector< Vec< 3, unsigned int> > >   *ff = dynamic_cast< Data< vector< Vec< 3, unsigned int> > >   * >( it_list_table->second ))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if ( DataPtr< vector< Vec<3,float> > >  *ff = dynamic_cast< DataPtr< vector< Vec<3,float> > >  * >( field ))
+    else if ( DataPtr< vector< Vec<3,float> > >  *ff = dynamic_cast< DataPtr< vector< Vec<3,float> > >  * >( it_list_table->second ))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if ( DataPtr< vector< Vec<3,double> > >   *ff = dynamic_cast< DataPtr< vector< Vec<3,double> > >   * >( field ) )
+    else if ( DataPtr< vector< Vec<3,double> > >   *ff = dynamic_cast< DataPtr< vector< Vec<3,double> > >   * >( it_list_table->second ) )
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if( DataPtr< vector< Vec< 3, int> > >  *ff = dynamic_cast< DataPtr< vector< Vec< 3, int> > >  * >( field ))
+    else if( DataPtr< vector< Vec< 3, int> > >  *ff = dynamic_cast< DataPtr< vector< Vec< 3, int> > >  * >( it_list_table->second ))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if(  DataPtr< vector< Vec< 3, unsigned int> > >   *ff = dynamic_cast< DataPtr< vector< Vec< 3, unsigned int> > >   * >( field ))
+    else if(  DataPtr< vector< Vec< 3, unsigned int> > >   *ff = dynamic_cast< DataPtr< vector< Vec< 3, unsigned int> > >   * >( it_list_table->second ))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if ( Data< vector< Vec<2,float> > >  *ff = dynamic_cast< Data< vector< Vec<2,float> > >  * >( field ))
+    else if ( Data< vector< Vec<2,float> > >  *ff = dynamic_cast< Data< vector< Vec<2,float> > >  * >( it_list_table->second ))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if ( Data< vector< Vec<2,double> > >   *ff = dynamic_cast< Data< vector< Vec<2,double> > >   * >( field ) )
+    else if ( Data< vector< Vec<2,double> > >   *ff = dynamic_cast< Data< vector< Vec<2,double> > >   * >( it_list_table->second ) )
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if( Data< vector< Vec< 2, int> > >   *ff = dynamic_cast< Data< vector< Vec< 2, int> > >   * >( field ))
+    else if( Data< vector< Vec< 2, int> > >   *ff = dynamic_cast< Data< vector< Vec< 2, int> > >   * >( it_list_table->second ))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if( Data< vector< Vec< 2, unsigned int> > >   *ff = dynamic_cast< Data< vector< Vec< 2, unsigned int> > >   * >( field ))
+    else if( Data< vector< Vec< 2, unsigned int> > >   *ff = dynamic_cast< Data< vector< Vec< 2, unsigned int> > >   * >( it_list_table->second ))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if (DataPtr< vector< Vec<2,float> > >  *ff = dynamic_cast< DataPtr< vector< Vec<2,float> > >  * >( field ))
+    else if (DataPtr< vector< Vec<2,float> > >  *ff = dynamic_cast< DataPtr< vector< Vec<2,float> > >  * >( it_list_table->second ))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if ( DataPtr< vector< Vec<2,double> > >   *ff = dynamic_cast< DataPtr< vector< Vec<2,double> > >   * >( field ) )
+    else if ( DataPtr< vector< Vec<2,double> > >   *ff = dynamic_cast< DataPtr< vector< Vec<2,double> > >   * >( it_list_table->second ) )
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if(  DataPtr< vector< Vec< 2, int> > >   *ff = dynamic_cast< DataPtr< vector< Vec< 2, int> > >   * >( field ))
+    else if(  DataPtr< vector< Vec< 2, int> > >   *ff = dynamic_cast< DataPtr< vector< Vec< 2, int> > >   * >( it_list_table->second ))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if(  DataPtr< vector< Vec< 2, unsigned int> > >   *ff = dynamic_cast< DataPtr< vector< Vec< 2, unsigned int> > >   * >( field ))
+    else if(  DataPtr< vector< Vec< 2, unsigned int> > >   *ff = dynamic_cast< DataPtr< vector< Vec< 2, unsigned int> > >   * >( it_list_table->second ))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if ( Data< vector< Vec<1,float> > >  *ff = dynamic_cast< Data< vector< Vec<1,float> > >  * >( field ))
+    else if ( Data< vector< Vec<1,float> > >  *ff = dynamic_cast< Data< vector< Vec<1,float> > >  * >( it_list_table->second ))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if ( Data< vector< Vec<1,double> > >   *ff = dynamic_cast< Data< vector< Vec<1,double> > >   * >( field ) )
+    else if ( Data< vector< Vec<1,double> > >   *ff = dynamic_cast< Data< vector< Vec<1,double> > >   * >( it_list_table->second ) )
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if( Data< vector< Vec< 1, int> > >   *ff = dynamic_cast< Data< vector< Vec< 1, int> > >   * >( field ))
+    else if( Data< vector< Vec< 1, int> > >   *ff = dynamic_cast< Data< vector< Vec< 1, int> > >   * >( it_list_table->second ))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if( Data< vector< Vec< 1, unsigned int> > >   *ff = dynamic_cast< Data< vector< Vec< 1, unsigned int> > >   * >( field ))
+    else if( Data< vector< Vec< 1, unsigned int> > >   *ff = dynamic_cast< Data< vector< Vec< 1, unsigned int> > >   * >( it_list_table->second ))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if (DataPtr< vector< Vec<1,float> > >  *ff = dynamic_cast< DataPtr< vector< Vec<1,float> > >  * >( field ))
+    else if (DataPtr< vector< Vec<1,float> > >  *ff = dynamic_cast< DataPtr< vector< Vec<1,float> > >  * >( it_list_table->second ))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if ( DataPtr< vector< Vec<1,double> > >   *ff = dynamic_cast< DataPtr< vector< Vec<1,double> > >   * >( field ) )
+    else if ( DataPtr< vector< Vec<1,double> > >   *ff = dynamic_cast< DataPtr< vector< Vec<1,double> > >   * >( it_list_table->second ) )
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if(  DataPtr< vector< Vec< 1, int> > >   *ff = dynamic_cast< DataPtr< vector< Vec< 1, int> > >   * >( field ))
+    else if(  DataPtr< vector< Vec< 1, int> > >   *ff = dynamic_cast< DataPtr< vector< Vec< 1, int> > >   * >( it_list_table->second ))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if(  DataPtr< vector< Vec< 1, unsigned int> > >   *ff = dynamic_cast< DataPtr< vector< Vec< 1, unsigned int> > >   * >( field ))
+    else if(  DataPtr< vector< Vec< 1, unsigned int> > >   *ff = dynamic_cast< DataPtr< vector< Vec< 1, unsigned int> > >   * >( it_list_table->second ))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if(  Data< vector< double > >   *ff = dynamic_cast< Data< vector< double> >   * >( field))
+    else if(  Data< vector< double > >   *ff = dynamic_cast< Data< vector< double> >   * >( it_list_table->second))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if(  Data< vector< float > >   *ff = dynamic_cast< Data< vector< float> >   * >( field))
+    else if(  Data< vector< float > >   *ff = dynamic_cast< Data< vector< float> >   * >( it_list_table->second))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if(  Data< vector< int > >   *ff = dynamic_cast< Data< vector< int> >   * >( field))
+    else if(  Data< vector< int > >   *ff = dynamic_cast< Data< vector< int> >   * >( it_list_table->second))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if(  Data< vector< std::string > >   *ff = dynamic_cast< Data< vector< std::string > >   * >( field))
+    else if(  Data< vector< std::string > >   *ff = dynamic_cast< Data< vector< std::string > >   * >( it_list_table->second))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if(  Data< vector< unsigned int > >   *ff = dynamic_cast< Data< vector< unsigned int> >   * >( field))
+    else if(  Data< vector< unsigned int > >   *ff = dynamic_cast< Data< vector< unsigned int> >   * >( it_list_table->second))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if(  DataPtr< vector< double > >   *ff = dynamic_cast< DataPtr< vector< double> >   * >( field))
+    else if(  DataPtr< vector< double > >   *ff = dynamic_cast< DataPtr< vector< double> >   * >( it_list_table->second))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if(  DataPtr< vector< float > >   *ff = dynamic_cast< DataPtr< vector< float> >   * >( field))
+    else if(  DataPtr< vector< float > >   *ff = dynamic_cast< DataPtr< vector< float> >   * >( it_list_table->second))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if(  DataPtr< vector< int > >   *ff = dynamic_cast< DataPtr< vector< int> >   * >( field))
+    else if(  DataPtr< vector< int > >   *ff = dynamic_cast< DataPtr< vector< int> >   * >( it_list_table->second))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if(  DataPtr< vector< unsigned int > >   *ff = dynamic_cast< DataPtr< vector< unsigned int> >   * >( field))
+    else if(  DataPtr< vector< unsigned int > >   *ff = dynamic_cast< DataPtr< vector< unsigned int> >   * >( it_list_table->second))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if(  Data<sofa::component::topology::PointData< double > >   *ff = dynamic_cast< Data<sofa::component::topology::PointData< double> >   * >( field))
+    else if(  Data<sofa::component::topology::PointData< double > >   *ff = dynamic_cast< Data<sofa::component::topology::PointData< double> >   * >( it_list_table->second))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if(  Data<sofa::component::topology::PointData< float > >   *ff = dynamic_cast< Data<sofa::component::topology::PointData< float> >   * >( field))
+    else if(  Data<sofa::component::topology::PointData< float > >   *ff = dynamic_cast< Data<sofa::component::topology::PointData< float> >   * >( it_list_table->second))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if(  Data<sofa::component::topology::PointData< int > >   *ff = dynamic_cast< Data<sofa::component::topology::PointData< int> >   * >( field))
+    else if(  Data<sofa::component::topology::PointData< int > >   *ff = dynamic_cast< Data<sofa::component::topology::PointData< int> >   * >( it_list_table->second))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if(  Data<sofa::component::topology::PointData< unsigned int > >   *ff = dynamic_cast< Data<sofa::component::topology::PointData< unsigned int> >   * >( field))
+    else if(  Data<sofa::component::topology::PointData< unsigned int > >   *ff = dynamic_cast< Data<sofa::component::topology::PointData< unsigned int> >   * >( it_list_table->second))
     {
-        storeQtTable( table, ff);
+        storeQtTable(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-    else if (Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring > >  *ff = dynamic_cast< Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring > >  * >( field ))
+
+    //**************************************************************************************************************************************
+    else if (  Data<sofa::component::misc::Monitor< Vec3dTypes >::MonitorData >  *ff = dynamic_cast< Data<sofa::component::misc::Monitor< Vec3dTypes >::MonitorData > * >( it_list_table->second))
     {
+        storeQtTable< Vec3dTypes >(it_list_table, ff);
+    }
+    //**************************************************************************************************************************************
+    else if (  Data<sofa::component::misc::Monitor< Vec3fTypes >::MonitorData >  *ff = dynamic_cast< Data<sofa::component::misc::Monitor< Vec3fTypes >::MonitorData > * >( it_list_table->second))
+    {
+        storeQtTable< Vec3fTypes >(it_list_table, ff);
+    }
+    //**************************************************************************************************************************************
+
+    else if (Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring > >  *ff = dynamic_cast< Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring > >  * >( it_list_table->second ))
+    {
+
+        Q3Table* table = it_list_table->first;
+
         vector<sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring > new_value;
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
@@ -3422,8 +3466,11 @@ void ModifyObject::storeTable(Q3Table* table, BaseData* field)
         ff->setValue( new_value );
     }
     //**************************************************************************************************************************************
-    else if (Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec6fTypes>::Spring > >  *ff = dynamic_cast< Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec6fTypes>::Spring > >  * >( field ))
+    else if (Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec6fTypes>::Spring > >  *ff = dynamic_cast< Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec6fTypes>::Spring > >  * >( it_list_table->second ))
     {
+
+        Q3Table* table = it_list_table->first;
+
         vector<sofa::component::forcefield::SpringForceField< Vec6fTypes>::Spring > new_value;
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
@@ -3446,8 +3493,10 @@ void ModifyObject::storeTable(Q3Table* table, BaseData* field)
         ff->setValue( new_value );
     }
     //**************************************************************************************************************************************
-    else if (Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec3dTypes>::Spring > >  *ff = dynamic_cast< Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec3dTypes>::Spring > >  * >( field ))
+    else if (Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec3dTypes>::Spring > >  *ff = dynamic_cast< Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec3dTypes>::Spring > >  * >( it_list_table->second ))
     {
+
+        Q3Table* table = it_list_table->first;
 
         vector<sofa::component::forcefield::SpringForceField< Vec3dTypes>::Spring > new_value;
 
@@ -3471,8 +3520,10 @@ void ModifyObject::storeTable(Q3Table* table, BaseData* field)
         ff->setValue( new_value );
     }
     //**************************************************************************************************************************************
-    else if (Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec3fTypes>::Spring > >  *ff = dynamic_cast< Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec3fTypes>::Spring > >  * >( field ))
+    else if (Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec3fTypes>::Spring > >  *ff = dynamic_cast< Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec3fTypes>::Spring > >  * >( it_list_table->second ))
     {
+
+        Q3Table* table = it_list_table->first;
 
         vector<sofa::component::forcefield::SpringForceField< Vec3fTypes>::Spring > new_value;
 
@@ -3496,8 +3547,10 @@ void ModifyObject::storeTable(Q3Table* table, BaseData* field)
         ff->setValue( new_value );
     }
     //**************************************************************************************************************************************
-    else if (Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec2dTypes>::Spring > >  *ff = dynamic_cast< Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec2dTypes>::Spring > >  * >( field ))
+    else if (Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec2dTypes>::Spring > >  *ff = dynamic_cast< Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec2dTypes>::Spring > >  * >( it_list_table->second ))
     {
+
+        Q3Table* table = it_list_table->first;
 
         vector<sofa::component::forcefield::SpringForceField< Vec2dTypes>::Spring > new_value;
 
@@ -3521,8 +3574,10 @@ void ModifyObject::storeTable(Q3Table* table, BaseData* field)
         ff->setValue( new_value );
     }
     //**************************************************************************************************************************************
-    else if (Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec2fTypes>::Spring > >  *ff = dynamic_cast< Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec2fTypes>::Spring > >  * >( field ))
+    else if (Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec2fTypes>::Spring > >  *ff = dynamic_cast< Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec2fTypes>::Spring > >  * >( it_list_table->second ))
     {
+
+        Q3Table* table = it_list_table->first;
 
         vector<sofa::component::forcefield::SpringForceField< Vec2fTypes>::Spring > new_value;
 
@@ -3546,8 +3601,10 @@ void ModifyObject::storeTable(Q3Table* table, BaseData* field)
         ff->setValue( new_value );
     }
     //**************************************************************************************************************************************
-    else if (Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec1dTypes>::Spring > >  *ff = dynamic_cast< Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec1dTypes>::Spring > >  * >( field ))
+    else if (Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec1dTypes>::Spring > >  *ff = dynamic_cast< Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec1dTypes>::Spring > >  * >( it_list_table->second ))
     {
+
+        Q3Table* table = it_list_table->first;
 
         vector<sofa::component::forcefield::SpringForceField< Vec1dTypes>::Spring > new_value;
 
@@ -3571,8 +3628,10 @@ void ModifyObject::storeTable(Q3Table* table, BaseData* field)
         ff->setValue( new_value );
     }
     //**************************************************************************************************************************************
-    else if (Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec1fTypes>::Spring > >  *ff = dynamic_cast< Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec1fTypes>::Spring > >  * >( field ))
+    else if (Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec1fTypes>::Spring > >  *ff = dynamic_cast< Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec1fTypes>::Spring > >  * >( it_list_table->second ))
     {
+
+        Q3Table* table = it_list_table->first;
 
         vector<sofa::component::forcefield::SpringForceField< Vec1fTypes>::Spring > new_value;
 
@@ -3596,8 +3655,11 @@ void ModifyObject::storeTable(Q3Table* table, BaseData* field)
         ff->setValue( new_value );
     }
     //**************************************************************************************************************************************
-    else if (Data< sofa::helper::vector<sofa::component::forcefield::JointSpringForceField< Rigid3dTypes>::Spring > >  *ff = dynamic_cast< Data< sofa::helper::vector<sofa::component::forcefield::JointSpringForceField< Rigid3dTypes>::Spring > >  * >( field ))
+    else if (Data< sofa::helper::vector<sofa::component::forcefield::JointSpringForceField< Rigid3dTypes>::Spring > >  *ff = dynamic_cast< Data< sofa::helper::vector<sofa::component::forcefield::JointSpringForceField< Rigid3dTypes>::Spring > >  * >( it_list_table->second ))
     {
+
+        Q3Table* table = it_list_table->first;
+
         sofa::helper::vector<  sofa::component::forcefield::JointSpringForceField< Rigid3dTypes >::Spring > new_value;
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
@@ -3638,8 +3700,11 @@ void ModifyObject::storeTable(Q3Table* table, BaseData* field)
         ff->setValue( new_value );
     }
     //**************************************************************************************************************************************
-    else if (Data< sofa::helper::vector<sofa::component::forcefield::JointSpringForceField< Rigid3fTypes>::Spring > >  *ff = dynamic_cast< Data< sofa::helper::vector<sofa::component::forcefield::JointSpringForceField< Rigid3fTypes>::Spring > >  * >( field ))
+    else if (Data< sofa::helper::vector<sofa::component::forcefield::JointSpringForceField< Rigid3fTypes>::Spring > >  *ff = dynamic_cast< Data< sofa::helper::vector<sofa::component::forcefield::JointSpringForceField< Rigid3fTypes>::Spring > >  * >( it_list_table->second ))
     {
+
+        Q3Table* table = it_list_table->first;
+
         sofa::helper::vector<  sofa::component::forcefield::JointSpringForceField< Rigid3fTypes >::Spring > new_value;
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
@@ -3845,8 +3910,11 @@ bool ModifyObject::createQtTable(Data< sofa::helper::vector< T > > *ff, Q3GroupB
     return true;
 }
 //********************************************************************************************************************
-void ModifyObject::storeQtTable( Q3Table* table, Data< sofa::helper::vector< std::string > >* ff )
+
+void ModifyObject::storeQtTable(std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< sofa::helper::vector< std::string > >* ff )
 {
+    Q3Table* table=it_list_table->first;
+
     QString vec_value;
     vector< std::string > new_value;
     for (unsigned int i=0; i<ff->getValue().size(); i++)
@@ -3858,8 +3926,11 @@ void ModifyObject::storeQtTable( Q3Table* table, Data< sofa::helper::vector< std
 }
 //********************************************************************************************************************
 template<class T>
-void ModifyObject::storeQtTable( Q3Table* table, Data< sofa::helper::vector< T > >* ff )
+void ModifyObject::storeQtTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< sofa::helper::vector< T > >* ff )
 {
+
+    Q3Table* table=it_list_table->first;
+
     QString vec_value;
     vector< T > new_value;
     for (unsigned int i=0; i<ff->getValue().size(); i++)
@@ -3908,8 +3979,11 @@ bool ModifyObject::createQtTable(DataPtr< sofa::helper::vector< T > > *ff, Q3Gro
 }
 //********************************************************************************************************************
 template<class T>
-void ModifyObject::storeQtTable( Q3Table* table, DataPtr< sofa::helper::vector< T > >* ff )
+void ModifyObject::storeQtTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, DataPtr< sofa::helper::vector< T > >* ff )
 {
+
+    Q3Table* table=it_list_table->first;
+
     QString vec_value;
     vector< T > new_value;
     for (unsigned int i=0; i<ff->getValue().size(); i++)
@@ -3962,8 +4036,10 @@ bool ModifyObject::createQtTable(Data< sofa::helper::vector< Vec<N,T> > > *ff, Q
 }
 //*******************************************************************************************************************
 template< int N, class T>
-void ModifyObject::storeQtTable( Q3Table* table, Data< sofa::helper::vector< Vec<N,T> > >* ff )
+void ModifyObject::storeQtTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< sofa::helper::vector< Vec<N,T> > >* ff )
 {
+
+    Q3Table* table=it_list_table->first;
 
     sofa::helper::vector< Vec<N,T> > new_value;
     for (unsigned int i=0; i<ff->getValue().size(); i++)
@@ -4019,8 +4095,11 @@ bool ModifyObject::createQtTable(DataPtr< sofa::helper::vector< Vec<N,T> > > *ff
 }
 //********************************************************************************************************************
 template< int N, class T>
-void ModifyObject::storeQtTable( Q3Table* table, DataPtr< sofa::helper::vector< Vec<N,T> > >* ff )
+void ModifyObject::storeQtTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, DataPtr< sofa::helper::vector< Vec<N,T> > >* ff )
 {
+
+    Q3Table* table=it_list_table->first;
+
     sofa::helper::vector< Vec<N,T> > new_value;
     for (unsigned int i=0; i<ff->getValue().size(); i++)
     {
@@ -4079,8 +4158,11 @@ bool ModifyObject::createQtTable(Data< sofa::component::topology::PointData< T >
 }
 //********************************************************************************************************************
 template<class T>
-void ModifyObject::storeQtTable( Q3Table* table, Data< sofa::component::topology::PointData< T >  >* ff )
+void ModifyObject::storeQtTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< sofa::component::topology::PointData< T >  >* ff )
 {
+
+    Q3Table* table=it_list_table->first;
+
     QString vec_value;
     sofa::component::topology::PointData< T > new_value;
     for (unsigned int i=0; i<ff->getValue().size(); i++)
@@ -4091,6 +4173,197 @@ void ModifyObject::storeQtTable( Q3Table* table, Data< sofa::component::topology
     ff->setValue( new_value );
 }
 //********************************************************************************************************************
+
+template< class T>
+bool ModifyObject::createQtTable(Data<typename sofa::component::misc::Monitor<T>::MonitorData >* ff, Q3GroupBox *box, Q3Table* vectorTable, Q3Table* vectorTable2, Q3Table* vectorTable3 )
+{
+    //internal monitorData
+    typename sofa::component::misc::Monitor<T>::MonitorData MonitorDataTemp = ff->getValue();
+    //number of rows
+    unsigned short int nbRowVels = 0, nbRowForces = 0, nbRowPos = 0;
+
+    if (!vectorTable || !vectorTable2 || !vectorTable3)
+    {
+        box->setColumns(1);
+
+        new QLabel("Positions", box);
+
+        vectorTable = new Q3Table(MonitorDataTemp.sizeIdxPos(),4, box);
+
+        vectorTable->setReadOnly(false);
+        list_Table.push_back(std::make_pair(vectorTable, ff));
+        vectorTable->horizontalHeader()->setLabel(0,QString("particle Indices"));
+        vectorTable->setColumnStretchable(0,true);
+        vectorTable->horizontalHeader()->setLabel(1,QString("X"));      vectorTable->setColumnStretchable(1,true);
+        vectorTable->horizontalHeader()->setLabel(2,QString("Y"));      vectorTable->setColumnStretchable(2,true);
+        vectorTable->horizontalHeader()->setLabel(3,QString("Z"));      vectorTable->setColumnStretchable(3,true);
+
+        connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+
+        new QLabel("Velocities", box);
+
+        vectorTable2 = new Q3Table(MonitorDataTemp.sizeIdxVels(),4, box);
+
+        vectorTable2->setReadOnly(false);
+        list_Table.push_back(std::make_pair(vectorTable2, ff));
+        vectorTable2->horizontalHeader()->setLabel(0,QString("particle Indices"));
+        vectorTable2->setColumnStretchable(0,true);
+        vectorTable2->horizontalHeader()->setLabel(1,QString("X"));
+        vectorTable2->setColumnStretchable(1,true);
+        vectorTable2->horizontalHeader()->setLabel(2,QString("Y"));
+        vectorTable2->setColumnStretchable(2,true);
+        vectorTable2->horizontalHeader()->setLabel(3,QString("Z"));
+        vectorTable2->setColumnStretchable(3,true);
+
+        connect( vectorTable2, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+
+        new QLabel("Forces", box);
+
+        vectorTable3 = new Q3Table(MonitorDataTemp.sizeIdxForces(),4, box);
+
+        vectorTable3->setReadOnly(false);
+        list_Table.push_back(std::make_pair(vectorTable3, ff));
+        vectorTable3->horizontalHeader()->setLabel(0,QString("particle Indices"));
+        vectorTable3->setColumnStretchable(0,true);
+        vectorTable3->horizontalHeader()->setLabel(1,QString("X"));
+        vectorTable3->setColumnStretchable(1,true);
+        vectorTable3->horizontalHeader()->setLabel(2,QString("Y"));
+        vectorTable3->setColumnStretchable(2,true);
+        vectorTable3->horizontalHeader()->setLabel(3,QString("Z"));
+        vectorTable3->setColumnStretchable(3,true);
+
+        connect( vectorTable3, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+
+    } //fin if (!vectorTable)
+
+    if (MonitorDataTemp.getSizeVecPos())
+        nbRowPos = MonitorDataTemp.sizeIdxPos();
+
+    if (MonitorDataTemp.getSizeVecVels())
+        nbRowVels = MonitorDataTemp.sizeIdxVels();
+
+    if (MonitorDataTemp.getSizeVecForces())
+        nbRowForces = MonitorDataTemp.sizeIdxForces();
+
+    vectorTable->setNumRows(nbRowPos);
+    vectorTable2->setNumRows(nbRowVels);
+    vectorTable3->setNumRows(nbRowForces);
+
+
+    for (unsigned int i=0; i<3; i++)
+    {
+        std::ostringstream oss[nbRowPos];
+        for (unsigned int j=0; j<nbRowPos; j++)
+        {
+            oss[j] << (MonitorDataTemp.getPos(j))[i];
+            vectorTable->setText(j,i+1,std::string(oss[j].str()).c_str());
+        }
+
+        std::ostringstream oss2[nbRowVels];
+        for (unsigned int j=0; j<nbRowVels; j++)
+        {
+            oss2[j] << (MonitorDataTemp.getVel(j))[i];
+            vectorTable2->setText(j,i+1,std::string(oss2[j].str()).c_str());
+        }
+
+        std::ostringstream oss3[nbRowForces];
+        for (unsigned int j=0; j<nbRowForces; j++)
+        {
+            oss3[j] << (MonitorDataTemp.getForce(j))[i];
+            vectorTable3->setText(j,i+1,std::string(oss3[j].str()).c_str());
+        }
+    }
+    //vectorTable1
+    std::ostringstream oss[nbRowPos];
+    for (unsigned int j=0; j<nbRowPos; j++)
+    {
+        oss[j] << MonitorDataTemp.getIndPos()[j];
+        vectorTable->setText(j,0,std::string(oss[j].str()).c_str());
+    }
+    //vectorTable2
+    std::ostringstream oss2[nbRowVels];
+    for (unsigned int j=0; j<nbRowVels; j++)
+    {
+        oss2[j] << MonitorDataTemp.getIndVels()[j];
+        vectorTable2->setText(j,0,std::string(oss2[j].str()).c_str());
+    }
+    //vectorTable3
+    std::ostringstream oss3[nbRowForces];
+    for (unsigned int j=0; j<nbRowForces; j++)
+    {
+        oss3[j] << MonitorDataTemp.getIndForces()[j];
+        vectorTable3->setText(j,0,std::string(oss3[j].str()).c_str());
+    }
+
+    counterWidget+=3;
+    return true;
+}
+
+//********************************************************************************************************************
+template<class T>
+void ModifyObject::storeQtTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data<typename sofa::component::misc::Monitor<T>::MonitorData >* ff )
+{
+    Q3Table* table = it_list_table->first;
+    //internal monitorData
+    typename sofa::component::misc::Monitor<T>::MonitorData NewMonitorData = ff->getValue();
+
+
+    //Qtable positions
+    if (NewMonitorData.getSizeVecPos())
+    {
+        int valueBox;
+        sofa::helper::vector < int > values = NewMonitorData.getIndPos();
+        for (int i=0; i < table -> numRows(); i++)
+        {
+            valueBox = (int)atof(table->text(i,0));
+            if(valueBox >= 0 && valueBox <= (int)(NewMonitorData.getSizeVecPos() - 1))
+                values[i] = valueBox;
+        }
+
+        NewMonitorData.setIndPos(values);
+    }
+    it_list_table++;
+    table = it_list_table->first;
+
+
+    //Qtable velocities
+
+    if (NewMonitorData.getSizeVecVels())
+    {
+        int valueBox;
+        sofa::helper::vector < int > values = NewMonitorData.getIndVels();
+        for (int i=0; i < table -> numRows(); i++)
+        {
+            valueBox = (int)atof(table->text(i,0));
+            if(valueBox >= 0 && valueBox <= (int)(NewMonitorData.getSizeVecVels() - 1))
+                values[i] = valueBox;
+        }
+
+        NewMonitorData.setIndVels(values);
+    }
+    it_list_table++;
+    table=it_list_table->first;
+
+
+    //Qtable forces
+
+    if (NewMonitorData.getSizeVecForces())
+    {
+        int valueBox;
+        sofa::helper::vector < int > values = NewMonitorData.getIndForces();
+
+        for (int i=0; i < table -> numRows(); i++)
+        {
+            valueBox = (int)atof(table->text(i,0));
+            if(valueBox >= 0 && valueBox <= (int)(NewMonitorData.getSizeVecForces() - 1))
+                values[i] = valueBox;
+        }
+
+        NewMonitorData.setIndForces(values);
+    }
+
+    ff->setValue(NewMonitorData);
+}
 //********************************************************************************************************************
 
 Q3Table *ModifyObject::addResizableTable(Q3GroupBox *box,int number, int column)
