@@ -26,7 +26,7 @@
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/component/MechanicalObject.inl>
 
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/component/mass/UniformMass.h>
 
 #include <sofa/defaulttype/DataTypeInfo.h>

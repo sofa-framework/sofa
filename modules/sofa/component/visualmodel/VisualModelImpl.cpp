@@ -415,6 +415,12 @@ void VisualModelImpl::applyUVScale(double scaleU, double scaleV)
 
 void VisualModelImpl::init()
 {
+    field_vertices.beginEdit();
+    field_vnormals.beginEdit();
+    field_vtexcoords.beginEdit();
+    field_triangles.beginEdit();
+    field_quads.beginEdit();
+
     VisualModel::init();
     updateVisual();
 }

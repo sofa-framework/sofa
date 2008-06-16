@@ -930,6 +930,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::computeTetrahedronVolume( Basi
 template<class DataTypes>
 void TetrahedronSetTopology<DataTypes>::init()
 {
+    f_m_topologyContainer->beginEdit();
 }
 template<class DataTypes>
 TetrahedronSetTopology<DataTypes>::TetrahedronSetTopology(MechanicalObject<DataTypes> *obj) : TriangleSetTopology<DataTypes>( obj), f_m_topologyContainer(new DataPtr< TetrahedronSetTopologyContainer >(new TetrahedronSetTopologyContainer(), "Tetrahedron Container"))

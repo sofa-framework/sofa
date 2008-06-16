@@ -3971,6 +3971,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 template<class DataTypes>
 void TriangleSetTopology<DataTypes>::init()
 {
+    f_m_topologyContainer->beginEdit();
 }
 template<class DataTypes>
 TriangleSetTopology<DataTypes>::TriangleSetTopology(MechanicalObject<DataTypes> *obj) : EdgeSetTopology<DataTypes>( obj),f_m_topologyContainer(new DataPtr< TriangleSetTopologyContainer >(new TriangleSetTopologyContainer(), "Triangle Container"))

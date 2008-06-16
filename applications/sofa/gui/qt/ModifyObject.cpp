@@ -1010,19 +1010,19 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 box->setColumns(2);
                 box->setTitle(QString("Instance"));
                 new QLabel(QString("Name"), box);
-                new QLabel(QString(node_clicked->getName()), box);
+                new QLabel(QString(node_clicked->getName().c_str()), box);
                 new QLabel(QString("Class"), box);
-                new QLabel(QString(node_clicked->getClassName()), box);
+                new QLabel(QString(node_clicked->getClassName().c_str()), box);
                 std::string namespacename = node_clicked->decodeNamespaceName(typeid(*node_clicked));
                 if (!namespacename.empty())
                 {
                     new QLabel(QString("Namespace"), box);
-                    new QLabel(QString(namespacename), box);
+                    new QLabel(QString(namespacename.c_str()), box);
                 }
                 if (!node_clicked->getTemplateName().empty())
                 {
                     new QLabel(QString("Template"), box);
-                    new QLabel(QString(node_clicked->getTemplateName()), box);
+                    new QLabel(QString(node_clicked->getTemplateName().c_str()), box);
                 }
 
                 tabLayout->addWidget( box );
@@ -1037,17 +1037,17 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 if (!entry->description.empty() && entry->description != std::string("TODO"))
                 {
                     new QLabel(QString("Description"), box);
-                    new QLabel(QString(entry->description), box);
+                    new QLabel(QString(entry->description.c_str()), box);
                 }
                 if (!entry->authors.empty() && entry->authors != std::string("TODO"))
                 {
                     new QLabel(QString("Authors"), box);
-                    new QLabel(QString(entry->authors), box);
+                    new QLabel(QString(entry->authors.c_str()), box);
                 }
                 if (!entry->license.empty() && entry->license != std::string("TODO"))
                 {
                     new QLabel(QString("License"), box);
-                    new QLabel(QString(entry->license), box);
+                    new QLabel(QString(entry->license.c_str()), box);
                 }
                 tabLayout->addWidget( box );
             }

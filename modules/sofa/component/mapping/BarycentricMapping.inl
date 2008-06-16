@@ -851,6 +851,7 @@ void BarycentricMapping<BasicMapping>::createMapperFromTopology(Topology * topol
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::init()
 {
+    f_grid->beginEdit();
     if(mapper == NULL) // try to create a mapper according to the topology of the In model
     {
         core::componentmodel::topology::Topology* topology = dynamic_cast<core::componentmodel::topology::Topology*>(this->fromModel->getContext()->getTopology());

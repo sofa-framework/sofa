@@ -115,6 +115,13 @@ template <class DataTypes> void TetrahedralCorotationalFEMForceField<DataTypes>:
 template <class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::init()
 {
+    f_poissonRatio.beginEdit();
+    f_youngModulus.beginEdit();
+    f_localStiffnessFactor.beginEdit();
+    f_updateStiffnessMatrix.beginEdit();
+    f_assembling.beginEdit();
+
+
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
     _mesh =0;
     if (getContext()->getMainTopology()!=0)

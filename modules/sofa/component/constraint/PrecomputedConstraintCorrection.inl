@@ -80,6 +80,9 @@ PrecomputedConstraintCorrection<DataTypes>::~PrecomputedConstraintCorrection()
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::init()
 {
+
+    f_rotations.beginEdit();
+    f_restRotations.beginEdit();
     mstate = dynamic_cast< behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
     const VecDeriv& v0 = *mstate->getV();
 

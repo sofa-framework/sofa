@@ -845,6 +845,7 @@ for (i=0;i<ea.size();++i) {
 template<class DataTypes>
 void ManifoldEdgeSetTopology<DataTypes>::init()
 {
+    f_m_topologyContainer->beginEdit();
     EdgeSetTopology<DataTypes>::init();
     getEdgeSetTopologyContainer()->computeConnectedComponent();
     //assert(topology->getEdgeSetTopologyContainer()->checkTopology());

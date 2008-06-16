@@ -73,6 +73,10 @@ Fluid3D::~Fluid3D()
 
 void Fluid3D::init()
 {
+    f_nx.beginEdit();
+    f_ny.beginEdit();
+    f_nz.beginEdit();
+    f_cellwidth.beginEdit();
     fluid->clear(nx,ny,nz);
     fnext->clear(nx,ny,nz);
     ftemp->clear(nx,ny,nz);
