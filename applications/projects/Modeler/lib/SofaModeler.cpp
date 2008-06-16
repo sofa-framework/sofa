@@ -128,7 +128,7 @@ void SofaModeler::changeInformation(Q3ListViewItem *item)
 {
     if (!item) return;
     if (item->childCount() != 0) return;
-    std::string nameObject = item->text(0);
+    std::string nameObject = item->text(0).ascii();
     std::string::size_type end_name = nameObject.find(" ");
     if (end_name != std::string::npos) nameObject.resize(end_name);
     ClassInfo *currentComponent = getInfoFromName(nameObject);

@@ -128,6 +128,10 @@ int main(int argc, char** argv)
         }
     }
 
+    Mat4x4f xform;
+    bool hasXForm = false;
+    xform.identity();
+
     if (rotation != Vec3f(0,0,0))
     {
         std::cout << "Rotating mesh..."<<std::endl;
@@ -144,6 +148,8 @@ int main(int argc, char** argv)
             obj.PP(i) = mat*obj.getPP(i);
             obj.PN(i) = mat*obj.getPN(i);
         }
+        hasXForm = true;
+        xform = mat;
     }
 
     if (translation != Vec3f(0,0,0))
@@ -153,6 +159,18 @@ int main(int argc, char** argv)
         {
             obj.PP(i) = obj.getPP(i) + translation;
         }
+        hasXForm = true;
+        xform[0][3] = translation[0];
+        xform[1][3] = translation[1];
+        xform[2][3] = translation[2];
+    }
+
+    if (obj.distmap && hasXForm)
+    {
+        //Mat4x4f m; m.invert(xform);
+        std::cout << "distmap mat = "<<xform <<" * " << obj.distmap->mat<<" = ";
+        obj.distmap->mat = xform * obj.distmap->mat;
+        std::cout << obj.distmap->mat<<std::endl;
     }
 
     std::cout << "Mesh bbox="<<obj.calcBBox()<<std::endl;
