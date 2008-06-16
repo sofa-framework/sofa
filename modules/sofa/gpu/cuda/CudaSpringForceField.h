@@ -49,14 +49,14 @@ public:
     //enum { BSIZE=16 };
     struct GPUSpring
     {
-        int index; ///< -1 if no spring
+        int index; ///< 0 if no spring
         //float initpos;
         float ks;
         //float kd;
-        GPUSpring() : index(-1), /*initpos(0),*/ ks(0)/*, kd(0)*/ {}
+        GPUSpring() : index(0), /*initpos(0),*/ ks(0)/*, kd(0)*/ {}
         void set(int index, float /*initpos*/, float ks, float /*kd*/)
         {
-            this->index = index;
+            this->index = index+1;
             //this->initpos = initpos;
             this->ks = ks;
             //this->kd = kd;
@@ -64,14 +64,14 @@ public:
     };
     struct GPUSpring2
     {
-        //int index; ///< -1 if no spring
+        //int index; ///< 0 if no spring
         float initpos;
         //float ks;
         float kd;
-        GPUSpring2() : /*index(-1),*/ initpos(0), /*ks(0),*/ kd(0) {}
+        GPUSpring2() : /*index(0),*/ initpos(0), /*ks(0),*/ kd(0) {}
         void set(int /*index*/, float initpos, float /*ks*/, float kd)
         {
-            //this->index = index;
+            //this->index = index+1;
             this->initpos = initpos;
             //this->ks = ks;
             this->kd = kd;

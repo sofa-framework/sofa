@@ -123,7 +123,8 @@ public:
             glBindBuffer( GL_ARRAY_BUFFER, bufferObject);
             glBufferData( GL_ARRAY_BUFFER, allocSize*sizeof ( T ), 0, GL_DYNAMIC_DRAW);
             glBindBuffer( GL_ARRAY_BUFFER, 0);
-            deviceIsValid = false;
+            if ( vectorSize > 0 && deviceIsValid )
+                deviceIsValid = false;
         }
         else
         {
@@ -164,6 +165,8 @@ public:
         reserve ( s );
         if ( s > vectorSize )
         {
+            copyToHost();
+            memset(hostPointer+vectorSize,0,(s-vectorSize)*sizeof(T));
             // Call the constructor for the new elements
             for ( size_type i = vectorSize; i < s; i++ )
             {
@@ -184,8 +187,9 @@ public:
                 }
             }
         }
-        else
+        else if (s < vectorSize)
         {
+            copyToHost();
             // Call the destructor for the deleted elements
             for ( size_type i = s; i < vectorSize; i++ )
             {
