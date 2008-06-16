@@ -33,6 +33,7 @@
 #include <sofa/component/forcefield/SpringForceField.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/simulation/common/Node.h>
+#include <sofa/component/misc/Monitor.h>
 
 #include <qglobal.h>
 #ifdef SOFA_QT4
@@ -131,8 +132,9 @@ protected:
     void updateHistory();
     void updateEnergy();
 
-    bool createTable(core::objectmodel::BaseData* field, Q3GroupBox *box=NULL, Q3Table* vectorTable=NULL, Q3Table* vectorTable2=NULL );
-    void storeTable(Q3Table* table, core::objectmodel::BaseData* field);
+    bool createTable(core::objectmodel::BaseData* field, Q3GroupBox *box=NULL, Q3Table* vectorTable=NULL, Q3Table* vectorTable2=NULL, Q3Table* vectorTable3=NULL );
+    void storeTable(std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table);
+// 	void storeTable(Q3Table* table, core::objectmodel::BaseData* field);
 
     void createVector( core::objectmodel::BaseData* object,const Quater<double> &value, Q3GroupBox *box); //will be created as a Vec<4,double>
     void createVector( core::objectmodel::BaseData* object,const Quater<float>  &value, Q3GroupBox *box); //will be created as a Vec<4,float>
@@ -156,29 +158,35 @@ protected:
     template< class T>
     bool createQtTable(Data< sofa::helper::vector< T > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
     template<class T>
-    void storeQtTable( Q3Table* table, Data< sofa::helper::vector< T > >* ff );
+    void storeQtTable(std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< sofa::helper::vector< T > >* ff );
 
-    void storeQtTable( Q3Table* table, Data< sofa::helper::vector< std::string > >* ff );
+    void storeQtTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< sofa::helper::vector< std::string > >* ff );
+
     //*********************************************************
     template< class T>
     bool createQtTable(DataPtr< sofa::helper::vector< T > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
     template< class T>
-    void storeQtTable( Q3Table* table, DataPtr< sofa::helper::vector< T > >* ff );
+    void storeQtTable(std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, DataPtr< sofa::helper::vector< T > >* ff );
     //*********************************************************
     template< int N, class T>
     bool createQtTable(Data< sofa::helper::vector< Vec<N,T> > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
     template< int N, class T>
-    void storeQtTable( Q3Table* table, Data< sofa::helper::vector< Vec<N,T> > >* ff );
+    void storeQtTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< sofa::helper::vector< Vec<N,T> > >* ff );
     //*********************************************************
     template< int N, class T>
     bool createQtTable(DataPtr< sofa::helper::vector< Vec<N,T> > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
     template< int N, class T>
-    void storeQtTable( Q3Table* table, DataPtr< sofa::helper::vector< Vec<N,T> > >* ff );
+    void storeQtTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, DataPtr< sofa::helper::vector< Vec<N,T> > >* ff );
     //*********************************************************
     template< class T>
     bool createQtTable(Data< sofa::component::topology::PointData< T > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
     template< class T>
-    void storeQtTable( Q3Table* table, Data< sofa::component::topology::PointData< T > >* ff );
+    void storeQtTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< sofa::component::topology::PointData< T > >* ff );
+    //*********************************************************
+    template< class T>
+    bool createQtTable(Data<typename sofa::component::misc::Monitor<T>::MonitorData >* ff, Q3GroupBox *box, Q3Table* vectorTable, Q3Table* vectorTable2, Q3Table* vectorTable3 );
+    template< class T>
+    void storeQtTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< typename sofa::component::misc::Monitor<T>::MonitorData >* ff );
     //*********************************************************
 
     Q3Table* addResizableTable(Q3GroupBox *box,int size, int column=1);

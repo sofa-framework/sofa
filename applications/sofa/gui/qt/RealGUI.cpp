@@ -819,9 +819,11 @@ void RealGUI::lmlOpen ( const char* filename )
 {
     if ( pmlreader )
     {
+        Node* groot;
         if ( lmlreader != NULL ) delete lmlreader;
         lmlreader = new LMLReader; std::cout <<"New lml reader\n";
         lmlreader->BuildStructure ( filename, pmlreader );
+
         groot = viewer->getScene();
         getSimulation()->init ( groot );
 
