@@ -214,10 +214,10 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
         Index b = elems[i][1];
         Index c = elems[i][2];
         Index d = elems[i][3];
-        Transformation Rt;
-        computeRotationLarge(Rt, x, a, b, c);
-        const TetrahedronFEMForceFieldInternalData<gpu::cuda::CudaVec3fTypes>::GPUElementState& s = data.state[i];
-        const TetrahedronFEMForceFieldInternalData<gpu::cuda::CudaVec3fTypes>::GPUElement& e = data.elems[i];
+        typename Main::Transformation Rt;
+        m->computeRotationLarge(Rt, x, a, b, c);
+        const GPUElementState& s = data.state[i];
+        const GPUElement& e = data.elems[i];
         Mat3x3f Rdiff = Rt-s.Rt;
         if ((Rdiff[0].norm2()+Rdiff[1].norm2()+Rdiff[2].norm2()) > 0.000001f)
         {
@@ -229,7 +229,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
         Coord xc = Rt*(x[c]-x[a]);
         Coord xd = Rt*(x[d]-x[a]);
 
-        Displacement D;
+        typename Main::Displacement D;
         D[0] = 0;
         D[1] = 0;
         D[2] = 0;

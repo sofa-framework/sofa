@@ -53,7 +53,7 @@ extern "C"
 
 struct GPUSpring
 {
-    int index; ///< -1 if no spring
+    int index; ///< 0 if no spring
     float ks;
 };
 
@@ -508,6 +508,7 @@ __global__ void SpringForceFieldCuda3t_addExternalForce_kernel(unsigned int nbSp
     for (int s = 0; s < nbSpringPerVertex; s++)
     {
         GPUSpring spring = *springs;
+        --spring.index;
         springs+=BSIZE;
         GPUSpring2 spring2 = *(const GPUSpring2*)springs;
         springs+=BSIZE;
@@ -575,6 +576,7 @@ __global__ void SpringForceFieldCuda3t1_addForce_kernel(unsigned int nbSpringPer
     for (int s = 0; s < nbSpringPerVertex; s++)
     {
         GPUSpring spring = *springs;
+        --spring.index;
         springs+=BSIZE;
         GPUSpring2 spring2 = *(const GPUSpring2*)springs;
         springs+=BSIZE;
@@ -651,6 +653,7 @@ __global__ void SpringForceFieldCuda3t_addForce_kernel(unsigned int nbSpringPerV
     for (int s = 0; s < nbSpringPerVertex; s++)
     {
         GPUSpring spring = *springs;
+        --spring.index;
         springs+=BSIZE;
         GPUSpring2 spring2 = *(const GPUSpring2*)springs;
         springs+=BSIZE;
@@ -742,6 +745,7 @@ __global__ void StiffSpringForceFieldCuda3t_addExternalForce_kernel(unsigned int
     for (int s = 0; s < nbSpringPerVertex; s++)
     {
         GPUSpring spring = *springs;
+        --spring.index;
         springs+=BSIZE;
         GPUSpring2 spring2 = *(const GPUSpring2*)springs;
         springs+=BSIZE;
@@ -813,6 +817,7 @@ __global__ void StiffSpringForceFieldCuda3t1_addForce_kernel(unsigned int nbSpri
     for (int s = 0; s < nbSpringPerVertex; s++)
     {
         GPUSpring spring = *springs;
+        --spring.index;
         springs+=BSIZE;
         GPUSpring2 spring2 = *(const GPUSpring2*)springs;
         springs+=BSIZE;
@@ -892,6 +897,7 @@ __global__ void StiffSpringForceFieldCuda3t_addForce_kernel(unsigned int nbSprin
     for (int s = 0; s < nbSpringPerVertex; s++)
     {
         GPUSpring spring = *springs;
+        --spring.index;
         springs+=BSIZE;
         GPUSpring2 spring2 = *(const GPUSpring2*)springs;
         springs+=BSIZE;
@@ -929,8 +935,10 @@ __global__ void StiffSpringForceFieldCuda3t_addForce_kernel(unsigned int nbSprin
             u -= pos1;
             relativeVelocity -= vel1;
 
-            real inverseLength = 1/sqrt(dot(u,u));
-            real d = __fdividef(1,inverseLength);
+            //real inverseLength = 1/sqrt(dot(u,u));
+            //real d = __fdividef(1,inverseLength);
+            real d = sqrt(dot(u,u));
+            real inverseLength = 1.0f/d;
             u *= inverseLength;
             real elongation = d - spring2.initpos;
             real elongationVelocity = dot(u,relativeVelocity);
@@ -986,6 +994,7 @@ __global__ void StiffSpringForceFieldCuda3t_addExternalDForce_kernel(unsigned in
     for (int s = 0; s < nbSpringPerVertex; s++)
     {
         GPUSpring spring = *springs;
+        --spring.index;
         springs+=BSIZE;
         //GPUSpring2 spring2 = *(const GPUSpring2*)springs;
         springs+=BSIZE;
@@ -1047,6 +1056,7 @@ __global__ void StiffSpringForceFieldCuda3t1_addDForce_kernel(unsigned int nbSpr
     for (int s = 0; s < nbSpringPerVertex; s++)
     {
         GPUSpring spring = *springs;
+        --spring.index;
         springs+=BSIZE;
         //GPUSpring2 spring2 = *(const GPUSpring2*)springs;
         springs+=BSIZE;
@@ -1121,6 +1131,7 @@ __global__ void StiffSpringForceFieldCuda3t_addDForce_kernel(unsigned int nbSpri
     for (int s = 0; s < nbSpringPerVertex; s++)
     {
         GPUSpring spring = *springs;
+        --spring.index;
         springs+=BSIZE;
         //GPUSpring2 spring2 = *(const GPUSpring2*)springs;
         springs+=BSIZE;
