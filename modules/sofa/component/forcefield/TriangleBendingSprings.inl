@@ -37,7 +37,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGLEBENDINGSPRINGS_INL
 
 #include <sofa/component/forcefield/TriangleBendingSprings.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <iostream>
 
 namespace sofa
@@ -136,25 +136,25 @@ void TriangleBendingSprings<DataTypes>::init()
     // Set the bending springs
 
     std::map< IndexPair, unsigned > edgeMap;
-    topology::MeshTopology* topology = dynamic_cast<topology::MeshTopology*>( this->getContext()->getTopology() );
+    sofa::core::componentmodel::topology::BaseMeshTopology* topology = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>( this->getContext()->getTopology() );
     assert( topology );
 
-    const topology::MeshTopology::SeqTriangles& triangles = topology->getTriangles();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = topology->getTriangles();
     //std::cout<<"==================================TriangleBendingSprings<DataTypes>::init(), triangles size = "<<triangles.size()<<std::endl;
     for( unsigned i= 0; i<triangles.size(); ++i )
     {
-        const topology::MeshTopology::Triangle& face = triangles[i];
+        const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& face = triangles[i];
         {
             registerTriangle( face[0], face[1], face[2], edgeMap );
         }
 
     }
 
-    const topology::MeshTopology::SeqQuads& quads = topology->getQuads();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqQuads& quads = topology->getQuads();
     //std::cout<<"==================================TriangleBendingSprings<DataTypes>::init(), quad size = "<<topology->getQuads().size()<<std::endl;
     for( unsigned i= 0; i<quads.size(); ++i )
     {
-        const topology::MeshTopology::Quad& face = quads[i];
+        const sofa::core::componentmodel::topology::BaseMeshTopology::Quad& face = quads[i];
         {
             registerTriangle( face[0], face[1], face[2], edgeMap );
             registerTriangle( face[0], face[2], face[3], edgeMap );

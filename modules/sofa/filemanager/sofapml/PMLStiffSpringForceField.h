@@ -31,7 +31,7 @@
 #include "PMLBody.h"
 
 #include <StructuralComponent.h>
-#include "sofa/component/topology/MeshTopology.h"
+#include "sofa/core/componentmodel/topology/BaseMeshTopology.h"
 #include "sofa/component/collision/TriangleModel.h"
 //#include "sofa/component/collision/LineModel.h"
 //#include "sofa/component/collision/PointModel.h"
@@ -86,10 +86,10 @@ private :
     void createCollisionModel();
 
     // extract edges to a list of lines
-    MeshTopology::Line * hexaToLines(Cell* pCell);
-    MeshTopology::Line * tetraToLines(Cell* pCell);
-    MeshTopology::Line * triangleToLines(Cell* pCell);
-    MeshTopology::Line * quadToLines(Cell* pCell);
+    BaseMeshTopology::Line * hexaToLines(Cell* pCell);
+    BaseMeshTopology::Line * tetraToLines(Cell* pCell);
+    BaseMeshTopology::Line * triangleToLines(Cell* pCell);
+    BaseMeshTopology::Line * quadToLines(Cell* pCell);
 
     //initialization of properties
     void initMass(string m);

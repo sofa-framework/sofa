@@ -30,7 +30,7 @@
 #endif
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/topology/TriangleData.h>
@@ -80,9 +80,9 @@ public:
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
 
-    typedef topology::MeshTopology::index_type Index;
-    typedef topology::MeshTopology::Triangle Element;
-    typedef topology::MeshTopology::SeqTriangles VecElement;
+    typedef sofa::core::componentmodel::topology::BaseMeshTopology::index_type Index;
+    typedef sofa::core::componentmodel::topology::BaseMeshTopology::Triangle Element;
+    typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles VecElement;
 
     static const int SMALL = 1;										///< Symbol of small displacements triangle solver
     static const int LARGE = 0;										///< Symbol of large displacements triangle solver

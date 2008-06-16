@@ -8,7 +8,7 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/io/Mesh.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
@@ -283,8 +283,8 @@ public:
 
     //CudaVector<SamplingPoint> meshPts;
     CudaVector<Coord> meshPts;
-    sofa::component::topology::MeshTopology::SeqTriangles meshTriangles;
-    sofa::component::topology::MeshTopology::SeqQuads meshQuads;
+    sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles meshTriangles;
+    sofa::core::componentmodel::topology::BaseMeshTopology::SeqQuads meshQuads;
 
 protected:
     int nbRef;

@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_INL
 
 #include <sofa/component/forcefield/JointSpringForceField.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/Cylinder.h>

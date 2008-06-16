@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 //#ifdef SOFA_HAVE_FLOWVR
 #include <flowvr/render/mesh.h>
 //#endif
@@ -430,9 +431,9 @@ void FFDDistanceGridCollisionModel::init()
                 elems[c].points.swap(elems[e].points); // move the list of points to the new
             elems[c].elem = e;
 #ifdef SOFA_NEW_HEXA
-            topology::MeshTopology::Hexa cube = ffdGrid->getHexaCopy(e);
+            core::componentmodel::topology::BaseMeshTopology::Hexa cube = ffdGrid->getHexaCopy(e);
 #else
-            topology::MeshTopology::Cube cube = ffdGrid->getCubeCopy(e);
+            core::componentmodel::topology::BaseMeshTopology::Cube cube = ffdGrid->getCubeCopy(e);
 #endif
             elems[c].initP0 = ffdGrid->getPoint(cube[0]);
             elems[c].initDP = ffdGrid->getPoint(cube[7])-elems[c].initP0;
@@ -496,9 +497,9 @@ void FFDDistanceGridCollisionModel::updateGrid()
     {
         DeformedCube& cube = getDeformCube( index );
 #ifdef SOFA_NEW_HEXA
-        const sofa::helper::vector<topology::MeshTopology::Hexa>& cubeCorners = ffdGrid->getHexas();
+        const sofa::helper::vector<core::componentmodel::topology::BaseMeshTopology::Hexa>& cubeCorners = ffdGrid->getHexas();
 #else
-        const sofa::helper::vector<topology::MeshTopology::Cube>& cubeCorners = ffdGrid->getCubes();
+        const sofa::helper::vector<core::componentmodel::topology::BaseMeshTopology::Cube>& cubeCorners = ffdGrid->getCubes();
 #endif
         const Vec3Types::VecCoord& x = *ffd->getX();
         {

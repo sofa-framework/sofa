@@ -45,7 +45,7 @@
 #include <map>
 
 #include <sofa/core/componentmodel/behavior/ForceField.h> // or "BaseForceField.h" ?
-#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/topology/TriangleData.h> // to comment ?
@@ -61,7 +61,7 @@ namespace component
 
 namespace forcefield
 {
-
+using namespace sofa::helper;
 using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 

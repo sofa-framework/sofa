@@ -28,6 +28,7 @@
 using namespace sofa::component::mass;
 using namespace sofa::component::mapping;
 using namespace sofa::component::forcefield;
+using namespace sofa::component::topology;
 using namespace sofa::component;
 
 #include <PhysicalModel.h>
@@ -122,9 +123,9 @@ void PMLFemForceField::initDensity(string m)
 
 //convenient method to tesselate a hexahedron to 5 tetrahedron
 // used by createTopology method
-MeshTopology::Tetra * PMLFemForceField::Tesselate(Cell* pCell)
+BaseMeshTopology::Tetra * PMLFemForceField::Tesselate(Cell* pCell)
 {
-    MeshTopology::Tetra *tet = new MeshTopology::Tetra[5];
+    BaseMeshTopology::Tetra *tet = new BaseMeshTopology::Tetra[5];
     Atom *pAtom;
     int index[8];
 
@@ -177,11 +178,11 @@ void PMLFemForceField::createMechanicalState(StructuralComponent* body)
 void PMLFemForceField::createTopology(StructuralComponent* body)
 {
     topology = new MeshTopology();
-    ((MeshTopology*)topology)->clear();
+    ((BaseMeshTopology*)topology)->clear();
 
     unsigned int nbCells = body->getNumberOfCells();
-    MeshTopology::Tetra * tet;
-    MeshTopology::Line * line;
+    BaseMeshTopology::Tetra * tet;
+    BaseMeshTopology::Line * line;
     Cell * pCell;
     Atom * pAtom;
 
@@ -196,22 +197,22 @@ void PMLFemForceField::createTopology(StructuralComponent* body)
             tet = Tesselate(pCell);
             for (unsigned int p(0) ; p<5 ; p++)
             {
-                ((MeshTopology::SeqTetras&)((MeshTopology*)topology)->getTetras()).push_back(tet[p]);
+                ((BaseMeshTopology::SeqTetras&)((BaseMeshTopology*)topology)->getTetras()).push_back(tet[p]);
                 for (unsigned int l1=0 ; l1<4 ; l1++)
                 {
                     for (unsigned int l2=l1+1 ; l2<4 ; l2++)
                     {
-                        line = new MeshTopology::Line;
+                        line = new BaseMeshTopology::Line;
                         (*line)[0] = tet[p][l1];
                         (*line)[1] = tet[p][l2];
-                        ((MeshTopology::SeqLines&)((MeshTopology*)topology)->getLines()).push_back(*line);
+                        ((BaseMeshTopology::SeqLines&)((BaseMeshTopology*)topology)->getLines()).push_back(*line);
                     }
                 }
             }
             break;
 
         case StructureProperties::TETRAHEDRON :
-            tet = new MeshTopology::Tetra;
+            tet = new BaseMeshTopology::Tetra;
             for (unsigned int i(0) ; i<4 ; i++)
             {
                 pAtom = (Atom*)(pCell->getStructure(i));
@@ -220,14 +221,14 @@ void PMLFemForceField::createTopology(StructuralComponent* body)
                 {
                     for (unsigned int l2=l1+1 ; l2<4 ; l2++)
                     {
-                        line = new MeshTopology::Line;
+                        line = new BaseMeshTopology::Line;
                         (*line)[0] = (*tet)[l1];
                         (*line)[1] = (*tet)[l2];
-                        ((MeshTopology::SeqLines&)((MeshTopology*)topology)->getLines()).push_back(*line);
+                        ((BaseMeshTopology::SeqLines&)((BaseMeshTopology*)topology)->getLines()).push_back(*line);
                     }
                 }
             }
-            ((MeshTopology::SeqTetras&)((MeshTopology*)topology)->getTetras()).push_back(*tet);
+            ((BaseMeshTopology::SeqTetras&)((BaseMeshTopology*)topology)->getTetras()).push_back(*tet);
             break;
 
         default : break;
@@ -326,8 +327,8 @@ void PMLFemForceField::createVisualModel(StructuralComponent* body)
 
     Cell * pCell;
     Atom * pAtom;
-    MeshTopology::Quad * quad;
-    MeshTopology::Triangle * triangle;
+    BaseMeshTopology::Quad * quad;
+    BaseMeshTopology::Triangle * triangle;
 
     for (unsigned int i=0 ; i< extFacets->getNumberOfStructures() ; i++)
     {
@@ -335,23 +336,23 @@ void PMLFemForceField::createVisualModel(StructuralComponent* body)
         switch(pCell->getProperties()->getType())
         {
         case StructureProperties::QUAD :
-            quad = new MeshTopology::Quad;
+            quad = new BaseMeshTopology::Quad;
             for (unsigned int j(0) ; j<4 ; j++)
             {
                 pAtom = (Atom*)(pCell->getStructure(j));
                 (*quad)[j] = AtomsToDOFsIndexes[pAtom->getIndex()];
             }
-            ((MeshTopology::SeqQuads&)((MeshTopology*)topology)->getQuads()).push_back(*quad);
+            ((BaseMeshTopology::SeqQuads&)((BaseMeshTopology*)topology)->getQuads()).push_back(*quad);
             break;
 
         case StructureProperties::TRIANGLE :
-            triangle = new MeshTopology::Triangle;
+            triangle = new BaseMeshTopology::Triangle;
             for (unsigned int j(0) ; j<3 ; j++)
             {
                 pAtom = (Atom*)(pCell->getStructure(j));
                 (*triangle)[j] = AtomsToDOFsIndexes[pAtom->getIndex()];
             }
-            ((MeshTopology::SeqTriangles&)((MeshTopology*)topology)->getTriangles()).push_back(*triangle);
+            ((BaseMeshTopology::SeqTriangles&)((BaseMeshTopology*)topology)->getTriangles()).push_back(*triangle);
             break;
 
         default : break;
@@ -439,37 +440,37 @@ bool PMLFemForceField::FusionBody(PMLBody* body)
     }
 
     //------   Fusion Topology
-    MeshTopology * femTopo = (MeshTopology * ) (femBody->getTopology());
+    BaseMeshTopology * femTopo = (BaseMeshTopology * ) (femBody->getTopology());
 
     //fusion tetras
     for (int i=0 ; i < femTopo->getNbTetras() ; i++)
     {
-        MeshTopology::Tetra tet = femTopo->getTetra(i);
+        BaseMeshTopology::Tetra tet = femTopo->getTetra(i);
         for (unsigned int j(0) ; j<4 ; j++)
         {
             tet[j] = oldToNewIndex[tet[j] ];
         }
-        ((MeshTopology::SeqTetras&)((MeshTopology*)topology)->getTetras()).push_back(tet);
+        ((BaseMeshTopology::SeqTetras&)((BaseMeshTopology*)topology)->getTetras()).push_back(tet);
     }
     //fusion triangles
     for (int i=0 ; i < femTopo->getNbTriangles() ; i++)
     {
-        MeshTopology::Triangle tri = femTopo->getTriangle(i);
+        BaseMeshTopology::Triangle tri = femTopo->getTriangle(i);
         for (unsigned int j(0) ; j<3 ; j++)
         {
             tri[j] = oldToNewIndex[tri[j] ];
         }
-        ((MeshTopology::SeqTriangles&)((MeshTopology*)topology)->getTriangles()).push_back(tri);
+        ((BaseMeshTopology::SeqTriangles&)((BaseMeshTopology*)topology)->getTriangles()).push_back(tri);
     }
     //fusion quads
     for (int i=0 ; i < femTopo->getNbQuads() ; i++)
     {
-        MeshTopology::Quad qua = femTopo->getQuad(i);
+        BaseMeshTopology::Quad qua = femTopo->getQuad(i);
         for (unsigned int j(0) ; j<4 ; j++)
         {
             qua[j] = oldToNewIndex[qua[j] ];
         }
-        ((MeshTopology::SeqQuads&)((MeshTopology*)topology)->getQuads()).push_back(qua);
+        ((BaseMeshTopology::SeqQuads&)((BaseMeshTopology*)topology)->getQuads()).push_back(qua);
     }
 
 

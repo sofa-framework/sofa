@@ -246,7 +246,7 @@ protected:
     void buildFromVoxelFile(const std::string& filename);
     void buildFromRawVoxelFile(const std::string& filename);
 
-    void constructCollisionModels(const sofa::helper::vector< sofa::component::topology::MeshTopology * > &list_mesh,
+    void constructCollisionModels(const sofa::helper::vector< sofa::core::componentmodel::topology::BaseMeshTopology * > &list_mesh,
             const sofa::helper::vector< sofa::helper::vector< Vector3 >* >            &list_X,
             const sofa::helper::vector< unsigned int> mesh_MC,
             std::map< unsigned int, Vector3 >     map_indices) const;
@@ -318,19 +318,19 @@ public :
     virtual const SeqHexas& getHexas()
     {
         if( !_alreadyInit ) init();
-        return MeshTopology::getHexas();
+        return sofa::component::topology::MeshTopology::getHexas();
     }
 #else
     virtual const SeqCubes& getHexas()
     {
         if( !_alreadyInit ) init();
-        return MeshTopology::getHexas();
+        return sofa::component::topology::MeshTopology::getHexas();
     }
 #endif
     virtual int getNbPoints() const
     {
         if( !_alreadyInit ) const_cast<SparseGridTopology*>(this)->init();
-        return MeshTopology::getNbPoints();
+        return sofa::core::componentmodel::topology::BaseMeshTopology::getNbPoints();
     }
 
     virtual int getNbHexas() { return this->getHexas().size();}

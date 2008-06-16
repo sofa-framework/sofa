@@ -248,10 +248,12 @@ public:
     GLuint bufferRead(bool create = false)
     {
         if (!bufferObject)
+        {
             if (create)
                 createBuffer();
             else
                 return 0;
+        }
         copyToDevice();
         return bufferObject;
     }
@@ -260,10 +262,12 @@ public:
     GLuint bufferWrite(bool create = false)
     {
         if (!bufferObject)
+        {
             if (create)
                 createBuffer();
             else
                 return 0;
+        }
         copyToDevice();
         unmapBuffer();
         hostIsValid = false;

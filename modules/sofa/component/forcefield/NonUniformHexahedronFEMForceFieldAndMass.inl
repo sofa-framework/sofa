@@ -64,7 +64,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
         return;
     }
 
-    this->_mesh = dynamic_cast<sofa::component::topology::MeshTopology*>(this->getContext()->getTopology());
+    this->_mesh = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>(this->getContext()->getTopology());
     if ( this->_mesh==NULL)
     {
         std::cerr << "ERROR(NonUniformHexahedronFEMForceFieldAndMass): object must have a MeshTopology.\n";

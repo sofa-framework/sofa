@@ -24,7 +24,7 @@
 *******************************************************************************/
 #include <sofa/component/forcefield/TriangularFEMForceField.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/component/topology/TriangleData.inl>
 #include <sofa/component/topology/EdgeData.inl>

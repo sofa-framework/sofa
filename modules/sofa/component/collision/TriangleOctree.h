@@ -29,7 +29,7 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/component/MechanicalObject.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
 /*THIS STATIC CUBE SIZE MUST BE CHANGE, it represents the size of the occtree cube*/
 #define CUBE_SIZE 200

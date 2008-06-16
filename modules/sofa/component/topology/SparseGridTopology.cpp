@@ -28,7 +28,7 @@
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/component/topology/SparseGridTopology.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/fixed_array.h>
@@ -403,7 +403,7 @@ void SparseGridTopology::updateMesh()
     //Creating if needed collision models and visual models
     using sofa::simulation::tree::GNode;
 
-    sofa::helper::vector< sofa::component::topology::MeshTopology * > list_mesh;
+    sofa::helper::vector< sofa::core::componentmodel::topology::BaseMeshTopology * > list_mesh;
     sofa::helper::vector< sofa::helper::vector< Vector3 >* > list_X;
 
     //Get Collision Model
@@ -457,7 +457,7 @@ void SparseGridTopology::getMesh(sofa::helper::io::Mesh &m)
     MC.createMesh(&(*dataVoxels.beginEdit())[0],0.25f,  m,smoothData.getValue());
 }
 
-void SparseGridTopology::constructCollisionModels(const sofa::helper::vector< sofa::component::topology::MeshTopology * > &list_mesh,
+void SparseGridTopology::constructCollisionModels(const sofa::helper::vector< sofa::core::componentmodel::topology::BaseMeshTopology * > &list_mesh,
         const sofa::helper::vector< sofa::helper::vector< Vector3 >* >            &list_X,
         const sofa::helper::vector< unsigned int> mesh_MC,
         std::map< unsigned int, Vector3 >     map_indices) const

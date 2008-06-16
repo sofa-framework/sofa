@@ -3,7 +3,7 @@
 
 #include <sofa/component/forcefield/MeshSpringForceField.h>
 #include <sofa/component/forcefield/StiffSpringForceField.inl>
-#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -51,7 +51,7 @@ void MeshSpringForceField<DataTypes>::init()
 
     if (this->mstate1==this->mstate2)
     {
-        topology::MeshTopology* topology = dynamic_cast<topology::MeshTopology*>(this->mstate1->getContext()->getTopology());
+        sofa::core::componentmodel::topology::BaseMeshTopology* topology = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>(this->mstate1->getContext()->getTopology());
 
 
         if (topology != NULL)
@@ -66,7 +66,7 @@ void MeshSpringForceField<DataTypes>::init()
                 n = topology->getNbLines();
                 for (int i=0; i<n; ++i)
                 {
-                    topology::MeshTopology::Line e = topology->getLine(i);
+                    sofa::core::componentmodel::topology::BaseMeshTopology::Line e = topology->getLine(i);
                     this->addSpring(sset, e[0], e[1], s, d);
                 }
             }
@@ -77,7 +77,7 @@ void MeshSpringForceField<DataTypes>::init()
                 n = topology->getNbTriangles();
                 for (int i=0; i<n; ++i)
                 {
-                    topology::MeshTopology::Triangle e = topology->getTriangle(i);
+                    sofa::core::componentmodel::topology::BaseMeshTopology::Triangle e = topology->getTriangle(i);
                     this->addSpring(sset, e[0], e[1], s, d);
                     this->addSpring(sset, e[0], e[2], s, d);
                     this->addSpring(sset, e[1], e[2], s, d);
@@ -90,7 +90,7 @@ void MeshSpringForceField<DataTypes>::init()
                 n = topology->getNbQuads();
                 for (int i=0; i<n; ++i)
                 {
-                    topology::MeshTopology::Quad e = topology->getQuad(i);
+                    sofa::core::componentmodel::topology::BaseMeshTopology::Quad e = topology->getQuad(i);
                     this->addSpring(sset, e[0], e[1], s, d);
                     this->addSpring(sset, e[0], e[2], s, d);
                     this->addSpring(sset, e[0], e[3], s, d);
@@ -106,7 +106,7 @@ void MeshSpringForceField<DataTypes>::init()
                 n = topology->getNbTetras();
                 for (int i=0; i<n; ++i)
                 {
-                    topology::MeshTopology::Tetra e = topology->getTetra(i);
+                    sofa::core::componentmodel::topology::BaseMeshTopology::Tetra e = topology->getTetra(i);
                     this->addSpring(sset, e[0], e[1], s, d);
                     this->addSpring(sset, e[0], e[2], s, d);
                     this->addSpring(sset, e[0], e[3], s, d);
@@ -125,13 +125,13 @@ void MeshSpringForceField<DataTypes>::init()
                 for (int i=0; i<n; ++i)
                 {
                     if (!topology->isCubeActive(i)) continue;
-                    topology::MeshTopology::Hexa e = topology->getHexa(i);
+                    sofa::core::componentmodel::topology::BaseMeshTopology::Hexa e = topology->getHexa(i);
 #else
                 n = topology->getNbCubes();
                 for (int i=0; i<n; ++i)
                 {
                     if (!topology->isCubeActive(i)) continue;
-                    topology::MeshTopology::Cube e = topology->getCube(i);
+                    sofa::core::componentmodel::topology::BaseMeshTopology::Cube e = topology->getCube(i);
 #endif
                     for (int i=0; i<8; i++)
                         for (int j=i+1; j<8; j++)

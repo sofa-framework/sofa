@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELDDENSITY_INL
 #define SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELDDENSITY_INL
 
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/component/forcefield/NonUniformHexahedronFEMForceFieldDensity.h>
 #include <sofa/helper/system/FileRepository.h>
 
@@ -68,7 +69,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
         return;
     }
 
-    this->_mesh = dynamic_cast<sofa::component::topology::MeshTopology*>(this->getContext()->getTopology());
+    this->_mesh = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>(this->getContext()->getTopology());
     if ( this->_mesh==NULL)
     {
         std::cerr << "ERROR(NonUniformHexahedronFEMForceFieldDensity): object must have a MeshTopology.\n";

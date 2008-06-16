@@ -27,7 +27,7 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/component/topology/TetrahedronSetTopology.h>
 
