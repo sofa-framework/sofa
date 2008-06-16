@@ -198,7 +198,7 @@ The components directly access their sibling components only, except for the map
 A component traversed by a visitor can indirectly access the data in its associated sub-tree in read-write mode using visitors, whereas data in its parent graph is read-only and only partially accessible using method \texttt{getContext}.
 Sibling nodes of the same type can be traversed by visitors in arbitrary order.
 
-The visitors belong to namespace \texttt{simulation::tree}.
+The visitors belong to namespace \texttt{sofa::simulation}.
 
 \subsection{ODE Solvers}
 When an \texttt{AnimateVisitor} traverses a node with an \texttt{OdeSolver} component,
@@ -261,7 +261,7 @@ Applying a \texttt{MechanicalPropagatePositionAndVelocityVisitor} is thus necess
 This visitor is automatically performed after time integration, as one can see in the code of method \\ \texttt{MechanicalIntegrationVisitor::fwdOdeSolver}.
 It is also used by some solvers when auxiliary states are needed, as discussed in section~\ref{sec:statevectors}, in order to update the mapped DOFs.
 
-\todo{Call tree of AnimateVisitor, restricted to sofa::core and sofa::simulation::tree}
+\todo{Call tree of AnimateVisitor, restricted to sofa::core and sofa::simulation}
 
 \todo{Discuss independent and shared solvers}
 
