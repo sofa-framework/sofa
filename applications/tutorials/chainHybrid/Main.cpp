@@ -25,6 +25,7 @@
 #include <sofa/component/visualmodel/OglModel.h>
 
 #include <sofa/simulation/common/TransformationVisitor.h>
+#include <sofa/helper/system/glut.h>
 
 using sofa::component::visualmodel::OglModel;
 
@@ -40,6 +41,7 @@ using sofa::component::odesolver::CGImplicitSolver;
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
+    glutInit(&argc,argv);
     sofa::helper::parse("This is a SOFA application.")
     (argc,argv);
     sofa::gui::SofaGUI::Init(argv[0]);
@@ -47,7 +49,7 @@ int main(int argc, char** argv)
     // The graph root node
     GNode* groot = new GNode;
     groot->setName( "root" );
-    groot->setGravityInWorld( Coord3(0,-10,0) );
+    groot->setGravityInWorld( Coord3(0,0,-10) );
 
 
     //Components for collision management

@@ -6,6 +6,7 @@
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/gui/SofaGUI.h>
 
+#include <sofa/helper/system/glut.h>
 using namespace sofa::simulation::tree;
 using sofa::component::odesolver::EulerSolver;
 
@@ -17,6 +18,8 @@ using sofa::component::odesolver::EulerSolver;
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
+
+    glutInit(&argc,argv);
     sofa::helper::parse("This is a SOFA application.")
     (argc,argv);
     sofa::gui::SofaGUI::Init(argv[0]);
