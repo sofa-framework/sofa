@@ -32,6 +32,7 @@
 #include <sofa/component/topology/PointData.h>
 #include <sofa/component/forcefield/SpringForceField.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/misc/Monitor.h>
 
@@ -75,7 +76,7 @@ namespace qt
 {
 
 using sofa::helper::Quater;
-using sofa::defaulttype::Vec;
+using namespace sofa::defaulttype;
 using sofa::simulation::Node;
 
 #ifndef SOFA_QT4
@@ -187,6 +188,41 @@ protected:
     bool createQtTable(Data<typename sofa::component::misc::Monitor<T>::MonitorData >* ff, Q3GroupBox *box, Q3Table* vectorTable, Q3Table* vectorTable2, Q3Table* vectorTable3 );
     template< class T>
     void storeQtTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< typename sofa::component::misc::Monitor<T>::MonitorData >* ff );
+    //*********************************************************
+
+
+    //Rigid Special Cases
+    template< int N, class T>
+    bool createQtTable(Data< sofa::helper::vector< RigidCoord<N,T> > > *ff, Q3GroupBox *box, Q3Table* vectorTable, Q3Table* vectorTable2  );
+    template<class T>
+    void storeQtRigid3Table( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< sofa::helper::vector< RigidCoord<3,T> > >* ff );
+    template<class T>
+    void storeQtRigid2Table( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< sofa::helper::vector< RigidCoord<2,T> > >* ff );
+
+    //*********************************************************
+    template< int N, class T>
+    bool createQtTable(Data< sofa::helper::vector< RigidDeriv<N,T> > > *ff, Q3GroupBox *box, Q3Table* vectorTable, Q3Table* vectorTable2  );
+    template<class T>
+    void storeQtRigid3Table( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< sofa::helper::vector< RigidDeriv<3,T> > >* ff );
+    template<class T>
+    void storeQtRigid2Table( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< sofa::helper::vector< RigidDeriv<2,T> > >* ff );
+
+    //*********************************************************
+    template< int N, class T>
+    bool createQtTable(DataPtr< sofa::helper::vector< RigidCoord<N,T> > > *ff, Q3GroupBox *box, Q3Table* vectorTable, Q3Table* vectorTable2  );
+    template<class T>
+    void storeQtRigid3Table( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, DataPtr< sofa::helper::vector< RigidCoord<3,T> > >* ff );
+    template<class T>
+    void storeQtRigid2Table( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, DataPtr< sofa::helper::vector< RigidCoord<2,T> > >* ff );
+
+    //*********************************************************
+    template< int N, class T>
+    bool createQtTable(DataPtr< sofa::helper::vector< RigidDeriv<N,T> > > *ff, Q3GroupBox *box, Q3Table* vectorTable, Q3Table* vectorTable2  );
+    template<class T>
+    void storeQtRigid3Table( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, DataPtr< sofa::helper::vector< RigidDeriv<3,T> > >* ff );
+    template<class T>
+    void storeQtRigid2Table( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, DataPtr< sofa::helper::vector< RigidDeriv<2,T> > >* ff );
+
     //*********************************************************
 
     Q3Table* addResizableTable(Q3GroupBox *box,int size, int column=1);
