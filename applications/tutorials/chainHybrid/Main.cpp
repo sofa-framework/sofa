@@ -95,7 +95,7 @@ int main(int argc, char** argv)
     chain->addChild(torusFixed);
 
     MeshTopology* meshTorusFixed = new MeshTopology;
-    meshTorusFixed->load(sofa::helper::system::DataRepository.getFile("CollisionModels/torus2_for_collision.obj").c_str());
+    meshTorusFixed->load(sofa::helper::system::DataRepository.getFile("CollisionModels/torus_for_collision.obj").c_str());
     torusFixed->addObject(meshTorusFixed);
 
     MechanicalObject3* dofFixed = new MechanicalObject3; dofFixed->setName("Fixed Object");
@@ -108,7 +108,7 @@ int main(int argc, char** argv)
 
     OglModel* visualFixed = new OglModel;
     visualFixed->setName("visual");
-    visualFixed->load(sofa::helper::system::DataRepository.getFile("VisualModels/torus2.obj"),"","");
+    visualFixed->load(sofa::helper::system::DataRepository.getFile("VisualModels/torus.obj"),"","");
     visualFixed->setColor("gray");
     torusFixed->addObject(visualFixed);
 
@@ -198,7 +198,7 @@ int main(int argc, char** argv)
     torusSpring->addObject(solverSpring);
 
     MeshTopology* meshTorusSpring = new MeshTopology;
-    meshTorusSpring->load(sofa::helper::system::DataRepository.getFile("Topology/torus2_low_res.msh").c_str());
+    meshTorusSpring->load(sofa::helper::system::DataRepository.getFile("Topology/torus_low_res.msh").c_str());
     torusSpring->addObject(meshTorusSpring);
 
     MechanicalObject3* dofSpring = new MechanicalObject3; dofSpring->setName("Spring Object");
@@ -221,7 +221,7 @@ int main(int argc, char** argv)
 
     OglModel* visualSpring = new OglModel;
     visualSpring->setName("visual");
-    visualSpring->load(sofa::helper::system::DataRepository.getFile("VisualModels/torus2.obj"),"","");
+    visualSpring->load(sofa::helper::system::DataRepository.getFile("VisualModels/torus.obj"),"","");
     visualSpring->setColor("green");
     SpringVisualNode->addObject(visualSpring);
 
@@ -236,7 +236,7 @@ int main(int argc, char** argv)
     torusSpring->addChild(SpringCollisionNode);
 
     MeshTopology* meshTorusSpring_surf= new MeshTopology;
-    meshTorusSpring_surf->load(sofa::helper::system::DataRepository.getFile("CollisionModels/torus2_for_collision.obj").c_str());
+    meshTorusSpring_surf->load(sofa::helper::system::DataRepository.getFile("CollisionModels/torus_for_collision.obj").c_str());
     SpringCollisionNode->addObject(meshTorusSpring_surf);
 
     MechanicalObject3* dofSpring_surf = new MechanicalObject3; dofSpring_surf->setName("Collision Object Spring");
@@ -348,7 +348,7 @@ int main(int argc, char** argv)
 
     OglModel* visualRigid = new OglModel;
     visualRigid->setName("visual");
-    visualRigid->load(sofa::helper::system::DataRepository.getFile("VisualModels/torus2.obj"),"","");
+    visualRigid->load(sofa::helper::system::DataRepository.getFile("VisualModels/torus.obj"),"","");
     visualRigid->setColor("gray");
     RigidVisualNode->addObject(visualRigid);
 
@@ -363,7 +363,7 @@ int main(int argc, char** argv)
     torusRigid->addChild(RigidCollisionNode);
 
     MeshTopology* meshTorusRigid_surf= new MeshTopology;
-    meshTorusRigid_surf->load(sofa::helper::system::DataRepository.getFile("CollisionModels/torus2_for_collision.obj").c_str());
+    meshTorusRigid_surf->load(sofa::helper::system::DataRepository.getFile("CollisionModels/torus_for_collision.obj").c_str());
     RigidCollisionNode->addObject(meshTorusRigid_surf);
 
     MechanicalObject3* dofRigid_surf = new MechanicalObject3; dofRigid_surf->setName("Collision Object Rigid");
@@ -380,15 +380,19 @@ int main(int argc, char** argv)
     //Set the initial position: must be done AFTER the initialization of the scene
     sofa::simulation::TransformationVisitor transform;
     transform.setTranslation(2.5,0.0,0.0);
+    transform.setRotation(90,0,0);
     transform.execute(torusFEM);
 
     transform.setTranslation(5.0,0.0,0.0);
+    transform.setRotation(0,0,0);
     transform.execute(torusSpring);
 
     transform.setTranslation(7.5,0.0,0.0);
+    transform.setRotation(90,0,0);
     transform.execute(torusFFD);
 
     transform.setTranslation(10.0,0.0,0.0);
+    transform.setRotation(00,0,0);
     transform.execute(torusRigid);
 
 

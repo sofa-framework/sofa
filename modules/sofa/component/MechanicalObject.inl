@@ -84,6 +84,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     translation=this->initData(&translation, Vector3(), "translation", "Translation of the DOFs");
     rotation=this->initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs");
     scale=this->initData(&scale, (SReal)1.0, "scale", "Scale of the DOFs");
+    filename=this->initData(&filename, std::string(""), "filename", "File corresponding to the Mechanical Object", false);
 
     /*    x = new VecCoord;
       v = new VecDeriv;*/
@@ -176,7 +177,12 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
 {
     if (arg->getAttribute("filename"))
     {
-        load(arg->getAttribute("filename"));
+        filename.setValue(arg->getAttribute("filename"));
+    }
+    if (!filename.getValue().empty())
+    {
+        load(filename.getValue().c_str());
+        filename.setValue(std::string("")); //clear the field filename: When we save the scene, we don't need anymore the filename
     }
 
     unsigned int size0 = getX()->size();

@@ -53,6 +53,11 @@ public:
 
     void setTranslation(SReal dx, SReal dy, SReal dz) { translation = Vector3(dx,dy,dz);}
     void setRotation(const Quaternion &q) {rotation = q;}
+    void setRotation(SReal rx, SReal ry, SReal rz)
+    {
+        Vector3 rot = Vector3(rx,ry,rz)*3.141592653/180.0;
+        rotation = Quaternion::createFromRotationVector( Vec<3,SReal>(rot[0],rot[1],rot[2]));
+    }
     void setScale(SReal s) {scale = s;}
 
 
