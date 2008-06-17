@@ -2050,7 +2050,7 @@ void ModifyObject::updateTables()
             it_list_Table++;
             if (!skip) createTable((*it_list_Table).second,NULL,(*it_center).first, (*it_list_Table).first);
         }
-        else if ( dynamic_cast < Data<sofa::component::misc::Monitor< Vec3dTypes >::MonitorData > *> ( (*it_list_Table).second ) )
+        else if ( dynamic_cast < Data<sofa::component::misc::Monitor< Vec3Types >::MonitorData > *> ( (*it_list_Table).second ) )
         {
             std::list< std::pair< Q3Table*, BaseData*> >::iterator it_center = it_list_Table;
             it_list_Table++;
