@@ -491,6 +491,7 @@ void GNode::initVisualContext()
 {
     if (getParent() != NULL)
     {
+        this->worldGravity_.setDisplayed(false); //only display gravity for the root: it will be propagated at each time step
         if (showVisualModels_.getValue() == -1)
             showVisualModels_.setValue(static_cast<GNode *>(getParent())->showVisualModels_.getValue());
         if (showBehaviorModels_.getValue() == -1)

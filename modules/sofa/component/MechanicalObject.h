@@ -92,6 +92,7 @@ protected:
     Data< Vector3 > translation;
     Data< Vector3> rotation;
     Data< SReal > scale;
+    Data< std::string > filename;
 
     /// @name Integration-related data
     /// @{

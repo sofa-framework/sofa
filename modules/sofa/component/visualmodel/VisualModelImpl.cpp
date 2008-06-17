@@ -129,7 +129,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
        field_vtexcoords  (initDataPtr(&field_vtexcoords, &vtexcoords, "texcoords",  "coordinates of the texture") ),
        field_triangles   (initDataPtr(&field_triangles, &triangles,"triangles" ,  "triangles of the model") ),
        field_quads       (initDataPtr(&field_quads, &quads,   "quads",    "quads of the model") ),
-       filename          (initData   (&filename,    "filename","Path to the model")),
+       filename          (initData   (&filename,    "filename","Path to the model", false)),
        texturename       (initData                            (&texturename, "texturename","Name of the Texture")),
        material(initData(&material,"material","Material")) //, tex(NULL)
 {
