@@ -205,10 +205,10 @@ public:
             return out;
         }
 
-        /**Indices vector initialization must be written like :
-        *	P"Number of particles to monitor" [ "indices of the particles" ]
-        *	V"Number of particles to monitor" [ "indices of the particles" ]
-        *	F"Number of particles to monitor" [ "indices of the particles" ]
+        /**Indices vector initialization MUST be written like :
+        *	P"Number of particles to monitor(put 0 if none)" [ "indices of the particles" ]
+        *	V"Number of particles to monitor(put 0 if none)" [ "indices of the particles" ]
+        *	F"Number of particles to monitor(put 0 if none)" [ "indices of the particles" ]
         *	Example : P2 [0 1] V4 [3 2 1 0] F0 []
         **/
         inline friend std::istream& operator >> ( std::istream& in, MonitorData &m )
