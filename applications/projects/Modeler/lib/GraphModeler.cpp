@@ -1,9 +1,7 @@
 #include "GraphModeler.h"
 
 #include <sofa/simulation/tree/Simulation.h>
-#include <sofa/simulation/common/FindByTypeVisitor.h>
 #include <sofa/gui/qt/FileManagement.h> //static functions to manage opening/ saving of files
-
 #include <sofa/helper/system/SetDirectory.h>
 #ifdef SOFA_QT4
 #include <Q3Header>
@@ -370,11 +368,9 @@ void GraphModeler::fileOpen(std::string filename)
     if (!filenameXML.empty())
     {
         sofa::helper::system::SetDirectory chdir ( filename );
-
         xml::BaseElement* xml = xml::loadFromFile ( filename.c_str() );
         if (xml == NULL) return;
         if (!xml->init()) std::cerr<< "Objects initialization failed.\n";
-
         root = dynamic_cast<GNode*> ( xml->getObject() );
         delete xml;
     }
