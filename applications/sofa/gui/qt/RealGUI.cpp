@@ -216,7 +216,7 @@ protected:
         switch (event->type())
         {
         case QEvent::FileOpen:
-            static_cast<RealGUI*>(mainWidget())->fileOpen(static_cast<QFileOpenEvent *>(event)->file());
+            static_cast<RealGUI*>(mainWidget())->fileOpen((static_cast<QFileOpenEvent *>(event)->file()).toStdString ());
             return true;
         default:
             return QApplication::event(event);
@@ -485,7 +485,7 @@ void RealGUI::updateRecentlyOpened(std::string fileLoaded)
     out.open(scenes.c_str(),std::ios::out);
 
     out << fileLoaded << "\n";
-    recentlyOpened->insertItem(QString(sofa::helper::system::DataRepository.getFile(fileLoaded.c_str())));
+    recentlyOpened->insertItem(QString::fromStdString(sofa::helper::system::DataRepository.getFile(fileLoaded.c_str())));
     for (unsigned int i=0; i<list_files.size() && i<5; ++i)
     {
         recentlyOpened->insertItem(QString(list_files[i].c_str()));
@@ -1078,10 +1078,10 @@ void RealGUI::fileOpen()
         else
 #endif
             if (s.endsWith( ".simu") )
-                fileOpenSimu(s);
+                fileOpenSimu(s.toStdString ());
             else
             {
-                fileOpen (s);
+                fileOpen (s.toStdString());
             }
     }
 }
@@ -1108,9 +1108,9 @@ void RealGUI::fileReload()
     }
 #else
     if (s.endsWith( ".simu") )
-        fileOpenSimu(s);
+        fileOpenSimu(s.toStdString());
     else
-        fileOpen ( s );
+        fileOpen ( s.toStdString() );
 #endif
 
 }
