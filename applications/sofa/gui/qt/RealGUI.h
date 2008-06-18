@@ -49,9 +49,12 @@
 #include <QStackedWidget>
 #include <QSlider>
 #include <QTimer>
+#include <Q3TextDrag>
 typedef Q3ListViewItem QListViewItem;
 typedef QStackedWidget QWidgetStack;
 #else
+typedef QTextDrag Q3TextDrag;
+#include <qdragobject.h>
 #include <qwidgetstack.h>
 #include <qlistview.h>
 #include <qslider.h>
@@ -151,6 +154,9 @@ public:
 
     virtual void editRecordDirectory();
     virtual void editGnuplotDirectory();
+
+    void dragMoveEvent( QDragMoveEvent* event) {event->accept();}
+    void dropEvent(QDropEvent* event);
 
 public slots:
     void fileRecentlyOpened(int id);

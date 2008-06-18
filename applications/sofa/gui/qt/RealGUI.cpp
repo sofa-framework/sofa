@@ -1781,7 +1781,16 @@ void RealGUI::loadObject ( std::string path, double dx, double dy, double dz,  d
 }
 
 
-
+void RealGUI::dropEvent(QDropEvent* event)
+{
+    QString text;
+    Q3TextDrag::decode(event, text);
+    std::string filename(text.ascii());
+    filename = filename.substr(7); //removing file://
+    filename.resize(filename.size()-1);
+    filename[filename.size()-1]='\0';
+    fileOpen(filename);
+}
 
 } // namespace qt
 
