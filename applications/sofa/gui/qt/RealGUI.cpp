@@ -482,11 +482,11 @@ void RealGUI::updateRecentlyOpened(std::string fileLoaded)
 
     recentlyOpened->clear();
     std::ofstream out;
-    out.open(scenes.c_str(),ios::out);
+    out.open(scenes.c_str(),std::ios::out);
 
     out << fileLoaded << "\n";
-    recentlyOpened->insertItem(QString(fileLoaded.c_str()));
-    for (unsigned int i=0; i<list_files.size(); ++i)
+    recentlyOpened->insertItem(QString(sofa::helper::system::DataRepository.getFile(fileLoaded.c_str())));
+    for (unsigned int i=0; i<list_files.size() && i<5; ++i)
     {
         recentlyOpened->insertItem(QString(list_files[i].c_str()));
         out << list_files[i] << "\n";
