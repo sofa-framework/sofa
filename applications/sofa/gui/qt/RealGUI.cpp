@@ -216,7 +216,8 @@ protected:
         switch (event->type())
         {
         case QEvent::FileOpen:
-            static_cast<RealGUI*>(mainWidget())->fileOpen((static_cast<QFileOpenEvent *>(event)->file()).toStdString ());
+            static_cast<RealGUI*>(mainWidget())->fileOpen(static_cast<QFileOpenEvent *>(event)->file().ascii());
+
             return true;
         default:
             return QApplication::event(event);
@@ -483,9 +484,10 @@ void RealGUI::updateRecentlyOpened(std::string fileLoaded)
     recentlyOpened->clear();
     std::ofstream out;
     out.open(scenes.c_str(),std::ios::out);
-
+    fileLoaded = sofa::helper::system::DataRepository.getFile(fileLoaded.c_str());
     out << fileLoaded << "\n";
-    recentlyOpened->insertItem(QString::fromStdString(sofa::helper::system::DataRepository.getFile(fileLoaded.c_str())));
+
+    recentlyOpened->insertItem(QString(fileLoaded.c_str()));
     for (unsigned int i=0; i<list_files.size() && i<5; ++i)
     {
         recentlyOpened->insertItem(QString(list_files[i].c_str()));
@@ -923,7 +925,12 @@ void RealGUI::initDesactivatedNode()
 
 void RealGUI::setScene ( Node* groot, const char* filename )
 {
-    updateRecentlyOpened(filename);
+    if (filename)
+    {
+        updateRecentlyOpened(filename);
+        setTitle ( filename );
+    }
+
     if (tabInstrument!= NULL)
     {
         tabs->removePage(tabInstrument);
@@ -931,7 +938,7 @@ void RealGUI::setScene ( Node* groot, const char* filename )
         tabInstrument = NULL;
     }
 
-    setTitle ( filename );
+
 
     viewer->setScene ( dynamic_cast< GNode *>(groot), filename );
     viewer->resetView();
@@ -1078,10 +1085,10 @@ void RealGUI::fileOpen()
         else
 #endif
             if (s.endsWith( ".simu") )
-                fileOpenSimu(s.toStdString ());
+                fileOpenSimu(s.ascii());
             else
             {
-                fileOpen (s.toStdString());
+                fileOpen (s.ascii());
             }
     }
 }
@@ -1108,9 +1115,9 @@ void RealGUI::fileReload()
     }
 #else
     if (s.endsWith( ".simu") )
-        fileOpenSimu(s.toStdString());
+        fileOpenSimu(s.ascii());
     else
-        fileOpen ( s.toStdString() );
+        fileOpen ( s.ascii() );
 #endif
 
 }

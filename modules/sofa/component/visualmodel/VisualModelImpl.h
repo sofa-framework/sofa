@@ -146,6 +146,9 @@ protected:
     float scaleTex;
     Data< std::string > filename;
     Data< std::string > texturename;
+    Data< Vector3 > translation;
+    Data< Vector3 > rotation;
+    Data< SReal > scale;
 
     Vec3f bbox[2];
 

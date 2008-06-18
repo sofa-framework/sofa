@@ -95,22 +95,23 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     }
 
 
-    if (arg->getAttribute("scale")!=NULL)
-    {
-        obj->applyScale(atof(arg->getAttribute("scale","1.0")));
-    }
+//       if (arg->getAttribute("scale")!=NULL) {
+// 	scale.setValue(atof(arg->getAttribute("scale","1.0")));
+//       }
     if (arg->getAttribute("rx")!=NULL || arg->getAttribute("ry")!=NULL || arg->getAttribute("rz")!=NULL)
     {
-        Vector3 rotation=Vector3((SReal)(atof(arg->getAttribute("rx","0.0"))),(SReal)(atof(arg->getAttribute("ry","0.0"))),(SReal)(atof(arg->getAttribute("rz","0.0"))))*3.141592653/180.0;
-
-        Quaternion q=helper::Quater<SReal>::createFromRotationVector( Vec<3,SReal>(rotation[0],rotation[1],rotation[2]));
-        this->applyRotation(q);
+        rotation.setValue(Vector3((SReal)(atof(arg->getAttribute("rx","0.0"))),(SReal)(atof(arg->getAttribute("ry","0.0"))),(SReal)(atof(arg->getAttribute("rz","0.0")))));
     }
 
     if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
     {
-        obj->applyTranslation((SReal)atof(arg->getAttribute("dx","0.0")), (SReal)atof(arg->getAttribute("dy","0.0")), (SReal)atof(arg->getAttribute("dz","0.0")));
+        translation.setValue(Vector3((SReal)atof(arg->getAttribute("dx","0.0")), (SReal)atof(arg->getAttribute("dy","0.0")), (SReal)atof(arg->getAttribute("dz","0.0"))));
     }
+
+    obj->applyScale(scale.getValue());
+    rotation.setValue(rotation.getValue()*3.141592653/180.0);
+    obj->applyRotation(helper::Quater<SReal>::createFromRotationVector( Vector3(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2])));
+    obj->applyTranslation(translation.getValue()[0],translation.getValue()[1],translation.getValue()[2]);
 
 }
 
@@ -131,6 +132,9 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
        field_quads       (initDataPtr(&field_quads, &quads,   "quads",    "quads of the model") ),
        filename          (initData   (&filename,    "filename","Path to the model", false)),
        texturename       (initData                            (&texturename, "texturename","Name of the Texture")),
+       translation       (initData   (&translation, Vector3(), "translation", "Initial Translation of the object")),
+       rotation          (initData   (&rotation, Vector3(), "rotation", "Initial Rotation of the object")),
+       scale             (initData   (&scale, (SReal)(1.0), "scale", "Initial Scale of the object")),
        material(initData(&material,"material","Material")) //, tex(NULL)
 {
     inputVertices = &vertices;
@@ -421,6 +425,9 @@ void VisualModelImpl::init()
     field_triangles.beginEdit();
     field_quads.beginEdit();
 
+    translation.setValue(Vector3());
+    rotation.setValue(Vector3());
+    scale.setValue((SReal)1.0);
     VisualModel::init();
     updateVisual();
 }
