@@ -2306,13 +2306,13 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
 
     else if(  Data<sofa::component::misc::Monitor< Vec3dTypes >::MonitorData >  *ff = dynamic_cast< Data<sofa::component::misc::Monitor< Vec3dTypes >::MonitorData >   * >( field))
     {
-        return createQtTable < Vec3dTypes >(ff,box,vectorTable, vectorTable2, vectorTable3);
+        return createMonitorQtTable < Vec3dTypes >(ff,box,vectorTable, vectorTable2, vectorTable3);
     }
 
     //********************************************************************************************************//
     else if(  Data<sofa::component::misc::Monitor< Vec3fTypes >::MonitorData >  *ff = dynamic_cast< Data<sofa::component::misc::Monitor< Vec3fTypes >::MonitorData >   * >( field))
     {
-        return createQtTable < Vec3fTypes >(ff,box,vectorTable, vectorTable2, vectorTable3);
+        return createMonitorQtTable < Vec3fTypes >(ff,box,vectorTable, vectorTable2, vectorTable3);
     }
     //********************************************************************************************************//
     //vector<Rigid3dTypes::Coord>
@@ -3211,12 +3211,12 @@ void ModifyObject::storeTable(std::list< std::pair< Q3Table*, BaseData*> >::
     //**************************************************************************************************************************************
     else if (  Data<sofa::component::misc::Monitor< Vec3dTypes >::MonitorData >  *ff = dynamic_cast< Data<sofa::component::misc::Monitor< Vec3dTypes >::MonitorData > * >( it_list_table->second))
     {
-        storeQtTable< Vec3dTypes >(it_list_table, ff);
+        storeMonitorQtTable< Vec3dTypes >(it_list_table, ff);
     }
     //**************************************************************************************************************************************
     else if (  Data<sofa::component::misc::Monitor< Vec3fTypes >::MonitorData >  *ff = dynamic_cast< Data<sofa::component::misc::Monitor< Vec3fTypes >::MonitorData > * >( it_list_table->second))
     {
-        storeQtTable< Vec3fTypes >(it_list_table, ff);
+        storeMonitorQtTable< Vec3fTypes >(it_list_table, ff);
     }
     //**************************************************************************************************************************************
 
@@ -3956,7 +3956,7 @@ void ModifyObject::storeQtTable( std::list< std::pair< Q3Table*, core::objectmod
 //********************************************************************************************************************
 
 template< class T>
-bool ModifyObject::createQtTable(Data<typename sofa::component::misc::Monitor<T>::MonitorData >* ff, Q3GroupBox *box, Q3Table* vectorTable, Q3Table* vectorTable2, Q3Table* vectorTable3 )
+bool ModifyObject::createMonitorQtTable(Data<typename sofa::component::misc::Monitor<T>::MonitorData >* ff, Q3GroupBox *box, Q3Table* vectorTable, Q3Table* vectorTable2, Q3Table* vectorTable3 )
 {
     //internal monitorData
     typename sofa::component::misc::Monitor<T>::MonitorData MonitorDataTemp = ff->getValue();
@@ -4033,48 +4033,55 @@ bool ModifyObject::createQtTable(Data<typename sofa::component::misc::Monitor<T>
 
     for (unsigned int i=0; i<3; i++)
     {
-        std::ostringstream oss[nbRowPos];
+        std::ostringstream *oss = new std::ostringstream[nbRowPos];
         for (unsigned int j=0; j<nbRowPos; j++)
         {
             oss[j] << (MonitorDataTemp.getPos(j))[i];
             vectorTable->setText(j,i+1,std::string(oss[j].str()).c_str());
         }
 
-        std::ostringstream oss2[nbRowVels];
+        std::ostringstream * oss2 = new std::ostringstream[nbRowVels];
         for (unsigned int j=0; j<nbRowVels; j++)
         {
             oss2[j] << (MonitorDataTemp.getVel(j))[i];
             vectorTable2->setText(j,i+1,std::string(oss2[j].str()).c_str());
         }
 
-        std::ostringstream oss3[nbRowForces];
+        std::ostringstream * oss3 = new std::ostringstream[nbRowForces];
         for (unsigned int j=0; j<nbRowForces; j++)
         {
             oss3[j] << (MonitorDataTemp.getForce(j))[i];
             vectorTable3->setText(j,i+1,std::string(oss3[j].str()).c_str());
         }
+        delete [] oss;
+        delete [] oss2;
+        delete [] oss3;
     }
     //vectorTable1
-    std::ostringstream oss[nbRowPos];
+    std::ostringstream  * oss = new std::ostringstream[nbRowPos];
     for (unsigned int j=0; j<nbRowPos; j++)
     {
         oss[j] << MonitorDataTemp.getIndPos()[j];
         vectorTable->setText(j,0,std::string(oss[j].str()).c_str());
     }
     //vectorTable2
-    std::ostringstream oss2[nbRowVels];
+    std::ostringstream * oss2 = new std::ostringstream[nbRowVels];
     for (unsigned int j=0; j<nbRowVels; j++)
     {
         oss2[j] << MonitorDataTemp.getIndVels()[j];
         vectorTable2->setText(j,0,std::string(oss2[j].str()).c_str());
     }
     //vectorTable3
-    std::ostringstream oss3[nbRowForces];
+    std::ostringstream * oss3 = new std::ostringstream[nbRowForces];
     for (unsigned int j=0; j<nbRowForces; j++)
     {
         oss3[j] << MonitorDataTemp.getIndForces()[j];
         vectorTable3->setText(j,0,std::string(oss3[j].str()).c_str());
     }
+
+    delete [] oss;
+    delete [] oss2;
+    delete [] oss3;
 
     counterWidget+=3;
     return true;
@@ -4082,7 +4089,7 @@ bool ModifyObject::createQtTable(Data<typename sofa::component::misc::Monitor<T>
 
 //********************************************************************************************************************
 template<class T>
-void ModifyObject::storeQtTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data<typename sofa::component::misc::Monitor<T>::MonitorData >* ff )
+void ModifyObject::storeMonitorQtTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data<typename sofa::component::misc::Monitor<T>::MonitorData >* ff )
 {
     Q3Table* table = it_list_table->first;
     //internal monitorData
