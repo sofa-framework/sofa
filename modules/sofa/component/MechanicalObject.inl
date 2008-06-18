@@ -198,19 +198,19 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
     if (arg->getAttribute("scale")!=NULL)
     {
         scale.setValue((SReal)atof(arg->getAttribute("scale")));
-        applyScale(scale.getValue());
+        //applyScale(scale.getValue());
     }
     if (arg->getAttribute("rx")!=NULL || arg->getAttribute("ry")!=NULL || arg->getAttribute("rz")!=NULL)
     {
         rotation.setValue(Vector3((SReal)(atof(arg->getAttribute("rx","0.0"))),(SReal)(atof(arg->getAttribute("ry","0.0"))),(SReal)(atof(arg->getAttribute("rz","0.0"))))*3.141592653/180.0);
 
         Quaternion q=helper::Quater<SReal>::createFromRotationVector( Vec<3,SReal>(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2]));
-        applyRotation(q);
+        //applyRotation(q);
     }
     if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
     {
         translation.setValue(Vector3((Real)atof(arg->getAttribute("dx","0.0")), (Real)atof(arg->getAttribute("dy","0.0")), (Real)atof(arg->getAttribute("dz","0.0"))));
-        applyTranslation(translation.getValue()[0],translation.getValue()[1],translation.getValue()[2]);
+        //applyTranslation(translation.getValue()[0],translation.getValue()[1],translation.getValue()[2]);
     }
 
 }
@@ -719,10 +719,10 @@ void MechanicalObject<DataTypes>::init()
                 DataTypes::set((*getX())[i], topo->getPX(i), topo->getPY(i), topo->getPZ(i));
             }
 
-            reinit();
         }
     }
 
+    reinit();
 
     if (v0 == NULL) this->v0 = new VecDeriv;
     *this->v0 = *v;
