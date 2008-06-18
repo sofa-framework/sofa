@@ -22,23 +22,12 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_GUI_FILEMANAGEMENT_H
-#define SOFA_GUI_FILEMANAGEMENT_H
 
-
-#ifdef SOFA_QT4
-#include <Q3FileDialog>
-#include <QFileDialog>
-#else
-#include <qfiledialog.h>
-#endif
-
+#include "FileManagement.h"
 namespace sofa
 {
-
 namespace gui
 {
-
 namespace qt
 {
 
@@ -47,11 +36,41 @@ namespace qt
 typedef QFileDialog Q3FileDialog;
 #endif
 
-QString getExistingDirectory ( QWidget* parent, const QString & dir = QString(), const char * name = 0, const QString & caption = QString() );
+QString getExistingDirectory ( QWidget* parent, const QString & dir, const char * name, const QString & caption)
+{
+#ifdef SOFA_QT4
+    QFileDialog::Options options = QFileDialog::ShowDirsOnly;
+    //	options |= QFileDialog::DontUseNativeDialog;
+    options |= QFileDialog::DontUseSheet;
+    return QFileDialog::getExistingDirectory ( parent, name?QString(name):caption, dir, options );
+#else
+    return Q3FileDialog::getExistingDirectory( dir, parent, name, caption );
+#endif
+};
 
-QString getOpenFileName ( QWidget* parent, const QString & startWith = QString(), const QString & filter = QString(), const char * name = 0, const QString & caption = QString(), QString * selectedFilter = 0 );
+QString getOpenFileName ( QWidget* parent, const QString & startWith, const QString & filter, const char * name, const QString & caption, QString * selectedFilter )
+{
+#ifdef SOFA_QT4
+    QFileDialog::Options options = 0;
+    //	options |= QFileDialog::DontUseNativeDialog;
+    options |= QFileDialog::DontUseSheet;
+    return QFileDialog::getOpenFileName ( parent, name?QString(name):caption, startWith, filter, selectedFilter, options );
+#else
+    return Q3FileDialog::getOpenFileName ( startWith, filter, parent, name, caption, selectedFilter );
+#endif
+};
 
-QString getSaveFileName ( QWidget* parent, const QString & startWith = QString(), const QString & filter = QString(), const char * name = 0, const QString & caption = QString(), QString * selectedFilter = 0 );
+QString getSaveFileName ( QWidget* parent, const QString & startWith, const QString & filter, const char * name, const QString & caption, QString * selectedFilter )
+{
+#ifdef SOFA_QT4
+    QFileDialog::Options options = 0;
+    //	options |= QFileDialog::DontUseNativeDialog;
+    options |= QFileDialog::DontUseSheet;
+    return QFileDialog::getSaveFileName ( parent, name?QString(name):caption, startWith, filter, selectedFilter, options );
+#else
+    return Q3FileDialog::getSaveFileName ( startWith, filter, parent, name, caption, selectedFilter );
+#endif
+};
 
 } // namespace qt
 
@@ -59,4 +78,3 @@ QString getSaveFileName ( QWidget* parent, const QString & startWith = QString()
 
 } // namespace sofa
 
-#endif // SOFA_GUI_VIEWER_REALGUI_H

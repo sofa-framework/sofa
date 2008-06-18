@@ -23,7 +23,8 @@ SOURCES += Main.cpp \
            GenGraphForm.cpp \
            AddObject.cpp \
            ModifyObject.cpp \
-           WFloatLineEdit.cpp 
+           WFloatLineEdit.cpp \
+           FileManagement.cpp
 
 
 SOFA_DIR = ../../../..
