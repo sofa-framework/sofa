@@ -29,6 +29,9 @@
     <property name="caption">
         <string>Sofa</string>
     </property>
+    <property name="acceptDrops">
+        <bool>true</bool>
+    </property>
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
