@@ -119,10 +119,10 @@ public:
     ~RealGUI();
 
 
-    virtual void fileOpen(const char* filename); //, int TYPE=NORMAL);
-    virtual void fileOpenSimu(const char* filename); //, int TYPE=NORMAL);
+    virtual void fileOpen(std::string filename); //, int TYPE=NORMAL);
+    virtual void fileOpenSimu(std::string filename); //, int TYPE=NORMAL);
     virtual void setScene(Node* groot, const char* filename=NULL);
-    virtual void setTitle( const char* windowTitle );
+    virtual void setTitle( std::string windowTitle );
 
     //public slots:
     virtual void fileNew();
@@ -133,7 +133,6 @@ public:
     virtual void fileSaveAs(Node* node,const char* filename);
 
     virtual void fileReload();
-    //virtual void filePrint();
     virtual void fileExit();
     virtual void saveXML();
     //virtual void editUndo();
@@ -154,7 +153,8 @@ public:
     virtual void editGnuplotDirectory();
 
 public slots:
-
+    void fileRecentlyOpened(int id);
+    void updateRecentlyOpened(std::string fileLoaded);
     void DoubleClickeItemInSceneView(QListViewItem * item);
     void RightClickedItemInSceneView(QListViewItem *item, const QPoint& point, int index);
     void playpauseGUI(bool value);

@@ -7,9 +7,9 @@
     <property name="geometry">
         <rect>
             <x>0</x>
-            <y>25</y>
+            <y>17</y>
             <width>1074</width>
-            <height>890</height>
+            <height>855</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -22,8 +22,8 @@
     </property>
     <property name="minimumSize">
         <size>
-            <width>316</width>
-            <height>881</height>
+            <width>302</width>
+            <height>846</height>
         </size>
     </property>
     <property name="caption">
@@ -1003,7 +1003,9 @@
         <action name="fileSaveAsAction"/>
         <action name="exportGraphAction"/>
         <separator/>
-        <action name="filePrintAction"/>
+        <action name="Action"/>
+        <item text="Recently Opened Files..." name="recentlyOpened" accel="">
+        </item>
         <separator/>
         <action name="fileExitAction"/>
     </item>
@@ -1108,26 +1110,6 @@
         </property>
         <property name="accel">
             <string></string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>filePrintAction</cstring>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
-        </property>
-        <property name="iconSet">
-            <iconset>image5</iconset>
-        </property>
-        <property name="text">
-            <string>Print</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;Print...</string>
-        </property>
-        <property name="accel">
-            <string>Ctrl+P</string>
         </property>
     </action>
     <action>
@@ -1418,6 +1400,17 @@
             <string>Execution Graph</string>
         </property>
     </action>
+    <action>
+        <property name="name">
+            <cstring>Action</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset></iconset>
+        </property>
+        <property name="text">
+            <string>Recently Opened Files...</string>
+        </property>
+    </action>
 </actions>
 <images>
     <image name="image0">
@@ -1487,12 +1480,6 @@
         <signal>activated()</signal>
         <receiver>GUI</receiver>
         <slot>fileSaveAs()</slot>
-    </connection>
-    <connection>
-        <sender>filePrintAction</sender>
-        <signal>activated()</signal>
-        <receiver>GUI</receiver>
-        <slot>filePrint()</slot>
     </connection>
     <connection>
         <sender>fileExitAction</sender>
@@ -1741,16 +1728,12 @@
         <slot>GUI_usesTextLabelChanged(bool)</slot>
     </connection>
 </connections>
-<includes>
-    <include location="local" impldecl="in implementation">GUI.ui.h</include>
-</includes>
 <slots>
     <slot>fileNew()</slot>
     <slot>fileOpen()</slot>
     <slot>fileReload()</slot>
     <slot>fileSave()</slot>
     <slot>fileSaveAs()</slot>
-    <slot>filePrint()</slot>
     <slot>fileExit()</slot>
     <slot>editUndo()</slot>
     <slot>editRedo()</slot>
