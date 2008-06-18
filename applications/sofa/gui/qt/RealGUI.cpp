@@ -432,7 +432,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
 
     scenes = sofa::helper::system::DataRepository.getFile ( scenes );
 
-
+    recentlyOpened->clear();
     std::ifstream end(scenes.c_str());
     std::string s;
     while( end >> s )
