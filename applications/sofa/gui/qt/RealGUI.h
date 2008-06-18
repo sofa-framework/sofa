@@ -155,7 +155,7 @@ public:
     virtual void editRecordDirectory();
     virtual void editGnuplotDirectory();
 
-    void dragMoveEvent( QDragMoveEvent* event) {event->accept();}
+    void dragEnterEvent( QDragEnterEvent* event) {event->accept();}
     void dropEvent(QDropEvent* event);
 
 public slots:
