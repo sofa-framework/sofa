@@ -184,10 +184,12 @@ protected:
     template< class T>
     void storeQtTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< sofa::component::topology::PointData< T > >* ff );
     //*********************************************************
+
+    //Monitor Special class
     template< class T>
-    bool createQtTable(Data<typename sofa::component::misc::Monitor<T>::MonitorData >* ff, Q3GroupBox *box, Q3Table* vectorTable, Q3Table* vectorTable2, Q3Table* vectorTable3 );
+    bool createMonitorQtTable(Data<typename sofa::component::misc::Monitor<T>::MonitorData >* ff, Q3GroupBox *box, Q3Table* vectorTable, Q3Table* vectorTable2, Q3Table* vectorTable3 );
     template< class T>
-    void storeQtTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< typename sofa::component::misc::Monitor<T>::MonitorData >* ff );
+    void storeMonitorQtTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< typename sofa::component::misc::Monitor<T>::MonitorData >* ff );
     //*********************************************************
 
 

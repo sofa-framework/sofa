@@ -1109,9 +1109,9 @@ void RealGUI::fileReload()
         else if ( s.endsWith ( ".lml" ) )
             lmlOpen ( s );
         else if (s.endsWith( ".simu") )
-            fileOpenSimu(s);
+            fileOpenSimu(filename);
         else
-            fileOpen ( s );
+            fileOpen ( filename );
     }
 #else
     if (s.endsWith( ".simu") )
