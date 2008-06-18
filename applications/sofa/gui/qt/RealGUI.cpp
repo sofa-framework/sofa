@@ -423,8 +423,27 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect ( timeSlider, SIGNAL (sliderMoved (int) ),   this, SLOT( slot_sliderValue( int) ) );
 
 
-    //Dialog Add Object
+    connect( recentlyOpened, SIGNAL(activated(int)), this, SLOT(fileRecentlyOpened(int)));
+    //Recently Opened Files
+    std::string scenes ( "Sofa.ini" );
+    if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )
+        return;
 
+    scenes = sofa::helper::system::DataRepository.getFile ( scenes );
+
+
+    std::ifstream end(scenes.c_str());
+    std::string s;
+    while( end >> s )
+    {
+        recentlyOpened->insertItem(QString(s.c_str()));
+    }
+    end.close();
+
+
+
+
+    //Dialog Add Object
     connect ( tabs, SIGNAL ( currentChanged ( QWidget* ) ), this, SLOT ( currentTabChanged ( QWidget* ) ) );
 
     addViewer();
@@ -435,6 +454,47 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     pmlreader = NULL;
     lmlreader = NULL;
 #endif
+}
+
+void RealGUI::fileRecentlyOpened(int id)
+{
+    fileOpen(recentlyOpened->text(id).ascii());
+}
+
+void RealGUI::updateRecentlyOpened(std::string fileLoaded)
+{
+    std::string scenes ( "Sofa.ini" );
+    if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )
+        return;
+
+    scenes = sofa::helper::system::DataRepository.getFile ( scenes );
+
+    std::vector< std::string > list_files;
+    std::ifstream end(scenes.c_str());
+    std::string s;
+    while( end >> s )
+    {
+        if (s != fileLoaded)
+            list_files.push_back(sofa::helper::system::DataRepository.getFile(s));
+    }
+    end.close();
+
+
+    recentlyOpened->clear();
+    std::ofstream out;
+    out.open(scenes.c_str(),ios::out);
+
+    out << fileLoaded << "\n";
+    recentlyOpened->insertItem(QString(fileLoaded.c_str()));
+    for (unsigned int i=0; i<list_files.size(); ++i)
+    {
+        recentlyOpened->insertItem(QString(list_files[i].c_str()));
+        out << list_files[i] << "\n";
+    }
+
+    out.close();
+
+
 }
 
 void RealGUI::setPixmap(std::string pixmap_filename, QPushButton* b)
@@ -739,8 +799,16 @@ bool RealGUI::setViewer ( const char* name )
     return true;
 }
 
-void RealGUI::fileOpen ( const char* filename )
+void RealGUI::fileOpen ( std::string filename )
 {
+
+    if ( sofa::helper::system::DataRepository.findFile (filename) )
+        filename = sofa::helper::system::DataRepository.getFile ( filename );
+    else
+        return;
+
+
+
     frameCounter = 0;
     sofa::simulation::tree::xml::numDefault = 0;
     list_object_added.clear();
@@ -770,15 +838,15 @@ void RealGUI::fileOpen ( const char* filename )
     current_Id_modifyDialog=0;
     map_modifyDialogOpened.clear();
 
-    simulation::Node* groot = getSimulation()->load ( filename );
+    simulation::Node* groot = getSimulation()->load ( filename.c_str() );
 
     if ( groot == NULL )
     {
-        qFatal ( "Failed to load %s",filename );
+        qFatal ( "Failed to load %s",filename.c_str() );
         return;
     }
 
-    setScene ( groot, filename );
+    setScene ( groot, filename.c_str() );
     //need to create again the output streams !!
 
     getSimulation()->gnuplotDirectory.setValue(gnuplot_directory);
@@ -855,6 +923,7 @@ void RealGUI::initDesactivatedNode()
 
 void RealGUI::setScene ( Node* groot, const char* filename )
 {
+    updateRecentlyOpened(filename);
     if (tabInstrument!= NULL)
     {
         tabs->removePage(tabInstrument);
@@ -934,9 +1003,9 @@ void RealGUI::screenshot()
     }
 }
 
-void RealGUI::fileOpenSimu ( const char* s )
+void RealGUI::fileOpenSimu ( std::string s )
 {
-    std::ifstream in(s);
+    std::ifstream in(s.c_str());
 
     if (!in.fail())
     {
@@ -1118,10 +1187,10 @@ void RealGUI::editGnuplotDirectory()
 }
 
 
-void RealGUI::setTitle ( const char* windowTitle )
+void RealGUI::setTitle ( std::string windowTitle )
 {
     std::string str = "Sofa";
-    if ( windowTitle && *windowTitle )
+    if ( !windowTitle.empty() )
     {
         str += " - ";
         str += windowTitle;
