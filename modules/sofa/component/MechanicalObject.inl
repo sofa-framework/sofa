@@ -815,9 +815,30 @@ void MechanicalObject<DataTypes>::reset()
 }
 
 template <class DataTypes>
+void MechanicalObject<DataTypes>::writeX(std::ostream &out)
+{
+    out << *getX();
+}
+template <class DataTypes>
+void MechanicalObject<DataTypes>::readX(std::istream &in)
+{
+    in >> *getX();
+}
+template <class DataTypes>
+void MechanicalObject<DataTypes>::writeV(std::ostream &out)
+{
+    out << *getV();
+}
+template <class DataTypes>
+void MechanicalObject<DataTypes>::readV(std::istream &in)
+{
+    in >> *getX();
+}
+
+template <class DataTypes>
 void MechanicalObject<DataTypes>::writeState( std::ostream& out )
 {
-    out<<*getX()<<" "<<*getV()<<" ";
+    writeX(out); out << " "; writeV(out);
 }
 
 template <class DataTypes>

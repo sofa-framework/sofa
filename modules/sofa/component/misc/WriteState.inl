@@ -15,8 +15,8 @@ namespace component
 namespace misc
 {
 
-template<class DataTypes>
-WriteState<DataTypes>::WriteState()
+
+WriteState::WriteState()
     : f_filename( initData(&f_filename, "filename", "output file name"))
     , f_writeX( initData(&f_writeX, true, "writeX", "flag enabling output of X vector"))
     , f_writeV( initData(&f_writeV, false, "writeV", "flag enabling output of V vector"))
@@ -38,55 +38,21 @@ WriteState<DataTypes>::WriteState()
     this->f_listening.setValue(true);
 }
 
-template<class DataTypes>
-WriteState<DataTypes>::~WriteState()
+
+WriteState::~WriteState()
 {
     if (outfile)
         delete outfile;
 }
 
-template<class DataTypes>
-void WriteState<DataTypes>::init()
+
+void WriteState::init()
 {
-    mmodel = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState());
+    mmodel = dynamic_cast<core::componentmodel::behavior::BaseMechanicalState*>(this->getContext()->getMechanicalState());
 
     // test the size and range of the DOFs to write in the file output
     if (mmodel)
     {
-        // test the position DOFs
-        if (DataInfoCoord::size() < f_DOFsX.getValue().size())
-        {
-            std::cerr << "ERROR: the size of DOFsX must be equal or smaller than the size of the mechanical data type."<<std::endl;
-            exit(-1);
-        }
-        else
-        {
-            for (unsigned int i=0; i<f_DOFsX.getValue().size(); i++)
-            {
-                if (DataInfoCoord::size() < f_DOFsX.getValue()[i])
-                {
-                    std::cerr << "ERROR: DOFX index " << f_DOFsX.getValue()[i] << " must contain a value between 0 and " << DataInfoCoord::size()-1 << std::endl;
-                    exit(-1);
-                }
-            }
-        }
-        // test the velocity DOFs
-        if (DataInfoDeriv::size() < f_DOFsV.getValue().size())
-        {
-            std::cerr << "ERROR: the size of DOFsV must be equal or smaller than the size of the mechanical data type."<<std::endl;
-            exit(-1);
-        }
-        else
-        {
-            for (unsigned int i=0; i<f_DOFsV.getValue().size(); i++)
-            {
-                if (DataInfoDeriv::size() < f_DOFsV.getValue()[i])
-                {
-                    std::cerr << "ERROR: DOFV index " << f_DOFsV.getValue()[i] << " must contain a value between 0 and " << DataInfoDeriv::size()-1 << std::endl;
-                    exit(-1);
-                }
-            }
-        }
         timeToTestEnergyIncrease = f_keperiod.getValue();
     }
     ///////////// end of the tests.
@@ -112,8 +78,8 @@ void WriteState<DataTypes>::init()
     }
 }
 
-template<class DataTypes>
-void WriteState<DataTypes>::reset()
+
+void WriteState::reset()
 {
     nextTime = 0;
     lastTime = 0;
@@ -122,8 +88,8 @@ void WriteState<DataTypes>::reset()
     savedKineticEnergy = 0;
 }
 
-template<class DataTypes>
-void WriteState<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
+
+void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
 {
     if (/* simulation::AnimateBeginEvent* ev = */ dynamic_cast<simulation::AnimateBeginEvent*>(event))
     {
@@ -174,23 +140,15 @@ void WriteState<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
                         (*outfile) << "T= "<< time << "\n";
                         if (f_writeX.getValue())
                         {
-                            (*outfile) << "  X=";
-                            for (int i=0; i<mmodel->getSize(); i++)
-                            {
-// 								for (unsigned int j=0; j<f_DOFsX.getValue().size(); j++)
-                                (*outfile) << " " << (*mmodel->getX())[i];
-                            }
+                            (*outfile) << "  X= ";
+                            mmodel->writeX(*outfile);
                             (*outfile) << "\n";
                         }
-                        // write the V state
+                        //write the V state
                         if (f_writeV.getValue())
                         {
-                            (*outfile) << "  V=";
-                            for (int i=0; i<mmodel->getSize(); i++)
-                            {
-// 								for (unsigned int j=0; j<f_DOFsV.getValue().size(); j++)
-                                (*outfile) << " " << (*mmodel->getV())[i]/*[f_DOFsV.getValue()[j]]*/;
-                            }
+                            (*outfile) << "  V= ";
+                            mmodel->writeV(*outfile);
                             (*outfile) << "\n";
                         }
                         outfile->flush();
@@ -205,23 +163,14 @@ void WriteState<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
                         (*outfile) << "T= "<< time << "\n";
                         if (f_writeX.getValue())
                         {
-                            (*outfile) << "  X=";
-
-                            for (int i=0; i<mmodel->getSize(); i++)
-                            {
-// 								for (unsigned int j=0; j<f_DOFsX.getValue().size(); j++)
-                                (*outfile) << " " << (*mmodel->getX())[i]/*[f_DOFsX.getValue()[j]]*/;
-                            }
+                            (*outfile) << "  X= ";
+                            mmodel->writeX(*outfile);
                             (*outfile) << "\n";
                         }
                         if (f_writeV.getValue())
                         {
-                            (*outfile) << "  V=";
-                            for (int i=0; i<mmodel->getSize(); i++)
-                            {
-// 								for (unsigned int j=0; j<f_DOFsV.getValue().size(); j++)
-                                (*outfile) << " " << (*mmodel->getV())[i]/*[f_DOFsV.getValue()[j]]*/;
-                            }
+                            (*outfile) << "  V= ";
+                            mmodel->writeV(*outfile);
                             (*outfile) << "\n";
                         }
                         outfile->flush();

@@ -67,52 +67,27 @@ Visitor::Result WriteStateCreator::processNodeTopDown( simulation::Node* gnode)
 {
     using namespace sofa::defaulttype;
 
-    sofa::core::objectmodel::BaseObject * mstate = gnode->getMechanicalState();
-    bool found = false;
+    sofa::core::componentmodel::behavior::BaseMechanicalState * mstate = dynamic_cast<sofa::core::componentmodel::behavior::BaseMechanicalState *>( gnode->getMechanicalState());
+    if (!mstate)   return Visitor::RESULT_CONTINUE;
     //We have a mechanical state
-
-#ifndef SOFA_FLOAT
-    if (!found)
-    {
-        sofa::core::componentmodel::behavior::MechanicalState< Vec3dTypes > *ms = dynamic_cast< sofa::core::componentmodel::behavior::MechanicalState< Vec3dTypes > *>(mstate);
-        if (ms!=NULL) {   addWriteState(ms, gnode);   found = true;}
-    }
-    if (!found)
-    {
-        sofa::core::componentmodel::behavior::MechanicalState< Rigid3dTypes > *ms = dynamic_cast< sofa::core::componentmodel::behavior::MechanicalState< Rigid3dTypes > *>(mstate);
-        if (ms!=NULL) { addWriteState(ms, gnode);  found = true;}
-    }
-#endif
-#ifndef SOFA_DOUBLE
-    if (!found)
-    {
-        sofa::core::componentmodel::behavior::MechanicalState< Vec3fTypes > *ms = dynamic_cast< sofa::core::componentmodel::behavior::MechanicalState< Vec3fTypes > *>(mstate);
-        if (ms != NULL) { addWriteState(ms, gnode);  found = true;}
-    }
-    if (!found)
-    {
-        sofa::core::componentmodel::behavior::MechanicalState< Rigid3fTypes > *ms = dynamic_cast< sofa::core::componentmodel::behavior::MechanicalState< Rigid3fTypes > *>(mstate);
-        if (ms!=NULL) { addWriteState(ms, gnode);  found = true;}
-    }
-#endif
-
-
+    addWriteState(mstate, gnode);
     return Visitor::RESULT_CONTINUE;
 }
 
-template< class DataTypes >
-void WriteStateCreator::addWriteState(sofa::core::componentmodel::behavior::MechanicalState< DataTypes > *ms, simulation::Node* gnode)
+
+
+void WriteStateCreator::addWriteState(sofa::core::componentmodel::behavior::BaseMechanicalState *ms, simulation::Node* gnode)
 {
     sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     sofa::core::BaseMapping *mapping;
     context->get(mapping);
     if ( mapping == NULL)
     {
-        sofa::component::misc::WriteState<DataTypes> *ws;
+        sofa::component::misc::WriteState *ws;
         context->get(ws);
         if ( ws == NULL )
         {
-            ws = new sofa::component::misc::WriteState<DataTypes>(); gnode->addObject(ws);
+            ws = new sofa::component::misc::WriteState(); gnode->addObject(ws);
         }
 
         std::ostringstream ofilename;
@@ -130,52 +105,26 @@ void WriteStateCreator::addWriteState(sofa::core::componentmodel::behavior::Mech
 Visitor::Result ReadStateCreator::processNodeTopDown( simulation::Node* gnode)
 {
     using namespace sofa::defaulttype;
-
-    sofa::core::objectmodel::BaseObject * mstate = gnode->getMechanicalState();
-    bool found = false;
+    sofa::core::componentmodel::behavior::BaseMechanicalState * mstate = dynamic_cast<sofa::core::componentmodel::behavior::BaseMechanicalState *>( gnode->getMechanicalState());
+    if (!mstate)   return Visitor::RESULT_CONTINUE;
     //We have a mechanical state
-#ifndef SOFA_FLOAT
-    if (!found)
-    {
-        sofa::core::componentmodel::behavior::MechanicalState< Vec3dTypes > *ms = dynamic_cast< sofa::core::componentmodel::behavior::MechanicalState< Vec3dTypes > *>(mstate);
-        if (ms != NULL) {  addReadState(ms, gnode);  found = true;}
-    }
-    if (!found)
-    {
-        sofa::core::componentmodel::behavior::MechanicalState< Rigid3dTypes > *ms = dynamic_cast< sofa::core::componentmodel::behavior::MechanicalState< Rigid3dTypes > *>(mstate);
-        if (ms != NULL) { addReadState(ms, gnode);  found = true;}
-    }
-#endif
-#ifndef SOFA_DOUBLE
-    if (!found)
-    {
-        sofa::core::componentmodel::behavior::MechanicalState< Vec3fTypes > *ms = dynamic_cast< sofa::core::componentmodel::behavior::MechanicalState< Vec3fTypes > *>(mstate);
-        if (ms!=NULL) {  addReadState(ms, gnode);  found = true;}
-    }
-    if (!found)
-    {
-        sofa::core::componentmodel::behavior::MechanicalState< Rigid3fTypes > *ms = dynamic_cast< sofa::core::componentmodel::behavior::MechanicalState< Rigid3fTypes > *>(mstate);
-        if (ms!=NULL) {  addReadState(ms, gnode);  found = true;}
-    }
-#endif
-
+    addReadState(mstate, gnode);
     return Visitor::RESULT_CONTINUE;
 }
 
 
 
-template< class DataTypes >
-void ReadStateCreator::addReadState(sofa::core::componentmodel::behavior::MechanicalState< DataTypes > *ms, simulation::Node* gnode)
+void ReadStateCreator::addReadState(sofa::core::componentmodel::behavior::BaseMechanicalState *ms, simulation::Node* gnode)
 {
 
     sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     sofa::core::BaseMapping *mapping; context->get(mapping);
     if (mapping== NULL)
     {
-        sofa::component::misc::ReadState<DataTypes> *rs; context->get(rs);
+        sofa::component::misc::ReadState *rs; context->get(rs);
         if (  rs == NULL )
         {
-            rs = new sofa::component::misc::ReadState <DataTypes>(); gnode->addObject(rs);
+            rs = new sofa::component::misc::ReadState(); gnode->addObject(rs);
         }
 
         std::ostringstream ofilename;
@@ -192,63 +141,15 @@ void ReadStateCreator::addReadState(sofa::core::componentmodel::behavior::Mechan
 Visitor::Result WriteStateActivator::processNodeTopDown( simulation::Node* gnode)
 {
     using namespace sofa::defaulttype;
+    sofa::component::misc::ReadState *rs = gnode->get< sofa::component::misc::ReadState >();
+    if (rs != NULL) { rs->reset();  rs->f_listening.setValue(!state);}
 
-    bool reader_done = false;
-#ifndef SOFA_FLOAT
-    if (!reader_done)
-    {
-        sofa::component::misc::ReadState< Vec3dTypes > *rsd = gnode->get< sofa::component::misc::ReadState< Vec3dTypes > >();
-        if (rsd != NULL) { rsd->reset();  rsd->f_listening.setValue(!state); reader_done = true;}
-    }
-    if (!reader_done)
-    {
-        sofa::component::misc::ReadState< Rigid3dTypes > *rsr = gnode->get< sofa::component::misc::ReadState< Rigid3dTypes > >();
-        if (rsr != NULL) { rsr->reset();  rsr->f_listening.setValue(!state); reader_done = true;}
-    }
-#endif
-#ifndef SOFA_DOUBLE
-    if (!reader_done)
-    {
-        sofa::component::misc::ReadState< Vec3fTypes > *rsf = gnode->get< sofa::component::misc::ReadState< Vec3fTypes > >();
-        if (rsf != NULL) { rsf->reset();  rsf->f_listening.setValue(!state); reader_done = true;}
-    }
-    if (!reader_done)
-    {
-        sofa::component::misc::ReadState< Rigid3fTypes > *rsr = gnode->get< sofa::component::misc::ReadState< Rigid3fTypes > >();
-        if (rsr != NULL) { rsr->reset();  rsr->f_listening.setValue(!state); reader_done = true;}
-    }
-#endif
-    bool writer_done = false;
-#ifndef SOFA_FLOAT
-    if (!writer_done)
-    {
-        sofa::component::misc::WriteState< Vec3dTypes > *wsd = gnode->get< sofa::component::misc::WriteState< Vec3dTypes > >();
-        if (wsd != NULL) { changeStateWriter(wsd); writer_done = true;}
-    }
-    if (!writer_done)
-    {
-        sofa::component::misc::WriteState< Rigid3dTypes > *wsr = gnode->get< sofa::component::misc::WriteState< Rigid3dTypes > >();
-        if (wsr != NULL) { changeStateWriter(wsr); writer_done = true;}
-    }
-#endif
-#ifndef SOFA_DOUBLE
-    if (!writer_done)
-    {
-        sofa::component::misc::WriteState< Vec3fTypes > *wsf = gnode->get< sofa::component::misc::WriteState< Vec3fTypes > >();
-        if (wsf != NULL) { changeStateWriter(wsf); writer_done = true;}
-    }
-    if (!writer_done)
-    {
-        sofa::component::misc::WriteState< Rigid3fTypes > *wsr = gnode->get< sofa::component::misc::WriteState< Rigid3fTypes > >();
-        if (wsr != NULL) { changeStateWriter(wsr); writer_done = true;}
-    }
-#endif
-
+    sofa::component::misc::WriteState *ws = gnode->get< sofa::component::misc::WriteState >();
+    if (ws != NULL) { changeStateWriter(ws);}
     return Visitor::RESULT_CONTINUE;
 }
 
-template< class DataTypes >
-void WriteStateActivator::changeStateWriter(sofa::component::misc::WriteState< DataTypes > *ws)
+void WriteStateActivator::changeStateWriter(sofa::component::misc::WriteState*ws)
 {
     if (!state) ws->reset();
     ws->f_listening.setValue(state);
@@ -260,18 +161,8 @@ Visitor::Result ReadStateModifier::processNodeTopDown( simulation::Node* gnode)
 {
     using namespace sofa::defaulttype;
 
-#ifndef SOFA_FLOAT
-    sofa::component::misc::ReadState< Vec3dTypes > *rsdf = gnode->get< sofa::component::misc::ReadState< Vec3dTypes > >();
-    if (rsdf != NULL) {changeTimeReader(rsdf);}
-    sofa::component::misc::ReadState< Rigid3dTypes > *rsrf = gnode->get< sofa::component::misc::ReadState< Rigid3dTypes > >();
-    if (rsrf != NULL) { changeTimeReader(rsrf);}
-#endif
-#ifndef SOFA_DOUBLE
-    sofa::component::misc::ReadState< Rigid3fTypes > *rsrd = gnode->get< sofa::component::misc::ReadState< Rigid3fTypes > >();
-    if (rsrd != NULL) { changeTimeReader(rsrd);}
-    sofa::component::misc::ReadState< Vec3fTypes > *rsfd = gnode->get< sofa::component::misc::ReadState< Vec3fTypes > >();
-    if (rsfd != NULL) {changeTimeReader(rsfd); }
-#endif
+    sofa::component::misc::ReadState*rs = gnode->get< sofa::component::misc::ReadState>();
+    if (rs != NULL) {changeTimeReader(rs);}
 
     return Visitor::RESULT_CONTINUE;
 }

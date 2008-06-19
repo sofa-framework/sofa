@@ -58,9 +58,16 @@ public:
 #endif
     };
 
-    void dragEnterEvent(QDragEnterEvent* event)
+    void dragMoveEvent( QDragMoveEvent* event)
     {
-        event->accept(Q3TextDrag::canDecode(event));
+        if ( getGNode(event->pos()))
+        {
+            event->accept(event->answerRect());
+        }
+        else
+        {
+            event->ignore(event->answerRect());
+        }
     }
 
     void dropEvent(QDropEvent* event);

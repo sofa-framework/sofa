@@ -169,6 +169,11 @@ public:
 
     virtual void reset();
 
+    virtual void writeX(std::ostream& out);
+    virtual void readX(std::istream& in);
+    virtual void writeV(std::ostream& out);
+    virtual void readV(std::istream& in);
+
     virtual void writeState( std::ostream& out );
 
     virtual void initGnuplot(const std::string path);
