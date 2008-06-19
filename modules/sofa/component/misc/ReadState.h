@@ -2,7 +2,7 @@
 #define SOFA_COMPONENT_MISC_READSTATE_H
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
@@ -21,22 +21,16 @@ namespace misc
 
 /** Read State vectors from file at each timestep
 */
-template<class DataTypes>
 class ReadState: public core::objectmodel::BaseObject
 {
 public:
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::Real Real;
 
     Data < std::string > f_filename;
     Data < double > f_interval;
     Data < double > f_shift;
 
 protected:
-    core::componentmodel::behavior::MechanicalState<DataTypes>* mmodel;
+    core::componentmodel::behavior::BaseMechanicalState* mmodel;
     std::ifstream* infile;
     double nextTime;
     double lastTime;
@@ -61,20 +55,11 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+        if (dynamic_cast<core::componentmodel::behavior::BaseMechanicalState*>(context->getMechanicalState()) == NULL)
             return false;
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const ReadState<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
 
 };
 

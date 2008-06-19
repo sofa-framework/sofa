@@ -75,8 +75,7 @@ public:
     void setSceneName(std::string &n) { sceneName = n;}
     void setCounter(int c) {counterWriteState = c;};
 protected:
-    template< class DataTypes >
-    void addWriteState(sofa::core::componentmodel::behavior::MechanicalState< DataTypes > *ms, simulation::Node* gnode);
+    void addWriteState(sofa::core::componentmodel::behavior::BaseMechanicalState*ms, simulation::Node* gnode);
 
     std::string sceneName;
     int counterWriteState; //avoid to have two same files if two mechanical objects has the same name
@@ -93,8 +92,7 @@ public:
     void setSceneName(std::string &n) { sceneName = n;}
     void setCounter(int c) {counterReadState = c;};
 protected:
-    template< class DataTypes >
-    void addReadState(sofa::core::componentmodel::behavior::MechanicalState< DataTypes > *ms, simulation::Node* gnode);
+    void addReadState(sofa::core::componentmodel::behavior::BaseMechanicalState *ms, simulation::Node* gnode);
     bool init;
     std::string sceneName;
     int counterReadState; //avoid to have two same files if two mechanical objects has the same name
@@ -110,8 +108,7 @@ public:
     bool getState() const {return state;};
     void setState(bool active) {state=active;};
 protected:
-    template< class DataTypes >
-    void changeStateWriter(sofa::component::misc::WriteState < DataTypes > *ws);
+    void changeStateWriter(sofa::component::misc::WriteState *ws);
 
     bool state;
 };
@@ -126,8 +123,7 @@ public:
     double getTime() const {return time;};
     void setTime(double _time) {time=_time;};
 protected:
-    template< class DataTypes >
-    void changeTimeReader(sofa::component::misc::ReadState < DataTypes > *rs) {rs->processReadState(time);};
+    void changeTimeReader(sofa::component::misc::ReadState *rs) {rs->processReadState(time);};
 
     double time;
 };

@@ -29,6 +29,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sstream>
 #include <iostream>
 
 
@@ -120,6 +121,10 @@ public:
     /// Scale the MechanicalObject
     virtual void applyScale(const double s)=0;
 
+    virtual void writeX(std::ostream &out)=0;
+    virtual void readX(std::istream &in)=0;
+    virtual void writeV(std::ostream &out)=0;
+    virtual void readV(std::istream &in)=0;
 
     virtual bool addBBox(double* /*minBBox*/, double* /*maxBBox*/)
     {

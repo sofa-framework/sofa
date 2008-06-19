@@ -16,8 +16,7 @@ namespace component
 namespace misc
 {
 
-template<class DataTypes>
-ReadState<DataTypes>::ReadState()
+ReadState::ReadState()
     : f_filename( initData(&f_filename, "filename", "output file name"))
     , f_interval( initData(&f_interval, 0.0, "interval", "time duration between inputs"))
     , f_shift( initData(&f_shift, 0.0, "shift", "shift between times in the file and times when they will be read"))
@@ -28,24 +27,21 @@ ReadState<DataTypes>::ReadState()
     this->f_listening.setValue(true);
 }
 
-template<class DataTypes>
-ReadState<DataTypes>::~ReadState()
+ReadState::~ReadState()
 {
     if (infile)
         delete infile;
 }
 
-template<class DataTypes>
-void ReadState<DataTypes>::init()
+void ReadState::init()
 {
 //     mmodel = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState());
     reset();
 }
 
-template<class DataTypes>
-void ReadState<DataTypes>::reset()
+void ReadState::reset()
 {
-    mmodel = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState());
+    mmodel = dynamic_cast< sofa::core::componentmodel::behavior::BaseMechanicalState* >(this->getContext()->getMechanicalState());
     if (infile)
         delete infile;
     const std::string& filename = f_filename.getValue();
@@ -62,8 +58,7 @@ void ReadState<DataTypes>::reset()
     nextTime = 0;
 }
 
-template<class DataTypes>
-void ReadState<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
+void ReadState::handleEvent(sofa::core::objectmodel::Event* event)
 {
     if (/* simulation::AnimateBeginEvent* ev = */ dynamic_cast<simulation::AnimateBeginEvent*>(event))
     {
@@ -76,22 +71,19 @@ void ReadState<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
 
 
 
-template<class DataTypes>
-void ReadState<DataTypes>::setTime(double time)
+void ReadState::setTime(double time)
 {
     if (time < nextTime) {reset(); nextTime=0.0;}
 }
 
-template<class DataTypes>
-void ReadState<DataTypes>::processReadState(double time)
+void ReadState::processReadState(double time)
 {
     if (time == lastTime) return;
     setTime(time);
     processReadState();
 }
 
-template<class DataTypes>
-void ReadState<DataTypes>::processReadState()
+void ReadState::processReadState()
 {
     bool updated = false;
 
@@ -107,7 +99,6 @@ void ReadState<DataTypes>::processReadState()
             //std::cout << "line= "<<line<<std::endl;
             std::istringstream str(line);
             str >> cmd;
-            //std::cout << "cmd= "<<cmd<<std::endl;
             if (cmd == "T=")
             {
                 str >> nextTime;
@@ -116,54 +107,20 @@ void ReadState<DataTypes>::processReadState()
 
             if (nextTime <= time) validLines.push_back(line);
         }
+
         for (std::vector<std::string>::iterator it=validLines.begin(); it!=validLines.end(); ++it)
         {
             std::istringstream str(*it);
             cmd.clear();
             str >> cmd;
-            //std::cout << "cmd= "<<cmd<<std::endl;
             if (cmd == "X=")
             {
-                int prevSize = mmodel->getSize();
-                //str >> (*mmodel->getX());
-                VecCoord v;
-                str >> v;
-                int newSize = v.size();
-                if (newSize == 0)
-                {
-                    std::cerr << "ReadState("<<f_filename.getValue()<<"): Empty vector read. Ignoring..."<<std::endl;
-                }
-                else
-                {
-                    if (newSize != prevSize)
-                    {
-                        std::cout << "ReadState("<<f_filename.getValue()<<"): size changed from "<<prevSize<<" to "<<newSize<<std::endl;
-                        mmodel->resize(newSize);
-                    }
-                    (*mmodel->getX()) = v;
-                }
+                mmodel->readX(str);
                 updated = true;
             }
             else if (cmd == "V=")
             {
-                int prevSize = mmodel->getSize();
-                //str >> (*mmodel->getV());
-                VecDeriv v;
-                str >> v;
-                int newSize = v.size();
-                if (newSize == 0)
-                {
-                    std::cerr << "ReadState("<<f_filename.getValue()<<"): Empty vector read. Ignoring..."<<std::endl;
-                }
-                else
-                {
-                    if (newSize != prevSize)
-                    {
-                        std::cout << "ReadState("<<f_filename.getValue()<<"): size changed from "<<prevSize<<" to "<<newSize<<std::endl;
-                        mmodel->resize(newSize);
-                    }
-                    (*mmodel->getV()) = v;
-                }
+                mmodel->readV(str);
                 updated = true;
             }
         }

@@ -64,7 +64,6 @@ void GraphModeler::addComponent(GNode *parent, ClassInfo* entry, std::string tem
 
 void GraphModeler::dropEvent(QDropEvent* event)
 {
-
     QString text;
     Q3TextDrag::decode(event, text);
     if (library.find(event->source()) != library.end())
