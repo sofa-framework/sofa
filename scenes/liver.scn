@@ -7,7 +7,7 @@
 	<Node name="Liver" depend="meshTopology dofs">
 		<!--<Object type="CGImplicit" iterations="25"/>-->
 		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
-		<Object type="CGLinearSolver" iterations="25" name="linear solver"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<Object type="MechanicalObject" template="Vec3f" name="dofs" filename="BehaviorModels/liver.xs3"/>
 		<Object type="DiagonalMass" name="mass" filename="BehaviorModels/liver.xs3"/>
 		<Object type="Mesh" name="meshTopology" filename="Topology/liver.mesh"/>
