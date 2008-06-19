@@ -66,27 +66,6 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::core::Collisio
 
         std::set< unsigned int > items;
         items.insert(ind_curr);
-        // also add neighbor triangles
-
-
-        sofa::core::componentmodel::topology::BaseMeshTopology* mesh = elem2.getCollisionModel()->getContext()->getMeshTopology();
-        if (mesh)
-        {
-            std::cout << "getTriangle("<<ind_curr<<")"<<std::endl;
-            sofa::core::componentmodel::topology::BaseMeshTopology::Triangle t = mesh->getTriangle(ind_curr);
-            for (int i=0; i<3; ++i)
-            {
-                std::cout << "getTriangleVertexShell("<<t[i]<<"):"<<std::flush;
-                const sofa::core::componentmodel::topology::BaseMeshTopology::VertexTriangles& vt = mesh->getTriangleVertexShell(t[i]);
-                for (sofa::core::componentmodel::topology::BaseMeshTopology::VertexTriangles::const_iterator it = vt.begin(); it != vt.end(); ++it)
-                {
-                    std::cout << " "<<*it<<std::flush;
-                    items.insert(*it);
-                }
-                std::cout << std::endl;
-            }
-        }
-
 
         bool is_topoMap = true;
 
