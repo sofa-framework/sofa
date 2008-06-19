@@ -107,12 +107,6 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     {
         translation.setValue(Vector3((SReal)atof(arg->getAttribute("dx","0.0")), (SReal)atof(arg->getAttribute("dy","0.0")), (SReal)atof(arg->getAttribute("dz","0.0"))));
     }
-
-    obj->applyScale(scale.getValue());
-    rotation.setValue(rotation.getValue()*3.141592653/180.0);
-    obj->applyRotation(helper::Quater<SReal>::createFromRotationVector( Vector3(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2])));
-    obj->applyTranslation(translation.getValue()[0],translation.getValue()[1],translation.getValue()[2]);
-
 }
 
 SOFA_DECL_CLASS(VisualModelImpl)
@@ -425,6 +419,11 @@ void VisualModelImpl::init()
     field_triangles.beginEdit();
     field_quads.beginEdit();
 
+    applyScale(scale.getValue());
+    applyRotation(helper::Quater<SReal>::createFromRotationVector( Vector3(rotation.getValue()[0]*M_PI/180.0,rotation.getValue()[1]*M_PI/180.0,rotation.getValue()[2])*M_PI/180.0));
+    applyTranslation(translation.getValue()[0],translation.getValue()[1],translation.getValue()[2]);
+
+
     translation.setValue(Vector3());
     rotation.setValue(Vector3());
     scale.setValue((SReal)1.0);
@@ -664,8 +663,9 @@ void VisualModelImpl::updateVisual()
         {
             /** HD : build also a Ogl description from main Topology. But it needs to be build only once since the topology update
             is taken care of by the handleTopologyChange() routine */
-            sofa::core::componentmodel::topology::BaseMeshTopology* topology = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>(getContext()->getTopology());
+            topology::MeshTopology* topology = dynamic_cast<topology::MeshTopology*>(getContext()->getTopology());
             sofa::core::componentmodel::topology::BaseTopology* pst = dynamic_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
+
             if (!topology && pst)
             {
                 useTopology=false;
@@ -673,6 +673,7 @@ void VisualModelImpl::updateVisual()
             }
             else
             {
+
                 if (topology != NULL && (topology->getRevision() != lastMeshRev))
                 {
                     computeMesh(topology);
@@ -825,6 +826,7 @@ void VisualModelImpl::handleTopologyChange()
     bool debug_mode = false;
 
     sofa::core::componentmodel::topology::BaseTopology *topology = static_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
+
 
     std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
     std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
@@ -991,7 +993,7 @@ void VisualModelImpl::handleTopologyChange()
 
         case core::componentmodel::topology::POINTSREMOVED:
         {
-            //std::cout << "INFO_print : Vis - POINTSREMOVED" << std::endl;
+            std::cout << "INFO_print : Vis - POINTSREMOVED" << std::endl;
 
             if (tstc)
             {
@@ -1187,7 +1189,7 @@ void VisualModelImpl::handleTopologyChange()
 
         case core::componentmodel::topology::POINTSRENUMBERING:
         {
-            //std::cout << "INFO_print : Vis - POINTSRENUMBERING" << std::endl;
+            std::cout << "INFO_print : Vis - POINTSRENUMBERING" << std::endl;
 
             if (tstc)
             {
