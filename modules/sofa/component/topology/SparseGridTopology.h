@@ -330,7 +330,7 @@ public :
     virtual int getNbPoints() const
     {
         if( !_alreadyInit ) const_cast<SparseGridTopology*>(this)->init();
-        return sofa::core::componentmodel::topology::BaseMeshTopology::getNbPoints();
+        return sofa::component::topology::MeshTopology::getNbPoints();
     }
 
     virtual int getNbHexas() { return this->getHexas().size();}
