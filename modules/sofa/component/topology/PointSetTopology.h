@@ -353,6 +353,8 @@ public:
     component::MechanicalObject<DataTypes> *object;
 
     DataPtr< PointSetTopologyContainer > *f_m_topologyContainer;
+
+    int revisionCounter;
 public:
     PointSetTopology(component::MechanicalObject<DataTypes> *obj);
 
@@ -378,6 +380,14 @@ public:
     /** creates a TopologyChangeVisitor and therefore warns all components that
         some topological changes have occured */
     virtual void propagateTopologicalChanges();
+
+    /** return the latest revision number */
+    virtual int getRevision() const
+    {
+        return revisionCounter;
+    }
+
+
 
     virtual void init();
     /** \brief Returns the PointSetTopologyContainer object of this PointSetTopologyContainer.
