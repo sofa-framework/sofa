@@ -303,8 +303,31 @@ void  PointSetGeometryAlgorithms<DataTypes>::getEnclosingSphere(typename DataTyp
 
 
 template<class DataTypes>
-void  PointSetGeometryAlgorithms<DataTypes>::getAABB(typename DataTypes::Real /*bb*/[6] ) const
+void  PointSetGeometryAlgorithms<DataTypes>::getAABB(typename DataTypes::Real bb[6] ) const
 {
+    // get restPosition
+    PointSetTopology<DataTypes> *parent=static_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
+    typename DataTypes::VecCoord& p = *parent->getDOF()->getX0();
+
+    bb[0] = (Real) p[0][0];
+    bb[1] = (Real) p[0][1];
+    bb[2] = (Real) p[0][2];
+    bb[3] = (Real) p[0][0];
+    bb[4] = (Real) p[0][1];
+    bb[5] = (Real) p[0][2];
+
+    for(unsigned int i=1; i<p.size(); ++i)
+    {
+        // min
+        if(bb[0] > (Real) p[i][0]) bb[0] = (Real) p[i][0];	// x
+        if(bb[1] > (Real) p[i][1]) bb[1] = (Real) p[i][1];	// y
+        if(bb[2] > (Real) p[i][2]) bb[2] = (Real) p[i][2];	// z
+
+        // max
+        if(bb[3] < (Real) p[i][0]) bb[3] = (Real) p[i][0];	// x
+        if(bb[4] < (Real) p[i][1]) bb[4] = (Real) p[i][1];	// y
+        if(bb[5] < (Real) p[i][2]) bb[5] = (Real) p[i][2];	// z
+    }
 }
 
 
