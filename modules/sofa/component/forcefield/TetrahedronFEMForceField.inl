@@ -1101,6 +1101,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
 template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::reinit()
 {
+    if (!this->mstate) return;
     setMethod(f_method.getValue() );
     VecCoord& p = *this->mstate->getX0();
     (*f_initialPoints.beginEdit()) = p;

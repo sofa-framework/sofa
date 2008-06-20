@@ -64,10 +64,10 @@ void OglTetrahedralModel<DataTypes>::drawTransparent()
         glDepthMask(GL_FALSE);
 
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-    const core::componentmodel::topology::BaseMeshTopology::SeqTetras& vec = topo->getTetras();
     core::componentmodel::topology::BaseMeshTopology::SeqTetras::const_iterator it;
 
 #ifdef GL_LINES_ADJACENCY_EXT
+    const core::componentmodel::topology::BaseMeshTopology::SeqTetras& vec = topo->getTetras();
     VecCoord& x = *nodes->getX();
     Coord v;
 

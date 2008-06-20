@@ -150,7 +150,7 @@ void Monitor<DataTypes>::fwdDraw ( Pass pass = Std )
         monitoring.endEdit();
 
         if ( saveXToGnuplot.getValue() || saveVToGnuplot.getValue() || saveFToGnuplot.getValue() )
-            exportGnuplot ( this ->getTime() );
+            exportGnuplot ( (Real) this ->getTime() );
 
     }
 }

@@ -75,7 +75,13 @@ public slots:
     ClassInfo* getInfoFromName(std::string name);
 
 
+    void dragEnterEvent( QDragEnterEvent* event) {event->accept();}
+    void dropEvent(QDropEvent* event);
     void keyPressEvent ( QKeyEvent * e );
+
+    void fileRecentlyOpened(int id);
+    void updateRecentlyOpened(std::string fileLoaded);
+
 protected:
     GraphModeler *graph;
 
