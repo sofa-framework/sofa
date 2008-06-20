@@ -318,6 +318,9 @@ public:
     virtual void printDOF( VecId, std::ostream& =std::cerr );
     virtual unsigned printDOFWithElapsedTime(VecId, unsigned =0, unsigned =0, std::ostream& =std::cerr );
     /// @}
+
+    // handle state changes
+    virtual void handleStateChange();
 };
 
 } // namespace component

@@ -176,11 +176,11 @@ const sofa::helper::vector<Triangle> &TriangleSetTopologyContainer::getTriangleA
 
 int TriangleSetTopologyContainer::getTriangleIndex(const unsigned int v1, const unsigned int v2, const unsigned int v3)
 {
-    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvs=getTriangleVertexShellArray();
+    //const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvs=getTriangleVertexShellArray();
 
-    const sofa::helper::vector<unsigned int> &set1=tvs[v1];
-    const sofa::helper::vector<unsigned int> &set2=tvs[v2];
-    const sofa::helper::vector<unsigned int> &set3=tvs[v3];
+    const sofa::helper::vector<unsigned int> &set1=getTriangleVertexShell(v1);
+    const sofa::helper::vector<unsigned int> &set2=getTriangleVertexShell(v2);
+    const sofa::helper::vector<unsigned int> &set3=getTriangleVertexShell(v3);
 
     // The destination vector must be large enough to contain the result.
     sofa::helper::vector<unsigned int> out1(set1.size()+set2.size());
@@ -245,7 +245,7 @@ const sofa::helper::vector< TriangleEdges> &TriangleSetTopologyContainer::getTri
 
 const sofa::helper::vector< unsigned int > &TriangleSetTopologyContainer::getTriangleVertexShell(const unsigned int i)
 {
-    if (!m_triangleVertexShell.size())
+    if (!m_triangleVertexShell.size() || i > m_triangleVertexShell.size()-1)
         createTriangleVertexShellArray();
     return m_triangleVertexShell[i];
 }
@@ -253,14 +253,14 @@ const sofa::helper::vector< unsigned int > &TriangleSetTopologyContainer::getTri
 
 const sofa::helper::vector< unsigned int > &TriangleSetTopologyContainer::getTriangleEdgeShell(const unsigned int i)
 {
-    if (!m_triangleEdgeShell.size())
+    if (!m_triangleEdgeShell.size() || i > m_triangleEdgeShell.size()-1)
         createTriangleEdgeShellArray();
     return m_triangleEdgeShell[i];
 }
 
 const TriangleEdges &TriangleSetTopologyContainer::getTriangleEdge(const unsigned int i)
 {
-    if (!m_triangleEdge.size())
+    if (!m_triangleEdge.size() || i > m_triangleEdge.size()-1)
         createTriangleEdgeArray();
     return m_triangleEdge[i];
 }
@@ -292,13 +292,13 @@ int TriangleSetTopologyContainer::getEdgeIndexInTriangle(const TriangleEdges &t,
 
 sofa::helper::vector< unsigned int > &TriangleSetTopologyContainer::getTriangleEdgeShellForModification(const unsigned int i)
 {
-    if (!m_triangleEdgeShell.size())
+    if (!m_triangleEdgeShell.size() || i > m_triangleEdgeShell.size()-1)
         createTriangleEdgeShellArray();
     return m_triangleEdgeShell[i];
 }
 sofa::helper::vector< unsigned int > &TriangleSetTopologyContainer::getTriangleVertexShellForModification(const unsigned int i)
 {
-    if (!m_triangleVertexShell.size())
+    if (!m_triangleVertexShell.size() || i > m_triangleVertexShell.size()-1)
         createTriangleVertexShellArray();
     return m_triangleVertexShell[i];
 }

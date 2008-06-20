@@ -413,15 +413,15 @@ const sofa::helper::vector<Hexahedron> &HexahedronSetTopologyContainer::getHexah
 
 int HexahedronSetTopologyContainer::getHexahedronIndex(const unsigned int v1, const unsigned int v2, const unsigned int v3, const unsigned int v4, const unsigned int v5, const unsigned int v6, const unsigned int v7, const unsigned int v8)
 {
-    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvs=getHexahedronVertexShellArray();
-    const sofa::helper::vector<unsigned int> &set1=tvs[v1];
-    const sofa::helper::vector<unsigned int> &set2=tvs[v2];
-    const sofa::helper::vector<unsigned int> &set3=tvs[v3];
-    const sofa::helper::vector<unsigned int> &set4=tvs[v4];
-    const sofa::helper::vector<unsigned int> &set5=tvs[v5];
-    const sofa::helper::vector<unsigned int> &set6=tvs[v6];
-    const sofa::helper::vector<unsigned int> &set7=tvs[v7];
-    const sofa::helper::vector<unsigned int> &set8=tvs[v8];
+    //const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvs=getHexahedronVertexShellArray();
+    const sofa::helper::vector<unsigned int> &set1=getHexahedronVertexShell(v1);
+    const sofa::helper::vector<unsigned int> &set2=getHexahedronVertexShell(v2);
+    const sofa::helper::vector<unsigned int> &set3=getHexahedronVertexShell(v3);
+    const sofa::helper::vector<unsigned int> &set4=getHexahedronVertexShell(v4);
+    const sofa::helper::vector<unsigned int> &set5=getHexahedronVertexShell(v5);
+    const sofa::helper::vector<unsigned int> &set6=getHexahedronVertexShell(v6);
+    const sofa::helper::vector<unsigned int> &set7=getHexahedronVertexShell(v7);
+    const sofa::helper::vector<unsigned int> &set8=getHexahedronVertexShell(v8);
 
     // The destination vector must be large enough to contain the result.
     sofa::helper::vector<unsigned int> out1(set1.size()+set2.size());
@@ -527,7 +527,7 @@ const sofa::helper::vector< HexahedronQuads> &HexahedronSetTopologyContainer::ge
 
 const sofa::helper::vector< unsigned int > &HexahedronSetTopologyContainer::getHexahedronVertexShell(const unsigned int i)
 {
-    if (!m_hexahedronVertexShell.size())
+    if (!m_hexahedronVertexShell.size() || i > m_hexahedronVertexShell.size()-1)
         createHexahedronVertexShellArray();
     return m_hexahedronVertexShell[i];
 }
@@ -535,28 +535,28 @@ const sofa::helper::vector< unsigned int > &HexahedronSetTopologyContainer::getH
 
 const sofa::helper::vector< unsigned int > &HexahedronSetTopologyContainer::getHexahedronEdgeShell(const unsigned int i)
 {
-    if (!m_hexahedronEdgeShell.size())
+    if (!m_hexahedronEdgeShell.size() || i > m_hexahedronEdgeShell.size()-1)
         createHexahedronEdgeShellArray();
     return m_hexahedronEdgeShell[i];
 }
 
 const sofa::helper::vector< unsigned int > &HexahedronSetTopologyContainer::getHexahedronQuadShell(const unsigned int i)
 {
-    if (!m_hexahedronQuadShell.size())
+    if (!m_hexahedronQuadShell.size() || i > m_hexahedronQuadShell.size()-1)
         createHexahedronQuadShellArray();
     return m_hexahedronQuadShell[i];
 }
 
 const HexahedronEdges &HexahedronSetTopologyContainer::getHexahedronEdges(const unsigned int i)
 {
-    if (!m_hexahedronEdge.size())
+    if (!m_hexahedronEdge.size() || i > m_hexahedronEdge.size()-1)
         createHexahedronEdgeArray();
     return m_hexahedronEdge[i];
 }
 
 const HexahedronQuads &HexahedronSetTopologyContainer::getHexahedronQuads(const unsigned int i)
 {
-    if (!m_hexahedronQuad.size())
+    if (!m_hexahedronQuad.size() || i > m_hexahedronQuad.size()-1)
         createHexahedronQuadArray();
     return m_hexahedronQuad[i];
 }
@@ -636,14 +636,14 @@ int HexahedronSetTopologyContainer::getQuadIndexInHexahedron(const HexahedronQua
 
 sofa::helper::vector< unsigned int > &HexahedronSetTopologyContainer::getHexahedronEdgeShellForModification(const unsigned int i)
 {
-    if (!m_hexahedronEdgeShell.size())
+    if (!m_hexahedronEdgeShell.size() || i > m_hexahedronEdgeShell.size()-1)
         createHexahedronEdgeShellArray();
     return m_hexahedronEdgeShell[i];
 }
 
 sofa::helper::vector< unsigned int > &HexahedronSetTopologyContainer::getHexahedronVertexShellForModification(const unsigned int i)
 {
-    if (!m_hexahedronVertexShell.size())
+    if (!m_hexahedronVertexShell.size() || i > m_hexahedronVertexShell.size()-1)
         createHexahedronVertexShellArray();
     return m_hexahedronVertexShell[i];
 }

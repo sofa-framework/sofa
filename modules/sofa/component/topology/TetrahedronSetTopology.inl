@@ -71,6 +71,7 @@ bool TetrahedronSetTopologyModifier<DataTypes>::load(const char *filename)
     else
     {
         loadPointSet(&loader);
+
         return true;
     }
 }
@@ -833,6 +834,22 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::removeItems(sofa::helper::ve
 }
 
 template<class DataTypes>
+void TetrahedronSetTopologyAlgorithms< DataTypes >::RemoveTetraBall(unsigned int ind_ta, unsigned int ind_tb)
+{
+
+    // Access the topology
+    TetrahedronSetTopology<DataTypes> *topology = dynamic_cast<TetrahedronSetTopology<DataTypes> *>(this->m_basicTopology);
+    assert (topology != 0);
+
+    sofa::helper::vector<unsigned int> init_indices;
+    sofa::helper::vector<unsigned int> &indices = init_indices;
+    topology->getTetrahedronSetGeometryAlgorithms()->getTetraInBall(ind_ta, ind_tb, indices);
+    removeTetrahedra(indices);
+
+    //cout<<"INFO, number to remove = "<< indices.size() <<endl;
+}
+
+template<class DataTypes>
 void TetrahedronSetTopologyAlgorithms< DataTypes >::writeMSH(const char *filename)
 {
 
@@ -924,6 +941,101 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::computeTetrahedronVolume( Basi
         ai[i]=(Real)(tripleProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]],p[t[3]]-p[t[0]])/6.0);
     }
 }
+
+/// Finds the indices of all tetrahedra in the ball of center ind_ta and of radius dist(ind_ta, ind_tb)
+template<class DataTypes>
+void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(unsigned int ind_ta, unsigned int ind_tb,  sofa::helper::vector<unsigned int> &indices)
+{
+
+    TetrahedronSetTopology< DataTypes > *topology = static_cast<TetrahedronSetTopology< DataTypes >* >(this->m_basicTopology);
+    assert (topology != 0);
+    TetrahedronSetTopologyContainer * container = static_cast< TetrahedronSetTopologyContainer* >(topology->getTopologyContainer());
+    const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
+
+    const Tetrahedron &ta=container->getTetrahedron(ind_ta);
+    const Tetrahedron &tb=container->getTetrahedron(ind_tb);
+
+    const typename DataTypes::Coord& ca=(vect_c[ta[0]]+vect_c[ta[1]]+vect_c[ta[2]]+vect_c[ta[3]])*0.25;
+    const typename DataTypes::Coord& cb=(vect_c[tb[0]]+vect_c[tb[1]]+vect_c[tb[2]]+vect_c[tb[3]])*0.25;
+    Vec<3,Real> pa;
+    Vec<3,Real> pb;
+    pa[0] = (Real) (ca[0]); pa[1] = (Real) (ca[1]); pa[2] = (Real) (ca[2]);
+    pb[0] = (Real) (cb[0]); pb[1] = (Real) (cb[1]); pb[2] = (Real) (cb[2]);
+
+    Real d = (pa-pb)*(pa-pb);
+
+    unsigned int t_test=ind_ta;
+    indices.push_back(t_test);
+
+    std::map<unsigned int, unsigned int> IndexMap;
+    IndexMap.clear();
+    IndexMap[t_test]=0;
+
+    sofa::helper::vector<unsigned int> ind2test;
+    ind2test.push_back(t_test);
+    sofa::helper::vector<unsigned int> ind2ask;
+    ind2ask.push_back(t_test);
+
+    while(ind2test.size()>0)
+    {
+
+        ind2test.clear();
+        for (unsigned int t=0; t<ind2ask.size(); t++)
+        {
+
+            unsigned int ind_t = ind2ask[t];
+            sofa::component::topology::TetrahedronTriangles adjacent_triangles = container->getTetrahedronTriangles(ind_t);
+
+            for (unsigned int i=0; i<adjacent_triangles.size(); i++)
+            {
+                sofa::helper::vector< unsigned int > tetras_to_remove = container->getTetrahedronTriangleShell(adjacent_triangles[i]);
+
+                if(tetras_to_remove.size()==2)
+                {
+                    if(tetras_to_remove[0]==ind_t)
+                    {
+                        t_test=tetras_to_remove[1];
+                    }
+                    else
+                    {
+                        t_test=tetras_to_remove[0];
+                    }
+
+                    std::map<unsigned int, unsigned int>::iterator iter_1 = IndexMap.find(t_test);
+                    if(iter_1 == IndexMap.end())
+                    {
+
+                        IndexMap[t_test]=0;
+
+                        const Tetrahedron &tc=container->getTetrahedron(t_test);
+                        const typename DataTypes::Coord& cc=(vect_c[tc[0]]+vect_c[tc[1]]+vect_c[tc[2]]+vect_c[tc[3]])*0.25;
+                        Vec<3,Real> pc;
+                        pc[0] = (Real) (cc[0]); pc[1] = (Real) (cc[1]); pc[2] = (Real) (cc[2]);
+
+                        Real d_test = (pa-pc)*(pa-pc);
+
+                        if(d_test<d)
+                        {
+                            ind2test.push_back(t_test);
+                            indices.push_back(t_test);
+                        }
+                    }
+                }
+            }
+        }
+
+        ind2ask.clear();
+        for (unsigned int t=0; t<ind2test.size(); t++)
+        {
+            ind2ask.push_back(ind2test[t]);
+        }
+
+    }
+
+    return;
+
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////TetrahedronSetTopology//////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////

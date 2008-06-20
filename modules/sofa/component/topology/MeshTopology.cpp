@@ -1062,119 +1062,119 @@ void MeshTopology::createHexaQuadShellArray ()
 
 const MeshTopology::VertexEdges& MeshTopology::getEdgeVertexShell(PointID i)
 {
-    if (!m_edgeVertexShell.size())
+    if (!m_edgeVertexShell.size() || i > m_edgeVertexShell.size()-1)
         createEdgeVertexShellArray();
     return m_edgeVertexShell[i];
 }
 
 const MeshTopology::TriangleEdges& MeshTopology::getEdgeTriangleShell(TriangleID i)
 {
-    if (m_edgeTriangleShell.empty())
+    if (m_edgeTriangleShell.empty() || i > m_edgeTriangleShell.size()-1)
         createEdgeTriangleShellArray();
     return m_edgeTriangleShell[i];
 }
 
 const MeshTopology::QuadEdges& MeshTopology::getEdgeQuadShell(QuadID i)
 {
-    if (m_edgeQuadShell.empty())
+    if (m_edgeQuadShell.empty() || i > m_edgeQuadShell.size()-1)
         createEdgeQuadShellArray();
     return m_edgeQuadShell[i];
 }
 
 const MeshTopology::TetraEdges& MeshTopology::getEdgeTetraShell(TetraID i)
 {
-    if (!m_edgeTetraShell.empty())
+    if (!m_edgeTetraShell.empty() || i > m_edgeTetraShell.size()-1)
         createEdgeTetraShellArray();
     return m_edgeTetraShell[i];
 }
 
 const MeshTopology::HexaEdges& MeshTopology::getEdgeHexaShell(HexaID i)
 {
-    if (!m_edgeHexaShell.size())
+    if (!m_edgeHexaShell.size() || i > m_edgeHexaShell.size()-1)
         createEdgeHexaShellArray();
     return m_edgeHexaShell[i];
 }
 
 const MeshTopology::VertexTriangles& MeshTopology::getTriangleVertexShell(PointID i)
 {
-    if (!m_triangleVertexShell.size())
+    if (!m_triangleVertexShell.size() || i > m_triangleVertexShell.size()-1)
         createTriangleVertexShellArray();
     return m_triangleVertexShell[i];
 }
 
 const MeshTopology::EdgeTriangles& MeshTopology::getTriangleEdgeShell(EdgeID i)
 {
-    if (m_triangleEdgeShell.empty())
+    if (m_triangleEdgeShell.empty() || i > m_triangleEdgeShell.size()-1)
         createTriangleEdgeShellArray();
     return m_triangleEdgeShell[i];
 }
 
 const MeshTopology::TetraTriangles& MeshTopology::getTriangleTetraShell(TetraID i)
 {
-    if (!m_triangleTetraShell.size())
+    if (!m_triangleTetraShell.size() || i > m_triangleTetraShell.size()-1)
         createTriangleTetraShellArray();
     return m_triangleTetraShell[i];
 }
 
 const MeshTopology::VertexQuads& MeshTopology::getQuadVertexShell(PointID i)
 {
-    if (m_quadVertexShell.empty())
+    if (m_quadVertexShell.empty() || i > m_quadVertexShell.size()-1)
         createQuadVertexShellArray();
     return m_quadVertexShell[i];
 }
 
 const vector< MeshTopology::QuadID >& MeshTopology::getQuadEdgeShell(EdgeID i)
 {
-    if (!m_quadEdgeShell.size())
+    if (!m_quadEdgeShell.size() || i > m_quadEdgeShell.size()-1)
         createQuadEdgeShellArray();
     return m_quadEdgeShell[i];
 }
 
 const MeshTopology::HexaQuads& MeshTopology::getQuadHexaShell(HexaID i)
 {
-    if (!m_quadHexaShell.size())
+    if (!m_quadHexaShell.size() || i > m_quadHexaShell.size()-1)
         createQuadHexaShellArray();
     return m_quadHexaShell[i];
 }
 
 const MeshTopology::VertexTetras& MeshTopology::getTetraVertexShell(PointID i)
 {
-    if (!m_tetraVertexShell.size())
+    if (!m_tetraVertexShell.size() || i > m_tetraVertexShell.size()-1)
         createTetraVertexShellArray();
     return m_tetraVertexShell[i];
 }
 
 const MeshTopology::EdgeTetras& MeshTopology::getTetraEdgeShell(EdgeID i)
 {
-    if (!m_tetraEdgeShell.size())
+    if (!m_tetraEdgeShell.size() || i > m_tetraEdgeShell.size()-1)
         createTetraEdgeShellArray();
     return m_tetraEdgeShell[i];
 }
 
 const MeshTopology::TriangleTetras& MeshTopology::getTetraTriangleShell(TriangleID i)
 {
-    if (!m_tetraTriangleShell.size())
+    if (!m_tetraTriangleShell.size() || i > m_tetraTriangleShell.size()-1)
         createTetraTriangleShellArray();
     return m_tetraTriangleShell[i];
 }
 
 const MeshTopology::VertexHexas& MeshTopology::getHexaVertexShell(PointID i)
 {
-    if (!m_hexaVertexShell.size())
+    if (!m_hexaVertexShell.size() || i > m_hexaVertexShell.size()-1)
         createHexaVertexShellArray();
     return m_hexaVertexShell[i];
 }
 
 const MeshTopology::EdgeHexas& MeshTopology::getHexaEdgeShell(EdgeID i)
 {
-    if (!m_hexaEdgeShell.size())
+    if (!m_hexaEdgeShell.size() || i > m_hexaEdgeShell.size()-1)
         createHexaEdgeShellArray();
     return m_hexaEdgeShell[i];
 }
 
 const MeshTopology::QuadHexas& MeshTopology::getHexaQuadShell(QuadID i)
 {
-    if (!m_hexaQuadShell.size())
+    if (!m_hexaQuadShell.size() || i > m_hexaQuadShell.size()-1)
         createHexaQuadShellArray();
     return m_hexaQuadShell[i];
 }
@@ -1212,11 +1212,11 @@ int MeshTopology::getEdgeIndex(PointID v1, PointID v2)
 
 int MeshTopology::getTriangleIndex(PointID v1, PointID v2, PointID v3)
 {
-    const vector< VertexTriangles > &tvs=getTriangleVertexShellArray();
+    //const vector< VertexTriangles > &tvs=getTriangleVertexShellArray();
 
-    const vector<TriangleID> &set1=tvs[v1];
-    const vector<TriangleID> &set2=tvs[v2];
-    const vector<TriangleID> &set3=tvs[v3];
+    const vector<TriangleID> &set1=getTriangleVertexShell(v1);
+    const vector<TriangleID> &set2=getTriangleVertexShell(v2);
+    const vector<TriangleID> &set3=getTriangleVertexShell(v3);
 
     // The destination vector must be large enough to contain the result.
     vector<TriangleID> out1(set1.size()+set2.size());
@@ -1239,12 +1239,12 @@ int MeshTopology::getTriangleIndex(PointID v1, PointID v2, PointID v3)
 
 int MeshTopology::getQuadIndex(PointID v1, PointID v2, PointID v3,  PointID v4)
 {
-    const vector< VertexQuads > &qvs=getQuadVertexShellArray();
+    //const vector< VertexQuads > &qvs=getQuadVertexShellArray();
 
-    const vector<QuadID> &set1=qvs[v1];
-    const vector<QuadID> &set2=qvs[v2];
-    const vector<QuadID> &set3=qvs[v3];
-    const vector<QuadID> &set4=qvs[v4];
+    const vector<QuadID> &set1=getQuadVertexShell(v1);
+    const vector<QuadID> &set2=getQuadVertexShell(v2);
+    const vector<QuadID> &set3=getQuadVertexShell(v3);
+    const vector<QuadID> &set4=getQuadVertexShell(v4);
 
     // The destination vector must be large enough to contain the result.
     vector<QuadID> out1(set1.size()+set2.size());

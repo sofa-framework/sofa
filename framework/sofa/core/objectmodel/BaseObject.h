@@ -126,6 +126,9 @@ public:
     /// Handle topological Changes
     virtual void handleTopologyChange() {}
 
+    /// Handle state Changes
+    virtual void handleStateChange() {}
+
     ///@}
 
     /// @name debug

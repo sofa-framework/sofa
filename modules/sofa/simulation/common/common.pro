@@ -33,6 +33,7 @@ HEADERS += Node.h \
            ResetVisitor.h \
            SolveVisitor.h \
            TopologyChangeVisitor.h \
+	     StateChangeVisitor.h \
            TransformationVisitor.h \
            UpdateContextVisitor.h \
            UpdateMappingEndEvent.h \
@@ -69,7 +70,8 @@ SOURCES += Node.cpp \
            PropagateEventVisitor.cpp \
            ResetVisitor.cpp \     
            SolveVisitor.cpp \
-           TopologyChangeVisitor.cpp \   
+           TopologyChangeVisitor.cpp \
+           StateChangeVisitor.cpp \   
            TransformationVisitor.cpp \
            UpdateContextVisitor.cpp \
            UpdateMappingEndEvent.cpp \

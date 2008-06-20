@@ -258,11 +258,11 @@ const sofa::helper::vector<Tetrahedron> &TetrahedronSetTopologyContainer::getTet
 
 int TetrahedronSetTopologyContainer::getTetrahedronIndex(const unsigned int v1, const unsigned int v2, const unsigned int v3, const unsigned int v4)
 {
-    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvs=getTetrahedronVertexShellArray();
-    const sofa::helper::vector<unsigned int> &set1=tvs[v1];
-    const sofa::helper::vector<unsigned int> &set2=tvs[v2];
-    const sofa::helper::vector<unsigned int> &set3=tvs[v3];
-    const sofa::helper::vector<unsigned int> &set4=tvs[v4];
+    //const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvs=getTetrahedronVertexShellArray();
+    const sofa::helper::vector<unsigned int> &set1=getTetrahedronVertexShell(v1);
+    const sofa::helper::vector<unsigned int> &set2=getTetrahedronVertexShell(v2);
+    const sofa::helper::vector<unsigned int> &set3=getTetrahedronVertexShell(v3);
+    const sofa::helper::vector<unsigned int> &set4=getTetrahedronVertexShell(v4);
 
     // The destination vector must be large enough to contain the result.
     sofa::helper::vector<unsigned int> out1(set1.size()+set2.size());
@@ -348,7 +348,7 @@ const sofa::helper::vector< TetrahedronTriangles> &TetrahedronSetTopologyContain
 
 const sofa::helper::vector< unsigned int > &TetrahedronSetTopologyContainer::getTetrahedronVertexShell(const unsigned int i)
 {
-    if (!m_tetrahedronVertexShell.size())
+    if (!m_tetrahedronVertexShell.size() || i > m_tetrahedronVertexShell.size()-1)
         createTetrahedronVertexShellArray();
     return m_tetrahedronVertexShell[i];
 }
@@ -356,28 +356,28 @@ const sofa::helper::vector< unsigned int > &TetrahedronSetTopologyContainer::get
 
 const sofa::helper::vector< unsigned int > &TetrahedronSetTopologyContainer::getTetrahedronEdgeShell(const unsigned int i)
 {
-    if (!m_tetrahedronEdgeShell.size())
+    if (!m_tetrahedronEdgeShell.size() || i > m_tetrahedronEdgeShell.size()-1)
         createTetrahedronEdgeShellArray();
     return m_tetrahedronEdgeShell[i];
 }
 
 const sofa::helper::vector< unsigned int > &TetrahedronSetTopologyContainer::getTetrahedronTriangleShell(const unsigned int i)
 {
-    if (!m_tetrahedronTriangleShell.size())
+    if (!m_tetrahedronTriangleShell.size() || i > m_tetrahedronTriangleShell.size()-1)
         createTetrahedronTriangleShellArray();
     return m_tetrahedronTriangleShell[i];
 }
 
 const TetrahedronEdges &TetrahedronSetTopologyContainer::getTetrahedronEdges(const unsigned int i)
 {
-    if (!m_tetrahedronEdge.size())
+    if (!m_tetrahedronEdge.size() || i > m_tetrahedronEdge.size()-1)
         createTetrahedronEdgeArray();
     return m_tetrahedronEdge[i];
 }
 
 const TetrahedronTriangles &TetrahedronSetTopologyContainer::getTetrahedronTriangles(const unsigned int i)
 {
-    if (!m_tetrahedronTriangle.size())
+    if (!m_tetrahedronTriangle.size() || i > m_tetrahedronTriangle.size()-1)
         createTetrahedronTriangleArray();
     return m_tetrahedronTriangle[i];
 }
@@ -433,14 +433,14 @@ int TetrahedronSetTopologyContainer::getTriangleIndexInTetrahedron(const Tetrahe
 
 sofa::helper::vector< unsigned int > &TetrahedronSetTopologyContainer::getTetrahedronEdgeShellForModification(const unsigned int i)
 {
-    if (!m_tetrahedronEdgeShell.size())
+    if (!m_tetrahedronEdgeShell.size() || i > m_tetrahedronEdgeShell.size()-1)
         createTetrahedronEdgeShellArray();
     return m_tetrahedronEdgeShell[i];
 }
 
 sofa::helper::vector< unsigned int > &TetrahedronSetTopologyContainer::getTetrahedronVertexShellForModification(const unsigned int i)
 {
-    if (!m_tetrahedronVertexShell.size())
+    if (!m_tetrahedronVertexShell.size() || i > m_tetrahedronVertexShell.size()-1)
         createTetrahedronVertexShellArray();
     return m_tetrahedronVertexShell[i];
 }

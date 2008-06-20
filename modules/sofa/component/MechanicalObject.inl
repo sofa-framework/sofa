@@ -37,6 +37,9 @@
 #include <assert.h>
 #include <iostream>
 
+#include <sofa/core/componentmodel/topology/BaseTopology.h>
+#include <sofa/component/topology/PointSetTopology.inl>
+
 
 namespace sofa
 {
@@ -44,6 +47,10 @@ namespace sofa
 
 namespace component
 {
+
+using namespace topology;
+using namespace sofa::core::componentmodel::topology;
+
 using namespace sofa::defaulttype;
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
@@ -237,6 +244,89 @@ MechanicalObject<DataTypes>::~MechanicalObject()
         delete m_gnuplotFileX;
 }
 
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::handleStateChange()
+{
+
+    sofa::core::componentmodel::topology::BaseTopology *topology = static_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
+
+    std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=topology->firstStateChange();
+    std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=topology->lastStateChange();
+
+    while( itBegin != itEnd )
+    {
+
+        TopologyChangeType changeType = (*itBegin)->getChangeType();
+
+        switch( changeType )
+        {
+
+        case core::componentmodel::topology::POINTSADDED:
+        {
+            unsigned int nbPoints = ( dynamic_cast< const PointsAdded * >( *itBegin ) )->getNbAddedVertices();
+            sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestors = ( dynamic_cast< const PointsAdded * >( *itBegin ) )->ancestorsList;
+            sofa::helper::vector< sofa::helper::vector< double       > > coefs     = ( dynamic_cast< const PointsAdded * >( *itBegin ) )->coefs;
+
+            if ( ancestors != (const sofa::helper::vector< sofa::helper::vector< unsigned int > >)0 )
+            {
+                unsigned int prevSizeMechObj = getSize();
+                resize( prevSizeMechObj + nbPoints );
+
+                sofa::helper::vector< sofa::helper::vector< double > > coefs2;
+                coefs2.resize(ancestors.size());
+
+                for (unsigned int i = 0; i < ancestors.size(); ++i)
+                {
+                    coefs2[i].resize(ancestors[i].size());
+
+                    for (unsigned int j = 0; j < ancestors[i].size(); ++j)
+                    {
+                        // constructng default coefs if none were defined
+                        if (coefs == (const sofa::helper::vector< sofa::helper::vector< double > >)0 || coefs[i].size() == 0)
+                            coefs2[i][j] = 1.0f / ancestors[i].size();
+                        else
+                            coefs2[i][j] = coefs[i][j];
+                    }
+                }
+
+                for (unsigned int i = 0; i < ancestors.size(); ++i)
+                {
+                    computeWeightedValue( prevSizeMechObj + i, ancestors[i], coefs2[i] );
+                }
+            }
+            break;
+        }
+        case core::componentmodel::topology::POINTSREMOVED:
+        {
+            const sofa::helper::vector<unsigned int> tab = ( dynamic_cast< const PointsRemoved * >( *itBegin ) )->getArray();
+
+            unsigned int prevSizeMechObj   = getSize();
+            unsigned int lastIndexMech = prevSizeMechObj - 1;
+            for (unsigned int i = 0; i < tab.size(); ++i)
+            {
+                replaceValue(lastIndexMech, tab[i] );
+
+                --lastIndexMech;
+            }
+            resize( prevSizeMechObj - tab.size() );
+            break;
+        }
+        case core::componentmodel::topology::POINTSRENUMBERING:
+        {
+            const sofa::helper::vector<unsigned int> &tab = ( dynamic_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
+
+            renumberValues( tab );
+            break;
+        }
+        default:
+            // Ignore events that are not Quad  related.
+            break;
+        };
+
+        ++itBegin;
+    }
+}
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::replaceValue (const int inputIndex, const int outputIndex)
@@ -711,7 +801,7 @@ void MechanicalObject<DataTypes>::init()
         if (topo!=NULL && topo->hasPos() && topo->getContext() == this->getContext())
         {
             int nbp = topo->getNbPoints();
-//  	      std::cout<<"Setting "<<nbp<<" points from topology. " << this->getName() << " topo : " << topo->getName() <<std::endl;
+            //std::cout<<"Setting "<<nbp<<" points from topology. " << this->getName() << " topo : " << topo->getName() <<std::endl;
             this->resize(nbp);
             for (int i=0; i<nbp; i++)
             {
@@ -743,6 +833,7 @@ void MechanicalObject<DataTypes>::init()
     }
 
     initialized = true;
+
 }
 
 
