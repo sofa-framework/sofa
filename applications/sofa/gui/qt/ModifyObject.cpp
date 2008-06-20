@@ -3965,14 +3965,22 @@ bool ModifyObject::createMonitorQtTable(Data<typename sofa::component::misc::Mon
 
     if (!vectorTable || !vectorTable2 || !vectorTable3)
     {
+        if (!MonitorDataTemp.sizeIdxPos() && !MonitorDataTemp.sizeIdxVels()
+            && !MonitorDataTemp.sizeIdxForces() && !EMPTY_FLAG )
+            return false;
+
         box->setColumns(1);
 
         new QLabel("Positions", box);
 
-        vectorTable = new Q3Table(MonitorDataTemp.sizeIdxPos(),4, box);
+        vectorTable = addResizableTable(box,MonitorDataTemp.sizeIdxPos(),4);
+        new QLabel (" ", box);
 
         vectorTable->setReadOnly(false);
+
         list_Table.push_back(std::make_pair(vectorTable, ff));
+        objectGUI.push_back(std::make_pair(ff,vectorTable));
+
         vectorTable->horizontalHeader()->setLabel(0,QString("particle Indices"));
         vectorTable->setColumnStretchable(0,true);
         vectorTable->horizontalHeader()->setLabel(1,QString("X"));      vectorTable->setColumnStretchable(1,true);
@@ -3983,10 +3991,13 @@ bool ModifyObject::createMonitorQtTable(Data<typename sofa::component::misc::Mon
 
         new QLabel("Velocities", box);
 
-        vectorTable2 = new Q3Table(MonitorDataTemp.sizeIdxVels(),4, box);
-
+        vectorTable2 = addResizableTable(box,MonitorDataTemp.sizeIdxVels(),4);
+        new QLabel (" ", box);
         vectorTable2->setReadOnly(false);
+
         list_Table.push_back(std::make_pair(vectorTable2, ff));
+        objectGUI.push_back(std::make_pair(ff,vectorTable2));
+
         vectorTable2->horizontalHeader()->setLabel(0,QString("particle Indices"));
         vectorTable2->setColumnStretchable(0,true);
         vectorTable2->horizontalHeader()->setLabel(1,QString("X"));
@@ -4000,10 +4011,13 @@ bool ModifyObject::createMonitorQtTable(Data<typename sofa::component::misc::Mon
 
         new QLabel("Forces", box);
 
-        vectorTable3 = new Q3Table(MonitorDataTemp.sizeIdxForces(),4, box);
-
+        vectorTable3 = addResizableTable(box,MonitorDataTemp.sizeIdxForces(),4);
+        new QLabel (" ", box);
         vectorTable3->setReadOnly(false);
+
         list_Table.push_back(std::make_pair(vectorTable3, ff));
+        objectGUI.push_back(std::make_pair(ff,vectorTable3));
+
         vectorTable3->horizontalHeader()->setLabel(0,QString("particle Indices"));
         vectorTable3->setColumnStretchable(0,true);
         vectorTable3->horizontalHeader()->setLabel(1,QString("X"));
@@ -4017,18 +4031,71 @@ bool ModifyObject::createMonitorQtTable(Data<typename sofa::component::misc::Mon
 
     } //fin if (!vectorTable)
 
-    if (MonitorDataTemp.getSizeVecPos())
-        nbRowPos = MonitorDataTemp.sizeIdxPos();
-
+    //number of rows for positions
     if (MonitorDataTemp.getSizeVecVels())
-        nbRowVels = MonitorDataTemp.sizeIdxVels();
+    {
+        if (setResize.find(vectorTable) != setResize.end())
+        {
+            sofa::helper::vector < int > NewIndPos;
+            NewIndPos = MonitorDataTemp.getIndPos();
+            NewIndPos.resize(vectorTable->numRows(), 0);
+            nbRowPos = NewIndPos.size();
+            MonitorDataTemp.setIndPos (NewIndPos);
+        }
+        else
+        {
+            nbRowPos = MonitorDataTemp.sizeIdxPos();
+            vectorTable->setNumRows(nbRowPos);
+        }
+    }
+    else
+    {
+        vectorTable->setNumRows(nbRowPos);
+    }
 
+    //number of rows for velocities
+    if (MonitorDataTemp.getSizeVecVels())
+    {
+        if (setResize.find(vectorTable2) != setResize.end())
+        {
+            sofa::helper::vector < int > NewIndVels;
+            NewIndVels = MonitorDataTemp.getIndVels();
+            NewIndVels.resize(vectorTable2->numRows(), 0);
+            nbRowVels = NewIndVels.size();
+            MonitorDataTemp.setIndVels (NewIndVels);
+        }
+        else
+        {
+            nbRowVels = MonitorDataTemp.sizeIdxVels();
+            vectorTable2->setNumRows(nbRowVels);
+        }
+    }
+    else
+    {
+        vectorTable2->setNumRows(nbRowVels);
+    }
+
+    //number of rows for forces
     if (MonitorDataTemp.getSizeVecForces())
-        nbRowForces = MonitorDataTemp.sizeIdxForces();
-
-    vectorTable->setNumRows(nbRowPos);
-    vectorTable2->setNumRows(nbRowVels);
-    vectorTable3->setNumRows(nbRowForces);
+    {
+        if (setResize.find(vectorTable3) != setResize.end())
+        {
+            sofa::helper::vector < int > NewIndForces;
+            NewIndForces = MonitorDataTemp.getIndForces();
+            NewIndForces.resize(vectorTable3->numRows(), 0);
+            nbRowForces = NewIndForces.size();
+            MonitorDataTemp.setIndForces (NewIndForces);
+        }
+        else
+        {
+            nbRowForces = MonitorDataTemp.sizeIdxForces();
+            vectorTable3->setNumRows(nbRowForces);
+        }
+    }
+    else
+    {
+        vectorTable3->setNumRows(nbRowForces);
+    }
 
 
     for (unsigned int i=0; i<3; i++)
@@ -4084,6 +4151,7 @@ bool ModifyObject::createMonitorQtTable(Data<typename sofa::component::misc::Mon
     delete [] oss3;
 
     counterWidget+=3;
+    ff->setValue (MonitorDataTemp);
     return true;
 }
 
