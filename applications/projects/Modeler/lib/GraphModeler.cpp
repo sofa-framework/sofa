@@ -6,9 +6,11 @@
 #ifdef SOFA_QT4
 #include <Q3Header>
 #include <Q3PopupMenu>
+#include <QMessageBox>
 #else
 #include <qheader.h>
 #include <qpopupmenu.h>
+#include <qmessagebox.h>
 #endif
 
 namespace sofa
@@ -41,42 +43,154 @@ void GraphModeler::addComponent(GNode *parent, ClassInfo* entry, std::string tem
 {
     if (!parent || !entry) return;
     BaseObject *object;
-    if (entry->creatorMap.find(entry->defaultTemplate) != entry->creatorMap.end())
+
+    if (entry->creatorMap.size() <= 1)
+    {
+        object = entry->creatorMap.begin()->second->createInstance(NULL,NULL);
+    }
+    else
     {
         if (templateName.empty())
             object = entry->creatorMap.find(entry->defaultTemplate)->second->createInstance(NULL, NULL);
         else
             object = entry->creatorMap.find(templateName)->second->createInstance(NULL, NULL);
-
     }
-    else
-        object = entry->creatorList.begin()->second->createInstance(NULL, NULL);
 
-    parent->addObject(object);
-    graphListener->addObject(parent, object);
-
-    if (saveHistory)
+    if (verifyInsertion(parent, object))
     {
-        Operation adding(graphListener->items[object], object, Operation::ADD_OBJECT);
-        historyOperation.push_front(adding);
+        parent->addObject(object);
+        graphListener->addObject(parent, object);
+        if (saveHistory)
+        {
+            Operation adding(graphListener->items[object], object, Operation::ADD_OBJECT);
+            historyOperation.push_front(adding);
+        }
     }
+    else delete object;
 }
+
+
+bool GraphModeler::verifyInsertion(GNode *parent, BaseObject *object)
+{
+    if (object->getTemplateName().empty()) return true;
+
+    BaseObject* reference = parent->getContext()->getMechanicalState();
+    if (!reference)
+    {
+        if (dynamic_cast<sofa::core::componentmodel::behavior::BaseMechanicalState*>(object) ||
+            dynamic_cast<sofa::core::VisualModel*>(object) ) return true;
+
+        reference = parent->getContext()->get< sofa::core::VisualModel >();
+        if (!reference)
+        {
+            const QString caption("Warning: no MechanicalState found or VisualModel!");
+            const QString warning=QString("No MechanicalState or VisualModel has been found in the current node!");
+            if ( QMessageBox::warning ( this, caption,warning, QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape, QMessageBox::Ignore ) == QMessageBox::Cancel )
+                return false;
+            return true; //WARNING no mechanical state: not good
+        }
+    }
+
+    std::string templateName = object->getTemplateName();
+    std::string referenceTemplate = reference->getTemplateName();
+    TemplateInfo referenceInfo; getInfoTemplate(referenceTemplate,referenceInfo);
+    std::cout << "Mechanical : " << referenceInfo << "\n";
+
+    if (referenceInfo.type == UNKNOWN) return true;
+
+    //Brutal search of the complete template
+    if (templateName.find(referenceTemplate) != std::string::npos) return true;
+    else
+    {
+        //If it failed, extract the dimension from the template and the type
+        TemplateInfo objectInfo; getInfoTemplate(templateName, objectInfo);
+        std::cout << "Object : " << objectInfo << "\n\n";
+        if ( referenceInfo == objectInfo) return true;
+
+        const QString caption("Warning: incompatible templates!");
+        const QString warning=QString("The mechanical state ") + QString(reference->getName().c_str()) + QString(" has a type <") + QString(referenceTemplate.c_str()) + QString("> not compatible with your component\n type: <") + QString(templateName.c_str()) + QString(">");
+
+        if ( QMessageBox::warning ( this, caption,warning, QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape, QMessageBox::Ignore ) == QMessageBox::Cancel )
+            return false;
+    }
+    return true;
+}
+
+void GraphModeler::getInfoTemplate(std::string templateName, GraphModeler::TemplateInfo &info )
+{
+
+    std::string extractTemplate = templateName;
+
+#ifdef SOFA_FLOAT
+    info.isFloat=true;
+#else
+    info.isFloat=false;
+#endif
+    info.dim=3;
+    for (unsigned int i=0; i<templateName.size(); ++i)
+    {
+        if (templateName[i] >= '0' && templateName[i] <= '9')
+        {
+            extractTemplate.resize(i);
+            info.dim=templateName[i] - '0';
+
+            if (templateName[i+1] == 'f') info.isFloat=true;
+            else
+            {
+                std::string::size_type pos_float=templateName.find("float");
+                std::string::size_type pos_double=templateName.find("double");
+                if (pos_float!=pos_double) {info.isFloat=pos_float<pos_double;}
+            }
+            break;
+        }
+    }
+    if      (extractTemplate.find("Vec") != std::string::npos) info.type= VEC;
+    else if (extractTemplate.find("Laparoscopic") != std::string::npos) info.type=LAPAROSCOPIC;
+    else if (extractTemplate.find("Rigid") != std::string::npos) info.type=RIGID;
+    else info.type=UNKNOWN;
+
+
+}
+
 
 void GraphModeler::dropEvent(QDropEvent* event)
 {
     QString text;
     Q3TextDrag::decode(event, text);
-    if (library.find(event->source()) != library.end())
+
+    std::string filename(text.ascii());
+    std::string test = filename; test.resize(4);
+    if (test == "file")
     {
-        std::string templateName =  text.ascii();
-        addComponent(getGNode(event->pos()), library.find(event->source())->second.first, templateName );
+
+#ifdef WIN32
+        for (unsigned int i=0; i<filename.size(); ++i)
+        {
+            if (filename[i] == '\\') filename[i] = '/';
+        }
+        filename = filename.substr(8); //removing file:///
+#else
+        filename = filename.substr(7); //removing file://
+#endif
+        filename.resize(filename.size()-1);
+        filename[filename.size()-1]='\0';
+        fileOpen(filename);
     }
     else
     {
-        if (text == QString("GNode"))
+
+        if (library.find(event->source()) != library.end())
         {
-            GNode* node=getGNode(event->pos());
-            if (node)  addGNode(node);
+            std::string templateName =  text.ascii();
+            addComponent(getGNode(event->pos()), library.find(event->source())->second.first, templateName );
+        }
+        else
+        {
+            if (text == QString("GNode"))
+            {
+                GNode* node=getGNode(event->pos());
+                if (node)  addGNode(node);
+            }
         }
     }
 }
@@ -328,6 +442,7 @@ void GraphModeler::changeName(std::string filename)
 {
     filenameXML = filename;
     emit( changeNameWindow(filename) );
+    emit( updateRecentlyOpened(filename) );
 }
 
 void GraphModeler::fileNew(GNode* root)

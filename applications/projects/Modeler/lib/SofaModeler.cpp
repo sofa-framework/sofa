@@ -1,4 +1,6 @@
 #include "SofaModeler.h"
+#include <sofa/helper/system/FileRepository.h>
+
 #include <map>
 #include <set>
 
@@ -88,17 +90,55 @@ SofaModeler::SofaModeler()
             QPushButton *button = new QPushButton(gridWidget, QString(entry->className.c_str()));
             gridLayout->addWidget(button, i,0);
             button->setFlat(true);
+
+            //Count the number of template usable: Mapping and MechanicalMapping must be separated
+            std::vector< std::string > templateCombo;
+            {
+                std::list< std::pair< std::string, ClassCreator*> >::iterator itTemplate;
+                for (itTemplate=entry->creatorList.begin(); itTemplate!= entry->creatorList.end(); itTemplate++)
+                {
+                    if (*it == "Mapping")
+                    {
+                        std::string mechanical = itTemplate->first;
+                        mechanical.resize(10+7);
+                        if (mechanical == "MechanicalMapping") continue;
+                    }
+                    else if ( *it == "MechanicalMapping")
+                    {
+                        std::string nonmechanical = itTemplate->first;
+                        nonmechanical.resize(7);
+                        if (nonmechanical == "Mapping") continue;
+                    }
+                    templateCombo.push_back(itTemplate->first);
+                }
+            }
+
+
             //Template: Add in a combo box the list of the templates
             QComboBox *combo=NULL;
-            if (entry->creatorList.size() > 1)
+            if ( entry->creatorList.size() > 1 )
             {
                 needSpacer = true;
                 combo = new QComboBox(gridWidget);
-                gridLayout->addWidget(combo, i,1);
-                std::list< std::pair< std::string, ClassCreator*> >::iterator it;
-                for (it=entry->creatorList.begin(); it!= entry->creatorList.end(); it++)
+                for (unsigned int t=0; t<templateCombo.size(); ++t)
+                    combo->insertItem(QString(templateCombo[t].c_str()));
+                if (templateCombo.size() == 1) //Mapping with only one template possible
                 {
-                    combo->insertItem(QString(it->first.c_str()));
+                    combo->hide();
+                    gridLayout->addWidget(new QLabel(QString(templateCombo[0].c_str()), gridWidget), i, 1);
+                }
+                else
+                {
+                    gridLayout->addWidget(combo, i,1);
+                }
+
+            }
+            else
+            {
+                if (!entry->creatorList.begin()->first.empty())
+                {
+                    QLabel *templateDescription = new QLabel(QString(entry->creatorList.begin()->first.c_str()), gridWidget);
+                    gridLayout->addWidget(templateDescription, i,1);
                 }
             }
             button->setText(QString(entry->className.c_str()));
@@ -122,7 +162,69 @@ SofaModeler::SofaModeler()
 #else
     connect(graph, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(changeInformation(QListViewItem *)));
 #endif
+
+    connect( graph, SIGNAL(updateRecentlyOpened(std::string)), this, SLOT(updateRecentlyOpened(std::string)));
+    connect( recentlyOpened, SIGNAL(activated(int)), this, SLOT(fileRecentlyOpened(int)));
+    //Recently Opened Files
+    std::string scenes ( "Modeler.ini" );
+    if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )
+        return;
+
+    scenes = sofa::helper::system::DataRepository.getFile ( scenes );
+
+    recentlyOpened->clear();
+    std::ifstream end(scenes.c_str());
+    std::string s;
+    while( end >> s )
+    {
+        recentlyOpened->insertItem(QString(s.c_str()));
+    }
+    end.close();
+
 };
+
+
+void SofaModeler::fileRecentlyOpened(int id)
+{
+    graph->fileOpen(recentlyOpened->text(id).ascii());
+}
+
+void SofaModeler::updateRecentlyOpened(std::string fileLoaded)
+{
+    std::string scenes ( "Modeler.ini" );
+    if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )
+        return;
+
+    scenes = sofa::helper::system::DataRepository.getFile ( scenes );
+
+    std::vector< std::string > list_files;
+    std::ifstream end(scenes.c_str());
+    std::string s;
+    while( end >> s )
+    {
+        if (s != fileLoaded)
+            list_files.push_back(sofa::helper::system::DataRepository.getFile(s));
+    }
+    end.close();
+
+
+    recentlyOpened->clear();
+    std::ofstream out;
+    out.open(scenes.c_str(),std::ios::out);
+    fileLoaded = sofa::helper::system::DataRepository.getFile(fileLoaded.c_str());
+    out << fileLoaded << "\n";
+
+    recentlyOpened->insertItem(QString(fileLoaded.c_str()));
+    for (unsigned int i=0; i<list_files.size() && i<5; ++i)
+    {
+        recentlyOpened->insertItem(QString(list_files[i].c_str()));
+        out << list_files[i] << "\n";
+    }
+
+    out.close();
+}
+
+
 
 void SofaModeler::changeInformation(Q3ListViewItem *item)
 {
@@ -149,7 +251,10 @@ void SofaModeler::dragComponent()
     Q3TextDrag *dragging = new Q3TextDrag(QString(currentComponent->className.c_str()), (QWidget *)sender);
     QComboBox *box = (QComboBox *) mapComponents.find(sender)->second.second;
     QString textDragged;
-    if (box)  textDragged = box->currentText();
+    if (box)
+    {
+        textDragged = box->currentText();
+    }
 
     dragging->setText(textDragged);
     dragging->dragCopy();
@@ -232,6 +337,30 @@ void SofaModeler::keyPressEvent ( QKeyEvent * e )
         e->ignore();
         break;
     }
+    }
+}
+
+void SofaModeler::dropEvent(QDropEvent* event)
+{
+    QString text;
+    Q3TextDrag::decode(event, text);
+    std::string filename(text.ascii());
+    std::string test = filename; test.resize(4);
+    if (test == "file")
+    {
+
+#ifdef WIN32
+        for (unsigned int i=0; i<filename.size(); ++i)
+        {
+            if (filename[i] == '/') filename[i] = '\\';
+        }
+        filename = filename.substr(8); //removing file:///
+#else
+        filename = filename.substr(7); //removing file://
+#endif
+        filename.resize(filename.size()-1);
+        filename[filename.size()-1]='\0';
+        graph->fileOpen(filename);
     }
 }
 

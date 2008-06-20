@@ -18,6 +18,8 @@
 #endif
 #include <sofa/gui/qt/GraphListenerQListView.h>
 #include <sofa/gui/qt/ModifyObject.h>
+#include <iostream>
+
 namespace sofa
 {
 
@@ -58,18 +60,38 @@ public:
 #endif
     };
 
-    void dragMoveEvent( QDragMoveEvent* event)
+    void dragEnterEvent( QDragEnterEvent* event)
     {
-        if ( getGNode(event->pos()))
-        {
-            event->accept(event->answerRect());
-        }
+        QString text;
+        Q3TextDrag::decode(event, text);
+        std::string filename(text.ascii());
+        std::string test = filename; test.resize(4);
+        if (test == "file") {event->accept();}
         else
         {
-            event->ignore(event->answerRect());
+            if ( getGNode(event->pos()))
+                event->accept(event->answerRect());
+            else
+                event->ignore(event->answerRect());
+        }
+    }
+    void dragMoveEvent( QDragMoveEvent* event)
+    {
+        QString text;
+        Q3TextDrag::decode(event, text);
+        std::string filename(text.ascii());
+        std::string test = filename; test.resize(4);
+        if (test == "file") {event->accept();}
+        else
+        {
+            if ( getGNode(event->pos()))
+                event->accept(event->answerRect());
+            else
+                event->ignore(event->answerRect());
         }
     }
 
+    bool verifyInsertion(GNode *parent, BaseObject *object);
     void dropEvent(QDropEvent* event);
 
     void setLibrary(ComponentMap &s) {library=s;}
@@ -83,6 +105,7 @@ public:
 
 signals:
     void changeNameWindow(std::string);
+    void updateRecentlyOpened(std::string);
 
 public slots:
     void collapseNode();
@@ -117,7 +140,9 @@ public slots:
     void fileSaveAs();
     void editUndo();
     void editRedo();
+    enum DataType {VEC,RIGID,LAPAROSCOPIC, UNKNOWN}; //type possible for mechanical state
 protected:
+
     class Operation
     {
     public:
@@ -131,6 +156,33 @@ protected:
         op ID;
     };
 
+    struct TemplateInfo
+    {
+        unsigned int dim;
+        DataType type;
+        bool isFloat;
+
+        bool operator==(const TemplateInfo& i)
+        {
+            return (i.dim == dim) && (i.type == type) && (i.isFloat == isFloat);
+        }
+
+        friend std::ostream& operator<< (std::ostream& out, const TemplateInfo& t)
+        {
+            out << "Dimenstion : " << t.dim << " Type: ";
+            if (t.type == VEC) out <<"Vec";
+            else if (t.type == RIGID) out << "Rigid";
+            else if (t.type == LAPAROSCOPIC) out << "Laparoscopic";
+            else if (t.type == UNKNOWN) out << "Unknown";
+
+            if (t.isFloat) out << " FLOAT";
+            else           out << " DOUBLE";
+            return out;
+        }
+
+    };
+
+    void getInfoTemplate(std::string templateName, TemplateInfo &info);
 
     GraphListenerQListView *graphListener;
     ComponentMap library;

@@ -1787,6 +1787,10 @@ void RealGUI::dropEvent(QDropEvent* event)
     Q3TextDrag::decode(event, text);
     std::string filename(text.ascii());
 #ifdef WIN32
+    for (unsigned int i=0; i<filename.size(); ++i)
+    {
+        if (filename[i] == '\\') filename[i] = '/';
+    }
     filename = filename.substr(8); //removing file:///
 #else
     filename = filename.substr(7); //removing file://

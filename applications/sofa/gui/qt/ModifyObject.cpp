@@ -23,7 +23,7 @@
  * and F. Poyer                                                                 *
  *******************************************************************************/
 
-#include "ModifyObject.h"
+#include <sofa/gui/qt/ModifyObject.h>
 #include <iostream>
 #ifdef SOFA_QT4
 #include <QLineEdit>
@@ -104,7 +104,7 @@ ModifyObject::ModifyObject(void *Id_, core::objectmodel::Base* node_clicked, Q3L
     setNode(node_clicked, item_clicked);
     connect ( this, SIGNAL( objectUpdated() ), parent_, SLOT( redraw() ));
     connect ( this, SIGNAL( dialogClosed(void *) ) , parent_, SLOT( modifyUnlock(void *)));
-// 	connect ( this, SIGNAL( transformObject(Node *, double, double, double, double, double, double, double)), parent, SLOT(transformObject(Node *, double, double, double, double, double, double, double)));
+
 
 }
 

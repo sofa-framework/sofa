@@ -23,6 +23,9 @@
     <property name="caption">
         <string>Sofa Modeler</string>
     </property>
+    <property name="acceptDrops">
+        <bool>true</bool>
+    </property>
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
@@ -140,7 +143,10 @@
         <action name="fileSaveAction"/>
         <action name="fileSaveAsAction"/>
         <separator/>
-        <action name="filePrintAction"/>
+        <action name="EmptyFiles"/>
+        <item text="Recently Opened Files..." name="recentlyOpened" accel="">
+            <action name="EmptyFiles"/>
+        </item>
         <separator/>
         <action name="fileExitAction"/>
     </item>
@@ -405,7 +411,16 @@
         <property name="accel">
             <string></string>
         </property>
+    </action>   
+    <action>
+        <property name="name">
+            <cstring>EmptyFiles</cstring>
+        </property>
+        <property name="text">
+            <string>...</string>
+        </property>
     </action>
+
 </actions>
 <images>
     <image name="image0">

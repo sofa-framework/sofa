@@ -1006,8 +1006,9 @@
         <action name="fileSaveAsAction"/>
         <action name="exportGraphAction"/>
         <separator/>
-        <action name="Action"/>
+        <action name="EmptyFiles"/>
         <item text="Recently Opened Files..." name="recentlyOpened" accel="">
+            <action name="EmptyFiles"/>
         </item>
         <separator/>
         <action name="fileExitAction"/>
@@ -1412,6 +1413,14 @@
         </property>
         <property name="text">
             <string>Recently Opened Files...</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>EmptyFiles</cstring>
+        </property>
+        <property name="text">
+            <string>...</string>
         </property>
     </action>
 </actions>
