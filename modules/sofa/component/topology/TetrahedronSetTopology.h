@@ -550,6 +550,10 @@ public:
      */
     virtual void writeMSH(const char *filename);
 
+    /** \brief  Removes all tetrahedra in the ball of center "ind_ta" and of radius dist(ind_ta, ind_tb)
+    */
+    void RemoveTetraBall(unsigned int ind_ta, unsigned int ind_tb);
+
     /** \brief Generic method for points renumbering
       */
     virtual void renumberPoints( const sofa::helper::vector<unsigned int> &/*index*/, const sofa::helper::vector<unsigned int> &/*inv_index*/);
@@ -578,6 +582,9 @@ public:
     void computeTetrahedronVolume( BasicArrayInterface<Real> &ai) const;
     /// computes the tetrahedron volume  of tetrahedron no i and returns it
     Real computeRestTetrahedronVolume(const unsigned int i) const;
+
+    /// finds the indices of all tetrahedra in the ball of center ind_ta and of radius dist(ind_ta, ind_tb)
+    void getTetraInBall(unsigned int ind_ta, unsigned int ind_tb, sofa::helper::vector<unsigned int> &indices);
 };
 
 

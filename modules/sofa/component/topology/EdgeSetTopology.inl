@@ -85,6 +85,7 @@ bool EdgeSetTopologyModifier<DataTypes>::load(const char *filename)
     else
     {
         loadPointSet(&loader);
+
         return true;
     }
 }
@@ -144,6 +145,12 @@ void EdgeSetTopologyModifier<DataTypes>::removeEdgesWarning( sofa::helper::vecto
 {
     /// sort vertices to remove in a descendent order
     std::sort( edges.begin(), edges.end(), std::greater<unsigned int>() );
+
+    EdgeSetTopology<DataTypes> *topology = dynamic_cast<EdgeSetTopology<DataTypes> *>(this->m_basicTopology);
+    assert (topology != 0);
+    EdgeSetTopologyContainer * container = static_cast<EdgeSetTopologyContainer *>(topology->getTopologyContainer());
+    assert (container != 0);
+    container->getEdgeVertexShellArray();
 
     // Warning that these edges will be deleted
     EdgesRemoved *e=new EdgesRemoved(edges);

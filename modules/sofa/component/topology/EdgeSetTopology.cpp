@@ -221,7 +221,7 @@ const sofa::helper::vector< sofa::helper::vector<unsigned int> > &EdgeSetTopolog
 
 const sofa::helper::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeVertexShell(const unsigned int i)
 {
-    if (!m_edgeVertexShell.size())
+    if (!m_edgeVertexShell.size() || i > m_edgeVertexShell.size()-1)
         createEdgeVertexShellArray();
     return m_edgeVertexShell[i];
 }
@@ -229,7 +229,7 @@ const sofa::helper::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeVer
 
 sofa::helper::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeVertexShellForModification(const unsigned int i)
 {
-    if (!m_edgeVertexShell.size())
+    if (!m_edgeVertexShell.size() || i > m_edgeVertexShell.size()-1)
         createEdgeVertexShellArray();
     return m_edgeVertexShell[i];
 }

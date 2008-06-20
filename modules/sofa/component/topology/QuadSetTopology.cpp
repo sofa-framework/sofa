@@ -176,12 +176,12 @@ const sofa::helper::vector<Quad> &QuadSetTopologyContainer::getQuadArray()
 
 int QuadSetTopologyContainer::getQuadIndex(const unsigned int v1, const unsigned int v2, const unsigned int v3,  const unsigned int v4)
 {
-    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvs=getQuadVertexShellArray();
+    //const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvs=getQuadVertexShellArray();
 
-    const sofa::helper::vector<unsigned int> &set1=tvs[v1];
-    const sofa::helper::vector<unsigned int> &set2=tvs[v2];
-    const sofa::helper::vector<unsigned int> &set3=tvs[v3];
-    const sofa::helper::vector<unsigned int> &set4=tvs[v4];
+    const sofa::helper::vector<unsigned int> &set1=getQuadVertexShell(v1);
+    const sofa::helper::vector<unsigned int> &set2=getQuadVertexShell(v2);
+    const sofa::helper::vector<unsigned int> &set3=getQuadVertexShell(v3);
+    const sofa::helper::vector<unsigned int> &set4=getQuadVertexShell(v4);
 
     // The destination vector must be large enough to contain the result.
     sofa::helper::vector<unsigned int> out1(set1.size()+set2.size());
@@ -251,7 +251,7 @@ const sofa::helper::vector< QuadEdges> &QuadSetTopologyContainer::getQuadEdgeArr
 
 const sofa::helper::vector< unsigned int > &QuadSetTopologyContainer::getQuadVertexShell(const unsigned int i)
 {
-    if (!m_quadVertexShell.size())
+    if (!m_quadVertexShell.size() || i > m_quadVertexShell.size()-1)
         createQuadVertexShellArray();
     return m_quadVertexShell[i];
 }
@@ -259,14 +259,14 @@ const sofa::helper::vector< unsigned int > &QuadSetTopologyContainer::getQuadVer
 
 const sofa::helper::vector< unsigned int > &QuadSetTopologyContainer::getQuadEdgeShell(const unsigned int i)
 {
-    if (!m_quadEdgeShell.size())
+    if (!m_quadEdgeShell.size() || i > m_quadEdgeShell.size()-1)
         createQuadEdgeShellArray();
     return m_quadEdgeShell[i];
 }
 
 const QuadEdges &QuadSetTopologyContainer::getQuadEdge(const unsigned int i)
 {
-    if (!m_quadEdge.size())
+    if (!m_quadEdge.size() || i > m_quadEdge.size()-1)
         createQuadEdgeArray();
     return m_quadEdge[i];
 }
@@ -302,13 +302,13 @@ int QuadSetTopologyContainer::getEdgeIndexInQuad(QuadEdges &t,unsigned int edgeI
 
 sofa::helper::vector< unsigned int > &QuadSetTopologyContainer::getQuadEdgeShellForModification(const unsigned int i)
 {
-    if (!m_quadEdgeShell.size())
+    if (!m_quadEdgeShell.size() || i > m_quadEdgeShell.size()-1)
         createQuadEdgeShellArray();
     return m_quadEdgeShell[i];
 }
 sofa::helper::vector< unsigned int > &QuadSetTopologyContainer::getQuadVertexShellForModification(const unsigned int i)
 {
-    if (!m_quadVertexShell.size())
+    if (!m_quadVertexShell.size() || i > m_quadVertexShell.size()-1)
         createQuadVertexShellArray();
     return m_quadVertexShell[i];
 }

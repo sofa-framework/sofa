@@ -73,6 +73,7 @@ bool QuadSetTopologyModifier<DataTypes>::load(const char *filename)
     else
     {
         loadPointSet(&loader);
+
         return true;
     }
 }
@@ -587,6 +588,7 @@ void QuadSetTopologyAlgorithms< DataTypes >::removeQuads(sofa::helper::vector< u
     assert (topology != 0);
     QuadSetTopologyModifier< DataTypes >* modifier  = static_cast< QuadSetTopologyModifier< DataTypes >* >(topology->getTopologyModifier());
     assert(modifier != 0);
+
     /// add the topological changes in the queue
     modifier->removeQuadsWarning(quads);
     // inform other objects that the quads are going to be removed

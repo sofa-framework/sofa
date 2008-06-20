@@ -73,6 +73,7 @@ bool TriangleSetTopologyModifier<DataTypes>::load(const char *filename)
     else
     {
         loadPointSet(&loader);
+
         return true;
     }
 }
@@ -1524,6 +1525,8 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
         // Create all the triangles registered to be created
         modifier->addTrianglesProcess((const sofa::helper::vector< Triangle > &) triangles_to_create) ; // WARNING called after the creation process by the method "addTrianglesProcess"
 
+        //cout<<"INFO, number to create = "<< triangles_to_create.size() <<endl;
+
         // Warn for the creation of all the triangles registered to be created
         modifier->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList);
 
@@ -1532,6 +1535,8 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
 
         // Remove all the triangles registered to be removed
         removeTriangles(triangles_to_remove, true, true); // (WARNING then PROPAGATION) called before the removal process by the method "removeTriangles"
+
+        //cout<<"INFO, number to remove = "<< triangles_to_remove.size() <<endl;
 
         // Propagate the topological changes *** not necessary
         //topology->propagateTopologicalChanges();

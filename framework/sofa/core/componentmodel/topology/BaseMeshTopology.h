@@ -27,6 +27,7 @@
 
 #include <stdlib.h>
 #include <vector>
+#include <list>
 #include <string>
 #include <iostream>
 #include <sofa/core/componentmodel/topology/Topology.h>
@@ -131,6 +132,8 @@ public:
 
     /// Random accessors
     /// @{
+    virtual unsigned int getDOFNumber() const;
+
     virtual int getNbEdges()     { return getEdges().size(); }
     virtual int getNbTriangles() { return getTriangles().size(); }
     virtual int getNbQuads()     { return getQuads().size(); }
@@ -217,6 +220,14 @@ public:
     /// return true if the given cube is active, i.e. it contains or is surrounded by mapped points.
     /// @deprecated
     virtual bool isCubeActive(int /*index*/) { return true; }
+
+    /** \brief Provides an iterator on the first element in the list of TopologyChange objects.
+     */
+    virtual std::list<const TopologyChange *>::const_iterator firstChange() const;
+
+    /** \brief Provides an iterator on the last element in the list of TopologyChange objects.
+     */
+    virtual std::list<const TopologyChange *>::const_iterator lastChange() const;
 };
 
 } // namespace topology

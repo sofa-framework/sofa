@@ -5,7 +5,7 @@
 #include <vector>
 //#include <string>
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+//#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/helper/fixed_array.h>
 
@@ -217,7 +217,8 @@ public:
      */
     void addPointsWarning(const unsigned int nPoints,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = (const sofa::helper::vector< sofa::helper::vector< unsigned int > >) 0,
-            const sofa::helper::vector< sofa::helper::vector< double       > >& coefs     = (const sofa::helper::vector< sofa::helper::vector< double       > >) 0);
+            const sofa::helper::vector< sofa::helper::vector< double       > >& coefs     = (const sofa::helper::vector< sofa::helper::vector< double       > >) 0,
+            const bool addDOF = true);
 
 
 
@@ -248,7 +249,7 @@ public:
      *
      * \sa removePointsProcess
      */
-    void removePointsWarning(sofa::helper::vector<unsigned int> &indices);
+    void removePointsWarning(sofa::helper::vector<unsigned int> &indices, const bool removeDOF = true);
 
 
     /** \brief Remove a subset of points
@@ -268,7 +269,7 @@ public:
      *
      * \sa renumberPointsProcess
      */
-    void renumberPointsWarning( const sofa::helper::vector<unsigned int> &index, const sofa::helper::vector<unsigned int> &inv_index);
+    void renumberPointsWarning( const sofa::helper::vector<unsigned int> &index, const sofa::helper::vector<unsigned int> &inv_index, const bool renumberDOF = true);
 
     /** \brief Reorder this topology.
      *
@@ -345,7 +346,7 @@ public:
 /** Describes a topological object that only consists as a set of points :
 it is a base class for all topological objects */
 template<class DataTypes>
-class PointSetTopology : public core::componentmodel::topology::BaseTopology, public core::componentmodel::topology::BaseMeshTopology
+class PointSetTopology : public core::componentmodel::topology::BaseTopology/*, public core::componentmodel::topology::BaseMeshTopology */
 {
 
 public:
@@ -388,6 +389,10 @@ public:
     }
 
 
+
+    /** creates a TopologyStateVisitor and therefore warns the Mechanical Object components that
+        points have been added or will be removed */
+    virtual void propagateStateChanges();
 
     virtual void init();
     /** \brief Returns the PointSetTopologyContainer object of this PointSetTopologyContainer.

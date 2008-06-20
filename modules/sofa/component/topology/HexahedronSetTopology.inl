@@ -71,6 +71,7 @@ bool HexahedronSetTopologyModifier<DataTypes>::load(const char *filename)
     else
     {
         loadPointSet(&loader);
+
         return true;
     }
 }

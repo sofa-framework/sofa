@@ -8,6 +8,9 @@
 #include <iostream>
 #include <sofa/core/objectmodel/BaseObject.h>
 
+//#include <sofa/core/componentmodel/topology/Topology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+
 namespace sofa
 {
 
@@ -19,6 +22,8 @@ namespace componentmodel
 
 namespace topology
 {
+using core::componentmodel::topology::BaseMeshTopology;
+typedef BaseMeshTopology::PointID PointID;
 
 // forward definitions :
 /// Contains the actual topology data and give acces to it.
@@ -31,79 +36,6 @@ class TopologyAlgorithms;
 class GeometryAlgorithms;
 /// Translates topology events (TopologyChange objects) from a topology so that they apply on another one.
 class TopologicalMapping;
-
-/// The enumeration used to give unique identifiers to TopologyChange objects.
-enum TopologyChangeType
-{
-    BASE,               ///< For TopologyChange class, should never be used.
-    ENDING_EVENT,       ///< To notify the end for the current sequence of topological change events
-    POINTSINDICESSWAP,  ///< For PointsIndicesSwap class.
-    POINTSADDED,        ///< For PointsAdded class.
-    POINTSREMOVED,      ///< For PointsRemoved class.
-    POINTSRENUMBERING,  ///< For PointsRenumbering class.
-    EDGESADDED,         ///< For EdgesAdded class.
-    EDGESREMOVED,       ///< For EdgesRemoved class.
-    EDGESRENUMBERING,    ///< For EdgesRenumbering class.
-    TRIANGLESADDED,     ///< For TrianglesAdded class.
-    TRIANGLESREMOVED,   ///< For TrianglesRemoved class.
-    TRIANGLESRENUMBERING, ///< For TrianglesRenumbering class.
-    TETRAHEDRAADDED,     ///< For TrianglesAdded class.
-    TETRAHEDRAREMOVED,   ///< For TrianglesRemoved class.
-    TETRAHEDRARENUMBERING, ///< For TrianglesRenumbering class.
-
-    QUADSADDED,     ///< For QuadsAdded class.
-    QUADSREMOVED,   ///< For QuadsRemoved class.
-    QUADSRENUMBERING, ///< For QuadsRenumbering class.
-    HEXAHEDRAADDED,     ///< For TrianglesAdded class.
-    HEXAHEDRAREMOVED,   ///< For TrianglesRemoved class.
-    HEXAHEDRARENUMBERING ///< For TrianglesRenumbering class.
-
-};
-
-
-/** \brief Base class to indicate a topology change occurred.
- *
- * All topological changes taking place in a given BaseTopology will issue a TopologyChange in the
- * BaseTopology's changeList, so that BasicTopologies mapped to it can know what happened and decide how to
- * react.
- * Classes inheriting from this one describe a given topolopy change (e.g. RemovedPoint, AddedEdge, etc).
- * The exact type of topology change is given by member changeType.
- */
-class TopologyChange
-{
-
-protected:
-    TopologyChangeType m_changeType; ///< A code that tells the nature of the Topology modification event (could be an enum).
-
-    TopologyChange( TopologyChangeType changeType = BASE ):m_changeType(changeType)
-    {
-    }
-
-public:
-    /** \brief Returns the code of this TopologyChange. */
-    TopologyChangeType getChangeType() const
-    {
-        return m_changeType;
-    }
-
-    /** \ brief Destructor.
-     *
-     * Must be virtual for TopologyChange to be a Polymorphic type.
-     */
-    virtual ~TopologyChange() { };
-};
-
-/** notifies the end for the current sequence of topological change events */
-class EndingEvent : public core::componentmodel::topology::TopologyChange
-{
-
-public:
-    EndingEvent() : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::ENDING_EVENT)
-    {
-    }
-
-};
-
 
 /** \brief Base class that gives access to the 4 topology related objects and an array of topology modifications.
  *
@@ -118,20 +50,27 @@ public:
  * The class also holds an array of TopologyChange objects needed by Topologies linked to this one to know
  * what happened and how to take it into account (or ignore it).
  */
-class BaseTopology : public virtual core::objectmodel::BaseObject
+class BaseTopology : public virtual core::objectmodel::BaseObject, public core::componentmodel::topology::BaseMeshTopology
 {
 
 public :
 
     /** \brief Provides an iterator on the first element in the list of TopologyChange objects.
      */
-    std::list<const TopologyChange *>::const_iterator firstChange() const;
-
-
+    virtual std::list<const TopologyChange *>::const_iterator firstChange() const;
 
     /** \brief Provides an iterator on the last element in the list of TopologyChange objects.
      */
-    std::list<const TopologyChange *>::const_iterator lastChange() const;
+    virtual std::list<const TopologyChange *>::const_iterator lastChange() const;
+
+    /** \brief Provides an iterator on the first element in the list of StateChange objects.
+     */
+    std::list<const TopologyChange *>::const_iterator firstStateChange() const;
+
+
+    /** \brief Provides an iterator on the last element in the list of StateChange objects.
+     */
+    std::list<const TopologyChange *>::const_iterator lastStateChange() const;
 
 
 
@@ -213,6 +152,21 @@ public :
     virtual void propagateTopologicalChanges()
     {
     }
+
+    /** \brief Called by a topology to warn the Mechanical Object component that points have been added or will be removed.
+     *
+     * Member m_StateChangeList should contain all TopologyChange objects corresponding to vertex changes in this topology
+     * that just happened (in the case of creation) or are about to happen (in the case of destruction) since
+     * last call to propagateTopologicalChanges.
+     *
+     * @see BaseTopology::m_changeList
+     * @sa firstChange()
+     * @sa lastChange()
+     */
+    virtual void propagateStateChanges()
+    {
+    }
+
     /** \brief Returns whether this topology is a main one or a specific one.
      *
      * @see BaseTopology::m_mainTopology
@@ -257,6 +211,11 @@ protected :
      */
     bool m_mainTopology;
 
+    /** \brief Free each State changes in the list and remove them from the list
+     *
+     */
+    void resetStateChangeList() const;
+
     Data< std::string > filename;
 
 };
@@ -284,6 +243,11 @@ public:
     {
         return m_changeList;
     }
+
+    const std::list<const TopologyChange *> &getStateChangeList() const
+    {
+        return m_StateChangeList;
+    }
     /*
             inline friend std::ostream& operator<< (std::ostream& out, const TopologyContainer& )
             {
@@ -303,6 +267,9 @@ protected:
     /// Array of topology modifications that have already occured (addition) or will occur next (deletion).
     std::list<const TopologyChange *> m_changeList; // shouldn't this be private?
 
+    /// Array of state modifications that have already occured (addition) or will occur next (deletion).
+    std::list<const TopologyChange *> m_StateChangeList; // shouldn't this be private?
+
 
     /** \brief Adds a TopologyChange to the list.
      *
@@ -318,10 +285,29 @@ protected:
         m_changeList.push_back(topologyChange);
     }
 
+    /** \brief Adds a StateChange to the list.
+     *
+     * Needed by topologies linked to this one to know what happened and what to do to take it into account.
+     *
+     * Only TopologyModifier and TopologyAlgorithms objects of this topology should have access to this method.
+     *
+     * Question : Is this wrapper really needed since member m_StateChangeList is protected and TopologyModifier
+     * and TopologyAlgorithms are friend classes?
+     */
+    void addStateChange(const TopologyChange *topologyChange)
+    {
+        m_StateChangeList.push_back(topologyChange);
+    }
+
     /** \brief Free each Topology changes in the list and remove them from the list
      *
      */
     void resetTopologyChangeList();
+
+    /** \brief Free each State changes in the list and remove them from the list
+     *
+     */
+    void resetStateChangeList();
 
     // Friend classes declaration.
     // Needed so that TopologyModifier and TopologyAlgorithms and BaseTopology can access private
@@ -366,6 +352,13 @@ protected:
     void addTopologyChange(const TopologyChange *topologyChange)
     {
         m_basicTopology->getTopologyContainer()->addTopologyChange(topologyChange);
+    }
+
+    /** \brief Adds a StateChange object to the list of the topology this object describes.
+     */
+    void addStateChange(const TopologyChange *topologyChange)
+    {
+        m_basicTopology->getTopologyContainer()->addStateChange(topologyChange);
     }
 
 };

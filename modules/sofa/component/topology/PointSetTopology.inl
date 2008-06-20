@@ -4,6 +4,7 @@
 
 #include <sofa/component/topology/PointSetTopology.h>
 #include <sofa/simulation/common/TopologyChangeVisitor.h>
+#include <sofa/simulation/common/StateChangeVisitor.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/helper/io/MeshTopologyLoader.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -106,50 +107,9 @@ void PointSetTopologyModifier<DataTypes>::swapPoints(const int i1,const int i2)
 
 template<class DataTypes>
 void PointSetTopologyModifier<DataTypes>::addPointsProcess(const unsigned int nPoints,
-        const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs, const bool addDOF)
-{
-    if(addDOF)
-    {
-
-        PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
-        assert (topology != 0);
-        unsigned int prevSizeMechObj   = topology->object->getSize();
-
-        // resizing the state vectors
-        topology->object->resize( prevSizeMechObj + nPoints );
-
-        if ( ancestors != (const sofa::helper::vector< sofa::helper::vector< unsigned int > >)0 )
-        {
-            assert( baryCoefs == (const sofa::helper::vector< sofa::helper::vector< double > >)0 || ancestors.size() == baryCoefs.size() );
-
-            sofa::helper::vector< sofa::helper::vector< double > > coefs;
-            coefs.resize(ancestors.size());
-
-            for (unsigned int i = 0; i < ancestors.size(); ++i)
-            {
-                assert( baryCoefs == (const sofa::helper::vector< sofa::helper::vector< double > >)0 || baryCoefs[i].size() == 0 || ancestors[i].size() == baryCoefs[i].size() );
-                coefs[i].resize(ancestors[i].size());
-
-
-                for (unsigned int j = 0; j < ancestors[i].size(); ++j)
-                {
-                    // constructng default coefs if none were defined
-                    if (baryCoefs == (const sofa::helper::vector< sofa::helper::vector< double > >)0 || baryCoefs[i].size() == 0)
-                        coefs[i][j] = 1.0f / ancestors[i].size();
-                    else
-                        coefs[i][j] = baryCoefs[i][j];
-                }
-            }
-
-            for ( unsigned int i = 0; i < nPoints; ++i)
-            {
-                topology->object->computeWeightedValue( prevSizeMechObj + i, ancestors[i], coefs[i] );
-            }
-        }
-
-    }
-}
+        const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+        const sofa::helper::vector< sofa::helper::vector< double > >& /*baryCoefs*/, const bool addDOF)
+{}
 
 template<class DataTypes>
 void PointSetTopologyModifier<DataTypes>::addNewPoint(unsigned int i, const sofa::helper::vector< double >& x)
@@ -170,81 +130,91 @@ void PointSetTopologyModifier<DataTypes>::addNewPoint(unsigned int i, const sofa
 template<class DataTypes>
 void PointSetTopologyModifier<DataTypes>::addPointsWarning(const unsigned int nPoints,
         const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double       > >& coefs)
+        const sofa::helper::vector< sofa::helper::vector< double       > >& coefs, const bool addDOF)
 {
+
+    PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
+    assert (topology != 0);
+
+    if(addDOF)
+    {
+
+        PointsAdded *e2=new PointsAdded(nPoints, ancestors, coefs);
+        addStateChange(e2);
+        topology->propagateStateChanges();
+
+    }
+
     // Warning that vertices just got created
     PointsAdded *e=new PointsAdded(nPoints, ancestors, coefs);
     addTopologyChange(e);
+
 }
 
 
 template<class DataTypes>
-void PointSetTopologyModifier<DataTypes>::removePointsWarning(sofa::helper::vector<unsigned int> &indices)
+void PointSetTopologyModifier<DataTypes>::removePointsWarning(sofa::helper::vector<unsigned int> &indices, const bool removeDOF)
 {
+
+    PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
+    assert (topology != 0);
 
     std::sort( indices.begin(), indices.end(), std::greater<unsigned int>() ); // BUG FIXED : sort indices here
     // Warning that these vertices will be deleted
     PointsRemoved *e=new PointsRemoved(indices);
     addTopologyChange(e);
-}
-
-
-
-template<class DataTypes>
-void PointSetTopologyModifier<DataTypes>::removePointsProcess( sofa::helper::vector<unsigned int> &indices, const bool removeDOF)
-{
-    // BUG FIXED : do not sort indices here
-    //std::sort( indices.begin(), indices.end(), std::greater<unsigned int>() );
-
-    // Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
-
-    PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
-    assert (topology != 0);
-    int prevSizeMechObj   = topology->object->getSize();
-
-    int lastIndexMech = prevSizeMechObj - 1;
 
     if(removeDOF)
     {
-
-        // deleting the vertices
-        for (unsigned int i = 0; i < indices.size(); ++i)
-        {
-            topology->object->replaceValue(lastIndexMech, indices[i] );
-
-            --lastIndexMech;
-        }
-
-        // resizing the state vectors
-        topology->object->resize( prevSizeMechObj - indices.size() );
-
+        PointsRemoved *e2=new PointsRemoved(indices);
+        addStateChange(e2);
     }
-    else
+
+}
+
+
+
+template<class DataTypes>
+void PointSetTopologyModifier<DataTypes>::removePointsProcess( sofa::helper::vector<unsigned int> &/*indices*/, const bool removeDOF)
+{
+
+    PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
+    assert (topology != 0);
+
+    if(removeDOF)
     {
-        topology->object->resize( prevSizeMechObj );
+        topology->propagateStateChanges();
     }
 
 }
 
 
 template<class DataTypes>
-void PointSetTopologyModifier<DataTypes>::renumberPointsWarning( const sofa::helper::vector<unsigned int> &index, const sofa::helper::vector<unsigned int> &inv_index)
+void PointSetTopologyModifier<DataTypes>::renumberPointsWarning( const sofa::helper::vector<unsigned int> &index, const sofa::helper::vector<unsigned int> &inv_index, const bool renumberDOF)
 {
     // Warning that these vertices will be deleted
     PointsRenumbering *e=new PointsRenumbering(index, inv_index);
     addTopologyChange(e);
+
+    if(renumberDOF)
+    {
+        PointsRenumbering *e2=new PointsRenumbering(index, inv_index);
+        addStateChange(e2);
+    }
 }
 
 template<class DataTypes>
 void PointSetTopologyModifier<DataTypes>::renumberPointsProcess( const sofa::helper::vector<unsigned int> &index, const sofa::helper::vector<unsigned int> &/*inv_index*/, const bool renumberDOF)
 {
 
+    PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
+    assert (topology != 0);
+
     if(renumberDOF)
     {
-        PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
-        assert (topology != 0);
-        topology->object->renumberValues( index );
+        topology->propagateStateChanges();
     }
+
 }
 
 
@@ -376,7 +346,15 @@ void PointSetTopology<DataTypes>::propagateTopologicalChanges()
     revisionCounter++;
 }
 
+template<class DataTypes>
+void PointSetTopology<DataTypes>::propagateStateChanges()
+{
 
+    sofa::simulation::StateChangeVisitor a;
+    this->getContext()->executeVisitor(&a);
+    // BUGFIX (Jeremie A. 06/12/07): remove the changes we just propagated, so that we don't send then again next time
+    this->resetStateChangeList();
+}
 
 template<class DataTypes>
 void PointSetTopology<DataTypes>::init()
