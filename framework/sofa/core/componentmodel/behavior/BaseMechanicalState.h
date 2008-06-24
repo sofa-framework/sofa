@@ -123,8 +123,12 @@ public:
 
     virtual void writeX(std::ostream &out)=0;
     virtual void readX(std::istream &in)=0;
+    virtual double compareX(std::istream &in)=0;
+
     virtual void writeV(std::ostream &out)=0;
     virtual void readV(std::istream &in)=0;
+    virtual double compareV(std::istream &in)=0;
+
 
     virtual bool addBBox(double* /*minBBox*/, double* /*maxBBox*/)
     {

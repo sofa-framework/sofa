@@ -8,6 +8,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>
 
+#include <sofa/core/componentmodel/behavior/BaseController.h>
 #include <set>
 
 namespace sofa
@@ -19,7 +20,7 @@ namespace component
 namespace collision
 {
 
-class GraspingManager : public core::objectmodel::BaseObject
+class GraspingManager : public core::componentmodel::behavior::BaseController
 {
 public:
     typedef TriangleModel::DataTypes DataTypes;

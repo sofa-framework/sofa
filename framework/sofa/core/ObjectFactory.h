@@ -40,8 +40,10 @@
 #include <sofa/core/componentmodel/behavior/BaseMechanicalMapping.h>
 #include <sofa/core/componentmodel/behavior/BaseMass.h>
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/core/componentmodel/behavior/LinearSolver.h>
 #include <sofa/core/componentmodel/behavior/MasterSolver.h>
 #include <sofa/core/componentmodel/topology/Topology.h>
+#include <sofa/core/componentmodel/behavior/BaseController.h>
 
 #include <map>
 #include <iostream>
@@ -305,10 +307,17 @@ public:
             entry.baseClasses.insert("Mass");
         if (implements<RealObject,core::componentmodel::behavior::OdeSolver>())
             entry.baseClasses.insert("OdeSolver");
+        if (implements<RealObject,core::componentmodel::behavior::LinearSolver>())
+            entry.baseClasses.insert("Linear Solver");
         if (implements<RealObject,core::componentmodel::behavior::MasterSolver>())
             entry.baseClasses.insert("MasterSolver");
         if (implements<RealObject,core::componentmodel::topology::Topology>())
             entry.baseClasses.insert("Topology");
+        if (implements<RealObject,core::componentmodel::behavior::BaseController>())
+            entry.baseClasses.insert("Controller");
+
+
+
 
         return addCreator(classname, templatename, new ObjectCreator<RealObject>);
     }

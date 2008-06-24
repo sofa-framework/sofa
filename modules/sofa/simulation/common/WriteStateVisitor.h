@@ -45,6 +45,7 @@
 
 #include <sofa/component/misc/WriteState.h>
 #include <sofa/component/misc/ReadState.h>
+#include <sofa/component/misc/CompareState.h>
 
 namespace sofa
 {
@@ -68,34 +69,70 @@ protected:
 class WriteStateCreator: public Visitor
 {
 public:
-    WriteStateCreator():sceneName(""), counterWriteState(0) {};
+    WriteStateCreator():sceneName(""), counterWriteState(0), createInMapping(false) {};
     WriteStateCreator(std::string &n, int c=0) {sceneName=n; counterWriteState=c;};
     virtual Result processNodeTopDown( simulation::Node*  );
 
     void setSceneName(std::string &n) { sceneName = n;}
     void setCounter(int c) {counterWriteState = c;};
+    void setCreateInMapping(bool b) {createInMapping=b;}
 protected:
     void addWriteState(sofa::core::componentmodel::behavior::BaseMechanicalState*ms, simulation::Node* gnode);
 
     std::string sceneName;
     int counterWriteState; //avoid to have two same files if two mechanical objects has the same name
+    bool createInMapping;
 };
 
 //Create ReadState component in the graph each time needed
 class ReadStateCreator: public Visitor
 {
 public:
-    ReadStateCreator():sceneName(""), counterReadState(0) {};
+    ReadStateCreator():sceneName(""), counterReadState(0), createInMapping(false) {};
     ReadStateCreator(std::string &n, bool i=true, int c=0 ) {sceneName=n; init=i; counterReadState=c;};
     virtual Result processNodeTopDown( simulation::Node*  );
 
     void setSceneName(std::string &n) { sceneName = n;}
     void setCounter(int c) {counterReadState = c;};
+    void setCreateInMapping(bool b) {createInMapping=b;}
 protected:
     void addReadState(sofa::core::componentmodel::behavior::BaseMechanicalState *ms, simulation::Node* gnode);
     bool init;
     std::string sceneName;
     int counterReadState; //avoid to have two same files if two mechanical objects has the same name
+    bool createInMapping;
+};
+
+
+//Create ReadState component in the graph each time needed
+class CompareStateCreator: public Visitor
+{
+public:
+    CompareStateCreator():sceneName(""), counterCompareState(0), createInMapping(false) {};
+    CompareStateCreator(std::string &n, bool i=true, int c=0 ) {sceneName=n; init=i; counterCompareState=c;};
+    virtual Result processNodeTopDown( simulation::Node*  );
+
+    void setSceneName(std::string &n) { sceneName = n;}
+    void setCounter(int c) {counterCompareState = c;};
+    void setCreateInMapping(bool b) {createInMapping=b;}
+protected:
+    void addCompareState(sofa::core::componentmodel::behavior::BaseMechanicalState *ms, simulation::Node* gnode);
+    bool init;
+    std::string sceneName;
+    int counterCompareState; //avoid to have two same files if two mechanical objects has the same name
+    bool createInMapping;
+};
+
+//Create ReadState component in the graph each time needed
+class CompareStateResult: public Visitor
+{
+public:
+    CompareStateResult() {error=0;};
+    virtual Result processNodeTopDown( simulation::Node*  );
+
+    double getError() {return error;};
+protected:
+    double error;
 };
 
 
@@ -113,6 +150,19 @@ protected:
     bool state;
 };
 
+class ReadStateActivator: public Visitor
+{
+public:
+    ReadStateActivator( bool active):state(active) {};
+    virtual Result processNodeTopDown( simulation::Node*  );
+
+    bool getState() const {return state;};
+    void setState(bool active) {state=active;};
+protected:
+    void changeStateReader(sofa::component::misc::ReadState *ws);
+
+    bool state;
+};
 
 class ReadStateModifier: public Visitor
 {

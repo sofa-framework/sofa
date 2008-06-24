@@ -419,8 +419,11 @@ void VisualModelImpl::init()
     field_triangles.beginEdit();
     field_quads.beginEdit();
 
+
+
     applyScale(scale.getValue());
-    applyRotation(helper::Quater<SReal>::createFromRotationVector( Vector3(rotation.getValue()[0]*M_PI/180.0,rotation.getValue()[1]*M_PI/180.0,rotation.getValue()[2])*M_PI/180.0));
+    Quaternion q = Quaternion::createFromRotationVector( Vector3(rotation.getValue())*M_PI/180.0);
+    applyRotation(q);
     applyTranslation(translation.getValue()[0],translation.getValue()[1],translation.getValue()[2]);
 
 

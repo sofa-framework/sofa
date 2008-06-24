@@ -65,8 +65,6 @@ Visitor::Result WriteStateVisitor::processNodeTopDown( simulation::Node* gnode )
 //Create a Write State component each time a mechanical state is found
 Visitor::Result WriteStateCreator::processNodeTopDown( simulation::Node* gnode)
 {
-    using namespace sofa::defaulttype;
-
     sofa::core::componentmodel::behavior::BaseMechanicalState * mstate = dynamic_cast<sofa::core::componentmodel::behavior::BaseMechanicalState *>( gnode->getMechanicalState());
     if (!mstate)   return Visitor::RESULT_CONTINUE;
     //We have a mechanical state
@@ -81,7 +79,7 @@ void WriteStateCreator::addWriteState(sofa::core::componentmodel::behavior::Base
     sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     sofa::core::BaseMapping *mapping;
     context->get(mapping);
-    if ( mapping == NULL)
+    if ( createInMapping || mapping == NULL)
     {
         sofa::component::misc::WriteState *ws;
         context->get(ws);
@@ -94,7 +92,6 @@ void WriteStateCreator::addWriteState(sofa::core::componentmodel::behavior::Base
         ofilename << sceneName << "_" << counterWriteState << "_" << ms->getName()  << "_mstate.txt" ;
 
         ws->f_filename.setValue(ofilename.str()); ws->init(); ws->f_listening.setValue(true);  //Activated at init
-
 
         ++counterWriteState;
     }
@@ -119,7 +116,7 @@ void ReadStateCreator::addReadState(sofa::core::componentmodel::behavior::BaseMe
 
     sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     sofa::core::BaseMapping *mapping; context->get(mapping);
-    if (mapping== NULL)
+    if (createInMapping || mapping== NULL)
     {
         sofa::component::misc::ReadState *rs; context->get(rs);
         if (  rs == NULL )
@@ -137,13 +134,60 @@ void ReadStateCreator::addReadState(sofa::core::componentmodel::behavior::BaseMe
     }
 }
 
+
+//Create a Compare State component each time a mechanical state is found
+Visitor::Result CompareStateCreator::processNodeTopDown( simulation::Node* gnode)
+{
+    using namespace sofa::defaulttype;
+    sofa::core::componentmodel::behavior::BaseMechanicalState * mstate = dynamic_cast<sofa::core::componentmodel::behavior::BaseMechanicalState *>( gnode->getMechanicalState());
+    if (!mstate)   return Visitor::RESULT_CONTINUE;
+    //We have a mechanical state
+    addCompareState(mstate, gnode);
+    return Visitor::RESULT_CONTINUE;
+}
+
+
+
+void CompareStateCreator::addCompareState(sofa::core::componentmodel::behavior::BaseMechanicalState *ms, simulation::Node* gnode)
+{
+
+    sofa::core::objectmodel::BaseContext* context = gnode->getContext();
+    sofa::core::BaseMapping *mapping; context->get(mapping);
+    if (createInMapping || mapping== NULL)
+    {
+        sofa::component::misc::CompareState *rs; context->get(rs);
+        if (  rs == NULL )
+        {
+            rs = new sofa::component::misc::CompareState(); gnode->addObject(rs);
+        }
+
+        std::ostringstream ofilename;
+        ofilename << sceneName << "_" << counterCompareState << "_" << ms->getName()  << "_mstate.txt" ;
+
+        rs->f_filename.setValue(ofilename.str());  rs->f_listening.setValue(false); //Desactivated only called by extern functions
+        if (init) rs->init();
+
+        ++counterCompareState;
+    }
+}
+
+
+
+//Create a Compare State component each time a mechanical state is found
+Visitor::Result CompareStateResult::processNodeTopDown( simulation::Node* gnode)
+{
+    sofa::component::misc::CompareState *cv;
+    gnode->get(cv);
+    if (!cv)   return Visitor::RESULT_CONTINUE;
+    //We have a mechanical state
+    error += cv->getError();
+    return Visitor::RESULT_CONTINUE;
+}
+
+
 //if state is true, we activate all the write states present in the scene.
 Visitor::Result WriteStateActivator::processNodeTopDown( simulation::Node* gnode)
 {
-    using namespace sofa::defaulttype;
-    sofa::component::misc::ReadState *rs = gnode->get< sofa::component::misc::ReadState >();
-    if (rs != NULL) { rs->reset();  rs->f_listening.setValue(!state);}
-
     sofa::component::misc::WriteState *ws = gnode->get< sofa::component::misc::WriteState >();
     if (ws != NULL) { changeStateWriter(ws);}
     return Visitor::RESULT_CONTINUE;
@@ -153,6 +197,21 @@ void WriteStateActivator::changeStateWriter(sofa::component::misc::WriteState*ws
 {
     if (!state) ws->reset();
     ws->f_listening.setValue(state);
+}
+
+//if state is true, we activate all the write states present in the scene.
+Visitor::Result ReadStateActivator::processNodeTopDown( simulation::Node* gnode)
+{
+    sofa::component::misc::ReadState *rs = gnode->get< sofa::component::misc::ReadState >();
+    if (rs != NULL) { changeStateReader(rs);}
+
+    return Visitor::RESULT_CONTINUE;
+}
+
+void ReadStateActivator::changeStateReader(sofa::component::misc::ReadState* rs)
+{
+    rs->reset();
+    rs->f_listening.setValue(state);
 }
 
 

@@ -41,9 +41,12 @@ using sofa::simulation::tree::GNode;
 using namespace sofa::core::objectmodel;
 class GraphModeler : public Q3ListView
 {
+
+
     typedef std::map< const QObject* , std::pair< ClassInfo*, QObject*> > ComponentMap;
     Q_OBJECT
 public:
+    enum DataType {VEC,RIGID,LAPAROSCOPIC, UNKNOWN}; //type possible for mechanical state
     GraphModeler( QWidget* parent=0, const char* name=0, Qt::WFlags f = 0 ):Q3ListView(parent, name, f), graphListener(NULL)
     {
         graphListener = new GraphListenerQListView(this);
@@ -140,7 +143,6 @@ public slots:
     void fileSaveAs();
     void editUndo();
     void editRedo();
-    enum DataType {VEC,RIGID,LAPAROSCOPIC, UNKNOWN}; //type possible for mechanical state
 protected:
 
     class Operation

@@ -37,7 +37,7 @@
 #ifndef SOFA_COMPONENT_CONTROLLER_ARTICULATEDHIERARCHYCONTROLLER_H
 #define SOFA_COMPONENT_CONTROLLER_ARTICULATEDHIERARCHYCONTROLLER_H
 
-#include <sofa/component/controller/BaseController.h>
+#include <sofa/component/controller/Controller.h>
 
 #include <sofa/component/container/ArticulatedHierarchyContainer.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -64,7 +64,7 @@ using sofa::component::container::ArticulatedHierarchyContainer;
  * Mouse Buttons and Wheel are controlling the value.
  * Keyboard is used to select the controlled articulation.
  */
-class ArticulatedHierarchyController : public BaseController
+class ArticulatedHierarchyController : public Controller
 {
 public:
     typedef std::vector< ArticulatedHierarchyContainer::ArticulationCenter * > ArtCenterVec;
@@ -88,7 +88,7 @@ public:
     virtual void init();
 
     /**
-     * @name BaseController Interface
+     * @name Controller Interface
      */
     //@{
 

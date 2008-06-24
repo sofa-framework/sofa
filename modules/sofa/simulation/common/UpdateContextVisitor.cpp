@@ -33,19 +33,27 @@ namespace simulation
 
 Visitor::Result UpdateContextVisitor::processNodeTopDown(simulation::Node* node)
 {
-    node->updateContext();
+
+    if (!startingNode) startingNode = node;
+    if (node != startingNode)
+        node->updateContext();
     return RESULT_CONTINUE;
 }
 
 Visitor::Result UpdateSimulationContextVisitor::processNodeTopDown(simulation::Node* node)
 {
-    node->updateSimulationContext();
+    if (!startingNode) startingNode = node;
+    if (node != startingNode)
+        node->updateSimulationContext();
     return RESULT_CONTINUE;
 }
 
 Visitor::Result UpdateVisualContextVisitor::processNodeTopDown(simulation::Node* node)
 {
-    node->updateVisualContext(filter);
+
+    if (!startingNode) startingNode = node;
+    if (node != startingNode)
+        node->updateVisualContext(filter);
     return RESULT_CONTINUE;
 }
 

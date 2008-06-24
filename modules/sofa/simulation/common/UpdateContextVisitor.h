@@ -37,6 +37,9 @@ namespace simulation
 class UpdateContextVisitor : public Visitor
 {
 public:
+    UpdateContextVisitor():Visitor(), startingNode(NULL)
+    {
+    }
 
     virtual Result processNodeTopDown(simulation::Node* node);
 
@@ -46,6 +49,8 @@ public:
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const { return true; }
+protected:
+    Node* startingNode;
 };
 
 class UpdateSimulationContextVisitor : public UpdateContextVisitor
