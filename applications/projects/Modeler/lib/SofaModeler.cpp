@@ -10,6 +10,7 @@
 #include <QGridLayout>
 #include <QTextEdit>
 #include <QComboBox>
+#include <QLabel>
 #else
 #include <qtoolbox.h>
 #include <qlayout.h>
