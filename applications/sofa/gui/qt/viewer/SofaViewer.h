@@ -51,7 +51,7 @@
 #include <sofa/component/collision/RayPickInteractor.h>
 
 //instruments handling
-#include <sofa/component/controller/BaseController.h>
+#include <sofa/component/controller/Controller.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/simulation/common/GrabVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
@@ -442,8 +442,8 @@ protected:
         }
         else
         {
-            std::vector< component::controller::BaseController* > bc;
-            instrument->getTreeObjects<component::controller::BaseController, std::vector< component::controller::BaseController* > >(&bc);
+            std::vector< component::controller::Controller* > bc;
+            instrument->getTreeObjects<component::controller::Controller, std::vector< component::controller::Controller* > >(&bc);
 
             if (!bc.empty())
             {

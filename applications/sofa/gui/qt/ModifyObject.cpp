@@ -1160,6 +1160,7 @@ void ModifyObject::updateValues()
             //*******************************************************************************************************************
             if( Data<int> * ff = dynamic_cast< Data<int> * >( objectGUI[index_object].first )  )
             {
+
                 if (dynamic_cast< QSpinBox *> ( objectGUI[index_object].second ))
                 {
 
@@ -1910,7 +1911,7 @@ void ModifyObject::updateValues()
 void ModifyObject::updateContext( Node *node )
 {
     if (node == NULL) return;
-    node->execute< sofa::simulation::UpdateContextVisitor >();
+    node->execute< sofa::simulation::UpdateVisualContextVisitor >();
 }
 
 

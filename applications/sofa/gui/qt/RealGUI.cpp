@@ -488,10 +488,13 @@ void RealGUI::updateRecentlyOpened(std::string fileLoaded)
     out << fileLoaded << "\n";
 
     recentlyOpened->insertItem(QString(fileLoaded.c_str()));
-    for (unsigned int i=0; i<list_files.size() && i<5; ++i)
+    for (unsigned int i=0; i<list_files.size() && i<5 ; ++i)
     {
-        recentlyOpened->insertItem(QString(list_files[i].c_str()));
-        out << list_files[i] << "\n";
+        if (fileLoaded != list_files[i])
+        {
+            recentlyOpened->insertItem(QString(list_files[i].c_str()));
+            out << list_files[i] << "\n";
+        }
     }
 
     out.close();
@@ -1795,8 +1798,12 @@ void RealGUI::dropEvent(QDropEvent* event)
 #else
     filename = filename.substr(7); //removing file://
 #endif
-    filename.resize(filename.size()-1);
-    filename[filename.size()-1]='\0';
+
+    if (filename[filename.size()-1] == '\n')
+    {
+        filename.resize(filename.size()-1);
+        filename[filename.size()-1]='\0';
+    }
     fileOpen(filename);
 }
 

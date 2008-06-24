@@ -8,6 +8,7 @@ HEADERS += \
           BehaviorModel.h \
           CollisionElement.h \
           CollisionModel.h \
+          componentmodel/behavior/BaseController.h \
           componentmodel/behavior/BaseConstraint.h \
           componentmodel/behavior/BaseConstraintCorrection.h \
           componentmodel/behavior/BaseForceField.h \
@@ -104,9 +105,9 @@ SOURCES +=  \
           objectmodel/KeypressedEvent.cpp \
           objectmodel/KeyreleasedEvent.cpp \
 	  objectmodel/MouseEvent.cpp \
-	  	  objectmodel/OmniEvent.cpp \
+  	  objectmodel/OmniEvent.cpp \
           ObjectFactory.cpp \
-          Mapping.cpp \
+          Mapping.cpp \	   
           componentmodel/behavior/BaseConstraint.cpp \
           componentmodel/behavior/BaseForceField.cpp \
           componentmodel/behavior/ForceField.cpp \

@@ -5,7 +5,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/gl/template.h>
-
+#include <sofa/core/VisualModel.h>
 namespace sofa
 {
 
@@ -17,7 +17,7 @@ namespace visualmodel
 
 using sofa::defaulttype::Vector3;
 
-class Light : public virtual sofa::core::objectmodel::BaseObject
+class Light : public virtual sofa::core::VisualModel
 {
 protected:
     Data<Vector3> color;

@@ -87,6 +87,19 @@ SofaModeler::SofaModeler()
         for (unsigned int i=0; i< inventory.count( (*it) ); ++i)
         {
             ClassInfo* entry = itMap->second;
+            //We must remove the mass from the ForceField list
+            if ( *it == "ForceField")
+            {
+                std::set< std::string >::iterator baseClassIt;
+                bool isMass=false;
+                for (baseClassIt = entry->baseClasses.begin(); baseClassIt!= entry->baseClasses.end() && !isMass; baseClassIt++)
+                {
+                    isMass= (*baseClassIt == "Mass");
+                }
+                if (isMass) { itMap++; continue;}
+            }
+
+
             QPushButton *button = new QPushButton(gridWidget, QString(entry->className.c_str()));
             gridLayout->addWidget(button, i,0);
             button->setFlat(true);
@@ -348,18 +361,21 @@ void SofaModeler::dropEvent(QDropEvent* event)
     std::string test = filename; test.resize(4);
     if (test == "file")
     {
-
 #ifdef WIN32
         for (unsigned int i=0; i<filename.size(); ++i)
         {
-            if (filename[i] == '/') filename[i] = '\\';
+            if (filename[i] == '\\') filename[i] = '/';
         }
         filename = filename.substr(8); //removing file:///
 #else
         filename = filename.substr(7); //removing file://
 #endif
-        filename.resize(filename.size()-1);
-        filename[filename.size()-1]='\0';
+
+        if (filename[filename.size()-1] == '\n')
+        {
+            filename.resize(filename.size()-1);
+            filename[filename.size()-1]='\0';
+        }
         graph->fileOpen(filename);
     }
 }

@@ -60,12 +60,12 @@ void WriteState::init()
     const std::string& filename = f_filename.getValue();
     if (!filename.empty())
     {
-        std::ifstream infile(filename.c_str());
-        if( infile.is_open() )
-        {
-            std::cerr << "ERROR: file "<<filename<<" already exists. Remove it to record new motion."<<std::endl;
-        }
-        else
+// 	    std::ifstream infile(filename.c_str());
+// 	    if( infile.is_open() )
+// 	      {
+// 		std::cerr << "ERROR: file "<<filename<<" already exists. Remove it to record new motion."<<std::endl;
+// 	      }
+// 	    else
         {
             outfile = new std::ofstream(filename.c_str());
             if( !outfile->is_open() )

@@ -23,7 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 //
-// C++ Interface: EdgeSetController
+// C++ Implementation : Controller
 //
 // Description:
 //
@@ -34,13 +34,19 @@
 //
 //
 
-#ifndef SOFA_COMPONENT_CONTROLLER_EDGESETCONTROLLER_H
-#define SOFA_COMPONENT_CONTROLLER_EDGESETCONTROLLER_H
+#include <sofa/component/controller/Controller.h>
 
-#include <sofa/component/controller/MechanicalStateController.h>
+#include <sofa/core/objectmodel/Event.h>
+#include <sofa/core/objectmodel/JoystickEvent.h>
+#include <sofa/core/objectmodel/KeypressedEvent.h>
+#include <sofa/core/objectmodel/KeyreleasedEvent.h>
+#include <sofa/core/objectmodel/MouseEvent.h>
+#include <sofa/core/objectmodel/OmniEvent.h>
 
+#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
 
-namespace sofa { namespace component { namespace topology { template < class DataTypes> class EdgeSetTopology; } } }
+#include <iostream>
 
 
 namespace sofa
@@ -52,94 +58,55 @@ namespace component
 namespace controller
 {
 
-/**
- * @brief EdgeSetController Class
- *
- * Provides a Mouse & Keyboard user control on an EdgeSet Topology.
- */
-template<class DataTypes>
-class EdgeSetController : public MechanicalStateController<DataTypes>
+
+Controller::Controller()
+    : handleEventTriggersUpdate( initData(&handleEventTriggersUpdate, "handleEventTriggersUpdate", "Event handling frequency controls the controller update frequency" ) )
 {
-public:
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Coord    Coord   ;
-    typedef typename DataTypes::Deriv    Deriv   ;
-    typedef typename Coord::value_type   Real    ;
 
-    typedef MechanicalStateController<DataTypes> Inherit;
-
-    /**
-     * @brief Default Constructor.
-     */
-    EdgeSetController();
-
-    /**
-     * @brief Default Destructor.
-     */
-    virtual ~EdgeSetController() {};
-
-    /**
-     * @brief SceneGraph callback initialization method.
-     */
-    void init();
-
-    /**
-     * @name Controller Interface
-     */
-    //@{
-
-    /**
-     * @brief Mouse event callback.
-     */
-    void onMouseEvent(core::objectmodel::MouseEvent *);
-
-    void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
+}
 
 
-    /**
-     * @brief Begin Animation event callback.
-     */
-    void onBeginAnimationStep();
 
-    //@}
-
-    /**
-     * @name Accessors
-     */
-    //@{
-
-
-    //@}
-
-    /**
-     * @brief Apply the controller modifications to the controlled MechanicalState.
-     */
-    void applyController(void);
-
-    /**
-     * @brief
-     */
-    void modifyTopology(void);
-
-    /**
-     * @brief
-     */
-    void draw();
-
-protected:
-    Real step; ///<
-
-    sofa::component::topology::EdgeSetTopology<DataTypes> *edges; ///<
-
-    Real edge0RestedLength;
-
-};
+void Controller::handleEvent(core::objectmodel::Event *event)
+{
+    if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
+    {
+        onBeginAnimationStep();
+    }
+    else if (dynamic_cast<sofa::simulation::AnimateEndEvent *>(event))
+    {
+        onEndAnimationStep();
+    }
+    else if (dynamic_cast<sofa::core::objectmodel::KeypressedEvent *>(event))
+    {
+        sofa::core::objectmodel::KeypressedEvent *kpev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
+        onKeyPressedEvent(kpev);
+    }
+    else if (dynamic_cast<sofa::core::objectmodel::KeyreleasedEvent *>(event))
+    {
+        sofa::core::objectmodel::KeyreleasedEvent *krev = dynamic_cast<sofa::core::objectmodel::KeyreleasedEvent *>(event);
+        onKeyReleasedEvent(krev);
+    }
+    else if (dynamic_cast<sofa::core::objectmodel::MouseEvent *>(event))
+    {
+        sofa::core::objectmodel::MouseEvent *mev = dynamic_cast<sofa::core::objectmodel::MouseEvent *>(event);
+        onMouseEvent(mev);
+    }
+    else if (dynamic_cast<sofa::core::objectmodel::JoystickEvent *>(event))
+    {
+        sofa::core::objectmodel::JoystickEvent *jev = dynamic_cast<sofa::core::objectmodel::JoystickEvent *>(event);
+        onJoystickEvent(jev);
+    }
+    else if (dynamic_cast<sofa::core::objectmodel::OmniEvent *>(event))
+    {
+        sofa::core::objectmodel::OmniEvent *oev = dynamic_cast<sofa::core::objectmodel::OmniEvent *>(event);
+        onOmniEvent(oev);
+    }
+}
 
 } // namespace controller
 
-} // namespace component
+} // namepace component
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_CONTROLLER_EDGESETCONTROLLER_H

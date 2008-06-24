@@ -23,7 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 //
-// C++ Interface: EdgeSetController
+// C++ Interface: Controller
 //
 // Description:
 //
@@ -34,14 +34,28 @@
 //
 //
 
-#ifndef SOFA_COMPONENT_CONTROLLER_EDGESETCONTROLLER_H
-#define SOFA_COMPONENT_CONTROLLER_EDGESETCONTROLLER_H
+#ifndef SOFA_COMPONENT_CONTROLLER_CONTROLLER_H
+#define SOFA_COMPONENT_CONTROLLER_CONTROLLER_H
 
-#include <sofa/component/controller/MechanicalStateController.h>
+#include <sofa/core/componentmodel/behavior/BaseController.h>
 
+namespace sofa
+{
+namespace core
+{
+namespace objectmodel
+{
 
-namespace sofa { namespace component { namespace topology { template < class DataTypes> class EdgeSetTopology; } } }
+class Event;
+class MouseEvent;
+class OmniEvent;
+class KeypressedEvent;
+class KeyreleasedEvent;
+class JoystickEvent;
 
+}
+}
+}
 
 namespace sofa
 {
@@ -53,87 +67,62 @@ namespace controller
 {
 
 /**
- * @brief EdgeSetController Class
- *
- * Provides a Mouse & Keyboard user control on an EdgeSet Topology.
+ * @brief Controller Class.
+ * Interface of user interaction on SOFA Components.
+ * Provides also an interface for BeginAnimation and EndAnimation events
+ * launched at the beginning and the end of a time step.
  */
-template<class DataTypes>
-class EdgeSetController : public MechanicalStateController<DataTypes>
+class Controller : public virtual core::componentmodel::behavior::BaseController
 {
+
 public:
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Coord    Coord   ;
-    typedef typename DataTypes::Deriv    Deriv   ;
-    typedef typename Coord::value_type   Real    ;
-
-    typedef MechanicalStateController<DataTypes> Inherit;
+    /**
+    * @brief Default constructor.
+    */
+    Controller();
 
     /**
-     * @brief Default Constructor.
-     */
-    EdgeSetController();
+    * @brief Mouse event callback.
+    */
+    virtual void onMouseEvent(core::objectmodel::MouseEvent *) {};
 
     /**
-     * @brief Default Destructor.
-     */
-    virtual ~EdgeSetController() {};
+    * @brief Omni event callback.
+    */
+    virtual void onOmniEvent(core::objectmodel::OmniEvent *) {};
 
     /**
-     * @brief SceneGraph callback initialization method.
-     */
-    void init();
+    * @brief Key Press event callback.
+    */
+    virtual void onKeyPressedEvent(core::objectmodel::KeypressedEvent *) {};
 
     /**
-     * @name Controller Interface
-     */
-    //@{
+    * @brief Key Release event callback.
+    */
+    virtual void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *) {};
 
     /**
-     * @brief Mouse event callback.
-     */
-    void onMouseEvent(core::objectmodel::MouseEvent *);
-
-    void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
-
+    * @brief Joystick event callback.
+    */
+    virtual void onJoystickEvent(core::objectmodel::JoystickEvent *) {};
 
     /**
-     * @brief Begin Animation event callback.
-     */
-    void onBeginAnimationStep();
-
-    //@}
+    * @brief Begin Animation event callback.
+    */
+    virtual void onBeginAnimationStep(void) {};
 
     /**
-     * @name Accessors
-     */
-    //@{
-
-
-    //@}
-
-    /**
-     * @brief Apply the controller modifications to the controlled MechanicalState.
-     */
-    void applyController(void);
-
-    /**
-     * @brief
-     */
-    void modifyTopology(void);
-
-    /**
-     * @brief
-     */
-    void draw();
+    * @brief End Animation event callback.
+    */
+    virtual void onEndAnimationStep(void) {};
 
 protected:
-    Real step; ///<
 
-    sofa::component::topology::EdgeSetTopology<DataTypes> *edges; ///<
+    Data< bool > handleEventTriggersUpdate; ///< Event reception triggers object update ?
 
-    Real edge0RestedLength;
+private:
 
+    void handleEvent(core::objectmodel::Event *);
 };
 
 } // namespace controller
@@ -142,4 +131,4 @@ protected:
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_CONTROLLER_EDGESETCONTROLLER_H
+#endif // SOFA_COMPONENT_CONTROLLER_CONTROLLER_H

@@ -37,7 +37,7 @@
 #ifndef SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_H
 #define SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_H
 
-#include <sofa/component/controller/BaseController.h>
+#include <sofa/component/controller/Controller.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/Quat.h>
 
@@ -62,7 +62,7 @@ using namespace sofa::defaulttype;
  * On a Rigid Particle, relative and absolute control is available.
  */
 template<class DataTypes>
-class MechanicalStateController : public BaseController
+class MechanicalStateController : public Controller
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -87,7 +87,7 @@ public:
     void init();
 
     /**
-     * @name BaseController Interface
+     * @name Controller Interface
      */
     //@{
 
