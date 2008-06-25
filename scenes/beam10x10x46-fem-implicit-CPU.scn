@@ -17,7 +17,9 @@
 		</Node>
 	</Node>
 	<Node name="M1">
-		<Object type="CGImplicit" iterations="10" />
+		<!--<Object type="CGImplicit" iterations="10" />-->
+		<Object type="EulerImplicit" />
+		<Object type="CGLinearSolver" iterations="10"/>
 		<Object type="RegularGrid"
 			nx="10" ny="10" nz="46"
 			xmin="-1.5" xmax="1.5"
@@ -30,6 +32,7 @@
 		<!--		<Object type="MeshSpringForceField" stiffness="2333" /> -->
 		<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="10000" poissonRatio="0.4" method="large" />
 		<Object type="PlaneForceField" normal="0 1 0" d="-3" stiffness="10000"  draw="1" />
+<!--
 		<Node>
 			<Object type="RegularGrid"
 				nx="2" ny="2" nz="9"
@@ -50,5 +53,6 @@
 			<Object type="VisualModel" name="Visual"/>
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
+-->
 	</Node>
 </Node>
