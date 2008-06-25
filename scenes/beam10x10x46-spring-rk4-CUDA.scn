@@ -29,6 +29,7 @@
 		<Object type="BoxConstraint" box="-1.6 -0.1 -7.6 1.6 3.1 -7.4" />
 		<Object type="MeshSpringForceField" stiffness="2333" />
 		<Object type="PlaneForceField" normal="0 1 0" d="-3" stiffness="10000"  draw="1" />
+<!--
 		<Node>
 			<Object type="RegularGrid"
 				nx="2" ny="2" nz="9"
@@ -53,5 +54,6 @@
 				<Object type="IdentityMapping" object1="../../Mapped" object2="Visual" />
 			</Node>
 		</Node>
+-->
 	</Node>
 </Node>
