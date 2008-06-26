@@ -9,6 +9,6 @@ enum { MBSIZE=96 };
 // Max size of thread blocks
 enum { MAXTHREADS=512 };
 
-#define NB_MULTIPROC 16
+
 
 #endif

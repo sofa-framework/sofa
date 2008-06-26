@@ -7,6 +7,7 @@
 #include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
 #include <sofa/gpu/cuda/CudaLCP.h>
 #include "CudaTypesBase.h"
+#include <sofa/component/linearsolver/FullMatrix.h>
 
 namespace sofa
 {
@@ -22,7 +23,6 @@ using namespace sofa::component::linearsolver;
 using namespace helper::system::thread;
 using namespace sofa::gpu::cuda;
 
-
 class CudaMechanicalGetConstraintValueVisitor : public simulation::MechanicalVisitor
 {
 public:
@@ -36,6 +36,28 @@ public:
 private:
     defaulttype::BaseVector * _v;
 };
+
+template<class real>
+class MechanicalGetConstraintValueVisitor : public simulation::MechanicalVisitor
+{
+public:
+
+    MechanicalGetConstraintValueVisitor(defaulttype::BaseVector * v)
+    {
+        real * data = ((CudaBaseVector<real> *) v)->getCudaVector().hostWrite();
+        _v = new FullVector<real>(data,0);
+    }
+
+    virtual Result fwdConstraint(simulation::Node*,core::componentmodel::behavior::BaseConstraint* c)
+    {
+        c->getConstraintValue(_v);
+        return RESULT_CONTINUE;
+    }
+private:
+    FullVector<real> * _v;
+};
+
+
 
 class CudaMechanicalGetContactIDVisitor : public simulation::MechanicalVisitor
 {
