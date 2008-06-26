@@ -1,0 +1,90 @@
+<Node name="root"  dt="0.5" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0">
+	<Object type="MasterContactSolver"/>
+	<Object type="CollisionPipeline" verbose="0" draw="0"/>
+	<Object type="BruteForceDetection" name="N2" />
+	<Object type="MinProximityIntersection" name="Proximity" alarmDistance="1.0" contactDistance="0.5" />
+	<Object type="CollisionResponse" name="Response" response="FrictionContact"/>	
+	<Node name="articulatedObject1">
+		<Object type="ComplianceArticulatedSystemSolver"/>
+		<Object type="MechanicalObject" name="ArticulatedObject" template="Vec1d"/>
+		<Node name="6D_DOFs1"> 
+			<Object type="MechanicalObject" name="6D_Dof" template="Rigid"/> 
+			<Object type="UniformMass" filename="BehaviorModels/rigid.xs3"/>
+		<!--	<Node name="obj0_collis">	
+				<Node name="Visu0">
+					<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" />
+					<Object type="RigidMapping" object1="../.." object2="Visual" index="0"/>
+				</Node>
+				<Node name="Collis0">
+					<Object type="Mesh" filename="VisualModels/smCube27.obj" />
+					<Object type="MechanicalObject" name="Collision"/>
+					<Object type="Triangle" />
+					<Object type="Line" />
+					<Object type="Point" />
+					<Object type="RigidMapping" index="0"/>
+				</Node> 
+			</Node>
+			<Node name="obj1_collis">	
+				<Node name="Visu1">
+					<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" />
+					<Object type="RigidMapping" object1="../.." object2="Visual" index="1"/>
+				</Node>
+				
+				<Node name="Collis1">
+					<Object type="Mesh" filename="VisualModels/smCube27.obj" />
+					<Object type="MechanicalObject" name="Collision"/>
+					<Object type="Triangle" />
+					<Object type="Line" />
+					<Object type="Point" />
+					<Object type="RigidMapping" index="1"/>
+				</Node> 
+				
+			</Node>
+			<Node name="obj2_collis">	
+				<Node name="Visu2">
+					<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" />
+					<Object type="RigidMapping" object1="../.." object2="Visual" index="2"/>
+				</Node>
+				<Node name="Collis2">
+					<Object type="Mesh" filename="VisualModels/smCube27.obj" />
+					<Object type="MechanicalObject" name="Collision"/>
+					<Object type="Triangle" />
+					<Object type="Line" />
+					<Object type="Point" />
+					<Object type="RigidMapping" index="2"/>
+				</Node> 
+			</Node> -->
+			<Object type="ArticulatedSystemMapping" object1="ArticulatedObject" object2="6D_Dof"/>
+		</Node>
+	
+		<Object type="ArticulatedHierarchyContainer" filename="BehaviorModels/manWalking.bvh"/>
+<!--		<Node name="articulationCenters">
+			<Node name="articulationCenter1">
+				<Object type="ArticulationCenter" parentIndex="0" childIndex="1" posOnParent="10 0 0" posOnChild="-10 0 0"/>
+				<Node name="articulations">
+					<Object type="Articulation" translation="1" rotation="0" rotationAxis="0 1 0" articulationIndex="0"/>
+				</Node>
+			</Node>
+			<Node name="articulationCenter2">
+				<Object type="ArticulationCenter" parentIndex="1" childIndex="2" posOnParent="10 0 0" posOnChild="-10 0 0"/>
+				<Node name="articulations">
+					<Object type="Articulation" translation="1" rotation="0" rotationAxis="0 1 0" articulationIndex="0"/>
+				</Node>
+			</Node>
+		</Node> -->
+		
+	</Node>
+	
+<!--	<Object type="StiffSpringForceField" name="Spring" object1="articulatedObject2" object2="articulatedObject1" spring="0 0 10000.0 1.0 0.0"/> -->
+	<Node name="Floor">
+		<Object type="Mesh" filename="CollisionModels/floor.obj" />
+		<Object type="MechanicalObject" dy="-40.0"/>
+		<Object type="Triangle" name="Floor" simulated="0" moving="0" />
+		<Object type="Line" name="Floor" simulated="0" moving="0" />
+		<Object type="Point" name="Floor" simulated="0" moving="0" />
+		<Object type="OglModel" name="FloorV" filename="VisualModels/floor.obj" texturename="VisualModels/floor.bmp" dy="-40.0"/>
+	</Node>	
+</Node>
+
+
+
