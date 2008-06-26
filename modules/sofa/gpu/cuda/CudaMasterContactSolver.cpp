@@ -73,12 +73,29 @@ void CudaMasterContactSolver<real>::build_LCP()
     _W.resize(_numConstraints,_numConstraints);
     _W.clear();
 
-    CudaMechanicalGetConstraintValueVisitor(&_dFree).execute(context);
-
-    for (unsigned int i=0; i<constraintCorrections.size(); i++)
+    if (useGPU_d.getValue())
     {
-        core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-        cc->getCompliance(&_W);
+        CudaMechanicalGetConstraintValueVisitor(&_dFree).execute(context);
+
+        for (unsigned int i=0; i<constraintCorrections.size(); i++)
+        {
+            core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+            cc->getCompliance(&_W);
+        }
+    }
+    else
+    {
+        MechanicalGetConstraintValueVisitor<real>(&_dFree).execute(context);
+
+        for (unsigned int i=0; i<constraintCorrections.size(); i++)
+        {
+            core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+            real * data = _W.getCudaMatrix().hostWrite();
+
+            FullMatrix<real> * w = new FullMatrix<real>(data,_W.colSize(),_W.rowSize());
+
+            cc->getCompliance(w);
+        }
     }
 
     if (initial_guess_d.getValue())
