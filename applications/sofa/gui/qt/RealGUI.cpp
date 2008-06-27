@@ -426,7 +426,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
 
     connect( recentlyOpened, SIGNAL(activated(int)), this, SLOT(fileRecentlyOpened(int)));
     //Recently Opened Files
-    std::string scenes ( "Sofa.ini" );
+    std::string scenes ( "config/Sofa.ini" );
     if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )
         return;
 
@@ -464,7 +464,7 @@ void RealGUI::fileRecentlyOpened(int id)
 
 void RealGUI::updateRecentlyOpened(std::string fileLoaded)
 {
-    std::string scenes ( "Sofa.ini" );
+    std::string scenes ( "config/Sofa.ini" );
     if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )
         return;
 
@@ -537,7 +537,7 @@ void RealGUI::init()
     m_dumpStateStream = 0;
     m_displayComputationTime = false;
     m_exportGnuplot = false;
-    record_directory = sofa::helper::system::SetDirectory::GetRelativeFromDir("../../scenes/simulation/",sofa::helper::system::SetDirectory::GetProcessFullPath("").c_str());
+    record_directory = sofa::helper::system::SetDirectory::GetRelativeFromDir("../../examples/Simulation/",sofa::helper::system::SetDirectory::GetProcessFullPath("").c_str());
     gnuplot_directory = "";
     writeSceneName = "";
 
@@ -548,7 +548,7 @@ void RealGUI::init()
     //*********************************************************************************************************************************
     //List of objects
     //Read the object.txt that contains the information about the objects which can be added to the scenes whithin a given BoundingBox and scale range
-    std::string object ( "object.txt" );
+    std::string object ( "config/object.txt" );
     if ( !sofa::helper::system::DataRepository.findFile ( object ) )
         return;
 
