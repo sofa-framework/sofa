@@ -81,7 +81,7 @@ int main(int argc, char** argv)
 
     if (fileName.empty())
     {
-        fileName = "liver.scn";
+        fileName = "Demos/liver.scn";
         sofa::helper::system::DataRepository.findFile(fileName);
     }
 

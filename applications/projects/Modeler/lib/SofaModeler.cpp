@@ -180,7 +180,7 @@ SofaModeler::SofaModeler()
     connect( graph, SIGNAL(updateRecentlyOpened(std::string)), this, SLOT(updateRecentlyOpened(std::string)));
     connect( recentlyOpened, SIGNAL(activated(int)), this, SLOT(fileRecentlyOpened(int)));
     //Recently Opened Files
-    std::string scenes ( "Modeler.ini" );
+    std::string scenes ( "config/Modeler.ini" );
     if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )
         return;
 
@@ -205,7 +205,7 @@ void SofaModeler::fileRecentlyOpened(int id)
 
 void SofaModeler::updateRecentlyOpened(std::string fileLoaded)
 {
-    std::string scenes ( "Modeler.ini" );
+    std::string scenes ( "config/Modeler.ini" );
     if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )
         return;
 
