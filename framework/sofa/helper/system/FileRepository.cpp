@@ -48,11 +48,11 @@ namespace system
 {
 
 #if defined (WIN32)
-FileRepository DataRepository("SOFA_DATA_PATH", "../scenes;../share");
+FileRepository DataRepository("SOFA_DATA_PATH", "../examples;../share");
 #elif defined (__APPLE__)
-FileRepository DataRepository("SOFA_DATA_PATH", "../scenes:../share:../Resources/scenes:../Resources:../../../../scenes:../../../../share");
+FileRepository DataRepository("SOFA_DATA_PATH", "../examples:../share:../Resources/examples:../Resources:../../../../examples:../../../../share");
 #else
-FileRepository DataRepository("SOFA_DATA_PATH", "../scenes:../share");
+FileRepository DataRepository("SOFA_DATA_PATH", "../examples:../share");
 #endif
 
 FileRepository::FileRepository(const char* envVar, const char* relativePath)
