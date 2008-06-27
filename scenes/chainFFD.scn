@@ -13,7 +13,7 @@
 		</Node>
 		<Node name="TorusFFD1">
 			<Object type="CGImplicit" iterations="25" threshold="0.000000000001" tolerance="0.000001" rayleighStiffness="0.1" rayleighMass="0" />
-			<Object type="MechanicalObject" dx="2.5" />
+			<Object type="MechanicalObject" translation="2.5 0 0" />
 			<Object type="UniformMass" totalmass="5" />
 			<Object type="RegularGrid"
 					nx="6" ny="2" nz="5"
@@ -28,7 +28,7 @@
 			</Node>
 			<Node name="Surf2">
 				<Object type="Mesh" filename="CollisionModels/torus_for_collision.obj" />
-				<Object type="MechanicalObject" dx="2.5" />
+				<Object type="MechanicalObject" translation="2.5 0 0" />
 				<Object type="Triangle" />
 				<Object type="BarycentricMapping" />
 			</Node>

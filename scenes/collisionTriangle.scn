@@ -29,9 +29,9 @@
 	</Node>
 	<Node name="Floor">
 		<Object type="Mesh" filename="CollisionModels/floor3.obj" />
-		<Object type="MechanicalObject" dy="-10" scale="0.75" />
+		<Object type="MechanicalObject" dy="-10" scale="1.75" />
 		<Object type="Triangle" name="FloorTriangle" simulated="0" moving="0" />
 		<Object type="Line" name="FloorLine" simulated="0" moving="0" />
-		<Object type="OglModel" name="FloorV" filename="CollisionModels/floor3.obj" texturename="VisualModels/brushed_metal.bmp" scaleTex="0.2" dy="-10" scale="0.75" />
+		<Object type="OglModel" name="FloorV" filename="CollisionModels/floor3.obj" texturename="VisualModels/brushed_metal.bmp" scaleTex="0.2" dy="-10" scale="1.75" />
 	</Node>
 </Node>

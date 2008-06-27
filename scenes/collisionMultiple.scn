@@ -6,7 +6,7 @@
 	<Object type="CollisionGroup" name="Group" />
 	<Node name="Torus">
 		<Object type="CGImplicit" iterations="10" tol="0.01" threshold="0.000001" />
-		<Object type="MechanicalObject" dx="0" dy="20" dz="29"/>
+		<Object type="MechanicalObject" dx="0" dy="20" dz="29" rz="64"/>
 		<Object type="UniformMass" totalmass="10"/>
 		<Object type="RegularGrid"
 			nx="6" ny="5" nz="2"
@@ -30,7 +30,7 @@
 	</Node>
 	<Node name="Dragon">
 		<Object type="CGImplicit" iterations="25" tol="0.01" threshold="0.000001" />
-		<Object type="MechanicalObject" dx="20" dy="20" dz="29"/>
+		<Object type="MechanicalObject" dx="20" dy="20" dz="29" rx="33"/>
 		<Object type="UniformMass" totalmass="10"/>
 		<Object type="RegularGrid"
 			nx="6" ny="5" nz="3"
@@ -54,7 +54,7 @@
 	</Node>
 	<Node name="Frog">
 		<Object type="CGImplicit" iterations="25" tol="0.01" threshold="0.000001" />
-		<Object type="MechanicalObject" dx="-20" dy="20" dz="29"/>
+		<Object type="MechanicalObject" dx="-20" dy="20" dz="29" ry="10"/>
 		<Object type="UniformMass" totalmass="10"/>
 		<Object type="RegularGrid"
 			nx="6" ny="3" nz="5"
