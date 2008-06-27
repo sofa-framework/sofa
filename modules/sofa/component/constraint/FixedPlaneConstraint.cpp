@@ -40,7 +40,7 @@ using namespace sofa::helper;
 
 SOFA_DECL_CLASS(FixedPlaneConstraint)
 
-int FixedPlaneConstraintClass = core::RegisterObject("FixedPlaneConstraint")
+int FixedPlaneConstraintClass = core::RegisterObject("Project particles on a given plane")
 #ifndef SOFA_FLOAT
         .add< FixedPlaneConstraint<Vec3dTypes> >()
 #endif
