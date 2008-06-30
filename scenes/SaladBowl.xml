@@ -1,8 +1,0 @@
-	<Node name="Salad Bowl">
-		<Object type="Mesh" filename="VisualModels/SaladBowl.obj" />
-		<Object type="MechanicalObject" dy="20" dz="-50" scale="100" />
-		<Object type="Triangle" name="Floor" static="1" />
-		<Object type="Line" name="Floor" static="1" />
-		<Object type="Point" name="Floor" static="1" />
-		<Object type="OglModel" name="FloorV" filename="VisualModels/SaladBowl.obj" scale="100" texturename="VisualModels/floor.bmp" color="yellow" dy="20" dz="-50"/>
-	</Node>

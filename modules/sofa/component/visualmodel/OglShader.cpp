@@ -70,7 +70,7 @@ void OglShader::initVisual()
         std::cout << "GLSL OK" << std::endl;
     else    std::cout << "init GLSL failed" << std::endl;
 
-    std::string file = std::string("shaders/") + vertFilename.getValue();
+    std::string file = vertFilename.getValue();
 
     if (!helper::system::DataRepository.findFile(file))
     {
@@ -78,17 +78,17 @@ void OglShader::initVisual()
         return;
     }
 
-    file = std::string("shaders/") + fragFilename.getValue();
+    file = fragFilename.getValue();
     if (!helper::system::DataRepository.findFile(file))
     {
         std::cerr << "OglShader : fragment shader file not found." << std::endl;
         return;
     }
 
-    file = std::string("shaders/") + geoFilename.getValue();
+    file = geoFilename.getValue();
     if (geoFilename.getValue() == "" || !helper::system::DataRepository.findFile(file))
-        m_shader.InitShaders(helper::system::DataRepository.getFile("shaders/" + vertFilename.getValue()),
-                helper::system::DataRepository.getFile("shaders/" + fragFilename.getValue()));
+        m_shader.InitShaders(helper::system::DataRepository.getFile(vertFilename.getValue()),
+                helper::system::DataRepository.getFile(fragFilename.getValue()));
 
     else
     {
@@ -105,9 +105,9 @@ void OglShader::initVisual()
         if (geometryVerticesOut.getValue() != -1)
             setGeometryVerticesOut(geometryVerticesOut.getValue());
 
-        m_shader.InitShaders(helper::system::DataRepository.getFile("shaders/" + vertFilename.getValue()),
-                helper::system::DataRepository.getFile("shaders/" + geoFilename.getValue()),
-                helper::system::DataRepository.getFile("shaders/" + fragFilename.getValue()));
+        m_shader.InitShaders(helper::system::DataRepository.getFile( vertFilename.getValue()),
+                helper::system::DataRepository.getFile(geoFilename.getValue()),
+                helper::system::DataRepository.getFile(fragFilename.getValue()));
 
         hasGeometryShader = true;
     }

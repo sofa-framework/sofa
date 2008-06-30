@@ -1,5 +1,8 @@
-addHaptic.xml
-
+Objects/SaladBowl.xml
+Objects/TorusFEM.xml
+Objects/TorusFFD.xml
+Objects/TorusSpring.xml
+Objects/TorusRigid.xml
 
 
 
