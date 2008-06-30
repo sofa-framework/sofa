@@ -2,13 +2,18 @@
 #ifdef PLANE_ENVIRONMENT_MAPPING
 varying vec3 normalVec;
 varying vec3 viewVec;
-#endif
+#endif //PLANE_ENVIRONMENT_MAPPING
 
 #ifdef PHONG
-varying vec3 lightDir, /* halfVector, */ normalView;
-#endif
+varying vec3 lightDir, normalView;
+#endif //PHONG
 
 varying vec4 diffuse, ambient, specular;
+
+#ifdef LIGHT2
+varying vec4 diffuse2, specular2;
+varying vec3 lightDir2;
+#endif //LIGHT2
 
 void main()
 {
@@ -20,7 +25,7 @@ void main()
 #ifdef TEXTURE_UNIT_0
 	gl_TexCoord[0] = gl_MultiTexCoord0;
 	//gl_TexCoord[1] = gl_MultiTexCoord1;
-#endif
+#endif //TEXTURE_UNIT_0
 	
 #ifdef PLANE_ENVIRONMENT_MAPPING
 	// Compute position and normal in world space
@@ -34,19 +39,28 @@ void main()
 	//reflectVec = reflect(I, normalW);
 	normalVec = normalW;
 	viewVec = I;
-#endif
+#endif //PLANE_ENVIRONMENT_MAPPING
 		
 #ifdef PHONG
 	normalView = gl_NormalMatrix * gl_Normal;
 	vec4 ecPos = gl_ModelViewMatrix * gl_Vertex;
 	vec3 aux = vec3(gl_LightSource[0].position-ecPos);
 	lightDir = normalize(aux);
-#endif
+#endif //PHONG
 
 	/* Compute the diffuse, ambient and globalAmbient terms */
 	diffuse = gl_FrontMaterial.diffuse * gl_LightSource[0].diffuse;
 	ambient = gl_FrontMaterial.ambient * gl_LightSource[0].ambient + gl_LightModel.ambient * gl_FrontMaterial.ambient;
 	specular = gl_FrontMaterial.specular * gl_LightSource[0].specular;
+
+#ifdef LIGHT2
+	diffuse2 = gl_FrontMaterial.diffuse * gl_LightSource[1].diffuse;
+	specular2 = gl_FrontMaterial.specular * gl_LightSource[1].specular;
+	
+	vec3 aux2 = vec3(gl_LightSource[1].position-ecPos);
+	lightDir = normalize(aux2);
+	
+#endif //LIGHT2
 
 
 }
