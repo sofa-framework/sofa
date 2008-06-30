@@ -131,7 +131,7 @@ void SPHFluidSurfaceMapping<In,Out>::createFaces(OutVecCoord& out, const Cell** 
     if (cells[7]->data.val > isoval) mk|= 64;
     if (cells[6]->data.val > isoval) mk|= 128;
 
-    const int* tri=MarchingCubeTriTable[mk];
+    const int* tri=helper::MarchingCubeTriTable[mk];
     while (*tri>=0)
     {
         if (addFace(cells[edgecell[tri[0]]]->data.p[edgepts[tri[0]]],

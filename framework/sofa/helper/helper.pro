@@ -51,6 +51,7 @@ HEADERS += \
           LCPcalc.h \
           LCPSolver.h \
           LCPSolver.inl \
+          MarchingCubeUtility.h \
           PolarDecompose.h \
           Quater.h \
           Quater.inl \
@@ -94,7 +95,8 @@ SOURCES += \
 	  io/bvh/BVHJoint.cpp \
 	  io/bvh/BVHLoader.cpp \
 	  io/bvh/BVHMotion.cpp \
-          LCPcalc.cpp \
+          LCPcalc.cpp \         
+          MarchingCubeUtility.cpp \
           Quater.cpp \
           system/SetDirectory.cpp \
           system/FileRepository.cpp \

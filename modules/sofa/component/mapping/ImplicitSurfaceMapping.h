@@ -28,6 +28,7 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/component/topology/MeshTopology.h>
+#include <sofa/helper/MarchingCubeUtility.h>
 #include <vector>
 
 namespace sofa
@@ -191,8 +192,6 @@ Y
 
 */
 
-extern const int MarchingCubeEdgeTable[256];
-extern const int MarchingCubeTriTable[256][16];
 
 } // namespace mapping
 

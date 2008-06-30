@@ -30,7 +30,7 @@
 #include <sofa/core/VisualModel.h>
 #include <sofa/core/objectmodel/DataPtr.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/component/mapping/ImplicitSurfaceMapping.h>
+#include <sofa/helper/MarchingCubeUtility.h>
 
 namespace sofa
 {

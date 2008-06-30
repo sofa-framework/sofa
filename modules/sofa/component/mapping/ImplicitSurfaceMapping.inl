@@ -226,7 +226,7 @@ void ImplicitSurfaceMapping<In,Out>::apply( OutVecCoord& out, const InVecCoord& 
                 if ((P1+i      )->data > isoval) mk|= 64;
                 if ((P1+i-dx   )->data > isoval) mk|= 128;
 
-                tri=MarchingCubeTriTable[mk];
+                tri=sofa::helper::MarchingCubeTriTable[mk];
                 while (*tri>=0)
                 {
                     typename std::vector<CubeData>::iterator b = base+i;

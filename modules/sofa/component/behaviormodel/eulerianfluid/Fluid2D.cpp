@@ -27,6 +27,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 #include <string.h>
+#include <sofa/helper/MarchingCubeUtility.h> // for marching cube tables
 
 namespace sofa
 {
@@ -360,7 +361,7 @@ void Fluid2D::updateVisual()
                 if (data2/*data[i         ]*/>=iso) mk|= 64;
                 if (data2/*data[i-dx      ]*/>=iso) mk|= 128;
 
-                tri= component::mapping::MarchingCubeTriTable[mk];
+                tri= helper::MarchingCubeTriTable[mk];
                 while (*tri>=0)
                 {
                     int* b = base+3*i;
