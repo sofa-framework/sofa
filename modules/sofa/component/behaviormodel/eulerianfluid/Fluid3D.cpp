@@ -401,7 +401,7 @@ void Fluid3D::updateVisual()
                 if (data[i         ]>iso) mk|= 64;
                 if (data[i-dx      ]>iso) mk|= 128;
 
-                tri = component::mapping::MarchingCubeTriTable[mk];
+                tri = helper::MarchingCubeTriTable[mk];
                 while (*tri>=0)
                 {
                     int* b = base+3*i;

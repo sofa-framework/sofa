@@ -76,27 +76,31 @@ template class ConstantForceField<Rigid2fTypes>;
 
 #ifndef SOFA_FLOAT
 template <>
-double ConstantForceField<Rigid3dTypes>::getPotentialEnergy(const VecCoord& x)
+double ConstantForceField<Rigid3dTypes>::getPotentialEnergy(const VecCoord& )
 {
+    std::cerr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<std::endl;
     return 0;
 }
 template <>
-double ConstantForceField<Rigid2dTypes>::getPotentialEnergy(const VecCoord& x)
+double ConstantForceField<Rigid2dTypes>::getPotentialEnergy(const VecCoord& )
 {
+    std::cerr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<std::endl;
     return 0;
 }
 #endif
 
 #ifndef SOFA_DOUBLE
 template <>
-double ConstantForceField<Rigid3fTypes>::getPotentialEnergy(const VecCoord& x)
+double ConstantForceField<Rigid3fTypes>::getPotentialEnergy(const VecCoord& )
 {
+    std::cerr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<std::endl;
     return 0;
 }
 
 template <>
-double ConstantForceField<Rigid2fTypes>::getPotentialEnergy(const VecCoord& x)
+double ConstantForceField<Rigid2fTypes>::getPotentialEnergy(const VecCoord& )
 {
+    std::cerr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<std::endl;
     return 0;
 }
 #endif

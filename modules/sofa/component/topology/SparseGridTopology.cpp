@@ -403,8 +403,10 @@ void SparseGridTopology::updateMesh()
     //Creating if needed collision models and visual models
     using sofa::simulation::tree::GNode;
 
-    sofa::helper::vector< sofa::core::componentmodel::topology::BaseMeshTopology * > list_mesh;
-    sofa::helper::vector< sofa::helper::vector< Vector3 >* > list_X;
+    sofa::helper::vector< sofa::core::componentmodel::topology::BaseMeshTopology * > list_meshf;
+    sofa::helper::vector< sofa::helper::vector< Vec3f >* > list_Xf;
+    sofa::helper::vector< sofa::core::componentmodel::topology::BaseMeshTopology * > list_meshd;
+    sofa::helper::vector< sofa::helper::vector< Vec3d >* > list_Xd;
 
     //Get Collision Model
     sofa::component::topology::MeshTopology  *m_temp;
@@ -415,28 +417,28 @@ void SparseGridTopology::updateMesh()
             && m_temp->getFilename() == "")
     {
 #ifndef SOFA_FLOAT
-        MechanicalObject< Vec3dTypes > *mecha_tempf = static_cast< GNode *>(m_temp->getContext())->get< MechanicalObject< Vec3dTypes > >();
-        if (mecha_tempf != NULL && mecha_tempf->getX()->size() < 2) //a triangle mesh has minimum 3elements
+        MechanicalObject< Vec3dTypes > *mecha_tempd = static_cast< GNode *>(m_temp->getContext())->get< MechanicalObject< Vec3dTypes > >();
+        if (mecha_tempd != NULL && mecha_tempd->getX()->size() < 2) //a triangle mesh has minimum 3elements
         {
 
-            list_mesh.push_back(m_temp);
-            list_X.push_back(mecha_tempf->getX());
+            list_meshd.push_back(m_temp);
+            list_Xd.push_back(mecha_tempd->getX());
         }
 #endif
 #ifndef SOFA_DOUBLE
         //HACK : to fix!!!
-// 		MechanicalObject< Vec3fTypes > *mecha_tempd = static_cast< GNode *>(m_temp->getContext())->get< MechanicalObject< Vec3fTypes > >();
-// 		if (mecha_tempd != NULL && mecha_tempd->getX()->size() < 2) //a triangle mesh has minimum 3elements
-// 		{
-//
-// 		  list_mesh.push_back(m_temp);
-// 		  list_X.push_back(mecha_tempd->getX());
-// 		}
+        MechanicalObject< Vec3fTypes > *mecha_tempf = static_cast< GNode *>(m_temp->getContext())->get< MechanicalObject< Vec3fTypes > >();
+        if (mecha_tempf != NULL && mecha_tempf->getX()->size() < 2) //a triangle mesh has minimum 3elements
+        {
+
+            list_meshf.push_back(m_temp);
+            list_Xf.push_back(mecha_tempf->getX());
+        }
 #endif
 
 
     }
-    if (list_mesh.size() == 0) return;
+    if (list_meshf.size() == 0 && list_meshd.size() == 0 ) return;
     //No Marching Cube to run
     sofa::helper::vector< unsigned int> mesh_MC;
     std::map< unsigned int, Vector3 >     map_indices;
@@ -449,7 +451,10 @@ void SparseGridTopology::updateMesh()
     MC.setSizeVoxel(size_voxel.getValue());
     MC.RenderMarchCube(&(*dataVoxels.beginEdit())[0], 0.25f,mesh_MC, map_indices, smoothData.getValue()); //Apply Smoothing is smoothData > 0
 
-    constructCollisionModels(list_mesh, list_X, mesh_MC, map_indices);
+    if (list_meshf.size() != 0)
+        constructCollisionModels(list_meshf, list_Xf, mesh_MC, map_indices);
+    else
+        constructCollisionModels(list_meshd, list_Xd, mesh_MC, map_indices);
 }
 
 void SparseGridTopology::getMesh(sofa::helper::io::Mesh &m)
@@ -457,8 +462,9 @@ void SparseGridTopology::getMesh(sofa::helper::io::Mesh &m)
     MC.createMesh(&(*dataVoxels.beginEdit())[0],0.25f,  m,smoothData.getValue());
 }
 
+template< class T >
 void SparseGridTopology::constructCollisionModels(const sofa::helper::vector< sofa::core::componentmodel::topology::BaseMeshTopology * > &list_mesh,
-        const sofa::helper::vector< sofa::helper::vector< Vector3 >* >            &list_X,
+        const sofa::helper::vector< sofa::helper::vector< Vec<3,T> >* >            &list_X,
         const sofa::helper::vector< unsigned int> mesh_MC,
         std::map< unsigned int, Vector3 >     map_indices) const
 {

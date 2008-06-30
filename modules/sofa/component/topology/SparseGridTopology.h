@@ -29,7 +29,7 @@
 
 
 #include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/topology/MarchingCubeUtility.h>
+#include <sofa/helper/MarchingCubeUtility.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/component/topology/RegularGridTopology.h>
 
@@ -44,7 +44,7 @@ namespace topology
 {
 
 using namespace sofa::defaulttype;
-
+using sofa::helper::MarchingCubeUtility;
 
 /** A sparse grid topology. Like a sparse FFD building from the bounding box of the object. Starting from a RegularGrid, only valid cells containing matter (ie intersecting the original surface mesh or totally inside the object) are considered.
 Valid cells are tagged by a Type BOUNDARY or INSIDE
@@ -246,8 +246,9 @@ protected:
     void buildFromVoxelFile(const std::string& filename);
     void buildFromRawVoxelFile(const std::string& filename);
 
+    template< class T>
     void constructCollisionModels(const sofa::helper::vector< sofa::core::componentmodel::topology::BaseMeshTopology * > &list_mesh,
-            const sofa::helper::vector< sofa::helper::vector< Vector3 >* >            &list_X,
+            const sofa::helper::vector< sofa::helper::vector< Vec<3,T> >* >            &list_X,
             const sofa::helper::vector< unsigned int> mesh_MC,
             std::map< unsigned int, Vector3 >     map_indices) const;
 

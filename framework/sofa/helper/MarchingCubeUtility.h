@@ -10,10 +10,7 @@
 namespace sofa
 {
 
-namespace component
-{
-
-namespace topology
+namespace helper
 {
 
 using sofa::defaulttype::Vec;
@@ -82,7 +79,8 @@ protected:
 
 };
 
-}
+extern const int MarchingCubeEdgeTable[256];
+extern const int MarchingCubeTriTable[256][16];
 }
 }
 #endif

@@ -30,7 +30,6 @@
 #include <sofa/core/VisualModel.h>
 #include <sofa/core/objectmodel/DataPtr.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/component/mapping/ImplicitSurfaceMapping.h>
 
 
 namespace sofa
@@ -45,7 +44,7 @@ namespace behaviormodel
 namespace eulerianfluid
 {
 
-class Fluid2D : public sofa::core::BehaviorModel
+class Fluid2D : public sofa::core::BehaviorModel, public sofa::core::VisualModel
 {
 public:
     typedef Grid2D::real real;
