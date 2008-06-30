@@ -422,7 +422,7 @@ void VisualModelImpl::init()
 
 
     applyScale(scale.getValue());
-    Quaternion q = Quaternion::createFromRotationVector( Vector3(rotation.getValue())*M_PI/180.0);
+    Quaternion q = Quaternion::createQuaterFromEuler( Vector3(rotation.getValue())*M_PI/180.0);
     applyRotation(q);
     applyTranslation(translation.getValue()[0],translation.getValue()[1],translation.getValue()[2]);
 

@@ -97,7 +97,7 @@ int main(int argc, char** argv)
     chain->addChild(torusFixed);
 
     MeshTopology* meshTorusFixed = new MeshTopology;
-    meshTorusFixed->load(sofa::helper::system::DataRepository.getFile("CollisionModels/torus_for_collision.obj").c_str());
+    meshTorusFixed->load(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj").c_str());
     torusFixed->addObject(meshTorusFixed);
 
     MechanicalObject3* dofFixed = new MechanicalObject3; dofFixed->setName("Fixed Object");
@@ -110,7 +110,7 @@ int main(int argc, char** argv)
 
     OglModel* visualFixed = new OglModel;
     visualFixed->setName("visual");
-    visualFixed->load(sofa::helper::system::DataRepository.getFile("VisualModels/torus.obj"),"","");
+    visualFixed->load(sofa::helper::system::DataRepository.getFile("mesh/torus.obj"),"","");
     visualFixed->setColor("gray");
     torusFixed->addObject(visualFixed);
 
@@ -131,7 +131,7 @@ int main(int argc, char** argv)
     torusFEM->addObject(solverFEM);
 
     MeshTopology* meshTorusFEM = new MeshTopology;
-    meshTorusFEM->load(sofa::helper::system::DataRepository.getFile("Topology/torus_low_res.msh").c_str());
+    meshTorusFEM->load(sofa::helper::system::DataRepository.getFile("mesh/torus_low_res.msh").c_str());
     torusFEM->addObject(meshTorusFEM);
 
     MechanicalObject3* dofFEM = new MechanicalObject3; dofFEM->setName("FEM Object");
@@ -156,7 +156,7 @@ int main(int argc, char** argv)
 
     OglModel* visualFEM = new OglModel;
     visualFEM->setName("visual");
-    visualFEM->load(sofa::helper::system::DataRepository.getFile("VisualModels/torus.obj"),"","");
+    visualFEM->load(sofa::helper::system::DataRepository.getFile("mesh/torus.obj"),"","");
     visualFEM->setColor("red");
     FEMVisualNode->addObject(visualFEM);
 
@@ -171,7 +171,7 @@ int main(int argc, char** argv)
     torusFEM->addChild(FEMCollisionNode);
 
     MeshTopology* meshTorusFEM_surf= new MeshTopology;
-    meshTorusFEM_surf->load(sofa::helper::system::DataRepository.getFile("CollisionModels/torus_for_collision.obj").c_str());
+    meshTorusFEM_surf->load(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj").c_str());
     FEMCollisionNode->addObject(meshTorusFEM_surf);
 
     MechanicalObject3* dofFEM_surf = new MechanicalObject3;  dofFEM_surf->setName("Collision Object FEM");
@@ -200,7 +200,7 @@ int main(int argc, char** argv)
     torusSpring->addObject(solverSpring);
 
     MeshTopology* meshTorusSpring = new MeshTopology;
-    meshTorusSpring->load(sofa::helper::system::DataRepository.getFile("Topology/torus_low_res.msh").c_str());
+    meshTorusSpring->load(sofa::helper::system::DataRepository.getFile("mesh/torus_low_res.msh").c_str());
     torusSpring->addObject(meshTorusSpring);
 
     MechanicalObject3* dofSpring = new MechanicalObject3; dofSpring->setName("Spring Object");
@@ -223,7 +223,7 @@ int main(int argc, char** argv)
 
     OglModel* visualSpring = new OglModel;
     visualSpring->setName("visual");
-    visualSpring->load(sofa::helper::system::DataRepository.getFile("VisualModels/torus.obj"),"","");
+    visualSpring->load(sofa::helper::system::DataRepository.getFile("mesh/torus.obj"),"","");
     visualSpring->setColor("green");
     SpringVisualNode->addObject(visualSpring);
 
@@ -238,7 +238,7 @@ int main(int argc, char** argv)
     torusSpring->addChild(SpringCollisionNode);
 
     MeshTopology* meshTorusSpring_surf= new MeshTopology;
-    meshTorusSpring_surf->load(sofa::helper::system::DataRepository.getFile("CollisionModels/torus_for_collision.obj").c_str());
+    meshTorusSpring_surf->load(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj").c_str());
     SpringCollisionNode->addObject(meshTorusSpring_surf);
 
     MechanicalObject3* dofSpring_surf = new MechanicalObject3; dofSpring_surf->setName("Collision Object Spring");
@@ -294,7 +294,7 @@ int main(int argc, char** argv)
 
     OglModel* visualFFD = new OglModel;
     visualFFD->setName("visual");
-    visualFFD->load(sofa::helper::system::DataRepository.getFile("VisualModels/torus.obj"),"","");
+    visualFFD->load(sofa::helper::system::DataRepository.getFile("mesh/torus.obj"),"","");
     visualFFD->setColor("yellow");
     FFDVisualNode->addObject(visualFFD);
 
@@ -309,7 +309,7 @@ int main(int argc, char** argv)
     torusFFD->addChild(FFDCollisionNode);
 
     MeshTopology* meshTorusFFD_surf= new MeshTopology;
-    meshTorusFFD_surf->load(sofa::helper::system::DataRepository.getFile("CollisionModels/torus_for_collision.obj").c_str());
+    meshTorusFFD_surf->load(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj").c_str());
     FFDCollisionNode->addObject(meshTorusFFD_surf);
 
     MechanicalObject3* dofFFD_surf = new MechanicalObject3; dofFFD_surf->setName("Collision Object FFD");
@@ -350,7 +350,7 @@ int main(int argc, char** argv)
 
     OglModel* visualRigid = new OglModel;
     visualRigid->setName("visual");
-    visualRigid->load(sofa::helper::system::DataRepository.getFile("VisualModels/torus.obj"),"","");
+    visualRigid->load(sofa::helper::system::DataRepository.getFile("mesh/torus.obj"),"","");
     visualRigid->setColor("gray");
     RigidVisualNode->addObject(visualRigid);
 
@@ -365,7 +365,7 @@ int main(int argc, char** argv)
     torusRigid->addChild(RigidCollisionNode);
 
     MeshTopology* meshTorusRigid_surf= new MeshTopology;
-    meshTorusRigid_surf->load(sofa::helper::system::DataRepository.getFile("CollisionModels/torus_for_collision.obj").c_str());
+    meshTorusRigid_surf->load(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj").c_str());
     RigidCollisionNode->addObject(meshTorusRigid_surf);
 
     MechanicalObject3* dofRigid_surf = new MechanicalObject3; dofRigid_surf->setName("Collision Object Rigid");

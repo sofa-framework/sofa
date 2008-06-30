@@ -83,7 +83,7 @@ int main(int argc, char** argv)
     // The visual model
     OglModel* visual = new OglModel();
     visual->setName( "visual" );
-    visual->load(sofa::helper::system::DataRepository.getFile("VisualModels/liver-smooth.obj"), "", "");
+    visual->load(sofa::helper::system::DataRepository.getFile("mesh/liver-smooth.obj"), "", "");
     visual->setColor("red");
     visual->applyScale(0.7);
     visual->applyTranslation(1.2, 0.8, 0);
