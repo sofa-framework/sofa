@@ -106,9 +106,9 @@ void PointSetTopologyModifier<DataTypes>::swapPoints(const int i1,const int i2)
 }
 
 template<class DataTypes>
-void PointSetTopologyModifier<DataTypes>::addPointsProcess(const unsigned int nPoints,
+void PointSetTopologyModifier<DataTypes>::addPointsProcess(const unsigned int /*nPoints*/,
         const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
-        const sofa::helper::vector< sofa::helper::vector< double > >& /*baryCoefs*/, const bool addDOF)
+        const sofa::helper::vector< sofa::helper::vector< double > >& /*baryCoefs*/, const bool /*addDOF*/)
 {}
 
 template<class DataTypes>
@@ -156,9 +156,6 @@ template<class DataTypes>
 void PointSetTopologyModifier<DataTypes>::removePointsWarning(sofa::helper::vector<unsigned int> &indices, const bool removeDOF)
 {
 
-    PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
-    assert (topology != 0);
-
     std::sort( indices.begin(), indices.end(), std::greater<unsigned int>() ); // BUG FIXED : sort indices here
     // Warning that these vertices will be deleted
     PointsRemoved *e=new PointsRemoved(indices);
@@ -204,7 +201,7 @@ void PointSetTopologyModifier<DataTypes>::renumberPointsWarning( const sofa::hel
 }
 
 template<class DataTypes>
-void PointSetTopologyModifier<DataTypes>::renumberPointsProcess( const sofa::helper::vector<unsigned int> &index, const sofa::helper::vector<unsigned int> &/*inv_index*/, const bool renumberDOF)
+void PointSetTopologyModifier<DataTypes>::renumberPointsProcess( const sofa::helper::vector<unsigned int> &/*index*/, const sofa::helper::vector<unsigned int> &/*inv_index*/, const bool renumberDOF)
 {
 
     PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
