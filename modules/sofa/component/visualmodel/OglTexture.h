@@ -31,6 +31,7 @@ public:
     OglTexture();
     virtual ~OglTexture();
 
+    virtual void parse(core::objectmodel::BaseObjectDescription* arg) {}
     virtual void init();
     virtual void initVisual();
     virtual void reinit();
@@ -59,10 +60,13 @@ private:
     Data<bool> repeat;
     helper::gl::Texture* texture2D;
 
+    helper::io::Image* img;
+
 public:
     OglTexture2D();
     virtual ~OglTexture2D();
 
+    void parse(core::objectmodel::BaseObjectDescription* arg);
     void initVisual();
     void reinit() { };
 

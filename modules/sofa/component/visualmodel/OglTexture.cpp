@@ -104,11 +104,30 @@ OglTexture2D::~OglTexture2D()
     if (!texture2D)delete texture2D;
 }
 
+void OglTexture2D::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    helper::system::FileRepository fp;
+    if (arg->getAttribute("texture2DFilename"))
+    {
+        texture2DFilename.setValue( arg->getAttribute("texture2DFilename") );
+    }
+    img = helper::io::Image::Create(texture2DFilename.getValue());
+
+    if (arg->getAttribute("id"))
+    {
+        id.setValue( arg->getAttribute("id") );
+    }
+
+    if (arg->getAttribute("textureUnit"))
+    {
+        textureUnit.setValue( atoi(arg->getAttribute("textureUnit") ) );
+    }
+}
+
 void OglTexture2D::initVisual()
 {
     OglTexture::initVisual();
-    helper::system::FileRepository fp;
-    helper::io::Image* img = helper::io::Image::Create(texture2DFilename.getValue());
+
     if (!img)
     {
         std::cerr << "OglTexture2D: Error : OglTexture2D file " << texture2DFilename.getValue() << " not found." << std::endl;
