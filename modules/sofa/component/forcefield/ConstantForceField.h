@@ -27,7 +27,6 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
     typedef helper::vector<unsigned> VecIndex;
-
 public:
 
     Data< VecIndex > points;

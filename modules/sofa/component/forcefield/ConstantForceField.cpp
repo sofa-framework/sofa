@@ -45,12 +45,16 @@ int ConstantForceFieldClass = core::RegisterObject("Constant forces applied to g
         .add< ConstantForceField<Vec2dTypes> >()
         .add< ConstantForceField<Vec1dTypes> >()
         .add< ConstantForceField<Vec6dTypes> >()
+        .add< ConstantForceField<Rigid3dTypes> >()
+        .add< ConstantForceField<Rigid2dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< ConstantForceField<Vec3fTypes> >()
         .add< ConstantForceField<Vec2fTypes> >()
         .add< ConstantForceField<Vec1fTypes> >()
         .add< ConstantForceField<Vec6fTypes> >()
+        .add< ConstantForceField<Rigid3fTypes> >()
+        .add< ConstantForceField<Rigid2fTypes> >()
 #endif
         ;
 #ifndef SOFA_FLOAT
@@ -58,15 +62,44 @@ template class ConstantForceField<Vec3dTypes>;
 template class ConstantForceField<Vec2dTypes>;
 template class ConstantForceField<Vec1dTypes>;
 template class ConstantForceField<Vec6dTypes>;
+template class ConstantForceField<Rigid3dTypes>;
+template class ConstantForceField<Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 template class ConstantForceField<Vec3fTypes>;
 template class ConstantForceField<Vec2fTypes>;
 template class ConstantForceField<Vec1fTypes>;
 template class ConstantForceField<Vec6fTypes>;
+template class ConstantForceField<Rigid3fTypes>;
+template class ConstantForceField<Rigid2fTypes>;
 #endif
 
+#ifndef SOFA_FLOAT
+template <>
+double ConstantForceField<Rigid3dTypes>::getPotentialEnergy(const VecCoord& x)
+{
+    return 0;
+}
+template <>
+double ConstantForceField<Rigid2dTypes>::getPotentialEnergy(const VecCoord& x)
+{
+    return 0;
+}
+#endif
 
+#ifndef SOFA_DOUBLE
+template <>
+double ConstantForceField<Rigid3fTypes>::getPotentialEnergy(const VecCoord& x)
+{
+    return 0;
+}
+
+template <>
+double ConstantForceField<Rigid2fTypes>::getPotentialEnergy(const VecCoord& x)
+{
+    return 0;
+}
+#endif
 } // namespace forcefield
 
 } // namespace component

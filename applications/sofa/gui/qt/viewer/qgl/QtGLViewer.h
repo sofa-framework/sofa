@@ -50,7 +50,7 @@
 #endif // SOFA_DEV
 
 
-#include <viewer/qgl/QGLViewer/qglviewer.h>
+#include <QGLViewer/qglviewer.h>
 
 namespace sofa
 {

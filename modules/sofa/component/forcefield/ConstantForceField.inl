@@ -29,6 +29,7 @@
 #include "ConstantForceField.h"
 #include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/gl/template.h>
 #include <assert.h>
 #include <iostream>
@@ -80,6 +81,19 @@ double ConstantForceField<DataTypes>::getPotentialEnergy(const VecCoord& x)
 }
 
 
+#ifndef SOFA_FLOAT
+template <>
+double ConstantForceField<defaulttype::Rigid3dTypes>::getPotentialEnergy(const VecCoord& );
+template <>
+double ConstantForceField<defaulttype::Rigid2dTypes>::getPotentialEnergy(const VecCoord& );
+#endif
+
+#ifndef SOFA_DOUBLE
+template <>
+double ConstantForceField<defaulttype::Rigid3fTypes>::getPotentialEnergy(const VecCoord& );
+template <>
+double ConstantForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const VecCoord& );
+#endif
 
 
 template<class DataTypes>

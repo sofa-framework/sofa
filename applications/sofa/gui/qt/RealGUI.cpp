@@ -1062,7 +1062,7 @@ void RealGUI::fileOpenSimu ( std::string s )
 }
 void RealGUI::fileNew()
 {
-    std::string newScene("newScene.scn");
+    std::string newScene("config/newScene.scn");
     if (sofa::helper::system::DataRepository.findFile (newScene))
         fileOpen(sofa::helper::system::DataRepository.getFile ( newScene ).c_str());
 }
