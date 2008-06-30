@@ -1,7 +1,7 @@
 
 #ifdef TEXTURE_UNIT_0
 uniform sampler2D colorTexture;
-#endif
+#endif //TEXTURE_UNIT_0
 
 #ifdef PLANE_ENVIRONMENT_MAPPING
 varying vec3 normalVec;
@@ -10,13 +10,18 @@ uniform sampler2D planeTexture;
 uniform float altitude;
 //uniform int axis; //0 = +X, 1 = +Y, 2 = +Z, 3 = -X, 4 = -Y, 5 = -Z
 uniform float border_gamma, border_alpha;
-#endif
+#endif //PLANE_ENVIRONMENT_MAPPING
 
 #ifdef PHONG
-varying vec3 lightDir /* , halfVector */ , normalView;
-#endif
+varying vec3 lightDir, normalView;
+#endif //PHONG
 
 varying vec4 diffuse, ambient, specular;
+
+#ifdef LIGHT2
+varying vec4 diffuse2, specular2;
+varying vec3 lightDir2;
+#endif //LIGHT2
 
 vec3 reflect(vec3 I, vec3 N)
 {
@@ -29,9 +34,9 @@ void main()
 	
 #ifdef TEXTURE_UNIT_0
 	color.rgb = texture2D(colorTexture,gl_TexCoord[0].st).rgb;
-#endif
+#endif //TEXTURE_UNIT_0
 	
-#ifdef PHONG	
+#ifdef PHONG
 	//Phong
 	vec3 n;
 	float NdotL,NdotHV;
@@ -58,11 +63,30 @@ void main()
 			
 		//}
 	}
+	
+#ifdef LIGHT2
+	/* compute the dot product between normal and ldir */
+	NdotL = max(dot(n,normalize(lightDir2)),0.0);
+
+	if (NdotL > 0.0) {
+	
+		/*spotEffect = dot(normalize(gl_LightSource[0].spotDirection), normalize(-lightDir2));
+		if (spotEffect > gl_LightSource[1].spotCosCutoff) {
+			spotEffect = pow(spotEffect, gl_LightSource[1].spotExponent);
+			att = spotEffect / (gl_LightSource[1].constantAttenuation +
+					gl_LightSource[1].linearAttenuation * dist +
+					gl_LightSource[1].quadraticAttenuation * dist * dist);*/
+				
+			phong_color += /*att * */ (diffuse2 * NdotL) ;
+			
+		//}
+	}
+
+#endif //LIGHT2
+	
 	color.rgb *= phong_color.rgb;
-	//end phong
 	
-	
-#endif
+#endif //PHONG
 
 	// Perform a simple 2D texture look up.
 	//vec3 base_color = gl_Color.xyz;//texture2D(planeTexture, reflectVec.xz).rgb;
@@ -82,7 +106,7 @@ void main()
 	  color.rgb += texture2D(planeTexture, reflectVec.xy*( altitude/reflectVec.z )+vec2(0.5,0.5)).rgb * specular.rgb;
 
 	}
-#endif
+#endif //PLANE_ENVIRONMENT_MAPPING
 
 
 	// Write the final pixel.
