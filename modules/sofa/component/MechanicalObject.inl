@@ -886,8 +886,7 @@ void MechanicalObject<DataTypes>::storeResetState()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::reset()
 {
-    if (reset_position == NULL)
-        return;
+    if (reset_position == NULL)        return;
     // Back to initial state
     this->resize(reset_position->size());
     //std::cout << this->getName() << ": reset X"<<std::endl;
@@ -895,6 +894,8 @@ void MechanicalObject<DataTypes>::reset()
     *this->getVecCoord(VecId::position().index) = *this->reset_position;
     //std::cout << this->getName() << ": reset V"<<std::endl;
     //*this->v = *v0;
+
+    if (v0 == NULL)	return;
     *this->getVecDeriv(VecId::velocity().index) = *this->v0;
 
     //std::cout << this->getName() << ": reset Xfree"<<std::endl;
