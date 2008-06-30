@@ -4,7 +4,6 @@
 	<Object type="NewProximityIntersection" name="Proximity" alarmDistance="2" contactDistance="0.7" />
 	<Object type="CollisionResponse" name="Response" response="default" />
 	<Object type="CollisionGroup" name="Group" />
-<Object type="CollisionGroup" name="Group" />	
 <Node name="Torus">
 		<Object type="CGImplicit" iterations="10" tol="0.01" threshold="0.000001" />
 		<Object type="MechanicalObject"   dx="0" dy="20" dz="-11"/>
