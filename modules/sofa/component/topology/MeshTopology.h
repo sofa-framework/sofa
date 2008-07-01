@@ -152,6 +152,8 @@ public:
         this->core::componentmodel::topology::Topology::parse(arg);
     }
 
+    void draw();
+
 protected:
     int nbPoints;
     vector< fixed_array<SReal,3> > seqPoints;
@@ -378,6 +380,8 @@ protected:
     int revision;
 
     Data< std::string > filename;
+
+    Data< bool > _draw;
 
     void invalidate();
 
