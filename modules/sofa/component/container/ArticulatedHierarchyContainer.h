@@ -147,6 +147,7 @@ public:
         */
         Data<Vector3> posOnChild;
 
+
         vector<Articulation*> articulations;
 
         Vector3 initTranslateChild(Quat objectRotation)
@@ -182,9 +183,11 @@ public:
 
     ~ArticulatedHierarchyContainer() {}
 
-    void parse (sofa::core::objectmodel::BaseObjectDescription* arg);
+
 
     void init();
+
+    void setFilename(std::string f) {filename.setValue(f);}
 
     vector<ArticulationCenter*> getArticulationCenters();
     ArticulationCenter* getArticulationCenterAsChild(int index);
@@ -197,7 +200,10 @@ public:
     int numOfFrames;
     double dtbvh;
 
+protected:
+    Data<std::string> filename;
 private:
+
 
     unsigned int id;
     sofa::helper::io::bvh::BVHJoint* joint;

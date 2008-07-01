@@ -471,10 +471,6 @@ void RealGUI::fileRecentlyOpened(int id)
 void RealGUI::updateRecentlyOpened(std::string fileLoaded)
 {
     std::string scenes ( "config/Sofa.ini" );
-    if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )
-    {
-
-    }
 
     scenes = sofa::helper::system::DataRepository.getFile ( scenes );
 
