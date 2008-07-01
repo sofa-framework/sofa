@@ -409,34 +409,35 @@ void SparseGridTopology::updateMesh()
     sofa::helper::vector< sofa::helper::vector< Vec3d >* > list_Xd;
 
     //Get Collision Model
-    sofa::component::topology::MeshTopology  *m_temp;
-    this->getContext()->get(m_temp, BaseContext::SearchDown);
+    sofa::helper::vector< sofa::core::componentmodel::topology::BaseMeshTopology* > m_temp;
+    this->getContext()->get< sofa::core::componentmodel::topology::BaseMeshTopology >(&m_temp, BaseContext::SearchDown);
 
-    if (    m_temp != NULL
-            && m_temp != this
-            && m_temp->getFilename() == "")
+    sofa::core::componentmodel::topology::BaseMeshTopology* collisionTopology=NULL;
+    for (unsigned int i=0; i<m_temp.size(); ++i)
+    {
+        if (m_temp[i] != this) {collisionTopology = m_temp[i]; break;}
+    }
+// 	      std::cout << m_temp << " " <<  (m_temp != this) << " " << m_temp->getNbTriangles()  << " !!!! test to enter \n";
+    if (   collisionTopology != NULL && collisionTopology->getNbTriangles() == 0)
     {
 #ifndef SOFA_FLOAT
-        MechanicalObject< Vec3dTypes > *mecha_tempd = static_cast< GNode *>(m_temp->getContext())->get< MechanicalObject< Vec3dTypes > >();
+        MechanicalObject< Vec3dTypes > *mecha_tempd = collisionTopology->getContext()->get< MechanicalObject< Vec3dTypes > >();
         if (mecha_tempd != NULL && mecha_tempd->getX()->size() < 2) //a triangle mesh has minimum 3elements
         {
 
-            list_meshd.push_back(m_temp);
+            list_meshd.push_back(collisionTopology);
             list_Xd.push_back(mecha_tempd->getX());
         }
 #endif
 #ifndef SOFA_DOUBLE
-        //HACK : to fix!!!
-        MechanicalObject< Vec3fTypes > *mecha_tempf = static_cast< GNode *>(m_temp->getContext())->get< MechanicalObject< Vec3fTypes > >();
+        MechanicalObject< Vec3fTypes > *mecha_tempf = collisionTopology->getContext()->get< MechanicalObject< Vec3fTypes > >();
         if (mecha_tempf != NULL && mecha_tempf->getX()->size() < 2) //a triangle mesh has minimum 3elements
         {
 
-            list_meshf.push_back(m_temp);
+            list_meshf.push_back(collisionTopology);
             list_Xf.push_back(mecha_tempf->getX());
         }
 #endif
-
-
     }
     if (list_meshf.size() == 0 && list_meshd.size() == 0 ) return;
     //No Marching Cube to run
@@ -449,7 +450,7 @@ void SparseGridTopology::updateMesh()
             (int)(resolution.getValue()*dim_voxels.getValue()[1]/s),
             (int)(resolution.getValue()*dim_voxels.getValue()[2]/s)));
     MC.setSizeVoxel(size_voxel.getValue());
-    MC.RenderMarchCube(&(*dataVoxels.beginEdit())[0], 0.25f,mesh_MC, map_indices, smoothData.getValue()); //Apply Smoothing is smoothData > 0
+    MC.RenderMarchCube(&(*dataVoxels.beginEdit())[0], 0.5f,mesh_MC, map_indices, smoothData.getValue()); //Apply Smoothing is smoothData > 0
 
     if (list_meshf.size() != 0)
         constructCollisionModels(list_meshf, list_Xf, mesh_MC, map_indices);
@@ -459,7 +460,7 @@ void SparseGridTopology::updateMesh()
 
 void SparseGridTopology::getMesh(sofa::helper::io::Mesh &m)
 {
-    MC.createMesh(&(*dataVoxels.beginEdit())[0],0.25f,  m,smoothData.getValue());
+    MC.createMesh(&(*dataVoxels.beginEdit())[0],0.5f,  m,smoothData.getValue());
 }
 
 template< class T >
