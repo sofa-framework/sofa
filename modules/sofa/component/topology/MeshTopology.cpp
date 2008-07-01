@@ -57,7 +57,7 @@ MeshTopology::MeshTopology()
     , seqTriangles(initData(&seqTriangles,"triangles","List of triangle indices")), validTriangles(false)
     , validQuads(false), validTetras(false), validHexas(false), revision(0)
     , filename(initData(&filename,"filename","Filename of the object"))
-    , _draw(initData(&_draw, false, "draw","if true, draw the topology hexahedroms"))
+    , _draw(initData(&_draw, false, "drawHexas","if true, draw the topology hexahedroms"))
 {
 }
 
@@ -1312,41 +1312,39 @@ void MeshTopology::draw()
 
 
         glColor3f(1,0,0);
-        for (unsigned int i=0; i<seqHexas.size(); i++)
+        for (int i=0; i<getNbHexas(); i++)
         {
-            for (unsigned int j=0; j<seqHexas[i].size(); j++)
-            {
-                glBegin(GL_LINE_STRIP);
-                glVertex3d(seqPoints[seqHexas[i][0]][0], seqPoints[seqHexas[i][0]][1], seqPoints[seqHexas[i][0]][2]);
-                glVertex3d(seqPoints[seqHexas[i][1]][0], seqPoints[seqHexas[i][1]][1], seqPoints[seqHexas[i][1]][2]);
-                glVertex3d(seqPoints[seqHexas[i][2]][0], seqPoints[seqHexas[i][2]][1], seqPoints[seqHexas[i][2]][2]);
-                glVertex3d(seqPoints[seqHexas[i][3]][0], seqPoints[seqHexas[i][3]][1], seqPoints[seqHexas[i][3]][2]);
-                glVertex3d(seqPoints[seqHexas[i][0]][0], seqPoints[seqHexas[i][0]][1], seqPoints[seqHexas[i][0]][2]);
-                glEnd();
-                glBegin(GL_LINE_STRIP);
-                glVertex3d(seqPoints[seqHexas[i][4]][0], seqPoints[seqHexas[i][4]][1], seqPoints[seqHexas[i][4]][2]);
-                glVertex3d(seqPoints[seqHexas[i][5]][0], seqPoints[seqHexas[i][5]][1], seqPoints[seqHexas[i][5]][2]);
-                glVertex3d(seqPoints[seqHexas[i][6]][0], seqPoints[seqHexas[i][6]][1], seqPoints[seqHexas[i][6]][2]);
-                glVertex3d(seqPoints[seqHexas[i][7]][0], seqPoints[seqHexas[i][7]][1], seqPoints[seqHexas[i][7]][2]);
-                glVertex3d(seqPoints[seqHexas[i][4]][0], seqPoints[seqHexas[i][4]][1], seqPoints[seqHexas[i][4]][2]);
-                glEnd();
-                glBegin(GL_LINES);
-                glVertex3d(seqPoints[seqHexas[i][3]][0], seqPoints[seqHexas[i][3]][1], seqPoints[seqHexas[i][3]][2]);
-                glVertex3d(seqPoints[seqHexas[i][7]][0], seqPoints[seqHexas[i][7]][1], seqPoints[seqHexas[i][7]][2]);
-                glEnd();
-                glBegin(GL_LINES);
-                glVertex3d(seqPoints[seqHexas[i][2]][0], seqPoints[seqHexas[i][2]][1], seqPoints[seqHexas[i][2]][2]);
-                glVertex3d(seqPoints[seqHexas[i][6]][0], seqPoints[seqHexas[i][6]][1], seqPoints[seqHexas[i][6]][2]);
-                glEnd();
-                glBegin(GL_LINES);
-                glVertex3d(seqPoints[seqHexas[i][0]][0], seqPoints[seqHexas[i][0]][1], seqPoints[seqHexas[i][0]][2]);
-                glVertex3d(seqPoints[seqHexas[i][4]][0], seqPoints[seqHexas[i][4]][1], seqPoints[seqHexas[i][4]][2]);
-                glEnd();
-                glBegin(GL_LINES);
-                glVertex3d(seqPoints[seqHexas[i][1]][0], seqPoints[seqHexas[i][1]][1], seqPoints[seqHexas[i][1]][2]);
-                glVertex3d(seqPoints[seqHexas[i][5]][0], seqPoints[seqHexas[i][5]][1], seqPoints[seqHexas[i][5]][2]);
-                glEnd();
-            }
+            const Hexa& c = getHexa(i);
+            glBegin(GL_LINE_STRIP);
+            glVertex3d(getPX(c[0]), getPY(c[0]), getPZ(c[0]));
+            glVertex3d(getPX(c[1]), getPY(c[1]), getPZ(c[1]));
+            glVertex3d(getPX(c[2]), getPY(c[2]), getPZ(c[2]));
+            glVertex3d(getPX(c[3]), getPY(c[3]), getPZ(c[3]));
+            glVertex3d(getPX(c[0]), getPY(c[0]), getPZ(c[0]));
+            glEnd();
+            glBegin(GL_LINE_STRIP);
+            glVertex3d(getPX(c[4]), getPY(c[4]), getPZ(c[4]));
+            glVertex3d(getPX(c[5]), getPY(c[5]), getPZ(c[5]));
+            glVertex3d(getPX(c[6]), getPY(c[6]), getPZ(c[6]));
+            glVertex3d(getPX(c[7]), getPY(c[7]), getPZ(c[7]));
+            glVertex3d(getPX(c[4]), getPY(c[4]), getPZ(c[4]));
+            glEnd();
+            glBegin(GL_LINES);
+            glVertex3d(getPX(c[3]), getPY(c[3]), getPZ(c[3]));
+            glVertex3d(getPX(c[7]), getPY(c[7]), getPZ(c[7]));
+            glEnd();
+            glBegin(GL_LINES);
+            glVertex3d(getPX(c[2]), getPY(c[2]), getPZ(c[2]));
+            glVertex3d(getPX(c[6]), getPY(c[6]), getPZ(c[6]));
+            glEnd();
+            glBegin(GL_LINES);
+            glVertex3d(getPX(c[0]), getPY(c[0]), getPZ(c[0]));
+            glVertex3d(getPX(c[4]), getPY(c[4]), getPZ(c[4]));
+            glEnd();
+            glBegin(GL_LINES);
+            glVertex3d(getPX(c[1]), getPY(c[1]), getPZ(c[1]));
+            glVertex3d(getPX(c[5]), getPY(c[5]), getPZ(c[5]));
+            glEnd();
         }
 
     }

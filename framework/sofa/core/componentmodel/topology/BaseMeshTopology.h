@@ -50,7 +50,7 @@ using namespace sofa::defaulttype;
 using helper::vector;
 using helper::fixed_array;
 
-//#define SOFA_NEW_HEXA
+#define SOFA_NEW_HEXA
 
 class BaseMeshTopology : public core::componentmodel::topology::Topology
 {
