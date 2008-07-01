@@ -171,9 +171,11 @@ void LinearMovementConstraint<DataTypes>::init()
     my_subset.setTestParameter( (void *) this );
     my_subset.setRemovalParameter( (void *) this );
 
+    x0.resize(0);
     nextM = prevM = Deriv();
 
 }
+
 
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::projectResponse(VecDeriv& )
@@ -185,7 +187,7 @@ template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::projectVelocity(VecDeriv& dx)
 {
     Real cT = (Real) this->getContext()->getTime();
-    if(cT <= *m_keyTimes.getValue().rbegin())
+    if(cT >= *m_keyTimes.getValue().begin() && cT <= *m_keyTimes.getValue().rbegin())
     {
         const SetIndexArray & indices = m_indices.getValue().getArray();
 
@@ -195,7 +197,7 @@ void LinearMovementConstraint<DataTypes>::projectVelocity(VecDeriv& dx)
         typename VecDeriv::const_iterator it_m = m_keyMovements.getValue().begin();
 
         //WARNING : we consider that the key-events are in chronological order
-        //here we search between which keyTimes we are, to know which are the movements to interpolate
+        //here we search between which keyTimes we are, to know which are the motion to interpolate
         while( it_t != m_keyTimes.getValue().end() && !finished)
         {
             if( *it_t <= cT)
@@ -213,7 +215,7 @@ void LinearMovementConstraint<DataTypes>::projectVelocity(VecDeriv& dx)
             it_m++;
         }
 
-        //if we found 2 keyTimes, we have to interpolate a movement
+        //if we found 2 keyTimes, we have to interpolate a velocity (linear interpolation)
         if(finished)
         {
             Real dTsimu = (Real) this->getContext()->getDt();
@@ -221,7 +223,7 @@ void LinearMovementConstraint<DataTypes>::projectVelocity(VecDeriv& dx)
             Deriv m= (nextM-prevM)*dt;
             Deriv mPrev= (nextM-prevM)*(((cT-dTsimu) - prevT) / (nextT - prevT));
 
-            //set the movment to the Dofs
+            //set the motion to the Dofs
             for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             {
                 dx[*it] = (m - mPrev) * (1/dTsimu);
@@ -236,82 +238,32 @@ void LinearMovementConstraint<DataTypes>::projectPosition(VecCoord& x)
 {
     Real cT = (Real) this->getContext()->getTime();
 
-    if (cT==0.0)
+    //initialize initial Dofs positions, if it's not done
+    if (x0.size() == 0)
+    {
+        const SetIndexArray & indices = m_indices.getValue().getArray();
         x0.resize( x.size() );
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            x0[*it] = x[*it];
+    }
 
-    if(cT <= *m_keyTimes.getValue().rbegin() && nextT!=prevT)
+    //if we found 2 keyTimes, we have to interpolate a position (linear interpolation)
+    if(cT >= *m_keyTimes.getValue().begin() && cT <= *m_keyTimes.getValue().rbegin() && nextT!=prevT)
     {
         const SetIndexArray & indices = m_indices.getValue().getArray();
 
         Real dt = (cT - prevT) / (nextT - prevT);
         Deriv m = prevM + (nextM-prevM)*dt;
 
-        //set the movment to the Dofs
+        //set the motion to the Dofs
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            if (cT == 0.0)
-                x0[*it] = x[*it];
-
             x[*it] = x0[*it] + m ;
         }
     }
 }
 
-// Matrix Integration interface
-/*template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int &offset)
-{
-    std::cout << "applyConstraint in Matrix with offset = " << offset << std::endl;
-    const SetIndexArray & indices = m_indices.getValue().getArray();
-
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
-    {
-        // Reset Fixed Row
-        for (int i=0; i<mat->colSize(); i++)
-        {
-            mat->element(i, 3 * (*it) + offset) = 0.0;
-            mat->element(i, 3 * (*it) + offset + 1) = 0.0;
-            mat->element(i, 3 * (*it) + offset + 2) = 0.0;
-        }
-
-        // Reset Fixed Col
-        for (int i=0; i<mat->rowSize(); i++)
-        {
-            mat->element(3 * (*it) + offset, i) = 0.0;
-            mat->element(3 * (*it) + offset + 1, i) = 0.0;
-            mat->element(3 * (*it) + offset + 2, i) = 0.0;
-        }
-
-        // Set Fixed Vertex
-        mat->element(3 * (*it) + offset, 3 * (*it) + offset) = 1.0;
-        mat->element(3 * (*it) + offset, 3 * (*it) + offset + 1) = 0.0;
-        mat->element(3 * (*it) + offset, 3 * (*it) + offset + 2) = 0.0;
-
-        mat->element(3 * (*it) + offset + 1, 3 * (*it) + offset) = 0.0;
-        mat->element(3 * (*it) + offset + 1, 3 * (*it) + offset + 1) = 1.0;
-        mat->element(3 * (*it) + offset + 1, 3 * (*it) + offset + 2) = 0.0;
-
-        mat->element(3 * (*it) + offset + 2, 3 * (*it) + offset) = 0.0;
-        mat->element(3 * (*it) + offset + 2, 3 * (*it) + offset + 1) = 0.0;
-        mat->element(3 * (*it) + offset + 2, 3 * (*it) + offset + 2) = 1.0;
-    }
-}
-
-template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int &offset)
-{
-	std::cout << "applyConstraint in Vector with offset = " << offset << std::endl;
-
-	const SetIndexArray & indices = m_indices.getValue().getArray();
-	for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
-	{
-		vect->element(3 * (*it) + offset) = 0.0;
-		vect->element(3 * (*it) + offset + 1) = 0.0;
-		vect->element(3 * (*it) + offset + 2) = 0.0;
-	}
-}
-*/
-
+//display the path the constrained dofs will go through
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::draw()
 {
@@ -346,5 +298,4 @@ void LinearMovementConstraint<Rigid3fTypes >::draw();
 } // namespace sofa
 
 #endif
-
 

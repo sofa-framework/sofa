@@ -93,7 +93,7 @@ void JointSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy
     //compute elongation
     Mp1p2.getCenter() -= spring.initTrans;
     //compute torsion
-    Mp1p2.getOrientation() = spring.initRot.inverse() * Mp1p2.getOrientation();
+    Mp1p2.getOrientation() =  Mp1p2.getOrientation() * spring.initRot.inverse();
 
     //-- decomposing spring torsion in 2 parts (lawful rotation and illicit rotation) to fix bug with large rotations
     Vector dRangles = Mp1p2.getOrientation().toEulerVector();

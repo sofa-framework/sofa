@@ -48,8 +48,8 @@ using core::objectmodel::Data;
 using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;
 
-/** impose a movement to given DOFs
-	The movement between 2 key times is linearly interpolated
+/** impose a motion to given DOFs (translation and rotation)
+	The motion between 2 key times is linearly interpolated
 */
 template <class DataTypes>
 class LinearMovementConstraint : public core::componentmodel::behavior::Constraint<DataTypes>, public virtual core::objectmodel::BaseObject
@@ -63,36 +63,45 @@ public:
     typedef topology::PointSubset SetIndex;
     typedef helper::vector<unsigned int> SetIndexArray;
 
-public:
+public :
+    /// indices of the DOFs the constraint is applied to
     Data<SetIndex> m_indices;
+    /// the key frames when the motion is defined by the user
     Data<helper::vector<Real> > m_keyTimes;
+    /// the motions corresponding to the key frames
     Data<VecDeriv > m_keyMovements;
 
+    /// the key times surrounding the current simulation time (for interpolation)
     Real prevT, nextT;
+    ///the motions corresponding to the surrouding key times
     Deriv prevM, nextM;
+    ///initial constrained DOFs position
     VecCoord x0;
 
     LinearMovementConstraint();
 
     virtual ~LinearMovementConstraint();
 
+    ///methods to add/remove some indices, keyTimes, keyMovement
     void clearIndices();
     void addIndex(unsigned int index);
     void removeIndex(unsigned int index);
     void clearKeyMovements();
+    /**add a new key movement
+    @param time : the simulation time you want to set a movement (in sec)
+    @param movement : the corresponding motion
+    for instance, addKeyMovement(1.0, Deriv(5,0,0) ) will set a translation of 5 in x direction a time 1.0s
+    **/
     void addKeyMovement(Real time, Deriv movement);
-    //void removeTranslation();
 
-    // -- Constraint interface
+
+    /// -- Constraint interface
     void init();
     void projectResponse(VecDeriv& dx);
     virtual void projectVelocity(VecDeriv& dx); ///< project dx to constrained space (dx models a velocity)
     virtual void projectPosition(VecCoord& x); ///< project x to constrained space (x models a position)
 
-    //void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int &offset);
-    //void applyConstraint(defaulttype::BaseVector *vect, unsigned int &offset);
-
-    // Handle topological changes
+    /// Handle topological changes
     virtual void handleTopologyChange();
 
     virtual void draw();
@@ -102,10 +111,10 @@ public:
 
 protected:
 
-    // Define TestNewPointFunction
+    /// Define TestNewPointFunction (for topology changes)
     static bool FCTestNewPointFunction(int, void*, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& );
 
-    // Define RemovalFunction
+    /// Define RemovalFunction (for topology changes)
     static void FCRemovalFunction ( int , void*);
 
 };
