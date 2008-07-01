@@ -182,7 +182,13 @@ SofaModeler::SofaModeler()
     //Recently Opened Files
     std::string scenes ( "config/Modeler.ini" );
     if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )
-        return;
+    {
+        std::string fileToBeCreated = sofa::helper::system::DataRepository.getFirstPath() + "/" + scenes;
+        std::cerr << fileToBeCreated << " will be created." << std::endl;
+        std::ofstream ofile(fileToBeCreated.c_str());
+        ofile << "";
+        ofile.close();
+    }
 
     scenes = sofa::helper::system::DataRepository.getFile ( scenes );
 
@@ -206,8 +212,6 @@ void SofaModeler::fileRecentlyOpened(int id)
 void SofaModeler::updateRecentlyOpened(std::string fileLoaded)
 {
     std::string scenes ( "config/Modeler.ini" );
-    if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )
-        return;
 
     scenes = sofa::helper::system::DataRepository.getFile ( scenes );
 

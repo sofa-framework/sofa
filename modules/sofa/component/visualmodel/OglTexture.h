@@ -31,7 +31,6 @@ public:
     OglTexture();
     virtual ~OglTexture();
 
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg) {}
     virtual void init();
     virtual void initVisual();
     virtual void reinit();

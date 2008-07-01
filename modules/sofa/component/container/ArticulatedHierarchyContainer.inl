@@ -27,6 +27,7 @@
 #define SOFA_COMPONENT_CONTAINER_ARTICULATEDHIERARCHYCONTAINER_INL
 
 #include <sofa/component/container/ArticulatedHierarchyContainer.h>
+#include <sofa/helper/system/FileRepository.h>
 
 namespace sofa
 {
@@ -89,7 +90,8 @@ vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*> Articul
     return articulations;
 }
 
-ArticulatedHierarchyContainer::ArticulatedHierarchyContainer()
+ArticulatedHierarchyContainer::ArticulatedHierarchyContainer():
+    filename(initData(&filename, "filename", "BVH File to load the articulation", false))
 {
     joint = NULL;
     id = 0;
@@ -98,17 +100,6 @@ ArticulatedHierarchyContainer::ArticulatedHierarchyContainer()
     dtbvh = 0.0;
 }
 
-void ArticulatedHierarchyContainer::parse (sofa::core::objectmodel::BaseObjectDescription* arg)
-{
-    if (arg->getAttribute("filename"))
-    {
-        sofa::helper::io::bvh::BVHLoader loader = sofa::helper::io::bvh::BVHLoader();
-        joint = loader.load(arg->getAttribute("filename"));
-        chargedFromFile = true;
-        numOfFrames = joint->getMotion()->frameCount;
-        dtbvh = joint->getMotion()->frameTime;
-    }
-}
 
 void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::io::bvh::BVHJoint* bvhjoint, int id_buf, const char* name, simulation::tree::GNode* node)
 {
@@ -224,6 +215,17 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
 void ArticulatedHierarchyContainer::init ()
 {
     simulation::tree::GNode* context = dynamic_cast<simulation::tree::GNode *>(this->getContext()); // access to current node
+
+    std::string file = filename.getValue();
+    if ( sofa::helper::system::DataRepository.findFile (file) )
+    {
+
+        sofa::helper::io::bvh::BVHLoader loader = sofa::helper::io::bvh::BVHLoader();
+        joint = loader.load(sofa::helper::system::DataRepository.getFile ( file ).c_str());
+        chargedFromFile = true;
+        numOfFrames = joint->getMotion()->frameCount;
+        dtbvh = joint->getMotion()->frameTime;
+    }
 
     if (joint != NULL)
     {
