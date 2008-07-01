@@ -428,7 +428,13 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     //Recently Opened Files
     std::string scenes ( "config/Sofa.ini" );
     if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )
-        return;
+    {
+        std::string fileToBeCreated = sofa::helper::system::DataRepository.getFirstPath() + "/" + scenes;
+        std::cerr << fileToBeCreated << " will be created." << std::endl;
+        std::ofstream ofile(fileToBeCreated.c_str());
+        ofile << "";
+        ofile.close();
+    }
 
     scenes = sofa::helper::system::DataRepository.getFile ( scenes );
 
@@ -466,7 +472,9 @@ void RealGUI::updateRecentlyOpened(std::string fileLoaded)
 {
     std::string scenes ( "config/Sofa.ini" );
     if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )
-        return;
+    {
+
+    }
 
     scenes = sofa::helper::system::DataRepository.getFile ( scenes );
 

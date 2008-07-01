@@ -33,6 +33,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
+#include <sofa/helper/system/glut.h>
 
 #include <assert.h>
 #include <iostream>
@@ -92,6 +93,8 @@ MechanicalObject<DataTypes>::MechanicalObject()
     rotation=this->initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs");
     scale=this->initData(&scale, (SReal)1.0, "scale", "Scale of the DOFs");
     filename=this->initData(&filename, std::string(""), "filename", "File corresponding to the Mechanical Object", false);
+    debugViewIndices=this->initData(&debugViewIndices, (bool) false, "debugViewIndices", "Debug : view indices");
+    debugViewIndicesScale=this->initData(&debugViewIndicesScale, (float) 0.0001, "debugViewIndicesScale", "Debug : scale for view indices");
 
     /*    x = new VecCoord;
       v = new VecDeriv;*/
@@ -1811,6 +1814,37 @@ bool MechanicalObject<DataTypes>::addBBox(double* minBBox, double* maxBBox)
     }
     return true;
 }
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::draw()
+{
+    if (debugViewIndices.getValue() != 0.0)
+    {
+        glColor3f(1.0,1.0,1.0);
+        glDisable(GL_LIGHTING);
+        float scale = debugViewIndicesScale.getValue();
+        for (int i=0 ; i< vsize ; i++)
+        {
+            std::ostringstream oss;
+            oss << i;
+            const char* s = oss.str().c_str();
+            //glVertex3f(getPX(i),getPY(i),getPZ(i) );
+            glPushMatrix();
+            glTranslatef(getPX(i), getPY(i), getPZ(i));
+
+            glScalef(scale,scale,scale);
+            while(*s)
+            {
+                glutStrokeCharacter(GLUT_STROKE_ROMAN, *s);
+                s++;
+            }
+            glPopMatrix();
+
+        }
+    }
+
+}
+
 
 //
 // Template specializations

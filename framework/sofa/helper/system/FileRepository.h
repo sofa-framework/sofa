@@ -67,6 +67,9 @@ public:
     /// Adds a path to the back of the set of paths.
     void addLastPath(const std::string& path);
 
+    /// Get the first path into the set of paths
+    std::string getFirstPath();
+
     /// Find file using the stored set of paths.
     /// @param basedir override current directory (optional)
     /// @param filename requested file as input, resolved file path as output

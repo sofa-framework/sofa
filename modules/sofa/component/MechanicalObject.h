@@ -139,6 +139,9 @@ public:
 
     Data<SReal> restScale;
 
+    Data<bool> debugViewIndices;
+    Data<float> debugViewIndicesScale;
+
     virtual VecCoord* getX()  { f_X->beginEdit(); return x;  }
     virtual VecDeriv* getV()  { f_V->beginEdit(); return v;  }
     virtual VecDeriv* getF()  { f_F->beginEdit(); return f;  }
@@ -319,10 +322,14 @@ public:
     /// @{
     virtual void printDOF( VecId, std::ostream& =std::cerr );
     virtual unsigned printDOFWithElapsedTime(VecId, unsigned =0, unsigned =0, std::ostream& =std::cerr );
+    //
+    void draw();
     /// @}
 
     // handle state changes
     virtual void handleStateChange();
+
+
 };
 
 } // namespace component
