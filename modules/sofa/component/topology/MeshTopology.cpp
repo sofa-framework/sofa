@@ -28,6 +28,8 @@
 #include <sofa/helper/io/MeshTopologyLoader.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/fixed_array.h>
+#include <sofa/helper/system/gl.h>
+#include <sofa/helper/gl/template.h>
 #include <set>
 #include <string.h>
 
@@ -55,6 +57,7 @@ MeshTopology::MeshTopology()
     , seqTriangles(initData(&seqTriangles,"triangles","List of triangle indices")), validTriangles(false)
     , validQuads(false), validTetras(false), validHexas(false), revision(0)
     , filename(initData(&filename,"filename","Filename of the object"))
+    , _draw(initData(&_draw, false, "draw","if true, draw the topology hexahedroms"))
 {
 }
 
@@ -1299,6 +1302,54 @@ void MeshTopology::invalidate()
     validHexas = false;
     ++revision;
     //std::cout << "MeshTopology::invalidate()"<<std::endl;
+}
+
+void MeshTopology::draw()
+{
+    if (_draw.getValue())
+    {
+        glDisable(GL_LIGHTING);
+
+
+        glColor3f(1,0,0);
+        for (unsigned int i=0; i<seqHexas.size(); i++)
+        {
+            for (unsigned int j=0; j<seqHexas[i].size(); j++)
+            {
+                glBegin(GL_LINE_STRIP);
+                glVertex3d(seqPoints[seqHexas[i][0]][0], seqPoints[seqHexas[i][0]][1], seqPoints[seqHexas[i][0]][2]);
+                glVertex3d(seqPoints[seqHexas[i][1]][0], seqPoints[seqHexas[i][1]][1], seqPoints[seqHexas[i][1]][2]);
+                glVertex3d(seqPoints[seqHexas[i][2]][0], seqPoints[seqHexas[i][2]][1], seqPoints[seqHexas[i][2]][2]);
+                glVertex3d(seqPoints[seqHexas[i][3]][0], seqPoints[seqHexas[i][3]][1], seqPoints[seqHexas[i][3]][2]);
+                glVertex3d(seqPoints[seqHexas[i][0]][0], seqPoints[seqHexas[i][0]][1], seqPoints[seqHexas[i][0]][2]);
+                glEnd();
+                glBegin(GL_LINE_STRIP);
+                glVertex3d(seqPoints[seqHexas[i][4]][0], seqPoints[seqHexas[i][4]][1], seqPoints[seqHexas[i][4]][2]);
+                glVertex3d(seqPoints[seqHexas[i][5]][0], seqPoints[seqHexas[i][5]][1], seqPoints[seqHexas[i][5]][2]);
+                glVertex3d(seqPoints[seqHexas[i][6]][0], seqPoints[seqHexas[i][6]][1], seqPoints[seqHexas[i][6]][2]);
+                glVertex3d(seqPoints[seqHexas[i][7]][0], seqPoints[seqHexas[i][7]][1], seqPoints[seqHexas[i][7]][2]);
+                glVertex3d(seqPoints[seqHexas[i][4]][0], seqPoints[seqHexas[i][4]][1], seqPoints[seqHexas[i][4]][2]);
+                glEnd();
+                glBegin(GL_LINES);
+                glVertex3d(seqPoints[seqHexas[i][3]][0], seqPoints[seqHexas[i][3]][1], seqPoints[seqHexas[i][3]][2]);
+                glVertex3d(seqPoints[seqHexas[i][7]][0], seqPoints[seqHexas[i][7]][1], seqPoints[seqHexas[i][7]][2]);
+                glEnd();
+                glBegin(GL_LINES);
+                glVertex3d(seqPoints[seqHexas[i][2]][0], seqPoints[seqHexas[i][2]][1], seqPoints[seqHexas[i][2]][2]);
+                glVertex3d(seqPoints[seqHexas[i][6]][0], seqPoints[seqHexas[i][6]][1], seqPoints[seqHexas[i][6]][2]);
+                glEnd();
+                glBegin(GL_LINES);
+                glVertex3d(seqPoints[seqHexas[i][0]][0], seqPoints[seqHexas[i][0]][1], seqPoints[seqHexas[i][0]][2]);
+                glVertex3d(seqPoints[seqHexas[i][4]][0], seqPoints[seqHexas[i][4]][1], seqPoints[seqHexas[i][4]][2]);
+                glEnd();
+                glBegin(GL_LINES);
+                glVertex3d(seqPoints[seqHexas[i][1]][0], seqPoints[seqHexas[i][1]][1], seqPoints[seqHexas[i][1]][2]);
+                glVertex3d(seqPoints[seqHexas[i][5]][0], seqPoints[seqHexas[i][5]][1], seqPoints[seqHexas[i][5]][2]);
+                glEnd();
+            }
+        }
+
+    }
 }
 
 } // namespace topology
