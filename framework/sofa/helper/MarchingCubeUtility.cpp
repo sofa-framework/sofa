@@ -7,7 +7,7 @@
 
 #include <sofa/helper/MarchingCubeUtility.h>
 
-#define PRECISION 2048.0f
+#define PRECISION 16384.0
 
 #include <string.h>
 
@@ -407,6 +407,7 @@ int MarchingCubeUtility::Polygonise(const GridCell &grid, float isolevel, sofa::
     IdVertex current_ID;
     for (i=0; MarchingCubeTriTable[cubeindex][i]!=-1; i+=3)
     {
+        Vec<3,unsigned int> current_triangle;
         for (IdVertex j=0; j<3; ++j)
         {
             current_P = vertindex[MarchingCubeTriTable[cubeindex][i+j]];
@@ -420,8 +421,14 @@ int MarchingCubeUtility::Polygonise(const GridCell &grid, float isolevel, sofa::
                 map_vertices.insert(std::make_pair(current_P, current_ID));
                 map_indices.insert (std::make_pair(current_ID,current_P));
             }
-            triangles.push_back(current_ID);
+            current_triangle[j]=current_ID;
         }
+
+        if (current_triangle[0] == current_triangle[1] || current_triangle[0] == current_triangle[2] || current_triangle[2] == current_triangle[1]) continue;
+        triangles.push_back(current_triangle[0]);
+        triangles.push_back(current_triangle[1]);
+        triangles.push_back(current_triangle[2]);
+
         ntriang+=3;
     }
     return(ntriang);
@@ -435,8 +442,8 @@ void MarchingCubeUtility::RenderMarchCube( const unsigned char *_data, const flo
         unsigned int CONVOLUTION_LENGTH) const
 {
     vector< float > data(size[0]*size[1]*size[2]);
+    if (data.size() == 0) return;
     for (unsigned int i=0; i<data.size(); ++i) data[i] = (float) getVoxel(i,_data);
-
     if (CONVOLUTION_LENGTH != 0) smoothData(&data[0], CONVOLUTION_LENGTH);
     unsigned int ID = 0;
     std::map< Vector3, IdVertex> map_vertices;
@@ -506,6 +513,7 @@ void MarchingCubeUtility::createMesh( const sofa::helper::vector< IdVertex > &me
         std::map< IdVertex,  Vector3>       &map_indices,
         sofa::helper::io::Mesh &m) const
 {
+    std::cout << "Creating Mesh using Marching Cubes\n";
     vector<Vector3> &vertices                 = m.getVertices();
     vector< vector < vector <int> > > &facets = m.getFacets();
 
@@ -544,6 +552,7 @@ void MarchingCubeUtility::createMesh( const unsigned char *data,  const float is
 
 void MarchingCubeUtility::smoothData( float *data, unsigned int CONVOLUTION_LENGTH) const
 {
+    std::cout << "Smoothing Data using " << CONVOLUTION_LENGTH << "x"<< CONVOLUTION_LENGTH << "x"<< CONVOLUTION_LENGTH << " as gaussian convolution kernel\n";
     vector< float >convolutionKernel;
     createConvolutionKernel(CONVOLUTION_LENGTH, convolutionKernel);
 
