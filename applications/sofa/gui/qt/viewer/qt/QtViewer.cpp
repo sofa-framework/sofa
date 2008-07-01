@@ -1743,11 +1743,7 @@ void QtViewer::wheelEvent(QWheelEvent* e)
 {
     if( e->state()&Qt::ControlButton )
     {
-        if (groot)
-        {
-            sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::Wheel, e->delta());
-            groot->propagateEvent(&mouseEvent);
-        }
+        moveLaparoscopic(e);
     }
     else
     {

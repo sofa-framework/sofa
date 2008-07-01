@@ -1469,7 +1469,6 @@ void QtGLViewer::mouseMoveEvent ( QMouseEvent * e )
         QGLViewer::mouseMoveEvent(e);
 }
 
-
 bool QtGLViewer::mouseEvent(QMouseEvent * e)
 {
     if(e->state()&Qt::ShiftButton)
@@ -1488,6 +1487,14 @@ bool QtGLViewer::mouseEvent(QMouseEvent * e)
             interactor->newEvent("hide");
     }
     return false;
+}
+
+void QtGLViewer::wheelEvent(QWheelEvent* e)
+{
+    if (e->state()&Qt::ControlButton)
+        moveLaparoscopic(e);
+    else
+        QGLViewer::wheelEvent(e);
 }
 
 void QtGLViewer::moveRayPickInteractor(int eventX, int eventY)
