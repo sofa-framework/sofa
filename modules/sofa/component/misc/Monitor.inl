@@ -12,7 +12,6 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/VisualModel.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <iostream>
 #include <fstream>
 
 
@@ -47,9 +46,9 @@ Monitor<DataTypes>::Monitor()
 template <class DataTypes>
 Monitor<DataTypes>::~Monitor()
 {
-    delete ( saveGnuplotX );
-    delete ( saveGnuplotV );
-    delete ( saveGnuplotF );
+    if (saveGnuplotX) delete ( saveGnuplotX );
+    if (saveGnuplotV) delete ( saveGnuplotV );
+    if (saveGnuplotF) delete ( saveGnuplotF );
 }
 ///////////////////////////// end~Monitor /////////////////////////////////
 
@@ -105,7 +104,7 @@ void Monitor<DataTypes>::init()
     monitoring.beginEdit()->setIndVelsInit (initialVelsIndices);
     monitoring.beginEdit()->setIndForcesInit (initialForcesIndices);
     monitoring.endEdit();
-
+    initGnuplot ("./");
 }
 ///////////////////////////// end init () /////////////////////////////////
 
