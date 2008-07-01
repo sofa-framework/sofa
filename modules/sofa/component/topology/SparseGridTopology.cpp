@@ -577,7 +577,11 @@ void SparseGridTopology::voxelizeTriangleMesh(helper::io::Mesh* mesh,
         //                   }
         //                 }
 
+#ifdef SOFA_NEW_HEXA
+        Vector3 cubeDiagonal = corners[6] - corners[0];
+#else
         Vector3 cubeDiagonal = corners[7] - corners[0];
+#endif
         Vector3 cubeCenter = corners[0] + cubeDiagonal*.5;
 
 
@@ -1073,7 +1077,11 @@ int SparseGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &fy
 
         const Hexa& c = getHexa( w );
         int c0 = c[0];
+#ifdef SOFA_NEW_HEXA
+        int c7 = c[6];
+#else
         int c7 = c[7];
+#endif
         Vector3 p0((SReal)getPX(c0), (SReal)getPY(c0), (SReal)getPZ(c0));
         Vector3 p7((SReal)getPX(c7), (SReal)getPY(c7), (SReal)getPZ(c7));
 
