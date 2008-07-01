@@ -513,6 +513,26 @@ protected:
         }
     }
 
+    void moveLaparoscopic(QWheelEvent *e)
+    {
+        int index_instrument = simulation::tree::getSimulation()->instrumentInUse.getValue();
+        if (index_instrument < 0 || index_instrument > (int)simulation::tree::getSimulation()->instruments.size()) return;
+
+        simulation::Node *instrument = simulation::tree::getSimulation()->instruments[index_instrument];
+        if (instrument == NULL) return;
+
+        std::vector< component::controller::Controller* > bc;
+        instrument->getTreeObjects<component::controller::Controller, std::vector< component::controller::Controller* > >(&bc);
+
+        if (!bc.empty())
+        {
+            sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::Wheel, e->delta());
+            if (groot)
+                groot->propagateEvent(&mouseEvent);
+            getQWidget()->update();
+        }
+    }
+
     virtual void moveRayPickInteractor(int , int ) {};
 
     sofa::helper::gl::Capture capture;
