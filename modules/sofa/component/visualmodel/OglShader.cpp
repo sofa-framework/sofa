@@ -66,11 +66,15 @@ void OglShader::reinit()
 
 void OglShader::initVisual()
 {
-    if (sofa::helper::gl::CShader::InitGLSL())
-        std::cout << "GLSL OK" << std::endl;
-    else    std::cout << "init GLSL failed" << std::endl;
+    std::string shaderPath = "shaders/";
 
-    std::string file = vertFilename.getValue();
+    if (!sofa::helper::gl::CShader::InitGLSL())
+    {
+        std::cerr << "OglShader : InitGLSL failed" << std::endl;
+        return;
+    }
+
+    std::string file = shaderPath + vertFilename.getValue();
 
     if (!helper::system::DataRepository.findFile(file))
     {
@@ -78,17 +82,17 @@ void OglShader::initVisual()
         return;
     }
 
-    file = fragFilename.getValue();
+    file = shaderPath + fragFilename.getValue();
     if (!helper::system::DataRepository.findFile(file))
     {
         std::cerr << "OglShader : fragment shader file not found." << std::endl;
         return;
     }
 
-    file = geoFilename.getValue();
+    file = shaderPath + geoFilename.getValue();
     if (geoFilename.getValue() == "" || !helper::system::DataRepository.findFile(file))
-        m_shader.InitShaders(helper::system::DataRepository.getFile(vertFilename.getValue()),
-                helper::system::DataRepository.getFile(fragFilename.getValue()));
+        m_shader.InitShaders(helper::system::DataRepository.getFile(shaderPath + vertFilename.getValue()),
+                helper::system::DataRepository.getFile(shaderPath + fragFilename.getValue()));
 
     else
     {
@@ -105,9 +109,9 @@ void OglShader::initVisual()
         if (geometryVerticesOut.getValue() != -1)
             setGeometryVerticesOut(geometryVerticesOut.getValue());
 
-        m_shader.InitShaders(helper::system::DataRepository.getFile( vertFilename.getValue()),
-                helper::system::DataRepository.getFile(geoFilename.getValue()),
-                helper::system::DataRepository.getFile(fragFilename.getValue()));
+        m_shader.InitShaders(helper::system::DataRepository.getFile(shaderPath + vertFilename.getValue()),
+                helper::system::DataRepository.getFile(shaderPath + geoFilename.getValue()),
+                helper::system::DataRepository.getFile(shaderPath + fragFilename.getValue()));
 
         hasGeometryShader = true;
     }

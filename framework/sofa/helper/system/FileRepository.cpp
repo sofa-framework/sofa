@@ -48,11 +48,11 @@ namespace system
 {
 
 #if defined (WIN32)
-FileRepository DataRepository("SOFA_DATA_PATH", "../examples;../share");
+FileRepository DataRepository("SOFA_DATA_PATH", "../share;../examples");
 #elif defined (__APPLE__)
-FileRepository DataRepository("SOFA_DATA_PATH", "../examples:../share:../Resources/examples:../Resources:../../../../examples:../../../../share");
+FileRepository DataRepository("SOFA_DATA_PATH", "../share:../examples:../Resources/examples:../Resources:../../../../examples:../../../../share");
 #else
-FileRepository DataRepository("SOFA_DATA_PATH", "../examples:../share");
+FileRepository DataRepository("SOFA_DATA_PATH", "../share:../examples");
 #endif
 
 FileRepository::FileRepository(const char* envVar, const char* relativePath)
@@ -122,6 +122,13 @@ void FileRepository::addLastPath(const std::string& path)
     }
     vpath.insert(vpath.end(), entries.begin(), entries.end());
 //     std::cout << path << std::endl;
+}
+
+std::string FileRepository::getFirstPath()
+{
+    if (vpath.size() > 0)
+        return vpath[0];
+    else return "";
 }
 
 bool FileRepository::findFileIn(std::string& filename, const std::string& path)
