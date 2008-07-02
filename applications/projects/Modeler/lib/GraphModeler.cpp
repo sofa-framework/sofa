@@ -22,43 +22,57 @@ namespace gui
 namespace qt
 {
 
-using namespace sofa::simulation::tree;
 
 #ifndef SOFA_QT4
 typedef QPopupMenu Q3PopupMenu;
 #endif
-void GraphModeler::addGNode(GNode *parent, bool saveHistory)
+GNode *GraphModeler::addGNode(GNode *parent, bool saveHistory)
 {
     GNode *child = new GNode();
-    parent->addChild(child);
+    if (parent != NULL)
+        parent->addChild(child);
+    else
+        child->setName("Root");
+
     graphListener->addChild(parent, child);
+
     if (saveHistory)
     {
         Operation adding(graphListener->items[child], child, Operation::ADD_OBJECT);
         historyOperation.push_front(adding);
     }
+    return child;
 }
 
-void GraphModeler::addComponent(GNode *parent, ClassInfo* entry, std::string templateName, bool saveHistory)
+BaseObject *GraphModeler::addComponent(GNode *parent, ClassInfo* entry, std::string templateName, bool saveHistory)
 {
-    if (!parent || !entry) return;
-    BaseObject *object;
+    BaseObject *object=NULL;;
+    if (!parent || !entry) return object;
+
+
+
+    xml::ObjectElement description("Default", entry->className.c_str() );
+
+    if (!templateName.empty()) description.setAttribute("template", templateName.c_str());
+
+
+    ClassCreator* c;
 
     if (entry->creatorMap.size() <= 1)
-    {
-        object = entry->creatorMap.begin()->second->createInstance(NULL,NULL);
-    }
+        c=entry->creatorMap.begin()->second;
     else
     {
         if (templateName.empty())
-            object = entry->creatorMap.find(entry->defaultTemplate)->second->createInstance(NULL, NULL);
+        {
+            c=entry->creatorMap.find(entry->defaultTemplate)->second; templateName=entry->defaultTemplate;
+        }
         else
-            object = entry->creatorMap.find(templateName)->second->createInstance(NULL, NULL);
+            c=entry->creatorMap.find(templateName)->second;
     }
 
-    if (verifyInsertion(parent, object))
+    if (c->canCreate(parent->getContext(), &description))
     {
-        parent->addObject(object);
+        object = c->createInstance(parent->getContext(), NULL);
         graphListener->addObject(parent, object);
         if (saveHistory)
         {
@@ -66,91 +80,35 @@ void GraphModeler::addComponent(GNode *parent, ClassInfo* entry, std::string tem
             historyOperation.push_front(adding);
         }
     }
-    else delete object;
-}
-
-
-bool GraphModeler::verifyInsertion(GNode *parent, BaseObject *object)
-{
-    if (object->getTemplateName().empty()) return true;
-
-    BaseObject* reference = parent->getContext()->getMechanicalState();
-    if (!reference)
-    {
-        if (dynamic_cast<sofa::core::componentmodel::behavior::BaseMechanicalState*>(object) ||
-            dynamic_cast<sofa::core::VisualModel*>(object) ) return true;
-
-        reference = parent->getContext()->get< sofa::core::VisualModel >();
-        if (!reference)
-        {
-            const QString caption("Warning: no MechanicalState found or VisualModel!");
-            const QString warning=QString("No MechanicalState or VisualModel has been found in the current node!");
-            if ( QMessageBox::warning ( this, caption,warning, QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape, QMessageBox::Ignore ) == QMessageBox::Cancel )
-                return false;
-            return true; //WARNING no mechanical state: not good
-        }
-    }
-
-    std::string templateName = object->getTemplateName();
-    std::string referenceTemplate = reference->getTemplateName();
-    TemplateInfo referenceInfo; getInfoTemplate(referenceTemplate,referenceInfo);
-    std::cout << "Mechanical : " << referenceInfo << "\n";
-
-    if (referenceInfo.type == UNKNOWN) return true;
-
-    //Brutal search of the complete template
-    if (templateName.find(referenceTemplate) != std::string::npos) return true;
     else
     {
-        //If it failed, extract the dimension from the template and the type
-        TemplateInfo objectInfo; getInfoTemplate(templateName, objectInfo);
-        std::cout << "Object : " << objectInfo << "\n\n";
-        if ( referenceInfo == objectInfo) return true;
+        BaseObject* reference = parent->getContext()->getMechanicalState();
 
-        const QString caption("Warning: incompatible templates!");
-        const QString warning=QString("The mechanical state ") + QString(reference->getName().c_str()) + QString(" has a type <") + QString(referenceTemplate.c_str()) + QString("> not compatible with your component\n type: <") + QString(templateName.c_str()) + QString(">");
-
-        if ( QMessageBox::warning ( this, caption,warning, QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape, QMessageBox::Ignore ) == QMessageBox::Cancel )
-            return false;
-    }
-    return true;
-}
-
-void GraphModeler::getInfoTemplate(std::string templateName, GraphModeler::TemplateInfo &info )
-{
-
-    std::string extractTemplate = templateName;
-
-#ifdef SOFA_FLOAT
-    info.isFloat=true;
-#else
-    info.isFloat=false;
-#endif
-    info.dim=3;
-    for (unsigned int i=0; i<templateName.size(); ++i)
-    {
-        if (templateName[i] >= '0' && templateName[i] <= '9')
+        if (!reference)
         {
-            extractTemplate.resize(i);
-            info.dim=templateName[i] - '0';
-
-            if (templateName[i+1] == 'f') info.isFloat=true;
-            else
-            {
-                std::string::size_type pos_float=templateName.find("float");
-                std::string::size_type pos_double=templateName.find("double");
-                if (pos_float!=pos_double) {info.isFloat=pos_float<pos_double;}
-            }
-            break;
+            const QString caption("Creation Impossible");
+            const QString warning=QString("No MechanicalState found in your Node ") + QString(parent->getName().c_str());
+            if ( QMessageBox::warning ( this, caption,warning, QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape, QMessageBox::Ignore ) == QMessageBox::Cancel )
+                return object;
         }
+        else if (entry->className.find("Mapping") != std::string::npos) ;//we accept the mappings as no initialization of the object has been done
+        else
+        {
+            const QString caption("Creation Impossible");
+            const QString warning=
+                QString("Your component won't be created: \n \t * <")
+                + QString(reference->getTemplateName().c_str()) + QString("> DOFs are used in the Node ") + QString(parent->getName().c_str()) + QString("\n\t * <")
+                + QString(templateName.c_str()) + QString("> is the type of your ") + QString(entry->className.c_str());
+            if ( QMessageBox::warning ( this, caption,warning, QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape, QMessageBox::Ignore ) == QMessageBox::Cancel )
+                return object;
+        }
+        object = c->createInstance(parent->getContext(), NULL);
+        graphListener->addObject(parent, object);
     }
-    if      (extractTemplate.find("Vec") != std::string::npos) info.type= VEC;
-    else if (extractTemplate.find("Laparoscopic") != std::string::npos) info.type=LAPAROSCOPIC;
-    else if (extractTemplate.find("Rigid") != std::string::npos) info.type=RIGID;
-    else info.type=UNKNOWN;
-
-
+    return object;
 }
+
+
 
 
 void GraphModeler::dropEvent(QDropEvent* event)
@@ -194,7 +152,6 @@ void GraphModeler::dropEvent(QDropEvent* event)
         }
     }
 }
-
 
 
 
@@ -290,10 +247,8 @@ void GraphModeler::openModifyObject(Q3ListViewItem *item)
     ModifyObjectModeler *dialogModify = new ModifyObjectModeler ( current_Id_modifyDialog, it->first, item,this,item->text(0));
     map_modifyObjectWindow.insert( std::make_pair(current_Id_modifyDialog, dialogModify));
     //If the item clicked is a node, we add it to the list of the element modified
-    if ( dynamic_cast<GNode *> (it->first ) )
-        map_modifyDialogOpened.insert ( std::make_pair ( current_Id_modifyDialog, it->first ) );
-    else
-        map_modifyDialogOpened.insert ( std::make_pair ( current_Id_modifyDialog, getGNode(item) ) );
+
+    map_modifyDialogOpened.insert ( std::make_pair ( current_Id_modifyDialog, it->first ) );
 
     dialogModify->show();
     dialogModify->raise();
@@ -309,17 +264,29 @@ void GraphModeler::doubleClick(Q3ListViewItem *item)
 void GraphModeler::rightClick(Q3ListViewItem *item, const QPoint &point, int index)
 {
     if (!item) return;
-
+    bool isNode=getObject(item)==NULL;
 
     Q3PopupMenu *contextMenu = new Q3PopupMenu ( this, "ContextMenu" );
-    if (item->childCount() != 0)
+    if (isNode)
     {
         contextMenu->insertItem("Collapse", this, SLOT( collapseNode()));
         contextMenu->insertItem("Expand"  , this, SLOT( expandNode()));
         contextMenu->insertSeparator ();
         contextMenu->insertItem("Save"  , this, SLOT( saveNode()));
     }
-    contextMenu->insertItem("Delete"  , this, SLOT( deleteComponent()));
+    int index_menu = contextMenu->insertItem("Delete"  , this, SLOT( deleteComponent()));
+
+    if (isNode)
+    {
+        if ( !isNodeErasable ( getGNode(item) ) )
+            contextMenu->setItemEnabled ( index_menu,false );
+    }
+    else
+    {
+        if ( !isObjectErasable ( getObject(item) ))
+            contextMenu->setItemEnabled ( index_menu,false );
+    }
+
     contextMenu->insertItem("Modify"  , this, SLOT( openModifyObject()));
     contextMenu->popup ( point, index );
 
@@ -390,7 +357,8 @@ void GraphModeler::deleteComponent(Q3ListViewItem* item, bool saveHistory)
     if (!item) return;
 
     GNode *parent = getGNode(item->parent());
-    if (item->childCount() == 0 && item != graphListener->items[getGNode(item)])
+    bool isNode   = getObject(item)==NULL;
+    if (!isNode && isObjectErasable(getObject(item)))
     {
         BaseObject* object = getObject(item);
         graphListener->removeObject(getGNode(item), getObject(item));
@@ -406,7 +374,7 @@ void GraphModeler::deleteComponent(Q3ListViewItem* item, bool saveHistory)
     }
     else
     {
-
+        if (!isNodeErasable(getGNode(item))) return;
         GNode *node = getGNode(item);
         graphListener->removeChild(parent, node);
 
@@ -456,8 +424,10 @@ void GraphModeler::fileNew(GNode* root)
         graphListener->removeChild(NULL,current_root);
         getSimulation()->unload(current_root);
     }
-    if (!root) { root = new GNode(); root->setName("Root");}
-    graphListener->addChild(NULL, root);
+
+    if (!root) { root = addGNode(NULL);}
+    else graphListener->addChild(NULL, root);
+
     firstChild()->setExpandable(true);
     firstChild()->setOpen(true);
     historyOperation.clear();
@@ -469,24 +439,26 @@ void GraphModeler::fileReload()
 {
     fileOpen(filenameXML);
 }
+
 void GraphModeler::fileOpen()
 {
     QString s = getOpenFileName ( this, NULL,"Scenes (*.scn *.xml *.simu *.pscn)", "open file dialog",  "Choose a file to open" );
     if (s.length() >0)
         fileOpen(s.ascii());
 }
+
 void GraphModeler::fileOpen(std::string filename)
 {
     filenameXML = filename;
     GNode *root = NULL;
+    xml::BaseElement* newXML=NULL;
     if (!filenameXML.empty())
     {
         sofa::helper::system::SetDirectory chdir ( filename );
-        xml::BaseElement* xml = xml::loadFromFile ( filename.c_str() );
-        if (xml == NULL) return;
-        if (!xml->init()) std::cerr<< "Objects initialization failed.\n";
-        root = dynamic_cast<GNode*> ( xml->getObject() );
-        delete xml;
+        newXML = xml::loadFromFile ( filename.c_str() );
+        if (newXML == NULL) return;
+        if (!newXML->init()) std::cerr<< "Objects initialization failed.\n";
+        root = dynamic_cast<GNode*> ( newXML->getObject() );
     }
     fileNew(root);
 }
@@ -538,6 +510,50 @@ void GraphModeler::keyPressEvent ( QKeyEvent * e )
         break;
     }
     }
+}
+/*****************************************************************************************************************/
+// Test if a node can be erased in the graph : the condition is that none of its children has a menu modify opened
+bool GraphModeler::isNodeErasable ( core::objectmodel::Base* element )
+{
+    std::map< void*, core::objectmodel::Base*>::iterator it;
+    for (it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); it++)
+    {
+
+        if (dynamic_cast< BaseObject* >(it->second))
+        {
+            if (getGNode(graphListener->items[it->second]) == element) return false;
+        }
+        else if (it->second == element) return false;
+
+    }
+
+    std::map< core::objectmodel::Base*, QListViewItem*>::iterator it_item;
+    it_item = graphListener->items.find(element);
+
+    QListViewItem *child = it_item->second->firstChild();
+    while (child != NULL)
+    {
+        for (it_item = graphListener->items.begin(); it_item != graphListener->items.end(); it_item++)
+        {
+            if  (it_item->second == child)
+            {
+                if (!isNodeErasable(it_item->first)) return false;
+                break;
+            }
+        }
+        child = child->nextSibling();
+    }
+    return true;
+}
+bool GraphModeler::isObjectErasable ( core::objectmodel::Base* element )
+{
+    std::map< void*, core::objectmodel::Base*>::iterator it;
+    for (it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); it++)
+    {
+        if (it->second == element) return false;
+    }
+
+    return true;
 }
 
 }

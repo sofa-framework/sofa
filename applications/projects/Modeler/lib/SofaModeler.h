@@ -12,7 +12,6 @@
 #include <sofa/helper/Factory.h>
 #include <sofa/simulation/tree/GNode.h>
 
-#include <sofa/gui/qt/GraphListenerQListView.h>
 
 #ifdef SOFA_QT4
 #include <Q3ListView>
@@ -69,6 +68,9 @@ public slots:
     void fileSave() {graph->fileSave();};
     void fileSaveAs() {graph->fileSaveAs();};
     void fileExit() {exit(0);};
+
+    void runInSofa();
+
     void changeNameWindow(std::string filename);
     void editUndo() {graph->editUndo();}
     void editRedo() {graph->editRedo();}

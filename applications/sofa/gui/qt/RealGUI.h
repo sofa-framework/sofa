@@ -35,12 +35,12 @@
 
 #include <sofa/gui/SofaGUI.h>
 
-#include <GUI.h>
-#include <GraphListenerQListView.h>
+#include "GUI.h"
+#include <sofa/gui/qt/GraphListenerQListView.h>
 #include <sofa/gui/qt/FileManagement.h>
-#include <viewer/SofaViewer.h>
-#include <AddObject.h>
-#include <ModifyObject.h>
+#include <sofa/gui/qt/viewer/SofaViewer.h>
+#include <sofa/gui/qt/AddObject.h>
+#include <sofa/gui/qt/ModifyObject.h>
 #include <sofa/simulation/tree/xml/XML.h>
 #include <sofa/helper/system/SetDirectory.h>
 
