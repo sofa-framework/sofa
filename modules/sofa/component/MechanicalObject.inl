@@ -214,7 +214,7 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
     {
         rotation.setValue(Vector3((SReal)(atof(arg->getAttribute("rx","0.0"))),(SReal)(atof(arg->getAttribute("ry","0.0"))),(SReal)(atof(arg->getAttribute("rz","0.0"))))*3.141592653/180.0);
 
-        Quaternion q=helper::Quater<SReal>::createQuaterFromEuler( Vec<3,SReal>(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2]));
+        //Quaternion q=helper::Quater<SReal>::createQuaterFromEuler( Vec<3,SReal>(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2]));
         //applyRotation(q);
     }
     if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
@@ -583,6 +583,7 @@ bool MechanicalObject<Vec1fTypes>::addBBox(double* minBBox, double* maxBBox);
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyScale(const double s)
 {
+    std::cout << "MechanicalObject : applyScale " << this->getName() << " s=" << s << "\n";
     VecCoord& x = *this->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {
@@ -663,12 +664,22 @@ void MechanicalObject<DataTypes>::computeNewPoint( const unsigned int i, const s
 {
     this->resize(i+1);
 
-    DataTypes::set((*getX())[i], m_x[0]*scale.getValue()+translation.getValue()[0], m_x[1]*scale.getValue()+translation.getValue()[1], m_x[2]*scale.getValue()+translation.getValue()[2]);
-    DataTypes::set((*getXfree())[i], m_x[0]*scale.getValue()+translation.getValue()[0], m_x[1]*scale.getValue()+translation.getValue()[1], m_x[2]*scale.getValue()+translation.getValue()[2]);
-    DataTypes::set((*getX0())[i], m_x[0]*scale.getValue()*restScale.getValue()+translation.getValue()[0], m_x[1]*scale.getValue()*restScale.getValue()+translation.getValue()[1], m_x[2]*scale.getValue()*restScale.getValue()+translation.getValue()[2]);
+    Vec<3,Real> pos(m_x[0], m_x[1], m_x[2]);
+    Vec<3,Real> restpos(pos);
+
+    Quaternion q=helper::Quater<SReal>::createQuaterFromEuler( Vec<3,SReal>(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2]));
+    pos = q.rotate(pos*scale.getValue());
+    pos += translation.getValue();
+
+    restpos = q.rotate(restpos*restScale.getValue());
+    restpos += translation.getValue();
+
+    DataTypes::set((*getX())[i], pos[0], pos[1], pos[2]);
+    DataTypes::set((*getXfree())[i], pos[0], pos[1], pos[2]);
+    DataTypes::set((*getX0())[i], restpos[0],restpos[1],restpos[2]);
 
     if (reset_position != NULL)
-        DataTypes::set((*reset_position)[i], m_x[0]*scale.getValue()+translation.getValue()[0], m_x[1]*scale.getValue()+translation.getValue()[1], m_x[2]*scale.getValue()+translation.getValue()[2]);
+        DataTypes::set((*reset_position)[i], pos[0], pos[1], pos[2]);
 }
 
 // Force the position of a point (and force its velocity to zero value)
