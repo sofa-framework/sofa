@@ -190,7 +190,7 @@ SofaModeler::SofaModeler()
     if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )
     {
         std::string fileToBeCreated = sofa::helper::system::DataRepository.getFirstPath() + "/" + scenes;
-        std::cerr << fileToBeCreated << " will be created." << std::endl;
+
         std::ofstream ofile(fileToBeCreated.c_str());
         ofile << "";
         ofile.close();
@@ -198,14 +198,7 @@ SofaModeler::SofaModeler()
 
     scenes = sofa::helper::system::DataRepository.getFile ( scenes );
 
-    recentlyOpened->clear();
-    std::ifstream end(scenes.c_str());
-    std::string s;
-    while( end >> s )
-    {
-        recentlyOpened->insertItem(QString(s.c_str()));
-    }
-    end.close();
+    updateRecentlyOpened("");
 
 };
 
@@ -235,10 +228,13 @@ void SofaModeler::updateRecentlyOpened(std::string fileLoaded)
     recentlyOpened->clear();
     std::ofstream out;
     out.open(scenes.c_str(),std::ios::out);
-    fileLoaded = sofa::helper::system::DataRepository.getFile(fileLoaded.c_str());
-    out << fileLoaded << "\n";
+    if (sofa::helper::system::DataRepository.findFile(fileLoaded))
+    {
+        fileLoaded = sofa::helper::system::DataRepository.getFile(fileLoaded);
+        out << fileLoaded << "\n";
 
-    recentlyOpened->insertItem(QString(fileLoaded.c_str()));
+        recentlyOpened->insertItem(QString(fileLoaded.c_str()));
+    }
     for (unsigned int i=0; i<list_files.size() && i<5; ++i)
     {
         recentlyOpened->insertItem(QString(list_files[i].c_str()));
@@ -300,10 +296,10 @@ void SofaModeler::changeComponent(ClassInfo *currentComponent)
     text += std::string("<ul>");
 
     text += std::string("<li>Description: ") + currentComponent->description + std::string("</li>");
-
-    text += std::string("<li>Authors: ")+currentComponent->authors;
-    text += std::string("</li>");
-    text += std::string("<li>License: ") + currentComponent->license + std::string("</li>");
+    if (!currentComponent->authors.empty())
+        text += std::string("<li>Authors: ")+currentComponent->authors +std::string("</li>");
+    if (!currentComponent->license.empty())
+        text += std::string("<li>License: ") + currentComponent->license + std::string("</li>");
     text += std::string("</ul>");
 
     infoItem->setText(text.c_str());

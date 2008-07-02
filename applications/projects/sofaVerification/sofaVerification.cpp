@@ -27,9 +27,10 @@ void apply(std::vector< std::string> &files, unsigned int iterations, bool reini
         }
 
 
-        std::string dir = SetDirectory::GetParentDir(SetDirectory::GetParentDir(DataRepository.getFile("Sofa.ini").c_str()).c_str());
-        std::string file = SetDirectory::GetFileName(files[i].c_str());
-        file = dir + std::string("/applications/projects/sofaVerification/simulation/") + file;
+
+        std::string file = SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str());
+        file = file + std::string("/applications/projects/sofaVerification/simulation/") + SetDirectory::GetFileName(files[i].c_str());
+
         if (reinit)
         {
             sofa::simulation::WriteStateCreator compareVisitor;

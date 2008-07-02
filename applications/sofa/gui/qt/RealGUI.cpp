@@ -430,7 +430,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )
     {
         std::string fileToBeCreated = sofa::helper::system::DataRepository.getFirstPath() + "/" + scenes;
-        std::cerr << fileToBeCreated << " will be created." << std::endl;
+
         std::ofstream ofile(fileToBeCreated.c_str());
         ofile << "";
         ofile.close();
@@ -438,16 +438,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
 
     scenes = sofa::helper::system::DataRepository.getFile ( scenes );
 
-    recentlyOpened->clear();
-    std::ifstream end(scenes.c_str());
-    std::string s;
-    while( end >> s )
-    {
-        recentlyOpened->insertItem(QString(s.c_str()));
-    }
-    end.close();
-
-
+    updateRecentlyOpened("");
 
 
     //Dialog Add Object
@@ -488,10 +479,13 @@ void RealGUI::updateRecentlyOpened(std::string fileLoaded)
     recentlyOpened->clear();
     std::ofstream out;
     out.open(scenes.c_str(),std::ios::out);
-    fileLoaded = sofa::helper::system::DataRepository.getFile(fileLoaded.c_str());
-    out << fileLoaded << "\n";
+    if (sofa::helper::system::DataRepository.findFile(fileLoaded))
+    {
+        fileLoaded = sofa::helper::system::DataRepository.getFile(fileLoaded);
+        out << fileLoaded << "\n";
 
-    recentlyOpened->insertItem(QString(fileLoaded.c_str()));
+        recentlyOpened->insertItem(QString(fileLoaded.c_str()));
+    }
     for (unsigned int i=0; i<list_files.size() && i<5 ; ++i)
     {
         if (fileLoaded != list_files[i])
