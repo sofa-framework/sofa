@@ -33,6 +33,7 @@
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/BaseMapping.h>
+#include <sofa/core/componentmodel/topology/TopologicalMapping.h>
 #include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
 #include <sofa/core/componentmodel/behavior/BaseForceField.h>
 #include <sofa/core/componentmodel/behavior/InteractionForceField.h>
@@ -303,6 +304,8 @@ public:
             entry.baseClasses.insert("Mapping");
         if (implements<RealObject,core::componentmodel::behavior::BaseMechanicalMapping>())
             entry.baseClasses.insert("MechanicalMapping");
+        if (implements<RealObject,core::componentmodel::topology::TopologicalMapping>())
+            entry.baseClasses.insert("TopologicalMapping");
         if (implements<RealObject,core::componentmodel::behavior::BaseMass>())
             entry.baseClasses.insert("Mass");
         if (implements<RealObject,core::componentmodel::behavior::OdeSolver>())

@@ -30,12 +30,6 @@
 #include <string>
 #include <iostream>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/BehaviorModel.h>
-
-#include <sofa/defaulttype/Vec3Types.h>
-
-#include <sofa/defaulttype/RigidTypes.h>
-
 namespace sofa
 {
 
@@ -47,9 +41,6 @@ namespace componentmodel
 
 namespace topology
 {
-
-using namespace sofa::core;
-using namespace sofa::defaulttype;
 
 class Tetra2TriangleTopologicalMapping;
 class Quad2TriangleTopologicalMapping;
