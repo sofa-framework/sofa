@@ -295,6 +295,9 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addForce (VecDeriv& f, const Vec
 // 		Deriv theGravity;
 // 		DataTypes::set ( theGravity, g[0], g[1], g[2]);
 
+
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
+
     // velocity-based stuff
     core::objectmodel::BaseContext::SpatialVector vframe = this->getContext()->getVelocityInWorld();
     core::objectmodel::BaseContext::Vec3 aframe = this->getContext()->getVelocityBasedLinearAccelerationInWorld() ;
@@ -308,6 +311,13 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addForce (VecDeriv& f, const Vec
     {
         f[i] += this->getContext()->getLocalGravity()*_particleMasses[i] + core::componentmodel::behavior::inertiaForce(vframe,aframe,_particleMasses[i],x[i],v[i]);
     }
+#else
+    for (unsigned int i=0; i<_particleMasses.size(); i++)
+    {
+        f[i] += this->getContext()->getLocalGravity()*_particleMasses[i];
+    }
+#endif
+
 }
 
 
