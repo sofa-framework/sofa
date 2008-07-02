@@ -31,6 +31,7 @@ void init()
 ////////// BEGIN CLASS LIST //////////
 SOFA_LINK_CLASS(ArticulatedHierarchyContainer)
 SOFA_LINK_CLASS(ArticulatedHierarchyController)
+SOFA_LINK_CLASS(ArticulatedHierarchyBVHController)
 SOFA_LINK_CLASS(ArticulatedSystemMapping)
 SOFA_LINK_CLASS(Articulation)
 SOFA_LINK_CLASS(ArticulationCenter)

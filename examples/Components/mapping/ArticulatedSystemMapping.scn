@@ -5,7 +5,7 @@
 	<Object type="MinProximityIntersection" name="Proximity" alarmDistance="1.0" contactDistance="0.5" />
 	<Object type="CollisionResponse" name="Response" response="FrictionContact"/>	
 	<Node name="articulatedObject1">
-		<Object type="ComplianceArticulatedSystemSolver"/>
+<!--		<Object type="ComplianceArticulatedSystemSolver"/> -->
 		<Object type="MechanicalObject" name="ArticulatedObject" template="Vec1d"/>
 		<Node name="6D_DOFs1"> 
 			<Object type="MechanicalObject" name="6D_Dof" template="Rigid"/> 
@@ -15,7 +15,7 @@
 		</Node>
 	
 		<Object type="ArticulatedHierarchyContainer" filename="BehaviorModels/manWalking.bvh"/>
-
+		<Object type="ArticulatedHierarchyBVHController" />
 	</Node>
 	
 	<Node name="Floor">
