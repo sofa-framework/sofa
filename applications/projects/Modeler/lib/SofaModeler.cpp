@@ -1,6 +1,12 @@
 #include "SofaModeler.h"
 #include <sofa/helper/system/FileRepository.h>
 
+
+#include <sofa/gui/SofaGUI.h>
+#include <sofa/helper/system/glut.h>
+#include <sofa/gui/qt/RealGUI.h>
+
+
 #include <map>
 #include <set>
 
@@ -383,6 +389,25 @@ void SofaModeler::dropEvent(QDropEvent* event)
         }
         graph->fileOpen(filename);
     }
+}
+
+void SofaModeler::runInSofa()
+{
+    GNode* root=graph->getRoot();
+    if (!root) return;
+    // Init the scene
+    sofa::gui::SofaGUI::Init("Modeler");
+    getSimulation()->init(root);
+    //=======================================
+    // Run the GUI
+    std::string gui = sofa::gui::SofaGUI::GetGUIName();
+    std::vector<std::string> plugins;
+
+    if (sofa::gui::SofaGUI::Init("Modeler",gui.c_str())) return ;
+    sofa::gui::qt::RealGUI *guiSofa = new sofa::gui::qt::RealGUI(gui.c_str());
+
+    guiSofa->setScene(root);
+    guiSofa->show();
 }
 
 

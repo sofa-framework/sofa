@@ -18,6 +18,9 @@
 #endif
 #include <sofa/gui/qt/GraphListenerQListView.h>
 #include <sofa/gui/qt/ModifyObject.h>
+#include <sofa/simulation/tree/xml/NodeElement.h>
+#include <sofa/simulation/tree/xml/ObjectElement.h>
+
 #include <iostream>
 
 namespace sofa
@@ -39,14 +42,16 @@ typedef sofa::core::ObjectFactory::ClassEntry ClassInfo;
 typedef sofa::core::ObjectFactory::Creator    ClassCreator;
 using sofa::simulation::tree::GNode;
 using namespace sofa::core::objectmodel;
+using namespace sofa::simulation::tree;
+
 class GraphModeler : public Q3ListView
 {
 
 
     typedef std::map< const QObject* , std::pair< ClassInfo*, QObject*> > ComponentMap;
+
     Q_OBJECT
 public:
-    enum DataType {VEC,RIGID,LAPAROSCOPIC, UNKNOWN}; //type possible for mechanical state
     GraphModeler( QWidget* parent=0, const char* name=0, Qt::WFlags f = 0 ):Q3ListView(parent, name, f), graphListener(NULL)
     {
         graphListener = new GraphListenerQListView(this);
@@ -94,7 +99,6 @@ public:
         }
     }
 
-    bool verifyInsertion(GNode *parent, BaseObject *object);
     void dropEvent(QDropEvent* event);
 
     void setLibrary(ComponentMap &s) {library=s;}
@@ -102,6 +106,7 @@ public:
 
     GNode *getGNode(const QPoint &pos);
     GNode *getGNode(Q3ListViewItem *item);
+    GNode *getRoot() {return getGNode(firstChild());}
     BaseObject *getObject(Q3ListViewItem *item);
 
     void keyPressEvent ( QKeyEvent * e );
@@ -126,8 +131,8 @@ public slots:
     void doubleClick(QListViewItem *);
     void rightClick(QListViewItem *, const QPoint &, int );
 #endif
-    void addGNode(GNode *parent, bool saveHistory=true);
-    void addComponent(GNode *parent, ClassInfo *entry, std::string templateName, bool saveHistory=true );
+    GNode *addGNode(GNode *parent, bool saveHistory=true);
+    BaseObject *addComponent(GNode *parent, ClassInfo *entry, std::string templateName, bool saveHistory=true );
     void deleteComponent();
     void deleteComponent(Q3ListViewItem *item, bool saveHistory=true);
     void modifyUnlock ( void *Id );
@@ -145,6 +150,9 @@ public slots:
     void editRedo();
 protected:
 
+    bool isNodeErasable ( core::objectmodel::Base* element );
+    bool isObjectErasable ( core::objectmodel::Base* element );
+
     class Operation
     {
     public:
@@ -158,41 +166,15 @@ protected:
         op ID;
     };
 
-    struct TemplateInfo
-    {
-        unsigned int dim;
-        DataType type;
-        bool isFloat;
-
-        bool operator==(const TemplateInfo& i)
-        {
-            return (i.dim == dim) && (i.type == type) && (i.isFloat == isFloat);
-        }
-
-        friend std::ostream& operator<< (std::ostream& out, const TemplateInfo& t)
-        {
-            out << "Dimenstion : " << t.dim << " Type: ";
-            if (t.type == VEC) out <<"Vec";
-            else if (t.type == RIGID) out << "Rigid";
-            else if (t.type == LAPAROSCOPIC) out << "Laparoscopic";
-            else if (t.type == UNKNOWN) out << "Unknown";
-
-            if (t.isFloat) out << " FLOAT";
-            else           out << " DOUBLE";
-            return out;
-        }
-
-    };
-
-    void getInfoTemplate(std::string templateName, TemplateInfo &info);
 
     GraphListenerQListView *graphListener;
     ComponentMap library;
 
+
     //Modify windows management: avoid duplicity, and dependencies
     void *current_Id_modifyDialog;
     std::map< void*, Base* >       map_modifyDialogOpened;
-    std::map< void*, QDialog* >                       map_modifyObjectWindow;
+    std::map< void*, QDialog* >    map_modifyObjectWindow;
 
     std::string filenameXML;
     std::deque< Operation > historyOperation;
