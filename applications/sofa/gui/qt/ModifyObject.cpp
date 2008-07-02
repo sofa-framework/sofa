@@ -3970,8 +3970,8 @@ bool ModifyObject::createMonitorQtTable(Data<typename sofa::component::misc::Mon
             && !MonitorDataTemp.sizeIdxForces() && !EMPTY_FLAG )
             return false;
 
-        box->setColumns(1);
-
+        box->setColumns(2);
+        new QLabel("", box);
         new QLabel("Positions", box);
 
         vectorTable = addResizableTable(box,MonitorDataTemp.sizeIdxPos(),4);
