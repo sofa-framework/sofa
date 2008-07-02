@@ -527,10 +527,10 @@ bool GraphModeler::isNodeErasable ( core::objectmodel::Base* element )
 
     }
 
-    std::map< core::objectmodel::Base*, QListViewItem*>::iterator it_item;
+    std::map< core::objectmodel::Base*, Q3ListViewItem*>::iterator it_item;
     it_item = graphListener->items.find(element);
 
-    QListViewItem *child = it_item->second->firstChild();
+    Q3ListViewItem *child = it_item->second->firstChild();
     while (child != NULL)
     {
         for (it_item = graphListener->items.begin(); it_item != graphListener->items.end(); it_item++)
