@@ -1150,12 +1150,22 @@ void HexahedronFEMForceField<DataTypes>::draw()
         if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
         Index a = (*it)[0];
         Index b = (*it)[1];
+#ifndef SOFA_NEW_HEXA
         Index d = (*it)[2];
         Index c = (*it)[3];
+#else
+        Index d = (*it)[3];
+        Index c = (*it)[2];
+#endif
         Index e = (*it)[4];
         Index f = (*it)[5];
+#ifndef SOFA_NEW_HEXA
         Index h = (*it)[6];
         Index g = (*it)[7];
+#else
+        Index h = (*it)[7];
+        Index g = (*it)[6];
+#endif
 
 // 		Coord center = (x[a]+x[b]+x[c]+x[d]+x[e]+x[g]+x[f]+x[h])*0.0625;
 // 		Real percentage = 0.666667;
