@@ -50,13 +50,7 @@ void OglTetrahedralModel<DataTypes>::init()
 template<class DataTypes>
 void OglTetrahedralModel<DataTypes>::drawTransparent()
 {
-//	glDisable(GL_CULL_FACE);
-//	glBegin(GL_LINES_ADJACENCY_EXT);
-//		glVertex3f(5.0,0.0,0.0);
-//		glVertex3f(0.0,0.0,0.0);
-//		glVertex3f(0.0,-5.0,0.0);
-//		glVertex3f(2.5,-2.5,-3.0);
-//	glEnd();
+    if (!getContext()->getShowVisualModels()) return;
 
     if(blending.getValue())
         glEnable(GL_BLEND);
