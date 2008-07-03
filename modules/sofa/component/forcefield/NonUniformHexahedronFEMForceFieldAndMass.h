@@ -54,7 +54,7 @@ url          = "http://www-evasion.imag.fr/Publications/2006/NPF06"
 }
 
 
-    */
+*/
 
 
 template<class DataTypes>
@@ -90,7 +90,6 @@ public:
     Data<Real> _totalMass;
 
     NonUniformHexahedronFEMForceFieldAndMass():HexahedronFEMForceFieldAndMassT()
-        ,_finerLevel(NULL)
     {
         _nbVirtualFinerLevels = initData(&this->_nbVirtualFinerLevels,0,"nbVirtualFinerLevels","use virtual finer levels, in order to compte non-uniform stiffness");
         _useMass = initData(&this->_useMass,true,"useMass","Using this ForceField like a Mass? (rather than using a separated Mass)");
@@ -100,33 +99,34 @@ public:
 
 
     virtual void init();
-// 		virtual void reinit();
+    virtual void reinit()  { std::cerr<<"WARNING : non-uniform mechanical properties can't be updated, changes on mechanical properties (young, poisson, density) are not taken into account.\n"; }
+
+
+
+    virtual void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
+    virtual void addGravityToV(double dt);
+    virtual void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+
 
 protected:
 
 
-//	void computeCoarseElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const helper::fixed_array<Coord,8> &nodes, const int elementIndice,  int level);
-    void computeElementStiffnessFromFiner( ElementStiffness &K, const helper::fixed_array<int,8>& children, const int elementIndice);
-
-    virtual void computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const helper::fixed_array<Coord,8> &nodes, const int elementIndice, double stiffnessFactor=1.0);
-    void computeElementStiffnessFromFiner( ElementStiffness &K,  const int elementIndice); ///< compute stiffness matrix from finer matrices, taking into account matter distribution, to build a non-uniform stiffness
-
-    virtual void computeElementMass( ElementMass &Mass, const helper::fixed_array<Coord,8> &nodes, const int elementIndice, double stiffnessFactor=1.0); ///< compute the mass matrix of an element
-    void computeElementMassFromFiner( ElementMass &Mass, const int elementIndice);
-
-
-    helper::vector<NonUniformHexahedronFEMForceFieldAndMass<DataTypes>* > _virtualFinerLevels; ///< number of finer levels to take into account during the non-uniformity computation
-
-    NonUniformHexahedronFEMForceFieldAndMass<DataTypes>*_finerLevel; ///< saving the finer virtual levels
-
     static const float FINE_TO_COARSE[8][8][8]; ///< interpolation matrices from finer level to a coarser (to build stiffness and mass matrices)
+    /// add a matrix of a fine element to its englobing coarser matrix
     void addFineToCoarse( ElementStiffness& coarse, const ElementStiffness& fine, int indice );
 
+    /// condensate matrice from the (virtual) finest level to the actual mechanical level
+    /// recursive function
+    /// if level is the finest level, matrices are built as usual
+    /// else  finer matrices are built by condensation and added to the current matrices by addFineToCoarse
+    void computeMechanicalMatricesByCondensation( ElementStiffness &K, ElementMass &M, const int elementIndice,  int level);
 
 
-    virtual  void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
-    virtual void addGravityToV(double dt);
-    virtual  void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+
+    /// compute the hookean material matrix
+    void computeMaterialStiffness(MaterialStiffness &m, double youngModulus, double poissonRatio);
+
+
 
 
 };
