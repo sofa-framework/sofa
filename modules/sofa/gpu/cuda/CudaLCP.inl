@@ -132,13 +132,13 @@ void CudaLCP_AddIndepAndUpdatef(int dim,int tmpsize,const void * m,const void * 
 }
 void CudaLCP_AddIndepAndUpdated(int dim,int tmpsize,const void * m,const void * q,const void * tmp,int pTmp,void * f,void * res,void * err)
 {
-#if !defined(__CUDA_ARCH__) ||  __CUDA_ARCH__ < 130
+//#if !defined(__CUDA_ARCH__) ||  __CUDA_ARCH__ < 130
     myprintf("CUDA ERROR: double precision not supported.\n");
-#else
-    dim3 threads(tmpsize,1);
-    dim3 grid(dim,1);
-    CudaLCP_AddIndepAndUpdate_kernel<double><<< grid, threads,threads.x>>>(dim,tmpsize,(const double*)m,(const double*)q,(const double*)tmp,pTmp,(float*)f,(double*)res,(double*)err,BSIZE/2);
-#endif
+//#else
+//	dim3 threads(tmpsize,1);
+//	dim3 grid(dim,1);
+//	CudaLCP_AddIndepAndUpdate_kernel<double><<< grid, threads,threads.x>>>(dim,tmpsize,(const double*)m,(const double*)q,(const double*)tmp,pTmp,(float*)f,(double*)res,(double*)err,BSIZE/2);
+//#endif
 }
 
 /*

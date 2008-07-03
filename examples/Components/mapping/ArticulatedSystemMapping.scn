@@ -24,7 +24,7 @@
 		<Object type="Triangle" name="Floor" simulated="0" moving="0" />
 		<Object type="Line" name="Floor" simulated="0" moving="0" />
 		<Object type="Point" name="Floor" simulated="0" moving="0" />
-		<Object type="OglModel" name="FloorV" filename="mesh/floor.obj" texturename="mesh/floor.bmp" scale="2" dy="-40.0"/>
+		<Object type="OglModel" name="FloorV" filename="mesh/floor.obj" texturename="textures/floor.bmp" scale="2" dy="-40.0"/>
 	</Node>	
 </Node>
 

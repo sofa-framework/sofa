@@ -77,7 +77,7 @@
 		<Object type="Mesh" filename="mesh/floor2.obj" />
 		<Object type="MechanicalObject" scale="0.2" dy="-5" />
 		<Object type="Triangle" name="Floor" simulated="0" moving="0" />
-		<Object type="OglModel" name="FloorV" filename="mesh/floor2.obj" texturename="mesh/floor.bmp" scale="0.2" dy="-4.75" />
+		<Object type="OglModel" name="FloorV" filename="mesh/floor2.obj" texturename="textures/floor.bmp" scale="0.2" dy="-4.75" />
 	</Node>
 	-->
 </Node>
