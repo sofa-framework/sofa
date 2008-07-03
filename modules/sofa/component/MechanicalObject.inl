@@ -1829,7 +1829,7 @@ bool MechanicalObject<DataTypes>::addBBox(double* minBBox, double* maxBBox)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::draw()
 {
-    if (debugViewIndices.getValue() != 0.0)
+    if (debugViewIndices.getValue())
     {
         glColor3f(1.0,1.0,1.0);
         glDisable(GL_LIGHTING);
@@ -1838,7 +1838,8 @@ void MechanicalObject<DataTypes>::draw()
         {
             std::ostringstream oss;
             oss << i;
-            const char* s = oss.str().c_str();
+            std::string tmp = oss.str();
+            const char* s = tmp.c_str();
             //glVertex3f(getPX(i),getPY(i),getPZ(i) );
             glPushMatrix();
             glTranslatef(getPX(i), getPY(i), getPZ(i));
