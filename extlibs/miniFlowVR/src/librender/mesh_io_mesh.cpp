@@ -71,6 +71,7 @@ static bool swapread(std::vector<T>& dest, FILE* fp)
 {
   int size=0;
   if (!swapread(&size,sizeof(int),fp)) return false;
+  //std::cout << "size = "<<size<<std::endl;
   return swapread(dest, size, fp);
 }
 
@@ -84,7 +85,7 @@ static bool swapwrite(const std::vector<T>& src, FILE* fp)
 }
 
 template<class T>
-static bool swapread(T*& dest, bool swapdata, FILE* fp)
+static bool swapread_malloc(T*& dest, bool swapdata, FILE* fp)
 {
   int size=0;
   if (!swapread((void *)&size,sizeof(int),fp)) return false;
@@ -103,7 +104,6 @@ static bool swapread(T*& dest, bool swapdata, FILE* fp)
     }
   }
   return true;
-  return true;
 }
 
 template<class T>
@@ -119,7 +119,11 @@ static bool swapwrite(const T* src, FILE* fp)
 
 bool Mesh::loadMesh(const char* filename)
 {
+#ifdef WIN32
+  FILE* fp = fopen(filename,"rb");
+#else
   FILE* fp = fopen(filename,"r");
+#endif
   if (fp==NULL) return false;
   std::cout<<"Loading Mesh file "<<filename<<std::endl;
   int magic = 0;
@@ -179,12 +183,15 @@ bool Mesh::loadMesh(const char* filename)
       ++p0;
     }
   }
+  //std::cout << "Load Faces"<<std::endl;
   if (getAttrib(MESH_FACES))
     if (!swapread(faces_p,fp)) return false;
+  //std::cout << "Load DistMap"<<std::endl;
   if (getAttrib(MESH_DISTMAP))
-    if (!swapread(distmap,true,fp)) return false;
+    if (!swapread_malloc(distmap,true,fp)) return false;
+  //std::cout << "Load Voxel"<<std::endl;
   if (getAttrib(MESH_VOXEL))
-    if (!swapread(voxel,false,fp)) return false;
+    if (!swapread_malloc(voxel,false,fp)) return false;
   fclose(fp);
   calcNormals(); // recompute normals
   calcBBox();
