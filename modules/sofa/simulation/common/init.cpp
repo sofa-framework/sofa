@@ -237,7 +237,6 @@ SOFA_LINK_CLASS(MasterConstraintSolver)
 SOFA_LINK_CLASS(EvalPointsDistance)
 SOFA_LINK_CLASS(EvalSurfaceDistance)
 //odesolver
-SOFA_LINK_CLASS(ComplianceArticulatedSystemSolver)
 SOFA_LINK_CLASS(ComplianceCGImplicitSolver)
 SOFA_LINK_CLASS(ComplianceEuler)
 //topology
