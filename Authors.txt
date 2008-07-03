@@ -1,0 +1,18 @@
+SOFA Core :: 
+	
+	M. Adam / J. Allard / B. Andre / P-J. Bensoussan / S. Cotin / C. Duriez / H. Delingette / F. Falipou / F. Faure 
+	S. Fonteneau / L. Heigeas / L. Jerabkova / C. Mendoza / M. Nesme / P. Neumann / J.-P. de la Plata Alcalde
+	F. Poyer / F. Roy.
+
+SOFA Modules ::
+
+	+ Co-rotational FEM: M. Nesme / F. Faure
+	+ Tetrahedral volume rendering: S. Barbier / G.-P. Bonneau
+	+ Dynamic Topologies: B. Andre / H. Delingette
+	+ Articulated Rigid Bodies: J.-P. de la Plata Alcalde / C. Duriez / M. Adam
+	+ GPU support using CUDA: J. Allard
+	+ Collision Detection:
+        + Deformable Models:
+        + Rigid Models:
+
+
