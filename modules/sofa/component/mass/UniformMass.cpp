@@ -27,6 +27,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/FileRepository.h>
 
 namespace sofa
 {
@@ -81,96 +82,103 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::parse(core::objectmodel::BaseObject
     Rigid3dMass m = this->getMass();
     if (arg->getAttribute("filename"))
     {
-        const char* filename = arg->getAttribute("filename");
-        char	cmd[64];
-        FILE*	file;
-        if ((file = fopen(filename, "r")) == NULL)
+        std::string filename = arg->getAttribute("filename");
+        if (!sofa::helper::system::DataRepository.findFile(filename))
         {
-            std::cerr << "ERROR: cannot read file '" << filename << "'." << std::endl;
+            std::cerr << "ERROR: cannot find file '" << filename << "'." << std::endl;
         }
         else
         {
-            //std::cout << "Loading rigid model '" << filename << "'" << std::endl;
-            // Check first line
-            //if (fgets(cmd, 7, file) != NULL && !strcmp(cmd,"Xsp 3.0"))
+            char	cmd[64];
+            FILE*	file;
+            if ((file = fopen(filename.c_str(), "r")) == NULL)
             {
-                skipToEOL(file);
-
-                while (fscanf(file, "%s", cmd) != EOF)
+                std::cerr << "ERROR: cannot read file '" << filename << "'." << std::endl;
+            }
+            else
+            {
+                //std::cout << "Loading rigid model '" << filename << "'" << std::endl;
+                // Check first line
+                //if (fgets(cmd, 7, file) != NULL && !strcmp(cmd,"Xsp 3.0"))
                 {
-                    if (!strcmp(cmd,"inrt"))
+                    skipToEOL(file);
+
+                    while (fscanf(file, "%s", cmd) != EOF)
                     {
-                        for (int i = 0; i < 9; i++)
+                        if (!strcmp(cmd,"inrt"))
                         {
-                            fscanf(file, "%lf", &(m.inertiaMatrix.ptr()[i]));
+                            for (int i = 0; i < 9; i++)
+                            {
+                                fscanf(file, "%lf", &(m.inertiaMatrix.ptr()[i]));
+                            }
                         }
-                    }
-                    else if (!strcmp(cmd,"cntr"))
-                    {
-                        Vec3d center;
-                        for (int i = 0; i < 3; ++i)
+                        else if (!strcmp(cmd,"cntr"))
                         {
-                            fscanf(file, "%lf", &(center[i]));
+                            Vec3d center;
+                            for (int i = 0; i < 3; ++i)
+                            {
+                                fscanf(file, "%lf", &(center[i]));
+                            }
                         }
-                    }
-                    else if (!strcmp(cmd,"mass"))
-                    {
-                        double mass;
-                        fscanf(file, "%lf", &mass);
-                        if (!arg->getAttribute("mass"))
-                            m.mass = mass;
-                    }
-                    else if (!strcmp(cmd,"volm"))
-                    {
-                        fscanf(file, "%lf", &(m.volume));
-                    }
-                    else if (!strcmp(cmd,"frme"))
-                    {
-                        Quatd orient;
-                        for (int i = 0; i < 4; ++i)
+                        else if (!strcmp(cmd,"mass"))
                         {
-                            fscanf(file, "%lf", &(orient[i]));
+                            double mass;
+                            fscanf(file, "%lf", &mass);
+                            if (!arg->getAttribute("mass"))
+                                m.mass = mass;
                         }
-                        orient.normalize();
-                    }
-                    else if (!strcmp(cmd,"grav"))
-                    {
-                        Vec3d gravity;
-                        fscanf(file, "%lf %lf %lf\n", &(gravity.x()),
-                                &(gravity.y()), &(gravity.z()));
-                    }
-                    else if (!strcmp(cmd,"visc"))
-                    {
-                        double viscosity = 0;
-                        fscanf(file, "%lf", &viscosity);
-                    }
-                    else if (!strcmp(cmd,"stck"))
-                    {
-                        double tmp;
-                        fscanf(file, "%lf", &tmp); //&(MSparams.default_stick));
-                    }
-                    else if (!strcmp(cmd,"step"))
-                    {
-                        double tmp;
-                        fscanf(file, "%lf", &tmp); //&(MSparams.default_dt));
-                    }
-                    else if (!strcmp(cmd,"prec"))
-                    {
-                        double tmp;
-                        fscanf(file, "%lf", &tmp); //&(MSparams.default_prec));
-                    }
-                    else if (cmd[0] == '#')	// it's a comment
-                    {
-                        skipToEOL(file);
-                    }
-                    else		// it's an unknown keyword
-                    {
-                        printf("%s: Unknown RigidMass keyword: %s\n", filename, cmd);
-                        skipToEOL(file);
+                        else if (!strcmp(cmd,"volm"))
+                        {
+                            fscanf(file, "%lf", &(m.volume));
+                        }
+                        else if (!strcmp(cmd,"frme"))
+                        {
+                            Quatd orient;
+                            for (int i = 0; i < 4; ++i)
+                            {
+                                fscanf(file, "%lf", &(orient[i]));
+                            }
+                            orient.normalize();
+                        }
+                        else if (!strcmp(cmd,"grav"))
+                        {
+                            Vec3d gravity;
+                            fscanf(file, "%lf %lf %lf\n", &(gravity.x()),
+                                    &(gravity.y()), &(gravity.z()));
+                        }
+                        else if (!strcmp(cmd,"visc"))
+                        {
+                            double viscosity = 0;
+                            fscanf(file, "%lf", &viscosity);
+                        }
+                        else if (!strcmp(cmd,"stck"))
+                        {
+                            double tmp;
+                            fscanf(file, "%lf", &tmp); //&(MSparams.default_stick));
+                        }
+                        else if (!strcmp(cmd,"step"))
+                        {
+                            double tmp;
+                            fscanf(file, "%lf", &tmp); //&(MSparams.default_dt));
+                        }
+                        else if (!strcmp(cmd,"prec"))
+                        {
+                            double tmp;
+                            fscanf(file, "%lf", &tmp); //&(MSparams.default_prec));
+                        }
+                        else if (cmd[0] == '#')	// it's a comment
+                        {
+                            skipToEOL(file);
+                        }
+                        else		// it's an unknown keyword
+                        {
+                            printf("%s: Unknown RigidMass keyword: %s\n", filename.c_str(), cmd);
+                            skipToEOL(file);
+                        }
                     }
                 }
+                fclose(file);
             }
-            fclose(file);
         }
     }
     m.recalc();
@@ -347,96 +355,103 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::parse(core::objectmodel::BaseObject
     Rigid3fMass m = this->getMass();
     if (arg->getAttribute("filename"))
     {
-        const char* filename = arg->getAttribute("filename");
-        char	cmd[64];
-        FILE*	file;
-        if ((file = fopen(filename, "r")) == NULL)
+        std::string filename = arg->getAttribute("filename");
+        if (!sofa::helper::system::DataRepository.findFile(filename))
         {
-            std::cerr << "ERROR: cannot read file '" << filename << "'." << std::endl;
+            std::cerr << "ERROR: cannot find file '" << filename << "'." << std::endl;
         }
         else
         {
-            //std::cout << "Loading rigid model '" << filename << "'" << std::endl;
-            // Check first line
-            //if (fgets(cmd, 7, file) != NULL && !strcmp(cmd,"Xsp 3.0"))
+            char	cmd[64];
+            FILE*	file;
+            if ((file = fopen(filename.c_str(), "r")) == NULL)
             {
-                skipToEOL(file);
-
-                while (fscanf(file, "%s", cmd) != EOF)
+                std::cerr << "ERROR: cannot read file '" << filename << "'." << std::endl;
+            }
+            else
+            {
+                //std::cout << "Loading rigid model '" << filename << "'" << std::endl;
+                // Check first line
+                //if (fgets(cmd, 7, file) != NULL && !strcmp(cmd,"Xsp 3.0"))
                 {
-                    if (!strcmp(cmd,"inrt"))
+                    skipToEOL(file);
+
+                    while (fscanf(file, "%s", cmd) != EOF)
                     {
-                        for (int i = 0; i < 9; i++)
+                        if (!strcmp(cmd,"inrt"))
                         {
-                            fscanf(file, "%f", &(m.inertiaMatrix.ptr()[i]));
+                            for (int i = 0; i < 9; i++)
+                            {
+                                fscanf(file, "%f", &(m.inertiaMatrix.ptr()[i]));
+                            }
                         }
-                    }
-                    else if (!strcmp(cmd,"cntr"))
-                    {
-                        Vec3d center;
-                        for (int i = 0; i < 3; ++i)
+                        else if (!strcmp(cmd,"cntr"))
                         {
-                            fscanf(file, "%lf", &(center[i]));
+                            Vec3d center;
+                            for (int i = 0; i < 3; ++i)
+                            {
+                                fscanf(file, "%lf", &(center[i]));
+                            }
                         }
-                    }
-                    else if (!strcmp(cmd,"mass"))
-                    {
-                        float mass;
-                        fscanf(file, "%f", &mass);
-                        if (!arg->getAttribute("mass"))
-                            m.mass = mass;
-                    }
-                    else if (!strcmp(cmd,"volm"))
-                    {
-                        fscanf(file, "%f", &(m.volume));
-                    }
-                    else if (!strcmp(cmd,"frme"))
-                    {
-                        Quatd orient;
-                        for (int i = 0; i < 4; ++i)
+                        else if (!strcmp(cmd,"mass"))
                         {
-                            fscanf(file, "%lf", &(orient[i]));
+                            float mass;
+                            fscanf(file, "%f", &mass);
+                            if (!arg->getAttribute("mass"))
+                                m.mass = mass;
                         }
-                        orient.normalize();
-                    }
-                    else if (!strcmp(cmd,"grav"))
-                    {
-                        Vec3d gravity;
-                        fscanf(file, "%lf %lf %lf\n", &(gravity.x()),
-                                &(gravity.y()), &(gravity.z()));
-                    }
-                    else if (!strcmp(cmd,"visc"))
-                    {
-                        double viscosity = 0;
-                        fscanf(file, "%lf", &viscosity);
-                    }
-                    else if (!strcmp(cmd,"stck"))
-                    {
-                        double tmp;
-                        fscanf(file, "%lf", &tmp); //&(MSparams.default_stick));
-                    }
-                    else if (!strcmp(cmd,"step"))
-                    {
-                        double tmp;
-                        fscanf(file, "%lf", &tmp); //&(MSparams.default_dt));
-                    }
-                    else if (!strcmp(cmd,"prec"))
-                    {
-                        double tmp;
-                        fscanf(file, "%lf", &tmp); //&(MSparams.default_prec));
-                    }
-                    else if (cmd[0] == '#')	// it's a comment
-                    {
-                        skipToEOL(file);
-                    }
-                    else		// it's an unknown keyword
-                    {
-                        printf("%s: Unknown RigidMass keyword: %s\n", filename, cmd);
-                        skipToEOL(file);
+                        else if (!strcmp(cmd,"volm"))
+                        {
+                            fscanf(file, "%f", &(m.volume));
+                        }
+                        else if (!strcmp(cmd,"frme"))
+                        {
+                            Quatd orient;
+                            for (int i = 0; i < 4; ++i)
+                            {
+                                fscanf(file, "%lf", &(orient[i]));
+                            }
+                            orient.normalize();
+                        }
+                        else if (!strcmp(cmd,"grav"))
+                        {
+                            Vec3d gravity;
+                            fscanf(file, "%lf %lf %lf\n", &(gravity.x()),
+                                    &(gravity.y()), &(gravity.z()));
+                        }
+                        else if (!strcmp(cmd,"visc"))
+                        {
+                            double viscosity = 0;
+                            fscanf(file, "%lf", &viscosity);
+                        }
+                        else if (!strcmp(cmd,"stck"))
+                        {
+                            double tmp;
+                            fscanf(file, "%lf", &tmp); //&(MSparams.default_stick));
+                        }
+                        else if (!strcmp(cmd,"step"))
+                        {
+                            double tmp;
+                            fscanf(file, "%lf", &tmp); //&(MSparams.default_dt));
+                        }
+                        else if (!strcmp(cmd,"prec"))
+                        {
+                            double tmp;
+                            fscanf(file, "%lf", &tmp); //&(MSparams.default_prec));
+                        }
+                        else if (cmd[0] == '#')	// it's a comment
+                        {
+                            skipToEOL(file);
+                        }
+                        else		// it's an unknown keyword
+                        {
+                            printf("%s: Unknown RigidMass keyword: %s\n", filename.c_str(), cmd);
+                            skipToEOL(file);
+                        }
                     }
                 }
+                fclose(file);
             }
-            fclose(file);
         }
     }
     m.recalc();
