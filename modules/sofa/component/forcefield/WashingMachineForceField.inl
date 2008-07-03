@@ -44,11 +44,11 @@ namespace forcefield
 {
 
 template<class DataTypes>
-void WashingMachineForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1)
+void WashingMachineForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 {
     for(int i=0; i<6; ++i)
     {
-        _planes[i]->addForce(f1,p1,v1);
+        _planes[i]->addForce(f,x,v);
         _planes[i]->rotate(Deriv(1,0,0),_speed.getValue());
     }
 }
@@ -63,10 +63,12 @@ void WashingMachineForceField<DataTypes>::addDForce(VecDeriv& f1, const VecDeriv
 
 
 template <class DataTypes>
-double WashingMachineForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
+double WashingMachineForceField<DataTypes>::getPotentialEnergy(const VecCoord&x)
 {
-    cerr<<"WashingMachineForceField::getPotentialEnergy-not-implemented !!!"<<endl;
-    return 0;
+    double energy = 0.0;
+    for(int i=0; i<6; ++i)
+        energy += _planes[i]->getPotentialEnergy(x);
+    return energy;
 }
 
 
@@ -74,9 +76,9 @@ double WashingMachineForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 template<class DataTypes>
 void WashingMachineForceField<DataTypes>::draw()
 {
-    if (!getContext()->getShowForceFields()) return;
+    if (!getContext()->getShowForceFields() || !_alreadyInit ) return;
     for(int i=0; i<6; ++i)
-// 				_planes[i]->draw2(_size.getValue()[0]);
+// 				_planes[i]->drawPlane(_size.getValue()[0]);
         _planes[i]->draw();
 }
 

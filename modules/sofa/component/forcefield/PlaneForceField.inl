@@ -124,16 +124,13 @@ template<class DataTypes>
 void PlaneForceField<DataTypes>::draw()
 {
     if (!getContext()->getShowForceFields()) return;
-    if (!bDraw.getValue()) return;
-    draw2();
+    drawPlane();
 }
 
 
 template<class DataTypes>
-void PlaneForceField<DataTypes>::draw2(float size)
+void PlaneForceField<DataTypes>::drawPlane(float size)
 {
-    if (!getContext()->getShowForceFields()) return;
-
     const VecCoord& p1 = *this->mstate->getX();
 
     defaulttype::Vec3d normal; normal = planeNormal.getValue();
