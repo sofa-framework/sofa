@@ -62,11 +62,18 @@ public slots:
 #endif
     void newGNode();
 
-    void fileNew() {graph->fileNew();};
-    void fileReload() {graph->fileReload();}
-    void fileOpen() {graph->fileOpen();};
-    void fileSave() {graph->fileSave();};
-    void fileSaveAs() {graph->fileSaveAs();};
+    void fileNew() {fileNew(NULL);};
+    void fileNew(GNode* root);
+
+    void fileReload() {fileOpen(graph->getFilename());}
+
+    void fileOpen();
+    void fileOpen(std::string filename);
+
+    void fileSave();
+    void fileSave(std::string filename);
+    void fileSaveAs();
+
     void fileExit() {exit(0);};
 
     void runInSofa();
@@ -85,7 +92,8 @@ public slots:
     void updateRecentlyOpened(std::string fileLoaded);
 
 protected:
-    GraphModeler *graph;
+    //	  std::map< unsigned int, GraphModeler*> tabGraph;
+    GraphModeler *graph; //currentGraph in Use
 
     std::map< const QObject* , std::pair<ClassInfo*, QObject*> > mapComponents;
 

@@ -175,16 +175,13 @@ SofaModeler::SofaModeler()
 
 
     graph->setLibrary(mapComponents);
-    graph->fileNew();
-    connect(graph, SIGNAL(changeNameWindow(std::string)), this, SLOT(changeNameWindow(std::string)));
+    fileNew();
 #ifdef SOFA_QT4
     connect(graph, SIGNAL(currentChanged(Q3ListViewItem *)), this, SLOT(changeInformation(Q3ListViewItem *)));
 #else
     connect(graph, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(changeInformation(QListViewItem *)));
 #endif
-
-    connect( graph, SIGNAL(updateRecentlyOpened(std::string)), this, SLOT(updateRecentlyOpened(std::string)));
-    connect( recentlyOpened, SIGNAL(activated(int)), this, SLOT(fileRecentlyOpened(int)));
+    connect( graph, SIGNAL( fileOpen(std::string)), this, SLOT(fileOpen(std::string)));
     //Recently Opened Files
     std::string scenes ( "config/Modeler.ini" );
     if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )
@@ -203,9 +200,43 @@ SofaModeler::SofaModeler()
 };
 
 
+void SofaModeler::fileNew( GNode* root)
+{
+    if (!root) graph->setFilename("");
+    changeNameWindow(graph->getFilename());
+    GNode *current_root=graph->getRoot();
+    if (current_root) graph->clearGraph();
+
+    //no parent, adding root: if root is NULL, then an empty GNode will be created
+    root = graph->addGNode(NULL, root);
+}
+
+void SofaModeler::fileOpen()
+{
+    QString s = getOpenFileName ( this, NULL,"Scenes (*.scn *.xml *.simu *.pscn)", "open file dialog",  "Choose a file to open" );
+    if (s.length() >0)
+        fileOpen(s.ascii());
+}
+
+void SofaModeler::fileOpen(std::string filename)
+{
+    graph->setFilename(filename);
+    GNode *root = NULL;
+    xml::BaseElement* newXML=NULL;
+    if (!filename.empty())
+    {
+        sofa::helper::system::SetDirectory chdir ( filename );
+        newXML = xml::loadFromFile ( filename.c_str() );
+        if (newXML == NULL) return;
+        if (!newXML->init()) std::cerr<< "Objects initialization failed.\n";
+        root = dynamic_cast<GNode*> ( newXML->getObject() );
+    }
+    fileNew(root);
+}
+
 void SofaModeler::fileRecentlyOpened(int id)
 {
-    graph->fileOpen(recentlyOpened->text(id).ascii());
+    fileOpen(recentlyOpened->text(id).ascii());
 }
 
 void SofaModeler::updateRecentlyOpened(std::string fileLoaded)
@@ -217,7 +248,7 @@ void SofaModeler::updateRecentlyOpened(std::string fileLoaded)
     std::vector< std::string > list_files;
     std::ifstream end(scenes.c_str());
     std::string s;
-    while( end >> s )
+    while( std::getline(end,s) )
     {
         if (s != fileLoaded)
             list_files.push_back(sofa::helper::system::DataRepository.getFile(s));
@@ -244,6 +275,26 @@ void SofaModeler::updateRecentlyOpened(std::string fileLoaded)
     out.close();
 }
 
+
+void SofaModeler::fileSave()
+{
+    if (graph->getFilename().empty()) fileSaveAs();
+    else 	                          fileSave(graph->getFilename());
+}
+
+void SofaModeler::fileSave(std::string filename)
+{
+    changeNameWindow(filename);
+    getSimulation()->printXML(graph->getRoot(), filename.c_str());
+}
+
+
+void SofaModeler::fileSaveAs()
+{
+    QString s = sofa::gui::qt::getSaveFileName ( this, NULL, "Scenes (*.scn *.xml)", "save file dialog", "Choose where the scene will be saved" );
+    if ( s.length() >0 )
+        fileSave ( s.ascii() );
+}
 
 
 void SofaModeler::changeInformation(Q3ListViewItem *item)
@@ -324,6 +375,7 @@ void SofaModeler::changeNameWindow(std::string filename)
 #else
     setCaption ( str.c_str() );
 #endif
+    updateRecentlyOpened(filename);
 }
 
 ClassInfo* SofaModeler::getInfoFromName(std::string name)
@@ -383,7 +435,7 @@ void SofaModeler::dropEvent(QDropEvent* event)
             filename.resize(filename.size()-1);
             filename[filename.size()-1]='\0';
         }
-        graph->fileOpen(filename);
+        fileOpen(filename);
     }
 }
 

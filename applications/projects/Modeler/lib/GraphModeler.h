@@ -47,7 +47,6 @@ using namespace sofa::simulation::tree;
 class GraphModeler : public Q3ListView
 {
 
-
     typedef std::map< const QObject* , std::pair< ClassInfo*, QObject*> > ComponentMap;
 
     Q_OBJECT
@@ -67,6 +66,10 @@ public:
         connect(this, SIGNAL(rightButtonClicked ( QListViewItem *, const QPoint &, int )),  this, SLOT( rightClick(QListViewItem *, const QPoint &, int )));
 #endif
     };
+
+    void clearGraph();
+    void setFilename(std::string filename) {filenameXML = filename;}
+    std::string getFilename() {return filenameXML;}
 
     void dragEnterEvent( QDragEnterEvent* event)
     {
@@ -112,14 +115,16 @@ public:
     void keyPressEvent ( QKeyEvent * e );
 
 signals:
-    void changeNameWindow(std::string);
-    void updateRecentlyOpened(std::string);
+    void fileOpen(std::string);
+
 
 public slots:
     void collapseNode();
     void collapseNode(Q3ListViewItem* item);
     void expandNode();
     void expandNode(Q3ListViewItem* item);
+    void loadNode();
+    void loadNode(Q3ListViewItem* item);
     void saveNode();
     void saveNode(Q3ListViewItem* item);
     void openModifyObject();
@@ -131,21 +136,13 @@ public slots:
     void doubleClick(QListViewItem *);
     void rightClick(QListViewItem *, const QPoint &, int );
 #endif
-    GNode *addGNode(GNode *parent, bool saveHistory=true);
+    GNode *addGNode(GNode *parent, GNode *node=NULL, bool saveHistory=true);
     BaseObject *addComponent(GNode *parent, ClassInfo *entry, std::string templateName, bool saveHistory=true );
     void deleteComponent();
     void deleteComponent(Q3ListViewItem *item, bool saveHistory=true);
     void modifyUnlock ( void *Id );
 
-    //File Menu
-    void changeName(std::string filename);
-    void fileNew(GNode* root=NULL);
-    void fileReload();
-    void fileOpen();
-    void fileOpen(std::string filename);
-    void fileSave();
-    void fileSave(std::string filename);
-    void fileSaveAs();
+
     void editUndo();
     void editRedo();
 protected:
@@ -176,7 +173,7 @@ protected:
     std::map< void*, Base* >       map_modifyDialogOpened;
     std::map< void*, QDialog* >    map_modifyObjectWindow;
 
-    std::string filenameXML;
+    std::string filenameXML; //name associated to the current graph
     std::deque< Operation > historyOperation;
     std::deque< Operation >::iterator currentStateHistory;
 
