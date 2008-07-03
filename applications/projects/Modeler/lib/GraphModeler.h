@@ -208,6 +208,7 @@ public:
         HIDE_FLAG = false;
         EMPTY_FLAG = true;
         RESIZABLE_FLAG = true;
+        REINIT_FLAG = false;
 
         energy_curve[0]=NULL;	        energy_curve[1]=NULL;	        energy_curve[2]=NULL;
         //Initialization of the Widget
