@@ -1,0 +1,107 @@
+<Node 	name="SandBox"
+	animate="0"
+	dt="0.06"
+	gravity="0 0 -9.81"
+	multiThreadSimulation="0"
+	showBehaviorModels="0"
+	showBoundingCollisionModels="0"
+	showCollisionModels="0"
+	showForceFields="0"
+	showInteractionForceFields="0"
+	showMappings="0"
+	showMechanicalMappings="0"
+	showNormals="0"
+	showVisualModels="1"
+	showWireFrame="0"
+	time="0.0"
+>
+	<Object type="CollisionPipeline" depth="6" verbose="0" draw="0"/>
+	<Object type="BruteForceDetection" name="N2" />
+	<Object type="NewProximityIntersection" name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
+	<Object type="CollisionResponse" name="Response" contact="default" />
+	<Object type="CollisionGroup" name="Group" />
+	
+	
+	<Object type="CGImplicit" iterations="20" vdamping=".23" rayleighStiffness=".4"/>
+
+
+	<Node name="Salad Bowl 1">
+		<Object type="Mesh" filename="mesh/SaladBowl.obj" />
+		<Object type="MechanicalObject" dy="-10" dz="-20"  scale="100" />
+		<Object type="Triangle" name="Floor" contactStiffness="10000"  simulated="0" moving="0"   contactFriction="10000000000" />
+		<Object type="Line" name="Floor" simulated="0" moving="0"   contactFriction="10000000000" />
+		<Object type="Point" name="Floor" simulated="0" moving="0"   contactFriction="10000000000" />
+		
+		<Object type="OglModel" name="FloorV" filename="mesh/SaladBowl.obj" scale="100"  color=".1 .6 .6 .5" dy="-10" dz="-20"/>
+	</Node>
+	
+	<Node name="Salad Bowl 2">
+		<Object type="Mesh" filename="mesh/SaladBowl.obj" />
+		<Object type="MechanicalObject" dx="70" dy="-10" dz="-20"  scale="100" />
+		<Object type="Triangle" name="Floor" contactStiffness="10000"  simulated="0" moving="0"   contactFriction="10000000000" />
+		<Object type="Line" name="Floor" simulated="0" moving="0"   contactFriction="10000000000" />
+		<Object type="Point" name="Floor" simulated="0" moving="0"   contactFriction="10000000000" />
+		
+		<Object type="OglModel" name="FloorV" filename="mesh/SaladBowl.obj" scale="100"  color=".1 .6 .6 .5" dx="70" dy="-10" dz="-20"/>
+	</Node>
+	
+	
+	
+	
+	<Node name="uniform" showInteractionForceFields="0">
+		<Object type="SparseGrid"
+				  n="8 6 7"
+				  filename="mesh/Armadillo_verysimplified.obj"
+				  />
+		
+		<Object type="MechanicalObject"  dx="70" ry="25"  />
+		
+		<Object type="HexahedronFEMForceFieldAndMass" youngModulus="20000" poissonRatio="0.3" method="large" density="10" updateStiffnessMatrix="false" printLog="0"/>
+		
+		<Node name="Visuunif">
+			<Object type="OglModel" name="Visual" filename="mesh/Armadillo_simplified.obj" color="1 .4 0 1" />
+			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
+		</Node>	
+		
+		<Node name="Colliunif">
+			<Object type="Mesh" filename="mesh/Armadillo_verysimplified.obj"/>
+			<Object type="MechanicalObject" />
+			<Object type="Triangle" contactStiffness="1"/> 
+			<Object type="Line" />
+			<Object type="Point"  />
+			<Object type="BarycentricMapping" />
+		</Node>
+		
+	</Node>
+	
+	
+	
+	<Node name="non uniform" showInteractionForceFields="0">
+		<Object type="SparseGrid"
+				  n="8 6 7"
+				  filename="mesh/Armadillo_verysimplified.obj"
+				  nbVirtualFinerLevels="2"
+				  />
+		<Object type="MechanicalObject" ry="25"/>
+		
+		<Object type="NonUniformHexahedronFEMForceFieldAndMass" nbVirtualFinerLevels="2" youngModulus="20000" poissonRatio="0.3" method="large" density="10" updateStiffnessMatrix="false" printLog="0"/>
+
+		<Node name="Visunonunif">
+			<Object type="OglModel" name="Visual" filename="mesh/Armadillo_simplified.obj" color="0.4 0.6 1.0" />
+			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
+		</Node>	
+		
+		<Node name="Collinonunif">
+			<Object type="Mesh" filename="mesh/Armadillo_verysimplified.obj"/>
+			<Object type="MechanicalObject" />
+			<Object type="Triangle" contactStiffness="1" /> 
+			<Object type="Line" />
+			<Object type="Point" />
+			<Object type="BarycentricMapping" />
+		</Node>
+		
+	</Node>
+	
+	
+
+</Node>
