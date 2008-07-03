@@ -197,10 +197,9 @@ SOFA_LINK_CLASS(OglFloatVectorVariable)
 SOFA_LINK_CLASS(OglFloatVector2Variable)
 SOFA_LINK_CLASS(OglFloatVector3Variable)
 SOFA_LINK_CLASS(OglFloatVector4Variable)
+SOFA_LINK_CLASS(OglShaderDefineMacro)
 SOFA_LINK_CLASS(OglTetrahedralModel)
 SOFA_LINK_CLASS(VoidMapping)
-
-
 
 #ifdef SOFA_DEV
 
@@ -248,3 +247,10 @@ SOFA_LINK_CLASS(ThreadSimulation)
 
 #endif // SOFA_DEV
 
+#ifdef SOFA_HAVE_SENSABLE
+
+SOFA_LINK_CLASS(OmniDriver)
+SOFA_LINK_CLASS(EnslavementForceField)
+SOFA_LINK_CLASS(VectorSpringForceField)
+
+#endif //SOFA_HAVE_SENSABLE
