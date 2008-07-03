@@ -1039,9 +1039,41 @@ void TetrahedronFEMForceField<DataTypes>::init()
             // if (flags && !flags->isCubeActive(i)) continue;
 #ifdef SOFA_NEW_HEXA
             core::componentmodel::topology::BaseMeshTopology::Hexa c = _mesh->getHexa(i);
+#define swap(a,b) { int t = a; a = b; b = t; }
+            if (!((i%nx)&1))
+            {
+                // swap all points on the X edges
+                swap(c[0],c[1]);
+                swap(c[3],c[2]);
+                swap(c[4],c[5]);
+                swap(c[7],c[6]);
+            }
+            if (((i/nx)%ny)&1)
+            {
+                // swap all points on the Y edges
+                swap(c[0],c[3]);
+                swap(c[1],c[2]);
+                swap(c[4],c[7]);
+                swap(c[5],c[6]);
+            }
+            if ((i/(nx*ny))&1)
+            {
+                // swap all points on the Z edges
+                swap(c[0],c[4]);
+                swap(c[1],c[5]);
+                swap(c[2],c[6]);
+                swap(c[3],c[7]);
+            }
+#undef swap
+            typedef core::componentmodel::topology::BaseMeshTopology::Tetra Tetra;
+            tetras->push_back(Tetra(c[0],c[5],c[1],c[6]));
+            tetras->push_back(Tetra(c[0],c[1],c[3],c[6]));
+            tetras->push_back(Tetra(c[1],c[3],c[6],c[2]));
+            tetras->push_back(Tetra(c[6],c[3],c[0],c[7]));
+            tetras->push_back(Tetra(c[6],c[7],c[0],c[5]));
+            tetras->push_back(Tetra(c[7],c[5],c[4],c[0]));
 #else
             core::componentmodel::topology::BaseMeshTopology::Cube c = _mesh->getCube(i);
-#endif
             int sym = 0;
             if (!((i%nx)&1)) sym+=1;
             if (((i/nx)%ny)&1) sym+=2;
@@ -1053,6 +1085,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
             tetras->push_back(Tetra(c[7^sym],c[2^sym],c[0^sym],c[6^sym]));
             tetras->push_back(Tetra(c[7^sym],c[6^sym],c[0^sym],c[5^sym]));
             tetras->push_back(Tetra(c[6^sym],c[5^sym],c[4^sym],c[0^sym]));
+#endif
         }
 
         /*
