@@ -234,7 +234,7 @@ protected:
 
     //*********************************************************
     template< class T>
-    bool createQtSpringTable(Data< vector< typename sofa::component::forcefield::JointSpringForceField< StdRigidTypes< 3,T > >::Spring > >  *ff, Q3GroupBox *box, Q3Table* vectorTable );
+    bool createQtSpringTable(Data< sofa::helper::vector< typename sofa::component::forcefield::JointSpringForceField< StdRigidTypes< 3,T > >::Spring > >  *ff, Q3GroupBox *box, Q3Table* vectorTable );
     template< class T>
     void storeQtSpringTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< sofa::helper::vector< typename sofa::component::forcefield::JointSpringForceField< StdRigidTypes<3,T> >::Spring > >  *ff );
 

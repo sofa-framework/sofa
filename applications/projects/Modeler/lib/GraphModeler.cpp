@@ -26,15 +26,29 @@ namespace qt
 #ifndef SOFA_QT4
 typedef QPopupMenu Q3PopupMenu;
 #endif
-GNode *GraphModeler::addGNode(GNode *parent, bool saveHistory)
+
+GNode *GraphModeler::addGNode(GNode *parent, GNode *child, bool saveHistory)
 {
-    GNode *child = new GNode();
+    if (!child)
+    {
+        child = new GNode();
+        if (!parent)
+            child->setName("Root");
+    }
+
+    graphListener->addChild(parent, child);
+
     if (parent != NULL)
         parent->addChild(child);
     else
-        child->setName("Root");
+    {
+        //Set up the root
+        firstChild()->setExpandable(true);
+        firstChild()->setOpen(true);
+        historyOperation.clear();
+        currentStateHistory=historyOperation.end();
+    }
 
-    graphListener->addChild(parent, child);
 
     if (saveHistory)
     {
@@ -132,7 +146,8 @@ void GraphModeler::dropEvent(QDropEvent* event)
 #endif
         filename.resize(filename.size()-1);
         filename[filename.size()-1]='\0';
-        fileOpen(filename);
+
+        emit(fileOpen(filename));
     }
     else
     {
@@ -272,6 +287,7 @@ void GraphModeler::rightClick(Q3ListViewItem *item, const QPoint &point, int ind
         contextMenu->insertItem("Collapse", this, SLOT( collapseNode()));
         contextMenu->insertItem("Expand"  , this, SLOT( expandNode()));
         contextMenu->insertSeparator ();
+        contextMenu->insertItem("Load"  , this, SLOT( loadNode()));
         contextMenu->insertItem("Save"  , this, SLOT( saveNode()));
     }
     int index_menu = contextMenu->insertItem("Delete"  , this, SLOT( deleteComponent()));
@@ -336,6 +352,30 @@ void GraphModeler::expandNode(Q3ListViewItem* item)
     }
 }
 
+void GraphModeler::loadNode()
+{
+    loadNode(currentItem());
+}
+
+void GraphModeler::loadNode(Q3ListViewItem* item)
+{
+    if (!item) return;
+    GNode *node = getGNode(item);
+
+    QString s = getOpenFileName ( this, NULL,"Scenes (*.scn *.xml *.simu *.pscn)", "open file dialog",  "Choose a file to open" );
+    if (s.length() >0)
+    {
+        xml::BaseElement* newXML=NULL;
+
+        newXML = xml::loadFromFile ( s.ascii() );
+        if (newXML == NULL) return;
+        if (!newXML->init()) std::cerr<< "Objects initialization failed.\n";
+        GNode *newNode = dynamic_cast<GNode*> ( newXML->getObject() );
+        if (newNode) addGNode(node,newNode);
+    }
+
+}
+
 void GraphModeler::saveNode()
 {
     saveNode(currentItem());
@@ -350,6 +390,11 @@ void GraphModeler::saveNode(Q3ListViewItem* item)
     QString s = sofa::gui::qt::getSaveFileName ( this, NULL, "Scenes (*.scn *.xml)", "save file dialog", "Choose where the scene will be saved" );
     if ( s.length() >0 )
         getSimulation()->printXML(node, s.ascii());
+}
+
+void GraphModeler::clearGraph()
+{
+    deleteComponent(firstChild());
 }
 
 void GraphModeler::deleteComponent(Q3ListViewItem* item, bool saveHistory)
@@ -386,10 +431,6 @@ void GraphModeler::deleteComponent(Q3ListViewItem* item, bool saveHistory)
 
         //OPERATION DELETE: to remove in order to be able to undo operation
         getSimulation()->unload (node);
-
-
-        //if we have removed the root, we recreate a new one
-        if (!parent) fileNew();
     }
 
 }
@@ -406,81 +447,7 @@ void GraphModeler::modifyUnlock ( void *Id )
 }
 
 
-void GraphModeler::changeName(std::string filename)
-{
-    filenameXML = filename;
-    emit( changeNameWindow(filename) );
-    emit( updateRecentlyOpened(filename) );
-}
 
-void GraphModeler::fileNew(GNode* root)
-{
-
-    if (!root) filenameXML.clear();
-    changeName(filenameXML);
-    GNode *current_root=getGNode(firstChild());
-    if (current_root)
-    {
-        graphListener->removeChild(NULL,current_root);
-        getSimulation()->unload(current_root);
-    }
-
-    if (!root) { root = addGNode(NULL);}
-    else graphListener->addChild(NULL, root);
-
-    firstChild()->setExpandable(true);
-    firstChild()->setOpen(true);
-    historyOperation.clear();
-    currentStateHistory=historyOperation.end();
-}
-
-
-void GraphModeler::fileReload()
-{
-    fileOpen(filenameXML);
-}
-
-void GraphModeler::fileOpen()
-{
-    QString s = getOpenFileName ( this, NULL,"Scenes (*.scn *.xml *.simu *.pscn)", "open file dialog",  "Choose a file to open" );
-    if (s.length() >0)
-        fileOpen(s.ascii());
-}
-
-void GraphModeler::fileOpen(std::string filename)
-{
-    filenameXML = filename;
-    GNode *root = NULL;
-    xml::BaseElement* newXML=NULL;
-    if (!filenameXML.empty())
-    {
-        sofa::helper::system::SetDirectory chdir ( filename );
-        newXML = xml::loadFromFile ( filename.c_str() );
-        if (newXML == NULL) return;
-        if (!newXML->init()) std::cerr<< "Objects initialization failed.\n";
-        root = dynamic_cast<GNode*> ( newXML->getObject() );
-    }
-    fileNew(root);
-}
-
-void GraphModeler::fileSave()
-{
-    if (filenameXML.empty()) fileSaveAs();
-    else 	                   fileSave(filenameXML);
-}
-
-void GraphModeler::fileSave(std::string filename)
-{
-    changeName(filename);
-    getSimulation()->printXML(getGNode(firstChild()), filename.c_str());
-}
-
-void GraphModeler::fileSaveAs()
-{
-    QString s = sofa::gui::qt::getSaveFileName ( this, NULL, "Scenes (*.scn *.xml)", "save file dialog", "Choose where the scene will be saved" );
-    if ( s.length() >0 )
-        fileSave ( s.ascii() );
-}
 
 void GraphModeler::editUndo()
 {
