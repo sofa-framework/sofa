@@ -468,7 +468,7 @@ void RealGUI::updateRecentlyOpened(std::string fileLoaded)
     std::vector< std::string > list_files;
     std::ifstream end(scenes.c_str());
     std::string s;
-    while( end >> s )
+    while( std::getline(end,s) )
     {
         if (s != fileLoaded)
             list_files.push_back(sofa::helper::system::DataRepository.getFile(s));
