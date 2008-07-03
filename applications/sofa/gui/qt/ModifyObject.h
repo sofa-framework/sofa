@@ -31,7 +31,9 @@
 
 #include <sofa/component/topology/PointData.h>
 #include <sofa/component/forcefield/SpringForceField.h>
+#include <sofa/component/forcefield/JointSpringForceField.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/misc/Monitor.h>
@@ -224,8 +226,18 @@ protected:
     void storeQtRigid3Table( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, DataPtr< sofa::helper::vector< RigidDeriv<3,T> > >* ff );
     template<class T>
     void storeQtRigid2Table( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, DataPtr< sofa::helper::vector< RigidDeriv<2,T> > >* ff );
+    //*********************************************************
+    template< int N, class T>
+    bool createQtSpringTable(Data<  sofa::helper::vector< typename sofa::component::forcefield::SpringForceField< StdVectorTypes< Vec<N,T>, Vec<N,T>, T> >::Spring > >  *ff, Q3GroupBox *box, Q3Table* vectorTable );
+    template< int N, class T>
+    void storeQtSpringTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data<  sofa::helper::vector< typename sofa::component::forcefield::SpringForceField< StdVectorTypes< Vec<N,T>, Vec<N,T>, T> >::Spring > >  *ff);
 
     //*********************************************************
+    template< class T>
+    bool createQtSpringTable(Data< vector< typename sofa::component::forcefield::JointSpringForceField< StdRigidTypes< 3,T > >::Spring > >  *ff, Q3GroupBox *box, Q3Table* vectorTable );
+    template< class T>
+    void storeQtSpringTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< sofa::helper::vector< typename sofa::component::forcefield::JointSpringForceField< StdRigidTypes<3,T> >::Spring > >  *ff );
+
 
     Q3Table* addResizableTable(Q3GroupBox *box,int size, int column=1);
 
@@ -255,6 +267,7 @@ protected:
     bool HIDE_FLAG; //if we allow to hide Datas
     bool EMPTY_FLAG;//if we allow empty datas
     bool RESIZABLE_FLAG;
+    bool REINIT_FLAG;
 };
 
 } // namespace qt
