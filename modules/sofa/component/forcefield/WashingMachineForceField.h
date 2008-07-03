@@ -50,6 +50,7 @@ namespace component
 namespace forcefield
 {
 
+/// A box of 6 PlaneForceField that can rotate
 template<class DataTypes>
 class WashingMachineForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
 {
@@ -76,10 +77,11 @@ public:
         : core::componentmodel::behavior::ForceField<DataTypes>(object)
         , _center(initData(&_center, Coord(0,0,0), "center", "box center"))
         , _size(initData(&_size, Deriv(1,1,1), "size", "box size"))
-        , _speed(initData(&_speed, (Real)0.01, "speed", "rotation speed"))
+        , _speed(initData(&_speed, (Real)0.001, "speed", "rotation speed"))
         , _stiffness(initData(&_stiffness, (Real)500.0, "stiffness", "penality force stiffness"))
         , _damping(initData(&_damping, (Real)5.0, "damping", "penality force damping"))
     {
+        _alreadyInit=false;
     }
 
 
@@ -92,12 +94,17 @@ public:
 
     virtual void init()
     {
+        _alreadyInit=true;
+
+        Inherit::init();
+
         for(int i=0; i<6; ++i)
         {
             _planes[i] = new PlaneForceFieldT;
             _planes[i]->setContext(this->getContext());
             _planes[i]->setStiffness(_stiffness.getValue());
             _planes[i]->setDamping(_damping.getValue());
+            _planes[i]->setMState( this->mstate );
         }
 
         Deriv diff = _center.getValue() - _size.getValue() * .5;
@@ -128,6 +135,10 @@ public:
 
     void draw();
     bool addBBox(double* minBBox, double* maxBBox);
+
+
+protected :
+    bool _alreadyInit;
 };
 
 } // namespace forcefield

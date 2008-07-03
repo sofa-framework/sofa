@@ -66,6 +66,8 @@ public:
         planeD.setValue( d / n );
     }
 
+    void setMState(  core::componentmodel::behavior::MechanicalState<DataTypes>* mstate ) { this->mstate = mstate; }
+
     void setStiffness(Real stiff)
     {
         stiffness.setValue( stiff );
@@ -87,7 +89,7 @@ public:
     virtual void updateStiffness( const VecCoord& x );
 
     void draw();
-    void draw2(float size=10.0f);
+    void drawPlane(float size=1000.0f);
     bool addBBox(double* minBBox, double* maxBBox);
 
 };
