@@ -329,7 +329,25 @@ Node* RealGUI::currentSimulation()
 RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*options*/ )
     : viewerName ( viewername ), viewer ( NULL ), currentTab ( NULL ), tabInstrument (NULL),  graphListener ( NULL ), dialog ( NULL )
 {
-
+    listDisplayFlags->header()->hide();
+    // remove everything...
+    listDisplayFlags->clear();
+    listDisplayFlags->setSortColumn(-1);
+    itemShowAll = new DisplayFlagItem(this, listDisplayFlags, ALL, "All", Q3CheckListItem::CheckBoxController);
+    itemShowAll->setOpen(true);
+    Q3CheckListItem* itemShowVisual = new Q3CheckListItem(itemShowAll, "Visual", Q3CheckListItem::CheckBoxController);
+    itemShowVisualModels = new DisplayFlagItem(this, itemShowVisual, VISUALMODELS, "Visual Models");
+    Q3CheckListItem* itemShowBehavior = new Q3CheckListItem(itemShowAll, itemShowVisual, "Behavior", Q3CheckListItem::CheckBoxController);
+    itemShowBehaviorModels = new DisplayFlagItem(this, itemShowBehavior, BEHAVIORMODELS, "Behavior Models");
+    itemShowForceFields = new DisplayFlagItem(this, itemShowBehavior, itemShowBehaviorModels, FORCEFIELDS, "Force Fields");
+    itemShowInteractions = new DisplayFlagItem(this, itemShowBehavior, itemShowForceFields, INTERACTIONS, "Interactions");
+    itemShowMappings = new DisplayFlagItem(this, itemShowBehavior, itemShowInteractions, MAPPINGS, "Mappings");
+    itemShowMechanicalMappings = new DisplayFlagItem(this, itemShowBehavior, itemShowMappings, MECHANICALMAPPINGS, "Mechanical Mappings");
+    Q3CheckListItem* itemShowCollision = new Q3CheckListItem(itemShowAll, itemShowBehavior, "Collision", Q3CheckListItem::CheckBoxController);
+    itemShowCollisionModels = new DisplayFlagItem(this, itemShowCollision, COLLISIONMODELS, "Collision Models");
+    itemShowBoundingTrees = new DisplayFlagItem(this, itemShowCollision, itemShowCollisionModels, BOUNDINGTREES, "Bounding Trees");
+    itemShowWireFrame = new DisplayFlagItem(this, listDisplayFlags, itemShowAll, WIREFRAME, "Wire Frame");
+    itemShowNormals = new DisplayFlagItem(this, listDisplayFlags, itemShowWireFrame, NORMALS, "Normals");
 
     left_stack = new QWidgetStack ( splitter2 );
     connect ( startButton, SIGNAL ( toggled ( bool ) ), this , SLOT ( playpauseGUI ( bool ) ) );
@@ -655,8 +673,8 @@ void RealGUI::addViewer()
 #else
     QValueList<int> list;
 #endif
-    list.push_back ( 75 );
-    list.push_back ( 500 );
+    list.push_back ( 259 );
+    list.push_back ( 525 );
     splitter_ptr->setSizes ( list );
 
     viewer->getQWidget()->setFocus();
@@ -953,6 +971,19 @@ void RealGUI::setScene ( Node* groot, const char* filename )
     initDesactivatedNode();
 
     eventNewTime();
+
+    // set state of display flags
+    itemShowVisualModels->init(groot->getContext()->getShowVisualModels());
+    itemShowBehaviorModels->init(groot->getContext()->getShowBehaviorModels());
+    itemShowCollisionModels->init(groot->getContext()->getShowCollisionModels());
+    itemShowBoundingTrees->init(groot->getContext()->getShowBoundingCollisionModels());
+    itemShowMappings->init(groot->getContext()->getShowMappings());
+    itemShowMechanicalMappings->init(groot->getContext()->getShowMechanicalMappings());
+    itemShowForceFields->init(groot->getContext()->getShowForceFields());
+    itemShowInteractions->init(groot->getContext()->getShowInteractionForceFields());
+    itemShowWireFrame->init(groot->getContext()->getShowWireFrame());
+    itemShowNormals->init(groot->getContext()->getShowNormals());
+
     //getSimulation()->updateVisualContext ( groot );
     startButton->setOn ( groot->getContext()->getAnimate() );
     dtEdit->setText ( QString::number ( groot->getDt() ) );
