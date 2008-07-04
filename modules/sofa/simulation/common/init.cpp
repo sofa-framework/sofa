@@ -252,6 +252,7 @@ SOFA_LINK_CLASS(ThreadSimulation)
 SOFA_LINK_CLASS(OmniDriver)
 SOFA_LINK_CLASS(NullForceFeedback)
 SOFA_LINK_CLASS(EnslavementForceFeedback)
+SOFA_LINK_CLASS(LCPForceFeedback)
 SOFA_LINK_CLASS(VectorSpringForceField)
 
 #endif //SOFA_HAVE_SENSABLE
