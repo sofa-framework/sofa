@@ -721,11 +721,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::init(const typename Out::Ve
         Mat3x3d m,mt;
         const Vector3 origin = in[cubes[c][0]];
         m[0] = in[cubes[c][1]]-origin;
-#ifdef SOFA_NEW_HEXA
-        m[1] = in[cubes[c][2]]-origin;
-#else
         m[1] = in[cubes[c][3]]-origin;
-#endif
         m[2] = in[cubes[c][4]]-origin;
         mt.transpose(m);
         hexahedronData[c].origin = origin;
