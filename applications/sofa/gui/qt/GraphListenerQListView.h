@@ -31,6 +31,7 @@
 
 #ifdef SOFA_QT4
 #include <Q3ListViewItem>
+#include <Q3CheckListItem>
 #include <Q3ListView>
 #include <QWidget>
 #include <Q3PopupMenu>
@@ -73,6 +74,7 @@ typedef Q3ListView QListView;
 typedef Q3PopupMenu QPopupMenu;
 #else
 typedef QListViewItem Q3ListViewItem;
+typedef QCheckListItem Q3CheckListItem;
 typedef QListView Q3ListView;
 typedef QPopupMenu Q3PopupMenu;
 #endif

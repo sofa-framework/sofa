@@ -7,9 +7,9 @@
     <property name="geometry">
         <rect>
             <x>0</x>
-            <y>17</y>
-            <width>1101</width>
-            <height>639</height>
+            <y>0</y>
+            <width>800</width>
+            <height>600</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -22,8 +22,8 @@
     </property>
     <property name="minimumSize">
         <size>
-            <width>0</width>
-            <height>0</height>
+            <width>232</width>
+            <height>561</height>
         </size>
     </property>
     <property name="caption">
@@ -43,58 +43,184 @@
             <property name="name">
                 <cstring>splitter2</cstring>
             </property>
-            <property name="enabled">
-                <bool>true</bool>
-            </property>
             <property name="orientation">
                 <enum>Horizontal</enum>
             </property>
-            <property name="opaqueResize">
-                <bool>true</bool>
-            </property>
             <widget class="QLayoutWidget">
                 <property name="name">
-                    <cstring>layout5</cstring>
+                    <cstring>layout6</cstring>
                 </property>
-                <grid>
+                <vbox>
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="QPushButton" row="2" column="1">
+                    <widget class="QLayoutWidget">
                         <property name="name">
-                            <cstring>SaveViewButton</cstring>
+                            <cstring>layout7</cstring>
                         </property>
-                        <property name="enabled">
-                            <bool>true</bool>
-                        </property>
-                        <property name="text">
-                            <string>Save Vie&amp;w</string>
-                        </property>
-                        <property name="accel">
-                            <string>Alt+W</string>
-                        </property>
-                        <property name="toolTip" stdset="0">
-                            <string>Save the position and orientation of the camera</string>
-                        </property>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QPushButton" row="2" column="0">
+                                <property name="name">
+                                    <cstring>ResetViewButton</cstring>
+                                </property>
+                                <property name="enabled">
+                                    <bool>true</bool>
+                                </property>
+                                <property name="text">
+                                    <string>Reset &amp;View</string>
+                                </property>
+                                <property name="accel">
+                                    <string>Alt+V</string>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>Set the camera to initial position and orientation</string>
+                                </property>
+                            </widget>
+                            <widget class="QLayoutWidget" row="1" column="1">
+                                <property name="name">
+                                    <cstring>layout13</cstring>
+                                </property>
+                                <hbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <widget class="QLabel">
+                                        <property name="name">
+                                            <cstring>dtLabel</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>DT:</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLineEdit">
+                                        <property name="name">
+                                            <cstring>dtEdit</cstring>
+                                        </property>
+                                        <property name="sizePolicy">
+                                            <sizepolicy>
+                                                <hsizetype>5</hsizetype>
+                                                <vsizetype>0</vsizetype>
+                                                <horstretch>0</horstretch>
+                                                <verstretch>0</verstretch>
+                                            </sizepolicy>
+                                        </property>
+                                        <property name="maximumSize">
+                                            <size>
+                                                <width>80</width>
+                                                <height>32767</height>
+                                            </size>
+                                        </property>
+                                        <property name="frameShape">
+                                            <enum>LineEditPanel</enum>
+                                        </property>
+                                        <property name="frameShadow">
+                                            <enum>Sunken</enum>
+                                        </property>
+                                    </widget>
+                                </hbox>
+                            </widget>
+                            <widget class="QPushButton" row="0" column="0">
+                                <property name="name">
+                                    <cstring>startButton</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>&amp;Animate</string>
+                                </property>
+                                <property name="accel">
+                                    <string>Alt+A</string>
+                                </property>
+                                <property name="toggleButton">
+                                    <bool>true</bool>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>Launch the Simulation</string>
+                                </property>
+                            </widget>
+                            <widget class="QPushButton" row="2" column="1">
+                                <property name="name">
+                                    <cstring>SaveViewButton</cstring>
+                                </property>
+                                <property name="enabled">
+                                    <bool>true</bool>
+                                </property>
+                                <property name="text">
+                                    <string>Save Vie&amp;w</string>
+                                </property>
+                                <property name="accel">
+                                    <string>Alt+W</string>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>Save the position and orientation of the camera</string>
+                                </property>
+                            </widget>
+                            <widget class="QPushButton" row="1" column="0">
+                                <property name="name">
+                                    <cstring>ResetSceneButton</cstring>
+                                </property>
+                                <property name="enabled">
+                                    <bool>true</bool>
+                                </property>
+                                <property name="text">
+                                    <string>&amp;Reset Scene</string>
+                                </property>
+                                <property name="accel">
+                                    <string>Alt+R</string>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>Reset the Simulation  (t=0)</string>
+                                </property>
+                            </widget>
+                            <widget class="QPushButton" row="0" column="1">
+                                <property name="name">
+                                    <cstring>stepButton</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>S&amp;tep</string>
+                                </property>
+                                <property name="accel">
+                                    <string>Alt+T</string>
+                                </property>
+                                <property name="autoRepeat">
+                                    <bool>true</bool>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>Compute the simulation at time t+DT</string>
+                                </property>
+                            </widget>
+                            <widget class="QPushButton" row="3" column="0" rowspan="1" colspan="2">
+                                <property name="name">
+                                    <cstring>screenshotButton</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Save &amp;Caption</string>
+                                </property>
+                                <property name="accel">
+                                    <string>Alt+C</string>
+                                </property>
+                            </widget>
+                        </grid>
                     </widget>
-                                        <spacer row="4" column="0" rowspan="1" colspan="2">
-                                            <property name="name">
-                                                <cstring>spacer_tab</cstring>
-                                            </property>
-                                            <property name="orientation">
-                                                <enum>Vertical</enum>
-                                            </property>
-                                            <property name="sizeType">
-                                                <enum>Fixed</enum>
-                                            </property>
-                                            <property name="sizeHint">
-                                                <size>
-                                                    <width>20</width>
-                                                    <height>5</height>
-                                                </size>
-                                            </property>
-                                        </spacer>
-                    <widget class="QTabWidget" row="5" column="0" rowspan="1" colspan="2">
+                    <spacer>
+                        <property name="name">
+                            <cstring>spacer_tab</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Vertical</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Fixed</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>20</width>
+                                <height>8</height>
+                            </size>
+                        </property>
+                    </spacer>
+                    <widget class="QTabWidget">
                         <property name="name">
                             <cstring>tabs</cstring>
                         </property>
@@ -109,576 +235,185 @@
                                 <property name="name">
                                     <cstring>unnamed</cstring>
                                 </property>
-                                <widget class="QLayoutWidget">
-                                    <property name="name">
-                                        <cstring>LayoutShowButtons</cstring>
-                                    </property>
-                                    <grid>
-                                        <property name="name">
-                                            <cstring>unnamed</cstring>
+                                <widget class="QListView">
+                                    <column>
+                                        <property name="text">
+                                            <string></string>
                                         </property>
-                                        <widget class="QPushButton" row="0" column="0">
-                                            <property name="name">
-                                                <cstring>showAllB</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>1</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>&amp;show</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="1" column="0">
-                                            <property name="name">
-                                                <cstring>showVisualB</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>1</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>show</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="2" column="0">
-                                            <property name="name">
-                                                <cstring>showBehaviorB</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>1</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>show</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="3" column="0">
-                                            <property name="name">
-                                                <cstring>showCollisionB</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>1</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>show</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="4" column="0">
-                                            <property name="name">
-                                                <cstring>showBoundingTreesB</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>1</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>show</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="5" column="0">
-                                            <property name="name">
-                                                <cstring>showMappingB</cstring>
-                                            </property>
-                                            <property name="mouseTracking">
-                                                <bool>false</bool>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>1</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>show</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="6" column="0">
-                                            <property name="name">
-                                                <cstring>showMechanicalMappingB</cstring>
-                                            </property>
-                                            <property name="text">
-                                                <string>show</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="7" column="0">
-                                            <property name="name">
-                                                <cstring>showForceFieldB</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>1</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>show</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="8" column="0">
-                                            <property name="name">
-                                                <cstring>showInteractionForceFieldB</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>1</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>show</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="0" column="1">
-                                            <property name="name">
-                                                <cstring>hideAllB</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>1</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>&amp;hide</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="1" column="1">
-                                            <property name="name">
-                                                <cstring>hideVisualB</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>1</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>hide</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="2" column="1">
-                                            <property name="name">
-                                                <cstring>hideBehaviorB</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>1</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>hide</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="3" column="1">
-                                            <property name="name">
-                                                <cstring>hideCollisionB</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>1</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>hide</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="4" column="1">
-                                            <property name="name">
-                                                <cstring>hideBoundingTreesB</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>1</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>hide</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="5" column="1">
-                                            <property name="name">
-                                                <cstring>hideMappingB</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>1</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="mouseTracking">
-                                                <bool>false</bool>
-                                            </property>
-                                            <property name="text">
-                                                <string>hide</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="6" column="1">
-                                            <property name="name">
-                                                <cstring>hideMechanicalMappingB</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>1</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>hide</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="7" column="1">
-                                            <property name="name">
-                                                <cstring>hideForceFieldB</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>1</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>hide</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="8" column="1">
-                                            <property name="name">
-                                                <cstring>hideInteractionForceFieldB</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>1</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>hide</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QLabel" row="0" column="2">
-                                            <property name="name">
-                                                <cstring>ShowHideAll</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>7</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>All</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QLabel" row="1" column="2">
-                                            <property name="name">
-                                                <cstring>ShowHideVisual</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>7</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
+                                        <property name="clickable">
+                                            <bool>true</bool>
+                                        </property>
+                                        <property name="resizable">
+                                            <bool>true</bool>
+                                        </property>
+                                    </column>
+                                <item>
+                                    <property name="text">
+                                        <string>All</string>
+                                    </property>
+                                    <property name="pixmap">
+                                        <pixmap></pixmap>
+                                    </property>
+                                    <item>
+                                        <property name="text">
+                                            <string>Visual</string>
+                                        </property>
+                                        <property name="pixmap">
+                                            <pixmap></pixmap>
+                                        </property>
+                                        <item>
                                             <property name="text">
                                                 <string>Visual Models</string>
                                             </property>
-                                        </widget>
-                                        <widget class="QLabel" row="2" column="2">
-                                            <property name="name">
-                                                <cstring>ShowHideBehavior</cstring>
+                                            <property name="pixmap">
+                                                <pixmap></pixmap>
                                             </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>7</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>Behavior Models</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QLabel" row="3" column="2">
-                                            <property name="name">
-                                                <cstring>ShowHideCollision</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>7</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>Collision Models</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QLabel" row="4" column="2">
-                                            <property name="name">
-                                                <cstring>ShowHideBoundingTrees</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>7</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>Bounding Trees</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QLabel" row="5" column="2">
-                                            <property name="name">
-                                                <cstring>ShowHideMappings</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>7</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>Mappings</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QLabel" row="6" column="2">
-                                            <property name="name">
-                                                <cstring>ShowHideMechanicalMappings</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>7</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>Mechanical Mappings</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QLabel" row="7" column="2">
-                                            <property name="name">
-                                                <cstring>ShowHideForceFields</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>7</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>Force Fields</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QLabel" row="8" column="2">
-                                            <property name="name">
-                                                <cstring>ShowHideInteractions</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>7</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
+                                        </item>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>Behavior</string>
+                                        </property>
+                                        <property name="pixmap">
+                                            <pixmap></pixmap>
+                                        </property>
+                                        <item>
                                             <property name="text">
                                                 <string>Interactions</string>
                                             </property>
-                                        </widget>
-                                        <spacer row="9" column="0">
-                                            <property name="name">
-                                                <cstring>spacer4</cstring>
+                                            <property name="pixmap">
+                                                <pixmap></pixmap>
                                             </property>
-                                            <property name="orientation">
-                                                <enum>Vertical</enum>
-                                            </property>
-                                            <property name="sizeType">
-                                                <enum>Fixed</enum>
-                                            </property>
-                                            <property name="sizeHint">
-                                                <size>
-                                                    <width>20</width>
-                                                    <height>5</height>
-                                                </size>
-                                            </property>
-                                        </spacer>
-                                        <widget class="QPushButton" row="10" column="0">
-                                            <property name="name">
-                                                <cstring>showWireFrameB</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>1</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
+                                        </item>
+                                        <item>
                                             <property name="text">
-                                                <string>show</string>
+                                                <string>ForceFields</string>
                                             </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="11" column="0">
-                                            <property name="name">
-                                                <cstring>showNormalsB</cstring>
+                                            <property name="pixmap">
+                                                <pixmap></pixmap>
                                             </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>1</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
+                                        </item>
+                                        <item>
                                             <property name="text">
-                                                <string>show</string>
+                                                <string>Behavior Models</string>
                                             </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="10" column="1">
-                                            <property name="name">
-                                                <cstring>hideWireFrameB</cstring>
+                                            <property name="pixmap">
+                                                <pixmap></pixmap>
                                             </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>1</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
+                                        </item>
+                                        <item>
                                             <property name="text">
-                                                <string>hide</string>
+                                                <string>Mappings</string>
                                             </property>
-                                        </widget>
-                                        <widget class="QPushButton" row="11" column="1">
-                                            <property name="name">
-                                                <cstring>hideNormalsB</cstring>
+                                            <property name="pixmap">
+                                                <pixmap></pixmap>
                                             </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>1</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
+                                        </item>
+                                        <item>
                                             <property name="text">
-                                                <string>hide</string>
+                                                <string>Mechanical Mappings</string>
                                             </property>
-                                        </widget>
-                                        <widget class="QLabel" row="10" column="2">
-                                            <property name="name">
-                                                <cstring>ShowHideWireFrame</cstring>
+                                            <property name="pixmap">
+                                                <pixmap></pixmap>
                                             </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>7</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
+                                        </item>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>Collision</string>
+                                        </property>
+                                        <property name="pixmap">
+                                            <pixmap></pixmap>
+                                        </property>
+                                        <item>
                                             <property name="text">
-                                                <string>Wire Frame</string>
+                                                <string>Collision Models</string>
                                             </property>
-                                        </widget>
-                                        <widget class="QLabel" row="11" column="2">
-                                            <property name="name">
-                                                <cstring>ShowHideNormals</cstring>
+                                            <property name="pixmap">
+                                                <pixmap></pixmap>
                                             </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>7</hsizetype>
-                                                    <vsizetype>1</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
+                                        </item>
+                                        <item>
                                             <property name="text">
-                                                <string>Normals</string>
+                                                <string>Bounding Trees</string>
                                             </property>
-                                        </widget>
-                                        <spacer row="12" column="0">
-                                            <property name="name">
-                                                <cstring>spacer5</cstring>
+                                            <property name="pixmap">
+                                                <pixmap></pixmap>
                                             </property>
-                                            <property name="orientation">
-                                                <enum>Vertical</enum>
-                                            </property>
-                                            <property name="sizeType">
-                                                <enum>Fixed</enum>
-                                            </property>
-                                            <property name="sizeHint">
-                                                <size>
-                                                    <width>20</width>
-                                                    <height>2</height>
-                                                </size>
-                                            </property>
-                                        </spacer>
-                                    </grid>
+                                        </item>
+                                    </item>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>Wire Frame</string>
+                                    </property>
+                                    <property name="pixmap">
+                                        <pixmap></pixmap>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>Normals</string>
+                                    </property>
+                                    <property name="pixmap">
+                                        <pixmap></pixmap>
+                                    </property>
+                                </item>
+                                    <property name="name">
+                                        <cstring>listDisplayFlags</cstring>
+                                    </property>
+                                    <property name="paletteBackgroundColor">
+                                        <color>
+                                            <red>239</red>
+                                            <green>243</green>
+                                            <blue>247</blue>
+                                        </color>
+                                    </property>
+                                    <property name="mouseTracking">
+                                        <bool>false</bool>
+                                    </property>
+                                    <property name="focusPolicy">
+                                        <enum>NoFocus</enum>
+                                    </property>
+                                    <property name="frameShape">
+                                        <enum>NoFrame</enum>
+                                    </property>
+                                    <property name="frameShadow">
+                                        <enum>Plain</enum>
+                                    </property>
+                                    <property name="resizePolicy">
+                                        <enum>AutoOneFit</enum>
+                                    </property>
+                                    <property name="hScrollBarMode">
+                                        <enum>AlwaysOff</enum>
+                                    </property>
+                                    <property name="allColumnsShowFocus">
+                                        <bool>false</bool>
+                                    </property>
+                                    <property name="rootIsDecorated">
+                                        <bool>true</bool>
+                                    </property>
+                                    <property name="treeStepSize">
+                                        <number>12</number>
+                                    </property>
                                 </widget>
+                                <spacer>
+                                    <property name="name">
+                                        <cstring>spacer5</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Vertical</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Fixed</enum>
+                                    </property>
+                                    <property name="sizeHint">
+                                        <size>
+                                            <width>20</width>
+                                            <height>8</height>
+                                        </size>
+                                    </property>
+                                </spacer>
                                 <widget class="QLayoutWidget">
                                     <property name="name">
                                         <cstring>layout4</cstring>
@@ -769,12 +504,12 @@
                                         <enum>Vertical</enum>
                                     </property>
                                     <property name="sizeType">
-                                        <enum>Expanding</enum>
+                                        <enum>Fixed</enum>
                                     </property>
                                     <property name="sizeHint">
                                         <size>
                                             <width>20</width>
-                                            <height>2</height>
+                                            <height>8</height>
                                         </size>
                                     </property>
                                 </spacer>
@@ -1039,129 +774,7 @@
                             </hbox>
                         </widget>
                     </widget>
-                    <widget class="QPushButton" row="0" column="1">
-                        <property name="name">
-                            <cstring>stepButton</cstring>
-                        </property>
-                        <property name="text">
-                            <string>S&amp;tep</string>
-                        </property>
-                        <property name="accel">
-                            <string>Alt+T</string>
-                        </property>
-                        <property name="autoRepeat">
-                            <bool>true</bool>
-                        </property>
-                        <property name="toolTip" stdset="0">
-                            <string>Compute the simulation at time t+DT</string>
-                        </property>
-                    </widget>
-                    <widget class="QLayoutWidget" row="1" column="1">
-                        <property name="name">
-                            <cstring>layout13</cstring>
-                        </property>
-                        <hbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QLabel">
-                                <property name="name">
-                                    <cstring>dtLabel</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>DT:</string>
-                                </property>
-                            </widget>
-                            <widget class="QLineEdit">
-                                <property name="name">
-                                    <cstring>dtEdit</cstring>
-                                </property>
-                                <property name="sizePolicy">
-                                    <sizepolicy>
-                                        <hsizetype>5</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                        <horstretch>0</horstretch>
-                                        <verstretch>0</verstretch>
-                                    </sizepolicy>
-                                </property>
-                                <property name="maximumSize">
-                                    <size>
-                                        <width>80</width>
-                                        <height>32767</height>
-                                    </size>
-                                </property>
-                                <property name="frameShape">
-                                    <enum>LineEditPanel</enum>
-                                </property>
-                                <property name="frameShadow">
-                                    <enum>Sunken</enum>
-                                </property>
-                            </widget>
-                        </hbox>
-                    </widget>
-                    <widget class="QPushButton" row="3" column="0" rowspan="1" colspan="2">
-                        <property name="name">
-                            <cstring>screenshotButton</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Save &amp;Caption</string>
-                        </property>
-                        <property name="accel">
-                            <string>Alt+C</string>
-                        </property>
-                    </widget>
-                    <widget class="QPushButton" row="1" column="0">
-                        <property name="name">
-                            <cstring>ResetSceneButton</cstring>
-                        </property>
-                        <property name="enabled">
-                            <bool>true</bool>
-                        </property>
-                        <property name="text">
-                            <string>&amp;Reset Scene</string>
-                        </property>
-                        <property name="accel">
-                            <string>Alt+R</string>
-                        </property>
-                        <property name="toolTip" stdset="0">
-                            <string>Reset the Simulation  (t=0)</string>
-                        </property>
-                    </widget>
-                    <widget class="QPushButton" row="2" column="0">
-                        <property name="name">
-                            <cstring>ResetViewButton</cstring>
-                        </property>
-                        <property name="enabled">
-                            <bool>true</bool>
-                        </property>
-                        <property name="text">
-                            <string>Reset &amp;View</string>
-                        </property>
-                        <property name="accel">
-                            <string>Alt+V</string>
-                        </property>
-                        <property name="toolTip" stdset="0">
-                            <string>Set the camera to initial position and orientation</string>
-                        </property>
-                    </widget>
-                    <widget class="QPushButton" row="0" column="0">
-                        <property name="name">
-                            <cstring>startButton</cstring>
-                        </property>
-                        <property name="text">
-                            <string>&amp;Animate</string>
-                        </property>
-                        <property name="accel">
-                            <string>Alt+A</string>
-                        </property>
-                        <property name="toggleButton">
-                            <bool>true</bool>
-                        </property>
-                        <property name="toolTip" stdset="0">
-                            <string>Launch the Simulation</string>
-                        </property>
-                    </widget>
-                </grid>
+                </vbox>
             </widget>
         </widget>
     </vbox>
@@ -1182,7 +795,7 @@
         <action name="exportGraphAction"/>
         <separator/>
         <action name="EmptyFiles"/>
-	<item text="Recently Opened Files..." name="recentlyOpened" accel="">
+       <item text="Recently Opened Files..." name="recentlyOpened" accel="">
             <action name="EmptyFiles"/>
         </item>
         <separator/>
@@ -1772,138 +1385,6 @@
         <signal>activated()</signal>
         <receiver>GUI</receiver>
         <slot>viewExecutionGraph()</slot>
-    </connection>
-    <connection>
-        <sender>showVisualB</sender>
-        <signal>clicked()</signal>
-        <receiver>GUI</receiver>
-        <slot>showVisualModels()</slot>
-    </connection>
-    <connection>
-        <sender>showAllB</sender>
-        <signal>clicked()</signal>
-        <receiver>GUI</receiver>
-        <slot>showAll()</slot>
-    </connection>
-    <connection>
-        <sender>hideAllB</sender>
-        <signal>clicked()</signal>
-        <receiver>GUI</receiver>
-        <slot>hideAll()</slot>
-    </connection>
-    <connection>
-        <sender>hideVisualB</sender>
-        <signal>clicked()</signal>
-        <receiver>GUI</receiver>
-        <slot>hideVisualModels()</slot>
-    </connection>
-    <connection>
-        <sender>showBehaviorB</sender>
-        <signal>clicked()</signal>
-        <receiver>GUI</receiver>
-        <slot>showBehaviorModels()</slot>
-    </connection>
-    <connection>
-        <sender>hideBehaviorB</sender>
-        <signal>clicked()</signal>
-        <receiver>GUI</receiver>
-        <slot>hideBehaviorModels()</slot>
-    </connection>
-    <connection>
-        <sender>showCollisionB</sender>
-        <signal>clicked()</signal>
-        <receiver>GUI</receiver>
-        <slot>showCollisionModels()</slot>
-    </connection>
-    <connection>
-        <sender>hideCollisionB</sender>
-        <signal>clicked()</signal>
-        <receiver>GUI</receiver>
-        <slot>hideCollisionModels()</slot>
-    </connection>
-    <connection>
-        <sender>showBoundingTreesB</sender>
-        <signal>clicked()</signal>
-        <receiver>GUI</receiver>
-        <slot>showBoundingTrees()</slot>
-    </connection>
-    <connection>
-        <sender>hideBoundingTreesB</sender>
-        <signal>clicked()</signal>
-        <receiver>GUI</receiver>
-        <slot>hideBoundingTrees()</slot>
-    </connection>
-    <connection>
-        <sender>showMappingB</sender>
-        <signal>clicked()</signal>
-        <receiver>GUI</receiver>
-        <slot>showMappings()</slot>
-    </connection>
-    <connection>
-        <sender>hideMappingB</sender>
-        <signal>clicked()</signal>
-        <receiver>GUI</receiver>
-        <slot>hideMappings()</slot>
-    </connection>
-    <connection>
-        <sender>showMechanicalMappingB</sender>
-        <signal>clicked()</signal>
-        <receiver>GUI</receiver>
-        <slot>showMechanicalMappings()</slot>
-    </connection>
-    <connection>
-        <sender>hideMechanicalMappingB</sender>
-        <signal>clicked()</signal>
-        <receiver>GUI</receiver>
-        <slot>hideMechanicalMappings()</slot>
-    </connection>
-    <connection>
-        <sender>showForceFieldB</sender>
-        <signal>clicked()</signal>
-        <receiver>GUI</receiver>
-        <slot>showForceFields()</slot>
-    </connection>
-    <connection>
-        <sender>hideForceFieldB</sender>
-        <signal>clicked()</signal>
-        <receiver>GUI</receiver>
-        <slot>hideForceFields()</slot>
-    </connection>
-    <connection>
-        <sender>showInteractionForceFieldB</sender>
-        <signal>clicked()</signal>
-        <receiver>GUI</receiver>
-        <slot>showInteractions()</slot>
-    </connection>
-    <connection>
-        <sender>hideInteractionForceFieldB</sender>
-        <signal>clicked()</signal>
-        <receiver>GUI</receiver>
-        <slot>hideInteractions()</slot>
-    </connection>
-    <connection>
-        <sender>showWireFrameB</sender>
-        <signal>clicked()</signal>
-        <receiver>GUI</receiver>
-        <slot>showWireFrame()</slot>
-    </connection>
-    <connection>
-        <sender>hideWireFrameB</sender>
-        <signal>clicked()</signal>
-        <receiver>GUI</receiver>
-        <slot>hideWireFrame()</slot>
-    </connection>
-    <connection>
-        <sender>showNormalsB</sender>
-        <signal>clicked()</signal>
-        <receiver>GUI</receiver>
-        <slot>showNormals()</slot>
-    </connection>
-    <connection>
-        <sender>hideNormalsB</sender>
-        <signal>clicked()</signal>
-        <receiver>GUI</receiver>
-        <slot>hideNormals()</slot>
     </connection>
     <connection>
         <sender>GUI</sender>

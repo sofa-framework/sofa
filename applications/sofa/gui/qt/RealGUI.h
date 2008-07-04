@@ -389,13 +389,69 @@ private:
 #endif
 
 
+
+    class DisplayFlagItem : public Q3CheckListItem
+    {
+    protected:
+        RealGUI* gui;
+        int id;
+        ToggleState last;
+    public:
+        template<class T>
+        DisplayFlagItem(RealGUI* g, T* parent, int id, const QString & text, Type tt = CheckBox)
+            : Q3CheckListItem(parent, text, tt)
+            , gui(g)
+            , id(id)
+            , last(NoChange)
+        {
+            if (tt == CheckBoxController)
+                setTristate(true);
+            //setState(NoChange);
+        }
+        template<class T>
+        DisplayFlagItem(RealGUI* g, T* parent, Q3CheckListItem* after, int id, const QString & text, Type tt = CheckBox)
+            : Q3CheckListItem(parent, after, text, tt)
+            , gui(g)
+            , id(id)
+            , last(NoChange)
+        {
+            if (tt == CheckBoxController)
+                setTristate(true);
+            //setState(NoChange);
+        }
+        void setState( ToggleState s )
+        {
+            last = s;
+            Q3CheckListItem::setState( s );
+        }
+        void init( bool b )
+        {
+            setState( b ? On : Off );
+        }
+    protected:
+        virtual void stateChange ( bool b )
+        {
+            ToggleState s = state();
+            if (s == last) return;
+            if (s == NoChange) return;
+            last = s;
+            gui->showhideElements(id,b);
+        }
+    };
+
+    DisplayFlagItem* itemShowAll;
+    DisplayFlagItem* itemShowVisualModels;
+    DisplayFlagItem* itemShowBehaviorModels;
+    DisplayFlagItem* itemShowCollisionModels;
+    DisplayFlagItem* itemShowBoundingTrees;
+    DisplayFlagItem* itemShowMappings;
+    DisplayFlagItem* itemShowMechanicalMappings;
+    DisplayFlagItem* itemShowForceFields;
+    DisplayFlagItem* itemShowInteractions;
+    DisplayFlagItem* itemShowWireFrame;
+    DisplayFlagItem* itemShowNormals;
+
 };
-
-
-
-
-
-
 
 } // namespace qt
 
