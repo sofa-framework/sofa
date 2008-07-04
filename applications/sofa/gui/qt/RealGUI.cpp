@@ -650,6 +650,7 @@ void RealGUI::addViewer()
     splitter_ptr->moveToLast ( left_stack );
     splitter_ptr->setOpaqueResize ( false );
 #ifdef SOFA_QT4
+    splitter_ptr->setStretchFactor( 0, 0);
     QList<int> list;
 #else
     QValueList<int> list;
