@@ -16,7 +16,7 @@ using namespace std;
 LCP::LCP(unsigned int mxC) : maxConst(mxC), tol(0.00001), numItMax(1000), useInitialF(true), mu(0.0), dim(0)
 {
     W = new double*[maxConst];
-    for (unsigned int i = 0; i < maxConst; i++)
+    for (int i = 0; i < maxConst; i++)
     {
         W[i] = new double[maxConst];
         memset(W[i], 0, maxConst * sizeof(double));
@@ -71,7 +71,7 @@ LCP& LCP::operator=(LCP& lcp)
 LCP::~LCP()
 {
     delete [] dfree;
-    for (unsigned int i = 0; i < maxConst; i++)
+    for (int i = 0; i < maxConst; i++)
     {
         delete [] W[i];
     }
@@ -82,7 +82,7 @@ LCP::~LCP()
 void LCP::reset(void)
 {
 
-    for (unsigned int i = 0; i < maxConst; i++)
+    for (int i = 0; i < maxConst; i++)
     {
         memset(W[i], 0, maxConst * sizeof(double));
     }
@@ -1201,7 +1201,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
         if (error < tol)
         {
             free(d);
-            for (unsigned int i = 0; i < numContacts; i++)
+            for (int i = 0; i < numContacts; i++)
                 delete W33[i];
             free(W33);
             //printf("Convergence after %d iteration(s) with tolerance : %f and error : %f with dim : %d\n",it, tol, error, dim);
@@ -1210,7 +1210,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
         }
     }
     free(d);
-    for (unsigned int i = 0; i < numContacts; i++)
+    for (int i = 0; i < numContacts; i++)
         delete W33[i];
     free(W33);
 
@@ -1313,7 +1313,7 @@ int nlcp_gaussseidelTimed(int dim, double *dfree, double**W, double *f, double m
             if((t1-t0) > timeout)
             {
                 free(d);
-                for (unsigned int i = 0; i < numContacts; i++)
+                for (int i = 0; i < numContacts; i++)
                     delete W33[i];
                 free(W33);
                 //printf("Convergence after %d iteration(s) with tolerance : %f and error : %f with dim : %d\n",it, tol, error, dim);
@@ -1325,7 +1325,7 @@ int nlcp_gaussseidelTimed(int dim, double *dfree, double**W, double *f, double m
         if (error < tol)
         {
             free(d);
-            for (unsigned int i = 0; i < numContacts; i++)
+            for (int i = 0; i < numContacts; i++)
                 delete W33[i];
             free(W33);
             //printf("Convergence after %d iteration(s) with tolerance : %f and error : %f with dim : %d\n",it, tol, error, dim);
@@ -1334,7 +1334,7 @@ int nlcp_gaussseidelTimed(int dim, double *dfree, double**W, double *f, double m
         }
     }
     free(d);
-    for (unsigned int i = 0; i < numContacts; i++)
+    for (int i = 0; i < numContacts; i++)
         delete W33[i];
     free(W33);
 

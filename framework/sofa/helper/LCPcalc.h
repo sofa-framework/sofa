@@ -26,14 +26,14 @@ class LCP
 {
 private:
     int maxConst;
-    int dim;
     double* dfree;
     double** W;
     double* f;
-    double mu;
     double tol;
     int numItMax;
     bool useInitialF;
+    double mu;
+    int dim;
     unsigned int nbConst;
 public:
     LCP(unsigned int maxConstraint);
