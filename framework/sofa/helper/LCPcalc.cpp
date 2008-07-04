@@ -3,17 +3,94 @@
 #include <algorithm>
 #include <functional>
 #include <iostream>
-#include <math.h>
-
-#ifdef WIN32
-#define isnan(x) ((x) != (x))
-#endif
+#include <fstream>
 
 namespace sofa
 {
 
 namespace helper
 {
+
+using namespace std;
+
+LCP::LCP(unsigned int mxC) : maxConst(mxC), tol(0.00001), numItMax(1000), useInitialF(true), mu(0.0), dim(0)
+{
+    W = new double*[maxConst];
+    for (unsigned int i = 0; i < maxConst; i++)
+    {
+        W[i] = new double[maxConst];
+        memset(W[i], 0, maxConst * sizeof(double));
+    }
+    dfree = new double[maxConst];
+    f = new double[2 * maxConst + 1];
+
+    memset(dfree, 0, maxConst * sizeof(double));
+    memset(f, 0, (2 * maxConst + 1) * sizeof(double));
+}
+/*
+LCP& LCP::operator=(LCP& lcp)
+{
+	if(this == &lcp) return *this; //self assignment
+
+	if(maxConst != lcp.maxConst)
+	{
+		maxConst = lcp.maxConst;
+
+		delete [] dfree;
+		for (unsigned int i = 0; i < maxConst; i++)
+		{
+			delete [] W[i];
+		}
+		delete [] W;
+
+		W = new double*[maxConst];
+		for (unsigned int i = 0; i < maxConst; i++)
+		{
+			W[i] = new double[maxConst];
+		}
+		dfree = new double[maxConst];
+		f = new double[2 * maxConst + 1];
+	}
+
+	dim = lcp.dim;
+	mu = lcp.mu;
+	tol = lcp.tol;
+	numItMax = lcp.numItMax;
+	useInitialF = lcp.useInitialF;
+	nbConst = lcp.nbConst;
+
+	for (unsigned int i = 0; i < maxConst; i++)
+		memcpy(W[i], lcp.W[i], maxConst * sizeof(double));
+	memcpy(dfree, lcp.dfree, maxConst * sizeof(double));
+	memcpy(f, lcp.f, maxConst * sizeof(double));
+
+	return *this;
+}
+*/
+
+LCP::~LCP()
+{
+    delete [] dfree;
+    for (unsigned int i = 0; i < maxConst; i++)
+    {
+        delete [] W[i];
+    }
+    delete [] W;
+}
+
+
+void LCP::reset(void)
+{
+
+    for (unsigned int i = 0; i < maxConst; i++)
+    {
+        memset(W[i], 0, maxConst * sizeof(double));
+    }
+
+    memset(dfree, 0, maxConst * sizeof(double));
+}
+
+
 
 //#include "mex.h"
 /* Resoud un LCP écrit sous la forme U = q + M.F
@@ -579,6 +656,7 @@ int lcp_lexicolemke(int dim, double * q, double ** M, double * res)
     return 0;
 
 }
+
 /******************************** WITHOUT ALLOCATION of A ************************************/
 int lcp_lexicolemke(int dim, double * q, double ** M, double **A, double * res)
 {
@@ -858,6 +936,7 @@ void afficheLCP(double *q, double **M, int dim)
     }
     printf("      ]\n\n");
 }
+
 /********************************************************************************************/
 void afficheLCP(double *q, double **M, double *f, int dim)
 {
@@ -1030,18 +1109,8 @@ struct listSortAscending
     }
 };
 
-int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, double &tol, int &numItMax, bool useInitialF)
+int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF)
 {
-
-    ///* Allocation
-    //A = (double **)malloc( dim*sizeof(double*) );
-    //for( ic = 0 ; ic < dim; ++ic )
-    // A[ic] = (double *)malloc( dim2*sizeof(double) );
-
-    //for( ic = 0 ; ic < dim; ++ic )
-    //  for( jc = 0 ; jc < dim2; ++jc )
-    //    A[ic][jc] = 0.0;
-
     double test = dim/3;
     double zero = 0.0;
     int numContacts =  (int) floor(test);
@@ -1060,11 +1129,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, d
     d = (double*)malloc(dim*sizeof(double));
     // put the vector force to zero
     if (!useInitialF)
-    {
-        std::cout << "Reset F\n";
-        for (i=0; i<dim; i++)
-            f[i]=0.0;
-    }
+        memset(f, 0, MAX_NUM_CONSTRAINTS*sizeof(double));
 
     // previous value of the force and the displacment
     double f_1[3];
@@ -1075,23 +1140,17 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, d
     W33 = (LocalBlock33 **) malloc (dim*sizeof(LocalBlock33));
     for (c1=0; c1<numContacts; c1++)
         W33[c1] = new LocalBlock33();
-
+    /*
     std::vector<listElem> sortedList;
     listElem buf;
     sortedList.clear();
     for (c1=0; c1<numContacts; c1++)
     {
-        buf.value = dfree[3*c1];
-        buf.index = c1;
-        sortedList.push_back(buf);
+    	buf.value = dfree[3*c1];
+    	buf.index = c1;
+    	sortedList.push_back(buf);
     }
-
-    //std::sort(sortedList.begin(), sortedList.end(), listSortAscending() );
-
-    //for (c1=0; c1<numContacts; c1++)
-    //{
-    //	mexPrintf("\n contact[%d] : dfree : %f", sortedList[c1].index, sortedList[c1].value);
-    //}
+    */
 
     //////////////
     // Beginning of iterative computations
@@ -1105,7 +1164,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, d
         for (c1=0; c1<numContacts; c1++)
         {
             // index of contact
-            int index1 = sortedList[c1].index;
+            int index1 = c1;
 
             // put the previous value of the contact force in a buffer and put the current value to 0
             f_1[0] = f[3*index1]; f_1[1] = f[3*index1+1]; f_1[2] = f[3*index1+2];
@@ -1115,7 +1174,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, d
             dn=dfree[3*index1]; dt=dfree[3*index1+1]; ds=dfree[3*index1+2];
             for (i=0; i<dim; i++)
             {
-                dn += W[3*index1  ][i]*f[i] ;
+                dn += W[3*index1  ][i]*f[i];
                 dt += W[3*index1+1][i]*f[i];
                 ds += W[3*index1+2][i]*f[i];
             }
@@ -1129,85 +1188,169 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, d
                         W[3*index1+1][3*index1+1], W[3*index1+1][3*index1+2],W[3*index1+2][3*index1+2]);
             }
 
+
             fn=f_1[0]; ft=f_1[1]; fs=f_1[2];
             W33[index1]->GS_State(mu,dn,dt,ds,fn,ft,fs);
-            if (isnan(fn) || isnan(ft) || isnan(fs) || isnan(dn) || isnan(dt) || isnan(ds))
-            {
-                printf("LCP dim = %d iteration %d: NaN found at constraint %d: fn = %f ft = %f fs = %f dn = %f dt = %f ds = %f\n",dim,it,c1,fn,ft,fs,dn,dt,ds);
-                break; // no point to continue
-            }
-            //error += absError(dn,dt,ds,d_1[0],d_1[1],d_1[2]);
-            double e = absError(dn,dt,ds,d_1[0],d_1[1],d_1[2]);
-            if (e > 10.0)
-            {
-                printf("LCP dim = %d iteration %d: error %f found at constraint %d: fn = %f ft = %f fs = %f dn = %f dt = %f ds = %f\n",dim,it,e,c1,fn,ft,fs,dn,dt,ds);
-                //break; // no point to continue
-            }
-            error += e;
+            error += absError(dn,dt,ds,d_1[0],d_1[1],d_1[2]);
 
 
-
-            // there is a contact!
-            //if ( (dn+EPSILON_LCP) < 0)
-            //{
-            //	// we compute the system only if the contact is active (at least one time during the iterations)
-            //	if(W33[index1]->computed==false)
-            //	{
-            //		W33[index1]->compute(W[3*index1][3*index1],W[3*index1][3*index1+1],W[3*index1][3*index1+2],
-            //									W[3*index1+1][3*index1+1], W[3*index1+1][3*index1+2],W[3*index1+2][3*index1+2]);
-            //	}
-            //	W33[index1]->stickState(dn,dt,ds,fn,ft,fs);
-
-            //	if(sqrt(ft*ft+fs*fs)> mu*fn)
-            //	{
-            //		fn=f_1[0]; ft=f_1[1]; fs=f_1[2];
-            //		W33[index1]->slipState(mu,dn,dt,ds,fn,ft,fs);
-            //	}
-            //	else
-            //	{
-            //		dn=0.0; dt=0.0; ds=0.0;
-            //	}
-            //	////error += normError(fn,ft,fs,f_1[0],f_1[1],f_1[2]);
-            //	error += absError(dn,dt,ds,d_1[0],d_1[1],d_1[2]);
-
-            //}
-            //else
-            //{
-            //	fn=0.0; ft=0.0; fs=0.0;
-            //	//if (f_1[0]>0)
-            //	//	error += normError(f_1[0],f_1[1],f_1[2],fn,ft,fs);
-            //	error += absError(dn,dt,ds,d_1[0],d_1[1],d_1[2]);
-
-            //}
             set3Dof(f,index1,fn,ft,fs);
+
         }
 
         if (error < tol)
         {
-//			printf("Convergence after %d iteration(s): error = %f\n",it,error);
+            free(d);
+            for (unsigned int i = 0; i < numContacts; i++)
+                delete W33[i];
+            free(W33);
+            //printf("Convergence after %d iteration(s) with tolerance : %f and error : %f with dim : %d\n",it, tol, error, dim);
             //afficheLCP(dfree,W,f,dim);
-            return it;
-        }
-        //else printf("LCP dim = %d iteration %d: error = %f\n",dim,it,error);
-        if (isnan(error))
-        {
-            break; // no point to continue
+            return 1;
         }
     }
+    free(d);
+    for (unsigned int i = 0; i < numContacts; i++)
+        delete W33[i];
+    free(W33);
 
-    printf("\n No convergence in nlcp_gaussseidel function : dim = %d, iteration = %d, error = %f\n", dim, it, error);
+    //printf("\n No convergence in nlcp_gaussseidel function : error =%f after %d iterations", error, it);
     //afficheLCP(dfree,W,f,dim);
-    fflush(NULL);
-    return it;
+    return 0;
 
 }
+
+int nlcp_gaussseidelTimed(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, double timeout)
+{
+    double test = dim/3;
+    double zero = 0.0;
+    int numContacts =  (int) floor(test);
+    test = dim/3 - numContacts;
+
+    ctime_t t0 = CTime::getTime()/CTime::getTicksPerSec();
+
+    if (test>0.01)
+    {
+        printf("\n WARNING dim should be dividable by 3 in nlcp_gaussseidel");
+        return 0;
+    }
+    // iterators
+    int it,c1,i;
+
+    // memory allocation of vector d
+    double *d;
+    d = (double*)malloc(dim*sizeof(double));
+    // put the vector force to zero
+    if (!useInitialF)
+        memset(f, 0, MAX_NUM_CONSTRAINTS*sizeof(double));
+
+    // previous value of the force and the displacment
+    double f_1[3];
+    double d_1[3];
+
+    // allocation of the inverted system 3x3
+    LocalBlock33 **W33;
+    W33 = (LocalBlock33 **) malloc (dim*sizeof(LocalBlock33));
+    for (c1=0; c1<numContacts; c1++)
+        W33[c1] = new LocalBlock33();
+    /*
+    std::vector<listElem> sortedList;
+    listElem buf;
+    sortedList.clear();
+    for (c1=0; c1<numContacts; c1++)
+    {
+    	buf.value = dfree[3*c1];
+    	buf.index = c1;
+    	sortedList.push_back(buf);
+    }
+    */
+
+    //////////////
+    // Beginning of iterative computations
+    //////////////
+    double error = 0;
+    double dn, dt, ds, fn, ft, fs;
+
+    for (it=0; it<numItMax; it++)
+    {
+        error =0;
+        for (c1=0; c1<numContacts; c1++)
+        {
+            // index of contact
+            int index1 = c1;
+
+            // put the previous value of the contact force in a buffer and put the current value to 0
+            f_1[0] = f[3*index1]; f_1[1] = f[3*index1+1]; f_1[2] = f[3*index1+2];
+            set3Dof(f,index1,zero,zero,zero); //		f[3*index] = 0.0; f[3*index+1] = 0.0; f[3*index+2] = 0.0;
+
+            // computation of actual d due to contribution of other contacts
+            dn=dfree[3*index1]; dt=dfree[3*index1+1]; ds=dfree[3*index1+2];
+            for (i=0; i<dim; i++)
+            {
+                dn += W[3*index1  ][i]*f[i];
+                dt += W[3*index1+1][i]*f[i];
+                ds += W[3*index1+2][i]*f[i];
+            }
+            d_1[0] = dn + W[3*index1  ][3*index1  ]*f_1[0]+W[3*index1  ][3*index1+1]*f_1[1]+W[3*index1  ][3*index1+2]*f_1[2];
+            d_1[1] = dt + W[3*index1+1][3*index1  ]*f_1[0]+W[3*index1+1][3*index1+1]*f_1[1]+W[3*index1+1][3*index1+2]*f_1[2];
+            d_1[2] = ds + W[3*index1+2][3*index1  ]*f_1[0]+W[3*index1+2][3*index1+1]*f_1[1]+W[3*index1+2][3*index1+2]*f_1[2];
+
+            if(W33[index1]->computed==false)
+            {
+                W33[index1]->compute(W[3*index1][3*index1],W[3*index1][3*index1+1],W[3*index1][3*index1+2],
+                        W[3*index1+1][3*index1+1], W[3*index1+1][3*index1+2],W[3*index1+2][3*index1+2]);
+            }
+
+
+            fn=f_1[0]; ft=f_1[1]; fs=f_1[2];
+            W33[index1]->GS_State(mu,dn,dt,ds,fn,ft,fs);
+            error += absError(dn,dt,ds,d_1[0],d_1[1],d_1[2]);
+
+
+            set3Dof(f,index1,fn,ft,fs);
+
+            ctime_t t1 = CTime::getTime()/CTime::getTicksPerSec();
+            if((t1-t0) > timeout)
+            {
+                free(d);
+                for (unsigned int i = 0; i < numContacts; i++)
+                    delete W33[i];
+                free(W33);
+                //printf("Convergence after %d iteration(s) with tolerance : %f and error : %f with dim : %d\n",it, tol, error, dim);
+                //afficheLCP(dfree,W,f,dim);
+                return 1;
+            }
+        }
+
+        if (error < tol)
+        {
+            free(d);
+            for (unsigned int i = 0; i < numContacts; i++)
+                delete W33[i];
+            free(W33);
+            //printf("Convergence after %d iteration(s) with tolerance : %f and error : %f with dim : %d\n",it, tol, error, dim);
+            //afficheLCP(dfree,W,f,dim);
+            return 1;
+        }
+    }
+    free(d);
+    for (unsigned int i = 0; i < numContacts; i++)
+        delete W33[i];
+    free(W33);
+
+    //printf("\n No convergence in nlcp_gaussseidel function : error =%f after %d iterations", error, it);
+    //afficheLCP(dfree,W,f,dim);
+    return 0;
+
+}
+
 
 /* Resoud un LCP écrit sous la forme U = q + M.F
  * dim : dimension du pb
  * res[0..dim-1] = U
  * res[dim..2*dim-1] = F
  */
-int gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal * res, double &tol, int &numItMax)
+void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal * res, double tol, int numItMax)
 {
     int compteur;	// compteur de boucle
     int compteur2, compteur3;	// compteur de boucle
@@ -1252,7 +1395,7 @@ int gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal *
 
     }
 
-    for (int compteur=0; compteur<dim; compteur++)
+    for (compteur=0; compteur<dim; compteur++)
         res[compteur] = res[compteur+dim];
 
     if (error >= tol)
@@ -1260,7 +1403,6 @@ int gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal *
         std::cout << "No convergence in gaussSeidelLCP1 : error = " << error << std::endl;
         //	afficheLCP(q, M, res, dim);
     }
-    return compteur;
 }
 
 } // namespace helper
