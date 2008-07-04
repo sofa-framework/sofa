@@ -59,7 +59,7 @@ void LCPForceFeedback::init()
     cout << "init LCPForceFeedback " << driver << " done " << std::endl;
 };
 
-void LCPForceFeedback::computeForce(double x, double y, double z, double u, double v, double w, double q, double& fx, double& fy, double& fz)
+void LCPForceFeedback::computeForce(double x, double y, double z, double /*u*/, double /*v*/, double /*w*/, double /*q*/, double& fx, double& fy, double& fz)
 {
     if (!f_activate.getValue())
     {
