@@ -41,7 +41,7 @@ simulation::Visitor::Result DeleteVisitor::processNodeTopDown(GNode* node)
 
     std::set<sofa::core::objectmodel::BaseObject*> done; // list of objects we already processed
     bool stop = false;
-    while (stop)
+    while (!stop)
     {
         stop = true;
         for (GNode::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
