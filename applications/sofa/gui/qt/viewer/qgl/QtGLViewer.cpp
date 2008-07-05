@@ -1386,7 +1386,7 @@ void QtGLViewer::draw()
         static int counter = 0;
         if ((counter++ % CAPTURE_PERIOD)==0)
 #endif
-            screenshot(capture.findFilename());
+            screenshot(capture.findFilename(), 2);
     }
 
     if (_waitForRender)

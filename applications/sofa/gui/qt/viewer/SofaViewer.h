@@ -155,9 +155,9 @@ public:
     //Fonctions needed to take a screenshot
     virtual const std::string screenshotName() { return capture.findFilename().c_str();};
     virtual void        setPrefix(const std::string filename) {capture.setPrefix(filename);};
-    virtual void        screenshot(const std::string filename)
+    virtual void        screenshot(const std::string filename, int compression_level = -1)
     {
-        capture.saveScreen(filename);
+        capture.saveScreen(filename, compression_level);
     }
 
 protected:

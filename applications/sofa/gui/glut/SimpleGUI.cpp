@@ -1532,7 +1532,7 @@ void SimpleGUI::paintGL()
         static int counter = 0;
         if ((counter++ % CAPTURE_PERIOD)==0)
 #endif
-            screenshot();
+            screenshot(2);
     }
 
     if (_waitForRender)
@@ -2648,9 +2648,9 @@ void SimpleGUI::showNormals(bool value)
     redraw();
 }
 
-void SimpleGUI::screenshot()
+void SimpleGUI::screenshot(int compression_level)
 {
-    capture.saveScreen();
+    capture.saveScreen(compression_level);
 }
 
 void SimpleGUI::exportOBJ(bool exportMTL)
