@@ -48,7 +48,7 @@ void GraphScatteredMatrix::apply(GraphScatteredVector& res, GraphScatteredVector
 #if 1
     // new more powerful visitors
     parent->propagateDxAndResetDf(x,res);
-    parent->addMBKdx(res,mFact,bFact,kFact); // df = (m M + b B + k K) dx
+    parent->addMBKdx(res,mFact,bFact,kFact, false); // df = (m M + b B + k K) dx
 
 #else
     parent->propagateDx(x);          // dx = p

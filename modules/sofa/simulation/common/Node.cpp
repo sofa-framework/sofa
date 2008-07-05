@@ -138,6 +138,7 @@ void Node::doAddObject(BaseObject* obj)
     int inserted=0;
     inserted+= masterSolver.add(dynamic_cast< core::componentmodel::behavior::MasterSolver* >(obj));
     inserted+= solver.add(dynamic_cast< core::componentmodel::behavior::OdeSolver* >(obj));
+    inserted+= linearSolver.add(dynamic_cast< core::componentmodel::behavior::LinearSolver* >(obj));
     inserted+= mechanicalState.add(dynamic_cast< core::componentmodel::behavior::BaseMechanicalState* >(obj));
     bool isMechanicalMapping = mechanicalMapping.add(dynamic_cast< core::componentmodel::behavior::BaseMechanicalMapping* >(obj));
     inserted+= isMechanicalMapping;
@@ -179,6 +180,7 @@ void Node::doRemoveObject(BaseObject* obj)
     object.remove(obj);
     masterSolver.remove(dynamic_cast< core::componentmodel::behavior::MasterSolver* >(obj));
     solver.remove(dynamic_cast< core::componentmodel::behavior::OdeSolver* >(obj));
+    linearSolver.remove(dynamic_cast< core::componentmodel::behavior::LinearSolver* >(obj));
     mechanicalState.remove(dynamic_cast< core::componentmodel::behavior::BaseMechanicalState* >(obj));
     mechanicalMapping.remove(dynamic_cast< core::componentmodel::behavior::BaseMechanicalMapping* >(obj));
     mass.remove(dynamic_cast< core::componentmodel::behavior::BaseMass* >(obj));
@@ -519,6 +521,9 @@ void Node::printComponents()
         cerr<<(*i)->getName()<<" ";
     cerr<<endl<<"OdeSolver: ";
     for ( Sequence<OdeSolver>::iterator i=solver.begin(), iend=solver.end(); i!=iend; i++ )
+        cerr<<(*i)->getName()<<" ";
+    cerr<<endl<<"LinearSolver: ";
+    for ( Sequence<LinearSolver>::iterator i=linearSolver.begin(), iend=linearSolver.end(); i!=iend; i++ )
         cerr<<(*i)->getName()<<" ";
     cerr<<endl<<"InteractionForceField: ";
     for ( Sequence<InteractionForceField>::iterator i=interactionForceField.begin(), iend=interactionForceField.end(); i!=iend; i++ )

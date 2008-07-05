@@ -520,7 +520,8 @@ class MechanicalResetForceVisitor : public MechanicalVisitor
 {
 public:
     VecId res;
-    MechanicalResetForceVisitor(VecId res) : res(res)
+    bool onlyMapped;
+    MechanicalResetForceVisitor(VecId res, bool onlyMapped = false) : res(res), onlyMapped(onlyMapped)
     {}
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
@@ -540,7 +541,8 @@ class MechanicalComputeForceVisitor : public MechanicalVisitor
 {
 public:
     VecId res;
-    MechanicalComputeForceVisitor(VecId res) : res(res)
+    bool accumulate; ///< Accumulate everything back to the DOFs through the mappings
+    MechanicalComputeForceVisitor(VecId res, bool accumulate = true) : res(res), accumulate(accumulate)
     {}
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
@@ -569,7 +571,8 @@ class MechanicalComputeDfVisitor : public MechanicalVisitor
 public:
     VecId res;
     bool useV;
-    MechanicalComputeDfVisitor(VecId res, bool useV=false) : res(res), useV(useV)
+    bool accumulate; ///< Accumulate everything back to the DOFs through the mappings
+    MechanicalComputeDfVisitor(VecId res, bool useV=false, bool accumulate=true) : res(res), useV(useV), accumulate(accumulate)
     {}
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
@@ -598,8 +601,9 @@ public:
     double bFactor;
     double kFactor;
     bool useV;
-    MechanicalAddMBKdxVisitor(VecId res, double mFactor, double bFactor, double kFactor, bool useV=false)
-        : res(res), mFactor(mFactor), bFactor(bFactor), kFactor(kFactor), useV(useV)
+    bool accumulate; ///< Accumulate everything back to the DOFs through the mappings
+    MechanicalAddMBKdxVisitor(VecId res, double mFactor, double bFactor, double kFactor, bool useV=false, bool accumulate = true)
+        : res(res), mFactor(mFactor), bFactor(bFactor), kFactor(kFactor), useV(useV), accumulate(accumulate)
     {}
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);

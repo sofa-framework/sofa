@@ -11,7 +11,8 @@
 			<Object type="OglModel" name="Visual" filename="mesh/torus2.obj" color="gray" />
 		</Node>
 		<Node name="TorusFEM">
-			<Object type="CGImplicit" iterations="20" threshold="0.000001" rayleighStiffness="0.01" rayleighMass="1" tolerance="0.001" />
+			<Object type="EulerImplicitSolver" rayleighStiffness="0.01" rayleighMass="1" />
+			<Object type="CGLinearSolver" iterations="20" threshold="0.000001" tolerance="0.001" />
 			<Object type="Mesh" filename="mesh/torus_low_res.msh"/>
 			<Object type="MechanicalObject" dx="2.5" />
 			<Object type="UniformMass" totalmass="5" />
@@ -28,7 +29,8 @@
 			</Node>
 		</Node>
 		<Node name="TorusSpring">
-			<Object type="CGImplicit" iterations="20" threshold="0.000001" rayleighStiffness="0.1" rayleighMass="1" tolerance="0.001" />
+			<Object type="EulerImplicitSolver" rayleighStiffness="0.1" rayleighMass="1" />
+			<Object type="CGLinearSolver" iterations="20" threshold="0.000001" tolerance="0.001" />
 			<Object type="Mesh" filename="mesh/torus2_low_res.msh"/>
 			<Object type="MechanicalObject" dx="5" />
 			<Object type="UniformMass" totalmass="5" />
@@ -45,7 +47,8 @@
 			</Node>
 		</Node>
 		<Node name="TorusFFD">
-			<Object type="CGImplicit" iterations="20" threshold="0.000001" rayleighStiffness="0.1" rayleighMass="1" tolerance="0.001" />
+			<Object type="EulerImplicitSolver" rayleighStiffness="0.1" rayleighMass="1" />
+			<Object type="CGLinearSolver" iterations="20" threshold="0.000001" tolerance="0.001" />
 			<Object type="MechanicalObject" dx="7.5" />
 			<Object type="UniformMass" totalmass="5" />
 			<Object type="RegularGrid"
@@ -67,7 +70,8 @@
 			</Node>
 		</Node>
 		<Node name="TorusRigid">
-			<Object type="CGImplicit" iterations="20" threshold="0.000001" rayleighStiffness="0.01" rayleighMass="1" tolerance="0.001" />
+			<Object type="EulerImplicitSolver" rayleighStiffness="0.01" rayleighMass="1" />
+			<Object type="CGLinearSolver" iterations="20" threshold="0.000001" tolerance="0.001" />
 			<Object type="MechanicalObject" template="Rigid" dx="10" />
 			<Object type="UniformMass" />
 			<Node name="Visu">
