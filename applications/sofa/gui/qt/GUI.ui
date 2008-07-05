@@ -556,6 +556,9 @@
                                             <property name="scaledContents">
                                                 <bool>true</bool>
                                             </property>
+					    <property name="toolTip" stdset="0">
+					      <string>http://sofa-framework.org</string>
+					    </property>
                                         </widget>
                                         <spacer>
                                             <property name="name">
@@ -576,6 +579,27 @@
                                         </spacer>
                                     </hbox>
                                 </widget>
+<!--
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>textLabel_url</cstring>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>7</hsizetype>
+                                            <vsizetype>0</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
+                                    <property name="text">
+                                        <string>&lt;a href="http://sofa-framework.org/"&gt;&lt;font color="#d67141"&gt;http://sofa-framework.org/&lt;/font&gt;&lt;/a&gt;</string>
+                                    </property>
+                                    <property name="alignment">
+                                        <set>WordBreak|AlignCenter</set>
+                                    </property>
+                                </widget>
+-->
                             </vbox>
                         </widget>
                         <widget class="QWidget">
