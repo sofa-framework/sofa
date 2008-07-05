@@ -1510,7 +1510,7 @@ void QtViewer::paintGL()
         static int counter = 0;
         if ((counter++ % CAPTURE_PERIOD)==0)
 #endif
-            screenshot(capture.findFilename());
+            screenshot(capture.findFilename(), 1);
     }
 
     if (_waitForRender)

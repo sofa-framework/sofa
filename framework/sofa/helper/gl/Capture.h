@@ -57,9 +57,9 @@ public:
     void setCounter(int v=-1) { counter = v; }
 
     std::string findFilename();
-    bool saveScreen(const std::string& filename);
+    bool saveScreen(const std::string& filename, int compression_level = -1);
 
-    bool saveScreen();
+    bool saveScreen(int compression_level = -1);
 };
 
 } // namespace gl

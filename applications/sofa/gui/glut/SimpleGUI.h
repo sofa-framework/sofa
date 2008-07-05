@@ -196,7 +196,7 @@ public:
     void showInteractionForceField(bool);
     void showWireFrame(bool);
     void showNormals(bool);
-    void screenshot();
+    void screenshot(int compression_level = -1);
     void exportOBJ(bool exportMTL=true);
     void dumpState(bool);
     void displayComputationTime(bool);

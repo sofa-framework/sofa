@@ -45,7 +45,7 @@ Capture::Capture()
 {
 }
 
-bool Capture::saveScreen(const std::string& filename)
+bool Capture::saveScreen(const std::string& filename, int compression_level)
 {
 #ifdef SOFA_HAVE_PNG
     io::ImagePNG img;
@@ -58,7 +58,19 @@ bool Capture::saveScreen(const std::string& filename)
     glReadBuffer(GL_FRONT);
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
     glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGB, GL_UNSIGNED_BYTE, img.getData());
+
+#ifdef SOFA_HAVE_PNG
+    if (compression_level != -1)
+    {
+        if (!img.save(filename, compression_level)) return false;
+    }
+    else
+    {
+        if (!img.save(filename)) return false;
+    }
+#else
     if (!img.save(filename)) return false;
+#endif
     std::cout << "Saved "<<img.getWidth()<<"x"<<img.getHeight()<<" screen image to "<<filename<<std::endl;
     glReadBuffer(GL_BACK);
     return true;
@@ -99,9 +111,9 @@ std::string Capture::findFilename()
 }
 
 
-bool Capture::saveScreen()
+bool Capture::saveScreen(int compression_level)
 {
-    return saveScreen(findFilename());
+    return saveScreen(findFilename(), compression_level);
 }
 
 } // namespace gl
