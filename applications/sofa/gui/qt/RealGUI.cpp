@@ -341,13 +341,15 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     itemShowBehaviorModels = new DisplayFlagItem(this, itemShowBehavior, BEHAVIORMODELS, "Behavior Models");
     itemShowForceFields = new DisplayFlagItem(this, itemShowBehavior, itemShowBehaviorModels, FORCEFIELDS, "Force Fields");
     itemShowInteractions = new DisplayFlagItem(this, itemShowBehavior, itemShowForceFields, INTERACTIONS, "Interactions");
-    itemShowMappings = new DisplayFlagItem(this, itemShowBehavior, itemShowInteractions, MAPPINGS, "Mappings");
-    itemShowMechanicalMappings = new DisplayFlagItem(this, itemShowBehavior, itemShowMappings, MECHANICALMAPPINGS, "Mechanical Mappings");
     Q3CheckListItem* itemShowCollision = new Q3CheckListItem(itemShowAll, itemShowBehavior, "Collision", Q3CheckListItem::CheckBoxController);
     itemShowCollisionModels = new DisplayFlagItem(this, itemShowCollision, COLLISIONMODELS, "Collision Models");
     itemShowBoundingTrees = new DisplayFlagItem(this, itemShowCollision, itemShowCollisionModels, BOUNDINGTREES, "Bounding Trees");
-    itemShowWireFrame = new DisplayFlagItem(this, listDisplayFlags, itemShowAll, WIREFRAME, "Wire Frame");
-    itemShowNormals = new DisplayFlagItem(this, listDisplayFlags, itemShowWireFrame, NORMALS, "Normals");
+    Q3CheckListItem* itemShowMapping = new Q3CheckListItem(itemShowAll, itemShowCollision, "Mapping", Q3CheckListItem::CheckBoxController);
+    itemShowMappings = new DisplayFlagItem(this, itemShowMapping, itemShowInteractions, MAPPINGS, "Visual Mappings");
+    itemShowMechanicalMappings = new DisplayFlagItem(this, itemShowMapping, itemShowMappings, MECHANICALMAPPINGS, "Mechanical Mappings");
+    Q3ListViewItem* itemShowOptions = new Q3ListViewItem(listDisplayFlags, itemShowAll, "Options");
+    itemShowWireFrame = new DisplayFlagItem(this, itemShowOptions, WIREFRAME, "Wire Frame");
+    itemShowNormals = new DisplayFlagItem(this, itemShowOptions, itemShowWireFrame, NORMALS, "Normals");
 
     left_stack = new QWidgetStack ( splitter2 );
     connect ( startButton, SIGNAL ( toggled ( bool ) ), this , SLOT ( playpauseGUI ( bool ) ) );

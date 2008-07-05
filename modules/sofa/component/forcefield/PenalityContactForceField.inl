@@ -102,7 +102,7 @@ void PenalityContactForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, 
 }
 
 template<class DataTypes>
-void PenalityContactForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2)
+void PenalityContactForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double /*bFactor*/)
 {
     df1.resize(dx1.size());
     df2.resize(dx2.size());
@@ -114,7 +114,7 @@ void PenalityContactForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df
             Coord du = dx2[c.m2]-dx1[c.m1];
             Real dpen = - du*c.norm;
             //if (c.pen < 0) dpen += c.pen; // start penality at distance 0
-            Real dfN = c.ks * dpen;
+            Real dfN = c.ks * dpen * kFactor;
             Deriv dforce = -c.norm*dfN;
             df1[c.m1]+=dforce;
             df2[c.m2]-=dforce;

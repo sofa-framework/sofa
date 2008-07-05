@@ -211,8 +211,11 @@ void PairInteractionForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df
         for (vdx1.index=0; vdx1.index<vtmp1.index; ++vdx1.index)
             if (mstate1->getVecDeriv(vdx1.index) == &dx1)
                 break;
+        VecDeriv& dx1scaled = *mstate1->getVecDeriv(vtmp1.index);
+        dx1scaled.resize(dx1.size());
         mstate1->vOp(vtmp1,BaseMechanicalState::VecId::null(),vdx1,kFactor);
-
+        //std::cout << "dx1 = "<<dx1<<std::endl;
+        //std::cout << "dx1*"<<kFactor<<" = "<<dx1scaled<<std::endl;
         BaseMechanicalState::VecId vtmp2(BaseMechanicalState::VecId::V_DERIV,BaseMechanicalState::VecId::V_FIRST_DYNAMIC_INDEX);
         mstate2->vAvail(vtmp2);
         mstate2->vAlloc(vtmp2);
@@ -221,9 +224,13 @@ void PairInteractionForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df
         for (vdx2.index=0; vdx2.index<vtmp2.index; ++vdx2.index)
             if (mstate2->getVecDeriv(vdx2.index) == &dx2)
                 break;
+        VecDeriv& dx2scaled = *mstate2->getVecDeriv(vtmp2.index);
+        dx2scaled.resize(dx2.size());
         mstate2->vOp(vtmp2,BaseMechanicalState::VecId::null(),vdx2,kFactor);
+        //std::cout << "dx2 = "<<dx2<<std::endl;
+        //std::cout << "dx2*"<<kFactor<<" = "<<dx2scaled<<std::endl;
 
-        addDForce(df1, df2, *mstate1->getVecDeriv(vtmp1.index), *mstate2->getVecDeriv(vtmp2.index));
+        addDForce(df1, df2, dx1scaled, dx2scaled);
 
         mstate1->vFree(vtmp1);
         mstate2->vFree(vtmp2);

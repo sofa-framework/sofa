@@ -256,7 +256,7 @@ void VectorSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, con
 
 template<class DataTypes>
 //void VectorSpringForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx)
-void VectorSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2)
+void VectorSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double /*bFactor*/)
 {
     const sofa::helper::vector<topology::Edge> &ea=(useTopology)?topology->getEdgeSetTopologyContainer()->getEdgeArray() : edgeArray;
     Deriv dforce,d;
@@ -270,7 +270,7 @@ void VectorSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, 
         const topology::Edge &e=ea[i];
         const Spring &s=springArray[i];
         d = dx2[e[1]]-dx1[e[0]];
-        dforce = d*s.ks;
+        dforce = d*(s.ks*kFactor);
         df1[e[0]]+=dforce;
         df2[e[1]]-=dforce;
     }

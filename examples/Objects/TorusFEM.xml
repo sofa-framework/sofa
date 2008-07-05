@@ -1,5 +1,6 @@
 <Node name="TorusFEM">
-	<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
+	<Object type="EulerImplicitSolver" rayleighStiffness="0.01" />
+	<Object type="CGLinearSolver" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
 	<Object type="Mesh" filename="mesh/torus_low_res.msh"/>
 	<Object type="MechanicalObject" dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0" />
 	<Object type="UniformMass" totalmass="5" />
