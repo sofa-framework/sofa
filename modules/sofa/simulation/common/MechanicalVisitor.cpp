@@ -484,7 +484,8 @@ Visitor::Result MechanicalPropagateFreePositionVisitor::fwdConstraint(simulation
 Visitor::Result MechanicalResetForceVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
 {
     mm->setF(res);
-    mm->resetForce();
+    if (!onlyMapped)
+        mm->resetForce();
     return RESULT_CONTINUE;
 }
 Visitor::Result MechanicalResetForceVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
@@ -498,7 +499,8 @@ Visitor::Result MechanicalResetForceVisitor::fwdConstraint(simulation::Node* /*n
     if (mm)
     {
         mm->setF(res);
-        mm->resetForce();
+        if (!onlyMapped)
+            mm->resetForce();
     }
     return RESULT_CONTINUE;
 }
@@ -540,7 +542,8 @@ Visitor::Result MechanicalComputeForceVisitor::fwdForceField(simulation::Node* /
 void MechanicalComputeForceVisitor::bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
 {
     //cerr<<"MechanicalComputeForceVisitor::bwdMechanicalMapping "<<map->getName()<<endl;
-    map->accumulateForce();
+    if (accumulate)
+        map->accumulateForce();
 }
 
 Visitor::Result MechanicalComputeDfVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
@@ -579,7 +582,8 @@ Visitor::Result MechanicalComputeDfVisitor::fwdForceField(simulation::Node* /*no
 }
 void MechanicalComputeDfVisitor::bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
 {
-    map->accumulateDf();
+    if (accumulate)
+        map->accumulateDf();
 }
 
 
@@ -621,7 +625,8 @@ Visitor::Result MechanicalAddMBKdxVisitor::fwdForceField(simulation::Node* /*nod
 
 void MechanicalAddMBKdxVisitor::bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
 {
-    map->accumulateDf();
+    if (accumulate)
+        map->accumulateDf();
 }
 
 Visitor::Result MechanicalResetConstraintVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
