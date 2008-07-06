@@ -112,13 +112,13 @@ public:
     /// Add external forces derivatives to F
     virtual void accumulateDf() { }
 
-    /// Translate the MechanicalObject
+    /// Translate the current state
     virtual void applyTranslation(const double dx, const double dy, const double dz)=0;
 
-    /// Translate the MechanicalObject
+    /// Rotate the current state
     virtual void applyRotation(const defaulttype::Quat q)=0;
 
-    /// Scale the MechanicalObject
+    /// Scale the current state
     virtual void applyScale(const double s)=0;
 
     virtual void writeX(std::ostream &out)=0;

@@ -53,7 +53,7 @@
 //instruments handling
 #include <sofa/component/controller/Controller.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
-#include <sofa/simulation/common/GrabVisitor.h>
+//#include <sofa/simulation/common/GrabVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 #include <sofa/simulation/tree/Simulation.h>
@@ -393,7 +393,7 @@ protected:
                     if (_mouseInteractorMoving)
                     {
                         _mouseInteractorMoving = false;
-                        static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::GrabVisitor>();
+                        //static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::GrabVisitor>();
                     }
                 }
                 break;

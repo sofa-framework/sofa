@@ -8,6 +8,7 @@
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
+#include <sofa/simulation/common/Visitor.h>
 
 #include <fstream>
 
@@ -71,6 +72,39 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
+};
+
+///Create WriteState component in the graph each time needed
+class WriteStateCreator: public Visitor
+{
+public:
+    WriteStateCreator() : sceneName(""), counterWriteState(0), createInMapping(false) {}
+    WriteStateCreator(std::string &n, int c=0) { sceneName=n; counterWriteState=c; }
+    virtual Result processNodeTopDown( simulation::Node*  );
+
+    void setSceneName(std::string &n) { sceneName = n; }
+    void setCounter(int c) { counterWriteState = c; }
+    void setCreateInMapping(bool b) { createInMapping=b; }
+protected:
+    void addWriteState(sofa::core::componentmodel::behavior::BaseMechanicalState*ms, simulation::Node* gnode);
+
+    std::string sceneName;
+    int counterWriteState; //avoid to have two same files if two mechanical objects has the same name
+    bool createInMapping;
+};
+
+class WriteStateActivator: public simulation::Visitor
+{
+public:
+    WriteStateActivator( bool active) : state(active) {}
+    virtual Result processNodeTopDown( simulation::Node*  );
+
+    bool getState() const { return state; }
+    void setState(bool active) { state=active; }
+protected:
+    void changeStateWriter(sofa::component::misc::WriteState *ws);
+
+    bool state;
 };
 
 } // namespace misc

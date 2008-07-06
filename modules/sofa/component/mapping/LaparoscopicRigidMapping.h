@@ -58,24 +58,20 @@ public:
     typedef typename Out::Coord Coord;
     typedef typename Out::Deriv Deriv;
     //typedef typename Coord::value_type Real;
-    defaulttype::Quat currentRotation;
+
 public:
     Data<defaulttype::Vector3> pivot;
     Data<defaulttype::Quat> rotation;
-    Data< component::topology::PointSubset > grab_index;
 
     LaparoscopicRigidMapping(In* from, Out* to)
         : Inherit(from, to)
-        , pivot(initData(&pivot, defaulttype::Vector3(0,0,0), "pivot","TODO-pivot"))
+        , pivot(initData(&pivot, defaulttype::Vector3(0,0,0), "pivot","Pivot point position"))
         , rotation(initData(&rotation, defaulttype::Quat(0,0,0,1), "rotation", "TODO-rotation"))
-        , grab_index(initData(&grab_index, "grab", "Index of the point to grab"))
-        , mstate(NULL), grab_state(false)
     {
     }
 
     virtual ~LaparoscopicRigidMapping()
     {
-        processRelease();
     }
 
 
@@ -84,8 +80,6 @@ public:
 
     void init();
 
-    virtual void reinit() {mstate = getMechanicalState();};
-
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
 
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
@@ -93,29 +87,9 @@ public:
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
     void draw();
-    void grab();
 
 protected:
-    void processGrab();
-    void processRelease();
-    //Contain the mechanical state of the tool
-    core::componentmodel::behavior::MechanicalState< defaulttype::Vec3Types > *mstate;
-    bool grab_state;/*
-	  component::MechanicalObject<defaulttype::Vec3Types> *mm;*/
-
-    //Find the DOFs of the laparascopic object
-    core::componentmodel::behavior::MechanicalState< defaulttype::Vec3Types > *getMechanicalState()
-    {
-        core::componentmodel::behavior::MechanicalState< defaulttype::Vec3Types > *m;
-        this->getContext()->get(m);
-        return m;
-    }
-
-
-    //For a give index, give the coordinates of a point
-    helper::vector< defaulttype::Vec3f > getGrabPoints();
-    sofa::helper::vector<core::componentmodel::behavior::BaseForceField*> forcefields;
-    sofa::helper::vector<simulation::tree::GNode*> nodes;
+    defaulttype::Quat currentRotation;
 };
 
 } // namespace mapping

@@ -13,6 +13,7 @@ namespace helper
 
 using namespace std;
 
+
 LCP::LCP(unsigned int mxC) : maxConst(mxC), tol(0.00001), numItMax(1000), useInitialF(true), mu(0.0), dim(0)
 {
     W = new double*[maxConst];
@@ -1129,7 +1130,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
     d = (double*)malloc(dim*sizeof(double));
     // put the vector force to zero
     if (!useInitialF)
-        memset(f, 0, MAX_NUM_CONSTRAINTS*sizeof(double));
+        memset(f, 0, dim*sizeof(double));
 
     // previous value of the force and the displacment
     double f_1[3];
@@ -1242,7 +1243,7 @@ int nlcp_gaussseidelTimed(int dim, double *dfree, double**W, double *f, double m
     d = (double*)malloc(dim*sizeof(double));
     // put the vector force to zero
     if (!useInitialF)
-        memset(f, 0, MAX_NUM_CONSTRAINTS*sizeof(double));
+        memset(f, 0, dim*sizeof(double));
 
     // previous value of the force and the displacment
     double f_1[3];

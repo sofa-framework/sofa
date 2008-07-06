@@ -443,7 +443,8 @@ void Simulation::dumpState ( Node* root, std::ofstream& out )
 void Simulation::initGnuplot ( Node* root )
 {
     if ( !root ) return;
-    root->execute<InitGnuplotVisitor>();
+    InitGnuplotVisitor v(gnuplotDirectory.getValue());
+    root->execute( v );
 }
 
 /// Update gnuplot file output

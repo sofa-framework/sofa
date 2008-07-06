@@ -1,6 +1,5 @@
 #include <sofa/simulation/common/ExportGnuplotVisitor.h>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/tree/Simulation.h>
 #include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
 #include <iostream>
 using std::cerr;
@@ -16,11 +15,11 @@ simulation::Visitor::Result InitGnuplotVisitor::processNodeTopDown(simulation::N
 {
     if (node->mechanicalState != NULL )
     {
-        node->mechanicalState->initGnuplot(tree::getSimulation()->gnuplotDirectory.getValue());
+        node->mechanicalState->initGnuplot(gnuplotDirectory);
     }
     if (node->mass != NULL )
     {
-        node->mass->initGnuplot(tree::getSimulation()->gnuplotDirectory.getValue());
+        node->mass->initGnuplot(gnuplotDirectory);
     }
     return RESULT_CONTINUE;
 }

@@ -23,7 +23,6 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/simulation/common/PipelineImpl.h>
-#include <sofa/component/collision/DiscreteIntersection.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/common/Node.h>
 namespace sofa

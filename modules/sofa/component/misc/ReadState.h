@@ -7,6 +7,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/simulation/common/Visitor.h>
 
 #include <fstream>
 
@@ -61,6 +62,54 @@ public:
     }
 
 
+};
+
+
+///Create ReadState component in the graph each time needed
+class ReadStateCreator: public Visitor
+{
+public:
+    ReadStateCreator():sceneName(""), counterReadState(0), createInMapping(false) {}
+    ReadStateCreator(std::string &n, bool i=true, int c=0 ) { sceneName=n; init=i; counterReadState=c; }
+    virtual Result processNodeTopDown( simulation::Node*  );
+
+    void setSceneName(std::string &n) { sceneName = n;}
+    void setCounter(int c) {counterReadState = c;};
+    void setCreateInMapping(bool b) {createInMapping=b;}
+protected:
+    void addReadState(sofa::core::componentmodel::behavior::BaseMechanicalState *ms, simulation::Node* gnode);
+    bool init;
+    std::string sceneName;
+    int counterReadState; //avoid to have two same files if two mechanical objects has the same name
+    bool createInMapping;
+};
+
+class ReadStateActivator: public Visitor
+{
+public:
+    ReadStateActivator( bool active):state(active) {}
+    virtual Result processNodeTopDown( simulation::Node*  );
+
+    bool getState() const {return state;};
+    void setState(bool active) {state=active;};
+protected:
+    void changeStateReader(sofa::component::misc::ReadState *ws);
+
+    bool state;
+};
+
+class ReadStateModifier: public simulation::Visitor
+{
+public:
+    ReadStateModifier( double _time):time(_time) {}
+    virtual Result processNodeTopDown( simulation::Node*  );
+
+    double getTime() const { return time; }
+    void setTime(double _time) { time=_time; }
+protected:
+    void changeTimeReader(sofa::component::misc::ReadState *rs) { rs->processReadState(time); }
+
+    double time;
 };
 
 } // namespace misc

@@ -53,7 +53,7 @@ public:
     }
 
     bool load(std::string filename);
-    bool save(std::string filename);
+    bool save(std::string filename, int compression_level = -1);
 };
 
 } // namespace io

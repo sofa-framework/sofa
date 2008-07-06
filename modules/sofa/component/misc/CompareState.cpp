@@ -17,8 +17,10 @@ namespace component
 namespace misc
 {
 
+
 int CompareStateClass = core::RegisterObject("Compare State vectors from a reference frame to the associated Mechanical State")
         .add< CompareState >();
+
 CompareState::CompareState(): ReadState()
 {
     totalError_X=0.0;
@@ -76,6 +78,63 @@ void CompareState::processCompareState()
         }
     }
 }
+
+
+
+
+
+
+
+//Create a Compare State component each time a mechanical state is found
+simulation::Visitor::Result CompareStateCreator::processNodeTopDown( simulation::Node* gnode)
+{
+    using namespace sofa::defaulttype;
+    sofa::core::componentmodel::behavior::BaseMechanicalState * mstate = dynamic_cast<sofa::core::componentmodel::behavior::BaseMechanicalState *>( gnode->getMechanicalState());
+    if (!mstate)   return simulation::Visitor::RESULT_CONTINUE;
+    //We have a mechanical state
+    addCompareState(mstate, gnode);
+    return simulation::Visitor::RESULT_CONTINUE;
+}
+
+
+
+void CompareStateCreator::addCompareState(sofa::core::componentmodel::behavior::BaseMechanicalState *ms, simulation::Node* gnode)
+{
+
+    sofa::core::objectmodel::BaseContext* context = gnode->getContext();
+    sofa::core::BaseMapping *mapping; context->get(mapping);
+    if (createInMapping || mapping== NULL)
+    {
+        sofa::component::misc::CompareState *rs; context->get(rs);
+        if (  rs == NULL )
+        {
+            rs = new sofa::component::misc::CompareState(); gnode->addObject(rs);
+        }
+
+        std::ostringstream ofilename;
+        ofilename << sceneName << "_" << counterCompareState << "_" << ms->getName()  << "_mstate.txt" ;
+
+        rs->f_filename.setValue(ofilename.str());  rs->f_listening.setValue(false); //Desactivated only called by extern functions
+        if (init) rs->init();
+
+        ++counterCompareState;
+    }
+}
+
+
+
+//Create a Compare State component each time a mechanical state is found
+simulation::Visitor::Result CompareStateResult::processNodeTopDown( simulation::Node* gnode)
+{
+    sofa::component::misc::CompareState *cv;
+    gnode->get(cv);
+    if (!cv)   return simulation::Visitor::RESULT_CONTINUE;
+    //We have a mechanical state
+    error += cv->getError();
+    return simulation::Visitor::RESULT_CONTINUE;
+}
+
+
 
 } // namespace misc
 
