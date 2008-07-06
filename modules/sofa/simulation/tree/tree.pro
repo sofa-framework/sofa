@@ -37,6 +37,7 @@ include($${SOFA_DIR}/sofa.cfg)
 TARGET = sofatree$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES
 LIBS += $$SOFA_FRAMEWORK_LIBS
+LIBS += -lsofasimulation$$LIBSUFFIX
 LIBS += $$SOFA_EXT_LIBS
 
 # Make sure there are no cross-dependencies

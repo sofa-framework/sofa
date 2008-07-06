@@ -10,6 +10,40 @@
 namespace sofa
 {
 
+namespace component
+{
+
+namespace mapping
+{
+
+using namespace sofa::defaulttype;
+using namespace sofa::core;
+using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::gpu::cuda;
+
+template class RigidMapping< MechanicalMapping< MechanicalState<CudaRigid3fTypes>, MechanicalState<CudaVec3fTypes> > >;
+template class RigidMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<CudaVec3fTypes> > >;
+template class RigidMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<CudaVec3fTypes> > >;
+//template class RigidMapping< MechanicalMapping< MechanicalState<CudaRigid3fTypes>, MechanicalState<Vec3dTypes> > >;
+//template class RigidMapping< MechanicalMapping< MechanicalState<CudaRigid3fTypes>, MechanicalState<Vec3fTypes> > >;
+template class RigidMapping< Mapping< State<CudaRigid3fTypes>, MappedModel<CudaVec3fTypes> > >;
+template class RigidMapping< Mapping< State<Rigid3fTypes>, MappedModel<CudaVec3fTypes> > >;
+template class RigidMapping< Mapping< State<Rigid3dTypes>, MappedModel<CudaVec3fTypes> > >;
+//template class RigidMapping< Mapping< State<CudaRigid3fTypes>, MappedModel<Vec3dTypes> > >;
+//template class RigidMapping< Mapping< State<CudaRigid3fTypes>, MappedModel<Vec3fTypes> > >;
+//template class RigidMapping< Mapping< State<CudaRigid3fTypes>, MappedModel<ExtVec3dTypes> > >;
+//template class RigidMapping< Mapping< State<CudaRigid3fTypes>, MappedModel<ExtVec3fTypes> > >;
+template class RigidMapping< MechanicalMapping< MechanicalState<CudaRigid3fTypes>, MechanicalState<CudaVec3f1Types> > >;
+template class RigidMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<CudaVec3f1Types> > >;
+template class RigidMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<CudaVec3f1Types> > >;
+template class RigidMapping< Mapping< State<CudaRigid3fTypes>, MappedModel<CudaVec3f1Types> > >;
+template class RigidMapping< Mapping< State<Rigid3fTypes>, MappedModel<CudaVec3f1Types> > >;
+template class RigidMapping< Mapping< State<Rigid3dTypes>, MappedModel<CudaVec3f1Types> > >;
+
+} // namespace mapping
+
+} // namespace component
+
 namespace gpu
 {
 

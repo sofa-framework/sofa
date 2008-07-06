@@ -128,6 +128,13 @@ public:
     typedef Factory<std::string, Mesh, std::string> FactoryMesh;
 
     static Mesh* Create(std::string filename);
+
+    template<class Object>
+    static void create(Object*& obj, std::string arg)
+    {
+        obj = new Object(arg);
+    }
+
 };
 
 } // namespace io

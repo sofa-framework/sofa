@@ -43,6 +43,8 @@ template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTyp
 BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::BarycentricPenalityContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
     : model1(model1), model2(model2), intersectionMethod(intersectionMethod), ff(NULL), parent(NULL)
 {
+    mapper1.setCollisionModel(model1);
+    mapper2.setCollisionModel(model2);
 }
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
@@ -73,8 +75,8 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
     const bool printLog = this->f_printLog.getValue();
     if (ff==NULL)
     {
-        MechanicalState1* mstate1 = mapper1.createMapping(model1);
-        MechanicalState2* mstate2 = mapper2.createMapping(model2);
+        MechanicalState1* mstate1 = mapper1.createMapping();
+        MechanicalState2* mstate2 = mapper2.createMapping();
         ff = new ResponseForceField(mstate1,mstate2);
         ff->setName( getName() );
     }
@@ -173,12 +175,14 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
         CollisionElement2 elem2(o->elem.second);
         int index1 = elem1.getIndex();
         int index2 = elem2.getIndex();
+        double r1 = 0.0;
+        double r2 = 0.0;
         // Create mapping for first point
-        index1 = mapper1.addPoint(o->point[0], index1);
+        index1 = mapper1.addPoint(o->point[0], index1, r1);
         // Create mapping for second point
-        index2 = mapper2.addPoint(o->point[1], index2);
+        index2 = mapper2.addPoint(o->point[1], index2, r2);
 
-        double distance = d0 + mapper1.radius(elem1) + mapper2.radius(elem2);
+        double distance = d0 + r1 + r2;
         double stiffness = (elem1.getContactStiffness() * elem2.getContactStiffness());
         if (distance != 0.0) stiffness /= distance;
 

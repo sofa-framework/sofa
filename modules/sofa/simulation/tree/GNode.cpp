@@ -26,7 +26,6 @@
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/simulation/common/DesactivatedNodeVisitor.h>
 #include <sofa/simulation/tree/MutationListener.h>
-#include <sofa/simulation/tree/xml/NodeElement.h>
 #include <iostream>
 
 using std::cerr;
@@ -648,31 +647,6 @@ void GNode::notifyMoveObject(core::objectmodel::BaseObject* obj, GNode* prev)
 {
     for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
         (*it)->moveObject(prev, this, obj);
-}
-
-
-
-void create(GNode*& obj, xml::Element<core::objectmodel::BaseNode>* arg)
-{
-    obj = new GNode();
-    obj->parse(arg);
-    /*
-    // This is no longer necessary as datafields are now used to parse attributes
-    obj->setDt(atof(arg->getAttribute("dt","0.01")));
-    obj->setTime(atof(arg->getAttribute("time","0.0")));
-    obj->setAnimate((atoi(arg->getAttribute("animate","0"))!=0));
-    obj->setDebug((atoi(arg->getAttribute("debug","0"))!=0));
-    obj->setShowCollisionModels((atoi(arg->getAttribute("showCollisionModels","0"))!=0));
-    obj->setShowBoundingCollisionModels((atoi(arg->getAttribute("showBoundingCollisionModels",arg->getAttribute("showCollisionModels","0")))!=0));
-    obj->setShowBehaviorModels((atoi(arg->getAttribute("showBehaviorModels","0"))!=0));
-    obj->setShowVisualModels((atoi(arg->getAttribute("showVisualModels","1"))!=0));
-    obj->setShowMappings((atoi(arg->getAttribute("showMappings","0"))!=0));
-    obj->setShowMechanicalMappings((atoi(arg->getAttribute("showMechanicalMappings",arg->getAttribute("showMappings","0")))!=0));
-    obj->setShowForceFields((atoi(arg->getAttribute("showForceFields","0"))!=0));
-    obj->setShowInteractionForceFields((atoi(arg->getAttribute("showInteractionForceFields",arg->getAttribute("showForceFields","0")))!=0));
-    obj->setShowWireFrame((atoi(arg->getAttribute("showWireFrame","0"))!=0));
-    obj->setShowNormals((atoi(arg->getAttribute("showNormals","0"))!=0));
-    */
 }
 
 SOFA_DECL_CLASS(GNode)

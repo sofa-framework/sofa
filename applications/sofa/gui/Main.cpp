@@ -1,4 +1,5 @@
 #include "SofaGUI.h"
+#include <sofa/component/init.h>
 
 namespace sofa
 {
@@ -24,6 +25,7 @@ SOFA_LINK_CLASS(OgreGUI)
 
 int SofaGUI::Init()
 {
+    sofa::component::init();
     if (guiCreators().empty())
     {
         std::cerr << "ERROR(SofaGUI): No GUI registered."<<std::endl;

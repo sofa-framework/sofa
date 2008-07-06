@@ -46,14 +46,6 @@ namespace tree
 namespace xml
 {
 
-//using namespace Common;
-
-template<class Node>
-void create(Node*& obj, std::pair<std::string,std::string> arg)
-{
-    obj = new Node(arg.first,arg.second);
-}
-
 class BaseElement : public core::objectmodel::BaseObjectDescription
 {
 private:
@@ -225,6 +217,12 @@ public:
     typedef helper::Factory< std::string, BaseElement, std::pair<std::string, std::string> > NodeFactory;
 
     static BaseElement* Create(const std::string& nodeClass, const std::string& name, const std::string& type);
+
+    template<class Node>
+    static void create(Node*& obj, std::pair<std::string,std::string> arg)
+    {
+        obj = new Node(arg.first,arg.second);
+    }
 
 };
 

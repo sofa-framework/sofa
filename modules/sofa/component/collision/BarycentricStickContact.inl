@@ -44,6 +44,8 @@ BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::Ba
     : model1(model1), model2(model2), intersectionMethod(intersectionMethod), ff(NULL), parent(NULL)
     , f_keepAlive(initData(&f_keepAlive, true, "keepAlive", "set to true to keep this contact alive even after collisions are no longer detected"))
 {
+    mapper1.setCollisionModel(model1);
+    mapper2.setCollisionModel(model2);
 }
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
@@ -76,8 +78,8 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
     if (ff==NULL)
     {
         std::cout << "Creating BarycentricStickContact springs"<<std::endl;
-        MechanicalState1* mstate1 = mapper1.createMapping(model1);
-        MechanicalState2* mstate2 = mapper2.createMapping(model2);
+        MechanicalState1* mstate1 = mapper1.createMapping();
+        MechanicalState2* mstate2 = mapper2.createMapping();
         ff = new ResponseForceField(mstate1,mstate2); ff->setName( getName());
     }
 
@@ -175,12 +177,14 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
         CollisionElement2 elem2(o->elem.second);
         int index1 = elem1.getIndex();
         int index2 = elem2.getIndex();
+        double r1 = 0.0;
+        double r2 = 0.0;
         // Create mapping for first point
-        index1 = mapper1.addPoint(o->point[0], index1);
+        index1 = mapper1.addPoint(o->point[0], index1, r1);
         // Create mapping for second point
-        index2 = mapper2.addPoint(o->point[1], index2);
+        index2 = mapper2.addPoint(o->point[1], index2, r2);
 
-        double distance = d0 + mapper1.radius(elem1) + mapper2.radius(elem2);
+        double distance = d0 + r1 + r2;
         double stiffness = (elem1.getContactStiffness() * elem2.getContactStiffness())/distance;
 
         double mu_v = (elem1.getContactFriction() + elem2.getContactFriction());

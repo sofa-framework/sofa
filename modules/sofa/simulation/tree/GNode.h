@@ -27,6 +27,7 @@
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/tree/MutationListener.h>
+#include <sofa/simulation/tree/xml/NodeElement.h>
 #include <stdlib.h>
 #include <vector>
 #include <string>
@@ -195,6 +196,13 @@ public:
     Sequence<GNode> child;
     typedef Sequence<GNode>::iterator ChildIterator;
 
+
+
+    static void create(GNode*& obj, xml::Element<core::objectmodel::BaseNode>* arg)
+    {
+        obj = new GNode();
+        obj->parse(arg);
+    }
 
 protected:
 

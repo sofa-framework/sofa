@@ -9,6 +9,12 @@ CONFIG += $$CONFIGLIBRARIES
 #CONFIG -= dynamiclib
 #CONFIG += staticlib
 LIBS += $$SOFA_FRAMEWORK_LIBS
+LIBS += -lsofasimulation$$LIBSUFFIX
+LIBS += -lsofatree$$LIBSUFFIX
+contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
+LIBS += -lsofaautomatescheduler$$LIBSUFFIX
+} # END SOFA_DEV
+LIBS += -lsofacomponent$$LIBSUFFIX
 LIBS += $$SOFA_EXT_LIBS
 
 HEADERS += mycuda.h \

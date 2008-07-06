@@ -19,6 +19,8 @@ template < class TCollisionModel1, class TCollisionModel2 >
 BarycentricLagrangianMultiplierContact<TCollisionModel1,TCollisionModel2>::BarycentricLagrangianMultiplierContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
     : model1(model1), model2(model2), intersectionMethod(intersectionMethod), ff(NULL), parent(NULL)
 {
+    mapper1.setCollisionModel(model1);
+    mapper2.setCollisionModel(model2);
 }
 
 template < class TCollisionModel1, class TCollisionModel2 >
@@ -58,8 +60,8 @@ void BarycentricLagrangianMultiplierContact<TCollisionModel1,TCollisionModel2>::
     }
     if (ff==NULL)
     {
-        MechanicalState1* mstate1 = mapper1.createMapping(model1);
-        MechanicalState2* mstate2 = mapper2.createMapping(model2);
+        MechanicalState1* mstate1 = mapper1.createMapping();
+        MechanicalState2* mstate2 = mapper2.createMapping();
         ff = new constraint::LagrangianMultiplierContactConstraint<Vec3Types>(mstate1,mstate2);
     }
 
@@ -75,11 +77,13 @@ void BarycentricLagrangianMultiplierContact<TCollisionModel1,TCollisionModel2>::
         CollisionElement2 elem2(o->elem.second);
         int index1 = elem1.getIndex();
         int index2 = elem2.getIndex();
+        double r1 = 0.0;
+        double r2 = 0.0;
         // Create mapping for first point
-        index1 = mapper1.addPoint(o->point[0], index1);
+        index1 = mapper1.addPoint(o->point[0], index1, r1);
         // Create mapping for second point
-        index2 = mapper2.addPoint(o->point[1], index2);
-        double distance = intersectionMethod->getContactDistance() + mapper1.radius(elem1) + mapper2.radius(elem2);
+        index2 = mapper2.addPoint(o->point[1], index2, r2);
+        double distance = intersectionMethod->getContactDistance() + r1 + r2;
         if (!model1->isSimulated() || !model2->isSimulated()) // create stiffer springs for non-animated models as only half of the force is really applied
             ff->addContact(index1, index2, o->normal, distance, 300, 0.00f, 0.00f); /// \todo compute stiffness and damping
         else

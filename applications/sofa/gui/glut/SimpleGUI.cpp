@@ -2036,6 +2036,7 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
                 groot->addChild(child);
                 child->addObject(interactor);
             }
+            interactor->init();
         }
         interactor->newEvent("show");
         switch (type)

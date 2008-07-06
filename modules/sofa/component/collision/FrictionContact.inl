@@ -25,6 +25,9 @@ template < class TCollisionModel1, class TCollisionModel2 >
 FrictionContact<TCollisionModel1,TCollisionModel2>::FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
     : model1(model1), model2(model2), intersectionMethod(intersectionMethod), c(NULL), parent(NULL)
 {
+    mapper1.setCollisionModel(model1);
+    mapper2.setCollisionModel(model2);
+
     mu = 0.6;
 }
 
@@ -90,9 +93,9 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
     if (c==NULL)
     {
         // Get the mechanical model from mapper1 to fill the constraint vector
-        MechanicalState1* mmodel1 = mapper1.createMapping(model1);
+        MechanicalState1* mmodel1 = mapper1.createMapping();
         // Get the mechanical model from mapper2 to fill the constraints vector
-        MechanicalState2* mmodel2 = mapper2.createMapping(model2);
+        MechanicalState2* mmodel2 = mapper2.createMapping();
         c = new constraint::UnilateralInteractionConstraint<Vec3Types>(mmodel1, mmodel2);
     }
 
@@ -109,18 +112,19 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
         CollisionElement2 elem2(o->elem.second);
         int index1 = elem1.getIndex();
         int index2 = elem2.getIndex();
-
+        double r1 = 0.0;
+        double r2 = 0.0;
         //double constraintValue = ((o->point[1] - o->point[0]) * o->normal) - intersectionMethod->getContactDistance();
 
         // Create mapping for first point
-        index1 = mapper1.addPoint(o->point[0], index1);
+        index1 = mapper1.addPoint(o->point[0], index1, r1);
         // Create mapping for second point
-        index2 = mapper2.addPoint(o->point[1], index2);
+        index2 = mapper2.addPoint(o->point[1], index2, r2);
         // Checks if friction is considered
         if (mu < 0.0 || mu > 1.0)
             cerr << endl << "Error: mu has to take values between 0.0 and 1.0" << endl;
 
-        double distance = d0 + mapper1.radius(elem1) + mapper2.radius(elem2);
+        double distance = d0 + r1 + r2;
         // Polynome de Cantor de N� sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
         long index = cantorPolynomia(cantorPolynomia(index1, index2),id);
         c->addContact(mu, o->normal, o->point[1], o->point[0], distance, index1, index2, o->freePoint[1], o->freePoint[0], index);

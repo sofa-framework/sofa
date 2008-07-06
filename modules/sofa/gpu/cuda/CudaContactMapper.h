@@ -67,13 +67,15 @@ template <class DataTypes>
 class ContactMapper<sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel,DataTypes> : public RigidContactMapper<sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel,DataTypes>
 {
 public:
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
     typedef RigidContactMapper<sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel,DataTypes> Inherit;
     typedef typename Inherit::MMechanicalState MMechanicalState;
     typedef typename Inherit::MCollisionModel MCollisionModel;
 
-    int addPoint(const Vector3& P, int index)
+    int addPoint(const Coord& P, int index, Real& r)
     {
-        int i = Inherit::addPoint(P, index);
+        int i = this->Inherit::addPoint(P, index, r);
         if (!this->mapping)
         {
             MCollisionModel* model = this->model;
@@ -121,13 +123,15 @@ template <class DataTypes>
 class ContactMapper<sofa::gpu::cuda::CudaPointModel,DataTypes> : public SubsetContactMapper<sofa::gpu::cuda::CudaPointModel,DataTypes>
 {
 public:
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
     typedef SubsetContactMapper<sofa::gpu::cuda::CudaPointModel,DataTypes> Inherit;
     typedef typename Inherit::MMechanicalState MMechanicalState;
     typedef typename Inherit::MCollisionModel MCollisionModel;
 
-    int addPoint(const Vector3& P, int index)
+    int addPoint(const Coord& P, int index, Real& r)
     {
-        int i = Inherit::addPoint(P, index);
+        int i = Inherit::addPoint(P, index, r);
         return i;
     }
 
@@ -149,13 +153,15 @@ template <class DataTypes>
 class ContactMapper<sofa::gpu::cuda::CudaSphereModel,DataTypes> : public SubsetContactMapper<sofa::gpu::cuda::CudaSphereModel,DataTypes>
 {
 public:
-    typedef SubsetContactMapper<sofa::gpu::cuda::CudaPointModel,DataTypes> Inherit;
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    typedef SubsetContactMapper<sofa::gpu::cuda::CudaSphereModel,DataTypes> Inherit;
     typedef typename Inherit::MMechanicalState MMechanicalState;
     typedef typename Inherit::MCollisionModel MCollisionModel;
 
-    int addPoint(const Vector3& P, int index)
+    int addPoint(const Coord& P, int index, Real& r)
     {
-        int i = Inherit::addPoint(P, index);
+        int i = this->Inherit::addPoint(P, index, r);
         return i;
     }
 

@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_H
 
 #include <sofa/helper/system/config.h>
+#include <sofa/helper/Factory.h>
 #include <sofa/component/mapping/BarycentricMapping.h>
 #include <sofa/component/mapping/IdentityMapping.h>
 #include <sofa/component/mapping/RigidMapping.h>
@@ -60,11 +61,47 @@ using namespace sofa::defaulttype;
 template < class TCollisionModel, class DataTypes = typename TCollisionModel::DataTypes >
 class ContactMapper;
 
-/// Base class for all mappers using BarycentricMapping
-template < class TCollisionModel, class DataTypes >
-class BarycentricContactMapper
+/// Base class common to all mappers able to provide a MechanicalState of a given type
+template <class TDataTypes>
+class BaseContactMapper
 {
 public:
+    typedef TDataTypes DataTypes;
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MMechanicalState;
+    virtual ~BaseContactMapper() {}
+    virtual MMechanicalState* createMapping(const char* name = "contactPoints") = 0;
+    virtual void cleanup() = 0;
+    virtual void resize(int size) = 0;
+    virtual int addPoint(const Coord& c, int index, Real& r) = 0;
+    virtual void update() = 0;
+
+    typedef helper::Factory< std::string, BaseContactMapper<DataTypes>, core::CollisionModel* > ContactMapperFactory;
+    static BaseContactMapper<DataTypes>* Create(core::CollisionModel* model, const std::string& name = std::string("default"))
+    {
+        return ContactMapperFactory::CreateObject(name, model);
+    }
+
+    template < class TCollisionModel>
+    static void create( ContactMapper<TCollisionModel, DataTypes>*& obj, core::CollisionModel* arg)
+    {
+        TCollisionModel* model = dynamic_cast<TCollisionModel*>(arg);
+        if (model == NULL) return;
+        obj = new ContactMapper<TCollisionModel, DataTypes>;
+        obj->setCollisionModel(model);
+    }
+
+};
+
+/// Base class for all mappers using BarycentricMapping
+template < class TCollisionModel, class DataTypes >
+class BarycentricContactMapper : public BaseContactMapper<DataTypes>
+{
+public:
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
     typedef TCollisionModel MCollisionModel;
     typedef typename MCollisionModel::InDataTypes InDataTypes;
     typedef typename MCollisionModel::Topology InTopology;
@@ -82,42 +119,14 @@ public:
     {
     }
 
-    void cleanup()
-    {
-        if (mapping!=NULL)
-        {
-            simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getContext());
-            if (parent!=NULL)
-            {
-                simulation::tree::GNode* child = dynamic_cast<simulation::tree::GNode*>(mapping->getContext());
-                child->removeObject(mapping->getTo());
-                child->removeObject(mapping);
-                parent->removeChild(child);
-                delete mapping->getTo();
-                delete mapping;
-                delete child;
-            }
-        }
-    }
-
-    MMechanicalState* createMapping(MCollisionModel* model)
+    void setCollisionModel(MCollisionModel* model)
     {
         this->model = model;
-        simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getContext());
-        if (parent==NULL)
-        {
-            std::cerr << "ERROR: BarycentricContactMapper only works for scenegraph scenes.\n";
-            return NULL;
-        }
-        simulation::tree::GNode* child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateSimulationContext();
-        MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
-        //mapping = new MMapping(model->getMechanicalState(), mstate, model->getTopology());
-        //mapper = mapping->getMapper();
-        mapper = new mapping::BarycentricMapperMeshTopology<InDataTypes, DataTypes>(model->getTopology());
-        mapping = new MMapping(model->getMechanicalState(), mstate, mapper);
-        child->addObject(mapping);
-        return mstate;
     }
+
+    void cleanup();
+
+    MMechanicalState* createMapping(const char* name="contactPoints");
 
     void resize(int size)
     {
@@ -135,11 +144,6 @@ public:
             mapping->updateMapping();
         }
     }
-
-    double radius(const typename TCollisionModel::Element& /*e*/)
-    {
-        return 0.0;
-    }
 };
 
 /// Mapper for LineModel
@@ -147,7 +151,9 @@ template<class DataTypes>
 class ContactMapper<LineModel, DataTypes> : public BarycentricContactMapper<LineModel, DataTypes>
 {
 public:
-    int addPoint(const Vector3& P, int index)
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    int addPoint(const Coord& P, int index, Real&)
     {
         return this->mapper->createPointInLine(P, index, this->model->getMechanicalState()->getX());
     }
@@ -159,7 +165,9 @@ template<class DataTypes>
 class ContactMapper<TriangleModel, DataTypes> : public BarycentricContactMapper<TriangleModel, DataTypes>
 {
 public:
-    int addPoint(const Vector3& P, int index)
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    int addPoint(const Coord& P, int index, Real&)
     {
         int nbt = this->model->getTopology()->getNbTriangles();
         if (index < nbt)
@@ -180,23 +188,14 @@ public:
     }
 };
 
-///// Mapper for TriangleSetModel
-//template<class DataTypes>
-//class ContactMapper<TriangleSetModel, DataTypes> : public BarycentricContactMapper<TriangleSetModel, DataTypes>
-//{
-//public:
-//    int addPoint(const Vector3& P, int index)
-//    {
-//        return this->mapper->createPointInTriangle(P, index, this->model->getMechanicalState()->getX());
-//    }
-//};
-
 /// Mapper for TetrahedronModel
 template<class DataTypes>
 class ContactMapper<TetrahedronModel, DataTypes> : public BarycentricContactMapper<TetrahedronModel, DataTypes>
 {
 public:
-    int addPoint(const Vector3& P, int index)
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    int addPoint(const Coord& P, int index, Real&)
     {
         Tetrahedron t(this->model, index);
         Vector3 b = t.getBary(P);
@@ -206,9 +205,11 @@ public:
 
 /// Base class for IdentityMapping based mappers
 template<class TCollisionModel, class DataTypes>
-class IdentityContactMapper
+class IdentityContactMapper : public BaseContactMapper<DataTypes>
 {
 public:
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
     typedef TCollisionModel MCollisionModel;
     typedef typename MCollisionModel::InDataTypes InDataTypes;
     typedef core::componentmodel::behavior::MechanicalState<InDataTypes> InMechanicalState;
@@ -223,44 +224,20 @@ public:
     {
     }
 
-    void cleanup()
-    {
-        if (mapping!=NULL)
-        {
-            simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getContext());
-            if (parent!=NULL)
-            {
-                simulation::tree::GNode* child = dynamic_cast<simulation::tree::GNode*>(mapping->getContext());
-                child->removeObject(mapping->getTo());
-                child->removeObject(mapping);
-                parent->removeChild(child);
-                delete mapping->getTo();
-                delete mapping;
-                delete child;
-            }
-        }
-    }
-
-    MMechanicalState* createMapping(MCollisionModel* model)
+    void setCollisionModel(MCollisionModel* model)
     {
         this->model = model;
-        simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getContext());
-        if (parent==NULL)
-        {
-            std::cerr << "ERROR: IdentityContactMapper only works for scenegraph scenes.\n";
-            return NULL;
-        }
-        simulation::tree::GNode* child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateSimulationContext();
-        MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
-        mapping = new MMapping(model->getMechanicalState(), mstate); child->addObject(mapping);
-        return mstate;
     }
+
+    void cleanup();
+
+    MMechanicalState* createMapping(const char* name="contactPoints");
 
     void resize(int size)
     {
     }
 
-    int addPoint(const Vector3& P, int index)
+    int addPoint(const Coord&, int index, Real&)
     {
         return index;
     }
@@ -272,21 +249,18 @@ public:
             mapping->updateMapping();
         }
     }
-
-    double radius(const typename TCollisionModel::Element& /*e*/)
-    {
-        return 0.0;
-    }
 };
 
 /// Specialization of IdentityContactMapper when mapping to the same DataTypes, as no mapping is required in this case
 template<class TCollisionModel>
-class IdentityContactMapper<TCollisionModel, typename TCollisionModel::InDataTypes>
+class IdentityContactMapper<TCollisionModel, typename TCollisionModel::InDataTypes> : public BaseContactMapper<typename TCollisionModel::InDataTypes>
 {
 public:
     typedef TCollisionModel MCollisionModel;
     typedef typename MCollisionModel::InDataTypes InDataTypes;
     typedef typename MCollisionModel::InDataTypes DataTypes;
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
     typedef core::componentmodel::behavior::MechanicalState<InDataTypes> InMechanicalState;
     typedef core::componentmodel::behavior::MechanicalState<DataTypes> MMechanicalState;
     MCollisionModel* model;
@@ -296,13 +270,18 @@ public:
     {
     }
 
+    void setCollisionModel(MCollisionModel* model)
+    {
+        this->model = model;
+    }
+
     void cleanup()
     {
     }
 
-    MMechanicalState* createMapping(MCollisionModel* model)
+    MMechanicalState* createMapping(const char* /*name*/="contactPoints")
     {
-        this->model = model;
+        if (model==NULL) return NULL;
         return model->getMechanicalState();
     }
 
@@ -310,18 +289,13 @@ public:
     {
     }
 
-    int addPoint(const Vector3& /*P*/, int index)
+    int addPoint(const Coord& /*P*/, int index, Real&)
     {
         return index;
     }
 
     void update()
     {
-    }
-
-    double radius(const typename TCollisionModel::Element& /*e*/)
-    {
-        return 0.0;
     }
 };
 
@@ -337,9 +311,13 @@ template<class TInDataTypes, class DataTypes>
 class ContactMapper<TSphereModel<TInDataTypes>, DataTypes> : public IdentityContactMapper<TSphereModel<TInDataTypes>, DataTypes>
 {
 public:
-    double radius(const TSphere<TInDataTypes>& e)
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    int addPoint(const Coord& /*P*/, int index, Real& r)
     {
-        return e.r();
+        TSphere<TInDataTypes> e(this->model, index);
+        r = e.r();
+        return index;
     }
 };
 
@@ -348,17 +326,23 @@ template<class DataTypes>
 class ContactMapper<SphereTreeModel, DataTypes> : public IdentityContactMapper<SphereTreeModel, DataTypes>
 {
 public:
-    double radius(const SingleSphere& e)
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    int addPoint(const Coord& /*P*/, int index, Real& r)
     {
-        return e.r();
+        SingleSphere e(this->model, index);
+        r = e.r();
+        return index;
     }
 };
 
 /// Base class for all mappers using RigidMapping
 template < class TCollisionModel, class DataTypes >
-class RigidContactMapper
+class RigidContactMapper : public BaseContactMapper<DataTypes>
 {
 public:
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
     typedef TCollisionModel MCollisionModel;
     typedef typename MCollisionModel::InDataTypes InDataTypes;
     typedef core::componentmodel::behavior::MechanicalState<InDataTypes> InMechanicalState;
@@ -376,44 +360,14 @@ public:
     {
     }
 
-    void cleanup()
-    {
-        if (child!=NULL)
-        {
-            simulation::tree::getSimulation()->unload(child);
-        }
-    }
-
-    MMechanicalState* createMapping(MCollisionModel* model)
+    void setCollisionModel(MCollisionModel* model)
     {
         this->model = model;
-        InMechanicalState* instate = model->getMechanicalState();
-        if (instate!=NULL)
-        {
-            simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(instate->getContext());
-            if (parent==NULL)
-            {
-                std::cerr << "ERROR: RigidContactMapper only works for scenegraph scenes.\n";
-                return NULL;
-            }
-            child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateSimulationContext();
-            outmodel = new MMechanicalObject; child->addObject(outmodel);
-            mapping = new MMapping(instate, outmodel); child->addObject(mapping);
-        }
-        else
-        {
-            simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getContext());
-            if (parent==NULL)
-            {
-                std::cerr << "ERROR: RigidContactMapper only works for scenegraph scenes.\n";
-                return NULL;
-            }
-            child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateSimulationContext();
-            outmodel = new MMechanicalObject; child->addObject(outmodel);
-            mapping = NULL;
-        }
-        return outmodel;
     }
+
+    void cleanup();
+
+    MMechanicalState* createMapping(const char* name="contactPoints");
 
     void resize(int size)
     {
@@ -424,7 +378,7 @@ public:
         nbp = 0;
     }
 
-    int addPoint(const Vector3& P, int index)
+    int addPoint(const Coord& P, int index, Real&)
     {
         int i = nbp++;
         if ((int)outmodel->getX()->size() <= i)
@@ -448,10 +402,6 @@ public:
         }
     }
 
-    double radius(const typename TCollisionModel::Element& /*e*/)
-    {
-        return 0.0;
-    }
 };
 
 /// Mapper for RigidDistanceGridCollisionModel
@@ -459,30 +409,16 @@ template <class DataTypes>
 class ContactMapper<RigidDistanceGridCollisionModel,DataTypes> : public RigidContactMapper<RigidDistanceGridCollisionModel,DataTypes>
 {
 public:
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
     typedef RigidContactMapper<RigidDistanceGridCollisionModel,DataTypes> Inherit;
     typedef typename Inherit::MMechanicalState MMechanicalState;
     typedef typename Inherit::MCollisionModel MCollisionModel;
-    MMechanicalState* createMapping(MCollisionModel* model)
-    {
-        MMechanicalState* outmodel = Inherit::createMapping(model);
-        if (this->child!=NULL && this->mapping==NULL)
-        {
-            // add velocity visualization
-            sofa::component::visualmodel::DrawV* visu = new sofa::component::visualmodel::DrawV;
-            this->child->addObject(visu);
-            visu->useAlpha.setValue(true);
-            visu->vscale.setValue(model->getContext()->getDt());
-            sofa::component::mapping::IdentityMapping< core::Mapping< core::componentmodel::behavior::State<DataTypes>, core::componentmodel::behavior::MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > > >* map = new sofa::component::mapping::IdentityMapping< core::Mapping< core::componentmodel::behavior::State<DataTypes> , core::componentmodel::behavior::MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > > > ( outmodel, visu );
-            this->child->addObject(map);
-            visu->init();
-            map->init();
-        }
-        return outmodel;
-    }
+    MMechanicalState* createMapping(const char* name="contactPoints");
 
-    int addPoint(const Vector3& P, int index)
+    int addPoint(const Coord& P, int index, Real& r)
     {
-        int i = Inherit::addPoint(P, index);
+        int i = Inherit::addPoint(P, index, r);
         if (!this->mapping)
         {
             MCollisionModel* model = this->model;
@@ -528,7 +464,9 @@ template <class DataTypes>
 class ContactMapper<FFDDistanceGridCollisionModel,DataTypes> : public BarycentricContactMapper<FFDDistanceGridCollisionModel,DataTypes>
 {
 public:
-    int addPoint(const Vector3& P, int index)
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    int addPoint(const Coord& P, int index, Real&)
     {
         Vector3 bary;
         int elem = this->model->getDeformCube(index).elem; //getDeformGrid()->findCube(P,bary[0],bary[1],bary[2]);
@@ -544,9 +482,11 @@ public:
 
 /// Base class for all mappers using SubsetMapping
 template < class TCollisionModel, class DataTypes >
-class SubsetContactMapper
+class SubsetContactMapper : public BaseContactMapper<DataTypes>
 {
 public:
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
     typedef TCollisionModel MCollisionModel;
     typedef typename MCollisionModel::InDataTypes InDataTypes;
     typedef core::componentmodel::behavior::MechanicalState<InDataTypes> InMechanicalState;
@@ -558,50 +498,21 @@ public:
     MMapping* mapping;
     MMechanicalState* outmodel;
     int nbp;
+    bool needInit;
 
     SubsetContactMapper()
-        : model(NULL), child(NULL), mapping(NULL), outmodel(NULL), nbp(0)
+        : model(NULL), child(NULL), mapping(NULL), outmodel(NULL), nbp(0), needInit(false)
     {
     }
 
-    void cleanup()
-    {
-        if (child!=NULL)
-        {
-            simulation::tree::getSimulation()->unload(child);
-        }
-    }
-
-    MMechanicalState* createMapping(MCollisionModel* model)
+    void setCollisionModel(MCollisionModel* model)
     {
         this->model = model;
-        InMechanicalState* instate = model->getMechanicalState();
-        if (instate!=NULL)
-        {
-            simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(instate->getContext());
-            if (parent==NULL)
-            {
-                std::cerr << "ERROR: SubsetContactMapper only works for scenegraph scenes.\n";
-                return NULL;
-            }
-            child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateSimulationContext();
-            outmodel = new MMechanicalObject; child->addObject(outmodel);
-            mapping = new MMapping(instate, outmodel); child->addObject(mapping);
-        }
-        else
-        {
-            simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getContext());
-            if (parent==NULL)
-            {
-                std::cerr << "ERROR: SubsetContactMapper only works for scenegraph scenes.\n";
-                return NULL;
-            }
-            child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateSimulationContext();
-            outmodel = new MMechanicalObject; child->addObject(outmodel);
-            mapping = NULL;
-        }
-        return outmodel;
     }
+
+    void cleanup();
+
+    MMechanicalState* createMapping(const char* name="contactPoints");
 
     void resize(int size)
     {
@@ -612,14 +523,15 @@ public:
         nbp = 0;
     }
 
-    int addPoint(const Vector3& P, int index)
+    int addPoint(const Coord& P, int index, Real&)
     {
         int i = nbp++;
         if ((int)outmodel->getX()->size() <= i)
             outmodel->resize(i+1);
         if (mapping)
         {
-            i = mapping->addPoint(P,index);
+            i = mapping->addPoint(index);
+            needInit = true;
         }
         else
         {
@@ -632,13 +544,29 @@ public:
     {
         if (mapping!=NULL)
         {
+            if (needInit)
+            {
+                mapping->init();
+                needInit = false;
+            }
             mapping->updateMapping();
         }
     }
 
-    double radius(const typename TCollisionModel::Element& /*e*/)
+    //double radius(const typename TCollisionModel::Element& /*e*/)
+    //{
+    //    return 0.0;
+    //}
+};
+
+template < class Mapper >
+class ContactMapperCreator : public helper::Creator < typename Mapper::ContactMapperFactory, Mapper >
+{
+public:
+    typedef helper::Creator < typename Mapper::ContactMapperFactory, Mapper > Inherit;
+    ContactMapperCreator(std::string name, bool multi = true)
+        : Inherit(name, multi)
     {
-        return 0.0;
     }
 };
 

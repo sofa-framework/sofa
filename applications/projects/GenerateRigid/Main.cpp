@@ -1,5 +1,5 @@
 #include "GenerateRigid.h"
-#include <sofa/simulation/common/init.h>
+#include <sofa/component/init.h>
 #include <iostream>
 #include <fstream>
 
@@ -13,7 +13,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    sofa::simulation::init();
+    sofa::component::init();
 
     sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create(argv[1]);
 

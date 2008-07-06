@@ -42,15 +42,23 @@ public:
 
     void init(int insize)
     {
-        if (map.empty()) return;
-        // compute mapT
-        std::vector<int> nout(insize);
-        for (unsigned int i=0; i<map.size(); i++)
-            nout[map[i]]++;
-        for (int i=0; i<insize; i++)
-            if (nout[i] > maxNOut) maxNOut = nout[i];
+        unsigned int n = map.size();
+        std::vector<int> nout;
+        if (n==0) return;
+        if (n==1)
+            maxNOut = 1;
+        else
+        {
+            // compute mapT
+            nout.resize(insize);
+            for (unsigned int i=0; i<map.size(); i++)
+                nout[map[i]]++;
+            for (int i=0; i<insize; i++)
+                if (nout[i] > maxNOut) maxNOut = nout[i];
+        }
         if (maxNOut <= 1)
         {
+            std::cout << "CudaSubsetMapping: strict subset, no need for mapT."<<std::endl;
             // at most one duplicated points per input. mapT is not necessary
             mapT.clear();
         }

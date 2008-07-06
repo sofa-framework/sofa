@@ -25,7 +25,6 @@
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/simulation/common/init.h>
 #include <sofa/simulation/common/PrintVisitor.h>
 #include <sofa/simulation/common/FindByTypeVisitor.h>
 #include <sofa/simulation/common/ExportGnuplotVisitor.h>
@@ -124,7 +123,7 @@ GNode* Simulation::processXML(xml::BaseElement* xml, const char *filename)
 /// Load from a string in memory
 GNode* Simulation::loadFromMemory ( const char *filename, const char *data, unsigned int size )
 {
-    ::sofa::simulation::init();
+    //::sofa::simulation::init();
 // 				std::cerr << "Loading simulation XML file "<<filename<<std::endl;
     xml::BaseElement* xml = xml::loadFromMemory (filename, data, size );
 
@@ -140,7 +139,7 @@ GNode* Simulation::loadFromMemory ( const char *filename, const char *data, unsi
 /// Load a scene from a file
 GNode* Simulation::loadFromFile ( const char *filename )
 {
-    ::sofa::simulation::init();
+    //::sofa::simulation::init();
 // 				std::cerr << "Loading simulation XML file "<<filename<<std::endl;
     xml::BaseElement* xml = xml::loadFromFile ( filename );
 
@@ -241,7 +240,7 @@ void Simulation::printXML ( Node* root, const char* fileName )
 /// Initialize the scene.
 void Simulation::init ( Node* root )
 {
-    cerr<<"Simulation::init"<<endl;
+    //cerr<<"Simulation::init"<<endl;
     setContext( root->getContext());
     if ( !root ) return;
     root->execute<InitVisitor>();
