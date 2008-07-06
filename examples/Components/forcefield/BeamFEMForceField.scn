@@ -34,7 +34,7 @@
 <!--        <Object type="CubeTopology" nx="115" ny="4" nz="4" xmin="0" xmax="7" ymin="-0.1" ymax="0.1" zmin="-0.1" zmax="0.1" /> -->
         <Object type="CubeTopology" nx="15" ny="2" nz="2" xmin="0" xmax="7" ymin="-0.1" ymax="0.1" zmin="-0.1" zmax="0.1" />
         <Object type="MechanicalObject" />
-        <Object type="BeamLinearMapping" isMechanical="false" />
+        <Object type="BeamLinearMapping" isMechanical="true" />
         <Object type="Triangle" />
 <!--        <Object type="OglModel" /> -->
       </Node>
