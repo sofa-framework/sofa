@@ -5,7 +5,7 @@
 namespace sofa
 {
 
-namespace simulation
+namespace component
 {
 
 
@@ -24,7 +24,7 @@ void init()
     }
 }
 
-} // namespace simulation
+} // namespace component
 
 } // namespace sofa
 
@@ -38,6 +38,7 @@ SOFA_LINK_CLASS(ArticulationCenter)
 SOFA_LINK_CLASS(AttachConstraint)
 SOFA_LINK_CLASS(Attribute)
 SOFA_LINK_CLASS(BarycentricMapping)
+SOFA_LINK_CLASS(BarycentricContactMapper)
 SOFA_LINK_CLASS(BarycentricPenalityContact)
 SOFA_LINK_CLASS(BeamFEMForceField)
 SOFA_LINK_CLASS(BeamLinearMapping)

@@ -22,21 +22,34 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_SIMULATION_INIT_H
-#define SOFA_SIMULATION_INIT_H
+#include <sofa/component/collision/BarycentricContactMapper.inl>
+#include <sofa/helper/Factory.inl>
 
 namespace sofa
 {
 
-namespace simulation
+namespace component
 {
 
+namespace collision
+{
 
-void init();
+using namespace defaulttype;
 
-} // namespace simulation
+SOFA_DECL_CLASS(BarycentricContactMapper)
+
+ContactMapperCreator< ContactMapper<SphereModel> > SphereContactMapperClass("default",true);
+ContactMapperCreator< ContactMapper<SphereTreeModel> > SphereTreeContactClass("default", true);
+ContactMapperCreator< ContactMapper<PointModel> > PointContactMapperClass("default",true);
+ContactMapperCreator< ContactMapper<LineModel> > LineContactMapperClass("default",true);
+ContactMapperCreator< ContactMapper<TriangleModel> > TriangleContactMapperClass("default",true);
+ContactMapperCreator< ContactMapper<TetrahedronModel> > TetrahedronContactMapperClass("default",true);
+ContactMapperCreator< ContactMapper<RigidDistanceGridCollisionModel> > DistanceGridContactMapperClass("default", true);
+ContactMapperCreator< ContactMapper<FFDDistanceGridCollisionModel> > FFDDistanceGridContactMapperClass("default", true);
+
+} // namespace collision
+
+} // namespace component
 
 } // namespace sofa
-
-#endif
 

@@ -3,14 +3,18 @@
 #include "CudaPointModel.h"
 #include <sofa/component/collision/NewProximityIntersection.inl>
 #include <sofa/component/collision/DiscreteIntersection.inl>
-#include <sofa/component/collision/RayPickInteractor.h>
+#include <sofa/component/collision/RayPickInteractor.inl>
 #include <sofa/component/collision/RayContact.h>
 #include "CudaContactMapper.h"
 #include <sofa/component/collision/BarycentricPenalityContact.inl>
+#include <sofa/component/collision/BarycentricContactMapper.inl>
 #include <sofa/component/forcefield/PenalityContactForceField.h>
 #include "CudaPenalityContactForceField.h"
+#include "CudaSpringForceField.h"
+#include <sofa/component/forcefield/VectorSpringForceField.h>
 #include <fstream>
 #include <sofa/helper/system/gl.h>
+#include <sofa/helper/Factory.inl>
 
 namespace sofa
 {
@@ -30,8 +34,8 @@ void BarycentricPenalityContact<CudaPointModel,CudaRigidDistanceGridCollisionMod
     //const bool printLog = this->f_printLog.getValue();
     if (ff==NULL)
     {
-        MechanicalState1* mstate1 = mapper1.createMapping(model1);
-        MechanicalState2* mstate2 = mapper2.createMapping(model2);
+        MechanicalState1* mstate1 = mapper1.createMapping("contactPointsCUDA");
+        MechanicalState2* mstate2 = mapper2.createMapping("contactPointsCUDA");
         ff = new ResponseForceField(mstate1,mstate2); ff->setName( getName());
     }
 
@@ -80,8 +84,8 @@ void BarycentricPenalityContact<CudaSphereModel,CudaRigidDistanceGridCollisionMo
     //const bool printLog = this->f_printLog.getValue();
     if (ff==NULL)
     {
-        MechanicalState1* mstate1 = mapper1.createMapping(model1);
-        MechanicalState2* mstate2 = mapper2.createMapping(model2);
+        MechanicalState1* mstate1 = mapper1.createMapping("contactPointsCUDA");
+        MechanicalState2* mstate2 = mapper2.createMapping("contactPointsCUDA");
         ff = new ResponseForceField(mstate1,mstate2); ff->setName( getName());
     }
 
@@ -122,6 +126,20 @@ void BarycentricPenalityContact<CudaSphereModel,CudaRigidDistanceGridCollisionMo
     mapper1.update();
     mapper2.update();
 }
+
+//ContactMapperCreator< ContactMapper<CudaSphereModel> > CudaSphereContactMapperClass("default",true);
+ContactMapperCreator< ContactMapper<CudaSphereModel, CudaVec3fTypes> > CudaSphereCudaContactMapperClass("default",true);
+
+template class DefaultPickingManager< CudaVec3fTypes, forcefield::StiffSpringForceField<CudaVec3fTypes> >;
+
+
+template<>
+void DefaultPickingManager<CudaVec3fTypes,forcefield::StiffSpringForceField<CudaVec3fTypes> >::addContact(forcefield::StiffSpringForceField<CudaVec3fTypes>* ff, int index1, int index2, double stiffness, double mu_v, double length, const Vector3& /*p1*/, const Vector3& /*p2*/)
+{
+    ff->addSpring(index1, index2, stiffness, mu_v, length);
+}
+
+helper::Creator<BasePickingManager::PickingManagerFactory, DefaultPickingManager< CudaVec3fTypes, forcefield::StiffSpringForceField<CudaVec3fTypes> > > PickingVectorSpringCudaClass ("VectorSpringCUDA",true);
 
 } //namespace collision
 

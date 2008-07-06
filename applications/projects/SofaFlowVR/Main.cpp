@@ -27,6 +27,7 @@
 #include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/MinProximityIntersection.h>
 #include <sofa/component/collision/BruteForceDetection.h>
+#include <sofa/component/init.h>
 
 #include <sofa/component/visualmodel/VisualModelImpl.h>
 #include <sofa/component/visualmodel/OglModel.h>
@@ -1755,7 +1756,6 @@ int main(int argc, char** argv)
 {
     sofa::helper::BackTrace::autodump();
 
-
     glutInit(&argc,argv);
 
     sofa::gui::SofaGUI::SetProgramName(argv[0]);
@@ -1778,6 +1778,8 @@ int main(int argc, char** argv)
     .option(&gui,'g',"gui",gui_help.c_str())
     .option(&plugins,'l',"load","load given plugins")
     (argc,argv);
+
+    sofa::component::init();
 
     if (!files.empty()) fileName = files[0];
 

@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/tree/Simulation.h>
+#include <sofa/component/init.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -61,6 +62,8 @@ int main(int argc, char** argv)
     .option(&gui,'g',"gui",gui_help.c_str())
     .option(&plugins,'l',"load","load given plugins")
     (argc,argv);
+
+    sofa::component::init();
 
     if (!files.empty()) fileName = files[0];
 

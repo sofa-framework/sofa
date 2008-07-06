@@ -10,6 +10,49 @@
 namespace sofa
 {
 
+namespace component
+{
+
+namespace mapping
+{
+using namespace sofa::defaulttype;
+using namespace sofa::core;
+using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::gpu::cuda;
+
+#ifndef SOFA_FLOAT
+#endif
+#ifndef SOFA_DOUBLE
+template class SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3fTypes> > >;
+template class SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<Vec3fTypes> > >;
+template class SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<CudaVec3fTypes> > >;
+template class SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<Vec3fTypes> > >;
+template class SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3fTypes> > >;
+// template class SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3dTypes> > >;
+template class SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<CudaVec3f1Types> > >;
+template class SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<CudaVec3fTypes> > >;
+template class SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3f1Types> > >;
+template class SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<Vec3fTypes> > >;
+template class SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<CudaVec3f1Types> > >;
+template class SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<CudaVec3fTypes> > >;
+template class SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<CudaVec3f1Types> > >;
+template class SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<Vec3fTypes> > >;
+template class SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<ExtVec3fTypes> > >;
+#endif
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+template class SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<Vec3dTypes> > >;
+template class SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<Vec3dTypes> > >;
+template class SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<Vec3dTypes> > >;
+template class SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<Vec3dTypes> > >;
+// template class SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<ExtVec3dTypes> > >;
+#endif
+#endif
+
+} // namespace mapping
+
+} // namespace component
+
 namespace gpu
 {
 

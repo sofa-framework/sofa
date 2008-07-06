@@ -287,6 +287,7 @@ protected:
                     groot->addChild(child);
                     child->addObject(interactor);
                 }
+                interactor->init();
             }
             interactor->newEvent("show");
             switch (e->type())

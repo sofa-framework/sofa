@@ -42,8 +42,8 @@ HEADERS += Node.h \
            VisitorScheduler.h \
            VisualVisitor.h \
            WriteStateVisitor.h \
-           XMLPrintVisitor.h \
-           init.h 
+           XMLPrintVisitor.h
+
 SOURCES += Node.cpp \
            AnimateBeginEvent.cpp \
            AnimateEndEvent.cpp \
@@ -79,8 +79,7 @@ SOURCES += Node.cpp \
            VisitorScheduler.cpp \
            VisualVisitor.cpp \
            WriteStateVisitor.cpp \
-           XMLPrintVisitor.cpp \
-           init.cpp 
+           XMLPrintVisitor.cpp
 
 SOFA_DIR =../../../..
 TEMPLATE = lib

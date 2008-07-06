@@ -68,8 +68,6 @@ protected:
     std::multimap<Key, Creator*> registry;
 
 public:
-//  typedef InterfaceCreator<Object>* Creator;
-
     bool registerCreator(Key key, Creator* creator, bool multi=false)
     {
         if(!multi && this->registry.find(key) != this->registry.end())
@@ -89,6 +87,13 @@ public:
     {
         return getInstance()->createObject(key, arg);
     }
+
+    typedef typename std::multimap<Key, Creator*>::iterator iterator;
+    iterator begin() { return registry.begin(); }
+    iterator end() { return registry.end(); }
+    typedef typename std::multimap<Key, Creator*>::const_iterator const_iterator;
+    const_iterator begin() const { return registry.begin(); }
+    const_iterator end() const { return registry.end(); }
 };
 
 template <class Factory, class RealObject>
@@ -106,7 +111,8 @@ public:
     Object *createInstance(Argument arg)
     {
         RealObject* instance = NULL;
-        create(instance, arg);
+        //create(instance, arg);
+        RealObject::create(instance, arg);
         return instance;
     }
     const std::type_info& type()
@@ -114,14 +120,14 @@ public:
         return typeid(RealObject);
     }
 };
-
+/*
 /// Generic object creator. Can be specialized for custom objects creation
 template<class Object, class Argument>
 void create(Object*& obj, Argument arg)
 {
-    obj = new Object(arg);
+	obj = new Object(arg);
 }
-
+*/
 template <class Factory, class RealObject>
 class CreatorFn : public Factory::Creator, public Factory::Key
 {
