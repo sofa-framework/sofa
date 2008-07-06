@@ -28,9 +28,9 @@ int main(int argc, char** argv)
 
     glutInit(&argc,argv);
 
-    //std::string fileName = "beam10x10x46-spring-rk4-CUDA.scn";
+    //std::string fileName = "CUDA/beam10x10x46-spring-rk4-CUDA.scn";
 
-    std::string fileName = "quadSpringSphereCUDA.scn";
+    std::string fileName = "CUDA/quadSpringSphereCUDA.scn";
 
     int nbIter = 0;
     if (argc < 2 || argc > 3)
