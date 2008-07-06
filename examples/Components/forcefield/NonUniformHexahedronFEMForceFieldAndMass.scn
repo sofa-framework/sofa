@@ -29,8 +29,6 @@
 		<Object type="Mesh" filename="mesh/SaladBowl.obj" />
 		<Object type="MechanicalObject" dy="-10" dz="-20"  scale="100" />
 		<Object type="Triangle" name="Floor" contactStiffness="10000"  simulated="0" moving="0"   contactFriction="10000000000" />
-		<Object type="Line" name="Floor" simulated="0" moving="0"   contactFriction="10000000000" />
-		<Object type="Point" name="Floor" simulated="0" moving="0"   contactFriction="10000000000" />
 		
 		<Object type="OglModel" name="FloorV" filename="mesh/SaladBowl.obj" scale="100"  color=".1 .6 .6 .5" dy="-10" dz="-20"/>
 	</Node>
@@ -39,8 +37,6 @@
 		<Object type="Mesh" filename="mesh/SaladBowl.obj" />
 		<Object type="MechanicalObject" dx="70" dy="-10" dz="-20"  scale="100" />
 		<Object type="Triangle" name="Floor" contactStiffness="10000"  simulated="0" moving="0"   contactFriction="10000000000" />
-		<Object type="Line" name="Floor" simulated="0" moving="0"   contactFriction="10000000000" />
-		<Object type="Point" name="Floor" simulated="0" moving="0"   contactFriction="10000000000" />
 		
 		<Object type="OglModel" name="FloorV" filename="mesh/SaladBowl.obj" scale="100"  color=".1 .6 .6 .5" dx="70" dy="-10" dz="-20"/>
 	</Node>
@@ -67,8 +63,6 @@
 			<Object type="Mesh" filename="mesh/Armadillo_verysimplified.obj"/>
 			<Object type="MechanicalObject" />
 			<Object type="Triangle" contactStiffness="1"/> 
-			<Object type="Line" />
-			<Object type="Point"  />
 			<Object type="BarycentricMapping" />
 		</Node>
 		
@@ -95,8 +89,6 @@
 			<Object type="Mesh" filename="mesh/Armadillo_verysimplified.obj"/>
 			<Object type="MechanicalObject" />
 			<Object type="Triangle" contactStiffness="1" /> 
-			<Object type="Line" />
-			<Object type="Point" />
 			<Object type="BarycentricMapping" />
 		</Node>
 		
