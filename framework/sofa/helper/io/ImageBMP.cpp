@@ -177,7 +177,7 @@ static bool fwriteDW(FILE* file, unsigned long data)
     return fwrite(&data,sizeof(data),1,file)!=0;
 }
 
-bool ImageBMP::save(std::string filename)
+bool ImageBMP::save(std::string filename, int)
 {
     FILE *file;
     /* make sure the file is there and open it read-only (binary) */

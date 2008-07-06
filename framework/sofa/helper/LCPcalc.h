@@ -20,8 +20,6 @@ using namespace system::thread;
 #define EPSILON_CONV	0.001			// for GS convergence
 #define MAX_BOU	50	// nombre maximal de boucles de calcul
 
-#define MAX_NUM_CONSTRAINTS 1000
-
 class LCP
 {
 private:

@@ -59,18 +59,7 @@ bool Capture::saveScreen(const std::string& filename, int compression_level)
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
     glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGB, GL_UNSIGNED_BYTE, img.getData());
 
-#ifdef SOFA_HAVE_PNG
-    if (compression_level != -1)
-    {
-        if (!img.save(filename, compression_level)) return false;
-    }
-    else
-    {
-        if (!img.save(filename)) return false;
-    }
-#else
-    if (!img.save(filename)) return false;
-#endif
+    if (!img.save(filename, compression_level)) return false;
     std::cout << "Saved "<<img.getWidth()<<"x"<<img.getHeight()<<" screen image to "<<filename<<std::endl;
     glReadBuffer(GL_BACK);
     return true;

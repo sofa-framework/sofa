@@ -23,7 +23,7 @@
  * and F. Poyer                                                                 *
  *******************************************************************************/
 #include <sofa/simulation/common/TransformationVisitor.h>
-#include <sofa/component/visualmodel/VisualModelImpl.h>
+
 namespace sofa
 {
 
@@ -33,14 +33,11 @@ namespace simulation
 void TransformationVisitor::processVisualModel(simulation::Node* // node
         , core::VisualModel* v)
 {
-    if (sofa::component::visualmodel::VisualModelImpl *visual = dynamic_cast<sofa::component::visualmodel::VisualModelImpl *>(v))
-    {
-        visual->applyScale ( scale );
-        visual->applyRotation(rotation);
-        visual->applyTranslation ( translation[0],translation[1],translation[2] );
-    }
-
+    v->applyScale ( scale );
+    v->applyRotation(rotation);
+    v->applyTranslation ( translation[0],translation[1],translation[2] );
 }
+
 void TransformationVisitor::processMechanicalState(simulation::Node* // node
         , core::componentmodel::behavior::BaseMechanicalState* m)
 {
@@ -56,8 +53,6 @@ Visitor::Result TransformationVisitor::processNodeTopDown(simulation::Node* node
     return RESULT_CONTINUE;
 }
 
-
 } // namespace simulation
 
 } // namespace sofa
-

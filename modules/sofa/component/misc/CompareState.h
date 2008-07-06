@@ -2,7 +2,7 @@
 #define SOFA_COMPONENT_MISC_COMPARESTATE_H
 
 #include <sofa/component/misc/ReadState.h>
-
+#include <sofa/simulation/common/Visitor.h>
 
 #include <fstream>
 
@@ -39,6 +39,36 @@ public:
 protected :
     double totalError_X;
     double totalError_V;
+};
+
+/// Create CompareState component in the graph each time needed
+class CompareStateCreator: public Visitor
+{
+public:
+    CompareStateCreator() : sceneName(""), counterCompareState(0), createInMapping(false) {}
+    CompareStateCreator(std::string &n, bool i=true, int c=0 ) { sceneName=n; init=i; counterCompareState=c; }
+    virtual Result processNodeTopDown( simulation::Node*  );
+
+    void setSceneName(std::string &n) { sceneName = n; }
+    void setCounter(int c) { counterCompareState = c; }
+    void setCreateInMapping(bool b) { createInMapping=b; }
+protected:
+    void addCompareState(sofa::core::componentmodel::behavior::BaseMechanicalState *ms, simulation::Node* gnode);
+    bool init;
+    std::string sceneName;
+    int counterCompareState; //avoid to have two same files if two mechanical objects has the same name
+    bool createInMapping;
+};
+
+class CompareStateResult: public Visitor
+{
+public:
+    CompareStateResult() { error=0; }
+    virtual Result processNodeTopDown( simulation::Node*  );
+
+    double getError() { return error; }
+protected:
+    double error;
 };
 
 } // namespace misc

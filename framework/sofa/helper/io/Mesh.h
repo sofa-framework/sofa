@@ -28,7 +28,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/Factory.h>
-#include <sofa/core/objectmodel/Data.h>
+//#include <sofa/core/objectmodel/Data.h>
 namespace sofa
 {
 
@@ -100,7 +100,8 @@ protected:
     vector<Vector3> texCoords; // for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
     vector<Vector3> normals;
     vector< vector < vector <int> > > facets;
-    sofa::core::objectmodel::Data< Material > material;
+    //sofa::core::objectmodel::Data< Material > material;
+    Material material;
 
     std::string textureName;
 public:
@@ -110,14 +111,14 @@ public:
         //std::cout << "vertices size : " << vertices.size() << std::endl;
         return vertices;
     };
-    vector<Vector3> & getTexCoords() {return texCoords;};
-    vector<Vector3> & getNormals() {return normals;};
+    vector<Vector3> & getTexCoords() { return texCoords; }
+    vector<Vector3> & getNormals() { return normals; }
     vector< vector < vector <int> > > & getFacets()
     {
         //std::cout << "facets size : " << facets.size() << std::endl;
         return facets;
     };
-    const Material& getMaterial() {return material.getValue();};
+    const Material& getMaterial() {return material; }
 
     std::string& getTextureName()
     {

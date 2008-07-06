@@ -16,7 +16,6 @@ HEADERS += Node.h \
            ExportGnuplotVisitor.h \
            ExportOBJVisitor.h \
            FindByTypeVisitor.h \
-           GrabVisitor.h \
            InitVisitor.h \  
            InstrumentVisitor.h \
            LocalStorage.h \
@@ -55,7 +54,6 @@ SOURCES += Node.cpp \
            DesactivatedNodeVisitor.cpp \
            ExportGnuplotVisitor.cpp \
            ExportOBJVisitor.cpp \
-           GrabVisitor.cpp \
            InitVisitor.cpp \   
            InstrumentVisitor.cpp \
            MasterSolverImpl.cpp \

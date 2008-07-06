@@ -18,6 +18,10 @@ namespace simulation
 class InitGnuplotVisitor : public simulation::Visitor
 {
 public:
+    std::string gnuplotDirectory;
+
+    InitGnuplotVisitor(std::string dir = std::string("")) : gnuplotDirectory(dir) {}
+
     /// This method calls the fwd* methods during the forward traversal. You typically do not overload it.
     virtual Result processNodeTopDown(simulation::Node* node);
 

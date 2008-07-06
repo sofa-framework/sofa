@@ -141,7 +141,7 @@ void MeshOBJ::readOBJ (FILE* file, const char* filename)
                 {
                     std::cout << "Using material "<<it->name<<std::endl;
                     (*it).activated = true;
-                    material.setValue(*it);
+                    material = *it;
                 }
             }
         }
