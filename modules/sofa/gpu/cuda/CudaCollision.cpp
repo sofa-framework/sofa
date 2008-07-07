@@ -130,14 +130,14 @@ void BarycentricPenalityContact<CudaSphereModel,CudaRigidDistanceGridCollisionMo
 //ContactMapperCreator< ContactMapper<CudaSphereModel> > CudaSphereContactMapperClass("default",true);
 ContactMapperCreator< ContactMapper<CudaSphereModel, CudaVec3fTypes> > CudaSphereCudaContactMapperClass("default",true);
 
-template class DefaultPickingManager< CudaVec3fTypes, forcefield::StiffSpringForceField<CudaVec3fTypes> >;
-
-
 template<>
 void DefaultPickingManager<CudaVec3fTypes,forcefield::StiffSpringForceField<CudaVec3fTypes> >::addContact(forcefield::StiffSpringForceField<CudaVec3fTypes>* ff, int index1, int index2, double stiffness, double mu_v, double length, const Vector3& /*p1*/, const Vector3& /*p2*/)
 {
     ff->addSpring(index1, index2, stiffness, mu_v, length);
 }
+
+template class DefaultPickingManager< CudaVec3fTypes, forcefield::StiffSpringForceField<CudaVec3fTypes> >;
+
 
 helper::Creator<BasePickingManager::PickingManagerFactory, DefaultPickingManager< CudaVec3fTypes, forcefield::StiffSpringForceField<CudaVec3fTypes> > > PickingVectorSpringCudaClass ("VectorSpringCUDA",true);
 
