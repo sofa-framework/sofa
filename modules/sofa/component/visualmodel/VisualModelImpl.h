@@ -174,11 +174,11 @@ public:
 
     bool load(const std::string& filename, const std::string& loader, const std::string& textureName);
 
-    void applyTranslation(double dx, double dy, double dz);
-    void applyRotation(Quat q);
-    void applyScale(double s);
-    void applyUVTranslation(double dU, double dV);
-    void applyUVScale(double su, double sv);
+    void applyTranslation(const double dx, const double dy, const double dz);
+    void applyRotation(const Quat q);
+    void applyScale(const double s);
+    void applyUVTranslation(const double dU, const double dV);
+    void applyUVScale(const double su, const double sv);
 
     void flipFaces();
 
