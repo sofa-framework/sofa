@@ -362,7 +362,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
     return true;
 }
 
-void VisualModelImpl::applyTranslation(double dx, double dy, double dz)
+void VisualModelImpl::applyTranslation(const double dx, const double dy, const double dz)
 {
     Vector3 d((GLfloat)dx,(GLfloat)dy,(GLfloat)dz);
     VecCoord& x = *getVecX();
@@ -373,7 +373,7 @@ void VisualModelImpl::applyTranslation(double dx, double dy, double dz)
     updateVisual();
 }
 
-void VisualModelImpl::applyRotation(Quat q)
+void VisualModelImpl::applyRotation(const Quat q)
 {
     VecCoord& x = *getVecX();
     for (unsigned int i = 0; i < x.size(); i++)
@@ -383,7 +383,7 @@ void VisualModelImpl::applyRotation(Quat q)
     updateVisual();
 }
 
-void VisualModelImpl::applyScale(double scale)
+void VisualModelImpl::applyScale(const double scale)
 {
     VecCoord& x = *getVecX();
     for (unsigned int i = 0; i < x.size(); i++)
@@ -393,7 +393,7 @@ void VisualModelImpl::applyScale(double scale)
     updateVisual();
 }
 
-void VisualModelImpl::applyUVTranslation(double dU, double dV)
+void VisualModelImpl::applyUVTranslation(const double dU, const double dV)
 {
     for (unsigned int i = 0; i < vtexcoords.size(); i++)
     {
@@ -402,7 +402,7 @@ void VisualModelImpl::applyUVTranslation(double dU, double dV)
     }
 }
 
-void VisualModelImpl::applyUVScale(double scaleU, double scaleV)
+void VisualModelImpl::applyUVScale(const double scaleU, const double scaleV)
 {
     for (unsigned int i = 0; i < vtexcoords.size(); i++)
     {

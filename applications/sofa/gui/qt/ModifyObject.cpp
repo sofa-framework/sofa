@@ -2517,6 +2517,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
         return true;
 
     }
+#ifndef WIN32
     //********************************************************************************************************//
     //vector<SpringForceField< Vec6dTypes >::Spring>
     else if (Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring > >  *ff = dynamic_cast< Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring > >  * >( field ))
@@ -2579,6 +2580,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
     {
         return createQtSpringTable<float>(ff,box,vectorTable);
     }
+#endif
 
     return false;
 }
@@ -2917,7 +2919,7 @@ void ModifyObject::storeTable(std::list< std::pair< Q3Table*, BaseData*> >::
         storeMonitorQtTable< Vec3fTypes >(it_list_table, ff);
     }
     //**************************************************************************************************************************************
-
+#ifndef WIN32
     else if (Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring > >  *ff = dynamic_cast< Data< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring > >  * >( it_list_table->second ))
     {
         storeQtSpringTable<6,double>(it_list_table, ff);
@@ -2967,8 +2969,8 @@ void ModifyObject::storeTable(std::list< std::pair< Q3Table*, BaseData*> >::
     {
         storeQtSpringTable<float>(it_list_table, ff);
     }
+#endif
 }
-
 
 //********************************************************************************************************************
 void ModifyObject::createVector(   core::objectmodel::BaseData* object,const Quater<double> &value, Q3GroupBox *box)
@@ -4285,7 +4287,7 @@ void ModifyObject::storeQtRigid2Table( std::list< std::pair< Q3Table*, core::obj
 
 
 
-
+#ifndef WIN32
 //********************************************************************************************************************
 template< int N, class T>
 bool ModifyObject::createQtSpringTable(Data< sofa::helper::vector< typename sofa::component::forcefield::SpringForceField< StdVectorTypes<Vec<N,T>,Vec<N,T>,T> >::Spring > >   *ff, Q3GroupBox *box, Q3Table* vectorTable )
@@ -4457,6 +4459,7 @@ void ModifyObject::storeQtSpringTable( std::list< std::pair< Q3Table*, core::obj
     }
     ff->setValue( new_value );
 }
+#endif
 //********************************************************************************************************************
 
 Q3Table *ModifyObject::addResizableTable(Q3GroupBox *box,int number, int column)
