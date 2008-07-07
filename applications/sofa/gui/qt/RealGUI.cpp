@@ -330,6 +330,10 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     : viewerName ( viewername ), viewer ( NULL ), currentTab ( NULL ), tabInstrument (NULL),  graphListener ( NULL ), dialog ( NULL )
 {
     listDisplayFlags->header()->hide();
+#ifdef SOFA_QT4
+    listDisplayFlags->setBackgroundRole(QPalette::NoRole);
+    listDisplayFlags->viewport()->setBackgroundRole(QPalette::NoRole);
+#endif
     // remove everything...
     listDisplayFlags->clear();
     listDisplayFlags->setSortColumn(-1);
