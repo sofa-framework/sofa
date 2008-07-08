@@ -9,6 +9,9 @@
 #include "CudaTypesBase.h"
 #include <sofa/component/linearsolver/FullMatrix.h>
 
+#define CHECK 0.01
+//#define DISPLAY_TIME
+
 namespace sofa
 {
 
@@ -82,7 +85,9 @@ class CudaMasterContactSolver : public sofa::simulation::MasterSolverImpl, publi
 public:
     typedef real Real;
     Data<bool> initial_guess_d;
-
+#ifdef CHECK
+    Data<bool> check_gpu;
+#endif
     Data < double > tol_d;
     Data<int> maxIt_d;
     Data < double > mu_d;
@@ -104,6 +109,10 @@ private:
 
     CudaBaseMatrix<real> _W;
     CudaBaseVector<real> _dFree, _f;
+
+#ifdef CHECK
+    CudaBaseVector<real> f_check;
+#endif
 
     unsigned int _numConstraints;
     double _mu;

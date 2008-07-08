@@ -22,16 +22,18 @@ using namespace helper::system::thread;
 using namespace core::componentmodel::behavior;
 
 #define MAX_NUM_CONSTRAINTS 1024
-//#define DISPLAY_TIME
 
 template<class real>
 CudaMasterContactSolver<real>::CudaMasterContactSolver()
     :
     initial_guess_d(initData(&initial_guess_d, true, "initial_guess","activate LCP results history to improve its resolution performances."))
+#ifdef CHECK
+    ,check_gpu(initData(&check_gpu, true, "checkGPU", "verification of lcp error"))
+#endif
     ,tol_d( initData(&tol_d, 0.001, "tolerance", "tolerance"))
     ,maxIt_d(initData(&maxIt_d, 200, "maxIt", "iterations of gauss seidel"))
     ,mu_d( initData(&mu_d, 0.0, "mu", ""))
-    ,useGPU_d(initData(&useGPU_d, 9, "useGPU", "compute LCP using GPU"))
+    ,useGPU_d(initData(&useGPU_d, 8, "useGPU", "compute LCP using GPU"))
     ,_mu(0.0)
 {
 
@@ -68,6 +70,7 @@ void CudaMasterContactSolver<real>::build_LCP()
         exit(-1);
     }
     _dFree.resize(_numConstraints);
+    _f.resize(_numConstraints);
     if (_mu>0.0) _W.setwarpsize(96);
     else _W.setwarpsize(64);
     _W.resize(_numConstraints,_numConstraints);
@@ -237,15 +240,50 @@ void CudaMasterContactSolver<real>::step(double dt)
 
     if (! initial_guess_d.getValue()) _f.clear();
 
-    if (_mu > 0.0)
+#ifdef CHECK
+    if (check_gpu.getValue())
     {
-        sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _mu,_tol, _maxIt);
+        f_check.resize(_numConstraints);
+        real t1,t2;
+        for (unsigned i=0; i<_numConstraints; i++) f_check[i] = _f[i];
+
+        if (_mu > 0.0)
+        {
+            t2 = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), f_check.getCudaVector(), _mu,_tol, _maxIt);
+
+            t1 = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(0,_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _mu,_tol, _maxIt);
+        }
+        else
+        {
+            t2 = sofa::gpu::cuda::CudaLCP<real>::CudaGaussSeidelLCP1(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), f_check.getCudaVector(), _tol, _maxIt);
+
+            t1 = sofa::gpu::cuda::CudaLCP<real>::CudaGaussSeidelLCP1(0,_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _tol, _maxIt);
+        }
+
+        if ((t1-t2>CHECK) || (t1-t2<-CHECK))
+        {
+            std::cout << "Error(" << useGPU_d.getValue() << ") dim(" << _numConstraints << ") : (cpu," << t1 << ") (gpu,(" << t2 << ")" << std::endl;
+        }
     }
     else
     {
-        sofa::gpu::cuda::CudaLCP<real>::CudaGaussSeidelLCP1(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _tol, _maxIt);
+#endif
+        real error;
 
+        if (_mu > 0.0)
+        {
+            error = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _mu,_tol, _maxIt);
+        }
+        else
+        {
+            error = sofa::gpu::cuda::CudaLCP<real>::CudaGaussSeidelLCP1(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _tol, _maxIt);
+        }
+
+        if (error > _tol) std::cout << "No convergence in gaussSeidelLCP1 : error = " << error << std::endl;
+
+#ifdef CHECK
     }
+#endif
 
 #ifdef DISPLAY_TIME
     std::cout<<" solve_LCP :         " <<( (double) timer->getTime() - time)*0.001<<" ms" <<std::endl;

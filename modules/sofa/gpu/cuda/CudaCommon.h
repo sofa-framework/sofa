@@ -9,6 +9,4 @@ enum { MBSIZE=96 };
 // Max size of thread blocks
 enum { MAXTHREADS=512 };
 
-
-
 #endif
