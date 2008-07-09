@@ -79,7 +79,6 @@ SOURCES += mycuda.cpp \
            CudaCollisionDetection.cpp \
            CudaPointModel.cpp \
            CudaPenalityContactForceField.cpp \
-           CudaSpatialGridContainer.cpp \
            CudaVisualModel.cpp \
            CudaTetrahedralVisualModel.cpp \
            CudaTestForceField.cpp \
@@ -100,12 +99,8 @@ CUDA_SOURCES += mycuda.cu \
            CudaCollisionDetection.cu \
            CudaContactMapper.cu \
            CudaPenalityContactForceField.cu \
-           CudaSpatialGridContainer.cu \
            CudaVisualModel.cu \
            CudaTestForceField.cu
-
-HEADERS += radixsort.cuh radixsort_kernel.cu
-CUDA_SOURCES += radixsort.cu
 
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
@@ -115,12 +110,17 @@ HEADERS += \
 	   CudaBTDLinearSolver.h
 
 SOURCES += \
-	   CudaLCP.cpp \
+	   CudaBTDLinearSolver.cpp  \
+	   cudalcp.cpp \
            CudaMasterContactSolver.cpp \
-	   CudaBTDLinearSolver.cpp
+           CudaSpatialGridContainer.cpp
 
 CUDA_SOURCES += \
+	   CudaBTDLinearSolver.cu \
 	   CudaLCP.cu \
-	   CudaBTDLinearSolver.cu
+           CudaSpatialGridContainer.cu
+
+HEADERS += radixsort.cuh radixsort_kernel.cu
+CUDA_SOURCES += radixsort.cu
 
 } # END SOFA_DEV

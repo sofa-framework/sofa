@@ -1,9 +1,8 @@
-  
-   SOFA, Simulation Open-Framework Architecture, version 1.0 beta 1
-           (c) 2006-2007 MGH, INRIA, USTL, UJF, CNRS
 
-  Authors: J. Allard, P-J. Bensoussan, S. Cotin, C. Duriez, H. Delingette, 
-  F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann, and F. Poyer
+   SOFA, Simulation Open-Framework Architecture, version 1.0 beta 3
+           (c) 2006-2008 MGH, INRIA, USTL, UJF, CNRS
+
+  Authors: See Authors.txt
 
 
 SOFA is an Open Source framework primarily targeted at real-time simulation, 
@@ -56,19 +55,16 @@ Contact information: contact@sofa-framework.org
 
 INSTALLATION
 
-Before building Sofa, look in sofa.cfg to configure it. Most importantly
-specify the GUI to use (FLTK, QT, or both).
+Before building Sofa, copy sofa-default.cfg to sofa-local.cfg and
+customize it to your local configuration.
 
 Building Sofa under Windows :
 -----------------------------
-	
- - MSVC 6 :
-     Launch Project VC6.bat. 
-
- - MSVC 7 : (Visual .net)
-     Launch Project VC7.bat.	 
 
  - MSVC 8 : (Visual 2005)
+     Launch Project VC8.bat.	 
+
+ - MSVC 9 : (Visual 2008)
      Launch Project VC8.bat.	 
 
  - console :
@@ -78,7 +74,7 @@ Building Sofa under Windows :
      If not launch project.bat.
      Then launch nmake to build all projects.
 
-After creating the projects, verify that project runSOFA is the activated
+After creating the projects, verify that project runSofa is the activated
 project.
 
 
@@ -91,4 +87,8 @@ Building Sofa under Linux :
 - console :
      Run qmake, then make
 
-
+Building Sofa under Mac OS :
+----------------------------
+     Run Project MacOS.sh
+     Then run make to build all projects.
+     The generated Xcode projects can be used to easily edit the code but with current version of qmake then can not be used to compile it correctly.

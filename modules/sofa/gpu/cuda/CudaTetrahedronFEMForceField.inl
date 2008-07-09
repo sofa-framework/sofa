@@ -1,3 +1,27 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 3      *
+*                (c) 2006-2008 MGH, INRIA, USTL, UJF, CNRS                    *
+*                                                                             *
+* This library is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This library is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this library; if not, write to the Free Software Foundation,     *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+*******************************************************************************
+*                               SOFA :: Modules                               *
+*                                                                             *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 #ifndef SOFA_GPU_CUDA_CUDATETRAHEDRONFEMFORCEFIELD_INL
 #define SOFA_GPU_CUDA_CUDATETRAHEDRONFEMFORCEFIELD_INL
 
@@ -113,7 +137,9 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
     std::vector<int> activeElems;
     for (unsigned int i=0; i<elems.size(); i++)
     {
+#ifdef SOFA_DEV
         if (!m->_trimgrid || m->_trimgrid->isCubeActive(i/6))
+#endif // SOFA_DEV
         {
             activeElems.push_back(i);
         }
@@ -175,6 +201,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
         m->needUpdateTopology = false;
     }
     Data& data = m->data;
+#ifdef SOFA_DEV
     // Count active cubes in topology
     if (m->_trimgrid)
     {
@@ -189,7 +216,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
         if ((int)data.size() != 6*nactive)
             m->reinit();
     }
-
+#endif // SOFA_DEV
 
     f.resize(x.size());
     Kernels::addForce(

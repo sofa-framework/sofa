@@ -1,33 +1,35 @@
-/*******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 1       *
-*                (c) 2006-2007 MGH, INRIA, USTL, UJF, CNRS                     *
-*                                                                              *
-* This library is free software; you can redistribute it and/or modify it      *
-* under the terms of the GNU Lesser General Public License as published by the *
-* Free Software Foundation; either version 2.1 of the License, or (at your     *
-* option) any later version.                                                   *
-*                                                                              *
-* This library is distributed in the hope that it will be useful, but WITHOUT  *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or        *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License  *
-* for more details.                                                            *
-*                                                                              *
-* You should have received a copy of the GNU Lesser General Public License     *
-* along with this library; if not, write to the Free Software Foundation,      *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.           *
-*                                                                              *
-* Contact information: contact@sofa-framework.org                              *
-*                                                                              *
-* Authors: J. Allard, P-J. Bensoussan, S. Cotin, C. Duriez, H. Delingette,     *
-* F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
-* and F. Poyer                                                                 *
-*******************************************************************************/
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 3      *
+*                (c) 2006-2008 MGH, INRIA, USTL, UJF, CNRS                    *
+*                                                                             *
+* This library is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This library is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this library; if not, write to the Free Software Foundation,     *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+*******************************************************************************
+*                               SOFA :: Modules                               *
+*                                                                             *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 #ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_H
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#ifdef SOFA_DEV
 #include <sofa/component/topology/FittedRegularGridTopology.h>
+#endif // SOFA_DEV
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
@@ -133,7 +135,9 @@ protected:
     SReal m_potentialEnergy;
 
     core::componentmodel::topology::BaseMeshTopology* _mesh;
+#ifdef SOFA_DEV
     topology::FittedRegularGridTopology* _trimgrid;
+#endif // SOFA_DEV
     const VecElement *_indexedElements;
     VecCoord _initialPoints; ///< the intial positions of the points
 
@@ -162,7 +166,10 @@ public:
     DataPtr<bool> f_assembling;
 
     TetrahedronFEMForceField()
-        : _mesh(NULL), _trimgrid(NULL)
+        : _mesh(NULL)
+#ifdef SOFA_DEV
+        , _trimgrid(NULL)
+#endif // SOFA_DEV
         , _indexedElements(NULL)
         , needUpdateTopology(false)
         , f_initialPoints(initDataPtr(&f_initialPoints, &_initialPoints, "initialPoints", "Initial Position"))
