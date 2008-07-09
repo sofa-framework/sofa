@@ -1,18 +1,54 @@
-SOFA Core :: 
-	
-	M. Adam / J. Allard / B. Andre / P-J. Bensoussan / S. Cotin / C. Duriez / H. Delingette / F. Falipou / F. Faure 
-	S. Fonteneau / L. Heigeas / L. Jerabkova / C. Mendoza / M. Nesme / P. Neumann / J.-P. de la Plata Alcalde
-	F. Poyer / F. Roy.
+/**************************************************************************
+*     SOFA, Simulation Open-Framework Architecture, version 1.0 beta 3    *
+*              (c) 2006-2008 MGH, INRIA, USTL, UJF, CNRS                  *
+*                                                                         *
+*                              CONTRIBUTORS                               *
+*                                                                         *
+**************************************************************************/
 
-SOFA Modules ::
+:: SOFA Framework :: 
 
-	+ Co-rotational FEM: M. Nesme / F. Faure
-	+ Tetrahedral volume rendering: S. Barbier / G.-P. Bonneau
-	+ Dynamic Topologies: B. Andre / H. Delingette
-	+ Articulated Rigid Bodies: J.-P. de la Plata Alcalde / C. Duriez / M. Adam
-	+ GPU support using CUDA: J. Allard
-	+ Collision Detection:
-        + Deformable Models:
-        + Rigid Models:
+    The following authors contributed to the design and implementation
+    of the core SOFA APIs, as well as base features and applications :
 
+        Michael Adam
+        Jeremie Allard
+        Barbara Andre
+        Pierre-Jean Bensoussan
+        Stephane Cotin
+        Christian Duriez
+        Herve Delingette
+        Florent Falipou
+        Francois Faure 
+        Sylvere Fonteneau
+        Laure Heigeas
+        Lenka Jerabkova
+        Cesar Mendoza
+        Matthieu Nesme
+        Paul Neumann
+        Juan Pablo de la Plata Alcalde
+        Francois Poyer
+        Frederick Roy
 
+:: SOFA Modules ::
+
+    In addition to classes created by the SOFA Team mentioned above,
+    the following authors are to be credited for their contributions :
+
+    + Co-rotational FEM
+        Matthieu Nesme and Francois Faure
+
+    + Dynamic Topologies
+        Barbara Andre and Herve Delingette
+
+    + Tetrahedral volume rendering
+        Sebastien Barbier and George-Pierre Bonneau
+
+    + Articulated Rigid Bodies based on Penalities
+        Michael Adam, Francois Faure
+
+    + Articulated Rigid Bodies based on Reduced Coordinates
+        Juan Pablo de la Plata Alcalde, Christian Duriez
+
+    + GPU support using CUDA
+        Jeremie Allard

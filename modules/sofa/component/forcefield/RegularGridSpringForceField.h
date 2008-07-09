@@ -1,8 +1,35 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 3      *
+*                (c) 2006-2008 MGH, INRIA, USTL, UJF, CNRS                    *
+*                                                                             *
+* This library is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This library is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this library; if not, write to the Free Software Foundation,     *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+*******************************************************************************
+*                               SOFA :: Modules                               *
+*                                                                             *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 #ifndef SOFA_COMPONENT_FORCEFIELD_REGULARGRIDSPRINGFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_REGULARGRIDSPRINGFORCEFIELD_H
 
 #include <sofa/component/forcefield/StiffSpringForceField.h>
+#include <sofa/component/topology/RegularGridTopology.h>
+#ifdef SOFA_DEV
 #include <sofa/component/topology/FittedRegularGridTopology.h>
+#endif // SOFA_DEV
 
 namespace sofa
 {
@@ -45,7 +72,10 @@ public:
           , quadsDamping  (initData(&quadsDamping  ,Real(0),"quadsDamping"  ,"Quads Damping"))
           , cubesStiffness(initData(&cubesStiffness,Real(0),"cubesStiffness","Cubes Stiffness"))
           , cubesDamping  (initData(&cubesDamping  ,Real(0),"cubesDamping"  ,"Cubes Damping"))
-          , topology(NULL), trimmedTopology(NULL)
+          , topology(NULL)
+#ifdef SOFA_DEV
+          , trimmedTopology(NULL)
+#endif // SOFA_DEV
     {
     }
 
@@ -57,7 +87,10 @@ public:
         , quadsDamping  (initData(&quadsDamping  ,Real(0),"quadsDamping"  ,"Quads Damping"))
         , cubesStiffness(initData(&cubesStiffness,Real(0),"cubesStiffness","Cubes Stiffness"))
         , cubesDamping  (initData(&cubesDamping  ,Real(0),"cubesDamping"  ,"Cubes Damping"))
-        , topology(NULL), trimmedTopology(NULL)
+        , topology(NULL)
+#ifdef SOFA_DEV
+        , trimmedTopology(NULL)
+#endif // SOFA_DEV
     {
     }
 
@@ -119,7 +152,9 @@ public:
 
 protected:
     topology::RegularGridTopology* topology;
+#ifdef SOFA_DEV
     topology::FittedRegularGridTopology* trimmedTopology;
+#endif // SOFA_DEV
 };
 
 } // namespace forcefield
