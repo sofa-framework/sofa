@@ -111,7 +111,7 @@ HEADERS += \
 
 SOURCES += \
 	   CudaBTDLinearSolver.cpp  \
-	   cudalcp.cpp \
+	   CudaLCP.cpp \
            CudaMasterContactSolver.cpp \
            CudaSpatialGridContainer.cpp
 
