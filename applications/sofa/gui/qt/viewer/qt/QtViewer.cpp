@@ -384,7 +384,7 @@ void QtViewer::initializeGL(void)
         CreateRenderTexture(g_DepthTexture, SHADOW_WIDTH, SHADOW_HEIGHT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT);
         CreateRenderTexture(ShadowTextureMask, SHADOW_MASK_SIZE, SHADOW_MASK_SIZE, GL_LUMINANCE, GL_LUMINANCE);
 
-        if (_shadow )
+        //if (_shadow )
         {
             if ( !CShader::InitGLSL() ) { printf("WARNING QtViewer : shadows are not supported !\n"); _shadow=false;}
             else
@@ -1182,10 +1182,10 @@ void QtViewer::DrawScene(void)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         if (_background==0)
             DrawLogo();
-        glPushMatrix();
+        //	glPushMatrix();
         _sceneTransform.Apply();
         DisplayOBJs();
-        glPopMatrix();
+//		glPopMatrix();
 
         {
             float ofu = GetWidth()/(float)SHADOW_MASK_SIZE;
