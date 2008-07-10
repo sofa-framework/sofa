@@ -1,31 +1,9 @@
-/******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 3      *
-*                (c) 2006-2008 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
 #ifndef SOFA_COMPONENT_CONSTRAINT_BILATERALINTERACTIONCONSTRAINT_INL
 #define SOFA_COMPONENT_CONSTRAINT_BILATERALINTERACTIONCONSTRAINT_INL
 
 #include <sofa/component/constraint/SlidingConstraint.h>
+#include <sofa/component/constraint/BilateralInteractionConstraint.h>
+#include <sofa/component/constraint/UnilateralInteractionConstraint.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/gl/template.h>
@@ -45,11 +23,6 @@ void SlidingConstraint<DataTypes>::init()
     assert(this->object2);
 
     thirdConstraint = 0;
-    /*
-    m3 = this->object2->getSize();
-    this->object2->resize(m3+1);
-
-    m3 = m2b.getValue() + 1;*/
 }
 
 template<class DataTypes>
@@ -83,11 +56,6 @@ void SlidingConstraint<DataTypes>::applyConstraint(unsigned int &constraintId, d
     proj = A + r * uniAB;
 
     // We move the constraint point onto the projection
-    /*	(*this->object2->getX())[m3] = proj;
-    	this->getContext()->get<mapping::Mapping>()->updateMapping();
-
-    	return;
-    */
     dir1 = P-proj;
     dist = dir1.norm(); // constraint violation
     dir1.normalize(); // direction of the constraint
@@ -111,19 +79,6 @@ void SlidingConstraint<DataTypes>::applyConstraint(unsigned int &constraintId, d
     c2.push_back(svd2);
     svd2.clear();
 
-    /*
-    svd2.push_back(SparseDeriv(tm2a, -dir1));
-    c2.push_back(svd2);
-    svd2[0] = SparseDeriv(tm2b, -dir1);
-    //	c2.push_back(svd2);
-    */
-
-    /* ajouter un point au mechanical object,
-    le déplacer sur la projection du point glissant
-    mettre à jour le mapping
-    donner la violation de la contrainte
-    */
-
     this->object1->setConstraintId(cid+1);
     svd1[0] = SparseDeriv(tm1, dir2);
     c1.push_back(svd1);
@@ -133,12 +88,6 @@ void SlidingConstraint<DataTypes>::applyConstraint(unsigned int &constraintId, d
     svd2.push_back(SparseDeriv(tm2b, -dir2 * r2));
     c2.push_back(svd2);
     svd2.clear();
-
-    /*	svd2[0] = SparseDeriv(tm2a, -dir2);
-    	c2.push_back(svd2);
-    	svd2[0] = SparseDeriv(tm2b, -dir2);
-    //	c2.push_back(svd2);
-    	*/
 
     thirdConstraint = 0;
     if(r<0)
@@ -200,12 +149,12 @@ void SlidingConstraint<DataTypes>::getConstraintId(long* id, unsigned int &offse
 }
 
 template<class DataTypes>
-void SlidingConstraint<DataTypes>::getConstraintType(bool* type, unsigned int &offset)
+void SlidingConstraint<DataTypes>::getConstraintResolution(std::vector<core::componentmodel::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
     for(int i=0; i<2; i++)
-        type[offset++] = true;
+        resTab[offset++] = new BilateralConstraintResolution();
     if(thirdConstraint)
-        type[offset++] = false;
+        resTab[offset++] = new UnilateralConstraintResolution();
 }
 
 template<class DataTypes>
