@@ -1,0 +1,37 @@
+
+
+<Node name="root" dt="0.005" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0" showWireFrame="1">
+	<Object type="Gravity" name="G" gravity="10 0 0" />
+	<Object type="CollisionPipeline" name="pipeline" depth="6" verbose="0"/>
+	<Object type="BruteForceDetection" name="detection" />
+	<Object type="CollisionResponse" name="response" response="FrictionContact" />
+	<Object type="MinProximityIntersection" name="proximity" alarmDistance="0.25" contactDistance="0.15" usePointPoint="1" filterIntersection="1" angleCone="0.0" />
+
+	<Node name="LiverFEM">
+		<Object type="CGImplicit" iterations="15" threshold="0.0000000001" tolerance="0.0001" rayleighStiffness="0.1" rayleighMass="1.0" />
+		<Object type="Mesh" filename="Topology/liver-smooth2.gmsh" />
+		<Object type="MechanicalObject" dx ="-0.0" dy="2"/>
+		<Object type="UniformMass" mass="0.020" />
+		<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="1500" poissonRatio="0.4" computeGlobalMatrix="false" method="large"/>
+		<Object type="BoxConstraint" box="-5 -5 0 5 0.5 10"/>
+		<Node name="Visu">
+			<Object type="OglModel" name="Visual" filename="VisualModels/liver-coarse.obj" color="1.0 0.0 0.0 1.0"  dx ="-0.0" dy="2"/> <!--liver-fine-->
+			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
+		</Node>
+		<Node name="Surf2">
+			<Object type="Mesh" filename="VisualModels/liver-coarse.obj"/>
+			<Object type="MechanicalObject" dx ="-0.0" dy="2"/>
+			<Object type="Triangle" filtered="1" group="1"/>
+			<Object type="Line"  filtered="1" group="1"/>
+			<Object type="Point" filtered="1" group="1"/>
+			<Object type="BarycentricMapping" />
+		</Node>
+	</Node>
+
+	
+</Node>
+
+
+
+
+

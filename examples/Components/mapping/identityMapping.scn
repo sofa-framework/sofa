@@ -1,0 +1,22 @@
+<!-- Mechanical MassSpring Group Basic Example -->
+<Node name="root" dt="0.02" showBehaviorModels="1" showCollisionModels="0" showMappings="1" showForceFields="0">
+	<Object type="CollisionPipeline" verbose="0" />
+	<Object type="BruteForceDetection" name="N2" />
+	<Object type="CollisionResponse" response="default" />
+	<Object type="ProximityIntersection" name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+	<Object type="CollisionGroup" />
+
+	<Node name="tshirt">
+		<Object type="CGImplicit" iterations="25"/>
+		<Object type="MechanicalObject" filename="BehaviorModels/tshirt_0.xs3" scale="10"/>
+		<Object type="DiagonalMass" filename="BehaviorModels/tshirt_0.xs3" />
+		<Object type="Mesh" filename="Topology/tshirt_0.mesh"/>
+		<Object type="FixedConstraint" indices="38 39 40 41 42 43 123 124 137"/>
+		<Object type="TriangleFEMForceField" name="FEM" youngModulus="50000" poissonRatio="0.3" method="large"/>
+		<Object type="Triangle" />
+		<Node name="Visu">
+			<Object type="OglModel" name="Visual" color="red"/>
+			<Object type="IdentityMapping" object1="../.." object2="Visual"/>
+		</Node>
+	</Node>
+</Node>
