@@ -54,6 +54,7 @@ void BarycentricContactMapper<TCollisionModel,DataTypes>::cleanup()
             delete mapping->getTo();
             delete mapping;
             delete child;
+            mapping = NULL;
         }
     }
 }
@@ -93,6 +94,7 @@ void IdentityContactMapper<TCollisionModel,DataTypes>::cleanup()
             delete mapping->getTo();
             delete mapping;
             delete child;
+            mapping = NULL;
         }
     }
 }
@@ -118,6 +120,7 @@ void RigidContactMapper<TCollisionModel,DataTypes>::cleanup()
     if (child!=NULL)
     {
         simulation::tree::getSimulation()->unload(child);
+        child = NULL;
     }
 }
 
@@ -159,6 +162,7 @@ void SubsetContactMapper<TCollisionModel,DataTypes>::cleanup()
     if (child!=NULL)
     {
         simulation::tree::getSimulation()->unload(child);
+        child = NULL;
     }
 }
 
