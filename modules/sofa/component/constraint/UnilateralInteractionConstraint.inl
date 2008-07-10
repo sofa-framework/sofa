@@ -1,27 +1,3 @@
-/******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 3      *
-*                (c) 2006-2008 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
 #ifndef SOFA_COMPONENT_CONSTRAINT_UNILATERALINTERACTIONCONSTRAINT_INL
 #define SOFA_COMPONENT_CONSTRAINT_UNILATERALINTERACTIONCONSTRAINT_INL
 
@@ -36,6 +12,53 @@ namespace component
 
 namespace constraint
 {
+
+void UnilateralConstraintResolutionWithFriction::init(int line, double** w)
+{
+    _W[0]=w[line  ][line  ];
+    _W[1]=w[line  ][line+1];
+    _W[2]=w[line  ][line+2];
+    _W[3]=w[line+1][line+1];
+    _W[4]=w[line+1][line+2];
+    _W[5]=w[line+2][line+2];
+}
+
+void UnilateralConstraintResolutionWithFriction::resolution(int line, double** /*w*/, double* d, double* force)
+{
+    double td[3];
+    double normFt;
+
+    // evaluation of the current normal position
+    td[0] = _W[0]*force[line] + _W[1]*force[line+1] + _W[2]*force[line+2] + d[line];
+    // evaluation of the new contact force
+    force[line] -= td[0]/_W[0];
+
+    if(force[line] < 0)
+    {
+        force[line]=0; force[line+1]=0; force[line+2]=0;
+        return;
+    }
+
+    // evaluation of the current tangent positions
+    td[1] = _W[1]*force[line] + _W[3]*force[line+1] + _W[4]*force[line+2] + d[line+1];
+    td[2] = _W[2]*force[line] + _W[4]*force[line+1] + _W[5]*force[line+2] + d[line+2];
+
+    // evaluation of the new fricton forces
+    force[line+1] -= 2*td[1]/(_W[3]+_W[5]);
+    force[line+2] -= 2*td[2]/(_W[3]+_W[5]);
+
+    normFt = sqrt(force[line+1]*force[line+1] + force[line+2]*force[line+2]);
+
+    if(normFt > _mu*force[line])
+    {
+        force[line+1] *= _mu*force[line]/normFt;
+        force[line+2] *= _mu*force[line]/normFt;
+    }
+
+    d[line]   += _W[0]*force[line] + _W[1]*force[line+1] + _W[2]*force[line+2];
+    d[line+1] += _W[1]*force[line] + _W[3]*force[line+1] + _W[4]*force[line+2];
+    d[line+2] += _W[2]*force[line] + _W[4]*force[line+1] + _W[5]*force[line+2];
+}
 
 template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id)
@@ -122,8 +145,8 @@ void UnilateralInteractionConstraint<DataTypes>::applyConstraint(unsigned int &c
     {
         Contact& c = contacts[i];
 
-        //mu = c.mu;
-        c.mu = mu;
+        mu = c.mu;
+        //c.mu = mu;
         c.id = contactId++;
 
         SparseVecDeriv svd1;
@@ -181,7 +204,6 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintValue(double * v)
     {
         Contact& c = contacts[i]; // get each contact detected
         v[c.id] = c.dfree;
-        //std::cout << "constraint value "<<c.id<<" = "<<c.dfree<<std::endl;
         if (c.mu > 0.0)
         {
             v[c.id+1] = c.dfree_t; // dfree_t & dfree_s are added to v to compute the friction
@@ -214,10 +236,19 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintId(long* id, unsig
 }
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::getConstraintType(bool* type, unsigned int &offset)
+void UnilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vector<core::componentmodel::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
-    for (unsigned int i=0; i<contacts.size()*3; i++)
-        type[offset++] = false;
+    for(unsigned int i=0; i<contacts.size(); i++)
+    {
+        Contact& c = contacts[i];
+        if(c.mu > 0.0)
+        {
+            resTab[offset] = new UnilateralConstraintResolutionWithFriction(c.mu);
+            offset += 3;
+        }
+        else
+            resTab[offset++] = new UnilateralConstraintResolution();
+    }
 }
 
 template<class DataTypes>
