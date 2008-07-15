@@ -1,4 +1,5 @@
-<Node name="root" dt="0.02" gravity="0 0 0" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="1" showBoundingCollisionModel="0" showInteractionForceFields="1">
+
+<Node name="root" dt="0.02" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="1">
 	
 	<Object type="CollisionPipeline" depth="6" verbose="0" draw="0"/>
 	<Object type="BruteForceDetection" name="N2" />
@@ -6,30 +7,22 @@
 	<Object type="CollisionResponse" name="Response" response="default" />
 	<Object type="CollisionGroup" name="Group" />
 	
-
-	
-
-	
-	<Node name="DragonHexaFEMAndMass">
-		<Object type="SparseGrid"
-				  n="12 9 6"
-				  filename="mesh/dragon.obj"
-				  />
-		<Object type="CGImplicit" iterations="10"/>
+	<Node name="M1">
+		<Object type="CGImplicit" iterations="25" />
 		<Object type="MechanicalObject" />
-		
-	
-<Object type="HexahedronFEMForceFieldAndMass" name="FEM" youngModulus="40000" poissonRatio="0.3" method="large" density="1" />
-		
-		<Node name="Visu">
-			<Object type="OglModel" name="Visual" filename="mesh/dragon.obj" color="blue" />
-			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
-		</Node>
-		<Node name="Surf">
-			<Object type="Sphere" filename="mesh/dragon.sph" contactStiffness="100" />
-			<Object type="BarycentricMapping"  />
-		</Node>
+		<Object type="UniformMass" mass="1" />
+		<Object type="RegularGrid"
+			nx="4" ny="4" nz="20"
+			xmin="-9" xmax="-6"
+			ymin="0" ymax="3"
+			zmin="0" zmax="19"
+		/>
+		<Object type="FixedConstraint" indices="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" />
+                <Object type="HexahedronFEMForceFieldAndMass" name="FEM" youngModulus="40000" poissonRatio="0.3" method="large" density="1" />  
+		<Object type="Triangle" />
+		<Object type="Line" />
+		<Object type="Point" />
 	</Node>
-
-
 </Node>
+
+
