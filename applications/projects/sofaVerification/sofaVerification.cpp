@@ -33,6 +33,10 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/simulation/common/WriteStateVisitor.h>
+#include <sofa/component/misc/ReadState.h>
+#include <sofa/component/misc/WriteState.h>
+#include <sofa/component/misc/CompareState.h>
+
 #include <ctime>
 
 // ---------------------------------------------------------------------
@@ -59,22 +63,22 @@ void apply(std::vector< std::string> &files, unsigned int iterations, bool reini
 
         if (reinit)
         {
-            sofa::simulation::WriteStateCreator compareVisitor;
+            sofa::component::misc::WriteStateCreator compareVisitor;
             compareVisitor.setCreateInMapping(true);
             compareVisitor.setSceneName(file);
             compareVisitor.execute(groot);
 
-            sofa::simulation::WriteStateActivator v_write(true);
+            sofa::component::misc::WriteStateActivator v_write(true);
             v_write.execute(groot);
         }
         else
         {
-            sofa::simulation::CompareStateCreator compareVisitor;
+            sofa::component::misc::CompareStateCreator compareVisitor;
             compareVisitor.setCreateInMapping(true);
             compareVisitor.setSceneName(file);
             compareVisitor.execute(groot);
 
-            sofa::simulation::ReadStateActivator v_read(true);
+            sofa::component::misc::ReadStateActivator v_read(true);
             v_read.execute(groot);
         }
         clock_t curtime = clock();
@@ -89,7 +93,7 @@ void apply(std::vector< std::string> &files, unsigned int iterations, bool reini
 
         if (!reinit)
         {
-            sofa::simulation::CompareStateResult result;
+            sofa::component::misc::CompareStateResult result;
             result.execute(groot);
             std::cout << "ERROR : " << result.getError() << "\n";
 

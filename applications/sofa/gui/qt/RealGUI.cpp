@@ -478,6 +478,11 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     pmlreader = NULL;
     lmlreader = NULL;
 #endif
+
+    const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
+
+    this->move(  ( screen.width()- this->width()  ) / 2,  ( screen.height() - this->height()) / 2  );
+
 }
 
 void RealGUI::fileRecentlyOpened(int id)

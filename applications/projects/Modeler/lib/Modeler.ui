@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>800</width>
-            <height>232</height>
+            <width>760</width>
+            <height>760</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -136,10 +136,12 @@
     <property name="enabled">
         <bool>true</bool>
     </property>
-    <item text="&amp;File" name="fileMenu">
+    <item text="&amp;File" name="fileMenu">     
+        <action name="fileNewTabAction"/>
+        <action name="fileCloseTabAction"/>
+        <separator/>
         <action name="fileNewAction"/>
         <action name="fileOpenAction"/>
-        <action name="fileReloadAction"/>
         <action name="fileSaveAction"/>
         <action name="fileSaveAsAction"/>
         <separator/>
@@ -155,11 +157,44 @@
         <action name="editUndoAction"/>
         <action name="editRedoAction"/>
     </item>
+<!--
     <item text="Help" name="helpMenu">
         <action name="helpAboutAction"/>
     </item>
+-->
 </menubar>
 <actions>
+    <action>
+        <property name="name">
+            <cstring>fileNewTabAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image0</iconset>
+        </property>
+        <property name="text">
+            <string>New Tab</string>
+        </property>
+        <property name="menuText">
+            <string>New &amp;Tab</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+T</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>fileCloseTabAction</cstring>
+        </property>
+        <property name="text">
+            <string>Close Tab</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Close Tab</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+W</string>
+        </property>
+    </action>
     <action>
         <property name="name">
             <cstring>fileNewAction</cstring>
@@ -168,10 +203,10 @@
             <iconset>image0</iconset>
         </property>
         <property name="text">
-            <string>New</string>
+            <string>Clear</string>
         </property>
         <property name="menuText">
-            <string>&amp;New</string>
+            <string>Clear</string>
         </property>
         <property name="accel">
             <string>Ctrl+N</string>
@@ -195,20 +230,6 @@
         </property>
     </action>
     <action>
-        <property name="name">
-            <cstring>fileReloadAction</cstring>
-        </property>
-        <property name="text">
-            <string>Reload</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;Reload</string>
-        </property>
-        <property name="accel">
-            <string>Ctrl+R</string>
-        </property>
-    </action>
-    <action>
       <property name="name">
         <cstring>runInSofaAction</cstring>
       </property>
@@ -216,7 +237,13 @@
         <iconset>image10</iconset>
       </property>
       <property name="text">
-        <string>Run in SOFA</string>
+        <string>Launch the current simulation into SOFA</string>
+      </property>
+      <property name="menuText">
+        <string>&amp;Run in SOFA</string>
+      </property>
+      <property name="accel">
+        <string>Ctrl+R</string>
       </property>
     </action>
     <action>
@@ -292,7 +319,7 @@
             <cstring>editUndoAction</cstring>
         </property>
         <property name="enabled">
-            <bool>true</bool>
+            <bool>false</bool>
         </property>
         <property name="iconSet">
             <iconset>image4</iconset>
@@ -312,7 +339,7 @@
             <cstring>editRedoAction</cstring>
         </property>
         <property name="enabled">
-            <bool>true</bool>
+            <bool>false</bool>
         </property>
         <property name="iconSet">
             <iconset>image5</iconset>
@@ -409,6 +436,15 @@
     </action>
     <action>
         <property name="name">
+            <cstring>EmptyFiles</cstring>
+        </property>
+        <property name="text">
+            <string>...</string>
+        </property>
+    </action>
+<!--
+    <action>
+        <property name="name">
             <cstring>helpAboutAction</cstring>
         </property>
         <property name="enabled">
@@ -424,15 +460,7 @@
             <string></string>
         </property>
     </action>   
-    <action>
-        <property name="name">
-            <cstring>EmptyFiles</cstring>
-        </property>
-        <property name="text">
-            <string>...</string>
-        </property>
-    </action>
-
+-->
 </actions>
 <images>
     <image name="image0">
@@ -471,6 +499,18 @@
 </images>
 <connections>
     <connection>
+        <sender>fileNewTabAction</sender>
+        <signal>activated()</signal>
+        <receiver>Modeler</receiver>
+        <slot>newTab()</slot>
+    </connection>
+    <connection>
+        <sender>fileCloseTabAction</sender>
+        <signal>activated()</signal>
+        <receiver>Modeler</receiver>
+        <slot>closeTab()</slot>
+    </connection>
+    <connection>
         <sender>fileNewAction</sender>
         <signal>activated()</signal>
         <receiver>Modeler</receiver>
@@ -481,12 +521,6 @@
         <signal>activated()</signal>
         <receiver>Modeler</receiver>
         <slot>fileOpen()</slot>
-    </connection>
-    <connection>
-        <sender>fileReloadAction</sender>
-        <signal>activated()</signal>
-        <receiver>Modeler</receiver>
-        <slot>fileReload()</slot>
     </connection>
     <connection>
         <sender>fileSaveAction</sender>
@@ -548,12 +582,14 @@
         <receiver>Modeler</receiver>
         <slot>editFind()</slot>
     </connection>
+<!--
     <connection>
         <sender>helpAboutAction</sender>
         <signal>activated()</signal>
         <receiver>Modeler</receiver>
         <slot>helpAbout()</slot>
-    </connection>
+    </connection> 
+-->
     <connection>
         <sender>GNodeButton</sender>
         <signal>pressed()</signal>
@@ -562,9 +598,10 @@
     </connection>
 </connections>
 <slots>
+    <slot>newTab()</slot>
+    <slot>closeTab()</slot>
     <slot>fileNew()</slot>
     <slot>fileOpen()</slot>
-    <slot>fileReload()</slot>
     <slot>fileSave()</slot>
     <slot>fileSaveAs()</slot>
     <slot>runInSofa()</slot>
@@ -575,9 +612,11 @@
     <slot>editCopy()</slot>
     <slot>editPaste()</slot>
     <slot>editFind()</slot>
+<!--
     <slot>helpIndex()</slot>
     <slot>helpContents()</slot>
     <slot>helpAbout()</slot>
+-->
     <slot>saveXML()</slot>
     <slot>newGNode()</slot>
 </slots>

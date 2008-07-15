@@ -92,6 +92,12 @@ public:
 #endif
     };
 
+    ~GraphModeler()
+    {
+        getSimulation()->unload(getRoot());
+        delete graphListener;
+    }
+
     void clearGraph();
     void setFilename(std::string filename) {filenameXML = filename;}
     std::string getFilename() {return filenameXML;}
@@ -141,7 +147,7 @@ public:
 
 signals:
     void fileOpen(std::string);
-
+    void closeDialog();
 
 public slots:
     void collapseNode();
@@ -165,6 +171,8 @@ public slots:
     BaseObject *addComponent(GNode *parent, ClassInfo *entry, std::string templateName, bool saveHistory=true );
     void deleteComponent();
     void deleteComponent(Q3ListViewItem *item, bool saveHistory=true);
+
+    void closeGraph() {emit(closeDialog());}
     void modifyUnlock ( void *Id );
 
 

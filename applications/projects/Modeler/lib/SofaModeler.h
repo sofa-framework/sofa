@@ -43,10 +43,14 @@
 #include <Q3ListView>
 #include <Q3TextDrag>
 #include <QPushButton>
+#include <QTabWidget>
+#include <QTabBar>
 #else
 #include <qlistview.h>
 #include <qdragobject.h>
 #include <qpushbutton.h>
+#include <qtabwidget.h>
+#include <qtabbar.h>
 #endif
 
 
@@ -78,6 +82,9 @@ public :
     SofaModeler();
     ~SofaModeler() {};
 
+signals:
+    void closeGraph();
+
 public slots:
     void dragComponent();
     void changeComponent(ClassInfo *currentComponent);
@@ -91,8 +98,6 @@ public slots:
     void fileNew() {fileNew(NULL);};
     void fileNew(GNode* root);
 
-    void fileReload() {fileOpen(graph->getFilename());}
-
     void fileOpen();
     void fileOpen(std::string filename);
 
@@ -100,10 +105,14 @@ public slots:
     void fileSave(std::string filename);
     void fileSaveAs();
 
+    void closeTab();
+    void newTab();
+
     void fileExit() {exit(0);};
 
     void runInSofa();
 
+    void changeCurrentScene( QWidget*);
     void changeNameWindow(std::string filename);
     void editUndo() {graph->editUndo();}
     void editRedo() {graph->editRedo();}
@@ -118,11 +127,14 @@ public slots:
     void updateRecentlyOpened(std::string fileLoaded);
 
 protected:
-    //	  std::map< unsigned int, GraphModeler*> tabGraph;
+    QTabWidget *sceneTab;
+
+
     GraphModeler *graph; //currentGraph in Use
+    QWidget *tabGraph;
 
     std::map< const QObject* , std::pair<ClassInfo*, QObject*> > mapComponents;
-
+    std::map< const QWidget*, GraphModeler*> mapGraph;
 };
 }
 }
