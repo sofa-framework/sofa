@@ -75,7 +75,6 @@ GNode *GraphModeler::addGNode(GNode *parent, GNode *child, bool saveHistory)
         currentStateHistory=historyOperation.end();
     }
 
-
     if (saveHistory)
     {
         Operation adding(graphListener->items[child], child, Operation::ADD_OBJECT);
@@ -293,6 +292,8 @@ void GraphModeler::openModifyObject(Q3ListViewItem *item)
 
     dialogModify->show();
     dialogModify->raise();
+    connect ( this, SIGNAL ( closeDialog() ), dialogModify, SLOT ( closeNow() ) );
+
 }
 
 void GraphModeler::doubleClick(Q3ListViewItem *item)

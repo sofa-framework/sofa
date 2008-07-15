@@ -43,11 +43,13 @@
 #include <QTextEdit>
 #include <QComboBox>
 #include <QLabel>
+#include <QApplication>
 #else
 #include <qtoolbox.h>
 #include <qlayout.h>
 #include <qtextedit.h>
 #include <qcombobox.h>
+#include <qapplication.h>
 #endif
 
 namespace sofa
@@ -68,9 +70,7 @@ SofaModeler::SofaModeler()
 {
     QWidget *GraphSupport = new QWidget((QWidget*)splitter2);
     QGridLayout* GraphLayout = new QGridLayout(GraphSupport, 1,1,5,2,"GraphLayout");
-    graph = new GraphModeler(GraphSupport);
-    graph->setAcceptDrops(true);
-    GraphLayout->addWidget(graph,0,0);
+
 
     //Construction of the left part of the GUI: list of all objects sorted by base class
     std::set< std::string > setType;
@@ -199,15 +199,13 @@ SofaModeler::SofaModeler()
         if (needSpacer) gridLayout->addItem(new QSpacerItem(1,1,QSizePolicy::Expanding, QSizePolicy::Minimum ), numRows,1);
     }
 
+    connect( recentlyOpened, SIGNAL(activated(int)), this, SLOT(fileRecentlyOpened(int)));
 
-    graph->setLibrary(mapComponents);
-    fileNew();
-#ifdef SOFA_QT4
-    connect(graph, SIGNAL(currentChanged(Q3ListViewItem *)), this, SLOT(changeInformation(Q3ListViewItem *)));
-#else
-    connect(graph, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(changeInformation(QListViewItem *)));
-#endif
-    connect( graph, SIGNAL( fileOpen(std::string)), this, SLOT(fileOpen(std::string)));
+    sceneTab = new QTabWidget(GraphSupport);
+    GraphLayout->addWidget(sceneTab,0,0);
+    connect( sceneTab, SIGNAL(currentChanged( QWidget*)), this, SLOT( changeCurrentScene( QWidget*)));
+
+    newTab();
     //Recently Opened Files
     std::string scenes ( "config/Modeler.ini" );
     if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )
@@ -223,18 +221,22 @@ SofaModeler::SofaModeler()
 
     updateRecentlyOpened("");
 
+    const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
+    this->move(  ( screen.width()- this->width()  ) / 2,  ( screen.height() - this->height()) / 2  );
 };
 
 
 void SofaModeler::fileNew( GNode* root)
 {
     if (!root) graph->setFilename("");
-    changeNameWindow(graph->getFilename());
+    changeNameWindow("");
+
     GNode *current_root=graph->getRoot();
     if (current_root) graph->clearGraph();
 
     //no parent, adding root: if root is NULL, then an empty GNode will be created
     root = graph->addGNode(NULL, root);
+    sceneTab->setCurrentPage( sceneTab->count()-1);
 }
 
 void SofaModeler::fileOpen()
@@ -244,9 +246,39 @@ void SofaModeler::fileOpen()
         fileOpen(s.ascii());
 }
 
+void SofaModeler::newTab()
+{
+    tabGraph = new QWidget();
+    QVBoxLayout *currentTabLayout = new QVBoxLayout(tabGraph, 0,1, QString("ModelerScene"));
+    sceneTab->addTab(tabGraph, QString("New Scene"));
+
+    graph = new GraphModeler(tabGraph);
+    mapGraph.insert(std::make_pair(tabGraph, graph));
+
+    graph->setAcceptDrops(true);
+    currentTabLayout->addWidget(graph,0,0);
+
+    graph->setLibrary(mapComponents);
+    fileNew();
+#ifdef SOFA_QT4
+    connect(graph, SIGNAL(currentChanged(Q3ListViewItem *)), this, SLOT(changeInformation(Q3ListViewItem *)));
+#else
+    connect(graph, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(changeInformation(QListViewItem *)));
+#endif
+    connect(graph, SIGNAL( fileOpen(std::string)), this, SLOT(fileOpen(std::string)));
+    connect(this, SIGNAL( closeGraph() ), graph, SLOT ( closeGraph() ) );
+}
+
+void SofaModeler::closeTab()
+{
+    emit(closeGraph());
+    if (sceneTab->count() <=1) fileNew();
+    else if (tabGraph)  delete tabGraph;
+}
+
 void SofaModeler::fileOpen(std::string filename)
 {
-    graph->setFilename(filename);
+    newTab();
     GNode *root = NULL;
     xml::BaseElement* newXML=NULL;
     if (!filename.empty())
@@ -258,6 +290,13 @@ void SofaModeler::fileOpen(std::string filename)
         root = dynamic_cast<GNode*> ( newXML->getObject() );
     }
     fileNew(root);
+    sceneTab->setCurrentPage( sceneTab->count()-1);
+
+    graph->setFilename(filename);
+    sceneTab->setTabLabel(tabGraph, QString(sofa::helper::system::SetDirectory::GetFileName(filename.c_str()).c_str()));
+    sceneTab->setTabToolTip(tabGraph, QString(filename.c_str()));
+
+    changeNameWindow(graph->getFilename());
 }
 
 void SofaModeler::fileRecentlyOpened(int id)
@@ -283,6 +322,7 @@ void SofaModeler::updateRecentlyOpened(std::string fileLoaded)
 
 
     recentlyOpened->clear();
+
     std::ofstream out;
     out.open(scenes.c_str(),std::ios::out);
     if (sofa::helper::system::DataRepository.findFile(fileLoaded))
@@ -319,7 +359,13 @@ void SofaModeler::fileSaveAs()
 {
     QString s = sofa::gui::qt::getSaveFileName ( this, NULL, "Scenes (*.scn *.xml)", "save file dialog", "Choose where the scene will be saved" );
     if ( s.length() >0 )
+    {
         fileSave ( s.ascii() );
+
+        std::string filename = s.ascii();
+        sceneTab->setTabLabel(tabGraph, QString(sofa::helper::system::SetDirectory::GetFileName(filename.c_str()).c_str()));
+        sceneTab->setTabToolTip(tabGraph, QString(filename.c_str()));
+    }
 }
 
 
@@ -389,6 +435,14 @@ void SofaModeler::newGNode()
     Q3TextDrag *dragging = new Q3TextDrag(QString("GNode"), this);
     dragging->setText(QString("GNode"));
     dragging->dragCopy();
+}
+
+
+void SofaModeler::changeCurrentScene( QWidget* currentGraph)
+{
+    tabGraph=currentGraph;
+    graph = mapGraph[currentGraph];
+    changeNameWindow(graph->getFilename());
 }
 
 void SofaModeler::changeNameWindow(std::string filename)
