@@ -2573,14 +2573,14 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
     //vector<JointSpringForceField< Rigid3dTypes >::Spring>
     else if (Data< vector<sofa::component::forcefield::JointSpringForceField< Rigid3dTypes>::Spring > >  *ff = dynamic_cast< Data< vector<sofa::component::forcefield::JointSpringForceField< Rigid3dTypes>::Spring > >  * >( field ))
     {
-        return createQtSpringTable<double>(ff,box,vectorTable);
+        return createQtRigidSpringTable<double>(ff,box,vectorTable);
     }
 
     //********************************************************************************************************//
     //vector<JointSpringForceField< Rigid3fTypes >::Spring>
     else if (Data< vector<sofa::component::forcefield::JointSpringForceField< Rigid3fTypes>::Spring > >  *ff = dynamic_cast< Data< vector<sofa::component::forcefield::JointSpringForceField< Rigid3fTypes>::Spring > >  * >( field ))
     {
-        return createQtSpringTable<float>(ff,box,vectorTable);
+        return createQtRigidSpringTable<float>(ff,box,vectorTable);
     }
 #endif
 
@@ -2964,12 +2964,12 @@ void ModifyObject::storeTable(std::list< std::pair< Q3Table*, BaseData*> >::
     //**************************************************************************************************************************************
     else if (Data< sofa::helper::vector<sofa::component::forcefield::JointSpringForceField< Rigid3dTypes>::Spring > >  *ff = dynamic_cast< Data< sofa::helper::vector<sofa::component::forcefield::JointSpringForceField< Rigid3dTypes>::Spring > >  * >( it_list_table->second ))
     {
-        storeQtSpringTable<double>(it_list_table, ff);
+        storeQtRigidSpringTable<double>(it_list_table, ff);
     }
     //**************************************************************************************************************************************
     else if (Data< sofa::helper::vector<sofa::component::forcefield::JointSpringForceField< Rigid3fTypes>::Spring > >  *ff = dynamic_cast< Data< sofa::helper::vector<sofa::component::forcefield::JointSpringForceField< Rigid3fTypes>::Spring > >  * >( it_list_table->second ))
     {
-        storeQtSpringTable<float>(it_list_table, ff);
+        storeQtRigidSpringTable<float>(it_list_table, ff);
     }
 #endif
 }
@@ -4360,7 +4360,7 @@ void ModifyObject::storeQtSpringTable( std::list< std::pair< Q3Table*, core::obj
 
 //********************************************************************************************************************
 template< class T>
-bool ModifyObject::createQtSpringTable(Data< vector< typename sofa::component::forcefield::JointSpringForceField< StdRigidTypes< 3,T > >::Spring > >  *ff, Q3GroupBox *box, Q3Table* vectorTable )
+bool ModifyObject::createQtRigidSpringTable(Data< vector< typename sofa::component::forcefield::JointSpringForceField< StdRigidTypes< 3,T > >::Spring > >  *ff, Q3GroupBox *box, Q3Table* vectorTable )
 {
     if (!vectorTable)
     {
@@ -4417,7 +4417,7 @@ bool ModifyObject::createQtSpringTable(Data< vector< typename sofa::component::f
 
 //********************************************************************************************************************
 template< class T>
-void ModifyObject::storeQtSpringTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< sofa::helper::vector< typename sofa::component::forcefield::JointSpringForceField< StdRigidTypes<3,T> >::Spring > >  *ff )
+void ModifyObject::storeQtRigidSpringTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< sofa::helper::vector< typename sofa::component::forcefield::JointSpringForceField< StdRigidTypes<3,T> >::Spring > >  *ff )
 {
 
     Q3Table* table = it_list_table->first;
