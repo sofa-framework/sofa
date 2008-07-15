@@ -101,7 +101,14 @@ void PointModel::draw()
         glPointSize(3);
         glColor4fv(getColor4f());
 
-        for (int i=0; i<size; i++)
+        // Check topological modifications
+        const int npoints = mstate->getX()->size();
+        if (npoints != size)
+        {
+            resize(npoints);
+        }
+
+        for (int i = 0; i < size; i++)
         {
             draw(i);
         }
