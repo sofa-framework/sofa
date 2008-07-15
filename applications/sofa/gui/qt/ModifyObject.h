@@ -229,7 +229,7 @@ protected:
     template<class T>
     void storeQtRigid2Table( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, DataPtr< sofa::helper::vector< RigidDeriv<2,T> > >* ff );
     //*********************************************************
-#ifndef WIN32
+
     template< int N, class T>
     bool createQtSpringTable(Data<  sofa::helper::vector< typename sofa::component::forcefield::SpringForceField< StdVectorTypes< Vec<N,T>, Vec<N,T>, T> >::Spring > >  *ff, Q3GroupBox *box, Q3Table* vectorTable );
     template< int N, class T>
@@ -237,10 +237,10 @@ protected:
 
     //*********************************************************
     template< class T>
-    bool createQtSpringTable(Data< sofa::helper::vector< typename sofa::component::forcefield::JointSpringForceField< StdRigidTypes< 3,T > >::Spring > >  *ff, Q3GroupBox *box, Q3Table* vectorTable );
+    bool createQtRigidSpringTable(Data< sofa::helper::vector< typename sofa::component::forcefield::JointSpringForceField< StdRigidTypes< 3,T > >::Spring > >  *ff, Q3GroupBox *box, Q3Table* vectorTable );
     template< class T>
-    void storeQtSpringTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< sofa::helper::vector< typename sofa::component::forcefield::JointSpringForceField< StdRigidTypes<3,T> >::Spring > >  *ff );
-#endif
+    void storeQtRigidSpringTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< sofa::helper::vector< typename sofa::component::forcefield::JointSpringForceField< StdRigidTypes<3,T> >::Spring > >  *ff );
+
 
 
     Q3Table* addResizableTable(Q3GroupBox *box,int size, int column=1);

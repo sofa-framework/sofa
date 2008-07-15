@@ -47,6 +47,8 @@
 #include <sofa/helper/system/SetDirectory.h>
 
 #ifdef SOFA_QT4
+#include <QApplication>
+#include <QDesktopWidget>
 #include <Q3ListViewItem>
 #include <QStackedWidget>
 #include <QSlider>
@@ -56,6 +58,8 @@ typedef Q3ListViewItem QListViewItem;
 typedef QStackedWidget QWidgetStack;
 #else
 typedef QTextDrag Q3TextDrag;
+#include <qapplication.h>
+#include <qdesktopwidget.h>
 #include <qdragobject.h>
 #include <qwidgetstack.h>
 #include <qlistview.h>
@@ -103,6 +107,57 @@ class RealGUI : public ::GUI, public SofaGUI
 
     /// @name SofaGUI Interface
     /// @{
+
+
+    class DisplayFlagItem : public Q3CheckListItem
+    {
+    protected:
+        RealGUI* gui;
+        int id;
+        ToggleState last;
+    public:
+        template<class T>
+        DisplayFlagItem(RealGUI* g, T* parent, int id, const QString & text, Type tt = CheckBox)
+            : Q3CheckListItem(parent, text, tt)
+            , gui(g)
+            , id(id)
+            , last(NoChange)
+        {
+            if (tt == CheckBoxController)
+                setTristate(true);
+            //setState(NoChange);
+        }
+        template<class T>
+        DisplayFlagItem(RealGUI* g, T* parent, Q3CheckListItem* after, int id, const QString & text, Type tt = CheckBox)
+            : Q3CheckListItem(parent, after, text, tt)
+            , gui(g)
+            , id(id)
+            , last(NoChange)
+        {
+            if (tt == CheckBoxController)
+                setTristate(true);
+            //setState(NoChange);
+        }
+        void setState( ToggleState s )
+        {
+            last = s;
+            Q3CheckListItem::setState( s );
+        }
+        void init( bool b )
+        {
+            setState( b ? On : Off );
+        }
+    protected:
+        virtual void stateChange ( bool b )
+        {
+            ToggleState s = state();
+            if (s == last) return;
+            if (s == NoChange) return;
+            last = s;
+            gui->showhideElements(id,b);
+        }
+    };
+
 public:
 
     static int InitGUI(const char* name, const std::vector<std::string>& options);
@@ -197,38 +252,7 @@ public slots:
     void hideWireFrame()         {showhideElements(WIREFRAME,false);};
     void hideNormals()           {showhideElements(NORMALS,false);};
 
-    void showhideElements(int FILTER, bool value)
-    {
-        Node* groot = getScene();
-        if ( groot )
-        {
-            switch(FILTER)
-            {
-            case ALL:
-                groot->getContext()->setShowVisualModels ( value );
-                groot->getContext()->setShowBehaviorModels ( value );
-                groot->getContext()->setShowCollisionModels ( value );
-                groot->getContext()->setShowBoundingCollisionModels ( value );
-                groot->getContext()->setShowMappings ( value );
-                groot->getContext()->setShowMechanicalMappings ( value );
-                groot->getContext()->setShowForceFields ( value );
-                groot->getContext()->setShowInteractionForceFields ( value );
-                break;
-            case VISUALMODELS:       groot->getContext()->setShowVisualModels ( value ); break;
-            case BEHAVIORMODELS:     groot->getContext()->setShowBehaviorModels ( value ); break;
-            case COLLISIONMODELS:    groot->getContext()->setShowCollisionModels ( value ); break;
-            case BOUNDINGTREES:      groot->getContext()->setShowBoundingCollisionModels ( value );  break;
-            case MAPPINGS:           groot->getContext()->setShowMappings ( value ); break;
-            case MECHANICALMAPPINGS: groot->getContext()->setShowMechanicalMappings ( value ); break;
-            case FORCEFIELDS:        groot->getContext()->setShowForceFields ( value ); break;
-            case INTERACTIONS:       groot->getContext()->setShowInteractionForceFields ( value ); break;
-            case WIREFRAME:          groot->getContext()->setShowWireFrame ( value ); break;
-            case NORMALS:            groot->getContext()->setShowNormals ( value ); break;
-            }
-            sofa::simulation::tree::getSimulation()->updateVisualContext ( groot, FILTER );
-        }
-        viewer->getQWidget()->update();
-    }
+    void showhideElements(int FILTER, bool value);
 
     void clearRecord();
     void slot_recordSimulation( bool);
@@ -392,54 +416,6 @@ private:
 
 
 
-    class DisplayFlagItem : public Q3CheckListItem
-    {
-    protected:
-        RealGUI* gui;
-        int id;
-        ToggleState last;
-    public:
-        template<class T>
-        DisplayFlagItem(RealGUI* g, T* parent, int id, const QString & text, Type tt = CheckBox)
-            : Q3CheckListItem(parent, text, tt)
-            , gui(g)
-            , id(id)
-            , last(NoChange)
-        {
-            if (tt == CheckBoxController)
-                setTristate(true);
-            //setState(NoChange);
-        }
-        template<class T>
-        DisplayFlagItem(RealGUI* g, T* parent, Q3CheckListItem* after, int id, const QString & text, Type tt = CheckBox)
-            : Q3CheckListItem(parent, after, text, tt)
-            , gui(g)
-            , id(id)
-            , last(NoChange)
-        {
-            if (tt == CheckBoxController)
-                setTristate(true);
-            //setState(NoChange);
-        }
-        void setState( ToggleState s )
-        {
-            last = s;
-            Q3CheckListItem::setState( s );
-        }
-        void init( bool b )
-        {
-            setState( b ? On : Off );
-        }
-    protected:
-        virtual void stateChange ( bool b )
-        {
-            ToggleState s = state();
-            if (s == last) return;
-            if (s == NoChange) return;
-            last = s;
-            gui->showhideElements(id,b);
-        }
-    };
 
     DisplayFlagItem* itemShowAll;
     DisplayFlagItem* itemShowVisualModels;

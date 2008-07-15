@@ -1850,6 +1850,40 @@ void RealGUI::dropEvent(QDropEvent* event)
     fileOpen(filename);
 }
 
+
+
+void RealGUI::showhideElements(int FILTER, bool value)
+{
+    Node* groot = getScene();
+    if ( groot )
+    {
+        switch(FILTER)
+        {
+        case ALL:
+            groot->getContext()->setShowVisualModels ( value );
+            groot->getContext()->setShowBehaviorModels ( value );
+            groot->getContext()->setShowCollisionModels ( value );
+            groot->getContext()->setShowBoundingCollisionModels ( value );
+            groot->getContext()->setShowMappings ( value );
+            groot->getContext()->setShowMechanicalMappings ( value );
+            groot->getContext()->setShowForceFields ( value );
+            groot->getContext()->setShowInteractionForceFields ( value );
+            break;
+        case VISUALMODELS:       groot->getContext()->setShowVisualModels ( value ); break;
+        case BEHAVIORMODELS:     groot->getContext()->setShowBehaviorModels ( value ); break;
+        case COLLISIONMODELS:    groot->getContext()->setShowCollisionModels ( value ); break;
+        case BOUNDINGTREES:      groot->getContext()->setShowBoundingCollisionModels ( value );  break;
+        case MAPPINGS:           groot->getContext()->setShowMappings ( value ); break;
+        case MECHANICALMAPPINGS: groot->getContext()->setShowMechanicalMappings ( value ); break;
+        case FORCEFIELDS:        groot->getContext()->setShowForceFields ( value ); break;
+        case INTERACTIONS:       groot->getContext()->setShowInteractionForceFields ( value ); break;
+        case WIREFRAME:          groot->getContext()->setShowWireFrame ( value ); break;
+        case NORMALS:            groot->getContext()->setShowNormals ( value ); break;
+        }
+        sofa::simulation::tree::getSimulation()->updateVisualContext ( groot, FILTER );
+    }
+    viewer->getQWidget()->update();
+}
 } // namespace qt
 
 } // namespace gui
