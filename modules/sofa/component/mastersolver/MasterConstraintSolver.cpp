@@ -1,5 +1,5 @@
 #include <sofa/component/mastersolver/MasterConstraintSolver.h>
-#include <sofa/component/odesolver/MasterContactSolver.h>
+#include <sofa/component/mastersolver/MasterContactSolver.h>
 
 #include <sofa/simulation/common/AnimateVisitor.h>
 #include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>

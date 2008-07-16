@@ -27,7 +27,7 @@
 
 #include <sofa/component/controller/ForceFeedback.h>
 #include <sofa/component/controller/OmniDriver.h>
-#include <sofa/component/odesolver/MasterContactSolver.h>
+#include <sofa/component/mastersolver/MasterContactSolver.h>
 
 namespace sofa
 {
