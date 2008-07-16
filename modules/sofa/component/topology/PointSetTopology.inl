@@ -263,7 +263,7 @@ void PointSetTopologyModifier<DataTypes>::swapPoints(const int i1,const int i2)
     getPointSetTopology()->getDOF()->swapValues( i1, i2 );
 
     PointsIndicesSwap *e = new PointsIndicesSwap( i1, i2 ); // local or global indices ? (example of edges)
-    addTopologyChange(e);
+    this->addTopologyChange(e);
 }
 
 template<class DataTypes>
@@ -304,7 +304,7 @@ void PointSetTopologyModifier<DataTypes>::addPointsWarning(const unsigned int nP
 
     // Warning that vertices just got created
     PointsAdded *e = new PointsAdded(nPoints);
-    addTopologyChange(e);
+    this->addTopologyChange(e);
 }
 
 template<class DataTypes>
@@ -324,7 +324,7 @@ void PointSetTopologyModifier<DataTypes>::addPointsWarning(const unsigned int nP
 
     // Warning that vertices just got created
     PointsAdded *e = new PointsAdded(nPoints, ancestors, coefs);
-    addTopologyChange(e);
+    this->addTopologyChange(e);
 }
 
 template<class DataTypes>
@@ -336,7 +336,7 @@ void PointSetTopologyModifier<DataTypes>::removePointsWarning(sofa::helper::vect
 
     // Warning that these vertices will be deleted
     PointsRemoved *e = new PointsRemoved(indices);
-    addTopologyChange(e);
+    this->addTopologyChange(e);
 
     if(removeDOF)
     {
@@ -362,7 +362,7 @@ void PointSetTopologyModifier<DataTypes>::renumberPointsWarning( const sofa::hel
 {
     // Warning that these vertices will be deleted
     PointsRenumbering *e = new PointsRenumbering(index, inv_index);
-    addTopologyChange(e);
+    this->addTopologyChange(e);
 
     if(renumberDOF)
     {
