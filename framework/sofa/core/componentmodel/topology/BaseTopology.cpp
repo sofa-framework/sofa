@@ -28,18 +28,23 @@
 
 namespace sofa
 {
-
 namespace core
 {
-
 namespace componentmodel
 {
-
 namespace topology
 {
+// BaseTopology implementation
 
-/** Question : shouldn't this be virtual, given this class has some virtual members?
-         */
+BaseTopology::BaseTopology(bool isMainTopology)
+    : m_topologyContainer(NULL),
+      m_topologyModifier(NULL),
+      m_topologyAlgorithms(NULL),
+      m_geometryAlgorithms(NULL),
+      m_mainTopology(isMainTopology),
+      filename(initData(&filename, "filename", "Filename of the object"))
+{}
+
 BaseTopology::~BaseTopology()
 {
     if (m_topologyContainer)
@@ -51,7 +56,6 @@ BaseTopology::~BaseTopology()
     if (m_geometryAlgorithms)
         delete m_geometryAlgorithms;
 }
-
 
 std::list<const TopologyChange *>::const_iterator BaseTopology::lastChange() const
 {
@@ -78,29 +82,52 @@ void BaseTopology::resetTopologyChangeList() const
     getTopologyContainer()->resetTopologyChangeList();
 }
 
-void TopologyContainer::resetTopologyChangeList()
-{
-    std::list<const TopologyChange *>::iterator it=m_changeList.begin();
-    for (; it!=m_changeList.end(); ++it)
-    {
-        delete (*it);
-    }
-    m_changeList.erase(m_changeList.begin(),m_changeList.end());
-}
-
 void BaseTopology::resetStateChangeList() const
 {
     getTopologyContainer()->resetStateChangeList();
 }
 
-void TopologyContainer::resetStateChangeList()
+// TopologyAlgorithms implementation
+
+void TopologyAlgorithms::addTopologyChange(const TopologyChange *topologyChange)
 {
-    std::list<const TopologyChange *>::iterator it=m_StateChangeList.begin();
-    for (; it!=m_StateChangeList.end(); ++it)
+    m_basicTopology->getTopologyContainer()->addTopologyChange(topologyChange);
+}
+
+// TopologyModifier implementation
+
+void TopologyModifier::addTopologyChange(const TopologyChange *topologyChange)
+{
+    m_basicTopology->getTopologyContainer()->addTopologyChange(topologyChange);
+}
+
+void TopologyModifier::addStateChange(const TopologyChange *topologyChange)
+{
+    m_basicTopology->getTopologyContainer()->addStateChange(topologyChange);
+}
+
+// TopologyContainer implementation
+
+void TopologyContainer::resetTopologyChangeList()
+{
+    for (std::list<const TopologyChange *>::iterator it=m_changeList.begin();
+            it!=m_changeList.end(); ++it)
     {
         delete (*it);
     }
-    m_StateChangeList.erase(m_StateChangeList.begin(),m_StateChangeList.end());
+
+    m_changeList.clear();
+}
+
+void TopologyContainer::resetStateChangeList()
+{
+    for (std::list<const TopologyChange *>::iterator it=m_StateChangeList.begin();
+            it!=m_StateChangeList.end(); ++it)
+    {
+        delete (*it);
+    }
+
+    m_StateChangeList.clear();
 }
 
 } // namespace topology

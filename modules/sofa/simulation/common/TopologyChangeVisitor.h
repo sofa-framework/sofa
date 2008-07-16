@@ -40,6 +40,11 @@ class TopologyChangeVisitor : public Visitor
 {
 
 public:
+    TopologyChangeVisitor()
+        : nbIter(0)
+    {}
+
+    virtual ~TopologyChangeVisitor() {}
 
     virtual void processTopologyChange(core::objectmodel::BaseObject* obj);
 
@@ -52,14 +57,15 @@ public:
     /// Only used for debugging / profiling purposes
     virtual const char* getCategoryName() const { return "topologyChange"; }
 
-    const unsigned int& getNbIter() { return NbIter;}
-    void resetNbIter() { NbIter=0;}
-    void incrNbIter() { NbIter+=1;}
+    const unsigned int& getNbIter() { return nbIter;}
+
+    void resetNbIter() { nbIter=0;}
+
+    void incrNbIter() { ++nbIter;}
 
 protected:
-
     /// Flag to know the number of iterations of the overloaded method processNodeTopDown
-    unsigned int NbIter;
+    unsigned int nbIter;
 };
 
 

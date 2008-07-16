@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/component/topology/EdgeSetTopology.h>
 #include <sofa/component/topology/EdgeSetTopology.inl>
+
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
@@ -121,58 +122,102 @@ template class EdgeSetTopologyModifier<Rigid2fTypes>;
 
 #endif
 
-// implementation EdgeSetTopologyContainer
+// EdgeSetTopologyContainer implementation
+
+EdgeSetTopologyContainer::EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top)
+    : PointSetTopologyContainer( top )
+{}
+
+EdgeSetTopologyContainer::EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top,
+        const sofa::helper::vector< Edge > &edges )
+    : PointSetTopologyContainer( top ),
+      m_edge( edges )
+{}
 
 void EdgeSetTopologyContainer::createEdgeVertexShellArray ()
 {
+    if(!m_edgeVertexShell.empty())
+    {
+        for(unsigned int i=0; i<m_edgeVertexShell.size(); ++i)
+            m_edgeVertexShell[i].clear();
+    }
+
     m_edgeVertexShell.resize( m_basicTopology->getDOFNumber() );
 
-    for (unsigned int i = 0; i < m_edge.size(); ++i)
+    for (unsigned int edge=0; edge < m_edge.size(); ++edge)
     {
-        // adding edge i in the edge shell of both points
-        m_edgeVertexShell[ m_edge[i][0]  ].push_back( i );
-        m_edgeVertexShell[ m_edge[i][1] ].push_back( i );
+        // adding edge in the edge shell of both points
+        m_edgeVertexShell[ m_edge[edge][0] ].push_back(edge);
+        m_edgeVertexShell[ m_edge[edge][1] ].push_back(edge);
     }
 }
 
-
-
-const sofa::helper::vector<Edge> &EdgeSetTopologyContainer::getEdgeArray()
+void EdgeSetTopologyContainer::createEdgeSetArray()
 {
-    if (!m_edge.size())
+#ifndef NDEBUG
+    cout << "Error. [EdgeSetTopologyContainer::createEdgeSetArray] This method must be implemented by a child topology." << endl;
+#endif
+}
+
+const sofa::helper::vector<Edge> &EdgeSetTopologyContainer::getEdgeArray() // const
+{
+    if(m_edge.empty())
+    {
+#ifndef NDEBUG
+        cout << "Warning. [EdgeSetTopologyContainer::getEdgeArray] edge array is empty." << endl;
+#endif
         createEdgeSetArray();
+    }
     return m_edge;
 }
 
-
 int EdgeSetTopologyContainer::getEdgeIndex(const unsigned int v1, const unsigned int v2)
 {
-
-    const sofa::helper::vector< unsigned int > &es1=getEdgeVertexShell(v1) ;
-
-    const sofa::helper::vector<Edge> &ea=getEdgeArray();
-    unsigned int i=0;
-    int result= -1;
-    while ((i<es1.size()) && (result== -1))
+    if(m_edge.empty())
     {
-        const Edge &e=ea[es1[i]];
-        if ((e[0]==v2)|| (e[1]==v2))
-            result=(int) es1[i];
+#ifndef NDEBUG
+        cout << "Warning. [EdgeSetTopologyContainer::getEdge] edge array is empty." << endl;
+#endif
+        createEdgeSetArray();
+    }
 
-        i++;
+    if(m_edgeVertexShell.empty())
+        createEdgeVertexShellArray();
+
+    const sofa::helper::vector< unsigned int > &es1 = getEdgeVertexShell(v1) ;
+
+    int result = -1;
+    for(unsigned int i=0; (i < es1.size()) && (result == -1); ++i)
+    {
+        const Edge &e = m_edge[ es1[i] ];
+        if ((e[0] == v2) || (e[1] == v2))
+            result = (int) es1[i];
     }
     return result;
 }
 
-const Edge &EdgeSetTopologyContainer::getEdge(const unsigned int i)
+const Edge &EdgeSetTopologyContainer::getEdge(const unsigned int i) // const
 {
-    if (!m_edge.size())
+    if(m_edge.empty())
+    {
+#ifndef NDEBUG
+        cout << "Warning. [EdgeSetTopologyContainer::getEdge] edge array is empty." << endl;
+#endif
         createEdgeSetArray();
+    }
+
+#ifndef NDEBUG
+    if(m_edge.size() < i)
+    {
+        cout << "Error. [EdgeSetTopologyContainer::getEdge] edge array out of bounds: " << i << " > " << m_edge.size() << endl;
+    }
+#endif
+
     return m_edge[i];
 }
 
 // Return the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
-int EdgeSetTopologyContainer::getNumberConnectedComponents(sofa::helper::vector<unsigned int>& components)
+int EdgeSetTopologyContainer::getNumberConnectedComponents(sofa::helper::vector<unsigned int>& components) // const
 {
     using namespace boost;
 
@@ -180,7 +225,7 @@ int EdgeSetTopologyContainer::getNumberConnectedComponents(sofa::helper::vector<
 
     Graph G;
 
-    const sofa::helper::vector<Edge> &ea=getEdgeArray();
+    const sofa::helper::vector<Edge> &ea = getEdgeArray();
     for (unsigned int k=0; k<ea.size(); ++k)
     {
         add_edge(ea[k][0], ea[k][1], G);
@@ -192,90 +237,82 @@ int EdgeSetTopologyContainer::getNumberConnectedComponents(sofa::helper::vector<
     return num;
 }
 
-
-
 bool EdgeSetTopologyContainer::checkTopology() const
 {
-    //std::cout << "*** CHECK EdgeSetTopologyContainer ***" << std::endl;
+    bool ret = PointSetTopologyContainer::checkTopology();
 
-    PointSetTopologyContainer::checkTopology();
-    if (m_edgeVertexShell.size()>0)
+    if (! m_edgeVertexShell.empty())
     {
-        unsigned int i,j;
-        for (i=0; i<m_edgeVertexShell.size(); ++i)
+        for (unsigned int i=0; i<m_edgeVertexShell.size(); ++i)
         {
-            const sofa::helper::vector<unsigned int> &es=m_edgeVertexShell[i];
+            const sofa::helper::vector<unsigned int> &es = m_edgeVertexShell[i];
 
-            for (j=0; j<es.size(); ++j)
+            for (unsigned int j=0; j<es.size(); ++j)
             {
-                bool check_edge_vertex_shell = (m_edge[es[j]][0]==i) ||  (m_edge[es[j]][1]==i);
-                if(!check_edge_vertex_shell)
+                bool check_edge_vertex_shell = (m_edge[ es[j] ][0] == i) ||  (m_edge[ es[j] ][1] == i);
+                if(! check_edge_vertex_shell)
                 {
                     std::cout << "*** CHECK FAILED : check_edge_vertex_shell, i = " << i << " , j = " << j << std::endl;
+                    ret = false;
                 }
-                assert(check_edge_vertex_shell);
             }
         }
-        //std::cout << "******** DONE : check_edge_vertex_shell" << std::endl;
     }
-    return true;
+
+    return ret;
 }
 
-
-unsigned int EdgeSetTopologyContainer::getNumberOfEdges()
+unsigned int EdgeSetTopologyContainer::getNumberOfEdges() // const
 {
-    if (!m_edge.size())
+    if(m_edge.empty())
+    {
+#ifndef NDEBUG
+        cout << "Warning. [EdgeSetTopologyContainer::getEdge] edge array is empty." << endl;
+#endif
         createEdgeSetArray();
+    }
+
     return m_edge.size();
 }
 
-
-
-const sofa::helper::vector< sofa::helper::vector<unsigned int> > &EdgeSetTopologyContainer::getEdgeVertexShellArray()
+const sofa::helper::vector< sofa::helper::vector<unsigned int> > &EdgeSetTopologyContainer::getEdgeVertexShellArray() // const
 {
-    if (!m_edgeVertexShell.size())
+    if(m_edgeVertexShell.empty())
+    {
+#ifndef NDEBUG
+        cout << "Warning. [EdgeSetTopologyContainer::getEdgeVertexShellArray] edge vertex shell array is empty." << endl;
+#endif
         createEdgeVertexShellArray();
+    }
+
     return m_edgeVertexShell;
 }
 
-
-
-
-
-
-const sofa::helper::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeVertexShell(const unsigned int i)
+const sofa::helper::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeVertexShell(const unsigned int i) // const
 {
-    if (!m_edgeVertexShell.size() || i > m_edgeVertexShell.size()-1)
+    if(m_edgeVertexShell.empty())
+    {
+#ifndef NDEBUG
+        cout << "Warning. [EdgeSetTopologyContainer::getEdgeVertexShell] edge vertex shell array is empty." << endl;
+#endif
         createEdgeVertexShellArray();
+    }
+
     return m_edgeVertexShell[i];
 }
-
 
 sofa::helper::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeVertexShellForModification(const unsigned int i)
 {
-    if (!m_edgeVertexShell.size() || i > m_edgeVertexShell.size()-1)
+    if(m_edgeVertexShell.empty())
+    {
+#ifndef NDEBUG
+        cout << "Warning. [EdgeSetTopologyContainer::getEdgeVertexShellForModification] edge vertex shell array is empty." << endl;
+#endif
         createEdgeVertexShellArray();
+    }
+
     return m_edgeVertexShell[i];
 }
-
-
-
-/*EdgeSetTopologyContainer::EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top) : PointSetTopologyContainer( top )
-{
-
-}
-*/
-
-
-EdgeSetTopologyContainer::EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, /*const sofa::helper::vector< unsigned int > &DOFIndex, */
-        const sofa::helper::vector< Edge >         &edges )
-    : PointSetTopologyContainer( top /*, DOFIndex*/ ), m_edge( edges )
-{
-
-}
-
-
-
 
 
 } // namespace topology

@@ -28,7 +28,6 @@
 #define SOFA_CORE_COMPONENTMODEL_TOPOLOGY_BASEMESHTOPOLOGY_H
 
 #include <stdlib.h>
-#include <vector>
 #include <list>
 #include <string>
 #include <iostream>
