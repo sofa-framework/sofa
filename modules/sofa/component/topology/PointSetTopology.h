@@ -83,28 +83,28 @@ public:
     */
     PointSetTopologyContainer *getPointSetTopologyContainer() const
     {
-        return static_cast<PointSetTopologyContainer *> (m_topologyContainer);
+        return static_cast<PointSetTopologyContainer *> (this->m_topologyContainer);
     }
 
     /** \brief Returns the PointSetTopologyModifier object of this PointSetTopology.
     */
     PointSetTopologyModifier<DataTypes> *getPointSetTopologyModifier() const
     {
-        return static_cast<PointSetTopologyModifier<DataTypes> *> (m_topologyModifier);
+        return static_cast<PointSetTopologyModifier<DataTypes> *> (this->m_topologyModifier);
     }
 
     /** \brief Returns the PointSetTopologyAlgorithms object of this PointSetTopology.
     */
     PointSetTopologyAlgorithms<DataTypes> *getPointSetTopologyAlgorithms() const
     {
-        return static_cast<PointSetTopologyAlgorithms<DataTypes> *> (m_topologyAlgorithms);
+        return static_cast<PointSetTopologyAlgorithms<DataTypes> *> (this->m_topologyAlgorithms);
     }
 
     /** \brief Returns the PointSetGeometryAlgorithms object of this PointSetTopology.
     */
     PointSetGeometryAlgorithms<DataTypes> *getPointSetGeometryAlgorithms() const
     {
-        return static_cast<PointSetGeometryAlgorithms<DataTypes> *> (m_geometryAlgorithms);
+        return static_cast<PointSetGeometryAlgorithms<DataTypes> *> (this->m_geometryAlgorithms);
     }
 
     /** \brief Called by a topology to warn specific topologies linked to it that TopologyChange objects happened.
@@ -243,7 +243,7 @@ public:
 
     PointSetTopology<DataTypes>* getPointSetTopology() const
     {
-        return static_cast<PointSetTopology<DataTypes>*> (m_basicTopology);
+        return static_cast<PointSetTopology<DataTypes>*> (this->m_basicTopology);
     }
 
     /** \brief Generic method to remove a list of items.
@@ -284,7 +284,7 @@ public:
 
     PointSetTopology<DataTypes>* getPointSetTopology() const
     {
-        return static_cast<PointSetTopology<DataTypes>*> (m_basicTopology);
+        return static_cast<PointSetTopology<DataTypes>*> (this->m_basicTopology);
     }
 
     /** return the centroid of the set of points */
@@ -318,7 +318,7 @@ public:
 
     PointSetTopology<DataTypes>* getPointSetTopology() const
     {
-        return static_cast<PointSetTopology<DataTypes>*> (m_basicTopology);
+        return static_cast<PointSetTopology<DataTypes>*> (this->m_basicTopology);
     }
 
     /** \brief Build a point set topology from a file : also modifies the MechanicalObject
@@ -454,7 +454,7 @@ public:
     template <typename DataTypes>
     PointSetTopology<DataTypes>* getPointSetTopology() const
     {
-        return static_cast<PointSetTopology<DataTypes>*> (m_basicTopology);
+        return static_cast<PointSetTopology<DataTypes>*> (this->m_basicTopology);
     }
 
     /** \brief Returns the number of vertices in this topology.
