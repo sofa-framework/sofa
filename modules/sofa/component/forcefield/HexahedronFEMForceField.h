@@ -134,7 +134,9 @@ protected:
 
 
     Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix
+#ifndef SOFA_NEW_HEXA
     static const int _indices[8]; ///< indices ordering is different than in topology node
+#endif
 
 public:
 

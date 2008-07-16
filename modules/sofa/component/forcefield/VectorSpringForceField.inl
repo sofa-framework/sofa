@@ -165,32 +165,38 @@ template <class DataTypes>
 void VectorSpringForceField<DataTypes>::init()
 {
     this->Inherit::init();
-    topology = dynamic_cast<topology::EdgeSetTopology<DataTypes>*>(getContext()->getMainTopology());
 
-    if (!m_filename.getValue().empty())
+    if (springArray.empty())
     {
-        // load the springs from a file
-        load(( const char *)(m_filename.getValue().c_str()));
-    }
-    else if (topology)
-    {
-        // create springs based on the mesh topology
-        useTopology = true;
-        createDefaultSprings();
-        f_listening.setValue(true);
-    }
-    else if (springArray.size()==0)
-    {
-        int n = this->mstate1->getSize();
-        springArray.resize(n);
-        edgeArray.resize(n);
-        for (int i=0; i<n; ++i)
+        topology = dynamic_cast<topology::EdgeSetTopology<DataTypes>*>(getContext()->getMainTopology());
+
+        if (!m_filename.getValue().empty())
         {
-            edgeArray[i][0] = i;
-            edgeArray[i][1] = i;
-            springArray[i].ks=(Real)m_stiffness.getValue();
-            springArray[i].kd=(Real)m_viscosity.getValue();
-            springArray[i].restVector = Coord();
+            // load the springs from a file
+            load(( const char *)(m_filename.getValue().c_str()));
+            return;
+        }
+
+        if (topology != NULL)
+        {
+            // create springs based on the mesh topology
+            useTopology = true;
+            createDefaultSprings();
+            f_listening.setValue(true);
+        }
+        else
+        {
+            int n = this->mstate1->getSize();
+            springArray.resize(n);
+            edgeArray.resize(n);
+            for (int i=0; i<n; ++i)
+            {
+                edgeArray[i][0] = i;
+                edgeArray[i][1] = i;
+                springArray[i].ks=(Real)m_stiffness.getValue();
+                springArray[i].kd=(Real)m_viscosity.getValue();
+                springArray[i].restVector = Coord();
+            }
         }
     }
 }
