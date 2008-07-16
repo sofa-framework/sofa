@@ -38,28 +38,7 @@ namespace topology
 
 using namespace sofa::defaulttype;
 
-
 SOFA_DECL_CLASS(PointSetTopology)
-
-
-PointSetTopologyContainer::PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top)
-    : core::componentmodel::topology::TopologyContainer(top)
-{
-}
-
-
-unsigned int PointSetTopologyContainer::getNumberOfVertices() const
-{
-
-    return m_basicTopology->getDOFNumber();
-}
-
-
-bool PointSetTopologyContainer::checkTopology() const
-{
-    //std::cout << "*** CHECK PointSetTopologyContainer ***" << std::endl;
-    return true;
-}
 
 int PointSetTopologyClass = core::RegisterObject("Topology consisting of a set of points")
 
@@ -90,7 +69,21 @@ template class PointSetGeometryAlgorithms<Vec3fTypes>;
 template class PointSetGeometryAlgorithms<Vec2fTypes>;
 #endif
 
+// PointSetTopologyContainer implementation
 
+PointSetTopologyContainer::PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top)
+    : core::componentmodel::topology::TopologyContainer(top)
+{}
+
+unsigned int PointSetTopologyContainer::getNumberOfVertices() const
+{
+    return m_basicTopology->getDOFNumber();
+}
+
+bool PointSetTopologyContainer::checkTopology() const
+{
+    return true;
+}
 
 } // namespace topology
 

@@ -25,13 +25,10 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGY_H
 #define SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGY_H
 
-//#include <stdlib.h>
-#include <vector>
-//#include <string>
+#include <sofa/helper/vector.h>
+#include <sofa/core/componentmodel/topology/Topology.h>		// TopologyChange
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
-//#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/component/MechanicalObject.h>
-#include <sofa/helper/fixed_array.h>
 
 namespace sofa
 {
@@ -41,424 +38,123 @@ namespace component
 
 namespace topology
 {
+template<class DataTypes>
+class PointSetTopology;
+
+template<class DataTypes>
+class PointSetTopologyAlgorithms;
+
+template<class DataTypes>
+class PointSetGeometryAlgorithms;
+
+template< typename DataTypes >
+class PointSetTopologyLoader;
+
+template<class DataTypes>
+class PointSetTopologyModifier;
+
+class PointSetTopologyContainer;
+
+class PointsIndicesSwap;
+class PointsAdded;
+class PointsRemoved;
+class PointsRenumbering;
 
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::PointID PointID;
 
 /////////////////////////////////////////////////////////
-/// TopologyChange subclasses
-/////////////////////////////////////////////////////////
-
-
-
-/** indicates that the indices of two points are being swapped */
-class PointsIndicesSwap : public core::componentmodel::topology::TopologyChange
-{
-
-public:
-    unsigned int index[2];
-
-    PointsIndicesSwap(const unsigned int i1,const unsigned int i2) : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::POINTSINDICESSWAP)
-    {
-        index[0]=i1;
-        index[1]=i2;
-    }
-
-};
-
-
-
-/** indicates that some points were added */
-class PointsAdded : public core::componentmodel::topology::TopologyChange
-{
-
-public:
-    unsigned int nVertices;
-
-    sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestorsList;
-
-    sofa::helper::vector< sofa::helper::vector< double       > > coefs;
-
-    PointsAdded(const unsigned int nV,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = (const sofa::helper::vector< sofa::helper::vector< unsigned int > >)0,
-            const sofa::helper::vector< sofa::helper::vector< double       > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double       > >)0)
-        : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::POINTSADDED), nVertices(nV), ancestorsList(ancestors), coefs(baryCoefs)
-    { }
-
-    unsigned int getNbAddedVertices() const
-    {
-        return nVertices;
-    }
-
-};
-
-
-
-/** indicates that some points are about to be removed */
-class PointsRemoved : public core::componentmodel::topology::TopologyChange
-{
-
-public:
-    sofa::helper::vector<unsigned int> removedVertexArray;
-
-public:
-    PointsRemoved(const sofa::helper::vector<unsigned int>& _vArray) : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::POINTSREMOVED), removedVertexArray(_vArray)
-    {
-    }
-
-    const sofa::helper::vector<unsigned int> &getArray() const
-    {
-        return removedVertexArray;
-    }
-
-};
-
-
-
-/** indicates that the indices of all points have been renumbered */
-class PointsRenumbering : public core::componentmodel::topology::TopologyChange
-{
-
-public:
-    sofa::helper::vector<unsigned int> indexArray;
-    sofa::helper::vector<unsigned int> inv_indexArray;
-
-    PointsRenumbering(const sofa::helper::vector< unsigned int >& indices = (const sofa::helper::vector< unsigned int >)0, const sofa::helper::vector< unsigned int >& inv_indices = (const sofa::helper::vector< unsigned int >)0)
-        : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::POINTSRENUMBERING), indexArray(indices), inv_indexArray(inv_indices)
-    { }
-
-    const sofa::helper::vector<unsigned int> &getIndexArray() const
-    {
-        return indexArray;
-    }
-
-    const sofa::helper::vector<unsigned int> &getinv_IndexArray() const
-    {
-        return inv_indexArray;
-    }
-
-};
-
-
-
-/////////////////////////////////////////////////////////
 /// PointSetTopology objects
 /////////////////////////////////////////////////////////
-
-
-/** The container class that stores a set of points and provides access
-to each point. This set of point may be a subset of the DOF of the mechanical model */
-class PointSetTopologyContainer : public core::componentmodel::topology::TopologyContainer
-{
-
-public:
-
-    inline friend std::ostream& operator<< (std::ostream& out, const PointSetTopologyContainer& /*t*/)
-    {
-        return out;
-    }
-
-    /// Needed to be compliant with Datas.
-    inline friend std::istream& operator>>(std::istream& in, PointSetTopologyContainer& /*t*/)
-    {
-        return in;
-    }
-
-    /** \brief Returns the number of vertices in this topology.
-     *
-     */
-    unsigned int getNumberOfVertices() const;
-
-    /** \brief Constructor from a a Base Topology.
-     */
-    PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top=NULL);
-
-
-    /** \brief Checks if the Topology is coherent
-     *
-     */
-    virtual bool checkTopology() const;
-
-    template <typename DataTypes>
-    friend class PointSetTopologyModifier;
-
-};
-
-// forward declaration
-template< typename DataTypes > class PointSetTopologyLoader;
-
-/**
- * A class that can apply basic topology transformations on a set of points.
- */
-
-template<class DataTypes>
-class PointSetTopologyModifier : public core::componentmodel::topology::TopologyModifier
-{
-
-public:
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-
-    PointSetTopologyModifier(core::componentmodel::topology::BaseTopology *top) : TopologyModifier(top)
-    {
-    }
-
-    /** \brief Build a point set topology from a file : also modifies the MechanicalObject
-    *
-    */
-    virtual bool load(const char *filename);
-
-    /** \brief Swap points i1 and i2.
-     *
-     */
-    virtual void swapPoints(const int i1,const int i2);
-
-
-
-    /** \brief Translates the DOF : call the applyTranslation member function in the MechanicalObject
-     *
-     */
-    virtual void applyTranslation (const double dx,const double dy,const double dz);
-    /** \brief Scales the DOF : call the applyScale member function in the MechanicalObject object
-     *
-     */
-    virtual void applyScale (const double s);
-
-    /*
-    template< typename DataTypes >
-      friend class PointSetTopologyAlgorithms;
-
-    friend class sofa::core::componentmodel::topology::TopologicalMapping;
-
-    template< typename In, typename Out >
-    friend class Tetra2TriangleTopologicalMapping;
-    */
-
-    //protected:
-    /** \brief Sends a message to warn that some points were added in this topology.
-     *
-     * \sa addPointsProcess
-     */
-    void addPointsWarning(const unsigned int nPoints,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = (const sofa::helper::vector< sofa::helper::vector< unsigned int > >) 0,
-            const sofa::helper::vector< sofa::helper::vector< double       > >& coefs     = (const sofa::helper::vector< sofa::helper::vector< double       > >) 0,
-            const bool addDOF = true);
-
-
-
-    /** \brief Add some points to this topology.
-     *
-     * Use a list of ancestors to create the new points.
-     * Last parameter baryCoefs defines the coefficient used for the creation of the new points.
-     * Default value for these coefficient (when none is defined) is 1/n with n being the number of ancestors
-     * for the point being created.
-     *
-     * @param addDOF if true the points are actually added from the mechanical object's state vectors
-     *
-     * \sa addPointsWarning
-     */
-    virtual void addPointsProcess(const unsigned int nPoints,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = (const sofa::helper::vector< sofa::helper::vector< unsigned int > >)0,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0,
-            const bool addDOF = true);
-
-
-    /** \brief Add a new point (who has no ancestors) to this topology.
-     *
-     * \sa addPointsWarning
-     */
-    virtual void addNewPoint(unsigned int i,  const sofa::helper::vector< double >& x);
-
-    /** \brief Sends a message to warn that some points are about to be deleted.
-     *
-     * \sa removePointsProcess
-     */
-    void removePointsWarning(sofa::helper::vector<unsigned int> &indices, const bool removeDOF = true);
-
-
-    /** \brief Remove a subset of points
-     *
-     * Elements corresponding to these points are removed from the mechanical object's state vectors.
-     *
-     * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
-     * \sa removePointsWarning
-     *
-     * @param indices is not const because it is actually sorted from the highest index to the lowest one.
-     * @param removeDOF if true the points are actually deleted from the mechanical object's state vectors
-     */
-    virtual void removePointsProcess( sofa::helper::vector<unsigned int> &indices, const bool removeDOF = true);
-
-
-    /** \brief Sends a message to warn that points are about to be reordered.
-     *
-     * \sa renumberPointsProcess
-     */
-    void renumberPointsWarning( const sofa::helper::vector<unsigned int> &index, const sofa::helper::vector<unsigned int> &inv_index, const bool renumberDOF = true);
-
-    /** \brief Reorder this topology.
-     *
-     * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
-     * \see MechanicalObject::renumberValues
-     */
-    virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index, const sofa::helper::vector<unsigned int> &/*inv_index*/, const bool renumberDOF = true);
-
-protected:
-    /// modifies the mechanical object and creates the point set container
-    void loadPointSet(PointSetTopologyLoader<DataTypes> *);
-
-};
-
-/** A class that performs complex algorithms on a PointSet.
- *
- */
-template<class DataTypes>
-class PointSetTopologyAlgorithms : public core::componentmodel::topology::TopologyAlgorithms
-{
-    // no methods implemented yet
-public:
-    PointSetTopologyAlgorithms(core::componentmodel::topology::BaseTopology *top) : TopologyAlgorithms(top)
-    {
-    }
-
-    /** \brief Generic method to remove a list of items.
-    */
-    virtual void removeItems(sofa::helper::vector< unsigned int >& /*items*/) {return;}
-
-    /** \brief Generic method to write the current mesh into a msh file
-    */
-    virtual void writeMSH(const char * /*filename*/) {return;}
-
-    /** \brief Generic method for points renumbering
-    */
-    virtual void renumberPoints( const sofa::helper::vector<unsigned int> &/*index*/, const sofa::helper::vector<unsigned int> &/*inv_index*/) {return;}
-
-};
-
-
-/**
- * A class that can perform some geometric computation on a set of points.
- */
-template<class DataTypes>
-class PointSetGeometryAlgorithms : public core::componentmodel::topology::GeometryAlgorithms
-{
-
-public:
-    typedef typename DataTypes::Real Real;
-
-    typedef typename DataTypes::Coord Coord;
-
-    typedef typename DataTypes::VecCoord VecCoord;
-
-    PointSetGeometryAlgorithms(core::componentmodel::topology::BaseTopology *top) : GeometryAlgorithms(top)
-    {
-    }
-
-    /** return the centroid of the set of points */
-    Coord getPointSetCenter() const;
-
-    /** return the centre and a radius of a sphere enclosing the  set of points (may not be the smalled one) */
-    void getEnclosingSphere(Coord &center,Real &radius) const;
-
-    /** return the axis aligned bounding box : index 0 = xmin, index 1=ymin,
-        index 2 = zmin, index 3 = xmax, index 4 = ymax, index 5=zmax */
-    void getAABB(Real bb[6]) const;
-
-};
-
-
 
 /** Describes a topological object that only consists as a set of points :
 it is a base class for all topological objects */
 template<class DataTypes>
-class PointSetTopology : public core::componentmodel::topology::BaseTopology/*, public core::componentmodel::topology::BaseMeshTopology */
+class PointSetTopology : public core::componentmodel::topology::BaseTopology
 {
-
-public:
-    /** the object where the mechanical DOFs are stored */
-    component::MechanicalObject<DataTypes> *object;
-
-    DataPtr< PointSetTopologyContainer > *f_m_topologyContainer;
-
-    int revisionCounter;
 public:
     PointSetTopology(component::MechanicalObject<DataTypes> *obj);
 
-    /** \brief Returns the PointSetTopologyAlgorithms object of this PointSetTopology.
-     */
-    PointSetTopologyAlgorithms<DataTypes> *getPointSetTopologyAlgorithms() const
-    {
-        return (PointSetTopologyAlgorithms<DataTypes> *)this->m_topologyAlgorithms;
-    }
-
-    /** \brief Generic method returning the TopologyAlgorithms object
-     */
-    virtual core::componentmodel::topology::TopologyAlgorithms *getTopologyAlgorithms() const
-    {
-        return getPointSetTopologyAlgorithms();
-    }
-
-    /** \brief Returns the object where the mechanical DOFs are stored */
-    component::MechanicalObject<DataTypes> *getDOF() const
-    {
-        return object;
-    }
-    /** creates a TopologyChangeVisitor and therefore warns all components that
-        some topological changes have occured */
-    virtual void propagateTopologicalChanges();
-
-    /** return the latest revision number */
-    virtual int getRevision() const
-    {
-        return revisionCounter;
-    }
-
-
-
-    /** creates a TopologyStateVisitor and therefore warns the Mechanical Object components that
-        points have been added or will be removed */
-    virtual void propagateStateChanges();
+    virtual ~PointSetTopology() {}
 
     virtual void init();
+
     /** \brief Returns the PointSetTopologyContainer object of this PointSetTopologyContainer.
-     */
+    */
     PointSetTopologyContainer *getPointSetTopologyContainer() const
     {
-        return (PointSetTopologyContainer *)this->m_topologyContainer;
+        return static_cast<PointSetTopologyContainer *> (m_topologyContainer);
     }
+
+    /** \brief Returns the PointSetTopologyModifier object of this PointSetTopology.
+    */
+    PointSetTopologyModifier<DataTypes> *getPointSetTopologyModifier() const
+    {
+        return static_cast<PointSetTopologyModifier<DataTypes> *> (m_topologyModifier);
+    }
+
+    /** \brief Returns the PointSetTopologyAlgorithms object of this PointSetTopology.
+    */
+    PointSetTopologyAlgorithms<DataTypes> *getPointSetTopologyAlgorithms() const
+    {
+        return static_cast<PointSetTopologyAlgorithms<DataTypes> *> (m_topologyAlgorithms);
+    }
+
+    /** \brief Returns the PointSetGeometryAlgorithms object of this PointSetTopology.
+    */
+    PointSetGeometryAlgorithms<DataTypes> *getPointSetGeometryAlgorithms() const
+    {
+        return static_cast<PointSetGeometryAlgorithms<DataTypes> *> (m_geometryAlgorithms);
+    }
+
+    /** \brief Called by a topology to warn specific topologies linked to it that TopologyChange objects happened.
+    *
+    * Member m_changeList should contain all TopologyChange objects corresponding to changes in this topology
+    * that just happened (in the case of creation) or are about to happen (in the case of destruction) since
+    * last call to propagateTopologicalChanges.
+    *
+    * @see BaseTopology::m_changeList
+    * @sa firstChange()
+    * @sa lastChange()
+    */
+    virtual void propagateTopologicalChanges();
+
+    /** \brief Called by a topology to warn the Mechanical Object component that points have been added or will be removed.
+    *
+    * Member m_StateChangeList should contain all TopologyChange objects corresponding to vertex changes in this topology
+    * that just happened (in the case of creation) or are about to happen (in the case of destruction) since
+    * last call to propagateTopologicalChanges.
+    *
+    * @see BaseTopology::m_changeList
+    * @sa firstChange()
+    * @sa lastChange()
+    */
+    virtual void propagateStateChanges();
+
+    /** return the latest revision number */
+    virtual int getRevision() const { return revisionCounter; }
+
+    /** \brief Returns the object where the mechanical DOFs are stored */
+    component::MechanicalObject<DataTypes> *getDOF() const { return object;	}
 
     /** \brief Build a topology from a file : call the load member function in the modifier object
-     *
-     */
+    *
+    */
     virtual bool load(const char *filename);
+
     /** \brief Translates the DOF : call the applyTranslation member function in the modifier object
-     *
-     */
+    *
+    */
     virtual void applyTranslation (const double dx,const double dy,const double dz);
+
     /** \brief Scales the DOF : call the applyScale member function in the modifier object
-     *
-     */
+    *
+    */
     virtual void applyScale (const double s);
 
-
-    /** Parse the XML attributes : allows to load a topology from a file */
-    void parse(core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (arg->getAttribute("filename"))
-            this->load(arg->getAttribute("filename"));
-        if (arg->getAttribute("scale")!=NULL)
-        {
-            this->applyScale(atof(arg->getAttribute("scale")));
-        }
-        if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
-        {
-            this->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
-        }
-        this->core::componentmodel::topology::BaseTopology::parse(arg);
-    }
-
     /** \brief Return the number of DOF in the mechanicalObject this Topology deals with.
-     *
-     */
+    *
+    */
     virtual unsigned int getDOFNumber() const { return object->getSize(); }
 
 
@@ -494,6 +190,22 @@ public:
         if (arg) obj->parse(arg);
     }
 
+    /** Parse the XML attributes : allows to load a topology from a file */
+    void parse(core::objectmodel::BaseObjectDescription* arg)
+    {
+        if (arg->getAttribute("filename"))
+            this->load(arg->getAttribute("filename"));		// this is called at creation time, a container and modifier must exist !!!
+        if (arg->getAttribute("scale")!=NULL)
+        {
+            this->applyScale(atof(arg->getAttribute("scale")));
+        }
+        if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
+        {
+            this->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
+        }
+        this->core::componentmodel::topology::BaseTopology::parse(arg);
+    }
+
     virtual std::string getTemplateName() const
     {
         return templateName(this);
@@ -504,10 +216,354 @@ public:
         return DataTypes::Name();
     }
 
-protected:
-    PointSetTopology(component::MechanicalObject<DataTypes> *obj,const PointSetTopology *);
+public:
+    // TODO: clarify, do these members have to be public?
+    DataPtr< PointSetTopologyContainer > *f_m_topologyContainer;	// TODO: clarify, what is this needed for
 
+    /** the object where the mechanical DOFs are stored */
+    component::MechanicalObject<DataTypes> *object;					// TODO: clarify, should not this be in the container?
+
+private:
+    int revisionCounter;
 };
+
+/** A class that performs complex algorithms on a PointSet.
+*
+*/
+template<class DataTypes>
+class PointSetTopologyAlgorithms : public core::componentmodel::topology::TopologyAlgorithms
+{
+    // no methods implemented yet
+public:
+    PointSetTopologyAlgorithms(core::componentmodel::topology::BaseTopology *top)
+        : TopologyAlgorithms(top)
+    {}
+
+    virtual ~PointSetTopologyAlgorithms() {}
+
+    PointSetTopology<DataTypes>* getPointSetTopology() const
+    {
+        return static_cast<PointSetTopology<DataTypes>*> (m_basicTopology);
+    }
+
+    /** \brief Generic method to remove a list of items.
+    */
+    virtual void removeItems(sofa::helper::vector< unsigned int >& /*items*/)
+    { }
+
+    /** \brief Generic method to write the current mesh into a msh file
+    */
+    virtual void writeMSH(const char * /*filename*/)
+    { }
+
+    /** \brief Generic method for points renumbering
+    */
+    virtual void renumberPoints( const sofa::helper::vector<unsigned int> &/*index*/,
+            const sofa::helper::vector<unsigned int> &/*inv_index*/)
+    { }
+};
+
+
+/**
+* A class that can perform some geometric computation on a set of points.
+*/
+template<class DataTypes>
+class PointSetGeometryAlgorithms : public core::componentmodel::topology::GeometryAlgorithms
+{
+
+public:
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::VecCoord VecCoord;
+
+    PointSetGeometryAlgorithms(core::componentmodel::topology::BaseTopology *top)
+        : GeometryAlgorithms(top)
+    {}
+
+    virtual ~PointSetGeometryAlgorithms() {}
+
+    PointSetTopology<DataTypes>* getPointSetTopology() const
+    {
+        return static_cast<PointSetTopology<DataTypes>*> (m_basicTopology);
+    }
+
+    /** return the centroid of the set of points */
+    Coord getPointSetCenter() const;
+
+    /** return the centre and a radius of a sphere enclosing the  set of points (may not be the smalled one) */
+    void getEnclosingSphere(Coord &center, Real &radius) const;
+
+    /** return the axis aligned bounding box : index 0 = xmin, index 1=ymin,
+    index 2 = zmin, index 3 = xmax, index 4 = ymax, index 5=zmax */
+    void getAABB(Real bb[6]) const;
+};
+
+
+/**
+* A class that can apply basic topology transformations on a set of points.
+*/
+template<class DataTypes>
+class PointSetTopologyModifier : public core::componentmodel::topology::TopologyModifier
+{
+
+public:
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+
+    PointSetTopologyModifier(core::componentmodel::topology::BaseTopology *top)
+        : TopologyModifier(top)
+    {}
+
+    virtual ~PointSetTopologyModifier() {}
+
+    PointSetTopology<DataTypes>* getPointSetTopology() const
+    {
+        return static_cast<PointSetTopology<DataTypes>*> (m_basicTopology);
+    }
+
+    /** \brief Build a point set topology from a file : also modifies the MechanicalObject
+    *
+    */
+    virtual bool load(const char *filename);
+
+    /** \brief Swap points i1 and i2.
+    *
+    */
+    virtual void swapPoints(const int i1,const int i2);
+
+    /** \brief Translates the DOF : call the applyTranslation member function in the MechanicalObject
+    *
+    */
+    virtual void applyTranslation (const double dx,const double dy,const double dz);
+
+    /** \brief Scales the DOF : call the applyScale member function in the MechanicalObject object
+    *
+    */
+    virtual void applyScale (const double s);
+
+    /** \brief Sends a message to warn that some points were added in this topology.
+    *
+    * \sa addPointsProcess
+    */
+    void addPointsWarning(const unsigned int nPoints, const bool addDOF = true);
+
+    /** \brief Sends a message to warn that some points were added in this topology.
+    *
+    * \sa addPointsProcess
+    */
+    void addPointsWarning(const unsigned int nPoints,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double       > >& coefs,
+            const bool addDOF = true);
+
+
+    /** \brief Add some points to this topology.
+    *
+    * Use a list of ancestors to create the new points.
+    * Last parameter baryCoefs defines the coefficient used for the creation of the new points.
+    * Default value for these coefficient (when none is defined) is 1/n with n being the number of ancestors
+    * for the point being created.
+    *
+    * @param addDOF if true the points are actually added from the mechanical object's state vectors
+    *
+    * \sa addPointsWarning
+    */
+    virtual void addPointsProcess(const unsigned int nPoints, const bool addDOF = true);
+
+    /** \brief Add some points to this topology.
+    *
+    * Use a list of ancestors to create the new points.
+    * Last parameter baryCoefs defines the coefficient used for the creation of the new points.
+    * Default value for these coefficient (when none is defined) is 1/n with n being the number of ancestors
+    * for the point being created.
+    *
+    * @param addDOF if true the points are actually added from the mechanical object's state vectors
+    *
+    * \sa addPointsWarning
+    */
+    virtual void addPointsProcess(const unsigned int nPoints,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
+            const bool addDOF = true);
+
+    /** \brief Add a new point (who has no ancestors) to this topology.
+    *
+    * \sa addPointsWarning
+    */
+    virtual void addNewPoint(unsigned int i,  const sofa::helper::vector< double >& x);
+
+    /** \brief Sends a message to warn that some points are about to be deleted.
+    *
+    * \sa removePointsProcess
+    */
+    // side effect: indices are sorted first
+    void removePointsWarning(/*const*/ sofa::helper::vector<unsigned int> &indices,
+            const bool removeDOF = true);
+
+
+    /** \brief Remove a subset of points
+    *
+    * Elements corresponding to these points are removed from the mechanical object's state vectors.
+    *
+    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
+    * \sa removePointsWarning
+    *
+    * @param indices is not const because it is actually sorted from the highest index to the lowest one.
+    * @param removeDOF if true the points are actually deleted from the mechanical object's state vectors
+    */
+    virtual void removePointsProcess(const sofa::helper::vector<unsigned int> &indices,
+            const bool removeDOF = true);
+
+
+    /** \brief Sends a message to warn that points are about to be reordered.
+    *
+    * \sa renumberPointsProcess
+    */
+    void renumberPointsWarning( const sofa::helper::vector<unsigned int> &index,
+            const sofa::helper::vector<unsigned int> &inv_index,
+            const bool renumberDOF = true);
+
+    /** \brief Reorder this topology.
+    *
+    * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
+    * \see MechanicalObject::renumberValues
+    */
+    virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index,
+            const sofa::helper::vector<unsigned int> &/*inv_index*/,
+            const bool renumberDOF = true);
+
+protected:
+    /// modifies the mechanical object and creates the point set container
+    void loadPointSet(PointSetTopologyLoader<DataTypes> *);
+};
+
+/** The container class that stores a set of points and provides access
+to each point. This set of point may be a subset of the DOF of the mechanical model */
+class PointSetTopologyContainer : public core::componentmodel::topology::TopologyContainer
+{
+    template <typename DataTypes>
+    friend class PointSetTopologyModifier;
+
+public:
+    /** \brief Constructor from a a Base Topology.
+    */
+    PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top=NULL);
+
+    virtual ~PointSetTopologyContainer() {}
+
+    template <typename DataTypes>
+    PointSetTopology<DataTypes>* getPointSetTopology() const
+    {
+        return static_cast<PointSetTopology<DataTypes>*> (m_basicTopology);
+    }
+
+    /** \brief Returns the number of vertices in this topology.
+    *
+    */
+    unsigned int getNumberOfVertices() const;
+
+    /** \brief Checks if the Topology is coherent
+    *
+    */
+    virtual bool checkTopology() const;
+
+    inline friend std::ostream& operator<< (std::ostream& out, const PointSetTopologyContainer& /*t*/)
+    {
+        return out;
+    }
+
+    /// Needed to be compliant with Datas.
+    inline friend std::istream& operator>>(std::istream& in, PointSetTopologyContainer& /*t*/)
+    {
+        return in;
+    }
+};
+
+/////////////////////////////////////////////////////////
+/// TopologyChange subclasses
+/////////////////////////////////////////////////////////
+
+
+/** indicates that the indices of two points are being swapped */
+class PointsIndicesSwap : public core::componentmodel::topology::TopologyChange
+{
+public:
+    PointsIndicesSwap(const unsigned int i1,const unsigned int i2)
+        : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::POINTSINDICESSWAP)
+    {
+        index[0]=i1;
+        index[1]=i2;
+    }
+
+public:
+    unsigned int index[2];
+};
+
+/** indicates that some points were added */
+class PointsAdded : public core::componentmodel::topology::TopologyChange
+{
+public:
+
+    PointsAdded(const unsigned int nV)
+        : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::POINTSADDED)
+        , nVertices(nV)
+    { }
+
+    PointsAdded(const unsigned int nV,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double       > >& baryCoefs)
+        : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::POINTSADDED)
+        , nVertices(nV), ancestorsList(ancestors), coefs(baryCoefs)
+    { }
+
+    unsigned int getNbAddedVertices() const {return nVertices;}
+
+public:
+    unsigned int nVertices;
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestorsList;
+    sofa::helper::vector< sofa::helper::vector< double       > > coefs;
+};
+
+/** indicates that some points are about to be removed */
+class PointsRemoved : public core::componentmodel::topology::TopologyChange
+{
+public:
+    PointsRemoved(const sofa::helper::vector<unsigned int>& _vArray)
+        : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::POINTSREMOVED),
+          removedVertexArray(_vArray)
+    { }
+
+    const sofa::helper::vector<unsigned int> &getArray() const { return removedVertexArray;	}
+
+public:
+    sofa::helper::vector<unsigned int> removedVertexArray;
+};
+
+
+/** indicates that the indices of all points have been renumbered */
+class PointsRenumbering : public core::componentmodel::topology::TopologyChange
+{
+public:
+
+    PointsRenumbering()
+        : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::POINTSRENUMBERING)
+    { }
+
+    PointsRenumbering(const sofa::helper::vector< unsigned int >& indices,
+            const sofa::helper::vector< unsigned int >& inv_indices)
+        : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::POINTSRENUMBERING),
+          indexArray(indices), inv_indexArray(inv_indices)
+    { }
+
+    const sofa::helper::vector<unsigned int> &getIndexArray() const { return indexArray; }
+
+    const sofa::helper::vector<unsigned int> &getinv_IndexArray() const { return inv_indexArray; }
+
+public:
+    sofa::helper::vector<unsigned int> indexArray;
+    sofa::helper::vector<unsigned int> inv_indexArray;
+};
+
 
 } // namespace topology
 

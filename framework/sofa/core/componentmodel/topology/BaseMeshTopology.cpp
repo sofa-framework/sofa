@@ -49,7 +49,6 @@ BaseMeshTopology::BaseMeshTopology()
 /// Returns the number of current vertices
 unsigned int BaseMeshTopology::getDOFNumber() const
 {
-
     std::cerr << "WARNING: "<<this->getClassName()<<"::getDOFNumber unsupported."<<std::endl;
     return 0;
 }
@@ -234,7 +233,6 @@ void BaseMeshTopology::addHexa(int, int, int, int, int, int, int, int)
 
 std::list<const TopologyChange *>::const_iterator BaseMeshTopology::firstChange() const
 {
-
     std::cerr << "WARNING: "<<this->getClassName()<<"::firstChange() not supported." << std::endl;
     std::list<const TopologyChange *>::const_iterator l;
     return l;
@@ -242,7 +240,6 @@ std::list<const TopologyChange *>::const_iterator BaseMeshTopology::firstChange(
 
 std::list<const TopologyChange *>::const_iterator BaseMeshTopology::lastChange() const
 {
-
     std::cerr << "WARNING: "<<this->getClassName()<<"::lastChange() not supported." << std::endl;
     std::list<const TopologyChange *>::const_iterator l;
     return l;
