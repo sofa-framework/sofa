@@ -112,9 +112,9 @@ public:
 #ifdef CHECK
     Data<bool> check_gpu;
 #endif
-    Data < double > tol_d;
-    Data<int> maxIt_d;
-    Data < double > mu_d;
+    Data <double> tol_d;
+    Data <int> maxIt_d;
+    Data <double> mu_d;
 
     Data<int> useGPU_d;
 
