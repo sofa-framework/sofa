@@ -84,7 +84,6 @@ void MechanicalStateController<DataTypes>::init()
 template <class DataTypes>
 void MechanicalStateController<DataTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)
 {
-    cout << "mouse event !" << endl;
     eventX = mev->getPosX();
     eventY = mev->getPosY();
 

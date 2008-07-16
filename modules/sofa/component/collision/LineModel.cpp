@@ -88,26 +88,21 @@ void LineModel::init()
         return;
     }
 
-    topology = dynamic_cast<Topology *>(getContext()->getTopology());
-    if (!topology)
+    core::componentmodel::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
+    if (!bmt)
     {
-        std::cerr << "ERROR: LineModel requires a BaseMeshTopology.\n";
+        std::cerr << "ERROR: LineModel requires a MeshTopology.\n";
         return;
     }
-    //topology = this->getTopology();
-    setTopology = dynamic_cast<SetTopology*>(getContext()->getMainTopology());
-    if (setTopology)
+
+    resize( bmt->getNbEdges() );
+
+    for(int i = 0; i < bmt->getNbEdges(); i++)
     {
-        //std::cout << "INFO_print : Col - init TRIANGLE " << std::endl;
-        sofa::component::topology::EdgeSetTopologyContainer *estc= setTopology->getEdgeSetTopologyContainer();
-        const sofa::helper::vector<sofa::component::topology::Edge> &ea=estc->getEdgeArray();
-        resize(ea.size());
-        for(unsigned int i=0; i<ea.size(); i++)
-        {
-            elems[i].i1 = ea[i][0];
-            elems[i].i2 = ea[i][1];
-        }
+        elems[i].i1 = bmt->getEdge(i)[0];
+        elems[i].i2 = bmt->getEdge(i)[1];
     }
+
     updateFromTopology();
 }
 
@@ -118,92 +113,82 @@ void LineModel::handleTopologyChange()
     //{
     // We use the same edge array as the topology -> only resize and recompute flags
 
-    //sofa::component::topology::EdgeSetTopology<DataTypes> *setTopology = dynamic_cast< sofa::component::topology::EdgeSetTopology<DataTypes> * > (getContext()->getMainTopology());
-    resize(setTopology->getEdgeSetTopologyContainer()->getNumberOfEdges());
-
-    sofa::component::topology::EdgeSetTopologyContainer *estc= setTopology->getEdgeSetTopologyContainer();
-    const sofa::helper::vector<sofa::component::topology::Edge> &ea=estc->getEdgeArray();
-    //resize(ea.size());
-    for(unsigned int i=0; i<ea.size(); i++)
+    core::componentmodel::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
+    if (bmt)
     {
-        elems[i].i1 = ea[i][0];
-        elems[i].i2 = ea[i][1];
+        resize(bmt->getNbEdges());
+
+        for(int i = 0; i < bmt->getNbEdges(); i++)
+        {
+            elems[i].i1 = bmt->getEdge(i)[0];
+            elems[i].i2 = bmt->getEdge(i)[1];
+        }
+
+        needsUpdate = true;
     }
-
-    needsUpdate = true;
-
 
     //	return;
     //}
 
-    sofa::core::componentmodel::topology::BaseTopology* bt = setTopology;//getContext()->getMainTopology();
-    if (bt)
+    if (bmt)
     {
-
-        std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=bt->firstChange();
-        std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=bt->lastChange();
-
+        std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = bmt->firstChange();
+        std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = bmt->lastChange();
 
         while( itBegin != itEnd )
         {
             core::componentmodel::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
             // Since we are using identifier, we can safely use C type casts.
 
-            sofa::core::componentmodel::topology::TopologyContainer *container=bt->getTopologyContainer();
-
-            sofa::component::topology::EdgeSetTopologyContainer *tstc= dynamic_cast<sofa::component::topology::EdgeSetTopologyContainer *>(container);
-
             switch( changeType )
             {
-
-
-            case core::componentmodel::topology::ENDING_EVENT:
+            case core::componentmodel::topology::ENDING_EVENT :
             {
-                //std::cout << "INFO_print : Col - ENDING_EVENT" << std::endl;
-                needsUpdate=true;
+                //	std::cout << "INFO_print : Col - ENDING_EVENT" << std::endl;
+                needsUpdate = true;
                 break;
             }
 
 
-            case core::componentmodel::topology::EDGESADDED:
+            case core::componentmodel::topology::EDGESADDED :
             {
-                //std::cout << "INFO_print : Col - EDGESADDED" << std::endl;
-                //EdgeInfo t;
-                const sofa::component::topology::EdgesAdded *ta=dynamic_cast< const sofa::component::topology::EdgesAdded * >( *itBegin );
-                for (unsigned int i=0; i<ta->getNbAddedEdges(); ++i)
+                //	std::cout << "INFO_print : Col - EDGESADDED" << std::endl;
+                const sofa::component::topology::EdgesAdded *ta = dynamic_cast< const sofa::component::topology::EdgesAdded * >( *itBegin );
+
+                for (unsigned int i = 0; i < ta->getNbAddedEdges(); ++i)
                 {
-                    elems[elems.size() - ta->getNbAddedEdges() + i].i1=(ta->edgeArray[i])[0];
-                    elems[elems.size() - ta->getNbAddedEdges() + i].i2=(ta->edgeArray[i])[1];
+                    elems[elems.size() - ta->getNbAddedEdges() + i].i1 = (ta->edgeArray[i])[0];
+                    elems[elems.size() - ta->getNbAddedEdges() + i].i2 = (ta->edgeArray[i])[1];
                 }
-                resize( elems.size());
-                needsUpdate=true;
+
+                resize( elems.size() );
+                needsUpdate = true;
 
                 break;
             }
 
-            case core::componentmodel::topology::EDGESREMOVED:
+            case core::componentmodel::topology::EDGESREMOVED :
             {
                 //std::cout << "INFO_print : Col - EDGESREMOVED" << std::endl;
                 unsigned int last;
                 unsigned int ind_last;
 
-                if(tstc)
+                if (bmt)
                 {
-                    last= (tstc->getEdgeArray()).size() - 1;
+                    last = bmt->getNbEdges() - 1;
                 }
                 else
                 {
-                    last= elems.size() -1;
+                    last = elems.size() -1;
                 }
 
-                const sofa::helper::vector<unsigned int> &tab = ( dynamic_cast< const sofa::component::topology::EdgesRemoved *>( *itBegin ) )->getArray();
+                const sofa::helper::vector< unsigned int > &tab = ( dynamic_cast< const sofa::component::topology::EdgesRemoved *>( *itBegin ) )->getArray();
 
                 LineData tmp;
                 //topology::Edge tmp2;
 
-                for (unsigned int i = 0; i <tab.size(); ++i)
+                for (unsigned int i = 0; i < tab.size(); ++i)
                 {
-
                     unsigned int ind_k = tab[i];
 
                     tmp = elems[ind_k];
@@ -222,7 +207,6 @@ void LineModel::handleTopologyChange()
 
                     if(last != ind_last)
                     {
-
                         tmp = elems[last];
                         elems[last] = elems[ind_last];
                         elems[ind_last] = tmp;
@@ -243,16 +227,12 @@ void LineModel::handleTopologyChange()
                 break;
             }
 
-
-            case core::componentmodel::topology::POINTSREMOVED:
+            case core::componentmodel::topology::POINTSREMOVED :
             {
-
                 //std::cout << "INFO_print : Col - POINTSREMOVED" << std::endl;
-                if (tstc)
+                if (bmt)
                 {
-
-                    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvsa=tstc->getEdgeVertexShellArray();
-                    unsigned int last = tvsa.size() -1;
+                    unsigned int last = bmt->getDOFNumber() - 1;
 
                     unsigned int i,j;
                     const sofa::helper::vector<unsigned int> tab = ( dynamic_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
@@ -260,7 +240,6 @@ void LineModel::handleTopologyChange()
                     sofa::helper::vector<unsigned int> lastIndexVec;
                     for(unsigned int i_init = 0; i_init < tab.size(); ++i_init)
                     {
-
                         lastIndexVec.push_back(last - i_init);
                     }
 
@@ -270,62 +249,45 @@ void LineModel::handleTopologyChange()
                         bool is_reached = false;
                         while( (!is_reached) && (i_next < lastIndexVec.size() - 1))
                         {
-
                             i_next += 1 ;
                             is_reached = is_reached || (lastIndexVec[i_next] == tab[i]);
                         }
 
                         if(is_reached)
                         {
-
                             lastIndexVec[i_next] = lastIndexVec[i];
-
                         }
 
-                        const sofa::helper::vector<unsigned int> &shell=tvsa[lastIndexVec[i]];
-                        for (j=0; j<shell.size(); ++j)
+                        const sofa::helper::vector<unsigned int> &shell = bmt->getEdgeVertexShell(lastIndexVec[i]);
+
+                        for (j = 0; j < shell.size(); ++j)
                         {
+                            unsigned int ind_j = shell[j];
 
-                            unsigned int ind_j =shell[j];
-
-                            if ((unsigned)elems[ind_j].i1==last)
-                                elems[ind_j].i1=tab[i];
-                            else if ((unsigned)elems[ind_j].i2==last)
-                                elems[ind_j].i2=tab[i];
-
-                            /*
-                            if(elems[ind_j].i1 > elems[ind_j].i2){
-                            	unsigned int aux;
-                            	aux = elems[ind_j].i1;
-                            	elems[ind_j].i1 = elems[ind_j].i2;
-                            	elems[ind_j].i2 = aux;
+                            if ((unsigned)elems[ind_j].i1 == last)
+                            {
+                                elems[ind_j].i1 = tab[i];
                             }
-                            */
+                            else if ((unsigned)elems[ind_j].i2 == last)
+                            {
+                                elems[ind_j].i2 = tab[i];
+                            }
                         }
 
                         --last;
                     }
-
                 }
 
                 needsUpdate=true;
 
-
-
                 break;
             }
-
-            // Case "POINTSRENUMBERING" added to propagate the treatment to the Visual Model
 
             case core::componentmodel::topology::POINTSRENUMBERING:
             {
                 //std::cout << "INFO_print : Vis - POINTSRENUMBERING" << std::endl;
-
-                if (tstc)
+                if (bmt)
                 {
-
-                    //const sofa::helper::vector<sofa::component::topology::Edge> &ta=tstc->getEdgeArray();
-
                     unsigned int i;
 
                     const sofa::helper::vector<unsigned int> tab = ( dynamic_cast< const sofa::component::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
@@ -335,13 +297,9 @@ void LineModel::handleTopologyChange()
                         elems[i].i1  = tab[elems[i].i1];
                         elems[i].i2  = tab[elems[i].i2];
                     }
-
                 }
 
-                //}
-
                 break;
-
             }
 
             default:
@@ -429,45 +387,38 @@ void LineModel::handleTopologyChange()
 
 void LineModel::updateFromTopology()
 {
-    /*
-    needsUpdate=true;
-    int revision = topology->getRevision();
-    if (revision == meshRevision)
+    core::componentmodel::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
+    if (bmt)
     {
-            needsUpdate=false;
-    	return;
-    }
-    */
+        int revision = bmt->getRevision();
+        if (revision == meshRevision)
+            return;
 
-    const unsigned int npoints = mstate->getX()->size();
-    const unsigned int nlines = topology->getNbLines();
+        needsUpdate = true;
 
-    int revision = topology->getRevision();
-    if (revision == meshRevision)
-    {
-        return;
-    }
-    needsUpdate=true;
+        const unsigned int nbPoints = mstate->getX()->size();
+        const unsigned int nbLines = bmt->getNbEdges();
 
-    resize(nlines);
-    int index = 0;
-    //VecCoord& x = *mstate->getX();
-    //VecDeriv& v = *mstate->getV();
-    for (unsigned int i=0; i<nlines; i++)
-    {
-        //Topology::Line idx = topology->getLine(i);
-        topology::BaseMeshTopology::Line idx = topology->getLine(i);
-        if (idx[0] >= npoints || idx[1] >= npoints)
+        resize( nbLines );
+        int index = 0;
+
+        for (unsigned int i = 0; i < nbLines; i++)
         {
-            std::cerr << "ERROR: Out of range index in Line "<<i<<": "<<idx[0]<<" "<<idx[1]<<" ( total points="<<npoints<<")\n";
-            continue;
+            topology::BaseMeshTopology::Line idx = bmt->getEdge(i);
+
+            if (idx[0] >= nbPoints || idx[1] >= nbPoints)
+            {
+                std::cerr << "ERROR: Out of range index in Line " << i << ": " << idx[0] << " " << idx[1] << " ( total points = " << nbPoints << " )\n";
+                continue;
+            }
+
+            elems[index].i1 = idx[0];
+            elems[index].i2 = idx[1];
+            ++index;
         }
-        elems[index].i1 = idx[0];
-        elems[index].i2 = idx[1];
-        ++index;
+
+        meshRevision = revision;
     }
-    meshRevision = revision;
-    //return;
 }
 
 //void LineMeshModel::updateFromTopology()
