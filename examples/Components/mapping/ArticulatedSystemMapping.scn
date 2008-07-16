@@ -22,7 +22,7 @@
 	<Node>
 		<Object type="EulerImplicit" name="cg odesolver" printLog="false"/>
 		<Object type="CGLinearSolver" iterations="100" name="linear solver" threshold="1e-20" tolerance="1e-20"/>
-		<Object type="MechanicalObject" name="Articulations" template="Vec1d" position="0 0 0 0 0 0 0"/>
+		<Object type="MechanicalObject" name="Articulations" template="Vec1d" position="0 0 0 0"/>
 		<Node>
 			<Object type="MechanicalObject" template="Rigid" name="DOFs"
 				position="0 0 0  0 0 0 1 
