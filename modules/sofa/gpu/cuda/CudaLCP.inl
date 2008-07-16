@@ -106,7 +106,7 @@ void CudaLCP_MultIndepf(int dim,const void * m,int pM,const void * f,void * tmp,
     dim3 threads(BSIZE,1);
     dim3 grid((dim+BSIZE-1)/BSIZE,dim);
 
-    CudaLCP_MultIndep_kernel<float><<< grid, threads,threads.x*sizeof(float)>>>(dim, (const float*)m,pM,(const float*)f,(float*)tmp,pTmp,BSIZE/2);
+    CudaLCP_MultIndep_kernel<float><<< grid, threads,0>>>(dim, (const float*)m,pM,(const float*)f,(float*)tmp,pTmp,BSIZE/2);
 }
 void CudaLCP_MultIndepd(int dim,const void * m,int pM,const void * f,void * tmp,int pTmp)
 {
@@ -116,7 +116,7 @@ void CudaLCP_MultIndepd(int dim,const void * m,int pM,const void * f,void * tmp,
     dim3 threads(BSIZE,1);
     dim3 grid((dim+BSIZE-1)/BSIZE,dim);
 
-    CudaLCP_MultIndep_kernel<double><<< grid, threads,threads.x*sizeof(double)>>>(dim, (const double*)m,pM,(const double*)f,(double*)tmp,pTmp,BSIZE/2);
+    CudaLCP_MultIndep_kernel<double><<< grid, threads,0>>>(dim, (const double*)m,pM,(const double*)f,(double*)tmp,pTmp,BSIZE/2);
 #endif
 }
 
@@ -133,7 +133,7 @@ void CudaLCP_AddIndepf(int dim,int tmpsize,const void * q,const void * tmp,int p
     dim3 threads(tmpsize,1);
     dim3 grid(dim,1);
 
-    CudaLCP_AddIndep_kernel<float><<< grid, threads,threads.x>>>(dim,tmpsize,(const float*)q,(const float*)tmp,pTmp,(float*)res,BSIZE/2);
+    CudaLCP_AddIndep_kernel<float><<< grid, threads,threads.x>>>(dim,tmpsize,(const float*)q,(const float*)tmp,pTmp,(float*)res,tmpsize);
 }
 void CudaLCP_AddIndepd(int dim,int tmpsize,const void * q,const void * tmp,int pTmp,void * res)
 {
@@ -143,7 +143,7 @@ void CudaLCP_AddIndepd(int dim,int tmpsize,const void * q,const void * tmp,int p
     dim3 threads(tmpsize,1);
     dim3 grid(dim,1);
 
-    CudaLCP_AddIndep_kernel<double><<< grid, threads,threads.x>>>(dim,tmpsize,(const double*)q,(const double*)tmp,pTmp,(double*)res,BSIZE/2);
+    CudaLCP_AddIndep_kernel<double><<< grid, threads,threads.x>>>(dim,tmpsize,(const double*)q,(const double*)tmp,pTmp,(double*)res,tmpsize);
 #endif
 }
 
@@ -151,17 +151,19 @@ void CudaLCP_AddIndepAndUpdatef(int dim,int tmpsize,const void * m,const void * 
 {
     dim3 threads(tmpsize,1);
     dim3 grid(dim,1);
-    CudaLCP_AddIndepAndUpdate_kernel<float><<< grid, threads,threads.x>>>(dim,tmpsize,(const float*)m,(const float*)q,(const float*)tmp,pTmp,(float*)f,(float*)res,(float*)err,BSIZE/2);
+
+    CudaLCP_AddIndepAndUpdate_kernel<float><<< grid, threads,threads.x>>>(dim,tmpsize,(const float*)m,(const float*)q,(const float*)tmp,pTmp,(float*)f,(float*)res,(float*)err,tmpsize);
 }
 void CudaLCP_AddIndepAndUpdated(int dim,int tmpsize,const void * m,const void * q,const void * tmp,int pTmp,void * f,void * res,void * err)
 {
-//#if !defined(__CUDA_ARCH__) ||  __CUDA_ARCH__ < 130
+#if !defined(__CUDA_ARCH__) ||  __CUDA_ARCH__ < 130
     myprintf("CUDA ERROR: double precision not supported.\n");
-//#else
-//	dim3 threads(tmpsize,1);
-//	dim3 grid(dim,1);
-//	CudaLCP_AddIndepAndUpdate_kernel<double><<< grid, threads,threads.x>>>(dim,tmpsize,(const double*)m,(const double*)q,(const double*)tmp,pTmp,(float*)f,(double*)res,(double*)err,BSIZE/2);
-//#endif
+#else
+    dim3 threads(tmpsize,1);
+    dim3 grid(dim,1);
+
+    CudaLCP_AddIndepAndUpdate_kernel<double><<< grid, threads,threads.x>>>(dim,tmpsize,(const double*)m,(const double*)q,(const double*)tmp,pTmp,(float*)f,(double*)res,(double*)err,tmpsize);
+#endif
 }
 
 /*
@@ -241,7 +243,7 @@ void CudaLCP_ComputeNextIter_V4_DepKernelf(int d,int debutblock,const void * m,i
     dim3 threads(BSIZE,1);
     dim3 grid(1,1);
 
-    CudaLCP_ComputeNextIter_V4_DepKernel_kernel<float><<< grid, threads,(threads.x*2)*sizeof(float)>>>(d,debutblock,(const float*) m,mP,(const float *) q,(float*)f, (float*) err,(float *)res);
+    CudaLCP_ComputeNextIter_V4_DepKernel_kernel<float><<< grid, threads,0>>>(d,debutblock,(const float*) m,mP,(const float *) q,(float*)f, (float*) err,(float *)res);
 }
 void CudaLCP_ComputeNextIter_V4_DepKerneld(int d,int debutblock,const void * m,int mP,const void * q,void * f,void * err,void * res)
 {
@@ -251,7 +253,7 @@ void CudaLCP_ComputeNextIter_V4_DepKerneld(int d,int debutblock,const void * m,i
     dim3 threads(BSIZE,1);
     dim3 grid(1,1);
 
-    CudaLCP_ComputeNextIter_V4_DepKernel_kernel<double><<< grid, threads,(threads.x*2)*sizeof(double)>>>(d,debutblock,(const double*) m,mP,(const double *) q,(double*)f, (double*) err,(double *)res);
+    CudaLCP_ComputeNextIter_V4_DepKernel_kernel<double><<< grid, threads,0>>>(d,debutblock,(const double*) m,mP,(const double *) q,(double*)f, (double*) err,(double *)res);
 #endif
 }
 
@@ -270,7 +272,7 @@ void CudaLCP_ComputeNextIter_V4_InDepKernelf(int dim,int d,int debutBlock,const 
     dim3 threads(BSIZE,1);
     dim3 grid(1,dim-d);
 
-    CudaLCP_ComputeNextIter_V4_InDepKernel_kernel<float><<< grid, threads,threads.x*sizeof(float)>>>(dim,debutBlock,(const float*) m,mP,(const float*)f, (float *)res,BSIZE/2);
+    CudaLCP_ComputeNextIter_V4_InDepKernel_kernel<float><<< grid, threads,0>>>(dim,debutBlock,(const float*) m,mP,(const float*)f, (float *)res,BSIZE/2);
 }
 void CudaLCP_ComputeNextIter_V4_InDepKerneld(int dim,int d,int debutBlock,const void * m,int mP,const void * f,void * res)
 {
@@ -280,7 +282,7 @@ void CudaLCP_ComputeNextIter_V4_InDepKerneld(int dim,int d,int debutBlock,const 
     dim3 threads(BSIZE,1);
     dim3 grid(1,dim-d);
 
-    CudaLCP_ComputeNextIter_V4_InDepKernel_kernel<double><<< grid, threads,threads.x*sizeof(double)>>>(dim,debutBlock,(const double*) m,mP,(const double*)f, (double *)res,BSIZE/2);
+    CudaLCP_ComputeNextIter_V4_InDepKernel_kernel<double><<< grid, threads,0>>>(dim,debutBlock,(const double*) m,mP,(const double*)f, (double *)res,BSIZE/2);
 #endif
 }
 
@@ -469,20 +471,39 @@ void CudaLCP_FullKernel_V8d(int dim,int itMax,float tol,const void * m,int mP,co
 */
 void CudaNLCP_MultIndepf(int dim,const void * m,int pM,const void * f,void * tmp,int pTmp)
 {
-    dim3 threads(BSIZE,1);
-    dim3 grid((dim+BSIZE-1)/BSIZE,dim);
+    dim3 threads(MBSIZE,1);
+    dim3 grid((dim+MBSIZE-1)/MBSIZE,dim);
 
-    CudaNLCP_MultIndep_kernel<<< grid, threads,threads.x*sizeof(float)>>>(dim, (const float*)m,pM,(const float*)f,(float*)tmp,pTmp,BSIZE/2);
+    CudaNLCP_MultIndep_kernel<float><<< grid, threads,0>>>(dim, (const float*)m,pM,(const float*)f,(float*)tmp,pTmp);
 }
 void CudaNLCP_MultIndepd(int dim,const void * m,int pM,const void * f,void * tmp,int pTmp)
 {
 #if !defined(__CUDA_ARCH__) ||  __CUDA_ARCH__ < 130
     myprintf("CUDA ERROR: double precision not supported.\n");
 #else
-    dim3 threads(BSIZE,1);
-    dim3 grid((dim+BSIZE-1)/BSIZE,dim);
+    dim3 threads(MBSIZE,1);
+    dim3 grid((dim+MBSIZE-1)/MBSIZE,dim);
 
-    CudaNLCP_MultIndep_kernel<<< grid, threads,threads.x*sizeof(double)>>>(dim, (const double*)m,pM,(const double*)f,(double*)tmp,pTmp,BSIZE/2);
+    CudaNLCP_MultIndep_kernel<double><<< grid, threads,0>>>(dim, (const double*)m,pM,(const double*)f,(double*)tmp,pTmp);
+#endif
+}
+
+void CudaNLCP_AddIndepf(int dim,int tmpsize,const void * q,const void * tmp,int pTmp,void * res)
+{
+    dim3 threads(tmpsize,1);
+    dim3 grid(dim,1);
+
+    CudaNLCP_AddIndep_kernel<float><<< grid, threads,threads.x>>>(dim,tmpsize,(const float*)q,(const float*)tmp,pTmp,(float*)res,tmpsize);
+}
+void CudaNLCP_AddIndepd(int dim,int tmpsize,const void * q,const void * tmp,int pTmp,void * res)
+{
+#if !defined(__CUDA_ARCH__) ||  __CUDA_ARCH__ < 130
+    myprintf("CUDA ERROR: double precision not supported.\n");
+#else
+    dim3 threads(tmpsize,1);
+    dim3 grid(dim,1);
+
+    CudaNLCP_AddIndep_kernel<double><<< grid, threads,threads.x>>>(dim,tmpsize,(const float*)q,(const float*)tmp,pTmp,(float*)res,tmpsize);
 #endif
 }
 
@@ -491,7 +512,9 @@ void CudaNLCP_ComputeNextIter_V1_InDepKernelf(int dim,int d,int debutBlock,const
     dim3 threads(MBSIZE,1);
     dim3 grid(1,dim-d);
 
-    CudaNLCP_ComputeNextIter_V1_InDepKernel_kernel<<< grid, threads,threads.x*sizeof(float)>>>(dim,debutBlock,(const float*) m,mP,(const float*)f, (float *)res,48);
+    CudaNLCP_ComputeNextIter_V1_InDepKernel_kernel<float><<< grid, threads,0>>>(dim,debutBlock,(const float*) m,mP,(const float*)f, (float *)res);
+
+//	printf("fin\n");
 }
 void CudaNLCP_ComputeNextIter_V1_InDepKerneld(int dim,int d,int debutBlock,const void * m,int mP,const void * f,void * res)
 {
@@ -501,7 +524,7 @@ void CudaNLCP_ComputeNextIter_V1_InDepKerneld(int dim,int d,int debutBlock,const
     dim3 threads(MBSIZE,1);
     dim3 grid(1,dim-d);
 
-    CudaNLCP_ComputeNextIter_V1_InDepKernel_kernel<<< grid, threads,threads.x*sizeof(double)>>>(dim,debutBlock,(const double*) m,mP,(const double*)f, (double *)res,48);
+    CudaNLCP_ComputeNextIter_V1_InDepKernel_kernel<double><<< grid, threads,0>>>(dim,debutBlock,(const double*) m,mP,(const double*)f, (double *)res);
 #endif
 }
 
@@ -510,7 +533,7 @@ void CudaNLCP_ComputeNextIter_V1_DepKernelf(int dim,int d,int debutblock,float m
     dim3 threads(MBSIZE,1);
     dim3 grid(1,1);
 
-    CudaNLCP_ComputeNextIter_V1_DepKernel_kernel<<< grid, threads, threads.x*5*sizeof(float) >>>(dim,d,debutblock,mu,(const float*) m,mP,(const float *) q,(float*)f, (float*) err,(float *)res);
+    CudaNLCP_ComputeNextIter_V1_DepKernel_kernel<float><<< grid, threads,0>>>(dim,d,debutblock,mu,(const float*) m,mP,(const float *) q,(float*)f, (float*) err,(float *)res);
 }
 void CudaNLCP_ComputeNextIter_V1_DepKerneld(int dim,int d,int debutblock,float mu,const void * m,int mP,const void * q,void * f,void * err,void * res)
 {
@@ -520,28 +543,175 @@ void CudaNLCP_ComputeNextIter_V1_DepKerneld(int dim,int d,int debutblock,float m
     dim3 threads(MBSIZE,1);
     dim3 grid(1,1);
 
-    CudaNLCP_ComputeNextIter_V1_DepKernel_kernel<<< grid, threads, threads.x*5*sizeof(double) >>>(dim,d,debutblock,mu,(const double*) m,mP,(const double *) q,(double*)f, (double*) err,(double *)res);
+    CudaNLCP_ComputeNextIter_V1_DepKernel_kernel<double><<< grid, threads,0>>>(dim,d,debutblock,mu,(const double*) m,mP,(const double *) q,(double*)f, (double*) err,(double *)res);
 #endif
 }
 
 void CudaNLCP_FullKernel_V2f(int dim,int itMax,float tol,float mu,const void * m,int mP,const void * q,void * f,void * err,void * share)
 {
-    dim3 threads(BSIZE_C,BSIZE_L);
+    dim3 threads(MBSIZE_C,MBSIZE_C);
     dim3 grid(1,NB_MULTIPROC);
-    int dim_n = (dim+BSIZE_L-1)/BSIZE_L * BSIZE_L;
+    int dim_n = (dim+MBSIZE_C-1)/MBSIZE_C * MBSIZE_C;
 
-    CudaNLCP_FullKernel_V2_kernel<<< grid, threads,0>>>(dim,dim_n,dim_n*itMax,tol,mu,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share);
+    CudaNLCP_FullKernel_V2_kernel<float><<< grid, threads,0>>>(dim,dim_n,dim_n*itMax,tol,mu,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share);
 }
 void CudaNLCP_FullKernel_V2d(int dim,int itMax,float tol,float mu,const void * m,int mP,const void * q,void * f,void * err,void * share)
 {
 #if !defined(__CUDA_ARCH__) ||  __CUDA_ARCH__ < 130
     myprintf("CUDA ERROR: double precision not supported.\n");
 #else
-    dim3 threads(BSIZE_C,BSIZE_L);
+    dim3 threads(MBSIZE_C,MBSIZE_C);
     dim3 grid(1,NB_MULTIPROC);
-    int dim_n = (dim+BSIZE_L-1)/BSIZE_L * BSIZE_L;
+    int dim_n = (dim+MBSIZE_C-1)/MBSIZE_C * MBSIZE_C;
 
-    CudaNLCP_FullKernel_V2_kernel<<< grid, threads,0>>>(dim,dim_n,dim_n*itMax,tol,mu,(const double *) m,mP,(const double *) q,(double *) f,(double *) err,(int *) share);
+    CudaNLCP_FullKernel_V2_kernel<double><<< grid, threads,0>>>(dim,dim_n,dim_n*itMax,tol,mu,(const double *) m,mP,(const double *) q,(double *) f,(double *) err,(int *) share);
 
 #endif
 }
+
+
+/*
+template<class real>
+__global__ void CudaNLCP_FullKernel_V2_kernel(int dim,int dim_n,int countMax,real tol,real mu,const real * m,int mPitch,const real * q,real * f,volatile real * err,volatile int * share) {
+	__shared__ real temp[MBSIZE_L][MBSIZE_L];
+	__shared__ real f_i[MBSIZE_L];
+	__shared__ real q_s[MBSIZE_L];
+	__shared__ real error;
+	__shared__ real last_share;
+	__shared__ real f_1[3];
+	real m_i;
+
+	int tx = threadIdx.x;
+	int ty = threadIdx.y;
+	int count = blockIdx.y * MBSIZE_L + ty;
+
+	if ((tx==0) && (ty==0)) last_share=0;
+
+	__syncthreads();
+
+	while ((last_share<countMax) && (count<countMax)) {
+		temp[ty][tx] = 0.0;
+
+		int ligne = count % dim_n;
+		int bl = ligne/MBSIZE_L * MBSIZE_L;
+
+	//fin de la ligne il n'y a pas de bloc diago
+		int i = bl + MBSIZE_L;
+		while ((i<dim_n) && (last_share<countMax)) {
+			m_i = ((real *) ((char*) m + (mPitch*ligne)))[i+tx];
+
+			if ((tx==0) && (ty==0)) {
+				int dep;
+
+				if (i+MBSIZE_L<dim_n) dep = count-ligne-dim_n+i+MBSIZE_L;
+				else dep = count-ligne;
+
+				while (last_share<dep) last_share = share[0]; // boucle de syncho
+}
+
+#if MBSIZE_L>32
+			__syncthreads();
+#endif
+
+			if (ty==0) f_i[tx] = f[i+tx];
+
+			__syncthreads();
+
+			if (i+tx<dim) temp[ty][tx] += m_i * f_i[tx]; //même si ligne>dim mais on ecrira pas a la fin
+			i+=MBSIZE_L;
+}
+
+	//avant le bloc colone qui contient la diago
+		i=0;
+		while ((i<bl) && (last_share<countMax)) {
+			m_i = ((real *) ((char*) m + (mPitch*ligne)))[i+tx];
+
+			if ((tx==0) && (ty==0)) {
+				int dep = count-ligne+i+MBSIZE_L;
+
+				while (last_share<dep) last_share = share[0]; // boucle de syncho
+}
+
+#if MBSIZE_L>32
+			__syncthreads();
+#endif
+
+			if (ty==0) f_i[tx] = f[i+tx];
+
+			__syncthreads();
+
+			temp[ty][tx] += m_i * f_i[tx];
+			i+=MBSIZE_L;
+}
+
+		if (last_share<countMax) { //on ne fait plus rien
+			m_i = ((real *) ((char*) m + (mPitch*ligne)))[bl+tx];
+
+		//debut du bloc diago
+			if (ty==0) {
+				f_i[tx] = f[bl+tx];
+
+				if (tx<MBSIZE_L) q_s[tx] = q[ligne+tx];
+
+				if (tx==0) {
+					if (ligne==0) error=0.0;
+					else error=err[0];
+}
+}
+
+			__syncthreads();
+
+			i=0;
+			while ((i<MBSIZE_L) && (bl+i<dim)){
+				if (((ty>=i) && (ty<=i+2)) && ((tx<i) || (tx>i+2))) temp[ty][tx] += m_i * f_i[tx]; // mise à jour de tous les valeur du bloc diago
+
+#if MBSIZE_L>32
+				__syncthreads();
+#endif
+
+				if ((ty==0) && (tx<=2)) { //on prends
+					real r_tmp = q_s[i];
+
+					for (int k=1;k<MBSIZE_L;k++) temp[0][bl+ty] += temp[i][bl+ty];
+
+					if (tx==0) f_1[ty] = f_i[bl+ty];
+
+					real d0 = -(temp[0][ty] + temp[0][ty+1]*f_1[1] + temp[0][ty+2]*f_1[2]) / temp[0][bl+i];
+
+					real f_2;
+
+					if (r_tmp<0) f_2 = -r_tmp/m_i;
+					else f_2=0.0;
+
+					//error += fabs(m_i * (f_2 - f_1));
+
+					f_i[tx] = f_2;
+}
+
+				i+=3;
+
+				__syncthreads();//ligne suivante
+}
+
+			if (ty==0) f[bl+tx] = f_i[tx];
+
+#if MBSIZE_L>32
+			__syncthreads();
+#endif
+
+			if ((ty==0) && (tx==0)) {
+				err[0] = error;
+
+				if (ligne+MBSIZE_L==dim_n) {
+					if (error<tol)	share[0] = countMax;
+					else share[0] += MBSIZE_L;
+} else share[0] += MBSIZE_L;
+}
+
+			__syncthreads();//ligne suivante
+
+			count += NB_MULTIPROC*MBSIZE_L;
+}
+}
+}
+*/

@@ -45,7 +45,7 @@ using namespace sofa::defaulttype;
 using namespace helper::system::thread;
 using namespace core::componentmodel::behavior;
 
-#define MAX_NUM_CONSTRAINTS 1024
+#define MAX_NUM_CONSTRAINTS 2048
 
 template<class real>
 CudaMasterContactSolver<real>::CudaMasterContactSolver()
@@ -63,7 +63,7 @@ CudaMasterContactSolver<real>::CudaMasterContactSolver()
 
     _W.resize(MAX_NUM_CONSTRAINTS,MAX_NUM_CONSTRAINTS);
     _dFree.resize(MAX_NUM_CONSTRAINTS);
-    _f.resize(MAX_NUM_CONSTRAINTS+1);
+    _f.resize(MAX_NUM_CONSTRAINTS);
     _numConstraints = 0;
     _mu = 0.0;
 
@@ -85,7 +85,6 @@ void CudaMasterContactSolver<real>::build_LCP()
     _numConstraints = 0;
 
     simulation::MechanicalResetConstraintVisitor().execute(context);
-    _mu = mu_d.getValue();
     simulation::MechanicalAccumulateConstraint(_numConstraints, _mu).execute(context);
 
     if (_numConstraints > MAX_NUM_CONSTRAINTS)
@@ -95,8 +94,8 @@ void CudaMasterContactSolver<real>::build_LCP()
     }
     _dFree.resize(_numConstraints);
     _f.resize(_numConstraints);
-    if (_mu>0.0) _W.setwarpsize(96);
-    else _W.setwarpsize(64);
+    if (_mu>0.0) _W.setwarpsize(MBSIZE);
+    else _W.setwarpsize(BSIZE);
     _W.resize(_numConstraints,_numConstraints);
     _W.clear();
 
@@ -207,6 +206,8 @@ void CudaMasterContactSolver<real>::keepContactForcesValue()
 template<class real>
 void CudaMasterContactSolver<real>::step(double dt)
 {
+    _mu = mu_d.getValue();
+
     real _tol = (real) tol_d.getValue();
     int _maxIt = maxIt_d.getValue();
 
