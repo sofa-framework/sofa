@@ -435,7 +435,7 @@ void EdgeSetTopologyModifier<DataTypes>::addEdgesWarning(const unsigned int nEdg
 {
     // Warning that edges just got created
     EdgesAdded *e = new EdgesAdded(nEdges);
-    addTopologyChange(e);
+    this->addTopologyChange(e);
 }
 
 template<class DataTypes>
@@ -445,7 +445,7 @@ void EdgeSetTopologyModifier<DataTypes>::addEdgesWarning(const unsigned int nEdg
 {
     // Warning that edges just got created
     EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList);
-    addTopologyChange(e);
+    this->addTopologyChange(e);
 }
 
 template<class DataTypes>
@@ -456,7 +456,7 @@ void EdgeSetTopologyModifier<DataTypes>::addEdgesWarning(const unsigned int nEdg
 {
     // Warning that edges just got created
     EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList, ancestors);
-    addTopologyChange(e);
+    this->addTopologyChange(e);
 }
 
 template<class DataTypes>
@@ -468,7 +468,7 @@ void EdgeSetTopologyModifier<DataTypes>::addEdgesWarning(const unsigned int nEdg
 {
     // Warning that edges just got created
     EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList, ancestors, baryCoefs);
-    addTopologyChange(e);
+    this->addTopologyChange(e);
 }
 
 template<class DataTypes>
@@ -480,7 +480,7 @@ void EdgeSetTopologyModifier<DataTypes>::removeEdgesWarning(sofa::helper::vector
 
     // Warning that these edges will be deleted
     EdgesRemoved *e = new EdgesRemoved(edges);
-    addTopologyChange(e);
+    this->addTopologyChange(e);
 }
 
 template<class DataTypes>
@@ -726,7 +726,7 @@ void EdgeSetTopologyModifier< DataTypes >::swapEdgesProcess(const sofa::helper::
     modifier->addEdgesWarning( v.size(), v, edgeIndexList, ancestorsArray);
 
     //   EdgesAdded ea( 2 * edgesPairs.size(), v );
-    // addTopologyChange( ea );
+    // this->addTopologyChange( ea );
 
     // now warn about the destruction of the old edges
     sofa::helper::vector< unsigned int > indices;
@@ -739,7 +739,7 @@ void EdgeSetTopologyModifier< DataTypes >::swapEdgesProcess(const sofa::helper::
     modifier->removeEdgesWarning(indices );
 
     //            EdgesRemoved er( indices );
-    //            addTopologyChange( er );
+    //            this->addTopologyChange( er );
 
     // propagate the warnings
     topology->propagateTopologicalChanges();
