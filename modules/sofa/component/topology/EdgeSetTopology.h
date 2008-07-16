@@ -84,28 +84,28 @@ public:
     */
     EdgeSetTopologyContainer *getEdgeSetTopologyContainer() const
     {
-        return static_cast<EdgeSetTopologyContainer *> (m_topologyContainer);
+        return static_cast<EdgeSetTopologyContainer *> (this->m_topologyContainer);
     }
 
     /** \brief Returns the EdgeSetTopologyModifier object of this EdgeSetTopology.
     */
     EdgeSetTopologyModifier<DataTypes> *getEdgeSetTopologyModifier() const
     {
-        return static_cast<EdgeSetTopologyModifier<DataTypes> *> (m_topologyModifier);
+        return static_cast<EdgeSetTopologyModifier<DataTypes> *> (this->m_topologyModifier);
     }
 
     /** \brief Returns the EdgeSetTopologyAlgorithms object of this EdgeSetTopology.
     */
     EdgeSetTopologyAlgorithms<DataTypes> *getEdgeSetTopologyAlgorithms() const
     {
-        return static_cast<EdgeSetTopologyAlgorithms<DataTypes> *> (m_topologyAlgorithms);
+        return static_cast<EdgeSetTopologyAlgorithms<DataTypes> *> (this->m_topologyAlgorithms);
     }
 
     /** \brief Returns the EdgeSetTopologyAlgorithms object of this EdgeSetTopology.
     */
     EdgeSetGeometryAlgorithms<DataTypes> *getEdgeSetGeometryAlgorithms() const
     {
-        return static_cast<EdgeSetGeometryAlgorithms<DataTypes> *> (m_geometryAlgorithms);
+        return static_cast<EdgeSetGeometryAlgorithms<DataTypes> *> (this->m_geometryAlgorithms);
     }
 
     /// BaseMeshTopology API
@@ -288,7 +288,7 @@ public:
 
     EdgeSetTopology<DataTypes> * getEdgeSetTopology() const
     {
-        return static_cast<EdgeSetTopology<DataTypes> *> (m_basicTopology);
+        return static_cast<EdgeSetTopology<DataTypes> *> (this->m_basicTopology);
     }
 
     /** \brief Build an edge set topology from a file : also modifies the MechanicalObject
