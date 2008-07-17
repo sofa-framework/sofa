@@ -25,6 +25,12 @@ contains(DEFINES,SOFA_HAVE_FLOWVR){
 	SUBDIRS -= extlibs/miniFlowVR
 }
 
+#QGLViewer
+
+contains(DEFINES,SOFA_GUI_QGLVIEWER){
+	SUBDIRS += extlibs/libQGLViewer/QGLViewer
+}
+
 SUBDIRS += framework
 SUBDIRS += modules
 SUBDIRS += applications
