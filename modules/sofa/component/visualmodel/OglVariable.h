@@ -40,6 +40,17 @@ namespace component
 namespace visualmodel
 {
 
+/**
+ *  \brief Defines an uniform variable for a OglShader.
+ *
+ *  This is an abstract class which pass a value to an uniform
+ *  variable defined into the shader.
+ *  At the moment, following types have been supported :
+ *   - int, ivec2, ivec3, ivec4;
+ *   - float, vec2, vec3, vec4;
+ *   - int[], ivec2[], ivec3[], ivec4[];
+ *   - float[], vec2[], vec3[], vec4[];
+ */
 
 class OglVariable : public core::VisualModel, public OglShaderElement
 {

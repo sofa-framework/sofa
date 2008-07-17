@@ -217,11 +217,12 @@ public:
     }
 
 public:
+    /** the object where the mechanical DOFs are stored */
+    component::MechanicalObject<DataTypes> *object;					// TODO: clarify, should not this be in the container?
+
     // TODO: clarify, do these members have to be public?
     DataPtr< PointSetTopologyContainer > *f_m_topologyContainer;	// TODO: clarify, what is this needed for
 
-    /** the object where the mechanical DOFs are stored */
-    component::MechanicalObject<DataTypes> *object;					// TODO: clarify, should not this be in the container?
 
 private:
     int revisionCounter;

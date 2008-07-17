@@ -60,13 +60,13 @@ void OglTetrahedralModel<DataTypes>::init()
 
     if (!nodes)
     {
-        std::cerr << "No mecha." << std::endl;
+        std::cerr << "OglTetrahedralModel : Error : no MechanicalState found." << std::endl;
         return;
     }
 
     if (!topo)
     {
-        std::cerr << "No topo." << std::endl;
+        std::cerr << "OglTetrahedralModel : Error : no BaseMeshTopology found." << std::endl;
         return;
     }
 }

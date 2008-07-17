@@ -39,6 +39,18 @@ namespace component
 namespace visualmodel
 {
 
+/**
+ *  \brief Utility to cast Light into a Opengl scene.
+ *
+ *  This class must be used in a scene with one LightManager object.
+ *  This abstract class defines lights (i.e basically id and color)
+ *  The inherited lights are:
+ *   - Directional light (direction);
+ *   - Positional light (position);
+ *   - Spot light (position, direction, cutoff...).
+ *
+ */
+
 using sofa::defaulttype::Vector3;
 
 class Light : public virtual sofa::core::VisualModel

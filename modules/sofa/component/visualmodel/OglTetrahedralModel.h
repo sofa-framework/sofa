@@ -37,6 +37,17 @@ namespace component
 namespace visualmodel
 {
 
+/**
+ *  \brief Render 3D models with tetrahedra.
+ *
+ *  This is a basic class using tetrehedra for the rendering
+ *  instead of common triangles. It loads its data with
+ *  a BaseMeshTopology and a MechanicalState.
+ *  This rendering is only available with Nvidia's >8 series
+ *  and Ati's >2K series.
+ *
+ */
+
 template<class DataTypes>
 class OglTetrahedralModel : public core::VisualModel
 {

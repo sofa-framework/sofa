@@ -95,6 +95,16 @@ public:
     VecCoord* getVecX()  { return getX(); }
 };
 
+/**
+ *  \brief Abstract class which implements partially VisualModel.
+ *
+ *  This class implemented all non-hardware (i.e OpenGL or DirectX)
+ *  specific functions for rendering. It takes a 3D model (basically a .OBJ model)
+ *  and apply transformations on it.
+ *  At the moment, it is only implemented by OglModel for OpenGL systems.
+ *
+ */
+
 class VisualModelImpl : public core::VisualModel, public ExtVec3fMappedModel, public RigidMappedModel
 {
 protected:

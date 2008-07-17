@@ -52,19 +52,37 @@ namespace component
 namespace visualmodel
 {
 
+/**
+ *  \brief Utility to use shader for a visual model in OpenGL.
+ *
+ *  This class is used to implement shader into Sofa, for visual rendering
+ *  or for special treatement that needs shader mechanism.
+ *  The 3 kinds of shaders can be defined : vertex, triangle and fragment.
+ *  Geometry shader is only available with Nvidia's >8 series
+ *  and Ati's >2K series.
+ */
+
 class OglShader : public core::Shader, public core::VisualModel
 {
 protected:
+    ///Activates or not the shader in live
     Data<bool> turnOn;
 
+    ///File where vertex shader is defined
     Data<std::string> vertFilename;
+    ///File where fragment shader is defined
     Data<std::string> fragFilename;
+    ///File where geometry shader is defined
     Data<std::string> geoFilename;
 
+    ///Describes the input type of primitive if geometry shader is used
     Data<int> geometryInputType;
+    ///Describes the output type of primitive if geometry shader is used
     Data<int> geometryOutputType;
+    ///Describes the number of vertices in output if geometry shader is used
     Data<int> geometryVerticesOut;
 
+    ///OpenGL shader
     sofa::helper::gl::CShader m_shader;
 
     bool hasGeometryShader;
@@ -116,10 +134,20 @@ public:
     void  setGeometryVerticesOut(GLint v);
 };
 
+/**
+ *  \brief Abstract class which defines a element to be used with a OglShader.
+ *
+ *  This is only an partial implementation of the interface ShaderElement
+ *  which adds a pointer to its corresponding shader (where it will be used)
+ *  and the id (or name) of the element.
+ */
+
 class OglShaderElement : public core::ShaderElement
 {
 protected:
+    ///Name of element (corresponding with the shader)
     Data<std::string> id;
+    ///Shader to use the element with
     OglShader* shader;
 public:
     OglShaderElement();
