@@ -544,6 +544,14 @@ protected:
     */
     virtual void createEdgeVertexShellArray();
 
+    bool hasEdges() const;
+
+    bool hasEdgeVertexShell() const;
+
+    void clearEdges();
+
+    void clearEdgeVertexShell();
+
 protected:
     /*** The array that stores the set of edges in the edge set */
     sofa::helper::vector<Edge> m_edge;

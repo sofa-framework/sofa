@@ -377,19 +377,40 @@ void EdgeSetTopologyModifier<DataTypes>::addEdge(Edge e)
 {
     EdgeSetTopologyContainer* container = getEdgeSetTopology()->getEdgeSetTopologyContainer();
 
-    //unsigned int edgeId = container->m_edge.size();
+#ifndef NDEBUG
+    // check if the 2 vertices are different
+    if(e[0] == e[1])
+    {
+        cout << "Error: [EdgeSetTopologyModifier::addEdge] : invalid edge: "
+                << e[0] << ", " << e[1] << endl;
 
-    //if (!container->m_edgeVertexShell.empty())
-    //{
-    //	const sofa::helper::vector< sofa::helper::vector<unsigned int> > &sa = container->getEdgeVertexShellArray();
-    //	sofa::helper::vector< unsigned int > &shell0 = container->getEdgeVertexShellForModification( e[0] );
-    //	shell0.push_back(edgeId);
-    //	sort(shell0.begin(), shell0.end());
+        return;
+    }
 
-    //	sofa::helper::vector< unsigned int > &shell1 = container->getEdgeVertexShellForModification( e[1] );
-    //	shell1.push_back(edgeId);
-    //	sort(shell1.begin(), shell1.end());
-    //}
+    // check if there already exists an edge.
+    // Important: getEdgeIndex creates the edge vertex shell array
+    if(container->hasEdgeVertexShell())
+    {
+        if(container->getEdgeIndex(e[0],e[1]) != -1)
+        {
+            cout << "Error: [EdgeSetTopologyModifier::addEdgesProcess] : Edge "
+                    << e[0] << ", " << e[1] << " already exists." << endl;
+            return;
+        }
+    }
+#endif
+    if (container->hasEdgeVertexShell())
+    {
+        const unsigned int edgeId = container->m_edge.size();
+
+        sofa::helper::vector< unsigned int > &shell0 = container->getEdgeVertexShellForModification( e[0] );
+        shell0.push_back(edgeId);
+        sort(shell0.begin(), shell0.end());
+
+        sofa::helper::vector< unsigned int > &shell1 = container->getEdgeVertexShellForModification( e[1] );
+        shell1.push_back(edgeId);
+        sort(shell1.begin(), shell1.end());
+    }
 
     container->m_edge.push_back(e);
 }
@@ -398,35 +419,10 @@ template<class DataTypes>
 void EdgeSetTopologyModifier<DataTypes>::addEdgesProcess(const sofa::helper::vector< Edge > &edges)
 {
     EdgeSetTopologyContainer* container = getEdgeSetTopology()->getEdgeSetTopologyContainer();
-    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &sa = container->getEdgeVertexShellArray();
-
     container->m_edge.reserve(container->m_edge.size() + edges.size());
-    unsigned int edgeId = container->m_edge.size();
-
-    for (unsigned int i = 0; i < edges.size(); ++i, ++edgeId)
+    for (unsigned int i=0; i<edges.size(); ++i)
     {
-        const Edge &e = edges[i];
-
-        // check if the 2 vertices are different
-        if(e[0]==e[1])
-            cout << "Warning: [EdgeSetTopologyModifier::addEdgesProcess] : invalid edge: " << e[0] << ", " << e[1] << endl;
-
-        // check if there already exists an edge. note that getEdgeIndex creates the shell array
-        if(container->getEdgeIndex(e[0],e[1]) != -1)
-            cout << "Warning: [EdgeSetTopologyModifier::addEdgesProcess] : Edge " << e[0] << ", " << e[1] << " already exists." << endl;
-
-        if (!sa.empty())
-        {
-            sofa::helper::vector< unsigned int > &shell0 = container->getEdgeVertexShellForModification( e[0] );
-            shell0.push_back(edgeId);
-            sort(shell0.begin(), shell0.end());
-
-            sofa::helper::vector< unsigned int > &shell1 = container->getEdgeVertexShellForModification( e[1] );
-            shell1.push_back(edgeId);
-            sort(shell1.begin(), shell1.end());
-        }
-
-        container->m_edge.push_back(e);
+        addEdge(edges[i]);
     }
 }
 
@@ -489,6 +485,12 @@ void EdgeSetTopologyModifier<DataTypes>::removeEdgesProcess(const sofa::helper::
 {
     EdgeSetTopologyContainer * container = getEdgeSetTopology()->getEdgeSetTopologyContainer();
 
+    if(!container->hasEdges())	// TODO : this method should only be called when edges exist
+    {
+        cout << "Error. [EdgeSetTopologyModifier::removeEdgesProcess] edge array is empty." << endl;
+        return;
+    }
+
     sofa::helper::vector<unsigned int> vertexToBeRemoved;
 
     for (unsigned int i=0; i<indices.size(); ++i)
@@ -497,7 +499,7 @@ void EdgeSetTopologyModifier<DataTypes>::removeEdgesProcess(const sofa::helper::
         const unsigned int point0 = e[0], point1 = e[1];
 
         // first check that the edge shell array has been initialized
-        if (container->m_edgeVertexShell.empty())
+        if(!container->hasEdgeVertexShell())
         {
             container->createEdgeVertexShellArray();
         }
@@ -558,7 +560,7 @@ void EdgeSetTopologyModifier< DataTypes >::addPointsProcess(const unsigned int n
     // now update the local container structures.
     EdgeSetTopologyContainer * container = getEdgeSetTopology()->getEdgeSetTopologyContainer();
 
-    if(!container->m_edgeVertexShell.empty())
+    if(container->hasEdgeVertexShell())
         container->m_edgeVertexShell.resize( container->getNumberOfVertices() + nPoints );
 
     // call the PointSet method.
@@ -574,7 +576,7 @@ void EdgeSetTopologyModifier< DataTypes >::addPointsProcess(const unsigned int n
     // now update the local container structures.
     EdgeSetTopologyContainer * container = getEdgeSetTopology()->getEdgeSetTopologyContainer();
 
-    if(!container->m_edgeVertexShell.empty())
+    if(container->hasEdgeVertexShell())
         container->m_edgeVertexShell.resize( container->getNumberOfVertices() + nPoints );
 
     // call the PointSet method.
@@ -584,14 +586,14 @@ void EdgeSetTopologyModifier< DataTypes >::addPointsProcess(const unsigned int n
 template<class DataTypes >
 void EdgeSetTopologyModifier< DataTypes >::addNewPoint(unsigned int i, const sofa::helper::vector< double >& x)
 {
-    // start by calling the standard method.
-    PointSetTopologyModifier< DataTypes >::addNewPoint(i, x);
-
     // now update the local container structures.
     EdgeSetTopologyContainer * container = getEdgeSetTopology()->getEdgeSetTopologyContainer();
 
-    if(!container->m_edgeVertexShell.empty())
+    if(container->hasEdgeVertexShell())
         container->m_edgeVertexShell.resize( i+1 );
+
+    // call the PointSet method.
+    PointSetTopologyModifier< DataTypes >::addNewPoint(i, x);
 }
 
 template< class DataTypes >
@@ -600,17 +602,22 @@ void EdgeSetTopologyModifier< DataTypes >::removePointsProcess(sofa::helper::vec
 {
     EdgeSetTopologyContainer * container = getEdgeSetTopology()->getEdgeSetTopologyContainer();
 
-    const sofa::helper::vector< sofa::helper::vector< unsigned int > > & edgeVertexShellArray = container->getEdgeVertexShellArray();
+    if(!container->hasEdges())	// TODO : this method should only be called when edges exist
+    {
+        cout << "Error. [EdgeSetTopologyModifier::removePointsProcess] edge array is empty." << endl;
+
+        PointSetTopologyModifier< DataTypes >::removePointsProcess( indices, removeDOF );
+        return;
+    }
 
     // forces the construction of the edge shell array if it does not exists
-    if(edgeVertexShellArray.empty())
+    if(container->hasEdgeVertexShell())
         container->createEdgeVertexShellArray();
 
-    unsigned int lastPoint = container->m_edgeVertexShell.size() - 1;
+    // TODO: remove edges connected to the points being removed (or make sure it cannot occur)
 
-    // TODO: remove edges connected to the points being removed
-
-    for (unsigned int i = 0; i < indices.size(); ++i)
+    unsigned int lastPoint = container->getNumberOfVertices() - 1;
+    for (unsigned int i=0; i<indices.size(); ++i, --lastPoint)
     {
         // updating the edges connected to the point replacing the removed one:
         // for all edges connected to the last point
@@ -625,8 +632,6 @@ void EdgeSetTopologyModifier< DataTypes >::removePointsProcess(sofa::helper::vec
 
         // updating the edge shell itself (change the old index for the new one)
         container->m_edgeVertexShell[ indices[i] ] = container->m_edgeVertexShell[ lastPoint ];
-
-        --lastPoint;
     }
 
     container->m_edgeVertexShell.resize( container->m_edgeVertexShell.size() - indices.size() );
@@ -641,19 +646,26 @@ void EdgeSetTopologyModifier< DataTypes >::renumberPointsProcess( const sofa::he
         const sofa::helper::vector<unsigned int> &inv_index,
         const bool renumberDOF)
 {
-    // now update the local container structures.
     EdgeSetTopologyContainer * container = getEdgeSetTopology()->getEdgeSetTopologyContainer();
 
-    if(container->m_edgeVertexShell.empty())
-        container->createEdgeVertexShellArray();
-
-    const sofa::helper::vector< sofa::helper::vector< unsigned int > > & edgeVertexShellArray = container->getEdgeVertexShellArray();
-    // copy of the the edge vertex shell array
-    sofa::helper::vector< sofa::helper::vector< unsigned int > > EdgeVertexShell_cp = edgeVertexShellArray;
-
-    for (unsigned int i=0; i<index.size(); ++i)
+    if(!container->hasEdges())	// TODO : this method should only be called when edges exist
     {
-        container->m_edgeVertexShell[i] = EdgeVertexShell_cp[ index[i] ];
+        cout << "Error. [EdgeSetTopologyModifier::renumberPointsProcess] edge array is empty." << endl;
+
+        // call the point set method
+        PointSetTopologyModifier< DataTypes >::renumberPointsProcess( index, inv_index, renumberDOF );
+        return;
+    }
+
+    if(container->hasEdgeVertexShell())
+    {
+        // copy of the the edge vertex shell array
+        sofa::helper::vector< sofa::helper::vector< unsigned int > > edgeVertexShell_cp = container->getEdgeVertexShellArray();
+
+        for (unsigned int i=0; i<index.size(); ++i)
+        {
+            container->m_edgeVertexShell[i] = edgeVertexShell_cp[ index[i] ];
+        }
     }
 
     for (unsigned int i=0; i<container->m_edge.size(); ++i)
