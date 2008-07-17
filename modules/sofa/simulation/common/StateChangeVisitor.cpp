@@ -25,6 +25,7 @@
 
 #include <sofa/simulation/common/StateChangeVisitor.h>
 #include <sofa/simulation/common/Node.h>
+#include <sofa/core/componentmodel/topology/TopologicalMapping.h>
 
 namespace sofa
 {
