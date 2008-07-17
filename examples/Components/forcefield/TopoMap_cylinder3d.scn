@@ -11,7 +11,7 @@
 		<!-- <Object type="StaticSolver" iterations="140" /> -->
 		<Object type="CGImplicit" iterations="40" tolerance="1e-6" threshold="1e-10"/>
 		<Object type="MechanicalObject" name="Volume" />
-		<Object type="TetrahedronSetTopology" name="topo_Volume" filename="Topology/cylinder.msh" scale="1" />
+		<Object type="TetrahedronSetTopology" name="topo_Volume" filename="mesh/cylinder.msh" scale="1" />
 
 		<Object type="DiagonalMass" massDensity="0.5" />
 		<Object type="FixedPlaneConstraint" direction="0 0 1" dmin="-0.1" dmax="0.1"/>
