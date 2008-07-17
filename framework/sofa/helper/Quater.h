@@ -134,6 +134,9 @@ public:
     Quater<Real> operator+(const Quater<Real> &q1) const;
 
     Quater<Real> operator*(const Quater<Real> &q1) const;
+
+    Quater<Real> operator*(const Real &r) const;
+
     /// Given two Quaters, multiply them together to get a third quaternion.
     //template <class T>
     //friend Quater<T> operator*(const Quater<T>& q1, const Quater<T>& q2);
