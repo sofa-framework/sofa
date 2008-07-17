@@ -68,7 +68,9 @@ HEADERS += \
           system/PipeProcess.h \
           vector.h \
 	  polygon_cube_intersection/vec.h \
-	  polygon_cube_intersection/polygon_cube_intersection.h
+	  polygon_cube_intersection/polygon_cube_intersection.h \
+    DualQuat.inl \
+    DualQuat.h
           
 SOURCES += \
           ArgumentParser.cpp \
@@ -104,4 +106,6 @@ SOURCES += \
           system/thread/debug.cpp \
           system/PipeProcess.cpp \
 	  polygon_cube_intersection/polygon_cube_intersection.cpp \
-	  polygon_cube_intersection/fast_polygon_cube_intersection.cpp 
+	  polygon_cube_intersection/fast_polygon_cube_intersection.cpp \
+    DualQuat.cpp
+
