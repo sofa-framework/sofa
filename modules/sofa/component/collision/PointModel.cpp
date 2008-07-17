@@ -22,12 +22,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/helper/system/config.h>
+#include <sofa/component/collision/proximity.h>
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/core/componentmodel/collision/Intersection.inl>
+#include <iostream>
+#include <algorithm>
+
+
+
+
 #include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
 #include <vector>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>
+#include <sofa/core/componentmodel/collision/Intersection.inl>
+
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
@@ -37,6 +51,10 @@ namespace component
 
 namespace collision
 {
+
+using namespace sofa::defaulttype;
+using namespace sofa::core::componentmodel::collision;
+using namespace helper;
 
 SOFA_DECL_CLASS(Point)
 
@@ -305,6 +323,70 @@ void PointModel::updateNormals()
             normals[i].clear();
     }
 }
+
+
+bool Point::testLMD(const Vector3 &PQ, double &coneFactor, double &coneExtension)
+{
+    Vector3 pt = p();
+
+    sofa::core::componentmodel::topology::BaseMeshTopology* mesh = model->getTopology();
+    helper::vector<Vector3> x = (*model->mstate->getX());
+
+    const helper::vector <unsigned int>& triangleVertexShell = mesh->getTriangleVertexShell(index);
+    const helper::vector <unsigned int>& edgeVertexShell = mesh->getEdgeVertexShell(index);
+
+
+    Vector3 nMean;
+
+    for (unsigned int i=0; i<triangleVertexShell.size(); i++)
+    {
+        unsigned int t = triangleVertexShell[i];
+        const fixed_array<unsigned int,3>& ptr = mesh->getTriangle(t);
+        Vector3 nCur = (x[ptr[1]]-x[ptr[0]]).cross(x[ptr[2]]-x[ptr[0]]);
+        nCur.normalize();
+        nMean += nCur;
+    }
+
+    if (triangleVertexShell.size()==0)
+    {
+        for (unsigned int i=0; i<edgeVertexShell.size(); i++)
+        {
+            unsigned int e = edgeVertexShell[i];
+            const fixed_array<unsigned int,2>& ped = mesh->getEdge(e);
+            Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
+            l.normalize();
+            nMean += l;
+        }
+    }
+
+    if (nMean.norm()> 0.0000000001)
+        nMean.normalize();
+
+
+    for (unsigned int i=0; i<edgeVertexShell.size(); i++)
+    {
+        unsigned int e = edgeVertexShell[i];
+        const fixed_array<unsigned int,2>& ped = mesh->getEdge(e);
+        Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
+        l.normalize();
+        double computedAngleCone = dot(nMean , l) * coneFactor;
+        if (computedAngleCone<0)
+            computedAngleCone=0.0;
+        computedAngleCone+=coneExtension;
+        if (dot(l , PQ) < -computedAngleCone*PQ.norm())
+            return false;
+    }
+    return true;
+
+
+}
+
+
+
+
+
+
+
 
 } // namespace collision
 

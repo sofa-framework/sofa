@@ -56,6 +56,8 @@ public:
     const Vector3& pFree() const;
     const Vector3& v() const;
     Vector3 n() const;
+
+    bool Point::testLMD(const Vector3 &, double &, double &);
 };
 
 class PointModel : public core::CollisionModel
@@ -92,6 +94,8 @@ public:
 
     //virtual const char* getTypeName() const { return "Point"; }
 
+
+
 protected:
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
@@ -119,6 +123,8 @@ inline const Vector3& Point::pFree() const { return (*model->mstate->getXfree())
 inline const Vector3& Point::v() const { return (*model->mstate->getV())[index]; }
 
 inline Vector3 Point::n() const { return ((unsigned)index<model->normals.size()) ? model->normals[index] : Vector3(); }
+
+//bool Point::testLMD(const Vector3 &PQ, double &coneFactor, double &coneExtension);
 
 } // namespace collision
 
