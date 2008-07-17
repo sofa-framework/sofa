@@ -4,7 +4,7 @@ void main()
 {
 
  float s0 ;
- const float sc = gl_TexCoord[1].q/512.0;
+ float sc = gl_TexCoord[1].q/512.0;
  
  s0 = shadow2DProj(shadowMap, gl_TexCoord[1]).r;
  /*
