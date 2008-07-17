@@ -49,6 +49,14 @@ namespace component
 namespace visualmodel
 {
 
+/**
+ *  \brief Main class for rendering 3D model in SOFA.
+ *
+ *  This class implements VisuelModelImpl with rendering functions
+ *  using OpenGL.
+ *
+ */
+
 class OglModel : public VisualModelImpl
 {
 private:

@@ -42,6 +42,14 @@ namespace component
 namespace visualmodel
 {
 
+/**
+ *  \brief Defines an uniform sampler (texture) for a OglShader.
+ *
+ *  This is an abstract class which passes a texture id to an uniform
+ *  sampler variable defined into the shader and load the image into OpenGL.
+ *  At the moment, only texture2D is supported.
+ */
+
 class OglTexture :  public core::VisualModel, public OglShaderElement
 {
 
@@ -67,6 +75,7 @@ public:
     virtual void bind() = 0;
     virtual void unbind() = 0;
 
+    ///Utility function to set current active texture
     static void setActiveTexture(unsigned short unit);
 
     //virtual void setInShader(OglShader& s) = 0;

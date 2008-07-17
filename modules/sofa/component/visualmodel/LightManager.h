@@ -49,12 +49,19 @@ namespace component
 namespace visualmodel
 {
 
+/**
+ *  \brief Utility to manage lights into an Opengl scene
+ *
+ *  This class must be used with the Light class.
+ *  It centralizes all the Lights and managed them.
+ *
+ */
+
 class LightManager : public core::VisualModel
 {
 private:
     static const unsigned int MAX_NUMBER_OF_LIGHTS = GL_MAX_LIGHTS;
     std::vector<Light*> lights;
-    Light* defaultLight;
 
 public:
     LightManager();
@@ -65,8 +72,12 @@ public:
     void initVisual();
     void update() { };
     void draw();
+
+    ///Register a light into the LightManager
     void putLight(Light* light);
+    ///Register a vector of lights into the LightManager
     void putLights(std::vector<Light*> lights);
+    ///Remove all lights of the LightManager
     void clear();
 };
 

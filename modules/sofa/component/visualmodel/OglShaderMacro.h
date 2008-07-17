@@ -36,6 +36,16 @@ namespace component
 namespace visualmodel
 {
 
+/**
+ *  \brief Small class to define macro into an OglShader.
+ *
+ *  This small abstract class describes macro into an OpenGL shader
+ *  (GLSL). It was mainly written for implementing #ifdef macro
+ *  into shader, and therefore, to have a multi-purpose shader (and not
+ *  many fragmented shaders).
+ *
+ */
+
 class OglShaderMacro : public OglShaderElement
 {
 protected:
