@@ -57,7 +57,7 @@ public:
     const Vector3& v() const;
     Vector3 n() const;
 
-    bool Point::testLMD(const Vector3 &, double &, double &);
+    bool testLMD(const Vector3 &, double &, double &);
 };
 
 class PointModel : public core::CollisionModel
