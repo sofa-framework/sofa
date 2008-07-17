@@ -22,34 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+
 #include <sofa/simulation/common/StateChangeVisitor.h>
-#include <sofa/helper/Factory.h>
 #include <sofa/simulation/common/Node.h>
-
-#include <sofa/core/componentmodel/topology/TopologicalMapping.h>
-#include <sofa/core/componentmodel/topology/BaseTopology.h>
-
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
-
-#include <sofa/component/topology/PointSetTopology.h>
 
 namespace sofa
 {
 
 namespace simulation
 {
-
-
-using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::behavior;
-
-using namespace sofa::core::componentmodel::topology;
-
-using namespace sofa::core;
-
-using namespace sofa::component::topology;
-
 
 void StateChangeVisitor::processStateChange(core::objectmodel::BaseObject* obj)
 {

@@ -26,8 +26,6 @@
 #define SOFA_SIMULATION_TREE_TOPOLOGYCHANGEACTION_H
 
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/core/BehaviorModel.h>
-#include <sofa/core/componentmodel/collision/Pipeline.h>
 
 namespace sofa
 {

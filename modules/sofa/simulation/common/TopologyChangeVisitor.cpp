@@ -22,15 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+
 #include <sofa/simulation/common/TopologyChangeVisitor.h>
-#include <sofa/helper/Factory.h>
 #include <sofa/simulation/common/Node.h>
-
 #include <sofa/core/componentmodel/topology/TopologicalMapping.h>
-#include <sofa/core/componentmodel/topology/BaseTopology.h>
-
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {

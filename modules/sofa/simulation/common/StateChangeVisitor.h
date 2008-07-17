@@ -26,15 +26,12 @@
 #define SOFA_SIMULATION_TREE_STATECHANGEACTION_H
 
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/core/BehaviorModel.h>
-#include <sofa/core/componentmodel/collision/Pipeline.h>
 
 namespace sofa
 {
 
 namespace simulation
 {
-
 
 class StateChangeVisitor : public Visitor
 {

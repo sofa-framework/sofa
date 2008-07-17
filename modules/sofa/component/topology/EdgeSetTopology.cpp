@@ -134,17 +134,24 @@ EdgeSetTopologyContainer::EdgeSetTopologyContainer(core::componentmodel::topolog
       m_edge( edges )
 {}
 
-void EdgeSetTopologyContainer::createEdgeVertexShellArray ()
+void EdgeSetTopologyContainer::createEdgeVertexShellArray()
 {
-    if(!m_edgeVertexShell.empty())
+    if(!hasEdges())	// TODO : this method should only be called when edges exist
     {
-        for(unsigned int i=0; i<m_edgeVertexShell.size(); ++i)
-            m_edgeVertexShell[i].clear();
+#ifndef NDEBUG
+        cout << "Warning. [EdgeSetTopologyContainer::createEdgeVertexShellArray] edge array is empty." << endl;
+#endif
+        createEdgeSetArray();
+    }
+
+    if(hasEdgeVertexShell())
+    {
+        clearEdgeVertexShell();
     }
 
     m_edgeVertexShell.resize( m_basicTopology->getDOFNumber() );
 
-    for (unsigned int edge=0; edge < m_edge.size(); ++edge)
+    for (unsigned int edge=0; edge<m_edge.size(); ++edge)
     {
         // adding edge in the edge shell of both points
         m_edgeVertexShell[ m_edge[edge][0] ].push_back(edge);
@@ -161,27 +168,28 @@ void EdgeSetTopologyContainer::createEdgeSetArray()
 
 const sofa::helper::vector<Edge> &EdgeSetTopologyContainer::getEdgeArray() // const
 {
-    if(m_edge.empty())
+    if(!hasEdges())	// TODO : this method should only be called when edges exist
     {
 #ifndef NDEBUG
         cout << "Warning. [EdgeSetTopologyContainer::getEdgeArray] edge array is empty." << endl;
 #endif
         createEdgeSetArray();
     }
+
     return m_edge;
 }
 
 int EdgeSetTopologyContainer::getEdgeIndex(const unsigned int v1, const unsigned int v2)
 {
-    if(m_edge.empty())
+    if(!hasEdges()) // TODO : this method should only be called when edges exist
     {
 #ifndef NDEBUG
-        cout << "Warning. [EdgeSetTopologyContainer::getEdge] edge array is empty." << endl;
+        cout << "Warning. [EdgeSetTopologyContainer::getEdgeIndex] edge array is empty." << endl;
 #endif
         createEdgeSetArray();
     }
 
-    if(m_edgeVertexShell.empty())
+    if(!hasEdgeVertexShell())
         createEdgeVertexShellArray();
 
     const sofa::helper::vector< unsigned int > &es1 = getEdgeVertexShell(v1) ;
@@ -198,7 +206,7 @@ int EdgeSetTopologyContainer::getEdgeIndex(const unsigned int v1, const unsigned
 
 const Edge &EdgeSetTopologyContainer::getEdge(const unsigned int i) // const
 {
-    if(m_edge.empty())
+    if(!hasEdges()) // TODO : this method should only be called when edges exist
     {
 #ifndef NDEBUG
         cout << "Warning. [EdgeSetTopologyContainer::getEdge] edge array is empty." << endl;
@@ -207,9 +215,10 @@ const Edge &EdgeSetTopologyContainer::getEdge(const unsigned int i) // const
     }
 
 #ifndef NDEBUG
-    if(m_edge.size() < i)
+    if(m_edge.size() <= i)
     {
-        cout << "Error. [EdgeSetTopologyContainer::getEdge] edge array out of bounds: " << i << " > " << m_edge.size() << endl;
+        cout << "Error. [EdgeSetTopologyContainer::getEdge] edge array out of bounds: "
+                << i << " >= " << m_edge.size() << endl;
     }
 #endif
 
@@ -241,7 +250,15 @@ bool EdgeSetTopologyContainer::checkTopology() const
 {
     bool ret = PointSetTopologyContainer::checkTopology();
 
-    if (! m_edgeVertexShell.empty())
+    if(!hasEdges()) // TODO : this method should only be called when edges exist
+    {
+#ifndef NDEBUG
+        cout << "Warning. [EdgeSetTopologyContainer::checkTopology] edge array is empty." << endl;
+#endif
+        return ret;
+    }
+
+    if (hasEdgeVertexShell())
     {
         for (unsigned int i=0; i<m_edgeVertexShell.size(); ++i)
         {
@@ -264,10 +281,10 @@ bool EdgeSetTopologyContainer::checkTopology() const
 
 unsigned int EdgeSetTopologyContainer::getNumberOfEdges() // const
 {
-    if(m_edge.empty())
+    if(!hasEdges()) // TODO : this method should only be called when edges exist
     {
 #ifndef NDEBUG
-        cout << "Warning. [EdgeSetTopologyContainer::getEdge] edge array is empty." << endl;
+        cout << "Warning. [EdgeSetTopologyContainer::getNumberOfEdges] edge array is empty." << endl;
 #endif
         createEdgeSetArray();
     }
@@ -277,7 +294,7 @@ unsigned int EdgeSetTopologyContainer::getNumberOfEdges() // const
 
 const sofa::helper::vector< sofa::helper::vector<unsigned int> > &EdgeSetTopologyContainer::getEdgeVertexShellArray() // const
 {
-    if(m_edgeVertexShell.empty())
+    if(!hasEdgeVertexShell())	// TODO : this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
         cout << "Warning. [EdgeSetTopologyContainer::getEdgeVertexShellArray] edge vertex shell array is empty." << endl;
@@ -290,7 +307,7 @@ const sofa::helper::vector< sofa::helper::vector<unsigned int> > &EdgeSetTopolog
 
 const sofa::helper::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeVertexShell(const unsigned int i) // const
 {
-    if(m_edgeVertexShell.empty())
+    if(!hasEdgeVertexShell())	// TODO : this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
         cout << "Warning. [EdgeSetTopologyContainer::getEdgeVertexShell] edge vertex shell array is empty." << endl;
@@ -298,12 +315,18 @@ const sofa::helper::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeVer
         createEdgeVertexShellArray();
     }
 
+#ifndef NDEBUG
+    if(m_edgeVertexShell.size() <= i)
+        cout << "Error. [EdgeSetTopologyContainer::getEdgeVertexShell] edge vertex shell array out of bounds: "
+                << i << " >= " << m_edgeVertexShell.size() << endl;
+#endif
+
     return m_edgeVertexShell[i];
 }
 
 sofa::helper::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeVertexShellForModification(const unsigned int i)
 {
-    if(m_edgeVertexShell.empty())
+    if(!hasEdgeVertexShell())	// TODO : this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
         cout << "Warning. [EdgeSetTopologyContainer::getEdgeVertexShellForModification] edge vertex shell array is empty." << endl;
@@ -314,6 +337,28 @@ sofa::helper::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeVertexShe
     return m_edgeVertexShell[i];
 }
 
+bool EdgeSetTopologyContainer::hasEdges() const
+{
+    return !m_edge.empty();
+}
+
+bool EdgeSetTopologyContainer::hasEdgeVertexShell() const
+{
+    return !m_edgeVertexShell.empty();
+}
+
+void EdgeSetTopologyContainer::clearEdges()
+{
+    m_edge.clear();
+}
+
+void EdgeSetTopologyContainer::clearEdgeVertexShell()
+{
+    for(unsigned int i=0; i<m_edgeVertexShell.size(); ++i)
+        m_edgeVertexShell[i].clear();
+
+    m_edgeVertexShell.clear();
+}
 
 } // namespace topology
 
