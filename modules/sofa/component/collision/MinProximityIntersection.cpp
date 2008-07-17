@@ -856,8 +856,7 @@ bool MinProximityIntersection::testValidity(Point &p, const Vector3 &PQ)
     Vector3 pt = p.p();
 
     BaseMeshTopology* topology = p.getCollisionModel()->getTopology();
-    helper::vector<Vector3> x = *(p.getCollisionModel()->getMechanicalState()->getX());
-
+    helper::vector<Vector3>& x = *(p.getCollisionModel()->getMechanicalState()->getX());
     const helper::vector <unsigned int>& triangleVertexShell = topology->getTriangleVertexShell(p.getIndex());
     const helper::vector <unsigned int>& edgeVertexShell = topology->getEdgeVertexShell(p.getIndex());
 
@@ -919,7 +918,7 @@ bool MinProximityIntersection::testValidity(Line &l, const Vector3 &PQ)
     AB.normalize();
 
     BaseMeshTopology* topology = l.getCollisionModel()->getTopology();
-    helper::vector<Vector3> x = *(l.getCollisionModel()->getMechanicalState()->getX());
+    helper::vector<Vector3>& x = *(l.getCollisionModel()->getMechanicalState()->getX());
 
     const sofa::helper::vector<unsigned int>& triangleEdgeShell = topology->getTriangleEdgeShell(l.getIndex());
 
