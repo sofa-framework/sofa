@@ -62,9 +62,9 @@ using std::cout;
 using std::endl;
 
 template< class DataTypes>
-void TriangularFEMForceField<DataTypes>::TRQSTriangleCreationFunction (int /*triangleIndex*/, void* param,
+void TriangularFEMForceField<DataTypes>::TRQSTriangleCreationFunction (	int triangleIndex, void* param,
         TriangleInformation &tinfo,
-        const Triangle& t,
+        const Triangle& ,
         const sofa::helper::vector< unsigned int > &,
         const sofa::helper::vector< double >&)
 {
@@ -73,52 +73,25 @@ void TriangularFEMForceField<DataTypes>::TRQSTriangleCreationFunction (int /*tri
     {
         TriangleSetTopology<DataTypes> *_mesh=ff->getTriangularTopology();
         assert(_mesh!=0);
-        //TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
-        //const std::vector< Triangle > &triangleArray=container->getTriangleArray() ;
-        //const Triangle &t=triangleArray[triangleIndex];
-
-        const typename DataTypes::VecCoord& vect_c = *_mesh->getDOF()->getX0();
+        TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
+        const std::vector< Triangle > &triangleArray=container->getTriangleArray() ;
+        const Triangle &t=triangleArray[triangleIndex];
+//		const typename DataTypes::VecCoord& vect_c = *_mesh->getDOF()->getX0();
 
         Index a = t[0];
         Index b = t[1];
         Index c = t[2];
 
-        tinfo.materialMatrix[0][0] = 1;
-        tinfo.materialMatrix[0][1] = ff->f_poisson.getValue();
-        tinfo.materialMatrix[0][2] = 0;
-        tinfo.materialMatrix[1][0] = ff->f_poisson.getValue();
-        tinfo.materialMatrix[1][1] = 1;
-        tinfo.materialMatrix[1][2] = 0;
-        tinfo.materialMatrix[2][0] = 0;
-        tinfo.materialMatrix[2][1] = 0;
-        tinfo.materialMatrix[2][2] = 0.5f * (1 - ff->f_poisson.getValue());
-
-        tinfo.materialMatrix *= (ff->f_young.getValue() / (12 * (1 - ff->f_poisson.getValue() * ff->f_poisson.getValue())));
-
         switch(ff->method)
         {
         case SMALL :
-            //ff->creation_computeMaterialStiffnesses(); //ff->computeMaterialStiffness(triangleIndex,a,b,c)
-            //ff->initSmall(); //ff-> triangleIndex,a,b,c
+            ff->computeMaterialStiffness(triangleIndex,a,b,c);
+            ff->initSmall();
 
             break;
         case LARGE :
-            //ff->creation_computeMaterialStiffnesses(); //ff->computeMaterialStiffness(triangleIndex,a,b,c)
-
-            //ff->initLarge(); //ff-> triangleIndex,a,b,c
-
-            Transformation R_0_1;
-            //cerr<<"TriangularFEMForceField<DataTypes>::initLarge(), x.size() = "<<_object->getX()->size()<<", _initialPoints.getValue().size() = "<<_initialPoints.getValue().size()<<endl;
-            ff->computeRotationLarge( R_0_1, vect_c, a, b, c );
-
-            tinfo.rotatedInitialElements[0] = R_0_1 * vect_c[a]; //ff->_initialPoints.getValue()[a];
-            tinfo.rotatedInitialElements[1] = R_0_1 * vect_c[b];
-            tinfo.rotatedInitialElements[2] = R_0_1 * vect_c[c];
-
-            tinfo.rotatedInitialElements[1] -= tinfo.rotatedInitialElements[0];
-            tinfo.rotatedInitialElements[2] -= tinfo.rotatedInitialElements[0];
-            tinfo.rotatedInitialElements[0] = Coord(0,0,0);
-
+            ff->computeMaterialStiffness(triangleIndex,a,b,c);
+            ff->initLarge(triangleIndex,a,b,c);
             break;
         }
     }
@@ -136,8 +109,7 @@ void TriangularFEMForceField<DataTypes>::TRQSEdgeCreationFunction(int edgeIndex,
 
 
 template <class DataTypes>
-TriangularFEMForceField<DataTypes>::
-TriangularFEMForceField()
+TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     : _mesh(NULL)
 //, _indexedElements(NULL)
     , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
@@ -167,7 +139,6 @@ TriangularFEMForceField<DataTypes>::~TriangularFEMForceField()
 {
 }
 
-
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::init()
 {
@@ -178,10 +149,8 @@ void TriangularFEMForceField<DataTypes>::init()
     else if (f_method.getValue() == "large")
         method = LARGE;
 
-    //cerr<<"TriangularFEMForceField<DataTypes>::init(), node = "<<this->getContext()->getName()<<endl;
-
-
     _mesh =0;
+
     if (getContext()->getMainTopology()!=0)
         _mesh= dynamic_cast<TriangleSetTopology<DataTypes>*>(getContext()->getMainTopology());
 
@@ -190,6 +159,19 @@ void TriangularFEMForceField<DataTypes>::init()
         std::cerr << "ERROR(TriangularFEMForceField): object must have a Triangular Set Topology.\n";
         return;
     }
+
+    lastFracturedEdgeIndex = -1;
+
+    reinit();
+}
+
+
+template <class DataTypes>void TriangularFEMForceField<DataTypes>::reinit()
+{
+    if (f_method.getValue() == "small")
+        method = SMALL;
+    else if (f_method.getValue() == "large")
+        method = LARGE;
 
     TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
 
@@ -218,46 +200,10 @@ void TriangularFEMForceField<DataTypes>::init()
                 (const sofa::helper::vector< double >)0);
     }
 
-    /*
-    	const sofa::helper::vector<Edge> &edgeArray=container->getEdgeArray();
-    	for (i=0;i<container->getNumberOfEdges();++i) {
-    		TRQSEdgeCreationFunction(i, (void*) this, edgeInfo[i],
-    			edgeArray[i],  (const sofa::helper::vector< unsigned int > )0,
-    			(const sofa::helper::vector< double >)0);
-    	}
-    */
-    triangleInfo.setCreateFunction(TRQSTriangleCreationFunction);
-    //edgeInfo.setCreateFunction(TRQSEdgeCreationFunction);
-    //triangleInfo.setDestroyFunction(TRQSTriangleDestroyFunction);
 
+    triangleInfo.setCreateFunction(TRQSTriangleCreationFunction);
     triangleInfo.setCreateParameter( (void *) this );
     triangleInfo.setDestroyParameter( (void *) this );
-    //edgeInfo.setCreateParameter( (void *) this );
-    //edgeInfo.setDestroyParameter( (void *) this );
-
-    //_strainDisplacements.resize(container->getNumberOfTriangles());
-    //_rotations.resize(container->getNumberOfTriangles());
-
-    computeMaterialStiffnesses();
-
-    initSmall();
-    initLarge();
-}
-
-
-
-template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::reinit()
-{
-    if (f_method.getValue() == "small")
-        method = SMALL;
-    else if (f_method.getValue() == "large")
-        method = LARGE;
-
-    computeMaterialStiffnesses();
-
-    initSmall();
-    initLarge();
 }
 
 
@@ -354,9 +300,9 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
                 ++it;
             }
 
-            meanStrainDirection.normalize();
+            //meanStrainDirection.normalize();
 
-            vertexInfo[i].meanStrainDirection = meanStrainDirection;
+            vertexInfo[i].meanStrainDirection = meanStrainDirection / (double)triangleNeighbors.size();
             vertexInfo[i].sumEigenValues = (double)vertexInfo[i].sumEigenValues / (double)triangleNeighbors.size();
         }
 
@@ -370,7 +316,6 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
 
         if (nbPoints > 0)
         {
-
             double max = 0; //vertexInfo[0].sumEigenValues;
             int mostDeformableVertexIndex = -1; //0;
 
@@ -414,8 +359,11 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
             				curIndex--;
             			}
             */
-//                    if (vertexOnBorder && (max > 0.05))
-            if (mostDeformableVertexIndex!=-1 && (max > 0.1))
+            // if (vertexOnBorder && (max > 0.05))
+
+            const double THRESHOLD = 0.2;
+
+            if ((mostDeformableVertexIndex!=-1) && (max > THRESHOLD))
             {
                 std::cout << "max=" << max << std::endl;
                 double minDotProduct = 1000.0;
@@ -440,15 +388,49 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
 
                     if (vertexInfo[mostDeformableVertexIndex].meanStrainDirection.norm() != 0.0)
                     {
-                        Coord d = x[b]-x[a]; d.normalize();
-                        if (!fracture || fabs(n * d) < minDotProduct)
+                        Coord d = x[b]-x[a];
+                        d.normalize();
+                        if (/*!fracture || */fabs(n * d) < minDotProduct)
                         {
                             sofa::helper::vector< unsigned int > triangleEdgeShell = container->getTriangleEdgeShell(*it);
                             if (triangleEdgeShell.size() != 1)
                             {
-                                minDotProduct = fabs(n * d);
-                                fracturableIndex = *it;
-                                fracture = true;
+                                /*
+                                bool bb(false);
+                                sofa::helper::vector< unsigned int >::iterator _it = triangleEdgeShell.begin();
+                                sofa::helper::vector< unsigned int >::iterator _itEnd = triangleEdgeShell.end();
+                                while (_it != _itEnd)
+                                {
+                                	helper::fixed_array<unsigned int,3> edges = container->getTriangleEdge(*_it);
+
+                                	int cptTest=0;
+                                	for (int i=0; i<3; i++)
+                                	{
+                                		if (container->getTriangleEdgeShell(edges[i]).size() < 2)
+                                		{
+                                			cptTest++;
+                                		}
+                                	}
+
+                                	if (cptTest > 2)
+                                	{
+                                		if (max < 5 * THRESHOLD)
+                                		{
+                                			bb = true;
+                                			break;
+                                		}
+                                	}
+
+                                	++_it;
+                                }
+
+                                if (!bb)
+                                */
+                                {
+                                    minDotProduct = fabs(n * d);
+                                    fracturableIndex = *it;
+                                    fracture = true;
+                                }
                             }
                         }
                     }
@@ -460,6 +442,7 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
                 {
                     std::cout << "fracture at edge "<<fracturableIndex<<std::endl;
                     edgeInfo[fracturableIndex].fracturable = true;
+                    lastFracturedEdgeIndex = fracturableIndex;
                 }
             }
         }
@@ -566,8 +549,9 @@ void TriangularFEMForceField<DataTypes>::computeEigenStrain( Coord &v, StrainDis
 //	std::cout << "D = " << D(1,1) << ", " << D(2,2) << std::endl; // eigenvalues
 }
 
+
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computeMaterialStiffnesses()
+void TriangularFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index &a, Index &b, Index &c)
 {
     //_materialsStiffnesses.resize(_indexedElements->size());
 
@@ -575,24 +559,20 @@ void TriangularFEMForceField<DataTypes>::computeMaterialStiffnesses()
     unsigned int nbTriangles=container->getNumberOfTriangles();
     //const sofa::helper::vector< Triangle> &triangleArray=container->getTriangleArray() ;
 
-    TriangleInformation *tinfo;
+    TriangleInformation *tinfo = &triangleInfo[i];
 
-    for(unsigned i = 0; i < nbTriangles; ++i) //_indexedElements->size()
-    {
-        tinfo=&triangleInfo[i];
+    tinfo->materialMatrix[0][0] = 1;
+    tinfo->materialMatrix[0][1] = f_poisson.getValue();
+    tinfo->materialMatrix[0][2] = 0;
+    tinfo->materialMatrix[1][0] = f_poisson.getValue();
+    tinfo->materialMatrix[1][1] = 1;
+    tinfo->materialMatrix[1][2] = 0;
+    tinfo->materialMatrix[2][0] = 0;
+    tinfo->materialMatrix[2][1] = 0;
+    tinfo->materialMatrix[2][2] = 0.5f * (1 - f_poisson.getValue());
 
-        tinfo->materialMatrix[0][0] = 1;
-        tinfo->materialMatrix[0][1] = f_poisson.getValue();
-        tinfo->materialMatrix[0][2] = 0;
-        tinfo->materialMatrix[1][0] = f_poisson.getValue();
-        tinfo->materialMatrix[1][1] = 1;
-        tinfo->materialMatrix[1][2] = 0;
-        tinfo->materialMatrix[2][0] = 0;
-        tinfo->materialMatrix[2][1] = 0;
-        tinfo->materialMatrix[2][2] = 0.5f * (1 - f_poisson.getValue());
+    tinfo->materialMatrix *= (f_young.getValue() / (12 * (1 - f_poisson.getValue() * f_poisson.getValue())));
 
-        tinfo->materialMatrix *= (f_young.getValue() / (12 * (1 - f_poisson.getValue() * f_poisson.getValue())));
-    }
 }
 
 
@@ -792,49 +772,38 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h
 */
 
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::initLarge()
+void TriangularFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Index&c)
 {
 
 #ifdef DEBUG_TRIANGLEFEM
     std::cout << "TriangularFEMForceField::initLarge\n";
 #endif
 
-    TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
-    unsigned int nbTriangles=container->getNumberOfTriangles();
-    const sofa::helper::vector< Triangle> &triangleArray=container->getTriangleArray() ;
+    //TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
 
     //_rotatedInitialElements.resize(_indexedElements->size());
 
     //typename VecElement::const_iterator it;
     //unsigned int i(0);
 
-    TriangleInformation *tinfo;
+    TriangleInformation *tinfo = &triangleInfo[i];
 
+    // Rotation matrix (initial triangle/world)
+    // first vector on first edge
+    // second vector in the plane of the two first edges
+    // third vector orthogonal to first and second
+    Transformation R_0_1;
 
-    for(unsigned int i=0; i<nbTriangles; i+=1) //it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i
-    {
-        tinfo=&triangleInfo[i];
+    //cerr<<"TriangularFEMForceField<DataTypes>::initLarge(), x.size() = "<<_object->getX()->size()<<", _initialPoints.getValue().size() = "<<_initialPoints.getValue().size()<<endl;
+    computeRotationLarge( R_0_1, _initialPoints.getValue(), a, b, c );
 
-        Index a = triangleArray[i][0]; //(*it)[0];
-        Index b = triangleArray[i][1];
-        Index c = triangleArray[i][2];
+    tinfo->rotatedInitialElements[0] = R_0_1 * _initialPoints.getValue()[a]; //_rotatedInitialElements ... _initialPoints.getValue()
+    tinfo->rotatedInitialElements[1] = R_0_1 * _initialPoints.getValue()[b];
+    tinfo->rotatedInitialElements[2] = R_0_1 * _initialPoints.getValue()[c];
 
-        // Rotation matrix (initial triangle/world)
-        // first vector on first edge
-        // second vector in the plane of the two first edges
-        // third vector orthogonal to first and second
-        Transformation R_0_1;
-        //cerr<<"TriangularFEMForceField<DataTypes>::initLarge(), x.size() = "<<_object->getX()->size()<<", _initialPoints.getValue().size() = "<<_initialPoints.getValue().size()<<endl;
-        computeRotationLarge( R_0_1, _initialPoints.getValue(), a, b, c );
-
-        tinfo->rotatedInitialElements[0] = R_0_1 * _initialPoints.getValue()[a]; //_rotatedInitialElements ... _initialPoints.getValue()
-        tinfo->rotatedInitialElements[1] = R_0_1 * _initialPoints.getValue()[b];
-        tinfo->rotatedInitialElements[2] = R_0_1 * _initialPoints.getValue()[c];
-
-        tinfo->rotatedInitialElements[1] -= tinfo->rotatedInitialElements[0];
-        tinfo->rotatedInitialElements[2] -= tinfo->rotatedInitialElements[0];
-        tinfo->rotatedInitialElements[0] = Coord(0,0,0);
-    }
+    tinfo->rotatedInitialElements[1] -= tinfo->rotatedInitialElements[0];
+    tinfo->rotatedInitialElements[2] -= tinfo->rotatedInitialElements[0];
+    tinfo->rotatedInitialElements[0] = Coord(0,0,0);
 }
 
 
@@ -943,19 +912,20 @@ void TriangularFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const
         double maxEigenValue;
         computeEigenStrain(v, J, D, maxEigenValue);
 
-        if (fabs(maxEigenValue) > 0.1)
-        {
-            triangleInfo[elementIndex].eigenValue = fabs(maxEigenValue);
-        }
-        else
-        {
-            v[0] = 0.0;
-            v[1] = 0.0;
-            v[2] = 0.0;
-            triangleInfo[elementIndex].eigenValue = 0.0;
-        }
-
-        Rv = R_2_0 * v;
+        //	if (fabs(maxEigenValue) > 0.1)
+        //	{
+        triangleInfo[elementIndex].eigenValue = fabs(maxEigenValue);
+        //	}
+        /*	else
+        	{
+        		v[0] = 0.0;
+        		v[1] = 0.0;
+        		v[2] = 0.0;
+        		triangleInfo[elementIndex].eigenValue = 0.0;
+        	}
+        */
+        //Rv = R_2_0 * v;
+        Rv = (p[b]-p[a]) * v[0] + (p[c]-p[a]) * v[1];
 
         triangleInfo[elementIndex].principalStrainDirection = Rv;
 
@@ -1062,64 +1032,111 @@ void TriangularFEMForceField<DataTypes>::draw()
     const sofa::helper::vector< Triangle> &triangleArray=container->getTriangleArray() ;
 
     glDisable(GL_LIGHTING);
+    /*
+        glBegin(GL_TRIANGLES);
+        //typename VecElement::const_iterator it;
+    	unsigned int i;
+        for(i=0;i<nbTriangles; ++i) //it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it
+        {
+            Index a = triangleArray[i][0];//(*it)[0];
+            Index b = triangleArray[i][1];//(*it)[1];
+            Index c = triangleArray[i][2];//(*it)[2];
 
-    glBegin(GL_TRIANGLES);
-    //typename VecElement::const_iterator it;
-    unsigned int i;
-    for(i=0; i<nbTriangles; ++i) //it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it
-    {
-        Index a = triangleArray[i][0];//(*it)[0];
-        Index b = triangleArray[i][1];//(*it)[1];
-        Index c = triangleArray[i][2];//(*it)[2];
-
-        glColor4f(0,1,0,1);
-        helper::gl::glVertexT(x[a]);
-        glColor4f(0,0.5,0.5,1);
-        helper::gl::glVertexT(x[b]);
-        glColor4f(0,0,1,1);
-        helper::gl::glVertexT(x[c]);
-    }
-    glEnd();
-
+            glColor4f(0,1,0,1);
+            helper::gl::glVertexT(x[a]);
+            glColor4f(0,0.5,0.5,1);
+            helper::gl::glVertexT(x[b]);
+            glColor4f(0,0,1,1);
+            helper::gl::glVertexT(x[c]);
+        }
+        glEnd();
+    */
     if (f_fracturable.getValue())
     {
-        /*
         const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvsa=container->getTriangleVertexShellArray();
-        	unsigned int nbPoints = tvsa.size();
+        unsigned int nbPoints = tvsa.size();
+        double totalSumEigenValues = vertexInfo[0].sumEigenValues;
+        double max = vertexInfo[0].sumEigenValues;
 
-        	if (nbPoints > 0)
-        	{
-        		double max = vertexInfo[0].sumEigenValues;
-        		unsigned int mostDeformableVertexIndex = 0;
-        		for( unsigned int i=1; i<nbPoints; i++ )
+        for( unsigned int i=1; i<nbPoints; i++ )
+        {
+            totalSumEigenValues += vertexInfo[i].sumEigenValues;
+            if (vertexInfo[i].sumEigenValues > max)
+                max = vertexInfo[i].sumEigenValues;
+        }
+
+        glBegin(GL_TRIANGLES);
+        //typename VecElement::const_iterator it;
+        unsigned int i;
+        for(i=0; i<nbTriangles; ++i) //it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it
+        {
+            Index a = triangleArray[i][0];//(*it)[0];
+            Index b = triangleArray[i][1];//(*it)[1];
+            Index c = triangleArray[i][2];//(*it)[2];
+
+            double meanEV = (vertexInfo[a].sumEigenValues + vertexInfo[b].sumEigenValues + vertexInfo[c].sumEigenValues) / 3.0;
+
+            glColor4f(meanEV / max, 1- meanEV / max, 0.0, 1);
+            helper::gl::glVertexT(x[a]);
+            helper::gl::glVertexT(x[b]);
+            helper::gl::glVertexT(x[c]);
+        }
+        glEnd();
+
+        /*
+        		if (nbPoints > 0)
         		{
-        			if (vertexInfo[i].sumEigenValues > max)
+        			double max = vertexInfo[0].sumEigenValues;
+        			unsigned int mostDeformableVertexIndex = 0;
+        			for( unsigned int i=1; i<nbPoints; i++ )
         			{
-        				mostDeformableVertexIndex = i;
-        				max = vertexInfo[i].sumEigenValues;
+        				if (vertexInfo[i].sumEigenValues > max)
+        				{
+        					mostDeformableVertexIndex = i;
+        					max = vertexInfo[i].sumEigenValues;
+        				}
         			}
+
+        			glPointSize(8);
+        			glBegin(GL_POINTS);
+        			glColor4f(1,1,1,1);
+        			helper::gl::glVertexT(x[mostDeformableVertexIndex]);
+        			glEnd();
+        			glPointSize(1);
         		}
 
-        		glPointSize(8);
-        		glBegin(GL_POINTS);
-        		glColor4f(1,1,1,1);
-        		helper::gl::glVertexT(x[mostDeformableVertexIndex]);
-        		glEnd();
-        		glPointSize(1);
-        	}
+        */
+        /*
+        			glBegin(GL_LINES);
+        		for( unsigned int i=0; i<nbPoints; i++ )
+        		{
+        			glColor4f(1,0,1,1);
+        			helper::gl::glVertexT(x[i]-vertexInfo[i].meanStrainDirection);
+        			helper::gl::glVertexT(x[i]+vertexInfo[i].meanStrainDirection);
+        			//helper::gl::glVertexT(x[i]-vertexInfo[i].meanStrainDirection * 2.5);
+        			//helper::gl::glVertexT(x[i]+vertexInfo[i].meanStrainDirection * 2.5);
+        		}
+        			glEnd();
+        */
+        const VecCoord& x = *this->mstate->getX();
+        TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
+        unsigned int nbTriangles=container->getNumberOfTriangles();
+        const sofa::helper::vector< Triangle> &triangleArray=container->getTriangleArray();
+        glColor4f(1,0,1,1);
+        glBegin(GL_LINES);
+        //typename VecElement::const_iterator it;
+        for(i=0; i<nbTriangles; ++i) //it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it
+        {
+            Index a = triangleArray[i][0];//(*it)[0];
+            Index b = triangleArray[i][1];//(*it)[1];
+            Index c = triangleArray[i][2];//(*it)[2];
+            Coord center = (x[a]+x[b]+x[c])/3;
+            Coord d = triangleInfo[i].principalStrainDirection*0.2;
+            helper::gl::glVertexT(center-d);
+            helper::gl::glVertexT(center+d);
+        }
+        glEnd();
 
-
-        	for( unsigned int i=0; i<nbPoints; i++ )
-        	{
-        		glBegin(GL_LINES);
-        		glColor4f(1,0,1,1);
-        	//	helper::gl::glVertexT(x[i]-vertexInfo[i].meanStrainDirection * 0.01);
-        	//	helper::gl::glVertexT(x[i]+vertexInfo[i].meanStrainDirection * 0.01);
-        		helper::gl::glVertexT(x[i]-vertexInfo[i].meanStrainDirection * 2.5);
-        		helper::gl::glVertexT(x[i]+vertexInfo[i].meanStrainDirection * 2.5);
-        		glEnd();
-        	}
-        	*/
         const sofa::helper::vector< Edge> &edgeArray=container->getEdgeArray() ;
         unsigned int nbEdges = container->getNumberOfEdges();
 
