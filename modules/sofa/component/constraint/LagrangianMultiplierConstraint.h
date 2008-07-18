@@ -118,6 +118,20 @@ public:
             return r;
         }
 
+        static Coord interpolate(const helper::vector< Coord > &ancestors, const helper::vector< Real > &coefs)
+        {
+            assert(ancestors.size() == coefs.size());
+
+            Coord c = (Real)0.0;
+
+            for (unsigned int i = 0; i < ancestors.size(); i++)
+            {
+                c += ancestors[i] * coefs[i];
+            }
+
+            return c;
+        }
+
     };
     typedef typename LMTypes::VecCoord LMCoord;
     typedef typename LMTypes::VecDeriv LMDeriv;

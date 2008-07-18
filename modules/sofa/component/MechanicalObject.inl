@@ -606,6 +606,73 @@ void MechanicalObject<DataTypes>::getIndicesInSpace(sofa::helper::vector<unsigne
     }
 }
 
+/*
+template <class DataTypes>
+void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, const sofa::helper::vector< unsigned int >& ancestors, const sofa::helper::vector< double >& coefs)
+{
+	// HD interpolate position, speed,force,...
+	// assume all coef sum to 1.0
+	unsigned int j;
+
+	// Note that the x,v,x0,f,dx,xfree,vfree and internalForces vectors (but
+	// not v0, reset_position, and externalForces) are present in the
+	// array of all vectors, so then don't need to be processed separatly.
+	if (v0 != NULL)
+	{
+		(*v0)[i] = Deriv();
+		for (j = 0; j < ancestors.size(); ++j)
+		{
+			(*v0)[i] += (*v0)[ancestors[j]] * (Real)coefs[j];
+		}
+	}
+
+	// Note: the following assumes that topological changes won't be reset
+	if (reset_position != NULL)
+	{
+		(*reset_position)[i] = Coord();
+		for (j = 0; j < ancestors.size(); ++j)
+		{
+			(*reset_position)[i] += (*reset_position)[ancestors[j]] * (Real)coefs[j];
+		}
+	}
+
+	if (externalForces->size() > 0)
+	{
+		(*externalForces)[i] = Deriv();
+		for (j = 0; j < ancestors.size(); ++j)
+		{
+			(*externalForces)[i] += (*externalForces)[ancestors[j]] * (Real)coefs[j];
+		}
+	}
+
+
+	for (unsigned int k = 0; k < vectorsCoord.size(); k++)
+	{
+		if (vectorsCoord[k]!=NULL && vectorsCoord[k]->size()!=0)
+		{
+			(*vectorsCoord[k])[i] = Coord();
+			for (j = 0; j < ancestors.size(); ++j)
+			{
+				(*vectorsCoord[k])[i] += (*vectorsCoord[k])[ancestors[j]] * (Real)coefs[j];
+			}
+		}
+	}
+
+	for (unsigned int k = 0; k < vectorsDeriv.size(); k++)
+	{
+		if (vectorsDeriv[k]!=NULL && vectorsDeriv[k]->size()!=0)
+		{
+			(*vectorsDeriv[k])[i] = Deriv();
+			for (j = 0; j < ancestors.size(); ++j)
+			{
+				(*vectorsDeriv[k])[i] += (*vectorsDeriv[k])[ancestors[j]] * (Real)coefs[j];
+			}
+		}
+	}
+}
+*/
+
+
 template <class DataTypes>
 void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, const sofa::helper::vector< unsigned int >& ancestors, const sofa::helper::vector< double >& coefs)
 {
@@ -618,46 +685,83 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
     // array of all vectors, so then don't need to be processed separatly.
     if (v0 != NULL)
     {
-        (*v0)[i]=Deriv();
-        for (j=0; j<ancestors.size(); ++j)
-            (*v0)[i]+=(*v0)[ancestors[j]]*(Real)coefs[j];
+        helper::vector< Deriv > ancestorsDeriv(ancestors.size());
+        helper::vector< Real > ancestorsCoefs(ancestors.size());
+
+        for (j = 0; j < ancestors.size(); ++j)
+        {
+            ancestorsDeriv[j] = (*v0)[ancestors[j]];
+            ancestorsCoefs[j] = coefs[j];
+        }
+
+        (*v0)[i] = DataTypes::interpolate(ancestorsDeriv, ancestorsCoefs);
     }
+
     // Note: the following assumes that topological changes won't be reset
     if (reset_position != NULL)
     {
-        (*reset_position)[i]=Coord();
-        for (j=0; j<ancestors.size(); ++j)
-            (*reset_position)[i]+=(*reset_position)[ancestors[j]]*(Real)coefs[j];
-    }
-    if (externalForces->size()>0)
-    {
-        (*externalForces)[i]=Deriv();
-        for (j=0; j<ancestors.size(); ++j)
-            (*externalForces)[i]+=(*externalForces)[ancestors[j]]*(Real)coefs[j];
-    }
-    for (unsigned int k=0; k<vectorsCoord.size(); k++)
-    {
-        if (vectorsCoord[k]!=NULL && vectorsCoord[k]->size()!=0)
+        helper::vector< Coord > ancestorsCoord(ancestors.size());
+        helper::vector< Real > ancestorsCoefs(ancestors.size());
+
+        for (j = 0; j < ancestors.size(); ++j)
         {
-            (*vectorsCoord[k])[i]=Coord();
-            for (j=0; j<ancestors.size(); ++j)
+            ancestorsCoord[j] = (*reset_position)[ancestors[j]];
+            ancestorsCoefs[j] = coefs[j];
+        }
+
+        (*reset_position)[i] = DataTypes::interpolate(ancestorsCoord, ancestorsCoefs);
+    }
+
+    if (externalForces->size() > 0)
+    {
+        helper::vector< Deriv > ancestorsDeriv(ancestors.size());
+        helper::vector< Real > ancestorsCoefs(ancestors.size());
+
+        for (j = 0; j < ancestors.size(); ++j)
+        {
+            ancestorsDeriv[j] = (*externalForces)[ancestors[j]];
+            ancestorsCoefs[j] = coefs[j];
+        }
+
+        (*externalForces)[i] = DataTypes::interpolate(ancestorsDeriv, ancestorsCoefs);
+    }
+
+
+    for (unsigned int k = 0; k < vectorsCoord.size(); k++)
+    {
+        if ((vectorsCoord[k] != NULL) && (vectorsCoord[k]->size() != 0))
+        {
+            helper::vector< Coord > ancestorsCoord(ancestors.size());
+            helper::vector< Real > ancestorsCoefs(ancestors.size());
+
+            for (j = 0; j < ancestors.size(); ++j)
             {
-                (*vectorsCoord[k])[i]+= (*vectorsCoord[k])[ancestors[j]]*(Real)coefs[j];
+                ancestorsCoord[j] = (*vectorsCoord[k])[ancestors[j]];
+                ancestorsCoefs[j] = coefs[j];
             }
+
+            (*vectorsCoord[k])[i] = DataTypes::interpolate(ancestorsCoord, ancestorsCoefs);
         }
     }
-    for (unsigned int k=0; k<vectorsDeriv.size(); k++)
+
+    for (unsigned int k = 0; k < vectorsDeriv.size(); k++)
     {
-        if (vectorsDeriv[k]!=NULL && vectorsDeriv[k]->size()!=0)
+        if ((vectorsDeriv[k] != NULL) && (vectorsDeriv[k]->size() != 0))
         {
-            (*vectorsDeriv[k])[i]=Deriv();
-            for (j=0; j<ancestors.size(); ++j)
+            helper::vector< Deriv > ancestorsDeriv(ancestors.size());
+            helper::vector< Real > ancestorsCoefs(ancestors.size());
+
+            for (j = 0; j < ancestors.size(); ++j)
             {
-                (*vectorsDeriv[k])[i]+= (*vectorsDeriv[k])[ancestors[j]]*(Real)coefs[j];
+                ancestorsDeriv[j] = (*vectorsDeriv[k])[ancestors[j]];
+                ancestorsCoefs[j] = coefs[j];
             }
+
+            (*vectorsDeriv[k])[i] = DataTypes::interpolate(ancestorsDeriv, ancestorsCoefs);
         }
     }
 }
+
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::computeNewPoint( const unsigned int i, const sofa::helper::vector< double >& m_x)
