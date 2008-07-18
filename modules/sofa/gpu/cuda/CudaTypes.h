@@ -733,6 +733,21 @@ public:
             c[2] += (Real) z;
     }
 
+    template<class C>
+    static C interpolate(const helper::vector< C > & ancestors, const helper::vector< Real > & coefs)
+    {
+        assert(ancestors.size() == coefs.size());
+
+        C coord;
+
+        for (unsigned int i = 0; i < ancestors.size(); i++)
+        {
+            coord += ancestors[i] * coefs[i];
+        }
+
+        return coord;
+    }
+
     static const char* Name();
 };
 
@@ -1052,6 +1067,58 @@ public:
             c[1] += (Real) y;
         if ( c.size() >2 )
             c[2] += (Real) z;
+    }
+
+    static Coord interpolate(const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs)
+    {
+        assert(ancestors.size() == coefs.size());
+
+        Coord c;
+
+        for (unsigned int i = 0; i < ancestors.size(); i++)
+        {
+            // Position interpolation.
+            c.getCenter() += ancestors[i].getCenter() * coefs[i];
+
+            // Angle extraction from the orientation quaternion.
+            helper::Quater<Real> q = ancestors[i].getOrientation();
+            Real angle = acos(q[3]) * 2;
+
+            // Axis extraction from the orientation quaternion.
+            defaulttype::Vec<3,Real> v(q[0], q[1], q[2]);
+            Real norm = v.norm();
+            if (norm > 0.0005)
+            {
+                v.normalize();
+
+                // The scale factor is applied to the angle
+                angle *= coefs[i];
+
+                // Corresponding quaternion is computed, then added to the interpolated point orientation.
+                q.axisToQuat(v, angle);
+                q.normalize();
+
+                c.getOrientation() += q;
+            }
+        }
+
+        c.getOrientation().normalize();
+
+        return c;
+    }
+
+    static Deriv interpolate(const helper::vector< Deriv > & ancestors, const helper::vector< Real > & coefs)
+    {
+        assert(ancestors.size() == coefs.size());
+
+        Deriv d;
+
+        for (unsigned int i = 0; i < ancestors.size(); i++)
+        {
+            d += ancestors[i] * coefs[i];
+        }
+
+        return d;
     }
 
     static const char* Name();
