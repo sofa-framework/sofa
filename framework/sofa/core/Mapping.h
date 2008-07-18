@@ -56,8 +56,9 @@ protected:
     In* fromModel;
     /// Output Model
     Out* toModel;
-
+    /// Name of the Input Model
     Data< std::string > object1;
+    /// Name of the Output Model
     Data< std::string > object2;
 public:
     /// Constructor, taking input and output models as parameters.
@@ -66,7 +67,7 @@ public:
     /// setModels with non-NULL value before the intialization (i.e. before
     /// init() is called).
     Mapping(In* from=NULL, Out* to=NULL);
-
+    /// Destructor
     virtual ~Mapping();
 
     /// Specify the input and output models.
@@ -155,6 +156,7 @@ public:
     }
 
 protected:
+    /// If true, display the mapping
     bool getShow() const { return this->getContext()->getShowMappings(); }
 };
 
