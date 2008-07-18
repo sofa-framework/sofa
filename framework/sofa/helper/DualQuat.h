@@ -74,10 +74,10 @@ public:
     inline const Quat& operator[] ( unsigned int i ) const;
     inline Quat& operator[] ( unsigned int i );
 
-    inline friend std::ostream& operator<< ( std::ostream& os, const DualQuat<Real>& dq )
-    { os << dq[0] << " " << dq[1]; return os;}
-    inline friend std::istream& operator>> ( std::istream& is, const DualQuat<Real>& dq )
-    { is >> dq[0] >> dq[1]; return is;}
+    inline friend std::ostream& operator<< ( std::ostream& os, const DualQuat<Real>& dq );
+    //{ os << dq[0] << " " << dq[1]; return os;}
+    inline friend std::istream& operator>> ( std::istream& is, const DualQuat<Real>& dq );
+    //{ is >> dq[0] >> dq[1]; return is;}
 };
 
 typedef DualQuat<double> DualQuatd; ///< alias
