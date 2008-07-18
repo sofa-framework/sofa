@@ -20,7 +20,8 @@
 	<Object type="ProximityIntersection"/>
 
 	<Node>
-		<Object type="CGImplicitSolver"	/>
+		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<Object type="MechanicalObject" template="Rigid" name="DOFs"
 				position="0 0 0  0 0 0 1 
 						  1 0 0  0 0 0 1 

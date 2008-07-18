@@ -8,9 +8,9 @@
 		<Object type="Mesh"
 			triangles="0 1 2  0 2 3"
 		/>
-<!--		<Object type="FixedConstraint" indices="2 3"/>-->
 		<Object type="TriangleFEMForceField" name="FEM0" youngModulus="100" poissonRatio="0.3" method="large"/>
-                <Object type="ConstantForceField" points="0 1 2 3" forces="-1 -1 0  1 -1 0  1 1 0  -1 1 0"/>
+                <Object type="BoxConstantForceField" box="0 0   0  1 0.5 0"  force="0 -1 0"/>
+                <Object type="BoxConstantForceField" box="0 0.5 0  1 1   0"  force="0 1  0"/>
 		<Node name="Visu">
 			<Object type="OglModel" name="Visual" color="red"/>
 			<Object type="IdentityMapping" object1="../.." object2="Visual"/>
