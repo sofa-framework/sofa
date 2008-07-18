@@ -106,6 +106,20 @@ public:
     }
 
     static const char* Name();
+
+    static Coord interpolate(const helper::vector< Coord > &ancestors, const helper::vector< Real > &coefs)
+    {
+        assert(ancestors.size() == coefs.size());
+
+        Coord c;
+
+        for (unsigned int i = 0; i < ancestors.size(); i++)
+        {
+            c += ancestors[i] * coefs[i];
+        }
+
+        return c;
+    }
 };
 
 /// Custom vector allocator class allowing data to be allocated at a specific location (such as for transmission through DMA, PCI-Express, Shared Memory, Network)
@@ -334,6 +348,20 @@ public:
     }
 
     static const char* Name();
+
+    static Coord interpolate(const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs)
+    {
+        assert(ancestors.size() == coefs.size());
+
+        Coord c;
+
+        for (unsigned int i = 0; i < ancestors.size(); i++)
+        {
+            c += ancestors[i] * coefs[i];
+        }
+
+        return c;
+    }
 };
 
 //

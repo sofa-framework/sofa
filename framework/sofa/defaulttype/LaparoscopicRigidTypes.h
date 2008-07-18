@@ -297,6 +297,34 @@ public:
     {
         return "LaparoscopicRigid3";
     }
+
+    static Coord interpolate(const helper::vector< Coord > &ancestors, const helper::vector< Real > &coefs)
+    {
+        assert(ancestors.size() == coefs.size());
+
+        Coord c;
+
+        for (unsigned int i = 0; i < ancestors.size(); i++)
+        {
+            c += ancestors[i] * coefs[i];
+        }
+
+        return c;
+    }
+
+    static Deriv interpolate(const helper::vector< Deriv > &ancestors, const helper::vector< Real > &coefs)
+    {
+        assert(ancestors.size() == coefs.size());
+
+        Deriv d;
+
+        for (unsigned int i = 0; i < ancestors.size(); i++)
+        {
+            d += ancestors[i] * coefs[i];
+        }
+
+        return d;
+    }
 };
 
 inline LaparoscopicRigid3Types::Deriv operator*(const LaparoscopicRigid3Types::Deriv& d, const Rigid3Mass& m)

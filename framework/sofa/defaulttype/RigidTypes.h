@@ -277,10 +277,9 @@ public:
 
     void operator +=(const RigidCoord<3,real>& a)
     {
-        //std::cout << "+="<<std::endl;
         center += a.getCenter();
-        //orientation += a.getOrientation();
-        //orientation.normalize();
+        //	orientation += a.getOrientation();
+        //	orientation.normalize();
     }
 
     template<typename real2>
@@ -597,6 +596,58 @@ public:
     }
 
     static const char* Name();
+
+    static Coord interpolate(const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs)
+    {
+        assert(ancestors.size() == coefs.size());
+
+        Coord c;
+
+        for (unsigned int i = 0; i < ancestors.size(); i++)
+        {
+            // Position interpolation.
+            c.getCenter() += ancestors[i].getCenter() * coefs[i];
+
+            // Angle extraction from the orientation quaternion.
+            helper::Quater<Real> q = ancestors[i].getOrientation();
+            Real angle = acos(q[3]) * 2;
+
+            // Axis extraction from the orientation quaternion.
+            defaulttype::Vec<3,Real> v(q[0], q[1], q[2]);
+            Real norm = v.norm();
+            if (norm > 0.0005)
+            {
+                v.normalize();
+
+                // The scale factor is applied to the angle
+                angle *= coefs[i];
+
+                // Corresponding quaternion is computed, then added to the interpolated point orientation.
+                q.axisToQuat(v, angle);
+                q.normalize();
+
+                c.getOrientation() += q;
+            }
+        }
+
+        c.getOrientation().normalize();
+
+        return c;
+    }
+
+    static Deriv interpolate(const helper::vector< Deriv > & ancestors, const helper::vector< Real > & coefs)
+    {
+        assert(ancestors.size() == coefs.size());
+
+        Deriv d;
+
+        for (unsigned int i = 0; i < ancestors.size(); i++)
+        {
+            d += ancestors[i] * coefs[i];
+        }
+
+        return d;
+    }
 };
 
 typedef StdRigidTypes<3,double> Rigid3dTypes;
@@ -1104,6 +1155,34 @@ public:
     {
         c.getVCenter()[0] += (Real)x;
         c.getVCenter()[1] += (Real)y;
+    }
+
+    static Coord interpolate(const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs)
+    {
+        assert(ancestors.size() == coefs.size());
+
+        Coord c;
+
+        for (unsigned int i = 0; i < ancestors.size(); i++)
+        {
+            c += ancestors[i] * coefs[i];
+        }
+
+        return c;
+    }
+
+    static Deriv interpolate(const helper::vector< Deriv > & ancestors, const helper::vector< Real > & coefs)
+    {
+        assert(ancestors.size() == coefs.size());
+
+        Deriv d;
+
+        for (unsigned int i = 0; i < ancestors.size(); i++)
+        {
+            d += ancestors[i] * coefs[i];
+        }
+
+        return d;
     }
 
 };
