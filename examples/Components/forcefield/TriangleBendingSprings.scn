@@ -5,8 +5,10 @@
   <Object type="BruteForceDetection" name="N2" />
   <Object type="CollisionResponse" response="default" name="collision response"/>
 
-	<Node name="M1">
-		<Object type="CGImplicit" iterations="25"/>
+	<Node name="M1"> 	    
+                <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
 		<Object type="MechanicalObject" />
 		<Object type="UniformMass" mass="0.1" />
 		<Object type="RegularGrid"
@@ -26,8 +28,10 @@
 		
 	</Node>
 
-	<Node name="M2">
-		<Object type="CGImplicit" iterations="25"/>
+	<Node name="M2"> 	    
+                <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
 		<Object type="MechanicalObject" />
 		<Object type="UniformMass" mass="0.1" />
 		<Object type="RegularGrid"
@@ -47,8 +51,10 @@
 		
 	</Node>
 
-	<Node name="M3">
-		<Object type="CGImplicit" iterations="25"/>
+	<Node name="M3"> 
+	        <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
 		<Object type="MechanicalObject" />
 		<Object type="UniformMass" mass="0.1" />
 		<Object type="RegularGrid"

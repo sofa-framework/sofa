@@ -1,6 +1,7 @@
 <Node name="root"  dt="0.01" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="1">
 	<Node name="M1">
-		<Object type="CGImplicit" iterations="25" tol="0.01" threshold="0.000001" />
+ 	        <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<Object type="MechanicalObject" />
 		<Object type="UniformMass" totalmass="10"/>
 		<Object type="RegularGrid"

@@ -12,7 +12,8 @@
 			<Object type="OglModel" name="Visual" filename="mesh/torus2.obj" color="gray" />
 		</Node>
 		<Node name="TorusFEM">
-			<Object type="CGImplicit" iterations="25" threshold="0.000000000001" tolerance="0.000001" rayleighStiffness="0.1" rayleighMass="0" />
+        	        <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+			<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 			<Object type="Mesh" filename="mesh/torus_low_res.msh"/>
 			<Object type="MechanicalObject" dx="2.5" />
 			<Object type="UniformMass" totalmass="5" />
@@ -29,7 +30,8 @@
 			</Node>
 		</Node>
 		<Node name="TorusFEM">
-			<Object type="CGImplicit" iterations="25" threshold="0.000000000001" tolerance="0.000001" rayleighStiffness="0.1" rayleighMass="0" />
+        	        <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+			<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 			<Object type="Mesh" filename="mesh/torus2_low_res.msh"/>
 			<Object type="MechanicalObject" dx="5" />
 			<Object type="UniformMass" totalmass="5" />
@@ -46,7 +48,8 @@
 			</Node>
 		</Node>
 		<Node name="TorusFEM">
-			<Object type="CGImplicit" iterations="25" threshold="0.000000000001" tolerance="0.000001" rayleighStiffness="0.1" rayleighMass="0" />
+ 	               <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		       <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 			<Object type="Mesh" filename="mesh/torus_low_res.msh"/>
 			<Object type="MechanicalObject" dx="7.5" />
 			<Object type="UniformMass" totalmass="5" />
@@ -63,7 +66,8 @@
 			</Node>
 		</Node>
 		<Node name="TorusFEM">
-			<Object type="CGImplicit" iterations="25" threshold="0.000000000001" tolerance="0.000001" rayleighStiffness="0.1" rayleighMass="0" />
+        	        <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+        		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 			<Object type="Mesh" filename="mesh/torus2_low_res.msh"/>
 			<Object type="MechanicalObject" dx="10" />
 			<Object type="UniformMass" totalmass="5" />

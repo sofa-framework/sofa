@@ -12,7 +12,9 @@
 			<Object type="OglModel" name="Visual" filename="mesh/torus2.obj" color="gray" />
 		</Node>
 		<Node name="TorusFFD1">
-			<Object type="CGImplicit" iterations="25" threshold="0.000000000001" tolerance="0.000001" rayleighStiffness="0.1" rayleighMass="0" />
+		        <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+			<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+		
 			<Object type="MechanicalObject" translation="2.5 0 0" />
 			<Object type="UniformMass" totalmass="5" />
 			<Object type="RegularGrid"
@@ -34,7 +36,9 @@
 			</Node>
 		</Node>
 		<Node name="TorusFFD2">
-			<Object type="CGImplicit" iterations="25" threshold="0.000000000001" tolerance="0.000001" rayleighStiffness="0.1" rayleighMass="0" />
+			<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+			<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
 			<Object type="MechanicalObject" dx="5" />
 			<Object type="UniformMass" totalmass="5" />
 			<Object type="RegularGrid"
@@ -56,7 +60,9 @@
 			</Node>
 		</Node>
 		<Node name="TorusFFD3">
-			<Object type="CGImplicit" iterations="25" threshold="0.000000000001" tolerance="0.000001" rayleighStiffness="0.1" rayleighMass="0" />
+	 	        <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+			<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
 			<Object type="MechanicalObject" dx="7.5" />
 			<Object type="UniformMass" totalmass="5" />
 			<Object type="RegularGrid"
@@ -78,7 +84,9 @@
 			</Node>
 		</Node>
 		<Node name="TorusFFD4">
-			<Object type="CGImplicit" iterations="25" threshold="0.000000000001" tolerance="0.000001" rayleighStiffness="0.1" rayleighMass="0" />
+			<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+			<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
 			<Object type="MechanicalObject" dx="10" />
 			<Object type="UniformMass" totalmass="5" />
 			<Object type="RegularGrid"
@@ -100,12 +108,4 @@
 			</Node>
 		</Node>
 	</Node>
-	<!--
-	<Node name="Floor">
-		<Object type="Mesh" filename="mesh/floor2.obj" />
-		<Object type="MechanicalObject" scale="0.2" dy="-5" />
-		<Object type="Triangle" name="Floor" simulated="0" moving="0" />
-		<Object type="OglModel" name="FloorV" filename="mesh/floor2.obj" texturename="textures/floor.bmp" scale="0.2" dy="-4.75" />
-	</Node>
-	-->
 </Node>

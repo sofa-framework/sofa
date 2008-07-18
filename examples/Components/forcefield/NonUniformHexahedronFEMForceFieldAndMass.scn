@@ -22,7 +22,8 @@
 	<Object type="CollisionGroup" name="Group" />
 	
 	
-	<Object type="CGImplicit" iterations="20" vdamping=".23" rayleighStiffness=".4"/>
+ 	<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+	<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
 
 	<Node name="Salad Bowl 1">
