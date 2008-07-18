@@ -266,20 +266,6 @@ Quater<Real>& DualQuat<Real>::operator[] ( unsigned int i )
     return _q[i];
 }
 
-template<class Real>
-std::ostream& operator<< ( std::ostream& os, const DualQuat<Real>& dq )
-{
-    os << dq[0] << " " << dq[1];
-    return os;
-}
-
-template<class Real>
-std::istream& operator>> ( std::istream& is, const DualQuat<Real>& dq )
-{
-    is >> dq[0] >> dq[1];
-    return is;
-}
-
 } // namespace helper
 
 } // namespace sofa
