@@ -67,6 +67,7 @@ public:
     typedef CollisionElementIterator Iterator;
     typedef componentmodel::topology::BaseMeshTopology Topology;
 
+    /// Constructor
     CollisionModel()
         : bActive(initData(&bActive, true, "active", "flag indicating if this collision model is active and should be included in default collision detections"))
         , bMoving(initData(&bMoving, true, "moving", "flag indicating if this object is changing position between iterations"))
@@ -87,7 +88,7 @@ public:
     {
         getColor4f(); //init the color to default value
     }
-
+    /// Destructor
     virtual ~CollisionModel() { }
 
     /// Return true if there are no elements
@@ -161,6 +162,7 @@ public:
     /// Default to true.
     virtual bool isActive() const { return bActive.getValue() && getContext()->isActive(); }
 
+    /// \brief Set true if this CollisionModel should be used for collisions.
     virtual void setActive(bool val=true) { bActive.setValue(val); }
 
     /// \brief Return true if this CollisionModel is changing position between
@@ -169,6 +171,8 @@ public:
     /// Default to true.
     virtual bool isMoving() const { return bMoving.getValue(); }
 
+    /// \brief Set true if this CollisionModel is changing position between
+    /// iterations.
     virtual void setMoving(bool val=true) { bMoving.setValue(val); }
 
     /// \brief Return true if this CollisionModel is attached to a simulation.
@@ -178,6 +182,7 @@ public:
     /// Default to true.
     virtual bool isSimulated() const { return bSimulated.getValue(); }
 
+    /// \brief Set true if this CollisionModel is attached to a simulation.
     virtual void setSimulated(bool val=true) { bSimulated.setValue(val); }
 
     /// \brief Return true if this CollisionModel must build its neigborhood
@@ -186,6 +191,7 @@ public:
     /// Default to false.
     virtual bool isFiltered() const { return bFiltered.getValue(); }
 
+    /// \brief Set true if this CollisionModel must build its neigborhood
     virtual void setFiltered(bool val=true) { bFiltered.setValue(val); }
 
     /// Create or update the bounding volume hierarchy.
@@ -316,15 +322,17 @@ public:
     /// @name Experimental methods
     /// @{
 
-    /// Distance to the actual (visual) surface
+    /// Get distance to the actual (visual) surface
     double getProximity() { return proximity.getValue(); }
 
-    /// Contact stiffness
+    /// Get contact stiffness
     double getContactStiffness(int /*index*/) { return contactStiffness.getValue(); }
+    /// Set contact stiffness
     void setContactStiffness(double stiffness) { contactStiffness.setValue(stiffness); }
 
-    /// Contact friction (damping) coefficient
+    /// Get contact friction (damping) coefficient
     double getContactFriction(int /*index*/) { return contactFriction.getValue(); }
+    /// Set contact friction (damping) coefficient
     void setContactFriction(double friction) { contactFriction.setValue(friction); }
 
     /// Contact response algorithm
@@ -337,29 +345,34 @@ public:
 
     /// Get a color that can be used to display this CollisionModel
     const float* getColor4f();
+    /// Set a color that can be used to display this CollisionModel
     void setColor4f(const float *c) {color.setValue(defaulttype::Vec4f(c[0],c[1],c[2],c[3]));};
 protected:
-
+    /// flag indicating if this collision model is active and should be included in default
+    /// collision detections
     Data<bool> bActive;
-
+    ///flag indicating if this object is changing position between iterations
     Data<bool> bMoving;
-
+    /// flag indicating if this object is controlled by a simulation
     Data<bool> bSimulated;
-
+    /// flag indication if the object can self collide
     Data<bool> bSelfCollision;
-
+    /// Distance to the actual (visual) surface
     Data<double> proximity;
-
+    /// Default contact stiffness
     Data<double> contactStiffness;
-
+    /// Default contact friction (damping) coefficient
     Data<double> contactFriction;
-
+    /// contactResponse", "if set, indicate to the ContactManager that this model should use the
+    /// given class of contacts.\nNote that this is only indicative, and in particular if both
+    /// collision models specify a different class it is up to the manager to choose.
     Data<std::string> contactResponse;
-
+    /// flag indicating if the model has to build its neighborhood to filter contacts
     Data<bool> bFiltered;
-
+    /// If not zero, ID of a group containing this model. No collision can occur between collision
+    /// models of the same group (allowing the same object to have multiple collision models
     Data<int> group;
-
+    /// color used to display the collision model if requested
     Data<defaulttype::Vec4f> color;
 
     /// Number of collision elements

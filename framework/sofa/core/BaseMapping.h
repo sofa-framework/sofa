@@ -50,6 +50,7 @@ namespace core
 class BaseMapping : public virtual objectmodel::BaseObject
 {
 public:
+    /// Destructor
     virtual ~BaseMapping() { }
 
     /// Apply the transformation from the input model to the output model (like apply displacement from BehaviorModel to VisualModel)

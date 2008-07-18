@@ -50,6 +50,7 @@ namespace core
 class BehaviorModel : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
+    /// Destructor
     virtual ~BehaviorModel() {}
 
     /// Computation of a new simulation step.
