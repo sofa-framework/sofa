@@ -12,7 +12,8 @@
 	<Object type="CollisionResponse" name="Response" response="default" />
 	
 	<Node name="lamp1">
-		<Object type="CGImplicit" iterations="50"/>
+		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<Object type="MechanicalObject" template="Rigid" dx="5" dy="10.0" dz="0.0" />
 		<Object type="UniformMass" totalmass="100"/>
 		<Node name="Visu">

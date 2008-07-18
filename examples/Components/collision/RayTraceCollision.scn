@@ -5,7 +5,9 @@
 	<Object type="CollisionResponse" name="Response" response="default" />
 	<Object type="CollisionGroup" name="Group" />
 <Node name="Torus">
-		<Object type="CGImplicit" iterations="10" tol="0.01" threshold="0.000001" />
+		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
 		<Object type="MechanicalObject"   dx="0" dy="20" dz="-11"/>
 		<Object type="UniformMass" totalmass="30"/>
 		<Object type="RegularGrid"
@@ -27,7 +29,9 @@
 		</Node>
 </Node>
 <Node name="Torus">
-		<Object type="CGImplicit" iterations="10" tol="0.01" threshold="0.000001" />
+		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
 		<Object type="MechanicalObject"  dx="0" dy="20" dz="-13"/>
 		<Object type="UniformMass" totalmass="30"/>
 		<Object type="RegularGrid"
@@ -50,7 +54,9 @@
 </Node>
 
 <Node name="Torus">
-		<Object type="CGImplicit" iterations="10" tol="0.01" threshold="0.000001" />
+		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
 		<Object type="MechanicalObject" dx="0" dy="20" dz="-15"/>
 		<Object type="UniformMass" totalmass="30"/>
 		<Object type="RegularGrid"
@@ -72,7 +78,9 @@
 		</Node>
 </Node>
 <Node name="Torus">
-		<Object type="CGImplicit" iterations="10" tol="0.01" threshold="0.000001" />
+		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
 		<Object type="MechanicalObject" dx="0" dy="20" dz="-17"/>
 		<Object type="UniformMass" totalmass="30"/>
 		<Object type="RegularGrid"
@@ -93,7 +101,9 @@
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>	<Node name="Torus">
-		<Object type="CGImplicit" iterations="10" tol="0.01" threshold="0.000001" />
+		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
 		<Object type="MechanicalObject" dx="0" dy="20" dz="-19"/>
 		<Object type="UniformMass" totalmass="30"/>
 		<Object type="RegularGrid"
@@ -116,7 +126,9 @@
 	</Node>	
 
 <Node name="Torus">
-		<Object type="CGImplicit" iterations="10" tol="0.01" threshold="0.000001" />
+		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
 		<Object type="MechanicalObject" dx="0" dy="20" dz="-23"/>
 		<Object type="UniformMass" totalmass="30"/>
 		<Object type="RegularGrid"
@@ -139,7 +151,9 @@
 	</Node>
 
 		<Node name="Torus">
-		<Object type="CGImplicit" iterations="10" tol="0.01" threshold="0.000001" />
+		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
 		<Object type="MechanicalObject" dx="0" dy="20" dz="-21"/>
 		<Object type="UniformMass" totalmass="30"/>
 		<Object type="RegularGrid"
@@ -162,7 +176,9 @@
 	</Node>
 
 	<Node name="Torus">
-		<Object type="CGImplicit" iterations="10" tol="0.01" threshold="0.000001" />
+		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
 		<Object type="MechanicalObject" dx="0" dy="20" dz="-29"/>
 		<Object type="UniformMass" totalmass="30"/>
 		<Object type="RegularGrid"
@@ -184,7 +200,9 @@
 		</Node>
 	</Node>
 	<Node name="Torus">
-		<Object type="CGImplicit" iterations="10" tol="0.01" threshold="0.000001" />
+		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
 		<Object type="MechanicalObject" dx="0" dy="20" dz="-27"/>
 		<Object type="UniformMass" totalmass="30"/>
 		<Object type="RegularGrid"
@@ -206,7 +224,9 @@
 		</Node>
 	</Node>
 	<Node name="Torus">
-		<Object type="CGImplicit" iterations="10" tol="0.01" threshold="0.000001" />
+		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
 		<Object type="MechanicalObject" dx="0" dy="20" dz="-25"/>
 		<Object type="UniformMass" totalmass="30"/>
 		<Object type="RegularGrid"
