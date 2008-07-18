@@ -92,15 +92,10 @@ protected:
 //    component::MechanicalObject<DataTypes>* _object;
 
     typedef Vec<6, Real> Displacement;								///< the displacement vector
-
     typedef Mat<3, 3, Real> MaterialStiffness;						///< the matrix of material stiffness
     typedef sofa::helper::vector<MaterialStiffness> VecMaterialStiffness;    ///< a vector of material stiffness matrices
-    //VecMaterialStiffness _materialsStiffnesses;						///< the material stiffness matrices vector
-
     typedef Mat<6, 3, Real> StrainDisplacement;						///< the strain-displacement matrix
     typedef sofa::helper::vector<StrainDisplacement> VecStrainDisplacement;	///< a vector of strain-displacement matrices
-    //VecStrainDisplacement _strainDisplacements;						///< the strain-displacement matrices vector
-
     typedef Mat<3, 3, Real > Transformation;						///< matrix for rigid transformations like rotations
 
     class TriangleInformation
@@ -156,27 +151,21 @@ protected:
 //     Real _dampingRatio;
 
     bool updateMatrix;
+    int lastFracturedEdgeIndex;
 
 public:
 
     TriangularFEMForceField();
-
     TriangleSetTopology<DataTypes> *getTriangularTopology() const {return _mesh;}
 
     //virtual const char* getTypeName() const { return "TriangularFEMForceField"; }
 
     virtual ~TriangularFEMForceField();
-
-
     virtual void init();
     virtual void reinit();
     virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-
     virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
-
     virtual double getPotentialEnergy(const VecCoord& x);
-
-    // handle topological changes
     virtual void handleTopologyChange();
 
     void draw();
@@ -196,12 +185,6 @@ public:
     void setDamping(Real val) { f_damping.setValue(val); }
     int  getMethod() { return method; }
     void setMethod(int val) { method = val; }
-
-//     component::MechanicalObject<DataTypes>* getObject()
-//     {
-//         return _object;
-//     }
-
     int getFracturedEdge();
 
 protected :
@@ -224,12 +207,12 @@ protected :
 
     /// f += Kx where K is the stiffness matrix and x a displacement
     virtual void applyStiffness( VecCoord& f, Real h, const VecCoord& x );
+    virtual void computeMaterialStiffness(int i, Index& a, Index& b, Index& c);
     void computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c);
-    void computeMaterialStiffnesses();
     void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J );
 
     ////////////// small displacements method
-    void initSmall();
+    void initSmall(void);
     void accumulateForceSmall( VecCoord& f, const VecCoord & p, Index elementIndex, bool implicit = false );
     void accumulateDampingSmall( VecCoord& f, Index elementIndex );
     void applyStiffnessSmall( VecCoord& f, Real h, const VecCoord& x );
@@ -237,7 +220,7 @@ protected :
     ////////////// large displacements method
     //sofa::helper::vector< helper::fixed_array <Coord, 3> > _rotatedInitialElements;   ///< The initials positions in its frame
     //sofa::helper::vector< Transformation > _rotations;
-    void initLarge();
+    void initLarge(int i, Index&a, Index&b, Index&c);
     void computeRotationLarge( Transformation &r, const VecCoord &p, const Index &a, const Index &b, const Index &c);
     void accumulateForceLarge( VecCoord& f, const VecCoord & p, Index elementIndex, bool implicit=false );
     void accumulateDampingLarge( VecCoord& f, Index elementIndex );
