@@ -26,6 +26,7 @@
 #define MYCUDA_H
 
 #include <string.h>
+#include <sofa/helper/system/gl.h>
 
 #if defined(__cplusplus)
 namespace sofa

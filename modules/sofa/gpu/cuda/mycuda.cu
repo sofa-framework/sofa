@@ -23,7 +23,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "mycuda.h"
-#include <sofa/helper/system/gl.h>
 #include <cuda.h>
 #include <cuda_gl_interop.h>
 #if defined(__cplusplus)
