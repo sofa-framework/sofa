@@ -195,7 +195,7 @@ void DualQuat<Real>::fromMatrix ( const defaulttype::Matrix4 M )
 }
 
 template<class Real>
-typename DualQuat<Real>::Vec DualQuat<Real>::transform ( const DualQuat<Real>::Vec& vec )
+typename DualQuat<Real>::Vec DualQuat<Real>::transform ( const typename DualQuat<Real>::Vec& vec )
 {
     defaulttype::Matrix4 M;
     toMatrix ( M );
@@ -264,6 +264,20 @@ template<class Real>
 Quater<Real>& DualQuat<Real>::operator[] ( unsigned int i )
 {
     return _q[i];
+}
+
+template<class Real>
+std::ostream& operator<< ( std::ostream& os, const DualQuat<Real>& dq )
+{
+    os << dq[0] << " " << dq[1];
+    return os;
+}
+
+template<class Real>
+std::istream& operator>> ( std::istream& is, const DualQuat<Real>& dq )
+{
+    is >> dq[0] >> dq[1];
+    return is;
 }
 
 } // namespace helper
