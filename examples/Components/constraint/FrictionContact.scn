@@ -7,7 +7,8 @@
 	<Object type="CollisionGroup" name="Group" />
 	
 	<Node name="TORUS">
-		<Object type="CGImplicit" iterations="25"/>
+		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<Object type="MechanicalObject" template="Rigid" scale="1.0"  dx="0.0" dy="0.0" dz="0.0"/>
 		<Object type="UniformMass" filename="BehaviorModels/torus.rigid" mass="4000.0"/>
 		<Object type="UncoupledConstraintCorrection"/>
