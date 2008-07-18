@@ -235,6 +235,9 @@ public:
 
     virtual void applyTranslation (const double dx,const double dy,const double dz);
 
+    // rotation using Euler Angles in degree
+    virtual void applyRotation (const double rx, const double ry, const double rz);
+
     virtual void applyRotation (const defaulttype::Quat q);
 
     virtual void applyScale (const double s);
@@ -259,6 +262,9 @@ public:
     virtual void setOffset(unsigned int &);
 
     /// @}
+
+    void setFilename(std::string s) {filename.setValue(s);};
+    std::string getFilename() {return filename.getValue();};
 
     virtual void addDxToCollisionModel(void);
 

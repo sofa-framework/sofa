@@ -25,10 +25,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "GraphModeler.h"
+#include "AddPreset.h"
 
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/gui/qt/FileManagement.h> //static functions to manage opening/ saving of files
+#include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/simulation/common/TransformationVisitor.h>
+
+#include <sofa/component/visualmodel/VisualModelImpl.h>
+
 #ifdef SOFA_QT4
 #include <Q3Header>
 #include <Q3PopupMenu>
@@ -315,6 +321,7 @@ void GraphModeler::rightClick(Q3ListViewItem *item, const QPoint &point, int ind
         contextMenu->insertItem("Expand"  , this, SLOT( expandNode()));
         contextMenu->insertSeparator ();
         contextMenu->insertItem("Load"  , this, SLOT( loadNode()));
+        contextMenu->insertItem(QIconSet(), tr( "Preset"), preset);
         contextMenu->insertItem("Save"  , this, SLOT( saveNode()));
     }
     int index_menu = contextMenu->insertItem("Delete"  , this, SLOT( deleteComponent()));
@@ -379,29 +386,146 @@ void GraphModeler::expandNode(Q3ListViewItem* item)
     }
 }
 
-void GraphModeler::loadNode()
+GNode *GraphModeler::loadNode()
 {
-    loadNode(currentItem());
+    return loadNode(currentItem());
 }
 
-void GraphModeler::loadNode(Q3ListViewItem* item)
+GNode *GraphModeler::loadNode(Q3ListViewItem* item, std::string filename)
 {
-    if (!item) return;
+    if (!item) return NULL;
     GNode *node = getGNode(item);
-
-    QString s = getOpenFileName ( this, NULL,"Scenes (*.scn *.xml *.simu *.pscn)", "open file dialog",  "Choose a file to open" );
-    if (s.length() >0)
+    if (filename.empty())
     {
-        xml::BaseElement* newXML=NULL;
+        QString s = getOpenFileName ( this, NULL,"Scenes (*.scn *.xml *.simu *.pscn)", "open file dialog",  "Choose a file to open" );
+        if (s.length() >0)
+        {
+            filename = s.ascii();
+        }
+        else return NULL;
+    }
+    xml::BaseElement* newXML=NULL;
 
-        newXML = xml::loadFromFile ( s.ascii() );
-        if (newXML == NULL) return;
-        if (!newXML->init()) std::cerr<< "Objects initialization failed.\n";
-        GNode *newNode = dynamic_cast<GNode*> ( newXML->getObject() );
-        if (newNode) addGNode(node,newNode);
+    newXML = xml::loadFromFile (filename.c_str() );
+    if (newXML == NULL) return NULL;
+    if (!newXML->init()) std::cerr<< "Objects initialization failed.\n";
+    GNode *newNode = dynamic_cast<GNode*> ( newXML->getObject() );
+    if (newNode) addGNode(node,newNode);
+    return newNode;
+}
+
+void GraphModeler::loadPreset(std::string presetName)
+{
+
+    if (!DialogAdd)
+    {
+        DialogAdd = new AddPreset(this,"AddPreset");
+        DialogAdd->setPath(sofa::helper::system::DataRepository.getFirstPath());
     }
 
+    DialogAdd->setPresetFile(presetName);
+    GNode *node=getGNode(currentItem());
+    DialogAdd->setParentNode(node);
+
+    DialogAdd->show();
+    DialogAdd->raise();
 }
+
+
+void GraphModeler::loadPreset(GNode *parent, std::string presetFile,
+        std::string *filenames,
+        std::string *translation,
+        std::string *rotation,
+        std::string scale)
+{
+
+
+    xml::BaseElement* newXML=NULL;
+
+    newXML = xml::loadFromFile (presetFile.c_str() );
+    if (newXML == NULL) return;
+
+    bool collisionNodeFound=false;
+    xml::BaseElement *meshMecha=NULL;
+    xml::BaseElement::child_iterator<> it(newXML->begin());
+    for (; it!=newXML->end(); ++it)
+    {
+
+        if (it->getType() == std::string("MechanicalObject"))
+        {
+            updatePresetNode(*it, std::string(), translation, rotation, scale);
+        }
+        if (it->getType() == std::string("Mesh") || it->getType() == std::string("SparseGrid"))
+        {
+            updatePresetNode(*it, filenames[0], translation, rotation, scale);
+            meshMecha = it;
+        }
+        if (it->getType() == std::string("OglModel"))
+        {
+            updatePresetNode(*it, filenames[1], translation, rotation, scale);
+        }
+
+        if (it->getName() == std::string("VisualNode"))
+        {
+            xml::BaseElement* visualXML = it;
+
+            xml::BaseElement::child_iterator<> it_visual(visualXML->begin());
+            for (; it_visual!=visualXML->end(); ++it_visual)
+            {
+                if (it_visual->getType() == std::string("OglModel"))
+                {
+                    updatePresetNode(*it_visual, filenames[1], translation, rotation, scale);
+                }
+            }
+        }
+        if (it->getName() == std::string("CollisionNode"))
+        {
+            collisionNodeFound=true;
+            xml::BaseElement* collisionXML = it;
+
+            xml::BaseElement::child_iterator<> it_collision(collisionXML->begin());
+            for (; it_collision!=collisionXML->end(); ++it_collision)
+            {
+
+                if (it_collision->getType() == std::string("MechanicalObject"))
+                {
+                    updatePresetNode(*it_collision, std::string(), translation, rotation, scale);
+                }
+                if (it_collision->getType() == std::string("Mesh"))
+                {
+                    updatePresetNode(*it_collision, filenames[2], translation, rotation, scale);
+                }
+            }
+        }
+    }
+
+    //Case of Fixed preset: the mesh initial corresponds to the collision model
+    if (!collisionNodeFound && meshMecha)
+    {
+        updatePresetNode(*meshMecha, filenames[2], translation, rotation, scale);
+    }
+
+
+    if (!newXML->init()) std::cerr<< "Objects initialization failed.\n";
+    GNode *presetNode = dynamic_cast<GNode*> ( newXML->getObject() );
+    if (presetNode) addGNode(parent,presetNode);
+}
+
+void GraphModeler::updatePresetNode(xml::BaseElement &elem, std::string meshFile, std::string *translation, std::string *rotation, std::string scale)
+{
+    if (elem.presenceAttribute(std::string("filename"))) elem.setAttribute(std::string("filename"), meshFile.c_str());
+
+    if (elem.presenceAttribute(std::string("dx"))) elem.setAttribute(std::string("dx"), translation[0].c_str());
+    if (elem.presenceAttribute(std::string("dy"))) elem.setAttribute(std::string("dy"), translation[1].c_str());
+    if (elem.presenceAttribute(std::string("dz"))) elem.setAttribute(std::string("dz"), translation[2].c_str());
+
+    if (elem.presenceAttribute(std::string("rx"))) elem.setAttribute(std::string("rx"), rotation[0].c_str());
+    if (elem.presenceAttribute(std::string("ry"))) elem.setAttribute(std::string("ry"), rotation[1].c_str());
+    if (elem.presenceAttribute(std::string("rz"))) elem.setAttribute(std::string("rz"), rotation[2].c_str());
+
+    if (elem.presenceAttribute(std::string("scale"))) elem.setAttribute(std::string("scale"), scale.c_str());
+}
+
 
 void GraphModeler::saveNode()
 {

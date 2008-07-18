@@ -109,6 +109,9 @@ public:
     /// Set an attribute. Override any existing value
     virtual void setAttribute(const std::string& attr, const char* val);
 
+    /// Verify the presence of an attribute
+    virtual bool presenceAttribute(const std::string& s);
+
     /// Remove an attribute. Fails if this attribute is "name" or "type"
     virtual bool removeAttribute(const std::string& attr);
 

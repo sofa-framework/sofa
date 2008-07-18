@@ -373,6 +373,12 @@ void VisualModelImpl::applyTranslation(const double dx, const double dy, const d
     updateVisual();
 }
 
+//Apply Rotation from Euler angles (in degree!)
+void VisualModelImpl::applyRotation (const double rx, const double ry, const double rz)
+{
+    Quaternion q=helper::Quater<SReal>::createQuaterFromEuler( Vec<3,SReal>(rx,ry,rz)*M_PI/180.0);
+    applyRotation(q);
+}
 void VisualModelImpl::applyRotation(const Quat q)
 {
     VecCoord& x = *getVecX();
@@ -422,8 +428,7 @@ void VisualModelImpl::init()
 
 
     applyScale(scale.getValue());
-    Quaternion q = Quaternion::createQuaterFromEuler( Vector3(rotation.getValue())*M_PI/180.0);
-    applyRotation(q);
+    applyRotation(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2]);
     applyTranslation(translation.getValue()[0],translation.getValue()[1],translation.getValue()[2]);
 
 

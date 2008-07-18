@@ -26,6 +26,7 @@
 ******************************************************************************/
 #include "SofaModeler.h"
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/SetDirectory.h>
 
 
 #include <sofa/gui/SofaGUI.h>
@@ -44,12 +45,14 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QApplication>
+#include <QMenuBar>
 #else
 #include <qtoolbox.h>
 #include <qlayout.h>
 #include <qtextedit.h>
 #include <qcombobox.h>
 #include <qapplication.h>
+#include <qmenubar.h>
 #endif
 
 namespace sofa
@@ -70,6 +73,64 @@ SofaModeler::SofaModeler()
 {
     QWidget *GraphSupport = new QWidget((QWidget*)splitter2);
     QGridLayout* GraphLayout = new QGridLayout(GraphSupport, 1,1,5,2,"GraphLayout");
+
+    //Add Filemenu Recently Opened files
+    recentlyOpened = new Q3PopupMenu(this);
+    this->fileMenu->insertItem( QIconSet( ), tr( "Recently Opened Files..."), recentlyOpened, -1, 9);
+
+    //Add menu Preset
+    preset = new Q3PopupMenu(this);
+    this->menubar->insertItem(QString("Preset"), preset, 4);
+
+    presetPath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/applications/projects/Modeler/preset/" );
+    std::string presetFile = presetPath + std::string("preset.ini" );
+
+    presetFile = sofa::helper::system::DataRepository.getFile ( presetFile );
+
+    //store the kind and the name of the preset
+    std::multimap< std::string, std::pair< std::string,std::string> > presetArchitecture;
+
+
+    std::ifstream end(presetFile.c_str());
+    std::string s;
+
+
+    std::string directory, namePreset, nameFile;
+    while( std::getline(end,s) )
+    {
+        //s contains the current line
+        std::string::size_type slash = s.find('/');
+        if (slash != std::string::npos)
+        {
+            directory = s; directory.resize(slash);
+            s=s.substr(slash+1);
+
+            slash = s.find('/');
+            if (slash != std::string::npos)
+            {
+                namePreset=s; namePreset.resize(slash);
+                nameFile = s.substr(slash+1);
+
+                presetArchitecture.insert(std::make_pair( directory, std::make_pair( namePreset, nameFile) ) );
+            }
+
+        }
+    }
+    end.close();
+
+    std::multimap< std::string, std::pair< std::string,std::string> >::iterator it_preset = presetArchitecture.begin();
+    while(it_preset != presetArchitecture.end())
+    {
+        std::string directoryName = it_preset->first;
+        Q3PopupMenu* directory = new Q3PopupMenu(this);
+        connect( directory, SIGNAL(activated(int)), this, SLOT(loadPreset(int)));
+        preset->insertItem(QIconSet(), tr( it_preset->first.c_str()), directory);
+        for (unsigned int i=0; i<presetArchitecture.count(directoryName); i++,it_preset++)
+        {
+            directory->insertItem(it_preset->second.first.c_str());//, this, SLOT(loadPreset()) );
+            mapPreset.insert(it_preset->second);
+        }
+    }
 
 
     //Construction of the left part of the GUI: list of all objects sorted by base class
@@ -246,7 +307,28 @@ void SofaModeler::fileOpen()
         fileOpen(s.ascii());
 }
 
+void SofaModeler::clearTab()
+{
+    fileNew();
+}
+
+
 void SofaModeler::newTab()
+{
+    std::string newScene="config/newScene.scn";
+    if (sofa::helper::system::DataRepository.findFile(newScene))
+    {
+        newScene = sofa::helper::system::DataRepository.getFile ( newScene);
+        fileOpen(newScene);
+        graph->setFilename("");
+    }
+    else
+    {
+        createTab();
+    }
+}
+
+void SofaModeler::createTab()
 {
     tabGraph = new QWidget();
     QVBoxLayout *currentTabLayout = new QVBoxLayout(tabGraph, 0,1, QString("ModelerScene"));
@@ -259,26 +341,33 @@ void SofaModeler::newTab()
     currentTabLayout->addWidget(graph,0,0);
 
     graph->setLibrary(mapComponents);
+    graph->setPreset(preset);
+
     fileNew();
+
 #ifdef SOFA_QT4
     connect(graph, SIGNAL(currentChanged(Q3ListViewItem *)), this, SLOT(changeInformation(Q3ListViewItem *)));
 #else
     connect(graph, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(changeInformation(QListViewItem *)));
 #endif
     connect(graph, SIGNAL( fileOpen(std::string)), this, SLOT(fileOpen(std::string)));
-    connect(this, SIGNAL( closeGraph() ), graph, SLOT ( closeGraph() ) );
 }
 
 void SofaModeler::closeTab()
 {
-    emit(closeGraph());
+
+    graph->closeGraph();
     if (sceneTab->count() <=1) fileNew();
-    else if (tabGraph)  delete tabGraph;
+    else if (tabGraph)
+    {
+        mapGraph.erase(tabGraph);
+        delete tabGraph;
+    }
 }
 
 void SofaModeler::fileOpen(std::string filename)
 {
-    newTab();
+    createTab();
     GNode *root = NULL;
     xml::BaseElement* newXML=NULL;
     if (!filename.empty())
@@ -306,6 +395,13 @@ void SofaModeler::fileRecentlyOpened(int id)
 
 void SofaModeler::updateRecentlyOpened(std::string fileLoaded)
 {
+
+#ifdef WIN32
+    for (unsigned int i=0; i<fileLoaded.size(); ++i)
+    {
+        if (fileLoaded[i] == '\\') fileLoaded[i] = '/';
+    }
+#endif
     std::string scenes ( "config/Modeler.ini" );
 
     scenes = sofa::helper::system::DataRepository.getFile ( scenes );
@@ -368,6 +464,19 @@ void SofaModeler::fileSaveAs()
     }
 }
 
+void SofaModeler::loadPreset(int id)
+{
+    Q3PopupMenu *s = (Q3PopupMenu*) sender();
+    std::string presetFile = presetPath+ mapPreset[s->text(id).ascii()];
+
+
+    if (sofa::helper::system::DataRepository.findFile ( presetFile ))
+    {
+        presetFile = sofa::helper::system::DataRepository.getFile ( presetFile );
+        graph->loadPreset(presetFile);
+    }
+    else std::cerr<<"Preset : " << presetFile << " Not found\n";
+}
 
 void SofaModeler::changeInformation(Q3ListViewItem *item)
 {
@@ -442,7 +551,8 @@ void SofaModeler::changeCurrentScene( QWidget* currentGraph)
 {
     tabGraph=currentGraph;
     graph = mapGraph[currentGraph];
-    changeNameWindow(graph->getFilename());
+    if (graph)
+        changeNameWindow(graph->getFilename());
 }
 
 void SofaModeler::changeNameWindow(std::string filename)
@@ -450,7 +560,7 @@ void SofaModeler::changeNameWindow(std::string filename)
 
     std::string str = "Sofa Modeler";
     if (!filename.empty()) str+= std::string(" - ") + filename;
-#ifdef _WIN32
+#ifdef WIN32
     setWindowTitle ( str.c_str() );
 #else
     setCaption ( str.c_str() );
@@ -501,10 +611,6 @@ void SofaModeler::dropEvent(QDropEvent* event)
     if (test == "file")
     {
 #ifdef WIN32
-        for (unsigned int i=0; i<filename.size(); ++i)
-        {
-            if (filename[i] == '\\') filename[i] = '/';
-        }
         filename = filename.substr(8); //removing file:///
 #else
         filename = filename.substr(7); //removing file://

@@ -221,11 +221,6 @@ protected:
             //cerr<<"QtViewer::keyPressEvent, CONTROL pressed"<<endl;
             break;
         }
-        case Qt::Key_Escape:
-        {
-            exit(0);
-            break;
-        }
         default:
         {
             e->ignore();

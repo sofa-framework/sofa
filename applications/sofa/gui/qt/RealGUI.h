@@ -54,8 +54,10 @@
 #include <QSlider>
 #include <QTimer>
 #include <Q3TextDrag>
+#include <Q3PopupMenu>
 typedef Q3ListViewItem QListViewItem;
 typedef QStackedWidget QWidgetStack;
+typedef Q3PopupMenu QPopupMenu;
 #else
 typedef QTextDrag Q3TextDrag;
 #include <qapplication.h>
@@ -64,6 +66,7 @@ typedef QTextDrag Q3TextDrag;
 #include <qwidgetstack.h>
 #include <qlistview.h>
 #include <qslider.h>
+#include <qpopupmenu.h>
 #endif
 
 
@@ -108,55 +111,6 @@ class RealGUI : public ::GUI, public SofaGUI
     /// @name SofaGUI Interface
     /// @{
 
-
-    class DisplayFlagItem : public Q3CheckListItem
-    {
-    protected:
-        RealGUI* gui;
-        int id;
-        ToggleState last;
-    public:
-        template<class T>
-        DisplayFlagItem(RealGUI* g, T* parent, int id, const QString & text, Type tt = CheckBox)
-            : Q3CheckListItem(parent, text, tt)
-            , gui(g)
-            , id(id)
-            , last(NoChange)
-        {
-            if (tt == CheckBoxController)
-                setTristate(true);
-            //setState(NoChange);
-        }
-        template<class T>
-        DisplayFlagItem(RealGUI* g, T* parent, Q3CheckListItem* after, int id, const QString & text, Type tt = CheckBox)
-            : Q3CheckListItem(parent, after, text, tt)
-            , gui(g)
-            , id(id)
-            , last(NoChange)
-        {
-            if (tt == CheckBoxController)
-                setTristate(true);
-            //setState(NoChange);
-        }
-        void setState( ToggleState s )
-        {
-            last = s;
-            Q3CheckListItem::setState( s );
-        }
-        void init( bool b )
-        {
-            setState( b ? On : Off );
-        }
-    protected:
-        virtual void stateChange ( bool b )
-        {
-            ToggleState s = state();
-            if (s == last) return;
-            if (s == NoChange) return;
-            last = s;
-            gui->showhideElements(id,b);
-        }
-    };
 
 public:
 
@@ -366,6 +320,7 @@ protected:
 
     QWidgetStack* left_stack;
     AddObject *dialog;
+    QPopupMenu *recentlyOpened;
 
 
     sofa::simulation::tree::GNode* getScene() { if (viewer) return viewer->getScene(); else return NULL; }
@@ -415,6 +370,54 @@ private:
 #endif
 
 
+    class DisplayFlagItem : public Q3CheckListItem
+    {
+    protected:
+        RealGUI* gui;
+        int id;
+        ToggleState last;
+    public:
+        template<class T>
+        DisplayFlagItem(RealGUI* g, T* parent, int id, const QString & text, Type tt = CheckBox)
+            : Q3CheckListItem(parent, text, tt)
+            , gui(g)
+            , id(id)
+            , last(NoChange)
+        {
+            if (tt == CheckBoxController)
+                setTristate(true);
+            //setState(NoChange);
+        }
+        template<class T>
+        DisplayFlagItem(RealGUI* g, T* parent, Q3CheckListItem* after, int id, const QString & text, Type tt = CheckBox)
+            : Q3CheckListItem(parent, after, text, tt)
+            , gui(g)
+            , id(id)
+            , last(NoChange)
+        {
+            if (tt == CheckBoxController)
+                setTristate(true);
+            //setState(NoChange);
+        }
+        void setState( ToggleState s )
+        {
+            last = s;
+            Q3CheckListItem::setState( s );
+        }
+        void init( bool b )
+        {
+            setState( b ? On : Off );
+        }
+    protected:
+        virtual void stateChange ( bool b )
+        {
+            ToggleState s = state();
+            if (s == last) return;
+            if (s == NoChange) return;
+            last = s;
+            gui->showhideElements(id,b);
+        }
+    };
 
 
     DisplayFlagItem* itemShowAll;

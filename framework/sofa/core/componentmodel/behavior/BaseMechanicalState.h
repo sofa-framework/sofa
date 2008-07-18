@@ -117,6 +117,11 @@ public:
     /// Translate the current state
     virtual void applyTranslation(const double dx, const double dy, const double dz)=0;
 
+
+    /// Rotate the current state
+    /// This method is optional, it is used when the user want to interactively change the position of an object using Euler angles
+    virtual void applyRotation (const double /*rx*/, const double /*ry*/, const double /*rz*/) {};
+
     /// Rotate the current state
     virtual void applyRotation(const defaulttype::Quat q)=0;
 

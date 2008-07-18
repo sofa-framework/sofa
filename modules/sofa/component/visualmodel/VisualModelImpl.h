@@ -185,12 +185,17 @@ public:
     bool load(const std::string& filename, const std::string& loader, const std::string& textureName);
 
     void applyTranslation(const double dx, const double dy, const double dz);
+    //Apply Rotation from Euler angles (in degree!)
+    void applyRotation (const double rx, const double ry, const double rz);
     void applyRotation(const Quat q);
     void applyScale(const double s);
     void applyUVTranslation(const double dU, const double dV);
     void applyUVScale(const double su, const double sv);
 
     void flipFaces();
+
+    void setFilename(std::string s) {filename.setValue(s);}
+    std::string getFilename() {return filename.getValue();}
 
     void setColor(float r, float g, float b, float a);
     void setColor(std::string color);

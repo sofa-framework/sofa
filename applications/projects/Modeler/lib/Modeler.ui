@@ -140,16 +140,12 @@
         <action name="fileNewTabAction"/>
         <action name="fileCloseTabAction"/>
         <separator/>
-        <action name="fileNewAction"/>
+        <action name="fileClearTabAction"/>
         <action name="fileOpenAction"/>
         <action name="fileSaveAction"/>
         <action name="fileSaveAsAction"/>
         <separator/>
         <action name="runInSofaAction"/>
-        <action name="EmptyFiles"/>
-        <item text="Recently Opened Files..." name="recentlyOpened" accel="">
-            <action name="EmptyFiles"/>
-        </item>
         <separator/>
         <action name="fileExitAction"/>
     </item>
@@ -197,7 +193,7 @@
     </action>
     <action>
         <property name="name">
-            <cstring>fileNewAction</cstring>
+            <cstring>fileClearTabAction</cstring>
         </property>
         <property name="iconSet">
             <iconset>image0</iconset>
@@ -434,14 +430,6 @@
             <string>Ctrl+F</string>
         </property>
     </action>
-    <action>
-        <property name="name">
-            <cstring>EmptyFiles</cstring>
-        </property>
-        <property name="text">
-            <string>...</string>
-        </property>
-    </action>
 <!--
     <action>
         <property name="name">
@@ -511,10 +499,10 @@
         <slot>closeTab()</slot>
     </connection>
     <connection>
-        <sender>fileNewAction</sender>
+        <sender>fileClearTabAction</sender>
         <signal>activated()</signal>
         <receiver>Modeler</receiver>
-        <slot>fileNew()</slot>
+        <slot>clearTab()</slot>
     </connection>
     <connection>
         <sender>fileOpenAction</sender>
@@ -600,7 +588,7 @@
 <slots>
     <slot>newTab()</slot>
     <slot>closeTab()</slot>
-    <slot>fileNew()</slot>
+    <slot>clearTab()</slot>
     <slot>fileOpen()</slot>
     <slot>fileSave()</slot>
     <slot>fileSaveAs()</slot>

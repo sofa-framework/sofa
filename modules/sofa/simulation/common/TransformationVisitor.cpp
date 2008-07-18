@@ -34,7 +34,7 @@ void TransformationVisitor::processVisualModel(simulation::Node* // node
         , core::VisualModel* v)
 {
     v->applyScale ( scale );
-    v->applyRotation(rotation);
+    v->applyRotation(rotation[0],rotation[1],rotation[2]);
     v->applyTranslation ( translation[0],translation[1],translation[2] );
 }
 
@@ -42,7 +42,7 @@ void TransformationVisitor::processMechanicalState(simulation::Node* // node
         , core::componentmodel::behavior::BaseMechanicalState* m)
 {
     m->applyScale ( scale );
-    m->applyRotation(rotation);
+    m->applyRotation(rotation[0],rotation[1],rotation[2]);
     m->applyTranslation ( translation[0],translation[1],translation[2] );
 }
 
