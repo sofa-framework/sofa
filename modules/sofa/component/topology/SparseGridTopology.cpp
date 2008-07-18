@@ -1069,7 +1069,7 @@ int SparseGridTopology::findCube(const Vector3& pos, SReal& fx, SReal &fy, SReal
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
 int SparseGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
 {
-    if (seqHexas.size() == 0) return;
+    if (seqHexas.size() == 0) return -1;
     int indice = 0;
     float lgmin = 99999999.0f;
 
