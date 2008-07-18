@@ -212,7 +212,7 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
     }
     if (arg->getAttribute("rx")!=NULL || arg->getAttribute("ry")!=NULL || arg->getAttribute("rz")!=NULL)
     {
-        rotation.setValue(Vector3((SReal)(atof(arg->getAttribute("rx","0.0"))),(SReal)(atof(arg->getAttribute("ry","0.0"))),(SReal)(atof(arg->getAttribute("rz","0.0"))))*3.141592653/180.0);
+        rotation.setValue(Vector3((SReal)(atof(arg->getAttribute("rx","0.0"))),(SReal)(atof(arg->getAttribute("ry","0.0"))),(SReal)(atof(arg->getAttribute("rz","0.0")))));
 
         //Quaternion q=helper::Quater<SReal>::createQuaterFromEuler( Vec<3,SReal>(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2]));
         //applyRotation(q);
@@ -551,6 +551,15 @@ void MechanicalObject<DataTypes>::applyTranslation (const double dx,const double
         DataTypes::add
         (x[i],dx,dy,dz);
     }
+
+}
+
+//Apply Rotation from Euler angles (in degree!)
+template <class DataTypes>
+void MechanicalObject<DataTypes>::applyRotation (const double rx, const double ry, const double rz)
+{
+    Quaternion q=helper::Quater<SReal>::createQuaterFromEuler( Vec<3,SReal>(rx,ry,rz)*M_PI/180.0);
+    applyRotation(q);
 }
 
 template <class DataTypes>
@@ -564,7 +573,6 @@ void MechanicalObject<DataTypes>::applyRotation (const defaulttype::Quat q)
         Vec<3,Real> newposition = q.rotate(pos);
         DataTypes::set(x[i],newposition[0],newposition[1],newposition[2]);
     }
-    //TODO: special case of rigid bodies. need to update the orientation
 }
 
 #ifndef SOFA_FLOAT
@@ -971,8 +979,7 @@ void MechanicalObject<DataTypes>::reinit()
 
     if (rotation.getValue()[0]!=0.0 || rotation.getValue()[1]!=0.0 || rotation.getValue()[2]!=0.0)
     {
-        Quaternion q=helper::Quater<SReal>::createQuaterFromEuler( Vec<3,SReal>(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2]));
-        this->applyRotation(q);
+        this->applyRotation(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2]);
 //  	p0 = q.rotate(p0);
     }
 

@@ -29,6 +29,8 @@
 
 #include <deque>
 
+#include "AddPreset.h"
+
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -90,12 +92,14 @@ public:
         connect(this, SIGNAL(doubleClicked ( QListViewItem *, const QPoint &, int )), this, SLOT( doubleClick(QListViewItem *)));
         connect(this, SIGNAL(rightButtonClicked ( QListViewItem *, const QPoint &, int )),  this, SLOT( rightClick(QListViewItem *, const QPoint &, int )));
 #endif
+        DialogAdd=NULL;
     };
 
     ~GraphModeler()
     {
         getSimulation()->unload(getRoot());
         delete graphListener;
+        if (DialogAdd) delete DialogAdd;
     }
 
     void clearGraph();
@@ -136,7 +140,7 @@ public:
     void dropEvent(QDropEvent* event);
 
     void setLibrary(ComponentMap &s) {library=s;}
-
+    void setPreset(Q3PopupMenu *_preset) {preset=_preset;}
 
     GNode *getGNode(const QPoint &pos);
     GNode *getGNode(Q3ListViewItem *item);
@@ -154,8 +158,10 @@ public slots:
     void collapseNode(Q3ListViewItem* item);
     void expandNode();
     void expandNode(Q3ListViewItem* item);
-    void loadNode();
-    void loadNode(Q3ListViewItem* item);
+    GNode *loadNode();
+    GNode *loadNode(Q3ListViewItem* item, std::string filename="");
+    void loadPreset(std::string presetName);
+    void loadPreset(GNode*,std::string,std::string*, std::string*,std::string*,std::string);
     void saveNode();
     void saveNode(Q3ListViewItem* item);
     void openModifyObject();
@@ -182,6 +188,7 @@ protected:
 
     bool isNodeErasable ( core::objectmodel::Base* element );
     bool isObjectErasable ( core::objectmodel::Base* element );
+    void updatePresetNode(xml::BaseElement &elem, std::string meshFile, std::string *translation, std::string *rotation, std::string scale);
 
     class Operation
     {
@@ -199,7 +206,8 @@ protected:
 
     GraphListenerQListView *graphListener;
     ComponentMap library;
-
+    Q3PopupMenu *preset;
+    AddPreset *DialogAdd;
 
     //Modify windows management: avoid duplicity, and dependencies
     void *current_Id_modifyDialog;

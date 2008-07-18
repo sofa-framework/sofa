@@ -47,17 +47,12 @@ public:
     TransformationVisitor()
     {
         translation = Vector3();
-        rotation = Quat::createFromRotationVector( Vector3() );
+        rotation = Vector3();
         scale = (SReal)1.0;
     }
 
     void setTranslation(SReal dx, SReal dy, SReal dz) { translation = Vector3(dx,dy,dz);}
-    void setRotation(const Quaternion &q) {rotation = q;}
-    void setRotation(SReal rx, SReal ry, SReal rz)
-    {
-        Vector3 rot = Vector3(rx,ry,rz)*3.141592653/180.0;
-        rotation = Quaternion::createFromRotationVector( Vec<3,SReal>(rot[0],rot[1],rot[2]));
-    }
+    void setRotation(SReal rx, SReal ry, SReal rz) {    rotation=Vector3(rx,ry,rz);	}
     void setScale(SReal s) {scale = s;}
 
 
@@ -74,7 +69,7 @@ public:
 
 protected:
     Vector3 translation;
-    Quaternion rotation;
+    Vector3 rotation;
     SReal scale;
 };
 

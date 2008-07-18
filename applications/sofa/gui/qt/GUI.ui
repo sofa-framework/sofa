@@ -23,7 +23,7 @@
     <property name="minimumSize">
         <size>
             <width>232</width>
-            <height>561</height>
+            <height>461</height>
         </size>
     </property>
     <property name="caption">
@@ -397,122 +397,6 @@
                                         <number>12</number>
                                     </property>
                                 </widget>
-                                <spacer>
-                                    <property name="name">
-                                        <cstring>spacer5</cstring>
-                                    </property>
-                                    <property name="orientation">
-                                        <enum>Vertical</enum>
-                                    </property>
-                                    <property name="sizeType">
-                                        <enum>Fixed</enum>
-                                    </property>
-                                    <property name="sizeHint">
-                                        <size>
-                                            <width>20</width>
-                                            <height>8</height>
-                                        </size>
-                                    </property>
-                                </spacer>
-                                <widget class="QLayoutWidget">
-                                    <property name="name">
-                                        <cstring>layout4</cstring>
-                                    </property>
-                                    <hbox>
-                                        <property name="name">
-                                            <cstring>unnamed</cstring>
-                                        </property>
-                                        <property name="margin">
-                                            <number>0</number>
-                                        </property>
-                                        <property name="spacing">
-                                            <number>0</number>
-                                        </property>
-                                        <spacer>
-                                            <property name="name">
-                                                <cstring>spacer5_3_2</cstring>
-                                            </property>
-                                            <property name="orientation">
-                                                <enum>Horizontal</enum>
-                                            </property>
-                                            <property name="sizeType">
-                                                <enum>Expanding</enum>
-                                            </property>
-                                            <property name="sizeHint">
-                                                <size>
-                                                    <width>10</width>
-                                                    <height>2</height>
-                                                </size>
-                                            </property>
-                                        </spacer>
-                                        <widget class="QSpinBox">
-                                            <property name="name">
-                                                <cstring>sizeW</cstring>
-                                            </property>
-                                            <property name="maxValue">
-                                                <number>30000</number>
-                                            </property>
-                                        </widget>
-                                        <widget class="QLabel">
-                                            <property name="name">
-                                                <cstring>textLabel_sizeX</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>0</hsizetype>
-                                                    <vsizetype>5</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>&lt;p align="center"&gt;x&lt;/p&gt;</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QSpinBox">
-                                            <property name="name">
-                                                <cstring>sizeH</cstring>
-                                            </property>
-                                            <property name="maxValue">
-                                                <number>30000</number>
-                                            </property>
-                                        </widget>
-                                        <spacer>
-                                            <property name="name">
-                                                <cstring>spacer5_3_2_2</cstring>
-                                            </property>
-                                            <property name="orientation">
-                                                <enum>Horizontal</enum>
-                                            </property>
-                                            <property name="sizeType">
-                                                <enum>Expanding</enum>
-                                            </property>
-                                            <property name="sizeHint">
-                                                <size>
-                                                    <width>10</width>
-                                                    <height>2</height>
-                                                </size>
-                                            </property>
-                                        </spacer>
-                                    </hbox>
-                                </widget>
-                                <spacer>
-                                    <property name="name">
-                                        <cstring>spacer5_3</cstring>
-                                    </property>
-                                    <property name="orientation">
-                                        <enum>Vertical</enum>
-                                    </property>
-                                    <property name="sizeType">
-                                        <enum>Fixed</enum>
-                                    </property>
-                                    <property name="sizeHint">
-                                        <size>
-                                            <width>20</width>
-                                            <height>8</height>
-                                        </size>
-                                    </property>
-                                </spacer>
                                 <widget class="QLayoutWidget">
                                     <property name="name">
                                         <cstring>layout4</cstring>
@@ -754,10 +638,92 @@
                             <attribute name="title">
                                 <string>Viewer</string>
                             </attribute>
-                            <hbox>
+                            <vbox>
                                 <property name="name">
                                     <cstring>unnamed</cstring>
                                 </property>
+                                <widget class="QLayoutWidget">
+                                    <property name="name">
+                                        <cstring>layout4</cstring>
+                                    </property>
+                                    <hbox>
+                                        <property name="name">
+                                            <cstring>unnamed</cstring>
+                                        </property>
+                                        <property name="margin">
+                                            <number>0</number>
+                                        </property>
+                                        <property name="spacing">
+                                            <number>0</number>
+                                        </property>
+                                        <spacer>
+                                            <property name="name">
+                                                <cstring>spacer5_3_2</cstring>
+                                            </property>
+                                            <property name="orientation">
+                                                <enum>Horizontal</enum>
+                                            </property>
+                                            <property name="sizeType">
+                                                <enum>Expanding</enum>
+                                            </property>
+                                            <property name="sizeHint">
+                                                <size>
+                                                    <width>10</width>
+                                                    <height>2</height>
+                                                </size>
+                                            </property>
+                                        </spacer>
+                                        <widget class="QSpinBox">
+                                            <property name="name">
+                                                <cstring>sizeW</cstring>
+                                            </property>
+                                            <property name="maxValue">
+                                                <number>30000</number>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLabel">
+                                            <property name="name">
+                                                <cstring>textLabel_sizeX</cstring>
+                                            </property>
+                                            <property name="sizePolicy">
+                                                <sizepolicy>
+                                                    <hsizetype>0</hsizetype>
+                                                    <vsizetype>5</vsizetype>
+                                                    <horstretch>0</horstretch>
+                                                    <verstretch>0</verstretch>
+                                                </sizepolicy>
+                                            </property>
+                                            <property name="text">
+                                                <string>&lt;p align="center"&gt;x&lt;/p&gt;</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QSpinBox">
+                                            <property name="name">
+                                                <cstring>sizeH</cstring>
+                                            </property>
+                                            <property name="maxValue">
+                                                <number>30000</number>
+                                            </property>
+                                        </widget>
+                                        <spacer>
+                                            <property name="name">
+                                                <cstring>spacer5_3_2_2</cstring>
+                                            </property>
+                                            <property name="orientation">
+                                                <enum>Horizontal</enum>
+                                            </property>
+                                            <property name="sizeType">
+                                                <enum>Expanding</enum>
+                                            </property>
+                                            <property name="sizeHint">
+                                                <size>
+                                                    <width>10</width>
+                                                    <height>2</height>
+                                                </size>
+                                            </property>
+                                        </spacer>
+                                    </hbox>
+                                </widget>
                                 <widget class="QTextEdit">
                                     <property name="name">
                                         <cstring>textEdit1</cstring>
@@ -795,7 +761,7 @@
                                         <bool>true</bool>
                                     </property>
                                 </widget>
-                            </hbox>
+                            </vbox>
                         </widget>
                     </widget>
                 </vbox>
@@ -818,10 +784,6 @@
         <action name="fileSaveAsAction"/>
         <action name="exportGraphAction"/>
         <separator/>
-        <action name="EmptyFiles"/>
-       <item text="Recently Opened Files..." name="recentlyOpened" accel="">
-            <action name="EmptyFiles"/>
-        </item>
         <separator/>
         <action name="fileExitAction"/>
     </item>
@@ -1214,25 +1176,6 @@
         </property>
         <property name="menuText">
             <string>Execution Graph</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>Action</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset></iconset>
-        </property>
-        <property name="text">
-            <string>Recently Opened Files...</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>EmptyFiles</cstring>
-        </property>
-        <property name="text">
-            <string>...</string>
         </property>
     </action>
 </actions>

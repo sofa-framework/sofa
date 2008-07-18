@@ -93,7 +93,6 @@ extern simulation::tree::GNode* groot;
 #include <QAction>
 #include <QMessageBox>
 #include <QTabWidget>
-#include <Q3PopupMenu>
 #include <QToolTip>
 #include <QButtonGroup>
 #include <QRadioButton>
@@ -113,7 +112,6 @@ extern simulation::tree::GNode* groot;
 #include <qaction.h>
 #include <qmessagebox.h>
 #include <qtabwidget.h>
-#include <qpopupmenu.h>
 #include <qtooltip.h>
 #include <qbuttongroup.h>
 #include <qradiobutton.h>
@@ -138,7 +136,6 @@ typedef Q3ListView QListView;
 typedef Q3DockWindow QDockWindow;
 typedef QStackedWidget QWidgetStack;
 typedef Q3TextEdit QTextEdit;
-typedef Q3PopupMenu QPopupMenu;
 #endif
 
 
@@ -331,6 +328,11 @@ Node* RealGUI::currentSimulation()
 RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*options*/ )
     : viewerName ( viewername ), viewer ( NULL ), currentTab ( NULL ), tabInstrument (NULL),  graphListener ( NULL ), dialog ( NULL )
 {
+    //Add Filemenu Recently Opened files
+    recentlyOpened = new QPopupMenu(this);
+    this->fileMenu->insertItem( QIconSet( ), tr( "Recently Opened Files..."), recentlyOpened, -1, 7);
+
+
     listDisplayFlags->header()->hide();
 #ifdef SOFA_QT4
     listDisplayFlags->setBackgroundRole(QPalette::NoRole);
@@ -360,6 +362,8 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     left_stack = new QWidgetStack ( splitter2 );
     connect ( startButton, SIGNAL ( toggled ( bool ) ), this , SLOT ( playpauseGUI ( bool ) ) );
 
+
+    //Status Bar Configuration
     fpsLabel = new QLabel ( "9999.9 FPS", statusBar() );
     fpsLabel->setMinimumSize ( fpsLabel->sizeHint() );
     fpsLabel->clear();
@@ -446,7 +450,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect ( playforward_record,  SIGNAL (clicked () ),     this, SLOT( slot_playforward( ) ) );
     connect ( stepforward_record,  SIGNAL (clicked () ),     this, SLOT( slot_stepforward( ) ) );
     connect ( forward_record, SIGNAL (clicked () ),          this, SLOT( slot_forward( ) ) );
-    connect (loadRecordTime, SIGNAL(returnPressed ()),       this, SLOT( slot_loadrecord_timevalue()));
+    connect ( loadRecordTime, SIGNAL(returnPressed ()),       this, SLOT( slot_loadrecord_timevalue()));
     connect ( timeSlider, SIGNAL (sliderMoved (int) ),   this, SLOT( slot_sliderValue( int) ) );
 
 
@@ -479,8 +483,8 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     lmlreader = NULL;
 #endif
 
+    //Center the application
     const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
-
     this->move(  ( screen.width()- this->width()  ) / 2,  ( screen.height() - this->height()) / 2  );
 
 }
@@ -492,6 +496,13 @@ void RealGUI::fileRecentlyOpened(int id)
 
 void RealGUI::updateRecentlyOpened(std::string fileLoaded)
 {
+
+#ifdef WIN32
+    for (unsigned int i=0; i<fileLoaded.size(); ++i)
+    {
+        if (fileLoaded[i] == '\\') fileLoaded[i] = '/';
+    }
+#endif
     std::string scenes ( "config/Sofa.ini" );
 
     scenes = sofa::helper::system::DataRepository.getFile ( scenes );
@@ -1248,7 +1259,7 @@ void RealGUI::setTitle ( std::string windowTitle )
         str += " - ";
         str += windowTitle;
     }
-#ifdef _WIN32
+#ifdef WIN32
     setWindowTitle ( str.c_str() );
 #else
     setCaption ( str.c_str() );
@@ -1710,6 +1721,11 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
         _animationOBJcounter = 0;
         break;
     }
+    case Qt::Key_Escape:
+    {
+        fileExit();
+        break;
+    }
     default:
     {
         e->ignore();
@@ -1729,7 +1745,7 @@ void RealGUI::transformObject ( Node *node, double dx, double dy, double dz,  do
 
     TransformationVisitor transform;
     transform.setTranslation(dx,dy,dz);
-    transform.setRotation(defaulttype::Quat::createFromRotationVector( rotationVector));
+    transform.setRotation(rx,ry,rz);
     transform.setScale(scale);
     transform.execute(node);
 
@@ -1833,10 +1849,6 @@ void RealGUI::dropEvent(QDropEvent* event)
     Q3TextDrag::decode(event, text);
     std::string filename(text.ascii());
 #ifdef WIN32
-    for (unsigned int i=0; i<filename.size(); ++i)
-    {
-        if (filename[i] == '\\') filename[i] = '/';
-    }
     filename = filename.substr(8); //removing file:///
 #else
     filename = filename.substr(7); //removing file://
@@ -1884,6 +1896,8 @@ void RealGUI::showhideElements(int FILTER, bool value)
     }
     viewer->getQWidget()->update();
 }
+
+
 } // namespace qt
 
 } // namespace gui

@@ -460,7 +460,8 @@ void SparseGridTopology::updateMesh()
 
 void SparseGridTopology::getMesh(sofa::helper::io::Mesh &m)
 {
-    MC.createMesh(&(*dataVoxels.beginEdit())[0],0.5f,  m,smoothData.getValue());
+    if (dataVoxels.beginEdit()->size() != 0)
+        MC.createMesh(&(*dataVoxels.beginEdit())[0],0.5f,  m,smoothData.getValue());
 }
 
 template< class T >
@@ -1068,6 +1069,7 @@ int SparseGridTopology::findCube(const Vector3& pos, SReal& fx, SReal &fy, SReal
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
 int SparseGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
 {
+    if (seqHexas.size() == 0) return;
     int indice = 0;
     float lgmin = 99999999.0f;
 

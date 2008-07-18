@@ -45,12 +45,14 @@
 #include <QPushButton>
 #include <QTabWidget>
 #include <QTabBar>
+#include <Q3PopupMenu>
 #else
 #include <qlistview.h>
 #include <qdragobject.h>
 #include <qpushbutton.h>
 #include <qtabwidget.h>
 #include <qtabbar.h>
+#include <qpopupmenu.h>
 #endif
 
 
@@ -65,6 +67,7 @@ namespace qt
 
 #ifndef SOFA_QT4
 typedef QListView Q3ListView;
+typedef QPopupMenu Q3PopupMenu;
 #endif
 
 typedef sofa::core::ObjectFactory::ClassEntry ClassInfo;
@@ -83,7 +86,14 @@ public :
     ~SofaModeler() {};
 
 signals:
-    void closeGraph();
+    void loadPresetGraph(std::string);
+
+
+public:
+
+    /// Create a new empty Tab
+    void createTab();
+
 
 public slots:
     void dragComponent();
@@ -93,29 +103,50 @@ public slots:
 #else
     void changeInformation(QListViewItem *);
 #endif
+
+    /// Dropping a Node in the Graph
     void newGNode();
 
+    /// Creation of a new scene (new tab will be created)
     void fileNew() {fileNew(NULL);};
     void fileNew(GNode* root);
 
+    /// Open an existing simulation (new tab will be created)
     void fileOpen();
     void fileOpen(std::string filename);
 
+    /// Save the current simulation
     void fileSave();
     void fileSave(std::string filename);
     void fileSaveAs();
 
+    /// Remove all components of the current simulation
+    void clearTab();
+    /// Close the current simulation
     void closeTab();
+    /// Create a new tab containing an empty simulation (by default the collision pipeline is added)
     void newTab();
 
+    /// Quit the Modeler
     void fileExit() {exit(0);};
 
+    /// Launch the current simulation into Sofa
     void runInSofa();
 
+    /// Change of simulation by changing the current opened tabulation
     void changeCurrentScene( QWidget*);
+    /// Change the name of the main window
     void changeNameWindow(std::string filename);
+
+    /// not implemented yet: would undo the last operation done in the current simulation
     void editUndo() {graph->editUndo();}
+    /// not implemented yet: would redo the last operation done in the current simulation
     void editRedo() {graph->editRedo();}
+
+    /// Load a preset stored in the menu preset: add a node to the current simulation
+    void loadPreset(int);
+
+    /// From the name of the type of a component, gives serveral information
     ClassInfo* getInfoFromName(std::string name);
 
 
@@ -123,18 +154,31 @@ public slots:
     void dropEvent(QDropEvent* event);
     void keyPressEvent ( QKeyEvent * e );
 
+    /// Open a recently Opened files from the menu Recently Opened Files...
     void fileRecentlyOpened(int id);
+    /// Update the menu Recently Opened Files...
     void updateRecentlyOpened(std::string fileLoaded);
 
 protected:
+    /// Widget containing all the graphs
     QTabWidget *sceneTab;
-
-
+    /// Current in-use graph
     GraphModeler *graph; //currentGraph in Use
+    /// Current opened Tab
     QWidget *tabGraph;
+    /// Menu recently opened
+    Q3PopupMenu *recentlyOpened;
+    /// Menu preset
+    Q3PopupMenu *preset;
+    /// Correspondance between a name clicked in the menu and a path to the preset
+    std::map< std::string, std::string > mapPreset;
+
 
     std::map< const QObject* , std::pair<ClassInfo*, QObject*> > mapComponents;
     std::map< const QWidget*, GraphModeler*> mapGraph;
+
+private:
+    std::string presetPath;
 };
 }
 }

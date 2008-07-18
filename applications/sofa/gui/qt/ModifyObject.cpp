@@ -302,7 +302,8 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     //checkBox->setGeometry( 205, i*25+5, 170, 20 );
                     if (Data<int> *ff=dynamic_cast< Data<int> * >( (*it).second))
                     {
-                        checkBox->setChecked(ff->getValue());
+                        if (it->first == "showVisualModels") checkBox->setChecked(ff->getValue()!=0);
+                        else                                 checkBox->setChecked(ff->getValue()==1);
                         connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeVisualValue() ) );
                     }
 
@@ -1135,8 +1136,7 @@ void ModifyObject::updateValues()
 
                 sofa::simulation::TransformationVisitor transform;
                 transform.setTranslation(transformation[0]->getFloatValue(),transformation[1]->getFloatValue(),transformation[2]->getFloatValue());
-                Vector3 rotationVector= Vector3(transformation[3]->getFloatValue(),transformation[4]->getFloatValue(),transformation[5]->getFloatValue());
-                transform.setRotation(defaulttype::Quat::createFromRotationVector( rotationVector));
+                transform.setRotation(transformation[3]->getFloatValue(),transformation[4]->getFloatValue(),transformation[5]->getFloatValue());
                 transform.setScale(transformation[6]->getFloatValue());
                 transform.execute(current_node);
 
