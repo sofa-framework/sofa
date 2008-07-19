@@ -101,6 +101,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSTriangleCreationFunction (
         TriangleSetTopology<DataTypes> *_mesh=ff->getTriangularTopology();
         assert(_mesh!=0);
         TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
+        sofa::component::topology::TriangleSetTopologyContainer *tstc= dynamic_cast<sofa::component::topology::TriangleSetTopologyContainer *>(container);
 
         //const sofa::helper::vector< Edge > &edgeArray=container->getEdgeArray() ;
         const sofa::helper::vector< Triangle > &triangleArray=container->getTriangleArray() ;
@@ -117,12 +118,6 @@ void TriangularBendingSprings<DataTypes>::TriangularBSTriangleCreationFunction (
 
         for (unsigned int i=0; i<triangleAdded.size(); ++i)
         {
-
-            TriangleSetTopology<DataTypes> *_mesh=ff->getTriangularTopology();
-            assert(_mesh!=0);
-            TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
-
-            sofa::component::topology::TriangleSetTopologyContainer *tstc= dynamic_cast<sofa::component::topology::TriangleSetTopologyContainer *>(container);
 
             /// describe the jth edge index of triangle no i
             TriangleEdges te2 = triangleEdgeArray[triangleAdded[i]];
@@ -217,6 +212,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSTriangleDestructionFunctio
         TriangleSetTopology<DataTypes> *_mesh=ff->getTriangularTopology();
         assert(_mesh!=0);
         TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
+        sofa::component::topology::TriangleSetTopologyContainer *tstc= dynamic_cast<sofa::component::topology::TriangleSetTopologyContainer *>(container);
         //const sofa::helper::vector< Edge > &edgeArray=container->getEdgeArray() ;
         const sofa::helper::vector< Triangle > &triangleArray=container->getTriangleArray() ;
         const sofa::helper::vector< TriangleEdges > &triangleEdgeArray=container->getTriangleEdgeArray() ;
@@ -230,13 +226,6 @@ void TriangularBendingSprings<DataTypes>::TriangularBSTriangleDestructionFunctio
 
         for (unsigned int i=0; i<triangleRemoved.size(); ++i)
         {
-
-            TriangleSetTopology<DataTypes> *_mesh=ff->getTriangularTopology();
-            assert(_mesh!=0);
-            TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
-
-            sofa::component::topology::TriangleSetTopologyContainer *tstc= dynamic_cast<sofa::component::topology::TriangleSetTopologyContainer *>(container);
-
             /// describe the jth edge index of triangle no i
             TriangleEdges te = triangleEdgeArray[triangleRemoved[i]];
             /// describe the jth vertex index of triangle no i

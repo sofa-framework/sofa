@@ -139,8 +139,8 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
 
     Coord fiberDir((Real)cos(theta), (Real)sin(theta), 0);
     Mat<3,3,Real> bary,baryInv;
-    bary[0] = Inherited::_initialPoints.getValue()[v2]-Inherited::_initialPoints.getValue()[v1];
-    bary[1] = Inherited::_initialPoints.getValue()[v3]-Inherited::_initialPoints.getValue()[v1];
+    bary[0] = (*Inherited::_initialPoints)[v2]-(*Inherited::_initialPoints)[v1];
+    bary[1] = (*Inherited::_initialPoints)[v3]-(*Inherited::_initialPoints)[v1];
     bary[2] = cross(bary[0],bary[1]);
     bary.transpose();
     baryInv.invert(bary);
