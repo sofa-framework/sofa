@@ -114,7 +114,7 @@ void PenalityContactForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df
             Coord du = dx2[c.m2]-dx1[c.m1];
             Real dpen = - du*c.norm;
             //if (c.pen < 0) dpen += c.pen; // start penality at distance 0
-            Real dfN = c.ks * dpen * kFactor;
+            Real dfN = c.ks * dpen * (Real)kFactor;
             Deriv dforce = -c.norm*dfN;
             df1[c.m1]+=dforce;
             df2[c.m2]-=dforce;
