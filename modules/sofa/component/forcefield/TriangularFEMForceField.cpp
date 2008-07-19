@@ -64,20 +64,13 @@ using std::endl;
 template< class DataTypes>
 void TriangularFEMForceField<DataTypes>::TRQSTriangleCreationFunction (	int triangleIndex, void* param,
         TriangleInformation &/*tinfo*/,
-        const Triangle& ,
+        const Triangle& t,
         const sofa::helper::vector< unsigned int > &,
         const sofa::helper::vector< double >&)
 {
     TriangularFEMForceField<DataTypes> *ff= (TriangularFEMForceField<DataTypes> *)param;
     if (ff)
     {
-        TriangleSetTopology<DataTypes> *_mesh=ff->getTriangularTopology();
-        assert(_mesh!=0);
-        TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
-        const std::vector< Triangle > &triangleArray=container->getTriangleArray() ;
-        const Triangle &t=triangleArray[triangleIndex];
-//		const typename DataTypes::VecCoord& vect_c = *_mesh->getDOF()->getX0();
-
         Index a = t[0];
         Index b = t[1];
         Index c = t[2];
@@ -112,7 +105,6 @@ template <class DataTypes>
 TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     : _mesh(NULL)
 //, _indexedElements(NULL)
-    , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
     , method(LARGE)
     , f_method(initData(&f_method,std::string("large"),"method","large: large displacements, small: small displacements"))
     , f_poisson(initData(&f_poisson,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
@@ -184,11 +176,12 @@ template <class DataTypes>void TriangularFEMForceField<DataTypes>::reinit()
 
     vertexInfo.resize(nbPoints);
 
-    if (_initialPoints.getValue().size() == 0)
-    {
-        VecCoord& p = *this->mstate->getX(); //getX0(); ???
-        _initialPoints.setValue(p);
-    }
+    //if (_initialPoints.getValue().size() == 0)
+    //{
+    //	VecCoord& p = *this->mstate->getX(); //getX0(); ???
+    //	_initialPoints.setValue(p);
+    //}
+    _initialPoints = this->mstate->getX0();
 
     unsigned int i;
 
@@ -272,10 +265,10 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
 
         for( unsigned int i=0; i<nbPoints; i++ )
         {
-            sofa::helper::vector< unsigned int > triangleNeighbors = tvsa[i];
+            const sofa::helper::vector< unsigned int >& triangleNeighbors = tvsa[i];
 
-            sofa::helper::vector< unsigned int >::iterator it = triangleNeighbors.begin();
-            sofa::helper::vector< unsigned int >::iterator itEnd = triangleNeighbors.end();
+            sofa::helper::vector< unsigned int >::const_iterator it = triangleNeighbors.begin();
+            sofa::helper::vector< unsigned int >::const_iterator itEnd = triangleNeighbors.end();
             Coord meanStrainDirection, refStrainDirection;
             meanStrainDirection.clear();
             refStrainDirection.clear();
@@ -370,10 +363,10 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
                 unsigned int fracturableIndex = 0;
                 bool fracture(false);
 
-                sofa::helper::vector< unsigned int > edgeNeighbors = tesa[mostDeformableVertexIndex];
+                const sofa::helper::vector< unsigned int >& edgeNeighbors = tesa[mostDeformableVertexIndex];
 
-                sofa::helper::vector< unsigned int >::iterator it = edgeNeighbors.begin();
-                sofa::helper::vector< unsigned int >::iterator itEnd = edgeNeighbors.end();
+                sofa::helper::vector< unsigned int >::const_iterator it = edgeNeighbors.begin();
+                sofa::helper::vector< unsigned int >::const_iterator itEnd = edgeNeighbors.end();
 
                 Index a;
                 Index b;
@@ -544,6 +537,8 @@ void TriangularFEMForceField<DataTypes>::computeEigenStrain( Coord &v, StrainDis
     v[1] = (Real)V(2,1);
     v[2] = 0.0;
 
+    v.normalize();
+
     maxEigenValue = D(1,1);
 
 //	std::cout << "D = " << D(1,1) << ", " << D(2,2) << std::endl; // eigenvalues
@@ -693,10 +688,10 @@ void TriangularFEMForceField<DataTypes>::accumulateForceSmall( VecCoord &f, cons
     Displacement D;
     D[0] = 0;
     D[1] = 0;
-    D[2] = (_initialPoints.getValue()[b][0]-_initialPoints.getValue()[a][0]) - deforme_b[0];
+    D[2] = ((*_initialPoints)[b][0]-(*_initialPoints)[a][0]) - deforme_b[0];
     D[3] = 0;
-    D[4] = (_initialPoints.getValue()[c][0]-_initialPoints.getValue()[a][0]) - deforme_c[0];
-    D[5] = (_initialPoints.getValue()[c][1]-_initialPoints.getValue()[a][1]) - deforme_c[1];
+    D[4] = ((*_initialPoints)[c][0]-(*_initialPoints)[a][0]) - deforme_c[0];
+    D[5] = ((*_initialPoints)[c][1]-(*_initialPoints)[a][1]) - deforme_c[1];
 
 
     StrainDisplacement J;
@@ -794,12 +789,12 @@ void TriangularFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Inde
     // third vector orthogonal to first and second
     Transformation R_0_1;
 
-    //cerr<<"TriangularFEMForceField<DataTypes>::initLarge(), x.size() = "<<_object->getX()->size()<<", _initialPoints.getValue().size() = "<<_initialPoints.getValue().size()<<endl;
-    computeRotationLarge( R_0_1, _initialPoints.getValue(), a, b, c );
+    //cerr<<"TriangularFEMForceField<DataTypes>::initLarge(), x.size() = "<<_object->getX()->size()<<", (*_initialPoints).size() = "<<(*_initialPoints).size()<<endl;
+    computeRotationLarge( R_0_1, (*_initialPoints), a, b, c );
 
-    tinfo->rotatedInitialElements[0] = R_0_1 * _initialPoints.getValue()[a]; //_rotatedInitialElements ... _initialPoints.getValue()
-    tinfo->rotatedInitialElements[1] = R_0_1 * _initialPoints.getValue()[b];
-    tinfo->rotatedInitialElements[2] = R_0_1 * _initialPoints.getValue()[c];
+    tinfo->rotatedInitialElements[0] = R_0_1 * (*_initialPoints)[a]; //_rotatedInitialElements ... (*_initialPoints)
+    tinfo->rotatedInitialElements[1] = R_0_1 * (*_initialPoints)[b];
+    tinfo->rotatedInitialElements[2] = R_0_1 * (*_initialPoints)[c];
 
     tinfo->rotatedInitialElements[1] -= tinfo->rotatedInitialElements[0];
     tinfo->rotatedInitialElements[2] -= tinfo->rotatedInitialElements[0];

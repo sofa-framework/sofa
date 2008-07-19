@@ -144,7 +144,8 @@ protected:
 
     TriangleSetTopology<DataTypes> * _mesh;
     //const VecElement *_indexedElements;
-    Data< VecCoord > _initialPoints; ///< the intial positions of the points
+    //Data< VecCoord > _initialPoints; ///< the intial positions of the points
+    VecCoord* _initialPoints;
 //     int _method; ///< the computation method of the displacements
 //     Real _poissonRatio;
 //     Real _youngModulus;
