@@ -1027,11 +1027,13 @@ void TriangularFEMForceField<DataTypes>::draw()
     const sofa::helper::vector< Triangle> &triangleArray=container->getTriangleArray() ;
 
     glDisable(GL_LIGHTING);
-    /*
+    if (!f_fracturable.getValue())
+    {
+
         glBegin(GL_TRIANGLES);
         //typename VecElement::const_iterator it;
-    	unsigned int i;
-        for(i=0;i<nbTriangles; ++i) //it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it
+        unsigned int i;
+        for(i=0; i<nbTriangles; ++i) //it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it
         {
             Index a = triangleArray[i][0];//(*it)[0];
             Index b = triangleArray[i][1];//(*it)[1];
@@ -1045,7 +1047,7 @@ void TriangularFEMForceField<DataTypes>::draw()
             helper::gl::glVertexT(x[c]);
         }
         glEnd();
-    */
+    }
     if (f_fracturable.getValue())
     {
         const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvsa=container->getTriangleVertexShellArray();
@@ -1126,28 +1128,29 @@ void TriangularFEMForceField<DataTypes>::draw()
             Index b = triangleArray[i][1];//(*it)[1];
             Index c = triangleArray[i][2];//(*it)[2];
             Coord center = (x[a]+x[b]+x[c])/3;
-            Coord d = triangleInfo[i].principalStrainDirection*0.2;
+            Coord d = triangleInfo[i].principalStrainDirection*0.4;
             helper::gl::glVertexT(center-d);
             helper::gl::glVertexT(center+d);
         }
         glEnd();
+        /*
+        		const sofa::helper::vector< Edge> &edgeArray=container->getEdgeArray() ;
+        		unsigned int nbEdges = container->getNumberOfEdges();
 
-        const sofa::helper::vector< Edge> &edgeArray=container->getEdgeArray() ;
-        unsigned int nbEdges = container->getNumberOfEdges();
-
-        for( unsigned int i=0; i<nbEdges; i++ )
-        {
-            if (edgeInfo[i].fracturable)
-            {
-                glLineWidth(7);
-                glBegin(GL_LINES);
-                glColor4f(1,0.5,0.25,1);
-                helper::gl::glVertexT(x[edgeArray[i][0]]);
-                helper::gl::glVertexT(x[edgeArray[i][1]]);
-                glEnd();
-                glLineWidth(1);
-            }
-        }
+        		for( unsigned int i=0; i<nbEdges; i++ )
+        		{
+        			if (edgeInfo[i].fracturable)
+        			{
+        				glLineWidth(7);
+        				glBegin(GL_LINES);
+        				glColor4f(1,0.5,0.25,1);
+        				helper::gl::glVertexT(x[edgeArray[i][0]]);
+        				helper::gl::glVertexT(x[edgeArray[i][1]]);
+        				glEnd();
+        				glLineWidth(1);
+        			}
+        		}
+        */
     }
 
     if (getContext()->getShowWireFrame())
