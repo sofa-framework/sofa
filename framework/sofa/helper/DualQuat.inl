@@ -70,8 +70,8 @@ template<class Real>
 DualQuat<Real>::DualQuat ( const Vec& tr1, const Quat& q1, const Vec& tr2, const Quat& q2 )
 {
     //TODO// refaire la fonction en calculant directement le vecteur. Histoire d'aller plus vite...
-    defaulttype::Matrix4 minusTr1M4, tr2M4, rigidM4, relRot1M4;
-    defaulttype::Matrix3 relRot1M3;
+    defaulttype::Mat<4,4,Real> minusTr1M4, tr2M4, rigidM4, relRot1M4;
+    defaulttype::Mat<3,3,Real> relRot1M3;
 
     minusTr1M4.identity();
     tr2M4.identity();
@@ -115,7 +115,7 @@ DualQuat<Real> DualQuat<Real>::identity()
 template<class Real>
 void DualQuat<Real>::normalize()
 {
-    Real mag = sqrt ( _q[0][0]*_q[0][0] + _q[0][1]*_q[0][1] + _q[0][2]*_q[0][2] + _q[0][3]*_q[0][3] );
+    Real mag = (Real) sqrt ( _q[0][0]*_q[0][0] + _q[0][1]*_q[0][1] + _q[0][2]*_q[0][2] + _q[0][3]*_q[0][3] );
     assert ( mag != 0 ); // We can't normalize a null dual quaternion.
     for ( int i = 0; i < 2; i++ )
         for ( int j = 0; j < 4; j++ )
@@ -129,10 +129,10 @@ void DualQuat<Real>::fromTransQuat ( const Vec& tr, const Quat& q )
     _q[0] = q;
 
     // dual part:
-    _q[1][3] = -0.5* ( tr[0]*q[0] + tr[1]*q[1] + tr[2]*q[2] ); // q[w]
-    _q[1][0] =  0.5* ( tr[0]*q[3] + tr[1]*q[2] - tr[2]*q[1] ); // q[x]
-    _q[1][1] =  0.5* ( -tr[0]*q[2] + tr[1]*q[3] + tr[2]*q[0] ); // q[y]
-    _q[1][2] =  0.5* ( tr[0]*q[1] - tr[1]*q[0] + tr[2]*q[3] ); // q[z]
+    _q[1][3] = -(Real)0.5* ( tr[0]*q[0] + tr[1]*q[1] + tr[2]*q[2] ); // q[w]
+    _q[1][0] =  (Real)0.5* ( tr[0]*q[3] + tr[1]*q[2] - tr[2]*q[1] ); // q[x]
+    _q[1][1] =  (Real)0.5* ( -tr[0]*q[2] + tr[1]*q[3] + tr[2]*q[0] ); // q[y]
+    _q[1][2] =  (Real)0.5* ( tr[0]*q[1] - tr[1]*q[0] + tr[2]*q[3] ); // q[z]
 
     // Do it an unit dual quat
     normalize();
@@ -145,18 +145,18 @@ void DualQuat<Real>::toTransQuat ( Vec& vec, Quat& quat ) const
     quat = _q[0];
 
     // dual part:
-    vec[0] = 2.0* ( -_q[1][3]*_q[0][0] + _q[1][0]*_q[0][3] - _q[1][1]*_q[0][2] + _q[1][2]*_q[0][1] );
-    vec[1] = 2.0* ( -_q[1][3]*_q[0][1] + _q[1][0]*_q[0][2] + _q[1][1]*_q[0][3] - _q[1][2]*_q[0][0] );
-    vec[2] = 2.0* ( -_q[1][3]*_q[0][2] - _q[1][0]*_q[0][1] + _q[1][1]*_q[0][0] + _q[1][2]*_q[0][3] );
+    vec[0] = 2* ( -_q[1][3]*_q[0][0] + _q[1][0]*_q[0][3] - _q[1][1]*_q[0][2] + _q[1][2]*_q[0][1] );
+    vec[1] = 2* ( -_q[1][3]*_q[0][1] + _q[1][0]*_q[0][2] + _q[1][1]*_q[0][3] - _q[1][2]*_q[0][0] );
+    vec[2] = 2* ( -_q[1][3]*_q[0][2] - _q[1][0]*_q[0][1] + _q[1][1]*_q[0][0] + _q[1][2]*_q[0][3] );
 }
 
 template<class Real>
 void DualQuat<Real>::toMatrix ( defaulttype::Matrix4& M ) const
 {
     Real t0, t1, t2;
-    t0 = 2.0 * ( -_q[1][3]*_q[0][0] + _q[1][0]*_q[0][3] - _q[1][1]*_q[0][2] + _q[1][2]*_q[0][1] );
-    t1 = 2.0 * ( -_q[1][3]*_q[0][1] + _q[1][0]*_q[0][2] + _q[1][1]*_q[0][3] - _q[1][2]*_q[0][0] );
-    t2 = 2.0 * ( -_q[1][3]*_q[0][2] - _q[1][0]*_q[0][1] + _q[1][1]*_q[0][0] + _q[1][2]*_q[0][3] );
+    t0 = 2 * ( -_q[1][3]*_q[0][0] + _q[1][0]*_q[0][3] - _q[1][1]*_q[0][2] + _q[1][2]*_q[0][1] );
+    t1 = 2 * ( -_q[1][3]*_q[0][1] + _q[1][0]*_q[0][2] + _q[1][1]*_q[0][3] - _q[1][2]*_q[0][0] );
+    t2 = 2 * ( -_q[1][3]*_q[0][2] - _q[1][0]*_q[0][1] + _q[1][1]*_q[0][0] + _q[1][2]*_q[0][3] );
 
     M ( 0, 0 ) = 1 - 2* ( _q[0][1]*_q[0][1] + _q[0][2]*_q[0][2] ); // 1 - 2(y0*y0) - 2(z0*z0)
     M ( 0, 1 ) =     2* ( _q[0][0]*_q[0][1] - _q[0][3]*_q[0][2] ); // 2(x0y0 - w0z0)
@@ -186,10 +186,10 @@ void DualQuat<Real>::fromMatrix ( const defaulttype::Matrix4 M )
     _q[0].fromMatrix ( rotPartM3 );
 
     // dual part:
-    _q[1][3] = -0.5* ( M( 0, 3)*_q[0][0] + M( 1, 3)*_q[0][1] + M( 2, 3)*_q[0][2] );
-    _q[1][0] =  0.5* ( M( 0, 3)*_q[0][3] + M( 1, 3)*_q[0][2] - M( 2, 3)*_q[0][1] );
-    _q[1][1] =  0.5* (-M( 0, 3)*_q[0][2] + M( 1, 3)*_q[0][3] + M( 2, 3)*_q[0][0] );
-    _q[1][2] =  0.5* ( M( 0, 3)*_q[0][1] - M( 1, 3)*_q[0][0] + M( 2, 3)*_q[0][3] );
+    _q[1][3] = -(Real)0.5* ( M( 0, 3)*_q[0][0] + M( 1, 3)*_q[0][1] + M( 2, 3)*_q[0][2] );
+    _q[1][0] =  (Real)0.5* ( M( 0, 3)*_q[0][3] + M( 1, 3)*_q[0][2] - M( 2, 3)*_q[0][1] );
+    _q[1][1] =  (Real)0.5* (-M( 0, 3)*_q[0][2] + M( 1, 3)*_q[0][3] + M( 2, 3)*_q[0][0] );
+    _q[1][2] =  (Real)0.5* ( M( 0, 3)*_q[0][1] - M( 1, 3)*_q[0][0] + M( 2, 3)*_q[0][3] );
 
     normalize();
 }

@@ -162,7 +162,7 @@ void CudaLCP_AddIndepAndUpdated(int dim,int tmpsize,const void * m,const void * 
     dim3 threads(tmpsize,1);
     dim3 grid(dim,1);
 
-    CudaLCP_AddIndepAndUpdate_kernel<double><<< grid, threads,threads.x>>>(dim,tmpsize,(const double*)m,(const double*)q,(const double*)tmp,pTmp,(float*)f,(double*)res,(double*)err,tmpsize);
+    CudaLCP_AddIndepAndUpdate_kernel<double><<< grid, threads,threads.x>>>(dim,tmpsize,(const double*)m,(const double*)q,(const double*)tmp,pTmp,(double*)f,(double*)res,(double*)err,tmpsize);
 #endif
 }
 
@@ -398,7 +398,7 @@ void CudaLCP_FullKernel_V6d(int dim,int itMax,float tol,const void * m,int mP,co
     dim3 threads(BSIZE_C,1);
     dim3 grid(1,NB_MULTIPROC);
 
-    CudaLCP_FullKernel_V6_kernel<<< grid, threads,threads.x*threads.y*sizeof(double)>>>(dim,dim*itMax,tol,(const double *) m,mP,(const double *) q,(double *) f,(double *) err,(int *) share);
+    CudaLCP_FullKernel_V6_kernel<<< grid, threads,threads.x*threads.y*sizeof(double)>>>(dim,dim*itMax,(double)tol,(const double *) m,mP,(const double *) q,(double *) f,(double *) err,(int *) share);
 #endif
 }
 
@@ -421,7 +421,7 @@ void CudaLCP_FullKernel_V7d(int dim,int itMax,float tol,const void * m,int mP,co
     dim3 grid(1,NB_MULTIPROC);
     int dim_n = (dim+BSIZE_L-1)/BSIZE_L * BSIZE_L;
 
-    CudaLCP_FullKernel_V7_kernel<<< grid, threads,0>>>(dim,dim_n,dim_n*itMax,tol,(const double *) m,mP,(const double *) q,(double *) f,(double *) err,(int *) share);
+    CudaLCP_FullKernel_V7_kernel<<< grid, threads,0>>>(dim,dim_n,dim_n*itMax,(double)tol,(const double *) m,mP,(const double *) q,(double *) f,(double *) err,(int *) share);
 
 #endif
 }
@@ -445,7 +445,7 @@ void CudaLCP_FullKernel_V8d(int dim,int itMax,float tol,const void * m,int mP,co
     dim3 grid(1,NB_MULTIPROC);
     int dim_n = (dim+BSIZE_C-1)/BSIZE_C * BSIZE_C;
 
-    CudaLCP_FullKernel_V8_kernel<<< grid, threads,0>>>(dim,dim_n,dim_n*itMax,tol,(const double *) m,mP,(const double *) q,(double *) f,(double *) err,(int *) share);
+    CudaLCP_FullKernel_V8_kernel<<< grid, threads,0>>>(dim,dim_n,dim_n*itMax,(double)tol,(const double *) m,mP,(const double *) q,(double *) f,(double *) err,(int *) share);
 
 #endif
 }
@@ -503,7 +503,7 @@ void CudaNLCP_AddIndepd(int dim,int tmpsize,const void * q,const void * tmp,int 
     dim3 threads(tmpsize,1);
     dim3 grid(dim,1);
 
-    CudaNLCP_AddIndep_kernel<double><<< grid, threads,threads.x>>>(dim,tmpsize,(const float*)q,(const float*)tmp,pTmp,(float*)res,tmpsize);
+    CudaNLCP_AddIndep_kernel<double><<< grid, threads,threads.x>>>(dim,tmpsize,(const double*)q,(const double*)tmp,pTmp,(double*)res,tmpsize);
 #endif
 }
 
@@ -543,7 +543,7 @@ void CudaNLCP_ComputeNextIter_V1_DepKerneld(int dim,int d,int debutblock,float m
     dim3 threads(MBSIZE,1);
     dim3 grid(1,1);
 
-    CudaNLCP_ComputeNextIter_V1_DepKernel_kernel<double><<< grid, threads,0>>>(dim,d,debutblock,mu,(const double*) m,mP,(const double *) q,(double*)f, (double*) err,(double *)res);
+    CudaNLCP_ComputeNextIter_V1_DepKernel_kernel<double><<< grid, threads,0>>>(dim,d,debutblock,(double)mu,(const double*) m,mP,(const double *) q,(double*)f, (double*) err,(double *)res);
 #endif
 }
 

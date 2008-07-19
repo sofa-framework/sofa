@@ -415,7 +415,7 @@ void QuadSetTopologyModifier<DataTypes>::addQuad(Quad t)
         {
             unsigned int edgeIndex = container->getEdgeIndex(t[(j+1)%4], t[(j+2)%4]);
 
-            if(edgeIndex == -1)
+            if((int)edgeIndex == -1)
             {
                 // first create the edges
                 sofa::helper::vector< Edge > v(1);

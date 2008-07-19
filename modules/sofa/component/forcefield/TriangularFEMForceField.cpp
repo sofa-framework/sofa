@@ -63,7 +63,7 @@ using std::endl;
 
 template< class DataTypes>
 void TriangularFEMForceField<DataTypes>::TRQSTriangleCreationFunction (	int triangleIndex, void* param,
-        TriangleInformation &tinfo,
+        TriangleInformation &/*tinfo*/,
         const Triangle& ,
         const sofa::helper::vector< unsigned int > &,
         const sofa::helper::vector< double >&)
@@ -551,12 +551,12 @@ void TriangularFEMForceField<DataTypes>::computeEigenStrain( Coord &v, StrainDis
 
 
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index &a, Index &b, Index &c)
+void TriangularFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index &/*a*/, Index &/*b*/, Index &/*c*/)
 {
     //_materialsStiffnesses.resize(_indexedElements->size());
 
-    TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
-    unsigned int nbTriangles=container->getNumberOfTriangles();
+    //TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
+    //unsigned int nbTriangles=container->getNumberOfTriangles();
     //const sofa::helper::vector< Triangle> &triangleArray=container->getTriangleArray() ;
 
     TriangleInformation *tinfo = &triangleInfo[i];
@@ -1074,9 +1074,9 @@ void TriangularFEMForceField<DataTypes>::draw()
             Index b = triangleArray[i][1];//(*it)[1];
             Index c = triangleArray[i][2];//(*it)[2];
 
-            double meanEV = (vertexInfo[a].sumEigenValues + vertexInfo[b].sumEigenValues + vertexInfo[c].sumEigenValues) / 3.0;
+            float meanEV = (float)((vertexInfo[a].sumEigenValues + vertexInfo[b].sumEigenValues + vertexInfo[c].sumEigenValues) / 3.0);
 
-            glColor4f(meanEV / max, 1- meanEV / max, 0.0, 1);
+            glColor4f(meanEV / max, 1- meanEV / max, 0, 1);
             helper::gl::glVertexT(x[a]);
             helper::gl::glVertexT(x[b]);
             helper::gl::glVertexT(x[c]);

@@ -52,9 +52,9 @@ using namespace sofa::core::componentmodel::behavior;
 
 template<class DataTypes>
 PointSetTopology<DataTypes>::PointSetTopology(MechanicalObject<DataTypes> *obj)
-    : object(obj),
-      f_m_topologyContainer(new DataPtr< PointSetTopologyContainer >(new PointSetTopologyContainer(), "Point Container")),
-      revisionCounter(0)
+    : f_m_topologyContainer(new DataPtr< PointSetTopologyContainer >(new PointSetTopologyContainer(), "Point Container"))
+    , object(obj)
+    , revisionCounter(0)
 {
     // TODO: move this to init if possible
     m_topologyContainer = f_m_topologyContainer->beginEdit();
