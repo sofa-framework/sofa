@@ -24,6 +24,9 @@
 ******************************************************************************/
 #include "mycuda.h"
 #include <cuda.h>
+#ifdef WIN32
+#include <sofa/helper/system/gl.h>
+#endif
 #include <cuda_gl_interop.h>
 #if defined(__cplusplus)
 namespace sofa
