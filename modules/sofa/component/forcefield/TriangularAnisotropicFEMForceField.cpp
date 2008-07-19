@@ -68,6 +68,7 @@ TriangularAnisotropicFEMForceField<DataTypes>::
 TriangularAnisotropicFEMForceField()
     : f_young2(initData(&f_young2,(Real)(0.5*Inherited::f_young.getValue()),"transverseYoungModulus","Young modulus along transverse direction"))
     , f_theta(initData(&f_theta,(Real)(0.0),"fiberAngle","Fiber angle in global reference frame (in degrees)"))
+    , f_fiberCenter(initData(&f_fiberCenter,"fiberCenter","Concentric fiber center in global reference frame"))
 {
 
 }
@@ -133,15 +134,24 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     Q22 = f_young2.getValue()/(1-Inherited::f_poisson.getValue()*f_poisson2.getValue());
     Q66 = Inherited::f_young.getValue() / (2.0*(1 + Inherited::f_poisson.getValue()));
 
-    Real c, s, c2, s2, c3, s3,c4, s4;
-    double theta = (double)f_theta.getValue()*M_PI/180.0;
-    //double theta_ref;
-
-    Coord fiberDir((Real)cos(theta), (Real)sin(theta), 0);
     Mat<3,3,Real> bary,baryInv;
     bary[0] = (*Inherited::_initialPoints)[v2]-(*Inherited::_initialPoints)[v1];
     bary[1] = (*Inherited::_initialPoints)[v3]-(*Inherited::_initialPoints)[v1];
     bary[2] = cross(bary[0],bary[1]);
+    Coord fiberDir;
+    if (!f_fiberCenter.getValue().empty())
+    {
+        Coord tcenter = ((*Inherited::_initialPoints)[v1]+(*Inherited::_initialPoints)[v2]+(*Inherited::_initialPoints)[v3])*(Real)(1.0/3.0);
+        Coord fcenter = f_fiberCenter.getValue()[0];
+        fiberDir = cross(bary[2],fcenter-tcenter);
+    }
+    else
+    {
+        double theta = (double)f_theta.getValue()*M_PI/180.0;
+        //double theta_ref;
+
+        fiberDir = Coord((Real)cos(theta), (Real)sin(theta), 0);
+    }
     bary.transpose();
     baryInv.invert(bary);
     if (i >= (int) fiberDirRefs.size())
@@ -150,6 +160,8 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     fiberDirRef = baryInv * fiberDir;
     fiberDirRef[2] = 0;
     fiberDirRef.normalize();
+
+    Real c, s, c2, s2, c3, s3,c4, s4;
     c = fiberDirRef[0]; //cos(theta_ref);
     s = fiberDirRef[1]; //sin(theta_ref);
     c2 = c*c;
@@ -197,7 +209,7 @@ template <class DataTypes>void TriangularAnisotropicFEMForceField<DataTypes>::dr
         TriangleSetTopologyContainer *container=Inherited::_mesh->getTriangleSetTopologyContainer();
         unsigned int nbTriangles=container->getNumberOfTriangles();
         const sofa::helper::vector< Triangle> &triangleArray=container->getTriangleArray();
-        glColor3f(1,1,1);
+        glColor3f(0,0.2f,1);
         glBegin(GL_LINES);
         //typename VecElement::const_iterator it;
         unsigned int i;
@@ -208,7 +220,7 @@ template <class DataTypes>void TriangularAnisotropicFEMForceField<DataTypes>::dr
             Index c = triangleArray[i][2];//(*it)[2];
             Coord center = (x[a]+x[b]+x[c])/3;
             Coord d = (x[b]-x[a])*fiberDirRefs[i][0] + (x[c]-x[a])*fiberDirRefs[i][1];
-            d*=0.5;
+            d*=0.4;
             helper::gl::glVertexT(center-d);
             helper::gl::glVertexT(center+d);
         }
