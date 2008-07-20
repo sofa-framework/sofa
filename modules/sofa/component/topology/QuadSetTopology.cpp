@@ -512,13 +512,12 @@ sofa::helper::vector< unsigned int > &QuadSetTopologyContainer::getQuadVertexShe
 
 bool QuadSetTopologyContainer::checkTopology() const
 {
+#ifndef NDEBUG
     bool ret = true;
 
     if(!hasQuads()) // TODO : this method should only be called when quads exist
     {
-#ifndef NDEBUG
         cout << "Warning. [QuadSetTopologyContainer::checkTopology] quad array is empty." << endl;
-#endif
         if(hasEdges())
             ret = EdgeSetTopologyContainer::checkTopology();
 
@@ -567,6 +566,9 @@ bool QuadSetTopologyContainer::checkTopology() const
     }
 
     return ret;
+#else
+    return true;
+#endif
 }
 
 bool QuadSetTopologyContainer::hasQuads() const
