@@ -35,12 +35,12 @@ namespace component
 namespace topology
 {
 // forward declarations
-template<class DataTypes>
+template <class DataTypes>
 class QuadSetTopology;
 
 class QuadSetTopologyContainer;
 
-template<class DataTypes>
+template <class DataTypes>
 class QuadSetTopologyModifier;
 
 template < class DataTypes >
@@ -55,7 +55,6 @@ class QuadSetTopologyLoader;
 class QuadsAdded;
 class QuadsRemoved;
 
-using namespace sofa::defaulttype;
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::QuadID QuadID;
 typedef BaseMeshTopology::Quad Quad;
@@ -65,12 +64,15 @@ typedef BaseMeshTopology::EdgeQuads EdgeQuads;
 typedef BaseMeshTopology::QuadEdges QuadEdges;
 
 template< class Real>
-bool is_point_in_quad(const Vec<3,Real>& p, const Vec<3,Real>& a, const Vec<3,Real>& b, const Vec<3,Real>& c, const Vec<3,Real>& d);
+bool is_point_in_quad(const defaulttype::Vec<3,Real>& p, const defaulttype::Vec<3,Real>& a,
+        const defaulttype::Vec<3,Real>& b, const defaulttype::Vec<3,Real>& c,
+        const defaulttype::Vec<3,Real>& d);
 
-void snapping_test_quad(double epsilon, double alpha0, double alpha1, double alpha2, double alpha3, bool& is_snap_0, bool& is_snap_1, bool& is_snap_2, bool& is_snap_3);
+void snapping_test_quad(double epsilon, double alpha0, double alpha1, double alpha2, double alpha3,
+        bool& is_snap_0, bool& is_snap_1, bool& is_snap_2, bool& is_snap_3);
 
 template< class Real>
-inline Real areaProduct(const Vec<3,Real>& a, const Vec<3,Real>& b);
+inline Real areaProduct(const defaulttype::Vec<3,Real>& a, const defaulttype::Vec<3,Real>& b);
 
 template< class Real>
 inline Real areaProduct(const defaulttype::Vec<2,Real>& a, const defaulttype::Vec<2,Real>& b );
@@ -143,14 +145,12 @@ public:
 * A class that performs topology algorithms on an QuadSet.
 */
 template < class DataTypes >
-class QuadSetTopologyAlgorithms : public PointSetTopologyAlgorithms<DataTypes>
+class QuadSetTopologyAlgorithms : public EdgeSetTopologyAlgorithms<DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
 
-    QuadSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
-        : PointSetTopologyAlgorithms<DataTypes>(top)
-    { }
+    QuadSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top);
 
     virtual ~QuadSetTopologyAlgorithms() {}
 
@@ -195,9 +195,7 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
 
-    QuadSetGeometryAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
-        : EdgeSetGeometryAlgorithms<DataTypes>(top)
-    { }
+    QuadSetGeometryAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top);
 
     virtual ~QuadSetGeometryAlgorithms() {}
 
@@ -224,13 +222,14 @@ public:
     /** \brief Computes the normal vector of a quad indexed by ind_q (not normed)
     *
     */
-    Vec<3,double> computeQuadNormal(const unsigned int ind_q);
+    defaulttype::Vec<3,double> computeQuadNormal(const unsigned int ind_q);
 
     /** \brief Tests if a quad indexed by ind_q (and incident to the vertex indexed by ind_p)
     * is included or not in the plane defined by (ind_p, plane_vect)
     *
     */
-    bool is_quad_in_plane(const unsigned int ind_q, const unsigned int ind_p, const Vec<3,Real>& plane_vect);
+    bool is_quad_in_plane(const unsigned int ind_q, const unsigned int ind_p,
+            const defaulttype::Vec<3,Real>& plane_vect);
 
 };
 
