@@ -127,8 +127,8 @@ void  HexahedronSetTopologyAlgorithms<DataTypes>::renumberPoints(const sofa::hel
 template< class DataTypes>
 typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeHexahedronVolume( const unsigned int /*i*/) const
 {
-    HexahedronSetTopology< DataTypes > *topology = getHexahedronSetTopology();
-    HexahedronSetTopologyContainer * container = topology->getHexahedronSetTopologyContainer();
+    //HexahedronSetTopology< DataTypes > *topology = getHexahedronSetTopology();
+    //HexahedronSetTopologyContainer * container = topology->getHexahedronSetTopologyContainer();
     //const Hexahedron &t = container->getHexahedron(i);
     //const VecCoord& p = *topology->getDOF()->getX();
     Real volume=(Real)(0.0); // todo
@@ -138,8 +138,8 @@ typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeHe
 template< class DataTypes>
 typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeRestHexahedronVolume( const unsigned int /*i*/) const
 {
-    HexahedronSetTopology< DataTypes > *topology = getHexahedronSetTopology();
-    HexahedronSetTopologyContainer * container = topology->getHexahedronSetTopologyContainer();
+    //HexahedronSetTopology< DataTypes > *topology = getHexahedronSetTopology();
+    //HexahedronSetTopologyContainer * container = topology->getHexahedronSetTopologyContainer();
     //const Hexahedron &t = container->getHexahedron(i);
     //const VecCoord& p = *topology->getDOF()->getX0();
     Real volume=(Real)(0.0); // todo
