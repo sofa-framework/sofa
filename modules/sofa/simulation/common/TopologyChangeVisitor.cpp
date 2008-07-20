@@ -63,29 +63,22 @@ Visitor::Result TopologyChangeVisitor::processNodeTopDown(simulation::Node* node
 
                 obj->updateTopologicalMapping(); // update the specific TopologicalMapping
                 is_TopologicalMapping = true;
-
-                // Increment the number of iterations of the method processNodeTopDown
-                incrNbIter();
-                return RESULT_PRUNE; // stop the propagation of topological changes
             }
         }
-
-        this->processTopologyChange(*it);
     }
 
-    /*
-    if(is_TopologicalMapping){ // find one TopologicalMapping node among the brothers (which must be the first one written in the scene file)
+    if(is_TopologicalMapping)  // find one TopologicalMapping node among the brothers (which must be the first one written in the scene file)
+    {
 
-    	// Increment the number of iterations of the method processNodeTopDown
-    	incrNbIter();
-    	return RESULT_PRUNE; // stop the propagation of topological changes
+        // Increment the number of iterations of the method processNodeTopDown
+        incrNbIter();
+        return RESULT_PRUNE; // stop the propagation of topological changes
     }
 
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
-    	this->processTopologyChange(*it);
+        this->processTopologyChange(*it);
     }
-    */
 
     // Increment the number of iterations of the method processNodeTopDown
     incrNbIter();
@@ -97,3 +90,4 @@ Visitor::Result TopologyChangeVisitor::processNodeTopDown(simulation::Node* node
 } // namespace simulation
 
 } // namespace sofa
+

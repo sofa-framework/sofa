@@ -40,26 +40,9 @@ void StateChangeVisitor::processStateChange(core::objectmodel::BaseObject* obj)
 
 Visitor::Result StateChangeVisitor::processNodeTopDown(simulation::Node* node)
 {
-    // Topological modifications are not propagated to the contact nodes.
-    if (node->getContext()->getName() == "contactPoints")
-        return RESULT_PRUNE;
+    this->processStateChange(node->getContext()->getMechanicalState());
 
-    Result res = RESULT_CONTINUE;
-
-    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
-    {
-        if (dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping*>(*it) !=  NULL)
-        {
-            res = RESULT_PRUNE; // stop the propagation of state changes
-        }
-    }
-
-    if (node->getContext()->getMechanicalState() != NULL)
-    {
-        this->processStateChange(node->getContext()->getMechanicalState());
-    }
-
-    return res;
+    return RESULT_PRUNE; // stop the propagation of state changes
 }
 
 
@@ -67,3 +50,4 @@ Visitor::Result StateChangeVisitor::processNodeTopDown(simulation::Node* node)
 } // namespace simulation
 
 } // namespace sofa
+
