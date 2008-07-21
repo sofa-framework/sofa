@@ -28,6 +28,7 @@
 #include <sofa/helper/io/MeshTopologyLoader.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/fixed_array.h>
+#include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>
 #include <set>
@@ -137,67 +138,78 @@ bool MeshTopology::load(const char* filename)
     if ((strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".obj"))
         || (strlen(filename)>6 && !strcmp(filename+strlen(filename)-6,".trian")))
     {
-        helper::io::Mesh* mesh = helper::io::Mesh::Create(filename);
-        if (mesh==NULL) return false;
-
-        loader.setNbPoints(mesh->getVertices().size());
-        for (unsigned int i=0; i<mesh->getVertices().size(); i++)
+        std::string meshFilename(filename);
+        if (sofa::helper::system::DataRepository.findFile (meshFilename))
         {
-            loader.addPoint((double)mesh->getVertices()[i][0],(double)mesh->getVertices()[i][1],(double)mesh->getVertices()[i][2]);
-        }
+            helper::io::Mesh* mesh = helper::io::Mesh::Create(filename);
+            if (mesh==NULL) return false;
 
-        std::set< std::pair<int,int> > edges;
+            loader.setNbPoints(mesh->getVertices().size());
+            for (unsigned int i=0; i<mesh->getVertices().size(); i++)
+            {
+                loader.addPoint((double)mesh->getVertices()[i][0],(double)mesh->getVertices()[i][1],(double)mesh->getVertices()[i][2]);
+            }
 
-        const vector< vector < vector <int> > > & facets = mesh->getFacets();
-        for (unsigned int i=0; i<facets.size(); i++)
-        {
-            const vector<int>& facet = facets[i][0];
-            if (facet.size()==2)
+            std::set< std::pair<int,int> > edges;
+
+            const vector< vector < vector <int> > > & facets = mesh->getFacets();
+            for (unsigned int i=0; i<facets.size(); i++)
             {
-                // Line
-                if (facet[0]<facet[1])
-                    loader.addEdge(facet[0],facet[1]);
-                else
-                    loader.addEdge(facet[1],facet[0]);
-            }
-            else if (facet.size()==4)
-            {
-                // Quat
-                loader.addQuad(facet[0],facet[1],facet[2],facet[3]);
-            }
-            else
-            {
-                // Triangularize
-                for (unsigned int j=2; j<facet.size(); j++)
-                    loader.addTriangle(facet[0],facet[j-1],facet[j]);
-            }
-            // Add edges
-            if (facet.size()>2)
-                for (unsigned int j=0; j<facet.size(); j++)
+                const vector<int>& facet = facets[i][0];
+                if (facet.size()==2)
                 {
-                    int i1 = facet[j];
-                    int i2 = facet[(j+1)%facet.size()];
-                    if (edges.count(std::make_pair(i1,i2))!=0)
-                    {
-                        /*
-                        std::cerr << "ERROR: Duplicate edge.\n";*/
-                    }
-                    else if (edges.count(std::make_pair(i2,i1))==0)
-                    {
-                        if (i1>i2)
-                            loader.addEdge(i1,i2);
-                        else
-                            loader.addEdge(i2,i1);
-                        edges.insert(std::make_pair(i1,i2));
-                    }
+                    // Line
+                    if (facet[0]<facet[1])
+                        loader.addEdge(facet[0],facet[1]);
+                    else
+                        loader.addEdge(facet[1],facet[0]);
                 }
+                else if (facet.size()==4)
+                {
+                    // Quat
+                    loader.addQuad(facet[0],facet[1],facet[2],facet[3]);
+                }
+                else
+                {
+                    // Triangularize
+                    for (unsigned int j=2; j<facet.size(); j++)
+                        loader.addTriangle(facet[0],facet[j-1],facet[j]);
+                }
+                // Add edges
+                if (facet.size()>2)
+                    for (unsigned int j=0; j<facet.size(); j++)
+                    {
+                        int i1 = facet[j];
+                        int i2 = facet[(j+1)%facet.size()];
+                        if (edges.count(std::make_pair(i1,i2))!=0)
+                        {
+                            /*
+                            std::cerr << "ERROR: Duplicate edge.\n";*/
+                        }
+                        else if (edges.count(std::make_pair(i2,i1))==0)
+                        {
+                            if (i1>i2)
+                                loader.addEdge(i1,i2);
+                            else
+                                loader.addEdge(i2,i1);
+                            edges.insert(std::make_pair(i1,i2));
+                        }
+                    }
+            }
+            delete mesh;
         }
-        delete mesh;
+        else
+        {
+            logWarning(std::string("Mesh \"") + filename +std::string("\" not found"));
+        }
     }
     else
     {
         if (!loader.load(filename))
+        {
+            logWarning(std::string("Unable to load Mesh \"") + filename );
             return false;
+        }
     }
     this->filename.setValue(filename);
     return true;
