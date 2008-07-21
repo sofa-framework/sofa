@@ -47,14 +47,6 @@ BaseTopology::BaseTopology(bool isMainTopology)
 
 BaseTopology::~BaseTopology()
 {
-    if (m_topologyContainer)
-        delete m_topologyContainer;
-    if (m_topologyModifier)
-        delete m_topologyModifier;
-    if (m_topologyAlgorithms)
-        delete m_topologyAlgorithms;
-    if (m_geometryAlgorithms)
-        delete m_geometryAlgorithms;
 }
 
 std::list<const TopologyChange *>::const_iterator BaseTopology::lastChange() const
