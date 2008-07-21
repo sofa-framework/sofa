@@ -91,6 +91,8 @@ bool ObjectElement::initNode()
         {
             unused += ' ';
             unused += it->first;
+
+            obj->logWarning(std::string("Unused Attribute: \"") + it->first + std::string("\" with value: \"" ) + it->second.c_str() + std::string("\"") );
         }
     }
     if (!unused.empty())

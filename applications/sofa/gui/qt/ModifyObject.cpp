@@ -1008,6 +1008,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
             dialogTab->addTab(tab, QString("Infos"));
             ++counterTab;
+            //Instance
             {
                 Q3GroupBox *box = new Q3GroupBox(tab, QString("Instance"));
                 box->setColumns(2);
@@ -1031,6 +1032,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 tabLayout->addWidget( box );
             }
 
+            //Class description
             core::ObjectFactory::ClassEntry* entry = core::ObjectFactory::getInstance()->getEntry(node_clicked->getClassName());
             if (entry != NULL && ! entry->creatorList.empty())
             {
@@ -1054,6 +1056,22 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 }
                 tabLayout->addWidget( box );
             }
+
+            //Log of initialization
+            core::objectmodel::BaseObject *obj = dynamic_cast< core::objectmodel::BaseObject* >(node_clicked);
+            if (obj && obj->getLogWarning().size() != 0)
+            {
+                const sofa::helper::vector< std::string > &log = obj->getLogWarning();
+                Q3GroupBox *box = new Q3GroupBox(tab, QString("Log"));
+                box->setColumns(1);
+                box->setTitle(QString("Log"));
+                for (unsigned int idLog=0; idLog<log.size(); ++idLog)
+                {
+                    new QLabel(QString(log[idLog].c_str()), box);
+                }
+                tabLayout->addWidget( box );
+            }
+
             tabLayout->addStretch();
         }
 
