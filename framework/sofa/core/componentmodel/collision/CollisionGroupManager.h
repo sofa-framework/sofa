@@ -45,19 +45,40 @@ namespace collision
 {
 
 //class Scene;
-
+/**
+ * @brief Given a set of contacts, create integration groups
+ *
+ * For each pair of objects in contacts :
+ *
+ * - Look which mechanical integration algorithm is used
+ *
+ * - If they are “compatible”, create a algorithm merging them
+ *
+ *   -# Often simply the most stable of the two
+ *
+ *	Explicit Euler + Explicit Runge Kutta -> Explicit Runge Kutta
+ *
+ *	Explicit * + Implicit Euler -> Implicit Euler
+ *
+ *
+ */
 class CollisionGroupManager : public virtual CollisionAlgorithm
 {
 protected:
+    /// integration groups
     sofa::helper::vector<core::objectmodel::BaseContext*> groups;
 
 public:
+    /// Destructor
     virtual ~CollisionGroupManager() { }
 
+    /// Create the integration groups
     virtual void createGroups(objectmodel::BaseContext* scene, const sofa::helper::vector<Contact*>& contacts) = 0;
 
+    /// Clear de integration groups
     virtual void clearGroups(objectmodel::BaseContext* scene) = 0;
 
+    /// Get de integration groups
     virtual const sofa::helper::vector<objectmodel::BaseContext*>& getGroups() { return groups; };
 
 protected:

@@ -50,6 +50,10 @@ namespace componentmodel
 namespace collision
 {
 
+/**
+ * @brief Pipeline component gather list of collision models and control the sequence of computations
+*/
+
 class Pipeline : public virtual sofa::core::objectmodel::BaseObject
 {
 protected:

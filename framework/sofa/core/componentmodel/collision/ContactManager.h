@@ -44,6 +44,9 @@ namespace componentmodel
 
 namespace collision
 {
+/**
+ * @brief Given a set of detected contact points, create contact response components
+ */
 
 class ContactManager : public virtual CollisionAlgorithm
 {
@@ -51,11 +54,13 @@ public:
     typedef NarrowPhaseDetection::DetectionOutputMap DetectionOutputMap;
     typedef sofa::helper::vector<Contact*> ContactVector;
 
+    /// Constructor
     ContactManager()
         : intersectionMethod(NULL)
     {
     }
 
+    /// Destructor
     virtual ~ContactManager() { }
 
     virtual void createContacts(DetectionOutputMap& outputs) = 0;

@@ -43,6 +43,8 @@ namespace componentmodel
 namespace behavior
 {
 
+/// @TODO All methods in this class need to be commented
+
 /**
  *  \brief Component computing contact forces within a simulated body using the compliance method.
  */

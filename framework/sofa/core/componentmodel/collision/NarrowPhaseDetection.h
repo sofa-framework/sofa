@@ -44,13 +44,19 @@ namespace componentmodel
 namespace collision
 {
 
+/**
+* @brief Given a set of potentially colliding pairs of models, compute set of contact points
+*/
+
 class NarrowPhaseDetection : virtual public Detection
 {
 public:
     typedef std::map< std::pair<core::CollisionModel*, core::CollisionModel* >, DetectionOutputVector* > DetectionOutputMap;
 
+    /// Destructor
     virtual ~NarrowPhaseDetection() { }
 
+    /// Clear all the potentially colliding pairs detected in the previous simulation step
     virtual void beginNarrowPhase()
     {
         for (DetectionOutputMap::iterator it = outputsMap.begin(); it!=outputsMap.end(); it++)
@@ -60,8 +66,10 @@ public:
         }
     }
 
+    /// Add a new potentially colliding pairs of models
     virtual void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair) = 0;
 
+    /// Add a new list of potentially colliding pairs of models
     virtual void addCollisionPairs(const sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >& v)
     {
         for (sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >::const_iterator it = v.begin(); it!=v.end(); it++)
