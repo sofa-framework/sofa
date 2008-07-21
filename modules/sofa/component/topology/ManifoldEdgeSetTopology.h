@@ -130,9 +130,8 @@ public:
 
     /// @}
 
-public:
-    DataPtr< ManifoldEdgeSetTopologyContainer > *f_m_topologyContainer;
-
+protected:
+    virtual void createComponents();
 };
 
 /**

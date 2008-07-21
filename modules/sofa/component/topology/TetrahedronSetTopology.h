@@ -595,7 +595,6 @@ class TetrahedronSetTopology : public TriangleSetTopology <DataTypes>
 
 public:
     TetrahedronSetTopology(component::MechanicalObject<DataTypes> *obj);
-    DataPtr<TetrahedronSetTopologyContainer > *f_m_topologyContainer;
 
     virtual void init();
     /** \brief Returns the TetrahedronSetTopologyContainer object of this TetrahedronSetTopology.
@@ -642,6 +641,8 @@ public:
 
     /// @}
 
+protected:
+    virtual void createComponents();
 };
 
 } // namespace topology

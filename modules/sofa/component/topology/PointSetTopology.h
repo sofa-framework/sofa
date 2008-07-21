@@ -77,6 +77,9 @@ public:
 
     virtual ~PointSetTopology() {}
 
+    /// Parse the given description to assign values to this object's fields and potentially other parameters
+    virtual void parse(sofa::core::objectmodel::BaseObjectDescription* arg);
+
     virtual void init();
 
     /** \brief Returns the PointSetTopologyContainer object of this PointSetTopologyContainer.
@@ -190,22 +193,6 @@ public:
         if (arg) obj->parse(arg);
     }
 
-    /** Parse the XML attributes : allows to load a topology from a file */
-    void parse(core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (arg->getAttribute("filename"))
-            this->load(arg->getAttribute("filename"));		// this is called at creation time, a container and modifier must exist !!!
-        if (arg->getAttribute("scale")!=NULL)
-        {
-            this->applyScale(atof(arg->getAttribute("scale")));
-        }
-        if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
-        {
-            this->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
-        }
-        this->core::componentmodel::topology::BaseTopology::parse(arg);
-    }
-
     virtual std::string getTemplateName() const
     {
         return templateName(this);
@@ -223,6 +210,8 @@ public:
     // TODO: clarify, do these members have to be public?
     DataPtr< PointSetTopologyContainer > *f_m_topologyContainer;	// TODO: clarify, what is this needed for
 
+protected:
+    virtual void createComponents();
 
 private:
     int revisionCounter;

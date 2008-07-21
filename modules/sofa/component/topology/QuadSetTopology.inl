@@ -46,24 +46,23 @@ using namespace sofa::defaulttype;
 
 template<class DataTypes>
 QuadSetTopology<DataTypes>::QuadSetTopology(MechanicalObject<DataTypes> *obj)
-    : EdgeSetTopology<DataTypes>( obj),
-      f_m_topologyContainer(new DataPtr< QuadSetTopologyContainer >(new QuadSetTopologyContainer(), "Quad Container"))
+    : EdgeSetTopology<DataTypes>( obj)
 {
-    // TODO: move this to init if possible
-    this->m_topologyContainer=f_m_topologyContainer->beginEdit();
-    this->m_topologyContainer->setTopology(this);
+}
 
-    this->m_topologyModifier=(new QuadSetTopologyModifier<DataTypes>(this));
-    this->m_topologyAlgorithms=(new QuadSetTopologyAlgorithms<DataTypes>(this));
-    this->m_geometryAlgorithms=(new QuadSetGeometryAlgorithms<DataTypes>(this));
-
-    this->addField(f_m_topologyContainer, "quadcontainer");
+template<class DataTypes>
+void QuadSetTopology<DataTypes>::createComponents()
+{
+    this->m_topologyContainer = new QuadSetTopologyContainer(this);
+    this->m_topologyModifier= new QuadSetTopologyModifier<DataTypes>(this);
+    this->m_topologyAlgorithms= new QuadSetTopologyAlgorithms<DataTypes>(this);
+    this->m_geometryAlgorithms= new QuadSetGeometryAlgorithms<DataTypes>(this);
 }
 
 template<class DataTypes>
 void QuadSetTopology<DataTypes>::init()
 {
-    f_m_topologyContainer->beginEdit();
+    EdgeSetTopology<DataTypes>::init();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

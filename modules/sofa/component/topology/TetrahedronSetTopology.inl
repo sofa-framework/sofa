@@ -46,6 +46,31 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::componentmodel::behavior;
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////TetrahedronSetTopology///////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+template<class DataTypes>
+TetrahedronSetTopology<DataTypes>::TetrahedronSetTopology(MechanicalObject<DataTypes> *obj)
+    : TriangleSetTopology<DataTypes>( obj)
+{
+}
+
+template<class DataTypes>
+void TetrahedronSetTopology<DataTypes>::createComponents()
+{
+    this->m_topologyContainer = new TetrahedronSetTopologyContainer(this);
+    this->m_topologyModifier= new TetrahedronSetTopologyModifier<DataTypes>(this);
+    this->m_topologyAlgorithms= new TetrahedronSetTopologyAlgorithms<DataTypes>(this);
+    this->m_geometryAlgorithms= new TetrahedronSetGeometryAlgorithms<DataTypes>(this);
+}
+
+template<class DataTypes>
+void TetrahedronSetTopology<DataTypes>::init()
+{
+    TriangleSetTopology<DataTypes>::init();
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////TetrahedronSetTopologyModifier//////////////////////////////////////
@@ -1060,32 +1085,10 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(unsigned int 
 
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////TetrahedronSetTopology//////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-template<class DataTypes>
-void TetrahedronSetTopology<DataTypes>::init()
-{
-    f_m_topologyContainer->beginEdit();
-}
-template<class DataTypes>
-TetrahedronSetTopology<DataTypes>::TetrahedronSetTopology(MechanicalObject<DataTypes> *obj) : TriangleSetTopology<DataTypes>( obj), f_m_topologyContainer(new DataPtr< TetrahedronSetTopologyContainer >(new TetrahedronSetTopologyContainer(), "Tetrahedron Container"))
-
-{
-    this->m_topologyContainer=f_m_topologyContainer->beginEdit();
-    this->m_topologyContainer->setTopology(this);
-    this->m_topologyModifier= new TetrahedronSetTopologyModifier<DataTypes>(this);
-    this->m_topologyAlgorithms= new TetrahedronSetTopologyAlgorithms<DataTypes>(this);
-    this->m_geometryAlgorithms= new TetrahedronSetGeometryAlgorithms<DataTypes>(this);
-
-    this->addField(f_m_topologyContainer, "tetrahedroncontainer");
-}
-
-
 } // namespace topology
 
 } // namespace component
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENTS_TetrahedronSetTOPOLOGY_INL
+#endif // SOFA_COMPONENTS_TETEAHEDRONSETTOPOLOGY_INL

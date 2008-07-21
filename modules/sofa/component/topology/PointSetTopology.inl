@@ -52,24 +52,58 @@ using namespace sofa::core::componentmodel::behavior;
 
 template<class DataTypes>
 PointSetTopology<DataTypes>::PointSetTopology(MechanicalObject<DataTypes> *obj)
-    : object(obj),
-      f_m_topologyContainer(new DataPtr< PointSetTopologyContainer >(new PointSetTopologyContainer(), "Point Container")),
-      revisionCounter(0)
+    : object(obj)
+    , f_m_topologyContainer(new DataPtr< PointSetTopologyContainer >(NULL, "Point Container"))
+    , revisionCounter(0)
 {
-    // TODO: move this to init if possible
-    m_topologyContainer = f_m_topologyContainer->beginEdit();
-    this->m_topologyContainer->setTopology(this);
-    m_topologyModifier=(new PointSetTopologyModifier<DataTypes>(this));
-    m_topologyAlgorithms=(new PointSetTopologyAlgorithms<DataTypes>(this));
-    m_geometryAlgorithms=(new PointSetGeometryAlgorithms<DataTypes>(this));
+}
 
+template<class DataTypes>
+void PointSetTopology<DataTypes>::createComponents()
+{
+    this->m_topologyContainer  = new PointSetTopologyContainer(this);
+    this->m_topologyModifier   = new PointSetTopologyModifier<DataTypes>(this);
+    this->m_topologyAlgorithms = new PointSetTopologyAlgorithms<DataTypes>(this);
+    this->m_geometryAlgorithms = new PointSetGeometryAlgorithms<DataTypes>(this);
+}
+
+template<class DataTypes>
+void PointSetTopology<DataTypes>::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
+{
+    // Create the container, modifier and algorithms
+    createComponents();
+    // Add them in the context
+    this->getContext()->addObject(this->m_topologyContainer);
+    this->getContext()->addObject(this->m_topologyModifier);
+    this->getContext()->addObject(this->m_topologyAlgorithms);
+    this->getContext()->addObject(this->m_geometryAlgorithms);
+
+    // parse the given parameters, also transmit them to each component
     this->addField(this->f_m_topologyContainer, "pointcontainer");
+    this->f_m_topologyContainer->beginEdit();
+    core::componentmodel::topology::BaseTopology::parse(arg);
+    this->m_topologyContainer->parse(arg);
+    this->m_topologyModifier->parse(arg);
+    this->m_topologyAlgorithms->parse(arg);
+    this->m_geometryAlgorithms->parse(arg);
+
+    if (arg->getAttribute("filename"))
+        this->load(arg->getAttribute("filename"));		// this is called at creation time, a container and modifier must exist !!!
+    if (arg->getAttribute("scale")!=NULL)
+    {
+        this->applyScale(atof(arg->getAttribute("scale")));
+    }
+    if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
+    {
+        this->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
+    }
+    this->core::componentmodel::topology::BaseTopology::parse(arg);
 }
 
 template<class DataTypes>
 void PointSetTopology<DataTypes>::init()
 {
-    f_m_topologyContainer->beginEdit();
+    core::componentmodel::topology::BaseTopology::init();
 }
 
 template<class DataTypes>

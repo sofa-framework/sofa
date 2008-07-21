@@ -147,8 +147,8 @@ public:
 
     /// @}
 
-public:
-    DataPtr<HexahedronSetTopologyContainer > *f_m_topologyContainer;
+protected:
+    virtual void createComponents();
 };
 
 /**

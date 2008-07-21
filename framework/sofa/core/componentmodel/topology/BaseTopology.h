@@ -211,14 +211,14 @@ protected :
 
 
 /** A class that contains a set of high-level (user friendly) methods that perform topological changes */
-class TopologyAlgorithms
+class TopologyAlgorithms : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
     /** \brief Constructor.
     *
     * @param basicTopology the topology this object applies to.
     */
-    TopologyAlgorithms(BaseTopology *basicTopology)
+    TopologyAlgorithms(BaseTopology *basicTopology = NULL)
         : m_basicTopology(basicTopology)
     {}
 
@@ -259,14 +259,14 @@ protected:
 };
 
 /** A class that contains a set of methods that describes the geometry of the object */
-class GeometryAlgorithms
+class GeometryAlgorithms : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
     /** \brief Constructor.
     *
     * @param basicTopology the topology this object applies to.
     */
-    GeometryAlgorithms(BaseTopology *basicTopology)
+    GeometryAlgorithms(BaseTopology *basicTopology = NULL)
         : m_basicTopology(basicTopology)
     {}
 
@@ -281,7 +281,7 @@ protected:
 };
 
 /** A class that contains a set of low-level methods that perform topological changes */
-class TopologyModifier
+class TopologyModifier : public virtual sofa::core::objectmodel::BaseObject
 {
     friend class TopologyMapping;
 
@@ -290,7 +290,7 @@ public:
     *
     * @param basicTopology the topology this object applies to.
     */
-    TopologyModifier(BaseTopology *basicTopology)
+    TopologyModifier(BaseTopology *basicTopology = NULL)
         : m_basicTopology(basicTopology)
     {
     }
@@ -315,7 +315,7 @@ protected:
 };
 
 /** A class that contains a description of the topology (set of edges, triangles, adjacency information, ...) */
-class TopologyContainer
+class TopologyContainer : public virtual sofa::core::objectmodel::BaseObject
 {
     friend class TopologyModifier;
 
@@ -324,7 +324,7 @@ public:
     *
     * @param basicTopology the topology this object describes.
     */
-    TopologyContainer(BaseTopology *basicTopology)
+    TopologyContainer(BaseTopology *basicTopology = NULL)
         : m_basicTopology(basicTopology)
     {
     }

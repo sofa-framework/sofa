@@ -631,7 +631,6 @@ class TriangleSetTopology : public EdgeSetTopology <DataTypes>
 
 public:
     TriangleSetTopology(component::MechanicalObject<DataTypes> *obj);
-    DataPtr< TriangleSetTopologyContainer > *f_m_topologyContainer;
 
     virtual void init();
     /** \brief Returns the TriangleSetTopologyContainer object of this TriangleSetTopology.
@@ -674,6 +673,8 @@ public:
 
     /// @}
 
+protected:
+    virtual void createComponents();
 };
 
 } // namespace topology
