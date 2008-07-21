@@ -106,10 +106,10 @@ public:
     typedef typename MCollisionModel::InDataTypes InDataTypes;
     typedef typename MCollisionModel::Topology InTopology;
     typedef core::componentmodel::behavior::MechanicalState< InDataTypes> InMechanicalState;
-    typedef core::componentmodel::behavior::MechanicalState< DataTypes> MMechanicalState;
-    typedef component::MechanicalObject<DataTypes> MMechanicalObject;
+    typedef core::componentmodel::behavior::MechanicalState<  typename BarycentricContactMapper::DataTypes> MMechanicalState;
+    typedef component::MechanicalObject<typename BarycentricContactMapper::DataTypes> MMechanicalObject;
     typedef mapping::BarycentricMapping< core::componentmodel::behavior::MechanicalMapping< InMechanicalState, MMechanicalState > > MMapping;
-    typedef mapping::TopologyBarycentricMapper<InDataTypes,  DataTypes> MMapper;
+    typedef mapping::TopologyBarycentricMapper<InDataTypes, typename BarycentricContactMapper::DataTypes> MMapper;
     MCollisionModel* model;
     MMapping* mapping;
     MMapper* mapper;
@@ -213,8 +213,8 @@ public:
     typedef TCollisionModel MCollisionModel;
     typedef typename MCollisionModel::InDataTypes InDataTypes;
     typedef core::componentmodel::behavior::MechanicalState<InDataTypes> InMechanicalState;
-    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MMechanicalState;
-    typedef component::MechanicalObject<DataTypes> MMechanicalObject;
+    typedef core::componentmodel::behavior::MechanicalState<typename IdentityContactMapper::DataTypes> MMechanicalState;
+    typedef component::MechanicalObject<typename IdentityContactMapper::DataTypes> MMechanicalObject;
     typedef mapping::IdentityMapping< core::componentmodel::behavior::MechanicalMapping< InMechanicalState, MMechanicalState > > MMapping;
     MCollisionModel* model;
     MMapping* mapping;
@@ -346,8 +346,8 @@ public:
     typedef TCollisionModel MCollisionModel;
     typedef typename MCollisionModel::InDataTypes InDataTypes;
     typedef core::componentmodel::behavior::MechanicalState<InDataTypes> InMechanicalState;
-    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MMechanicalState;
-    typedef component::MechanicalObject<DataTypes> MMechanicalObject;
+    typedef core::componentmodel::behavior::MechanicalState<typename RigidContactMapper::DataTypes> MMechanicalState;
+    typedef component::MechanicalObject<typename RigidContactMapper::DataTypes> MMechanicalObject;
     typedef mapping::RigidMapping< core::componentmodel::behavior::MechanicalMapping< InMechanicalState, MMechanicalState > > MMapping;
     MCollisionModel* model;
     simulation::tree::GNode* child;
@@ -490,8 +490,8 @@ public:
     typedef TCollisionModel MCollisionModel;
     typedef typename MCollisionModel::InDataTypes InDataTypes;
     typedef core::componentmodel::behavior::MechanicalState<InDataTypes> InMechanicalState;
-    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MMechanicalState;
-    typedef component::MechanicalObject<DataTypes> MMechanicalObject;
+    typedef core::componentmodel::behavior::MechanicalState<typename SubsetContactMapper::DataTypes> MMechanicalState;
+    typedef component::MechanicalObject<typename SubsetContactMapper::DataTypes> MMechanicalObject;
     typedef mapping::SubsetMapping< core::componentmodel::behavior::MechanicalMapping< InMechanicalState, MMechanicalState > > MMapping;
     MCollisionModel* model;
     simulation::tree::GNode* child;

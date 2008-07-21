@@ -61,9 +61,10 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
 
     std::string file;
     file=(arg->getAttribute("texturename",""));
-    if (!file.empty() && sofa::helper::system::DataRepository.findFile (file))
+    if (!file.empty())
+    {
         texturename.setValue( sofa::helper::system::DataRepository.getFile ( file ));
-
+    }
 
     file=(arg->getAttribute("filename",""));
     //// Temporary commented in case of IdentityMapping without obj file :
@@ -318,30 +319,40 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
 bool VisualModelImpl::load(const std::string& filename, const std::string& loader, const std::string& textureName)
 {
     bool tex = !textureName.empty();
-    if (!textureName.empty())
+    if (!textureName.empty() )
     {
-        tex = loadTexture(textureName);
+        std::string textureFilename(textureName);
+        if (sofa::helper::system::DataRepository.findFile (textureFilename))
+            tex = loadTexture(textureName);
+        else
+            logWarning(std::string("Texture \"") + textureName +std::string("\" not found"));
     }
     tex = !textureName.empty();
 
     if (!filename.empty() && vertices.size() == 0)
     {
-        //name = filename;
-        helper::io::Mesh *objLoader;
-        if (loader.empty())
-            objLoader = helper::io::Mesh::Create(filename);
-        else
-            objLoader = helper::io::Mesh::FactoryMesh::CreateObject(loader, filename);
+        std::string meshFilename(filename);
+        if (sofa::helper::system::DataRepository.findFile (meshFilename))
+        {
+            //name = filename;
+            helper::io::Mesh *objLoader;
+            if (loader.empty())
+                objLoader = helper::io::Mesh::Create(filename);
+            else
+                objLoader = helper::io::Mesh::FactoryMesh::CreateObject(loader, filename);
 
-        if (!objLoader)
-        {
-            return false;
+            if (!objLoader)
+            {
+                return false;
+            }
+            else
+            {
+                setMesh(*objLoader,tex);
+                //std::cout << "VisualModel::load, vertices.size = "<< vertices.size() <<std::endl;
+            }
         }
         else
-        {
-            setMesh(*objLoader,tex);
-            //std::cout << "VisualModel::load, vertices.size = "<< vertices.size() <<std::endl;
-        }
+            logWarning(std::string("Mesh \"") + filename +std::string("\" not found"));
     }
     else
     {

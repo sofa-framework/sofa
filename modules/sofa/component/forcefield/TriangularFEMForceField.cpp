@@ -1073,7 +1073,7 @@ void TriangularFEMForceField<DataTypes>::draw()
 
             float meanEV = (float)((vertexInfo[a].sumEigenValues + vertexInfo[b].sumEigenValues + vertexInfo[c].sumEigenValues) / 3.0);
 
-            glColor4f(meanEV / max, 1- meanEV / max, 0, 1);
+            glColor4f((float)(meanEV / max), (float)(1- meanEV / max), 0.0f, 1.0f);
             helper::gl::glVertexT(x[a]);
             helper::gl::glVertexT(x[b]);
             helper::gl::glVertexT(x[c]);
