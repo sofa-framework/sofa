@@ -40,17 +40,20 @@ namespace objectmodel
 
 /**
 	@author Juan Pablo de la Plata
+	@brief This event is propagated along the objects when a key on the keyboard is released.
 */
 class KeyreleasedEvent : public core::objectmodel::Event
 {
 public:
+    /// Constructor
     KeyreleasedEvent( char );
-
+    /// Destructor
     ~KeyreleasedEvent();
-
+    /// Return the key released
     char getKey() const;
 
 protected:
+    /// Store the key
     char m_char;
 };
 

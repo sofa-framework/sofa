@@ -42,32 +42,42 @@ namespace componentmodel
 
 namespace collision
 {
-
+/**
+ * @brief given a set of root collision models, computes potentially colliding pairs.
+ */
 class BroadPhaseDetection : virtual public Detection
 {
 public:
+    /// Destructor
     virtual ~BroadPhaseDetection() { }
 
+    /// Clear all the potentially colliding pairs detected in the previous simulation step
     virtual void beginBroadPhase()
     {
         cmPairs.clear();
     }
 
+    /// Add a new collision model to the set of root collision models managed by this class
     virtual void addCollisionModel(core::CollisionModel *cm) = 0;
 
+    /// Add a list of collision models to the set of root collision models managed by this class
     virtual void addCollisionModels(const sofa::helper::vector<core::CollisionModel *> v)
     {
         for (sofa::helper::vector<core::CollisionModel *>::const_iterator it = v.begin(); it<v.end(); it++)
             addCollisionModel(*it);
     }
 
+    /// Actions to accomplish when the broadPhase is finished. By default do nothing.
     virtual void endBroadPhase()
     {
     }
 
+    /// Get the potentially colliding pairs detected
     sofa::helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >& getCollisionModelPairs() { return cmPairs; }
 
 protected:
+
+    /// Potentially colliding pairs
     sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> > cmPairs;
     std::map<Instance,sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> > > storedCmPairs;
 

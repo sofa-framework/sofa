@@ -46,6 +46,18 @@ namespace collision
 
 using defaulttype::Vec3f;
 
+/**
+ *  \brief Generic description of a contact point using GPU.
+ *
+ *  Each contact point is described by :
+ *
+ *  \item p1:
+ *  \item P2:
+ *  \item distance:
+ *  \item i2:
+ *  \item normal:
+ */
+
 struct GPUDetectionOutput
 {
     int p1;
@@ -58,6 +70,9 @@ struct GPUDetectionOutput
     Vec3f normal;
 };
 
+/**
+ *  \brief Abstract description of a set of contact point using GPU.
+ */
 class GPUDetectionOutputVector : public DetectionOutputVector
 {
 public:

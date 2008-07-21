@@ -44,7 +44,7 @@ namespace componentmodel
 
 namespace behavior
 {
-
+/// @TODO  The classes applyConstraint, getConstraintValue && getConstraintId need to be commented
 #ifdef SOFA_DEV
 /**
  *  \brief Object computing a constraint resolution within a Gauss-Seidel algorithm

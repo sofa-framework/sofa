@@ -46,15 +46,32 @@ namespace componentmodel
 
 namespace collision
 {
-
+/**
+ * @brief contact response component handling the response between a pair of models
+ *
+ * - Dynamically created by the ContactManager
+ *
+ *   -# Persistent between iterations
+ *
+ *   -# New id data in DetectionOutput allow to keep an history of a contact
+ *
+ * - In most cases : create and initialize the real response component
+ *
+ *   -#InteractionForceField, Constraint, ...
+ *
+ * - Contact object dynamically appears in the scenegraph
+ */
 class Contact : public virtual objectmodel::BaseObject
 {
 public:
 
+    ///Destructor
     virtual ~Contact() { }
 
+    /// Get the pair of collision models which are in contact
     virtual std::pair< core::CollisionModel*, core::CollisionModel* > getCollisionModels() = 0;
 
+    /// Set the generic description of a contact point
     virtual void setDetectionOutputs(DetectionOutputVector* outputs) = 0;
 
     virtual void createResponse(objectmodel::BaseContext* group) = 0;
@@ -72,6 +89,7 @@ public:
 
     typedef helper::Factory< std::string, Contact, std::pair<std::pair<core::CollisionModel*,core::CollisionModel*>,Intersection*> > Factory;
 
+    /// Create a new contact given 2 collision elements and an intersection method
     static Contact* Create(const std::string& type, core::CollisionModel* model1, core::CollisionModel* model2, Intersection* intersectionMethod);
 
     template<class RealContact>

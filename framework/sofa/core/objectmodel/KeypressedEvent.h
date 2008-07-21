@@ -40,17 +40,20 @@ namespace objectmodel
 
 /**
 	@author Francois Faure
+	@brief This event is propagated along the objects when a key on the keyboard is pressed.
 */
 class KeypressedEvent : public Event
 {
 public:
+    /// Constructor
     KeypressedEvent( char );
-
+    /// Destructor
     ~KeypressedEvent();
-
+    /// Return the key pressed
     char getKey() const;
 
 protected:
+    /// Store the key
     char m_char;
 };
 
