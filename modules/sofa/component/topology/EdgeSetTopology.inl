@@ -65,22 +65,23 @@ using namespace sofa::core::componentmodel::behavior;
 
 template<class DataTypes>
 EdgeSetTopology<DataTypes>::EdgeSetTopology(MechanicalObject<DataTypes> *obj)
-    : PointSetTopology<DataTypes>( obj),
-      f_m_topologyContainer(new DataPtr< EdgeSetTopologyContainer >(new EdgeSetTopologyContainer(), "Edge Container"))
+    : PointSetTopology<DataTypes>( obj)
 {
-    // TODO: move this to init if possible
-    this->m_topologyContainer=f_m_topologyContainer->beginEdit();
-    this->m_topologyContainer->setTopology(this);
+}
+
+template<class DataTypes>
+void EdgeSetTopology<DataTypes>::createComponents()
+{
+    this->m_topologyContainer = new EdgeSetTopologyContainer(this);
     this->m_topologyModifier= new EdgeSetTopologyModifier<DataTypes>(this);
     this->m_topologyAlgorithms= new EdgeSetTopologyAlgorithms<DataTypes>(this);
     this->m_geometryAlgorithms= new EdgeSetGeometryAlgorithms<DataTypes>(this);
-    this->addField(this->f_m_topologyContainer, "edgecontainer");
 }
 
 template<class DataTypes>
 void EdgeSetTopology<DataTypes>::init()
 {
-    f_m_topologyContainer->beginEdit();
+    PointSetTopology<DataTypes>::init();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

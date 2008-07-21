@@ -124,8 +124,8 @@ public:
 
     /// @}
 
-public:
-    DataPtr< EdgeSetTopologyContainer > *f_m_topologyContainer;
+protected:
+    virtual void createComponents();
 };
 
 

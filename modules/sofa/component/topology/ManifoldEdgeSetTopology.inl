@@ -50,23 +50,22 @@ using namespace sofa::core::componentmodel::behavior;
 
 template<class DataTypes>
 ManifoldEdgeSetTopology<DataTypes>::ManifoldEdgeSetTopology(MechanicalObject<DataTypes> *obj)
-    : EdgeSetTopology<DataTypes>( obj),
-      f_m_topologyContainer(new DataPtr< ManifoldEdgeSetTopologyContainer >(new ManifoldEdgeSetTopologyContainer(), "Manifold Edge Container"))
+    : EdgeSetTopology<DataTypes>( obj)
 {
-    // TODO: move this to init if possible
-    this->m_topologyContainer=f_m_topologyContainer->beginEdit();
-    this->m_topologyContainer->setTopology(this);
+}
+
+template<class DataTypes>
+void ManifoldEdgeSetTopology<DataTypes>::createComponents()
+{
+    this->m_topologyContainer = new ManifoldEdgeSetTopologyContainer(this);
     this->m_topologyModifier= new ManifoldEdgeSetTopologyModifier<DataTypes>(this);
     this->m_topologyAlgorithms= new ManifoldEdgeSetTopologyAlgorithms<DataTypes>(this);
     this->m_geometryAlgorithms= new ManifoldEdgeSetGeometryAlgorithms<DataTypes>(this);
-    this->addField(this->f_m_topologyContainer, "manifoldedgecontainer");
 }
 
 template<class DataTypes>
 void ManifoldEdgeSetTopology<DataTypes>::init()
 {
-    f_m_topologyContainer->beginEdit();
-
     // BIBI ?
     EdgeSetTopology<DataTypes>::init();
     getEdgeSetTopologyContainer()->computeConnectedComponent();

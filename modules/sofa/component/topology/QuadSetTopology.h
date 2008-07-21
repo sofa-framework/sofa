@@ -136,8 +136,8 @@ public:
 
     /// @}
 
-public:
-    DataPtr< QuadSetTopologyContainer > *f_m_topologyContainer;
+protected:
+    virtual void createComponents();
 };
 
 

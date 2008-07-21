@@ -49,9 +49,33 @@ using namespace sofa::core::componentmodel::behavior;
 using namespace sofa::core::componentmodel::topology;
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////TriangleSetTopology////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+template<class DataTypes>
+TriangleSetTopology<DataTypes>::TriangleSetTopology(MechanicalObject<DataTypes> *obj)
+    : EdgeSetTopology<DataTypes>( obj)
+{
+}
+
+template<class DataTypes>
+void TriangleSetTopology<DataTypes>::createComponents()
+{
+    this->m_topologyContainer = new TriangleSetTopologyContainer(this);
+    this->m_topologyModifier= new TriangleSetTopologyModifier<DataTypes>(this);
+    this->m_topologyAlgorithms= new TriangleSetTopologyAlgorithms<DataTypes>(this);
+    this->m_geometryAlgorithms= new TriangleSetGeometryAlgorithms<DataTypes>(this);
+}
+
+template<class DataTypes>
+void TriangleSetTopology<DataTypes>::init()
+{
+    EdgeSetTopology<DataTypes>::init();
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////TriangleSetTopologyModifier//////////////////////////////////////
+//////////////////////////////////TriangleSetTopologyModifier////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -3993,29 +4017,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
     return (is_reached && is_validated && is_intersected); // b is in triangle indexed by ind_t_current
 }
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////TriangleSetTopology//////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-template<class DataTypes>
-void TriangleSetTopology<DataTypes>::init()
-{
-    f_m_topologyContainer->beginEdit();
-}
-template<class DataTypes>
-TriangleSetTopology<DataTypes>::TriangleSetTopology(MechanicalObject<DataTypes> *obj) : EdgeSetTopology<DataTypes>( obj),f_m_topologyContainer(new DataPtr< TriangleSetTopologyContainer >(new TriangleSetTopologyContainer(), "Triangle Container"))
-
-{
-    this->m_topologyContainer=f_m_topologyContainer->beginEdit();
-    this->m_topologyContainer->setTopology(this);
-
-    this->m_topologyModifier=(new TriangleSetTopologyModifier<DataTypes>(this));
-    this->m_topologyAlgorithms=(new TriangleSetTopologyAlgorithms<DataTypes>(this));
-    this->m_geometryAlgorithms=(new TriangleSetGeometryAlgorithms<DataTypes>(this));
-
-    this->addField(f_m_topologyContainer, "trianglecontainer");
-}
-
 } // namespace topology
 
 } // namespace component

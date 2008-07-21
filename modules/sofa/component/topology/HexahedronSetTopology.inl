@@ -48,22 +48,23 @@ const unsigned int hexahedronEdgeArray[12][2]= {{0,1},{0,3},{0,4},{1,2},{1,5},{2
 
 template<class DataTypes>
 HexahedronSetTopology<DataTypes>::HexahedronSetTopology(MechanicalObject<DataTypes> *obj)
-    : QuadSetTopology<DataTypes>( obj),
-      f_m_topologyContainer(new DataPtr< HexahedronSetTopologyContainer >(new HexahedronSetTopologyContainer(), "Hexahedron Container"))
+    : QuadSetTopology<DataTypes>( obj)
 {
-    this->m_topologyContainer=f_m_topologyContainer->beginEdit();
-    this->m_topologyContainer->setTopology(this);
+}
+
+template<class DataTypes>
+void HexahedronSetTopology<DataTypes>::createComponents()
+{
+    this->m_topologyContainer = new HexahedronSetTopologyContainer(this);
     this->m_topologyModifier= new HexahedronSetTopologyModifier<DataTypes>(this);
     this->m_topologyAlgorithms= new HexahedronSetTopologyAlgorithms<DataTypes>(this);
     this->m_geometryAlgorithms= new HexahedronSetGeometryAlgorithms<DataTypes>(this);
-
-    this->addField(f_m_topologyContainer, "hexahedroncontainer");
 }
 
 template<class DataTypes>
 void HexahedronSetTopology<DataTypes>::init()
 {
-    f_m_topologyContainer->beginEdit();
+    QuadSetTopology<DataTypes>::init();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
