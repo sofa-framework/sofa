@@ -322,7 +322,7 @@ AttachConstraint<DataTypes>::AttachConstraint()
 // Handle topological changes
 template <class DataTypes> void AttachConstraint<DataTypes>::handleTopologyChange()
 {
-    sofa::core::componentmodel::topology::BaseTopology *topology = static_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
+    sofa::core::componentmodel::topology::BaseMeshTopology* topology = getContext()->getMeshTopology();
 
     std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
     std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
