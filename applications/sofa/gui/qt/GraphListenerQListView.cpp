@@ -28,6 +28,7 @@
 #include <GenGraphForm.h>
 #include "RealGUI.h"
 #include "iconnode.xpm"
+#include "iconwarning.xpm"
 #include <sofa/simulation/common/Colors.h>
 
 
@@ -311,9 +312,21 @@ void GraphListenerQListView::addObject(GNode* parent, core::objectmodel::BaseObj
         name += object->getName();
 // 	      }
         item->setText(0, name.c_str());
-        QPixmap* pix = getPixmap(object);
-        if (pix)
-            item->setPixmap(0, *pix);
+
+        if (object->getLogWarning().size() == 0)
+        {
+            QPixmap* pix = getPixmap(object);
+            if (pix)
+                item->setPixmap(0, *pix);
+
+        }
+        else
+        {
+            static QPixmap pixWarning((const char**)iconwarning_xpm);
+            item->setPixmap(0,pixWarning);
+        }
+
+
         items[object] = item;
     }
 }
