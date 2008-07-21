@@ -4,7 +4,7 @@
 \subsection{First steps}
 \par
 Once SOFA is compiled, in the directory bin will be placed an executable called runSofa (or runSofad if you are using the debug version).
-The first time you will run SOFA, a GUI using Qt will appear. By default a simulation modeling a liver with some fixed points will be displayed.\\
+The first time you will run SOFA, a GUI using Qt will appear. By default a simulation modeling a liver with some fixed points will be displayed. Simulations must be written in a xml format, generally, Sofa scenes have the extension ``.scn'', and Sofa objects directly the extension ``.xml''. You can load both of them using the file menu, or drag \& dropping them in the interface.\\
 Basically the GUI is divided in two: 
 \begin{itemize}
  \item a control panel subdivided in several tabulations, giving the user the possibility to display various information about the simulation, and even modifying it interactively
@@ -13,7 +13,7 @@ Basically the GUI is divided in two:
 
 \begin{figure}[htpb]
 	\centering
-		\includegraphics[width=0.95\textwidth]{GUI/GUI.png}
+		\includegraphics[width=1.0\textwidth]{GUI/GUI.png}
 	\caption{SOFA first-time}
 \end{figure}
 At any time, you can hide the control panel by moving its right border to the left.
@@ -26,7 +26,7 @@ At any time, you can hide the control panel by moving its right border to the le
 		\includegraphics[width=0.45\textwidth]{GUI/GUI_basic.png}
 	\caption{Basic Controls}
 \end{figure}
-\vspace{20mm}
+\vspace{25mm}
 The basics controls are :
 \begin{itemize}
  \item {\bf Animate} : launch the simulation. The simulation won't stop until you press Animate.
@@ -50,6 +50,13 @@ DT corresponds to the time step used in the computation of the simulation. It ca
 
 \subsection{View Tab}
 The ``View Tab'' is the default tab, you can filter the information you want to be displayed by your viewer. It is quite useful to have a fast and global control. 
+
+\begin{figure}[htpb]
+	\centering
+		\includegraphics[width=0.3\textwidth]{GUI/GUI_visual.png}
+	\caption{Basic Controls}
+\end{figure}
+
 The options are:
 \begin{itemize}
  \item {\bf All}: Enable or disable the display of all the visual information available in SOFA
@@ -63,9 +70,6 @@ The options are:
 \item {\bf Wire Frame}: Change the way 3D models(visual, and collision) are displayed
 \item {\bf Normals}: Normals of the visual models
 \end{itemize}
-
-The last useful option of this tab is the possibility to re size your viewer, which can be very helpful to record a video at a given resolution.
-
 
 
 
@@ -147,6 +151,9 @@ An interesting feature to note, is when you might be always using, and adding th
 
 \subsection{Viewer Tab}
 The ``Viewer tab'' describes all the keyboard shortcuts available for the current viewer.
+
+The last useful option of this tab is the possibility to re-size your viewer, which can be very helpful to record a video at a given resolution.
+
 
 
 
