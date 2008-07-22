@@ -231,7 +231,7 @@ SOFA_LINK_CLASS(VoidMapping)
 #ifdef SOFA_DEV
 
 // collision
-SOFA_LINK_CLASS(BarycentricLagrangianMultiplierContact)
+//SOFA_LINK_CLASS(BarycentricLagrangianMultiplierContact)
 SOFA_LINK_CLASS(BarycentricStickContact)
 SOFA_LINK_CLASS(CuttingManager)
 SOFA_LINK_CLASS(EdgeRemoveContact)
@@ -243,9 +243,9 @@ SOFA_LINK_CLASS(TriangularFEMFractureManager)
 // constraint
 SOFA_LINK_CLASS(BeamConstraint)
 SOFA_LINK_CLASS(BilateralInteractionConstraint)
-SOFA_LINK_CLASS(LagrangianMultiplierAttachConstraint)
-SOFA_LINK_CLASS(LagrangianMultiplierContactConstraint)
-SOFA_LINK_CLASS(LagrangianMultiplierFixedConstraint)
+//SOFA_LINK_CLASS(LagrangianMultiplierAttachConstraint)
+//SOFA_LINK_CLASS(LagrangianMultiplierContactConstraint)
+//SOFA_LINK_CLASS(LagrangianMultiplierFixedConstraint)
 SOFA_LINK_CLASS(SlidingConstraint)
 // controller
 SOFA_LINK_CLASS(JointSpringController)

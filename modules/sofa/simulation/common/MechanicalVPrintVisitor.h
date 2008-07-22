@@ -44,7 +44,6 @@ public:
 
     MechanicalVPrintVisitor( VecId v, std::ostream& =std::cerr );
     virtual Result processNodeTopDown(simulation::Node* node);
-    virtual void fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
 
 protected:
     VecId v_;
@@ -64,7 +63,6 @@ protected:
 public:
     MechanicalVPrintWithElapsedTimeVisitor( VecId v, unsigned time, std::ostream& =std::cerr );
     virtual Result processNodeTopDown(simulation::Node* node);
-    virtual void fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
 };
 
 } // namespace simulation

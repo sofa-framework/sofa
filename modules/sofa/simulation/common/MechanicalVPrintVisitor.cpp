@@ -31,11 +31,11 @@ namespace sofa
 namespace simulation
 {
 
-
 MechanicalVPrintVisitor::MechanicalVPrintVisitor( VecId v, std::ostream& out )
     : v_(v)
     , out_(out)
-{}
+{
+}
 
 Visitor::Result MechanicalVPrintVisitor::processNodeTopDown(simulation::Node* node)
 {
@@ -45,30 +45,17 @@ Visitor::Result MechanicalVPrintVisitor::processNodeTopDown(simulation::Node* no
         (*node->mechanicalState).printDOF(v_,out_);
         out_<<"] ";
     }
-    for_each(this, node, node->constraint, &MechanicalVPrintVisitor::fwdConstraint);
     return Visitor::RESULT_CONTINUE;
 }
-void MechanicalVPrintVisitor::fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
-{
-    core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
-    if (mm)
-    {
-        out_<<"[ ";
-        (*mm).printDOF(v_,out_);
-        out_<<"] ";
-    }
-}
-
-
-
 
 
 MechanicalVPrintWithElapsedTimeVisitor::MechanicalVPrintWithElapsedTimeVisitor( VecId v, unsigned time, std::ostream& out )
     : v_(v)
-    ,count_(0)
-    ,time_(time)
+    , count_(0)
+    , time_(time)
     , out_(out)
-{}
+{
+}
 
 Visitor::Result MechanicalVPrintWithElapsedTimeVisitor::processNodeTopDown(simulation::Node* node)
 {
@@ -76,20 +63,9 @@ Visitor::Result MechanicalVPrintWithElapsedTimeVisitor::processNodeTopDown(simul
     {
         count_+=(*node->mechanicalState).printDOFWithElapsedTime(v_,count_,time_,out_);
     }
-    for_each(this, node, node->constraint, &MechanicalVPrintWithElapsedTimeVisitor::fwdConstraint);
     return Visitor::RESULT_CONTINUE;
 }
-void MechanicalVPrintWithElapsedTimeVisitor::fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
-{
-    core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
-    if (mm)
-    {
-        count_+=(*mm).printDOFWithElapsedTime(v_,count_,time_,out_);
-    }
-}
-
 
 } // namespace simulation
 
 } // namespace sofa
-
