@@ -1,8 +1,6 @@
 #!/usr/bin/awk -f
 # This script removes parts flagged by SOFA_DEV inside C source code files
-# The file with the relevant parts removed is output to the standard output,
-# while files mentionned inside removed parts are output to the standard error.
-# This can be used to remove then from the repository by svn rm'ing them.
+# The file with the relevant parts removed is output to the standard output.
 
 # If you never used awk, a good introduction is available at http://www.cs.hmc.edu/qref/awk.html
 
