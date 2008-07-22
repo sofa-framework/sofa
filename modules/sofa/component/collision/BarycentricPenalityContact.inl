@@ -175,8 +175,8 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
         CollisionElement2 elem2(o->elem.second);
         int index1 = elem1.getIndex();
         int index2 = elem2.getIndex();
-        double r1 = 0.0;
-        double r2 = 0.0;
+        typename DataTypes1::Real r1 = 0.0;
+        typename DataTypes2::Real r2 = 0.0;
         // Create mapping for first point
         index1 = mapper1.addPoint(o->point[0], index1, r1);
         // Create mapping for second point

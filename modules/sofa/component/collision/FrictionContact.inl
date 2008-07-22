@@ -136,8 +136,8 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
         CollisionElement2 elem2(o->elem.second);
         int index1 = elem1.getIndex();
         int index2 = elem2.getIndex();
-        double r1 = 0.0;
-        double r2 = 0.0;
+        typename DataTypes1::Real r1 = 0.0;
+        typename DataTypes2::Real r2 = 0.0;
         //double constraintValue = ((o->point[1] - o->point[0]) * o->normal) - intersectionMethod->getContactDistance();
 
         // Create mapping for first point
