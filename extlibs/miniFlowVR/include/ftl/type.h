@@ -168,12 +168,12 @@ extern inline int toSingle(int t)
 {
   int e = elemSize(t);
   if (e==0) e=1;
-  return t & ~(MASK_NX|MASK_NY|MASK_SIZE) | (e << SHIFT_SIZE);
+  return ( t & ~(MASK_NX|MASK_NY|MASK_SIZE) ) | (e << SHIFT_SIZE);
 }
 
 extern inline int toVector(int t)
 {
-  return t & ~(MASK_NY|MASK_SIZE) | ((size(t)/ny(t)) << SHIFT_SIZE);
+  return ( t & ~(MASK_NY|MASK_SIZE) ) | ((size(t)/ny(t)) << SHIFT_SIZE);
 }
 
 extern inline int vector(int elemtype, int nx)

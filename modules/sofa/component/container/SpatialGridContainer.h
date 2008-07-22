@@ -61,8 +61,13 @@
 #      define HASH_NAMESPACE std
 #    endif
 #  else
-#    include <ext/hash_map>
-#    define HASH_NAMESPACE __gnu_cxx
+#    if __GNUC__ > 4 || (__GNUC__ == 4 && (__GNUC_MINOR__ >= 3 ))
+#      include <tr1/unordered_map>
+#      define HASH_NAMESPACE std::tr1
+#    else
+#      include <ext/hash_map>
+#      define HASH_NAMESPACE __gnu_cxx
+#    endif
 #  endif
 #endif
 
@@ -249,7 +254,18 @@ public:
         }
     };
 
+
+#ifndef _MSC_VER
+#    if __GNUC__ > 4 || (__GNUC__ == 4 && (__GNUC_MINOR__ >= 3 ))        //hash_map is deprecated since gcc-4.3
+    typedef HASH_NAMESPACE::unordered_map<Key, Grid*, key_hash_fun> Map;
+#    else
     typedef HASH_NAMESPACE::hash_map<Key, Grid*, key_hash_fun> Map;
+#    endif
+#else
+    typedef HASH_NAMESPACE::hash_map<Key, Grid*, key_hash_fun> Map;
+#endif
+
+
 
     typedef typename Map::const_iterator const_iterator;
     typedef typename Map::iterator iterator;
