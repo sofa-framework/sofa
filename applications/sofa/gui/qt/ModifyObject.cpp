@@ -994,7 +994,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
         if (Node* node = dynamic_cast< Node* >(node_clicked))
         {
-            if (node->mass!= NULL )
+            if (node->mass!= NULL || node->forceField.size()!=0 )
             {
                 createGraphMass(dialogTab);
             }
@@ -1973,7 +1973,7 @@ void ModifyObject::updateHistory()
 {
     if (Node *gnode = dynamic_cast<Node *>(node))
     {
-        if ( gnode->mass)
+        if ( gnode->mass || gnode->forceField.size() != 0)
         {
             history.push_back(gnode->getTime());
             updateEnergy();
@@ -1987,11 +1987,19 @@ void ModifyObject::updateEnergy()
     Node *gnode = dynamic_cast<Node *>(node);
 
     unsigned int index = energy_history[0].size();
-    energy_history[0].push_back(gnode->mass->getKineticEnergy());
-    energy_history[1].push_back(gnode->forceField[0]->getPotentialEnergy()); //The first forcefield is the one associated with the mass
+    if (gnode->mass)
+        energy_history[0].push_back(gnode->mass->getKineticEnergy());
+    else
+        energy_history[0].push_back(0);
+
+    if (gnode->forceField.size() != 0)
+        energy_history[1].push_back(gnode->forceField[0]->getPotentialEnergy());
+    else
+        energy_history[1].push_back(0);
+
     energy_history[2].push_back(energy_history[0][index] + energy_history[1][index]);
 
-    if (dialogTab->currentPageIndex() == dialogTab->count()-1)
+    if (dialogTab->currentPageIndex() == dialogTab->count()-2)
     {
         energy_curve[0]->setRawData(&history[0],&(energy_history[0][0]), history.size());
         energy_curve[1]->setRawData(&history[0],&(energy_history[1][0]), history.size());
