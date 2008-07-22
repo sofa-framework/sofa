@@ -225,6 +225,7 @@ SofaModeler::SofaModeler()
             QComboBox *combo=NULL;
             if ( entry->creatorList.size() > 1 )
             {
+
                 needSpacer = true;
                 combo = new QComboBox(gridWidget);
                 for (unsigned int t=0; t<templateCombo.size(); ++t)
@@ -236,6 +237,7 @@ SofaModeler::SofaModeler()
                 }
                 else
                 {
+                    if (templateCombo.size() == 0) {combo->hide(); button->hide();}
                     gridLayout->addWidget(combo, i,1);
                 }
 
