@@ -1,7 +1,7 @@
 <Node dt="0.02" name="root" showBehaviorModels="0" showCollisionModels="0" showForceFields="0" showMappings="0"> 
   <Object depth="6" draw="0" type="CollisionPipeline" verbose="0"/>
   <Object name="N2" type="BruteForceDetection"/>
-  <Object alarmDistance="0.3" contactDistance="0.2" name="Proximity" type="ProximityIntersection"/>    
+  <Object alarmDistance="0.3" contactDistance="0.2" name="Proximity" type="MinProximityIntersection"/>    
   <Object name="Response" response="default" type="CollisionResponse"/>    
   <Object name="Group" type="CollisionGroup"/>                                              
   

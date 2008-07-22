@@ -9,21 +9,21 @@
 	<Object type="CollisionPipeline" name="pipeline" depth="6" verbose="0"/>
 	<Object type="BruteForceDetection" name="detection" />
 	<Object type="CollisionResponse" name="response" response="FrictionContact" />
-	<Object type="MinProximityIntersection" name="proximity" alarmDistance="0.15" contactDistance="0.05" usePointPoint="1" filterIntersection="1" angleCone="0.0" />
+	<Object type="LocalMinDistance" name="proximity" alarmDistance="0.15" contactDistance="0.05" usePointPoint="1" filterIntersection="1" angleCone="0.0" />
 	<Object type="MasterContactSolver"/>
-	<Object type="OmniDriver" scale="0.1"/>
+	<Object type="OmniDriver" scale="0.1" orientation="180 -90 0"/>
 
 	<Node name="Tooth" >
 		<Node name="VisualModel" >
-			<Object type="OglModel" name="ToothVisualModel" filename="data/mesh/tooth-closed.obj" color="white" rz="-90" /> 
+			<Object type="OglModel" name="ToothVisualModel" filename="data/mesh/skull_and_teeth.obj" color="white" /> 
 		</Node>
 		<Node name="CollisionModel" >
 		 
-			<Object type="Mesh" name="ToothCollisionModel" filename="data/mesh/tooth_coarse_mesh.obj" />
-			<Object type="MechanicalObject" name="toothState" scale="1.58" dz="2.23" dx="0.08" dy="0.15"/>		
-			<Object type="Triangle" name="tooth" contactStiffness="100" filtered="1" simulated="0" moving="0"/>
-			<Object type="Line" name="tooth" contactStiffness="100" filtered="1" simulated="0" moving="0"/>	
-			<Object type="Point" name="tooth" contactStiffness="100" filtered="1" simulated="0" moving="0"/>	
+			<Object type="Mesh" name="ToothCollisionModel" filename="data/mesh/skull_and_teeth_coarse.obj" />
+			<Object type="MechanicalObject" name="toothState" />		
+			<Object type="Triangle" name="tooth" contactStiffness="100" simulated="0" moving="0"/>
+			<Object type="Line" name="tooth" contactStiffness="100" simulated="0" moving="0"/>	
+			<Object type="Point" name="tooth" contactStiffness="100" simulated="0" moving="0"/>	
 		</Node>
 	</Node>
 	
@@ -66,8 +66,8 @@
 		<Node name="CollisionModel" >
 			<Object type="Mesh" name="InstrumentCollisionModel" filename="data/mesh/dental_instrument_centerline.obj" />
 			<Object type="MechanicalObject" name="instrumentCollisionState"  ry="-180" rz="-90" dz="3.5" dx="-0.3" />
-			<Object type="Line" name="instrument" contactStiffness="10" filtered="1" />
-			<Object type="Point" name="instrument" contactStiffness="10" filtered="1" /> 
+			<Object type="Line" name="instrument" contactStiffness="10" />
+			<Object type="Point" name="instrument" contactStiffness="10" /> 
 			<Object type="RigidMapping" name="MM->CM mapping" object1="instrumentState" object2="instrumentCollisionState" />
 		</Node>
 		<Node name="RefModelRight" >

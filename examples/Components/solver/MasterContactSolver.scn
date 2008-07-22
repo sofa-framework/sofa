@@ -2,7 +2,7 @@
 	<Object type="MasterContactSolver"/>   
 	<Object type="CollisionPipeline" depth="6" verbose="0" draw="0"/>
 	<Object type="BruteForceDetection" name="N2" />
-	<Object type="MinProximityIntersection" name="Proximity" usePointPoint="1" alarmDistance="0.5" contactDistance="0.2" filterIntersection="1" angleCone="0"/>
+	<Object type="LocalMinDistance" name="Proximity" usePointPoint="1" alarmDistance="0.5" contactDistance="0.2" filterIntersection="1" angleCone="0"/>
 	<Object type="CollisionResponse" name="Response" response="FrictionContact"/> <!--"default"/>-->
 	<Object type="CollisionGroup" name="Group" />
 	
@@ -20,9 +20,9 @@
 		<Node name="Surf2">
 			<Object type="Mesh" filename="CollisionModels/torus_for_collision.obj"/>
 			<Object type="MechanicalObject" scale="1.0"/>
-			<Object type="Triangle" filtered="1"/> 
-			<Object type="Line" filtered="1"/>
-			<Object type="Point" filtered="1"/>
+			<Object type="Triangle" /> 
+			<Object type="Line" />
+			<Object type="Point" />
 			<Object type="RigidMapping" />
 		</Node>
 	</Node>
@@ -30,54 +30,54 @@
 	<Node name="BOX">
 		<Object type="MechanicalObject"/>
 		<Object type="Mesh" filename="CollisionModels/box.obj"/>
-		<Object type="Triangle" filtered="1" simulated="0" moving="0"/>	
-		<Object type="Line" filtered="1" simulated="0" moving="0"/>
-		<Object type="Point" filtered="1" simulated="0" moving="0"/>
+		<Object type="Triangle" simulated="0" moving="0"/>	
+		<Object type="Line" simulated="0" moving="0"/>
+		<Object type="Point" simulated="0" moving="0"/>
 		<Object type="OglModel" name="Visual" filename="CollisionModels/box.obj" color="1 0 0 0.1"/>
 	</Node>
 	
 	<Node name="BOXB">
 		<Object type="MechanicalObject" dy="10.0"/>
 		<Object type="Mesh" filename="CollisionModels/box.obj"/>
-		<Object type="Triangle" filtered="1" simulated="0" moving="0"/>	
-		<Object type="Line" filtered="1" simulated="0" moving="0"/>
-		<Object type="Point" filtered="1" simulated="0" moving="0"/>
+		<Object type="Triangle" simulated="0" moving="0"/>	
+		<Object type="Line" simulated="0" moving="0"/>
+		<Object type="Point" simulated="0" moving="0"/>
 		<Object type="OglModel" name="Visual" filename="CollisionModels/box.obj" color="1 0 0 0.1" dy="10.0"/>
 	</Node>
 	
 	<Node name="BOX2">
 		<Object type="MechanicalObject" dx="-5.0"/>
 		<Object type="Mesh" filename="CollisionModels/box2.obj"/>
-		<Object type="Triangle" filtered="1" simulated="0" moving="0"/>	
-		<Object type="Line" filtered="1" simulated="0" moving="0"/>
-		<Object type="Point" filtered="1" simulated="0" moving="0"/>
+		<Object type="Triangle" simulated="0" moving="0"/>	
+		<Object type="Line" simulated="0" moving="0"/>
+		<Object type="Point" simulated="0" moving="0"/>
 		<Object type="OglModel" name="Visual" filename="CollisionModels/box2.obj" color="1 0 0 0.1" dx="-5.0"/>
 	</Node>
 	
 	<Node name="BOX2B">
 		<Object type="MechanicalObject" dx="5.0"/>
 		<Object type="Mesh" filename="CollisionModels/box2.obj"/>
-		<Object type="Triangle" filtered="1" simulated="0" moving="0"/>	
-		<Object type="Line" filtered="1" simulated="0" moving="0"/>
-		<Object type="Point" filtered="1" simulated="0" moving="0"/>
+		<Object type="Triangle" simulated="0" moving="0"/>	
+		<Object type="Line" simulated="0" moving="0"/>
+		<Object type="Point" simulated="0" moving="0"/>
 		<Object type="OglModel" name="Visual" filename="CollisionModels/box2.obj" color="1 0 0 0.1" dx="5.0"/>
 	</Node>
 	
 	<Node name="BOX3">
 		<Object type="MechanicalObject" dz="-5.0"/>
 		<Object type="Mesh" filename="CollisionModels/box3.obj"/>
-		<Object type="Triangle" filtered="1" simulated="0" moving="0"/>	
-		<Object type="Line" filtered="1" simulated="0" moving="0"/>
-		<Object type="Point" filtered="1" simulated="0" moving="0"/>
+		<Object type="Triangle" simulated="0" moving="0"/>	
+		<Object type="Line" simulated="0" moving="0"/>
+		<Object type="Point" simulated="0" moving="0"/>
 		<Object type="OglModel" name="Visual" filename="CollisionModels/box3.obj" color="1 0 0 0.1" dz="-5.0"/>
 	</Node>
 	
 	<Node name="BOX3B">
 		<Object type="MechanicalObject" dz="5.0"/>
 		<Object type="Mesh" filename="CollisionModels/box3.obj"/>
-		<Object type="Triangle" filtered="1" simulated="0" moving="0"/>	
-		<Object type="Line" filtered="1" simulated="0" moving="0"/>
-		<Object type="Point" filtered="1" simulated="0" moving="0"/>
+		<Object type="Triangle" simulated="0" moving="0"/>	
+		<Object type="Line" simulated="0" moving="0"/>
+		<Object type="Point" simulated="0" moving="0"/>
 		<Object type="OglModel" name="Visual" filename="CollisionModels/box3.obj" color="1 0 0 0.1" dz="5.0"/>
 	</Node>
 	
