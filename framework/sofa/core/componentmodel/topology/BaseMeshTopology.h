@@ -186,6 +186,46 @@ public:
     virtual const QuadHexas& getHexaQuadShell(QuadID i);
     /// @}
 
+
+    /// Returns the index of the edge joining vertex v1 and vertex v2; returns -1 if no edge exists
+    virtual int getEdgeIndex(PointID v1, PointID v2);
+    /// Returns the index of the triangle given three vertex indices; returns -1 if no edge exists
+    virtual int getTriangleIndex(PointID v1, PointID v2, PointID v3);
+    /// Returns the index of the quad given four vertex indices; returns -1 if no edge exists
+    virtual int getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4);
+    /// Returns the index of the tetrahedron given four vertex indices; returns -1 if no edge exists
+    virtual int getTetrahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4);
+    /// Returns the index of the hexahedron given eight vertex indices; returns -1 if no edge exists
+    virtual int getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4, PointID v5, PointID v6, PointID v7, PointID v8);
+
+
+    /** returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex. Returns -1 if none */
+    virtual int getVertexIndexInTriangle(const Triangle &t, PointID vertexIndex) const;
+    /** returns the index (either 0, 1 ,2) of the edge whose global index is edgeIndex. Returns -1 if none */
+    virtual int getEdgeIndexInTriangle(const TriangleEdges &t, EdgeID edgeIndex) const;
+
+    /** returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex. Returns -1 if none */
+    virtual int getVertexIndexInQuad(Quad &t, PointID vertexIndex) const;
+    /** returns the index (either 0, 1 ,2, 3) of the edge whose global index is edgeIndex. Returns -1 if none */
+    virtual int getEdgeIndexInQuad(QuadEdges &t, EdgeID edgeIndex) const;
+
+    /** returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex. Returns -1 if none */
+    virtual int getVertexIndexInTetrahedron(const Tetra &t, PointID vertexIndex) const;
+    /** returns the index (either 0, 1 ,2 ,3, 4, 5) of the edge whose global index is edgeIndex. Returns -1 if none */
+    virtual int getEdgeIndexInTetrahedron(const TetraEdges &t, EdgeID edgeIndex) const;
+    /** returns the index (either 0, 1 ,2 ,3) of the triangle whose global index is triangleIndex. Returns -1 if none */
+    virtual int getTriangleIndexInTetrahedron(const TetraTriangles &t, TriangleID triangleIndex) const;
+
+    /** returns the index (either 0, 1 ,2, 3, 4, 5, 6, or 7) of the vertex whose global index is vertexIndex. Returns -1 if none */
+    virtual int getVertexIndexInHexahedron(Hexa &t, PointID vertexIndex) const;
+    /** returns the index (either 0, 1 ,2 ,3, 4, 5, 6, 7, 8, 9, 10, 11) of the edge whose global index is edgeIndex. Returns -1 if none */
+    virtual int getEdgeIndexInHexahedron(const HexaEdges &t, EdgeID edgeIndex) const;
+    /** returns the index (either 0, 1 ,2 ,3, 4, 5) of the quad whose global index is quadIndex. Returns -1 if none */
+    virtual int getQuadIndexInHexahedron(const HexaQuads &t, QuadID quadIndex) const;
+
+    /** returns for each index (between 0 and 5) the two vertex indices that are adjacent to that edge */
+    virtual Edge getLocalTetrahedronEdges (const unsigned int i) const;
+
     /// @name Deprecated names, for backward-compatibility
     /// @{
     const SeqLines& getLines() { return getEdges(); }

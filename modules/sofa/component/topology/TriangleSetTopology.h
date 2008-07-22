@@ -671,6 +671,24 @@ public:
     /// Returns the set of triangles adjacent to a given edge.
     const EdgeTriangles& getTriangleEdgeShell(EdgeID i) { return getTriangleSetTopologyContainer()->getTriangleEdgeShell(i); }
 
+    /// Returns the index of the triangle given three vertex indices; returns -1 if no edge exists
+    int getTriangleIndex(PointID v1, PointID v2, PointID v3)
+    {
+        return  getTriangleSetTopologyContainer()->getTriangleIndex(v1, v2, v3);
+    }
+
+    /// Returns the index (either 0, 1 ,2) of the vertex whose global index is vertexIndex. Returns -1 if none
+    int getVertexIndexInTriangle(const Triangle &t, PointID i) const
+    {
+        return  getTriangleSetTopologyContainer()->getVertexIndexInTriangle(t, i);
+    }
+    /// Returns the index (either 0, 1 ,2) of the edge whose global index is edgeIndex. Returns -1 if none
+    int getEdgeIndexInTriangle(const TriangleEdges &t, EdgeID i) const
+    {
+        return  getTriangleSetTopologyContainer()->getEdgeIndexInTriangle(t, i);
+    }
+
+
     /// @}
 
 protected:

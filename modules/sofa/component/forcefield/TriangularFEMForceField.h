@@ -143,6 +143,7 @@ protected:
     EdgeData<EdgeInformation> edgeInfo;
 
     TriangleSetTopology<DataTypes> * _mesh;
+    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
     //const VecElement *_indexedElements;
     //Data< VecCoord > _initialPoints; ///< the intial positions of the points
     VecCoord* _initialPoints;

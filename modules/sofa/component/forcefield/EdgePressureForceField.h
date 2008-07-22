@@ -71,6 +71,7 @@ protected:
 
 
     topology::EdgeSetTopology<DataTypes>* est;
+    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 
     Data<Deriv> pressure;
 

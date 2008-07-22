@@ -180,7 +180,7 @@ public:
 /// Handle topological changes
     void handleTopologyChange()
     {
-        sofa::core::componentmodel::topology::BaseTopology *topology = (getContext()->getMainTopology());
+        sofa::core::componentmodel::topology::BaseMeshTopology* topology = getContext()->getMeshTopology();
         std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=topology->firstChange();
         std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=topology->lastChange();
         if (itBegin != itEnd)

@@ -38,7 +38,6 @@
 #include <boost/config.hpp>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 #include <utility>
 
 #include <boost/graph/adjacency_list.hpp>

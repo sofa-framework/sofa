@@ -54,20 +54,19 @@ template <class DataTypes> TrianglePressureForceField<DataTypes>::~TrianglePress
 // Handle topological changes
 template <class DataTypes> void  TrianglePressureForceField<DataTypes>::handleTopologyChange()
 {
-    sofa::core::componentmodel::topology::BaseTopology *topology = static_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
+    std::list<const TopologyChange *>::const_iterator itBegin=_topology->firstChange();
+    std::list<const TopologyChange *>::const_iterator itEnd=_topology->lastChange();
 
 
-    std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
-
-
-    trianglePressureMap.handleTopologyEvents(itBegin,itEnd,tst->getTriangleSetTopologyContainer()->getNumberOfTriangles());
+    trianglePressureMap.handleTopologyEvents(itBegin,itEnd,_topology->getNbTriangles());
 
 }
 template <class DataTypes> void TrianglePressureForceField<DataTypes>::init()
 {
     //std::cerr << "initializing TrianglePressureForceField" << std::endl;
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
+
+    _topology = getContext()->getMeshTopology();
 
     tst= static_cast<sofa::component::topology::TriangleSetTopology<DataTypes> *>(getContext()->getMainTopology());
     assert(tst!=0);
@@ -98,14 +97,13 @@ void TrianglePressureForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord
     Deriv force;
 
     typename topology::TriangleSubsetData<TrianglePressureInformation>::iterator it;
-    const std::vector<Triangle> &ta=tst->getTriangleSetTopologyContainer()->getTriangleArray();
 
     for(it=trianglePressureMap.begin(); it!=trianglePressureMap.end(); it++ )
     {
         force=(*it).second.force/3;
-        f[ta[(*it).first][0]]+=force;
-        f[ta[(*it).first][1]]+=force;
-        f[ta[(*it).first][2]]+=force;
+        f[_topology->getTriangle((*it).first)[0]]+=force;
+        f[_topology->getTriangle((*it).first)[1]]+=force;
+        f[_topology->getTriangle((*it).first)[2]]+=force;
 
     }
 }
@@ -149,7 +147,7 @@ void TrianglePressureForceField<DataTypes>::selectTrianglesAlongPlane()
 {
     const VecCoord& x = *this->mstate->getX0();
     std::vector<bool> vArray;
-    unsigned int i,n;
+    unsigned int i;
 
     vArray.resize(x.size());
 
@@ -158,11 +156,9 @@ void TrianglePressureForceField<DataTypes>::selectTrianglesAlongPlane()
         vArray[i]=isPointInPlane(x[i]);
     }
 
-    const std::vector<Triangle> &ta=tst->getTriangleSetTopologyContainer()->getTriangleArray();
-
-    for (n=0; n<ta.size(); ++n)
+    for (int n=0; n<_topology->getNbTriangles(); ++n)
     {
-        if ((vArray[ta[n][0]]) && (vArray[ta[n][1]])&& (vArray[ta[n][2]]) )
+        if ((vArray[_topology->getTriangle(n)[0]]) && (vArray[_topology->getTriangle(n)[1]])&& (vArray[_topology->getTriangle(n)[2]]) )
         {
             // insert a dummy element : computation of pressure done later
             TrianglePressureInformation t;
@@ -215,13 +211,12 @@ void TrianglePressureForceField<DataTypes>::draw()
     glColor4f(0,1,0,1);
 
     typename topology::TriangleSubsetData<TrianglePressureInformation>::iterator it;
-    const std::vector<Triangle> &ta=tst->getTriangleSetTopologyContainer()->getTriangleArray();
 
     for(it=trianglePressureMap.begin(); it!=trianglePressureMap.end(); it++ )
     {
-        helper::gl::glVertexT(x[ta[(*it).first][0]]);
-        helper::gl::glVertexT(x[ta[(*it).first][1]]);
-        helper::gl::glVertexT(x[ta[(*it).first][2]]);
+        helper::gl::glVertexT(x[_topology->getTriangle((*it).first)[0]]);
+        helper::gl::glVertexT(x[_topology->getTriangle((*it).first)[1]]);
+        helper::gl::glVertexT(x[_topology->getTriangle((*it).first)[2]]);
     }
     glEnd();
 

@@ -128,6 +128,12 @@ public:
         return getEdgeSetTopologyContainer()->getEdgeVertexShell(i);
     }
 
+    /// Returns the index of the edge joining vertex v1 and vertex v2; returns -1 if no edge exists
+    virtual int getEdgeIndex(PointID v1, PointID v2)
+    {
+        return getEdgeSetTopologyContainer()->getEdgeIndex(v1, v2);
+    }
+
     /// @}
 
 protected:

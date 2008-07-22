@@ -83,13 +83,8 @@ void TriangularAnisotropicFEMForceField<DataTypes>::TRQSTriangleCreationFunction
     TriangularAnisotropicFEMForceField<DataTypes> *ff= (TriangularAnisotropicFEMForceField<DataTypes> *)param;
     if (ff)
     {
-        TriangleSetTopology<DataTypes> *_mesh = ff->getTriangularTopology();
-        assert(_mesh!=0);
-        TriangleSetTopologyContainer *container = _mesh->getTriangleSetTopologyContainer();
-        const std::vector< Triangle > &triangleArray=container->getTriangleArray() ;
-        const Triangle &t = triangleArray[triangleIndex];
 
-//		const typename DataTypes::VecCoord& vect_c = *_mesh->getDOF()->getX0();
+        const Triangle &t = ff->_topology->getTriangle(triangleIndex);
 
         Index a = t[0];
         Index b = t[1];
@@ -113,6 +108,9 @@ template< class DataTypes>
 void TriangularAnisotropicFEMForceField<DataTypes>::init()
 {
     Inherited::init();
+
+    _topology = getContext()->getMeshTopology();
+
     //reinit();
 }
 
@@ -125,7 +123,6 @@ template <class DataTypes>void TriangularAnisotropicFEMForceField<DataTypes>::re
 template <class DataTypes>
 void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index& v1, Index& v2, Index& v3)
 {
-// 	TriangleSetTopologyContainer *container = Inherited::_mesh-> getTriangleSetTopologyContainer();
     TriangleInformation *tinfo = &Inherited::triangleInfo[i];
 
     Real Q11, Q12, Q22, Q66;
@@ -206,18 +203,16 @@ template <class DataTypes>void TriangularAnisotropicFEMForceField<DataTypes>::dr
     if (!fiberDirRefs.empty())
     {
         const VecCoord& x = *this->mstate->getX();
-        TriangleSetTopologyContainer *container=Inherited::_mesh->getTriangleSetTopologyContainer();
-        unsigned int nbTriangles=container->getNumberOfTriangles();
-        const sofa::helper::vector< Triangle> &triangleArray=container->getTriangleArray();
+        int nbTriangles=_topology->getNbTriangles();
         glColor3f(0,0.2f,1);
         glBegin(GL_LINES);
         //typename VecElement::const_iterator it;
-        unsigned int i;
+        int i;
         for(i=0; i<nbTriangles; ++i) //it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it
         {
-            Index a = triangleArray[i][0];//(*it)[0];
-            Index b = triangleArray[i][1];//(*it)[1];
-            Index c = triangleArray[i][2];//(*it)[2];
+            Index a = _topology->getTriangle(i)[0];//(*it)[0];
+            Index b = _topology->getTriangle(i)[1];//(*it)[1];
+            Index c = _topology->getTriangle(i)[2];//(*it)[2];
             Coord center = (x[a]+x[b]+x[c])/3;
             Coord d = (x[b]-x[a])*fiberDirRefs[i][0] + (x[c]-x[a])*fiberDirRefs[i][1];
             d*=0.4;

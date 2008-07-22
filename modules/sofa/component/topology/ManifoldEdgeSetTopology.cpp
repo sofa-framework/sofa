@@ -331,9 +331,8 @@ void ManifoldEdgeSetTopologyContainer::computeConnectedComponent()
 
 bool ManifoldEdgeSetTopologyContainer::checkTopology() const
 {
-    bool ret = EdgeSetTopologyContainer::checkTopology();
-
 #ifndef NDEBUG
+    bool ret = EdgeSetTopologyContainer::checkTopology();
 
     if(!hasEdges()) // TODO : this method should only be called when edges exist
     {
@@ -359,8 +358,10 @@ bool ManifoldEdgeSetTopologyContainer::checkTopology() const
         }
     }
 
-#endif
     return ret;
+#else
+    return true;
+#endif
 }
 
 unsigned int ManifoldEdgeSetTopologyContainer::getNumberOfEdges() // const

@@ -135,6 +135,7 @@ protected:
     EdgeData<EdgeInformation> edgeInfo;
 
     TriangleSetTopology<DataTypes> * _mesh;
+    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 
     bool updateMatrix;
 

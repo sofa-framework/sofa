@@ -145,6 +145,29 @@ public:
     /// Returns the set of hexahedra adjacent to a given quad.
     const QuadHexas& getHexaQuadShell(QuadID i) { return getHexahedronSetTopologyContainer()->getHexahedronQuadShell(i); }
 
+    /// Returns the index of the hexahedron given eight vertex indices; returns -1 if no edge exists
+    int getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4, PointID v5, PointID v6, PointID v7, PointID v8)
+    {
+        return getHexahedronSetTopologyContainer()->getHexahedronIndex(v1, v2, v3, v4, v5, v6, v7, v8);
+    }
+
+    /// Returns the index (either 0, 1 ,2, 3, 4, 5, 6, or 7) of the vertex whose global index is vertexIndex. Returns -1 if none
+    int getVertexIndexInHexahedron(Hexa &t, PointID i) const
+    {
+        return getHexahedronSetTopologyContainer()->getVertexIndexInHexahedron(t, i);
+    }
+    /// Returns the index (either 0, 1 ,2 ,3, 4, 5, 6, 7, 8, 9, 10, 11) of the edge whose global index is edgeIndex. Returns -1 if none
+    int getEdgeIndexInHexahedron(const HexaEdges &t, EdgeID i) const
+    {
+        return getHexahedronSetTopologyContainer()->getEdgeIndexInHexahedron(t, i);
+    }
+    /// Returns the index (either 0, 1 ,2 ,3, 4, 5) of the quad whose global index is quadIndex. Returns -1 if none
+    int getQuadIndexInHexahedron(const HexaQuads &t, QuadID i) const
+    {
+        return getHexahedronSetTopologyContainer()->getQuadIndexInHexahedron(t, i);
+    }
+
+
     /// @}
 
 protected:

@@ -104,10 +104,8 @@ void HexahedralFEMForceField<DataTypes>::parse(core::objectmodel::BaseObjectDesc
 
 template <class DataTypes> void HexahedralFEMForceField<DataTypes>::handleTopologyChange()
 {
-    sofa::core::componentmodel::topology::BaseTopology *topology = static_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
-
-    std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
+    std::list<const TopologyChange *>::const_iterator itBegin=_topology->firstChange();
+    std::list<const TopologyChange *>::const_iterator itEnd=_topology->lastChange();
 
 
     hexahedronInfo.handleTopologyEvents(itBegin,itEnd);
@@ -122,11 +120,13 @@ void HexahedralFEMForceField<DataTypes>::init()
 
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
 
+    _topology = getContext()->getMeshTopology();
+
     _mesh =0;
     if (getContext()->getMainTopology()!=0)
         _mesh= dynamic_cast<HexahedronSetTopology<DataTypes>*>(getContext()->getMainTopology());
 
-    if ((_mesh==0) || (_mesh->getHexahedronSetTopologyContainer()->getNumberOfHexahedra()==0))
+    if ((_mesh==0) || (_topology->getNbHexas()==0))
     {
         std::cerr << "ERROR(HexahedralFEMForceField): object must have a Hexahedral Set Topology.\n";
         return;
@@ -175,8 +175,8 @@ void HexahedralFEMForceField<DataTypes>::init()
 
     //hexahedronInfo[i].materialMatrix.resize(_indexedElements->size() );
     //_rotations.resize( _indexedElements->size() );
-    //_rotatedInitialElements.resize(_mesh->getHexahedronSetTopologyContainer()->getNumberOfHexahedra()); //_indexedElements->size()
-    // _elementStiffnesses.resize(_mesh->getHexahedronSetTopologyContainer()->getNumberOfHexahedra()); //_indexedElements->size()
+    //_rotatedInitialElements.resize(_topology->getNbHexas()); //_indexedElements->size()
+    // _elementStiffnesses.resize(_topology->getNbHexas()); //_indexedElements->size()
     // 	_stiffnesses.resize( _initialPoints.getValue().size()*3 ); // assembly ?
 
     reinit(); // compute per-element stiffness matrices and other precomputed values
@@ -210,16 +210,12 @@ void HexahedralFEMForceField<DataTypes>::reinit()
     else if (f_method.getValue()  == "polar")
         this->setMethod(POLAR);
 
-    HexahedronSetTopologyContainer *container=_mesh->getHexahedronSetTopologyContainer();
-    unsigned int i;
+    hexahedronInfo.resize(_topology->getNbHexas());
 
-    hexahedronInfo.resize(container->getNumberOfHexahedra());
-
-    const std::vector<Hexahedron> &hexahedronArray=container->getHexahedronArray();
-    for (i=0; i<container->getNumberOfHexahedra(); ++i)
+    for (int i=0; i<_topology->getNbHexas(); ++i)
     {
         FHexahedronCreationFunction(i, (void*) this, hexahedronInfo[i],
-                hexahedronArray[i],  (const std::vector< unsigned int > )0,
+                _topology->getHexa(i),  (const std::vector< unsigned int > )0,
                 (const std::vector< double >)0);
     }
 
@@ -227,33 +223,6 @@ void HexahedralFEMForceField<DataTypes>::reinit()
     hexahedronInfo.setCreateParameter( (void *) this );
     hexahedronInfo.setDestroyParameter( (void *) this );
 
-    /*
-    switch(method)
-    {
-    	case LARGE :
-    	{
-    		unsigned int i=0;
-    		typename VecElement::const_iterator it;
-    		for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
-    		{
-    			computeMaterialStiffness(i);
-    			initLarge(i,*it);
-    		}
-    		break;
-    	}
-    	case POLAR :
-    	{
-    		unsigned int i=0;
-    		typename VecElement::const_iterator it;
-    		for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
-    		{
-    			computeMaterialStiffness(i);
-    			initPolar(i,*it);
-    		}
-    		break;
-    	}
-    }
-    */
 }
 
 
@@ -270,15 +239,11 @@ void HexahedralFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& 
 {
     f.resize(p.size());
 
-    unsigned int i;
-    HexahedronSetTopologyContainer *container=_mesh->getHexahedronSetTopologyContainer();
-    //const std::vector< Hexahedron > &hexahedronArray=container->getHexahedronArray() ;
-
     switch(method)
     {
     case LARGE :
     {
-        for(i = 0 ; i<container->getNumberOfHexahedra(); ++i)
+        for(int i = 0 ; i<_topology->getNbHexas(); ++i)
         {
             accumulateForceLarge( f, p, i);
         }
@@ -286,7 +251,7 @@ void HexahedralFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& 
     }
     case POLAR :
     {
-        for(i = 0 ; i<container->getNumberOfHexahedra(); ++i)
+        for(int i = 0 ; i<_topology->getNbHexas(); ++i)
         {
             accumulateForcePolar( f, p, i);
         }
@@ -294,22 +259,6 @@ void HexahedralFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& 
     }
     }
 
-    /*
-
-    unsigned int i=0;
-    typename VecElement::const_iterator it;
-
-    	if(method==LARGE)
-    		for(it=_indexedElements->begin();it!=_indexedElements->end();++it,++i)
-    		{
-    			accumulateForceLarge( f, p, i, *it );
-    		}
-    	else
-    		for(it=_indexedElements->begin();it!=_indexedElements->end();++it,++i)
-    		{
-    			accumulateForcePolar( f, p, i, *it );
-    		}
-    */
 }
 
 template<class DataTypes>
@@ -317,14 +266,10 @@ void HexahedralFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv&
 {
     if( v.size()!=x.size() ) v.resize(x.size());
 
-    unsigned int i=0;
-    HexahedronSetTopologyContainer *container=_mesh->getHexahedronSetTopologyContainer();
-    const std::vector< Hexahedron > &hexahedronArray=container->getHexahedronArray() ;
-
     //typename VecElement::const_iterator it;
 
     //for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
-    for(i = 0 ; i<container->getNumberOfHexahedra(); ++i)
+    for(int i = 0 ; i<_topology->getNbHexas(); ++i)
     {
 
         Transformation R_0_2;
@@ -335,7 +280,7 @@ void HexahedralFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv&
         for(int w=0; w<8; ++w)
         {
             Coord x_2;
-            x_2 = R_0_2 * x[hexahedronArray[i][w]];
+            x_2 = R_0_2 * x[_topology->getHexa(i)[w]];
             X[w*3] = x_2[0];
             X[w*3+1] = x_2[1];
             X[w*3+2] = x_2[2];
@@ -346,7 +291,7 @@ void HexahedralFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv&
 
 
         for(int w=0; w<8; ++w)
-            v[hexahedronArray[i][w]] -= hexahedronInfo[i].rotation * Deriv( F[w*3],  F[w*3+1],  F[w*3+2]  );
+            v[_topology->getHexa(i)[w]] -= hexahedronInfo[i].rotation * Deriv( F[w*3],  F[w*3+1],  F[w*3+2]  );
     }
 
 }
@@ -595,7 +540,7 @@ typename HexahedralFEMForceField<DataTypes>::Mat33 HexahedralFEMForceField<DataT
 template<class DataTypes>
 void HexahedralFEMForceField<DataTypes>::computeMaterialStiffness(int i)
 {
-    //const Real youngModulus = (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/container->getNumberOfHexahedra()])*_youngModulus;
+    //const Real youngModulus = (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/_topology->getNbHexas()])*_youngModulus;
 
     hexahedronInfo[i].materialMatrix[0][0] = hexahedronInfo[i].materialMatrix[1][1] = hexahedronInfo[i].materialMatrix[2][2] = 1;
     hexahedronInfo[i].materialMatrix[0][1] = hexahedronInfo[i].materialMatrix[0][2] = hexahedronInfo[i].materialMatrix[1][0]
@@ -640,12 +585,10 @@ void HexahedralFEMForceField<DataTypes>::initLarge(int i)
     // third vector orthogonal to first and second
 
     const VecCoord *X0=_mesh->getDOF()->getX0();
-    HexahedronSetTopologyContainer *container=_mesh->getHexahedronSetTopologyContainer();
-    const std::vector< Hexahedron > &hexahedronArray=container->getHexahedronArray() ;
 
     Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
-        nodes[w] = (*X0)[hexahedronArray[i][w]];
+        nodes[w] = (*X0)[_topology->getHexa(i)[w]];
 
 
     Coord horizontal;
@@ -656,7 +599,7 @@ void HexahedralFEMForceField<DataTypes>::initLarge(int i)
     computeRotationLarge( R_0_1, horizontal,vertical);
 
     for(int w=0; w<8; ++w)
-        hexahedronInfo[i].rotatedInitialElements[w] = R_0_1*(*X0)[hexahedronArray[i][w]];
+        hexahedronInfo[i].rotatedInitialElements[w] = R_0_1*(*X0)[_topology->getHexa(i)[w]];
 
 
     computeElementStiffness( hexahedronInfo[i].stiffness, hexahedronInfo[i].materialMatrix, nodes, i );//computeElementStiffness( hexahedronInfo[i].stiffness, hexahedronInfo[i].materialMatrix, nodes, i );
@@ -705,12 +648,9 @@ void HexahedralFEMForceField<DataTypes>::computeRotationLarge( Transformation &r
 template<class DataTypes>
 void HexahedralFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const Vector & p, int i)
 {
-    HexahedronSetTopologyContainer *container=_mesh->getHexahedronSetTopologyContainer();
-    const std::vector< Hexahedron > &hexahedronArray=container->getHexahedronArray() ;
-
     Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
-        nodes[w] = p[hexahedronArray[i][w]];
+        nodes[w] = p[_topology->getHexa(i)[w]];
 
     Coord horizontal;
     horizontal = (nodes[1]-nodes[0] + nodes[2]-nodes[3] + nodes[5]-nodes[4] + nodes[6]-nodes[7])*.25;
@@ -746,7 +686,7 @@ void HexahedralFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const 
     computeForce( F, D, hexahedronInfo[i].stiffness ); // computeForce( F, D, hexahedronInfo[i].stiffness ); // compute force on element
 
     for(int w=0; w<8; ++w)
-        f[hexahedronArray[i][w]] += hexahedronInfo[i].rotation * Deriv( F[w*3],  F[w*3+1],   F[w*3+2]  );
+        f[_topology->getHexa(i)[w]] += hexahedronInfo[i].rotation * Deriv( F[w*3],  F[w*3+1],   F[w*3+2]  );
 }
 
 
@@ -767,12 +707,9 @@ void HexahedralFEMForceField<DataTypes>::initPolar(int i)
 {
     const VecCoord *X0=_mesh->getDOF()->getX0();
 
-    HexahedronSetTopologyContainer *container=_mesh->getHexahedronSetTopologyContainer();
-    const std::vector< Hexahedron > &hexahedronArray=container->getHexahedronArray() ;
-
     Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
-        nodes[j] = (*X0)[hexahedronArray[i][j]];
+        nodes[j] = (*X0)[_topology->getHexa(i)[j]];
 
     Transformation R_0_1; // Rotation matrix (deformed and displaced Hexahedron/world)
     computeRotationPolar( R_0_1, nodes );
@@ -821,12 +758,9 @@ void HexahedralFEMForceField<DataTypes>::computeRotationPolar( Transformation &r
 template<class DataTypes>
 void HexahedralFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const Vector & p, int i)
 {
-    HexahedronSetTopologyContainer *container=_mesh->getHexahedronSetTopologyContainer();
-    const std::vector< Hexahedron > &hexahedronArray=container->getHexahedronArray() ;
-
     Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
-        nodes[j] = p[hexahedronArray[i][j]];
+        nodes[j] = p[_topology->getHexa(i)[j]];
 
 
     Transformation R_0_2; // Rotation matrix (deformed and displaced Hexahedron/world)
@@ -862,7 +796,7 @@ void HexahedralFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const 
 
 
     for(int j=0; j<8; ++j)
-        f[hexahedronArray[i][j]] += hexahedronInfo[i].rotation * Deriv( F[j*3],  F[j*3+1],   F[j*3+2]  );
+        f[_topology->getHexa(i)[j]] += hexahedronInfo[i].rotation * Deriv( F[j*3],  F[j*3+1],   F[j*3+2]  );
 }
 
 
@@ -891,19 +825,16 @@ void HexahedralFEMForceField<DataTypes>::draw()
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    HexahedronSetTopologyContainer *container=_mesh->getHexahedronSetTopologyContainer();
-    const std::vector< Hexahedron > &hexahedronArray=container->getHexahedronArray() ;
-
     glDisable(GL_LIGHTING);
 
     //typename VecElement::const_iterator it;
     //int i;
     //for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
-    unsigned int i;
-    for(i = 0 ; i<container->getNumberOfHexahedra(); ++i)
+
+    for(int i = 0 ; i<_topology->getNbHexas(); ++i)
     {
 
-        const Hexahedron &t=hexahedronArray[i];
+        const Hexahedron &t=_topology->getHexa(i);
 
         Index a = t[0];
         Index b = t[1];

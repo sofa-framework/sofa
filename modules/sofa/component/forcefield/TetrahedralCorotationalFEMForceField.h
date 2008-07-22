@@ -137,6 +137,7 @@ protected:
     double m_potentialEnergy;
 
     TetrahedronSetTopology<DataTypes> * _mesh;
+    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 
 public:
     int method;

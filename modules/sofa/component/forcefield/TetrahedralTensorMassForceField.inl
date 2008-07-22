@@ -80,12 +80,6 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronCreatio
     TetrahedralTensorMassForceField<DataTypes> *ff= (TetrahedralTensorMassForceField<DataTypes> *)param;
     if (ff)
     {
-        TetrahedronSetTopology<DataTypes> *_mesh=ff->getTetrahedralTopology();
-        assert(_mesh!=0);
-        TetrahedronSetTopologyContainer *container=_mesh->getTetrahedronSetTopologyContainer();
-        const std::vector< Edge > &edgeArray=container->getEdgeArray();
-        const std::vector< Tetrahedron > &tetrahedronArray=container->getTetrahedronArray() ;
-        const std::vector< TetrahedronEdges > &tetrahedronEdgeArray=container->getTetrahedronEdgeArray() ;
 
         unsigned int i,j,k,l,u,v;
 
@@ -94,15 +88,17 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronCreatio
         typename DataTypes::Real mu=ff->getMu();
         typename DataTypes::Real lambdastar, mustar;
         typename DataTypes::Coord point[4],shapeVector[4];
-        const typename DataTypes::VecCoord *restPosition=_mesh->getDOF()->getX0();
+
+        component::MechanicalObject<DataTypes>* _mstate = dynamic_cast<component::MechanicalObject<DataTypes>*>(ff->getContext()->getMechanicalState());
+        const typename DataTypes::VecCoord *restPosition=_mstate->getX0();
 
         for (i=0; i<tetrahedronAdded.size(); ++i)
         {
 
             /// get a reference on the edge set of the ith added tetrahedron
-            const TetrahedronEdges &te= tetrahedronEdgeArray[tetrahedronAdded[i]];
+            const TetrahedronEdges &te= ff->_topology->getEdgeTetraShell(tetrahedronAdded[i]);
             ///get a reference on the vertex set of the ith added tetrahedron
-            const Tetrahedron &t= tetrahedronArray[tetrahedronAdded[i]];
+            const Tetrahedron &t= ff->_topology->getTetra(tetrahedronAdded[i]);
             // store points
             for(j=0; j<4; ++j)
                 point[j]=(*restPosition)[t[j]];
@@ -124,8 +120,8 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronCreatio
             for(j=0; j<6; ++j)
             {
                 /// local indices of the edge
-                k = container->getLocalTetrahedronEdges(j)[0];
-                l = container->getLocalTetrahedronEdges(j)[1];
+                k = ff->_topology->getLocalTetrahedronEdges(j)[0];
+                l = ff->_topology->getLocalTetrahedronEdges(j)[1];
 
                 Mat3 &m=edgeData[te[j]].DfDx;
 
@@ -137,7 +133,7 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronCreatio
                         std::cerr<<"negative cotangent["<<tetrahedronAdded[i]<<"]["<<j<<"]"<<std::endl;
                 }
 
-                if (edgeArray[te[j]][0]!=t[l])
+                if (ff->_topology->getEdge(te[j])[0]!=t[l])
                 {
                     for (u=0; u<3; ++u)
                     {
@@ -174,12 +170,6 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronDestruc
     TetrahedralTensorMassForceField<DataTypes> *ff= (TetrahedralTensorMassForceField<DataTypes> *)param;
     if (ff)
     {
-        TetrahedronSetTopology<DataTypes> *_mesh=ff->getTetrahedralTopology();
-        assert(_mesh!=0);
-        TetrahedronSetTopologyContainer *container=_mesh->getTetrahedronSetTopologyContainer();
-        const std::vector< Edge > &edgeArray=container->getEdgeArray() ;
-        const std::vector< Tetrahedron > &tetrahedronArray=container->getTetrahedronArray() ;
-        const std::vector< TetrahedronEdges > &tetrahedronEdgeArray=container->getTetrahedronEdgeArray() ;
 
         unsigned int i,j,k,l,u,v;
 
@@ -188,15 +178,17 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronDestruc
         typename DataTypes::Real mu=ff->getMu();
         typename DataTypes::Real lambdastar, mustar;
         typename DataTypes::Coord point[4],shapeVector[4];
-        const typename DataTypes::VecCoord *restPosition=_mesh->getDOF()->getX0();
+
+        component::MechanicalObject<DataTypes>* _mstate = dynamic_cast<component::MechanicalObject<DataTypes>*>(ff->getContext()->getMechanicalState());
+        const typename DataTypes::VecCoord *restPosition=_mstate->getX0();
 
         for (i=0; i<tetrahedronRemoved.size(); ++i)
         {
 
             /// get a reference on the edge set of the ith added tetrahedron
-            const TetrahedronEdges &te= tetrahedronEdgeArray[tetrahedronRemoved[i]];
+            const TetrahedronEdges &te= ff->_topology->getEdgeTetraShell(tetrahedronRemoved[i]);
             ///get a reference on the vertex set of the ith added tetrahedron
-            const Tetrahedron &t= tetrahedronArray[tetrahedronRemoved[i]];
+            const Tetrahedron &t= ff->_topology->getTetra(tetrahedronRemoved[i]);
             // store points
             for(j=0; j<4; ++j)
                 point[j]=(*restPosition)[t[j]];
@@ -218,8 +210,8 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronDestruc
             for(j=0; j<6; ++j)
             {
                 /// local indices of the edge
-                k = container->getLocalTetrahedronEdges(j)[0];
-                l = container->getLocalTetrahedronEdges(j)[1];
+                k = ff->_topology->getLocalTetrahedronEdges(j)[0];
+                l = ff->_topology->getLocalTetrahedronEdges(j)[1];
 
                 Mat3 &m=edgeData[te[j]].DfDx;
 
@@ -231,7 +223,7 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronDestruc
                         std::cerr<<"negative cotangent["<<tetrahedronRemoved[i]<<"]["<<j<<"]"<<std::endl;
                 }
 
-                if (edgeArray[te[j]][0]!=t[l])
+                if (ff->_topology->getEdge(te[j])[0]!=t[l])
                 {
                     for (u=0; u<3; ++u)
                     {
@@ -276,10 +268,8 @@ template <class DataTypes> TetrahedralTensorMassForceField<DataTypes>::Tetrahedr
 
 template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::handleTopologyChange()
 {
-    sofa::core::componentmodel::topology::BaseTopology *topology = static_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
-
-    std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
+    std::list<const TopologyChange *>::const_iterator itBegin=_topology->firstChange();
+    std::list<const TopologyChange *>::const_iterator itEnd=_topology->lastChange();
 
     edgeInfo.handleTopologyEvents(itBegin,itEnd);
 }
@@ -293,21 +283,22 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
 {
     std::cerr << "initializing TetrahedralTensorMassForceField" << std::endl;
     this->Inherited::init();
+
+    _topology = getContext()->getMeshTopology();
+
     _mesh =0;
     if (getContext()->getMainTopology()!=0)
         _mesh= dynamic_cast<TetrahedronSetTopology<DataTypes>*>(getContext()->getMainTopology());
 
-    if ((_mesh==0) || (_mesh->getTetrahedronSetTopologyContainer()->getNumberOfTetrahedra()==0))
+    if ((_mesh==0) || (_topology->getNbTetras()==0))
     {
         std::cerr << "ERROR(TetrahedralTensorMassForceField): object must have a Tetrahedral Set Topology.\n";
         return;
     }
     updateLameCoefficients();
 
-    TetrahedronSetTopologyContainer *container=_mesh->getTetrahedronSetTopologyContainer();
-
     /// prepare to store info in the edge array
-    edgeInfo.resize(container->getNumberOfEdges());
+    edgeInfo.resize(_topology->getNbEdges());
 
     if (_initialPoints.size() == 0)
     {
@@ -316,18 +307,17 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
         _initialPoints=p;
     }
 
-    unsigned int i;
+    int i;
     // set edge tensor to 0
-    const std::vector<Edge> &edgeArray=container->getEdgeArray();
-    for (i=0; i<container->getNumberOfEdges(); ++i)
+    for (i=0; i<_topology->getNbEdges(); ++i)
     {
         TetrahedralTMEdgeCreationFunction(i, (void*) this, edgeInfo[i],
-                edgeArray[i],  (const std::vector< unsigned int > )0,
+                _topology->getEdge(i),  (const std::vector< unsigned int > )0,
                 (const std::vector< double >)0);
     }
     // create edge tensor by calling the tetrahedron creation function
     std::vector<unsigned int> tetrahedronAdded;
-    for (i=0; i<container->getNumberOfTetrahedra(); ++i)
+    for (i=0; i<_topology->getNbTetras(); ++i)
         tetrahedronAdded.push_back(i);
     TetrahedralTMTetrahedronCreationFunction(tetrahedronAdded,(void*) this,
             edgeInfo);
@@ -351,10 +341,8 @@ double TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const VecC
 template <class DataTypes>
 void TetrahedralTensorMassForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/)
 {
-    unsigned int i,v0,v1;
-    TetrahedronSetTopologyContainer *container=_mesh->getTetrahedronSetTopologyContainer();
-    unsigned int nbEdges=container->getNumberOfEdges();
-    const std::vector<Edge> &edgeArray=container->getEdgeArray();
+    unsigned int v0,v1;
+    int nbEdges=_topology->getNbEdges();
 
     EdgeRestInformation *einfo;
 
@@ -362,11 +350,11 @@ void TetrahedralTensorMassForceField<DataTypes>::addForce(VecDeriv& f, const Vec
     Coord dp0,dp1,dp;
 
 
-    for(i=0; i<nbEdges; i++ )
+    for(int i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInfo[i];
-        v0=edgeArray[i][0];
-        v1=edgeArray[i][1];
+        v0=_topology->getEdge(i)[0];
+        v1=_topology->getEdge(i)[1];
         dp0=x[v0]-_initialPoints[v0];
         dp1=x[v1]-_initialPoints[v1];
         dp = dp1-dp0;
@@ -381,10 +369,8 @@ void TetrahedralTensorMassForceField<DataTypes>::addForce(VecDeriv& f, const Vec
 template <class DataTypes>
 void TetrahedralTensorMassForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx)
 {
-    unsigned int i,v0,v1;
-    TetrahedronSetTopologyContainer *container=_mesh->getTetrahedronSetTopologyContainer();
-    unsigned int nbEdges=container->getNumberOfEdges();
-    const std::vector<Edge> &edgeArray=container->getEdgeArray();
+    unsigned int v0,v1;
+    int nbEdges=_topology->getNbEdges();
 
     EdgeRestInformation *einfo;
 
@@ -392,11 +378,11 @@ void TetrahedralTensorMassForceField<DataTypes>::addDForce(VecDeriv& df, const V
     Deriv force;
     Coord dp0,dp1,dp;
 
-    for(i=0; i<nbEdges; i++ )
+    for(int i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInfo[i];
-        v0=edgeArray[i][0];
-        v1=edgeArray[i][1];
+        v0=_topology->getEdge(i)[0];
+        v1=_topology->getEdge(i)[1];
         dp0=dx[v0];
         dp1=dx[v1];
         dp = dp1-dp0;
@@ -427,9 +413,7 @@ void TetrahedralTensorMassForceField<DataTypes>::draw()
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 // 	VecCoord& x = *this->mstate->getX();
-// 	TetrahedronSetTopologyContainer *container=_mesh->getTetrahedronSetTopologyContainer();
-// 	unsigned int nbTriangles=container->getNumberOfTriangles();
-// 	const std::vector< Triangle> &triangleArray=container->getTriangleArray() ;
+// 	int nbTriangles=_topology->getNbTriangles();
 
     /*
     	glDisable(GL_LIGHTING);
@@ -437,9 +421,9 @@ void TetrahedralTensorMassForceField<DataTypes>::draw()
     	glBegin(GL_TRIANGLES);
     	for(i=0;i<nbTriangles; ++i)
     	{
-    		int a = triangleArray[i][0];
-    		int b = triangleArray[i][1];
-    		int c = triangleArray[i][2];
+    		int a = _topology->getTriangle(i)[0];
+    		int b = _topology->getTriangle(i)[1];
+    		int c = _topology->getTriangle(i)[2];
 
     		glColor4f(0,1,0,1);
     		helper::gl::glVertexT(x[a]);

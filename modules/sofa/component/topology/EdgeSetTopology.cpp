@@ -248,13 +248,14 @@ int EdgeSetTopologyContainer::getNumberConnectedComponents(sofa::helper::vector<
 
 bool EdgeSetTopologyContainer::checkTopology() const
 {
+#ifndef NDEBUG
     bool ret = PointSetTopologyContainer::checkTopology();
 
     if(!hasEdges()) // TODO : this method should only be called when edges exist
     {
-#ifndef NDEBUG
+
         cout << "Warning. [EdgeSetTopologyContainer::checkTopology] edge array is empty." << endl;
-#endif
+
         return ret;
     }
 
@@ -277,6 +278,9 @@ bool EdgeSetTopologyContainer::checkTopology() const
     }
 
     return ret;
+#else
+    return true;
+#endif
 }
 
 unsigned int EdgeSetTopologyContainer::getNumberOfEdges() // const

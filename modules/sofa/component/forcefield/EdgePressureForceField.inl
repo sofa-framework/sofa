@@ -56,14 +56,11 @@ template <class DataTypes> EdgePressureForceField<DataTypes>::~EdgePressureForce
 // Handle topological changes
 template <class DataTypes> void  EdgePressureForceField<DataTypes>::handleTopologyChange()
 {
-    sofa::core::componentmodel::topology::BaseTopology *topology = static_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
+    std::list<const TopologyChange *>::const_iterator itBegin=_topology->firstChange();
+    std::list<const TopologyChange *>::const_iterator itEnd=_topology->lastChange();
 
 
-    std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
-
-
-    edgePressureMap.handleTopologyEvents(itBegin,itEnd,est->getEdgeSetTopologyContainer()->getNumberOfEdges());
+    edgePressureMap.handleTopologyEvents(itBegin,itEnd,_topology->getNbEdges());
 
 }
 template <class DataTypes> void EdgePressureForceField<DataTypes>::init()
@@ -72,6 +69,8 @@ template <class DataTypes> void EdgePressureForceField<DataTypes>::init()
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
 
     est= static_cast<sofa::component::topology::EdgeSetTopology<DataTypes> *>(getContext()->getMainTopology());
+    _topology = getContext()->getMeshTopology();
+
     assert(est!=0);
 
     if (est==NULL)
@@ -100,13 +99,12 @@ void EdgePressureForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& /*
     Deriv force;
 
     typename topology::EdgeSubsetData<EdgePressureInformation>::iterator it;
-    const std::vector<Edge> &ea=est->getEdgeSetTopologyContainer()->getEdgeArray();
 
     for(it=edgePressureMap.begin(); it!=edgePressureMap.end(); it++ )
     {
         force=(*it).second.force/2;
-        f[ea[(*it).first][0]]+=force;
-        f[ea[(*it).first][1]]+=force;
+        f[_topology->getEdge((*it).first)[0]]+=force;
+        f[_topology->getEdge((*it).first)[1]]+=force;
 
     }
 }
@@ -150,7 +148,7 @@ void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
 {
     const VecCoord& x = *this->mstate->getX0();
     std::vector<bool> vArray;
-    unsigned int i,n;
+    unsigned int i;
 
     vArray.resize(x.size());
 
@@ -159,11 +157,9 @@ void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
         vArray[i]=isPointInPlane(x[i]);
     }
 
-    const std::vector<Edge> &ea=est->getEdgeSetTopologyContainer()->getEdgeArray();
-
-    for (n=0; n<ea.size(); ++n)
+    for (int n=0; n<_topology->getNbEdges(); ++n)
     {
-        if ((vArray[ea[n][0]]) && (vArray[ea[n][1]]))
+        if ((vArray[_topology->getEdge(n)[0]]) && (vArray[_topology->getEdge(n)[1]]))
         {
             // insert a dummy element : computation of pressure done later
             EdgePressureInformation t;
@@ -216,12 +212,11 @@ void EdgePressureForceField<DataTypes>::draw()
     glColor4f(0,1,0,1);
 
     typename topology::EdgeSubsetData<EdgePressureInformation>::iterator it;
-    const std::vector<Edge> &ea=est->getEdgeSetTopologyContainer()->getEdgeArray();
 
     for(it=edgePressureMap.begin(); it!=edgePressureMap.end(); it++ )
     {
-        helper::gl::glVertexT(x[ea[(*it).first][0]]);
-        helper::gl::glVertexT(x[ea[(*it).first][1]]);
+        helper::gl::glVertexT(x[_topology->getEdge((*it).first)[0]]);
+        helper::gl::glVertexT(x[_topology->getEdge((*it).first)[1]]);
     }
     glEnd();
 

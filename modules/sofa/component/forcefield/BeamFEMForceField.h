@@ -153,6 +153,8 @@ protected:
 
     Quat& beamQuat(int i) { return beamsData[i].quat; }
 
+    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+
 public:
     BeamFEMForceField()
         : _indexedElements(NULL)

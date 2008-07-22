@@ -64,25 +64,27 @@ void BeamFEMForceField<DataTypes>::init()
 {
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
     sofa::core::objectmodel::BaseContext* context = this->getContext();
-    core::componentmodel::topology::BaseMeshTopology* topology = context->getMeshTopology();
+
+    _topology = context->getMeshTopology();
+
     stiffnessContainer = context->core::objectmodel::BaseContext::get<StiffnessContainer>();
     lengthContainer = context->core::objectmodel::BaseContext::get<LengthContainer>();
     poissonContainer = context->core::objectmodel::BaseContext::get<PoissonContainer>();
     radiusContainer = context->core::objectmodel::BaseContext::get<RadiusContainer>();
 
-    if (topology==NULL)
+    if (_topology==NULL)
     {
         std::cerr << "ERROR(BeamFEMForceField): object must have a BaseMeshTopology (i.e. EdgeSetTopology or MeshTopology).\n";
         return;
     }
     else
     {
-        if(topology->getNbEdges()==0)
+        if(_topology->getNbEdges()==0)
         {
             std::cerr << "ERROR(BeamFEMForceField): topology is empty.\n";
             return;
         }
-        _indexedElements = &topology->getEdges();
+        _indexedElements = &_topology->getEdges();
     }
 
     beamsData.setCreateFunction(BeamFEMEdgeCreationFunction);
@@ -179,10 +181,9 @@ template <class DataTypes>
 void BeamFEMForceField<DataTypes>::handleTopologyChange()
 {
     //_beamQuat.resize( _indexedElements->size() );
-    sofa::core::componentmodel::topology::BaseTopology *topology = static_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
 
-    std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=topology->firstChange();
-    std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=topology->lastChange();
+    std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=_topology->firstChange();
+    std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=_topology->lastChange();
 
     beamsData.handleTopologyEvents(itBegin,itEnd);
 }

@@ -96,6 +96,7 @@ protected:
     EdgeData<EdgeRestInformation> edgeInfo;
 
     TetrahedronSetTopology<DataTypes> * _mesh;
+    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
     VecCoord  _initialPoints;///< the intial positions of the points
 
     bool updateMatrix;
