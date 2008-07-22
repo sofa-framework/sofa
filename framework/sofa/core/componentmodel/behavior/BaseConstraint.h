@@ -46,6 +46,7 @@ namespace behavior
 {
 /// @TODO  The classes applyConstraint, getConstraintValue && getConstraintId need to be commented
 #ifdef SOFA_DEV
+
 /**
  *  \brief Object computing a constraint resolution within a Gauss-Seidel algorithm
  */
@@ -126,10 +127,6 @@ public:
     /// Add the corresponding ConstraintResolution using the offset parameter
     virtual void getConstraintResolution(std::vector<ConstraintResolution*>& /*resTab*/, unsigned int& /*offset*/) {};
 #endif //SOFA_DEV
-
-    /// Get additionnal DOFs associated to this constraint (such as Lagrange Multiplier values)
-    /// \todo Remove it or disable it until we have a working Lagrange Multipliers implementation
-    virtual BaseMechanicalState* getDOFs() { return NULL; }
 
     /// says if the constraint is holonomic or not
     /// holonomic constraints can be processed using different methods such as :

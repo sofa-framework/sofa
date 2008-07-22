@@ -34,7 +34,9 @@
 #include <sofa/component/topology/TetrahedronSetTopology.h>
 #include <sofa/component/topology/QuadSetTopology.h>
 #include <sofa/component/topology/HexahedronSetTopology.h>
+#ifdef SOFA_DEV
 #include <sofa/component/collision/CuttingManager.h>
+#endif // SOFA_DEV
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -114,12 +116,15 @@ private:
         unsigned int b_last_init;
         sofa::helper::vector< unsigned int > b_p12_last_init;
         sofa::helper::vector< unsigned int > b_i123_last_init;
-        CuttingPoint* cutB;
 
         unsigned int a_last_init;
         sofa::helper::vector< unsigned int >  a_p12_last_init;
         sofa::helper::vector< unsigned int >  a_i123_last_init;
+
+#ifdef SOFA_DEV
+        CuttingPoint* cutB;
         CuttingPoint* cutA;
+#endif // SOFA_DEV
     }	incision;
 };
 
