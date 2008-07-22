@@ -144,6 +144,7 @@ protected:
 
 
     HexahedronSetTopology<DataTypes> * _mesh;
+    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 
     //topology::SparseGridTopology* _sparseGrid;
 

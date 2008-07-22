@@ -118,6 +118,7 @@ protected:
     EdgeData<EdgeInformation> edgeInfo;
 
     QuadSetTopology<DataTypes> * _mesh;
+    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 
     bool updateMatrix;
 

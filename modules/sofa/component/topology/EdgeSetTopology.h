@@ -101,7 +101,7 @@ public:
         return static_cast<EdgeSetTopologyAlgorithms<DataTypes> *> (this->m_topologyAlgorithms);
     }
 
-    /** \brief Returns the EdgeSetTopologyAlgorithms object of this EdgeSetTopology.
+    /** \brief Returns the EdgeSetGeometryAlgorithms object of this EdgeSetTopology.
     */
     EdgeSetGeometryAlgorithms<DataTypes> *getEdgeSetGeometryAlgorithms() const
     {
@@ -120,6 +120,12 @@ public:
     virtual const VertexEdges& getEdgeVertexShell(PointID i)
     {
         return getEdgeSetTopologyContainer()->getEdgeVertexShell(i);
+    }
+
+    /// Returns the index of the edge joining vertex v1 and vertex v2; returns -1 if no edge exists
+    virtual int getEdgeIndex(PointID v1, PointID v2)
+    {
+        return getEdgeSetTopologyContainer()->getEdgeIndex(v1, v2);
     }
 
     /// @}
@@ -170,8 +176,6 @@ public:
 
     /** \brief add a set  of edges
     @param edges an array of pair of vertex indices describing the edge to be created
-    @param ancestors for each edge to be created provides an array of edge ancestors (optional)
-    @param baryCoefs for each edge provides the barycentric coordinates (sum to 1) associated with each ancestor (optional)
     *
     */
     virtual void addEdges(const sofa::helper::vector< Edge >& edges) ;

@@ -639,6 +639,34 @@ public:
     /// Returns the set of tetrahedra adjacent to a given triangle.
     const TriangleTetras& getTetraTriangleShell(TriangleID i) { return getTetrahedronSetTopologyContainer()->getTetrahedronTriangleShell(i); }
 
+    /// Returns the index of the tetrahedron given four vertex indices; returns -1 if no edge exists
+    int getTetrahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4)
+    {
+        return getTetrahedronSetTopologyContainer()->getTetrahedronIndex(v1, v2, v3, v4);
+    }
+
+    /// Returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex. Returns -1 if none
+    int getVertexIndexInTetrahedron(const Tetra &t, PointID i) const
+    {
+        return getTetrahedronSetTopologyContainer()->getVertexIndexInTetrahedron(t, i);
+    }
+    /// Returns the index (either 0, 1 ,2 ,3, 4, 5) of the edge whose global index is edgeIndex. Returns -1 if none
+    int getEdgeIndexInTetrahedron(const TetraEdges &t, EdgeID i) const
+    {
+        return getTetrahedronSetTopologyContainer()->getEdgeIndexInTetrahedron(t, i);
+    }
+    /// Returns the index (either 0, 1 ,2 ,3) of the triangle whose global index is triangleIndex. Returns -1 if none
+    int getTriangleIndexInTetrahedron(const TetraTriangles &t, TriangleID i) const
+    {
+        return getTetrahedronSetTopologyContainer()->getTriangleIndexInTetrahedron(t, i);
+    }
+    /// Returns for each index (between 0 and 5) the two vertex indices that are adjacent to that edge
+    Edge getLocalTetrahedronEdges (const unsigned int i) const
+    {
+        return getTetrahedronSetTopologyContainer()->getLocalTetrahedronEdges(i);
+    }
+
+
     /// @}
 
 protected:

@@ -110,6 +110,7 @@ protected:
     EdgeData<EdgeRestInformation> edgeInfo;
 
     TriangleSetTopology<DataTypes> * _mesh;
+    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
     Data < VecCoord >  _initialPoints;										///< the intial positions of the points
 
     bool updateMatrix;

@@ -88,6 +88,7 @@ const BaseMeshTopology::TetraEdges& BaseMeshTopology::getEdgeTetraShell(TetraID)
     return empty;
 }
 
+
 /// Returns the set of edges adjacent to a given hexahedron.
 const BaseMeshTopology::HexaEdges& BaseMeshTopology::getEdgeHexaShell(HexaID)
 {
@@ -243,6 +244,103 @@ std::list<const TopologyChange *>::const_iterator BaseMeshTopology::lastChange()
     std::cerr << "WARNING: "<<this->getClassName()<<"::lastChange() not supported." << std::endl;
     std::list<const TopologyChange *>::const_iterator l;
     return l;
+}
+
+int BaseMeshTopology::getEdgeIndex(PointID v1, PointID v2)
+{
+    std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgeIndex() not supported." << std::endl;
+    return 0;
+}
+
+int BaseMeshTopology::getTriangleIndex(PointID v1, PointID v2, PointID v3)
+{
+    std::cerr << "WARNING: "<<this->getClassName()<<"::getTriangleIndex() not supported." << std::endl;
+    return 0;
+}
+
+int BaseMeshTopology::getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4)
+{
+    std::cerr << "WARNING: "<<this->getClassName()<<"::getQuadIndex() not supported." << std::endl;
+    return 0;
+}
+
+int BaseMeshTopology::getTetrahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4)
+{
+    std::cerr << "WARNING: "<<this->getClassName()<<"::getTetrahedronIndex() not supported." << std::endl;
+    return 0;
+}
+
+int BaseMeshTopology::getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4, PointID v5, PointID v6, PointID v7, PointID v8)
+{
+    std::cerr << "WARNING: "<<this->getClassName()<<"::getHexahedronIndex() not supported." << std::endl;
+    return 0;
+}
+
+int BaseMeshTopology::getVertexIndexInTriangle(const Triangle &t, PointID vertexIndex) const
+{
+    std::cerr << "WARNING: "<<this->getClassName()<<"::getVertexIndexInTriangle() not supported." << std::endl;
+    return 0;
+}
+
+int BaseMeshTopology::getEdgeIndexInTriangle(const TriangleEdges &t, EdgeID edgeIndex) const
+{
+    std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgeIndexInTriangle() not supported." << std::endl;
+    return 0;
+}
+
+int BaseMeshTopology::getVertexIndexInQuad(Quad &t, PointID vertexIndex) const
+{
+    std::cerr << "WARNING: "<<this->getClassName()<<"::getVertexIndexInQuad() not supported." << std::endl;
+    return 0;
+}
+
+int BaseMeshTopology::getEdgeIndexInQuad(QuadEdges &t, EdgeID edgeIndex) const
+{
+    std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgeIndexInQuad() not supported." << std::endl;
+    return 0;
+}
+
+int BaseMeshTopology::getVertexIndexInTetrahedron(const Tetra &t, PointID vertexIndex) const
+{
+    std::cerr << "WARNING: "<<this->getClassName()<<"::getVertexIndexInTetrahedron() not supported." << std::endl;
+    return 0;
+}
+
+int BaseMeshTopology::getEdgeIndexInTetrahedron(const TetraEdges &t, EdgeID edgeIndex) const
+{
+    std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgeIndexInTetrahedron() not supported." << std::endl;
+    return 0;
+}
+
+int BaseMeshTopology::getTriangleIndexInTetrahedron(const TetraTriangles &t, TriangleID triangleIndex) const
+{
+    std::cerr << "WARNING: "<<this->getClassName()<<"::getTriangleIndexInTetrahedron() not supported." << std::endl;
+    return 0;
+}
+
+int BaseMeshTopology::getVertexIndexInHexahedron(Hexa &t, PointID vertexIndex) const
+{
+    std::cerr << "WARNING: "<<this->getClassName()<<"::getVertexIndexInHexahedron() not supported." << std::endl;
+    return 0;
+}
+
+int BaseMeshTopology::getEdgeIndexInHexahedron(const HexaEdges &t, EdgeID edgeIndex) const
+{
+    std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgeIndexInHexahedron() not supported." << std::endl;
+    return 0;
+}
+
+int BaseMeshTopology::getQuadIndexInHexahedron(const HexaQuads &t, QuadID quadIndex) const
+{
+    std::cerr << "WARNING: "<<this->getClassName()<<"::getQuadIndexInHexahedron() not supported." << std::endl;
+    return 0;
+}
+
+BaseMeshTopology::Edge BaseMeshTopology::getLocalTetrahedronEdges (const unsigned int i) const
+{
+    static BaseMeshTopology::Edge empty;
+    std::cerr << "WARNING: "<<this->getClassName()<<"::getLocalTetrahedronEdges() not supported." << std::endl;
+    return empty;
 }
 
 } // namespace topology

@@ -70,6 +70,7 @@ protected:
     TriangleSubsetData<TrianglePressureInformation> trianglePressureMap;
 
     topology::TriangleSetTopology<DataTypes>* tst;
+    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 
     Data<Deriv> pressure;
 

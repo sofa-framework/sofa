@@ -134,6 +134,23 @@ public:
     /// Returns the set of quads adjacent to a given edge.
     const EdgeQuads& getQuadEdgeShell(EdgeID i) { return getQuadSetTopologyContainer()->getQuadEdgeShell(i); }
 
+    /// Returns the index of the quad given four vertex indices; returns -1 if no edge exists
+    int getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4)
+    {
+        return getQuadSetTopologyContainer()->getQuadIndex(v1, v2, v3, v4);
+    }
+
+    /// Returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex. Returns -1 if none
+    int getVertexIndexInQuad(Quad &t, PointID i) const
+    {
+        return getQuadSetTopologyContainer()->getVertexIndexInQuad(t, i);
+    }
+    /// Returns the index (either 0, 1 ,2, 3) of the edge whose global index is edgeIndex. Returns -1 if none
+    int getEdgeIndexInQuad(QuadEdges &t, EdgeID i) const
+    {
+        return getQuadSetTopologyContainer()->getEdgeIndexInQuad(t, i);
+    }
+
     /// @}
 
 protected:
@@ -570,7 +587,7 @@ public:
 protected:
     /** \brief Creates the QuadSet array.
     *
-    * This function must be implemented by derived classes to create a list of quads from a set of tetrahedra for instance
+    * This function must be implemented by derived classes to create a list of quads from a set of hexahedra for instance
     */
     virtual void createQuadSetArray();
 

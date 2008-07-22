@@ -91,6 +91,8 @@ public:
 
     VecDeriv fiberDirRefs;
 
+    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+
     static void TRQSTriangleCreationFunction (int , void* , TriangleInformation &, const Triangle& , const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
 
 };
