@@ -413,7 +413,6 @@ void QuadSetTopologyModifier<DataTypes>::addQuad(Quad t)
         {
             sofa::helper::vector< unsigned int > &shell = container->getQuadVertexShellForModification( t[j] );
             shell.push_back( quadIndex );
-            sort(shell.begin(), shell.end());
         }
     }
 
@@ -448,7 +447,6 @@ void QuadSetTopologyModifier<DataTypes>::addQuad(Quad t)
             {
                 sofa::helper::vector< unsigned int > &shell = container->m_quadEdgeShell[container->m_quadEdge[quadIndex][j]];
                 shell.push_back( quadIndex );
-                sort(shell.begin(), shell.end());
             }
         }
     }
@@ -574,7 +572,6 @@ void QuadSetTopologyModifier<DataTypes>::removeQuadsProcess(const sofa::helper::
                 {
                     sofa::helper::vector< unsigned int > &shell = container->m_quadVertexShell[ q[v] ];
                     replace(shell.begin(), shell.end(), lastQuad, indices[i]);
-                    sort(shell.begin(), shell.end());
                 }
             }
 
@@ -584,7 +581,6 @@ void QuadSetTopologyModifier<DataTypes>::removeQuadsProcess(const sofa::helper::
                 {
                     sofa::helper::vector< unsigned int > &shell =  container->m_quadEdgeShell[ container->m_quadEdge[lastQuad][e]];
                     replace(shell.begin(), shell.end(), lastQuad, indices[i]);
-                    sort(shell.begin(), shell.end());
                 }
             }
         }

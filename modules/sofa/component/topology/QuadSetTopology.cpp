@@ -293,10 +293,15 @@ int QuadSetTopologyContainer::getQuadIndex(const unsigned int v1,
     if(!hasQuadVertexShell())
         createQuadVertexShellArray();
 
-    const sofa::helper::vector<unsigned int> &set1 = getQuadVertexShell(v1);
-    const sofa::helper::vector<unsigned int> &set2 = getQuadVertexShell(v2);
-    const sofa::helper::vector<unsigned int> &set3 = getQuadVertexShell(v3);
-    const sofa::helper::vector<unsigned int> &set4 = getQuadVertexShell(v4);
+    sofa::helper::vector<unsigned int> set1 = getQuadVertexShell(v1);
+    sofa::helper::vector<unsigned int> set2 = getQuadVertexShell(v2);
+    sofa::helper::vector<unsigned int> set3 = getQuadVertexShell(v3);
+    sofa::helper::vector<unsigned int> set4 = getQuadVertexShell(v4);
+
+    sort(set1.begin(), set1.end());
+    sort(set2.begin(), set2.end());
+    sort(set3.begin(), set3.end());
+    sort(set4.begin(), set4.end());
 
     // The destination vector must be large enough to contain the result.
     sofa::helper::vector<unsigned int> out1(set1.size()+set2.size());

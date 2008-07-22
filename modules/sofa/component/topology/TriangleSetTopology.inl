@@ -3616,7 +3616,6 @@ void TriangleSetTopologyModifier<DataTypes>::addTriangle(Triangle t)
             {
                 sofa::helper::vector< unsigned int > &shell = container->m_triangleEdgeShell[container->m_triangleEdge[triangleIndex][j]];
                 shell.push_back( triangleIndex );
-                sort(shell.begin(), shell.end());
             }
         }
     }
@@ -3627,7 +3626,6 @@ void TriangleSetTopologyModifier<DataTypes>::addTriangle(Triangle t)
         {
             sofa::helper::vector< unsigned int > &shell = container->getTriangleVertexShellForModification( t[j] );
             shell.push_back( triangleIndex );
-            sort(shell.begin(), shell.end());
         }
     }
 
@@ -3753,7 +3751,6 @@ void TriangleSetTopologyModifier<DataTypes>::removeTrianglesProcess(const sofa::
                 {
                     sofa::helper::vector< unsigned int > &shell = container->m_triangleVertexShell[ q[j] ];
                     replace(shell.begin(), shell.end(), lastTriangle, indices[i]);
-                    sort(shell.begin(), shell.end());
                 }
             }
 
@@ -3763,7 +3760,6 @@ void TriangleSetTopologyModifier<DataTypes>::removeTrianglesProcess(const sofa::
                 {
                     sofa::helper::vector< unsigned int > &shell = container->m_triangleEdgeShell[ container->m_triangleEdge[lastTriangle][j]];
                     replace(shell.begin(), shell.end(), lastTriangle, indices[i]);
-                    sort(shell.begin(), shell.end());
                 }
             }
         }

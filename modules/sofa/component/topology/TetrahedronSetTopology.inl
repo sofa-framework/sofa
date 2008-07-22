@@ -209,7 +209,6 @@ void TetrahedronSetTopologyModifier<DataTypes>::addTetrahedraProcess(const sofa:
                 {
                     sofa::helper::vector< unsigned int > &shell = container->getTetrahedronVertexShellForModification( t[j] );
                     shell.push_back( tetrahedronIndex );
-                    sort(shell.begin(), shell.end());
                 }
             }
 
@@ -263,7 +262,6 @@ void TetrahedronSetTopologyModifier<DataTypes>::addTetrahedraProcess(const sofa:
                 {
                     sofa::helper::vector< unsigned int > &shell = container->m_tetrahedronEdgeShell[container->m_tetrahedronEdge[tetrahedronIndex][j]];
                     shell.push_back( tetrahedronIndex );
-                    sort(shell.begin(), shell.end());
                 }
             }
             if (ttsa.size()>0)
@@ -272,7 +270,6 @@ void TetrahedronSetTopologyModifier<DataTypes>::addTetrahedraProcess(const sofa:
                 {
                     sofa::helper::vector< unsigned int > &shell = container->m_tetrahedronTriangleShell[container->m_tetrahedronTriangle[tetrahedronIndex][j]];
                     shell.push_back( tetrahedronIndex );
-                    sort(shell.begin(), shell.end());
                 }
             }
         }
@@ -480,65 +477,51 @@ void TetrahedronSetTopologyModifier<DataTypes>::removeTetrahedraProcess( const s
                 {
                     sofa::helper::vector< unsigned int > &shell0 = container->m_tetrahedronVertexShell[ t[0] ];
                     replace(shell0.begin(), shell0.end(), oldTetrahedronIndex, indices[i]);
-                    sort(shell0.begin(), shell0.end());
 
                     sofa::helper::vector< unsigned int > &shell1 = container->m_tetrahedronVertexShell[ t[1] ];
                     replace(shell1.begin(), shell1.end(), oldTetrahedronIndex, indices[i]);
-                    sort(shell1.begin(), shell1.end());
 
                     sofa::helper::vector< unsigned int > &shell2 = container->m_tetrahedronVertexShell[ t[2] ];
                     replace(shell2.begin(), shell2.end(), oldTetrahedronIndex, indices[i]);
-                    sort(shell2.begin(), shell2.end());
 
                     sofa::helper::vector< unsigned int > &shell3 = container->m_tetrahedronVertexShell[ t[3] ];
                     replace(shell3.begin(), shell3.end(), oldTetrahedronIndex, indices[i]);
-                    sort(shell3.begin(), shell3.end());
                 }
 
                 if (container->m_tetrahedronEdgeShell.size()>0)
                 {
                     sofa::helper::vector< unsigned int > &shell0 =  container->m_tetrahedronEdgeShell[ container->m_tetrahedronEdge[indices[i]][0]];
                     replace(shell0.begin(), shell0.end(), oldTetrahedronIndex, indices[i]);
-                    sort(shell0.begin(), shell0.end());
 
                     sofa::helper::vector< unsigned int > &shell1 =  container->m_tetrahedronEdgeShell[ container->m_tetrahedronEdge[indices[i]][1]];
                     replace(shell1.begin(), shell1.end(), oldTetrahedronIndex, indices[i]);
-                    sort(shell1.begin(), shell1.end());
 
                     sofa::helper::vector< unsigned int > &shell2 =  container->m_tetrahedronEdgeShell[ container->m_tetrahedronEdge[indices[i]][2]];
                     replace(shell2.begin(), shell2.end(), oldTetrahedronIndex, indices[i]);
-                    sort(shell2.begin(), shell2.end());
 
                     sofa::helper::vector< unsigned int > &shell3 =  container->m_tetrahedronEdgeShell[ container->m_tetrahedronEdge[indices[i]][3]];
                     replace(shell3.begin(), shell3.end(), oldTetrahedronIndex, indices[i]);
-                    sort(shell3.begin(), shell3.end());
 
                     sofa::helper::vector< unsigned int > &shell4 =  container->m_tetrahedronEdgeShell[ container->m_tetrahedronEdge[indices[i]][4]];
                     replace(shell4.begin(), shell4.end(), oldTetrahedronIndex, indices[i]);
-                    sort(shell4.begin(), shell4.end());
 
                     sofa::helper::vector< unsigned int > &shell5 =  container->m_tetrahedronEdgeShell[ container->m_tetrahedronEdge[indices[i]][5]];
                     replace(shell5.begin(), shell5.end(), oldTetrahedronIndex, indices[i]);
-                    sort(shell5.begin(), shell5.end());
                 }
 
                 if (container->m_tetrahedronTriangleShell.size()>0)
                 {
                     sofa::helper::vector< unsigned int > &shell0 =  container->m_tetrahedronTriangleShell[ container->m_tetrahedronTriangle[indices[i]][0]];
                     replace(shell0.begin(), shell0.end(), oldTetrahedronIndex, indices[i]);
-                    sort(shell0.begin(), shell0.end());
 
                     sofa::helper::vector< unsigned int > &shell1 =  container->m_tetrahedronTriangleShell[ container->m_tetrahedronTriangle[indices[i]][1]];
                     replace(shell1.begin(), shell1.end(), oldTetrahedronIndex, indices[i]);
-                    sort(shell1.begin(), shell1.end());
 
                     sofa::helper::vector< unsigned int > &shell2 =  container->m_tetrahedronTriangleShell[ container->m_tetrahedronTriangle[indices[i]][2]];
                     replace(shell2.begin(), shell2.end(), oldTetrahedronIndex, indices[i]);
-                    sort(shell2.begin(), shell2.end());
 
                     sofa::helper::vector< unsigned int > &shell3 =  container->m_tetrahedronTriangleShell[ container->m_tetrahedronTriangle[indices[i]][3]];
                     replace(shell3.begin(), shell3.end(), oldTetrahedronIndex, indices[i]);
-                    sort(shell3.begin(), shell3.end());
 
                 }
 

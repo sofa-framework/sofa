@@ -405,11 +405,9 @@ void EdgeSetTopologyModifier<DataTypes>::addEdge(Edge e)
 
         sofa::helper::vector< unsigned int > &shell0 = container->getEdgeVertexShellForModification( e[0] );
         shell0.push_back(edgeId);
-        sort(shell0.begin(), shell0.end());
 
         sofa::helper::vector< unsigned int > &shell1 = container->getEdgeVertexShellForModification( e[1] );
         shell1.push_back(edgeId);
-        sort(shell1.begin(), shell1.end());
     }
 
     container->m_edge.push_back(e);
@@ -534,12 +532,10 @@ void EdgeSetTopologyModifier<DataTypes>::removeEdgesProcess(const sofa::helper::
         // TODO: clarify if vector<set<int>> would not be better for shells - no duplicates and no sorting
         sofa::helper::vector< unsigned int > &shell3 = container->m_edgeVertexShell[ point3 ];
         replace(shell3.begin(), shell3.end(), lastEdgeIndex, indices[i]);
-        sort(shell3.begin(), shell3.end());
 
         //replaces the edge index oldEdgeIndex with indices[i] for the second vertex
         sofa::helper::vector< unsigned int > &shell4 = container->m_edgeVertexShell[ point4 ];
         replace(shell4.begin(), shell4.end(), lastEdgeIndex, indices[i]);
-        sort(shell4.begin(), shell4.end());
 
         container->m_edge.resize( container->m_edge.size() - 1 ); // resizing to erase multiple occurence of the edge.
     }
