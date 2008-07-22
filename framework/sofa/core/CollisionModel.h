@@ -77,7 +77,6 @@ public:
         , contactStiffness(initData(&contactStiffness, 10.0, "contactStiffness", "Default contact stiffness"))
         , contactFriction(initData(&contactFriction, 0.01, "contactFriction", "Default contact friction (damping) coefficient"))
         , contactResponse(initData(&contactResponse, "contactResponse", "if set, indicate to the ContactManager that this model should use the given class of contacts.\nNote that this is only indicative, and in particular if both collision models specify a different class it is up to the manager to choose."))
-        , bFiltered(initData(&bFiltered, false, "filtered", "flag indicating if the model has to build its neighborhood to filter contacts"))
         , group(initData(&group, 0, "group", "If not zero, ID of a group containing this model. No collision can occur between collision models of the same group (allowing the same object to have multiple collision models)"))
         , color(initData(&color, defaulttype::Vec4f(1,0,0,1), "color", "color used to display the collision model if requested"))
         , size(0), previous(NULL)  , next(NULL), numberOfContacts(0)
@@ -184,15 +183,6 @@ public:
 
     /// \brief Set true if this CollisionModel is attached to a simulation.
     virtual void setSimulated(bool val=true) { bSimulated.setValue(val); }
-
-    /// \brief Return true if this CollisionModel must build its neigborhood
-    /// basically to be used in filtered proximity detection
-    ///
-    /// Default to false.
-    virtual bool isFiltered() const { return bFiltered.getValue(); }
-
-    /// \brief Set true if this CollisionModel must build its neigborhood
-    virtual void setFiltered(bool val=true) { bFiltered.setValue(val); }
 
     /// Create or update the bounding volume hierarchy.
     virtual void computeBoundingTree(int maxDepth=0) = 0;
@@ -367,8 +357,6 @@ protected:
     /// given class of contacts.\nNote that this is only indicative, and in particular if both
     /// collision models specify a different class it is up to the manager to choose.
     Data<std::string> contactResponse;
-    /// flag indicating if the model has to build its neighborhood to filter contacts
-    Data<bool> bFiltered;
     /// If not zero, ID of a group containing this model. No collision can occur between collision
     /// models of the same group (allowing the same object to have multiple collision models
     Data<int> group;
