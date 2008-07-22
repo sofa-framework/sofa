@@ -251,7 +251,6 @@ MechanicalObject<DataTypes>::~MechanicalObject()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::handleStateChange()
 {
-
     sofa::core::componentmodel::topology::BaseTopology *topology = static_cast<sofa::core::componentmodel::topology::BaseTopology *>(this->getContext()->getMainTopology());
 
     std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=topology->firstStateChange();
@@ -259,19 +258,17 @@ void MechanicalObject<DataTypes>::handleStateChange()
 
     while( itBegin != itEnd )
     {
-
         TopologyChangeType changeType = (*itBegin)->getChangeType();
 
         switch( changeType )
         {
-
         case core::componentmodel::topology::POINTSADDED:
         {
-            unsigned int nbPoints = ( dynamic_cast< const PointsAdded * >( *itBegin ) )->getNbAddedVertices();
-            sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestors = ( dynamic_cast< const PointsAdded * >( *itBegin ) )->ancestorsList;
-            sofa::helper::vector< sofa::helper::vector< double       > > coefs     = ( dynamic_cast< const PointsAdded * >( *itBegin ) )->coefs;
+            unsigned int nbPoints = ( static_cast< const PointsAdded * >( *itBegin ) )->getNbAddedVertices();
+            sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestors = ( static_cast< const PointsAdded * >( *itBegin ) )->ancestorsList;
+            sofa::helper::vector< sofa::helper::vector< double       > > coefs     = ( static_cast< const PointsAdded * >( *itBegin ) )->coefs;
 
-            if ( ancestors != (const sofa::helper::vector< sofa::helper::vector< unsigned int > >)0 )
+            if (!ancestors.empty() )
             {
                 unsigned int prevSizeMechObj = getSize();
                 resize( prevSizeMechObj + nbPoints );
@@ -302,7 +299,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
         }
         case core::componentmodel::topology::POINTSREMOVED:
         {
-            const sofa::helper::vector<unsigned int> tab = ( dynamic_cast< const PointsRemoved * >( *itBegin ) )->getArray();
+            const sofa::helper::vector<unsigned int> tab = ( static_cast< const PointsRemoved * >( *itBegin ) )->getArray();
 
             unsigned int prevSizeMechObj   = getSize();
             unsigned int lastIndexMech = prevSizeMechObj - 1;
@@ -317,7 +314,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
         }
         case core::componentmodel::topology::POINTSRENUMBERING:
         {
-            const sofa::helper::vector<unsigned int> &tab = ( dynamic_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
+            const sofa::helper::vector<unsigned int> &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
 
             renumberValues( tab );
             break;

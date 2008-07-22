@@ -2725,7 +2725,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
             }
 #endif
 
-            const sofa::helper::vector<unsigned int> &tab = (dynamic_cast< const component::topology::HexahedraRemoved *> (*changeIt))->getArray();
+            const sofa::helper::vector<unsigned int> &tab = (static_cast< const component::topology::HexahedraRemoved *> (*changeIt))->getArray();
             sofa::helper::vector<unsigned int> hexahedra(tab);
 
             for(unsigned int i=0; i<hexahedra.size(); ++i)

@@ -249,7 +249,6 @@ void TriangleModel::handleTopologyChange()
         while( itBegin != itEnd )
         {
             core::componentmodel::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
-            // Since we are using identifier, we can safely use C type casts.
 
             sofa::core::componentmodel::topology::TopologyContainer *container=bt->getTopologyContainer();
 
@@ -271,7 +270,7 @@ void TriangleModel::handleTopologyChange()
             {
                 //std::cout << "INFO_print : Col - TRIANGLESADDED" << std::endl;
                 TriangleInfo t;
-                const sofa::component::topology::TrianglesAdded *ta=dynamic_cast< const sofa::component::topology::TrianglesAdded * >( *itBegin );
+                const sofa::component::topology::TrianglesAdded *ta=static_cast< const sofa::component::topology::TrianglesAdded * >( *itBegin );
                 for (unsigned int i=0; i<ta->getNbAddedTriangles(); ++i)
                 {
                     mytriangles.push_back(ta->triangleArray[i]);
@@ -297,7 +296,7 @@ void TriangleModel::handleTopologyChange()
                     last= elems.size() -1;
                 }
 
-                const sofa::helper::vector<unsigned int> &tab = ( dynamic_cast< const sofa::component::topology::TrianglesRemoved *>( *itBegin ) )->getArray();
+                const sofa::helper::vector<unsigned int> &tab = ( static_cast< const sofa::component::topology::TrianglesRemoved *>( *itBegin ) )->getArray();
 
                 TriangleInfo tmp;
                 topology::Triangle tmp2;
@@ -351,7 +350,7 @@ void TriangleModel::handleTopologyChange()
                     unsigned int last = tvsa.size() -1;
 
                     unsigned int i,j;
-                    const sofa::helper::vector<unsigned int> tab = ( dynamic_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
+                    const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
                     sofa::helper::vector<unsigned int> lastIndexVec;
                     for(unsigned int i_init = 0; i_init < tab.size(); ++i_init)
@@ -468,7 +467,7 @@ void TriangleModel::handleTopologyChange()
 
                     unsigned int i;
 
-                    const sofa::helper::vector<unsigned int> tab = ( dynamic_cast< const sofa::component::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
+                    const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
                     for ( i = 0; i < mytriangles.size(); ++i)
                     {

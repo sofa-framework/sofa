@@ -345,7 +345,7 @@ template <class DataTypes> void QuadularBendingSprings<DataTypes>::handleTopolog
             unsigned int last = _topology->getDOFNumber() -1;
             unsigned int i,j;
 
-            const sofa::helper::vector<unsigned int> tab = ( dynamic_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
+            const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
             sofa::helper::vector<unsigned int> lastIndexVec;
             for(unsigned int i_init = 0; i_init < tab.size(); ++i_init)
@@ -474,7 +474,7 @@ template <class DataTypes> void QuadularBendingSprings<DataTypes>::handleTopolog
             if(changeType == core::componentmodel::topology::POINTSRENUMBERING)
             {
 
-                const sofa::helper::vector<unsigned int> tab = ( dynamic_cast< const sofa::component::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
+                const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
                 for ( int i = 0; i < _topology->getNbEdges(); ++i)
                 {
