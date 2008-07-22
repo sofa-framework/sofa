@@ -110,7 +110,10 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     , f_young(initData(&f_young,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
     , f_damping(initData(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
     , f_fracturable(initData(&f_fracturable,false,"fracturable","the forcefield computes the next fracturable Edge"))
-{}
+    , showStressValue(initData(&showStressValue,false,"showStressValue","Flag activating rendering of stress values as a color in each triangle"))
+    , showStressVector(initData(&showStressVector,false,"showStressVector","Flag activating rendering of stress directions within each triangle"))
+{
+}
 
 
 template <class DataTypes> void TriangularFEMForceField<DataTypes>::handleTopologyChange()
@@ -957,6 +960,75 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h
     }
 }
 
+static Vec3d ColorMap[64] =
+{
+    Vec3d( 0.0,        0.0,       0.5625 ),
+    Vec3d( 0.0,        0.0,       0.625  ),
+    Vec3d( 0.0,        0.0,       0.6875 ),
+    Vec3d( 0.0,        0.0,         0.75 ),
+    Vec3d( 0.0,        0.0,       0.8125 ),
+    Vec3d( 0.0,        0.0,        0.875 ),
+    Vec3d( 0.0,        0.0,       0.9375 ),
+    Vec3d( 0.0,        0.0,          1.0 ),
+    Vec3d( 0.0,     0.0625,          1.0 ),
+    Vec3d( 0.0,      0.125,          1.0 ),
+    Vec3d( 0.0,     0.1875,          1.0 ),
+    Vec3d( 0.0,       0.25,          1.0 ),
+    Vec3d( 0.0,     0.3125,          1.0 ),
+    Vec3d( 0.0,      0.375,          1.0 ),
+    Vec3d( 0.0,     0.4375,          1.0 ),
+    Vec3d( 0.0,        0.5,          1.0 ),
+    Vec3d( 0.0,     0.5625,          1.0 ),
+    Vec3d( 0.0,      0.625,          1.0 ),
+    Vec3d( 0.0,     0.6875,          1.0 ),
+    Vec3d( 0.0,       0.75,          1.0 ),
+    Vec3d( 0.0,     0.8125,          1.0 ),
+    Vec3d( 0.0,     0.875,           1.0 ),
+    Vec3d( 0.0,     0.9375,          1.0 ),
+    Vec3d( 0.0,        1.0,          1.0 ),
+    Vec3d( 0.0625,     1.0,          1.0 ),
+    Vec3d( 0.125,      1.0,       0.9375 ),
+    Vec3d( 0.1875,     1.0,        0.875 ),
+    Vec3d( 0.25,       1.0,       0.8125 ),
+    Vec3d( 0.3125,     1.0,         0.75 ),
+    Vec3d( 0.375,      1.0,       0.6875 ),
+    Vec3d( 0.4375,     1.0,        0.625 ),
+    Vec3d( 0.5,        1.0,       0.5625 ),
+    Vec3d( 0.5625,     1.0,          0.5 ),
+    Vec3d( 0.625,      1.0,       0.4375 ),
+    Vec3d( 0.6875,     1.0,        0.375 ),
+    Vec3d( 0.75,       1.0,       0.3125 ),
+    Vec3d( 0.8125,     1.0,         0.25 ),
+    Vec3d( 0.875,      1.0,       0.1875 ),
+    Vec3d( 0.9375,     1.0,        0.125 ),
+    Vec3d( 1.0,        1.0,       0.0625 ),
+    Vec3d( 1.0,        1.0,          0.0 ),
+    Vec3d( 1.0,       0.9375,        0.0 ),
+    Vec3d( 1.0,        0.875,        0.0 ),
+    Vec3d( 1.0,       0.8125,        0.0 ),
+    Vec3d( 1.0,         0.75,        0.0 ),
+    Vec3d( 1.0,       0.6875,        0.0 ),
+    Vec3d( 1.0,        0.625,        0.0 ),
+    Vec3d( 1.0,       0.5625,        0.0 ),
+    Vec3d( 1.0,          0.5,        0.0 ),
+    Vec3d( 1.0,       0.4375,        0.0 ),
+    Vec3d( 1.0,        0.375,        0.0 ),
+    Vec3d( 1.0,       0.3125,        0.0 ),
+    Vec3d( 1.0,         0.25,        0.0 ),
+    Vec3d( 1.0,       0.1875,        0.0 ),
+    Vec3d( 1.0,        0.125,        0.0 ),
+    Vec3d( 1.0,       0.0625,        0.0 ),
+    Vec3d( 1.0,          0.0,        0.0 ),
+    Vec3d( 0.9375,       0.0,        0.0 ),
+    Vec3d( 0.875,        0.0,        0.0 ),
+    Vec3d( 0.8125,       0.0,        0.0 ),
+    Vec3d( 0.75,         0.0,        0.0 ),
+    Vec3d( 0.6875,       0.0,        0.0 ),
+    Vec3d( 0.625,        0.0,        0.0 ),
+    Vec3d( 0.5625,       0.0,        0.0 )
+};
+
+
 template<class DataTypes>
 int TriangularFEMForceField<DataTypes>::getFracturedEdge()
 {
@@ -989,7 +1061,7 @@ void TriangularFEMForceField<DataTypes>::draw()
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     const VecCoord& x = *this->mstate->getX();
-    int nbTriangles=_topology->getNbTriangles();
+    unsigned int nbTriangles=_topology->getNbTriangles();
 
     glDisable(GL_LIGHTING);
     if (!f_fracturable.getValue())
@@ -997,8 +1069,7 @@ void TriangularFEMForceField<DataTypes>::draw()
 
         glBegin(GL_TRIANGLES);
         //typename VecElement::const_iterator it;
-        int i;
-        for(i=0; i<nbTriangles; ++i) //it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it
+        for(unsigned int i=0; i<nbTriangles; ++i) //it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it
         {
             Index a = _topology->getTriangle(i)[0];//(*it)[0];
             Index b = _topology->getTriangle(i)[1];//(*it)[1];
@@ -1015,88 +1086,99 @@ void TriangularFEMForceField<DataTypes>::draw()
     }
     if (f_fracturable.getValue())
     {
-        unsigned int nbPoints = _topology->getDOFNumber();
-        double totalSumEigenValues = vertexInfo[0].sumEigenValues;
-        double max = vertexInfo[0].sumEigenValues;
-
-        for( unsigned int i=1; i<nbPoints; i++ )
+        if (showStressValue.getValue())
         {
-            totalSumEigenValues += vertexInfo[i].sumEigenValues;
-            if (vertexInfo[i].sumEigenValues > max)
-                max = vertexInfo[i].sumEigenValues;
-        }
+            unsigned int nbPoints = _topology->getDOFNumber();
 
-        glBegin(GL_TRIANGLES);
-        //typename VecElement::const_iterator it;
-        int i;
-        for(i=0; i<nbTriangles; ++i) //it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it
+            double totalSumEigenValues = vertexInfo[0].sumEigenValues;
+            double max = vertexInfo[0].sumEigenValues;
+
+            for( unsigned int i=1; i<nbPoints; i++ )
+            {
+                totalSumEigenValues += vertexInfo[i].sumEigenValues;
+                if (vertexInfo[i].sumEigenValues > max)
+                    max = vertexInfo[i].sumEigenValues;
+            }
+
+            glBegin(GL_TRIANGLES);
+            //typename VecElement::const_iterator it;
+            for(unsigned int i=0; i<nbTriangles; ++i) //it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it
+
+            {
+                Index a = _topology->getTriangle(i)[0];//(*it)[0];
+                Index b = _topology->getTriangle(i)[1];//(*it)[1];
+                Index c = _topology->getTriangle(i)[2];//(*it)[2];
+
+                float v = (float)((vertexInfo[a].sumEigenValues + vertexInfo[b].sumEigenValues + vertexInfo[c].sumEigenValues) / 3.0);
+                v /= max;
+
+                Vec3d color = ColorMap[(int)(v*63)];
+                glColor3dv(color.ptr());
+                //glColor4f((float)(meanEV / max), (float)(1- meanEV / max), 0.0f, 1.0f);
+                helper::gl::glVertexT(x[a]);
+                helper::gl::glVertexT(x[b]);
+                helper::gl::glVertexT(x[c]);
+            }
+            glEnd();
+
+            /*
+            		if (nbPoints > 0)
+            		{
+            			double max = vertexInfo[0].sumEigenValues;
+            			unsigned int mostDeformableVertexIndex = 0;
+            			for( unsigned int i=1; i<nbPoints; i++ )
+            			{
+            				if (vertexInfo[i].sumEigenValues > max)
+            				{
+            					mostDeformableVertexIndex = i;
+            					max = vertexInfo[i].sumEigenValues;
+            				}
+            			}
+
+            			glPointSize(8);
+            			glBegin(GL_POINTS);
+            			glColor4f(1,1,1,1);
+            			helper::gl::glVertexT(x[mostDeformableVertexIndex]);
+            			glEnd();
+            			glPointSize(1);
+            		}
+
+            */
+            /*
+            			glBegin(GL_LINES);
+            		for( unsigned int i=0; i<nbPoints; i++ )
+            		{
+            			glColor4f(1,0,1,1);
+            			helper::gl::glVertexT(x[i]-vertexInfo[i].meanStrainDirection);
+            			helper::gl::glVertexT(x[i]+vertexInfo[i].meanStrainDirection);
+            			//helper::gl::glVertexT(x[i]-vertexInfo[i].meanStrainDirection * 2.5);
+            			//helper::gl::glVertexT(x[i]+vertexInfo[i].meanStrainDirection * 2.5);
+            		}
+            			glEnd();
+            */
+        }
+        if (showStressVector.getValue())
         {
-            Index a = _topology->getTriangle(i)[0];//(*it)[0];
-            Index b = _topology->getTriangle(i)[1];//(*it)[1];
-            Index c = _topology->getTriangle(i)[2];//(*it)[2];
-
-            float meanEV = (float)((vertexInfo[a].sumEigenValues + vertexInfo[b].sumEigenValues + vertexInfo[c].sumEigenValues) / 3.0);
-
-            glColor4f((float)(meanEV / max), (float)(1- meanEV / max), 0.0f, 1.0f);
-            helper::gl::glVertexT(x[a]);
-            helper::gl::glVertexT(x[b]);
-            helper::gl::glVertexT(x[c]);
+            //const VecCoord& x = *this->mstate->getX();
+            //int nbTriangles=_topology->getNbTriangles();
+            glColor4f(1,0,1,1);
+            glBegin(GL_LINES);
+            //typename VecElement::const_iterator it;
+            for(unsigned int i=0; i<nbTriangles; ++i) //it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it
+            {
+                Index a = _topology->getTriangle(i)[0];
+                Index b = _topology->getTriangle(i)[1];
+                Index c = _topology->getTriangle(i)[2];
+                Coord center = (x[a]+x[b]+x[c])/3;
+                Coord d = triangleInfo[i].principalStrainDirection*0.4;
+                helper::gl::glVertexT(center-d);
+                helper::gl::glVertexT(center+d);
+            }
+            glEnd();
         }
-        glEnd();
-
         /*
-        		if (nbPoints > 0)
-        		{
-        			double max = vertexInfo[0].sumEigenValues;
-        			unsigned int mostDeformableVertexIndex = 0;
-        			for( unsigned int i=1; i<nbPoints; i++ )
-        			{
-        				if (vertexInfo[i].sumEigenValues > max)
-        				{
-        					mostDeformableVertexIndex = i;
-        					max = vertexInfo[i].sumEigenValues;
-        				}
-        			}
 
-        			glPointSize(8);
-        			glBegin(GL_POINTS);
-        			glColor4f(1,1,1,1);
-        			helper::gl::glVertexT(x[mostDeformableVertexIndex]);
-        			glEnd();
-        			glPointSize(1);
-        		}
-
-        */
-        /*
-        			glBegin(GL_LINES);
-        		for( unsigned int i=0; i<nbPoints; i++ )
-        		{
-        			glColor4f(1,0,1,1);
-        			helper::gl::glVertexT(x[i]-vertexInfo[i].meanStrainDirection);
-        			helper::gl::glVertexT(x[i]+vertexInfo[i].meanStrainDirection);
-        			//helper::gl::glVertexT(x[i]-vertexInfo[i].meanStrainDirection * 2.5);
-        			//helper::gl::glVertexT(x[i]+vertexInfo[i].meanStrainDirection * 2.5);
-        		}
-        			glEnd();
-        */
-        const VecCoord& x = *this->mstate->getX();
-        int nbTriangles=_topology->getNbTriangles();
-        glColor4f(1,0,1,1);
-        glBegin(GL_LINES);
-        //typename VecElement::const_iterator it;
-        for(i=0; i<nbTriangles; ++i) //it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it
-        {
-            Index a = _topology->getTriangle(i)[0];
-            Index b = _topology->getTriangle(i)[1];
-            Index c = _topology->getTriangle(i)[2];
-            Coord center = (x[a]+x[b]+x[c])/3;
-            Coord d = triangleInfo[i].principalStrainDirection*0.4;
-            helper::gl::glVertexT(center-d);
-            helper::gl::glVertexT(center+d);
-        }
-        glEnd();
-        /*
-        		int nbEdges = toplogy->getNbEdges();
+        		int nbEdges = _topology->getNbEdges();
 
         		for( unsigned int i=0; i<nbEdges; i++ )
         		{

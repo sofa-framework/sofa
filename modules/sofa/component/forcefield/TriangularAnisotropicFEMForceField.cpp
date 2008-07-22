@@ -64,11 +64,11 @@ using std::endl;
 SOFA_DECL_CLASS(TriangularAnisotropicFEMForceField)
 
 template <class DataTypes>
-TriangularAnisotropicFEMForceField<DataTypes>::
-TriangularAnisotropicFEMForceField()
+TriangularAnisotropicFEMForceField<DataTypes>::TriangularAnisotropicFEMForceField()
     : f_young2(initData(&f_young2,(Real)(0.5*Inherited::f_young.getValue()),"transverseYoungModulus","Young modulus along transverse direction"))
     , f_theta(initData(&f_theta,(Real)(0.0),"fiberAngle","Fiber angle in global reference frame (in degrees)"))
     , f_fiberCenter(initData(&f_fiberCenter,"fiberCenter","Concentric fiber center in global reference frame"))
+    , showFiber(initData(&showFiber,true,"showFiber","Flag activating rendering of fiber directions within each triangle"))
 {
 
 }
@@ -200,11 +200,13 @@ template <class DataTypes>void TriangularAnisotropicFEMForceField<DataTypes>::dr
     glEnable(GL_POLYGON_OFFSET_FILL);
     Inherited::draw();
     glDisable(GL_POLYGON_OFFSET_FILL);
-    if (!fiberDirRefs.empty())
+    if (!getContext()->getShowForceFields())
+        return;
+    if (showFiber.getValue() && !fiberDirRefs.empty())
     {
         const VecCoord& x = *this->mstate->getX();
         int nbTriangles=_topology->getNbTriangles();
-        glColor3f(0,0.2f,1);
+        glColor3f(1,1,1);
         glBegin(GL_LINES);
         //typename VecElement::const_iterator it;
         int i;

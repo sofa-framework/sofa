@@ -208,38 +208,40 @@ void CubeTopology::updateEdges()
 
 void CubeTopology::updateQuads()
 {
-    seqQuads.clear();
+    seqQuads.beginEdit()->clear();
     const int nx = this->nx.getValue();
     const int ny = this->ny.getValue();
     const int nz = this->nz.getValue();
-    seqQuads.reserve((nx-1)*(ny-1)*(nz>1?2:1)+(nx-1)*(nz-1)*(ny>1?2:1)+(ny-1)*(nz-1)*(nx>1?2:1));
+    seqQuads.beginEdit()->reserve((nx-1)*(ny-1)*(nz>1?2:1)+(nx-1)*(nz-1)*(ny>1?2:1)+(ny-1)*(nz-1)*(nx>1?2:1));
     // quads along Z=0 plane
     for (int z=0, y=0; y<ny-1; y++)
         for (int x=0; x<nx-1; x++)
-            seqQuads.push_back(Quad(point(x,y,z,PLANE_Z0),point(x,y+1,z,PLANE_Z0),point(x+1,y+1,z,PLANE_Z0),point(x+1,y,z,PLANE_Z0)));
+            seqQuads.beginEdit()->push_back(Quad(point(x,y,z,PLANE_Z0),point(x,y+1,z,PLANE_Z0),point(x+1,y+1,z,PLANE_Z0),point(x+1,y,z,PLANE_Z0)));
     // quads along Z=NZ-1 plane
     if (nz > 1)
         for (int z=nz-1, y=0; y<ny-1; y++)
             for (int x=0; x<nx-1; x++)
-                seqQuads.push_back(Quad(point(x,y,z,PLANE_Z1),point(x+1,y,z,PLANE_Z1),point(x+1,y+1,z,PLANE_Z1),point(x,y+1,z,PLANE_Z1)));
+                seqQuads.beginEdit()->push_back(Quad(point(x,y,z,PLANE_Z1),point(x+1,y,z,PLANE_Z1),point(x+1,y+1,z,PLANE_Z1),point(x,y+1,z,PLANE_Z1)));
     // quads along Y=0 plane
     for (int y=0, z=0; z<nz-1; z++)
         for (int x=0; x<nx-1; x++)
-            seqQuads.push_back(Quad(point(x,y,z,PLANE_Y0),point(x+1,y,z,PLANE_Y0),point(x+1,y,z+1,PLANE_Y0),point(x,y,z+1,PLANE_Y0)));
+            seqQuads.beginEdit()->push_back(Quad(point(x,y,z,PLANE_Y0),point(x+1,y,z,PLANE_Y0),point(x+1,y,z+1,PLANE_Y0),point(x,y,z+1,PLANE_Y0)));
     // quads along Y=NY-1 plane
     if (ny > 1)
         for (int y=ny-1, z=0; z<nz-1; z++)
             for (int x=0; x<nx-1; x++)
-                seqQuads.push_back(Quad(point(x,y,z,PLANE_Y1),point(x,y,z+1,PLANE_Y1),point(x+1,y,z+1,PLANE_Y1),point(x+1,y,z,PLANE_Y1)));
+                seqQuads.beginEdit()->push_back(Quad(point(x,y,z,PLANE_Y1),point(x,y,z+1,PLANE_Y1),point(x+1,y,z+1,PLANE_Y1),point(x+1,y,z,PLANE_Y1)));
     // quads along X=0 plane
     for (int x=0, z=0; z<nz-1; z++)
         for (int y=0; y<ny-1; y++)
-            seqQuads.push_back(Quad(point(x,y,z,PLANE_X0),point(x,y,z+1,PLANE_X0),point(x,y+1,z+1,PLANE_X0),point(x,y+1,z,PLANE_X0)));
+            seqQuads.beginEdit()->push_back(Quad(point(x,y,z,PLANE_X0),point(x,y,z+1,PLANE_X0),point(x,y+1,z+1,PLANE_X0),point(x,y+1,z,PLANE_X0)));
     // quads along X=NX-1 plane
     if (nx > 1)
         for (int x=nx-1, z=0; z<nz-1; z++)
             for (int y=0; y<ny-1; y++)
-                seqQuads.push_back(Quad(point(x,y,z,PLANE_X1),point(x,y+1,z,PLANE_X1),point(x,y+1,z+1,PLANE_X1),point(x,y,z+1,PLANE_X1)));
+                seqQuads.beginEdit()->push_back(Quad(point(x,y,z,PLANE_X1),point(x,y+1,z,PLANE_X1),point(x,y+1,z+1,PLANE_X1),point(x,y,z+1,PLANE_X1)));
+
+    seqQuads.endEdit();
 }
 
 void CubeTopology::setPos(SReal xmin, SReal xmax, SReal ymin, SReal ymax, SReal zmin, SReal zmax)

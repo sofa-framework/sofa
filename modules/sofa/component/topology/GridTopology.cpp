@@ -91,43 +91,48 @@ void GridTopology::updateEdges()
 
 void GridTopology::updateQuads()
 {
-    seqQuads.clear();
-    seqQuads.reserve((n.getValue()[0]-1)*(n.getValue()[1]-1)*n.getValue()[2]+(n.getValue()[0]-1)*n.getValue()[1]*(n.getValue()[2]-1)+n.getValue()[0]*(n.getValue()[1]-1)*(n.getValue()[2]-1));
+    SeqQuads& quads = *seqQuads.beginEdit();
+    quads.clear();
+    quads.reserve((n.getValue()[0]-1)*(n.getValue()[1]-1)*n.getValue()[2]+(n.getValue()[0]-1)*n.getValue()[1]*(n.getValue()[2]-1)+n.getValue()[0]*(n.getValue()[1]-1)*(n.getValue()[2]-1));
     // quads along XY plane
     for (int z=0; z<n.getValue()[2]; z++)
         for (int y=0; y<n.getValue()[1]-1; y++)
             for (int x=0; x<n.getValue()[0]-1; x++)
-                seqQuads.push_back(Quad(point(x,y,z),point(x+1,y,z),point(x+1,y+1,z),point(x,y+1,z)));
+                quads.push_back(Quad(point(x,y,z),point(x+1,y,z),point(x+1,y+1,z),point(x,y+1,z)));
     // quads along XZ plane
     for (int z=0; z<n.getValue()[2]-1; z++)
         for (int y=0; y<n.getValue()[1]; y++)
             for (int x=0; x<n.getValue()[0]-1; x++)
-                seqQuads.push_back(Quad(point(x,y,z),point(x+1,y,z),point(x+1,y,z+1),point(x,y,z+1)));
+                quads.push_back(Quad(point(x,y,z),point(x+1,y,z),point(x+1,y,z+1),point(x,y,z+1)));
     // quads along YZ plane
     for (int z=0; z<n.getValue()[2]-1; z++)
         for (int y=0; y<n.getValue()[1]-1; y++)
             for (int x=0; x<n.getValue()[0]; x++)
-                seqQuads.push_back(Quad(point(x,y,z),point(x,y+1,z),point(x,y+1,z+1),point(x,y,z+1)));
+                quads.push_back(Quad(point(x,y,z),point(x,y+1,z),point(x,y+1,z+1),point(x,y,z+1)));
+
+    seqQuads.endEdit();
 }
 
 void GridTopology::updateHexas()
 {
-    seqHexas.clear();
-    seqHexas.reserve((n.getValue()[0]-1)*(n.getValue()[1]-1)*(n.getValue()[2]-1));
+    SeqHexas& hexas = *seqHexas.beginEdit();
+    hexas.clear();
+    hexas.reserve((n.getValue()[0]-1)*(n.getValue()[1]-1)*(n.getValue()[2]-1));
     for (int z=0; z<n.getValue()[2]-1; z++)
         for (int y=0; y<n.getValue()[1]-1; y++)
             for (int x=0; x<n.getValue()[0]-1; x++)
 #ifdef SOFA_NEW_HEXA
-                seqHexas.push_back(Hexa(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
+                hexas.push_back(Hexa(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
                         point(x+1,y+1,z  ),point(x  ,y+1,z  ),
                         point(x  ,y  ,z+1),point(x+1,y  ,z+1),
                         point(x+1,y+1,z+1),point(x  ,y+1,z+1)));
 #else
-                seqHexas.push_back(Hexa(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
+                hexas.push_back(Hexa(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
                         point(x  ,y+1,z  ),point(x+1,y+1,z  ),
                         point(x  ,y  ,z+1),point(x+1,y  ,z+1),
                         point(x  ,y+1,z+1),point(x+1,y+1,z+1)));
 #endif
+    seqHexas.endEdit();
 }
 
 GridTopology::Hexa GridTopology::getHexaCopy(int i)
