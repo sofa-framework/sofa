@@ -2,7 +2,7 @@
 	<Object type="MasterContactSolver" initial_guess="true"/>   
 	<Object type="CollisionPipeline" depth="6" verbose="0" draw="0"/>
 	<Object type="BruteForceDetection" name="N2" />
-	<Object type="MinProximityIntersection" name="Proximity" usePointPoint="1" alarmDistance="0.35" contactDistance="0.1" filterIntersection="1" angleCone="0"/>
+	<Object type="LocalMinDistance" name="Proximity" usePointPoint="1" alarmDistance="0.35" contactDistance="0.1" filterIntersection="1" angleCone="0"/>
 	<Object type="CollisionResponse" name="Response" response="FrictionContact"/>
 	<Object type="CollisionGroup" name="Group" />
 	
@@ -19,9 +19,9 @@
 		<Node name="Surf2">
 			<Object type="Mesh" filename="mesh/torus_for_collision.obj"/>
 			<Object type="MechanicalObject" scale="1.0"/>
-			<Object type="Triangle" filtered="1"/> 
-			<Object type="Line" filtered="1"/>
-			<Object type="Point" filtered="1"/>
+			<Object type="Triangle" /> 
+			<Object type="Line" />
+			<Object type="Point" />
 			<Object type="RigidMapping" />
 		</Node>
 	</Node>
@@ -38,9 +38,9 @@
 		<Node name="Surf2">
 			<Object type="Mesh" filename="mesh/smCube27.obj"/>
 			<Object type="MechanicalObject" scale="0.3"/>
-			<Object type="Triangle" filtered="1"/> 
-			<Object type="Line" filtered="1"/>
-			<Object type="Point" filtered="1"/>
+			<Object type="Triangle" /> 
+			<Object type="Line" />
+			<Object type="Point" />
 			<Object type="RigidMapping" />
 		</Node>
 	</Node>
@@ -57,9 +57,9 @@
 		<Node name="Surf2">
 			<Object type="Mesh" filename="mesh/ball.obj"/>
 			<Object type="MechanicalObject" scale="1.0"/>
-			<Object type="Triangle" filtered="1"/> 
-			<Object type="Line" filtered="1"/>
-			<Object type="Point" filtered="1"/>
+			<Object type="Triangle" /> 
+			<Object type="Line" />
+			<Object type="Point" />
 			<Object type="RigidMapping" />
 		</Node>
 	</Node>
@@ -76,9 +76,9 @@
 		<Node name="Surf2">
 			<Object type="Mesh" filename="mesh/man.obj"/>
 			<Object type="MechanicalObject" scale="10.0"/>
-			<Object type="Triangle" filtered="1"/> 
-			<Object type="Line" filtered="1"/>
-			<Object type="Point" filtered="1"/>
+			<Object type="Triangle" /> 
+			<Object type="Line" />
+			<Object type="Point" />
 			<Object type="RigidMapping" />
 		</Node>
 	</Node>
@@ -95,9 +95,9 @@
 		<Node name="Surf2">
 			<Object type="Mesh" filename="mesh/dragon_clean.obj"/>
 			<Object type="MechanicalObject" scale="0.2"/>
-			<Object type="Triangle" filtered="1"/> 
-			<Object type="Line" filtered="1"/>
-			<Object type="Point" filtered="1"/>
+			<Object type="Triangle" /> 
+			<Object type="Line" />
+			<Object type="Point" />
 			<Object type="RigidMapping" />
 		</Node>
 	</Node>
@@ -105,54 +105,54 @@
 	<Node name="BOX">
 		<Object type="MechanicalObject"/>
 		<Object type="Mesh" filename="mesh/box.obj"/>
-		<Object type="Triangle" filtered="1" simulated="0" moving="0"/>	
-		<Object type="Line" filtered="1" simulated="0" moving="0"/>
-		<Object type="Point" filtered="1" simulated="0" moving="0"/>
+		<Object type="Triangle" simulated="0" moving="0"/>	
+		<Object type="Line" simulated="0" moving="0"/>
+		<Object type="Point" simulated="0" moving="0"/>
 		<Object type="OglModel" name="Visual" filename="mesh/box.obj" color="1 0 0 0.1"/>
 	</Node>
 	
 	<Node name="BOXB">
 		<Object type="MechanicalObject" dy="10.0"/>
 		<Object type="Mesh" filename="mesh/box.obj"/>
-		<Object type="Triangle" filtered="1" simulated="0" moving="0"/>	
-		<Object type="Line" filtered="1" simulated="0" moving="0"/>
-		<Object type="Point" filtered="1" simulated="0" moving="0"/>
+		<Object type="Triangle" simulated="0" moving="0"/>	
+		<Object type="Line" simulated="0" moving="0"/>
+		<Object type="Point" simulated="0" moving="0"/>
 		<Object type="OglModel" name="Visual" filename="mesh/box.obj" color="1 0 0 0.1" dy="10.0"/>
 	</Node>
 	
 	<Node name="BOX2">
 		<Object type="MechanicalObject" dx="-5.0"/>
 		<Object type="Mesh" filename="mesh/box2.obj"/>
-		<Object type="Triangle" filtered="1" simulated="0" moving="0"/>	
-		<Object type="Line" filtered="1" simulated="0" moving="0"/>
-		<Object type="Point" filtered="1" simulated="0" moving="0"/>
+		<Object type="Triangle" simulated="0" moving="0"/>	
+		<Object type="Line" simulated="0" moving="0"/>
+		<Object type="Point" simulated="0" moving="0"/>
 		<Object type="OglModel" name="Visual" filename="mesh/box2.obj" color="1 0 0 0.1" dx="-5.0"/>
 	</Node>
 	
 	<Node name="BOX2B">
 		<Object type="MechanicalObject" dx="5.0"/>
 		<Object type="Mesh" filename="mesh/box2.obj"/>
-		<Object type="Triangle" filtered="1" simulated="0" moving="0"/>	
-		<Object type="Line" filtered="1" simulated="0" moving="0"/>
-		<Object type="Point" filtered="1" simulated="0" moving="0"/>
+		<Object type="Triangle" simulated="0" moving="0"/>	
+		<Object type="Line" simulated="0" moving="0"/>
+		<Object type="Point" simulated="0" moving="0"/>
 		<Object type="OglModel" name="Visual" filename="mesh/box2.obj" color="1 0 0 0.1" dx="5.0"/>
 	</Node>
 	
 	<Node name="BOX3">
 		<Object type="MechanicalObject" dz="-5.0"/>
 		<Object type="Mesh" filename="mesh/box3.obj"/>
-		<Object type="Triangle" filtered="1" simulated="0" moving="0"/>	
-		<Object type="Line" filtered="1" simulated="0" moving="0"/>
-		<Object type="Point" filtered="1" simulated="0" moving="0"/>
+		<Object type="Triangle" simulated="0" moving="0"/>	
+		<Object type="Line" simulated="0" moving="0"/>
+		<Object type="Point" simulated="0" moving="0"/>
 		<Object type="OglModel" name="Visual" filename="mesh/box3.obj" color="1 0 0 0.1" dz="-5.0"/>
 	</Node>
 	
 	<Node name="BOX3B">
 		<Object type="MechanicalObject" dz="5.0"/>
 		<Object type="Mesh" filename="mesh/box3.obj"/>
-		<Object type="Triangle" filtered="1" simulated="0" moving="0"/>	
-		<Object type="Line" filtered="1" simulated="0" moving="0"/>
-		<Object type="Point" filtered="1" simulated="0" moving="0"/>
+		<Object type="Triangle" simulated="0" moving="0"/>	
+		<Object type="Line" simulated="0" moving="0"/>
+		<Object type="Point" simulated="0" moving="0"/>
 		<Object type="OglModel" name="Visual" filename="mesh/box3.obj" color="1 0 0 0.1" dz="5.0"/>
 	</Node>
 	

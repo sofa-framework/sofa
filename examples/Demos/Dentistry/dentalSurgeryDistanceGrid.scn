@@ -61,8 +61,8 @@
 		<Node name="CollisionModel" >
 			<Object type="Mesh" name="InstrumentCollisionModel" filename="data/mesh/dental_instrument_centerline.obj" />
 			<Object type="MechanicalObject" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" />
-			<Object type="Line" name="instrument" contactStiffness="10" filtered="0" />
-			<Object type="Point" name="instrument" contactStiffness="10" filtered="0" /> 
+			<Object type="Line" name="instrument" contactStiffness="10" />
+			<Object type="Point" name="instrument" contactStiffness="10" /> 
 			<Object type="RigidMapping" name="MM->CM mapping" object1="instrumentState" object2="instrumentCollisionState" />
 		</Node>
 		<Node name="RefModelRight" >

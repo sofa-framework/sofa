@@ -2,7 +2,7 @@
 	<Object type="MasterConstraintSolver" mu="0"/> 
 	<Object type="CollisionPipeline" depth="6" verbose="0" draw="0"/>
 	<Object type="BruteForceDetection" name="N2" />
-	<Object type="MinProximityIntersection" name="Proximity" usePointPoint="0" alarmDistance="0.2" contactDistance="0.09" filterIntersection="1" angleCone="0.0"/>
+	<Object type="LocalMinDistance" name="Proximity" usePointPoint="0" alarmDistance="0.2" contactDistance="0.09" filterIntersection="1" angleCone="0.0"/>
 	<Object type="CollisionResponse" name="Response" response="FrictionContact"/> 
 	<Object type="CollisionGroup" name="Group" />
 
@@ -23,9 +23,9 @@
 		<Node name="ColliCube">
 			<Object type="Mesh" filename="mesh/cube.obj"/>
 			<Object type="MechanicalObject" scale="1.0"/>
-			<Object type="Triangle" filtered="1" contactStiffness="0.1"/> 
-			<Object type="Line" filtered="1" contactStiffness="0.1"/>
-			<Object type="Point" filtered="1" contactStiffness="0.1"/>
+			<Object type="Triangle" contactStiffness="0.1"/> 
+			<Object type="Line" contactStiffness="0.1"/>
+			<Object type="Point" contactStiffness="0.1"/>
 			<Object type="RigidMapping" />
 		</Node>
 		
@@ -54,9 +54,9 @@
 		<Node name="ColliCube">
 			<Object type="Mesh" filename="mesh/cube.obj"/>
 			<Object type="MechanicalObject" scale="1.0"/>
-			<Object type="Triangle" filtered="1" contactStiffness="0.1"/> 
-			<Object type="Line" filtered="1" contactStiffness="0.1"/>
-			<Object type="Point" filtered="1" contactStiffness="0.1"/>
+			<Object type="Triangle" contactStiffness="0.1"/> 
+			<Object type="Line" contactStiffness="0.1"/>
+			<Object type="Point" contactStiffness="0.1"/>
 			<Object type="RigidMapping" />
 		</Node>
 		

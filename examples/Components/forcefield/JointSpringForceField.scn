@@ -17,7 +17,7 @@
 	<Object type="BruteForceDetection"/>
 	<Object type="DefaultContactManager"/>
 	<Object type="DefaultPipeline"/>
-	<Object type="ProximityIntersection"/>
+	<Object type="MinProximityIntersection"/>
 
 	<Node>
 		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>

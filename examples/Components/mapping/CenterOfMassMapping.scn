@@ -29,7 +29,7 @@
 			<Data value="default2"/>
 		</Attribute>
 	</Object>
-	<Object type="ProximityIntersection">
+	<Object type="MinProximityIntersection">
 		<Attribute type="name">
 			<Data value="default3"/>
 		</Attribute>
@@ -294,9 +294,6 @@
 				</Attribute>
 				<Attribute type="contactFriction">
 					<Data value="0.01"/>
-				</Attribute>
-				<Attribute type="filtered">
-					<Data value="0"/>
 				</Attribute>
 				<Attribute type="color">
 					<Data value="1 0.5 0 1"/>

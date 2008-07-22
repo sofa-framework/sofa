@@ -1,7 +1,7 @@
 <Node name="root"  dt="0.005" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="1">
 	<Object type="CollisionPipeline" verbose="0" draw="1"/>
 	<Object type="BruteForceDetection" name="N2" />
-	<Object type="ProximityIntersection" name="Proximity" alarmDistance="1.0" contactDistance="0.75" />
+	<Object type="MinProximityIntersection" name="Proximity" alarmDistance="1.0" contactDistance="0.75" />
 	<Object type="CollisionResponse" name="Response" response="default" />
 	<Object type="CollisionGroup" name="Group" />
 	<Node name="M1">
@@ -24,6 +24,7 @@
 			<Object type="MechanicalObject" />
 			<Object type="Triangle" />
 			<Object type="Line" />
+			<Object type="Point" />
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
@@ -47,6 +48,7 @@
 			<Object type="MechanicalObject" />
 			<Object type="Triangle" />
 			<Object type="Line" />
+			<Object type="Point" />
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
@@ -70,6 +72,7 @@
 			<Object type="MechanicalObject" />
 			<Object type="Triangle" />
 			<Object type="Line" />
+			<Object type="Point" />
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
@@ -93,6 +96,7 @@
 			<Object type="MechanicalObject" />
 			<Object type="Triangle" />
 			<Object type="Line" />
+			<Object type="Point" />
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
@@ -117,6 +121,7 @@
 			<Object type="MechanicalObject" />
 			<Object type="Triangle" />
 			<Object type="Line" />
+			<Object type="Point" />
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
@@ -126,6 +131,7 @@
 		<Object type="MechanicalObject" dy="-20" />
 		<Object type="Triangle" name="Floor" simulated="0" moving="0" />
 		<Object type="Line" name="Floor" simulated="0" moving="0" />
+		<Object type="Point" name="Floor" simulated="0" moving="0" />
 		<Object type="OglModel" name="FloorV" filename="mesh/floor3.obj" texturename="textures/floor.bmp" dy="-20" />
 	</Node>
 </Node>

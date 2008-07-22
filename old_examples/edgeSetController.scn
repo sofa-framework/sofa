@@ -43,27 +43,27 @@
 	<Node name="TORUS1">
 		<Object type="Mesh" filename="mesh/torus2_for_collision.obj" ry="90.0" dx="3.0"/>
 		<Object type="MechanicalObject" scale="1.0" ry="90.0" dx="3.0"/>
-		<Object type="Triangle" filtered="1" simulated="0" moving="0"/> 
-		<Object type="Line" filtered="1" simulated="0" moving="0"/>
-		<Object type="Point" filtered="1" simulated="0" moving="0"/>
+		<Object type="Triangle" simulated="0" moving="0"/> 
+		<Object type="Line" simulated="0" moving="0"/>
+		<Object type="Point" simulated="0" moving="0"/>
 		<Object type="OglModel" name="Visual" filename="mesh/torus2.obj" color="1.0 0.5 0.25 1.0" ry="90.0" dx="3.0"/>	
 	</Node>
 	
 	<Node name="TORUS2">
 		<Object type="Mesh" filename="mesh/torus2_for_collision.obj" ry="90.0" dx="6.0"/>
 		<Object type="MechanicalObject" scale="1.0" ry="90.0" dx="6.0"/>
-		<Object type="Triangle" filtered="1" simulated="0" moving="0"/> 
-		<Object type="Line" filtered="1" simulated="0" moving="0"/>
-		<Object type="Point" filtered="1" simulated="0" moving="0"/>
+		<Object type="Triangle" simulated="0" moving="0"/> 
+		<Object type="Line" simulated="0" moving="0"/>
+		<Object type="Point" simulated="0" moving="0"/>
 		<Object type="OglModel" name="Visual" filename="mesh/torus2.obj" color="1.0 0.5 0.25 1.0" ry="90.0" dx="6.0"/>	
 	</Node>
 	
 	<Node name="TORUS3">
 		<Object type="Mesh" filename="mesh/torus2_for_collision.obj" ry="90.0" dx="9.0"/>
 		<Object type="MechanicalObject" scale="1.0" ry="90.0" dx="9.0"/>
-		<Object type="Triangle" filtered="1" simulated="0" moving="0"/> 
-		<Object type="Line" filtered="1" simulated="0" moving="0"/>
-		<Object type="Point" filtered="1" simulated="0" moving="0"/>
+		<Object type="Triangle" simulated="0" moving="0"/> 
+		<Object type="Line" simulated="0" moving="0"/>
+		<Object type="Point" simulated="0" moving="0"/>
 		<Object type="OglModel" name="Visual" filename="mesh/torus2.obj" color="1.0 0.5 0.25 1.0" ry="90.0" dx="9.0"/>	
 	</Node>
 	
