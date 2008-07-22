@@ -60,9 +60,6 @@ MinProximityIntersection::MinProximityIntersection()
     , usePointPoint(initData(&usePointPoint, true, "usePointPoint","activate Point-Point intersection tests"))
     , alarmDistance(initData(&alarmDistance, 1.0, "alarmDistance","Proximity detection distance"))
     , contactDistance(initData(&contactDistance, 0.5, "contactDistance","Distance below which a contact is created"))
-    , filterIntersection(initData(&filterIntersection, false, "filterIntersection","Intersections are filtered according to their orientation"))
-    , angleCone(initData(&angleCone, 0.0, "angleCone","Filtering cone extension angle"))
-    , coneFactor(initData(&coneFactor, 0.5, "coneFactor", "Factor for filtering cone angle computation"))
 {
 }
 
@@ -92,7 +89,7 @@ void MinProximityIntersection::init()
     }
     intersectors.ignore<RayModel, PointModel>();
     intersectors.ignore<RayModel, LineModel>();
-    intersectors.add<RayModel, TriangleModel, MinProximityIntersection>(this);
+    //intersectors.add<RayModel, TriangleModel, MinProximityIntersection>(this);
 }
 
 bool MinProximityIntersection::testIntersection(Cube &cube1, Cube &cube2)
@@ -151,18 +148,7 @@ bool MinProximityIntersection::testIntersection(Line& e1, Line& e2)
     Vector3 PQ = AC + CD * beta - AB * alpha;
 
     if (PQ.norm2() < alarmDist*alarmDist)
-    {
-        if (filterIntersection.getValue())
-        {
-            if (!testValidity(e1, PQ))
-                return false;
-
-            Vector3 QP = -PQ;
-            return testValidity(e2, QP);
-        }
-        else
-            return true;
-    }
+        return true;
     else
         return false;
 }
@@ -203,17 +189,6 @@ int MinProximityIntersection::computeIntersection(Line& e1, Line& e2, OutputVect
 
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
-
-    if (filterIntersection.getValue())
-    {
-        if (!testValidity(e1, PQ))
-            return 0;
-
-        Vector3 QP = -PQ;
-
-        if (!testValidity(e2, QP))
-            return 0;
-    }
 
 #ifdef DETECTIONOUTPUT_FREEMOTION
 
@@ -290,18 +265,7 @@ bool MinProximityIntersection::testIntersection(Triangle& e2, Point& e1)
     const Vector3 PQ = AB * alpha + AC * beta - AP;
 
     if (PQ.norm2() < alarmDist*alarmDist)
-    {
-        if (filterIntersection.getValue())
-        {
-            if (!testValidity(e1, PQ))
-                return false;
-
-            Vector3 QP = -PQ;
-            return testValidity(e2, QP);
-        }
-        else
-            return true;
-    }
+        return true;
     else
         return false;
 }
@@ -346,16 +310,6 @@ int MinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, Outpu
         return 0;
 
     Vector3 PQ = Q-P;
-    if (filterIntersection.getValue())
-    {
-        if (!testValidity(e1, PQ))
-            return 0;
-
-        Vector3 QP = -PQ;
-
-        if (!testValidity(e2, QP))
-            return 0;
-    }
 
 
 #ifdef DETECTIONOUTPUT_FREEMOTION
@@ -414,18 +368,7 @@ bool MinProximityIntersection::testIntersection(Line& e2, Point& e1)
     PQ = Q-P;
 
     if (PQ.norm2() < alarmDist*alarmDist)
-    {
-        if (filterIntersection.getValue())
-        {
-            if (!testValidity(e1, PQ))
-                return false;
-
-            Vector3 QP = -PQ;
-            return testValidity(e2, QP);
-        }
-        else
-            return true;
-    }
+        return true;
     else
         return false;
 }
@@ -459,16 +402,6 @@ int MinProximityIntersection::computeIntersection(Line& e2, Point& e1, OutputVec
         return 0;
 
     Vector3 PQ = Q-P;
-    if (filterIntersection.getValue())
-    {
-        if (!testValidity(e1, PQ))
-            return 0;
-
-        Vector3 QP = -PQ;
-
-        if (!testValidity(e2, QP))
-            return 0;
-    }
 
 #ifdef DETECTIONOUTPUT_FREEMOTION
 
@@ -506,18 +439,7 @@ bool MinProximityIntersection::testIntersection(Point& e1, Point& e2)
     Vector3 PQ = e2.p()-e1.p();
 
     if (PQ.norm2() < alarmDist*alarmDist)
-    {
-        if (filterIntersection.getValue())
-        {
-            if (!testValidity(e1, PQ))
-                return false;
-
-            Vector3 QP = -PQ;
-            return testValidity(e2, QP);
-        }
-        else
-            return true;
-    }
+        return true;
     else
         return false;
 }
@@ -541,17 +463,6 @@ int MinProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVe
 
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
-
-    if (filterIntersection.getValue())
-    {
-        if (!testValidity(e1, PQ))
-            return 0;
-
-        Vector3 QP = -PQ;
-
-        if (!testValidity(e2, QP))
-            return 0;
-    }
 
     const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
 
@@ -786,202 +697,70 @@ int MinProximityIntersection::computeIntersection(Sphere& e1, Point& e2, OutputV
     detection->value -= contactDist;
     return 1;
 }
-
+/*
 bool MinProximityIntersection::testIntersection(Ray &t1,Triangle &t2)
 {
-    Vector3 P,Q,PQ;
-    static DistanceSegTri proximitySolver;
+	Vector3 P,Q,PQ;
+	static DistanceSegTri proximitySolver;
 
-    const double alarmDist = getAlarmDistance() + t1.getProximity() + t2.getProximity();
+	const double alarmDist = getAlarmDistance() + t1.getProximity() + t2.getProximity();
 
-    if (fabs(t2.n() * t1.direction()) < 0.000001)
-        return false; // no intersection for edges parallel to the triangle
+	if (fabs(t2.n() * t1.direction()) < 0.000001)
+		return false; // no intersection for edges parallel to the triangle
 
-    Vector3 A = t1.origin();
-    Vector3 B = A + t1.direction() * t1.l();
+	Vector3 A = t1.origin();
+	Vector3 B = A + t1.direction() * t1.l();
 
-    proximitySolver.NewComputation( &t2, A, B,P,Q);
-    PQ = Q-P;
+	proximitySolver.NewComputation( &t2, A, B,P,Q);
+	PQ = Q-P;
 
-    if (PQ.norm2() < alarmDist*alarmDist)
-    {
-        //std::cout<<"Collision between Line - Triangle"<<std::endl;
-        return true;
-    }
-    else
-        return false;
+	if (PQ.norm2() < alarmDist*alarmDist)
+	{
+		//std::cout<<"Collision between Line - Triangle"<<std::endl;
+		return true;
+	}
+	else
+		return false;
 }
 
 int MinProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, OutputVector* contacts)
 {
-    const double alarmDist = getAlarmDistance() + t1.getProximity() + t2.getProximity();
+	const double alarmDist = getAlarmDistance() + t1.getProximity() + t2.getProximity();
 
 
-    if (fabs(t2.n() * t1.direction()) < 0.000001)
-        return false; // no intersection for edges parallel to the triangle
+	if (fabs(t2.n() * t1.direction()) < 0.000001)
+		return false; // no intersection for edges parallel to the triangle
 
-    Vector3 A = t1.origin();
-    Vector3 B = A + t1.direction() * t1.l();
+	Vector3 A = t1.origin();
+	Vector3 B = A + t1.direction() * t1.l();
 
-    Vector3 P,Q,PQ;
-    static DistanceSegTri proximitySolver;
+	Vector3 P,Q,PQ;
+	static DistanceSegTri proximitySolver;
 
-    proximitySolver.NewComputation( &t2, A,B,P,Q);
-    PQ = Q-P;
+	proximitySolver.NewComputation( &t2, A,B,P,Q);
+	PQ = Q-P;
 
-    if (PQ.norm2() >= alarmDist*alarmDist)
-        return 0;
+	if (PQ.norm2() >= alarmDist*alarmDist)
+		return 0;
 
-    const double contactDist = alarmDist;
-    contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
+	const double contactDist = alarmDist;
+	contacts->resize(contacts->size()+1);
+	DetectionOutput *detection = &*(contacts->end()-1);
 
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(t1, t2);
+	detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(t1, t2);
     detection->id = t1.getIndex();
-    detection->point[1]=P;
-    detection->point[0]=Q;
+	detection->point[1]=P;
+	detection->point[0]=Q;
 #ifdef DETECTIONOUTPUT_FREEMOTION
-    detection->freePoint[1] = P;
-    detection->freePoint[0] = Q;
+	detection->freePoint[1] = P;
+	detection->freePoint[0] = Q;
 #endif
-    detection->normal=-t2.n();
-    detection->value = PQ.norm();
-    detection->value -= contactDist;
-    return 1;
+	detection->normal=-t2.n();
+	detection->value = PQ.norm();
+	detection->value -= contactDist;
+	return 1;
 }
-
-
-bool MinProximityIntersection::testValidity(Point &p, const Vector3 &PQ)
-{
-    Vector3 pt = p.p();
-
-    BaseMeshTopology* topology = p.getCollisionModel()->getTopology();
-    helper::vector<Vector3>& x = *(p.getCollisionModel()->getMechanicalState()->getX());
-    const helper::vector <unsigned int>& triangleVertexShell = topology->getTriangleVertexShell(p.getIndex());
-    const helper::vector <unsigned int>& edgeVertexShell = topology->getEdgeVertexShell(p.getIndex());
-
-
-    Vector3 nMean;
-
-    for (unsigned int i=0; i<triangleVertexShell.size(); i++)
-    {
-        unsigned int t = triangleVertexShell[i];
-        const fixed_array<unsigned int,3>& ptr = topology->getTriangle(t);
-        Vector3 nCur = (x[ptr[1]]-x[ptr[0]]).cross(x[ptr[2]]-x[ptr[0]]);
-        nCur.normalize();
-        nMean += nCur;
-    }
-
-    if (triangleVertexShell.size()==0)
-    {
-        for (unsigned int i=0; i<edgeVertexShell.size(); i++)
-        {
-            unsigned int e = edgeVertexShell[i];
-            const fixed_array<unsigned int,2>& ped = topology->getEdge(e);
-            Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
-            l.normalize();
-            nMean += l;
-        }
-    }
-
-    if (nMean.norm()> 0.0000000001)
-        nMean.normalize();
-
-
-    for (unsigned int i=0; i<edgeVertexShell.size(); i++)
-    {
-        unsigned int e = edgeVertexShell[i];
-        const fixed_array<unsigned int,2>& ped = topology->getEdge(e);
-        Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
-        l.normalize();
-        double computedAngleCone = dot(nMean , l) * coneFactor.getValue();
-        if (computedAngleCone<0)
-            computedAngleCone=0.0;
-        computedAngleCone+=angleCone.getValue();
-        if (dot(l , PQ) < -computedAngleCone*PQ.norm())
-            return false;
-    }
-    return true;
-
-}
-
-bool MinProximityIntersection::testValidity(Line &l, const Vector3 &PQ)
-{
-    Vector3 nMean;
-    Vector3 n1, n2;
-    Vector3 t1, t2;
-
-    const Vector3 &pt1 = l.p1();
-    const Vector3 &pt2 = l.p2();
-
-    Vector3 AB = pt2 - pt1;
-    AB.normalize();
-
-    BaseMeshTopology* topology = l.getCollisionModel()->getTopology();
-    helper::vector<Vector3>& x = *(l.getCollisionModel()->getMechanicalState()->getX());
-
-    const sofa::helper::vector<unsigned int>& triangleEdgeShell = topology->getTriangleEdgeShell(l.getIndex());
-
-    // filter if there are two triangles around the edge
-    if (triangleEdgeShell.size() == 2)
-    {
-        // compute the normal of the triangle situated on the right
-        const BaseMeshTopology::Triangle& triangleRight = topology->getTriangle(triangleEdgeShell[0]);
-        n1 = cross(x[triangleRight[1]]-x[triangleRight[0]], x[triangleRight[2]]-x[triangleRight[0]]);
-        n1.normalize();
-        nMean = n1;
-        t1 = -cross(n1, AB);
-        t1.normalize(); // necessary ?
-
-        // compute the normal of the triangle situated on the left
-        const fixed_array<PointID,3>& triangleLeft = topology->getTriangle(triangleEdgeShell[1]);
-        n2 = cross(x[triangleLeft[1]]-x[triangleLeft[0]], x[triangleLeft[2]]-x[triangleLeft[0]]);
-        n2.normalize();
-        nMean += n2;
-        t2 = -cross(AB, n2);
-        t2.normalize(); // necessary ?
-
-        nMean.normalize();
-
-        if ((nMean*PQ) < 0) // test
-            return false;
-
-        // compute the angle for the cone to filter contacts using the normal of the triangle situated on the right
-        double computedAngleCone = (nMean * t1) * coneFactor.getValue();
-        if (computedAngleCone<0)
-            computedAngleCone=0.0;
-        computedAngleCone+=angleCone.getValue();
-
-        if (t1*PQ < -computedAngleCone*PQ.norm())
-            return false;
-
-        // compute the angle for the cone to filter contacts using the normal of the triangle situated on the left
-        computedAngleCone = (nMean * t2) * coneFactor.getValue();
-        if (computedAngleCone<0)
-            computedAngleCone=0.0;
-        computedAngleCone+=angleCone.getValue();
-
-        if (t2*PQ < -computedAngleCone*PQ.norm())
-            return false;
-
-    }
-    return true;
-
-
-}
-
-bool MinProximityIntersection::testValidity(Triangle &t, const Vector3 &PQ)
-{
-    const Vector3& pt1 = t.p1();
-    const Vector3& pt2 = t.p2();
-    const Vector3& pt3 = t.p3();
-
-    Vector3 n = cross(pt2-pt1,pt3-pt1);
-
-    return ( (n*PQ) >= 0.0);
-}
-
-
+*/
 void MinProximityIntersection::draw()
 {
     if (!getContext()->getShowCollisionModels())

@@ -50,10 +50,6 @@ public:
     Data<bool> usePointPoint;
     Data<double> alarmDistance;
     Data<double> contactDistance;
-    Data<bool> filterIntersection;
-    Data<double> angleCone;
-    Data<double> coneFactor;
-
 
     MinProximityIntersection();
 
@@ -82,8 +78,7 @@ public:
     bool testIntersection(Line&, Line&);
     bool testIntersection(Triangle&, Point&);
     bool testIntersection(Triangle&, Sphere&);
-    bool testIntersection(Ray&, Sphere&);
-    bool testIntersection(Ray&, Triangle&);
+    //bool testIntersection(Ray&, Triangle&);
 
     int computeIntersection(Cube&, Cube&, OutputVector*);
     int computeIntersection(Point&, Point&, OutputVector*);
@@ -94,16 +89,7 @@ public:
     int computeIntersection(Line&, Line&, OutputVector*);
     int computeIntersection(Triangle&, Point&, OutputVector*);
     int computeIntersection(Triangle&, Sphere&, OutputVector*);
-    int computeIntersection(Ray&, Sphere&, OutputVector*);
-    int computeIntersection(Ray&, Triangle&, OutputVector*);
-
-    /// These methods check the validity of a found intersection.
-    /// According to the local configuration around the found intersected primitive,
-    /// we build a "Region Of Interest" geometric cone.
-    /// Pertinent intersections have to belong to this cone, others are not taking into account anymore.
-    bool testValidity(Point&, const Vector3&);
-    bool testValidity(Line&, const Vector3&);
-    bool testValidity(Triangle&, const Vector3&);
+    //int computeIntersection(Ray&, Triangle&, OutputVector*);
 
     void draw();
 
