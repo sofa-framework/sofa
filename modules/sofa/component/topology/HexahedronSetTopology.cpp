@@ -491,14 +491,23 @@ int HexahedronSetTopologyContainer::getHexahedronIndex(const unsigned int v1, co
     if(!hasHexahedronVertexShell())
         createHexahedronVertexShellArray();
 
-    const sofa::helper::vector<unsigned int> &set1 = getHexahedronVertexShell(v1);
-    const sofa::helper::vector<unsigned int> &set2 = getHexahedronVertexShell(v2);
-    const sofa::helper::vector<unsigned int> &set3 = getHexahedronVertexShell(v3);
-    const sofa::helper::vector<unsigned int> &set4 = getHexahedronVertexShell(v4);
-    const sofa::helper::vector<unsigned int> &set5 = getHexahedronVertexShell(v5);
-    const sofa::helper::vector<unsigned int> &set6 = getHexahedronVertexShell(v6);
-    const sofa::helper::vector<unsigned int> &set7 = getHexahedronVertexShell(v7);
-    const sofa::helper::vector<unsigned int> &set8 = getHexahedronVertexShell(v8);
+    sofa::helper::vector<unsigned int> set1 = getHexahedronVertexShell(v1);
+    sofa::helper::vector<unsigned int> set2 = getHexahedronVertexShell(v2);
+    sofa::helper::vector<unsigned int> set3 = getHexahedronVertexShell(v3);
+    sofa::helper::vector<unsigned int> set4 = getHexahedronVertexShell(v4);
+    sofa::helper::vector<unsigned int> set5 = getHexahedronVertexShell(v5);
+    sofa::helper::vector<unsigned int> set6 = getHexahedronVertexShell(v6);
+    sofa::helper::vector<unsigned int> set7 = getHexahedronVertexShell(v7);
+    sofa::helper::vector<unsigned int> set8 = getHexahedronVertexShell(v8);
+
+    sort(set1.begin(), set1.end());
+    sort(set2.begin(), set2.end());
+    sort(set3.begin(), set3.end());
+    sort(set4.begin(), set4.end());
+    sort(set5.begin(), set5.end());
+    sort(set6.begin(), set6.end());
+    sort(set7.begin(), set7.end());
+    sort(set8.begin(), set8.end());
 
     // The destination vector must be large enough to contain the result.
     sofa::helper::vector<unsigned int> out1(set1.size()+set2.size());

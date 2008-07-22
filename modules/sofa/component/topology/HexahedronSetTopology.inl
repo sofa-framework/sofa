@@ -426,7 +426,6 @@ void HexahedronSetTopologyModifier<DataTypes>::addHexahedron(Hexahedron t)
             {
                 sofa::helper::vector< unsigned int > &shell = container->m_hexahedronQuadShell[container->m_hexahedronQuad[hexahedronIndex][q]];
                 shell.push_back( hexahedronIndex );
-                sort(shell.begin(), shell.end());
             }
         }
     } // quads
@@ -451,7 +450,6 @@ void HexahedronSetTopologyModifier<DataTypes>::addHexahedron(Hexahedron t)
             {
                 sofa::helper::vector< unsigned int > &shell = container->m_hexahedronEdgeShell[container->m_hexahedronEdge[hexahedronIndex][e]];
                 shell.push_back( hexahedronIndex );
-                sort(shell.begin(), shell.end());
             }
         }
     } // edges
@@ -462,7 +460,6 @@ void HexahedronSetTopologyModifier<DataTypes>::addHexahedron(Hexahedron t)
         {
             sofa::helper::vector< unsigned int > &shell = container->getHexahedronVertexShellForModification( t[v] );
             shell.push_back( hexahedronIndex );
-            sort(shell.begin(), shell.end());
         }
     }
 
@@ -592,7 +589,6 @@ void HexahedronSetTopologyModifier<DataTypes>::removeHexahedraProcess( const sof
                 {
                     sofa::helper::vector< unsigned int > &shell = container->m_hexahedronVertexShell[ h[v] ];
                     replace(shell.begin(), shell.end(), lastHexahedron, indices[i]);
-                    sort(shell.begin(), shell.end());
                 }
             }
 
@@ -602,7 +598,6 @@ void HexahedronSetTopologyModifier<DataTypes>::removeHexahedraProcess( const sof
                 {
                     sofa::helper::vector< unsigned int > &shell =  container->m_hexahedronEdgeShell[ container->m_hexahedronEdge[lastHexahedron][e]];
                     replace(shell.begin(), shell.end(), lastHexahedron, indices[i]);
-                    sort(shell.begin(), shell.end());
                 }
             }
 
@@ -612,7 +607,6 @@ void HexahedronSetTopologyModifier<DataTypes>::removeHexahedraProcess( const sof
                 {
                     sofa::helper::vector< unsigned int > &shell =  container->m_hexahedronQuadShell[ container->m_hexahedronQuad[lastHexahedron][q]];
                     replace(shell.begin(), shell.end(), lastHexahedron, indices[i]);
-                    sort(shell.begin(), shell.end());
                 }
             }
         }

@@ -282,11 +282,16 @@ const sofa::helper::vector<Tetrahedron> &TetrahedronSetTopologyContainer::getTet
 
 int TetrahedronSetTopologyContainer::getTetrahedronIndex(const unsigned int v1, const unsigned int v2, const unsigned int v3, const unsigned int v4)
 {
-    //const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvs=getTetrahedronVertexShellArray();
-    const sofa::helper::vector<unsigned int> &set1=getTetrahedronVertexShell(v1);
-    const sofa::helper::vector<unsigned int> &set2=getTetrahedronVertexShell(v2);
-    const sofa::helper::vector<unsigned int> &set3=getTetrahedronVertexShell(v3);
-    const sofa::helper::vector<unsigned int> &set4=getTetrahedronVertexShell(v4);
+
+    sofa::helper::vector<unsigned int> set1=getTetrahedronVertexShell(v1);
+    sofa::helper::vector<unsigned int> set2=getTetrahedronVertexShell(v2);
+    sofa::helper::vector<unsigned int> set3=getTetrahedronVertexShell(v3);
+    sofa::helper::vector<unsigned int> set4=getTetrahedronVertexShell(v4);
+
+    sort(set1.begin(), set1.end());
+    sort(set2.begin(), set2.end());
+    sort(set3.begin(), set3.end());
+    sort(set4.begin(), set4.end());
 
     // The destination vector must be large enough to contain the result.
     sofa::helper::vector<unsigned int> out1(set1.size()+set2.size());

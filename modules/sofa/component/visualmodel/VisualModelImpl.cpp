@@ -1012,7 +1012,7 @@ void VisualModelImpl::handleTopologyChange()
 
         case core::componentmodel::topology::POINTSREMOVED:
         {
-            std::cout << "INFO_print : Vis - POINTSREMOVED" << std::endl;
+            //std::cout << "INFO_print : Vis - POINTSREMOVED" << std::endl;
 
             if (tstc)
             {
@@ -1208,7 +1208,7 @@ void VisualModelImpl::handleTopologyChange()
 
         case core::componentmodel::topology::POINTSRENUMBERING:
         {
-            std::cout << "INFO_print : Vis - POINTSRENUMBERING" << std::endl;
+            //std::cout << "INFO_print : Vis - POINTSRENUMBERING" << std::endl;
 
             if (tstc)
             {
