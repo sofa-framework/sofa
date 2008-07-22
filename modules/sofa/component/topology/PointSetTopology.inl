@@ -86,6 +86,11 @@ void PointSetTopology<DataTypes>::parse(sofa::core::objectmodel::BaseObjectDescr
     this->m_topologyModifier->parse(arg);
     this->m_topologyAlgorithms->parse(arg);
     this->m_geometryAlgorithms->parse(arg);
+    // set the name of each component
+    this->m_topologyContainer->setName(this->getName()+std::string("Container"));
+    this->m_topologyModifier->setName(this->getName()+std::string("Modifier"));
+    this->m_topologyAlgorithms->setName(this->getName()+std::string("Algorithms"));
+    this->m_geometryAlgorithms->setName(this->getName()+std::string("Geometry"));
 
     if (arg->getAttribute("filename"))
         this->load(arg->getAttribute("filename"));		// this is called at creation time, a container and modifier must exist !!!
