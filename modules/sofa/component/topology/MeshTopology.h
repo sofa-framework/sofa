@@ -164,15 +164,20 @@ protected:
     //SeqTriangles   seqTriangles;
     Data<SeqTriangles> seqTriangles;
     bool         validTriangles;
-    SeqQuads       seqQuads;
+
+    //SeqQuads       seqQuads;
+    Data<SeqQuads>       seqQuads;
     bool         validQuads;
 
-    SeqTetras      seqTetras;
+    //SeqTetras      seqTetras;
+    Data<SeqTetras>      seqTetras;
     bool         validTetras;
+
 #ifdef SOFA_NEW_HEXA
-    SeqHexas	   seqHexas;
+    //SeqHexas	   seqHexas;
+    Data<SeqHexas>	   seqHexas;
 #else
-    SeqCubes       seqHexas;
+    Data<SeqCubes>       seqHexas;
 #endif
     bool         validHexas;
 

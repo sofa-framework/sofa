@@ -88,6 +88,7 @@ public:
     Data<Real> f_young2;
     Data<Real> f_theta;
     Data<VecCoord> f_fiberCenter;
+    Data<bool> showFiber;
 
     VecDeriv fiberDirRefs;
 

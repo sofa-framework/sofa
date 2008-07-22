@@ -179,6 +179,9 @@ public:
     Data<Real> f_damping;
     Data<bool> f_fracturable;
 
+    Data<bool> showStressValue;
+    Data<bool> showStressVector;
+
     Real getPoisson() { return f_poisson.getValue(); }
     void setPoisson(Real val) { f_poisson.setValue(val); }
     Real getYoung() { return f_young.getValue(); }
