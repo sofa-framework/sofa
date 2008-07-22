@@ -5,6 +5,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <iostream>
 
+
 namespace sofa
 {
 
@@ -13,7 +14,7 @@ namespace component
 
 namespace constraint
 {
-
+#ifdef SOFA_DEV
 class UnilateralConstraintResolution : public core::componentmodel::behavior::ConstraintResolution
 {
 public:
@@ -37,7 +38,7 @@ protected:
     double _mu;
     double _W[6];
 };
-
+#endif
 template<class DataTypes>
 class UnilateralInteractionConstraint : public core::componentmodel::behavior::InteractionConstraint
 {
@@ -123,9 +124,9 @@ public:
     virtual void getConstraintValue(double *);
 
     virtual void getConstraintId(long* id, unsigned int &offset);
-
+#ifdef SOFA_DEV
     virtual void getConstraintResolution(std::vector<core::componentmodel::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
-
+#endif
     // Previous Constraint Interface
     virtual void projectResponse() {}
     virtual void projectVelocity() {}

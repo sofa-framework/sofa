@@ -92,13 +92,14 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintId(long* id, unsign
         id[offset++] = cid;
     }
 }
-
+#ifdef SOFA_DEV
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vector<core::componentmodel::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
     for(int i=0; i<3; i++)
         resTab[offset++] = new BilateralConstraintResolution();
 }
+#endif
 
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::draw()

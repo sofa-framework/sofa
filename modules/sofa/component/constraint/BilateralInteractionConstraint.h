@@ -15,6 +15,7 @@ namespace component
 namespace constraint
 {
 
+#ifdef SOFA_DEV
 class BilateralConstraintResolution : public core::componentmodel::behavior::ConstraintResolution
 {
 public:
@@ -23,7 +24,7 @@ public:
         force[line] = - d[line] / w[line][line];
     }
 };
-
+#endif
 template<class DataTypes>
 class BilateralInteractionConstraint : public core::componentmodel::behavior::InteractionConstraint
 {
@@ -89,8 +90,9 @@ public:
 
     virtual void getConstraintId(long* id, unsigned int &offset);
 
+#ifdef SOFA_DEV
     virtual void getConstraintResolution(std::vector<core::componentmodel::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
-
+#endif
     // Previous Constraint Interface
     virtual void projectResponse() {}
     virtual void projectVelocity() {}

@@ -85,9 +85,9 @@ public:
     virtual void getConstraintValue(double* v /*, unsigned int &numContacts */);
 
     virtual void getConstraintId(long* id, unsigned int &offset);
-
+#ifdef SOFA_DEV
     virtual void getConstraintResolution(std::vector<core::componentmodel::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
-
+#endif
     // Previous Constraint Interface
     virtual void projectResponse() {}
     virtual void projectVelocity() {}
