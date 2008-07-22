@@ -144,7 +144,7 @@ bool BBox::inFrustum(const ftl::Mat4x4f& frustum, bool exact) const
     Mat3x3f m0;
     m0(0,0)=frustum(0,0);  m0(0,1)=frustum(0,1);  m0(0,2)=frustum(0,2);
     m0(1,0)=frustum(1,0);  m0(1,1)=frustum(1,1);  m0(1,2)=frustum(1,2);
-    m0(3,0)=frustum(3,0);  m0(3,1)=frustum(3,1);  m0(3,2)=frustum(3,2);
+    m0(2,0)=frustum(2,0);  m0(2,1)=frustum(2,1);  m0(2,2)=frustum(2,2);
     Mat3x3f minv; minv.invert(m0);
     // m0.p0 + frustum.col(3) = 0;
     // p0 = minv.(-frustum.col(3));
