@@ -39,6 +39,7 @@ namespace componentmodel
 namespace topology
 {
 class BaseTopology;
+class BaseMeshTopology;
 }
 }
 }
