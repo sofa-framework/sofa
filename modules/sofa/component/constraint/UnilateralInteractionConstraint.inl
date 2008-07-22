@@ -12,7 +12,7 @@ namespace component
 
 namespace constraint
 {
-
+#ifdef SOFA_DEV
 void UnilateralConstraintResolutionWithFriction::init(int line, double** w)
 {
     _W[0]=w[line  ][line  ];
@@ -59,6 +59,7 @@ void UnilateralConstraintResolutionWithFriction::resolution(int line, double** /
     d[line+1] += _W[1]*force[line] + _W[3]*force[line+1] + _W[4]*force[line+2];
     d[line+2] += _W[2]*force[line] + _W[4]*force[line+1] + _W[5]*force[line+2];
 }
+#endif
 
 template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id)
@@ -235,6 +236,7 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintId(long* id, unsig
     }
 }
 
+#ifdef SOFA_DEV
 template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vector<core::componentmodel::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
@@ -250,6 +252,7 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::ve
             resTab[offset++] = new UnilateralConstraintResolution();
     }
 }
+#endif
 
 template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::draw()

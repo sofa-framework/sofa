@@ -147,7 +147,7 @@ void SlidingConstraint<DataTypes>::getConstraintId(long* id, unsigned int &offse
         id[offset++] = cid;
     }
 }
-
+#ifdef SOFA_DEV
 template<class DataTypes>
 void SlidingConstraint<DataTypes>::getConstraintResolution(std::vector<core::componentmodel::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
@@ -156,6 +156,7 @@ void SlidingConstraint<DataTypes>::getConstraintResolution(std::vector<core::com
     if(thirdConstraint)
         resTab[offset++] = new UnilateralConstraintResolution();
 }
+#endif
 
 template<class DataTypes>
 void SlidingConstraint<DataTypes>::draw()
