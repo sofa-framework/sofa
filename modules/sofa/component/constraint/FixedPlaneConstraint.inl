@@ -27,6 +27,7 @@
 
 #include <sofa/core/componentmodel/behavior/Constraint.inl>
 #include <sofa/component/constraint/FixedPlaneConstraint.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 

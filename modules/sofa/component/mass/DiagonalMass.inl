@@ -34,6 +34,8 @@
 #include <sofa/component/topology/TopologyChangedEvent.h>
 #include <sofa/component/topology/PointData.inl>
 #include <sofa/component/topology/RegularGridTopology.h>
+#include <sofa/component/topology/TriangleSetTopology.h>
+#include <sofa/component/topology/TetrahedronSetTopology.h>
 #include <sofa/component/mass/AddMToMatrixFunctor.h>
 
 namespace sofa
