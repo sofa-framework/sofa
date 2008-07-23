@@ -731,6 +731,7 @@ template<class DataTypes >
 void HexahedronSetTopologyModifier< DataTypes >::addQuadsProcess(const sofa::helper::vector< Quad > &quads)
 {
     // start by calling the parent's method.
+    // TODO : only if quads exist
     QuadSetTopologyModifier< DataTypes >::addQuadsProcess( quads );
 
     HexahedronSetTopology< DataTypes > *topology = getHexahedronSetTopology();
@@ -789,11 +790,10 @@ void HexahedronSetTopologyModifier< DataTypes >::removeEdgesProcess( const sofa:
 
     if(container->hasHexahedronEdges())
     {
-        unsigned int lastEdge = container->getNumberOfEdges() - 1;
-
         if(!container->hasHexahedronEdgeShell())
             container->createHexahedronEdgeShellArray();
 
+        unsigned int lastEdge = container->getNumberOfEdges() - 1;
         for(unsigned int i=0; i<indices.size(); ++i, --lastEdge)
         {
             for(sofa::helper::vector<unsigned int>::iterator itt=container->m_hexahedronEdgeShell[lastEdge].begin();
@@ -878,7 +878,6 @@ void HexahedronSetTopologyModifier< DataTypes >::renumberPointsProcess( const so
         container->m_hexahedron[i][5]  = inv_index[ container->m_hexahedron[i][5]  ];
         container->m_hexahedron[i][6]  = inv_index[ container->m_hexahedron[i][6]  ];
         container->m_hexahedron[i][7]  = inv_index[ container->m_hexahedron[i][7]  ];
-
     }
 
     // call the parent's method.

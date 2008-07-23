@@ -103,7 +103,7 @@ HexahedronSetTopologyContainer::HexahedronSetTopologyContainer(core::componentmo
 void HexahedronSetTopologyContainer::createHexahedronSetArray()
 {
 #ifndef NDEBUG
-    cout << "Error. [HexahedronSetTopologyContainer::createEdgeSetArray] This method must be implemented by a child topology." << endl;
+    cout << "Error. [HexahedronSetTopologyContainer::createHexahedronSetArray] This method must be implemented by a child topology." << endl;
 #endif
 }
 
@@ -114,14 +114,6 @@ void HexahedronSetTopologyContainer::createEdgeSetArray()
 
     // create a temporary map to find redundant edges
     std::map<Edge,unsigned int> edgeMap;
-    unsigned int edgeHexahedronDescriptionArray[12][2]= {{0,1},{0,3},{0,4},
-        {1,2},{1,5},
-        {2,3},{2,6},
-        {3,7},
-        {4,5},{4,7},
-        {5,6},
-        {6,7}
-    };
 
     /// create the m_edge array at the same time than it fills the m_hexahedronEdge array
     for(unsigned int i=0; i<m_hexahedron.size(); ++i)
@@ -130,8 +122,8 @@ void HexahedronSetTopologyContainer::createEdgeSetArray()
         for(unsigned int j=0; j<12; ++j)
         {
             Edge e;
-            unsigned int v1 = t[edgeHexahedronDescriptionArray[j][0]];
-            unsigned int v2 = t[edgeHexahedronDescriptionArray[j][1]];
+            unsigned int v1 = t[hexahedronEdgeArray[j][0]];
+            unsigned int v2 = t[hexahedronEdgeArray[j][1]];
             // sort vertices in lexicographic order
             if(v1<v2)
             {
@@ -602,11 +594,8 @@ const sofa::helper::vector< HexahedronEdges> &HexahedronSetTopologyContainer::ge
 
 Edge HexahedronSetTopologyContainer::getLocalHexahedronEdges (const unsigned int i) const
 {
-    //if(!hasHexahedronEdges())
-    //	createHexahedronEdgeArray();
-
     assert(i<12);
-    return Edge (m_hexahedronEdge[i][0], m_hexahedronEdge[i][1]);
+    return Edge (hexahedronEdgeArray[i][0], hexahedronEdgeArray[i][1]);
 }
 
 const sofa::helper::vector< HexahedronQuads> &HexahedronSetTopologyContainer::getHexahedronQuadArray()
@@ -768,15 +757,27 @@ bool HexahedronSetTopologyContainer::checkTopology() const
     {
         ret = QuadSetTopologyContainer::checkTopology();
     }
+    else if(hasEdges())
+    {
+        ret = EdgeSetTopologyContainer::checkTopology();
+    }
 
     if(hasHexahedronVertexShell())
     {
         for(unsigned int i=0; i<m_hexahedronVertexShell.size(); ++i)
         {
-            const sofa::helper::vector<unsigned int> &tvs=m_hexahedronVertexShell[i];
+            const sofa::helper::vector<unsigned int> &tvs = m_hexahedronVertexShell[i];
             for(unsigned int j=0; j<tvs.size(); ++j)
             {
-                bool check_hexa_vertex_shell = (m_hexahedron[tvs[j]][0]==i) ||  (m_hexahedron[tvs[j]][1]==i) || (m_hexahedron[tvs[j]][2]==i) || (m_hexahedron[tvs[j]][3]==i) || (m_hexahedron[tvs[j]][4]==i) ||  (m_hexahedron[tvs[j]][5]==i) || (m_hexahedron[tvs[j]][6]==i) || (m_hexahedron[tvs[j]][7]==i);
+                bool check_hexa_vertex_shell = (m_hexahedron[tvs[j]][0]==i)
+                        || (m_hexahedron[tvs[j]][1]==i)
+                        || (m_hexahedron[tvs[j]][2]==i)
+                        || (m_hexahedron[tvs[j]][3]==i)
+                        || (m_hexahedron[tvs[j]][4]==i)
+                        ||  (m_hexahedron[tvs[j]][5]==i)
+                        || (m_hexahedron[tvs[j]][6]==i)
+                        || (m_hexahedron[tvs[j]][7]==i);
+
                 if(!check_hexa_vertex_shell)
                 {
                     std::cout << "*** CHECK FAILED : check_hexa_vertex_shell, i = " << i << " , j = " << j << std::endl;
@@ -793,7 +794,18 @@ bool HexahedronSetTopologyContainer::checkTopology() const
             const sofa::helper::vector<unsigned int> &tes=m_hexahedronEdgeShell[i];
             for(unsigned int j=0; j<tes.size(); ++j)
             {
-                bool check_hexa_edge_shell = (m_hexahedronEdge[tes[j]][0]==i) ||  (m_hexahedronEdge[tes[j]][1]==i) || (m_hexahedronEdge[tes[j]][2]==i) || (m_hexahedronEdge[tes[j]][3]==i) || (m_hexahedronEdge[tes[j]][4]==i) || (m_hexahedronEdge[tes[j]][5]==i) || (m_hexahedronEdge[tes[j]][6]==i) ||  (m_hexahedronEdge[tes[j]][7]==i) || (m_hexahedronEdge[tes[j]][8]==i) || (m_hexahedronEdge[tes[j]][9]==i) || (m_hexahedronEdge[tes[j]][10]==i) || (m_hexahedronEdge[tes[j]][11]==i);
+                bool check_hexa_edge_shell =   (m_hexahedronEdge[tes[j]][0]==i)
+                        || (m_hexahedronEdge[tes[j]][1]==i)
+                        || (m_hexahedronEdge[tes[j]][2]==i)
+                        || (m_hexahedronEdge[tes[j]][3]==i)
+                        || (m_hexahedronEdge[tes[j]][4]==i)
+                        || (m_hexahedronEdge[tes[j]][5]==i)
+                        || (m_hexahedronEdge[tes[j]][6]==i)
+                        || (m_hexahedronEdge[tes[j]][7]==i)
+                        || (m_hexahedronEdge[tes[j]][8]==i)
+                        || (m_hexahedronEdge[tes[j]][9]==i)
+                        || (m_hexahedronEdge[tes[j]][10]==i)
+                        || (m_hexahedronEdge[tes[j]][11]==i);
                 if(!check_hexa_edge_shell)
                 {
                     std::cout << "*** CHECK FAILED : check_hexa_edge_shell, i = " << i << " , j = " << j << std::endl;
@@ -810,7 +822,12 @@ bool HexahedronSetTopologyContainer::checkTopology() const
             const sofa::helper::vector<unsigned int> &tes=m_hexahedronQuadShell[i];
             for(unsigned int j=0; j<tes.size(); ++j)
             {
-                bool check_hexa_quad_shell = (m_hexahedronQuad[tes[j]][0]==i) ||  (m_hexahedronQuad[tes[j]][1]==i) || (m_hexahedronQuad[tes[j]][2]==i) || (m_hexahedronQuad[tes[j]][3]==i) || (m_hexahedronQuad[tes[j]][4]==i) || (m_hexahedronQuad[tes[j]][5]==i);
+                bool check_hexa_quad_shell =   (m_hexahedronQuad[tes[j]][0]==i)
+                        || (m_hexahedronQuad[tes[j]][1]==i)
+                        || (m_hexahedronQuad[tes[j]][2]==i)
+                        || (m_hexahedronQuad[tes[j]][3]==i)
+                        || (m_hexahedronQuad[tes[j]][4]==i)
+                        || (m_hexahedronQuad[tes[j]][5]==i);
                 if(!check_hexa_quad_shell)
                 {
                     std::cout << "*** CHECK FAILED : check_hexa_quad_shell, i = " << i << " , j = " << j << std::endl;
