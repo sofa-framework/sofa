@@ -22,11 +22,9 @@
 		<Object type="DefaultPipeline"	/>
 		<Object type="MinProximityIntersection"	/>
 		<Node>
-			<Object type="CGImplicitSolver"
-				iterations="100"
-				name="solver"
-				printLog="0"
-			/>
+			<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+			<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
 			<Object type="MechanicalObject" template="Rigid"
 				position="0 0 0 0 0 0 1 1 0 0 0 0 0 1 3 0 0 0 0 0 1 5 0 0 0 0 0 1 7 0 0 0 0 0 1"
 				name="DOFs"

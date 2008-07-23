@@ -51,17 +51,8 @@
 		showNormals="0" 
 		multiThreadSimulation="0" 
 		 >
-		<Object type="CGImplicitSolver">
-			<Attribute type="name">
-				<Data value="solver"/>
-			</Attribute>
-			<Attribute type="printLog">
-				<Data value="0"/>
-			</Attribute>
-			<Attribute type="iterations">
-				<Data value="100"/>
-			</Attribute>
-		</Object>
+		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<Object type="MechanicalObject" template="Rigid">
 			<Attribute type="name">
 				<Data value="DOFs"/>

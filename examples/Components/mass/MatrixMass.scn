@@ -8,7 +8,7 @@
 	
 	<Node name="DragonCoarse">
 		<Object type="SparseGrid"
-			nx="2" ny="2" nz="2"
+			n="2 2 2"
 			filename="mesh/dragon.obj"
 			/>
 		<Object type="CGImplicit" iterations="100"/>

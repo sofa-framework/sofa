@@ -25,5 +25,5 @@
 		</Node>
 	</Node>
 	<Object type="Sphere" name="Floor" filename="mesh/floor.sph" simulated="0" moving="0" dy="-12.5" contactStiffness="1000"/>
-	<Object type="OglModel" name="FloorV" filename="mesh/floor2.obj" texturename="texture/floor2.bmp" dy="-12.5" />
+	<Object type="OglModel" name="FloorV" filename="mesh/floor2.obj" texturename="textures/floor2.bmp" dy="-12.5" />
 </Node>
