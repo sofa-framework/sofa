@@ -109,7 +109,6 @@ protected:
     TriangleData<TriangleRestInformation> triangleInfo;
     EdgeData<EdgeRestInformation> edgeInfo;
 
-    TriangleSetTopology<DataTypes> * _mesh;
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
     Data < VecCoord >  _initialPoints;										///< the intial positions of the points
 
@@ -125,8 +124,6 @@ protected:
 public:
 
     TriangularBiquadraticSpringsForceField();
-
-    TriangleSetTopology<DataTypes> *getTriangularTopology() const {return _mesh;}
 
     virtual ~TriangularBiquadraticSpringsForceField();
 

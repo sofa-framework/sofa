@@ -74,20 +74,20 @@ template <class DataTypes>
 void EdgeSetController<DataTypes>::init()
 {
     _topology = this->getContext()->getMeshTopology();
-    this->getContext()->get(edgeGEO_ptr);
-    this->getContext()->get(edgeALG_ptr);
+    this->getContext()->get(edgeGeo);
+    this->getContext()->get(edgeAlg);
 
-    if (edgeGEO_ptr == NULL)
+    if (edgeGeo == NULL)
         std::cerr << "WARNING. EdgeSetController has no binding EdgeSetGeometryAlgorithms\n";
 
-    if (edgeALG_ptr == NULL)
+    if (edgeAlg == NULL)
         std::cerr << "WARNING. EdgeSetController has no binding EdgeSetTopologyAlgorithms\n";
 
     Inherit::init();
 
     if (_topology->getNbEdges()>0)
     {
-        edge0RestedLength = edgeGEO_ptr->computeRestEdgeLength(0);
+        edge0RestedLength = edgeGeo->computeRestEdgeLength(0);
     }
 }
 
@@ -165,7 +165,7 @@ void EdgeSetController<DataTypes>::applyController()
 template <class DataTypes>
 void EdgeSetController<DataTypes>::modifyTopology(void)
 {
-    assert(edgeGEO_ptr != 0);
+    assert(edgeGeo != 0);
 
     if (step >= 0)
     {
@@ -174,13 +174,13 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
 
         if (baseEdge.size() == 1)
         {
-            if (edgeGEO_ptr->computeRestEdgeLength(baseEdge[0]) > ( 2 * edge0RestedLength ))
+            if (edgeGeo->computeRestEdgeLength(baseEdge[0]) > ( 2 * edge0RestedLength ))
             {
                 // First Edge makes 2
                 sofa::helper::vector<unsigned int> indices(0);
                 indices.push_back(baseEdge[0]);
 
-                edgeALG_ptr->splitEdges(indices);
+                edgeAlg->splitEdges(indices);
 
                 // Renumber Vertices
 
@@ -211,7 +211,7 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
                 std::cout << std::endl;
                 */
 
-                edgeALG_ptr->renumberPoints((const sofa::helper::vector<unsigned int> &) inverse_permutations, (const sofa::helper::vector<unsigned int> &) permutations);
+                edgeAlg->renumberPoints((const sofa::helper::vector<unsigned int> &) inverse_permutations, (const sofa::helper::vector<unsigned int> &) permutations);
 
             }
         }
@@ -224,8 +224,8 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
         if (baseEdge.size() == 2)
         {
 
-            if ((edgeGEO_ptr->computeRestEdgeLength(baseEdge[0]) < ( 0.5 * edge0RestedLength ))
-                ||(edgeGEO_ptr->computeRestEdgeLength(baseEdge[1]) < ( 0.5 * edge0RestedLength )))
+            if ((edgeGeo->computeRestEdgeLength(baseEdge[0]) < ( 0.5 * edge0RestedLength ))
+                ||(edgeGeo->computeRestEdgeLength(baseEdge[1]) < ( 0.5 * edge0RestedLength )))
 
             {
                 // Fuse Edges (0-1)
@@ -235,7 +235,7 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
                 v.push_back(baseEdge[0]);
                 v.push_back(baseEdge[1]);
                 edges_fuse.push_back(v);
-                edgeALG_ptr->fuseEdges(edges_fuse, true);
+                edgeAlg->fuseEdges(edges_fuse, true);
 
                 // Renumber Vertices
 
@@ -265,7 +265,7 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
                 std::cout << std::endl;
                 */
 
-                edgeALG_ptr->renumberPoints((const sofa::helper::vector<unsigned int> &) inverse_permutations, (const sofa::helper::vector<unsigned int> &) permutations);
+                edgeAlg->renumberPoints((const sofa::helper::vector<unsigned int> &) inverse_permutations, (const sofa::helper::vector<unsigned int> &) permutations);
 
             }
         }
@@ -278,7 +278,7 @@ void EdgeSetController<DataTypes>::draw()
 {
     glDisable(GL_LIGHTING);
 
-    if (edgeGEO_ptr)
+    if (edgeGeo)
     {
         glBegin(GL_LINES);
         for (int i=0; i<_topology->getNbEdges(); i++)

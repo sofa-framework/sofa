@@ -70,7 +70,7 @@ protected:
     EdgeSubsetData<EdgePressureInformation> edgePressureMap;
 
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
-    sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGEO_ptr;
+    sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
 
     Data<Deriv> pressure;
 

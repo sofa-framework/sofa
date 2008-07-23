@@ -136,7 +136,6 @@ protected:
 
     double m_potentialEnergy;
 
-    TetrahedronSetTopology<DataTypes> * _mesh;
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 
 public:
@@ -154,8 +153,7 @@ public:
     DataPtr<bool> f_assembling;
 
     TetrahedralCorotationalFEMForceField()
-        : _mesh(NULL)
-        , f_method(initData(&f_method,std::string("large"),"method","\"small\", \"large\" (by QR) or \"polar\" displacements"))
+        : f_method(initData(&f_method,std::string("large"),"method","\"small\", \"large\" (by QR) or \"polar\" displacements"))
         ,  _poissonRatio((Real)0.45f)
         , f_poissonRatio(initDataPtr(&f_poissonRatio,&_poissonRatio,"poissonRatio","FEM Poisson Ratio"))
         ,  _youngModulus((Real)5000)
@@ -178,8 +176,6 @@ public:
     void setUpdateStiffnessMatrix(bool val) { this->f_updateStiffnessMatrix.setValue(val); }
 
     void setComputeGlobalMatrix(bool val) { this->f_assembling.setValue(val); }
-
-    TetrahedronSetTopology<DataTypes> *getTetrahedralTopology() const {return _mesh;}
 
     virtual void init();
     virtual void reinit();

@@ -102,9 +102,7 @@ void TriangularFEMForceField<DataTypes>::TRQSEdgeCreationFunction(int edgeIndex,
 
 template <class DataTypes>
 TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
-    : _mesh(NULL)
-//, _indexedElements(NULL)
-    , method(LARGE)
+    : method(LARGE)
     , f_method(initData(&f_method,std::string("large"),"method","large: large displacements, small: small displacements"))
     , f_poisson(initData(&f_poisson,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
     , f_young(initData(&f_young,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
@@ -144,12 +142,10 @@ void TriangularFEMForceField<DataTypes>::init()
     else if (f_method.getValue() == "large")
         method = LARGE;
 
-    _mesh =0;
+    sofa::component::topology::TriangleSetTopologyContainer* triangleCont;
+    this->getContext()->get(triangleCont);
 
-    if (getContext()->getMainTopology()!=0)
-        _mesh= dynamic_cast<TriangleSetTopology<DataTypes>*>(getContext()->getMainTopology());
-
-    if ((_mesh==0) || (_topology->getNbTriangles()==0))
+    if ((triangleCont==0) || (_topology->getNbTriangles()==0))
     {
         std::cerr << "ERROR(TriangularFEMForceField): object must have a Triangular Set Topology.\n";
         return;

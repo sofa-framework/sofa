@@ -69,11 +69,11 @@ template <class DataTypes> void EdgePressureForceField<DataTypes>::init()
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
 
     _topology = this->getContext()->getMeshTopology();
-    this->getContext()->get(edgeGEO_ptr);
+    this->getContext()->get(edgeGeo);
 
-    assert(edgeGEO_ptr!=0);
+    assert(edgeGeo!=0);
 
-    if (edgeGEO_ptr==NULL)
+    if (edgeGeo==NULL)
     {
         std::cerr << "ERROR(EdgePressureForceField): object must have an EdgeSetTopology.\n";
         return;
@@ -123,7 +123,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
 
     for(it=edgePressureMap.begin(); it!=edgePressureMap.end(); it++ )
     {
-        (*it).second.length=edgeGEO_ptr->computeRestEdgeLength((*it).first);
+        (*it).second.length=edgeGeo->computeRestEdgeLength((*it).first);
         (*it).second.force=pressure.getValue()*(*it).second.length;
     }
 }

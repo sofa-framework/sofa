@@ -269,6 +269,14 @@ public:
     /** \brief Provides an iterator on the last element in the list of TopologyChange objects.
      */
     virtual std::list<const TopologyChange *>::const_iterator lastChange() const;
+
+    /** \brief Provides an iterator on the first element in the list of StateChange objects.
+     */
+    virtual std::list<const TopologyChange *>::const_iterator firstStateChange() const;
+
+    /** \brief Provides an iterator on the last element in the list of StateChange objects.
+     */
+    virtual std::list<const TopologyChange *>::const_iterator lastStateChange() const;
 };
 
 } // namespace topology

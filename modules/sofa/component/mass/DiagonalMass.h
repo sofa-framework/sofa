@@ -97,11 +97,11 @@ public:
 
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 
-    sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGEO_ptr;
-    sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* triangleGEO_ptr;
-    sofa::component::topology::QuadSetGeometryAlgorithms<DataTypes>* quadGEO_ptr;
-    sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes>* tetraGEO_ptr;
-    sofa::component::topology::HexahedronSetGeometryAlgorithms<DataTypes>* hexaGEO_ptr;
+    sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
+    sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* triangleGeo;
+    sofa::component::topology::QuadSetGeometryAlgorithms<DataTypes>* quadGeo;
+    sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes>* tetraGeo;
+    sofa::component::topology::HexahedronSetGeometryAlgorithms<DataTypes>* hexaGeo;
 
     DiagonalMass();
 

@@ -142,7 +142,6 @@ protected:
     PointData<VertexInformation> vertexInfo;
     EdgeData<EdgeInformation> edgeInfo;
 
-    TriangleSetTopology<DataTypes> * _mesh;
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
     //const VecElement *_indexedElements;
     //Data< VecCoord > _initialPoints; ///< the intial positions of the points
@@ -158,7 +157,6 @@ protected:
 public:
 
     TriangularFEMForceField();
-    TriangleSetTopology<DataTypes> *getTriangularTopology() const {return _mesh;}
 
     //virtual const char* getTypeName() const { return "TriangularFEMForceField"; }
 

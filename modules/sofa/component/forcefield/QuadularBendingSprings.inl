@@ -92,8 +92,7 @@ void QuadularBendingSprings<DataTypes>::QuadularBSQuadCreationFunction (const so
 
         unsigned int nb_activated = 0;
 
-        component::MechanicalObject<DataTypes>* _mstate = dynamic_cast<component::MechanicalObject<DataTypes>*>(ff->getContext()->getMechanicalState());
-        const typename DataTypes::VecCoord *restPosition=_mstate->getX0();
+        const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
 
         for (unsigned int i=0; i<quadAdded.size(); ++i)
         {
@@ -497,10 +496,10 @@ void QuadularBendingSprings<DataTypes>::init()
 
     _topology = getContext()->getMeshTopology();
 
-    sofa::component::topology::QuadSetTopologyContainer* quadCONT_ptr;
-    this->getContext()->get(quadCONT_ptr);
+    sofa::component::topology::QuadSetTopologyContainer* quadCont;
+    this->getContext()->get(quadCont);
 
-    if ((quadCONT_ptr==0) || (_topology->getNbQuads()==0))
+    if ((quadCont==0) || (_topology->getNbQuads()==0))
     {
         std::cerr << "ERROR(QuadularBendingSprings): object must have a Quadular Set Topology.\n";
         return;
