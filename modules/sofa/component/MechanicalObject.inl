@@ -252,7 +252,7 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::handleStateChange()
 {
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
-    _topology = getContext()->getMeshTopology();
+    _topology = this->getContext()->getMeshTopology();
 
     std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=_topology->firstStateChange();
     std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=_topology->lastStateChange();
