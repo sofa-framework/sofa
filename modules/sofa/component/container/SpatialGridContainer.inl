@@ -744,15 +744,16 @@ bool SpatialGridContainer<DataTypes>::sortPoints()
             std::cout << " "<<i<<"->"<<old2new[i];
         std::cout << std::endl;
     }
-    topology::PointSetTopology<DataTypes>* t = dynamic_cast<topology::PointSetTopology<DataTypes>*>(this->getContext()->getMainTopology());
-    if (t)
+
+    sofa::component::topology::PointSetTopologyAlgorithms<DataTypes>* pointALG_ptr;
+    this->getContext()->get(pointALG_ptr);
+
+    if (pointALG_ptr)
     {
         if(this->f_printLog.getValue())
-            std::cout << "SpatialGridContainer::sortPoints(): renumber using PointSetTopology."<<std::endl;
-        //topology->getPointSetTopologyAlgorithms()->renumberPoints(map,invmap);
-        ((topology::PointSetTopologyModifier<DataTypes>*)t->getTopologyModifier())->renumberPointsWarning(new2old,old2new);
-        ((topology::PointSetTopologyModifier<DataTypes>*)t->getTopologyModifier())->renumberPointsProcess(new2old,old2new);
-        t->propagateTopologicalChanges();
+            std::cout << "SpatialGridContainer::sortPoints(): renumber using PointSetTopologyAlgorithms."<<std::endl;
+
+        pointALG_ptr->renumberPoints(new2old,old2new);
     }
     else
     {

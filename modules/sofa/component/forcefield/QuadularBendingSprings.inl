@@ -59,8 +59,7 @@ void QuadularBendingSprings<DataTypes>::QuadularBSEdgeCreationFunction(int /*edg
     QuadularBendingSprings<DataTypes> *ff= (QuadularBendingSprings<DataTypes> *)param;
     if (ff)
     {
-        //QuadSetTopology<DataTypes> *_mesh=ff->getQuadularTopology();
-        //assert(_mesh!=0);
+
         unsigned int u,v;
         /// set to zero the edge stiffness matrix
         for (u=0; u<3; ++u)
@@ -194,15 +193,13 @@ void QuadularBendingSprings<DataTypes>::QuadularBSQuadDestructionFunction (const
     QuadularBendingSprings<DataTypes> *ff= (QuadularBendingSprings<DataTypes> *)param;
     if (ff)
     {
-        QuadSetTopology<DataTypes> *_mesh=ff->getQuadularTopology();
-        assert(_mesh!=0);
 
         double m_ks=ff->getKs(); // typename DataTypes::
         double m_kd=ff->getKd(); // typename DataTypes::
 
         //unsigned int u,v;
 
-        const typename DataTypes::VecCoord *restPosition=_mesh->getDOF()->getX0();
+        const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
 
         for (unsigned int i=0; i<quadRemoved.size(); ++i)
         {
@@ -312,8 +309,7 @@ void QuadularBendingSprings<DataTypes>::QuadularBSQuadDestructionFunction (const
 
 template<class DataTypes>
 QuadularBendingSprings<DataTypes>::QuadularBendingSprings()
-    : _mesh(NULL)
-    , updateMatrix(true)
+    : updateMatrix(true)
     , f_ks(initData(&f_ks,(double) 100000.0,"stiffness","uniform stiffness for the all springs")) //(Real)0.3 ??
     , f_kd(initData(&f_kd,(double) 1.0,"damping","uniform damping for the all springs")) // (Real)1000. ??
 {
@@ -501,11 +497,10 @@ void QuadularBendingSprings<DataTypes>::init()
 
     _topology = getContext()->getMeshTopology();
 
-    _mesh =0;
-    if (getContext()->getMainTopology()!=0)
-        _mesh= dynamic_cast<QuadSetTopology<DataTypes>*>(getContext()->getMainTopology());
+    sofa::component::topology::QuadSetTopologyContainer* quadCONT_ptr;
+    this->getContext()->get(quadCONT_ptr);
 
-    if ((_mesh==0) || (_topology->getNbQuads()==0))
+    if ((quadCONT_ptr==0) || (_topology->getNbQuads()==0))
     {
         std::cerr << "ERROR(QuadularBendingSprings): object must have a Quadular Set Topology.\n";
         return;

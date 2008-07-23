@@ -112,8 +112,6 @@ void TriangleModel::updateNormals()
 
 void TriangleModel::updateFromTopology()
 {
-
-    std::cout << "BIBI_print : Col - updateFromTopology : pass 1 " << std::endl;
 //    needsUpdate = false;
     const unsigned npoints = mstate->getX()->size();
     const unsigned ntris = _topology->getNbTriangles();
@@ -123,7 +121,6 @@ void TriangleModel::updateFromTopology()
     int revision = _topology->getRevision();
     if (revision == meshRevision && newsize==(unsigned)size)
     {
-        std::cout << "BIBI_print : Col - updateFromTopology : pass 2 " << std::endl;
         return;
     }
     needsUpdate=true;
@@ -133,19 +130,15 @@ void TriangleModel::updateFromTopology()
     if (newsize == ntris)
     {
         // no need to copy the triangle indices
-        std::cout << "BIBI_print : Col - updateFromTopology : pass 3 " << std::endl;
         triangles = & _topology->getTriangles();
     }
     else
     {
-        std::cout << "BIBI_print : Col - updateFromTopology : pass 4 " << std::endl;
         triangles = &mytriangles;
         mytriangles.resize(newsize);
         int index = 0;
         for (unsigned i=0; i<ntris; i++)
         {
-            std::cout << "BIBI_print : Col - updateFromTopology : pass 5 " << std::endl;
-
             topology::BaseMeshTopology::Triangle idx = _topology->getTriangle(i);
             if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints)
             {
@@ -159,8 +152,6 @@ void TriangleModel::updateFromTopology()
         }
         for (unsigned i=0; i<nquads; i++)
         {
-            std::cout << "BIBI_print : Col - updateFromTopology : pass 6 " << std::endl;
-
             topology::BaseMeshTopology::Quad idx = _topology->getQuad(i);
             if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints || idx[3] >= npoints)
             {
@@ -179,11 +170,8 @@ void TriangleModel::updateFromTopology()
             mytriangles[index][2] = idx[2];
             ++index;
         }
-
-        std::cout << "BIBI_print : Col - updateFromTopology : pass 7 " << std::endl;
     }
     updateFlags();
-    std::cout << "BIBI_print : Col - updateFromTopology : pass 8 " << std::endl;
     meshRevision = revision;
 }
 
