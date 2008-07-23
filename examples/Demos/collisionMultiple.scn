@@ -4,8 +4,9 @@
 	<Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.75" contactDistance="0.5" />
 	<Object type="CollisionResponse" name="Response" response="default" />
 	<Object type="CollisionGroup" name="Group" />
-	<Node name="Torus">
-		<Object type="CGImplicit" iterations="10" tol="0.01" threshold="0.000001" />
+	<Node name="Torus">	
+		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<Object type="MechanicalObject" dx="0" dy="20" dz="29" rz="64"/>
 		<Object type="UniformMass" totalmass="10"/>
 		<Object type="RegularGrid"
@@ -29,7 +30,9 @@
 		</Node>
 	</Node>
 	<Node name="Dragon">
-		<Object type="CGImplicit" iterations="25" tol="0.01" threshold="0.000001" />
+		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
 		<Object type="MechanicalObject" dx="20" dy="20" dz="29" rx="33"/>
 		<Object type="UniformMass" totalmass="10"/>
 		<Object type="RegularGrid"
@@ -53,7 +56,9 @@
 		</Node>
 	</Node>
 	<Node name="Frog">
-		<Object type="CGImplicit" iterations="25" tol="0.01" threshold="0.000001" />
+		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
 		<Object type="MechanicalObject" dx="-20" dy="20" dz="29" ry="10"/>
 		<Object type="UniformMass" totalmass="10"/>
 		<Object type="RegularGrid"
