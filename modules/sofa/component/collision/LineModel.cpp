@@ -420,69 +420,6 @@ void LineModel::updateFromTopology()
     }
 }
 
-//void LineMeshModel::updateFromTopology()
-//{
-//	needsUpdate=true;
-//	int revision = mesh->getRevision();
-//	if (revision == meshRevision)
-//	{
-//	        needsUpdate=false;
-//		return;
-//	}
-//
-//	const unsigned int npoints = mstate->getX()->size();
-//	const unsigned int nlines = mesh->getNbLines();
-//	resize(nlines);
-//	int index = 0;
-//	//VecCoord& x = *mstate->getX();
-//	//VecDeriv& v = *mstate->getV();
-//	for (unsigned int i=0; i<nlines; i++)
-//	{
-//		MeshTopology::Line idx = mesh->getLine(i);
-//		if (idx[0] >= npoints || idx[1] >= npoints)
-//		{
-//			std::cerr << "ERROR: Out of range index in Line "<<i<<": "<<idx[0]<<" "<<idx[1]<<" ( total points="<<npoints<<")\n";
-//			continue;
-//		}
-//		elems[index].i1 = idx[0];
-//		elems[index].i2 = idx[1];
-//		++index;
-//	}
-//	meshRevision = revision;
-//	return;
-//}
-
-//void LineSetModel::updateFromTopology()
-//{
-//	//sofa::core::componentmodel::topology::BaseTopology* bt = mesh;
-//    	sofa::component::topology::EdgeSetTopologyContainer *container = mesh->getEdgeSetTopologyContainer();
-//	//needsUpdate=true;
-//	if (needsUpdate)
-//	{
-//		const unsigned int npoints = mstate->getX()->size();
-//		const unsigned int nlines = container->getNumberOfEdges();
-//
-//		resize(nlines);
-//		int index = 0;
-//		//VecCoord& x = *mstate->getX();
-//		//VecDeriv& v = *mstate->getV();
-//		for (unsigned int i=0; i<nlines; i++)
-//		{
-//			sofa::component::topology::Edge idx = container->getEdge(i);
-//			if (idx[0] >= npoints || idx[1] >= npoints)
-//			{
-//				std::cerr << "ERROR: Out of range index in Line "<<i<<": "<<idx[0]<<" "<<idx[1]<<" ( total points="<<npoints<<")\n";
-//				continue;
-//			}
-//
-//			elems[index].i1 = idx[0];
-//			elems[index].i2 = idx[1];
-//			++index;
-//		}
-//	}
-//	needsUpdate=false;
-//}
-
 void LineModel::draw(int index)
 {
     Line t(this,index);

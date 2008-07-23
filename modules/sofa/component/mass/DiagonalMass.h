@@ -36,6 +36,12 @@
 #include <sofa/component/topology/PointData.h>
 #include <sofa/helper/vector.h>
 
+#include <sofa/component/topology/EdgeSetTopology.h>
+#include <sofa/component/topology/TriangleSetTopology.h>
+#include <sofa/component/topology/TetrahedronSetTopology.h>
+#include <sofa/component/topology/QuadSetTopology.h>
+#include <sofa/component/topology/HexahedronSetTopology.h>
+
 namespace sofa
 {
 
@@ -67,7 +73,9 @@ public:
         TOPOLOGY_UNKNOWN=0,
         TOPOLOGY_EDGESET=1,
         TOPOLOGY_TRIANGLESET=2,
-        TOPOLOGY_TETRAHEDRONSET=3
+        TOPOLOGY_TETRAHEDRONSET=3,
+        TOPOLOGY_QUADSET=4,
+        TOPOLOGY_HEXAHEDRONSET=5
     } TopologyType;
 
     Data< VecMass > f_mass;
@@ -86,6 +94,15 @@ protected:
     TopologyType topologyType;
 
 public:
+
+    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+
+    sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGEO_ptr;
+    sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* triangleGEO_ptr;
+    sofa::component::topology::QuadSetGeometryAlgorithms<DataTypes>* quadGEO_ptr;
+    sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes>* tetraGEO_ptr;
+    sofa::component::topology::HexahedronSetGeometryAlgorithms<DataTypes>* hexaGEO_ptr;
+
     DiagonalMass();
 
     ~DiagonalMass();

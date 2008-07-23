@@ -53,8 +53,6 @@ int TetrahedronModelClass = core::RegisterObject("collision model using a tetrah
 
 TetrahedronModel::TetrahedronModel()
     : tetra(NULL), mstate(NULL)
-    , topology(NULL)
-    , setTopology(NULL)
 {
 }
 
@@ -67,6 +65,8 @@ void TetrahedronModel::resize(int size)
 
 void TetrahedronModel::init()
 {
+    _topology = this->getContext()->getMeshTopology();
+
     this->CollisionModel::init();
     mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
 
@@ -76,22 +76,20 @@ void TetrahedronModel::init()
         return;
     }
 
-    topology = getContext()->getMeshTopology();
-    if (!topology)
+    if (!_topology)
     {
         std::cerr << "ERROR: TetrahedronModel requires a BaseMeshTopology.\n";
         return;
     }
-    setTopology = dynamic_cast<SetTopology*>(getContext()->getMainTopology());
 
-    tetra = &topology->getTetras();
+    tetra = &_topology->getTetras();
     resize(tetra->size());
 
 }
 
 void TetrahedronModel::handleTopologyChange()
 {
-    resize(setTopology->getTetrahedronSetTopologyContainer()->getNumberOfTetrahedra());
+    resize(_topology->getNbTetras());
 }
 
 void TetrahedronModel::draw(int index)
@@ -154,7 +152,7 @@ void TetrahedronModel::draw(int index)
 
 void TetrahedronModel::draw()
 {
-    if (mstate && topology && getContext()->getShowCollisionModels())
+    if (mstate && _topology && getContext()->getShowCollisionModels())
     {
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -187,7 +185,7 @@ void TetrahedronModel::draw()
 void TetrahedronModel::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    if (!mstate || !topology) return;
+    if (!mstate || !_topology) return;
     if (!isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
 
     Vector3 minElem, maxElem;
