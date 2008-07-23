@@ -109,7 +109,8 @@ HEADERS += \
            CudaMasterContactSolver.h \
 	   CudaBTDLinearSolver.h \
 	   CudaUnilateralInteractionConstraint.h \
-	   CudaFrictionContact.h
+	   CudaFrictionContact.h \
+	   CudaPrecomputedConstraintCorrection.h
 
 SOURCES += \
 	   CudaBTDLinearSolver.cpp  \
@@ -117,7 +118,8 @@ SOURCES += \
            CudaMasterContactSolver.cpp \
            CudaSpatialGridContainer.cpp \
 	   CudaUnilateralInteractionConstraint.cpp \
-	   CudaFrictionContact.cpp
+	   CudaFrictionContact.cpp \
+	   CudaPrecomputedConstraintCorrection.cpp
 
 CUDA_SOURCES += \
 	   CudaBTDLinearSolver.cu \

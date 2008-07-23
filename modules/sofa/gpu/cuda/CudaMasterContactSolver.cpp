@@ -52,11 +52,11 @@ CudaMasterContactSolver<real>::CudaMasterContactSolver()
     :
     initial_guess_d(initData(&initial_guess_d, true, "initial_guess","activate LCP results history to improve its resolution performances."))
 #ifdef CHECK
-    ,check_gpu(initData(&check_gpu, false, "checkGPU", "verification of lcp error"))
+    ,check_gpu(initData(&check_gpu, true, "checkGPU", "verification of lcp error"))
 #endif
     ,tol_d( initData(&tol_d, 0.001, "tolerance", "tolerance"))
     ,maxIt_d(initData(&maxIt_d, 100, "maxIt", "iterations of gauss seidel"))
-    ,mu_d( initData(&mu_d, 0.0, "mu", ""))
+    ,mu_d( initData(&mu_d, 0.6, "mu", ""))
     ,useGPU_d(initData(&useGPU_d,8, "useGPU", "compute LCP using GPU"))
 {
 
