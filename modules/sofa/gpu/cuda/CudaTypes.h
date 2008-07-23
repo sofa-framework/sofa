@@ -132,12 +132,12 @@ public:
     {
         return vectorSize==0;
     }
-    void reserve ( size_type s )
+    void reserve (size_type s,size_type WARP_SIZE=BSIZE)
     {
         if ( s <= allocSize ) return;
         allocSize = ( s>2*allocSize ) ?s:2*allocSize;
         // always allocate multiples of BSIZE values
-        allocSize = ( allocSize+BSIZE-1 ) &-BSIZE;
+        allocSize = ( allocSize+WARP_SIZE-1 ) &-WARP_SIZE;
 
         if (bufferObject)
         {
@@ -171,10 +171,10 @@ public:
             mycudaFreeHost ( prevHostPointer );
     }
     /// resize the vector without calling constructors or destructors, and without synchronizing the device and host copy
-    void fastResize ( size_type s )
+    void fastResize ( size_type s,size_type WARP_SIZE=BSIZE)
     {
         if ( s == vectorSize ) return;
-        reserve ( s );
+        reserve ( s,WARP_SIZE);
         vectorSize = s;
         if ( !vectorSize )
         {
@@ -183,10 +183,10 @@ public:
             hostIsValid = true;
         }
     }
-    void resize ( size_type s )
+    void resize ( size_type s,size_type WARP_SIZE=BSIZE)
     {
         if ( s == vectorSize ) return;
-        reserve ( s );
+        reserve ( s,WARP_SIZE);
         if ( s > vectorSize )
         {
             copyToHost();
@@ -517,7 +517,7 @@ public:
         return sizeX==0 || sizeY==0;
     }
 
-    void fastResize(size_type x,size_type y,size_type WARP_SIZE)
+    void fastResize(size_type x,size_type y,size_type WARP_SIZE=BSIZE)
     {
         size_type s = x*y;
 
@@ -525,7 +525,7 @@ public:
         {
             hostAllocSize = ( s>2*hostAllocSize ) ? s : 2*hostAllocSize;
             // always allocate multiples of BSIZE values
-            hostAllocSize = ( hostAllocSize+BSIZE-1 )/BSIZE * BSIZE;
+            hostAllocSize = ( hostAllocSize+WARP_SIZE-1 )/WARP_SIZE * WARP_SIZE;
             T* prevHostPointer = hostPointer;
 
             if ( prevHostPointer != NULL ) mycudaFreeHost ( prevHostPointer );
@@ -554,9 +554,9 @@ public:
         hostIsValid = true;
     }
 
-    void resize (size_type x,size_type y,size_t w)
+    void resize (size_type x,size_type y,size_t WARP_SIZE=BSIZE)
     {
-        fastResize(x,y,w);
+        fastResize(x,y,WARP_SIZE);
     }
 
     void swap ( CudaMatrix<T>& v )
