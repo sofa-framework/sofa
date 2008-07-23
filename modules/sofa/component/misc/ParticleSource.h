@@ -144,13 +144,18 @@ public:
         if (nparticles>0)
         {
             //std::cout << "ParticleSource: Creating "<<nparticles<<" particles, total "<<i0+nparticles<<" particles."<<std::endl;
-            topology::PointSetTopology<DataTypes>* t = dynamic_cast<topology::PointSetTopology<DataTypes>*>(this->getContext()->getMainTopology());
-            if (t != NULL)
+            sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+            _topology = this->getContext()->getMeshTopology();
+
+            sofa::component::topology::PointSetTopologyModifier<DataTypes>* pointMod;
+            this->getContext()->get(pointMod);
+
+            if (pointMod != NULL)
             {
                 int n = i0+nparticles*N - this->mstate->getX()->size();
-                ((topology::PointSetTopologyModifier<DataTypes>*)t->getTopologyModifier())->addPointsWarning(n);
-                ((topology::PointSetTopologyModifier<DataTypes>*)t->getTopologyModifier())->addPointsProcess(n);
-                t->propagateTopologicalChanges();
+                pointMod->addPointsWarning(n);
+                pointMod->addPointsProcess(n);
+                _topology->propagateTopologicalChanges();
             }
             else
             {

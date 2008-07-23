@@ -93,7 +93,7 @@ public:
     typedef DataTypes::Coord Coord;
     typedef DataTypes::Deriv Deriv;
     typedef Line Element;
-    typedef topology::EdgeSetTopology<DataTypes> SetTopology;
+
     friend class Line;
 
     LineModel();
@@ -124,7 +124,6 @@ protected:
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
     Topology* topology;
-    SetTopology* setTopology;
     PointModel* mpoints;
     int meshRevision;
 };
@@ -186,7 +185,6 @@ inline const Vector3& Line::v2() const { return (*model->mstate->getV())[model->
 //class LineSetModel : public LineModel
 //{
 //public:
-//    typedef topology::EdgeSetTopology<DataTypes> Topology;
 //
 //    LineSetModel();
 //

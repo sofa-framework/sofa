@@ -745,15 +745,15 @@ bool SpatialGridContainer<DataTypes>::sortPoints()
         std::cout << std::endl;
     }
 
-    sofa::component::topology::PointSetTopologyAlgorithms<DataTypes>* pointAlg;
-    this->getContext()->get(pointAlg);
+    sofa::component::topology::PointSetTopologyAlgorithms<DataTypes>* pointALG_ptr;
+    this->getContext()->get(pointALG_ptr);
 
-    if (pointAlg)
+    if (pointALG_ptr)
     {
         if(this->f_printLog.getValue())
             std::cout << "SpatialGridContainer::sortPoints(): renumber using PointSetTopologyAlgorithms."<<std::endl;
 
-        pointAlg->renumberPoints(new2old,old2new);
+        pointALG_ptr->renumberPoints(new2old,old2new);
     }
     else
     {
