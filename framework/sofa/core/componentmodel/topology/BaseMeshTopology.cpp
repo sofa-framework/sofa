@@ -246,6 +246,20 @@ std::list<const TopologyChange *>::const_iterator BaseMeshTopology::lastChange()
     return l;
 }
 
+std::list<const TopologyChange *>::const_iterator BaseMeshTopology::firstStateChange() const
+{
+    std::cerr << "WARNING: "<<this->getClassName()<<"::firstStateChange() not supported." << std::endl;
+    std::list<const TopologyChange *>::const_iterator l;
+    return l;
+}
+
+std::list<const TopologyChange *>::const_iterator BaseMeshTopology::lastStateChange() const
+{
+    std::cerr << "WARNING: "<<this->getClassName()<<"::lastStateChange() not supported." << std::endl;
+    std::list<const TopologyChange *>::const_iterator l;
+    return l;
+}
+
 int BaseMeshTopology::getEdgeIndex(PointID, PointID)
 {
     std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgeIndex() not supported." << std::endl;

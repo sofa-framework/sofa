@@ -72,8 +72,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeCreationFunction(int /
     TriangularBendingSprings<DataTypes> *ff= (TriangularBendingSprings<DataTypes> *)param;
     if (ff)
     {
-        //TriangleSetTopology<DataTypes> *_mesh=ff->getTriangularTopology();
-        //assert(_mesh!=0);
+
         unsigned int u,v;
         /// set to zero the edge stiffness matrix
         for (u=0; u<3; ++u)
@@ -106,8 +105,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSTriangleCreationFunction (
 
         unsigned int nb_activated = 0;
 
-        component::MechanicalObject<DataTypes>* _mstate = dynamic_cast<component::MechanicalObject<DataTypes>*>(ff->getContext()->getMechanicalState());
-        const typename DataTypes::VecCoord *restPosition=_mstate->getX0();
+        const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
 
         for (unsigned int i=0; i<triangleAdded.size(); ++i)
         {
@@ -208,8 +206,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSTriangleDestructionFunctio
 
         //unsigned int u,v;
 
-        component::MechanicalObject<DataTypes>* _mstate = dynamic_cast<component::MechanicalObject<DataTypes>*>(ff->getContext()->getMechanicalState());
-        const typename DataTypes::VecCoord *restPosition=_mstate->getX0();
+        const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
 
         for (unsigned int i=0; i<triangleRemoved.size(); ++i)
         {
@@ -312,8 +309,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSTriangleDestructionFunctio
 
 template<class DataTypes>
 TriangularBendingSprings<DataTypes>::TriangularBendingSprings(/*component::MechanicalObject<DataTypes>* m_dof */ /*double _ks, double _kd*/)
-    : _mesh(NULL)
-    , updateMatrix(true)
+    : updateMatrix(true)
     , f_ks(initData(&f_ks,(double) 100000.0,"stiffness","uniform stiffness for the all springs")) //(Real)0.3 ??
     , f_kd(initData(&f_kd,(double) 1.0,"damping","uniform damping for the all springs")) // (Real)1000. ??
 {
@@ -464,11 +460,10 @@ void TriangularBendingSprings<DataTypes>::init()
 
     _topology = getContext()->getMeshTopology();
 
-    _mesh =0;
-    if (getContext()->getMainTopology()!=0)
-        _mesh= dynamic_cast<TriangleSetTopology<DataTypes>*>(getContext()->getMainTopology());
+    sofa::component::topology::TriangleSetTopologyContainer* triangleCont;
+    this->getContext()->get(triangleCont);
 
-    if ((_mesh==0) || (_topology->getNbTriangles()==0))
+    if ((triangleCont==0) || (_topology->getNbTriangles()==0))
     {
         std::cerr << "ERROR(TriangularBendingSprings): object must have a Triangular Set Topology.\n";
         return;

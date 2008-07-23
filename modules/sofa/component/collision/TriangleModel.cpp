@@ -232,10 +232,10 @@ void TriangleModel::handleTopologyChange()
         return;
     }
 
-    sofa::core::componentmodel::topology::TopologyModifier* topoMOD_ptr;
-    this->getContext()->get(topoMOD_ptr);
+    sofa::core::componentmodel::topology::TopologyModifier* topoMod;
+    this->getContext()->get(topoMod);
 
-    if (topoMOD_ptr)   // dynamic topology
+    if (topoMod)   // dynamic topology
     {
 
         std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=_topology->firstChange();

@@ -93,7 +93,6 @@ protected:
 
     EdgeData<EdgeRestInformation> edgeInfo;
 
-    TriangleSetTopology<DataTypes> * _mesh;
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
     VecCoord  _initialPoints;///< the intial positions of the points
 
@@ -107,8 +106,6 @@ protected:
 public:
 
     TriangularTensorMassForceField();
-
-    TriangleSetTopology<DataTypes> *getTriangularTopology() const {return _mesh;}
 
     virtual ~TriangularTensorMassForceField();
 

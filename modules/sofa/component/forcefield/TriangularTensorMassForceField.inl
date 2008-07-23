@@ -55,8 +55,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeCreationFunction
     TriangularTensorMassForceField<DataTypes> *ff= (TriangularTensorMassForceField<DataTypes> *)param;
     if (ff)
     {
-        //TriangleSetTopology<DataTypes> *_mesh=ff->getTriangularTopology();
-        //assert(_mesh!=0);
+
         unsigned int u,v;
         /// set to zero the stiffness matrix
         for (u=0; u<3; ++u)
@@ -86,8 +85,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMTriangleCreationFunc
         typename DataTypes::Real lambdastar, mustar;
         typename DataTypes::Coord point[3],dpk,dpl;
 
-        component::MechanicalObject<DataTypes>* _mstate = dynamic_cast<component::MechanicalObject<DataTypes>*>(ff->getContext()->getMechanicalState());
-        const typename DataTypes::VecCoord *restPosition=_mstate->getX0();
+        const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
 
         for (i=0; i<triangleAdded.size(); ++i)
         {
@@ -176,8 +174,8 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMTriangleDestructionF
         typename DataTypes::Real mu=ff->getMu();
         typename DataTypes::Real lambdastar, mustar;
         typename DataTypes::Coord point[3],dpk,dpl;
-        component::MechanicalObject<DataTypes>* _mstate = dynamic_cast<component::MechanicalObject<DataTypes>*>(ff->getContext()->getMechanicalState());
-        const typename DataTypes::VecCoord *restPosition=_mstate->getX0();
+
+        const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
 
         for (i=0; i<triangleRemoved.size(); ++i)
         {
@@ -253,8 +251,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMTriangleDestructionF
 
 
 template <class DataTypes> TriangularTensorMassForceField<DataTypes>::TriangularTensorMassForceField()
-    : _mesh(NULL)
-    , _initialPoints(0)
+    : _initialPoints(0)
     , updateMatrix(true)
     , f_poissonRatio(initData(&f_poissonRatio,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
     , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
@@ -283,11 +280,10 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
 
     _topology = getContext()->getMeshTopology();
 
-    _mesh =0;
-    if (getContext()->getMainTopology()!=0)
-        _mesh= dynamic_cast<TriangleSetTopology<DataTypes>*>(getContext()->getMainTopology());
+    sofa::component::topology::TriangleSetTopologyContainer* triangleCont;
+    this->getContext()->get(triangleCont);
 
-    if ((_mesh==0) || (_topology->getNbTriangles()==0))
+    if ((triangleCont==0) || (_topology->getNbTriangles()==0))
     {
         std::cerr << "ERROR(TriangularTensorMassForceField): object must have a Triangular Set Topology.\n";
         return;

@@ -121,11 +121,10 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::init()
 
     _topology = getContext()->getMeshTopology();
 
-    _mesh =0;
-    if (getContext()->getMainTopology()!=0)
-        _mesh= dynamic_cast<TetrahedronSetTopology<DataTypes>*>(getContext()->getMainTopology());
+    sofa::component::topology::TetrahedronSetTopologyContainer* tetraCont;
+    this->getContext()->get(tetraCont);
 
-    if ((_mesh==0) || (_topology->getNbTetras()==0))
+    if ((tetraCont==0) || (_topology->getNbTetras()==0))
     {
         std::cerr << "ERROR(TetrahedralCorotationalFEMForceField): object must have a Tetrahedral Set Topology.\n";
         return;
@@ -396,7 +395,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(i
     _materialsStiffnesses[i][3][3] = _materialsStiffnesses[i][4][4] = _materialsStiffnesses[i][5][5] =	mu2;*/
 
     // divide by 36 times volumes of the element
-    const VecCoord *X0=_mesh->getDOF()->getX0();
+    const VecCoord *X0=this->mstate->getX0();
 
     Coord A = (*X0)[b] - (*X0)[a];
     Coord B = (*X0)[c] - (*X0)[a];
@@ -516,7 +515,7 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::computeForce( Displ
 template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::initSmall(int i, Index&a, Index&b, Index&c, Index&d)
 {
-    const VecCoord *X0=_mesh->getDOF()->getX0();
+    const VecCoord *X0=this->mstate->getX0();
 
     computeStrainDisplacement(tetrahedronInfo[i].strainDisplacementMatrix, (*X0)[a], (*X0)[b], (*X0)[c], (*X0)[d] );
 }
@@ -527,7 +526,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall( Vect
     //std::cerr<<"TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall"<<std::endl;
 
     const Tetrahedron &t=_topology->getTetra(elementIndex);
-    const VecCoord *X0=_mesh->getDOF()->getX0();
+    const VecCoord *X0=this->mstate->getX0();
 
 
     Index a = t[0];
@@ -697,7 +696,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::initLarge(int i, Index&a, 
     // first vector on first edge
     // second vector in the plane of the two first edges
     // third vector orthogonal to first and second
-    const VecCoord *X0=_mesh->getDOF()->getX0();
+    const VecCoord *X0=this->mstate->getX0();
 
     Transformation R_0_1;
     computeRotationLarge( R_0_1, (*X0), a, b, c);
@@ -898,7 +897,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::applyStiffnessLarge( Vecto
 template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::initPolar(int i, Index& a, Index&b, Index&c, Index&d)
 {
-    const VecCoord *X0=_mesh->getDOF()->getX0();
+    const VecCoord *X0=this->mstate->getX0();
 
     Transformation A;
     A[0] = (*X0)[b]-(*X0)[a];

@@ -58,8 +58,7 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeCreationFuncti
     TetrahedralTensorMassForceField<DataTypes> *ff= (TetrahedralTensorMassForceField<DataTypes> *)param;
     if (ff)
     {
-        //TriangleSetTopology<DataTypes> *_mesh=ff->getTetrahedralTopology();
-        //assert(_mesh!=0);
+
         unsigned int u,v;
         /// set to zero the stiffness matrix
         for (u=0; u<3; ++u)
@@ -89,8 +88,7 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronCreatio
         typename DataTypes::Real lambdastar, mustar;
         typename DataTypes::Coord point[4],shapeVector[4];
 
-        component::MechanicalObject<DataTypes>* _mstate = dynamic_cast<component::MechanicalObject<DataTypes>*>(ff->getContext()->getMechanicalState());
-        const typename DataTypes::VecCoord *restPosition=_mstate->getX0();
+        const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
 
         for (i=0; i<tetrahedronAdded.size(); ++i)
         {
@@ -179,8 +177,7 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronDestruc
         typename DataTypes::Real lambdastar, mustar;
         typename DataTypes::Coord point[4],shapeVector[4];
 
-        component::MechanicalObject<DataTypes>* _mstate = dynamic_cast<component::MechanicalObject<DataTypes>*>(ff->getContext()->getMechanicalState());
-        const typename DataTypes::VecCoord *restPosition=_mstate->getX0();
+        const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
 
         for (i=0; i<tetrahedronRemoved.size(); ++i)
         {
@@ -256,8 +253,7 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronDestruc
 
 
 template <class DataTypes> TetrahedralTensorMassForceField<DataTypes>::TetrahedralTensorMassForceField()
-    : _mesh(NULL)
-    , _initialPoints(0)
+    : _initialPoints(0)
     , updateMatrix(true)
     , f_poissonRatio(initData(&f_poissonRatio,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
     , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
@@ -286,11 +282,10 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
 
     _topology = getContext()->getMeshTopology();
 
-    _mesh =0;
-    if (getContext()->getMainTopology()!=0)
-        _mesh= dynamic_cast<TetrahedronSetTopology<DataTypes>*>(getContext()->getMainTopology());
+    sofa::component::topology::TetrahedronSetTopologyContainer* tetraCont;
+    this->getContext()->get(tetraCont);
 
-    if ((_mesh==0) || (_topology->getNbTetras()==0))
+    if ((tetraCont==0) || (_topology->getNbTetras()==0))
     {
         std::cerr << "ERROR(TetrahedralTensorMassForceField): object must have a Tetrahedral Set Topology.\n";
         return;

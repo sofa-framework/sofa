@@ -132,8 +132,8 @@ protected:
     Real step; ///<
 
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
-    sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGEO_ptr;
-    sofa::component::topology::EdgeSetTopologyAlgorithms<DataTypes>* edgeALG_ptr;
+    sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
+    sofa::component::topology::EdgeSetTopologyAlgorithms<DataTypes>* edgeAlg;
 
 
 

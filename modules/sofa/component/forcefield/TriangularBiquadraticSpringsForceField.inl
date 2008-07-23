@@ -55,12 +55,12 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSEdgeCreationFunction
     TriangularBiquadraticSpringsForceField<DataTypes> *ff= (TriangularBiquadraticSpringsForceField<DataTypes> *)param;
     if (ff)
     {
-        TriangleSetTopology<DataTypes> *_mesh=ff->getTriangularTopology();
-        assert(_mesh!=0);
-        TriangleSetGeometryAlgorithms<DataTypes> *ga=_mesh->getTriangleSetGeometryAlgorithms();
+
+        sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* triangleGeo;
+        ff->getContext()->get(triangleGeo);
 
         // store the rest length of the edge created
-        ei.restSquareLength=ga->computeRestSquareEdgeLength(edgeIndex);
+        ei.restSquareLength=triangleGeo->computeRestSquareEdgeLength(edgeIndex);
         ei.stiffness=0;
     }
 }
@@ -145,8 +145,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleDestroyFunct
     }
 }
 template <class DataTypes> TriangularBiquadraticSpringsForceField<DataTypes>::TriangularBiquadraticSpringsForceField()
-    : _mesh(NULL)
-    , _initialPoints(initData(&_initialPoints,"initialPoints", "Initial Position"))
+    : _initialPoints(initData(&_initialPoints,"initialPoints", "Initial Position"))
     , updateMatrix(true)
     , f_poissonRatio(initData(&f_poissonRatio,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
     , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
@@ -178,11 +177,10 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
 
     _topology = getContext()->getMeshTopology();
 
-    _mesh =0;
-    if (getContext()->getMainTopology()!=0)
-        _mesh= dynamic_cast<TriangleSetTopology<DataTypes>*>(getContext()->getMainTopology());
+    sofa::component::topology::TriangleSetTopologyContainer* triangleCont;
+    this->getContext()->get(triangleCont);
 
-    if ((_mesh==0) || (_topology->getNbTriangles()==0))
+    if ((triangleCont==0) || (_topology->getNbTriangles()==0))
     {
         std::cerr << "ERROR(TriangularBiquadraticSpringsForceField): object must have a Triangular Set Topology.\n";
         return;

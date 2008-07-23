@@ -95,7 +95,6 @@ protected:
 
     EdgeData<EdgeRestInformation> edgeInfo;
 
-    TetrahedronSetTopology<DataTypes> * _mesh;
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
     VecCoord  _initialPoints;///< the intial positions of the points
 
@@ -109,8 +108,6 @@ protected:
 public:
 
     TetrahedralTensorMassForceField();
-
-    TetrahedronSetTopology<DataTypes> *getTetrahedralTopology() const {return _mesh;}
 
     virtual ~TetrahedralTensorMassForceField();
 
