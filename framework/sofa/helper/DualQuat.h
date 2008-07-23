@@ -64,6 +64,7 @@ public:
     void toTransQuat ( Vec& vec, Quat& quat ) const;
     inline void toMatrix( defaulttype::Matrix4& M) const;
     inline void fromMatrix( const defaulttype::Matrix4 M);
+    inline void toGlMatrix( double M[16]) const;
     Vec transform( const Vec& vec); // Apply the QD transformation to a point
 
     inline DualQuat<Real> operator+ ( const DualQuat<Real>& dq ) const;
