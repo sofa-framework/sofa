@@ -16,12 +16,12 @@
 			/>
 		<Object type="RegularGridSpringForceField" name="Springs" stiffness="200" damping="1" />
 		<Node name="Visu">
-			<Object type="OglModel" name="Visual" filename="mesh/smCube125.obj" color="green" />
+			<Object type="OglModel" name="Visual" filename="mesh/smCube125.obj" color="green" dx="18" dy="17" dz="29"/>
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
 			<Object type="Mesh" filename="mesh/smCube125.obj" />
-			<Object type="MechanicalObject" />
+			<Object type="MechanicalObject" dx="18" dy="17" dz="29"/>
 			<Object type="Triangle" />
 			<Object type="Line" />
 			<Object type="Point" />
@@ -40,12 +40,12 @@
 			/>
 		<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="300" poissonRatio="0.3" method="polar"/>
 		<Node name="Visu">
-			<Object type="OglModel" name="Visual" filename="mesh/smCube125.obj" color="cyan" />
+			<Object type="OglModel" name="Visual" filename="mesh/smCube125.obj" color="cyan" dx="0" dy="17" dz="29"/>
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
 			<Object type="Mesh" filename="mesh/smCube125.obj" />
-			<Object type="MechanicalObject" />
+			<Object type="MechanicalObject" dx="0" dy="17" dz="29"/>
 			<Object type="Triangle" />
 			<Object type="Line" />
 			<Object type="Point" />

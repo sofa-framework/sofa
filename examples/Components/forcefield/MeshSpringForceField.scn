@@ -47,7 +47,7 @@
 				<Object type="BarycentricMapping" />
 			</Node>
 		</Node>
-		<Node name="TorusSpring"
+		<Node name="TorusSpring">
  	        	<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
 			<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 			<Object type="Mesh" filename="mesh/torus_low_res.msh"/>
