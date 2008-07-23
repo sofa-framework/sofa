@@ -406,7 +406,7 @@ void CudaLCP_FullKernel_V6d(int dim,int itMax,float tol,const void * m,int mP,co
 
 void CudaLCP_FullKernel_V7f(int dim,int itMax,float tol,const void * m,int mP,const void * q,void * f,void * err,void * share)
 {
-    dim3 threads(BSIZE_L,BSIZE_L);
+    dim3 threads(BSIZE_C,BSIZE_L);
     dim3 grid(1,NB_MULTIPROC);
     int dim_n = (dim+BSIZE_L-1)/BSIZE_L * BSIZE_L;
 
@@ -417,7 +417,7 @@ void CudaLCP_FullKernel_V7d(int dim,int itMax,float tol,const void * m,int mP,co
 #if !defined(__CUDA_ARCH__) ||  __CUDA_ARCH__ < 130
     myprintf("CUDA ERROR: double precision not supported.\n");
 #else
-    dim3 threads(BSIZE_L,BSIZE_L);
+    dim3 threads(BSIZE_C,BSIZE_L);
     dim3 grid(1,NB_MULTIPROC);
     int dim_n = (dim+BSIZE_L-1)/BSIZE_L * BSIZE_L;
 
@@ -507,14 +507,98 @@ void CudaNLCP_AddIndepd(int dim,int tmpsize,const void * q,const void * tmp,int 
 #endif
 }
 
+/*
+template<class real>
+__global__ void CudaNLCP_ComputeNextIter_V1_DepKernel_kernel(int d,int d3,int debutblock,float mu,const real * m,int mPitch,const real * q,float * f,real * err,real * res) {
+	__shared__  float f_i[MBSIZE];
+	__shared__  float r_i[MBSIZE];
+	__shared__  float q_i[MBSIZE];
+	__shared__  float M0[MBSIZE];
+	__shared__  float M1[MBSIZE];
+	__shared__  float M2[MBSIZE];
+	__shared__ float error;
+
+	float f_1[3];
+	int index1 = threadIdx.x;//index du thread dans le bloc
+	int compteur3 = debutblock + index1;
+
+	f_i[index1]=f[compteur3];
+	r_i[index1]=res[compteur3];
+	q_i[index1]=q[compteur3];
+
+	if (index1==0) error = 0;
+	__syncthreads();
+
+	for (int ligne=0; ligne<d; ligne+=3)	{
+		int compteur2 = debutblock+ligne;
+
+		M0[index1] = ((float *) ((char*) m + (mPitch*compteur2)))[compteur3];
+		M1[index1] = ((float *) ((char*) m + (mPitch*(compteur2+1))))[compteur3];
+		M2[index1] = ((float *) ((char*) m + (mPitch*(compteur2+2))))[compteur3];
+
+		__syncthreads();
+
+		if (index1==ligne) {
+			f_1[0] = f_i[ligne];
+			f_1[1] = f_i[ligne+1];
+			f_1[2] = f_i[ligne+2];
+
+			f_i[ligne] = -(r_i[ligne] + M1[ligne]*f_i[ligne+1] + M2[ligne]*f_i[ligne+2]) / M0[ligne];
+
+			if (f_i[ligne] < 0) {
+				f_i[ligne]=0.0;
+				f_i[ligne+1]=0.0;
+				f_i[ligne+2]=0.0;
+} else {
+				float d1 = r_i[ligne+1] + M1[ligne]*f_i[ligne] + M1[ligne+1]*f_i[ligne+1] + M2[ligne+1]*f_i[ligne+2];
+				float d2 = r_i[ligne+2] + M2[ligne]*f_i[ligne] + M2[ligne+1]*f_i[ligne+1] + M2[ligne+2]*f_i[ligne+2];
+
+				f_i[ligne+1] = f_i[ligne+1] - 2*d1/(M1[ligne+1]+M2[ligne+2]);
+				f_i[ligne+2] = f_i[ligne+2] - 2*d2/(M1[ligne+1]+M2[ligne+2]);
+
+				float normFt=f_i[ligne+1]*f_i[ligne+1]+f_i[ligne+2]*f_i[ligne+2];
+				float mu_tmp=mu*f_i[ligne];
+
+				if (normFt > mu_tmp*mu_tmp){
+					float mu_tmp_norm = mu_tmp*rsqrtf(normFt);
+					f_i[ligne+1] *= mu_tmp_norm;
+					f_i[ligne+2] *= mu_tmp_norm;
+}
+}
+
+			float e0 = (f_1[0]-f_i[ligne])*M0[ligne] + (f_1[1]-f_i[ligne+1])*M0[ligne+1] + (f_1[2]-f_i[ligne+2])*M0[ligne+2];
+
+			float e1 = (f_1[0]-f_i[ligne])*M1[ligne] + (f_1[1]-f_i[ligne+1])*M1[ligne+1] + (f_1[2]-f_i[ligne+2])*M1[ligne+2];
+
+			float e2 = (f_1[0]-f_i[ligne])*M2[ligne] + (f_1[1]-f_i[ligne+1])*M2[ligne+1] + (f_1[2]-f_i[ligne+2])*M2[ligne+2];
+
+			error += sqrt(e0*e0 + e1*e1 + e2*e2);
+
+			r_i[ligne] = q_i[ligne];
+			r_i[ligne+1] = q_i[ligne+1];
+			r_i[ligne+2] = q_i[ligne+2];
+}
+
+		__syncthreads();
+
+		if ((index1<d) && ((index1<ligne) || (index1>ligne+2))) { //colone 0
+			r_i[index1] += M0[index1]*f_i[ligne];
+			r_i[index1] += M1[index1]*f_i[ligne+1];
+			r_i[index1] += M2[index1]*f_i[ligne+2];
+}
+}
+
+	f[compteur3] = f_i[index1];
+	res[compteur3] = r_i[index1];
+	if (index1==0) err[0] += error;
+}
+*/
 void CudaNLCP_ComputeNextIter_V1_InDepKernelf(int dim,int d,int debutBlock,const void * m,int mP,const void * f,void * res)
 {
     dim3 threads(MBSIZE,1);
     dim3 grid(1,dim-d);
 
     CudaNLCP_ComputeNextIter_V1_InDepKernel_kernel<float><<< grid, threads,0>>>(dim,debutBlock,(const float*) m,mP,(const float*)f, (float *)res);
-
-//	printf("fin\n");
 }
 void CudaNLCP_ComputeNextIter_V1_InDepKerneld(int dim,int d,int debutBlock,const void * m,int mP,const void * f,void * res)
 {
@@ -568,150 +652,3 @@ void CudaNLCP_FullKernel_V2d(int dim,int itMax,float tol,float mu,const void * m
 
 #endif
 }
-
-
-/*
-template<class real>
-__global__ void CudaNLCP_FullKernel_V2_kernel(int dim,int dim_n,int countMax,real tol,real mu,const real * m,int mPitch,const real * q,real * f,volatile real * err,volatile int * share) {
-	__shared__ real temp[MBSIZE_L][MBSIZE_L];
-	__shared__ real f_i[MBSIZE_L];
-	__shared__ real q_s[MBSIZE_L];
-	__shared__ real error;
-	__shared__ real last_share;
-	__shared__ real f_1[3];
-	real m_i;
-
-	int tx = threadIdx.x;
-	int ty = threadIdx.y;
-	int count = blockIdx.y * MBSIZE_L + ty;
-
-	if ((tx==0) && (ty==0)) last_share=0;
-
-	__syncthreads();
-
-	while ((last_share<countMax) && (count<countMax)) {
-		temp[ty][tx] = 0.0;
-
-		int ligne = count % dim_n;
-		int bl = ligne/MBSIZE_L * MBSIZE_L;
-
-	//fin de la ligne il n'y a pas de bloc diago
-		int i = bl + MBSIZE_L;
-		while ((i<dim_n) && (last_share<countMax)) {
-			m_i = ((real *) ((char*) m + (mPitch*ligne)))[i+tx];
-
-			if ((tx==0) && (ty==0)) {
-				int dep;
-
-				if (i+MBSIZE_L<dim_n) dep = count-ligne-dim_n+i+MBSIZE_L;
-				else dep = count-ligne;
-
-				while (last_share<dep) last_share = share[0]; // boucle de syncho
-}
-
-#if MBSIZE_L>32
-			__syncthreads();
-#endif
-
-			if (ty==0) f_i[tx] = f[i+tx];
-
-			__syncthreads();
-
-			if (i+tx<dim) temp[ty][tx] += m_i * f_i[tx]; //même si ligne>dim mais on ecrira pas a la fin
-			i+=MBSIZE_L;
-}
-
-	//avant le bloc colone qui contient la diago
-		i=0;
-		while ((i<bl) && (last_share<countMax)) {
-			m_i = ((real *) ((char*) m + (mPitch*ligne)))[i+tx];
-
-			if ((tx==0) && (ty==0)) {
-				int dep = count-ligne+i+MBSIZE_L;
-
-				while (last_share<dep) last_share = share[0]; // boucle de syncho
-}
-
-#if MBSIZE_L>32
-			__syncthreads();
-#endif
-
-			if (ty==0) f_i[tx] = f[i+tx];
-
-			__syncthreads();
-
-			temp[ty][tx] += m_i * f_i[tx];
-			i+=MBSIZE_L;
-}
-
-		if (last_share<countMax) { //on ne fait plus rien
-			m_i = ((real *) ((char*) m + (mPitch*ligne)))[bl+tx];
-
-		//debut du bloc diago
-			if (ty==0) {
-				f_i[tx] = f[bl+tx];
-
-				if (tx<MBSIZE_L) q_s[tx] = q[ligne+tx];
-
-				if (tx==0) {
-					if (ligne==0) error=0.0;
-					else error=err[0];
-}
-}
-
-			__syncthreads();
-
-			i=0;
-			while ((i<MBSIZE_L) && (bl+i<dim)){
-				if (((ty>=i) && (ty<=i+2)) && ((tx<i) || (tx>i+2))) temp[ty][tx] += m_i * f_i[tx]; // mise à jour de tous les valeur du bloc diago
-
-#if MBSIZE_L>32
-				__syncthreads();
-#endif
-
-				if ((ty==0) && (tx<=2)) { //on prends
-					real r_tmp = q_s[i];
-
-					for (int k=1;k<MBSIZE_L;k++) temp[0][bl+ty] += temp[i][bl+ty];
-
-					if (tx==0) f_1[ty] = f_i[bl+ty];
-
-					real d0 = -(temp[0][ty] + temp[0][ty+1]*f_1[1] + temp[0][ty+2]*f_1[2]) / temp[0][bl+i];
-
-					real f_2;
-
-					if (r_tmp<0) f_2 = -r_tmp/m_i;
-					else f_2=0.0;
-
-					//error += fabs(m_i * (f_2 - f_1));
-
-					f_i[tx] = f_2;
-}
-
-				i+=3;
-
-				__syncthreads();//ligne suivante
-}
-
-			if (ty==0) f[bl+tx] = f_i[tx];
-
-#if MBSIZE_L>32
-			__syncthreads();
-#endif
-
-			if ((ty==0) && (tx==0)) {
-				err[0] = error;
-
-				if (ligne+MBSIZE_L==dim_n) {
-					if (error<tol)	share[0] = countMax;
-					else share[0] += MBSIZE_L;
-} else share[0] += MBSIZE_L;
-}
-
-			__syncthreads();//ligne suivante
-
-			count += NB_MULTIPROC*MBSIZE_L;
-}
-}
-}
-*/

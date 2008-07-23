@@ -107,13 +107,17 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 HEADERS += \
 	   CudaLCP.h \
            CudaMasterContactSolver.h \
-	   CudaBTDLinearSolver.h
+	   CudaBTDLinearSolver.h \
+	   CudaUnilateralInteractionConstraint.h \
+	   CudaFrictionContact.h
 
 SOURCES += \
 	   CudaBTDLinearSolver.cpp  \
 	   CudaLCP.cpp \
            CudaMasterContactSolver.cpp \
-           CudaSpatialGridContainer.cpp
+           CudaSpatialGridContainer.cpp \
+	   CudaUnilateralInteractionConstraint.cpp \
+	   CudaFrictionContact.cpp
 
 CUDA_SOURCES += \
 	   CudaBTDLinearSolver.cu \
