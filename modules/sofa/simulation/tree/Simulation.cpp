@@ -50,6 +50,9 @@
 
 #include <fstream>
 #include <string.h>
+#ifndef WIN32
+#include <locale.h>
+#endif
 
 namespace sofa
 {
@@ -87,6 +90,12 @@ GNode* Simulation::processXML(xml::BaseElement* xml, const char *filename)
 
     // We go the the current file's directory so that all relative path are correct
     helper::system::SetDirectory chdir ( filename );
+
+#ifndef WIN32
+    // Reset local settings to make sure that floating-point values are interpreted correctly
+    setlocale(LC_ALL,"C");
+    setlocale(LC_NUMERIC,"C");
+#endif
 
 // 				std::cout << "Initializing objects"<<std::endl;
     if ( !xml->init() )
