@@ -129,6 +129,7 @@ protected:
     bool useNormals; ///< True if normals should be read from file
     bool castShadow; ///< True if object cast shadows
 
+    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 
     /*     Data< ResizableExtVector<Coord> > vertices; */
     DataPtr< ResizableExtVector<Coord> > field_vertices;
@@ -215,8 +216,7 @@ public:
     void setTriangles(ResizableExtVector<Triangle> * t) {triangles = *t;}
 
     virtual void computePositions();
-    virtual void computeMesh(sofa::core::componentmodel::topology::BaseMeshTopology* topology);
-    virtual void computeMeshFromTopology(sofa::core::componentmodel::topology::BaseTopology* topology);
+    virtual void computeMesh();
     virtual void computeNormals();
     virtual void computeBBox();
 

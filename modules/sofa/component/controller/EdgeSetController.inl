@@ -73,17 +73,21 @@ EdgeSetController<DataTypes>::EdgeSetController()
 template <class DataTypes>
 void EdgeSetController<DataTypes>::init()
 {
-    edges = dynamic_cast<topology::EdgeSetTopology<DataTypes> * > (this->getContext()->getMainTopology());
+    _topology = this->getContext()->getMeshTopology();
+    this->getContext()->get(edgeGEO_ptr);
+    this->getContext()->get(edgeALG_ptr);
 
-    if (!edges)
-        std::cerr << "WARNING. EdgeSetController has no binding Edges Topology\n";
+    if (edgeGEO_ptr == NULL)
+        std::cerr << "WARNING. EdgeSetController has no binding EdgeSetGeometryAlgorithms\n";
+
+    if (edgeALG_ptr == NULL)
+        std::cerr << "WARNING. EdgeSetController has no binding EdgeSetTopologyAlgorithms\n";
 
     Inherit::init();
 
-    if (edges)
+    if (_topology->getNbEdges()>0)
     {
-        edge0RestedLength = edges->getEdgeSetGeometryAlgorithms()->computeRestEdgeLength(0);
-        edges->getEdgeSetTopologyContainer()->getEdgeVertexShellArray();
+        edge0RestedLength = edgeGEO_ptr->computeRestEdgeLength(0);
     }
 }
 
@@ -161,28 +165,26 @@ void EdgeSetController<DataTypes>::applyController()
 template <class DataTypes>
 void EdgeSetController<DataTypes>::modifyTopology(void)
 {
-    assert(edges != 0);
+    assert(edgeGEO_ptr != 0);
 
     if (step >= 0)
     {
-        edges->getEdgeSetTopologyContainer()->getEdgeVertexShellArray();
-
         sofa::helper::vector< unsigned int > baseEdge(0);
-        baseEdge = edges->getEdgeSetTopologyContainer()->getEdgeVertexShell(0);
+        baseEdge = _topology->getEdgeVertexShell(0);
 
         if (baseEdge.size() == 1)
         {
-            if (edges->getEdgeSetGeometryAlgorithms()->computeRestEdgeLength(baseEdge[0]) > ( 2 * edge0RestedLength ))
+            if (edgeGEO_ptr->computeRestEdgeLength(baseEdge[0]) > ( 2 * edge0RestedLength ))
             {
                 // First Edge makes 2
                 sofa::helper::vector<unsigned int> indices(0);
                 indices.push_back(baseEdge[0]);
 
-                edges->getEdgeSetTopologyAlgorithms()->splitEdges(indices);
+                edgeALG_ptr->splitEdges(indices);
 
                 // Renumber Vertices
 
-                unsigned int numPoints = edges->getPointSetTopologyContainer()->getNumberOfVertices();
+                unsigned int numPoints = _topology->getDOFNumber();
 
                 sofa::helper::vector<unsigned int> permutations(numPoints);
                 permutations[0] = 0;
@@ -209,23 +211,21 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
                 std::cout << std::endl;
                 */
 
-                edges->getEdgeSetTopologyAlgorithms()->renumberPoints((const sofa::helper::vector<unsigned int> &) inverse_permutations, (const sofa::helper::vector<unsigned int> &) permutations);
+                edgeALG_ptr->renumberPoints((const sofa::helper::vector<unsigned int> &) inverse_permutations, (const sofa::helper::vector<unsigned int> &) permutations);
 
             }
         }
     }
     else
     {
-        edges->getEdgeSetTopologyContainer()->getEdgeVertexShellArray();
-
         sofa::helper::vector< unsigned int > baseEdge;
-        baseEdge = edges->getEdgeSetTopologyContainer()->getEdgeVertexShell(1);
+        baseEdge = _topology->getEdgeVertexShell(1);
 
         if (baseEdge.size() == 2)
         {
 
-            if ((edges->getEdgeSetGeometryAlgorithms()->computeRestEdgeLength(baseEdge[0]) < ( 0.5 * edge0RestedLength ))
-                ||(edges->getEdgeSetGeometryAlgorithms()->computeRestEdgeLength(baseEdge[1]) < ( 0.5 * edge0RestedLength )))
+            if ((edgeGEO_ptr->computeRestEdgeLength(baseEdge[0]) < ( 0.5 * edge0RestedLength ))
+                ||(edgeGEO_ptr->computeRestEdgeLength(baseEdge[1]) < ( 0.5 * edge0RestedLength )))
 
             {
                 // Fuse Edges (0-1)
@@ -235,11 +235,11 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
                 v.push_back(baseEdge[0]);
                 v.push_back(baseEdge[1]);
                 edges_fuse.push_back(v);
-                edges->getEdgeSetTopologyAlgorithms()->fuseEdges(edges_fuse, true);
+                edgeALG_ptr->fuseEdges(edges_fuse, true);
 
                 // Renumber Vertices
 
-                unsigned int numPoints = edges->getPointSetTopologyContainer()->getNumberOfVertices();
+                unsigned int numPoints = _topology->getDOFNumber();
 
                 sofa::helper::vector<unsigned int> permutations(numPoints);
                 permutations[0] = 0;
@@ -265,7 +265,7 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
                 std::cout << std::endl;
                 */
 
-                edges->getEdgeSetTopologyAlgorithms()->renumberPoints((const sofa::helper::vector<unsigned int> &) inverse_permutations, (const sofa::helper::vector<unsigned int> &) permutations);
+                edgeALG_ptr->renumberPoints((const sofa::helper::vector<unsigned int> &) inverse_permutations, (const sofa::helper::vector<unsigned int> &) permutations);
 
             }
         }
@@ -278,24 +278,24 @@ void EdgeSetController<DataTypes>::draw()
 {
     glDisable(GL_LIGHTING);
 
-    if (edges)
+    if (edgeGEO_ptr)
     {
         glBegin(GL_LINES);
-        for (unsigned int i=0; i<edges->getEdgeSetTopologyContainer()->getNumberOfEdges(); i++)
+        for (int i=0; i<_topology->getNbEdges(); i++)
         {
             glColor4f(1.0,1.0,0.0,1.0);
-            helper::gl::glVertexT((*this->mState->getX())[edges->getEdge(i)[0]]);
-            helper::gl::glVertexT((*this->mState->getX())[edges->getEdge(i)[1]]);
+            helper::gl::glVertexT((*this->mState->getX())[_topology->getEdge(i)[0]]);
+            helper::gl::glVertexT((*this->mState->getX())[_topology->getEdge(i)[1]]);
         }
         glEnd();
 
         glPointSize(10);
         glBegin(GL_POINTS);
-        for (unsigned int i=0; i<edges->getEdgeSetTopologyContainer()->getNumberOfEdges(); i++)
+        for (int i=0; i<_topology->getNbEdges(); i++)
         {
             glColor4f(1.0,0.0,0.0,1.0);
-            helper::gl::glVertexT((*this->mState->getX())[edges->getEdge(i)[0]]);
-            helper::gl::glVertexT((*this->mState->getX())[edges->getEdge(i)[1]]);
+            helper::gl::glVertexT((*this->mState->getX())[_topology->getEdge(i)[0]]);
+            helper::gl::glVertexT((*this->mState->getX())[_topology->getEdge(i)[1]]);
         }
         glEnd();
         glPointSize(1);

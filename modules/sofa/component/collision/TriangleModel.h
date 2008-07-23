@@ -86,7 +86,6 @@ public:
     typedef DataTypes::Coord Coord;
     typedef DataTypes::Deriv Deriv;
     typedef Triangle Element;
-    typedef topology::TriangleSetTopology<DataTypes> SetTopology;
     friend class Triangle;
 
     enum TriangleFlag
@@ -122,8 +121,8 @@ protected:
     core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
     Data<bool> computeNormals;
     int meshRevision;
-    Topology* topology;
-    SetTopology* setTopology;
+
+    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 
 public:
 

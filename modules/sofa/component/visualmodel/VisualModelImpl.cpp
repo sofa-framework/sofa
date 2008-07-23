@@ -430,6 +430,8 @@ void VisualModelImpl::applyUVScale(const double scaleU, const double scaleV)
 
 void VisualModelImpl::init()
 {
+    _topology = getContext()->getMeshTopology();
+
     field_vertices.beginEdit();
     field_vnormals.beginEdit();
     field_vtexcoords.beginEdit();
@@ -682,20 +684,21 @@ void VisualModelImpl::updateVisual()
         {
             /** HD : build also a Ogl description from main Topology. But it needs to be build only once since the topology update
             is taken care of by the handleTopologyChange() routine */
-            topology::MeshTopology* topology = dynamic_cast<topology::MeshTopology*>(getContext()->getTopology());
-            sofa::core::componentmodel::topology::BaseTopology* pst = dynamic_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
 
-            if (!topology && pst)
+            sofa::core::componentmodel::topology::TopologyModifier* topoMOD_ptr;
+            this->getContext()->get(topoMOD_ptr);
+
+            if (topoMOD_ptr)   // dynamic topology
             {
                 useTopology=false;
-                computeMeshFromTopology(pst);
+                computeMesh();
             }
             else
             {
 
-                if (topology != NULL && (topology->getRevision() != lastMeshRev))
+                if (topoMOD_ptr == NULL && (_topology->getRevision() != lastMeshRev))  // static topology
                 {
-                    computeMesh(topology);
+                    computeMesh();
                 }
             }
         }
@@ -717,14 +720,14 @@ void VisualModelImpl::computePositions()
     }
 }
 
-void VisualModelImpl::computeMesh(sofa::core::componentmodel::topology::BaseMeshTopology* topology)
+void VisualModelImpl::computeMesh()
 {
     if (vertices.empty())
     {
-        if (topology->hasPos())
+        if (_topology->hasPos())
         {
 
-            if (sofa::component::topology::SparseGridTopology * spTopo = dynamic_cast< sofa::component::topology::SparseGridTopology *>(topology))
+            if (sofa::component::topology::SparseGridTopology * spTopo = dynamic_cast< sofa::component::topology::SparseGridTopology *>(_topology))
             {
                 std::cout << "VisualModel: getting marching cube mesh from topology : ";
                 sofa::helper::io::Mesh m;
@@ -737,20 +740,20 @@ void VisualModelImpl::computeMesh(sofa::core::componentmodel::topology::BaseMesh
                 return;
             }
             if (this->f_printLog.getValue())
-                std::cout << "VisualModel: copying "<<topology->getNbPoints()<<" points from topology."<<std::endl;
-            vertices.resize(topology->getNbPoints());
+                std::cout << "VisualModel: copying "<<_topology->getNbPoints()<<" points from topology."<<std::endl;
+            vertices.resize(_topology->getNbPoints());
 
             for (unsigned int i=0; i<vertices.size(); i++)
             {
-                vertices[i][0] = (Real)topology->getPX(i);
-                vertices[i][1] = (Real)topology->getPY(i);
-                vertices[i][2] = (Real)topology->getPZ(i);
+                vertices[i][0] = (Real)_topology->getPX(i);
+                vertices[i][1] = (Real)_topology->getPY(i);
+                vertices[i][2] = (Real)_topology->getPZ(i);
             }
 
         }
         else
         {
-            core::componentmodel::behavior::BaseMechanicalState* mstate = dynamic_cast<core::componentmodel::behavior::BaseMechanicalState*>(topology->getContext()->getMechanicalState());
+            core::componentmodel::behavior::BaseMechanicalState* mstate = dynamic_cast<core::componentmodel::behavior::BaseMechanicalState*>(_topology->getContext()->getMechanicalState());
             if (mstate)
             {
                 if (this->f_printLog.getValue())
@@ -767,8 +770,8 @@ void VisualModelImpl::computeMesh(sofa::core::componentmodel::topology::BaseMesh
         }
     }
 
-    lastMeshRev = topology->getRevision();
-    const vector<sofa::core::componentmodel::topology::BaseMeshTopology::Triangle>& inputTriangles = topology->getTriangles();
+    lastMeshRev = _topology->getRevision();
+    const vector<sofa::core::componentmodel::topology::BaseMeshTopology::Triangle>& inputTriangles = _topology->getTriangles();
     if (this->f_printLog.getValue())
         std::cout << "VisualModel: copying "<<inputTriangles.size()<<" triangles from topology."<<std::endl;
 
@@ -779,7 +782,7 @@ void VisualModelImpl::computeMesh(sofa::core::componentmodel::topology::BaseMesh
         triangles[i] = inputTriangles[i];
     }
 
-    const vector<sofa::core::componentmodel::topology::BaseMeshTopology::Quad>& inputQuads = topology->getQuads();
+    const vector<sofa::core::componentmodel::topology::BaseMeshTopology::Quad>& inputQuads = _topology->getQuads();
     if (this->f_printLog.getValue())
         std::cout << "VisualModel: copying "<<inputQuads.size()<<" quads from topology."<<std::endl;
     quads.resize(inputQuads.size());
@@ -787,79 +790,22 @@ void VisualModelImpl::computeMesh(sofa::core::componentmodel::topology::BaseMesh
         quads[i] = inputQuads[i];
 }
 
-void VisualModelImpl::computeMeshFromTopology(sofa::core::componentmodel::topology::BaseTopology* bt)
-{
-    triangles.clear();
-
-    if (vertices.empty())
-    {
-        BaseMechanicalState *bs= dynamic_cast<BaseMechanicalState *>(getContext()->getMechanicalState());
-        assert(bs);
-        assert(bs->getSize());
-        vertices.resize(bs->getSize());
-        for (unsigned int i=0; i<vertices.size(); i++)
-        {
-            vertices[i][0] = (Real)bs->getPX(i);
-            vertices[i][1] = (Real)bs->getPY(i);
-            vertices[i][2] = (Real)bs->getPZ(i);
-        }
-    }
-    TopologyContainer *container=bt->getTopologyContainer();
-
-
-    //std::cout << "INFO_print : Vis - init TRIANGLE " << std::endl;
-    sofa::component::topology::TriangleSetTopologyContainer *tstc= dynamic_cast<sofa::component::topology::TriangleSetTopologyContainer *>(container);
-    sofa::component::topology::QuadSetTopologyContainer *qstc= dynamic_cast<sofa::component::topology::QuadSetTopologyContainer *>(container);
-    if (tstc)
-    {
-
-        const sofa::helper::vector<sofa::component::topology::Triangle> &triangleArray=tstc->getTriangleArray();
-        triangles.resize(triangleArray.size());
-
-        for (unsigned int i=0; i<triangleArray.size(); ++i)
-        {
-            triangles[i] = triangleArray[i];
-        }
-
-    }
-    else
-    {
-        if (qstc)
-        {
-
-            const sofa::helper::vector<sofa::component::topology::Quad> &quadArray=qstc->getQuadArray();
-            quads.resize(quadArray.size());
-
-            for (unsigned int i=0; i<quadArray.size(); ++i)
-            {
-                quads[i] = quadArray[i];
-            }
-
-        }
-    }
-
-}
 void VisualModelImpl::handleTopologyChange()
 {
 
     bool debug_mode = false;
 
-    sofa::core::componentmodel::topology::BaseTopology *topology = static_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
-
-    std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
+    std::list<const TopologyChange *>::const_iterator itBegin=_topology->firstChange();
+    std::list<const TopologyChange *>::const_iterator itEnd=_topology->lastChange();
 
     while( itBegin != itEnd )
     {
         core::componentmodel::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
-
-        sofa::core::componentmodel::topology::TopologyContainer *container = topology->getTopologyContainer();
-
-        sofa::component::topology::TriangleSetTopologyContainer *tstc= dynamic_cast<sofa::component::topology::TriangleSetTopologyContainer *>(container);
-        sofa::component::topology::QuadSetTopologyContainer *qstc= dynamic_cast<sofa::component::topology::QuadSetTopologyContainer *>(container);
+        // Since we are using identifier, we can safely use C type casts.
 
         switch( changeType )
         {
+
         case core::componentmodel::topology::ENDING_EVENT:
         {
             //std::cout << "INFO_print : Vis - ENDING_EVENT" << std::endl;
@@ -871,7 +817,7 @@ void VisualModelImpl::handleTopologyChange()
         {
             //std::cout << "INFO_print : Vis - TRIANGLESADDED" << std::endl;
 
-            const sofa::component::topology::TrianglesAdded *ta=static_cast< const sofa::component::topology::TrianglesAdded * >( *itBegin );
+            const sofa::component::topology::TrianglesAdded *ta=dynamic_cast< const sofa::component::topology::TrianglesAdded * >( *itBegin );
             Triangle t;
 
             for (unsigned int i=0; i<ta->getNbAddedTriangles(); ++i)
@@ -890,7 +836,7 @@ void VisualModelImpl::handleTopologyChange()
         {
             //std::cout << "INFO_print : Vis - QUADSADDED" << std::endl;
 
-            const sofa::component::topology::QuadsAdded *ta_const=static_cast< const sofa::component::topology::QuadsAdded * >( *itBegin );
+            const sofa::component::topology::QuadsAdded *ta_const=dynamic_cast< const sofa::component::topology::QuadsAdded * >( *itBegin );
             sofa::component::topology::QuadsAdded *ta = const_cast< sofa::component::topology::QuadsAdded * >(ta_const);
             Quad t;
 
@@ -914,16 +860,9 @@ void VisualModelImpl::handleTopologyChange()
             unsigned int last;
             unsigned int ind_last;
 
-            if(tstc)
-            {
-                last= (tstc->getTriangleArray()).size() - 1;
-            }
-            else
-            {
-                last= triangles.size() -1;
-            }
+            last= _topology->getNbTriangles() - 1;
 
-            const sofa::helper::vector<unsigned int> &tab = ( static_cast< const sofa::component::topology::TrianglesRemoved *>( *itBegin ) )->getArray();
+            const sofa::helper::vector<unsigned int> &tab = ( dynamic_cast< const sofa::component::topology::TrianglesRemoved *>( *itBegin ) )->getArray();
 
             Triangle tmp;
 
@@ -961,16 +900,9 @@ void VisualModelImpl::handleTopologyChange()
             unsigned int last;
             unsigned int ind_last;
 
-            if(qstc)
-            {
-                last= (qstc->getQuadArray()).size() - 1;
-            }
-            else
-            {
-                last= quads.size() -1;
-            }
+            last= _topology->getNbQuads() - 1;
 
-            const sofa::helper::vector<unsigned int> &tab = ( static_cast< const sofa::component::topology::QuadsRemoved *>( *itBegin ) )->getArray();
+            const sofa::helper::vector<unsigned int> &tab = ( dynamic_cast< const sofa::component::topology::QuadsRemoved *>( *itBegin ) )->getArray();
 
             Quad tmp;
 
@@ -1009,15 +941,14 @@ void VisualModelImpl::handleTopologyChange()
         {
             //std::cout << "INFO_print : Vis - POINTSREMOVED" << std::endl;
 
-            if (tstc)
+            if (_topology->getNbTriangles()>0)
             {
 
-                const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvsa=tstc->getTriangleVertexShellArray();
-                unsigned int last = tvsa.size() -1;
+                unsigned int last = _topology->getDOFNumber() -1;
 
                 unsigned int i,j;
 
-                const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
+                const sofa::helper::vector<unsigned int> tab = ( dynamic_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
                 sofa::helper::vector<unsigned int> lastIndexVec;
 
@@ -1044,7 +975,7 @@ void VisualModelImpl::handleTopologyChange()
                         lastIndexVec[i_next] = lastIndexVec[i];
                     }
 
-                    const sofa::helper::vector<unsigned int> &shell= tvsa[lastIndexVec[i]];
+                    const sofa::helper::vector<unsigned int> &shell= _topology->getTriangleVertexShell(lastIndexVec[i]);
                     for (j=0; j<shell.size(); ++j)
                     {
 
@@ -1093,7 +1024,7 @@ void VisualModelImpl::handleTopologyChange()
                             if(is_forgotten)
                             {
 
-                                unsigned int ind_forgotten = j_loc;
+                                int ind_forgotten = j_loc;
 
                                 bool is_in_shell = false;
                                 for (unsigned int j_glob=0; j_glob<shell.size(); ++j_glob)
@@ -1105,9 +1036,9 @@ void VisualModelImpl::handleTopologyChange()
                                 {
                                     std::cout << "INFO_print : Vis - triangle is forgotten in SHELL !!! global indices (point, triangle) = ( "  << last << " , " << ind_forgotten  << " )" << std::endl;
 
-                                    if(ind_forgotten<tstc->getTriangleArray().size())
+                                    if(ind_forgotten<_topology->getNbTriangles())
                                     {
-                                        const sofa::component::topology::Triangle t_forgotten = tstc->getTriangle(ind_forgotten);
+                                        const sofa::component::topology::Triangle t_forgotten = _topology->getTriangle(ind_forgotten);
                                         std::cout << "INFO_print : Vis - last = " << last << std::endl;
                                         std::cout << "INFO_print : Vis - lastIndexVec[i] = " << lastIndexVec[i] << std::endl;
                                         std::cout << "INFO_print : Vis - tab.size() = " << tab.size() << " , tab = " << tab << std::endl;
@@ -1131,15 +1062,14 @@ void VisualModelImpl::handleTopologyChange()
             else
             {
 
-                if (qstc)
+                if (_topology->getNbQuads()>0)
                 {
 
-                    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvsa=qstc->getQuadVertexShellArray();
-                    unsigned int last = tvsa.size() -1;
+                    unsigned int last = _topology->getDOFNumber() -1;
 
                     unsigned int i,j;
 
-                    const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
+                    const sofa::helper::vector<unsigned int> tab = ( dynamic_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
                     sofa::helper::vector<unsigned int> lastIndexVec;
                     for(unsigned int i_init = 0; i_init < tab.size(); ++i_init)
@@ -1166,7 +1096,7 @@ void VisualModelImpl::handleTopologyChange()
 
                         }
 
-                        const sofa::helper::vector<unsigned int> &shell= tvsa[lastIndexVec[i]];
+                        const sofa::helper::vector<unsigned int> &shell= _topology->getQuadVertexShell(lastIndexVec[i]);
                         for (j=0; j<shell.size(); ++j)
                         {
 
@@ -1205,14 +1135,12 @@ void VisualModelImpl::handleTopologyChange()
         {
             //std::cout << "INFO_print : Vis - POINTSRENUMBERING" << std::endl;
 
-            if (tstc)
+            if (_topology->getNbTriangles()>0)
             {
-
-                //const sofa::helper::vector<sofa::component::topology::Triangle> &ta=tstc->getTriangleArray();
 
                 unsigned int i;
 
-                const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
+                const sofa::helper::vector<unsigned int> tab = ( dynamic_cast< const sofa::component::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
                 for ( i = 0; i < triangles.size(); ++i)
                 {
@@ -1224,14 +1152,12 @@ void VisualModelImpl::handleTopologyChange()
             }
             else
             {
-                if (qstc)
+                if (_topology->getNbQuads()>0)
                 {
-
-                    //const sofa::helper::vector<sofa::component::topology::Quad> &qa=qstc->getQuadArray();
 
                     unsigned int i;
 
-                    const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
+                    const sofa::helper::vector<unsigned int> tab = ( dynamic_cast< const sofa::component::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
                     for ( i = 0; i < quads.size(); ++i)
                     {

@@ -90,7 +90,6 @@ public:
     typedef DataTypes::Coord Coord;
     typedef DataTypes::Deriv Deriv;
     typedef Tetrahedron Element;
-    typedef topology::TetrahedronSetTopology<DataTypes> SetTopology;
     friend class Tetrahedron;
 
 protected:
@@ -106,8 +105,7 @@ protected:
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
 
-    Topology* topology;
-    SetTopology* setTopology;
+    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 
 public:
 
@@ -130,7 +128,7 @@ public:
     virtual void handleTopologyChange();
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
-    Topology* getTopology() { return topology; }
+
 };
 
 inline Tetrahedron::Tetrahedron(TetrahedronModel* model, int index)
