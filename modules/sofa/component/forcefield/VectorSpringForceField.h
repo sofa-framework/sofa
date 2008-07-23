@@ -77,8 +77,7 @@ protected:
     double m_potentialEnergy;
     /// true if the springs are initialized from the topology
     bool useTopology;
-    /// the EdgeSet topology used to get the list of edges
-    sofa::component::topology::EdgeSetTopology<DataTypes> *topology;
+
     /// indices in case we don't use the topology
     sofa::helper::vector<topology::Edge> edgeArray;
     /// where the springs information are stored
@@ -100,6 +99,11 @@ protected:
             const sofa::helper::vector< double >& coefs);
 
 public:
+
+    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+    sofa::component::topology::EdgeSetTopologyContainer* edgeCont;
+    sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
+    sofa::component::topology::EdgeSetTopologyAlgorithms<DataTypes>* edgeAlg;
 
     VectorSpringForceField(MechanicalState* _object=NULL);
 

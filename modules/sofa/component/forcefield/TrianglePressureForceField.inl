@@ -68,12 +68,13 @@ template <class DataTypes> void TrianglePressureForceField<DataTypes>::init()
 
     _topology = getContext()->getMeshTopology();
 
-    tst= static_cast<sofa::component::topology::TriangleSetTopology<DataTypes> *>(getContext()->getMainTopology());
-    assert(tst!=0);
+    sofa::component::topology::TriangleSetTopologyContainer* triangleCont;
+    this->getContext()->get(triangleCont);
+    assert(triangleCont!=0);
 
-    if (tst==NULL)
+    if (triangleCont==NULL)
     {
-        std::cerr << "ERROR(TrianglePressureForceField): object must have an TriangleSetTopology.\n";
+        std::cerr << "ERROR(TrianglePressureForceField): object must have an TriangleSetTopologyContainer.\n";
         return;
     }
 
@@ -118,13 +119,14 @@ double TrianglePressureForceField<DataTypes>::getPotentialEnergy(const VecCoord&
 template<class DataTypes>
 void TrianglePressureForceField<DataTypes>::initTriangleInformation()
 {
-    topology::TriangleSetGeometryAlgorithms<DataTypes> *esga=tst->getTriangleSetGeometryAlgorithms();
+    sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* triangleGeo;
+    this->getContext()->get(triangleGeo);
 
     typename topology::TriangleSubsetData<TrianglePressureInformation>::iterator it;
 
     for(it=trianglePressureMap.begin(); it!=trianglePressureMap.end(); it++ )
     {
-        (*it).second.area=esga->computeRestTriangleArea((*it).first);
+        (*it).second.area=triangleGeo->computeRestTriangleArea((*it).first);
         (*it).second.force=pressure.getValue()*(*it).second.area;
     }
 }

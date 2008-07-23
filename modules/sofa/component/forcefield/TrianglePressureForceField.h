@@ -69,7 +69,6 @@ protected:
 
     TriangleSubsetData<TrianglePressureInformation> trianglePressureMap;
 
-    topology::TriangleSetTopology<DataTypes>* tst;
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 
     Data<Deriv> pressure;
@@ -85,8 +84,7 @@ protected:
 public:
 
     TrianglePressureForceField():
-        tst(0)
-        , pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
+        pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
         , triangleList(initData(&triangleList,std::string(),"triangleList", "Indices of triangles separated with commas where a pressure is applied"))
         , normal(initData(&normal,"normal", "Normal direction for the plane selection of triangles"))
         , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))

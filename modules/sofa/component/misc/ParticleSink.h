@@ -126,13 +126,18 @@ public:
         }
         if (!remove.empty())
         {
-            topology::PointSetTopology<DataTypes>* t = dynamic_cast<topology::PointSetTopology<DataTypes>*>(this->getContext()->getMainTopology());
-            if (t != NULL)
+            sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+            _topology = this->getContext()->getMeshTopology();
+
+            sofa::component::topology::PointSetTopologyModifier<DataTypes>* pointMod;
+            this->getContext()->get(pointMod);
+
+            if (pointMod != NULL)
             {
-                std::cout << "ParticleSink: remove "<<remove.size()<<" particles using PointSetTopology."<<std::endl;
-                ((topology::PointSetTopologyModifier<DataTypes>*)t->getTopologyModifier())->removePointsWarning(remove);
-                t->propagateTopologicalChanges();
-                ((topology::PointSetTopologyModifier<DataTypes>*)t->getTopologyModifier())->removePointsProcess(remove);
+                std::cout << "ParticleSink: remove "<<remove.size()<<" particles using PointSetTopologyModifier."<<std::endl;
+                pointMod->removePointsWarning(remove);
+                _topology->propagateTopologicalChanges();
+                pointMod->removePointsProcess(remove);
             }
             else if(MechanicalObject<DataTypes>* object = dynamic_cast<MechanicalObject<DataTypes>*>(this->mstate))
             {
