@@ -33,7 +33,7 @@
 #include "CudaTypesBase.h"
 #include <sofa/component/linearsolver/FullMatrix.h>
 
-//#define CHECK 0.01
+#define CHECK 0.01
 //#define DISPLAY_TIME
 
 namespace sofa
