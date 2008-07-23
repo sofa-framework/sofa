@@ -34,9 +34,7 @@
 #include <sofa/component/topology/TetrahedronSetTopology.h>
 #include <sofa/component/topology/QuadSetTopology.h>
 #include <sofa/component/topology/HexahedronSetTopology.h>
-#ifdef SOFA_DEV
 #include <sofa/component/collision/CuttingManager.h>
-#endif // SOFA_DEV
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -95,8 +93,8 @@ protected:
 private:
     bool incisionTriangleModel(sofa::core::CollisionElementIterator, Vector3&, bool, bool);
     /// Intermediate method to handle cutting
-    bool incisionTriangleSetTopology(sofa::core::componentmodel::topology::BaseMeshTopology*);
-    bool incisionTriangleSetTopology(sofa::core::CollisionElementIterator, Vector3&, bool, bool, sofa::core::componentmodel::topology::BaseMeshTopology*);
+    bool incisionTriangleSetTopology(topology::TriangleSetTopology< Vec3Types >*);
+    bool incisionTriangleSetTopology(sofa::core::CollisionElementIterator, Vector3&, bool, bool, topology::TriangleSetTopology< Vec3Types >*);
 
     void removeItemsFromTriangleModel(sofa::core::CollisionElementIterator) const;
     void removeItemsFromTriangleSetModel(sofa::core::CollisionElementIterator) const;
@@ -116,15 +114,12 @@ private:
         unsigned int b_last_init;
         sofa::helper::vector< unsigned int > b_p12_last_init;
         sofa::helper::vector< unsigned int > b_i123_last_init;
+        CuttingPoint* cutB;
 
         unsigned int a_last_init;
         sofa::helper::vector< unsigned int >  a_p12_last_init;
         sofa::helper::vector< unsigned int >  a_i123_last_init;
-
-#ifdef SOFA_DEV
-        CuttingPoint* cutB;
         CuttingPoint* cutA;
-#endif // SOFA_DEV
     }	incision;
 };
 
