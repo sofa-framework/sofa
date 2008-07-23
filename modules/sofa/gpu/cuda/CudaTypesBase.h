@@ -44,11 +44,6 @@ class CudaBaseMatrix : public BaseMatrix
 {
 public :
 
-    CudaBaseMatrix()
-    {
-        warp_size = 0;
-    }
-
     CudaMatrix<T> & getCudaMatrix()
     {
         return m;
@@ -56,17 +51,12 @@ public :
 
     void resize(int nbCol, int nbRow)
     {
-        m.resize(nbCol,nbRow,warp_size);
+        m.resize(nbCol,nbRow,BSIZE);
     }
 
     void resize(int nbCol, int nbRow,int ws)
     {
         m.resize(nbCol,nbRow,ws);
-    }
-
-    void setwarpsize(int wp)
-    {
-        warp_size = wp;
     }
 
     int rowSize() const
@@ -121,7 +111,6 @@ public :
 
 private :
     CudaMatrix<T> m;
-    int warp_size;
 };
 
 template <class T>
@@ -147,6 +136,11 @@ public :
     void resize(int nbRow)
     {
         v.resize(nbRow);
+    }
+
+    void resize(int nbRow,int warp_size)
+    {
+        v.resize(nbRow,warp_size);
     }
 
     int size() const

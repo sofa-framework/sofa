@@ -45,7 +45,7 @@ using namespace sofa::defaulttype;
 using namespace helper::system::thread;
 using namespace core::componentmodel::behavior;
 
-#define MAX_NUM_CONSTRAINTS 2048
+static unsigned MAX_NUM_CONSTRAINTS=2048;
 
 template<class real>
 CudaMasterContactSolver<real>::CudaMasterContactSolver()
@@ -55,17 +55,16 @@ CudaMasterContactSolver<real>::CudaMasterContactSolver()
     ,check_gpu(initData(&check_gpu, false, "checkGPU", "verification of lcp error"))
 #endif
     ,tol_d( initData(&tol_d, 0.001, "tolerance", "tolerance"))
-    ,maxIt_d(initData(&maxIt_d, 200, "maxIt", "iterations of gauss seidel"))
+    ,maxIt_d(initData(&maxIt_d, 100, "maxIt", "iterations of gauss seidel"))
     ,mu_d( initData(&mu_d, 0.0, "mu", ""))
     ,useGPU_d(initData(&useGPU_d,8, "useGPU", "compute LCP using GPU"))
-    ,_mu(0.0)
 {
 
     _W.resize(MAX_NUM_CONSTRAINTS,MAX_NUM_CONSTRAINTS);
     _dFree.resize(MAX_NUM_CONSTRAINTS);
     _f.resize(MAX_NUM_CONSTRAINTS);
     _numConstraints = 0;
-    _mu = 0.0;
+    _mu = mu_d.getValue();
 
     _numPreviousContact=0;
     _PreviousContactList = (contactBuf *)malloc(MAX_NUM_CONSTRAINTS * sizeof(contactBuf));
@@ -89,14 +88,29 @@ void CudaMasterContactSolver<real>::build_LCP()
 
     if (_numConstraints > MAX_NUM_CONSTRAINTS)
     {
-        cerr<<endl<<"Error in MasterContactSolver, maximum number of contacts exceeded, "<< _numConstraints/3 <<" contacts detected"<<endl;
-        exit(-1);
+        cerr<<endl<<"Warning in MasterContactSolver, maximum number of contacts exceeded, "<< _numConstraints <<" contacts detected"<<endl;
+        MAX_NUM_CONSTRAINTS=MAX_NUM_CONSTRAINTS+MAX_NUM_CONSTRAINTS;
+
+        free(_PreviousContactList);
+        free(_cont_id_list);
+
+        _PreviousContactList = (contactBuf *)malloc(MAX_NUM_CONSTRAINTS * sizeof(contactBuf));
+        _cont_id_list = (long *)malloc(MAX_NUM_CONSTRAINTS * sizeof(long));
     }
-    _dFree.resize(_numConstraints);
-    _f.resize(_numConstraints);
-    if (_mu>0.0) _W.setwarpsize(MBSIZE);
-    else _W.setwarpsize(BSIZE);
-    _W.resize(_numConstraints,_numConstraints);
+
+    if (_mu>0.0)
+    {
+        _dFree.resize(_numConstraints,MBSIZE);
+        _f.resize(_numConstraints,MBSIZE);
+        _W.resize(_numConstraints,_numConstraints,MBSIZE);
+    }
+    else
+    {
+        _dFree.resize(_numConstraints);
+        _f.resize(_numConstraints);
+        _W.resize(_numConstraints,_numConstraints);
+    }
+
     _W.clear();
 
     if (useGPU_d.getValue())
@@ -268,18 +282,20 @@ void CudaMasterContactSolver<real>::step(double dt)
 #ifdef CHECK
     if (check_gpu.getValue())
     {
-        f_check.resize(_numConstraints);
         real t1,t2;
-        for (unsigned i=0; i<_numConstraints; i++) f_check[i] = _f[i];
 
         if (_mu > 0.0)
         {
+            f_check.resize(_numConstraints,MBSIZE);
+            for (unsigned i=0; i<_numConstraints; i++) f_check[i] = _f[i];
             t2 = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), f_check.getCudaVector(), _mu,_tol, _maxIt);
 
             t1 = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(0,_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _mu,_tol, _maxIt);
         }
         else
         {
+            f_check.resize(_numConstraints);
+            for (unsigned i=0; i<_numConstraints; i++) f_check[i] = _f[i];
             t2 = sofa::gpu::cuda::CudaLCP<real>::CudaGaussSeidelLCP1(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), f_check.getCudaVector(), _tol, _maxIt);
 
             t1 = sofa::gpu::cuda::CudaLCP<real>::CudaGaussSeidelLCP1(0,_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _tol, _maxIt);
