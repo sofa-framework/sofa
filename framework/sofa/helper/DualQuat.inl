@@ -85,7 +85,7 @@ DualQuat<Real>::DualQuat ( const Vec& tr1, const Quat& q1, const Vec& tr2, const
     tr2M4 ( 2, 3 ) = tr2[2];
 
     // The rotational part of the matrix rigidM4 is the same as 'q2 * q1.inverse()'
-    Quat rotQ = ( q2 * q1.inverse() );
+    Quat rotQ = ( q2 * q1.inverse());
     rotQ.toMatrix ( relRot1M3 );
 
     for ( int i = 0; i < 3; i++ )
@@ -172,6 +172,33 @@ void DualQuat<Real>::toMatrix ( defaulttype::Matrix4& M ) const
     M ( 2, 3 ) = t2;
     M ( 3, 0 ) = M ( 3, 1 ) = M ( 3, 2 ) = 0;
     M ( 3, 3 ) = 1;
+}
+
+template<class Real>
+void DualQuat<Real>::toGlMatrix ( double M[16] ) const
+{
+    // GL matrices are transposed.
+    Real t0, t1, t2;
+    t0 = 2.0 * ( -_q[1][3]*_q[0][0] + _q[1][0]*_q[0][3] - _q[1][1]*_q[0][2] + _q[1][2]*_q[0][1] );
+    t1 = 2.0 * ( -_q[1][3]*_q[0][1] + _q[1][0]*_q[0][2] + _q[1][1]*_q[0][3] - _q[1][2]*_q[0][0] );
+    t2 = 2.0 * ( -_q[1][3]*_q[0][2] - _q[1][0]*_q[0][1] + _q[1][1]*_q[0][0] + _q[1][2]*_q[0][3] );
+
+    M[0] = 1 - 2* ( _q[0][1]*_q[0][1] + _q[0][2]*_q[0][2] ); // 1 - 2(y0*y0) - 2(z0*z0)
+    M[1] =     2* ( _q[0][0]*_q[0][1] + _q[0][3]*_q[0][2] ); // 2(x0y0 + w0z0)
+    M[2] =     2* ( _q[0][0]*_q[0][2] - _q[0][3]*_q[0][1] ); // 2(x0z0 - w0y0)
+    M[3] = 0;
+    M[4] =     2* ( _q[0][0]*_q[0][1] - _q[0][3]*_q[0][2] ); // 2(x0y0 - w0z0)
+    M[5] = 1 - 2* ( _q[0][0]*_q[0][0] + _q[0][2]*_q[0][2] ); // 1 - 2(x0*x0) - 2(z0*z0)
+    M[6] =     2* ( _q[0][1]*_q[0][2] + _q[0][3]*_q[0][0] ); // 2(y0z0 + w0x0)
+    M[7] = 0;
+    M[8] =     2* ( _q[0][0]*_q[0][2] + _q[0][3]*_q[0][1] ); // 2(x0z0 + w0y0)
+    M[9] =     2* ( _q[0][1]*_q[0][2] - _q[0][3]*_q[0][0] ); // 2(y0z0 - w0x0)
+    M[10] = 1 - 2* ( _q[0][0]*_q[0][0] + _q[0][1]*_q[0][1] ); // 1 - 2(x0*x0) - 2(y0*y0)
+    M[11] = 0;
+    M[12] = t0;
+    M[13] = t1;
+    M[14] = t2;
+    M[15] = 1;
 }
 
 template<class Real>
