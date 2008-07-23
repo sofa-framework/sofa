@@ -142,8 +142,6 @@ protected:
     //CompressedMatrix _stiffnesses;
     double m_potentialEnergy;
 
-
-    HexahedronSetTopology<DataTypes> * _mesh;
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 
     //topology::SparseGridTopology* _sparseGrid;
@@ -165,10 +163,7 @@ public:
 
 
     HexahedralFEMForceField()
-        : _mesh(NULL)//, _sparseGrid(NULL)
-        //, _indexedElements(NULL)
-        //, _initialPoints(initData(&_initialPoints,"initialPoints", "Initial Position"))
-        , f_method(initData(&f_method,std::string("large"),"method","\"large\" or \"polar\" displacements"))
+        : f_method(initData(&f_method,std::string("large"),"method","\"large\" or \"polar\" displacements"))
         , f_poissonRatio(initData(&f_poissonRatio,(Real)0.45f,"poissonRatio",""))
         , f_youngModulus(initData(&f_youngModulus,(Real)5000,"youngModulus",""))
 //             , f_updateStiffnessMatrix(initData(&f_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
@@ -218,8 +213,6 @@ public:
 
     virtual void init();
     virtual void reinit();
-
-    HexahedronSetTopology<DataTypes> *getHexahedralTopology() const {return _mesh;}
 
     virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 

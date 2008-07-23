@@ -69,9 +69,8 @@ protected:
 
     EdgeSubsetData<EdgePressureInformation> edgePressureMap;
 
-
-    topology::EdgeSetTopology<DataTypes>* est;
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+    sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGEO_ptr;
 
     Data<Deriv> pressure;
 
@@ -86,8 +85,7 @@ protected:
 public:
 
     EdgePressureForceField():
-        est(0)
-        , pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
+        pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
         , edgeList(initData(&edgeList,std::string(""),"edgeList", "Indices of edges separated with commas where a pressure is applied"))
         , normal(initData(&normal,"normal", "Normal direction for the plane selection of edges"))
         , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))

@@ -122,11 +122,10 @@ void HexahedralFEMForceField<DataTypes>::init()
 
     _topology = getContext()->getMeshTopology();
 
-    _mesh =0;
-    if (getContext()->getMainTopology()!=0)
-        _mesh= dynamic_cast<HexahedronSetTopology<DataTypes>*>(getContext()->getMainTopology());
+    sofa::component::topology::HexahedronSetTopologyContainer* hexaCONT_ptr;
+    this->getContext()->get(hexaCONT_ptr);
 
-    if ((_mesh==0) || (_topology->getNbHexas()==0))
+    if ((hexaCONT_ptr==0) || (_topology->getNbHexas()==0))
     {
         std::cerr << "ERROR(HexahedralFEMForceField): object must have a Hexahedral Set Topology.\n";
         return;
@@ -140,29 +139,28 @@ void HexahedralFEMForceField<DataTypes>::init()
     	return;
     }
 
-    _mesh = dynamic_cast<sofa::component::topology::MeshTopology*>(this->getContext()->getTopology());
-    if ( _mesh==NULL)
+    if ( _topology==NULL)
     {
     	std::cerr << "ERROR(HexahedralFEMForceField): object must have a MeshTopology.\n";
     	return;
     }
-    else if( _mesh->getNbCubes()<=0 )
+    else if( _topology->getNbCubes()<=0 )
     {
     	std::cerr << "ERROR(HexahedralFEMForceField): object must have a hexahedric MeshTopology.\n";
-    	std::cerr << _mesh->getName()<<std::endl;
-    	std::cerr << _mesh->getTypeName()<<std::endl;
-    	cerr<<_mesh->getNbPoints()<<endl;
+    	std::cerr << _topology->getName()<<std::endl;
+    	std::cerr << _topology->getTypeName()<<std::endl;
+    	cerr<<_topology->getNbPoints()<<endl;
     	return;
     }
 
     */
 
-// 	if (!_mesh->getCubes().empty())
+// 	if (!_topology->getCubes().empty())
 // 	else
 // 	{
-    //_indexedElements = & (_mesh->getCubes());
+    //_indexedElements = & (_topology->getCubes());
 // 	}
-    //_sparseGrid = dynamic_cast<topology::SparseGridTopology*>(_mesh);
+    //_sparseGrid = dynamic_cast<topology::SparseGridTopology*>(_topology);
 
 
     /*
@@ -584,7 +582,7 @@ void HexahedralFEMForceField<DataTypes>::initLarge(int i)
     // second vector in the plane of the two first edges
     // third vector orthogonal to first and second
 
-    const VecCoord *X0=_mesh->getDOF()->getX0();
+    const VecCoord *X0=this->mstate->getX0();
 
     Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
@@ -705,7 +703,7 @@ void HexahedralFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const 
 template<class DataTypes>
 void HexahedralFEMForceField<DataTypes>::initPolar(int i)
 {
-    const VecCoord *X0=_mesh->getDOF()->getX0();
+    const VecCoord *X0=this->mstate->getX0();
 
     Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)

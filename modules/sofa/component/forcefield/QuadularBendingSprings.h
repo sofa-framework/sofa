@@ -117,7 +117,6 @@ protected:
 
     EdgeData<EdgeInformation> edgeInfo;
 
-    QuadSetTopology<DataTypes> * _mesh;
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 
     bool updateMatrix;
@@ -128,8 +127,6 @@ protected:
 public:
 
     QuadularBendingSprings();
-
-    QuadSetTopology<DataTypes> *getQuadularTopology() const {return _mesh;}
 
     ~QuadularBendingSprings();
 

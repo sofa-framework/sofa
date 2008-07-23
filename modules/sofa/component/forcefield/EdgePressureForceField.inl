@@ -68,12 +68,12 @@ template <class DataTypes> void EdgePressureForceField<DataTypes>::init()
     //std::cerr << "initializing EdgePressureForceField" << std::endl;
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
 
-    est= static_cast<sofa::component::topology::EdgeSetTopology<DataTypes> *>(getContext()->getMainTopology());
-    _topology = getContext()->getMeshTopology();
+    _topology = this->getContext()->getMeshTopology();
+    this->getContext()->get(edgeGEO_ptr);
 
-    assert(est!=0);
+    assert(edgeGEO_ptr!=0);
 
-    if (est==NULL)
+    if (edgeGEO_ptr==NULL)
     {
         std::cerr << "ERROR(EdgePressureForceField): object must have an EdgeSetTopology.\n";
         return;
@@ -119,13 +119,11 @@ double EdgePressureForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x
 template<class DataTypes>
 void EdgePressureForceField<DataTypes>::initEdgeInformation()
 {
-    topology::EdgeSetGeometryAlgorithms<DataTypes> *esga=est->getEdgeSetGeometryAlgorithms();
-
     typename topology::EdgeSubsetData<EdgePressureInformation>::iterator it;
 
     for(it=edgePressureMap.begin(); it!=edgePressureMap.end(); it++ )
     {
-        (*it).second.length=esga->computeRestEdgeLength((*it).first);
+        (*it).second.length=edgeGEO_ptr->computeRestEdgeLength((*it).first);
         (*it).second.force=pressure.getValue()*(*it).second.length;
     }
 }
