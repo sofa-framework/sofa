@@ -1106,7 +1106,7 @@ void TriangularFEMForceField<DataTypes>::draw()
                 Index c = _topology->getTriangle(i)[2];//(*it)[2];
 
                 float v = (float)((vertexInfo[a].sumEigenValues + vertexInfo[b].sumEigenValues + vertexInfo[c].sumEigenValues) / 3.0);
-                v /= max;
+                v /= (float)max;
 
                 Vec3d color = ColorMap[(int)(v*63)];
                 glColor3dv(color.ptr());
