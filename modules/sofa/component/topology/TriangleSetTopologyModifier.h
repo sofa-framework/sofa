@@ -1,0 +1,873 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 3      *
+*                (c) 2006-2008 MGH, INRIA, USTL, UJF, CNRS                    *
+*                                                                             *
+* This library is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This library is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this library; if not, write to the Free Software Foundation,     *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+*******************************************************************************
+*                               SOFA :: Modules                               *
+*                                                                             *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#ifndef SOFA_COMPONENT_TOPOLOGY_TRIANGLESETTOPOLOGY_H
+#define SOFA_COMPONENT_TOPOLOGY_TRIANGLESETTOPOLOGY_H
+
+#include <sofa/component/topology/EdgeSetTopology.h>
+#include <map>
+
+namespace sofa
+{
+namespace component
+{
+namespace topology
+{
+// forward declarations
+template<class DataTypes>
+class TriangleSetTopology;
+
+class TriangleSetTopologyContainer;
+
+template<class DataTypes>
+class TriangleSetTopologyModifier;
+
+template < class DataTypes >
+class TriangleSetTopologyAlgorithms;
+
+template < class DataTypes >
+class TriangleSetGeometryAlgorithms;
+
+template <class DataTypes>
+class TriangleSetTopologyLoader;
+
+class TrianglesAdded;
+class TrianglesRemoved;
+
+using namespace sofa::defaulttype;
+using core::componentmodel::topology::BaseMeshTopology;
+typedef BaseMeshTopology::TriangleID TriangleID;
+typedef BaseMeshTopology::Triangle Triangle;
+typedef BaseMeshTopology::SeqTriangles SeqTriangles;
+typedef BaseMeshTopology::VertexTriangles VertexTriangles;
+typedef BaseMeshTopology::EdgeTriangles EdgeTriangles;
+typedef BaseMeshTopology::TriangleEdges TriangleEdges;
+
+template< class Real>
+bool is_point_in_triangle(const Vec<3,Real>& p, const Vec<3,Real>& a, const Vec<3,Real>& b, const Vec<3,Real>& c);
+
+template< class Real>
+bool is_point_in_halfplane(const Vec<3,Real>& p, unsigned int e0, unsigned int e1, const Vec<3,Real>& a, const Vec<3,Real>& b, const Vec<3,Real>& c, unsigned int ind_p0, unsigned int ind_p1, unsigned int ind_p2);
+
+void snapping_test_triangle(double epsilon,
+        double alpha0, double alpha1, double alpha2,
+        bool& is_snap_0, bool& is_snap_1, bool& is_snap_2);
+
+void snapping_test_edge(double epsilon,
+        double alpha0, double alpha1,
+        bool& is_snap_0, bool& is_snap_1);
+
+template< class Real>
+inline Real areaProduct(const Vec<3,Real>& a, const Vec<3,Real>& b);
+
+template< class Real>
+inline Real areaProduct(const defaulttype::Vec<2,Real>& a, const defaulttype::Vec<2,Real>& b );
+
+template< class Real>
+inline Real areaProduct(const defaulttype::Vec<1,Real>& , const defaulttype::Vec<1,Real>&  );
+
+/////////////////////////////////////////////////////////
+/// TriangleSetTopology objects
+/////////////////////////////////////////////////////////
+
+/** Describes a topological object that consists as a set of points and triangles connected these points */
+template<class DataTypes>
+class TriangleSetTopology : public EdgeSetTopology <DataTypes>
+{
+public:
+    TriangleSetTopology(component::MechanicalObject<DataTypes> *obj);
+
+    virtual ~TriangleSetTopology() {}
+
+    virtual void init();
+
+    /** \brief Returns the TriangleSetTopologyContainer object of this TriangleSetTopology.
+    */
+    TriangleSetTopologyContainer *getTriangleSetTopologyContainer() const
+    {
+        return static_cast<TriangleSetTopologyContainer *> (this->m_topologyContainer);
+    }
+
+    /** \brief Returns the TriangleSetTopologyModifier object of this TriangleSetTopology.
+    */
+    TriangleSetTopologyModifier<DataTypes> *getTriangleSetTopologyModifier() const
+    {
+        return static_cast<TriangleSetTopologyModifier<DataTypes> *> (this->m_topologyModifier);
+    }
+
+    /** \brief Returns the TriangleSetTopologyAlgorithms object of this TriangleSetTopology.
+    */
+    TriangleSetTopologyAlgorithms<DataTypes> *getTriangleSetTopologyAlgorithms() const
+    {
+        return static_cast<TriangleSetTopologyAlgorithms<DataTypes> *> (this->m_topologyAlgorithms);
+    }
+
+    /** \brief Returns the TriangleSetTopologyAlgorithms object of this TriangleSetTopology.
+    */
+    TriangleSetGeometryAlgorithms<DataTypes> *getTriangleSetGeometryAlgorithms() const
+    {
+        return static_cast<TriangleSetGeometryAlgorithms<DataTypes> *> (this->m_geometryAlgorithms);
+    }
+
+    /// BaseMeshTopology API
+    /// @{
+
+    const SeqTriangles& getTriangles()
+    {
+        return getTriangleSetTopologyContainer()->getTriangleArray();
+    }
+
+    /// Returns the set of edges adjacent to a given triangle.
+    const TriangleEdges& getEdgeTriangleShell(TriangleID i)
+    {
+        return getTriangleSetTopologyContainer()->getTriangleEdge(i);
+    }
+
+    /// Returns the set of triangles adjacent to a given vertex.
+    const VertexTriangles& getTriangleVertexShell(PointID i)
+    {
+        return getTriangleSetTopologyContainer()->getTriangleVertexShell(i);
+    }
+
+    /// Returns the set of triangles adjacent to a given edge.
+    const EdgeTriangles& getTriangleEdgeShell(EdgeID i)
+    {
+        return getTriangleSetTopologyContainer()->getTriangleEdgeShell(i);
+    }
+
+    /// Returns the index of the triangle given three vertex indices; returns -1 if no edge exists
+    int getTriangleIndex(PointID v1, PointID v2, PointID v3)
+    {
+        return  getTriangleSetTopologyContainer()->getTriangleIndex(v1, v2, v3);
+    }
+
+    /// Returns the index (either 0, 1 ,2) of the vertex whose global index is vertexIndex. Returns -1 if none
+    int getVertexIndexInTriangle(const Triangle &t, PointID i) const
+    {
+        return  getTriangleSetTopologyContainer()->getVertexIndexInTriangle(t, i);
+    }
+    /// Returns the index (either 0, 1 ,2) of the edge whose global index is edgeIndex. Returns -1 if none
+    int getEdgeIndexInTriangle(const TriangleEdges &t, EdgeID i) const
+    {
+        return  getTriangleSetTopologyContainer()->getEdgeIndexInTriangle(t, i);
+    }
+
+    /// @}
+
+protected:
+    virtual void createComponents();
+};
+
+/**
+* A class that performs topology algorithms on an TriangleSet.
+*/
+template < class DataTypes >
+class TriangleSetTopologyAlgorithms : public EdgeSetTopologyAlgorithms<DataTypes>
+{
+public:
+    typedef typename DataTypes::Real Real;
+
+    TriangleSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
+        : EdgeSetTopologyAlgorithms<DataTypes>(top)
+    {}
+
+    virtual ~TriangleSetTopologyAlgorithms() {}
+
+    TriangleSetTopology< DataTypes >* getTriangleSetTopology() const
+    {
+        return static_cast<TriangleSetTopology< DataTypes >* > (this->m_basicTopology);
+    }
+
+    /** \brief Remove a set  of triangles
+    @param triangles an array of triangle indices to be removed (note that the array is not const since it needs to be sorted)
+    *
+    @param removeIsolatedEdges if true isolated edges are also removed
+    @param removeIsolatedPoints if true isolated vertices are also removed
+    *
+    */
+    virtual void removeTriangles(sofa::helper::vector< unsigned int >& triangles,
+            const bool removeIsolatedEdges,
+            const bool removeIsolatedPoints);
+
+    /** \brief Generic method to remove a list of items.
+     */
+    virtual void removeItems(sofa::helper::vector< unsigned int >& items);
+
+    /** \brief Generic method to write the current mesh into a msh file
+     */
+    virtual void writeMSH(const char *filename);
+
+    /** \brief Generic method for points renumbering
+      */
+    virtual void renumberPoints( const sofa::helper::vector<unsigned int> &index,
+            const sofa::helper::vector<unsigned int> &inv_index);
+
+    /** \brief  Moves and fixes the two closest points of two triangles to their median point
+    */
+    bool Suture2Points(unsigned int ind_ta, unsigned int ind_tb, unsigned int &ind1, unsigned int &ind2);
+
+    /** \brief  Incises along the list of points (ind_edge,coord) intersected by the vector from point a to point b and the triangular mesh
+    */
+    bool InciseAlongPointsList(bool is_first_cut,
+            const Vec<3,double>& a, const Vec<3,double>& b,
+            const unsigned int ind_ta, const unsigned int ind_tb,
+            unsigned int& a_last, sofa::helper::vector< unsigned int > &a_p12_last,
+            sofa::helper::vector< unsigned int > &a_i123_last,
+            unsigned int& b_last, sofa::helper::vector< unsigned int > &b_p12_last,
+            sofa::helper::vector< unsigned int > &b_i123_last,
+            sofa::helper::vector< sofa::helper::vector<unsigned int> > &new_points,
+            sofa::helper::vector< sofa::helper::vector<unsigned int> > &closest_vertices);
+
+    /** \brief Removes triangles along the list of points (ind_edge,coord) intersected by the vector from point a to point b and the triangular mesh
+    */
+    void RemoveAlongTrianglesList(const Vec<3,double>& a, const Vec<3,double>& b,
+            const unsigned int ind_ta, const unsigned int ind_tb);
+
+    /** \brief Incises along the list of points (ind_edge,coord) intersected by the sequence of input segments (list of input points) and the triangular mesh
+    */
+    void InciseAlongLinesList(const sofa::helper::vector< Vec<3,double> >& input_points,
+            const sofa::helper::vector< unsigned int > &input_triangles);
+
+    /** \brief Duplicates the given edge. Only works of at least one of its points is adjacent to a border.
+     * @returns the number of newly created points, or -1 if the incision failed.
+     */
+    virtual int InciseAlongEdge(unsigned int edge);
+
+};
+
+/**
+* A class that provides geometry information on an TriangleSet.
+*/
+template < class DataTypes >
+class TriangleSetGeometryAlgorithms : public EdgeSetGeometryAlgorithms<DataTypes>
+{
+public:
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+
+    TriangleSetGeometryAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
+        : EdgeSetGeometryAlgorithms<DataTypes>(top)
+    {}
+
+    virtual ~TriangleSetGeometryAlgorithms() {}
+
+    TriangleSetTopology< DataTypes >* getTriangleSetTopology() const
+    {
+        return static_cast<TriangleSetTopology< DataTypes >* > (this->m_basicTopology);
+    }
+
+    /** \brief Returns spatial position of point indexed by i
+    *
+    */
+    const Coord& getPositionPoint(unsigned int i);
+
+    /** \brief Computes the area of triangle no i and returns it
+    *
+    */
+    Real computeTriangleArea(const unsigned int i) const;
+
+    /** \brief Computes the triangle area of all triangles are store in the array interface
+    *
+    */
+    void computeTriangleArea( BasicArrayInterface<Real> &ai) const;
+
+    /** \brief Computes the initial area  of triangle no i and returns it
+    *
+    */
+    Real computeRestTriangleArea(const unsigned int i) const;
+
+    /** \brief Computes barycentric coefficients of point p in triangle (a,b,c) indexed by ind_t
+    *
+    */
+    sofa::helper::vector< double > computeTriangleBarycoefs( const Vec<3,double> &p, unsigned int ind_t);
+
+    /** \brief Computes barycentric coefficients of point p in triangle whose vertices are indexed by (ind_p1,ind_p2,ind_p3)
+    *
+    */
+    sofa::helper::vector< double > compute3PointsBarycoefs( const Vec<3,double> &p,
+            unsigned int ind_p1,
+            unsigned int ind_p2,
+            unsigned int ind_p3);
+
+    /** \brief Finds the two closest points from two triangles (each of the point belonging to one triangle)
+    *
+    */
+    void closestIndexPair(unsigned int ind_ta, unsigned int ind_tb, unsigned int &ind1, unsigned int &ind2);
+
+    /** \brief Tests if a point is included in the triangle indexed by ind_t
+    *
+    */
+    bool is_PointinTriangle(bool is_tested, const Vec<3,Real>& p, unsigned int ind_t, unsigned int &ind_t_test);
+
+    /** \brief Computes the point defined by 2 indices of vertex and 1 barycentric coordinate
+    *
+    */
+    Vec<3,double> computeBaryEdgePoint(sofa::helper::vector< unsigned int>& indices, const double &coord_p);
+
+    /** \brief Computes the normal vector of a triangle indexed by ind_t (not normed)
+    *
+    */
+    Vec<3,double> computeTriangleNormal(const unsigned int ind_t);
+
+    /** \brief Tests how to triangularize a quad whose vertices are defined by (p_q1, p_q2, ind_q3, ind_q4) according to the Delaunay criterion
+    *
+    */
+    bool isQuadDeulaunayOriented(const Vec<3,double>& p_q1, const Vec<3,double>& p_q2,
+            unsigned int ind_q3, unsigned int ind_q4);
+
+    /** \brief Computes the opposite point to ind_p
+    *
+    */
+    Vec<3,double> getOppositePoint(unsigned int ind_p, sofa::helper::vector< unsigned int>& indices, const double &coord_p);
+
+    /** \brief Tests if a triangle indexed by ind_t (and incident to the vertex indexed by ind_p) is included or not in the plane defined by (ind_p, plane_vect)
+    *
+    */
+    bool is_triangle_in_plane(const unsigned int ind_t, const unsigned int ind_p, const Vec<3,Real>& plane_vect);
+
+    /** \brief Prepares the duplication of a vertex
+    *
+    */
+    void Prepare_VertexDuplication(const unsigned int ind_p,
+            const unsigned int ind_t_from, const unsigned int ind_t_to,
+            const sofa::helper::vector< unsigned int>& indices_from, const double &coord_from,
+            const sofa::helper::vector< unsigned int>& indices_to, const double &coord_to,
+            sofa::helper::vector< unsigned int > &triangles_list_1,
+            sofa::helper::vector< unsigned int > &triangles_list_2);
+
+    /** \brief Computes the intersection of the vector from point a to point b and the triangle indexed by t
+    *
+    */
+    bool computeSegmentTriangleIntersection(bool is_entered,
+            const Vec<3,double>& a, const Vec<3,double>& b,
+            const unsigned int ind_t,
+            sofa::helper::vector<unsigned int> &indices,
+            double &baryCoef, double& coord_kmin);
+
+    /** \brief Computes the list of points (ind_edge,coord) intersected by the segment from point a to point b and the triangular mesh
+    *
+    */
+    bool computeIntersectedPointsList(const Vec<3,double>& a, const Vec<3,double>& b,
+            const unsigned int ind_ta, unsigned int& ind_tb,
+            sofa::helper::vector< unsigned int > &triangles_list,
+            sofa::helper::vector< sofa::helper::vector< unsigned int> > &indices_list,
+            sofa::helper::vector< double >& coords_list,
+            bool& is_on_boundary);
+};
+
+/**
+* A class that modifies the topology by adding and removing triangles
+*/
+template<class DataTypes>
+class TriangleSetTopologyModifier : public EdgeSetTopologyModifier <DataTypes>
+{
+    friend class TriangleSetTopologyLoader<DataTypes>;
+
+public:
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+
+    TriangleSetTopologyModifier(core::componentmodel::topology::BaseTopology *top)
+        : EdgeSetTopologyModifier<DataTypes>(top)
+    { }
+
+    virtual ~TriangleSetTopologyModifier() {}
+
+    TriangleSetTopology< DataTypes >* getTriangleSetTopology() const
+    {
+        return static_cast<TriangleSetTopology< DataTypes >* > (this->m_basicTopology);
+    }
+
+    /** \brief Build a triangle set topology from a file : also modifies the MechanicalObject
+     *
+     */
+    virtual bool load(const char *filename);
+
+    /** \brief Write the current mesh into a msh file
+     *
+     */
+    virtual void writeMSHfile(const char *filename);
+
+    /** \brief Sends a message to warn that some triangles were added in this topology.
+     *
+     * \sa addTrianglesProcess
+     */
+    void addTrianglesWarning(const unsigned int nTriangles,
+            const sofa::helper::vector< Triangle >& trianglesList,
+            const sofa::helper::vector< unsigned int >& trianglesIndexList) ;
+
+    /** \brief Sends a message to warn that some triangles were added in this topology.
+     *
+     * \sa addTrianglesProcess
+     */
+    void addTrianglesWarning(const unsigned int nTriangles,
+            const sofa::helper::vector< Triangle >& trianglesList,
+            const sofa::helper::vector< unsigned int >& trianglesIndexList,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs) ;
+
+    /** \brief Sends a message to warn that some edges were added in this topology.
+    *
+    * \sa addEdgesProcess
+    */
+    void addEdgesWarning(const unsigned int nEdges,
+            const sofa::helper::vector< Edge >& edgesList,
+            const sofa::helper::vector< unsigned int >& edgesIndexList)
+    {
+        EdgeSetTopologyModifier<DataTypes>::addEdgesWarning( nEdges, edgesList, edgesIndexList);
+    }
+
+    /** \brief Sends a message to warn that some edges were added in this topology.
+    *
+    * \sa addEdgesProcess
+    */
+    void addEdgesWarning(const unsigned int nEdges,
+            const sofa::helper::vector< Edge >& edgesList,
+            const sofa::helper::vector< unsigned int >& edgesIndexList,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
+    {
+        EdgeSetTopologyModifier<DataTypes>::addEdgesWarning( nEdges, edgesList, edgesIndexList, ancestors, baryCoefs);
+    }
+
+    /** \brief Actually Add some triangles to this topology.
+    *
+    * \sa addTrianglesWarning
+    */
+    virtual void addTrianglesProcess(const sofa::helper::vector< Triangle > &triangles);
+
+    /** \brief Sends a message to warn that some triangles are about to be deleted.
+    *
+    * \sa removeTrianglesProcess
+    *
+    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
+    */
+    virtual void removeTrianglesWarning( sofa::helper::vector<unsigned int> &triangles);
+
+    /** \brief Remove a subset of  triangles. Eventually remove isolated edges and vertices
+    *
+    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
+    * \sa removeTrianglesWarning
+    *
+    * @param removeIsolatedEdges if true isolated edges are also removed
+    * @param removeIsolatedPoints if true isolated vertices are also removed
+    */
+    virtual void removeTrianglesProcess( const sofa::helper::vector<unsigned int> &indices,
+            const bool removeIsolatedEdges=false,
+            const bool removeIsolatedPoints=false);
+
+    /** \brief Add some edges to this topology.
+     *
+     * \sa addEdgesWarning
+     */
+    void addEdgesProcess(const sofa::helper::vector< Edge > &edges);
+
+    /** \brief Remove a subset of edges
+    *
+    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
+    * \sa removeEdgesWarning
+    *
+    * @param removeIsolatedItems if true isolated vertices are also removed
+    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
+    */
+    virtual void removeEdgesProcess( const sofa::helper::vector<unsigned int> &indices,
+            const bool removeIsolatedItems=false);
+
+    /** \brief Add some points to this topology.
+    *
+    * Use a list of ancestors to create the new points.
+    * Last parameter baryCoefs defines the coefficient used for the creation of the new points.
+    * Default value for these coefficient (when none is defined) is 1/n with n being the number of ancestors
+    * for the point being created.
+    * Important : the points are actually added to the mechanical object's state vectors iff (addDOF == true)
+    *
+    * \sa addPointsWarning
+    */
+    virtual void addPointsProcess(const unsigned int nPoints, const bool addDOF = true);
+
+    /** \brief Add some points to this topology.
+     *
+     * Use a list of ancestors to create the new points.
+     * Last parameter baryCoefs defines the coefficient used for the creation of the new points.
+     * Default value for these coefficient (when none is defined) is 1/n with n being the number of ancestors
+     * for the point being created.
+     * Important : the points are actually added to the mechanical object's state vectors iff (addDOF == true)
+     *
+     * \sa addPointsWarning
+     */
+    virtual void addPointsProcess(const unsigned int nPoints,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
+            const bool addDOF = true);
+
+    /** \brief Add a new point (who has no ancestors) to this topology.
+     *
+     * \sa addPointsWarning
+     */
+    virtual void addNewPoint(unsigned int i,  const sofa::helper::vector< double >& x);
+
+    /** \brief Remove a subset of points
+     *
+     * Elements corresponding to these points are removed from the mechanical object's state vectors.
+     *
+     * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
+     * \sa removePointsWarning
+     * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
+     */
+    virtual void removePointsProcess(sofa::helper::vector<unsigned int> &indices,
+            const bool removeDOF = true);
+
+    /** \brief Reorder this topology.
+     *
+     * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
+     * \see MechanicalObject::renumberValues
+     */
+    virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index,
+            const sofa::helper::vector<unsigned int> &inv_index,
+            const bool renumberDOF = true);
+
+    //protected:
+    /** \brief Load a triangle.
+     */
+    void addTriangle(Triangle e);
+
+};
+
+/** Object that stores a set of triangles and provides access
+to each triangle and its edges and vertices */
+class TriangleSetTopologyContainer : public EdgeSetTopologyContainer
+{
+    template< typename DataTypes >
+    friend class TriangleSetTopologyModifier;
+
+public:
+    TriangleSetTopologyContainer(core::componentmodel::topology::BaseTopology *top=NULL);
+
+    TriangleSetTopologyContainer(core::componentmodel::topology::BaseTopology *top,
+            const sofa::helper::vector< Triangle > &triangles );
+
+    virtual ~TriangleSetTopologyContainer() {}
+
+    template< typename DataTypes >
+    TriangleSetTopology< DataTypes >* getTriangleSetTopology() const
+    {
+        return static_cast<TriangleSetTopology< DataTypes >* > (this->m_basicTopology);
+    }
+
+    /** \brief Returns the Triangle array.
+    *
+    */
+    const sofa::helper::vector<Triangle> &getTriangleArray();
+
+    /** \brief Returns the Triangle Vertex Shells array.
+    *
+    */
+    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getTriangleVertexShellArray();
+
+    /** \brief Returns the TriangleEdges array (ie provide the 3 edge indices for each triangle)
+    *
+    */
+    const sofa::helper::vector< TriangleEdges > &getTriangleEdgeArray() ;
+
+    /** \brief Returns the Triangle Edge Shells array (ie provides the triangles adjacent to each edge)
+    *
+    */
+    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getTriangleEdgeShellArray() ;
+
+    /** \brief Returns the ith Triangle.
+    *
+    */
+    const Triangle &getTriangle(const unsigned int i);
+
+    /** \brief Returns the number of triangles in this topology.
+    *
+    */
+    unsigned int getNumberOfTriangles() ;
+
+    /** \brief Returns the set of triangles adjacent to a given vertex.
+    *
+    */
+    const sofa::helper::vector< unsigned int > &getTriangleVertexShell(const unsigned int i) ;
+
+
+    /** \brief Returns the 3 edges adjacent to a given triangle.
+    *
+    */
+    const TriangleEdges &getTriangleEdge(const unsigned int i) ;
+
+
+    /** \brief Returns the set of triangles adjacent to a given edge.
+    *
+    */
+    const sofa::helper::vector< unsigned int > &getTriangleEdgeShell(const unsigned int i) ;
+
+    /** Returns the indices of a triangle given three vertex indices : returns -1 if none */
+    int getTriangleIndex(const unsigned int v1, const unsigned int v2, const unsigned int v3);
+
+
+    /** returns the index (either 0, 1 ,2) of the vertex whose global index is vertexIndex. Returns -1 if none */
+    int getVertexIndexInTriangle(const Triangle &t,const unsigned int vertexIndex) const;
+
+    /** returns the index (either 0, 1 ,2) of the edge whose global index is edgeIndex. Returns -1 if none */
+    int getEdgeIndexInTriangle(const TriangleEdges &t,const unsigned int edgeIndex) const;
+
+    /** \brief Checks if the Triangle Set Topology is coherent
+    *
+    * Check if the Triangle and the Triangle Shell arrays are coherent
+    */
+    virtual bool checkTopology() const;
+
+    inline friend std::ostream& operator<< (std::ostream& out, const TriangleSetTopologyContainer& t)
+    {
+        out << t.m_triangle.size() << " " << t.m_triangle << " "
+            << t.m_triangleEdge.size() << " " << t.m_triangleEdge << " "
+            << t.m_triangleVertexShell.size();
+        for (unsigned int i=0; i<t.m_triangleVertexShell.size(); i++)
+        {
+            out << " " << t.m_triangleVertexShell[i].size();
+            out << " " <<t.m_triangleVertexShell[i] ;
+        }
+        out  << " " << t.m_triangleEdgeShell.size();
+        for (unsigned int i=0; i<t.m_triangleEdgeShell.size(); i++)
+        {
+            out  << " " << t.m_triangleEdgeShell[i].size();
+            out  << " " << t.m_triangleEdgeShell[i];
+        }
+
+        return out;
+    }
+
+    /// Needed to be compliant with Datas.
+    inline friend std::istream& operator>>(std::istream& in, TriangleSetTopologyContainer& t)
+    {
+        unsigned int s;
+        in >> s;
+        for (unsigned int i=0; i<s; i++)
+        {
+            Triangle T; in >> T;
+            t.m_triangle.push_back(T);
+        }
+        in >> s;
+        for (unsigned int i=0; i<s; i++)
+        {
+            TriangleEdges T; in >> T;
+            t.m_triangleEdge.push_back(T);
+        }
+
+        unsigned int sub;
+        in >> s;
+        for (unsigned int i=0; i<s; i++)
+        {
+            in >> sub;
+            sofa::helper::vector< unsigned int > v;
+            for (unsigned int j=0; j<sub; j++)
+            {
+                unsigned int value;
+                in >> value;
+                v.push_back(value);
+            }
+            t.m_triangleVertexShell.push_back(v);
+        }
+
+        in >> s;
+        for (unsigned int i=0; i<s; i++)
+        {
+            in >> sub;
+            sofa::helper::vector< unsigned int > v;
+            for (unsigned int j=0; j<sub; j++)
+            {
+                unsigned int value;
+                in >> value;
+                v.push_back(value);
+            }
+            t.m_triangleEdgeShell.push_back(v);
+        }
+
+        return in;
+    }
+
+protected:
+    /** \brief Creates the TriangleSet array.
+    *
+    * This function must be implemented by derived classes to create a list of triangles from a set of tetrahedra for instance
+    */
+    virtual void createTriangleSetArray();
+
+    /** \brief Creates the EdgeSet array.
+    *
+    * Create the set of edges when needed.
+    */
+    virtual void createEdgeSetArray();
+
+    bool hasTriangles() const;
+
+    bool hasTriangleEdges() const;
+
+    bool hasTriangleVertexShell() const;
+
+    bool hasTriangleEdgeShell() const;
+
+    void clearTriangles();
+
+    void clearTriangleEdges();
+
+    void clearTriangleVertexShell();
+
+    void clearTriangleEdgeShell();
+
+private:
+    /** \brief Creates the array of edge indices for each triangle
+    *
+    * This function is only called if the TriangleEdge array is required.
+    * m_triangleEdge[i] contains the 3 indices of the 3 edges opposite to the ith vertex
+    */
+    void createTriangleEdgeArray();
+    /** \brief Creates the Triangle Vertex Shell Array
+    *
+    * This function is only called if the TriangleVertexShell array is required.
+    * m_triangleVertexShell[i] contains the indices of all triangles adjacent to the ith vertex
+    */
+    void createTriangleVertexShellArray();
+
+    /** \brief Creates the Triangle Edge Shell Array
+    *
+    * This function is only called if the TriangleVertexShell array is required.
+    * m_triangleEdgeShell[i] contains the indices of all triangles adjacent to the ith edge
+    */
+    void createTriangleEdgeShellArray();
+
+    /** \brief Returns a non-const triangle vertex shell given a vertex index for subsequent modification
+    *
+    */
+    sofa::helper::vector< unsigned int > &getTriangleVertexShellForModification(const unsigned int vertexIndex);
+    /** \brief Returns a non-const triangle edge shell given the index of an edge for subsequent modification
+    *
+    */
+    sofa::helper::vector< unsigned int > &getTriangleEdgeShellForModification(const unsigned int edgeIndex);
+
+protected:
+    /// provides the set of triangles
+    sofa::helper::vector<Triangle> m_triangle;
+    /// provides the 3 edges in each triangle
+    sofa::helper::vector<TriangleEdges> m_triangleEdge;
+    /// for each vertex provides the set of triangles adjacent to that vertex
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > m_triangleVertexShell;
+    /// for each edge provides the set of triangles adjacent to that edge
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > m_triangleEdgeShell;
+};
+
+/////////////////////////////////////////////////////////
+/// TopologyChange subclasses
+/////////////////////////////////////////////////////////
+
+/** indicates that some triangles were added */
+class TrianglesAdded : public core::componentmodel::topology::TopologyChange
+{
+public:
+    TrianglesAdded(const unsigned int nT)
+        : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::TRIANGLESADDED),
+          nTriangles(nT)
+    { }
+
+    TrianglesAdded(const unsigned int nT,
+            const sofa::helper::vector< Triangle >& _triangleArray,
+            const sofa::helper::vector< unsigned int >& trianglesIndex)
+        : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::TRIANGLESADDED),
+          nTriangles(nT),
+          triangleArray(_triangleArray),
+          triangleIndexArray(trianglesIndex)
+    { }
+
+    TrianglesAdded(const unsigned int nT,
+            const sofa::helper::vector< Triangle >& _triangleArray,
+            const sofa::helper::vector< unsigned int >& trianglesIndex,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
+        : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::TRIANGLESADDED),
+          nTriangles(nT),
+          triangleArray(_triangleArray),
+          triangleIndexArray(trianglesIndex),
+          ancestorsList(ancestors),
+          coefs(baryCoefs)
+    { }
+
+    unsigned int getNbAddedTriangles() const
+    {
+        return nTriangles;
+    }
+
+    const sofa::helper::vector<unsigned int> &getArray() const
+    {
+        return triangleIndexArray;
+    }
+
+    const Triangle &getTriangle(const unsigned int i)
+    {
+        return triangleArray[i];
+    }
+
+public:
+    unsigned int nTriangles;
+    sofa::helper::vector< Triangle > triangleArray;
+    sofa::helper::vector< unsigned int > triangleIndexArray;
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestorsList;
+    sofa::helper::vector< sofa::helper::vector< double > > coefs;
+};
+
+/** indicates that some triangles are about to be removed */
+class TrianglesRemoved : public core::componentmodel::topology::TopologyChange
+{
+public:
+    TrianglesRemoved(const sofa::helper::vector<unsigned int> _tArray)
+        : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::TRIANGLESREMOVED),
+          removedTrianglesArray(_tArray)
+    {}
+
+    unsigned int getNbRemovedTriangles() const
+    {
+        return removedTrianglesArray.size();
+    }
+
+    const sofa::helper::vector<unsigned int> &getArray() const
+    {
+        return removedTrianglesArray;
+    }
+
+    unsigned int &getTriangleIndices(const unsigned int i)
+    {
+        return removedTrianglesArray[i];
+    }
+
+protected:
+    sofa::helper::vector<unsigned int> removedTrianglesArray;
+};
+
+} // namespace topology
+
+} // namespace component
+
+} // namespace sofa
+
+#endif
