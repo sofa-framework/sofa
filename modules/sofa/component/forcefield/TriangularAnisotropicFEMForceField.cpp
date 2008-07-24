@@ -129,7 +129,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     Q11 = Inherited::f_young.getValue()/(1-Inherited::f_poisson.getValue()*f_poisson2.getValue());
     Q12 = Inherited::f_poisson.getValue()*f_young2.getValue()/(1-Inherited::f_poisson.getValue()*f_poisson2.getValue());
     Q22 = f_young2.getValue()/(1-Inherited::f_poisson.getValue()*f_poisson2.getValue());
-    Q66 = Inherited::f_young.getValue() / (2.0*(1 + Inherited::f_poisson.getValue()));
+    Q66 = (Real)(Inherited::f_young.getValue() / (2.0*(1 + Inherited::f_poisson.getValue())));
 
     Mat<3,3,Real> bary,baryInv;
     bary[0] = (*Inherited::_initialPoints)[v2]-(*Inherited::_initialPoints)[v1];

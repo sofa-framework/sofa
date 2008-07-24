@@ -1027,7 +1027,7 @@ void VisualModelImpl::handleTopologyChange()
                                 bool is_in_shell = false;
                                 for (unsigned int j_glob=0; j_glob<shell.size(); ++j_glob)
                                 {
-                                    is_in_shell = is_in_shell || (shell[j_glob] == ind_forgotten);
+                                    is_in_shell = is_in_shell || ((int)shell[j_glob] == ind_forgotten);
                                 }
 
                                 if(!is_in_shell)
