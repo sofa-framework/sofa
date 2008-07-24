@@ -144,7 +144,7 @@ The mapping is one-way and the mapped DOFs have no mechanical influence.
 
 The \texttt{SphereModel} class derives from \texttt{MechanicalObject}, with an additional radius value. 
 It also derives from \texttt{CollisionModel}, which allows it to be processed by the collision detection and modeling pipeline. 
-When contact or mouse interaction forces are applied to the spheres, the forces are propagated bottom-up to their parent DOFs by the mapping. 
+When contact or mouse interaction forces are applied to the spheres, the forces are propagated bottom-up to their parent DOFs by the mapping (see section~\ref{sec:mappings}). 
 This allows the contact forces to be taken into account in the dynamics equations. 
 The mapping is thus two-ways and derives from \texttt{MechanicalMapping} instead of \texttt{Mapping}. 
 This is why it has a different color in the image of the scene graph.
