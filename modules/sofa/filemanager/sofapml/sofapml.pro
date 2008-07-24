@@ -13,7 +13,7 @@ HEADERS += PMLBody.h \
            PMLRigidBody.h \
            PMLFemForceField.h \
            PMLStiffSpringForceField.h \
-	     PMLInteractionForceField.h \
+           PMLInteractionForceField.h \
            PMLMappedBody.h \
            PMLReader.h \
            LMLConstraint.h \
@@ -27,7 +27,7 @@ SOURCES = 	PMLBody.cpp \
            PMLRigidBody.cpp \
            PMLFemForceField.cpp \
            PMLStiffSpringForceField.cpp \
-	     PMLInteractionForceField.cpp \
+           PMLInteractionForceField.cpp \
            PMLMappedBody.cpp \
            PMLReader.cpp \
            LMLConstraint.cpp \
