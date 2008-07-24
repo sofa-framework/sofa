@@ -22,19 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/topology/ManifoldEdgeSetTopology.h>
-#include <sofa/component/topology/ManifoldEdgeSetTopology.inl>
 
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/component/topology/ManifoldEdgeSetTopologyContainer.h>
 
 // Use BOOST GRAPH LIBRARY :
 
 #include <boost/config.hpp>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 #include <utility>
 
 #include <boost/graph/adjacency_list.hpp>
@@ -52,80 +47,8 @@ namespace component
 namespace topology
 {
 
+using namespace std;
 using namespace sofa::defaulttype;
-
-SOFA_DECL_CLASS(ManifoldEdgeSetTopology)
-
-// factory related stuff
-
-int ManifoldEdgeSetTopologyClass = core::RegisterObject("Manofold Edge set topology")
-#ifndef SOFA_FLOAT
-        .add< ManifoldEdgeSetTopology<Vec3dTypes> >()
-        .add< ManifoldEdgeSetTopology<Vec2dTypes> >()
-        .add< ManifoldEdgeSetTopology<Vec1dTypes> >()
-        .add< ManifoldEdgeSetTopology<Rigid3dTypes> >()
-        .add< ManifoldEdgeSetTopology<Rigid2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< ManifoldEdgeSetTopology<Vec3fTypes> >()
-        .add< ManifoldEdgeSetTopology<Vec2fTypes> >()
-        .add< ManifoldEdgeSetTopology<Vec1fTypes> >()
-        .add< ManifoldEdgeSetTopology<Rigid3fTypes> >()
-        .add< ManifoldEdgeSetTopology<Rigid2fTypes> >()
-#endif
-        ;
-
-#ifndef SOFA_FLOAT
-template class ManifoldEdgeSetTopology<Vec3dTypes>;
-template class ManifoldEdgeSetTopology<Vec2dTypes>;
-template class ManifoldEdgeSetTopology<Vec1dTypes>;
-template class ManifoldEdgeSetTopology<Rigid3dTypes>;
-template class ManifoldEdgeSetTopology<Rigid2dTypes>;
-
-
-template class ManifoldEdgeSetTopologyAlgorithms<Vec3dTypes>;
-template class ManifoldEdgeSetTopologyAlgorithms<Vec2dTypes>;
-template class ManifoldEdgeSetTopologyAlgorithms<Vec1dTypes>;
-template class ManifoldEdgeSetTopologyAlgorithms<Rigid3dTypes>;
-template class ManifoldEdgeSetTopologyAlgorithms<Rigid2dTypes>;
-
-
-template class ManifoldEdgeSetGeometryAlgorithms<Vec3dTypes>;
-template class ManifoldEdgeSetGeometryAlgorithms<Vec2dTypes>;
-template class ManifoldEdgeSetGeometryAlgorithms<Vec1dTypes>;
-
-template class ManifoldEdgeSetTopologyModifier<Vec3dTypes>;
-template class ManifoldEdgeSetTopologyModifier<Vec2dTypes>;
-template class ManifoldEdgeSetTopologyModifier<Vec1dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class ManifoldEdgeSetTopology<Vec3fTypes>;
-template class ManifoldEdgeSetTopology<Vec2fTypes>;
-template class ManifoldEdgeSetTopology<Vec1fTypes>;
-template class ManifoldEdgeSetTopology<Rigid3fTypes>;
-template class ManifoldEdgeSetTopology<Rigid2fTypes>;
-
-
-template class ManifoldEdgeSetTopologyAlgorithms<Vec3fTypes>;
-template class ManifoldEdgeSetTopologyAlgorithms<Vec2fTypes>;
-template class ManifoldEdgeSetTopologyAlgorithms<Vec1fTypes>;
-template class ManifoldEdgeSetTopologyAlgorithms<Rigid3fTypes>;
-template class ManifoldEdgeSetTopologyAlgorithms<Rigid2fTypes>;
-
-
-template class ManifoldEdgeSetGeometryAlgorithms<Vec3fTypes>;
-template class ManifoldEdgeSetGeometryAlgorithms<Vec2fTypes>;
-template class ManifoldEdgeSetGeometryAlgorithms<Vec1fTypes>;
-
-template class ManifoldEdgeSetGeometryAlgorithms<Rigid3fTypes>;
-template class ManifoldEdgeSetGeometryAlgorithms<Rigid2fTypes>;
-
-template class ManifoldEdgeSetTopologyModifier<Vec3fTypes>;
-template class ManifoldEdgeSetTopologyModifier<Vec2fTypes>;
-template class ManifoldEdgeSetTopologyModifier<Vec1fTypes>;
-#endif
-
-// ManifoldEdgeSetTopologyContainer implementation
 
 ManifoldEdgeSetTopologyContainer::ManifoldEdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top)
     : EdgeSetTopologyContainer( top )

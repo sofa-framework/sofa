@@ -23,10 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/topology/HexahedronSetTopology.h>
-#include <sofa/component/topology/HexahedronSetTopology.inl>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/component/topology/HexahedronSetTopologyContainer.h>
 
 namespace sofa
 {
@@ -34,61 +31,10 @@ namespace component
 {
 namespace topology
 {
+using namespace std;
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(HexahedronSetTopology)
-
-int HexahedronSetTopologyClass = core::RegisterObject("Hexahedron set topology")
-
-#ifndef SOFA_FLOAT
-        .add< HexahedronSetTopology<Vec3dTypes> >()
-        .add< HexahedronSetTopology<Vec2dTypes> >()
-        .add< HexahedronSetTopology<Vec1dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< HexahedronSetTopology<Vec3fTypes> >()
-        .add< HexahedronSetTopology<Vec2fTypes> >()
-        .add< HexahedronSetTopology<Vec1fTypes> >()
-#endif
-        ;
-
-#ifndef SOFA_FLOAT
-template class HexahedronSetTopology<Vec3dTypes>;
-template class HexahedronSetTopology<Vec2dTypes>;
-template class HexahedronSetTopology<Vec1dTypes>;
-
-template class HexahedronSetTopologyAlgorithms<Vec3dTypes>;
-template class HexahedronSetTopologyAlgorithms<Vec2dTypes>;
-template class HexahedronSetTopologyAlgorithms<Vec1dTypes>;
-
-template class HexahedronSetGeometryAlgorithms<Vec3dTypes>;
-template class HexahedronSetGeometryAlgorithms<Vec2dTypes>;
-template class HexahedronSetGeometryAlgorithms<Vec1dTypes>;
-
-template class HexahedronSetTopologyModifier<Vec3dTypes>;
-template class HexahedronSetTopologyModifier<Vec2dTypes>;
-template class HexahedronSetTopologyModifier<Vec1dTypes>;
-#endif
-
-#ifndef SOFA_DOUBLE
-template class HexahedronSetTopology<Vec3fTypes>;
-template class HexahedronSetTopology<Vec2fTypes>;
-template class HexahedronSetTopology<Vec1fTypes>;
-
-template class HexahedronSetTopologyAlgorithms<Vec3fTypes>;
-template class HexahedronSetTopologyAlgorithms<Vec2fTypes>;
-template class HexahedronSetTopologyAlgorithms<Vec1fTypes>;
-
-template class HexahedronSetGeometryAlgorithms<Vec3fTypes>;
-template class HexahedronSetGeometryAlgorithms<Vec2fTypes>;
-template class HexahedronSetGeometryAlgorithms<Vec1fTypes>;
-
-template class HexahedronSetTopologyModifier<Vec3fTypes>;
-template class HexahedronSetTopologyModifier<Vec2fTypes>;
-template class HexahedronSetTopologyModifier<Vec1fTypes>;
-#endif
-
-// HexahedronSetTopologyContainer implementation
+const unsigned int hexahedronEdgeArray[12][2]= {{0,1},{0,3},{0,4},{1,2},{1,5},{2,3},{2,6},{3,7},{4,5},{4,7},{5,6},{6,7}};
 
 HexahedronSetTopologyContainer::HexahedronSetTopologyContainer(core::componentmodel::topology::BaseTopology *top)
     : QuadSetTopologyContainer(top)

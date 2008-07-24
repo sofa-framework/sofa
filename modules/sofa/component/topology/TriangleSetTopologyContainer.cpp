@@ -22,10 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/topology/TriangleSetTopology.h>
-#include <sofa/component/topology/TriangleSetTopology.inl>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/component/topology/TriangleSetTopologyContainer.h>
 
 namespace sofa
 {
@@ -35,60 +32,8 @@ namespace component
 
 namespace topology
 {
+using namespace std;
 using namespace sofa::defaulttype;
-
-SOFA_DECL_CLASS(TriangleSetTopology)
-
-int TriangleSetTopologyClass = core::RegisterObject("Triangle set topology")
-#ifndef SOFA_FLOAT
-        .add< TriangleSetTopology<Vec3dTypes> >()
-        .add< TriangleSetTopology<Vec2dTypes> >()
-        .add< TriangleSetTopology<Vec1dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TriangleSetTopology<Vec3fTypes> >()
-        .add< TriangleSetTopology<Vec2fTypes> >()
-        .add< TriangleSetTopology<Vec1fTypes> >()
-#endif
-        ;
-
-#ifndef SOFA_FLOAT
-template class TriangleSetTopology<Vec3dTypes>;
-template class TriangleSetTopology<Vec2dTypes>;
-template class TriangleSetTopology<Vec1dTypes>;
-
-template class TriangleSetTopologyAlgorithms<Vec3dTypes>;
-template class TriangleSetTopologyAlgorithms<Vec2dTypes>;
-template class TriangleSetTopologyAlgorithms<Vec1dTypes>;
-
-template class TriangleSetGeometryAlgorithms<Vec3dTypes>;
-template class TriangleSetGeometryAlgorithms<Vec2dTypes>;
-template class TriangleSetGeometryAlgorithms<Vec1dTypes>;
-
-template class TriangleSetTopologyModifier<Vec3dTypes>;
-template class TriangleSetTopologyModifier<Vec2dTypes>;
-template class TriangleSetTopologyModifier<Vec1dTypes>;
-#endif
-
-#ifndef SOFA_DOUBLE
-template class TriangleSetTopology<Vec3fTypes>;
-template class TriangleSetTopology<Vec2fTypes>;
-template class TriangleSetTopology<Vec1fTypes>;
-
-template class TriangleSetTopologyAlgorithms<Vec3fTypes>;
-template class TriangleSetTopologyAlgorithms<Vec2fTypes>;
-template class TriangleSetTopologyAlgorithms<Vec1fTypes>;
-
-template class TriangleSetGeometryAlgorithms<Vec3fTypes>;
-template class TriangleSetGeometryAlgorithms<Vec2fTypes>;
-template class TriangleSetGeometryAlgorithms<Vec1fTypes>;
-
-template class TriangleSetTopologyModifier<Vec3fTypes>;
-template class TriangleSetTopologyModifier<Vec2fTypes>;
-template class TriangleSetTopologyModifier<Vec1fTypes>;
-#endif
-
-// TriangleSetTopologyContainer implementation
 
 TriangleSetTopologyContainer::TriangleSetTopologyContainer(core::componentmodel::topology::BaseTopology *top )
     : EdgeSetTopologyContainer(top)
