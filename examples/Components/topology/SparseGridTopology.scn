@@ -11,7 +11,8 @@
 			n="6 5 4"
 			filename="mesh/dragon.obj"
 			/>
-		<Object type="CGImplicit" iterations="100"/>
+		<Object type="EulerImplicit" />                
+		<Object type="CGLinearSolver" iterations="100" />
 		<Object type="MechanicalObject" />
 		<Object type="UniformMass" mass="0.5"/>
 		<Object type="MeshSpringForceField" name="Springs" stiffness="500" damping="10" />
@@ -31,7 +32,8 @@
 			n="12 9 6"
 			filename="mesh/dragon.obj"
 		/>
-		<Object type="CGImplicit" iterations="100"/>
+		<Object type="EulerImplicit" />                
+		<Object type="CGLinearSolver" iterations="100" />
 		<Object type="MechanicalObject" dz="15"/>
 		<Object type="UniformMass" mass="0.5"/>
 		<Object type="MeshSpringForceField" name="Springs" stiffness="500" damping="10" />
@@ -51,7 +53,8 @@
 			nx="25 20 9"
 			filename="mesh/dragon.obj"
 			/>
-		<Object type="CGImplicit" iterations="100"/>
+		<Object type="EulerImplicit" />                
+		<Object type="CGLinearSolver" iterations="100" />
 		<Object type="MechanicalObject" dz="30"/>
 		<Object type="UniformMass" mass="0.5"/>
 		<Object type="MeshSpringForceField" name="Springs" stiffness="500" damping="10" />

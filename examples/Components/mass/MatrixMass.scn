@@ -11,7 +11,8 @@
 			n="2 2 2"
 			filename="mesh/dragon.obj"
 			/>
-		<Object type="CGImplicit" iterations="100"/>
+		<Object type="EulerImplicit" />                
+		<Object type="CGLinearSolver" iterations="100" />
 		<Object type="MechanicalObject" />
 		
 		<Object type="MatrixMass" defaultValue="3"/>

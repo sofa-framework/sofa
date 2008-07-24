@@ -4,7 +4,8 @@
 	<Object type="BruteForceDetection" name="N2" />
 	<Object type="CollisionResponse" name="Response" response="default" />
 	<Node name="M1">
-		<Object type="CGImplicit" iterations="100"/>
+		<Object type="EulerImplicit" />
+		<Object type="CGLinearSolver" iterations="100"/>
 		<Object type="MechanicalObject" filename="BehaviorModels/smCube27.xs3" dx="0" dy="-10.5" dz="0"/>
 		<Object type="DiagonalMass" filename="BehaviorModels/smCube27.xs3"/>
 		<Object type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3"/>
@@ -19,7 +20,8 @@
 		</Node>
 	</Node>
 	<Node name="M2">
-		<Object type="CGImplicit" iterations="100"/>
+		<Object type="EulerImplicit" />
+		<Object type="CGLinearSolver" iterations="100"/>
 		<Object type="MechanicalObject" template="Rigid" dx="4" dy="0" dz="0"/>
 		<Object type="UniformMass" filename="BehaviorModels/rigid.xs3"/>
 		<Node name="Points">
@@ -36,7 +38,8 @@
 		</Node>
 	</Node>
 	<Node name="M3">
-		<Object type="CGImplicit" iterations="100"/>
+		<Object type="EulerImplicit" />
+		<Object type="CGLinearSolver" iterations="100"/>
 		<Object type="MechanicalObject" filename="BehaviorModels/smCube27.xs3" dx="0" dy="10.5" dz="-4"/>
 		<Object type="DiagonalMass" filename="BehaviorModels/smCube27.xs3"/>
 		<Object type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3"/>
@@ -51,7 +54,8 @@
 		</Node>
 	</Node>
 	<Node name="M4">
-		<Object type="CGImplicit" iterations="100"/>
+		<Object type="EulerImplicit" />
+		<Object type="CGLinearSolver" iterations="100"/>
 		<Object type="MechanicalObject" template="Rigid" dx="0" dy="21" dz="0"/>
 		<Object type="UniformMass" filename="BehaviorModels/rigid.xs3"/>
 		<Node name="Points">
@@ -68,7 +72,8 @@
 		</Node>
 	</Node>
 	<Node name="M5">
-		<Object type="CGImplicit" iterations="100"/>
+		<Object type="EulerImplicit" />
+		<Object type="CGLinearSolver" iterations="100"/>
 		<Object type="MechanicalObject" filename="BehaviorModels/smCube27.xs3" dx="-4" dy="31.5" dz="-4"/>
 		<Object type="DiagonalMass" filename="BehaviorModels/smCube27.xs3"/>
 		<Object type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3"/>
@@ -83,7 +88,8 @@
 		</Node>
 	</Node>
 	<Node name="M6">
-		<Object type="CGImplicit" iterations="100"/>
+		<Object type="EulerImplicit" />
+		<Object type="CGLinearSolver" iterations="100"/>
 		<Object type="MechanicalObject" template="Rigid" dx="0" dy="45" dz="0"/>
 		<Object type="UniformMass" filename="BehaviorModels/rigid.xs3"/>
 		<Node name="Points">

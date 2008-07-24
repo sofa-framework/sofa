@@ -7,7 +7,8 @@
 	<Object type="CollisionGroup" />
 
 	<Node name="tshirt">
-		<Object type="CGImplicit" iterations="25"/>
+		<Object type="EulerImplicit" />
+		<Object type="CGLinearSolver" iterations="25"/>
 		<Object type="MechanicalObject" filename="BehaviorModels/tshirt_0.xs3" scale="10"/>
 		<Object type="DiagonalMass" filename="BehaviorModels/tshirt_0.xs3" />
 		<Object type="Mesh" filename="Topology/tshirt_0.mesh"/>

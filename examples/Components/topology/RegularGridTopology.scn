@@ -4,7 +4,8 @@
 	<Object type="CollisionResponse" response="default" />
 	
 	<Node name="LiverFFD-lowres">
-		<Object type="CGImplicit"/>
+		<Object type="EulerImplicit" />                
+		<Object type="CGLinearSolver" />
 		<Object type="MechanicalObject" />
 		<Object type="UniformMass" totalmass="100.0" />
 		<Object type="RegularGrid"
@@ -26,7 +27,8 @@
 	</Node>
 	
 	<Node name="LiverFFD-hires">
-		<Object type="CGImplicit"/>
+		<Object type="EulerImplicit" />                
+		<Object type="CGLinearSolver" />
 		<Object type="MechanicalObject" />
 		<Object type="UniformMass" totalmass="100.0" />
 		<Object type="RegularGrid"

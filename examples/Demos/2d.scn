@@ -1,5 +1,6 @@
 <Node dt="0.004" showBehaviorModels="1" showCollisionModels="1" showMappings="1" showForceFields="1" gravity="0 -10 0" >
-	<Object type="CGImplicit" iterations="25" />
+	<Object type="EulerImplicit" />
+	<Object type="CGLinearSolver" iterations="25" />
 	<Node name="Cube1">
 		<Object type="MechanicalObject" template="Rigid2d" position="0 10 0" velocity="0.1 1 -200" />
 		<Object type="UniformMass" mass="1 1 0.83333"/>

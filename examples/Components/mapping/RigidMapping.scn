@@ -12,7 +12,8 @@
 			<Object type="OglModel" name="Visual" filename="mesh/torus2.obj" color="gray" />
 		</Node>
 		<Node name="TorusRigid">
-			<Object type="CGImplicit" iterations="25" threshold="0.000000000001" tolerance="0.000001" rayleighStiffness="0.1" rayleighMass="0" />
+			<Object type="EulerImplicit" />
+			<Object type="CGLinearSolver" iterations="25" threshold="0.000000000001" tolerance="0.000001" rayleighStiffness="0.1" rayleighMass="0" />
 			<Object type="MechanicalObject" template="Rigid" dx="2.5" />
 			<Object type="UniformMass"  />
 			<Node name="Visu">
@@ -27,7 +28,8 @@
 			</Node>
 		</Node>
 		<Node name="TorusRigid">
-			<Object type="CGImplicit" iterations="25" threshold="0.000000000001" tolerance="0.000001" rayleighStiffness="0.1" rayleighMass="0" />
+			<Object type="EulerImplicit" />
+			<Object type="CGLinearSolver" iterations="25" threshold="0.000000000001" tolerance="0.000001" rayleighStiffness="0.1" rayleighMass="0" />
 			<Object type="MechanicalObject" template="Rigid" dx="5" />
 			<Object type="UniformMass"  />
 			<Node name="Visu">
@@ -42,7 +44,8 @@
 			</Node>
 		</Node>
 		<Node name="TorusRigid">
-			<Object type="CGImplicit" iterations="25" threshold="0.000000000001" tolerance="0.000001" rayleighStiffness="0.1" rayleighMass="0" />
+			<Object type="EulerImplicit" />
+			<Object type="CGLinearSolver" iterations="25" threshold="0.000000000001" tolerance="0.000001" rayleighStiffness="0.1" rayleighMass="0" />
 			<Object type="MechanicalObject" template="Rigid" dx="7.5" />
 			<Object type="UniformMass"  />
 			<Node name="Visu">
@@ -57,7 +60,8 @@
 			</Node>
 		</Node>
 		<Node name="TorusRigid">
-			<Object type="CGImplicit" iterations="25" threshold="0.000000000001" tolerance="0.000001" rayleighStiffness="0.1" rayleighMass="0" />
+			<Object type="EulerImplicit" />
+			<Object type="CGLinearSolver" iterations="25" threshold="0.000000000001" tolerance="0.000001" rayleighStiffness="0.1" rayleighMass="0" />
 			<Object type="MechanicalObject" template="Rigid" dx="10" />
 			<Object type="UniformMass"/>
 			<Node name="Visu">

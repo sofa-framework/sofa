@@ -3,7 +3,8 @@
 	<Object type="CollisionPipeline" verbose="0" />
 	<Object type="BruteForceDetection" name="N2" draw="1" />
 	<Node name="Poutre1">
-		<Object type="CGImplicit" iterations="10"/>
+		<Object type="EulerImplicit" />
+		<Object type="CGLinearSolver" iterations="10"/>
 		<Node name="M1">
 			<Object type="MechanicalObject" filename="BehaviorModels/smCube27.xs3" dz="-21.0"/>
 			<Object type="DiagonalMass" filename="BehaviorModels/smCube27.xs3"/>

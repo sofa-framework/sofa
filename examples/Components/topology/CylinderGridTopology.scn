@@ -4,7 +4,8 @@
 		<Object type="OglModel" filename="mesh/truthcylinder1-bent.obj" scale="0.95" dx="0" dy="-1" dz="0" color="green" />
 	</Node>
 	<Node name="CylinderFEMTetra">
-		<Object type="CGImplicit" iterations="25" rayleighStiffness="6" rayleighDamping="10" tolerance="0.000001"/>
+		<Object type="EulerImplicit" />                
+		<Object type="CGLinearSolver" iterations="25" rayleighStiffness="6" rayleighDamping="10" tolerance="0.000001"/>
 		<Object type="MechanicalObject" dx="-10" />
 		<Object type="UniformMass" totalmass="15" />
 		<Object type="CylinderGridTopology"
@@ -15,7 +16,8 @@
 		<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="1116" poissonRatio="0.3" method="polar" />
 	</Node>
 	<Node name="CylinderFEM">
-		<Object type="CGImplicit" iterations="25" rayleighStiffness="6" rayleighDamping="10" tolerance="0.000001"/>
+		<Object type="EulerImplicit" />                
+		<Object type="CGLinearSolver" iterations="25" rayleighStiffness="6" rayleighDamping="10" tolerance="0.000001"/>
 		<Object type="MechanicalObject" />
 		<Object type="UniformMass" totalmass="15" />
 		<Object type="CylinderGridTopology"
@@ -30,7 +32,8 @@
 		<Object type="HexahedronFEMForceField" name="FEM" youngModulus="1116" poissonRatio="0.3" method="large" />
 	</Node>
 	<Node name="CylinderSpring">
-		<Object type="CGImplicit" iterations="25" rayleighStiffness="6" rayleighDamping="10" tolerance="0.000001"/>
+		<Object type="EulerImplicit" />                
+		<Object type="CGLinearSolver" iterations="25" rayleighStiffness="6" rayleighDamping="10" tolerance="0.000001"/>
 		<Object type="MechanicalObject" dx="10" />
 		<Object type="UniformMass" totalmass="15" />
 		<Object type="CylinderGridTopology"
