@@ -27,7 +27,6 @@
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/component/contextobject/CoordinateSystem.h>
-#include <sofa/component/odesolver/EulerSolver.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/gui/SofaGUI.h>
@@ -44,9 +43,11 @@
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/topology/RegularGridTopology.h>
 
-//Including Solvers
-#include <sofa/component/odesolver/CGImplicitSolver.h>
 
+//Including Solvers
+#include <sofa/component/odesolver/EulerImplicitSolver.h>
+#include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <sofa/simulation/common/MatrixLinearSolver.h>
 
 #include <sofa/component/visualmodel/OglModel.h>
 
@@ -58,7 +59,11 @@ using sofa::component::visualmodel::OglModel;
 using namespace sofa::simulation::tree;
 using namespace sofa::component::collision;
 using namespace sofa::component::topology;
-using sofa::component::odesolver::CGImplicitSolver;
+using sofa::component::odesolver::EulerImplicitSolver;
+using sofa::component::linearsolver::CGLinearSolver;
+using sofa::simulation::GraphScatteredMatrix;
+using sofa::simulation::GraphScatteredVector;
+typedef CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector> CGLinearSolverGraph;
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
@@ -147,14 +152,19 @@ int main(int argc, char** argv)
     torusFEM->setName("FEM");
     chain->addChild(torusFEM);
 
-    CGImplicitSolver* solverFEM = new CGImplicitSolver;
-    solverFEM->setName("Conjugate Gradient Implicit");
-    solverFEM->f_maxIter.setValue(20); //iteration maxi for the CG
-    solverFEM->f_smallDenominatorThreshold.setValue(0.000001);
-    solverFEM->f_tolerance.setValue(0.001);
+    EulerImplicitSolver* solverFEM = new EulerImplicitSolver;
+    CGLinearSolverGraph* linearFEM = new CGLinearSolverGraph;
+    solverFEM->setName("Euler Implicit");
     solverFEM->f_rayleighStiffness.setValue(0.01);
     solverFEM->f_rayleighMass.setValue(1);
+
+    solverFEM->setName("Conjugate Gradient");
+    linearFEM->f_maxIter.setValue(20); //iteration maxi for the CG
+    linearFEM->f_smallDenominatorThreshold.setValue(0.000001);
+    linearFEM->f_tolerance.setValue(0.001);
+
     torusFEM->addObject(solverFEM);
+    torusFEM->addObject(linearFEM);
 
     MeshTopology* meshTorusFEM = new MeshTopology;
     meshTorusFEM->load(sofa::helper::system::DataRepository.getFile("mesh/torus_low_res.msh").c_str());
@@ -216,14 +226,19 @@ int main(int argc, char** argv)
     torusSpring->setName("Spring");
     chain->addChild(torusSpring);
 
-    CGImplicitSolver* solverSpring = new CGImplicitSolver;
-    solverSpring->setName("Conjugate Gradient Implicit");
-    solverSpring->f_maxIter.setValue(20); //iteration maxi for the CG
-    solverSpring->f_smallDenominatorThreshold.setValue(0.000001);
-    solverSpring->f_tolerance.setValue(0.001);
+    EulerImplicitSolver* solverSpring = new EulerImplicitSolver;
+    CGLinearSolverGraph* linearSpring = new CGLinearSolverGraph;
+    solverSpring->setName("Euler Implicit");
     solverSpring->f_rayleighStiffness.setValue(0.01);
     solverSpring->f_rayleighMass.setValue(1);
+
+    linearSpring->setName("Conjugate Gradient");
+    linearSpring->f_maxIter.setValue(20); //iteration maxi for the CG
+    linearSpring->f_smallDenominatorThreshold.setValue(0.000001);
+    linearSpring->f_tolerance.setValue(0.001);
+
     torusSpring->addObject(solverSpring);
+    torusSpring->addObject(linearSpring);
 
     MeshTopology* meshTorusSpring = new MeshTopology;
     meshTorusSpring->load(sofa::helper::system::DataRepository.getFile("mesh/torus_low_res.msh").c_str());
@@ -283,14 +298,19 @@ int main(int argc, char** argv)
     torusFFD->setName("FFD");
     chain->addChild(torusFFD);
 
-    CGImplicitSolver* solverFFD = new CGImplicitSolver;
-    solverFFD->setName("Conjugate Gradient Implicit");
-    solverFFD->f_maxIter.setValue(20); //iteration maxi for the CG
-    solverFFD->f_smallDenominatorThreshold.setValue(0.000001);
-    solverFFD->f_tolerance.setValue(0.001);
+    EulerImplicitSolver* solverFFD = new EulerImplicitSolver;
+    CGLinearSolverGraph* linearFFD = new CGLinearSolverGraph;
+    solverFFD->setName("Euler Implicit");
     solverFFD->f_rayleighStiffness.setValue(0.01);
     solverFFD->f_rayleighMass.setValue(1);
+
+    linearFFD->setName("Conjugate Gradient");
+    linearFFD->f_maxIter.setValue(20); //iteration maxi for the CG
+    linearFFD->f_smallDenominatorThreshold.setValue(0.000001);
+    linearFFD->f_tolerance.setValue(0.001);
+
     torusFFD->addObject(solverFFD);
+    torusFFD->addObject(linearFFD);
 
     MechanicalObject3* dofFFD = new MechanicalObject3; dofFFD->setName("FFD Object");
     torusFFD->addObject(dofFFD);
@@ -353,14 +373,20 @@ int main(int argc, char** argv)
     torusRigid->setName("Rigid");
     chain->addChild(torusRigid);
 
-    CGImplicitSolver* solverRigid = new CGImplicitSolver;
-    solverRigid->setName("Conjugate Gradient Implicit");
-    solverRigid->f_maxIter.setValue(20); //iteration maxi for the CG
-    solverRigid->f_smallDenominatorThreshold.setValue(0.000001);
-    solverRigid->f_tolerance.setValue(0.001);
+
+    EulerImplicitSolver* solverRigid = new EulerImplicitSolver;
+    CGLinearSolverGraph* linearRigid = new CGLinearSolverGraph;
+    solverRigid->setName("Euler Implicit");
     solverRigid->f_rayleighStiffness.setValue(0.01);
     solverRigid->f_rayleighMass.setValue(1);
+
+    solverRigid->setName("Conjugate Gradient");
+    linearRigid->f_maxIter.setValue(20); //iteration maxi for the CG
+    linearRigid->f_smallDenominatorThreshold.setValue(0.000001);
+    linearRigid->f_tolerance.setValue(0.001);
+
     torusRigid->addObject(solverRigid);
+    torusRigid->addObject(linearRigid);
 
     MechanicalObjectRigid3* dofRigid = new MechanicalObjectRigid3; dofRigid->setName("Rigid Object");
     torusRigid->addObject(dofRigid);
