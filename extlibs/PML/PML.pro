@@ -8,6 +8,7 @@ include($${SOFA_DIR}/sofa.cfg)
 
 TARGET = physicalmodel$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES
+LIBS *= $$SOFA_LIBS
 
 # INCLUDEPATH += ./PhysicalProperties 
 
