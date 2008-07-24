@@ -97,7 +97,7 @@ void FixedConstraint<Rigid3dTypes>::draw()
             gl::glVertexT(x[i].getCenter());
     else
         for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-            gl::glVertexT(x[0].getCenter());
+            gl::glVertexT(x[*it].getCenter());
     glEnd();
 }
 
@@ -116,7 +116,7 @@ void FixedConstraint<Rigid2dTypes>::draw()
             gl::glVertexT(x[i].getCenter());
     else
         for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-            gl::glVertexT(x[0].getCenter());
+            gl::glVertexT(x[*it].getCenter());
     glEnd();
 }
 #endif
@@ -137,7 +137,7 @@ void FixedConstraint<Rigid3fTypes>::draw()
             gl::glVertexT(x[i].getCenter());
     else
         for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-            gl::glVertexT(x[0].getCenter());
+            gl::glVertexT(x[*it].getCenter());
     glEnd();
 }
 
@@ -156,7 +156,7 @@ void FixedConstraint<Rigid2fTypes>::draw()
             gl::glVertexT(x[i].getCenter());
     else
         for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-            gl::glVertexT(x[0].getCenter());
+            gl::glVertexT(x[*it].getCenter());
     glEnd();
 }
 #endif
