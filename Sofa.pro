@@ -11,14 +11,6 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 SUBDIRS += extlibs/qwt
 
-# PML
-	SUBDIRS += extlibs/PML
-	SUBDIRS += extlibs/LML
-!contains(DEFINES,SOFA_PML){
-	SUBDIRS -= extlibs/PML
-	SUBDIRS -= extlibs/LML
-}
-
 # FlowVR
 	SUBDIRS += extlibs/miniFlowVR
 contains(DEFINES,SOFA_HAVE_FLOWVR){
@@ -29,6 +21,14 @@ contains(DEFINES,SOFA_HAVE_FLOWVR){
 
 contains(DEFINES,SOFA_GUI_QGLVIEWER){
 	SUBDIRS += extlibs/libQGLViewer/QGLViewer
+}
+
+# PML
+	SUBDIRS += extlibs/PML
+	SUBDIRS += extlibs/LML
+!contains(DEFINES,SOFA_PML){
+	SUBDIRS -= extlibs/PML
+	SUBDIRS -= extlibs/LML
 }
 
 SUBDIRS += framework

@@ -8,7 +8,8 @@ include($${SOFA_DIR}/sofa.cfg)
 TARGET = load$$LIBSUFFIX
 TEMPLATE = lib
 CONFIG += $$CONFIGLIBRARIES
-LIBS *= $$SOFA_LIBS
+LIBS *= $$SOFA_EXT_LIBS
+LIBS -= -lload$$LIBSUFFIX
 
 # --------------- Sources --------------------
 SOURCES += Force.cpp \
