@@ -23,10 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/topology/TetrahedronSetTopology.h>
-#include <sofa/component/topology/TetrahedronSetTopology.inl>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
 
 namespace sofa
 {
@@ -36,62 +33,10 @@ namespace component
 
 namespace topology
 {
+const unsigned int tetrahedronEdgeArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
 
+using namespace std;
 using namespace sofa::defaulttype;
-
-SOFA_DECL_CLASS(TetrahedronSetTopology)
-
-int TetrahedronSetTopologyClass = core::RegisterObject("Tetrahedron set topology")
-#ifndef SOFA_FLOAT
-        .add< TetrahedronSetTopology<Vec3dTypes> >()
-        .add< TetrahedronSetTopology<Vec2dTypes> >()
-        .add< TetrahedronSetTopology<Vec1dTypes> >()
-#endif
-
-#ifndef SOFA_DOUBLE
-        .add< TetrahedronSetTopology<Vec3fTypes> >()
-        .add< TetrahedronSetTopology<Vec2fTypes> >()
-        .add< TetrahedronSetTopology<Vec1fTypes> >()
-#endif
-        ;
-
-#ifndef SOFA_FLOAT
-template class TetrahedronSetTopology<Vec3dTypes>;
-template class TetrahedronSetTopology<Vec2dTypes>;
-template class TetrahedronSetTopology<Vec1dTypes>;
-
-template class TetrahedronSetTopologyAlgorithms<Vec3dTypes>;
-template class TetrahedronSetTopologyAlgorithms<Vec2dTypes>;
-template class TetrahedronSetTopologyAlgorithms<Vec1dTypes>;
-
-template class TetrahedronSetGeometryAlgorithms<Vec3dTypes>;
-template class TetrahedronSetGeometryAlgorithms<Vec2dTypes>;
-template class TetrahedronSetGeometryAlgorithms<Vec1dTypes>;
-
-template class TetrahedronSetTopologyModifier<Vec3dTypes>;
-template class TetrahedronSetTopologyModifier<Vec2dTypes>;
-template class TetrahedronSetTopologyModifier<Vec1dTypes>;
-#endif
-
-#ifndef SOFA_DOUBLE
-template class TetrahedronSetTopology<Vec3fTypes>;
-template class TetrahedronSetTopology<Vec2fTypes>;
-template class TetrahedronSetTopology<Vec1fTypes>;
-
-template class TetrahedronSetTopologyAlgorithms<Vec3fTypes>;
-template class TetrahedronSetTopologyAlgorithms<Vec2fTypes>;
-template class TetrahedronSetTopologyAlgorithms<Vec1fTypes>;
-
-template class TetrahedronSetGeometryAlgorithms<Vec3fTypes>;
-template class TetrahedronSetGeometryAlgorithms<Vec2fTypes>;
-template class TetrahedronSetGeometryAlgorithms<Vec1fTypes>;
-
-template class TetrahedronSetTopologyModifier<Vec3fTypes>;
-template class TetrahedronSetTopologyModifier<Vec2fTypes>;
-template class TetrahedronSetTopologyModifier<Vec1fTypes>;
-#endif
-
-// TetrahedronSetTopologyContainer implementation
 
 TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer(core::componentmodel::topology::BaseTopology *top)
     : TriangleSetTopologyContainer( top)

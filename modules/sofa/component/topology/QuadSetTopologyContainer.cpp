@@ -23,10 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/topology/QuadSetTopology.h>
-#include <sofa/component/topology/QuadSetTopology.inl>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/component/topology/QuadSetTopologyContainer.h>
 
 namespace sofa
 {
@@ -34,62 +31,8 @@ namespace component
 {
 namespace topology
 {
-
+using namespace std;
 using namespace sofa::defaulttype;
-
-SOFA_DECL_CLASS(QuadSetTopology)
-
-int QuadSetTopologyClass = core::RegisterObject("Quad set topology")
-
-#ifndef SOFA_FLOAT
-        .add< QuadSetTopology<Vec3dTypes> >()
-        .add< QuadSetTopology<Vec2dTypes> >()
-        .add< QuadSetTopology<Vec1dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< QuadSetTopology<Vec3fTypes> >()
-        .add< QuadSetTopology<Vec2fTypes> >()
-        .add< QuadSetTopology<Vec1fTypes> >()
-#endif
-        ;
-
-#ifndef SOFA_FLOAT
-template class QuadSetTopology<Vec3dTypes>;
-template class QuadSetTopology<Vec2dTypes>;
-template class QuadSetTopology<Vec1dTypes>;
-
-template class QuadSetTopologyAlgorithms<Vec3dTypes>;
-template class QuadSetTopologyAlgorithms<Vec2dTypes>;
-template class QuadSetTopologyAlgorithms<Vec1dTypes>;
-
-template class QuadSetGeometryAlgorithms<Vec3dTypes>;
-template class QuadSetGeometryAlgorithms<Vec2dTypes>;
-template class QuadSetGeometryAlgorithms<Vec1dTypes>;
-
-template class QuadSetTopologyModifier<Vec3dTypes>;
-template class QuadSetTopologyModifier<Vec2dTypes>;
-template class QuadSetTopologyModifier<Vec1dTypes>;
-#endif
-
-#ifndef SOFA_DOUBLE
-template class QuadSetTopology<Vec3fTypes>;
-template class QuadSetTopology<Vec2fTypes>;
-template class QuadSetTopology<Vec1fTypes>;
-
-template class QuadSetTopologyAlgorithms<Vec3fTypes>;
-template class QuadSetTopologyAlgorithms<Vec2fTypes>;
-template class QuadSetTopologyAlgorithms<Vec1fTypes>;
-
-template class QuadSetGeometryAlgorithms<Vec3fTypes>;
-template class QuadSetGeometryAlgorithms<Vec2fTypes>;
-template class QuadSetGeometryAlgorithms<Vec1fTypes>;
-
-template class QuadSetTopologyModifier<Vec3fTypes>;
-template class QuadSetTopologyModifier<Vec2fTypes>;
-template class QuadSetTopologyModifier<Vec1fTypes>;
-#endif
-
-// QuadSetTopologyContainer implementation
 
 QuadSetTopologyContainer::QuadSetTopologyContainer(core::componentmodel::topology::BaseTopology *top )
     : EdgeSetTopologyContainer(top)
