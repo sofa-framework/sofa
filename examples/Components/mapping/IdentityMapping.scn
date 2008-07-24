@@ -11,7 +11,7 @@
 		<Object type="CGLinearSolver" iterations="25"/>
 		<Object type="MechanicalObject" filename="BehaviorModels/tshirt_0.xs3" scale="10"/>
 		<Object type="DiagonalMass" filename="BehaviorModels/tshirt_0.xs3" />
-		<Object type="Mesh" filename="Topology/tshirt_0.mesh"/>
+		<Object type="Mesh" filename="mesh/tshirt_0.mesh"/>
 		<Object type="FixedConstraint" indices="38 39 40 41 42 43 123 124 137"/>
 		<Object type="TriangleFEMForceField" name="FEM" youngModulus="50000" poissonRatio="0.3" method="large"/>
 		<Object type="Triangle" />

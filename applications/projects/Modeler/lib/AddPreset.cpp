@@ -67,10 +67,50 @@ typedef QButtonGroup Q3ButtonGroup;
 #endif
 
 
-AddPreset::AddPreset(  QWidget* parent , const char* name, bool , Qt::WFlags ):	DialogAddPreset(parent, name)
+AddPreset::AddPreset(  QWidget* parent , const char* name, bool *elementPresent, bool , Qt::WFlags ):	DialogAddPreset(parent, name)
 {
     this->setCaption(QString(sofa::helper::system::SetDirectory::GetFileName(name).c_str()));
     clear();
+
+    if (elementPresent != NULL)
+    {
+        if (!elementPresent[0])
+        {
+            openFileText0->hide();
+            openFilePath0->hide();
+            openFileButton0->hide();
+        }
+        else
+        {
+            openFileText0->show();
+            openFilePath0->show();
+            openFileButton0->show();
+        }
+        if (!elementPresent[1])
+        {
+            openFileText1->hide();
+            openFilePath1->hide();
+            openFileButton1->hide();
+        }
+        else
+        {
+            openFileText1->show();
+            openFilePath1->show();
+            openFileButton1->show();
+        }
+        if (!elementPresent[2])
+        {
+            openFileText2->hide();
+            openFilePath2->hide();
+            openFileButton2->hide();
+        }
+        else
+        {
+            openFileText2->show();
+            openFilePath2->show();
+            openFileButton2->show();
+        }
+    }
     //Make the connection between this widget and the parent
     connect( this, SIGNAL(loadPreset(GNode*,std::string,std::string*, std::string*,std::string*,std::string)),
             parent, SLOT(loadPreset(GNode*,std::string,std::string*, std::string*,std::string*,std::string)));

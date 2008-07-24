@@ -417,9 +417,22 @@ GNode *GraphModeler::loadNode(Q3ListViewItem* item, std::string filename)
 void GraphModeler::loadPreset(std::string presetName)
 {
 
+
+    xml::BaseElement* newXML = xml::loadFromFile (presetName.c_str() );
+    if (newXML == NULL) return;
+
+    xml::BaseElement::child_iterator<> it(newXML->begin());
+    bool elementPresent[3]= {false,false,false};
+    for (; it!=newXML->end(); ++it)
+    {
+        if (it->getType() == std::string("Mesh") || it->getType() == std::string("SparseGrid")) elementPresent[0] = true;
+        else if (it->getName() == std::string("VisualNode") || it->getType() == std::string("OglModel")) elementPresent[1] = true;
+        else if (it->getName() == std::string("CollisionNode")) elementPresent[2] = true;
+    }
+
     if (!DialogAdd)
     {
-        DialogAdd = new AddPreset(this,"AddPreset");
+        DialogAdd = new AddPreset(this,"AddPreset", elementPresent);
         DialogAdd->setPath(sofa::helper::system::DataRepository.getFirstPath());
     }
 
@@ -499,11 +512,11 @@ void GraphModeler::loadPreset(GNode *parent, std::string presetFile,
         }
     }
 
-    //Case of Fixed preset: the mesh initial corresponds to the collision model
-    if (!collisionNodeFound && meshMecha)
-    {
-        updatePresetNode(*meshMecha, filenames[2], translation, rotation, scale);
-    }
+// 	//Case of Fixed preset: the mesh initial corresponds to the collision model
+// 	if (!collisionNodeFound && meshMecha)
+// 	  {
+// 	    updatePresetNode(*meshMecha, filenames[2], translation, rotation, scale);
+// 	  }
 
 
     if (!newXML->init()) std::cerr<< "Objects initialization failed.\n";
