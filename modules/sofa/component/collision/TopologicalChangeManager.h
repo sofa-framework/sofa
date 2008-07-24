@@ -96,8 +96,8 @@ protected:
 private:
     bool incisionTriangleModel(sofa::core::CollisionElementIterator, Vector3&, bool, bool);
     /// Intermediate method to handle cutting
-    bool incisionTriangleSetTopology(topology::TriangleSetTopology< Vec3Types >*);
-    bool incisionTriangleSetTopology(sofa::core::CollisionElementIterator, Vector3&, bool, bool, topology::TriangleSetTopology< Vec3Types >*);
+    bool incisionTriangleSetTopology(sofa::core::componentmodel::topology::BaseMeshTopology*);
+    bool incisionTriangleSetTopology(sofa::core::CollisionElementIterator, Vector3&, bool, bool, sofa::core::componentmodel::topology::BaseMeshTopology*);
 
     void removeItemsFromTriangleModel(sofa::core::CollisionElementIterator) const;
     void removeItemsFromTriangleSetModel(sofa::core::CollisionElementIterator) const;
