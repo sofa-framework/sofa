@@ -1,7 +1,8 @@
 <!-- Mechanical+Visual Basic Example -->
 <Node name="root"  dt="0.01" showBehaviorModels="0" showCollisionModels="1" showMappings="0" showForceFields="1">
 	<Node name="Poutre1">
-		<Object type="CGImplicit" iterations="20"/>
+		<Object type="EulerImplicit" />
+		<Object type="CGLinearSolver" iterations="20"/>
 		<Node name="M1">
 			<Object type="MechanicalObject" filename="BehaviorModels/smCube27.xs3" dz="-21.0"/>
 			<Object type="DiagonalMass" filename="BehaviorModels/smCube27.xs3"/>

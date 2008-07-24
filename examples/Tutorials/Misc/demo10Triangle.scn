@@ -5,7 +5,8 @@
 	<Object type="CollisionResponse" name="Response" response="default" />
 	<Object type="CollisionGroup" name="Group" />
 	<Node name="M1">
-		<Object type="CGImplicit" iterations="100" threshold="0.000001" />
+		<Object type="EulerImplicit" />
+		<Object type="CGLinearSolver" iterations="100" threshold="0.000001" />
 		<Object type="MechanicalObject" dx="0" dy="-10.5" dz="0"/>
 		<Object type="UniformMass" mass="0.05"/>
 		<Object type="RegularGrid"
@@ -29,7 +30,8 @@
 		</Node>
 	</Node>
 	<Node name="M2">
-		<Object type="CGImplicit" iterations="100" threshold="0.000001" />
+		<Object type="EulerImplicit" />
+		<Object type="CGLinearSolver" iterations="100" threshold="0.000001" />
 		<Object type="MechanicalObject" dx="2" dy="0" dz="0"/>
 		<Object type="UniformMass" mass="0.05"/>
 		<Object type="RegularGrid"
@@ -53,7 +55,8 @@
 		</Node>
 	</Node>
 	<Node name="M3">
-		<Object type="CGImplicit" iterations="100" threshold="0.000001" />
+		<Object type="EulerImplicit" />
+		<Object type="CGLinearSolver" iterations="100" threshold="0.000001" />
 		<Object type="MechanicalObject" dx="0" dy="10.5" dz="-4"/>
 		<Object type="UniformMass" mass="0.05"/>
 		<Object type="RegularGrid"
@@ -77,7 +80,8 @@
 		</Node>
 	</Node>
 	<Node name="M4">
-		<Object type="CGImplicit" iterations="100" threshold="0.000001" />
+		<Object type="EulerImplicit" />
+		<Object type="CGLinearSolver" iterations="100" threshold="0.000001" />
 		<Object type="MechanicalObject" dx="0" dy="21" dz="0"/>
 		<Object type="UniformMass" mass="0.05"/>
 		<Object type="RegularGrid"
@@ -102,7 +106,8 @@
 	</Node>
 	<!--
 	<Node name="M5">
-		<Object type="CGImplicit" iterations="100" threshold="0.000001" />
+		<Object type="EulerImplicit" />
+		<Object type="CGLinearSolver" iterations="100" threshold="0.000001" />
 		<Object type="MechanicalObject" dx="-4" dy="31.5" dz="-4"/>
 		<Object type="UniformMass" mass="0.05"/>
 		<Object type="RegularGrid"

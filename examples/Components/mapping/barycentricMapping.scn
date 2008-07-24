@@ -14,7 +14,8 @@
 			<Object type="OglModel" name="Visual" filename="VisualModels/torus2.obj" color="gray" />
 		</Node>
 		<Node name="TorusFEM">
-			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
+			<Object type="EulerImplicit" />                
+			<Object type="CGLinearSolver" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
 			<Object type="Mesh" filename="Topology/torus_low_res.msh"/>
 			<Object type="MechanicalObject" dx="2.5" />
 			<Object type="UniformMass" totalmass="5" />
@@ -33,7 +34,8 @@
 			</Node>
 		</Node>
 		<Node name="TorusSpring">
-			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
+			<Object type="EulerImplicit" />                
+			<Object type="CGLinearSolver" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
 			<Object type="Mesh" filename="Topology/torus2_low_res.msh"/>
 			<Object type="MechanicalObject" dx="5" />
 			<Object type="UniformMass" totalmass="5" />
@@ -52,7 +54,8 @@
 			</Node>
 		</Node>
 		<Node name="TorusFFD">
-			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
+			<Object type="EulerImplicit" />                
+			<Object type="CGLinearSolver" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
 			<Object type="MechanicalObject" dx="7.5" />
 			<Object type="UniformMass" totalmass="5" />
 			<Object type="RegularGrid"
@@ -76,7 +79,8 @@
 			</Node>
 		</Node>
 		<Node name="TorusRigid">
-			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
+			<Object type="EulerImplicit" />                
+			<Object type="CGLinearSolver" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
 			<Object type="MechanicalObject" template="Rigid" dx="10" />
 			<Object type="UniformMass" filename="BehaviorModels/torus2.rigid" />
 			<Node name="Visu">
@@ -103,7 +107,8 @@
 			<Object type="OglModel" name="Visual" filename="VisualModels/torus2.obj" color="gray" dz="6" />
 		</Node>
 		<Node name="TorusFEM">
-			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
+			<Object type="EulerImplicit" />                
+			<Object type="CGLinearSolver" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
 			<Object type="Mesh" filename="Topology/torus_low_res.msh"/>
 			<Object type="MechanicalObject" dx="2.5" dz="6" />
 			<Object type="UniformMass" totalmass="5" />
@@ -122,7 +127,8 @@
 			</Node>
 		</Node>
 		<Node name="TorusFEM">
-			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
+			<Object type="EulerImplicit" />                
+			<Object type="CGLinearSolver" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
 			<Object type="Mesh" filename="Topology/torus2_low_res.msh"/>
 			<Object type="MechanicalObject" dx="5" dz="6" />
 			<Object type="UniformMass" totalmass="5" />
@@ -141,7 +147,8 @@
 			</Node>
 		</Node>
 		<Node name="TorusFEM">
-			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
+			<Object type="EulerImplicit" />                
+			<Object type="CGLinearSolver" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
 			<Object type="Mesh" filename="Topology/torus_low_res.msh"/>
 			<Object type="MechanicalObject" dx="7.5" dz="6" />
 			<Object type="UniformMass" totalmass="5" />
@@ -160,7 +167,8 @@
 			</Node>
 		</Node>
 		<Node name="TorusFEM">
-			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
+			<Object type="EulerImplicit" />                
+			<Object type="CGLinearSolver" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
 			<Object type="Mesh" filename="Topology/torus2_low_res.msh"/>
 			<Object type="MechanicalObject" dx="10" dz="6" />
 			<Object type="UniformMass" totalmass="5" />
@@ -189,7 +197,8 @@
 			<Object type="OglModel" name="Visual" filename="VisualModels/torus2.obj" dz="12" color="gray" />
 		</Node>
 		<Node name="TorusSpring">
-			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
+			<Object type="EulerImplicit" />                
+			<Object type="CGLinearSolver" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
 			<Object type="Mesh" filename="Topology/torus_low_res.msh"/>
 			<Object type="MechanicalObject" dx="2.5" dz="12" />
 			<Object type="UniformMass" totalmass="5" />
@@ -208,7 +217,8 @@
 			</Node>
 		</Node>
 		<Node name="TorusSpring">
-			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
+			<Object type="EulerImplicit" />                
+			<Object type="CGLinearSolver" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
 			<Object type="Mesh" filename="Topology/torus2_low_res.msh"/>
 			<Object type="MechanicalObject" dx="5" dz="12" />
 			<Object type="UniformMass" totalmass="5" />
@@ -227,7 +237,8 @@
 			</Node>
 		</Node>
 		<Node name="TorusSpring">
-			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
+			<Object type="EulerImplicit" />                
+			<Object type="CGLinearSolver" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
 			<Object type="Mesh" filename="Topology/torus_low_res.msh"/>
 			<Object type="MechanicalObject" dx="7.5" dz="12" />
 			<Object type="UniformMass" totalmass="5" />
@@ -246,7 +257,8 @@
 			</Node>
 		</Node>
 		<Node name="TorusSpring">
-			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
+			<Object type="EulerImplicit" />                
+			<Object type="CGLinearSolver" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
 			<Object type="Mesh" filename="Topology/torus2_low_res.msh"/>
 			<Object type="MechanicalObject" dx="10" dz="12" />
 			<Object type="UniformMass" totalmass="5" />
@@ -275,7 +287,8 @@
 			<Object type="OglModel" name="Visual" filename="VisualModels/torus2.obj" dz="18" color="gray" />
 		</Node>
 		<Node name="TorusFFD">
-			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
+			<Object type="EulerImplicit" />                
+			<Object type="CGLinearSolver" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
 			<Object type="MechanicalObject" dx="2.5" dz="18" />
 			<Object type="UniformMass" totalmass="5" />
 			<Object type="RegularGrid"
@@ -299,7 +312,8 @@
 			</Node>
 		</Node>
 		<Node name="TorusFFD">
-			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
+			<Object type="EulerImplicit" />                
+			<Object type="CGLinearSolver" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
 			<Object type="MechanicalObject" dx="5" dz="18" />
 			<Object type="UniformMass" totalmass="5" />
 			<Object type="RegularGrid"
@@ -323,7 +337,8 @@
 			</Node>
 		</Node>
 		<Node name="TorusFFD">
-			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
+			<Object type="EulerImplicit" />                
+			<Object type="CGLinearSolver" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
 			<Object type="MechanicalObject" dx="7.5" dz="18" />
 			<Object type="UniformMass" totalmass="5" />
 			<Object type="RegularGrid"
@@ -347,7 +362,8 @@
 			</Node>
 		</Node>
 		<Node name="TorusFFD">
-			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
+			<Object type="EulerImplicit" />                
+			<Object type="CGLinearSolver" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
 			<Object type="MechanicalObject" dx="10" dz="18" />
 			<Object type="UniformMass" totalmass="5" />
 			<Object type="RegularGrid"
@@ -381,7 +397,8 @@
 			<Object type="OglModel" name="Visual" filename="VisualModels/torus2.obj" dz="24" color="gray" />
 		</Node>
 		<Node name="TorusRigid">
-			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0" />
+			<Object type="EulerImplicit" />                
+			<Object type="CGLinearSolver" iterations="100" threshold="0.00000001" rayleighStiffness="0" />
 			<Object type="MechanicalObject" template="Rigid" dx="2.5" dz="24" />
 			<Object type="UniformMass" filename="BehaviorModels/torus.rigid" />
 			<Node name="Visu">
@@ -398,7 +415,8 @@
 			</Node>
 		</Node>
 		<Node name="TorusRigid">
-			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0" />
+			<Object type="EulerImplicit" />                
+			<Object type="CGLinearSolver" iterations="100" threshold="0.00000001" rayleighStiffness="0" />
 			<Object type="MechanicalObject" template="Rigid" dx="5" dz="24" />
 			<Object type="UniformMass" filename="BehaviorModels/torus2.rigid" />
 			<Node name="Visu">
@@ -415,7 +433,8 @@
 			</Node>
 		</Node>
 		<Node name="TorusRigid">
-			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0" />
+			<Object type="EulerImplicit" />                
+			<Object type="CGLinearSolver" iterations="100" threshold="0.00000001" rayleighStiffness="0" />
 			<Object type="MechanicalObject" template="Rigid" dx="7.5" dz="24" />
 			<Object type="UniformMass" filename="BehaviorModels/torus.rigid" />
 			<Node name="Visu">
@@ -432,7 +451,8 @@
 			</Node>
 		</Node>
 		<Node name="TorusRigid">
-			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0" />
+			<Object type="EulerImplicit" />                
+			<Object type="CGLinearSolver" iterations="100" threshold="0.00000001" rayleighStiffness="0" />
 			<Object type="MechanicalObject" template="Rigid" dx="10" dz="24" />
 			<Object type="UniformMass" filename="BehaviorModels/torus2.rigid" />
 			<Node name="Visu">

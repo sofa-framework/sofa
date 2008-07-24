@@ -4,10 +4,8 @@
 	<Object type="NewProximityIntersection" name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
 	<Object type="CollisionResponse" name="Response" response="default" />
 	<Object type="CollisionGroup" name="Group" />
-
-
-	<Object type="CGImplicit" iterations="25"/>
-	<!--<Object type="CollisionGroup" />-->
+	<Object type="EulerImplicit" />                
+	<Object type="CGLinearSolver" iterations="25" />
 	<Node name="Liver1">
 		<!--<Object type="CGImplicit" iterations="25"/>-->
 		<Object type="EulerImplicit"/>
