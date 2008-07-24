@@ -25,7 +25,6 @@
 #include <sofa/component/topology/PointSetTopology.h>
 #include <sofa/component/topology/PointSetTopology.inl>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -46,36 +45,45 @@ int PointSetTopologyClass = core::RegisterObject("Topology consisting of a set o
 #ifndef SOFA_FLOAT
         .add< PointSetTopology<Vec3dTypes> >()
         .add< PointSetTopology<Vec2dTypes> >()
-//     .add< PointSetTopology<Vec1dTypes> >()
-//     .add< PointSetTopology<Rigid3dTypes> >()
-//     .add< PointSetTopology<Rigid2dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< PointSetTopology<Vec3fTypes> >()
         .add< PointSetTopology<Vec2fTypes> >()
-//     .add< PointSetTopology<Vec1fTypes> >()
-//     .add< PointSetTopology<Rigid3fTypes> >()
-//     .add< PointSetTopology<Rigid2fTypes> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
+template class PointSetTopologyModifier<Vec3dTypes>;
+template class PointSetTopologyModifier<Vec2dTypes>;
 template class PointSetTopology<Vec3dTypes>;
 template class PointSetTopology<Vec2dTypes>;
-//     template class PointSetTopology<Vec1dTypes>;
-
-//     template class PointSetTopology<Rigid3dTypes>;
-//     template class PointSetTopology<Rigid2dTypes>;
+template class PointSetGeometryAlgorithms<Vec3dTypes>;
+template class PointSetGeometryAlgorithms<Vec2dTypes>;
 #endif
-
 #ifndef SOFA_DOUBLE
+template class PointSetTopologyModifier<Vec3fTypes>;
+template class PointSetTopologyModifier<Vec2fTypes>;
 template class PointSetTopology<Vec3fTypes>;
 template class PointSetTopology<Vec2fTypes>;
-//     template class PointSetTopology<Vec1fTypes>;
-
-//     template class PointSetTopology<Rigid3fTypes>;
-//     template class PointSetTopology<Rigid2fTypes>;
+template class PointSetGeometryAlgorithms<Vec3fTypes>;
+template class PointSetGeometryAlgorithms<Vec2fTypes>;
 #endif
+
+// PointSetTopologyContainer implementation
+
+PointSetTopologyContainer::PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top)
+    : core::componentmodel::topology::TopologyContainer(top)
+{}
+
+unsigned int PointSetTopologyContainer::getNumberOfVertices() const
+{
+    return m_basicTopology->getDOFNumber();
+}
+
+bool PointSetTopologyContainer::checkTopology() const
+{
+    return true;
+}
 
 } // namespace topology
 
