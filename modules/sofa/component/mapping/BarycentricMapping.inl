@@ -847,7 +847,7 @@ void BarycentricMapping<BasicMapping>::init()
     f_grid->beginEdit();
     if(mapper == NULL) // try to create a mapper according to the topology of the In model
     {
-        core::componentmodel::topology::Topology* topology = dynamic_cast<core::componentmodel::topology::Topology*>(this->fromModel->getContext()->getTopology());
+        sofa::core::componentmodel::topology::BaseMeshTopology* topology = this->fromModel->getContext()->getMeshTopology();
         if (topology!=NULL)
         {
             createMapperFromTopology(topology);
@@ -2688,7 +2688,7 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::handleTopologyChange()
 template <class In, class Out>
 void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
 {
-    if(topology->getTopologyContainer()->getChangeList().empty())
+    if(topology->firstChange()==topology->lastChange())
         return;
 
     std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = topology->firstChange();
@@ -2861,7 +2861,7 @@ void BarycentricMapping<BasicMapping>::handleTopologyChange()
         core::componentmodel::topology::BaseTopology* topology = dynamic_cast<core::componentmodel::topology::BaseTopology*> (this->toModel->getContext()->getMainTopology());
         if (topology != NULL)
         {
-            if(!topology->getTopologyContainer()->getChangeList().empty())
+            if(topology->firstChange() != topology->lastChange()) // may not be necessary
             {
                 const std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = topology->firstChange();
                 const std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = topology->lastChange();

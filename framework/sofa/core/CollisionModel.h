@@ -333,6 +333,9 @@ public:
     /// Topology associated to the collision model
     virtual Topology* getTopology() { return getContext()->getMeshTopology(); }
 
+    /// BaseMeshTopology associated to the collision model
+    virtual sofa::core::componentmodel::topology::BaseMeshTopology* getMeshTopology() { return getContext()->getMeshTopology(); }
+
     /// Get a color that can be used to display this CollisionModel
     const float* getColor4f();
     /// Set a color that can be used to display this CollisionModel

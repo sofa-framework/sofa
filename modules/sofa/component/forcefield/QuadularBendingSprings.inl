@@ -542,7 +542,7 @@ void QuadularBendingSprings<DataTypes>::init()
     std::map< IndexPair, IndexPair > edgeMap;
     std::set< IndexPair > springSet;
 
-    topology::MeshTopology* topology = dynamic_cast<topology::MeshTopology*>( this->getContext()->getTopology() );
+    sofa::core::componentmodel::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
     assert( topology );
 
     const topology::MeshTopology::SeqQuads& quads = topology->getQuads();

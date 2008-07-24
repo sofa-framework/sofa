@@ -329,7 +329,7 @@ bool Point::testLMD(const Vector3 &PQ, double &coneFactor, double &coneExtension
 {
     Vector3 pt = p();
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* mesh = model->getTopology();
+    sofa::core::componentmodel::topology::BaseMeshTopology* mesh = model->getMeshTopology();
     helper::vector<Vector3> x = (*model->mstate->getX());
 
     const helper::vector <unsigned int>& triangleVertexShell = mesh->getTriangleVertexShell(index);

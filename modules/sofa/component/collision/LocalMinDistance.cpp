@@ -833,7 +833,7 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ)
 {
     Vector3 pt = p.p();
 
-    BaseMeshTopology* topology = p.getCollisionModel()->getTopology();
+    BaseMeshTopology* topology = p.getCollisionModel()->getMeshTopology();
     helper::vector<Vector3>& x = *(p.getCollisionModel()->getMechanicalState()->getX());
 
     const helper::vector <unsigned int>& triangleVertexShell = topology->getTriangleVertexShell(p.getIndex());
@@ -896,7 +896,7 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
     Vector3 AB = pt2 - pt1;
     AB.normalize();
 
-    BaseMeshTopology* topology = l.getCollisionModel()->getTopology();
+    BaseMeshTopology* topology = l.getCollisionModel()->getMeshTopology();
     helper::vector<Vector3>& x = *(l.getCollisionModel()->getMechanicalState()->getX());
 
     const sofa::helper::vector<unsigned int>& triangleEdgeShell = topology->getTriangleEdgeShell(l.getIndex());

@@ -75,7 +75,7 @@ void MeshSpringForceField<DataTypes>::init()
 
     if (this->mstate1==this->mstate2)
     {
-        sofa::core::componentmodel::topology::BaseMeshTopology* topology = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>(this->mstate1->getContext()->getTopology());
+        sofa::core::componentmodel::topology::BaseMeshTopology* topology = this->mstate1->getContext()->getMeshTopology();
 
 
         if (topology != NULL)

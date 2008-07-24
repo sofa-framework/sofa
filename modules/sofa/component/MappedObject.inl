@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MAPPEDOBJECT_INL
 
 #include <sofa/component/MappedObject.h>
-#include <sofa/core/componentmodel/topology/Topology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
@@ -51,7 +51,7 @@ void MappedObject<DataTypes>::init()
 {
     if (getX()->size() == 0)
     {
-        core::componentmodel::topology::Topology* topo = dynamic_cast<core::componentmodel::topology::Topology*>(this->getContext()->getTopology());
+        sofa::core::componentmodel::topology::BaseMeshTopology* topo = this->getContext()->getMeshTopology();
         if (topo!=NULL && topo->hasPos() && topo->getContext() == this->getContext())
         {
             VecCoord& x = *getX();

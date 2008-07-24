@@ -995,7 +995,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
     f_assembling.beginEdit();
 
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
-    _mesh = dynamic_cast<core::componentmodel::topology::BaseMeshTopology*>(this->getContext()->getTopology());
+    _mesh = this->getContext()->getMeshTopology();
 #ifdef SOFA_NEW_HEXA
     if (_mesh==NULL || (_mesh->getTetras().empty() && _mesh->getNbHexas()<=0))
 #else

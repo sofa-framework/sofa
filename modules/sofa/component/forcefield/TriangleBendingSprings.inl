@@ -136,7 +136,7 @@ void TriangleBendingSprings<DataTypes>::init()
     // Set the bending springs
 
     std::map< IndexPair, unsigned > edgeMap;
-    sofa::core::componentmodel::topology::BaseMeshTopology* topology = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>( this->getContext()->getTopology() );
+    sofa::core::componentmodel::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
     assert( topology );
 
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = topology->getTriangles();

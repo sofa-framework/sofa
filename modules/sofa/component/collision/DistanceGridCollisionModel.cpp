@@ -387,7 +387,7 @@ void FFDDistanceGridCollisionModel::init()
     std::cout << "> FFDDistanceGridCollisionModel::init()"<<std::endl;
     this->core::CollisionModel::init();
     ffd = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
-    ffdGrid = dynamic_cast< topology::RegularGridTopology* > (getContext()->getTopology());
+    ffdGrid = dynamic_cast< topology::RegularGridTopology* > (getContext()->getMeshTopology());
     if (!ffd || !ffdGrid)
     {
         std::cerr << "ERROR: FFDDistanceGridCollisionModel requires a Vec3-based deformable model with associated RegularGridTopology.\n";
