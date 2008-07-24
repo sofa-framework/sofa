@@ -1,8 +1,8 @@
 [General]
 img_extIsRegExp=false
 img_extensions=.eps .jpg .jpeg .png .pdf .ps .fig .gif .dvi
-kileprversion=1
-kileversion=1.9.3
+kileprversion=2
+kileversion=2.0
 lastDocument=sofadocumentation.tex
 masterDocument=sofadocumentation.tex
 name=Sofa  documentation
@@ -30,5 +30,5 @@ column=0
 encoding=ISO 8859-1
 highlight=LaTeX
 line=42
-open=true
+open=false
 order=0
