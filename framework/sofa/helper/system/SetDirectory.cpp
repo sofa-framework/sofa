@@ -53,7 +53,7 @@ SetDirectory::SetDirectory(const char* filename)
     directory = GetParentDir(filename);
     if (!directory.empty())
     {
-        //std::cout << ">chdir("<<directory<<")"<<std::endl;
+        std::cout << ">chdir("<<directory<<")"<<std::endl;
         previousDir = GetCurrentDir();
 #ifndef WIN32
         chdir(directory.c_str());
@@ -68,7 +68,7 @@ SetDirectory::SetDirectory(const std::string& filename)
     directory = GetParentDir(filename.c_str());
     if (!directory.empty())
     {
-        //std::cout << ">chdir("<<directory<<")"<<std::endl;
+        std::cout << ">chdir("<<directory<<")"<<std::endl;
         previousDir = GetCurrentDir();
 #ifndef WIN32
         chdir(directory.c_str());
@@ -82,7 +82,7 @@ SetDirectory::~SetDirectory()
 {
     if (!directory.empty() && !previousDir.empty())
     {
-        //std::cout << "<chdir("<<previousDir<<")"<<std::endl;
+        std::cout << "<chdir("<<directory<<")"<<std::endl;
 #ifndef WIN32
         chdir(previousDir.c_str());
 #else

@@ -29,7 +29,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/GLshader.h>
+#include <sofa/helper/gl/GLSLShader.h>
 #include <sofa/helper/gl/Texture.h>
 #include <sofa/component/visualmodel/OglShader.h>
 

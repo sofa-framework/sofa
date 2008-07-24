@@ -201,13 +201,14 @@ SOFA_LINK_CLASS(ReadState)
 SOFA_LINK_CLASS(WriteState)
 SOFA_LINK_CLASS(QuadBendingSprings)
 SOFA_LINK_CLASS(QuadularBendingSprings)
-SOFA_LINK_CLASS(OglShader)
 SOFA_LINK_CLASS(DirectionalLight)
 SOFA_LINK_CLASS(PositionalLight)
 SOFA_LINK_CLASS(SpotLight)
 SOFA_LINK_CLASS(LightManager)
-SOFA_LINK_CLASS(OglTexture2D)
 
+#ifdef SOFA_HAVE_GLEW
+SOFA_LINK_CLASS(OglShader)
+SOFA_LINK_CLASS(OglTexture2D)
 SOFA_LINK_CLASS(OglIntVariable)
 SOFA_LINK_CLASS(OglInt2Variable)
 SOFA_LINK_CLASS(OglInt3Variable)
@@ -226,6 +227,8 @@ SOFA_LINK_CLASS(OglFloatVector3Variable)
 SOFA_LINK_CLASS(OglFloatVector4Variable)
 SOFA_LINK_CLASS(OglShaderDefineMacro)
 SOFA_LINK_CLASS(OglTetrahedralModel)
+#endif
+
 SOFA_LINK_CLASS(VoidMapping)
 
 #ifdef SOFA_DEV

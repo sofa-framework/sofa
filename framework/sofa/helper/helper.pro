@@ -27,7 +27,6 @@ HEADERS += \
           gl/Cylinder.h \
           gl/Capture.h \
           gl/glfont.h \
-          gl/GLshader.h \
           gl/RAII.h \
           gl/template.h \
           gl/Texture.h \
@@ -80,7 +79,6 @@ SOURCES += \
           gl/Cylinder.cpp \
           gl/Capture.cpp \
           gl/glfont.cpp \
-          gl/GLshader.cpp \
           gl/Texture.cpp \
           gl/Trackball.cpp \
           gl/Transformation.cpp \
@@ -109,3 +107,13 @@ SOURCES += \
 	  polygon_cube_intersection/fast_polygon_cube_intersection.cpp \
     DualQuat.cpp
 
+
+contains(DEFINES,SOFA_HAVE_GLEW){
+
+    HEADERS += \
+          gl/GLSLShader.h
+
+    SOURCES += \
+          gl/GLSLShader.cpp
+
+}

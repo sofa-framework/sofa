@@ -101,7 +101,7 @@ class SofaViewer
 
 public:
     SofaViewer ()
-        : groot(NULL), m_isControlPressed(false), _video(false), _shadow(false), _axis(false), camera_type(CAMERA_PERSPECTIVE)
+        : groot(NULL), m_isControlPressed(false), _video(false), _shadow(false), _gl_shadow(false), _axis(false), camera_type(CAMERA_PERSPECTIVE)
     {}
     virtual ~SofaViewer() {}
 
@@ -180,7 +180,7 @@ protected:
         case Qt::Key_L:
             // --- draw shadows
         {
-            _shadow = !_shadow;
+            if (_gl_shadow) _shadow = !_shadow;
             break;
         }
         case Qt::Key_R:
@@ -540,6 +540,7 @@ protected:
     bool m_isControlPressed;
     bool _video;
     bool _shadow;
+    bool _gl_shadow;
     bool _axis;
     int  camera_type;
     int _background;

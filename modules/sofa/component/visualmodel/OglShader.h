@@ -41,7 +41,7 @@
 #include <sofa/core/Shader.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/GLshader.h>
+#include <sofa/helper/gl/GLSLShader.h>
 
 namespace sofa
 {
@@ -83,7 +83,7 @@ protected:
     Data<int> geometryVerticesOut;
 
     ///OpenGL shader
-    sofa::helper::gl::CShader m_shader;
+    sofa::helper::gl::GLSLShader m_shader;
 
     bool hasGeometryShader;
 
