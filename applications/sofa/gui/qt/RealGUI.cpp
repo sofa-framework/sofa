@@ -1043,9 +1043,15 @@ void RealGUI::screenshot()
 
     QString filename;
 
+#ifdef SOFA_HAVE_PNG
+    char* imageString = "Images (*.png)";
+#else
+    char* imageString = "Images (*.bmp)";
+#endif
+
     filename = getSaveFileName ( this,
             viewer->screenshotName().c_str(),
-            "Images (*.png *.bmp *.jpg)",
+            imageString,
             "save file dialog"
             "Choose a filename to save under" );
     viewer->getQWidget()->repaint();
