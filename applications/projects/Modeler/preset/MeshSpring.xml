@@ -1,6 +1,6 @@
 <Node name="MeshSpring">
 	<Object type="EulerImplicitSolver" rayleighStiffness="0.01" />
-	<Object type="CGLinearSolver" iterations="25" threshold="0.00000001" rayleighStiffness="0.01" />
+	<Object type="CGLinearSolver" iterations="25" threshold="0.00000001" />
 	<Object type="Mesh"  filename="file"/> 
 	<Object type="MechanicalObject"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"/>
 	<Object type="UniformMass" totalmass="5" />
