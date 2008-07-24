@@ -169,13 +169,13 @@ public:
     typedef typename DataTypes::Coord Coord;
     int addPoint(const Coord& P, int index, Real&)
     {
-        int nbt = this->model->getTopology()->getNbTriangles();
+        int nbt = this->model->getMeshTopology()->getNbTriangles();
         if (index < nbt)
             return this->mapper->createPointInTriangle(P, index, this->model->getMechanicalState()->getX());
         else
         {
             int qindex = (index - nbt)/2;
-            int nbq = this->model->getTopology()->getNbQuads();
+            int nbq = this->model->getMeshTopology()->getNbQuads();
             if (qindex < nbq)
                 return this->mapper->createPointInQuad(P, qindex, this->model->getMechanicalState()->getX());
             else

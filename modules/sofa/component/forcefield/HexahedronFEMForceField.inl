@@ -85,13 +85,13 @@ void HexahedronFEMForceField<DataTypes>::init()
     else _alreadyInit=true;
 
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
-    if( this->getContext()->getTopology()==NULL )
+    if( this->getContext()->getMeshTopology()==NULL )
     {
         std::cerr << "ERROR(HexahedronFEMForceField): object must have a Topology.\n";
         return;
     }
 
-    _mesh = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>(this->getContext()->getTopology());
+    _mesh = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>(this->getContext()->getMeshTopology());
     if ( _mesh==NULL)
     {
         std::cerr << "ERROR(HexahedronFEMForceField): object must have a MeshTopology.\n";

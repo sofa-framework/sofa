@@ -372,7 +372,7 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::init()
 {
     /*  using sofa::component::topology::RegularGridTopology;
-      RegularGridTopology* reg = dynamic_cast<RegularGridTopology*>( getContext()->getTopology() );
+      RegularGridTopology* reg = dynamic_cast<RegularGridTopology*>( getContext()->getMeshTopology() );
       if( reg != NULL )
       {
         Real weight = reg->getDx().norm() * reg->getDy().norm() * reg->getDz().norm() * m_massDensity.getValue()/8;

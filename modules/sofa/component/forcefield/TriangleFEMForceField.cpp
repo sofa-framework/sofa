@@ -83,7 +83,7 @@ void TriangleFEMForceField<DataTypes>::init()
         method = LARGE;
 
     cerr<<"TriangleFEMForceField<DataTypes>::init(), node = "<<this->getContext()->getName()<<endl;
-    _mesh = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>(this->getContext()->getTopology());
+    _mesh = this->getContext()->getMeshTopology();
 
     if (_mesh==NULL || (_mesh->getTriangles().empty() && _mesh->getNbQuads()<=0))
     {

@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MECHANICALOBJECT_INL
 
 #include <sofa/component/MechanicalObject.h>
-#include <sofa/core/componentmodel/topology/Topology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 
@@ -921,7 +921,7 @@ void MechanicalObject<DataTypes>::init()
     }
     else if (getX()->size() <= 1)
     {
-        core::componentmodel::topology::Topology* topo = dynamic_cast<core::componentmodel::topology::Topology*>(this->getContext()->getTopology());
+        sofa::core::componentmodel::topology::BaseMeshTopology* topo = this->getContext()->getMeshTopology();
         if (topo!=NULL && topo->hasPos() && topo->getContext() == this->getContext())
         {
             int nbp = topo->getNbPoints();

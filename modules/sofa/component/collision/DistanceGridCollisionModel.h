@@ -770,7 +770,7 @@ public:
     // alias used by ContactMapper
 
     core::componentmodel::behavior::MechanicalState<DataTypes>* getMechanicalState() { return ffd; }
-    topology::RegularGridTopology* getTopology() { return ffdGrid; }
+    topology::RegularGridTopology* getMeshTopology() { return ffdGrid; }
 
     void init();
 

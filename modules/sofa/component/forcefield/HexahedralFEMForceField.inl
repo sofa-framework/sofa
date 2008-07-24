@@ -133,7 +133,7 @@ void HexahedralFEMForceField<DataTypes>::init()
 
 
     /*
-    if( this->getContext()->getTopology()==NULL )
+    if( this->getContext()->getMeshTopology()==NULL )
     {
     	std::cerr << "ERROR(HexahedralFEMForceField): object must have a Topology.\n";
     	return;

@@ -71,9 +71,9 @@ typename BarycentricContactMapper<TCollisionModel,DataTypes>::MMechanicalState* 
     }
     simulation::tree::GNode* child = new simulation::tree::GNode(name); parent->addChild(child); child->updateSimulationContext();
     MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
-    //mapping = new MMapping(model->getMechanicalState(), mstate, model->getTopology());
+    //mapping = new MMapping(model->getMechanicalState(), mstate, model->getMeshTopology());
     //mapper = mapping->getMapper();
-    mapper = new mapping::BarycentricMapperMeshTopology<InDataTypes, typename BarycentricContactMapper::DataTypes>(model->getTopology());
+    mapper = new mapping::BarycentricMapperMeshTopology<InDataTypes, typename BarycentricContactMapper::DataTypes>(model->getMeshTopology());
     mapping = new MMapping(model->getMechanicalState(), mstate, mapper);
     child->addObject(mapping);
     return mstate;

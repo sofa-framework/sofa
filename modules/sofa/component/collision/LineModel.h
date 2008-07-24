@@ -176,7 +176,7 @@ inline const Vector3& Line::v2() const { return (*model->mstate->getV())[model->
 //
 //    virtual void init();
 //
-//    Topology* getTopology() { return mesh; }
+//    Topology* getMeshTopology() { return mesh; }
 //
 //protected:
 //    Topology* mesh;
@@ -191,7 +191,7 @@ inline const Vector3& Line::v2() const { return (*model->mstate->getV())[model->
 //    ///\Todo
 //    virtual void init();
 //
-//    Topology* getTopology() { return mesh; }
+//    Topology* getMeshTopology() { return mesh; }
 //
 //protected:
 //

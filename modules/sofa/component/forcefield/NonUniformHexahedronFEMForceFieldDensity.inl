@@ -63,13 +63,13 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
 
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
 
-    if( this->getContext()->getTopology()==NULL )
+    if( this->getContext()->getMeshTopology()==NULL )
     {
         std::cerr << "ERROR(NonUniformHexahedronFEMForceFieldDensity): object must have a Topology.\n";
         return;
     }
 
-    this->_mesh = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>(this->getContext()->getTopology());
+    this->_mesh = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>(this->getContext()->getMeshTopology());
     if ( this->_mesh==NULL)
     {
         std::cerr << "ERROR(NonUniformHexahedronFEMForceFieldDensity): object must have a MeshTopology.\n";

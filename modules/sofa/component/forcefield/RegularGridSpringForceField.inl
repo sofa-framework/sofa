@@ -57,7 +57,7 @@ void RegularGridSpringForceField<DataTypes>::init()
     }
     if (this->mstate1==this->mstate2)
     {
-        topology = dynamic_cast<topology::RegularGridTopology*>(this->mstate1->getContext()->getTopology());
+        topology = dynamic_cast<topology::RegularGridTopology*>(this->mstate1->getContext()->getMeshTopology());
 #ifdef SOFA_DEV
         if (topology != NULL)
             trimmedTopology = dynamic_cast<topology::FittedRegularGridTopology*>(topology);
