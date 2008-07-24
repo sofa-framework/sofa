@@ -160,7 +160,7 @@ public:
     virtual int createPointInCube(const typename Out::Coord& /*p*/, int /*cubeIndex*/, const typename In::VecCoord* /*points*/) {return 0;}
 
 protected:
-    TopologyBarycentricMapper(core::componentmodel::topology::Topology* /*topology*/) {}
+    TopologyBarycentricMapper(core::componentmodel::topology::BaseMeshTopology* /*topology*/) {}
 };
 
 /// Class allowing barycentric mapping computation on a RegularGridTopology
@@ -185,7 +185,7 @@ public:
 
     void clear(int reserve=0);
     bool isEmpty() {return map.size() == 0;}
-    void setTopology(topology::RegularGridTopology* _topology) {topology = _topology;}
+    void setTopology(topology::RegularGridTopology* topology) {topology = topology;}
     int addPointInCube(int cubeIndex, const SReal* baryCoords);
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
@@ -374,7 +374,7 @@ public:
     virtual void handlePointEvents(std::list< const core::componentmodel::topology::TopologyChange *>::const_iterator,
             std::list< const core::componentmodel::topology::TopologyChange *>::const_iterator )=0;
 protected:
-    BarycentricMapperBaseTopology(core::componentmodel::topology::BaseTopology* /*topology*/)
+    BarycentricMapperBaseTopology(core::componentmodel::topology::BaseMeshTopology* /*topology*/)
     {}
 };
 
@@ -390,10 +390,10 @@ public:
     typedef typename Inherit::MappingData1D MappingData;
 protected:
     topology::PointData< MappingData >  map;
-    topology::EdgeSetTopology<In>* topology;
+    topology::BaseMeshTopology* topology;
 
 public:
-    BarycentricMapperEdgeSetTopology(topology::EdgeSetTopology<In>* topology)
+    BarycentricMapperEdgeSetTopology(topology::BaseMeshTopology* topology)
         : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}
@@ -459,10 +459,10 @@ public:
     typedef typename Inherit::MappingData2D MappingData;
 protected:
     topology::PointData< MappingData >  map;
-    topology::TriangleSetTopology<In>* topology;
+    topology::BaseMeshTopology* topology;
 
 public:
-    BarycentricMapperTriangleSetTopology(topology::TriangleSetTopology<In>* topology)
+    BarycentricMapperTriangleSetTopology(topology::BaseMeshTopology* topology)
         : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}
@@ -528,10 +528,10 @@ public:
     typedef typename Inherit::MappingData2D MappingData;
 protected:
     topology::PointData< MappingData >  map;
-    topology::QuadSetTopology<In>* topology;
+    topology::BaseMeshTopology* topology;
 
 public:
-    BarycentricMapperQuadSetTopology(topology::QuadSetTopology<In>* topology)
+    BarycentricMapperQuadSetTopology(topology::BaseMeshTopology* topology)
         : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}
@@ -595,10 +595,10 @@ public:
     typedef typename Inherit::MappingData3D MappingData;
 protected:
     topology::PointData< MappingData >  map;
-    topology::TetrahedronSetTopology<In>* topology;
+    topology::BaseMeshTopology* topology;
 
 public:
-    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopology<In>* topology)
+    BarycentricMapperTetrahedronSetTopology(topology::BaseMeshTopology* topology)
         : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}
@@ -662,10 +662,10 @@ public:
     typedef typename Inherit::MappingData3D MappingData;
 protected:
     topology::PointData< MappingData >  map;
-    topology::HexahedronSetTopology<In>* topology;
+    topology::BaseMeshTopology* topology;
 
 public:
-    BarycentricMapperHexahedronSetTopology(topology::HexahedronSetTopology<In>* topology)
+    BarycentricMapperHexahedronSetTopology(topology::BaseMeshTopology* topology)
         : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}
@@ -752,7 +752,7 @@ public:
     typedef typename OutDataTypes::SparseDeriv OutSparseDeriv;
     typedef typename OutDataTypes::Real OutReal;
 
-    typedef core::componentmodel::topology::Topology Topology;
+    typedef core::componentmodel::topology::BaseMeshTopology BaseMeshTopology;
 
 protected:
 
@@ -779,7 +779,7 @@ public:
         }
     }
 
-    BarycentricMapping(In* from, Out* to, Topology * topology );
+    BarycentricMapping(In* from, Out* to, BaseMeshTopology * topology );
 
     virtual ~BarycentricMapping()
     {
@@ -805,7 +805,7 @@ public:
     TopologyBarycentricMapper<InDataTypes,OutDataTypes>*	getMapper() {return mapper;}
 
 private:
-    void createMapperFromTopology(Topology * topology);
+    void createMapperFromTopology(BaseMeshTopology * topology);
 };
 
 } // namespace mapping
