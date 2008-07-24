@@ -45,7 +45,9 @@
 #include <sofa/helper/system/glut.h>
 #include <sofa/helper/gl/glfont.h>
 #include <sofa/helper/gl/RAII.h>
-#include <sofa/helper/gl/GLshader.h>
+#ifdef SOFA_HAVE_GLEW
+#include <sofa/helper/gl/GLSLShader.h>
+#endif
 #include <sofa/helper/io/ImageBMP.h>
 
 #ifdef SOFA_DEV
@@ -105,6 +107,7 @@ Quaternion QtViewer::_newQuat;
 Quaternion QtViewer::_currentQuat;
 Vector3 QtViewer::_mouseInteractorRelativePosition(0,0,0);
 
+#ifdef SOFA_HAVE_GLEW
 // Shadow Mapping parameters
 
 // These store our width and height for the shadow texture
@@ -127,7 +130,7 @@ enum { SHADOW_MASK_SIZE = 2048 };
 GLuint g_DepthTexture;
 
 // This is our global shader object that will load the shader files
-CShader g_Shader;
+GLSLShader g_Shader;
 
 //float g_DepthOffset[2] = { 3.0f, 0.0f };
 float g_DepthOffset[2] = { 10.0f, 0.0f };
@@ -141,7 +144,7 @@ float g_mModelView[16] = {0};
 GLuint ShadowTextureMask;
 
 // End of Shadow Mapping Parameters
-
+#endif // SOFA_HAVE_GLEW
 
 static bool enabled = false;
 sofa::core::ObjectFactory::ClassEntry* classVisualModel;
@@ -199,6 +202,7 @@ QtViewer::QtViewer(QWidget* parent, const char* name)
     _axis = false;
     _background = 0;
     _shadow = false;
+    _gl_shadow = false;
     _numOBJmodels = 0;
     _materialMode = 0;
     _facetNormal = GL_FALSE;
@@ -322,17 +326,6 @@ void QtViewer::initializeGL(void)
         glewInit();
         if (!GLEW_ARB_multitexture)
             std::cerr << "Error: GL_ARB_multitexture not supported\n";
-#else
-        glActiveTextureARB        = (PFNGLACTIVETEXTUREARBPROC)        glewGetProcAddress("glActiveTextureARB");
-        glMultiTexCoord2fARB    = (PFNGLMULTITEXCOORD2FARBPROC)        glewGetProcAddress("glMultiTexCoord2fARB");
-
-        // Make sure our multi-texturing extensions were loaded correctly
-        if(!glActiveTextureARB || !glMultiTexCoord2fARB)
-        {
-            // Print an error message and quit.
-            //    MessageBox(g_hWnd, "Your current setup does not support multitexturing", "Error", MB_OK);
-            //PostQuitMessage(0);
-        }
 #endif
 
         _clearBuffer = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
@@ -380,18 +373,22 @@ void QtViewer::initializeGL(void)
         glEnable(GL_LIGHT0);
         //glEnable(GL_COLOR_MATERIAL);
 
+#ifdef SOFA_HAVE_GLEW
         // Here we allocate memory for our depth texture that will store our light's view
         CreateRenderTexture(g_DepthTexture, SHADOW_WIDTH, SHADOW_HEIGHT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT);
         CreateRenderTexture(ShadowTextureMask, SHADOW_MASK_SIZE, SHADOW_MASK_SIZE, GL_LUMINANCE, GL_LUMINANCE);
 
-        //if (_shadow )
+        if ( GLSLShader::InitGLSL() )
         {
-            if ( !CShader::InitGLSL() ) { printf("WARNING QtViewer : shadows are not supported !\n"); _shadow=false;}
-            else
-            {
-                // Here we pass in our new vertex and fragment shader files to our shader object.
-                g_Shader.InitShaders(sofa::helper::system::DataRepository.getFile("shaders/ShadowMappingPCF.vert"), sofa::helper::system::DataRepository.getFile("shaders/ShadowMappingPCF.frag"));
-            }
+            // Here we pass in our new vertex and fragment shader files to our shader object.
+            g_Shader.InitShaders(sofa::helper::system::DataRepository.getFile("shaders/ShadowMappingPCF.vert"), sofa::helper::system::DataRepository.getFile("shaders/ShadowMappingPCF.frag"));
+            _gl_shadow = true;
+        }
+        else
+#endif
+        {
+            printf("WARNING QtViewer : shadows are not supported !\n");
+            _gl_shadow=false;
         }
 
         // change status so we only do this stuff once
@@ -536,6 +533,7 @@ void QtViewer::CreateRenderTexture(GLuint& textureID, int sizeX, int sizeY, int 
 
 void QtViewer::ApplyShadowMap()
 {
+#ifdef SOFA_HAVE_GLEW
     // Let's turn our shaders on for doing shadow mapping on our world
     g_Shader.TurnOn();
 
@@ -601,6 +599,7 @@ void QtViewer::ApplyShadowMap()
 
     // Light expected, we need to turn our shader off since we are done
     g_Shader.TurnOff();
+#endif
 }
 
 // ---------------------------------------------------------
@@ -1042,7 +1041,7 @@ void QtViewer::DrawScene(void)
     _newQuat.buildRotationMatrix(_sceneTransform.rotation);
     calcProjection();
 
-#if 1
+#ifdef SOFA_HAVE_GLEW
     if (_shadow)
     {
         //glGetDoublev(GL_MODELVIEW_MATRIX,lastModelviewMatrix);

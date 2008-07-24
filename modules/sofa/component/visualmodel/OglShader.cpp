@@ -92,7 +92,7 @@ void OglShader::initVisual()
 {
     std::string shaderPath = "shaders/";
 
-    if (!sofa::helper::gl::CShader::InitGLSL())
+    if (!sofa::helper::gl::GLSLShader::InitGLSL())
     {
         std::cerr << "OglShader : InitGLSL failed" << std::endl;
         return;
