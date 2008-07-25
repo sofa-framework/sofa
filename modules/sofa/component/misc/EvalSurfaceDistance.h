@@ -47,9 +47,12 @@ namespace component
 namespace misc
 {
 
+/** Compute the distance between surfaces in two objects
+*/
 template<class TDataTypes>
 class EvalSurfaceDistance: public EvalPointsDistance<TDataTypes>, public virtual sofa::core::objectmodel::BaseObject
 {
+
 public:
     typedef EvalPointsDistance<TDataTypes> Inherit;
     typedef TDataTypes DataTypes;
@@ -59,20 +62,30 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
 
+    /// Alarm distance for proximity detection
     Data < SReal > maxDist;
+
+    /** Default constructor
+    */
     EvalSurfaceDistance();
     virtual ~EvalSurfaceDistance();
 
+    /// Compute the error metric between two surfaces
     virtual SReal  eval();
+    /// Init the computation
     virtual void init();
     virtual void draw();
 
 protected:
+
+    /// Projection vector
     VecCoord xproj;
 
-    sofa::component::collision::TriangleModel *surfaceCM;
+    /// Point model of first object
     sofa::component::collision::PointModel *pointsCM;
-    //sofa::component::collision::MinProximityIntersection * intersection;
+    /// Surface model of second object
+    sofa::component::collision::TriangleModel *surfaceCM;
+
     sofa::component::collision::NewProximityIntersection * intersection;
     sofa::component::collision::BruteForceDetection* detection;
     typedef core::componentmodel::collision::TDetectionOutputVector< sofa::component::collision::TriangleModel, sofa::component::collision::PointModel> ContactVector;
