@@ -390,6 +390,7 @@ void Simulation::unload ( GNode* root )
     if ( !root ) return;
     instruments.clear();
     instrumentInUse.setValue(-1);
+    root->execute<CleanupVisitor>();
     root->execute<DeleteVisitor>();
     if ( root->getParent() !=NULL )
         root->getParent()->removeChild ( root );

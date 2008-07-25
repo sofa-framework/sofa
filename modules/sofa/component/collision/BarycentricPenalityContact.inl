@@ -63,9 +63,8 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
         delete ff;
         parent = NULL;
         ff = NULL;
-//Is it needed? : in current state, solve the problem when DeleteVisitor calls this method. mapper makes access to its model that can eventually have already been deleted -> crash
-//         mapper1.cleanup();
-//         mapper2.cleanup();
+        mapper1.cleanup();
+        mapper2.cleanup();
     }
 }
 
