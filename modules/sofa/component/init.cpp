@@ -259,6 +259,8 @@ SOFA_LINK_CLASS(NonUniformHexahedronFEMForceFieldDensity)
 SOFA_LINK_CLASS(TetrahedralBiquadraticSpringsForceField)
 SOFA_LINK_CLASS(TetrahedralQuadraticSpringsForceField)
 SOFA_LINK_CLASS(WashingMachineForceField)
+//mapping
+SOFA_LINK_CLASS(DQSkinningMapping)
 //mastersolver
 SOFA_LINK_CLASS(MasterConstraintSolver)
 //misc

@@ -67,10 +67,8 @@ HEADERS += \
           system/PipeProcess.h \
           vector.h \
 	  polygon_cube_intersection/vec.h \
-	  polygon_cube_intersection/polygon_cube_intersection.h \
-    DualQuat.inl \
-    DualQuat.h
-          
+	  polygon_cube_intersection/polygon_cube_intersection.h
+
 SOURCES += \
           ArgumentParser.cpp \
           BackTrace.cpp \
@@ -104,8 +102,7 @@ SOURCES += \
           system/thread/debug.cpp \
           system/PipeProcess.cpp \
 	  polygon_cube_intersection/polygon_cube_intersection.cpp \
-	  polygon_cube_intersection/fast_polygon_cube_intersection.cpp \
-    DualQuat.cpp
+	  polygon_cube_intersection/fast_polygon_cube_intersection.cpp
 
 
 contains(DEFINES,SOFA_HAVE_GLEW){
@@ -117,3 +114,14 @@ contains(DEFINES,SOFA_HAVE_GLEW){
           gl/GLSLShader.cpp
 
 }
+
+contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
+
+    HEADERS += \
+          DualQuat.inl \
+          DualQuat.h
+
+    SOURCES += \
+          DualQuat.cpp
+
+} # END SOFA_DEV
