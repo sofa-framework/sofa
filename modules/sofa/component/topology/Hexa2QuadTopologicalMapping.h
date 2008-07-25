@@ -142,6 +142,9 @@ public:
         if (arg->findObject(arg->getAttribute("object2","..")) == NULL)
             std::cerr << "Cannot create "<<className(obj)<<" as object2 is missing.\n";
 
+        if (arg->findObject(arg->getAttribute("object1","../..")) == NULL || arg->findObject(arg->getAttribute("object2","..")) == NULL)
+            return false;
+
         HexahedronSetTopologyContainer* topoIn;
         QuadSetTopologyContainer* topoOut;
         (dynamic_cast<sofa::core::objectmodel::BaseObject*>(arg->findObject(arg->getAttribute("object1","../.."))))->getContext()->get(topoIn);
@@ -163,9 +166,13 @@ public:
     {
         HexahedronSetTopologyContainer* topoIn;
         QuadSetTopologyContainer* topoOut;
-        (dynamic_cast<sofa::core::objectmodel::BaseObject*>(arg->findObject(arg->getAttribute("object1","../.."))))->getContext()->get(topoIn);
-        (dynamic_cast<sofa::core::objectmodel::BaseObject*>(arg->findObject(arg->getAttribute("object2",".."))))->getContext()->get(topoOut);
-
+        if (arg)
+        {
+            if (arg->findObject(arg->getAttribute("object1","../..")) != NULL)
+                (dynamic_cast<sofa::core::objectmodel::BaseObject*>(arg->findObject(arg->getAttribute("object1","../.."))))->getContext()->get(topoIn);
+            if (arg->findObject(arg->getAttribute("object2","..")) != NULL)
+                (dynamic_cast<sofa::core::objectmodel::BaseObject*>(arg->findObject(arg->getAttribute("object2",".."))))->getContext()->get(topoOut);
+        }
         obj = new T(
             (arg?dynamic_cast<In*>(topoIn):NULL),
             (arg?dynamic_cast<Out*>(topoOut):NULL));

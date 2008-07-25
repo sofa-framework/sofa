@@ -44,8 +44,8 @@ namespace misc
 template<class DataTypes>
 EvalSurfaceDistance<DataTypes>::EvalSurfaceDistance()
     : maxDist( initData(&maxDist, (SReal)1.0, "maxDist", "alarm distance for proximity detection"))
-    , surfaceCM(NULL)
     , pointsCM(NULL)
+    , surfaceCM(NULL)
     , intersection(NULL)
     , detection(NULL)
 {

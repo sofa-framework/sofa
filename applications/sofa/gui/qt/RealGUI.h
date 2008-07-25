@@ -417,6 +417,9 @@ private:
             last = s;
             gui->showhideElements(id,b);
         }
+        /* 	virtual void activate() */
+        /* 	{ */
+        /* 	} */
     };
 
 
