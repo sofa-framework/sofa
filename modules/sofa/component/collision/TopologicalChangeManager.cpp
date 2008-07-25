@@ -103,7 +103,7 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::core::Collisio
                         items.insert(ind);
                     }
 
-                    topo_curr = dynamic_cast<sofa::core::componentmodel::topology::BaseTopology *>(topoMap->getFrom());
+                    topo_curr = topoMap->getFrom()->getContext()->getMeshTopology();
                     node_curr = dynamic_cast<simulation::tree::GNode*>(topo_curr->getContext());
 
                     break;
