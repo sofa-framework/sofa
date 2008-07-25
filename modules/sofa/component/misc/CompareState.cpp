@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+
 #ifndef SOFA_COMPONENT_MISC_COMPARESTATE_INL
 #define SOFA_COMPONENT_MISC_COMPARESTATE_INL
 
@@ -42,6 +43,7 @@ namespace misc
 {
 
 
+
 int CompareStateClass = core::RegisterObject("Compare State vectors from a reference frame to the associated Mechanical State")
         .add< CompareState >();
 
@@ -52,7 +54,7 @@ CompareState::CompareState(): ReadState()
 }
 
 
-
+//-------------------------------- handleEvent-------------------------------------------
 void CompareState::handleEvent(sofa::core::objectmodel::Event* event)
 {
     if (/* simulation::AnimateBeginEvent* ev = */ dynamic_cast<simulation::AnimateBeginEvent*>(event))
@@ -63,6 +65,8 @@ void CompareState::handleEvent(sofa::core::objectmodel::Event* event)
     {
     }
 }
+
+//-------------------------------- processCompareState------------------------------------
 void CompareState::processCompareState()
 {
     if (infile && mmodel)
@@ -74,7 +78,6 @@ void CompareState::processCompareState()
         while (nextTime <= time && !infile->eof())
         {
             getline(*infile, line);
-            //std::cout << "line= "<<line<<std::endl;
             std::istringstream str(line);
             str >> cmd;
             if (cmd == "T=")

@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+
 #ifndef SOFA_COMPONENT_MISC_EVALPOINTSDISTANCE_H
 #define SOFA_COMPONENT_MISC_EVALPOINTSDISTANCE_H
 
@@ -41,10 +42,15 @@ namespace component
 namespace misc
 {
 
+
+/** Compute the distance between point/node positions in two objects
+*/
 template<class TDataTypes>
 class EvalPointsDistance: public virtual sofa::core::objectmodel::BaseObject
 {
+
 public:
+
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -52,27 +58,44 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
 
+    /// Rendering of lines between associated points (activation)
     Data < bool > f_draw;
+    /// Output file name
     Data < std::string > f_filename;
+    /// Period between outputs
     Data < double > f_period;
+    /// Computed distances (mean, min, max, standard deviation)
     Data < double > distMean, distMin, distMax, distDev;
+    /// Relative computed distances (mean, min, max, standard deviation)
     Data < double > rdistMean, rdistMin, rdistMax, rdistDev;
+
+    /** Default constructor
+    */
     EvalPointsDistance();
     virtual ~EvalPointsDistance();
 
+    /// Init the computation of the distances
+    virtual void init();
+    /// Reset the computation of the distances
+    virtual void reset();
+
+    /** Distance computation */
+
+    /// Get the nodes/points coordinates of the two objects and compute the distances
     virtual SReal eval();
+    /// Compute the distances between the two objects
     virtual SReal doEval(const VecCoord& x1, const VecCoord& x2, const VecCoord& x0);
 
-    virtual void init();
-    virtual void reset();
+
     virtual void handleEvent(sofa::core::objectmodel::Event* event);
     virtual void draw();
     virtual void doDraw(const VecCoord& x1, const VecCoord& x2);
 
-    /// Retrieve the associated MechanicalState
+    /// Retrieve the associated MechanicalState (First model)
     core::componentmodel::behavior::MechanicalState<DataTypes>* getMState1() { return mstate1; }
     core::componentmodel::behavior::BaseMechanicalState* getMechModel1() { return mstate1; }
-    /// Retrieve the associated MechanicalState
+
+    /// Retrieve the associated MechanicalState (Second model)
     core::componentmodel::behavior::MechanicalState<DataTypes>* getMState2() { return mstate2; }
     core::componentmodel::behavior::BaseMechanicalState* getMechModel2() { return mstate2; }
 
@@ -126,9 +149,13 @@ public:
     }
 
 protected:
+    /// First model mechanical state
     core::componentmodel::behavior::MechanicalState<DataTypes> *mstate1;
+    /// Second model mechanical state
     core::componentmodel::behavior::MechanicalState<DataTypes> *mstate2;
+    /// output file
     std::ofstream* outfile;
+    /// time value for the distance computations
     double lastTime;
 };
 

@@ -60,6 +60,7 @@ EvalSurfaceDistance<DataTypes>::~EvalSurfaceDistance()
         delete detection;
 }
 
+//-------------------------------- init ------------------------------------
 template<class DataTypes>
 void EvalSurfaceDistance<DataTypes>::init()
 {
@@ -90,13 +91,14 @@ void EvalSurfaceDistance<DataTypes>::init()
     detection->init();
 }
 
+//-------------------------------- eval------------------------------------
 template<class DataTypes>
 SReal EvalSurfaceDistance<DataTypes>::eval()
 {
     if (!this->mstate1 || !this->mstate2 || !surfaceCM || !pointsCM || !intersection || !detection) return 0.0;
+
     const VecCoord& x0 = *this->mstate1->getX0();
     const VecCoord& x1 = *this->mstate1->getX();
-    //const VecCoord& x2 = *this->mstate2->getX();
     surfaceCM->computeBoundingTree(6);
     pointsCM->computeBoundingTree(6);
     intersection->setAlarmDistance(maxDist.getValue());
@@ -160,6 +162,7 @@ SReal EvalSurfaceDistance<DataTypes>::eval()
     return this->doEval(x1, xproj, x0);
 }
 
+//-------------------------------- draw------------------------------------
 template<class DataTypes>
 void EvalSurfaceDistance<DataTypes>::draw()
 {

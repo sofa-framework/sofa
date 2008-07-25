@@ -71,6 +71,8 @@ EvalPointsDistance<DataTypes>::~EvalPointsDistance()
         delete outfile;
 }
 
+
+//-------------------------------- init------------------------------------
 template<class DataTypes>
 void EvalPointsDistance<DataTypes>::init()
 {
@@ -96,12 +98,15 @@ void EvalPointsDistance<DataTypes>::init()
 
 }
 
+//-------------------------------- reset ------------------------------------
 template<class DataTypes>
 void EvalPointsDistance<DataTypes>::reset()
 {
     lastTime = 0;
 }
 
+
+//-------------------------------- eval ------------------------------------
 template<class DataTypes>
 SReal EvalPointsDistance<DataTypes>::eval()
 {
@@ -113,6 +118,7 @@ SReal EvalPointsDistance<DataTypes>::eval()
     return this->doEval(x1, x2, x0);
 }
 
+//-------------------------------- doEval------------------------------------
 template<class DataTypes>
 SReal EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoord& x2, const VecCoord& x0)
 {
@@ -165,6 +171,7 @@ SReal EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoord& 
     return dmean;
 }
 
+//-------------------------------- draw ------------------------------------
 template<class DataTypes>
 void EvalPointsDistance<DataTypes>::draw()
 {
@@ -177,6 +184,7 @@ void EvalPointsDistance<DataTypes>::draw()
     this->doDraw(x1,x2);
 }
 
+//-------------------------------- doDraw------------------------------------
 template<class DataTypes>
 void EvalPointsDistance<DataTypes>::doDraw(const VecCoord& x1, const VecCoord& x2)
 {
@@ -194,15 +202,14 @@ void EvalPointsDistance<DataTypes>::doDraw(const VecCoord& x1, const VecCoord& x
     glEnd();
 }
 
+//-------------------------------- handleEvent ------------------------------------
 template<class DataTypes>
 void EvalPointsDistance<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
 {
     if (!mstate1 || !mstate2)
         return;
     std::ostream *out = (outfile==NULL)? &std::cout : outfile;
-    //if (/* simulation::AnimateBeginEvent* ev = */ dynamic_cast<simulation::AnimateBeginEvent*>(event))
-    //if (/* simulation::AnimateEndEvent* ev = */ dynamic_cast<simulation::AnimateEndEvent*>(event))
-    if (/* simulation::UpdateMappingEndEvent* ev = */ dynamic_cast<simulation::UpdateMappingEndEvent*>(event))
+    if (dynamic_cast<simulation::UpdateMappingEndEvent*>(event))
     {
         double time = getContext()->getTime();
         // write the state using a period
