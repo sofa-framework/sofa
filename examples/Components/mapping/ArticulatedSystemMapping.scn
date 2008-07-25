@@ -22,6 +22,11 @@
 	<Node>
 		<Object type="EulerImplicit" name="cg odesolver" printLog="false"/>
 		<Object type="CGLinearSolver" iterations="100" name="linear solver" threshold="1e-20" tolerance="1e-20"/>
+		<Node name="restarticulation">
+			<Object type="MechanicalObject" name="rest" template="Vec1d" position="0 0 0 0"/>
+			<Object type="FixedConstraint" indices="0 1 2 3"/>
+		</Node>
+		<Node name="articulation">		
 		<Object type="MechanicalObject" name="Articulations" template="Vec1d" position="0 0 0 0"/>
 		<Node>
 			<Object type="MechanicalObject" template="Rigid" name="DOFs"
@@ -32,7 +37,7 @@
 				7 0 0  0 0 0 1"
 				/>
 			<Object type="UniformMass" template="Rigid" name="mass"
-				mass="1 1 [1 0 0,0 1 0,0 0 1]"
+				mass="0.1 0.1 [1 0 0,0 1 0,0 0 1]"
 				/>
 			<Object type="FixedConstraint" template="Rigid" name="fixOrigin"
 				indices="0"
@@ -81,29 +86,31 @@
 		<Object type="ArticulatedHierarchyContainer"/>
 		<Node name="articulationCenters">
 			<Node name="articulationCenter1">
-				<Object type="ArticulationCenter" parentIndex="0" childIndex="1" posOnParent="0 0 0" posOnChild="-1 0 0"/>
+				<Object type="ArticulationCenter" parentIndex="0" childIndex="1" posOnParent="0 0 0" posOnChild="-1 0 0" articulationProcess="2"/>
 				<Node name="articulations">
 					<Object type="Articulation" translation="0" rotation="1" rotationAxis="0 0 1" articulationIndex="0"/>
 				</Node>
 			</Node>
 			<Node name="articulationCenter2">
-				<Object type="ArticulationCenter" parentIndex="1" childIndex="2" posOnParent="1 0 0" posOnChild="-1 0 0"/>
+				<Object type="ArticulationCenter" parentIndex="1" childIndex="2" posOnParent="1 0 0" posOnChild="-1 0 0" articulationProcess="2"/>
 				<Node name="articulations">
 					<Object type="Articulation" translation="0" rotation="1" rotationAxis="0 0 1" articulationIndex="1"/>
 				</Node>
 			</Node>
 			<Node name="articulationCenter3">
-				<Object type="ArticulationCenter" parentIndex="2" childIndex="3" posOnParent="1 0 0" posOnChild="-1 0 0"/>
+				<Object type="ArticulationCenter" parentIndex="2" childIndex="3" posOnParent="1 0 0" posOnChild="-1 0 0" articulationProcess="0"/>
 				<Node name="articulations">
 					<Object type="Articulation" translation="0" rotation="1" rotationAxis="0 0 1" articulationIndex="2"/>
 				</Node>
 			</Node>
 			<Node name="articulationCenter4">
-				<Object type="ArticulationCenter" parentIndex="3" childIndex="4" posOnParent="1 0 0" posOnChild="-1 0 0"/>
+				<Object type="ArticulationCenter" parentIndex="3" childIndex="4" posOnParent="1 0 0" posOnChild="-1 0 0" articulationProcess="1"/>
 				<Node name="articulations">
 					<Object type="Articulation" translation="0" rotation="1" rotationAxis="0 0 1" articulationIndex="3"/>
 				</Node>
 			</Node>
 		</Node>
+		</Node>
+		<Object type="StiffSpringForceField" name="Spring" object1="articulation" object2="restarticulation" spring=" 1 1 100.0 1.0 0.0  2 2 100.0 1.0 0.0  3 3 100.0 1.0 0.0"/>
 	</Node>	
 </Node> 
