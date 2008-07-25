@@ -382,7 +382,7 @@ private:
             : Q3CheckListItem(parent, text, tt)
             , gui(g)
             , id(id)
-            , last(NoChange)
+            , last(Off)
         {
             if (tt == CheckBoxController)
                 setTristate(true);
@@ -393,7 +393,7 @@ private:
             : Q3CheckListItem(parent, after, text, tt)
             , gui(g)
             , id(id)
-            , last(NoChange)
+            , last(Off)
         {
             if (tt == CheckBoxController)
                 setTristate(true);
