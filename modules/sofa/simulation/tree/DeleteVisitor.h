@@ -37,6 +37,15 @@ namespace simulation
 namespace tree
 {
 
+class CleanupVisitor : public GNodeVisitor
+{
+public:
+    CleanupVisitor() {}
+
+    virtual Result processNodeTopDown(GNode* node);
+    virtual void processNodeBottomUp(GNode* node);
+};
+
 class DeleteVisitor : public GNodeVisitor
 {
 public:
