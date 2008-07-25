@@ -324,6 +324,47 @@ private:
     */
     sofa::helper::vector< unsigned int > &getHexahedronEdgeShellForModification(const unsigned int edgeIndex);
 
+
+    /// BaseMeshTopology API
+    /// @{
+
+    const SeqHexas& getHexas()
+    {
+        return getHexahedronArray();
+    }
+
+    /// Returns the set of edges adjacent to a given hexahedron.
+    const HexaEdges& getEdgeHexaShell(HexaID i)
+    {
+        return getHexahedronEdges(i);
+    }
+
+    /// Returns the set of quads adjacent to a given hexahedron.
+    const HexaQuads& getQuadHexaShell(HexaID i)
+    {
+        return getHexahedronQuads(i);
+    }
+
+    /// Returns the set of hexahedra adjacent to a given vertex.
+    const VertexHexas& getHexaVertexShell(PointID i)
+    {
+        return getHexahedronVertexShell(i);
+    }
+
+    /// Returns the set of hexahedra adjacent to a given edge.
+    const EdgeHexas& getHexaEdgeShell(EdgeID i)
+    {
+        return getHexahedronEdgeShell(i);
+    }
+
+    /// Returns the set of hexahedra adjacent to a given quad.
+    const QuadHexas& getHexaQuadShell(QuadID i)
+    {
+        return getHexahedronQuadShell(i);
+    }
+
+    /// @}
+
 protected:
     /// provides the set of hexahedra
     sofa::helper::vector<Hexahedron> m_hexahedron;

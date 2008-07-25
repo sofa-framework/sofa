@@ -159,6 +159,16 @@ protected:
 
     void clearEdgeVertexShell();
 
+    /// BaseMeshTopology API
+    /// @{
+
+    virtual const SeqEdges& getEdges()
+    {
+        return getEdgeArray();
+    }
+
+    /// @}
+
 protected:
     /*** The array that stores the set of edges in the edge set */
     sofa::helper::vector<Edge> m_edge;

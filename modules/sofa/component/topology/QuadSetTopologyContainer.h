@@ -261,6 +261,22 @@ private:
     */
     sofa::helper::vector< unsigned int > &getQuadEdgeShellForModification(const unsigned int edgeIndex);
 
+    /// BaseMeshTopology API
+    /// @{
+
+    const SeqQuads& getQuads()
+    {
+        return getQuadArray();
+    }
+
+    /// Returns the set of edges adjacent to a given quad.
+    const QuadEdges& getEdgeQuadShell(QuadID i)
+    {
+        return getQuadEdge(i);
+    }
+
+    /// @}
+
 protected:
     /// provides the set of quads
     sofa::helper::vector<Quad> m_quad;
