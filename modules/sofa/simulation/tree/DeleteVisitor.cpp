@@ -55,11 +55,11 @@ simulation::Visitor::Result CleanupVisitor::processNodeTopDown(GNode* node)
     return RESULT_CONTINUE;
 }
 
-void CleanupVisitor::processNodeBottomUp(GNode* node)
+void CleanupVisitor::processNodeBottomUp(GNode* /*node*/)
 {
 }
 
-simulation::Visitor::Result DeleteVisitor::processNodeTopDown(GNode* node)
+simulation::Visitor::Result DeleteVisitor::processNodeTopDown(GNode* /*node*/)
 {
     return RESULT_CONTINUE;
 }
