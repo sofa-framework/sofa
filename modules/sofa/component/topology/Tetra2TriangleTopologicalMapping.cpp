@@ -32,9 +32,6 @@
 #include <sofa/core/componentmodel/topology/TopologicalMapping.h>
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Vec3Types.h>
-
 
 namespace sofa
 {
@@ -56,30 +53,9 @@ SOFA_DECL_CLASS(Tetra2TriangleTopologicalMapping)
 
 // Register in the Factory
 int Tetra2TriangleTopologicalMappingClass = core::RegisterObject("Special case of mapping where TetrahedronSetTopology is converted to TriangleSetTopology")
-#ifndef SOFA_FLOAT
-        .add< Tetra2TriangleTopologicalMapping< TetrahedronSetTopology<Vec3dTypes>, TriangleSetTopology<Vec3dTypes> > >()
-        .add< Tetra2TriangleTopologicalMapping< TetrahedronSetTopology<Vec2dTypes>, TriangleSetTopology<Vec2dTypes> > >()
-        .add< Tetra2TriangleTopologicalMapping< TetrahedronSetTopology<Vec1dTypes>, TriangleSetTopology<Vec1dTypes> > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< Tetra2TriangleTopologicalMapping< TetrahedronSetTopology<Vec3fTypes>, TriangleSetTopology<Vec3fTypes> > >()
-        .add< Tetra2TriangleTopologicalMapping< TetrahedronSetTopology<Vec2fTypes>, TriangleSetTopology<Vec2fTypes> > >()
-        .add< Tetra2TriangleTopologicalMapping< TetrahedronSetTopology<Vec1fTypes>, TriangleSetTopology<Vec1fTypes> > >()
-#endif
+        .add< Tetra2TriangleTopologicalMapping< TetrahedronSetTopologyContainer, TriangleSetTopologyContainer > >()
+
         ;
-
-#ifndef SOFA_FLOAT
-template class Tetra2TriangleTopologicalMapping< TetrahedronSetTopology<Vec3dTypes>, TriangleSetTopology<Vec3dTypes> >;
-template class Tetra2TriangleTopologicalMapping< TetrahedronSetTopology<Vec2dTypes>, TriangleSetTopology<Vec2dTypes> >;
-template class Tetra2TriangleTopologicalMapping< TetrahedronSetTopology<Vec1dTypes>, TriangleSetTopology<Vec1dTypes> >;
-#endif
-#ifndef SOFA_DOUBLE
-template class Tetra2TriangleTopologicalMapping< TetrahedronSetTopology<Vec3fTypes>, TriangleSetTopology<Vec3fTypes> >;
-template class Tetra2TriangleTopologicalMapping< TetrahedronSetTopology<Vec2fTypes>, TriangleSetTopology<Vec2fTypes> >;
-template class Tetra2TriangleTopologicalMapping< TetrahedronSetTopology<Vec1fTypes>, TriangleSetTopology<Vec1fTypes> >;
-#endif
-
-;
 
 } // namespace topology
 

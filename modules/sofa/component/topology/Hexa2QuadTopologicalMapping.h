@@ -27,14 +27,13 @@
 
 #include <sofa/core/componentmodel/topology/TopologicalMapping.h>
 
-#include <sofa/core/componentmodel/topology/Topology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 #include <sofa/component/topology/QuadSetTopology.h>
 #include <sofa/component/topology/HexahedronSetTopology.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <map>
-#include <sofa/defaulttype/VecTypes.h>
 
 #include <sofa/core/BaseMapping.h>
 
@@ -142,9 +141,15 @@ public:
             std::cerr << "Cannot create "<<className(obj)<<" as object1 is missing.\n";
         if (arg->findObject(arg->getAttribute("object2","..")) == NULL)
             std::cerr << "Cannot create "<<className(obj)<<" as object2 is missing.\n";
-        if (dynamic_cast<In*>(arg->findObject(arg->getAttribute("object1","../.."))) == NULL)
+
+        HexahedronSetTopologyContainer* topoIn;
+        QuadSetTopologyContainer* topoOut;
+        (dynamic_cast<sofa::core::objectmodel::BaseObject*>(arg->findObject(arg->getAttribute("object1","../.."))))->getContext()->get(topoIn);
+        (dynamic_cast<sofa::core::objectmodel::BaseObject*>(arg->findObject(arg->getAttribute("object2",".."))))->getContext()->get(topoOut);
+
+        if (dynamic_cast<In*>(topoIn) == NULL)
             return false;
-        if (dynamic_cast<Out*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
+        if (dynamic_cast<Out*>(topoOut) == NULL)
             return false;
         return BaseMapping::canCreate(obj, context, arg);
     }
@@ -156,9 +161,14 @@ public:
     template<class T>
     static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
+        HexahedronSetTopologyContainer* topoIn;
+        QuadSetTopologyContainer* topoOut;
+        (dynamic_cast<sofa::core::objectmodel::BaseObject*>(arg->findObject(arg->getAttribute("object1","../.."))))->getContext()->get(topoIn);
+        (dynamic_cast<sofa::core::objectmodel::BaseObject*>(arg->findObject(arg->getAttribute("object2",".."))))->getContext()->get(topoOut);
+
         obj = new T(
-            (arg?dynamic_cast<In*>(arg->findObject(arg->getAttribute("object1","../.."))):NULL),
-            (arg?dynamic_cast<Out*>(arg->findObject(arg->getAttribute("object2",".."))):NULL));
+            (arg?dynamic_cast<In*>(topoIn):NULL),
+            (arg?dynamic_cast<Out*>(topoOut):NULL));
         if (context) context->addObject(obj);
         if ((arg) && (arg->getAttribute("object1")))
         {

@@ -32,9 +32,6 @@
 #include <sofa/core/componentmodel/topology/TopologicalMapping.h>
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Vec3Types.h>
-
 #include <sofa/defaulttype/RigidTypes.h>
 
 
@@ -58,25 +55,9 @@ SOFA_DECL_CLASS(Edge2QuadTopologicalMapping)
 
 // Register in the Factory
 int Edge2QuadTopologicalMappingClass = core::RegisterObject("Special case of mapping where EdgeSetTopology is converted to QuadSetTopology")
-#ifndef SOFA_FLOAT
-        .add< Edge2QuadTopologicalMapping< EdgeSetTopology<Rigid3dTypes>, QuadSetTopology<Vec3dTypes> > >()
-        .add< Edge2QuadTopologicalMapping< EdgeSetTopology<Rigid2dTypes>, QuadSetTopology<Vec2dTypes> > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< Edge2QuadTopologicalMapping< EdgeSetTopology<Rigid3fTypes>, QuadSetTopology<Vec3fTypes> > >()
-        .add< Edge2QuadTopologicalMapping< EdgeSetTopology<Rigid2fTypes>, QuadSetTopology<Vec2fTypes> > >()
-#endif
-        ;
-#ifndef SOFA_FLOAT
-template class Edge2QuadTopologicalMapping< EdgeSetTopology<Rigid3dTypes>, QuadSetTopology<Vec3dTypes> >;
-template class Edge2QuadTopologicalMapping< EdgeSetTopology<Rigid2dTypes>, QuadSetTopology<Vec2dTypes> >;
-#endif
-#ifndef SOFA_DOUBLE
-template class Edge2QuadTopologicalMapping< EdgeSetTopology<Rigid3fTypes>, QuadSetTopology<Vec3fTypes> >;
-template class Edge2QuadTopologicalMapping< EdgeSetTopology<Rigid2fTypes>, QuadSetTopology<Vec2fTypes> >;
-#endif
+        .add< Edge2QuadTopologicalMapping< EdgeSetTopologyContainer, QuadSetTopologyContainer > >()
 
-;
+        ;
 
 } // namespace topology
 

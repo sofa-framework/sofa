@@ -32,9 +32,6 @@
 #include <sofa/core/componentmodel/topology/TopologicalMapping.h>
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Vec3Types.h>
-
 
 namespace sofa
 {
@@ -56,30 +53,9 @@ SOFA_DECL_CLASS(Hexa2QuadTopologicalMapping)
 
 // Register in the Factory
 int Hexa2QuadTopologicalMappingClass = core::RegisterObject("Special case of mapping where HexahedronSetTopology is converted to QuadSetTopology")
-#ifndef SOFA_FLOAT
-        .add< Hexa2QuadTopologicalMapping< HexahedronSetTopology<Vec3dTypes>, QuadSetTopology<Vec3dTypes> > >()
-        .add< Hexa2QuadTopologicalMapping< HexahedronSetTopology<Vec2dTypes>, QuadSetTopology<Vec2dTypes> > >()
-        .add< Hexa2QuadTopologicalMapping< HexahedronSetTopology<Vec1dTypes>, QuadSetTopology<Vec1dTypes> > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< Hexa2QuadTopologicalMapping< HexahedronSetTopology<Vec3fTypes>, QuadSetTopology<Vec3fTypes> > >()
-        .add< Hexa2QuadTopologicalMapping< HexahedronSetTopology<Vec2fTypes>, QuadSetTopology<Vec2fTypes> > >()
-        .add< Hexa2QuadTopologicalMapping< HexahedronSetTopology<Vec1fTypes>, QuadSetTopology<Vec1fTypes> > >()
-#endif
+        .add< Hexa2QuadTopologicalMapping< HexahedronSetTopologyContainer, QuadSetTopologyContainer > >()
+
         ;
-
-#ifndef SOFA_FLOAT
-template class Hexa2QuadTopologicalMapping< HexahedronSetTopology<Vec3dTypes>, QuadSetTopology<Vec3dTypes> >;
-template class Hexa2QuadTopologicalMapping< HexahedronSetTopology<Vec2dTypes>, QuadSetTopology<Vec2dTypes> >;
-template class Hexa2QuadTopologicalMapping< HexahedronSetTopology<Vec1dTypes>, QuadSetTopology<Vec1dTypes> >;
-#endif
-#ifndef SOFA_DOUBLE
-template class Hexa2QuadTopologicalMapping< HexahedronSetTopology<Vec3fTypes>, QuadSetTopology<Vec3fTypes> >;
-template class Hexa2QuadTopologicalMapping< HexahedronSetTopology<Vec2fTypes>, QuadSetTopology<Vec2fTypes> >;
-template class Hexa2QuadTopologicalMapping< HexahedronSetTopology<Vec1fTypes>, QuadSetTopology<Vec1fTypes> >;
-#endif
-
-;
 
 } // namespace topology
 
