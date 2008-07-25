@@ -304,6 +304,11 @@ void CudaMasterContactSolver<real>::step(double dt)
         if ((t1-t2>CHECK) || (t1-t2<-CHECK))
         {
             std::cout << "Error(" << useGPU_d.getValue() << ") dim(" << _numConstraints << ") : (cpu," << t1 << ") (gpu,(" << t2 << ")" << std::endl;
+
+            //for (unsigned i=0;i<_numConstraints;i++) printf("%f ",f_check[i]);
+            //printf("\n");
+            //for (unsigned i=0;i<_numConstraints;i++) printf("%f ",_f[i]);
+            //printf("\n");
         }
     }
     else
