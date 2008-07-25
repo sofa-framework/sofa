@@ -86,8 +86,10 @@ public:
     }
 
     void init();
+    void reset();
 
-    void applyOld( typename Out::VecCoord& out, const typename In::VecCoord& in );
+
+    //void applyOld( typename Out::VecCoord& out, const typename In::VecCoord& in );
 
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
 

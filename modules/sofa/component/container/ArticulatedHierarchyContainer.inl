@@ -51,7 +51,8 @@ ArticulatedHierarchyContainer::ArticulationCenter::ArticulationCenter():
     childIndex(initData(&childIndex, "childIndex", "Child of the center articulation")),
     globalPosition(initData(&globalPosition, "globalPosition", "Global position of the articulation center")),
     posOnParent(initData(&posOnParent, "posOnParent", "Parent position of the articulation center")),
-    posOnChild(initData(&posOnChild, "posOnChild", "Child position of the articulation center"))
+    posOnChild(initData(&posOnChild, "posOnChild", "Child position of the articulation center")),
+    articulationProcess(initData(&articulationProcess, (int) 0, "articulationProcess", " 0 - (default) hierarchy between articulations (euler angles)\n 1- ( on Parent) no hierarchy - axis are attached to the parent\n 2- (attached on Child) no hierarchy - axis are attached to the child"))
 {
 }
 

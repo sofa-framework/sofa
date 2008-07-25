@@ -146,9 +146,23 @@ public:
         *	It stores the local position of the center articulation in relation to the global position of the childDOF
         */
         Data<Vector3> posOnChild;
+        /**
+        *	It tells if the articulations of the articulation center are processed one by one or globally:
+        *   0 - (default         ) articulation are treated one by one, the axis of the second articulation is updated by the potential rotation of the first articulation
+        						   potential problems could arise when rotation exceed 90° (known problem of euler angles)
+        *   1 - (Attach on Parent) the axis of the articulations are linked to the parent - rotations are treated by successive increases -
+        *   2 - (Attach on Child ) the axis of the articulations are linked to the child (estimate position from the previous time step) - rotations are treated by successive increases -
+        */
+        Data<int> articulationProcess;
 
 
         vector<Articulation*> articulations;
+
+        Vector3 posOnChildGlobal(Quat localToGlobal)
+        {
+            Vector3 result = localToGlobal.rotate(posOnChild.getValue());
+            return result;
+        }
 
         Vector3 initTranslateChild(Quat objectRotation)
         {
@@ -167,17 +181,26 @@ public:
 
         Vector3 correctPosChild(Vector3 object1Pos, Quat object1Rot, Vector3 object2Pos, Quat object2Rot)
         {
+            Vector3 result;
             Vector3 PAParent = posOnParent.getValue() - Vector3(0,0,0);
             Vector3 PAChild = posOnChild.getValue() - Vector3(0,0,0);
             Vector3 A1 = object1Pos + object1Rot.rotate(PAParent);
             Vector3 A2 = object2Pos + object2Rot.rotate(PAChild);
 
-            return A1 - A2;
+            result = A1 - A2;
+
+            return result;
 
         }
 
         vector<Articulation*> getArticulations();
-    };
+
+        Quat OrientationArticulationCenter;
+        Vector3 DisplacementArticulationCenter;
+        Vector3 Disp_Rotation;
+
+
+    }; // end ArticulationCenter
 
     ArticulatedHierarchyContainer();
 
