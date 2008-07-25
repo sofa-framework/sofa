@@ -85,6 +85,11 @@ public:
     {
         return in;
     }
+
+    /// BaseMeshTopology API
+    /// @{
+    virtual void clear()                       { }
+    /// @}
 };
 
 } // namespace topology

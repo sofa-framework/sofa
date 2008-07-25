@@ -290,6 +290,16 @@ public:
         }
     }
 
+    /// BaseMeshTopology API
+    /// @{
+
+    virtual const SeqEdges& getEdges()
+    {
+        return getEdgeArray();
+    }
+
+    /// @}
+
 protected:
     /** \brief Returns a non-const edge shell of the ith DOF for subsequent modification
     *

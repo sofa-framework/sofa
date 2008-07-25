@@ -261,6 +261,22 @@ private:
     */
     sofa::helper::vector< unsigned int > &getTriangleEdgeShellForModification(const unsigned int edgeIndex);
 
+    /// BaseMeshTopology API
+    /// @{
+
+    const SeqTriangles& getTriangles()
+    {
+        return getTriangleArray();
+    }
+
+    /// Returns the set of edges adjacent to a given triangle.
+    const TriangleEdges& getEdgeTriangleShell(TriangleID i)
+    {
+        return getTriangleEdge(i);
+    }
+
+    /// @}
+
 protected:
     /// provides the set of triangles
     sofa::helper::vector<Triangle> m_triangle;
