@@ -168,6 +168,10 @@ public:
         if (arg->findObject(arg->getAttribute("object2","..")) == NULL)
             std::cerr << "Cannot create "<<className(obj)<<" as object2 is missing.\n";
 
+        if (arg->findObject(arg->getAttribute("object1","../..")) == NULL || arg->findObject(arg->getAttribute("object2","..")) == NULL)
+            return false;
+
+
         EdgeSetTopologyContainer* topoIn;
         QuadSetTopologyContainer* topoOut;
         (dynamic_cast<sofa::core::objectmodel::BaseObject*>(arg->findObject(arg->getAttribute("object1","../.."))))->getContext()->get(topoIn);
@@ -187,11 +191,15 @@ public:
     template<class T>
     static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        EdgeSetTopologyContainer* topoIn;
-        QuadSetTopologyContainer* topoOut;
-        (dynamic_cast<sofa::core::objectmodel::BaseObject*>(arg->findObject(arg->getAttribute("object1","../.."))))->getContext()->get(topoIn);
-        (dynamic_cast<sofa::core::objectmodel::BaseObject*>(arg->findObject(arg->getAttribute("object2",".."))))->getContext()->get(topoOut);
-
+        EdgeSetTopologyContainer* topoIn=NULL;
+        QuadSetTopologyContainer* topoOut=NULL;
+        if (arg)
+        {
+            if (arg->findObject(arg->getAttribute("object1","../..")) != NULL)
+                (dynamic_cast<sofa::core::objectmodel::BaseObject*>(arg->findObject(arg->getAttribute("object1","../.."))))->getContext()->get(topoIn);
+            if (arg->findObject(arg->getAttribute("object2","../..")) != NULL)
+                (dynamic_cast<sofa::core::objectmodel::BaseObject*>(arg->findObject(arg->getAttribute("object2",".."))))->getContext()->get(topoOut);
+        }
         obj = new T(
             (arg?dynamic_cast<In*>(topoIn):NULL),
             (arg?dynamic_cast<Out*>(topoOut):NULL));

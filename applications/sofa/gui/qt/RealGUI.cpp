@@ -1865,7 +1865,9 @@ void RealGUI::dropEvent(QDropEvent* event)
         filename.resize(filename.size()-1);
         filename[filename.size()-1]='\0';
     }
-    fileOpen(filename);
+
+    if (filename.rfind(".simu") != std::string::npos) fileOpenSimu(filename);
+    else  	                                    fileOpen(filename);
 }
 
 
