@@ -1044,9 +1044,9 @@ void RealGUI::screenshot()
     QString filename;
 
 #ifdef SOFA_HAVE_PNG
-    char* imageString = "Images (*.png)";
+    const char* imageString = "Images (*.png)";
 #else
-    char* imageString = "Images (*.bmp)";
+    const char* imageString = "Images (*.bmp)";
 #endif
 
     filename = getSaveFileName ( this,
