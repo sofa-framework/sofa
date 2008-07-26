@@ -117,7 +117,10 @@ public:
 
     BaseMeshTopology();
 
-    virtual bool load(const char* filename) = 0;
+    /// Load the topology from a file.
+    ///
+    /// The default implementation supports the following formats: obj, gmsh, mesh (custom simple text file), xs3 (deprecated description of mass-springs networks).
+    virtual bool load(const char* filename);
 
     // defined in Topology
     //virtual int getNbPoints() const = 0;
@@ -238,21 +241,26 @@ public:
 #endif
     /// @}
 
-    // Points accessors (not always available)
+    /// @name Initial points accessors (only available if the topology was loaded from a file containing this information).
+    /// Note that this data is only used for initialisation and is not maintained afterwards (i.e. topological changes may not be applied)
+    /// @{
     virtual bool hasPos() const { return false; }
     virtual double getPX(int) const { return 0.0; }
     virtual double getPY(int) const { return 0.0; }
     virtual double getPZ(int) const { return 0.0; }
+    /// @}
 
-    // for procedural creation without file loader
+    /// Procedural creation methods
+    /// @{
     virtual void clear();
-    virtual void addPoint(double px, double py, double pz);
+    virtual) void addPoint(double px, double py, double pz);
     virtual void addEdge( int a, int b );
     void addLine( int a, int b ) { addEdge(a,b); }
     virtual void addTriangle( int a, int b, int c );
     virtual void addQuad( int a, int b, int c, int d );
     virtual void addTetra( int a, int b, int c, int d );
     virtual void addHexa( int a, int b, int c, int d, int e, int f, int g, int h );
+    /// @}
 
     /// get the current revision of this mesh (use to detect changes)
     /// @deprecated
