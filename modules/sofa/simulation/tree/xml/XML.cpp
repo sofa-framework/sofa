@@ -303,6 +303,8 @@ BaseElement* includeNode(xmlNodePtr root,const char *basefilename)
     BaseElement* result = createNode(newroot, filename.c_str(), true);
     if (result)
     {
+
+        if (result->getName() == "Group") result->setGroupType(true);
         // Copy attributes
         for (xmlAttrPtr attr = root->properties; attr!=NULL; attr = attr->next)
         {
@@ -310,9 +312,10 @@ BaseElement* includeNode(xmlNodePtr root,const char *basefilename)
             if (!xmlStrcmp(attr->name,(const xmlChar*)"href")) continue;
             if (!xmlStrcmp(attr->name,(const xmlChar*)"name"))
             {
-                // only set the name of the root node
-                result->setName((const char*)attr->children->content);
-                if (result->getName() == "Group") result->setGroupType(true);
+                if(!xmlStrcmp(attr->children->content,(const xmlChar*)"Group")) result->setGroupType(true);
+                else  result->setGroupType(false);
+
+                if (!result->isGroupType()) result->setName((const char*)attr->children->content);
             }
             else
             {
