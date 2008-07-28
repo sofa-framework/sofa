@@ -24,6 +24,7 @@
 ******************************************************************************/
 
 #include <sofa/component/topology/HexahedronSetTopologyContainer.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -33,6 +34,8 @@ namespace topology
 {
 using namespace std;
 using namespace sofa::defaulttype;
+
+int HexahedronSetTopologyContainerClass = core::RegisterObject("Hexahedron set topology container");
 
 const unsigned int hexahedronEdgeArray[12][2]= {{0,1},{0,3},{0,4},{1,2},{1,5},{2,3},{2,6},{3,7},{4,5},{4,7},{5,6},{6,7}};
 

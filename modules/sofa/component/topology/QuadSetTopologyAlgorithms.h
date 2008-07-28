@@ -27,7 +27,6 @@
 
 #include <sofa/component/topology/EdgeSetTopologyAlgorithms.h>
 #include <sofa/component/topology/QuadSetTopology.h>
-
 namespace sofa
 {
 namespace component
@@ -46,7 +45,13 @@ class QuadSetTopologyAlgorithms : public EdgeSetTopologyAlgorithms<DataTypes>
 public:
     typedef typename DataTypes::Real Real;
 
-    QuadSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top);
+    QuadSetTopologyAlgorithms()
+        : EdgeSetTopologyAlgorithms<DataTypes>()
+    { };
+
+    QuadSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
+        : EdgeSetTopologyAlgorithms<DataTypes>(top)
+    { }
 
     virtual ~QuadSetTopologyAlgorithms() {}
 

@@ -65,6 +65,10 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
 
+    HexahedronSetTopologyModifier()
+        : QuadSetTopologyModifier<DataTypes>()
+    { }
+
     HexahedronSetTopologyModifier(core::componentmodel::topology::BaseTopology *top)
         : QuadSetTopologyModifier<DataTypes>(top)
     { }

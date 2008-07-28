@@ -66,6 +66,10 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
 
+    TetrahedronSetTopologyModifier()
+        : TriangleSetTopologyModifier<DataTypes>()
+    {}
+
     TetrahedronSetTopologyModifier(core::componentmodel::topology::BaseTopology *top)
         : TriangleSetTopologyModifier<DataTypes>(top)
     {}

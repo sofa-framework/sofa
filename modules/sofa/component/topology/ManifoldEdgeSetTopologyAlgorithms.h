@@ -45,6 +45,10 @@ template < class DataTypes >
 class ManifoldEdgeSetTopologyAlgorithms : public EdgeSetTopologyAlgorithms<DataTypes>
 {
 public:
+    ManifoldEdgeSetTopologyAlgorithms()
+        : EdgeSetTopologyAlgorithms<DataTypes>()
+    {}
+
     ManifoldEdgeSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
         : EdgeSetTopologyAlgorithms<DataTypes>(top)
     {}

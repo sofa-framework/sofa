@@ -25,6 +25,7 @@
 
 #include <sofa/component/topology/QuadSetTopologyContainer.h>
 
+#include <sofa/core/ObjectFactory.h>
 namespace sofa
 {
 namespace component
@@ -33,6 +34,8 @@ namespace topology
 {
 using namespace std;
 using namespace sofa::defaulttype;
+
+int QuadSetTopologyContainerClass = core::RegisterObject("Quad set topology container");
 
 QuadSetTopologyContainer::QuadSetTopologyContainer(core::componentmodel::topology::BaseTopology *top )
     : EdgeSetTopologyContainer(top)

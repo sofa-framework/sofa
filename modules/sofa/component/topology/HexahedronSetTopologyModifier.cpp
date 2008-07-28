@@ -26,6 +26,7 @@
 #include <sofa/component/topology/HexahedronSetTopologyModifier.h>
 #include <sofa/component/topology/HexahedronSetTopologyModifier.inl>
 #include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -35,6 +36,18 @@ namespace topology
 {
 using namespace sofa::defaulttype;
 
+int HexahedronSetTopologyModifierClass = core::RegisterObject("Hexahedron set topology modifier")
+#ifndef SOFA_FLOAT
+        .add< HexahedronSetTopologyModifier<Vec3dTypes> >()
+        .add< HexahedronSetTopologyModifier<Vec2dTypes> >()
+        .add< HexahedronSetTopologyModifier<Vec1dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< HexahedronSetTopologyModifier<Vec3fTypes> >()
+        .add< HexahedronSetTopologyModifier<Vec2fTypes> >()
+        .add< HexahedronSetTopologyModifier<Vec1fTypes> >()
+#endif
+        ;
 #ifndef SOFA_FLOAT
 template class HexahedronSetTopologyModifier<Vec3dTypes>;
 template class HexahedronSetTopologyModifier<Vec2dTypes>;

@@ -47,6 +47,10 @@ class TetrahedronSetTopologyAlgorithms : public TriangleSetTopologyAlgorithms<Da
 public:
     typedef typename DataTypes::Real Real;
 
+    TetrahedronSetTopologyAlgorithms()
+        : TriangleSetTopologyAlgorithms<DataTypes>()
+    {}
+
     TetrahedronSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
         : TriangleSetTopologyAlgorithms<DataTypes>(top)
     {}

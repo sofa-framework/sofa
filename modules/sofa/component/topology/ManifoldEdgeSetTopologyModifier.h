@@ -59,6 +59,10 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
 
+    ManifoldEdgeSetTopologyModifier()
+        : EdgeSetTopologyModifier<DataTypes>()
+    {}
+
     ManifoldEdgeSetTopologyModifier(core::componentmodel::topology::BaseTopology *top)
         : EdgeSetTopologyModifier<DataTypes>(top)
     {}
