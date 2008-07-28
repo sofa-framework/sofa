@@ -24,7 +24,7 @@
 ******************************************************************************/
 
 #include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
-
+#include <sofa/core/ObjectFactory.h>
 namespace sofa
 {
 
@@ -37,6 +37,8 @@ const unsigned int tetrahedronEdgeArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,
 
 using namespace std;
 using namespace sofa::defaulttype;
+
+int TetrahedronSetTopologyContainerClass = core::RegisterObject("Tetrahedron set topology container");
 
 TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer(core::componentmodel::topology::BaseTopology *top)
     : TriangleSetTopologyContainer( top)

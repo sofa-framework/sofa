@@ -25,6 +25,7 @@
 #include <sofa/component/topology/QuadSetTopologyModifier.h>
 #include <sofa/component/topology/QuadSetTopologyModifier.inl>
 #include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -33,7 +34,18 @@ namespace component
 namespace topology
 {
 using namespace sofa::defaulttype;
-
+int QuadSetTopologyModifierClass = core::RegisterObject("Quad set topology modifier")
+#ifndef SOFA_FLOAT
+        .add< QuadSetTopologyModifier<Vec3dTypes> >()
+        .add< QuadSetTopologyModifier<Vec2dTypes> >()
+        .add< QuadSetTopologyModifier<Vec1dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< QuadSetTopologyModifier<Vec3fTypes> >()
+        .add< QuadSetTopologyModifier<Vec2fTypes> >()
+        .add< QuadSetTopologyModifier<Vec1fTypes> >()
+#endif
+        ;
 #ifndef SOFA_FLOAT
 template class QuadSetTopologyModifier<Vec3dTypes>;
 template class QuadSetTopologyModifier<Vec2dTypes>;

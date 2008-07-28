@@ -43,10 +43,6 @@ using namespace sofa::defaulttype;
 ////////////////////////////////////QuadSetTopologyAlgorithms////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-template<class DataTypes>
-QuadSetTopologyAlgorithms< DataTypes >::QuadSetTopologyAlgorithms(core::componentmodel::topology::BaseTopology *top)
-    : EdgeSetTopologyAlgorithms<DataTypes>(top)
-{ }
 
 template<class DataTypes>
 QuadSetTopology< DataTypes >* QuadSetTopologyAlgorithms< DataTypes >::getQuadSetTopology() const

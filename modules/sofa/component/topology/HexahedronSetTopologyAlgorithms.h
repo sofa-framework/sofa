@@ -47,6 +47,10 @@ class HexahedronSetTopologyAlgorithms : public QuadSetTopologyAlgorithms<DataTyp
 public:
     typedef typename DataTypes::Real Real;
 
+    HexahedronSetTopologyAlgorithms()
+        : QuadSetTopologyAlgorithms<DataTypes>()
+    { }
+
     HexahedronSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
         : QuadSetTopologyAlgorithms<DataTypes>(top)
     { }

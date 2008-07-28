@@ -25,6 +25,7 @@
 
 #include <sofa/component/topology/ManifoldEdgeSetTopologyContainer.h>
 
+#include <sofa/core/ObjectFactory.h>
 // Use BOOST GRAPH LIBRARY :
 
 #include <boost/config.hpp>
@@ -49,6 +50,8 @@ namespace topology
 
 using namespace std;
 using namespace sofa::defaulttype;
+
+int ManifoldEdgeSetTopologyContainerClass = core::RegisterObject("ManifoldEdge set topology container");
 
 ManifoldEdgeSetTopologyContainer::ManifoldEdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top)
     : EdgeSetTopologyContainer( top )

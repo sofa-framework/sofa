@@ -27,7 +27,7 @@
 
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
-
+#include <sofa/core/ObjectFactory.h>
 namespace sofa
 {
 
@@ -39,6 +39,22 @@ namespace topology
 
 using namespace sofa::defaulttype;
 
+int ManifoldEdgeSetTopologyAlgorithmsClass = core::RegisterObject("ManifoldEdge set topology algorithms")
+#ifndef SOFA_FLOAT
+        .add< ManifoldEdgeSetTopologyAlgorithms<Vec3dTypes> >()
+        .add< ManifoldEdgeSetTopologyAlgorithms<Vec2dTypes> >()
+        .add< ManifoldEdgeSetTopologyAlgorithms<Vec1dTypes> >()
+        .add< ManifoldEdgeSetTopologyAlgorithms<Rigid3dTypes> >()
+        .add< ManifoldEdgeSetTopologyAlgorithms<Rigid2dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< ManifoldEdgeSetTopologyAlgorithms<Vec3fTypes> >()
+        .add< ManifoldEdgeSetTopologyAlgorithms<Vec2fTypes> >()
+        .add< ManifoldEdgeSetTopologyAlgorithms<Vec1fTypes> >()
+        .add< ManifoldEdgeSetTopologyAlgorithms<Rigid3fTypes> >()
+        .add< ManifoldEdgeSetTopologyAlgorithms<Rigid2fTypes> >()
+#endif
+        ;
 #ifndef SOFA_FLOAT
 template class ManifoldEdgeSetTopologyAlgorithms<Vec3dTypes>;
 template class ManifoldEdgeSetTopologyAlgorithms<Vec2dTypes>;
