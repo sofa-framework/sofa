@@ -122,7 +122,7 @@ SOURCES += \
 	  CudaPrecomputedConstraintCorrection.cpp
 
 CUDA_SOURCES += \
-	   CudaBTDLinearSolver.cu \
+	   CudaComputeMinv.cu \
 	   CudaLCP.cu \
            CudaSpatialGridContainer.cu
 
