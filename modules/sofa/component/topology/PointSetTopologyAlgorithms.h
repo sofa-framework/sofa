@@ -48,6 +48,10 @@ class PointSetTopologyAlgorithms : public core::componentmodel::topology::Topolo
 {
     // no methods implemented yet
 public:
+    PointSetTopologyAlgorithms()
+        : TopologyAlgorithms()
+    {}
+
     PointSetTopologyAlgorithms(core::componentmodel::topology::BaseTopology *top)
         : TopologyAlgorithms(top)
     {}

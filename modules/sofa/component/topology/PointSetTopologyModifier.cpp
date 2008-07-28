@@ -26,6 +26,7 @@
 #include <sofa/component/topology/PointSetTopologyModifier.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -36,11 +37,23 @@ namespace component
 namespace topology
 {
 using namespace sofa::defaulttype;
+int PointSetTopologyModifierClass = core::RegisterObject("Point set topology modifier")
+#ifndef SOFA_FLOAT
+        .add< PointSetTopologyModifier<Vec3dTypes> >()
+        .add< PointSetTopologyModifier<Vec2dTypes> >()
+        .add< PointSetTopologyModifier<Vec1dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< PointSetTopologyModifier<Vec3fTypes> >()
+        .add< PointSetTopologyModifier<Vec2fTypes> >()
+        .add< PointSetTopologyModifier<Vec1fTypes> >()
+#endif
+        ;
 
 #ifndef SOFA_FLOAT
 template class PointSetTopologyModifier<Vec3dTypes>;
 template class PointSetTopologyModifier<Vec2dTypes>;
-//     template class PointSetTopologyModifier<Vec1dTypes>;
+template class PointSetTopologyModifier<Vec1dTypes>;
 
 //     template class PointSetTopologyModifier<Rigid3dTypes>;
 //     template class PointSetTopologyModifier<Rigid2dTypes>;
@@ -49,7 +62,7 @@ template class PointSetTopologyModifier<Vec2dTypes>;
 #ifndef SOFA_DOUBLE
 template class PointSetTopologyModifier<Vec3fTypes>;
 template class PointSetTopologyModifier<Vec2fTypes>;
-//     template class PointSetTopologyModifier<Vec1fTypes>;
+template class PointSetTopologyModifier<Vec1fTypes>;
 
 //     template class PointSetTopologyModifier<Rigid3fTypes>;
 //     template class PointSetTopologyModifier<Rigid2fTypes>;

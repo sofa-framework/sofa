@@ -24,6 +24,8 @@
 ******************************************************************************/
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
 
+#include <sofa/core/ObjectFactory.h>
+
 namespace sofa
 {
 
@@ -34,6 +36,9 @@ namespace topology
 {
 using namespace std;
 using namespace sofa::defaulttype;
+
+
+int TriangleSetTopologyContainerClass = core::RegisterObject("Triangle set topology container");
 
 TriangleSetTopologyContainer::TriangleSetTopologyContainer(core::componentmodel::topology::BaseTopology *top )
     : EdgeSetTopologyContainer(top)

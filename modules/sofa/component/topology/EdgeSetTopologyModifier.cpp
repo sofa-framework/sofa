@@ -27,6 +27,7 @@
 
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -38,6 +39,22 @@ namespace topology
 {
 using namespace sofa::defaulttype;
 
+int EdgeSetTopologyModifierClass = core::RegisterObject("Edge set topology modifier")
+#ifndef SOFA_FLOAT
+        .add< EdgeSetTopologyModifier<Vec3dTypes> >()
+        .add< EdgeSetTopologyModifier<Vec2dTypes> >()
+        .add< EdgeSetTopologyModifier<Vec1dTypes> >()
+        .add< EdgeSetTopologyModifier<Rigid3dTypes> >()
+        .add< EdgeSetTopologyModifier<Rigid2dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< EdgeSetTopologyModifier<Vec3fTypes> >()
+        .add< EdgeSetTopologyModifier<Vec2fTypes> >()
+        .add< EdgeSetTopologyModifier<Vec1fTypes> >()
+        .add< EdgeSetTopologyModifier<Rigid3fTypes> >()
+        .add< EdgeSetTopologyModifier<Rigid2fTypes> >()
+#endif
+        ;
 #ifndef SOFA_FLOAT
 template class EdgeSetTopologyModifier<Vec3dTypes>;
 template class EdgeSetTopologyModifier<Vec2dTypes>;

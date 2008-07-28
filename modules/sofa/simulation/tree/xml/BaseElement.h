@@ -56,6 +56,7 @@ private:
     BaseElement* parent;
     typedef std::list<BaseElement*> ChildList;
     ChildList children;
+    bool groupType;       //type of Node Element: only its objects have to be taken into account
 public:
     BaseElement(const std::string& name, const std::string& type, BaseElement* newParent=NULL);
 
@@ -96,6 +97,12 @@ public:
 
     /// Return true if this element was the root of the file
     bool isFileRoot();
+
+    /// Return true if this element was a special group node from an included file
+    bool isGroupType() {return groupType;}
+
+    /// Specify that the current element if a special group node from an included file
+    void setGroupType(bool b) {groupType=b;}
 
     ///// Get all attribute data, read-only
     //const std::map<std::string,std::string*>& getAttributeMap() const;

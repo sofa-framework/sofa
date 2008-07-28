@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/component/topology/PointSetTopologyContainer.h>
 
+#include <sofa/core/ObjectFactory.h>
 namespace sofa
 {
 
@@ -34,6 +35,8 @@ namespace topology
 {
 
 using namespace sofa::defaulttype;
+
+int PointSetTopologyContainerClass = core::RegisterObject("Point set topology container");
 
 PointSetTopologyContainer::PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top)
     : core::componentmodel::topology::TopologyContainer(top)

@@ -56,6 +56,10 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
 
+    PointSetTopologyModifier()
+        : TopologyModifier()
+    {}
+
     PointSetTopologyModifier(core::componentmodel::topology::BaseTopology *top)
         : TopologyModifier(top)
     {}

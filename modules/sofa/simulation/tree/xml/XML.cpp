@@ -155,11 +155,20 @@ BaseElement* createNode(xmlNodePtr root, const char *basefilename, bool isRoot =
         BaseElement* childnode = createNode(child, basefilename);
         if (childnode != NULL)
         {
-            if (!node->addChild(childnode))
+            //  if the current node is an included node, with the special name Group, we only add the objects.
+            if (childnode->isGroupType())
             {
-                std::cerr << "Node "<<childnode->getClass()<<" name "<<childnode->getName()<<" type "<<childnode->getType()
-                        <<" cannot be a child of node "<<node->getClass()<<" name "<<node->getName()<<" type "<<node->getType()<<std::endl;
-                delete childnode;
+                BaseElement::child_iterator<> it(childnode->begin());
+                for(; it!=childnode->end(); ++it) {node->addChild(it); childnode->removeChild(it);}
+            }
+            else
+            {
+                if (!node->addChild(childnode))
+                {
+                    std::cerr << "Node "<<childnode->getClass()<<" name "<<childnode->getName()<<" type "<<childnode->getType()
+                            <<" cannot be a child of node "<<node->getClass()<<" name "<<node->getName()<<" type "<<node->getType()<<std::endl;
+                    delete childnode;
+                }
             }
         }
     }
@@ -303,10 +312,12 @@ BaseElement* includeNode(xmlNodePtr root,const char *basefilename)
             {
                 // only set the name of the root node
                 result->setName((const char*)attr->children->content);
+                if (result->getName() == "Group") result->setGroupType(true);
             }
             else
             {
                 const char* attrname = (const char*)attr->name;
+
                 const char* value = (const char*)attr->children->content;
                 if (const char* sep = strstr(attrname,"__"))
                 {

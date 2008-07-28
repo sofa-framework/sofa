@@ -51,6 +51,10 @@ template < class DataTypes >
 class EdgeSetTopologyAlgorithms : public PointSetTopologyAlgorithms<DataTypes>
 {
 public:
+    EdgeSetTopologyAlgorithms()
+        : PointSetTopologyAlgorithms<DataTypes>()
+    {}
+
     EdgeSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
         : PointSetTopologyAlgorithms<DataTypes>(top)
     {}
