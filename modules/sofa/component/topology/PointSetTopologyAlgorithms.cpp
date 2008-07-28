@@ -26,6 +26,7 @@
 #include <sofa/component/topology/PointSetTopologyAlgorithms.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -36,7 +37,30 @@ namespace component
 namespace topology
 {
 
+using namespace sofa::defaulttype;
+int PointSetTopologyAlgorithmsClass = core::RegisterObject("Point set topology algorithms")
+#ifndef SOFA_FLOAT
+        .add< PointSetTopologyAlgorithms<Vec3dTypes> >()
+        .add< PointSetTopologyAlgorithms<Vec2dTypes> >()
+        .add< PointSetTopologyAlgorithms<Vec1dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< PointSetTopologyAlgorithms<Vec3fTypes> >()
+        .add< PointSetTopologyAlgorithms<Vec2fTypes> >()
+        .add< PointSetTopologyAlgorithms<Vec1fTypes> >()
+#endif
+        ;
+#ifndef SOFA_FLOAT
+template class PointSetTopologyAlgorithms<Vec3dTypes>;
+template class PointSetTopologyAlgorithms<Vec2dTypes>;
+template class PointSetTopologyAlgorithms<Vec1dTypes>;
+#endif
 
+#ifndef SOFA_DOUBLE
+template class PointSetTopologyAlgorithms<Vec3fTypes>;
+template class PointSetTopologyAlgorithms<Vec2fTypes>;
+template class PointSetTopologyAlgorithms<Vec1fTypes>;
+#endif
 } // namespace topology
 
 } // namespace component

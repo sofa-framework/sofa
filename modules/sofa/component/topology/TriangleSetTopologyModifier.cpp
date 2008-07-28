@@ -25,6 +25,7 @@
 #include <sofa/component/topology/TriangleSetTopologyModifier.h>
 #include <sofa/component/topology/TriangleSetTopologyModifier.inl>
 #include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -36,6 +37,18 @@ namespace topology
 {
 using namespace sofa::defaulttype;
 
+int TriangleSetTopologyModifierClass = core::RegisterObject("Triangle set topology modifier")
+#ifndef SOFA_FLOAT
+        .add< TriangleSetTopologyModifier<Vec3dTypes> >()
+        .add< TriangleSetTopologyModifier<Vec2dTypes> >()
+        .add< TriangleSetTopologyModifier<Vec1dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< TriangleSetTopologyModifier<Vec3fTypes> >()
+        .add< TriangleSetTopologyModifier<Vec2fTypes> >()
+        .add< TriangleSetTopologyModifier<Vec1fTypes> >()
+#endif
+        ;
 #ifndef SOFA_FLOAT
 template class TriangleSetTopologyModifier<Vec3dTypes>;
 template class TriangleSetTopologyModifier<Vec2dTypes>;

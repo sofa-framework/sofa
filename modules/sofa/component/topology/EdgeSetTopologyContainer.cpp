@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
 
+#include <sofa/core/ObjectFactory.h>
 // Use BOOST GRAPH LIBRARY :
 
 #include <boost/config.hpp>
@@ -47,6 +48,8 @@ namespace topology
 {
 using namespace std;
 using namespace sofa::defaulttype;
+
+int EdgeSetTopologyContainerClass = core::RegisterObject("Edge set topology container");
 
 EdgeSetTopologyContainer::EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top)
     : PointSetTopologyContainer( top )

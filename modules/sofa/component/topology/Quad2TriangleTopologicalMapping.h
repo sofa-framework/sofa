@@ -165,8 +165,8 @@ public:
     template<class T>
     static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        QuadSetTopologyContainer* topoIn;
-        TriangleSetTopologyContainer* topoOut;
+        QuadSetTopologyContainer* topoIn=NULL;
+        TriangleSetTopologyContainer* topoOut=NULL;
         if (arg)
         {
             if (arg->findObject(arg->getAttribute("object1","../..")) != NULL)
