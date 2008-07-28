@@ -42,9 +42,9 @@ using namespace sofa::defaulttype;
 using helper::vector;
 using helper::fixed_array;
 
-BaseMeshTopology::BaseMeshTopology()
-{
-}
+// BaseMeshTopology::BaseMeshTopology()
+// {
+// }
 
 /// Returns the number of current vertices
 unsigned int BaseMeshTopology::getDOFNumber() const

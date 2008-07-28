@@ -115,12 +115,12 @@ public:
     typedef vector<HexaID> QuadHexas;
     /// @}
 
-    BaseMeshTopology();
+    BaseMeshTopology() {};
 
     /// Load the topology from a file.
     ///
     /// The default implementation supports the following formats: obj, gmsh, mesh (custom simple text file), xs3 (deprecated description of mass-springs networks).
-    virtual bool load(const char* filename);
+    virtual bool load(const char* /* filename */) { return false;};
 
     // defined in Topology
     //virtual int getNbPoints() const = 0;
@@ -253,7 +253,7 @@ public:
     /// Procedural creation methods
     /// @{
     virtual void clear();
-    virtual) void addPoint(double px, double py, double pz);
+    virtual void addPoint(double px, double py, double pz);
     virtual void addEdge( int a, int b );
     void addLine( int a, int b ) { addEdge(a,b); }
     virtual void addTriangle( int a, int b, int c );

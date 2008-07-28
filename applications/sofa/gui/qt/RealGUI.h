@@ -387,6 +387,7 @@ private:
             if (tt == CheckBoxController)
                 setTristate(true);
             //setState(NoChange);
+
         }
         template<class T>
         DisplayFlagItem(RealGUI* g, T* parent, Q3CheckListItem* after, int id, const QString & text, Type tt = CheckBox)
@@ -417,9 +418,12 @@ private:
             last = s;
             gui->showhideElements(id,b);
         }
-        /* 	virtual void activate() */
-        /* 	{ */
-        /* 	} */
+        virtual void activate()
+        {
+            if (isOn()) {setState(Off); gui->showhideElements(id,false);}
+            else        {setState(On); gui->showhideElements(id,true);}
+        }
+
     };
 
 
