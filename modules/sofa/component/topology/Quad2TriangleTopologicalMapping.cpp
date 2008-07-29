@@ -26,12 +26,6 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/topology/TriangleSetTopology.h>
-#include <sofa/component/topology/QuadSetTopology.h>
-
-#include <sofa/core/componentmodel/topology/TopologicalMapping.h>
-#include <sofa/core/componentmodel/topology/BaseTopology.h>
-
 
 namespace sofa
 {
@@ -42,18 +36,11 @@ namespace component
 namespace topology
 {
 
-using namespace sofa::defaulttype;
-using namespace core;
-using namespace core::componentmodel::topology;
-using namespace sofa::core::componentmodel::behavior;
-
-using namespace sofa::component::topology;
-
 SOFA_DECL_CLASS(Quad2TriangleTopologicalMapping)
 
 // Register in the Factory
 int Quad2TriangleTopologicalMappingClass = core::RegisterObject("Special case of mapping where QuadSetTopology is converted to TriangleSetTopology")
-        .add< Quad2TriangleTopologicalMapping< QuadSetTopologyContainer, TriangleSetTopologyContainer > >()
+        .add< Quad2TriangleTopologicalMapping >()
 
         ;
 

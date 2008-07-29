@@ -64,15 +64,15 @@ using namespace sofa::core;
  * Tetra2TriangleTopologicalMapping class is templated by the pair (INPUT TOPOLOGY, OUTPUT TOPOLOGY)
  *
 */
-template <class TIn, class TOut>
+
 class Tetra2TriangleTopologicalMapping : public TopologicalMapping
 {
 
 public:
     /// Input Topology
-    typedef TIn In;
+    typedef TetrahedronSetTopologyContainer In;
     /// Output Topology
-    typedef TOut Out;
+    typedef TriangleSetTopologyContainer Out;
 
     friend class TopologicalMapping;
 

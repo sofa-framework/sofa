@@ -406,6 +406,7 @@ void DiagonalMass<DataTypes, MassType>::init()
     this->getContext()->get(hexaGeo);
 
     Inherited::init();
+
     // add the functions to handle topology changes.
 
     VecMass& masses = *f_mass.beginEdit();
@@ -427,12 +428,13 @@ void DiagonalMass<DataTypes, MassType>::init()
 
         if (_topology->getNbTetras()>0)
         {
+
             VecMass& masses = *f_mass.beginEdit();
             topologyType=TOPOLOGY_TETRAHEDRONSET;
 
             // resize array
             clear();
-            masses.resize(_topology->getDOFNumber());
+            masses.resize(this->mstate->getSize());
 
             for(unsigned int i=0; i<masses.size(); ++i)
                 masses[i]=(Real)0;
@@ -442,6 +444,7 @@ void DiagonalMass<DataTypes, MassType>::init()
 
             for (int i=0; i<_topology->getNbTetras(); ++i)
             {
+
                 const Tetrahedron &t=_topology->getTetra(i);
                 mass=(md*tetraGeo->computeRestTetrahedronVolume(i))/4;
                 masses[t[0]]+=mass;
@@ -458,7 +461,7 @@ void DiagonalMass<DataTypes, MassType>::init()
 
             // resize array
             clear();
-            masses.resize(_topology->getDOFNumber());
+            masses.resize(this->mstate->getSize());
 
             for(unsigned int i=0; i<masses.size(); ++i)
                 masses[i]=(Real)0;
@@ -496,7 +499,7 @@ void DiagonalMass<DataTypes, MassType>::init()
 
             // resize array
             clear();
-            masses.resize(_topology->getDOFNumber());
+            masses.resize(this->mstate->getSize());
 
             for(unsigned int i=0; i<masses.size(); ++i)
                 masses[i]=(Real)0;

@@ -26,13 +26,6 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/topology/QuadSetTopology.h>
-#include <sofa/component/topology/HexahedronSetTopology.h>
-
-#include <sofa/core/componentmodel/topology/TopologicalMapping.h>
-#include <sofa/core/componentmodel/topology/BaseTopology.h>
-
-
 namespace sofa
 {
 
@@ -42,18 +35,11 @@ namespace component
 namespace topology
 {
 
-using namespace sofa::defaulttype;
-using namespace core;
-using namespace core::componentmodel::topology;
-using namespace sofa::core::componentmodel::behavior;
-
-using namespace sofa::component::topology;
-
 SOFA_DECL_CLASS(Hexa2QuadTopologicalMapping)
 
 // Register in the Factory
 int Hexa2QuadTopologicalMappingClass = core::RegisterObject("Special case of mapping where HexahedronSetTopology is converted to QuadSetTopology")
-        .add< Hexa2QuadTopologicalMapping< HexahedronSetTopologyContainer, QuadSetTopologyContainer > >()
+        .add< Hexa2QuadTopologicalMapping >()
 
         ;
 

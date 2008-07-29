@@ -72,19 +72,18 @@ using namespace sofa::core;
  *
 */
 
-template <class TIn, class TOut>
 class Edge2QuadTopologicalMapping : public TopologicalMapping
 {
 
 public:
     /// Input Topology
-    typedef TIn In;
+    typedef EdgeSetTopologyContainer In;
     /// Output Topology
-    typedef TOut Out;
+    typedef QuadSetTopologyContainer Out;
 
-    typedef typename State<Rigid3Types>::VecCoord VecCoord;
-    typedef typename State<Rigid3Types>::Coord Coord;
-    typedef typename Coord::value_type Real;
+    typedef State<Rigid3Types>::VecCoord VecCoord;
+    typedef State<Rigid3Types>::Coord Coord;
+    typedef Coord::value_type Real;
     enum { M=Coord::static_size };
     typedef defaulttype::Mat<M,M,Real> Mat;
     typedef defaulttype::Vec<M,Real> Vec;
