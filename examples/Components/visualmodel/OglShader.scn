@@ -4,7 +4,7 @@
 		<Object type="MechanicalObject" template="Vec3d"/>
 		<Object type="TetrahedronSetTopology" filename="mesh/single_tetra.msh" scale="1.0"/>
 		<Node  activated="0" >
-			<Object type="OglShader" geometryVerticesOut="12" geometryInputType="10" geometryOutputType="5" vertFilename="tetra.vert" geoFilename="tetra_triangles.geo" fragFilename="tetra.frag"/>
+			<Object type="OglShader" geometryVerticesOut="12" geometryInputType="10" geometryOutputType="5" vertFilename="shaders/tetra.vert" geoFilename="shaders/tetra_triangles.geo" fragFilename="shaders/tetra.frag"/>
 			<Object type="OglFloatVector4Variable" id="MappingTable" values="
 	1 0 0 0 
 	0 0 0 1 
@@ -60,7 +60,7 @@
 		</Node>
 		
 		<Node>
-			<Object type="OglShader" geometryVerticesOut="12" geometryInputType="10" geometryOutputType="5" vertFilename="PT.vert" geoFilename="PT.geo" fragFilename="PT.frag"/>
+			<Object type="OglShader" geometryVerticesOut="12" geometryInputType="10" geometryOutputType="5" vertFilename="shaders/PT.vert" geoFilename="shaders/PT.geo" fragFilename="shaders/PT.frag"/>
 						<Object type="OglFloat3Variable" id="fragmentColor" value="1.0 1.0 1.0" />
 			<Object type="OglFloatVariable" id="fragmentOpacity" value="1.0" />
 			<Object type="OglFloatVector4Variable" id="MappingTable" values="
