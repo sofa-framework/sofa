@@ -36,6 +36,7 @@ namespace topology
 {
 using namespace sofa::defaulttype;
 
+SOFA_DECL_CLASS(TetrahedronSetTopologyModifier)
 int TetrahedronSetTopologyModifierClass = core::RegisterObject("Tetrahedron set topology modifier")
 #ifndef SOFA_FLOAT
         .add< TetrahedronSetTopologyModifier<Vec3dTypes> >()

@@ -38,7 +38,10 @@ using namespace std;
 using namespace sofa::defaulttype;
 
 
-int TriangleSetTopologyContainerClass = core::RegisterObject("Triangle set topology container");
+SOFA_DECL_CLASS(TriangleSetTopologyContainer)
+int TriangleSetTopologyContainerClass = core::RegisterObject("Triangle set topology container")
+        .add< TriangleSetTopologyContainer >()
+        ;
 
 TriangleSetTopologyContainer::TriangleSetTopologyContainer(core::componentmodel::topology::BaseTopology *top )
     : EdgeSetTopologyContainer(top)

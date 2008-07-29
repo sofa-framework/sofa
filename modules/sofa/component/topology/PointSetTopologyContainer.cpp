@@ -35,8 +35,10 @@ namespace topology
 {
 
 using namespace sofa::defaulttype;
-
-int PointSetTopologyContainerClass = core::RegisterObject("Point set topology container");
+SOFA_DECL_CLASS(PointSetTopologyContainer)
+int PointSetTopologyContainerClass = core::RegisterObject("Point set topology container")
+        .add< PointSetTopologyContainer >()
+        ;
 
 PointSetTopologyContainer::PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top)
     : core::componentmodel::topology::TopologyContainer(top)

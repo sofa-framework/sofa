@@ -35,7 +35,7 @@ namespace component
 namespace topology
 {
 using namespace sofa::defaulttype;
-
+SOFA_DECL_CLASS(HexahedronSetTopologyModifier)
 int HexahedronSetTopologyModifierClass = core::RegisterObject("Hexahedron set topology modifier")
 #ifndef SOFA_FLOAT
         .add< HexahedronSetTopologyModifier<Vec3dTypes> >()

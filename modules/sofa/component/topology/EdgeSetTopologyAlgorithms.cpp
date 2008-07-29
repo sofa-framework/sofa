@@ -39,7 +39,7 @@ namespace topology
 {
 
 using namespace sofa::defaulttype;
-
+SOFA_DECL_CLASS(EdgeSetTopologyAlgorithms)
 int EdgeSetTopologyAlgorithmsClass = core::RegisterObject("Edge set topology algorithms")
 #ifndef SOFA_FLOAT
         .add< EdgeSetTopologyAlgorithms<Vec3dTypes> >()

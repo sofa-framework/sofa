@@ -34,6 +34,7 @@ namespace component
 namespace topology
 {
 using namespace sofa::defaulttype;
+SOFA_DECL_CLASS(QuadSetTopologyModifier)
 int QuadSetTopologyModifierClass = core::RegisterObject("Quad set topology modifier")
 #ifndef SOFA_FLOAT
         .add< QuadSetTopologyModifier<Vec3dTypes> >()
