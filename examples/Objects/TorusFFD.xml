@@ -1,6 +1,6 @@
 <Node name="TorusFFD">
 	<Object type="EulerImplicitSolver" rayleighStiffness="0.01" />
-	<Object type="CGLinearSolver" iterations="25" threshold="0.00000001" rayleighStiffness="0.01" />
+	<Object type="CGLinearSolver" iterations="25" threshold="0.00000001"  />
 	<Object type="RegularGrid"
 			nx="6" ny="2" nz="5"
 			xmin="-2.5" xmax="2.5"
