@@ -67,14 +67,11 @@ using namespace sofa::core;
 
 class Hexa2QuadTopologicalMapping : public TopologicalMapping
 {
-
 public:
     /// Input Topology
     typedef HexahedronSetTopologyContainer In;
     /// Output Topology
     typedef QuadSetTopologyContainer Out;
-
-    friend class TopologicalMapping;
 
 protected:
     /// Input source BaseTopology

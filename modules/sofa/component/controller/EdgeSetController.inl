@@ -184,7 +184,7 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
 
                 // Renumber Vertices
 
-                unsigned int numPoints = _topology->getDOFNumber();
+                unsigned int numPoints = _topology->getNbPoints();
 
                 sofa::helper::vector<unsigned int> permutations(numPoints);
                 permutations[0] = 0;
@@ -239,7 +239,7 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
 
                 // Renumber Vertices
 
-                unsigned int numPoints = _topology->getDOFNumber();
+                unsigned int numPoints = _topology->getNbPoints();
 
                 sofa::helper::vector<unsigned int> permutations(numPoints);
                 permutations[0] = 0;

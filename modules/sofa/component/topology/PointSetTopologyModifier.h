@@ -136,12 +136,6 @@ public:
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
             const bool addDOF = true);
 
-    /** \brief Add a new point (who has no ancestors) to this topology.
-    *
-    * \sa addPointsWarning
-    */
-    virtual void addNewPoint(unsigned int i,  const sofa::helper::vector< double >& x);
-
     /** \brief Sends a message to warn that some points are about to be deleted.
     *
     * \sa removePointsProcess

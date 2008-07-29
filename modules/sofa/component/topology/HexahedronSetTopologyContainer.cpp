@@ -371,7 +371,7 @@ void HexahedronSetTopologyContainer::createHexahedronVertexShellArray()
     if(hasHexahedronVertexShell())
         clearHexahedronVertexShell();
 
-    m_hexahedronVertexShell.resize( getNumberOfVertices() );
+    m_hexahedronVertexShell.resize( getNbPoints() );
 
     for(unsigned int i=0; i<m_hexahedron.size(); ++i)
     {

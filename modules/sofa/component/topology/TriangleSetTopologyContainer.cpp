@@ -75,7 +75,7 @@ void TriangleSetTopologyContainer::createTriangleVertexShellArray ()
         clearTriangleVertexShell();
     }
 
-    m_triangleVertexShell.resize( m_basicTopology->getDOFNumber() );
+    m_triangleVertexShell.resize( m_basicTopology->getNbPoints() );
     unsigned int j;
 
     for (unsigned int i = 0; i < m_triangle.size(); ++i)

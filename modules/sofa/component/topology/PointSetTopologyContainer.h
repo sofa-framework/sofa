@@ -50,9 +50,6 @@ to each point. This set of point may be a subset of the DOF of the mechanical mo
 class PointSetTopologyContainer : public core::componentmodel::topology::TopologyContainer
 {
 public:
-    template <typename DataTypes>
-    friend class PointSetTopologyModifier;
-
     /** \brief Constructor from a a Base Topology.
     */
     PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top=NULL);
@@ -65,10 +62,12 @@ public:
         return static_cast<PointSetTopology<DataTypes>*> (this->m_basicTopology);
     }
 
-    /** \brief Returns the number of vertices in this topology.
-    *
-    */
-    unsigned int getNumberOfVertices() const;
+    void addPoint();
+    void addPoints(const unsigned int nPoints);
+
+    void removePoint();
+    void removePoints(const unsigned int nPoints);
+
 
     /** \brief Checks if the Topology is coherent
     *
@@ -88,8 +87,16 @@ public:
 
     /// BaseMeshTopology API
     /// @{
-    virtual void clear()                       { }
+    /** \brief Returns the number of vertices in this topology.
+    *
+    */
+    virtual int getNbPoints() const {return nbPoints;}
+
+    virtual void clear();
     /// @}
+
+private:
+    unsigned int	nbPoints;
 };
 
 } // namespace topology

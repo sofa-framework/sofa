@@ -168,7 +168,7 @@ template <class DataTypes>void TriangularFEMForceField<DataTypes>::reinit()
     triangleInfo.resize(_topology->getNbTriangles());
     /// prepare to store info in the edge array
     edgeInfo.resize(_topology->getNbEdges());
-    unsigned int nbPoints=_topology->getDOFNumber();
+    unsigned int nbPoints=_topology->getNbPoints();
 
     vertexInfo.resize(nbPoints);
 
@@ -249,7 +249,7 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
     if (f_fracturable.getValue())
     {
         // First Pass - Vertices Pass
-        unsigned int nbPoints=_topology->getDOFNumber();
+        unsigned int nbPoints=_topology->getNbPoints();
 
         for( unsigned int i=0; i<nbPoints; i++ )
         {
@@ -1084,7 +1084,7 @@ void TriangularFEMForceField<DataTypes>::draw()
     {
         if (showStressValue.getValue())
         {
-            unsigned int nbPoints = _topology->getDOFNumber();
+            unsigned int nbPoints = _topology->getNbPoints();
 
             double totalSumEigenValues = vertexInfo[0].sumEigenValues;
             double max = vertexInfo[0].sumEigenValues;

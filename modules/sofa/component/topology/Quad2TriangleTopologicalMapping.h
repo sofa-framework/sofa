@@ -67,14 +67,11 @@ using namespace sofa::core;
 
 class Quad2TriangleTopologicalMapping : public TopologicalMapping
 {
-
 public:
     /// Input Topology
     typedef QuadSetTopologyContainer In;
     /// Output Topology
     typedef TriangleSetTopologyContainer Out;
-
-    friend class TopologicalMapping;
 
 protected:
     /// Input source BaseTopology

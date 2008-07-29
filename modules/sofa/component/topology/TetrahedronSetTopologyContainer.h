@@ -59,7 +59,6 @@ typedef TetraTriangles TetrahedronTriangles;
 /** a class that stores a set of tetrahedra and provides access with adjacent triangles, edges and vertices */
 class TetrahedronSetTopologyContainer : public TriangleSetTopologyContainer
 {
-public:
     template< typename DataTypes >
     friend class TetrahedronSetTopologyModifier;
 

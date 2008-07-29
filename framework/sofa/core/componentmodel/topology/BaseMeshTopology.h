@@ -136,8 +136,6 @@ public:
 
     /// Random accessors
     /// @{
-    virtual unsigned int getDOFNumber() const;
-
     virtual int getNbEdges()     { return getEdges().size(); }
     virtual int getNbTriangles() { return getTriangles().size(); }
     virtual int getNbQuads()     { return getQuads().size(); }

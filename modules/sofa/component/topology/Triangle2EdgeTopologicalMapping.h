@@ -67,14 +67,11 @@ using namespace sofa::core;
 
 class Triangle2EdgeTopologicalMapping : public TopologicalMapping
 {
-
 public:
     /// Input Topology
     typedef TriangleSetTopologyContainer In;
     /// Output Topology
     typedef EdgeSetTopologyContainer Out;
-
-    friend class TopologicalMapping;
 
 protected:
     /// Input source BaseTopology

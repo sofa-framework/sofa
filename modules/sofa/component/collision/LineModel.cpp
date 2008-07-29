@@ -231,7 +231,7 @@ void LineModel::handleTopologyChange()
                 //std::cout << "INFO_print : Col - POINTSREMOVED" << std::endl;
                 if (bmt)
                 {
-                    unsigned int last = bmt->getDOFNumber() - 1;
+                    unsigned int last = bmt->getNbPoints() - 1;
 
                     unsigned int i,j;
                     const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();

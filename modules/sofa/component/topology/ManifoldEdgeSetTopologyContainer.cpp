@@ -79,7 +79,7 @@ void ManifoldEdgeSetTopologyContainer::createEdgeVertexShellArray()
         clearEdgeVertexShell();
     }
 
-    m_edgeVertexShell.resize( m_basicTopology->getDOFNumber() );
+    m_edgeVertexShell.resize( m_basicTopology->getNbPoints() );
 
     for (unsigned int i = 0; i < m_edge.size(); ++i)
     {

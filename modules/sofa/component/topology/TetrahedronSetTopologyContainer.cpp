@@ -199,7 +199,7 @@ void TetrahedronSetTopologyContainer::createTetrahedronVertexShellArray ()
     if(hasTetrahedronVertexShell())
         clearTetrahedronVertexShell();
 
-    m_tetrahedronVertexShell.resize( m_basicTopology->getDOFNumber() );
+    m_tetrahedronVertexShell.resize( m_basicTopology->getNbPoints() );
 
     for (unsigned int i = 0; i < m_tetrahedron.size(); ++i)
     {

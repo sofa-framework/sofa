@@ -41,17 +41,38 @@ int PointSetTopologyContainerClass = core::RegisterObject("Point set topology co
         ;
 
 PointSetTopologyContainer::PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top)
-    : core::componentmodel::topology::TopologyContainer(top)
+    : core::componentmodel::topology::TopologyContainer(top),
+      nbPoints(0)
 {}
-
-unsigned int PointSetTopologyContainer::getNumberOfVertices() const
-{
-    return m_basicTopology->getDOFNumber();
-}
 
 bool PointSetTopologyContainer::checkTopology() const
 {
     return true;
+}
+
+void PointSetTopologyContainer::addPoints(const unsigned int nPoints)
+{
+    nbPoints += nPoints;
+}
+
+void PointSetTopologyContainer::removePoints(const unsigned int nPoints)
+{
+    nbPoints -= nPoints;
+}
+
+void PointSetTopologyContainer::addPoint()
+{
+    ++nbPoints;
+}
+
+void PointSetTopologyContainer::removePoint()
+{
+    --nbPoints;
+}
+
+void PointSetTopologyContainer::clear()
+{
+    nbPoints = 0;
 }
 
 } // namespace topology
