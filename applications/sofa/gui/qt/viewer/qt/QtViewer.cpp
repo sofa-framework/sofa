@@ -2087,6 +2087,12 @@ void QtViewer::mouseEvent ( QMouseEvent * e )
 
 void QtViewer::moveRayPickInteractor(int eventX, int eventY)
 {
+    for (unsigned int i=0; i<16; ++i)
+    {
+        std::cout << "["<<lastModelviewMatrix[i]<< "," << lastProjectionMatrix[i] << "] ";
+    }
+    std::cout << "\n";
+
     Vec3d p0, px, py, pz;
     gluUnProject(eventX, lastViewport[3]-1-(eventY), 0, lastModelviewMatrix, lastProjectionMatrix, lastViewport, &(p0[0]), &(p0[1]), &(p0[2]));
     gluUnProject(eventX+1, lastViewport[3]-1-(eventY), 0, lastModelviewMatrix, lastProjectionMatrix, lastViewport, &(px[0]), &(px[1]), &(px[2]));
