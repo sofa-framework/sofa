@@ -37,6 +37,7 @@ namespace topology
 {
 using namespace sofa::defaulttype;
 
+SOFA_DECL_CLASS(TriangleSetTopologyModifier)
 int TriangleSetTopologyModifierClass = core::RegisterObject("Triangle set topology modifier")
 #ifndef SOFA_FLOAT
         .add< TriangleSetTopologyModifier<Vec3dTypes> >()

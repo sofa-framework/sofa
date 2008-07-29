@@ -38,6 +38,7 @@ namespace topology
 {
 
 using namespace sofa::defaulttype;
+SOFA_DECL_CLASS(PointSetTopologyAlgorithms)
 int PointSetTopologyAlgorithmsClass = core::RegisterObject("Point set topology algorithms")
 #ifndef SOFA_FLOAT
         .add< PointSetTopologyAlgorithms<Vec3dTypes> >()

@@ -50,8 +50,10 @@ namespace topology
 
 using namespace std;
 using namespace sofa::defaulttype;
-
-int ManifoldEdgeSetTopologyContainerClass = core::RegisterObject("ManifoldEdge set topology container");
+SOFA_DECL_CLASS(ManifoldEdgeSetTopologyContainer)
+int ManifoldEdgeSetTopologyContainerClass = core::RegisterObject("ManifoldEdge set topology container")
+        .add< ManifoldEdgeSetTopologyContainer >()
+        ;
 
 ManifoldEdgeSetTopologyContainer::ManifoldEdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top)
     : EdgeSetTopologyContainer( top )

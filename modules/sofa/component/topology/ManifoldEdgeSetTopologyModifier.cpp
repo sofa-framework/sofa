@@ -38,6 +38,7 @@ namespace component
 namespace topology
 {
 using namespace sofa::defaulttype;
+SOFA_DECL_CLASS(ManifoldEdgeSetTopologyModifier)
 int ManifoldEdgeSetTopologyModifierClass = core::RegisterObject("ManifoldEdge set topology modifier")
 #ifndef SOFA_FLOAT
         .add< ManifoldEdgeSetTopologyModifier<Vec3dTypes> >()
