@@ -44,12 +44,6 @@ namespace componentmodel
 namespace topology
 {
 
-class Tetra2TriangleTopologicalMapping;
-class Quad2TriangleTopologicalMapping;
-class Hexa2QuadTopologicalMapping;
-class Triangle2EdgeTopologicalMapping;
-class Edge2QuadTopologicalMapping;
-
 
 /**
  *  \brief This Interface is a new kind of Mapping, called TopologicalMapping, which converts an INPUT TOPOLOGY to an OUTPUT TOPOLOGY (both topologies are of type BaseTopology)

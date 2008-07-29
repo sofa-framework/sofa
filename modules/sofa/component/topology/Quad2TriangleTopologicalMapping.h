@@ -65,15 +65,14 @@ using namespace sofa::core;
  *
 */
 
-template <class TIn, class TOut>
 class Quad2TriangleTopologicalMapping : public TopologicalMapping
 {
 
 public:
     /// Input Topology
-    typedef TIn In;
+    typedef QuadSetTopologyContainer In;
     /// Output Topology
-    typedef TOut Out;
+    typedef TriangleSetTopologyContainer Out;
 
     friend class TopologicalMapping;
 

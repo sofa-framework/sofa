@@ -26,14 +26,6 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/topology/QuadSetTopology.h>
-#include <sofa/component/topology/EdgeSetTopology.h>
-
-#include <sofa/core/componentmodel/topology/TopologicalMapping.h>
-#include <sofa/core/componentmodel/topology/BaseTopology.h>
-
-#include <sofa/defaulttype/RigidTypes.h>
-
 
 namespace sofa
 {
@@ -44,18 +36,12 @@ namespace component
 namespace topology
 {
 
-using namespace sofa::defaulttype;
-using namespace core;
-using namespace core::componentmodel::topology;
-using namespace sofa::core::componentmodel::behavior;
-
-using namespace sofa::component::topology;
 
 SOFA_DECL_CLASS(Edge2QuadTopologicalMapping)
 
 // Register in the Factory
 int Edge2QuadTopologicalMappingClass = core::RegisterObject("Special case of mapping where EdgeSetTopology is converted to QuadSetTopology")
-        .add< Edge2QuadTopologicalMapping< EdgeSetTopologyContainer, QuadSetTopologyContainer > >()
+        .add< Edge2QuadTopologicalMapping >()
 
         ;
 
