@@ -38,9 +38,6 @@ namespace topology
 template <class DataTypes>
 class TetrahedronSetTopology;
 
-template <class DataTypes>
-class TetrahedronSetTopologyLoader;
-
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::TetraID TetraID;
 typedef BaseMeshTopology::Tetra Tetra;
@@ -61,7 +58,6 @@ typedef TetraTriangles TetrahedronTriangles;
 template<class DataTypes>
 class TetrahedronSetTopologyModifier : public TriangleSetTopologyModifier <DataTypes>
 {
-    friend class TetrahedronSetTopologyLoader<DataTypes>;
 public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -77,11 +73,6 @@ public:
     virtual ~TetrahedronSetTopologyModifier() {}
 
     TetrahedronSetTopology< DataTypes >* getTetrahedronSetTopology() const;
-
-    /** \brief Build  a tetrahedron set topology from a file : also modifies the MechanicalObject
-    *
-    */
-    virtual bool load(const char *filename);
 
     /** \brief Write the current mesh into a msh file
     *

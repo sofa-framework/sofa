@@ -38,9 +38,6 @@ namespace topology
 template<class DataTypes>
 class EdgeSetTopology;
 
-template <class DataTypes>
-class EdgeSetTopologyLoader;
-
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::EdgeID EdgeID;
 typedef BaseMeshTopology::Edge Edge;
@@ -54,7 +51,6 @@ template<class DataTypes>
 class EdgeSetTopologyModifier : public PointSetTopologyModifier <DataTypes>
 {
 public:
-    friend class EdgeSetTopologyLoader<DataTypes>;
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -70,11 +66,6 @@ public:
     virtual ~EdgeSetTopologyModifier() {}
 
     EdgeSetTopology<DataTypes> * getEdgeSetTopology() const;
-
-    /** \brief Build an edge set topology from a file : also modifies the MechanicalObject
-    *
-    */
-    virtual bool load(const char *filename);
 
     /** \brief Sends a message to warn that some edges were added in this topology.
     *

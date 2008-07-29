@@ -68,6 +68,10 @@ public:
     TetrahedronSetTopologyContainer(core::componentmodel::topology::BaseTopology *top,
             const sofa::helper::vector< Tetrahedron >& tetrahedra );
 
+    virtual ~TetrahedronSetTopologyContainer() {}
+
+    virtual void init();
+
     /** \brief Returns the Tetrahedron array.
     *
     */

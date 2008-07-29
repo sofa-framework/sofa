@@ -26,6 +26,9 @@
 #include <sofa/component/topology/QuadSetTopologyContainer.h>
 
 #include <sofa/core/ObjectFactory.h>
+
+#include <sofa/component/Meshloader.h>
+
 namespace sofa
 {
 namespace component
@@ -48,6 +51,19 @@ QuadSetTopologyContainer::QuadSetTopologyContainer(core::componentmodel::topolog
     : EdgeSetTopologyContainer(top),
       m_quad( quads )
 {}
+
+void QuadSetTopologyContainer::init()
+{
+    sofa::component::MeshLoader* m_loader;
+    this->getContext()->get(m_loader);
+
+    if(m_loader)
+    {
+
+        m_quad = m_loader->getQuads();
+
+    }
+}
 
 void QuadSetTopologyContainer::createQuadSetArray()
 {

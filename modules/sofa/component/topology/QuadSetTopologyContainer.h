@@ -62,6 +62,8 @@ public:
 
     virtual ~QuadSetTopologyContainer() {}
 
+    virtual void init();
+
     template< typename DataTypes >
     QuadSetTopology< DataTypes >* getQuadSetTopology() const
     {

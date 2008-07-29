@@ -25,7 +25,6 @@
 #include <iostream>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/component/topology/MeshTopology.h>
-#include <sofa/helper/io/MeshTopologyLoader.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -33,6 +32,8 @@
 #include <sofa/helper/gl/template.h>
 #include <set>
 #include <string.h>
+
+#include <sofa/component/Meshloader.h>
 
 namespace sofa
 {
@@ -67,6 +68,25 @@ MeshTopology::MeshTopology()
 
 void MeshTopology::init()
 {
+
+    sofa::component::MeshLoader* m_loader;
+    this->getContext()->get(m_loader);
+
+    if(m_loader)
+    {
+
+        int nbp = m_loader->getNbPoints();
+
+        //std::cout<<"Setting "<<nbp<<" points from MeshLoader. " <<std::endl;
+
+        seqPoints = m_loader->getPoints();
+        seqEdges = m_loader->getEdges();
+        seqTriangles = m_loader->getTriangles();
+        seqQuads = m_loader->getQuads();
+        seqTetras = m_loader->getTetras();
+        seqHexas = m_loader->getHexas();
+    }
+
     // compute the number of points if if the topology is charged from the scene.
     unsigned int maxIndex = 0;
     if (nbPoints==0)
@@ -83,48 +103,6 @@ void MeshTopology::init()
     }
 }
 
-class MeshTopology::Loader : public helper::io::MeshTopologyLoader
-{
-public:
-    MeshTopology* dest;
-    Loader(MeshTopology* dest) : dest(dest) {}
-    virtual void addPoint(double px, double py, double pz)
-    {
-        dest->seqPoints.push_back(helper::make_array((SReal)px, (SReal)py, (SReal)pz));
-        if (dest->seqPoints.size() > (unsigned)dest->nbPoints)
-            dest->nbPoints = dest->seqPoints.size();
-    }
-    virtual void addEdge(int p1, int p2)
-    {
-        dest->seqEdges.beginEdit()->push_back(Edge(p1,p2));
-        dest->seqEdges.endEdit();
-    }
-    virtual void addTriangle(int p1, int p2, int p3)
-    {
-        dest->seqTriangles.beginEdit()->push_back(Triangle(p1,p2,p3));
-        dest->seqTriangles.endEdit();
-    }
-    virtual void addQuad(int p1, int p2, int p3, int p4)
-    {
-        dest->seqQuads.beginEdit()->push_back(Quad(p1,p2,p3,p4));
-        dest->seqQuads.endEdit();
-    }
-    virtual void addTetra(int p1, int p2, int p3, int p4)
-    {
-        dest->seqTetras.beginEdit()->push_back(Tetra(p1,p2,p3,p4));
-        dest->seqTetras.endEdit();
-    }
-    virtual void addCube(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8)
-    {
-#ifdef SOFA_NEW_HEXA
-        dest->seqHexas.beginEdit()->push_back(Hexa(p1,p2,p3,p4,p5,p6,p7,p8));
-#else
-        dest->seqHexas.beginEdit()->push_back(Hexa(p1,p2,p4,p3,p5,p6,p8,p7));
-#endif
-        dest->seqHexas.endEdit();
-    }
-};
-
 void MeshTopology::clear()
 {
     nbPoints = 0;
@@ -134,91 +112,6 @@ void MeshTopology::clear()
     seqTetras.beginEdit()->clear(); seqTetras.endEdit();
     seqHexas.beginEdit()->clear(); seqHexas.endEdit();
     invalidate();
-}
-
-bool MeshTopology::load(const char* filename)
-{
-    clear();
-    Loader loader(this);
-
-    if ((strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".obj"))
-        || (strlen(filename)>6 && !strcmp(filename+strlen(filename)-6,".trian")))
-    {
-        std::string meshFilename(filename);
-        if (sofa::helper::system::DataRepository.findFile (meshFilename))
-        {
-            helper::io::Mesh* mesh = helper::io::Mesh::Create(filename);
-            if (mesh==NULL) return false;
-
-            loader.setNbPoints(mesh->getVertices().size());
-            for (unsigned int i=0; i<mesh->getVertices().size(); i++)
-            {
-                loader.addPoint((double)mesh->getVertices()[i][0],(double)mesh->getVertices()[i][1],(double)mesh->getVertices()[i][2]);
-            }
-
-            std::set< std::pair<int,int> > edges;
-
-            const vector< vector < vector <int> > > & facets = mesh->getFacets();
-            for (unsigned int i=0; i<facets.size(); i++)
-            {
-                const vector<int>& facet = facets[i][0];
-                if (facet.size()==2)
-                {
-                    // Line
-                    if (facet[0]<facet[1])
-                        loader.addEdge(facet[0],facet[1]);
-                    else
-                        loader.addEdge(facet[1],facet[0]);
-                }
-                else if (facet.size()==4)
-                {
-                    // Quat
-                    loader.addQuad(facet[0],facet[1],facet[2],facet[3]);
-                }
-                else
-                {
-                    // Triangularize
-                    for (unsigned int j=2; j<facet.size(); j++)
-                        loader.addTriangle(facet[0],facet[j-1],facet[j]);
-                }
-                // Add edges
-                if (facet.size()>2)
-                    for (unsigned int j=0; j<facet.size(); j++)
-                    {
-                        int i1 = facet[j];
-                        int i2 = facet[(j+1)%facet.size()];
-                        if (edges.count(std::make_pair(i1,i2))!=0)
-                        {
-                            /*
-                            std::cerr << "ERROR: Duplicate edge.\n";*/
-                        }
-                        else if (edges.count(std::make_pair(i2,i1))==0)
-                        {
-                            if (i1>i2)
-                                loader.addEdge(i1,i2);
-                            else
-                                loader.addEdge(i2,i1);
-                            edges.insert(std::make_pair(i1,i2));
-                        }
-                    }
-            }
-            delete mesh;
-        }
-        else
-        {
-            logWarning(std::string("Mesh \"") + filename +std::string("\" not found"));
-        }
-    }
-    else
-    {
-        if (!loader.load(filename))
-        {
-            logWarning(std::string("Unable to load Mesh \"") + filename );
-            return false;
-        }
-    }
-    this->filename.setValue(filename);
-    return true;
 }
 
 

@@ -62,6 +62,8 @@ public:
 
     virtual ~EdgeSetTopologyContainer() {}
 
+    virtual void init();
+
     template< typename DataTypes >
     EdgeSetTopology< DataTypes >* getEdgeSetTopology() const
     {

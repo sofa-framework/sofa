@@ -36,9 +36,6 @@ namespace topology
 template<class DataTypes>
 class TriangleSetTopology;
 
-template <class DataTypes>
-class TriangleSetTopologyLoader;
-
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::TriangleID TriangleID;
 typedef BaseMeshTopology::Triangle Triangle;
@@ -53,7 +50,6 @@ typedef BaseMeshTopology::TriangleEdges TriangleEdges;
 template<class DataTypes>
 class TriangleSetTopologyModifier : public EdgeSetTopologyModifier <DataTypes>
 {
-    friend class TriangleSetTopologyLoader<DataTypes>;
 
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -69,11 +65,6 @@ public:
     virtual ~TriangleSetTopologyModifier() {}
 
     TriangleSetTopology< DataTypes >* getTriangleSetTopology() const;
-
-    /** \brief Build a triangle set topology from a file : also modifies the MechanicalObject
-     *
-     */
-    virtual bool load(const char *filename);
 
     /** \brief Write the current mesh into a msh file
      *

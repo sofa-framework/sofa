@@ -41,6 +41,7 @@
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
 #include <sofa/component/topology/PointSetTopology.inl>
 
+#include <sofa/component/Meshloader.h>
 
 namespace sofa
 {
@@ -921,16 +922,39 @@ void MechanicalObject<DataTypes>::init()
     }
     else if (getX()->size() <= 1)
     {
-        sofa::core::componentmodel::topology::BaseMeshTopology* topo = this->getContext()->getMeshTopology();
-        if (topo!=NULL && topo->hasPos() && topo->getContext() == this->getContext())
+        sofa::component::MeshLoader* m_loader;
+        this->getContext()->get(m_loader);
+
+        if(m_loader)
         {
-            int nbp = topo->getNbPoints();
-            //std::cout<<"Setting "<<nbp<<" points from topology. " << this->getName() << " topo : " << topo->getName() <<std::endl;
+
+            int nbp = m_loader->getNbPoints();
+
+            //std::cout<<"Setting "<<nbp<<" points from MeshLoader. " <<std::endl;
+
             this->resize(nbp);
             for (int i=0; i<nbp; i++)
             {
                 (*getX())[i] = Coord();
-                DataTypes::set((*getX())[i], topo->getPX(i), topo->getPY(i), topo->getPZ(i));
+                DataTypes::set((*getX())[i], m_loader->getPX(i), m_loader->getPY(i), m_loader->getPZ(i));
+            }
+
+        }
+        else
+        {
+
+            sofa::core::componentmodel::topology::BaseMeshTopology* topo = this->getContext()->getMeshTopology();
+            if (topo!=NULL && topo->hasPos() && topo->getContext() == this->getContext())
+            {
+                int nbp = topo->getNbPoints();
+                //std::cout<<"Setting "<<nbp<<" points from topology. " << this->getName() << " topo : " << topo->getName() <<std::endl;
+                this->resize(nbp);
+                for (int i=0; i<nbp; i++)
+                {
+                    (*getX())[i] = Coord();
+                    DataTypes::set((*getX())[i], topo->getPX(i), topo->getPY(i), topo->getPZ(i));
+                }
+
             }
 
         }

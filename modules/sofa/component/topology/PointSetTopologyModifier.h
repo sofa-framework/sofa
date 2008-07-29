@@ -40,9 +40,6 @@ namespace topology
 template<class DataTypes>
 class PointSetTopology;
 
-template< typename DataTypes >
-class PointSetTopologyLoader;
-
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::PointID PointID;
 
@@ -70,11 +67,6 @@ public:
     {
         return static_cast<PointSetTopology<DataTypes>*> (this->m_basicTopology);
     }
-
-    /** \brief Build a point set topology from a file : also modifies the MechanicalObject
-    *
-    */
-    virtual bool load(const char *filename);
 
     /** \brief Swap points i1 and i2.
     *
@@ -175,10 +167,6 @@ public:
     virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index,
             const sofa::helper::vector<unsigned int> &/*inv_index*/,
             const bool renumberDOF = true);
-
-protected:
-    /// modifies the mechanical object and creates the point set container
-    void loadPointSet(PointSetTopologyLoader<DataTypes> *);
 };
 
 } // namespace topology

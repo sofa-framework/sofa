@@ -36,9 +36,6 @@ namespace topology
 template <class DataTypes>
 class HexahedronSetTopology;
 
-template <class DataTypes>
-class HexahedronSetTopologyLoader;
-
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::HexaID HexaID;
 typedef BaseMeshTopology::Hexa Hexa;
@@ -59,7 +56,6 @@ typedef HexaQuads HexahedronQuads;
 template<class DataTypes>
 class HexahedronSetTopologyModifier : public QuadSetTopologyModifier <DataTypes>
 {
-    friend class HexahedronSetTopologyLoader<DataTypes>;
 
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -76,11 +72,6 @@ public:
     virtual ~HexahedronSetTopologyModifier() {}
 
     HexahedronSetTopology< DataTypes >* getHexahedronSetTopology() const;
-
-    /** \brief Build  a hexahedron set topology from a file : also modifies the MechanicalObject
-    *
-    */
-    virtual bool load(const char *filename);
 
     /** \brief Write the current mesh into a msh file
     *

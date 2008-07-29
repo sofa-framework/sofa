@@ -26,6 +26,8 @@
 #include <sofa/component/topology/HexahedronSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/component/Meshloader.h>
+
 namespace sofa
 {
 namespace component
@@ -50,6 +52,19 @@ HexahedronSetTopologyContainer::HexahedronSetTopologyContainer(core::componentmo
     : QuadSetTopologyContainer(top),
       m_hexahedron( hexahedra )
 { }
+
+void HexahedronSetTopologyContainer::init()
+{
+    sofa::component::MeshLoader* m_loader;
+    this->getContext()->get(m_loader);
+
+    if(m_loader)
+    {
+
+        m_hexahedron = m_loader->getHexas();
+
+    }
+}
 
 void HexahedronSetTopologyContainer::createHexahedronSetArray()
 {

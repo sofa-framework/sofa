@@ -6,6 +6,7 @@
 	<Object type="CollisionGroup" name="Group" />
 	<Node name="Chain">
 		<Node name="Fixed">
+			<Object type="MeshLoader" name="meshLoader" filename="mesh/torus_for_collision.obj"/>
 			<Object type="Mesh" filename="mesh/torus_for_collision.obj" />
 			<Object type="MechanicalObject" rx="90"/>
 			<Object type="Triangle" simulated="0" moving="0" />
