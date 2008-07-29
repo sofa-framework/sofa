@@ -71,7 +71,7 @@ void QuadSetTopologyContainer::createQuadVertexShellArray()
         clearQuadVertexShell();
     }
 
-    m_quadVertexShell.resize( getNumberOfVertices() );
+    m_quadVertexShell.resize( getNbPoints() );
 
     for (unsigned int i=0; i<m_quad.size(); ++i)
     {

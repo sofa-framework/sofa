@@ -53,10 +53,10 @@ typedef BaseMeshTopology::TriangleEdges TriangleEdges;
 to each triangle and its edges and vertices */
 class TriangleSetTopologyContainer : public EdgeSetTopologyContainer
 {
-public:
     template< typename DataTypes >
     friend class TriangleSetTopologyModifier;
 
+public:
     TriangleSetTopologyContainer(core::componentmodel::topology::BaseTopology *top=NULL);
 
     TriangleSetTopologyContainer(core::componentmodel::topology::BaseTopology *top,

@@ -67,14 +67,11 @@ using namespace sofa::core;
 
 class Tetra2TriangleTopologicalMapping : public TopologicalMapping
 {
-
 public:
     /// Input Topology
     typedef TetrahedronSetTopologyContainer In;
     /// Output Topology
     typedef TriangleSetTopologyContainer Out;
-
-    friend class TopologicalMapping;
 
 protected:
     /// Input source BaseTopology

@@ -75,7 +75,8 @@ class TopologicalMapping;
 * The class also holds an array of TopologyChange objects needed by Topologies linked to this one to know
 * what happened and how to take it into account (or ignore it).
 */
-class BaseTopology : public virtual core::objectmodel::BaseObject, public core::componentmodel::topology::BaseMeshTopology
+class BaseTopology : public virtual core::objectmodel::BaseObject,
+    public core::componentmodel::topology::BaseMeshTopology
 {
 
 public :
@@ -175,11 +176,6 @@ public :
     * @see BaseTopology::m_mainTopology
     */
     bool isMainTopology() const { return m_mainTopology; }
-
-    /** \brief Return the number of DOF in the mechanicalObject this Topology deals with.
-    *
-    */
-    virtual unsigned int getDOFNumber() const { return 0; }
 
     virtual std::string getFilename() const { return filename.getValue(); }
 

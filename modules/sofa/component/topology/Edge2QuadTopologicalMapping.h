@@ -74,7 +74,6 @@ using namespace sofa::core;
 
 class Edge2QuadTopologicalMapping : public TopologicalMapping
 {
-
 public:
     /// Input Topology
     typedef EdgeSetTopologyContainer In;
@@ -87,8 +86,6 @@ public:
     enum { M=Coord::static_size };
     typedef defaulttype::Mat<M,M,Real> Mat;
     typedef defaulttype::Vec<M,Real> Vec;
-
-    friend class TopologicalMapping;
 
 protected:
     /// Input source BaseTopology

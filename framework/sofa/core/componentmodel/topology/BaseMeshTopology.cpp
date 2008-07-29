@@ -42,17 +42,6 @@ using namespace sofa::defaulttype;
 using helper::vector;
 using helper::fixed_array;
 
-// BaseMeshTopology::BaseMeshTopology()
-// {
-// }
-
-/// Returns the number of current vertices
-unsigned int BaseMeshTopology::getDOFNumber() const
-{
-    std::cerr << "WARNING: "<<this->getClassName()<<"::getDOFNumber unsupported."<<std::endl;
-    return 0;
-}
-
 /// Returns the set of edges adjacent to a given vertex.
 const BaseMeshTopology::VertexEdges& BaseMeshTopology::getEdgeVertexShell(PointID)
 {

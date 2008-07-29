@@ -942,7 +942,7 @@ void VisualModelImpl::handleTopologyChange()
             if (_topology->getNbTriangles()>0)
             {
 
-                unsigned int last = _topology->getDOFNumber() -1;
+                unsigned int last = _topology->getNbPoints() -1;
 
                 unsigned int i,j;
 
@@ -1063,7 +1063,7 @@ void VisualModelImpl::handleTopologyChange()
                 if (_topology->getNbQuads()>0)
                 {
 
-                    unsigned int last = _topology->getDOFNumber() -1;
+                    unsigned int last = _topology->getNbPoints() -1;
 
                     unsigned int i,j;
 

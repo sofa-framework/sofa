@@ -279,7 +279,7 @@ void TriangleModel::handleTopologyChange()
                 unsigned int last;
                 unsigned int ind_last;
 
-                last= _topology->getDOFNumber() - 1;
+                last= _topology->getNbPoints() - 1;
 
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const sofa::component::topology::TrianglesRemoved *>( *itBegin ) )->getArray();
 
@@ -331,7 +331,7 @@ void TriangleModel::handleTopologyChange()
                 if (_topology->getNbTriangles()>0)
                 {
 
-                    unsigned int last = _topology->getDOFNumber() -1;
+                    unsigned int last = _topology->getNbPoints() -1;
 
                     unsigned int i,j;
                     const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();

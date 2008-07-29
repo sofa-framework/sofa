@@ -46,7 +46,7 @@ typename DataTypes::Coord PointSetGeometryAlgorithms<DataTypes>::getPointSetCent
     PointSetTopology<DataTypes> *topology = getPointSetTopology();
     typename DataTypes::VecCoord& p = *(topology->getDOF()->getX0());
 
-    const unsigned int numVertices = topology->getDOFNumber();
+    const unsigned int numVertices = topology->getNbPoints();
     for(unsigned int i=0; i<numVertices; ++i)
     {
         center += p[i];
@@ -64,7 +64,7 @@ void  PointSetGeometryAlgorithms<DataTypes>::getEnclosingSphere(typename DataTyp
     PointSetTopology<DataTypes> *topology = getPointSetTopology();
     typename DataTypes::VecCoord& p = *(topology->getDOF()->getX0());
 
-    const unsigned int numVertices = topology->getDOFNumber();
+    const unsigned int numVertices = topology->getNbPoints();
     for(unsigned int i=0; i<numVertices; ++i)
     {
         center += p[i];

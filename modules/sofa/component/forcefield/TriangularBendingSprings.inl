@@ -337,7 +337,7 @@ template <class DataTypes> void TriangularBendingSprings<DataTypes>::handleTopol
         if(changeType == core::componentmodel::topology::POINTSREMOVED)
         {
 
-            unsigned int last = _topology->getDOFNumber() -1;
+            unsigned int last = _topology->getNbPoints() -1;
             unsigned int i,j;
 
             const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
