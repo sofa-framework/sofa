@@ -61,6 +61,10 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
 
+    HexahedronSetGeometryAlgorithms()
+        : QuadSetGeometryAlgorithms<DataTypes>()
+    {}
+
     HexahedronSetGeometryAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
         : QuadSetGeometryAlgorithms<DataTypes>(top)
     {}

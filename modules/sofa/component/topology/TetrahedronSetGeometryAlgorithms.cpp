@@ -26,7 +26,7 @@
 #include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
 #include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.inl>
 #include <sofa/defaulttype/Vec3Types.h>
-
+#include <sofa/core/ObjectFactory.h>
 namespace sofa
 {
 
@@ -36,6 +36,19 @@ namespace component
 namespace topology
 {
 using namespace sofa::defaulttype;
+SOFA_DECL_CLASS(TetrahedronSetGeometryAlgorithms)
+int TetrahedronSetGeometryAlgorithmsClass = core::RegisterObject("Tetrahedron set geometry algorithms")
+#ifndef SOFA_FLOAT
+        .add< TetrahedronSetGeometryAlgorithms<Vec3dTypes> >()
+        .add< TetrahedronSetGeometryAlgorithms<Vec2dTypes> >()
+        .add< TetrahedronSetGeometryAlgorithms<Vec1dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< TetrahedronSetGeometryAlgorithms<Vec3fTypes> >()
+        .add< TetrahedronSetGeometryAlgorithms<Vec2fTypes> >()
+        .add< TetrahedronSetGeometryAlgorithms<Vec1fTypes> >()
+#endif
+        ;
 
 #ifndef SOFA_FLOAT
 template class TetrahedronSetGeometryAlgorithms<Vec3dTypes>;

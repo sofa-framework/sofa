@@ -63,6 +63,10 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
 
+    TetrahedronSetGeometryAlgorithms()
+        : TriangleSetGeometryAlgorithms<DataTypes>()
+    {}
+
     TetrahedronSetGeometryAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
         : TriangleSetGeometryAlgorithms<DataTypes>(top)
     {}

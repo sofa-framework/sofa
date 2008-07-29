@@ -37,11 +37,6 @@ namespace topology
 using namespace sofa::defaulttype;
 
 template< class DataTypes>
-QuadSetGeometryAlgorithms< DataTypes >::QuadSetGeometryAlgorithms(core::componentmodel::topology::BaseTopology *top)
-    : EdgeSetGeometryAlgorithms<DataTypes>(top)
-{ }
-
-template< class DataTypes>
 QuadSetTopology< DataTypes >* QuadSetGeometryAlgorithms< DataTypes >::getQuadSetTopology() const
 {
     return static_cast<QuadSetTopology< DataTypes >* > (this->m_basicTopology);

@@ -55,6 +55,10 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
 
+    ManifoldEdgeSetGeometryAlgorithms()
+        : EdgeSetGeometryAlgorithms<DataTypes>()
+    {}
+
     ManifoldEdgeSetGeometryAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
         : EdgeSetGeometryAlgorithms<DataTypes>(top)
     {}

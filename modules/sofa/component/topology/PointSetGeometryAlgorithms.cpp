@@ -26,7 +26,7 @@
 #include <sofa/component/topology/PointSetGeometryAlgorithms.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
-
+#include <sofa/core/ObjectFactory.h>
 namespace sofa
 {
 
@@ -37,11 +37,23 @@ namespace topology
 {
 
 using namespace sofa::defaulttype;
-
+SOFA_DECL_CLASS(PointSetGeometryAlgorithms)
+int PointSetGeometryAlgorithmsClass = core::RegisterObject("Point set geometry algorithms")
+#ifndef SOFA_FLOAT
+        .add< PointSetGeometryAlgorithms<Vec3dTypes> >()
+        .add< PointSetGeometryAlgorithms<Vec2dTypes> >()
+        .add< PointSetGeometryAlgorithms<Vec1dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< PointSetGeometryAlgorithms<Vec3fTypes> >()
+        .add< PointSetGeometryAlgorithms<Vec2fTypes> >()
+        .add< PointSetGeometryAlgorithms<Vec1fTypes> >()
+#endif
+        ;
 #ifndef SOFA_FLOAT
 template class PointSetGeometryAlgorithms<Vec3dTypes>;
 template class PointSetGeometryAlgorithms<Vec2dTypes>;
-//     template class PointSetGeometryAlgorithms<Vec1dTypes>;
+template class PointSetGeometryAlgorithms<Vec1dTypes>;
 
 //     template class PointSetGeometryAlgorithms<Rigid3dTypes>;
 //     template class PointSetGeometryAlgorithms<Rigid2dTypes>;
@@ -50,7 +62,7 @@ template class PointSetGeometryAlgorithms<Vec2dTypes>;
 #ifndef SOFA_DOUBLE
 template class PointSetGeometryAlgorithms<Vec3fTypes>;
 template class PointSetGeometryAlgorithms<Vec2fTypes>;
-//     template class PointSetGeometryAlgorithms<Vec1fTypes>;
+template class PointSetGeometryAlgorithms<Vec1fTypes>;
 
 //     template class PointSetGeometryAlgorithms<Rigid3fTypes>;
 //     template class PointSetGeometryAlgorithms<Rigid2fTypes>;

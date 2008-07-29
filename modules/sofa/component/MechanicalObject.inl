@@ -1039,14 +1039,13 @@ void MechanicalObject<DataTypes>::readX(std::istream &in)
 {
     //in >> *getX(); //Modified to handle a modification of the number of Dofs. Problem to resolve: how to modify the containers to handle this...
     Coord pos;
-    unsigned int sizeX = x->size();
-    unsigned int i=0;
+    int i=0;
     while (in >> pos)
     {
-        if (i>= sizeX) x->resize(i+1);
+        if (i>= getSize()) resize(i+1);
         (*x)[i++]=pos;
     }
-    if (i<sizeX) x->resize(i);
+    if (i<getSize()) resize(i);
 }
 
 template <class DataTypes>
@@ -1081,7 +1080,16 @@ void MechanicalObject<DataTypes>::writeV(std::ostream &out)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::readV(std::istream &in)
 {
-    in >> *getX();
+    //in >> *getV();
+    Deriv pos;
+    int i=0;
+    while (in >> pos)
+    {
+        if (i>= getSize()) resize(i+1);
+        (*v)[i++]=pos;
+    }
+    if (i<getSize()) resize(i);
+
 }
 
 template <class DataTypes>

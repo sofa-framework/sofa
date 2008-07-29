@@ -53,6 +53,9 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
 
+    PointSetGeometryAlgorithms()
+        : GeometryAlgorithms()
+    {}
     PointSetGeometryAlgorithms(core::componentmodel::topology::BaseTopology *top)
         : GeometryAlgorithms(top)
     {}
