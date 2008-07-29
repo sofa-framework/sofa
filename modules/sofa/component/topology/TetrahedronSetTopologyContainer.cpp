@@ -25,6 +25,9 @@
 
 #include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
+
+#include <sofa/component/Meshloader.h>
+
 namespace sofa
 {
 
@@ -52,6 +55,19 @@ TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer(core::component
     : TriangleSetTopologyContainer( top),
       m_tetrahedron( tetrahedra )
 {}
+
+void TetrahedronSetTopologyContainer::init()
+{
+    sofa::component::MeshLoader* m_loader;
+    this->getContext()->get(m_loader);
+
+    if(m_loader)
+    {
+
+        m_tetrahedron = m_loader->getTetras();
+
+    }
+}
 
 void TetrahedronSetTopologyContainer::createTetrahedronSetArray()
 {

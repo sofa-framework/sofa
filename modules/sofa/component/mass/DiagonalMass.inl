@@ -77,7 +77,10 @@ inline void MassEdgeCreationFunction(const sofa::helper::vector<unsigned int> &e
             /// get the edge to be added
             const Edge &e=dm->_topology->getEdge(edgeAdded[i]);
             // compute its mass based on the mass density and the edge length
-            mass=(md*dm->edgeGeo->computeRestEdgeLength(edgeAdded[i]))/2;
+            if(dm->edgeGeo)
+            {
+                mass=(md*dm->edgeGeo->computeRestEdgeLength(edgeAdded[i]))/2;
+            }
             // added mass on its two vertices
             masses[e[0]]+=mass;
             masses[e[1]]+=mass;
@@ -103,7 +106,10 @@ inline void MassEdgeDestroyFunction(const sofa::helper::vector<unsigned int> &ed
             /// get the edge to be added
             const Edge &e=dm->_topology->getEdge(edgeRemoved[i]);
             // compute its mass based on the mass density and the edge length
-            mass=(md*dm->edgeGeo->computeRestEdgeLength(edgeRemoved[i]))/2;
+            if(dm->edgeGeo)
+            {
+                mass=(md*dm->edgeGeo->computeRestEdgeLength(edgeRemoved[i]))/2;
+            }
             // added mass on its two vertices
             masses[e[0]]-=mass;
             masses[e[1]]-=mass;
@@ -129,7 +135,10 @@ inline void MassTriangleCreationFunction(const sofa::helper::vector<unsigned int
             /// get the triangle to be added
             const Triangle &t=dm->_topology->getTriangle(triangleAdded[i]);
             // compute its mass based on the mass density and the triangle area
-            mass=(md*dm->triangleGeo->computeRestTriangleArea(triangleAdded[i]))/3;
+            if(dm->triangleGeo)
+            {
+                mass=(md*dm->triangleGeo->computeRestTriangleArea(triangleAdded[i]))/3;
+            }
             // removed  mass on its three vertices
             masses[t[0]]+=mass;
             masses[t[1]]+=mass;
@@ -156,7 +165,10 @@ inline void MassTriangleDestroyFunction(const sofa::helper::vector<unsigned int>
             /// get the triangle to be added
             const Triangle &t=dm->_topology->getTriangle(triangleRemoved[i]);
             // compute its mass based on the mass density and the triangle area
-            mass=(md*dm->triangleGeo->computeRestTriangleArea(triangleRemoved[i]))/3;
+            if(dm->triangleGeo)
+            {
+                mass=(md*dm->triangleGeo->computeRestTriangleArea(triangleRemoved[i]))/3;
+            }
             // removed  mass on its three vertices
             masses[t[0]]-=mass;
             masses[t[1]]-=mass;
@@ -187,7 +199,10 @@ inline void MassTetrahedronCreationFunction(const sofa::helper::vector<unsigned 
             /// get the tetrahedron to be added
             const Tetrahedron &t=dm->_topology->getTetra(tetrahedronAdded[i]);
             // compute its mass based on the mass density and the tetrahedron volume
-            mass=(md*dm->tetraGeo->computeRestTetrahedronVolume(tetrahedronAdded[i]))/4;
+            if(dm->tetraGeo)
+            {
+                mass=(md*dm->tetraGeo->computeRestTetrahedronVolume(tetrahedronAdded[i]))/4;
+            }
             // removed  mass on its four vertices
             masses[t[0]]+=mass;
             masses[t[1]]+=mass;
@@ -215,8 +230,11 @@ inline void MassTetrahedronDestroyFunction(const sofa::helper::vector<unsigned i
         {
             /// get the tetrahedron to be added
             const Tetrahedron &t=dm->_topology->getTetra(tetrahedronRemoved[i]);
-            // compute its mass based on the mass density and the tetrahedron volume
-            mass=(md*dm->tetraGeo->computeRestTetrahedronVolume(tetrahedronRemoved[i]))/4;
+            if(dm->tetraGeo)
+            {
+                // compute its mass based on the mass density and the tetrahedron volume
+                mass=(md*dm->tetraGeo->computeRestTetrahedronVolume(tetrahedronRemoved[i]))/4;
+            }
             // removed  mass on its four vertices
             masses[t[0]]-=mass;
             masses[t[1]]-=mass;
@@ -446,7 +464,10 @@ void DiagonalMass<DataTypes, MassType>::init()
             {
 
                 const Tetrahedron &t=_topology->getTetra(i);
-                mass=(md*tetraGeo->computeRestTetrahedronVolume(i))/4;
+                if(tetraGeo)
+                {
+                    mass=(md*tetraGeo->computeRestTetrahedronVolume(i))/4;
+                }
                 masses[t[0]]+=mass;
                 masses[t[1]]+=mass;
                 masses[t[2]]+=mass;
@@ -472,7 +493,10 @@ void DiagonalMass<DataTypes, MassType>::init()
             for (int i=0; i<_topology->getNbTriangles(); ++i)
             {
                 const Triangle &t=_topology->getTriangle(i);
-                mass=(md*triangleGeo->computeRestTriangleArea(i))/3;
+                if(triangleGeo)
+                {
+                    mass=(md*triangleGeo->computeRestTriangleArea(i))/3;
+                }
                 masses[t[0]]+=mass;
                 masses[t[1]]+=mass;
                 masses[t[2]]+=mass;
@@ -510,7 +534,10 @@ void DiagonalMass<DataTypes, MassType>::init()
             for (int i=0; i<_topology->getNbEdges(); ++i)
             {
                 const Edge &e=_topology->getEdge(i);
-                mass=(md*edgeGeo->computeEdgeLength(i))/2;
+                if(edgeGeo)
+                {
+                    mass=(md*edgeGeo->computeEdgeLength(i))/2;
+                }
                 masses[e[0]]+=mass;
                 masses[e[1]]+=mass;
             }

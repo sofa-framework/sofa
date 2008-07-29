@@ -38,9 +38,6 @@ namespace topology
 template<class DataTypes>
 class ManifoldEdgeSetTopology;
 
-template <class DataTypes>
-class ManifoldEdgeSetTopologyLoader;
-
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::EdgeID EdgeID;
 typedef BaseMeshTopology::Edge Edge;
@@ -53,7 +50,6 @@ typedef BaseMeshTopology::VertexEdges VertexEdges;
 template<class DataTypes>
 class ManifoldEdgeSetTopologyModifier : public EdgeSetTopologyModifier <DataTypes>
 {
-    friend class ManifoldEdgeSetTopologyLoader<DataTypes>;
 
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -70,11 +66,6 @@ public:
     virtual ~ManifoldEdgeSetTopologyModifier() {}
 
     ManifoldEdgeSetTopology<DataTypes> * getEdgeSetTopology() const;
-
-    /** \brief Build an edge set topology from a file : also modifies the MechanicalObject
-    *
-    */
-    virtual bool load(const char *filename);
 
     /** \brief Sends a message to warn that some edges were added in this topology.
     *

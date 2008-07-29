@@ -38,6 +38,8 @@
 #include <boost/graph/cuthill_mckee_ordering.hpp>
 #include <boost/graph/bandwidth.hpp>
 
+#include <sofa/component/Meshloader.h>
+
 namespace sofa
 {
 
@@ -62,6 +64,19 @@ EdgeSetTopologyContainer::EdgeSetTopologyContainer(core::componentmodel::topolog
     : PointSetTopologyContainer( top ),
       m_edge( edges )
 {}
+
+void EdgeSetTopologyContainer::init()
+{
+    sofa::component::MeshLoader* m_loader;
+    this->getContext()->get(m_loader);
+
+    if(m_loader)
+    {
+
+        m_edge = m_loader->getEdges();
+
+    }
+}
 
 void EdgeSetTopologyContainer::createEdgeVertexShellArray()
 {

@@ -269,7 +269,11 @@ bool MeshTopologyLoader::load(const char *filename)
                 ++ntetras;
                 break;
             case 5: // Hexa
+#ifdef SOFA_NEW_HEXA
                 addCube(nodes[0], nodes[1], nodes[2], nodes[3],nodes[4], nodes[5], nodes[6], nodes[7]);
+#else
+                addCube(nodes[0], nodes[1], nodes[3], nodes[2],nodes[4], nodes[5], nodes[7], nodes[6]);
+#endif
                 ++ncubes;
                 break;
             }

@@ -56,8 +56,6 @@ public:
 
     virtual void clear();
 
-    virtual bool load(const char* filename);
-
     virtual int getNbPoints() const;
 
     // Complete sequence accessors
@@ -140,17 +138,6 @@ public:
     /// return true if the given cube is active, i.e. it contains or is surrounded by mapped points.
     /// @deprecated
     virtual bool isCubeActive(int /*index*/) { return true; }
-
-    void parse(core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (arg->getAttribute("filename"))
-        {
-            filename.setValue( arg->getAttribute("filename") );
-            this->load(arg->getAttribute("filename"));
-        }
-        arg->removeAttribute("filename");
-        this->core::componentmodel::topology::Topology::parse(arg);
-    }
 
     void draw();
 
@@ -396,8 +383,6 @@ protected:
     virtual void updateTetras()    { }
     virtual void updateHexas()     { }
 
-    class Loader;
-    friend class Loader;
 };
 
 } // namespace topology

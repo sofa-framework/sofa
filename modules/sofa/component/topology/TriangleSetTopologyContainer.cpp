@@ -26,6 +26,8 @@
 
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/component/Meshloader.h>
+
 namespace sofa
 {
 
@@ -52,6 +54,19 @@ TriangleSetTopologyContainer::TriangleSetTopologyContainer(core::componentmodel:
     : EdgeSetTopologyContainer(top),
       m_triangle( triangles )
 {}
+
+void TriangleSetTopologyContainer::init()
+{
+    sofa::component::MeshLoader* m_loader;
+    this->getContext()->get(m_loader);
+
+    if(m_loader)
+    {
+
+        m_triangle = m_loader->getTriangles();
+
+    }
+}
 
 void TriangleSetTopologyContainer::createTriangleSetArray()
 {

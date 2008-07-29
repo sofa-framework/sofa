@@ -39,9 +39,6 @@ namespace topology
 template <class DataTypes>
 class QuadSetTopology;
 
-template <class DataTypes>
-class QuadSetTopologyLoader;
-
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::QuadID QuadID;
 typedef BaseMeshTopology::Quad Quad;
@@ -56,7 +53,6 @@ typedef BaseMeshTopology::QuadEdges QuadEdges;
 template<class DataTypes>
 class QuadSetTopologyModifier : public EdgeSetTopologyModifier <DataTypes>
 {
-    friend class QuadSetTopologyLoader<DataTypes>;
 public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -72,11 +68,6 @@ public:
     virtual ~QuadSetTopologyModifier() {}
 
     QuadSetTopology< DataTypes >* getQuadSetTopology() const;
-
-    /** \brief Build a quad set topology from a file : also modifies the MechanicalObject
-    *
-    */
-    virtual bool load(const char *filename);
 
     /** \brief Write the current mesh into a msh file
     *

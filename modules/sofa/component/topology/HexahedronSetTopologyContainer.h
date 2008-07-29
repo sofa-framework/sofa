@@ -84,6 +84,8 @@ public:
 
     virtual ~HexahedronSetTopologyContainer() {}
 
+    virtual void init();
+
     template< typename DataTypes >
     HexahedronSetTopology< DataTypes >* getHexahedronSetTopology() const
     {

@@ -64,6 +64,8 @@ public:
 
     virtual ~TriangleSetTopologyContainer() {}
 
+    virtual void init();
+
     template< typename DataTypes >
     TriangleSetTopology< DataTypes >* getTriangleSetTopology() const
     {
