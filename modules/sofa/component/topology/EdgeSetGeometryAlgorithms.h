@@ -68,6 +68,11 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
 
+
+    EdgeSetGeometryAlgorithms()
+        : PointSetGeometryAlgorithms<DataTypes>()
+    {}
+
     EdgeSetGeometryAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
         : PointSetGeometryAlgorithms<DataTypes>(top)
     {}

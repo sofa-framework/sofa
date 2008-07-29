@@ -55,7 +55,14 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
 
-    QuadSetGeometryAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top);
+    QuadSetGeometryAlgorithms()
+        : EdgeSetGeometryAlgorithms<DataTypes>()
+    { }
+
+    QuadSetGeometryAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
+        : EdgeSetGeometryAlgorithms<DataTypes>(top)
+    { }
+
 
     virtual ~QuadSetGeometryAlgorithms() {}
 

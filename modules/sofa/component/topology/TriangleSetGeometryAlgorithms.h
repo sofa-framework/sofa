@@ -57,6 +57,10 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
 
+    TriangleSetGeometryAlgorithms()
+        : EdgeSetGeometryAlgorithms<DataTypes>()
+    {}
+
     TriangleSetGeometryAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
         : EdgeSetGeometryAlgorithms<DataTypes>(top)
     {}

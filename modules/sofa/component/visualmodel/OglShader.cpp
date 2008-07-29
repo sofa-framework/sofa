@@ -90,7 +90,8 @@ void OglShader::reinit()
 
 void OglShader::initVisual()
 {
-    std::string shaderPath = "shaders/";
+// 	std::string shaderPath = "shaders/"; //No hard coded path!
+    std::string shaderPath = "";
 
     if (!sofa::helper::gl::GLSLShader::InitGLSL())
     {
