@@ -183,7 +183,7 @@ public slots:
     void screenshot();
 
 #ifdef SOFA_QT4
-    void flagChanged(Q3ListViewItem *)
+    void flagChanged(Q3ListViewItem *item)
     {
         DisplayFlagItem *flag=NULL;
         if ( flag=dynamic_cast<DisplayFlagItem *>(item) )  flag->switchState();
