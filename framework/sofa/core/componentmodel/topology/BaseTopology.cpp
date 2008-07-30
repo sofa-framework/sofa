@@ -93,12 +93,22 @@ void BaseTopology::resetStateChangeList() const
 
 // TopologyAlgorithms implementation
 
+void TopologyAlgorithms::init()
+{
+    this->getContext()->get(m_topologyContainer);
+}
+
 void TopologyAlgorithms::addTopologyChange(const TopologyChange *topologyChange)
 {
-    m_basicTopology->getTopologyContainer()->addTopologyChange(topologyChange);
+    m_topologyContainer->addTopologyChange(topologyChange);
 }
 
 // TopologyModifier implementation
+
+void TopologyModifier::init()
+{
+    this->getContext()->get(m_topologyContainer);
+}
 
 void TopologyModifier::addTopologyChange(const TopologyChange *topologyChange)
 {
@@ -112,6 +122,9 @@ void TopologyModifier::addStateChange(const TopologyChange *topologyChange)
 
 // TopologyContainer implementation
 
+void TopologyContainer::init()
+{
+}
 
 std::list<const TopologyChange *>::const_iterator TopologyContainer::lastChange() const
 {

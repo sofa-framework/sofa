@@ -37,8 +37,12 @@ namespace component
 
 namespace topology
 {
-template<class DataTypes>
-class PointSetTopology;
+class PointSetTopologyContainer;
+
+class PointSetTopologyModifier;
+
+template < class DataTypes >
+class PointSetGeometryAlgorithms;
 
 /** A class that performs complex algorithms on a PointSet.
 *
@@ -52,16 +56,9 @@ public:
         : TopologyAlgorithms()
     {}
 
-    PointSetTopologyAlgorithms(core::componentmodel::topology::BaseTopology *top)
-        : TopologyAlgorithms(top)
-    {}
-
     virtual ~PointSetTopologyAlgorithms() {}
 
-    PointSetTopology<DataTypes>* getPointSetTopology() const
-    {
-        return static_cast<PointSetTopology<DataTypes>*> (this->m_basicTopology);
-    }
+    virtual void init();
 
     /** \brief Generic method to remove a list of items.
     */
@@ -73,6 +70,11 @@ public:
     virtual void renumberPoints( const sofa::helper::vector<unsigned int> &/*index*/,
             const sofa::helper::vector<unsigned int> &/*inv_index*/)
     { }
+
+private:
+    PointSetTopologyContainer*					m_container;
+    PointSetTopologyModifier*					m_modifier;
+    PointSetGeometryAlgorithms< DataTypes >*	m_geometryAlgorithms;
 };
 
 } // namespace topology

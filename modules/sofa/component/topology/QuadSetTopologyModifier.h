@@ -55,13 +55,9 @@ public:
         : EdgeSetTopologyModifier()
     { }
 
-    QuadSetTopologyModifier(core::componentmodel::topology::TopologyContainer *container)
-        : EdgeSetTopologyModifier(container)
-    { }
-
     virtual ~QuadSetTopologyModifier() {}
 
-    QuadSetTopologyContainer* getQuadSetTopologyContainer() const;
+    virtual void init();
 
     /** \brief Sends a message to warn that some quads were added in this topology.
     *
@@ -199,6 +195,9 @@ public:
     /** \brief Add a quad.
     */
     void addQuad(Quad e);
+
+private:
+    QuadSetTopologyContainer* 	m_container;
 };
 
 } // namespace topology

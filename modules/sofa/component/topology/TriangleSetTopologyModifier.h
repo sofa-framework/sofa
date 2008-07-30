@@ -53,13 +53,9 @@ public:
         : EdgeSetTopologyModifier()
     { }
 
-    TriangleSetTopologyModifier(core::componentmodel::topology::TopologyContainer *container)
-        : EdgeSetTopologyModifier(container)
-    { }
-
     virtual ~TriangleSetTopologyModifier() {}
 
-    TriangleSetTopologyContainer* getTriangleSetTopologyContainer() const;
+    virtual void init();
 
     /** \brief Sends a message to warn that some triangles were added in this topology.
      *
@@ -198,6 +194,8 @@ public:
      */
     void addTriangle(Triangle e);
 
+private:
+    TriangleSetTopologyContainer*	m_container;
 };
 
 } // namespace topology

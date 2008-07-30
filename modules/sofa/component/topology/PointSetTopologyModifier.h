@@ -51,13 +51,9 @@ public:
         : TopologyModifier()
     {}
 
-    PointSetTopologyModifier(core::componentmodel::topology::TopologyContainer *container)
-        : TopologyModifier(container)
-    {}
-
     virtual ~PointSetTopologyModifier() {}
 
-    PointSetTopologyContainer* getPointSetTopologyContainer() const;
+    virtual void init();
 
     /** \brief Swap points i1 and i2.
     *
@@ -149,6 +145,8 @@ public:
             const sofa::helper::vector<unsigned int> &/*inv_index*/,
             const bool renumberDOF = true);
 
+private:
+    PointSetTopologyContainer* 	m_container;
 };
 
 } // namespace topology

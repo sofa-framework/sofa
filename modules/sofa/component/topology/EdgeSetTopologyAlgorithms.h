@@ -35,8 +35,12 @@ namespace component
 
 namespace topology
 {
-template<class DataTypes>
-class EdgeSetTopology;
+class EdgeSetTopologyContainer;
+
+class EdgeSetTopologyModifier;
+
+template < class DataTypes >
+class EdgeSetGeometryAlgorithms;
 
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::EdgeID EdgeID;
@@ -55,13 +59,9 @@ public:
         : PointSetTopologyAlgorithms<DataTypes>()
     {}
 
-    EdgeSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
-        : PointSetTopologyAlgorithms<DataTypes>(top)
-    {}
-
     virtual ~EdgeSetTopologyAlgorithms() {}
 
-    EdgeSetTopology< DataTypes >* getEdgeSetTopology() const;
+    virtual void init();
 
     /** \brief Remove a set  of edges
     @param edges an array of edge indices to be removed (note that the array is not const since it needs to be sorted)
@@ -127,6 +127,11 @@ public:
     /** \brief Gives the optimal vertex permutation according to the Reverse CuthillMckee algorithm (use BOOST GRAPH LIBRAIRY)
     */
     virtual void resortCuthillMckee(sofa::helper::vector<int>& inverse_permutation);
+
+private:
+    EdgeSetTopologyContainer*					m_container;
+    EdgeSetTopologyModifier*					m_modifier;
+    EdgeSetGeometryAlgorithms< DataTypes >*		m_geometryAlgorithms;
 };
 
 } // namespace topology

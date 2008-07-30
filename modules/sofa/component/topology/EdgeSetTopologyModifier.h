@@ -53,13 +53,9 @@ public:
         : PointSetTopologyModifier()
     {}
 
-    EdgeSetTopologyModifier(core::componentmodel::topology::TopologyContainer *container)
-        : PointSetTopologyModifier(container)
-    {}
-
     virtual ~EdgeSetTopologyModifier() {}
 
-    EdgeSetTopologyContainer* getEdgeSetTopologyContainer() const;
+    virtual void init();
 
     /** \brief Sends a message to warn that some edges were added in this topology.
     *
@@ -197,6 +193,9 @@ public:
     /** \brief Add an edge.
     */
     void addEdge(Edge e);
+
+private:
+    EdgeSetTopologyContainer* 	m_container;
 };
 
 } // namespace topology

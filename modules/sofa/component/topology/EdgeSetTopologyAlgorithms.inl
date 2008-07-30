@@ -51,32 +51,30 @@ namespace component
 
 namespace topology
 {
-
 using namespace sofa::defaulttype;
 using namespace sofa::core::componentmodel::behavior;
 
 template<class DataTypes>
-EdgeSetTopology< DataTypes >* EdgeSetTopologyAlgorithms< DataTypes >::getEdgeSetTopology() const
+void EdgeSetTopologyAlgorithms< DataTypes >::init()
 {
-    return static_cast<EdgeSetTopology< DataTypes >* > (this->m_basicTopology);
+    PointSetTopologyAlgorithms< DataTypes >::init();
+    this->getContext()->get(m_container);
+    this->getContext()->get(m_modifier);
+    this->getContext()->get(m_geometryAlgorithms);
 }
 
 template<class DataTypes>
 void EdgeSetTopologyAlgorithms< DataTypes >::removeEdges(sofa::helper::vector< unsigned int >& edges,
         const bool removeIsolatedPoints)
 {
-    EdgeSetTopology< DataTypes > *topology = getEdgeSetTopology();
-    EdgeSetTopologyModifier* modifier  = topology->getEdgeSetTopologyModifier();
-    EdgeSetTopologyContainer* container  = topology->getEdgeSetTopologyContainer();
-
     /// add the topological changes in the queue
-    modifier->removeEdgesWarning(edges);
+    m_modifier->removeEdgesWarning(edges);
     // inform other objects that the edges are going to be removed
-    container->propagateTopologicalChanges();
+    m_container->propagateTopologicalChanges();
     // now destroy the old edges.
-    modifier->removeEdgesProcess( edges, removeIsolatedPoints );
+    m_modifier->removeEdgesProcess( edges, removeIsolatedPoints );
 
-    container->checkTopology();
+    m_container->checkTopology();
 }
 
 template<class DataTypes>
@@ -89,31 +87,23 @@ template<class DataTypes>
 void  EdgeSetTopologyAlgorithms<DataTypes>::renumberPoints( const sofa::helper::vector<unsigned int> &index,
         const sofa::helper::vector<unsigned int> &inv_index)
 {
-    EdgeSetTopology< DataTypes > *topology = getEdgeSetTopology();
-    EdgeSetTopologyModifier* modifier  = topology->getEdgeSetTopologyModifier();
-    EdgeSetTopologyContainer* container  = topology->getEdgeSetTopologyContainer();
-
     /// add the topological changes in the queue
-    modifier->renumberPointsWarning(index, inv_index);
+    m_modifier->renumberPointsWarning(index, inv_index);
     // inform other objects that the triangles are going to be removed
-    container->propagateTopologicalChanges();
+    m_container->propagateTopologicalChanges();
     // now renumber the points
-    modifier->renumberPointsProcess(index, inv_index);
+    m_modifier->renumberPointsProcess(index, inv_index);
 
-    container->checkTopology();
+    m_container->checkTopology();
 }
 
 template<class DataTypes>
 void EdgeSetTopologyAlgorithms< DataTypes >::addEdges(const sofa::helper::vector< Edge >& edges)
 {
-    EdgeSetTopology< DataTypes > *topology = getEdgeSetTopology();
-    EdgeSetTopologyModifier* modifier  = topology->getEdgeSetTopologyModifier();
-    EdgeSetTopologyContainer* container  = topology->getEdgeSetTopologyContainer();
-
-    unsigned int nEdges = topology->getEdgeSetTopologyContainer()->getNumberOfEdges();
+    unsigned int nEdges = m_container->getNumberOfEdges();
 
     /// actually add edges in the topology container
-    modifier->addEdgesProcess(edges);
+    m_modifier->addEdgesProcess(edges);
 
     sofa::helper::vector<unsigned int> edgesIndex;
     edgesIndex.reserve(edges.size());
@@ -124,10 +114,10 @@ void EdgeSetTopologyAlgorithms< DataTypes >::addEdges(const sofa::helper::vector
     }
 
     // add topology event in the stack of topological events
-    modifier->addEdgesWarning( edges.size(), edges, edgesIndex);
+    m_modifier->addEdgesWarning( edges.size(), edges, edgesIndex);
 
     // inform other objects that the edges are already added
-    container->propagateTopologicalChanges();
+    m_container->propagateTopologicalChanges();
 }
 
 template<class DataTypes>
@@ -135,14 +125,10 @@ void EdgeSetTopologyAlgorithms< DataTypes >::addEdges(const sofa::helper::vector
         const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
         const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
 {
-    EdgeSetTopology< DataTypes > *topology = getEdgeSetTopology();
-    EdgeSetTopologyModifier* modifier  = topology->getEdgeSetTopologyModifier();
-    EdgeSetTopologyContainer* container  = topology->getEdgeSetTopologyContainer();
-
-    unsigned int nEdges = topology->getEdgeSetTopologyContainer()->getNumberOfEdges();
+    unsigned int nEdges = m_container->getNumberOfEdges();
 
     /// actually add edges in the topology container
-    modifier->addEdgesProcess(edges);
+    m_modifier->addEdgesProcess(edges);
 
     sofa::helper::vector<unsigned int> edgesIndex;
     edgesIndex.reserve(edges.size());
@@ -153,38 +139,32 @@ void EdgeSetTopologyAlgorithms< DataTypes >::addEdges(const sofa::helper::vector
     }
 
     // add topology event in the stack of topological events
-    modifier->addEdgesWarning( edges.size(), edges, edgesIndex, ancestors, baryCoefs);
+    m_modifier->addEdgesWarning( edges.size(), edges, edgesIndex, ancestors, baryCoefs);
 
     // inform other objects that the edges are already added
-    container->propagateTopologicalChanges();
+    m_container->propagateTopologicalChanges();
 }
 
 template<class DataTypes>
 void EdgeSetTopologyAlgorithms< DataTypes >::swapEdges(const sofa::helper::vector< sofa::helper::vector< unsigned int > >& edgesPairs)
 {
-    EdgeSetTopology< DataTypes > *topology = getEdgeSetTopology();
-
-    topology->getEdgeSetTopologyModifier()->swapEdgesProcess(edgesPairs);
-    topology->getEdgeSetTopologyContainer()->checkTopology();
+    m_modifier->swapEdgesProcess(edgesPairs);
+    m_container->checkTopology();
 }
 
 template<class DataTypes>
 void EdgeSetTopologyAlgorithms< DataTypes >::fuseEdges(const sofa::helper::vector< sofa::helper::vector< unsigned int > >& edgesPairs, const bool removeIsolatedPoints)
 {
-    EdgeSetTopology< DataTypes > *topology = getEdgeSetTopology();
-
-    topology->getEdgeSetTopologyModifier()->fuseEdgesProcess(edgesPairs, removeIsolatedPoints);
-    topology->getEdgeSetTopologyContainer()->checkTopology();
+    m_modifier->fuseEdgesProcess(edgesPairs, removeIsolatedPoints);
+    m_container->checkTopology();
 }
 
 template<class DataTypes>
 void EdgeSetTopologyAlgorithms< DataTypes >::splitEdges( sofa::helper::vector<unsigned int> &indices,
         const bool removeIsolatedPoints)
 {
-    EdgeSetTopology< DataTypes > *topology = getEdgeSetTopology();
-
-    topology->getEdgeSetTopologyModifier()->splitEdgesProcess(indices, removeIsolatedPoints);
-    topology->getEdgeSetTopologyContainer()->checkTopology();
+    m_modifier->splitEdgesProcess(indices, removeIsolatedPoints);
+    m_container->checkTopology();
 }
 
 template<class DataTypes>
@@ -192,10 +172,8 @@ void EdgeSetTopologyAlgorithms< DataTypes >::splitEdges( sofa::helper::vector<un
         const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
         const bool removeIsolatedPoints)
 {
-    EdgeSetTopology< DataTypes > *topology = getEdgeSetTopology();
-
-    topology->getEdgeSetTopologyModifier()->splitEdgesProcess(indices, baryCoefs, removeIsolatedPoints);
-    topology->getEdgeSetTopologyContainer()->checkTopology();
+    m_modifier->splitEdgesProcess(indices, baryCoefs, removeIsolatedPoints);
+    m_container->checkTopology();
 }
 
 // Give the optimal vertex permutation according to the Reverse CuthillMckee algorithm (use BOOST GRAPH LIBRAIRY)
@@ -212,10 +190,7 @@ void EdgeSetTopologyAlgorithms< DataTypes >::resortCuthillMckee(sofa::helper::ve
 
     Graph G;
 
-    EdgeSetTopology< DataTypes > *topology = getEdgeSetTopology();
-    EdgeSetTopologyContainer *container = topology->getEdgeSetTopologyContainer();
-
-    const sofa::helper::vector<Edge> &ea=container->getEdgeArray();
+    const sofa::helper::vector<Edge> &ea=m_container->getEdgeArray();
 
     for (unsigned int k=0; k<ea.size(); ++k)
     {

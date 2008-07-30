@@ -61,13 +61,9 @@ public:
         : TriangleSetTopologyModifier()
     {}
 
-    TetrahedronSetTopologyModifier(core::componentmodel::topology::TopologyContainer *container)
-        : TriangleSetTopologyModifier(container)
-    {}
-
     virtual ~TetrahedronSetTopologyModifier() {}
 
-    TetrahedronSetTopologyContainer* getTetrahedronSetTopologyContainer() const;
+    virtual void init();
 
     /** \brief Sends a message to warn that some tetrahedra were added in this topology.
     *
@@ -192,10 +188,12 @@ public:
             const sofa::helper::vector<unsigned int> &/*inv_index*/,
             const bool renumberDOF = true);
 
-protected:
     /** \brief Add a tetrahedron.
     */
     void addTetrahedron(Tetrahedron e);
+
+private:
+    TetrahedronSetTopologyContainer* 	m_container;
 };
 
 } // namespace topology

@@ -40,28 +40,25 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::componentmodel::behavior;
 
 template<class DataTypes>
-HexahedronSetTopology< DataTypes >* HexahedronSetTopologyAlgorithms< DataTypes >::getHexahedronSetTopology() const
+void HexahedronSetTopologyAlgorithms< DataTypes >::init()
 {
-    return static_cast<HexahedronSetTopology< DataTypes >* > (this->m_basicTopology);
+    QuadSetTopologyAlgorithms< DataTypes >::init();
+    this->getContext()->get(m_container);
+    this->getContext()->get(m_modifier);
+    this->getContext()->get(m_geometryAlgorithms);
 }
 
 template<class DataTypes>
 void HexahedronSetTopologyAlgorithms< DataTypes >::removeHexahedra(sofa::helper::vector< unsigned int >& hexahedra)
 {
-    HexahedronSetTopology< DataTypes > *topology = getHexahedronSetTopology();
-    HexahedronSetTopologyModifier* modifier  = topology->getHexahedronSetTopologyModifier();
-    HexahedronSetTopologyContainer* container  = topology->getHexahedronSetTopologyContainer();
-
     // add the topological changes in the queue
-    modifier->removeHexahedraWarning(hexahedra);
-
+    m_modifier->removeHexahedraWarning(hexahedra);
     // inform other objects that the hexa are going to be removed
-    container->propagateTopologicalChanges();
-
+    m_container->propagateTopologicalChanges();
     // now destroy the old hexahedra.
-    modifier->removeHexahedraProcess(  hexahedra ,true);
+    m_modifier->removeHexahedraProcess(  hexahedra ,true);
 
-    container->checkTopology();
+    m_container->checkTopology();
 }
 
 template<class DataTypes>
@@ -74,18 +71,14 @@ template<class DataTypes>
 void  HexahedronSetTopologyAlgorithms<DataTypes>::renumberPoints(const sofa::helper::vector<unsigned int> &index,
         const sofa::helper::vector<unsigned int> &inv_index)
 {
-    HexahedronSetTopology< DataTypes > *topology = getHexahedronSetTopology();
-    HexahedronSetTopologyModifier* modifier  = topology->getHexahedronSetTopologyModifier();
-    HexahedronSetTopologyContainer* container  = topology->getHexahedronSetTopologyContainer();
-
     /// add the topological changes in the queue
-    modifier->renumberPointsWarning(index, inv_index);
+    m_modifier->renumberPointsWarning(index, inv_index);
     // inform other objects that the triangles are going to be removed
-    container->propagateTopologicalChanges();
+    m_container->propagateTopologicalChanges();
     // now renumber the points
-    modifier->renumberPointsProcess(index, inv_index);
+    m_modifier->renumberPointsProcess(index, inv_index);
 
-    container->checkTopology();
+    m_container->checkTopology();
 }
 
 } // namespace topology
