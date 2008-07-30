@@ -61,7 +61,6 @@ MeshTopology::MeshTopology()
     , seqTetras(initData(&seqTetras,"tetras","List of tetra indices")), validTetras(false)
     , seqHexas(initData(&seqHexas,"hexas","List of hexa indices")), validHexas(false)
     , revision(0)
-    , filename(initData(&filename,"filename","Filename of the object"))
     , _draw(initData(&_draw, false, "drawHexas","if true, draw the topology hexahedroms"))
 {
 }

@@ -57,8 +57,8 @@ int OglShaderClass = core::RegisterObject("OglShader")
 
 OglShader::OglShader():
     turnOn(initData(&turnOn, (bool) true, "turnOn", "Turn On the shader?")),
-    vertFilename(initData(&vertFilename, (std::string) "toonShading.vert", "vertFilename", "Set the vertex shader filename to load")),
-    fragFilename(initData(&fragFilename, (std::string) "toonShading.frag", "fragFilename", "Set the fragment shader filename to load")),
+    vertFilename(initData(&vertFilename, (std::string) "shaders/toonShading.vert", "vertFilename", "Set the vertex shader filename to load")),
+    fragFilename(initData(&fragFilename, (std::string) "shaders/toonShading.frag", "fragFilename", "Set the fragment shader filename to load")),
     geoFilename(initData(&geoFilename, (std::string) "", "geoFilename", "Set the geometry shader filename to load")),
     geometryInputType(initData(&geometryInputType, (int) -1, "geometryInputType", "Set input types for the geometry shader")),
     geometryOutputType(initData(&geometryOutputType, (int) -1, "geometryOutputType", "Set output types for the geometry shader")),
@@ -91,7 +91,6 @@ void OglShader::reinit()
 void OglShader::initVisual()
 {
 // 	std::string shaderPath = "shaders/"; //No hard coded path!
-    std::string shaderPath = "";
 
     if (!sofa::helper::gl::GLSLShader::InitGLSL())
     {
@@ -99,7 +98,7 @@ void OglShader::initVisual()
         return;
     }
 
-    std::string file = shaderPath + vertFilename.getValue();
+    std::string file = vertFilename.getValue();
 
     if (!helper::system::DataRepository.findFile(file))
     {
@@ -107,17 +106,17 @@ void OglShader::initVisual()
         return;
     }
 
-    file = shaderPath + fragFilename.getValue();
+    file = fragFilename.getValue();
     if (!helper::system::DataRepository.findFile(file))
     {
         std::cerr << "OglShader : fragment shader file not found." << std::endl;
         return;
     }
 
-    file = shaderPath + geoFilename.getValue();
+    file = geoFilename.getValue();
     if (geoFilename.getValue() == "" || !helper::system::DataRepository.findFile(file))
-        m_shader.InitShaders(helper::system::DataRepository.getFile(shaderPath + vertFilename.getValue()),
-                helper::system::DataRepository.getFile(shaderPath + fragFilename.getValue()));
+        m_shader.InitShaders(helper::system::DataRepository.getFile(vertFilename.getValue()),
+                helper::system::DataRepository.getFile(fragFilename.getValue()));
 
     else
     {
@@ -134,9 +133,9 @@ void OglShader::initVisual()
         if (geometryVerticesOut.getValue() != -1)
             setGeometryVerticesOut(geometryVerticesOut.getValue());
 
-        m_shader.InitShaders(helper::system::DataRepository.getFile(shaderPath + vertFilename.getValue()),
-                helper::system::DataRepository.getFile(shaderPath + geoFilename.getValue()),
-                helper::system::DataRepository.getFile(shaderPath + fragFilename.getValue()));
+        m_shader.InitShaders(helper::system::DataRepository.getFile(vertFilename.getValue()),
+                helper::system::DataRepository.getFile(geoFilename.getValue()),
+                helper::system::DataRepository.getFile(fragFilename.getValue()));
 
         hasGeometryShader = true;
     }

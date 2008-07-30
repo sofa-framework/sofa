@@ -103,6 +103,7 @@ SparseGridTopology::SparseGridTopology(bool _isVirtual)
     n(initData(&n,Vec<3,int>(2,2,2),"n","grid resolution")),
     min(initData(&min,Vector3(0,0,0),"min","Min")),
     max(initData(&max,Vector3(0,0,0),"max","Max")),
+    filename(initData(&filename,"filename","File describing the SparseGrid")),
     _nbVirtualFinerLevels( initData(&_nbVirtualFinerLevels, 0, "nbVirtualFinerLevels", "create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)")),
     dim_voxels(initData(&dim_voxels,Vec<3,unsigned int>(512,512,246),"dim_voxels","Dimension of the voxel File")),
     size_voxel(initData(&size_voxel,Vector3(1.0f,1.0f,1.0f),"size_voxel","Dimension of one voxel")),
