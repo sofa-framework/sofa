@@ -49,7 +49,7 @@ typename DataTypes::Real QuadSetGeometryAlgorithms< DataTypes >::computeQuadArea
     QuadSetTopologyContainer * container = topology->getQuadSetTopologyContainer();
 
     const Quad &t = container->getQuad(i);
-    const VecCoord& p = *(topology->getDOF()->getX());
+    const VecCoord& p = *(this->object->getX());
     Real area = (Real)((areaProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]])
             + areaProduct(p[t[3]]-p[t[2]],p[t[0]]-p[t[2]])) * (Real) 0.5);
     return area;
@@ -62,7 +62,7 @@ typename DataTypes::Real QuadSetGeometryAlgorithms< DataTypes >::computeRestQuad
     QuadSetTopologyContainer * container = topology->getQuadSetTopologyContainer();
 
     const Quad &t = container->getQuad(i);
-    const VecCoord& p = *(topology->getDOF()->getX0());
+    const VecCoord& p = *(this->object->getX0());
     Real area = (Real)((areaProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]])
             + areaProduct(p[t[3]]-p[t[2]],p[t[0]]-p[t[2]])) * (Real) 0.5);
     return area;
@@ -76,7 +76,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::computeQuadArea( BasicArrayInterface<
 
     //const sofa::helper::vector<Quad> &ta=container->getQuadArray();
     unsigned int nb_quads = container->getNumberOfQuads();
-    const typename DataTypes::VecCoord& p = *(topology->getDOF()->getX());
+    const typename DataTypes::VecCoord& p = *(this->object->getX());
 
     for(unsigned int i=0; i<nb_quads; ++i)
     {
@@ -96,7 +96,7 @@ Vec<3,double> QuadSetGeometryAlgorithms< DataTypes >::computeQuadNormal(const un
     QuadSetTopologyContainer * container = topology->getQuadSetTopologyContainer();
 
     const Quad &q = container->getQuad(ind_q);
-    const typename DataTypes::VecCoord& vect_c = *(topology->getDOF()->getX());
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
     const typename DataTypes::Coord& c0=vect_c[q[0]];
     const typename DataTypes::Coord& c1=vect_c[q[1]];
@@ -131,7 +131,7 @@ bool QuadSetGeometryAlgorithms< DataTypes >::is_quad_in_plane(const unsigned int
 
     // HYP : ind_p==q[0] or ind_q==t[1] or ind_q==t[2] or ind_q==q[3]
 
-    const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
     unsigned int ind_1;
     unsigned int ind_2;

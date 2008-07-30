@@ -62,6 +62,8 @@ public:
 
     virtual ~PointSetGeometryAlgorithms() {}
 
+    virtual void init();
+
     PointSetTopology<DataTypes>* getPointSetTopology() const
     {
         return static_cast<PointSetTopology<DataTypes>*> (this->m_basicTopology);
@@ -76,6 +78,13 @@ public:
     /** return the axis aligned bounding box : index 0 = xmin, index 1=ymin,
     index 2 = zmin, index 3 = xmax, index 4 = ymax, index 5=zmax */
     void getAABB(Real bb[6]) const;
+
+    /** \brief Returns the object where the mechanical DOFs are stored */
+    component::MechanicalState<DataTypes> *getDOF() const { return object;	}
+
+protected:
+    /** the object where the mechanical DOFs are stored */
+    core::componentmodel::behavior::MechanicalState<DataTypes> *object;
 };
 
 } // namespace topology

@@ -116,8 +116,11 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::Suture2Points(unsigned int ind_
     PointSetTopology<DataTypes> *point_topology = dynamic_cast<PointSetTopology<DataTypes> *>(topology);
     assert (point_topology != 0);
 
-    point_topology->object->forcePointPosition(ind1, x_created);
-    point_topology->object->forcePointPosition(ind2, x_created);
+    ///TODO:Cast into a MechanicalObject ?
+    MechanicalState<DataTypes>* state = point_topology->getPointSetGeometryAlgorithms()->getDOF();
+    MechanicalObject<DataTypes> *temp = dynamic_cast<MechanicalObject<DataTypes> *>(state);
+    temp->forcePointPosition(ind1, x_created);
+    temp->forcePointPosition(ind2, x_created);
 
     return true;
 }
