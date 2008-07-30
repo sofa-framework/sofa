@@ -35,10 +35,6 @@ namespace component
 
 namespace topology
 {
-template<class DataTypes>
-class EdgeSetTopology;
-
-template<class DataTypes>
 class EdgeSetTopologyModifier;
 
 using core::componentmodel::topology::BaseMeshTopology;
@@ -52,7 +48,6 @@ typedef BaseMeshTopology::VertexEdges VertexEdges;
 class EdgeSetTopologyContainer : public PointSetTopologyContainer
 {
 public:
-    template< typename DataTypes >
     friend class EdgeSetTopologyModifier;
 
     EdgeSetTopologyContainer();

@@ -35,10 +35,6 @@ namespace component
 
 namespace topology
 {
-template <class DataTypes>
-class TetrahedronSetTopology;
-
-template <class DataTypes>
 class TetrahedronSetTopologyModifier;
 
 using core::componentmodel::topology::BaseMeshTopology;
@@ -59,7 +55,6 @@ typedef TetraTriangles TetrahedronTriangles;
 /** a class that stores a set of tetrahedra and provides access with adjacent triangles, edges and vertices */
 class TetrahedronSetTopologyContainer : public TriangleSetTopologyContainer
 {
-    template< typename DataTypes >
     friend class TetrahedronSetTopologyModifier;
 
 public:

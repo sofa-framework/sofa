@@ -49,10 +49,6 @@ namespace component
 {
 namespace topology
 {
-template <class DataTypes>
-class HexahedronSetTopology;
-
-template <class DataTypes>
 class HexahedronSetTopologyModifier;
 
 using core::componentmodel::topology::BaseMeshTopology;
@@ -73,7 +69,6 @@ typedef HexaQuads HexahedronQuads;
 /** a class that stores a set of hexahedra and provides access with adjacent quads, edges and vertices */
 class HexahedronSetTopologyContainer : public QuadSetTopologyContainer
 {
-    template< typename DataTypes >
     friend class HexahedronSetTopologyModifier;
 
 public:

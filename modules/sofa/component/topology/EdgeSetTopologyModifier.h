@@ -46,19 +46,15 @@ typedef BaseMeshTopology::VertexEdges VertexEdges;
 /**
 * A class that can apply basic transformations on a set of edges.
 */
-template<class DataTypes>
-class EdgeSetTopologyModifier : public PointSetTopologyModifier <DataTypes>
+class EdgeSetTopologyModifier : public PointSetTopologyModifier
 {
 public:
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-
     EdgeSetTopologyModifier()
-        : PointSetTopologyModifier<DataTypes>()
+        : PointSetTopologyModifier()
     {}
 
     EdgeSetTopologyModifier(core::componentmodel::topology::TopologyContainer *container)
-        : PointSetTopologyModifier<DataTypes>(container)
+        : PointSetTopologyModifier(container)
     {}
 
     virtual ~EdgeSetTopologyModifier() {}

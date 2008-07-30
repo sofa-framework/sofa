@@ -23,9 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/topology/PointSetTopologyModifier.h>
-#include <sofa/component/topology/PointSetTopologyModifier.inl>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/component/topology/PointSetTopologyChange.h>
+#include <sofa/component/topology/PointSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -36,38 +35,138 @@ namespace component
 
 namespace topology
 {
-using namespace sofa::defaulttype;
 SOFA_DECL_CLASS(PointSetTopologyModifier)
 int PointSetTopologyModifierClass = core::RegisterObject("Point set topology modifier")
-#ifndef SOFA_FLOAT
-        .add< PointSetTopologyModifier<Vec3dTypes> >()
-        .add< PointSetTopologyModifier<Vec2dTypes> >()
-        .add< PointSetTopologyModifier<Vec1dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< PointSetTopologyModifier<Vec3fTypes> >()
-        .add< PointSetTopologyModifier<Vec2fTypes> >()
-        .add< PointSetTopologyModifier<Vec1fTypes> >()
-#endif
-        ;
+        .add< PointSetTopologyModifier >();
 
-#ifndef SOFA_FLOAT
-template class PointSetTopologyModifier<Vec3dTypes>;
-template class PointSetTopologyModifier<Vec2dTypes>;
-template class PointSetTopologyModifier<Vec1dTypes>;
+using namespace std;
+using namespace sofa::defaulttype;
+using namespace sofa::core::componentmodel::behavior;
 
-//     template class PointSetTopologyModifier<Rigid3dTypes>;
-//     template class PointSetTopologyModifier<Rigid2dTypes>;
-#endif
 
-#ifndef SOFA_DOUBLE
-template class PointSetTopologyModifier<Vec3fTypes>;
-template class PointSetTopologyModifier<Vec2fTypes>;
-template class PointSetTopologyModifier<Vec1fTypes>;
+PointSetTopologyContainer* PointSetTopologyModifier::getPointSetTopologyContainer() const
+{
+    return static_cast<PointSetTopologyContainer*> (this->m_topologyContainer);
+}
 
-//     template class PointSetTopologyModifier<Rigid3fTypes>;
-//     template class PointSetTopologyModifier<Rigid2fTypes>;
-#endif
+
+void PointSetTopologyModifier::swapPoints(const int i1,const int i2)
+{
+    //PointsIndicesSwap *e2 = PointsIndicesSwap PointsAdded( i1, i2 );
+    //addStateChange(e2);
+    //container->propagateStateChanges();
+
+    PointsIndicesSwap *e = new PointsIndicesSwap( i1, i2 ); // local or global indices ? (example of edges)
+    this->addTopologyChange(e);
+}
+
+
+void PointSetTopologyModifier::addPointsProcess(const unsigned int nPoints, const bool /*addDOF*/)
+{
+    getPointSetTopologyContainer()->addPoints(nPoints);
+}
+
+
+void PointSetTopologyModifier::addPointsProcess(const unsigned int nPoints,
+        const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+        const sofa::helper::vector< sofa::helper::vector< double > >& /*baryCoefs*/,
+        const bool /*addDOF*/)
+{
+    getPointSetTopologyContainer()->addPoints(nPoints);
+}
+
+
+void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints, const bool addDOF)
+{
+    PointSetTopologyContainer* container = getPointSetTopologyContainer();
+
+    if(addDOF)
+    {
+        PointsAdded *e2 = new PointsAdded(nPoints);
+        addStateChange(e2);
+        container->propagateStateChanges();
+    }
+
+    // Warning that vertices just got created
+    PointsAdded *e = new PointsAdded(nPoints);
+    this->addTopologyChange(e);
+}
+
+
+void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
+        const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double       > >& coefs,
+        const bool addDOF)
+{
+    PointSetTopologyContainer* container = getPointSetTopologyContainer();
+
+    if(addDOF)
+    {
+        PointsAdded *e2 = new PointsAdded(nPoints, ancestors, coefs);
+        addStateChange(e2);
+        container->propagateStateChanges();
+    }
+
+    // Warning that vertices just got created
+    PointsAdded *e = new PointsAdded(nPoints, ancestors, coefs);
+    this->addTopologyChange(e);
+}
+
+
+void PointSetTopologyModifier::removePointsWarning(sofa::helper::vector<unsigned int> &indices,
+        const bool removeDOF)
+{
+    // TODO: clarify why sorting is necessary
+    std::sort( indices.begin(), indices.end(), std::greater<unsigned int>() );
+
+    // Warning that these vertices will be deleted
+    PointsRemoved *e = new PointsRemoved(indices);
+    this->addTopologyChange(e);
+
+    if(removeDOF)
+    {
+        PointsRemoved *e2=new PointsRemoved(indices);
+        addStateChange(e2);
+    }
+}
+
+
+void PointSetTopologyModifier::removePointsProcess(const sofa::helper::vector<unsigned int> & indices,
+        const bool removeDOF)
+{
+    if(removeDOF)
+    {
+        getPointSetTopologyContainer()->propagateStateChanges();
+    }
+    getPointSetTopologyContainer()->removePoints(indices.size());
+}
+
+
+void PointSetTopologyModifier::renumberPointsWarning( const sofa::helper::vector<unsigned int> &index,
+        const sofa::helper::vector<unsigned int> &inv_index,
+        const bool renumberDOF)
+{
+    // Warning that these vertices will be deleted
+    PointsRenumbering *e = new PointsRenumbering(index, inv_index);
+    this->addTopologyChange(e);
+
+    if(renumberDOF)
+    {
+        PointsRenumbering *e2 = new PointsRenumbering(index, inv_index);
+        addStateChange(e2);
+    }
+}
+
+
+void PointSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector<unsigned int> &/*index*/,
+        const sofa::helper::vector<unsigned int> &/*inv_index*/,
+        const bool renumberDOF)
+{
+    if(renumberDOF)
+    {
+        getPointSetTopologyContainer()->propagateStateChanges();
+    }
+}
 
 } // namespace topology
 

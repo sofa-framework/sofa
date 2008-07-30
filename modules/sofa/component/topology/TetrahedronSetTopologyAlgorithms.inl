@@ -51,17 +51,18 @@ template<class DataTypes>
 void TetrahedronSetTopologyAlgorithms< DataTypes >::removeTetrahedra(sofa::helper::vector< unsigned int >& tetrahedra)
 {
     TetrahedronSetTopology< DataTypes > *topology = getTetrahedronSetTopology();
-    TetrahedronSetTopologyModifier< DataTypes >* modifier  = topology->getTetrahedronSetTopologyModifier();
+    TetrahedronSetTopologyModifier* modifier  = topology->getTetrahedronSetTopologyModifier();
+    TetrahedronSetTopologyContainer* container = topology->getTetrahedronSetTopologyContainer();
 
     modifier->removeTetrahedraWarning(tetrahedra);
 
     // inform other objects that the triangles are going to be removed
-    topology->propagateTopologicalChanges();
+    container->propagateTopologicalChanges();
 
     // now destroy the old tetrahedra.
     modifier->removeTetrahedraProcess(  tetrahedra ,true);
 
-    topology->getTetrahedronSetTopologyContainer()->checkTopology();
+    container->checkTopology();
 }
 
 template<class DataTypes>
@@ -88,16 +89,17 @@ void  TetrahedronSetTopologyAlgorithms<DataTypes>::renumberPoints( const sofa::h
         const sofa::helper::vector<unsigned int> &inv_index)
 {
     TetrahedronSetTopology< DataTypes > *topology = getTetrahedronSetTopology();
-    TetrahedronSetTopologyModifier< DataTypes >* modifier  = topology->getTetrahedronSetTopologyModifier();
+    TetrahedronSetTopologyModifier* modifier  = topology->getTetrahedronSetTopologyModifier();
+    TetrahedronSetTopologyContainer* container = topology->getTetrahedronSetTopologyContainer();
 
     /// add the topological changes in the queue
     modifier->renumberPointsWarning(index, inv_index);
     // inform other objects that the triangles are going to be removed
-    topology->propagateTopologicalChanges();
+    container->propagateTopologicalChanges();
     // now renumber the points
     modifier->renumberPointsProcess(index, inv_index);
 
-    topology->getTetrahedronSetTopologyContainer()->checkTopology();
+    container->checkTopology();
 }
 
 } // namespace topology
