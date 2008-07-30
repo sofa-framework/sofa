@@ -109,7 +109,8 @@ QPixmap* getPixmap(core::objectmodel::Base* obj)
             flags |= 1 << MAPPING;
         if (dynamic_cast<core::componentmodel::behavior::BaseMass*>(obj))
             flags |= 1 << MASS;
-        if (dynamic_cast<core::componentmodel::topology::Topology *>(obj))
+        if (dynamic_cast<core::componentmodel::topology::Topology *>(obj)
+            || dynamic_cast<core::componentmodel::topology::BaseTopologyObject *>(obj) )
             flags |= 1 << TOPOLOGY;
         if (dynamic_cast<core::VisualModel*>(obj) && !flags)
             flags |= 1 << VMODEL;

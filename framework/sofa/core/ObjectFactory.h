@@ -46,6 +46,7 @@
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
 #include <sofa/core/componentmodel/behavior/MasterSolver.h>
 #include <sofa/core/componentmodel/topology/Topology.h>
+#include <sofa/core/componentmodel/topology/BaseTopologyObject.h>
 #include <sofa/core/componentmodel/behavior/BaseController.h>
 
 #include <map>
@@ -318,6 +319,8 @@ public:
             entry.baseClasses.insert("MasterSolver");
         if (implements<RealObject,core::componentmodel::topology::Topology>())
             entry.baseClasses.insert("Topology");
+        if (implements<RealObject,core::componentmodel::topology::BaseTopologyObject>())
+            entry.baseClasses.insert("TopologyObject");
         if (implements<RealObject,core::componentmodel::behavior::BaseController>())
             entry.baseClasses.insert("Controller");
 
