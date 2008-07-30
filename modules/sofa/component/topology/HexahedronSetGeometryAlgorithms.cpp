@@ -38,13 +38,19 @@ namespace topology
 using namespace sofa::defaulttype;
 SOFA_DECL_CLASS(HexahedronSetGeometryAlgorithms)
 int HexahedronSetGeometryAlgorithmsClass = core::RegisterObject("Hexahedron set geometry algorithms")
+#ifdef SOFA_FLOAT
+        .add< HexahedronSetGeometryAlgorithms<Vec3fTypes> >(true) // default template
+#else
+        .add< HexahedronSetGeometryAlgorithms<Vec3dTypes> >(true) // default template
+#ifndef SOFA_DOUBLE
+        .add< HexahedronSetGeometryAlgorithms<Vec3fTypes> >() // default template
+#endif
+#endif
 #ifndef SOFA_FLOAT
-        .add< HexahedronSetGeometryAlgorithms<Vec3dTypes> >()
         .add< HexahedronSetGeometryAlgorithms<Vec2dTypes> >()
         .add< HexahedronSetGeometryAlgorithms<Vec1dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< HexahedronSetGeometryAlgorithms<Vec3fTypes> >()
         .add< HexahedronSetGeometryAlgorithms<Vec2fTypes> >()
         .add< HexahedronSetGeometryAlgorithms<Vec1fTypes> >()
 #endif

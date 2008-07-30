@@ -39,15 +39,21 @@ namespace topology
 using namespace sofa::defaulttype;
 SOFA_DECL_CLASS(ManifoldEdgeSetGeometryAlgorithms)
 int ManifoldEdgeSetGeometryAlgorithmsClass = core::RegisterObject("ManifoldEdge set geometry algorithms")
+#ifdef SOFA_FLOAT
+        .add< ManifoldEdgeSetGeometryAlgorithms<Vec3fTypes> >(true) // default template
+#else
+        .add< ManifoldEdgeSetGeometryAlgorithms<Vec3dTypes> >(true) // default template
+#ifndef SOFA_DOUBLE
+        .add< ManifoldEdgeSetGeometryAlgorithms<Vec3fTypes> >() // default template
+#endif
+#endif
 #ifndef SOFA_FLOAT
-        .add< ManifoldEdgeSetGeometryAlgorithms<Vec3dTypes> >()
         .add< ManifoldEdgeSetGeometryAlgorithms<Vec2dTypes> >()
         .add< ManifoldEdgeSetGeometryAlgorithms<Vec1dTypes> >()
         .add< ManifoldEdgeSetGeometryAlgorithms<Rigid3dTypes> >()
         .add< ManifoldEdgeSetGeometryAlgorithms<Rigid2dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< ManifoldEdgeSetGeometryAlgorithms<Vec3fTypes> >()
         .add< ManifoldEdgeSetGeometryAlgorithms<Vec2fTypes> >()
         .add< ManifoldEdgeSetGeometryAlgorithms<Vec1fTypes> >()
         .add< ManifoldEdgeSetGeometryAlgorithms<Rigid3fTypes> >()

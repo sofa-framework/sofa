@@ -39,13 +39,19 @@ using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(TriangleSetTopologyAlgorithms)
 int TriangleSetTopologyAlgorithmsClass = core::RegisterObject("Triangle set topology algorithms")
+#ifdef SOFA_FLOAT
+        .add< TriangleSetTopologyAlgorithms<Vec3fTypes> >(true) // default template
+#else
+        .add< TriangleSetTopologyAlgorithms<Vec3dTypes> >(true) // default template
+#ifndef SOFA_DOUBLE
+        .add< TriangleSetTopologyAlgorithms<Vec3fTypes> >() // default template
+#endif
+#endif
 #ifndef SOFA_FLOAT
-        .add< TriangleSetTopologyAlgorithms<Vec3dTypes> >()
         .add< TriangleSetTopologyAlgorithms<Vec2dTypes> >()
         .add< TriangleSetTopologyAlgorithms<Vec1dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< TriangleSetTopologyAlgorithms<Vec3fTypes> >()
         .add< TriangleSetTopologyAlgorithms<Vec2fTypes> >()
         .add< TriangleSetTopologyAlgorithms<Vec1fTypes> >()
 #endif

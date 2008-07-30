@@ -496,10 +496,7 @@ void QuadularBendingSprings<DataTypes>::init()
 
     _topology = getContext()->getMeshTopology();
 
-    sofa::component::topology::QuadSetTopologyContainer* quadCont;
-    this->getContext()->get(quadCont);
-
-    if ((quadCont==0) || (_topology->getNbQuads()==0))
+    if (_topology->getNbQuads()==0)
     {
         std::cerr << "ERROR(QuadularBendingSprings): object must have a Quadular Set Topology.\n";
         return;

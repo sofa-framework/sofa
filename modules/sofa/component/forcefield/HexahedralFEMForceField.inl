@@ -122,10 +122,7 @@ void HexahedralFEMForceField<DataTypes>::init()
 
     _topology = getContext()->getMeshTopology();
 
-    sofa::component::topology::HexahedronSetTopologyContainer* hexaCont;
-    this->getContext()->get(hexaCont);
-
-    if ((hexaCont==0) || (_topology->getNbHexas()==0))
+    if (_topology->getNbHexas()==0)
     {
         std::cerr << "ERROR(HexahedralFEMForceField): object must have a Hexahedral Set Topology.\n";
         return;
