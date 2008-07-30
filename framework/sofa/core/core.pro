@@ -53,6 +53,7 @@ HEADERS += \
           componentmodel/collision/Pipeline.h \
           componentmodel/topology/BaseMeshTopology.h \
           componentmodel/topology/BaseTopology.h \
+          componentmodel/topology/BaseTopologyObject.h \
           componentmodel/topology/TopologicalMapping.h \
           componentmodel/topology/Topology.h \
           Mapping.h \
