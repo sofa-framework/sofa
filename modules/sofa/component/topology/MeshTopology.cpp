@@ -33,7 +33,7 @@
 #include <set>
 #include <string.h>
 
-#include <sofa/component/Meshloader.h>
+#include <sofa/component/MeshLoader.h>
 
 namespace sofa
 {
@@ -75,7 +75,7 @@ void MeshTopology::init()
     if(m_loader)
     {
 
-        int nbp = m_loader->getNbPoints();
+// 		int nbp = m_loader->getNbPoints();
 
         //std::cout<<"Setting "<<nbp<<" points from MeshLoader. " <<std::endl;
 

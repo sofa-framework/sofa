@@ -27,7 +27,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/Meshloader.h>
+#include <sofa/component/MeshLoader.h>
 
 namespace sofa
 {

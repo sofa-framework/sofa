@@ -41,7 +41,7 @@
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
 #include <sofa/component/topology/PointSetTopology.inl>
 
-#include <sofa/component/Meshloader.h>
+#include <sofa/component/MeshLoader.h>
 
 namespace sofa
 {
