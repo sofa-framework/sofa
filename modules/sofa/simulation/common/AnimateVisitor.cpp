@@ -68,7 +68,7 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
     //cerr<<"AnimateVisitor::process Node  "<<node->getName()<<endl;
     if (!node->is_activated.getValue()) return Visitor::RESULT_PRUNE;
     if (dt == 0) setDt(node->getDt());
-    for_each(this, node, node->behaviorModel, &AnimateVisitor::processBehaviorModel);
+// 	for_each(this, node, node->behaviorModel, &AnimateVisitor::processBehaviorModel);
     if (node->masterSolver != NULL)
     {
         ctime_t t0 = begin(node, node->masterSolver);
