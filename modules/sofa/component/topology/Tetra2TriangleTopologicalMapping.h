@@ -29,8 +29,6 @@
 
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
-#include <sofa/component/topology/TriangleSetTopology.h>
-#include <sofa/component/topology/TetrahedronSetTopology.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <map>
@@ -48,7 +46,6 @@ namespace topology
 
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::behavior;
 
 using namespace sofa::component::topology;
 using namespace sofa::core::componentmodel::topology;
@@ -69,9 +66,9 @@ class Tetra2TriangleTopologicalMapping : public TopologicalMapping
 {
 public:
     /// Input Topology
-    typedef TetrahedronSetTopologyContainer In;
+    typedef BaseMeshTopology In;
     /// Output Topology
-    typedef TriangleSetTopologyContainer Out;
+    typedef BaseMeshTopology Out;
 
 protected:
     /// Input source BaseTopology
@@ -141,8 +138,8 @@ public:
         if (arg->findObject(arg->getAttribute("object1","../..")) == NULL || arg->findObject(arg->getAttribute("object2","..")) == NULL)
             return false;
 
-        TetrahedronSetTopologyContainer* topoIn;
-        TriangleSetTopologyContainer* topoOut;
+        BaseMeshTopology* topoIn;
+        BaseMeshTopology* topoOut;
         (dynamic_cast<sofa::core::objectmodel::BaseObject*>(arg->findObject(arg->getAttribute("object1","../.."))))->getContext()->get(topoIn);
         (dynamic_cast<sofa::core::objectmodel::BaseObject*>(arg->findObject(arg->getAttribute("object2",".."))))->getContext()->get(topoOut);
 
@@ -160,8 +157,8 @@ public:
     template<class T>
     static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        TetrahedronSetTopologyContainer* topoIn=NULL;
-        TriangleSetTopologyContainer* topoOut=NULL;
+        BaseMeshTopology* topoIn=NULL;
+        BaseMeshTopology* topoOut=NULL;
         if (arg)
         {
             if (arg->findObject(arg->getAttribute("object1","../..")) != NULL)
