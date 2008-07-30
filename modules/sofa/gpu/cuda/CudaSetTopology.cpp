@@ -60,8 +60,6 @@ int PointSetTopologyCudaClass = core::RegisterObject("Topology consisting of a s
 
 #ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class PointSetTopologyModifier<CudaVec3dTypes>;
-//template class PointSetTopologyModifier<CudaVec2dTypes>;
 template class PointSetTopology<CudaVec3dTypes>;
 //template class PointSetTopology<CudaVec2dTypes>;
 template class PointSetGeometryAlgorithms<CudaVec3dTypes>;
@@ -69,8 +67,6 @@ template class PointSetGeometryAlgorithms<CudaVec3dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 #endif // SOFA_DEV
 
-template class PointSetTopologyModifier<CudaVec3fTypes>;
-//template class PointSetTopologyModifier<CudaVec2fTypes>;
 template class PointSetTopology<CudaVec3fTypes>;
 //template class PointSetTopology<CudaVec2fTypes>;
 template class PointSetGeometryAlgorithms<CudaVec3fTypes>;
@@ -114,10 +110,6 @@ template class EdgeSetGeometryAlgorithms<CudaVec3dTypes>;
 //template class EdgeSetGeometryAlgorithms<CudaVec1dTypes>;
 template class EdgeSetGeometryAlgorithms<CudaRigid3dTypes>;
 //template class EdgeSetGeometryAlgorithms<CudaRigid2dTypes>;
-
-template class EdgeSetTopologyModifier<CudaVec3dTypes>;
-//template class EdgeSetTopologyModifier<CudaVec2dTypes>;
-//template class EdgeSetTopologyModifier<CudaVec1dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 #endif // SOFA_DEV
 
@@ -139,10 +131,6 @@ template class EdgeSetGeometryAlgorithms<CudaVec3fTypes>;
 //template class EdgeSetGeometryAlgorithms<CudaVec1fTypes>;
 template class EdgeSetGeometryAlgorithms<CudaRigid3fTypes>;
 //template class EdgeSetGeometryAlgorithms<CudaRigid2fTypes>;
-
-template class EdgeSetTopologyModifier<CudaVec3fTypes>;
-//template class EdgeSetTopologyModifier<CudaVec2fTypes>;
-//template class EdgeSetTopologyModifier<CudaVec1fTypes>;
 
 //TriangleSetTopology
 
@@ -174,10 +162,6 @@ template class TriangleSetGeometryAlgorithms<CudaVec3dTypes>;
 //template class TriangleSetGeometryAlgorithms<CudaVec2dTypes>;
 //template class TriangleSetGeometryAlgorithms<CudaVec1dTypes>;
 
-
-template class TriangleSetTopologyModifier<CudaVec3dTypes>;
-//template class TriangleSetTopologyModifier<CudaVec2dTypes>;
-//template class TriangleSetTopologyModifier<CudaVec1dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 #endif // SOFA_DEV
 
@@ -192,10 +176,6 @@ template class TriangleSetTopologyAlgorithms<CudaVec3fTypes>;
 template class TriangleSetGeometryAlgorithms<CudaVec3fTypes>;
 //template class TriangleSetGeometryAlgorithms<CudaVec2fTypes>;
 //template class TriangleSetGeometryAlgorithms<CudaVec1fTypes>;
-
-template class TriangleSetTopologyModifier<CudaVec3fTypes>;
-//template class TriangleSetTopologyModifier<CudaVec2fTypes>;
-//template class TriangleSetTopologyModifier<CudaVec1fTypes>;
 
 //TetrahedronSetTopology
 
@@ -227,9 +207,6 @@ template class TetrahedronSetGeometryAlgorithms<CudaVec3dTypes>;
 //template class TetrahedronSetGeometryAlgorithms<CudaVec2dTypes>;
 //template class TetrahedronSetGeometryAlgorithms<CudaVec1dTypes>;
 
-template class TetrahedronSetTopologyModifier<CudaVec3dTypes>;
-//template class TetrahedronSetTopologyModifier<CudaVec2dTypes>;
-//template class TetrahedronSetTopologyModifier<CudaVec1dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 #endif // SOFA_DEV
 
@@ -244,10 +221,6 @@ template class TetrahedronSetTopologyAlgorithms<CudaVec3fTypes>;
 template class TetrahedronSetGeometryAlgorithms<CudaVec3fTypes>;
 //template class TetrahedronSetGeometryAlgorithms<CudaVec2fTypes>;
 //template class TetrahedronSetGeometryAlgorithms<CudaVec1fTypes>;
-
-template class TetrahedronSetTopologyModifier<CudaVec3fTypes>;
-//template class TetrahedronSetTopologyModifier<CudaVec2fTypes>;
-//template class TetrahedronSetTopologyModifier<CudaVec1fTypes>;
 
 
 //int Tetra2TriangleTopologicalMappingCudaClass = core::RegisterObject("Special case of mapping where TetrahedronSetTopology is converted to TriangleSetTopology")
