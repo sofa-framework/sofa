@@ -55,7 +55,6 @@ namespace topology
 
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::behavior;
 
 using namespace sofa::component::topology;
 using namespace sofa::core::componentmodel::topology;
@@ -76,9 +75,9 @@ class Edge2QuadTopologicalMapping : public TopologicalMapping
 {
 public:
     /// Input Topology
-    typedef EdgeSetTopologyContainer In;
+    typedef BaseMeshTopology In;
     /// Output Topology
-    typedef QuadSetTopologyContainer Out;
+    typedef BaseMeshTopology Out;
 
     typedef State<Rigid3Types>::VecCoord VecCoord;
     typedef State<Rigid3Types>::Coord Coord;
@@ -168,8 +167,8 @@ public:
             return false;
 
 
-        EdgeSetTopologyContainer* topoIn;
-        QuadSetTopologyContainer* topoOut;
+        BaseMeshTopology* topoIn;
+        BaseMeshTopology* topoOut;
         (dynamic_cast<sofa::core::objectmodel::BaseObject*>(arg->findObject(arg->getAttribute("object1","../.."))))->getContext()->get(topoIn);
         (dynamic_cast<sofa::core::objectmodel::BaseObject*>(arg->findObject(arg->getAttribute("object2",".."))))->getContext()->get(topoOut);
 
@@ -187,8 +186,8 @@ public:
     template<class T>
     static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        EdgeSetTopologyContainer* topoIn=NULL;
-        QuadSetTopologyContainer* topoOut=NULL;
+        BaseMeshTopology* topoIn=NULL;
+        BaseMeshTopology* topoOut=NULL;
         if (arg)
         {
             if (arg->findObject(arg->getAttribute("object1","../..")) != NULL)
