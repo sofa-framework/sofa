@@ -44,13 +44,9 @@ typedef BaseMeshTopology::PointID PointID;
 /**
 * A class that can apply basic topology transformations on a set of points.
 */
-template<class DataTypes>
 class PointSetTopologyModifier : public core::componentmodel::topology::TopologyModifier
 {
 public:
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-
     PointSetTopologyModifier()
         : TopologyModifier()
     {}

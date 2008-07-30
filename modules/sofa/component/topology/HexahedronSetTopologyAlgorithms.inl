@@ -49,18 +49,19 @@ template<class DataTypes>
 void HexahedronSetTopologyAlgorithms< DataTypes >::removeHexahedra(sofa::helper::vector< unsigned int >& hexahedra)
 {
     HexahedronSetTopology< DataTypes > *topology = getHexahedronSetTopology();
-    HexahedronSetTopologyModifier< DataTypes >* modifier  = topology->getHexahedronSetTopologyModifier();
+    HexahedronSetTopologyModifier* modifier  = topology->getHexahedronSetTopologyModifier();
+    HexahedronSetTopologyContainer* container  = topology->getHexahedronSetTopologyContainer();
 
     // add the topological changes in the queue
     modifier->removeHexahedraWarning(hexahedra);
 
     // inform other objects that the hexa are going to be removed
-    topology->propagateTopologicalChanges();
+    container->propagateTopologicalChanges();
 
     // now destroy the old hexahedra.
     modifier->removeHexahedraProcess(  hexahedra ,true);
 
-    topology->getHexahedronSetTopologyContainer()->checkTopology();
+    container->checkTopology();
 }
 
 template<class DataTypes>
@@ -74,16 +75,17 @@ void  HexahedronSetTopologyAlgorithms<DataTypes>::renumberPoints(const sofa::hel
         const sofa::helper::vector<unsigned int> &inv_index)
 {
     HexahedronSetTopology< DataTypes > *topology = getHexahedronSetTopology();
-    HexahedronSetTopologyModifier< DataTypes >* modifier  = topology->getHexahedronSetTopologyModifier();
+    HexahedronSetTopologyModifier* modifier  = topology->getHexahedronSetTopologyModifier();
+    HexahedronSetTopologyContainer* container  = topology->getHexahedronSetTopologyContainer();
 
     /// add the topological changes in the queue
     modifier->renumberPointsWarning(index, inv_index);
     // inform other objects that the triangles are going to be removed
-    topology->propagateTopologicalChanges();
+    container->propagateTopologicalChanges();
     // now renumber the points
     modifier->renumberPointsProcess(index, inv_index);
 
-    topology->getHexahedronSetTopologyContainer()->checkTopology();
+    container->checkTopology();
 }
 
 } // namespace topology

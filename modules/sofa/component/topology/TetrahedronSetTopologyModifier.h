@@ -54,19 +54,15 @@ typedef TetraTriangles TetrahedronTriangles;
 /**
 * A class that modifies the topology by adding and removing tetrahedra
 */
-template<class DataTypes>
-class TetrahedronSetTopologyModifier : public TriangleSetTopologyModifier <DataTypes>
+class TetrahedronSetTopologyModifier : public TriangleSetTopologyModifier
 {
 public:
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-
     TetrahedronSetTopologyModifier()
-        : TriangleSetTopologyModifier<DataTypes>()
+        : TriangleSetTopologyModifier()
     {}
 
     TetrahedronSetTopologyModifier(core::componentmodel::topology::TopologyContainer *container)
-        : TriangleSetTopologyModifier<DataTypes>(container)
+        : TriangleSetTopologyModifier(container)
     {}
 
     virtual ~TetrahedronSetTopologyModifier() {}

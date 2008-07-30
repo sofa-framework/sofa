@@ -36,10 +36,6 @@ namespace component
 
 namespace topology
 {
-template<class DataTypes>
-class PointSetTopology;
-
-template<class DataTypes>
 class PointSetTopologyModifier;
 
 using core::componentmodel::topology::BaseMeshTopology;

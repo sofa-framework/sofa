@@ -35,10 +35,6 @@ namespace component
 
 namespace topology
 {
-template<class DataTypes>
-class ManifoldEdgeSetTopology;
-
-template<class DataTypes>
 class ManifoldEdgeSetTopologyModifier;
 
 using core::componentmodel::topology::BaseMeshTopology;
@@ -51,7 +47,6 @@ typedef BaseMeshTopology::VertexEdges VertexEdges;
   this topology is constraint by the manifold property : each vertex is adjacent either to one vertex or to two vertices. */
 class ManifoldEdgeSetTopologyContainer : public EdgeSetTopologyContainer
 {
-    template< typename DataTypes >
     friend class ManifoldEdgeSetTopologyModifier;
 
 public:

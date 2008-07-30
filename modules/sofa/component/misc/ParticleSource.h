@@ -147,7 +147,7 @@ public:
             sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
             _topology = this->getContext()->getMeshTopology();
 
-            sofa::component::topology::PointSetTopologyModifier<DataTypes>* pointMod;
+            sofa::component::topology::PointSetTopologyModifier* pointMod;
             this->getContext()->get(pointMod);
 
             if (pointMod != NULL)

@@ -35,10 +35,6 @@ namespace component
 
 namespace topology
 {
-template<class DataTypes>
-class TriangleSetTopology;
-
-template<class DataTypes>
 class TriangleSetTopologyModifier;
 
 using core::componentmodel::topology::BaseMeshTopology;
@@ -53,7 +49,6 @@ typedef BaseMeshTopology::TriangleEdges TriangleEdges;
 to each triangle and its edges and vertices */
 class TriangleSetTopologyContainer : public EdgeSetTopologyContainer
 {
-    template< typename DataTypes >
     friend class TriangleSetTopologyModifier;
 
 public:

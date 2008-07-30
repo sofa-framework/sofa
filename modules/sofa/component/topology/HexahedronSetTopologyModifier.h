@@ -52,19 +52,15 @@ typedef HexaQuads HexahedronQuads;
 /**
 * A class that modifies the topology by adding and removing hexahedra
 */
-template<class DataTypes>
-class HexahedronSetTopologyModifier : public QuadSetTopologyModifier <DataTypes>
+class HexahedronSetTopologyModifier : public QuadSetTopologyModifier
 {
 public:
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-
     HexahedronSetTopologyModifier()
-        : QuadSetTopologyModifier<DataTypes>()
+        : QuadSetTopologyModifier()
     { }
 
     HexahedronSetTopologyModifier(core::componentmodel::topology::TopologyContainer *container)
-        : QuadSetTopologyModifier<DataTypes>(container)
+        : QuadSetTopologyModifier(container)
     { }
 
     virtual ~HexahedronSetTopologyModifier() {}

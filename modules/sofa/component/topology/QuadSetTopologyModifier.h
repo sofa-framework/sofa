@@ -48,19 +48,15 @@ typedef BaseMeshTopology::QuadEdges QuadEdges;
 /**
 * A class that modifies the topology by adding and removing quads
 */
-template<class DataTypes>
-class QuadSetTopologyModifier : public EdgeSetTopologyModifier <DataTypes>
+class QuadSetTopologyModifier : public EdgeSetTopologyModifier
 {
 public:
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-
     QuadSetTopologyModifier()
-        : EdgeSetTopologyModifier<DataTypes>()
+        : EdgeSetTopologyModifier()
     { }
 
     QuadSetTopologyModifier(core::componentmodel::topology::TopologyContainer *container)
-        : EdgeSetTopologyModifier<DataTypes>(container)
+        : EdgeSetTopologyModifier(container)
     { }
 
     virtual ~QuadSetTopologyModifier() {}
@@ -93,7 +89,7 @@ public:
             const sofa::helper::vector< Edge >& edgesList,
             const sofa::helper::vector< unsigned int >& edgesIndexList)
     {
-        EdgeSetTopologyModifier<DataTypes>::addEdgesWarning( nEdges, edgesList, edgesIndexList);
+        EdgeSetTopologyModifier::addEdgesWarning( nEdges, edgesList, edgesIndexList);
     }
 
     /** \brief Sends a message to warn that some edges were added in this topology.
@@ -106,7 +102,7 @@ public:
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
     {
-        EdgeSetTopologyModifier<DataTypes>::addEdgesWarning( nEdges, edgesList, edgesIndexList, ancestors, baryCoefs);
+        EdgeSetTopologyModifier::addEdgesWarning( nEdges, edgesList, edgesIndexList, ancestors, baryCoefs);
     }
 
     /** \brief Actually Add some quads to this topology.

@@ -33,10 +33,6 @@ namespace component
 {
 namespace topology
 {
-template <class DataTypes>
-class QuadSetTopology;
-
-template <class DataTypes>
 class QuadSetTopologyModifier;
 
 using core::componentmodel::topology::BaseMeshTopology;
@@ -51,7 +47,6 @@ typedef BaseMeshTopology::QuadEdges QuadEdges;
 to each quad and its edges and vertices */
 class QuadSetTopologyContainer : public EdgeSetTopologyContainer
 {
-    template< typename DataTypes >
     friend class QuadSetTopologyModifier;
 
 public:

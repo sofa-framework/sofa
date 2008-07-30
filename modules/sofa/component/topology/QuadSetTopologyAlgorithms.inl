@@ -56,17 +56,17 @@ void QuadSetTopologyAlgorithms< DataTypes >::removeQuads(sofa::helper::vector< u
         const bool removeIsolatedPoints)
 {
     QuadSetTopology<DataTypes> *topology = getQuadSetTopology();
-    QuadSetTopologyModifier< DataTypes >* modifier = topology->getQuadSetTopologyModifier();
+    QuadSetTopologyModifier* modifier = topology->getQuadSetTopologyModifier();
+    QuadSetTopologyContainer* container = topology->getQuadSetTopologyContainer();
 
     /// add the topological changes in the queue
     modifier->removeQuadsWarning(quads);
     // inform other objects that the quads are going to be removed
-    topology->propagateTopologicalChanges();
+    container->propagateTopologicalChanges();
     // now destroy the old quads.
-
     modifier->removeQuadsProcess( quads, removeIsolatedEdges, removeIsolatedPoints);
 
-    topology->getQuadSetTopologyContainer()->checkTopology();
+    container->checkTopology();
 }
 
 template<class DataTypes>
@@ -80,16 +80,17 @@ void  QuadSetTopologyAlgorithms<DataTypes>::renumberPoints( const sofa::helper::
         const sofa::helper::vector<unsigned int> &inv_index)
 {
     QuadSetTopology<DataTypes> *topology = getQuadSetTopology();
-    QuadSetTopologyModifier< DataTypes >* modifier = topology->getQuadSetTopologyModifier();
+    QuadSetTopologyModifier* modifier = topology->getQuadSetTopologyModifier();
+    QuadSetTopologyContainer* container = topology->getQuadSetTopologyContainer();
 
     /// add the topological changes in the queue
     modifier->renumberPointsWarning(index, inv_index);
     // inform other objects that the triangles are going to be removed
-    topology->propagateTopologicalChanges();
+    container->propagateTopologicalChanges();
     // now renumber the points
     modifier->renumberPointsProcess(index, inv_index);
 
-    topology->getQuadSetTopologyContainer()->checkTopology();
+    container->checkTopology();
 }
 
 } // namespace topology
