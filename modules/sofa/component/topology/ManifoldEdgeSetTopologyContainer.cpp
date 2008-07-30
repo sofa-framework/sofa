@@ -55,14 +55,22 @@ int ManifoldEdgeSetTopologyContainerClass = core::RegisterObject("ManifoldEdge s
         .add< ManifoldEdgeSetTopologyContainer >()
         ;
 
-ManifoldEdgeSetTopologyContainer::ManifoldEdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top)
-    : EdgeSetTopologyContainer( top )
+ManifoldEdgeSetTopologyContainer::ManifoldEdgeSetTopologyContainer()
+    : EdgeSetTopologyContainer( )
 {}
 
-ManifoldEdgeSetTopologyContainer::ManifoldEdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top,
-        const sofa::helper::vector< Edge > &edges )
-    : EdgeSetTopologyContainer( top, edges )
+ManifoldEdgeSetTopologyContainer::ManifoldEdgeSetTopologyContainer(const sofa::helper::vector< Edge > &edges )
+    : EdgeSetTopologyContainer( edges )
 {}
+
+void ManifoldEdgeSetTopologyContainer::init()
+{
+    // load edges
+    EdgeSetTopologyContainer::init();
+
+    // load points
+    PointSetTopologyContainer::init();
+}
 
 void ManifoldEdgeSetTopologyContainer::createEdgeVertexShellArray()
 {
@@ -79,7 +87,7 @@ void ManifoldEdgeSetTopologyContainer::createEdgeVertexShellArray()
         clearEdgeVertexShell();
     }
 
-    m_edgeVertexShell.resize( m_basicTopology->getNbPoints() );
+    m_edgeVertexShell.resize( getNbPoints() );
 
     for (unsigned int i = 0; i < m_edge.size(); ++i)
     {

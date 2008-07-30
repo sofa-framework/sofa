@@ -69,10 +69,6 @@ public:
     */
     virtual void removeItems(sofa::helper::vector< unsigned int >& items);
 
-    /** \brief Generic method to write the current mesh into a msh file
-    */
-    virtual void writeMSH(const char *filename);
-
     /** \brief  Removes all tetrahedra in the ball of center "ind_ta" and of radius dist(ind_ta, ind_tb)
     */
     void RemoveTetraBall(unsigned int ind_ta, unsigned int ind_tb);

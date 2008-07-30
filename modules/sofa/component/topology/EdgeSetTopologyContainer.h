@@ -55,20 +55,29 @@ public:
     template< typename DataTypes >
     friend class EdgeSetTopologyModifier;
 
-    EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top = NULL);
+    EdgeSetTopologyContainer();
 
-    EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top,
-            const sofa::helper::vector< Edge > &edges);
+    EdgeSetTopologyContainer(const sofa::helper::vector< Edge > &edges);
 
     virtual ~EdgeSetTopologyContainer() {}
 
     virtual void init();
 
-    template< typename DataTypes >
-    EdgeSetTopology< DataTypes >* getEdgeSetTopology() const
+    /// BaseMeshTopology API
+    /// @{
+
+    virtual const SeqEdges& getEdges()
     {
-        return static_cast<EdgeSetTopology< DataTypes >* > (this->m_basicTopology);
+        return getEdgeArray();
     }
+
+    /// @}
+
+    /** \brief Checks if the topology is coherent
+    *
+    * Check if the shell arrays are coherent
+    */
+    virtual bool checkTopology() const;
 
     /** \brief Returns the Edge array.
     *
@@ -99,12 +108,6 @@ public:
     *
     */
     virtual int getEdgeIndex(const unsigned int v1, const unsigned int v2);
-
-    /** \brief Checks if the Edge Set Topology is coherent
-    *
-    * Check if the Edge and the Edhe Shell arrays are coherent
-    */
-    virtual bool checkTopology() const;
 
     /** \brief Returns the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
     @param components the array containing the optimal vertex permutation according to the Reverse CuthillMckee algorithm
@@ -160,16 +163,6 @@ protected:
     void clearEdges();
 
     void clearEdgeVertexShell();
-
-    /// BaseMeshTopology API
-    /// @{
-
-    virtual const SeqEdges& getEdges()
-    {
-        return getEdgeArray();
-    }
-
-    /// @}
 
 protected:
     /*** The array that stores the set of edges in the edge set */

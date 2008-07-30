@@ -46,27 +46,27 @@ int TetrahedronSetTopologyContainerClass = core::RegisterObject("Tetrahedron set
         .add< TetrahedronSetTopologyContainer >()
         ;
 
-TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer(core::componentmodel::topology::BaseTopology *top)
-    : TriangleSetTopologyContainer( top)
+TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer()
+    : TriangleSetTopologyContainer()
 {}
 
-TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer(core::componentmodel::topology::BaseTopology *top,
-        const sofa::helper::vector< Tetrahedron >& tetrahedra )
-    : TriangleSetTopologyContainer( top),
+TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer(const sofa::helper::vector< Tetrahedron >& tetrahedra )
+    : TriangleSetTopologyContainer(),
       m_tetrahedron( tetrahedra )
 {}
 
 void TetrahedronSetTopologyContainer::init()
 {
-    sofa::component::MeshLoader* m_loader;
-    this->getContext()->get(m_loader);
+    sofa::component::MeshLoader* loader;
+    this->getContext()->get(loader);
 
-    if(m_loader)
+    if(loader)
     {
-
-        m_tetrahedron = m_loader->getTetras();
-
+        m_tetrahedron = loader->getTetras();
     }
+
+    // load points
+    PointSetTopologyContainer::init();
 }
 
 void TetrahedronSetTopologyContainer::createTetrahedronSetArray()
@@ -215,7 +215,7 @@ void TetrahedronSetTopologyContainer::createTetrahedronVertexShellArray ()
     if(hasTetrahedronVertexShell())
         clearTetrahedronVertexShell();
 
-    m_tetrahedronVertexShell.resize( m_basicTopology->getNbPoints() );
+    m_tetrahedronVertexShell.resize( getNbPoints() );
 
     for (unsigned int i = 0; i < m_tetrahedron.size(); ++i)
     {

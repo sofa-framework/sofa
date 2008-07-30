@@ -70,15 +70,6 @@ void HexahedronSetTopologyAlgorithms< DataTypes >::removeItems(sofa::helper::vec
 }
 
 template<class DataTypes>
-void HexahedronSetTopologyAlgorithms< DataTypes >::writeMSH(const char *filename)
-{
-    HexahedronSetTopology< DataTypes > *topology = getHexahedronSetTopology();
-    HexahedronSetTopologyModifier< DataTypes >* modifier  = topology->getHexahedronSetTopologyModifier();
-
-    modifier->writeMSHfile(filename);
-}
-
-template<class DataTypes>
 void  HexahedronSetTopologyAlgorithms<DataTypes>::renumberPoints(const sofa::helper::vector<unsigned int> &index,
         const sofa::helper::vector<unsigned int> &inv_index)
 {

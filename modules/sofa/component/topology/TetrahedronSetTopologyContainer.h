@@ -63,14 +63,59 @@ class TetrahedronSetTopologyContainer : public TriangleSetTopologyContainer
     friend class TetrahedronSetTopologyModifier;
 
 public:
-    TetrahedronSetTopologyContainer(core::componentmodel::topology::BaseTopology *top = NULL);
+    TetrahedronSetTopologyContainer();
 
-    TetrahedronSetTopologyContainer(core::componentmodel::topology::BaseTopology *top,
-            const sofa::helper::vector< Tetrahedron >& tetrahedra );
+    TetrahedronSetTopologyContainer(const sofa::helper::vector< Tetrahedron >& tetrahedra );
 
     virtual ~TetrahedronSetTopologyContainer() {}
 
     virtual void init();
+
+    /// BaseMeshTopology API
+    /// @{
+
+    const SeqTetras& getTetras()
+    {
+        return getTetrahedronArray();
+    }
+
+    /// Returns the set of edges adjacent to a given tetrahedron.
+    const TetraEdges& getEdgeTetraShell(TetraID i)
+    {
+        return getTetrahedronEdges(i);
+    }
+
+    /// Returns the set of triangles adjacent to a given tetrahedron.
+    const TetraTriangles& getTriangleTetraShell(TetraID i)
+    {
+        return getTetrahedronTriangles(i);
+    }
+
+    /// Returns the set of tetrahedra adjacent to a given vertex.
+    const VertexTetras& getTetraVertexShell(PointID i)
+    {
+        return getTetrahedronVertexShell(i);
+    }
+
+    /// Returns the set of tetrahedra adjacent to a given edge.
+    const EdgeTetras& getTetraEdgeShell(EdgeID i)
+    {
+        return getTetrahedronEdgeShell(i);
+    }
+
+    /// Returns the set of tetrahedra adjacent to a given triangle.
+    const TriangleTetras& getTetraTriangleShell(TriangleID i)
+    {
+        return getTetrahedronTriangleShell(i);
+    }
+
+    /// @}
+
+    /** \brief Checks if the topology is coherent
+    *
+    * Check if the shell arrays are coherent
+    */
+    virtual bool checkTopology() const;
 
     /** \brief Returns the Tetrahedron array.
     *
@@ -154,11 +199,6 @@ public:
 
     /** returns the index (either 0, 1 ,2 or 3) of the triangle whose global index is triangleIndex. Returns -1 if none */
     int getTriangleIndexInTetrahedron(const TetrahedronTriangles &t,unsigned int triangleIndex) const;
-
-    /** \brief Checks if the Tetrahedron Set Topology is coherent
-    *
-    */
-    virtual bool checkTopology() const;
 
     inline friend std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t)
     {
@@ -306,46 +346,6 @@ private:
     */
     sofa::helper::vector< unsigned int > &getTetrahedronEdgeShellForModification(const unsigned int edgeIndex);
 
-    /// BaseMeshTopology API
-    /// @{
-
-    const SeqTetras& getTetras()
-    {
-        return getTetrahedronArray();
-    }
-
-    /// Returns the set of edges adjacent to a given tetrahedron.
-    const TetraEdges& getEdgeTetraShell(TetraID i)
-    {
-        return getTetrahedronEdges(i);
-    }
-
-    /// Returns the set of triangles adjacent to a given tetrahedron.
-    const TetraTriangles& getTriangleTetraShell(TetraID i)
-    {
-        return getTetrahedronTriangles(i);
-    }
-
-    /// Returns the set of tetrahedra adjacent to a given vertex.
-    const VertexTetras& getTetraVertexShell(PointID i)
-    {
-        return getTetrahedronVertexShell(i);
-    }
-
-    /// Returns the set of tetrahedra adjacent to a given edge.
-    const EdgeTetras& getTetraEdgeShell(EdgeID i)
-    {
-        return getTetrahedronEdgeShell(i);
-    }
-
-    /// Returns the set of tetrahedra adjacent to a given triangle.
-    const TriangleTetras& getTetraTriangleShell(TriangleID i)
-    {
-        return getTetrahedronTriangleShell(i);
-    }
-
-
-    /// @}
 
 protected:
     /// provides the set of tetrahedra

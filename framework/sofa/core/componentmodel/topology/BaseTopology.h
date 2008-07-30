@@ -48,14 +48,19 @@ namespace topology
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::PointID PointID;
 
-// forward definitions :
+// forward declarations:
+
 class BaseTopology;
+
 /// Provides high-level topology algorithms (e.g. CutAlongPlane, DecimateTopology, etc).
 class TopologyAlgorithms;
+
 /// Provides some geometric functions (e.g. ComputeTriangleNormal, ComputeShell, etc).
 class GeometryAlgorithms;
+
 /// Provides low-level topology methods (e.g. AddPoint, RemoveEdge, etc).
 class TopologyModifier;
+
 /// Contains the actual topology data and give acces to it.
 class TopologyContainer;
 
@@ -78,11 +83,10 @@ class TopologicalMapping;
 class BaseTopology : public virtual core::objectmodel::BaseObject,
     public core::componentmodel::topology::BaseMeshTopology
 {
-
 public :
     /** \brief Constructor.
     *
-    * Optionnial parameter isMainTopology may be used to specify wether this is a main or a specific topology
+    * Optional parameter isMainTopology may be used to specify whether this is a main or a specific topology
     * (defaults to true).
     *
     * All topology related objects (TopologyContainer, TopologyModifier, TopologyAlgorithms,
@@ -107,7 +111,7 @@ public :
     * Specific topologies cannot be allowed to be directly modified, since this might invalidate their
     * mapping from the main topology.
     */
-    virtual TopologyAlgorithms *getTopologyAlgorithms() const
+    TopologyAlgorithms *getTopologyAlgorithms() const
     {
         if (m_mainTopology)
             return m_topologyAlgorithms;
@@ -120,56 +124,15 @@ public :
     GeometryAlgorithms *getGeometryAlgorithms() const {	return m_geometryAlgorithms; }
 
 
-    /** \brief Called by a topology to warn specific topologies linked to it that TopologyChange objects happened.
-    *
-    * Member m_changeList should contain all TopologyChange objects corresponding to changes in this topology
-    * that just happened (in the case of creation) or are about to happen (in the case of destruction) since
-    * last call to propagateTopologicalChanges.
-    *
-    * @see BaseTopology::m_changeList
-    * @sa firstChange()
-    * @sa lastChange()
-    */
-    virtual void propagateTopologicalChanges() =0;
-
-    /** \brief Called by a topology to warn the Mechanical Object component that points have been added or will be removed.
-    *
-    * Member m_StateChangeList should contain all TopologyChange objects corresponding to vertex changes in this topology
-    * that just happened (in the case of creation) or are about to happen (in the case of destruction) since
-    * last call to propagateTopologicalChanges.
-    *
-    * @see BaseTopology::m_changeList
-    * @sa firstChange()
-    * @sa lastChange()
-    */
-    virtual void propagateStateChanges() =0;
-
-    /** \brief Free each Topology changes in the list and remove them from the list
-    *
-    */
-    void resetTopologyChangeList() const;
-
-    /** \brief Free each State changes in the list and remove them from the list
-    *
-    */
-    void resetStateChangeList() const;
-
-    /** \brief Provides an iterator on the first element in the list of TopologyChange objects.
-    */
-    virtual std::list<const TopologyChange *>::const_iterator firstChange() const;
-
-    /** \brief Provides an iterator on the last element in the list of TopologyChange objects.
-    */
-    virtual std::list<const TopologyChange *>::const_iterator lastChange() const;
-
-    /** \brief Provides an iterator on the first element in the list of StateChange objects.
-    */
+    // TODO: remove these methods (the implementation has been moved into container)
+    std::list<const TopologyChange *>::const_iterator firstChange() const;
+    std::list<const TopologyChange *>::const_iterator lastChange() const;
     std::list<const TopologyChange *>::const_iterator firstStateChange() const;
-
-
-    /** \brief Provides an iterator on the last element in the list of StateChange objects.
-    */
     std::list<const TopologyChange *>::const_iterator lastStateChange() const;
+    void propagateTopologicalChanges();
+    void propagateStateChanges();
+    void resetTopologyChangeList() const;
+    void resetStateChangeList() const;
 
     /** \brief Returns whether this topology is a main one or a specific one.
     *
@@ -177,7 +140,8 @@ public :
     */
     bool isMainTopology() const { return m_mainTopology; }
 
-    virtual std::string getFilename() const { return filename.getValue(); }
+    /** return the latest revision number */
+    int getRevision() const { return revisionCounter; }
 
 protected :
     /// Contains the actual topology data and give acces to it (nature of these data heavily depends on the kind of topology).
@@ -192,6 +156,7 @@ protected :
     /// Provides some geometric functions (e.g. ComputeTriangleNormal, ComputeShell, etc).
     GeometryAlgorithms *m_geometryAlgorithms;
 
+private:
     /** \brief Defines whether this topology is the main one for its mechanical object.
     *
     * If true, then this topology is the main topology of the MechanicalObject, meaning this is the one
@@ -202,7 +167,7 @@ protected :
     */
     bool m_mainTopology;
 
-    Data< std::string > filename;
+    int revisionCounter;
 };
 
 
@@ -251,7 +216,6 @@ protected:
 
     /// The topology this object applies to.
     BaseTopology *m_basicTopology;
-
 };
 
 /** A class that contains a set of methods that describes the geometry of the object */
@@ -273,23 +237,19 @@ public:
 protected:
     /// The topology this object applies to.
     BaseTopology *m_basicTopology;
-
 };
 
 /** A class that contains a set of low-level methods that perform topological changes */
 class TopologyModifier : public virtual sofa::core::objectmodel::BaseObject
 {
-    friend class TopologyMapping;
-
 public:
     /** \brief Constructor.
     *
     * @param basicTopology the topology this object applies to.
     */
-    TopologyModifier(BaseTopology *basicTopology = NULL)
-        : m_basicTopology(basicTopology)
-    {
-    }
+    TopologyModifier(TopologyContainer *container=NULL)
+        : m_topologyContainer(container)
+    { }
 
     /// Destructor
     virtual ~TopologyModifier()
@@ -303,37 +263,30 @@ protected:
     /** \brief Adds a StateChange object to the list of the topology this object describes.
     */
     void addStateChange(const TopologyChange *topologyChange);
+
 protected:
-
-    /// The topology this object applies to.
-    BaseTopology *m_basicTopology;
-
+    /// Contains the actual topology data and give acces to it (nature of these data heavily depends on the kind of topology).
+    TopologyContainer *m_topologyContainer;
 };
 
 /** A class that contains a description of the topology (set of edges, triangles, adjacency information, ...) */
 class TopologyContainer : public virtual sofa::core::objectmodel::BaseObject
 {
-    friend class TopologyModifier;
-
 public:
     /** \brief Constructor.
     *
     * @param basicTopology the topology this object describes.
     */
-    TopologyContainer(BaseTopology *basicTopology = NULL)
-        : m_basicTopology(basicTopology)
-    {
-    }
+    TopologyContainer()
+    {}
 
     /// Destructor
     virtual ~TopologyContainer()
     {}
 
-    void setTopology(BaseTopology *b) { m_basicTopology = b;}
-
     const std::list<const TopologyChange *> &getChangeList() const { return m_changeList; }
 
-    const std::list<const TopologyChange *> &getStateChangeList() const { return m_StateChangeList; }
+    const std::list<const TopologyChange *> &getStateChangeList() const { return m_stateChangeList; }
 
     /** \brief Adds a TopologyChange to the list.
     *
@@ -352,8 +305,46 @@ public:
     */
     void addStateChange(const TopologyChange *topologyChange)
     {
-        m_StateChangeList.push_back(topologyChange);
+        m_stateChangeList.push_back(topologyChange);
     }
+
+    /** \brief Provides an iterator on the first element in the list of TopologyChange objects.
+     */
+    std::list<const TopologyChange *>::const_iterator firstChange() const;
+
+    /** \brief Provides an iterator on the last element in the list of TopologyChange objects.
+     */
+    std::list<const TopologyChange *>::const_iterator lastChange() const;
+
+    /** \brief Provides an iterator on the first element in the list of StateChange objects.
+     */
+    std::list<const TopologyChange *>::const_iterator firstStateChange() const;
+
+    /** \brief Provides an iterator on the last element in the list of StateChange objects.
+     */
+    std::list<const TopologyChange *>::const_iterator lastStateChange() const;
+
+    /** \brief Called by a topology to warn specific topologies linked to it that TopologyChange objects happened.
+    *
+    * ChangeList should contain all TopologyChange objects corresponding to changes in this topology
+    * that just happened (in the case of creation) or are about to happen (in the case of destruction) since
+    * last call to propagateTopologicalChanges.
+    *
+    * @sa firstChange()
+    * @sa lastChange()
+    */
+    virtual void propagateTopologicalChanges() {}
+
+    /** \brief Called by a topology to warn the Mechanical Object component that points have been added or will be removed.
+    *
+    * StateChangeList should contain all TopologyChange objects corresponding to vertex changes in this topology
+    * that just happened (in the case of creation) or are about to happen (in the case of destruction) since
+    * last call to propagateTopologicalChanges.
+    *
+    * @sa firstChange()
+    * @sa lastChange()
+    */
+    virtual void propagateStateChanges() {}
 
     /** \brief Free each Topology changes in the list and remove them from the list
     *
@@ -365,16 +356,12 @@ public:
     */
     void resetStateChangeList();
 
-protected:
-    /// The topology this object describes.
-    BaseTopology *m_basicTopology;
-
 private:
     /// Array of topology modifications that have already occured (addition) or will occur next (deletion).
     std::list<const TopologyChange *> m_changeList;
 
     /// Array of state modifications that have already occured (addition) or will occur next (deletion).
-    std::list<const TopologyChange *> m_StateChangeList;
+    std::list<const TopologyChange *> m_stateChangeList;
 };
 
 } // namespace topology

@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_TOPOLOGY_QUADSETTOPOLOGYMODIFIER_H
 
 #include <sofa/component/topology/EdgeSetTopologyModifier.h>
-#include <sofa/component/topology/QuadSetTopology.h>
 
 namespace sofa
 {
@@ -36,8 +35,7 @@ namespace component
 
 namespace topology
 {
-template <class DataTypes>
-class QuadSetTopology;
+class QuadSetTopologyContainer;
 
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::QuadID QuadID;
@@ -61,18 +59,13 @@ public:
         : EdgeSetTopologyModifier<DataTypes>()
     { }
 
-    QuadSetTopologyModifier(core::componentmodel::topology::BaseTopology *top)
-        : EdgeSetTopologyModifier<DataTypes>(top)
+    QuadSetTopologyModifier(core::componentmodel::topology::TopologyContainer *container)
+        : EdgeSetTopologyModifier<DataTypes>(container)
     { }
 
     virtual ~QuadSetTopologyModifier() {}
 
-    QuadSetTopology< DataTypes >* getQuadSetTopology() const;
-
-    /** \brief Write the current mesh into a msh file
-    *
-    */
-    virtual void writeMSHfile(const char *filename);
+    QuadSetTopologyContainer* getQuadSetTopologyContainer() const;
 
     /** \brief Sends a message to warn that some quads were added in this topology.
     *
@@ -207,8 +200,7 @@ public:
             const sofa::helper::vector<unsigned int>& inv_index,
             const bool renumberDOF = true);
 
-    //protected:
-    /** \brief Load a quad.
+    /** \brief Add a quad.
     */
     void addQuad(Quad e);
 };

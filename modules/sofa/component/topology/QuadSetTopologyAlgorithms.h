@@ -72,10 +72,6 @@ public:
     */
     virtual void removeItems(sofa::helper::vector< unsigned int >& items);
 
-    /** \brief Generic method to write the current mesh into a msh file
-    */
-    virtual void writeMSH(const char *filename);
-
     /** \brief Generic method for points renumbering
     */
     virtual void renumberPoints( const sofa::helper::vector<unsigned int>& index,

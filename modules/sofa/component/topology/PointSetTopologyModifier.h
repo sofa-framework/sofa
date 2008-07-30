@@ -27,7 +27,6 @@
 
 #include <sofa/helper/vector.h>
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
-#include <sofa/component/topology/PointSetTopology.h>
 
 namespace sofa
 {
@@ -37,8 +36,7 @@ namespace component
 
 namespace topology
 {
-template<class DataTypes>
-class PointSetTopology;
+class PointSetTopologyContainer;
 
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::PointID PointID;
@@ -57,31 +55,18 @@ public:
         : TopologyModifier()
     {}
 
-    PointSetTopologyModifier(core::componentmodel::topology::BaseTopology *top)
-        : TopologyModifier(top)
+    PointSetTopologyModifier(core::componentmodel::topology::TopologyContainer *container)
+        : TopologyModifier(container)
     {}
 
     virtual ~PointSetTopologyModifier() {}
 
-    PointSetTopology<DataTypes>* getPointSetTopology() const
-    {
-        return static_cast<PointSetTopology<DataTypes>*> (this->m_basicTopology);
-    }
+    PointSetTopologyContainer* getPointSetTopologyContainer() const;
 
     /** \brief Swap points i1 and i2.
     *
     */
     virtual void swapPoints(const int i1,const int i2);
-
-    /** \brief Translates the DOF : call the applyTranslation member function in the MechanicalObject
-    *
-    */
-    virtual void applyTranslation (const double dx,const double dy,const double dz);
-
-    /** \brief Scales the DOF : call the applyScale member function in the MechanicalObject object
-    *
-    */
-    virtual void applyScale (const double s);
 
     /** \brief Sends a message to warn that some points were added in this topology.
     *
@@ -167,6 +152,7 @@ public:
     virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index,
             const sofa::helper::vector<unsigned int> &/*inv_index*/,
             const bool renumberDOF = true);
+
 };
 
 } // namespace topology

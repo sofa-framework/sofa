@@ -261,6 +261,18 @@ void BaseMeshTopology::propagateStateChanges()
     return ;
 }
 
+void BaseMeshTopology::resetTopologyChangeList() const
+{
+    std::cerr << "WARNING: "<<this->getClassName()<<"::resetTopologyChangeList() not supported." << std::endl;
+    return ;
+}
+
+void BaseMeshTopology::resetStateChangeList() const
+{
+    std::cerr << "WARNING: "<<this->getClassName()<<"::resetStateChangeList() not supported." << std::endl;
+    return ;
+}
+
 int BaseMeshTopology::getEdgeIndex(PointID, PointID)
 {
     std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgeIndex() not supported." << std::endl;

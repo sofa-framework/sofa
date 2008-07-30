@@ -55,18 +55,29 @@ class ManifoldEdgeSetTopologyContainer : public EdgeSetTopologyContainer
     friend class ManifoldEdgeSetTopologyModifier;
 
 public:
-    ManifoldEdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top = NULL);
+    ManifoldEdgeSetTopologyContainer();
 
-    ManifoldEdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top,
-            const sofa::helper::vector< Edge > &edges);
+    ManifoldEdgeSetTopologyContainer(const sofa::helper::vector< Edge > &edges);
 
     virtual ~ManifoldEdgeSetTopologyContainer() {}
 
-    template< typename DataTypes >
-    EdgeSetTopology< DataTypes >* getEdgeSetTopology() const
+    virtual void init();
+
+    /// BaseMeshTopology API
+    /// @{
+
+    virtual const SeqEdges& getEdges()
     {
-        return static_cast<EdgeSetTopology< DataTypes >* > (this->m_basicTopology);
+        return getEdgeArray();
     }
+
+    /// @}
+
+    /** \brief Checks if the topology is coherent
+    *
+    * Check if the shell arrays are coherent
+    */
+    virtual bool checkTopology() const;
 
     // Describe each connected component, which can be seen as an oriented line
     class ConnectedComponent
@@ -117,12 +128,6 @@ public:
     *
     */
     virtual int getEdgeIndex(const unsigned int v1, const unsigned int v2);
-
-    /** \brief Checks if the Edge Set Topology is coherent
-    *
-    * Check if the Edge and the Edhe Shell arrays are coherent
-    */
-    virtual bool checkTopology() const;
 
     /** \brief Returns the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
     @param components the array containing the optimal vertex permutation according to the Reverse CuthillMckee algorithm
@@ -289,16 +294,6 @@ public:
             return (getEdgeVertexShell(getEdge(i)[0]))[0];
         }
     }
-
-    /// BaseMeshTopology API
-    /// @{
-
-    virtual const SeqEdges& getEdges()
-    {
-        return getEdgeArray();
-    }
-
-    /// @}
 
 protected:
     /** \brief Returns a non-const edge shell of the ith DOF for subsequent modification

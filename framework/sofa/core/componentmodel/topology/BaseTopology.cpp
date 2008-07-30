@@ -42,7 +42,7 @@ BaseTopology::BaseTopology(bool isMainTopology)
       m_topologyAlgorithms(NULL),
       m_geometryAlgorithms(NULL),
       m_mainTopology(isMainTopology),
-      filename(initData(&filename, "filename", "Filename of the object"))
+      revisionCounter(0)
 {}
 
 BaseTopology::~BaseTopology()
@@ -51,32 +51,44 @@ BaseTopology::~BaseTopology()
 
 std::list<const TopologyChange *>::const_iterator BaseTopology::lastChange() const
 {
-    return m_topologyContainer->getChangeList().end();
+    return m_topologyContainer->lastChange();
 }
 
 std::list<const TopologyChange *>::const_iterator BaseTopology::firstChange() const
 {
-    return m_topologyContainer->getChangeList().begin();
+    return m_topologyContainer->firstChange();
 }
 
 std::list<const TopologyChange *>::const_iterator BaseTopology::lastStateChange() const
 {
-    return m_topologyContainer->getStateChangeList().end();
+    return m_topologyContainer->lastStateChange();
 }
 
 std::list<const TopologyChange *>::const_iterator BaseTopology::firstStateChange() const
 {
-    return m_topologyContainer->getStateChangeList().begin();
+    return m_topologyContainer->firstStateChange();
+}
+
+void BaseTopology::propagateTopologicalChanges()
+{
+    m_topologyContainer->propagateTopologicalChanges();
+
+    ++revisionCounter;
+}
+
+void BaseTopology::propagateStateChanges()
+{
+    m_topologyContainer->propagateStateChanges();
 }
 
 void BaseTopology::resetTopologyChangeList() const
 {
-    getTopologyContainer()->resetTopologyChangeList();
+    m_topologyContainer->resetTopologyChangeList();
 }
 
 void BaseTopology::resetStateChangeList() const
 {
-    getTopologyContainer()->resetStateChangeList();
+    m_topologyContainer->resetStateChangeList();
 }
 
 // TopologyAlgorithms implementation
@@ -90,15 +102,36 @@ void TopologyAlgorithms::addTopologyChange(const TopologyChange *topologyChange)
 
 void TopologyModifier::addTopologyChange(const TopologyChange *topologyChange)
 {
-    m_basicTopology->getTopologyContainer()->addTopologyChange(topologyChange);
+    m_topologyContainer->addTopologyChange(topologyChange);
 }
 
 void TopologyModifier::addStateChange(const TopologyChange *topologyChange)
 {
-    m_basicTopology->getTopologyContainer()->addStateChange(topologyChange);
+    m_topologyContainer->addStateChange(topologyChange);
 }
 
 // TopologyContainer implementation
+
+
+std::list<const TopologyChange *>::const_iterator TopologyContainer::lastChange() const
+{
+    return m_changeList.end();
+}
+
+std::list<const TopologyChange *>::const_iterator TopologyContainer::firstChange() const
+{
+    return m_changeList.begin();
+}
+
+std::list<const TopologyChange *>::const_iterator TopologyContainer::lastStateChange() const
+{
+    return m_stateChangeList.end();
+}
+
+std::list<const TopologyChange *>::const_iterator TopologyContainer::firstStateChange() const
+{
+    return m_stateChangeList.begin();
+}
 
 void TopologyContainer::resetTopologyChangeList()
 {
@@ -113,13 +146,13 @@ void TopologyContainer::resetTopologyChangeList()
 
 void TopologyContainer::resetStateChangeList()
 {
-    for (std::list<const TopologyChange *>::iterator it=m_StateChangeList.begin();
-            it!=m_StateChangeList.end(); ++it)
+    for (std::list<const TopologyChange *>::iterator it=m_stateChangeList.begin();
+            it!=m_stateChangeList.end(); ++it)
     {
         delete (*it);
     }
 
-    m_StateChangeList.clear();
+    m_stateChangeList.clear();
 }
 
 } // namespace topology
