@@ -42,6 +42,7 @@
 #include <sofa/simulation/common/WriteStateVisitor.h>
 #include <sofa/simulation/common/XMLPrintVisitor.h>
 #include <sofa/simulation/common/PropagateEventVisitor.h>
+#include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/simulation/common/UpdateMappingEndEvent.h>
@@ -293,9 +294,11 @@ void Simulation::animate ( Node* root, double dt )
 
     AnimateVisitor act;
     act.setDt ( mechanicalDt );
+    BehaviorUpdatePositionVisitor beh(root->getDt());
     for( unsigned i=0; i<numMechSteps.getValue(); i++ )
     {
         root->execute ( act );
+        root->execute ( beh );
         root->setTime ( startTime + (i+1)* act.getDt() );
         root->execute<UpdateSimulationContextVisitor>();
     }
