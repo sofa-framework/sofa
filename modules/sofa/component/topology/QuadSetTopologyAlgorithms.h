@@ -33,8 +33,12 @@ namespace component
 {
 namespace topology
 {
-template <class DataTypes>
-class QuadSetTopology;
+class QuadSetTopologyContainer;
+
+class QuadSetTopologyModifier;
+
+template < class DataTypes >
+class QuadSetGeometryAlgorithms;
 
 /**
 * A class that performs topology algorithms on an QuadSet.
@@ -49,13 +53,9 @@ public:
         : EdgeSetTopologyAlgorithms<DataTypes>()
     { };
 
-    QuadSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
-        : EdgeSetTopologyAlgorithms<DataTypes>(top)
-    { }
-
     virtual ~QuadSetTopologyAlgorithms() {}
 
-    QuadSetTopology< DataTypes >* getQuadSetTopology() const;
+    virtual void init();
 
     /** \brief Remove a set  of quads
     @param quads an array of quad indices to be removed (note that the array is not const since it needs to be sorted)
@@ -76,6 +76,11 @@ public:
     */
     virtual void renumberPoints( const sofa::helper::vector<unsigned int>& index,
             const sofa::helper::vector<unsigned int>& inv_index);
+
+private:
+    QuadSetTopologyContainer*					m_container;
+    QuadSetTopologyModifier*					m_modifier;
+    QuadSetGeometryAlgorithms< DataTypes >*		m_geometryAlgorithms;
 };
 
 } // namespace topology

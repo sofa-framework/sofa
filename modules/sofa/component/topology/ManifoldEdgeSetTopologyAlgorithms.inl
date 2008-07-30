@@ -42,27 +42,26 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::componentmodel::behavior;
 
 template<class DataTypes>
-ManifoldEdgeSetTopology<DataTypes> * ManifoldEdgeSetTopologyAlgorithms< DataTypes >::getEdgeSetTopology() const
+void ManifoldEdgeSetTopologyAlgorithms< DataTypes >::init()
 {
-    return static_cast<ManifoldEdgeSetTopology<DataTypes> *> (this->m_basicTopology);
+    EdgeSetTopologyAlgorithms< DataTypes >::init();
+    this->getContext()->get(m_container);
+    this->getContext()->get(m_modifier);
+    this->getContext()->get(m_geometryAlgorithms);
 }
 
 template<class DataTypes>
 void ManifoldEdgeSetTopologyAlgorithms< DataTypes >::removeEdges(sofa::helper::vector< unsigned int >& edges,
         const bool removeIsolatedPoints)
 {
-    ManifoldEdgeSetTopology< DataTypes > *topology = getEdgeSetTopology();
-    ManifoldEdgeSetTopologyModifier* modifier  = topology->getEdgeSetTopologyModifier();
-    ManifoldEdgeSetTopologyContainer* container  = topology->getEdgeSetTopologyContainer();
-
     /// add the topological changes in the queue
-    modifier->removeEdgesWarning(edges);
+    m_modifier->removeEdgesWarning(edges);
     // inform other objects that the edges are going to be removed
-    container->propagateTopologicalChanges();
+    m_container->propagateTopologicalChanges();
     // now destroy the old edges.
-    modifier->removeEdgesProcess( edges, removeIsolatedPoints );
+    m_modifier->removeEdgesProcess( edges, removeIsolatedPoints );
 
-    container->checkTopology();
+    m_container->checkTopology();
 }
 
 template<class DataTypes>
@@ -75,31 +74,23 @@ template<class DataTypes>
 void  ManifoldEdgeSetTopologyAlgorithms<DataTypes>::renumberPoints( const sofa::helper::vector<unsigned int> &index,
         const sofa::helper::vector<unsigned int> &inv_index)
 {
-    ManifoldEdgeSetTopology< DataTypes > *topology = getEdgeSetTopology();
-    ManifoldEdgeSetTopologyModifier* modifier  = topology->getEdgeSetTopologyModifier();
-    ManifoldEdgeSetTopologyContainer* container  = topology->getEdgeSetTopologyContainer();
-
     /// add the topological changes in the queue
-    modifier->renumberPointsWarning(index, inv_index);
+    m_modifier->renumberPointsWarning(index, inv_index);
     // inform other objects that the triangles are going to be removed
-    container->propagateTopologicalChanges();
+    m_container->propagateTopologicalChanges();
     // now renumber the points
-    modifier->renumberPointsProcess(index, inv_index);
+    m_modifier->renumberPointsProcess(index, inv_index);
 
-    container->checkTopology();
+    m_container->checkTopology();
 }
 
 template<class DataTypes>
 void ManifoldEdgeSetTopologyAlgorithms< DataTypes >::addEdges(const sofa::helper::vector< Edge >& edges)
 {
-    ManifoldEdgeSetTopology< DataTypes > *topology = getEdgeSetTopology();
-    ManifoldEdgeSetTopologyModifier* modifier  = topology->getEdgeSetTopologyModifier();
-    ManifoldEdgeSetTopologyContainer* container  = topology->getEdgeSetTopologyContainer();
-
-    unsigned int nEdges = topology->getEdgeSetTopologyContainer()->getNumberOfEdges();
+    unsigned int nEdges = m_container->getNumberOfEdges();
 
     /// actually add edges in the topology container
-    modifier->addEdgesProcess(edges);
+    m_modifier->addEdgesProcess(edges);
 
     sofa::helper::vector<unsigned int> edgesIndex;
     edgesIndex.reserve(edges.size());
@@ -110,10 +101,10 @@ void ManifoldEdgeSetTopologyAlgorithms< DataTypes >::addEdges(const sofa::helper
     }
 
     // add topology event in the stack of topological events
-    modifier->addEdgesWarning( edges.size(), edges, edgesIndex);
+    m_modifier->addEdgesWarning( edges.size(), edges, edgesIndex);
 
     // inform other objects that the edges are already added
-    container->propagateTopologicalChanges();
+    m_container->propagateTopologicalChanges();
 }
 
 template<class DataTypes>
@@ -121,14 +112,10 @@ void ManifoldEdgeSetTopologyAlgorithms< DataTypes >::addEdges(const sofa::helper
         const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors ,
         const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
 {
-    ManifoldEdgeSetTopology< DataTypes > *topology = getEdgeSetTopology();
-    ManifoldEdgeSetTopologyModifier* modifier  = topology->getEdgeSetTopologyModifier();
-    ManifoldEdgeSetTopologyContainer* container  = topology->getEdgeSetTopologyContainer();
-
-    unsigned int nEdges = container->getNumberOfEdges();
+    unsigned int nEdges = m_container->getNumberOfEdges();
 
     /// actually add edges in the topology container
-    modifier->addEdgesProcess(edges);
+    m_modifier->addEdgesProcess(edges);
 
     sofa::helper::vector<unsigned int> edgesIndex;
 
@@ -138,39 +125,33 @@ void ManifoldEdgeSetTopologyAlgorithms< DataTypes >::addEdges(const sofa::helper
     }
 
     // add topology event in the stack of topological events
-    modifier->addEdgesWarning( edges.size(), edges,edgesIndex,ancestors,baryCoefs);
+    m_modifier->addEdgesWarning( edges.size(), edges,edgesIndex,ancestors,baryCoefs);
 
     // inform other objects that the edges are already added
-    container->propagateTopologicalChanges();
+    m_container->propagateTopologicalChanges();
 }
 
 template<class DataTypes>
 void ManifoldEdgeSetTopologyAlgorithms< DataTypes >::swapEdges(const sofa::helper::vector< sofa::helper::vector< unsigned int > >& edgesPairs)
 {
-    ManifoldEdgeSetTopology< DataTypes > *topology = getEdgeSetTopology();
-
-    topology->getEdgeSetTopologyModifier()->swapEdgesProcess(edgesPairs);
-    topology->getEdgeSetTopologyContainer()->checkTopology();
+    m_modifier->swapEdgesProcess(edgesPairs);
+    m_container->checkTopology();
 }
 
 
 template<class DataTypes>
 void ManifoldEdgeSetTopologyAlgorithms< DataTypes >::fuseEdges(const sofa::helper::vector< sofa::helper::vector< unsigned int > >& edgesPairs, const bool removeIsolatedPoints)
 {
-    ManifoldEdgeSetTopology< DataTypes > *topology = getEdgeSetTopology();
-
-    topology->getEdgeSetTopologyModifier()->fuseEdgesProcess(edgesPairs, removeIsolatedPoints);
-    topology->getEdgeSetTopologyContainer()->checkTopology();
+    m_modifier->fuseEdgesProcess(edgesPairs, removeIsolatedPoints);
+    m_container->checkTopology();
 }
 
 template<class DataTypes>
 void ManifoldEdgeSetTopologyAlgorithms< DataTypes >::splitEdges( sofa::helper::vector<unsigned int> &indices,
         const bool removeIsolatedPoints)
 {
-    ManifoldEdgeSetTopology< DataTypes > *topology = getEdgeSetTopology();
-
-    topology->getEdgeSetTopologyModifier()->splitEdgesProcess(indices, removeIsolatedPoints);
-    topology->getEdgeSetTopologyContainer()->checkTopology();
+    m_modifier->splitEdgesProcess(indices, removeIsolatedPoints);
+    m_container->checkTopology();
 }
 
 template<class DataTypes>
@@ -178,10 +159,8 @@ void ManifoldEdgeSetTopologyAlgorithms< DataTypes >::splitEdges( sofa::helper::v
         const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
         const bool removeIsolatedPoints)
 {
-    ManifoldEdgeSetTopology< DataTypes > *topology = getEdgeSetTopology();
-
-    topology->getEdgeSetTopologyModifier()->splitEdgesProcess(indices, baryCoefs, removeIsolatedPoints);
-    topology->getEdgeSetTopologyContainer()->checkTopology();
+    m_modifier->splitEdgesProcess(indices, baryCoefs, removeIsolatedPoints);
+    m_container->checkTopology();
 }
 
 } // namespace topology

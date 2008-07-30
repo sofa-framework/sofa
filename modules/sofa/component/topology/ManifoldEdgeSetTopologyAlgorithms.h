@@ -35,8 +35,12 @@ namespace component
 
 namespace topology
 {
-template<class DataTypes>
-class ManifoldEdgeSetTopology;
+class ManifoldEdgeSetTopologyContainer;
+
+class ManifoldEdgeSetTopologyModifier;
+
+template < class DataTypes >
+class ManifoldEdgeSetGeometryAlgorithms;
 
 /**
 * A class that performs topology algorithms on an ManifoldEdgeSet.
@@ -49,13 +53,9 @@ public:
         : EdgeSetTopologyAlgorithms<DataTypes>()
     {}
 
-    ManifoldEdgeSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
-        : EdgeSetTopologyAlgorithms<DataTypes>(top)
-    {}
-
     virtual ~ManifoldEdgeSetTopologyAlgorithms() {}
 
-    ManifoldEdgeSetTopology< DataTypes >* getEdgeSetTopology() const;
+    virtual void init();
 
     /** \brief Remove a set  of edges
     @param edges an array of edge indices to be removed (note that the array is not const since it needs to be sorted)
@@ -118,6 +118,10 @@ public:
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
             const bool removeIsolatedPoints = true);
 
+private:
+    ManifoldEdgeSetTopologyContainer*					m_container;
+    ManifoldEdgeSetTopologyModifier*					m_modifier;
+    ManifoldEdgeSetGeometryAlgorithms< DataTypes >*		m_geometryAlgorithms;
 };
 } // namespace topology
 

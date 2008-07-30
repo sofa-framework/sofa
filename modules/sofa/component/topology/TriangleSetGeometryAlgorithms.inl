@@ -450,7 +450,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::is_PointinTriangle(bool is_test
 
                     if(ind_triangle != ind_t)
                     {
-                        is_in_next_triangle = topology->getTriangleSetGeometryAlgorithms()->is_PointinTriangle(false, p, ind_triangle, ind_t_false);
+                        is_in_next_triangle = is_PointinTriangle(false, p, ind_triangle, ind_t_false);
                     }
                     i++;
                 }

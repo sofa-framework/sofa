@@ -42,27 +42,26 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::componentmodel::behavior;
 
 template<class DataTypes>
-TetrahedronSetTopology< DataTypes >* TetrahedronSetTopologyAlgorithms< DataTypes >::getTetrahedronSetTopology() const
+void TetrahedronSetTopologyAlgorithms< DataTypes >::init()
 {
-    return static_cast<TetrahedronSetTopology< DataTypes >* > (this->m_basicTopology);
+    TriangleSetTopologyAlgorithms< DataTypes >::init();
+    this->getContext()->get(m_container);
+    this->getContext()->get(m_modifier);
+    this->getContext()->get(m_geometryAlgorithms);
 }
 
 template<class DataTypes>
 void TetrahedronSetTopologyAlgorithms< DataTypes >::removeTetrahedra(sofa::helper::vector< unsigned int >& tetrahedra)
 {
-    TetrahedronSetTopology< DataTypes > *topology = getTetrahedronSetTopology();
-    TetrahedronSetTopologyModifier* modifier  = topology->getTetrahedronSetTopologyModifier();
-    TetrahedronSetTopologyContainer* container = topology->getTetrahedronSetTopologyContainer();
-
-    modifier->removeTetrahedraWarning(tetrahedra);
+    m_modifier->removeTetrahedraWarning(tetrahedra);
 
     // inform other objects that the triangles are going to be removed
-    container->propagateTopologicalChanges();
+    m_container->propagateTopologicalChanges();
 
     // now destroy the old tetrahedra.
-    modifier->removeTetrahedraProcess(  tetrahedra ,true);
+    m_modifier->removeTetrahedraProcess(  tetrahedra ,true);
 
-    container->checkTopology();
+    m_container->checkTopology();
 }
 
 template<class DataTypes>
@@ -74,11 +73,9 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::removeItems(sofa::helper::ve
 template<class DataTypes>
 void TetrahedronSetTopologyAlgorithms< DataTypes >::RemoveTetraBall(unsigned int ind_ta, unsigned int ind_tb)
 {
-    TetrahedronSetTopology< DataTypes > *topology = getTetrahedronSetTopology();
-
     sofa::helper::vector<unsigned int> init_indices;
     sofa::helper::vector<unsigned int> &indices = init_indices;
-    topology->getTetrahedronSetGeometryAlgorithms()->getTetraInBall(ind_ta, ind_tb, indices);
+    m_geometryAlgorithms->getTetraInBall(ind_ta, ind_tb, indices);
     removeTetrahedra(indices);
 
     //cout<<"INFO, number to remove = "<< indices.size() <<endl;
@@ -88,18 +85,14 @@ template<class DataTypes>
 void  TetrahedronSetTopologyAlgorithms<DataTypes>::renumberPoints( const sofa::helper::vector<unsigned int> &index,
         const sofa::helper::vector<unsigned int> &inv_index)
 {
-    TetrahedronSetTopology< DataTypes > *topology = getTetrahedronSetTopology();
-    TetrahedronSetTopologyModifier* modifier  = topology->getTetrahedronSetTopologyModifier();
-    TetrahedronSetTopologyContainer* container = topology->getTetrahedronSetTopologyContainer();
-
     /// add the topological changes in the queue
-    modifier->renumberPointsWarning(index, inv_index);
+    m_modifier->renumberPointsWarning(index, inv_index);
     // inform other objects that the triangles are going to be removed
-    container->propagateTopologicalChanges();
+    m_container->propagateTopologicalChanges();
     // now renumber the points
-    modifier->renumberPointsProcess(index, inv_index);
+    m_modifier->renumberPointsProcess(index, inv_index);
 
-    container->checkTopology();
+    m_container->checkTopology();
 }
 
 } // namespace topology

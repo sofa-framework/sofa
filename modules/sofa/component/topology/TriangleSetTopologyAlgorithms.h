@@ -33,8 +33,12 @@ namespace component
 {
 namespace topology
 {
-template<class DataTypes>
-class TriangleSetTopology;
+class TriangleSetTopologyContainer;
+
+class TriangleSetTopologyModifier;
+
+template < class DataTypes >
+class TriangleSetGeometryAlgorithms;
 
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::TriangleID TriangleID;
@@ -59,13 +63,9 @@ public:
         :EdgeSetTopologyAlgorithms<DataTypes>()
     {}
 
-    TriangleSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
-        : EdgeSetTopologyAlgorithms<DataTypes>(top)
-    {}
-
     virtual ~TriangleSetTopologyAlgorithms() {}
 
-    TriangleSetTopology< DataTypes >* getTriangleSetTopology() const;
+    virtual void init();
 
     /** \brief Remove a set  of triangles
     @param triangles an array of triangle indices to be removed (note that the array is not const since it needs to be sorted)
@@ -120,6 +120,10 @@ public:
      */
     virtual int InciseAlongEdge(unsigned int edge);
 
+private:
+    TriangleSetTopologyContainer*					m_container;
+    TriangleSetTopologyModifier*					m_modifier;
+    TriangleSetGeometryAlgorithms< DataTypes >*		m_geometryAlgorithms;
 };
 
 } // namespace topology

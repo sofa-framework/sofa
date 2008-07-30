@@ -44,9 +44,10 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::componentmodel::behavior;
 
 
-PointSetTopologyContainer* PointSetTopologyModifier::getPointSetTopologyContainer() const
+void PointSetTopologyModifier::init()
 {
-    return static_cast<PointSetTopologyContainer*> (this->m_topologyContainer);
+    core::componentmodel::topology::TopologyModifier::init();
+    this->getContext()->get(m_container);
 }
 
 
@@ -54,7 +55,7 @@ void PointSetTopologyModifier::swapPoints(const int i1,const int i2)
 {
     //PointsIndicesSwap *e2 = PointsIndicesSwap PointsAdded( i1, i2 );
     //addStateChange(e2);
-    //container->propagateStateChanges();
+    //m_container->propagateStateChanges();
 
     PointsIndicesSwap *e = new PointsIndicesSwap( i1, i2 ); // local or global indices ? (example of edges)
     this->addTopologyChange(e);
@@ -63,7 +64,7 @@ void PointSetTopologyModifier::swapPoints(const int i1,const int i2)
 
 void PointSetTopologyModifier::addPointsProcess(const unsigned int nPoints, const bool /*addDOF*/)
 {
-    getPointSetTopologyContainer()->addPoints(nPoints);
+    m_container->addPoints(nPoints);
 }
 
 
@@ -72,19 +73,17 @@ void PointSetTopologyModifier::addPointsProcess(const unsigned int nPoints,
         const sofa::helper::vector< sofa::helper::vector< double > >& /*baryCoefs*/,
         const bool /*addDOF*/)
 {
-    getPointSetTopologyContainer()->addPoints(nPoints);
+    m_container->addPoints(nPoints);
 }
 
 
 void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints, const bool addDOF)
 {
-    PointSetTopologyContainer* container = getPointSetTopologyContainer();
-
     if(addDOF)
     {
         PointsAdded *e2 = new PointsAdded(nPoints);
         addStateChange(e2);
-        container->propagateStateChanges();
+        m_container->propagateStateChanges();
     }
 
     // Warning that vertices just got created
@@ -98,13 +97,11 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
         const sofa::helper::vector< sofa::helper::vector< double       > >& coefs,
         const bool addDOF)
 {
-    PointSetTopologyContainer* container = getPointSetTopologyContainer();
-
     if(addDOF)
     {
         PointsAdded *e2 = new PointsAdded(nPoints, ancestors, coefs);
         addStateChange(e2);
-        container->propagateStateChanges();
+        m_container->propagateStateChanges();
     }
 
     // Warning that vertices just got created
@@ -136,9 +133,9 @@ void PointSetTopologyModifier::removePointsProcess(const sofa::helper::vector<un
 {
     if(removeDOF)
     {
-        getPointSetTopologyContainer()->propagateStateChanges();
+        m_container->propagateStateChanges();
     }
-    getPointSetTopologyContainer()->removePoints(indices.size());
+    m_container->removePoints(indices.size());
 }
 
 
@@ -164,7 +161,7 @@ void PointSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector
 {
     if(renumberDOF)
     {
-        getPointSetTopologyContainer()->propagateStateChanges();
+        m_container->propagateStateChanges();
     }
 }
 

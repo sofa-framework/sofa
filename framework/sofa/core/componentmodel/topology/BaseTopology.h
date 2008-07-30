@@ -179,13 +179,14 @@ public:
     *
     * @param basicTopology the topology this object applies to.
     */
-    TopologyAlgorithms(BaseTopology *basicTopology = NULL)
-        : m_basicTopology(basicTopology)
+    TopologyAlgorithms()
     {}
 
     /// Destructor
     virtual ~TopologyAlgorithms()
     {}
+
+    virtual void init();
 
     /** \notify the end for the current sequence of topological change events.
     */
@@ -213,9 +214,8 @@ protected:
     void addTopologyChange(const TopologyChange *topologyChange);
 
 protected:
-
-    /// The topology this object applies to.
-    BaseTopology *m_basicTopology;
+    /// Contains the actual topology data and give acces to it (nature of these data heavily depends on the kind of topology).
+    TopologyContainer *m_topologyContainer;
 };
 
 /** A class that contains a set of methods that describes the geometry of the object */
@@ -247,13 +247,15 @@ public:
     *
     * @param basicTopology the topology this object applies to.
     */
-    TopologyModifier(TopologyContainer *container=NULL)
-        : m_topologyContainer(container)
+    TopologyModifier()
+        : m_topologyContainer(NULL)
     { }
 
     /// Destructor
     virtual ~TopologyModifier()
     { }
+
+    virtual void init();
 
 protected:
     /** \brief Adds a TopologyChange object to the list of the topology this object describes.
@@ -283,6 +285,8 @@ public:
     /// Destructor
     virtual ~TopologyContainer()
     {}
+
+    virtual void init();
 
     const std::list<const TopologyChange *> &getChangeList() const { return m_changeList; }
 

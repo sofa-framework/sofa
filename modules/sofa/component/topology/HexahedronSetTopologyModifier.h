@@ -59,13 +59,9 @@ public:
         : QuadSetTopologyModifier()
     { }
 
-    HexahedronSetTopologyModifier(core::componentmodel::topology::TopologyContainer *container)
-        : QuadSetTopologyModifier(container)
-    { }
-
     virtual ~HexahedronSetTopologyModifier() {}
 
-    HexahedronSetTopologyContainer* getHexahedronSetTopologyContainer() const;
+    virtual void init();
 
     /** \brief Sends a message to warn that some hexahedra were added in this topology.
     *
@@ -190,10 +186,12 @@ public:
             const sofa::helper::vector<unsigned int>& inv_index,
             const bool renumberDOF = true);
 
-protected:
     /** \brief Add a hexahedron.
     */
     void addHexahedron(Hexahedron e);
+
+private:
+    HexahedronSetTopologyContainer* 	m_container;
 };
 
 } // namespace topology

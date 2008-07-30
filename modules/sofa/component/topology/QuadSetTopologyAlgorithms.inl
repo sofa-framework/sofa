@@ -45,9 +45,12 @@ using namespace sofa::defaulttype;
 
 
 template<class DataTypes>
-QuadSetTopology< DataTypes >* QuadSetTopologyAlgorithms< DataTypes >::getQuadSetTopology() const
+void QuadSetTopologyAlgorithms< DataTypes >::init()
 {
-    return static_cast<QuadSetTopology< DataTypes >* > (this->m_basicTopology);
+    EdgeSetTopologyAlgorithms< DataTypes >::init();
+    this->getContext()->get(m_container);
+    this->getContext()->get(m_modifier);
+    this->getContext()->get(m_geometryAlgorithms);
 }
 
 template<class DataTypes>
@@ -55,18 +58,14 @@ void QuadSetTopologyAlgorithms< DataTypes >::removeQuads(sofa::helper::vector< u
         const bool removeIsolatedEdges,
         const bool removeIsolatedPoints)
 {
-    QuadSetTopology<DataTypes> *topology = getQuadSetTopology();
-    QuadSetTopologyModifier* modifier = topology->getQuadSetTopologyModifier();
-    QuadSetTopologyContainer* container = topology->getQuadSetTopologyContainer();
-
     /// add the topological changes in the queue
-    modifier->removeQuadsWarning(quads);
+    m_modifier->removeQuadsWarning(quads);
     // inform other objects that the quads are going to be removed
-    container->propagateTopologicalChanges();
+    m_container->propagateTopologicalChanges();
     // now destroy the old quads.
-    modifier->removeQuadsProcess( quads, removeIsolatedEdges, removeIsolatedPoints);
+    m_modifier->removeQuadsProcess( quads, removeIsolatedEdges, removeIsolatedPoints);
 
-    container->checkTopology();
+    m_container->checkTopology();
 }
 
 template<class DataTypes>
@@ -79,18 +78,14 @@ template<class DataTypes>
 void  QuadSetTopologyAlgorithms<DataTypes>::renumberPoints( const sofa::helper::vector<unsigned int> &index,
         const sofa::helper::vector<unsigned int> &inv_index)
 {
-    QuadSetTopology<DataTypes> *topology = getQuadSetTopology();
-    QuadSetTopologyModifier* modifier = topology->getQuadSetTopologyModifier();
-    QuadSetTopologyContainer* container = topology->getQuadSetTopologyContainer();
-
     /// add the topological changes in the queue
-    modifier->renumberPointsWarning(index, inv_index);
+    m_modifier->renumberPointsWarning(index, inv_index);
     // inform other objects that the triangles are going to be removed
-    container->propagateTopologicalChanges();
+    m_container->propagateTopologicalChanges();
     // now renumber the points
-    modifier->renumberPointsProcess(index, inv_index);
+    m_modifier->renumberPointsProcess(index, inv_index);
 
-    container->checkTopology();
+    m_container->checkTopology();
 }
 
 } // namespace topology

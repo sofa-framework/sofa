@@ -35,8 +35,12 @@ namespace component
 
 namespace topology
 {
-template <class DataTypes>
-class HexahedronSetTopology;
+class HexahedronSetTopologyContainer;
+
+class HexahedronSetTopologyModifier;
+
+template < class DataTypes >
+class HexahedronSetGeometryAlgorithms;
 
 /**
 * A class that performs topology algorithms on an HexahedronSet.
@@ -51,13 +55,9 @@ public:
         : QuadSetTopologyAlgorithms<DataTypes>()
     { }
 
-    HexahedronSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
-        : QuadSetTopologyAlgorithms<DataTypes>(top)
-    { }
-
     virtual ~HexahedronSetTopologyAlgorithms() {}
 
-    HexahedronSetTopology< DataTypes >* getHexahedronSetTopology() const;
+    virtual void init();
 
     /** \brief Remove a set  of hexahedra
     @param hexahedra an array of hexahedron indices to be removed (note that the array is not const since it needs to be sorted)
@@ -73,6 +73,11 @@ public:
     */
     virtual void renumberPoints( const sofa::helper::vector<unsigned int>& index,
             const sofa::helper::vector<unsigned int>& inv_index);
+
+private:
+    HexahedronSetTopologyContainer*						m_container;
+    HexahedronSetTopologyModifier*						m_modifier;
+    HexahedronSetGeometryAlgorithms< DataTypes >*		m_geometryAlgorithms;
 };
 
 } // namespace topology
