@@ -56,7 +56,7 @@ CudaMasterContactSolver<real>::CudaMasterContactSolver()
 #endif
     ,tol_d( initData(&tol_d, 0.001, "tolerance", "tolerance"))
     ,maxIt_d(initData(&maxIt_d, 100, "maxIt", "iterations of gauss seidel"))
-    ,mu_d( initData(&mu_d, 0.6, "mu", ""))
+    ,mu_d( initData(&mu_d, 0.0, "mu", ""))
     ,useGPU_d(initData(&useGPU_d,8, "useGPU", "compute LCP using GPU"))
 {
 
@@ -88,7 +88,7 @@ void CudaMasterContactSolver<real>::build_LCP()
 
     if (_numConstraints > MAX_NUM_CONSTRAINTS)
     {
-        cerr<<endl<<"Warning in MasterContactSolver, maximum number of contacts exceeded, "<< _numConstraints <<" contacts detected"<<endl;
+        cerr<<endl<<"Warning in CudaMasterContactSolver, maximum number of contacts exceeded, "<< _numConstraints <<" contacts detected"<<endl;
         MAX_NUM_CONSTRAINTS=MAX_NUM_CONSTRAINTS+MAX_NUM_CONSTRAINTS;
 
         free(_PreviousContactList);
@@ -304,11 +304,6 @@ void CudaMasterContactSolver<real>::step(double dt)
         if ((t1-t2>CHECK) || (t1-t2<-CHECK))
         {
             std::cout << "Error(" << useGPU_d.getValue() << ") dim(" << _numConstraints << ") : (cpu," << t1 << ") (gpu,(" << t2 << ")" << std::endl;
-
-            //for (unsigned i=0;i<_numConstraints;i++) printf("%f ",f_check[i]);
-            //printf("\n");
-            //for (unsigned i=0;i<_numConstraints;i++) printf("%f ",_f[i]);
-            //printf("\n");
         }
     }
     else
