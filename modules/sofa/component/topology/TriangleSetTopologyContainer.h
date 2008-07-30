@@ -57,20 +57,35 @@ class TriangleSetTopologyContainer : public EdgeSetTopologyContainer
     friend class TriangleSetTopologyModifier;
 
 public:
-    TriangleSetTopologyContainer(core::componentmodel::topology::BaseTopology *top=NULL);
+    TriangleSetTopologyContainer();
 
-    TriangleSetTopologyContainer(core::componentmodel::topology::BaseTopology *top,
-            const sofa::helper::vector< Triangle > &triangles );
+    TriangleSetTopologyContainer(const sofa::helper::vector< Triangle > &triangles );
 
     virtual ~TriangleSetTopologyContainer() {}
 
     virtual void init();
 
-    template< typename DataTypes >
-    TriangleSetTopology< DataTypes >* getTriangleSetTopology() const
+    /// BaseMeshTopology API
+    /// @{
+
+    const SeqTriangles& getTriangles()
     {
-        return static_cast<TriangleSetTopology< DataTypes >* > (this->m_basicTopology);
+        return getTriangleArray();
     }
+
+    /// Returns the set of edges adjacent to a given triangle.
+    const TriangleEdges& getEdgeTriangleShell(TriangleID i)
+    {
+        return getTriangleEdge(i);
+    }
+
+    /// @}
+
+    /** \brief Checks if the topology is coherent
+    *
+    * Check if the shell arrays are coherent
+    */
+    virtual bool checkTopology() const;
 
     /** \brief Returns the Triangle array.
     *
@@ -128,12 +143,6 @@ public:
 
     /** returns the index (either 0, 1 ,2) of the edge whose global index is edgeIndex. Returns -1 if none */
     int getEdgeIndexInTriangle(const TriangleEdges &t,const unsigned int edgeIndex) const;
-
-    /** \brief Checks if the Triangle Set Topology is coherent
-    *
-    * Check if the Triangle and the Triangle Shell arrays are coherent
-    */
-    virtual bool checkTopology() const;
 
     inline friend std::ostream& operator<< (std::ostream& out, const TriangleSetTopologyContainer& t)
     {
@@ -262,22 +271,6 @@ private:
     *
     */
     sofa::helper::vector< unsigned int > &getTriangleEdgeShellForModification(const unsigned int edgeIndex);
-
-    /// BaseMeshTopology API
-    /// @{
-
-    const SeqTriangles& getTriangles()
-    {
-        return getTriangleArray();
-    }
-
-    /// Returns the set of edges adjacent to a given triangle.
-    const TriangleEdges& getEdgeTriangleShell(TriangleID i)
-    {
-        return getTriangleEdge(i);
-    }
-
-    /// @}
 
 protected:
     /// provides the set of triangles

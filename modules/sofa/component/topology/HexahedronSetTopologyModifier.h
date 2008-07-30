@@ -33,8 +33,7 @@ namespace component
 {
 namespace topology
 {
-template <class DataTypes>
-class HexahedronSetTopology;
+class HexahedronSetTopologyContainer;
 
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::HexaID HexaID;
@@ -56,7 +55,6 @@ typedef HexaQuads HexahedronQuads;
 template<class DataTypes>
 class HexahedronSetTopologyModifier : public QuadSetTopologyModifier <DataTypes>
 {
-
 public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -65,18 +63,13 @@ public:
         : QuadSetTopologyModifier<DataTypes>()
     { }
 
-    HexahedronSetTopologyModifier(core::componentmodel::topology::BaseTopology *top)
-        : QuadSetTopologyModifier<DataTypes>(top)
+    HexahedronSetTopologyModifier(core::componentmodel::topology::TopologyContainer *container)
+        : QuadSetTopologyModifier<DataTypes>(container)
     { }
 
     virtual ~HexahedronSetTopologyModifier() {}
 
-    HexahedronSetTopology< DataTypes >* getHexahedronSetTopology() const;
-
-    /** \brief Write the current mesh into a msh file
-    *
-    */
-    virtual void writeMSHfile(const char *filename);
+    HexahedronSetTopologyContainer* getHexahedronSetTopologyContainer() const;
 
     /** \brief Sends a message to warn that some hexahedra were added in this topology.
     *
@@ -202,7 +195,7 @@ public:
             const bool renumberDOF = true);
 
 protected:
-    /** \brief Load a hexahedron.
+    /** \brief Add a hexahedron.
     */
     void addHexahedron(Hexahedron e);
 };

@@ -33,8 +33,7 @@ namespace component
 {
 namespace topology
 {
-template<class DataTypes>
-class TriangleSetTopology;
+class TriangleSetTopologyContainer;
 
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::TriangleID TriangleID;
@@ -50,7 +49,6 @@ typedef BaseMeshTopology::TriangleEdges TriangleEdges;
 template<class DataTypes>
 class TriangleSetTopologyModifier : public EdgeSetTopologyModifier <DataTypes>
 {
-
 public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -58,18 +56,14 @@ public:
     TriangleSetTopologyModifier()
         : EdgeSetTopologyModifier<DataTypes>()
     { }
-    TriangleSetTopologyModifier(core::componentmodel::topology::BaseTopology *top)
-        : EdgeSetTopologyModifier<DataTypes>(top)
+
+    TriangleSetTopologyModifier(core::componentmodel::topology::TopologyContainer *container)
+        : EdgeSetTopologyModifier<DataTypes>(container)
     { }
 
     virtual ~TriangleSetTopologyModifier() {}
 
-    TriangleSetTopology< DataTypes >* getTriangleSetTopology() const;
-
-    /** \brief Write the current mesh into a msh file
-     *
-     */
-    virtual void writeMSHfile(const char *filename);
+    TriangleSetTopologyContainer* getTriangleSetTopologyContainer() const;
 
     /** \brief Sends a message to warn that some triangles were added in this topology.
      *
@@ -204,7 +198,7 @@ public:
             const bool renumberDOF = true);
 
     //protected:
-    /** \brief Load a triangle.
+    /** \brief Add a triangle.
      */
     void addTriangle(Triangle e);
 

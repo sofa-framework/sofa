@@ -42,27 +42,27 @@ int QuadSetTopologyContainerClass = core::RegisterObject("Quad set topology cont
         .add< QuadSetTopologyContainer >()
         ;
 
-QuadSetTopologyContainer::QuadSetTopologyContainer(core::componentmodel::topology::BaseTopology *top )
-    : EdgeSetTopologyContainer(top)
+QuadSetTopologyContainer::QuadSetTopologyContainer()
+    : EdgeSetTopologyContainer()
 {}
 
-QuadSetTopologyContainer::QuadSetTopologyContainer(core::componentmodel::topology::BaseTopology *top,
-        const sofa::helper::vector< Quad >& quads )
-    : EdgeSetTopologyContainer(top),
+QuadSetTopologyContainer::QuadSetTopologyContainer(const sofa::helper::vector< Quad >& quads )
+    : EdgeSetTopologyContainer(),
       m_quad( quads )
 {}
 
 void QuadSetTopologyContainer::init()
 {
-    sofa::component::MeshLoader* m_loader;
-    this->getContext()->get(m_loader);
+    sofa::component::MeshLoader* loader;
+    this->getContext()->get(loader);
 
-    if(m_loader)
+    if(loader)
     {
-
-        m_quad = m_loader->getQuads();
-
+        m_quad = loader->getQuads();
     }
+
+    // load points
+    PointSetTopologyContainer::init();
 }
 
 void QuadSetTopologyContainer::createQuadSetArray()

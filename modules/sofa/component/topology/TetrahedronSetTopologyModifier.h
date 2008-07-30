@@ -35,8 +35,7 @@ namespace component
 
 namespace topology
 {
-template <class DataTypes>
-class TetrahedronSetTopology;
+class TetrahedronSetTopologyContainer;
 
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::TetraID TetraID;
@@ -66,18 +65,13 @@ public:
         : TriangleSetTopologyModifier<DataTypes>()
     {}
 
-    TetrahedronSetTopologyModifier(core::componentmodel::topology::BaseTopology *top)
-        : TriangleSetTopologyModifier<DataTypes>(top)
+    TetrahedronSetTopologyModifier(core::componentmodel::topology::TopologyContainer *container)
+        : TriangleSetTopologyModifier<DataTypes>(container)
     {}
 
     virtual ~TetrahedronSetTopologyModifier() {}
 
-    TetrahedronSetTopology< DataTypes >* getTetrahedronSetTopology() const;
-
-    /** \brief Write the current mesh into a msh file
-    *
-    */
-    virtual void writeMSHfile(const char *filename);
+    TetrahedronSetTopologyContainer* getTetrahedronSetTopologyContainer() const;
 
     /** \brief Sends a message to warn that some tetrahedra were added in this topology.
     *
@@ -203,7 +197,7 @@ public:
             const bool renumberDOF = true);
 
 protected:
-    /** \brief Load a tetrahedron.
+    /** \brief Add a tetrahedron.
     */
     void addTetrahedron(Tetrahedron e);
 };

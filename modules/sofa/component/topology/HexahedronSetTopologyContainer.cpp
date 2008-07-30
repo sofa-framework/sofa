@@ -43,27 +43,27 @@ int HexahedronSetTopologyContainerClass = core::RegisterObject("Hexahedron set t
 
 const unsigned int hexahedronEdgeArray[12][2]= {{0,1},{0,3},{0,4},{1,2},{1,5},{2,3},{2,6},{3,7},{4,5},{4,7},{5,6},{6,7}};
 
-HexahedronSetTopologyContainer::HexahedronSetTopologyContainer(core::componentmodel::topology::BaseTopology *top)
-    : QuadSetTopologyContainer(top)
+HexahedronSetTopologyContainer::HexahedronSetTopologyContainer()
+    : QuadSetTopologyContainer()
 { }
 
-HexahedronSetTopologyContainer::HexahedronSetTopologyContainer(core::componentmodel::topology::BaseTopology *top,
-        const sofa::helper::vector< Hexahedron > &hexahedra )
-    : QuadSetTopologyContainer(top),
+HexahedronSetTopologyContainer::HexahedronSetTopologyContainer(const sofa::helper::vector< Hexahedron > &hexahedra )
+    : QuadSetTopologyContainer(),
       m_hexahedron( hexahedra )
 { }
 
 void HexahedronSetTopologyContainer::init()
 {
-    sofa::component::MeshLoader* m_loader;
-    this->getContext()->get(m_loader);
+    sofa::component::MeshLoader* loader;
+    this->getContext()->get(loader);
 
-    if(m_loader)
+    if(loader)
     {
-
-        m_hexahedron = m_loader->getHexas();
-
+        m_hexahedron = loader->getHexas();
     }
+
+    // load points
+    PointSetTopologyContainer::init();
 }
 
 void HexahedronSetTopologyContainer::createHexahedronSetArray()

@@ -45,27 +45,27 @@ int TriangleSetTopologyContainerClass = core::RegisterObject("Triangle set topol
         .add< TriangleSetTopologyContainer >()
         ;
 
-TriangleSetTopologyContainer::TriangleSetTopologyContainer(core::componentmodel::topology::BaseTopology *top )
-    : EdgeSetTopologyContainer(top)
+TriangleSetTopologyContainer::TriangleSetTopologyContainer()
+    : EdgeSetTopologyContainer()
 {}
 
-TriangleSetTopologyContainer::TriangleSetTopologyContainer(core::componentmodel::topology::BaseTopology *top,
-        const sofa::helper::vector< Triangle > &triangles )
-    : EdgeSetTopologyContainer(top),
+TriangleSetTopologyContainer::TriangleSetTopologyContainer(const sofa::helper::vector< Triangle > &triangles )
+    : EdgeSetTopologyContainer(),
       m_triangle( triangles )
 {}
 
 void TriangleSetTopologyContainer::init()
 {
-    sofa::component::MeshLoader* m_loader;
-    this->getContext()->get(m_loader);
+    sofa::component::MeshLoader* loader;
+    this->getContext()->get(loader);
 
-    if(m_loader)
+    if(loader)
     {
-
-        m_triangle = m_loader->getTriangles();
-
+        m_triangle = loader->getTriangles();
     }
+
+    // load points
+    PointSetTopologyContainer::init();
 }
 
 void TriangleSetTopologyContainer::createTriangleSetArray()
@@ -90,7 +90,7 @@ void TriangleSetTopologyContainer::createTriangleVertexShellArray ()
         clearTriangleVertexShell();
     }
 
-    m_triangleVertexShell.resize( m_basicTopology->getNbPoints() );
+    m_triangleVertexShell.resize( getNbPoints() );
     unsigned int j;
 
     for (unsigned int i = 0; i < m_triangle.size(); ++i)

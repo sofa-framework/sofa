@@ -55,20 +55,35 @@ class QuadSetTopologyContainer : public EdgeSetTopologyContainer
     friend class QuadSetTopologyModifier;
 
 public:
-    QuadSetTopologyContainer(core::componentmodel::topology::BaseTopology *top=NULL);
+    QuadSetTopologyContainer();
 
-    QuadSetTopologyContainer(core::componentmodel::topology::BaseTopology *top,
-            const sofa::helper::vector< Quad >& quads );
+    QuadSetTopologyContainer(const sofa::helper::vector< Quad >& quads );
 
     virtual ~QuadSetTopologyContainer() {}
 
     virtual void init();
 
-    template< typename DataTypes >
-    QuadSetTopology< DataTypes >* getQuadSetTopology() const
+    /// BaseMeshTopology API
+    /// @{
+
+    const SeqQuads& getQuads()
     {
-        return static_cast<QuadSetTopology< DataTypes >* > (this->m_basicTopology);
+        return getQuadArray();
     }
+
+    /// Returns the set of edges adjacent to a given quad.
+    const QuadEdges& getEdgeQuadShell(QuadID i)
+    {
+        return getQuadEdge(i);
+    }
+
+    /// @}
+
+    /** \brief Checks if the topology is coherent
+    *
+    * Check if the shell arrays are coherent
+    */
+    virtual bool checkTopology() const;
 
     /** \brief Returns the Quad array.
     *
@@ -126,12 +141,6 @@ public:
 
     /** returns the index (either 0, 1, 2, 3) of the edge whose global index is edgeIndex. Returns -1 if none */
     int getEdgeIndexInQuad(QuadEdges &t,unsigned int edheIndex) const;
-
-    /** \brief Checks if the Quad Set Topology is coherent
-    *
-    * Check if the Quad and the Quad Shell arrays are coherent
-    */
-    virtual bool checkTopology() const;
 
     inline friend std::ostream& operator<< (std::ostream& out, const QuadSetTopologyContainer& t)
     {
@@ -262,22 +271,6 @@ private:
     *
     */
     sofa::helper::vector< unsigned int > &getQuadEdgeShellForModification(const unsigned int edgeIndex);
-
-    /// BaseMeshTopology API
-    /// @{
-
-    const SeqQuads& getQuads()
-    {
-        return getQuadArray();
-    }
-
-    /// Returns the set of edges adjacent to a given quad.
-    const QuadEdges& getEdgeQuadShell(QuadID i)
-    {
-        return getQuadEdge(i);
-    }
-
-    /// @}
 
 protected:
     /// provides the set of quads

@@ -84,12 +84,6 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::RemoveTetraBall(unsigned int
 }
 
 template<class DataTypes>
-void TetrahedronSetTopologyAlgorithms< DataTypes >::writeMSH(const char *filename)
-{
-    getTetrahedronSetTopology()->getTetrahedronSetTopologyModifier()->writeMSHfile(filename);
-}
-
-template<class DataTypes>
 void  TetrahedronSetTopologyAlgorithms<DataTypes>::renumberPoints( const sofa::helper::vector<unsigned int> &index,
         const sofa::helper::vector<unsigned int> &inv_index)
 {

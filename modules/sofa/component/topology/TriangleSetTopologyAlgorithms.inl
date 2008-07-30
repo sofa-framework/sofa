@@ -72,12 +72,6 @@ void TriangleSetTopologyAlgorithms< DataTypes >::removeItems(sofa::helper::vecto
 }
 
 template<class DataTypes>
-void TriangleSetTopologyAlgorithms< DataTypes >::writeMSH(const char *filename)
-{
-    getTriangleSetTopology()->getTriangleSetTopologyModifier()->writeMSHfile(filename);
-}
-
-template<class DataTypes>
 void  TriangleSetTopologyAlgorithms<DataTypes>::renumberPoints( const sofa::helper::vector<unsigned int> &index,
         const sofa::helper::vector<unsigned int> &inv_index)
 {

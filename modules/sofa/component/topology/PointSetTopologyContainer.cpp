@@ -24,6 +24,11 @@
 ******************************************************************************/
 #include <sofa/component/topology/PointSetTopologyContainer.h>
 
+#include <sofa/simulation/common/TopologyChangeVisitor.h>
+#include <sofa/simulation/common/StateChangeVisitor.h>
+#include <sofa/simulation/tree/GNode.h>
+#include <sofa/component/MeshLoader.h>
+
 #include <sofa/core/ObjectFactory.h>
 namespace sofa
 {
@@ -40,10 +45,26 @@ int PointSetTopologyContainerClass = core::RegisterObject("Point set topology co
         .add< PointSetTopologyContainer >()
         ;
 
-PointSetTopologyContainer::PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top)
-    : core::componentmodel::topology::TopologyContainer(top),
+PointSetTopologyContainer::PointSetTopologyContainer()
+    : core::componentmodel::topology::TopologyContainer(),
       nbPoints(0)
 {}
+
+PointSetTopologyContainer::PointSetTopologyContainer(const int nPoints)
+    : core::componentmodel::topology::TopologyContainer(),
+      nbPoints(nPoints)
+{}
+
+void PointSetTopologyContainer::init()
+{
+    sofa::component::MeshLoader* loader;
+    this->getContext()->get(loader);
+
+    if(loader)
+    {
+        nbPoints = loader->getNbPoints();
+    }
+}
 
 bool PointSetTopologyContainer::checkTopology() const
 {
@@ -73,6 +94,24 @@ void PointSetTopologyContainer::removePoint()
 void PointSetTopologyContainer::clear()
 {
     nbPoints = 0;
+}
+
+void PointSetTopologyContainer::propagateTopologicalChanges()
+{
+    sofa::simulation::TopologyChangeVisitor a;
+    getContext()->executeVisitor(&a);
+
+    // remove the changes we just propagated, so that we don't send then again next time
+    resetTopologyChangeList();
+}
+
+void PointSetTopologyContainer::propagateStateChanges()
+{
+    sofa::simulation::StateChangeVisitor a;
+    getContext()->executeVisitor(&a);
+
+    // remove the changes we just propagated, so that we don't send then again next time
+    resetStateChangeList();
 }
 
 } // namespace topology

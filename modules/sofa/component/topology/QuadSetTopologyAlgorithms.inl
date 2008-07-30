@@ -76,12 +76,6 @@ void QuadSetTopologyAlgorithms< DataTypes >::removeItems(sofa::helper::vector< u
 }
 
 template<class DataTypes>
-void QuadSetTopologyAlgorithms< DataTypes >::writeMSH(const char *filename)
-{
-    getQuadSetTopology()->getQuadSetTopologyModifier()->writeMSHfile(filename);
-}
-
-template<class DataTypes>
 void  QuadSetTopologyAlgorithms<DataTypes>::renumberPoints( const sofa::helper::vector<unsigned int> &index,
         const sofa::helper::vector<unsigned int> &inv_index)
 {

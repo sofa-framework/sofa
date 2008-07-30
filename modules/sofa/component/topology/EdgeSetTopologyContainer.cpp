@@ -55,27 +55,27 @@ int EdgeSetTopologyContainerClass = core::RegisterObject("Edge set topology cont
         .add< EdgeSetTopologyContainer >()
         ;
 
-EdgeSetTopologyContainer::EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top)
-    : PointSetTopologyContainer( top )
+EdgeSetTopologyContainer::EdgeSetTopologyContainer()
+    : PointSetTopologyContainer( )
 {}
 
-EdgeSetTopologyContainer::EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top,
-        const sofa::helper::vector< Edge > &edges )
-    : PointSetTopologyContainer( top ),
+EdgeSetTopologyContainer::EdgeSetTopologyContainer(const sofa::helper::vector< Edge > &edges )
+    : PointSetTopologyContainer( ),
       m_edge( edges )
 {}
 
 void EdgeSetTopologyContainer::init()
 {
-    sofa::component::MeshLoader* m_loader;
-    this->getContext()->get(m_loader);
+    sofa::component::MeshLoader* loader;
+    this->getContext()->get(loader);
 
-    if(m_loader)
+    if(loader)
     {
-
-        m_edge = m_loader->getEdges();
-
+        m_edge = loader->getEdges();
     }
+
+    // load points
+    PointSetTopologyContainer::init();
 }
 
 void EdgeSetTopologyContainer::createEdgeVertexShellArray()
@@ -93,7 +93,7 @@ void EdgeSetTopologyContainer::createEdgeVertexShellArray()
         clearEdgeVertexShell();
     }
 
-    m_edgeVertexShell.resize( m_basicTopology->getNbPoints() );
+    m_edgeVertexShell.resize( getNbPoints() );
 
     for (unsigned int edge=0; edge<m_edge.size(); ++edge)
     {

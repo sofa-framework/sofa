@@ -35,8 +35,7 @@ namespace component
 
 namespace topology
 {
-template<class DataTypes>
-class EdgeSetTopology;
+class EdgeSetTopologyContainer;
 
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::EdgeID EdgeID;
@@ -51,7 +50,6 @@ template<class DataTypes>
 class EdgeSetTopologyModifier : public PointSetTopologyModifier <DataTypes>
 {
 public:
-
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
 
@@ -59,13 +57,13 @@ public:
         : PointSetTopologyModifier<DataTypes>()
     {}
 
-    EdgeSetTopologyModifier(core::componentmodel::topology::BaseTopology *top)
-        : PointSetTopologyModifier<DataTypes>(top)
+    EdgeSetTopologyModifier(core::componentmodel::topology::TopologyContainer *container)
+        : PointSetTopologyModifier<DataTypes>(container)
     {}
 
     virtual ~EdgeSetTopologyModifier() {}
 
-    EdgeSetTopology<DataTypes> * getEdgeSetTopology() const;
+    EdgeSetTopologyContainer* getEdgeSetTopologyContainer() const;
 
     /** \brief Sends a message to warn that some edges were added in this topology.
     *
@@ -200,7 +198,7 @@ public:
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
             const bool removeIsolatedPoints = true);
 
-    /** \brief Load an edge.
+    /** \brief Add an edge.
     */
     void addEdge(Edge e);
 };

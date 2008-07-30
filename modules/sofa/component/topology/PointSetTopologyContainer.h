@@ -50,50 +50,68 @@ to each point. This set of point may be a subset of the DOF of the mechanical mo
 class PointSetTopologyContainer : public core::componentmodel::topology::TopologyContainer
 {
 public:
-    /** \brief Constructor from a a Base Topology.
-    */
-    PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top=NULL);
+    PointSetTopologyContainer();
+
+    PointSetTopologyContainer(const int nPoints);
 
     virtual ~PointSetTopologyContainer() {}
 
-    template <typename DataTypes>
-    PointSetTopology<DataTypes>* getPointSetTopology() const
-    {
-        return static_cast<PointSetTopology<DataTypes>*> (this->m_basicTopology);
-    }
-
-    void addPoint();
-    void addPoints(const unsigned int nPoints);
-
-    void removePoint();
-    void removePoints(const unsigned int nPoints);
-
-
-    /** \brief Checks if the Topology is coherent
-    *
-    */
-    virtual bool checkTopology() const;
-
-    inline friend std::ostream& operator<< (std::ostream& out, const PointSetTopologyContainer& /*t*/)
-    {
-        return out;
-    }
-
-    /// Needed to be compliant with Datas.
-    inline friend std::istream& operator>>(std::istream& in, PointSetTopologyContainer& /*t*/)
-    {
-        return in;
-    }
+    virtual void init();
 
     /// BaseMeshTopology API
     /// @{
     /** \brief Returns the number of vertices in this topology.
     *
     */
-    virtual int getNbPoints() const {return nbPoints;}
+    int getNbPoints() const {return nbPoints;}
 
     virtual void clear();
+
+    /** \brief Called by a topology to warn specific topologies linked to it that TopologyChange objects happened.
+    *
+    * ChangeList should contain all TopologyChange objects corresponding to changes in this topology
+    * that just happened (in the case of creation) or are about to happen (in the case of destruction) since
+    * last call to propagateTopologicalChanges.
+    *
+    * @sa firstChange()
+    * @sa lastChange()
+    */
+    void propagateTopologicalChanges();
+
+    /** \brief Called by a topology to warn the Mechanical Object component that points have been added or will be removed.
+    *
+    * StateChangeList should contain all TopologyChange objects corresponding to vertex changes in this topology
+    * that just happened (in the case of creation) or are about to happen (in the case of destruction) since
+    * last call to propagateTopologicalChanges.
+    *
+    * @sa firstChange()
+    * @sa lastChange()
+    */
+    void propagateStateChanges();
     /// @}
+
+    /** \brief Checks if the Topology is coherent
+    *
+    */
+    virtual bool checkTopology() const;
+
+    void addPoint();
+
+    void addPoints(const unsigned int nPoints);
+
+    void removePoint();
+
+    void removePoints(const unsigned int nPoints);
+
+    inline friend std::ostream& operator<< (std::ostream& out, const PointSetTopologyContainer& /*t*/)
+    {
+        return out;
+    }
+
+    inline friend std::istream& operator>>(std::istream& in, PointSetTopologyContainer& /*t*/)
+    {
+        return in;
+    }
 
 private:
     unsigned int	nbPoints;
