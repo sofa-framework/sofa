@@ -182,6 +182,35 @@ public slots:
     void resetScene();
     void screenshot();
 
+#ifdef SOFA_QT4
+    void flagChanged(Q3ListViewItem *)
+    {
+        DisplayFlagItem *flag=NULL;
+        if ( flag=dynamic_cast<DisplayFlagItem *>(item) )  flag->switchState();
+        else
+        {
+            Q3CheckListItem* checkItem=dynamic_cast<Q3CheckListItem*>(item);
+
+            if (checkItem->isOn()) checkItem->setState(Q3CheckListItem::Off);
+            else checkItem->setState(Q3CheckListItem::On);
+        }
+    };
+
+#else
+    void flagChanged(QListViewItem *item)
+    {
+        DisplayFlagItem *flag=NULL;
+        if ( (flag=dynamic_cast<DisplayFlagItem *>(item)) )  flag->switchState();
+        else
+        {
+            Q3CheckListItem* checkItem=dynamic_cast<Q3CheckListItem*>(item);
+
+            if (checkItem->isOn()) checkItem->setState(Q3CheckListItem::Off);
+            else checkItem->setState(Q3CheckListItem::On);
+        }
+    };
+#endif
+
     void showVisualModels()      {showhideElements(VISUALMODELS,true);};
     void showBehaviorModels()    {showhideElements(BEHAVIORMODELS,true);};
     void showCollisionModels()   {showhideElements(COLLISIONMODELS,true);};
@@ -409,6 +438,11 @@ private:
         {
             setState( b ? On : Off );
         }
+        void switchState()
+        {
+            if (isOn()) {setState(Off); gui->showhideElements(id,false);}
+            else        {setState(On); gui->showhideElements(id,true);}
+        }
     protected:
         virtual void stateChange ( bool b )
         {
@@ -417,11 +451,6 @@ private:
             if (s == NoChange) return;
             last = s;
             gui->showhideElements(id,b);
-        }
-        virtual void activate()
-        {
-            if (isOn()) {setState(Off); gui->showhideElements(id,false);}
-            else        {setState(On); gui->showhideElements(id,true);}
         }
 
     };
