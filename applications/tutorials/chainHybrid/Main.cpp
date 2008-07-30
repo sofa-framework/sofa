@@ -42,7 +42,7 @@
 //Including component for topological description of the objects
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/topology/RegularGridTopology.h>
-
+#include <sofa/component/MeshLoader.h>
 
 //Including Solvers
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
@@ -59,6 +59,7 @@ using sofa::component::visualmodel::OglModel;
 using namespace sofa::simulation::tree;
 using namespace sofa::component::collision;
 using namespace sofa::component::topology;
+using sofa::component::MeshLoader;
 using sofa::component::odesolver::EulerImplicitSolver;
 using sofa::component::linearsolver::CGLinearSolver;
 using sofa::simulation::GraphScatteredMatrix;
@@ -127,8 +128,11 @@ int main(int argc, char** argv)
     torusFixed->setName("Fixed");
     chain->addChild(torusFixed);
 
+    MeshLoader* loaderFixed = new MeshLoader;
+    loaderFixed->setFilename(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj"));
+    torusFixed->addObject(loaderFixed);
+
     MeshTopology* meshTorusFixed = new MeshTopology;
-    meshTorusFixed->load(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj").c_str());
     torusFixed->addObject(meshTorusFixed);
 
     MechanicalObject3* dofFixed = new MechanicalObject3; dofFixed->setName("Fixed Object");
@@ -166,8 +170,12 @@ int main(int argc, char** argv)
     torusFEM->addObject(solverFEM);
     torusFEM->addObject(linearFEM);
 
+
+    MeshLoader* loaderFEM = new MeshLoader;
+    loaderFEM->setFilename(sofa::helper::system::DataRepository.getFile("mesh/torus_low_res.msh"));
+    torusFEM->addObject(loaderFEM);
+
     MeshTopology* meshTorusFEM = new MeshTopology;
-    meshTorusFEM->load(sofa::helper::system::DataRepository.getFile("mesh/torus_low_res.msh").c_str());
     torusFEM->addObject(meshTorusFEM);
 
     MechanicalObject3* dofFEM = new MechanicalObject3; dofFEM->setName("FEM Object");
@@ -206,8 +214,11 @@ int main(int argc, char** argv)
     FEMCollisionNode->setName("Visu");
     torusFEM->addChild(FEMCollisionNode);
 
+    MeshLoader* loaderFEM_surf = new MeshLoader;
+    loaderFEM_surf->setFilename(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj"));
+    FEMCollisionNode->addObject(loaderFEM_surf);
+
     MeshTopology* meshTorusFEM_surf= new MeshTopology;
-    meshTorusFEM_surf->load(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj").c_str());
     FEMCollisionNode->addObject(meshTorusFEM_surf);
 
     MechanicalObject3* dofFEM_surf = new MechanicalObject3;  dofFEM_surf->setName("Collision Object FEM");
@@ -240,8 +251,11 @@ int main(int argc, char** argv)
     torusSpring->addObject(solverSpring);
     torusSpring->addObject(linearSpring);
 
+    MeshLoader* loaderSpring = new MeshLoader;
+    loaderSpring->setFilename(sofa::helper::system::DataRepository.getFile("mesh/torus_low_res.msh"));
+    torusSpring->addObject(loaderSpring);
+
     MeshTopology* meshTorusSpring = new MeshTopology;
-    meshTorusSpring->load(sofa::helper::system::DataRepository.getFile("mesh/torus_low_res.msh").c_str());
     torusSpring->addObject(meshTorusSpring);
 
     MechanicalObject3* dofSpring = new MechanicalObject3; dofSpring->setName("Spring Object");
@@ -278,8 +292,11 @@ int main(int argc, char** argv)
     SpringCollisionNode->setName("Visu");
     torusSpring->addChild(SpringCollisionNode);
 
+    MeshLoader* loaderSpring_surf = new MeshLoader;
+    loaderSpring_surf->setFilename(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj"));
+    SpringCollisionNode->addObject(loaderSpring_surf);
+
     MeshTopology* meshTorusSpring_surf= new MeshTopology;
-    meshTorusSpring_surf->load(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj").c_str());
     SpringCollisionNode->addObject(meshTorusSpring_surf);
 
     MechanicalObject3* dofSpring_surf = new MechanicalObject3; dofSpring_surf->setName("Collision Object Spring");
@@ -354,8 +371,12 @@ int main(int argc, char** argv)
     FFDCollisionNode->setName("Visu");
     torusFFD->addChild(FFDCollisionNode);
 
+
+    MeshLoader* loaderFFD_surf = new MeshLoader;
+    loaderFFD_surf->setFilename(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj"));
+    FFDCollisionNode->addObject(loaderFFD_surf);
+
     MeshTopology* meshTorusFFD_surf= new MeshTopology;
-    meshTorusFFD_surf->load(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj").c_str());
     FFDCollisionNode->addObject(meshTorusFFD_surf);
 
     MechanicalObject3* dofFFD_surf = new MechanicalObject3; dofFFD_surf->setName("Collision Object FFD");
@@ -416,8 +437,11 @@ int main(int argc, char** argv)
     RigidCollisionNode->setName("Visu");
     torusRigid->addChild(RigidCollisionNode);
 
+    MeshLoader* loaderRigid_surf = new MeshLoader;
+    loaderRigid_surf->setFilename(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj"));
+    RigidCollisionNode->addObject(loaderRigid_surf);
+
     MeshTopology* meshTorusRigid_surf= new MeshTopology;
-    meshTorusRigid_surf->load(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj").c_str());
     RigidCollisionNode->addObject(meshTorusRigid_surf);
 
     MechanicalObject3* dofRigid_surf = new MechanicalObject3; dofRigid_surf->setName("Collision Object Rigid");
