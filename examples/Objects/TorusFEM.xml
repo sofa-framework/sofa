@@ -2,7 +2,7 @@
 	<Object type="EulerImplicitSolver" rayleighStiffness="0.01" />
 	<Object type="CGLinearSolver" iterations="25" threshold="0.00000001"  />
 	<Object type="MeshLoader" name="meshLoader" filename="mesh/torus_low_res.msh"/>
-	<Object type="Mesh" filename="mesh/torus_low_res.msh"/>
+	<Object type="Mesh"/>
 	<Object type="MechanicalObject" dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0" />
 	<Object type="UniformMass" totalmass="5" />
 	<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="1000" poissonRatio="0.3" computeGlobalMatrix="false" method="polar"/>
@@ -12,7 +12,7 @@
 	</Node>
 	<Node name="Surf2">
 		<Object type="MeshLoader" name="meshLoader" filename="mesh/torus_for_collision.obj"/>
-		<Object type="Mesh" filename="mesh/torus_for_collision.obj" />
+		<Object type="Mesh"/>
 		<Object type="MechanicalObject" dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"/>
 		<Object type="Triangle" />
 		<Object type="Line" />

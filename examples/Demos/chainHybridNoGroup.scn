@@ -4,95 +4,17 @@
 	<Object type="NewProximityIntersection" name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
 	<Object type="CollisionResponse" name="Response" response="default" />
 	<Node name="Chain">
-		<Node name="TorusFixed">
-			<Object type="Mesh" filename="mesh/torus2_for_collision.obj" />
-			<Object type="MechanicalObject" />
+		<Node name="Fixed">
+			<Object type="MeshLoader" name="meshLoader" filename="mesh/torus_for_collision.obj"/>
+			<Object type="Mesh" filename="mesh/torus_for_collision.obj" />
+			<Object type="MechanicalObject" rx="90"/>
 			<Object type="Triangle" simulated="0" moving="0" />
-			<Object type="OglModel" name="Visual" filename="mesh/torus2.obj" color="gray" />
+			<Object type="OglModel" name="Visual" filename="mesh/torus.obj" color="gray" rx="90"/>
 		</Node>
-		<Node name="TorusFEM">
-			<Object type="EulerImplicitSolver" rayleighStiffness="0.01" rayleighMass="1" />
-			<Object type="CGLinearSolver" iterations="20" threshold="0.000001" tolerance="0.001" />
-			<Object type="Mesh" filename="mesh/torus_low_res.msh"/>
-			<Object type="MechanicalObject" dx="2.5" />
-			<Object type="UniformMass" totalmass="5" />
-			<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="1000" poissonRatio="0.3" computeGlobalMatrix="false" method="large"/>
-			<Node name="Visu">
-				<Object type="OglModel" name="Visual" filename="mesh/torus.obj" dx="2.5" color="red" />
-				<Object type="BarycentricMapping" object1="../.." object2="Visual" />
-			</Node>
-			<Node name="Surf2">
-				<Object type="Mesh" filename="mesh/torus_for_collision.obj" />
-				<Object type="MechanicalObject" dx="2.5" />
-				<Object type="Triangle" />
-				<Object type="BarycentricMapping" />
-			</Node>
-		</Node>
-		<Node name="TorusSpring">
-			<Object type="EulerImplicitSolver" rayleighStiffness="0.1" rayleighMass="1" />
-			<Object type="CGLinearSolver" iterations="20" threshold="0.000001" tolerance="0.001" />
-			<Object type="Mesh" filename="mesh/torus2_low_res.msh"/>
-			<Object type="MechanicalObject" dx="5" />
-			<Object type="UniformMass" totalmass="5" />
-			<Object type="MeshSpringForceField" name="Springs" tetrasStiffness="400" tetrasDamping="0"/>
-			<Node name="Visu">
-				<Object type="OglModel" name="Visual" filename="mesh/torus2.obj" dx="5" color="green" />
-				<Object type="BarycentricMapping" object1="../.." object2="Visual" />
-			</Node>
-			<Node name="Surf2">
-				<Object type="Mesh" filename="mesh/torus2_for_collision.obj" />
-				<Object type="MechanicalObject" dx="5" />
-				<Object type="Triangle" />
-				<Object type="BarycentricMapping" />
-			</Node>
-		</Node>
-		<Node name="TorusFFD">
-			<Object type="EulerImplicitSolver" rayleighStiffness="0.1" rayleighMass="1" />
-			<Object type="CGLinearSolver" iterations="20" threshold="0.000001" tolerance="0.001" />
-			<Object type="MechanicalObject" dx="7.5" />
-			<Object type="UniformMass" totalmass="5" />
-			<Object type="RegularGrid"
-					nx="6" ny="2" nz="5"
-					xmin="-2.5" xmax="2.5"
-					ymin="-0.5" ymax="0.5"
-					zmin="-2" zmax="2"
-				/>
-			<Object type="RegularGridSpringForceField" name="Springs" stiffness="200" damping="0" />
-			<Node name="Visu">
-				<Object type="OglModel" name="Visual" filename="mesh/torus.obj" dx="7.5" color="yellow" />
-				<Object type="BarycentricMapping" object1="../.." object2="Visual" />
-			</Node>
-			<Node name="Surf2">
-				<Object type="Mesh" filename="mesh/torus_for_collision.obj" />
-				<Object type="MechanicalObject" dx="7.5" />
-				<Object type="Triangle" />
-				<Object type="BarycentricMapping" />
-			</Node>
-		</Node>
-		<Node name="TorusRigid">
-			<Object type="EulerImplicitSolver" rayleighStiffness="0.01" rayleighMass="1" />
-			<Object type="CGLinearSolver" iterations="20" threshold="0.000001" tolerance="0.001" />
-			<Object type="MechanicalObject" template="Rigid" dx="10" />
-			<Object type="UniformMass" />
-			<Node name="Visu">
-				<Object type="OglModel" name="Visual" filename="mesh/torus2.obj" color="gray" />
-				<Object type="RigidMapping" object1="../.." object2="Visual" />
-			</Node>
-			<Node name="Surf2">
-				<Object type="Mesh" filename="mesh/torus2_for_collision.obj" />
-				<Object type="MechanicalObject" />
-				<Object type="Triangle" />
-				<Object type="RigidMapping" />
-			</Node>
-		</Node>
-	</Node>
-	<!--
-	<Node name="Floor">
-		<Object type="Mesh" filename="mesh/floor2.obj" />
-		<Object type="MechanicalObject" scale="0.2" dy="-5" />
-		<Object type="Triangle" name="Floor" simulated="0" moving="0" />
-		<Object type="OglModel" name="FloorV" filename="mesh/floor2.obj" texturename="textures/floor.bmp" scale="0.2" dy="-4.75" />
-	</Node>
-	-->
-</Node>
 
+		<include name="FEM"         href="Objects/TorusFEM.xml"       dx="2.5"         />
+		<include name="Spring"      href="Objects/TorusSpring.xml"    dx="5"   rx="90" />
+		<include name="FFD"         href="Objects/TorusFFD.xml"       dx="7.5"         />
+		<include name="TorusRigid"  href="Objects/TorusRigid.xml"     dx="10"  rx="90" />
+	</Node>
+</Node>

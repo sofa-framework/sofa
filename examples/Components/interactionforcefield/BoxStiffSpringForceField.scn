@@ -10,7 +10,8 @@
 		<!--<Object type="CGImplicit" iterations="25"/>-->
 		<Object type="EulerImplicit"/>
 		<Object type="CGLinearSolver" iterations="25"/>
-		<Object type="Mesh" name="meshTopology" filename="mesh/liver.mesh"/>
+        	<Object type="MeshLoader" name="meshLoader" filename="mesh/liver.mesh"/>
+		<Object type="Mesh"/>
 		<Object type="MechanicalObject" template="Vec3d" name="Liver1MS" filename="BehaviorModels/liver.xs3"/>
 		<Object type="DiagonalMass" name="mass" filename="BehaviorModels/liver.xs3"/>
 		<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="2000" poissonRatio="0.3" computeGlobalMatrix="false" method="large"/>
@@ -28,7 +29,8 @@
 		<!--<Object type="CGImplicit" iterations="25"/>-->
 		<Object type="EulerImplicit"/>
 		<Object type="CGLinearSolver" iterations="25"/>
-		<Object type="Mesh" name="meshTopology" filename="mesh/liver.mesh" />
+        	<Object type="MeshLoader" name="meshLoader" filename="mesh/liver.mesh"/>
+		<Object type="Mesh"/>
 		<Object type="MechanicalObject" template="Vec3d" name="Liver2MS" filename="BehaviorModels/liver.xs3"  dx="10" ry="180"/>
 		<Object type="DiagonalMass" name="mass" filename="BehaviorModels/liver.xs3"/>
 		<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="1000" poissonRatio="0.3" computeGlobalMatrix="false" method="large"/>
@@ -45,7 +47,8 @@
 		<!--<Object type="CGImplicit" iterations="25"/>-->
 		<Object type="EulerImplicit"/>
 		<Object type="CGLinearSolver" iterations="25"/>
-		<Object type="Mesh" name="meshTopology" filename="mesh/liver.mesh" />
+        	<Object type="MeshLoader" name="meshLoader" filename="mesh/liver.mesh"/>
+		<Object type="Mesh"/>
 		<Object type="MechanicalObject" template="Vec3d" name="Liver3MS" filename="BehaviorModels/liver.xs3"  dx="20" ry="90"/>
 		<Object type="DiagonalMass" name="mass" filename="BehaviorModels/liver.xs3"/>
 <!--                <Object type="FixedConstraint" name="FixedConstraint" indices="3 39 64" /> -->

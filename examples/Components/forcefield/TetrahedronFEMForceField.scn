@@ -6,7 +6,8 @@
 	<Object type="CollisionGroup" name="Group" />
 	<Node name="ChainFEM">
 		<Node name="TorusFixed">
-			<Object type="Mesh" filename="mesh/torus2_for_collision.obj" />
+        		<Object type="MeshLoader" name="meshLoader" filename="mesh/torus2_for_collision.obj"/>
+			<Object type="Mesh" />
 			<Object type="MechanicalObject" />
 			<Object type="Triangle" simulated="0" moving="0" />
 			<Object type="OglModel" name="Visual" filename="mesh/torus2.obj" color="gray" />
@@ -14,7 +15,8 @@
 		<Node name="TorusFEM">
         	        <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
 			<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-			<Object type="Mesh" filename="mesh/torus_low_res.msh"/>
+        		<Object type="MeshLoader" name="meshLoader"  filename="mesh/torus_low_res.msh"/>
+			<Object type="Mesh" />
 			<Object type="MechanicalObject" dx="2.5" />
 			<Object type="UniformMass" totalmass="5" />
 			<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large"/>
@@ -23,7 +25,8 @@
 				<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf2">
-				<Object type="Mesh" filename="mesh/torus_for_collision.obj" />
+        		        <Object type="MeshLoader" name="meshLoader"  filename="mesh/torus_for_collision.obj"/>
+				<Object type="Mesh" />
 				<Object type="MechanicalObject" dx="2.5" />
 				<Object type="Triangle" />
 				<Object type="BarycentricMapping" />
@@ -32,7 +35,8 @@
 		<Node name="TorusFEM">
         	        <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
 			<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-			<Object type="Mesh" filename="mesh/torus2_low_res.msh"/>
+        		<Object type="MeshLoader" name="meshLoader"  filename="mesh/torus2_low_res.msh"/>
+			<Object type="Mesh" />
 			<Object type="MechanicalObject" dx="5" />
 			<Object type="UniformMass" totalmass="5" />
 			<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large"/>
@@ -40,8 +44,9 @@
 				<Object type="OglModel" name="Visual" filename="mesh/torus2.obj" color="red" dx="5" />
 				<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 			</Node>
-			<Node name="Surf2">
-				<Object type="Mesh" filename="mesh/torus2_for_collision.obj" />
+			<Node name="Surf2">   
+     		                <Object type="MeshLoader" name="meshLoader"  filename="mesh/torus2_for_collision.obj"/>
+				<Object type="Mesh" />
 				<Object type="MechanicalObject" dx="5" />
 				<Object type="Triangle" />
 				<Object type="BarycentricMapping" />
@@ -50,7 +55,9 @@
 		<Node name="TorusFEM">
  	               <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
 		       <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-			<Object type="Mesh" filename="mesh/torus_low_res.msh"/>
+        		<Object type="MeshLoader" name="meshLoader"  filename="mesh/torus_low_res.msh"/>
+			<Object type="Mesh" />
+			
 			<Object type="MechanicalObject" dx="7.5" />
 			<Object type="UniformMass" totalmass="5" />
 			<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large"/>
@@ -58,8 +65,9 @@
 				<Object type="OglModel" name="Visual" filename="mesh/torus.obj" color="red" dx="7.5" />
 				<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 			</Node>
-			<Node name="Surf2">
-				<Object type="Mesh" filename="mesh/torus_for_collision.obj" />
+			<Node name="Surf2">   
+     		                <Object type="MeshLoader" name="meshLoader"  filename="mesh/torus_for_collision.obj"/>
+				<Object type="Mesh" />
 				<Object type="MechanicalObject" dx="7.5" />
 				<Object type="Triangle" />
 				<Object type="BarycentricMapping" />
@@ -68,7 +76,8 @@
 		<Node name="TorusFEM">
         	        <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
         		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-			<Object type="Mesh" filename="mesh/torus2_low_res.msh"/>
+        		<Object type="MeshLoader" name="meshLoader"  filename="mesh/torus2_low_res.msh"/>
+			<Object type="Mesh" />			
 			<Object type="MechanicalObject" dx="10" />
 			<Object type="UniformMass" totalmass="5" />
 			<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large"/>
@@ -76,20 +85,13 @@
 				<Object type="OglModel" name="Visual" filename="mesh/torus2.obj" color="red" dx="10" />
 				<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 			</Node>
-			<Node name="Surf2">
-				<Object type="Mesh" filename="mesh/torus2_for_collision.obj" />
+			<Node name="Surf2">   
+     		                <Object type="MeshLoader" name="meshLoader"  filename="mesh/torus2_for_collision.obj"/>
+				<Object type="Mesh" />
 				<Object type="MechanicalObject" dx="10" />
 				<Object type="Triangle" />
 				<Object type="BarycentricMapping" />
 			</Node>
 		</Node>
 	</Node>
-	<!--
-	<Node name="Floor">
-		<Object type="Mesh" filename="mesh/floor2.obj" />
-		<Object type="MechanicalObject" scale="0.2" dy="-5" />
-		<Object type="Triangle" name="Floor" simulated="0" moving="0" />
-		<Object type="OglModel" name="FloorV" filename="mesh/floor2.obj" texturename="textures/floor.bmp" scale="0.2" dy="-4.75" />
-	</Node>
-	-->
 </Node>

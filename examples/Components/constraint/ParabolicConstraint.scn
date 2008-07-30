@@ -52,7 +52,8 @@
     </Node>
   </Node>
   <Node name="CubeFixed">
-    <Object type="Mesh" filename="mesh/cube.obj" />
+    <Object type="MeshLoader" name="meshLoader" filename="mesh/cube.obj"/>
+    <Object type="Mesh" />
     <Object type="MechanicalObject" scale="20" dz="-35"/>
     <Object type="Triangle" simulated="0" moving="0" />
     <Object type="OglModel" name="Visual" filename="mesh/cube.obj" color="gray" scale="20" dz="-35" />

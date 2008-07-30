@@ -17,7 +17,9 @@
 			<Object type="RigidMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf2">
-			<Object type="Mesh" filename="mesh/torus_for_collision.obj"/>
+
+        		<Object type="MeshLoader" name="meshLoader" filename="mesh/torus_for_collision.obj"/>
+			<Object type="Mesh" />
 			<Object type="MechanicalObject" scale="1.0"/>
 			<Object type="Triangle" /> 
 			<Object type="Line" />
@@ -36,7 +38,8 @@
 			<Object type="RigidMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf2">
-			<Object type="Mesh" filename="mesh/smCube27.obj"/>
+        		<Object type="MeshLoader" name="meshLoader" filename="mesh/smCube27.obj"/>
+			<Object type="Mesh" />
 			<Object type="MechanicalObject" scale="0.3"/>
 			<Object type="Triangle" /> 
 			<Object type="Line" />
@@ -55,7 +58,9 @@
 			<Object type="RigidMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf2">
-			<Object type="Mesh" filename="mesh/ball.obj"/>
+
+        		<Object type="MeshLoader" name="meshLoader" filename="mesh/ball.obj"/>
+			<Object type="Mesh" />
 			<Object type="MechanicalObject" scale="1.0"/>
 			<Object type="Triangle" /> 
 			<Object type="Line" />
@@ -74,7 +79,8 @@
 			<Object type="RigidMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf2">
-			<Object type="Mesh" filename="mesh/man.obj"/>
+        		<Object type="MeshLoader" name="meshLoader" filename="mesh/man.obj"/>
+			<Object type="Mesh" />
 			<Object type="MechanicalObject" scale="10.0"/>
 			<Object type="Triangle" /> 
 			<Object type="Line" />
@@ -82,29 +88,10 @@
 			<Object type="RigidMapping" />
 		</Node>
 	</Node>
-
-<!--
-	<Node name="DRAGON">
-		<Object type="ComplianceEuler"/>
-		<Object type="MechanicalObject" template="Rigid" scale="0.2"  dx="2.0" dy="2.0" dz="0.0"/>
-		<Object type="UniformMass" filename="BehaviorModels/dragon_clean.rigid" mass="6000.0"/>
-		<Node name="Visu">
-			<Object type="OglModel" name="Visual" filename="mesh/dragon_clean.obj" color="1.0 1.0 0.5 1.0" scale="0.2"/>
-			<Object type="RigidMapping" object1="../.." object2="Visual" />
-		</Node>
-		<Node name="Surf2">
-			<Object type="Mesh" filename="mesh/dragon_clean.obj"/>
-			<Object type="MechanicalObject" scale="0.2"/>
-			<Object type="Triangle" /> 
-			<Object type="Line" />
-			<Object type="Point" />
-			<Object type="RigidMapping" />
-		</Node>
-	</Node>
--->	
 	<Node name="BOX">
 		<Object type="MechanicalObject"/>
-		<Object type="Mesh" filename="mesh/box.obj"/>
+        	<Object type="MeshLoader" name="meshLoader" filename="mesh/box.obj"/>
+		<Object type="Mesh"/>
 		<Object type="Triangle" simulated="0" moving="0"/>	
 		<Object type="Line" simulated="0" moving="0"/>
 		<Object type="Point" simulated="0" moving="0"/>
@@ -113,7 +100,8 @@
 	
 	<Node name="BOXB">
 		<Object type="MechanicalObject" dy="10.0"/>
-		<Object type="Mesh" filename="mesh/box.obj"/>
+        	<Object type="MeshLoader" name="meshLoader" filename="mesh/box.obj"/>
+		<Object type="Mesh"/>
 		<Object type="Triangle" simulated="0" moving="0"/>	
 		<Object type="Line" simulated="0" moving="0"/>
 		<Object type="Point" simulated="0" moving="0"/>
@@ -122,7 +110,8 @@
 	
 	<Node name="BOX2">
 		<Object type="MechanicalObject" dx="-5.0"/>
-		<Object type="Mesh" filename="mesh/box2.obj"/>
+        	<Object type="MeshLoader" name="meshLoader" filename="mesh/box2.obj"/>
+		<Object type="Mesh"/>
 		<Object type="Triangle" simulated="0" moving="0"/>	
 		<Object type="Line" simulated="0" moving="0"/>
 		<Object type="Point" simulated="0" moving="0"/>
@@ -131,7 +120,8 @@
 	
 	<Node name="BOX2B">
 		<Object type="MechanicalObject" dx="5.0"/>
-		<Object type="Mesh" filename="mesh/box2.obj"/>
+        	<Object type="MeshLoader" name="meshLoader" filename="mesh/box2.obj"/>
+		<Object type="Mesh"/>
 		<Object type="Triangle" simulated="0" moving="0"/>	
 		<Object type="Line" simulated="0" moving="0"/>
 		<Object type="Point" simulated="0" moving="0"/>
@@ -140,7 +130,8 @@
 	
 	<Node name="BOX3">
 		<Object type="MechanicalObject" dz="-5.0"/>
-		<Object type="Mesh" filename="mesh/box3.obj"/>
+        	<Object type="MeshLoader" name="meshLoader" filename="mesh/box3.obj"/>
+		<Object type="Mesh"/>
 		<Object type="Triangle" simulated="0" moving="0"/>	
 		<Object type="Line" simulated="0" moving="0"/>
 		<Object type="Point" simulated="0" moving="0"/>
@@ -149,7 +140,8 @@
 	
 	<Node name="BOX3B">
 		<Object type="MechanicalObject" dz="5.0"/>
-		<Object type="Mesh" filename="mesh/box3.obj"/>
+        	<Object type="MeshLoader" name="meshLoader" filename="mesh/box3.obj"/>
+		<Object type="Mesh"/>
 		<Object type="Triangle" simulated="0" moving="0"/>	
 		<Object type="Line" simulated="0" moving="0"/>
 		<Object type="Point" simulated="0" moving="0"/>

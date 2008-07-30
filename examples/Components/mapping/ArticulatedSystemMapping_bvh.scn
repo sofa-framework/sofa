@@ -19,7 +19,8 @@
 	</Node>
 	
 	<Node name="Floor">
-		<Object type="Mesh" filename="mesh/floor.obj" />
+                <Object type="MeshLoader" name="meshLoader" filename="mesh/floor.obj"/>
+		<Object type="Mesh" />
 		<Object type="MechanicalObject" dy="-40.0" scale="2" />
 		<Object type="Triangle" name="Floor" simulated="0" moving="0" />
 		<Object type="Line" name="Floor" simulated="0" moving="0" />
