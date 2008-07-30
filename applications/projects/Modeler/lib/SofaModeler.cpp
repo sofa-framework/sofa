@@ -37,6 +37,9 @@
 #include <map>
 #include <set>
 
+
+// #define TEST_CREATION_COMPONENT
+
 #ifdef SOFA_QT4
 #include <QToolBox>
 #include <QSpacerItem>
@@ -140,16 +143,18 @@ SofaModeler::SofaModeler()
     sofa::core::ObjectFactory::getInstance()->getAllEntries(entries);
     for (unsigned int i=0; i<entries.size(); ++i)
     {
-// 	    sofa::core::objectmodel::BaseObject *object;
-// 	    if (entries[i]->creatorMap.find(entries[i]->defaultTemplate) != entries[i]->creatorMap.end())
-// 	      {
-// 		object = entries[i]->creatorMap.find(entries[i]->defaultTemplate)->second->createInstance(NULL, NULL);
-// 	      }
-// 	    else
-// 	      {
-// 		object = entries[i]->creatorList.begin()->second->createInstance(NULL, NULL);
-// 	      }
-
+#ifdef	    TEST_CREATION_COMPONENT
+        sofa::core::objectmodel::BaseObject *object;
+        if (entries[i]->creatorMap.find(entries[i]->defaultTemplate) != entries[i]->creatorMap.end())
+        {
+            object = entries[i]->creatorMap.find(entries[i]->defaultTemplate)->second->createInstance(NULL, NULL);
+        }
+        else
+        {
+            object = entries[i]->creatorList.begin()->second->createInstance(NULL, NULL);
+        }
+        delete object;
+#endif
         std::set< std::string >::iterator it;
         for (it = entries[i]->baseClasses.begin(); it!= entries[i]->baseClasses.end(); it++)
         {
@@ -161,7 +166,7 @@ SofaModeler::SofaModeler()
             setType.insert("_Undefined_");
             inventory.insert(std::make_pair("_Undefined_", entries[i]));
         }
-// 	    delete object;
+
     }
 
     std::set< std::string >::iterator it;
