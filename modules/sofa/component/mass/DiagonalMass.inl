@@ -69,7 +69,7 @@ inline void MassEdgeCreationFunction(const sofa::helper::vector<unsigned int> &e
     {
 
         typename DataTypes::Real md=dm->getMassDensity();
-        typename DataTypes::Real mass;
+        typename DataTypes::Real mass=typename DataTypes::Real();
         unsigned int i;
 
         for (i=0; i<edgeAdded.size(); ++i)
@@ -98,7 +98,7 @@ inline void MassEdgeDestroyFunction(const sofa::helper::vector<unsigned int> &ed
     {
 
         typename DataTypes::Real md=dm->getMassDensity();
-        typename DataTypes::Real mass;
+        typename DataTypes::Real mass=typename DataTypes::Real();
         unsigned int i;
 
         for (i=0; i<edgeRemoved.size(); ++i)
@@ -127,7 +127,7 @@ inline void MassTriangleCreationFunction(const sofa::helper::vector<unsigned int
     {
 
         typename DataTypes::Real md=dm->getMassDensity();
-        typename DataTypes::Real mass;
+        typename DataTypes::Real mass=typename DataTypes::Real();
         unsigned int i;
 
         for (i=0; i<triangleAdded.size(); ++i)
@@ -157,7 +157,7 @@ inline void MassTriangleDestroyFunction(const sofa::helper::vector<unsigned int>
     {
 
         typename DataTypes::Real md=dm->getMassDensity();
-        typename DataTypes::Real mass;
+        typename DataTypes::Real mass=typename DataTypes::Real();
         unsigned int i;
 
         for (i=0; i<triangleRemoved.size(); ++i)
@@ -191,7 +191,7 @@ inline void MassTetrahedronCreationFunction(const sofa::helper::vector<unsigned 
     {
 
         typename DataTypes::Real md=dm->getMassDensity();
-        typename DataTypes::Real mass;
+        typename DataTypes::Real mass=typename DataTypes::Real();
         unsigned int i;
 
         for (i=0; i<tetrahedronAdded.size(); ++i)
@@ -223,7 +223,7 @@ inline void MassTetrahedronDestroyFunction(const sofa::helper::vector<unsigned i
     {
 
         typename DataTypes::Real md=dm->getMassDensity();
-        typename DataTypes::Real mass;
+        typename DataTypes::Real mass=typename DataTypes::Real();
         unsigned int i;
 
         for (i=0; i<tetrahedronRemoved.size(); ++i)
@@ -458,7 +458,7 @@ void DiagonalMass<DataTypes, MassType>::init()
                 masses[i]=(Real)0;
 
             Real md=m_massDensity.getValue();
-            Real mass;
+            Real mass=Real();
 
             for (int i=0; i<_topology->getNbTetras(); ++i)
             {
@@ -488,7 +488,7 @@ void DiagonalMass<DataTypes, MassType>::init()
                 masses[i]=(Real)0;
 
             Real md=m_massDensity.getValue();
-            Real mass;
+            Real mass=Real();
 
             for (int i=0; i<_topology->getNbTriangles(); ++i)
             {
@@ -529,7 +529,7 @@ void DiagonalMass<DataTypes, MassType>::init()
                 masses[i]=(Real)0;
 
             Real md=m_massDensity.getValue();
-            Real mass;
+            Real mass=Real();
 
             for (int i=0; i<_topology->getNbEdges(); ++i)
             {
