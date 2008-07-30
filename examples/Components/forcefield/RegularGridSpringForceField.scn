@@ -6,7 +6,8 @@
 	<Object type="CollisionGroup" name="Group" />
 	<Node name="Chain">
 		<Node name="TorusFixed">
-			<Object type="Mesh" filename="mesh/torus2_for_collision.obj" />
+        		<Object type="MeshLoader" name="meshLoader" filename="mesh/torus2_for_collision.obj"/>
+			<Object type="Mesh" />
 			<Object type="MechanicalObject" />
 			<Object type="Triangle" simulated="0" moving="0" />
 			<Object type="OglModel" name="Visual" filename="mesh/torus2.obj" color="gray" />
@@ -29,7 +30,8 @@
 				<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf2">
-				<Object type="Mesh" filename="mesh/torus_for_collision.obj" />
+        		        <Object type="MeshLoader" name="meshLoader"  filename="mesh/torus_for_collision.obj"/>
+				<Object type="Mesh" />
 				<Object type="MechanicalObject" translation="2.5 0 0" />
 				<Object type="Triangle" />
 				<Object type="BarycentricMapping" />
@@ -53,7 +55,8 @@
 				<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf2">
-				<Object type="Mesh" filename="mesh/torus2_for_collision.obj" />
+	        		<Object type="MeshLoader" name="meshLoader" filename="mesh/torus2_for_collision.obj"/>
+				<Object type="Mesh" />
 				<Object type="MechanicalObject" dx="5"/>
 				<Object type="Triangle" />
 				<Object type="BarycentricMapping" />
@@ -77,7 +80,8 @@
 				<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf2">
-				<Object type="Mesh" filename="mesh/torus_for_collision.obj" />
+        		        <Object type="MeshLoader" name="meshLoader"  filename="mesh/torus_for_collision.obj"/>
+				<Object type="Mesh" />
 				<Object type="MechanicalObject" dx="7.5" />
 				<Object type="Triangle" />
 				<Object type="BarycentricMapping" />
@@ -101,7 +105,8 @@
 				<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf2">
-				<Object type="Mesh" filename="mesh/torus2_for_collision.obj" />
+	        		<Object type="MeshLoader" name="meshLoader" filename="mesh/torus2_for_collision.obj"/>
+				<Object type="Mesh" />
 				<Object type="MechanicalObject" dx="10" />
 				<Object type="Triangle" />
 				<Object type="BarycentricMapping" />

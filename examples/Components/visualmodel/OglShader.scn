@@ -7,9 +7,10 @@
 	
 	<Node name="Liver">
 		<Object type="CGImplicit" iterations="25"/>
+        	<Object type="MeshLoader" name="meshLoader"  filename="mesh/liver.mesh"/>
+		<Object type="Mesh" />
 		<Object type="MechanicalObject" template="Vec3f" name="Liver" filename="BehaviorModels/liver.xs3"/>
 		<Object type="DiagonalMass" name="mass" filename="BehaviorModels/liver.xs3"/>
-		<Object type="Mesh" name="meshTopology" filename="mesh/liver.mesh"/>
 		<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="500" poissonRatio="0.3" computeGlobalMatrix="false" method="large"/>
                 <Object type="FixedConstraint" name="FixedConstraint" indices="3 39 64" />
 		<Node name="Visu">

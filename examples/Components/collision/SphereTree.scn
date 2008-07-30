@@ -6,7 +6,6 @@
 	<!-- Required for collision detection -->
 	<Object type="CollisionPipeline" verbose="0" />
 	
-	<!-- Required for a MechanicalObject" template="Rigid -->
 	<Object type="TestDetection" name="TestDetection" />
 
 	<Object type="CollisionResponse" name="Response" response="default" />

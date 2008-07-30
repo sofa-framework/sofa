@@ -21,7 +21,8 @@
 			<Object type="RigidMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="ColliCube">
-			<Object type="Mesh" filename="mesh/cube.obj"/>
+        		<Object type="MeshLoader" name="meshLoader" filename="mesh/cube.obj"/>
+			<Object type="Mesh" />
 			<Object type="MechanicalObject" scale="1.0"/>
 			<Object type="Triangle" contactStiffness="0.1"/> 
 			<Object type="Line" contactStiffness="0.1"/>
@@ -52,7 +53,8 @@
 			<Object type="RigidMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="ColliCube">
-			<Object type="Mesh" filename="mesh/cube.obj"/>
+        		<Object type="MeshLoader" name="meshLoader" filename="mesh/cube.obj"/>
+			<Object type="Mesh" />
 			<Object type="MechanicalObject" scale="1.0"/>
 			<Object type="Triangle" contactStiffness="0.1"/> 
 			<Object type="Line" contactStiffness="0.1"/>

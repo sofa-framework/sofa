@@ -6,7 +6,8 @@
 	<Object type="CollisionGroup" name="Group" />
 	<Node name="ChainRigid">
 		<Node name="TorusFixed">
-			<Object type="Mesh" filename="mesh/torus2_for_collision.obj" />
+        		<Object type="MeshLoader" name="meshLoader" filename="mesh/torus2_for_collision.obj"/>
+			<Object type="Mesh" />
 			<Object type="MechanicalObject" />
 			<Object type="Triangle" simulated="0" moving="0" />
 			<Object type="OglModel" name="Visual" filename="mesh/torus2.obj" color="gray" />
@@ -21,7 +22,8 @@
 				<Object type="RigidMapping" object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf2">
-				<Object type="Mesh" filename="mesh/torus_for_collision.obj" />
+        		        <Object type="MeshLoader" name="meshLoader"  filename="mesh/torus_for_collision.obj"/>
+				<Object type="Mesh" />
 				<Object type="MechanicalObject" />
 				<Object type="Triangle" />
 				<Object type="RigidMapping" />
@@ -37,7 +39,8 @@
 				<Object type="RigidMapping" object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf2">
-				<Object type="Mesh" filename="mesh/torus2_for_collision.obj" />
+	        		<Object type="MeshLoader" name="meshLoader" filename="mesh/torus2_for_collision.obj"/>
+				<Object type="Mesh" />
 				<Object type="MechanicalObject" />
 				<Object type="Triangle" />
 				<Object type="RigidMapping" />
@@ -53,7 +56,8 @@
 				<Object type="RigidMapping" object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf2">
-				<Object type="Mesh" filename="mesh/torus_for_collision.obj" />
+        		        <Object type="MeshLoader" name="meshLoader"  filename="mesh/torus_for_collision.obj"/>
+				<Object type="Mesh" />
 				<Object type="MechanicalObject" />
 				<Object type="Triangle" />
 				<Object type="RigidMapping" />
@@ -69,19 +73,11 @@
 				<Object type="RigidMapping" object1="../.." object2="Visual" />
 			</Node>
 			<Node name="Surf2">
-				<Object type="Mesh" filename="mesh/torus2_for_collision.obj" />
+	        		<Object type="MeshLoader" name="meshLoader" filename="mesh/torus2_for_collision.obj"/>
+				<Object type="Mesh" />
 				<Object type="MechanicalObject" />
 				<Object type="Triangle" />
 				<Object type="RigidMapping" />
 			</Node>
 		</Node>
 	</Node>
-	<!--
-	<Node name="Floor">
-		<Object type="Mesh" filename="mesh/floor2.obj" />
-		<Object type="MechanicalObject" scale="0.2" dy="-5" />
-		<Object type="Triangle" name="Floor" simulated="0" moving="0" />
-		<Object type="OglModel" name="FloorV" filename="mesh/floor2.obj" texturename="textures/floor.bmp" scale="0.2" dy="-4.75" />
-	</Node>
-	-->
-</Node>
