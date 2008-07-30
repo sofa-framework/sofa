@@ -33,6 +33,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseTopologyObject.h>
 
 namespace sofa
 {
@@ -80,8 +81,7 @@ class TopologicalMapping;
 * The class also holds an array of TopologyChange objects needed by Topologies linked to this one to know
 * what happened and how to take it into account (or ignore it).
 */
-class BaseTopology : public virtual core::objectmodel::BaseObject,
-    public core::componentmodel::topology::BaseMeshTopology
+class BaseTopology :  public core::componentmodel::topology::BaseMeshTopology
 {
 public :
     /** \brief Constructor.
@@ -172,7 +172,7 @@ private:
 
 
 /** A class that contains a set of high-level (user friendly) methods that perform topological changes */
-class TopologyAlgorithms : public virtual sofa::core::objectmodel::BaseObject
+class TopologyAlgorithms : public virtual sofa::core::componentmodel::topology::BaseTopologyObject
 {
 public:
     /** \brief Constructor.
@@ -219,7 +219,7 @@ protected:
 };
 
 /** A class that contains a set of methods that describes the geometry of the object */
-class GeometryAlgorithms : public virtual sofa::core::objectmodel::BaseObject
+class GeometryAlgorithms : public virtual sofa::core::componentmodel::topology::BaseTopologyObject
 {
 public:
     /** \brief Constructor.
@@ -240,7 +240,7 @@ protected:
 };
 
 /** A class that contains a set of low-level methods that perform topological changes */
-class TopologyModifier : public virtual sofa::core::objectmodel::BaseObject
+class TopologyModifier : public virtual sofa::core::componentmodel::topology::BaseTopologyObject
 {
 public:
     /** \brief Constructor.
@@ -270,7 +270,7 @@ protected:
 };
 
 /** A class that contains a description of the topology (set of edges, triangles, adjacency information, ...) */
-class TopologyContainer : public virtual sofa::core::objectmodel::BaseObject
+class TopologyContainer : public virtual sofa::core::componentmodel::topology::BaseTopologyObject
 {
 public:
     /** \brief Constructor.
