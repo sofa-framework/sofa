@@ -51,7 +51,7 @@ typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeEdgeLeng
     EdgeSetTopologyContainer *container = topology->getEdgeSetTopologyContainer();
 
     const Edge &e = container->getEdge(i);
-    const VecCoord& p = *topology->getDOF()->getX();
+    const VecCoord& p = *(this->object->getX());
     const Real length = (p[e[0]]-p[e[1]]).norm();
     return length;
 }
@@ -63,7 +63,7 @@ typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeRestEdge
     EdgeSetTopologyContainer *container = topology->getEdgeSetTopologyContainer();
 
     const Edge &e = container->getEdge(i);
-    const VecCoord& p = *topology->getDOF()->getX0();
+    const VecCoord& p = *(this->object->getX0());
     const Real length = (p[e[0]]-p[e[1]]).norm();
     return length;
 }
@@ -75,7 +75,7 @@ typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeRestSqua
     EdgeSetTopologyContainer *container = topology->getEdgeSetTopologyContainer();
 
     const Edge &e = container->getEdge(i);
-    const VecCoord& p = *topology->getDOF()->getX0();
+    const VecCoord& p = *(this->object->getX0());
     const Real length = (p[e[0]]-p[e[1]]).norm2();
     return length;
 }
@@ -88,7 +88,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeLength( BasicArrayInterfac
     EdgeSetTopologyContainer *container = topology->getEdgeSetTopologyContainer();
 
     const sofa::helper::vector<Edge> &ea = container->getEdgeArray();
-    const typename DataTypes::VecCoord& p = *topology->getDOF()->getX();
+    const typename DataTypes::VecCoord& p = *(this->object->getX());
 
     for (unsigned int i=0; i<ea.size(); ++i)
     {

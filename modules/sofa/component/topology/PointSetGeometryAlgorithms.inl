@@ -39,12 +39,19 @@ namespace topology
 using namespace sofa::defaulttype;
 
 template <class DataTypes>
+void PointSetGeometryAlgorithms<DataTypes>::init()
+{
+    object = this->getContext()->core::objectmodel::BaseContext::get< core::componentmodel::behavior::MechanicalState<DataTypes> >();
+}
+
+template <class DataTypes>
 typename DataTypes::Coord PointSetGeometryAlgorithms<DataTypes>::getPointSetCenter() const
 {
     typename DataTypes::Coord center;
     // get restPosition
     PointSetTopology<DataTypes> *topology = getPointSetTopology();
-    typename DataTypes::VecCoord& p = *(topology->getDOF()->getX0());
+//		typename DataTypes::VecCoord& p = *(topology->getDOF()->getX0());
+    typename DataTypes::VecCoord& p = *(object->getX0());
 
     const unsigned int numVertices = topology->getNbPoints();
     for(unsigned int i=0; i<numVertices; ++i)
@@ -62,7 +69,8 @@ void  PointSetGeometryAlgorithms<DataTypes>::getEnclosingSphere(typename DataTyp
 {
     // get restPosition
     PointSetTopology<DataTypes> *topology = getPointSetTopology();
-    typename DataTypes::VecCoord& p = *(topology->getDOF()->getX0());
+//		typename DataTypes::VecCoord& p = *(topology->getDOF()->getX0());
+    typename DataTypes::VecCoord& p = *(object->getX0());
 
     const unsigned int numVertices = topology->getNbPoints();
     for(unsigned int i=0; i<numVertices; ++i)
@@ -86,8 +94,8 @@ template<class DataTypes>
 void  PointSetGeometryAlgorithms<DataTypes>::getAABB(typename DataTypes::Real bb[6] ) const
 {
     // get restPosition
-    PointSetTopology<DataTypes> *parent = getPointSetTopology();
-    typename DataTypes::VecCoord& p = *parent->getDOF()->getX0();
+//		PointSetTopology<DataTypes> *parent = getPointSetTopology();
+    typename DataTypes::VecCoord& p = *(object->getX0());
 
     bb[0] = (Real) p[0][0];
     bb[1] = (Real) p[0][1];

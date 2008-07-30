@@ -51,7 +51,7 @@ typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeT
     TetrahedronSetTopologyContainer * container = topology->getTetrahedronSetTopologyContainer();
 
     const Tetrahedron &t = container->getTetrahedron(i);
-    const VecCoord& p = *topology->getDOF()->getX();
+    const VecCoord& p = *(this->object->getX());
     Real volume = (Real)(tripleProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]],p[t[3]]-p[t[0]])/6.0);
     return volume;
 }
@@ -63,7 +63,7 @@ typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeR
     TetrahedronSetTopologyContainer * container = topology->getTetrahedronSetTopologyContainer();
 
     const Tetrahedron &t=container->getTetrahedron(i);
-    const VecCoord& p = *topology->getDOF()->getX0();
+    const VecCoord& p = *(this->object->getX0());
     Real volume = (Real)(tripleProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]],p[t[3]]-p[t[0]])/6.0);
     return volume;
 }
@@ -76,7 +76,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::computeTetrahedronVolume( Basi
     TetrahedronSetTopologyContainer * container = topology->getTetrahedronSetTopologyContainer();
 
     const sofa::helper::vector<Tetrahedron> &ta = container->getTetrahedronArray();
-    const typename DataTypes::VecCoord& p = *topology->getDOF()->getX();
+    const typename DataTypes::VecCoord& p = *(this->object->getX());
     for (unsigned int i=0; i<ta.size(); ++i)
     {
         const Tetrahedron &t = ta[i];
@@ -92,7 +92,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(unsigned int 
     TetrahedronSetTopology< DataTypes > *topology = getTetrahedronSetTopology();
     TetrahedronSetTopologyContainer * container = topology->getTetrahedronSetTopologyContainer();
 
-    const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
     const Tetrahedron &ta=container->getTetrahedron(ind_ta);
     const Tetrahedron &tb=container->getTetrahedron(ind_tb);

@@ -51,7 +51,7 @@ typename DataTypes::Real TriangleSetGeometryAlgorithms< DataTypes >::computeTria
     TriangleSetTopologyContainer *container = topology->getTriangleSetTopologyContainer();
 
     const Triangle &t = container->getTriangle(i);
-    const VecCoord& p = *(topology->getDOF()->getX());
+    const VecCoord& p = *(this->object->getX());
     Real area = (Real)(areaProduct(p[t[1]]-p[t[0]], p[t[2]]-p[t[0]]) * 0.5);
     return area;
 }
@@ -63,7 +63,7 @@ typename DataTypes::Real TriangleSetGeometryAlgorithms< DataTypes >::computeRest
     TriangleSetTopologyContainer *container = topology->getTriangleSetTopologyContainer();
 
     const Triangle &t = container->getTriangle(i);
-    const VecCoord& p = *(topology->getDOF()->getX0());
+    const VecCoord& p = *(this->object->getX0());
     Real area = (Real) (areaProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]]) * 0.5);
     return area;
 }
@@ -76,7 +76,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::computeTriangleArea( BasicArrayIn
     TriangleSetTopologyContainer *container = topology->getTriangleSetTopologyContainer();
 
     const sofa::helper::vector<Triangle> &ta = container->getTriangleArray();
-    const typename DataTypes::VecCoord& p = *(topology->getDOF()->getX());
+    const typename DataTypes::VecCoord& p = *(this->object->getX());
 
     for (unsigned int i=0; i<ta.size(); ++i)
     {
@@ -90,8 +90,7 @@ template<class DataTypes>
 Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::computeBaryEdgePoint(sofa::helper::vector< unsigned int>& indices,
         const double &coord_p)
 {
-    TriangleSetTopology<DataTypes> *topology = getTriangleSetTopology();
-    const typename DataTypes::VecCoord& vect_c = *(topology->getDOF()->getX());
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
     const typename DataTypes::Coord& c1 = vect_c[indices[0]];
     const typename DataTypes::Coord& c2 = vect_c[indices[1]];
@@ -110,9 +109,7 @@ Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::getOppositePoint(unsig
         sofa::helper::vector< unsigned int>& indices,
         const double &coord_p)
 {
-    TriangleSetTopology<DataTypes> *topology = getTriangleSetTopology();
-
-    const typename DataTypes::VecCoord& vect_c = *(topology->getDOF()->getX());
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
     const typename DataTypes::Coord& c1 = vect_c[indices[0]];
     const typename DataTypes::Coord& c2 = vect_c[indices[1]];
@@ -152,7 +149,7 @@ Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleNormal(
     TriangleSetTopologyContainer *container = topology->getTriangleSetTopologyContainer();
 
     const Triangle &t = container->getTriangle(ind_t);
-    const typename DataTypes::VecCoord& vect_c = *(topology->getDOF()->getX());
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
     const typename DataTypes::Coord& c0 = vect_c[t[0]];
     const typename DataTypes::Coord& c1 = vect_c[t[1]];
@@ -188,7 +185,7 @@ sofa::helper::vector< double > TriangleSetGeometryAlgorithms< DataTypes >::compu
     TriangleSetTopologyContainer *container = topology->getTriangleSetTopologyContainer();
 
     const Triangle &t=container->getTriangle(ind_t);
-    const typename DataTypes::VecCoord& vect_c = *(topology->getDOF()->getX());
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
     const typename DataTypes::Coord& c0=vect_c[t[0]];
     const typename DataTypes::Coord& c1=vect_c[t[1]];
@@ -244,9 +241,7 @@ sofa::helper::vector< double > TriangleSetGeometryAlgorithms< DataTypes >::compu
 {
     sofa::helper::vector< double > baryCoefs;
 
-    TriangleSetTopology<DataTypes> *topology = getTriangleSetTopology();
-
-    const typename DataTypes::VecCoord& vect_c = *(topology->getDOF()->getX());
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
     const typename DataTypes::Coord& c0 = vect_c[ind_p1];
     const typename DataTypes::Coord& c1 = vect_c[ind_p2];
@@ -300,7 +295,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::closestIndexPair(unsigned int i
     TriangleSetTopology<DataTypes> *topology = getTriangleSetTopology();
     TriangleSetTopologyContainer *container = topology->getTriangleSetTopologyContainer();
 
-    const typename DataTypes::VecCoord& vect_c = *(topology->getDOF()->getX());
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
     const Triangle &ta=container->getTriangle(ind_ta);
     const Triangle &tb=container->getTriangle(ind_tb);
@@ -355,7 +350,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::is_PointinTriangle(bool is_test
     TriangleSetTopology<DataTypes> *topology = getTriangleSetTopology();
     TriangleSetTopologyContainer *container = topology->getTriangleSetTopologyContainer();
 
-    const typename DataTypes::VecCoord& vect_c = *(topology->getDOF()->getX());
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
     const Triangle &t=container->getTriangle(ind_t);
 
     const typename DataTypes::Coord& c0=vect_c[t[0]];
@@ -495,9 +490,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const V
 {
     sofa::helper::vector< double > baryCoefs;
 
-    TriangleSetTopology<DataTypes> *topology = getTriangleSetTopology();
-
-    const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
     const typename DataTypes::Coord& c3 = vect_c[ind_q3];
     const typename DataTypes::Coord& c4 = vect_c[ind_q4];
@@ -537,7 +530,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::is_triangle_in_plane(const unsi
 
     // HYP : ind_p==t[0] or ind_p==t[1] or ind_p==t[2]
 
-    const typename DataTypes::VecCoord& vect_c = *(topology->getDOF()->getX());
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
     unsigned int ind_1;
     unsigned int ind_2;
@@ -598,7 +591,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::Prepare_VertexDuplication(const
     TriangleSetTopology<DataTypes> *topology = getTriangleSetTopology();
     TriangleSetTopologyContainer *container = topology->getTriangleSetTopologyContainer();
 
-    const typename DataTypes::VecCoord& vect_c = *(topology->getDOF()->getX());
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
     const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvsa=container->getTriangleVertexShellArray();
     const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tesa=container->getTriangleEdgeShellArray();
@@ -827,8 +820,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::Prepare_VertexDuplication(const
 template<class DataTypes>
 const typename DataTypes::Coord& TriangleSetGeometryAlgorithms< DataTypes >::getPositionPoint(unsigned int i)
 {
-    TriangleSetTopology< DataTypes > *topology = getTriangleSetTopology();
-    const typename DataTypes::VecCoord& vect_c = *(topology->getDOF()->getX());
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
     return vect_c[i];
 }
 
@@ -862,7 +854,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
     TriangleSetTopologyContainer *container = topology->getTriangleSetTopologyContainer();
 
     const Triangle &t=container->getTriangle(ind_t);
-    const typename DataTypes::VecCoord& vect_c = *(topology->getDOF()->getX());
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
     bool is_full_01=(is_entered && ((t[0] == ind_first && t[1] == ind_second) || (t[1] == ind_first && t[0] == ind_second)));
     bool is_full_12=(is_entered && ((t[1] == ind_first && t[2] == ind_second) || (t[2] == ind_first && t[1] == ind_second)));
@@ -1189,7 +1181,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
         indices_list.push_back(indices_first_list);
         coords_list.push_back(coord_t);
 
-        const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
+        const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
         Vec<3,double> c_t_current; // WARNING : conversion from 'double' to 'float', possible loss of data ! // typename DataTypes::Coord
         c_t_current[0]=(double) ((1.0-coord_t)*((double) (vect_c[indices[0]][0]))+coord_t*((double) (vect_c[indices[1]][0])));
