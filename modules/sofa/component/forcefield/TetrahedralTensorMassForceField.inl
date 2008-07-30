@@ -282,10 +282,7 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
 
     _topology = getContext()->getMeshTopology();
 
-    sofa::component::topology::TetrahedronSetTopologyContainer* tetraCont;
-    this->getContext()->get(tetraCont);
-
-    if ((tetraCont==0) || (_topology->getNbTetras()==0))
+    if (_topology->getNbTetras()==0)
     {
         std::cerr << "ERROR(TetrahedralTensorMassForceField): object must have a Tetrahedral Set Topology.\n";
         return;

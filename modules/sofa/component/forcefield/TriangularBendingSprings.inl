@@ -460,10 +460,7 @@ void TriangularBendingSprings<DataTypes>::init()
 
     _topology = getContext()->getMeshTopology();
 
-    sofa::component::topology::TriangleSetTopologyContainer* triangleCont;
-    this->getContext()->get(triangleCont);
-
-    if ((triangleCont==0) || (_topology->getNbTriangles()==0))
+    if (_topology->getNbTriangles()==0)
     {
         std::cerr << "ERROR(TriangularBendingSprings): object must have a Triangular Set Topology.\n";
         return;

@@ -40,13 +40,19 @@ namespace topology
 using namespace sofa::defaulttype;
 SOFA_DECL_CLASS(TetrahedronSetTopologyAlgorithms)
 int TetrahedronSetTopologyAlgorithmsClass = core::RegisterObject("Tetrahedron set topology algorithms")
+#ifdef SOFA_FLOAT
+        .add< TetrahedronSetTopologyAlgorithms<Vec3fTypes> >(true) // default template
+#else
+        .add< TetrahedronSetTopologyAlgorithms<Vec3dTypes> >(true) // default template
+#ifndef SOFA_DOUBLE
+        .add< TetrahedronSetTopologyAlgorithms<Vec3fTypes> >() // default template
+#endif
+#endif
 #ifndef SOFA_FLOAT
-        .add< TetrahedronSetTopologyAlgorithms<Vec3dTypes> >()
         .add< TetrahedronSetTopologyAlgorithms<Vec2dTypes> >()
         .add< TetrahedronSetTopologyAlgorithms<Vec1dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< TetrahedronSetTopologyAlgorithms<Vec3fTypes> >()
         .add< TetrahedronSetTopologyAlgorithms<Vec2fTypes> >()
         .add< TetrahedronSetTopologyAlgorithms<Vec1fTypes> >()
 #endif

@@ -175,10 +175,7 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
 
     _topology = getContext()->getMeshTopology();
 
-    sofa::component::topology::TriangleSetTopologyContainer* triangleCont;
-    this->getContext()->get(triangleCont);
-
-    if ((triangleCont==0) || (_topology->getNbTriangles()==0))
+    if (_topology->getNbTriangles()==0)
     {
         std::cerr << "ERROR(TriangularQuadraticSpringsForceField): object must have a Triangular Set Topology.\n";
         return;

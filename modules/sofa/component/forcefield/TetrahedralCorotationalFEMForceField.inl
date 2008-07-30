@@ -121,10 +121,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::init()
 
     _topology = getContext()->getMeshTopology();
 
-    sofa::component::topology::TetrahedronSetTopologyContainer* tetraCont;
-    this->getContext()->get(tetraCont);
-
-    if ((tetraCont==0) || (_topology->getNbTetras()==0))
+    if (_topology->getNbTetras()==0)
     {
         std::cerr << "ERROR(TetrahedralCorotationalFEMForceField): object must have a Tetrahedral Set Topology.\n";
         return;

@@ -142,10 +142,7 @@ void TriangularFEMForceField<DataTypes>::init()
     else if (f_method.getValue() == "large")
         method = LARGE;
 
-    sofa::component::topology::TriangleSetTopologyContainer* triangleCont;
-    this->getContext()->get(triangleCont);
-
-    if ((triangleCont==0) || (_topology->getNbTriangles()==0))
+    if (_topology->getNbTriangles()==0)
     {
         std::cerr << "ERROR(TriangularFEMForceField): object must have a Triangular Set Topology.\n";
         return;

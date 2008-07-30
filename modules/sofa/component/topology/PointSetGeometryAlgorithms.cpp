@@ -39,13 +39,19 @@ namespace topology
 using namespace sofa::defaulttype;
 SOFA_DECL_CLASS(PointSetGeometryAlgorithms)
 int PointSetGeometryAlgorithmsClass = core::RegisterObject("Point set geometry algorithms")
+#ifdef SOFA_FLOAT
+        .add< PointSetGeometryAlgorithms<Vec3fTypes> >(true) // default template
+#else
+        .add< PointSetGeometryAlgorithms<Vec3dTypes> >(true) // default template
+#ifndef SOFA_DOUBLE
+        .add< PointSetGeometryAlgorithms<Vec3fTypes> >() // default template
+#endif
+#endif
 #ifndef SOFA_FLOAT
-        .add< PointSetGeometryAlgorithms<Vec3dTypes> >()
         .add< PointSetGeometryAlgorithms<Vec2dTypes> >()
         .add< PointSetGeometryAlgorithms<Vec1dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< PointSetGeometryAlgorithms<Vec3fTypes> >()
         .add< PointSetGeometryAlgorithms<Vec2fTypes> >()
         .add< PointSetGeometryAlgorithms<Vec1fTypes> >()
 #endif
