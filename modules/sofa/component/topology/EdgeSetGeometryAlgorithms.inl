@@ -41,7 +41,7 @@ using namespace sofa::defaulttype;
 template <class DataTypes>
 void EdgeSetGeometryAlgorithms<DataTypes>::init()
 {
-    PointSetGeometryAlgorithms::init();
+    PointSetGeometryAlgorithms<DataTypes>::init();
     this->getContext()->get(m_container);
 }
 

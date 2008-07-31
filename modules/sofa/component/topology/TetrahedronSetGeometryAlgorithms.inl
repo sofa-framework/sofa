@@ -41,7 +41,7 @@ using namespace sofa::defaulttype;
 template <class DataTypes>
 void TetrahedronSetGeometryAlgorithms<DataTypes>::init()
 {
-    TriangleSetGeometryAlgorithms::init();
+    TriangleSetGeometryAlgorithms<DataTypes>::init();
     this->getContext()->get(m_container);
 }
 

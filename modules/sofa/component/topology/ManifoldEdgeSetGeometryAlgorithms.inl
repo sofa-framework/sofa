@@ -39,7 +39,7 @@ namespace topology
 template <class DataTypes>
 void ManifoldEdgeSetGeometryAlgorithms<DataTypes>::init()
 {
-    EdgeSetGeometryAlgorithms::init();
+    EdgeSetGeometryAlgorithms<DataTypes>::init();
     this->getContext()->get(m_container);
 }
 

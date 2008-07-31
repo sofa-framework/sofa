@@ -39,7 +39,7 @@ using namespace sofa::defaulttype;
 template <class DataTypes>
 void QuadSetGeometryAlgorithms<DataTypes>::init()
 {
-    EdgeSetGeometryAlgorithms::init();
+    EdgeSetGeometryAlgorithms<DataTypes>::init();
     this->getContext()->get(m_container);
 }
 
