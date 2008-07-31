@@ -362,8 +362,8 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect( listDisplayFlags, SIGNAL( clicked(Q3ListViewItem *)), this, SLOT(flagChanged(Q3ListViewItem *)));
     connect( listDisplayFlags, SIGNAL( doubleClicked(Q3ListViewItem *)), this, SLOT(flagChanged(Q3ListViewItem *)));
 #else
-    connect( listDisplayFlags, SIGNAL( clicked(QListViewItem *)), this, SLOT(flagChanged(QListViewItem *)));
-    connect( listDisplayFlags, SIGNAL( doubleClicked(QListViewItem *)), this, SLOT(flagChanged(QListViewItem *)));
+    connect( listDisplayFlags, SIGNAL( pressed(QListViewItem *)), this, SLOT(flagChanged(QListViewItem *)));
+    connect( listDisplayFlags, SIGNAL( doubleClicked(QListViewItem *)), this, SLOT(flagDoubleClicked(QListViewItem *)));
 #endif
     left_stack = new QWidgetStack ( splitter2 );
     connect ( startButton, SIGNAL ( toggled ( bool ) ), this , SLOT ( playpauseGUI ( bool ) ) );
