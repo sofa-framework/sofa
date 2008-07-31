@@ -8,7 +8,7 @@
 			<Object type="DiagonalMass" filename="BehaviorModels/smCube27.xs3"/>
 			<Object type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3"/>
 			<Object type="FixedConstraint" indices="0 3 6 9 12 15 18 21 24"/>
-			<Object type="Monitor" name="moniteur" MonitoredParticles="P6 [0 2 3 4 1 5] V1 [2] F0 []"/>
+			<Object type="Monitor" name="moniteur" ShowVelocities="true" MonitoredParticles="P3 [8 16 24] V3 [2 11 20] F0 []"/>
 		</Node>
 		<Node name="M2">
 			<Object type="MechanicalObject" filename="BehaviorModels/smCube27.xs3" dz="10.5"/>
@@ -19,16 +19,19 @@
 			<Object type="MechanicalObject" filename="BehaviorModels/smCube27.xs3" dz="21"/>
 			<Object type="DiagonalMass" filename="BehaviorModels/smCube27.xs3"/>
 			<Object type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3"/>
+			<Object type="Monitor" name="moniteur" ShowVelocities="true" MonitoredParticles="P3 [8 16 24] V3 [2 11 20] F0 []"/>
 		</Node>
 		<Node name="M4">
 			<Object type="MechanicalObject" filename="BehaviorModels/smCube27.xs3" dz="31.5"/>
 			<Object type="DiagonalMass" filename="BehaviorModels/smCube27.xs3"/>
 			<Object type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3"/>
+			<Object type="Monitor" name="moniteur" ShowVelocities="true" MonitoredParticles="P3 [8 16 24] V3 [2 11 20] F0 []"/>
 		</Node>
 		<Node name="M5">
 			<Object type="MechanicalObject" filename="BehaviorModels/smCube27.xs3" dz="42"/>
 			<Object type="DiagonalMass" filename="BehaviorModels/smCube27.xs3"/>
 			<Object type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3"/>
+			<Object type="Monitor" name="moniteur" ShowVelocities="true" ShowTrajectories="true" TrajectoriesColor="1 0 1" MonitoredParticles="P3 [8 16 24] V3 [2 11 20] F0 []"/>
 		</Node>
 		<Object type="StiffSpringForceField" name="ExternalSprings1" filename="BehaviorModels/linkSmCube27.xs3" object1="M1" object2="M2" />
 		<Object type="StiffSpringForceField" name="ExternalSprings2" filename="BehaviorModels/linkSmCube27.xs3" object1="M2" object2="M3" />

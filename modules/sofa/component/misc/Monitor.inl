@@ -197,11 +197,11 @@ void Monitor<DataTypes>::fwdDraw ( Pass pass = Std )
     {
         glPointSize(5.0);
         glBegin (GL_POINTS);
-        glColor3f ((*positionsColor.beginEdit())[0], (*positionsColor.beginEdit())[1], (*positionsColor.beginEdit())[2]);
+        glColor3d ((*positionsColor.beginEdit())[0], (*positionsColor.beginEdit())[1], (*positionsColor.beginEdit())[2]);
         for (unsigned int i=0; i < monitoring.beginEdit() -> sizeIdxPos(); i++)
         {
             Coord posvertex = monitoring.beginEdit() ->getPos(i);
-            glVertex3f (posvertex[0], posvertex[1], posvertex[2]);
+            glVertex3d (posvertex[0], posvertex[1], posvertex[2]);
         }
         glEnd ();
     }
@@ -224,7 +224,7 @@ void Monitor<DataTypes>::fwdDraw ( Pass pass = Std )
                     topVelVertex[j] = baseVelVertex[j] + topVelVertex[j];
                 }
 
-                glColor3f ((*velocitiesColor.beginEdit())[0], (*velocitiesColor.beginEdit())[1], (*velocitiesColor.beginEdit())[2]);
+                glColor3d ((*velocitiesColor.beginEdit())[0], (*velocitiesColor.beginEdit())[1], (*velocitiesColor.beginEdit())[2]);
                 helper::gl::Axis::draw(baseVelVertex, topVelVertex, 0.1);
             }
         }
@@ -243,7 +243,7 @@ void Monitor<DataTypes>::fwdDraw ( Pass pass = Std )
             {
                 topVelVertex = baseVelVertex + topVelVertex;
 
-                glColor3f ((*forcesColor.beginEdit())[0], (*forcesColor.beginEdit())[1], (*forcesColor.beginEdit())[2]);
+                glColor3d ((*forcesColor.beginEdit())[0], (*forcesColor.beginEdit())[1], (*forcesColor.beginEdit())[2]);
                 helper::gl::Axis::draw(baseVelVertex, topVelVertex, 0.2);
             }
         }
@@ -267,17 +267,17 @@ void Monitor<DataTypes>::fwdDraw ( Pass pass = Std )
 
         //printing those positions
         glLineWidth (1);
-        glColor3f ((*trajectoriesColor.beginEdit())[0], (*trajectoriesColor.beginEdit())[1], (*trajectoriesColor.beginEdit())[2]);
+        glColor3d ((*trajectoriesColor.beginEdit())[0], (*trajectoriesColor.beginEdit())[1], (*trajectoriesColor.beginEdit())[2]);
         glBegin (GL_LINES);
         for (unsigned int i = 1; i < monitoring.beginEdit()->getSavePos()->size(); i++)
         {
             for (unsigned int j = 0; j < instantPositionsSize; j++)
             {
-                glVertex3f (((*monitoring.beginEdit()->getSavePos())[i-1][j][0]),
+                glVertex3d (((*monitoring.beginEdit()->getSavePos())[i-1][j][0]),
                         ((*monitoring.beginEdit()->getSavePos())[i-1][j][1]),
                         ((*monitoring.beginEdit()->getSavePos())[i-1][j][2]));
 
-                glVertex3f (((*monitoring.beginEdit()->getSavePos())[i][j][0]),
+                glVertex3d (((*monitoring.beginEdit()->getSavePos())[i][j][0]),
                         ((*monitoring.beginEdit()->getSavePos())[i][j][1]),
                         ((*monitoring.beginEdit()->getSavePos())[i][j][2]));
             }
