@@ -56,7 +56,7 @@ public:
     {
     public:
 
-        MonitorData()
+        MonitorData():vels(NULL),forces(NULL),pos(NULL)
         {
         };
 
@@ -173,19 +173,28 @@ public:
         //return the size of mechanical state position vector
         unsigned int getSizeVecPos() const
         {
-            return pos -> size();
+            if (pos)
+                return pos -> size();
+            else
+                return 0;
         }
 
         //return the size of mechanical state velocity vector
         unsigned int getSizeVecVels() const
         {
-            return vels -> size();
+            if (vels)
+                return vels -> size();
+            else
+                return 0;
         }
 
         //return the size of mechanical state force vector
         unsigned int getSizeVecForces() const
         {
-            return forces -> size();
+            if (forces)
+                return forces -> size();
+            else
+                return 0;
         }
 
         ///////////////////////////////////////////////////////////////////
