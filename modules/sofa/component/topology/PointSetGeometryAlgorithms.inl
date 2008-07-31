@@ -39,9 +39,9 @@ namespace topology
 using namespace sofa::defaulttype;
 
 template <class DataTypes>
-void PointSetGeometryAlgorithms<DataTypes>::init()
+void PointSetGeometryAlgorithms< DataTypes >::init()
 {
-    object = this->getContext()->core::objectmodel::BaseContext::get< core::componentmodel::behavior::MechanicalState<DataTypes> >();
+    object = this->getContext()->core::objectmodel::BaseContext::get< core::componentmodel::behavior::MechanicalState< DataTypes > >();
     core::componentmodel::topology::GeometryAlgorithms::init();
     this->getContext()->get(m_container);
 }

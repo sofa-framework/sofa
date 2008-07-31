@@ -177,7 +177,6 @@ class TopologyAlgorithms : public virtual sofa::core::componentmodel::topology::
 public:
     /** \brief Constructor.
     *
-    * @param basicTopology the topology this object applies to.
     */
     TopologyAlgorithms()
     {}
@@ -224,10 +223,9 @@ class GeometryAlgorithms : public virtual sofa::core::componentmodel::topology::
 public:
     /** \brief Constructor.
     *
-    * @param basicTopology the topology this object applies to.
     */
-    GeometryAlgorithms(BaseTopology *basicTopology = NULL)
-        : m_basicTopology(basicTopology)
+    GeometryAlgorithms()
+        : m_topologyContainer(NULL)
     {}
 
     /// Destructor
@@ -237,8 +235,8 @@ public:
     virtual void init();
 
 protected:
-    /// The topology this object applies to.
-    BaseTopology *m_basicTopology;
+    /// Contains the actual topology data and give acces to it (nature of these data heavily depends on the kind of topology).
+    TopologyContainer *m_topologyContainer;
 };
 
 /** A class that contains a set of low-level methods that perform topological changes */
@@ -247,7 +245,6 @@ class TopologyModifier : public virtual sofa::core::componentmodel::topology::Ba
 public:
     /** \brief Constructor.
     *
-    * @param basicTopology the topology this object applies to.
     */
     TopologyModifier()
         : m_topologyContainer(NULL)
@@ -279,7 +276,6 @@ class TopologyContainer : public virtual sofa::core::componentmodel::topology::B
 public:
     /** \brief Constructor.
     *
-    * @param basicTopology the topology this object describes.
     */
     TopologyContainer()
     {}

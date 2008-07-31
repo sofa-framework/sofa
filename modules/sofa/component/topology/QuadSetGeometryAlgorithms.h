@@ -27,6 +27,8 @@
 
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
 
+#include <sofa/component/topology/QuadSetTopologyContainer.h>
+
 namespace sofa
 {
 namespace component
@@ -57,11 +59,6 @@ public:
     QuadSetGeometryAlgorithms()
         : EdgeSetGeometryAlgorithms<DataTypes>()
     { }
-
-    QuadSetGeometryAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
-        : EdgeSetGeometryAlgorithms<DataTypes>(top)
-    { }
-
 
     virtual ~QuadSetGeometryAlgorithms() {}
 

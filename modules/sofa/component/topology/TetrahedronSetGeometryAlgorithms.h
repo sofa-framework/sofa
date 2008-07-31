@@ -27,6 +27,8 @@
 
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 
+#include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
+
 namespace sofa
 {
 
@@ -64,10 +66,6 @@ public:
 
     TetrahedronSetGeometryAlgorithms()
         : TriangleSetGeometryAlgorithms<DataTypes>()
-    {}
-
-    TetrahedronSetGeometryAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
-        : TriangleSetGeometryAlgorithms<DataTypes>(top)
     {}
 
     virtual ~TetrahedronSetGeometryAlgorithms() {}

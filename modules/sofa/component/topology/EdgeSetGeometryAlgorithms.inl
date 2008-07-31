@@ -25,7 +25,6 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_INL
 #define SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_INL
 
-#include <sofa/component/topology/EdgeSetTopology.h>
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
 
 namespace sofa
@@ -39,9 +38,9 @@ namespace topology
 using namespace sofa::defaulttype;
 
 template <class DataTypes>
-void EdgeSetGeometryAlgorithms<DataTypes>::init()
+void EdgeSetGeometryAlgorithms< DataTypes >::init()
 {
-    PointSetGeometryAlgorithms<DataTypes>::init();
+    PointSetGeometryAlgorithms< DataTypes >::init();
     this->getContext()->get(m_container);
 }
 

@@ -26,7 +26,10 @@
 #define SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_H
 
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
-#include <sofa/component/topology/PointSetTopology.h>
+
+#include <sofa/component/topology/PointSetTopologyContainer.h>
+
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
 
 namespace sofa
 {
@@ -39,6 +42,7 @@ namespace topology
 class PointSetTopologyContainer;
 
 using core::componentmodel::topology::BaseMeshTopology;
+using core::componentmodel::behavior::MechanicalState;
 typedef BaseMeshTopology::PointID PointID;
 
 /**
@@ -54,9 +58,6 @@ public:
 
     PointSetGeometryAlgorithms()
         : GeometryAlgorithms()
-    {}
-    PointSetGeometryAlgorithms(core::componentmodel::topology::BaseTopology *top)
-        : GeometryAlgorithms(top)
     {}
 
     virtual ~PointSetGeometryAlgorithms() {}
@@ -74,11 +75,11 @@ public:
     void getAABB(Real bb[6]) const;
 
     /** \brief Returns the object where the mechanical DOFs are stored */
-    component::MechanicalState<DataTypes> *getDOF() const { return object;	}
+    sofa::core::componentmodel::behavior::MechanicalState<DataTypes> *getDOF() const { return object;	}
 
 protected:
     /** the object where the mechanical DOFs are stored */
-    core::componentmodel::behavior::MechanicalState<DataTypes> *object;
+    sofa::core::componentmodel::behavior::MechanicalState<DataTypes> *object;
 
 private:
     PointSetTopologyContainer* m_container;

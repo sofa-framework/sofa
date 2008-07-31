@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_INL
 
 #include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
-#include <sofa/component/topology/QuadSetTopology.h>
 
 namespace sofa
 {
@@ -37,9 +36,9 @@ namespace topology
 using namespace sofa::defaulttype;
 
 template <class DataTypes>
-void QuadSetGeometryAlgorithms<DataTypes>::init()
+void QuadSetGeometryAlgorithms< DataTypes >::init()
 {
-    EdgeSetGeometryAlgorithms<DataTypes>::init();
+    EdgeSetGeometryAlgorithms< DataTypes >::init();
     this->getContext()->get(m_container);
 }
 

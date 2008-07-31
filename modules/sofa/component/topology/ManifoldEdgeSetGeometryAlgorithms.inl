@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETGEOMETRYALGORITHMS_INL
 
 #include <sofa/component/topology/ManifoldEdgeSetGeometryAlgorithms.h>
-#include <sofa/component/topology/ManifoldEdgeSetTopology.h>
 
 namespace sofa
 {
@@ -37,9 +36,9 @@ namespace component
 namespace topology
 {
 template <class DataTypes>
-void ManifoldEdgeSetGeometryAlgorithms<DataTypes>::init()
+void ManifoldEdgeSetGeometryAlgorithms< DataTypes >::init()
 {
-    EdgeSetGeometryAlgorithms<DataTypes>::init();
+    EdgeSetGeometryAlgorithms< DataTypes >::init();
     this->getContext()->get(m_container);
 }
 
