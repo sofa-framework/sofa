@@ -33,7 +33,7 @@
         <property name="resizeMode">
             <enum>FreeResize</enum>
         </property>
-        <widget class="QTextEdit">
+        <widget class="QTextBrowser">
             <property name="name">
                 <cstring>infoItem</cstring>
             </property>

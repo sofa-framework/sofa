@@ -114,6 +114,7 @@ public slots:
     /// Open an existing simulation (new tab will be created)
     void fileOpen();
     void fileOpen(std::string filename);
+    void fileOpen(const QString &filename) {fileOpen(std::string(filename.ascii()));}
 
     /// Save the current simulation
     void fileSave();

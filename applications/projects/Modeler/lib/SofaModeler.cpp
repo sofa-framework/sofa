@@ -36,6 +36,7 @@
 
 #include <map>
 #include <set>
+#include <cctype>
 
 
 // #define TEST_CREATION_COMPONENT
@@ -45,6 +46,7 @@
 #include <QSpacerItem>
 #include <QGridLayout>
 #include <QTextEdit>
+#include <Q3TextBrowser>
 #include <QComboBox>
 #include <QLabel>
 #include <QApplication>
@@ -53,6 +55,7 @@
 #include <qtoolbox.h>
 #include <qlayout.h>
 #include <qtextedit.h>
+#include <qtextbrowser.h>
 #include <qcombobox.h>
 #include <qapplication.h>
 #include <qmenubar.h>
@@ -267,6 +270,8 @@ SofaModeler::SofaModeler()
         if (needSpacer) gridLayout->addItem(new QSpacerItem(1,1,QSizePolicy::Expanding, QSizePolicy::Minimum ), numRows,1);
     }
 
+    connect( this->infoItem, SIGNAL(linkClicked( const QString &)), this, SLOT(fileOpen(const QString &)));
+
     connect( recentlyOpened, SIGNAL(activated(int)), this, SLOT(fileRecentlyOpened(int)));
 
     sceneTab = new QTabWidget(GraphSupport);
@@ -311,7 +316,7 @@ void SofaModeler::fileOpen()
 {
     QString s = getOpenFileName ( this, NULL,"Scenes (*.scn *.xml *.simu *.pscn)", "open file dialog",  "Choose a file to open" );
     if (s.length() >0)
-        fileOpen(s.ascii());
+        fileOpen(s);
 }
 
 void SofaModeler::clearTab()
@@ -397,7 +402,7 @@ void SofaModeler::fileOpen(std::string filename)
 
 void SofaModeler::fileRecentlyOpened(int id)
 {
-    fileOpen(recentlyOpened->text(id).ascii());
+    fileOpen(recentlyOpened->text(id));
 }
 
 void SofaModeler::updateRecentlyOpened(std::string fileLoaded)
@@ -525,20 +530,36 @@ void SofaModeler::changeComponent(ClassInfo *currentComponent)
 {
     std::string text;
     text  = std::string("<H2>")  + currentComponent->className + std::string(": ");
+
+    std::vector< std::string > possiblePaths;
     for (std::set< std::string >::iterator it=currentComponent->baseClasses.begin(); it!=currentComponent->baseClasses.end() ; it++)
     {
         if (it != currentComponent->baseClasses.begin()) text += std::string(", ");
         text += (*it);
+        std::string baseClassName( *it );
+        for (unsigned int i=0; i<baseClassName.size(); ++i)
+        {
+            if (isupper(baseClassName[i])) baseClassName[i] = tolower(baseClassName[i]);
+        }
+
+        std::string path=std::string("Components/") + baseClassName + std::string("/") + currentComponent->className + std::string(".scn");
+
+        if ( sofa::helper::system::DataRepository.findFile ( path ) )
+            possiblePaths.push_back(sofa::helper::system::DataRepository.getFile ( path ));
     }
+
     text += std::string("</H2>");
 
     text += std::string("<ul>");
 
-    text += std::string("<li>Description: ") + currentComponent->description + std::string("</li>");
+    text += std::string("<li><b>Description: </b>") + currentComponent->description + std::string("</li>");
     if (!currentComponent->authors.empty())
-        text += std::string("<li>Authors: ")+currentComponent->authors +std::string("</li>");
+        text += std::string("<li><b>Authors: </b>")+currentComponent->authors +std::string("</li>");
     if (!currentComponent->license.empty())
-        text += std::string("<li>License: ") + currentComponent->license + std::string("</li>");
+        text += std::string("<li><b>License: </b>") + currentComponent->license + std::string("</li>");
+    if (possiblePaths.size() != 0)
+        text += std::string("<li><b>Example: </b><a href=\"")+possiblePaths[0]+std::string("\">") + possiblePaths[0] + std::string("</a></li>");
+
     text += std::string("</ul>");
 
     infoItem->setText(text.c_str());
