@@ -35,8 +35,7 @@ namespace component
 
 namespace topology
 {
-template <class DataTypes>
-class TetrahedronSetTopology;
+class TetrahedronSetTopologyContainer;
 
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::TetraID TetraID;
@@ -73,7 +72,7 @@ public:
 
     virtual ~TetrahedronSetGeometryAlgorithms() {}
 
-    TetrahedronSetTopology< DataTypes >* getTetrahedronSetTopology() const;
+    virtual void init();
 
     /// computes the volume of tetrahedron no i and returns it
     Real computeTetrahedronVolume(const unsigned int i) const;
@@ -90,6 +89,9 @@ public:
     /** \brief Write the current mesh into a msh file
     */
     void writeMSHfile(const char *filename);
+
+private:
+    TetrahedronSetTopologyContainer* m_container;
 };
 
 } // namespace topology

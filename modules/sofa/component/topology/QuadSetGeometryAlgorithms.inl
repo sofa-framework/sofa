@@ -36,19 +36,17 @@ namespace topology
 {
 using namespace sofa::defaulttype;
 
-template< class DataTypes>
-QuadSetTopology< DataTypes >* QuadSetGeometryAlgorithms< DataTypes >::getQuadSetTopology() const
+template <class DataTypes>
+void QuadSetGeometryAlgorithms<DataTypes>::init()
 {
-    return static_cast<QuadSetTopology< DataTypes >* > (this->m_basicTopology);
+    EdgeSetGeometryAlgorithms::init();
+    this->getContext()->get(m_container);
 }
 
 template< class DataTypes>
 typename DataTypes::Real QuadSetGeometryAlgorithms< DataTypes >::computeQuadArea( const unsigned int i) const
 {
-    QuadSetTopology<DataTypes> *topology = getQuadSetTopology();
-    QuadSetTopologyContainer * container = topology->getQuadSetTopologyContainer();
-
-    const Quad &t = container->getQuad(i);
+    const Quad &t = m_container->getQuad(i);
     const VecCoord& p = *(this->object->getX());
     Real area = (Real)((areaProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]])
             + areaProduct(p[t[3]]-p[t[2]],p[t[0]]-p[t[2]])) * (Real) 0.5);
@@ -58,10 +56,7 @@ typename DataTypes::Real QuadSetGeometryAlgorithms< DataTypes >::computeQuadArea
 template< class DataTypes>
 typename DataTypes::Real QuadSetGeometryAlgorithms< DataTypes >::computeRestQuadArea( const unsigned int i) const
 {
-    QuadSetTopology<DataTypes> *topology = getQuadSetTopology();
-    QuadSetTopologyContainer * container = topology->getQuadSetTopologyContainer();
-
-    const Quad &t = container->getQuad(i);
+    const Quad &t = m_container->getQuad(i);
     const VecCoord& p = *(this->object->getX0());
     Real area = (Real)((areaProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]])
             + areaProduct(p[t[3]]-p[t[2]],p[t[0]]-p[t[2]])) * (Real) 0.5);
@@ -71,17 +66,14 @@ typename DataTypes::Real QuadSetGeometryAlgorithms< DataTypes >::computeRestQuad
 template<class DataTypes>
 void QuadSetGeometryAlgorithms<DataTypes>::computeQuadArea( BasicArrayInterface<Real> &ai) const
 {
-    QuadSetTopology<DataTypes> *topology = getQuadSetTopology();
-    QuadSetTopologyContainer * container = topology->getQuadSetTopologyContainer();
-
-    //const sofa::helper::vector<Quad> &ta=container->getQuadArray();
-    unsigned int nb_quads = container->getNumberOfQuads();
+    //const sofa::helper::vector<Quad> &ta=m_container->getQuadArray();
+    unsigned int nb_quads = m_container->getNumberOfQuads();
     const typename DataTypes::VecCoord& p = *(this->object->getX());
 
     for(unsigned int i=0; i<nb_quads; ++i)
     {
         // ta.size()
-        const Quad &t = container->getQuad(i);  //ta[i];
+        const Quad &t = m_container->getQuad(i);  //ta[i];
         ai[i] = (Real)((areaProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]])
                 + areaProduct(p[t[3]]-p[t[2]],p[t[0]]-p[t[2]])) * (Real) 0.5);
     }
@@ -92,10 +84,8 @@ template<class DataTypes>
 Vec<3,double> QuadSetGeometryAlgorithms< DataTypes >::computeQuadNormal(const unsigned int ind_q)
 {
     // HYP :  The quad indexed by ind_q is planar
-    QuadSetTopology<DataTypes> *topology = getQuadSetTopology();
-    QuadSetTopologyContainer * container = topology->getQuadSetTopologyContainer();
 
-    const Quad &q = container->getQuad(ind_q);
+    const Quad &q = m_container->getQuad(ind_q);
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
     const typename DataTypes::Coord& c0=vect_c[q[0]];
@@ -124,10 +114,7 @@ bool QuadSetGeometryAlgorithms< DataTypes >::is_quad_in_plane(const unsigned int
         const unsigned int ind_p,
         const Vec<3,Real>&plane_vect)
 {
-    QuadSetTopology<DataTypes> *topology = getQuadSetTopology();
-    QuadSetTopologyContainer * container = topology->getQuadSetTopologyContainer();
-
-    const Quad &q = container->getQuad(ind_q);
+    const Quad &q = m_container->getQuad(ind_q);
 
     // HYP : ind_p==q[0] or ind_q==t[1] or ind_q==t[2] or ind_q==q[3]
 
@@ -184,9 +171,6 @@ bool QuadSetGeometryAlgorithms< DataTypes >::is_quad_in_plane(const unsigned int
 template <typename DataTypes>
 void QuadSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename)
 {
-    QuadSetTopology<DataTypes> *topology = getQuadSetTopology();
-    QuadSetTopologyContainer *container = topology->getQuadSetTopologyContainer();
-
     std::ofstream myfile;
     myfile.open (filename);
 
@@ -209,7 +193,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename)
     myfile << "$ENDNOD\n";
     myfile << "$ELM\n";
 
-    const sofa::helper::vector<Quad>& qa = container->getQuadArray();
+    const sofa::helper::vector<Quad>& qa = m_container->getQuadArray();
 
     myfile << qa.size() <<"\n";
 

@@ -234,6 +234,8 @@ public:
     virtual ~GeometryAlgorithms()
     {}
 
+    virtual void init();
+
 protected:
     /// The topology this object applies to.
     BaseTopology *m_basicTopology;

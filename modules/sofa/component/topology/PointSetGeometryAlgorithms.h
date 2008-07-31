@@ -36,8 +36,7 @@ namespace component
 
 namespace topology
 {
-template<class DataTypes>
-class PointSetTopology;
+class PointSetTopologyContainer;
 
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::PointID PointID;
@@ -64,11 +63,6 @@ public:
 
     virtual void init();
 
-    PointSetTopology<DataTypes>* getPointSetTopology() const
-    {
-        return static_cast<PointSetTopology<DataTypes>*> (this->m_basicTopology);
-    }
-
     /** return the centroid of the set of points */
     Coord getPointSetCenter() const;
 
@@ -85,6 +79,9 @@ public:
 protected:
     /** the object where the mechanical DOFs are stored */
     core::componentmodel::behavior::MechanicalState<DataTypes> *object;
+
+private:
+    PointSetTopologyContainer* m_container;
 };
 
 } // namespace topology

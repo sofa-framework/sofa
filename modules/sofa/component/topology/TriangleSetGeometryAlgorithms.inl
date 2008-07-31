@@ -38,19 +38,17 @@ namespace topology
 {
 using namespace sofa::defaulttype;
 
-template< class DataTypes>
-TriangleSetTopology< DataTypes >* TriangleSetGeometryAlgorithms< DataTypes >::getTriangleSetTopology() const
+template <class DataTypes>
+void TriangleSetGeometryAlgorithms<DataTypes>::init()
 {
-    return static_cast<TriangleSetTopology< DataTypes >* > (this->m_basicTopology);
+    EdgeSetGeometryAlgorithms::init();
+    this->getContext()->get(m_container);
 }
 
 template< class DataTypes>
 typename DataTypes::Real TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleArea( const unsigned int i) const
 {
-    TriangleSetTopology<DataTypes> *topology = getTriangleSetTopology();
-    TriangleSetTopologyContainer *container = topology->getTriangleSetTopologyContainer();
-
-    const Triangle &t = container->getTriangle(i);
+    const Triangle &t = m_container->getTriangle(i);
     const VecCoord& p = *(this->object->getX());
     Real area = (Real)(areaProduct(p[t[1]]-p[t[0]], p[t[2]]-p[t[0]]) * 0.5);
     return area;
@@ -59,10 +57,7 @@ typename DataTypes::Real TriangleSetGeometryAlgorithms< DataTypes >::computeTria
 template< class DataTypes>
 typename DataTypes::Real TriangleSetGeometryAlgorithms< DataTypes >::computeRestTriangleArea( const unsigned int i) const
 {
-    TriangleSetTopology<DataTypes> *topology = getTriangleSetTopology();
-    TriangleSetTopologyContainer *container = topology->getTriangleSetTopologyContainer();
-
-    const Triangle &t = container->getTriangle(i);
+    const Triangle &t = m_container->getTriangle(i);
     const VecCoord& p = *(this->object->getX0());
     Real area = (Real) (areaProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]]) * 0.5);
     return area;
@@ -72,10 +67,7 @@ typename DataTypes::Real TriangleSetGeometryAlgorithms< DataTypes >::computeRest
 template<class DataTypes>
 void TriangleSetGeometryAlgorithms<DataTypes>::computeTriangleArea( BasicArrayInterface<Real> &ai) const
 {
-    TriangleSetTopology<DataTypes> *topology = getTriangleSetTopology();
-    TriangleSetTopologyContainer *container = topology->getTriangleSetTopologyContainer();
-
-    const sofa::helper::vector<Triangle> &ta = container->getTriangleArray();
+    const sofa::helper::vector<Triangle> &ta = m_container->getTriangleArray();
     const typename DataTypes::VecCoord& p = *(this->object->getX());
 
     for (unsigned int i=0; i<ta.size(); ++i)
@@ -145,10 +137,7 @@ Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::getOppositePoint(unsig
 template<class DataTypes>
 Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleNormal(const unsigned int ind_t)
 {
-    TriangleSetTopology<DataTypes> *topology = getTriangleSetTopology();
-    TriangleSetTopologyContainer *container = topology->getTriangleSetTopologyContainer();
-
-    const Triangle &t = container->getTriangle(ind_t);
+    const Triangle &t = m_container->getTriangle(ind_t);
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
     const typename DataTypes::Coord& c0 = vect_c[t[0]];
@@ -181,10 +170,7 @@ sofa::helper::vector< double > TriangleSetGeometryAlgorithms< DataTypes >::compu
 {
     sofa::helper::vector< double > baryCoefs;
 
-    TriangleSetTopology<DataTypes> *topology = getTriangleSetTopology();
-    TriangleSetTopologyContainer *container = topology->getTriangleSetTopologyContainer();
-
-    const Triangle &t=container->getTriangle(ind_t);
+    const Triangle &t=m_container->getTriangle(ind_t);
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
     const typename DataTypes::Coord& c0=vect_c[t[0]];
@@ -292,13 +278,10 @@ template<class DataTypes>
 void TriangleSetGeometryAlgorithms< DataTypes >::closestIndexPair(unsigned int ind_ta, unsigned int ind_tb,
         unsigned int &ind1, unsigned int &ind2)
 {
-    TriangleSetTopology<DataTypes> *topology = getTriangleSetTopology();
-    TriangleSetTopologyContainer *container = topology->getTriangleSetTopologyContainer();
-
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
-    const Triangle &ta=container->getTriangle(ind_ta);
-    const Triangle &tb=container->getTriangle(ind_tb);
+    const Triangle &ta=m_container->getTriangle(ind_ta);
+    const Triangle &tb=m_container->getTriangle(ind_tb);
 
     Real min_value=(Real) 0.0;
     bool is_init = false;
@@ -347,11 +330,8 @@ template<class DataTypes>
 bool TriangleSetGeometryAlgorithms< DataTypes >::is_PointinTriangle(bool is_tested, const Vec<3,Real>& p,
         unsigned int ind_t, unsigned int &ind_t_test)
 {
-    TriangleSetTopology<DataTypes> *topology = getTriangleSetTopology();
-    TriangleSetTopologyContainer *container = topology->getTriangleSetTopologyContainer();
-
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
-    const Triangle &t=container->getTriangle(ind_t);
+    const Triangle &t=m_container->getTriangle(ind_t);
 
     const typename DataTypes::Coord& c0=vect_c[t[0]];
     const typename DataTypes::Coord& c1=vect_c[t[1]];
@@ -391,8 +371,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::is_PointinTriangle(bool is_test
         {
             sofa::helper::vector< unsigned int > shell;
             unsigned int ind_edge = 0;
-            const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvsa=container->getTriangleVertexShellArray();
-            const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tesa=container->getTriangleEdgeShellArray();
+            const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvsa=m_container->getTriangleVertexShellArray();
+            const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tesa=m_container->getTriangleEdgeShellArray();
 
             if(v_01 < 0.0)
             {
@@ -409,7 +389,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::is_PointinTriangle(bool is_test
                     }
                     else // v_01 < 0.0
                     {
-                        ind_edge=container->getEdgeIndex(t[0],t[1]);
+                        ind_edge=m_container->getEdgeIndex(t[0],t[1]);
                         shell =(sofa::helper::vector< unsigned int >) (tesa[ind_edge]);
                     }
                 }
@@ -425,13 +405,13 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::is_PointinTriangle(bool is_test
                     }
                     else // v_12 < 0.0
                     {
-                        ind_edge=container->getEdgeIndex(t[1],t[2]);
+                        ind_edge=m_container->getEdgeIndex(t[1],t[2]);
                         shell =(sofa::helper::vector< unsigned int >) (tesa[ind_edge]);
                     }
                 }
                 else // v_20 < 0.0
                 {
-                    ind_edge=container->getEdgeIndex(t[2],t[0]);
+                    ind_edge=m_container->getEdgeIndex(t[2],t[0]);
                     shell =(sofa::helper::vector< unsigned int >) (tesa[ind_edge]);
                 }
             }
@@ -523,10 +503,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const V
 template<class DataTypes>
 bool TriangleSetGeometryAlgorithms< DataTypes >::is_triangle_in_plane(const unsigned int ind_t, const unsigned int ind_p,  const Vec<3,Real>&plane_vect)
 {
-    TriangleSetTopology<DataTypes> *topology = getTriangleSetTopology();
-    TriangleSetTopologyContainer *container = topology->getTriangleSetTopologyContainer();
-
-    const Triangle &t=container->getTriangle(ind_t);
+    const Triangle &t=m_container->getTriangle(ind_t);
 
     // HYP : ind_p==t[0] or ind_p==t[1] or ind_p==t[2]
 
@@ -588,13 +565,10 @@ void TriangleSetGeometryAlgorithms< DataTypes >::Prepare_VertexDuplication(const
 {
     //HYP : if coord_from or coord_to == 0.0 or 1.0, ind_p is distinct from ind_from and from ind_to
 
-    TriangleSetTopology<DataTypes> *topology = getTriangleSetTopology();
-    TriangleSetTopologyContainer *container = topology->getTriangleSetTopologyContainer();
-
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
-    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvsa=container->getTriangleVertexShellArray();
-    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tesa=container->getTriangleEdgeShellArray();
+    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvsa=m_container->getTriangleVertexShellArray();
+    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tesa=m_container->getTriangleEdgeShellArray();
 
     const typename DataTypes::Coord& c_p = vect_c[ind_p];
     Vec<3,Real> point_p;
@@ -633,11 +607,11 @@ void TriangleSetGeometryAlgorithms< DataTypes >::Prepare_VertexDuplication(const
 
         if(coord_from==0.0)
         {
-            ind_edge=container->getEdgeIndex(indices_from[0], ind_p);
+            ind_edge=m_container->getEdgeIndex(indices_from[0], ind_p);
         }
         else // coord_from==1.0
         {
-            ind_edge=container->getEdgeIndex(indices_from[1], ind_p);
+            ind_edge=m_container->getEdgeIndex(indices_from[1], ind_p);
         }
 
         if (tesa.size()>0)
@@ -693,11 +667,11 @@ void TriangleSetGeometryAlgorithms< DataTypes >::Prepare_VertexDuplication(const
 
         if(coord_to==0.0)
         {
-            ind_edge=container->getEdgeIndex(indices_to[0], ind_p);
+            ind_edge=m_container->getEdgeIndex(indices_to[0], ind_p);
         }
         else // coord_to==1.0
         {
-            ind_edge=container->getEdgeIndex(indices_to[1], ind_p);
+            ind_edge=m_container->getEdgeIndex(indices_to[1], ind_p);
         }
 
         if (tesa.size()>0)
@@ -850,10 +824,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
     bool is_validated = false;
     bool is_intersected = false;
 
-    TriangleSetTopology<DataTypes> *topology = getTriangleSetTopology();
-    TriangleSetTopologyContainer *container = topology->getTriangleSetTopologyContainer();
-
-    const Triangle &t=container->getTriangle(ind_t);
+    const Triangle &t=m_container->getTriangle(ind_t);
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
     bool is_full_01=(is_entered && ((t[0] == ind_first && t[1] == ind_second) || (t[1] == ind_first && t[0] == ind_second)));
@@ -1134,9 +1105,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
         sofa::helper::vector< sofa::helper::vector<unsigned int> > &indices_list,
         sofa::helper::vector< double >& coords_list, bool& is_on_boundary)
 {
-    TriangleSetTopology<DataTypes> *topology = getTriangleSetTopology();
-    TriangleSetTopologyContainer *container = topology->getTriangleSetTopologyContainer();
-
     bool is_validated=true;
     bool is_intersected=true;
 
@@ -1173,7 +1141,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
     while((coord_k_test<1.0 && is_validated) && is_intersected)
     {
-        ind_edge=container->getEdgeIndex(indices[0],indices[1]);
+        ind_edge=m_container->getEdgeIndex(indices[0],indices[1]);
         sofa::helper::vector< unsigned int > indices_first_list;
         indices_first_list.push_back(indices[0]);
         indices_first_list.push_back(indices[1]);
@@ -1208,7 +1176,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                 ind_index=indices[1];
             }
 
-            const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvsa=container->getTriangleVertexShellArray();
+            const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvsa=m_container->getTriangleVertexShellArray();
 
             if (tvsa.size()>0)
             {
@@ -1230,7 +1198,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                         {
                             ind_triangle=shell[i];
 
-                            const Triangle &t=container->getTriangle(ind_triangle);
+                            const Triangle &t=m_container->getTriangle(ind_triangle);
 
                             const typename DataTypes::Coord& c0=vect_c[t[0]];
                             const typename DataTypes::Coord& c1=vect_c[t[1]];
@@ -1299,9 +1267,9 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
         }
         else // current point indexed by ind_t_current is on an edge, but not on a vertex
         {
-            ind_edge=container->getEdgeIndex(indices[0],indices[1]);
+            ind_edge=m_container->getEdgeIndex(indices[0],indices[1]);
 
-            const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tesa=container->getTriangleEdgeShellArray();
+            const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tesa=m_container->getTriangleEdgeShellArray();
 
             if (tesa.size()>0)
             {
@@ -1323,7 +1291,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                         {
                             ind_triangle=shell[i];
 
-                            const Triangle &t=container->getTriangle(ind_triangle);
+                            const Triangle &t=m_container->getTriangle(ind_triangle);
 
                             const typename DataTypes::Coord& c0=vect_c[t[0]];
                             const typename DataTypes::Coord& c1=vect_c[t[1]];
@@ -1416,9 +1384,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 template <typename DataTypes>
 void TriangleSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename)
 {
-    TriangleSetTopology<DataTypes> *topology = getTriangleSetTopology();
-    TriangleSetTopologyContainer *container = topology->getTriangleSetTopologyContainer();
-
     std::ofstream myfile;
     myfile.open (filename);
 
@@ -1441,7 +1406,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename
     myfile << "$ENDNOD\n";
     myfile << "$ELM\n";
 
-    const sofa::helper::vector<Triangle> &ta=container->getTriangleArray();
+    const sofa::helper::vector<Triangle> &ta=m_container->getTriangleArray();
 
     myfile << ta.size() <<"\n";
 

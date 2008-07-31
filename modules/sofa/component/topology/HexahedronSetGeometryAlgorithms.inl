@@ -38,18 +38,17 @@ namespace topology
 {
 using namespace sofa::defaulttype;
 
-template< class DataTypes>
-HexahedronSetTopology< DataTypes >* HexahedronSetGeometryAlgorithms< DataTypes >::getHexahedronSetTopology() const
+template <class DataTypes>
+void HexahedronSetGeometryAlgorithms<DataTypes>::init()
 {
-    return static_cast<HexahedronSetTopology< DataTypes >* > (this->m_basicTopology);
+    QuadSetGeometryAlgorithms::init();
+    this->getContext()->get(m_container);
 }
 
 template< class DataTypes>
 typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeHexahedronVolume( const unsigned int /*i*/) const
 {
-    //HexahedronSetTopology< DataTypes > *topology = getHexahedronSetTopology();
-    //HexahedronSetTopologyContainer * container = topology->getHexahedronSetTopologyContainer();
-    //const Hexahedron &t = container->getHexahedron(i);
+    //const Hexahedron &t = m_container->getHexahedron(i);
     //const VecCoord& p = *(this->object->getX());
     Real volume=(Real)(0.0); // todo
     return volume;
@@ -58,9 +57,7 @@ typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeHe
 template< class DataTypes>
 typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeRestHexahedronVolume( const unsigned int /*i*/) const
 {
-    //HexahedronSetTopology< DataTypes > *topology = getHexahedronSetTopology();
-    //HexahedronSetTopologyContainer * container = topology->getHexahedronSetTopologyContainer();
-    //const Hexahedron &t = container->getHexahedron(i);
+    //const Hexahedron &t = m_container->getHexahedron(i);
     //const VecCoord& p = *(this->object->getX0());
     Real volume=(Real)(0.0); // todo
     return volume;
@@ -69,13 +66,11 @@ typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeRe
 template<class DataTypes>
 void HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronVolume( BasicArrayInterface<Real> &ai) const
 {
-    HexahedronSetTopology< DataTypes > *topology = getHexahedronSetTopology();
-    HexahedronSetTopologyContainer * container = topology->getHexahedronSetTopologyContainer();
-    //const sofa::helper::vector<Hexahedron> &ta=container->getHexahedronArray();
+    //const sofa::helper::vector<Hexahedron> &ta=m_container->getHexahedronArray();
     //const typename DataTypes::VecCoord& p = *(this->object->getX());
-    for(unsigned int i=0; i<container->getNumberOfHexahedra(); ++i)
+    for(unsigned int i=0; i<m_container->getNumberOfHexahedra(); ++i)
     {
-        //const Hexahedron &t=container->getHexahedron(i); //ta[i];
+        //const Hexahedron &t=m_container->getHexahedron(i); //ta[i];
         ai[i]=(Real)(0.0); // todo
     }
 }
@@ -84,9 +79,6 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronVolume( BasicA
 template <typename DataTypes>
 void HexahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename)
 {
-    HexahedronSetTopology<DataTypes> *topology = getHexahedronSetTopology();
-    HexahedronSetTopologyContainer *container = topology->getHexahedronSetTopologyContainer();
-
     std::ofstream myfile;
     myfile.open (filename);
 
@@ -109,7 +101,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filena
     myfile << "$ENDNOD\n";
     myfile << "$ELM\n";
 
-    const sofa::helper::vector<Hexahedron> hea = container->getHexahedronArray();
+    const sofa::helper::vector<Hexahedron> hea = m_container->getHexahedronArray();
 
     myfile << hea.size() <<"\n";
 

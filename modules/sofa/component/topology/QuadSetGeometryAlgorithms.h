@@ -33,8 +33,7 @@ namespace component
 {
 namespace topology
 {
-template <class DataTypes>
-class QuadSetTopology;
+class QuadSetTopologyContainer;
 
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::QuadID QuadID;
@@ -66,7 +65,7 @@ public:
 
     virtual ~QuadSetGeometryAlgorithms() {}
 
-    QuadSetTopology< DataTypes >* getQuadSetTopology() const;
+    virtual void init();
 
     /** \brief Computes the area of quad no i and returns it
     *
@@ -98,6 +97,9 @@ public:
     /** \brief Write the current mesh into a msh file
     */
     void writeMSHfile(const char *filename);
+
+private:
+    QuadSetTopologyContainer* m_container;
 
 };
 

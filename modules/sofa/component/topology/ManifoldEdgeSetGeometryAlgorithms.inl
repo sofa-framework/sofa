@@ -36,11 +36,13 @@ namespace component
 
 namespace topology
 {
-template<class DataTypes>
-ManifoldEdgeSetTopology<DataTypes> * ManifoldEdgeSetGeometryAlgorithms<DataTypes>::getEdgeSetTopology() const
+template <class DataTypes>
+void ManifoldEdgeSetGeometryAlgorithms<DataTypes>::init()
 {
-    return static_cast<ManifoldEdgeSetTopology<DataTypes> *> (this->m_basicTopology);
+    EdgeSetGeometryAlgorithms::init();
+    this->getContext()->get(m_container);
 }
+
 
 } // namespace topology
 
