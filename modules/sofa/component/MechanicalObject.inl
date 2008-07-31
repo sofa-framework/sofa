@@ -940,6 +940,23 @@ void MechanicalObject<DataTypes>::init()
             }
 
         }
+        else
+        {
+
+            sofa::core::componentmodel::topology::BaseMeshTopology* topo = this->getContext()->getMeshTopology();
+            if (topo!=NULL && topo->hasPos() && topo->getContext() == this->getContext())
+            {
+                int nbp = topo->getNbPoints();
+                //std::cout<<"Setting "<<nbp<<" points from topology. " << this->getName() << " topo : " << topo->getName() <<std::endl;
+                this->resize(nbp);
+                for (int i=0; i<nbp; i++)
+                {
+                    (*getX())[i] = Coord();
+                    DataTypes::set((*getX())[i], topo->getPX(i), topo->getPY(i), topo->getPZ(i));
+                }
+
+            }
+        }
     }
 
     reinit();
