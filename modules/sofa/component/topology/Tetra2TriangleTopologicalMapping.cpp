@@ -236,7 +236,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMapping()
 
                                 ind_real_last = Glob2LocMap[last];
 
-                                if(k != last)
+                                if((int) k != last)
                                 {
 
                                     Glob2LocMap.erase(Glob2LocMap.find(k));
@@ -251,7 +251,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMapping()
                                 }
                             }
 
-                            if( ind_k != ind_last)
+                            if((int) ind_k != ind_last)
                             {
 
                                 Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[ind_last]));

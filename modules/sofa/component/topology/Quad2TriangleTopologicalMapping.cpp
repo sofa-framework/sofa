@@ -287,7 +287,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMapping()
 
                                     ind_real_last = In2OutMap[last];
 
-                                    if(k != last)
+                                    if((int) k != last)
                                     {
 
                                         In2OutMap.erase(In2OutMap.find(k));
@@ -310,7 +310,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMapping()
                                     std::cout << "INFO_print : Quad2TriangleTopologicalMapping - In2OutMap should have the quad " << last << std::endl;
                                 }
 
-                                if( ind_k[1] != ind_last)
+                                if((int) ind_k[1] != ind_last)
                                 {
 
                                     In2OutMap.erase(In2OutMap.find(Loc2GlobVec[ind_last]));
@@ -331,7 +331,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMapping()
 
                                 ind_last = ind_last-1;
 
-                                if( ind_k[0] != ind_last)
+                                if((int) ind_k[0] != ind_last)
                                 {
 
                                     ind_tmp = Loc2GlobVec[ind_k[0]];
