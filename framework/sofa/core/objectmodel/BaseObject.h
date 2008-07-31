@@ -146,7 +146,7 @@ public:
 
     const sofa::helper::vector<std::string> & getLogWarning() {return logWarnings;}
 
-    void logWarning(std::string l) {logWarnings.push_back(l);}
+    void logWarning(std::string l) {logWarnings.push_back(l); std::cerr<<"WARNING: " << l << "\n";}
 
     ///@}
 
