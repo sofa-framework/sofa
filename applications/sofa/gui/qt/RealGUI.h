@@ -185,9 +185,14 @@ public slots:
 #ifdef SOFA_QT4
     void flagChanged(Q3ListViewItem *item)
     {
-        DisplayFlagItem *flag=NULL;
-        if ( flag=dynamic_cast<DisplayFlagItem *>(item) )  flag->switchState();
-        else
+
+        if ( dynamic_cast<DisplayFlagItem *>(item) )
+        {
+            DisplayFlagItem *flag=dynamic_cast<DisplayFlagItem *>(item);
+
+            flag->switchState();
+        }
+        else if (dynamic_cast<Q3CheckListItem*>(item))
         {
             Q3CheckListItem* checkItem=dynamic_cast<Q3CheckListItem*>(item);
 
@@ -196,12 +201,22 @@ public slots:
         }
     };
 
+    void flagDoubleClicked(Q3ListViewItem *item)
+    {
+        item->setOpen ( !item->isOpen() );
+        flagChanged(item);
+    }
 #else
     void flagChanged(QListViewItem *item)
     {
-        DisplayFlagItem *flag=NULL;
-        if ( (flag=dynamic_cast<DisplayFlagItem *>(item)) )  flag->switchState();
-        else
+
+        if ( dynamic_cast<DisplayFlagItem *>(item) )
+        {
+            DisplayFlagItem *flag=dynamic_cast<DisplayFlagItem *>(item);
+
+            flag->switchState();
+        }
+        else if (dynamic_cast<Q3CheckListItem*>(item))
         {
             Q3CheckListItem* checkItem=dynamic_cast<Q3CheckListItem*>(item);
 
@@ -209,6 +224,12 @@ public slots:
             else checkItem->setState(Q3CheckListItem::On);
         }
     };
+
+    void flagDoubleClicked(QListViewItem *item)
+    {
+        item->setOpen ( !item->isOpen() );
+        flagChanged(item);
+    }
 #endif
 
     void showVisualModels()      {showhideElements(VISUALMODELS,true);};
