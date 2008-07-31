@@ -95,6 +95,10 @@ public:
     bool is_quad_in_plane(const unsigned int ind_q, const unsigned int ind_p,
             const defaulttype::Vec<3,Real>& plane_vect);
 
+    /** \brief Write the current mesh into a msh file
+    */
+    void writeMSHfile(const char *filename);
+
 };
 
 template< class Real>

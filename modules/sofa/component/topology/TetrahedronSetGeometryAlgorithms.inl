@@ -182,6 +182,49 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(unsigned int 
     return;
 }
 
+/// Write the current mesh into a msh file
+template <typename DataTypes>
+void TetrahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename)
+{
+    TetrahedronSetTopology<DataTypes> *topology = getTetrahedronSetTopology();
+    TetrahedronSetTopologyContainer *container = topology->getTetrahedronSetTopologyContainer();
+
+    std::ofstream myfile;
+    myfile.open (filename);
+
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
+
+    const unsigned int numVertices = vect_c.size();
+
+    myfile << "$NOD\n";
+    myfile << numVertices <<"\n";
+
+    for (unsigned int i=0; i<numVertices; ++i)
+    {
+        double x = (double) vect_c[i][0];
+        double y = (double) vect_c[i][1];
+        double z = (double) vect_c[i][2];
+
+        myfile << i+1 << " " << x << " " << y << " " << z <<"\n";
+    }
+
+    myfile << "$ENDNOD\n";
+    myfile << "$ELM\n";
+
+    const sofa::helper::vector<Tetrahedron> &tea = container->getTetrahedronArray();
+
+    myfile << tea.size() <<"\n";
+
+    for (unsigned int i=0; i<tea.size(); ++i)
+    {
+        myfile << i+1 << " 4 1 1 4 " << tea[i][0]+1 << " " << tea[i][1]+1 << " " << tea[i][2]+1 << " " << tea[i][3]+1 <<"\n";
+    }
+
+    myfile << "$ENDELM\n";
+
+    myfile.close();
+}
+
 /// Cross product for 3-elements vectors.
 template<typename real>
 inline real tripleProduct(const Vec<3,real>& a, const Vec<3,real>& b,const Vec<3,real> &c)

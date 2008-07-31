@@ -81,6 +81,10 @@ public:
 
     /// computes the hexahedron volume  of hexahedron no i and returns it
     Real computeRestHexahedronVolume(const unsigned int i) const;
+
+    /** \brief Write the current mesh into a msh file
+    */
+    void writeMSHfile(const char *filename);
 };
 
 } // namespace topology
