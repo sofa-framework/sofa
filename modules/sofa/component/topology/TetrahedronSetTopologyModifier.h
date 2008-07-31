@@ -83,6 +83,11 @@ public:
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs);
 
+    /** \brief Add a tetrahedron.
+    *
+    */
+    void addTetrahedronProcess(Tetrahedron e);
+
     /** \brief Actually Add some tetrahedra to this topology.
     *
     * \sa addTetrahedraWarning
@@ -143,31 +148,9 @@ public:
 
     /** \brief Add some points to this topology.
     *
-    * Use a list of ancestors to create the new points.
-    * Last parameter baryCoefs defines the coefficient used for the creation of the new points.
-    * Default value for these coefficient (when none is defined) is 1/n with n being the number of ancestors
-    * for the point being created.
-    * Important : the points are actually added to the mechanical object's state vectors iff (addDOF == true)
-    *
     * \sa addPointsWarning
     */
-    virtual void addPointsProcess(const unsigned int nPoints,
-            const bool addDOF = true);
-
-    /** \brief Add some points to this topology.
-    *
-    * Use a list of ancestors to create the new points.
-    * Last parameter baryCoefs defines the coefficient used for the creation of the new points.
-    * Default value for these coefficient (when none is defined) is 1/n with n being the number of ancestors
-    * for the point being created.
-    * Important : the points are actually added to the mechanical object's state vectors iff (addDOF == true)
-    *
-    * \sa addPointsWarning
-    */
-    virtual void addPointsProcess(const unsigned int nPoints,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
-            const bool addDOF = true);
+    virtual void addPointsProcess(const unsigned int nPoints);
 
     /** \brief Remove a subset of points
     *
@@ -187,10 +170,6 @@ public:
     virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index,
             const sofa::helper::vector<unsigned int> &/*inv_index*/,
             const bool renumberDOF = true);
-
-    /** \brief Add a tetrahedron.
-    */
-    void addTetrahedron(Tetrahedron e);
 
 private:
     TetrahedronSetTopologyContainer* 	m_container;

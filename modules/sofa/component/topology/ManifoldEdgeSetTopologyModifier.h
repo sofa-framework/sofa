@@ -57,52 +57,15 @@ public:
 
     virtual void init();
 
-    /** \brief Sends a message to warn that some edges were added in this topology.
-    *
-    * \sa addEdgesProcess
+    /** \brief Add an edge.
     */
-    virtual void addEdgesWarning(const unsigned int nEdges);
-
-    /** \brief Sends a message to warn that some edges were added in this topology.
-    *
-    * \sa addEdgesProcess
-    */
-    virtual void addEdgesWarning(const unsigned int nEdges,
-            const sofa::helper::vector< Edge >& edgesList,
-            const sofa::helper::vector< unsigned int >& edgesIndexList);
-
-    /** \brief Sends a message to warn that some edges were added in this topology.
-    *
-    * \sa addEdgesProcess
-    */
-    virtual void addEdgesWarning(const unsigned int nEdges,
-            const sofa::helper::vector< Edge >& edgesList,
-            const sofa::helper::vector< unsigned int >& edgesIndexList,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors);
-
-    /** \brief Sends a message to warn that some edges were added in this topology.
-    *
-    * \sa addEdgesProcess
-    */
-    virtual void addEdgesWarning(const unsigned int nEdges,
-            const sofa::helper::vector< Edge >& edgesList,
-            const sofa::helper::vector< unsigned int >& edgesIndexList,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs);
-
+    void addEdgeProcess(Edge e);
 
     /** \brief Add some edges to this topology.
     *
     * \sa addEdgesWarning
     */
     virtual void addEdgesProcess(const sofa::helper::vector< Edge > &edges);
-
-    /** \brief Sends a message to warn that some edges are about to be deleted.
-    *
-    * \sa removeEdgesProcess
-    */
-    // side effect : edges are sorted first
-    virtual void removeEdgesWarning(/*const*/ sofa::helper::vector<unsigned int> &edges);
 
     /** \brief Effectively Remove a subset of edges. Eventually remove isolated vertices
     *
@@ -116,83 +79,6 @@ public:
     * @param removeIsolatedItems if true isolated vertices are also removed
     */
     virtual void removeEdgesProcess(const sofa::helper::vector<unsigned int> &indices, const bool removeIsolatedItems = false);
-
-    /** \brief Add some points to this topology.
-    *
-    * Use a list of ancestors to create the new points.
-    * Last parameter baryCoefs defines the coefficient used for the creation of the new edges.
-    * Default value for these coefficient (when none is defined) is 1/n with n being the number of ancestors
-    * for the edge being created.
-    * Important : the points are actually added to the mechanical object's state vectors iff (addDOF == true)
-    *
-    * \sa addPointsWarning
-    */
-    virtual void addPointsProcess(const unsigned int nPoints, const bool addDOF = true);
-
-    /** \brief Add some points to this topology.
-    *
-    * Use a list of ancestors to create the new points.
-    * Last parameter baryCoefs defines the coefficient used for the creation of the new edges.
-    * Default value for these coefficient (when none is defined) is 1/n with n being the number of ancestors
-    * for the edge being created.
-    * Important : the points are actually added to the mechanical object's state vectors iff (addDOF == true)
-    *
-    * \sa addPointsWarning
-    */
-    virtual void addPointsProcess(const unsigned int nPoints,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
-            const bool addDOF = true);
-
-    /** \brief Remove a subset of points
-    *
-    * these points are removed form the mechanical object's state vectors.
-    *
-    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
-    * \sa removePointsWarning
-    * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
-    */
-    virtual void removePointsProcess(/*const*/ sofa::helper::vector<unsigned int> &indices,
-            const bool removeDOF = true);
-
-    /** \brief Reorder this topology.
-    *
-    * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
-    * \see MechanicalObject::renumberValues
-    */
-    virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index,
-            const sofa::helper::vector<unsigned int> &/*inv_index*/,
-            const bool renumberDOF = true);
-
-    /** \brief Swap the edges.
-    *
-    */
-    virtual void swapEdgesProcess(const sofa::helper::vector< sofa::helper::vector< unsigned int > >& edgesPairs);
-
-    /** \brief Fuse the edges.
-    *
-    * @param removeIsolatedItems if true isolated vertices are also removed
-    */
-    virtual void fuseEdgesProcess(const sofa::helper::vector< sofa::helper::vector< unsigned int > >& edgesPairs, const bool removeIsolatedPoints = true);
-
-    /** \brief Split the edges.
-    *
-    * @param removeIsolatedItems if true isolated vertices are also removed
-    */
-    virtual void splitEdgesProcess(/*const*/ sofa::helper::vector<unsigned int> &indices,
-            const bool removeIsolatedPoints = true);
-
-    /** \brief Split the edges.
-    *
-    * @param removeIsolatedItems if true isolated vertices are also removed
-    */
-    virtual void splitEdgesProcess(/*const*/ sofa::helper::vector<unsigned int> &indices,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
-            const bool removeIsolatedPoints = true);
-
-    /** \brief Add an edge.
-    */
-    void addEdge(Edge e);
 
 private:
     ManifoldEdgeSetTopologyContainer* 	m_container;

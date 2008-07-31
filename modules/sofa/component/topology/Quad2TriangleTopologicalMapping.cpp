@@ -140,8 +140,8 @@ void Quad2TriangleTopologicalMapping::init()
                 unsigned int p1 = quadArray[i][1];
                 unsigned int p2 = quadArray[i][2];
                 unsigned int p3 = quadArray[i][3];
-                to_tstm->addTriangle(Triangle(helper::make_array<unsigned int>((unsigned int) p0, (unsigned int) p1, (unsigned int) p2)));
-                to_tstm->addTriangle(Triangle(helper::make_array<unsigned int>((unsigned int) p0, (unsigned int) p2, (unsigned int) p3)));
+                to_tstm->addTriangleProcess(Triangle(helper::make_array<unsigned int>((unsigned int) p0, (unsigned int) p1, (unsigned int) p2)));
+                to_tstm->addTriangleProcess(Triangle(helper::make_array<unsigned int>((unsigned int) p0, (unsigned int) p2, (unsigned int) p3)));
 
                 Loc2GlobVec.push_back(i);
                 Loc2GlobVec.push_back(i);

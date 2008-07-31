@@ -138,7 +138,7 @@ void Triangle2EdgeTopologicalMapping::init()
                 if (fromModel->getTriangleEdgeShell(i).size()==1)
                 {
 
-                    to_tstm->addEdge(edgeArray[i]);
+                    to_tstm->addEdgeProcess(edgeArray[i]);
 
                     Loc2GlobVec.push_back(i);
                     Glob2LocMap[i]=Loc2GlobVec.size()-1;

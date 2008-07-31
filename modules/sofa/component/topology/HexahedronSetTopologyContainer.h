@@ -80,6 +80,8 @@ public:
 
     virtual void init();
 
+    virtual void clear();
+
     /// BaseMeshTopology API
     /// @{
 
@@ -137,9 +139,9 @@ public:
     const Hexahedron &getHexahedron(const unsigned int i);
 
     /** \brief Returns the number of hexahedra in this topology.
-    *
+    *	The difference to getNbHexas() is that this method does not generate the hexa array if it does not exist.
     */
-    unsigned int getNumberOfHexahedra() ;
+    unsigned int getNumberOfHexahedra() const;
 
     /** \brief Returns the Hexahedron Vertex Shells array.
     *

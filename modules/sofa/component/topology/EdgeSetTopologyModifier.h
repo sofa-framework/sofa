@@ -90,6 +90,9 @@ public:
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs);
 
+    /** \brief Add an edge.
+    */
+    void addEdgeProcess(Edge e);
 
     /** \brief Add some edges to this topology.
     *
@@ -117,53 +120,6 @@ public:
     */
     virtual void removeEdgesProcess(const sofa::helper::vector<unsigned int> &indices, const bool removeIsolatedItems = false);
 
-    /** \brief Add some points to this topology.
-    *
-    * Use a list of ancestors to create the new points.
-    * Last parameter baryCoefs defines the coefficient used for the creation of the new edges.
-    * Default value for these coefficient (when none is defined) is 1/n with n being the number of ancestors
-    * for the edge being created.
-    * Important : the points are actually added to the mechanical object's state vectors iff (addDOF == true)
-    *
-    * \sa addPointsWarning
-    */
-    virtual void addPointsProcess(const unsigned int nPoints, const bool addDOF = true);
-
-    /** \brief Add some points to this topology.
-    *
-    * Use a list of ancestors to create the new points.
-    * Last parameter baryCoefs defines the coefficient used for the creation of the new edges.
-    * Default value for these coefficient (when none is defined) is 1/n with n being the number of ancestors
-    * for the edge being created.
-    * Important : the points are actually added to the mechanical object's state vectors iff (addDOF == true)
-    *
-    * \sa addPointsWarning
-    */
-    virtual void addPointsProcess(const unsigned int nPoints,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
-            const bool addDOF = true);
-
-    /** \brief Remove a subset of points
-    *
-    * these points are removed form the mechanical object's state vectors.
-    *
-    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
-    * \sa removePointsWarning
-    * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
-    */
-    virtual void removePointsProcess(/*const*/ sofa::helper::vector<unsigned int> &indices,
-            const bool removeDOF = true);
-
-    /** \brief Reorder this topology.
-    *
-    * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
-    * \see MechanicalObject::renumberValues
-    */
-    virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index,
-            const sofa::helper::vector<unsigned int> &/*inv_index*/,
-            const bool renumberDOF = true);
-
     /** \brief Swap the edges.
     *
     */
@@ -190,9 +146,31 @@ public:
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
             const bool removeIsolatedPoints = true);
 
-    /** \brief Add an edge.
+    /** \brief Add some points to this topology.
+    *
+    * \sa addPointsWarning
     */
-    void addEdge(Edge e);
+    virtual void addPointsProcess(const unsigned int nPoints);
+
+    /** \brief Remove a subset of points
+    *
+    * these points are removed form the mechanical object's state vectors.
+    *
+    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
+    * \sa removePointsWarning
+    * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
+    */
+    virtual void removePointsProcess(/*const*/ sofa::helper::vector<unsigned int> &indices,
+            const bool removeDOF = true);
+
+    /** \brief Reorder this topology.
+    *
+    * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
+    * \see MechanicalObject::renumberValues
+    */
+    virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index,
+            const sofa::helper::vector<unsigned int> &/*inv_index*/,
+            const bool renumberDOF = true);
 
 private:
     EdgeSetTopologyContainer* 	m_container;

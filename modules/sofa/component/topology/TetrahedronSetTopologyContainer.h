@@ -66,6 +66,8 @@ public:
 
     virtual void init();
 
+    virtual void clear();
+
     /// BaseMeshTopology API
     /// @{
 
@@ -123,9 +125,9 @@ public:
     const Tetrahedron &getTetrahedron(const unsigned int i);
 
     /** \brief Returns the number of tetrahedra in this topology.
-    *
+    *	The difference to getNbTetras() is that this method does not generate the tetra array if it does not exist.
     */
-    unsigned int getNumberOfTetrahedra();
+    unsigned int getNumberOfTetrahedra() const;
 
     /** \brief Returns the Tetrahedron Vertex Shells array.
     *

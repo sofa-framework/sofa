@@ -52,7 +52,7 @@ void QuadSetTopologyModifier::init()
 }
 
 
-void QuadSetTopologyModifier::addQuad(Quad t)
+void QuadSetTopologyModifier::addQuadProcess(Quad t)
 {
 #ifndef NDEBUG
     // check if the 4 vertices are different
@@ -78,7 +78,7 @@ void QuadSetTopologyModifier::addQuad(Quad t)
     }
 #endif
 
-    const unsigned int quadIndex = m_container->m_quad.size();
+    const unsigned int quadIndex = m_container->getNumberOfQuads();
 
     if(m_container->hasQuadVertexShell())
     {
@@ -107,7 +107,7 @@ void QuadSetTopologyModifier::addQuad(Quad t)
                 edgeIndex = m_container->getEdgeIndex(t[(j+1)%4],t[(j+2)%4]);
                 sofa::helper::vector< unsigned int > edgeIndexList;
                 edgeIndexList.push_back((unsigned int) edgeIndex);
-                this->addEdgesWarning( v.size(), v, edgeIndexList);
+                addEdgesWarning( v.size(), v, edgeIndexList);
             }
 
             if(m_container->hasQuadEdges())
@@ -134,7 +134,7 @@ void QuadSetTopologyModifier::addQuadsProcess(const sofa::helper::vector< Quad >
 
     for(unsigned int i=0; i<quads.size(); ++i)
     {
-        addQuad(quads[i]);
+        addQuadProcess(quads[i]);
     }
 }
 
@@ -145,7 +145,7 @@ void QuadSetTopologyModifier::addQuadsWarning(const unsigned int nQuads,
 {
     // Warning that quads just got created
     QuadsAdded *e = new QuadsAdded(nQuads, quadsList, quadsIndexList);
-    this->addTopologyChange(e);
+    addTopologyChange(e);
 }
 
 
@@ -157,7 +157,7 @@ void QuadSetTopologyModifier::addQuadsWarning(const unsigned int nQuads,
 {
     // Warning that quads just got created
     QuadsAdded *e=new QuadsAdded(nQuads, quadsList,quadsIndexList,ancestors,baryCoefs);
-    this->addTopologyChange(e);
+    addTopologyChange(e);
 }
 
 
@@ -168,7 +168,7 @@ void QuadSetTopologyModifier::removeQuadsWarning( sofa::helper::vector<unsigned 
 
     // Warning that these quads will be deleted
     QuadsRemoved *e=new QuadsRemoved(quads);
-    this->addTopologyChange(e);
+    addTopologyChange(e);
 }
 
 
@@ -176,12 +176,12 @@ void QuadSetTopologyModifier::removeQuadsProcess(const sofa::helper::vector<unsi
         const bool removeIsolatedEdges,
         const bool removeIsolatedPoints)
 {
-    if(!m_container->hasQuads()) // TODO : this method should only be called when quads exist
+    if(!m_container->hasQuads()) // this method should only be called when quads exist
     {
 #ifndef NDEBUG
         cout << "Error. [QuadSetTopologyModifier::removeQuadsProcess] quad array is empty." << endl;
 #endif
-        m_container->createQuadSetArray();
+        return;
     }
 
     if(m_container->hasEdges() && removeIsolatedEdges)
@@ -202,9 +202,9 @@ void QuadSetTopologyModifier::removeQuadsProcess(const sofa::helper::vector<unsi
     sofa::helper::vector<unsigned int> edgeToBeRemoved;
     sofa::helper::vector<unsigned int> vertexToBeRemoved;
 
-    for(unsigned int i = 0; i<indices.size(); ++i)
+    unsigned int lastQuad = m_container->getNumberOfQuads() - 1;
+    for(unsigned int i=0; i<indices.size(); ++i, --lastQuad)
     {
-        const unsigned int lastQuad = m_container->m_quad.size() - 1;
         Quad &t = m_container->m_quad[ indices[i] ];
         Quad &q = m_container->m_quad[ lastQuad ];
 
@@ -215,19 +215,18 @@ void QuadSetTopologyModifier::removeQuadsProcess(const sofa::helper::vector<unsi
             {
                 sofa::helper::vector< unsigned int > &shell = m_container->m_quadVertexShell[ t[v] ];
                 shell.erase(remove(shell.begin(), shell.end(), indices[i]), shell.end());
-                if((removeIsolatedPoints) && shell.empty())
+                if(removeIsolatedPoints && shell.empty())
                     vertexToBeRemoved.push_back(t[v]);
             }
         }
 
-        /** first check that the quad edge shell array has been initialized */
         if(m_container->hasQuadEdgeShell())
         {
             for(unsigned int e=0; e<4; ++e)
             {
                 sofa::helper::vector< unsigned int > &shell = m_container->m_quadEdgeShell[ m_container->m_quadEdge[indices[i]][e]];
                 shell.erase(remove(shell.begin(), shell.end(), indices[i]), shell.end());
-                if((removeIsolatedEdges) && shell.empty())
+                if(removeIsolatedEdges && shell.empty())
                     edgeToBeRemoved.push_back(m_container->m_quadEdge[indices[i]][e]);
             }
         }
@@ -269,49 +268,33 @@ void QuadSetTopologyModifier::removeQuadsProcess(const sofa::helper::vector<unsi
     if(!edgeToBeRemoved.empty())
     {
         /// warn that edges will be deleted
-        this->removeEdgesWarning(edgeToBeRemoved);
+        removeEdgesWarning(edgeToBeRemoved);
         m_container->propagateTopologicalChanges();
         /// actually remove edges without looking for isolated vertices
-        this->removeEdgesProcess(edgeToBeRemoved,false);
+        removeEdgesProcess(edgeToBeRemoved,false);
     }
 
     if(!vertexToBeRemoved.empty())
     {
-        this->removePointsWarning(vertexToBeRemoved);
+        removePointsWarning(vertexToBeRemoved);
         /// propagate to all components
         m_container->propagateTopologicalChanges();
-        this->removePointsProcess(vertexToBeRemoved);
+        removePointsProcess(vertexToBeRemoved);
     }
 }
 
-void QuadSetTopologyModifier::addPointsProcess(const unsigned int nPoints, const bool addDOF)
+void QuadSetTopologyModifier::addPointsProcess(const unsigned int nPoints)
 {
     // start by calling the parent's method.
-    // TODO : only if edges exist, otherwise call the PointSet method
-    EdgeSetTopologyModifier::addPointsProcess( nPoints, addDOF );
+    EdgeSetTopologyModifier::addPointsProcess( nPoints );
 
     // now update the local container structures.
     if(m_container->hasQuadVertexShell())
-        m_container->m_quadVertexShell.resize( m_container->m_quadVertexShell.size() + nPoints );
-}
-
-void QuadSetTopologyModifier::addPointsProcess(const unsigned int nPoints,
-        const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
-        const bool addDOF)
-{
-    // start by calling the parent's method.
-    // TODO : only if edges exist, otherwise call the PointSet method
-    EdgeSetTopologyModifier::addPointsProcess( nPoints, ancestors, baryCoefs, addDOF );
-
-    // now update the local container structures.
-    if(m_container->hasQuadVertexShell())
-        m_container->m_quadVertexShell.resize( m_container->m_quadVertexShell.size() + nPoints );
+        m_container->m_quadVertexShell.resize( m_container->getNbPoints() );
 }
 
 void QuadSetTopologyModifier::addEdgesProcess(const sofa::helper::vector< Edge > &edges)
 {
-    // now update the local container structures.
     if(!m_container->hasEdges())
     {
         m_container->createEdgeSetArray();
@@ -327,80 +310,68 @@ void QuadSetTopologyModifier::addEdgesProcess(const sofa::helper::vector< Edge >
 void QuadSetTopologyModifier::removePointsProcess( sofa::helper::vector<unsigned int> &indices,
         const bool removeDOF)
 {
-    // now update the local container structures
-
-    // force the creation of the quad vertex shell array before any point is deleted
-    if(!m_container->hasQuadVertexShell())
-        m_container->createQuadVertexShellArray();
-
-    unsigned int lastPoint = m_container->getNbPoints() - 1;
-    for(unsigned int i=0; i<indices.size(); ++i, --lastPoint)
+    if(m_container->hasQuads())
     {
-        // updating the quads connected to the point replacing the removed one:
-        // for all quads connected to the last point
+        if(!m_container->hasQuadVertexShell())
+            m_container->createQuadVertexShellArray();
 
-        sofa::helper::vector<unsigned int> &shell = m_container->m_quadVertexShell[lastPoint];
-        for(unsigned int j=0; j<shell.size(); ++j)
+        unsigned int lastPoint = m_container->getNbPoints() - 1;
+        for(unsigned int i=0; i<indices.size(); ++i, --lastPoint)
         {
-            const unsigned int q = shell[j];
-            for(unsigned int k=0; k<4; ++k)
+            // updating the quads connected to the point replacing the removed one:
+            // for all quads connected to the last point
+
+            sofa::helper::vector<unsigned int> &shell = m_container->m_quadVertexShell[lastPoint];
+            for(unsigned int j=0; j<shell.size(); ++j)
             {
-                if(m_container->m_quad[q][k] == lastPoint)
-                    m_container->m_quad[q][k] = indices[i];
+                const unsigned int q = shell[j];
+                for(unsigned int k=0; k<4; ++k)
+                {
+                    if(m_container->m_quad[q][k] == lastPoint)
+                        m_container->m_quad[q][k] = indices[i];
+                }
             }
+
+            // updating the edge shell itself (change the old index for the new one)
+            m_container->m_quadVertexShell[ indices[i] ] = m_container->m_quadVertexShell[ lastPoint ];
         }
 
-        // updating the edge shell itself (change the old index for the new one)
-        m_container->m_quadVertexShell[ indices[i] ] = m_container->m_quadVertexShell[ lastPoint ];
+        m_container->m_quadVertexShell.resize( m_container->m_quadVertexShell.size() - indices.size() );
     }
-
-    m_container->m_quadVertexShell.resize( m_container->m_quadVertexShell.size() - indices.size() );
 
     // Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
     // call the parent's method.
-    // TODO : only if edges exist, otherwise call PointSetMethod
     EdgeSetTopologyModifier::removePointsProcess( indices, removeDOF );
 }
 
 void QuadSetTopologyModifier::removeEdgesProcess( const sofa::helper::vector<unsigned int> &indices,
         const bool removeIsolatedItems)
 {
-    // TODO : clarify what exactly has to happen here (what if an edge is removed from an existing quad?)
+    // Note: this does not check if an edge is removed from an existing quad (it should never happen)
 
-    // now update the local container structures
-    if(!m_container->hasEdges()) // TODO : this method should only be called when edges exist
+    if(m_container->hasQuadEdges()) // this method should only be called when edges exist
     {
-#ifndef NDEBUG
-        cout << "Warning. [QuadSetTopologyModifier::removeEdgesProcess] edge array is empty." << endl;
-#endif
-        m_container->createEdgeSetArray();
-    }
+        if(!m_container->hasQuadEdgeShell())
+            m_container->createQuadEdgeShellArray();
 
-    if(!m_container->hasQuadEdgeShell())
-        m_container->createQuadEdgeShellArray();
-
-    if(!m_container->hasQuadEdges())
-        m_container->createQuadEdgeArray();
-
-    unsigned int edgeIndex;
-    unsigned int lastEdge = m_container->getNumberOfEdges() - 1;
-    for(unsigned int i = 0; i < indices.size(); ++i, --lastEdge)
-    {
-        // updating the quads connected to the edge replacing the removed one:
-        // for all quads connected to the last point
-        for(sofa::helper::vector<unsigned int>::iterator itt = m_container->m_quadEdgeShell[lastEdge].begin();
-            itt != m_container->m_quadEdgeShell[lastEdge].end(); ++itt)
+        unsigned int lastEdge = m_container->getNumberOfEdges() - 1;
+        for(unsigned int i = 0; i < indices.size(); ++i, --lastEdge)
         {
-            edgeIndex = m_container->getEdgeIndexInQuad(m_container->m_quadEdge[(*itt)], lastEdge);
-            assert((int)edgeIndex!= -1);
-            m_container->m_quadEdge[(*itt)][(unsigned int)edgeIndex] = indices[i];
+            // updating the quads connected to the edge replacing the removed one:
+            // for all quads connected to the last point
+            for(sofa::helper::vector<unsigned int>::iterator itt = m_container->m_quadEdgeShell[lastEdge].begin();
+                itt != m_container->m_quadEdgeShell[lastEdge].end(); ++itt)
+            {
+                unsigned int edgeIndex = m_container->getEdgeIndexInQuad(m_container->m_quadEdge[*itt], lastEdge);
+                m_container->m_quadEdge[*itt][edgeIndex] = indices[i];
+            }
+
+            // updating the edge shell itself (change the old index for the new one)
+            m_container->m_quadEdgeShell[ indices[i] ] = m_container->m_quadEdgeShell[ lastEdge ];
         }
 
-        // updating the edge shell itself (change the old index for the new one)
-        m_container->m_quadEdgeShell[ indices[i] ] = m_container->m_quadEdgeShell[ lastEdge ];
+        m_container->m_quadEdgeShell.resize( m_container->getNumberOfEdges() - indices.size() );
     }
-
-    m_container->m_quadEdgeShell.resize( m_container->m_quadEdgeShell.size() - indices.size() );
 
     // call the parent's method.
     EdgeSetTopologyModifier::removeEdgesProcess(indices, removeIsolatedItems);
@@ -410,37 +381,28 @@ void QuadSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector<
         const sofa::helper::vector<unsigned int> &inv_index,
         const bool renumberDOF)
 {
-    // now update the local container structures.
-    if(!m_container->hasQuads()) // TODO : this method should only be called when quads exist
+    if(m_container->hasQuads())
     {
-#ifndef NDEBUG
-        cout << "Error. [QuadSetTopologyModifier::renumberPointsProcess] quad array is empty." << endl;
-#endif
-        m_container->createQuadSetArray();
-    }
-
-    if(m_container->hasQuadVertexShell())
-    {
-        sofa::helper::vector< sofa::helper::vector< unsigned int > > quadVertexShell_cp = m_container->m_quadVertexShell;
-        for(unsigned int i=0; i<index.size(); ++i)
+        if(m_container->hasQuadVertexShell())
         {
-            m_container->m_quadVertexShell[i] = quadVertexShell_cp[ index[i] ];
+            sofa::helper::vector< sofa::helper::vector< unsigned int > > quadVertexShell_cp = m_container->m_quadVertexShell;
+            for(unsigned int i=0; i<index.size(); ++i)
+            {
+                m_container->m_quadVertexShell[i] = quadVertexShell_cp[ index[i] ];
+            }
+        }
+
+        for(unsigned int i=0; i<m_container->m_quad.size(); ++i)
+        {
+            m_container->m_quad[i][0]  = inv_index[ m_container->m_quad[i][0]  ];
+            m_container->m_quad[i][1]  = inv_index[ m_container->m_quad[i][1]  ];
+            m_container->m_quad[i][2]  = inv_index[ m_container->m_quad[i][2]  ];
+            m_container->m_quad[i][3]  = inv_index[ m_container->m_quad[i][3]  ];
         }
     }
 
-    for(unsigned int i=0; i<m_container->m_quad.size(); ++i)
-    {
-        m_container->m_quad[i][0]  = inv_index[ m_container->m_quad[i][0]  ];
-        m_container->m_quad[i][1]  = inv_index[ m_container->m_quad[i][1]  ];
-        m_container->m_quad[i][2]  = inv_index[ m_container->m_quad[i][2]  ];
-        m_container->m_quad[i][3]  = inv_index[ m_container->m_quad[i][3]  ];
-    }
-
     // call the parent's method
-    if(m_container->hasEdges())
-        EdgeSetTopologyModifier::renumberPointsProcess( index, inv_index, renumberDOF );
-    else
-        PointSetTopologyModifier::renumberPointsProcess( index, inv_index, renumberDOF );
+    EdgeSetTopologyModifier::renumberPointsProcess( index, inv_index, renumberDOF );
 }
 
 } // namespace topology

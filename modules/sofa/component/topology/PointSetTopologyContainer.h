@@ -54,14 +54,14 @@ public:
 
     virtual void init();
 
+    virtual void clear();
+
     /// BaseMeshTopology API
     /// @{
     /** \brief Returns the number of vertices in this topology.
     *
     */
     int getNbPoints() const {return nbPoints;}
-
-    virtual void clear();
 
     /** \brief Called by a topology to warn specific topologies linked to it that TopologyChange objects happened.
     *

@@ -51,31 +51,21 @@ void PointSetTopologyModifier::init()
 }
 
 
-void PointSetTopologyModifier::swapPoints(const int i1,const int i2)
+void PointSetTopologyModifier::swapPoints(const int i1, const int i2)
 {
-    //PointsIndicesSwap *e2 = PointsIndicesSwap PointsAdded( i1, i2 );
-    //addStateChange(e2);
-    //m_container->propagateStateChanges();
+    PointsIndicesSwap *e2 = new PointsIndicesSwap( i1, i2 );
+    addStateChange(e2);
+    m_container->propagateStateChanges();
 
-    PointsIndicesSwap *e = new PointsIndicesSwap( i1, i2 ); // local or global indices ? (example of edges)
+    PointsIndicesSwap *e = new PointsIndicesSwap( i1, i2 );
     this->addTopologyChange(e);
 }
 
 
-void PointSetTopologyModifier::addPointsProcess(const unsigned int nPoints, const bool /*addDOF*/)
+void PointSetTopologyModifier::addPointsProcess(const unsigned int nPoints)
 {
     m_container->addPoints(nPoints);
 }
-
-
-void PointSetTopologyModifier::addPointsProcess(const unsigned int nPoints,
-        const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
-        const sofa::helper::vector< sofa::helper::vector< double > >& /*baryCoefs*/,
-        const bool /*addDOF*/)
-{
-    m_container->addPoints(nPoints);
-}
-
 
 void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints, const bool addDOF)
 {
@@ -113,7 +103,7 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
 void PointSetTopologyModifier::removePointsWarning(sofa::helper::vector<unsigned int> &indices,
         const bool removeDOF)
 {
-    // TODO: clarify why sorting is necessary
+    // sort points so that they are removed in a descending order
     std::sort( indices.begin(), indices.end(), std::greater<unsigned int>() );
 
     // Warning that these vertices will be deleted
@@ -122,7 +112,7 @@ void PointSetTopologyModifier::removePointsWarning(sofa::helper::vector<unsigned
 
     if(removeDOF)
     {
-        PointsRemoved *e2=new PointsRemoved(indices);
+        PointsRemoved *e2 = new PointsRemoved(indices);
         addStateChange(e2);
     }
 }

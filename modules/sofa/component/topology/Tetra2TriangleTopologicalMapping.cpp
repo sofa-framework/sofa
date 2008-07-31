@@ -136,7 +136,7 @@ void Tetra2TriangleTopologicalMapping::init()
                 if (fromModel->getTetraTriangleShell(i).size()==1)
                 {
 
-                    to_tstm->addTriangle(triangleArray[i]);
+                    to_tstm->addTriangleProcess(triangleArray[i]);
 
                     Loc2GlobVec.push_back(i);
                     Glob2LocMap[i]=Loc2GlobVec.size()-1;
