@@ -41,7 +41,7 @@ using namespace sofa::defaulttype;
 template <class DataTypes>
 void HexahedronSetGeometryAlgorithms<DataTypes>::init()
 {
-    QuadSetGeometryAlgorithms::init();
+    QuadSetGeometryAlgorithms<DataTypes>::init();
     this->getContext()->get(m_container);
 }
 
