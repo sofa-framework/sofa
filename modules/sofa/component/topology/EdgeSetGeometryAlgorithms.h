@@ -27,6 +27,8 @@
 
 #include <sofa/component/topology/PointSetGeometryAlgorithms.h>
 
+#include <sofa/component/topology/EdgeSetTopologyContainer.h>
+
 namespace sofa
 {
 
@@ -70,10 +72,6 @@ public:
 
     EdgeSetGeometryAlgorithms()
         : PointSetGeometryAlgorithms<DataTypes>()
-    {}
-
-    EdgeSetGeometryAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
-        : PointSetGeometryAlgorithms<DataTypes>(top)
     {}
 
     virtual ~EdgeSetGeometryAlgorithms() {}

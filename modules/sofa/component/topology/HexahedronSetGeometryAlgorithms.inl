@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETGEOMETRYALGORITHMS_INL
 
 #include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
-#include <sofa/component/topology/HexahedronSetTopology.h>
 
 namespace sofa
 {
@@ -39,9 +38,9 @@ namespace topology
 using namespace sofa::defaulttype;
 
 template <class DataTypes>
-void HexahedronSetGeometryAlgorithms<DataTypes>::init()
+void HexahedronSetGeometryAlgorithms< DataTypes >::init()
 {
-    QuadSetGeometryAlgorithms<DataTypes>::init();
+    QuadSetGeometryAlgorithms< DataTypes >::init();
     this->getContext()->get(m_container);
 }
 

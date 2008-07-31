@@ -27,6 +27,8 @@
 
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
 
+#include <sofa/component/topology/ManifoldEdgeSetTopologyContainer.h>
+
 namespace sofa
 {
 
@@ -56,10 +58,6 @@ public:
 
     ManifoldEdgeSetGeometryAlgorithms()
         : EdgeSetGeometryAlgorithms<DataTypes>()
-    {}
-
-    ManifoldEdgeSetGeometryAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
-        : EdgeSetGeometryAlgorithms<DataTypes>(top)
     {}
 
     virtual ~ManifoldEdgeSetGeometryAlgorithms() {}

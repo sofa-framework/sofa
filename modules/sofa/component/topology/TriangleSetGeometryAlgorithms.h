@@ -27,6 +27,8 @@
 
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
 
+#include <sofa/component/topology/TriangleSetTopologyContainer.h>
+
 namespace sofa
 {
 
@@ -58,10 +60,6 @@ public:
 
     TriangleSetGeometryAlgorithms()
         : EdgeSetGeometryAlgorithms<DataTypes>()
-    {}
-
-    TriangleSetGeometryAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
-        : EdgeSetGeometryAlgorithms<DataTypes>(top)
     {}
 
     virtual ~TriangleSetGeometryAlgorithms() {}

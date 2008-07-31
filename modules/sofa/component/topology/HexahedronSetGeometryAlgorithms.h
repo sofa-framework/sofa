@@ -27,6 +27,8 @@
 
 #include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
 
+#include <sofa/component/topology/HexahedronSetTopologyContainer.h>
+
 namespace sofa
 {
 namespace component
@@ -62,10 +64,6 @@ public:
 
     HexahedronSetGeometryAlgorithms()
         : QuadSetGeometryAlgorithms<DataTypes>()
-    {}
-
-    HexahedronSetGeometryAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top)
-        : QuadSetGeometryAlgorithms<DataTypes>(top)
     {}
 
     virtual ~HexahedronSetGeometryAlgorithms() {}
