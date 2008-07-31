@@ -14,7 +14,7 @@
 \section{Possibilities}
 
 With a monitor, you can see the positions, velocities, forces of chosen particles directly in the GUI or save it into files (readable with Gnuplot)\\
-(See \textbf{Figure \ref{figure1} } to look at a monitor in action)
+(See \textbf{Figure \ref{figure1} } and \textbf{Figure \ref{figure2} } to look at a monitor in action)
 
 \section{How to add a monitor to your scene}
 
@@ -31,7 +31,7 @@ With a monitor, you can see the positions, velocities, forces of chosen particle
 	For example :
 	P3 [12 4 0] V0 [] F5 [1 2 3 4 5]
 
-	You can also see the ``monitoredBeamSpring.scn'' file for an example (located in the \textit{examples/Components/monitor} directory)
+	You can also see the ``Monitor.scn'' file for an example (located in the \textit{examples/Components/monitor} directory)
 
 	\item In a c++ file :\\
 	Include first the Monitor header located in \textit{sofa/component/misc/}.
@@ -67,6 +67,23 @@ Once the scene launched, if you click on the monitor node in the graph, you shou
 
 By clicking on one of the \textit{particle Indices} boxes, you can change the number of the particle monitored.
 With the \textit{spinBox} on the left, you can add or remove particles to monitor.
+
+\pagebreak
+
+You can also edit the graphical proprieties, with for example : \\
+\begin{itemize}
+	\item show velocities, forces, positions.
+	\item define the color of these attributes.
+	\item keep the trace of positions.
+\end{itemize}
+
+\begin{figure} [h]
+	\includegraphics[scale=0.5] {QTableMonitor2.png}
+	\caption{Graphical proprieties}
+	\label{figure2}
+\end{figure}
+
+
 
 
 

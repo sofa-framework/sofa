@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MISC_MONITOR_H
 #include <sofa/core/VisualModel.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-
+#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
@@ -270,19 +270,30 @@ public:
         //return the position vector of particle number "index"
         const Coord getPos ( unsigned int index ) const
         {
-            return pos[0][posIndices[index]];
+            return ((*pos)[posIndices[index]]);
         }
 
         //return the velocity vector of particle number "index"
         const Deriv getVel ( unsigned int index ) const
         {
-            return vels[0][velsIndices[index]];
+            return (*vels)[velsIndices[index]];
         }
 
         //return the force vector of particle number "index"
         const Deriv getForce ( unsigned int index ) const
         {
-            return forces[0][forcesIndices[index]];
+            return (*forces)[forcesIndices[index]];
+        }
+
+        const VecCoord* getMechPos () const
+        {
+            return pos;
+        }
+
+        //get the vector containing the saved positions (for trajectories)
+        sofa::helper::vector < VecCoord >* getSavePos()
+        {
+            return &savePos;
         }
 
     protected:
@@ -304,6 +315,10 @@ public:
         VecDeriv* vels;
         VecDeriv* forces;
         VecCoord* pos;
+
+        ///store the positions to draw the trajectory of points
+        sofa::helper::vector < VecCoord > savePos;
+
     };
 
     Data < bool > saveXToGnuplot;
@@ -311,6 +326,22 @@ public:
     Data < bool > saveFToGnuplot;
 
     Data < MonitorData > monitoring;
+
+    Data < bool > showPositions;
+    Data <defaulttype::Vector3> positionsColor;
+
+    Data < bool > showVelocities;
+    Data< defaulttype::Vector3 > velocitiesColor;
+
+    Data < bool > showForces;
+    Data< defaulttype::Vector3 > forcesColor;
+
+    Data < double > showMinThreshold;
+
+    Data < bool > showTrajectories;
+    Data < double > trajectoriesPrecision;
+    Data< defaulttype::Vector3 > trajectoriesColor;
+
 
     Monitor ();
     ~Monitor ();
@@ -350,11 +381,21 @@ public:
 
 protected:
 
+    /////////////////////////// vectorNorm() /////////////////////////////////
+    inline double vectorNorm (Deriv currentVel)
+    {
+        return sqrt (currentVel[0]*currentVel[0] + currentVel[1]*currentVel[1] + currentVel[2]*currentVel[2]);
+    }
+    /////////////////////////// end vectorNorm () ////////////////////////////
+
     std::ofstream* saveGnuplotX;
     std::ofstream* saveGnuplotV;
     std::ofstream* saveGnuplotF;
 
     core::componentmodel::behavior::MechanicalState<DataTypes>* mmodel;
+
+    ///use for trajectoriesPrecision (save value only if trajectoriesPrecision <= internalDt)
+    double internalDt;
 };
 
 } // namespace misc
