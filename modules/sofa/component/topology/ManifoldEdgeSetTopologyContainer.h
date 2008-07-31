@@ -58,15 +58,7 @@ public:
 
     virtual void init();
 
-    /// BaseMeshTopology API
-    /// @{
-
-    virtual const SeqEdges& getEdges()
-    {
-        return getEdgeArray();
-    }
-
-    /// @}
+    virtual void clear();
 
     /** \brief Checks if the topology is coherent
     *
@@ -74,60 +66,10 @@ public:
     */
     virtual bool checkTopology() const;
 
-    // Describe each connected component, which can be seen as an oriented line
-    class ConnectedComponent
-    {
-    public:
-
-        ConnectedComponent(unsigned int FirstVertexIndex=-1, unsigned int LastVertexIndex=-1, unsigned int size=0,unsigned int ccIndex=0)
-            : FirstVertexIndex(FirstVertexIndex), LastVertexIndex(LastVertexIndex), size(size), ccIndex(ccIndex)
-        {}
-
-        virtual ~ConnectedComponent() {}
-
-    public:
-        unsigned int FirstVertexIndex; // index of the first vertex on the line
-        unsigned int LastVertexIndex; // index of the last vertex on the line
-
-        unsigned int size; // number of the vertices on the line
-
-        unsigned int ccIndex; // index of the connected component stored in the m_ConnectedComponentArray
-    };
-
-    /** \brief Returns the Edge array.
-    *
-    */
-    virtual const sofa::helper::vector<Edge> &getEdgeArray(); // TODO: const;
-
-    /** \brief Returns the ith Edge.
-    *
-    */
-    virtual const Edge &getEdge(const unsigned int i); // TODO: const;
-
-    /** \brief Returns the number of edges in this topology.
-    *
-    */
-    virtual unsigned int getNumberOfEdges(); // TODO: const;
-
-    /** \brief Returns the Edge Shell array.
-    *
-    */
-    virtual const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getEdgeVertexShellArray(); // TODO: const;
-
-    /** \brief Returns the edge shell of the ith DOF.
-    *
-    */
-    virtual const sofa::helper::vector< unsigned int > &getEdgeVertexShell(const unsigned int i);
-
-    /** \brief Returns the index of the edge joining vertex v1 and vertex v2; returns -1 if no edge exists
-    *
-    */
-    virtual int getEdgeIndex(const unsigned int v1, const unsigned int v2);
-
     /** \brief Returns the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
     @param components the array containing the optimal vertex permutation according to the Reverse CuthillMckee algorithm
     */
-    virtual int getNumberConnectedComponents(sofa::helper::vector<unsigned int>& components); // TODO: const;
+    virtual int getNumberConnectedComponents(sofa::helper::vector<unsigned int>& components);
 
     inline friend std::ostream& operator<< (std::ostream& out, const ManifoldEdgeSetTopologyContainer& t)
     {
@@ -150,6 +92,35 @@ public:
         }
         return in;
     }
+protected:
+    /** \brief Creates the EdgeSetIndex.
+    *
+    * This function is only called if the EdgeShell member is required.
+    * EdgeShell[i] contains the indices of all edges having the ith DOF as
+    * one of their ends.
+    */
+    virtual void createEdgeVertexShellArray();
+
+private:
+    // Describe each connected component, which can be seen as an oriented line
+    class ConnectedComponent
+    {
+    public:
+
+        ConnectedComponent(unsigned int FirstVertexIndex=-1, unsigned int LastVertexIndex=-1, unsigned int size=0,unsigned int ccIndex=0)
+            : FirstVertexIndex(FirstVertexIndex), LastVertexIndex(LastVertexIndex), size(size), ccIndex(ccIndex)
+        {}
+
+        virtual ~ConnectedComponent() {}
+
+    public:
+        unsigned int FirstVertexIndex; // index of the first vertex on the line
+        unsigned int LastVertexIndex; // index of the last vertex on the line
+
+        unsigned int size; // number of the vertices on the line
+
+        unsigned int ccIndex; // index of the connected component stored in the m_ConnectedComponentArray
+    };
 
     /** \brief Resets the array of connected components and the ComponentVertex array (which are not valide anymore).
     *
@@ -290,34 +261,6 @@ public:
         }
     }
 
-protected:
-    /** \brief Returns a non-const edge shell of the ith DOF for subsequent modification
-    *
-    */
-    virtual sofa::helper::vector< unsigned int > &getEdgeVertexShellForModification(const unsigned int i);
-
-    /** \brief Creates the EdgeSet array.
-    *
-    * This function must be implemented by derived classes to create a list of edges from a set of triangles or tetrahedra
-    */
-    virtual void createEdgeSetArray();
-
-    /** \brief Creates the EdgeSetIndex.
-    *
-    * This function is only called if the EdgeShell member is required.
-    * EdgeShell[i] contains the indices of all edges having the ith DOF as
-    * one of their ends.
-    */
-    virtual void createEdgeVertexShellArray();
-
-    bool hasEdges() const;
-
-    bool hasEdgeVertexShell() const;
-
-    void clearEdges();
-
-    void clearEdgeVertexShell();
-
     /** \brief Returns the ComponentVertex array.
     *
     */
@@ -334,7 +277,7 @@ protected:
         return m_ConnectedComponentArray;
     }
 
-protected:
+private:
     /** The array that stores for each vertex index, the connected component the vertex belongs to */
     sofa::helper::vector< unsigned int > m_ComponentVertexArray;
 

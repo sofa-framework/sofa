@@ -34,14 +34,15 @@ namespace component
 {
 namespace topology
 {
-using namespace std;
-using namespace sofa::defaulttype;
 SOFA_DECL_CLASS(HexahedronSetTopologyContainer)
 int HexahedronSetTopologyContainerClass = core::RegisterObject("Hexahedron set topology container")
         .add< HexahedronSetTopologyContainer >()
         ;
 
 const unsigned int hexahedronEdgeArray[12][2]= {{0,1},{0,3},{0,4},{1,2},{1,5},{2,3},{2,6},{3,7},{4,5},{4,7},{5,6},{6,7}};
+
+using namespace std;
+using namespace sofa::defaulttype;
 
 HexahedronSetTopologyContainer::HexahedronSetTopologyContainer()
     : QuadSetTopologyContainer()
@@ -76,7 +77,15 @@ void HexahedronSetTopologyContainer::createHexahedronSetArray()
 void HexahedronSetTopologyContainer::createEdgeSetArray()
 {
     if(hasEdges())
-        clearEdges();
+    {
+        EdgeSetTopologyContainer::clear();
+
+        clearQuadEdges();
+        clearQuadEdgeShell();
+
+        clearHexahedronEdges();
+        clearHexahedronEdgeShell();
+    }
 
     // create a temporary map to find redundant edges
     std::map<Edge,unsigned int> edgeMap;
@@ -87,18 +96,9 @@ void HexahedronSetTopologyContainer::createEdgeSetArray()
         Hexahedron &t = m_hexahedron[i];
         for(unsigned int j=0; j<12; ++j)
         {
-            Edge e;
             unsigned int v1 = t[hexahedronEdgeArray[j][0]];
             unsigned int v2 = t[hexahedronEdgeArray[j][1]];
-            // sort vertices in lexicographic order
-            if(v1<v2)
-            {
-                e=Edge(v1,v2);
-            }
-            else
-            {
-                e=Edge(v2,v1);
-            }
+            const Edge e((v1<v2) ? Edge(v1,v2) : Edge(v2,v1));
 
             if(edgeMap.find(e)==edgeMap.end())
             {
@@ -121,15 +121,6 @@ void HexahedronSetTopologyContainer::createHexahedronEdgeArray()
 
     m_hexahedronEdge.resize( getNumberOfHexahedra());
 
-    unsigned int edgeHexahedronDescriptionArray[12][2]= {{0,1},{0,3},{0,4},
-        {1,2},{1,5},
-        {2,3},{2,6},
-        {3,7},
-        {4,5},{4,7},
-        {5,6},
-        {6,7}
-    };
-
     for(unsigned int i=0; i<m_hexahedron.size(); ++i)
     {
         Hexahedron &t = m_hexahedron[i];
@@ -137,9 +128,8 @@ void HexahedronSetTopologyContainer::createHexahedronEdgeArray()
         // adding edge i in the edge shell of both points
         for(unsigned int j=0; j<12; ++j)
         {
-            const int edgeIndex = getEdgeIndex(t[edgeHexahedronDescriptionArray[j][0]],
-                    t[edgeHexahedronDescriptionArray[j][1]]);
-            assert(edgeIndex!= -1);
+            const int edgeIndex = getEdgeIndex(t[hexahedronEdgeArray[j][0]],
+                    t[hexahedronEdgeArray[j][1]]);
             m_hexahedronEdge[i][j] = edgeIndex;
         }
     }
@@ -148,18 +138,21 @@ void HexahedronSetTopologyContainer::createHexahedronEdgeArray()
 void HexahedronSetTopologyContainer::createQuadSetArray()
 {
     if(hasQuads())
+    {
+        QuadSetTopologyContainer::clear();
         clearQuads();
+        clearHexahedronQuads();
+        clearHexahedronQuadShell();
+    }
 
     // create a temporary map to find redundant quads
     std::map<Quad,unsigned int> quadMap;
-    std::map<Quad,unsigned int>::iterator itt;
-    Quad qu;
-    unsigned int v[4],val;
-    int quadIndex;
 
     for(unsigned int i=0; i<m_hexahedron.size(); ++i)
     {
         Hexahedron &h = m_hexahedron[i];
+
+        unsigned int v[4], val;
 
         // Quad 0 :
         v[0]=h[0];
@@ -170,18 +163,17 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
         // sort v such that v[0] is the smallest one
         while ((v[0]>v[1]) || (v[0]>v[2]) || (v[0]>v[3]))
         {
-            val=v[0];
+            val = v[0];
             v[0]=v[1];
             v[1]=v[2];
             v[2]=v[3];
             v[3]=val;
         }
-        //std::sort(v,v+1); std::sort(v,v+2); std::sort(v,v+3);
-        //std::sort(v+1,v+2); std::sort(v+1,v+3);
-        //std::sort(v+2,v+3);
+
         // sort vertices in lexicographics order
-        qu=helper::make_array<unsigned int>(v[0],v[3],v[2],v[1]);
-        itt=quadMap.find(qu);
+        int quadIndex;
+        Quad qu=helper::make_array<unsigned int>(v[0],v[3],v[2],v[1]);
+        std::map<Quad,unsigned int>::iterator itt = quadMap.find(qu);
         if(itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
@@ -206,9 +198,6 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
             v[2]=v[3];
             v[3]=val;
         }
-        //std::sort(v,v+1); std::sort(v,v+2); std::sort(v,v+3);
-        //std::sort(v+1,v+2); std::sort(v+1,v+3);
-        //std::sort(v+2,v+3);
         // sort vertices in lexicographics order
         qu=helper::make_array<unsigned int>(v[0],v[3],v[2],v[1]);
         itt=quadMap.find(qu);
@@ -233,9 +222,6 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
             v[2]=v[3];
             v[3]=val;
         }
-        //std::sort(v,v+1); std::sort(v,v+2); std::sort(v,v+3);
-        //std::sort(v+1,v+2); std::sort(v+1,v+3);
-        //std::sort(v+2,v+3);
         // sort vertices in lexicographics order
         qu=helper::make_array<unsigned int>(v[0],v[3],v[2],v[1]);
         itt=quadMap.find(qu);
@@ -260,9 +246,6 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
             v[2]=v[3];
             v[3]=val;
         }
-        //std::sort(v,v+1); std::sort(v,v+2); std::sort(v,v+3);
-        //std::sort(v+1,v+2); std::sort(v+1,v+3);
-        //std::sort(v+2,v+3);
         // sort vertices in lexicographics order
         qu=helper::make_array<unsigned int>(v[0],v[3],v[2],v[1]);
         itt=quadMap.find(qu);
@@ -290,9 +273,6 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
             v[2]=v[3];
             v[3]=val;
         }
-        //std::sort(v,v+1); std::sort(v,v+2); std::sort(v,v+3);
-        //std::sort(v+1,v+2); std::sort(v+1,v+3);
-        //std::sort(v+2,v+3);
         // sort vertices in lexicographics order
         qu=helper::make_array<unsigned int>(v[0],v[3],v[2],v[1]);
         itt=quadMap.find(qu);
@@ -320,9 +300,6 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
             v[2]=v[3];
             v[3]=val;
         }
-        //std::sort(v,v+1); std::sort(v,v+2); std::sort(v,v+3);
-        //std::sort(v+1,v+2); std::sort(v+1,v+3);
-        //std::sort(v+2,v+3);
         // sort vertices in lexicographics order
         qu=helper::make_array<unsigned int>(v[0],v[3],v[2],v[1]);
         itt=quadMap.find(qu);
@@ -438,13 +415,25 @@ void HexahedronSetTopologyContainer::createHexahedronQuadShellArray()
 
 const sofa::helper::vector<Hexahedron> &HexahedronSetTopologyContainer::getHexahedronArray()
 {
-    if(!hasHexahedra())
+    if(!hasHexahedra() && getNbPoints()>0)
+    {
+#ifndef NDEBUG
+        cout << "Warning. [HexahedronSetTopologyContainer::getHexahedronArray] creating hexahedron array." << endl;
+#endif
         createHexahedronSetArray();
+    }
 
     return m_hexahedron;
 }
 
-int HexahedronSetTopologyContainer::getHexahedronIndex(const unsigned int v1, const unsigned int v2, const unsigned int v3, const unsigned int v4, const unsigned int v5, const unsigned int v6, const unsigned int v7, const unsigned int v8)
+int HexahedronSetTopologyContainer::getHexahedronIndex(const unsigned int v1,
+        const unsigned int v2,
+        const unsigned int v3,
+        const unsigned int v4,
+        const unsigned int v5,
+        const unsigned int v6,
+        const unsigned int v7,
+        const unsigned int v8)
 {
     if(!hasHexahedronVertexShell())
         createHexahedronVertexShellArray();
@@ -518,11 +507,8 @@ const Hexahedron &HexahedronSetTopologyContainer::getHexahedron(const unsigned i
     return m_hexahedron[i];
 }
 
-unsigned int HexahedronSetTopologyContainer::getNumberOfHexahedra()
+unsigned int HexahedronSetTopologyContainer::getNumberOfHexahedra() const
 {
-    if(!hasHexahedra())
-        createHexahedronSetArray();
-
     return m_hexahedron.size();
 }
 
@@ -719,15 +705,6 @@ bool HexahedronSetTopologyContainer::checkTopology() const
 #ifndef NDEBUG
     bool ret = true;
 
-    if(hasQuads())
-    {
-        ret = QuadSetTopologyContainer::checkTopology();
-    }
-    else if(hasEdges())
-    {
-        ret = EdgeSetTopologyContainer::checkTopology();
-    }
-
     if(hasHexahedronVertexShell())
     {
         for(unsigned int i=0; i<m_hexahedronVertexShell.size(); ++i)
@@ -803,7 +780,7 @@ bool HexahedronSetTopologyContainer::checkTopology() const
         }
     }
 
-    return ret;
+    return ret && QuadSetTopologyContainer::checkTopology();
 #else
     return true;
 #endif
@@ -867,6 +844,18 @@ void HexahedronSetTopologyContainer::clearHexahedronEdgeShell()
 void HexahedronSetTopologyContainer::clearHexahedronQuadShell()
 {
     m_hexahedronQuadShell.clear();
+}
+
+void HexahedronSetTopologyContainer::clear()
+{
+    clearHexahedronVertexShell();
+    clearHexahedronEdgeShell();
+    clearHexahedronQuadShell();
+    clearHexahedronQuads();
+    clearHexahedronEdges();
+    clearHexahedra();
+
+    QuadSetTopologyContainer::clear();
 }
 
 } // namespace topology

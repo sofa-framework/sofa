@@ -78,32 +78,9 @@ public:
 
     /** \brief Add some points to this topology.
     *
-    * Use a list of ancestors to create the new points.
-    * Last parameter baryCoefs defines the coefficient used for the creation of the new points.
-    * Default value for these coefficient (when none is defined) is 1/n with n being the number of ancestors
-    * for the point being created.
-    *
-    * @param addDOF if true the points are actually added from the mechanical object's state vectors
-    *
     * \sa addPointsWarning
     */
-    virtual void addPointsProcess(const unsigned int nPoints, const bool addDOF = true);
-
-    /** \brief Add some points to this topology.
-    *
-    * Use a list of ancestors to create the new points.
-    * Last parameter baryCoefs defines the coefficient used for the creation of the new points.
-    * Default value for these coefficient (when none is defined) is 1/n with n being the number of ancestors
-    * for the point being created.
-    *
-    * @param addDOF if true the points are actually added from the mechanical object's state vectors
-    *
-    * \sa addPointsWarning
-    */
-    virtual void addPointsProcess(const unsigned int nPoints,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
-            const bool addDOF = true);
+    virtual void addPointsProcess(const unsigned int nPoints);
 
     /** \brief Sends a message to warn that some points are about to be deleted.
     *

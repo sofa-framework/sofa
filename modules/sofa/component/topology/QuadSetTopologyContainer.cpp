@@ -74,7 +74,7 @@ void QuadSetTopologyContainer::createQuadSetArray()
 
 void QuadSetTopologyContainer::createQuadVertexShellArray()
 {
-    if(!hasQuads()) // TODO : this method should only be called when quads exist
+    if(!hasQuads()) // this method should only be called when quads exist
     {
 #ifndef NDEBUG
         cout << "Warning. [QuadSetTopologyContainer::createQuadVertexShellArray] quad array is empty." << endl;
@@ -101,7 +101,7 @@ void QuadSetTopologyContainer::createQuadVertexShellArray()
 
 void QuadSetTopologyContainer::createQuadEdgeShellArray()
 {
-    if(!hasQuads()) // TODO : this method should only be called when quads exist
+    if(!hasQuads()) // this method should only be called when quads exist
     {
 #ifndef NDEBUG
         cout << "Warning. [QuadSetTopologyContainer::createQuadEdgeShellArray] quad array is empty." << endl;
@@ -109,7 +109,7 @@ void QuadSetTopologyContainer::createQuadEdgeShellArray()
         createQuadSetArray();
     }
 
-    if(!hasEdges()) // TODO : this method should only be called when edges exist
+    if(!hasEdges()) // this method should only be called when edges exist
     {
 #ifndef NDEBUG
         cout << "Warning. [QuadSetTopologyContainer::createQuadEdgeShellArray] edge array is empty." << endl;
@@ -142,7 +142,7 @@ void QuadSetTopologyContainer::createQuadEdgeShellArray()
 
 void QuadSetTopologyContainer::createEdgeSetArray()
 {
-    if(!hasQuads()) // TODO : this method should only be called when quads exist
+    if(!hasQuads()) // this method should only be called when quads exist
     {
 #ifndef NDEBUG
         cout << "Warning. [QuadSetTopologyContainer::createEdgeSetArray] quad array is empty." << endl;
@@ -150,17 +150,14 @@ void QuadSetTopologyContainer::createEdgeSetArray()
         createQuadSetArray();
     }
 
-    if(hasEdges()) // TODO : this method should only be called when quads exist
+    if(hasEdges())
     {
 #ifndef NDEBUG
         cout << "Warning. [QuadSetTopologyContainer::createEdgeSetArray] edge array is not empty." << endl;
 #endif
 
         // clear edges and all shells that depend on edges
-        clearEdges();
-
-        if(hasEdgeVertexShell())
-            clearEdgeVertexShell();
+        EdgeSetTopologyContainer::clear();
 
         if(hasQuadEdges())
             clearQuadEdges();
@@ -196,7 +193,7 @@ void QuadSetTopologyContainer::createEdgeSetArray()
 
 void QuadSetTopologyContainer::createQuadEdgeArray()
 {
-    if(!hasQuads()) // TODO : this method should only be called when quads exist
+    if(!hasQuads()) // this method should only be called when quads exist
     {
 #ifndef NDEBUG
         cout << "Warning. [QuadSetTopologyContainer::createQuadEdgeArray] quad array is empty." << endl;
@@ -204,7 +201,7 @@ void QuadSetTopologyContainer::createQuadEdgeArray()
         createQuadSetArray();
     }
 
-    if(!hasEdges()) // TODO : this method should only be called when edges exist
+    if(!hasEdges()) // this method should only be called when edges exist
     {
 #ifndef NDEBUG
         cout << "Warning. [QuadSetTopologyContainer::createQuadEdgeArray] edge array is empty." << endl;
@@ -226,11 +223,6 @@ void QuadSetTopologyContainer::createQuadEdgeArray()
         for (unsigned int j=0; j<4; ++j)
         {
             const int edgeIndex = getEdgeIndex(t[(j+1)%4],t[(j+2)%4]);
-
-#ifndef NDEBUG
-            if(edgeIndex == -1)
-                cout << "Error. [QuadSetTopologyContainer::createQuadEdgeArray] edge not found." << endl;
-#endif
             m_quadEdge[i][j]=edgeIndex;
         }
     }
@@ -238,10 +230,10 @@ void QuadSetTopologyContainer::createQuadEdgeArray()
 
 const sofa::helper::vector<Quad> &QuadSetTopologyContainer::getQuadArray()
 {
-    if(!hasQuads()) // TODO : this method should only be called when quads exist
+    if(!hasQuads() && getNbPoints()>0)
     {
 #ifndef NDEBUG
-        cout << "Warning. [QuadSetTopologyContainer::getQuadArray] quad array is empty." << endl;
+        cout << "Warning. [QuadSetTopologyContainer::getQuadArray] creating quad array." << endl;
 #endif
         createQuadSetArray();
     }
@@ -294,9 +286,9 @@ int QuadSetTopologyContainer::getQuadIndex(const unsigned int v1,
         return -1;
 }
 
-const Quad &QuadSetTopologyContainer::getQuad(const unsigned int i) // TODO : const
+const Quad &QuadSetTopologyContainer::getQuad(const unsigned int i)
 {
-    if(!hasQuads()) // TODO : this method should only be called when quads exist
+    if(!hasQuads()) // this method should only be called when quads exist
     {
 #ifndef NDEBUG
         cout << "Warning. [QuadSetTopologyContainer::] quad array is empty." << endl;
@@ -307,22 +299,14 @@ const Quad &QuadSetTopologyContainer::getQuad(const unsigned int i) // TODO : co
     return m_quad[i];
 }
 
-unsigned int QuadSetTopologyContainer::getNumberOfQuads() // TODO : const
+unsigned int QuadSetTopologyContainer::getNumberOfQuads() const
 {
-    if(!hasQuads()) // TODO : this method should only be called when quads exist
-    {
-#ifndef NDEBUG
-        cout << "Warning. [QuadSetTopologyContainer::] quad array is empty." << endl;
-#endif
-        createQuadSetArray();
-    }
-
     return m_quad.size();
 }
 
 const sofa::helper::vector< sofa::helper::vector<unsigned int> > &QuadSetTopologyContainer::getQuadVertexShellArray()
 {
-    if(!hasQuadVertexShell())	// TODO : this method should only be called when the shell array exists
+    if(!hasQuadVertexShell())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
         cout << "Warning. [QuadSetTopologyContainer::getQuadVertexShellArray] quad vertex shell array is empty." << endl;
@@ -335,7 +319,7 @@ const sofa::helper::vector< sofa::helper::vector<unsigned int> > &QuadSetTopolog
 
 const sofa::helper::vector< sofa::helper::vector<unsigned int> > &QuadSetTopologyContainer::getQuadEdgeShellArray()
 {
-    if(!hasQuadEdgeShell())	// TODO : this method should only be called when the shell array exists
+    if(!hasQuadEdgeShell())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
         cout << "Warning. [QuadSetTopologyContainer::getQuadEdgeShellArray] quad edge shell array is empty." << endl;
@@ -356,7 +340,7 @@ const sofa::helper::vector< QuadEdges> &QuadSetTopologyContainer::getQuadEdgeArr
 
 const sofa::helper::vector< unsigned int > &QuadSetTopologyContainer::getQuadVertexShell(const unsigned int i)
 {
-    if(!hasQuadVertexShell())	// TODO : this method should only be called when the shell array exists
+    if(!hasQuadVertexShell())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
         cout << "Warning. [QuadSetTopologyContainer::getQuadVertexShell] quad vertex shell array is empty." << endl;
@@ -374,10 +358,9 @@ const sofa::helper::vector< unsigned int > &QuadSetTopologyContainer::getQuadVer
     return m_quadVertexShell[i];
 }
 
-
 const sofa::helper::vector< unsigned int > &QuadSetTopologyContainer::getQuadEdgeShell(const unsigned int i)
 {
-    if(!hasQuadEdgeShell())	// TODO : this method should only be called when the shell array exists
+    if(!hasQuadEdgeShell())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
         cout << "Warning. [QuadSetTopologyContainer::getQuadEdgeShell] quad edge shell array is empty." << endl;
@@ -399,7 +382,8 @@ const QuadEdges &QuadSetTopologyContainer::getQuadEdge(const unsigned int i)
 {
     if(m_quadEdge.empty())
         createQuadEdgeArray();
-    else if( i >= m_quadEdge.size())
+
+    if( i >= m_quadEdge.size())
     {
 #ifndef NDEBUG
         cout << "Error. [QuadSetTopologyContainer::getQuadEdge] index out of bounds." << endl;
@@ -440,14 +424,15 @@ int QuadSetTopologyContainer::getEdgeIndexInQuad(QuadEdges &t, unsigned int edge
 
 sofa::helper::vector< unsigned int > &QuadSetTopologyContainer::getQuadEdgeShellForModification(const unsigned int i)
 {
-    if(!hasQuadEdgeShell())	// TODO : this method should only be called when the shell array exists
+    if(!hasQuadEdgeShell())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
         cout << "Warning. [QuadSetTopologyContainer::getQuadEdgeShellForModification] quad edge shell array is empty." << endl;
 #endif
         createQuadEdgeShellArray();
     }
-    else if( i >= m_quadEdgeShell.size())
+
+    if( i >= m_quadEdgeShell.size())
     {
 #ifndef NDEBUG
         cout << "Error. [QuadSetTopologyContainer::getQuadEdgeShellForModification] index out of bounds." << endl;
@@ -460,14 +445,15 @@ sofa::helper::vector< unsigned int > &QuadSetTopologyContainer::getQuadEdgeShell
 
 sofa::helper::vector< unsigned int > &QuadSetTopologyContainer::getQuadVertexShellForModification(const unsigned int i)
 {
-    if(!hasQuadVertexShell())	// TODO : this method should only be called when the shell array exists
+    if(!hasQuadVertexShell())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
         cout << "Warning. [QuadSetTopologyContainer::getQuadVertexShellForModification] quad vertex shell array is empty." << endl;
 #endif
         createQuadVertexShellArray();
     }
-    else if( i >= m_quadVertexShell.size())
+
+    if( i >= m_quadVertexShell.size())
     {
 #ifndef NDEBUG
         cout << "Error. [QuadSetTopologyContainer::getQuadVertexShellForModification] index out of bounds." << endl;
@@ -483,18 +469,6 @@ bool QuadSetTopologyContainer::checkTopology() const
 {
 #ifndef NDEBUG
     bool ret = true;
-
-    if(!hasQuads()) // TODO : this method should only be called when quads exist
-    {
-        cout << "Warning. [QuadSetTopologyContainer::checkTopology] quad array is empty." << endl;
-        if(hasEdges())
-            ret = EdgeSetTopologyContainer::checkTopology();
-
-        return ret;
-    }
-
-    if(hasEdges())
-        ret = EdgeSetTopologyContainer::checkTopology();
 
     if(hasQuadVertexShell())
     {
@@ -534,7 +508,7 @@ bool QuadSetTopologyContainer::checkTopology() const
         }
     }
 
-    return ret;
+    return ret && EdgeSetTopologyContainer::checkTopology();
 #else
     return true;
 #endif
@@ -584,6 +558,16 @@ void QuadSetTopologyContainer::clearQuadEdges()
 void QuadSetTopologyContainer::clearQuads()
 {
     m_quad.clear();
+}
+
+void QuadSetTopologyContainer::clear()
+{
+    clearQuadVertexShell();
+    clearQuadEdgeShell();
+    clearQuadEdges();
+    clearQuads();
+
+    EdgeSetTopologyContainer::clear();
 }
 
 } // namespace topology

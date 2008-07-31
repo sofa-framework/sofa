@@ -58,6 +58,8 @@ public:
 
     virtual void init();
 
+    virtual void clear();
+
     /// BaseMeshTopology API
     /// @{
 
@@ -106,9 +108,9 @@ public:
     const Quad &getQuad(const unsigned int i);
 
     /** \brief Returns the number of quads in this topology.
-    *
+    *	The difference to getNbQuads() is that this method does not generate the quad array if it does not exist.
     */
-    unsigned int getNumberOfQuads() ;
+    unsigned int getNumberOfQuads() const;
 
     /** \brief Returns the set of quads adjacent to a given vertex.
     *

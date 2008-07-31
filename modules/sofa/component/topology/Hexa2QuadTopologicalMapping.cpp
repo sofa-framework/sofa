@@ -137,7 +137,7 @@ void Hexa2QuadTopologicalMapping::init()
                 if (fromModel->getHexaQuadShell(i).size()==1)
                 {
 
-                    to_tstm->addQuad(quadArray[i]);
+                    to_tstm->addQuadProcess(quadArray[i]);
 
                     Loc2GlobVec.push_back(i);
                     Glob2LocMap[i]=Loc2GlobVec.size()-1;

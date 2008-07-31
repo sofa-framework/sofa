@@ -1019,7 +1019,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
 
 
         // Create all the points registered to be created
-        m_modifier->addPointsProcess((const unsigned int) acc_nb_points - nb_points, p_ancestors, p_baryCoefs);
+        m_modifier->addPointsProcess((const unsigned int) acc_nb_points - nb_points);
 
         // Warn for the creation of all the points registered to be created
         m_modifier->addPointsWarning((const unsigned int) acc_nb_points - nb_points, p_ancestors, p_baryCoefs);
@@ -1671,7 +1671,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
         }
 
         // Create all the points registered to be created
-        m_modifier->addPointsProcess((const unsigned int) acc_nb_points - nb_points, p_ancestors, p_baryCoefs);
+        m_modifier->addPointsProcess((const unsigned int) acc_nb_points - nb_points);
 
         // Warn for the creation of all the points registered to be created
         m_modifier->addPointsWarning((const unsigned int) acc_nb_points - nb_points, p_ancestors, p_baryCoefs);
@@ -1896,7 +1896,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
     }
 
     // Create all the points registered to be created
-    m_modifier->addPointsProcess((const unsigned int) acc_nb_points - nb_points, p_ancestors, p_baryCoefs);
+    m_modifier->addPointsProcess((const unsigned int) acc_nb_points - nb_points);
 
     // Warn for the creation of all the points registered to be created
     m_modifier->addPointsWarning((const unsigned int) acc_nb_points - nb_points, p_ancestors, p_baryCoefs);

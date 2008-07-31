@@ -77,29 +77,9 @@ public:
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs);
 
-    /** \brief Sends a message to warn that some edges were added in this topology.
-    *
-    * \sa addEdgesProcess
+    /** \brief Add a quad.
     */
-    void addEdgesWarning(const unsigned int nEdges,
-            const sofa::helper::vector< Edge >& edgesList,
-            const sofa::helper::vector< unsigned int >& edgesIndexList)
-    {
-        EdgeSetTopologyModifier::addEdgesWarning( nEdges, edgesList, edgesIndexList);
-    }
-
-    /** \brief Sends a message to warn that some edges were added in this topology.
-    *
-    * \sa addEdgesProcess
-    */
-    void addEdgesWarning(const unsigned int nEdges,
-            const sofa::helper::vector< Edge >& edgesList,
-            const sofa::helper::vector< unsigned int >& edgesIndexList,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
-    {
-        EdgeSetTopologyModifier::addEdgesWarning( nEdges, edgesList, edgesIndexList, ancestors, baryCoefs);
-    }
+    void addQuadProcess(Quad e);
 
     /** \brief Actually Add some quads to this topology.
     *
@@ -146,30 +126,9 @@ public:
 
     /** \brief Add some points to this topology.
     *
-    * Use a list of ancestors to create the new points.
-    * Last parameter baryCoefs defines the coefficient used for the creation of the new points.
-    * Default value for these coefficient (when none is defined) is 1/n with n being the number of ancestors
-    * for the point being created.
-    * Important : the points are actually added to the mechanical object's state vectors iff (addDOF == true)
-    *
     * \sa addPointsWarning
     */
-    virtual void addPointsProcess(const unsigned int nPoints, const bool addDOF = true);
-
-    /** \brief Add some points to this topology.
-    *
-    * Use a list of ancestors to create the new points.
-    * Last parameter baryCoefs defines the coefficient used for the creation of the new points.
-    * Default value for these coefficient (when none is defined) is 1/n with n being the number of ancestors
-    * for the point being created.
-    * Important : the points are actually added to the mechanical object's state vectors iff (addDOF == true)
-    *
-    * \sa addPointsWarning
-    */
-    virtual void addPointsProcess(const unsigned int nPoints,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
-            const bool addDOF = true);
+    virtual void addPointsProcess(const unsigned int nPoints);
 
     /** \brief Remove a subset of points
     *
@@ -182,7 +141,6 @@ public:
     virtual void removePointsProcess(sofa::helper::vector<unsigned int> &indices,
             const bool removeDOF = true);
 
-
     /** \brief Reorder this topology.
     *
     * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
@@ -191,11 +149,6 @@ public:
     virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int>& index,
             const sofa::helper::vector<unsigned int>& inv_index,
             const bool renumberDOF = true);
-
-    /** \brief Add a quad.
-    */
-    void addQuad(Quad e);
-
 private:
     QuadSetTopologyContainer* 	m_container;
 };

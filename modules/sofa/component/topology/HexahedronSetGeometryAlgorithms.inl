@@ -49,7 +49,7 @@ typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeHe
 {
     //const Hexahedron &t = m_container->getHexahedron(i);
     //const VecCoord& p = *(this->object->getX());
-    Real volume=(Real)(0.0); // todo
+    Real volume=(Real)(0.0); /// @TODO : implementation of computeHexahedronVolume
     return volume;
 }
 
@@ -58,7 +58,7 @@ typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeRe
 {
     //const Hexahedron &t = m_container->getHexahedron(i);
     //const VecCoord& p = *(this->object->getX0());
-    Real volume=(Real)(0.0); // todo
+    Real volume=(Real)(0.0); /// @TODO : implementation of computeRestHexahedronVolume
     return volume;
 }
 
@@ -70,7 +70,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronVolume( BasicA
     for(unsigned int i=0; i<m_container->getNumberOfHexahedra(); ++i)
     {
         //const Hexahedron &t=m_container->getHexahedron(i); //ta[i];
-        ai[i]=(Real)(0.0); // todo
+        ai[i]=(Real)(0.0); /// @TODO : implementation of computeHexahedronVolume
     }
 }
 

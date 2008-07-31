@@ -47,14 +47,13 @@ using namespace std;
 using namespace sofa::defaulttype;
 using namespace sofa::core::componentmodel::behavior;
 
-
 void EdgeSetTopologyModifier::init()
 {
     PointSetTopologyModifier::init();
-    this->getContext()->get(m_container);
+    getContext()->get(m_container);
 }
 
-void EdgeSetTopologyModifier::addEdge(Edge e)
+void EdgeSetTopologyModifier::addEdgeProcess(Edge e)
 {
 #ifndef NDEBUG
     // check if the 2 vertices are different
@@ -80,7 +79,7 @@ void EdgeSetTopologyModifier::addEdge(Edge e)
 #endif
     if (m_container->hasEdgeVertexShell())
     {
-        const unsigned int edgeId = m_container->m_edge.size();
+        const unsigned int edgeId = m_container->getNumberOfEdges();
 
         sofa::helper::vector< unsigned int > &shell0 = m_container->getEdgeVertexShellForModification( e[0] );
         shell0.push_back(edgeId);
@@ -95,10 +94,10 @@ void EdgeSetTopologyModifier::addEdge(Edge e)
 
 void EdgeSetTopologyModifier::addEdgesProcess(const sofa::helper::vector< Edge > &edges)
 {
-    m_container->m_edge.reserve(m_container->m_edge.size() + edges.size());
+    m_container->m_edge.reserve(m_container->getNumberOfEdges() + edges.size());
     for (unsigned int i=0; i<edges.size(); ++i)
     {
-        addEdge(edges[i]);
+        addEdgeProcess(edges[i]);
     }
 }
 
@@ -107,7 +106,7 @@ void EdgeSetTopologyModifier::addEdgesWarning(const unsigned int nEdges)
 {
     // Warning that edges just got created
     EdgesAdded *e = new EdgesAdded(nEdges);
-    this->addTopologyChange(e);
+    addTopologyChange(e);
 }
 
 
@@ -117,7 +116,7 @@ void EdgeSetTopologyModifier::addEdgesWarning(const unsigned int nEdges,
 {
     // Warning that edges just got created
     EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList);
-    this->addTopologyChange(e);
+    addTopologyChange(e);
 }
 
 
@@ -128,7 +127,7 @@ void EdgeSetTopologyModifier::addEdgesWarning(const unsigned int nEdges,
 {
     // Warning that edges just got created
     EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList, ancestors);
-    this->addTopologyChange(e);
+    addTopologyChange(e);
 }
 
 
@@ -140,154 +139,132 @@ void EdgeSetTopologyModifier::addEdgesWarning(const unsigned int nEdges,
 {
     // Warning that edges just got created
     EdgesAdded *e = new EdgesAdded(nEdges, edgesList, edgesIndexList, ancestors, baryCoefs);
-    this->addTopologyChange(e);
+    addTopologyChange(e);
 }
 
 
 void EdgeSetTopologyModifier::removeEdgesWarning(sofa::helper::vector<unsigned int> &edges )
 {
-    // sort vertices to remove in a descendent order
-    // TODO: clarify why sorting is necessary
+    // sort edges to remove in a descendent order
     std::sort( edges.begin(), edges.end(), std::greater<unsigned int>() );
 
     // Warning that these edges will be deleted
     EdgesRemoved *e = new EdgesRemoved(edges);
-    this->addTopologyChange(e);
+    addTopologyChange(e);
 }
 
 
 void EdgeSetTopologyModifier::removeEdgesProcess(const sofa::helper::vector<unsigned int> &indices,
         const bool removeIsolatedItems)
 {
-    if(!m_container->hasEdges())	// TODO : this method should only be called when edges exist
+    if(!m_container->hasEdges())	// this method should only be called when edges exist
     {
-        cout << "Error. [EdgeSetTopologyModifier::removeEdgesProcess] edge array is empty." << endl;
+        cout << "Warning. [EdgeSetTopologyModifier::removeEdgesProcess] edge array is empty." << endl;
         return;
+    }
+
+    if(removeIsolatedItems && !m_container->hasEdgeVertexShell())
+    {
+        m_container->createEdgeVertexShellArray();
     }
 
     sofa::helper::vector<unsigned int> vertexToBeRemoved;
 
-    for (unsigned int i=0; i<indices.size(); ++i)
+    unsigned int lastEdgeIndex = m_container->getNumberOfEdges() - 1;
+    for (unsigned int i=0; i<indices.size(); ++i, --lastEdgeIndex)
     {
-        const Edge &e = m_container->m_edge[ indices[i] ];
-        const unsigned int point0 = e[0], point1 = e[1];
-
-        // first check that the edge shell array has been initialized
-        if(!m_container->hasEdgeVertexShell())
+        // now updates the shell information of the edge formely at the end of the array
+        if(m_container->hasEdgeVertexShell())
         {
-            m_container->createEdgeVertexShellArray();
-        }
+            const Edge &e = m_container->m_edge[ indices[i] ];
+            const Edge &q = m_container->m_edge[ lastEdgeIndex ];
+            const unsigned int point0 = e[0], point1 = e[1];
+            const unsigned int point2 = q[0], point3 = q[1];
 
-        sofa::helper::vector< unsigned int > &shell0 = m_container->m_edgeVertexShell[ point0 ];
-        // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-        //assert(std::find( shell0.begin(), shell0.end(), indices[i] ) !=shell0.end());
-        shell0.erase( std::find( shell0.begin(), shell0.end(), indices[i] ) );
-        if (removeIsolatedItems && shell0.empty())
-        {
-            vertexToBeRemoved.push_back(point0);
-        }
+            sofa::helper::vector< unsigned int > &shell0 = m_container->m_edgeVertexShell[ point0 ];
+            shell0.erase( std::remove( shell0.begin(), shell0.end(), indices[i] ), shell0.end() );
+            if(removeIsolatedItems && shell0.empty())
+            {
+                vertexToBeRemoved.push_back(point0);
+            }
 
-        sofa::helper::vector< unsigned int > &shell1 = m_container->m_edgeVertexShell[ point1 ];
-        // removes the first occurence (should be the only one) of the edge in the edge shell of the other point
-        //assert(std::find( shell1.begin(), shell1.end(), indices[i] ) !=shell1.end());
-        shell1.erase( std::find( shell1.begin(), shell1.end(), indices[i] ) );
-        if (removeIsolatedItems && shell1.empty())
-        {
-            vertexToBeRemoved.push_back(point1);
+            sofa::helper::vector< unsigned int > &shell1 = m_container->m_edgeVertexShell[ point1 ];
+            shell1.erase( std::remove( shell1.begin(), shell1.end(), indices[i] ), shell1.end() );
+            if(removeIsolatedItems && shell1.empty())
+            {
+                vertexToBeRemoved.push_back(point1);
+            }
+
+            if(indices[i] < lastEdgeIndex)
+            {
+                //replaces the edge index oldEdgeIndex with indices[i] for the first vertex
+                sofa::helper::vector< unsigned int > &shell2 = m_container->m_edgeVertexShell[ point2 ];
+                replace(shell2.begin(), shell2.end(), lastEdgeIndex, indices[i]);
+
+                //replaces the edge index oldEdgeIndex with indices[i] for the second vertex
+                sofa::helper::vector< unsigned int > &shell3 = m_container->m_edgeVertexShell[ point3 ];
+                replace(shell3.begin(), shell3.end(), lastEdgeIndex, indices[i]);
+            }
         }
 
         // removes the edge from the edgelist
-        m_container->m_edge[ indices[i] ] = m_container->m_edge[ m_container->m_edge.size() - 1 ]; // overwriting with last valid value.
-
-        // now updates the shell information of the edge formely at the end of the array
-        unsigned int lastEdgeIndex = m_container->m_edge.size() - 1;
-        const Edge &e1 = m_container->m_edge[ indices[i] ];
-        const unsigned int point3 = e1[0], point4 = e1[1];
-
-        //replaces the edge index oldEdgeIndex with indices[i] for the first vertex
-        // TODO: clarify if vector<set<int>> would not be better for shells - no duplicates and no sorting
-        sofa::helper::vector< unsigned int > &shell3 = m_container->m_edgeVertexShell[ point3 ];
-        replace(shell3.begin(), shell3.end(), lastEdgeIndex, indices[i]);
-
-        //replaces the edge index oldEdgeIndex with indices[i] for the second vertex
-        sofa::helper::vector< unsigned int > &shell4 = m_container->m_edgeVertexShell[ point4 ];
-        replace(shell4.begin(), shell4.end(), lastEdgeIndex, indices[i]);
-
-        m_container->m_edge.resize( m_container->m_edge.size() - 1 ); // resizing to erase multiple occurence of the edge.
+        m_container->m_edge[ indices[i] ] = m_container->m_edge[ lastEdgeIndex ]; // overwriting with last valid value.
+        m_container->m_edge.resize( lastEdgeIndex ); // resizing to erase multiple occurence of the edge.
     }
 
     if (! vertexToBeRemoved.empty())
     {
-        this->removePointsWarning(vertexToBeRemoved);
+        removePointsWarning(vertexToBeRemoved);
         // inform other objects that the points are going to be removed
         m_container->propagateTopologicalChanges();
-        this->removePointsProcess(vertexToBeRemoved);
+        removePointsProcess(vertexToBeRemoved);
     }
 }
 
-void EdgeSetTopologyModifier::addPointsProcess(const unsigned int nPoints,
-        const bool addDOF)
+void EdgeSetTopologyModifier::addPointsProcess(const unsigned int nPoints)
 {
-    // now update the local container structures.
+    // start by calling the parent's method.
+    PointSetTopologyModifier::addPointsProcess( nPoints );
+
     if(m_container->hasEdgeVertexShell())
-        m_container->m_edgeVertexShell.resize( m_container->getNbPoints() + nPoints );
-
-    // call the PointSet method.
-    PointSetTopologyModifier::addPointsProcess( nPoints, addDOF );
-}
-
-void EdgeSetTopologyModifier::addPointsProcess(const unsigned int nPoints,
-        const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
-        const bool addDOF)
-{
-    // now update the local container structures.
-    if(m_container->hasEdgeVertexShell())
-        m_container->m_edgeVertexShell.resize( m_container->getNbPoints() + nPoints );
-
-    // call the PointSet method.
-    PointSetTopologyModifier::addPointsProcess( nPoints, ancestors, baryCoefs, addDOF );
+        m_container->m_edgeVertexShell.resize( m_container->getNbPoints() );
 }
 
 void EdgeSetTopologyModifier::removePointsProcess(sofa::helper::vector<unsigned int> &indices,
         const bool removeDOF)
 {
-    if(!m_container->hasEdges())	// TODO : this method should only be called when edges exist
+    // Note: edges connected to the points being removed are not removed here (this situation should not occur)
+
+    if(m_container->hasEdges())
     {
-        cout << "Error. [EdgeSetTopologyModifier::removePointsProcess] edge array is empty." << endl;
+        // forces the construction of the edge shell array if it does not exists
+        if(!m_container->hasEdgeVertexShell())
+            m_container->createEdgeVertexShellArray();
 
-        PointSetTopologyModifier::removePointsProcess( indices, removeDOF );
-        return;
-    }
-
-    // forces the construction of the edge shell array if it does not exists
-    if(!m_container->hasEdgeVertexShell())
-        m_container->createEdgeVertexShellArray();
-
-    // TODO: remove edges connected to the points being removed (or make sure it cannot occur)
-
-    unsigned int lastPoint = m_container->getNbPoints() - 1;
-    for (unsigned int i=0; i<indices.size(); ++i, --lastPoint)
-    {
-        // updating the edges connected to the point replacing the removed one:
-        // for all edges connected to the last point
-        for (unsigned int j = 0; j < m_container->m_edgeVertexShell[lastPoint].size(); ++j)
+        unsigned int lastPoint = m_container->getNbPoints() - 1;
+        for (unsigned int i=0; i<indices.size(); ++i, --lastPoint)
         {
-            // change the old index for the new one
-            if ( m_container->m_edge[ m_container->m_edgeVertexShell[lastPoint][j] ][0] == lastPoint )
-                m_container->m_edge[ m_container->m_edgeVertexShell[lastPoint][j] ][0] = indices[i];
-            else
-                m_container->m_edge[ m_container->m_edgeVertexShell[lastPoint][j] ][1] = indices[i];
+            // updating the edges connected to the point replacing the removed one:
+            // for all edges connected to the last point
+            for (unsigned int j=0; j<m_container->m_edgeVertexShell[lastPoint].size(); ++j)
+            {
+                const int edgeId = m_container->m_edgeVertexShell[lastPoint][j];
+                // change the old index for the new one
+                if ( m_container->m_edge[ edgeId ][0] == lastPoint )
+                    m_container->m_edge[ edgeId ][0] = indices[i];
+                else
+                    m_container->m_edge[ edgeId ][1] = indices[i];
+            }
+
+            // updating the edge shell itself (change the old index for the new one)
+            m_container->m_edgeVertexShell[ indices[i] ] = m_container->m_edgeVertexShell[ lastPoint ];
         }
 
-        // updating the edge shell itself (change the old index for the new one)
-        m_container->m_edgeVertexShell[ indices[i] ] = m_container->m_edgeVertexShell[ lastPoint ];
+        m_container->m_edgeVertexShell.resize( m_container->m_edgeVertexShell.size() - indices.size() );
     }
 
-    m_container->m_edgeVertexShell.resize( m_container->m_edgeVertexShell.size() - indices.size() );
-
-    // call the point set method.
     // Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
+    // call the parent method.
     PointSetTopologyModifier::removePointsProcess( indices, removeDOF );
 }
 
@@ -295,51 +272,46 @@ void EdgeSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector<
         const sofa::helper::vector<unsigned int> &inv_index,
         const bool renumberDOF)
 {
-    if(!m_container->hasEdges())	// TODO : this method should only be called when edges exist
+    if(m_container->hasEdges())
     {
-        cout << "Error. [EdgeSetTopologyModifier::renumberPointsProcess] edge array is empty." << endl;
-
-        // call the point set method
-        PointSetTopologyModifier::renumberPointsProcess( index, inv_index, renumberDOF );
-        return;
-    }
-
-    if(m_container->hasEdgeVertexShell())
-    {
-        // copy of the the edge vertex shell array
-        sofa::helper::vector< sofa::helper::vector< unsigned int > > edgeVertexShell_cp = m_container->getEdgeVertexShellArray();
-
-        for (unsigned int i=0; i<index.size(); ++i)
+        if(m_container->hasEdgeVertexShell())
         {
-            m_container->m_edgeVertexShell[i] = edgeVertexShell_cp[ index[i] ];
+            // copy of the the edge vertex shell array
+            sofa::helper::vector< sofa::helper::vector< unsigned int > > edgeVertexShell_cp = m_container->getEdgeVertexShellArray();
+
+            for (unsigned int i=0; i<index.size(); ++i)
+            {
+                m_container->m_edgeVertexShell[i] = edgeVertexShell_cp[ index[i] ];
+            }
+        }
+
+        for (unsigned int i=0; i<m_container->m_edge.size(); ++i)
+        {
+            const unsigned int p0 = inv_index[ m_container->m_edge[i][0]  ];
+            const unsigned int p1 = inv_index[ m_container->m_edge[i][1]  ];
+
+            if(p0<p1)
+            {
+                m_container->m_edge[i][0] = p0;
+                m_container->m_edge[i][1] = p1;
+            }
+            else
+            {
+                m_container->m_edge[i][0] = p1;
+                m_container->m_edge[i][1] = p0;
+            }
         }
     }
 
-    for (unsigned int i=0; i<m_container->m_edge.size(); ++i)
-    {
-        const unsigned int p0 = inv_index[ m_container->m_edge[i][0]  ];
-        const unsigned int p1 = inv_index[ m_container->m_edge[i][1]  ];
-
-        if(p0<p1)
-        {
-            m_container->m_edge[i][0] = p0;
-            m_container->m_edge[i][1] = p1;
-        }
-        else
-        {
-            m_container->m_edge[i][0] = p1;
-            m_container->m_edge[i][1] = p0;
-        }
-    }
-
-    // call the point set method
+    // call the parent method
     PointSetTopologyModifier::renumberPointsProcess( index, inv_index, renumberDOF );
 }
 
 
 void EdgeSetTopologyModifier::swapEdgesProcess(const sofa::helper::vector< sofa::helper::vector< unsigned int > >& edgesPairs)
 {
-    EdgeSetTopologyModifier* modifier = this;
+    if(!m_container->hasEdges())
+        return;
 
     // first create the edges
     sofa::helper::vector< Edge > v;
@@ -351,7 +323,7 @@ void EdgeSetTopologyModifier::swapEdgesProcess(const sofa::helper::vector< sofa:
     sofa::helper::vector<sofa::helper::vector<unsigned int> > ancestorsArray;
     ancestorsArray.reserve(edgesPairs.size());
 
-    unsigned int nbEdges=m_container->getNumberOfEdges();
+    unsigned int nbEdges = m_container->getNumberOfEdges();
 
     for (unsigned int i=0; i<edgesPairs.size(); ++i)
     {
@@ -377,13 +349,10 @@ void EdgeSetTopologyModifier::swapEdgesProcess(const sofa::helper::vector< sofa:
         ancestorsArray.push_back(ancestors);
     }
 
-    modifier->addEdgesProcess( v );
+    addEdgesProcess( v );
 
     // now warn about the creation
-    modifier->addEdgesWarning( v.size(), v, edgeIndexList, ancestorsArray);
-
-    //   EdgesAdded ea( 2 * edgesPairs.size(), v );
-    // this->addTopologyChange( ea );
+    addEdgesWarning( v.size(), v, edgeIndexList, ancestorsArray);
 
     // now warn about the destruction of the old edges
     sofa::helper::vector< unsigned int > indices;
@@ -393,23 +362,21 @@ void EdgeSetTopologyModifier::swapEdgesProcess(const sofa::helper::vector< sofa:
         indices.push_back( edgesPairs[i][0]  );
         indices.push_back( edgesPairs[i][1] );
     }
-    modifier->removeEdgesWarning(indices );
-
-    //            EdgesRemoved er( indices );
-    //            this->addTopologyChange( er );
+    removeEdgesWarning(indices );
 
     // propagate the warnings
     m_container->propagateTopologicalChanges();
 
     // now destroy the old edges.
-    modifier->removeEdgesProcess( indices );
+    removeEdgesProcess( indices );
 }
 
 
 void EdgeSetTopologyModifier::fuseEdgesProcess(const sofa::helper::vector< sofa::helper::vector< unsigned int > >& edgesPairs,
         const bool removeIsolatedPoints)
 {
-    EdgeSetTopologyModifier* modifier = this;
+    if(!m_container->hasEdges())
+        return;
 
     // first create the edges
     sofa::helper::vector< Edge > v;
@@ -449,10 +416,10 @@ void EdgeSetTopologyModifier::fuseEdgesProcess(const sofa::helper::vector< sofa:
         ancestorsArray.push_back(ancestors);
     }
 
-    modifier->addEdgesProcess( v );
+    addEdgesProcess( v );
 
     // now warn about the creation
-    modifier->addEdgesWarning( v.size(), v, edgeIndexList, ancestorsArray);
+    addEdgesWarning( v.size(), v, edgeIndexList, ancestorsArray);
 
     // now warn about the destruction of the old edges
     sofa::helper::vector< unsigned int > indices;
@@ -463,20 +430,21 @@ void EdgeSetTopologyModifier::fuseEdgesProcess(const sofa::helper::vector< sofa:
         indices.push_back( edgesPairs[i][1] );
     }
 
-    modifier->removeEdgesWarning( indices );
+    removeEdgesWarning( indices );
 
     // propagate the warnings
     m_container->propagateTopologicalChanges();
 
     // now destroy the old edges.
-    modifier->removeEdgesProcess( indices, removeIsolatedPoints );
+    removeEdgesProcess( indices, removeIsolatedPoints );
 }
 
 
 void EdgeSetTopologyModifier::splitEdgesProcess(sofa::helper::vector<unsigned int> &indices,
         const bool removeIsolatedPoints)
 {
-    EdgeSetTopologyModifier* modifier = this;
+    if(!m_container->hasEdges())
+        return;
 
     sofa::helper::vector< sofa::helper::vector< double > > defaultBaryCoefs(indices.size());
 
@@ -511,22 +479,22 @@ void EdgeSetTopologyModifier::splitEdgesProcess(sofa::helper::vector<unsigned in
         defaultBaryCoefs[i].resize(2, 0.5f);
     }
 
-    modifier->addPointsProcess( indices.size(), v, defaultBaryCoefs);
+    addPointsProcess( indices.size());
 
-    modifier->addEdgesProcess( edges );
+    addEdgesProcess( edges );
 
     // warn about added points and edges
-    modifier->addPointsWarning( indices.size(), v, defaultBaryCoefs);
+    addPointsWarning( indices.size(), v, defaultBaryCoefs);
 
-    modifier->addEdgesWarning( edges.size(), edges, edgesIndex);
+    addEdgesWarning( edges.size(), edges, edgesIndex);
 
     // warn about old edges about to be removed
-    modifier->removeEdgesWarning( indices );
+    removeEdgesWarning( indices );
 
     m_container->propagateTopologicalChanges();
 
     // Removing the old edges
-    modifier->removeEdgesProcess( indices, removeIsolatedPoints );
+    removeEdgesProcess( indices, removeIsolatedPoints );
 }
 
 
@@ -534,7 +502,8 @@ void EdgeSetTopologyModifier::splitEdgesProcess(sofa::helper::vector<unsigned in
         const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
         const bool removeIsolatedPoints)
 {
-    EdgeSetTopologyModifier* modifier = this;
+    if(!m_container->hasEdges())
+        return;
 
     sofa::helper::vector< sofa::helper::vector< unsigned int > > v(indices.size());
 
@@ -565,22 +534,22 @@ void EdgeSetTopologyModifier::splitEdgesProcess(sofa::helper::vector<unsigned in
         edgesIndex.push_back(nbEdges++);
     }
 
-    modifier->addPointsProcess( indices.size(), v, baryCoefs);
+    addPointsProcess( indices.size());
 
-    modifier->addEdgesProcess( edges );
+    addEdgesProcess( edges );
 
     // warn about added points and edges
-    modifier->addPointsWarning( indices.size(), v, baryCoefs);
+    addPointsWarning( indices.size(), v, baryCoefs);
 
-    modifier->addEdgesWarning( edges.size(), edges, edgesIndex);
+    addEdgesWarning( edges.size(), edges, edgesIndex);
 
     // warn about old edges about to be removed
-    modifier->removeEdgesWarning( indices );
+    removeEdgesWarning( indices );
 
     m_container->propagateTopologicalChanges();
 
     // Removing the old edges
-    modifier->removeEdgesProcess( indices, removeIsolatedPoints );
+    removeEdgesProcess( indices, removeIsolatedPoints );
 }
 
 } // namespace topology

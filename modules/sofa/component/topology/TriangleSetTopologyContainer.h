@@ -60,6 +60,8 @@ public:
 
     virtual void init();
 
+    virtual void clear();
+
     /// BaseMeshTopology API
     /// @{
 
@@ -108,9 +110,9 @@ public:
     const Triangle &getTriangle(const unsigned int i);
 
     /** \brief Returns the number of triangles in this topology.
-    *
+    *	The difference to getNbTriangles() is that this method does not generate the triangle array if it does not exist.
     */
-    unsigned int getNumberOfTriangles() ;
+    unsigned int getNumberOfTriangles() const;
 
     /** \brief Returns the set of triangles adjacent to a given vertex.
     *

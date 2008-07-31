@@ -189,7 +189,7 @@ void Edge2QuadTopologicalMapping::init()
                     unsigned int q2 = p1*N+((j+1)%N);
                     unsigned int q3 = p0*N+((j+1)%N);
 
-                    to_tstm->addQuad(Quad(helper::make_array<unsigned int>((unsigned int) q0, (unsigned int) q1, (unsigned int) q2, (unsigned int) q3)));
+                    to_tstm->addQuadProcess(Quad(helper::make_array<unsigned int>((unsigned int) q0, (unsigned int) q1, (unsigned int) q2, (unsigned int) q3)));
                     Loc2GlobVec.push_back(i);
                     out_info.push_back(Loc2GlobVec.size()-1);
                 }
