@@ -80,6 +80,52 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronVolume( BasicA
     }
 }
 
+/// Write the current mesh into a msh file
+template <typename DataTypes>
+void HexahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename)
+{
+    HexahedronSetTopology<DataTypes> *topology = getHexahedronSetTopology();
+    HexahedronSetTopologyContainer *container = topology->getHexahedronSetTopologyContainer();
+
+    std::ofstream myfile;
+    myfile.open (filename);
+
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
+
+    const unsigned int numVertices = vect_c.size();
+
+    myfile << "$NOD\n";
+    myfile << numVertices <<"\n";
+
+    for(unsigned int i=0; i<numVertices; ++i)
+    {
+        double x = (double) vect_c[i][0];
+        double y = (double) vect_c[i][1];
+        double z = (double) vect_c[i][2];
+
+        myfile << i+1 << " " << x << " " << y << " " << z <<"\n";
+    }
+
+    myfile << "$ENDNOD\n";
+    myfile << "$ELM\n";
+
+    const sofa::helper::vector<Hexahedron> hea = container->getHexahedronArray();
+
+    myfile << hea.size() <<"\n";
+
+    for(unsigned int i=0; i<hea.size(); ++i)
+    {
+        myfile << i+1 << " 5 1 1 8 " << hea[i][4]+1 << " " << hea[i][5]+1 << " "
+                << hea[i][1]+1 << " " << hea[i][0]+1 << " "
+                << hea[i][7]+1 << " " << hea[i][6]+1 << " "
+                << hea[i][2]+1 << " " << hea[i][3]+1 << "\n";
+    }
+
+    myfile << "$ENDELM\n";
+
+    myfile.close();
+}
+
 /// Cross product for 3-elements vectors.
 template<typename real>
 inline real tripleProduct(const Vec<3,real>& a, const Vec<3,real>& b,const Vec<3,real> &c)
@@ -102,6 +148,8 @@ inline real tripleProduct(const Vec<1,real>& , const Vec<1,real>& , const Vec<1,
     assert(false);
     return (real)0;
 }
+
+
 
 } // namespace topology
 

@@ -170,6 +170,10 @@ public:
             sofa::helper::vector< sofa::helper::vector< unsigned int> > &indices_list,
             sofa::helper::vector< double >& coords_list,
             bool& is_on_boundary);
+
+    /** \brief Write the current mesh into a msh file
+    */
+    void writeMSHfile(const char *filename);
 };
 
 

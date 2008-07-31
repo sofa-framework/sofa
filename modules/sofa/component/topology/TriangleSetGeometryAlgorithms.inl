@@ -1412,6 +1412,49 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
     return (is_reached && is_validated && is_intersected); // b is in triangle indexed by ind_t_current
 }
 
+/// Write the current mesh into a msh file
+template <typename DataTypes>
+void TriangleSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename)
+{
+    TriangleSetTopology<DataTypes> *topology = getTriangleSetTopology();
+    TriangleSetTopologyContainer *container = topology->getTriangleSetTopologyContainer();
+
+    std::ofstream myfile;
+    myfile.open (filename);
+
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
+
+    const unsigned int numVertices = vect_c.size();
+
+    myfile << "$NOD\n";
+    myfile << numVertices <<"\n";
+
+    for (unsigned int i=0; i<numVertices; ++i)
+    {
+        double x = (double) vect_c[i][0];
+        double y = (double) vect_c[i][1];
+        double z = (double) vect_c[i][2];
+
+        myfile << i+1 << " " << x << " " << y << " " << z <<"\n";
+    }
+
+    myfile << "$ENDNOD\n";
+    myfile << "$ELM\n";
+
+    const sofa::helper::vector<Triangle> &ta=container->getTriangleArray();
+
+    myfile << ta.size() <<"\n";
+
+    for (unsigned int i=0; i<ta.size(); ++i)
+    {
+        myfile << i+1 << " 2 6 6 3 " << ta[i][0]+1 << " " << ta[i][1]+1 << " " << ta[i][2]+1 <<"\n";
+    }
+
+    myfile << "$ENDELM\n";
+
+    myfile.close();
+}
+
 /// Test for REAL if a point p is in a triangle indexed by (a,b,c)
 
 template<class Real>

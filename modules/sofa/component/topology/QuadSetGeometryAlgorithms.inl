@@ -180,6 +180,49 @@ bool QuadSetGeometryAlgorithms< DataTypes >::is_quad_in_plane(const unsigned int
     return((p1-p0)*( plane_vect)>=0.0 && (p2-p0)*( plane_vect)>=0.0 && (p3-p0)*( plane_vect)>=0.0);
 }
 
+/// Write the current mesh into a msh file
+template <typename DataTypes>
+void QuadSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename)
+{
+    QuadSetTopology<DataTypes> *topology = getQuadSetTopology();
+    QuadSetTopologyContainer *container = topology->getQuadSetTopologyContainer();
+
+    std::ofstream myfile;
+    myfile.open (filename);
+
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
+
+    const unsigned int numVertices = vect_c.size();
+
+    myfile << "$NOD\n";
+    myfile << numVertices <<"\n";
+
+    for(unsigned int i=0; i<numVertices; ++i)
+    {
+        double x = (double) vect_c[i][0];
+        double y = (double) vect_c[i][1];
+        double z = (double) vect_c[i][2];
+
+        myfile << i+1 << " " << x << " " << y << " " << z <<"\n";
+    }
+
+    myfile << "$ENDNOD\n";
+    myfile << "$ELM\n";
+
+    const sofa::helper::vector<Quad>& qa = container->getQuadArray();
+
+    myfile << qa.size() <<"\n";
+
+    for(unsigned int i=0; i<qa.size(); ++i)
+    {
+        myfile << i+1 << " 3 1 1 4 " << qa[i][0]+1 << " " << qa[i][1]+1 << " " << qa[i][2]+1 << " " << qa[i][3]+1 << "\n";
+    }
+
+    myfile << "$ENDELM\n";
+
+    myfile.close();
+}
+
 /// Cross product for 3-elements vectors.
 template< class Real>
 Real areaProduct(const Vec<3,Real>& a, const Vec<3,Real>& b)

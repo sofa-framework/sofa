@@ -86,6 +86,10 @@ public:
 
     /// finds the indices of all tetrahedra in the ball of center ind_ta and of radius dist(ind_ta, ind_tb)
     void getTetraInBall(unsigned int ind_ta, unsigned int ind_tb, sofa::helper::vector<unsigned int> &indices);
+
+    /** \brief Write the current mesh into a msh file
+    */
+    void writeMSHfile(const char *filename);
 };
 
 } // namespace topology
