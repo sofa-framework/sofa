@@ -35,8 +35,7 @@ namespace component
 
 namespace topology
 {
-template<class DataTypes>
-class TriangleSetTopology;
+class TriangleSetTopologyContainer;
 
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::TriangleID TriangleID;
@@ -67,7 +66,7 @@ public:
 
     virtual ~TriangleSetGeometryAlgorithms() {}
 
-    TriangleSetTopology< DataTypes >* getTriangleSetTopology() const;
+    virtual void init();
 
     /** \brief Returns spatial position of point indexed by i
     *
@@ -174,6 +173,9 @@ public:
     /** \brief Write the current mesh into a msh file
     */
     void writeMSHfile(const char *filename);
+
+private:
+    TriangleSetTopologyContainer* m_container;
 };
 
 

@@ -42,6 +42,8 @@ template <class DataTypes>
 void PointSetGeometryAlgorithms<DataTypes>::init()
 {
     object = this->getContext()->core::objectmodel::BaseContext::get< core::componentmodel::behavior::MechanicalState<DataTypes> >();
+    core::componentmodel::topology::GeometryAlgorithms::init();
+    this->getContext()->get(m_container);
 }
 
 template <class DataTypes>
@@ -49,11 +51,9 @@ typename DataTypes::Coord PointSetGeometryAlgorithms<DataTypes>::getPointSetCent
 {
     typename DataTypes::Coord center;
     // get restPosition
-    PointSetTopology<DataTypes> *topology = getPointSetTopology();
-//		typename DataTypes::VecCoord& p = *(topology->getDOF()->getX0());
     typename DataTypes::VecCoord& p = *(object->getX0());
 
-    const unsigned int numVertices = topology->getNbPoints();
+    const unsigned int numVertices = m_container->getNbPoints();
     for(unsigned int i=0; i<numVertices; ++i)
     {
         center += p[i];
@@ -68,11 +68,9 @@ void  PointSetGeometryAlgorithms<DataTypes>::getEnclosingSphere(typename DataTyp
         typename DataTypes::Real &radius) const
 {
     // get restPosition
-    PointSetTopology<DataTypes> *topology = getPointSetTopology();
-//		typename DataTypes::VecCoord& p = *(topology->getDOF()->getX0());
     typename DataTypes::VecCoord& p = *(object->getX0());
 
-    const unsigned int numVertices = topology->getNbPoints();
+    const unsigned int numVertices = m_container->getNbPoints();
     for(unsigned int i=0; i<numVertices; ++i)
     {
         center += p[i];
@@ -94,7 +92,6 @@ template<class DataTypes>
 void  PointSetGeometryAlgorithms<DataTypes>::getAABB(typename DataTypes::Real bb[6] ) const
 {
     // get restPosition
-//		PointSetTopology<DataTypes> *parent = getPointSetTopology();
     typename DataTypes::VecCoord& p = *(object->getX0());
 
     bb[0] = (Real) p[0][0];

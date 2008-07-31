@@ -33,8 +33,7 @@ namespace component
 {
 namespace topology
 {
-template <class DataTypes>
-class HexahedronSetTopology;
+class HexahedronSetTopologyContainer;
 
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::HexaID HexaID;
@@ -71,7 +70,7 @@ public:
 
     virtual ~HexahedronSetGeometryAlgorithms() {}
 
-    HexahedronSetTopology< DataTypes >* getHexahedronSetTopology() const;
+    virtual void init();
 
     /// computes the volume of hexahedron no i and returns it
     Real computeHexahedronVolume(const unsigned int i) const;
@@ -85,6 +84,9 @@ public:
     /** \brief Write the current mesh into a msh file
     */
     void writeMSHfile(const char *filename);
+
+private:
+    HexahedronSetTopologyContainer* m_container;
 };
 
 } // namespace topology

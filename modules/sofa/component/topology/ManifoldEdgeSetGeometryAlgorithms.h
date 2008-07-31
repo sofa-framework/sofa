@@ -35,8 +35,7 @@ namespace component
 
 namespace topology
 {
-template<class DataTypes>
-class ManifoldEdgeSetTopology;
+class ManifoldEdgeSetTopologyContainer;
 
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::EdgeID EdgeID;
@@ -65,7 +64,10 @@ public:
 
     virtual ~ManifoldEdgeSetGeometryAlgorithms() {}
 
-    ManifoldEdgeSetTopology< DataTypes >* getEdgeSetTopology() const;
+    virtual void init();
+
+private:
+    ManifoldEdgeSetTopologyContainer* m_container;
 };
 
 } // namespace topology

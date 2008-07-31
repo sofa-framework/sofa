@@ -35,8 +35,7 @@ namespace component
 
 namespace topology
 {
-template<class DataTypes>
-class EdgeSetTopology;
+class EdgeSetTopologyContainer;
 
 /** \brief A class used as an interface with an array : Useful to compute geometric information on each edge in an efficient way
 *
@@ -79,7 +78,7 @@ public:
 
     virtual ~EdgeSetGeometryAlgorithms() {}
 
-    EdgeSetTopology< DataTypes >* getEdgeSetTopology() const;
+    virtual void init();
 
     /// computes the length of edge no i and returns it
     virtual Real computeEdgeLength(const unsigned int i) const;
@@ -92,6 +91,9 @@ public:
 
     /// computes the initial square length of edge no i and returns it
     virtual Real computeRestSquareEdgeLength(const unsigned int i) const;
+
+private:
+    EdgeSetTopologyContainer* m_container;
 };
 
 } // namespace topology
