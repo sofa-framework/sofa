@@ -359,8 +359,8 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     itemShowWireFrame = new DisplayFlagItem(this, itemShowOptions, WIREFRAME, "Wire Frame");
     itemShowNormals = new DisplayFlagItem(this, itemShowOptions, itemShowWireFrame, NORMALS, "Normals");
 #ifdef SOFA_QT4
-    connect( listDisplayFlags, SIGNAL( clicked(Q3ListViewItem *)), this, SLOT(flagChanged(Q3ListViewItem *)));
-    connect( listDisplayFlags, SIGNAL( doubleClicked(Q3ListViewItem *)), this, SLOT(flagChanged(Q3ListViewItem *)));
+    connect( listDisplayFlags, SIGNAL( pressed(Q3ListViewItem *)), this, SLOT(flagChanged(Q3ListViewItem *)));
+    connect( listDisplayFlags, SIGNAL( doubleClicked(Q3ListViewItem *)), this, SLOT(flagDoubleClicked(Q3ListViewItem *)));
 #else
     connect( listDisplayFlags, SIGNAL( pressed(QListViewItem *)), this, SLOT(flagChanged(QListViewItem *)));
     connect( listDisplayFlags, SIGNAL( doubleClicked(QListViewItem *)), this, SLOT(flagDoubleClicked(QListViewItem *)));
