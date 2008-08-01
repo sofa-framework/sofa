@@ -21,7 +21,8 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<Object type="Mesh" filename="mesh/smCube27.obj" />
+			<Object type="MeshLoader" filename="mesh/smCube27.obj" />
+			<Object type="Mesh"  />
 			<Object type="MechanicalObject" dx="0" dy="-10.5" dz="0"/>
 			<Object type="Triangle" />
 			<Object type="Line" />
@@ -46,7 +47,8 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<Object type="Mesh" filename="mesh/smCube27.obj" />
+			<Object type="MeshLoader" filename="mesh/smCube27.obj" />
+			<Object type="Mesh"  />
 			<Object type="MechanicalObject" dx="2" dy="0" dz="0"/>
 			<Object type="Triangle" />
 			<Object type="Line" />
@@ -71,7 +73,8 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<Object type="Mesh" filename="mesh/smCube27.obj" />
+			<Object type="MeshLoader" filename="mesh/smCube27.obj" />
+			<Object type="Mesh" />
 			<Object type="MechanicalObject" dx="0" dy="10.5" dz="-4"/>
 			<Object type="Triangle" />
 			<Object type="Line" />
@@ -96,7 +99,8 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<Object type="Mesh" filename="mesh/smCube27.obj" />
+			<Object type="MeshLoader" filename="mesh/smCube27.obj" />
+			<Object type="Mesh" />
 			<Object type="MechanicalObject" dx="0" dy="21" dz="0"/>
 			<Object type="Triangle" />
 			<Object type="Line" />
@@ -122,7 +126,8 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<Object type="Mesh" filename="mesh/smCube27.obj" />
+			<Object type="MeshLoader" filename="mesh/smCube27.obj" />	
+			<Object type="Mesh" />
 			<Object type="MechanicalObject" />
 			<Object type="Triangle" />
 			<Object type="Line" />
@@ -132,7 +137,8 @@
 	</Node>
 	-->
 	<Node name="Floor">
-		<Object type="Mesh" filename="mesh/floor3.obj" />
+		<Object type="MeshLoader" filename="mesh/floor3.obj" />
+		<Object type="Mesh"  />
 		<Object type="MechanicalObject" dy="-20" />
 		<Object type="Triangle" name="Floor" simulated="0" moving="0" />
 		<Object type="Line" name="Floor" simulated="0" moving="0" />

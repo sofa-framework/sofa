@@ -13,8 +13,8 @@
 		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
 		<Object type="MechanicalObject" name="Quads" />
-
-		<Object type="QuadSetTopology" name="topo_Quads" filename="mesh/nine_quads.msh" scale="1" />
+		<Object type="MeshLoader" filename="mesh/nine_quads.msh" scale="1" />
+		<Object type="QuadSetTopology" name="topo_Quads" />
 
 		<Object type="QuadularBendingSprings" name="FEM-Bend" stiffness="3000" damping="1.0"/> 
 

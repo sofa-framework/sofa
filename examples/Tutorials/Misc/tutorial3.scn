@@ -21,7 +21,8 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<Object type="Mesh" filename="mesh/smCube125.obj" />
+			<Object type="MeshLoader" filename="mesh/smCube125.obj" />
+			<Object type="Mesh" />
 			<Object type="MechanicalObject" dx="18" dy="17" dz="29"/>
 			<Object type="Triangle" />
 			<Object type="Line" />
@@ -46,7 +47,8 @@
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<Object type="Mesh" filename="mesh/smCube125.obj" />
+			<Object type="MeshLoader" filename="mesh/smCube125.obj" />
+			<Object type="Mesh"/>
 			<Object type="MechanicalObject" dx="0" dy="17" dz="29"/>
 			<Object type="Triangle" />
 			<Object type="Line" />
@@ -68,7 +70,8 @@
 			<Object type="RigidMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<Object type="Mesh" filename="mesh/smCube125.obj" />
+			<Object type="MeshLoader" filename="mesh/smCube125.obj" />
+			<Object type="Mesh"/>
 			<Object type="MechanicalObject" />
 			<Object type="Triangle" />
 			<Object type="Line" />
@@ -77,7 +80,8 @@
 		</Node>
 	</Node>
 	<Node name="Floor">
-		<Object type="Mesh" filename="mesh/floor2b.obj" />
+		<Object type="MeshLoader" filename="mesh/floor2b.obj" />
+		<Object type="Mesh" />
 		<Object type="MechanicalObject" dy="-10.25" scale="0.5" />
 		<Object type="Triangle" name="Floor" simulated="0" moving="0" />
 		<Object type="Line" name="Floor" simulated="0" moving="0" />

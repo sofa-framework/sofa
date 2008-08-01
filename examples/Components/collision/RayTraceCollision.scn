@@ -260,7 +260,7 @@
 
 	<Node name="Floor">
 	        <Object type="MeshLoader" name="meshLoader" filename="mesh/floor2b.obj"/>
-		<Object type="Mesh" filename="mesh/floor2b.obj" />
+		<Object type="Mesh"  />
 		<Object type="MechanicalObject" dy="-10" scale="0.5" />
 		<Object type="TriangleOctree" name="Floor" simulated="0" moving="0" />
 		<Object type="OglModel" name="FloorV" filename="mesh/floor2b.obj" scale="0.5" notexturename="textures/floor.bmp" color="lightgray" dy="-10" />
