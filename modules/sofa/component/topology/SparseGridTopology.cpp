@@ -218,12 +218,17 @@ void SparseGridTopology::init()
 void SparseGridTopology::buildAsFinest(  )
 {
     // 		  cerr<<"SparseGridTopology::buildAsFinest(  )\n";
-    const  std::string&	_filename(filename.getValue());
+
+    std::string _filename=filename.getValue();
     if (_filename.empty())
     {
         std::cerr << "SparseGridTopology: no filename specified." << std::endl;
         return;
     }
+    if ( sofa::helper::system::DataRepository.findFile ( _filename ))
+        _filename = sofa::helper::system::DataRepository.getFile ( _filename );
+    else
+        return;
 
     // initialize the following datafields:
     // xmin, xmax, ymin, ymax, zmin, zmax, evtl. nx, ny, nz
@@ -348,6 +353,7 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
     if (dataVoxels.getValue().size() == 0)
     {
         FILE *file = fopen( filename.c_str(), "r" );
+        if (!file) { std::cerr<< "FILE " << filename << " not found\n"; return;}
         //Get the voxels from the file
         dataVoxels.beginEdit()->resize(dim_voxels.getValue()[0]*dim_voxels.getValue()[1]*dim_voxels.getValue()[2]/8, (unsigned char)0);
 
