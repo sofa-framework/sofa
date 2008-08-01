@@ -176,6 +176,10 @@ int TriangleOctree::nearestTriangle (int minIndex,
 
 
     }
+
+
+    if (minIndex < 0) return minIndex;
+
     /*u=p2 v=p3 p1=1-u+v*/
     int pointR=-1;
     Triangle t3(tm,minIndex);
