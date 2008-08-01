@@ -425,7 +425,7 @@ void GraphModeler::loadPreset(std::string presetName)
     bool elementPresent[3]= {false,false,false};
     for (; it!=newXML->end(); ++it)
     {
-        if (it->getType() == std::string("Mesh") || it->getType() == std::string("SparseGrid")) elementPresent[0] = true;
+        if (it->getType() == std::string("MeshLoader") || it->getType() == std::string("SparseGrid")) elementPresent[0] = true;
         else if (it->getName() == std::string("VisualNode") || it->getType() == std::string("OglModel")) elementPresent[1] = true;
         else if (it->getName() == std::string("CollisionNode")) elementPresent[2] = true;
     }
@@ -468,7 +468,7 @@ void GraphModeler::loadPreset(GNode *parent, std::string presetFile,
         {
             updatePresetNode(*it, std::string(), translation, rotation, scale);
         }
-        if (it->getType() == std::string("Mesh") || it->getType() == std::string("SparseGrid"))
+        if (it->getType() == std::string("MeshLoader") || it->getType() == std::string("SparseGrid"))
         {
             updatePresetNode(*it, filenames[0], translation, rotation, scale);
             meshMecha = it;
@@ -504,7 +504,7 @@ void GraphModeler::loadPreset(GNode *parent, std::string presetFile,
                 {
                     updatePresetNode(*it_collision, std::string(), translation, rotation, scale);
                 }
-                if (it_collision->getType() == std::string("Mesh"))
+                if (it_collision->getType() == std::string("MeshLoader"))
                 {
                     updatePresetNode(*it_collision, filenames[2], translation, rotation, scale);
                 }

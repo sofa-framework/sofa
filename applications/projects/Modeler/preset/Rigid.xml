@@ -9,7 +9,7 @@
 		<Object type="RigidMapping" object1="../.." object2="Visual" />
 	</Node>
 	<Node name="CollisionNode">
-		<Object type="Mesh" filename="file" />
+	        <Object type="MeshLoader" filename="file"/>
 		<Object type="MechanicalObject"  />
 		<Object type="Triangle" />
 		<Object type="Line" />

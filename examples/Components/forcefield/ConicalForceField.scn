@@ -7,10 +7,10 @@
 	<Node name="Liver">
 		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
 		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        	<Object type="MeshLoader" name="meshLoader"  filename="mesh/liver.mesh"/>
+        	<Object type="MeshLoader" name="meshLoader"  filename="mesh/liver.msh"/>
 		<Object type="Mesh"/>
-		<Object type="MechanicalObject" template="Vec3f" name="Liver" filename="BehaviorModels/liver.xs3" />
-		<Object type="DiagonalMass" name="mass" filename="BehaviorModels/liver.xs3"/>
+		<Object type="MechanicalObject" template="Vec3f" name="Liver" />
+		<Object type="UniformMass" name="mass" mass="0.05"/>
 		<Object type="TetrahedronFEMForceField" name="FEM" youngModulus="5000" poissonRatio="0.3"
 			computeGlobalMatrix="false" method="large"/>
 		<Object type="ConicalForceField" template="Vec3f"  coneCenter="0.0 -10.0 0.0" coneHeight="0 20 0" coneAngle="40" />
