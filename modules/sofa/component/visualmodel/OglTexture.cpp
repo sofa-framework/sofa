@@ -123,6 +123,7 @@ OglTexture2D::OglTexture2D()
 
 }
 
+
 OglTexture2D::~OglTexture2D()
 {
     if (!texture2D)delete texture2D;
@@ -187,6 +188,7 @@ void OglTexture2D::initVisual()
 
 void OglTexture2D::bind()
 {
+    if (!texture2D) initVisual();
     texture2D->bind();
     glEnable(GL_TEXTURE_2D);
 }
