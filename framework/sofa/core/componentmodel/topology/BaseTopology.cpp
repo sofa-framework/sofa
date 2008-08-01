@@ -91,6 +91,13 @@ void BaseTopology::resetStateChangeList() const
     m_topologyContainer->resetStateChangeList();
 }
 
+// GeometryAlgorithms implementation
+
+void GeometryAlgorithms::init()
+{
+    this->getContext()->get(m_topologyContainer);
+}
+
 // TopologyAlgorithms implementation
 
 void TopologyAlgorithms::init()

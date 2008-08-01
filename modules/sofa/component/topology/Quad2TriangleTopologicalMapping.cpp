@@ -423,7 +423,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMapping()
 
                     const sofa::component::topology::PointsAdded *ta=static_cast< const sofa::component::topology::PointsAdded * >( *itBegin );
 
-                    to_tstm->addPointsProcess(ta->getNbAddedVertices(), ta->ancestorsList, ta->coefs, false);
+                    to_tstm->addPointsProcess(ta->getNbAddedVertices());
                     to_tstm->addPointsWarning(ta->getNbAddedVertices(), ta->ancestorsList, ta->coefs, false);
                     toModel->propagateTopologicalChanges();
 

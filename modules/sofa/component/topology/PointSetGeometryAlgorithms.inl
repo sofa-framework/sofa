@@ -26,7 +26,9 @@
 #define SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_INL
 
 #include <sofa/component/topology/PointSetGeometryAlgorithms.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/component/topology/PointSetTopologyContainer.h>
 
 namespace sofa
 {

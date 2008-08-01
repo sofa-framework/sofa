@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_INL
 
 #include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
+#include <sofa/component/topology/QuadSetTopologyContainer.h>
 
 namespace sofa
 {

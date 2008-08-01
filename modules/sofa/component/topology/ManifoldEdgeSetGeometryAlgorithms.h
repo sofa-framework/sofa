@@ -27,8 +27,6 @@
 
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
 
-#include <sofa/component/topology/ManifoldEdgeSetTopologyContainer.h>
-
 namespace sofa
 {
 
