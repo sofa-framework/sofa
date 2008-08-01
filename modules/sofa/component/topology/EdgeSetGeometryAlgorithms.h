@@ -88,6 +88,7 @@ public:
     /// computes the initial square length of edge no i and returns it
     virtual Real computeRestSquareEdgeLength(const unsigned int i) const;
 
+    void writeMSHfile(const char *filename);
 private:
     EdgeSetTopologyContainer* m_container;
 };

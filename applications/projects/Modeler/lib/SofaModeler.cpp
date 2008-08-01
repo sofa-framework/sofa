@@ -547,6 +547,13 @@ void SofaModeler::changeComponent(ClassInfo *currentComponent)
         if ( sofa::helper::system::DataRepository.findFile ( path ) )
             possiblePaths.push_back(sofa::helper::system::DataRepository.getFile ( path ));
     }
+    if (possiblePaths.size() == 0)
+    {
+        std::string path=std::string("Components/misc/") + currentComponent->className + std::string(".scn");
+
+        if ( sofa::helper::system::DataRepository.findFile ( path ) )
+            possiblePaths.push_back(sofa::helper::system::DataRepository.getFile ( path ));
+    }
 
     text += std::string("</H2>");
 

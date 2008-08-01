@@ -10,7 +10,7 @@
 		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
 		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<Object type="MechanicalObject" template="Rigid" scale="1.0"  dx="0.0" dy="0.0" dz="0.0"/>
-		<Object type="UniformMass" filename="BehaviorModels/torus.rigid" mass="4000.0"/>
+		<Object type="UniformMass"  mass="4000.0"/>
 		<Object type="UncoupledConstraintCorrection"/>
 		<Node name="Visu">
 			<Object type="OglModel" name="Visual" filename="mesh/torus.obj" color="1.0 0.5 0.25 1.0" scale="1.0"/>
@@ -27,11 +27,10 @@
 			<Object type="RigidMapping" />
 		</Node>
 	</Node>
-	
 	<Node name="CUBE">
 		<Object type="EulerSolver"/>
 		<Object type="MechanicalObject" template="Rigid" scale="0.3"  dx="-2.0" dy="-2.0" dz="0.0"/>
-		<Object type="UniformMass" filename="BehaviorModels/rigid.xs3" mass="1000.0"/>
+		<Object type="UniformMass"  mass="1000.0"/>
 		<Object type="UncoupledConstraintCorrection"/>
 		<Node name="Visu">
 			<Object type="OglModel" name="Visual" filename="mesh/smCube27.obj" color="0.0 0.5 0.5 1.0" scale="0.3"/>
@@ -51,7 +50,7 @@
 	<Node name="BALL">
 		<Object type="EulerSolver"/>
 		<Object type="MechanicalObject" template="Rigid" scale="1.0"  dx="2.0" dy="-2.0" dz="0.0"/>
-		<Object type="UniformMass" filename="BehaviorModels/rigid.xs3" mass="2000.0"/>
+		<Object type="UniformMass"  mass="2000.0"/>
 		<Object type="UncoupledConstraintCorrection"/>
 		<Node name="Visu">
 			<Object type="OglModel" name="Visual" filename="mesh/ball.obj" color="0.5 0.0 0.5 1.0" scale="1.0"/>
@@ -72,7 +71,7 @@
 	<Node name="MAN">
 		<Object type="EulerSolver"/>
 		<Object type="MechanicalObject" template="Rigid" scale="10.0"  dx="0.0" dy="-3.0" dz="0.0"/>
-		<Object type="UniformMass" filename="BehaviorModels/rigid.xs3" mass="8000.0"/>
+		<Object type="UniformMass"  mass="8000.0"/>
 		<Object type="UncoupledConstraintCorrection"/>
 		<Node name="Visu">
 			<Object type="OglModel" name="Visual" filename="mesh/man.obj" color="0.8 0.8 0.8 1.0" scale="10.0"/>
@@ -88,10 +87,11 @@
 			<Object type="RigidMapping" />
 		</Node>
 	</Node>
+
 	<Node name="BOX">
-		<Object type="MechanicalObject"/>
         	<Object type="MeshLoader" name="meshLoader" filename="mesh/box.obj"/>
 		<Object type="Mesh"/>
+		<Object type="MechanicalObject"/>
 		<Object type="Triangle" simulated="0" moving="0"/>	
 		<Object type="Line" simulated="0" moving="0"/>
 		<Object type="Point" simulated="0" moving="0"/>
@@ -99,9 +99,9 @@
 	</Node>
 	
 	<Node name="BOXB">
-		<Object type="MechanicalObject" dy="10.0"/>
         	<Object type="MeshLoader" name="meshLoader" filename="mesh/box.obj"/>
 		<Object type="Mesh"/>
+		<Object type="MechanicalObject" dy="10.0"/>
 		<Object type="Triangle" simulated="0" moving="0"/>	
 		<Object type="Line" simulated="0" moving="0"/>
 		<Object type="Point" simulated="0" moving="0"/>
@@ -109,9 +109,9 @@
 	</Node>
 	
 	<Node name="BOX2">
-		<Object type="MechanicalObject" dx="-5.0"/>
         	<Object type="MeshLoader" name="meshLoader" filename="mesh/box2.obj"/>
 		<Object type="Mesh"/>
+		<Object type="MechanicalObject" dx="-5.0"/>
 		<Object type="Triangle" simulated="0" moving="0"/>	
 		<Object type="Line" simulated="0" moving="0"/>
 		<Object type="Point" simulated="0" moving="0"/>
@@ -119,9 +119,9 @@
 	</Node>
 	
 	<Node name="BOX2B">
-		<Object type="MechanicalObject" dx="5.0"/>
         	<Object type="MeshLoader" name="meshLoader" filename="mesh/box2.obj"/>
 		<Object type="Mesh"/>
+		<Object type="MechanicalObject" dx="5.0"/>
 		<Object type="Triangle" simulated="0" moving="0"/>	
 		<Object type="Line" simulated="0" moving="0"/>
 		<Object type="Point" simulated="0" moving="0"/>
@@ -129,9 +129,9 @@
 	</Node>
 	
 	<Node name="BOX3">
-		<Object type="MechanicalObject" dz="-5.0"/>
         	<Object type="MeshLoader" name="meshLoader" filename="mesh/box3.obj"/>
 		<Object type="Mesh"/>
+		<Object type="MechanicalObject" dz="-5.0"/>
 		<Object type="Triangle" simulated="0" moving="0"/>	
 		<Object type="Line" simulated="0" moving="0"/>
 		<Object type="Point" simulated="0" moving="0"/>
@@ -139,13 +139,12 @@
 	</Node>
 	
 	<Node name="BOX3B">
-		<Object type="MechanicalObject" dz="5.0"/>
         	<Object type="MeshLoader" name="meshLoader" filename="mesh/box3.obj"/>
 		<Object type="Mesh"/>
+		<Object type="MechanicalObject" dz="5.0"/>
 		<Object type="Triangle" simulated="0" moving="0"/>	
 		<Object type="Line" simulated="0" moving="0"/>
 		<Object type="Point" simulated="0" moving="0"/>
 		<Object type="OglModel" name="Visual" filename="mesh/box3.obj" color="1 0 0 0.1" dz="5.0"/>
 	</Node>
-	
 </Node>

@@ -45,7 +45,6 @@ void EdgeSetGeometryAlgorithms< DataTypes >::init()
     PointSetGeometryAlgorithms< DataTypes >::init();
     this->getContext()->get(m_container);
 }
-
 template< class DataTypes>
 typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeEdgeLength( const unsigned int i) const
 {
@@ -87,6 +86,45 @@ void EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeLength( BasicArrayInterfac
     }
 }
 
+/// Write the current mesh into a msh file
+template <typename DataTypes>
+void EdgeSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename)
+{
+    std::ofstream myfile;
+    myfile.open (filename);
+
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
+
+    const unsigned int numVertices = vect_c.size();
+
+    myfile << "$NOD\n";
+    myfile << numVertices <<"\n";
+
+    for (unsigned int i=0; i<numVertices; ++i)
+    {
+        double x = (double) vect_c[i][0];
+        double y = (double) vect_c[i][1];
+        double z = (double) vect_c[i][2];
+
+        myfile << i+1 << " " << x << " " << y << " " << z <<"\n";
+    }
+
+    myfile << "$ENDNOD\n";
+    myfile << "$ELM\n";
+
+    const sofa::helper::vector<Edge> &edge = m_container->getEdgeArray();
+
+    myfile << edge.size() <<"\n";
+
+    for (unsigned int i=0; i<edge.size(); ++i)
+    {
+        myfile << i+1 << " 1 1 1 2 " << edge[i][0]+1 << " " << edge[i][1]+1 <<"\n";
+    }
+
+    myfile << "$ENDELM\n";
+
+    myfile.close();
+}
 } // namespace topology
 
 } // namespace component

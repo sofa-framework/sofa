@@ -86,7 +86,7 @@ public:
 
         inline friend std::ostream& operator << ( std::ostream& out, const Spring& s )
         {
-            out<<s.m1<<" "<<s.m2<<" "<<s.ks<<" "<<s.kd<<" "<<s.initpos;
+            out<<s.m1<<" "<<s.m2<<" "<<s.ks<<" "<<s.kd<<" "<<s.initpos<<"\n";
             return out;
         }
 

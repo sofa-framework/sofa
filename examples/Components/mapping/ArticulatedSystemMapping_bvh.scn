@@ -1,4 +1,4 @@
-<Node name="root"  dt="0.5" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0">
+<Node name="root"  gravity="0 -.98 0" dt="0.5" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0">
 	<Object type="MasterContactSolver"/>
 	<Object type="CollisionPipeline" verbose="0" draw="0"/>
 	<Object type="BruteForceDetection" name="N2" />
@@ -9,7 +9,7 @@
 		<Object type="MechanicalObject" name="ArticulatedObject" template="Vec1d"/>
 		<Node name="6D_DOFs1"> 
 			<Object type="MechanicalObject" name="6D_Dof" template="Rigid"/> 
-			<Object type="UniformMass" filename="BehaviorModels/rigid.xs3"/>
+			<Object type="UniformMass" mass="0.5"/>
 
 			<Object type="ArticulatedSystemMapping" object1="ArticulatedObject" object2="6D_Dof"/>
 		</Node>

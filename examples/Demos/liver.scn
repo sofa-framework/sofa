@@ -8,10 +8,10 @@
 		<!--<Object type="CGImplicit" iterations="25"/>-->
 		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
 		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        	<Object type="MeshLoader" name="meshLoader" filename="mesh/liver.mesh"/>
-		<Object type="MechanicalObject" name="dofs" filename="BehaviorModels/liver.xs3" />
+        	<Object type="MeshLoader" name="meshLoader" filename="mesh/liver.msh"/>
+		<Object type="MechanicalObject" name="dofs" />
 		<Object type="TetrahedronSetTopology" name="topo"/>
-		<Object type="DiagonalMass" name="mass" />
+		<Object type="DiagonalMass" massDensity="1" name="computed using mass density"/>
 		<Object type="TetrahedralCorotationalFEMForceField" name="FEM" youngModulus="500" poissonRatio="0.3" computeGlobalMatrix="false" method="large"/> 
                 <Object type="FixedConstraint" name="FixedConstraint" indices="3 39 64" />
 
