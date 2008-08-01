@@ -45,7 +45,7 @@ void PointSetGeometryAlgorithms< DataTypes >::init()
 {
     object = this->getContext()->core::objectmodel::BaseContext::get< core::componentmodel::behavior::MechanicalState< DataTypes > >();
     core::componentmodel::topology::GeometryAlgorithms::init();
-    this->getContext()->get(m_container);
+    m_topology = this->getContext()->getMeshTopology();
 }
 
 template <class DataTypes>
@@ -55,8 +55,8 @@ typename DataTypes::Coord PointSetGeometryAlgorithms<DataTypes>::getPointSetCent
     // get restPosition
     typename DataTypes::VecCoord& p = *(object->getX0());
 
-    const unsigned int numVertices = m_container->getNbPoints();
-    for(unsigned int i=0; i<numVertices; ++i)
+    const int numVertices = m_topology->getNbPoints();
+    for(int i=0; i<numVertices; ++i)
     {
         center += p[i];
     }
@@ -72,7 +72,7 @@ void  PointSetGeometryAlgorithms<DataTypes>::getEnclosingSphere(typename DataTyp
     // get restPosition
     typename DataTypes::VecCoord& p = *(object->getX0());
 
-    const unsigned int numVertices = m_container->getNbPoints();
+    const unsigned int numVertices = m_topology->getNbPoints();
     for(unsigned int i=0; i<numVertices; ++i)
     {
         center += p[i];

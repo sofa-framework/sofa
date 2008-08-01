@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_H
 
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
@@ -94,7 +95,7 @@ public:
     void writeMSHfile(const char *filename);
 
 private:
-    QuadSetTopologyContainer* m_container;
+    sofa::core::componentmodel::topology::BaseMeshTopology* m_topology;
 
 };
 

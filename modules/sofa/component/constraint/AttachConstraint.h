@@ -27,6 +27,7 @@
 
 #include <sofa/core/componentmodel/behavior/PairInteractionConstraint.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
@@ -70,6 +71,8 @@ public:
 
 protected:
     AttachConstraintInternalData<DataTypes> data;
+
+    sofa::core::componentmodel::topology::BaseMeshTopology* topology;
 
 public:
     Data<SetIndex> f_indices1;

@@ -96,8 +96,6 @@ FixedConstraint<DataTypes>::FixedConstraint()
 // Handle topological changes
 template <class DataTypes> void FixedConstraint<DataTypes>::handleTopologyChange()
 {
-    sofa::core::componentmodel::topology::BaseMeshTopology* topology = getContext()->getMeshTopology();
-
     std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
     std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
 
@@ -138,6 +136,8 @@ template <class DataTypes>
 void FixedConstraint<DataTypes>::init()
 {
     this->core::componentmodel::behavior::Constraint<DataTypes>::init();
+
+    topology = getContext()->getMeshTopology();
 
     // Initialize functions and parameters
     topology::PointSubset my_subset = f_indices.getValue();

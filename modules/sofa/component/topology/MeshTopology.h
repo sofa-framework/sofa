@@ -366,6 +366,71 @@ protected:
      */
     int getQuadIndex(PointID v1, PointID v2, PointID v3,  PointID v4);
 
+    /** \brief Returns the index of the tetrahedron given four vertex indices; returns -1 if no edge exists
+     *
+     */
+    int getTetrahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4);
+
+    /** \brief Returns the index of the hexahedron given eight vertex indices; returns -1 if no edge exists
+     *
+     */
+    int getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4, PointID v5, PointID v6, PointID v7, PointID v8);
+
+    /** \brief Returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex. Returns -1 if none
+    *
+    */
+    int getVertexIndexInTriangle(const Triangle &t, PointID vertexIndex) const;
+
+    /** \brief Returns the index (either 0, 1 ,2) of the edge whose global index is edgeIndex. Returns -1 if none
+    *
+    */
+    int getEdgeIndexInTriangle(const TriangleEdges &t, EdgeID edgeIndex) const;
+
+    /** \brief Returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex. Returns -1 if none
+    *
+    */
+    int getVertexIndexInQuad(Quad &t, PointID vertexIndex) const;
+
+    /** \brief Returns the index (either 0, 1 ,2, 3) of the edge whose global index is edgeIndex. Returns -1 if none
+    *
+    */
+    int getEdgeIndexInQuad(QuadEdges &t, EdgeID edgeIndex) const;
+
+    /** \brief Returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex. Returns -1 if none
+    *
+    */
+    int getVertexIndexInTetrahedron(const Tetra &t, PointID vertexIndex) const;
+
+    /** \brief Returns the index (either 0, 1 ,2 ,3, 4, 5) of the edge whose global index is edgeIndex. Returns -1 if none
+    *
+    */
+    int getEdgeIndexInTetrahedron(const TetraEdges &t, EdgeID edgeIndex) const;
+
+    /** \brief Returns the index (either 0, 1 ,2 ,3) of the triangle whose global index is triangleIndex. Returns -1 if none
+    *
+    */
+    int getTriangleIndexInTetrahedron(const TetraTriangles &t, TriangleID triangleIndex) const;
+
+    /** \brief Returns the index (either 0, 1 ,2, 3, 4, 5, 6, or 7) of the vertex whose global index is vertexIndex. Returns -1 if none
+    *
+    */
+    int getVertexIndexInHexahedron(Hexa &t, PointID vertexIndex) const;
+
+    /** \brief Returns the index (either 0, 1 ,2 ,3, 4, 5, 6, 7, 8, 9, 10, 11) of the edge whose global index is edgeIndex. Returns -1 if none
+    *
+    */
+    int getEdgeIndexInHexahedron(const HexaEdges &t, EdgeID edgeIndex) const;
+
+    /** \brief Returns the index (either 0, 1 ,2 ,3, 4, 5) of the quad whose global index is quadIndex. Returns -1 if none
+    *
+    */
+    int getQuadIndexInHexahedron(const HexaQuads &t, QuadID quadIndex) const;
+
+    /** \brief Returns for each index (between 0 and 5) the two vertex indices that are adjacent to that edge
+    *
+    */
+    Edge getLocalTetrahedronEdges (const unsigned int i) const;
+
     int revision;
 
     Data< bool > _draw;

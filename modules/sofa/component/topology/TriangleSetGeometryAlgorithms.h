@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_TRIANGLESETGEOMETRYALGORITHMS_H
 
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
@@ -171,7 +172,7 @@ public:
     void writeMSHfile(const char *filename);
 
 private:
-    TriangleSetTopologyContainer* m_container;
+    sofa::core::componentmodel::topology::BaseMeshTopology* m_topology;
 };
 
 

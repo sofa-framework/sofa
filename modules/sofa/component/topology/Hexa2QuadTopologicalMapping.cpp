@@ -163,7 +163,7 @@ unsigned int Hexa2QuadTopologicalMapping::getFromIndex(unsigned int ind)
     }
     else
     {
-        return -1;
+        return 0;
     }
 }
 

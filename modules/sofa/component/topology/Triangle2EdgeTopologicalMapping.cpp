@@ -163,7 +163,7 @@ unsigned int Triangle2EdgeTopologicalMapping::getFromIndex(unsigned int ind)
     }
     else
     {
-        return -1;
+        return 0;
     }
 }
 

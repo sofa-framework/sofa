@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MECHANICALOBJECT_H
 
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/core/objectmodel/XDataPtr.h>
 #include <sofa/core/objectmodel/VDataPtr.h>
 #include <sofa/defaulttype/BaseVector.h>
@@ -334,6 +335,9 @@ public:
 
     // handle state changes
     virtual void handleStateChange();
+
+protected:
+    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 
 
 };

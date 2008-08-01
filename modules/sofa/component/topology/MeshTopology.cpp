@@ -1192,6 +1192,269 @@ int MeshTopology::getQuadIndex(PointID v1, PointID v2, PointID v3,  PointID v4)
         return -1;
 }
 
+int MeshTopology::getTetrahedronIndex(PointID v1, PointID v2, PointID v3,  PointID v4)
+{
+
+    const vector<TetraID> &set1=getTetraVertexShell(v1);
+    const vector<TetraID> &set2=getTetraVertexShell(v2);
+    const vector<TetraID> &set3=getTetraVertexShell(v3);
+    const vector<TetraID> &set4=getTetraVertexShell(v4);
+
+    // The destination vector must be large enough to contain the result.
+    vector<TetraID> out1(set1.size()+set2.size());
+    vector<TetraID>::iterator result1;
+    result1 = std::set_intersection(set1.begin(),set1.end(),set2.begin(),set2.end(),out1.begin());
+    out1.erase(result1,out1.end());
+
+    vector<TetraID> out2(set3.size()+out1.size());
+    vector<TetraID>::iterator result2;
+    result2 = std::set_intersection(set3.begin(),set3.end(),out1.begin(),out1.end(),out2.begin());
+    out2.erase(result2,out2.end());
+
+    vector<TetraID> out3(set4.size()+out2.size());
+    vector<TetraID>::iterator result3;
+    result3 = std::set_intersection(set4.begin(),set4.end(),out2.begin(),out2.end(),out3.begin());
+    out3.erase(result3,out3.end());
+
+    assert(out3.size()==0 || out3.size()==1);
+
+    if (out3.size()==1)
+        return (int) (out3[0]);
+    else
+        return -1;
+}
+
+int MeshTopology::getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4, PointID v5, PointID v6, PointID v7, PointID v8)
+{
+
+    const vector<HexaID> &set1=getTetraVertexShell(v1);
+    const vector<HexaID> &set2=getTetraVertexShell(v2);
+    const vector<HexaID> &set3=getTetraVertexShell(v3);
+    const vector<HexaID> &set4=getTetraVertexShell(v4);
+    const vector<HexaID> &set5=getTetraVertexShell(v5);
+    const vector<HexaID> &set6=getTetraVertexShell(v6);
+    const vector<HexaID> &set7=getTetraVertexShell(v7);
+    const vector<HexaID> &set8=getTetraVertexShell(v8);
+
+    // The destination vector must be large enough to contain the result.
+    vector<HexaID> out1(set1.size()+set2.size());
+    vector<HexaID>::iterator result1;
+    result1 = std::set_intersection(set1.begin(),set1.end(),set2.begin(),set2.end(),out1.begin());
+    out1.erase(result1,out1.end());
+
+    vector<HexaID> out2(set3.size()+out1.size());
+    vector<HexaID>::iterator result2;
+    result2 = std::set_intersection(set3.begin(),set3.end(),out1.begin(),out1.end(),out2.begin());
+    out2.erase(result2,out2.end());
+
+    vector<HexaID> out3(set4.size()+out2.size());
+    vector<HexaID>::iterator result3;
+    result3 = std::set_intersection(set4.begin(),set4.end(),out2.begin(),out2.end(),out3.begin());
+    out3.erase(result3,out3.end());
+
+    vector<HexaID> out4(set5.size()+set3.size());
+    vector<HexaID>::iterator result4;
+    result4 = std::set_intersection(set5.begin(),set5.end(),set3.begin(),set3.end(),out4.begin());
+    out4.erase(result4,out4.end());
+
+    vector<HexaID> out5(set6.size()+out4.size());
+    vector<HexaID>::iterator result5;
+    result5 = std::set_intersection(set6.begin(),set6.end(),out4.begin(),out4.end(),out5.begin());
+    out5.erase(result5,out5.end());
+
+    vector<HexaID> out6(set7.size()+out5.size());
+    vector<HexaID>::iterator result6;
+    result6 = std::set_intersection(set7.begin(),set7.end(),out5.begin(),out5.end(),out6.begin());
+    out6.erase(result6,out6.end());
+
+    vector<HexaID> out7(set8.size()+out6.size());
+    vector<HexaID>::iterator result7;
+    result7 = std::set_intersection(set8.begin(),set8.end(),out6.begin(),out6.end(),out7.begin());
+    out7.erase(result6,out7.end());
+
+    assert(out7.size()==0 || out7.size()==1);
+
+    if (out7.size()==1)
+        return (int) (out7[0]);
+    else
+        return -1;
+}
+
+int MeshTopology::getVertexIndexInTriangle(const Triangle &t, PointID vertexIndex) const
+{
+    if (t[0]==vertexIndex)
+        return 0;
+    else if (t[1]==vertexIndex)
+        return 1;
+    else if (t[2]==vertexIndex)
+        return 2;
+    else
+        return -1;
+}
+
+int MeshTopology::getEdgeIndexInTriangle(const TriangleEdges &t, EdgeID edgeIndex) const
+{
+    if (t[0]==edgeIndex)
+        return 0;
+    else if (t[1]==edgeIndex)
+        return 1;
+    else if (t[2]==edgeIndex)
+        return 2;
+    else
+        return -1;
+}
+
+int MeshTopology::getVertexIndexInQuad(Quad &t, PointID vertexIndex) const
+{
+    if(t[0]==vertexIndex)
+        return 0;
+    else if(t[1]==vertexIndex)
+        return 1;
+    else if(t[2]==vertexIndex)
+        return 2;
+    else if(t[3]==vertexIndex)
+        return 3;
+    else
+        return -1;
+}
+
+int MeshTopology::getEdgeIndexInQuad(QuadEdges &t, EdgeID edgeIndex) const
+{
+    if(t[0]==edgeIndex)
+        return 0;
+    else if(t[1]==edgeIndex)
+        return 1;
+    else if(t[2]==edgeIndex)
+        return 2;
+    else if(t[3]==edgeIndex)
+        return 3;
+    else
+        return -1;
+}
+
+int MeshTopology::getVertexIndexInTetrahedron(const Tetra &t, PointID vertexIndex) const
+{
+    if (t[0]==vertexIndex)
+        return 0;
+    else if (t[1]==vertexIndex)
+        return 1;
+    else if (t[2]==vertexIndex)
+        return 2;
+    else if (t[3]==vertexIndex)
+        return 3;
+    else
+        return -1;
+}
+
+int MeshTopology::getEdgeIndexInTetrahedron(const TetraEdges &t, EdgeID edgeIndex) const
+{
+    if (t[0]==edgeIndex)
+        return 0;
+    else if (t[1]==edgeIndex)
+        return 1;
+    else if (t[2]==edgeIndex)
+        return 2;
+    else if (t[3]==edgeIndex)
+        return 3;
+    else if (t[4]==edgeIndex)
+        return 4;
+    else if (t[5]==edgeIndex)
+        return 5;
+    else
+        return -1;
+}
+
+int MeshTopology::getTriangleIndexInTetrahedron(const TetraTriangles &t, TriangleID triangleIndex) const
+{
+    if (t[0]==triangleIndex)
+        return 0;
+    else if (t[1]==triangleIndex)
+        return 1;
+    else if (t[2]==triangleIndex)
+        return 2;
+    else if (t[3]==triangleIndex)
+        return 3;
+    else
+        return -1;
+}
+
+int MeshTopology::getVertexIndexInHexahedron(Hexa &t, PointID vertexIndex) const
+{
+    if(t[0]==vertexIndex)
+        return 0;
+    else if(t[1]==vertexIndex)
+        return 1;
+    else if(t[2]==vertexIndex)
+        return 2;
+    else if(t[3]==vertexIndex)
+        return 3;
+    else if(t[4]==vertexIndex)
+        return 4;
+    else if(t[5]==vertexIndex)
+        return 5;
+    else if(t[6]==vertexIndex)
+        return 6;
+    else if(t[7]==vertexIndex)
+        return 7;
+    else
+        return -1;
+}
+
+int MeshTopology::getEdgeIndexInHexahedron(const HexaEdges &t, EdgeID edgeIndex) const
+{
+    if(t[0]==edgeIndex)
+        return 0;
+    else if(t[1]==edgeIndex)
+        return 1;
+    else if(t[2]==edgeIndex)
+        return 2;
+    else if(t[3]==edgeIndex)
+        return 3;
+    else if(t[4]==edgeIndex)
+        return 4;
+    else if(t[5]==edgeIndex)
+        return 5;
+    else if(t[6]==edgeIndex)
+        return 6;
+    else if(t[7]==edgeIndex)
+        return 7;
+    else if(t[8]==edgeIndex)
+        return 8;
+    else if(t[9]==edgeIndex)
+        return 9;
+    else if(t[10]==edgeIndex)
+        return 10;
+    else if(t[11]==edgeIndex)
+        return 11;
+    else
+        return -1;
+}
+
+int MeshTopology::getQuadIndexInHexahedron(const HexaQuads &t, QuadID quadIndex) const
+{
+    if(t[0]==quadIndex)
+        return 0;
+    else if(t[1]==quadIndex)
+        return 1;
+    else if(t[2]==quadIndex)
+        return 2;
+    else if(t[3]==quadIndex)
+        return 3;
+    else if(t[4]==quadIndex)
+        return 4;
+    else if(t[5]==quadIndex)
+        return 5;
+    else
+        return -1;
+}
+
+MeshTopology::Edge MeshTopology::getLocalTetrahedronEdges (const unsigned int i) const
+{
+    assert(i<6);
+    const unsigned int tetrahedronEdgeArray[6][2]= {{0,1},{0,2},{0,3},{1,2},{1,3},{2,3}};
+    return MeshTopology::Edge (tetrahedronEdgeArray[i][0], tetrahedronEdgeArray[i][1]);
+}
+
 bool MeshTopology::hasPos() const
 {
     return !seqPoints.empty();
