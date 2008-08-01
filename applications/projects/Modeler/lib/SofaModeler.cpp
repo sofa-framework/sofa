@@ -627,7 +627,7 @@ void SofaModeler::keyPressEvent ( QKeyEvent * e )
     case Qt::Key_Escape :
     case Qt::Key_Q :
     {
-        fileExit();
+        if (isActiveWindow())  fileExit();
         break;
     }
     default:
@@ -678,6 +678,7 @@ void SofaModeler::runInSofa()
 
     guiSofa->setScene(root);
     guiSofa->show();
+    guiSofa->setFocus();
     mapSofa.insert(std::make_pair(tabGraph, guiSofa));
 }
 
