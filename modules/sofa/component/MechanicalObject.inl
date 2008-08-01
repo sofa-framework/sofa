@@ -252,9 +252,6 @@ MechanicalObject<DataTypes>::~MechanicalObject()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::handleStateChange()
 {
-    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
-    _topology = this->getContext()->getMeshTopology();
-
     std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=_topology->firstStateChange();
     std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=_topology->lastStateChange();
 
@@ -903,7 +900,7 @@ void MechanicalObject<DataTypes>::addDxToCollisionModel()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::init()
 {
-
+    _topology = this->getContext()->getMeshTopology();
 
     f_X->beginEdit();
     f_V->beginEdit();
@@ -912,8 +909,6 @@ void MechanicalObject<DataTypes>::init()
     f_Xfree->beginEdit();
     f_Vfree->beginEdit();
     f_X0->beginEdit();
-
-
 
     if (getX()->size() != (std::size_t)vsize || getV()->size() != (std::size_t)vsize)
     {
@@ -943,16 +938,15 @@ void MechanicalObject<DataTypes>::init()
         else
         {
 
-            sofa::core::componentmodel::topology::BaseMeshTopology* topo = this->getContext()->getMeshTopology();
-            if (topo!=NULL && topo->hasPos() && topo->getContext() == this->getContext())
+            if (_topology!=NULL && _topology->hasPos() && _topology->getContext() == this->getContext())
             {
-                int nbp = topo->getNbPoints();
-                //std::cout<<"Setting "<<nbp<<" points from topology. " << this->getName() << " topo : " << topo->getName() <<std::endl;
+                int nbp = _topology->getNbPoints();
+                //std::cout<<"Setting "<<nbp<<" points from topology. " << this->getName() << " topo : " << _topology->getName() <<std::endl;
                 this->resize(nbp);
                 for (int i=0; i<nbp; i++)
                 {
                     (*getX())[i] = Coord();
-                    DataTypes::set((*getX())[i], topo->getPX(i), topo->getPY(i), topo->getPZ(i));
+                    DataTypes::set((*getX())[i], _topology->getPX(i), _topology->getPY(i), _topology->getPZ(i));
                 }
 
             }

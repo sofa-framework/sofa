@@ -760,8 +760,6 @@ void BarycentricMapping<BasicMapping>::createMapperFromTopology(BaseMeshTopology
 {
     mapper = NULL;
 
-    BaseMeshTopology * topology2 = this->fromModel->getContext()->getMeshTopology();
-
     core::componentmodel::topology::TopologyContainer* topoCont2;
     this->fromModel->getContext()->get(topoCont2);
 
@@ -772,7 +770,7 @@ void BarycentricMapping<BasicMapping>::createMapperFromTopology(BaseMeshTopology
         if(t1 != NULL)
         {
             typedef BarycentricMapperHexahedronSetTopology<InDataTypes, OutDataTypes> HexahedronSetMapper;
-            mapper = new HexahedronSetMapper(topology2);
+            mapper = new HexahedronSetMapper(topology_from);
         }
         else
         {
@@ -780,7 +778,7 @@ void BarycentricMapping<BasicMapping>::createMapperFromTopology(BaseMeshTopology
             if(t2 != NULL)
             {
                 typedef BarycentricMapperTetrahedronSetTopology<InDataTypes, OutDataTypes> TetrahedronSetMapper;
-                mapper = new TetrahedronSetMapper(topology2);
+                mapper = new TetrahedronSetMapper(topology_from);
             }
             else
             {
@@ -788,7 +786,7 @@ void BarycentricMapping<BasicMapping>::createMapperFromTopology(BaseMeshTopology
                 if(t3 != NULL)
                 {
                     typedef BarycentricMapperQuadSetTopology<InDataTypes, OutDataTypes> QuadSetMapper;
-                    mapper = new QuadSetMapper(topology2);
+                    mapper = new QuadSetMapper(topology_from);
                 }
                 else
                 {
@@ -796,7 +794,7 @@ void BarycentricMapping<BasicMapping>::createMapperFromTopology(BaseMeshTopology
                     if (t4 != NULL)
                     {
                         typedef BarycentricMapperTriangleSetTopology<InDataTypes, OutDataTypes> TriangleSetMapper;
-                        mapper = new TriangleSetMapper(topology2);
+                        mapper = new TriangleSetMapper(topology_from);
                     }
                     else
                     {
@@ -804,7 +802,7 @@ void BarycentricMapping<BasicMapping>::createMapperFromTopology(BaseMeshTopology
                         if(t5 != NULL)
                         {
                             typedef BarycentricMapperEdgeSetTopology<InDataTypes, OutDataTypes> EdgeSetMapper;
-                            mapper = new EdgeSetMapper(topology2);
+                            mapper = new EdgeSetMapper(topology_from);
                         }
                     }
                 }
@@ -849,13 +847,15 @@ void BarycentricMapping<BasicMapping>::createMapperFromTopology(BaseMeshTopology
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::init()
 {
+    topology_from = this->fromModel->getContext()->getMeshTopology();
+    topology_to = this->toModel->getContext()->getMeshTopology();
+
     f_grid->beginEdit();
     if(mapper == NULL) // try to create a mapper according to the topology of the In model
     {
-        sofa::core::componentmodel::topology::BaseMeshTopology* topology = this->fromModel->getContext()->getMeshTopology();
-        if (topology!=NULL)
+        if (topology_from!=NULL)
         {
-            createMapperFromTopology(topology);
+            createMapperFromTopology(topology_from);
         }
     }
 
@@ -2863,13 +2863,13 @@ void BarycentricMapping<BasicMapping>::handleTopologyChange()
         topoMapper->handleTopologyChange();
 
         // handle changes in the To topology
-        core::componentmodel::topology::BaseMeshTopology* topology = this->toModel->getContext()->getMeshTopology();
-        if (topology != NULL)
+        core::componentmodel::topology::BaseMeshTopology* topology_to = this->toModel->getContext()->getMeshTopology();
+        if (topology_to != NULL)
         {
-            if(topology->firstChange() != topology->lastChange()) // may not be necessary
+            if(topology_to->firstChange() != topology_to->lastChange()) // may not be necessary
             {
-                const std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = topology->firstChange();
-                const std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = topology->lastChange();
+                const std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = topology_to->firstChange();
+                const std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = topology_to->lastChange();
 
                 topoMapper->handlePointEvents(itBegin, itEnd);
             }

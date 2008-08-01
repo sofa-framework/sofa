@@ -322,8 +322,6 @@ AttachConstraint<DataTypes>::AttachConstraint()
 // Handle topological changes
 template <class DataTypes> void AttachConstraint<DataTypes>::handleTopologyChange()
 {
-    sofa::core::componentmodel::topology::BaseMeshTopology* topology = getContext()->getMeshTopology();
-
     std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
     std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
 
@@ -361,6 +359,9 @@ template <class DataTypes>
 void AttachConstraint<DataTypes>::init()
 {
     this->core::componentmodel::behavior::PairInteractionConstraint<DataTypes>::init();
+
+    topology = getContext()->getMeshTopology();
+
     if (f_radius.getValue() >= 0 && f_indices1.getValue().size()==0 && f_indices2.getValue().size()==0 && this->mstate1 && this->mstate2)
     {
         const Real maxR = f_radius.getValue();

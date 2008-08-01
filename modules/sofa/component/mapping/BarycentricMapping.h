@@ -28,6 +28,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/component/topology/PointData.h>
 #include <sofa/component/topology/HexahedronData.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 // forward declarations
 namespace sofa
@@ -803,6 +804,10 @@ public:
     virtual void handleTopologyChange();
 
     TopologyBarycentricMapper<InDataTypes,OutDataTypes>*	getMapper() {return mapper;}
+
+protected:
+    sofa::core::componentmodel::topology::BaseMeshTopology* topology_from;
+    sofa::core::componentmodel::topology::BaseMeshTopology* topology_to;
 
 private:
     void createMapperFromTopology(BaseMeshTopology * topology);

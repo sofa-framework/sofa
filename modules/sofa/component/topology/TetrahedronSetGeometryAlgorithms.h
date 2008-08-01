@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETGEOMETRYALGORITHMS_H
 
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
@@ -87,7 +88,7 @@ public:
     void writeMSHfile(const char *filename);
 
 private:
-    TetrahedronSetTopologyContainer* m_container;
+    sofa::core::componentmodel::topology::BaseMeshTopology* m_topology;
 };
 
 } // namespace topology

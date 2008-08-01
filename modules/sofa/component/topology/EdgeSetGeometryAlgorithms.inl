@@ -43,12 +43,12 @@ template <class DataTypes>
 void EdgeSetGeometryAlgorithms< DataTypes >::init()
 {
     PointSetGeometryAlgorithms< DataTypes >::init();
-    this->getContext()->get(m_container);
+    m_topology = this->getContext()->getMeshTopology();
 }
 template< class DataTypes>
 typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeEdgeLength( const unsigned int i) const
 {
-    const Edge &e = m_container->getEdge(i);
+    const Edge &e = m_topology->getEdge(i);
     const VecCoord& p = *(this->object->getX());
     const Real length = (p[e[0]]-p[e[1]]).norm();
     return length;
@@ -57,7 +57,7 @@ typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeEdgeLeng
 template< class DataTypes>
 typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeRestEdgeLength( const unsigned int i) const
 {
-    const Edge &e = m_container->getEdge(i);
+    const Edge &e = m_topology->getEdge(i);
     const VecCoord& p = *(this->object->getX0());
     const Real length = (p[e[0]]-p[e[1]]).norm();
     return length;
@@ -66,7 +66,7 @@ typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeRestEdge
 template< class DataTypes>
 typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeRestSquareEdgeLength( const unsigned int i) const
 {
-    const Edge &e = m_container->getEdge(i);
+    const Edge &e = m_topology->getEdge(i);
     const VecCoord& p = *(this->object->getX0());
     const Real length = (p[e[0]]-p[e[1]]).norm2();
     return length;
@@ -76,7 +76,7 @@ typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeRestSqua
 template<class DataTypes>
 void EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeLength( BasicArrayInterface<Real> &ai) const
 {
-    const sofa::helper::vector<Edge> &ea = m_container->getEdgeArray();
+    const sofa::helper::vector<Edge> &ea = m_topology->getEdges();
     const typename DataTypes::VecCoord& p = *(this->object->getX());
 
     for (unsigned int i=0; i<ea.size(); ++i)
@@ -112,7 +112,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename)
     myfile << "$ENDNOD\n";
     myfile << "$ELM\n";
 
-    const sofa::helper::vector<Edge> &edge = m_container->getEdgeArray();
+    const sofa::helper::vector<Edge> &edge = m_topology->getEdges();
 
     myfile << edge.size() <<"\n";
 

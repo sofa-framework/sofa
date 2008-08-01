@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_H
 
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
@@ -89,7 +90,7 @@ protected:
     sofa::core::componentmodel::behavior::MechanicalState<DataTypes> *object;
 
 private:
-    PointSetTopologyContainer* m_container;
+    sofa::core::componentmodel::topology::BaseMeshTopology* m_topology;
 };
 
 } // namespace topology

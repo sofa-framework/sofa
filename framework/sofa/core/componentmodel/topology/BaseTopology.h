@@ -225,7 +225,6 @@ public:
     *
     */
     GeometryAlgorithms()
-        : m_topologyContainer(NULL)
     {}
 
     /// Destructor
@@ -234,9 +233,6 @@ public:
 
     virtual void init();
 
-protected:
-    /// Contains the actual topology data and give acces to it (nature of these data heavily depends on the kind of topology).
-    TopologyContainer *m_topologyContainer;
 };
 
 /** A class that contains a set of low-level methods that perform topological changes */

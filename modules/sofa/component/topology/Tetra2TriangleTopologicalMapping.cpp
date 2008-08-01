@@ -163,7 +163,7 @@ unsigned int Tetra2TriangleTopologicalMapping::getFromIndex(unsigned int ind)
     }
     else
     {
-        return -1;
+        return 0;
     }
 }
 

@@ -27,6 +27,7 @@
 
 #include <sofa/core/componentmodel/behavior/Constraint.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
@@ -101,6 +102,8 @@ public:
     bool isHolonomic() {return true;}
 
 protected :
+
+    sofa::core::componentmodel::topology::BaseMeshTopology* topology;
 
     // Define TestNewPointFunction
     static bool FCTestNewPointFunction(int, void*, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& );

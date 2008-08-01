@@ -27,6 +27,7 @@
 
 #include <sofa/core/componentmodel/behavior/Constraint.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <set>
 #include <sofa/component/topology/PointSubset.h>
 
@@ -84,6 +85,8 @@ public:
 
     void draw();
 protected:
+
+    sofa::core::componentmodel::topology::BaseMeshTopology* topology;
 
     // Define TestNewPointFunction
     static bool FPCTestNewPointFunction(int, void*, const helper::vector< unsigned int > &, const helper::vector< double >& );

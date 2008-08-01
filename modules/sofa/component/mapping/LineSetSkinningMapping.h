@@ -96,6 +96,8 @@ public:
 
 protected:
 
+    sofa::core::componentmodel::topology::BaseMeshTopology* t;
+
     /*!
     	Set the neighborhood line level
     */

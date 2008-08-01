@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETGEOMETRYALGORITHMS_H
 
 #include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
@@ -82,7 +83,7 @@ public:
     void writeMSHfile(const char *filename);
 
 private:
-    HexahedronSetTopologyContainer* m_container;
+    sofa::core::componentmodel::topology::BaseMeshTopology* m_topology;
 };
 
 } // namespace topology

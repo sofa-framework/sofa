@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_H
 
 #include <sofa/component/topology/PointSetGeometryAlgorithms.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
@@ -90,7 +91,7 @@ public:
 
     void writeMSHfile(const char *filename);
 private:
-    EdgeSetTopologyContainer* m_container;
+    sofa::core::componentmodel::topology::BaseMeshTopology* m_topology;
 };
 
 } // namespace topology
