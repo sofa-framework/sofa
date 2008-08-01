@@ -7,14 +7,15 @@
 	<Object type="Gravity" name="G" gravity="0 -9.81 0" />
 	<Node name="Cylinder Reference">
             <Node name="Visual">
-               <Object type="OglModel" filename="mesh/TruthCylinder-Deformed.obj" color="0.5 0.5 0.5 0.5" scale="1.0" />
+               <Object type="OglModel" filename="mesh/truthCylinder-Deformed.obj" color="0.5 0.5 0.5 0.5" scale="1.0" />
             </Node>
             <Node name="EndPoint">
                 <Object type="MechanicalObject" position="0.0 -0.119383 0.126842" />
                 <Object type="FixedConstraint" indices="0" />
             </Node>
             <Node name="Surface">
-                <Object type="Mesh" filename="mesh/TruthCylinder-Deformed.obj" />
+            	<Object type="MeshLoader"  filename="mesh/truthCylinder-Deformed.obj" /> 
+                <Object type="Mesh" />
                 <Object type="MechanicalObject" scale="1.0" />
                 <Object type="Triangle" />
                 <Object type="Line" />
