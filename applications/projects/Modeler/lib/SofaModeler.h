@@ -38,6 +38,9 @@
 #include <sofa/helper/Factory.h>
 #include <sofa/simulation/tree/GNode.h>
 
+#include <sofa/gui/SofaGUI.h>
+#include <sofa/helper/system/glut.h>
+#include <sofa/gui/qt/RealGUI.h>
 
 #ifdef SOFA_QT4
 #include <Q3ListView>
@@ -129,7 +132,7 @@ public slots:
     void newTab();
 
     /// Quit the Modeler
-    void fileExit() {exit(0);};
+    void fileExit() {close();};
 
     /// Launch the current simulation into Sofa
     void runInSofa();
@@ -177,6 +180,7 @@ protected:
 
     std::map< const QObject* , std::pair<ClassInfo*, QObject*> > mapComponents;
     std::map< const QWidget*, GraphModeler*> mapGraph;
+    std::map< const QWidget*, sofa::gui::qt::RealGUI*> mapSofa;
 
 private:
     std::string presetPath;
