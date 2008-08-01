@@ -494,7 +494,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMapping()
                         }
                     }
 
-                    to_tstm->addPointsProcess(to_nVertices, to_ancestorsList, to_coefs, true);
+                    to_tstm->addPointsProcess(to_nVertices);
                     to_tstm->addPointsWarning(to_nVertices, to_ancestorsList, to_coefs, true);
                     toModel->propagateTopologicalChanges();
 

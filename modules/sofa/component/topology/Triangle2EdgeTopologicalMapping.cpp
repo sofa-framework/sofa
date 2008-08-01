@@ -576,7 +576,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMapping()
                     //std::cout << "INFO_print : Triangle2EdgeTopologicalMapping - POINTSADDED" << std::endl;
 
                     const sofa::component::topology::PointsAdded *ta=static_cast< const sofa::component::topology::PointsAdded * >( *itBegin );
-                    to_tstm->addPointsProcess(ta->getNbAddedVertices(), ta->ancestorsList, ta->coefs, false);
+                    to_tstm->addPointsProcess(ta->getNbAddedVertices());
                     to_tstm->addPointsWarning(ta->getNbAddedVertices(), ta->ancestorsList, ta->coefs, false);
                     toModel->propagateTopologicalChanges();
 

@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_TRIANGLESETGEOMETRYALGORITHMS_INL
 
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
+#include <sofa/component/topology/TriangleSetTopologyContainer.h>
 
 namespace sofa
 {

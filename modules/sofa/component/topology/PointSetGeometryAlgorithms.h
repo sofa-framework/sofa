@@ -27,12 +27,19 @@
 
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
 
-#include <sofa/component/topology/PointSetTopologyContainer.h>
-
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-
 namespace sofa
 {
+namespace core
+{
+namespace componentmodel
+{
+namespace behavior
+{
+template <class DataTypes>
+class MechanicalState;
+}
+}
+}
 
 namespace component
 {

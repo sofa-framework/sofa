@@ -27,6 +27,8 @@
 
 #include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
 
+#include <sofa/component/topology/HexahedronSetTopologyContainer.h>
+
 namespace sofa
 {
 

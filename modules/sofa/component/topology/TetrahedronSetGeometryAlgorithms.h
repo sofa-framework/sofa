@@ -27,8 +27,6 @@
 
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 
-#include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
-
 namespace sofa
 {
 
