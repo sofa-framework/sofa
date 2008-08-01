@@ -15,8 +15,6 @@
 	showWireFrame="0"
 	time="0"
 >
-		<Object type="Gravity"
-			gravity="0 -9.81 0"	/>
 		<Object type="BruteForceDetection"	/>
 		<Object type="DefaultContactManager"	/>
 		<Object type="DefaultPipeline"	/>
