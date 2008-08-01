@@ -304,6 +304,7 @@ signals:
     void reload();
     void newScene();
     void newStep();
+    void quit();
 
 protected:
 

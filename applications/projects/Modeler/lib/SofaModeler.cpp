@@ -29,9 +29,6 @@
 #include <sofa/helper/system/SetDirectory.h>
 
 
-#include <sofa/gui/SofaGUI.h>
-#include <sofa/helper/system/glut.h>
-#include <sofa/gui/qt/RealGUI.h>
 
 
 #include <map>
@@ -372,7 +369,11 @@ void SofaModeler::closeTab()
     if (sceneTab->count() <=1) fileNew();
     else if (tabGraph)
     {
+        mapSofa[tabGraph]->fileExit();
+        delete mapGraph[tabGraph];
+        delete mapSofa [tabGraph];
         mapGraph.erase(tabGraph);
+        mapSofa .erase(tabGraph);
         delete tabGraph;
     }
 }
@@ -677,6 +678,7 @@ void SofaModeler::runInSofa()
 
     guiSofa->setScene(root);
     guiSofa->show();
+    mapSofa.insert(std::make_pair(tabGraph, guiSofa));
 }
 
 
