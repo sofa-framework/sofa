@@ -38,10 +38,6 @@
 #define SOFA_COMPONENT_CONTROLLER_EDGESETCONTROLLER_H
 
 #include <sofa/component/controller/MechanicalStateController.h>
-#include <sofa/component/topology/EdgeSetTopology.h>
-
-
-namespace sofa { namespace component { namespace topology { template < class DataTypes> class EdgeSetTopology; } } }
 
 
 namespace sofa
@@ -49,6 +45,13 @@ namespace sofa
 
 namespace component
 {
+namespace topology
+{
+template <class T>
+class EdgeSetGeometryAlgorithms;
+template <class T>
+class EdgeSetTopologyAlgorithms;
+}
 
 namespace controller
 {

@@ -29,8 +29,11 @@
 #include <iostream>
 
 #include <sofa/helper/gl/template.h>
+
 #include <sofa/component/topology/QuadData.inl>
 #include <sofa/component/topology/EdgeData.inl>
+
+#include <sofa/component/topology/PointSetTopologyChange.h>
 
 namespace sofa
 {
@@ -50,6 +53,10 @@ using std::cout;
 using std::endl;
 
 using namespace core::componentmodel::behavior;
+using core::componentmodel::topology::BaseMeshTopology;
+
+typedef BaseMeshTopology::Quad				Quad;
+typedef BaseMeshTopology::QuadEdges			QuadEdges;
 
 template< class DataTypes>
 void QuadularBendingSprings<DataTypes>::QuadularBSEdgeCreationFunction(int /*edgeIndex*/, void* param, EdgeInformation &ei,

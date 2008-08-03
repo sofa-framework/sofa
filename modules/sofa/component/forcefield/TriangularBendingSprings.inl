@@ -37,7 +37,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_INL
 
 #include <sofa/component/forcefield/TriangularBendingSprings.h>
-// #include <sofa/component/topology/MeshTopology.h>
+#include <sofa/component/topology/PointSetTopologyChange.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 
@@ -63,6 +63,8 @@ using std::cout;
 using std::endl;
 
 using namespace core::componentmodel::behavior;
+using core::componentmodel::topology::BaseMeshTopology;
+typedef BaseMeshTopology::TriangleEdges TriangleEdges;
 
 template< class DataTypes>
 void TriangularBendingSprings<DataTypes>::TriangularBSEdgeCreationFunction(int /*edgeIndex*/, void* param, EdgeInformation &ei,

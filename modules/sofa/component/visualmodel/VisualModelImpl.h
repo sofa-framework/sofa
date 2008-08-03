@@ -28,15 +28,10 @@
 #include <string>
 #include <sofa/core/VisualModel.h>
 #include <sofa/core/componentmodel/behavior/MappedModel.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/component/topology/TriangleSetTopology.h>
-#include <sofa/component/topology/QuadSetTopology.h>
-#include <sofa/component/topology/TetrahedronSetTopology.h>
-#include <sofa/component/topology/HexahedronSetTopology.h>
-#include <sofa/component/topology/SparseGridTopology.h>
 #include <sofa/helper/io/Mesh.h>
 
 #include <map>

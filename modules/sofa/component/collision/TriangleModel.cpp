@@ -32,6 +32,11 @@
 #include <vector>
 #include <sofa/helper/gl/template.h>
 #include <iostream>
+
+#include <sofa/component/topology/PointSetTopologyChange.h>
+#include <sofa/component/topology/TriangleSetTopologyChange.h>
+
+
 using std::cerr;
 using std::endl;
 

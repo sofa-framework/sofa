@@ -29,7 +29,6 @@
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/component/topology/EdgeSetTopology.h>
 #include <sofa/component/collision/PointModel.h>
 
 namespace sofa
@@ -42,7 +41,6 @@ namespace collision
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
 
 class LineModel;
 

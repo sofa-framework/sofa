@@ -25,10 +25,12 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_QUADSETTOPOLOGYALGORITHMS_INL
 #define SOFA_COMPONENT_TOPOLOGY_QUADSETTOPOLOGYALGORITHMS_INL
 
+#include <sofa/component/topology/QuadSetTopologyContainer.h>
+#include <sofa/component/topology/QuadSetTopologyModifier.h>
 #include <sofa/component/topology/QuadSetTopologyAlgorithms.h>
+#include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
 #include <algorithm>
 #include <functional>
-#include <sofa/component/topology/QuadSetTopology.h>
 
 namespace sofa
 {

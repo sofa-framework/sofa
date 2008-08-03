@@ -27,13 +27,13 @@
 #ifndef SOFA_CORE_COMPONENTMODEL_TOPOLOGY_BASETOPOLOGY_H
 #define SOFA_CORE_COMPONENTMODEL_TOPOLOGY_BASETOPOLOGY_H
 
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/componentmodel/topology/BaseTopologyObject.h>
+
+#include <sofa/helper/vector.h>
 #include <list>
 #include <string>
 
-#include <sofa/helper/vector.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/core/componentmodel/topology/BaseTopologyObject.h>
 
 namespace sofa
 {
@@ -47,11 +47,8 @@ namespace componentmodel
 namespace topology
 {
 using core::componentmodel::topology::BaseMeshTopology;
-typedef BaseMeshTopology::PointID PointID;
 
 // forward declarations:
-
-class BaseTopology;
 
 /// Provides high-level topology algorithms (e.g. CutAlongPlane, DecimateTopology, etc).
 class TopologyAlgorithms;
@@ -68,119 +65,18 @@ class TopologyContainer;
 /// Translates topology events (TopologyChange objects) from a topology so that they apply on another one.
 class TopologicalMapping;
 
-/** \brief Base class that gives access to the 4 topology related objects and an array of topology modifications.
-*
-* This class containss everything that is needed to manage a particular topology. That is :
-* - a TopologyContainer object to hold actual data like DOF indices or neighborhood information,
-* - a TopologyModifier object providing simple low-level methods on these data (like RemoveEdge,
-* DuplicatePoint, etc),
-* - a TopologyAlgorithms object providing high-level methods (like CutAlongPlane or RefineLocally) which
-* mostly rely on calls to methods of TopologyModifier,
-* - a GeometryAlgorithms object providing geometric functions (like ComputeTriangleNormals).
-*
-* The class also holds an array of TopologyChange objects needed by Topologies linked to this one to know
-* what happened and how to take it into account (or ignore it).
-*/
-class BaseTopology :  public core::componentmodel::topology::BaseMeshTopology
-{
-public :
-    /** \brief Constructor.
-    *
-    * Optional parameter isMainTopology may be used to specify whether this is a main or a specific topology
-    * (defaults to true).
-    *
-    * All topology related objects (TopologyContainer, TopologyModifier, TopologyAlgorithms,
-    * GeometryAlgorithms) are initialized to 0.
-    */
-    BaseTopology(bool isMainTopology = true);
-
-    /// Destructor.
-    virtual ~BaseTopology();
-
-    /** \brief Returns the TopologyContainer object of this Topology.
-    */
-    TopologyContainer *getTopologyContainer() const { return m_topologyContainer;}
-
-
-    /** \brief Returns the TopologyModifier object of this Topology.
-    */
-    TopologyModifier *getTopologyModifier() const {	return m_topologyModifier;	}
-
-    /** \brief Returns the TopologyAlgorithms object of this Topology if it is a main topology, 0 otherwise.
-    *
-    * Specific topologies cannot be allowed to be directly modified, since this might invalidate their
-    * mapping from the main topology.
-    */
-    TopologyAlgorithms *getTopologyAlgorithms() const
-    {
-        if (m_mainTopology)
-            return m_topologyAlgorithms;
-        else
-            return NULL;
-    }
-
-    /** \brief Returns the GeometryAlgorithms object of this Topology.
-    */
-    GeometryAlgorithms *getGeometryAlgorithms() const {	return m_geometryAlgorithms; }
-
-
-    // TODO: remove these methods (the implementation has been moved into container)
-    std::list<const TopologyChange *>::const_iterator firstChange() const;
-    std::list<const TopologyChange *>::const_iterator lastChange() const;
-    std::list<const TopologyChange *>::const_iterator firstStateChange() const;
-    std::list<const TopologyChange *>::const_iterator lastStateChange() const;
-    void propagateTopologicalChanges();
-    void propagateStateChanges();
-    void resetTopologyChangeList() const;
-    void resetStateChangeList() const;
-
-    /** \brief Returns whether this topology is a main one or a specific one.
-    *
-    * @see BaseTopology::m_mainTopology
-    */
-    bool isMainTopology() const { return m_mainTopology; }
-
-    /** return the latest revision number */
-    int getRevision() const { return revisionCounter; }
-
-protected :
-    /// Contains the actual topology data and give acces to it (nature of these data heavily depends on the kind of topology).
-    TopologyContainer *m_topologyContainer;
-
-    /// Provides low-level topology methods (e.g. AddPoint, RemoveEdge, etc).
-    TopologyModifier *m_topologyModifier;
-
-    /// Provides high-level topology algorithms (e.g. CutAlongPlane, DecimateTopology, etc).
-    TopologyAlgorithms *m_topologyAlgorithms;
-
-    /// Provides some geometric functions (e.g. ComputeTriangleNormal, ComputeShell, etc).
-    GeometryAlgorithms *m_geometryAlgorithms;
-
-private:
-    /** \brief Defines whether this topology is the main one for its mechanical object.
-    *
-    * If true, then this topology is the main topology of the MechanicalObject, meaning this is the one
-    * obtained by default when asking the MechanicalObject for its topology.
-    * Otherwise this topology is a specific one, relying on the main one of the MechanicalObject through a
-    * TopologicalMapping. For example, a specific topology might be a subset of the main topology of the
-    * MechanicalObject, on which a Constraint or a ForceField applies.
-    */
-    bool m_mainTopology;
-
-    int revisionCounter;
-};
-
 
 /** A class that contains a set of high-level (user friendly) methods that perform topological changes */
-class TopologyAlgorithms : public virtual sofa::core::componentmodel::topology::BaseTopologyObject
+class TopologyAlgorithms : public sofa::core::componentmodel::topology::BaseTopologyObject
 {
-public:
+protected:
     /** \brief Constructor.
     *
     */
     TopologyAlgorithms()
     {}
 
+public:
     /// Destructor
     virtual ~TopologyAlgorithms()
     {}
@@ -218,15 +114,16 @@ protected:
 };
 
 /** A class that contains a set of methods that describes the geometry of the object */
-class GeometryAlgorithms : public virtual sofa::core::componentmodel::topology::BaseTopologyObject
+class GeometryAlgorithms : public sofa::core::componentmodel::topology::BaseTopologyObject
 {
-public:
+protected:
     /** \brief Constructor.
     *
     */
     GeometryAlgorithms()
     {}
 
+public:
     /// Destructor
     virtual ~GeometryAlgorithms()
     {}
@@ -236,9 +133,9 @@ public:
 };
 
 /** A class that contains a set of low-level methods that perform topological changes */
-class TopologyModifier : public virtual sofa::core::componentmodel::topology::BaseTopologyObject
+class TopologyModifier : public sofa::core::componentmodel::topology::BaseTopologyObject
 {
-public:
+protected:
     /** \brief Constructor.
     *
     */
@@ -246,6 +143,7 @@ public:
         : m_topologyContainer(NULL)
     { }
 
+public:
     /// Destructor
     virtual ~TopologyModifier()
     { }
@@ -267,20 +165,32 @@ protected:
 };
 
 /** A class that contains a description of the topology (set of edges, triangles, adjacency information, ...) */
-class TopologyContainer : public virtual sofa::core::componentmodel::topology::BaseTopologyObject
+class TopologyContainer : public sofa::core::componentmodel::topology::BaseTopologyObject,
+    public core::componentmodel::topology::BaseMeshTopology
 {
-public:
+protected:
     /** \brief Constructor.
     *
     */
     TopologyContainer()
     {}
 
+public:
     /// Destructor
     virtual ~TopologyContainer()
     {}
 
     virtual void init();
+
+    /// BaseMeshTopology API
+    /// @{
+    virtual const SeqEdges& getEdges()         { static SeqEdges     empty; return empty; }
+    virtual const SeqTriangles& getTriangles() { static SeqTriangles empty; return empty; }
+    virtual const SeqQuads& getQuads()         { static SeqQuads     empty; return empty; }
+    virtual const SeqTetras& getTetras()       { static SeqTetras    empty; return empty; }
+    virtual const SeqHexas& getHexas()         { static SeqHexas     empty; return empty; }
+    /// @}
+
 
     const std::list<const TopologyChange *> &getChangeList() const { return m_changeList; }
 

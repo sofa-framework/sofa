@@ -29,9 +29,6 @@
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/component/topology/QuadSetTopology.h> // prepares quad's detection
-#include <sofa/component/topology/TriangleSetTopology.h>
-#include <sofa/component/topology/TetrahedronSetTopology.h>
 
 #include <map>
 
@@ -109,9 +106,9 @@ protected:
     };
 
     sofa::helper::vector<TriangleInfo> elems;
-    const sofa::helper::vector<topology::Triangle>* triangles;
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles* triangles;
 
-    sofa::helper::vector<topology::Triangle> mytriangles;
+    sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles mytriangles;
 
     bool needsUpdate;
     virtual void updateFromTopology();

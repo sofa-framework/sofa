@@ -59,12 +59,12 @@ public:
     //typedef int index_type;
     typedef unsigned int index_type;
     enum { InvalidID = (unsigned)-1 };
-    typedef index_type PointID;
-    typedef index_type EdgeID;
-    typedef index_type TriangleID;
-    typedef index_type QuadID;
-    typedef index_type TetraID;
-    typedef index_type HexaID;
+    typedef index_type		PointID;
+    typedef index_type		EdgeID;
+    typedef index_type		TriangleID;
+    typedef index_type		QuadID;
+    typedef index_type		TetraID;
+    typedef index_type		HexaID;
 
     typedef fixed_array<PointID,2> Edge;
     typedef fixed_array<PointID,3> Triangle;
@@ -72,17 +72,17 @@ public:
     typedef fixed_array<PointID,4> Tetra;
     typedef fixed_array<PointID,8> Hexa;
 
-    typedef vector<Edge> SeqEdges;
-    typedef vector<Triangle> SeqTriangles;
-    typedef vector<Quad> SeqQuads;
-    typedef vector<Tetra> SeqTetras;
-    typedef vector<Hexa> SeqHexas;
+    typedef vector<Edge>		SeqEdges;
+    typedef vector<Triangle>	SeqTriangles;
+    typedef vector<Quad>		SeqQuads;
+    typedef vector<Tetra>		SeqTetras;
+    typedef vector<Hexa>		SeqHexas;
 
     /// @name Deprecated types, for backward-compatibility
     /// @{
-    typedef EdgeID LineID;
-    typedef Edge Line;
-    typedef SeqEdges SeqLines;
+    typedef EdgeID		LineID;
+    typedef Edge		Line;
+    typedef SeqEdges	SeqLines;
 #ifndef SOFA_NEW_HEXA
     typedef HexaID CubeID;
     typedef Hexa Cube;
@@ -92,27 +92,27 @@ public:
 
     /// fixed-size neighbors arrays
     /// @{
-    typedef fixed_array<EdgeID,3> TriangleEdges;
-    typedef fixed_array<QuadID,4> QuadEdges;
-    typedef fixed_array<TriangleID,4> TetraTriangles;
-    typedef fixed_array<EdgeID,6> TetraEdges;
-    typedef fixed_array<QuadID,6> HexaQuads;
-    typedef fixed_array<EdgeID,12> HexaEdges;
+    typedef fixed_array<EdgeID,3>		TriangleEdges;
+    typedef fixed_array<QuadID,4>		QuadEdges;
+    typedef fixed_array<TriangleID,4>	TetraTriangles;
+    typedef fixed_array<EdgeID,6>		TetraEdges;
+    typedef fixed_array<QuadID,6>		HexaQuads;
+    typedef fixed_array<EdgeID,12>		HexaEdges;
     /// @}
 
     /// dynamic-size neighbors arrays
     /// @{
-    typedef vector<EdgeID> VertexEdges;
-    typedef vector<TriangleID> VertexTriangles;
-    typedef vector<QuadID> VertexQuads;
-    typedef vector<TetraID> VertexTetras;
-    typedef vector<HexaID> VertexHexas;
-    typedef vector<TriangleID> EdgeTriangles;
-    typedef vector<QuadID> EdgeQuads;
-    typedef vector<TetraID> EdgeTetras;
-    typedef vector<HexaID> EdgeHexas;
-    typedef vector<TetraID> TriangleTetras;
-    typedef vector<HexaID> QuadHexas;
+    typedef vector<EdgeID>			VertexEdges;
+    typedef vector<TriangleID>		VertexTriangles;
+    typedef vector<QuadID>			VertexQuads;
+    typedef vector<TetraID>			VertexTetras;
+    typedef vector<HexaID>			VertexHexas;
+    typedef vector<TriangleID>		EdgeTriangles;
+    typedef vector<QuadID>			EdgeQuads;
+    typedef vector<TetraID>			EdgeTetras;
+    typedef vector<HexaID>			EdgeHexas;
+    typedef vector<TetraID>			TriangleTetras;
+    typedef vector<HexaID>			QuadHexas;
     /// @}
 
     BaseMeshTopology() {};
@@ -190,13 +190,13 @@ public:
 
     /// Returns the index of the edge joining vertex v1 and vertex v2; returns -1 if no edge exists
     virtual int getEdgeIndex(PointID v1, PointID v2);
-    /// Returns the index of the triangle given three vertex indices; returns -1 if no edge exists
+    /// Returns the index of the triangle given three vertex indices; returns -1 if no triangle exists
     virtual int getTriangleIndex(PointID v1, PointID v2, PointID v3);
-    /// Returns the index of the quad given four vertex indices; returns -1 if no edge exists
+    /// Returns the index of the quad given four vertex indices; returns -1 if no quad exists
     virtual int getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4);
-    /// Returns the index of the tetrahedron given four vertex indices; returns -1 if no edge exists
+    /// Returns the index of the tetrahedron given four vertex indices; returns -1 if no tetrahedron exists
     virtual int getTetrahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4);
-    /// Returns the index of the hexahedron given eight vertex indices; returns -1 if no edge exists
+    /// Returns the index of the hexahedron given eight vertex indices; returns -1 if no hexahedron exists
     virtual int getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4, PointID v5, PointID v6, PointID v7, PointID v8);
 
 

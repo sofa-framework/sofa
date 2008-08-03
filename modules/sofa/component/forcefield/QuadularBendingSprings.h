@@ -35,7 +35,6 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/topology/QuadData.h>
-#include <sofa/component/topology/QuadData.h> // to comment ?
 #include <sofa/component/topology/EdgeData.h>
 
 #include <sofa/defaulttype/Mat.h>

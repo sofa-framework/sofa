@@ -27,7 +27,6 @@
 
 #include <sofa/helper/vector.h>
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
-#include <sofa/component/topology/PointSetTopology.h>
 
 namespace sofa
 {

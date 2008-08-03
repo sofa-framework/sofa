@@ -60,18 +60,12 @@ int PointSetGeometryAlgorithmsClass = core::RegisterObject("Point set geometry a
 template class PointSetGeometryAlgorithms<Vec3dTypes>;
 template class PointSetGeometryAlgorithms<Vec2dTypes>;
 template class PointSetGeometryAlgorithms<Vec1dTypes>;
-
-//     template class PointSetGeometryAlgorithms<Rigid3dTypes>;
-//     template class PointSetGeometryAlgorithms<Rigid2dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
 template class PointSetGeometryAlgorithms<Vec3fTypes>;
 template class PointSetGeometryAlgorithms<Vec2fTypes>;
 template class PointSetGeometryAlgorithms<Vec1fTypes>;
-
-//     template class PointSetGeometryAlgorithms<Rigid3fTypes>;
-//     template class PointSetGeometryAlgorithms<Rigid2fTypes>;
 #endif
 
 } // namespace topology

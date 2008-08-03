@@ -48,6 +48,7 @@ namespace component
 
 namespace topology
 {
+
 using namespace std;
 using namespace sofa::defaulttype;
 SOFA_DECL_CLASS(EdgeSetTopologyContainer)
@@ -76,6 +77,11 @@ void EdgeSetTopologyContainer::init()
 
     // load points
     PointSetTopologyContainer::init();
+}
+
+void EdgeSetTopologyContainer::addEdge(int a, int b)
+{
+    m_edge.push_back(Edge(a,b));
 }
 
 void EdgeSetTopologyContainer::createEdgeVertexShellArray()
@@ -123,7 +129,7 @@ const sofa::helper::vector<Edge> &EdgeSetTopologyContainer::getEdgeArray()
     return m_edge;
 }
 
-int EdgeSetTopologyContainer::getEdgeIndex(const unsigned int v1, const unsigned int v2)
+int EdgeSetTopologyContainer::getEdgeIndex(PointID v1, PointID v2)
 {
     if(!hasEdges()) // this method should only be called when edges exist
     {
@@ -146,27 +152,6 @@ int EdgeSetTopologyContainer::getEdgeIndex(const unsigned int v1, const unsigned
             result = (int) es1[i];
     }
     return result;
-}
-
-const Edge &EdgeSetTopologyContainer::getEdge(const unsigned int i)
-{
-    if(!hasEdges()) // this method should only be called when edges exist
-    {
-#ifndef NDEBUG
-        cout << "Warning. [EdgeSetTopologyContainer::getEdge] edge array is empty." << endl;
-#endif
-        createEdgeSetArray();
-    }
-
-#ifndef NDEBUG
-    if(m_edge.size() <= i)
-    {
-        cout << "Error. [EdgeSetTopologyContainer::getEdge] edge array out of bounds: "
-                << i << " >= " << m_edge.size() << endl;
-    }
-#endif
-
-    return m_edge[i];
 }
 
 // Return the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
@@ -223,7 +208,7 @@ unsigned int EdgeSetTopologyContainer::getNumberOfEdges() const
     return m_edge.size();
 }
 
-const sofa::helper::vector< sofa::helper::vector<unsigned int> > &EdgeSetTopologyContainer::getEdgeVertexShellArray() // const
+const sofa::helper::vector< sofa::helper::vector<unsigned int> > &EdgeSetTopologyContainer::getEdgeVertexShellArray()
 {
     if(!hasEdgeVertexShell())
     {
@@ -236,7 +221,7 @@ const sofa::helper::vector< sofa::helper::vector<unsigned int> > &EdgeSetTopolog
     return m_edgeVertexShell;
 }
 
-const sofa::helper::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeVertexShell(const unsigned int i) // const
+const VertexEdges& EdgeSetTopologyContainer::getEdgeVertexShell(PointID i)
 {
     if(!hasEdgeVertexShell())	// this method should only be called when the shell array exists
     {

@@ -25,8 +25,10 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_INL
 #define SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_INL
 
-#include <sofa/component/topology/EdgeSetTopology.h>
+#include <sofa/component/topology/EdgeSetTopologyContainer.h>
+#include <sofa/component/topology/EdgeSetTopologyModifier.h>
 #include <sofa/component/topology/EdgeSetTopologyAlgorithms.h>
+#include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
 #include <algorithm>
 #include <functional>
 

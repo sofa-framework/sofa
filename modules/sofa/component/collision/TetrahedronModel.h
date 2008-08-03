@@ -29,7 +29,6 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/component/topology/TetrahedronSetTopology.h>
 
 #include <map>
 
@@ -101,7 +100,7 @@ protected:
     };
 
     sofa::helper::vector<TetrahedronInfo> elems;
-    const sofa::helper::vector<topology::Tetrahedron>* tetra;
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetras* tetra;
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
 

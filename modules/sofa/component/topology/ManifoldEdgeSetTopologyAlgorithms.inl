@@ -25,10 +25,12 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETTOPOLOGYALGORITHMS_INL
 #define SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETTOPOLOGYALGORITHMS_INL
 
+#include <sofa/component/topology/ManifoldEdgeSetTopologyContainer.h>
+#include <sofa/component/topology/ManifoldEdgeSetTopologyModifier.h>
 #include <sofa/component/topology/ManifoldEdgeSetTopologyAlgorithms.h>
+#include <sofa/component/topology/ManifoldEdgeSetGeometryAlgorithms.h>
 #include <algorithm>
 #include <functional>
-#include <sofa/component/topology/ManifoldEdgeSetTopology.h>
 
 namespace sofa
 {

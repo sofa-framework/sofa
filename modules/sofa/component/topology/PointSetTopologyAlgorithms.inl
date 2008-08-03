@@ -25,7 +25,10 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYALGORITHMS_INL
 #define SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYALGORITHMS_INL
 
+#include <sofa/component/topology/PointSetTopologyContainer.h>
+#include <sofa/component/topology/PointSetTopologyModifier.h>
 #include <sofa/component/topology/PointSetTopologyAlgorithms.h>
+#include <sofa/component/topology/PointSetGeometryAlgorithms.h>
 
 namespace sofa
 {

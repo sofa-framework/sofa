@@ -52,17 +52,6 @@ namespace topology
 class MeshTopology;
 class RegularGridTopology;
 class SparseGridTopology;
-
-template<class T>
-class EdgeSetTopology;
-template<class T>
-class TriangleSetTopology;
-template<class T>
-class QuadSetTopology;
-template<class T>
-class TetrahedronSetTopology;
-template<class T>
-class HexahedronSetTopology;
 }
 }
 }
@@ -75,6 +64,8 @@ namespace component
 
 namespace mapping
 {
+
+using core::componentmodel::topology::BaseMeshTopology;
 
 /// Base class for barycentric mapping topology-specific mappers
 template<class In, class Out>
@@ -273,10 +264,10 @@ protected:
     sofa::helper::vector< MappingData1D >  map1d;
     sofa::helper::vector< MappingData2D >  map2d;
     sofa::helper::vector< MappingData3D >  map3d;
-    topology::BaseMeshTopology* topology;
+    BaseMeshTopology* topology;
 
 public:
-    BarycentricMapperMeshTopology(topology::BaseMeshTopology* topology)
+    BarycentricMapperMeshTopology(BaseMeshTopology* topology)
         : TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}
@@ -391,10 +382,10 @@ public:
     typedef typename Inherit::MappingData1D MappingData;
 protected:
     topology::PointData< MappingData >  map;
-    topology::BaseMeshTopology* topology;
+    BaseMeshTopology* topology;
 
 public:
-    BarycentricMapperEdgeSetTopology(topology::BaseMeshTopology* topology)
+    BarycentricMapperEdgeSetTopology(BaseMeshTopology* topology)
         : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}
@@ -460,10 +451,10 @@ public:
     typedef typename Inherit::MappingData2D MappingData;
 protected:
     topology::PointData< MappingData >  map;
-    topology::BaseMeshTopology* topology;
+    BaseMeshTopology* topology;
 
 public:
-    BarycentricMapperTriangleSetTopology(topology::BaseMeshTopology* topology)
+    BarycentricMapperTriangleSetTopology(BaseMeshTopology* topology)
         : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}
@@ -529,10 +520,10 @@ public:
     typedef typename Inherit::MappingData2D MappingData;
 protected:
     topology::PointData< MappingData >  map;
-    topology::BaseMeshTopology* topology;
+    BaseMeshTopology* topology;
 
 public:
-    BarycentricMapperQuadSetTopology(topology::BaseMeshTopology* topology)
+    BarycentricMapperQuadSetTopology(BaseMeshTopology* topology)
         : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}
@@ -596,10 +587,10 @@ public:
     typedef typename Inherit::MappingData3D MappingData;
 protected:
     topology::PointData< MappingData >  map;
-    topology::BaseMeshTopology* topology;
+    BaseMeshTopology* topology;
 
 public:
-    BarycentricMapperTetrahedronSetTopology(topology::BaseMeshTopology* topology)
+    BarycentricMapperTetrahedronSetTopology(BaseMeshTopology* topology)
         : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}
@@ -663,10 +654,10 @@ public:
     typedef typename Inherit::MappingData3D MappingData;
 protected:
     topology::PointData< MappingData >  map;
-    topology::BaseMeshTopology* topology;
+    BaseMeshTopology* topology;
 
 public:
-    BarycentricMapperHexahedronSetTopology(topology::BaseMeshTopology* topology)
+    BarycentricMapperHexahedronSetTopology(BaseMeshTopology* topology)
         : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper<In,Out>(topology),
           topology(topology)
     {}

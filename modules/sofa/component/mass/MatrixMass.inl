@@ -32,13 +32,6 @@
 
 #include <sofa/helper/gl/template.h>
 
-
-#include <sofa/component/topology/EdgeSetTopology.h>
-#include <sofa/component/topology/TriangleSetTopology.h>
-#include <sofa/component/topology/TetrahedronSetTopology.h>
-#include <sofa/component/topology/GridTopology.h>
-#include <sofa/component/topology/SparseGridTopology.h>
-
 namespace sofa
 {
 

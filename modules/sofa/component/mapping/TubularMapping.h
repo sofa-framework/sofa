@@ -30,8 +30,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <vector>
 
-#include <sofa/component/topology/TriangleSetTopology.h>
-
 namespace sofa
 {
 

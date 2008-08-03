@@ -28,6 +28,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/component/topology/TriangleData.inl>
 #include <sofa/component/topology/EdgeData.inl>
+#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 
 
 namespace sofa
@@ -46,6 +47,12 @@ using namespace core::componentmodel::topology;
 using std::cerr;
 using std::cout;
 using std::endl;
+
+using core::componentmodel::topology::BaseMeshTopology;
+
+typedef BaseMeshTopology::Triangle			Triangle;
+typedef BaseMeshTopology::TriangleEdges		TriangleEdges;
+
 
 template< class DataTypes>
 void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSEdgeCreationFunction(int edgeIndex, void* param, EdgeRestInformation &ei,

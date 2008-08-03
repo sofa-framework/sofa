@@ -25,8 +25,10 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETTOPOLOGYALGORITHMS_INL
 #define SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETTOPOLOGYALGORITHMS_INL
 
+#include <sofa/component/topology/HexahedronSetTopologyContainer.h>
+#include <sofa/component/topology/HexahedronSetTopologyModifier.h>
 #include <sofa/component/topology/HexahedronSetTopologyAlgorithms.h>
-#include <sofa/component/topology/HexahedronSetTopology.h>
+#include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
 #include <algorithm>
 #include <functional>
 

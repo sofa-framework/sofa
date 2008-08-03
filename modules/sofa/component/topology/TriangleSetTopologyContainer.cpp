@@ -228,7 +228,7 @@ void TriangleSetTopologyContainer::createTriangleEdgeArray()
     }
 }
 
-const sofa::helper::vector<Triangle> &TriangleSetTopologyContainer::getTriangleArray()
+const sofa::helper::vector<Triangle> & TriangleSetTopologyContainer::getTriangleArray()
 {
     if(!hasTriangles() && getNbPoints()>0)
     {
@@ -242,9 +242,7 @@ const sofa::helper::vector<Triangle> &TriangleSetTopologyContainer::getTriangleA
 }
 
 
-int TriangleSetTopologyContainer::getTriangleIndex(const unsigned int v1,
-        const unsigned int v2,
-        const unsigned int v3)
+int TriangleSetTopologyContainer::getTriangleIndex(PointID v1, PointID v2, PointID v3)
 {
     if(!hasTriangleVertexShell())
         createTriangleVertexShellArray();
@@ -279,19 +277,6 @@ int TriangleSetTopologyContainer::getTriangleIndex(const unsigned int v1,
         return -1;
 }
 
-const Triangle &TriangleSetTopologyContainer::getTriangle(const unsigned int i)
-{
-    if(!hasTriangles()) // this method should only be called when triangles exist
-    {
-#ifndef NDEBUG
-        cout << "Warning. [TriangleSetTopologyContainer::getTriangle] triangle array is empty." << endl;
-#endif
-        createTriangleSetArray();
-    }
-
-    return m_triangle[i];
-}
-
 unsigned int TriangleSetTopologyContainer::getNumberOfTriangles() const
 {
     return m_triangle.size();
@@ -323,7 +308,7 @@ const sofa::helper::vector< sofa::helper::vector<unsigned int> > &TriangleSetTop
     return m_triangleEdgeShell;
 }
 
-const sofa::helper::vector< TriangleEdges> &TriangleSetTopologyContainer::getTriangleEdgeArray()
+const sofa::helper::vector<TriangleEdges> &TriangleSetTopologyContainer::getTriangleEdgeArray()
 {
     if(m_triangleEdge.empty())
         createTriangleEdgeArray();
@@ -331,7 +316,7 @@ const sofa::helper::vector< TriangleEdges> &TriangleSetTopologyContainer::getTri
     return m_triangleEdge;
 }
 
-const sofa::helper::vector< unsigned int > &TriangleSetTopologyContainer::getTriangleVertexShell(const unsigned int i)
+const VertexTriangles& TriangleSetTopologyContainer::getTriangleVertexShell(PointID i)
 {
     if(!hasTriangleVertexShell())	// this method should only be called when the shell array exists
     {
@@ -351,7 +336,7 @@ const sofa::helper::vector< unsigned int > &TriangleSetTopologyContainer::getTri
     return m_triangleVertexShell[i];
 }
 
-const sofa::helper::vector< unsigned int > &TriangleSetTopologyContainer::getTriangleEdgeShell(const unsigned int i)
+const EdgeTriangles& TriangleSetTopologyContainer::getTriangleEdgeShell(EdgeID i)
 {
     if(!hasTriangleEdgeShell())	// this method should only be called when the shell array exists
     {
@@ -387,7 +372,7 @@ const TriangleEdges &TriangleSetTopologyContainer::getTriangleEdge(const unsigne
     return m_triangleEdge[i];
 }
 
-int TriangleSetTopologyContainer::getVertexIndexInTriangle(const Triangle &t,const unsigned int vertexIndex) const
+int TriangleSetTopologyContainer::getVertexIndexInTriangle(const Triangle &t, PointID vertexIndex) const
 {
     if (t[0]==vertexIndex)
         return 0;
@@ -399,7 +384,7 @@ int TriangleSetTopologyContainer::getVertexIndexInTriangle(const Triangle &t,con
         return -1;
 }
 
-int TriangleSetTopologyContainer::getEdgeIndexInTriangle(const TriangleEdges &t,const unsigned int edgeIndex) const
+int TriangleSetTopologyContainer::getEdgeIndexInTriangle(const TriangleEdges &t, EdgeID edgeIndex) const
 {
     if (t[0]==edgeIndex)
         return 0;

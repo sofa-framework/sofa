@@ -24,7 +24,8 @@
 ******************************************************************************/
 #include <sofa/component/forcefield/TrianglePressureForceField.h>
 #include <sofa/component/topology/TriangleSubsetData.inl>
-#include <sofa/component/topology/TetrahedronSetTopology.h>
+#include <sofa/component/topology/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/helper/gl/template.h>
 #include <vector>
 #include <set>

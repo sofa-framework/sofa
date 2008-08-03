@@ -36,12 +36,16 @@ namespace topology
 class QuadSetTopologyModifier;
 
 using core::componentmodel::topology::BaseMeshTopology;
-typedef BaseMeshTopology::QuadID QuadID;
-typedef BaseMeshTopology::Quad Quad;
-typedef BaseMeshTopology::SeqQuads SeqQuads;
-typedef BaseMeshTopology::VertexQuads VertexQuads;
-typedef BaseMeshTopology::EdgeQuads EdgeQuads;
-typedef BaseMeshTopology::QuadEdges QuadEdges;
+
+typedef BaseMeshTopology::PointID			PointID;
+typedef BaseMeshTopology::EdgeID			EdgeID;
+typedef BaseMeshTopology::QuadID			QuadID;
+typedef BaseMeshTopology::Edge				Edge;
+typedef BaseMeshTopology::Quad				Quad;
+typedef BaseMeshTopology::SeqQuads			SeqQuads;
+typedef BaseMeshTopology::QuadEdges			QuadEdges;
+typedef BaseMeshTopology::VertexQuads		VertexQuads;
+typedef BaseMeshTopology::EdgeQuads			EdgeQuads;
 
 /** Object that stores a set of quads and provides access
 to each quad and its edges and vertices */
@@ -74,6 +78,19 @@ public:
         return getQuadEdge(i);
     }
 
+    /** \brief Returns the set of quads adjacent to a given vertex.
+    *
+    */
+    virtual const VertexQuads& getQuadVertexShell(PointID i);
+
+    /** \brief Returns the set of quads adjacent to a given edge.
+    *
+    */
+    virtual const EdgeQuads& getQuadEdgeShell(EdgeID i);
+
+    /** Returns the indices of a quad given four vertex indices : returns -1 if none */
+    virtual int getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4);
+
     /// @}
 
     /** \brief Checks if the topology is coherent
@@ -102,36 +119,15 @@ public:
     */
     const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getQuadEdgeShellArray() ;
 
-    /** \brief Returns the ith Quad.
-    *
-    */
-    const Quad &getQuad(const unsigned int i);
-
     /** \brief Returns the number of quads in this topology.
     *	The difference to getNbQuads() is that this method does not generate the quad array if it does not exist.
     */
     unsigned int getNumberOfQuads() const;
 
-    /** \brief Returns the set of quads adjacent to a given vertex.
-    *
-    */
-    const sofa::helper::vector< unsigned int > &getQuadVertexShell(const unsigned int i) ;
-
-
     /** \brief Returns the 4 edges adjacent to a given quad.
     *
     */
     const QuadEdges &getQuadEdge(const unsigned int i) ;
-
-
-    /** \brief Returns the set of quads adjacent to a given edge.
-    *
-    */
-    const sofa::helper::vector< unsigned int > &getQuadEdgeShell(const unsigned int i) ;
-
-
-    /** Returns the indices of a quad given four vertex indices : returns -1 if none */
-    int getQuadIndex(const unsigned int v1, const unsigned int v2, const unsigned int v3, const unsigned int v4);
 
     /** returns the index (either 0, 1, 2, 3) of the vertex whose global index is vertexIndex. Returns -1 if none */
     int getVertexIndexInQuad(Quad &t,unsigned int vertexIndex) const;

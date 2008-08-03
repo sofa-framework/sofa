@@ -27,6 +27,9 @@
 
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+
+#include <sofa/component/topology/PointSetTopologyChange.h>
+
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 
@@ -37,9 +40,6 @@
 
 #include <assert.h>
 #include <iostream>
-
-#include <sofa/core/componentmodel/topology/BaseTopology.h>
-#include <sofa/component/topology/PointSetTopology.inl>
 
 #include <sofa/component/MeshLoader.h>
 

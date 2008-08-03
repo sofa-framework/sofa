@@ -47,6 +47,9 @@ using std::cerr;
 using std::cout;
 using std::endl;
 
+using core::componentmodel::topology::BaseMeshTopology;
+typedef BaseMeshTopology::TriangleEdges TriangleEdges;
+
 template< class DataTypes>
 void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeCreationFunction(int /*edgeIndex*/, void* param, EdgeRestInformation &ei,
         const Edge& ,  const sofa::helper::vector< unsigned int > &,

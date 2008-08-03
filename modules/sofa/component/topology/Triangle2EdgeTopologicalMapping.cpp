@@ -28,8 +28,17 @@
 
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
-#include <sofa/component/topology/EdgeSetTopology.h>
-#include <sofa/component/topology/TriangleSetTopology.h>
+#include <sofa/component/topology/EdgeSetTopologyContainer.h>
+#include <sofa/component/topology/EdgeSetTopologyModifier.h>
+#include <sofa/component/topology/EdgeSetTopologyAlgorithms.h>
+#include <sofa/component/topology/EdgeSetTopologyChange.h>
+
+#include <sofa/component/topology/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/TriangleSetTopologyModifier.h>
+#include <sofa/component/topology/TriangleSetTopologyAlgorithms.h>
+#include <sofa/component/topology/TriangleSetTopologyChange.h>
+
+#include <sofa/component/topology/PointSetTopologyChange.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <map>

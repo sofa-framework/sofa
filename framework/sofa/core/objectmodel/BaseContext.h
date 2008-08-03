@@ -205,9 +205,6 @@ public:
     /// Topology
     virtual core::componentmodel::topology::Topology* getTopology() const;
 
-    /// Dynamic Topology
-    virtual core::componentmodel::topology::BaseTopology* getMainTopology() const;
-
     /// Mesh Topology (unified interface for both static and dynamic topologies)
     virtual core::componentmodel::topology::BaseMeshTopology* getMeshTopology() const;
 

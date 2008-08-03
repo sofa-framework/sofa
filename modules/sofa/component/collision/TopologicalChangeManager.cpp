@@ -31,16 +31,11 @@
 
 #include <sofa/core/componentmodel/topology/TopologicalMapping.h>
 
-/*
-// Includes to distinghuish specific topologies
-
-#include <sofa/component/topology/TetrahedronSetTopology.h>
-#include <sofa/component/topology/TriangleSetTopology.h>
-#include <sofa/component/topology/HexahedronSetTopology.h>
-#include <sofa/component/topology/QuadSetTopology.h>
-
-*/
-
+#include <sofa/component/topology/EdgeSetTopologyContainer.h>
+#include <sofa/component/topology/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/QuadSetTopologyContainer.h>
+#include <sofa/component/topology/HexahedronSetTopologyContainer.h>
 
 namespace sofa
 {

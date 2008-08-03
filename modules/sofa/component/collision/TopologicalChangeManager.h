@@ -30,11 +30,6 @@
 
 #include <sofa/core/BehaviorModel.h>
 
-#include <sofa/component/topology/TriangleSetTopology.h>
-#include <sofa/component/topology/TetrahedronSetTopology.h>
-#include <sofa/component/topology/QuadSetTopology.h>
-#include <sofa/component/topology/HexahedronSetTopology.h>
-
 #ifdef SOFA_DEV
 #include <sofa/component/collision/CuttingManager.h>
 #endif
@@ -55,21 +50,6 @@ namespace component
 namespace collision
 {
 class TriangleSetModel;
-}
-
-namespace topology
-{
-template<class T>
-class TriangleSetTopology;
-template<class T>
-class TetrahedronSetTopology;
-template<class T>
-class HexahedronSetTopology;
-template<class T>
-class QuadSetTopology;
-class QuadSetTopologyContainer;
-class TetrahedronSetTopologyContainer;
-class HexahedronSetTopologyContainer;
 }
 }
 

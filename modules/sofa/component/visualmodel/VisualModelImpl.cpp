@@ -23,6 +23,20 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/visualmodel/VisualModelImpl.h>
+
+#include <sofa/component/topology/TriangleSetTopologyModifier.h>
+#include <sofa/component/topology/QuadSetTopologyModifier.h>
+#include <sofa/component/topology/TetrahedronSetTopologyModifier.h>
+#include <sofa/component/topology/HexahedronSetTopologyModifier.h>
+
+#include <sofa/component/topology/PointSetTopologyChange.h>
+#include <sofa/component/topology/TriangleSetTopologyChange.h>
+#include <sofa/component/topology/QuadSetTopologyChange.h>
+#include <sofa/component/topology/TetrahedronSetTopologyChange.h>
+#include <sofa/component/topology/HexahedronSetTopologyChange.h>
+
+#include <sofa/component/topology/SparseGridTopology.h>
+
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/gl/RAII.h>
 #include <sofa/helper/vector.h>

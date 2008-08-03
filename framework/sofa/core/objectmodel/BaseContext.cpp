@@ -252,11 +252,6 @@ core::componentmodel::topology::Topology* BaseContext::getTopology() const
 {
     return this->get<sofa::core::componentmodel::topology::Topology>();
 }
-/// Dynamic Topology
-core::componentmodel::topology::BaseTopology* BaseContext::getMainTopology() const
-{
-    return this->get<sofa::core::componentmodel::topology::BaseTopology>();
-}
 /// Mesh Topology (unified interface for both static and dynamic topologies)
 core::componentmodel::topology::BaseMeshTopology* BaseContext::getMeshTopology() const
 {

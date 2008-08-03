@@ -29,9 +29,6 @@
 
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
-#include <sofa/component/topology/QuadSetTopology.h>
-#include <sofa/component/topology/EdgeSetTopology.h>
-
 #include <sofa/defaulttype/Vec.h>
 #include <map>
 
@@ -40,8 +37,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-
-#include <sofa/defaulttype/Vec.h>
 
 
 namespace sofa
@@ -58,8 +53,8 @@ using namespace sofa::defaulttype;
 
 using namespace sofa::component::topology;
 using namespace sofa::core::componentmodel::topology;
-
 using namespace sofa::core;
+using namespace sofa::core::componentmodel::behavior;
 
 /**
  * This class, called Edge2QuadTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :

@@ -34,15 +34,15 @@ namespace component
 {
 namespace topology
 {
+using namespace std;
+using namespace sofa::defaulttype;
+
 SOFA_DECL_CLASS(HexahedronSetTopologyContainer)
 int HexahedronSetTopologyContainerClass = core::RegisterObject("Hexahedron set topology container")
         .add< HexahedronSetTopologyContainer >()
         ;
 
 const unsigned int hexahedronEdgeArray[12][2]= {{0,1},{0,3},{0,4},{1,2},{1,5},{2,3},{2,6},{3,7},{4,5},{4,7},{5,6},{6,7}};
-
-using namespace std;
-using namespace sofa::defaulttype;
 
 HexahedronSetTopologyContainer::HexahedronSetTopologyContainer()
     : QuadSetTopologyContainer()
@@ -426,14 +426,8 @@ const sofa::helper::vector<Hexahedron> &HexahedronSetTopologyContainer::getHexah
     return m_hexahedron;
 }
 
-int HexahedronSetTopologyContainer::getHexahedronIndex(const unsigned int v1,
-        const unsigned int v2,
-        const unsigned int v3,
-        const unsigned int v4,
-        const unsigned int v5,
-        const unsigned int v6,
-        const unsigned int v7,
-        const unsigned int v8)
+int HexahedronSetTopologyContainer::getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4,
+        PointID v5, PointID v6, PointID v7, PointID v8)
 {
     if(!hasHexahedronVertexShell())
         createHexahedronVertexShellArray();
