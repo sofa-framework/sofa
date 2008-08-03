@@ -36,10 +36,9 @@ namespace component
 
 namespace topology
 {
-class PointSetTopologyModifier;
-
 using core::componentmodel::topology::BaseMeshTopology;
-typedef BaseMeshTopology::PointID PointID;
+
+typedef BaseMeshTopology::PointID			PointID;
 
 /** The container class that stores a set of points and provides access
 to each point. This set of point may be a subset of the DOF of the mechanical model */
@@ -53,8 +52,6 @@ public:
     virtual ~PointSetTopologyContainer() {}
 
     virtual void init();
-
-    virtual void clear();
 
     /// BaseMeshTopology API
     /// @{
@@ -84,6 +81,13 @@ public:
     * @sa lastChange()
     */
     void propagateStateChanges();
+
+    /// @}
+
+    /// Procedural creation methods
+    /// @{
+    virtual void clear();
+    virtual void addPoint(double px, double py, double pz);
     /// @}
 
     /** \brief Checks if the Topology is coherent

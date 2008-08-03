@@ -36,11 +36,11 @@
 #include <sofa/component/topology/PointData.h>
 #include <sofa/helper/vector.h>
 
-#include <sofa/component/topology/EdgeSetTopology.h>
-#include <sofa/component/topology/TriangleSetTopology.h>
-#include <sofa/component/topology/TetrahedronSetTopology.h>
-#include <sofa/component/topology/QuadSetTopology.h>
-#include <sofa/component/topology/HexahedronSetTopology.h>
+#include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
+#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
+#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
+#include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
 
 namespace sofa
 {

@@ -38,19 +38,24 @@ namespace topology
 class TetrahedronSetTopologyModifier;
 
 using core::componentmodel::topology::BaseMeshTopology;
-typedef BaseMeshTopology::TetraID TetraID;
 
-typedef BaseMeshTopology::Tetra Tetra;
-typedef BaseMeshTopology::SeqTetras SeqTetras;
-typedef BaseMeshTopology::VertexTetras VertexTetras;
-typedef BaseMeshTopology::EdgeTetras EdgeTetras;
-typedef BaseMeshTopology::TriangleTetras TriangleTetras;
-typedef BaseMeshTopology::TetraEdges TetraEdges;
-typedef BaseMeshTopology::TetraTriangles TetraTriangles;
+typedef BaseMeshTopology::PointID			PointID;
+typedef BaseMeshTopology::EdgeID			EdgeID;
+typedef BaseMeshTopology::TriangleID		TriangleID;
+typedef BaseMeshTopology::TetraID			TetraID;
+typedef BaseMeshTopology::Edge				Edge;
+typedef BaseMeshTopology::Triangle			Triangle;
+typedef BaseMeshTopology::Tetra				Tetra;
+typedef BaseMeshTopology::SeqTetras			SeqTetras;
+typedef BaseMeshTopology::VertexTetras		VertexTetras;
+typedef BaseMeshTopology::EdgeTetras		EdgeTetras;
+typedef BaseMeshTopology::TriangleTetras	TriangleTetras;
+typedef BaseMeshTopology::TetraEdges		TetraEdges;
+typedef BaseMeshTopology::TetraTriangles	TetraTriangles;
 
-typedef Tetra Tetrahedron;
-typedef TetraEdges TetrahedronEdges;
-typedef TetraTriangles TetrahedronTriangles;
+typedef Tetra			Tetrahedron;
+typedef TetraEdges		TetrahedronEdges;
+typedef TetraTriangles	TetrahedronTriangles;
 
 /** a class that stores a set of tetrahedra and provides access with adjacent triangles, edges and vertices */
 class TetrahedronSetTopologyContainer : public TriangleSetTopologyContainer
@@ -58,6 +63,10 @@ class TetrahedronSetTopologyContainer : public TriangleSetTopologyContainer
     friend class TetrahedronSetTopologyModifier;
 
 public:
+    typedef Tetra			Tetrahedron;
+    typedef TetraEdges		TetrahedronEdges;
+    typedef TetraTriangles	TetrahedronTriangles;
+
     TetrahedronSetTopologyContainer();
 
     TetrahedronSetTopologyContainer(const sofa::helper::vector< Tetrahedron >& tetrahedra );
@@ -106,6 +115,14 @@ public:
         return getTetrahedronTriangleShell(i);
     }
 
+    /** Returns the indices of a tetrahedron given four vertex indices : returns -1 if none */
+    virtual int getTetrahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4);
+
+    /** \brief Returns for each index (between 0 and 5) the two vertex indices that are adjacent to that edge
+    *
+    */
+    virtual Edge getLocalTetrahedronEdges (const unsigned int i) const;
+
     /// @}
 
     /** \brief Checks if the topology is coherent
@@ -114,20 +131,15 @@ public:
     */
     virtual bool checkTopology() const;
 
-    /** \brief Returns the Tetrahedron array.
-    *
-    */
-    const sofa::helper::vector<Tetrahedron> &getTetrahedronArray();
-
-    /** \brief Returns the ith Tetrahedron.
-    *
-    */
-    const Tetrahedron &getTetrahedron(const unsigned int i);
-
     /** \brief Returns the number of tetrahedra in this topology.
     *	The difference to getNbTetras() is that this method does not generate the tetra array if it does not exist.
     */
     unsigned int getNumberOfTetrahedra() const;
+
+    /** \brief Returns the Tetrahedron array.
+    *
+    */
+    const sofa::helper::vector<Tetrahedron> &getTetrahedronArray();
 
     /** \brief Returns the Tetrahedron Vertex Shells array.
     *
@@ -148,11 +160,6 @@ public:
     *
     */
     const TetrahedronEdges &getTetrahedronEdges(const unsigned int i) ;
-
-    /** \brief Returns for each index (between 0 and 5) the two vertex indices that are adjacent to that edge
-    *
-    */
-    Edge getLocalTetrahedronEdges (const unsigned int i) const;
 
     /** \brief Returns the Tetrahedron Triangles  array.
     *
@@ -183,10 +190,6 @@ public:
     *
     */
     const sofa::helper::vector< unsigned int > &getTetrahedronTriangleShell(const unsigned int i) ;
-
-    /** Returns the indices of a tetrahedron given four vertex indices : returns -1 if none */
-    int getTetrahedronIndex(const unsigned int v1, const unsigned int v2,
-            const unsigned int v3, const unsigned int v4);
 
     /** returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex. Returns -1 if none */
     int getVertexIndexInTetrahedron(const Tetrahedron &t,unsigned int vertexIndex) const;

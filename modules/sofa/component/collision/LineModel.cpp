@@ -30,6 +30,8 @@
 #include <vector>
 #include <sofa/helper/gl/template.h>
 #include <sofa/simulation/tree/GNode.h>
+#include <sofa/component/topology/PointSetTopologyChange.h>
+#include <sofa/component/topology/EdgeSetTopologyChange.h>
 
 namespace sofa
 {
@@ -50,6 +52,8 @@ int LineModelClass = core::RegisterObject("collision model using a linear mesh, 
         .addAlias("LineMesh")
         .addAlias("LineSet")
         ;
+
+using core::componentmodel::topology::BaseMeshTopology;
 
 //int LineSetModelClass = core::RegisterObject("collision model using a linear mesh, as described in MeshTopology")
 //.add< LineSetModel >()

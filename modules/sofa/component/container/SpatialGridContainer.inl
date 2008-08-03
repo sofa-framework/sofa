@@ -38,7 +38,10 @@
 #define SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_INL
 
 #include <sofa/component/container/SpatialGridContainer.h>
-#include <sofa/component/topology/PointSetTopology.h>
+
+#include <sofa/component/topology/PointSetTopologyAlgorithms.h>
+#include <sofa/component/topology/PointSetTopologyChange.h>
+
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/helper/system/gl.h>

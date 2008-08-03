@@ -38,10 +38,12 @@ namespace topology
 class ManifoldEdgeSetTopologyModifier;
 
 using core::componentmodel::topology::BaseMeshTopology;
-typedef BaseMeshTopology::EdgeID EdgeID;
-typedef BaseMeshTopology::Edge Edge;
-typedef BaseMeshTopology::SeqEdges SeqEdges;
-typedef BaseMeshTopology::VertexEdges VertexEdges;
+
+typedef BaseMeshTopology::PointID			PointID;
+typedef BaseMeshTopology::EdgeID			EdgeID;
+typedef BaseMeshTopology::Edge				Edge;
+typedef BaseMeshTopology::SeqEdges			SeqEdges;
+typedef BaseMeshTopology::VertexEdges		VertexEdges;
 
 /** a class that stores a set of edges and provides access to the adjacency between points and edges.
   this topology is constraint by the manifold property : each vertex is adjacent either to one vertex or to two vertices. */

@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_QUADSETTOPOLOGYALGORITHMS_H
 
 #include <sofa/component/topology/EdgeSetTopologyAlgorithms.h>
-#include <sofa/component/topology/QuadSetTopology.h>
+
 namespace sofa
 {
 namespace component

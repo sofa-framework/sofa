@@ -423,26 +423,6 @@ core::componentmodel::topology::Topology* GNode::getTopology() const
         return NULL;
 }
 
-/// Dynamic Topology
-core::componentmodel::topology::BaseTopology* GNode::getMainTopology() const
-{
-    core::componentmodel::topology::BaseTopology *main=0;
-    unsigned int i;
-    for (i=0; i<basicTopology.size(); ++i)
-    {
-        if (basicTopology[i]->isMainTopology()==true)
-            main=basicTopology[i];
-    }
-    // return main;
-    // CHANGE 12/01/06 (Jeremie A.): Inherit parent topology if no local topology is defined
-    if (main)
-        return main;
-    else if (parent)
-        return parent->getMainTopology();
-    else
-        return NULL;
-}
-
 /// Mesh Topology (unified interface for both static and dynamic topologies)
 core::componentmodel::topology::BaseMeshTopology* GNode::getMeshTopology() const
 {

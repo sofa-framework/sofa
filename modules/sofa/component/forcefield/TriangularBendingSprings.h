@@ -48,10 +48,9 @@
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/component/topology/TriangleData.h> // to comment ?
-#include <sofa/component/topology/EdgeData.h>
 
 #include <sofa/defaulttype/Mat.h>
+#include <sofa/component/topology/EdgeData.h>
 
 namespace sofa
 {

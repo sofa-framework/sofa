@@ -40,7 +40,7 @@ namespace topology
 {
 
 
-class BaseTopologyObject : public core::objectmodel::BaseObject
+class BaseTopologyObject : public virtual core::objectmodel::BaseObject
 {
 
 };

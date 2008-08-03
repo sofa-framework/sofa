@@ -28,69 +28,15 @@
 
 namespace sofa
 {
+
 namespace core
 {
+
 namespace componentmodel
 {
+
 namespace topology
 {
-// BaseTopology implementation
-
-BaseTopology::BaseTopology(bool isMainTopology)
-    : m_topologyContainer(NULL),
-      m_topologyModifier(NULL),
-      m_topologyAlgorithms(NULL),
-      m_geometryAlgorithms(NULL),
-      m_mainTopology(isMainTopology),
-      revisionCounter(0)
-{}
-
-BaseTopology::~BaseTopology()
-{
-}
-
-std::list<const TopologyChange *>::const_iterator BaseTopology::lastChange() const
-{
-    return m_topologyContainer->lastChange();
-}
-
-std::list<const TopologyChange *>::const_iterator BaseTopology::firstChange() const
-{
-    return m_topologyContainer->firstChange();
-}
-
-std::list<const TopologyChange *>::const_iterator BaseTopology::lastStateChange() const
-{
-    return m_topologyContainer->lastStateChange();
-}
-
-std::list<const TopologyChange *>::const_iterator BaseTopology::firstStateChange() const
-{
-    return m_topologyContainer->firstStateChange();
-}
-
-void BaseTopology::propagateTopologicalChanges()
-{
-    m_topologyContainer->propagateTopologicalChanges();
-
-    ++revisionCounter;
-}
-
-void BaseTopology::propagateStateChanges()
-{
-    m_topologyContainer->propagateStateChanges();
-}
-
-void BaseTopology::resetTopologyChangeList() const
-{
-    m_topologyContainer->resetTopologyChangeList();
-}
-
-void BaseTopology::resetStateChangeList() const
-{
-    m_topologyContainer->resetStateChangeList();
-}
-
 // GeometryAlgorithms implementation
 
 void GeometryAlgorithms::init()

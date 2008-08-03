@@ -26,6 +26,7 @@
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <sofa/helper/gl/template.h>
+#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/component/topology/TriangleData.inl>
 #include <sofa/component/topology/EdgeData.inl>
 

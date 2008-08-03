@@ -36,15 +36,15 @@ namespace component
 
 namespace topology
 {
+using namespace std;
+using namespace sofa::defaulttype;
+
 SOFA_DECL_CLASS(TetrahedronSetTopologyContainer)
 int TetrahedronSetTopologyContainerClass = core::RegisterObject("Tetrahedron set topology container")
         .add< TetrahedronSetTopologyContainer >()
         ;
 
 const unsigned int tetrahedronEdgeArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
-
-using namespace std;
-using namespace sofa::defaulttype;
 
 TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer()
     : TriangleSetTopologyContainer()
@@ -288,10 +288,7 @@ const sofa::helper::vector<Tetrahedron> &TetrahedronSetTopologyContainer::getTet
     return m_tetrahedron;
 }
 
-int TetrahedronSetTopologyContainer::getTetrahedronIndex(const unsigned int v1,
-        const unsigned int v2,
-        const unsigned int v3,
-        const unsigned int v4)
+int TetrahedronSetTopologyContainer::getTetrahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4)
 {
     if(!hasTetrahedronVertexShell())
         createTetrahedronVertexShellArray();
@@ -328,14 +325,6 @@ int TetrahedronSetTopologyContainer::getTetrahedronIndex(const unsigned int v1,
         return (int) (out3[0]);
     else
         return -1;
-}
-
-const Tetrahedron &TetrahedronSetTopologyContainer::getTetrahedron(const unsigned int i)
-{
-    if (!hasTetrahedra())
-        createTetrahedronSetArray();
-
-    return m_tetrahedron[i];
 }
 
 unsigned int TetrahedronSetTopologyContainer::getNumberOfTetrahedra() const

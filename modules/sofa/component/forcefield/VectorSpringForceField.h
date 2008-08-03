@@ -33,6 +33,11 @@
 #include <sofa/component/topology/EdgeData.h>
 #include <sofa/component/topology/TopologyChangedEvent.h>
 
+#include <sofa/component/topology/EdgeSetTopologyContainer.h>
+#include <sofa/component/topology/EdgeSetTopologyAlgorithms.h>
+#include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
+
+
 namespace sofa
 {
 
@@ -43,6 +48,7 @@ namespace forcefield
 {
 
 using namespace sofa::defaulttype;
+using sofa::core::objectmodel::Event;
 
 template<class DataTypes>
 class VectorSpringForceField

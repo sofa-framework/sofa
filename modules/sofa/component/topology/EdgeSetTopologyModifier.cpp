@@ -94,7 +94,6 @@ void EdgeSetTopologyModifier::addEdgeProcess(Edge e)
 
 void EdgeSetTopologyModifier::addEdgesProcess(const sofa::helper::vector< Edge > &edges)
 {
-    m_container->m_edge.reserve(m_container->getNumberOfEdges() + edges.size());
     for (unsigned int i=0; i<edges.size(); ++i)
     {
         addEdgeProcess(edges[i]);

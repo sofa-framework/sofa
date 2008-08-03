@@ -47,7 +47,13 @@ using std::cerr;
 using std::cout;
 using std::endl;
 
+using core::componentmodel::topology::BaseMeshTopology;
 
+typedef BaseMeshTopology::Tetra				Tetra;
+typedef BaseMeshTopology::TetraEdges		TetraEdges;
+
+typedef Tetra			Tetrahedron;
+typedef TetraEdges		TetrahedronEdges;
 
 
 template< class DataTypes>

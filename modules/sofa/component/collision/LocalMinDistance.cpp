@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
 #include <sofa/component/collision/LocalMinDistance.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/collision/proximity.h>
 #include <sofa/defaulttype/Mat.h>
@@ -48,6 +49,9 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace sofa::core::componentmodel::collision;
 using namespace helper;
+
+using core::componentmodel::topology::BaseMeshTopology;
+typedef BaseMeshTopology::PointID			PointID;
 
 SOFA_DECL_CLASS(LocalMinDistance)
 

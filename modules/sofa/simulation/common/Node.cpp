@@ -170,7 +170,6 @@ void Node::doAddObject(BaseObject* obj)
         inserted+= mapping.add(dynamic_cast< core::BaseMapping* >(obj));
     inserted+= mass.add(dynamic_cast< core::componentmodel::behavior::BaseMass* >(obj));
     inserted+= topology.add(dynamic_cast< core::componentmodel::topology::Topology* >(obj));
-    inserted+= basicTopology.add(dynamic_cast< core::componentmodel::topology::BaseTopology* >(obj));
     inserted+= meshTopology.add(dynamic_cast< core::componentmodel::topology::BaseMeshTopology* >(obj));
     inserted+= shader.add(dynamic_cast< sofa::core::Shader* >(obj));
 
@@ -209,7 +208,6 @@ void Node::doRemoveObject(BaseObject* obj)
     mechanicalMapping.remove(dynamic_cast< core::componentmodel::behavior::BaseMechanicalMapping* >(obj));
     mass.remove(dynamic_cast< core::componentmodel::behavior::BaseMass* >(obj));
     topology.remove(dynamic_cast< core::componentmodel::topology::Topology* >(obj));
-    basicTopology.remove(dynamic_cast< core::componentmodel::topology::BaseTopology* >(obj));
     meshTopology.remove(dynamic_cast< core::componentmodel::topology::BaseMeshTopology* >(obj));
     shader.remove(dynamic_cast<sofa::core::Shader* >(obj));
 
@@ -240,19 +238,6 @@ void Node::doRemoveObject(BaseObject* obj)
 core::componentmodel::topology::Topology* Node::getTopology() const
 {
     return this->topology;
-}
-
-/// Dynamic Topology
-core::componentmodel::topology::BaseTopology* Node::getMainTopology() const
-{
-    core::componentmodel::topology::BaseTopology *main=0;
-    unsigned int i;
-    for (i=0; i<basicTopology.size(); ++i)
-    {
-        if (basicTopology[i]->isMainTopology()==true)
-            main=basicTopology[i];
-    }
-    return main;
 }
 
 /// Mesh Topology (unified interface for both static and dynamic topologies)
@@ -566,9 +551,6 @@ void Node::printComponents()
         cerr<<(*i)->getName()<<" ";
     cerr<<endl<<"Topology: ";
     for ( Single<Topology>::iterator i=topology.begin(), iend=topology.end(); i!=iend; i++ )
-        cerr<<(*i)->getName()<<" ";
-    cerr<<endl<<"BaseTopology: ";
-    for ( Sequence<BaseTopology>::iterator i=basicTopology.begin(), iend=basicTopology.end(); i!=iend; i++ )
         cerr<<(*i)->getName()<<" ";
     cerr<<endl<<"MeshTopology: ";
     for ( Single<BaseMeshTopology>::iterator i=meshTopology.begin(), iend=meshTopology.end(); i!=iend; i++ )

@@ -37,6 +37,7 @@ namespace topology
 {
 using namespace std;
 using namespace sofa::defaulttype;
+
 SOFA_DECL_CLASS(QuadSetTopologyContainer)
 int QuadSetTopologyContainerClass = core::RegisterObject("Quad set topology container")
         .add< QuadSetTopologyContainer >()
@@ -241,10 +242,7 @@ const sofa::helper::vector<Quad> &QuadSetTopologyContainer::getQuadArray()
     return m_quad;
 }
 
-int QuadSetTopologyContainer::getQuadIndex(const unsigned int v1,
-        const unsigned int v2,
-        const unsigned int v3,
-        const unsigned int v4)
+int QuadSetTopologyContainer::getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4)
 {
     if(!hasQuadVertexShell())
         createQuadVertexShellArray();
@@ -286,19 +284,6 @@ int QuadSetTopologyContainer::getQuadIndex(const unsigned int v1,
         return -1;
 }
 
-const Quad &QuadSetTopologyContainer::getQuad(const unsigned int i)
-{
-    if(!hasQuads()) // this method should only be called when quads exist
-    {
-#ifndef NDEBUG
-        cout << "Warning. [QuadSetTopologyContainer::] quad array is empty." << endl;
-#endif
-        createQuadSetArray();
-    }
-
-    return m_quad[i];
-}
-
 unsigned int QuadSetTopologyContainer::getNumberOfQuads() const
 {
     return m_quad.size();
@@ -338,7 +323,7 @@ const sofa::helper::vector< QuadEdges> &QuadSetTopologyContainer::getQuadEdgeArr
     return m_quadEdge;
 }
 
-const sofa::helper::vector< unsigned int > &QuadSetTopologyContainer::getQuadVertexShell(const unsigned int i)
+const VertexQuads& QuadSetTopologyContainer::getQuadVertexShell(PointID i)
 {
     if(!hasQuadVertexShell())	// this method should only be called when the shell array exists
     {
@@ -358,7 +343,7 @@ const sofa::helper::vector< unsigned int > &QuadSetTopologyContainer::getQuadVer
     return m_quadVertexShell[i];
 }
 
-const sofa::helper::vector< unsigned int > &QuadSetTopologyContainer::getQuadEdgeShell(const unsigned int i)
+const EdgeQuads& QuadSetTopologyContainer::getQuadEdgeShell(EdgeID i)
 {
     if(!hasQuadEdgeShell())	// this method should only be called when the shell array exists
     {

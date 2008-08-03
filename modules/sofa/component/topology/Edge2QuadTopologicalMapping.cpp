@@ -28,14 +28,19 @@
 
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
-#include <sofa/component/topology/QuadSetTopology.h>
-#include <sofa/component/topology/EdgeSetTopology.h>
+#include <sofa/component/topology/QuadSetTopologyModifier.h>
+#include <sofa/component/topology/QuadSetTopologyAlgorithms.h>
+
+#include <sofa/component/topology/EdgeSetTopologyChange.h>
+
+#include <sofa/component/topology/PointSetTopologyChange.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/component/MechanicalObject.h>
 
 #include <math.h>
 #include <sofa/defaulttype/Vec.h>

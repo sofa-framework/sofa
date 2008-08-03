@@ -38,7 +38,6 @@
 #define SOFA_COMPONENT_CONTROLLER_EDGESETCONTROLLER_INL
 
 #include <sofa/component/controller/EdgeSetController.h>
-#include <sofa/component/topology/EdgeSetTopology.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
@@ -49,8 +48,8 @@
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
-
-#include <sofa/component/topology/ManifoldEdgeSetTopology.h>
+#include <sofa/component/topology/EdgeSetTopologyAlgorithms.h>
+#include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
 
 namespace sofa
 {

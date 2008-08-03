@@ -28,7 +28,7 @@
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/component/topology/EdgeSubsetData.h>
-
+#include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
 
 
 namespace sofa

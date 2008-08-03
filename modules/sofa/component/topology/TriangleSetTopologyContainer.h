@@ -38,12 +38,16 @@ namespace topology
 class TriangleSetTopologyModifier;
 
 using core::componentmodel::topology::BaseMeshTopology;
-typedef BaseMeshTopology::TriangleID TriangleID;
-typedef BaseMeshTopology::Triangle Triangle;
-typedef BaseMeshTopology::SeqTriangles SeqTriangles;
-typedef BaseMeshTopology::VertexTriangles VertexTriangles;
-typedef BaseMeshTopology::EdgeTriangles EdgeTriangles;
-typedef BaseMeshTopology::TriangleEdges TriangleEdges;
+
+typedef BaseMeshTopology::PointID			PointID;
+typedef BaseMeshTopology::EdgeID			EdgeID;
+typedef BaseMeshTopology::TriangleID		TriangleID;
+typedef BaseMeshTopology::Edge				Edge;
+typedef BaseMeshTopology::Triangle			Triangle;
+typedef BaseMeshTopology::SeqTriangles		SeqTriangles;
+typedef BaseMeshTopology::TriangleEdges		TriangleEdges;
+typedef BaseMeshTopology::VertexTriangles	VertexTriangles;
+typedef BaseMeshTopology::EdgeTriangles		EdgeTriangles;
 
 /** Object that stores a set of triangles and provides access
 to each triangle and its edges and vertices */
@@ -52,6 +56,7 @@ class TriangleSetTopologyContainer : public EdgeSetTopologyContainer
     friend class TriangleSetTopologyModifier;
 
 public:
+
     TriangleSetTopologyContainer();
 
     TriangleSetTopologyContainer(const sofa::helper::vector< Triangle > &triangles );
@@ -70,11 +75,31 @@ public:
         return getTriangleArray();
     }
 
+    /** Returns the indices of a triangle given three vertex indices : returns -1 if none */
+    virtual int getTriangleIndex(PointID v1, PointID v2, PointID v3);
+
     /// Returns the set of edges adjacent to a given triangle.
     const TriangleEdges& getEdgeTriangleShell(TriangleID i)
     {
         return getTriangleEdge(i);
     }
+
+    /** \brief Returns the set of triangles adjacent to a given vertex.
+    *
+    */
+    virtual const VertexTriangles& getTriangleVertexShell(PointID i);
+
+
+    /** \brief Returns the set of triangles adjacent to a given edge.
+    *
+    */
+    virtual const EdgeTriangles& getTriangleEdgeShell(EdgeID i) ;
+
+    /** returns the index (either 0, 1 ,2) of the vertex whose global index is vertexIndex. Returns -1 if none */
+    virtual int getVertexIndexInTriangle(const Triangle &t, PointID vertexIndex) const;
+
+    /** returns the index (either 0, 1 ,2) of the edge whose global index is edgeIndex. Returns -1 if none */
+    virtual int getEdgeIndexInTriangle(const TriangleEdges &t, EdgeID edgeIndex) const;
 
     /// @}
 
@@ -104,42 +129,16 @@ public:
     */
     const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getTriangleEdgeShellArray() ;
 
-    /** \brief Returns the ith Triangle.
-    *
-    */
-    const Triangle &getTriangle(const unsigned int i);
-
     /** \brief Returns the number of triangles in this topology.
     *	The difference to getNbTriangles() is that this method does not generate the triangle array if it does not exist.
     */
     unsigned int getNumberOfTriangles() const;
-
-    /** \brief Returns the set of triangles adjacent to a given vertex.
-    *
-    */
-    const sofa::helper::vector< unsigned int > &getTriangleVertexShell(const unsigned int i) ;
 
 
     /** \brief Returns the 3 edges adjacent to a given triangle.
     *
     */
     const TriangleEdges &getTriangleEdge(const unsigned int i) ;
-
-
-    /** \brief Returns the set of triangles adjacent to a given edge.
-    *
-    */
-    const sofa::helper::vector< unsigned int > &getTriangleEdgeShell(const unsigned int i) ;
-
-    /** Returns the indices of a triangle given three vertex indices : returns -1 if none */
-    int getTriangleIndex(const unsigned int v1, const unsigned int v2, const unsigned int v3);
-
-
-    /** returns the index (either 0, 1 ,2) of the vertex whose global index is vertexIndex. Returns -1 if none */
-    int getVertexIndexInTriangle(const Triangle &t,const unsigned int vertexIndex) const;
-
-    /** returns the index (either 0, 1 ,2) of the edge whose global index is edgeIndex. Returns -1 if none */
-    int getEdgeIndexInTriangle(const TriangleEdges &t,const unsigned int edgeIndex) const;
 
     inline friend std::ostream& operator<< (std::ostream& out, const TriangleSetTopologyContainer& t)
     {

@@ -52,19 +52,24 @@ namespace topology
 class HexahedronSetTopologyModifier;
 
 using core::componentmodel::topology::BaseMeshTopology;
-typedef BaseMeshTopology::HexaID HexaID;
 
-typedef BaseMeshTopology::Hexa Hexa;
-typedef BaseMeshTopology::SeqHexas SeqHexas;
-typedef BaseMeshTopology::VertexHexas VertexHexas;
-typedef BaseMeshTopology::EdgeHexas EdgeHexas;
-typedef BaseMeshTopology::QuadHexas QuadHexas;
-typedef BaseMeshTopology::HexaEdges HexaEdges;
-typedef BaseMeshTopology::HexaQuads HexaQuads;
+typedef BaseMeshTopology::PointID			PointID;
+typedef BaseMeshTopology::EdgeID			EdgeID;
+typedef BaseMeshTopology::TriangleID		QuadID;
+typedef BaseMeshTopology::HexaID			HexaID;
+typedef BaseMeshTopology::Edge				Edge;
+typedef BaseMeshTopology::Quad				Quad;
+typedef BaseMeshTopology::Hexa				Hexa;
+typedef BaseMeshTopology::SeqHexas			SeqHexas;
+typedef BaseMeshTopology::VertexHexas		VertexHexas;
+typedef BaseMeshTopology::EdgeHexas			EdgeHexas;
+typedef BaseMeshTopology::QuadHexas			QuadHexas;
+typedef BaseMeshTopology::HexaEdges			HexaEdges;
+typedef BaseMeshTopology::HexaQuads			HexaQuads;
 
-typedef Hexa Hexahedron;
-typedef HexaEdges HexahedronEdges;
-typedef HexaQuads HexahedronQuads;
+typedef Hexa		Hexahedron;
+typedef HexaEdges	HexahedronEdges;
+typedef HexaQuads	HexahedronQuads;
 
 /** a class that stores a set of hexahedra and provides access with adjacent quads, edges and vertices */
 class HexahedronSetTopologyContainer : public QuadSetTopologyContainer
@@ -72,6 +77,10 @@ class HexahedronSetTopologyContainer : public QuadSetTopologyContainer
     friend class HexahedronSetTopologyModifier;
 
 public:
+    typedef Hexa		Hexahedron;
+    typedef HexaEdges	HexahedronEdges;
+    typedef HexaQuads	HexahedronQuads;
+
     HexahedronSetTopologyContainer();
 
     HexahedronSetTopologyContainer(const sofa::helper::vector< Hexahedron > &hexahedra);
@@ -119,6 +128,10 @@ public:
     {
         return getHexahedronQuadShell(i);
     }
+
+    /** Returns the indices of a hexahedron given 8 vertex indices : returns -1 if none */
+    virtual int getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4,
+            PointID v5, PointID v6, PointID v7, PointID v8);
 
     /// @}
 
@@ -198,12 +211,6 @@ public:
     *
     */
     const sofa::helper::vector< unsigned int > &getHexahedronQuadShell(const unsigned int i) ;
-
-    /** Returns the indices of a hexahedron given 8 vertex indices : returns -1 if none */
-    int getHexahedronIndex(const unsigned int v1, const unsigned int v2,
-            const unsigned int v3, const unsigned int v4,
-            const unsigned int v5, const unsigned int v6,
-            const unsigned int v7, const unsigned int v8);
 
     /** returns the index of the vertex whose global index is vertexIndex. Returns -1 if none */
     int getVertexIndexInHexahedron(Hexahedron &t,unsigned int vertexIndex) const;

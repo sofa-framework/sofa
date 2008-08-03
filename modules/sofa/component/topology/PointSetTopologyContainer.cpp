@@ -40,6 +40,7 @@ namespace topology
 {
 
 using namespace sofa::defaulttype;
+
 SOFA_DECL_CLASS(PointSetTopologyContainer)
 int PointSetTopologyContainerClass = core::RegisterObject("Point set topology container")
         .add< PointSetTopologyContainer >()
@@ -79,6 +80,11 @@ void PointSetTopologyContainer::addPoints(const unsigned int nPoints)
 void PointSetTopologyContainer::removePoints(const unsigned int nPoints)
 {
     nbPoints -= nPoints;
+}
+
+void PointSetTopologyContainer::addPoint(double , double , double )
+{
+    ++nbPoints;
 }
 
 void PointSetTopologyContainer::addPoint()

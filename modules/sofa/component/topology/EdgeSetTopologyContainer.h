@@ -35,21 +35,20 @@ namespace component
 
 namespace topology
 {
-class EdgeSetTopologyModifier;
-
 using core::componentmodel::topology::BaseMeshTopology;
-typedef BaseMeshTopology::EdgeID EdgeID;
-typedef BaseMeshTopology::Edge Edge;
-typedef BaseMeshTopology::SeqEdges SeqEdges;
-typedef BaseMeshTopology::VertexEdges VertexEdges;
 
+typedef BaseMeshTopology::PointID			PointID;
+typedef BaseMeshTopology::EdgeID			EdgeID;
+typedef BaseMeshTopology::Edge				Edge;
+typedef BaseMeshTopology::SeqEdges			SeqEdges;
+typedef BaseMeshTopology::VertexEdges		VertexEdges;
 
 /** a class that stores a set of edges  and provides access to the adjacency between points and edges */
 class EdgeSetTopologyContainer : public PointSetTopologyContainer
 {
-public:
     friend class EdgeSetTopologyModifier;
 
+public:
     EdgeSetTopologyContainer();
 
     EdgeSetTopologyContainer(const sofa::helper::vector< Edge > &edges);
@@ -57,8 +56,6 @@ public:
     virtual ~EdgeSetTopologyContainer() {}
 
     virtual void init();
-
-    virtual void clear();
 
     /// BaseMeshTopology API
     /// @{
@@ -68,6 +65,22 @@ public:
         return getEdgeArray();
     }
 
+    /** \brief Returns the edge shell of the ith DOF.
+    *
+    */
+    virtual const VertexEdges& getEdgeVertexShell(PointID i);
+
+    /** \brief Returns the index of the edge joining vertex v1 and vertex v2; returns -1 if no edge exists
+    *
+    */
+    virtual int getEdgeIndex(PointID v1, PointID v2);
+
+    /// @}
+
+    /// Procedural creation methods
+    /// @{
+    virtual void clear();
+    virtual void addEdge( int a, int b );
     /// @}
 
     /** \brief Checks if the topology is coherent
@@ -76,35 +89,22 @@ public:
     */
     virtual bool checkTopology() const;
 
+    /** \brief Returns the number of edges in this topology.
+    *  The difference to getNbEdges() is that this method does not generate the edge array if it does not exist.
+    */
+    unsigned int getNumberOfEdges() const;
+
     /** \brief Returns the Edge array.
     *
     */
     virtual const sofa::helper::vector<Edge> &getEdgeArray();
 
-    /** \brief Returns the ith Edge.
-    *
-    */
-    virtual const Edge &getEdge(const unsigned int i);
-
-    /** \brief Returns the number of edges in this topology.
-    *  The difference to getNbEdges() is that this method does not generate the edge array if it does not exist.
-    */
-    unsigned int getNumberOfEdges() const;
 
     /** \brief Returns the Edge Shell array.
     *
     */
     virtual const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getEdgeVertexShellArray();
 
-    /** \brief Returns the edge shell of the ith DOF.
-    *
-    */
-    virtual const sofa::helper::vector< unsigned int > &getEdgeVertexShell(const unsigned int i);
-
-    /** \brief Returns the index of the edge joining vertex v1 and vertex v2; returns -1 if no edge exists
-    *
-    */
-    virtual int getEdgeIndex(const unsigned int v1, const unsigned int v2);
 
     /** \brief Returns the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
     @param components the array containing the optimal vertex permutation according to the Reverse CuthillMckee algorithm
@@ -133,7 +133,6 @@ public:
         return in;
     }
 
-protected:
     /** \brief Returns a non-const edge shell of the ith DOF for subsequent modification
     *
     */

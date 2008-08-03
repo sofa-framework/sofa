@@ -37,11 +37,11 @@
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/component/topology/SparseGridTopology.h>
 
-#include <sofa/component/topology/EdgeSetTopology.h>
-#include <sofa/component/topology/TriangleSetTopology.h>
-#include <sofa/component/topology/QuadSetTopology.h>
-#include <sofa/component/topology/TetrahedronSetTopology.h>
-#include <sofa/component/topology/HexahedronSetTopology.h>
+#include <sofa/component/topology/EdgeSetTopologyContainer.h>
+#include <sofa/component/topology/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/QuadSetTopologyContainer.h>
+#include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/HexahedronSetTopologyContainer.h>
 
 #include <sofa/component/topology/PointData.h>
 #include <sofa/component/topology/PointData.inl>

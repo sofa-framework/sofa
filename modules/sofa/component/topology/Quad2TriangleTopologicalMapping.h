@@ -29,9 +29,6 @@
 
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
-#include <sofa/component/topology/TriangleSetTopology.h>
-#include <sofa/component/topology/QuadSetTopology.h>
-
 #include <sofa/defaulttype/Vec.h>
 #include <map>
 
