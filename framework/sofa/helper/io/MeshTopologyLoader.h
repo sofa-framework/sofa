@@ -58,11 +58,11 @@ public:
     virtual void addCube(int /*p1*/, int /*p2*/, int /*p3*/, int /*p4*/, int /*p5*/, int /*p6*/, int /*p7*/, int /*p8*/) {}
 private:
     bool loadObj(const char *filename);
-    bool loadMesh(const char *filename);
+    bool loadMeshFile(const char *filename);
 
     bool loadGmsh(FILE *, const int);
     bool loadXsp(FILE *, bool);
-    bool loadMeshTopology(FILE *);
+    bool loadMesh(FILE *);
 };
 
 } // namespace io

@@ -291,10 +291,10 @@ bool MeshTopologyLoader::loadXsp(FILE *file, bool vector_spring)
     char cmd[1024];
     int npoints = 0;
     int nlines = 0;
-    int ntris = 0;
-    int nquads = 0;
-    int ntetras = 0;
-    int ncubes = 0;
+//	int ntris = 0;
+//	int nquads = 0;
+//	int ntetras = 0;
+//	int ncubes = 0;
 
     int totalNumMasses;
     int totalNumSprings;
@@ -399,7 +399,7 @@ bool MeshTopologyLoader::loadXsp(FILE *file, bool vector_spring)
     return true;
 }
 
-bool MeshTopologyLoader::loadMeshTopology(FILE *file)
+bool MeshTopologyLoader::loadMesh(FILE *file)
 {
     char cmd[1024];
     int npoints = 0;
@@ -531,7 +531,7 @@ bool MeshTopologyLoader::loadMeshTopology(FILE *file)
     return true;
 }
 
-bool MeshTopologyLoader::loadMesh(const char *filename)
+bool MeshTopologyLoader::loadMeshFile(const char *filename)
 {
     FILE* file;
     char cmd[1024];
@@ -589,7 +589,7 @@ bool MeshTopologyLoader::loadMesh(const char *filename)
     }
     else
     {
-        fileLoaded = loadMeshTopology(file);
+        fileLoaded = loadMesh(file);
     }
 
     fclose(file);
@@ -613,7 +613,7 @@ bool MeshTopologyLoader::load(const char *filename)
         fileLoaded = loadObj(fname.c_str());
     }
     else
-        fileLoaded = loadMesh(fname.c_str());
+        fileLoaded = loadMeshFile(fname.c_str());
 
     if(!fileLoaded)
         printf("Error loading mesh file: %s \n", fname.c_str());
