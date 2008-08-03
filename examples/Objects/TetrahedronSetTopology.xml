@@ -1,8 +1,8 @@
 <Node name="Group"> 
-  <Object type="TriangleSetTopologyContainer"  name="Container" />
-  <Object type="TriangleSetTopologyModifier"   name="Modifier" />
-  <Object type="TriangleSetTopologyAlgorithms" name="TopoAlgo"   template="name to set during include" />
-  <Object type="TriangleSetGeometryAlgorithms" name="GeomAlgo"   template="name to set during include" />
+  <Object type="TetrahedronSetTopologyContainer"  name="Container" />
+  <Object type="TetrahedronSetTopologyModifier"   name="Modifier" />
+  <Object type="TetrahedronSetTopologyAlgorithms" name="TopoAlgo"   template="name to set during include" />
+  <Object type="TetrahedronSetGeometryAlgorithms" name="GeomAlgo"   template="name to set during include" />
 </Node>
 <!-- 
      Template List 
@@ -16,5 +16,5 @@
        - StdVectorTypes&lt;Vec&lt;3, float&gt;, Vec&lt;3, float&gt;, float&gt; &gt;
 
      Example of use:
-     <include href="Objects/TriangleSetTopology.xml" template="StdVectorTypes&lt;Vec&lt;3, double&gt;, Vec&lt;3, double&gt;, double&gt; &gt;" />
+     <include href="Objects/TetrahedronSetTopology.xml" template="StdVectorTypes&lt;Vec&lt;3, double&gt;, Vec&lt;3, double&gt;, double&gt; &gt;" />
 -->
