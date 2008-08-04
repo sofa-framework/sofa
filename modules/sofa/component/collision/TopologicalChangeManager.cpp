@@ -36,7 +36,8 @@
 #include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
 #include <sofa/component/topology/QuadSetTopologyContainer.h>
 #include <sofa/component/topology/HexahedronSetTopologyContainer.h>
-
+#include <sofa/component/topology/TriangleSetTopologyModifier.h>
+#include <sofa/component/topology/TriangleSetTopologyAlgorithms.h>
 namespace sofa
 {
 

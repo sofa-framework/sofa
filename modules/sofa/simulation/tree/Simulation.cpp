@@ -322,6 +322,7 @@ void Simulation::animate ( Node* root, double dt )
 void Simulation::reset ( Node* root )
 {
     if ( !root ) return;
+
     root->execute<ResetVisitor>();
     root->execute<MechanicalPropagatePositionAndVelocityVisitor>();
     root->execute<UpdateMappingVisitor>();

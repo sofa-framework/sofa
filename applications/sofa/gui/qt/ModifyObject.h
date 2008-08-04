@@ -51,6 +51,7 @@
 #include <QPushButton>
 #include <QTabWidget>
 #include <QSpinBox>
+#include <Q3CheckListItem>
 #else
 #include <qdialog.h>
 #include <qlistview.h>
@@ -84,7 +85,9 @@ using namespace sofa::defaulttype;
 using sofa::simulation::Node;
 
 #ifndef SOFA_QT4
+typedef QListView   Q3ListView;
 typedef QListViewItem Q3ListViewItem;
+typedef QCheckListItem   Q3CheckListItem;
 typedef QTable    Q3Table;
 typedef QGroupBox Q3GroupBox;
 typedef QTextEdit   Q3TextEdit;
@@ -119,6 +122,11 @@ public slots:
     void reject   () {                 emit(dialogClosed(Id)); deleteLater(); QDialog::reject();} //When closing a window, inform the parent.
     void accept   () { updateValues(); emit(dialogClosed(Id)); deleteLater(); QDialog::accept();} //if closing by using Ok button, update the values
     void resizeTable(int);
+#ifdef QT4
+    void visualFlagChanged(Q3ListViewItem *item);
+#else
+    void visualFlagChanged(QListViewItem *item);
+#endif
 signals:
     void objectUpdated();              //update done
     void dialogClosed(void *);            //the current window has been closed: we give the Id of the current window
@@ -262,6 +270,10 @@ protected:
 
     void *Id;
     bool visualContentModified;
+
+    //Visual Flags
+    Q3CheckListItem* itemShowFlag[10];
+
     std::vector< double > history;
     std::vector< double > energy_history[3];
     QwtPlot *graphEnergy;
@@ -281,3 +293,4 @@ protected:
 } // namespace sofa
 
 #endif
+
