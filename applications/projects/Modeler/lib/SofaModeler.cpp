@@ -365,17 +365,24 @@ void SofaModeler::createTab()
 void SofaModeler::closeTab()
 {
 
-    graph->closeGraph();
-    if (sceneTab->count() <=1) fileNew();
+    if (sceneTab->count() <=1)
+        fileNew();
     else if (tabGraph)
     {
-        mapSofa[tabGraph]->fileExit();
-        delete mapGraph[tabGraph];
-        delete mapSofa [tabGraph];
+        //If the scene has been launch in Sofa
+        if (mapSofa[tabGraph] != 0)
+        {
+            mapSofa[tabGraph]->fileExit();
+            //	      delete mapSofa [tabGraph];
+            mapSofa .erase(tabGraph);
+        }
+        //else
+        //	      delete mapGraph[tabGraph];
         mapGraph.erase(tabGraph);
-        mapSofa .erase(tabGraph);
+
         delete tabGraph;
     }
+    graph->closeGraph();
 }
 
 void SofaModeler::fileOpen(std::string filename)

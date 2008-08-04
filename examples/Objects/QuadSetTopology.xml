@@ -1,19 +1,19 @@
 <Node name="Group"> 
   <Object type="QuadSetTopologyContainer"  name="Container" />
   <Object type="QuadSetTopologyModifier"   name="Modifier" />
-  <Object type="QuadSetTopologyAlgorithms" name="TopoAlgo"   template="name to set during include" />
-  <Object type="QuadSetGeometryAlgorithms" name="GeomAlgo"   template="name to set during include" />
+  <Object type="QuadSetTopologyAlgorithms" name="TopoAlgo"  template="StdVectorTypes&lt;Vec&lt;3, double&gt;, Vec&lt;3, double&gt;, double&gt; &gt;" />
+  <Object type="QuadSetGeometryAlgorithms" name="GeomAlgo"  template="StdVectorTypes&lt;Vec&lt;3, double&gt;, Vec&lt;3, double&gt;, double&gt; &gt;" />
 </Node>
 <!-- 
      Template List 
 
-       - StdVectorTypes&lt;Vec&lt;1, double&gt;, Vec&lt;1, double&gt;, double&gt; &gt;
-       - StdVectorTypes&lt;Vec&lt;2, double&gt;, Vec&lt;2, double&gt;, double&gt; &gt;
-       - StdVectorTypes&lt;Vec&lt;3, double&gt;, Vec&lt;3, double&gt;, double&gt; &gt;
+       - "StdVectorTypes&lt;Vec&lt;1, double&gt;, Vec&lt;1, double&gt;, double&gt; &gt;"
+       - "StdVectorTypes&lt;Vec&lt;2, double&gt;, Vec&lt;2, double&gt;, double&gt; &gt;"
+       - "StdVectorTypes&lt;Vec&lt;3, double&gt;, Vec&lt;3, double&gt;, double&gt; &gt;"
 
-       - StdVectorTypes&lt;Vec&lt;1, float&gt;, Vec&lt;1, float&gt;, float&gt; &gt;
-       - StdVectorTypes&lt;Vec&lt;2, float&gt;, Vec&lt;2, float&gt;, float&gt; &gt;
-       - StdVectorTypes&lt;Vec&lt;3, float&gt;, Vec&lt;3, float&gt;, float&gt; &gt;
+       - "StdVectorTypes&lt;Vec&lt;1, float&gt;, Vec&lt;1, float&gt;, float&gt; &gt;"
+       - "StdVectorTypes&lt;Vec&lt;2, float&gt;, Vec&lt;2, float&gt;, float&gt; &gt;"
+       - "StdVectorTypes&lt;Vec&lt;3, float&gt;, Vec&lt;3, float&gt;, float&gt; &gt;"
 
      Example of use:
      <include href="Objects/QuadSetTopology.xml" template="StdVectorTypes&lt;Vec&lt;3, double&gt;, Vec&lt;3, double&gt;, double&gt; &gt;" />
