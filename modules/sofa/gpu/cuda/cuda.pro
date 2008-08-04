@@ -81,8 +81,7 @@ SOURCES += mycuda.cpp \
            CudaPenalityContactForceField.cpp \
            CudaVisualModel.cpp \
            CudaTetrahedralVisualModel.cpp \
-           CudaTestForceField.cpp \
-           CudaSetTopology.cpp
+           CudaTestForceField.cpp
 
 CUDA_SOURCES += mycuda.cu \
            CudaMechanicalObject.cu \
