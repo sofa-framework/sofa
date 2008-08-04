@@ -13,7 +13,7 @@
     <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
     <Object type="MeshLoader" filename="mesh/cylinder.msh"/>
     <Object type="MechanicalObject" name="Volume" />
-    <Object type="TetrahedronSetTopology" name="topo_Volume" />
+	<include href="Objects/TetrahedronSetTopology.xml" />
 
     <Object type="DiagonalMass" massDensity="0.5" />
     <Object type="FixedPlaneConstraint" direction="0 0 1" dmin="-0.1" dmax="0.1"/>
@@ -21,8 +21,9 @@
     <Object type="TetrahedralCorotationalFEMForceField" name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
 
     <Node name="T">
-      <Object type="TriangleSetTopology" name="topo_Surface" />
-      <Object type="Tetra2TriangleTopologicalMapping" object1="../../topo_Volume" object2="topo_Surface"/>
+      <include href="Objects/TriangleSetTopology.xml" />
+      
+      <Object type="Tetra2TriangleTopologicalMapping" object1="../../Container" object2="Container"/>
       
       <Object type="TriangularFEMForceField" name="FEM" youngModulus="10" poissonRatio="0.3" method="large" /> 
       <Object type="TriangularBendingSprings" name="FEM-Bend" stiffness="300" damping="1.0"/>		    
