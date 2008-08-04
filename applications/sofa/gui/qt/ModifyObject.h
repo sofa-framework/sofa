@@ -122,7 +122,7 @@ public slots:
     void reject   () {                 emit(dialogClosed(Id)); deleteLater(); QDialog::reject();} //When closing a window, inform the parent.
     void accept   () { updateValues(); emit(dialogClosed(Id)); deleteLater(); QDialog::accept();} //if closing by using Ok button, update the values
     void resizeTable(int);
-#ifdef QT4
+#ifdef SOFA_QT4
     void visualFlagChanged(Q3ListViewItem *item);
 #else
     void visualFlagChanged(QListViewItem *item);
