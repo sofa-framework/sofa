@@ -55,7 +55,6 @@ SOFA_LINK_CLASS(CudaCollision)
 SOFA_LINK_CLASS(CudaCollisionDetection)
 SOFA_LINK_CLASS(CudaPointModel)
 SOFA_LINK_CLASS(CudaTestForceField)
-SOFA_LINK_CLASS(CudaSetTopology)
 SOFA_LINK_CLASS(CudaVisualModel)
 SOFA_LINK_CLASS(CudaOglTetrahedralModel)
 
