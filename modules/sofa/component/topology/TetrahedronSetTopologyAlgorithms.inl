@@ -52,51 +52,6 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::init()
     this->getContext()->get(m_geometryAlgorithms);
 }
 
-template<class DataTypes>
-void TetrahedronSetTopologyAlgorithms< DataTypes >::removeTetrahedra(sofa::helper::vector< unsigned int >& tetrahedra)
-{
-    m_modifier->removeTetrahedraWarning(tetrahedra);
-
-    // inform other objects that the triangles are going to be removed
-    m_container->propagateTopologicalChanges();
-
-    // now destroy the old tetrahedra.
-    m_modifier->removeTetrahedraProcess(  tetrahedra ,true);
-
-    m_container->checkTopology();
-}
-
-template<class DataTypes>
-void TetrahedronSetTopologyAlgorithms< DataTypes >::removeItems(sofa::helper::vector< unsigned int >& items)
-{
-    removeTetrahedra(items);
-}
-
-template<class DataTypes>
-void TetrahedronSetTopologyAlgorithms< DataTypes >::RemoveTetraBall(unsigned int ind_ta, unsigned int ind_tb)
-{
-    sofa::helper::vector<unsigned int> init_indices;
-    sofa::helper::vector<unsigned int> &indices = init_indices;
-    m_geometryAlgorithms->getTetraInBall(ind_ta, ind_tb, indices);
-    removeTetrahedra(indices);
-
-    //cout<<"INFO, number to remove = "<< indices.size() <<endl;
-}
-
-template<class DataTypes>
-void  TetrahedronSetTopologyAlgorithms<DataTypes>::renumberPoints( const sofa::helper::vector<unsigned int> &index,
-        const sofa::helper::vector<unsigned int> &inv_index)
-{
-    /// add the topological changes in the queue
-    m_modifier->renumberPointsWarning(index, inv_index);
-    // inform other objects that the triangles are going to be removed
-    m_container->propagateTopologicalChanges();
-    // now renumber the points
-    m_modifier->renumberPointsProcess(index, inv_index);
-
-    m_container->checkTopology();
-}
-
 } // namespace topology
 
 } // namespace component

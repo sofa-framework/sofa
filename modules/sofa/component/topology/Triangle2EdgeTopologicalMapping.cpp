@@ -30,12 +30,10 @@
 
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
 #include <sofa/component/topology/EdgeSetTopologyModifier.h>
-#include <sofa/component/topology/EdgeSetTopologyAlgorithms.h>
 #include <sofa/component/topology/EdgeSetTopologyChange.h>
 
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
 #include <sofa/component/topology/TriangleSetTopologyModifier.h>
-#include <sofa/component/topology/TriangleSetTopologyAlgorithms.h>
 #include <sofa/component/topology/TriangleSetTopologyChange.h>
 
 #include <sofa/component/topology/PointSetTopologyChange.h>
@@ -128,9 +126,6 @@ void Triangle2EdgeTopologicalMapping::init()
 
             std::cout << "INFO_print : Triangle2EdgeTopologicalMapping - to = edge" << std::endl;
 
-            EdgeSetTopologyAlgorithms<Vec3Types> *to_tstal;
-            toModel->getContext()->get(to_tstal);
-
             EdgeSetTopologyModifier *to_tstm;
             toModel->getContext()->get(to_tstm);
 
@@ -156,7 +151,7 @@ void Triangle2EdgeTopologicalMapping::init()
                 }
             }
 
-            to_tstal->notifyEndingEvent();
+            to_tstm->notifyEndingEvent();
         }
 
     }
@@ -184,9 +179,6 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMapping()
     if (fromModel)
     {
 
-        EdgeSetTopologyAlgorithms<Vec3Types> *to_tstal;
-        toModel->getContext()->get(to_tstal);
-
         EdgeSetTopologyModifier *to_tstm;
         toModel->getContext()->get(to_tstm);
 
@@ -206,7 +198,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMapping()
                 case core::componentmodel::topology::ENDING_EVENT:
                 {
                     //std::cout << "INFO_print : Triangle2EdgeTopologicalMapping - ENDING_EVENT" << std::endl;
-                    to_tstal->notifyEndingEvent();
+                    to_tstm->notifyEndingEvent();
                     break;
                 }
 
@@ -281,7 +273,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMapping()
 
                             sofa::helper::vector< unsigned int > edges_to_remove;
                             edges_to_remove.push_back(ind_k);
-                            to_tstal->removeEdges(edges_to_remove, false);
+                            to_tstm->removeEdges(edges_to_remove, false);
 
                         }
                         else
@@ -294,7 +286,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMapping()
                         --last;
                     }
 
-                    //toModel->propagateTopologicalChanges();
+                    //to_tstm->propagateTopologicalChanges();
 
                     break;
                 }
@@ -385,7 +377,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMapping()
 
                         to_tstm->addEdgesProcess(edges_to_create) ;
                         to_tstm->addEdgesWarning(edges_to_create.size(), edges_to_create, edgesIndexList) ;
-                        //toModel->propagateTopologicalChanges();
+                        //to_tstm->propagateTopologicalChanges();
 
                     }
 
@@ -409,7 +401,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMapping()
                     sofa::helper::vector<unsigned int>& tab_indices = indices;
 
                     to_tstm->removePointsWarning(tab_indices, false);
-                    toModel->propagateTopologicalChanges();
+                    to_tstm->propagateTopologicalChanges();
                     to_tstm->removePointsProcess(tab_indices, false);
 
                     break;
@@ -437,7 +429,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMapping()
                     sofa::helper::vector<unsigned int>& inv_tab_indices = inv_indices;
 
                     to_tstm->renumberPointsWarning(tab_indices, inv_tab_indices, false);
-                    toModel->propagateTopologicalChanges();
+                    to_tstm->propagateTopologicalChanges();
                     to_tstm->renumberPointsProcess(tab_indices, inv_tab_indices, false);
 
                     break;
@@ -530,7 +522,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMapping()
 
                                     sofa::helper::vector< unsigned int > edges_to_remove;
                                     edges_to_remove.push_back(ind_k);
-                                    to_tstal->removeEdges(edges_to_remove, false);
+                                    to_tstm->removeEdges(edges_to_remove, false);
 
                                 }
                                 else   // add as visible the edge indexed by k
@@ -572,7 +564,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMapping()
 
                         to_tstm->addEdgesProcess(edges_to_create) ;
                         to_tstm->addEdgesWarning(edges_to_create.size(), edges_to_create, edgesIndexList) ;
-                        toModel->propagateTopologicalChanges();
+                        to_tstm->propagateTopologicalChanges();
 
                     }
 
@@ -587,7 +579,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMapping()
                     const sofa::component::topology::PointsAdded *ta=static_cast< const sofa::component::topology::PointsAdded * >( *itBegin );
                     to_tstm->addPointsProcess(ta->getNbAddedVertices());
                     to_tstm->addPointsWarning(ta->getNbAddedVertices(), ta->ancestorsList, ta->coefs, false);
-                    toModel->propagateTopologicalChanges();
+                    to_tstm->propagateTopologicalChanges();
 
                     break;
                 }
@@ -600,7 +592,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMapping()
 
                 ++itBegin;
             }
-            toModel->propagateTopologicalChanges();
+            to_tstm->propagateTopologicalChanges();
 
         }
     }

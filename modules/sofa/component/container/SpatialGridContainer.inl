@@ -39,8 +39,8 @@
 
 #include <sofa/component/container/SpatialGridContainer.h>
 
-#include <sofa/component/topology/PointSetTopologyAlgorithms.h>
 #include <sofa/component/topology/PointSetTopologyChange.h>
+#include <sofa/component/topology/PointSetTopologyModifier.h>
 
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
@@ -748,15 +748,15 @@ bool SpatialGridContainer<DataTypes>::sortPoints()
         std::cout << std::endl;
     }
 
-    sofa::component::topology::PointSetTopologyAlgorithms<DataTypes>* pointALG_ptr;
-    this->getContext()->get(pointALG_ptr);
+    sofa::component::topology::PointSetTopologyModifier* pointMod;
+    this->getContext()->get(pointMod);
 
-    if (pointALG_ptr)
+    if (pointMod)
     {
         if(this->f_printLog.getValue())
-            std::cout << "SpatialGridContainer::sortPoints(): renumber using PointSetTopologyAlgorithms."<<std::endl;
+            std::cout << "SpatialGridContainer::sortPoints(): renumber using PointSetTopologyModifier."<<std::endl;
 
-        pointALG_ptr->renumberPoints(new2old,old2new);
+        pointMod->renumberPoints(new2old,old2new);
     }
     else
     {

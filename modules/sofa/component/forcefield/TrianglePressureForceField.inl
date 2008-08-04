@@ -24,7 +24,6 @@
 ******************************************************************************/
 #include <sofa/component/forcefield/TrianglePressureForceField.h>
 #include <sofa/component/topology/TriangleSubsetData.inl>
-#include <sofa/component/topology/TriangleSetTopologyContainer.h>
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/helper/gl/template.h>
 #include <vector>
@@ -68,16 +67,6 @@ template <class DataTypes> void TrianglePressureForceField<DataTypes>::init()
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
 
     _topology = getContext()->getMeshTopology();
-
-    sofa::component::topology::TriangleSetTopologyContainer* triangleCont;
-    this->getContext()->get(triangleCont);
-    assert(triangleCont!=0);
-
-    if (triangleCont==NULL)
-    {
-        std::cerr << "ERROR(TrianglePressureForceField): object must have an TriangleSetTopologyContainer.\n";
-        return;
-    }
 
     if (dmin.getValue()!=dmax.getValue())
     {

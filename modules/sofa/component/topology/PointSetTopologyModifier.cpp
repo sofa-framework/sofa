@@ -23,6 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/topology/PointSetTopologyModifier.h>
+#include <sofa/simulation/common/StateChangeVisitor.h>
+#include <sofa/simulation/common/TopologyChangeVisitor.h>
 #include <sofa/component/topology/PointSetTopologyChange.h>
 #include <sofa/component/topology/PointSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
@@ -55,7 +57,7 @@ void PointSetTopologyModifier::swapPoints(const int i1, const int i2)
 {
     PointsIndicesSwap *e2 = new PointsIndicesSwap( i1, i2 );
     addStateChange(e2);
-    m_container->propagateStateChanges();
+    propagateStateChanges();
 
     PointsIndicesSwap *e = new PointsIndicesSwap( i1, i2 );
     this->addTopologyChange(e);
@@ -73,7 +75,7 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints, cons
     {
         PointsAdded *e2 = new PointsAdded(nPoints);
         addStateChange(e2);
-        m_container->propagateStateChanges();
+        propagateStateChanges();
     }
 
     // Warning that vertices just got created
@@ -91,7 +93,7 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
     {
         PointsAdded *e2 = new PointsAdded(nPoints, ancestors, coefs);
         addStateChange(e2);
-        m_container->propagateStateChanges();
+        propagateStateChanges();
     }
 
     // Warning that vertices just got created
@@ -123,7 +125,7 @@ void PointSetTopologyModifier::removePointsProcess(const sofa::helper::vector<un
 {
     if(removeDOF)
     {
-        m_container->propagateStateChanges();
+        propagateStateChanges();
     }
     m_container->removePoints(indices.size());
 }
@@ -151,8 +153,32 @@ void PointSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector
 {
     if(renumberDOF)
     {
-        m_container->propagateStateChanges();
+        propagateStateChanges();
     }
+}
+
+void PointSetTopologyModifier::propagateTopologicalChanges()
+{
+    sofa::simulation::TopologyChangeVisitor a;
+    getContext()->executeVisitor(&a);
+
+    // remove the changes we just propagated, so that we don't send then again next time
+    m_container->resetTopologyChangeList();
+}
+
+void PointSetTopologyModifier::propagateStateChanges()
+{
+    sofa::simulation::StateChangeVisitor a;
+    getContext()->executeVisitor(&a);
+
+    // remove the changes we just propagated, so that we don't send then again next time
+    m_container->resetStateChangeList();
+}
+
+void PointSetTopologyModifier::notifyEndingEvent()
+{
+    sofa::core::componentmodel::topology::EndingEvent *e=new sofa::core::componentmodel::topology::EndingEvent();
+    m_container->addTopologyChange(e);
 }
 
 } // namespace topology

@@ -168,6 +168,22 @@ public:
             const sofa::helper::vector<unsigned int>& inv_index,
             const bool renumberDOF = true);
 
+    /** \brief Remove a set  of hexahedra
+    @param hexahedra an array of hexahedron indices to be removed (note that the array is not const since it needs to be sorted)
+    *
+    */
+    virtual void removeHexahedra(sofa::helper::vector< unsigned int >& hexahedra);
+
+    /** \brief Generic method to remove a list of items.
+    */
+    virtual void removeItems(sofa::helper::vector< unsigned int >& items);
+
+    /** \brief Generic method for points renumbering
+    */
+    virtual void renumberPoints( const sofa::helper::vector<unsigned int>& index,
+            const sofa::helper::vector<unsigned int>& inv_index);
+
+
 private:
     HexahedronSetTopologyContainer* 	m_container;
 };

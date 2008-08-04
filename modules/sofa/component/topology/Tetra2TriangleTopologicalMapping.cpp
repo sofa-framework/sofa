@@ -30,12 +30,10 @@
 
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
 #include <sofa/component/topology/TriangleSetTopologyModifier.h>
-#include <sofa/component/topology/TriangleSetTopologyAlgorithms.h>
 #include <sofa/component/topology/TriangleSetTopologyChange.h>
 
 #include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
 #include <sofa/component/topology/TetrahedronSetTopologyModifier.h>
-#include <sofa/component/topology/TetrahedronSetTopologyAlgorithms.h>
 #include <sofa/component/topology/TetrahedronSetTopologyChange.h>
 
 #include <sofa/component/topology/PointSetTopologyChange.h>
@@ -154,9 +152,7 @@ void Tetra2TriangleTopologicalMapping::init()
                 }
             }
 
-            TriangleSetTopologyAlgorithms<Vec3Types> *triangleAlg;
-            toModel->getContext()->get(triangleAlg);
-            triangleAlg->notifyEndingEvent();
+            to_tstm->notifyEndingEvent();
 
         }
 
@@ -203,9 +199,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMapping()
                 case core::componentmodel::topology::ENDING_EVENT:
                 {
                     //std::cout << "INFO_print : Tetra2TriangleTopologicalMapping - ENDING_EVENT" << std::endl;
-                    TriangleSetTopologyAlgorithms<Vec3Types> *triangleAlg;
-                    toModel->getContext()->get(triangleAlg);
-                    triangleAlg->notifyEndingEvent();
+                    to_tstm->notifyEndingEvent();
                     break;
                 }
 
@@ -281,9 +275,9 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMapping()
                             sofa::helper::vector< unsigned int > triangles_to_remove;
                             triangles_to_remove.push_back(ind_k);
 
-                            TriangleSetTopologyAlgorithms<Vec3Types> *triangleAlg;
-                            toModel->getContext()->get(triangleAlg);
-                            triangleAlg->removeTriangles(triangles_to_remove, true, false);
+                            TriangleSetTopologyModifier *triangleMod;
+                            toModel->getContext()->get(triangleMod);
+                            triangleMod->removeTriangles(triangles_to_remove, true, false);
 
                         }
                         else
@@ -416,7 +410,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMapping()
 
                     to_tstm->removePointsWarning(tab_indices, false);
 
-                    toModel->propagateTopologicalChanges();
+                    to_tstm->propagateTopologicalChanges();
                     to_tstm->removePointsProcess(tab_indices, false);
 
                     break;
@@ -444,7 +438,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMapping()
                     sofa::helper::vector<unsigned int>& inv_tab_indices = inv_indices;
 
                     to_tstm->renumberPointsWarning(tab_indices, inv_tab_indices, false);
-                    toModel->propagateTopologicalChanges();
+                    to_tstm->propagateTopologicalChanges();
                     to_tstm->renumberPointsProcess(tab_indices, inv_tab_indices, false);
 
                     break;
@@ -456,7 +450,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMapping()
 
                 ++itBegin;
             }
-            toModel->propagateTopologicalChanges();
+            to_tstm->propagateTopologicalChanges();
         }
     }
 

@@ -53,42 +53,6 @@ void TriangleSetTopologyAlgorithms< DataTypes >::init()
     this->getContext()->get(m_geometryAlgorithms);
 }
 
-template<class DataTypes>
-void TriangleSetTopologyAlgorithms< DataTypes >::removeTriangles(sofa::helper::vector< unsigned int >& triangles,
-        const bool removeIsolatedEdges,
-        const bool removeIsolatedPoints)
-{
-    /// add the topological changes in the queue
-    m_modifier->removeTrianglesWarning(triangles);
-    // inform other objects that the triangles are going to be removed
-    m_container->propagateTopologicalChanges();
-    // now destroy the old triangles.
-    m_modifier->removeTrianglesProcess(  triangles ,removeIsolatedEdges, removeIsolatedPoints);
-
-    m_container->checkTopology();
-}
-
-template<class DataTypes>
-void TriangleSetTopologyAlgorithms< DataTypes >::removeItems(sofa::helper::vector< unsigned int >& items)
-{
-    removeTriangles(items, true, true);
-}
-
-template<class DataTypes>
-void  TriangleSetTopologyAlgorithms<DataTypes>::renumberPoints( const sofa::helper::vector<unsigned int> &index,
-        const sofa::helper::vector<unsigned int> &inv_index)
-{
-    /// add the topological changes in the queue
-    m_modifier->renumberPointsWarning(index, inv_index);
-    // inform other objects that the triangles are going to be removed
-    m_container->propagateTopologicalChanges();
-    // now renumber the points
-    m_modifier->renumberPointsProcess(index, inv_index);
-
-    m_container->checkTopology();
-}
-
-
 // Move and fix the two closest points of two triangles to their median point
 template<class DataTypes>
 bool TriangleSetTopologyAlgorithms< DataTypes >::Suture2Points(unsigned int ind_ta, unsigned int ind_tb,
@@ -1037,15 +1001,15 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
         m_modifier->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList);
 
         // Propagate the topological changes *** not necessary
-        //m_container->propagateTopologicalChanges();
+        //m_modifier->propagateTopologicalChanges();
 
         // Remove all the triangles registered to be removed
-        removeTriangles(triangles_to_remove, true, true); // (WARNING then PROPAGATION) called before the removal process by the method "removeTriangles"
+        m_modifier->removeTriangles(triangles_to_remove, true, true); // (WARNING then PROPAGATION) called before the removal process by the method "removeTriangles"
 
         //cout<<"INFO, number to remove = "<< triangles_to_remove.size() <<endl;
 
         // Propagate the topological changes *** not necessary
-        //m_container->propagateTopologicalChanges();
+        //m_modifier->propagateTopologicalChanges();
 
     }
 
@@ -1088,7 +1052,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::RemoveAlongTrianglesList(const 
         {
             triangles.push_back(triangles_list[i]);
         }
-        removeTriangles(triangles, true, true);
+        m_modifier->removeTriangles(triangles, true, true);
     }
 }
 
@@ -1687,13 +1651,13 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
         m_modifier->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList);
 
         // Propagate the topological changes *** not necessary
-        //m_container->propagateTopologicalChanges();
+        //m_modifier->propagateTopologicalChanges();
 
         // Remove all the triangles registered to be removed
-        removeTriangles(triangles_to_remove, true, true); // (WARNING then PROPAGATION) called before the removal process by the method "removeTriangles"
+        m_modifier->removeTriangles(triangles_to_remove, true, true); // (WARNING then PROPAGATION) called before the removal process by the method "removeTriangles"
 
         // Propagate the topological changes *** not necessary
-        //m_container->propagateTopologicalChanges();
+        //m_modifier->propagateTopologicalChanges();
     }
 }
 
@@ -1912,13 +1876,13 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
     m_modifier->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList);
 
     // Propagate the topological changes *** not necessary
-    //m_container->propagateTopologicalChanges();
+    //m_modifier->propagateTopologicalChanges();
 
     // Remove all the triangles registered to be removed
-    removeTriangles(triangles_to_remove, true, true); // (WARNING then PROPAGATION) called before the removal process by the method "removeTriangles"
+    m_modifier->removeTriangles(triangles_to_remove, true, true); // (WARNING then PROPAGATION) called before the removal process by the method "removeTriangles"
 
     // Propagate the topological changes *** not necessary
-    //m_container->propagateTopologicalChanges();
+    //m_modifier->propagateTopologicalChanges();
 
     return (pb_is_on_border?1:0)+(pa_is_on_border?1:0); // todo: get new edge indice
 }

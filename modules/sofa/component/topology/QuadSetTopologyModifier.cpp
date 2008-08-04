@@ -269,7 +269,7 @@ void QuadSetTopologyModifier::removeQuadsProcess(const sofa::helper::vector<unsi
     {
         /// warn that edges will be deleted
         removeEdgesWarning(edgeToBeRemoved);
-        m_container->propagateTopologicalChanges();
+        propagateTopologicalChanges();
         /// actually remove edges without looking for isolated vertices
         removeEdgesProcess(edgeToBeRemoved,false);
     }
@@ -278,7 +278,7 @@ void QuadSetTopologyModifier::removeQuadsProcess(const sofa::helper::vector<unsi
     {
         removePointsWarning(vertexToBeRemoved);
         /// propagate to all components
-        m_container->propagateTopologicalChanges();
+        propagateTopologicalChanges();
         removePointsProcess(vertexToBeRemoved);
     }
 }
@@ -403,6 +403,38 @@ void QuadSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector<
 
     // call the parent's method
     EdgeSetTopologyModifier::renumberPointsProcess( index, inv_index, renumberDOF );
+}
+
+void QuadSetTopologyModifier::removeQuads(sofa::helper::vector< unsigned int >& quads,
+        const bool removeIsolatedEdges,
+        const bool removeIsolatedPoints)
+{
+    /// add the topological changes in the queue
+    removeQuadsWarning(quads);
+    // inform other objects that the quads are going to be removed
+    propagateTopologicalChanges();
+    // now destroy the old quads.
+    removeQuadsProcess( quads, removeIsolatedEdges, removeIsolatedPoints);
+
+    m_container->checkTopology();
+}
+
+void QuadSetTopologyModifier::removeItems(sofa::helper::vector< unsigned int >& items)
+{
+    removeQuads(items, true, true);
+}
+
+void QuadSetTopologyModifier::renumberPoints( const sofa::helper::vector<unsigned int> &index,
+        const sofa::helper::vector<unsigned int> &inv_index)
+{
+    /// add the topological changes in the queue
+    renumberPointsWarning(index, inv_index);
+    // inform other objects that the triangles are going to be removed
+    propagateTopologicalChanges();
+    // now renumber the points
+    renumberPointsProcess(index, inv_index);
+
+    m_container->checkTopology();
 }
 
 } // namespace topology

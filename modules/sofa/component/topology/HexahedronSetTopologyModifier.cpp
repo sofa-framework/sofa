@@ -416,7 +416,7 @@ void HexahedronSetTopologyModifier::removeHexahedraProcess( const sofa::helper::
             removeEdgesWarning(edgeToBeRemoved);
         }
 
-        m_container->propagateTopologicalChanges();
+        propagateTopologicalChanges();
 
         if(!quadToBeRemoved.empty())
         {
@@ -434,7 +434,7 @@ void HexahedronSetTopologyModifier::removeHexahedraProcess( const sofa::helper::
     if(!vertexToBeRemoved.empty())
     {
         removePointsWarning(vertexToBeRemoved);
-        m_container->propagateTopologicalChanges();
+        propagateTopologicalChanges();
         removePointsProcess(vertexToBeRemoved);
     }
 }
@@ -592,6 +592,36 @@ void HexahedronSetTopologyModifier::renumberPointsProcess( const sofa::helper::v
 
     // call the parent's method.
     QuadSetTopologyModifier::renumberPointsProcess( index, inv_index, renumberDOF );
+}
+
+void HexahedronSetTopologyModifier::removeHexahedra(sofa::helper::vector< unsigned int >& hexahedra)
+{
+    // add the topological changes in the queue
+    removeHexahedraWarning(hexahedra);
+    // inform other objects that the hexa are going to be removed
+    propagateTopologicalChanges();
+    // now destroy the old hexahedra.
+    removeHexahedraProcess(  hexahedra ,true);
+
+    m_container->checkTopology();
+}
+
+void HexahedronSetTopologyModifier::removeItems(sofa::helper::vector< unsigned int >& items)
+{
+    removeHexahedra(items);
+}
+
+void HexahedronSetTopologyModifier::renumberPoints(const sofa::helper::vector<unsigned int> &index,
+        const sofa::helper::vector<unsigned int> &inv_index)
+{
+    /// add the topological changes in the queue
+    renumberPointsWarning(index, inv_index);
+    // inform other objects that the triangles are going to be removed
+    propagateTopologicalChanges();
+    // now renumber the points
+    renumberPointsProcess(index, inv_index);
+
+    m_container->checkTopology();
 }
 
 } // namespace topology

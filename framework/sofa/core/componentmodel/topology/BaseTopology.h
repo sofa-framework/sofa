@@ -83,26 +83,6 @@ public:
 
     virtual void init();
 
-    /** \notify the end for the current sequence of topological change events.
-    */
-    void notifyEndingEvent()
-    {
-        EndingEvent *e=new EndingEvent();
-        addTopologyChange(e);
-    }
-
-    /** \brief Generic method to remove a list of items.
-    */
-    virtual void removeItems(sofa::helper::vector< unsigned int >& /*items*/) {	}
-
-    /** \brief Generic method to write the current mesh into a msh file
-    */
-    virtual void writeMSH(const char * /*filename*/) {return;}
-
-    /** \brief Generic method for points renumbering
-    */
-    virtual void renumberPoints( const sofa::helper::vector<unsigned int> &/*index*/, const sofa::helper::vector<unsigned int> &/*inv_index*/) { }
-
 protected:
     /** \brief Adds a TopologyChange object to the list of the topology this object describes.
     */
@@ -129,7 +109,6 @@ public:
     {}
 
     virtual void init();
-
 };
 
 /** A class that contains a set of low-level methods that perform topological changes */
@@ -149,6 +128,36 @@ public:
     { }
 
     virtual void init();
+
+    /** \brief Called by a topology to warn the Mechanical Object component that points have been added or will be removed.
+    *
+    * StateChangeList should contain all TopologyChange objects corresponding to vertex changes in this topology
+    * that just happened (in the case of creation) or are about to happen (in the case of destruction) since
+    * last call to propagateTopologicalChanges.
+    *
+    * @sa firstChange()
+    * @sa lastChange()
+    */
+    virtual void propagateStateChanges();
+
+    /** \brief Called by a topology to warn specific topologies linked to it that TopologyChange objects happened.
+    *
+    * ChangeList should contain all TopologyChange objects corresponding to changes in this topology
+    * that just happened (in the case of creation) or are about to happen (in the case of destruction) since
+    * last call to propagateTopologicalChanges.
+    *
+    * @sa firstChange()
+    * @sa lastChange()
+    */
+    virtual void propagateTopologicalChanges();
+
+    /** \notify the end for the current sequence of topological change events.
+    */
+    virtual void notifyEndingEvent();
+
+    /** \brief Generic method to remove a list of items.
+    */
+    virtual void removeItems(sofa::helper::vector< unsigned int >& /*items*/);
 
 protected:
     /** \brief Adds a TopologyChange object to the list of the topology this object describes.
@@ -232,27 +241,6 @@ public:
      */
     std::list<const TopologyChange *>::const_iterator lastStateChange() const;
 
-    /** \brief Called by a topology to warn specific topologies linked to it that TopologyChange objects happened.
-    *
-    * ChangeList should contain all TopologyChange objects corresponding to changes in this topology
-    * that just happened (in the case of creation) or are about to happen (in the case of destruction) since
-    * last call to propagateTopologicalChanges.
-    *
-    * @sa firstChange()
-    * @sa lastChange()
-    */
-    virtual void propagateTopologicalChanges() {}
-
-    /** \brief Called by a topology to warn the Mechanical Object component that points have been added or will be removed.
-    *
-    * StateChangeList should contain all TopologyChange objects corresponding to vertex changes in this topology
-    * that just happened (in the case of creation) or are about to happen (in the case of destruction) since
-    * last call to propagateTopologicalChanges.
-    *
-    * @sa firstChange()
-    * @sa lastChange()
-    */
-    virtual void propagateStateChanges() {}
 
     /** \brief Free each Topology changes in the list and remove them from the list
     *

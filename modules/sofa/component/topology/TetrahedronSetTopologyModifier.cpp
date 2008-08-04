@@ -321,7 +321,7 @@ void TetrahedronSetTopologyModifier::removeTetrahedraProcess( const sofa::helper
             removeEdgesWarning(edgeToBeRemoved);
         }
 
-        m_container->propagateTopologicalChanges();
+        propagateTopologicalChanges();
 
         if (!triangleToBeRemoved.empty())
         {
@@ -340,7 +340,7 @@ void TetrahedronSetTopologyModifier::removeTetrahedraProcess( const sofa::helper
     if (!vertexToBeRemoved.empty())
     {
         removePointsWarning(vertexToBeRemoved);
-        m_container->propagateTopologicalChanges();
+        propagateTopologicalChanges();
         removePointsProcess(vertexToBeRemoved);
     }
 }
@@ -496,6 +496,37 @@ void TetrahedronSetTopologyModifier::renumberPointsProcess( const sofa::helper::
 
     // call the parent's method.
     TriangleSetTopologyModifier::renumberPointsProcess( index, inv_index, renumberDOF );
+}
+
+void TetrahedronSetTopologyModifier::removeTetrahedra(sofa::helper::vector< unsigned int >& tetrahedra)
+{
+    removeTetrahedraWarning(tetrahedra);
+
+    // inform other objects that the triangles are going to be removed
+    propagateTopologicalChanges();
+
+    // now destroy the old tetrahedra.
+    removeTetrahedraProcess(  tetrahedra ,true);
+
+    m_container->checkTopology();
+}
+
+void TetrahedronSetTopologyModifier::removeItems(sofa::helper::vector< unsigned int >& items)
+{
+    removeTetrahedra(items);
+}
+
+void TetrahedronSetTopologyModifier::renumberPoints( const sofa::helper::vector<unsigned int> &index,
+        const sofa::helper::vector<unsigned int> &inv_index)
+{
+    /// add the topological changes in the queue
+    renumberPointsWarning(index, inv_index);
+    // inform other objects that the triangles are going to be removed
+    propagateTopologicalChanges();
+    // now renumber the points
+    renumberPointsProcess(index, inv_index);
+
+    m_container->checkTopology();
 }
 
 } // namespace topology

@@ -55,41 +55,6 @@ void QuadSetTopologyAlgorithms< DataTypes >::init()
     this->getContext()->get(m_geometryAlgorithms);
 }
 
-template<class DataTypes>
-void QuadSetTopologyAlgorithms< DataTypes >::removeQuads(sofa::helper::vector< unsigned int >& quads,
-        const bool removeIsolatedEdges,
-        const bool removeIsolatedPoints)
-{
-    /// add the topological changes in the queue
-    m_modifier->removeQuadsWarning(quads);
-    // inform other objects that the quads are going to be removed
-    m_container->propagateTopologicalChanges();
-    // now destroy the old quads.
-    m_modifier->removeQuadsProcess( quads, removeIsolatedEdges, removeIsolatedPoints);
-
-    m_container->checkTopology();
-}
-
-template<class DataTypes>
-void QuadSetTopologyAlgorithms< DataTypes >::removeItems(sofa::helper::vector< unsigned int >& items)
-{
-    removeQuads(items, true, true);
-}
-
-template<class DataTypes>
-void  QuadSetTopologyAlgorithms<DataTypes>::renumberPoints( const sofa::helper::vector<unsigned int> &index,
-        const sofa::helper::vector<unsigned int> &inv_index)
-{
-    /// add the topological changes in the queue
-    m_modifier->renumberPointsWarning(index, inv_index);
-    // inform other objects that the triangles are going to be removed
-    m_container->propagateTopologicalChanges();
-    // now renumber the points
-    m_modifier->renumberPointsProcess(index, inv_index);
-
-    m_container->checkTopology();
-}
-
 } // namespace topology
 
 } // namespace component

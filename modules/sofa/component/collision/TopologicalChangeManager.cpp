@@ -33,11 +33,11 @@
 
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/TriangleSetTopologyModifier.h>
 #include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
 #include <sofa/component/topology/QuadSetTopologyContainer.h>
 #include <sofa/component/topology/HexahedronSetTopologyContainer.h>
-#include <sofa/component/topology/TriangleSetTopologyModifier.h>
-#include <sofa/component/topology/TriangleSetTopologyAlgorithms.h>
+
 namespace sofa
 {
 
@@ -95,7 +95,7 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::core::Collisio
                     {
                         unsigned int ind_glob = topoMap->getGlobIndex(*it);
                         unsigned int ind = topoMap->getFromIndex(ind_glob);
-                        std::cout << *it << " -> "<<ind_glob << " -> "<<ind<<std::endl;
+                        //std::cout << *it << " -> "<<ind_glob << " -> "<<ind<<std::endl;
                         items.insert(ind);
                     }
 
@@ -110,12 +110,15 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::core::Collisio
         vitems.reserve(items.size());
         vitems.insert(vitems.end(), items.rbegin(), items.rend());
 
-        sofa::core::componentmodel::topology::TopologyAlgorithms* topoAlg;
-        topo_curr->getContext()->get(topoAlg);
-        topoAlg->removeItems(vitems);
+        sofa::core::componentmodel::topology::TopologyModifier* topoMod;
+        topo_curr->getContext()->get(topoMod);
 
-        topoAlg->notifyEndingEvent();
-        topo_curr->propagateTopologicalChanges();
+        topoMod->removeItems(vitems);
+
+        topoMod->notifyEndingEvent();
+
+
+        topoMod->propagateTopologicalChanges();
 
 
         /*
@@ -124,10 +127,10 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::core::Collisio
         sofa::helper::vector<int> init_inverse_permutation;
         sofa::helper::vector<int>& inverse_permutation = init_inverse_permutation;
 
-        sofa::component::topology::EdgeSetTopologyAlgorithms<Vec3Types>* edgeAlg;
-        topo_curr->getContext()->get(edgeAlg);
+        sofa::component::topology::EdgeSetTopologyModifier* edgeMod;
+        topo_curr->getContext()->get(edgeMod);
 
-        edgeAlg->resortCuthillMckee(inverse_permutation);
+        edgeMod->resortCuthillMckee(inverse_permutation);
 
         //std::cout << "inverse_permutation : " << std::endl;
         sofa::helper::vector<int> permutation;
@@ -142,9 +145,9 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::core::Collisio
         	//std::cout << i << " -> " << permutation[i] << std::endl;
         //}
 
-        sofa::core::componentmodel::topology::TopologyAlgorithms* topoAlg;
-        topo_curr->getContext()->get(topoAlg);
-        topoAlg->renumberPoints((const sofa::helper::vector<unsigned int> &) inverse_permutation, (const sofa::helper::vector<unsigned int> &) permutation);
+        sofa::core::componentmodel::topology::TopologyModifier* topoMod;
+        topo_curr->getContext()->get(topoMod);
+        topoMod->renumberPoints((const sofa::helper::vector<unsigned int> &) inverse_permutation, (const sofa::helper::vector<unsigned int> &) permutation);
 
         */
     }
@@ -186,14 +189,18 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
         sofa::helper::vector< sofa::helper::vector<unsigned int> > &new_points = new_points_init;
         sofa::helper::vector< sofa::helper::vector<unsigned int> > &closest_vertices = closest_vertices_init;
 
+        sofa::component::topology::TriangleSetTopologyModifier* triangleMod;
+        _topology->getContext()->get(triangleMod);
+
         sofa::component::topology::TriangleSetTopologyAlgorithms<Vec3Types>* triangleAlg;
         _topology->getContext()->get(triangleAlg);
+
         bool is_fully_cut = triangleAlg->InciseAlongPointsList(incision.is_first_cut, a, b, ind_ta, ind_tb, a_last, a_p12_last, a_i123_last, b_last, b_p12_last, b_i123_last, new_points, closest_vertices);
 
         // notify the end for the current sequence of topological change events
-        triangleAlg->notifyEndingEvent();
+        triangleMod->notifyEndingEvent();
 
-        _topology->propagateTopologicalChanges();
+        triangleMod->propagateTopologicalChanges();
 
         incision.is_first_cut = false;
 

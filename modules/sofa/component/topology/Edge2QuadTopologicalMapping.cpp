@@ -29,7 +29,7 @@
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 #include <sofa/component/topology/QuadSetTopologyModifier.h>
-#include <sofa/component/topology/QuadSetTopologyAlgorithms.h>
+#include <sofa/component/topology/QuadSetTopologyContainer.h>
 
 #include <sofa/component/topology/EdgeSetTopologyChange.h>
 
@@ -137,6 +137,9 @@ void Edge2QuadTopologicalMapping::init()
             QuadSetTopologyModifier *to_tstm;
             toModel->getContext()->get(to_tstm);
 
+            QuadSetTopologyContainer *to_tstc;
+            toModel->getContext()->get(to_tstc);
+
             const sofa::helper::vector<Edge> &edgeArray=fromModel->getEdges();
 
             Loc2GlobVec.clear();
@@ -173,6 +176,7 @@ void Edge2QuadTopologicalMapping::init()
                     Vec x = t + (Y*cos((Real) (2.0*j*M_PI/N)) + Z*sin((Real) (2.0*j*M_PI/N)))*((Real) rho);
 
                     (*to_mstate->getX())[p0*N+j]=x;
+                    to_tstc->addPoint();
                 }
             }
 
@@ -202,9 +206,7 @@ void Edge2QuadTopologicalMapping::init()
                 In2OutMap[i]=out_info;
             }
 
-            QuadSetTopologyAlgorithms<Vec3Types> *to_alg;
-            toModel->getContext()->get(to_alg);
-            to_alg->notifyEndingEvent();
+            to_tstm->notifyEndingEvent();
         }
 
     }
@@ -226,9 +228,6 @@ void Edge2QuadTopologicalMapping::updateTopologicalMapping()
     if (fromModel)
     {
 
-        QuadSetTopologyAlgorithms<Vec3Types> *to_alg;
-        toModel->getContext()->get(to_alg);
-
         QuadSetTopologyModifier *to_tstm;
         toModel->getContext()->get(to_tstm);
 
@@ -248,7 +247,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMapping()
                 case core::componentmodel::topology::ENDING_EVENT:
                 {
                     //std::cout << "INFO_print : TopologicalMapping - ENDING_EVENT" << std::endl;
-                    to_alg->notifyEndingEvent();
+                    to_tstm->notifyEndingEvent();
                     break;
                 }
 
@@ -297,7 +296,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMapping()
 
                                 //to_tstm->addQuadsProcess(quads_to_create) ;
                                 //to_tstm->addQuadsWarning(quads_to_create.size(), quads_to_create, quadsIndexList) ;
-                                //toModel->propagateTopologicalChanges();
+                                //to_tstm->propagateTopologicalChanges();
                             }
 
                             In2OutMap[k]=out_info;
@@ -305,7 +304,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMapping()
 
                         to_tstm->addQuadsProcess(quads_to_create) ;
                         to_tstm->addQuadsWarning(quads_to_create.size(), quads_to_create, quadsIndexList) ;
-                        toModel->propagateTopologicalChanges();
+                        to_tstm->propagateTopologicalChanges();
                     }
                     break;
                 }
@@ -419,7 +418,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMapping()
                                     quads_to_remove.push_back(ind_list[j]);
                                 }
 
-                                to_alg->removeQuads(quads_to_remove, true, true);
+                                to_tstm->removeQuads(quads_to_remove, true, true);
 
                             }
                             else
@@ -460,7 +459,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMapping()
                     sofa::helper::vector<unsigned int>& inv_tab_indices = inv_indices;
 
                     to_tstm->renumberPointsWarning(tab_indices, inv_tab_indices, true);
-                    toModel->propagateTopologicalChanges();
+                    to_tstm->propagateTopologicalChanges();
                     to_tstm->renumberPointsProcess(tab_indices, inv_tab_indices, true);
 
                     break;
@@ -501,7 +500,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMapping()
 
                     to_tstm->addPointsProcess(to_nVertices);
                     to_tstm->addPointsWarning(to_nVertices, to_ancestorsList, to_coefs, true);
-                    toModel->propagateTopologicalChanges();
+                    to_tstm->propagateTopologicalChanges();
 
                     break;
                 }
@@ -513,7 +512,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMapping()
 
                 ++itBegin;
             }
-            toModel->propagateTopologicalChanges();
+            to_tstm->propagateTopologicalChanges();
         }
     }
 

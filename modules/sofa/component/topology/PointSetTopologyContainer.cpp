@@ -24,8 +24,6 @@
 ******************************************************************************/
 #include <sofa/component/topology/PointSetTopologyContainer.h>
 
-#include <sofa/simulation/common/TopologyChangeVisitor.h>
-#include <sofa/simulation/common/StateChangeVisitor.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/component/MeshLoader.h>
 
@@ -100,24 +98,6 @@ void PointSetTopologyContainer::removePoint()
 void PointSetTopologyContainer::clear()
 {
     nbPoints = 0;
-}
-
-void PointSetTopologyContainer::propagateTopologicalChanges()
-{
-    sofa::simulation::TopologyChangeVisitor a;
-    getContext()->executeVisitor(&a);
-
-    // remove the changes we just propagated, so that we don't send then again next time
-    resetTopologyChangeList();
-}
-
-void PointSetTopologyContainer::propagateStateChanges()
-{
-    sofa::simulation::StateChangeVisitor a;
-    getContext()->executeVisitor(&a);
-
-    // remove the changes we just propagated, so that we don't send then again next time
-    resetStateChangeList();
 }
 
 } // namespace topology

@@ -59,17 +59,6 @@ public:
 
     virtual void init();
 
-    /** \brief Generic method to remove a list of items.
-    */
-    virtual void removeItems(sofa::helper::vector< unsigned int >& /*items*/)
-    { }
-
-    /** \brief Generic method for points renumbering
-    */
-    virtual void renumberPoints( const sofa::helper::vector<unsigned int> &/*index*/,
-            const sofa::helper::vector<unsigned int> &/*inv_index*/)
-    { }
-
 private:
     PointSetTopologyContainer*					m_container;
     PointSetTopologyModifier*					m_modifier;
