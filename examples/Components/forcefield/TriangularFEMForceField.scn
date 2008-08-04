@@ -10,7 +10,7 @@
 		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<Object type="MeshLoader" filename="mesh/square3.msh" />
 		<Object type="MechanicalObject"  />
-		<Object type="TriangleSetTopology" />
+		<include href="Objects/TriangleSetTopology.xml" />
 		<Object type="DiagonalMass" massDensity="0.015" />
 		<Object type="FixedConstraint" indices="0 1"/>
 		<Object type="TriangularFEMForceField" name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />  

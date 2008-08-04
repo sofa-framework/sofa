@@ -13,6 +13,7 @@
 
     <Object type="MeshLoader"  filename="mesh/nine_quads.msh" />
     <Object type="MechanicalObject" name="Quads" />
+    <include href="Objects/QuadSetTopology.xml" />
     <Object type="QuadSetTopology" name="topo_Quads" />
     <Object type="QuadularBendingSprings" name="FEM-Bend" stiffness="3000" damping="1.0"/> 
     <Object type="DiagonalMass" massDensity="0.5" />
@@ -22,8 +23,8 @@
       <Object type="IdentityMapping" object1="../../Quads" object2="Visual" />
     </Node>		
     <Node name="Surf">
-      <Object type="TriangleSetTopology" name="topo_Triangles" />
-      <Object type="Quad2TriangleTopologicalMapping" object1="../../topo_Quads" object2="topo_Triangles"/>      
+     <include href="Objects/TriangleSetTopology.xml" />
+      <Object type="Quad2TriangleTopologicalMapping" object1="../../Container" object2="Container"/>      
       <Object type="TriangularFEMForceField" name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
       <Object type="TriangularBendingSprings" name="FEM-Bend" stiffness="3000" damping="1.0"/>		      
       <Object type="TriangleSet"/>					      
