@@ -149,6 +149,18 @@ void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw()
 }
 
 template <>
+void DiagonalMass<Rigid3dTypes, Rigid3dMass>::reinit()
+{
+    Inherited::reinit();
+}
+
+template <>
+void DiagonalMass<Rigid2dTypes, Rigid2dMass>::reinit()
+{
+    Inherited::reinit();
+}
+
+template <>
 void DiagonalMass<Rigid3dTypes, Rigid3dMass>::init()
 {
     Inherited::init();
@@ -283,6 +295,18 @@ void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw()
         glEnd();
     }
 }
+template <>
+void DiagonalMass<Rigid3fTypes, Rigid3fMass>::reinit()
+{
+    Inherited::init();
+}
+
+template <>
+void DiagonalMass<Rigid2fTypes, Rigid2fMass>::reinit()
+{
+    Inherited::init();
+}
+
 template <>
 void DiagonalMass<Rigid3fTypes, Rigid3fMass>::init()
 {
