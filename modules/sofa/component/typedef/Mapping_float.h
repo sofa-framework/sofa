@@ -104,11 +104,11 @@ typedef sofa::component::mapping::CenterOfMassMapping< sofa::core::componentmode
 sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Rigid2fTypes>,
      sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Vec2fTypes> > > CenterOfMassMechanicalMappingRigid2f_to_2f;
 
-typedef sofa::component::mapping::BarycentricMapping< sofa::core::Mapping<
+typedef sofa::component::mapping::CenterOfMassMapping< sofa::core::Mapping<
 sofa::core::componentmodel::behavior::State<sofa::defaulttype::Rigid3fTypes>,
      sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::Vec3fTypes> > > CenterOfMassMappingRigid3f_to_3f;
 
-typedef sofa::component::mapping::BarycentricMapping< sofa::core::Mapping<
+typedef sofa::component::mapping::CenterOfMassMapping< sofa::core::Mapping<
 sofa::core::componentmodel::behavior::State<sofa::defaulttype::Rigid3fTypes>,
      sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::ExtVec3fTypes> > > CenterOfMassMappingRigid3f_to_Ext3;
 

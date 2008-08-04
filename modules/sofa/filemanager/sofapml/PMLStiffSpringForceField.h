@@ -46,11 +46,11 @@
 #include "PMLBody.h"
 
 #include <StructuralComponent.h>
-#include "sofa/core/componentmodel/topology/BaseMeshTopology.h"
-#include "sofa/component/collision/TriangleModel.h"
-//#include "sofa/component/collision/LineModel.h"
-//#include "sofa/component/collision/PointModel.h"
-#include "sofa/component/forcefield/MeshSpringForceField.h"
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/component/collision/TriangleModel.h>
+#include <sofa/component/forcefield/MeshSpringForceField.h>
+
 
 #include <map>
 
