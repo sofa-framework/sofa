@@ -37,14 +37,15 @@
 #include <PhysicalModel.h>
 #include <CellProperties.h>
 
-#include "sofa/defaulttype/Vec3Types.h"
-#include "sofa/component/mapping/RigidMapping.h"
-#include "sofa/component/mapping/IdentityMapping.h"
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/component/mapping/RigidMapping.h>
+#include <sofa/component/mapping/IdentityMapping.h>
 //#include "sofa/componentCore/MappedModel.h"
-#include "sofa/component/mass/UniformMass.h"
-#include "sofa/component/mass/DiagonalMass.h"
-#include "sofa/core/componentmodel/topology/BaseMeshTopology.h"
-#include "sofa/component/collision/TriangleModel.h"
+#include <sofa/component/mass/UniformMass.h>
+#include <sofa/component/mass/DiagonalMass.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/component/collision/TriangleModel.h>
 //#include "sofa/component/collision/LineModel.h"
 //#include "sofa/component/collision/PointModel.h"
 //using namespace sofa::component::GL;
