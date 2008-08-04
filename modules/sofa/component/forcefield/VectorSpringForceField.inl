@@ -57,29 +57,28 @@ void VectorSpringForceField<DataTypes>::springCreationFunction(int /*index*/,
     if (ff)
     {
 
-        if (ff->edgeCont)
+
+        //EdgeSetGeometryAlgorithms<DataTypes> *ga=topology->getEdgeSetGeometryAlgorithms();
+        //t.restLength=ga->computeRestEdgeLength(index);
+        const typename DataTypes::VecCoord& x0 = *ff->getObject1()->getX0();
+        t.restVector = x0[e[1]] - x0[e[0]];
+        if (ancestors.size()>0)
         {
-            //EdgeSetGeometryAlgorithms<DataTypes> *ga=topology->getEdgeSetGeometryAlgorithms();
-            //t.restLength=ga->computeRestEdgeLength(index);
-            const typename DataTypes::VecCoord& x0 = *ff->getObject1()->getX0();
-            t.restVector = x0[e[1]] - x0[e[0]];
-            if (ancestors.size()>0)
+            t.kd=t.ks=0;
+            const topology::EdgeData<Spring> &sa=ff->getSpringArray();
+            unsigned int i;
+            for (i=0; i<ancestors.size(); ++i)
             {
-                t.kd=t.ks=0;
-                const topology::EdgeData<Spring> &sa=ff->getSpringArray();
-                unsigned int i;
-                for (i=0; i<ancestors.size(); ++i)
-                {
-                    t.kd+=(typename DataTypes::Real)(sa[i].kd*coefs[i]);
-                    t.ks+=(typename DataTypes::Real)(sa[i].ks*coefs[i]);
-                }
-            }
-            else
-            {
-                t.kd=ff->getStiffness();
-                t.ks=ff->getViscosity();
+                t.kd+=(typename DataTypes::Real)(sa[i].kd*coefs[i]);
+                t.ks+=(typename DataTypes::Real)(sa[i].ks*coefs[i]);
             }
         }
+        else
+        {
+            t.kd=ff->getStiffness();
+            t.ks=ff->getViscosity();
+        }
+
     }
 }
 
@@ -122,7 +121,7 @@ void VectorSpringForceField<DataTypes>::resizeArray(unsigned int n)
 template <class DataTypes>
 void VectorSpringForceField<DataTypes>::addSpring(int m1, int m2, SReal ks, SReal kd, Coord restVector)
 {
-    if (useTopology && edgeCont)
+    if (useTopology && _topology)
     {
         int e=_topology->getEdgeIndex((unsigned int)m1,(unsigned int)m2);
         if (e>=0)
@@ -163,9 +162,8 @@ template <class DataTypes>
 void VectorSpringForceField<DataTypes>::init()
 {
     _topology = this->getContext()->getMeshTopology();
-    this->getContext()->get(edgeCont);
     this->getContext()->get(edgeGeo);
-    this->getContext()->get(edgeAlg);
+    this->getContext()->get(edgeMod);
 
     this->Inherit::init();
 
@@ -178,7 +176,7 @@ void VectorSpringForceField<DataTypes>::init()
             return;
         }
 
-        if (edgeCont != NULL)
+        if (_topology != NULL)
         {
             // create springs based on the mesh topology
             useTopology = true;
@@ -234,16 +232,16 @@ void VectorSpringForceField<DataTypes>::handleEvent( Event* e )
 
                     sofa::helper::vector<unsigned int> edgeArray;
                     edgeArray.push_back(12);
-                    edgeAlg->removeEdges(edgeArray);
+                    edgeMod->removeEdges(edgeArray);
                 }
-                //            edgeAlg->splitEdges(edgeArray);
+                //            edgeMod->splitEdges(edgeArray);
             }
         }
         else
         {
             sofa::component::topology::TopologyChangedEvent *tce=dynamic_cast<sofa::component::topology::TopologyChangedEvent *>(e);
             /// test that the event is a change of topology and that it
-            if ((tce) && edgeCont /*&& (tce->getMeshTopology()== _topology )*/)
+            if ((tce) && edgeMod /*&& (tce->getMeshTopology()== _topology )*/)
             {
                 std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=_topology->firstChange();
                 std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=_topology->lastChange();

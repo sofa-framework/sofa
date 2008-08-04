@@ -33,9 +33,8 @@
 #include <sofa/component/topology/EdgeData.h>
 #include <sofa/component/topology/TopologyChangedEvent.h>
 
-#include <sofa/component/topology/EdgeSetTopologyContainer.h>
-#include <sofa/component/topology/EdgeSetTopologyAlgorithms.h>
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
+#include <sofa/component/topology/EdgeSetTopologyModifier.h>
 
 
 namespace sofa
@@ -109,7 +108,7 @@ public:
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
     sofa::component::topology::EdgeSetTopologyContainer* edgeCont;
     sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
-    sofa::component::topology::EdgeSetTopologyAlgorithms<DataTypes>* edgeAlg;
+    sofa::component::topology::EdgeSetTopologyModifier* edgeMod;
 
     VectorSpringForceField(MechanicalState* _object=NULL);
 

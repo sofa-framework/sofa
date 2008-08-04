@@ -156,7 +156,7 @@ public:
                 int n = i0+nparticles*N - this->mstate->getX()->size();
                 pointMod->addPointsWarning(n);
                 pointMod->addPointsProcess(n);
-                _topology->propagateTopologicalChanges();
+                pointMod->propagateTopologicalChanges();
             }
             else
             {

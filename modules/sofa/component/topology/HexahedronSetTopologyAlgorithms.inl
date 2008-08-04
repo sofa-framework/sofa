@@ -50,39 +50,6 @@ void HexahedronSetTopologyAlgorithms< DataTypes >::init()
     this->getContext()->get(m_geometryAlgorithms);
 }
 
-template<class DataTypes>
-void HexahedronSetTopologyAlgorithms< DataTypes >::removeHexahedra(sofa::helper::vector< unsigned int >& hexahedra)
-{
-    // add the topological changes in the queue
-    m_modifier->removeHexahedraWarning(hexahedra);
-    // inform other objects that the hexa are going to be removed
-    m_container->propagateTopologicalChanges();
-    // now destroy the old hexahedra.
-    m_modifier->removeHexahedraProcess(  hexahedra ,true);
-
-    m_container->checkTopology();
-}
-
-template<class DataTypes>
-void HexahedronSetTopologyAlgorithms< DataTypes >::removeItems(sofa::helper::vector< unsigned int >& items)
-{
-    removeHexahedra(items);
-}
-
-template<class DataTypes>
-void  HexahedronSetTopologyAlgorithms<DataTypes>::renumberPoints(const sofa::helper::vector<unsigned int> &index,
-        const sofa::helper::vector<unsigned int> &inv_index)
-{
-    /// add the topological changes in the queue
-    m_modifier->renumberPointsWarning(index, inv_index);
-    // inform other objects that the triangles are going to be removed
-    m_container->propagateTopologicalChanges();
-    // now renumber the points
-    m_modifier->renumberPointsProcess(index, inv_index);
-
-    m_container->checkTopology();
-}
-
 } // namespace topology
 
 } // namespace component

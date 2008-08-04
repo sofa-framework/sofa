@@ -30,12 +30,10 @@
 
 #include <sofa/component/topology/QuadSetTopologyContainer.h>
 #include <sofa/component/topology/QuadSetTopologyModifier.h>
-#include <sofa/component/topology/QuadSetTopologyAlgorithms.h>
 #include <sofa/component/topology/QuadSetTopologyChange.h>
 
 #include <sofa/component/topology/HexahedronSetTopologyContainer.h>
 #include <sofa/component/topology/HexahedronSetTopologyModifier.h>
-#include <sofa/component/topology/HexahedronSetTopologyAlgorithms.h>
 #include <sofa/component/topology/HexahedronSetTopologyChange.h>
 
 #include <sofa/component/topology/PointSetTopologyChange.h>
@@ -155,9 +153,7 @@ void Hexa2QuadTopologicalMapping::init()
                 }
             }
 
-            QuadSetTopologyAlgorithms<Vec3Types> *to_alg;
-            toModel->getContext()->get(to_alg);
-            to_alg->notifyEndingEvent();
+            to_tstm->notifyEndingEvent();
         }
 
     }
@@ -184,9 +180,6 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMapping()
     if (fromModel)
     {
 
-        QuadSetTopologyAlgorithms<Vec3Types> *to_alg;
-        toModel->getContext()->get(to_alg);
-
         QuadSetTopologyModifier *to_tstm;
         toModel->getContext()->get(to_tstm);
 
@@ -206,7 +199,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMapping()
                 case core::componentmodel::topology::ENDING_EVENT:
                 {
                     //std::cout << "INFO_print : Hexa2QuadTopologicalMapping - ENDING_EVENT" << std::endl;
-                    to_alg->notifyEndingEvent();
+                    to_tstm->notifyEndingEvent();
                     break;
                 }
 
@@ -282,7 +275,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMapping()
                             sofa::helper::vector< unsigned int > quads_to_remove;
                             quads_to_remove.push_back(ind_k);
 
-                            to_alg->removeQuads(quads_to_remove, true, false);
+                            to_tstm->removeQuads(quads_to_remove, true, false);
 
                         }
                         else
@@ -464,7 +457,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMapping()
                     sofa::helper::vector<unsigned int>& tab_indices = indices;
 
                     to_tstm->removePointsWarning(tab_indices, false);
-                    toModel->propagateTopologicalChanges();
+                    to_tstm->propagateTopologicalChanges();
                     to_tstm->removePointsProcess(tab_indices, false);
 
                     break;
@@ -492,7 +485,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMapping()
                     sofa::helper::vector<unsigned int>& inv_tab_indices = inv_indices;
 
                     to_tstm->renumberPointsWarning(tab_indices, inv_tab_indices, false);
-                    toModel->propagateTopologicalChanges();
+                    to_tstm->propagateTopologicalChanges();
                     to_tstm->renumberPointsProcess(tab_indices, inv_tab_indices, false);
 
                     break;
@@ -505,7 +498,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMapping()
 
                 ++itBegin;
             }
-            toModel->propagateTopologicalChanges();
+            to_tstm->propagateTopologicalChanges();
         }
     }
 

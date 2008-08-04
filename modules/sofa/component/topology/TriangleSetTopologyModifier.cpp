@@ -268,7 +268,7 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
     {
         /// warn that edges will be deleted
         removeEdgesWarning(edgeToBeRemoved);
-        m_container->propagateTopologicalChanges();
+        propagateTopologicalChanges();
         /// actually remove edges without looking for isolated vertices
         removeEdgesProcess(edgeToBeRemoved, false);
     }
@@ -277,7 +277,7 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
     {
         removePointsWarning(vertexToBeRemoved);
         /// propagate to all components
-        m_container->propagateTopologicalChanges();
+        propagateTopologicalChanges();
         removePointsProcess(vertexToBeRemoved);
     }
 }
@@ -402,6 +402,39 @@ void TriangleSetTopologyModifier::renumberPointsProcess( const sofa::helper::vec
     // call the parent's method
     EdgeSetTopologyModifier::renumberPointsProcess( index, inv_index, renumberDOF );
 }
+
+void TriangleSetTopologyModifier::removeTriangles(sofa::helper::vector< unsigned int >& triangles,
+        const bool removeIsolatedEdges,
+        const bool removeIsolatedPoints)
+{
+    /// add the topological changes in the queue
+    removeTrianglesWarning(triangles);
+    // inform other objects that the triangles are going to be removed
+    propagateTopologicalChanges();
+    // now destroy the old triangles.
+    removeTrianglesProcess(  triangles ,removeIsolatedEdges, removeIsolatedPoints);
+
+    m_container->checkTopology();
+}
+
+void TriangleSetTopologyModifier::removeItems(sofa::helper::vector< unsigned int >& items)
+{
+    removeTriangles(items, true, true);
+}
+
+void TriangleSetTopologyModifier::renumberPoints( const sofa::helper::vector<unsigned int> &index,
+        const sofa::helper::vector<unsigned int> &inv_index)
+{
+    /// add the topological changes in the queue
+    renumberPointsWarning(index, inv_index);
+    // inform other objects that the triangles are going to be removed
+    propagateTopologicalChanges();
+    // now renumber the points
+    renumberPointsProcess(index, inv_index);
+
+    m_container->checkTopology();
+}
+
 
 } // namespace topology
 

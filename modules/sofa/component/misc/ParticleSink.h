@@ -137,7 +137,7 @@ public:
             {
                 std::cout << "ParticleSink: remove "<<remove.size()<<" particles using PointSetTopologyModifier."<<std::endl;
                 pointMod->removePointsWarning(remove);
-                _topology->propagateTopologicalChanges();
+                pointMod->propagateTopologicalChanges();
                 pointMod->removePointsProcess(remove);
             }
             else if(MechanicalObject<DataTypes>* object = dynamic_cast<MechanicalObject<DataTypes>*>(this->mstate))

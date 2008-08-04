@@ -172,6 +172,27 @@ public:
             const sofa::helper::vector<unsigned int> &inv_index,
             const bool renumberDOF = true);
 
+    /** \brief Remove a set  of triangles
+    @param triangles an array of triangle indices to be removed (note that the array is not const since it needs to be sorted)
+    *
+    @param removeIsolatedEdges if true isolated edges are also removed
+    @param removeIsolatedPoints if true isolated vertices are also removed
+    *
+    */
+    virtual void removeTriangles(sofa::helper::vector< unsigned int >& triangles,
+            const bool removeIsolatedEdges,
+            const bool removeIsolatedPoints);
+
+    /** \brief Generic method to remove a list of items.
+     */
+    virtual void removeItems(sofa::helper::vector< unsigned int >& items);
+
+    /** \brief Generic method for points renumbering
+      */
+    virtual void renumberPoints( const sofa::helper::vector<unsigned int> &index,
+            const sofa::helper::vector<unsigned int> &inv_index);
+
+
 private:
     TriangleSetTopologyContainer*	m_container;
 };

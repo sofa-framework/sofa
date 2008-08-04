@@ -38,6 +38,7 @@
 #define SOFA_COMPONENT_CONTROLLER_EDGESETCONTROLLER_H
 
 #include <sofa/component/controller/MechanicalStateController.h>
+#include <sofa/component/topology/EdgeSetTopologyModifier.h>
 
 
 namespace sofa
@@ -49,8 +50,8 @@ namespace topology
 {
 template <class T>
 class EdgeSetGeometryAlgorithms;
-template <class T>
-class EdgeSetTopologyAlgorithms;
+
+class EdgeSetTopologyModifier;
 }
 
 namespace controller
@@ -135,8 +136,8 @@ protected:
     Real step; ///<
 
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
-    sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGEO;
-    sofa::component::topology::EdgeSetTopologyAlgorithms<DataTypes>* edgeALG;
+    sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
+    sofa::component::topology::EdgeSetTopologyModifier* edgeMod;
 
 
 

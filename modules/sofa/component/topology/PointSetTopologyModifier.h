@@ -122,6 +122,44 @@ public:
             const sofa::helper::vector<unsigned int> &/*inv_index*/,
             const bool renumberDOF = true);
 
+    /** \brief Called by a topology to warn specific topologies linked to it that TopologyChange objects happened.
+    *
+    * ChangeList should contain all TopologyChange objects corresponding to changes in this topology
+    * that just happened (in the case of creation) or are about to happen (in the case of destruction) since
+    * last call to propagateTopologicalChanges.
+    *
+    * @sa firstChange()
+    * @sa lastChange()
+    */
+    void propagateTopologicalChanges();
+
+    /** \brief Called by a topology to warn the Mechanical Object component that points have been added or will be removed.
+    *
+    * StateChangeList should contain all TopologyChange objects corresponding to vertex changes in this topology
+    * that just happened (in the case of creation) or are about to happen (in the case of destruction) since
+    * last call to propagateTopologicalChanges.
+    *
+    * @sa firstChange()
+    * @sa lastChange()
+    */
+    void propagateStateChanges();
+    /// @}
+
+    /** \notify the end for the current sequence of topological change events.
+    */
+    void notifyEndingEvent();
+
+    /** \brief Generic method to remove a list of items.
+    */
+    virtual void removeItems(sofa::helper::vector< unsigned int >& /*items*/)
+    { }
+
+    /** \brief Generic method for points renumbering
+    */
+    virtual void renumberPoints( const sofa::helper::vector<unsigned int> &/*index*/,
+            const sofa::helper::vector<unsigned int> &/*inv_index*/)
+    { }
+
 private:
     PointSetTopologyContainer* 	m_container;
 };
