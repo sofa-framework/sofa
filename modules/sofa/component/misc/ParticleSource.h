@@ -221,7 +221,12 @@ public:
         if (time < f_start.getValue() || time > f_stop.getValue()) return;
         // constraint the last value
         for (unsigned int s=0; s<lastparticles.size(); s++)
+        {
+            //HACK: TODO understand why these conditions can be reached
+            if (res.size() >= lastparticles[s]) continue;
+
             res[lastparticles[s]] = Deriv();
+        }
     }
 
     virtual void projectVelocity(VecDeriv& res) ///< project dx to constrained space (dx models a velocity)
@@ -232,7 +237,11 @@ public:
         if (time < f_start.getValue() || time > f_stop.getValue()) return;
         // constraint the last value
         for (unsigned int s=0; s<lastparticles.size(); s++)
+        {
+            //HACK: TODO understand why these conditions can be reached
+            if (res.size() >= lastparticles[s]) continue;
             res[lastparticles[s]] = f_velocity.getValue();
+        }
     }
 
     virtual void projectPosition(VecCoord& x) ///< project x to constrained space (x models a position)
@@ -244,6 +253,8 @@ public:
         // constraint the last value
         for (unsigned int s=0; s<lastparticles.size(); s++)
         {
+            //HACK: TODO understand why these conditions can be reached
+            if (lastpos.size() >= s || x.size() >= lastparticles[s]) continue;
             x[lastparticles[s]] = lastpos[s];
             x[lastparticles[s]] += f_velocity.getValue()*(time - lasttime); // account for particle initial motion
         }
