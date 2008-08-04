@@ -113,6 +113,7 @@ public:
 
     void clear();
 
+    virtual void reinit();
     virtual void init();
     virtual void parse(core::objectmodel::BaseObjectDescription* arg);
 
