@@ -28,6 +28,7 @@
 #define SOFA_CORE_MAPPING_H
 
 #include <sofa/core/BaseMapping.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
 
 namespace sofa
 {
@@ -153,6 +154,20 @@ public:
             arg->removeAttribute("object2");
         }
         if (arg) obj->parse(arg);
+    }
+
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+
+    static std::string templateName(const Mapping<TIn, TOut>* = NULL)
+    {
+        if (In::Name() == std::string("MechanicalState"))
+            return std::string("MechanicalMapping[")+TIn::DataTypes::Name() + std::string(",") + TOut::DataTypes::Name() + std::string("]");
+        else
+            return std::string("Mapping[")+TIn::DataTypes::Name() + std::string(",") + TOut::DataTypes::Name() + std::string("]");
     }
 
 protected:
