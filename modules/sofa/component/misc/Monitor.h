@@ -388,6 +388,15 @@ public:
     virtual void exportGnuplot ( Real time );
 
 
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const Monitor<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
 protected:
 
     /////////////////////////// vectorNorm() /////////////////////////////////

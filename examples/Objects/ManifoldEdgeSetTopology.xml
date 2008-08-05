@@ -1,24 +1,24 @@
 <Node name="Group"> 
   <Object type="ManifoldEdgeSetTopologyContainer"  name="Container" />
   <Object type="ManifoldEdgeSetTopologyModifier"   name="Modifier" />
-  <Object type="ManifoldEdgeSetTopologyAlgorithms" name="TopoAlgo"  template="StdVectorTypes&lt;Vec&lt;3, double&gt;, Vec&lt;3, double&gt;, double&gt; &gt;" />
-  <Object type="ManifoldEdgeSetGeometryAlgorithms" name="GeomAlgo"  template="StdVectorTypes&lt;Vec&lt;3, double&gt;, Vec&lt;3, double&gt;, double&gt; &gt;" />
+  <Object type="ManifoldEdgeSetTopologyAlgorithms" name="TopoAlgo"  template="Vec3d" />
+  <Object type="ManifoldEdgeSetGeometryAlgorithms" name="GeomAlgo"  template="Vec3d" />
 </Node>
 <!-- 
      Template List 
+       - Vec3d
+       - Vec2d
+       - Vec1d
 
-       - "StdVectorTypes&lt;Vec&lt;1, double&gt;, Vec&lt;1, double&gt;, double&gt; &gt;"
-       - "StdVectorTypes&lt;Vec&lt;2, double&gt;, Vec&lt;2, double&gt;, double&gt; &gt;"
-       - "StdVectorTypes&lt;Vec&lt;3, double&gt;, Vec&lt;3, double&gt;, double&gt; &gt;"
-       - "StdRigidTypes&lt;3, double&gt; &gt;"
-       - "StdRigidTypes&lt;2, double&gt; &gt;"
+       - Vec3f
+       - Vec2f
+       - Vec1f
 
-       - "StdVectorTypes&lt;Vec&lt;1, float&gt;, Vec&lt;1, float&gt;, float&gt; &gt;"
-       - "StdVectorTypes&lt;Vec&lt;2, float&gt;, Vec&lt;2, float&gt;, float&gt; &gt;"
-       - "StdVectorTypes&lt;Vec&lt;3, float&gt;, Vec&lt;3, float&gt;, float&gt; &gt;"
-       - "StdRigidTypes&lt;3, float&gt; &gt;"
-       - "StdRigidTypes&lt;2, float&gt; &gt;"
+       -Rigid      (by default is double, if SOFA_FLOAT is activated, it will use float instead)
+       -Rigid3f
+       -Rigid2d
+       -Rigid2f
 
      Example of use:
-     <include href="Objects/ManifoldEdgeSetTopology.xml" template="StdVectorTypes&lt;Vec&lt;3, double&gt;, Vec&lt;3, double&gt;, double&gt; &gt;" />
+     <include href="Objects/ManifoldEdgeSetTopology.xml" template="Vec1d" />
 -->

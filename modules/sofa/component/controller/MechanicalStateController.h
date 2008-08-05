@@ -150,6 +150,15 @@ public:
      */
     void applyController(void);
 
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const MechanicalStateController<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
 protected:
 
     Data< unsigned int > index; ///< Controlled DOF index.

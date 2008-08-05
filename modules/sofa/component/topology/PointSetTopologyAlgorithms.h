@@ -59,6 +59,15 @@ public:
 
     virtual void init();
 
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const PointSetTopologyAlgorithms<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
 private:
     PointSetTopologyContainer*					m_container;
     PointSetTopologyModifier*					m_modifier;

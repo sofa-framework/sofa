@@ -85,6 +85,15 @@ public:
     /** \brief Returns the object where the mechanical DOFs are stored */
     sofa::core::componentmodel::behavior::MechanicalState<DataTypes> *getDOF() const { return object;	}
 
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const PointSetGeometryAlgorithms<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
 protected:
     /** the object where the mechanical DOFs are stored */
     sofa::core::componentmodel::behavior::MechanicalState<DataTypes> *object;

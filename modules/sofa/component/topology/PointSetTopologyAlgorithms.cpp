@@ -22,11 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/topology/PointSetTopologyAlgorithms.h>
-#include <sofa/component/topology/PointSetTopologyAlgorithms.inl>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/component/topology/PointSetTopologyAlgorithms.inl>
+
 
 namespace sofa
 {
