@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_TOPOLOGY_TRIANGLESETGEOMETRYALGORITHMS_H
 
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
@@ -36,8 +35,6 @@ namespace component
 
 namespace topology
 {
-class TriangleSetTopologyContainer;
-
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::TriangleID TriangleID;
 typedef BaseMeshTopology::Triangle Triangle;
@@ -62,8 +59,6 @@ public:
     {}
 
     virtual ~TriangleSetGeometryAlgorithms() {}
-
-    virtual void init();
 
     /** \brief Returns spatial position of point indexed by i
     *
@@ -170,9 +165,6 @@ public:
     /** \brief Write the current mesh into a msh file
     */
     void writeMSHfile(const char *filename);
-
-private:
-    sofa::core::componentmodel::topology::BaseMeshTopology* m_topology;
 };
 
 

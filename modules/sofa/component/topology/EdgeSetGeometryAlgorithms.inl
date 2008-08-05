@@ -27,7 +27,6 @@
 
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
 
-#include <sofa/component/topology/EdgeSetTopologyContainer.h>
 #include <sofa/component/topology/PointSetGeometryAlgorithms.inl>
 
 namespace sofa
@@ -40,12 +39,6 @@ namespace topology
 {
 using namespace sofa::defaulttype;
 
-template <class DataTypes>
-void EdgeSetGeometryAlgorithms< DataTypes >::init()
-{
-    PointSetGeometryAlgorithms< DataTypes >::init();
-    m_topology = this->getContext()->getMeshTopology();
-}
 template< class DataTypes>
 typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeEdgeLength( const unsigned int i) const
 {

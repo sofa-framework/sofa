@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETGEOMETRYALGORITHMS_H
 
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
@@ -36,8 +35,6 @@ namespace component
 
 namespace topology
 {
-class TetrahedronSetTopologyContainer;
-
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::TetraID TetraID;
 typedef BaseMeshTopology::Tetra Tetra;
@@ -69,8 +66,6 @@ public:
 
     virtual ~TetrahedronSetGeometryAlgorithms() {}
 
-    virtual void init();
-
     /// computes the volume of tetrahedron no i and returns it
     Real computeTetrahedronVolume(const unsigned int i) const;
 
@@ -86,9 +81,6 @@ public:
     /** \brief Write the current mesh into a msh file
     */
     void writeMSHfile(const char *filename);
-
-private:
-    sofa::core::componentmodel::topology::BaseMeshTopology* m_topology;
 };
 
 } // namespace topology

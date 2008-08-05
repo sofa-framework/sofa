@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_H
 
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
@@ -34,8 +33,6 @@ namespace component
 {
 namespace topology
 {
-class QuadSetTopologyContainer;
-
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::QuadID QuadID;
 typedef BaseMeshTopology::Quad Quad;
@@ -60,8 +57,6 @@ public:
     { }
 
     virtual ~QuadSetGeometryAlgorithms() {}
-
-    virtual void init();
 
     /** \brief Computes the area of quad no i and returns it
     *
@@ -93,10 +88,6 @@ public:
     /** \brief Write the current mesh into a msh file
     */
     void writeMSHfile(const char *filename);
-
-private:
-    sofa::core::componentmodel::topology::BaseMeshTopology* m_topology;
-
 };
 
 template< class Real>

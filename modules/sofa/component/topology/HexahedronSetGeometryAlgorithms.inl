@@ -27,8 +27,6 @@
 
 #include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
 
-#include <sofa/component/topology/HexahedronSetTopologyContainer.h>
-
 namespace sofa
 {
 
@@ -38,13 +36,6 @@ namespace component
 namespace topology
 {
 using namespace sofa::defaulttype;
-
-template <class DataTypes>
-void HexahedronSetGeometryAlgorithms< DataTypes >::init()
-{
-    QuadSetGeometryAlgorithms< DataTypes >::init();
-    m_topology = this->getContext()->getMeshTopology();
-}
 
 template< class DataTypes>
 typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeHexahedronVolume( const unsigned int /*i*/) const
@@ -141,8 +132,6 @@ inline real tripleProduct(const Vec<1,real>& , const Vec<1,real>& , const Vec<1,
     assert(false);
     return (real)0;
 }
-
-
 
 } // namespace topology
 

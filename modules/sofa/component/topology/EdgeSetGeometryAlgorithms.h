@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_H
 
 #include <sofa/component/topology/PointSetGeometryAlgorithms.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
@@ -36,8 +35,6 @@ namespace component
 
 namespace topology
 {
-class EdgeSetTopologyContainer;
-
 /** \brief A class used as an interface with an array : Useful to compute geometric information on each edge in an efficient way
 *
 */
@@ -75,8 +72,6 @@ public:
 
     virtual ~EdgeSetGeometryAlgorithms() {}
 
-    virtual void init();
-
     /// computes the length of edge no i and returns it
     virtual Real computeEdgeLength(const unsigned int i) const;
 
@@ -90,8 +85,6 @@ public:
     virtual Real computeRestSquareEdgeLength(const unsigned int i) const;
 
     void writeMSHfile(const char *filename);
-private:
-    sofa::core::componentmodel::topology::BaseMeshTopology* m_topology;
 };
 
 } // namespace topology
