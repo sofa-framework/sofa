@@ -40,7 +40,7 @@ using namespace sofa::defaulttype;
 template< class DataTypes>
 typename DataTypes::Real TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleArea( const unsigned int i) const
 {
-    const Triangle &t = m_topology->getTriangle(i);
+    const Triangle &t = this->m_topology->getTriangle(i);
     const VecCoord& p = *(this->object->getX());
     Real area = (Real)(areaProduct(p[t[1]]-p[t[0]], p[t[2]]-p[t[0]]) * 0.5);
     return area;
@@ -49,7 +49,7 @@ typename DataTypes::Real TriangleSetGeometryAlgorithms< DataTypes >::computeTria
 template< class DataTypes>
 typename DataTypes::Real TriangleSetGeometryAlgorithms< DataTypes >::computeRestTriangleArea( const unsigned int i) const
 {
-    const Triangle &t = m_topology->getTriangle(i);
+    const Triangle &t = this->m_topology->getTriangle(i);
     const VecCoord& p = *(this->object->getX0());
     Real area = (Real) (areaProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]]) * 0.5);
     return area;
@@ -59,7 +59,7 @@ typename DataTypes::Real TriangleSetGeometryAlgorithms< DataTypes >::computeRest
 template<class DataTypes>
 void TriangleSetGeometryAlgorithms<DataTypes>::computeTriangleArea( BasicArrayInterface<Real> &ai) const
 {
-    const sofa::helper::vector<Triangle> &ta = m_topology->getTriangles();
+    const sofa::helper::vector<Triangle> &ta = this->m_topology->getTriangles();
     const typename DataTypes::VecCoord& p = *(this->object->getX());
 
     for (unsigned int i=0; i<ta.size(); ++i)
@@ -129,7 +129,7 @@ Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::getOppositePoint(unsig
 template<class DataTypes>
 Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleNormal(const unsigned int ind_t)
 {
-    const Triangle &t = m_topology->getTriangle(ind_t);
+    const Triangle &t = this->m_topology->getTriangle(ind_t);
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
     const typename DataTypes::Coord& c0 = vect_c[t[0]];
@@ -162,7 +162,7 @@ sofa::helper::vector< double > TriangleSetGeometryAlgorithms< DataTypes >::compu
 {
     sofa::helper::vector< double > baryCoefs;
 
-    const Triangle &t=m_topology->getTriangle(ind_t);
+    const Triangle &t=this->m_topology->getTriangle(ind_t);
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
     const typename DataTypes::Coord& c0=vect_c[t[0]];
@@ -272,8 +272,8 @@ void TriangleSetGeometryAlgorithms< DataTypes >::closestIndexPair(unsigned int i
 {
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
-    const Triangle &ta=m_topology->getTriangle(ind_ta);
-    const Triangle &tb=m_topology->getTriangle(ind_tb);
+    const Triangle &ta=this->m_topology->getTriangle(ind_ta);
+    const Triangle &tb=this->m_topology->getTriangle(ind_tb);
 
     Real min_value=(Real) 0.0;
     bool is_init = false;
@@ -323,7 +323,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::is_PointinTriangle(bool is_test
         unsigned int ind_t, unsigned int &ind_t_test)
 {
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
-    const Triangle &t=m_topology->getTriangle(ind_t);
+    const Triangle &t=this->m_topology->getTriangle(ind_t);
 
     const typename DataTypes::Coord& c0=vect_c[t[0]];
     const typename DataTypes::Coord& c1=vect_c[t[1]];
@@ -368,19 +368,19 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::is_PointinTriangle(bool is_test
             {
                 if(v_12 < 0.0) /// vertex 1
                 {
-                    shell =(sofa::helper::vector< unsigned int >) (m_topology->getTriangleVertexShell(t[1]));
+                    shell =(sofa::helper::vector< unsigned int >) (this->m_topology->getTriangleVertexShell(t[1]));
                 }
                 else
                 {
                     if(v_20 < 0.0) /// vertex 0
                     {
-                        shell =(sofa::helper::vector< unsigned int >) (m_topology->getTriangleVertexShell(t[0]));
+                        shell =(sofa::helper::vector< unsigned int >) (this->m_topology->getTriangleVertexShell(t[0]));
 
                     }
                     else // v_01 < 0.0
                     {
-                        ind_edge=m_topology->getEdgeIndex(t[0],t[1]);
-                        shell =(sofa::helper::vector< unsigned int >) (m_topology->getTriangleEdgeShell(ind_edge));
+                        ind_edge=this->m_topology->getEdgeIndex(t[0],t[1]);
+                        shell =(sofa::helper::vector< unsigned int >) (this->m_topology->getTriangleEdgeShell(ind_edge));
                     }
                 }
             }
@@ -390,19 +390,19 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::is_PointinTriangle(bool is_test
                 {
                     if(v_20 < 0.0) /// vertex 2
                     {
-                        shell =(sofa::helper::vector< unsigned int >) (m_topology->getTriangleVertexShell(t[2]));
+                        shell =(sofa::helper::vector< unsigned int >) (this->m_topology->getTriangleVertexShell(t[2]));
 
                     }
                     else // v_12 < 0.0
                     {
-                        ind_edge=m_topology->getEdgeIndex(t[1],t[2]);
-                        shell =(sofa::helper::vector< unsigned int >) (m_topology->getTriangleEdgeShell(ind_edge));
+                        ind_edge=this->m_topology->getEdgeIndex(t[1],t[2]);
+                        shell =(sofa::helper::vector< unsigned int >) (this->m_topology->getTriangleEdgeShell(ind_edge));
                     }
                 }
                 else // v_20 < 0.0
                 {
-                    ind_edge=m_topology->getEdgeIndex(t[2],t[0]);
-                    shell =(sofa::helper::vector< unsigned int >) (m_topology->getTriangleEdgeShell(ind_edge));
+                    ind_edge=this->m_topology->getEdgeIndex(t[2],t[0]);
+                    shell =(sofa::helper::vector< unsigned int >) (this->m_topology->getTriangleEdgeShell(ind_edge));
                 }
             }
 
@@ -493,7 +493,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const V
 template<class DataTypes>
 bool TriangleSetGeometryAlgorithms< DataTypes >::is_triangle_in_plane(const unsigned int ind_t, const unsigned int ind_p,  const Vec<3,Real>&plane_vect)
 {
-    const Triangle &t=m_topology->getTriangle(ind_t);
+    const Triangle &t=this->m_topology->getTriangle(ind_t);
 
     // HYP : ind_p==t[0] or ind_p==t[1] or ind_p==t[2]
 
@@ -594,16 +594,16 @@ void TriangleSetGeometryAlgorithms< DataTypes >::Prepare_VertexDuplication(const
 
         if(coord_from==0.0)
         {
-            ind_edge=m_topology->getEdgeIndex(indices_from[0], ind_p);
+            ind_edge=this->m_topology->getEdgeIndex(indices_from[0], ind_p);
         }
         else // coord_from==1.0
         {
-            ind_edge=m_topology->getEdgeIndex(indices_from[1], ind_p);
+            ind_edge=this->m_topology->getEdgeIndex(indices_from[1], ind_p);
         }
 
-        if (m_topology->getNbEdges()>0)
+        if (this->m_topology->getNbEdges()>0)
         {
-            sofa::helper::vector< unsigned int > shell =(sofa::helper::vector< unsigned int >) (m_topology->getTriangleEdgeShell(ind_edge));
+            sofa::helper::vector< unsigned int > shell =(sofa::helper::vector< unsigned int >) (this->m_topology->getTriangleEdgeShell(ind_edge));
             unsigned int ind_triangle=shell[0];
             unsigned int i=0;
             bool is_in_next_triangle=false;
@@ -654,16 +654,16 @@ void TriangleSetGeometryAlgorithms< DataTypes >::Prepare_VertexDuplication(const
 
         if(coord_to==0.0)
         {
-            ind_edge=m_topology->getEdgeIndex(indices_to[0], ind_p);
+            ind_edge=this->m_topology->getEdgeIndex(indices_to[0], ind_p);
         }
         else // coord_to==1.0
         {
-            ind_edge=m_topology->getEdgeIndex(indices_to[1], ind_p);
+            ind_edge=this->m_topology->getEdgeIndex(indices_to[1], ind_p);
         }
 
-        if (m_topology->getNbEdges()>0)
+        if (this->m_topology->getNbEdges()>0)
         {
-            sofa::helper::vector< unsigned int > shell =(sofa::helper::vector< unsigned int >) (m_topology->getTriangleEdgeShell(ind_edge));
+            sofa::helper::vector< unsigned int > shell =(sofa::helper::vector< unsigned int >) (this->m_topology->getTriangleEdgeShell(ind_edge));
             unsigned int ind_triangle=shell[0];
             unsigned int i=0;
             bool is_in_next_triangle=false;
@@ -700,9 +700,9 @@ void TriangleSetGeometryAlgorithms< DataTypes >::Prepare_VertexDuplication(const
         }
     }
 
-    if (m_topology->getNbPoints()>0)
+    if (this->m_topology->getNbPoints()>0)
     {
-        sofa::helper::vector< unsigned int > shell =(sofa::helper::vector< unsigned int >) (m_topology->getTriangleVertexShell(ind_p));
+        sofa::helper::vector< unsigned int > shell =(sofa::helper::vector< unsigned int >) (this->m_topology->getTriangleVertexShell(ind_p));
         unsigned int ind_triangle=shell[0];
         unsigned int i=0;
 
@@ -811,7 +811,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
     bool is_validated = false;
     bool is_intersected = false;
 
-    const Triangle &t=m_topology->getTriangle(ind_t);
+    const Triangle &t=this->m_topology->getTriangle(ind_t);
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
     bool is_full_01=(is_entered && ((t[0] == ind_first && t[1] == ind_second) || (t[1] == ind_first && t[0] == ind_second)));
@@ -1128,7 +1128,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
     while((coord_k_test<1.0 && is_validated) && is_intersected)
     {
-        ind_edge=m_topology->getEdgeIndex(indices[0],indices[1]);
+        ind_edge=this->m_topology->getEdgeIndex(indices[0],indices[1]);
         sofa::helper::vector< unsigned int > indices_first_list;
         indices_first_list.push_back(indices[0]);
         indices_first_list.push_back(indices[1]);
@@ -1163,9 +1163,9 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                 ind_index=indices[1];
             }
 
-            if (m_topology->getNbPoints() >0)
+            if (this->m_topology->getNbPoints() >0)
             {
-                sofa::helper::vector< unsigned int > shell =(sofa::helper::vector< unsigned int >) (m_topology->getTriangleVertexShell(ind_index));
+                sofa::helper::vector< unsigned int > shell =(sofa::helper::vector< unsigned int >) (this->m_topology->getTriangleVertexShell(ind_index));
                 ind_triangle=shell[0];
                 unsigned int i=0;
                 //bool is_in_next_triangle=false;
@@ -1183,7 +1183,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                         {
                             ind_triangle=shell[i];
 
-                            const Triangle &t=m_topology->getTriangle(ind_triangle);
+                            const Triangle &t=this->m_topology->getTriangle(ind_triangle);
 
                             const typename DataTypes::Coord& c0=vect_c[t[0]];
                             const typename DataTypes::Coord& c1=vect_c[t[1]];
@@ -1252,11 +1252,11 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
         }
         else // current point indexed by ind_t_current is on an edge, but not on a vertex
         {
-            ind_edge=m_topology->getEdgeIndex(indices[0],indices[1]);
+            ind_edge=this->m_topology->getEdgeIndex(indices[0],indices[1]);
 
-            if (m_topology->getNbEdges()>0)
+            if (this->m_topology->getNbEdges()>0)
             {
-                sofa::helper::vector< unsigned int > shell =(sofa::helper::vector< unsigned int >) (m_topology->getTriangleEdgeShell(ind_edge));
+                sofa::helper::vector< unsigned int > shell =(sofa::helper::vector< unsigned int >) (this->m_topology->getTriangleEdgeShell(ind_edge));
                 ind_triangle=shell[0];
                 unsigned int i=0;
 
@@ -1274,7 +1274,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                         {
                             ind_triangle=shell[i];
 
-                            const Triangle &t=m_topology->getTriangle(ind_triangle);
+                            const Triangle &t=this->m_topology->getTriangle(ind_triangle);
 
                             const typename DataTypes::Coord& c0=vect_c[t[0]];
                             const typename DataTypes::Coord& c1=vect_c[t[1]];
@@ -1389,7 +1389,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename
     myfile << "$ENDNOD\n";
     myfile << "$ELM\n";
 
-    const sofa::helper::vector<Triangle> &ta=m_topology->getTriangles();
+    const sofa::helper::vector<Triangle> &ta=this->m_topology->getTriangles();
 
     myfile << ta.size() <<"\n";
 
