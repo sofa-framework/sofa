@@ -171,10 +171,10 @@ void BeamFEMForceField<DataTypes>::BeamFEMEdgeCreationFunction(int edgeIndex, vo
 {
     std::cout << "Create beam "<<edgeIndex<<" ("<<e<<") from "<<a<<std::endl;
     BeamFEMForceField<DataTypes>* p = static_cast<BeamFEMForceField<DataTypes>*>(param);
-    p->beamsData.resize(edgeIndex+1);
+    // p->beamsData.resize(edgeIndex+1);
     static_cast<BeamFEMForceField<DataTypes>*>(param)->reinitBeam(edgeIndex);
     ei = p->beamsData[edgeIndex];
-    p->beamsData.resize(edgeIndex);
+    // p->beamsData.resize(edgeIndex);
 }
 
 template <class DataTypes>
