@@ -127,6 +127,15 @@ public:
      */
     void modifyTopology(void);
 
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const EdgeSetController<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
     /**
      * @brief
      */

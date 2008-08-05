@@ -25,6 +25,9 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYALGORITHMS_INL
 #define SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYALGORITHMS_INL
 
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
+
 #include <sofa/component/topology/PointSetTopologyContainer.h>
 #include <sofa/component/topology/PointSetTopologyModifier.h>
 #include <sofa/component/topology/PointSetTopologyAlgorithms.h>

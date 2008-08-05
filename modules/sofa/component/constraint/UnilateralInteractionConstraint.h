@@ -171,6 +171,15 @@ public:
         }
     }
 
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const UnilateralInteractionConstraint<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
     void draw();
 
     /// this constraint is NOT holonomic

@@ -132,6 +132,15 @@ public:
         }
     }
 
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const SlidingConstraint<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
     void draw();
 
     /// this constraint is holonomic

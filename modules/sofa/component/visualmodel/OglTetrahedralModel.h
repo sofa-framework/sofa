@@ -70,6 +70,16 @@ public:
     void drawTransparent();
     bool addBBox(double* minBBox, double* maxBBox);
 
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const OglTetrahedralModel<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
+
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T>

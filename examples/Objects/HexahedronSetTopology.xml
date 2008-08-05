@@ -1,20 +1,19 @@
 <Node name="Group"> 
   <Object type="HexahedronSetTopologyContainer"  name="Container" />
   <Object type="HexahedronSetTopologyModifier"   name="Modifier" />
-  <Object type="HexahedronSetTopologyAlgorithms" name="TopoAlgo"   template="StdVectorTypes&lt;Vec&lt;3, double&gt;, Vec&lt;3, double&gt;, double&gt; &gt;" />
-  <Object type="HexahedronSetGeometryAlgorithms" name="GeomAlgo"   template="StdVectorTypes&lt;Vec&lt;3, double&gt;, Vec&lt;3, double&gt;, double&gt; &gt;" />
+  <Object type="HexahedronSetTopologyAlgorithms" name="TopoAlgo"   template="Vec3d" />
+  <Object type="HexahedronSetGeometryAlgorithms" name="GeomAlgo"   template="Vec3d" />
 </Node>
 <!-- 
      Template List 
+       - Vec3d
+       - Vec2d
+       - Vec1d
 
-       - "StdVectorTypes&lt;Vec&lt;1, double&gt;, Vec&lt;1, double&gt;, double&gt; &gt;"
-       - "StdVectorTypes&lt;Vec&lt;2, double&gt;, Vec&lt;2, double&gt;, double&gt; &gt;"
-       - "StdVectorTypes&lt;Vec&lt;3, double&gt;, Vec&lt;3, double&gt;, double&gt; &gt;"
-
-       - "StdVectorTypes&lt;Vec&lt;1, float&gt;, Vec&lt;1, float&gt;, float&gt; &gt;"
-       - "StdVectorTypes&lt;Vec&lt;2, float&gt;, Vec&lt;2, float&gt;, float&gt; &gt;"
-       - "StdVectorTypes&lt;Vec&lt;3, float&gt;, Vec&lt;3, float&gt;, float&gt; &gt;"
+       - Vec3f
+       - Vec2f
+       - Vec1f
 
      Example of use:
-     <include href="Objects/HexahedronSetTopology.xml" template="StdVectorTypes&lt;Vec&lt;3, double&gt;, Vec&lt;3, double&gt;, double&gt; &gt;" />
+     <include href="Objects/HexahedronSetGeometryAlgorithms.xml" template="Vec1d" />
 -->

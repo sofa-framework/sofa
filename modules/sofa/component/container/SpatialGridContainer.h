@@ -348,6 +348,15 @@ public:
     }
     bool sortPoints();
 
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const SpatialGridContainer<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
 protected:
     core::componentmodel::behavior::MechanicalState<DataTypes>* mstate;
 };

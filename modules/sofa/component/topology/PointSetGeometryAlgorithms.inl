@@ -29,6 +29,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/topology/PointSetTopologyContainer.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
 
 namespace sofa
 {
