@@ -330,6 +330,20 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addDForce(VecDeriv& df, const Ve
 
 
 template<class DataTypes>
+void HexahedronFEMForceFieldAndMass<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx, double kFactor, double)
+{
+    VecDeriv kdx(dx.size());// = dx * kFactor;
+    for(unsigned i=0; i<dx.size(); ++i)
+        kdx[i]=dx[i]*kFactor;
+    HexahedronFEMForceFieldT::addDForce(df,kdx);
+}
+
+
+
+
+
+
+template<class DataTypes>
 double HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass(unsigned int /*index*/)
 {
     std::cerr<<"HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass not yet implemented\n"; return 0.0;

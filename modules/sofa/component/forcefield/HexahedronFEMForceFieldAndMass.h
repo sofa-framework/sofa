@@ -95,7 +95,7 @@ public:
     {std::cerr<<"HexahedronFEMForceFieldAndMass<DataTypes>::getPotentialEnergy not yet implemented\n"; return 0;}
 
     virtual void addDForce(VecDeriv& df, const VecDeriv& dx);
-    virtual void addDForce(VecDeriv& df, const VecDeriv& dx, double, double) { addDForce(df,dx); }
+    virtual void addDForce(VecDeriv& df, const VecDeriv& dx, double kFactor, double);
 
     virtual void addGravityToV(double dt);
 
