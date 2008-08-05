@@ -117,7 +117,6 @@ public slots:
     void saveTextEdit();                //Save in datafield the content of a QTextEdit
     void changeValue();               //each time a field is modified
     void changeVisualValue();               //each time a field of the Visualization tab is modified
-    void changeNumberPoint();         //used to dynamically add points in an object of type pointSubset
     void closeNow () {emit(reject());} //called from outside to close the current widget
     void reject   () {                 emit(dialogClosed(Id)); deleteLater(); QDialog::reject();} //When closing a window, inform the parent.
     void accept   () { updateValues(); emit(dialogClosed(Id)); deleteLater(); QDialog::accept();} //if closing by using Ok button, update the values
@@ -260,7 +259,6 @@ protected:
     QPushButton *buttonUpdate;
     std::vector<std::pair< core::objectmodel::BaseData*,  QObject*> >  objectGUI;  //vector of all the Qt Object added in the window
     std::set< const core::objectmodel::BaseData* >                     setUpdates; //set of objects that have ben modified
-    std::list< std::list< QObject* > * >                               list_PointSubset;
     std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >    list_Table;
     std::list< std::pair< Q3TextEdit*, core::objectmodel::BaseData*> > list_TextEdit;
     std::map< core::objectmodel::BaseData*, int >                      dataIndexTab;

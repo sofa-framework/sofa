@@ -671,37 +671,65 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 //PointSubset
                 else if( Data<PointSubset> * ff = dynamic_cast< Data<PointSubset> * >( (*it).second )  )
                 {
+                    Q3Table *vectorTable=NULL;
+
+                    box->setColumns(1);
+
+                    vectorTable = addResizableTable(box,ff->getValue().size(),1);
+
+                    list_Table.push_back(std::make_pair(vectorTable, ff));
+                    objectGUI.push_back(std::make_pair(ff,vectorTable));
+                    vectorTable->horizontalHeader()->setLabel(0,QString("Value"));
+                    vectorTable->setColumnStretchable(0,true);
+
+                    connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+
+
+                    if (setResize.find(vectorTable) != setResize.end()) ff->beginEdit()->resize(vectorTable->numRows());
+                    else	  vectorTable->setNumRows(ff->getValue().size());
+
 
                     //Get the PointSubset from the Data
                     PointSubset p= ff->getValue();
-                    //Add the structure to the list
-                    std::list< QObject *> *current_list = new std::list< QObject *>();
-                    list_PointSubset.push_back(current_list);
 
-                    //First line with only the title and the number of points
-                    box->setColumns(2);
-                    QSpinBox* spinBox = new QSpinBox((int)0,(int)INT_MAX,1,box);
+                    for (unsigned int i=0; i<ff->getValue().size(); i++)
+                    {
+                        std::ostringstream oss;
+                        oss << p[i];
+                        vectorTable->setText(i,0,std::string(oss.str()).c_str());
+                    }
+                }
+                //********************************************************************************************************//
+                //PointSubset
+                else if( DataPtr<PointSubset> * ff = dynamic_cast< DataPtr<PointSubset> * >( (*it).second )  )
+                {
+                    Q3Table *vectorTable=NULL;
 
-                    current_list->push_back(spinBox);
+                    box->setColumns(1);
 
+                    vectorTable = addResizableTable(box,ff->getValue().size(),1);
 
-                    Q3Table *vectorTable = new Q3Table(p.size(),1, box);
-                    current_list->push_back(vectorTable);
+                    list_Table.push_back(std::make_pair(vectorTable, ff));
+                    objectGUI.push_back(std::make_pair(ff,vectorTable));
+                    vectorTable->horizontalHeader()->setLabel(0,QString("Value"));
+                    vectorTable->setColumnStretchable(0,true);
 
-                    vectorTable->horizontalHeader()->setLabel(0,QString("Index of the Points"));	vectorTable->setColumnStretchable(0,true);
                     connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
 
-                    spinBox->setValue( p.size() );
-                    for (unsigned int t=0; t< p.size(); t++)
-                    {
-                        std::ostringstream oindex;
-                        oindex << "Index_" << t;
 
+                    if (setResize.find(vectorTable) != setResize.end()) ff->beginEdit()->resize(vectorTable->numRows());
+                    else	  vectorTable->setNumRows(ff->getValue().size());
+
+
+                    //Get the PointSubset from the Data
+                    PointSubset p= ff->getValue();
+
+                    for (unsigned int i=0; i<ff->getValue().size(); i++)
+                    {
                         std::ostringstream oss;
-                        oss << p[t];
-                        vectorTable->setText(t,0, QString(std::string(oss.str()).c_str()));
+                        oss << p[i];
+                        vectorTable->setText(i,0,std::string(oss.str()).c_str());
                     }
-                    connect( spinBox, SIGNAL( valueChanged(int) ), this, SLOT( changeNumberPoint() ) );
                 }
                 //********************************************************************************************************//
                 //RigidMass<3, double>,RigidMass<3, float>
@@ -1214,8 +1242,6 @@ void ModifyObject::updateValues()
             }
         }
 
-        std::list< std::list< QObject*> * >::iterator block_iterator=list_PointSubset.begin();
-
         for (unsigned int index_object=0; index_object < objectGUI.size(); ++index_object)
         {
             //Special Treatment for visual flags
@@ -1438,24 +1464,6 @@ void ModifyObject::updateValues()
                 storeVector(index_object, &v.getVCenter());
                 storeVector(index_object, &v.getVOrientation());
                 ff->setValue(v);
-            }
-            //*******************************************************************************************************************
-            else if( Data<PointSubset> * ff = dynamic_cast< Data<PointSubset> * >( objectGUI[index_object].first ))
-            {
-                std::list< QObject *>::iterator element_iterator=(*block_iterator)->begin();
-                element_iterator++;
-                Q3Table  *table = dynamic_cast< Q3Table *>  ( (*element_iterator) );
-                block_iterator++;
-
-
-                PointSubset p;
-                p.resize(table->numRows());
-                for ( int index=0; index<table->numRows(); index++)
-                {
-                    if (table->text(index,0) == "") p[index] = 0;
-                    else                            p[index] = atoi(table->text(index,0));
-                }
-                ff->setValue(p);
             }
             //*******************************************************************************************************************
             else if( Data<RigidMass<3, double> > * ff = dynamic_cast< Data<RigidMass<3, double> > * >( objectGUI[index_object].first )  )
@@ -1808,24 +1816,6 @@ void ModifyObject::updateValues()
                 ff->setValue(v);
             }
             //*******************************************************************************************************************
-            else if( DataPtr<PointSubset> * ff = dynamic_cast< DataPtr<PointSubset> * >( objectGUI[index_object].first ))
-            {
-                std::list< QObject *>::iterator element_iterator=(*block_iterator)->begin();
-                element_iterator++;
-                Q3Table  *table = dynamic_cast< Q3Table *>  ( (*element_iterator) );
-                block_iterator++;
-
-
-                PointSubset p;
-                p.resize(table->numRows());
-                for ( int index=0; index<table->numRows(); index++)
-                {
-                    if (table->text(index,0) == "") p[index] = 0;
-                    else                            p[index] = atoi(table->text(index,0));
-                }
-                ff->setValue(p);
-            }
-            //*******************************************************************************************************************
             else if( DataPtr<RigidMass<3, double> > * ff = dynamic_cast< DataPtr<RigidMass<3, double> > * >( objectGUI[index_object].first )  )
             {
                 RigidMass<3, double> current_mass = ff->getValue();
@@ -2057,39 +2047,6 @@ void ModifyObject::updateEnergy()
     }
 
 }
-
-//*******************************************************************************************************************
-//Method called when the number of one of the PointSubset block has been modified : we need to recreate the block modified
-void ModifyObject::changeNumberPoint()
-{
-
-    //Add or remove fields
-    std::list< std::list< QObject*> * >::iterator block_iterator;
-
-    //For each block of the set
-    for (block_iterator=list_PointSubset.begin() ; block_iterator != list_PointSubset.end(); block_iterator++)
-    {
-
-        //For each block of type PointSubset, we verify the initial number of element and the current
-        std::list< QObject *> *current_structure = (*block_iterator);
-        if (current_structure == NULL) continue;
-
-        std::list< QObject *>::iterator element_iterator=current_structure->begin();
-        QSpinBox *spin  = dynamic_cast< QSpinBox *> ( (*element_iterator) );
-        element_iterator++;
-        Q3Table  *table = dynamic_cast< Q3Table *>  ( (*element_iterator) );
-
-        if ( spin->value() != table->numRows())
-        {
-            int initial_number = table->numRows();
-            table->setNumRows( spin->value() );
-            for (int i=initial_number; i< spin->value(); i++)  table->setText(i,0,QString(std::string("0").c_str()));
-        }
-    }
-    emit( changeValue() );
-
-}
-
 
 
 
@@ -2487,10 +2444,47 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
         return createQtTable(ff,box,vectorTable, vectorTable2);
     }
     //********************************************************************************************************//
-    //vector<Rigid2ddTypes::Deriv>
+    //PointSubset
     else if (Data< vector<Rigid2dTypes::Deriv> >  *ff = dynamic_cast< Data< vector<Rigid2dTypes::Deriv>  >   * >( field ))
     {
         return createQtTable(ff,box,vectorTable, vectorTable2);
+    }
+    else if (Data< PointSubset > *ff = dynamic_cast< Data< PointSubset > *>(field))
+    {
+        PointSubset new_value;
+
+        for (int i=0; i<vectorTable->numRows(); ++i)
+        {
+            QString value = vectorTable->text(i,0);
+            if (value.isEmpty())
+            {
+                new_value.push_back(0);
+                vectorTable->setText(i,0,QString("0"));
+            }
+            else
+                new_value.push_back( atoi(value) );
+        }
+        ff->setValue( new_value );
+        changeValue();
+    }
+    //********************************************************************************************************//
+    else if (DataPtr< PointSubset > *ff = dynamic_cast< DataPtr< PointSubset > *>(field))
+    {
+        PointSubset new_value;
+
+        for (int i=0; i<vectorTable->numRows(); ++i)
+        {
+            QString value = vectorTable->text(i,0);
+            if (value.isEmpty())
+            {
+                new_value.push_back(0);
+                vectorTable->setText(i,0,QString("0"));
+            }
+            else
+                new_value.push_back( atoi(value) );
+        }
+        ff->setValue( new_value );
+        changeValue();
     }
     //********************************************************************************************************//
     //vector<LaparoscopicRigid3Types::Coord>
@@ -4546,7 +4540,8 @@ Q3Table *ModifyObject::addResizableTable(Q3GroupBox *box,int number, int column)
     Q3Table* table = new Q3Table(number,column, box);
     spinBox->setValue(number);
     resizeMap.insert(std::make_pair(spinBox, table));
-    connect( spinBox, SIGNAL( valueChanged(int) ), this, SLOT( resizeTable(int) ) );	return  table;
+    connect( spinBox, SIGNAL( valueChanged(int) ), this, SLOT( resizeTable(int) ) );
+    return  table;
 }
 
 const core::objectmodel::BaseData* ModifyObject::getData(const QObject *object)
