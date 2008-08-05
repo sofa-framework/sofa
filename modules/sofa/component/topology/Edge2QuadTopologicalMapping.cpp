@@ -26,8 +26,6 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-
 #include <sofa/component/topology/QuadSetTopologyModifier.h>
 #include <sofa/component/topology/QuadSetTopologyContainer.h>
 
@@ -62,11 +60,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 using namespace sofa::core::componentmodel::topology;
 
-/// Input Topology
-typedef BaseMeshTopology In;
-/// Output Topology
-typedef BaseMeshTopology Out;
-
 SOFA_DECL_CLASS(Edge2QuadTopologicalMapping)
 
 // Register in the Factory
@@ -76,40 +69,6 @@ int Edge2QuadTopologicalMappingClass = core::RegisterObject("Special case of map
         ;
 
 // Implementation
-
-
-In* Edge2QuadTopologicalMapping::getFromModel()
-{
-    return this->fromModel;
-}
-
-
-Out* Edge2QuadTopologicalMapping::getToModel()
-{
-    return this->toModel;
-}
-
-
-objectmodel::BaseObject* Edge2QuadTopologicalMapping::getFrom()
-{
-    return this->fromModel;
-}
-
-
-objectmodel::BaseObject* Edge2QuadTopologicalMapping::getTo()
-{
-    return this->toModel;
-}
-
-
-
-void Edge2QuadTopologicalMapping::setModels(In* from, Out* to)
-{
-    this->fromModel = from;
-    this->toModel = to;
-}
-
-
 
 void Edge2QuadTopologicalMapping::init()
 {

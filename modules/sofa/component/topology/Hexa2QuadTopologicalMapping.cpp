@@ -26,8 +26,6 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-
 #include <sofa/component/topology/QuadSetTopologyContainer.h>
 #include <sofa/component/topology/QuadSetTopologyModifier.h>
 #include <sofa/component/topology/QuadSetTopologyChange.h>
@@ -56,11 +54,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 using namespace sofa::core::componentmodel::topology;
 
-/// Input Topology
-typedef BaseMeshTopology In;
-/// Output Topology
-typedef BaseMeshTopology Out;
-
 SOFA_DECL_CLASS(Hexa2QuadTopologicalMapping)
 
 // Register in the Factory
@@ -72,10 +65,9 @@ int Hexa2QuadTopologicalMappingClass = core::RegisterObject("Special case of map
 // Implementation
 
 Hexa2QuadTopologicalMapping::Hexa2QuadTopologicalMapping(In* from, Out* to)
-    :
-    fromModel(from), toModel(to),
-    object1(initData(&object1, std::string("../.."), "object1", "First object to map")),
-    object2(initData(&object2, std::string(".."), "object2", "Second object to map"))
+    : TopologicalMapping(from, to),
+      object1(initData(&object1, std::string("../.."), "object1", "First object to map")),
+      object2(initData(&object2, std::string(".."), "object2", "Second object to map"))
 {
 }
 
@@ -83,34 +75,6 @@ Hexa2QuadTopologicalMapping::Hexa2QuadTopologicalMapping(In* from, Out* to)
 Hexa2QuadTopologicalMapping::~Hexa2QuadTopologicalMapping()
 {
 }
-
-In* Hexa2QuadTopologicalMapping::getFromModel()
-{
-    return this->fromModel;
-}
-
-Out* Hexa2QuadTopologicalMapping::getToModel()
-{
-    return this->toModel;
-}
-
-objectmodel::BaseObject* Hexa2QuadTopologicalMapping::getFrom()
-{
-    return this->fromModel;
-}
-
-objectmodel::BaseObject* Hexa2QuadTopologicalMapping::getTo()
-{
-    return this->toModel;
-}
-
-
-void Hexa2QuadTopologicalMapping::setModels(In* from, Out* to)
-{
-    this->fromModel = from;
-    this->toModel = to;
-}
-
 
 void Hexa2QuadTopologicalMapping::init()
 {

@@ -27,9 +27,6 @@
 
 #include <sofa/core/componentmodel/topology/TopologicalMapping.h>
 
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-
-
 #include <sofa/defaulttype/Vec.h>
 #include <map>
 
@@ -43,7 +40,6 @@ namespace component
 
 namespace topology
 {
-
 
 using namespace sofa::defaulttype;
 
@@ -65,21 +61,6 @@ using namespace sofa::core;
 class Tetra2TriangleTopologicalMapping : public TopologicalMapping
 {
 public:
-    /// Input Topology
-    typedef BaseMeshTopology In;
-    /// Output Topology
-    typedef BaseMeshTopology Out;
-
-protected:
-    /// Input source BaseTopology
-    In* fromModel;
-    /// Output target BaseTopology
-    Out* toModel;
-
-    Data< std::string > object1;
-    Data< std::string > object2;
-
-public:
 
     /** \brief Constructor.
      *
@@ -93,19 +74,6 @@ public:
      * Does nothing.
      */
     virtual ~Tetra2TriangleTopologicalMapping();
-
-    /// Specify the input and output topologies.
-    virtual void setModels(In* from, Out* to);
-
-    /// Return the pointer to the input topology.
-    In* getFromModel();
-    /// Return the pointer to the output topology.
-    Out* getToModel();
-
-    /// Return the pointer to the input topology.
-    objectmodel::BaseObject* getFrom();
-    /// Return the pointer to the output topology.
-    objectmodel::BaseObject* getTo();
 
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
      */
@@ -182,6 +150,10 @@ public:
         }
         if (arg) obj->parse(arg);
     }
+
+protected:
+    Data< std::string > object1;
+    Data< std::string > object2;
 
 };
 
