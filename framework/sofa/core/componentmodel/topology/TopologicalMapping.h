@@ -32,6 +32,8 @@
 #include <string>
 #include <iostream>
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+
 namespace sofa
 {
 
@@ -43,7 +45,6 @@ namespace componentmodel
 
 namespace topology
 {
-
 
 /**
  *  \brief This Interface is a new kind of Mapping, called TopologicalMapping, which converts an INPUT TOPOLOGY to an OUTPUT TOPOLOGY (both topologies are of type BaseTopology)
@@ -60,14 +61,29 @@ namespace topology
 class TopologicalMapping : public virtual objectmodel::BaseObject
 {
 public:
+    /// Input Topology
+    typedef BaseMeshTopology In;
+    /// Output Topology
+    typedef BaseMeshTopology Out;
+
+    TopologicalMapping(In* from, Out* to)
+        : fromModel(from), toModel(to)
+    {}
 
     virtual ~TopologicalMapping() { }
 
+    /// Specify the input and output topologies.
+//	void setModels(In* from, Out* to)
+    //{
+    //	fromModel = from;
+    //	toModel = to;
+    //}
+
     /// Accessor to the INPUT topology of the TopologicalMapping :
-    virtual objectmodel::BaseObject* getFrom() = 0;
+    In* getFrom() {return fromModel;}
 
     /// Accessor to the OUTPUT topology of the TopologicalMapping :
-    virtual objectmodel::BaseObject* getTo() = 0;
+    Out* getTo() {return toModel;}
 
     /// Method called at each topological changes propagation which comes from the INPUT topology to adapt the OUTPUT topology :
     virtual void updateTopologicalMapping() = 0;
@@ -95,7 +111,13 @@ public:
 
     const std::map<unsigned int, sofa::helper::vector<unsigned int> >& getIn2OutMap() { return In2OutMap;}
 
+
 protected:
+
+    /// Input source BaseTopology
+    In* fromModel;
+    /// Output target BaseTopology
+    Out* toModel;
 
     // Two index maps :
 
@@ -108,8 +130,6 @@ protected:
     std::map<unsigned int, unsigned int> Glob2LocMap;
 
     std::map<unsigned int, sofa::helper::vector<unsigned int> > In2OutMap;
-
-
 };
 
 } // namespace topology

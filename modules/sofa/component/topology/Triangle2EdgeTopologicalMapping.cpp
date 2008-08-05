@@ -26,8 +26,6 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
 #include <sofa/component/topology/EdgeSetTopologyModifier.h>
 #include <sofa/component/topology/EdgeSetTopologyChange.h>
@@ -56,11 +54,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 using namespace sofa::core::componentmodel::topology;
 
-/// Input Topology
-typedef BaseMeshTopology In;
-/// Output Topology
-typedef BaseMeshTopology Out;
-
 SOFA_DECL_CLASS(Triangle2EdgeTopologicalMapping)
 
 // Register in the Factory
@@ -70,10 +63,9 @@ int Triangle2EdgeTopologicalMappingClass = core::RegisterObject("Special case of
         ;
 
 Triangle2EdgeTopologicalMapping::Triangle2EdgeTopologicalMapping(In* from, Out* to)
-    :
-    fromModel(from), toModel(to),
-    object1(initData(&object1, std::string("../.."), "object1", "First object to map")),
-    object2(initData(&object2, std::string(".."), "object2", "Second object to map"))
+    : TopologicalMapping(from, to),
+      object1(initData(&object1, std::string("../.."), "object1", "First object to map")),
+      object2(initData(&object2, std::string(".."), "object2", "Second object to map"))
 {
 }
 
@@ -81,34 +73,6 @@ Triangle2EdgeTopologicalMapping::Triangle2EdgeTopologicalMapping(In* from, Out* 
 Triangle2EdgeTopologicalMapping::~Triangle2EdgeTopologicalMapping()
 {
 }
-
-In* Triangle2EdgeTopologicalMapping::getFromModel()
-{
-    return this->fromModel;
-}
-
-Out* Triangle2EdgeTopologicalMapping::getToModel()
-{
-    return this->toModel;
-}
-
-objectmodel::BaseObject* Triangle2EdgeTopologicalMapping::getFrom()
-{
-    return this->fromModel;
-}
-
-objectmodel::BaseObject* Triangle2EdgeTopologicalMapping::getTo()
-{
-    return this->toModel;
-}
-
-
-void Triangle2EdgeTopologicalMapping::setModels(In* from, Out* to)
-{
-    this->fromModel = from;
-    this->toModel = to;
-}
-
 
 void Triangle2EdgeTopologicalMapping::init()
 {

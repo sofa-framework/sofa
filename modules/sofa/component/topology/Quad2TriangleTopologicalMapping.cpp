@@ -26,8 +26,6 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
 #include <sofa/component/topology/TriangleSetTopologyModifier.h>
 #include <sofa/component/topology/TriangleSetTopologyChange.h>
@@ -73,10 +71,9 @@ int Quad2TriangleTopologicalMappingClass = core::RegisterObject("Special case of
 // Implementation
 
 Quad2TriangleTopologicalMapping::Quad2TriangleTopologicalMapping(In* from, Out* to)
-    :
-    fromModel(from), toModel(to),
-    object1(initData(&object1, std::string("../.."), "object1", "First object to map")),
-    object2(initData(&object2, std::string(".."), "object2", "Second object to map"))
+    : TopologicalMapping(from, to),
+      object1(initData(&object1, std::string("../.."), "object1", "First object to map")),
+      object2(initData(&object2, std::string(".."), "object2", "Second object to map"))
 {
 }
 
@@ -84,34 +81,6 @@ Quad2TriangleTopologicalMapping::Quad2TriangleTopologicalMapping(In* from, Out* 
 Quad2TriangleTopologicalMapping::~Quad2TriangleTopologicalMapping()
 {
 }
-
-In* Quad2TriangleTopologicalMapping::getFromModel()
-{
-    return this->fromModel;
-}
-
-Out* Quad2TriangleTopologicalMapping::getToModel()
-{
-    return this->toModel;
-}
-
-objectmodel::BaseObject* Quad2TriangleTopologicalMapping::getFrom()
-{
-    return this->fromModel;
-}
-
-objectmodel::BaseObject* Quad2TriangleTopologicalMapping::getTo()
-{
-    return this->toModel;
-}
-
-
-void Quad2TriangleTopologicalMapping::setModels(In* from, Out* to)
-{
-    this->fromModel = from;
-    this->toModel = to;
-}
-
 
 void Quad2TriangleTopologicalMapping::init()
 {

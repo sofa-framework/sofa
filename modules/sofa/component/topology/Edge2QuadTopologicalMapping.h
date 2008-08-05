@@ -27,15 +27,11 @@
 
 #include <sofa/core/componentmodel/topology/TopologicalMapping.h>
 
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/RigidTypes.h>
 #include <map>
 
 #include <sofa/core/BaseMapping.h>
-
-#include <sofa/defaulttype/RigidTypes.h>
-
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 
 
@@ -47,7 +43,6 @@ namespace component
 
 namespace topology
 {
-
 
 using namespace sofa::defaulttype;
 
@@ -69,11 +64,6 @@ using namespace sofa::core::componentmodel::behavior;
 class Edge2QuadTopologicalMapping : public TopologicalMapping
 {
 public:
-    /// Input Topology
-    typedef BaseMeshTopology In;
-    /// Output Topology
-    typedef BaseMeshTopology Out;
-
     typedef State<Rigid3Types>::VecCoord VecCoord;
     typedef State<Rigid3Types>::Coord Coord;
     typedef Coord::value_type Real;
@@ -81,17 +71,6 @@ public:
     typedef defaulttype::Mat<M,M,Real> Mat;
     typedef defaulttype::Vec<M,Real> Vec;
 
-protected:
-    /// Input source BaseTopology
-    In* fromModel;
-    /// Output target BaseTopology
-    Out* toModel;
-
-    Data<unsigned int> m_nbPointsOnEachCircle; // number of points to create along the circles around each point of the input topology (10 by default)
-    Data<double> m_radius;	// radius of the circles around each point of the input topology (1 by default)
-
-    Data< std::string > object1;
-    Data< std::string > object2;
 
 public:
 
@@ -101,12 +80,11 @@ public:
      * @param to   the topology for which the TopologyChange objects must be translated (the "target").
      */
     Edge2QuadTopologicalMapping(In* from, Out* to)
-        :
-        fromModel(from), toModel(to),
-        m_nbPointsOnEachCircle( initData(&m_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles")),
-        m_radius( initData(&m_radius, "radius", "Radius of created circles")),
-        object1(initData(&object1, std::string("../.."), "object1", "First object to map")),
-        object2(initData(&object2, std::string(".."), "object2", "Second object to map"))
+        :  TopologicalMapping(from, to),
+           m_nbPointsOnEachCircle( initData(&m_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles")),
+           m_radius( initData(&m_radius, "radius", "Radius of created circles")),
+           object1(initData(&object1, std::string("../.."), "object1", "First object to map")),
+           object2(initData(&object2, std::string(".."), "object2", "Second object to map"))
     {
     }
 
@@ -116,19 +94,6 @@ public:
      */
     virtual ~Edge2QuadTopologicalMapping()
     {}
-
-    /// Specify the input and output topologies.
-    virtual void setModels(In* from, Out* to);
-
-    /// Return the pointer to the input topology.
-    In* getFromModel();
-    /// Return the pointer to the output topology.
-    Out* getToModel();
-
-    /// Return the pointer to the input topology.
-    objectmodel::BaseObject* getFrom();
-    /// Return the pointer to the output topology.
-    objectmodel::BaseObject* getTo();
 
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
      */
@@ -207,6 +172,12 @@ public:
         if (arg) obj->parse(arg);
     }
 
+protected:
+    Data<unsigned int> m_nbPointsOnEachCircle; // number of points to create along the circles around each point of the input topology (10 by default)
+    Data<double> m_radius;	// radius of the circles around each point of the input topology (1 by default)
+
+    Data< std::string > object1;
+    Data< std::string > object2;
 };
 
 } // namespace topology

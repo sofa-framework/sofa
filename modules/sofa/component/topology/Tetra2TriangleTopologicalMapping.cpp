@@ -26,8 +26,6 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
 #include <sofa/component/topology/TriangleSetTopologyModifier.h>
 #include <sofa/component/topology/TriangleSetTopologyChange.h>
@@ -56,11 +54,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 using namespace sofa::core::componentmodel::topology;
 
-/// Input Topology
-typedef BaseMeshTopology In;
-/// Output Topology
-typedef BaseMeshTopology Out;
-
 SOFA_DECL_CLASS(Tetra2TriangleTopologicalMapping)
 
 // Register in the Factory
@@ -72,41 +65,14 @@ int Tetra2TriangleTopologicalMappingClass = core::RegisterObject("Special case o
 // Implementation
 
 Tetra2TriangleTopologicalMapping::Tetra2TriangleTopologicalMapping(In* from, Out* to)
-    :
-    fromModel(from), toModel(to),
-    object1(initData(&object1, std::string("../.."), "object1", "First object to map")),
-    object2(initData(&object2, std::string(".."), "object2", "Second object to map"))
+    : TopologicalMapping(from, to),
+      object1(initData(&object1, std::string("../.."), "object1", "First object to map")),
+      object2(initData(&object2, std::string(".."), "object2", "Second object to map"))
 {
 }
 
 Tetra2TriangleTopologicalMapping::~Tetra2TriangleTopologicalMapping()
 {
-}
-
-In* Tetra2TriangleTopologicalMapping::getFromModel()
-{
-    return this->fromModel;
-}
-
-Out* Tetra2TriangleTopologicalMapping::getToModel()
-{
-    return this->toModel;
-}
-
-objectmodel::BaseObject* Tetra2TriangleTopologicalMapping::getFrom()
-{
-    return this->fromModel;
-}
-
-objectmodel::BaseObject* Tetra2TriangleTopologicalMapping::getTo()
-{
-    return this->toModel;
-}
-
-void Tetra2TriangleTopologicalMapping::setModels(In* from, Out* to)
-{
-    this->fromModel = from;
-    this->toModel = to;
 }
 
 void Tetra2TriangleTopologicalMapping::init()
