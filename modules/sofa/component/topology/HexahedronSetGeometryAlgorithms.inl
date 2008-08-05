@@ -40,7 +40,7 @@ using namespace sofa::defaulttype;
 template< class DataTypes>
 typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeHexahedronVolume( const unsigned int /*i*/) const
 {
-    //const Hexahedron &t = m_topology->getHexa(i);
+    //const Hexahedron &t = this->m_topology->getHexa(i);
     //const VecCoord& p = *(this->object->getX());
     Real volume=(Real)(0.0); /// @TODO : implementation of computeHexahedronVolume
     return volume;
@@ -49,7 +49,7 @@ typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeHe
 template< class DataTypes>
 typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeRestHexahedronVolume( const unsigned int /*i*/) const
 {
-    //const Hexahedron &t = m_topology->getHexa(i);
+    //const Hexahedron &t = this->m_topology->getHexa(i);
     //const VecCoord& p = *(this->object->getX0());
     Real volume=(Real)(0.0); /// @TODO : implementation of computeRestHexahedronVolume
     return volume;
@@ -58,11 +58,11 @@ typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeRe
 template<class DataTypes>
 void HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronVolume( BasicArrayInterface<Real> &ai) const
 {
-    //const sofa::helper::vector<Hexahedron> &ta=m_topology->getHexas();
+    //const sofa::helper::vector<Hexahedron> &ta=this->m_topology->getHexas();
     //const typename DataTypes::VecCoord& p = *(this->object->getX());
-    for(int i=0; i<m_topology->getNbHexas(); ++i)
+    for(int i=0; i<this->m_topology->getNbHexas(); ++i)
     {
-        //const Hexahedron &t=m_topology->getHexa(i); //ta[i];
+        //const Hexahedron &t=this->m_topology->getHexa(i); //ta[i];
         ai[i]=(Real)(0.0); /// @TODO : implementation of computeHexahedronVolume
     }
 }
@@ -93,7 +93,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filena
     myfile << "$ENDNOD\n";
     myfile << "$ELM\n";
 
-    const sofa::helper::vector<Hexahedron> hea = m_topology->getHexas();
+    const sofa::helper::vector<Hexahedron> hea = this->m_topology->getHexas();
 
     myfile << hea.size() <<"\n";
 

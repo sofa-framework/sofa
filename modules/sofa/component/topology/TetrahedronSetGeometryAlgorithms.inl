@@ -40,7 +40,7 @@ using namespace sofa::defaulttype;
 template< class DataTypes>
 typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeTetrahedronVolume( const unsigned int i) const
 {
-    const Tetrahedron &t = m_topology->getTetra(i);
+    const Tetrahedron &t = this->m_topology->getTetra(i);
     const VecCoord& p = *(this->object->getX());
     Real volume = (Real)(tripleProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]],p[t[3]]-p[t[0]])/6.0);
     return volume;
@@ -49,7 +49,7 @@ typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeT
 template< class DataTypes>
 typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeRestTetrahedronVolume( const unsigned int i) const
 {
-    const Tetrahedron &t=m_topology->getTetra(i);
+    const Tetrahedron &t=this->m_topology->getTetra(i);
     const VecCoord& p = *(this->object->getX0());
     Real volume = (Real)(tripleProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]],p[t[3]]-p[t[0]])/6.0);
     return volume;
@@ -59,7 +59,7 @@ typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeR
 template<class DataTypes>
 void TetrahedronSetGeometryAlgorithms<DataTypes>::computeTetrahedronVolume( BasicArrayInterface<Real> &ai) const
 {
-    const sofa::helper::vector<Tetrahedron> &ta = m_topology->getTetras();
+    const sofa::helper::vector<Tetrahedron> &ta = this->m_topology->getTetras();
     const typename DataTypes::VecCoord& p = *(this->object->getX());
     for (unsigned int i=0; i<ta.size(); ++i)
     {
@@ -75,8 +75,8 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(unsigned int 
 {
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
-    const Tetrahedron &ta=m_topology->getTetra(ind_ta);
-    const Tetrahedron &tb=m_topology->getTetra(ind_tb);
+    const Tetrahedron &ta=this->m_topology->getTetra(ind_ta);
+    const Tetrahedron &tb=this->m_topology->getTetra(ind_tb);
 
     const typename DataTypes::Coord& ca=(vect_c[ta[0]]+vect_c[ta[1]]+vect_c[ta[2]]+vect_c[ta[3]])*0.25;
     const typename DataTypes::Coord& cb=(vect_c[tb[0]]+vect_c[tb[1]]+vect_c[tb[2]]+vect_c[tb[3]])*0.25;
@@ -109,11 +109,11 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(unsigned int 
         for (unsigned int t=0; t<ind2ask.size(); t++)
         {
             unsigned int ind_t = ind2ask[t];
-            sofa::component::topology::TetrahedronTriangles adjacent_triangles = m_topology->getTriangleTetraShell(ind_t);
+            sofa::component::topology::TetrahedronTriangles adjacent_triangles = this->m_topology->getTriangleTetraShell(ind_t);
 
             for (unsigned int i=0; i<adjacent_triangles.size(); i++)
             {
-                sofa::helper::vector< unsigned int > tetras_to_remove = m_topology->getTetraTriangleShell(adjacent_triangles[i]);
+                sofa::helper::vector< unsigned int > tetras_to_remove = this->m_topology->getTetraTriangleShell(adjacent_triangles[i]);
 
                 if(tetras_to_remove.size()==2)
                 {
@@ -131,7 +131,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(unsigned int 
                     {
                         IndexMap[t_test]=0;
 
-                        const Tetrahedron &tc=m_topology->getTetra(t_test);
+                        const Tetrahedron &tc=this->m_topology->getTetra(t_test);
                         const typename DataTypes::Coord& cc = (vect_c[tc[0]]
                                 + vect_c[tc[1]]
                                 + vect_c[tc[2]]
@@ -189,7 +189,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filen
     myfile << "$ENDNOD\n";
     myfile << "$ELM\n";
 
-    const sofa::helper::vector<Tetrahedron> &tea = m_topology->getTetras();
+    const sofa::helper::vector<Tetrahedron> &tea = this->m_topology->getTetras();
 
     myfile << tea.size() <<"\n";
 
