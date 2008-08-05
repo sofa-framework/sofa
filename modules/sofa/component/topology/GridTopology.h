@@ -75,15 +75,16 @@ public:
 
     virtual int getNbHexas() { return (n.getValue()[0]-1)*(n.getValue()[1]-1)*(n.getValue()[2]-1); }
 
-    int getNbQuads()
-    {
-        if (n.getValue()[2] == 1)
-            return (n.getValue()[0]-1)*(n.getValue()[1]-1);
-        else if (n.getValue()[1] == 1)
-            return (n.getValue()[0]-1)*(n.getValue()[2]-1);
-        else
-            return (n.getValue()[1]-1)*(n.getValue()[2]-1);
+    /*
+    int getNbQuads() {
+      if (n.getValue()[2] == 1)
+        return (n.getValue()[0]-1)*(n.getValue()[1]-1);
+      else if (n.getValue()[1] == 1)
+        return (n.getValue()[0]-1)*(n.getValue()[2]-1);
+      else
+        return (n.getValue()[1]-1)*(n.getValue()[2]-1);
     }
+    */
 
     Hexa getHexaCopy(int i);
     Hexa getHexa(int x, int y, int z);
