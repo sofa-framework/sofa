@@ -157,6 +157,23 @@ public:
     virtual void setConstraintId(unsigned int ) = 0;
     /// Return the constraint IDs corresponding to the entries in the constraints matrix returned by getC()
     virtual sofa::helper::vector<unsigned int>& getConstraintId() = 0;
+
+
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const MechanicalState<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
+
+    static std::string Name(const State<DataTypes>* = NULL)
+    {
+        return std::string("MechanicalState");
+    }
+
 };
 
 } // namespace behavior
