@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETGEOMETRYALGORITHMS_H
 
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
@@ -36,8 +35,6 @@ namespace component
 
 namespace topology
 {
-class ManifoldEdgeSetTopologyContainer;
-
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::EdgeID EdgeID;
 typedef BaseMeshTopology::Edge Edge;
@@ -60,11 +57,6 @@ public:
     {}
 
     virtual ~ManifoldEdgeSetGeometryAlgorithms() {}
-
-    virtual void init();
-
-private:
-    sofa::core::componentmodel::topology::BaseMeshTopology* m_topology;
 };
 
 } // namespace topology

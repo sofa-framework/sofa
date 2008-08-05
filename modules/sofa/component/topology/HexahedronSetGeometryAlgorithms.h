@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETGEOMETRYALGORITHMS_H
 
 #include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
@@ -34,8 +33,6 @@ namespace component
 {
 namespace topology
 {
-class HexahedronSetTopologyContainer;
-
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::HexaID HexaID;
 typedef BaseMeshTopology::Hexa Hexa;
@@ -67,8 +64,6 @@ public:
 
     virtual ~HexahedronSetGeometryAlgorithms() {}
 
-    virtual void init();
-
     /// computes the volume of hexahedron no i and returns it
     Real computeHexahedronVolume(const unsigned int i) const;
 
@@ -81,9 +76,6 @@ public:
     /** \brief Write the current mesh into a msh file
     */
     void writeMSHfile(const char *filename);
-
-private:
-    sofa::core::componentmodel::topology::BaseMeshTopology* m_topology;
 };
 
 } // namespace topology

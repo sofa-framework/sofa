@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETGEOMETRYALGORITHMS_INL
 
 #include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
 
 namespace sofa
 {
@@ -37,13 +36,6 @@ namespace component
 namespace topology
 {
 using namespace sofa::defaulttype;
-
-template <class DataTypes>
-void TetrahedronSetGeometryAlgorithms< DataTypes >::init()
-{
-    TriangleSetGeometryAlgorithms< DataTypes >::init();
-    m_topology = this->getContext()->getMeshTopology();
-}
 
 template< class DataTypes>
 typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeTetrahedronVolume( const unsigned int i) const

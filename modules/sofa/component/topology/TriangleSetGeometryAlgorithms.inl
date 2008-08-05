@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_TOPOLOGY_TRIANGLESETGEOMETRYALGORITHMS_INL
 
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TriangleSetTopologyContainer.h>
 
 namespace sofa
 {
@@ -37,13 +36,6 @@ namespace component
 namespace topology
 {
 using namespace sofa::defaulttype;
-
-template <class DataTypes>
-void TriangleSetGeometryAlgorithms< DataTypes >::init()
-{
-    EdgeSetGeometryAlgorithms< DataTypes >::init();
-    m_topology = this->getContext()->getMeshTopology();
-}
 
 template< class DataTypes>
 typename DataTypes::Real TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleArea( const unsigned int i) const

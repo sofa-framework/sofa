@@ -47,8 +47,6 @@ namespace component
 
 namespace topology
 {
-class PointSetTopologyContainer;
-
 using core::componentmodel::topology::BaseMeshTopology;
 using core::componentmodel::behavior::MechanicalState;
 typedef BaseMeshTopology::PointID PointID;
@@ -97,8 +95,6 @@ public:
 protected:
     /** the object where the mechanical DOFs are stored */
     sofa::core::componentmodel::behavior::MechanicalState<DataTypes> *object;
-
-private:
     sofa::core::componentmodel::topology::BaseMeshTopology* m_topology;
 };
 

@@ -27,8 +27,6 @@
 
 #include <sofa/component/topology/ManifoldEdgeSetGeometryAlgorithms.h>
 
-#include <sofa/component/topology/ManifoldEdgeSetTopologyContainer.h>
-
 namespace sofa
 {
 
@@ -37,13 +35,6 @@ namespace component
 
 namespace topology
 {
-template <class DataTypes>
-void ManifoldEdgeSetGeometryAlgorithms< DataTypes >::init()
-{
-    EdgeSetGeometryAlgorithms< DataTypes >::init();
-    m_topology = this->getContext()->getMeshTopology();
-}
-
 
 } // namespace topology
 
