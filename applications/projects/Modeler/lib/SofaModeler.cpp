@@ -171,6 +171,7 @@ SofaModeler::SofaModeler()
 
     std::set< std::string >::iterator it;
     std::multimap< std::string,ClassInfo* >::iterator itMap;
+
     for (it = setType.begin(); it != setType.end(); it++)
     {
         itMap = inventory.find( (*it) );
@@ -183,6 +184,7 @@ SofaModeler::SofaModeler()
 
         //Insert all the components belonging to the same family
         SofaComponents->addItem( gridWidget ,it->c_str() );
+        unsigned int counterElem=0;
         for (unsigned int i=0; i< inventory.count( (*it) ); ++i)
         {
             ClassInfo* entry = itMap->second;
@@ -200,7 +202,7 @@ SofaModeler::SofaModeler()
 
 
             QPushButton *button = new QPushButton(gridWidget, QString(entry->className.c_str()));
-            gridLayout->addWidget(button, i,0);
+            gridLayout->addWidget(button, counterElem,0);
             button->setFlat(true);
 
             //Count the number of template usable: Mapping and MechanicalMapping must be separated
@@ -238,12 +240,12 @@ SofaModeler::SofaModeler()
                 if (templateCombo.size() == 1) //Mapping with only one template possible
                 {
                     combo->hide();
-                    gridLayout->addWidget(new QLabel(QString(templateCombo[0].c_str()), gridWidget), i, 1);
+                    gridLayout->addWidget(new QLabel(QString(templateCombo[0].c_str()), gridWidget), counterElem, 1);
                 }
                 else
                 {
-                    if (templateCombo.size() == 0) {combo->hide(); button->hide();}
-                    gridLayout->addWidget(combo, i,1);
+                    gridLayout->addWidget(combo, counterElem,1);
+                    if (templateCombo.size() == 0) {combo->hide(); button->hide(); counterElem--;}
                 }
 
             }
@@ -252,7 +254,7 @@ SofaModeler::SofaModeler()
                 if (!entry->creatorList.begin()->first.empty())
                 {
                     QLabel *templateDescription = new QLabel(QString(entry->creatorList.begin()->first.c_str()), gridWidget);
-                    gridLayout->addWidget(templateDescription, i,1);
+                    gridLayout->addWidget(templateDescription, counterElem,1);
                 }
             }
             button->setText(QString(entry->className.c_str()));
@@ -261,6 +263,7 @@ SofaModeler::SofaModeler()
             itMap++;
 
             connect(button, SIGNAL(pressed() ), this, SLOT( dragComponent() ));
+            counterElem++;
         }
 
         gridLayout->addItem(new QSpacerItem(1,1,QSizePolicy::Expanding, QSizePolicy::Minimum ), numRows,0);
