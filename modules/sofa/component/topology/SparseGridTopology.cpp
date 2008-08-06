@@ -103,7 +103,6 @@ SparseGridTopology::SparseGridTopology(bool _isVirtual)
     n(initData(&n,Vec<3,int>(2,2,2),"n","grid resolution")),
     min(initData(&min,Vector3(0,0,0),"min","Min")),
     max(initData(&max,Vector3(0,0,0),"max","Max")),
-    filename(initData(&filename,"filename","File describing the SparseGrid")),
     _nbVirtualFinerLevels( initData(&_nbVirtualFinerLevels, 0, "nbVirtualFinerLevels", "create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)")),
     dim_voxels(initData(&dim_voxels,Vec<3,unsigned int>(512,512,246),"dim_voxels","Dimension of the voxel File")),
     size_voxel(initData(&size_voxel,Vector3(1.0f,1.0f,1.0f),"size_voxel","Dimension of one voxel")),
@@ -122,8 +121,7 @@ bool SparseGridTopology::load(const char* filename)
 {
     std::string f(filename);
     if ( sofa::helper::system::DataRepository.findFile ( f ) )
-        f = sofa::helper::system::DataRepository.getFile ( f );
-    this->filename.setValue( f );
+        this->d_filename.setValue( f );
 // 		cerr<<"SparseGridTopology::load : "<<filename<<"    "<<this->filename.getValue()<<endl;
     return true;
 }
@@ -218,16 +216,13 @@ void SparseGridTopology::init()
 void SparseGridTopology::buildAsFinest(  )
 {
     // 		  cerr<<"SparseGridTopology::buildAsFinest(  )\n";
-
-    std::string _filename=filename.getValue();
+    std::string _filename=d_filename.getValue();
     if (_filename.empty())
     {
         std::cerr << "SparseGridTopology: no filename specified." << std::endl;
         return;
     }
-    if ( sofa::helper::system::DataRepository.findFile ( _filename ))
-        _filename = sofa::helper::system::DataRepository.getFile ( _filename );
-    else
+    if (! sofa::helper::system::DataRepository.findFile ( _filename ))
         return;
 
     // initialize the following datafields:
@@ -1030,7 +1025,7 @@ void SparseGridTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->setNx( newnx );
     _virtualFinerLevels[0]->setNy( newny );
     _virtualFinerLevels[0]->setNz( newnz );
-    _virtualFinerLevels[0]->load(this->filename.getValue().c_str());
+    _virtualFinerLevels[0]->load(this->d_filename.getValue().c_str());
     _virtualFinerLevels[0]->init();
 
     cerr<<"SparseGridTopology "<<getName()<<" buildVirtualFinerLevels : ";

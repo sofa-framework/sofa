@@ -87,9 +87,13 @@ public:
 
     virtual ~HexahedronSetTopologyContainer() {}
 
-    virtual void init();
-
+    /// Procedural creation methods
+    /// @{
     virtual void clear();
+    virtual void addHexa( int a, int b, int c, int d, int e, int f, int g, int h );
+    /// @}
+
+    virtual void init();
 
     /// BaseMeshTopology API
     /// @{
@@ -378,6 +382,7 @@ protected:
     sofa::helper::vector< sofa::helper::vector< unsigned int > > m_hexahedronEdgeShell;
     /// for each quad provides the set of hexahedra adjacent to that edge
     sofa::helper::vector< sofa::helper::vector< unsigned int > > m_hexahedronQuadShell;
+    virtual void loadFromMeshLoader(sofa::component::MeshLoader* loader);
 };
 
 } // namespace topology

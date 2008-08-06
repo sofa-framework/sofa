@@ -23,7 +23,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <iostream>
-#include <sofa/helper/io/Mesh.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/fixed_array.h>
@@ -126,18 +125,55 @@ void MeshTopology::addEdge( int a, int b )
 {
     seqEdges.beginEdit()->push_back(Edge(a,b));
     seqEdges.endEdit();
+    if (a >= (int)nbPoints) nbPoints = a+1;
+    if (b >= (int)nbPoints) nbPoints = b+1;
 }
 
 void MeshTopology::addTriangle( int a, int b, int c )
 {
     seqTriangles.beginEdit()->push_back( Triangle(a,b,c) );
     seqTriangles.endEdit();
+    if (a >= (int)nbPoints) nbPoints = a+1;
+    if (b >= (int)nbPoints) nbPoints = b+1;
+    if (c >= (int)nbPoints) nbPoints = c+1;
 }
 
-void MeshTopology::addTetrahedron( int a, int b, int c, int d )
+void MeshTopology::addQuad(int a, int b, int c, int d)
+{
+    seqQuads.beginEdit()->push_back(Quad(a,b,c,d));
+    seqQuads.endEdit();
+    if (a >= (int)nbPoints) nbPoints = a+1;
+    if (b >= (int)nbPoints) nbPoints = b+1;
+    if (c >= (int)nbPoints) nbPoints = c+1;
+    if (d >= (int)nbPoints) nbPoints = d+1;
+}
+
+void MeshTopology::addTetra( int a, int b, int c, int d )
 {
     seqTetras.beginEdit()->push_back( Tetra(a,b,c,d) );
     seqTetras.endEdit();
+    if (a >= (int)nbPoints) nbPoints = a+1;
+    if (b >= (int)nbPoints) nbPoints = b+1;
+    if (c >= (int)nbPoints) nbPoints = c+1;
+    if (d >= (int)nbPoints) nbPoints = d+1;
+}
+
+void MeshTopology::addHexa(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8)
+{
+#ifdef SOFA_NEW_HEXA
+    seqHexas.beginEdit()->push_back(Hexa(p1,p2,p3,p4,p5,p6,p7,p8));
+#else
+    seqHexas.beginEdit()->push_back(Hexa(p1,p2,p4,p3,p5,p6,p8,p7));
+#endif
+    seqHexas.endEdit();
+    if (p1 >= (int)nbPoints) nbPoints = p1+1;
+    if (p2 >= (int)nbPoints) nbPoints = p2+1;
+    if (p3 >= (int)nbPoints) nbPoints = p3+1;
+    if (p4 >= (int)nbPoints) nbPoints = p4+1;
+    if (p5 >= (int)nbPoints) nbPoints = p5+1;
+    if (p6 >= (int)nbPoints) nbPoints = p6+1;
+    if (p7 >= (int)nbPoints) nbPoints = p7+1;
+    if (p8 >= (int)nbPoints) nbPoints = p8+1;
 }
 
 const MeshTopology::SeqEdges& MeshTopology::getEdges()
@@ -1514,21 +1550,20 @@ void MeshTopology::draw()
             glBegin(GL_LINES);
             glVertex3d(getPX(c[3]), getPY(c[3]), getPZ(c[3]));
             glVertex3d(getPX(c[7]), getPY(c[7]), getPZ(c[7]));
-            glEnd();
-            glBegin(GL_LINES);
+            //glEnd();
+            //glBegin(GL_LINES);
             glVertex3d(getPX(c[2]), getPY(c[2]), getPZ(c[2]));
             glVertex3d(getPX(c[6]), getPY(c[6]), getPZ(c[6]));
-            glEnd();
-            glBegin(GL_LINES);
+            //glEnd();
+            //glBegin(GL_LINES);
             glVertex3d(getPX(c[0]), getPY(c[0]), getPZ(c[0]));
             glVertex3d(getPX(c[4]), getPY(c[4]), getPZ(c[4]));
-            glEnd();
-            glBegin(GL_LINES);
+            //glEnd();
+            //glBegin(GL_LINES);
             glVertex3d(getPX(c[1]), getPY(c[1]), getPZ(c[1]));
             glVertex3d(getPX(c[5]), getPY(c[5]), getPZ(c[5]));
             glEnd();
         }
-
     }
 }
 

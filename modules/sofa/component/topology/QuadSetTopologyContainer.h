@@ -60,9 +60,13 @@ public:
 
     virtual ~QuadSetTopologyContainer() {}
 
-    virtual void init();
-
+    /// Procedural creation methods
+    /// @{
     virtual void clear();
+    virtual void addQuad( int a, int b, int c, int d );
+    /// @}
+
+    virtual void init();
 
     /// BaseMeshTopology API
     /// @{
@@ -274,6 +278,8 @@ protected:
     sofa::helper::vector< sofa::helper::vector< unsigned int > > m_quadVertexShell;
     /// for each edge provides the set of quads adjacent to that edge
     sofa::helper::vector< sofa::helper::vector< unsigned int > > m_quadEdgeShell;
+
+    virtual void loadFromMeshLoader(sofa::component::MeshLoader* loader);
 };
 
 } // namespace topology

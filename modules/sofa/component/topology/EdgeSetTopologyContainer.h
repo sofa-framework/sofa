@@ -55,6 +55,12 @@ public:
 
     virtual ~EdgeSetTopologyContainer() {}
 
+    /// Procedural creation methods
+    /// @{
+    virtual void clear();
+    virtual void addEdge( int a, int b );
+    /// @}
+
     virtual void init();
 
     /// BaseMeshTopology API
@@ -75,12 +81,6 @@ public:
     */
     virtual int getEdgeIndex(PointID v1, PointID v2);
 
-    /// @}
-
-    /// Procedural creation methods
-    /// @{
-    virtual void clear();
-    virtual void addEdge( int a, int b );
     /// @}
 
     /** \brief Checks if the topology is coherent
@@ -166,6 +166,8 @@ protected:
 
     /** the array that stores the set of edge-vertex shells, ie for each vertex gives the set of adjacent edges */
     sofa::helper::vector< sofa::helper::vector< unsigned int > > m_edgeVertexShell;
+
+    virtual void loadFromMeshLoader(sofa::component::MeshLoader* loader);
 };
 
 } // namespace topology

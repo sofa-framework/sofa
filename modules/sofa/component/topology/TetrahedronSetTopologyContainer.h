@@ -73,9 +73,13 @@ public:
 
     virtual ~TetrahedronSetTopologyContainer() {}
 
-    virtual void init();
-
+    /// Procedural creation methods
+    /// @{
     virtual void clear();
+    virtual void addTetra( int a, int b, int c, int d );
+    /// @}
+
+    virtual void init();
 
     /// BaseMeshTopology API
     /// @{
@@ -361,6 +365,8 @@ protected:
     sofa::helper::vector< sofa::helper::vector< unsigned int > > m_tetrahedronEdgeShell;
     /// for each triangle provides the set of tetrahedra adjacent to that edge
     sofa::helper::vector< sofa::helper::vector< unsigned int > > m_tetrahedronTriangleShell;
+
+    virtual void loadFromMeshLoader(sofa::component::MeshLoader* loader);
 };
 
 } // namespace topology

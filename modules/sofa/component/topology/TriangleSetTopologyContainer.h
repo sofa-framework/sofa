@@ -63,9 +63,13 @@ public:
 
     virtual ~TriangleSetTopologyContainer() {}
 
-    virtual void init();
-
+    /// Procedural creation methods
+    /// @{
     virtual void clear();
+    virtual void addTriangle( int a, int b, int c );
+    /// @}
+
+    virtual void init();
 
     /// BaseMeshTopology API
     /// @{
@@ -277,6 +281,8 @@ protected:
     sofa::helper::vector< sofa::helper::vector< unsigned int > > m_triangleVertexShell;
     /// for each edge provides the set of triangles adjacent to that edge
     sofa::helper::vector< sofa::helper::vector< unsigned int > > m_triangleEdgeShell;
+
+    virtual void loadFromMeshLoader(sofa::component::MeshLoader* loader);
 };
 
 } // namespace topology

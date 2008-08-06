@@ -51,22 +51,38 @@ TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer()
 {}
 
 TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer(const sofa::helper::vector< Tetrahedron >& tetrahedra )
-    : TriangleSetTopologyContainer(),
-      m_tetrahedron( tetrahedra )
-{}
+    : TriangleSetTopologyContainer()
+    , m_tetrahedron( tetrahedra )
+{
+    for (unsigned int i=0; i<m_tetrahedron.size(); ++i)
+    {
+        for(unsigned int j=0; j<4; ++j)
+        {
+            int a = m_tetrahedron[i][j];
+            if (a >= (int)nbPoints) nbPoints = a+1;
+        }
+    }
+}
+
+void TetrahedronSetTopologyContainer::addTetra( int a, int b, int c, int d )
+{
+    m_tetrahedron.push_back(Tetra(a,b,c,d));
+    if (a >= (int)nbPoints) nbPoints = a+1;
+    if (b >= (int)nbPoints) nbPoints = b+1;
+    if (c >= (int)nbPoints) nbPoints = c+1;
+    if (d >= (int)nbPoints) nbPoints = d+1;
+}
 
 void TetrahedronSetTopologyContainer::init()
 {
-    sofa::component::MeshLoader* loader;
-    this->getContext()->get(loader);
+    TriangleSetTopologyContainer::init();
+}
 
-    if(loader)
-    {
-        m_tetrahedron = loader->getTetras();
-    }
-
+void TetrahedronSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoader* loader)
+{
     // load points
-    PointSetTopologyContainer::init();
+    PointSetTopologyContainer::loadFromMeshLoader(loader);
+    m_tetrahedron = loader->getTetras();
 }
 
 void TetrahedronSetTopologyContainer::createTetrahedronSetArray()

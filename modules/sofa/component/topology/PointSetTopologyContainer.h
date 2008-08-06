@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYCONTAINER_H
 
 #include <sofa/helper/vector.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
 
 namespace sofa
@@ -33,6 +34,8 @@ namespace sofa
 
 namespace component
 {
+
+class MeshLoader;
 
 namespace topology
 {
@@ -45,26 +48,18 @@ to each point. This set of point may be a subset of the DOF of the mechanical mo
 class PointSetTopologyContainer : public core::componentmodel::topology::TopologyContainer
 {
 public:
-    PointSetTopologyContainer();
 
-    PointSetTopologyContainer(const int nPoints);
+    PointSetTopologyContainer(int nPoints = 0);
 
     virtual ~PointSetTopologyContainer() {}
-
-    virtual void init();
-
-    /// BaseMeshTopology API
-    /// @{
-    /** \brief Returns the number of vertices in this topology.
-    *
-    */
-    int getNbPoints() const {return nbPoints;}
 
     /// Procedural creation methods
     /// @{
     virtual void clear();
     virtual void addPoint(double px, double py, double pz);
     /// @}
+
+    virtual void init();
 
     /** \brief Checks if the Topology is coherent
     *
@@ -89,8 +84,23 @@ public:
         return in;
     }
 
-private:
-    unsigned int	nbPoints;
+    /// BaseMeshTopology API
+    /// @{
+    /** \brief Returns the number of vertices in this topology.
+    *
+    */
+    int getNbPoints() const { return (int)nbPoints; }
+    virtual void setNbPoints(int n);
+    virtual bool hasPos() const;
+    virtual double getPX(int i) const;
+    virtual double getPY(int i) const;
+    virtual double getPZ(int i) const;
+    /// @}
+protected:
+    unsigned int nbPoints;
+    typedef defaulttype::Vec3Types InitTypes;
+    InitTypes::VecCoord initPoints;
+    virtual void loadFromMeshLoader(sofa::component::MeshLoader* loader);
 };
 
 } // namespace topology

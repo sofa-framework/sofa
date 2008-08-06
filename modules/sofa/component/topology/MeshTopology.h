@@ -54,8 +54,6 @@ public:
 
     virtual void init();
 
-    virtual void clear();
-
     virtual int getNbPoints() const;
 
     // Complete sequence accessors
@@ -126,12 +124,15 @@ public:
     virtual double getPZ(int i) const;
 
     // for procedural creation without file loader
+    virtual void clear();
     void addPoint(double px, double py, double pz);
     void addEdge( int a, int b );
     void addTriangle( int a, int b, int c );
-    void addTetrahedron( int a, int b, int c, int d );
+    void addQuad( int a, int b, int c, int d );
+    void addTetra( int a, int b, int c, int d );
+    void addHexa( int a, int b, int c, int d, int e, int f, int g, int h );
 
-    // get the current revision of this mesh (use to detect changes)
+    /// get the current revision of this mesh (use to detect changes)
     int getRevision() const { return revision; }
 
     /// return true if the given cube is active, i.e. it contains or is surrounded by mapped points.

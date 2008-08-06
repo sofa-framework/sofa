@@ -91,19 +91,18 @@ bool MeshTopologyLoader::loadObj(const char *filename)
         }
         else if (facet.size()==4)
         {
-            // Quat
+            // Quad
             addQuad(facet[0],facet[1],facet[2],facet[3]);
         }
-        else if (facet.size()==8)
-        {
-            // Quadralize
-            addQuad(facet[0],facet[3],facet[2],facet[1]);
-            addQuad(facet[4],facet[5],facet[6],facet[7]);
-            addQuad(facet[0],facet[1],facet[5],facet[4]);
-            addQuad(facet[1],facet[2],facet[6],facet[5]);
-            addQuad(facet[2],facet[3],facet[7],facet[6]);
-            addQuad(facet[3],facet[0],facet[4],facet[7]);
-        }
+        // else if (facet.size()==8)
+        // { // Quadralize
+        //     addQuad(facet[0],facet[3],facet[2],facet[1]);
+        //     addQuad(facet[4],facet[5],facet[6],facet[7]);
+        //     addQuad(facet[0],facet[1],facet[5],facet[4]);
+        //     addQuad(facet[1],facet[2],facet[6],facet[5]);
+        //     addQuad(facet[2],facet[3],facet[7],facet[6]);
+        //     addQuad(facet[3],facet[0],facet[4],facet[7]);
+        // }
         else
         {
             // Triangularize
