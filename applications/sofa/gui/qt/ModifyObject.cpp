@@ -61,6 +61,7 @@
 #include <sofa/simulation/common/TransformationVisitor.h>
 
 
+
 #include <qwt_legend.h>
 
 #if !defined(INFINITY)
@@ -278,80 +279,27 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     tabVisualizationLayout = new QVBoxLayout( tabVisualization, 0, 1, "tabVisualizationLayout");
 
 
-                    box = new Q3GroupBox(tabVisualization, QString("Tri State Test"));
+                    box = new Q3GroupBox(tabVisualization, QString("Tri State"));
                     tabVisualizationLayout->addWidget( box );
 
                     box->setColumns(2);
                     box->setTitle(QString("Visualization Flags"));
 
-                    Q3ListView *listDisplayFlags = new Q3ListView(box);
-                    listDisplayFlags->addColumn(QString::null);
-                    listDisplayFlags->setRootIsDecorated( TRUE );
-                    listDisplayFlags->setTreeStepSize( 12 );
-                    listDisplayFlags->header()->hide();
-                    listDisplayFlags->clear();
+                    displayFlag = new DisplayFlagWidget(box);
 
-                    enum {VISUAL, BEHAVIOR, COLLISION, BOUNDING, MAPPING, MECHANICALMAPPING, FORCEFIELD, INTERACTION, WIREFRAME, NORMALS};
-
-                    listDisplayFlags->setSortColumn(-1);
-                    Q3CheckListItem* itemShowAll = new Q3CheckListItem(listDisplayFlags, "All", Q3CheckListItem::CheckBoxController);
-                    itemShowAll->setOpen(true);
-                    Q3CheckListItem* itemShowVisual    = new Q3CheckListItem(itemShowAll, "Visual", Q3CheckListItem::CheckBoxController);
-                    itemShowVisual->setOpen(true);
-                    itemShowFlag[VISUAL]   = new Q3CheckListItem(itemShowVisual, "Visual Models", Q3CheckListItem::CheckBox);
-                    Q3CheckListItem* itemShowBehavior  = new Q3CheckListItem(itemShowAll, itemShowVisual, "Behavior", Q3CheckListItem::CheckBoxController);
-                    itemShowBehavior->setOpen(true);
-                    itemShowFlag[BEHAVIOR]   = new Q3CheckListItem(itemShowBehavior,  "Behavior Models", Q3CheckListItem::CheckBox);
-                    itemShowFlag[FORCEFIELD]   = new Q3CheckListItem(itemShowBehavior, itemShowFlag[BEHAVIOR], "Force Fields", Q3CheckListItem::CheckBox);
-                    itemShowFlag[INTERACTION]   = new Q3CheckListItem(itemShowBehavior, itemShowFlag[FORCEFIELD],  "Interactions", Q3CheckListItem::CheckBox);
-                    Q3CheckListItem* itemShowCollision = new Q3CheckListItem(itemShowAll, itemShowBehavior, "Collision", Q3CheckListItem::CheckBoxController);
-                    itemShowCollision->setOpen(true);
-                    itemShowFlag[COLLISION]   = new Q3CheckListItem(itemShowCollision,  "Collision Models", Q3CheckListItem::CheckBox);
-                    itemShowFlag[BOUNDING]   = new Q3CheckListItem(itemShowCollision, itemShowFlag[COLLISION], "Bounding Trees", Q3CheckListItem::CheckBox);
-                    Q3CheckListItem* itemShowMapping   = new Q3CheckListItem(itemShowAll, itemShowCollision, "Mapping", Q3CheckListItem::CheckBoxController);
-                    itemShowMapping->setOpen(true);
-                    itemShowFlag[MAPPING]   = new Q3CheckListItem(itemShowMapping,  "Visual Mappings", Q3CheckListItem::CheckBox);
-                    itemShowFlag[MECHANICALMAPPING]   = new Q3CheckListItem(itemShowMapping, itemShowFlag[MAPPING],  "Mechanical Mappings", Q3CheckListItem::CheckBox);
-                    Q3ListViewItem*  itemShowOptions   = new Q3ListViewItem(listDisplayFlags, itemShowAll, "Options");
-                    itemShowOptions->setOpen(true);
-                    itemShowFlag[WIREFRAME]   = new Q3CheckListItem(itemShowOptions, "Wire Frame", Q3CheckListItem::CheckBox);
-                    itemShowFlag[NORMALS]   = new Q3CheckListItem(itemShowOptions, itemShowFlag[WIREFRAME], "Normals", Q3CheckListItem::CheckBox);
-
-                    listDisplayFlags->insertItem(itemShowAll);
-                    itemShowAll->insertItem(itemShowVisual); itemShowAll->setOpen(true);
-                    itemShowVisual->insertItem(itemShowFlag[VISUAL]);
-                    itemShowAll->insertItem(itemShowBehavior);
-                    itemShowBehavior->insertItem(itemShowFlag[BEHAVIOR]);
-                    itemShowBehavior->insertItem(itemShowFlag[FORCEFIELD]);
-                    itemShowBehavior->insertItem(itemShowFlag[INTERACTION]);
-                    itemShowAll->insertItem(itemShowCollision);
-                    itemShowCollision->insertItem(itemShowFlag[COLLISION]);
-                    itemShowCollision->insertItem(itemShowFlag[BOUNDING]);
-                    itemShowAll->insertItem(itemShowMapping);
-                    itemShowMapping->insertItem(itemShowFlag[MAPPING]);
-                    itemShowMapping->insertItem(itemShowFlag[MECHANICALMAPPING]);
-
-                    listDisplayFlags->insertItem(itemShowOptions); itemShowOptions->setOpen(true);
-                    itemShowOptions->insertItem(itemShowFlag[WIREFRAME]);
-                    itemShowOptions->insertItem(itemShowFlag[NORMALS]);
+                    connect( displayFlag, SIGNAL( change(int,bool)), this, SLOT(changeVisualValue() ));
 
                     Data<int> *ff;
 
                     for (unsigned int i=0; i<10; ++i)
                     {
                         ff=dynamic_cast< Data<int> * >( (*it).second);
-                        objectGUI.push_back(std::make_pair( (*it).second,  (QObject *) itemShowFlag[i]));
-                        if (i!=0) itemShowFlag[i]->setOn(ff->getValue()==1);
-                        else      itemShowFlag[i]->setOn(ff->getValue()!=0);
+                        objectGUI.push_back(std::make_pair( (*it).second,  (QObject *) displayFlag));
+                        if (i!=0) displayFlag->setFlag(i,(ff->getValue()==1));
+                        else      displayFlag->setFlag(i,(ff->getValue()!=0));
                         it++;
                     }
                     it--;
-
-#ifdef SOFA_QT4
-                    connect( listDisplayFlags, SIGNAL( pressed(QListViewItem *)), this, SLOT(visualFlagChanged(QListViewItem *)));
-#else
-                    connect( listDisplayFlags, SIGNAL( pressed(QListViewItem *)), this, SLOT(visualFlagChanged(QListViewItem *)));
-#endif
                     continue;
                 }
             }
@@ -1245,12 +1193,12 @@ void ModifyObject::updateValues()
         for (unsigned int index_object=0; index_object < objectGUI.size(); ++index_object)
         {
             //Special Treatment for visual flags
-            if( visualContentModified && objectGUI[index_object].second == (QObject*) itemShowFlag[0])
+            if( visualContentModified && objectGUI[index_object].second == (QObject*) displayFlag)
             {
                 for (unsigned int i=0; i<10; ++i)
                 {
                     Data<int> * ff = dynamic_cast< Data<int> * >( objectGUI[index_object].first );
-                    ff->setValue(itemShowFlag[i]->isOn());
+                    ff->setValue(displayFlag->getFlag(i));
                     index_object++;
                 }
                 index_object--;
@@ -4566,13 +4514,6 @@ void ModifyObject::resizeTable(int number)
     setResize.clear();
 }
 
-void ModifyObject::visualFlagChanged(Q3ListViewItem *item)
-{
-    changeVisualValue();
-    Q3CheckListItem* checkItem=dynamic_cast<Q3CheckListItem*>(item);
-    if (checkItem->isOn()) checkItem->setState(Q3CheckListItem::Off);
-    else checkItem->setState(Q3CheckListItem::On);
-}
 
 } // namespace qt
 

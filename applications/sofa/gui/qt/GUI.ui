@@ -22,8 +22,8 @@
     </property>
     <property name="minimumSize">
         <size>
-            <width>232</width>
-            <height>461</height>
+            <width>246</width>
+            <height>462</height>
         </size>
     </property>
     <property name="caption">
@@ -231,183 +231,21 @@
                             <attribute name="title">
                                 <string>View</string>
                             </attribute>
-                            <vbox>
+                            <grid>
                                 <property name="name">
                                     <cstring>unnamed</cstring>
                                 </property>
-                                <widget class="QListView">
-                                    <column>
-                                        <property name="text">
-                                            <string></string>
-                                        </property>
-                                        <property name="clickable">
-                                            <bool>true</bool>
-                                        </property>
-                                        <property name="resizable">
-                                            <bool>true</bool>
-                                        </property>
-                                    </column>
-                                <item>
-                                    <property name="text">
-                                        <string>All</string>
-                                    </property>
-                                    <property name="pixmap">
-                                        <pixmap></pixmap>
-                                    </property>
-                                    <item>
-                                        <property name="text">
-                                            <string>Visual</string>
-                                        </property>
-                                        <property name="pixmap">
-                                            <pixmap></pixmap>
-                                        </property>
-                                        <item>
-                                            <property name="text">
-                                                <string>Visual Models</string>
-                                            </property>
-                                            <property name="pixmap">
-                                                <pixmap></pixmap>
-                                            </property>
-                                        </item>
-                                    </item>
-                                    <item>
-                                        <property name="text">
-                                            <string>Behavior</string>
-                                        </property>
-                                        <property name="pixmap">
-                                            <pixmap></pixmap>
-                                        </property>
-                                        <item>
-                                            <property name="text">
-                                                <string>Interactions</string>
-                                            </property>
-                                            <property name="pixmap">
-                                                <pixmap></pixmap>
-                                            </property>
-                                        </item>
-                                        <item>
-                                            <property name="text">
-                                                <string>ForceFields</string>
-                                            </property>
-                                            <property name="pixmap">
-                                                <pixmap></pixmap>
-                                            </property>
-                                        </item>
-                                        <item>
-                                            <property name="text">
-                                                <string>Behavior Models</string>
-                                            </property>
-                                            <property name="pixmap">
-                                                <pixmap></pixmap>
-                                            </property>
-                                        </item>
-                                        <item>
-                                            <property name="text">
-                                                <string>Mappings</string>
-                                            </property>
-                                            <property name="pixmap">
-                                                <pixmap></pixmap>
-                                            </property>
-                                        </item>
-                                        <item>
-                                            <property name="text">
-                                                <string>Mechanical Mappings</string>
-                                            </property>
-                                            <property name="pixmap">
-                                                <pixmap></pixmap>
-                                            </property>
-                                        </item>
-                                    </item>
-                                    <item>
-                                        <property name="text">
-                                            <string>Collision</string>
-                                        </property>
-                                        <property name="pixmap">
-                                            <pixmap></pixmap>
-                                        </property>
-                                        <item>
-                                            <property name="text">
-                                                <string>Collision Models</string>
-                                            </property>
-                                            <property name="pixmap">
-                                                <pixmap></pixmap>
-                                            </property>
-                                        </item>
-                                        <item>
-                                            <property name="text">
-                                                <string>Bounding Trees</string>
-                                            </property>
-                                            <property name="pixmap">
-                                                <pixmap></pixmap>
-                                            </property>
-                                        </item>
-                                    </item>
-                                </item>
-                                <item>
-                                    <property name="text">
-                                        <string>Wire Frame</string>
-                                    </property>
-                                    <property name="pixmap">
-                                        <pixmap></pixmap>
-                                    </property>
-                                </item>
-                                <item>
-                                    <property name="text">
-                                        <string>Normals</string>
-                                    </property>
-                                    <property name="pixmap">
-                                        <pixmap></pixmap>
-                                    </property>
-                                </item>
+                                <widget class="QLayoutWidget" row="1" column="0">
                                     <property name="name">
-                                        <cstring>listDisplayFlags</cstring>
+                                        <cstring>iconSofa</cstring>
                                     </property>
-                                    <property name="paletteBackgroundColor">
-                                        <color>
-                                            <red>239</red>
-                                            <green>243</green>
-                                            <blue>247</blue>
-                                        </color>
-                                    </property>
-                                    <property name="mouseTracking">
-                                        <bool>false</bool>
-                                    </property>
-                                    <property name="focusPolicy">
-                                        <enum>NoFocus</enum>
-                                    </property>
-                                    <property name="frameShape">
-                                        <enum>NoFrame</enum>
-                                    </property>
-                                    <property name="frameShadow">
-                                        <enum>Plain</enum>
-                                    </property>
-                                    <property name="resizePolicy">
-                                        <enum>AutoOneFit</enum>
-                                    </property>
-                                    <property name="hScrollBarMode">
-                                        <enum>AlwaysOff</enum>
-                                    </property>
-                                    <property name="allColumnsShowFocus">
-                                        <bool>false</bool>
-                                    </property>
-                                    <property name="rootIsDecorated">
-                                        <bool>true</bool>
-                                    </property>
-                                    <property name="treeStepSize">
-                                        <number>12</number>
-                                    </property>
-                                </widget>
-                                <widget class="QLayoutWidget">
-                                    <property name="name">
-                                        <cstring>layout4</cstring>
-                                    </property>
-                                    <hbox>
+                                    <grid>
                                         <property name="name">
                                             <cstring>unnamed</cstring>
                                         </property>
-                                        <spacer>
+                                        <spacer row="0" column="2">
                                             <property name="name">
-                                                <cstring>spacer7</cstring>
+                                                <cstring>spacer8</cstring>
                                             </property>
                                             <property name="orientation">
                                                 <enum>Horizontal</enum>
@@ -417,12 +255,12 @@
                                             </property>
                                             <property name="sizeHint">
                                                 <size>
-                                                    <width>40</width>
-                                                    <height>10</height>
+                                                    <width>299</width>
+                                                    <height>16</height>
                                                 </size>
                                             </property>
                                         </spacer>
-                                        <widget class="QLabel">
+                                        <widget class="QLabel" row="0" column="1">
                                             <property name="name">
                                                 <cstring>pixmapLabel1</cstring>
                                             </property>
@@ -440,13 +278,13 @@
                                             <property name="scaledContents">
                                                 <bool>true</bool>
                                             </property>
-					    <property name="toolTip" stdset="0">
-					      <string>http://sofa-framework.org</string>
-					    </property>
+                                            <property name="toolTip" stdset="0">
+                                                <string>http://sofa-framework.org</string>
+                                            </property>
                                         </widget>
-                                        <spacer>
+                                        <spacer row="0" column="0">
                                             <property name="name">
-                                                <cstring>spacer8</cstring>
+                                                <cstring>spacer7</cstring>
                                             </property>
                                             <property name="orientation">
                                                 <enum>Horizontal</enum>
@@ -456,35 +294,14 @@
                                             </property>
                                             <property name="sizeHint">
                                                 <size>
-                                                    <width>40</width>
-                                                    <height>10</height>
+                                                    <width>299</width>
+                                                    <height>16</height>
                                                 </size>
                                             </property>
                                         </spacer>
-                                    </hbox>
+                                    </grid>
                                 </widget>
-<!--
-                                <widget class="QLabel">
-                                    <property name="name">
-                                        <cstring>textLabel_url</cstring>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>7</hsizetype>
-                                            <vsizetype>0</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="text">
-                                        <string>&lt;a href="http://sofa-framework.org/"&gt;&lt;font color="#d67141"&gt;http://sofa-framework.org/&lt;/font&gt;&lt;/a&gt;</string>
-                                    </property>
-                                    <property name="alignment">
-                                        <set>WordBreak|AlignCenter</set>
-                                    </property>
-                                </widget>
--->
-                            </vbox>
+                            </grid>
                         </widget>
                         <widget class="QWidget">
                             <property name="name">
@@ -795,8 +612,6 @@
         <action name="viewerOpenGLAction"/>
         <action name="viewerQGLViewerAction"/>
         <action name="viewerOGREAction"/>
-        <separator/>
-        <action name="viewExecution_GraphAction"/>
     </item>
     <item text="Help" name="helpMenu">
         <action name="helpContentsAction"/>
@@ -1167,17 +982,6 @@
             <string>Gnuplot Directory...</string>
         </property>
     </action>
-    <action>
-        <property name="name">
-            <cstring>viewExecution_GraphAction</cstring>
-        </property>
-        <property name="text">
-            <string>Execution Graph</string>
-        </property>
-        <property name="menuText">
-            <string>Execution Graph</string>
-        </property>
-    </action>
 </actions>
 <images>
     <image name="image0">
@@ -1348,12 +1152,6 @@
         <slot>editGnuplotDirectory()</slot>
     </connection>
     <connection>
-        <sender>viewExecution_GraphAction</sender>
-        <signal>activated()</signal>
-        <receiver>GUI</receiver>
-        <slot>viewExecutionGraph()</slot>
-    </connection>
-    <connection>
         <sender>GUI</sender>
         <signal>usesTextLabelChanged(bool)</signal>
         <receiver>GUI</receiver>
@@ -1384,7 +1182,6 @@
     <slot>RightClickedItemInSceneView( QListViewItem *, const QPoint &amp;, int )</slot>
     <slot>editRecordDirectory()</slot>
     <slot>editGnuplotDirectory()</slot>
-    <slot>viewExecutionGraph()</slot>
     <slot>showVisualModels()</slot>
     <slot>hideVisualModels()</slot>
     <slot>showBehaviorModels()</slot>

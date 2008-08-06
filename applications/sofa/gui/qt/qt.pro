@@ -10,6 +10,7 @@ HEADERS += viewer/SofaViewer.h \
            GraphListenerQListView.h \
            GenGraphForm.h \
            AddObject.h \
+           DisplayFlagWidget.h \
            ModifyObject.h \
            WFloatLineEdit.h \
            FileManagement.h
@@ -22,6 +23,7 @@ SOURCES += Main.cpp \
            GraphListenerQListView.cpp \
            GenGraphForm.cpp \
            AddObject.cpp \
+           DisplayFlagWidget.cpp \
            ModifyObject.cpp \
            WFloatLineEdit.cpp \
            FileManagement.cpp
