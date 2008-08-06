@@ -200,6 +200,19 @@ SofaModeler::SofaModeler()
                 if (isMass) { itMap++; continue;}
             }
 
+            //We must remove the topological container from the Topology
+            if ( *it == "Topology")
+            {
+                std::set< std::string >::iterator baseClassIt;
+                bool isMass=false;
+                for (baseClassIt = entry->baseClasses.begin(); baseClassIt!= entry->baseClasses.end() && !isMass; baseClassIt++)
+                {
+                    isMass= (*baseClassIt == "TopologyObject");
+                }
+                if (isMass) { itMap++; continue;}
+            }
+
+
 
             QPushButton *button = new QPushButton(gridWidget, QString(entry->className.c_str()));
             gridLayout->addWidget(button, counterElem,0);

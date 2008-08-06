@@ -316,9 +316,9 @@ void QuadularBendingSprings<DataTypes>::QuadularBSQuadDestructionFunction (const
 template<class DataTypes>
 QuadularBendingSprings<DataTypes>::QuadularBendingSprings()
     : updateMatrix(true)
-    , f_ks(initData(&f_ks,(double) 100000.0,"stiffness","uniform stiffness for the all springs")) //(Real)0.3 ??
-    , f_kd(initData(&f_kd,(double) 1.0,"damping","uniform damping for the all springs")) // (Real)1000. ??
 {
+    f_ks = this->initData(&f_ks,(double) 100000.0,"stiffness","uniform stiffness for the all springs");
+    f_kd = this->initData(&f_kd,(double) 1.0,"damping","uniform damping for the all springs");
 }
 
 
@@ -501,7 +501,7 @@ void QuadularBendingSprings<DataTypes>::init()
     //std::cerr << "initializing QuadularBendingSprings" << std::endl;
     this->Inherited::init();
 
-    _topology = getContext()->getMeshTopology();
+    _topology = this->getContext()->getMeshTopology();
 
     if (_topology->getNbQuads()==0)
     {
@@ -765,10 +765,10 @@ void QuadularBendingSprings<DataTypes>::updateLameCoefficients()
 template<class DataTypes>
 void QuadularBendingSprings<DataTypes>::draw()
 {
-    if (!getContext()->getShowForceFields()) return;
+    if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;
 
-    if (getContext()->getShowWireFrame())
+    if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     VecCoord& x = *this->mstate->getX();
@@ -836,7 +836,7 @@ void QuadularBendingSprings<DataTypes>::draw()
     glEnd();
 
 
-    if (getContext()->getShowWireFrame())
+    if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 
