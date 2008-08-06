@@ -335,7 +335,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
 
     displayFlag = new DisplayFlagWidget(tabView);
     connect( displayFlag, SIGNAL( change(int,bool)), this, SLOT(showhideElements(int,bool) ));
-    tabViewLayout->addWidget(displayFlag,0,0);
+    gridLayout1->addWidget(displayFlag,0,0);
 
 
     left_stack = new QWidgetStack ( splitter2 );

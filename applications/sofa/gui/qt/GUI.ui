@@ -234,7 +234,7 @@
 			    <grid>
                             <widget class="QLayoutWidget" row="2" column="0">
                               <property name="name">
-                                <cstring>tabViewLayout</cstring>
+                                <cstring>gridLayout1</cstring>
                               </property>
                               <grid>
                                 <widget class="QLayoutWidget" row="1" column="0">
