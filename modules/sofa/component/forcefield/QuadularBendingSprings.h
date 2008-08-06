@@ -58,7 +58,7 @@ Bending springs added between vertices of quads sharing a common edge.
 The springs connect the vertices not belonging to the common edge. It compresses when the surface bends along the common edge.
 */
 template<class DataTypes>
-class QuadularBendingSprings : public core::componentmodel::behavior::ForceField<DataTypes>, public core::VisualModel
+class QuadularBendingSprings : public core::componentmodel::behavior::ForceField<DataTypes>
 {
 public:
     typedef core::componentmodel::behavior::ForceField<DataTypes> Inherited;
