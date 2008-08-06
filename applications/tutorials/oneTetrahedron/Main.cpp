@@ -88,7 +88,7 @@ int main(int argc, char** argv)
     MeshTopology* topology = new MeshTopology;
     groot->addObject( topology );
     topology->setName("topology");
-    topology->addTetrahedron(0,1,2,3);
+    topology->addTetra(0,1,2,3);
 
     // Tetrahedron constraints
     FixedConstraint3* constraints = new FixedConstraint3;

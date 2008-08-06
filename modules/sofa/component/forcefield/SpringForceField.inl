@@ -92,12 +92,14 @@ public:
 template <class DataTypes>
 bool SpringForceField<DataTypes>::load(const char *filename)
 {
+    bool ret = true;
     if (filename && filename[0])
     {
         Loader loader(this);
-        return loader.load(filename);
+        ret &= loader.load(filename);
     }
-    else return false;
+    else ret = false;
+    return ret;
 }
 
 template <class DataTypes>

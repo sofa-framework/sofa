@@ -49,22 +49,42 @@ HexahedronSetTopologyContainer::HexahedronSetTopologyContainer()
 { }
 
 HexahedronSetTopologyContainer::HexahedronSetTopologyContainer(const sofa::helper::vector< Hexahedron > &hexahedra )
-    : QuadSetTopologyContainer(),
-      m_hexahedron( hexahedra )
-{ }
+    : QuadSetTopologyContainer()
+    , m_hexahedron( hexahedra )
+{
+    for (unsigned int i=0; i<m_hexahedron.size(); ++i)
+    {
+        for(unsigned int j=0; j<8; ++j)
+        {
+            int a = m_hexahedron[i][j];
+            if (a >= (int)nbPoints) nbPoints = a+1;
+        }
+    }
+}
+
+void HexahedronSetTopologyContainer::addHexa( int a, int b, int c, int d, int e, int f, int g, int h )
+{
+    m_hexahedron.push_back(Hexahedron(a,b,c,d,e,f,g,h));
+    if (a >= (int)nbPoints) nbPoints = a+1;
+    if (b >= (int)nbPoints) nbPoints = b+1;
+    if (c >= (int)nbPoints) nbPoints = c+1;
+    if (d >= (int)nbPoints) nbPoints = d+1;
+    if (e >= (int)nbPoints) nbPoints = e+1;
+    if (f >= (int)nbPoints) nbPoints = f+1;
+    if (g >= (int)nbPoints) nbPoints = g+1;
+    if (h >= (int)nbPoints) nbPoints = h+1;
+}
 
 void HexahedronSetTopologyContainer::init()
 {
-    sofa::component::MeshLoader* loader;
-    this->getContext()->get(loader);
+    QuadSetTopologyContainer::init();
+}
 
-    if(loader)
-    {
-        m_hexahedron = loader->getHexas();
-    }
-
+void HexahedronSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoader* loader)
+{
     // load points
-    PointSetTopologyContainer::init();
+    PointSetTopologyContainer::loadFromMeshLoader(loader);
+    m_hexahedron = loader->getHexas();
 }
 
 void HexahedronSetTopologyContainer::createHexahedronSetArray()

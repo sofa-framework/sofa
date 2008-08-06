@@ -50,22 +50,37 @@ TriangleSetTopologyContainer::TriangleSetTopologyContainer()
 {}
 
 TriangleSetTopologyContainer::TriangleSetTopologyContainer(const sofa::helper::vector< Triangle > &triangles )
-    : EdgeSetTopologyContainer(),
-      m_triangle( triangles )
-{}
+    : EdgeSetTopologyContainer()
+    , m_triangle( triangles )
+{
+    for (unsigned int i=0; i<m_triangle.size(); ++i)
+    {
+        for(unsigned int j=0; j<3; ++j)
+        {
+            int a = m_triangle[i][j];
+            if (a >= (int)nbPoints) nbPoints = a+1;
+        }
+    }
+}
 
 void TriangleSetTopologyContainer::init()
 {
-    sofa::component::MeshLoader* loader;
-    this->getContext()->get(loader);
+    EdgeSetTopologyContainer::init();
+}
 
-    if(loader)
-    {
-        m_triangle = loader->getTriangles();
-    }
-
+void TriangleSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoader* loader)
+{
     // load points
-    PointSetTopologyContainer::init();
+    PointSetTopologyContainer::loadFromMeshLoader(loader);
+    m_triangle = loader->getTriangles();
+}
+
+void TriangleSetTopologyContainer::addTriangle( int a, int b, int c )
+{
+    m_triangle.push_back(Triangle(a,b,c));
+    if (a >= (int)nbPoints) nbPoints = a+1;
+    if (b >= (int)nbPoints) nbPoints = b+1;
+    if (c >= (int)nbPoints) nbPoints = c+1;
 }
 
 void TriangleSetTopologyContainer::createTriangleSetArray()

@@ -194,7 +194,6 @@ protected:
     Data< Vec<3, int>    > n;
     Data< Vector3 > min;
     Data< Vector3 > max;
-    Data< std::string> filename;
     Data< int > _nbVirtualFinerLevels; ///< create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)
 
     Data< Vec<3, unsigned int>  > dim_voxels;
