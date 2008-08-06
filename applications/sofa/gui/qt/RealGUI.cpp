@@ -333,39 +333,11 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     recentlyOpened = new QPopupMenu(this);
     this->fileMenu->insertItem( QIconSet( ), tr( "Recently Opened Files..."), recentlyOpened, -1, 7);
 
+    displayFlag = new DisplayFlagWidget(tabView);
+    connect( displayFlag, SIGNAL( change(int,bool)), this, SLOT(showhideElements(int,bool) ));
+    tabViewLayout->addWidget(displayFlag,0,0);
 
-    listDisplayFlags->header()->hide();
-#ifdef SOFA_QT4
-    listDisplayFlags->setBackgroundRole(QPalette::NoRole);
-    listDisplayFlags->viewport()->setBackgroundRole(QPalette::NoRole);
-#endif
-    // remove everything...
-    listDisplayFlags->clear();
-    listDisplayFlags->setSortColumn(-1);
-    itemShowAll = new DisplayFlagItem(this, listDisplayFlags, ALL, "All", Q3CheckListItem::CheckBoxController);
-    itemShowAll->setOpen(true);
-    Q3CheckListItem* itemShowVisual = new Q3CheckListItem(itemShowAll, "Visual", Q3CheckListItem::CheckBoxController);
-    itemShowVisualModels = new DisplayFlagItem(this, itemShowVisual, VISUALMODELS, "Visual Models");
-    Q3CheckListItem* itemShowBehavior = new Q3CheckListItem(itemShowAll, itemShowVisual, "Behavior", Q3CheckListItem::CheckBoxController);
-    itemShowBehaviorModels = new DisplayFlagItem(this, itemShowBehavior, BEHAVIORMODELS, "Behavior Models");
-    itemShowForceFields = new DisplayFlagItem(this, itemShowBehavior, itemShowBehaviorModels, FORCEFIELDS, "Force Fields");
-    itemShowInteractions = new DisplayFlagItem(this, itemShowBehavior, itemShowForceFields, INTERACTIONS, "Interactions");
-    Q3CheckListItem* itemShowCollision = new Q3CheckListItem(itemShowAll, itemShowBehavior, "Collision", Q3CheckListItem::CheckBoxController);
-    itemShowCollisionModels = new DisplayFlagItem(this, itemShowCollision, COLLISIONMODELS, "Collision Models");
-    itemShowBoundingTrees = new DisplayFlagItem(this, itemShowCollision, itemShowCollisionModels, BOUNDINGTREES, "Bounding Trees");
-    Q3CheckListItem* itemShowMapping = new Q3CheckListItem(itemShowAll, itemShowCollision, "Mapping", Q3CheckListItem::CheckBoxController);
-    itemShowMappings = new DisplayFlagItem(this, itemShowMapping, itemShowInteractions, MAPPINGS, "Visual Mappings");
-    itemShowMechanicalMappings = new DisplayFlagItem(this, itemShowMapping, itemShowMappings, MECHANICALMAPPINGS, "Mechanical Mappings");
-    Q3ListViewItem* itemShowOptions = new Q3ListViewItem(listDisplayFlags, itemShowAll, "Options");
-    itemShowWireFrame = new DisplayFlagItem(this, itemShowOptions, WIREFRAME, "Wire Frame");
-    itemShowNormals = new DisplayFlagItem(this, itemShowOptions, itemShowWireFrame, NORMALS, "Normals");
-#ifdef SOFA_QT4
-    connect( listDisplayFlags, SIGNAL( pressed(Q3ListViewItem *)), this, SLOT(flagChanged(Q3ListViewItem *)));
-    connect( listDisplayFlags, SIGNAL( doubleClicked(Q3ListViewItem *)), this, SLOT(flagDoubleClicked(Q3ListViewItem *)));
-#else
-    connect( listDisplayFlags, SIGNAL( pressed(QListViewItem *)), this, SLOT(flagChanged(QListViewItem *)));
-    connect( listDisplayFlags, SIGNAL( doubleClicked(QListViewItem *)), this, SLOT(flagDoubleClicked(QListViewItem *)));
-#endif
+
     left_stack = new QWidgetStack ( splitter2 );
     connect ( startButton, SIGNAL ( toggled ( bool ) ), this , SLOT ( playpauseGUI ( bool ) ) );
 
@@ -1004,16 +976,16 @@ void RealGUI::setScene ( Node* groot, const char* filename )
     eventNewTime();
 
     // set state of display flags
-    itemShowVisualModels->init(groot->getContext()->getShowVisualModels());
-    itemShowBehaviorModels->init(groot->getContext()->getShowBehaviorModels());
-    itemShowCollisionModels->init(groot->getContext()->getShowCollisionModels());
-    itemShowBoundingTrees->init(groot->getContext()->getShowBoundingCollisionModels());
-    itemShowMappings->init(groot->getContext()->getShowMappings());
-    itemShowMechanicalMappings->init(groot->getContext()->getShowMechanicalMappings());
-    itemShowForceFields->init(groot->getContext()->getShowForceFields());
-    itemShowInteractions->init(groot->getContext()->getShowInteractionForceFields());
-    itemShowWireFrame->init(groot->getContext()->getShowWireFrame());
-    itemShowNormals->init(groot->getContext()->getShowNormals());
+    displayFlag->setFlag(DisplayFlagWidget::VISUAL,groot->getContext()->getShowVisualModels());
+    displayFlag->setFlag(DisplayFlagWidget::BEHAVIOR,groot->getContext()->getShowBehaviorModels());
+    displayFlag->setFlag(DisplayFlagWidget::COLLISION,groot->getContext()->getShowCollisionModels());
+    displayFlag->setFlag(DisplayFlagWidget::BOUNDING,groot->getContext()->getShowBoundingCollisionModels());
+    displayFlag->setFlag(DisplayFlagWidget::MAPPING,groot->getContext()->getShowMappings());
+    displayFlag->setFlag(DisplayFlagWidget::MECHANICALMAPPING,groot->getContext()->getShowMechanicalMappings());
+    displayFlag->setFlag(DisplayFlagWidget::FORCEFIELD,groot->getContext()->getShowForceFields());
+    displayFlag->setFlag(DisplayFlagWidget::INTERACTION,groot->getContext()->getShowInteractionForceFields());
+    displayFlag->setFlag(DisplayFlagWidget::WIREFRAME,groot->getContext()->getShowWireFrame());
+    displayFlag->setFlag(DisplayFlagWidget::NORMALS,groot->getContext()->getShowNormals());
 
     //getSimulation()->updateVisualContext ( groot );
     startButton->setOn ( groot->getContext()->getAnimate() );
@@ -1887,7 +1859,7 @@ void RealGUI::showhideElements(int FILTER, bool value)
     {
         switch(FILTER)
         {
-        case ALL:
+        case DisplayFlagWidget::ALL:
             groot->getContext()->setShowVisualModels ( value );
             groot->getContext()->setShowBehaviorModels ( value );
             groot->getContext()->setShowCollisionModels ( value );
@@ -1897,16 +1869,16 @@ void RealGUI::showhideElements(int FILTER, bool value)
             groot->getContext()->setShowForceFields ( value );
             groot->getContext()->setShowInteractionForceFields ( value );
             break;
-        case VISUALMODELS:       groot->getContext()->setShowVisualModels ( value ); break;
-        case BEHAVIORMODELS:     groot->getContext()->setShowBehaviorModels ( value ); break;
-        case COLLISIONMODELS:    groot->getContext()->setShowCollisionModels ( value ); break;
-        case BOUNDINGTREES:      groot->getContext()->setShowBoundingCollisionModels ( value );  break;
-        case MAPPINGS:           groot->getContext()->setShowMappings ( value ); break;
-        case MECHANICALMAPPINGS: groot->getContext()->setShowMechanicalMappings ( value ); break;
-        case FORCEFIELDS:        groot->getContext()->setShowForceFields ( value ); break;
-        case INTERACTIONS:       groot->getContext()->setShowInteractionForceFields ( value ); break;
-        case WIREFRAME:          groot->getContext()->setShowWireFrame ( value ); break;
-        case NORMALS:            groot->getContext()->setShowNormals ( value ); break;
+        case  DisplayFlagWidget::VISUAL:            groot->getContext()->setShowVisualModels ( value ); break;
+        case  DisplayFlagWidget::BEHAVIOR:          groot->getContext()->setShowBehaviorModels ( value ); break;
+        case  DisplayFlagWidget::COLLISION:         groot->getContext()->setShowCollisionModels ( value ); break;
+        case  DisplayFlagWidget::BOUNDING:          groot->getContext()->setShowBoundingCollisionModels ( value );  break;
+        case  DisplayFlagWidget::MAPPING:           groot->getContext()->setShowMappings ( value ); break;
+        case  DisplayFlagWidget::MECHANICALMAPPING: groot->getContext()->setShowMechanicalMappings ( value ); break;
+        case  DisplayFlagWidget::FORCEFIELD:        groot->getContext()->setShowForceFields ( value ); break;
+        case  DisplayFlagWidget::INTERACTION:       groot->getContext()->setShowInteractionForceFields ( value ); break;
+        case  DisplayFlagWidget::WIREFRAME:         groot->getContext()->setShowWireFrame ( value ); break;
+        case  DisplayFlagWidget::NORMALS:           groot->getContext()->setShowNormals ( value ); break;
         }
         sofa::simulation::tree::getSimulation()->updateVisualContext ( groot, FILTER );
     }

@@ -43,8 +43,11 @@
 #include <sofa/gui/qt/viewer/SofaViewer.h>
 #include <sofa/gui/qt/AddObject.h>
 #include <sofa/gui/qt/ModifyObject.h>
+#include <sofa/gui/qt/DisplayFlagWidget.h>
+
 #include <sofa/simulation/tree/xml/XML.h>
 #include <sofa/helper/system/SetDirectory.h>
+
 
 #ifdef SOFA_QT4
 #include <QApplication>
@@ -81,21 +84,6 @@ namespace qt
 
 //enum TYPE{ NORMAL, PML, LML};
 enum SCRIPT_TYPE { PHP, PERL };
-
-enum
-{
-    ALL,
-    VISUALMODELS,
-    BEHAVIORMODELS,
-    COLLISIONMODELS,
-    BOUNDINGTREES,
-    MAPPINGS,
-    MECHANICALMAPPINGS,
-    FORCEFIELDS,
-    INTERACTIONS,
-    WIREFRAME,
-    NORMALS
-};
 
 using sofa::simulation::tree::GNode;
 using sofa::simulation::Node;
@@ -149,19 +137,9 @@ public:
     virtual void fileReload();
     virtual void fileExit();
     virtual void saveXML();
-    //virtual void editUndo();
-    //virtual void editRedo();
-    //virtual void editCut();
-    //virtual void editCopy();
-    //virtual void editPaste();
-    //virtual void editFind();
     virtual void viewerOpenGL();
     virtual void viewerQGLViewer();
     virtual void viewerOGRE();
-    virtual void viewExecutionGraph();
-    //virtual void helpIndex();
-    //virtual void helpContents();
-    //virtual void helpAbout();
 
     virtual void editRecordDirectory();
     virtual void editGnuplotDirectory();
@@ -181,80 +159,6 @@ public slots:
     void setDt(const QString&);
     void resetScene();
     void screenshot();
-
-#ifdef SOFA_QT4
-    void flagChanged(Q3ListViewItem *item)
-    {
-
-        if ( dynamic_cast<DisplayFlagItem *>(item) )
-        {
-            DisplayFlagItem *flag=dynamic_cast<DisplayFlagItem *>(item);
-
-            flag->switchState();
-        }
-        else if (dynamic_cast<Q3CheckListItem*>(item))
-        {
-            Q3CheckListItem* checkItem=dynamic_cast<Q3CheckListItem*>(item);
-
-            if (checkItem->isOn()) checkItem->setState(Q3CheckListItem::Off);
-            else checkItem->setState(Q3CheckListItem::On);
-        }
-    };
-
-    void flagDoubleClicked(Q3ListViewItem *item)
-    {
-        item->setOpen ( !item->isOpen() );
-        flagChanged(item);
-    }
-#else
-    void flagChanged(QListViewItem *item)
-    {
-
-        if ( dynamic_cast<DisplayFlagItem *>(item) )
-        {
-            DisplayFlagItem *flag=dynamic_cast<DisplayFlagItem *>(item);
-
-            flag->switchState();
-        }
-        else if (dynamic_cast<Q3CheckListItem*>(item))
-        {
-            Q3CheckListItem* checkItem=dynamic_cast<Q3CheckListItem*>(item);
-
-            if (checkItem->isOn()) checkItem->setState(Q3CheckListItem::Off);
-            else checkItem->setState(Q3CheckListItem::On);
-        }
-    };
-
-    void flagDoubleClicked(QListViewItem *item)
-    {
-        item->setOpen ( !item->isOpen() );
-        flagChanged(item);
-    }
-#endif
-
-    void showVisualModels()      {showhideElements(VISUALMODELS,true);};
-    void showBehaviorModels()    {showhideElements(BEHAVIORMODELS,true);};
-    void showCollisionModels()   {showhideElements(COLLISIONMODELS,true);};
-    void showBoundingTrees()     {showhideElements(BOUNDINGTREES,true);};
-    void showMappings()          {showhideElements(MAPPINGS,true);};
-    void showMechanicalMappings() {showhideElements(MECHANICALMAPPINGS,true);};
-    void showForceFields()       {showhideElements(FORCEFIELDS,true);};
-    void showInteractions()      {showhideElements(INTERACTIONS,true);};
-    void showAll()               {showhideElements(ALL,true);};
-    void showWireFrame()         {showhideElements(WIREFRAME,true);};
-    void showNormals()           {showhideElements(NORMALS,true);};
-
-    void hideVisualModels()      {showhideElements(VISUALMODELS,false);};
-    void hideBehaviorModels()    {showhideElements(BEHAVIORMODELS,false);};
-    void hideCollisionModels()   {showhideElements(COLLISIONMODELS,false);};
-    void hideBoundingTrees()     {showhideElements(BOUNDINGTREES,false);};
-    void hideMappings()          {showhideElements(MAPPINGS,false);};
-    void hideMechanicalMappings() {showhideElements(MECHANICALMAPPINGS,false);};
-    void hideForceFields()       {showhideElements(FORCEFIELDS,false);};
-    void hideInteractions()      {showhideElements(INTERACTIONS,false);};
-    void hideAll()               {showhideElements(ALL,false);};
-    void hideWireFrame()         {showhideElements(WIREFRAME,false);};
-    void hideNormals()           {showhideElements(NORMALS,false);};
 
     void showhideElements(int FILTER, bool value);
 
@@ -420,75 +324,7 @@ private:
     LMLReader *lmlreader;
 #endif
 
-
-    class DisplayFlagItem : public Q3CheckListItem
-    {
-    protected:
-        RealGUI* gui;
-        int id;
-        ToggleState last;
-    public:
-        template<class T>
-        DisplayFlagItem(RealGUI* g, T* parent, int id, const QString & text, Type tt = CheckBox)
-            : Q3CheckListItem(parent, text, tt)
-            , gui(g)
-            , id(id)
-            , last(Off)
-        {
-            if (tt == CheckBoxController)
-                setTristate(true);
-            //setState(NoChange);
-
-        }
-        template<class T>
-        DisplayFlagItem(RealGUI* g, T* parent, Q3CheckListItem* after, int id, const QString & text, Type tt = CheckBox)
-            : Q3CheckListItem(parent, after, text, tt)
-            , gui(g)
-            , id(id)
-            , last(Off)
-        {
-            if (tt == CheckBoxController)
-                setTristate(true);
-            //setState(NoChange);
-        }
-        void setState( ToggleState s )
-        {
-            last = s;
-            Q3CheckListItem::setState( s );
-        }
-        void init( bool b )
-        {
-            setState( b ? On : Off );
-        }
-        void switchState()
-        {
-            if (isOn()) {setState(Off); gui->showhideElements(id,false);}
-            else        {setState(On); gui->showhideElements(id,true);}
-        }
-    protected:
-        virtual void stateChange ( bool b )
-        {
-            ToggleState s = state();
-            if (s == last) return;
-            if (s == NoChange) return;
-            last = s;
-            gui->showhideElements(id,b);
-        }
-
-    };
-
-
-    DisplayFlagItem* itemShowAll;
-    DisplayFlagItem* itemShowVisualModels;
-    DisplayFlagItem* itemShowBehaviorModels;
-    DisplayFlagItem* itemShowCollisionModels;
-    DisplayFlagItem* itemShowBoundingTrees;
-    DisplayFlagItem* itemShowMappings;
-    DisplayFlagItem* itemShowMechanicalMappings;
-    DisplayFlagItem* itemShowForceFields;
-    DisplayFlagItem* itemShowInteractions;
-    DisplayFlagItem* itemShowWireFrame;
-    DisplayFlagItem* itemShowNormals;
+    DisplayFlagWidget *displayFlag;
 
 };
 
