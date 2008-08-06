@@ -167,12 +167,12 @@ sofa::core::componentmodel::behavior::State<sofa::defaulttype::Rigid3fTypes>,
 //ImplicitSurfaceMapping
 //---------------------
 typedef sofa::component::mapping::ImplicitSurfaceMapping<
-sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Vec3fTypes>,
+sofa::core::componentmodel::behavior::State<sofa::defaulttype::Vec3fTypes>,
      sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::Vec3fTypes>  > ImplicitSurfaceMapping3f_to_3f;
 
 
 typedef sofa::component::mapping::ImplicitSurfaceMapping<
-sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Vec3fTypes>,
+sofa::core::componentmodel::behavior::State<sofa::defaulttype::Vec3fTypes>,
      sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::ExtVec3fTypes>  > ImplicitSurfaceMapping3f_to_Ext3;
 
 
@@ -227,11 +227,11 @@ sofa::core::componentmodel::behavior::State<sofa::defaulttype::Rigid3fTypes>,
 //SPHFluidSurfaceMapping
 //---------------------
 typedef sofa::component::mapping::SPHFluidSurfaceMapping<
-sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Vec3fTypes>,
+sofa::core::componentmodel::behavior::State<sofa::defaulttype::Vec3fTypes>,
      sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::Vec3fTypes>  > SPHFluidSurfaceMapping3f_to_3f;
 
 typedef sofa::component::mapping::SPHFluidSurfaceMapping<
-sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Vec3fTypes>,
+sofa::core::componentmodel::behavior::State<sofa::defaulttype::Vec3fTypes>,
      sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::ExtVec3fTypes>  > SPHFluidSurfaceMapping3f_to_Ext3;
 
 //SkinningMapping
