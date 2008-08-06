@@ -64,7 +64,7 @@ class UpdateVisualContextVisitor : public UpdateContextVisitor
 
 public:
     int filter;
-    UpdateVisualContextVisitor(int FILTER=0):filter(FILTER)
+    UpdateVisualContextVisitor(int FILTER=10):filter(FILTER)
     {};
     virtual Result processNodeTopDown(simulation::Node* node);
 

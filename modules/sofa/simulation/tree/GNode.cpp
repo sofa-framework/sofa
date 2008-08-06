@@ -517,40 +517,40 @@ void GNode::updateVisualContext(int FILTER)
 {
     if ( getParent() != NULL )
     {
-        if (!FILTER)
+        if (FILTER==10)
             copyVisualContext(*parent);
         else
         {
             switch (FILTER)
             {
-            case 1:
+            case 0:
                 showVisualModels_.setValue((*parent).showVisualModels_.getValue());
                 break;
-            case 2:
+            case 1:
                 showBehaviorModels_.setValue((*parent).showBehaviorModels_.getValue());
                 break;
-            case 3:
+            case 2:
                 showCollisionModels_.setValue((*parent).showCollisionModels_.getValue());
                 break;
-            case 4:
+            case 3:
                 showBoundingCollisionModels_.setValue((*parent).showBoundingCollisionModels_.getValue());
                 break;
-            case 5:
+            case 4:
                 showMappings_.setValue((*parent).showMappings_.getValue());
                 break;
-            case 6:
+            case 5:
                 showMechanicalMappings_.setValue((*parent).showMechanicalMappings_.getValue());
                 break;
-            case 7:
+            case 6:
                 showForceFields_.setValue((*parent).showForceFields_.getValue());
                 break;
-            case 8:
+            case 7:
                 showInteractionForceFields_.setValue((*parent).showInteractionForceFields_.getValue());
                 break;
-            case 9:
+            case 8:
                 showWireFrame_.setValue((*parent).showWireFrame_.getValue());
                 break;
-            case 10:
+            case 9:
                 showNormals_.setValue((*parent).showNormals_.getValue());
                 break;
             }
