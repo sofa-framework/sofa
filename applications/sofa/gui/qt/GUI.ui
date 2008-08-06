@@ -230,11 +230,13 @@
                             </property>
                             <attribute name="title">
                                 <string>View</string>
-                            </attribute>
-                            <grid>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
+                            </attribute>                           
+			    <grid>
+                            <widget class="QLayoutWidget" row="2" column="0">
+                              <property name="name">
+                                <cstring>tabViewLayout</cstring>
+                              </property>
+                              <grid>
                                 <widget class="QLayoutWidget" row="1" column="0">
                                     <property name="name">
                                         <cstring>iconSofa</cstring>
@@ -302,6 +304,8 @@
                                     </grid>
                                 </widget>
                             </grid>
+                            </widget>
+			    </grid>
                         </widget>
                         <widget class="QWidget">
                             <property name="name">

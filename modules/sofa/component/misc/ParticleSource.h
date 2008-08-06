@@ -223,7 +223,7 @@ public:
         for (unsigned int s=0; s<lastparticles.size(); s++)
         {
             //HACK: TODO understand why these conditions can be reached
-            if (res.size() >= lastparticles[s]) continue;
+            if (lastparticles[s] >= res.size()) continue;
 
             res[lastparticles[s]] = Deriv();
         }
@@ -239,7 +239,7 @@ public:
         for (unsigned int s=0; s<lastparticles.size(); s++)
         {
             //HACK: TODO understand why these conditions can be reached
-            if (res.size() >= lastparticles[s]) continue;
+            if ( lastparticles[s] >= res.size() ) continue;
             res[lastparticles[s]] = f_velocity.getValue();
         }
     }
@@ -254,7 +254,7 @@ public:
         for (unsigned int s=0; s<lastparticles.size(); s++)
         {
             //HACK: TODO understand why these conditions can be reached
-            if (lastpos.size() >= s || x.size() >= lastparticles[s]) continue;
+            if (lastpos.size() >= s || lastparticles[s] >= x.size()) continue;
             x[lastparticles[s]] = lastpos[s];
             x[lastparticles[s]] += f_velocity.getValue()*(time - lasttime); // account for particle initial motion
         }

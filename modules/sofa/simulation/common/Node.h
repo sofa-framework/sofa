@@ -493,7 +493,7 @@ public:
     virtual void propagateEvent( core::objectmodel::Event* event );
 
     /// Update the visual context values, based on parent and local ContextObjects
-    virtual void updateVisualContext(int FILTER=0);
+    virtual void updateVisualContext(int FILTER=10);
 
     Single<VisitorScheduler> actionScheduler;
 

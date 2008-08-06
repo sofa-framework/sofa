@@ -36,6 +36,8 @@
 #include <Q3CheckListItem>
 #include <Q3ListViewItem>
 #include <Q3Header>
+#include <QMouseEvent>
+#include <Q3Frame>
 #else
 #include <qlistview.h>
 #include <qheader.h>
