@@ -552,7 +552,7 @@ void SofaModeler::changeComponent(ClassInfo *currentComponent)
         {
             if (isupper(baseClassName[i])) baseClassName[i] = tolower(baseClassName[i]);
         }
-
+        if (baseClassName == "mastersolver")   baseClassName="solver";
         if (baseClassName == "collisionmodel") baseClassName="collision";
         std::string path=std::string("Components/") + baseClassName + std::string("/") + currentComponent->className + std::string(".scn");
 
