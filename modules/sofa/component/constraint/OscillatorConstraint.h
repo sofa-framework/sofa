@@ -55,14 +55,31 @@ public:
 protected:
     struct Oscillator
     {
+        unsigned int index;
         Coord mean;
         Deriv amplitude;
         Real pulsation;
         Real phase;
-        Oscillator( const Coord& m, const Deriv& a, const Real& w, const Real& p )
-            : mean(m), amplitude(a), pulsation(w), phase(p) {}
+
+        Oscillator() {}
+
+        Oscillator( unsigned int i, const Coord& m, const Deriv& a, const Real& w, const Real& p )
+            : index(i), mean(m), amplitude(a), pulsation(w), phase(p) {}
+
+        inline friend std::istream& operator >> ( std::istream& in, Oscillator& o )
+        {
+            in>>o.index>>o.mean>>o.amplitude>>o.pulsation>>o.phase;
+            return in;
+        }
+
+        inline friend std::ostream& operator << ( std::ostream& out, const Oscillator& o )
+        {
+            out << o.index<< " " <<o.mean<< " " <<o.amplitude<< " " <<o.pulsation<< " " <<o.phase<<"\n";
+            return out;
+        }
     };
-    helper::vector< std::pair<unsigned,Oscillator> > constraints; ///< constrained particles
+
+    Data< helper::vector< Oscillator > > constraints; ///< constrained particles
 
 
 public:

@@ -28,7 +28,6 @@
 
 #include <sofa/component/contextobject/CoordinateSystem.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <iostream>
 #include <sofa/helper/system/gl.h>
@@ -46,7 +45,9 @@ namespace contextobject
 {
 
 CoordinateSystem::CoordinateSystem()
-    : positionInParent_( Frame::identity() )
+    : origin(initData(&origin,defaulttype::Vec3f(),"origin", "Position of the local frame"))
+    , orientation(initData(&orientation,defaulttype::Vec3f(),"orientation", "Orientation of the local frame"))
+    , positionInParent_( Frame::identity() )
 //, velocity_( Vec(0,0,0), Vec(0,0,0) )
 {}
 
@@ -169,30 +170,21 @@ void CoordinateSystem::draw()
 
 using namespace sofa::defaulttype;
 
-void CoordinateSystem::parse(core::objectmodel::BaseObjectDescription* arg)
+
+
+void CoordinateSystem::reinit()
 {
     typedef CoordinateSystem::Frame Frame;
     typedef CoordinateSystem::Vec Vec;
     typedef CoordinateSystem::Rot Rot;
-
-    this->core::objectmodel::ContextObject::parse(arg);
-
-    float x, y, z ;
-    Vec vec;
-    Vec rot;
-    if (arg->getAttribute("origin"))
-    {
-        sscanf(arg->getAttribute("origin"),"%f%f%f",&x,&y,&z);
-        vec = Vec(x,y,z);
-    }
-    if (arg->getAttribute("orientation"))
-    {
-        sscanf(arg->getAttribute("orientation"),"%f%f%f",&x,&y,&z);
-        rot = Vec(x,y,z);
-    }
-    setTransform( Frame( vec, Rot::createFromRotationVector( rot ) ));
+    setTransform( Frame( origin.getValue(), Rot::createFromRotationVector( orientation.getValue() ) ));
 }
 
+
+void CoordinateSystem::init()
+{
+    reinit();
+}
 SOFA_DECL_CLASS(CoordinateSystem)
 
 int CoordinateSystemClass = core::RegisterObject("Translation and orientation of the local reference frame with respect to its parent")
