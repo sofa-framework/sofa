@@ -154,7 +154,27 @@ public slots:
     ClassInfo* getInfoFromName(std::string name);
 
 
-    void dragEnterEvent( QDragEnterEvent* event) {event->accept();}
+    void dragEnterEvent( QDragEnterEvent* event)
+    {
+        QString text;
+        Q3TextDrag::decode(event, text);
+        std::string filename(text.ascii());
+        std::string test = filename; test.resize(4);
+        if (test == "file")  event->accept();
+        else          	 event->ignore();
+    }
+
+    void dragMoveEvent( QDragMoveEvent* event)
+    {
+
+        QString text;
+        Q3TextDrag::decode(event, text);
+        std::string filename(text.ascii());
+        std::string test = filename; test.resize(4);
+        if (test == "file")  event->accept();
+        else          	 event->ignore();
+    }
+
     void dropEvent(QDropEvent* event);
     void keyPressEvent ( QKeyEvent * e );
 

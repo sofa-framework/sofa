@@ -153,11 +153,6 @@
         <action name="editUndoAction"/>
         <action name="editRedoAction"/>
     </item>
-<!--
-    <item text="Help" name="helpMenu">
-        <action name="helpAboutAction"/>
-    </item>
--->
 </menubar>
 <actions>
     <action>
@@ -430,25 +425,6 @@
             <string>Ctrl+F</string>
         </property>
     </action>
-<!--
-    <action>
-        <property name="name">
-            <cstring>helpAboutAction</cstring>
-        </property>
-        <property name="enabled">
-            <bool>true</bool>
-        </property>
-        <property name="text">
-            <string>About</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;About</string>
-        </property>
-        <property name="accel">
-            <string></string>
-        </property>
-    </action>   
--->
 </actions>
 <images>
     <image name="image0">
@@ -570,14 +546,6 @@
         <receiver>Modeler</receiver>
         <slot>editFind()</slot>
     </connection>
-<!--
-    <connection>
-        <sender>helpAboutAction</sender>
-        <signal>activated()</signal>
-        <receiver>Modeler</receiver>
-        <slot>helpAbout()</slot>
-    </connection> 
--->
     <connection>
         <sender>GNodeButton</sender>
         <signal>pressed()</signal>
@@ -600,11 +568,6 @@
     <slot>editCopy()</slot>
     <slot>editPaste()</slot>
     <slot>editFind()</slot>
-<!--
-    <slot>helpIndex()</slot>
-    <slot>helpContents()</slot>
-    <slot>helpAbout()</slot>
--->
     <slot>saveXML()</slot>
     <slot>newGNode()</slot>
 </slots>
