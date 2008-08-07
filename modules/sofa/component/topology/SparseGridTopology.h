@@ -57,7 +57,7 @@ public:
     typedef fixed_array<Vector3,8> CubeCorners;
     typedef enum {OUTSIDE,INSIDE,BOUNDARY} Type; ///< each cube has a type depending on its filling ratio
 
-
+    typedef Vec<3, int> Vec3i;
 
     SparseGridTopology(bool _isVirtual=false);
 
@@ -109,35 +109,35 @@ public:
     int getNy() const { return n.getValue()[1]; }
     int getNz() const { return n.getValue()[2]; }
 
-    void setN(Vec<3,int> _n) {n.setValue(_n);}
-    void setNx(int _n) { n.setValue(Vec<3,int>(_n             ,n.getValue()[1],n.getValue()[2])); }
-    void setNy(int _n) { n.setValue(Vec<3,int>(n.getValue()[0],_n             ,n.getValue()[2])); }
-    void setNz(int _n) { n.setValue(Vec<3,int>(n.getValue()[0],n.getValue()[1],_n)             ); }
+    void setN(Vec3i _n) {n.setValue(_n);}
+    void setNx(int _n) { n.setValue(Vec3i(_n             ,n.getValue()[1],n.getValue()[2])); }
+    void setNy(int _n) { n.setValue(Vec3i(n.getValue()[0],_n             ,n.getValue()[2])); }
+    void setNz(int _n) { n.setValue(Vec3i(n.getValue()[0],n.getValue()[1],_n)             ); }
 
     int getNbVirtualFinerLevels() const { return _nbVirtualFinerLevels.getValue();}
     void setNbVirtualFinerLevels(int n) {_nbVirtualFinerLevels.setValue(n);}
 
-    void setMin(Vector3 _min) {min.setValue(_min);}
-    void setXmin(SReal _min) { min.setValue(Vector3(_min             ,min.getValue()[1],min.getValue()[2])); }
-    void setYmin(SReal _min) { min.setValue(Vector3(min.getValue()[0],_min             ,min.getValue()[2])); }
-    void setZmin(SReal _min) { min.setValue(Vector3(min.getValue()[0],min.getValue()[1],_min)             ); }
+    void setMin(Vector3 val) {_min.setValue(val);}
+    void setXmin(SReal val) { _min.setValue(Vector3(val             ,_min.getValue()[1],_min.getValue()[2])); }
+    void setYmin(SReal val) { _min.setValue(Vector3(_min.getValue()[0],val             ,_min.getValue()[2])); }
+    void setZmin(SReal val) { _min.setValue(Vector3(_min.getValue()[0],_min.getValue()[1],val)             ); }
 
 
-    void setMax(Vector3 _max) {min.setValue(_max);}
+    void setMax(Vector3 val) {_min.setValue(val);}
 
-    void setXmax(SReal _max) { max.setValue(Vector3(_max             ,max.getValue()[1],max.getValue()[2])); }
-    void setYmax(SReal _max) { max.setValue(Vector3(max.getValue()[0],_max             ,max.getValue()[2])); }
-    void setZmax(SReal _max) { max.setValue(Vector3(max.getValue()[0],max.getValue()[1],_max)             ); }
+    void setXmax(SReal val) { _max.setValue(Vector3(val             ,_max.getValue()[1],_max.getValue()[2])); }
+    void setYmax(SReal val) { _max.setValue(Vector3(_max.getValue()[0],val             ,_max.getValue()[2])); }
+    void setZmax(SReal val) { _max.setValue(Vector3(_max.getValue()[0],_max.getValue()[1],val)             ); }
 
-    Vector3 getMin() {return min.getValue();}
-    SReal getXmin() { return min.getValue()[0]; }
-    SReal getYmin() { return min.getValue()[1]; }
-    SReal getZmin() { return min.getValue()[2]; }
+    Vector3 getMin() {return _min.getValue();}
+    SReal getXmin() { return _min.getValue()[0]; }
+    SReal getYmin() { return _min.getValue()[1]; }
+    SReal getZmin() { return _min.getValue()[2]; }
 
-    Vector3 getMax() {return max.getValue();}
-    SReal getXmax() { return max.getValue()[0]; }
-    SReal getYmax() { return max.getValue()[1]; }
-    SReal getZmax() { return max.getValue()[2]; }
+    Vector3 getMax() {return _max.getValue();}
+    SReal getXmax() { return _max.getValue()[0]; }
+    SReal getYmax() { return _max.getValue()[1]; }
+    SReal getZmax() { return _max.getValue()[2]; }
 
     bool hasPos()  const { return true; }
 
@@ -172,12 +172,12 @@ public:
     void getMesh( sofa::helper::io::Mesh &m);
 
 
-    void setDimVoxels( int a, int b, int c) { dim_voxels.setValue(Vec<3, unsigned int>(a,b,c));}
-    void setSizeVoxel( float a, float b, float c) { dim_voxels.setValue(Vec3f(a,b,c));}
+    void setDimVoxels( int a, int b, int c) { dataResolution.setValue(Vec3i(a,b,c));}
+    void setSizeVoxel( float a, float b, float c) { voxelSize.setValue(Vector3(a,b,c));}
 
     bool getVoxel(unsigned int x, unsigned int y, unsigned int z)
     {
-        return getVoxel(dim_voxels.getValue()[0]*dim_voxels.getValue()[1]*z + dim_voxels.getValue()[0]*y + x);
+        return getVoxel(dataResolution.getValue()[0]*dataResolution.getValue()[1]*z + dataResolution.getValue()[0]*y + x);
     }
 
     bool getVoxel(unsigned int index) const
@@ -192,22 +192,20 @@ protected:
     bool isVirtual;
     /// cutting number in all directions
     Data< Vec<3, int>    > n;
-    Data< Vector3 > min;
-    Data< Vector3 > max;
+    Data< Vector3 > _min;
+    Data< Vector3 > _max;
     Data< int > _nbVirtualFinerLevels; ///< create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)
 
-    Data< Vec<3, unsigned int>  > dim_voxels;
-    Data< Vector3 >                 size_voxel;
-    Data< unsigned int >          resolution;
-    Data< unsigned int >          smoothData;
-
+    Data< Vec3i >			dataResolution;
+    Data< Vector3 >         voxelSize;
+    Data< unsigned int >    marchingCubeStep;
+    Data< unsigned int >    convolutionSize;
 
     virtual void updateEdges();
     virtual void updateQuads();
     virtual void updateHexas();
 
-
-    MarchingCubeUtility                 MC;
+    MarchingCubeUtility                 marchingCubes;
     Data< vector< unsigned char > >     dataVoxels;
     bool                                _usingMC;
 
@@ -247,9 +245,7 @@ protected:
 
     template< class T>
     void constructCollisionModels(const sofa::helper::vector< sofa::core::componentmodel::topology::BaseMeshTopology * > &list_mesh,
-            const sofa::helper::vector< sofa::helper::vector< Vec<3,T> >* >            &list_X,
-            const sofa::helper::vector< unsigned int> mesh_MC,
-            std::map< unsigned int, Vector3 >     map_indices) const;
+            const sofa::helper::vector< sofa::helper::vector< Vec<3,T> >* >            &list_X) const;
 
     SparseGridTopology* _finerSparseGrid; ///< an eventual finer sparse grid that can be used to built this coarser sparse grid
     SparseGridTopology* _coarserSparseGrid; ///< an eventual coarser sparse grid
