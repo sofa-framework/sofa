@@ -98,6 +98,12 @@ void Quad2TriangleTopologicalMapping::init()
 
             std::cout << "INFO_print : Quad2TriangleTopologicalMapping - to = triangle" << std::endl;
 
+            TriangleSetTopologyContainer *to_tstc;
+            toModel->getContext()->get(to_tstc);
+            to_tstc->clear();
+
+            toModel->setNbPoints(fromModel->getNbPoints());
+
             TriangleSetTopologyModifier *to_tstm;
             toModel->getContext()->get(to_tstm);
 

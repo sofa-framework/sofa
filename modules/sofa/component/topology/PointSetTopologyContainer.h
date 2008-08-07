@@ -90,7 +90,7 @@ public:
     *
     */
     int getNbPoints() const { return (int)nbPoints; }
-    virtual void setNbPoints(int n);
+    void setNbPoints(int n);
     virtual bool hasPos() const;
     virtual double getPX(int i) const;
     virtual double getPY(int i) const;

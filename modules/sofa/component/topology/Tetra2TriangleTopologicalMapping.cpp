@@ -92,6 +92,12 @@ void Tetra2TriangleTopologicalMapping::init()
 
             std::cout << "INFO_print : Tetra2TriangleTopologicalMapping - to = triangle" << std::endl;
 
+            TriangleSetTopologyContainer *to_tstc;
+            toModel->getContext()->get(to_tstc);
+            to_tstc->clear();
+
+            toModel->setNbPoints(fromModel->getNbPoints());
+
             TriangleSetTopologyModifier *to_tstm;
             toModel->getContext()->get(to_tstm);
 
