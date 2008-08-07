@@ -58,7 +58,8 @@ TriangleSetTopologyContainer::TriangleSetTopologyContainer(const sofa::helper::v
         for(unsigned int j=0; j<3; ++j)
         {
             int a = m_triangle[i][j];
-            if (a >= (int)nbPoints) nbPoints = a+1;
+            if (a >= (int)nbPoints)
+                nbPoints = a+1;
         }
     }
 }

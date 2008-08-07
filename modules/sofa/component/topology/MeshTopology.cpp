@@ -26,7 +26,7 @@
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/fixed_array.h>
-#include <sofa/helper/system/FileRepository.h>
+#include <sofa/component/MeshLoader.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>
 #include <set>
@@ -44,6 +44,7 @@ namespace topology
 {
 
 using namespace sofa::defaulttype;
+using core::componentmodel::topology::BaseMeshTopology;
 
 SOFA_DECL_CLASS(MeshTopology)
 
@@ -66,24 +67,23 @@ MeshTopology::MeshTopology()
 
 void MeshTopology::init()
 {
+    sofa::component::MeshLoader* loader;
+    this->getContext()->get(loader);
 
-    sofa::component::MeshLoader* m_loader;
-    this->getContext()->get(m_loader);
-
-    if(m_loader)
+    if(loader)
     {
-
-// 		int nbp = m_loader->getNbPoints();
-
-        //std::cout<<"Setting "<<nbp<<" points from MeshLoader. " <<std::endl;
-
-        seqPoints = m_loader->getPoints();
-        seqEdges = m_loader->getEdges();
-        seqTriangles = m_loader->getTriangles();
-        seqQuads = m_loader->getQuads();
-        seqTetras = m_loader->getTetras();
-        seqHexas = m_loader->getHexas();
+        loadFromMeshLoader(loader);
     }
+}
+
+void MeshTopology::loadFromMeshLoader(sofa::component::MeshLoader* loader)
+{
+    seqPoints = loader->getPoints();
+    seqEdges = loader->getEdges();
+    seqTriangles = loader->getTriangles();
+    seqQuads = loader->getQuads();
+    seqTetras = loader->getTetras();
+    seqHexas = loader->getHexas();
 
     // compute the number of points if if the topology is charged from the scene.
     unsigned int maxIndex = 0;
