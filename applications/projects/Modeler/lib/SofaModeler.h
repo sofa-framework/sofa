@@ -184,6 +184,7 @@ protected:
 
 private:
     std::string presetPath;
+    std::string examplePath;
 };
 }
 }

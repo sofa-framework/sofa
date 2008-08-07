@@ -43,6 +43,7 @@ using namespace sofa::defaulttype;
 template <class DataTypes>
 OscillatorConstraint<DataTypes>::OscillatorConstraint()
     : core::componentmodel::behavior::Constraint<DataTypes>(NULL)
+    , constraints(initData(&constraints,"oscillators","Define a sequence of oscillating particules: \n[index, mean, amplitude, pulsation, phase]"))
 {
 }
 
@@ -50,6 +51,7 @@ OscillatorConstraint<DataTypes>::OscillatorConstraint()
 template <class DataTypes>
 OscillatorConstraint<DataTypes>::OscillatorConstraint(core::componentmodel::behavior::MechanicalState<DataTypes>* mstate)
     : core::componentmodel::behavior::Constraint<DataTypes>(mstate)
+    , constraints(initData(&constraints,"oscillators","Define a sequence of oscillating particules: \n[index, Mean(x,y,z), amplitude(x,y,z), pulsation, phase]"))
 {
 }
 
@@ -61,7 +63,7 @@ OscillatorConstraint<DataTypes>::~OscillatorConstraint()
 template <class DataTypes>
 OscillatorConstraint<DataTypes>*  OscillatorConstraint<DataTypes>::addConstraint(unsigned index, const Coord& mean, const Deriv& amplitude, Real pulsation, Real phase)
 {
-    this->constraints.push_back( std::make_pair( index, Oscillator(mean,amplitude,pulsation,phase) ) );
+    this->constraints.beginEdit()->push_back( Oscillator(index,mean,amplitude,pulsation,phase) );
     return this;
 }
 
@@ -69,10 +71,11 @@ OscillatorConstraint<DataTypes>*  OscillatorConstraint<DataTypes>::addConstraint
 template <class DataTypes>
 void OscillatorConstraint<DataTypes>::projectResponse(VecDeriv& res)
 {
+    const helper::vector< Oscillator > &oscillators = constraints.getValue();
     //Real t = (Real) getContext()->getTime();
-    for( unsigned i=0; i<constraints.size(); ++i )
+    for( unsigned i=0; i<oscillators.size(); ++i )
     {
-        const unsigned& index = constraints[i].first;
+        const unsigned& index = oscillators[i].index;
         //const Deriv& a = constraints[i].second.amplitude;
         //const Real& w = constraints[i].second.pulsation;
         //const Real& p = constraints[i].second.phase;
@@ -85,13 +88,14 @@ void OscillatorConstraint<DataTypes>::projectResponse(VecDeriv& res)
 template <class DataTypes>
 void OscillatorConstraint<DataTypes>::projectVelocity(VecDeriv& res)
 {
+    const helper::vector< Oscillator > &oscillators = constraints.getValue();
     Real t = (Real) getContext()->getTime();
-    for( unsigned i=0; i<constraints.size(); ++i )
+    for( unsigned i=0; i<oscillators.size(); ++i )
     {
-        const unsigned& index = constraints[i].first;
-        const Deriv& a = constraints[i].second.amplitude;
-        const Real& w = constraints[i].second.pulsation;
-        const Real& p = constraints[i].second.phase;
+        const unsigned& index = oscillators[i].index;
+        const Deriv& a = oscillators[i].amplitude;
+        const Real& w = oscillators[i].pulsation;
+        const Real& p = oscillators[i].phase;
 
         res[index] = a*w*cos(w*t+p);
     }
@@ -100,15 +104,16 @@ void OscillatorConstraint<DataTypes>::projectVelocity(VecDeriv& res)
 template <class DataTypes>
 void OscillatorConstraint<DataTypes>::projectPosition(VecCoord& res)
 {
+    const helper::vector< Oscillator > &oscillators = constraints.getValue();
     Real t = (Real) getContext()->getTime();
     //std::cerr<<"OscillatorConstraint<DataTypes>::projectPosition, t = "<<t<<endl;
-    for( unsigned i=0; i<constraints.size(); ++i )
+    for( unsigned i=0; i<oscillators.size(); ++i )
     {
-        const unsigned& index = constraints[i].first;
-        const Coord& m = constraints[i].second.mean;
-        const Deriv& a = constraints[i].second.amplitude;
-        const Real& w = constraints[i].second.pulsation;
-        const Real& p = constraints[i].second.phase;
+        const unsigned& index = oscillators[i].index;
+        const Coord& m = oscillators[i].mean;
+        const Deriv& a = oscillators[i].amplitude;
+        const Real& w = oscillators[i].pulsation;
+        const Real& p = oscillators[i].phase;
 
         res[index] = m + a*sin(w*t+p);
     }

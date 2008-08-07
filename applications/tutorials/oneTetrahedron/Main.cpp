@@ -86,21 +86,23 @@ int main(int argc, char** argv)
 
     // Tetrahedron topology
     MeshTopology* topology = new MeshTopology;
+    topology->setName("mesh topology");
     groot->addObject( topology );
-    topology->setName("topology");
     topology->addTetra(0,1,2,3);
 
     // Tetrahedron constraints
     FixedConstraint3* constraints = new FixedConstraint3;
-    groot->addObject(constraints);
     constraints->setName("constraints");
+    groot->addObject(constraints);
     constraints->addConstraint(0);
 
     // Tetrahedron force field
-    TetrahedronFEMForceField3* spring = new  TetrahedronFEMForceField3;
-    groot->addObject(spring);
-    spring->setUpdateStiffnessMatrix(true);
-    spring->setYoungModulus(6);
+    TetrahedronFEMForceField3* fem = new  TetrahedronFEMForceField3;
+    fem->setName("FEM");
+    groot->addObject(fem);
+    fem->setMethod("polar");
+    fem->setUpdateStiffnessMatrix(true);
+    fem->setYoungModulus(6);
 
     // Tetrahedron skin
     GNode* skin = new GNode;

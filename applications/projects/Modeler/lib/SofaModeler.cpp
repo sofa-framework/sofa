@@ -85,6 +85,8 @@ SofaModeler::SofaModeler()
     preset = new Q3PopupMenu(this);
     this->menubar->insertItem(QString("Preset"), preset, 4);
 
+
+    examplePath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/examples/" );
     presetPath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/applications/projects/Modeler/preset/" );
     std::string presetFile = presetPath + std::string("preset.ini" );
 
@@ -248,6 +250,7 @@ SofaModeler::SofaModeler()
 
                 needSpacer = true;
                 combo = new QComboBox(gridWidget);
+
                 for (unsigned int t=0; t<templateCombo.size(); ++t)
                     combo->insertItem(QString(templateCombo[t].c_str()));
                 if (templateCombo.size() == 1) //Mapping with only one template possible
@@ -327,9 +330,12 @@ void SofaModeler::fileNew( GNode* root)
 
 void SofaModeler::fileOpen()
 {
-    QString s = getOpenFileName ( this, NULL,"Scenes (*.scn *.xml *.simu *.pscn)", "open file dialog",  "Choose a file to open" );
+    QString s = getOpenFileName ( this, QString(examplePath.c_str()),"Scenes (*.scn *.xml *.simu *.pscn)", "open file dialog",  "Choose a file to open" );
     if (s.length() >0)
+    {
         fileOpen(s);
+        examplePath = sofa::helper::system::SetDirectory::GetParentDir(s.ascii());
+    }
 }
 
 void SofaModeler::clearTab()
@@ -489,7 +495,7 @@ void SofaModeler::fileSave(std::string filename)
 
 void SofaModeler::fileSaveAs()
 {
-    QString s = sofa::gui::qt::getSaveFileName ( this, NULL, "Scenes (*.scn *.xml)", "save file dialog", "Choose where the scene will be saved" );
+    QString s = sofa::gui::qt::getSaveFileName ( this, QString(examplePath.c_str()), "Scenes (*.scn *.xml)", "save file dialog", "Choose where the scene will be saved" );
     if ( s.length() >0 )
     {
         fileSave ( s.ascii() );
@@ -497,6 +503,7 @@ void SofaModeler::fileSaveAs()
         std::string filename = s.ascii();
         sceneTab->setTabLabel(tabGraph, QString(sofa::helper::system::SetDirectory::GetFileName(filename.c_str()).c_str()));
         sceneTab->setTabToolTip(tabGraph, QString(filename.c_str()));
+        examplePath = sofa::helper::system::SetDirectory::GetParentDir(filename.c_str());
     }
 }
 

@@ -30,6 +30,7 @@
 
 #include <sofa/core/objectmodel/ContextObject.h>
 #include <sofa/defaulttype/SolidTypes.h>
+#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
@@ -75,13 +76,14 @@ public:
     virtual ~CoordinateSystem()
     {}
 
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
-
     // ContextObject
     virtual void apply();
 
     virtual void draw();
 
+    virtual void reinit();
+
+    virtual void init();
 
     /// Transform wrt parent
     const Frame&  getTransform() const;
@@ -107,6 +109,8 @@ public:
     /// wrt parent frame, given in LOCAL frame
     //CoordinateSystem* setVelocity( const SpatialVector& f );
 
+    Data< defaulttype::Vec3f > origin;
+    Data< defaulttype::Vec3f > orientation;
 protected:
     Frame positionInParent_;   ///< wrt parent frame
     //SpatialVector velocity_;  ///< velocity wrt parent frame, given in LOCAL frame
