@@ -96,11 +96,16 @@ public:
     virtual double getPY(int i) const;
     virtual double getPZ(int i) const;
     /// @}
+
+protected:
+    virtual void loadFromMeshLoader(sofa::component::MeshLoader* loader);
+
 protected:
     unsigned int nbPoints;
+
+private:
     typedef defaulttype::Vec3Types InitTypes;
     InitTypes::VecCoord initPoints;
-    virtual void loadFromMeshLoader(sofa::component::MeshLoader* loader);
 };
 
 } // namespace topology

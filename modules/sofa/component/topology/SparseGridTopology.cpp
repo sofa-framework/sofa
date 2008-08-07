@@ -103,6 +103,7 @@ SparseGridTopology::SparseGridTopology(bool _isVirtual)
     n(initData(&n, Vec3i(2,2,2), "n", "grid resolution")),
     _min(initData(&_min, Vector3(0,0,0), "min","Min")),
     _max(initData(&_max, Vector3(0,0,0), "max","Max")),
+    _filename(initData(&_filename,"filename","File describing the SparseGrid")),
     _nbVirtualFinerLevels( initData(&_nbVirtualFinerLevels, 0, "nbVirtualFinerLevels", "create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)")),
     dataResolution(initData(&dataResolution, Vec3i(0,0,0), "dataResolution", "Dimension of the voxel File")),
     voxelSize(initData(&voxelSize, Vector3(1.0f,1.0f,1.0f), "voxelSize", "Dimension of one voxel")),
@@ -115,18 +116,6 @@ SparseGridTopology::SparseGridTopology(bool _isVirtual)
     _coarserSparseGrid = NULL;
     _usingMC = false;
 }
-
-
-bool SparseGridTopology::load(const char* filename)
-{
-    std::string f(filename);
-    if ( sofa::helper::system::DataRepository.findFile ( f ) )
-        this->d_filename.setValue( f );
-// 		cerr<<"SparseGridTopology::load : "<<filename<<"    "<<this->filename.getValue()<<endl;
-    return true;
-}
-
-
 
 void SparseGridTopology::init()
 {
@@ -216,39 +205,42 @@ void SparseGridTopology::init()
 void SparseGridTopology::buildAsFinest(  )
 {
     // 		  cerr<<"SparseGridTopology::buildAsFinest(  )\n";
-    std::string _filename=d_filename.getValue();
-    if (_filename.empty())
+    std::string filename = _filename.getValue();
+    if (filename.empty())
     {
         std::cerr << "SparseGridTopology: no filename specified." << std::endl;
         return;
     }
-    if (! sofa::helper::system::DataRepository.findFile ( _filename ))
+    if (! sofa::helper::system::DataRepository.findFile( filename ))
         return;
+    else
+        filename = sofa::helper::system::DataRepository.getFile( filename );
+
 
     // initialize the following datafields:
     // xmin, xmax, ymin, ymax, zmin, zmax, evtl. nx, ny, nz
     // _regularGrid, _indicesOfRegularCubeInSparseGrid, _types
     // seqPoints, seqHexas.getValue(), nbPoints
-    if(_filename.length() > 4 && _filename.compare(_filename.length()-4, 4, ".obj")==0)
+    if(filename.length() > 4 && filename.compare(filename.length()-4, 4, ".obj")==0)
     {
-        //			std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
-        buildFromTriangleMesh(_filename);
+        //			std::cout << "SparseGridTopology: using mesh "<<filename<<std::endl;
+        buildFromTriangleMesh(filename);
     }
-    else if(_filename.length() > 6 && _filename.compare(_filename.length()-6, 6, ".trian")==0)
+    else if(filename.length() > 6 && filename.compare(filename.length()-6, 6, ".trian")==0)
     {
-        //			std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
-        buildFromTriangleMesh(_filename);
+        //			std::cout << "SparseGridTopology: using mesh "<<filename<<std::endl;
+        buildFromTriangleMesh(filename);
     }
-    else if(_filename.length() > 4 && _filename.compare(_filename.length()-4, 4, ".raw")==0)
+    else if(filename.length() > 4 && filename.compare(filename.length()-4, 4, ".raw")==0)
     {
-        //			std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
+        //			std::cout << "SparseGridTopology: using mesh "<<filename<<std::endl;
         _usingMC = true;
 
-        buildFromRawVoxelFile(_filename);
+        buildFromRawVoxelFile(filename);
     }
-    else if(_filename.length() > 6 && _filename.compare(_filename.length()-6, 6, ".voxel")==0)
+    else if(filename.length() > 6 && filename.compare(filename.length()-6, 6, ".voxel")==0)
     {
-        buildFromVoxelFile(_filename);
+        buildFromVoxelFile(filename);
     }
 }
 
@@ -1004,11 +996,6 @@ void SparseGridTopology::buildFromFiner(  )
         }
 }
 
-
-
-
-
-
 void SparseGridTopology::buildVirtualFinerLevels()
 {
     int nb = _nbVirtualFinerLevels.getValue();
@@ -1027,7 +1014,7 @@ void SparseGridTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->setNx( newnx );
     _virtualFinerLevels[0]->setNy( newny );
     _virtualFinerLevels[0]->setNz( newnz );
-    _virtualFinerLevels[0]->load(this->d_filename.getValue().c_str());
+    _virtualFinerLevels[0]->_filename.setValue( this->_filename.getValue());
     _virtualFinerLevels[0]->init();
 
     cerr<<"SparseGridTopology "<<getName()<<" buildVirtualFinerLevels : ";
@@ -1049,8 +1036,6 @@ void SparseGridTopology::buildVirtualFinerLevels()
     cerr<<endl;
 
     this->setFinerSparseGrid(_virtualFinerLevels[nb-1]);
-
-
 }
 
 

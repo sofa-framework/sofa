@@ -40,6 +40,8 @@ namespace sofa
 namespace component
 {
 
+class MeshLoader;
+
 namespace topology
 {
 
@@ -47,9 +49,11 @@ using namespace sofa::defaulttype;
 using helper::vector;
 using helper::fixed_array;
 
+
 class MeshTopology : public core::componentmodel::topology::BaseMeshTopology
 {
 public:
+
     MeshTopology();
 
     virtual void init();
@@ -446,6 +450,8 @@ protected:
     virtual void updateTetras()    { }
     virtual void updateHexas()     { }
 
+protected:
+    virtual void loadFromMeshLoader(sofa::component::MeshLoader* loader);
 };
 
 } // namespace topology
