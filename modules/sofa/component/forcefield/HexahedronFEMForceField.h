@@ -198,7 +198,15 @@ public:
 
     void setYoungModulus(Real val) { this->f_youngModulus.setValue(val); }
 
-    void setMethod(int val) { method = val; }
+    void setMethod(int val)
+    {
+        method = val;
+        switch(val)
+        {
+        case POLAR: f_method.setValue("polar"); break;
+        default   : f_method.setValue("large");
+        };
+    }
 
     void setUpdateStiffnessMatrix(bool val) { this->f_updateStiffnessMatrix.setValue(val); }
 
