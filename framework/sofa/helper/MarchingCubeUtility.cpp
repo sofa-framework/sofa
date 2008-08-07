@@ -341,7 +341,8 @@ const int MarchingCubeTriTable[256][16] =
 
 
 MarchingCubeUtility::MarchingCubeUtility()
-    : cubeStep(1), convolutionSize(1), dataVoxelSize(Vector3(1.0f,1.0f,1.0f))
+    : cubeStep(1), convolutionSize(1),
+      dataResolution(0,0,0), dataVoxelSize(1.0f,1.0f,1.0f)
 {}
 
 /*
@@ -552,7 +553,7 @@ void MarchingCubeUtility::run( const unsigned char *_data, const float isolevel,
     }
 }
 
-void MarchingCubeUtility::createTriangleMesh( const unsigned char *data,  const float isolevel,
+void MarchingCubeUtility::run( const unsigned char *data,  const float isolevel,
         sofa::helper::io::Mesh &m) const
 {
     using sofa::helper::vector;

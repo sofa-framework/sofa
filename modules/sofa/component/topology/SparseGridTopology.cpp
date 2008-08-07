@@ -462,7 +462,7 @@ void SparseGridTopology::updateMesh()
 void SparseGridTopology::getMesh(sofa::helper::io::Mesh &m)
 {
     if (!dataVoxels.getValue().empty())
-        marchingCubes.createTriangleMesh(&dataVoxels.getValue()[0], 0.5f, m);
+        marchingCubes.run(&dataVoxels.getValue()[0], 0.5f, m);
 }
 
 template< class T >
