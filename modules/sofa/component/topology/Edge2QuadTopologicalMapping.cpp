@@ -114,6 +114,8 @@ void Edge2QuadTopologicalMapping::init()
             to_mstate->resize(fromModel->getNbPoints() * N);
             to_tstc->clear();
 
+            toModel->setNbPoints(fromModel->getNbPoints() * N);
+
             for (unsigned int i=0; i<(unsigned int) fromModel->getNbPoints(); ++i)
             {
                 unsigned int p0=i;
@@ -136,9 +138,6 @@ void Edge2QuadTopologicalMapping::init()
                     Vec x = t + (Y*cos((Real) (2.0*j*M_PI/N)) + Z*sin((Real) (2.0*j*M_PI/N)))*((Real) rho);
 
                     (*to_mstate->getX())[p0*N+j]=x;
-
-                    to_tstc->addPoint();
-
                 }
             }
 

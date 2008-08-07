@@ -92,6 +92,12 @@ void Hexa2QuadTopologicalMapping::init()
 
             std::cout << "INFO_print : Hexa2QuadTopologicalMapping - to = quad" << std::endl;
 
+            QuadSetTopologyContainer *to_tstc;
+            toModel->getContext()->get(to_tstc);
+            to_tstc->clear();
+
+            toModel->setNbPoints(fromModel->getNbPoints());
+
             QuadSetTopologyModifier *to_tstm;
             toModel->getContext()->get(to_tstm);
 

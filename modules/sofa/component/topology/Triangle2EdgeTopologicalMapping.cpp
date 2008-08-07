@@ -90,6 +90,13 @@ void Triangle2EdgeTopologicalMapping::init()
 
             std::cout << "INFO_print : Triangle2EdgeTopologicalMapping - to = edge" << std::endl;
 
+            EdgeSetTopologyContainer *to_tstc;
+            toModel->getContext()->get(to_tstc);
+            to_tstc->clear();
+
+            toModel->setNbPoints(fromModel->getNbPoints());
+
+
             EdgeSetTopologyModifier *to_tstm;
             toModel->getContext()->get(to_tstm);
 

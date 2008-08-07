@@ -56,6 +56,8 @@ public:
 
     virtual int getNbPoints() const;
 
+    virtual void setNbPoints(int n);
+
     // Complete sequence accessors
 
     virtual const SeqEdges& getEdges();

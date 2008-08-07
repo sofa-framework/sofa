@@ -231,6 +231,11 @@ int MeshTopology::getNbPoints() const
     return nbPoints;
 }
 
+void MeshTopology::setNbPoints(int n)
+{
+    nbPoints = n;
+}
+
 int MeshTopology::getNbEdges()
 {
     return getEdges().size();
