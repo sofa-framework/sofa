@@ -181,12 +181,11 @@ SofaModeler::SofaModeler()
         QString s=QString(it->c_str()) + QString("Widget");
         QWidget* gridWidget = new QWidget(SofaComponents, s);
         QGridLayout* gridLayout = new QGridLayout( gridWidget, numRows+1,1);
-        bool needSpacer = false;
-
+        gridLayout->addItem(new QSpacerItem(1,1,QSizePolicy::Minimum, QSizePolicy::Expanding ), 0,0);
 
         //Insert all the components belonging to the same family
         SofaComponents->addItem( gridWidget ,it->c_str() );
-        unsigned int counterElem=0;
+        unsigned int counterElem=1;
         for (unsigned int i=0; i< inventory.count( (*it) ); ++i)
         {
             ClassInfo* entry = itMap->second;
@@ -247,8 +246,6 @@ SofaModeler::SofaModeler()
             QComboBox *combo=NULL;
             if ( entry->creatorList.size() > 1 )
             {
-
-                needSpacer = true;
                 combo = new QComboBox(gridWidget);
 
                 for (unsigned int t=0; t<templateCombo.size(); ++t)
@@ -281,9 +278,6 @@ SofaModeler::SofaModeler()
             connect(button, SIGNAL(pressed() ), this, SLOT( dragComponent() ));
             counterElem++;
         }
-
-        gridLayout->addItem(new QSpacerItem(1,1,QSizePolicy::Expanding, QSizePolicy::Minimum ), numRows,0);
-        if (needSpacer) gridLayout->addItem(new QSpacerItem(1,1,QSizePolicy::Expanding, QSizePolicy::Minimum ), numRows,1);
     }
 
     connect( this->infoItem, SIGNAL(linkClicked( const QString &)), this, SLOT(fileOpen(const QString &)));
@@ -536,7 +530,6 @@ void SofaModeler::changeInformation(Q3ListViewItem *item)
 
 void SofaModeler::dragComponent()
 {
-
     const QObject* sender = this->sender();
     //Change the frontal description of the object
     if ( mapComponents.find(sender) == mapComponents.end()) return;
@@ -609,7 +602,7 @@ void SofaModeler::changeComponent(ClassInfo *currentComponent)
 
 void SofaModeler::newGNode()
 {
-    Q3TextDrag *dragging = new Q3TextDrag(QString("GNode"), this);
+    Q3TextDrag *dragging = new Q3TextDrag(QString("GNode"), (QPushButton*)sender());
     dragging->setText(QString("GNode"));
     dragging->dragCopy();
 }
@@ -672,6 +665,9 @@ void SofaModeler::keyPressEvent ( QKeyEvent * e )
 
 void SofaModeler::dropEvent(QDropEvent* event)
 {
+    QPushButton *push = (QPushButton *)event->source();
+    if (push) push->setDown(false);
+
     QString text;
     Q3TextDrag::decode(event, text);
     std::string filename(text.ascii());
@@ -691,6 +687,7 @@ void SofaModeler::dropEvent(QDropEvent* event)
         }
         fileOpen(filename);
     }
+
 }
 
 void SofaModeler::runInSofa()

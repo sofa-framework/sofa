@@ -61,12 +61,14 @@ typedef QPopupMenu Q3PopupMenu;
 
 GNode *GraphModeler::addGNode(GNode *parent, GNode *child, bool saveHistory)
 {
+    GNode *lastRoot = getRoot();
     if (!child)
     {
         child = new GNode();
         if (!parent)
             child->setName("Root");
     }
+
 
     graphListener->addChild(parent, child);
 
@@ -86,6 +88,7 @@ GNode *GraphModeler::addGNode(GNode *parent, GNode *child, bool saveHistory)
         Operation adding(graphListener->items[child], child, Operation::ADD_OBJECT);
         historyOperation.push_front(adding);
     }
+    if (!parent) deleteComponent(graphListener->items[lastRoot]);
     return child;
 }
 
@@ -158,6 +161,9 @@ BaseObject *GraphModeler::addComponent(GNode *parent, ClassInfo* entry, std::str
 
 void GraphModeler::dropEvent(QDropEvent* event)
 {
+    QPushButton *push = (QPushButton *)event->source();
+    if (push)  push->setDown(false);
+
     QString text;
     Q3TextDrag::decode(event, text);
 
@@ -512,11 +518,6 @@ void GraphModeler::loadPreset(GNode *parent, std::string presetFile,
         }
     }
 
-// 	//Case of Fixed preset: the mesh initial corresponds to the collision model
-// 	if (!collisionNodeFound && meshMecha)
-// 	  {
-// 	    updatePresetNode(*meshMecha, filenames[2], translation, rotation, scale);
-// 	  }
 
 
     if (!newXML->init()) std::cerr<< "Objects initialization failed.\n";
@@ -592,7 +593,7 @@ void GraphModeler::deleteComponent(Q3ListViewItem* item, bool saveHistory)
             Operation removal(item, getGNode(item),Operation::DELETE_OBJECT);
             historyOperation.push_front(removal);
         }
-
+        if (!parent && childCount() == 0) addGNode(NULL);
         //OPERATION DELETE: to remove in order to be able to undo operation
         getSimulation()->unload (node);
     }

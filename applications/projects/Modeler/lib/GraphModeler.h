@@ -112,13 +112,10 @@ public:
         Q3TextDrag::decode(event, text);
         std::string filename(text.ascii());
         std::string test = filename; test.resize(4);
-        if (test == "file") {event->accept();}
+        if (test == "file") {event->accept(event->answerRect());}
         else
         {
-            if ( getGNode(event->pos()))
-                event->accept(event->answerRect());
-            else
-                event->ignore(event->answerRect());
+            event->accept(event->answerRect());
         }
     }
     void dragMoveEvent( QDragMoveEvent* event)
@@ -127,13 +124,17 @@ public:
         Q3TextDrag::decode(event, text);
         std::string filename(text.ascii());
         std::string test = filename; test.resize(4);
-        if (test == "file") {event->accept();}
+        if (test == "file") {event->accept(event->answerRect());}
         else
         {
             if ( getGNode(event->pos()))
+            {
                 event->accept(event->answerRect());
+            }
             else
+            {
                 event->ignore(event->answerRect());
+            }
         }
     }
 
