@@ -83,7 +83,7 @@ public:
 
     /// given a set of data (size of the data and size of the marching cube beeing defined previously),
     /// we construct a Sofa mesh.
-    void createTriangleMesh(  const unsigned char *data,  const float isolevel, sofa::helper::io::Mesh &m) const;
+    void run(  const unsigned char *data,  const float isolevel, sofa::helper::io::Mesh &m) const;
 
 private:
 
@@ -119,10 +119,10 @@ private:
     void smoothData( float *data) const;
 
 private:
-    Vec3i			dataResolution;
-    Vector3			dataVoxelSize;
     unsigned int	cubeStep;
     unsigned int	convolutionSize;
+    Vec3i			dataResolution;
+    Vector3			dataVoxelSize;
 
 };
 
