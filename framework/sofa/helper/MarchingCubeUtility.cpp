@@ -43,9 +43,6 @@ namespace sofa
 namespace helper
 {
 
-
-
-
 const int MarchingCubeEdgeTable[256] =
 {
     0x0  , 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c,
@@ -343,17 +340,21 @@ const int MarchingCubeTriTable[256][16] =
 };
 
 
-
+MarchingCubeUtility::MarchingCubeUtility()
+    : cubeStep(1), convolutionSize(1), dataVoxelSize(Vector3(1.0f,1.0f,1.0f))
+{}
 
 /*
 Linearly interpolate the position where an isosurface cuts
 an edge between two vertices, each with their own scalar value
 */
-void MarchingCubeUtility::VertexInterp(const float isolevel, const Vector3 &p1, const Vector3 &p2, const float valp1, const float valp2, Vector3 &p) const
+void MarchingCubeUtility::vertexInterp(const float isolevel,
+        const Vector3 &p1, const Vector3 &p2,
+        const float valp1, const float valp2, Vector3 &p) const
 {
     float mu = (isolevel - valp1) / (valp2 - valp1);
     p = p1 + (p2 - p1) * mu;
-    p = p.linearProduct(sizeVoxel*size[0]*0.5f);
+    p = p.linearProduct(dataVoxelSize*dataResolution[0]*0.5f);
     p[0] = (int)(p[0]*PRECISION)/PRECISION;
     p[1] = (int)(p[1]*PRECISION)/PRECISION;
     p[2] = (int)(p[2]*PRECISION)/PRECISION;
@@ -367,16 +368,16 @@ bool MarchingCubeUtility::testGrid(const float v, const float isolevel) const
 
 
 /*
-   Given a grid cell and an isolevel, calculate the triangular
-   facets required to represent the isosurface through the cell.
-   Return the number of triangular facets, the array "triangles"
-   will be loaded up with the vertices at most 5 triangular facets.
-	0 will be returned if the grid cell is either totally above
-   of totally below the isolevel.
+Given a grid cell and an isolevel, calculate the triangular
+facets required to represent the isosurface through the cell.
+Return the number of triangular facets, the array "triangles"
+will be loaded up with the vertices at most 5 triangular facets.
+0 will be returned if the grid cell is either totally above
+of totally below the isolevel.
 */
-int MarchingCubeUtility::Polygonise(const GridCell &grid, float isolevel, sofa::helper::vector< IdVertex > &triangles,
-        std::map< Vector3, IdVertex> &map_vertices,
-        std::map< IdVertex, Vector3> &map_indices,
+int MarchingCubeUtility::polygonise(const GridCell &grid, float isolevel, sofa::helper::vector< PointID > &triangles,
+        std::map< Vector3, PointID> &map_vertices,
+        std::map< PointID, Vector3> &map_indices,
         unsigned int &ID) const
 {
 
@@ -402,39 +403,39 @@ int MarchingCubeUtility::Polygonise(const GridCell &grid, float isolevel, sofa::
 
     /* Find the vertices where the surface intersects the cube */
     if (MarchingCubeEdgeTable[cubeindex] & 1)
-        VertexInterp(isolevel,grid.pos[0],grid.pos[1],grid.val[0],grid.val[1], vertindex[0]);
+        vertexInterp(isolevel,grid.pos[0],grid.pos[1],grid.val[0],grid.val[1], vertindex[0]);
     if (MarchingCubeEdgeTable[cubeindex] & 2)
-        VertexInterp(isolevel,grid.pos[1],grid.pos[2],grid.val[1],grid.val[2], vertindex[1]);
+        vertexInterp(isolevel,grid.pos[1],grid.pos[2],grid.val[1],grid.val[2], vertindex[1]);
     if (MarchingCubeEdgeTable[cubeindex] & 4)
-        VertexInterp(isolevel,grid.pos[2],grid.pos[3],grid.val[2],grid.val[3], vertindex[2]);
+        vertexInterp(isolevel,grid.pos[2],grid.pos[3],grid.val[2],grid.val[3], vertindex[2]);
     if (MarchingCubeEdgeTable[cubeindex] & 8)
-        VertexInterp(isolevel,grid.pos[3],grid.pos[0],grid.val[3],grid.val[0], vertindex[3]);
+        vertexInterp(isolevel,grid.pos[3],grid.pos[0],grid.val[3],grid.val[0], vertindex[3]);
     if (MarchingCubeEdgeTable[cubeindex] & 16)
-        VertexInterp(isolevel,grid.pos[4],grid.pos[5],grid.val[4],grid.val[5], vertindex[4]);
+        vertexInterp(isolevel,grid.pos[4],grid.pos[5],grid.val[4],grid.val[5], vertindex[4]);
     if (MarchingCubeEdgeTable[cubeindex] & 32)
-        VertexInterp(isolevel,grid.pos[5],grid.pos[6],grid.val[5],grid.val[6], vertindex[5]);
+        vertexInterp(isolevel,grid.pos[5],grid.pos[6],grid.val[5],grid.val[6], vertindex[5]);
     if (MarchingCubeEdgeTable[cubeindex] & 64)
-        VertexInterp(isolevel,grid.pos[6],grid.pos[7],grid.val[6],grid.val[7], vertindex[6]);
+        vertexInterp(isolevel,grid.pos[6],grid.pos[7],grid.val[6],grid.val[7], vertindex[6]);
     if (MarchingCubeEdgeTable[cubeindex] & 128)
-        VertexInterp(isolevel,grid.pos[7],grid.pos[4],grid.val[7],grid.val[4], vertindex[7]);
+        vertexInterp(isolevel,grid.pos[7],grid.pos[4],grid.val[7],grid.val[4], vertindex[7]);
     if (MarchingCubeEdgeTable[cubeindex] & 256)
-        VertexInterp(isolevel,grid.pos[0],grid.pos[4],grid.val[0],grid.val[4], vertindex[8]);
+        vertexInterp(isolevel,grid.pos[0],grid.pos[4],grid.val[0],grid.val[4], vertindex[8]);
     if (MarchingCubeEdgeTable[cubeindex] & 512)
-        VertexInterp(isolevel,grid.pos[1],grid.pos[5],grid.val[1],grid.val[5], vertindex[9]);
+        vertexInterp(isolevel,grid.pos[1],grid.pos[5],grid.val[1],grid.val[5], vertindex[9]);
     if (MarchingCubeEdgeTable[cubeindex] & 1024)
-        VertexInterp(isolevel,grid.pos[2],grid.pos[6],grid.val[2],grid.val[6], vertindex[10]);
+        vertexInterp(isolevel,grid.pos[2],grid.pos[6],grid.val[2],grid.val[6], vertindex[10]);
     if (MarchingCubeEdgeTable[cubeindex] & 2048)
-        VertexInterp(isolevel,grid.pos[3],grid.pos[7],grid.val[3],grid.val[7], vertindex[11]);
+        vertexInterp(isolevel,grid.pos[3],grid.pos[7],grid.val[3],grid.val[7], vertindex[11]);
 
     /* Create the triangle */
     ntriang = 0;
-    std::map< Vector3, IdVertex>::iterator iter;
+    std::map< Vector3, PointID>::iterator iter;
     Vector3 current_P;
-    IdVertex current_ID;
+    PointID current_ID;
     for (i=0; MarchingCubeTriTable[cubeindex][i]!=-1; i+=3)
     {
         Vec<3,unsigned int> current_triangle;
-        for (IdVertex j=0; j<3; ++j)
+        for (PointID j=0; j<3; ++j)
         {
             current_P = vertindex[MarchingCubeTriTable[cubeindex][i+j]];
             //Search if the current Vertex P is already stored with an ID
@@ -462,137 +463,140 @@ int MarchingCubeUtility::Polygonise(const GridCell &grid, float isolevel, sofa::
 
 
 
-void MarchingCubeUtility::RenderMarchCube( const unsigned char *_data, const float isolevel,
-        sofa::helper::vector< IdVertex > &mesh,
-        std::map< IdVertex, Vector3>       &map_indices,
-        unsigned int CONVOLUTION_LENGTH) const
+void MarchingCubeUtility::run( const unsigned char *_data, const float isolevel,
+        sofa::helper::vector< PointID > &mesh,
+        sofa::helper::vector< Vector3 >  &vertices) const
 {
-    vector< float > data(size[0]*size[1]*size[2]);
-    if (data.size() == 0) return;
-    for (unsigned int i=0; i<data.size(); ++i) data[i] = (float) getVoxel(i,_data);
-    if (CONVOLUTION_LENGTH != 0) smoothData(&data[0], CONVOLUTION_LENGTH);
+    std::map<PointID, Vector3>	map_indices;
+
+    vector< float > data(dataResolution[0]*dataResolution[1]*dataResolution[2]);
+    if (data.size() == 0)
+        return;
+
+    for (unsigned int i=0; i<data.size(); ++i)
+        data[i] = (float) getVoxel(i,_data);
+
+    if (convolutionSize != 0)
+        smoothData(&data[0]);
+
     unsigned int ID = 0;
-    std::map< Vector3, IdVertex> map_vertices;
+    std::map< Vector3, PointID> map_vertices;
 
-    Vector3 gridStep=Vector3(2.0f/((float)gridSize[0]),2.0f/((float)gridSize[1]),2.0f/((float)gridSize[2]));
+    Vec3i gridSize = Vec3i(dataResolution[0]/cubeStep, dataResolution[1]/cubeStep, dataResolution[2]/cubeStep);
 
-    Vec<3,int> dataGridStep(size[0]/gridSize[0],size[1]/gridSize[1],size[2]/gridSize[2]);
+    Vector3 gridStep = Vector3(2.0f/((float)gridSize[0]), 2.0f/((float)gridSize[1]), 2.0f/((float)gridSize[2]));
 
-    IdVertex counter_triangles=0;
+    Vec3i dataGridStep(dataResolution[0]/gridSize[0],dataResolution[1]/gridSize[1],dataResolution[2]/gridSize[2]);
+
+    PointID counter_triangles=0;
     for(int k=0; k<gridSize[2]-1; k++)
         for(int j=0; j<gridSize[1]-1; j++)
             for(int i=0; i<gridSize[0]-1; i++)
             {
                 GridCell cell;
                 Vector3 vcurf((float)i, (float)j, (float)k);
-                Vec<3,int> vcuri(i, j, k);
+                Vec3i vcuri(i, j, k);
 
                 cell.pos[0]=vcurf.linearProduct(gridStep)-Vector3(1.0f,1.0f,1.0f);
-                Vec<3,int> valPos0=vcuri.linearProduct(dataGridStep);
-                cell.val[0]=data[valPos0[0] + valPos0[1]*size[0] + valPos0[2]*size[0]*size[1]];
+                Vec3i valPos0=vcuri.linearProduct(dataGridStep);
+                cell.val[0]=data[valPos0[0] + valPos0[1]*dataResolution[0] + valPos0[2]*dataResolution[0]*dataResolution[1]];
 
-                Vec<3,int> valPos;
+                Vec3i valPos;
 
                 cell.pos[1]=cell.pos[0]+Vector3(gridStep[0], 0, 0);
                 if(i==gridSize[0]-1)
                     valPos=valPos0;
                 else
-                    valPos=valPos0+Vec<3,int>(dataGridStep[0], 0, 0);
-                cell.val[1]=data[valPos[0] + valPos[1]*size[0] + valPos[2]*size[0]*size[1]];
+                    valPos=valPos0+Vec3i(dataGridStep[0], 0, 0);
+                cell.val[1]=data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]];
 
                 cell.pos[2]=cell.pos[0]+Vector3(gridStep[0], gridStep[1], 0);
-                valPos=valPos0+Vec<3,int>(i==gridSize[0]-1 ? 0 : dataGridStep[0], j==gridSize[1]-1 ? 0 : dataGridStep[1], 0);
-                cell.val[2]=data[valPos[0] + valPos[1]*size[0] + valPos[2]*size[0]*size[1]];
+                valPos=valPos0+Vec3i(i==gridSize[0]-1 ? 0 : dataGridStep[0], j==gridSize[1]-1 ? 0 : dataGridStep[1], 0);
+                cell.val[2]=data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]];
 
                 cell.pos[3]=cell.pos[0]+Vector3(0, gridStep[1], 0);
-                valPos=valPos0+Vec<3,int>(0, j==gridSize[1]-1 ? 0 : dataGridStep[1], 0);
-                cell.val[3]=data[valPos[0] + valPos[1]*size[0] + valPos[2]*size[0]*size[1]];
-
-
+                valPos=valPos0+Vec3i(0, j==gridSize[1]-1 ? 0 : dataGridStep[1], 0);
+                cell.val[3]=data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]];
 
                 cell.pos[4]=cell.pos[0]+Vector3(0, 0, gridStep[2]);
-                valPos=valPos0+Vec<3,int>(0, 0, k==gridSize[2]-1 ? 0 : dataGridStep[2]);
-                cell.val[4]=data[valPos[0] + valPos[1]*size[0] + valPos[2]*size[0]*size[1]];
-
+                valPos=valPos0+Vec3i(0, 0, k==gridSize[2]-1 ? 0 : dataGridStep[2]);
+                cell.val[4]=data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]];
 
                 cell.pos[5]=cell.pos[0]+Vector3(gridStep[0], 0, gridStep[2]);
-                valPos=valPos0+Vec<3,int>(i==gridSize[0]-1 ? 0 : dataGridStep[0], 0, k==gridSize[2]-1 ? 0 : dataGridStep[2]);
-                cell.val[5]=data[valPos[0] + valPos[1]*size[0] + valPos[2]*size[0]*size[1]];
+                valPos=valPos0+Vec3i(i==gridSize[0]-1 ? 0 : dataGridStep[0], 0, k==gridSize[2]-1 ? 0 : dataGridStep[2]);
+                cell.val[5]=data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]];
 
                 cell.pos[6]=cell.pos[0]+Vector3(gridStep[0], gridStep[1], gridStep[2]);
-                valPos=valPos0+Vec<3,int>(i==gridSize[0]-1 ? 0 : dataGridStep[0], j==gridSize[1]-1 ? 0 : dataGridStep[1], k==gridSize[2]-1 ? 0 : dataGridStep[2]);
-                cell.val[6]=data[valPos[0] + valPos[1]*size[0] + valPos[2]*size[0]*size[1]];
+                valPos=valPos0+Vec3i(i==gridSize[0]-1 ? 0 : dataGridStep[0], j==gridSize[1]-1 ? 0 : dataGridStep[1], k==gridSize[2]-1 ? 0 : dataGridStep[2]);
+                cell.val[6]=data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]];
 
                 cell.pos[7]=cell.pos[0]+Vector3(0, gridStep[1], gridStep[2]);
-                valPos=valPos0+Vec<3,int>(0, j==gridSize[1]-1 ? 0 : dataGridStep[1], k==gridSize[2]-1 ? 0 : dataGridStep[2]);
-                cell.val[7]=data[valPos[0] + valPos[1]*size[0] + valPos[2]*size[0]*size[1]];
+                valPos=valPos0+Vec3i(0, j==gridSize[1]-1 ? 0 : dataGridStep[1], k==gridSize[2]-1 ? 0 : dataGridStep[2]);
+                cell.val[7]=data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]];
 
 
-                int numvert=Polygonise(cell, isolevel, mesh, map_vertices, map_indices, ID);
+                int numvert = polygonise(cell, isolevel, mesh, map_vertices, map_indices, ID);
                 counter_triangles += numvert/3;
             }
 
+    //WARNING mesh from Marching Cube has indices starting from ID 1, a sofa mesh begins with ID 0
+    vertices.resize(map_indices.size());
+    for(unsigned int i=0; i<map_indices.size(); ++i)
+    {
+        vertices[i] = map_indices[i+1];
+    }
 
+    for(unsigned int i=0; i<mesh.size(); ++i)
+    {
+        mesh[i] -= 1;
+    }
 }
 
-void MarchingCubeUtility::createMesh( const sofa::helper::vector< IdVertex > &mesh,
-        std::map< IdVertex,  Vector3>       &map_indices,
+void MarchingCubeUtility::createTriangleMesh( const unsigned char *data,  const float isolevel,
         sofa::helper::io::Mesh &m) const
-{
-    std::cout << "Creating Mesh using Marching Cubes\n";
-    vector<Vector3> &vertices                 = m.getVertices();
-    vector< vector < vector <int> > > &facets = m.getFacets();
-
-    for (unsigned int i=0; i<map_indices.size(); ++i)
-    {
-        vertices.push_back(map_indices[i+1]);
-    }
-
-    vector<int> vIndices;
-    const vector<int> nIndices = vector<int>(3,0);
-    const vector<int> tIndices = vector<int>(3,0);
-    vector< vector< int > > vertNormTexIndices;
-    for (unsigned int i=0; i<mesh.size(); i+=3)
-    {
-        vIndices.clear();
-        vertNormTexIndices.clear();
-        vIndices.push_back(mesh[i]-1);	           vIndices.push_back(mesh[i+1]-1);	    vIndices.push_back(mesh[i+2]-1);
-        vertNormTexIndices.push_back(vIndices);  vertNormTexIndices.push_back(nIndices);  vertNormTexIndices.push_back(tIndices);
-        facets.push_back(vertNormTexIndices);
-    }
-}
-
-void MarchingCubeUtility::createMesh( const unsigned char *data,  const float isolevel, sofa::helper::io::Mesh &m, unsigned int CONVOLUTION_LENGTH) const
 {
     using sofa::helper::vector;
     using sofa::defaulttype::Vector3;
 
-    sofa::helper::vector< IdVertex >  mesh;
-    std::map< IdVertex, Vector3>  map_indices;
+    std::cout << "Creating Mesh using Marching Cubes\n";
+    vector<Vector3> &vertices                 = m.getVertices();
+    vector< vector < vector <int> > > &facets = m.getFacets();
+
+    vector< PointID >				triangles;
 
     //Do the Marching Cube
-    RenderMarchCube(data, isolevel, mesh, map_indices, CONVOLUTION_LENGTH);
-    createMesh(mesh, map_indices, m);
+    run(data, isolevel, triangles, vertices);
+
+    const unsigned int numTriangles = triangles.size()/3;
+    facets.resize(numTriangles, vector< vector < int > >(3, vector<int>(3, 0)));
+    for (unsigned int i=0; i<triangles.size(); /*i+=3*/)
+    {
+        vector< vector< int > > &vertNormTexIndices = facets[i/3];
+        vector<int> &vIndices = vertNormTexIndices[0];
+
+        vIndices[0] = triangles[i++];
+        vIndices[1] = triangles[i++];
+        vIndices[2] = triangles[i++];
+    }
 }
 
-
-void MarchingCubeUtility::smoothData( float *data, unsigned int CONVOLUTION_LENGTH) const
+void MarchingCubeUtility::smoothData( float *data) const
 {
-    std::cout << "Smoothing Data using " << CONVOLUTION_LENGTH << "x"<< CONVOLUTION_LENGTH << "x"<< CONVOLUTION_LENGTH << " as gaussian convolution kernel\n";
+    std::cout << "Smoothing Data using " << convolutionSize << "x"<< convolutionSize << "x"<< convolutionSize << " as gaussian convolution kernel\n";
     vector< float >convolutionKernel;
-    createConvolutionKernel(CONVOLUTION_LENGTH, convolutionKernel);
+    createConvolutionKernel(convolutionKernel);
 
-    float *original_data=new float[size[0]*size[1]*size[2]];
-    memcpy(original_data, data, sizeof(float)*size[0]*size[1]*size[2]);
-    unsigned int limit = CONVOLUTION_LENGTH/2;
+    float *original_data=new float[dataResolution[0]*dataResolution[1]*dataResolution[2]];
+    memcpy(original_data, data, sizeof(float)*dataResolution[0]*dataResolution[1]*dataResolution[2]);
+    unsigned int limit = convolutionSize/2;
     unsigned int z,y,x;
-    for (z=limit; z<size[2]-limit; ++z)
+    for (z=limit; z<dataResolution[2]-limit; ++z)
     {
-        for (y=limit; y<size[1]-limit; ++y)
+        for (y=limit; y<dataResolution[1]-limit; ++y)
         {
-            for (x=limit; x<size[0]-limit; ++x)
+            for (x=limit; x<dataResolution[0]-limit; ++x)
             {
-                applyConvolution(CONVOLUTION_LENGTH, x,y,z, original_data, data, convolutionKernel);
+                applyConvolution(x,y,z, original_data, data, convolutionKernel);
             }
         }
     }
@@ -600,41 +604,44 @@ void MarchingCubeUtility::smoothData( float *data, unsigned int CONVOLUTION_LENG
     delete [] original_data;
 }
 
-void  MarchingCubeUtility::applyConvolution(unsigned int CONVOLUTION_LENGTH, unsigned int x, unsigned int y, unsigned int z, const float *original_data, float *data, const vector< float >  &convolutionKernel) const
+void  MarchingCubeUtility::applyConvolution(unsigned int x, unsigned int y, unsigned int z,
+        const float *original_data,
+        float *data,
+        const vector< float >  &convolutionKernel) const
 {
 
-    const unsigned int index = size[0]*(z*size[1] +y) +x;
-    const unsigned int step=size[0]*size[1];
+    const unsigned int index = dataResolution[0]*(z*dataResolution[1] +y) +x;
+    const unsigned int step=dataResolution[0]*dataResolution[1];
     data[index] = 0;
-    const unsigned int c=CONVOLUTION_LENGTH/2;
+    const unsigned int c=convolutionSize/2;
     unsigned int _z,_y,_x;
     unsigned int i=0;
-    for (  _z=0; _z<CONVOLUTION_LENGTH; ++_z)
+    for (  _z=0; _z<convolutionSize; ++_z)
     {
-        for (  _y=0; _y<CONVOLUTION_LENGTH; ++_y)
+        for (  _y=0; _y<convolutionSize; ++_y)
         {
-            for (  _x=0; _x<CONVOLUTION_LENGTH; ++_x)
+            for (  _x=0; _x<convolutionSize; ++_x)
             {
-                data[index] += convolutionKernel[i++]*original_data[index+step*(_z-c)+size[0]*(_y-c)+(_x-c)];
+                data[index] += convolutionKernel[i++]*original_data[index+step*(_z-c)+dataResolution[0]*(_y-c)+(_x-c)];
             }
         }
     }
 }
 
 
-void MarchingCubeUtility::createConvolutionKernel(unsigned int CONVOLUTION_LENGTH, vector< float >  &convolutionKernel) const
+void MarchingCubeUtility::createConvolutionKernel(vector< float >  &convolutionKernel) const
 {
-    int c = (1 + CONVOLUTION_LENGTH/2);
+    int c = (1 + convolutionSize/2);
     float total = 0.0;
 
-    convolutionKernel.resize(CONVOLUTION_LENGTH*CONVOLUTION_LENGTH*CONVOLUTION_LENGTH);
-    const float var = (float)CONVOLUTION_LENGTH/*/2.0f*/;
+    convolutionKernel.resize(convolutionSize*convolutionSize*convolutionSize);
+    const float var = (float)convolutionSize/*/2.0f*/;
     unsigned int i=0;
-    for (unsigned int z=0; z<CONVOLUTION_LENGTH; ++z)
+    for (unsigned int z=0; z<convolutionSize; ++z)
     {
-        for (unsigned int y=0; y<CONVOLUTION_LENGTH; ++y)
+        for (unsigned int y=0; y<convolutionSize; ++y)
         {
-            for (unsigned int x=0; x<CONVOLUTION_LENGTH; ++x)
+            for (unsigned int x=0; x<convolutionSize; ++x)
             {
                 convolutionKernel[i] = (float)(exp( -(pow((float)(x+1-c),2) + pow((float)(y+1-c),2) + pow((float)(z+1-c),2))/(2.0f*var)));
                 total += convolutionKernel[i++];
@@ -643,9 +650,9 @@ void MarchingCubeUtility::createConvolutionKernel(unsigned int CONVOLUTION_LENGT
     }
 
     i=0;
-    for (unsigned int z=0; z<CONVOLUTION_LENGTH; ++z)
-        for (unsigned int y=0; y<CONVOLUTION_LENGTH; ++y)
-            for (unsigned int x=0; x<CONVOLUTION_LENGTH; ++x)
+    for (unsigned int z=0; z<convolutionSize; ++z)
+        for (unsigned int y=0; y<convolutionSize; ++y)
+            for (unsigned int x=0; x<convolutionSize; ++x)
                 convolutionKernel[i++] /= total;
 
 
@@ -653,4 +660,5 @@ void MarchingCubeUtility::createConvolutionKernel(unsigned int CONVOLUTION_LENGT
 
 
 }
+
 }

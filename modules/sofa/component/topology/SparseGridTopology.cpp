@@ -100,14 +100,14 @@ const int SparseGridTopology::cornerIndicesFromFineToCoarse[8][8]=
 
 SparseGridTopology::SparseGridTopology(bool _isVirtual)
     :
-    n(initData(&n,Vec<3,int>(2,2,2),"n","grid resolution")),
-    min(initData(&min,Vector3(0,0,0),"min","Min")),
-    max(initData(&max,Vector3(0,0,0),"max","Max")),
+    n(initData(&n, Vec3i(2,2,2), "n", "grid resolution")),
+    _min(initData(&_min, Vector3(0,0,0), "min","Min")),
+    _max(initData(&_max, Vector3(0,0,0), "max","Max")),
     _nbVirtualFinerLevels( initData(&_nbVirtualFinerLevels, 0, "nbVirtualFinerLevels", "create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)")),
-    dim_voxels(initData(&dim_voxels,Vec<3,unsigned int>(512,512,246),"dim_voxels","Dimension of the voxel File")),
-    size_voxel(initData(&size_voxel,Vector3(1.0f,1.0f,1.0f),"size_voxel","Dimension of one voxel")),
-    resolution(initData(&resolution, (unsigned int) 128, "resolution", "Resolution of the Marching Cube")),
-    smoothData(initData(&smoothData, (unsigned int) 0, "smoothData", "Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required."))
+    dataResolution(initData(&dataResolution, Vec3i(0,0,0), "dataResolution", "Dimension of the voxel File")),
+    voxelSize(initData(&voxelSize, Vector3(1.0f,1.0f,1.0f), "voxelSize", "Dimension of one voxel")),
+    marchingCubeStep(initData(&marchingCubeStep, (unsigned int) 1, "marchingCubeStep", "Step of the Marching Cube algorithm")),
+    convolutionSize(initData(&convolutionSize, (unsigned int) 0, "convolutionSize", "Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required."))
 {
     isVirtual = _isVirtual;
     _alreadyInit = false;
@@ -136,7 +136,7 @@ void SparseGridTopology::init()
     this->MeshTopology::init();
     invalidate();
 
-    Vec<3,int> grid = n.getValue();
+    Vec3i grid = n.getValue();
 
     if(grid[0] < 2) grid[0]= 2;
     if(grid[1] < 2) grid[1]= 2;
@@ -286,9 +286,9 @@ void SparseGridTopology::buildFromVoxelFile(const std::string& filename)
         ymax =(int)( dy * fileNy);
         zmax =(int)( dz * fileNz);
 
-        n.setValue(Vec<3,int>(nx,ny,nz));
-        min.setValue(Vector3((SReal)xmin, (SReal)ymin, (SReal)zmin));
-        max.setValue(Vector3((SReal)xmax, (SReal)ymax, (SReal)zmax));
+        n.setValue(Vec3i(nx,ny,nz));
+        _min.setValue(Vector3((SReal)xmin, (SReal)ymin, (SReal)zmin));
+        _max.setValue(Vector3((SReal)xmax, (SReal)ymax, (SReal)zmax));
 
 
 
@@ -350,12 +350,12 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
         FILE *file = fopen( filename.c_str(), "r" );
         if (!file) { std::cerr<< "FILE " << filename << " not found\n"; return;}
         //Get the voxels from the file
-        dataVoxels.beginEdit()->resize(dim_voxels.getValue()[0]*dim_voxels.getValue()[1]*dim_voxels.getValue()[2]/8, (unsigned char)0);
+        dataVoxels.beginEdit()->resize(dataResolution.getValue()[0]*dataResolution.getValue()[1]*dataResolution.getValue()[2]/8, (unsigned char)0);
 
         unsigned char value;
-        const Vector3 transform(                (getNx()-1)/(float)dim_voxels.getValue()[0],
-                (getNy()-1)/(float)dim_voxels.getValue()[1],
-                (getNz()-1)/(float)dim_voxels.getValue()[2]);
+        const Vector3 transform(                (getNx()-1)/(float)dataResolution.getValue()[0],
+                (getNy()-1)/(float)dataResolution.getValue()[1],
+                (getNz()-1)/(float)dataResolution.getValue()[2]);
 
         for (unsigned int i=0; i<dataVoxels.beginEdit()->size()*8; i++)
         {
@@ -364,10 +364,10 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
             {
                 setVoxel(i,1);
 
-                const int z = i/(dim_voxels.getValue()[0]*dim_voxels.getValue()[1]);
-                const int y = (  (i%(dim_voxels.getValue()[0]*dim_voxels.getValue()[1]))
-                        /(dim_voxels.getValue()[0])                  	    );
-                const int x = i%dim_voxels.getValue()[0];
+                const int z = i/(dataResolution.getValue()[0]*dataResolution.getValue()[1]);
+                const int y = (  (i%(dataResolution.getValue()[0]*dataResolution.getValue()[1]))
+                        /(dataResolution.getValue()[0])                  	    );
+                const int x = i%dataResolution.getValue()[0];
 
                 unsigned int indexGrid =
                     (unsigned int)(z*transform[2])*(getNy()-1)*(getNx()-1)
@@ -380,9 +380,9 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
         }
         fclose(file);
     }
-    SReal s = std::max((SReal)dim_voxels.getValue()[0],std::max((SReal)dim_voxels.getValue()[1],(SReal)dim_voxels.getValue()[2]));
-    min.setValue(size_voxel.getValue()*s*(-0.5)); //Centered on 0
-    max.setValue(size_voxel.getValue()*s*0.5);
+    unsigned int max_dim_voxels = std::max(dataResolution.getValue()[0],std::max(dataResolution.getValue()[1],dataResolution.getValue()[2]));
+    _min.setValue(voxelSize.getValue()*max_dim_voxels*(-0.5));
+    _max.setValue(voxelSize.getValue()*max_dim_voxels*0.5);
 
     _regularGrid.setPos(getXmin(),getXmax(),getYmin(),getYmax(),getZmin(),getZmax());
     buildFromRegularGridTypes(_regularGrid, regularGridTypes);
@@ -397,10 +397,9 @@ void SparseGridTopology::updateMesh()
 {
     if (!_usingMC || dataVoxels.beginEdit()->size() == 0) return;
 
-
-    unsigned int s = std::max(dim_voxels.getValue()[0],std::max(dim_voxels.getValue()[1],dim_voxels.getValue()[2]));
-    min.setValue(size_voxel.getValue()*s*(-0.5));
-    max.setValue(size_voxel.getValue()*s*0.5);
+    unsigned int max_dim_voxels = std::max(dataResolution.getValue()[0],std::max(dataResolution.getValue()[1],dataResolution.getValue()[2]));
+    _min.setValue(voxelSize.getValue()*max_dim_voxels*(-0.5));
+    _max.setValue(voxelSize.getValue()*max_dim_voxels*0.5);
 
     //Creating if needed collision models and visual models
     using sofa::simulation::tree::GNode;
@@ -441,46 +440,49 @@ void SparseGridTopology::updateMesh()
         }
 #endif
     }
-    if (list_meshf.size() == 0 && list_meshd.size() == 0 ) return;
-    //No Marching Cube to run
-    sofa::helper::vector< unsigned int> mesh_MC;
-    std::map< unsigned int, Vector3 >     map_indices;
-    //Configuration of the Marching Cubes algorithm
-    MC.setSize(Vec<3,int>(dim_voxels.getValue()[0],dim_voxels.getValue()[1],dim_voxels.getValue()[2]));
-    //Cubic voxels
-    MC.setGridSize(Vec<3,int>(      resolution.getValue()*dim_voxels.getValue()[0]/s,
-            (int)(resolution.getValue()*dim_voxels.getValue()[1]/s),
-            (int)(resolution.getValue()*dim_voxels.getValue()[2]/s)));
-    MC.setSizeVoxel(size_voxel.getValue());
-    MC.RenderMarchCube(&(*dataVoxels.beginEdit())[0], 0.5f,mesh_MC, map_indices, smoothData.getValue()); //Apply Smoothing is smoothData > 0
 
-    if (list_meshf.size() != 0)
-        constructCollisionModels(list_meshf, list_Xf, mesh_MC, map_indices);
+    if (list_meshf.empty() && list_meshd.empty() )
+        return;				 //No Marching Cube to run
+
+    //Configuration of the Marching Cubes algorithm
+
+    marchingCubes.setDataResolution(Vec3i(dataResolution.getValue()[0],
+            dataResolution.getValue()[1],
+            dataResolution.getValue()[2]));
+    marchingCubes.setDataVoxelSize(voxelSize.getValue());
+    marchingCubes.setStep(marchingCubeStep.getValue());
+    marchingCubes.setConvolutionSize(convolutionSize.getValue()); //apply Smoothing if convolutionSize > 0
+
+    if (! list_meshf.empty())
+        constructCollisionModels(list_meshf, list_Xf);
     else
-        constructCollisionModels(list_meshd, list_Xd, mesh_MC, map_indices);
+        constructCollisionModels(list_meshd, list_Xd);
 }
 
 void SparseGridTopology::getMesh(sofa::helper::io::Mesh &m)
 {
-    if (dataVoxels.beginEdit()->size() != 0)
-        MC.createMesh(&(*dataVoxels.beginEdit())[0],0.5f,  m,smoothData.getValue());
+    if (!dataVoxels.getValue().empty())
+        marchingCubes.createTriangleMesh(&dataVoxels.getValue()[0], 0.5f, m);
 }
 
 template< class T >
 void SparseGridTopology::constructCollisionModels(const sofa::helper::vector< sofa::core::componentmodel::topology::BaseMeshTopology * > &list_mesh,
-        const sofa::helper::vector< sofa::helper::vector< Vec<3,T> >* >            &list_X,
-        const sofa::helper::vector< unsigned int> mesh_MC,
-        std::map< unsigned int, Vector3 >     map_indices) const
+        const sofa::helper::vector< sofa::helper::vector< Vec<3,T> >* > &list_X) const
 {
+    sofa::helper::vector< unsigned int>	triangles;
+    vector< Vector3 >		vertices;
+
+    marchingCubes.run(&dataVoxels.getValue()[0], 0.5f, triangles, vertices);
+
     for (unsigned int i=0; i<list_mesh.size(); ++i)
     {
         list_mesh[i]->clear();
-        list_X[i]->resize(map_indices.size());
+        list_X[i]->resize(vertices.size());
     }
-    //Fill the dofs : WARNING mesh from Marching Cube has indices starting from ID 1, a sofa mesh begins with ID 0
-    for (unsigned int id_point=0; id_point<map_indices.size(); ++id_point)
+
+    for (unsigned int id_point=0; id_point<vertices.size(); ++id_point)
     {
-        const Vector3 point(map_indices[id_point+1]);
+        const Vector3 point(vertices[id_point]);
         for (unsigned int j=0; j<list_mesh.size(); ++j)
         {
             (*list_X[j])[id_point] = point;
@@ -488,11 +490,11 @@ void SparseGridTopology::constructCollisionModels(const sofa::helper::vector< so
     }
 
     //Fill the facets
-    for (unsigned int id_vertex=0; id_vertex<mesh_MC.size(); id_vertex+=3)
+    for (unsigned int id_vertex=0; id_vertex<triangles.size(); id_vertex+=3)
     {
         for (unsigned int j=0; j<list_mesh.size(); ++j)
         {
-            list_mesh[j]->addTriangle(mesh_MC[id_vertex]-1,mesh_MC[id_vertex+1]-1, mesh_MC[id_vertex+2]-1);
+            list_mesh[j]->addTriangle(triangles[id_vertex],triangles[id_vertex+1], triangles[id_vertex+2]);
         }
     }
 }
@@ -509,7 +511,7 @@ void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
     }
 
     // if not given sizes -> bounding box
-    if( min.getValue()== Vector3() && max.getValue()== Vector3())
+    if( _min.getValue()== Vector3() && _max.getValue()== Vector3())
     {
         SReal xMin, xMax, yMin, yMax, zMin, zMax;
         computeBoundingBox(mesh->getVertices(), xMin, xMax, yMin, yMax, zMin, zMax);
@@ -518,8 +520,8 @@ void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
         Vector3 diff ( xMax-xMin, yMax - yMin, zMax - zMin );
         diff /= 100.0;
 
-        min.setValue(Vector3( xMin - diff[0], yMin - diff[1], zMin - diff[2] ));
-        max.setValue(Vector3( xMax + diff[0], yMax + diff[1], zMax + diff[2] ));
+        _min.setValue(Vector3( xMin - diff[0], yMin - diff[1], zMin - diff[2] ));
+        _max.setValue(Vector3( xMax + diff[0], yMax + diff[1], zMax + diff[2] ));
     }
 
     _regularGrid.setSize(getNx(),getNy(),getNz());
