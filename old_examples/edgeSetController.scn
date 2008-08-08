@@ -13,7 +13,7 @@
 		<Object type="MeshLoader" name="meshLoader" filename="mesh/edgeSet.mesh"/>
 		<Object type="MechanicalObject" name="MechanicalDOFs" template="Rigid" position="0 0 0 0 0 0 1  1 0 0 0 0 0 1  2 0 0 0 0 0 1"/>
 		
-		<include href="Objects/EdgeSetTopology.xml" template="StdRigidTypes&lt;3,double&gt; &gt;" />
+		<include href="Objects/EdgeSetTopology.xml" template="Rigid" />
 		
 		<Object type="MechanicalStateController" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
 		<Object type="EdgeSetController" listening="true" mainDirection="-1.0 0.0 0.0"/>
@@ -23,7 +23,7 @@
 		<Object type="BeamFEMForceField" name="FEM" radius="0.1" youngModulus="50000000" />
 		
 		<Node name="CM">
-			<Object type="MechanicalObject" name="CollisionDOFs" template="Vec3" size="3"/>
+			<Object type="MechanicalObject" name="CollisionDOFs" template="Vec3d" size="3"/>
 			<Object type="LineSet" />
 			<Object type="PointSet" />
 			<Object type="IdentityMapping"/>
@@ -31,7 +31,7 @@
 		
 		<Node name="VM">
 			<Object type="MechanicalObject" name="VisualDOFs"/>
-			<include href="Objects/QuadSetTopology.xml" template="StdVectorTypes&lt;Vec&lt;3,double&gt;,Vec&lt;3,double&gt;,double&gt; &gt;"/>
+			<include href="Objects/QuadSetTopology.xml"/>
 			<Object type="Edge2QuadTopologicalMapping" nbPointsOnEachCircle="10" radius="0.5" object1="../../Container" object2="Container"/>
 			<Object type="TubularMapping" nbPointsOnEachCircle="10" radius="0.5" object1="../../MechanicalDOFs" object2="../VisualDOFs" />
 			

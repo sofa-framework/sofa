@@ -33,6 +33,11 @@ namespace sofa
 namespace simulation
 {
 
+StateChangeVisitor::StateChangeVisitor()
+    : root(true)
+{
+}
+
 void StateChangeVisitor::processStateChange(core::objectmodel::BaseObject* obj)
 {
     obj->handleStateChange();
@@ -40,9 +45,21 @@ void StateChangeVisitor::processStateChange(core::objectmodel::BaseObject* obj)
 
 Visitor::Result StateChangeVisitor::processNodeTopDown(simulation::Node* node)
 {
-    this->processStateChange(node->getContext()->getMechanicalState());
+    if (!root && node->mechanicalMapping != NULL)
+    {
+        if (!node->mechanicalMapping->sameTopology())
+        {
+            // stop all topological computations
+            return RESULT_PRUNE;
+        }
+    }
+    if (node->mechanicalState != NULL)
+    {
+        this->processStateChange(node->mechanicalState);
+    }
 
-    return RESULT_PRUNE; // stop the propagation of state changes
+    root = false; // now we process child nodes
+    return RESULT_CONTINUE; // continue the propagation of state changes
 }
 
 
