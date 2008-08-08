@@ -1336,7 +1336,8 @@ void QtViewer::calcProjection()
         getSimulation()->computeBBox(groot, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
         sceneBBoxIsValid = true;
     }
-    //std::cout << "Scene BBox = "<<sceneMinBBox<<" - "<<sceneMaxBBox<<"\n";
+    if (sceneMaxBBox==Vector3() && sceneMinBBox==Vector3())_zoomSpeed = _panSpeed = 2;
+
     if (!sceneBBoxIsValid || sceneMinBBox[0] > sceneMaxBBox[0])
     {
         zNear = 1.0;
@@ -1548,7 +1549,7 @@ void QtViewer::ApplySceneTransformation(int x, int y)
         else if (_navigationMode == ZOOM_MODE)
         {
             zshift = (2.0f * y - _W) / _W - (2.0f * _mouseY - _W) / _W;
-            _sceneTransform.translation[2] = _previousEyePos[2] -
+            _sceneTransform.translation[2] = _previousEyePos[2] +
                     _zoomSpeed * zshift;
             update();
         }
