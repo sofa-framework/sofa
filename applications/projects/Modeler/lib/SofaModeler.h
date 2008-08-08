@@ -99,6 +99,7 @@ public:
 
 
 public slots:
+    void test() {std::cout << "!!!!!!!!!!!!!!\n";}
     void dragComponent();
     void changeComponent(ClassInfo *currentComponent);
 #ifdef SOFA_QT4
