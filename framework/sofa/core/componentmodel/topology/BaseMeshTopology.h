@@ -115,7 +115,15 @@ public:
     typedef vector<HexaID>			QuadHexas;
     /// @}
 
-    BaseMeshTopology() {};
+    BaseMeshTopology();
+
+    void parse(core::objectmodel::BaseObjectDescription* arg);
+
+    /// Load the topology from a file.
+    ///
+    /// The default implementation supports the following formats: obj, gmsh, mesh (custom simple text file), xs3 (deprecated description of mass-springs networks).
+    virtual bool load(const char* filename);
+    virtual std::string getFilename() const {return d_filename.getValue();}
 
     // defined in Topology
     //virtual int getNbPoints() const = 0;
@@ -131,6 +139,7 @@ public:
 
     /// Random accessors
     /// @{
+
     virtual int getNbEdges()     { return getEdges().size(); }
     virtual int getNbTriangles() { return getTriangles().size(); }
     virtual int getNbQuads()     { return getQuads().size(); }
@@ -235,7 +244,7 @@ public:
     /// @}
 
     /// @name Initial points accessors (only available if the topology was loaded from a file containing this information).
-    /// Note that this data is only used for initialisation and is not maintained afterwards (i.e. topological changes may not be applied)
+    /// Note that this data is only used for initialization and is not maintained afterwards (i.e. topological changes may not be applied)
     /// @{
     virtual bool hasPos() const { return false; }
     virtual double getPX(int) const { return 0.0; }
@@ -284,6 +293,10 @@ public:
 
     /// @}
 
+
+protected:
+
+    Data< std::string > d_filename;
 };
 
 } // namespace topology
