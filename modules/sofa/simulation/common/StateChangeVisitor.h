@@ -37,6 +37,7 @@ class StateChangeVisitor : public Visitor
 {
 
 public:
+    StateChangeVisitor();
 
     virtual void processStateChange(core::objectmodel::BaseObject* obj);
 
@@ -49,6 +50,8 @@ public:
     /// Only used for debugging / profiling purposes
     virtual const char* getCategoryName() const { return "stateChange"; }
 
+protected:
+    bool root;
 };
 
 

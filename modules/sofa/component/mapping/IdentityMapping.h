@@ -74,6 +74,12 @@ public:
     {
     }
 
+    /// Return true if the destination model has the same topology as the source model.
+    ///
+    /// This is the case for mapping keeping a one-to-one correspondance between
+    /// input and output DOFs (mostly identity or data-conversion mappings).
+    virtual bool sameTopology() const { return true; }
+
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
 
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
