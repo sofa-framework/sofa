@@ -82,6 +82,8 @@ SofaModeler::SofaModeler()
     fileMenu->removeAction(Action);
 #endif
 
+    connect(GNodeButton, SIGNAL(pressed()), this, SLOT( releaseButton()));
+
     //Add menu Preset
     preset = new Q3PopupMenu(this);
     this->menubar->insertItem(QString("Preset"), preset, 4);
@@ -217,7 +219,7 @@ SofaModeler::SofaModeler()
 
 
             QPushButton *button = new QPushButton(gridWidget, QString(entry->className.c_str()));
-            connect(button, SIGNAL(pressed()), this, SLOT( test()));
+            connect(button, SIGNAL(pressed()), this, SLOT( releaseButton()));
             gridLayout->addWidget(button, counterElem,0);
             button->setFlat(false);
 
@@ -716,7 +718,11 @@ void SofaModeler::runInSofa()
     mapSofa.insert(std::make_pair(tabGraph, guiSofa));
 }
 
-
+void SofaModeler::releaseButton()
+{
+    QPushButton *push = (QPushButton *)sender();
+    if (push) push->setDown(false);
+}
 }
 }
 }
