@@ -191,7 +191,7 @@ protected:
     /// Current opened Tab
     QWidget *tabGraph;
     /// Menu recently opened
-    Q3PopupMenu *recentlyOpened;
+    //Q3PopupMenu *recentlyOpened;
     /// Menu preset
     Q3PopupMenu *preset;
     /// Correspondance between a name clicked in the menu and a path to the preset

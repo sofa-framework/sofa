@@ -605,6 +605,10 @@
         <action name="fileSaveAsAction"/>
         <action name="exportGraphAction"/>
         <separator/>
+        <action name="Action"/>
+        <item text="Recently Opened Files..." name="recentlyOpened" accel="">
+            <action name="TestAction"/>
+        </item>
         <separator/>
         <action name="fileExitAction"/>
     </item>
@@ -984,6 +988,25 @@
         </property>
         <property name="menuText">
             <string>Gnuplot Directory...</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>Action</cstring>
+        </property>
+        <property name="text">
+            <string>Recently Opened Files...</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>TestAction</cstring>
+        </property>
+        <property name="text">
+            <string>Test</string>
+        </property>
+        <property name="menuText">
+            <string>Test</string>
         </property>
     </action>
 </actions>

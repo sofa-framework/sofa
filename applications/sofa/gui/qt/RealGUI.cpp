@@ -329,9 +329,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     : viewerName ( viewername ), viewer ( NULL ), currentTab ( NULL ), tabInstrument (NULL),  graphListener ( NULL ), dialog ( NULL )
 {
     connect(this, SIGNAL(quit()), this, SLOT(fileExit()));
-    //Add Filemenu Recently Opened files
-    recentlyOpened = new QPopupMenu(this);
-    this->fileMenu->insertItem( QIconSet( ), tr( "Recently Opened Files..."), recentlyOpened, -1, 7);
 
     displayFlag = new DisplayFlagWidget(tabView);
     connect( displayFlag, SIGNAL( change(int,bool)), this, SLOT(showhideElements(int,bool) ));

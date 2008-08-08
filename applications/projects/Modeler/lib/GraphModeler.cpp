@@ -169,20 +169,20 @@ void GraphModeler::dropEvent(QDropEvent* event)
 
     std::string filename(text.ascii());
     std::string test = filename; test.resize(4);
+
     if (test == "file")
     {
-
 #ifdef WIN32
-        for (unsigned int i=0; i<filename.size(); ++i)
-        {
-            if (filename[i] == '\\') filename[i] = '/';
-        }
         filename = filename.substr(8); //removing file:///
 #else
         filename = filename.substr(7); //removing file://
 #endif
-        filename.resize(filename.size()-1);
-        filename[filename.size()-1]='\0';
+
+        if (filename[filename.size()-1] == '\n')
+        {
+            filename.resize(filename.size()-1);
+            filename[filename.size()-1]='\0';
+        }
 
         emit(fileOpen(filename));
     }
@@ -677,6 +677,7 @@ bool GraphModeler::isNodeErasable ( core::objectmodel::Base* element )
     }
     return true;
 }
+
 bool GraphModeler::isObjectErasable ( core::objectmodel::Base* element )
 {
     std::map< void*, core::objectmodel::Base*>::iterator it;
