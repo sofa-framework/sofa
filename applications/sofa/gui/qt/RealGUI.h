@@ -275,7 +275,7 @@ protected:
 
     QWidgetStack* left_stack;
     AddObject *dialog;
-    QPopupMenu *recentlyOpened;
+
 
 
     sofa::simulation::tree::GNode* getScene() { if (viewer) return viewer->getScene(); else return NULL; }

@@ -77,9 +77,10 @@ SofaModeler::SofaModeler()
     QWidget *GraphSupport = new QWidget((QWidget*)splitter2);
     QGridLayout* GraphLayout = new QGridLayout(GraphSupport, 1,1,5,2,"GraphLayout");
 
-    //Add Filemenu Recently Opened files
-    recentlyOpened = new Q3PopupMenu(this);
-    this->fileMenu->insertItem( QIconSet( ), tr( "Recently Opened Files..."), recentlyOpened, -1, 9);
+
+#ifdef SOFA_QT4
+    fileMenu->removeAction(Action);
+#endif
 
     //Add menu Preset
     preset = new Q3PopupMenu(this);
@@ -217,7 +218,7 @@ SofaModeler::SofaModeler()
 
             QPushButton *button = new QPushButton(gridWidget, QString(entry->className.c_str()));
             gridLayout->addWidget(button, counterElem,0);
-            button->setFlat(true);
+            button->setFlat(false);
 
             //Count the number of template usable: Mapping and MechanicalMapping must be separated
             std::vector< std::string > templateCombo;
@@ -447,7 +448,7 @@ void SofaModeler::updateRecentlyOpened(std::string fileLoaded)
     std::string s;
     while( std::getline(end,s) )
     {
-        if (s != fileLoaded)
+        if (strcmp(s.c_str(),fileLoaded.c_str()))
             list_files.push_back(sofa::helper::system::DataRepository.getFile(s));
     }
     end.close();
@@ -685,9 +686,9 @@ void SofaModeler::dropEvent(QDropEvent* event)
             filename.resize(filename.size()-1);
             filename[filename.size()-1]='\0';
         }
+
         fileOpen(filename);
     }
-
 }
 
 void SofaModeler::runInSofa()
