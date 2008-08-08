@@ -74,31 +74,64 @@ void MeshTopology::init()
     {
         loadFromMeshLoader(loader);
     }
+
+    // compute the number of points, if the topology is charged from the scene or if it was loaded from a MeshLoader without any points data.
+    if (nbPoints==0)
+    {
+        unsigned int n = 0;
+        for (unsigned int i=0; i<seqEdges.getValue().size(); i++)
+        {
+            for (unsigned int j=0; j<seqEdges.getValue()[i].size(); j++)
+            {
+                if (n <= seqEdges.getValue()[i][j])
+                    n = 1 + seqEdges.getValue()[i][j];
+            }
+        }
+        for (unsigned int i=0; i<seqTriangles.getValue().size(); i++)
+        {
+            for (unsigned int j=0; j<seqTriangles.getValue()[i].size(); j++)
+            {
+                if (n <= seqTriangles.getValue()[i][j])
+                    n = 1 + seqTriangles.getValue()[i][j];
+            }
+        }
+        for (unsigned int i=0; i<seqQuads.getValue().size(); i++)
+        {
+            for (unsigned int j=0; j<seqQuads.getValue()[i].size(); j++)
+            {
+                if (n <= seqQuads.getValue()[i][j])
+                    n = 1 + seqQuads.getValue()[i][j];
+            }
+        }
+        for (unsigned int i=0; i<seqTetras.getValue().size(); i++)
+        {
+            for (unsigned int j=0; j<seqTetras.getValue()[i].size(); j++)
+            {
+                if (n <= seqTetras.getValue()[i][j])
+                    n = 1 + seqTetras.getValue()[i][j];
+            }
+        }
+        for (unsigned int i=0; i<seqHexas.getValue().size(); i++)
+        {
+            for (unsigned int j=0; j<seqHexas.getValue()[i].size(); j++)
+            {
+                if (n <= seqHexas.getValue()[i][j])
+                    n = 1 + seqHexas.getValue()[i][j];
+            }
+        }
+        nbPoints = n;
+    }
 }
 
 void MeshTopology::loadFromMeshLoader(sofa::component::MeshLoader* loader)
 {
+    nbPoints = loader->getNbPoints();
     seqPoints = loader->getPoints();
     seqEdges = loader->getEdges();
     seqTriangles = loader->getTriangles();
     seqQuads = loader->getQuads();
     seqTetras = loader->getTetras();
     seqHexas = loader->getHexas();
-
-    // compute the number of points if if the topology is charged from the scene.
-    unsigned int maxIndex = 0;
-    if (nbPoints==0)
-    {
-        for (unsigned int i=0; i<seqEdges.getValue().size(); i++)
-        {
-            for (unsigned int j=0; j<seqEdges.getValue()[i].size(); j++)
-            {
-                if (maxIndex < seqEdges.getValue()[i][j])
-                    maxIndex = seqEdges.getValue()[i][j];
-            }
-        }
-        nbPoints = maxIndex + 1;
-    }
 }
 
 void MeshTopology::clear()

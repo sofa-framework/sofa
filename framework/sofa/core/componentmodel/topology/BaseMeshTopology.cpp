@@ -25,6 +25,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/helper/io/MeshTopologyLoader.h>
+#include <sofa/helper/system/FileRepository.h>
 
 namespace sofa
 {
@@ -41,6 +43,11 @@ namespace topology
 using namespace sofa::defaulttype;
 using helper::vector;
 using helper::fixed_array;
+
+BaseMeshTopology::BaseMeshTopology()
+    : d_filename(initData(&d_filename,"filename","Filename of the mesh"))
+{
+}
 
 /// Returns the set of edges adjacent to a given vertex.
 const BaseMeshTopology::VertexEdges& BaseMeshTopology::getEdgeVertexShell(PointID)
@@ -183,6 +190,67 @@ const BaseMeshTopology::QuadHexas& BaseMeshTopology::getHexaQuadShell(QuadID)
     if (getNbHexas()) std::cerr << "WARNING: "<<this->getClassName()<<"::getHexaQuadShell unsupported."<<std::endl;
     static QuadHexas empty;
     return empty;
+}
+
+void BaseMeshTopology::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    if (arg->getAttribute("filename"))
+    {
+        d_filename.setValue( arg->getAttribute("filename") );
+        this->load(arg->getAttribute("filename"));
+    }
+    arg->removeAttribute("filename");
+    this->core::componentmodel::topology::Topology::parse(arg);
+}
+
+class DefaultMeshTopologyLoader : public helper::io::MeshTopologyLoader
+{
+public:
+    BaseMeshTopology* dest;
+    DefaultMeshTopologyLoader(BaseMeshTopology* dest) : dest(dest) {}
+    virtual void addPoint(double px, double py, double pz)
+    {
+        dest->addPoint(px,py,pz);
+    }
+    virtual void addLine(int p1, int p2)
+    {
+        dest->addEdge(p1,p2);
+    }
+    virtual void addTriangle(int p1, int p2, int p3)
+    {
+        dest->addTriangle(p1,p2,p3);
+    }
+    virtual void addQuad(int p1, int p2, int p3, int p4)
+    {
+        dest->addQuad(p1,p2,p3,p4);
+    }
+    virtual void addTetra(int p1, int p2, int p3, int p4)
+    {
+        dest->addTetra(p1,p2,p3,p4);
+    }
+    virtual void addCube(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8)
+    {
+        dest->addHexa(p1,p2,p3,p4,p5,p6,p7,p8);
+    }
+};
+
+bool BaseMeshTopology::load(const char* filename)
+{
+    clear();
+    std::string meshFilename(filename);
+    if (!sofa::helper::system::DataRepository.findFile (meshFilename))
+    {
+        logWarning(std::string("Mesh \"") + filename +std::string("\" not found"));
+        return false;
+    }
+    this->d_filename.setValue( meshFilename );
+    DefaultMeshTopologyLoader loader(this);
+    if (!loader.load(meshFilename.c_str()))
+    {
+        logWarning(std::string("Unable to load Mesh \"") + filename );
+        return false;
+    }
+    return true;
 }
 
 // for procedural creation
