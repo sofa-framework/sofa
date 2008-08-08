@@ -330,6 +330,10 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
 {
     connect(this, SIGNAL(quit()), this, SLOT(fileExit()));
 
+#ifdef SOFA_QT4
+    fileMenu->removeAction(Action);
+#endif
+
     displayFlag = new DisplayFlagWidget(tabView);
     connect( displayFlag, SIGNAL( change(int,bool)), this, SLOT(showhideElements(int,bool) ));
     gridLayout1->addWidget(displayFlag,0,0);

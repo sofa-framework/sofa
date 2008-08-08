@@ -217,6 +217,7 @@ SofaModeler::SofaModeler()
 
 
             QPushButton *button = new QPushButton(gridWidget, QString(entry->className.c_str()));
+            connect(button, SIGNAL(pressed()), this, SLOT( test()));
             gridLayout->addWidget(button, counterElem,0);
             button->setFlat(false);
 
@@ -566,8 +567,11 @@ void SofaModeler::changeComponent(ClassInfo *currentComponent)
         {
             if (isupper(baseClassName[i])) baseClassName[i] = tolower(baseClassName[i]);
         }
-        if (baseClassName == "mastersolver")   baseClassName="solver";
-        if (baseClassName == "collisionmodel") baseClassName="collision";
+        if (baseClassName == "odesolver")            baseClassName="solver";
+        if (baseClassName == "mastersolver")         baseClassName="solver";
+        if (baseClassName == "topologicalmapping")   baseClassName="topology";
+        if (baseClassName == "topologyobject")       baseClassName="topology";
+        if (baseClassName == "collisionmodel")       baseClassName="collision";
         std::string path=std::string("Components/") + baseClassName + std::string("/") + currentComponent->className + std::string(".scn");
 
 
