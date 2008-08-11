@@ -82,13 +82,15 @@ SofaModeler::SofaModeler()
 #ifdef SOFA_QT4
     fileMenu->removeAction(Action);
 #endif
-
     connect(GNodeButton, SIGNAL(pressed()), this, SLOT( releaseButton()));
-    connect(windowMenu, SIGNAL(activated(int)), this, SLOT( changeCurrentScene(int)));
+
     //Add menu Preset
     preset = new Q3PopupMenu(this);
-    this->menubar->insertItem(QString("Preset"), preset, 4);
+    this->menubar->insertItem(tr(QString("&Preset")), preset, 4);
+    windowMenu = new Q3PopupMenu(this);
+    this->menubar->insertItem(tr(QString("&Window")), windowMenu, 5);
 
+    connect(windowMenu, SIGNAL(activated(int)), this, SLOT( changeCurrentScene(int)));
 
     examplePath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/examples/" );
     presetPath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/applications/projects/Modeler/preset/" );
