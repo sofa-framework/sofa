@@ -440,7 +440,7 @@ void SofaModeler::fileOpen(std::string filename)
 
     changeNameWindow(graph->getFilename());
 
-    mapWindow.insert(std::make_pair(windowMenu->insertItem( graph->getFilename()), tabGraph));
+    mapWindow.insert(std::make_pair(windowMenu->insertItem( graph->getFilename().c_str()), tabGraph));
 }
 
 void SofaModeler::fileRecentlyOpened(int id)
