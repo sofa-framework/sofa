@@ -85,7 +85,6 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     //if (!file.empty() && sofa::helper::system::DataRepository.findFile (file))
     //{
     filename.setValue( sofa::helper::system::DataRepository.getFile ( file ));
-    obj->load(filename.getValue(), loader, texturename.getValue());
     //}
 
 
@@ -189,7 +188,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
 
     const helper::io::Mesh::Material &materialImport = objLoader.getMaterial();
 
-    if (materialImport.activated)
+    if (!material.isSet() && materialImport.activated)
     {
         helper::io::Mesh::Material M;
         M = materialImport;
@@ -444,6 +443,8 @@ void VisualModelImpl::applyUVScale(const double scaleU, const double scaleV)
 
 void VisualModelImpl::init()
 {
+
+    load(filename.getValue(), "", texturename.getValue());
     _topology = getContext()->getMeshTopology();
 
     field_vertices.beginEdit();
