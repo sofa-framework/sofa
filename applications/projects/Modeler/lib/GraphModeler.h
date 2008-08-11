@@ -113,10 +113,7 @@ public:
         std::string filename(text.ascii());
         std::string test = filename; test.resize(4);
         if (test == "file") {event->accept(event->answerRect());}
-        else
-        {
-            event->accept(event->answerRect());
-        }
+        else  event->accept();
     }
     void dragMoveEvent( QDragMoveEvent* event)
     {
@@ -128,13 +125,9 @@ public:
         else
         {
             if ( getGNode(event->pos()))
-            {
                 event->accept(event->answerRect());
-            }
             else
-            {
                 event->ignore(event->answerRect());
-            }
         }
     }
 
