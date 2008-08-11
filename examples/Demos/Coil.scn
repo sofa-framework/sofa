@@ -7,6 +7,6 @@
 	<Object type="CollisionGroup" name="Group" />
 	<include href="Objects/SaladBowl.xml" ry="-90" scale="15" dx="10"  contactStiffness="500" color="1 0.7 0.55 0.3"/>
 	<include href="Objects/SaladBowl.xml" ry="90"  scale="15" dx="2"   contactStiffness="500" color="1 0.7 0.55 0.3"/>
-	<include href="Objects/InstrumentCatheter.xml" dx="2.1" color="0 0 1 1"
+	<include href="Objects/InstrumentCoil.xml" dx="2.1" color="0 0 1 1"
 		 TopoMapping__radius="0.2" TubularMapping__radius="0.2"/>
 </Node>
