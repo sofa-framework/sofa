@@ -74,6 +74,7 @@ typedef QTextDrag Q3TextDrag;
 
 SofaModeler::SofaModeler()
 {
+    count='0';
     QWidget *GraphSupport = new QWidget((QWidget*)splitter2);
     QGridLayout* GraphLayout = new QGridLayout(GraphSupport, 1,1,5,2,"GraphLayout");
 
@@ -83,7 +84,7 @@ SofaModeler::SofaModeler()
 #endif
 
     connect(GNodeButton, SIGNAL(pressed()), this, SLOT( releaseButton()));
-
+    connect(windowMenu, SIGNAL(activated(int)), this, SLOT( changeCurrentScene(int)));
     //Add menu Preset
     preset = new Q3PopupMenu(this);
     this->menubar->insertItem(QString("Preset"), preset, 4);
@@ -219,6 +220,7 @@ SofaModeler::SofaModeler()
 
 
             QPushButton *button = new QPushButton(gridWidget, QString(entry->className.c_str()));
+            connect(button, SIGNAL(pressed()), this, SLOT( newComponent()));
             connect(button, SIGNAL(pressed()), this, SLOT( releaseButton()));
             gridLayout->addWidget(button, counterElem,0);
             button->setFlat(false);
@@ -279,7 +281,7 @@ SofaModeler::SofaModeler()
             mapComponents.insert(std::make_pair(button, std::make_pair(entry, combo)));
             itMap++;
 
-            connect(button, SIGNAL(pressed() ), this, SLOT( dragComponent() ));
+            //connect(button, SIGNAL(pressed() ), this, SLOT( newComponent() ));
             counterElem++;
         }
     }
@@ -366,6 +368,7 @@ void SofaModeler::createTab()
     graph = new GraphModeler(tabGraph);
     mapGraph.insert(std::make_pair(tabGraph, graph));
 
+
     graph->setAcceptDrops(true);
     currentTabLayout->addWidget(graph,0,0);
 
@@ -389,6 +392,7 @@ void SofaModeler::closeTab()
         fileNew();
     else if (tabGraph)
     {
+
         //If the scene has been launch in Sofa
         if (mapSofa[tabGraph] != 0)
         {
@@ -398,6 +402,13 @@ void SofaModeler::closeTab()
         }
         //else
         //	      delete mapGraph[tabGraph];
+        std::map< int, QWidget* >::const_iterator it;
+        for (it = mapWindow.begin(); it!=mapWindow.end(); it++)
+        {
+            if (it->second == tabGraph) break;
+        }
+        mapWindow.erase(it->first);
+        windowMenu->removeItem(it->first);
         mapGraph.erase(tabGraph);
 
         delete tabGraph;
@@ -426,6 +437,8 @@ void SofaModeler::fileOpen(std::string filename)
     sceneTab->setTabToolTip(tabGraph, QString(filename.c_str()));
 
     changeNameWindow(graph->getFilename());
+
+    mapWindow.insert(std::make_pair(windowMenu->insertItem(QIconSet(), graph->getFilename()), tabGraph));
 }
 
 void SofaModeler::fileRecentlyOpened(int id)
@@ -532,7 +545,7 @@ void SofaModeler::changeInformation(Q3ListViewItem *item)
 
 
 
-void SofaModeler::dragComponent()
+void SofaModeler::newComponent()
 {
     const QObject* sender = this->sender();
     //Change the frontal description of the object
@@ -623,6 +636,13 @@ void SofaModeler::changeCurrentScene( QWidget* currentGraph)
         changeNameWindow(graph->getFilename());
 }
 
+
+void SofaModeler::changeCurrentScene(int id)
+{
+    sceneTab->setCurrentPage( sceneTab->indexOf(mapWindow[id]) );
+}
+
+
 void SofaModeler::changeNameWindow(std::string filename)
 {
 
@@ -699,11 +719,17 @@ void SofaModeler::dropEvent(QDropEvent* event)
 
 void SofaModeler::runInSofa()
 {
+
     GNode* root=graph->getRoot();
     if (!root) return;
     // Init the scene
     sofa::gui::SofaGUI::Init("Modeler");
-    getSimulation()->init(root);
+
+    //Saving the scene in a temporary file ==> doesn't modify the current GNode of the simulation
+    std::string filename=presetPath+std::string("temp") + (count++) + std::string(".scn");
+    getSimulation()->printXML(root,filename.c_str());
+
+    if (count > '9') count = '0';
     //=======================================
     // Run the GUI
     std::string gui = sofa::gui::SofaGUI::GetGUIName();
@@ -712,7 +738,7 @@ void SofaModeler::runInSofa()
     if (sofa::gui::SofaGUI::Init("Modeler",gui.c_str())) return ;
     sofa::gui::qt::RealGUI *guiSofa = new sofa::gui::qt::RealGUI(gui.c_str());
 
-    guiSofa->setScene(root);
+    guiSofa->fileOpen(filename);
     guiSofa->show();
     guiSofa->setFocus();
     mapSofa.insert(std::make_pair(tabGraph, guiSofa));

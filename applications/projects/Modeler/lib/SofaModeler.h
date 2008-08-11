@@ -100,7 +100,7 @@ public:
 
 public slots:
     void releaseButton();
-    void dragComponent();
+
     void changeComponent(ClassInfo *currentComponent);
 #ifdef SOFA_QT4
     void changeInformation(Q3ListViewItem *);
@@ -110,7 +110,7 @@ public slots:
 
     /// Dropping a Node in the Graph
     void newGNode();
-
+    void newComponent();
     /// Creation of a new scene (new tab will be created)
     void fileNew() {fileNew(NULL);};
     void fileNew(GNode* root);
@@ -140,6 +140,8 @@ public slots:
 
     /// Change of simulation by changing the current opened tabulation
     void changeCurrentScene( QWidget*);
+    /// Change of simulation by changing the current opened tabulation
+    void changeCurrentScene( int n);
     /// Change the name of the main window
     void changeNameWindow(std::string filename);
 
@@ -202,10 +204,12 @@ protected:
     std::map< const QObject* , std::pair<ClassInfo*, QObject*> > mapComponents;
     std::map< const QWidget*, GraphModeler*> mapGraph;
     std::map< const QWidget*, sofa::gui::qt::RealGUI*> mapSofa;
+    std::map< int, QWidget*> mapWindow;
 
 private:
     std::string presetPath;
     std::string examplePath;
+    char count;
 };
 }
 }
