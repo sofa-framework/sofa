@@ -6,7 +6,7 @@
 	<!-- Required for collision detection -->
 	<Object type="CollisionPipeline" verbose="0" />
 	
-	<Object type="TestDetection" name="TestDetection" />
+	<Object type="BruteForceDetection" name="Detection" />
 
 	<Object type="CollisionResponse" name="Response" response="default" />
 	
