@@ -6,7 +6,8 @@
 	<Object type="CollisionGroup" />
 
 	<Node name="TT">
-		<Object type="CGImplicit" iterations="40" tolerance="1e-6" threshold="1e-10"/>	
+		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<Object type="MeshLoader" name="meshLoader" filename="mesh/cylinder.msh" />
 		<Object type="MechanicalObject" name="Volume" />
 		<include href="Objects/TetrahedronSetTopology.xml" />
@@ -15,7 +16,6 @@
 		<Object type="FixedPlaneConstraint" direction="0 0 1" dmin="-0.1" dmax="0.1"/>
 		<Object type="FixedConstraint" indices="0" />		
         	<Object type="TetrahedralCorotationalFEMForceField" name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
-		<Object type="Gravity" gravity="0 0 0"/>		
 
 		<Node name="T">
 			<include href="Objects/TriangleSetTopology.xml" />

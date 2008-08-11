@@ -141,7 +141,7 @@ void MeshOBJ::readOBJ (FILE* file, const char* filename)
             {
                 if (it->name == matName)
                 {
-                    std::cout << "Using material "<<it->name<<std::endl;
+//  							std::cout << "Using material "<<it->name<<std::endl;
                     (*it).activated = true;
                     material = *it;
                 }
