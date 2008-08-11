@@ -197,6 +197,7 @@ protected:
     //Q3PopupMenu *recentlyOpened;
     /// Menu preset
     Q3PopupMenu *preset;
+    Q3PopupMenu *windowMenu;
     /// Correspondance between a name clicked in the menu and a path to the preset
     std::map< std::string, std::string > mapPreset;
 

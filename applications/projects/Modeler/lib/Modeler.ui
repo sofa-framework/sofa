@@ -157,8 +157,6 @@
         <action name="editUndoAction"/>
         <action name="editRedoAction"/>
     </item>
-    <item text="&amp;Window" name="windowMenu">
-    </item>
 </menubar>
 <toolbars>
 </toolbars>
