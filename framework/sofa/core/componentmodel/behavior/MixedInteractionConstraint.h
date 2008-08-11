@@ -182,6 +182,8 @@ public:
     }
 
 protected:
+    Data< std::string > object1;
+    Data< std::string > object2;
     MechanicalState<DataTypes1> *mstate1;
     MechanicalState<DataTypes2> *mstate2;
 };

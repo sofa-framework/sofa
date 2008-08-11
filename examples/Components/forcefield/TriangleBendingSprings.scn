@@ -19,7 +19,7 @@
 		/>
 		<Object type="FixedConstraint" indices="0 8"/>
 		<Object type="TriangleFEMForceField" name="FEM1" youngModulus="5000" poissonRatio="0.3" method="large"/>
-                <Object type="TriangleBendingSprings" name="FEM-Bend" stiffness="100" dampingRatio="0.1"/>
+                <Object type="TriangleBendingSprings" name="FEM-Bend" stiffness="100" damping="0.1"/>
 		<Object type="Triangle" />
 		<Node name="Visu">
 			<Object type="OglModel" name="Visual" color="green"/>
@@ -42,7 +42,7 @@
 		/>
 		<Object type="FixedConstraint" indices="0 15"/>
 		<Object type="TriangleFEMForceField" name="FEM2" youngModulus="5000" poissonRatio="0.3" method="large"/>
-                <Object type="TriangleBendingSprings" name="FEM-Bend" stiffness="100" dampingRatio="0.1"/>
+                <Object type="TriangleBendingSprings" name="FEM-Bend" stiffness="100" damping="0.1"/>
 		<Object type="Triangle" />
 		<Node name="Visu">
 			<Object type="OglModel" name="Visual" color="blue"/>
@@ -65,7 +65,7 @@
 		/>
 		<Object type="FixedConstraint" indices="0 9 99"/>
 		<Object type="TriangleFEMForceField" name="FEM3" youngModulus="5000" poissonRatio="0.3" method="large"/>
-                <Object type="TriangleBendingSprings" name="FEM-Bend" stiffness="100" dampingRatio="0.1"/>
+                <Object type="TriangleBendingSprings" name="FEM-Bend" stiffness="100" damping="0.1"/>
 		<Object type="Triangle" />
 		<Node name="Visu">
 			<Object type="OglModel" name="Visual" color="yellow"/>
