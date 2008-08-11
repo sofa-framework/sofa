@@ -48,7 +48,7 @@ bool GLSLShader::InitGLSL()
         fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
         return false;
     }
-    fprintf(stdout, "GLSLShader: Using GLEW %s\n", glewGetString(GLEW_VERSION));
+//     fprintf(stdout, "GLSLShader: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 
     // Make sure find the GL_ARB_shader_objects extension so we can use shaders.
     if(!GLEW_ARB_shader_objects)
@@ -143,7 +143,7 @@ bool GLSLShader::CompileShader(GLint target, const std::string& source, GLhandle
     GLint compiled = 0, length = 0, laux = 0;
     glGetObjectParameterivARB(shader, GL_OBJECT_COMPILE_STATUS_ARB, &compiled);
     if (!compiled) std::cerr << "ERROR: Compilation of "<<stype<<" shader failed:\n"<<src<<std::endl;
-    else std::cout << "Compilation of "<<stype<<" shader OK" << std::endl;
+//     else std::cout << "Compilation of "<<stype<<" shader OK" << std::endl;
     glGetObjectParameterivARB(shader, GL_OBJECT_INFO_LOG_LENGTH_ARB, &length);
     if (length)
     {
@@ -212,7 +212,7 @@ void GLSLShader::InitShaders(const std::string& strVertex, const std::string& st
     GLint linked = 0, length = 0, laux = 0;
     glGetObjectParameterivARB(m_hProgramObject, GL_OBJECT_LINK_STATUS_ARB, &linked);
     if (!linked) std::cerr << "ERROR: Link of program shader failed:\n"<<std::endl;
-    else std::cout << "Link of program shader OK" << std::endl;
+//     else std::cout << "Link of program shader OK" << std::endl;
     glGetObjectParameterivARB(m_hProgramObject, GL_OBJECT_INFO_LOG_LENGTH_ARB, &length);
     if (length)
     {

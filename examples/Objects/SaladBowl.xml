@@ -5,5 +5,5 @@
 	<Object type="Triangle" name="Floor" moving="false" simulated="false" contactStiffness="10"/>
 	<Object type="Line" name="Floor" moving="false" simulated="false" contactStiffness="10"/>
 	<Object type="Point" name="Floor" moving="false" simulated="false" contactStiffness="10" />
-	<Object type="OglModel" name="FloorV" filename="mesh/SaladBowl.obj" texturename="textures/floor.bmp" color="1 1 1" scale="1"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" />
+	<Object type="OglModel" name="FloorV" filename="mesh/SaladBowl.obj" texturename="textures/floor.bmp" color="1 1 1 1" scale="1"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" />
 </Node>
