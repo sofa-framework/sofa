@@ -65,7 +65,7 @@ Building Sofa under Windows :
      Launch Project VC8.bat.	 
 
  - MSVC 9 : (Visual 2008)
-     Launch Project VC8.bat.	 
+     Launch Project VC9.bat.	 
 
  - console :
      Open a command prompt with environment variables pointing to Visual
