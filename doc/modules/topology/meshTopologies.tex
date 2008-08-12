@@ -64,36 +64,6 @@ Topology objects are composed of four functional members:{\em Container}, {\em M
 \end{itemize}
 
 
-\begin{verbatim}
-
-Class BaseTopology<DataTypes> {
-
-// A container for info to be stored and methods to access adjacency :
-//   - Adjacency Information is only computed when needed
-//   - Non template class
-//   - Store TopologicalChange list
-
-TopologyContainer *container ;
-
-// A modifier for low-level methods to change topology :
-//   - Cannot be accessed from user
-//   - Modifier also changes the DOFs in the Mechanical Object
-//   - Low level methods to add or to remove an item
-TopologyModifiers<DataTypes> *modifier ;
-
-// TopologyAlgorithms for high-level methods to change topology (user access) :
-//   - Accessed from the user
-//   - High level algorithms to refine, cut mesh
-TopologyAlgorithms<DataTypes> *topologyAlgorithms ;
-
-// Geometry Algorithms methods to get geometry information :
-//   - Compute geometric information (normal, curvature, area, length)
-GeometryAlgorithms<DataTypes> *geometryAlgorithms ;
-
-};
-
-\end{verbatim}
-
 \begin{figure}[ht]
     \centering
         \includegraphics[width=0.6\textwidth]{topology/Sub_Shell_Diagram}
@@ -301,51 +271,71 @@ Here is the scene file corresponding to the example :
 
 \begin{verbatim}
 
-<!-- Mechanical MassSpring Group Basic Example -->
-
-<Node name="root" dt="0.05" showBehaviorModels="1" showCollisionModels="0" 
-      showMappings="0" showForceFields="0" showBoundingTree="0" gravity="0 0 0">
-
+<Node name="root" dt="0.05" showBehaviorModels="1" showCollisionModels="0" showMappings="0" 
+ showForceFields="0" showBoundingTree="0" gravity="0 0 0">
+  
 	<Object type="CollisionPipeline" verbose="0" />
 	<Object type="BruteForceDetection" name="N2" />
 	<Object type="CollisionResponse" response="default" />
-	<Object type="ProximityIntersection" name="Proximity" alarmDistance="0.8" 
-	        contactDistance="0.5" />
+	<Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.8" 
+	 contactDistance="0.5" />
+	
 	<Object type="CollisionGroup" />
 
 	<Node name="TT">
+	
+		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" 
+		 threshold="1.0e-9" />
 		
-		<Object type="CGImplicit" iterations="40" tolerance="1e-6" threshold="1e-10"/>
+		<Object type="MeshLoader" name="meshLoader" filename="mesh/cylinder.msh" />
 		<Object type="MechanicalObject" name="Volume" />
-		<Object type="TetrahedronSetTopology" name="topo_Volume" 
-		        filename="Topology/cylinder.msh" scale="1" />
-		<Object type="DiagonalMass" massDensity="0.5" />
+		<include href="Objects/TetrahedronSetTopology.xml" />
+
+    <Object type="DiagonalMass" massDensity="0.5" />
 		<Object type="FixedPlaneConstraint" direction="0 0 1" dmin="-0.1" dmax="0.1"/>
 		<Object type="FixedConstraint" indices="0" />		
- 		<Object type="TetrahedralCorotationalFEMForceField" name="FEM" youngModulus="60" 
- 		        poissonRatio="0.3" method="large" />
-		<Object type="Gravity" gravity="0 0 0"/>		
+    <Object type="TetrahedralCorotationalFEMForceField" name="FEM" youngModulus="60" 
+     poissonRatio="0.3" method="large" />
+    
+    <Object type="Gravity" gravity="0 0 0"/>
 
 		<Node name="T">
+		
+			<include href="Objects/TriangleSetTopology.xml" />
+			<Object type="Tetra2TriangleTopologicalMapping" object1="../../Container" object2="Container"/>
 
- 			<Object type="TriangleSetTopology" name="topo_Surface" />
-			<Object type="Tetra2TriangleTopologicalMapping" object1="../../topo_Volume" 
-			        object2="topo_Surface"/>
-			<Object type="TriangularFEMForceField" name="FEM" youngModulus="10" 
-              poissonRatio="0.3" method="large" /> 
-			<Object type="TriangularBendingSprings" name="FEM-Bend" stiffness="300" 
-			        damping="1.0"/>		    		  
+      <Object type="TriangularFEMForceField" name="FEM" youngModulus="10" poissonRatio="0.3" 
+       method="large" /> 
+			
+			<Object type="TriangularBendingSprings" name="FEM-Bend" stiffness="300" damping="1.0"/>		
+			    
 			<Object type="TriangleSet"/>
 
 			<Node name="Visu">
+			
 				<Object type="OglModel" name="Visual" color="blue" />
 				<Object type="IdentityMapping" object1="../../../Volume" object2="Visual" />
-			</Node>			
+				
+			</Node>						
 			
 		</Node>
-
+		
 	</Node>
+	
+</Node>
 
+\end{verbatim}
+
+Here is the example of the included TriangleSetTopology.xml file, where the four members of the {\em TriangleSetTopology} are defined :
+
+\begin{verbatim}
+
+<Node name="Group"> 
+  <Object type="TriangleSetTopologyContainer"  name="Container" />
+  <Object type="TriangleSetTopologyModifier"   name="Modifier" />
+  <Object type="TriangleSetTopologyAlgorithms" name="TopoAlgo"   template="Vec3d" />
+  <Object type="TriangleSetGeometryAlgorithms" name="GeomAlgo"   template="Vec3d" />
 </Node>
 
 \end{verbatim}
@@ -425,15 +415,11 @@ template <class DataTypes>
 void totoForceField<DataTypes>::handleTopologyChange()
 {
 
-    sofa::core::componentmodel::topology::BaseTopology *topology =
-static_cast< sofa::core::componentmodel::topology::BaseTopology* >
-(getContext()->getMainTopology());
-
     std::list< const sofa::core::componentmodel::topology::TopologyChange* >
-::const_iterator itBegin = topology->firstChange();
+::const_iterator itBegin = _topology->firstChange();
 
     std::list< const sofa::core::componentmodel::topology::TopologyChange*>
-::const_iterator itEnd = topology->lastChange();
+::const_iterator itEnd = _topology->lastChange();
 
     edgeinfo.handleTopologyEvents(itBegin,itEnd);
     
@@ -470,14 +456,12 @@ const sofa::helper::vector< double >&
 	
 \end{itemize}
 
-At any time, it is possible to access the topology container (so as to get some neighborhood information) with the following lines of code :
+At any time, it is possible to access the information from the container member of the topology (so as to get some neighborhood information) by using a pointer to the {\em BaseMeshTopology} API :
 
 	\begin{verbatim} 
 	
-EdgeSetTopology<DataTypes> *_mesh = ff->getTriangularTopology();
-
-EdgeSetTopologyContainer *container =
-_mesh->getEdgeSetTopologyContainer();
+sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+_topology = getContext()->getMeshTopology();
 
 	\end{verbatim} 
 
