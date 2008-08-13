@@ -304,7 +304,7 @@ void GraphModeler::openModifyObject(Q3ListViewItem *item)
 
     dialogModify->show();
     dialogModify->raise();
-    connect ( this, SIGNAL ( closeDialog() ), dialogModify, SLOT ( closeNow() ) );
+    //connect ( this, SIGNAL ( closeDialog() ), dialogModify, SLOT ( closeNow() ) );
 
 }
 

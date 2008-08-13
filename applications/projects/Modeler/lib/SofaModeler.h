@@ -202,9 +202,9 @@ protected:
     std::map< std::string, std::string > mapPreset;
 
 
-    std::map< const QObject* , std::pair<ClassInfo*, QObject*> > mapComponents;
-    std::map< const QWidget*, GraphModeler*> mapGraph;
-    std::map< const QWidget*, sofa::gui::qt::RealGUI*> mapSofa;
+    std::map<  const QObject* , std::pair<ClassInfo*, QObject*> > mapComponents;
+    std::map<  const QWidget*, GraphModeler*> mapGraph;
+    std::map<  const QWidget*, sofa::gui::qt::RealGUI*> mapSofa;
     std::map< int, QWidget*> mapWindow;
 
 private:

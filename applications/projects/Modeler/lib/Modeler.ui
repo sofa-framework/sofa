@@ -7,19 +7,25 @@
     <property name="geometry">
         <rect>
             <x>0</x>
-            <y>264</y>
-            <width>760</width>
-            <height>231</height>
+            <y>0</y>
+            <width>800</width>
+            <height>800</height>
         </rect>
     </property>
     <property name="sizePolicy">
         <sizepolicy>
             <hsizetype>1</hsizetype>
-            <vsizetype>0</vsizetype>
+            <vsizetype>1</vsizetype>
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
     </property>
+	<property name="minimumSize">
+		<size>
+			<width>246</width>
+			<height>800</height>
+		</size>
+	</property>
     <property name="caption">
         <string>Sofa Modeler</string>
     </property>
@@ -117,7 +123,7 @@
                         <property name="minimumSize">
                             <size>
                                 <width>300</width>
-                                <height>0</height>
+                                <height>500</height>
                             </size>
                         </property>
                         <property name="currentIndex">

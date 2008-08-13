@@ -98,6 +98,7 @@ public:
     ~GraphModeler()
     {
         getSimulation()->unload(getRoot());
+        //emit(closeDialog());
         delete graphListener;
         if (DialogAdd) delete DialogAdd;
     }
@@ -172,12 +173,27 @@ public slots:
     void deleteComponent();
     void deleteComponent(Q3ListViewItem *item, bool saveHistory=true);
 
-    void closeGraph() {emit(closeDialog());}
+    void closeGraph()
+    {
+        emit(closeDialog());
+    }
     void modifyUnlock ( void *Id );
 
 
     void editUndo();
     void editRedo();
+
+    void closeDialogs()
+    {
+        std::map< void*, QDialog* >::iterator it;    ;
+        for (it=map_modifyObjectWindow.begin();
+                it!=map_modifyObjectWindow.end();
+                it++)
+        {
+            delete it->second;
+        }
+
+    }
 protected:
 
     bool isNodeErasable ( core::objectmodel::Base* element );
