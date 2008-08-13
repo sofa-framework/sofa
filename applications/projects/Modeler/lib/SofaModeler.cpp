@@ -88,7 +88,7 @@ SofaModeler::SofaModeler()
     preset = new Q3PopupMenu(this);
     this->menubar->insertItem(tr(QString("&Preset")), preset, 4);
     windowMenu = new Q3PopupMenu(this);
-    this->menubar->insertItem(tr(QString("&Window")), windowMenu, 5);
+    this->menubar->insertItem(tr(QString("&Scenes")), windowMenu, 5);
 
     connect(windowMenu, SIGNAL(activated(int)), this, SLOT( changeCurrentScene(int)));
 
@@ -296,7 +296,7 @@ SofaModeler::SofaModeler()
     GraphLayout->addWidget(sceneTab,0,0);
     connect( sceneTab, SIGNAL(currentChanged( QWidget*)), this, SLOT( changeCurrentScene( QWidget*)));
 
-    newTab();
+    //newTab();
     //Recently Opened Files
     std::string scenes ( "config/Modeler.ini" );
     if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )
@@ -363,20 +363,20 @@ void SofaModeler::newTab()
 
 void SofaModeler::createTab()
 {
-    tabGraph = new QWidget();
-    QVBoxLayout *currentTabLayout = new QVBoxLayout(tabGraph, 0,1, QString("ModelerScene"));
-    sceneTab->addTab(tabGraph, QString("New Scene"));
-
-    graph = new GraphModeler(tabGraph);
-    mapGraph.insert(std::make_pair(tabGraph, graph));
-
+    QWidget *newtab = new QWidget();
+    tabGraph = newtab;
+    QVBoxLayout *currentTabLayout = new QVBoxLayout(newtab, 0,1, QString("ModelerScene"));
+    sceneTab->addTab(newtab, QString("New Scene"));
+    GraphModeler* modelerGraph = new GraphModeler(newtab,"Modeler");
+    mapGraph.insert(std::make_pair(newtab, modelerGraph));
+    mapGraph[newtab] = modelerGraph;
+    graph = modelerGraph;
 
     graph->setAcceptDrops(true);
     currentTabLayout->addWidget(graph,0,0);
 
     graph->setLibrary(mapComponents);
     graph->setPreset(preset);
-
     fileNew();
 
 #ifdef SOFA_QT4
@@ -389,33 +389,40 @@ void SofaModeler::createTab()
 
 void SofaModeler::closeTab()
 {
+    if (sceneTab->count() == 0) return;
 
-    if (sceneTab->count() <=1)
-        fileNew();
-    else if (tabGraph)
+    QWidget* curTab = tabGraph;
+    //If the scene has been launch in Sofa
+    if (mapSofa.size() &&
+        mapSofa.find(curTab) != mapSofa.end())
     {
-
-        //If the scene has been launch in Sofa
-        if (mapSofa[tabGraph] != 0)
-        {
-            mapSofa[tabGraph]->fileExit();
-            //	      delete mapSofa [tabGraph];
-            mapSofa .erase(tabGraph);
-        }
-        //else
-        //	      delete mapGraph[tabGraph];
-        std::map< int, QWidget* >::const_iterator it;
-        for (it = mapWindow.begin(); it!=mapWindow.end(); it++)
-        {
-            if (it->second == tabGraph) break;
-        }
-        mapWindow.erase(it->first);
-        windowMenu->removeItem(it->first);
-        mapGraph.erase(tabGraph);
-
-        delete tabGraph;
+        mapSofa[curTab]->fileExit();
+        mapSofa .erase(curTab);
     }
-    graph->closeGraph();
+
+    //Find the scene in the window menu
+    std::map< int, QWidget* >::const_iterator it;
+    for (it = mapWindow.begin(); it!=mapWindow.end(); it++)
+    {
+        if (it->second == curTab) break;
+    }
+    windowMenu->removeItem(it->first);
+    mapWindow.erase(it->first);
+
+    //Closing the Modify Dialog opened
+    GraphModeler *mod = graph;
+    if (dynamic_cast< GraphModeler* >(mod))
+    {
+        mod->closeDialogs();
+        mod->close();
+    }
+
+
+    sceneTab->removePage(curTab);
+    mapGraph.erase(curTab);
+    curTab->close();
+
+
 }
 
 void SofaModeler::fileOpen(std::string filename)
@@ -668,28 +675,26 @@ ClassInfo* SofaModeler::getInfoFromName(std::string name)
     return NULL;
 }
 
-void SofaModeler::keyPressEvent ( QKeyEvent * e )
+void SofaModeler::keyPressEvent ( QKeyEvent *)
 {
     // ignore if there are modifiers (i.e. CTRL of SHIFT)
-#ifdef SOFA_QT4
-    if (e->modifiers()) return;
-#else
-    if (e->state() & (Qt::KeyButtonMask)) return;
-#endif
-    switch ( e->key() )
-    {
-    case Qt::Key_Escape :
-    case Qt::Key_Q :
-    {
-        if (isActiveWindow())  fileExit();
-        break;
-    }
-    default:
-    {
-        e->ignore();
-        break;
-    }
-    }
+
+
+//#ifdef SOFA_QT4
+//	  if (e->modifiers()) return;
+//#else
+//	  if (e->state() & (Qt::KeyButtonMask)) return;
+//#endif
+//	  switch ( e->key() )
+//	  {
+//	  default:
+//		  {
+//			  e->ignore();
+//			  break;
+//		  }
+//	  }
+
+
 }
 
 void SofaModeler::dropEvent(QDropEvent* event)
@@ -721,7 +726,7 @@ void SofaModeler::dropEvent(QDropEvent* event)
 
 void SofaModeler::runInSofa()
 {
-
+    if (sceneTab->count() == 0) return;
     GNode* root=graph->getRoot();
     if (!root) return;
     // Init the scene
