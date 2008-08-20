@@ -60,6 +60,8 @@ public:
     Data< bool > showCenterOfGravity;
     Data< float > showAxisSize;
 
+    Data<bool> compute_mapping_inertia;
+
 public:
     UniformMass();
 

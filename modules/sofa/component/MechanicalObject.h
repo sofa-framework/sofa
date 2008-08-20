@@ -321,7 +321,10 @@ public:
 
     virtual void resetForce();
 
+    virtual void resetAcc();
+
     virtual void resetConstraint();
+
 
     /// @}
 

@@ -155,6 +155,7 @@ Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(simulation::Node* nod
 
     MechanicalEndIntegrationVisitor endVisitor(dt);
     node->execute(&endVisitor);
+    cerr<<"MechanicalIntegrationVisitor::fwdOdeSolver endVisitor ok"<<endl;
     return RESULT_PRUNE;
 }
 
@@ -305,12 +306,17 @@ Visitor::Result MechanicalAccFromFVisitor::fwdMass(simulation::Node* /*node*/, c
     return RESULT_CONTINUE;
 }
 
-
+#ifdef SOFA_SUPPORT_MAPPED_MASS
+MechanicalPropagatePositionAndVelocityVisitor::MechanicalPropagatePositionAndVelocityVisitor(double t, VecId x, VecId v, VecId a) : t(t), x(x), v(v), a(a)
+{
+    //cerr<<"::MechanicalPropagatePositionAndVelocityVisitor"<<endl;
+}
+#else
 MechanicalPropagatePositionAndVelocityVisitor::MechanicalPropagatePositionAndVelocityVisitor(double t, VecId x, VecId v) : t(t), x(x), v(v)
 {
     //cerr<<"::MechanicalPropagatePositionAndVelocityVisitor"<<endl;
 }
-
+#endif
 
 Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::processNodeTopDown(simulation::Node* node)
 {
@@ -333,12 +339,19 @@ Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdMechanicalStat
 {
     mm->setX(x);
     mm->setV(v);
+#ifdef SOFA_SUPPORT_MAPPED_MASS
+    mm->setDx(a);
+    mm->resetAcc();
+#endif
     return RESULT_CONTINUE;
 }
 Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
 {
     map->propagateX();
     map->propagateV();
+#ifdef SOFA_SUPPORT_MAPPED_MASS
+    map->propagateA();
+#endif
     return RESULT_CONTINUE;
 }
 Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)

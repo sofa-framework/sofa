@@ -105,6 +105,9 @@ public:
     /// Set F = 0
     virtual void resetForce() =0;//{ vOp( VecId::force() ); }
 
+    /// Set Acc =0
+    virtual void resetAcc() =0; //{ vOp( VecId::acceleration() ); }
+
     /// Reset the constraint matrix
     virtual void resetConstraint() =0;
 
@@ -166,6 +169,7 @@ public:
         static VecId restVelocity() { return VecId(V_DERIV,1); }
         static VecId force() { return VecId(V_DERIV,3); }
         static VecId dx() { return VecId(V_DERIV,4); }
+        static VecId acceleration() { return VecId(V_DERIV,5); }
         static VecId freePosition() { return VecId(V_COORD,2); }
         static VecId freeVelocity() { return VecId(V_DERIV,2); }
         static VecId holonomicC() {return VecId(V_CONST,0);}
@@ -276,6 +280,7 @@ public:
     /// Make the displacement vector point to the identified vector.
     ///
     /// To reset it to the default storage use \code setDx(VecId::dx()) \endcode
+    /// to make it point to acceleration use \code setDx(VecId::acceleration()) \endcode
     virtual void setDx(VecId v) = 0; //{}
 
     /// Make the holonomic constraint system matrix point to either holonomic Constraints or nonHolonomic Constraints.
