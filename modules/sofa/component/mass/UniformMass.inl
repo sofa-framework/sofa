@@ -56,6 +56,7 @@ UniformMass<DataTypes, MassType>::UniformMass()
     , totalMass( initData(&totalMass, 0.0, "totalmass", "Sum of the particles' masses") )
     , showCenterOfGravity( initData(&showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
     , showAxisSize( initData(&showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
+    , compute_mapping_inertia( initData(&compute_mapping_inertia, true, "compute_mapping_inertia", "to be used if the mass is placed under a mapping" ) )
 {}
 
 template <class DataTypes, class MassType>
@@ -156,6 +157,10 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x
     if (this->f_printLog.getValue())
         cerr<<"UniformMass::addForce, mg = "<<mass<<" * "<<theGravity<<" = "<<mg<<endl;
 
+
+
+
+
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
     // velocity-based stuff
     core::objectmodel::BaseContext::SpatialVector vframe = getContext()->getVelocityInWorld();
@@ -183,6 +188,25 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x
         //cerr<<"UniformMass<DataTypes, MassType>::computeForce(), vframe = "<<vframe<<", aframe = "<<aframe<<", x = "<<x[i]<<", v = "<<v[i]<<endl;
         //cerr<<"UniformMass<DataTypes, MassType>::computeForce() = "<<mg + Core::inertiaForce(vframe,aframe,mass,x[i],v[i])<<endl;
     }
+
+//#ifdef SOFA_SUPPORT_MAPPED_MASS
+    if (compute_mapping_inertia.getValue())
+    {
+        VecDeriv& acc =  *this->mstate->getDx();
+        // add inertia force due to acceleration from the motion of the mapping (coriolis type force)
+        for (unsigned int i=0; i<f.size(); i++)
+        {
+            Deriv coriolis = -acc[i]*m;
+            f[i] += coriolis;
+
+
+        }
+
+    }
+
+
+//#endif
+
 
 }
 

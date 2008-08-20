@@ -86,7 +86,7 @@ public:
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.
     ///
-    /// This method is used to compute the compliance for contact corrections.
+    /// This method is used to compute the constraint corrections and adapt the resolution if using baumgart type scheme
     /// For example, a backward-Euler dynamic implicit integrator would use:
     /// Input:      x_t  v_t  a_{t+dt}
     /// x_{t+dt}     1    dt  dt^2

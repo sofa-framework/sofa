@@ -112,6 +112,9 @@ MechanicalObject<DataTypes>::MechanicalObject()
     setVecCoord(VecId::restPosition().index, this->x0);
     setVecCoord(VecId::freePosition().index, this->xfree);
     setVecDeriv(VecId::freeVelocity().index, this->vfree);
+
+    //setVecDeriv(VecId::acceleration().index, this->dx);
+
     /*    cerr<<"MechanicalObject<DataTypes>::MechanicalObject, x.size() = "<<x->size()<<endl;
       cerr<<"MechanicalObject<DataTypes>::MechanicalObject, v.size() = "<<v->size()<<endl;*/
 }
@@ -1920,6 +1923,17 @@ void MechanicalObject<DataTypes>::resetForce()
     for( unsigned i=0; i<f.size(); ++i )
         f[i] = Deriv();
 }
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::resetAcc()
+{
+
+    VecDeriv& a= *getDx();
+    for( unsigned i=0; i<a.size(); ++i )
+        a[i] = Deriv();
+
+}
+
 
 
 template <class DataTypes>

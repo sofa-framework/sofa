@@ -454,7 +454,13 @@ public:
     double t;
     VecId x;
     VecId v;
+#ifdef SOFA_SUPPORT_MAPPED_MASS
+    // compute the acceleration created by the input velocity and the derivative of the mapping
+    VecId a;
+    MechanicalPropagatePositionAndVelocityVisitor(double time=0, VecId x = VecId::position(), VecId v = VecId::velocity(), VecId a = VecId::dx()); //
+#else
     MechanicalPropagatePositionAndVelocityVisitor(double time=0, VecId x = VecId::position(), VecId v = VecId::velocity());
+#endif
     virtual Result processNodeTopDown(simulation::Node* node);
     virtual void processNodeBottomUp(simulation::Node* node);
 

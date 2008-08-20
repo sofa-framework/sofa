@@ -350,7 +350,71 @@ void RigidRigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& parentForc
     }
 
 }
+template <class BasicMapping>
+void RigidRigidMapping<BasicMapping>::computeAccFromMapping(  typename Out::VecDeriv& acc_out, const typename In::VecDeriv& v_in, const typename In::VecDeriv& acc_in)
+{
+    acc_out.clear();
+    acc_out.resize(points.getValue().size());
 
+
+    // current acceleration on acc_in is applied on the child (when more than one mapping)
+    applyJ(acc_out,acc_in);
+
+    // computation of the acceleration due to the current velocity
+    // a+= w^(w^OM)
+
+    Vector omega;
+    unsigned int cptchildV;
+    unsigned int val;
+
+    switch (repartition.getValue().size())
+    {
+    case 0:
+        omega = v_in[index.getValue()].getVOrientation();
+        for(unsigned int i=0; i<points.getValue().size(); i++)
+        {
+            acc_out[i].getVCenter() +=   cross(omega, cross(omega,pointsR0[i].getCenter()) );
+        }
+        break;
+
+    case 1:
+        val = repartition.getValue()[0];
+        cptchildV=0;
+        for (unsigned int ifrom=0 ; ifrom<v_in.size() ; ifrom++)
+        {
+            omega = v_in[ifrom].getVOrientation();
+
+            for(unsigned int ito=0; ito<val; ito++)
+            {
+                acc_out[cptchildV].getVCenter() +=  cross(omega, cross(omega,(pointsR0[cptchildV]).getCenter()) );
+                cptchildV++;
+            }
+        }
+        break;
+
+    default:
+        if (repartition.getValue().size() != v_in.size())
+        {
+            std::cerr<<"Error : mapping dofs repartition.getValue() is not correct"<<std::endl;
+            return;
+        }
+        cptchildV=0;
+        for (unsigned int ifrom=0 ; ifrom<v_in.size() ; ifrom++)
+        {
+            omega = v_in[ifrom].getVOrientation();
+
+            for(unsigned int ito=0; ito<repartition.getValue()[ifrom]; ito++)
+            {
+                acc_out[cptchildV].getVCenter() += cross(omega, cross(omega,(pointsR0[cptchildV]).getCenter()) );
+                cptchildV++;
+            }
+        }
+        break;
+    }
+
+
+
+}
 
 template <class BasicMapping>
 void RigidRigidMapping<BasicMapping>::draw()
