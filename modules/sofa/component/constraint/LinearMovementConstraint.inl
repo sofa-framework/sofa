@@ -189,7 +189,7 @@ template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::projectVelocity(VecDeriv& dx)
 {
     Real cT = (Real) this->getContext()->getTime();
-    if(cT >= *m_keyTimes.getValue().begin() && cT <= *m_keyTimes.getValue().rbegin())
+    if(m_keyTimes.getValue().size() != 0 && cT >= *m_keyTimes.getValue().begin() && cT <= *m_keyTimes.getValue().rbegin())
     {
         const SetIndexArray & indices = m_indices.getValue().getArray();
 
@@ -250,7 +250,7 @@ void LinearMovementConstraint<DataTypes>::projectPosition(VecCoord& x)
     }
 
     //if we found 2 keyTimes, we have to interpolate a position (linear interpolation)
-    if(cT >= *m_keyTimes.getValue().begin() && cT <= *m_keyTimes.getValue().rbegin() && nextT!=prevT)
+    if(m_keyTimes.getValue().size() != 0 && cT >= *m_keyTimes.getValue().begin() && cT <= *m_keyTimes.getValue().rbegin() && nextT!=prevT)
     {
         const SetIndexArray & indices = m_indices.getValue().getArray();
 
@@ -269,8 +269,7 @@ void LinearMovementConstraint<DataTypes>::projectPosition(VecCoord& x)
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::draw()
 {
-    if (!getContext()->
-        getShowBehaviorModels()) return;
+    if (!getContext()->getShowBehaviorModels() || m_keyTimes.getValue().size() == 0 ) return;
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);
