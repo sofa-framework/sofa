@@ -86,7 +86,7 @@ public:
 
     virtual void applyConstraint(unsigned int & /*constraintId*/, double & /*unused*/);
 
-    virtual void getConstraintValue(double* v /*, unsigned int &numContacts */);
+    virtual void getConstraintValue(double* v /*, unsigned int &numContacts */, bool freeMotion);
 
     virtual void getConstraintId(long* id, unsigned int &offset);
 

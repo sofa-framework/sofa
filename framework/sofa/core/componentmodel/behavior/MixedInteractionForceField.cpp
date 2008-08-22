@@ -43,6 +43,16 @@ namespace behavior
 using namespace sofa::defaulttype;
 
 
+template class MixedInteractionForceField<Vec1dTypes, Vec3dTypes>;
+template class MixedInteractionForceField<Vec1dTypes, Vec3fTypes>;
+template class MixedInteractionForceField<Vec1fTypes, Vec3dTypes>;
+template class MixedInteractionForceField<Vec1fTypes, Vec3fTypes>;
+template class MixedInteractionForceField<Vec1dTypes, Rigid3dTypes>;
+template class MixedInteractionForceField<Vec1dTypes, Rigid3fTypes>;
+template class MixedInteractionForceField<Vec1fTypes, Rigid3dTypes>;
+template class MixedInteractionForceField<Vec1fTypes, Rigid3fTypes>;
+
+
 template class MixedInteractionForceField<Vec3dTypes, Vec3dTypes>;
 template class MixedInteractionForceField<Vec2dTypes, Vec2dTypes>;
 template class MixedInteractionForceField<Vec1dTypes, Vec1dTypes>;

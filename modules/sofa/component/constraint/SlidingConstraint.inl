@@ -119,8 +119,12 @@ void SlidingConstraint<DataTypes>::applyConstraint(unsigned int &constraintId, d
 }
 
 template<class DataTypes>
-void SlidingConstraint<DataTypes>::getConstraintValue(double* v)
+void SlidingConstraint<DataTypes>::getConstraintValue(double* v, bool freeMotion)
 {
+
+    if (!freeMotion)
+        std::cout<<"WARNING has to be implemented for method based on non freeMotion"<<std::endl;
+
     v[cid] = dist;
     v[cid+1] = 0.0;
 

@@ -24,6 +24,7 @@ void BilateralInteractionConstraint<DataTypes>::init()
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::applyConstraint(unsigned int &constraintId, double &mu)
 {
+    //std::cout<<"applyConstraint is called"<<std::endl;
     mu=0;
     int tm1, tm2;
     tm1 = m1.getValue();
@@ -66,12 +67,19 @@ void BilateralInteractionConstraint<DataTypes>::applyConstraint(unsigned int &co
     this->object2->setConstraintId(cid+2);
     svd2[0] = SparseDeriv(tm2, cz);
     c2.push_back(svd2);
+
+
 }
 
 template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::getConstraintValue(double* v)
+void BilateralInteractionConstraint<DataTypes>::getConstraintValue(double* v, bool freeMotion)
 {
-    dfree = (*this->object2->getXfree())[m2.getValue()] - (*this->object1->getXfree())[m1.getValue()];
+    //std::cout<<"getConstraintValue"<<std::endl;
+    if (freeMotion)
+        dfree = (*this->object2->getXfree())[m2.getValue()] - (*this->object1->getXfree())[m1.getValue()];
+    else
+        dfree = (*this->object2->getX())[m2.getValue()] - (*this->object1->getX())[m1.getValue()];
+
 
     v[cid] = dfree[0];
     v[cid+1] = dfree[1];
