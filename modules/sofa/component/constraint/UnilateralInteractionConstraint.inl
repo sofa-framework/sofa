@@ -184,8 +184,11 @@ void UnilateralInteractionConstraint<DataTypes>::applyConstraint(unsigned int &c
 }
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::getConstraintValue(defaulttype::BaseVector * v)
+void UnilateralInteractionConstraint<DataTypes>::getConstraintValue(defaulttype::BaseVector * v, bool freeMotion)
 {
+    if (!freeMotion)
+        std::cout<<"WARNING Not Implemented for resolution non based on freeMotion"<<std::endl;
+
     for (unsigned int i=0; i<contacts.size(); i++)
     {
         Contact& c = contacts[i]; // get each contact detected
@@ -199,8 +202,11 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintValue(defaulttype:
 }
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::getConstraintValue(double * v)
+void UnilateralInteractionConstraint<DataTypes>::getConstraintValue(double * v, bool freeMotion)
 {
+    if (!freeMotion)
+        std::cout<<"WARNING Not Implemented for resolution non based on freeMotion"<<std::endl;
+
     for (unsigned int i=0; i<contacts.size(); i++)
     {
         Contact& c = contacts[i]; // get each contact detected
