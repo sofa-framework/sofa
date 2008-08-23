@@ -34,6 +34,7 @@ namespace component
 {
 namespace topology
 {
+
 using namespace std;
 using namespace sofa::defaulttype;
 
@@ -46,11 +47,14 @@ const unsigned int hexahedronEdgeArray[12][2]= {{0,1},{0,3},{0,4},{1,2},{1,5},{2
 
 HexahedronSetTopologyContainer::HexahedronSetTopologyContainer()
     : QuadSetTopologyContainer()
-{ }
+    , d_hexahedron(initDataPtr(&d_hexahedron, &m_hexahedron, "hexas", "List of hexahedron indices"))
+{
+}
 
 HexahedronSetTopologyContainer::HexahedronSetTopologyContainer(const sofa::helper::vector< Hexahedron > &hexahedra )
     : QuadSetTopologyContainer()
     , m_hexahedron( hexahedra )
+    , d_hexahedron(initDataPtr(&d_hexahedron, &m_hexahedron, "hexas", "List of hexahedron indices"))
 {
     for (unsigned int i=0; i<m_hexahedron.size(); ++i)
     {
@@ -64,7 +68,9 @@ HexahedronSetTopologyContainer::HexahedronSetTopologyContainer(const sofa::helpe
 
 void HexahedronSetTopologyContainer::addHexa( int a, int b, int c, int d, int e, int f, int g, int h )
 {
+    d_hexahedron.beginEdit();
     m_hexahedron.push_back(Hexahedron(a,b,c,d,e,f,g,h));
+    d_hexahedron.endEdit();
     if (a >= (int)nbPoints) nbPoints = a+1;
     if (b >= (int)nbPoints) nbPoints = b+1;
     if (c >= (int)nbPoints) nbPoints = c+1;
@@ -84,7 +90,9 @@ void HexahedronSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoa
 {
     // load points
     PointSetTopologyContainer::loadFromMeshLoader(loader);
+    d_hexahedron.beginEdit();
     m_hexahedron = loader->getHexas();
+    d_hexahedron.endEdit();
 }
 
 void HexahedronSetTopologyContainer::createHexahedronSetArray()
@@ -96,6 +104,7 @@ void HexahedronSetTopologyContainer::createHexahedronSetArray()
 
 void HexahedronSetTopologyContainer::createEdgeSetArray()
 {
+    d_edge.beginEdit();
     if(hasEdges())
     {
         EdgeSetTopologyContainer::clear();
@@ -129,6 +138,7 @@ void HexahedronSetTopologyContainer::createEdgeSetArray()
             }
         }
     }
+    d_edge.endEdit();
 }
 
 void HexahedronSetTopologyContainer::createHexahedronEdgeArray()
@@ -157,6 +167,7 @@ void HexahedronSetTopologyContainer::createHexahedronEdgeArray()
 
 void HexahedronSetTopologyContainer::createQuadSetArray()
 {
+    d_quad.beginEdit();
     if(hasQuads())
     {
         QuadSetTopologyContainer::clear();
@@ -333,6 +344,7 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
             m_quad.push_back(qu);
         }
     }
+    d_quad.endEdit();
 }
 
 void HexahedronSetTopologyContainer::createHexahedronQuadArray()
@@ -832,7 +844,9 @@ bool HexahedronSetTopologyContainer::hasHexahedronQuadShell() const
 
 void HexahedronSetTopologyContainer::clearHexahedra()
 {
+    d_hexahedron.beginEdit();
     m_hexahedron.clear();
+    d_hexahedron.endEdit();
 }
 
 void HexahedronSetTopologyContainer::clearHexahedronEdges()

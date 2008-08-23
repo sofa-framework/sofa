@@ -35,6 +35,7 @@ namespace component
 {
 namespace topology
 {
+
 using namespace std;
 using namespace sofa::defaulttype;
 
@@ -45,11 +46,14 @@ int QuadSetTopologyContainerClass = core::RegisterObject("Quad set topology cont
 
 QuadSetTopologyContainer::QuadSetTopologyContainer()
     : EdgeSetTopologyContainer()
-{}
+    , d_quad(initDataPtr(&d_quad, &m_quad, "quads", "List of quad indices"))
+{
+}
 
 QuadSetTopologyContainer::QuadSetTopologyContainer(const sofa::helper::vector< Quad >& quads )
     : EdgeSetTopologyContainer()
     , m_quad( quads )
+    , d_quad(initDataPtr(&d_quad, &m_quad, "quads", "List of quad indices"))
 {
     for (unsigned int i=0; i<m_quad.size(); ++i)
     {
@@ -63,7 +67,9 @@ QuadSetTopologyContainer::QuadSetTopologyContainer(const sofa::helper::vector< Q
 
 void QuadSetTopologyContainer::addQuad( int a, int b, int c, int d )
 {
+    d_quad.beginEdit();
     m_quad.push_back(Quad(a,b,c,d));
+    d_quad.endEdit();
     if (a >= (int)nbPoints) nbPoints = a+1;
     if (b >= (int)nbPoints) nbPoints = b+1;
     if (c >= (int)nbPoints) nbPoints = c+1;
@@ -79,7 +85,9 @@ void QuadSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoader* l
 {
     // load points
     PointSetTopologyContainer::loadFromMeshLoader(loader);
+    d_quad.beginEdit();
     m_quad = loader->getQuads();
+    d_quad.endEdit();
 }
 
 void QuadSetTopologyContainer::createQuadSetArray()
@@ -159,6 +167,7 @@ void QuadSetTopologyContainer::createQuadEdgeShellArray()
 
 void QuadSetTopologyContainer::createEdgeSetArray()
 {
+    d_edge.beginEdit();
     if(!hasQuads()) // this method should only be called when quads exist
     {
 #ifndef NDEBUG
@@ -206,6 +215,7 @@ void QuadSetTopologyContainer::createEdgeSetArray()
             }
         }
     }
+    d_edge.endEdit();
 }
 
 void QuadSetTopologyContainer::createQuadEdgeArray()
@@ -558,7 +568,9 @@ void QuadSetTopologyContainer::clearQuadEdges()
 
 void QuadSetTopologyContainer::clearQuads()
 {
+    d_quad.beginEdit();
     m_quad.clear();
+    d_quad.endEdit();
 }
 
 void QuadSetTopologyContainer::clear()

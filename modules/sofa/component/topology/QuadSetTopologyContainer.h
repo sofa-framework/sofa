@@ -139,75 +139,6 @@ public:
     /** returns the index (either 0, 1, 2, 3) of the edge whose global index is edgeIndex. Returns -1 if none */
     int getEdgeIndexInQuad(QuadEdges &t,unsigned int edheIndex) const;
 
-    inline friend std::ostream& operator<< (std::ostream& out, const QuadSetTopologyContainer& t)
-    {
-        out << t.m_quad.size() << " " << t.m_quad << " "
-            << t.m_quadEdge.size() << " " << t.m_quadEdge << " "
-            << t.m_quadVertexShell.size();
-        for (unsigned int i=0; i<t.m_quadVertexShell.size(); i++)
-        {
-            out << " " << t.m_quadVertexShell[i].size();
-            out << " " <<t.m_quadVertexShell[i] ;
-        }
-        out  << " " << t.m_quadEdgeShell.size();
-        for (unsigned int i=0; i<t.m_quadEdgeShell.size(); i++)
-        {
-            out  << " " << t.m_quadEdgeShell[i].size();
-            out  << " " << t.m_quadEdgeShell[i];
-        }
-
-        return out;
-    }
-
-    /// Needed to be compliant with Datas.
-    inline friend std::istream& operator>>(std::istream& in, QuadSetTopologyContainer& t)
-    {
-        unsigned int s;
-        in >> s;
-        for (unsigned int i=0; i<s; i++)
-        {
-            Quad T; in >> T;
-            t.m_quad.push_back(T);
-        }
-        in >> s;
-        for (unsigned int i=0; i<s; i++)
-        {
-            QuadEdges T; in >> T;
-            t.m_quadEdge.push_back(T);
-        }
-
-        unsigned int sub;
-        in >> s;
-        for (unsigned int i=0; i<s; i++)
-        {
-            in >> sub;
-            sofa::helper::vector< unsigned int > v;
-            for (unsigned int j=0; j<sub; j++)
-            {
-                unsigned int value;
-                in >> value;
-                v.push_back(value);
-            }
-            t.m_quadVertexShell.push_back(v);
-        }
-
-        in >> s;
-        for (unsigned int i=0; i<s; i++)
-        {
-            in >> sub;
-            sofa::helper::vector< unsigned int > v;
-            for (unsigned int j=0; j<sub; j++)
-            {
-                unsigned int value;
-                in >> value;
-                v.push_back(value);
-            }
-            t.m_quadEdgeShell.push_back(v);
-        }
-
-        return in;
-    }
-
 protected:
     /** \brief Creates the QuadSet array.
     *
@@ -272,6 +203,7 @@ private:
 protected:
     /// provides the set of quads
     sofa::helper::vector<Quad> m_quad;
+    DataPtr< sofa::helper::vector<Quad> > d_quad;
     /// provides the 4 edges in each quad
     sofa::helper::vector<QuadEdges> m_quadEdge;
     /// for each vertex provides the set of quads adjacent to that vertex

@@ -102,6 +102,7 @@ protected:
 
 protected:
     unsigned int nbPoints;
+    DataPtr<unsigned int> d_nbPoints;
 
 private:
     typedef defaulttype::Vec3Types InitTypes;

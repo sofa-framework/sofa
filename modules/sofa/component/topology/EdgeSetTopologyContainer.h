@@ -111,28 +111,6 @@ public:
     */
     virtual int getNumberConnectedComponents(sofa::helper::vector<unsigned int>& components);
 
-    inline friend std::ostream& operator<< (std::ostream& out, const EdgeSetTopologyContainer& t)
-    {
-        out << t.m_edge.size();
-        for (unsigned int i=0; i<t.m_edge.size(); i++)
-            out << " " << t.m_edge[i][0] << " " << t.m_edge[i][1] ;
-
-        return out;
-    }
-
-    /// Needed to be compliant with Datas.
-    inline friend std::istream& operator>>(std::istream& in, EdgeSetTopologyContainer& t)
-    {
-        unsigned int s;
-        in >> s;
-        for (unsigned int i=0; i<s; i++)
-        {
-            Edge T; in >> T;
-            t.m_edge.push_back(T);
-        }
-        return in;
-    }
-
     /** \brief Returns a non-const edge shell of the ith DOF for subsequent modification
     *
     */
@@ -163,6 +141,7 @@ public:
 protected:
     /*** The array that stores the set of edges in the edge set */
     sofa::helper::vector<Edge> m_edge;
+    DataPtr< sofa::helper::vector<Edge> > d_edge;
 
     /** the array that stores the set of edge-vertex shells, ie for each vertex gives the set of adjacent edges */
     sofa::helper::vector< sofa::helper::vector< unsigned int > > m_edgeVertexShell;

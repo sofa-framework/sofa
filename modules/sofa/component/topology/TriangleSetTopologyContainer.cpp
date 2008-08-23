@@ -47,11 +47,14 @@ int TriangleSetTopologyContainerClass = core::RegisterObject("Triangle set topol
 
 TriangleSetTopologyContainer::TriangleSetTopologyContainer()
     : EdgeSetTopologyContainer()
-{}
+    , d_triangle(initDataPtr(&d_triangle, &m_triangle, "triangles", "List of triangle indices"))
+{
+}
 
 TriangleSetTopologyContainer::TriangleSetTopologyContainer(const sofa::helper::vector< Triangle > &triangles )
     : EdgeSetTopologyContainer()
     , m_triangle( triangles )
+    , d_triangle(initDataPtr(&d_triangle, &m_triangle, "triangles", "List of triangle indices"))
 {
     for (unsigned int i=0; i<m_triangle.size(); ++i)
     {
@@ -64,6 +67,16 @@ TriangleSetTopologyContainer::TriangleSetTopologyContainer(const sofa::helper::v
     }
 }
 
+void TriangleSetTopologyContainer::addTriangle( int a, int b, int c )
+{
+    d_triangle.beginEdit();
+    m_triangle.push_back(Triangle(a,b,c));
+    d_triangle.endEdit();
+    if (a >= (int)nbPoints) nbPoints = a+1;
+    if (b >= (int)nbPoints) nbPoints = b+1;
+    if (c >= (int)nbPoints) nbPoints = c+1;
+}
+
 void TriangleSetTopologyContainer::init()
 {
     EdgeSetTopologyContainer::init();
@@ -73,15 +86,9 @@ void TriangleSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoade
 {
     // load points
     PointSetTopologyContainer::loadFromMeshLoader(loader);
+    d_triangle.beginEdit();
     m_triangle = loader->getTriangles();
-}
-
-void TriangleSetTopologyContainer::addTriangle( int a, int b, int c )
-{
-    m_triangle.push_back(Triangle(a,b,c));
-    if (a >= (int)nbPoints) nbPoints = a+1;
-    if (b >= (int)nbPoints) nbPoints = b+1;
-    if (c >= (int)nbPoints) nbPoints = c+1;
+    d_triangle.endEdit();
 }
 
 void TriangleSetTopologyContainer::createTriangleSetArray()
@@ -159,6 +166,7 @@ void TriangleSetTopologyContainer::createTriangleEdgeShellArray ()
 
 void TriangleSetTopologyContainer::createEdgeSetArray()
 {
+    d_edge.beginEdit();
     if(!hasTriangles()) // this method should only be called when triangles exist
     {
 #ifndef NDEBUG
@@ -206,6 +214,7 @@ void TriangleSetTopologyContainer::createEdgeSetArray()
             }
         }
     }
+    d_edge.endEdit();
 }
 
 void TriangleSetTopologyContainer::createTriangleEdgeArray()
@@ -546,7 +555,9 @@ void TriangleSetTopologyContainer::clearTriangleEdges()
 
 void TriangleSetTopologyContainer::clearTriangles()
 {
+    d_triangle.beginEdit();
     m_triangle.clear();
+    d_triangle.endEdit();
 }
 
 void TriangleSetTopologyContainer::clear()

@@ -354,6 +354,7 @@ private:
 protected:
     /// provides the set of tetrahedra
     sofa::helper::vector<Tetrahedron> m_tetrahedron;
+    DataPtr< sofa::helper::vector<Tetrahedron> > d_tetrahedron;
     /// provides the set of edges for each tetrahedron
     sofa::helper::vector<TetrahedronEdges> m_tetrahedronEdge;
     /// provides the set of triangles for each tetrahedron

@@ -144,75 +144,6 @@ public:
     */
     const TriangleEdges &getTriangleEdge(const unsigned int i) ;
 
-    inline friend std::ostream& operator<< (std::ostream& out, const TriangleSetTopologyContainer& t)
-    {
-        out << t.m_triangle.size() << " " << t.m_triangle << " "
-            << t.m_triangleEdge.size() << " " << t.m_triangleEdge << " "
-            << t.m_triangleVertexShell.size();
-        for (unsigned int i=0; i<t.m_triangleVertexShell.size(); i++)
-        {
-            out << " " << t.m_triangleVertexShell[i].size();
-            out << " " <<t.m_triangleVertexShell[i] ;
-        }
-        out  << " " << t.m_triangleEdgeShell.size();
-        for (unsigned int i=0; i<t.m_triangleEdgeShell.size(); i++)
-        {
-            out  << " " << t.m_triangleEdgeShell[i].size();
-            out  << " " << t.m_triangleEdgeShell[i];
-        }
-
-        return out;
-    }
-
-    /// Needed to be compliant with Datas.
-    inline friend std::istream& operator>>(std::istream& in, TriangleSetTopologyContainer& t)
-    {
-        unsigned int s;
-        in >> s;
-        for (unsigned int i=0; i<s; i++)
-        {
-            Triangle T; in >> T;
-            t.m_triangle.push_back(T);
-        }
-        in >> s;
-        for (unsigned int i=0; i<s; i++)
-        {
-            TriangleEdges T; in >> T;
-            t.m_triangleEdge.push_back(T);
-        }
-
-        unsigned int sub;
-        in >> s;
-        for (unsigned int i=0; i<s; i++)
-        {
-            in >> sub;
-            sofa::helper::vector< unsigned int > v;
-            for (unsigned int j=0; j<sub; j++)
-            {
-                unsigned int value;
-                in >> value;
-                v.push_back(value);
-            }
-            t.m_triangleVertexShell.push_back(v);
-        }
-
-        in >> s;
-        for (unsigned int i=0; i<s; i++)
-        {
-            in >> sub;
-            sofa::helper::vector< unsigned int > v;
-            for (unsigned int j=0; j<sub; j++)
-            {
-                unsigned int value;
-                in >> value;
-                v.push_back(value);
-            }
-            t.m_triangleEdgeShell.push_back(v);
-        }
-
-        return in;
-    }
-
 protected:
     /** \brief Creates the TriangleSet array.
     *
@@ -275,6 +206,7 @@ private:
 protected:
     /// provides the set of triangles
     sofa::helper::vector<Triangle> m_triangle;
+    DataPtr< sofa::helper::vector<Triangle> > d_triangle;
     /// provides the 3 edges in each triangle
     sofa::helper::vector<TriangleEdges> m_triangleEdge;
     /// for each vertex provides the set of triangles adjacent to that vertex
