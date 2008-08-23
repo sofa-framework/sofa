@@ -25,14 +25,14 @@
 
 // CONVENTION : indices ordering for the vertices of an hexahedron :
 //
-// 	   Y  3---------2
-//     ^ /	       /|
-//     |/	      / |
+//     Y  3---------2
+//     ^ /         /|
+//     |/         / |
 //     7---------6  |
 //     |    	 |  |
 //     |  0------|--1
-//     | / 	     | /
-//     |/	     |/
+//     | /       | /
+//     |/        |/
 //     4---------5-->X
 //    /
 //   /
@@ -225,60 +225,6 @@ public:
     /** returns the index of the quad whose global index is quadIndex. Returns -1 if none */
     int getQuadIndexInHexahedron(const HexahedronQuads &t,unsigned int quadIndex) const;
 
-    inline friend std::ostream& operator<< (std::ostream& out, const HexahedronSetTopologyContainer& t)
-    {
-        out  << t.m_hexahedron<< " "
-                << t.m_hexahedronEdge<< " "
-                << t.m_hexahedronQuad;
-
-        out << " "<< t.m_hexahedronVertexShell.size();
-        for (unsigned int i=0; i<t.m_hexahedronVertexShell.size(); i++)
-        {
-            out << " " << t.m_hexahedronVertexShell[i];
-        }
-        out <<" "<< t.m_hexahedronEdgeShell.size();
-        for (unsigned int i=0; i<t.m_hexahedronEdgeShell.size(); i++)
-        {
-            out << " " << t.m_hexahedronEdgeShell[i];
-        }
-        out <<" "<< t.m_hexahedronQuadShell.size();
-        for (unsigned int i=0; i<t.m_hexahedronQuadShell.size(); i++)
-        {
-            out << " " << t.m_hexahedronQuadShell[i];
-        }
-        return out;
-    }
-
-    inline friend std::istream& operator>>(std::istream& in, HexahedronSetTopologyContainer& t)
-    {
-        unsigned int s;
-        sofa::helper::vector< unsigned int > value;
-
-
-        in >> t.m_hexahedron >> t.m_hexahedronEdge >> t.m_hexahedronQuad;
-
-
-        in >> s;
-        for (unsigned int i=0; i<s; i++)
-        {
-            in >> value;
-            t.m_hexahedronVertexShell.push_back(value);
-        }
-        in >> s;
-        for (unsigned int i=0; i<s; i++)
-        {
-            in >> value;
-            t.m_hexahedronEdgeShell.push_back(value);
-        }
-        in >> s;
-        for (unsigned int i=0; i<s; i++)
-        {
-            in >> value;
-            t.m_hexahedronQuadShell.push_back(value);
-        }
-        return in;
-    }
-
 protected:
     /** \brief Creates the EdgeSet array.
     *
@@ -371,6 +317,7 @@ private:
 protected:
     /// provides the set of hexahedra
     sofa::helper::vector<Hexahedron> m_hexahedron;
+    DataPtr< sofa::helper::vector<Hexahedron> > d_hexahedron;
     /// provides the set of edges for each hexahedron
     sofa::helper::vector<HexahedronEdges> m_hexahedronEdge;
     /// provides the set of quads for each hexahedron

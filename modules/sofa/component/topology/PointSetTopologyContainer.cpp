@@ -46,6 +46,7 @@ int PointSetTopologyContainerClass = core::RegisterObject("Point set topology co
 
 PointSetTopologyContainer::PointSetTopologyContainer(int npoints)
     : nbPoints(npoints)
+    , d_nbPoints(initDataPtr(&d_nbPoints, &nbPoints, "nbPoints", "Number of points"))
 {
 }
 

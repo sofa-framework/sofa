@@ -73,27 +73,6 @@ public:
     */
     virtual int getNumberConnectedComponents(sofa::helper::vector<unsigned int>& components);
 
-    inline friend std::ostream& operator<< (std::ostream& out, const ManifoldEdgeSetTopologyContainer& t)
-    {
-        out << t.m_edge.size();
-        for (unsigned int i=0; i<t.m_edge.size(); i++)
-            out << " " << t.m_edge[i][0] << " " << t.m_edge[i][1] ;
-
-        return out;
-    }
-
-    /// Needed to be compliant with Datas.
-    inline friend std::istream& operator>>(std::istream& in, ManifoldEdgeSetTopologyContainer& t)
-    {
-        unsigned int s;
-        in >> s;
-        for (unsigned int i=0; i<s; i++)
-        {
-            Edge T; in >> T;
-            t.m_edge.push_back(T);
-        }
-        return in;
-    }
 protected:
     /** \brief Creates the EdgeSetIndex.
     *

@@ -36,6 +36,7 @@ namespace component
 
 namespace topology
 {
+
 using namespace std;
 using namespace sofa::defaulttype;
 
@@ -48,11 +49,14 @@ const unsigned int tetrahedronEdgeArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,
 
 TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer()
     : TriangleSetTopologyContainer()
-{}
+    , d_tetrahedron(initDataPtr(&d_tetrahedron, &m_tetrahedron, "tetras", "List of tetrahedron indices"))
+{
+}
 
 TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer(const sofa::helper::vector< Tetrahedron >& tetrahedra )
     : TriangleSetTopologyContainer()
     , m_tetrahedron( tetrahedra )
+    , d_tetrahedron(initDataPtr(&d_tetrahedron, &m_tetrahedron, "tetras", "List of tetrahedron indices"))
 {
     for (unsigned int i=0; i<m_tetrahedron.size(); ++i)
     {
@@ -66,7 +70,9 @@ TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer(const sofa::hel
 
 void TetrahedronSetTopologyContainer::addTetra( int a, int b, int c, int d )
 {
+    d_tetrahedron.beginEdit();
     m_tetrahedron.push_back(Tetra(a,b,c,d));
+    d_tetrahedron.endEdit();
     if (a >= (int)nbPoints) nbPoints = a+1;
     if (b >= (int)nbPoints) nbPoints = b+1;
     if (c >= (int)nbPoints) nbPoints = c+1;
@@ -82,7 +88,9 @@ void TetrahedronSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLo
 {
     // load points
     PointSetTopologyContainer::loadFromMeshLoader(loader);
+    d_tetrahedron.beginEdit();
     m_tetrahedron = loader->getTetras();
+    d_tetrahedron.endEdit();
 }
 
 void TetrahedronSetTopologyContainer::createTetrahedronSetArray()
@@ -94,6 +102,7 @@ void TetrahedronSetTopologyContainer::createTetrahedronSetArray()
 
 void TetrahedronSetTopologyContainer::createEdgeSetArray()
 {
+    d_edge.beginEdit();
     if(hasEdges())
     {
         EdgeSetTopologyContainer::clear();
@@ -127,6 +136,7 @@ void TetrahedronSetTopologyContainer::createEdgeSetArray()
             }
         }
     }
+    d_edge.endEdit();
 }
 
 void TetrahedronSetTopologyContainer::createTetrahedronEdgeArray()
@@ -155,6 +165,7 @@ void TetrahedronSetTopologyContainer::createTetrahedronEdgeArray()
 
 void TetrahedronSetTopologyContainer::createTriangleSetArray()
 {
+    d_triangle.beginEdit();
     if(hasTriangles())
     {
         TriangleSetTopologyContainer::clear();
@@ -209,6 +220,7 @@ void TetrahedronSetTopologyContainer::createTriangleSetArray()
             }
         }
     }
+    d_triangle.endEdit();
 }
 
 void TetrahedronSetTopologyContainer::createTetrahedronTriangleArray()
@@ -618,7 +630,9 @@ bool TetrahedronSetTopologyContainer::hasTetrahedronTriangleShell() const
 
 void TetrahedronSetTopologyContainer::clearTetrahedra()
 {
+    d_tetrahedron.beginEdit();
     m_tetrahedron.clear();
+    d_tetrahedron.endEdit();
 }
 
 void TetrahedronSetTopologyContainer::clearTetrahedronEdges()

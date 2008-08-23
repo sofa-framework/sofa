@@ -58,11 +58,14 @@ int EdgeSetTopologyContainerClass = core::RegisterObject("Edge set topology cont
 
 EdgeSetTopologyContainer::EdgeSetTopologyContainer()
     : PointSetTopologyContainer( )
-{}
+    , d_edge(initDataPtr(&d_edge, &m_edge, "edges", "List of edge indices"))
+{
+}
 
 EdgeSetTopologyContainer::EdgeSetTopologyContainer(const sofa::helper::vector< Edge > &edges )
     : PointSetTopologyContainer( )
     , m_edge( edges )
+    , d_edge(initDataPtr(&d_edge, &m_edge, "edges", "List of edge indices"))
 {
     for (unsigned int i=0; i<m_edge.size(); ++i)
     {
@@ -83,12 +86,16 @@ void EdgeSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoader* l
 {
     // load points
     PointSetTopologyContainer::loadFromMeshLoader(loader);
+    d_edge.beginEdit();
     m_edge = loader->getEdges();
+    d_edge.endEdit();
 }
 
 void EdgeSetTopologyContainer::addEdge(int a, int b)
 {
+    d_edge.beginEdit();
     m_edge.push_back(Edge(a,b));
+    d_edge.endEdit();
     if (a >= (int)nbPoints) nbPoints = a+1;
     if (b >= (int)nbPoints) nbPoints = b+1;
 }
@@ -274,7 +281,9 @@ bool EdgeSetTopologyContainer::hasEdgeVertexShell() const
 
 void EdgeSetTopologyContainer::clearEdges()
 {
+    d_edge.beginEdit();
     m_edge.clear();
+    d_edge.endEdit();
 }
 
 void EdgeSetTopologyContainer::clearEdgeVertexShell()

@@ -55,14 +55,24 @@ int MeshTopologyClass = core::RegisterObject("Generic mesh topology")
 
 MeshTopology::MeshTopology()
     : nbPoints(0)
-    , seqEdges(initData(&seqEdges,"lines","List of line indices")), validEdges(false)
+    , seqEdges(initData(&seqEdges,"edges","List of edge indices")), validEdges(false)
     , seqTriangles(initData(&seqTriangles,"triangles","List of triangle indices")), validTriangles(false)
     , seqQuads(initData(&seqQuads,"quads","List of quad indices")), validQuads(false)
-    , seqTetras(initData(&seqTetras,"tetras","List of tetra indices")), validTetras(false)
-    , seqHexas(initData(&seqHexas,"hexas","List of hexa indices")), validHexas(false)
+    , seqTetras(initData(&seqTetras,"tetras","List of tetrahedron indices")), validTetras(false)
+    , seqHexas(initData(&seqHexas,"hexas","List of hexahedron indices")), validHexas(false)
     , revision(0)
     , _draw(initData(&_draw, false, "drawHexas","if true, draw the topology hexahedra"))
 {
+}
+
+void MeshTopology::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    if (arg->getAttribute("lines")) // old name for edges
+    {
+        std::string s = arg->getAttribute("lines");
+        seqEdges.read(s);
+    }
+    BaseMeshTopology::parse(arg);
 }
 
 void MeshTopology::init()
