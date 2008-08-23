@@ -119,8 +119,8 @@ public:
     /// Project the global Mechanical Vector to constrained space using offset parameter
     virtual void applyConstraint(defaulttype::BaseVector *, unsigned int & /*offset*/);
 
-    virtual void getConstraintValue(defaulttype::BaseVector *, bool ) {};
-    virtual void getConstraintValue(double *, bool ) {};
+    virtual void getConstraintValue(defaulttype::BaseVector *, bool /* freeMotion */ = true ) {}
+    virtual void getConstraintValue(double *, bool /* freeMotion */ = true ) {}
     virtual void getConstraintId(long * /*id*/, unsigned int & /*offset*/) {}
 
 #ifdef SOFA_DEV

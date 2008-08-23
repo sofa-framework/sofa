@@ -83,16 +83,6 @@ HEADERS += \
           ObjectFactory.h
 
 SOURCES +=  \
-          CollisionModel.cpp \
-          componentmodel/behavior/LinearSolver.cpp \
-          componentmodel/behavior/MasterSolver.cpp \
-          componentmodel/behavior/MultiMatrix.cpp \
-          componentmodel/behavior/OdeSolver.cpp \
-          componentmodel/collision/Contact.cpp \
-          componentmodel/collision/Intersection.cpp \
-          componentmodel/collision/Pipeline.cpp \
-          componentmodel/topology/BaseMeshTopology.cpp \
-          componentmodel/topology/BaseTopology.cpp \
           objectmodel/Base.cpp \
           objectmodel/BaseContext.cpp \
           objectmodel/BaseObject.cpp \
@@ -109,6 +99,16 @@ SOURCES +=  \
   	  objectmodel/OmniEvent.cpp \
           ObjectFactory.cpp \
           Mapping.cpp \	   
+          CollisionModel.cpp \
+          componentmodel/behavior/LinearSolver.cpp \
+          componentmodel/behavior/MasterSolver.cpp \
+          componentmodel/behavior/MultiMatrix.cpp \
+          componentmodel/behavior/OdeSolver.cpp \
+          componentmodel/collision/Contact.cpp \
+          componentmodel/collision/Intersection.cpp \
+          componentmodel/collision/Pipeline.cpp \
+          componentmodel/topology/BaseMeshTopology.cpp \
+          componentmodel/topology/BaseTopology.cpp \
           componentmodel/behavior/BaseConstraint.cpp \
           componentmodel/behavior/BaseForceField.cpp \
           componentmodel/behavior/ForceField.cpp \
