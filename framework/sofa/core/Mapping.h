@@ -74,6 +74,10 @@ public:
     /// Specify the input and output models.
     virtual void setModels(In* from, Out* to);
 
+    /// Set the path to the objects mapped in the scene graph by default object1="../.." and object2=".."
+    void setPathObject1(std::string &o) {object1.setValue(o);}
+    void setPathObject2(std::string &o) {object2.setValue(o);}
+
     /// Return the pointer to the input model.
     In* getFromModel();
     /// Return the pointer to the output model.
@@ -143,17 +147,20 @@ public:
             (arg?dynamic_cast<In*>(arg->findObject(arg->getAttribute("object1","../.."))):NULL),
             (arg?dynamic_cast<Out*>(arg->findObject(arg->getAttribute("object2",".."))):NULL));
         if (context) context->addObject(obj);
-        if ((arg) && (arg->getAttribute("object1")))
+        if (arg)
         {
-            obj->object1.setValue( arg->getAttribute("object1") );
-            arg->removeAttribute("object1");
+            if (arg->getAttribute("object1"))
+            {
+                obj->object1.setValue( arg->getAttribute("object1") );
+                arg->removeAttribute("object1");
+            }
+            if (arg->getAttribute("object2"))
+            {
+                obj->object2.setValue( arg->getAttribute("object2") );
+                arg->removeAttribute("object2");
+            }
+            obj->parse(arg);
         }
-        if ((arg) && (arg->getAttribute("object2")))
-        {
-            obj->object2.setValue( arg->getAttribute("object2") );
-            arg->removeAttribute("object2");
-        }
-        if (arg) obj->parse(arg);
     }
 
     virtual std::string getTemplateName() const

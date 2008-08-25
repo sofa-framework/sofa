@@ -590,7 +590,7 @@ bool MechanicalObject<Vec1fTypes>::addBBox(double* minBBox, double* maxBBox);
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyScale(const double s)
 {
-    std::cout << "MechanicalObject : applyScale " << this->getName() << " s=" << s << "\n";
+//       std::cout << "MechanicalObject : applyScale " << this->getName() << " s=" << s << "\n";
     VecCoord& x = *this->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {

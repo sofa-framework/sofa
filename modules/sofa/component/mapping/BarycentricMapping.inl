@@ -825,6 +825,7 @@ void BarycentricMapping<BasicMapping>::createMapperFromTopology(BaseMeshTopology
                 f_grid->beginEdit()->setTopology(t2);
                 this->mapper = f_grid->beginEdit();
             }
+
         }
         else
         {
@@ -858,6 +859,7 @@ void BarycentricMapping<BasicMapping>::init()
             createMapperFromTopology(topology_from);
         }
     }
+
 
     if (mapper != NULL)
     {
