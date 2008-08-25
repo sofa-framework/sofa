@@ -37,6 +37,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/helper/fixed_array.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/misc/Monitor.h>
 
@@ -84,6 +85,7 @@ namespace qt
 using sofa::helper::Quater;
 using namespace sofa::defaulttype;
 using sofa::simulation::Node;
+using sofa::helper::fixed_array;
 
 #ifndef SOFA_QT4
 typedef QListView   Q3ListView;
@@ -191,6 +193,18 @@ protected:
     bool createQtTable(Data< sofa::component::topology::PointData< T > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
     template< class T>
     void storeQtTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< sofa::component::topology::PointData< T > >* ff );
+    //*********************************************************
+
+    //fixed_array
+    template< std::size_t N, class T>
+    bool createQtTable(Data< sofa::helper::vector< fixed_array<T,N> > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
+    template< std::size_t N, class T>
+    void storeQtTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< sofa::helper::vector< fixed_array<T,N> > >* ff );
+    template< std::size_t N, class T>
+    bool createQtTable(DataPtr< sofa::helper::vector< fixed_array<T,N> > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
+    template< std::size_t N, class T>
+    void storeQtTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, DataPtr< sofa::helper::vector< fixed_array<T,N> > >* ff );
+
     //*********************************************************
 
     //Monitor Special class
