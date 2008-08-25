@@ -50,8 +50,6 @@
 #endif
 
 #include <sofa/component/topology/PointSubset.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/core/ObjectFactory.h>
@@ -89,6 +87,7 @@ using sofa::core::objectmodel::BaseData;
 typedef QGrid       Q3Grid;
 typedef QScrollView Q3ScrollView;
 #endif
+
 
 
 ModifyObject::ModifyObject(void *Id_, core::objectmodel::Base* node_clicked, Q3ListViewItem* item_clicked,  QWidget* parent_, const char* name, bool, Qt::WFlags // f
@@ -2264,6 +2263,59 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
     {
         return createQtTable(ff,box,vectorTable);
     }
+
+    //********************************************************************************************************//
+    //fixed_array1
+    else if(  Data<vector<fixed_array<unsigned int,1> > > *ff = dynamic_cast< Data<vector<fixed_array<unsigned int,1> > > * >  (field))
+    {
+        return createQtTable(  ff,box,vectorTable);
+    }
+    //fixed_array2
+    else if(  Data<vector<fixed_array<unsigned int,2> > > *ff = dynamic_cast< Data<vector<fixed_array<unsigned int,2> > > * >  (field))
+    {
+        return createQtTable(  ff,box,vectorTable);
+    }
+    //fixed_array3
+    else if(  Data<vector<fixed_array<unsigned int,3> > > *ff = dynamic_cast< Data<vector<fixed_array<unsigned int,3> > > * >  (field))
+    {
+        return createQtTable(  ff,box,vectorTable);
+    }
+    //fixed_array4
+    else if(  Data<vector<fixed_array<unsigned int,4> > > *ff = dynamic_cast< Data<vector<fixed_array<unsigned int,4> > > * >  (field))
+    {
+        return createQtTable(  ff,box,vectorTable);
+    }
+    //fixed_array8
+    else if(  Data<vector<fixed_array<unsigned int,8> > > *ff = dynamic_cast< Data<vector<fixed_array<unsigned int,8> > > * >  (field))
+    {
+        return createQtTable(  ff,box,vectorTable);
+    }
+    //********************************************************************************************************//
+    //fixed_array1
+    else if(  DataPtr<vector<fixed_array<unsigned int,1> > > *ff = dynamic_cast< DataPtr<vector<fixed_array<unsigned int,1> > > * >  (field))
+    {
+        return createQtTable(  ff,box,vectorTable);
+    }
+    //fixed_array2
+    else if(  DataPtr<vector<fixed_array<unsigned int,2> > > *ff = dynamic_cast< DataPtr<vector<fixed_array<unsigned int,2> > > * >  (field))
+    {
+        return createQtTable(  ff,box,vectorTable);
+    }
+    //fixed_array3
+    else if(  DataPtr<vector<fixed_array<unsigned int,3> > > *ff = dynamic_cast< DataPtr<vector<fixed_array<unsigned int,3> > > * >  (field))
+    {
+        return createQtTable(  ff,box,vectorTable);
+    }
+    //fixed_array4
+    else if(  DataPtr<vector<fixed_array<unsigned int,4> > > *ff = dynamic_cast< DataPtr<vector<fixed_array<unsigned int,4> > > * >  (field))
+    {
+        return createQtTable(  ff,box,vectorTable);
+    }
+    //fixed_array8
+    else if(  DataPtr<vector<fixed_array<unsigned int,8> > > *ff = dynamic_cast< DataPtr<vector<fixed_array<unsigned int,8> > > * >  (field))
+    {
+        return createQtTable(  ff,box,vectorTable);
+    }
     //********************************************************************************************************//
     //vector< double >
     else if(  Data<sofa::component::topology::PointData< double > >   *ff = dynamic_cast< Data<sofa::component::topology::PointData< double> >   * >( field))
@@ -2288,6 +2340,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
     {
         return createQtTable(ff,box,vectorTable);
     }
+
     //********************************************************************************************************//
 
     else if(  Data<sofa::component::misc::Monitor< Vec3dTypes >::MonitorData >  *ff = dynamic_cast< Data<sofa::component::misc::Monitor< Vec3dTypes >::MonitorData >   * >( field))
@@ -2811,6 +2864,58 @@ void ModifyObject::storeTable(std::list< std::pair< Q3Table*, BaseData*> >::
     {
         storeQtTable(it_list_table, ff);
     }
+    //********************************************************************************************************//
+    //fixed_array1
+    else if(  Data<vector<fixed_array<unsigned int,1> > > *ff = dynamic_cast< Data<vector<fixed_array<unsigned int,1> > > * >  (it_list_table->second))
+    {
+        storeQtTable( it_list_table, ff);
+    }
+    //fixed_array2
+    else if(  Data<vector<fixed_array<unsigned int,2> > > *ff = dynamic_cast< Data<vector<fixed_array<unsigned int,2> > > * >  (it_list_table->second))
+    {
+        storeQtTable( it_list_table, ff);
+    }
+    //fixed_array3
+    else if(  Data<vector<fixed_array<unsigned int,3> > > *ff = dynamic_cast< Data<vector<fixed_array<unsigned int,3> > > * >  (it_list_table->second))
+    {
+        storeQtTable( it_list_table, ff);
+    }
+    //fixed_array4
+    else if(  Data<vector<fixed_array<unsigned int,4> > > *ff = dynamic_cast< Data<vector<fixed_array<unsigned int,4> > > * >  (it_list_table->second))
+    {
+        storeQtTable( it_list_table, ff);
+    }
+    //fixed_array8
+    else if(  Data<vector<fixed_array<unsigned int,8> > > *ff = dynamic_cast< Data<vector<fixed_array<unsigned int,8> > > * >  (it_list_table->second))
+    {
+        storeQtTable( it_list_table, ff);
+    }
+    //********************************************************************************************************//
+    //fixed_array1
+    else if(  DataPtr<vector<fixed_array<unsigned int,1> > > *ff = dynamic_cast< DataPtr<vector<fixed_array<unsigned int,1> > > * >  (it_list_table->second))
+    {
+        storeQtTable( it_list_table, ff);
+    }
+    //fixed_array2
+    else if(  DataPtr<vector<fixed_array<unsigned int,2> > > *ff = dynamic_cast< DataPtr<vector<fixed_array<unsigned int,2> > > * >  (it_list_table->second))
+    {
+        storeQtTable( it_list_table, ff);
+    }
+    //fixed_array3
+    else if(  DataPtr<vector<fixed_array<unsigned int,3> > > *ff = dynamic_cast< DataPtr<vector<fixed_array<unsigned int,3> > > * >  (it_list_table->second))
+    {
+        storeQtTable( it_list_table, ff);
+    }
+    //fixed_array4
+    else if(  DataPtr<vector<fixed_array<unsigned int,4> > > *ff = dynamic_cast< DataPtr<vector<fixed_array<unsigned int,4> > > * >  (it_list_table->second))
+    {
+        storeQtTable( it_list_table, ff);
+    }
+    //fixed_array8
+    else if(  DataPtr<vector<fixed_array<unsigned int,8> > > *ff = dynamic_cast< DataPtr<vector<fixed_array<unsigned int,8> > > * >  (it_list_table->second))
+    {
+        storeQtTable( it_list_table, ff);
+    }
     //**************************************************************************************************************************************
     else if(  Data<sofa::component::topology::PointData< double > >   *ff = dynamic_cast< Data<sofa::component::topology::PointData< double> >   * >( it_list_table->second))
     {
@@ -3046,6 +3151,8 @@ void ModifyObject::storeVector(unsigned int &index, Data< Vec<N,T> > *ff)
     for (int i=0; i<N; i++)  value[i] =  (T) editSFFloat[i]->getFloatValue();
     ff->setValue(value);
 }
+
+
 template<class T>
 void ModifyObject::storeVector(unsigned int &index, Data< Quater<T> > *ff)
 {
@@ -3253,11 +3360,12 @@ bool ModifyObject::createQtTable(Data< sofa::helper::vector< Vec<N,T> > > *ff, Q
 
         list_Table.push_back(std::make_pair(vectorTable, ff));
         objectGUI.push_back(std::make_pair(ff,vectorTable));
-
-        if (N>=0) {vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);}
-        if (N>=1) {vectorTable->horizontalHeader()->setLabel(1,QString("Y"));   vectorTable->setColumnStretchable(1,true);}
-        if (N>=2) {vectorTable->horizontalHeader()->setLabel(2,QString("Z"));   vectorTable->setColumnStretchable(2,true);}
-
+        if (N<=2)
+        {
+            if (N>=0) {vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);}
+            if (N>=1) {vectorTable->horizontalHeader()->setLabel(1,QString("Y"));   vectorTable->setColumnStretchable(1,true);}
+            if (N>=2) {vectorTable->horizontalHeader()->setLabel(2,QString("Z"));   vectorTable->setColumnStretchable(2,true);}
+        }
         connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
     }
 
@@ -3314,11 +3422,12 @@ bool ModifyObject::createQtTable(DataPtr< sofa::helper::vector< Vec<N,T> > > *ff
 
         list_Table.push_back(std::make_pair(vectorTable, ff));
         objectGUI.push_back(std::make_pair(ff,vectorTable));
-
-        if (N>=0) {vectorTable->horizontalHeader()->setLabel(0,QString("X"));   vectorTable->setColumnStretchable(0,true);}
-        if (N>=1) {vectorTable->horizontalHeader()->setLabel(1,QString("Y"));   vectorTable->setColumnStretchable(1,true);}
-        if (N>=2) {vectorTable->horizontalHeader()->setLabel(2,QString("Z"));   vectorTable->setColumnStretchable(2,true);}
-
+        if (N<=2)
+        {
+            if (N>=0) {vectorTable->horizontalHeader()->setLabel(0,QString("X"));   vectorTable->setColumnStretchable(0,true);}
+            if (N>=1) {vectorTable->horizontalHeader()->setLabel(1,QString("Y"));   vectorTable->setColumnStretchable(1,true);}
+            if (N>=2) {vectorTable->horizontalHeader()->setLabel(2,QString("Z"));   vectorTable->setColumnStretchable(2,true);}
+        }
         connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
     }
     if (setResize.find(vectorTable) != setResize.end()) ff->beginEdit()->resize(vectorTable->numRows());
@@ -3349,6 +3458,119 @@ void ModifyObject::storeQtTable( std::list< std::pair< Q3Table*, core::objectmod
     {
         Vec<N,T> vec_value;
         for (int j=0; j<N; j++)
+        {
+            vec_value[j] = (T) atof(table->text(i,j));
+        }
+
+        new_value.push_back( vec_value );
+
+    }
+    ff->setValue( new_value );
+}
+//********************************************************************************************************************
+//********************************************************************************************************************
+template< std::size_t N, class T>
+bool ModifyObject::createQtTable(Data< sofa::helper::vector< fixed_array<T,N> > > *ff, Q3GroupBox *box, Q3Table* vectorTable )
+{
+    if (!vectorTable)
+    {
+        if (ff->getValue().size() == 0  && !EMPTY_FLAG)  return false;
+
+        box->setColumns(1);
+
+        if (RESIZABLE_FLAG) vectorTable = addResizableTable(box,ff->getValue().size(),N);
+        else vectorTable = new Q3Table(ff->getValue().size(),N, box);
+
+        list_Table.push_back(std::make_pair(vectorTable, ff));
+        objectGUI.push_back(std::make_pair(ff,vectorTable));
+
+        connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+    }
+
+    if (setResize.find(vectorTable) != setResize.end()) ff->beginEdit()->resize(vectorTable->numRows());
+    else	  vectorTable->setNumRows(ff->getValue().size());
+
+    sofa::helper::vector< fixed_array<T,N> > value = ff->getValue();
+
+
+    for (unsigned int i=0; i<ff->getValue().size(); i++)
+    {
+        std::ostringstream oss[N];
+        for (unsigned int j=0; j<N; j++)
+        {
+            oss[j] << value[i][j];
+            vectorTable->setText(i,j,std::string(oss[j].str()).c_str());
+        }
+    }
+    return true;
+}
+//*******************************************************************************************************************
+template< std::size_t N, class T>
+void ModifyObject::storeQtTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< sofa::helper::vector< fixed_array<T,N> > >* ff )
+{
+
+    Q3Table* table=it_list_table->first;
+
+    sofa::helper::vector< fixed_array<T,N> > new_value;
+    for (unsigned int i=0; i<ff->getValue().size(); i++)
+    {
+        fixed_array<T,N> vec_value;
+        for (unsigned int j=0; j<N; j++)
+        {
+            vec_value[j] = (T) atof(table->text(i,j));
+        }
+        new_value.push_back( vec_value );
+    }
+    ff->setValue( new_value );
+}
+//********************************************************************************************************************
+//********************************************************************************************************************
+template< std::size_t N, class T>
+bool ModifyObject::createQtTable(DataPtr< sofa::helper::vector< fixed_array<T,N> > > *ff, Q3GroupBox *box, Q3Table* vectorTable )
+{
+    if (!vectorTable)
+    {
+        if (ff->getValue().size() == 0  && !EMPTY_FLAG)  return false;
+
+        box->setColumns(1);
+
+
+        if (RESIZABLE_FLAG) vectorTable = addResizableTable(box,ff->getValue().size(),N);
+        else vectorTable = new Q3Table(ff->getValue().size(),N, box);
+
+        list_Table.push_back(std::make_pair(vectorTable, ff));
+        objectGUI.push_back(std::make_pair(ff,vectorTable));
+
+        connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+    }
+    if (setResize.find(vectorTable) != setResize.end()) ff->beginEdit()->resize(vectorTable->numRows());
+    else	  vectorTable->setNumRows(ff->getValue().size());
+
+    sofa::helper::vector< fixed_array<T,N> > value = ff->getValue();
+
+    for (unsigned int i=0; i<ff->getValue().size(); i++)
+    {
+        std::ostringstream oss[N];
+        for (unsigned int j=0; j<N; j++)
+        {
+            oss[j] << value[i][j];
+            vectorTable->setText(i,j,std::string(oss[j].str()).c_str());
+        }
+    }
+    return true;
+}
+//********************************************************************************************************************
+template< std::size_t N, class T>
+void ModifyObject::storeQtTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, DataPtr< sofa::helper::vector< fixed_array<T,N> > >* ff )
+{
+
+    Q3Table* table=it_list_table->first;
+
+    sofa::helper::vector< fixed_array<T,N> > new_value;
+    for (unsigned int i=0; i<ff->getValue().size(); i++)
+    {
+        fixed_array<T,N> vec_value;
+        for (unsigned int j=0; j<N; j++)
         {
             vec_value[j] = (T) atof(table->text(i,j));
         }
