@@ -178,7 +178,9 @@ public:
 
     void clear(int reserve=0);
     bool isEmpty() {return map.size() == 0;}
-    void setTopology(topology::RegularGridTopology* topology) {topology = topology;}
+    void setTopology(topology::RegularGridTopology* _topology) {topology = _topology;}
+    topology::RegularGridTopology *getTopology() {return topology;}
+
     int addPointInCube(int cubeIndex, const SReal* baryCoords);
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);

@@ -42,7 +42,7 @@ int GridTopologyClass = core::RegisterObject("Base class fo a regular grid in 3D
         ;
 
 GridTopology::GridTopology()
-    : n(initData(&n,Vec<3, int>(0,0,0),"n","grid resolution"))
+    : n(initData(&n,Vec<3, int>(2,2,2),"n","grid resolution"))
 {
 }
 
@@ -50,6 +50,7 @@ GridTopology::GridTopology(int _nx, int _ny, int _nz)
     : n(initData(&n,Vec<3, int>(_nx,_ny,_nz),"n","grid resolution"))
 {
     nbPoints = _nx*_ny*_nz;
+    this->n.setValue(Vec<3, int>(_nx,_ny,_nz));
 }
 
 void GridTopology::setSize(int nx, int ny, int nz)

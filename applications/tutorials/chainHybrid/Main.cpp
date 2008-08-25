@@ -129,7 +129,7 @@ int main(int argc, char** argv)
     chain->addChild(torusFixed);
 
     MeshLoader* loaderFixed = new MeshLoader;
-    loaderFixed->setFilename(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj"));
+    loaderFixed->load(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj").c_str());
     torusFixed->addObject(loaderFixed);
 
     MeshTopology* meshTorusFixed = new MeshTopology;
@@ -172,7 +172,7 @@ int main(int argc, char** argv)
 
 
     MeshLoader* loaderFEM = new MeshLoader;
-    loaderFEM->setFilename(sofa::helper::system::DataRepository.getFile("mesh/torus_low_res.msh"));
+    loaderFEM->load(sofa::helper::system::DataRepository.getFile("mesh/torus_low_res.msh").c_str());
     torusFEM->addObject(loaderFEM);
 
     MeshTopology* meshTorusFEM = new MeshTopology;
@@ -211,11 +211,11 @@ int main(int argc, char** argv)
 
     //Node COLLISION
     GNode* FEMCollisionNode = new GNode;
-    FEMCollisionNode->setName("Visu");
+    FEMCollisionNode->setName("Collision");
     torusFEM->addChild(FEMCollisionNode);
 
     MeshLoader* loaderFEM_surf = new MeshLoader;
-    loaderFEM_surf->setFilename(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj"));
+    loaderFEM_surf->load(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj").c_str());
     FEMCollisionNode->addObject(loaderFEM_surf);
 
     MeshTopology* meshTorusFEM_surf= new MeshTopology;
@@ -252,8 +252,9 @@ int main(int argc, char** argv)
     torusSpring->addObject(linearSpring);
 
     MeshLoader* loaderSpring = new MeshLoader;
-    loaderSpring->setFilename(sofa::helper::system::DataRepository.getFile("mesh/torus_low_res.msh"));
+    loaderSpring->load(sofa::helper::system::DataRepository.getFile("mesh/torus_low_res.msh").c_str());
     torusSpring->addObject(loaderSpring);
+    loaderSpring->init();
 
     MeshTopology* meshTorusSpring = new MeshTopology;
     torusSpring->addObject(meshTorusSpring);
@@ -289,11 +290,11 @@ int main(int argc, char** argv)
 
     //Node COLLISION
     GNode* SpringCollisionNode = new GNode;
-    SpringCollisionNode->setName("Visu");
+    SpringCollisionNode->setName("Collision");
     torusSpring->addChild(SpringCollisionNode);
 
     MeshLoader* loaderSpring_surf = new MeshLoader;
-    loaderSpring_surf->setFilename(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj"));
+    loaderSpring_surf->load(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj").c_str());
     SpringCollisionNode->addObject(loaderSpring_surf);
 
     MeshTopology* meshTorusSpring_surf= new MeshTopology;
@@ -368,12 +369,12 @@ int main(int argc, char** argv)
 
     //Node COLLISION
     GNode* FFDCollisionNode = new GNode;
-    FFDCollisionNode->setName("Visu");
+    FFDCollisionNode->setName("Collision");
     torusFFD->addChild(FFDCollisionNode);
 
 
     MeshLoader* loaderFFD_surf = new MeshLoader;
-    loaderFFD_surf->setFilename(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj"));
+    loaderFFD_surf->load(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj").c_str());
     FFDCollisionNode->addObject(loaderFFD_surf);
 
     MeshTopology* meshTorusFFD_surf= new MeshTopology;
@@ -434,11 +435,11 @@ int main(int argc, char** argv)
 
     //Node COLLISION
     GNode* RigidCollisionNode = new GNode;
-    RigidCollisionNode->setName("Visu");
+    RigidCollisionNode->setName("Collision");
     torusRigid->addChild(RigidCollisionNode);
 
     MeshLoader* loaderRigid_surf = new MeshLoader;
-    loaderRigid_surf->setFilename(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj"));
+    loaderRigid_surf->load(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj").c_str());
     RigidCollisionNode->addObject(loaderRigid_surf);
 
     MeshTopology* meshTorusRigid_surf= new MeshTopology;
@@ -452,6 +453,14 @@ int main(int argc, char** argv)
 
     RigidMechanicalMappingRigid3_to_3* mechaMappingRigid = new RigidMechanicalMappingRigid3_to_3(dofRigid, dofRigid_surf);
     RigidCollisionNode->addObject(mechaMappingRigid);
+
+
+
+
+
+
+
+
 
     getSimulation()->init(groot);
 

@@ -78,6 +78,10 @@ objectmodel::BaseObject* Mapping<In,Out>::getTo()
 template <class In, class Out>
 void Mapping<In,Out>::init()
 {
+    if (!object2.isSet() && toModel)
+    {
+        this->object2.setValue( toModel->getName() );
+    }
     this->updateMapping();
 }
 
