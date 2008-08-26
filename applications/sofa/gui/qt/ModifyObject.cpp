@@ -2265,6 +2265,16 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
     }
 
     //********************************************************************************************************//
+    //fixed_array3 double
+    else if(  Data<vector<fixed_array<double,3> > > *ff = dynamic_cast< Data<vector<fixed_array<double,3> > > * >  (field))
+    {
+        return createQtTable(  ff,box,vectorTable);
+    }
+    //fixed_array3 float
+    else if(  Data<vector<fixed_array<float,3> > > *ff = dynamic_cast< Data<vector<fixed_array<float,3> > > * >  (field))
+    {
+        return createQtTable(  ff,box,vectorTable);
+    }
     //fixed_array1
     else if(  Data<vector<fixed_array<unsigned int,1> > > *ff = dynamic_cast< Data<vector<fixed_array<unsigned int,1> > > * >  (field))
     {
@@ -2291,6 +2301,16 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
         return createQtTable(  ff,box,vectorTable);
     }
     //********************************************************************************************************//
+    //fixed_array3 double
+    else if(  DataPtr<vector<fixed_array<double,3> > > *ff = dynamic_cast< DataPtr<vector<fixed_array<double,3> > > * >  (field))
+    {
+        return createQtTable(  ff,box,vectorTable);
+    }
+    //fixed_array3 float
+    else if(  DataPtr<vector<fixed_array<float,3> > > *ff = dynamic_cast< DataPtr<vector<fixed_array<float,3> > > * >  (field))
+    {
+        return createQtTable(  ff,box,vectorTable);
+    }
     //fixed_array1
     else if(  DataPtr<vector<fixed_array<unsigned int,1> > > *ff = dynamic_cast< DataPtr<vector<fixed_array<unsigned int,1> > > * >  (field))
     {
@@ -2865,6 +2885,16 @@ void ModifyObject::storeTable(std::list< std::pair< Q3Table*, BaseData*> >::
         storeQtTable(it_list_table, ff);
     }
     //********************************************************************************************************//
+    //fixed_array3 double
+    else if(  Data<vector<fixed_array<double,3> > > *ff = dynamic_cast< Data<vector<fixed_array<double,3> > > * >  (it_list_table->second))
+    {
+        storeQtTable( it_list_table, ff);
+    }
+    //fixed_array3 float
+    else if(  Data<vector<fixed_array<float,3> > > *ff = dynamic_cast< Data<vector<fixed_array<float,3> > > * >  (it_list_table->second))
+    {
+        storeQtTable( it_list_table, ff);
+    }
     //fixed_array1
     else if(  Data<vector<fixed_array<unsigned int,1> > > *ff = dynamic_cast< Data<vector<fixed_array<unsigned int,1> > > * >  (it_list_table->second))
     {
@@ -2891,6 +2921,16 @@ void ModifyObject::storeTable(std::list< std::pair< Q3Table*, BaseData*> >::
         storeQtTable( it_list_table, ff);
     }
     //********************************************************************************************************//
+    //fixed_array3 double
+    else if(  DataPtr<vector<fixed_array<double,3> > > *ff = dynamic_cast< DataPtr<vector<fixed_array<double,3> > > * >  (it_list_table->second))
+    {
+        storeQtTable( it_list_table, ff);
+    }
+    //fixed_array3 float
+    else if(  DataPtr<vector<fixed_array<float,3> > > *ff = dynamic_cast< DataPtr<vector<fixed_array<float,3> > > * >  (it_list_table->second))
+    {
+        storeQtTable( it_list_table, ff);
+    }
     //fixed_array1
     else if(  DataPtr<vector<fixed_array<unsigned int,1> > > *ff = dynamic_cast< DataPtr<vector<fixed_array<unsigned int,1> > > * >  (it_list_table->second))
     {
