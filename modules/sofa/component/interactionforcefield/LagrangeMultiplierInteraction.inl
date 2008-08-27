@@ -65,7 +65,7 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::init()
 {
     core::componentmodel::behavior::InteractionForceField::init();
     core::objectmodel::BaseContext* test = this->getContext();
-    constraint = test->get<baseConstraint>(f_constraint.getValue());
+    test->get(constraint,f_constraint.getValue());
 
 
 }

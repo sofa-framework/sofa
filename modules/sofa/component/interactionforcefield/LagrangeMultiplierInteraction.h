@@ -72,6 +72,8 @@ public:
     typedef typename Coord2::value_type Real2;
 
     Data < std::string > f_constraint;
+    Data<std::string> pathObject1;
+    Data<std::string> pathObject2;
 
 protected:
 
@@ -87,6 +89,8 @@ public:
 
     LagrangeMultiplierInteraction()
         : f_constraint( initData(&f_constraint, "constraint", "constraint path"))
+        , pathObject1(initData(&pathObject1,  "object1","First object in interaction"))
+        , pathObject2(initData(&pathObject2,  "object2","Second object in interaction"))
     {
 
 

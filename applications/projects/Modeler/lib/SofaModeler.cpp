@@ -326,10 +326,10 @@ void SofaModeler::fileNew( GNode* root)
     changeNameWindow("");
 
     GNode *current_root=graph->getRoot();
-    if (current_root) graph->clearGraph();
+    if (current_root) graph->clearGraph(false);
 
     //no parent, adding root: if root is NULL, then an empty GNode will be created
-    root = graph->addGNode(NULL, root);
+    root = graph->addGNode(NULL, root, false);
     sceneTab->setCurrentPage( sceneTab->count()-1);
 }
 
@@ -388,6 +388,8 @@ void SofaModeler::createTab()
     connect(graph, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(changeInformation(QListViewItem *)));
 #endif
     connect(graph, SIGNAL( fileOpen(std::string)), this, SLOT(fileOpen(std::string)));
+    connect(graph, SIGNAL( undo(bool)), this, SLOT(updateUndo(bool)));
+// 	connect(graph, SIGNAL( redo(bool)), this, SLOT(updateRedo(bool)));
 }
 
 void SofaModeler::closeTab()
@@ -511,7 +513,6 @@ void SofaModeler::fileSave()
 
 void SofaModeler::fileSave(std::string filename)
 {
-    changeNameWindow(filename);
     getSimulation()->printXML(graph->getRoot(), filename.c_str());
 }
 
@@ -522,11 +523,15 @@ void SofaModeler::fileSaveAs()
     if ( s.length() >0 )
     {
         fileSave ( s.ascii() );
+        if (graph->getFilename().empty())
+        {
+            std::string filename = s.ascii();
+            changeNameWindow(filename);
+            sceneTab->setTabLabel(tabGraph, QString(sofa::helper::system::SetDirectory::GetFileName(filename.c_str()).c_str()));
+            sceneTab->setTabToolTip(tabGraph, QString(filename.c_str()));
+            examplePath = sofa::helper::system::SetDirectory::GetParentDir(filename.c_str());
+        }
 
-        std::string filename = s.ascii();
-        sceneTab->setTabLabel(tabGraph, QString(sofa::helper::system::SetDirectory::GetFileName(filename.c_str()).c_str()));
-        sceneTab->setTabToolTip(tabGraph, QString(filename.c_str()));
-        examplePath = sofa::helper::system::SetDirectory::GetParentDir(filename.c_str());
     }
 }
 
@@ -645,7 +650,16 @@ void SofaModeler::changeCurrentScene( QWidget* currentGraph)
     tabGraph=currentGraph;
     graph = mapGraph[currentGraph];
     if (graph)
+    {
         changeNameWindow(graph->getFilename());
+        editUndoAction->setEnabled(graph->isUndoEnabled());
+// 	    editRedoAction->setEnabled(graph->isRedoEnabled());
+    }
+    else
+    {
+        editUndoAction->setEnabled(false);
+// 	    editRedoAction->setEnabled(false);
+    }
 }
 
 

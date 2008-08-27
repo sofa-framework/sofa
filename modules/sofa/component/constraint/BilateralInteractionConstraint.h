@@ -49,13 +49,16 @@ protected:
 
     Data<int> m1;
     Data<int> m2;
-
+    Data<std::string> pathObject1;
+    Data<std::string> pathObject2;
 public:
 
     BilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
         : object1(object1), object2(object2), yetIntegrated(false)
         , m1(initData(&m1, 0, "first_point","index of the constraint on the first model"))
         , m2(initData(&m2, 0, "second_point","index of the constraint on the second model"))
+        , pathObject1(initData(&pathObject1,  "object1","First object in interaction"))
+        , pathObject2(initData(&pathObject2,  "object2","Second object in interaction"))
     {
     }
 
@@ -63,6 +66,8 @@ public:
         : object1(object), object2(object), yetIntegrated(false)
         , m1(initData(&m1, 0, "first_point","index of the constraint on the first model"))
         , m2(initData(&m2, 0, "second_point","index of the constraint on the second model"))
+        , pathObject1(initData(&pathObject1,  "object1","First object in interaction"))
+        , pathObject2(initData(&pathObject2,  "object2","Second object in interaction"))
     {
     }
 
@@ -70,6 +75,8 @@ public:
         : object1(NULL), object2(NULL), yetIntegrated(false)
         , m1(initData(&m1, 0, "first_point","index of the constraint on the first model"))
         , m2(initData(&m2, 0, "second_point","index of the constraint on the second model"))
+        , pathObject1(initData(&pathObject1,  "object1","First object in interaction"))
+        , pathObject2(initData(&pathObject2,  "object2","Second object in interaction"))
     {
     }
 

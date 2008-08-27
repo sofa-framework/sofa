@@ -70,25 +70,32 @@ GNode *GraphModeler::addGNode(GNode *parent, GNode *child, bool saveHistory)
     }
 
 
-    graphListener->addChild(parent, child);
 
     if (parent != NULL)
+    {
         parent->addChild(child);
+
+        if (saveHistory)
+        {
+            Operation adding(child, Operation::ADD_GNODE);
+            adding.info=std::string("Adding GNODE ") + child->getClassName();
+            storeHistory(adding);
+        }
+    }
     else
     {
+        graphListener->addChild(NULL, child);
         //Set up the root
         firstChild()->setExpandable(true);
         firstChild()->setOpen(true);
-        historyOperation.clear();
-        currentStateHistory=historyOperation.end();
+
+        if (saveHistory) clearHistory();
     }
 
-    if (saveHistory)
+    if (!parent && childCount()>1)
     {
-        Operation adding(graphListener->items[child], child, Operation::ADD_OBJECT);
-        historyOperation.push_front(adding);
+        deleteComponent(graphListener->items[lastRoot], saveHistory);
     }
-    if (!parent) deleteComponent(graphListener->items[lastRoot]);
     return child;
 }
 
@@ -121,11 +128,13 @@ BaseObject *GraphModeler::addComponent(GNode *parent, ClassInfo* entry, std::str
     if (c->canCreate(parent->getContext(), &description))
     {
         object = c->createInstance(parent->getContext(), NULL);
-        graphListener->addObject(parent, object);
+        parent->addObject(object);
         if (saveHistory)
         {
-            Operation adding(graphListener->items[object], object, Operation::ADD_OBJECT);
-            historyOperation.push_front(adding);
+            Operation adding(object, Operation::ADD_OBJECT);
+
+            adding.info=std::string("Adding Object ") + object->getClassName();
+            storeHistory(adding);
         }
     }
     else
@@ -151,7 +160,7 @@ BaseObject *GraphModeler::addComponent(GNode *parent, ClassInfo* entry, std::str
                 return object;
         }
         object = c->createInstance(parent->getContext(), NULL);
-        graphListener->addObject(parent, object);
+        parent->addObject(object);
     }
     return object;
 }
@@ -197,7 +206,11 @@ void GraphModeler::dropEvent(QDropEvent* event)
             {
                 Q3ListViewItem *after = graphListener->items[newComponent];
                 Q3ListViewItem *item = itemAt(event->pos());
-                after->moveItem(item);
+                if (getObject(item))
+                {
+                    after->moveItem(item);
+                    if (item) item->moveItem(after);
+                }
             }
         }
         else
@@ -205,7 +218,21 @@ void GraphModeler::dropEvent(QDropEvent* event)
             if (text == QString("GNode"))
             {
                 GNode* node=getGNode(event->pos());
-                if (node)  addGNode(node);
+
+                if (node)
+                {
+                    GNode *newNode=addGNode(node);
+                    if (newNode)
+                    {
+                        Q3ListViewItem *after = graphListener->items[newNode];
+                        Q3ListViewItem *item = itemAt(event->pos());
+                        if (getObject(item))
+                        {
+                            after->moveItem(item);
+                            if (item) item->moveItem(after);
+                        }
+                    }
+                }
             }
         }
     }
@@ -310,7 +337,6 @@ void GraphModeler::openModifyObject(Q3ListViewItem *item)
 
     dialogModify->show();
     dialogModify->raise();
-    //connect ( this, SIGNAL ( closeDialog() ), dialogModify, SLOT ( closeNow() ) );
 
 }
 
@@ -563,9 +589,9 @@ void GraphModeler::saveNode(Q3ListViewItem* item)
         getSimulation()->printXML(node, s.ascii());
 }
 
-void GraphModeler::clearGraph()
+void GraphModeler::clearGraph(bool saveHistory)
 {
-    deleteComponent(firstChild());
+    deleteComponent(firstChild(), saveHistory);
 }
 
 void GraphModeler::deleteComponent(Q3ListViewItem* item, bool saveHistory)
@@ -577,31 +603,34 @@ void GraphModeler::deleteComponent(Q3ListViewItem* item, bool saveHistory)
     if (!isNode && isObjectErasable(getObject(item)))
     {
         BaseObject* object = getObject(item);
-        graphListener->removeObject(getGNode(item), getObject(item));
-
         if (saveHistory)
         {
-            Operation removal(item, getObject(item),Operation::DELETE_OBJECT);
-            historyOperation.push_front(removal);
+            Operation removal(getObject(item),Operation::DELETE_OBJECT);
+            removal.parent=getGNode(item);
+            removal.above=getObject(item->itemAbove());
+            removal.info=std::string("Removing Object ") + object->getClassName();
+            storeHistory(removal);
         }
-        //OPERATION DELETE: to remove in order to be able to undo operation
-        parent->removeObject(object);
-        delete object;
+        getGNode(item)->removeObject(getObject(item));
     }
     else
     {
         if (!isNodeErasable(getGNode(item))) return;
         GNode *node = getGNode(item);
-        graphListener->removeChild(parent, node);
 
         if (saveHistory)
         {
-            Operation removal(item, getGNode(item),Operation::DELETE_OBJECT);
-            historyOperation.push_front(removal);
+            Operation removal(node,Operation::DELETE_GNODE);
+            removal.parent = parent;
+            removal.above=getObject(item->itemAbove());
+            removal.info=std::string("Removing GNode ") + node->getClassName();
+            storeHistory(removal);
         }
+        if (!parent)
+            graphListener->removeChild(parent, node);
+        else
+            parent->removeChild(node);
         if (!parent && childCount() == 0) addGNode(NULL);
-        //OPERATION DELETE: to remove in order to be able to undo operation
-        getSimulation()->unload (node);
     }
 
 }
@@ -619,18 +648,43 @@ void GraphModeler::modifyUnlock ( void *Id )
 
 
 
-
 void GraphModeler::editUndo()
 {
-    std::cout << "Undo \n";
-    std::cout << historyOperation.size() << " size of the history\n";
-    if (currentStateHistory == historyOperation.begin()) return;
-    currentStateHistory--;
-}
+    Operation o=historyOperation.back();
+    historyOperation.pop_back();
 
-void GraphModeler::editRedo()
-{
-    std::cout << "Redo \n";
+    emit( undo(historyOperation.size()));
+    switch(o.ID)
+    {
+    case Operation::DELETE_OBJECT:
+        o.parent->addObject(dynamic_cast<BaseObject*>(o.sofaComponent));
+        graphListener->items[o.sofaComponent]->moveItem(graphListener->items[o.above]);
+        break;
+    case Operation::DELETE_GNODE:
+        o.parent->addChild(dynamic_cast<GNode*>(o.sofaComponent));
+        //If the node is not alone below another parent node
+        if(o.above)
+            graphListener->items[o.sofaComponent]->moveItem(graphListener->items[o.above]);
+        else
+        {
+            Q3ListViewItem *nodeQt = graphListener->items[o.parent];
+            Q3ListViewItem *firstComp=nodeQt->firstChild();
+            if (firstComp != graphListener->items[o.sofaComponent])
+            {
+                graphListener->items[o.sofaComponent]->moveItem(firstComp);
+                firstComp->moveItem(graphListener->items[o.sofaComponent]);
+            }
+        }
+        break;
+    case Operation::ADD_OBJECT:
+        graphListener->removeObject(o.parent,dynamic_cast<BaseObject*>(o.sofaComponent));
+        //o.parent->removeObject(dynamic_cast<BaseObject*>(o.sofaComponent));
+        break;
+    case Operation::ADD_GNODE:
+        graphListener->removeChild(o.parent,dynamic_cast<GNode*>(o.sofaComponent));
+        //o.parent->removeChild(dynamic_cast<GNode*>(o.sofaComponent));
+        break;
+    }
 }
 
 void GraphModeler::keyPressEvent ( QKeyEvent * e )
@@ -693,6 +747,21 @@ bool GraphModeler::isObjectErasable ( core::objectmodel::Base* element )
     }
 
     return true;
+}
+
+/*****************************************************************************************************************/
+//History of operations management
+
+void GraphModeler::clearHistory()
+{
+    historyOperation.clear();
+    emit( undo(false) );
+}
+
+void GraphModeler::storeHistory(Operation &o)
+{
+    historyOperation.push_back(o);
+    emit( undo(true) );
 }
 
 }

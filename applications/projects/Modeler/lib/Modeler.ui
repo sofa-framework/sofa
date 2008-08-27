@@ -161,7 +161,6 @@
     </item>
     <item text="&amp;Edit" name="editMenu">
         <action name="editUndoAction"/>
-        <action name="editRedoAction"/>
     </item>
 </menubar>
 <toolbars>
@@ -335,26 +334,6 @@
         </property>
         <property name="accel">
             <string>Ctrl+Z</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>editRedoAction</cstring>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
-        </property>
-        <property name="iconSet">
-            <iconset>image6</iconset>
-        </property>
-        <property name="text">
-            <string>Redo</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;Redo</string>
-        </property>
-        <property name="accel">
-            <string>Ctrl+Y</string>
         </property>
     </action>
     <action>
@@ -548,12 +527,6 @@
         <slot>editUndo()</slot>
     </connection>
     <connection>
-        <sender>editRedoAction</sender>
-        <signal>activated()</signal>
-        <receiver>Modeler</receiver>
-        <slot>editRedo()</slot>
-    </connection>
-    <connection>
         <sender>editCutAction</sender>
         <signal>activated()</signal>
         <receiver>Modeler</receiver>
@@ -594,7 +567,6 @@
     <slot>runInSofa()</slot>
     <slot>fileExit()</slot>
     <slot>editUndo()</slot>
-    <slot>editRedo()</slot>
     <slot>editCut()</slot>
     <slot>editCopy()</slot>
     <slot>editPaste()</slot>

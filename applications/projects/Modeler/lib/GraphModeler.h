@@ -97,13 +97,14 @@ public:
 
     ~GraphModeler()
     {
+        for (unsigned int i=0; i<historyOperation.size(); ++i) editUndo();
         getSimulation()->unload(getRoot());
         //emit(closeDialog());
         delete graphListener;
         if (DialogAdd) delete DialogAdd;
     }
 
-    void clearGraph();
+    void clearGraph(bool saveHistory=true);
     void setFilename(std::string filename) {filenameXML = filename;}
     std::string getFilename() {return filenameXML;}
 
@@ -144,9 +145,18 @@ public:
 
     void keyPressEvent ( QKeyEvent * e );
 
+    bool isUndoEnabled() {return  historyOperation.size();}
+    /* 	bool isRedoEnabled() */
+    /* 	{ */
+    /* 	  return historyOperation.size() != 0 &&  */
+    /* 	    (currentStateHistory != historyOperation.end()-1); */
+    /* 	} */
+
 signals:
     void fileOpen(std::string);
     void closeDialog();
+    void undo(bool);
+    /* 	void redo(bool); */
 
 public slots:
     void collapseNode();
@@ -173,6 +183,8 @@ public slots:
     void deleteComponent();
     void deleteComponent(Q3ListViewItem *item, bool saveHistory=true);
 
+
+
     void closeGraph()
     {
         emit(closeDialog());
@@ -181,7 +193,7 @@ public slots:
 
 
     void editUndo();
-    void editRedo();
+    /* 	void editRedo(); */
 
     void closeDialogs()
     {
@@ -204,14 +216,19 @@ protected:
     {
     public:
         Operation() {};
-        enum op {DELETE_OBJECT, ADD_OBJECT};
-        Operation(Q3ListViewItem* item_,Base* sofaComponent_,  op ID_):
-            item(item_),sofaComponent(sofaComponent_), ID(ID_)
+        enum op {DELETE_OBJECT,DELETE_GNODE, ADD_OBJECT,ADD_GNODE};
+        Operation(Base* sofaComponent_,  op ID_): sofaComponent(sofaComponent_), above(NULL), ID(ID_)
         {}
-        Q3ListViewItem* item;
+
         Base* sofaComponent;
+        GNode* parent;
+        BaseObject* above;
         op ID;
+        std::string info;
     };
+
+    void storeHistory(Operation &o);
+    void clearHistory();
 
 
     GraphListenerQListView *graphListener;
@@ -225,9 +242,7 @@ protected:
     std::map< void*, QDialog* >    map_modifyObjectWindow;
 
     std::string filenameXML; //name associated to the current graph
-    std::deque< Operation > historyOperation;
-    std::deque< Operation >::iterator currentStateHistory;
-
+    std::vector< Operation > historyOperation;
 };
 
 
