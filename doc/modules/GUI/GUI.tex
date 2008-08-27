@@ -189,7 +189,7 @@ Fig.~\ref{fig:GUI_UML} gives an overview of the modular architecture of the GUI 
 By default, SOFA provides three viewers, that can be integrated easily to the Qt interface. 
 
 \begin{itemize}
- \item {\bf QtViewer}: a hand made viewer using OpenGL functionalities
+ \item {\bf QtViewer}: a hand made viewer using OpenGL functionality
  \item {\bf QtGLViewer}: a viewer using the library QGLViewer created by Gilles Debunne. It is distributed directly with SOFA, but you can also download it at:\\ {\bf http://artis.imag.fr/Members/Gilles.Debunne/QGLViewer/}
  \item {\bf OgreViewer}: this viewer remains experimental, but shows how it is possible to integrate a powerful rendering engine such as OGRE3D. You need to install 
 \end{itemize}
@@ -246,11 +246,17 @@ To readback a recorded simulation, you can process to a step by step(forward, an
 \par
 The files will be stored by default in the directory scenes/simulation of your SOFA. Nevertheless, you can change this directory by clicking on the menu Edit of the main window.
 
+
+
+
+
+
+
 \section{Modeler}
-A modeler for Sofa has been recently created. The purpose of this tool is to use the new-comers in Sofa to get an overview of the whole framework.
+A modeler for Sofa has been recently created. The purpose of this tool is both to help the new-comers in Sofa to get an overview of the whole framework, and accelerate the process of creation and configuration of a complex simulation for expert users.
 \begin{figure}[htpb]
 	\centering
-		\includegraphics[width=0.9\textwidth]{GUI/Modeler.png}
+		\includegraphics[width=0.75\textwidth]{GUI/Modeler.png}
 	\caption{Main Window of the Modeler} 	
 \end{figure}
 
@@ -258,7 +264,20 @@ A modeler for Sofa has been recently created. The purpose of this tool is to use
 The left part of the application displays a library of all the different components available in Sofa, sorted by the name of the Base Class. Clicking on any of them will display information about the usage, authors, licence if any, and sometimes a link to an example. This link will open a new tab in the modeler displaying a simulation. 
 At any time, you can launch Sofa from the Modeler, hitting CTRL+R, or going to File ... Run In Sofa.
 \subsection{Graph Editor}
-The right part seems very similar to the scene graph displayed in Sofa. The behavior is the same. Double clicking on a component will open a dialog, in which you can define all the parameters of the object. But, as you are in an editor, you can easily remove everything you have added. This editor is very convenient to test things. Try to create your object, launch into sofa, modify some components, or parameters, using the documentation displayed each time you select one item. \\
-To quickly test a simple scene, you can use the presets. You can build automatically a deformable object in a grid, or using a tetrahedric mesh, or rigid objects, that can be simulated, or not (floors, or walls are not simulated for instance).
-
+The right part seems very similar to the scene graph displayed in Sofa. The behavior is the same. Double clicking on a component will open a dialog, in which you can define all the parameters of the object. But, as you are in an editor, you can easily remove everything you have added. This editor is very convenient to test things. Try to create your object, launch into sofa, modify some components, or parameters, using the documentation displayed each time you select one item. 
+\subsection{Modeling}
+To model a new scene, just make a series of drag and drop of the components you desire from the Library to the Graph Editor. By default, when opening a new tab, all the default components to perform the collision detection are added. If you don't want them, just clear the tab (CTRL+N).\\
+To accelerate the process of creation, preset objects are available. You can build automatically :
+\begin{itemize}
+  \item deformable objects
+  \begin{itemize}
+    \item in a grid
+    \item using a tetrahedral mesh
+  \end{itemize}
+  \item rigid objects  
+  \begin{itemize}
+    \item simulated
+    \item not simulated: they will perform as obstacle like floors, or walls
+  \end{itemize}
+\end{itemize}
 

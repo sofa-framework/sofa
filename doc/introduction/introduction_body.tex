@@ -257,7 +257,7 @@ Here again, visitors are used to perform the desired operation in each traversed
 
 MultiVector operations are pruned at the first level for efficiency, because the solvers deal with the mechanically independent state variables rather than the mapped variables.
 Moreover, the mapped coordinates can not be assumed to vary linearly along with their parent variables.
-Applying a \texttt{MechanicalPropagatePositionAndVelocityVisitor} is thus necessary to update the mapped DOFs based on the mechanically independent DOFs.
+Applying a \\ \texttt{MechanicalPropagatePositionAndVelocityVisitor} is thus necessary to update the mapped DOFs based on the mechanically independent DOFs.
 This visitor is automatically performed after time integration, as one can see in the code of method \\ \texttt{MechanicalIntegrationVisitor::fwdOdeSolver}.
 It is also used by some solvers when auxiliary states are needed, as discussed in section~\ref{sec:statevectors}, in order to update the mapped DOFs.
 
@@ -345,7 +345,7 @@ This is the code of the example commented in section~\ref{sec:commentedExample} 
 \includecode{C++}{../../applications/tutorials/mixedPendulum/Main.cpp}
 
 \subsection{A liver}\label{xml:liver}
-The XML code of the liver discussed in section~\ref{sec:multimodel} page~\pageref{bla:liver} is in \texttt{../scenes/liver.scn}
+The XML code of the liver discussed in section~\ref{sec:multimodel} page~\pageref{bla:liver} is in \texttt{../examples/Demos/liver.scn}
 
 % \include{sofaMechanical}
 %
