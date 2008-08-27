@@ -49,6 +49,7 @@
 #include <QTabWidget>
 #include <QTabBar>
 #include <Q3PopupMenu>
+#include <QAction>
 #else
 #include <qlistview.h>
 #include <qdragobject.h>
@@ -56,6 +57,7 @@
 #include <qtabwidget.h>
 #include <qtabbar.h>
 #include <qpopupmenu.h>
+#include <qaction.h>
 #endif
 
 
@@ -99,7 +101,16 @@ public:
 
 
 public slots:
+
     void releaseButton();
+    void updateUndo(bool v)
+    {
+        this->editUndoAction->setEnabled(v);
+    }
+    /* 	  void updateRedo(bool v) */
+    /* 	  {  */
+    /* 	    this->editRedoAction->setEnabled(v); */
+    /* 	  } */
 
     void changeComponent(ClassInfo *currentComponent);
 #ifdef SOFA_QT4
@@ -148,7 +159,7 @@ public slots:
     /// not implemented yet: would undo the last operation done in the current simulation
     void editUndo() {graph->editUndo();}
     /// not implemented yet: would redo the last operation done in the current simulation
-    void editRedo() {graph->editRedo();}
+    /* 	  void editRedo(){graph->editRedo();} */
 
     /// Load a preset stored in the menu preset: add a node to the current simulation
     void loadPreset(int);

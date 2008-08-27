@@ -16,8 +16,8 @@
 			<Object type="OglModel" name="Visual" filename="mesh/cube.obj" color="1 0 0 1" dy="2.5"/>
 			<Node name="Constraints">
 				<Object type="MechanicalObject" name="points" template="Vec3d" position="1 1.25 1"/>
-				</Node>
-			</Node>	
+			</Node>
+		</Node>	
 		
 		
 		<Node name="CUBE_1">
@@ -42,16 +42,16 @@
 				<Object type="MechanicalObject" name="points" template="Vec3d" position="1 1.25 1	-1.25 -1.25 1.25"/>
 				<Object type="RigidMapping" />
 				</Node>
-			</Node>
-		
-		 <Object type="BilateralInteractionConstraint" object1="CUBE_0/Constraints/points" object2="CUBE_1/Constraints/points" first_point="0" second_point="0" />
-		 
-		 
-		 <Node name="LagrangeMultiplier">
-		 <Object type="MechanicalObject" name="LM" template="Vec1d" position="0 0 0" />
-		 </Node>
-		 <Object type="LagrangeMultiplierInteraction" object1="LagrangeMultiplier/LM" object2="CUBE_1/Constraints/points"/>
-		 
-		 
 		</Node>
+		
+		<Object type="BilateralInteractionConstraint" object1="CUBE_0/Constraints/points" object2="CUBE_1/Constraints/points" first_point="0" second_point="0" />
+		 
+		 
+		<Node name="LagrangeMultiplier">
+		      <Object type="MechanicalObject" name="LM" template="Vec1d" position="0 0 0" />
+		</Node>
+		<Object type="LagrangeMultiplierInteraction" object1="LagrangeMultiplier/LM" object2="CUBE_1/Constraints/points"/>
+		 
+		 
 	</Node>
+</Node>
