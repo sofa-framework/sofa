@@ -296,7 +296,10 @@ SofaModeler::SofaModeler()
     GraphLayout->addWidget(sceneTab,0,0);
     connect( sceneTab, SIGNAL(currentChanged( QWidget*)), this, SLOT( changeCurrentScene( QWidget*)));
 
-    //newTab();
+
+
+    newTab();
+
     //Recently Opened Files
     std::string scenes ( "config/Modeler.ini" );
     if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )

@@ -192,7 +192,13 @@ void GraphModeler::dropEvent(QDropEvent* event)
         if (library.find(event->source()) != library.end())
         {
             std::string templateName =  text.ascii();
-            addComponent(getGNode(event->pos()), library.find(event->source())->second.first, templateName );
+            BaseObject *newComponent = addComponent(getGNode(event->pos()), library.find(event->source())->second.first, templateName );
+            if (newComponent)
+            {
+                Q3ListViewItem *after = graphListener->items[newComponent];
+                Q3ListViewItem *item = itemAt(event->pos());
+                after->moveItem(item);
+            }
         }
         else
         {
