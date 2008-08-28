@@ -1203,7 +1203,7 @@ void RealGUI::fileSaveAs ( Node *node, const char* filename )
 void RealGUI::fileExit()
 {
     startButton->setOn ( false);
-    close();
+    this->close();
 }
 
 void RealGUI::saveXML()

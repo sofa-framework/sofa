@@ -142,21 +142,20 @@ public:
     GNode *getGNode(Q3ListViewItem *item);
     GNode *getRoot() {return getGNode(firstChild());}
     BaseObject *getObject(Q3ListViewItem *item);
+    void initItem(Q3ListViewItem *item, Q3ListViewItem *above);
+    void moveItem(Q3ListViewItem *item, Q3ListViewItem *above);
+
 
     void keyPressEvent ( QKeyEvent * e );
 
     bool isUndoEnabled() {return  historyOperation.size();}
-    /* 	bool isRedoEnabled() */
-    /* 	{ */
-    /* 	  return historyOperation.size() != 0 &&  */
-    /* 	    (currentStateHistory != historyOperation.end()-1); */
-    /* 	} */
+    bool isRedoEnabled() {return historyUndoOperation.size();}
 
 signals:
     void fileOpen(std::string);
     void closeDialog();
     void undo(bool);
-    /* 	void redo(bool); */
+    void redo(bool);
 
 public slots:
     void collapseNode();
@@ -193,7 +192,7 @@ public slots:
 
 
     void editUndo();
-    /* 	void editRedo(); */
+    void editRedo();
 
     void closeDialogs()
     {
@@ -229,7 +228,8 @@ protected:
 
     void storeHistory(Operation &o);
     void clearHistory();
-
+    void clearHistoryUndo();
+    void processUndo(Operation &o);
 
     GraphListenerQListView *graphListener;
     ComponentMap library;
@@ -243,6 +243,7 @@ protected:
 
     std::string filenameXML; //name associated to the current graph
     std::vector< Operation > historyOperation;
+    std::vector< Operation > historyUndoOperation;
 };
 
 
