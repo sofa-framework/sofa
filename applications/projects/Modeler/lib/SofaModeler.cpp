@@ -187,7 +187,6 @@ SofaModeler::SofaModeler()
         QString s=QString(it->c_str()) + QString("Widget");
         QWidget* gridWidget = new QWidget(SofaComponents, s);
         QGridLayout* gridLayout = new QGridLayout( gridWidget, numRows+1,1);
-        gridLayout->addItem(new QSpacerItem(1,1,QSizePolicy::Minimum, QSizePolicy::Expanding ), 0,0);
 
         //Insert all the components belonging to the same family
         SofaComponents->addItem( gridWidget ,it->c_str() );
@@ -286,6 +285,7 @@ SofaModeler::SofaModeler()
             //connect(button, SIGNAL(pressed() ), this, SLOT( newComponent() ));
             counterElem++;
         }
+        gridLayout->addItem(new QSpacerItem(1,1,QSizePolicy::Minimum, QSizePolicy::Expanding ), counterElem,0);
     }
 
     connect( this->infoItem, SIGNAL(linkClicked( const QString &)), this, SLOT(fileOpen(const QString &)));
@@ -300,6 +300,8 @@ SofaModeler::SofaModeler()
 
     newTab();
 
+    Library->setItemLabel(0, QString("Sofa Components: ")+SofaComponents->itemLabel(0));
+    connect(SofaComponents, SIGNAL(currentChanged(int)), this, SLOT(changeLibraryLabel(int)));
     //Recently Opened Files
     std::string scenes ( "config/Modeler.ini" );
     if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )
@@ -389,7 +391,7 @@ void SofaModeler::createTab()
 #endif
     connect(graph, SIGNAL( fileOpen(std::string)), this, SLOT(fileOpen(std::string)));
     connect(graph, SIGNAL( undo(bool)), this, SLOT(updateUndo(bool)));
-// 	connect(graph, SIGNAL( redo(bool)), this, SLOT(updateRedo(bool)));
+    connect(graph, SIGNAL( redo(bool)), this, SLOT(updateRedo(bool)));
 }
 
 void SofaModeler::closeTab()
@@ -560,7 +562,10 @@ void SofaModeler::changeInformation(Q3ListViewItem *item)
     if (currentComponent) changeComponent(currentComponent);
 }
 
-
+void SofaModeler::changeLibraryLabel(int index)
+{
+    Library->setItemLabel(0, QString("Sofa Components: ")+SofaComponents->itemLabel(index));
+}
 
 void SofaModeler::newComponent()
 {
@@ -653,12 +658,12 @@ void SofaModeler::changeCurrentScene( QWidget* currentGraph)
     {
         changeNameWindow(graph->getFilename());
         editUndoAction->setEnabled(graph->isUndoEnabled());
-// 	    editRedoAction->setEnabled(graph->isRedoEnabled());
+        editRedoAction->setEnabled(graph->isRedoEnabled());
     }
     else
     {
         editUndoAction->setEnabled(false);
-// 	    editRedoAction->setEnabled(false);
+        editRedoAction->setEnabled(false);
     }
 }
 

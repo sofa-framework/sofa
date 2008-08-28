@@ -8,23 +8,23 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>800</width>
-            <height>800</height>
+            <width>700</width>
+            <height>450</height>
         </rect>
     </property>
     <property name="sizePolicy">
         <sizepolicy>
-            <hsizetype>1</hsizetype>
-            <vsizetype>1</vsizetype>
+            <hsizetype>3</hsizetype>
+            <vsizetype>3</vsizetype>
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
     </property>
 	<property name="minimumSize">
-		<size>
-			<width>246</width>
-			<height>800</height>
-		</size>
+	  <size>
+	    <width>246</width>
+	    <height>250</height>
+	  </size>
 	</property>
     <property name="caption">
         <string>Sofa Modeler</string>
@@ -110,25 +110,47 @@
                     </widget>
                     <widget class="QToolBox" row="1" column="0">
                         <property name="name">
-                            <cstring>SofaComponents</cstring>
+                            <cstring>Library</cstring>
                         </property>
                         <property name="sizePolicy">
                             <sizepolicy>
                                 <hsizetype>7</hsizetype>
-                                <vsizetype>5</vsizetype>
+                                <vsizetype>7</vsizetype>
                                 <horstretch>0</horstretch>
                                 <verstretch>0</verstretch>
                             </sizepolicy>
                         </property>
                         <property name="minimumSize">
                             <size>
-                                <width>300</width>
-                                <height>500</height>
+                                <width>250</width>
+                                <height>150</height>
                             </size>
                         </property>
                         <property name="currentIndex">
                             <number>-1</number>
                         </property>
+			<widget class="QToolBox" row="1" column="0">
+                          <property name="name">
+                            <cstring>SofaComponents</cstring>
+                          </property>
+                          <property name="sizePolicy">
+                            <sizepolicy>
+                              <hsizetype>7</hsizetype>
+                                <vsizetype>5</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                          </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>100</width>
+                                <height>400</height>
+                            </size>
+                        </property>
+                        <property name="currentIndex">
+                            <number>-1</number>
+                        </property>
+                    </widget>
                     </widget>
                 </grid>
             </widget>
@@ -161,6 +183,7 @@
     </item>
     <item text="&amp;Edit" name="editMenu">
         <action name="editUndoAction"/>
+        <action name="editRedoAction"/>
     </item>
 </menubar>
 <toolbars>
@@ -334,6 +357,26 @@
         </property>
         <property name="accel">
             <string>Ctrl+Z</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>editRedoAction</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="iconSet">
+            <iconset>image5</iconset>
+        </property>
+        <property name="text">
+            <string>Redo</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Redo</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+Y</string>
         </property>
     </action>
     <action>
@@ -527,6 +570,12 @@
         <slot>editUndo()</slot>
     </connection>
     <connection>
+        <sender>editRedoAction</sender>
+        <signal>activated()</signal>
+        <receiver>Modeler</receiver>
+        <slot>editRedo()</slot>
+    </connection>
+    <connection>
         <sender>editCutAction</sender>
         <signal>activated()</signal>
         <receiver>Modeler</receiver>
@@ -567,6 +616,7 @@
     <slot>runInSofa()</slot>
     <slot>fileExit()</slot>
     <slot>editUndo()</slot>
+    <slot>editRedo()</slot>
     <slot>editCut()</slot>
     <slot>editCopy()</slot>
     <slot>editPaste()</slot>

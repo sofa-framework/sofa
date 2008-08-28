@@ -128,7 +128,7 @@ BaseObject *GraphModeler::addComponent(GNode *parent, ClassInfo* entry, std::str
     if (c->canCreate(parent->getContext(), &description))
     {
         object = c->createInstance(parent->getContext(), NULL);
-        parent->addObject(object);
+        //parent->addObject(object);
         if (saveHistory)
         {
             Operation adding(object, Operation::ADD_OBJECT);
@@ -160,7 +160,7 @@ BaseObject *GraphModeler::addComponent(GNode *parent, ClassInfo* entry, std::str
                 return object;
         }
         object = c->createInstance(parent->getContext(), NULL);
-        parent->addObject(object);
+// 	    parent->addObject(object);
     }
     return object;
 }
@@ -206,11 +206,7 @@ void GraphModeler::dropEvent(QDropEvent* event)
             {
                 Q3ListViewItem *after = graphListener->items[newComponent];
                 Q3ListViewItem *item = itemAt(event->pos());
-                if (getObject(item))
-                {
-                    after->moveItem(item);
-                    if (item) item->moveItem(after);
-                }
+                if (getObject(item)) initItem(after, item);
             }
         }
         else
@@ -226,11 +222,7 @@ void GraphModeler::dropEvent(QDropEvent* event)
                     {
                         Q3ListViewItem *after = graphListener->items[newNode];
                         Q3ListViewItem *item = itemAt(event->pos());
-                        if (getObject(item))
-                        {
-                            after->moveItem(item);
-                            if (item) item->moveItem(after);
-                        }
+                        if (getObject(item)) initItem(after,item);
                     }
                 }
             }
@@ -653,36 +645,79 @@ void GraphModeler::editUndo()
     Operation o=historyOperation.back();
     historyOperation.pop_back();
 
+    processUndo(o);
+    historyUndoOperation.push_back(o);
+
     emit( undo(historyOperation.size()));
+    emit( redo(true));
+}
+
+void GraphModeler::editRedo()
+{
+    Operation o=historyUndoOperation.back();
+    historyUndoOperation.pop_back();
+
+    processUndo(o);
+    historyOperation.push_back(o);
+
+    emit( redo(historyUndoOperation.size()));
+    emit( undo(true));
+
+}
+
+
+void GraphModeler::processUndo(Operation &o)
+{
     switch(o.ID)
     {
     case Operation::DELETE_OBJECT:
         o.parent->addObject(dynamic_cast<BaseObject*>(o.sofaComponent));
-        graphListener->items[o.sofaComponent]->moveItem(graphListener->items[o.above]);
+        moveItem(graphListener->items[o.sofaComponent],graphListener->items[o.above]);
+// 	    if(o.above)
+// 	      graphListener->items[o.sofaComponent]->moveItem(graphListener->items[o.above]);
+// 	    else
+// 	      {
+// 		Q3ListViewItem *nodeQt = graphListener->items[o.parent];
+// 		Q3ListViewItem *firstComp=nodeQt->firstChild();
+// 		if (firstComp != graphListener->items[o.sofaComponent])
+// 		  {
+// 		    graphListener->items[o.sofaComponent]->moveItem(firstComp);
+// 		    firstComp->moveItem(graphListener->items[o.sofaComponent]);
+// 		  }
+// 	      }
+        o.ID = Operation::ADD_OBJECT;
         break;
     case Operation::DELETE_GNODE:
         o.parent->addChild(dynamic_cast<GNode*>(o.sofaComponent));
         //If the node is not alone below another parent node
-        if(o.above)
-            graphListener->items[o.sofaComponent]->moveItem(graphListener->items[o.above]);
-        else
-        {
-            Q3ListViewItem *nodeQt = graphListener->items[o.parent];
-            Q3ListViewItem *firstComp=nodeQt->firstChild();
-            if (firstComp != graphListener->items[o.sofaComponent])
-            {
-                graphListener->items[o.sofaComponent]->moveItem(firstComp);
-                firstComp->moveItem(graphListener->items[o.sofaComponent]);
-            }
-        }
+        moveItem(graphListener->items[o.sofaComponent],graphListener->items[o.above]);
+
+// 	    if(o.above)
+// 	      graphListener->items[o.sofaComponent]->moveItem(graphListener->items[o.above]);
+// 	    else
+// 	      {
+// 		Q3ListViewItem *nodeQt = graphListener->items[o.parent];
+// 		Q3ListViewItem *firstComp=nodeQt->firstChild();
+// 		if (firstComp != graphListener->items[o.sofaComponent])
+// 		  {
+// 		    graphListener->items[o.sofaComponent]->moveItem(firstComp);
+// 		    firstComp->moveItem(graphListener->items[o.sofaComponent]);
+// 		  }
+// 	      }
+        o.ID = Operation::ADD_GNODE;
         break;
     case Operation::ADD_OBJECT:
-        graphListener->removeObject(o.parent,dynamic_cast<BaseObject*>(o.sofaComponent));
-        //o.parent->removeObject(dynamic_cast<BaseObject*>(o.sofaComponent));
+        o.parent=getGNode(graphListener->items[o.sofaComponent]);
+        o.above =getObject(graphListener->items[o.sofaComponent]->itemAbove());
+        o.parent->removeObject(dynamic_cast<BaseObject*>(o.sofaComponent));
+
+        o.ID = Operation::DELETE_OBJECT;
         break;
     case Operation::ADD_GNODE:
-        graphListener->removeChild(o.parent,dynamic_cast<GNode*>(o.sofaComponent));
-        //o.parent->removeChild(dynamic_cast<GNode*>(o.sofaComponent));
+        o.parent=getGNode(graphListener->items[o.sofaComponent]->parent());
+        o.above=getObject(graphListener->items[o.sofaComponent]->itemAbove());
+        o.parent->removeChild(dynamic_cast<GNode*>(o.sofaComponent));
+        o.ID = Operation::DELETE_GNODE;
         break;
     }
 }
@@ -749,17 +784,103 @@ bool GraphModeler::isObjectErasable ( core::objectmodel::Base* element )
     return true;
 }
 
+void GraphModeler::initItem(Q3ListViewItem *item, Q3ListViewItem *above)
+{
+    moveItem(item, above);
+    moveItem(above,item);
+}
+
+void GraphModeler::moveItem(Q3ListViewItem *item, Q3ListViewItem *above)
+{
+    if (item)
+    {
+        if (above)
+        {
+            item->moveItem(above);
+
+            //Move the object in the Sofa Node.
+            if (above && getObject(item))
+            {
+                GNode *n=getGNode(item);
+                GNode::Sequence<BaseObject>::iterator A=n->object.end();
+                GNode::Sequence<BaseObject>::iterator B=n->object.end();
+                BaseObject* objectA=getObject(above);
+                BaseObject* objectB=getObject(item);
+                bool inversion=false;
+                //Find the two objects in the Sequence of the GNode
+                for (GNode::Sequence<BaseObject>::iterator it=n->object.begin(); it!=n->object.end(); ++it)
+                {
+                    if( *it == objectA)
+                    {
+                        A=it;
+                        if (B!=n->object.end()) inversion=true;
+                    }
+                    else if ( *it == objectB) B=it;
+                }
+                //One has not been found: should not happen
+                if (A==n->object.end() || B==n->object.end()) return;
+
+                //Invert the elements
+                GNode::Sequence<BaseObject>::iterator it;
+                if (inversion) n->object.swap(A,B);
+                else
+                {
+                    for (it=B; it!=A+1; --it) n->object.swap(it,it-1);
+                }
+            }
+        }
+        else
+        {
+            //Object
+            if (getObject(item))
+            {
+                Q3ListViewItem *nodeQt = graphListener->items[getGNode(item)];
+                Q3ListViewItem *firstComp=nodeQt->firstChild();
+                if (firstComp != item) initItem(item, firstComp);
+            }
+            //GNode
+            else
+            {
+                Q3ListViewItem *nodeQt = graphListener->items[getGNode(item->parent())];
+                Q3ListViewItem *firstComp=nodeQt->firstChild();
+                if (firstComp != item) initItem(item, firstComp);
+            }
+        }
+    }
+}
+
 /*****************************************************************************************************************/
 //History of operations management
 
 void GraphModeler::clearHistory()
 {
+    for ( int i=historyOperation.size()-1; i>=0; --i)
+    {
+        if (historyOperation[i].ID == Operation::DELETE_OBJECT)
+            delete historyOperation[i].sofaComponent;
+        else if (historyOperation[i].ID == Operation::DELETE_GNODE)
+            getSimulation()->unload(dynamic_cast<GNode*>(historyOperation[i].sofaComponent));
+    }
     historyOperation.clear();
     emit( undo(false) );
 }
 
+void GraphModeler::clearHistoryUndo()
+{
+    for ( int i=historyUndoOperation.size()-1; i>=0; --i)
+    {
+        if (historyUndoOperation[i].ID == Operation::DELETE_OBJECT)
+            delete historyUndoOperation[i].sofaComponent;
+        else if (historyUndoOperation[i].ID == Operation::DELETE_GNODE)
+            getSimulation()->unload(dynamic_cast<GNode*>(historyUndoOperation[i].sofaComponent));
+    }
+    historyUndoOperation.clear();
+    emit( redo(false) );
+}
+
 void GraphModeler::storeHistory(Operation &o)
 {
+    clearHistoryUndo();
     historyOperation.push_back(o);
     emit( undo(true) );
 }
