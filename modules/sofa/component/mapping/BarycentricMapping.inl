@@ -206,7 +206,7 @@ int BarycentricMapperMeshTopology<In,Out>::addPointInQuad(int quadIndex, const S
 {
     map2d.resize(map2d.size()+1);
     MappingData2D& data = *map2d.rbegin();
-    data.in_index = quadIndex + topology->getNbTriangles();
+    data.in_index = quadIndex + this->topology->getNbTriangles();
     data.baryCoords[0] = (Real)baryCoords[0];
     data.baryCoords[1] = (Real)baryCoords[1];
     return map2d.size()-1;
@@ -229,7 +229,7 @@ int BarycentricMapperMeshTopology<In,Out>::addPointInCube(int cubeIndex, const S
 {
     map3d.resize(map3d.size()+1);
     MappingData3D& data = *map3d.rbegin();
-    data.in_index = cubeIndex + topology->getNbTetras();
+    data.in_index = cubeIndex + this->topology->getNbTetras();
     data.baryCoords[0] = (Real)baryCoords[0];
     data.baryCoords[1] = (Real)baryCoords[1];
     data.baryCoords[2] = (Real)baryCoords[2];
@@ -240,7 +240,7 @@ template <class In, class Out>
 int BarycentricMapperMeshTopology<In,Out>::createPointInLine(const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points)
 {
     SReal baryCoords[1];
-    const sofa::core::componentmodel::topology::BaseMeshTopology::Line& elem = topology->getLine(lineIndex);
+    const sofa::core::componentmodel::topology::BaseMeshTopology::Line& elem = this->topology->getLine(lineIndex);
     const typename In::Coord p0 = (*points)[elem[0]];
     const typename In::Coord pA = (*points)[elem[1]] - p0;
     typename In::Coord pos = p - p0;
@@ -252,7 +252,7 @@ template <class In, class Out>
 int BarycentricMapperMeshTopology<In,Out>::createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points)
 {
     SReal baryCoords[2];
-    const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& elem = topology->getTriangle(triangleIndex);
+    const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& elem = this->topology->getTriangle(triangleIndex);
     const typename In::Coord p0 = (*points)[elem[0]];
     const typename In::Coord pA = (*points)[elem[1]] - p0;
     const typename In::Coord pB = (*points)[elem[2]] - p0;
@@ -270,7 +270,7 @@ template <class In, class Out>
 int BarycentricMapperMeshTopology<In,Out>::createPointInQuad(const typename Out::Coord& p, int quadIndex, const typename In::VecCoord* points)
 {
     SReal baryCoords[2];
-    const sofa::core::componentmodel::topology::BaseMeshTopology::Quad& elem = topology->getQuad(quadIndex);
+    const sofa::core::componentmodel::topology::BaseMeshTopology::Quad& elem = this->topology->getQuad(quadIndex);
     const typename In::Coord p0 = (*points)[elem[0]];
     const typename In::Coord pA = (*points)[elem[1]] - p0;
     const typename In::Coord pB = (*points)[elem[3]] - p0;
@@ -293,14 +293,14 @@ void BarycentricMapperMeshTopology<In,Out>::init(const typename Out::VecCoord& o
 {
     int outside = 0;
 
-    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetras& tetras = topology->getTetras();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetras& tetras = this->topology->getTetras();
 #ifdef SOFA_NEW_HEXA
-    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqHexas& cubes = topology->getHexas();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqHexas& cubes = this->topology->getHexas();
 #else
-    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqCubes& cubes = topology->getCubes();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqCubes& cubes = this->topology->getCubes();
 #endif
-    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = topology->getTriangles();
-    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqQuads& quads = topology->getQuads();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqQuads& quads = this->topology->getQuads();
     sofa::helper::vector<Matrix3> bases;
     sofa::helper::vector<Vector3> centers;
     if (tetras.empty() && cubes.empty())
@@ -555,7 +555,7 @@ int BarycentricMapperQuadSetTopology<In,Out>::addPointInQuad(int quadIndex, cons
 {
     map.resize(map.size()+1);
     MappingData& data = *map.rbegin();
-    data.in_index = quadIndex + topology->getNbTriangles();
+    data.in_index = quadIndex;
     data.baryCoords[0] = (Real)baryCoords[0];
     data.baryCoords[1] = (Real)baryCoords[1];
     return map.size()-1;
@@ -735,7 +735,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::init(const typename Out::Ve
     for (unsigned int i=0; i<out.size(); ++i)
     {
         Vector3 coefs;
-        In::Real distance;
+        typename In::Real distance;
         const int index = _geomAlgo->findNearestHexahedron(out[i], coefs, distance);
 
         if(index != -1)
@@ -2545,8 +2545,8 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::applyJT( typename In::VecCo
 template <class In, class Out>
 void BarycentricMapperEdgeSetTopology<In,Out>::handleTopologyChange()
 {
-    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = topology->firstChange();
-    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = topology->lastChange();
+    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = this->topology->firstChange();
+    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = this->topology->lastChange();
 
     for(std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator changeIt = itBegin;
         changeIt != itEnd; ++changeIt)
@@ -2580,8 +2580,8 @@ void BarycentricMapperEdgeSetTopology<In,Out>::handleTopologyChange()
 template <class In, class Out>
 void BarycentricMapperTriangleSetTopology<In,Out>::handleTopologyChange()
 {
-    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = topology->firstChange();
-    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = topology->lastChange();
+    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = this->topology->firstChange();
+    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = this->topology->lastChange();
 
     for(std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator changeIt = itBegin;
         changeIt != itEnd; ++changeIt)
@@ -2615,8 +2615,8 @@ void BarycentricMapperTriangleSetTopology<In,Out>::handleTopologyChange()
 template <class In, class Out>
 void BarycentricMapperQuadSetTopology<In,Out>::handleTopologyChange()
 {
-    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = topology->firstChange();
-    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = topology->lastChange();
+    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = this->topology->firstChange();
+    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = this->topology->lastChange();
 
     for(std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator changeIt = itBegin;
         changeIt != itEnd; ++changeIt)
@@ -2650,8 +2650,8 @@ void BarycentricMapperQuadSetTopology<In,Out>::handleTopologyChange()
 template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopology<In,Out>::handleTopologyChange()
 {
-    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = topology->firstChange();
-    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = topology->lastChange();
+    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = this->topology->firstChange();
+    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = this->topology->lastChange();
 
     for(std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator changeIt = itBegin;
         changeIt != itEnd; ++changeIt)
@@ -2685,11 +2685,11 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::handleTopologyChange()
 template <class In, class Out>
 void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
 {
-    if(topology->firstChange()==topology->lastChange())
+    if(this->topology->firstChange() == this->topology->lastChange())
         return;
 
-    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = topology->firstChange();
-    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = topology->lastChange();
+    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = this->topology->firstChange();
+    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = this->topology->lastChange();
 
     for(std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator changeIt = itBegin;
         changeIt != itEnd; ++changeIt)
@@ -2725,19 +2725,19 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
                 unsigned int cubeId = hexahedra[i];
                 for(unsigned int j=0; j<map.size(); ++j)
                 {
-                    if(map[j].in_index == cubeId) // compute new mapping
+                    if(map[j].in_index == (int) cubeId) // compute new mapping
                     {
                         Vector3 coefs;
                         coefs[0] = map[j].baryCoords[0];
                         coefs[1] = map[j].baryCoords[1];
                         coefs[2] = map[j].baryCoords[2];
 
-                        In::Coord pos = _geomAlgo->getRestPointPositionInHexahedron(cubeId, coefs);
+                        typename In::Coord pos = _geomAlgo->getRestPointPositionInHexahedron(cubeId, coefs);
 
                         // find nearest cell and barycentric coords
                         int index=-1;
 
-                        In::Real distance = 1e10;
+                        typename In::Real distance = 1e10;
                         for (unsigned int c=0; c<nbHexas; ++c)
                         {
                             bool validC = true;
@@ -2755,7 +2755,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
                             {
                                 const Vector3 v = _geomAlgo->computeHexahedronRestBarycentricCoeficients(c, pos);
 
-                                In::Real d = (In::Real) std::max(std::max(-v[0],-v[1]), std::max(std::max(-v[2],v[0]-1), std::max(v[1]-1,v[2]-1)));
+                                Real d = (Real) std::max(std::max(-v[0],-v[1]), std::max(std::max(-v[2],v[0]-1), std::max(v[1]-1,v[2]-1)));
 
                                 if (d>0)
                                     d = (pos-_geomAlgo->computeHexahedronCenter(c)).norm2();
@@ -2787,7 +2787,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
                 unsigned int cubeId = hexahedra[i];
                 for(unsigned int j=0; j<map.size(); ++j)
                 {
-                    if(map[j].in_index == lastCubeId)
+                    if(map[j].in_index == (int) lastCubeId)
                         map[j].in_index = cubeId;
                 }
             }
