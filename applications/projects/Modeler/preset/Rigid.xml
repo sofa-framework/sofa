@@ -10,6 +10,7 @@
 	</Node>
 	<Node name="CollisionNode">
 	        <Object type="MeshLoader" filename="file"/>
+	        <Object type="Mesh" />
 		<Object type="MechanicalObject"  />
 		<Object type="Triangle" />
 		<Object type="Line" />

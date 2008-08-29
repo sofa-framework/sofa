@@ -67,11 +67,18 @@ typedef QButtonGroup Q3ButtonGroup;
 #endif
 
 
-AddPreset::AddPreset(  QWidget* parent , const char* name, bool *elementPresent, bool , Qt::WFlags ):	DialogAddPreset(parent, name)
+AddPreset::AddPreset(  QWidget* parent , const char* name,bool , Qt::WFlags ):	DialogAddPreset(parent, name)
 {
     this->setCaption(QString(sofa::helper::system::SetDirectory::GetFileName(name).c_str()));
     clear();
 
+    //Make the connection between this widget and the parent
+    connect( this, SIGNAL(loadPreset(GNode*,std::string,std::string*, std::string*,std::string*,std::string)),
+            parent, SLOT(loadPreset(GNode*,std::string,std::string*, std::string*,std::string*,std::string)));
+}
+
+void AddPreset::setElementPresent(bool *elementPresent)
+{
     if (elementPresent != NULL)
     {
         if (!elementPresent[0])
@@ -111,11 +118,7 @@ AddPreset::AddPreset(  QWidget* parent , const char* name, bool *elementPresent,
             openFileButton2->show();
         }
     }
-    //Make the connection between this widget and the parent
-    connect( this, SIGNAL(loadPreset(GNode*,std::string,std::string*, std::string*,std::string*,std::string)),
-            parent, SLOT(loadPreset(GNode*,std::string,std::string*, std::string*,std::string*,std::string)));
 }
-
 //Clear the dialoag
 void AddPreset::clear()
 {
@@ -144,7 +147,12 @@ void AddPreset::accept()
     std::string scale;
 
     std::string filenames[3];
-    filenames[0] = openFilePath0->text().ascii();
+    //In case of static objects
+    if (openFileText0->isVisible())
+        filenames[0] = openFilePath0->text().ascii();
+    else
+        filenames[0]=openFilePath2->text().ascii();
+
     filenames[1] = openFilePath1->text().ascii();
     filenames[2] = openFilePath2->text().ascii();
 

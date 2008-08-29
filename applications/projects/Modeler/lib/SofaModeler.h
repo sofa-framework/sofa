@@ -34,12 +34,9 @@
 #include <map>
 #include <vector>
 #include <string>
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/Factory.h>
-#include <sofa/simulation/tree/GNode.h>
 
 #include <sofa/gui/SofaGUI.h>
-#include <sofa/helper/system/glut.h>
 #include <sofa/gui/qt/RealGUI.h>
 
 #ifdef SOFA_QT4
@@ -90,50 +87,54 @@ public :
     SofaModeler();
     ~SofaModeler() {};
 
+    /// Create a new empty Tab
+    void createTab();
+    /// Change the content of the description box. Happens when the user has clicked on a component
+    void changeComponent(ClassInfo *currentComponent);
+    void fileOpen(std::string filename);
+    void fileSave(std::string filename);
+
+    /// Change the name of the main window
+    void changeNameWindow(std::string filename);
+    /// From the name of the type of a component, gives serveral information
+    ClassInfo* getInfoFromName(std::string name);
+    /// Update the menu Recently Opened Files...
+    void updateRecentlyOpened(std::string fileLoaded);
+
 signals:
     void loadPresetGraph(std::string);
 
-
-public:
-
-    /// Create a new empty Tab
-    void createTab();
-
-
 public slots:
-
+    /// When dropping a dragged element, this method set the button pushed to its initial state
     void releaseButton();
-    void updateUndo(bool v)
-    {
-        this->editUndoAction->setEnabled(v);
-    }
-    void updateRedo(bool v)
-    {
-        this->editRedoAction->setEnabled(v);
-    }
-
-    void changeComponent(ClassInfo *currentComponent);
+    /// Change the state of the Undo button
+    void updateUndo(bool v) {this->editUndoAction->setEnabled(v);}
+    /// Change the state of the Redo button
+    void updateRedo(bool v) {this->editRedoAction->setEnabled(v);}
+    /// Change the content of the description box. Happens when the user has clicked on a component
 #ifdef SOFA_QT4
     void changeInformation(Q3ListViewItem *);
 #else
     void changeInformation(QListViewItem *);
 #endif
+    /// Change the main library label, it happens when the user open a new class of component from the library
     void changeLibraryLabel(int index);
     /// Dropping a Node in the Graph
     void newGNode();
+    /// Dropping a component in the Graph
     void newComponent();
+
+    //File Menu
     /// Creation of a new scene (new tab will be created)
     void fileNew() {fileNew(NULL);};
     void fileNew(GNode* root);
 
     /// Open an existing simulation (new tab will be created)
     void fileOpen();
-    void fileOpen(std::string filename);
     void fileOpen(const QString &filename) {fileOpen(std::string(filename.ascii()));}
 
     /// Save the current simulation
     void fileSave();
-    void fileSave(std::string filename);
     void fileSaveAs();
 
     /// Remove all components of the current simulation
@@ -153,47 +154,25 @@ public slots:
     void changeCurrentScene( QWidget*);
     /// Change of simulation by changing the current opened tabulation
     void changeCurrentScene( int n);
-    /// Change the name of the main window
-    void changeNameWindow(std::string filename);
 
+    /// Propagate the action Undo to the graph
     void editUndo() {graph->editUndo();}
+    /// Propagate the action Redo to the graph
     void editRedo() {graph->editRedo();}
 
     /// Load a preset stored in the menu preset: add a node to the current simulation
     void loadPreset(int);
 
-    /// From the name of the type of a component, gives serveral information
-    ClassInfo* getInfoFromName(std::string name);
+    /// When the user enter the Modeler, grabbing something: determine the acceptance or not
+    void dragEnterEvent( QDragEnterEvent* event);
+    /// When the user move the mouse around, with something grabbed
+    void dragMoveEvent( QDragMoveEvent* event);
 
-
-    void dragEnterEvent( QDragEnterEvent* event)
-    {
-        QString text;
-        Q3TextDrag::decode(event, text);
-        std::string filename(text.ascii());
-        std::string test = filename; test.resize(4);
-        if (test == "file")  event->accept();
-        else          	 event->ignore();
-    }
-
-    void dragMoveEvent( QDragMoveEvent* event)
-    {
-
-        QString text;
-        Q3TextDrag::decode(event, text);
-        std::string filename(text.ascii());
-        std::string test = filename; test.resize(4);
-        if (test == "file")  event->accept();
-        else          	 event->ignore();
-    }
-
+    /// Action to perform when the user drop something in the Modeler
     void dropEvent(QDropEvent* event);
-    void keyPressEvent ( QKeyEvent * e );
 
     /// Open a recently Opened files from the menu Recently Opened Files...
     void fileRecentlyOpened(int id);
-    /// Update the menu Recently Opened Files...
-    void updateRecentlyOpened(std::string fileLoaded);
 
 protected:
     /// Widget containing all the graphs
@@ -202,18 +181,20 @@ protected:
     GraphModeler *graph; //currentGraph in Use
     /// Current opened Tab
     QWidget *tabGraph;
-    /// Menu recently opened
-    //Q3PopupMenu *recentlyOpened;
     /// Menu preset
     Q3PopupMenu *preset;
+    /// Menu containing the opened simulations in the Modeler
     Q3PopupMenu *windowMenu;
     /// Correspondance between a name clicked in the menu and a path to the preset
     std::map< std::string, std::string > mapPreset;
 
-
+    /// Main Sofa Ressources: contains all the component, with many info, and creators
     std::map<  const QObject* , std::pair<ClassInfo*, QObject*> > mapComponents;
+    /// Map between a tabulation from the modeler to an object of type GraphModeler
     std::map<  const QWidget*, GraphModeler*> mapGraph;
+    /// Map between a tabulation from the modeler to a Sofa Application
     std::map<  const QWidget*, sofa::gui::qt::RealGUI*> mapSofa;
+    /// Map between an index of tabulation to the tabulation itself
     std::map< int, QWidget*> mapWindow;
 
 private:

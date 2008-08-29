@@ -35,6 +35,9 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
+#include <sofa/gui/qt/GraphListenerQListView.h>
+#include <sofa/gui/qt/ModifyObject.h>
+
 #ifdef SOFA_QT4
 #include <Q3ListView>
 #include <Q3ListViewItem>
@@ -43,10 +46,6 @@
 #include <qlistview.h>
 #include <qdragobject.h>
 #endif
-#include <sofa/gui/qt/GraphListenerQListView.h>
-#include <sofa/gui/qt/ModifyObject.h>
-#include <sofa/simulation/tree/xml/NodeElement.h>
-#include <sofa/simulation/tree/xml/ObjectElement.h>
 
 #include <iostream>
 
@@ -99,77 +98,67 @@ public:
     {
         for (unsigned int i=0; i<historyOperation.size(); ++i) editUndo();
         getSimulation()->unload(getRoot());
-        //emit(closeDialog());
+
         delete graphListener;
         if (DialogAdd) delete DialogAdd;
     }
 
+    /// Set the Sofa Resources: intern library to get the creators of the elements
+    void setLibrary(ComponentMap &s) {library=s;}
+
+    /// Set a menu of Preset available when right clicking on a node
+    void setPreset(Q3PopupMenu *_preset) {preset=_preset;}
+
+    /// Return the Root of the simulation
+    GNode *getRoot() {return getGNode(firstChild());}
+
+    /// Set the Root of the simulation
+    GNode *setRoot(GNode *node=NULL, bool saveHistory=true) {clearGraph(saveHistory); return addGNode(NULL, node, saveHistory);}
+
+    /// Clear the contents of the current Graph
     void clearGraph(bool saveHistory=true);
+
+    /// Set the name of the simulation
     void setFilename(std::string filename) {filenameXML = filename;}
     std::string getFilename() {return filenameXML;}
 
-    void dragEnterEvent( QDragEnterEvent* event)
-    {
-        QString text;
-        Q3TextDrag::decode(event, text);
-        std::string filename(text.ascii());
-        std::string test = filename; test.resize(4);
-        if (test == "file") {event->accept(event->answerRect());}
-        else  event->accept();
-    }
-    void dragMoveEvent( QDragMoveEvent* event)
-    {
-        QString text;
-        Q3TextDrag::decode(event, text);
-        std::string filename(text.ascii());
-        std::string test = filename; test.resize(4);
-        if (test == "file") {event->accept(event->answerRect());}
-        else
-        {
-            if ( getGNode(event->pos()))
-                event->accept(event->answerRect());
-            else
-                event->ignore(event->answerRect());
-        }
-    }
-
-    void dropEvent(QDropEvent* event);
-
-    void setLibrary(ComponentMap &s) {library=s;}
-    void setPreset(Q3PopupMenu *_preset) {preset=_preset;}
-
-    GNode *getGNode(const QPoint &pos);
-    GNode *getGNode(Q3ListViewItem *item);
-    GNode *getRoot() {return getGNode(firstChild());}
-    BaseObject *getObject(Q3ListViewItem *item);
-    void initItem(Q3ListViewItem *item, Q3ListViewItem *above);
-    void moveItem(Q3ListViewItem *item, Q3ListViewItem *above);
-
-
+    /// Keyboard Management
     void keyPressEvent ( QKeyEvent * e );
 
+    /// Says if there is something to undo
     bool isUndoEnabled() {return  historyOperation.size();}
+    /// Says if there is something to redo
     bool isRedoEnabled() {return historyUndoOperation.size();}
 
+    /// Drag & Drop Management
+    void dragEnterEvent( QDragEnterEvent* event);
+    void dragMoveEvent( QDragMoveEvent* event);
+    void dropEvent(QDropEvent* event);
+
+    /// collaspe all the nodes below the current one
+    void collapseNode(Q3ListViewItem* item);
+    /// expande all the nodes below the current one
+    void expandNode(Q3ListViewItem* item);
+    /// load a node as a child of the current one
+    GNode *loadNode(Q3ListViewItem* item, std::string filename="");
+    /// Save a node
+    void saveNode(Q3ListViewItem* item);
+    /// Open the window to configure a component
+    void openModifyObject(Q3ListViewItem *);
+    /// Delete a componnent
+    void deleteComponent(Q3ListViewItem *item, bool saveHistory=true);
+
 signals:
-    void fileOpen(std::string);
-    void closeDialog();
+    void fileOpen(const QString&);
     void undo(bool);
     void redo(bool);
 
+
 public slots:
-    void collapseNode();
-    void collapseNode(Q3ListViewItem* item);
-    void expandNode();
-    void expandNode(Q3ListViewItem* item);
-    GNode *loadNode();
-    GNode *loadNode(Q3ListViewItem* item, std::string filename="");
-    void loadPreset(std::string presetName);
-    void loadPreset(GNode*,std::string,std::string*, std::string*,std::string*,std::string);
-    void saveNode();
-    void saveNode(Q3ListViewItem* item);
-    void openModifyObject();
-    void openModifyObject(Q3ListViewItem *);
+    void editUndo();
+    void editRedo();
+
+    //Right Click Menu
 #ifdef SOFA_QT4
     void doubleClick(Q3ListViewItem *);
     void rightClick(Q3ListViewItem *, const QPoint &, int );
@@ -177,40 +166,71 @@ public slots:
     void doubleClick(QListViewItem *);
     void rightClick(QListViewItem *, const QPoint &, int );
 #endif
-    GNode *addGNode(GNode *parent, GNode *node=NULL, bool saveHistory=true);
-    BaseObject *addComponent(GNode *parent, ClassInfo *entry, std::string templateName, bool saveHistory=true );
+    /// Context Menu Operation: collasping all the nodes below the current one
+    void collapseNode();
+    /// Context Menu Operation: expanding all the nodes below the current one
+    void expandNode();
+    /// Context Menu Operation: loading a node as a child of the current one
+    GNode *loadNode();
+    /// Context Menu Operation: loading a preset: open the window of configuration
+    void loadPreset(std::string presetName);
+    /// Context Menu Operation: loading a preset: actually creating the node, given its parameters (path to files, and initial position)
+    void loadPreset(GNode*,std::string,std::string*, std::string*,std::string*,std::string);
+    /// Context Menu Operation: Saving a node
+    void saveNode();
+    /// Context Menu Operation: Open the window to configure a component
+    void openModifyObject();
+    /// Context Menu Operation: Deleting a componnent
     void deleteComponent();
-    void deleteComponent(Q3ListViewItem *item, bool saveHistory=true);
 
-
-
-    void closeGraph()
-    {
-        emit(closeDialog());
-    }
+    /// Close all opened configuration windows
+    void closeDialogs();
+    /// Unlock a component: the configuration window has just closed
     void modifyUnlock ( void *Id );
 
-
-    void editUndo();
-    void editRedo();
-
-    void closeDialogs()
-    {
-        std::map< void*, QDialog* >::iterator it;    ;
-        for (it=map_modifyObjectWindow.begin();
-                it!=map_modifyObjectWindow.end();
-                it++)
-        {
-            delete it->second;
-        }
-
-    }
 protected:
+    /// Given a position, get the GNode corresponding (if the point is on a component, it returns the GNode parent)
+    GNode      *getGNode(const QPoint &pos);
 
+    /// Given a item of the list, return the GNode corresponding
+    GNode      *getGNode(Q3ListViewItem *item);
+    /// Get the component corresponding to the item, NULL if the item is a GNode
+    BaseObject *getObject(Q3ListViewItem *item);
+
+    /// Insert a GNode in the scene
+    GNode      *addGNode(GNode *parent, GNode *node=NULL, bool saveHistory=true);
+    /// Insert a Component in the scene
+    BaseObject *addComponent(GNode *parent, ClassInfo *entry, std::string templateName, bool saveHistory=true );
+
+    /// Find the Sofa Component above the item
+    Base *getComponentAbove(Q3ListViewItem *item);
+    /// Set a dropped component in the right position in the graph
+    void initItem(Q3ListViewItem *item, Q3ListViewItem *above);
+    /// Move an item (and the sofa component corresponding) above the other Q3ListViewItem "above"
+    void moveItem(Q3ListViewItem *item, Q3ListViewItem *above);
+
+    /// Verify if no component is being edited, starting from the current GNode passed, and going through all the children
     bool isNodeErasable ( core::objectmodel::Base* element );
+    /// Verigy if the present component is being edited
     bool isObjectErasable ( core::objectmodel::Base* element );
+    /// Change a preset node, update the paths to the files and the initial position
     void updatePresetNode(xml::BaseElement &elem, std::string meshFile, std::string *translation, std::string *rotation, std::string scale);
 
+    GraphListenerQListView *graphListener; // Management of the list: Listener of the sofa tree
+    ComponentMap library; // Sofa Library, containing a description of all the components existing
+    Q3PopupMenu *preset;  //Preset menu selection appearing when right click on a node
+    AddPreset *DialogAdd; //Single Window appearing when adding a preset
+
+    //Modify windows management: avoid duplicity, and dependencies
+    void *current_Id_modifyDialog;
+    std::map< void*, Base* >       map_modifyDialogOpened;
+    std::map< void*, QDialog* >    map_modifyObjectWindow;
+
+    std::string filenameXML; //name associated to the current graph
+
+    //-----------------------------------------------------------------------------//
+    //Historic of actions: management of the undo/redo actions
+    ///Basic class storing information about the operation done
     class Operation
     {
     public:
@@ -221,29 +241,22 @@ protected:
 
         Base* sofaComponent;
         GNode* parent;
-        BaseObject* above;
+        Base* above;
         op ID;
         std::string info;
     };
 
+
     void storeHistory(Operation &o);
-    void clearHistory();
-    void clearHistoryUndo();
     void processUndo(Operation &o);
 
-    GraphListenerQListView *graphListener;
-    ComponentMap library;
-    Q3PopupMenu *preset;
-    AddPreset *DialogAdd;
+    void clearHistory();
+    void clearHistoryUndo();
 
-    //Modify windows management: avoid duplicity, and dependencies
-    void *current_Id_modifyDialog;
-    std::map< void*, Base* >       map_modifyDialogOpened;
-    std::map< void*, QDialog* >    map_modifyObjectWindow;
-
-    std::string filenameXML; //name associated to the current graph
     std::vector< Operation > historyOperation;
     std::vector< Operation > historyUndoOperation;
+    //-----------------------------------------------------------------------------//
+
 };
 
 
@@ -258,7 +271,7 @@ protected:
 
 
 
-//Overloading ModifyObject to display all the elements
+///Overloading ModifyObject to display all the elements
 class ModifyObjectModeler: public ModifyObject
 {
 public:
@@ -273,8 +286,8 @@ public:
         EMPTY_FLAG = true;
         RESIZABLE_FLAG = true;
         REINIT_FLAG = false;
-
-        energy_curve[0]=NULL;	        energy_curve[1]=NULL;	        energy_curve[2]=NULL;
+        //remove the qwt graphes
+        energy_curve[0]=energy_curve[1]=energy_curve[2]=NULL;
         //Initialization of the Widget
         setNode(node_clicked, item_clicked);
         connect ( this, SIGNAL( dialogClosed(void *) ) , parent_, SLOT( modifyUnlock(void *)));

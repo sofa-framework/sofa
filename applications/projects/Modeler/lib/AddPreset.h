@@ -28,7 +28,6 @@
 #ifndef ADDPRESET_H
 #define ADDPRESET_H
 
-#include <vector>
 #include "DialogAddPreset.h"
 #include <sofa/simulation/tree/GNode.h>
 
@@ -47,11 +46,11 @@ class AddPreset : public DialogAddPreset
     Q_OBJECT
 public:
 
-    AddPreset(  QWidget* parent, const char* name= 0,bool *elementPresent=NULL, bool  modal= FALSE, Qt::WFlags f= 0 );
+    AddPreset(  QWidget* parent, const char* name= 0, bool  modal= FALSE, Qt::WFlags f= 0 );
+    void setElementPresent(bool *elementPresent);
     void setParentNode(GNode* parentNode) {node=parentNode;}
     void setPresetFile(std::string p) {presetFile=p;}
     void setPath(std::string p) {fileName=p;}
-
     void clear();
 
 public slots:
