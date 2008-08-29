@@ -38,18 +38,269 @@ namespace topology
 using namespace sofa::defaulttype;
 
 template< class DataTypes>
-typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeHexahedronVolume( const unsigned int /*i*/) const
+void HexahedronSetGeometryAlgorithms< DataTypes >::computeHexahedronAABB(const HexaID h, Coord& minCoord, Coord& maxCoord) const
 {
-    //const Hexahedron &t = this->m_topology->getHexa(i);
+    const Hexahedron &t = this->m_topology->getHexa(h);
+    const typename DataTypes::VecCoord& p = *(this->object->getX());
+
+    for(unsigned int i=0; i<3; ++i)
+    {
+        minCoord[i] = std::min( std::min(std::min(p[t[0]][i], p[t[1]][i]), std::min(p[t[2]][i], p[t[3]][i])),
+                std::min(std::min(p[t[4]][i], p[t[5]][i]), std::min(p[t[6]][i], p[t[7]][i])));
+
+        maxCoord[i] = std::max( std::max(std::max(p[t[0]][i], p[t[1]][i]), std::max(p[t[2]][i], p[t[3]][i])),
+                std::max(std::max(p[t[4]][i], p[t[5]][i]), std::max(p[t[6]][i], p[t[7]][i])));
+    }
+}
+
+template<class DataTypes>
+typename DataTypes::Coord HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronCenter(const HexaID h) const
+{
+    const Hexahedron &t = this->m_topology->getHexa(h);
+    const typename DataTypes::VecCoord& p = *(this->object->getX());
+
+    return (p[t[0]] + p[t[1]] + p[t[2]] + p[t[3]] + p[t[4]] + p[t[5]] + p[t[6]] + p[t[7]]) * (Real) 0.125;
+}
+
+template< class DataTypes>
+void HexahedronSetGeometryAlgorithms< DataTypes >::getHexahedronVertexCoordinates(const HexaID h, Coord pnt[8]) const
+{
+    const Hexahedron &t = this->m_topology->getHexa(h);
+    const typename DataTypes::VecCoord& p = *(this->object->getX());
+
+    for(unsigned int i=0; i<8; ++i)
+    {
+        pnt[i] = p[t[i]];
+    }
+}
+
+template< class DataTypes>
+void HexahedronSetGeometryAlgorithms< DataTypes >::getRestHexahedronVertexCoordinates(const HexaID h, Coord pnt[8]) const
+{
+    const Hexahedron &t = this->m_topology->getHexa(h);
+    const typename DataTypes::VecCoord& p = *(this->object->getX0());
+
+    for(unsigned int i=0; i<8; ++i)
+    {
+        pnt[i] = p[t[i]];
+    }
+}
+
+template<class DataTypes>
+typename DataTypes::Coord HexahedronSetGeometryAlgorithms<DataTypes>::getRestPointPositionInHexahedron(const HexaID h,
+        const Real baryC[3]) const
+{
+    Coord	p[8];
+    getRestHexahedronVertexCoordinates(h, p);
+
+    const Real &fx = baryC[0];
+    const Real &fy = baryC[1];
+    const Real &fz = baryC[2];
+
+    const Coord pos = p[0] * ((1-fx) * (1-fy) * (1-fz))
+            + p[1] * ((  fx) * (1-fy) * (1-fz))
+            + p[3] * ((1-fx) * (  fy) * (1-fz))
+            + p[2] * ((  fx) * (  fy) * (1-fz))
+            + p[4] * ((1-fx) * (1-fy) * (  fz))
+            + p[5] * ((  fx) * (1-fy) * (  fz))
+            + p[7] * ((1-fx) * (  fy) * (  fz))
+            + p[6] * ((  fx) * (  fy) * (  fz));
+
+    return pos;
+}
+
+template<class DataTypes>
+typename DataTypes::Coord HexahedronSetGeometryAlgorithms<DataTypes>::getRestPointPositionInHexahedron(const HexaID h,
+        const Vector3& baryC) const
+{
+    Coord	p[8];
+    getRestHexahedronVertexCoordinates(h, p);
+
+    const Real fx = (Real) baryC[0];
+    const Real fy = (Real) baryC[1];
+    const Real fz = (Real) baryC[2];
+
+    const Coord pos = p[0] * ((1-fx) * (1-fy) * (1-fz))
+            + p[1] * ((  fx) * (1-fy) * (1-fz))
+            + p[3] * ((1-fx) * (  fy) * (1-fz))
+            + p[2] * ((  fx) * (  fy) * (1-fz))
+            + p[4] * ((1-fx) * (1-fy) * (  fz))
+            + p[5] * ((  fx) * (1-fy) * (  fz))
+            + p[7] * ((1-fx) * (  fy) * (  fz))
+            + p[6] * ((  fx) * (  fy) * (  fz));
+
+    return pos;
+}
+
+template<class DataTypes>
+typename DataTypes::Coord HexahedronSetGeometryAlgorithms<DataTypes>::getPointPositionInHexahedron(const HexaID h,
+        const Real baryC[3]) const
+{
+    Coord	p[8];
+    getHexahedronVertexCoordinates(h, p);
+
+    const Real &fx = baryC[0];
+    const Real &fy = baryC[1];
+    const Real &fz = baryC[2];
+
+    const Coord pos = p[0] * ((1-fx) * (1-fy) * (1-fz))
+            + p[1] * ((  fx) * (1-fy) * (1-fz))
+            + p[3] * ((1-fx) * (  fy) * (1-fz))
+            + p[2] * ((  fx) * (  fy) * (1-fz))
+            + p[4] * ((1-fx) * (1-fy) * (  fz))
+            + p[5] * ((  fx) * (1-fy) * (  fz))
+            + p[7] * ((1-fx) * (  fy) * (  fz))
+            + p[6] * ((  fx) * (  fy) * (  fz));
+
+    return pos;
+}
+
+template<class DataTypes>
+typename DataTypes::Coord HexahedronSetGeometryAlgorithms<DataTypes>::getPointPositionInHexahedron(const HexaID h,
+        const Vector3& baryC) const
+{
+    Coord	p[8];
+    getHexahedronVertexCoordinates(h, p);
+
+    const Real fx = (Real) baryC[0];
+    const Real fy = (Real) baryC[1];
+    const Real fz = (Real) baryC[2];
+
+    const Coord pos = p[0] * ((1-fx) * (1-fy) * (1-fz))
+            + p[1] * ((  fx) * (1-fy) * (1-fz))
+            + p[3] * ((1-fx) * (  fy) * (1-fz))
+            + p[2] * ((  fx) * (  fy) * (1-fz))
+            + p[4] * ((1-fx) * (1-fy) * (  fz))
+            + p[5] * ((  fx) * (1-fy) * (  fz))
+            + p[7] * ((1-fx) * (  fy) * (  fz))
+            + p[6] * ((  fx) * (  fy) * (  fz));
+
+    return pos;
+}
+
+template<class DataTypes>
+Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronRestBarycentricCoeficients(const HexaID h,
+        const Coord& pos) const
+{
+    Coord	p[8];
+    getRestHexahedronVertexCoordinates(h, p);
+
+    Vector3 origin;
+    origin[0] = p[0][0];
+    origin[1] = p[0][1];
+    origin[2] = p[0][2];
+
+    Vector3 p1, p3, p4;
+    p1[0] = p[1][0];
+    p1[1] = p[1][1];
+    p1[2] = p[1][2];
+
+    p3[0] = p[3][0];
+    p3[1] = p[3][1];
+    p3[2] = p[3][2];
+
+    p4[0] = p[4][0];
+    p4[1] = p[4][1];
+    p4[2] = p[4][2];
+
+    Mat3x3d		m, mt, base;
+    m[0] = p1-origin;
+    m[1] = p3-origin;
+    m[2] = p4-origin;
+    mt.transpose(m);
+    base.invert(mt);
+
+    Vector3 pnt;
+    pnt[0] = pos[0];
+    pnt[1] = pos[1];
+    pnt[2] = pos[2];
+
+    return base * (pnt - origin);
+}
+
+template<class DataTypes>
+Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronBarycentricCoeficients(const HexaID h,
+        const Coord& pos) const
+{
+    // Warning: this is only correct if the hexahedron is not deformed
+    // as only 3 perpendicular edges are considered as a base
+    // other edges are assumed to be parallel to the respective base edge (and have the same length)
+
+    Coord	p[8];
+    getHexahedronVertexCoordinates(h, p);
+
+    Vector3 origin;
+    origin[0] = p[0][0];
+    origin[1] = p[0][1];
+    origin[2] = p[0][2];
+
+    Vector3 p1, p3, p4;
+    p1[0] = p[1][0];
+    p1[1] = p[1][1];
+    p1[2] = p[1][2];
+
+    p3[0] = p[3][0];
+    p3[1] = p[3][1];
+    p3[2] = p[3][2];
+
+    p4[0] = p[4][0];
+    p4[1] = p[4][1];
+    p4[2] = p[4][2];
+
+    Mat3x3d		m, mt, base;
+    m[0] = p1-origin;
+    m[1] = p3-origin;
+    m[2] = p4-origin;
+    mt.transpose(m);
+    base.invert(mt);
+
+    Vector3 pnt;
+    pnt[0] = pos[0];
+    pnt[1] = pos[1];
+    pnt[2] = pos[2];
+
+    return base * (pnt - origin);
+}
+
+template< class DataTypes>
+int HexahedronSetGeometryAlgorithms< DataTypes >::findNearestHexahedron(const Coord pos, Vector3& baryC, Real& distance) const
+{
+    int index=-1;
+    distance = 1e10;
+
+    for (int c=0; c<this->m_topology->getNbHexas(); ++c)
+    {
+        const Vector3 v = computeHexahedronBarycentricCoeficients(c, pos);
+
+        Real d = (Real) std::max(std::max(-v[0], -v[1]), std::max(std::max(-v[2], v[0]-1), std::max(v[1]-1, v[2]-1)));
+
+        if(d>0)
+            d = (pos - computeHexahedronCenter(c)).norm2();
+
+        if(d<distance)
+        {
+            baryC = v;
+            distance = d;
+            index = c;
+        }
+    }
+
+    return index;
+}
+
+template< class DataTypes>
+typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeHexahedronVolume( const HexaID /*h*/) const
+{
+    //const Hexahedron &t = this->m_topology->getHexa(h);
     //const VecCoord& p = *(this->object->getX());
     Real volume=(Real)(0.0); /// @TODO : implementation of computeHexahedronVolume
     return volume;
 }
 
 template< class DataTypes>
-typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeRestHexahedronVolume( const unsigned int /*i*/) const
+typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeRestHexahedronVolume( const HexaID /*h*/) const
 {
-    //const Hexahedron &t = this->m_topology->getHexa(i);
+    //const Hexahedron &t = this->m_topology->getHexa(h);
     //const VecCoord& p = *(this->object->getX0());
     Real volume=(Real)(0.0); /// @TODO : implementation of computeRestHexahedronVolume
     return volume;
@@ -69,7 +320,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronVolume( BasicA
 
 /// Write the current mesh into a msh file
 template <typename DataTypes>
-void HexahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename)
+void HexahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) const
 {
     std::ofstream myfile;
     myfile.open (filename);

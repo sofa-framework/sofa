@@ -38,19 +38,65 @@ namespace topology
 using namespace sofa::defaulttype;
 
 template< class DataTypes>
-typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeTetrahedronVolume( const unsigned int i) const
+void TetrahedronSetGeometryAlgorithms< DataTypes >::computeTetrahedronAABB(const TetraID i, Coord& minCoord, Coord& maxCoord) const
 {
     const Tetrahedron &t = this->m_topology->getTetra(i);
-    const VecCoord& p = *(this->object->getX());
+    const typename DataTypes::VecCoord& p = *(this->object->getX());
+
+    for(unsigned int i=0; i<3; ++i)
+    {
+        minCoord[i] = std::min(std::min(p[t[0]][i], p[t[3]][i]), std::min(p[t[1]][i], p[t[2]][i]));
+        maxCoord[i] = std::max(std::max(p[t[0]][i], p[t[3]][i]), std::max(p[t[1]][i], p[t[2]][i]));
+    }
+}
+
+template<class DataTypes>
+typename DataTypes::Coord TetrahedronSetGeometryAlgorithms<DataTypes>::computeTetrahedronCenter(const TetraID i) const
+{
+    const Tetrahedron &t = this->m_topology->getTetra(i);
+    const typename DataTypes::VecCoord& p = *(this->object->getX());
+
+    return (p[t[0]] + p[t[1]] + p[t[2]] + p[t[3]]) * (Real) 0.25;
+}
+
+template< class DataTypes>
+void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetrahedronVertexCoordinates(const TetraID i, Coord pnt[4]) const
+{
+    const Tetrahedron &t = this->m_topology->getTetra(i);
+    const typename DataTypes::VecCoord& p = *(this->object->getX());
+
+    for(unsigned int i=0; i<4; ++i)
+    {
+        pnt[i] = p[t[i]];
+    }
+}
+
+template< class DataTypes>
+void TetrahedronSetGeometryAlgorithms< DataTypes >::getRestTetrahedronVertexCoordinates(const TetraID i, Coord pnt[4]) const
+{
+    const Tetrahedron &t = this->m_topology->getTetra(i);
+    const typename DataTypes::VecCoord& p = *(this->object->getX0());
+
+    for(unsigned int i=0; i<4; ++i)
+    {
+        pnt[i] = p[t[i]];
+    }
+}
+
+template< class DataTypes>
+typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeTetrahedronVolume( const TetraID i) const
+{
+    const Tetrahedron &t = this->m_topology->getTetra(i);
+    const typename DataTypes::VecCoord& p = *(this->object->getX());
     Real volume = (Real)(tripleProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]],p[t[3]]-p[t[0]])/6.0);
     return volume;
 }
 
 template< class DataTypes>
-typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeRestTetrahedronVolume( const unsigned int i) const
+typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeRestTetrahedronVolume( const TetraID i) const
 {
     const Tetrahedron &t=this->m_topology->getTetra(i);
-    const VecCoord& p = *(this->object->getX0());
+    const typename DataTypes::VecCoord& p = *(this->object->getX0());
     Real volume = (Real)(tripleProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]],p[t[3]]-p[t[0]])/6.0);
     return volume;
 }
@@ -70,8 +116,8 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::computeTetrahedronVolume( Basi
 
 /// Finds the indices of all tetrahedra in the ball of center ind_ta and of radius dist(ind_ta, ind_tb)
 template<class DataTypes>
-void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(unsigned int ind_ta, unsigned int ind_tb,
-        sofa::helper::vector<unsigned int> &indices)
+void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID ind_ta, const TetraID ind_tb,
+        sofa::helper::vector<unsigned int> &indices) const
 {
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
@@ -165,7 +211,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(unsigned int 
 
 /// Write the current mesh into a msh file
 template <typename DataTypes>
-void TetrahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename)
+void TetrahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) const
 {
     std::ofstream myfile;
     myfile.open (filename);

@@ -58,10 +58,18 @@ public:
 
     virtual ~QuadSetGeometryAlgorithms() {}
 
+    void computeQuadAABB(const QuadID i, Coord& minCoord, Coord& maxCoord) const;
+
+    Coord computeQuadCenter(const QuadID i) const;
+
+    void getQuadVertexCoordinates(const QuadID i, Coord[4]) const;
+
+    void getRestQuadVertexCoordinates(const QuadID i, Coord[4]) const;
+
     /** \brief Computes the area of quad no i and returns it
     *
     */
-    Real computeQuadArea(const unsigned int i) const;
+    Real computeQuadArea(const QuadID i) const;
 
     /** \brief Computes the quad area of all quads are store in the array interface
     *
@@ -71,23 +79,23 @@ public:
     /** \brief Computes the initial area  of quad no i and returns it
     *
     */
-    Real computeRestQuadArea(const unsigned int i) const;
+    Real computeRestQuadArea(const QuadID i) const;
 
     /** \brief Computes the normal vector of a quad indexed by ind_q (not normed)
     *
     */
-    defaulttype::Vec<3,double> computeQuadNormal(const unsigned int ind_q);
+    defaulttype::Vec<3,double> computeQuadNormal(const QuadID ind_q) const;
 
     /** \brief Tests if a quad indexed by ind_q (and incident to the vertex indexed by ind_p)
     * is included or not in the plane defined by (ind_p, plane_vect)
     *
     */
-    bool is_quad_in_plane(const unsigned int ind_q, const unsigned int ind_p,
-            const defaulttype::Vec<3,Real>& plane_vect);
+    bool isQuadInPlane(const QuadID ind_q, const unsigned int ind_p,
+            const defaulttype::Vec<3,Real>& plane_vect) const;
 
     /** \brief Write the current mesh into a msh file
     */
-    void writeMSHfile(const char *filename);
+    void writeMSHfile(const char *filename) const;
 };
 
 template< class Real>

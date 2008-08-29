@@ -80,6 +80,13 @@ public:
     index 2 = zmin, index 3 = xmax, index 4 = ymax, index 5=zmax */
     void getAABB(Real bb[6]) const;
 
+    /** \brief Returns the axis aligned bounding box */
+    void getAABB(Coord& minCoord, Coord& maxCoord) const;
+
+    const Coord& getPointPosition(const PointID pointId) const;
+
+    const Coord& getPointRestPosition(const PointID pointId) const;
+
     /** \brief Returns the object where the mechanical DOFs are stored */
     sofa::core::componentmodel::behavior::MechanicalState<DataTypes> *getDOF() const { return object;	}
 
@@ -92,6 +99,7 @@ public:
     {
         return DataTypes::Name();
     }
+
 protected:
     /** the object where the mechanical DOFs are stored */
     sofa::core::componentmodel::behavior::MechanicalState<DataTypes> *object;
