@@ -43,6 +43,12 @@
 #include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
 #include <sofa/component/topology/HexahedronSetTopologyContainer.h>
 
+#include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
+#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
+#include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
+#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
+
 #include <sofa/component/topology/PointData.h>
 #include <sofa/component/topology/PointData.inl>
 
@@ -417,7 +423,6 @@ void BarycentricMapperMeshTopology<In,Out>::init(const typename Out::VecCoord& o
     }
 }
 
-
 template <class In, class Out>
 void BarycentricMapperEdgeSetTopology<In,Out>::clear(int reserve)
 {
@@ -450,6 +455,7 @@ int BarycentricMapperEdgeSetTopology<In,Out>::createPointInLine(const typename O
 template <class In, class Out>
 void BarycentricMapperEdgeSetTopology<In,Out>::init(const typename Out::VecCoord& /*out*/, const typename In::VecCoord& /*in*/)
 {
+    _container->getContext()->get(_geomAlgo);
 //	int outside = 0;
 //	const sofa::helper::vector<topology::Edge>& edges = this->topology->getEdges();
     //TODO: implementation of BarycentricMapperEdgeSetTopology::init
@@ -493,6 +499,8 @@ int BarycentricMapperTriangleSetTopology<In,Out>::createPointInTriangle(const ty
 template <class In, class Out>
 void BarycentricMapperTriangleSetTopology<In,Out>::init(const typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
+    _container->getContext()->get(_geomAlgo);
+
     int outside = 0;
 
     const sofa::helper::vector<topology::Triangle>& triangles = this->topology->getTriangles();
@@ -578,6 +586,8 @@ int BarycentricMapperQuadSetTopology<In,Out>::createPointInQuad(const typename O
 template <class In, class Out>
 void BarycentricMapperQuadSetTopology<In,Out>::init(const typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
+    _container->getContext()->get(_geomAlgo);
+
     int outside = 0;
     const sofa::helper::vector<topology::Quad>& quads = this->topology->getQuads();
 
@@ -647,6 +657,8 @@ int BarycentricMapperTetrahedronSetTopology<In,Out>::addPointInTetra(int tetraIn
 template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopology<In,Out>::init(const typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
+    _container->getContext()->get(_geomAlgo);
+
     int outside = 0;
     const sofa::helper::vector<topology::Tetrahedron>& tetras = this->topology->getTetras();
 
@@ -691,8 +703,8 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::init(const typename Out::V
 template <class In, class Out>
 void BarycentricMapperHexahedronSetTopology<In,Out>::clear(int reserve)
 {
-    map.clear(); if (reserve>0) map.reserve(reserve);
-    hexahedronData.clear();
+    map.clear();
+    if (reserve>0) map.reserve(reserve);
 }
 
 template <class In, class Out>
@@ -700,7 +712,7 @@ int BarycentricMapperHexahedronSetTopology<In,Out>::addPointInCube(int cubeIndex
 {
     map.resize(map.size()+1);
     MappingData& data = *map.rbegin();
-    data.in_index = cubeIndex + topology->getNbTetras();
+    data.in_index = cubeIndex;
     data.baryCoords[0] = (Real)baryCoords[0];
     data.baryCoords[1] = (Real)baryCoords[1];
     data.baryCoords[2] = (Real)baryCoords[2];
@@ -708,50 +720,28 @@ int BarycentricMapperHexahedronSetTopology<In,Out>::addPointInCube(int cubeIndex
 }
 
 template <class In, class Out>
-void BarycentricMapperHexahedronSetTopology<In,Out>::init(const typename Out::VecCoord& out, const typename In::VecCoord& in)
+void BarycentricMapperHexahedronSetTopology<In,Out>::init(const typename Out::VecCoord& out,
+        const typename In::VecCoord& /*in*/)
 {
-    const sofa::helper::vector<topology::Hexahedron>& cubes = this->topology->getHexas();
+    _container->getContext()->get(_geomAlgo);
+
+    if(_geomAlgo == NULL)
+    {
+        std::cerr << "Error [BarycentricMapperHexahedronSetTopology::init] cannot find GeometryAlgorithms component." << endl;
+    }
 
     clear(out.size());
 
-    hexahedronData.resize(cubes.size());
-
-    for (unsigned int c = 0; c < cubes.size(); c++)
+    for (unsigned int i=0; i<out.size(); ++i)
     {
-        Mat3x3d m,mt;
-        const Vector3 origin = in[cubes[c][0]];
-        m[0] = in[cubes[c][1]]-origin;
-        m[1] = in[cubes[c][3]]-origin;
-        m[2] = in[cubes[c][4]]-origin;
-        mt.transpose(m);
-        hexahedronData[c].origin = origin;
-        hexahedronData[c].base.invert(mt);
-        hexahedronData[c].center = (in[cubes[c][0]]+in[cubes[c][1]]+in[cubes[c][2]]+in[cubes[c][3]]
-                +in[cubes[c][4]]+in[cubes[c][5]]+in[cubes[c][6]]+in[cubes[c][7]])*0.125;
-    }
-
-    for (unsigned int i=0; i<out.size(); i++)
-    {
-        // find nearest cell
         Vector3 coefs;
-        int index=-1;
-        double distance = 1e10;
-        Vector3 pos = out[i];
-        for (unsigned int c = 0; c < cubes.size(); c++)
-        {
-            const Vec3d v = hexahedronData[c].base * (pos - hexahedronData[c].origin);
-            double d = std::max(std::max(-v[0],-v[1]), std::max(std::max(-v[2],v[0]-1), std::max(v[1]-1,v[2]-1)));
-            if (d>0)
-                d = (pos-hexahedronData[c].center).norm2();
-            if (d<distance)
-            {
-                coefs = v;
-                distance = d;
-                index = c;
-            }
-        }
+        In::Real distance;
+        const int index = _geomAlgo->findNearestHexahedron(out[i], coefs, distance);
+
         if(index != -1)
             addPointInCube(index, coefs.ptr());
+        else
+            std::cerr << "Error [BarycentricMapperHexahedronSetTopology::init] cannot find a cell for barycentric mapping." << std::endl;
     }
 }
 
@@ -770,7 +760,7 @@ void BarycentricMapping<BasicMapping>::createMapperFromTopology(BaseMeshTopology
         if(t1 != NULL)
         {
             typedef BarycentricMapperHexahedronSetTopology<InDataTypes, OutDataTypes> HexahedronSetMapper;
-            mapper = new HexahedronSetMapper(topology_from);
+            mapper = new HexahedronSetMapper(t1);
         }
         else
         {
@@ -778,7 +768,7 @@ void BarycentricMapping<BasicMapping>::createMapperFromTopology(BaseMeshTopology
             if(t2 != NULL)
             {
                 typedef BarycentricMapperTetrahedronSetTopology<InDataTypes, OutDataTypes> TetrahedronSetMapper;
-                mapper = new TetrahedronSetMapper(topology_from);
+                mapper = new TetrahedronSetMapper(t2);
             }
             else
             {
@@ -786,7 +776,7 @@ void BarycentricMapping<BasicMapping>::createMapperFromTopology(BaseMeshTopology
                 if(t3 != NULL)
                 {
                     typedef BarycentricMapperQuadSetTopology<InDataTypes, OutDataTypes> QuadSetMapper;
-                    mapper = new QuadSetMapper(topology_from);
+                    mapper = new QuadSetMapper(t3);
                 }
                 else
                 {
@@ -794,7 +784,7 @@ void BarycentricMapping<BasicMapping>::createMapperFromTopology(BaseMeshTopology
                     if (t4 != NULL)
                     {
                         typedef BarycentricMapperTriangleSetTopology<InDataTypes, OutDataTypes> TriangleSetMapper;
-                        mapper = new TriangleSetMapper(topology_from);
+                        mapper = new TriangleSetMapper(t4);
                     }
                     else
                     {
@@ -802,7 +792,7 @@ void BarycentricMapping<BasicMapping>::createMapperFromTopology(BaseMeshTopology
                         if(t5 != NULL)
                         {
                             typedef BarycentricMapperEdgeSetTopology<InDataTypes, OutDataTypes> EdgeSetMapper;
-                            mapper = new EdgeSetMapper(topology_from);
+                            mapper = new EdgeSetMapper(t5);
                         }
                     }
                 }
@@ -2719,18 +2709,12 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
         case core::componentmodel::topology::POINTSRENUMBERING:  ///< For PointsRenumbering.
             break;
         case core::componentmodel::topology::HEXAHEDRAADDED:     ///< For HexahedraAdded.
-            break;
+        {
+        }
+        break;
         case core::componentmodel::topology::HEXAHEDRAREMOVED:   ///< For HexahedraRemoved.
         {
-            const sofa::helper::vector<topology::Hexahedron>& cubes = this->topology->getHexas();
-
-#ifndef NDEBUG
-            if(cubes.size() != hexahedronData.size())
-            {
-                std::cout << "Error. BarycentricMapperHexahedronSetTopology::handleTopologyChange() : Topology container size does not match the hexahedron data size.";
-                return;
-            }
-#endif
+            const unsigned int nbHexas = this->topology->getNbHexas();
 
             const sofa::helper::vector<unsigned int> &tab = (static_cast< const component::topology::HexahedraRemoved *> (*changeIt))->getArray();
             sofa::helper::vector<unsigned int> hexahedra(tab);
@@ -2738,7 +2722,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
             for(unsigned int i=0; i<hexahedra.size(); ++i)
             {
                 // remove all references to the removed cubes from the mapping data
-                int cubeId = (int) hexahedra[i];
+                unsigned int cubeId = hexahedra[i];
                 for(unsigned int j=0; j<map.size(); ++j)
                 {
                     if(map[j].in_index == cubeId) // compute new mapping
@@ -2748,15 +2732,13 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
                         coefs[1] = map[j].baryCoords[1];
                         coefs[2] = map[j].baryCoords[2];
 
-                        // barycentricToWorld
-                        Matrix3 m;
-                        m.invert(hexahedronData[cubeId].base);
-                        Vector3 pos = (m * coefs) + hexahedronData[cubeId].origin;
+                        In::Coord pos = _geomAlgo->getRestPointPositionInHexahedron(cubeId, coefs);
 
-                        // find nearest cell
+                        // find nearest cell and barycentric coords
                         int index=-1;
-                        double distance = 1e10;
-                        for (unsigned int c = 0; c < cubes.size(); c++)
+
+                        In::Real distance = 1e10;
+                        for (unsigned int c=0; c<nbHexas; ++c)
                         {
                             bool validC = true;
                             // don't search in cubes that are being removed
@@ -2771,10 +2753,13 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
 
                             if(validC)
                             {
-                                const Vec3d v = hexahedronData[c].base * (pos - hexahedronData[c].origin);
-                                double d = std::max(std::max(-v[0],-v[1]), std::max(std::max(-v[2],v[0]-1), std::max(v[1]-1,v[2]-1)));
+                                const Vector3 v = _geomAlgo->computeHexahedronRestBarycentricCoeficients(c, pos);
+
+                                In::Real d = (In::Real) std::max(std::max(-v[0],-v[1]), std::max(std::max(-v[2],v[0]-1), std::max(v[1]-1,v[2]-1)));
+
                                 if (d>0)
-                                    d = (pos-hexahedronData[c].center).norm2();
+                                    d = (pos-_geomAlgo->computeHexahedronCenter(c)).norm2();
+
                                 if (d<distance)
                                 {
                                     coefs = v;
@@ -2796,8 +2781,8 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
             }
 
             // renumber
-            int lastCubeId = (int) cubes.size()-1;
-            for(unsigned int i=0; i<hexahedra.size(); ++i)
+            unsigned int lastCubeId = nbHexas-1;
+            for(unsigned int i=0; i<hexahedra.size(); ++i, --lastCubeId)
             {
                 unsigned int cubeId = hexahedra[i];
                 for(unsigned int j=0; j<map.size(); ++j)
@@ -2805,7 +2790,6 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
                     if(map[j].in_index == lastCubeId)
                         map[j].in_index = cubeId;
                 }
-                lastCubeId -= 1;
             }
         }
         break;
@@ -2815,8 +2799,6 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
             break;
         }
     }
-
-    hexahedronData.handleTopologyEvents(itBegin, itEnd);
 }
 
 template <class In, class Out>
@@ -2857,7 +2839,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handlePointEvents(std::list
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::handleTopologyChange()
 {
-    BarycentricMapperBaseTopology* topoMapper = dynamic_cast<BarycentricMapperBaseTopology*>(mapper);
+    BarycentricMapperDynamicTopology* topoMapper = dynamic_cast<BarycentricMapperDynamicTopology*>(mapper);
 
     if(topoMapper != NULL)
     {
@@ -2865,7 +2847,6 @@ void BarycentricMapping<BasicMapping>::handleTopologyChange()
         topoMapper->handleTopologyChange();
 
         // handle changes in the To topology
-        core::componentmodel::topology::BaseMeshTopology* topology_to = this->toModel->getContext()->getMeshTopology();
         if (topology_to != NULL)
         {
             if(topology_to->firstChange() != topology_to->lastChange()) // may not be necessary

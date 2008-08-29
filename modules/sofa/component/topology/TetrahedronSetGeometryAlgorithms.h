@@ -66,21 +66,30 @@ public:
 
     virtual ~TetrahedronSetGeometryAlgorithms() {}
 
+    void computeTetrahedronAABB(const TetraID i, Coord& minCoord, Coord& maxCoord) const;
+
+    Coord computeTetrahedronCenter(const TetraID i) const;
+
+    void getTetrahedronVertexCoordinates(const TetraID i, Coord[4]) const;
+
+    void getRestTetrahedronVertexCoordinates(const TetraID i, Coord[4]) const;
+
     /// computes the volume of tetrahedron no i and returns it
-    Real computeTetrahedronVolume(const unsigned int i) const;
+    Real computeTetrahedronVolume(const TetraID i) const;
 
     /// computes the tetrahedron volume of all tetrahedra are store in the array interface
     void computeTetrahedronVolume( BasicArrayInterface<Real> &ai) const;
 
     /// computes the tetrahedron volume  of tetrahedron no i and returns it
-    Real computeRestTetrahedronVolume(const unsigned int i) const;
+    Real computeRestTetrahedronVolume(const TetraID i) const;
 
     /// finds the indices of all tetrahedra in the ball of center ind_ta and of radius dist(ind_ta, ind_tb)
-    void getTetraInBall(unsigned int ind_ta, unsigned int ind_tb, sofa::helper::vector<unsigned int> &indices);
+    void getTetraInBall(const TetraID ind_ta, const TetraID ind_tb,
+            sofa::helper::vector<unsigned int> &indices) const;
 
     /** \brief Write the current mesh into a msh file
     */
-    void writeMSHfile(const char *filename);
+    void writeMSHfile(const char *filename) const;
 };
 
 } // namespace topology

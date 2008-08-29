@@ -275,6 +275,11 @@ public:
         return RigidCoord<3,real>(this->center - a.getCenter(), a.orientation.inverse() * this->orientation);
     }
 
+    RigidCoord<3,real> operator +(const RigidCoord<3,real>& a) const
+    {
+        return RigidCoord<3,real>(this->center + a.getCenter(), a.orientation * this->orientation);
+    }
+
     void operator +=(const RigidCoord<3,real>& a)
     {
         center += a.getCenter();
@@ -821,6 +826,11 @@ public:
     RigidCoord<2,real> operator -(const RigidCoord<2,real>& a) const
     {
         return RigidCoord<2,real>(this->center - a.getCenter(), this->orientation - a.orientation);
+    }
+
+    RigidCoord<2,real> operator +(const RigidCoord<2,real>& a) const
+    {
+        return RigidCoord<2,real>(this->center + a.getCenter(), this->orientation + a.orientation);
     }
 
     void operator +=(const RigidCoord<2,real>& a)

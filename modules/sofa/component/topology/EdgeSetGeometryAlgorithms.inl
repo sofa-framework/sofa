@@ -40,7 +40,7 @@ namespace topology
 using namespace sofa::defaulttype;
 
 template< class DataTypes>
-typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeEdgeLength( const unsigned int i) const
+typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeEdgeLength( const EdgeID i) const
 {
     const Edge &e = this->m_topology->getEdge(i);
     const VecCoord& p = *(this->object->getX());
@@ -49,7 +49,7 @@ typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeEdgeLeng
 }
 
 template< class DataTypes>
-typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeRestEdgeLength( const unsigned int i) const
+typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeRestEdgeLength( const EdgeID i) const
 {
     const Edge &e = this->m_topology->getEdge(i);
     const VecCoord& p = *(this->object->getX0());
@@ -58,7 +58,7 @@ typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeRestEdge
 }
 
 template< class DataTypes>
-typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeRestSquareEdgeLength( const unsigned int i) const
+typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeRestSquareEdgeLength( const EdgeID i) const
 {
     const Edge &e = this->m_topology->getEdge(i);
     const VecCoord& p = *(this->object->getX0());
@@ -80,9 +80,55 @@ void EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeLength( BasicArrayInterfac
     }
 }
 
+template<class DataTypes>
+void EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeAABB(const EdgeID i, Coord& minCoord, Coord& maxCoord) const
+{
+    const Edge &e = this->m_topology->getEdge(i);
+    const typename DataTypes::VecCoord& p = *(this->object->getX());
+
+    const Coord sum(p[e[0]] + p[e[1]]);
+    Coord dif(p[e[1]] - p[e[0]]);
+
+    if(dif[0] < 0) dif[0] = p[e[0]][0] - p[e[1]][0];
+    if(dif[1] < 0) dif[1] = p[e[0]][1] - p[e[1]][1];
+    if(dif[2] < 0) dif[2] = p[e[0]][2] - p[e[1]][2];
+
+    minCoord = (sum-dif) * (Real) 0.5;
+    maxCoord = (sum+dif) * (Real) 0.5;
+}
+
+template<class DataTypes>
+void EdgeSetGeometryAlgorithms<DataTypes>::getEdgeVertexCoordinates(const EdgeID i, Coord pnt[2]) const
+{
+    const Edge &e = this->m_topology->getEdge(i);
+    const typename DataTypes::VecCoord& p = *(this->object->getX());
+
+    pnt[0] = p[e[0]];
+    pnt[1] = p[e[1]];
+}
+
+template<class DataTypes>
+void EdgeSetGeometryAlgorithms<DataTypes>::getRestEdgeVertexCoordinates(const EdgeID i, Coord pnt[2]) const
+{
+    const Edge &e = this->m_topology->getEdge(i);
+    const typename DataTypes::VecCoord& p = *(this->object->getX0());
+
+    pnt[0] = p[e[0]];
+    pnt[1] = p[e[1]];
+}
+
+template<class DataTypes>
+typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeCenter(const EdgeID i) const
+{
+    const Edge &e = this->m_topology->getEdge(i);
+    const typename DataTypes::VecCoord& p = *(this->object->getX());
+
+    return (p[e[0]] + p[e[1]]) * (Real) 0.5;
+}
+
 /// Write the current mesh into a msh file
 template <typename DataTypes>
-void EdgeSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename)
+void EdgeSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) const
 {
     std::ofstream myfile;
     myfile.open (filename);

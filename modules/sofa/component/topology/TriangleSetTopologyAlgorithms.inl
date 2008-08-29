@@ -59,7 +59,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::Suture2Points(unsigned int ind_
         unsigned int &ind1, unsigned int &ind2)
 {
     // Access the topology
-    m_geometryAlgorithms->closestIndexPair(ind_ta, ind_tb, ind1, ind2);
+    m_geometryAlgorithms->computeClosestIndexPair(ind_ta, ind_tb, ind1, ind2);
 
     //std::cout << "INFO_print : ind1 = " << ind1 << std::endl;
     //std::cout << "INFO_print : ind2 = " << ind2 << std::endl;
@@ -134,7 +134,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
 
     if(is_first_cut)
     {
-        bool is_a_inside = m_geometryAlgorithms->is_PointinTriangle(true, a_new, ind_ta_new, ind_ta_test);
+        bool is_a_inside = m_geometryAlgorithms->isPointInTriangle(ind_ta_new, true, a_new, ind_ta_test);
         if(is_a_inside)
         {
             //std::cout << "a is inside" <<  std::endl;
@@ -154,7 +154,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
         }
     }
 
-    bool is_b_inside = m_geometryAlgorithms->is_PointinTriangle(true, b_new, ind_tb_new, ind_tb_test);
+    bool is_b_inside = m_geometryAlgorithms->isPointInTriangle(ind_tb_new, true, b_new, ind_tb_test);
     if(is_b_inside)
     {
         //std::cout << "b is inside" <<  std::endl;
@@ -217,7 +217,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
         x_i2 = b_i123_last[1];
         x_i3 = b_i123_last[2];
 
-        const typename DataTypes::Coord& b_point_last = m_geometryAlgorithms->getPositionPoint(b_last); //vect_c[b_last];
+        const typename DataTypes::Coord& b_point_last = m_geometryAlgorithms->getPointPosition(b_last); //vect_c[b_last];
 
         a_new[0]= (Real) b_point_last[0];
         a_new[1]= (Real) b_point_last[1];
@@ -334,7 +334,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
         bool& is_snap_a2=is_snap_a2_init;
 
         sofa::helper::vector< double > a_baryCoefs = m_geometryAlgorithms
-                ->computeTriangleBarycoefs((const Vec<3,double> &) a_new, ind_ta_new);
+                ->computeTriangleBarycoefs(ind_ta_new, (const Vec<3,double> &) a_new);
         snapping_test_triangle(epsilon, a_baryCoefs[0], a_baryCoefs[1], a_baryCoefs[2],
                 is_snap_a0, is_snap_a1, is_snap_a2);
 
@@ -586,7 +586,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
                     sofa::helper::vector< unsigned int > &triangles_list_2 = triangles_list_2_init;
 
                     // std::cout << "INFO_print : DO Prepare_VertexDuplication " <<  std::endl;
-                    m_geometryAlgorithms->Prepare_VertexDuplication(ind_p, triangles_list[i], triangles_list[i+1], indices_list[i-1], coords_list[i-1], indices_list[i+1], coords_list[i+1], triangles_list_1, triangles_list_2);
+                    m_geometryAlgorithms->prepareVertexDuplication(ind_p, triangles_list[i], triangles_list[i+1], indices_list[i-1], coords_list[i-1], indices_list[i+1], coords_list[i+1], triangles_list_1, triangles_list_2);
                     // std::cout << "INFO_print : DONE Prepare_VertexDuplication " <<  std::endl;
 
                     // std::cout << "INFO_print : triangles_list_1.size() = " << triangles_list_1.size() <<  std::endl;
@@ -714,7 +714,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
             bool& is_snap_b1=is_snap_b1_init;
             bool& is_snap_b2=is_snap_b2_init;
 
-            sofa::helper::vector< double > b_baryCoefs = m_geometryAlgorithms->computeTriangleBarycoefs((const Vec<3,double> &) b, ind_tb_new);
+            sofa::helper::vector< double > b_baryCoefs = m_geometryAlgorithms->computeTriangleBarycoefs(ind_tb_new, (const Vec<3,double> &) b);
 
             if(!is_intersected && !is_on_boundary)
             {
@@ -1150,13 +1150,13 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
 
     double epsilon = 0.2; // INFO : epsilon is a threshold in [0,1] to control the snapping of the extremities to the closest vertex
 
-    sofa::helper::vector< double > a_baryCoefs = m_geometryAlgorithms->computeTriangleBarycoefs((const Vec<3,double> &) a, ind_ta);
+    sofa::helper::vector< double > a_baryCoefs = m_geometryAlgorithms->computeTriangleBarycoefs(ind_ta, (const Vec<3,double> &) a);
     snapping_test_triangle(epsilon, a_baryCoefs[0], a_baryCoefs[1], a_baryCoefs[2],
             is_snap_a0, is_snap_a1, is_snap_a2);
 
     double is_snapping_a = is_snap_a0 || is_snap_a1 || is_snap_a2;
 
-    sofa::helper::vector< double > b_baryCoefs = m_geometryAlgorithms->computeTriangleBarycoefs((const Vec<3,double> &) b, ind_tb);
+    sofa::helper::vector< double > b_baryCoefs = m_geometryAlgorithms->computeTriangleBarycoefs(ind_tb, (const Vec<3,double> &) b);
     snapping_test_triangle(epsilon, b_baryCoefs[0], b_baryCoefs[1], b_baryCoefs[2],
             is_snap_b0, is_snap_b1, is_snap_b2);
 
@@ -1404,7 +1404,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
                     sofa::helper::vector< unsigned int > &triangles_list_2 = triangles_list_2_init;
 
                     //std::cout << "INFO_print : DO Prepare_VertexDuplication " <<  std::endl;
-                    m_geometryAlgorithms->Prepare_VertexDuplication(ind_p, triangles_list[i], triangles_list[i+1], indices_list[i-1], coords_list[i-1], indices_list[i+1], coords_list[i+1], triangles_list_1, triangles_list_2);
+                    m_geometryAlgorithms->prepareVertexDuplication(ind_p, triangles_list[i], triangles_list[i+1], indices_list[i-1], coords_list[i-1], indices_list[i+1], coords_list[i+1], triangles_list_1, triangles_list_2);
                     //std::cout << "INFO_print : DONE Prepare_VertexDuplication " <<  std::endl;
 
                     //std::cout << "INFO_print : triangles_list_1.size() = " << triangles_list_1.size() <<  std::endl;

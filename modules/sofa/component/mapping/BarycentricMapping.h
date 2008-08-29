@@ -28,8 +28,6 @@
 #include <sofa/helper/vector.h>
 #include <sofa/component/topology/PointData.h>
 #include <sofa/component/topology/HexahedronData.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/component/topology/RegularGridTopology.h>
 
 // forward declarations
 namespace sofa
@@ -40,7 +38,6 @@ namespace componentmodel
 {
 namespace topology
 {
-class BaseTopology;
 class BaseMeshTopology;
 }
 }
@@ -53,6 +50,26 @@ namespace topology
 class MeshTopology;
 class RegularGridTopology;
 class SparseGridTopology;
+
+class EdgeSetTopologyContainer;
+template <class T>
+class EdgeSetGeometryAlgorithms;
+
+class TriangleSetTopologyContainer;
+template <class T>
+class TriangleSetGeometryAlgorithms;
+
+class QuadSetTopologyContainer;
+template <class T>
+class QuadSetGeometryAlgorithms;
+
+class TetrahedronSetTopologyContainer;
+template <class T>
+class TetrahedronSetGeometryAlgorithms;
+
+class HexahedronSetTopologyContainer;
+template <class T>
+class HexahedronSetGeometryAlgorithms;
 }
 }
 }
@@ -65,9 +82,6 @@ namespace component
 
 namespace mapping
 {
-
-using core::componentmodel::topology::BaseMeshTopology;
-
 /// Base class for barycentric mapping topology-specific mappers
 template<class In, class Out>
 class BarycentricMapper
@@ -153,7 +167,12 @@ public:
     virtual int createPointInCube(const typename Out::Coord& /*p*/, int /*cubeIndex*/, const typename In::VecCoord* /*points*/) {return 0;}
 
 protected:
-    TopologyBarycentricMapper(core::componentmodel::topology::BaseMeshTopology* /*topology*/) {}
+    TopologyBarycentricMapper(core::componentmodel::topology::BaseMeshTopology* topology)
+        : topology(topology)
+    {}
+
+protected:
+    core::componentmodel::topology::BaseMeshTopology* topology;
 };
 
 /// Class allowing barycentric mapping computation on a RegularGridTopology
@@ -267,12 +286,10 @@ protected:
     sofa::helper::vector< MappingData1D >  map1d;
     sofa::helper::vector< MappingData2D >  map2d;
     sofa::helper::vector< MappingData3D >  map3d;
-    BaseMeshTopology* topology;
 
 public:
-    BarycentricMapperMeshTopology(BaseMeshTopology* topology)
-        : TopologyBarycentricMapper<In,Out>(topology),
-          topology(topology)
+    BarycentricMapperMeshTopology(core::componentmodel::topology::BaseMeshTopology* topology)
+        : TopologyBarycentricMapper<In,Out>(topology)
     {}
 
     virtual ~BarycentricMapperMeshTopology() {}
@@ -357,40 +374,41 @@ private:
 
 };
 
-/// Template class for barycentric mapping topology-specific mappers. Enables topological changes.
-class BarycentricMapperBaseTopology
+/// Base class for barycentric mapping topology-specific mappers. Enables topological changes.
+class BarycentricMapperDynamicTopology
 {
 public:
-    virtual ~BarycentricMapperBaseTopology() {}
-
     // handle topology changes in the From topology
     virtual void handleTopologyChange()=0;
+
     // handle topology changes in the To topology
     virtual void handlePointEvents(std::list< const core::componentmodel::topology::TopologyChange *>::const_iterator,
             std::list< const core::componentmodel::topology::TopologyChange *>::const_iterator )=0;
-protected:
-    BarycentricMapperBaseTopology(core::componentmodel::topology::BaseMeshTopology* /*topology*/)
-    {}
 };
 
 
 /// Class allowing barycentric mapping computation on a EdgeSetTopology
 template<class In, class Out>
-class BarycentricMapperEdgeSetTopology : public BarycentricMapperBaseTopology, public TopologyBarycentricMapper<In,Out>
+class BarycentricMapperEdgeSetTopology : public TopologyBarycentricMapper<In,Out>,
+    public BarycentricMapperDynamicTopology
+
 {
 public:
     typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::MappingData1D MappingData;
+
 protected:
     topology::PointData< MappingData >  map;
-    BaseMeshTopology* topology;
+    topology::EdgeSetTopologyContainer*			_container;
+    topology::EdgeSetGeometryAlgorithms<In>*	_geomAlgo;
 
 public:
-    BarycentricMapperEdgeSetTopology(BaseMeshTopology* topology)
-        : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper<In,Out>(topology),
-          topology(topology)
+    BarycentricMapperEdgeSetTopology(topology::EdgeSetTopologyContainer* topology)
+        : TopologyBarycentricMapper<In,Out>(topology),
+          _container(topology),
+          _geomAlgo(NULL)
     {}
 
     virtual ~BarycentricMapperEdgeSetTopology() {}
@@ -445,7 +463,8 @@ public:
 
 /// Class allowing barycentric mapping computation on a TriangleSetTopology
 template<class In, class Out>
-class BarycentricMapperTriangleSetTopology : public BarycentricMapperBaseTopology, public TopologyBarycentricMapper<In,Out>
+class BarycentricMapperTriangleSetTopology : public TopologyBarycentricMapper<In,Out>,
+    public BarycentricMapperDynamicTopology
 {
 public:
     typedef TopologyBarycentricMapper<In,Out> Inherit;
@@ -453,13 +472,15 @@ public:
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::MappingData2D MappingData;
 protected:
-    topology::PointData< MappingData >  map;
-    BaseMeshTopology* topology;
+    topology::PointData< MappingData >		map;
+    topology::TriangleSetTopologyContainer*			_container;
+    topology::TriangleSetGeometryAlgorithms<In>*	_geomAlgo;
 
 public:
-    BarycentricMapperTriangleSetTopology(BaseMeshTopology* topology)
-        : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper<In,Out>(topology),
-          topology(topology)
+    BarycentricMapperTriangleSetTopology(topology::TriangleSetTopologyContainer* topology)
+        : TopologyBarycentricMapper<In,Out>(topology),
+          _container(topology),
+          _geomAlgo(NULL)
     {}
 
     virtual ~BarycentricMapperTriangleSetTopology() {}
@@ -514,7 +535,8 @@ public:
 
 /// Class allowing barycentric mapping computation on a QuadSetTopology
 template<class In, class Out>
-class BarycentricMapperQuadSetTopology : public BarycentricMapperBaseTopology, public TopologyBarycentricMapper<In,Out>
+class BarycentricMapperQuadSetTopology : public TopologyBarycentricMapper<In,Out>,
+    public BarycentricMapperDynamicTopology
 {
 public:
     typedef TopologyBarycentricMapper<In,Out> Inherit;
@@ -523,12 +545,14 @@ public:
     typedef typename Inherit::MappingData2D MappingData;
 protected:
     topology::PointData< MappingData >  map;
-    BaseMeshTopology* topology;
+    topology::QuadSetTopologyContainer*			_container;
+    topology::QuadSetGeometryAlgorithms<In>*	_geomAlgo;
 
 public:
-    BarycentricMapperQuadSetTopology(BaseMeshTopology* topology)
-        : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper<In,Out>(topology),
-          topology(topology)
+    BarycentricMapperQuadSetTopology(topology::QuadSetTopologyContainer* topology)
+        : TopologyBarycentricMapper<In,Out>(topology),
+          _container(topology),
+          _geomAlgo(NULL)
     {}
 
     virtual ~BarycentricMapperQuadSetTopology() {}
@@ -581,7 +605,8 @@ public:
 
 /// Class allowing barycentric mapping computation on a TetrehedronSetTopology
 template<class In, class Out>
-class BarycentricMapperTetrahedronSetTopology : public BarycentricMapperBaseTopology, public TopologyBarycentricMapper<In,Out>
+class BarycentricMapperTetrahedronSetTopology : public TopologyBarycentricMapper<In,Out>,
+    public BarycentricMapperDynamicTopology
 {
 public:
     typedef TopologyBarycentricMapper<In,Out> Inherit;
@@ -590,12 +615,14 @@ public:
     typedef typename Inherit::MappingData3D MappingData;
 protected:
     topology::PointData< MappingData >  map;
-    BaseMeshTopology* topology;
+    topology::TetrahedronSetTopologyContainer*			_container;
+    topology::TetrahedronSetGeometryAlgorithms<In>*	_geomAlgo;
 
 public:
-    BarycentricMapperTetrahedronSetTopology(BaseMeshTopology* topology)
-        : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper<In,Out>(topology),
-          topology(topology)
+    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* topology)
+        : TopologyBarycentricMapper<In,Out>(topology),
+          _container(topology),
+          _geomAlgo(NULL)
     {}
 
     virtual ~BarycentricMapperTetrahedronSetTopology() {}
@@ -648,7 +675,8 @@ public:
 
 /// Class allowing barycentric mapping computation on a HexahedronSetTopology
 template<class In, class Out>
-class BarycentricMapperHexahedronSetTopology : public BarycentricMapperBaseTopology, public TopologyBarycentricMapper<In,Out>
+class BarycentricMapperHexahedronSetTopology : public TopologyBarycentricMapper<In,Out>,
+    public BarycentricMapperDynamicTopology
 {
 public:
     typedef TopologyBarycentricMapper<In,Out> Inherit;
@@ -657,12 +685,14 @@ public:
     typedef typename Inherit::MappingData3D MappingData;
 protected:
     topology::PointData< MappingData >  map;
-    BaseMeshTopology* topology;
+    topology::HexahedronSetTopologyContainer*		_container;
+    topology::HexahedronSetGeometryAlgorithms<In>*	_geomAlgo;
 
 public:
-    BarycentricMapperHexahedronSetTopology(BaseMeshTopology* topology)
-        : BarycentricMapperBaseTopology(topology), TopologyBarycentricMapper<In,Out>(topology),
-          topology(topology)
+    BarycentricMapperHexahedronSetTopology(topology::HexahedronSetTopologyContainer* topology)
+        : TopologyBarycentricMapper<In,Out>(topology),
+          _container(topology),
+          _geomAlgo(NULL)
     {}
 
     virtual ~BarycentricMapperHexahedronSetTopology() {}
@@ -710,17 +740,6 @@ public:
 
         return out;
     }
-
-
-private:
-    struct _BaseAndCenter
-    {
-        defaulttype::Vector3	origin;
-        defaulttype::Matrix3	base;
-        defaulttype::Vector3	center;
-    } ;
-
-    topology::HexahedronData< _BaseAndCenter > hexahedronData;
 };
 
 template <class BasicMapping>

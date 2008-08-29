@@ -52,8 +52,8 @@ template <class DataTypes>
 typename DataTypes::Coord PointSetGeometryAlgorithms<DataTypes>::getPointSetCenter() const
 {
     typename DataTypes::Coord center;
-    // get restPosition
-    typename DataTypes::VecCoord& p = *(object->getX0());
+    // get current positions
+    typename DataTypes::VecCoord& p = *(object->getX());
 
     const int numVertices = this->m_topology->getNbPoints();
     for(int i=0; i<numVertices; ++i)
@@ -69,8 +69,8 @@ template<class DataTypes>
 void  PointSetGeometryAlgorithms<DataTypes>::getEnclosingSphere(typename DataTypes::Coord &center,
         typename DataTypes::Real &radius) const
 {
-    // get restPosition
-    typename DataTypes::VecCoord& p = *(object->getX0());
+    // get current positions
+    typename DataTypes::VecCoord& p = *(object->getX());
 
     const unsigned int numVertices = this->m_topology->getNbPoints();
     for(unsigned int i=0; i<numVertices; ++i)
@@ -93,28 +93,54 @@ void  PointSetGeometryAlgorithms<DataTypes>::getEnclosingSphere(typename DataTyp
 template<class DataTypes>
 void  PointSetGeometryAlgorithms<DataTypes>::getAABB(typename DataTypes::Real bb[6] ) const
 {
-    // get restPosition
-    typename DataTypes::VecCoord& p = *(object->getX0());
+    Coord minCoord, maxCoord;
+    getAABB(minCoord, maxCoord);
 
-    bb[0] = (Real) p[0][0];
-    bb[1] = (Real) p[0][1];
-    bb[2] = (Real) p[0][2];
-    bb[3] = (Real) p[0][0];
-    bb[4] = (Real) p[0][1];
-    bb[5] = (Real) p[0][2];
+    bb[0] = minCoord[0];
+    bb[1] = minCoord[1];
+    bb[2] = minCoord[2];
+    bb[3] = maxCoord[0];
+    bb[4] = maxCoord[1];
+    bb[5] = maxCoord[2];
+}
+
+template<class DataTypes>
+void PointSetGeometryAlgorithms<DataTypes>::getAABB(Coord& minCoord, Coord& maxCoord) const
+{
+    // get current positions
+    typename DataTypes::VecCoord& p = *(object->getX());
+
+    minCoord = p[0];
+    maxCoord = p[0];
 
     for(unsigned int i=1; i<p.size(); ++i)
     {
-        // min
-        if(bb[0] > (Real) p[i][0]) bb[0] = (Real) p[i][0];	// x
-        if(bb[1] > (Real) p[i][1]) bb[1] = (Real) p[i][1];	// y
-        if(bb[2] > (Real) p[i][2]) bb[2] = (Real) p[i][2];	// z
+        if(minCoord[0] > p[i][0]) minCoord[0] = p[i][0];
+        if(minCoord[1] > p[i][1]) minCoord[1] = p[i][1];
+        if(minCoord[2] > p[i][2]) minCoord[2] = p[i][2];
 
-        // max
-        if(bb[3] < (Real) p[i][0]) bb[3] = (Real) p[i][0];	// x
-        if(bb[4] < (Real) p[i][1]) bb[4] = (Real) p[i][1];	// y
-        if(bb[5] < (Real) p[i][2]) bb[5] = (Real) p[i][2];	// z
+        if(maxCoord[0] < p[i][0]) maxCoord[0] = p[i][0];
+        if(maxCoord[1] < p[i][1]) maxCoord[1] = p[i][1];
+        if(maxCoord[2] < p[i][2]) maxCoord[2] = p[i][2];
     }
+}
+
+template<class DataTypes>
+const typename DataTypes::Coord& PointSetGeometryAlgorithms<DataTypes>::getPointPosition(const PointID pointId) const
+{
+    // get current positions
+    const typename DataTypes::VecCoord& p = *(object->getX());
+
+    return p[pointId];
+}
+
+template<class DataTypes>
+const typename DataTypes::Coord& PointSetGeometryAlgorithms<DataTypes>::getPointRestPosition(const PointID pointId) const
+{
+    // get rest positions
+    const typename DataTypes::VecCoord& p = *(object->getX0());
+
+    return p[pointId];
 }
 
 } // namespace topology

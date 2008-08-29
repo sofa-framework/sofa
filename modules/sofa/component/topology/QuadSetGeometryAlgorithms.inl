@@ -38,20 +38,66 @@ namespace topology
 using namespace sofa::defaulttype;
 
 template< class DataTypes>
-typename DataTypes::Real QuadSetGeometryAlgorithms< DataTypes >::computeQuadArea( const unsigned int i) const
+void QuadSetGeometryAlgorithms< DataTypes >::computeQuadAABB(const QuadID i, Coord& minCoord, Coord& maxCoord) const
 {
     const Quad &t = this->m_topology->getQuad(i);
-    const VecCoord& p = *(this->object->getX());
+    const typename DataTypes::VecCoord& p = *(this->object->getX());
+
+    for(unsigned int i=0; i<3; ++i)
+    {
+        minCoord[i] = std::min(std::min(p[t[0]][i], p[t[3]][i]), std::min(p[t[1]][i], p[t[2]][i]));
+        maxCoord[i] = std::max(std::max(p[t[0]][i], p[t[3]][i]), std::max(p[t[1]][i], p[t[2]][i]));
+    }
+}
+
+template<class DataTypes>
+typename DataTypes::Coord QuadSetGeometryAlgorithms<DataTypes>::computeQuadCenter(const QuadID i) const
+{
+    const Quad &t = this->m_topology->getQuad(i);
+    const typename DataTypes::VecCoord& p = *(this->object->getX());
+
+    return (p[t[0]] + p[t[1]] + p[t[2]] + p[t[3]]) * (Real) 0.25;
+}
+
+template< class DataTypes>
+void QuadSetGeometryAlgorithms< DataTypes >::getQuadVertexCoordinates(const QuadID i, Coord pnt[4]) const
+{
+    const Quad &t = this->m_topology->getQuad(i);
+    const typename DataTypes::VecCoord& p = *(this->object->getX());
+
+    for(unsigned int i=0; i<4; ++i)
+    {
+        pnt[i] = p[t[i]];
+    }
+}
+
+template< class DataTypes>
+void QuadSetGeometryAlgorithms< DataTypes >::getRestQuadVertexCoordinates(const QuadID i, Coord pnt[4]) const
+{
+    const Quad &t = this->m_topology->getQuad(i);
+    const typename DataTypes::VecCoord& p = *(this->object->getX0());
+
+    for(unsigned int i=0; i<4; ++i)
+    {
+        pnt[i] = p[t[i]];
+    }
+}
+
+template< class DataTypes>
+typename DataTypes::Real QuadSetGeometryAlgorithms< DataTypes >::computeQuadArea( const QuadID i) const
+{
+    const Quad &t = this->m_topology->getQuad(i);
+    const typename DataTypes::VecCoord& p = *(this->object->getX());
     Real area = (Real)((areaProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]])
             + areaProduct(p[t[3]]-p[t[2]],p[t[0]]-p[t[2]])) * (Real) 0.5);
     return area;
 }
 
 template< class DataTypes>
-typename DataTypes::Real QuadSetGeometryAlgorithms< DataTypes >::computeRestQuadArea( const unsigned int i) const
+typename DataTypes::Real QuadSetGeometryAlgorithms< DataTypes >::computeRestQuadArea( const QuadID i) const
 {
     const Quad &t = this->m_topology->getQuad(i);
-    const VecCoord& p = *(this->object->getX0());
+    const typename DataTypes::VecCoord& p = *(this->object->getX0());
     Real area = (Real)((areaProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]])
             + areaProduct(p[t[3]]-p[t[2]],p[t[0]]-p[t[2]])) * (Real) 0.5);
     return area;
@@ -75,7 +121,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::computeQuadArea( BasicArrayInterface<
 
 // Computes the normal vector of a quad indexed by ind_q (not normed)
 template<class DataTypes>
-Vec<3,double> QuadSetGeometryAlgorithms< DataTypes >::computeQuadNormal(const unsigned int ind_q)
+Vec<3,double> QuadSetGeometryAlgorithms< DataTypes >::computeQuadNormal(const QuadID ind_q) const
 {
     // HYP :  The quad indexed by ind_q is planar
 
@@ -104,9 +150,9 @@ Vec<3,double> QuadSetGeometryAlgorithms< DataTypes >::computeQuadNormal(const un
 
 // Test if a quad indexed by ind_quad (and incident to the vertex indexed by ind_p) is included or not in the plane defined by (ind_p, plane_vect)
 template<class DataTypes>
-bool QuadSetGeometryAlgorithms< DataTypes >::is_quad_in_plane(const unsigned int ind_q,
+bool QuadSetGeometryAlgorithms< DataTypes >::isQuadInPlane(const QuadID ind_q,
         const unsigned int ind_p,
-        const Vec<3,Real>&plane_vect)
+        const Vec<3,Real>&plane_vect) const
 {
     const Quad &q = this->m_topology->getQuad(ind_q);
 
@@ -163,7 +209,7 @@ bool QuadSetGeometryAlgorithms< DataTypes >::is_quad_in_plane(const unsigned int
 
 /// Write the current mesh into a msh file
 template <typename DataTypes>
-void QuadSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename)
+void QuadSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) const
 {
     std::ofstream myfile;
     myfile.open (filename);

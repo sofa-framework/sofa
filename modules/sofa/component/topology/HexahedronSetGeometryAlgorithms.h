@@ -64,18 +64,44 @@ public:
 
     virtual ~HexahedronSetGeometryAlgorithms() {}
 
-    /// computes the volume of hexahedron no i and returns it
-    Real computeHexahedronVolume(const unsigned int i) const;
+    void computeHexahedronAABB(const HexaID h, Coord& minCoord, Coord& maxCoord) const;
+
+    Coord computeHexahedronCenter(const HexaID h) const;
+
+    void getHexahedronVertexCoordinates(const HexaID h, Coord[8]) const;
+
+    void getRestHexahedronVertexCoordinates(const HexaID h, Coord[8]) const;
+
+    /// computes the volume of hexahedron no h and returns it
+    Real computeHexahedronVolume(const HexaID h) const;
 
     /// computes the hexahedron volume of all hexahedra are store in the array interface
     void computeHexahedronVolume( BasicArrayInterface<Real> &ai) const;
 
     /// computes the hexahedron volume  of hexahedron no i and returns it
-    Real computeRestHexahedronVolume(const unsigned int i) const;
+    Real computeRestHexahedronVolume(const HexaID h) const;
+
+    /// finds a hexahedron which is nearest to a given point. Computes barycentric coordinates and a distance measure.
+    int findNearestHexahedron(const Coord p, defaulttype::Vector3& baryC, Real& distance) const;
+
+    /// computes barycentric coordinates corresponding to a given position. Warning: this method is only correct if the hexahedron is not deformed
+    defaulttype::Vector3 computeHexahedronBarycentricCoeficients(const HexaID h, const Coord& p) const;
+
+    defaulttype::Vector3 computeHexahedronRestBarycentricCoeficients(const HexaID h, const Coord& p) const;
+
+    /// computes a position corresponding to given barycentric coordinates
+    Coord getPointPositionInHexahedron(const HexaID h, const defaulttype::Vector3& baryC) const;
+
+    Coord getRestPointPositionInHexahedron(const HexaID h, const defaulttype::Vector3& baryC) const;
+
+    /// computes a position corresponding to given barycentric coordinates
+    Coord getPointPositionInHexahedron(const HexaID h, const Real baryC[3]) const;
+
+    Coord getRestPointPositionInHexahedron(const HexaID h, const Real baryC[3]) const;
 
     /** \brief Write the current mesh into a msh file
     */
-    void writeMSHfile(const char *filename);
+    void writeMSHfile(const char *filename) const;
 };
 
 } // namespace topology

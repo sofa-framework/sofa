@@ -73,18 +73,26 @@ public:
     virtual ~EdgeSetGeometryAlgorithms() {}
 
     /// computes the length of edge no i and returns it
-    virtual Real computeEdgeLength(const unsigned int i) const;
+    Real computeEdgeLength(const EdgeID i) const;
 
     /// computes the edge length of all edges are store in the array interface
-    virtual void computeEdgeLength( BasicArrayInterface<Real> &ai) const;		// TODO: clarify, why not to use a vector here
+    void computeEdgeLength( BasicArrayInterface<Real> &ai) const;
 
     /// computes the initial length of edge no i and returns it
-    virtual Real computeRestEdgeLength(const unsigned int i) const;
+    Real computeRestEdgeLength(const EdgeID i) const;
 
     /// computes the initial square length of edge no i and returns it
-    virtual Real computeRestSquareEdgeLength(const unsigned int i) const;
+    Real computeRestSquareEdgeLength(const EdgeID i) const;
 
-    void writeMSHfile(const char *filename);
+    void computeEdgeAABB(const EdgeID i, Coord& minCoord, Coord& maxCoord) const;
+
+    Coord computeEdgeCenter(const EdgeID i) const;
+
+    void getEdgeVertexCoordinates(const EdgeID i, Coord[2]) const;
+
+    void getRestEdgeVertexCoordinates(const EdgeID i, Coord[2]) const;
+
+    void writeMSHfile(const char *filename) const;
 };
 
 } // namespace topology
