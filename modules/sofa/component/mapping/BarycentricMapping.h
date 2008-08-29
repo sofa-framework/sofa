@@ -378,12 +378,16 @@ private:
 class BarycentricMapperDynamicTopology
 {
 public:
+    virtual ~BarycentricMapperDynamicTopology() {}
+
     // handle topology changes in the From topology
     virtual void handleTopologyChange()=0;
 
     // handle topology changes in the To topology
     virtual void handlePointEvents(std::list< const core::componentmodel::topology::TopologyChange *>::const_iterator,
             std::list< const core::componentmodel::topology::TopologyChange *>::const_iterator )=0;
+protected:
+    BarycentricMapperDynamicTopology() {}
 };
 
 
