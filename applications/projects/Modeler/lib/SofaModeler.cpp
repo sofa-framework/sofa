@@ -33,10 +33,9 @@
 
 #include <map>
 #include <set>
-#include <cctype>
 
-
-// #define TEST_CREATION_COMPONENT
+//Automatically create and destroy all the components available: easy way to verify the default constructor and destructor
+//#define TEST_CREATION_COMPONENT
 
 #ifdef SOFA_QT4
 #include <QToolBox>
@@ -327,11 +326,8 @@ void SofaModeler::fileNew( GNode* root)
     if (!root) graph->setFilename("");
     changeNameWindow("");
 
-    GNode *current_root=graph->getRoot();
-    if (current_root) graph->clearGraph(false);
-
     //no parent, adding root: if root is NULL, then an empty GNode will be created
-    root = graph->addGNode(NULL, root, false);
+    root = graph->setRoot( root, false);
     sceneTab->setCurrentPage( sceneTab->count()-1);
 }
 
@@ -389,7 +385,7 @@ void SofaModeler::createTab()
 #else
     connect(graph, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(changeInformation(QListViewItem *)));
 #endif
-    connect(graph, SIGNAL( fileOpen(std::string)), this, SLOT(fileOpen(std::string)));
+    connect(graph, SIGNAL( fileOpen(const QString&)), this, SLOT(fileOpen(const QString&)));
     connect(graph, SIGNAL( undo(bool)), this, SLOT(updateUndo(bool)));
     connect(graph, SIGNAL( redo(bool)), this, SLOT(updateRedo(bool)));
 }
@@ -509,6 +505,7 @@ void SofaModeler::updateRecentlyOpened(std::string fileLoaded)
 
 void SofaModeler::fileSave()
 {
+    if (sceneTab->count() == 0) return;
     if (graph->getFilename().empty()) fileSaveAs();
     else 	                          fileSave(graph->getFilename());
 }
@@ -521,6 +518,7 @@ void SofaModeler::fileSave(std::string filename)
 
 void SofaModeler::fileSaveAs()
 {
+    if (sceneTab->count() == 0) return;
     QString s = sofa::gui::qt::getSaveFileName ( this, QString(examplePath.c_str()), "Scenes (*.scn *.xml)", "save file dialog", "Choose where the scene will be saved" );
     if ( s.length() >0 )
     {
@@ -582,7 +580,6 @@ void SofaModeler::newComponent()
     {
         textDragged = box->currentText();
     }
-
     dragging->setText(textDragged);
     dragging->dragCopy();
 
@@ -697,28 +694,6 @@ ClassInfo* SofaModeler::getInfoFromName(std::string name)
     return NULL;
 }
 
-void SofaModeler::keyPressEvent ( QKeyEvent *)
-{
-    // ignore if there are modifiers (i.e. CTRL of SHIFT)
-
-
-//#ifdef SOFA_QT4
-//	  if (e->modifiers()) return;
-//#else
-//	  if (e->state() & (Qt::KeyButtonMask)) return;
-//#endif
-//	  switch ( e->key() )
-//	  {
-//	  default:
-//		  {
-//			  e->ignore();
-//			  break;
-//		  }
-//	  }
-
-
-}
-
 void SofaModeler::dropEvent(QDropEvent* event)
 {
     QPushButton *push = (QPushButton *)event->source();
@@ -778,6 +753,38 @@ void SofaModeler::releaseButton()
     QPushButton *push = (QPushButton *)sender();
     if (push) push->setDown(false);
 }
+/// When the user enter the Modeler, grabbing something: determine the acceptance or not
+void SofaModeler::dragEnterEvent( QDragEnterEvent* event)
+{
+    QString text;
+    Q3TextDrag::decode(event, text);
+    if (text.isEmpty()) event->ignore();
+    else
+    {
+        std::string filename(text.ascii());
+        std::string test = filename; test.resize(4);
+        if (test == "file")  event->accept();
+        else event->ignore();
+    }
+}
+
+/// When the user move the mouse around, with something grabbed
+void SofaModeler::dragMoveEvent( QDragMoveEvent* event)
+{
+
+    QString text;
+    Q3TextDrag::decode(event, text);
+    if (text.isEmpty()) event->ignore();
+    else
+    {
+        std::string filename(text.ascii());
+        std::string test = filename; test.resize(4);
+        if (test == "file")  event->accept();
+        else event->ignore();
+    }
+}
+
+
 }
 }
 }

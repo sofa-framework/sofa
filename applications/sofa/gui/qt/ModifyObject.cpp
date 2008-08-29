@@ -145,7 +145,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
     if (node_clicked)
     {
         //If the current element is a node, we add a box to perform geometric transformation: translation, rotation, scaling
-        if(dynamic_cast< Node *>(node_clicked))
+        if(REINIT_FLAG && dynamic_cast< Node *>(node_clicked))
         {
             emptyTab = false;
             currentTab_save  = currentTab= new QWidget();
@@ -1013,7 +1013,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
         if (Node* node = dynamic_cast< Node* >(node_clicked))
         {
-            if (node->mass!= NULL || node->forceField.size()!=0 )
+            if (REINIT_FLAG && (node->mass!= NULL || node->forceField.size()!=0 ) )
             {
                 createGraphMass(dialogTab);
             }
@@ -1159,8 +1159,9 @@ void ModifyObject::updateValues()
     {
 
         //If the current element is a node of the graph, we first apply the transformations
-        if (Node* current_node = dynamic_cast< Node *>(node))
+        if (REINIT_FLAG && dynamic_cast< Node *>(node))
         {
+            Node* current_node = dynamic_cast< Node *>(node);
             if (!(transformation[0]->getFloatValue() == 0 &&
                     transformation[1]->getFloatValue() == 0 &&
                     transformation[2]->getFloatValue() == 0 &&

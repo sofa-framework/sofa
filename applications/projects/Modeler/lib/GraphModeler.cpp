@@ -31,9 +31,8 @@
 #include <sofa/gui/qt/FileManagement.h> //static functions to manage opening/ saving of files
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/simulation/common/TransformationVisitor.h>
 
-#include <sofa/component/visualmodel/VisualModelImpl.h>
+#include <sofa/simulation/tree/xml/ObjectElement.h>
 
 #ifdef SOFA_QT4
 #include <Q3Header>
@@ -160,7 +159,7 @@ BaseObject *GraphModeler::addComponent(GNode *parent, ClassInfo* entry, std::str
                 return object;
         }
         object = c->createInstance(parent->getContext(), NULL);
-// 	    parent->addObject(object);
+        // 	    parent->addObject(object);
     }
     return object;
 }
@@ -175,55 +174,55 @@ void GraphModeler::dropEvent(QDropEvent* event)
 
     QString text;
     Q3TextDrag::decode(event, text);
-
-    std::string filename(text.ascii());
-    std::string test = filename; test.resize(4);
-
-    if (test == "file")
+    if (!text.isEmpty())
     {
+        std::string filename(text.ascii());
+        std::string test = filename; test.resize(4);
+
+        if (test == "file")
+        {
 #ifdef WIN32
-        filename = filename.substr(8); //removing file:///
+            filename = filename.substr(8); //removing file:///
 #else
-        filename = filename.substr(7); //removing file://
+            filename = filename.substr(7); //removing file://
 #endif
 
-        if (filename[filename.size()-1] == '\n')
-        {
-            filename.resize(filename.size()-1);
-            filename[filename.size()-1]='\0';
-        }
+            if (filename[filename.size()-1] == '\n')
+            {
+                filename.resize(filename.size()-1);
+                filename[filename.size()-1]='\0';
+            }
 
-        emit(fileOpen(filename));
+            QString f(filename.c_str());
+            emit(fileOpen(f));
+            return;
+        }
+    }
+    if (library.find(event->source()) != library.end())
+    {
+        std::string templateName =  text.ascii();
+        BaseObject *newComponent = addComponent(getGNode(event->pos()), library.find(event->source())->second.first, templateName );
+        if (newComponent)
+        {
+            Q3ListViewItem *after = graphListener->items[newComponent];
+            Q3ListViewItem *item = itemAt(event->pos());
+            if (getObject(item)) initItem(after, item);
+        }
     }
     else
     {
-
-        if (library.find(event->source()) != library.end())
+        if (text == QString("GNode"))
         {
-            std::string templateName =  text.ascii();
-            BaseObject *newComponent = addComponent(getGNode(event->pos()), library.find(event->source())->second.first, templateName );
-            if (newComponent)
-            {
-                Q3ListViewItem *after = graphListener->items[newComponent];
-                Q3ListViewItem *item = itemAt(event->pos());
-                if (getObject(item)) initItem(after, item);
-            }
-        }
-        else
-        {
-            if (text == QString("GNode"))
-            {
-                GNode* node=getGNode(event->pos());
+            GNode* node=getGNode(event->pos());
 
-                if (node)
+            if (node)
+            {
+                GNode *newNode=addGNode(node);
+                if (newNode)
                 {
-                    GNode *newNode=addGNode(node);
-                    if (newNode)
-                    {
-                        Q3ListViewItem *after = graphListener->items[newNode];
-                        Q3ListViewItem *item = itemAt(event->pos());
-                        if (getObject(item)) initItem(after,item);
-                    }
+                    Q3ListViewItem *after = graphListener->items[newNode];
+                    Q3ListViewItem *item = itemAt(event->pos());
+                    if (getObject(item)) initItem(after,item);
                 }
             }
         }
@@ -455,17 +454,17 @@ void GraphModeler::loadPreset(std::string presetName)
     bool elementPresent[3]= {false,false,false};
     for (; it!=newXML->end(); ++it)
     {
-        if (it->getType() == std::string("MeshLoader") || it->getType() == std::string("SparseGrid")) elementPresent[0] = true;
-        else if (it->getName() == std::string("VisualNode") || it->getType() == std::string("OglModel")) elementPresent[1] = true;
+        if (it->getName() == std::string("VisualNode") || it->getType() == std::string("OglModel")) elementPresent[1] = true;
         else if (it->getName() == std::string("CollisionNode")) elementPresent[2] = true;
+        else if (it->getType() == std::string("MeshLoader") || it->getType() == std::string("SparseGrid")) elementPresent[0] = true;
     }
 
     if (!DialogAdd)
     {
-        DialogAdd = new AddPreset(this,"AddPreset", elementPresent);
+        DialogAdd = new AddPreset(this,"AddPreset");
         DialogAdd->setPath(sofa::helper::system::DataRepository.getFirstPath());
     }
-
+    DialogAdd->setElementPresent(elementPresent);
     DialogAdd->setPresetFile(presetName);
     GNode *node=getGNode(currentItem());
     DialogAdd->setParentNode(node);
@@ -599,7 +598,8 @@ void GraphModeler::deleteComponent(Q3ListViewItem* item, bool saveHistory)
         {
             Operation removal(getObject(item),Operation::DELETE_OBJECT);
             removal.parent=getGNode(item);
-            removal.above=getObject(item->itemAbove());
+            removal.above=getComponentAbove(item);
+
             removal.info=std::string("Removing Object ") + object->getClassName();
             storeHistory(removal);
         }
@@ -614,7 +614,7 @@ void GraphModeler::deleteComponent(Q3ListViewItem* item, bool saveHistory)
         {
             Operation removal(node,Operation::DELETE_GNODE);
             removal.parent = parent;
-            removal.above=getObject(item->itemAbove());
+            removal.above=getComponentAbove(item);
             removal.info=std::string("Removing GNode ") + node->getClassName();
             storeHistory(removal);
         }
@@ -626,6 +626,20 @@ void GraphModeler::deleteComponent(Q3ListViewItem* item, bool saveHistory)
     }
 
 }
+
+Base *GraphModeler::getComponentAbove(Q3ListViewItem *item)
+{
+    if (!item) return NULL;
+    Q3ListViewItem* itemAbove=item->itemAbove();
+    while (itemAbove && itemAbove->parent() != item->parent() )
+    {
+        itemAbove = itemAbove->parent();
+    }
+    Base *result=getObject(itemAbove);
+    if (!result) result=getGNode(itemAbove);
+    return result;
+}
+
 void GraphModeler::deleteComponent()
 {
     Q3ListViewItem *item = currentItem();
@@ -673,18 +687,6 @@ void GraphModeler::processUndo(Operation &o)
     case Operation::DELETE_OBJECT:
         o.parent->addObject(dynamic_cast<BaseObject*>(o.sofaComponent));
         moveItem(graphListener->items[o.sofaComponent],graphListener->items[o.above]);
-// 	    if(o.above)
-// 	      graphListener->items[o.sofaComponent]->moveItem(graphListener->items[o.above]);
-// 	    else
-// 	      {
-// 		Q3ListViewItem *nodeQt = graphListener->items[o.parent];
-// 		Q3ListViewItem *firstComp=nodeQt->firstChild();
-// 		if (firstComp != graphListener->items[o.sofaComponent])
-// 		  {
-// 		    graphListener->items[o.sofaComponent]->moveItem(firstComp);
-// 		    firstComp->moveItem(graphListener->items[o.sofaComponent]);
-// 		  }
-// 	      }
         o.ID = Operation::ADD_OBJECT;
         break;
     case Operation::DELETE_GNODE:
@@ -692,30 +694,19 @@ void GraphModeler::processUndo(Operation &o)
         //If the node is not alone below another parent node
         moveItem(graphListener->items[o.sofaComponent],graphListener->items[o.above]);
 
-// 	    if(o.above)
-// 	      graphListener->items[o.sofaComponent]->moveItem(graphListener->items[o.above]);
-// 	    else
-// 	      {
-// 		Q3ListViewItem *nodeQt = graphListener->items[o.parent];
-// 		Q3ListViewItem *firstComp=nodeQt->firstChild();
-// 		if (firstComp != graphListener->items[o.sofaComponent])
-// 		  {
-// 		    graphListener->items[o.sofaComponent]->moveItem(firstComp);
-// 		    firstComp->moveItem(graphListener->items[o.sofaComponent]);
-// 		  }
-// 	      }
         o.ID = Operation::ADD_GNODE;
         break;
     case Operation::ADD_OBJECT:
         o.parent=getGNode(graphListener->items[o.sofaComponent]);
-        o.above =getObject(graphListener->items[o.sofaComponent]->itemAbove());
+        o.above=getComponentAbove(graphListener->items[o.sofaComponent]);
+
         o.parent->removeObject(dynamic_cast<BaseObject*>(o.sofaComponent));
 
         o.ID = Operation::DELETE_OBJECT;
         break;
     case Operation::ADD_GNODE:
         o.parent=getGNode(graphListener->items[o.sofaComponent]->parent());
-        o.above=getObject(graphListener->items[o.sofaComponent]->itemAbove());
+        o.above=getComponentAbove(graphListener->items[o.sofaComponent]);
         o.parent->removeChild(dynamic_cast<GNode*>(o.sofaComponent));
         o.ID = Operation::DELETE_GNODE;
         break;
@@ -731,9 +722,15 @@ void GraphModeler::keyPressEvent ( QKeyEvent * e )
         deleteComponent();
         break;
     }
+    case Qt::Key_Return :
+    case Qt::Key_Enter :
+    {
+        openModifyObject();
+        break;
+    }
     default:
     {
-        e->ignore();
+        Q3ListView::keyPressEvent(e);
         break;
     }
     }
@@ -849,6 +846,43 @@ void GraphModeler::moveItem(Q3ListViewItem *item, Q3ListViewItem *above)
     }
 }
 
+
+/// Drag Management
+void GraphModeler::dragEnterEvent( QDragEnterEvent* event)
+{
+    event->accept(event->answerRect());
+}
+
+/// Drag Management
+void GraphModeler::dragMoveEvent( QDragMoveEvent* event)
+{
+    QString text;
+    Q3TextDrag::decode(event, text);
+    if (!text.isEmpty())
+    {
+        std::string filename(text.ascii());
+        std::string test = filename; test.resize(4);
+        if (test == "file") {event->accept(event->answerRect());}
+    }
+    else
+    {
+        if ( getGNode(event->pos()))
+            event->accept(event->answerRect());
+        else
+            event->ignore(event->answerRect());
+    }
+}
+
+void GraphModeler::closeDialogs()
+{
+    std::map< void*, QDialog* >::iterator it;    ;
+    for (it=map_modifyObjectWindow.begin();
+            it!=map_modifyObjectWindow.end();
+            it++)
+    {
+        delete it->second;
+    }
+}
 /*****************************************************************************************************************/
 //History of operations management
 
