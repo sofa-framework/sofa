@@ -54,6 +54,7 @@ template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass()
     : mass( initData(&mass, MassType(1.0f), "mass", "Mass of each particle") )
     , totalMass( initData(&totalMass, 0.0, "totalmass", "Sum of the particles' masses") )
+    , filenameMass( initData(&filenameMass, "filename", "Rigid file to load the mass parameters") )
     , showCenterOfGravity( initData(&showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
     , showAxisSize( initData(&showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
     , compute_mapping_inertia( initData(&compute_mapping_inertia, true, "compute_mapping_inertia", "to be used if the mass is placed under a mapping" ) )
@@ -76,15 +77,26 @@ void UniformMass<DataTypes, MassType>::setTotalMass(double m)
 }
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::init()
+void UniformMass<DataTypes, MassType>::reinit()
 {
-    this->core::componentmodel::behavior::Mass<DataTypes>::init();
     if (this->totalMass.getValue()>0 && this->mstate!=NULL)
     {
         MassType* m = this->mass.beginEdit();
         *m = ((typename DataTypes::Real)this->totalMass.getValue() / this->mstate->getX()->size());
         this->mass.endEdit();
     }
+    else
+    {
+        this->totalMass.setValue(  this->mstate->getX()->size()*this->mass.getValue());
+    }
+}
+template <class DataTypes, class MassType>
+void UniformMass<DataTypes, MassType>::init()
+{
+    loadRigidMass(filenameMass.getValue());
+    if (filenameMass.getValue().empty()) filenameMass.setDisplayed(false);
+    this->core::componentmodel::behavior::Mass<DataTypes>::init();
+    reinit();
 }
 
 // -- Mass interface
@@ -319,27 +331,20 @@ bool UniformMass<DataTypes, MassType>::addBBox(double* minBBox, double* maxBBox)
 }
 
 template<class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::parse(core::objectmodel::BaseObjectDescription* arg)
+void UniformMass<DataTypes, MassType>::loadRigidMass(std::string )
 {
-    Inherited::parse(arg);
-    /*
-    if (arg->getAttribute("mass"))
-      {
-        this->setMass((MassType)atof(arg->getAttribute("mass")));
-      }
-      if (arg->getAttribute("totalmass"))
-      {
-        this->setTotalMass(atof(arg->getAttribute("totalmass")));
-      }
-    */
+    //If the template is not rigid, we hide the Data filenameMass, to avoid confusion.
+    filenameMass.setDisplayed(false);
+    this->mass.setDisplayed(false);
 }
 
 
 //Specialization for rigids
 #ifndef SOFA_FLOAT
-
 template<>
-void UniformMass<Rigid3dTypes, Rigid3dMass>::parse(core::objectmodel::BaseObjectDescription* arg);
+void UniformMass<Rigid3dTypes, Rigid3dMass>::reinit();
+template<>
+void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string);
 template <>
 void UniformMass<Rigid3dTypes, Rigid3dMass>::draw();
 template <>
@@ -353,7 +358,9 @@ void UniformMass<Vec6dTypes,double>::draw();
 #endif
 #ifndef SOFA_DOUBLE
 template<>
-void UniformMass<Rigid3fTypes, Rigid3fMass>::parse(core::objectmodel::BaseObjectDescription* arg);
+void UniformMass<Rigid3fTypes, Rigid3fMass>::reinit();
+template<>
+void UniformMass<Rigid3fTypes, Rigid3fMass>::loadRigidMass(std::string);
 template <>
 void UniformMass<Rigid3fTypes, Rigid3fMass>::draw();
 template <>
