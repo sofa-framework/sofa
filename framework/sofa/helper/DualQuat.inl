@@ -60,7 +60,7 @@ DualQuat<Real>::DualQuat ( const Quat& qRe, const Quat& qIm )
 
 // Constructor
 template<class Real>
-DualQuat<Real>::DualQuat ( const Quat& q, const Vec& tr )
+DualQuat<Real>::DualQuat ( const Vec& tr, const Quat& q )
 {
     fromTransQuat ( tr, q );
 }
