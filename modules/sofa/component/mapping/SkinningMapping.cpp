@@ -37,7 +37,7 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(SkinningMapping)
+SOFA_DECL_CLASS(SkinningMapping);
 
 using namespace defaulttype;
 using namespace core;
@@ -82,7 +82,6 @@ template class SkinningMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fT
 // template class SkinningMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3dTypes> > >;
 template class SkinningMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > >;
 #endif
-
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
 template class SkinningMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3fTypes> > >;
@@ -91,9 +90,6 @@ template class SkinningMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3fT
 template class SkinningMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3dTypes> > >;
 #endif
 #endif
-
-
-
 
 
 } // namespace mapping
