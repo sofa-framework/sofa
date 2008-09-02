@@ -27,10 +27,12 @@
 
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/helper/DualQuat.h>
+
 #include <sofa/defaulttype/RigidTypes.h>
 #include <vector>
-
+#ifdef SOFA_DEV
+#include <sofa/helper/DualQuat.h>
+#endif
 namespace sofa
 {
 
@@ -68,8 +70,10 @@ public:
     typedef typename Coord::value_type Real;
     enum { N=Coord::static_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef typename helper::DualQuatd DualQuat;
 
+#ifdef SOFA_DEV
+    typedef typename helper::DualQuatd DualQuat;
+#endif
 protected:
     sofa::helper::vector<InCoord> initPosDOFs; // translation and rotation of the blended reference frame i, where i=0..n.
     sofa::helper::vector<Coord> initPos; // pos: point coord in  the reference frame i, where i=0..n ( + 1 for the blended reference frame)

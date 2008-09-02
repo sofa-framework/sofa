@@ -1433,12 +1433,12 @@ void QtViewer::calcProjection()
         // find Z so that dot(tcenter,tcenter-(0,0,Z))==0
         // tc.x*tc.x+tc.y*tc.y+tc.z*(tc.z-Z) = 0
         // Z = (tc.x*tc.x+tc.y*tc.y+tc.z*tc.z)/tc.z
-        std::cout << "center="<<center<<std::endl;
-        std::cout << "tcenter="<<tcenter<<std::endl;
+//                 std::cout << "center="<<center<<std::endl;
+//                 std::cout << "tcenter="<<tcenter<<std::endl;
         if (tcenter[2] < 0.0)
         {
             ratio = -300*(tcenter.norm2())/tcenter[2];
-            std::cout << "ratio="<<ratio<<std::endl;
+//                     std::cout << "ratio="<<ratio<<std::endl;
         }
         glOrtho( (-xNear * xFactor)*ratio , (xNear * xFactor)*ratio , (-yNear * yFactor)*ratio,
                 (yNear * yFactor)*ratio, zNear, zFar);
