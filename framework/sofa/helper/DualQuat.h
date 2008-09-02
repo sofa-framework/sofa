@@ -49,8 +49,9 @@ public:
     DualQuat ();
     DualQuat ( const DualQuat<Real>& q );
     DualQuat ( const Quat& qRe, const Quat& qIm );
-    DualQuat ( const Quat& q, const Vec& tr );
-    // This constructor define a rigid transformation
+    // This constructor define a rigid transformation from the origin to the reference frame
+    DualQuat ( const Vec& tr, const Quat& q );
+    // This constructor define a rigid transformation from a reference frame to another
     DualQuat ( const Vec& tr1,   // The reference frame center at the beginning
             const Quat& q1,   // The reference frame orientation at the beginning
             const Vec& tr2,   // The reference frame center at the end
