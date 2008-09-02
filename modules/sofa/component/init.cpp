@@ -283,8 +283,6 @@ SOFA_LINK_CLASS(TetrahedralQuadraticSpringsForceField)
 SOFA_LINK_CLASS(WashingMachineForceField)
 // interactionforcefield
 SOFA_LINK_CLASS(LagrangeMultiplierInteraction)
-//mapping
-SOFA_LINK_CLASS(DQSkinningMapping)
 //mastersolver
 SOFA_LINK_CLASS(MasterConstraintSolver)
 //misc

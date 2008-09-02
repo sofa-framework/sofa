@@ -85,7 +85,6 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::reinit()
 template<>
 void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
 {
-    this->totalMass.setValue(0.0);
     this->totalMass.setDisplayed(false);
     if (!filename.empty())
     {
@@ -189,6 +188,8 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
         }
         this->setMass(m);
     }
+    else if (this->totalMass.getValue()>0 ) this->mass.setValue(this->totalMass.getValue());
+    this->totalMass.setValue(0.0);
 }
 
 
@@ -364,7 +365,6 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::reinit()
 template<>
 void UniformMass<Rigid3fTypes, Rigid3fMass>::loadRigidMass(std::string filename)
 {
-    this->totalMass.setValue(0.0);
     this->totalMass.setDisplayed(false);
     if (!filename.empty())
     {
@@ -466,8 +466,12 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::loadRigidMass(std::string filename)
                 fclose(file);
             }
         }
+
         this->setMass(m);
     }
+    else if (this->totalMass.getValue()>0 ) this->mass.setValue(this->totalMass.getValue());
+    this->totalMass.setValue(0.0);
+
 }
 
 
