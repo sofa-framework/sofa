@@ -716,7 +716,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                         }
                     }
 
-                    new QLabel("Inertia Mass Matrix", box);
+                    new QLabel("Inertia Mass Matrix(Read Only)", box);
                     Q3Grid* massgrid= new Q3Grid(3,box);
                     WFloatLineEdit *massmatrix[3][3];
                     for (int row=0; row<3; row++)
@@ -813,7 +813,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     editInertiaMatrix->setMinFloatValue( 0.0f );
                     editInertiaMatrix->setMaxFloatValue( (float)INFINITY );
 
-                    new QLabel("Inertia Mass Matrix", box);
+                    new QLabel("Inertia Mass Matrix(Read Only)", box);
 
                     WFloatLineEdit* editInertiaMassMatrix = new WFloatLineEdit( box, "editInertiaMass" );
                     objectGUI.push_back(std::make_pair( (*it).second,  (QObject *) editInertiaMassMatrix));

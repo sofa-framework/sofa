@@ -55,7 +55,7 @@ public:
 //protected:
     Data<MassType> mass;    ///< the mass of each particle
     Data<double> totalMass; ///< if >0 : total mass of this body
-
+    Data<std::string> filenameMass; ///< a .rigid file to automatically load the inertia matrix and other parameters
     /// to display the center of gravity of the system
     Data< bool > showCenterOfGravity;
     Data< float > showAxisSize;
@@ -72,10 +72,10 @@ public:
 
     double getTotalMass() const { return totalMass.getValue(); }
     void setTotalMass(double m);
-
+    void loadRigidMass(std::string filename);
     // -- Mass interface
 
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
+    void reinit();
     void init();
 
     void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);

@@ -76,13 +76,20 @@ Mat3x3d MatrixFromEulerXYZ(double thetaX, double thetaY, double thetaZ)
 
 #ifndef SOFA_FLOAT
 template<>
-void UniformMass<Rigid3dTypes, Rigid3dMass>::parse(core::objectmodel::BaseObjectDescription* arg)
+void UniformMass<Rigid3dTypes, Rigid3dMass>::reinit()
 {
-    Inherited::parse(arg);
-    Rigid3dMass m = this->getMass();
-    if (arg->getAttribute("filename"))
+    this->mass.beginEdit()->recalc();
+    this->mass.endEdit();
+}
+
+template<>
+void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
+{
+    this->totalMass.setValue(0.0);
+    this->totalMass.setDisplayed(false);
+    if (!filename.empty())
     {
-        std::string filename = arg->getAttribute("filename");
+        Rigid3dMass m = this->getMass();
         if (!sofa::helper::system::DataRepository.findFile(filename))
         {
             std::cerr << "ERROR: cannot find file '" << filename << "'." << std::endl;
@@ -112,7 +119,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::parse(core::objectmodel::BaseObject
                                 fscanf(file, "%lf", &(m.inertiaMatrix.ptr()[i]));
                             }
                         }
-                        else if (!strcmp(cmd,"cntr"))
+                        else if (!strcmp(cmd,"cntr") || !strcmp(cmd,"center") )
                         {
                             Vec3d center;
                             for (int i = 0; i < 3; ++i)
@@ -124,7 +131,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::parse(core::objectmodel::BaseObject
                         {
                             double mass;
                             fscanf(file, "%lf", &mass);
-                            if (!arg->getAttribute("mass"))
+                            if (!this->mass.isSet())
                                 m.mass = mass;
                         }
                         else if (!strcmp(cmd,"volm"))
@@ -180,9 +187,8 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::parse(core::objectmodel::BaseObject
                 fclose(file);
             }
         }
+        this->setMass(m);
     }
-    m.recalc();
-    this->setMass(m);
 }
 
 
@@ -349,13 +355,20 @@ void UniformMass<Vec3dTypes, double>::addMDxToVector(defaulttype::BaseVector *re
 
 #ifndef SOFA_DOUBLE
 template<>
-void UniformMass<Rigid3fTypes, Rigid3fMass>::parse(core::objectmodel::BaseObjectDescription* arg)
+void UniformMass<Rigid3fTypes, Rigid3fMass>::reinit()
 {
-    Inherited::parse(arg);
-    Rigid3fMass m = this->getMass();
-    if (arg->getAttribute("filename"))
+    this->mass.beginEdit()->recalc();
+    this->mass.endEdit();
+}
+
+template<>
+void UniformMass<Rigid3fTypes, Rigid3fMass>::loadRigidMass(std::string filename)
+{
+    this->totalMass.setValue(0.0);
+    this->totalMass.setDisplayed(false);
+    if (!filename.empty())
     {
-        std::string filename = arg->getAttribute("filename");
+        Rigid3fMass m = this->getMass();
         if (!sofa::helper::system::DataRepository.findFile(filename))
         {
             std::cerr << "ERROR: cannot find file '" << filename << "'." << std::endl;
@@ -397,7 +410,7 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::parse(core::objectmodel::BaseObject
                         {
                             float mass;
                             fscanf(file, "%f", &mass);
-                            if (!arg->getAttribute("mass"))
+                            if (!this->mass.isSet())
                                 m.mass = mass;
                         }
                         else if (!strcmp(cmd,"volm"))
@@ -453,9 +466,8 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::parse(core::objectmodel::BaseObject
                 fclose(file);
             }
         }
+        this->setMass(m);
     }
-    m.recalc();
-    this->setMass(m);
 }
 
 
