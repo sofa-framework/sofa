@@ -27,6 +27,7 @@
 
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/helper/DualQuat.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <vector>
 
@@ -38,6 +39,16 @@ namespace component
 
 namespace mapping
 {
+
+typedef enum
+{
+    WEIGHT_LINEAR, WEIGHT_INVDIST, WEIGHT_HERMITE
+} WeightingType;
+
+typedef enum
+{
+    INTERPOLATION_LINEAR, INTERPOLATION_DUAL_QUATERNION
+} InterpolationType;
 
 template <class BasicMapping>
 class SkinningMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
@@ -57,62 +68,57 @@ public:
     typedef typename Coord::value_type Real;
     enum { N=Coord::static_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
+    typedef typename helper::DualQuatd DualQuat;
 
 protected:
-    sofa::helper::vector<InCoord> initPos;
-    Coord translation;
-    Mat rotation;
+    sofa::helper::vector<InCoord> initPosDOFs; // translation and rotation of the blended reference frame i, where i=0..n.
+    sofa::helper::vector<Coord> initPos; // pos: point coord in  the reference frame i, where i=0..n ( + 1 for the blended reference frame)
+    sofa::helper::vector<Coord> initBlendedPos; // pos: point coord in  the blended reference frames, where i=0..n ( + 1 for the blended reference frame)
     sofa::helper::vector<Coord> rotatedPoints;
-
-    class Loader;
-    void load(const char* filename);
 
     Data<sofa::helper::vector<unsigned int> > repartition;
     Data<sofa::helper::vector<double> >  coefs;
     Data<unsigned int> nbRefs;
 
     bool computeWeights;
+    WeightingType wheighting;
+    InterpolationType interpolation;
+
+    class Loader;
+    void load ( const char* filename );
+    inline void computeInitPos();
+    inline void sortReferences();
 
 public:
-
-    SkinningMapping(In* from, Out* to)
-        : Inherit(from, to)
-        , repartition(initData(&repartition,"repartition","repartition between input DOFs and skinned vertices"))
-        , coefs(initData(&coefs,"coefs","weights list for the influences of the references Dofs"))
-        , nbRefs(initData(&nbRefs,(unsigned)3,"nbRefs","nb references for skinning"))
-        , computeWeights(true)
-    {
-    }
-
-    virtual ~SkinningMapping() {}
+    SkinningMapping ( In* from, Out* to );
+    virtual ~SkinningMapping();
 
     void init();
+    void parse ( core::objectmodel::BaseObjectDescription* arg );
 
-    void parse(core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (arg->getAttribute("filename"))
-            this->load(arg->getAttribute("filename"));
-        this->Inherit::parse(arg);
-    }
-
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
-
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
-
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
-
-    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
-
+    void apply ( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    void applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    void applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    void applyJT ( typename In::VecConst& out, const typename Out::VecConst& in );
 
     void draw();
-
     void clear();
 
-    void setNbRefs(unsigned int nb) { nbRefs.setValue(nb); }
-    void setWeightCoefs(sofa::helper::vector<double> &weights);
-    void setRepartition(sofa::helper::vector<unsigned int> &rep);
-    void setComputeWeights(bool val) {computeWeights=val;}
+    // Weights
+    void setWeightsToHermite();
+    void setWieghtsToInvDist();
+    void setWeightsToLinear();
+    inline void updateWeights();
 
+    // Interpolations
+    void setInterpolationToLinear();
+    void setInterpolationToDualQuaternion();
+
+    // Accessors
+    void setNbRefs ( unsigned int nb ) { nbRefs.setValue ( nb ); }
+    void setWeightCoefs ( sofa::helper::vector<double> &weights );
+    void setRepartition ( sofa::helper::vector<unsigned int> &rep );
+    void setComputeWeights ( bool val ) {computeWeights=val;}
     unsigned int getNbRefs() { return nbRefs.getValue(); }
     const sofa::helper::vector<double>& getWeightCoefs() { return coefs.getValue(); }
     const sofa::helper::vector<unsigned int>& getRepartition() { return repartition.getValue(); }
