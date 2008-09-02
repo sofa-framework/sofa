@@ -255,28 +255,32 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             name.resize(4);
             if (name == "show")
             {
-                if (!visualTab && dynamic_cast< Data<int> * >( (*it).second )
-                    &&
-                    (
-                            (*it).first == "showVisualModels" ||
-                            (*it).first == "showBehaviorModels" ||
-                            (*it).first == "showCollisionModels" ||
-                            (*it).first == "showBoundingCollisionModels" ||
-                            (*it).first == "showMappings" ||
-                            (*it).first == "showMechanicalMappings" ||
-                            (*it).first == "showForceFields" ||
-                            (*it).first == "showInteractionForceFields" ||
-                            (*it).first == "showWireFrame" ||
-                            (*it).first == "showNormals"
-                    )
-                   )
+                if (!visualTab)
                 {
-
                     visualTab = true;
                     tabVisualization = new QWidget();
-
                     tabVisualizationLayout = new QVBoxLayout( tabVisualization, 0, 1, "tabVisualizationLayout");
+                }
 
+                currentTab = tabVisualization;
+                currentTabLayout = tabVisualizationLayout;
+
+                if ( dynamic_cast< Data<int> * >( (*it).second )
+                        &&
+                        (
+                                (*it).first == "showVisualModels" ||
+                                (*it).first == "showBehaviorModels" ||
+                                (*it).first == "showCollisionModels" ||
+                                (*it).first == "showBoundingCollisionModels" ||
+                                (*it).first == "showMappings" ||
+                                (*it).first == "showMechanicalMappings" ||
+                                (*it).first == "showForceFields" ||
+                                (*it).first == "showInteractionForceFields" ||
+                                (*it).first == "showWireFrame" ||
+                                (*it).first == "showNormals"
+                        )
+                   )
+                {
 
                     box = new Q3GroupBox(tabVisualization, QString("Tri State"));
                     tabVisualizationLayout->addWidget( box );
@@ -1000,6 +1004,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
         if (tabVisualization != NULL)
         {
             dialogTab->addTab(tabVisualization, QString("Visualization"));
+            tabVisualizationLayout->addStretch();
         }
         for (unsigned int indexTab = 0; indexTab<counterTab; indexTab++)
         {
