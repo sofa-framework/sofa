@@ -660,6 +660,7 @@ void RealGUI::addViewer()
 
     viewer->setup();
 
+
     connect ( ResetViewButton, SIGNAL ( clicked() ), viewer->getQWidget(), SLOT ( resetView() ) );
     connect ( SaveViewButton, SIGNAL ( clicked() ), viewer->getQWidget(), SLOT ( saveView() ) );
     connect ( screenshotButton, SIGNAL ( clicked() ), this, SLOT ( screenshot() ) );
@@ -667,6 +668,7 @@ void RealGUI::addViewer()
     connect ( sizeH, SIGNAL ( valueChanged ( int ) ), viewer->getQWidget(), SLOT ( setSizeH ( int ) ) );
     connect ( viewer->getQWidget(), SIGNAL ( resizeW ( int ) ), sizeW, SLOT ( setValue ( int ) ) );
     connect ( viewer->getQWidget(), SIGNAL ( resizeH ( int ) ), sizeH, SLOT ( setValue ( int ) ) );
+    connect ( viewer->getQWidget(), SIGNAL ( quit (  ) ), this, SLOT ( fileExit (  ) ) );
 
     QSplitter *splitter_ptr = dynamic_cast<QSplitter *> ( splitter2 );
     splitter_ptr->moveToLast ( left_stack );

@@ -1058,7 +1058,7 @@ void Grid3D::step_project(const Grid3D* prev, Grid3D* temp, real dt, real /*diff
         });
     }
 
-    std::cout << "STEP: CG iteration "<<step<<" error(d) "<<sqrt(err/b_norm2)<<"\n";
+    // std::cout << "STEP: CG iteration "<<step<<" error(d) "<<sqrt(err/b_norm2)<<"\n";
 
     // Now apply pressure back to velocity
     a = dt;

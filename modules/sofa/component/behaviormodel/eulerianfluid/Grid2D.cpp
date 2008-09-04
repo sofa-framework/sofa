@@ -815,9 +815,9 @@ void Grid2D::step_project(const Grid2D* prev, Grid2D* temp, real dt, real /*diff
     // Finally calculate projection to divergence free velocity
 
     // u_new = u~ - dt/P Dp where P = fluid density and p = pressure, Dp = (dp/dx,dp/dy)
-    // D.u_new = 0  =>  -dx²D²p = -P/dt dx²D.u~
-    //   where  -dx²D²p = 6p(i,j,k)-p(i-1,j,k)-p(i,j-1,k)-p(i,j,k-1)-p(i+1,j,k)-p(i,j+1,k)-p(i,j,k+1)
-    //     and  -P/dt dx²D.u~ = -P/dt dx ( u~(i+1,j,k) - u~(i,j,k) + v~(i,j+1,k) - v~(i,j,k) + w~(i,j,k+1) - w~(i,j,k) )
+    // D.u_new = 0  =>  -dxï¿½Dï¿½p = -P/dt dxï¿½D.u~
+    //   where  -dxï¿½Dï¿½p = 6p(i,j,k)-p(i-1,j,k)-p(i,j-1,k)-p(i,j,k-1)-p(i+1,j,k)-p(i,j+1,k)-p(i,j,k+1)
+    //     and  -P/dt dxï¿½D.u~ = -P/dt dx ( u~(i+1,j,k) - u~(i,j,k) + v~(i,j+1,k) - v~(i,j,k) + w~(i,j,k+1) - w~(i,j,k) )
     // Ap = b where A is a diagonal matrix plus neighbour coefficients at -1
 
     memset(temp->fdata,0,temp->ncell*sizeof(Cell));
@@ -937,7 +937,7 @@ void Grid2D::step_project(const Grid2D* prev, Grid2D* temp, real dt, real /*diff
         });
     }
 
-    //  std::cout << "STEP: CG iteration "<<step<<" error "<<sqrt(err/b_norm2)<<"\n";
+    // std::cout << "STEP: CG iteration "<<step<<" error "<<sqrt(err/b_norm2)<<"\n";
 
     // Now apply pressure back to velocity
     a = dt;

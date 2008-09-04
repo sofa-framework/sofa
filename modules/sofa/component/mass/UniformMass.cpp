@@ -470,7 +470,7 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::loadRigidMass(std::string filename)
         this->setMass(m);
     }
     else if (this->totalMass.getValue()>0 ) this->mass.setValue(this->totalMass.getValue());
-    this->totalMass.setValue(0.0);
+    this->totalMass.setValue(0.0f);
 
 }
 
