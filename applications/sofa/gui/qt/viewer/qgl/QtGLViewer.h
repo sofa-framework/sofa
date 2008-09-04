@@ -241,6 +241,7 @@ signals:
     void redrawn();
     void resizeW( int );
     void resizeH( int );
+    void quit();
 };
 
 } // namespace qgl

@@ -1446,6 +1446,11 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
             viewAll();
             break;
         }
+        case Qt::Key_Escape:
+        {
+            emit(quit());
+            break;
+        }
         default:
         {
             SofaViewer::keyPressEvent(e);

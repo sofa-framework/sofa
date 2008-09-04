@@ -28,7 +28,6 @@
 #include <sofa/component/mapping/SkinningMapping.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/DualQuat.inl>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/io/Mesh.h>
@@ -37,6 +36,10 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <string>
 #include <iostream>
+
+#ifdef SOFA_DEV
+#include <sofa/helper/DualQuat.inl>
+#endif
 
 using std::cerr;
 using std::endl;
@@ -117,6 +120,7 @@ void SkinningMapping<BasicMapping>::computeInitPos ( )
         }
         break;
     }
+#ifdef SOFA_DEV
     case INTERPOLATION_DUAL_QUATERNION:
     {
         initBlendedPos.resize( xto.size());
@@ -137,6 +141,7 @@ void SkinningMapping<BasicMapping>::computeInitPos ( )
         }
         break;
     }
+#endif
     default: {}
     }
     repartition.setValue ( m_reps );
@@ -381,6 +386,7 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
         }
         break;
     }
+#ifdef SOFA_DEV
     case INTERPOLATION_DUAL_QUATERNION:
     {
         for ( unsigned int i=0 ; i<out.size(); i++ )
@@ -403,6 +409,7 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
         }
         break;
     }
+#endif
     default: {}
     }
 }
@@ -515,6 +522,7 @@ void SkinningMapping<BasicMapping>::draw()
     }
     glEnd();
 
+#ifdef SOFA_DEV
     /*  Animation continue des repères le long de la poutre.
     bool anim = true;
     static unsigned int step = 0;
@@ -547,6 +555,7 @@ void SkinningMapping<BasicMapping>::draw()
       }
     }
     //*/
+#endif
 }
 
 } // namespace mapping
