@@ -448,7 +448,7 @@ std::map<CudaDistanceGrid::CudaDistanceGridParams, CudaDistanceGrid*>& CudaDista
 
 CudaRigidDistanceGridCollisionModel::CudaRigidDistanceGridCollisionModel()
     : modified(true)
-    , filename( initData( &filename, "filename", "load distance grid from specified file"))
+    , fileCudaRigidDistanceGrid( initData( &fileCudaRigidDistanceGrid, "fileCudaRigidDistanceGrid", "load distance grid from specified file"))
     , scale( initData( &scale, 1.0, "scale", "scaling factor for input file"))
     , box( initData( &box, "box", "Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
     , nx( initData( &nx, 64, "nx", "number of values on X axis") )
@@ -476,18 +476,18 @@ void CudaRigidDistanceGridCollisionModel::init()
     rigid = dynamic_cast< core::componentmodel::behavior::MechanicalState<RigidTypes>* > (getContext()->getMechanicalState());
 
     CudaDistanceGrid* grid = NULL;
-    if (filename.getValue().empty())
+    if (fileCudaRigidDistanceGrid.getValue().empty())
     {
         if (elems.size()==0 || elems[0].grid==NULL)
             std::cerr << "ERROR: CudaRigidDistanceGridCollisionModel requires an input filename.\n";
         // else the grid has already been set
         return;
     }
-    std::cout << "CudaRigidDistanceGridCollisionModel: creating "<<nx.getValue()<<"x"<<ny.getValue()<<"x"<<nz.getValue()<<" DistanceGrid from file "<<filename.getValue();
+    std::cout << "CudaRigidDistanceGridCollisionModel: creating "<<nx.getValue()<<"x"<<ny.getValue()<<"x"<<nz.getValue()<<" DistanceGrid from file "<<fileCudaRigidDistanceGrid.getValue();
     if (scale.getValue()!=1.0) std::cout<<" scale="<<scale.getValue();
     if (box.getValue()[0][0]<box.getValue()[1][0]) std::cout<<" bbox=<"<<box.getValue()[0]<<">-<"<<box.getValue()[0]<<">";
     std::cout << std::endl;
-    grid = CudaDistanceGrid::loadShared(filename.getValue(), scale.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
+    grid = CudaDistanceGrid::loadShared(fileCudaRigidDistanceGrid.getValue(), scale.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
 
     resize(1);
     elems[0].grid = grid;

@@ -72,7 +72,7 @@ protected:
 
 public:
     Data<unsigned> index;
-    Data< std::string > filename;
+    Data< std::string > fileRigidRigidMapping;
     //axis length for display
     Data<double> axisLength;
 
@@ -81,7 +81,7 @@ public:
           points(initData(&points, "initialPoints", "Initial position of the points")),
           repartition(initData(&repartition,"repartition","number of dest dofs per entry dof")),
           index(initData(&index,(unsigned)0,"index","input DOF index")),
-          filename(initData(&filename,"filename","Filename")),
+          fileRigidRigidMapping(initData(&fileRigidRigidMapping,"fileRigidRigidMapping","Filename")),
           axisLength(initData( &axisLength, 0.7, "axisLength", "axis length for display"))
     {
     }
@@ -96,8 +96,6 @@ public:
 
     void parse(core::objectmodel::BaseObjectDescription* arg)
     {
-        if (!filename.getValue().empty())
-            this->load(filename.getValue().c_str());
         this->Inherit::parse(arg);
     }
 

@@ -16,7 +16,7 @@
 		<Object type="MechanicalObject" template="Rigid" dx="5" dy="10.0" dz="0.0" />
 		<Object type="UniformMass" totalmass="100"/>
 		<Node name="Visu">
-			<Object type="OglModel" name="Visual" filename="mesh/lamp600.obj" texturename="textures/FIFA2.bmp" scale="0.1" color="gray" />
+			<Object type="OglModel" name="Visual" fileMesh="mesh/lamp600.obj" texturename="textures/FIFA2.bmp" scale="0.1" color="gray" />
 			<Object type="RigidMapping" object1="../.." object2="../Visual" />
 		</Node> 
 		<Node name="Surf">
@@ -27,9 +27,9 @@
 
 	<!-- Definition of static models model -->
 	<Object type="SphereTree" name="lamp2" filename="mesh/lamp600-medial.sph" simulated="0" moving="0" scale="0.1"  dx="-8" dy="-1" dz="10"  />
-	<Object type="OglModel" name="lamp2" filename="mesh/lamp600.obj" texturename="textures/brushed_metal.bmp" scale="0.1"   dx="-8" dy="-1" dz="10"/>
+	<Object type="OglModel" name="lamp2" fileMesh="mesh/lamp600.obj" texturename="textures/brushed_metal.bmp" scale="0.1"   dx="-8" dy="-1" dz="10"/>
 
 	<Object type="SphereTree" name="lamp3" filename="mesh/lamp600-medial.sph" simulated="0" moving="0" scale="0.1"   dx="8" dy="-2" dz="-10"/>
-	<Object type="OglModel" name="lamp3" filename="mesh/lamp600.obj" texturename="textures/floor.bmp" scale="0.1"   dx="8" dy="-2" dz="-10"/>
+	<Object type="OglModel" name="lamp3" fileMesh="mesh/lamp600.obj" texturename="textures/floor.bmp" scale="0.1"   dx="8" dy="-2" dz="-10"/>
 	
 </Node>

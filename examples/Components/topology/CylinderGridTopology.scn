@@ -1,6 +1,6 @@
 <Node name="root" dt="0.02" gravity="0 0 100" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="1">
 	<Node name="Reference">
-		<Object type="OglModel" filename="mesh/truthcylinder1-bent.obj" scale="0.95" dx="0" dy="-1" dz="0" color="green" />
+		<Object type="OglModel" fileMesh="mesh/truthcylinder1-bent.obj" scale="0.95" dx="0" dy="-1" dz="0" color="green" />
 	</Node>
 	<Node name="CylinderFEMTetra">
 		<Object type="EulerImplicit" />                

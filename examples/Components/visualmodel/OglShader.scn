@@ -17,7 +17,7 @@
                 <Object type="FixedConstraint" name="FixedConstraint" indices="3 39 64" />
 		<Node name="Visu">
          		<Object type="OglShader" fragFilename="shaders/toonShading.frag" vertFilename="shaders/toonShading.vert"/>
-			<Object type="OglModel" name="VisualModel" filename="mesh/liver-smooth.obj" color="red" />
+			<Object type="OglModel" name="VisualModel" fileMesh="mesh/liver-smooth.obj" color="red" />
 			<Object type="BarycentricMapping" object1="../.." object2="VisualModel" />
 		</Node>
 		<Node name="Surf">

@@ -465,7 +465,7 @@ protected:
     bool modified;
 
     // Input data parameters
-    Data< std::string > filename;
+    Data< std::string > fileRigidDistanceGrid;
     Data< double > scale;
     Data< helper::fixed_array<DistanceGrid::Coord,2> > box;
     Data< int > nx;
@@ -740,7 +740,7 @@ protected:
     sofa::helper::vector<DeformedCube> elems;
 
     // Input data parameters
-    Data< std::string > filename;
+    Data< std::string > fileFFDDistanceGrid;
     Data< double > scale;
     Data< helper::fixed_array<DistanceGrid::Coord,2> > box;
     Data< int > nx;

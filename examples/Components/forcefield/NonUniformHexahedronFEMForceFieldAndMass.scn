@@ -17,8 +17,8 @@
 >
 	<Object type="CollisionPipeline" depth="6" verbose="0" draw="0"/>
 	<Object type="BruteForceDetection" name="N2" />
-	<Object type="NewProximityIntersection" name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
-	<Object type="CollisionResponse" name="Response" contact="default" />
+	<Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
+	<Object type="CollisionResponse" name="Response" response="default" />
 	<Object type="CollisionGroup" name="Group" />
 	
 	
@@ -32,7 +32,7 @@
 		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<Object type="SparseGrid"
 				  n="8 6 7"
-				  filename="mesh/Armadillo_verysimplified.obj"
+				  fileTopology="mesh/Armadillo_verysimplified.obj"
 				  />
 		
 		<Object type="MechanicalObject"  dx="70" ry="25"  />
@@ -40,7 +40,7 @@
 		<Object type="HexahedronFEMForceFieldAndMass" youngModulus="20000" poissonRatio="0.3" method="large" density="10" updateStiffnessMatrix="false" printLog="0"/>
 		
 		<Node name="Visuunif">
-			<Object type="OglModel" name="Visual" filename="mesh/Armadillo_simplified.obj" color="1 .4 0 1" />
+			<Object type="OglModel" name="Visual" fileMesh="mesh/Armadillo_simplified.obj" color="1 .4 0 1" />
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>	
 		
@@ -62,7 +62,7 @@
 		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<Object type="SparseGrid"
 				  n="8 6 7"
-				  filename="mesh/Armadillo_verysimplified.obj"
+				  fileTopology="mesh/Armadillo_verysimplified.obj"
 				  nbVirtualFinerLevels="2"
 				  />
 		<Object type="MechanicalObject" ry="25"/>
@@ -70,7 +70,7 @@
 		<Object type="NonUniformHexahedronFEMForceFieldAndMass" nbVirtualFinerLevels="2" youngModulus="20000" poissonRatio="0.3" method="large" density="10" updateStiffnessMatrix="false" printLog="0"/>
 
 		<Node name="Visunonunif">
-			<Object type="OglModel" name="Visual" filename="mesh/Armadillo_simplified.obj" color="0.4 0.6 1.0" />
+			<Object type="OglModel" name="Visual" fileMesh="mesh/Armadillo_simplified.obj" color="0.4 0.6 1.0" />
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>	
 		

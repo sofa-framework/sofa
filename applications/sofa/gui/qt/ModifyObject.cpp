@@ -135,6 +135,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
 
     bool visualTab = false;
+    bool isNode = (dynamic_cast< Node *>(node_clicked) != NULL);
     QWidget *tabVisualization = NULL; //tab for visualization info: only created if needed ( boolean visualTab gives this answer ).
 
     QVBoxLayout *currentTabLayout = NULL;
@@ -145,7 +146,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
     if (node_clicked)
     {
         //If the current element is a node, we add a box to perform geometric transformation: translation, rotation, scaling
-        if(REINIT_FLAG && dynamic_cast< Node *>(node_clicked))
+        if(REINIT_FLAG && isNode)
         {
             emptyTab = false;
             currentTab_save  = currentTab= new QWidget();
@@ -1001,10 +1002,10 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
         }
 
         if (tabPropertiesLayout!= NULL) tabPropertiesLayout->addStretch();
-        if (tabVisualization != NULL)
+        if (tabVisualization != NULL )
         {
             dialogTab->addTab(tabVisualization, QString("Visualization"));
-            tabVisualizationLayout->addStretch();
+            if ( !isNode) tabVisualizationLayout->addStretch();
         }
         for (unsigned int indexTab = 0; indexTab<counterTab; indexTab++)
         {

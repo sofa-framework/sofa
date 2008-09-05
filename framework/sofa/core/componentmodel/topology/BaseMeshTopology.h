@@ -116,14 +116,14 @@ public:
     /// @}
 
     BaseMeshTopology();
-
+    virtual void init();
     void parse(core::objectmodel::BaseObjectDescription* arg);
 
     /// Load the topology from a file.
     ///
     /// The default implementation supports the following formats: obj, gmsh, mesh (custom simple text file), xs3 (deprecated description of mass-springs networks).
     virtual bool load(const char* filename);
-    virtual std::string getFilename() const {return d_filename.getValue();}
+    virtual std::string getFilename() const {return fileTopology.getValue();}
 
     // defined in Topology
     //virtual int getNbPoints() const = 0;
@@ -296,7 +296,7 @@ public:
 
 protected:
 
-    Data< std::string > d_filename;
+    Data< std::string > fileTopology;
 };
 
 } // namespace topology

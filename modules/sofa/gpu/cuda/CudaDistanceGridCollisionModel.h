@@ -462,7 +462,7 @@ protected:
     bool modified;
 
     // Input data parameters
-    Data< std::string > filename;
+    Data< std::string > fileCudaRigidDistanceGrid;
     Data< double > scale;
     Data< helper::fixed_array<CudaDistanceGrid::Coord,2> > box;
     Data< int > nx;

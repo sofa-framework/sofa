@@ -77,7 +77,12 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , nbRefs ( initData ( &nbRefs, ( unsigned ) 3,"nbRefs","nb references for skinning" ) )
     , computeWeights ( true )
     , wheighting ( WEIGHT_INVDIST )
-    , interpolation ( INTERPOLATION_DUAL_QUATERNION )
+    , interpolation
+#ifdef SOFA_DEV
+    ( INTERPOLATION_DUAL_QUATERNION )
+#else
+    ( INTERPOLATION_LINEAR )
+#endif
 {
 }
 

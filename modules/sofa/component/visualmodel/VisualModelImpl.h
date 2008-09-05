@@ -150,7 +150,7 @@ protected:
     ResizableExtVector<int> vertNormIdx;
 
     float scaleTex;
-    Data< std::string > filename;
+    Data< std::string > fileMesh;
     Data< std::string > texturename;
     Data< Vector3 > translation;
     Data< Vector3 > rotation;
@@ -190,8 +190,8 @@ public:
 
     void flipFaces();
 
-    void setFilename(std::string s) {filename.setValue(s);}
-    std::string getFilename() {return filename.getValue();}
+    void setFilename(std::string s) {fileMesh.setValue(s);}
+    std::string getFilename() {return fileMesh.getValue();}
 
     void setColor(float r, float g, float b, float a);
     void setColor(std::string color);
