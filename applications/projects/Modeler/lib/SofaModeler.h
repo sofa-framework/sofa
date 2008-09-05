@@ -174,6 +174,8 @@ public slots:
     /// Open a recently Opened files from the menu Recently Opened Files...
     void fileRecentlyOpened(int id);
 
+    /// Filter in the library all the components containing the text written
+    void searchText(const QString&);
 protected:
     /// Widget containing all the graphs
     QTabWidget *sceneTab;
@@ -189,6 +191,7 @@ protected:
     std::map< std::string, std::string > mapPreset;
 
     /// Main Sofa Ressources: contains all the component, with many info, and creators
+    typedef std::map<  const QObject* , std::pair<ClassInfo*, QObject*> >::const_iterator libraryIterator;
     std::map<  const QObject* , std::pair<ClassInfo*, QObject*> > mapComponents;
     /// Map between a tabulation from the modeler to an object of type GraphModeler
     std::map<  const QWidget*, GraphModeler*> mapGraph;
