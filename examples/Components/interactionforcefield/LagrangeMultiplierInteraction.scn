@@ -13,7 +13,7 @@
 		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-20" threshold="1.0e-20" />
 		
 		<Node name="CUBE_0">
-			<Object type="OglModel" name="Visual" filename="mesh/cube.obj" color="1 0 0 1" dy="2.5"/>
+			<Object type="OglModel" name="Visual" fileMesh="mesh/cube.obj" color="1 0 0 1" dy="2.5"/>
 			<Node name="Constraints">
 				<Object type="MechanicalObject" name="points" template="Vec3d" position="1 1.25 1"/>
 			</Node>
@@ -26,7 +26,7 @@
 			<Object type="UniformMass" totalmass="10.0"/>
 			<!--<Object type="UncoupledConstraintCorrection"/> -->
 			<Node name="Visu">
-				<Object type="OglModel" name="Visual" filename="mesh/cube.obj" color="1 1 0 1.0"/>
+				<Object type="OglModel" name="Visual" fileMesh="mesh/cube.obj" color="1 1 0 1.0"/>
 				<Object type="RigidMapping" object1="../.." object2="Visual" />
 				</Node>
 			<Node name="ColliCube">

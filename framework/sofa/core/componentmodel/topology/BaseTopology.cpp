@@ -81,6 +81,8 @@ void TopologyModifier::removeItems(sofa::helper::vector< unsigned int >& /*items
 
 void TopologyContainer::init()
 {
+    core::componentmodel::topology::BaseMeshTopology::init();
+    core::componentmodel::topology::BaseTopologyObject::init();
 }
 
 std::list<const TopologyChange *>::const_iterator TopologyContainer::lastChange() const

@@ -45,7 +45,7 @@ using helper::vector;
 using helper::fixed_array;
 
 BaseMeshTopology::BaseMeshTopology()
-    : d_filename(initData(&d_filename,"filename","Filename of the mesh"))
+    : fileTopology(initData(&fileTopology,"fileTopology","Filename of the mesh"))
 {
 }
 
@@ -192,14 +192,15 @@ const BaseMeshTopology::QuadHexas& BaseMeshTopology::getHexaQuadShell(QuadID)
     return empty;
 }
 
+void BaseMeshTopology::init()
+{
+    if (!fileTopology.getValue().empty())
+    {
+        this->load(fileTopology.getValue().c_str());
+    }
+}
 void BaseMeshTopology::parse(core::objectmodel::BaseObjectDescription* arg)
 {
-    if (arg->getAttribute("filename"))
-    {
-        d_filename.setValue( arg->getAttribute("filename") );
-        this->load(arg->getAttribute("filename"));
-    }
-    arg->removeAttribute("filename");
     this->core::componentmodel::topology::Topology::parse(arg);
 }
 
@@ -243,7 +244,7 @@ bool BaseMeshTopology::load(const char* filename)
         logWarning(std::string("Mesh \"") + filename +std::string("\" not found"));
         return false;
     }
-    this->d_filename.setValue( meshFilename );
+    this->fileTopology.setValue( meshFilename );
     DefaultMeshTopologyLoader loader(this);
     if (!loader.load(meshFilename.c_str()))
     {

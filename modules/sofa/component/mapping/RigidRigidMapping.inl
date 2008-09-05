@@ -108,6 +108,10 @@ void RigidRigidMapping<BasicMapping>::load(const char *filename)
 template <class BasicMapping>
 void RigidRigidMapping<BasicMapping>::init()
 {
+
+    if (!fileRigidRigidMapping.getValue().empty())
+        this->load(fileRigidRigidMapping.getValue().c_str());
+
     if (this->points.getValue().empty() && this->toModel!=NULL)
     {
         VecCoord& x = *this->toModel->getX();

@@ -63,7 +63,7 @@ using namespace defaulttype;
 
 RigidDistanceGridCollisionModel::RigidDistanceGridCollisionModel()
     : modified(true)
-    , filename( initData( &filename, "filename", "load distance grid from specified file"))
+    , fileRigidDistanceGrid( initData( &fileRigidDistanceGrid, "fileRigidDistanceGrid", "load distance grid from specified file"))
     , scale( initData( &scale, 1.0, "scale", "scaling factor for input file"))
     , box( initData( &box, "box", "Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
     , nx( initData( &nx, 64, "nx", "number of values on X axis") )
@@ -91,18 +91,18 @@ void RigidDistanceGridCollisionModel::init()
     rigid = dynamic_cast< core::componentmodel::behavior::MechanicalState<RigidTypes>* > (getContext()->getMechanicalState());
 
     DistanceGrid* grid = NULL;
-    if (filename.getValue().empty())
+    if (fileRigidDistanceGrid.getValue().empty())
     {
         if (elems.size()==0 || elems[0].grid==NULL)
             std::cerr << "ERROR: RigidDistanceGridCollisionModel requires an input filename.\n";
         // else the grid has already been set
         return;
     }
-    std::cout << "RigidDistanceGridCollisionModel: creating "<<nx.getValue()<<"x"<<ny.getValue()<<"x"<<nz.getValue()<<" DistanceGrid from file "<<filename.getValue();
+    std::cout << "RigidDistanceGridCollisionModel: creating "<<nx.getValue()<<"x"<<ny.getValue()<<"x"<<nz.getValue()<<" DistanceGrid from file "<<fileRigidDistanceGrid.getValue();
     if (scale.getValue()!=1.0) std::cout<<" scale="<<scale.getValue();
     if (box.getValue()[0][0]<box.getValue()[1][0]) std::cout<<" bbox=<"<<box.getValue()[0]<<">-<"<<box.getValue()[0]<<">";
     std::cout << std::endl;
-    grid = DistanceGrid::loadShared(filename.getValue(), scale.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
+    grid = DistanceGrid::loadShared(fileRigidDistanceGrid.getValue(), scale.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
 
     resize(1);
     elems[0].grid = grid;
@@ -362,7 +362,7 @@ void RigidDistanceGridCollisionModel::draw(int index)
 ////////////////////////////////////////////////////////////////////////////////
 
 FFDDistanceGridCollisionModel::FFDDistanceGridCollisionModel()
-    : filename( initData( &filename, "filename", "load distance grid from specified file"))
+    : fileFFDDistanceGrid( initData( &fileFFDDistanceGrid, "fileFFDDistanceGrid", "load distance grid from specified file"))
     , scale( initData( &scale, 1.0, "scale", "scaling factor for input file"))
     , box( initData( &box, "box", "Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
     , nx( initData( &nx, 64, "nx", "number of values on X axis") )
@@ -395,16 +395,16 @@ void FFDDistanceGridCollisionModel::init()
     }
 
     DistanceGrid* grid = NULL;
-    if (filename.getValue().empty())
+    if (fileFFDDistanceGrid.getValue().empty())
     {
         std::cerr << "ERROR: FFDDistanceGridCollisionModel requires an input filename.\n";
         return;
     }
-    std::cout << "FFDDistanceGridCollisionModel: creating "<<nx.getValue()<<"x"<<ny.getValue()<<"x"<<nz.getValue()<<" DistanceGrid from file "<<filename.getValue();
+    std::cout << "FFDDistanceGridCollisionModel: creating "<<nx.getValue()<<"x"<<ny.getValue()<<"x"<<nz.getValue()<<" DistanceGrid from file "<<fileFFDDistanceGrid.getValue();
     if (scale.getValue()!=1.0) std::cout<<" scale="<<scale.getValue();
     if (box.getValue()[0][0]<box.getValue()[1][0]) std::cout<<" bbox=<"<<box.getValue()[0]<<">-<"<<box.getValue()[0]<<">";
     std::cout << std::endl;
-    grid = DistanceGrid::loadShared(filename.getValue(), scale.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
+    grid = DistanceGrid::loadShared(fileFFDDistanceGrid.getValue(), scale.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
     if (grid && !dumpfilename.getValue().empty())
     {
         std::cout << "FFDDistanceGridCollisionModel: dump grid to "<<dumpfilename.getValue()<<std::endl;

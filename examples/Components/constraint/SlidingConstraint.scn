@@ -17,7 +17,7 @@
 		<Object type="UniformMass" totalmass="10.0"/>
 		<Object type="UncoupledConstraintCorrection"/>
 		<Node name="Visu">
-			<Object type="OglModel" name="Visual" filename="mesh/cube.obj" color="1 1 0 1.0"/>
+			<Object type="OglModel" name="Visual" fileMesh="mesh/cube.obj" color="1 1 0 1.0"/>
 			<Object type="RigidMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="ColliCube">
@@ -49,7 +49,7 @@
 		<Object type="UniformMass" totalmass="10.0"/>
 		<Object type="UncoupledConstraintCorrection"/>
 		<Node name="Visu">
-			<Object type="OglModel" name="Visual" filename="mesh/cube.obj" color="1 1 0 1.0"/>
+			<Object type="OglModel" name="Visual" fileMesh="mesh/cube.obj" color="1 1 0 1.0"/>
 			<Object type="RigidMapping" object1="../.." object2="Visual" />
 		</Node>
 		<Node name="ColliCube">

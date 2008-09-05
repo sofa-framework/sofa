@@ -170,8 +170,8 @@ public slots:
     void slot_playforward(  ) ;
     void slot_stepforward( ) ;
     void slot_forward( );
-    void slot_sliderValue(int);
-    void slot_loadrecord_timevalue();
+    void slot_sliderValue(int value,bool updateTime=true);
+    void slot_loadrecord_timevalue(bool updateTime=true);
 
 
 

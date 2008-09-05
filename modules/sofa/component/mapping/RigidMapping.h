@@ -68,14 +68,14 @@ public:
     VecCoord rotatedPoints;
     RigidMappingInternalData<typename In::DataTypes, typename Out::DataTypes> data;
     Data<unsigned int> index;
-    Data< std::string > filename;
+    Data< std::string > fileRigidMapping;
     Data< bool > useX0;
 
     RigidMapping ( In* from, Out* to )
         : Inherit ( from, to ),
           points ( initData ( &points,"initialPoints", "Local Coordinates of the points" ) ),
           index ( initData ( &index, ( unsigned ) 0,"index","input DOF index" ) ),
-          filename ( initData ( &filename,"filename","Filename" ) ),
+          fileRigidMapping ( initData ( &fileRigidMapping,"fileRigidMapping","Filename" ) ),
           useX0( initData ( &useX0,false,"useX0","Use x0 instead of local copy of initial positions (to support topo changes)") ),
           repartition ( initData ( &repartition,"repartition","number of dest dofs per entry dof" ) )
     {
@@ -93,7 +93,6 @@ public:
 
     void parse ( core::objectmodel::BaseObjectDescription* arg )
     {
-        if ( !filename.getValue().empty() ) this->load ( filename.getValue().c_str() );
         this->Inherit::parse ( arg );
     }
 

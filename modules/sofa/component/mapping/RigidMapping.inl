@@ -144,6 +144,7 @@ int RigidMapping<BasicMapping>::addPoint(const Coord& c, int indexFrom)
 template <class BasicMapping>
 void RigidMapping<BasicMapping>::init()
 {
+    if ( !fileRigidMapping.getValue().empty() ) this->load ( fileRigidMapping.getValue().c_str() );
     //cerr<<"RigidMapping<BasicMapping>::init begin "<<getName()<<endl;
     if (this->points.getValue().empty() && this->toModel!=NULL && !useX0.getValue())
     {

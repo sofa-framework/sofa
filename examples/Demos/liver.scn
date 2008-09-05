@@ -20,7 +20,7 @@
 
 		<Node name="Visu">
 		<!-- Using material contained in liver-smooth.obj -->
-			<Object type="OglModel" name="VisualModel" filename="mesh/liver-smooth.obj"  />
+			<Object type="OglModel" name="VisualModel" fileMesh="mesh/liver-smooth.obj"  />
 			<Object type="BarycentricMapping" object1="../.." object2="VisualModel" name="visual mapping"/>
 		</Node>
 		<Node name="Surf">

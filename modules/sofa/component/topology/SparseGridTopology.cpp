@@ -121,7 +121,7 @@ bool SparseGridTopology::load(const char* filename)
 {
     std::string f(filename);
     if ( sofa::helper::system::DataRepository.findFile ( f ) )
-        this->d_filename.setValue( f );
+        this->fileTopology.setValue( f );
 // 		cerr<<"SparseGridTopology::load : "<<filename<<"    "<<this->filename.getValue()<<endl;
     return true;
 }
@@ -216,7 +216,7 @@ void SparseGridTopology::init()
 void SparseGridTopology::buildAsFinest(  )
 {
     // 		  cerr<<"SparseGridTopology::buildAsFinest(  )\n";
-    std::string _filename=d_filename.getValue();
+    std::string _filename=fileTopology.getValue();
     if (_filename.empty())
     {
         std::cerr << "SparseGridTopology: no filename specified." << std::endl;
@@ -1027,7 +1027,7 @@ void SparseGridTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->setNx( newnx );
     _virtualFinerLevels[0]->setNy( newny );
     _virtualFinerLevels[0]->setNz( newnz );
-    _virtualFinerLevels[0]->load(this->d_filename.getValue().c_str());
+    _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
     _virtualFinerLevels[0]->init();
 
     cerr<<"SparseGridTopology "<<getName()<<" buildVirtualFinerLevels : ";

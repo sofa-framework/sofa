@@ -104,6 +104,7 @@ double PointSetTopologyContainer::getPZ(int i) const
 
 void PointSetTopologyContainer::init()
 {
+    core::componentmodel::topology::TopologyContainer::init();
     sofa::component::MeshLoader* loader;
     this->getContext()->get(loader);
 
