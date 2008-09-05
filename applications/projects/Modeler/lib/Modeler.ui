@@ -108,7 +108,24 @@
                             <string>GNode</string>
                         </property>
                     </widget>
-                    <widget class="QToolBox" row="1" column="0">
+		    <widget class="QLayoutWidget" row="1" column="0" >
+		      <hbox>
+			<widget class="QLabel" >
+                          <property name="name">
+                            <cstring>LabelSearch</cstring>
+                          </property>
+                          <property name="text">
+                            <cstring>Filter:</cstring>
+                          </property>
+			</widget>
+			<widget class="QLineEdit" >
+                          <property name="name">
+                            <cstring>SearchEdit</cstring>
+                          </property>
+			</widget>
+		      </hbox>
+		    </widget>
+                    <widget class="QToolBox" row="2" column="0">
                         <property name="name">
                             <cstring>Library</cstring>
                         </property>
@@ -144,7 +161,7 @@
                         <property name="minimumSize">
                             <size>
                                 <width>100</width>
-                                <height>400</height>
+                                <height>100</height>
                             </size>
                         </property>
                         <property name="currentIndex">
@@ -605,6 +622,12 @@
         <receiver>Modeler</receiver>
         <slot>newGNode()</slot>
     </connection>
+    <connection>
+        <sender>SearchEdit</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>Modeler</receiver>
+        <slot>searchText(const QString&amp;)</slot>
+    </connection>
 </connections>
 <slots>
     <slot>newTab()</slot>
@@ -623,6 +646,7 @@
     <slot>editFind()</slot>
     <slot>saveXML()</slot>
     <slot>newGNode()</slot>
+    <slot>searchText(const QString&amp;)</slot>
 </slots>
 <layoutdefaults spacing="2" margin="5"/>
 </UI>

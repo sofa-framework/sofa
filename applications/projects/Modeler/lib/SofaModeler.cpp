@@ -183,7 +183,7 @@ SofaModeler::SofaModeler()
     {
         itMap = inventory.find( (*it) );
         unsigned int numRows = inventory.count( (*it) );
-        QString s=QString(it->c_str()) + QString("Widget");
+        QString s=QString(it->c_str());
         QWidget* gridWidget = new QWidget(SofaComponents, s);
         QGridLayout* gridLayout = new QGridLayout( gridWidget, numRows+1,1);
 
@@ -256,14 +256,14 @@ SofaModeler::SofaModeler()
 
                 for (unsigned int t=0; t<templateCombo.size(); ++t)
                     combo->insertItem(QString(templateCombo[t].c_str()));
+
+                gridLayout->addWidget(combo, counterElem,1);
                 if (templateCombo.size() == 1) //Mapping with only one template possible
                 {
-                    combo->hide();
-                    gridLayout->addWidget(new QLabel(QString(templateCombo[0].c_str()), gridWidget), counterElem, 1);
+                    combo->insertItem(QString(templateCombo[0].c_str()));
                 }
                 else
                 {
-                    gridLayout->addWidget(combo, counterElem,1);
                     if (templateCombo.size() == 0) {combo->hide(); button->hide(); counterElem--;}
                 }
 
@@ -272,8 +272,9 @@ SofaModeler::SofaModeler()
             {
                 if (!entry->creatorList.begin()->first.empty())
                 {
-                    QLabel *templateDescription = new QLabel(QString(entry->creatorList.begin()->first.c_str()), gridWidget);
-                    gridLayout->addWidget(templateDescription, counterElem,1);
+                    combo = new QComboBox(gridWidget);
+                    combo->insertItem(QString(entry->creatorList.begin()->first.c_str()));
+                    gridLayout->addWidget(combo, counterElem,1);
                 }
             }
             button->setText(QString(entry->className.c_str()));
@@ -771,7 +772,6 @@ void SofaModeler::dragEnterEvent( QDragEnterEvent* event)
 /// When the user move the mouse around, with something grabbed
 void SofaModeler::dragMoveEvent( QDragMoveEvent* event)
 {
-
     QString text;
     Q3TextDrag::decode(event, text);
     if (text.isEmpty()) event->ignore();
@@ -784,7 +784,51 @@ void SofaModeler::dragMoveEvent( QDragMoveEvent* event)
     }
 }
 
+/// Quick Filter of te components
+void SofaModeler::searchText(const QString& text)
+{
+    int index=-1;
+    libraryIterator it;
+    QWidget *currentTab=NULL;
+    bool toHide=true;
+    for (it=mapComponents.begin(); it!=mapComponents.end(); it++)
+    {
+        QPushButton *button=(QPushButton *)it->first;
 
+        if (currentTab != button->parent())
+        {
+            if (currentTab)
+            {
+                index++;
+                if (toHide)	SofaComponents->removeItem(currentTab);
+                else if (SofaComponents->indexOf(currentTab) == -1) SofaComponents->insertItem(index, currentTab, currentTab->name());
+            }
+            currentTab = (QWidget*)button->parent();
+            toHide=true;
+        }
+
+        QComboBox   *combo =(QComboBox *)it->second.second;
+        if (it->second.first->className.find(text.ascii()) != std::string::npos)
+        {
+            button->show();
+            if (combo) combo->show();
+            toHide=false;
+        }
+        else
+        {
+            button->hide();
+            if (combo) combo->hide();
+        }
+    }
+
+    if (currentTab)
+    {
+        index++;
+        if (toHide)	SofaComponents->removeItem(currentTab);
+        else if (SofaComponents->indexOf(currentTab) == -1) SofaComponents->insertItem(index, currentTab, currentTab->name());
+    }
+    SofaComponents->update();
+}
 }
 }
 }
