@@ -70,6 +70,10 @@ public:
     /// Process the BaseForceField
     virtual Result fwdForceField(simulation::Node* /*node*/, core::componentmodel::behavior::BaseForceField* f);
 
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalComputeEnergyVisitor"; }
+
 };
 
 }

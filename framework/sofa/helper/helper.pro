@@ -7,6 +7,7 @@ include($${SOFA_DIR}/sofa.cfg)
 TARGET = sofahelper$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES
 LIBS += $$SOFA_EXT_LIBS
+INCLUDEPATH += /usr/include/libxml2
 
 # Cross-dependecy to faulttype is forbidden as defaulttype depends on helper...
 # LIBS += -lsofadefaulttype$$LIBSUFFIX

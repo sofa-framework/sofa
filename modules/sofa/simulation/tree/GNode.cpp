@@ -498,8 +498,11 @@ void GNode::updateContext()
 {
     if ( getParent() != NULL )
     {
+        if( debug_ )
+        {
+            cerr<<"GNode::updateContext, node = "<<getName()<<", incoming context = "<< *getParent()->getContext() << endl;
+        }
         copyContext(*parent);
-        //cerr<<"node "<<getName()<<", copy context, time = "<<getTime()<<endl;
     }
     simulation::Node::updateContext();
 }
@@ -508,6 +511,10 @@ void GNode::updateSimulationContext()
 {
     if ( getParent() != NULL )
     {
+        if( debug_ )
+        {
+            cerr<<"GNode::updateContext, node = "<<getName()<<", incoming context = "<< *getParent()->getContext() << endl;
+        }
         copySimulationContext(*parent);
     }
     simulation::Node::updateSimulationContext();

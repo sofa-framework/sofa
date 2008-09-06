@@ -22,11 +22,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_ACTION_H
-#define SOFA_SIMULATION_ACTION_H
+#ifndef SOFA_SIMULATION_VISITOR_H
+#define SOFA_SIMULATION_VISITOR_H
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/LocalStorage.h>
+#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
+#include <iostream>
 
 namespace sofa
 {
@@ -37,7 +39,7 @@ namespace simulation
 
 class LocalStorage;
 
-/// Base class for actions propagated recursively through the scenegraph
+/// Base class for visitors propagated recursively through the scenegraph
 class Visitor
 {
 public:
@@ -51,13 +53,26 @@ public:
     /// Callback method called after child node have been processed and before going back to the parent node.
     virtual void processNodeBottomUp(simulation::Node* /*node*/) {}
 
-    /// Return a category name for this action.
+    /// Return a category name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getCategoryName() const { return "default"; }
 
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "Visitor"; }
+
+#ifdef SOFA_VERBOSE_TRAVERSAL
+    void debug_write_state_before( core::objectmodel::BaseObject* obj ) ;
+    void debug_write_state_after( core::objectmodel::BaseObject* obj ) ;
+#else
+    inline void debug_write_state_before( core::objectmodel::BaseObject*  ) {}
+    inline void debug_write_state_after( core::objectmodel::BaseObject*  ) {}
+#endif
+
+
     /// Helper method to enumerate objects in the given list. The callback gets the pointer to node
-    template < class Act, class Container, class Object >
-    void for_each(Act* action, simulation::Node* node, const Container& list, void (Act::*fn)(simulation::Node*, Object*))
+    template < class Visit, class Container, class Object >
+    void for_each(Visit* visitor, simulation::Node* node, const Container& list, void (Visit::*fn)(simulation::Node*, Object*))
     {
 
         if (node->getLogTime())
@@ -66,7 +81,9 @@ public:
             ctime_t t0 = node->startTime();
             for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
             {
-                (action->*fn)(node, *it);
+                debug_write_state_before(*it);
+                (visitor->*fn)(node, *it);
+                debug_write_state_after(*it);
                 t0 = node->endTime(t0, category, *it);
             }
         }
@@ -74,15 +91,17 @@ public:
         {
             for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
             {
-                (action->*fn)(node, *it);
+                debug_write_state_before(*it);
+                (visitor->*fn)(node, *it);
+                debug_write_state_after(*it);
             }
         }
 
     }
 
     /// Helper method to enumerate objects in the given list. The callback gets the pointer to node
-    template < class Act, class Container, class Object >
-    Visitor::Result for_each_r(Act* action, simulation::Node* node, const Container& list, Visitor::Result (Act::*fn)(simulation::Node*, Object*))
+    template < class Visit, class Container, class Object >
+    Visitor::Result for_each_r(Visit* visitor, simulation::Node* node, const Container& list, Visitor::Result (Visit::*fn)(simulation::Node*, Object*))
     {
 
         Visitor::Result res = Visitor::RESULT_CONTINUE;
@@ -92,7 +111,9 @@ public:
             ctime_t t0 = node->startTime();
             for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
             {
-                res = (action->*fn)(node, *it);
+                debug_write_state_before(*it);
+                res = (visitor->*fn)(node, *it);
+                debug_write_state_after(*it);
                 t0 = node->endTime(t0, category, *it);
             }
         }
@@ -100,19 +121,22 @@ public:
         {
             for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
             {
-                res = (action->*fn)(node, *it);
+                debug_write_state_before(*it);
+                res = (visitor->*fn)(node, *it);
+                debug_write_state_after(*it);
             }
         }
         return res;
 
     }
 
-    //template < class Act, class Container, class Object >
-    //void for_each(Act* action, const Container& list, void (Act::*fn)(Object))
+
+    //template < class Visit, class Container, class Object >
+    //void for_each(Visit* visitor, const Container& list, void (Visit::*fn)(Object))
     //{
     //	for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
     //	{
-    //		(action->*fn)(*it);
+    //		(visitor->*fn)(*it);
     //	}
     //}
 
@@ -136,7 +160,7 @@ public:
     void execute(core::objectmodel::BaseContext*);
 
 
-    /// Specify whether this action can be parallelized.
+    /// Specify whether this visitor can be parallelized.
     virtual bool isThreadSafe() const { return false; }
 
     /// Callback method called when decending to a new node. Recursion will stop if this method returns RESULT_PRUNE

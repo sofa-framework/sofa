@@ -414,58 +414,20 @@ void Node::initialize()
 
 void Node::updateContext()
 {
-    //if( debug_ ) cerr<<"Node::updateContext, node = "<<getName()<<", incoming context = "<< *this->getContext() << endl;
 
-    // Apply local modifications to the context
-    if (getLogTime())
+    for ( unsigned i=0; i<contextObject.size(); ++i )
     {
-        for ( unsigned i=0; i<contextObject.size(); ++i )
-        {
-            contextObject[i]->init();
-            contextObject[i]->apply();
-            //cerr<<"Node::updateContext, modified by node = "<<contextObject[i]->getName()<< endl;
-        }
+        contextObject[i]->init();
+        contextObject[i]->apply();
+        //cerr<<"Node::updateContext, modified by node = "<<contextObject[i]->getName()<<endl;
     }
-    else
-    {
-        for ( unsigned i=0; i<contextObject.size(); ++i )
-        {
-            contextObject[i]->init();
-            contextObject[i]->apply();
-            //cerr<<"Node::updateContext, modified by node = "<<contextObject[i]->getName()<<endl;
-        }
-    }
-//	if( !mechanicalModel.empty() ) {
-//		mechanicalModel->updateContext(&context_);
-//	}
-
-
-    // project the gravity to the local coordinate system
-    /*        getContext()->setGravity( getContext()->getLocalFrame().backProjectVector(getContext()->getWorldGravity()) );*/
 
     if ( debug_ ) std::cerr<<"Node::updateContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) << endl;
 }
 
 void Node::updateSimulationContext()
 {
-    // Apply local modifications to the context
-    if (getLogTime())
-    {
-        for ( unsigned i=0; i<contextObject.size(); ++i )
-        {
-            contextObject[i]->init();
-            contextObject[i]->apply();
-        }
-    }
-    else
-    {
-        for ( unsigned i=0; i<contextObject.size(); ++i )
-        {
-            contextObject[i]->init();
-            contextObject[i]->apply();
-        }
-    }
-    if ( debug_ ) std::cerr<<"Node::updateSimulationContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) << endl;
+    updateContext();
 }
 
 void Node::updateVisualContext(int/* FILTER*/)

@@ -75,6 +75,7 @@ public:
     typedef component::MechanicalObject<InDataTypes> Inherit;
     typedef typename InDataTypes::Real Real;
     typedef typename InDataTypes::VecReal VecReal;
+    //typedef typename InDataTypes::VecCoord VecCoord;
 
     typedef TDataTypes DataTypes;
     typedef TSphere<DataTypes> Element;
@@ -100,7 +101,8 @@ public:
     sofa::core::componentmodel::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return this; }
 
     Real getRadius(int i) const { return this->radius.getValue()[i]; }
-    void setRadius(int i, Real r) { (*this->radius.beginEdit())[i] = r; }
+    void setRadius(int i, Real r) { (*this->radius.beginEdit())[i] = r; this->radius.endEdit(); }
+    void setRadius(Real r) { VecReal& radii = *this->radius.beginEdit(); radii.fill(r); this->radius.endEdit(); }
 
     const VecReal& getR() const { return this->radius.getValue(); }
 

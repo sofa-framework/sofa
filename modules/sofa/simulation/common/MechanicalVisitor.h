@@ -66,6 +66,10 @@ class MechanicalVisitor : public Visitor
 public:
     typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
 
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalVisitor"; }
+
     /**@name Forward processing
     Methods called during the forward (top-down) traversal of the data structure.
     Method processNodeTopDown(simulation::Node*) calls the fwd* methods in the order given here. When there is a mapping, it is processed first, then method fwdMappedMechanicalState is applied to the BaseMechanicalState.
@@ -188,6 +192,10 @@ public:
     {}
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
 
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalVAvailVisitor"; }
+
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
@@ -205,6 +213,10 @@ public:
     {}
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
 
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalVAllocVisitor"; }
+
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
@@ -220,6 +232,11 @@ public:
     MechanicalVFreeVisitor(VecId v) : v(v)
     {}
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalVFreeVisitor"; }
+
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
@@ -293,6 +310,10 @@ public:
     /// Sequential code
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
 
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalVDotVisitor"; }
+
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
@@ -319,6 +340,11 @@ public:
     {}
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalPropagateDxVisitor"; }
+
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
@@ -338,6 +364,11 @@ public:
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalPropagateDxAndResetForceVisitor"; }
+
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
@@ -353,11 +384,10 @@ public:
     MechanicalPropagateAndAddDxVisitor(VecId dx = VecId::dx()) : dx(dx)
     {}
 
-    //virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
-    //{
-    //    mm->setDx(dx);
-    //    return RESULT_CONTINUE;
-    //}
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalPropagateAndAddDxVisitor"; }
+
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
 
@@ -384,6 +414,10 @@ public:
     {}
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* mass);
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalAddMDxVisitor"; }
 
 #ifdef SOFA_SUPPORT_MAPPED_MASS
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
@@ -436,6 +470,10 @@ public:
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* mass);
 
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalAccFromFVisitor"; }
+
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
@@ -469,6 +507,10 @@ public:
     virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
 
 
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalPropagatePositionAndVelocityVisitor"; }
+
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
@@ -499,6 +541,10 @@ public:
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
     virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
 
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalPropagateFreePositionVisitor"; }
+
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
@@ -519,6 +565,10 @@ public:
     {}
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalResetForceVisitor"; }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -543,6 +593,10 @@ public:
     virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
 
 
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalComputeForceVisitor"; }
+
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
@@ -565,6 +619,10 @@ public:
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdForceField(simulation::Node* /*node*/, core::componentmodel::behavior::BaseForceField* ff);
     virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalComputeDfVisitor"; }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -596,6 +654,10 @@ public:
     virtual Result fwdForceField(simulation::Node* /*node*/, core::componentmodel::behavior::BaseForceField* ff);
     virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
 
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalAddMBKdxVisitor"; }
+
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
@@ -613,6 +675,10 @@ public:
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
 
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalResetConstraintVisitor"; }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -632,6 +698,10 @@ public:
     virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
     virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
 
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalAccumulateConstraint"; }
 
     virtual bool isThreadSafe() const
     {
@@ -657,6 +727,10 @@ public:
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/);
     virtual void bwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
 
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalApplyConstraintsVisitor"; }
+
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
@@ -676,6 +750,10 @@ public:
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
 
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalBeginIntegrationVisitor"; }
+
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
@@ -694,6 +772,10 @@ public:
     {}
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalEndIntegrationVisitor"; }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -716,6 +798,10 @@ public:
     {
     }
 
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalIntegrationVisitor"; }
+
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
@@ -735,6 +821,10 @@ public:
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms);
 
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalComputeComplianceVisitor"; }
+
 private:
     double **_W;
 };
@@ -752,6 +842,10 @@ public:
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalComputeContactForceVisitor"; }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -773,6 +867,10 @@ public:
 
     /// Process the BaseMass
     virtual Result fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* mass);
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalAddSeparateGravityVisitor"; }
 
 };
 

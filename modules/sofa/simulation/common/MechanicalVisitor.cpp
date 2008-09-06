@@ -46,7 +46,9 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node)
     for (unsigned i=0; i<node->solver.size() && res!=RESULT_PRUNE; i++ )
     {
         ctime_t t0 = begin(node, node->solver[i]);
+        debug_write_state_before(node->solver[i]);
         res = this->fwdOdeSolver(node, node->solver[i]);
+        debug_write_state_after(node->solver[i]);
         end(node, node->solver[i], t0);
     }
     if (res != RESULT_PRUNE)
@@ -63,11 +65,17 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node)
                 }
                 Result res2;
                 ctime_t t0 = begin(node, node->mechanicalMapping);
+                debug_write_state_before(node->mechanicalMapping);
                 res = this->fwdMechanicalMapping(node, node->mechanicalMapping);
+                debug_write_state_after(node->mechanicalMapping);
                 end(node, node->mechanicalMapping, t0);
+
                 t0 = begin(node, node->mechanicalState);
+                debug_write_state_before(node->mechanicalState);
                 res2 = this->fwdMappedMechanicalState(node, node->mechanicalState);
+                debug_write_state_after(node->mechanicalState);
                 end(node, node->mechanicalState, t0);
+
                 if (res2 == RESULT_PRUNE)
                     res = res2;
             }
@@ -75,7 +83,9 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node)
             {
                 //cerr<<"MechanicalVisitor::processNodeTopDown, node "<<node->getName()<<" is a no-map model"<<endl;
                 ctime_t t0 = begin(node, node->mechanicalState);
+                debug_write_state_before(node->mechanicalState);
                 res = this->fwdMechanicalState(node, node->mechanicalState);
+                debug_write_state_after(node->mechanicalState);
                 end(node, node->mechanicalState, t0);
             }
         }
@@ -85,7 +95,9 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node)
         if (node->mass != NULL)
         {
             ctime_t t0 = begin(node, node->mass);
+            debug_write_state_before(node->mass);
             res = this->fwdMass(node, node->mass);
+            debug_write_state_after(node->mass);
             end(node, node->mass, t0);
         }
     }

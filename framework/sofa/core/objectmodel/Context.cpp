@@ -423,16 +423,6 @@ void Context::copyVisualContext(const Context& c)
     showNormals_.setValue(c.showNormals_.getValue());
 }
 
-std::ostream& operator << (std::ostream& out, const Context& c )
-{
-    out<<std::endl<<"local gravity = "<<c.getLocalGravity();
-    out<<std::endl<<"transform from local to world = "<<c.getPositionInWorld();
-    //out<<std::endl<<"transform from world to local = "<<c.getWorldToLocal();
-    out<<std::endl<<"spatial velocity = "<<c.getVelocityInWorld();
-    out<<std::endl<<"acceleration of the origin = "<<c.getVelocityBasedLinearAccelerationInWorld();
-    return out;
-}
-
 
 
 

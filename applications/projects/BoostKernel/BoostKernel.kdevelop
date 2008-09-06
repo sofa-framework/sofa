@@ -100,17 +100,17 @@
   </kdevdebugger>
   <kdevtrollproject>
     <run>
-      <mainprogram>../../../bin/runBoostKernel</mainprogram>
+      <mainprogram>/home/ffaure/Desktop/sofa-dev/trunk/Sofa/bin/runBoostKernel-latest</mainprogram>
       <programargs></programargs>
       <directoryradio>build</directoryradio>
       <customdirectory>/</customdirectory>
       <terminal>true</terminal>
       <autocompile>true</autocompile>
       <envvars>
-        <envvar value="../../../lib/linux:$LD_LIBRARY_PATH" name="LD_LIBRARY_PATH" />
+        <envvar value="lib/linux:$LD_LIBRARY_PATH" name="LD_LIBRARY_PATH" />
       </envvars>
       <globaldebugarguments></globaldebugarguments>
-      <globalcwd>/scratch/ffaure/sofa-dev/trunk/Sofa/applications/projects/BoostKernel</globalcwd>
+      <globalcwd>/home/ffaure/Documents/sofa-dev/trunk/Sofa</globalcwd>
       <useglobalprogram>true</useglobalprogram>
       <autoinstall>false</autoinstall>
       <autokdesu>false</autokdesu>
@@ -188,11 +188,11 @@
     <qt>
       <used>false</used>
       <version>3</version>
-      <root>/usr/lib/qt-3.3/</root>
+      <root>/usr/share/qt3</root>
       <includestyle>3</includestyle>
       <designerintegration>EmbeddedKDevDesigner</designerintegration>
-      <qmake>/usr/lib/qt-3.3/bin/qmake</qmake>
-      <designer>/usr/lib/qt-3.3//bin/designer</designer>
+      <qmake>/usr/bin/qmake-qt3</qmake>
+      <designer>/usr/bin/designer-qt3</designer>
       <designerpluginpaths/>
     </qt>
     <designerintegration>

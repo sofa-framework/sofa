@@ -277,6 +277,19 @@ void BaseContext::executeVisitor( simulation::Visitor* )
     //assert(false);
 }
 
+std::ostream& operator << (std::ostream& out, const BaseContext& c )
+{
+    out<<std::endl<<"local gravity = "<<c.getLocalGravity();
+    out<<std::endl<<"transform from local to world = "<<c.getPositionInWorld();
+    //out<<std::endl<<"transform from world to local = "<<c.getWorldToLocal();
+    out<<std::endl<<"spatial velocity = "<<c.getVelocityInWorld();
+    out<<std::endl<<"acceleration of the origin = "<<c.getVelocityBasedLinearAccelerationInWorld();
+    out<<std::endl<<"showBehaviorModels = "<<c.getShowBehaviorModels();
+    return out;
+}
+
+
+
 
 } // namespace objectmodel
 
