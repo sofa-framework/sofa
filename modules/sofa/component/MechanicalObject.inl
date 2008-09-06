@@ -577,14 +577,14 @@ void MechanicalObject<DataTypes>::applyRotation (const defaulttype::Quat q)
 #ifndef SOFA_FLOAT
 template<>
 void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaulttype::Quat q);
-template <>
-bool MechanicalObject<Vec1dTypes>::addBBox(double* minBBox, double* maxBBox);
+/*    template <>
+	bool MechanicalObject<Vec1dTypes>::addBBox(double* minBBox, double* maxBBox)*/;
 #endif
 #ifndef SOFA_Real
 template<>
 void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaulttype::Quat q);
-template <>
-bool MechanicalObject<Vec1fTypes>::addBBox(double* minBBox, double* maxBBox);
+//     template <>
+// 	bool MechanicalObject<Vec1fTypes>::addBBox(double* minBBox, double* maxBBox);
 #endif
 
 template <class DataTypes>
@@ -1135,6 +1135,18 @@ double MechanicalObject<DataTypes>::compareV(std::istream &in)
     }
     return error/count;
 }
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::writeF(std::ostream &out)
+{
+    out << *getF();
+}
+template <class DataTypes>
+void MechanicalObject<DataTypes>::writeDx(std::ostream &out)
+{
+    out << *getDx();
+}
+
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::writeState( std::ostream& out )

@@ -80,6 +80,17 @@ double ConstantForceField<DataTypes>::getPotentialEnergy(const VecCoord& x)
     return e;
 }
 
+template <class DataTypes>
+void ConstantForceField<DataTypes>::setForce( unsigned i, const Deriv& force )
+{
+    VecIndex& indices = *points.beginEdit();
+    VecDeriv& f = *forces.beginEdit();
+    indices.push_back(i);
+    f.push_back( force );
+    points.endEdit();
+    forces.endEdit();
+}
+
 
 #ifndef SOFA_FLOAT
 template <>

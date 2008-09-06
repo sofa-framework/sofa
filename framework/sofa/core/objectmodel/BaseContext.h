@@ -398,6 +398,7 @@ public:
 
     /// @}
 
+    friend std::ostream& operator << (std::ostream& out, const BaseContext& c );
 };
 
 } // namespace objectmodel

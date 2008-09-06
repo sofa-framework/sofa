@@ -23,6 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/common/Visitor.h>
+#include <sofa/simulation/common/VisualVisitor.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
 
 namespace sofa
 {
@@ -36,6 +38,41 @@ void Visitor::execute(sofa::core::objectmodel::BaseContext* c)
     c->executeVisitor(this);
 }
 
+#ifdef SOFA_VERBOSE_TRAVERSAL
+void Visitor::debug_write_state_before( core::objectmodel::BaseObject* obj )
+{
+    using std::cerr;
+    using std::endl;
+    if( dynamic_cast<VisualVisitor*>(this) ) return;
+    cerr<<"Visitor "<<getClassName()<<" enter component "<<obj->getName();
+    using core::componentmodel::behavior::BaseMechanicalState;
+    if( BaseMechanicalState* dof = dynamic_cast<BaseMechanicalState*> ( obj->getContext()->getMechanicalState() ) )
+    {
+        cerr<<", state:\nx= "; dof->writeX(cerr);
+        cerr<<"\nv= ";        dof->writeV(cerr);
+        cerr<<"\ndx= ";       dof->writeDx(cerr);
+        cerr<<"\nf= ";        dof->writeF(cerr);
+    }
+    cerr<<endl;
+}
+
+void Visitor::debug_write_state_after( core::objectmodel::BaseObject* obj )
+{
+    using std::cerr;
+    using std::endl;
+    if( dynamic_cast<VisualVisitor*>(this) ) return;
+    cerr<<"Visitor "<<getClassName()<<" leave component "<<obj->getName();
+    using core::componentmodel::behavior::BaseMechanicalState;
+    if( BaseMechanicalState* dof = dynamic_cast<BaseMechanicalState*> ( obj->getContext()->getMechanicalState() ) )
+    {
+        cerr<<", state:\nx= "; dof->writeX(cerr);
+        cerr<<"\nv= ";        dof->writeV(cerr);
+        cerr<<"\ndx= ";       dof->writeDx(cerr);
+        cerr<<"\nf= ";        dof->writeF(cerr);
+    }
+    cerr<<endl;
+}
+#endif
 
 } // namespace simulation
 

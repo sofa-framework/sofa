@@ -66,6 +66,10 @@ class MechanicalMatrixVisitor : public Visitor
 public:
     typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
 
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalMatrixVisitor"; }
+
     /**@name Forward processing
     Methods called during the forward (top-down) traversal of the data structure.
      Method processNodeTopDown(simulation::Node*) calls the fwd* methods in the order given here. When there is a mapping, it is processed first, then method fwdMappedMechanicalState is applied to the BaseMechanicalState.
@@ -191,6 +195,10 @@ public:
         ms->contributeToMatrixDimension(nbRow, nbCol);
         return RESULT_CONTINUE;
     }
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalGetMatrixDimensionVisitor"; }
+
 };
 
 
@@ -208,6 +216,10 @@ public:
         offsetOnEnter = _offset;
         offsetOnExit = _offset;
     }
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalAddMBK_ToMatrixVisitor"; }
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms)
     {
@@ -325,6 +337,10 @@ public:
     BaseVector *vect;
     unsigned int offset;
 
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return " MechanicalMultiVector2BaseVectorVisitor"; }
+
     MechanicalMultiVector2BaseVectorVisitor(VecId _src, defaulttype::BaseVector * _vect, unsigned int _offset=0)
         : src(_src),vect(_vect),offset(_offset)
     {
@@ -347,6 +363,10 @@ public:
     BaseVector *src;
     VecId dest;
     unsigned int offset;
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalMultiVectorPeqBaseVectorVisitor"; }
 
     MechanicalMultiVectorPeqBaseVectorVisitor(VecId _dest, defaulttype::BaseVector * _src, unsigned int _offset=0)
         : src(_src),dest(_dest),offset(_offset)

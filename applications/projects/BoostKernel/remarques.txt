@@ -31,5 +31,7 @@ SphereModel est en fait TSphereModel. Dans http://www.sofa-framework.org/classes
 Pas tres logique que getTreeObject et getObjects soient dans Node, car les Node sont censés être indépendants de la scene dans laquelle ils s'insèrent.
 Il faudrait peut-etre une simulation::Scene abstraite.
 
+BOOST_STATIC_ASSERT n'a pas l'air de fonctionner dans mon projet IK (Vec4(real,real,real) passe).
+
 
 

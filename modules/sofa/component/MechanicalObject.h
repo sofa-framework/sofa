@@ -179,6 +179,8 @@ public:
     virtual void writeV(std::ostream& out);
     virtual void readV(std::istream& in);
     virtual double compareV(std::istream& in);
+    virtual void writeF(std::ostream& out);
+    virtual void writeDx(std::ostream& out);
 
     virtual void writeState( std::ostream& out );
 

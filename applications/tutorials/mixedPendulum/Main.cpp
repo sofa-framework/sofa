@@ -38,7 +38,8 @@
 #include <sofa/component/typedef/Sofa_typedef.h>
 
 using namespace sofa::simulation::tree;
-using sofa::component::odesolver::EulerSolver;
+//typedef sofa::component::odesolver::EulerSolver Solver;
+typedef sofa::component::odesolver::CGImplicitSolver Solver;
 
 int main(int, char** argv)
 {
@@ -54,7 +55,7 @@ int main(int, char** argv)
     groot->setGravityInWorld( Coord3(0,-10,0) );
 
     // One solver for all the graph
-    EulerSolver* solver = new EulerSolver;
+    Solver* solver = new Solver;
     groot->addObject(solver);
     solver->setName("S");
 
@@ -90,7 +91,7 @@ int main(int, char** argv)
     StiffSpringForceField3* spring = new StiffSpringForceField3;
     deformableBody->addObject(spring);
     spring->setName("F1");
-    spring->addSpring( 1,0, 10., 1, splength );
+    spring->addSpring( 1,0, 100., 1, splength );
 
 
     //-------------------- Rigid body
@@ -111,6 +112,17 @@ int main(int, char** argv)
     UniformMassRigid3* rigidMass = new UniformMassRigid3;
     rigidBody->addObject(rigidMass);
     rigidMass->setName("M2");
+    UniformMassRigid3::MassType* m = rigidMass->mass.beginEdit();
+    m->mass=0.3;
+    UniformMassRigid3::MassType::Mat3x3 inertia;
+    inertia.fill(0.0);
+    float in = 0.1;
+    inertia[0][0] = in;
+    inertia[1][1] = in;
+    inertia[2][2] = in;
+    m->inertiaMatrix = inertia;
+    m->recalc();
+    rigidMass->mass.endEdit();
 
 
     //-------------------- the particles attached to the rigid body
@@ -136,7 +148,7 @@ int main(int, char** argv)
     StiffSpringForceField3* iff = new StiffSpringForceField3( DOF, rigidParticleDOF );
     groot->addObject(iff);
     iff->setName("F13");
-    iff->addSpring( 1,0, 10., 1., splength );
+    iff->addSpring( 1,0, 100., 1., splength );
 
 
 

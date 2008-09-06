@@ -58,6 +58,9 @@ public:
 
     ConstantForceField();
 
+    /// Set a force to a given particle
+    void setForce( unsigned i, const Deriv& f );
+
     /// Add the forces
     virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 

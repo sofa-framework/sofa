@@ -100,7 +100,7 @@
   </kdevdebugger>
   <kdevtrollproject>
     <run>
-      <mainprogram>../../../bin/mixedPendulum-latest</mainprogram>
+      <mainprogram>../../../bin/mixedPendulum-latest </mainprogram>
       <programargs/>
       <directoryradio>build</directoryradio>
       <customdirectory>/</customdirectory>
@@ -110,7 +110,7 @@
         <envvar value="../../../lib/linux:../lib/linux:$LD_LIBRARY_PATH" name="LD_LIBRARY_PATH" />
       </envvars>
       <globaldebugarguments/>
-      <globalcwd>/home/ffaure/Documents/sofa-dev/trunk/Sofa/applications/tutorials/mixedPendulum</globalcwd>
+      <globalcwd>/home/ffaure/Documents/programmes/Sofa/sofa-dev/trunk/Sofa/applications/tutorials/mixedPendulum</globalcwd>
       <useglobalprogram>true</useglobalprogram>
       <autoinstall>false</autoinstall>
       <autokdesu>false</autokdesu>
@@ -133,6 +133,8 @@
       <replacePaths>false</replacePaths>
       <disableDefaultOpts>true</disableDefaultOpts>
       <enableFilenamesOnly>false</enableFilenamesOnly>
+      <showVariablesInTree>true</showVariablesInTree>
+      <showParseErrors>true</showParseErrors>
     </qmake>
   </kdevtrollproject>
   <kdevfilecreate>
