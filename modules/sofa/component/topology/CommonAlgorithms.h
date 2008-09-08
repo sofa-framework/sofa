@@ -22,77 +22,74 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <iostream>
-#include <fstream>
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
+#ifndef SOFA_COMPONENT_TOPOLOGY_COMMONALGORITHMS_H
+#define SOFA_COMPONENT_TOPOLOGY_COMMONALGORITHMS_H
 
-#include "mycuda.h"
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
-namespace gpu
+
+namespace component
 {
-namespace cuda
+
+namespace topology
 {
 
-SOFA_LINK_CLASS(CudaFixedConstraint)
-SOFA_LINK_CLASS(CudaMechanicalObject)
-SOFA_LINK_CLASS(CudaSpringForceField)
-SOFA_LINK_CLASS(CudaUniformMass)
-SOFA_LINK_CLASS(CudaPlaneForceField)
-SOFA_LINK_CLASS(CudaSphereForceField)
-SOFA_LINK_CLASS(CudaEllipsoidForceField)
-SOFA_LINK_CLASS(CudaIdentityMapping)
-SOFA_LINK_CLASS(CudaBarycentricMapping)
-SOFA_LINK_CLASS(CudaRigidMapping)
-SOFA_LINK_CLASS(CudaSubsetMapping)
-SOFA_LINK_CLASS(CudaDistanceGridCollisionModel)
-SOFA_LINK_CLASS(CudaTetrahedronFEMForceField)
-SOFA_LINK_CLASS(CudaCollision)
-SOFA_LINK_CLASS(CudaCollisionDetection)
-SOFA_LINK_CLASS(CudaPointModel)
-SOFA_LINK_CLASS(CudaTestForceField)
-SOFA_LINK_CLASS(CudaSetTopology)
-SOFA_LINK_CLASS(CudaVisualModel)
-SOFA_LINK_CLASS(CudaOglTetrahedralModel)
+using namespace sofa::defaulttype;
 
-#ifdef SOFA_DEV
-
-SOFA_LINK_CLASS(CudaMasterContactSolver)
-SOFA_LINK_CLASS(CudaSpatialGridContainer)
-
-#endif // SOFA_DEV
-
-extern "C"
+/// Cross product for 3-elements vectors.
+template< class Real>
+Real areaProduct(const Vec<3,Real>& a, const Vec<3,Real>& b)
 {
-//MycudaVerboseLevel mycudaVerboseLevel = LOG_ERR;
-    MycudaVerboseLevel mycudaVerboseLevel = LOG_INFO;
-//MycudaVerboseLevel mycudaVerboseLevel = LOG_TRACE;
+    return Vec<3,Real>(a.y()*b.z() - a.z()*b.y(),
+            a.z()*b.x() - a.x()*b.z(),
+            a.x()*b.y() - a.y()*b.x()).norm();
 }
 
-void mycudaLogError(int err, const char* src)
+/// area for 2-elements vectors.
+template< class Real>
+Real areaProduct(const defaulttype::Vec<2,Real>& a, const defaulttype::Vec<2,Real>& b )
 {
-    std::cerr << "CUDA: Error "<<err<<" returned from "<<src<<".\n";
-    exit(1);
+    return a[0]*b[1] - a[1]*b[0];
 }
 
-int myprintf(const char* fmt, ...)
+/// area invalid for 1-elements vectors.
+template< class Real>
+Real areaProduct(const defaulttype::Vec<1,Real>& , const defaulttype::Vec<1,Real>& )
 {
-    va_list args;
-    va_start( args, fmt );
-    int r = vfprintf( stderr, fmt, args );
-    va_end( args );
-    return r;
+    assert(false);
+    return (Real)0;
 }
 
-const char* mygetenv(const char* name)
+
+/// Volume (triple product) for 3-elements vectors.
+template<typename real>
+inline real tripleProduct(const Vec<3,real>& a, const Vec<3,real>& b,const Vec<3,real> &c)
 {
-    return getenv(name);
+    return dot(a,cross(b,c));
 }
 
-} // namespace cuda
-} // namespace gpu
+/// Volume invalid for 2-elements vectors.
+template <typename real>
+inline real tripleProduct(const Vec<2,real>& , const Vec<2,real>& , const Vec<2,real> &)
+{
+    assert(false);
+    return (real)0;
+}
+
+/// Volume invalid for 1-elements vectors.
+template <typename real>
+inline real tripleProduct(const Vec<1,real>& , const Vec<1,real>& , const Vec<1,real> &)
+{
+    assert(false);
+    return (real)0;
+}
+
+} // namespace topology
+
+} // namespace component
+
 } // namespace sofa
+
+#endif

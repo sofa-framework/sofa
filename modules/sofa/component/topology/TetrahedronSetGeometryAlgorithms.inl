@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETGEOMETRYALGORITHMS_INL
 
 #include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/CommonAlgorithms.h>
 
 namespace sofa
 {
@@ -247,29 +248,6 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filen
     myfile << "$ENDELM\n";
 
     myfile.close();
-}
-
-/// Cross product for 3-elements vectors.
-template<typename real>
-inline real tripleProduct(const Vec<3,real>& a, const Vec<3,real>& b,const Vec<3,real> &c)
-{
-    return dot(a,cross(b,c));
-}
-
-/// area from 2-elements vectors.
-template <typename real>
-inline real tripleProduct(const Vec<2,real>& , const Vec<2,real>& ,const Vec<2,real> &)
-{
-    assert(false);
-    return (real)0;
-}
-
-/// area for 1-elements vectors.
-template <typename real>
-inline real tripleProduct(const Vec<1,real>& , const Vec<1,real>& ,const Vec<1,real> &)
-{
-    assert(false);
-    return (real)0;
 }
 
 } // namespace topology
