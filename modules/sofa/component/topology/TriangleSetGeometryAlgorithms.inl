@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_TRIANGLESETGEOMETRYALGORITHMS_INL
 
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
+#include <sofa/component/topology/CommonAlgorithms.h>
 
 namespace sofa
 {
@@ -1540,30 +1541,6 @@ bool is_point_in_halfplane(const Vec<3,Real>& p, unsigned int e0, unsigned int e
         //std::cout << "INFO_print : triangle is flat" << std::endl;
         return false;
     }
-}
-
-/// Cross product for 3-elements vectors.
-template< class Real>
-Real areaProduct(const Vec<3,Real>& a, const Vec<3,Real>& b)
-{
-    return Vec<3,Real>(a.y()*b.z() - a.z()*b.y(),
-            a.z()*b.x() - a.x()*b.z(),
-            a.x()*b.y() - a.y()*b.x()).norm();
-}
-
-/// area from 2-elements vectors.
-template< class Real>
-Real areaProduct(const defaulttype::Vec<2,Real>& a, const defaulttype::Vec<2,Real>& b )
-{
-    return a[0]*b[1] - a[1]*b[0];
-}
-
-/// area for 1-elements vectors.
-template< class Real>
-Real areaProduct(const defaulttype::Vec<1,Real>& , const defaulttype::Vec<1,Real>& )
-{
-    assert(false);
-    return (Real)0;
 }
 
 } // namespace topology
