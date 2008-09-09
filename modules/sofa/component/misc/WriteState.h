@@ -102,19 +102,25 @@ public:
 class WriteStateCreator: public Visitor
 {
 public:
-    WriteStateCreator() : sceneName(""), counterWriteState(0), createInMapping(false) {}
-    WriteStateCreator(std::string &n, int c=0) { sceneName=n; counterWriteState=c; }
+    WriteStateCreator(): sceneName(""), recordX(true),recordV(true), createInMapping(false), counterWriteState(0) {};
+    WriteStateCreator(std::string &n, bool _recordX, bool _recordV, bool _createInMapping, int c=0) :
+        sceneName(n),recordX(_recordX),recordV(_recordV),createInMapping(_createInMapping),counterWriteState(c) { };
     virtual Result processNodeTopDown( simulation::Node*  );
 
     void setSceneName(std::string &n) { sceneName = n; }
-    void setCounter(int c) { counterWriteState = c; }
+    void setRecordX(bool b) {recordX=b;}
+    void setRecordV(bool b) {recordV=b;}
     void setCreateInMapping(bool b) { createInMapping=b; }
+    void setCounter(int c) { counterWriteState = c; }
 protected:
+    std::string sceneName;
+    bool recordX,recordV;
+    bool createInMapping;
+
+    int counterWriteState; //avoid to have two same files if two mechanical objects has the same name
+
     void addWriteState(sofa::core::componentmodel::behavior::BaseMechanicalState*ms, simulation::Node* gnode);
 
-    std::string sceneName;
-    int counterWriteState; //avoid to have two same files if two mechanical objects has the same name
-    bool createInMapping;
 };
 
 class WriteStateActivator: public simulation::Visitor

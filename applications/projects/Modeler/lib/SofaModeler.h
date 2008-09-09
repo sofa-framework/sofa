@@ -193,6 +193,7 @@ protected:
     /// Main Sofa Ressources: contains all the component, with many info, and creators
     typedef std::map<  const QObject* , std::pair<ClassInfo*, QObject*> >::const_iterator libraryIterator;
     std::map<  const QObject* , std::pair<ClassInfo*, QObject*> > mapComponents;
+    unsigned int displayComponents;
     /// Map between a tabulation from the modeler to an object of type GraphModeler
     std::map<  const QWidget*, GraphModeler*> mapGraph;
     /// Map between a tabulation from the modeler to a Sofa Application
