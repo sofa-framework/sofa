@@ -149,6 +149,14 @@ public:
 
     void draw();
 
+    virtual bool hasVolume() { return ( ( getNbTetras() + getNbHexas() ) > 0 ); }
+    virtual bool hasSurface() { return ( ( getNbTriangles() + getNbQuads() ) > 0 ); }
+    virtual bool hasLines() { return ( ( getNbLines() ) > 0 ); }
+
+    virtual bool isVolume() { return hasVolume(); }
+    virtual bool isSurface() { return !hasVolume() && hasSurface(); }
+    virtual bool isLines() { return !hasVolume() && !hasSurface() && hasLines(); }
+
 protected:
     int nbPoints;
     vector< fixed_array<SReal,3> > seqPoints;
@@ -446,11 +454,11 @@ protected:
 
     void invalidate();
 
-    virtual void updateEdges()     { }
-    virtual void updateTriangles() { }
-    virtual void updateQuads()     { }
-    virtual void updateTetras()    { }
-    virtual void updateHexas()     { }
+    virtual void updateEdges();
+    virtual void updateTriangles();
+    virtual void updateQuads();
+    virtual void updateTetras();
+    virtual void updateHexas();
 
 protected:
     virtual void loadFromMeshLoader(sofa::component::MeshLoader* loader);
