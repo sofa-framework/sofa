@@ -93,8 +93,8 @@ public:
 class ReadStateCreator: public Visitor
 {
 public:
-    ReadStateCreator():sceneName(""), counterReadState(0), createInMapping(false) {}
-    ReadStateCreator(std::string &n, bool i=true, int c=0 ) { sceneName=n; init=i; counterReadState=c; }
+    ReadStateCreator():sceneName(""), createInMapping(false), counterReadState(0) {}
+    ReadStateCreator(std::string &n, bool _createInMapping, bool i=true, int c=0 ): sceneName(n), createInMapping(_createInMapping), init(i) , counterReadState(c) {}
     virtual Result processNodeTopDown( simulation::Node*  );
 
     void setSceneName(std::string &n) { sceneName = n;}
@@ -102,10 +102,10 @@ public:
     void setCreateInMapping(bool b) {createInMapping=b;}
 protected:
     void addReadState(sofa::core::componentmodel::behavior::BaseMechanicalState *ms, simulation::Node* gnode);
-    bool init;
     std::string sceneName;
-    int counterReadState; //avoid to have two same files if two mechanical objects has the same name
     bool createInMapping;
+    bool init;
+    int counterReadState; //avoid to have two same files if two mechanical objects has the same name
 };
 
 class ReadStateActivator: public Visitor

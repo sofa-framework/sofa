@@ -148,6 +148,7 @@ SofaModeler::SofaModeler()
     std::multimap< std::string, ClassInfo* > inventory;
     std::vector< ClassInfo* > entries;
     sofa::core::ObjectFactory::getInstance()->getAllEntries(entries);
+
     for (unsigned int i=0; i<entries.size(); ++i)
     {
 #ifdef	    TEST_CREATION_COMPONENT
@@ -219,12 +220,6 @@ SofaModeler::SofaModeler()
 
 
 
-            QPushButton *button = new QPushButton(gridWidget, QString(entry->className.c_str()));
-            connect(button, SIGNAL(pressed()), this, SLOT( newComponent()));
-            connect(button, SIGNAL(pressed()), this, SLOT( releaseButton()));
-            gridLayout->addWidget(button, counterElem,0);
-            button->setFlat(false);
-
             //Count the number of template usable: Mapping and MechanicalMapping must be separated
             std::vector< std::string > templateCombo;
             {
@@ -246,7 +241,15 @@ SofaModeler::SofaModeler()
                     templateCombo.push_back(itTemplate->first);
                 }
             }
+            if (templateCombo.size() == 0 && entry->creatorList.size() > 1)
+            { itMap++; continue;}
 
+            displayComponents++;
+            QPushButton *button = new QPushButton(gridWidget, QString(entry->className.c_str()));
+            connect(button, SIGNAL(pressed()), this, SLOT( newComponent()));
+            connect(button, SIGNAL(pressed()), this, SLOT( releaseButton()));
+            gridLayout->addWidget(button, counterElem,0);
+            button->setFlat(false);
 
             //Template: Add in a combo box the list of the templates
             QComboBox *combo=NULL;
@@ -258,15 +261,6 @@ SofaModeler::SofaModeler()
                     combo->insertItem(QString(templateCombo[t].c_str()));
 
                 gridLayout->addWidget(combo, counterElem,1);
-                if (templateCombo.size() == 1) //Mapping with only one template possible
-                {
-                    combo->insertItem(QString(templateCombo[0].c_str()));
-                }
-                else
-                {
-                    if (templateCombo.size() == 0) {combo->hide(); button->hide(); counterElem--;}
-                }
-
             }
             else
             {
@@ -299,8 +293,7 @@ SofaModeler::SofaModeler()
 
 
     newTab();
-
-    Library->setItemLabel(0, QString("Sofa Components: ")+SofaComponents->itemLabel(0));
+    changeLibraryLabel(0);
     connect(SofaComponents, SIGNAL(currentChanged(int)), this, SLOT(changeLibraryLabel(int)));
     //Recently Opened Files
     std::string scenes ( "config/Modeler.ini" );
@@ -563,7 +556,8 @@ void SofaModeler::changeInformation(Q3ListViewItem *item)
 
 void SofaModeler::changeLibraryLabel(int index)
 {
-    Library->setItemLabel(0, QString("Sofa Components: ")+SofaComponents->itemLabel(index));
+
+    Library->setItemLabel(0, QString("Sofa Components[") + QString::number(displayComponents) + QString("] : ")+SofaComponents->itemLabel(index));
 }
 
 void SofaModeler::newComponent()
@@ -791,6 +785,7 @@ void SofaModeler::searchText(const QString& text)
     libraryIterator it;
     QWidget *currentTab=NULL;
     bool toHide=true;
+    unsigned int displayed=0;
     for (it=mapComponents.begin(); it!=mapComponents.end(); it++)
     {
         QPushButton *button=(QPushButton *)it->first;
@@ -800,10 +795,9 @@ void SofaModeler::searchText(const QString& text)
             if (currentTab)
             {
                 index++;
-                if (toHide)	SofaComponents->removeItem(currentTab);
-                else if (SofaComponents->indexOf(currentTab) == -1) SofaComponents->insertItem(index, currentTab, currentTab->name());
+                if (!toHide && SofaComponents->indexOf(currentTab) == -1) SofaComponents->insertItem(index, currentTab, currentTab->name());
             }
-            currentTab = (QWidget*)button->parent();
+            currentTab = (QWidget*)button->parent(); SofaComponents->removeItem(currentTab);
             toHide=true;
         }
 
@@ -813,6 +807,7 @@ void SofaModeler::searchText(const QString& text)
             button->show();
             if (combo) combo->show();
             toHide=false;
+            displayed++;
         }
         else
         {
@@ -824,9 +819,11 @@ void SofaModeler::searchText(const QString& text)
     if (currentTab)
     {
         index++;
-        if (toHide)	SofaComponents->removeItem(currentTab);
-        else if (SofaComponents->indexOf(currentTab) == -1) SofaComponents->insertItem(index, currentTab, currentTab->name());
+        if (!toHide && SofaComponents->indexOf(currentTab) == -1) SofaComponents->insertItem(index, currentTab, currentTab->name());
     }
+    displayComponents = displayed;
+    changeLibraryLabel(SofaComponents->currentIndex());
+
     SofaComponents->update();
 }
 }

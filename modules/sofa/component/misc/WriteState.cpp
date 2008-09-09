@@ -69,6 +69,8 @@ void WriteStateCreator::addWriteState(sofa::core::componentmodel::behavior::Base
         if ( ws == NULL )
         {
             ws = new sofa::component::misc::WriteState(); gnode->addObject(ws);
+            ws->f_writeX.setValue(recordX);
+            ws->f_writeV.setValue(recordV);
         }
 
         std::ostringstream ofilename;
