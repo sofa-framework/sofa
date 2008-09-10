@@ -67,7 +67,7 @@ void OglShaderDefineMacro::init()
 {
     OglShaderMacro::init();
 
-    shader->addDefineMacro(id.getValue(), value.getValue());
+    shader->addDefineMacro(indexShader.getValue(), id.getValue(), value.getValue());
 }
 
 }
