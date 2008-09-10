@@ -56,7 +56,7 @@ namespace visualmodel
  *  \brief Utility to use shader for a visual model in OpenGL.
  *
  *  This class is used to implement shader into Sofa, for visual rendering
- *  or for special treatement that needs shader mechanism.
+ *  or for special treatment that needs shader mechanism.
  *  The 3 kinds of shaders can be defined : vertex, triangle and fragment.
  *  Geometry shader is only available with Nvidia's >8 series
  *  and Ati's >2K series.
@@ -64,15 +64,18 @@ namespace visualmodel
 
 class OglShader : public core::Shader, public core::VisualModel
 {
-protected:
-    ///Activates or not the shader in live
+public:
+    ///Activates or not the shader
     Data<bool> turnOn;
+    ///Tells if it must be activated automatically(value false : the visitor will switch the shader)
+    ///or manually (value true : useful when another component wants to use it for itself only)
+    Data<bool> passive;
 
-    ///File where vertex shader is defined
+    ///Files where vertex shader is defined
     Data<std::string> vertFilename;
-    ///File where fragment shader is defined
+    ///Files where fragment shader is defined
     Data<std::string> fragFilename;
-    ///File where geometry shader is defined
+    ///Files where geometry shader is defined
     Data<std::string> geoFilename;
 
     ///Describes the input type of primitive if geometry shader is used
@@ -82,10 +85,17 @@ protected:
     ///Describes the number of vertices in output if geometry shader is used
     Data<int> geometryVerticesOut;
 
+    Data<unsigned int> indexActiveShader;
+
+protected:
     ///OpenGL shader
-    sofa::helper::gl::GLSLShader m_shader;
+    std::vector<sofa::helper::gl::GLSLShader*> shaderVector;
 
     bool hasGeometryShader;
+
+    std::vector<std::string> vertexFilenames;
+    std::vector<std::string> fragmentFilenames;
+    std::vector<std::string> geometryFilenames;
 
 public:
     OglShader();
@@ -99,39 +109,44 @@ public:
 
     void start();
     void stop();
+    bool isActive();
 
-    void addDefineMacro(const std::string &name, const std::string &value);
+    unsigned int getNumberOfShaders();
+    unsigned int getCurrentIndex();
+    void setCurrentIndex(const unsigned int index);
 
-    void setTexture(const char* name, unsigned short unit);
+    void addDefineMacro(const unsigned int index, const std::string &name, const std::string &value);
 
-    void setInt(const char* name, int i);
-    void setInt2(const char* name, int i1, int i2);
-    void setInt3(const char* name, int i1, int i2, int i3);
-    void setInt4(const char* name, int i1, int i2, int i3, int i4);
+    void setTexture(const unsigned int index, const char* name, unsigned short unit);
 
-    void setFloat(const char* name, float f1);
-    void setFloat2(const char* name, float f1, float f2);
-    void setFloat3(const char* name, float f1, float f2, float f3);
-    void setFloat4(const char* name, float f1, float f2, float f3, float f4);
+    void setInt(const unsigned int index, const char* name, int i);
+    void setInt2(const unsigned int index, const char* name, int i1, int i2);
+    void setInt3(const unsigned int index, const char* name, int i1, int i2, int i3);
+    void setInt4(const unsigned int index, const char* name, int i1, int i2, int i3, int i4);
 
-    void setIntVector(const char* name, int count, const GLint* i);
-    void setIntVector2(const char* name, int count, const GLint* i);
-    void setIntVector3(const char* name, int count, const GLint* i);
-    void setIntVector4(const char* name, int count, const GLint* i);
+    void setFloat(const unsigned int index, const char* name, float f1);
+    void setFloat2(const unsigned int index, const char* name, float f1, float f2);
+    void setFloat3(const unsigned int index, const char* name, float f1, float f2, float f3);
+    void setFloat4(const unsigned int index, const char* name, float f1, float f2, float f3, float f4);
 
-    void setFloatVector(const char* name, int count, const float* f);
-    void setFloatVector2(const char* name, int count, const float* f);
-    void setFloatVector3(const char* name, int count, const float* f);
-    void setFloatVector4(const char* name, int count, const float* f);
+    void setIntVector(const unsigned int index, const char* name, int count, const GLint* i);
+    void setIntVector2(const unsigned int index, const char* name, int count, const GLint* i);
+    void setIntVector3(const unsigned int index, const char* name, int count, const GLint* i);
+    void setIntVector4(const unsigned int index, const char* name, int count, const GLint* i);
 
-    GLint getGeometryInputType() ;
-    void  setGeometryInputType(GLint v) ;
+    void setFloatVector(const unsigned int index, const char* name, int count, const float* f);
+    void setFloatVector2(const unsigned int index, const char* name, int count, const float* f);
+    void setFloatVector3(const unsigned int index, const char* name, int count, const float* f);
+    void setFloatVector4(const unsigned int index, const char* name, int count, const float* f);
 
-    GLint getGeometryOutputType() ;
-    void  setGeometryOutputType(GLint v) ;
+    GLint getGeometryInputType(const unsigned int index) ;
+    void  setGeometryInputType(const unsigned int index, GLint v) ;
 
-    GLint getGeometryVerticesOut() ;
-    void  setGeometryVerticesOut(GLint v);
+    GLint getGeometryOutputType(const unsigned int index) ;
+    void  setGeometryOutputType(const unsigned int index, GLint v) ;
+
+    GLint getGeometryVerticesOut(const unsigned int index) ;
+    void  setGeometryVerticesOut(const unsigned int index, GLint v);
 };
 
 /**
@@ -147,6 +162,8 @@ class OglShaderElement : public core::ShaderElement
 protected:
     ///Name of element (corresponding with the shader)
     Data<std::string> id;
+    ///Name of element (corresponding with the shader)
+    Data<unsigned int> indexShader;
     ///Shader to use the element with
     OglShader* shader;
 public:

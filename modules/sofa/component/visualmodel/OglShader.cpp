@@ -57,12 +57,14 @@ int OglShaderClass = core::RegisterObject("OglShader")
 
 OglShader::OglShader():
     turnOn(initData(&turnOn, (bool) true, "turnOn", "Turn On the shader?")),
+    passive(initData(&passive, (bool) false, "passive", "Will this shader be activated manually or automatically?")),
     vertFilename(initData(&vertFilename, (std::string) "shaders/toonShading.vert", "vertFilename", "Set the vertex shader filename to load")),
     fragFilename(initData(&fragFilename, (std::string) "shaders/toonShading.frag", "fragFilename", "Set the fragment shader filename to load")),
     geoFilename(initData(&geoFilename, (std::string) "", "geoFilename", "Set the geometry shader filename to load")),
     geometryInputType(initData(&geometryInputType, (int) -1, "geometryInputType", "Set input types for the geometry shader")),
     geometryOutputType(initData(&geometryOutputType, (int) -1, "geometryOutputType", "Set output types for the geometry shader")),
     geometryVerticesOut(initData(&geometryVerticesOut, (int) -1, "geometryVerticesOut", "Set max number of vertices in output for the geometry shader")),
+    indexActiveShader(initData(&indexActiveShader, (unsigned int) 0, "indexActiveShader", "Set current active shader")),
     hasGeometryShader(false)
 {
 
@@ -71,26 +73,156 @@ OglShader::OglShader():
 
 OglShader::~OglShader()
 {
-    m_shader.TurnOff();
-    m_shader.Release();
+    shaderVector[indexActiveShader.getValue()]->TurnOff();
+    for (unsigned int i=0 ; i<shaderVector.size() ; i++)
+    {
+        shaderVector[i]->Release();
+        delete shaderVector[i];
+    }
 }
 
 void OglShader::init()
 {
 
+    ///Vertex filenames parsing
+    std::string tempStr = vertFilename.getValue();
+    std::string file;
+    const std::string SEPARATOR = ";";
+    unsigned int pos = 0;
+    unsigned int oldPos = 0;
+
+    pos = tempStr.find(SEPARATOR, oldPos);
+
+    while (pos != std::string::npos)
+    {
+        file = tempStr.substr( oldPos, pos - oldPos);
+
+        if (!helper::system::DataRepository.findFile(file))
+        {
+            std::cerr << "OglShader : vertex shader file " << file <<" was not found." << std::endl;
+            return;
+        }
+        vertexFilenames.push_back( file );
+
+        oldPos = pos + SEPARATOR.size();
+        pos = tempStr.find(SEPARATOR, oldPos + SEPARATOR.size());
+    }
+
+    file = tempStr.substr( oldPos );
+
+    if (!helper::system::DataRepository.findFile(file))
+    {
+        std::cerr << "OglShader : vertex shader file " << file <<" was not found." << std::endl;
+        return;
+    }
+    vertexFilenames.push_back( file );
+
+    ///Fragment filenames parsing
+    pos = oldPos = 0;
+    tempStr = fragFilename.getValue();
+
+    pos = tempStr.find(SEPARATOR, oldPos);
+
+    while (pos != std::string::npos)
+    {
+        file = tempStr.substr( oldPos, pos - oldPos );
+
+        if (!helper::system::DataRepository.findFile(file))
+        {
+            std::cerr << "OglShader : fragment shader file " << file <<" was not found." << std::endl;
+            return;
+        }
+        fragmentFilenames.push_back( file );
+
+        oldPos = pos + SEPARATOR.size();
+        pos = tempStr.find(SEPARATOR, oldPos + SEPARATOR.size());
+    }
+
+    file = tempStr.substr( oldPos );
+    if (!helper::system::DataRepository.findFile(file))
+    {
+        std::cerr << "OglShader : fragment shader file " << file <<" was not found." << std::endl;
+        return;
+    }
+    fragmentFilenames.push_back( file );
+
+
+    ///Geometry filenames parsing
+    pos = oldPos = 0;
+    tempStr = geoFilename.getValue();
+
+    if (geoFilename.getValue() == "" )
+    {
+        //shaderVector[i]->InitShaders(helper::system::DataRepository.getFile(vertFilename.getValue()),
+        //		             helper::system::DataRepository.getFile(fragFilename.getValue()));
+
+        if (fragmentFilenames.size() != vertexFilenames.size())
+        {
+            std::cerr << "OglShader : The number of Vertex shaders is different from the number of Fragment Shaders." << std::endl;
+            return;
+        }
+
+        shaderVector.resize(vertexFilenames.size());
+
+        for (unsigned int i=0 ; i<vertexFilenames.size() ; i++)
+        {
+            shaderVector[i] = new sofa::helper::gl::GLSLShader();
+        }
+
+    }
+    else
+    {
+        pos = tempStr.find(SEPARATOR, oldPos);
+
+        while (pos != std::string::npos)
+        {
+            pos = tempStr.find(SEPARATOR, oldPos);
+            if (pos != std::string::npos)
+            {
+                file = tempStr.substr( oldPos, pos - oldPos );
+
+                if (!helper::system::DataRepository.findFile(file))
+                {
+                    std::cerr << "OglShader : geometry shader file " << file <<" was not found." << std::endl;
+                    return;
+                }
+                geometryFilenames.push_back( file );
+            }
+            oldPos = pos + SEPARATOR.size();
+            pos = tempStr.find(SEPARATOR, oldPos + SEPARATOR.size());
+        }
+
+        file = tempStr.substr( oldPos );
+        if (!helper::system::DataRepository.findFile(file))
+        {
+            std::cerr << "OglShader : geometry shader file " << file <<" was not found." << std::endl;
+            return;
+        }
+        geometryFilenames.push_back( file );
+
+
+        if (fragmentFilenames.size() != vertexFilenames.size() && geometryFilenames.size() !=  vertexFilenames.size())
+        {
+            std::cerr << "OglShader : The number of indicated shaders is not coherent (not the same number for each triplet." << std::endl;
+            return;
+        }
+
+        shaderVector.resize(vertexFilenames.size());
+        for (unsigned int i=0 ; i<vertexFilenames.size() ; i++)
+            shaderVector[i] = new sofa::helper::gl::GLSLShader();
+
+        hasGeometryShader = true;
+    }
+
 }
 
 void OglShader::reinit()
 {
-    if (hasGeometryShader)
-    {
 
-    }
 }
 
 void OglShader::initVisual()
 {
-// 	std::string shaderPath = "shaders/"; //No hard coded path!
 
     if (!sofa::helper::gl::GLSLShader::InitGLSL())
     {
@@ -98,46 +230,49 @@ void OglShader::initVisual()
         return;
     }
 
-    std::string file = vertFilename.getValue();
-
-    if (!helper::system::DataRepository.findFile(file))
+    if (!hasGeometryShader)
     {
-        std::cerr << "OglShader : vertex shader file not found." << std::endl;
-        return;
+        for (unsigned int i=0 ; i<shaderVector.size() ; i++)
+        {
+            shaderVector[i]->InitShaders(helper::system::DataRepository.getFile(vertexFilenames[i]),
+                    helper::system::DataRepository.getFile(fragmentFilenames[i]));
+        }
     }
-
-    file = fragFilename.getValue();
-    if (!helper::system::DataRepository.findFile(file))
-    {
-        std::cerr << "OglShader : fragment shader file not found." << std::endl;
-        return;
-    }
-
-    file = geoFilename.getValue();
-    if (geoFilename.getValue() == "" || !helper::system::DataRepository.findFile(file))
-        m_shader.InitShaders(helper::system::DataRepository.getFile(vertFilename.getValue()),
-                helper::system::DataRepository.getFile(fragFilename.getValue()));
-
     else
     {
         if (geometryInputType.getValue() != -1)
-            setGeometryInputType(geometryInputType.getValue());
+        {
+            for (unsigned int i=0 ; i<vertexFilenames.size() ; i++)
+                setGeometryInputType(i, geometryInputType.getValue());
+        }
         if (geometryOutputType.getValue() != -1)
-            setGeometryOutputType(geometryOutputType.getValue());
+        {
+            for (unsigned int i=0 ; i<vertexFilenames.size() ; i++)
+                setGeometryOutputType(i, geometryOutputType.getValue());
+        }
 #ifdef GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT
         GLint maxV;
         glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT, &maxV);
-        if (geometryVerticesOut.getValue() == -1 || geometryVerticesOut.getValue() > maxV)
-            geometryVerticesOut.setValue(3);
+        if (geometryVerticesOut.getValue() < 0 || geometryVerticesOut.getValue() > maxV)
+        {
+            for (unsigned int i=0 ; i<vertexFilenames.size() ; i++)
+                geometryVerticesOut.setValue(3);
+        }
 #endif
-        if (geometryVerticesOut.getValue() != -1)
-            setGeometryVerticesOut(geometryVerticesOut.getValue());
+        if (geometryVerticesOut.getValue() >= 0)
+        {
+            for (unsigned int i=0 ; i<vertexFilenames.size() ; i++)
+                setGeometryVerticesOut(i, geometryVerticesOut.getValue());
+        }
 
-        m_shader.InitShaders(helper::system::DataRepository.getFile(vertFilename.getValue()),
-                helper::system::DataRepository.getFile(geoFilename.getValue()),
-                helper::system::DataRepository.getFile(fragFilename.getValue()));
 
-        hasGeometryShader = true;
+
+        for (unsigned int i=0 ; i<vertexFilenames.size() ; i++)
+        {
+            shaderVector[i]->InitShaders(helper::system::DataRepository.getFile(vertexFilenames[i]),
+                    helper::system::DataRepository.getFile(geometryFilenames[i]),
+                    helper::system::DataRepository.getFile(fragmentFilenames[i]));
+        }
     }
 
 }
@@ -150,163 +285,189 @@ void OglShader::drawVisual()
 void OglShader::stop()
 {
     if(turnOn.getValue())
-        m_shader.TurnOff();
+        shaderVector[indexActiveShader.getValue()]->TurnOff();
 }
 
 void OglShader::start()
 {
     if(turnOn.getValue())
-        m_shader.TurnOn();
+        shaderVector[indexActiveShader.getValue()]->TurnOn();
+}
+
+bool OglShader::isActive()
+{
+    return !passive.getValue();
 }
 
 void OglShader::updateVisual()
 {
 
 }
-
-void OglShader::addDefineMacro(const std::string &name, const std::string &value)
+unsigned int OglShader::getNumberOfShaders()
 {
-    m_shader.AddDefineMacro(name, value);
+    return shaderVector.size();
 }
 
-void OglShader::setTexture(const char* name, unsigned short unit)
+unsigned int OglShader::getCurrentIndex()
 {
-    start();
-    m_shader.SetInt(m_shader.GetVariable(name), unit);
-    stop();
-}
-void OglShader::setInt(const char* name, int i)
-{
-    start();
-    m_shader.SetInt(m_shader.GetVariable(name), i);
-    stop();
+    return indexActiveShader.getValue();
 }
 
-void OglShader::setInt2(const char* name, int i1, int i2)
+void OglShader::setCurrentIndex(const unsigned int index)
 {
-    start();
-    m_shader.SetInt2(m_shader.GetVariable(name), i1, i2);
-    stop();
-}
-void OglShader::setInt3(const char* name, int i1, int i2, int i3)
-{
-    start();
-    m_shader.SetInt3(m_shader.GetVariable(name), i1, i2, i3);
-    stop();
-}
-void OglShader::setInt4(const char* name, int i1, int i2, int i3, int i4)
-{
-    start();
-    m_shader.SetInt4(m_shader.GetVariable(name), i1, i2, i3, i4);
-    stop();
+    if (index < shaderVector.size())
+    {
+        shaderVector[indexActiveShader.getValue()]->TurnOff();
+        indexActiveShader.setValue(index);
+        shaderVector[indexActiveShader.getValue()]->TurnOn();
+    }
 }
 
-void OglShader::setFloat(const char* name, float f1)
+void OglShader::addDefineMacro(const unsigned int index, const std::string &name, const std::string &value)
+{
+    shaderVector[index]->AddDefineMacro(name, value);
+}
+
+void OglShader::setTexture(const unsigned int index, const char* name, unsigned short unit)
 {
     start();
-    m_shader.SetFloat(m_shader.GetVariable(name), f1);
+    shaderVector[index]->SetInt(shaderVector[index]->GetVariable(name), unit);
     stop();
 }
-void OglShader::setFloat2(const char* name, float f1, float f2)
+void OglShader::setInt(const unsigned int index, const char* name, int i)
 {
     start();
-    m_shader.SetFloat2(m_shader.GetVariable(name), f1, f2);
-    stop();
-}
-void OglShader::setFloat3(const char* name, float f1, float f2, float f3)
-{
-    start();
-    m_shader.SetFloat3(m_shader.GetVariable(name), f1, f2, f3);
-    stop();
-}
-void OglShader::setFloat4(const char* name, float f1, float f2, float f3, float f4)
-{
-    start();
-    m_shader.SetFloat4(m_shader.GetVariable(name), f1, f2, f3, f4);
+    shaderVector[index]->SetInt(shaderVector[index]->GetVariable(name), i);
     stop();
 }
 
-void OglShader::setIntVector(const char* name, int count, const GLint* i)
+void OglShader::setInt2(const unsigned int index, const char* name, int i1, int i2)
 {
     start();
-    m_shader.SetIntVector(m_shader.GetVariable(name), count, i);
+    shaderVector[index]->SetInt2(shaderVector[index]->GetVariable(name), i1, i2);
     stop();
 }
-void OglShader::setIntVector2(const char* name, int count, const GLint* i)
+void OglShader::setInt3(const unsigned int index, const char* name, int i1, int i2, int i3)
 {
     start();
-    m_shader.SetIntVector2(m_shader.GetVariable(name), count, i);
+    shaderVector[index]->SetInt3(shaderVector[index]->GetVariable(name), i1, i2, i3);
     stop();
 }
-void OglShader::setIntVector3(const char* name, int count, const GLint* i)
+void OglShader::setInt4(const unsigned int index, const char* name, int i1, int i2, int i3, int i4)
 {
     start();
-    m_shader.SetIntVector3(m_shader.GetVariable(name), count, i);
-    stop();
-}
-void OglShader::setIntVector4(const char* name, int count, const GLint* i)
-{
-    start();
-    m_shader.SetIntVector4(m_shader.GetVariable(name), count, i);
+    shaderVector[index]->SetInt4(shaderVector[index]->GetVariable(name), i1, i2, i3, i4);
     stop();
 }
 
-void OglShader::setFloatVector(const char* name, int count, const float* f)
+void OglShader::setFloat(const unsigned int index, const char* name, float f1)
 {
     start();
-    m_shader.SetFloatVector(m_shader.GetVariable(name), count, f);
+    shaderVector[index]->SetFloat(shaderVector[index]->GetVariable(name), f1);
     stop();
 }
-void OglShader::setFloatVector2(const char* name, int count, const float* f)
+void OglShader::setFloat2(const unsigned int index, const char* name, float f1, float f2)
 {
     start();
-    m_shader.SetFloatVector2(m_shader.GetVariable(name), count, f);
+    shaderVector[index]->SetFloat2(shaderVector[index]->GetVariable(name), f1, f2);
     stop();
 }
-void OglShader::setFloatVector3(const char* name, int count, const float* f)
+void OglShader::setFloat3(const unsigned int index, const char* name, float f1, float f2, float f3)
 {
     start();
-    m_shader.SetFloatVector3(m_shader.GetVariable(name), count, f);
+    shaderVector[index]->SetFloat3(shaderVector[index]->GetVariable(name), f1, f2, f3);
     stop();
 }
-void OglShader::setFloatVector4(const char* name, int count, const float* f)
+void OglShader::setFloat4(const unsigned int index, const char* name, float f1, float f2, float f3, float f4)
 {
     start();
-    m_shader.SetFloatVector4(m_shader.GetVariable(name), count, f);
+    shaderVector[index]->SetFloat4(shaderVector[index]->GetVariable(name), f1, f2, f3, f4);
+    stop();
+}
+
+void OglShader::setIntVector(const unsigned int index, const char* name, int count, const GLint* i)
+{
+    start();
+    shaderVector[index]->SetIntVector(shaderVector[index]->GetVariable(name), count, i);
+    stop();
+}
+void OglShader::setIntVector2(const unsigned int index, const char* name, int count, const GLint* i)
+{
+    start();
+    shaderVector[index]->SetIntVector2(shaderVector[index]->GetVariable(name), count, i);
+    stop();
+}
+void OglShader::setIntVector3(const unsigned int index, const char* name, int count, const GLint* i)
+{
+    start();
+    shaderVector[index]->SetIntVector3(shaderVector[index]->GetVariable(name), count, i);
+    stop();
+}
+void OglShader::setIntVector4(const unsigned int index, const char* name, int count, const GLint* i)
+{
+    start();
+    shaderVector[index]->SetIntVector4(shaderVector[index]->GetVariable(name), count, i);
+    stop();
+}
+
+void OglShader::setFloatVector(const unsigned int index, const char* name, int count, const float* f)
+{
+    start();
+    shaderVector[index]->SetFloatVector(shaderVector[index]->GetVariable(name), count, f);
+    stop();
+}
+void OglShader::setFloatVector2(const unsigned int index, const char* name, int count, const float* f)
+{
+    start();
+    shaderVector[index]->SetFloatVector2(shaderVector[index]->GetVariable(name), count, f);
+    stop();
+}
+void OglShader::setFloatVector3(const unsigned int index, const char* name, int count, const float* f)
+{
+    start();
+    shaderVector[index]->SetFloatVector3(shaderVector[index]->GetVariable(name), count, f);
+    stop();
+}
+void OglShader::setFloatVector4(const unsigned int index, const char* name, int count, const float* f)
+{
+    start();
+    shaderVector[index]->SetFloatVector4(shaderVector[index]->GetVariable(name), count, f);
     stop();
 }
 
 
-GLint OglShader::getGeometryInputType()
+GLint OglShader::getGeometryInputType(const unsigned int index)
 {
-    return m_shader.GetGeometryInputType();
+    return shaderVector[index]->GetGeometryInputType();
 }
-void  OglShader::setGeometryInputType(GLint v)
+void  OglShader::setGeometryInputType(const unsigned int index, GLint v)
 {
-    m_shader.SetGeometryInputType(v);
-}
-
-GLint OglShader::getGeometryOutputType()
-{
-    return m_shader.GetGeometryOutputType();
-}
-void  OglShader::setGeometryOutputType(GLint v)
-{
-    m_shader.SetGeometryOutputType(v);
+    shaderVector[index]->SetGeometryInputType(v);
 }
 
-GLint OglShader::getGeometryVerticesOut()
+GLint OglShader::getGeometryOutputType(const unsigned int index)
 {
-    return m_shader.GetGeometryVerticesOut();
+    return shaderVector[index]->GetGeometryOutputType();
 }
 
-void  OglShader::setGeometryVerticesOut(GLint v)
+void  OglShader::setGeometryOutputType(const unsigned int index, GLint v)
 {
-    m_shader.SetGeometryVerticesOut(v);
+    shaderVector[index]->SetGeometryOutputType(v);
+}
+
+GLint OglShader::getGeometryVerticesOut(const unsigned int index)
+{
+    return shaderVector[index]->GetGeometryVerticesOut();
+}
+
+void  OglShader::setGeometryVerticesOut(const unsigned int index, GLint v)
+{
+    shaderVector[index]->SetGeometryVerticesOut(v);
 }
 
 OglShaderElement::OglShaderElement()
     : id(initData(&id, (std::string) "id", "id", "Set an ID name"))
+    , indexShader(initData(&indexShader, (unsigned int) 0, "indexShader", "Set the index of the desired shader you want to apply this parameter"))
 {
 
 }

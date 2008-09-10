@@ -181,7 +181,7 @@ void OglTexture2D::initVisual()
 
     unbind();
 
-    shader->setTexture(id.getValue().c_str(), textureUnit.getValue());
+    shader->setTexture(indexShader.getValue(), id.getValue().c_str(), textureUnit.getValue());
 
     setActiveTexture(0);
 }
