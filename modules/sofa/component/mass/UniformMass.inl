@@ -109,6 +109,7 @@ void UniformMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx,
     for (unsigned int i=0; i<dx.size(); i++)
     {
         res[i] += dx[i] * m;
+        //cerr<<"dx[i] = "<<dx[i]<<", m = "<<m<<", dx[i] * m = "<<dx[i] * m<<endl;
     }
 }
 
@@ -119,6 +120,7 @@ void UniformMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
     for (unsigned int i=0; i<f.size(); i++)
     {
         a[i] = f[i] / m;
+        //cerr<<"f[i] = "<<f[i]<<", m = "<<m<<", f[i] / m = "<<f[i] / m<<endl;
     }
 }
 

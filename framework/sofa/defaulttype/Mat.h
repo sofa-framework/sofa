@@ -30,6 +30,9 @@
 #include <sofa/defaulttype/Vec.h>
 #include <assert.h>
 #include <sofa/helper/static_assert.h>
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace sofa
 {
@@ -532,6 +535,8 @@ inline real determinant(const Mat<2,2,real>& m)
             - m(1,0)*m(0,1);
 }
 
+#define MIN_DETERMINANT  1.0e-100
+
 /// Matrix inversion (general case).
 template<int S, class real>
 bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
@@ -565,8 +570,9 @@ bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
             }
         }
 
-        if (pivot <= 1e-10)
+        if (pivot <= (real) MIN_DETERMINANT)
         {
+            cerr<<"Warning: invertMatrix finds too small determinant, matrix = "<<from<<endl;
             return false;
         }
 
@@ -606,8 +612,11 @@ bool invertMatrix(Mat<3,3,real>& dest, const Mat<3,3,real>& from)
 {
     real det=determinant(from);
 
-    if ( -1e-10<=det && det<=1e-10)
+    if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT)
+    {
+        cerr<<"Warning: invertMatrix finds too small determinant, matrix = "<<from<<endl;
         return false;
+    }
 
     dest(0,0)= (from(1,1)*from(2,2) - from(2,1)*from(1,2))/det;
     dest(1,0)= (from(1,2)*from(2,0) - from(2,2)*from(1,0))/det;
@@ -628,8 +637,11 @@ bool invertMatrix(Mat<2,2,real>& dest, const Mat<2,2,real>& from)
 {
     real det=determinant(from);
 
-    if ( -1e-10<=det && det<=1e-10)
+    if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT)
+    {
+        cerr<<"Warning: invertMatrix finds too small determinant, matrix = "<<from<<endl;
         return false;
+    }
 
     dest(0,0)=  from(1,1)/det;
     dest(0,1)= -from(0,1)/det;
@@ -638,6 +650,7 @@ bool invertMatrix(Mat<2,2,real>& dest, const Mat<2,2,real>& from)
 
     return true;
 }
+#undef MIN_DETERMINANT
 
 typedef Mat<2,2,float> Mat2x2f;
 typedef Mat<2,2,double> Mat2x2d;
@@ -729,7 +742,7 @@ inline const T S_SQR(const T a)
     return a*a;
 }
 
-///Computes sqrt(a² + b²) without destructive underflow or overflow.
+///Computes sqrt(aï¿½ + bï¿½) without destructive underflow or overflow.
 template <class T1, class T2>
 T1 pythag(const T1 a, const T2 b)
 {
