@@ -115,6 +115,9 @@ public:
     core::componentmodel::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
     core::componentmodel::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }
 
+    sofa::helper::vector< Spring > getSprings() {return springs.getValue();}
+
+    virtual void reinit();
     virtual void init();
 
     virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);

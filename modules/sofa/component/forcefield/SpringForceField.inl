@@ -102,6 +102,17 @@ bool SpringForceField<DataTypes>::load(const char *filename)
     return ret;
 }
 
+
+template <class DataTypes>
+void SpringForceField<DataTypes>::reinit()
+{
+    for (unsigned int i=0; i<springs.getValue().size(); ++i)
+    {
+        (*springs.beginEdit())[i].ks = ks.getValue()/springs.getValue()[i].initpos;
+        (*springs.beginEdit())[i].kd = kd.getValue()/springs.getValue()[i].initpos;
+    }
+}
+
 template <class DataTypes>
 void SpringForceField<DataTypes>::init()
 {

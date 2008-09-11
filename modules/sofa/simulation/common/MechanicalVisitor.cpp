@@ -167,7 +167,7 @@ Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(simulation::Node* nod
 
     MechanicalEndIntegrationVisitor endVisitor(dt);
     node->execute(&endVisitor);
-    cerr<<"MechanicalIntegrationVisitor::fwdOdeSolver endVisitor ok"<<endl;
+// 	cerr<<"MechanicalIntegrationVisitor::fwdOdeSolver endVisitor ok"<<endl;
     return RESULT_PRUNE;
 }
 

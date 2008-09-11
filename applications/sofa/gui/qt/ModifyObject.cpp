@@ -309,12 +309,11 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             }
 
             {
-
+                if (hideData(it->second)) continue;
                 std::string box_name(oss.str());
                 box = new Q3GroupBox(currentTab, QString(box_name.c_str()));
                 box->setColumns(4);
                 box->setTitle(QString((*it).first.c_str()));
-                if (hideData(it->second))  box->hide();
 
                 std::string label_text=(*it).second->help;
 

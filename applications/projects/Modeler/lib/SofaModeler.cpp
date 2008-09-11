@@ -517,14 +517,15 @@ void SofaModeler::fileSaveAs()
     if ( s.length() >0 )
     {
         fileSave ( s.ascii() );
-        if (graph->getFilename().empty())
-        {
-            std::string filename = s.ascii();
-            changeNameWindow(filename);
-            sceneTab->setTabLabel(tabGraph, QString(sofa::helper::system::SetDirectory::GetFileName(filename.c_str()).c_str()));
-            sceneTab->setTabToolTip(tabGraph, QString(filename.c_str()));
-            examplePath = sofa::helper::system::SetDirectory::GetParentDir(filename.c_str());
-        }
+//  	    if (graph->getFilename().empty())
+//  	      {
+        std::string filename = s.ascii();
+        graph->setFilename(filename);
+        changeNameWindow(filename);
+        sceneTab->setTabLabel(tabGraph, QString(sofa::helper::system::SetDirectory::GetFileName(filename.c_str()).c_str()));
+        sceneTab->setTabToolTip(tabGraph, QString(filename.c_str()));
+        examplePath = sofa::helper::system::SetDirectory::GetParentDir(filename.c_str());
+//  	      }
 
     }
 }

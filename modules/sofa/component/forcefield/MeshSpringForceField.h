@@ -63,16 +63,16 @@ protected:
 
 public:
     MeshSpringForceField()
-        : linesStiffness(initData(&linesStiffness,Real(0),"linesStiffness","Stiffness for the Lines")),
-          linesDamping(initData(&linesDamping,Real(0),"linesDamping","Damping for the Lines")),
-          trianglesStiffness(initData(&trianglesStiffness,Real(0),"trianglesStiffness","Stiffness for the Triangles")),
-          trianglesDamping(initData(&trianglesDamping,Real(0),"trianglesDamping","Damping for the Triangles")),
-          quadsStiffness(initData(&quadsStiffness,Real(0),"quadsStiffness","Stiffness for the Quads")),
-          quadsDamping(initData(&quadsDamping,Real(0),"quadsDamping","Damping for the Quads")),
-          tetrasStiffness(initData(&tetrasStiffness,Real(0),"tetrasStiffness","Stiffness for the Tetras")),
-          tetrasDamping(initData(&tetrasDamping,Real(0),"tetrasDamping","Damping for the Tetras")),
-          cubesStiffness(initData(&cubesStiffness,Real(0),"cubesStiffness","Stiffness for the Cubes")),
-          cubesDamping(initData(&cubesDamping,Real(0),"cubesDamping","Damping for the Cubes"))
+        : linesStiffness(initData(&linesStiffness,Real(0),"linesStiffness","Stiffness for the Lines",false)),
+          linesDamping(initData(&linesDamping,Real(0),"linesDamping","Damping for the Lines",false)),
+          trianglesStiffness(initData(&trianglesStiffness,Real(0),"trianglesStiffness","Stiffness for the Triangles",false)),
+          trianglesDamping(initData(&trianglesDamping,Real(0),"trianglesDamping","Damping for the Triangles",false)),
+          quadsStiffness(initData(&quadsStiffness,Real(0),"quadsStiffness","Stiffness for the Quads",false)),
+          quadsDamping(initData(&quadsDamping,Real(0),"quadsDamping","Damping for the Quads",false)),
+          tetrasStiffness(initData(&tetrasStiffness,Real(0),"tetrasStiffness","Stiffness for the Tetras",false)),
+          tetrasDamping(initData(&tetrasDamping,Real(0),"tetrasDamping","Damping for the Tetras",false)),
+          cubesStiffness(initData(&cubesStiffness,Real(0),"cubesStiffness","Stiffness for the Cubes",false)),
+          cubesDamping(initData(&cubesDamping,Real(0),"cubesDamping","Damping for the Cubes",false))
     {
     }
 

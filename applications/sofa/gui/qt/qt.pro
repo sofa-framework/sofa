@@ -4,36 +4,17 @@
 # Cible : une bibliotheque:  sofaguiviewer$$LIBSUFFIX
 
 
-HEADERS += viewer/SofaViewer.h \
-           Main.h \
-           RealGUI.h \
-           GraphListenerQListView.h \
-           GenGraphForm.h \
-           AddObject.h \
-           DisplayFlagWidget.h \
-           ModifyObject.h \
-           WFloatLineEdit.h \
-           FileManagement.h
-
-
-SOURCES += Main.cpp \
-           RealGUI_graph.cpp \
-           RealGUI_record.cpp \
-           RealGUI.cpp \
-           GraphListenerQListView.cpp \
-           GenGraphForm.cpp \
-           AddObject.cpp \
-           DisplayFlagWidget.cpp \
-           ModifyObject.cpp \
-           WFloatLineEdit.cpp \
-           FileManagement.cpp
-
-
 SOFA_DIR = ../../../..
 TEMPLATE = lib
 include($${SOFA_DIR}/sofa.cfg)
 
 TARGET = sofaguiqt$$LIBSUFFIX
+
+LIBS += $$SOFA_FRAMEWORK_LIBS $$SOFA_MODULES_LIBS
+LIBS += -lsofagui$$LIBSUFFIX
+LIBS += $$SOFA_GUI_EXT_LIBS
+LIBS += $$SOFA_EXT_LIBS
+
 
 contains (DEFINES, SOFA_QT4) {	
 
@@ -51,10 +32,32 @@ else {
 	  FORMS += DialogAddObject.ui
 }
 
-LIBS += $$SOFA_FRAMEWORK_LIBS $$SOFA_MODULES_LIBS
-LIBS += -lsofagui$$LIBSUFFIX
-LIBS += $$SOFA_GUI_EXT_LIBS
-LIBS += $$SOFA_EXT_LIBS
+
+HEADERS += viewer/SofaViewer.h \
+           GraphListenerQListView.h \
+           GenGraphForm.h \
+           AddObject.h \
+           Main.h \
+           RealGUI.h \
+           DisplayFlagWidget.h \
+           ModifyObject.h \
+           WFloatLineEdit.h \
+           FileManagement.h
+
+
+SOURCES += Main.cpp \
+           GraphListenerQListView.cpp \
+           GenGraphForm.cpp \
+           AddObject.cpp \
+           RealGUI_graph.cpp \
+           RealGUI_record.cpp \
+           RealGUI.cpp \
+           DisplayFlagWidget.cpp \
+           ModifyObject.cpp \
+           WFloatLineEdit.cpp \
+           FileManagement.cpp
+
+
 
 contains( DEFINES, SOFA_GUI_QTVIEWER){
 
