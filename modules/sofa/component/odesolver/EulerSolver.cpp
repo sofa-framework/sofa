@@ -62,17 +62,22 @@ void EulerSolver::solve(double dt)
     MultiVector f(this, VecId::force());
     bool printLog = f_printLog.getValue();
 
+
+    addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
+    computeForce(f);
     if( printLog )
     {
         cerr<<"EulerSolver, dt = "<< dt <<endl;
         cerr<<"EulerSolver, initial x = "<< pos <<endl;
         cerr<<"EulerSolver, initial v = "<< vel <<endl;
+        cerr<<"EulerSolver, f = "<< f <<endl;
     }
-
-    addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
-    computeForce(f);
     accFromF(acc, f);
     projectResponse(acc);
+    if( printLog )
+    {
+        cerr<<"EulerSolver, a = "<< acc <<endl;
+    }
 
     // update state
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
@@ -105,7 +110,6 @@ void EulerSolver::solve(double dt)
 
     if( printLog )
     {
-        cerr<<"EulerSolver, acceleration = "<< acc <<endl;
         cerr<<"EulerSolver, final x = "<< pos <<endl;
         cerr<<"EulerSolver, final v = "<< vel <<endl;
     }
