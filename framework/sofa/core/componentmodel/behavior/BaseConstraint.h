@@ -134,6 +134,8 @@ public:
     /// Non-holonomic constraints (like contact, friction...) need more specific treatments
     virtual bool isHolonomic() {return false; }
 
+    /// Test if the constraint is satisfied: return the error.
+    virtual double getError() { return 0.0;}
 };
 
 } // namespace behavior
