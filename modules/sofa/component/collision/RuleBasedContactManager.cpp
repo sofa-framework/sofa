@@ -22,13 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_DEFAULTCONTACTMANAGER_H
-#define SOFA_COMPONENT_COLLISION_DEFAULTCONTACTMANAGER_H
-
-#include <sofa/core/componentmodel/collision/ContactManager.h>
-#include <sofa/simulation/tree/GNode.h>
-#include <vector>
-
+#include <sofa/component/collision/RuleBasedContactManager.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -39,37 +34,43 @@ namespace component
 namespace collision
 {
 
-class DefaultContactManager : public core::componentmodel::collision::ContactManager
+SOFA_DECL_CLASS(RuleBasedContactManager)
+
+int RuleBasedContactManagerClass = core::RegisterObject("Create different response to the collisions based on a set of rules")
+        .add< RuleBasedContactManager >()
+        .addAlias("RuleBasedCollisionResponse")
+        ;
+
+RuleBasedContactManager::RuleBasedContactManager()
+    : rules(initData(&rules, "rules", "Ordered list of rules, each with a triplet of strings.\n"
+            "The first two define either the name of the collision model, its group number, or * meaning any model.\n"
+            "The last string define the response algorithm to use for contacts matched by this rule.\n"
+            "Rules are applied in the order they are specified. If none match a given contact, the default response is used.\n"))
 {
-protected:
-    typedef std::map<std::pair<core::CollisionModel*,core::CollisionModel*>,core::componentmodel::collision::Contact*> ContactMap;
-    ContactMap contactMap;
+}
 
-    void clear();
-public:
-    Data<std::string> response;
-
-    DefaultContactManager();
-    ~DefaultContactManager();
-
-    void createContacts(DetectionOutputMap& outputs);
-
-    void draw();
-
-    virtual std::string getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2);
+RuleBasedContactManager::~RuleBasedContactManager()
+{
+}
 
 
-protected:
+std::string RuleBasedContactManager::getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2)
+{
+    // Response locally defined on a given CollisionModel takes priority (necessary for the mouse for instance)
+    std::string response1 = model1->getContactResponse();
+    std::string response2 = model2->getContactResponse();
+    if (!response1.empty()) return response1;
+    else if (!response2.empty()) return response2;
 
-    std::map<Instance,ContactMap> storedContactMap;
-
-    virtual void changeInstance(Instance inst)
+    const helper::vector<Rule>& r = rules.getValue();
+    for (helper::vector<Rule>::const_iterator it = r.begin(), itend = r.end(); it != itend; ++it)
     {
-        core::componentmodel::collision::ContactManager::changeInstance(inst);
-        storedContactMap[instance].swap(contactMap);
-        contactMap.swap(storedContactMap[inst]);
+        if (it->match(model1, model2) || it->match(model2, model1))
+            return it->response; // rule it matched
     }
-};
+    // no rule matched
+    return DefaultContactManager::getContactResponse(model1, model2);
+}
 
 } // namespace collision
 
@@ -77,4 +78,3 @@ protected:
 
 } // namespace sofa
 
-#endif

@@ -328,6 +328,10 @@ public:
     /// Contact response algorithm
     std::string getContactResponse() { return contactResponse.getValue(); }
 
+    /// If not zero, ID of a group containing this model. No collision can occur between collision
+    /// models of the same group (allowing the same object to have multiple collision models)
+    int getGroup() { return group.getValue(); }
+
     /// @}
 
     /// Topology associated to the collision model
@@ -361,7 +365,7 @@ protected:
     /// collision models specify a different class it is up to the manager to choose.
     Data<std::string> contactResponse;
     /// If not zero, ID of a group containing this model. No collision can occur between collision
-    /// models of the same group (allowing the same object to have multiple collision models
+    /// models of the same group (allowing the same object to have multiple collision models)
     Data<int> group;
     /// color used to display the collision model if requested
     Data<defaulttype::Vec4f> color;

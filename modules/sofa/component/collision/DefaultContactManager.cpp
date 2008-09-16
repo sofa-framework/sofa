@@ -93,11 +93,7 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
             //std::cout << "Creation new "<<contacttype<<" contact"<<std::endl;
             core::CollisionModel* model1 = outputsIt->first.first;
             core::CollisionModel* model2 = outputsIt->first.second;
-            std::string response1 = model1->getContactResponse();
-            std::string response2 = model2->getContactResponse();
-            std::string responseUsed = response.getValue();
-            if (!response1.empty()) responseUsed = response1;
-            else if (!response2.empty()) responseUsed = response2;
+            std::string responseUsed = getContactResponse(model1, model2);
             core::componentmodel::collision::Contact* contact = core::componentmodel::collision::Contact::Create(responseUsed, model1, model2, intersectionMethod);
             if (contact == NULL) std::cerr << "Contact "<<responseUsed<<" between " << model1->getClassName()<<" and "<<model2->getClassName() << " creation failed"<<std::endl;
             else
@@ -166,6 +162,16 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
     {
         collisionModels[i]->setNumberOfContacts(nbContactsMap[collisionModels[i]]);
     }
+}
+
+std::string DefaultContactManager::getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2)
+{
+    std::string responseUsed = response.getValue();
+    std::string response1 = model1->getContactResponse();
+    std::string response2 = model2->getContactResponse();
+    if (!response1.empty()) responseUsed = response1;
+    else if (!response2.empty()) responseUsed = response2;
+    return responseUsed;
 }
 
 void DefaultContactManager::draw()
