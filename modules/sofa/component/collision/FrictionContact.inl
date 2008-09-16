@@ -58,11 +58,6 @@ FrictionContact<TCollisionModel1,TCollisionModel2>::FrictionContact(CollisionMod
 template < class TCollisionModel1, class TCollisionModel2 >
 FrictionContact<TCollisionModel1,TCollisionModel2>::~FrictionContact()
 {
-    if (c!=NULL)
-    {
-        if (parent!=NULL) parent->removeObject(c);
-        delete c;
-    }
 }
 template < class TCollisionModel1, class TCollisionModel2 >
 void FrictionContact<TCollisionModel1,TCollisionModel2>::cleanup()
@@ -121,6 +116,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
         // Get the mechanical model from mapper2 to fill the constraints vector
         MechanicalState2* mmodel2 = mapper2.createMapping();
         c = new constraint::UnilateralInteractionConstraint<Vec3Types>(mmodel1, mmodel2);
+        c->setName( getName() );
     }
 
     int size = contacts.size();
@@ -170,10 +166,16 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::createResponse(core::ob
 {
     if (c!=NULL)
     {
-        if (parent!=NULL) parent->removeObject(c);
+        if (parent!=NULL)
+        {
+            parent->removeObject(this);
+            parent->removeObject(c);
+        }
         parent = group;
         if (parent!=NULL)
         {
+            //std::cout << "Attaching contact response to "<<parent->getName()<<std::endl;
+            parent->addObject(this);
             parent->addObject(c);
         }
     }
@@ -186,6 +188,8 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::removeResponse()
     {
         if (parent!=NULL)
         {
+            //std::cout << "Removing contact response from "<<parent->getName()<<std::endl;
+            parent->removeObject(this);
             parent->removeObject(c);
         }
         parent = NULL;
