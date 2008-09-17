@@ -293,7 +293,7 @@ typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeEl
 {
     const Vector3 v = computeHexahedronBarycentricCoeficients(h, pos);
 
-    DataTypes::Real d = (DataTypes::Real) std::max(std::max(-v[0], -v[1]), std::max(std::max(-v[2], v[0]-1), std::max(v[1]-1, v[2]-1)));
+    typename DataTypes::Real d = (DataTypes::Real) std::max(std::max(-v[0], -v[1]), std::max(std::max(-v[2], v[0]-1), std::max(v[1]-1, v[2]-1)));
 
     if(d>0)
         d = (pos - computeHexahedronCenter(h)).norm2();
@@ -306,7 +306,7 @@ typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeEl
 {
     const Vector3 v = computeHexahedronRestBarycentricCoeficients(h, pos);
 
-    DataTypes::Real d = (DataTypes::Real) std::max(std::max(-v[0], -v[1]), std::max(std::max(-v[2], v[0]-1), std::max(v[1]-1, v[2]-1)));
+    typename DataTypes::Real d = (DataTypes::Real) std::max(std::max(-v[0], -v[1]), std::max(std::max(-v[2], v[0]-1), std::max(v[1]-1, v[2]-1)));
 
     if(d>0)
         d = (pos - computeHexahedronRestCenter(h)).norm2();
