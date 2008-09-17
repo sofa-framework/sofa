@@ -32,8 +32,6 @@
 #include <set>
 #include <string.h>
 
-#include <sofa/component/MeshLoader.h>
-
 namespace sofa
 {
 

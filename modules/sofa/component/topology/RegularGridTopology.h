@@ -46,6 +46,11 @@ public:
     RegularGridTopology(int nx, int ny, int nz);
     RegularGridTopology();
 
+    virtual void init()
+    {
+        reinit();
+    }
+
     virtual void reinit()
     {
         setPos(min.getValue()[0],max.getValue()[0],min.getValue()[1],max.getValue()[1],min.getValue()[2],max.getValue()[2]);

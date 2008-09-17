@@ -228,6 +228,7 @@ SOFA_LINK_CLASS(DirectionalLight)
 SOFA_LINK_CLASS(PositionalLight)
 SOFA_LINK_CLASS(SpotLight)
 SOFA_LINK_CLASS(LightManager)
+SOFA_LINK_CLASS(VoxelGridLoader)
 
 #ifdef SOFA_HAVE_GLEW
 SOFA_LINK_CLASS(OglShader)
