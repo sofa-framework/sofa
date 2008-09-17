@@ -54,11 +54,36 @@ void HexahedronSetGeometryAlgorithms< DataTypes >::computeHexahedronAABB(const H
     }
 }
 
+template< class DataTypes>
+void HexahedronSetGeometryAlgorithms< DataTypes >::computeHexahedronRestAABB(const HexaID h, Coord& minCoord, Coord& maxCoord) const
+{
+    const Hexahedron &t = this->m_topology->getHexa(h);
+    const typename DataTypes::VecCoord& p = *(this->object->getX0());
+
+    for(unsigned int i=0; i<3; ++i)
+    {
+        minCoord[i] = std::min( std::min(std::min(p[t[0]][i], p[t[1]][i]), std::min(p[t[2]][i], p[t[3]][i])),
+                std::min(std::min(p[t[4]][i], p[t[5]][i]), std::min(p[t[6]][i], p[t[7]][i])));
+
+        maxCoord[i] = std::max( std::max(std::max(p[t[0]][i], p[t[1]][i]), std::max(p[t[2]][i], p[t[3]][i])),
+                std::max(std::max(p[t[4]][i], p[t[5]][i]), std::max(p[t[6]][i], p[t[7]][i])));
+    }
+}
+
 template<class DataTypes>
 typename DataTypes::Coord HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronCenter(const HexaID h) const
 {
     const Hexahedron &t = this->m_topology->getHexa(h);
     const typename DataTypes::VecCoord& p = *(this->object->getX());
+
+    return (p[t[0]] + p[t[1]] + p[t[2]] + p[t[3]] + p[t[4]] + p[t[5]] + p[t[6]] + p[t[7]]) * (Real) 0.125;
+}
+
+template<class DataTypes>
+typename DataTypes::Coord HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronRestCenter(const HexaID h) const
+{
+    const Hexahedron &t = this->m_topology->getHexa(h);
+    const typename DataTypes::VecCoord& p = *(this->object->getX0());
 
     return (p[t[0]] + p[t[1]] + p[t[2]] + p[t[3]] + p[t[4]] + p[t[5]] + p[t[6]] + p[t[7]]) * (Real) 0.125;
 }
@@ -264,27 +289,50 @@ Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronBarycentric
 }
 
 template< class DataTypes>
-int HexahedronSetGeometryAlgorithms< DataTypes >::findNearestHexahedron(const Coord pos, Vector3& baryC, Real& distance) const
+typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeElementDistanceMeasure(const HexaID h, const Coord pos) const
+{
+    const Vector3 v = computeHexahedronBarycentricCoeficients(h, pos);
+
+    DataTypes::Real d = (DataTypes::Real) std::max(std::max(-v[0], -v[1]), std::max(std::max(-v[2], v[0]-1), std::max(v[1]-1, v[2]-1)));
+
+    if(d>0)
+        d = (pos - computeHexahedronCenter(h)).norm2();
+
+    return d;
+}
+
+template< class DataTypes>
+typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeElementRestDistanceMeasure(const HexaID h, const Coord pos) const
+{
+    const Vector3 v = computeHexahedronRestBarycentricCoeficients(h, pos);
+
+    DataTypes::Real d = (DataTypes::Real) std::max(std::max(-v[0], -v[1]), std::max(std::max(-v[2], v[0]-1), std::max(v[1]-1, v[2]-1)));
+
+    if(d>0)
+        d = (pos - computeHexahedronRestCenter(h)).norm2();
+
+    return d;
+}
+
+template< class DataTypes>
+int HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElement(const Coord pos, Vector3& baryC, Real& distance) const
 {
     int index=-1;
     distance = 1e10;
 
     for (int c=0; c<this->m_topology->getNbHexas(); ++c)
     {
-        const Vector3 v = computeHexahedronBarycentricCoeficients(c, pos);
-
-        Real d = (Real) std::max(std::max(-v[0], -v[1]), std::max(std::max(-v[2], v[0]-1), std::max(v[1]-1, v[2]-1)));
-
-        if(d>0)
-            d = (pos - computeHexahedronCenter(c)).norm2();
+        const Real d = computeElementDistanceMeasure(c, pos);
 
         if(d<distance)
         {
-            baryC = v;
             distance = d;
             index = c;
         }
     }
+
+    if(index != -1)
+        baryC = computeHexahedronBarycentricCoeficients(index, pos);
 
     return index;
 }

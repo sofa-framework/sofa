@@ -66,7 +66,11 @@ public:
 
     void computeHexahedronAABB(const HexaID h, Coord& minCoord, Coord& maxCoord) const;
 
+    void computeHexahedronRestAABB(const HexaID h, Coord& minCoord, Coord& maxCoord) const;
+
     Coord computeHexahedronCenter(const HexaID h) const;
+
+    Coord computeHexahedronRestCenter(const HexaID h) const;
 
     void getHexahedronVertexCoordinates(const HexaID h, Coord[8]) const;
 
@@ -80,9 +84,6 @@ public:
 
     /// computes the hexahedron volume  of hexahedron no i and returns it
     Real computeRestHexahedronVolume(const HexaID h) const;
-
-    /// finds a hexahedron which is nearest to a given point. Computes barycentric coordinates and a distance measure.
-    int findNearestHexahedron(const Coord p, defaulttype::Vector3& baryC, Real& distance) const;
 
     /// computes barycentric coordinates corresponding to a given position. Warning: this method is only correct if the hexahedron is not deformed
     defaulttype::Vector3 computeHexahedronBarycentricCoeficients(const HexaID h, const Coord& p) const;
@@ -98,6 +99,14 @@ public:
     Coord getPointPositionInHexahedron(const HexaID h, const Real baryC[3]) const;
 
     Coord getRestPointPositionInHexahedron(const HexaID h, const Real baryC[3]) const;
+
+    /// finds a hexahedron which is nearest to a given point. Computes barycentric coordinates and a distance measure.
+    int findNearestElement(const Coord p, defaulttype::Vector3& baryC, Real& distance) const;
+
+    /// If the point is inside the element, the distance measure is < 0. If the point is outside the element, the distance measure is a squared distance to the element center.
+    virtual Real computeElementDistanceMeasure(const HexaID h, const Coord p) const;
+
+    virtual Real computeElementRestDistanceMeasure(const HexaID h, const Coord p) const;
 
     /** \brief Write the current mesh into a msh file
     */
