@@ -133,9 +133,6 @@ void SparseGridTopology::init()
     if(_alreadyInit) return;
     _alreadyInit = true;
 
-    this->MeshTopology::init();
-    invalidate();
-
     Vec3i grid = n.getValue();
 
     if(grid[0] < 2) grid[0]= 2;
