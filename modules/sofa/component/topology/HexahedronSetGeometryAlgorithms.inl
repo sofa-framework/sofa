@@ -291,9 +291,11 @@ Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronBarycentric
 template< class DataTypes>
 typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeElementDistanceMeasure(const HexaID h, const Coord pos) const
 {
+    typedef typename DataTypes::Real Real;
+
     const Vector3 v = computeHexahedronBarycentricCoeficients(h, pos);
 
-    typename DataTypes::Real d = (DataTypes::Real) std::max(std::max(-v[0], -v[1]), std::max(std::max(-v[2], v[0]-1), std::max(v[1]-1, v[2]-1)));
+    Real d = (Real) std::max(std::max(-v[0], -v[1]), std::max(std::max(-v[2], v[0]-1), std::max(v[1]-1, v[2]-1)));
 
     if(d>0)
         d = (pos - computeHexahedronCenter(h)).norm2();
@@ -304,9 +306,11 @@ typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeEl
 template< class DataTypes>
 typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeElementRestDistanceMeasure(const HexaID h, const Coord pos) const
 {
+    typedef typename DataTypes::Real Real;
+
     const Vector3 v = computeHexahedronRestBarycentricCoeficients(h, pos);
 
-    typename DataTypes::Real d = (DataTypes::Real) std::max(std::max(-v[0], -v[1]), std::max(std::max(-v[2], v[0]-1), std::max(v[1]-1, v[2]-1)));
+    Real d = (Real) std::max(std::max(-v[0], -v[1]), std::max(std::max(-v[2], v[0]-1), std::max(v[1]-1, v[2]-1)));
 
     if(d>0)
         d = (pos - computeHexahedronRestCenter(h)).norm2();
