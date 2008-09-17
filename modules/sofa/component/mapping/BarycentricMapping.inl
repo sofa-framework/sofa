@@ -736,7 +736,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::init(const typename Out::Ve
     {
         Vector3 coefs;
         typename In::Real distance;
-        const int index = _geomAlgo->findNearestHexahedron(out[i], coefs, distance);
+        const int index = _geomAlgo->findNearestElement(out[i], coefs, distance);
 
         if(index != -1)
             addPointInCube(index, coefs.ptr());
@@ -2753,16 +2753,10 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
 
                             if(validC)
                             {
-                                const Vector3 v = _geomAlgo->computeHexahedronRestBarycentricCoeficients(c, pos);
-
-                                Real d = (Real) std::max(std::max(-v[0],-v[1]), std::max(std::max(-v[2],v[0]-1), std::max(v[1]-1,v[2]-1)));
-
-                                if (d>0)
-                                    d = (pos-_geomAlgo->computeHexahedronCenter(c)).norm2();
+                                const Real d = _geomAlgo->computeElementRestDistanceMeasure(c, pos);
 
                                 if (d<distance)
                                 {
-                                    coefs = v;
                                     distance = d;
                                     index = c;
                                 }
@@ -2771,9 +2765,11 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
 
                         if(index != -1)
                         {
-                            map[j].baryCoords[0] = (Real) coefs[0];
-                            map[j].baryCoords[1] = (Real) coefs[1];
-                            map[j].baryCoords[2] = (Real) coefs[2];
+                            const Vector3 bc = _geomAlgo->computeHexahedronRestBarycentricCoeficients(index, pos);
+
+                            map[j].baryCoords[0] = (Real) bc[0];
+                            map[j].baryCoords[1] = (Real) bc[1];
+                            map[j].baryCoords[2] = (Real) bc[2];
                             map[j].in_index = index;
                         }
                     }
