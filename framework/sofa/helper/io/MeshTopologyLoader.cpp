@@ -78,6 +78,7 @@ bool MeshTopologyLoader::loadObj(const char *filename)
     }
 
     const vector< vector < vector <int> > > & facets = mesh->getFacets();
+    std::set< std::pair<int,int> > edges;
     for (unsigned int i=0; i<facets.size(); i++)
     {
         const vector<int>& facet = facets[i][0];
@@ -110,7 +111,6 @@ bool MeshTopologyLoader::loadObj(const char *filename)
                 addTriangle(facet[0],facet[j-1],facet[j]);
         }
 
-        std::set< std::pair<int,int> > edges;
         // Add edges
         if (facet.size()>2)
         {
