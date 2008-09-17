@@ -1,7 +1,8 @@
-\section{NonUniformHexahedronFEMForceFieldAndMass}
+\subsection{NonUniformHexahedronFEMForceFieldAndMass}
+\graphicspath{{../modules/}}  % to include images
 
 
-\subsection{Concepts}
+\subsubsection{Concepts}
 
 This force field implement the article :
 
@@ -22,10 +23,11 @@ This force field implement the article :
 The basic idea, illustrated in figure \ref{fig:condensation}, is :
 
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\linewidth]{condensation}
-	\caption{The condensation principle}
+\begin{figure}
+\begin{center}
+	\includegraphics[width=\linewidth]{forcefield/nonUniformHexahedron/condensation.pdf}
+\end{center}
+	\caption{The condensation principle.}
 	\label{fig:condensation}
 \end{figure}
 
@@ -39,7 +41,7 @@ The basic idea, illustrated in figure \ref{fig:condensation}, is :
 
 \textbf{Warning} : actually the NonUniformHexahedronFEMForceFieldAndMass is only working with SparseGridTopology, and need enough finer virtual levels to compute the condensation. 
 
-\subsection{Data Fields}
+\subsubsection{Data Fields}
 
 \begin{itemize}
 \item From HexahedronFEMForceFieldAndMass
@@ -60,7 +62,7 @@ The basic idea, illustrated in figure \ref{fig:condensation}, is :
 \end{itemize}
 
 
-\subsection{Example}
+\subsubsection{Example}
 
 
 
