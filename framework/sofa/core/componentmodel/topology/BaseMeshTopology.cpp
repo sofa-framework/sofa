@@ -194,14 +194,14 @@ const BaseMeshTopology::QuadHexas& BaseMeshTopology::getHexaQuadShell(QuadID)
 
 void BaseMeshTopology::init()
 {
-    if (!fileTopology.getValue().empty())
-    {
-        this->load(fileTopology.getValue().c_str());
-    }
 }
 void BaseMeshTopology::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     this->core::componentmodel::topology::Topology::parse(arg);
+    if (!fileTopology.getValue().empty())
+    {
+        this->load(fileTopology.getValue().c_str());
+    }
 }
 
 class DefaultMeshTopologyLoader : public helper::io::MeshTopologyLoader
