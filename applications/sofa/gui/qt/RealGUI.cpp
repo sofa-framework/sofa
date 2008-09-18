@@ -1204,6 +1204,8 @@ void RealGUI::fileSaveAs ( Node *node, const char* filename )
 
 void RealGUI::fileExit()
 {
+    //Hide all opened ModifyObject windows
+    emit ( newScene() );
     startButton->setOn ( false);
     this->close();
 }

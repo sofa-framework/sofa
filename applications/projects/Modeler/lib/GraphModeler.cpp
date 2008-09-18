@@ -550,7 +550,9 @@ void GraphModeler::loadPreset(GNode *parent, std::string presetFile,
 
 void GraphModeler::updatePresetNode(xml::BaseElement &elem, std::string meshFile, std::string *translation, std::string *rotation, std::string scale)
 {
-    if (elem.presenceAttribute(std::string("filename"))) elem.setAttribute(std::string("filename"), meshFile.c_str());
+    if (elem.presenceAttribute(std::string("filename")))     elem.setAttribute(std::string("filename"),     meshFile.c_str());
+    if (elem.presenceAttribute(std::string("fileMesh")))     elem.setAttribute(std::string("fileMesh"),     meshFile.c_str());
+    if (elem.presenceAttribute(std::string("fileTopology"))) elem.setAttribute(std::string("fileTopology"), meshFile.c_str());
 
     if (elem.presenceAttribute(std::string("dx"))) elem.setAttribute(std::string("dx"), translation[0].c_str());
     if (elem.presenceAttribute(std::string("dy"))) elem.setAttribute(std::string("dy"), translation[1].c_str());

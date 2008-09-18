@@ -42,5 +42,12 @@ int main(int argc, char** argv)
     sofa::gui::qt::SofaModeler* sofaModeler = new sofa::gui::qt::SofaModeler();
     application->setMainWidget(sofaModeler);
     sofaModeler->show();
+
+    for (int i=1; i<argc; ++i)
+    {
+        //Try to open the simulations passed in command line
+        sofaModeler->fileOpen(std::string(argv[i]));
+    }
+
     return application->exec();
 }
