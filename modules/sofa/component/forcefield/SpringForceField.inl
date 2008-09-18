@@ -108,8 +108,8 @@ void SpringForceField<DataTypes>::reinit()
 {
     for (unsigned int i=0; i<springs.getValue().size(); ++i)
     {
-        (*springs.beginEdit())[i].ks = ks.getValue()/springs.getValue()[i].initpos;
-        (*springs.beginEdit())[i].kd = kd.getValue()/springs.getValue()[i].initpos;
+        (*springs.beginEdit())[i].ks = ks.getValue();
+        (*springs.beginEdit())[i].kd = kd.getValue();
     }
 }
 

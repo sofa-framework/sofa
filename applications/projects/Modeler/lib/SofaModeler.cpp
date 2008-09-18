@@ -74,12 +74,16 @@ typedef QTextDrag Q3TextDrag;
 SofaModeler::SofaModeler()
 {
     count='0';
+    displayComponents=0;
     QWidget *GraphSupport = new QWidget((QWidget*)splitter2);
     QGridLayout* GraphLayout = new QGridLayout(GraphSupport, 1,1,5,2,"GraphLayout");
 
-
 #ifdef SOFA_QT4
     fileMenu->removeAction(Action);
+
+    //Temporary: desactivate with Qt4 the filter
+    LabelSearch->hide();
+    SearchEdit->hide();
 #endif
     connect(GNodeButton, SIGNAL(pressed()), this, SLOT( releaseButton()));
 
@@ -171,8 +175,8 @@ SofaModeler::SofaModeler()
         }
         if (entries[i]->baseClasses.size() == 0)
         {
-            setType.insert("_Undefined_");
-            inventory.insert(std::make_pair("_Undefined_", entries[i]));
+            setType.insert("_Miscellaneous");
+            inventory.insert(std::make_pair("_Miscellaneous", entries[i]));
         }
 
     }
@@ -418,33 +422,39 @@ void SofaModeler::closeTab()
     sceneTab->removePage(curTab);
     mapGraph.erase(curTab);
     curTab->close();
-
-
 }
 
 void SofaModeler::fileOpen(std::string filename)
 {
-    createTab();
-    GNode *root = NULL;
-    xml::BaseElement* newXML=NULL;
-    if (!filename.empty())
+    if ( sofa::helper::system::DataRepository.findFile ( filename ) )
     {
-        sofa::helper::system::SetDirectory chdir ( filename );
-        newXML = xml::loadFromFile ( filename.c_str() );
-        if (newXML == NULL) return;
-        if (!newXML->init()) std::cerr<< "Objects initialization failed.\n";
-        root = dynamic_cast<GNode*> ( newXML->getObject() );
+        filename =  sofa::helper::system::DataRepository.getFile ( filename );
+
+        GNode *root = NULL;
+        xml::BaseElement* newXML=NULL;
+        if (!filename.empty())
+        {
+            sofa::helper::system::SetDirectory chdir ( filename );
+            newXML = xml::loadFromFile ( filename.c_str() );
+            if (newXML == NULL) return;
+            if (!newXML->init()) std::cerr<< "Objects initialization failed.\n";
+            root = dynamic_cast<GNode*> ( newXML->getObject() );
+        }
+        if (root)
+        {
+            createTab();
+            fileNew(root);
+            sceneTab->setCurrentPage( sceneTab->count()-1);
+
+            graph->setFilename(filename);
+            sceneTab->setTabLabel(tabGraph, QString(sofa::helper::system::SetDirectory::GetFileName(filename.c_str()).c_str()));
+            sceneTab->setTabToolTip(tabGraph, QString(filename.c_str()));
+
+            changeNameWindow(graph->getFilename());
+
+            mapWindow.insert(std::make_pair(windowMenu->insertItem( graph->getFilename().c_str()), tabGraph));
+        }
     }
-    fileNew(root);
-    sceneTab->setCurrentPage( sceneTab->count()-1);
-
-    graph->setFilename(filename);
-    sceneTab->setTabLabel(tabGraph, QString(sofa::helper::system::SetDirectory::GetFileName(filename.c_str()).c_str()));
-    sceneTab->setTabToolTip(tabGraph, QString(filename.c_str()));
-
-    changeNameWindow(graph->getFilename());
-
-    mapWindow.insert(std::make_pair(windowMenu->insertItem( graph->getFilename().c_str()), tabGraph));
 }
 
 void SofaModeler::fileRecentlyOpened(int id)
@@ -616,11 +626,19 @@ void SofaModeler::changeComponent(ClassInfo *currentComponent)
             possiblePaths.push_back(sofa::helper::system::DataRepository.getFile ( path ));
     }
 
+
+    std::string nameSpace = sofa::core::objectmodel::Base::decodeNamespaceName(currentComponent->creatorList.begin()->second->type());
+
+
     text += std::string("</H2>");
 
     text += std::string("<ul>");
 
     text += std::string("<li><b>Description: </b>") + currentComponent->description + std::string("</li>");
+
+
+    if (!nameSpace.empty())
+        text += std::string("<li><b>NameSpace: </b>")+nameSpace +std::string("</li>");
     if (!currentComponent->authors.empty())
         text += std::string("<li><b>Authors: </b>")+currentComponent->authors +std::string("</li>");
     if (!currentComponent->license.empty())
@@ -631,7 +649,6 @@ void SofaModeler::changeComponent(ClassInfo *currentComponent)
     text += std::string("</ul>");
 
     infoItem->setText(text.c_str());
-
 }
 
 
