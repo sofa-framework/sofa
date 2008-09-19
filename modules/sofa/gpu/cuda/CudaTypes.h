@@ -822,6 +822,14 @@ public:
         return r;
     }
 
+
+    /// Dot product.
+    template<class real2>
+    inline friend real operator*(const Vec<N,real2>& v1, const Vec3r1<real>& v2 )
+    {
+        return v2*v1;
+    }
+
     /// Dot product.
     real operator*(const Vec3r1& v) const
     {
