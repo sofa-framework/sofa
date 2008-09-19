@@ -288,46 +288,97 @@ private:
 };
 /// Class allowing barycentric mapping computation on a RegularGridTopology
 template<class In, class Out>
-class BarycentricMapperRegularGridTopology : public BarycentricMapperMeshTopology<In,Out>
+class BarycentricMapperRegularGridTopology : public TopologyBarycentricMapper<In,Out>
 {
 public:
-    typedef BarycentricMapperMeshTopology<In,Out> Inherit;
+    typedef TopologyBarycentricMapper<In,Out> Inherit;
+    typedef typename Inherit::Real Real;
+    typedef typename Inherit::OutReal OutReal;
+    typedef typename Inherit::CubeData CubeData;
 protected:
+    sofa::helper::vector<CubeData> map;
     topology::RegularGridTopology* topology;
 
 public:
     BarycentricMapperRegularGridTopology(topology::RegularGridTopology* topology)
-        : BarycentricMapperMeshTopology<In,Out>(topology),topology(topology)
+        : Inherit(topology),topology(topology)
     {}
 
     virtual ~BarycentricMapperRegularGridTopology() {}
 
-    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    void clear(int reserve=0);
 
-    bool isEmpty() {return this->map1d.size()+this->map2d.size()+this->map3d.size() == 0;}
+    bool isEmpty() {return this->map.size() == 0;}
     void setTopology(topology::RegularGridTopology* _topology) {this->topology = _topology;}
     topology::RegularGridTopology *getTopology() {return dynamic_cast<topology::RegularGridTopology *>(this->topology);}
+
+    int addPointInCube(int cubeIndex, const SReal* baryCoords);
+
+    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
+
+    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperRegularGridTopology<In, Out> &b )
+    {
+        in >> b.map;
+        return in;
+    }
+
+    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperRegularGridTopology<In, Out> & b )
+    {
+        out << b.map;
+        return out;
+    }
 
 };
 
 
-
 /// Class allowing barycentric mapping computation on a SparseGridTopology
 template<class In, class Out>
-class BarycentricMapperSparseGridTopology : public  BarycentricMapperMeshTopology<In,Out>
+class BarycentricMapperSparseGridTopology : public TopologyBarycentricMapper<In,Out>
 {
 public:
-    typedef BarycentricMapperMeshTopology<In,Out> Inherit;
+    typedef TopologyBarycentricMapper<In,Out> Inherit;
+    typedef typename Inherit::Real Real;
+    typedef typename Inherit::OutReal OutReal;
+    typedef typename Inherit::CubeData CubeData;
 protected:
+    sofa::helper::vector<CubeData> map;
     topology::SparseGridTopology* topology;
 public:
     BarycentricMapperSparseGridTopology(topology::SparseGridTopology* topology)
-        : BarycentricMapperMeshTopology<In,Out>(topology),topology(topology)
+        : TopologyBarycentricMapper<In,Out>(topology),
+          topology(topology)
     {}
 
-    virtual ~BarycentricMapperSparseGridTopology() {};
+    virtual ~BarycentricMapperSparseGridTopology() {}
+
+    void clear(int reserve=0);
+
+    int addPointInCube(int cubeIndex, const SReal* baryCoords);
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
+
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
+
+    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperSparseGridTopology<In, Out> &b )
+    {
+        in >> b.map;
+        return in;
+    }
+
+    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperSparseGridTopology<In, Out> & b )
+    {
+        out << b.map;
+        return out;
+    }
 
 };
 
