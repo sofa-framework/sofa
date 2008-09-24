@@ -43,7 +43,8 @@ namespace helper
 template<class Real>
 Quater<Real>::Quater()
 {
-    _q[0] = _q[1] = _q[2] = _q[3] = 0.0;
+    _q[0] = _q[1] = _q[2] = 0.0;
+    _q[3] = 1.0;
 }
 
 template<class Real>
