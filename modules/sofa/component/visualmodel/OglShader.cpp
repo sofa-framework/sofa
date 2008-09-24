@@ -57,7 +57,7 @@ int OglShaderClass = core::RegisterObject("OglShader")
 
 OglShader::OglShader():
     turnOn(initData(&turnOn, (bool) true, "turnOn", "Turn On the shader?")),
-    passive(initData(&passive, (bool) false, "passive", "Will this shader be activated manually or automatically?")),
+    passive(initData(&passive, (bool) true, "passive", "Will this shader be activated manually or automatically?")),
     vertFilename(initData(&vertFilename, (std::string) "shaders/toonShading.vert", "vertFilename", "Set the vertex shader filename to load")),
     fragFilename(initData(&fragFilename, (std::string) "shaders/toonShading.frag", "fragFilename", "Set the fragment shader filename to load")),
     geoFilename(initData(&geoFilename, (std::string) "", "geoFilename", "Set the geometry shader filename to load")),
