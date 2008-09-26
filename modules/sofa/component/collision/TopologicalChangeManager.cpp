@@ -86,7 +86,7 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::core::Collisio
             {
 
                 sofa::core::componentmodel::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping *>(*it);
-                if(topoMap != NULL)
+                if(topoMap != NULL && topoMap->propagateFromInputToOutputModel())
                 {
 
                     is_topoMap = true;

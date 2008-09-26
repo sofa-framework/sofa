@@ -49,6 +49,7 @@ void TopologyChangeVisitor::processTopologyChange(core::objectmodel::BaseObject*
 
 Visitor::Result TopologyChangeVisitor::processNodeTopDown(simulation::Node* node)
 {
+    if (!root) root = node;
     bool is_TopologicalMapping = false;
 
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
@@ -58,10 +59,10 @@ Visitor::Result TopologyChangeVisitor::processNodeTopDown(simulation::Node* node
 
             sofa::core::componentmodel::topology::TopologicalMapping* obj = dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping*>(*it);
 
-            if(getNbIter() > 0)  // the propagation of topological changes comes (at least) from a father node, not from a brother
+            if(obj->propagateFromInputToOutputModel() && node != root)  // the propagation of topological changes comes (at least) from a father node, not from a brother
             {
 
-                obj->updateTopologicalMapping(); // update the specific TopologicalMapping
+                obj->updateTopologicalMappingTopDown(); // update the specific TopologicalMapping
                 is_TopologicalMapping = true;
             }
         }
@@ -69,9 +70,6 @@ Visitor::Result TopologyChangeVisitor::processNodeTopDown(simulation::Node* node
 
     if(is_TopologicalMapping)  // find one TopologicalMapping node among the brothers (which must be the first one written in the scene file)
     {
-
-        // Increment the number of iterations of the method processNodeTopDown
-        incrNbIter();
         return RESULT_PRUNE; // stop the propagation of topological changes
     }
 
@@ -79,13 +77,30 @@ Visitor::Result TopologyChangeVisitor::processNodeTopDown(simulation::Node* node
     {
         this->processTopologyChange(*it);
     }
-
-    // Increment the number of iterations of the method processNodeTopDown
-    incrNbIter();
     return RESULT_CONTINUE;
 }
 
 
+void TopologyChangeVisitor::processNodeBottomUp(simulation::Node* node)
+{
+    bool is_TopologicalMapping = false;
+
+    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+    {
+        if (dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping*>(*it)!= NULL)  // find a TopologicalMapping node among the brothers (it must be the first one written)
+        {
+
+            sofa::core::componentmodel::topology::TopologicalMapping* obj = dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping*>(*it);
+
+            if(obj->propagateFromOutputToInputModel() && node == root)
+            {
+
+                obj->updateTopologicalMappingBottomUp(); // update the specific TopologicalMapping
+                is_TopologicalMapping = true;
+            }
+        }
+    }
+}
 
 } // namespace simulation
 

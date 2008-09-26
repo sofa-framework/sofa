@@ -179,7 +179,7 @@ unsigned int Edge2QuadTopologicalMapping::getFromIndex(unsigned int ind)
     return ind; // identity
 }
 
-void Edge2QuadTopologicalMapping::updateTopologicalMapping()
+void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 {
 
     unsigned int N = m_nbPointsOnEachCircle.getValue();

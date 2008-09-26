@@ -145,7 +145,7 @@ unsigned int Quad2TriangleTopologicalMapping::getFromIndex(unsigned int ind)
     return ind; // identity
 }
 
-void Quad2TriangleTopologicalMapping::updateTopologicalMapping()
+void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 {
 
 

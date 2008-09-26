@@ -73,6 +73,8 @@ public:
 
     virtual ~TetrahedronSetTopologyContainer() {}
 
+    virtual void draw();
+
     /// Procedural creation methods
     /// @{
     virtual void clear();

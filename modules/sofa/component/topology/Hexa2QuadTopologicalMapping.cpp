@@ -142,7 +142,7 @@ unsigned int Hexa2QuadTopologicalMapping::getFromIndex(unsigned int ind)
     }
 }
 
-void Hexa2QuadTopologicalMapping::updateTopologicalMapping()
+void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 {
 
     // INITIALISATION of QUADULAR mesh from HEXAHEDRAL mesh :
