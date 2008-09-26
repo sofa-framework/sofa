@@ -85,7 +85,7 @@ public:
      * reflect the effects of the first topology changes on the second topology.
      *
      */
-    virtual void updateTopologicalMapping();
+    virtual void updateTopologicalMappingTopDown();
 
     virtual unsigned int getFromIndex(unsigned int ind);
 

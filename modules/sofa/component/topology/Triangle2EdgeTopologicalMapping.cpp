@@ -142,7 +142,7 @@ unsigned int Triangle2EdgeTopologicalMapping::getFromIndex(unsigned int ind)
     }
 }
 
-void Triangle2EdgeTopologicalMapping::updateTopologicalMapping()
+void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
 {
 
     // INITIALISATION of EDGE mesh from TRIANGULAR mesh :

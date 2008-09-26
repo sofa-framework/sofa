@@ -144,7 +144,7 @@ unsigned int Tetra2TriangleTopologicalMapping::getFromIndex(unsigned int ind)
     }
 }
 
-void Tetra2TriangleTopologicalMapping::updateTopologicalMapping()
+void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 {
 
     // INITIALISATION of TRIANGULAR mesh from TETRAHEDRAL mesh :

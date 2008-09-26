@@ -22,47 +22,64 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_TOPOLOGYCHANGEACTION_H
-#define SOFA_SIMULATION_TREE_TOPOLOGYCHANGEACTION_H
+#ifndef SOFA_COMPONENT_MAPPING_SIMPLETESSELATEDTETRAMAPPING_H
+#define SOFA_COMPONENT_MAPPING_SIMPLETESSELATEDTETRAMAPPING_H
 
-#include <sofa/simulation/common/Visitor.h>
+#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/component/topology/SimpleTeselatedTetraTopologicalMapping.h>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {
 
-namespace simulation
+namespace component
+{
+
+namespace mapping
 {
 
 
-class TopologyChangeVisitor : public Visitor
+template <class BasicMapping>
+class SimpleTesselatedTetraMechanicalMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
 {
-
 public:
-    TopologyChangeVisitor()
-        : root(NULL)
-    {}
+    typedef BasicMapping Inherit;
+    typedef typename Inherit::In In;
+    typedef typename Inherit::Out Out;
+    typedef typename Out::VecCoord OutVecCoord;
+    typedef typename Out::VecDeriv OutVecDeriv;
+    typedef typename Out::Coord OutCoord;
+    typedef typename Out::Deriv OutDeriv;
+    typedef typename In::VecCoord InVecCoord;
+    typedef typename In::VecDeriv InVecDeriv;
+    typedef typename In::Coord InCoord;
+    typedef typename In::Deriv InDeriv;
+    typedef typename InCoord::value_type Real;
 
-    virtual ~TopologyChangeVisitor() {}
+    SimpleTesselatedTetraMechanicalMapping(In* from, Out* to);
 
-    virtual void processTopologyChange(core::objectmodel::BaseObject* obj);
+    void init();
 
-    virtual Result processNodeTopDown(simulation::Node* node);
-    virtual void processNodeBottomUp(simulation::Node* node);
+    virtual ~SimpleTesselatedTetraMechanicalMapping();
 
-    /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const { return true; }
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
 
-    /// Return a category name for this action.
-    /// Only used for debugging / profiling purposes
-    virtual const char* getCategoryName() const { return "topologyChange"; }
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+
+    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
 
 protected:
-    /// Flag to know the number of iterations of the overloaded method processNodeTopDown
-    simulation::Node* root;
+    topology::SimpleTeselatedTetraTopologicalMapping* topoMap;
+    core::componentmodel::topology::BaseMeshTopology* inputTopo;
+    core::componentmodel::topology::BaseMeshTopology* outputTopo;
 };
 
+} // namespace mapping
 
-} // namespace simulation
+} // namespace component
 
 } // namespace sofa
 

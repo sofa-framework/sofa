@@ -28,6 +28,9 @@
 
 #include <sofa/component/MeshLoader.h>
 
+#include <sofa/helper/system/gl.h>
+#include <sofa/helper/gl/template.h>
+
 namespace sofa
 {
 
@@ -65,6 +68,30 @@ TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer(const sofa::hel
             int a = m_tetrahedron[i][j];
             if (a >= (int)nbPoints) nbPoints = a+1;
         }
+    }
+}
+
+void TetrahedronSetTopologyContainer::draw()
+{
+    glDisable(GL_LIGHTING);
+
+
+    glColor3f(1,0,0);
+    for (int i=0; i<getNbTetras(); i++)
+    {
+        const Tetra& t = getTetra(i);
+        glBegin(GL_LINE_STRIP);
+        glVertex3d(getPX(t[0]), getPY(t[0]), getPZ(t[0]));
+        glVertex3d(getPX(t[1]), getPY(t[1]), getPZ(t[1]));
+        glVertex3d(getPX(t[2]), getPY(t[2]), getPZ(t[2]));
+        glVertex3d(getPX(t[3]), getPY(t[3]), getPZ(t[3]));
+        glVertex3d(getPX(t[0]), getPY(t[0]), getPZ(t[0]));
+        glVertex3d(getPX(t[2]), getPY(t[2]), getPZ(t[2]));
+        glEnd();
+        glBegin(GL_LINES);
+        glVertex3d(getPX(t[1]), getPY(t[1]), getPZ(t[1]));
+        glVertex3d(getPX(t[3]), getPY(t[3]), getPZ(t[3]));
+        glEnd();
     }
 }
 
