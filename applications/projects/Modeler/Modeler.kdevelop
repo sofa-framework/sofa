@@ -11,11 +11,12 @@
     </keywords>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description/>
+    <description></description>
     <ignoreparts/>
     <secondaryLanguages/>
     <versioncontrol>kdevsubversion</versioncontrol>
     <projectname>Modeler</projectname>
+    <defaultencoding></defaultencoding>
   </general>
   <kdevfileview>
     <groups>
@@ -80,15 +81,16 @@
   </kdevdoctreeview>
   <kdevdebugger>
     <general>
-      <dbgshell/>
+      <dbgshell></dbgshell>
       <programargs>-f Data/demo6.scn</programargs>
-      <gdbpath/>
-      <configGdbScript/>
-      <runShellScript/>
-      <runGdbScript/>
+      <gdbpath></gdbpath>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
+      <raiseGDBOnStart>false</raiseGDBOnStart>
     </general>
     <display>
       <staticmembers>false</staticmembers>
@@ -98,7 +100,7 @@
   </kdevdebugger>
   <kdevtrollproject>
     <run>
-      <mainprogram>example1</mainprogram>
+      <mainprogram>../../../bin/Modeler</mainprogram>
       <programargs>-f Data/demo6.scn </programargs>
       <directoryradio>build</directoryradio>
       <customdirectory>/</customdirectory>
@@ -107,20 +109,33 @@
       <envvars>
         <envvar value="../../../lib/linux:$LD_LIBRARY_PATH" name="LD_LIBRARY_PATH" />
       </envvars>
+      <globaldebugarguments></globaldebugarguments>
+      <globalcwd>/home/ffaure/Documents/programmes/Sofa/sofa-dev/trunk/Sofa/applications/projects/Modeler</globalcwd>
+      <useglobalprogram>true</useglobalprogram>
+      <autoinstall>false</autoinstall>
+      <autokdesu>false</autokdesu>
     </run>
     <general>
-      <activedir></activedir>
+      <activedir>exec</activedir>
     </general>
     <make>
       <abortonerror>false</abortonerror>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
-      <makebin/>
+      <makebin></makebin>
       <envvars/>
       <prio>0</prio>
       <runmultiplejobs>false</runmultiplejobs>
     </make>
     <subclassing/>
+    <qmake>
+      <savebehaviour>2</savebehaviour>
+      <replacePaths>false</replacePaths>
+      <disableDefaultOpts>true</disableDefaultOpts>
+      <enableFilenamesOnly>false</enableFilenamesOnly>
+      <showVariablesInTree>true</showVariablesInTree>
+      <showParseErrors>true</showParseErrors>
+    </qmake>
   </kdevtrollproject>
   <kdevfilecreate>
     <filetypes/>
@@ -159,9 +174,11 @@
       <usePermanentCaching>true</usePermanentCaching>
       <alwaysIncludeNamespaces>false</alwaysIncludeNamespaces>
       <includePaths>.;</includePaths>
+      <parseMissingHeadersExperimental>false</parseMissingHeadersExperimental>
+      <resolveIncludePathsUsingMakeExperimental>false</resolveIncludePathsUsingMakeExperimental>
     </codecompletion>
     <creategettersetter>
-      <prefixGet/>
+      <prefixGet></prefixGet>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -181,6 +198,11 @@
     <designerintegration>
       <qtdesigner/>
     </designerintegration>
+    <splitheadersource>
+      <enabled>false</enabled>
+      <synchronize>true</synchronize>
+      <orientation>Vertical</orientation>
+    </splitheadersource>
   </kdevcppsupport>
   <cppsupportpart>
     <filetemplates>

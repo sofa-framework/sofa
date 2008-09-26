@@ -1,15 +1,15 @@
 [General]
 img_extIsRegExp=false
-img_extensions=.eps .pdf .dvi .ps .fig .gif .jpg .jpeg .png
-kileprversion=1
-kileversion=1.9.3
+img_extensions=.eps .jpg .jpeg .png .pdf .ps .fig .gif .dvi
+kileprversion=2
+kileversion=2.0
 lastDocument=sceneEquations.tex
 masterDocument=
 name=SceneEquations
 pkg_extIsRegExp=false
-pkg_extensions=.cls .sty .dtx
+pkg_extensions=.cls .sty
 src_extIsRegExp=false
-src_extensions=.tex .ltx .bib .mp
+src_extensions=.tex .ltx .latex .dtx .ins .bib .mp
 
 [Tools]
 MakeIndex=
@@ -17,11 +17,12 @@ QuickBuild=
 
 [item:sceneEquations.tex]
 archive=true
-column=56
-encoding=ISO 8859-1
+column=20
+encoding=ISO 8859-15
 highlight=LaTeX
-line=107
-open=false
+line=129
+open=true
+order=0
 
 [item:sceneequations.kilepr]
 archive=true
@@ -30,3 +31,4 @@ encoding=
 highlight=
 line=0
 open=false
+order=-1

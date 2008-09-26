@@ -955,7 +955,7 @@ void BarycentricMapperMeshTopology<In,Out>::apply( typename Out::VecCoord& out, 
             const Real fx = map2d[i].baryCoords[0];
             const Real fy = map2d[i].baryCoords[1];
             int index = map2d[i].in_index;
-            std::cout << index << " " << triangles.size() << " !!!!!!!\n";
+//	    std::cout << index << " " << triangles.size() << " !!!!!!!\n";
             if (index<c0)
             {
                 const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& triangle = triangles[index];
