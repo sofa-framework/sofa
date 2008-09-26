@@ -194,17 +194,37 @@ Example: A mass-spring string and a rigid body
 \end{columns}
 \end{frame}
 
-% \begin{frame}
-%  \frametitle{A more complete picture of the scene graph}
-% \begin{itemize}
-%  \item The graph displayed in the GUI shows only the hierarchy:\\ \includegraphics[width=0.5\linewidth]{mixed7.png}
-%  \item Additional pointers appear in the graph exported and displayed using graphviz: \includegraphics[width=\linewidth]{mixed8.png}
-% \end{itemize}
-% \end{frame}
+\begin{frame}
+ \frametitle{Modularity: various mechanical models attached to the same collision model}
+\begin{figure}
+ \centering
+ \includegraphics[width=0.4\linewidth]{demoLiverFall1.png}
+ \includegraphics[width=0.4\linewidth]{demoLiverFall2.png}
+ % demo.: 1179666x1179666 pixel, 0dpi, infxinf cm, bb=
+\end{figure}
+\begin{itemize}
+ \item different mechanical models
+ \item same collision model attached using the appropriate mapping 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Modularity: various collision models attached to the same mechanical model}
+\begin{figure}
+ \centering
+ \includegraphics[width=0.4\linewidth]{liver_collision_spheres.png}
+ \includegraphics[width=0.4\linewidth]{liver_collision_triangles.png}
+\end{figure}
+\begin{itemize}
+ \item same mechanical model
+ \item various collision models
+\end{itemize}
+\end{frame}
 
 
 \begin{frame}
- \frametitle{Interacting bodies}
+ \frametitle{Example of interacting bodies}
+Rigid and deformable bodies connected.
 \begin{itemize}
  \item We attach a point to the rigid body using a mapping
  \item We insert a spring between this point and the string
@@ -225,25 +245,25 @@ Example: A mass-spring string and a rigid body
 \end{frame}
 
 
-\begin{frame}
-\frametitle{Interacting bodies}
-Without interaction force
-\begin{figure}
-\begin{tabular}{c}
- \includegraphics[height=3cm]{mixed3.png} \\ scene graph
-\end{tabular}
-\begin{tabular}{c}
- \includegraphics[height=3cm]{mixed1.png} \\ t=0
-\end{tabular}
-\begin{tabular}{c}
- \includegraphics[height=3cm]{mixed2.png} \\ t = ...
-\end{tabular}
-\end{figure}
-\end{frame}
+% \begin{frame}
+% \frametitle{Interacting bodies}
+% Without interaction force
+% \begin{figure}
+% \begin{tabular}{c}
+%  \includegraphics[height=3cm]{mixed3.png} \\ scene graph
+% \end{tabular}
+% \begin{tabular}{c}
+%  \includegraphics[height=3cm]{mixed1.png} \\ t=0
+% \end{tabular}
+% \begin{tabular}{c}
+%  \includegraphics[height=3cm]{mixed2.png} \\ t = ...
+% \end{tabular}
+% \end{figure}
+% \end{frame}
 
 
 \begin{frame}
-\frametitle{Interacting bodies}
+\frametitle{Simulation using implicit time integration}
 With interaction force
 \begin{figure}
 \begin{tabular}{c}
@@ -265,7 +285,7 @@ With interaction force
 
 \begin{frame}
  \frametitle{Data processing}
-Sofa Actions:
+Sofa Visitors:
 \begin{itemize}
  \item The scene graph is recursively traversed top-down and bottom-up
  \item Callbacks are applied to components of certain classes
@@ -282,7 +302,7 @@ Sofa Actions:
 
 
 \begin{frame}
- \frametitle{Example of action}
+ \frametitle{Example of visitor}
 \begin{itemize}
  \item Accumulate forces, top-down callbaks:
 \begin{itemize}
@@ -303,7 +323,7 @@ Sofa Actions:
 
 
 \begin{frame}
- \frametitle{Example of action (continued)}
+ \frametitle{Example of visitor (continued)}
 
 \begin{itemize}
  \item Accumulate forces, bottom-up callbacks:
@@ -321,7 +341,7 @@ Sofa Actions:
 
 
 \begin{frame}
- \frametitle{Another action}
+ \frametitle{Another visitor}
 \begin{itemize}
  \item Compute acceleration, top-down callbacks:
 \begin{itemize}
@@ -407,7 +427,7 @@ class Vec3fTypes
  \frametitle{Algorithms}
 At each time step:
 \begin{enumerate}
- \item Collisions are modeled by springs using a CollisionAction
+ \item Collisions are modeled by springs using a CollisionVisitor
  \item Differential Equation solvers update x and v 
  \item Mappings propagate the new state to all the layers and external buffers (rendering)
 \end{enumerate}
