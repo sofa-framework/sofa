@@ -27,7 +27,7 @@
 
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/component/topology/SimpleTeselatedTetraTopologicalMapping.h>
+#include <sofa/component/topology/SimpleTesselatedTetraTopologicalMapping.h>
 #include <sofa/helper/vector.h>
 
 namespace sofa
@@ -72,7 +72,7 @@ public:
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
 
 protected:
-    topology::SimpleTeselatedTetraTopologicalMapping* topoMap;
+    topology::SimpleTesselatedTetraTopologicalMapping* topoMap;
     core::componentmodel::topology::BaseMeshTopology* inputTopo;
     core::componentmodel::topology::BaseMeshTopology* outputTopo;
 };
