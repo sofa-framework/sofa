@@ -54,10 +54,9 @@ Visitor::Result TopologyChangeVisitor::processNodeTopDown(simulation::Node* node
 
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
-        if (dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping*>(*it)!= NULL)  // find a TopologicalMapping node among the brothers (it must be the first one written)
+        sofa::core::componentmodel::topology::TopologicalMapping* obj = dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping*>(*it);
+        if (obj != NULL)  // find a TopologicalMapping node among the brothers (it must be the first one written)
         {
-
-            sofa::core::componentmodel::topology::TopologicalMapping* obj = dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping*>(*it);
 
             if(obj->propagateFromInputToOutputModel() && node != root)  // the propagation of topological changes comes (at least) from a father node, not from a brother
             {
@@ -83,20 +82,16 @@ Visitor::Result TopologyChangeVisitor::processNodeTopDown(simulation::Node* node
 
 void TopologyChangeVisitor::processNodeBottomUp(simulation::Node* node)
 {
-    bool is_TopologicalMapping = false;
-
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
-        if (dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping*>(*it)!= NULL)  // find a TopologicalMapping node among the brothers (it must be the first one written)
+        sofa::core::componentmodel::topology::TopologicalMapping* obj = dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping*>(*it);
+        if (obj != NULL)  // find a TopologicalMapping node among the brothers (it must be the first one written)
         {
-
-            sofa::core::componentmodel::topology::TopologicalMapping* obj = dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping*>(*it);
 
             if(obj->propagateFromOutputToInputModel() && node == root)
             {
 
                 obj->updateTopologicalMappingBottomUp(); // update the specific TopologicalMapping
-                is_TopologicalMapping = true;
             }
         }
     }
