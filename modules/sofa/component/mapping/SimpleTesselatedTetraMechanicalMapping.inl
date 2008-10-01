@@ -132,6 +132,12 @@ void SimpleTesselatedTetraMechanicalMapping<BaseMapping>::applyJT( typename In::
 template <class BaseMapping>
 void SimpleTesselatedTetraMechanicalMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
 {
+
+    if (!topoMap) return;
+    const topology::PointData<int>& pointSource = topoMap->getPointSource();
+    if (pointSource.empty()) return;
+    const core::componentmodel::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
+
     int offset = out.size();
     out.resize(offset+in.size());
 
@@ -140,7 +146,19 @@ void SimpleTesselatedTetraMechanicalMapping<BaseMapping>::applyJT( typename In::
         for(unsigned int j=0; j<in[c].size(); j++)
         {
             const typename Out::SparseDeriv cIn = in[c][j];
-            //out[c+offset].push_back(typename In::SparseDeriv( indices[cIn.index] , (typename In::Deriv) cIn.data ));
+            int source = pointSource[cIn.index];
+            if (source > 0)
+            {
+                out[c+offset].push_back(typename In::SparseDeriv( source-1 , (typename In::Deriv) cIn.data ));
+            }
+            else if (source < 0)
+            {
+                core::componentmodel::topology::BaseMeshTopology::Edge e = edges[-source-1];
+                typename In::Deriv f = (typename In::Deriv) cIn.data;
+                f*=0.5f;
+                out[c+offset].push_back(typename In::SparseDeriv( e[0] , f ));
+                out[c+offset].push_back(typename In::SparseDeriv( e[1] , f ));
+            }
         }
     }
 }

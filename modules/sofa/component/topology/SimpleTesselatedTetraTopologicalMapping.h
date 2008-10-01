@@ -29,6 +29,7 @@
 
 #include <sofa/defaulttype/Vec.h>
 #include <map>
+#include <set>
 
 #include <sofa/core/BaseMapping.h>
 #include <sofa/component/topology/PointData.h>
@@ -76,7 +77,7 @@ public:
      */
     virtual void init();
 
-    virtual void updateTopologicalMappingTopDown() {}
+    virtual void updateTopologicalMappingTopDown();
 
     /** \brief Translates the TopologyChange objects from the source to the target.
      *
@@ -87,7 +88,7 @@ public:
     virtual void updateTopologicalMappingBottomUp();
 
     /// Return true if this mapping is able to propagate topological changes from input to output model
-    virtual bool propagateFromInputToOutputModel() { return false; }
+    virtual bool propagateFromInputToOutputModel() { return true; }
 
     /// Return true if this mapping is able to propagate topological changes from output to input model
     virtual bool propagateFromOutputToInputModel() { return true; }
@@ -164,6 +165,7 @@ public:
 
     const PointData<int>& getPointMappedFromPoint() const { return pointMappedFromPoint; }
     const EdgeData<int>& getPointMappedFromEdge() const { return pointMappedFromEdge; }
+    const PointData<int>& getPointSource() const { return pointSource; }
 
 protected:
     Data< std::string > object1;
@@ -173,8 +175,8 @@ protected:
     EdgeData<int> pointMappedFromEdge;
     TetrahedronData< fixed_array<int, 8> > tetrasMappedFromTetra;
 
-    PointData<int> pointSource; ///< Which point or edge (if < 0) from the input topology map to a given point in the output topology
-    TetrahedronData<int> tetraSource; ///<Which tetra from the input topology map to a given tetra in the output topology
+    PointData<int> pointSource; ///< Which input topology element map to a given point in the output topology : 0 -> none, > 0 -> point index + 1, < 0 , - edge index -1
+    TetrahedronData<int> tetraSource; ///<Which tetra from the input topology map to a given tetra in the output topology (-1 if none)
 
     void swapOutputPoints(int i1, int i2);
     void removeOutputPoints( const sofa::helper::vector<unsigned int>& tab );
@@ -185,17 +187,29 @@ protected:
 
     void setPointSource(int i, int source)
     {
-        pointSource[i] = source;
-        if (source < 0)
+        if (i != -1)
+            pointSource[i] = source;
+        if (source > 0)
         {
-            pointMappedFromEdge[1-source] = i;
+            pointMappedFromPoint[source-1] = i;
         }
-        else
+        else if (source < 0)
         {
-            pointMappedFromPoint[source] = i;
+            pointMappedFromEdge[-source-1] = i;
         }
     }
-    sofa::helper::vector<unsigned int> tetrasToRemove;
+    std::set<unsigned int> tetrasToRemove;
+
+
+    void swapInputPoints(int i1, int i2);
+    void removeInputPoints( const sofa::helper::vector<unsigned int>& tab );
+    void renumberInputPoints( const sofa::helper::vector<unsigned int>& tab );
+    void swapInputEdges(int i1, int i2);
+    void removeInputEdges( const sofa::helper::vector<unsigned int>& tab );
+
+    void swapInputTetras(int i1, int i2);
+    void removeInputTetras( const sofa::helper::vector<unsigned int>& tab );
+
 };
 
 } // namespace topology
