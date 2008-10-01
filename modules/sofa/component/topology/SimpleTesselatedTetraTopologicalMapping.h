@@ -195,7 +195,7 @@ protected:
             pointMappedFromPoint[source] = i;
         }
     }
-    const sofa::helper::vector<unsigned int> tetrasToRemove;
+    sofa::helper::vector<unsigned int> tetrasToRemove;
 };
 
 } // namespace topology

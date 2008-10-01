@@ -1,0 +1,30 @@
+<Node name="root" dt="0.05" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0" showBoundingTree="0" gravity="0 0 0">
+	<Object type="CollisionPipeline" verbose="0" name="CollisionPipeline"/>
+	<Object type="BruteForceDetection" name="N2" />
+	<Object type="CollisionResponse" response="default" name="collision response"/>
+	<Node name="TetraTopology1">
+		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+<!--		<Object type="MeshLoader" name="meshLoader" filename="mesh/liver.msh" /> -->
+		<Object type="TetrahedronSetTopologyContainer" name="Container1" fileTopology="mesh/tetra.msh" />
+		<Object type="TetrahedronSetTopologyModifier"/>
+		<Object type="MechanicalObject" />
+		<Object type="FixedConstraint" indices="0 1 3" />
+		<Object type="DiagonalMass" massDensity="1" name="computed using mass density"/>
+		<Object type="TetrahedralCorotationalFEMForceField" name="FEM" youngModulus="500" poissonRatio="0.3" computeGlobalMatrix="false" method="large"/> 
+		<Node name="TetraTopology2">
+			<Object type="TetrahedronSetTopologyContainer" name="Container2"/>
+			<Object type="TetrahedronSetTopologyModifier"/>
+			<Object type="SimpleTesselatedTetraTopologicalMapping" object1="Container1" object2="Container2"/>
+			<Object type="Sphere" radius="0.05" />
+			<Object type="SimpleTesselatedTetraMechanicalMapping"/>
+			<!--<Object type="TetrahedronFEMForceField" />-->
+
+			<Node name="T">
+				<include href="Objects/TriangleSetTopology.xml" />
+				<Object type="Tetra2TriangleTopologicalMapping" object1="../../Container2" object2="Container"/>
+				<Object type="TriangleSet"/>
+			</Node>
+		</Node>
+	</Node>
+</Node>
