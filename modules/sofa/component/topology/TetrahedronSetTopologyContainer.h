@@ -352,7 +352,6 @@ private:
     */
     sofa::helper::vector< unsigned int > &getTetrahedronEdgeShellForModification(const unsigned int edgeIndex);
 
-
 protected:
     /// provides the set of tetrahedra
     sofa::helper::vector<Tetrahedron> m_tetrahedron;
@@ -370,6 +369,8 @@ protected:
     sofa::helper::vector< sofa::helper::vector< unsigned int > > m_tetrahedronTriangleShell;
 
     virtual void loadFromMeshLoader(sofa::component::MeshLoader* loader);
+
+    Data< bool > _draw;
 };
 
 } // namespace topology
