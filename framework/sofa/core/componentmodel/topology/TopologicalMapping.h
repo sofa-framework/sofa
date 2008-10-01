@@ -86,7 +86,16 @@ public:
     Out* getTo() {return toModel;}
 
     /// Method called at each topological changes propagation which comes from the INPUT topology to adapt the OUTPUT topology :
-    virtual void updateTopologicalMapping() = 0;
+    virtual void updateTopologicalMappingTopDown() = 0;
+
+    /// Method called at each topological changes propagation which comes from the INPUT topology to adapt the OUTPUT topology :
+    virtual void updateTopologicalMappingBottomUp() {};
+
+    /// Return true if this mapping is able to propagate topological changes from input to output model
+    virtual bool propagateFromInputToOutputModel() { return true; }
+
+    /// Return true if this mapping is able to propagate topological changes from output to input model
+    virtual bool propagateFromOutputToInputModel() { return false; }
 
     /// Accessor to index maps :
     const std::map<unsigned int, unsigned int>& getGlob2LocMap() { return Glob2LocMap;}
