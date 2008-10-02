@@ -26,6 +26,7 @@
 #define SOFA_SIMULATION_TREE_TOPOLOGYCHANGEACTION_H
 
 #include <sofa/simulation/common/Visitor.h>
+#include <sofa/core/componentmodel/topology/Topology.h>
 
 namespace sofa
 {
@@ -38,8 +39,8 @@ class TopologyChangeVisitor : public Visitor
 {
 
 public:
-    TopologyChangeVisitor()
-        : root(NULL)
+    TopologyChangeVisitor(core::componentmodel::topology::Topology* source)
+        : /*root(NULL),*/ source(source)
     {}
 
     virtual ~TopologyChangeVisitor() {}
@@ -58,7 +59,9 @@ public:
 
 protected:
     /// Flag to know the number of iterations of the overloaded method processNodeTopDown
-    simulation::Node* root;
+    //simulation::Node* root;
+
+    core::componentmodel::topology::Topology* source;
 };
 
 

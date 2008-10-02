@@ -80,7 +80,7 @@ void SimpleTesselatedTetraTopologicalMapping::init()
 //				from_tstc->loadFromMeshLoader(mshLoader);
             }
 
-            std::cout << from_tstc->getNbPoints() << std::endl;
+            //std::cout << from_tstc->getNbPoints() << std::endl;
 
             pointSource.resize(from_tstc->getNbPoints()+from_tstc->getNbEdges());
 
@@ -88,7 +88,7 @@ void SimpleTesselatedTetraTopologicalMapping::init()
             for (int i=0; i<from_tstc->getNbPoints(); i++)
             {
                 to_tstc->addPoint(from_tstc->getPX(i), from_tstc->getPY(i), from_tstc->getPZ(i));
-                std::cout << from_tstc->getPX(i) << " " << from_tstc->getPY(i) << " " << from_tstc->getPZ(i) << std::endl;
+                //std::cout << from_tstc->getPX(i) << " " << from_tstc->getPY(i) << " " << from_tstc->getPZ(i) << std::endl;
 
                 pointMappedFromPoint.push_back(i);
                 pointSource[i] = i+1;
@@ -157,7 +157,7 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingBottomUp()
     {
         //TetrahedronSetTopologyContainer *from_tstc;
         //fromModel->getContext()->get(from_tstc);
-        TriangleSetTopologyModifier *from_tstm;
+        TetrahedronSetTopologyModifier *from_tstm;
         fromModel->getContext()->get(from_tstm);
         //TetrahedronSetTopologyContainer *to_tstc;
         //toModel->getContext()->get(to_tstc);
@@ -223,9 +223,15 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingBottomUp()
                     vitems.insert(vitems.end(), tetrasToRemove.rbegin(), tetrasToRemove.rend());
 
                     from_tstm->removeItems(vitems);
-                    from_tstm->notifyEndingEvent();
+                    //from_tstm->removeTetrahedraWarning(vitems);
+                    //from_tstm->propagateTopologicalChanges();
+                    //from_tstm->removeTetrahedraProcess(vitems);
 
                     tetrasToRemove.clear();
+
+                    from_tstm->propagateTopologicalChanges();
+                    from_tstm->notifyEndingEvent();
+                    from_tstm->propagateTopologicalChanges();
                 }
 
                 break;
@@ -413,9 +419,9 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingTopDown()
             }
             case core::componentmodel::topology::ENDING_EVENT:
             {
-                std::cout << "pointMappedFromPoint = " << pointMappedFromPoint<<std::endl;
-                std::cout << "pointMappedFromEdge = " << pointMappedFromEdge<<std::endl;
-                std::cout << "pointSource = " << pointMappedFromEdge<<std::endl;
+                //std::cout << "pointMappedFromPoint = " << pointMappedFromPoint<<std::endl;
+                //std::cout << "pointMappedFromEdge = " << pointMappedFromEdge<<std::endl;
+                //std::cout << "pointSource = " << pointMappedFromEdge<<std::endl;
                 break;
             }
             default: break;

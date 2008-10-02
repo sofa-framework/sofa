@@ -167,7 +167,9 @@ void Edge2QuadTopologicalMapping::init()
                 In2OutMap[i]=out_info;
             }
 
+            //to_tstm->propagateTopologicalChanges();
             to_tstm->notifyEndingEvent();
+            //to_tstm->propagateTopologicalChanges();
         }
 
     }
@@ -208,7 +210,9 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                 case core::componentmodel::topology::ENDING_EVENT:
                 {
                     //std::cout << "INFO_print : TopologicalMapping - ENDING_EVENT" << std::endl;
+                    to_tstm->propagateTopologicalChanges();
                     to_tstm->notifyEndingEvent();
+                    to_tstm->propagateTopologicalChanges();
                     break;
                 }
 
@@ -263,7 +267,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                             In2OutMap[k]=out_info;
                         }
 
-                        to_tstm->addQuadsProcess(quads_to_create) ;
+                        to_tstm->addQuadsProcess(quads_to_create);
                         to_tstm->addQuadsWarning(quads_to_create.size(), quads_to_create, quadsIndexList) ;
                         to_tstm->propagateTopologicalChanges();
                     }
@@ -469,7 +473,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                 default:
                     // Ignore events that are not Quad  related.
                     break;
-                };
+                }
 
                 ++itBegin;
             }

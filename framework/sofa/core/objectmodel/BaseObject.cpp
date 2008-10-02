@@ -25,8 +25,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
+#include <sofa/core/componentmodel/topology/Topology.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -104,6 +106,23 @@ void BaseObject::handleEvent( Event* e )
     {
         cerr<<"BaseObject "<<getName()<<" gets a key event: "<<ke->getKey()<<endl;
     }
+}
+
+/// Handle topological Changes from a given Topology
+void BaseObject::handleTopologyChange(core::componentmodel::topology::Topology* t)
+{
+    if (t == this->getContext()->getTopology())
+    {
+        std::cout << getClassName() << " " << getName() << " processing topology changes from " << t->getName() << std::endl;
+        handleTopologyChange();
+    }
+}
+
+/// Handle state Changes from a given Topology
+void BaseObject::handleStateChange(core::componentmodel::topology::Topology* t)
+{
+    if (t == this->getContext()->getTopology())
+        handleStateChange();
 }
 
 // void BaseObject::setListening( bool b )
