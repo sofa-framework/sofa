@@ -87,7 +87,7 @@ public:
     /**
      * @brief SceneGraph callback initialization method.
      */
-    void init();
+    virtual void init();
 
     /**
      * @name Controller Interface
@@ -97,15 +97,15 @@ public:
     /**
      * @brief Mouse event callback.
      */
-    void onMouseEvent(core::objectmodel::MouseEvent *);
+    virtual void onMouseEvent(core::objectmodel::MouseEvent *);
 
-    void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
+    virtual void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
 
 
     /**
      * @brief Begin Animation event callback.
      */
-    void onBeginAnimationStep();
+    virtual void onBeginAnimationStep();
 
     //@}
 
@@ -120,12 +120,12 @@ public:
     /**
      * @brief Apply the controller modifications to the controlled MechanicalState.
      */
-    void applyController(void);
+    virtual void applyController(void);
 
     /**
      * @brief
      */
-    void modifyTopology(void);
+    virtual void modifyTopology(void);
 
     virtual std::string getTemplateName() const
     {
@@ -139,18 +139,28 @@ public:
     /**
      * @brief
      */
-    void draw();
+    virtual void draw();
 
 protected:
-    Real step; ///<
+    Data<Real> step;
+    Real depl; ///<
 
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
     sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
     sofa::component::topology::EdgeSetTopologyModifier* edgeMod;
+    Coord refPos;
+    helper::vector<Real> vertexT;
 
+    virtual void computeVertexT();
 
+    virtual Coord getNewRestPos(const Coord& pos, Real /*t*/, Real dt)
+    {
+        sofa::defaulttype::Vec<3,Real> vectrans(dt * this->mainDirection[0], dt * this->mainDirection[1], dt * this->mainDirection[2]);
+        vectrans = pos.getOrientation().rotate(vectrans);
+        return Coord(pos.getCenter()+vectrans, pos.getOrientation());
+    }
 
-    Real edge0RestedLength;
+    Real edgeTLength;
 
 };
 
