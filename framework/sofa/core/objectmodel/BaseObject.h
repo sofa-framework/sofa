@@ -42,6 +42,17 @@ namespace sofa
 namespace core
 {
 
+// forward declaration of referenced classes
+namespace componentmodel
+{
+namespace topology
+{
+class Topology;
+//class BaseTopology;
+//class BaseMeshTopology;
+}
+}
+
 namespace objectmodel
 {
 
@@ -129,8 +140,14 @@ public:
     /// Handle topological Changes
     virtual void handleTopologyChange() {}
 
+    /// Handle topological Changes from a given Topology
+    virtual void handleTopologyChange(core::componentmodel::topology::Topology* t);
+
     /// Handle state Changes
     virtual void handleStateChange() {}
+
+    /// Handle state Changes from a given Topology
+    virtual void handleStateChange(core::componentmodel::topology::Topology* t);
 
     ///@}
 

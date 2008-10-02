@@ -123,7 +123,9 @@ void Hexa2QuadTopologicalMapping::init()
                 }
             }
 
+            //to_tstm->propagateTopologicalChanges();
             to_tstm->notifyEndingEvent();
+            //to_tstm->propagateTopologicalChanges();
         }
 
     }
@@ -169,7 +171,9 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                 case core::componentmodel::topology::ENDING_EVENT:
                 {
                     //std::cout << "INFO_print : Hexa2QuadTopologicalMapping - ENDING_EVENT" << std::endl;
+                    to_tstm->propagateTopologicalChanges();
                     to_tstm->notifyEndingEvent();
+                    to_tstm->propagateTopologicalChanges();
                     break;
                 }
 

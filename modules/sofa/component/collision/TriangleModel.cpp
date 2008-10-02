@@ -94,6 +94,7 @@ void TriangleModel::init()
     }
 
     //std::cout << "INFO_print : Col - init TRIANGLE " << std::endl;
+    std::cout << "TriangleModel: initially "<<_topology->getNbTriangles()<<" triangles." << std::endl;
     triangles = &_topology->getTriangles();
     resize(_topology->getNbTriangles());
 
@@ -112,6 +113,7 @@ void TriangleModel::updateNormals()
 
         t.n() = cross(pt2-pt1,pt3-pt1);
         t.n().normalize();
+        //std::cout << i << " " << t.n() << std::endl;
     }
 }
 
@@ -177,6 +179,7 @@ void TriangleModel::updateFromTopology()
         }
     }
     updateFlags();
+    updateNormals();
     meshRevision = revision;
 }
 
@@ -229,11 +232,31 @@ void TriangleModel::handleTopologyChange()
     if (triangles != &mytriangles)
     {
         // We use the same triangle array as the topology -> only resize and recompute flags
-        resize(_topology->getNbTriangles());
-        needsUpdate = true;
-        updateFlags();
-        updateNormals(); // not strictly necessary but useful if we display the model before the next collision iteration
 
+        std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=_topology->firstChange();
+        std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=_topology->lastChange();
+
+        while( itBegin != itEnd )
+        {
+            core::componentmodel::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
+
+            switch( changeType )
+            {
+
+
+            case core::componentmodel::topology::ENDING_EVENT:
+            {
+                std::cout << "TriangleModel: now "<<_topology->getNbTriangles()<<" triangles." << std::endl;
+                resize(_topology->getNbTriangles());
+                needsUpdate=true;
+                updateFlags();
+                updateNormals();
+                break;
+            }
+            default: break;
+            }
+            ++itBegin;
+        }
         return;
     }
 

@@ -5,14 +5,15 @@
 	<Node name="TetraTopology1">
 		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
 		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+		<!--
 		<Object type="TetrahedronSetTopologyContainer" name="Container1" fileTopology="mesh/tetra.msh" />
 		<Object type="MechanicalObject" name="dofs" />
                 <Object type="FixedConstraint" name="FixedConstraint" indices="0 1 3" />
-		<!--
-		<Object type="TetrahedronSetTopologyContainer" name="Container1" fileTopology="mesh/liver.msh" />
-		<Object type="Sphere" radius="0.1" name="dofs" />
-                <Object type="FixedConstraint" name="FixedConstraint" indices="3 39 64" />
 		-->
+		<Object type="TetrahedronSetTopologyContainer" name="Container1" fileTopology="mesh/liver.msh" />
+		<Object type="MechanicalObject" radius="0.1" name="dofs" group="1" />
+                <Object type="FixedConstraint" name="FixedConstraint" indices="3 39 64" />
+
 		<Object type="TetrahedronSetTopologyModifier"/>
 		<!-- Algorithms: used in DiagonalMass to compute the mass -->
 		<Object type="TetrahedronSetGeometryAlgorithms" name="GeomAlgo"  />
@@ -22,13 +23,13 @@
 			<Object type="TetrahedronSetTopologyContainer" name="Container2"/>
 			<Object type="TetrahedronSetTopologyModifier"/>
 			<Object type="SimpleTesselatedTetraTopologicalMapping" object1="Container1" object2="Container2"/>
-			<Object type="Sphere" radius="0.05" />
+			<Object type="MechanicalObject" radius="0.05" group="1" />
 			<Object type="SimpleTesselatedTetraMechanicalMapping"/>
 			<!--<Object type="TetrahedralCorotationalFEMForceField" name="FEM" youngModulus="500" poissonRatio="0.3" computeGlobalMatrix="false" method="large"/> -->
 			<Node name="T" showWireFrame="1">
 				<include href="Objects/TriangleSetTopology.xml" />
 				<Object type="Tetra2TriangleTopologicalMapping" object1="../../Container2" object2="Container"/>
-				<Object type="Triangle"/>
+				<Object type="Triangle" group="1"/>
 			</Node>
 		</Node>
 	</Node>

@@ -134,7 +134,9 @@ void Quad2TriangleTopologicalMapping::init()
 
             }
 
+            //to_tstm->propagateTopologicalChanges();
             to_tstm->notifyEndingEvent();
+            //to_tstm->propagateTopologicalChanges();
         }
 
     }
@@ -173,7 +175,9 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                 case core::componentmodel::topology::ENDING_EVENT:
                 {
                     //std::cout << "INFO_print : TopologicalMapping - ENDING_EVENT" << std::endl;
+                    to_tstm->propagateTopologicalChanges();
                     to_tstm->notifyEndingEvent();
+                    to_tstm->propagateTopologicalChanges();
                     break;
                 }
 

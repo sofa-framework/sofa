@@ -44,12 +44,12 @@ using namespace sofa::core;
 
 void TopologyChangeVisitor::processTopologyChange(core::objectmodel::BaseObject* obj)
 {
-    obj->handleTopologyChange();
+    obj->handleTopologyChange(source);
 }
 
 Visitor::Result TopologyChangeVisitor::processNodeTopDown(simulation::Node* node)
 {
-    if (!root) root = node;
+    //if (!root) root = node;
     bool is_TopologicalMapping = false;
 
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
@@ -58,7 +58,7 @@ Visitor::Result TopologyChangeVisitor::processNodeTopDown(simulation::Node* node
         if (obj != NULL)  // find a TopologicalMapping node among the brothers (it must be the first one written)
         {
 
-            if(obj->propagateFromInputToOutputModel() && node != root)  // the propagation of topological changes comes (at least) from a father node, not from a brother
+            if(obj->propagateFromInputToOutputModel() && obj->getFrom() == source)  //node != root){ // the propagation of topological changes comes (at least) from a father node, not from a brother
             {
 
                 obj->updateTopologicalMappingTopDown(); // update the specific TopologicalMapping
@@ -69,7 +69,7 @@ Visitor::Result TopologyChangeVisitor::processNodeTopDown(simulation::Node* node
 
     if(is_TopologicalMapping)  // find one TopologicalMapping node among the brothers (which must be the first one written in the scene file)
     {
-        return RESULT_PRUNE; // stop the propagation of topological changes
+        //return RESULT_PRUNE; // stop the propagation of topological changes
     }
 
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
@@ -79,7 +79,6 @@ Visitor::Result TopologyChangeVisitor::processNodeTopDown(simulation::Node* node
     return RESULT_CONTINUE;
 }
 
-
 void TopologyChangeVisitor::processNodeBottomUp(simulation::Node* node)
 {
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
@@ -88,7 +87,7 @@ void TopologyChangeVisitor::processNodeBottomUp(simulation::Node* node)
         if (obj != NULL)  // find a TopologicalMapping node among the brothers (it must be the first one written)
         {
 
-            if(obj->propagateFromOutputToInputModel() && node == root)
+            if(obj->propagateFromOutputToInputModel() && obj->getTo() == source)  //node == root){
             {
 
                 obj->updateTopologicalMappingBottomUp(); // update the specific TopologicalMapping

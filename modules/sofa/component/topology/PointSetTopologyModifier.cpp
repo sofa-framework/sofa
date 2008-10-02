@@ -159,7 +159,8 @@ void PointSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector
 
 void PointSetTopologyModifier::propagateTopologicalChanges()
 {
-    sofa::simulation::TopologyChangeVisitor a;
+    if (m_container->firstChange() == m_container->lastChange()) return; // nothing to do if no event is stored
+    sofa::simulation::TopologyChangeVisitor a(m_container);
     getContext()->executeVisitor(&a);
 
     // remove the changes we just propagated, so that we don't send then again next time
@@ -168,7 +169,8 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
 
 void PointSetTopologyModifier::propagateStateChanges()
 {
-    sofa::simulation::StateChangeVisitor a;
+    if (m_container->firstStateChange() == m_container->lastStateChange()) return; // nothing to do if no event is stored
+    sofa::simulation::StateChangeVisitor a(m_container);
     getContext()->executeVisitor(&a);
 
     // remove the changes we just propagated, so that we don't send then again next time

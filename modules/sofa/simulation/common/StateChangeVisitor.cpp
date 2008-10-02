@@ -33,14 +33,14 @@ namespace sofa
 namespace simulation
 {
 
-StateChangeVisitor::StateChangeVisitor()
-    : root(true)
+StateChangeVisitor::StateChangeVisitor(core::componentmodel::topology::Topology* source)
+    : root(true), source(source)
 {
 }
 
 void StateChangeVisitor::processStateChange(core::objectmodel::BaseObject* obj)
 {
-    obj->handleStateChange();
+    obj->handleStateChange(source);
 }
 
 Visitor::Result StateChangeVisitor::processNodeTopDown(simulation::Node* node)
@@ -61,8 +61,6 @@ Visitor::Result StateChangeVisitor::processNodeTopDown(simulation::Node* node)
     root = false; // now we process child nodes
     return RESULT_CONTINUE; // continue the propagation of state changes
 }
-
-
 
 } // namespace simulation
 

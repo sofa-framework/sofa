@@ -122,11 +122,11 @@ void Triangle2EdgeTopologicalMapping::init()
                 }
             }
 
+            //to_tstm->propagateTopologicalChanges();
             to_tstm->notifyEndingEvent();
+            //to_tstm->propagateTopologicalChanges();
         }
-
     }
-
 }
 
 unsigned int Triangle2EdgeTopologicalMapping::getFromIndex(unsigned int ind)
@@ -169,7 +169,9 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                 case core::componentmodel::topology::ENDING_EVENT:
                 {
                     //std::cout << "INFO_print : Triangle2EdgeTopologicalMapping - ENDING_EVENT" << std::endl;
+                    to_tstm->propagateTopologicalChanges();
                     to_tstm->notifyEndingEvent();
+                    to_tstm->propagateTopologicalChanges();
                     break;
                 }
 
