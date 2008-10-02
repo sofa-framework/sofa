@@ -80,6 +80,8 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::reinit()
 {
     this->mass.beginEdit()->recalc();
     this->mass.endEdit();
+
+    std::cout << "this->mass.getValue() = " << this->mass.getValue() << std::endl;
 }
 
 template<>
@@ -220,6 +222,16 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::draw()
     {
         helper::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len*showAxisSize.getValue());
         gravityCenter += (x[i].getCenter());
+    }
+
+    if (showInitialCenterOfGravity.getValue())
+    {
+        const VecCoord& x0 = *mstate->getX0();
+
+        for (unsigned int i=0; i<x0.size(); i++)
+        {
+            helper::gl::Axis::draw(x0[i].getCenter(), x0[i].getOrientation(), len*showAxisSize.getValue());
+        }
     }
 
     if(showCenterOfGravity.getValue())

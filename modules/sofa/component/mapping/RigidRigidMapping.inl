@@ -179,11 +179,23 @@ void RigidRigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const 
     switch (repartition.getValue().size())
     {
     case 0 : //no value specified : simple rigid mapping
-        in[index.getValue()].writeRotationMatrix(rotation);
-        for(unsigned int i=0; i<points.getValue().size(); i++)
+        if (!indexFromEnd.getValue())
         {
-            pointsR0[i].getCenter() = rotation*(points.getValue()[i]).getCenter();
-            out[i] = in[index.getValue()].mult(points.getValue()[i]);
+            in[index.getValue()].writeRotationMatrix(rotation);
+            for(unsigned int i=0; i<points.getValue().size(); i++)
+            {
+                pointsR0[i].getCenter() = rotation*(points.getValue()[i]).getCenter();
+                out[i] = in[index.getValue()].mult(points.getValue()[i]);
+            }
+        }
+        else
+        {
+            in[in.size() - 1 - index.getValue()].writeRotationMatrix(rotation);
+            for(unsigned int i=0; i<points.getValue().size(); i++)
+            {
+                pointsR0[i].getCenter() = rotation*(points.getValue()[i]).getCenter();
+                out[i] = in[in.size() - 1 - index.getValue()].mult(points.getValue()[i]);
+            }
         }
         break;
 
@@ -236,12 +248,26 @@ void RigidRigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& childForce
     switch (repartition.getValue().size())
     {
     case 0:
-        v = parentForces[index.getValue()].getVCenter();
-        omega = parentForces[index.getValue()].getVOrientation();
-        for(unsigned int i=0; i<points.getValue().size(); i++)
+        if (!indexFromEnd.getValue())
         {
-            childForces[i].getVCenter() =  v + cross(omega,pointsR0[i].getCenter());
-            childForces[i].getVOrientation() = omega;
+            v = parentForces[index.getValue()].getVCenter();
+            omega = parentForces[index.getValue()].getVOrientation();
+            for(unsigned int i=0; i<points.getValue().size(); i++)
+            {
+                childForces[i].getVCenter() =  v + cross(omega,pointsR0[i].getCenter());
+                childForces[i].getVOrientation() = omega;
+            }
+        }
+        else
+        {
+            v = parentForces[parentForces.size() - 1 - index.getValue()].getVCenter();
+            omega = parentForces[parentForces.size() - 1 - index.getValue()].getVOrientation();
+
+            for(unsigned int i = 0; i < points.getValue().size(); i++)
+            {
+                childForces[i].getVCenter() =  v + cross(omega,pointsR0[i].getCenter());
+                childForces[i].getVOrientation() = omega;
+            }
         }
         break;
 
@@ -307,8 +333,18 @@ void RigidRigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& parentForc
             v += f;
             omega += childForces[i].getVOrientation() + cross(f,-pointsR0[i].getCenter());
         }
-        parentForces[index.getValue()].getVCenter() += v;
-        parentForces[index.getValue()].getVOrientation() += omega;
+
+        if (!indexFromEnd.getValue())
+        {
+            parentForces[index.getValue()].getVCenter() += v;
+            parentForces[index.getValue()].getVOrientation() += omega;
+        }
+        else
+        {
+            parentForces[parentForces.size() - 1 - index.getValue()].getVCenter() += v;
+            parentForces[parentForces.size() - 1 - index.getValue()].getVOrientation() += omega;
+        }
+
         break;
     case 1 :
         val = repartition.getValue()[0];
@@ -374,7 +410,16 @@ void RigidRigidMapping<BasicMapping>::computeAccFromMapping(  typename Out::VecD
     switch (repartition.getValue().size())
     {
     case 0:
-        omega = v_in[index.getValue()].getVOrientation();
+
+        if (!indexFromEnd.getValue())
+        {
+            omega = v_in[index.getValue()].getVOrientation();
+        }
+        else
+        {
+            omega = v_in[v_in.size() - 1 - index.getValue()].getVOrientation();
+        }
+
         for(unsigned int i=0; i<points.getValue().size(); i++)
         {
             acc_out[i].getVCenter() +=   cross(omega, cross(omega,pointsR0[i].getCenter()) );

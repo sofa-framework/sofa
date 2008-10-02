@@ -99,6 +99,9 @@ public:
      */
     virtual void onMouseEvent(core::objectmodel::MouseEvent *);
 
+    /**
+     * @brief Keyboard key pressed event callback.
+     */
     virtual void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
 
 
@@ -114,6 +117,15 @@ public:
      */
     //@{
 
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const EdgeSetController<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
 
     //@}
 
@@ -127,15 +139,6 @@ public:
      */
     virtual void modifyTopology(void);
 
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const EdgeSetController<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
     /**
      * @brief
      */
@@ -157,11 +160,10 @@ protected:
     {
         sofa::defaulttype::Vec<3,Real> vectrans(dt * this->mainDirection[0], dt * this->mainDirection[1], dt * this->mainDirection[2]);
         vectrans = pos.getOrientation().rotate(vectrans);
-        return Coord(pos.getCenter()+vectrans, pos.getOrientation());
+        return Coord(pos.getCenter() - vectrans, pos.getOrientation());
     }
 
     Real edgeTLength;
-
 };
 
 } // namespace controller
