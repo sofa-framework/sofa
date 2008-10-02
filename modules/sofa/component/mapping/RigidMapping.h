@@ -70,6 +70,7 @@ public:
     Data<unsigned int> index;
     Data< std::string > fileRigidMapping;
     Data< bool > useX0;
+    Data< bool > indexFromEnd;
 
     RigidMapping ( In* from, Out* to )
         : Inherit ( from, to ),
@@ -77,6 +78,7 @@ public:
           index ( initData ( &index, ( unsigned ) 0,"index","input DOF index" ) ),
           fileRigidMapping ( initData ( &fileRigidMapping,"fileRigidMapping","Filename" ) ),
           useX0( initData ( &useX0,false,"useX0","Use x0 instead of local copy of initial positions (to support topo changes)") ),
+          indexFromEnd( initData ( &indexFromEnd,false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") ),
           repartition ( initData ( &repartition,"repartition","number of dest dofs per entry dof" ) )
     {
     }

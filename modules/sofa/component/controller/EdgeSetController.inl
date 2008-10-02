@@ -84,11 +84,12 @@ void EdgeSetController<DataTypes>::init()
 
     Inherit::init();
 
-    /*	if (_topology->getNbEdges()>0)
-    	{
-    		edge0RestedLength = edgeGeo->computeRestEdgeLength(0);
-    	}
-    	*/
+    /*
+    if (_topology->getNbEdges()>0)
+    {
+    	edge0RestedLength = edgeGeo->computeRestEdgeLength(0);
+    }
+    */
 
     computeVertexT();
 
@@ -98,6 +99,8 @@ void EdgeSetController<DataTypes>::init()
         edgeTLength = 1;
 }
 
+
+
 template <class DataTypes>
 void EdgeSetController<DataTypes>::computeVertexT()
 {
@@ -105,16 +108,19 @@ void EdgeSetController<DataTypes>::computeVertexT()
     const VecCoord& x0 = * this->mState->getX0();
 
     vertexT.resize(n);
-    for (int i=0; i<n; ++i)
+    for (int i = 0; i < n; ++i)
     {
-        if (i==0)
+        if (i == 0)
             vertexT[0] = 0;
         else
-            vertexT[i] = vertexT[i-1] + ((x0[i]-x0[i-1]).norm());
+            vertexT[i] = vertexT[i-1] + ((x0[i] - x0[i-1]).norm());
     }
-    if (n>0)
+
+    if (n > 0)
         refPos = x0[0];
 }
+
+
 
 template <class DataTypes>
 void EdgeSetController<DataTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)
@@ -131,6 +137,8 @@ void EdgeSetController<DataTypes>::onMouseEvent(core::objectmodel::MouseEvent *m
     }
 }
 
+
+
 template <class DataTypes>
 void EdgeSetController<DataTypes>::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kev)
 {
@@ -140,12 +148,15 @@ void EdgeSetController<DataTypes>::onKeyPressedEvent(core::objectmodel::Keypress
         this->mouseMode = Inherit::Wheel;
         depl += 2*step.getValue();
         break;
+
     case '-':
         this->mouseMode = Inherit::Wheel;
         depl -= 2*step.getValue();
         break;
     }
 }
+
+
 
 template <class DataTypes>
 void EdgeSetController<DataTypes>::onBeginAnimationStep()
@@ -169,17 +180,8 @@ void EdgeSetController<DataTypes>::applyController()
         {
             Coord& pos = (*this->mState->getX0())[0];
             pos = getNewRestPos(pos, vertexT[0], depl);
-            vertexT[0]-=depl;
+            vertexT[0] -= depl;
             depl = 0;
-            //std::cout << pos << std::endl;
-            /*
-            sofa::helper::Quater<Real>& quatrot = (*this->mState->getX0())[0].getOrientation();
-            sofa::defaulttype::Vec<3,Real> vectrans(step * this->mainDirection[0] * (Real)0.05, step * this->mainDirection[1] * (Real)0.05, step * this->mainDirection[2] * (Real)0.05);
-            vectrans = quatrot.rotate(vectrans);
-            //	std::cout << "X0 += " << vectrans << std::endl;
-            (*this->mState->getX0())[0].getCenter() += vectrans;
-            //	(*this->mState->getX())[0].getCenter() += vectrans;
-            */
         }
 
         sofa::simulation::tree::GNode *node = static_cast<sofa::simulation::tree::GNode*> (this->getContext());
@@ -197,14 +199,12 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
 {
     assert(edgeGeo != 0);
 
-    //if (depl >= 0)
     {
         sofa::helper::vector< unsigned int > baseEdge(0);
         baseEdge = _topology->getEdgeVertexShell(0);
 
         if (baseEdge.size() == 1)
         {
-            //if (edgeGeo->computeRestEdgeLength(baseEdge[0]) > ( 2 * edge0RestedLength ))
             if (fabs(vertexT[1] - vertexT[0]) > ( 2 * edgeTLength ))
             {
                 // First Edge makes 2
@@ -214,9 +214,7 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
                 edgeMod->splitEdges(indices);
 
                 // update vertexT
-                vertexT.insert(vertexT.begin()+1, (vertexT[0] + vertexT[1])/2);
-                //std::cout << "T0 : " << vertexT[0] << std::endl;
-                //std::cout << "T1 : " << vertexT[1] << std::endl;
+                vertexT.insert(vertexT.begin()+1, (vertexT[0] + vertexT[1])/static_cast<Real>(2.0));
 
                 // Renumber Vertices
 
@@ -252,16 +250,13 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
             }
         }
     }
-    //else
+
     {
         sofa::helper::vector< unsigned int > baseEdge;
         baseEdge = _topology->getEdgeVertexShell(1);
 
         if (baseEdge.size() == 2)
         {
-
-            //if ((edgeGeo->computeRestEdgeLength(baseEdge[0]) < ( 0.5 * edge0RestedLength ))
-            //	||(edgeGeo->computeRestEdgeLength(baseEdge[1]) < ( 0.5 * edge0RestedLength )))
             if (fabs(vertexT[1] - vertexT[0]) < ( 0.5 * edgeTLength ))
             {
                 // Fuse Edges (0-1)

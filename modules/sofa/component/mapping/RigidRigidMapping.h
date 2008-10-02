@@ -75,6 +75,7 @@ public:
     Data< std::string > fileRigidRigidMapping;
     //axis length for display
     Data<double> axisLength;
+    Data< bool > indexFromEnd;
 
     RigidRigidMapping(In* from, Out* to)
         : Inherit(from, to),
@@ -82,7 +83,8 @@ public:
           repartition(initData(&repartition,"repartition","number of dest dofs per entry dof")),
           index(initData(&index,(unsigned)0,"index","input DOF index")),
           fileRigidRigidMapping(initData(&fileRigidRigidMapping,"fileRigidRigidMapping","Filename")),
-          axisLength(initData( &axisLength, 0.7, "axisLength", "axis length for display"))
+          axisLength(initData( &axisLength, 0.7, "axisLength", "axis length for display")),
+          indexFromEnd( initData ( &indexFromEnd,false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") )
     {
     }
 

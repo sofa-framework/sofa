@@ -247,8 +247,17 @@ void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typen
     switch (repartition.getValue().size())
     {
     case 0 : //no value specified : simple rigid mapping
-        translation = in[index.getValue()].getCenter();
-        in[index.getValue()].writeRotationMatrix(rotation);
+
+        if (indexFromEnd.getValue())
+        {
+            translation = in[in.size() - 1 - index.getValue()].getCenter();
+            in[in.size() - 1 - index.getValue()].writeRotationMatrix(rotation);
+        }
+        else
+        {
+            translation = in[index.getValue()].getCenter();
+            in[index.getValue()].writeRotationMatrix(rotation);
+        }
 
         for(unsigned int i=0; i<pts.size(); i++)
         {
@@ -256,6 +265,7 @@ void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typen
             out[i] = rotatedPoints[i];
             out[i] += translation;
         }
+
         break;
 
     case 1 : //one value specified : uniform repartition mapping on the input dofs
@@ -315,8 +325,17 @@ void RigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const type
     switch (repartition.getValue().size())
     {
     case 0:
-        v = in[index.getValue()].getVCenter();
-        omega = in[index.getValue()].getVOrientation();
+        if (indexFromEnd.getValue())
+        {
+            v = in[in.size() - 1 - index.getValue()].getVCenter();
+            omega = in[in.size() - 1 - index.getValue()].getVOrientation();
+        }
+        else
+        {
+            v = in[index.getValue()].getVCenter();
+            omega = in[index.getValue()].getVOrientation();
+        }
+
         for(unsigned int i=0; i<pts.size(); i++)
         {
             // out = J in
@@ -393,8 +412,18 @@ void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
             //cerr<<"RigidMapping<BasicMapping>::applyJT, new v = "<<v<<endl;
             //cerr<<"RigidMapping<BasicMapping>::applyJT, new omega = "<<omega<<endl;
         }
-        out[index.getValue()].getVCenter() += v;
-        out[index.getValue()].getVOrientation() += omega;
+
+        if (indexFromEnd.getValue())
+        {
+            out[out.size() - 1 - index.getValue()].getVCenter() += v;
+            out[out.size() - 1 - index.getValue()].getVOrientation() += omega;
+        }
+        else
+        {
+            out[index.getValue()].getVCenter() += v;
+            out[index.getValue()].getVOrientation() += omega;
+        }
+
         break;
     case 1 :
         val = repartition.getValue()[0];
@@ -495,7 +524,14 @@ void RigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typen
         direction.getVOrientation() = omega_n;
 
         // for rigid model, there's only the center of mass as application point (so only one vector for each constraint)
-        out[outSize+i].push_back(InSparseDeriv(index.getValue(), direction)); // 0 = index of the center of mass
+        if (indexFromEnd.getValue())
+        {
+            out[outSize+i].push_back(InSparseDeriv(out.size() - 1 - index.getValue(), direction)); // 0 = index of the center of mass
+        }
+        else
+        {
+            out[outSize+i].push_back(InSparseDeriv(index.getValue(), direction)); // 0 = index of the center of mass
+        }
     }
 }
 

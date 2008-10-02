@@ -58,6 +58,7 @@ UniformMass<DataTypes, MassType>::UniformMass()
     , showCenterOfGravity( initData(&showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
     , showAxisSize( initData(&showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
     , compute_mapping_inertia( initData(&compute_mapping_inertia, true, "compute_mapping_inertia", "to be used if the mass is placed under a mapping" ) )
+    , showInitialCenterOfGravity( initData(&showInitialCenterOfGravity, false, "showInitialCenterOfGravity", "display the initial center of gravity of the system" ) )
 {}
 
 template <class DataTypes, class MassType>
@@ -120,7 +121,7 @@ void UniformMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
     for (unsigned int i=0; i<f.size(); i++)
     {
         a[i] = f[i] / m;
-        //cerr<<"f[i] = "<<f[i]<<", m = "<<m<<", f[i] / m = "<<f[i] / m<<endl;
+        // cerr<<"f[i] = "<<f[i]<<", m = "<<m<<", f[i] / m = "<<f[i] / m<<endl;
     }
 }
 
