@@ -81,7 +81,18 @@ public:
 class BaseConstraint : public virtual objectmodel::BaseObject
 {
 public:
+    BaseConstraint()
+        : group(initData(&group, 0, "group", "ID of the group containing this constraint. This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle."))
+    {
+    }
+
     virtual ~BaseConstraint() { }
+
+    /// Get the ID of the group containing this constraint. This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle.
+    int getGroup() const { return group.getValue(); }
+
+    /// Set the ID of the group containing this constraint. This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle.
+    void setGroup(int g) { group.setValue(g); }
 
     /// @name Vector operations
     /// @{
@@ -136,6 +147,9 @@ public:
 
     /// Test if the constraint is satisfied: return the error.
     virtual double getError() { return 0.0;}
+
+protected:
+    Data<int> group;
 };
 
 } // namespace behavior
