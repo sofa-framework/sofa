@@ -35,7 +35,6 @@
 #include <sofa/component/PoissonContainer.h>
 #include <sofa/component/LengthContainer.h>
 #include <sofa/component/RadiusContainer.h>
-#include "NewMAT/newmat.h"
 
 
 
@@ -136,7 +135,7 @@ protected:
     topology::EdgeData<BeamInfo> beamsData;
 
     const VecElement *_indexedElements;
-    Data< VecCoord > _initialPoints; ///< the intial positions of the points
+    unsigned int maxPoints;
     int _method; ///< the computation method of the displacements
     Data<Real> _poissonRatio;
     Data<Real> _youngModulus;
@@ -157,7 +156,6 @@ protected:
 public:
     BeamFEMForceField()
         : _indexedElements(NULL)
-        , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
         , _method(0)
         , _poissonRatio(initData(&_poissonRatio,(Real)0.49f,"poissonRatio","Potion Ratio"))
         , _youngModulus(initData(&_youngModulus,(Real)5000,"youngModulus","Young Modulus"))

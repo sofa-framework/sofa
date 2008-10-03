@@ -67,6 +67,7 @@ void BeamFEMForceField<DataTypes>::init()
 
     _topology = context->getMeshTopology();
 
+
     stiffnessContainer = context->core::objectmodel::BaseContext::get<StiffnessContainer>();
     lengthContainer = context->core::objectmodel::BaseContext::get<LengthContainer>();
     poissonContainer = context->core::objectmodel::BaseContext::get<PoissonContainer>();
@@ -91,12 +92,6 @@ void BeamFEMForceField<DataTypes>::init()
     beamsData.setCreateParameter( (void *) this );
     beamsData.setDestroyParameter( (void *) this );
 
-    if (_initialPoints.getValue().size() == 0)
-    {
-        VecCoord& p = *this->mstate->getX();
-        _initialPoints.setValue(p);
-    }
-
     reinit();
 }
 
@@ -106,28 +101,7 @@ void BeamFEMForceField<DataTypes>::reinit()
     unsigned int n = _indexedElements->size();
     //_beamQuat.resize( n );
     //_stiffnessMatrices.resize( n );
-    _forces.resize( this->mstate->getSize() ); //_initialPoints.getValue().size() );
-
-    if (!stiffnessContainer)
-    {
-        ///TODO
-        std::cerr << "Warning(BeamFEMForceField): No object from StiffnessContainer has been loaded.\n";
-    }
-    if (!lengthContainer)
-    {
-        ///TODO
-        std::cerr << "Warning(BeamFEMForceField): No object from LengthContainer has been loaded.\n";
-    }
-    if (!poissonContainer)
-    {
-        ///TODO
-        std::cerr << "Warning(BeamFEMForceField): No object from PoissonContainer has been loaded.\n";
-    }
-    if (!radiusContainer)
-    {
-        ///TODO
-        std::cerr << "Warning(BeamFEMForceField): No object from RadiusContainer has been loaded.\n";
-    }
+    _forces.resize( this->mstate->getSize() );
 
     initBeams( n );
     for (unsigned int i=0; i<n; ++i)
@@ -146,18 +120,21 @@ void BeamFEMForceField<DataTypes>::reinitBeam(unsigned int i)
     //if (needInit)
     if (stiffnessContainer)
         stiffness = stiffnessContainer->getStiffness(i) ;
-    else stiffness =  _youngModulus.getValue() ;
-    if (lengthContainer)
-        length = lengthContainer->getLength(i) ;
-    else  length = (x0[a].getCenter()-x0[b].getCenter()).norm() ;
+    else
+        stiffness =  _youngModulus.getValue() ;
+    //if (lengthContainer)
+    //	length = lengthContainer->getLength(i) ;
+    //else
+    length = (x0[a].getCenter()-x0[b].getCenter()).norm() ;
     if (radiusContainer)
         radius = radiusContainer->getRadius(i) ;
-    else  radius = _radius.getValue() ;
+    else
+        radius = _radius.getValue() ;
     if (poissonContainer)
         poisson = poissonContainer->getPoisson(i) ;
-    else poisson = _poissonRatio.getValue() ;
+    else
+        poisson = _poissonRatio.getValue() ;
 
-    std::cout << i << " " << stiffness << " " << length << " " << poisson << " " << radius << std::endl;
     setBeam(i, stiffness, length, poisson, radius );
 
     computeStiffness(i,a,b);
@@ -536,6 +513,7 @@ template<class DataTypes>
 void BeamFEMForceField<DataTypes>::setBeam(unsigned int i, double E, double L, double nu, double r)
 {
     beamsData[i].init(E,L,nu,r);
+    //_indexedElements = &_topology->getEdges();
 }
 
 template<class DataTypes>
