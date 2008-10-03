@@ -471,10 +471,10 @@ public:
         : sizeX ( 0 ), sizeY( 0 ), pitch(0), hostAllocSize ( 0 ), deviceAllocSize ( 0 ), devicePointer ( NULL ), hostPointer ( NULL ), deviceIsValid ( true ), hostIsValid ( true )
     {}
 
-    CudaMatrix(size_t x, size_t y )
+    CudaMatrix(size_t x, size_t y, size_t size)
         : sizeX ( 0 ), sizeY ( 0 ), pitch(0), hostAllocSize ( 0 ), deviceAllocSize ( 0 ), devicePointer ( NULL ), hostPointer ( NULL ), deviceIsValid ( true ), hostIsValid ( true )
     {
-        resize (x,y,0);
+        resize (x,y,size);
     }
 
     CudaMatrix(const CudaMatrix<T>& v )
@@ -517,7 +517,7 @@ public:
         return sizeX==0 || sizeY==0;
     }
 
-    void fastResize(size_type x,size_type y,size_type WARP_SIZE=BSIZE)
+    void fastResize(size_type x,size_type y,size_type WARP_SIZE)
     {
         size_type s = x*y;
 
@@ -525,7 +525,7 @@ public:
         {
             hostAllocSize = ( s>2*hostAllocSize ) ? s : 2*hostAllocSize;
             // always allocate multiples of BSIZE values
-            hostAllocSize = ( hostAllocSize+WARP_SIZE-1 )/WARP_SIZE * WARP_SIZE;
+            //hostAllocSize = ( hostAllocSize+WARP_SIZE-1 )/WARP_SIZE * WARP_SIZE;
             T* prevHostPointer = hostPointer;
 
             if ( prevHostPointer != NULL ) mycudaFreeHost ( prevHostPointer );
@@ -534,20 +534,31 @@ public:
             hostPointer = (T*)newHostPointer;
         }
 
+
         if (WARP_SIZE==0) pitch = x*sizeof(T);
         else pitch = ((x+WARP_SIZE-1)/WARP_SIZE)*WARP_SIZE*sizeof(T);
-        int ypitch;
-        if (WARP_SIZE==0) ypitch = y;
-        else ypitch = ((y+WARP_SIZE-1)/WARP_SIZE)*WARP_SIZE;
-        if (ypitch*pitch > deviceAllocSize)
+
+        //int ypitch = y;
+        //if (WARP_SIZE==0) ypitch = y;
+        //else ypitch = ((y+WARP_SIZE-1)/WARP_SIZE)*WARP_SIZE;
+
+        if (y*pitch > deviceAllocSize)
         {
             void* prevDevicePointer = devicePointer;
             if (prevDevicePointer != NULL ) mycudaFree ( prevDevicePointer );
 
-            mycudaMallocPitch(&devicePointer, &pitch, pitch, ypitch);
-            deviceAllocSize = ypitch*pitch;
+            mycudaMallocPitch(&devicePointer, &pitch, pitch, y);
+            deviceAllocSize = y*pitch;
         }
+        /*
+        if (y*x > deviceAllocSize) {
+         void* prevDevicePointer = devicePointer;
+         if (prevDevicePointer != NULL ) mycudaFree ( prevDevicePointer );
 
+         mycudaMallocPitch(&devicePointer, &pitch, x*sizeof(T), y);
+         deviceAllocSize = y*x;
+        }
+        */
         sizeX = x;
         sizeY = y;
         deviceIsValid = true;

@@ -45,7 +45,7 @@ using namespace sofa::defaulttype;
 using namespace helper::system::thread;
 using namespace core::componentmodel::behavior;
 
-static unsigned MAX_NUM_CONSTRAINTS=2048;
+static unsigned MAX_NUM_CONSTRAINTS=1024;
 
 template<class real>
 CudaMasterContactSolver<real>::CudaMasterContactSolver()
@@ -305,6 +305,7 @@ void CudaMasterContactSolver<real>::step(double dt)
         {
             std::cout << "Error(" << useGPU_d.getValue() << ") dim(" << _numConstraints << ") : (cpu," << t1 << ") (gpu,(" << t2 << ")" << std::endl;
         }
+
     }
     else
     {
@@ -319,6 +320,7 @@ void CudaMasterContactSolver<real>::step(double dt)
         {
             error = sofa::gpu::cuda::CudaLCP<real>::CudaGaussSeidelLCP1(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _tol, _maxIt);
         }
+
 
         if (error > _tol) std::cout << "No convergence in gaussSeidelLCP1 : error = " << error << std::endl;
 
