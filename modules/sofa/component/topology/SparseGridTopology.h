@@ -69,9 +69,9 @@ public:
 
     bool load(const char* filename);
     virtual void init();
-    void buildAsFinest(); ///< building from a mesh file
-    void buildFromFiner(); ///< building by condensating a finer sparse grid (used if setFinerSparseGrid has initializated _finerSparseGrid before calling init() )
-    void buildVirtualFinerLevels(); ///< building eventual virtual finer levels (cf _nbVirtualFinerLevels)
+    virtual void buildAsFinest(); ///< building from a mesh file
+    virtual void buildFromFiner(); ///< building by condensating a finer sparse grid (used if setFinerSparseGrid has initializated _finerSparseGrid before calling init() )
+    virtual void buildVirtualFinerLevels(); ///< building eventual virtual finer levels (cf _nbVirtualFinerLevels)
 
     typedef std::map<Vector3,int> MapBetweenCornerPositionAndIndice;///< a vertex indice for a given vertex position in space
 
@@ -188,6 +188,9 @@ public:
     };
 
 
+    Data< vector< unsigned char > >     dataVoxels;
+
+
 protected:
     bool isVirtual;
     /// cutting number in all directions
@@ -206,7 +209,6 @@ protected:
     virtual void updateHexas();
 
     MarchingCubeUtility                 marchingCubes;
-    Data< vector< unsigned char > >     dataVoxels;
     bool                                _usingMC;
 
     sofa::helper::vector<Type> _types; ///< BOUNDARY or FULL filled cells
