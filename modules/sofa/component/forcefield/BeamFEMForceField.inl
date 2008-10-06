@@ -116,7 +116,7 @@ void BeamFEMForceField<DataTypes>::reinitBeam(unsigned int i)
     Index a = (*_indexedElements)[i][0];
     Index b = (*_indexedElements)[i][1];
     const VecCoord& x0 = *this->mstate->getX0();
-    std::cout << "Beam "<<i<<" : ("<<a<<' '<<b<<") : beamsData size = "<<beamsData.size()<<" mstate size = "<<this->mstate->getSize()<<" x0 size = "<<x0.size()<<std::endl;
+//    std::cout << "Beam "<<i<<" : ("<<a<<' '<<b<<") : beamsData size = "<<beamsData.size()<<" mstate size = "<<this->mstate->getSize()<<" x0 size = "<<x0.size()<<std::endl;
     //if (needInit)
     if (stiffnessContainer)
         stiffness = stiffnessContainer->getStiffness(i) ;
@@ -146,7 +146,7 @@ void BeamFEMForceField<DataTypes>::BeamFEMEdgeCreationFunction(int edgeIndex, vo
         const topology::Edge& e,  const sofa::helper::vector< unsigned int > &a,
         const sofa::helper::vector< double >&)
 {
-    std::cout << "Create beam "<<edgeIndex<<" ("<<e<<") from "<<a<<std::endl;
+//    std::cout << "Create beam "<<edgeIndex<<" ("<<e<<") from "<<a<<std::endl;
     BeamFEMForceField<DataTypes>* p = static_cast<BeamFEMForceField<DataTypes>*>(param);
     // p->beamsData.resize(edgeIndex+1);
     static_cast<BeamFEMForceField<DataTypes>*>(param)->reinitBeam(edgeIndex);
