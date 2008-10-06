@@ -101,11 +101,13 @@ void BaseObject::cleanup()
 /// Handle an event
 void BaseObject::handleEvent( Event* e )
 {
+    /*
     cerr<<"BaseObject "<<getName()<<" ("<<getTypeName()<<") gets an event"<<endl;
     if( KeypressedEvent* ke = dynamic_cast<KeypressedEvent*>( e ) )
     {
         cerr<<"BaseObject "<<getName()<<" gets a key event: "<<ke->getKey()<<endl;
     }
+    */
 }
 
 /// Handle topological Changes from a given Topology
@@ -113,7 +115,7 @@ void BaseObject::handleTopologyChange(core::componentmodel::topology::Topology* 
 {
     if (t == this->getContext()->getTopology())
     {
-        std::cout << getClassName() << " " << getName() << " processing topology changes from " << t->getName() << std::endl;
+        //	std::cout << getClassName() << " " << getName() << " processing topology changes from " << t->getName() << std::endl;
         handleTopologyChange();
     }
 }
