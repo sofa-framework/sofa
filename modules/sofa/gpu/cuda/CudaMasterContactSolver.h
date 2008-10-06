@@ -25,16 +25,16 @@
 #ifndef SOFA_COMPONENT_ODESOLVER_CUDAMASTERCONTACTSOLVER_H
 #define SOFA_COMPONENT_ODESOLVER_CUDAMASTERCONTACTSOLVER_H
 
+#include <sofa/core/componentmodel/behavior/OdeSolver.h>
 #include <sofa/simulation/common/MasterSolverImpl.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
+#include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/simulation/common/OdeSolverImpl.h>
+#include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/gpu/cuda/CudaLCP.h>
 #include "CudaTypesBase.h"
-#include <sofa/component/linearsolver/FullMatrix.h>
-
-//#define CHECK 0.01
-//#define DISPLAY_TIME
 
 namespace sofa
 {
@@ -49,21 +49,97 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::linearsolver;
 using namespace helper::system::thread;
 using namespace sofa::gpu::cuda;
-
-class CudaMechanicalGetConstraintValueVisitor : public simulation::MechanicalVisitor
+/*
+class LCP
 {
 public:
-    CudaMechanicalGetConstraintValueVisitor(defaulttype::BaseVector * v): _v(v) {}
+	int maxConst;
+	LPtrFullMatrix<double> W, A;
+    FullVector<double> dFree, f;
+	double tol;
+	int numItMax;
+	unsigned int nbConst;
+	bool useInitialF;
+	double mu;
+	int dim;
+private:
+	bool lok;
 
-    virtual Result fwdConstraint(simulation::Node*,core::componentmodel::behavior::BaseConstraint* c)
+public:
+	LCP(unsigned int maxConstraint);
+	~LCP();
+	void reset(void);
+	//LCP& operator=(LCP& lcp);
+	inline double** getW(void) {return W.lptr();};
+	inline double& getMu(void) { return mu;};
+	inline double* getDfree(void) {return dFree.ptr();};
+	inline int getDfreeSize(void) {return dFree.size();};
+	inline double getTolerance(void) {return tol;};
+	inline void setTol(double t) {tol = t;};
+	inline double getMaxIter(void) {return numItMax;};
+	inline double* getF(void) {return f.ptr();};
+	inline bool useInitialGuess(void) {return useInitialF;};
+	inline unsigned int getNbConst(void) {return nbConst;};
+	inline void setNbConst(unsigned int nbC) {nbConst = nbC;};
+	inline unsigned int getMaxConst(void) {return maxConst;};
+
+	inline bool isLocked(void) {return false;};
+	inline void lock(void) {lok = true;};
+	inline void unlock(void) {lok = false;};
+	inline void wait(void) {while(lok) ; } //infinite loop?
+};
+*/
+
+
+class MechanicalResetContactForceVisitor : public simulation::MechanicalVisitor
+{
+public:
+    VecId force;
+    MechanicalResetContactForceVisitor()
     {
-        c->getConstraintValue(_v);
+    }
+
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms)
+    {
+        ms->resetContactForce();
         return RESULT_CONTINUE;
     }
-private:
-    defaulttype::BaseVector * _v;
+
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms)
+    {
+        ms->resetForce();
+        return RESULT_CONTINUE;
+    }
 };
 
+/* ACTION 2 : Apply the Contact Forces on mechanical models & Compute displacements */
+class MechanicalApplyContactForceVisitor : public simulation::MechanicalVisitor
+{
+public:
+    VecId force;
+    MechanicalApplyContactForceVisitor(double *f):_f(f)
+    {
+    }
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms)
+    {
+        ms->applyContactForce(_f);
+        return RESULT_CONTINUE;
+    }
+
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms)
+    {
+        ms->applyContactForce(_f);
+        return RESULT_CONTINUE;
+    }
+
+private:
+    double *_f; // vector of contact forces from lcp //
+    // to be multiplied by constraint direction in mechanical models //
+
+};
+
+/* ACTION 3 : gets the vector of constraint values */
+/* ACTION 3 : gets the vector of constraint values */
 template<class real>
 class MechanicalGetConstraintValueVisitor : public simulation::MechanicalVisitor
 {
@@ -84,7 +160,19 @@ private:
     FullVector<real> * _v;
 };
 
+class CudaMechanicalGetConstraintValueVisitor : public simulation::MechanicalVisitor
+{
+public:
+    CudaMechanicalGetConstraintValueVisitor(defaulttype::BaseVector * v): _v(v) {}
 
+    virtual Result fwdConstraint(simulation::Node*,core::componentmodel::behavior::BaseConstraint* c)
+    {
+        c->getConstraintValue(_v);
+        return RESULT_CONTINUE;
+    }
+private:
+    defaulttype::BaseVector * _v;
+};
 
 class CudaMechanicalGetContactIDVisitor : public simulation::MechanicalVisitor
 {
@@ -104,17 +192,16 @@ private:
 };
 
 template<class real>
-class CudaMasterContactSolver : public sofa::simulation::MasterSolverImpl, public virtual sofa::core::objectmodel::BaseObject
+class CudaMasterContactSolver : public sofa::simulation::MasterSolverImpl
 {
 public:
-    typedef real Real;
-    Data<bool> initial_guess_d;
+    Data<bool> initial_guess;
 #ifdef CHECK
     Data<bool> check_gpu;
 #endif
-    Data <double> tol_d;
-    Data <int> maxIt_d;
-    Data <double> mu_d;
+    Data < double > tol;
+    Data < int > maxIt;
+    Data < double > mu;
 
     Data<int> useGPU_d;
 
@@ -123,6 +210,7 @@ public:
     void step (double dt);
 
     virtual void init();
+    //LCP* getLCP(void) {return (lcp == &lcp1) ? &lcp2 : &lcp1;};
 
 private:
     std::vector<core::componentmodel::behavior::BaseConstraintCorrection*> constraintCorrections;
@@ -131,16 +219,19 @@ private:
 
     void build_LCP();
 
+    unsigned int _numConstraints;
+    double _mu;
+    simulation::tree::GNode *context;
+    //LCP lcp1, lcp2;
+    //CudaBaseMatrix<real> _A;
+
     CudaBaseMatrix<real> _W;
     CudaBaseVector<real> _dFree, _f;
-
 #ifdef CHECK
     CudaBaseVector<real> f_check;
 #endif
 
-    unsigned int _numConstraints;
-    double _mu;
-    simulation::tree::GNode *context;
+    //LCP* lcp;
 
     typedef struct
     {
