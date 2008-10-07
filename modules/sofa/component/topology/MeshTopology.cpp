@@ -75,12 +75,15 @@ void MeshTopology::parse(core::objectmodel::BaseObjectDescription* arg)
 
 void MeshTopology::init()
 {
-    sofa::component::MeshLoader* loader;
-    this->getContext()->get(loader);
-
-    if(loader)
+    if (nbPoints==0)
     {
-        loadFromMeshLoader(loader);
+        sofa::component::MeshLoader* loader;
+        this->getContext()->get(loader);
+
+        if(loader)
+        {
+            loadFromMeshLoader(loader);
+        }
     }
 
     // compute the number of points, if the topology is charged from the scene or if it was loaded from a MeshLoader without any points data.
