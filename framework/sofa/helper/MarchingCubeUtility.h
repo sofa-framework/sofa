@@ -110,11 +110,12 @@ private:
         return ((dataVoxels[index>>3]&((int)(pow(2.0f, i)))) >> i) == 1;
     }
 
-    void createConvolutionKernel(vector< float >  &convolutionKernel) const;
+    void createGaussianConvolutionKernel(vector< float >  &convolutionKernel) const;
 
-    void applyConvolution(unsigned int x, unsigned int y, unsigned int z,
-            const float *original_data, float *data,
-            const vector< float >  &convolutionKernel) const;
+    void applyConvolution(const float* convolutionKernel,
+            unsigned int x, unsigned int y, unsigned int z,
+            const float *input_data,
+            float *output_data) const;
 
     void smoothData( float *data) const;
 
