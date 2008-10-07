@@ -584,79 +584,80 @@ void MarchingCubeUtility::run( const unsigned char *data,  const float isolevel,
 void MarchingCubeUtility::smoothData( float *data) const
 {
     std::cout << "Smoothing Data using " << convolutionSize << "x"<< convolutionSize << "x"<< convolutionSize << " as gaussian convolution kernel\n";
-    vector< float >convolutionKernel;
-    createConvolutionKernel(convolutionKernel);
+    vector< float > convolutionKernel;
+    createGaussianConvolutionKernel(convolutionKernel);
 
-    float *original_data=new float[dataResolution[0]*dataResolution[1]*dataResolution[2]];
-    memcpy(original_data, data, sizeof(float)*dataResolution[0]*dataResolution[1]*dataResolution[2]);
-    unsigned int limit = convolutionSize/2;
-    unsigned int z,y,x;
-    for (z=limit; z<dataResolution[2]-limit; ++z)
-    {
-        for (y=limit; y<dataResolution[1]-limit; ++y)
+    vector<float> input_data((dataResolution[0]+convolutionSize)
+            *(dataResolution[1]+convolutionSize)
+            *(dataResolution[2]+convolutionSize),
+            0.0f);
+
+    for(unsigned int k=0; k<dataResolution[2]; ++k)
+        for(unsigned int j=0; j<dataResolution[1]; ++j)
         {
-            for (x=limit; x<dataResolution[0]-limit; ++x)
-            {
-                applyConvolution(x,y,z, original_data, data, convolutionKernel);
-            }
+            memcpy(&input_data[0] + convolutionSize/2
+                    + (j + convolutionSize/2)*(dataResolution[0]+convolutionSize)
+                    + (k + convolutionSize/2)*(dataResolution[0]+convolutionSize)*(dataResolution[1]+convolutionSize),
+                    data + j*dataResolution[0] + k*dataResolution[0]*dataResolution[1],
+                    sizeof(float)*dataResolution[0]);
         }
-    }
 
-    delete [] original_data;
+    for(unsigned int k=0; k<dataResolution[2]; ++k)
+        for(unsigned int j=0; j<dataResolution[1]; ++j)
+            for(unsigned int i=0; i<dataResolution[0]; ++i)
+            {
+                applyConvolution(&convolutionKernel[0], i,j,k, &input_data[0], data);
+            }
+
 }
 
-void  MarchingCubeUtility::applyConvolution(unsigned int x, unsigned int y, unsigned int z,
-        const float *original_data,
-        float *data,
-        const vector< float >  &convolutionKernel) const
+void  MarchingCubeUtility::applyConvolution(const float* convolutionKernel,
+        unsigned int x, unsigned int y, unsigned int z,
+        const float* input_data,
+        float* output_data) const
 {
-
-    const unsigned int index = dataResolution[0]*(z*dataResolution[1] +y) +x;
-    const unsigned int step=dataResolution[0]*dataResolution[1];
-    data[index] = 0;
-    const unsigned int c=convolutionSize/2;
-    unsigned int _z,_y,_x;
-    unsigned int i=0;
-    for (  _z=0; _z<convolutionSize; ++_z)
-    {
-        for (  _y=0; _y<convolutionSize; ++_y)
-        {
-            for (  _x=0; _x<convolutionSize; ++_x)
+    const unsigned int index = x + dataResolution[0] * (y + dataResolution[1] * z);
+    output_data[index] = 0.0f;
+    unsigned int idx=0;
+    for(unsigned int k=0; k<convolutionSize; ++k)
+        for(unsigned int j=0; j<convolutionSize; ++j)
+            for(unsigned int i=0; i<convolutionSize; ++i)
             {
-                data[index] += convolutionKernel[i++]*original_data[index+step*(_z-c)+dataResolution[0]*(_y-c)+(_x-c)];
+                output_data[index] += convolutionKernel[idx++]
+                        * input_data[(x+i) + (dataResolution[0]+convolutionSize) * ((y+j) + (z+k) * (dataResolution[1]+convolutionSize))];
             }
-        }
-    }
 }
 
-
-void MarchingCubeUtility::createConvolutionKernel(vector< float >  &convolutionKernel) const
+void MarchingCubeUtility::createGaussianConvolutionKernel(vector< float >  &convolutionKernel) const
 {
-    int c = (1 + convolutionSize/2);
+    if(convolutionSize<=1)
+    {
+        convolutionKernel.resize(1, 1.0f);
+        return;
+    }
+    else
+    {
+        convolutionKernel.resize(convolutionSize*convolutionSize*convolutionSize);
+    }
+
+    const float step = 4.0f / (float) (convolutionSize-1);
+
     float total = 0.0;
-
-    convolutionKernel.resize(convolutionSize*convolutionSize*convolutionSize);
-    const float var = (float)convolutionSize/*/2.0f*/;
-    unsigned int i=0;
-    for (unsigned int z=0; z<convolutionSize; ++z)
-    {
-        for (unsigned int y=0; y<convolutionSize; ++y)
-        {
-            for (unsigned int x=0; x<convolutionSize; ++x)
+    unsigned int idx=0;
+    for(unsigned int k=0; k<convolutionSize; ++k)
+        for(unsigned int j=0; j<convolutionSize; ++j)
+            for(unsigned int i=0; i<convolutionSize; ++i)
             {
-                convolutionKernel[i] = (float)(exp( -(pow((float)(x+1-c),2) + pow((float)(y+1-c),2) + pow((float)(z+1-c),2))/(2.0f*var)));
-                total += convolutionKernel[i++];
+                const float x = -2.0f + i * step;
+                const float y = -2.0f + j * step;
+                const float z = -2.0f + k * step;
+                convolutionKernel[idx] = (float)(exp( - 0.5f * (x*x+y*y+z*z)));
+                total += convolutionKernel[idx++];
             }
-        }
-    }
 
-    i=0;
-    for (unsigned int z=0; z<convolutionSize; ++z)
-        for (unsigned int y=0; y<convolutionSize; ++y)
-            for (unsigned int x=0; x<convolutionSize; ++x)
-                convolutionKernel[i++] /= total;
-
-
+    total = 1.0f/total;
+    for(unsigned int i=0; i<convolutionKernel.size(); ++i)
+        convolutionKernel[i] *= total;
 }
 
 
