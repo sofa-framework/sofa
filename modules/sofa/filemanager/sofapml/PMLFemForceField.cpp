@@ -137,7 +137,7 @@ void PMLFemForceField::initDensity(string m)
 }
 
 
-//convenient method to tesselate a hexahedron to 5 tetrahedron
+//convenient method to tesselate a hexahedron to 5 tetrahedra
 // used by createTopology method
 BaseMeshTopology::Tetra * PMLFemForceField::Tesselate(Cell* pCell)
 {
@@ -188,9 +188,9 @@ void PMLFemForceField::createMechanicalState(StructuralComponent* body)
 }
 
 
-// creation of the topolgy
-// topology constituted exclusively by tetrahedrons
-// --> if there is hexahedrons, they are tesselated in 5 tetrahedron
+// creation of the topology
+// topology constituted exclusively by tetrahedra
+// --> if there is hexahedrons, they are tesselated in 5 tetrahedra
 void PMLFemForceField::createTopology(StructuralComponent* body)
 {
     topology = new MeshTopology();
@@ -202,7 +202,7 @@ void PMLFemForceField::createTopology(StructuralComponent* body)
     Cell * pCell;
     Atom * pAtom;
 
-    //for each pml cell, build 1 or 5 tetrahedrons
+    //for each pml cell, build 1 or 5 tetrahedra
     for (unsigned int cid(0) ; cid<nbCells ; cid++)
     {
         pCell = body->getCell(cid);
