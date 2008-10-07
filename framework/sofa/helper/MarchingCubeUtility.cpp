@@ -587,13 +587,13 @@ void MarchingCubeUtility::smoothData( float *data) const
     vector< float > convolutionKernel;
     createGaussianConvolutionKernel(convolutionKernel);
 
-    vector<float> input_data((dataResolution[0]+convolutionSize)
+    vector<float> input_data((int)((dataResolution[0]+convolutionSize)
             *(dataResolution[1]+convolutionSize)
-            *(dataResolution[2]+convolutionSize),
+            *(dataResolution[2]+convolutionSize)),
             0.0f);
 
-    for(unsigned int k=0; k<dataResolution[2]; ++k)
-        for(unsigned int j=0; j<dataResolution[1]; ++j)
+    for(int k=0; k<dataResolution[2]; ++k)
+        for(int j=0; j<dataResolution[1]; ++j)
         {
             memcpy(&input_data[0] + convolutionSize/2
                     + (j + convolutionSize/2)*(dataResolution[0]+convolutionSize)
@@ -602,9 +602,9 @@ void MarchingCubeUtility::smoothData( float *data) const
                     sizeof(float)*dataResolution[0]);
         }
 
-    for(unsigned int k=0; k<dataResolution[2]; ++k)
-        for(unsigned int j=0; j<dataResolution[1]; ++j)
-            for(unsigned int i=0; i<dataResolution[0]; ++i)
+    for(int k=0; k<dataResolution[2]; ++k)
+        for(int j=0; j<dataResolution[1]; ++j)
+            for(int i=0; i<dataResolution[0]; ++i)
             {
                 applyConvolution(&convolutionKernel[0], i,j,k, &input_data[0], data);
             }
