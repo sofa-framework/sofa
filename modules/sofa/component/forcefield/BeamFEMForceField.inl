@@ -118,22 +118,22 @@ void BeamFEMForceField<DataTypes>::reinitBeam(unsigned int i)
     const VecCoord& x0 = *this->mstate->getX0();
 //    std::cout << "Beam "<<i<<" : ("<<a<<' '<<b<<") : beamsData size = "<<beamsData.size()<<" mstate size = "<<this->mstate->getSize()<<" x0 size = "<<x0.size()<<std::endl;
     //if (needInit)
-    if (stiffnessContainer)
-        stiffness = stiffnessContainer->getStiffness(i) ;
-    else
-        stiffness =  _youngModulus.getValue() ;
+    //if (stiffnessContainer)
+    //	stiffness = stiffnessContainer->getStiffness(i) ;
+    //else
+    stiffness =  _youngModulus.getValue() ;
     //if (lengthContainer)
     //	length = lengthContainer->getLength(i) ;
     //else
     length = (x0[a].getCenter()-x0[b].getCenter()).norm() ;
-    if (radiusContainer)
-        radius = radiusContainer->getRadius(i) ;
-    else
-        radius = _radius.getValue() ;
-    if (poissonContainer)
-        poisson = poissonContainer->getPoisson(i) ;
-    else
-        poisson = _poissonRatio.getValue() ;
+    //if (radiusContainer)
+    //	radius = radiusContainer->getRadius(i) ;
+    //else
+    radius = _radius.getValue() ;
+    //if (poissonContainer)
+    //	poisson = poissonContainer->getPoisson(i) ;
+    //else
+    poisson = _poissonRatio.getValue() ;
 
     setBeam(i, stiffness, length, poisson, radius );
 
