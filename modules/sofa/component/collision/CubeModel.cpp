@@ -80,6 +80,15 @@ void CubeModel::setParentOf(int childIndex, const Vector3& min, const Vector3& m
     elems[i].maxBBox = max;
 }
 
+void CubeModel::setLeafCube(int cubeIndex, int childIndex)
+{
+    parentOf[childIndex] = cubeIndex;
+    this->elems[cubeIndex].children.first=core::CollisionElementIterator(getNext(), childIndex);
+    this->elems[cubeIndex].children.second=core::CollisionElementIterator(getNext(), childIndex+1);
+    //elems[cubeIndex].minBBox = min;
+    //elems[cubeIndex].maxBBox = max;
+}
+
 void CubeModel::setLeafCube(int cubeIndex, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const Vector3& min, const Vector3& max)
 {
     elems[cubeIndex].minBBox = min;
@@ -352,9 +361,12 @@ void CubeModel::computeBoundingTree(int maxDepth)
             level = clevel;
             ++lvl;
         }
-        // Finally update parentOf to reflect new cell order
-        for (int i=0; i<size; i++)
-            parentOf[elems[i].children.first.getIndex()] = i;
+        if (!parentOf.empty())
+        {
+            // Finally update parentOf to reflect new cell order
+            for (int i=0; i<size; i++)
+                parentOf[elems[i].children.first.getIndex()] = i;
+        }
     }
     else
     {
