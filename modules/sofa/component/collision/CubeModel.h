@@ -83,6 +83,7 @@ public:
     virtual void resize(int size);
 
     void setParentOf(int childIndex, const Vector3& min, const Vector3& max);
+    void setLeafCube(int cubeIndex, int childIndex);
     void setLeafCube(int cubeIndex, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const Vector3& min, const Vector3& max);
 
 
