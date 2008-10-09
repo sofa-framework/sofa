@@ -538,17 +538,21 @@ public:
         if (WARP_SIZE==0) pitch = x*sizeof(T);
         else pitch = ((x+WARP_SIZE-1)/WARP_SIZE)*WARP_SIZE*sizeof(T);
 
-        //int ypitch = y;
+        size_type ypitch = y;
         //if (WARP_SIZE==0) ypitch = y;
         //else ypitch = ((y+WARP_SIZE-1)/WARP_SIZE)*WARP_SIZE;
 
-        if (y*pitch > deviceAllocSize)
+        if ( ypitch*pitch > deviceAllocSize )
         {
+            if (ypitch < 2 * ((deviceAllocSize+pitch-1) / pitch))
+            {
+                ypitch = 2 * ((deviceAllocSize+pitch-1) / pitch);
+            }
             void* prevDevicePointer = devicePointer;
             if (prevDevicePointer != NULL ) mycudaFree ( prevDevicePointer );
 
-            mycudaMallocPitch(&devicePointer, &pitch, pitch, y);
-            deviceAllocSize = y*pitch;
+            mycudaMallocPitch(&devicePointer, &pitch, pitch, ypitch);
+            deviceAllocSize = ypitch*pitch;
         }
         /*
         if (y*x > deviceAllocSize) {
