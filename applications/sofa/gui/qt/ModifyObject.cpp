@@ -98,6 +98,7 @@ ModifyObject::ModifyObject(void *Id_, core::objectmodel::Base* node_clicked, Q3L
     setCaption(name);
 
     HIDE_FLAG = true;
+    READONLY_FLAG = true;
     EMPTY_FLAG = false;
     RESIZABLE_FLAG = false;
     REINIT_FLAG = true;
@@ -355,7 +356,8 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     QSpinBox* spinBox = new QSpinBox((int)INT_MIN,(int)INT_MAX,1,box);
                     objectGUI.push_back(std::make_pair( (*it).second,  (QObject *) spinBox));
 
-                    spinBox->setValue(ff->getValue());
+                    spinBox->setValue(ff->getValue()); readOnlyData(spinBox,ff);
+
                     connect( spinBox, SIGNAL( valueChanged(int) ), this, SLOT( changeValue() ) );
                 }
                 //********************************************************************************************************//
@@ -366,6 +368,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     objectGUI.push_back(std::make_pair( (*it).second,  (QObject *) checkBox));
 
                     checkBox->setChecked(ff->getValue());
+                    readOnlyData(checkBox,ff);
                     connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeValue() ) );
                 }
                 //********************************************************************************************************//
@@ -375,7 +378,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     QSpinBox* spinBox = new QSpinBox((int)0,(int)INT_MAX,1,box);
                     objectGUI.push_back(std::make_pair( (*it).second,  (QObject *) spinBox));
 
-                    spinBox->setValue(ff->getValue());
+                    spinBox->setValue(ff->getValue()); readOnlyData(spinBox,ff);
                     connect( spinBox, SIGNAL( valueChanged(int) ), this, SLOT( changeValue() ) );
                 }
                 //********************************************************************************************************//
@@ -388,7 +391,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     editSFFloat->setMinFloatValue( (float)-INFINITY );
                     editSFFloat->setMaxFloatValue( (float)INFINITY );
 
-                    editSFFloat->setFloatValue(ff->getValue());
+                    editSFFloat->setFloatValue(ff->getValue()); readOnlyData(editSFFloat,ff);
                     connect( editSFFloat, SIGNAL( textChanged(const QString &) ), this, SLOT( changeValue() ) );
                 }
                 //********************************************************************************************************//
@@ -401,7 +404,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     editSFFloat->setMinFloatValue( (float)-INFINITY );
                     editSFFloat->setMaxFloatValue( (float)INFINITY );
 
-                    editSFFloat->setFloatValue(ff->getValue());
+                    editSFFloat->setFloatValue(ff->getValue()); readOnlyData(editSFFloat,ff);
                     connect( editSFFloat, SIGNAL( textChanged(const QString &) ), this, SLOT( changeValue() ) );
                 }
                 //********************************************************************************************************//
@@ -412,7 +415,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     QLineEdit* lineEdit = new QLineEdit(box);
                     objectGUI.push_back(std::make_pair( (*it).second,  (QObject *) lineEdit));
 
-                    lineEdit->setText(QString(ff->getValue().c_str()));
+                    lineEdit->setText(QString(ff->getValue().c_str())); readOnlyData(lineEdit,ff);
                     connect( lineEdit, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
                 }
                 //********************************************************************************************************//
@@ -422,7 +425,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     QSpinBox* spinBox = new QSpinBox((int)INT_MIN,(int)INT_MAX,1,box);
                     objectGUI.push_back(std::make_pair( (*it).second,  (QObject *) spinBox));
 
-                    spinBox->setValue(ff->getValue());
+                    spinBox->setValue(ff->getValue()); readOnlyData(spinBox,ff);
                     connect( spinBox, SIGNAL( valueChanged(int) ), this, SLOT( changeValue() ) );
                 }
                 //********************************************************************************************************//
@@ -432,7 +435,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     QSpinBox* spinBox = new QSpinBox((int)0,(int)INT_MAX,1,box);
                     objectGUI.push_back(std::make_pair( (*it).second,  (QObject *) spinBox));
 
-                    spinBox->setValue(ff->getValue());
+                    spinBox->setValue(ff->getValue()); readOnlyData(spinBox,ff);
                     connect( spinBox, SIGNAL( valueChanged(int) ), this, SLOT( changeValue() ) );
                 }
                 //********************************************************************************************************//
@@ -442,7 +445,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     QCheckBox* checkBox = new QCheckBox(box);
                     objectGUI.push_back(std::make_pair( (*it).second,  (QObject *) checkBox));
 
-                    checkBox->setChecked(ff->getValue());
+                    checkBox->setChecked(ff->getValue()); readOnlyData(checkBox,ff);
                     connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeValue() ) );
                 }
                 //********************************************************************************************************//
@@ -455,7 +458,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     editSFFloat->setMinFloatValue( (float)-INFINITY );
                     editSFFloat->setMaxFloatValue( (float)INFINITY );
 
-                    editSFFloat->setFloatValue(ff->getValue());
+                    editSFFloat->setFloatValue(ff->getValue()); readOnlyData(editSFFloat,ff);
                     connect( editSFFloat, SIGNAL( textChanged(const QString &) ), this, SLOT( changeValue() ) );
                 }
                 //********************************************************************************************************//
@@ -468,7 +471,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     editSFFloat->setMinFloatValue( (float)-INFINITY );
                     editSFFloat->setMaxFloatValue( (float)INFINITY );
 
-                    editSFFloat->setFloatValue(ff->getValue());
+                    editSFFloat->setFloatValue(ff->getValue()); readOnlyData(editSFFloat,ff);
                     connect( editSFFloat, SIGNAL( textChanged(const QString &) ), this, SLOT( changeValue() ) );
                 }
                 //********************************************************************************************************//
@@ -479,7 +482,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     QLineEdit* lineEdit = new QLineEdit(box);
                     objectGUI.push_back(std::make_pair( (*it).second,  (QObject *) lineEdit));
 
-                    lineEdit->setText(QString(ff->getValue().c_str()));
+                    lineEdit->setText(QString(ff->getValue().c_str())); readOnlyData(lineEdit,ff);
                     connect( lineEdit, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
                 }
                 else if(DataPtr<bool> *ff = dynamic_cast< DataPtr< bool> * > ( (*it).second) )
@@ -487,7 +490,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     QCheckBox* checkBox = new QCheckBox(box);
                     objectGUI.push_back(std::make_pair( (*it).second,  (QObject *) checkBox));
 
-                    checkBox->setChecked(ff->getValue());
+                    checkBox->setChecked(ff->getValue()); readOnlyData(checkBox,ff);
                     connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeValue() ) );
                 }
                 //********************************************************************************************************//
@@ -649,6 +652,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                         oss << p[i];
                         vectorTable->setText(i,0,std::string(oss.str()).c_str());
                     }
+                    readOnlyData(vectorTable,ff);
                 }
                 //********************************************************************************************************//
                 //PointSubset
@@ -681,6 +685,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                         oss << p[i];
                         vectorTable->setText(i,0,std::string(oss.str()).c_str());
                     }
+                    readOnlyData(vectorTable,ff);
                 }
                 //********************************************************************************************************//
                 //RigidMass<3, double>,RigidMass<3, float>
@@ -720,7 +725,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                         }
                     }
 
-                    new QLabel("Inertia Mass Matrix(Read Only)", box);
+                    new QLabel("Inertia Mass Matrix", box);
                     Q3Grid* massgrid= new Q3Grid(3,box);
                     WFloatLineEdit *massmatrix[3][3];
                     for (int row=0; row<3; row++)
@@ -742,14 +747,15 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     if( Data<RigidMass<3, double> > * ff = dynamic_cast< Data<RigidMass<3, double> > * >( (*it).second )  )
                     {
                         RigidMass<3, double> current_mass = ff->getValue();
-                        editMass->setFloatValue(current_mass.mass);
-                        editVolume->setFloatValue(current_mass.volume);
+                        editMass->setFloatValue(current_mass.mass);     readOnlyData(editMass,ff);
+                        editVolume->setFloatValue(current_mass.volume); readOnlyData(editVolume,ff);
 
                         for (int row=0; row<3; row++)
                         {
                             for (int column=0; column<3; column++)
                             {
                                 matrix[row][column]->setFloatValue(current_mass.inertiaMatrix[row][column]);
+                                readOnlyData(matrix[row][column],ff);
                                 connect( matrix[row][column], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
                             }
                         }
@@ -759,6 +765,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                             for (int column=0; column<3; column++)
                             {
                                 massmatrix[row][column]->setFloatValue(current_mass.inertiaMassMatrix[row][column]);
+                                massmatrix[row][column]->setEnabled(false);
                                 connect( massmatrix[row][column], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
                             }
                         }
@@ -767,13 +774,14 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     else if( Data<RigidMass<3, float> > * ff = dynamic_cast< Data<RigidMass<3, float> > * >( (*it).second )  )
                     {
                         RigidMass<3, float> current_mass = ff->getValue();
-                        editMass->setFloatValue(current_mass.mass);
-                        editVolume->setFloatValue(current_mass.volume);
+                        editMass->setFloatValue(current_mass.mass);     readOnlyData(editMass,ff);
+                        editVolume->setFloatValue(current_mass.volume); readOnlyData(editVolume,ff);
                         for (int row=0; row<3; row++)
                         {
                             for (int column=0; column<3; column++)
                             {
                                 matrix[row][column]->setFloatValue(current_mass.inertiaMatrix[row][column]);
+                                readOnlyData(matrix[row][column],ff);
                                 connect( matrix[row][column], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
                             }
                         }
@@ -783,6 +791,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                             for (int column=0; column<3; column++)
                             {
                                 massmatrix[row][column]->setFloatValue(current_mass.inertiaMassMatrix[row][column]);
+                                massmatrix[row][column]->setEnabled(false);
                                 connect( massmatrix[row][column], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
                             }
                         }
@@ -829,19 +838,19 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     if( Data<RigidMass<2, double> > * ff = dynamic_cast< Data<RigidMass<2, double> > * >( (*it).second )  )
                     {
                         RigidMass<2, double> current_mass = ff->getValue();
-                        editMass->setFloatValue(current_mass.mass);
-                        editVolume->setFloatValue(current_mass.volume);
-                        editInertiaMatrix->setFloatValue(current_mass.inertiaMatrix);
-                        editInertiaMassMatrix->setFloatValue(current_mass.inertiaMassMatrix);
+                        editMass->setFloatValue(current_mass.mass);                           readOnlyData(editMass,ff);
+                        editVolume->setFloatValue(current_mass.volume);		        readOnlyData(editVolume,ff);
+                        editInertiaMatrix->setFloatValue(current_mass.inertiaMatrix);         readOnlyData(editInertiaMatrix,ff);
+                        editInertiaMassMatrix->setFloatValue(current_mass.inertiaMassMatrix); editInertiaMassMatrix->setEnabled(false);
                     }
 
                     else if( Data<RigidMass<2, float> > * ff = dynamic_cast< Data<RigidMass<2, float> > * >( (*it).second )  )
                     {
                         RigidMass<2, float> current_mass = ff->getValue();
-                        editMass->setFloatValue(current_mass.mass);
-                        editVolume->setFloatValue(current_mass.volume);
-                        editInertiaMatrix->setFloatValue(current_mass.inertiaMatrix);
-                        editInertiaMassMatrix->setFloatValue(current_mass.inertiaMassMatrix);
+                        editMass->setFloatValue(current_mass.mass);                           readOnlyData(editMass,ff);
+                        editVolume->setFloatValue(current_mass.volume);			readOnlyData(editVolume,ff);
+                        editInertiaMatrix->setFloatValue(current_mass.inertiaMatrix);		readOnlyData(editInertiaMatrix,ff);
+                        editInertiaMassMatrix->setFloatValue(current_mass.inertiaMassMatrix);	editInertiaMassMatrix->setEnabled(false);
 
                     }
                     connect( editMass, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
@@ -914,14 +923,14 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
                     //Diffuse Component
                     checkBox = new QCheckBox(box); objectGUI.push_back(std::make_pair( (*it).second,  (QObject *) checkBox));
-                    checkBox->setChecked(material.useDiffuse);
+                    checkBox->setChecked(material.useDiffuse); readOnlyData(checkBox,ff);
                     connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeValue() ) );
                     new QLabel("Diffuse", box);
                     createVector(  (*it).second ,material.diffuse, box);
 
                     //Ambient Component
                     checkBox = new QCheckBox(box); objectGUI.push_back(std::make_pair( (*it).second,  (QObject *) checkBox));
-                    checkBox->setChecked(material.useAmbient);
+                    checkBox->setChecked(material.useAmbient); readOnlyData(checkBox,ff);
                     connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeValue() ) );
                     new QLabel("Ambient", box);
                     createVector(  (*it).second ,material.ambient, box);
@@ -929,7 +938,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
                     //Emissive Component
                     checkBox = new QCheckBox(box); objectGUI.push_back(std::make_pair( (*it).second,  (QObject *) checkBox));
-                    checkBox->setChecked(material.useEmissive);
+                    checkBox->setChecked(material.useEmissive); readOnlyData(checkBox,ff);
                     connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeValue() ) );
                     new QLabel("Emissive", box);
                     createVector(  (*it).second ,material.emissive, box);
@@ -937,21 +946,21 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
                     //Specular Component
                     checkBox = new QCheckBox(box); objectGUI.push_back(std::make_pair( (*it).second,  (QObject *) checkBox));
-                    checkBox->setChecked(material.useSpecular);
+                    checkBox->setChecked(material.useSpecular); readOnlyData(checkBox,ff);
                     connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeValue() ) );
                     new QLabel("Specular", box);
                     createVector(  (*it).second ,material.specular, box);
 
                     //Shininess Component
                     checkBox = new QCheckBox(box); objectGUI.push_back(std::make_pair( (*it).second,  (QObject *) checkBox));
-                    checkBox->setChecked(material.useShininess);
+                    checkBox->setChecked(material.useShininess); readOnlyData(checkBox,ff);
                     connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeValue() ) );
                     new QLabel("Shininess", box);
                     WFloatLineEdit* editShininess = new WFloatLineEdit( box, "editShininess" );
                     objectGUI.push_back(std::make_pair( (*it).second,  (QObject *) editShininess));
                     editShininess->setMinFloatValue( 0.0f );
                     editShininess->setMaxFloatValue( (float)128.0f );
-                    editShininess->setFloatValue( material.shininess);
+                    editShininess->setFloatValue( material.shininess); readOnlyData(editShininess,ff);
                     connect( editShininess, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
 
                     box->setColumns(6);
@@ -3176,7 +3185,7 @@ void ModifyObject::createVector( core::objectmodel::BaseData* object,const Vec<N
     }
     for (int i=0; i<N; i++)
     {
-        editSFFloat[i]->setFloatValue((float)value[i]);
+        editSFFloat[i]->setFloatValue((float)value[i]); readOnlyData(editSFFloat[i],object);
     }
     for (int i=0; i<N; i++)
     {
@@ -3304,6 +3313,7 @@ bool ModifyObject::createQtTable(Data< sofa::helper::vector< T > > *ff, Q3GroupB
         oss << value[i];
         vectorTable->setText(i,0,std::string(oss.str()).c_str());
     }
+    readOnlyData(vectorTable,ff);
     return true;
 }
 //********************************************************************************************************************
@@ -3372,6 +3382,7 @@ bool ModifyObject::createQtTable(DataPtr< sofa::helper::vector< T > > *ff, Q3Gro
         oss << value[i];
         vectorTable->setText(i,0,std::string(oss.str()).c_str());
     }
+    readOnlyData(vectorTable,ff);
     return true;
 }
 //********************************************************************************************************************
@@ -3430,6 +3441,7 @@ bool ModifyObject::createQtTable(Data< sofa::helper::vector< Vec<N,T> > > *ff, Q
             vectorTable->setText(i,j,std::string(oss[j].str()).c_str());
         }
     }
+    readOnlyData(vectorTable,ff);
     return true;
 }
 //*******************************************************************************************************************
@@ -3490,6 +3502,7 @@ bool ModifyObject::createQtTable(DataPtr< sofa::helper::vector< Vec<N,T> > > *ff
             vectorTable->setText(i,j,std::string(oss[j].str()).c_str());
         }
     }
+    readOnlyData(vectorTable,ff);
     return true;
 }
 //********************************************************************************************************************
@@ -3548,6 +3561,7 @@ bool ModifyObject::createQtTable(Data< sofa::helper::vector< fixed_array<T,N> > 
             vectorTable->setText(i,j,std::string(oss[j].str()).c_str());
         }
     }
+    readOnlyData(vectorTable,ff);
     return true;
 }
 //*******************************************************************************************************************
@@ -3603,6 +3617,7 @@ bool ModifyObject::createQtTable(DataPtr< sofa::helper::vector< fixed_array<T,N>
             vectorTable->setText(i,j,std::string(oss[j].str()).c_str());
         }
     }
+    readOnlyData(vectorTable,ff);
     return true;
 }
 //********************************************************************************************************************
@@ -3666,6 +3681,7 @@ bool ModifyObject::createQtTable(Data< sofa::component::topology::PointData< T >
         oss << value[i];
         vectorTable->setText(i,0,std::string(oss.str()).c_str());
     }
+    readOnlyData(vectorTable,ff);
     return true;
 }
 //********************************************************************************************************************
@@ -3876,7 +3892,9 @@ bool ModifyObject::createMonitorQtTable(Data<typename sofa::component::misc::Mon
         oss3[j] << MonitorDataTemp.getIndForces()[j];
         vectorTable3->setText(j,0,std::string(oss3[j].str()).c_str());
     }
-
+    if (vectorTable ) readOnlyData(vectorTable ,ff);
+    if (vectorTable2) readOnlyData(vectorTable2,ff);
+    if (vectorTable3) readOnlyData(vectorTable3,ff);
     delete [] oss;
     delete [] oss2;
     delete [] oss3;
@@ -4030,6 +4048,9 @@ bool ModifyObject::createQtTable(DataPtr< sofa::helper::vector< RigidCoord<N,T> 
         int count = 0;
         while (oss_i >> Tvalue)    vectorTable2->setText(i,count++,QString::number(Tvalue));
     }
+    readOnlyData(vectorTable,ff);
+    readOnlyData(vectorTable2,ff);
+
     counterWidget+=2;
     return true;
 }
@@ -4110,6 +4131,8 @@ bool ModifyObject::createQtTable(Data< sofa::helper::vector< RigidCoord<N,T> > >
         int count = 0;
         while (oss_i >> Tvalue)    vectorTable2->setText(i,count++,QString::number(Tvalue));
     }
+    readOnlyData(vectorTable,ff);
+    readOnlyData(vectorTable2,ff);
     counterWidget+=2;
     return true;
 }
@@ -4191,6 +4214,8 @@ bool ModifyObject::createQtTable(Data< sofa::helper::vector< RigidDeriv<N,T> > >
         int count = 0;
         while (oss_i >> Tvalue)    vectorTable2->setText(i,count++,QString::number(Tvalue));
     }
+    readOnlyData(vectorTable,ff);
+    readOnlyData(vectorTable2,ff);
     counterWidget+=2;
     return true;
 }
@@ -4271,6 +4296,8 @@ bool ModifyObject::createQtTable(DataPtr< sofa::helper::vector< RigidDeriv<N,T> 
         int count = 0;
         while (oss_i >> Tvalue)    vectorTable2->setText(i,count++,QString::number(Tvalue));
     }
+    readOnlyData(vectorTable,ff);
+    readOnlyData(vectorTable2,ff);
     counterWidget+=2;
     return true;
 }
@@ -4611,6 +4638,8 @@ bool ModifyObject::createQtSpringTable(Data< sofa::helper::vector< typename sofa
         oss[3] << value[i].kd;      vectorTable->setText(i,3,std::string(oss[3].str()).c_str());
         oss[4] << value[i].initpos; vectorTable->setText(i,4,std::string(oss[4].str()).c_str());
     }
+
+    readOnlyData(vectorTable,ff);
     return true;
 }
 
@@ -4697,6 +4726,7 @@ bool ModifyObject::createQtRigidSpringTable(Data< vector< typename sofa::compone
         oss[11] << value[i].limitAngles[4];   	 vectorTable->setText(i,11 ,std::string(oss[11].str()).c_str());
         oss[12] << value[i].limitAngles[5];   	 vectorTable->setText(i,12 ,std::string(oss[12].str()).c_str());
     }
+    readOnlyData(vectorTable,ff);
     return true;
 }
 
@@ -4782,6 +4812,15 @@ void ModifyObject::resizeTable(int number)
     setResize.clear();
 }
 
+void ModifyObject::readOnlyData(Q3Table *widget, core::objectmodel::BaseData* data)
+{
+    widget->setReadOnly(( (data->isReadOnly()) && READONLY_FLAG));
+}
+
+void ModifyObject::readOnlyData(QWidget *widget, core::objectmodel::BaseData* data)
+{
+    widget->setEnabled(!( (data->isReadOnly()) && READONLY_FLAG));
+}
 
 } // namespace qt
 

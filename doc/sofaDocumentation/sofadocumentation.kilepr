@@ -26,9 +26,9 @@ order=-1
 
 [item:sofadocumentation.tex]
 archive=true
-column=72
+column=0
 encoding=ISO 8859-1
 highlight=LaTeX
-line=22
+line=51
 open=true
 order=0

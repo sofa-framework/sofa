@@ -308,7 +308,7 @@ int RealGUI::mainLoop()
 
 void RealGUI::redraw()
 {
-    viewer->getQWidget()->update();
+    emit newStep();
 }
 
 int RealGUI::closeGUI()
@@ -396,6 +396,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     statusBar()->addWidget ( fpsLabel );
     statusBar()->addWidget ( timeLabel );
 
+
     statusBar()->addWidget( record);
     statusBar()->addWidget( backward_record);
     statusBar()->addWidget( stepbackward_record);
@@ -455,6 +456,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect ( tabs, SIGNAL ( currentChanged ( QWidget* ) ), this, SLOT ( currentTabChanged ( QWidget* ) ) );
 
     addViewer();
+    connect ( this, SIGNAL( newStep()), viewer->getQWidget(), SLOT( update()));
     currentTabChanged ( tabs->currentPage() );
 
 
@@ -637,26 +639,21 @@ void RealGUI::addViewer()
                 std::cerr << "ERROR(QtGUI): unknown or disabled viewer name "<<name<<std::endl;
                 application->exit();
             }
+
 #ifdef SOFA_QT4
     left_stack->addWidget ( viewer->getQWidget() );
     left_stack->setCurrentWidget ( viewer->getQWidget() );
+    viewer->getQWidget()->setFocusPolicy ( Qt::StrongFocus );
 #else
     int id_viewer = left_stack->addWidget ( viewer->getQWidget() );
     left_stack->raiseWidget ( id_viewer );
-#endif
-    viewer->getQWidget()->setSizePolicy ( QSizePolicy ( ( QSizePolicy::SizeType ) 7, ( QSizePolicy::SizeType ) 7, 100, 1,
-            viewer->getQWidget()->sizePolicy().hasHeightForWidth() ) );
-    viewer->getQWidget()->setMinimumSize ( QSize ( 0, 0 ) );
-#ifndef SOFA_QT4
+    viewer->getQWidget()->setFocusPolicy ( QWidget::StrongFocus );
     viewer->getQWidget()->setCursor ( QCursor ( 2 ) );
 #endif
-    viewer->getQWidget()->setMouseTracking ( TRUE );
 
-#ifdef SOFA_QT4
-    viewer->getQWidget()->setFocusPolicy ( Qt::StrongFocus );
-#else
-    viewer->getQWidget()->setFocusPolicy ( QWidget::StrongFocus );
-#endif
+    viewer->getQWidget()->setSizePolicy ( QSizePolicy ( ( QSizePolicy::SizeType ) 7, ( QSizePolicy::SizeType ) 7, 100, 1, viewer->getQWidget()->sizePolicy().hasHeightForWidth() ) );
+    viewer->getQWidget()->setMinimumSize ( QSize ( 0, 0 ) );
+    viewer->getQWidget()->setMouseTracking ( TRUE );
 
     viewer->setup();
 
@@ -1334,6 +1331,9 @@ void RealGUI::step()
 
     {
         if ( viewer->ready() ) return;
+
+
+
         //groot->setLogTime(true);
 
         getSimulation()->animate ( groot );
@@ -1348,10 +1348,8 @@ void RealGUI::step()
         eventNewStep();
         eventNewTime();
 
-#ifdef SOFA_QT4
-        viewer->getQWidget()->setUpdatesEnabled ( true );
-#endif
-        viewer->getQWidget()->update();
+//    	    viewer->getQWidget()->update();
+
         if (currentTab == TabStats) graphCreateStats(viewer->getScene());
     }
 
@@ -1579,7 +1577,8 @@ void RealGUI::resetScene()
         eventNewTime();
 
         //viewer->resetView();
-        viewer->getQWidget()->update();
+        emit newStep();
+// 	    viewer->getQWidget()->update();
     }
 }
 
@@ -1681,11 +1680,6 @@ void RealGUI::exportOBJ ( bool exportMTL )
 
 
 //*****************************************************************************************
-// Called by the animate timer
-void RealGUI::animate()
-{
-    viewer->getQWidget()->update();
-}
 
 
 void RealGUI::keyPressEvent ( QKeyEvent * e )
