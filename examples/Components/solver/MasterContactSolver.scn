@@ -18,7 +18,9 @@
 	</Node>
 
 	 <Node name="Torus2">
-		<Object type="EulerSolver"/>
+		<!--<Object type="EulerSolver"/> -->
+		<Object type="EulerImplicitSolver"/>	
+		<Object type="CGLinearSolver" iterations="25"/>	
 		<Object type="MechanicalObject" template="Rigid" scale="5.0" dx ="-12" dy="0"/>
 		<Object type="UniformMass" filename="BehaviorModels/torus.rigid" mass="5000.0"/>
 		<Object type="UncoupledConstraintCorrection"/>
@@ -36,9 +38,10 @@
 			<Object type="RigidMapping" />
 		</Node>
 	</Node>
-	
+	<!--
 	<Node name="Torus3">
-		<Object type="EulerSolver"/>
+		<Object type="EulerImplicitSolver"/>	
+		<Object type="CGLinearSolver" iterations="25"/>	
 		<Object type="MechanicalObject" template="Rigid" scale="5.0" dx ="-25" dy="0"/>
 		<Object type="UniformMass" filename="BehaviorModels/torus2.rigid" mass="5000.0"/>
 		<Object type="UncoupledConstraintCorrection"/>
@@ -58,7 +61,8 @@
 	</Node>
 	
 	<Node name="Torus4">
-		<Object type="EulerSolver"/>
+		<Object type="EulerImplicitSolver"/>	
+		<Object type="CGLinearSolver" iterations="25"/>	
 		<Object type="MechanicalObject" template="Rigid" scale="5.0" dx ="-38" dy="0"/>
 		<Object type="UniformMass" filename="BehaviorModels/torus.rigid" mass="5000.0"/>
 		<Object type="UncoupledConstraintCorrection"/>
@@ -76,5 +80,5 @@
 			<Object type="RigidMapping" />
 		</Node>
 	</Node>
-	
+	-->
 </Node>

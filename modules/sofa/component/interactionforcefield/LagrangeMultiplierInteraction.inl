@@ -64,10 +64,61 @@ template<class DataTypes1, class DataTypes2>
 void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::init()
 {
     core::componentmodel::behavior::InteractionForceField::init();
+
     core::objectmodel::BaseContext* test = this->getContext();
+
+    // ancien mécanisme: une seule contrainte
     test->get(constraint,f_constraint.getValue());
 
 
+    // nouveau mécanisme: plusieurs contraintes
+    test->get<baseConstraint>(&list_base_constraint, core::objectmodel::BaseContext::SearchDown);
+
+
+    // debug //
+    //std::cout<<"************** list of constraints : *************"<<std::endl;
+    long id[100];
+    unsigned int offset;
+    for (int i=0; i<list_base_constraint.size(); i++)
+    {
+        std::cout<<list_base_constraint[i]->getName()<<std::endl;
+
+        baseConstraint* bc =list_base_constraint[i];
+
+        SimpleConstraint * sc = dynamic_cast<SimpleConstraint *>(bc);
+        if (sc != NULL)
+        {
+            //debug
+            //std::cerr<< "simple constraint applied on object "<<sc->getMState()->getName() <<std::endl;
+            list_constraint.push_back(sc);
+        }
+
+        InteractionConstraint* ic= dynamic_cast<InteractionConstraint*> (bc);
+        if (ic != NULL)
+        {
+            // debug
+            //std::cerr<< "interaction constraint applied on object "<<ic->getMechModel1()->getName() <<"  and on object "<< ic->getMechModel2()->getName()<<std::endl;
+            //std::cerr<< "mstate1 : "<<this->mstate2->getName()<<std::endl;
+
+            core::objectmodel::BaseContext* context_model1 = ic->getMechModel1()->getContext();
+            core::objectmodel::BaseContext* context_model2 = ic->getMechModel2()->getContext();
+            if (this->mstate2==context_model1->getMechanicalState() || this->mstate2==context_model2->getMechanicalState() )
+            {
+                std::cout<<" - this constraint must be handled - "<<std::endl;
+                list_interaction_constraint.push_back(ic);
+
+
+                offset=0;
+                ic->getConstraintId(id, offset);
+                std::cout<< "constraint offset"<<offset<<std::endl;
+            }
+        }
+    }
+
+    for (int i=0; i<offset; i++)
+    {
+        std::cout<< "id : "<< id[i] <<std::endl;
+    }
 }
 
 
@@ -76,6 +127,17 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addForce(VecDeriv1& 
         const VecCoord1& , const VecCoord2& ,
         const VecDeriv1& , const VecDeriv2& )
 {
+
+    unsigned int count=0;
+    double mu=0.0;
+
+    for (int i=0; i<list_interaction_constraint.size(); i++)
+    {
+        list_interaction_constraint[i]->applyConstraint(count, mu);
+        std::cout<< "constraint count"<<count<<std::endl;
+    }
+    unsigned int count1=0;
+    constraint->applyConstraint(count1, mu);
 
 
     /// @TODO clear the MechanicalState of the lagrange Multiplier during Begin visitor
@@ -106,7 +168,7 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addForce(VecDeriv1& 
 }
 /*
 template<class DataTypes1, class DataTypes2>
-void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addForce2(VecDeriv1& f1, VecDeriv2& f2,
+void LagranintgeMultiplierInteraction<DataTypes1, DataTypes2>::addForce2(VecDeriv1& f1, VecDeriv2& f2,
 																	  const VecCoord1& p1, const VecCoord2& p2,
 																	  const VecDeriv1& v1, const VecDeriv2& v2)
 {
@@ -122,16 +184,13 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addDForce(VecDeriv1&
 
     //std::cout<<"addDForce : dLambda "<< dLambda << " -  dx2:" << dx2 <<std::endl;
 
-    unsigned int count=0;
-    double mu=0.0;
+
 
     sofa::simulation::tree::GNode *context = dynamic_cast<sofa::simulation::tree::GNode *>(this->getContext()); // access to current node (which is supposed to be the root)
     sofa::simulation::MechanicalResetConstraintVisitor().execute(context);
-    constraint->applyConstraint(count, mu);
 
 
     VecConst2& c2= *this->mstate2->getC();
-
     //std::cout<<" constraint size :"<<c2.size()<<std::endl;
 
 

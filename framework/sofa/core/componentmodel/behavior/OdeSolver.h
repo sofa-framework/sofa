@@ -75,8 +75,14 @@ public:
     /// Main computation method.
     ///
     /// Specify and execute all computation for timestep integration, i.e.
+    /// advancing the state from time t to t+dt, putting the resulting position and velocity in the provided vectors.
+    virtual void solve(double /*dt*/, BaseMechanicalState::VecId /*xResult*/, BaseMechanicalState::VecId /*vResult*/) { std::cerr << "ERROR: " << getClassName() << " don't implement solve on custom x and v" << std::endl; }
+
+    /// Main computation method.
+    ///
+    /// Specify and execute all computation for timestep integration, i.e.
     /// advancing the state from time t to t+dt.
-    virtual void solve (double dt) = 0;
+    virtual void solve (double dt) { solve(dt, BaseMechanicalState::VecId::position(), BaseMechanicalState::VecId::velocity()); }
 
     /// Propagate the given state (time, position and velocity) through all mappings
     ///

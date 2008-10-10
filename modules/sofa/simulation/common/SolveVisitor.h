@@ -45,7 +45,7 @@ class SolveVisitor : public Visitor
 {
 
 public:
-    SolveVisitor(double _dt):dt(_dt) {}
+    SolveVisitor(double _dt, bool free = false):dt(_dt), freeMotion(free) {}
     void processSolver(simulation::Node* node, core::componentmodel::behavior::OdeSolver* b);
     virtual Result processNodeTopDown(simulation::Node* node);
 
@@ -60,6 +60,7 @@ public:
     double getDt() {return dt;}
 protected:
     double dt;
+    bool freeMotion;
 };
 
 } // namespace simulation

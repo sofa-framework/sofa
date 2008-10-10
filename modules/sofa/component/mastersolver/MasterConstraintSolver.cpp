@@ -65,7 +65,7 @@ void MasterConstraintSolver::step ( double dt )
     for (simulation::tree::GNode::ChildIterator it = context->child.begin(); it != context->child.end(); ++it)
     {
         for (unsigned i=0; i<(*it)->solver.size(); i++)
-            (*it)->solver[i]->solve(dt);
+            (*it)->solver[i]->solve(dt, core::componentmodel::behavior::BaseMechanicalState::VecId::freePosition(), core::componentmodel::behavior::BaseMechanicalState::VecId::freeVelocity());
     }
 
     simulation::MechanicalPropagateFreePositionVisitor().execute(context);
@@ -138,6 +138,7 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
         double* d, std::vector<ConstraintResolution*>& res)
 {
 //	fprintf(stderr, "gaussSeidelConstraint\n");
+    std::cout<<"------------------------------------ new iteration ---------------------------------"<<std::endl;
     int i, j, k, l, nb;
 
     double errF[6];
@@ -166,6 +167,7 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
                 d[j+l] = dfree[j+l];
             }
 
+            // TODO : add a vector with the non null force
             for(k=0; k<dim; k++)
                 for(l=0; l<nb; l++)
                     d[j+l] += w[j+l][k] * force[k];
@@ -191,8 +193,11 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
             j += nb;
         }
 
-        if(error < tolerance)
+        if(error < tolerance && i>0) // do not stop at the first iteration (that is used for initial guess computation)
+        {
+            std::cout<<" ------------------ convergence after "<<i<<" iterations ------------------"<<std::endl;
             break;
+        }
     }
 
     for(i=0; i<dim; )

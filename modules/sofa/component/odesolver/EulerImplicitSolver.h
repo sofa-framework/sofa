@@ -52,7 +52,7 @@ public:
 
     EulerImplicitSolver();
 
-    void solve (double dt);
+    void solve (double dt, sofa::core::componentmodel::behavior::BaseMechanicalState::VecId xResult, sofa::core::componentmodel::behavior::BaseMechanicalState::VecId vResult);
 
     /// Given a displacement as computed by the linear system inversion, how much will it affect the velocity
     ///

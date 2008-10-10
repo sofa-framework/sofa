@@ -1789,6 +1789,10 @@ void MechanicalObject<DataTypes>::setX(VecId v)
 {
     if (v.type == VecId::V_COORD)
     {
+        if (this->f_printLog.getValue() == true)
+        {
+            std::cout<<"setX ("<<v.index<<") is called"<<std::endl;
+        }
         this->x = getVecCoord(v.index);
     }
     else
@@ -1802,6 +1806,11 @@ void MechanicalObject<DataTypes>::setXfree(VecId v)
 {
     if (v.type == VecId::V_COORD)
     {
+        if (this->f_printLog.getValue() == true)
+        {
+            std::cout<<"setXfree ("<<v.index<<") is called"<<std::endl;
+        }
+
         this->xfree = getVecCoord(v.index);
     }
     else

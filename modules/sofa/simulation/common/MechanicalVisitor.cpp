@@ -588,10 +588,14 @@ void MechanicalComputeContactForceVisitor::bwdMechanicalMapping(simulation::Node
     map->accumulateForce();
 }
 
-Visitor::Result MechanicalAddSeparateGravityVisitor::fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* mass)
+Visitor::Result MechanicalAddSeparateGravityVisitor::fwdMass(simulation::Node* node, core::componentmodel::behavior::BaseMass* mass)
 {
     if( mass->m_separateGravity.getValue() )
+    {
+        if (! (res == VecId::velocity())) dynamic_cast<core::componentmodel::behavior::BaseMechanicalState*>(node->getMechanicalState())->setV(res);
         mass->addGravityToV(dt);
+        if (! (res == VecId::velocity())) dynamic_cast<core::componentmodel::behavior::BaseMechanicalState*>(node->getMechanicalState())->setV(VecId::velocity());
+    }
 
     return RESULT_CONTINUE;
 }

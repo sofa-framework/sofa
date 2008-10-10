@@ -4,13 +4,16 @@
 	<Object type="BruteForceDetection" name="N2" />
 	<Object type="LocalMinDistance" name="Proximity" usePointPoint="1" alarmDistance="0.35" contactDistance="0.1" filterIntersection="1" angleCone="0"/>
 	<Object type="CollisionResponse" name="Response" response="FrictionContact"/>
-	<Object type="CollisionGroup" name="Group" />
 	
+	<Node>
+			<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />	
+	<Object type="CollisionGroup" name="Group" />
+
 	<Node name="TORUS">
-		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
-		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
 		<Object type="MechanicalObject" template="Rigid" scale="1.0"  dx="0.0" dy="0.0" dz="0.0"/>
-		<Object type="UniformMass"  mass="4000.0"/>
+		<Object type="UniformMass"  mass="40.0"/>
 		<Object type="UncoupledConstraintCorrection"/>
 		<Node name="Visu">
 			<Object type="OglModel" name="Visual" fileMesh="mesh/torus.obj" color="1.0 0.5 0.25 1.0" scale="1.0"/>
@@ -27,6 +30,7 @@
 			<Object type="RigidMapping" />
 		</Node>
 	</Node>
+	<!--
 	<Node name="CUBE">
 		<Object type="EulerSolver"/>
 		<Object type="MechanicalObject" template="Rigid" scale="0.3"  dx="-2.0" dy="-2.0" dz="0.0"/>
@@ -87,6 +91,8 @@
 			<Object type="RigidMapping" />
 		</Node>
 	</Node>
+	-->
+
 
 	<Node name="BOX">
         	<Object type="MeshLoader" name="meshLoader" filename="mesh/box.obj"/>
@@ -146,5 +152,6 @@
 		<Object type="Line" simulated="0" moving="0"/>
 		<Object type="Point" simulated="0" moving="0"/>
 		<Object type="OglModel" name="Visual" fileMesh="mesh/box3.obj" color="1 0 0 0.1" dz="5.0"/>
+	</Node>
 	</Node>
 </Node>

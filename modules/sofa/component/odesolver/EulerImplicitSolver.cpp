@@ -55,7 +55,7 @@ EulerImplicitSolver::EulerImplicitSolver()
 {
 }
 
-void EulerImplicitSolver::solve(double dt)
+void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior::BaseMechanicalState::VecId xResult, sofa::core::componentmodel::behavior::BaseMechanicalState::VecId vResult)
 {
     MultiVector pos(this, VecId::position());
     MultiVector vel(this, VecId::velocity());
@@ -70,8 +70,6 @@ void EulerImplicitSolver::solve(double dt)
     double h = dt;
     //const bool printLog = f_printLog.getValue();
     const bool verbose  = f_verbose.getValue();
-
-    addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
     //projectResponse(vel);          // initial velocities are projected to the constrained space
 
@@ -135,29 +133,36 @@ void EulerImplicitSolver::solve(double dt)
     // x is the solution of the system
 
     // apply the solution
+
+    MultiVector newPos(this, xResult);
+    MultiVector newVel(this, vResult);
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
-    vel.peq( x );                       // vel = vel + x
-    pos.peq( vel, h );                  // pos = pos + h vel
+    //vel.peq( x );                       // vel = vel + x
+    newVel.eq(vel, x);
+    //pos.peq( vel, h );                  // pos = pos + h vel
+    newPos.eq(pos, newVel, h);
 #else // single-operation optimization
     {
         simulation::MechanicalVMultiOpVisitor vmop;
         vmop.ops.resize(2);
-        vmop.ops[0].first = (VecId)vel;
+        vmop.ops[0].first = (VecId)newVel;
         vmop.ops[0].second.push_back(std::make_pair((VecId)vel,1.0));
         vmop.ops[0].second.push_back(std::make_pair((VecId)x,1.0));
-        vmop.ops[1].first = (VecId)pos;
+        vmop.ops[1].first = (VecId)newPos;
         vmop.ops[1].second.push_back(std::make_pair((VecId)pos,1.0));
-        vmop.ops[1].second.push_back(std::make_pair((VecId)vel,h));
+        vmop.ops[1].second.push_back(std::make_pair((VecId)newVel,h));
         vmop.execute(this->getContext());
     }
 #endif
+
+    addSeparateGravity(dt, newVel);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
     if (f_velocityDamping.getValue()!=0.0)
-        vel *= exp(-h*f_velocityDamping.getValue());
+        newVel *= exp(-h*f_velocityDamping.getValue());
 
     if( verbose )
     {
-        cerr<<"EulerImplicitSolver, final x = "<< pos <<endl;
-        cerr<<"EulerImplicitSolver, final v = "<< vel <<endl;
+        cerr<<"EulerImplicitSolver, final x = "<< newPos <<endl;
+        cerr<<"EulerImplicitSolver, final v = "<< newVel <<endl;
     }
 }
 
