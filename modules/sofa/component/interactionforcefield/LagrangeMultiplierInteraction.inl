@@ -79,7 +79,7 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::init()
     //std::cout<<"************** list of constraints : *************"<<std::endl;
     long id[100];
     unsigned int offset;
-    for (int i=0; i<list_base_constraint.size(); i++)
+    for (unsigned int i=0; i<list_base_constraint.size(); i++)
     {
         std::cout<<list_base_constraint[i]->getName()<<std::endl;
 
@@ -115,7 +115,7 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::init()
         }
     }
 
-    for (int i=0; i<offset; i++)
+    for (unsigned int i=0; i<offset; i++)
     {
         std::cout<< "id : "<< id[i] <<std::endl;
     }
@@ -131,7 +131,7 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addForce(VecDeriv1& 
     unsigned int count=0;
     double mu=0.0;
 
-    for (int i=0; i<list_interaction_constraint.size(); i++)
+    for (unsigned int i=0; i<list_interaction_constraint.size(); i++)
     {
         list_interaction_constraint[i]->applyConstraint(count, mu);
         std::cout<< "constraint count"<<count<<std::endl;
