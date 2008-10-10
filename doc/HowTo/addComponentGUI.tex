@@ -8,7 +8,7 @@ When you create your own component, it can be very convenient to display some in
 They are templated with the type you want. It can be ``classic'' types, bool, int, double (...), or more complex one (your own data structure). You only have to implement the stream operators ``<<'' and ``>>''. In the constructor of your object, you have to call the function initData, or initDataPtr. 
 \\
 for instance, let call your class  {\bf foo}. You want to control a parameter of type boolean called {\bf verbose}.
-\begin{figure}
+\begin{figure}[htpb]
 \begin{code_cpp}
      foo(): verbose(initData(&verbose, false, "verbose","Helpful comments in relation with verbose", true))	
 {
