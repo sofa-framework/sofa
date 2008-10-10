@@ -51,7 +51,9 @@ using namespace sofa::core;
  * This class, called SimpleTesselatedTetraTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
  *
  * INPUT TOPOLOGY = TetrahedronSetTopology
- * OUTPUT TOPOLOGY = Set of TetrahedronSetTopology, as the boundary of the INPUT TOPOLOGY
+ * OUTPUT TOPOLOGY = Set of TetrahedronSetTopologies, as the boundary of the INPUT TOPOLOGY
+ *
+ * Each tetrahedron in the input Topology will be divided in eight tetrahedrom in the output topology
  *
  * SimpleTesselatedTetraTopologicalMapping class is templated by the pair (INPUT TOPOLOGY, OUTPUT TOPOLOGY)
  *
@@ -77,12 +79,18 @@ public:
      */
     virtual void init();
 
-    virtual void updateTopologicalMappingTopDown();
-
     /** \brief Translates the TopologyChange objects from the source to the target.
      *
      * Translates each of the TopologyChange objects waiting in the source list so that they have a meaning and
      * reflect the effects of the first topology changes on the second topology.
+     *
+     */
+    virtual void updateTopologicalMappingTopDown();
+
+    /** \brief Translates the TopologyChange objects from the target to the source.
+     *
+     * Translates each of the TopologyChange objects waiting in the source list so that they have a meaning and
+     * reflect the effects of the second topology changes on the first topology.
      *
      */
     virtual void updateTopologicalMappingBottomUp();
@@ -171,9 +179,9 @@ protected:
     Data< std::string > object1;
     Data< std::string > object2;
 
-    PointData<int> pointMappedFromPoint;
-    EdgeData<int> pointMappedFromEdge;
-    TetrahedronData< fixed_array<int, 8> > tetrasMappedFromTetra;
+    PointData<int> pointMappedFromPoint; ///< each point of the input topology is mapped to the same point.
+    EdgeData<int> pointMappedFromEdge; ///< each edge of the input topology is mapped to his midpoint.
+    TetrahedronData< fixed_array<int, 8> > tetrasMappedFromTetra; ///< each Tetrahedron of the input topology is mapped to the 8 tetrahedrons in which it can be divided.
 
     PointData<int> pointSource; ///< Which input topology element map to a given point in the output topology : 0 -> none, > 0 -> point index + 1, < 0 , - edge index -1
     TetrahedronData<int> tetraSource; ///<Which tetra from the input topology map to a given tetra in the output topology (-1 if none)
