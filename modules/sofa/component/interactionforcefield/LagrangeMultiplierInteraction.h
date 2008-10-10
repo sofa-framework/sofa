@@ -31,7 +31,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
-
+#include <sofa/core/componentmodel/behavior/Constraint.h>
 
 namespace sofa
 {
@@ -55,6 +55,8 @@ class LagrangeMultiplierInteraction : public core::componentmodel::behavior::Mix
 {
 public:
     typedef core::componentmodel::behavior::BaseConstraint baseConstraint;
+    typedef core::componentmodel::behavior::Constraint<DataTypes2> SimpleConstraint;
+    typedef core::componentmodel::behavior::InteractionConstraint InteractionConstraint;
 
     typedef core::componentmodel::behavior::MixedInteractionForceField<DataTypes1, DataTypes2> Inherit;
     typedef typename DataTypes1::VecCoord VecCoord1;
@@ -81,16 +83,19 @@ protected:
     LagrangeMultiplierInteractionInternalData<DataTypes1, DataTypes2> data;
     baseConstraint* constraint;
 
-    //core::componentmodel::behavior::MechanicalState<DataTypes1> *mstate1;
-    //core::componentmodel::behavior::MechanicalState<DataTypes2> *mstate2;
+    std::vector<baseConstraint*>  list_base_constraint;
+    std::vector<SimpleConstraint*> list_constraint;
+    std::vector<InteractionConstraint*> list_interaction_constraint;
+
+
 
 public:
 
 
     LagrangeMultiplierInteraction()
         : f_constraint( initData(&f_constraint, "constraint", "constraint path"))
-        , pathObject1(initData(&pathObject1,  "object1","First object in interaction"))
-        , pathObject2(initData(&pathObject2,  "object2","Second object in interaction"))
+        , pathObject1(initData(&pathObject1,  "object1", "Mechanical State of the Lagrange Multiplier"))
+        , pathObject2(initData(&pathObject2,  "object2", "Mechanical Object subject to constraints"))
     {
 
 

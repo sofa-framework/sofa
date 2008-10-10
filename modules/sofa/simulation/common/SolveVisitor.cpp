@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/common/SolveVisitor.h>
+#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
 
 namespace sofa
 {
@@ -32,13 +33,21 @@ namespace simulation
 
 void SolveVisitor::processSolver(simulation::Node* /*node */, core::componentmodel::behavior::OdeSolver* s)
 {
-    s->solve(dt);
+    if (freeMotion)
+        s->solve(dt, sofa::core::componentmodel::behavior::BaseMechanicalState::VecId::freePosition(), sofa::core::componentmodel::behavior::BaseMechanicalState::VecId::freeVelocity());
+    else
+        s->solve(dt);
 }
 
 Visitor::Result SolveVisitor::processNodeTopDown(simulation::Node* node)
 {
-    for_each(this, node, node->solver, &SolveVisitor::processSolver);
-    return RESULT_CONTINUE;
+    if (! node->solver.empty())
+    {
+        for_each(this, node, node->solver, &SolveVisitor::processSolver);
+        return RESULT_PRUNE;
+    }
+    else
+        return RESULT_CONTINUE;
 }
 
 

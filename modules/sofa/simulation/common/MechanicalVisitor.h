@@ -530,10 +530,7 @@ public:
     double t;
     VecId x;
     VecId v;
-    //MechanicalPropagateFreePositionVisitor(double time=0, VecId xfree = VecId::freePosition()): t(time), xfree(xfree)
-    //{
-    //}
-    MechanicalPropagateFreePositionVisitor(double time=0, VecId x = VecId::position(), VecId v = VecId::velocity()): t(time), x(x), v(v)
+    MechanicalPropagateFreePositionVisitor(double time=0, VecId x = VecId::freePosition(), VecId v = VecId::freeVelocity()): t(time), x(x), v(v)
     {
     }
     virtual Result processNodeTopDown(simulation::Node* node);
@@ -862,7 +859,8 @@ class MechanicalAddSeparateGravityVisitor : public MechanicalVisitor
 public:
 
     double dt;
-    MechanicalAddSeparateGravityVisitor(double dt) : dt(dt)
+    VecId res;
+    MechanicalAddSeparateGravityVisitor(double dt, VecId res) : dt(dt), res(res)
     {}
 
     /// Process the BaseMass
