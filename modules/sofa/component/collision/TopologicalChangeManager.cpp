@@ -74,6 +74,11 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::core::Collisio
         simulation::tree::GNode *node_curr = dynamic_cast<simulation::tree::GNode*>(topo_curr->getContext());
 
         std::set< unsigned int > items;
+        if (topo_curr->getNbTetras() > 0)
+        {
+            // get the index of the tetra linked to this triangle
+            ind_curr = topo_curr->getTetraTriangleShell(ind_curr)[0];
+        }
         items.insert(ind_curr);
 
         bool is_topoMap = true;

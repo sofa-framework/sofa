@@ -88,7 +88,7 @@ public:
     /// Method called at each topological changes propagation which comes from the INPUT topology to adapt the OUTPUT topology :
     virtual void updateTopologicalMappingTopDown() = 0;
 
-    /// Method called at each topological changes propagation which comes from the INPUT topology to adapt the OUTPUT topology :
+    /// Method called at each topological changes propagation which comes from the OUTPUT topology to adapt the INPUT topology :
     virtual void updateTopologicalMappingBottomUp() {};
 
     /// Return true if this mapping is able to propagate topological changes from input to output model
