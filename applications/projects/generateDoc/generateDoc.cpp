@@ -133,7 +133,7 @@ bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
     //sofa::core::ObjectFactory::getInstance()->dump();
     std::ofstream out(filename.c_str());
 
-    out << "<html><body>\n";
+    //out << "<html><body>\n";
 
     std::vector<std::string> templates;
     std::set<std::string> templateSet;
@@ -352,7 +352,25 @@ bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
         }
     out << "</table>\n";
 
-    out << "</body></html>\n";
+    out << "<?php if ($base) { ?>";
+
+    out << "<p> <b>Filter by Base Class :</b> ";
+
+    out << "<?php if ($show) { echo '<a href=\""<<url<<"'.($desc?'?desc='.$desc:'').'\">'; ?>";
+    out << "ALL";
+    out << "<?php } if ($show) echo '</a>'; ?>";
+    for (const char** c = baseClasses; *c; ++c)
+    {
+        out << " <span class=\"class-base-name\" style=\"background-color: " << sofa::simulation::Colors::getColor(*c) << ";\">";
+        out << "<?php if ($show != '"<<xmlencode(*c)<<"') echo '<a href=\""<<url<<"?show="<<xmlencode(*c)<<"'.($desc?'&desc='.$desc:'').'\">'; ?>";
+        out << *c;
+        out << "<?php if ($show != '"<<xmlencode(*c)<<"') echo '</a>'; ?>";
+        out << "</span>";
+    }
+    out << "</p>\n";
+    out << "<?php } ?>";
+
+    //out << "</body></html>\n";
 
     return true;
 }
