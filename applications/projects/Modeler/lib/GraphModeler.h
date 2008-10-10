@@ -283,6 +283,7 @@ public:
         visualContentModified=false;
         setCaption(name);
         HIDE_FLAG = false;
+        READONLY_FLAG=false; //everything will be editable
         EMPTY_FLAG = true;
         RESIZABLE_FLAG = true;
         REINIT_FLAG = false;

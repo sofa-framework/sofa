@@ -99,7 +99,7 @@ void BaseObject::cleanup()
 { }
 
 /// Handle an event
-void BaseObject::handleEvent( Event* e )
+void BaseObject::handleEvent( Event* /*e*/ )
 {
     /*
     cerr<<"BaseObject "<<getName()<<" ("<<getTypeName()<<") gets an event"<<endl;

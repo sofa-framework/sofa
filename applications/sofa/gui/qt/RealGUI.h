@@ -154,7 +154,6 @@ public slots:
     void RightClickedItemInSceneView(QListViewItem *item, const QPoint& point, int index);
     void playpauseGUI(bool value);
     void step();
-    void animate();
     void setDt(double);
     void setDt(const QString&);
     void resetScene();
@@ -280,11 +279,11 @@ protected:
 
     sofa::simulation::tree::GNode* getScene() { if (viewer) return viewer->getScene(); else return NULL; }
 
-    void sleep(unsigned int mseconds, unsigned int init_time)
+    void sleep(float seconds, float init_time)
     {
         unsigned int t = 0;
-        clock_t goal = mseconds + init_time;
-        while (goal > clock()) t++;
+        clock_t goal = seconds + init_time;
+        while (goal > clock()/(float)CLOCKS_PER_SEC) t++;
     }
 
 private:

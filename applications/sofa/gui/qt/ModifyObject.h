@@ -110,6 +110,8 @@ public:
     void setNode(core::objectmodel::Base* node, Q3ListViewItem* item_clicked=NULL); //create all the widgets of the dialog window
 
     bool hideData(core::objectmodel::BaseData* data) { return (!data->isDisplayed()) && HIDE_FLAG;};
+    void readOnlyData(Q3Table *widget, core::objectmodel::BaseData* data);
+    void readOnlyData(QWidget *widget, core::objectmodel::BaseData* data);
 
 
 public slots:
@@ -290,6 +292,7 @@ protected:
     unsigned int counterWidget;
 
     bool HIDE_FLAG; //if we allow to hide Datas
+    bool READONLY_FLAG; //if we allow  ReadOnly Datas
     bool EMPTY_FLAG;//if we allow empty datas
     bool RESIZABLE_FLAG;
     bool REINIT_FLAG;

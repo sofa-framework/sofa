@@ -61,22 +61,24 @@ public:
     /** Constructor
     \param helpMsg help on the field
      */
-    Data( const char* helpMsg=0, bool isDisplayed=true )
+    Data( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false )
         : BaseData(helpMsg)
-        , m_value(T()) // BUGFIX (Jeremie A.): Force initialization of basic types to 0 (bool, int, float, etc).
+        , m_value(T())// BUGFIX (Jeremie A.): Force initialization of basic types to 0 (bool, int, float, etc).
     {
         m_isDisplayed = isDisplayed;
+        m_isReadOnly = isReadOnly;
     }
 
     /** Constructor
     \param value default value
     \param helpMsg help on the field
      */
-    Data( const T& value, const char* helpMsg=0, bool isDisplayed=true  )
+    Data( const T& value, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false  )
         : BaseData(helpMsg)
         , m_value(value)
     {
-        m_isDisplayed = isDisplayed;
+        m_isDisplayed=isDisplayed;
+        m_isReadOnly=isReadOnly;
     }
 
     virtual ~Data()
