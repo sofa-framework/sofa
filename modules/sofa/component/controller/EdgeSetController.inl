@@ -62,6 +62,7 @@ namespace controller
 template <class DataTypes>
 EdgeSetController<DataTypes>::EdgeSetController()
     : step(initData(&step,(Real)0.1,"step","base step when changing beam length"))
+    , speed(initData(&speed,(Real)0.0,"speed","continuous beam length increase/decrease"))
     , depl(0.0)
 {
 
@@ -154,6 +155,19 @@ void EdgeSetController<DataTypes>::onKeyPressedEvent(core::objectmodel::Keypress
         this->mouseMode = Inherit::Wheel;
         depl -= 2*step.getValue();
         break;
+    case '*':
+        this->mouseMode = Inherit::Wheel;
+        speed.setValue(speed.getValue() + 10*step.getValue());
+        break;
+
+    case '/':
+        this->mouseMode = Inherit::Wheel;
+        speed.setValue(speed.getValue() - 10*step.getValue());
+        break;
+    case '0':
+        this->mouseMode = Inherit::None;
+        speed.setValue(0);
+        break;
     }
 }
 
@@ -173,8 +187,9 @@ void EdgeSetController<DataTypes>::applyController()
     using sofa::defaulttype::Quat;
     using sofa::defaulttype::Vec;
 
-    if (this->mouseMode == Inherit::Wheel)
+    if (depl != 0 || speed.getValue() != 0) //this->mouseMode == Inherit::Wheel)
     {
+        depl += speed.getValue() * this->getContext()->getDt();
         this->mouseMode = Inherit::None;
 
         if (this->mState)

@@ -146,7 +146,8 @@ public:
 
 protected:
     Data<Real> step;
-    Real depl; ///<
+    Data<Real> speed;
+    Real depl;
 
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
     sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
