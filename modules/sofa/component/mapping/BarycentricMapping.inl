@@ -797,12 +797,14 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::init(const typename Out::Ve
 
     clear(out.size());
 
-    helper::vector<typename In::Coord>	coord;
+    typename In::VecCoord	coord;
     helper::vector<int>		elements(out.size());
     helper::vector<Vector3> coefs(out.size());
     helper::vector<Real>	distances(out.size());
 
-    coord.assign(out.begin(), out.end());
+    //coord.assign(out.begin(), out.end());
+    coord.resize(out.size());
+    for (unsigned int i=0; i<out.size(); ++i) coord[i] = out[i];
 
     _geomAlgo->findNearestElements(coord, elements, coefs, distances);
 
