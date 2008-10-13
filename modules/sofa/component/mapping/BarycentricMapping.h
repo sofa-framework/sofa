@@ -157,19 +157,24 @@ public:
 
     virtual ~TopologyBarycentricMapper() {}
 
-    virtual int addPointInLine(int /*lineIndex*/, const SReal* /*baryCoords*/) {return 0;}
+    virtual int addPointInLine(const int /*lineIndex*/, const SReal* /*baryCoords*/) {return 0;}
+    virtual int setPointInLine(const int /*pointIndex*/, const int /*lineIndex*/, const SReal* /*baryCoords*/) {return 0;}
     virtual int createPointInLine(const typename Out::Coord& /*p*/, int /*lineIndex*/, const typename In::VecCoord* /*points*/) {return 0;}
 
-    virtual int addPointInTriangle(int /*triangleIndex*/, const SReal* /*baryCoords*/) {return 0;}
+    virtual int addPointInTriangle(const int /*triangleIndex*/, const SReal* /*baryCoords*/) {return 0;}
+    virtual int setPointInTriangle(const int /*pointIndex*/, const int /*triangleIndex*/, const SReal* /*baryCoords*/) {return 0;}
     virtual int createPointInTriangle(const typename Out::Coord& /*p*/, int /*triangleIndex*/, const typename In::VecCoord* /*points*/) {return 0;}
 
-    virtual int addPointInQuad(int /*quadIndex*/, const SReal* /*baryCoords*/) {return 0;}
+    virtual int addPointInQuad(const int /*quadIndex*/, const SReal* /*baryCoords*/) {return 0;}
+    virtual int setPointInQuad(const int /*pointIndex*/, const int /*quadIndex*/, const SReal* /*baryCoords*/) {return 0;}
     virtual int createPointInQuad(const typename Out::Coord& /*p*/, int /*quadIndex*/, const typename In::VecCoord* /*points*/) {return 0;}
 
-    virtual int addPointInTetra(int /*tetraIndex*/, const SReal* /*baryCoords*/) {return 0;}
+    virtual int addPointInTetra(const int /*tetraIndex*/, const SReal* /*baryCoords*/) {return 0;}
+    virtual int setPointInTetra(const int /*pointIndex*/, const int /*tetraIndex*/, const SReal* /*baryCoords*/) {return 0;}
     virtual int createPointInTetra(const typename Out::Coord& /*p*/, int /*tetraIndex*/, const typename In::VecCoord* /*points*/) {return 0;}
 
-    virtual int addPointInCube(int /*cubeIndex*/, const SReal* /*baryCoords*/) {return 0;}
+    virtual int addPointInCube(const int /*cubeIndex*/, const SReal* /*baryCoords*/) {return 0;}
+    virtual int setPointInCube(const int /*pointIndex*/, const int /*cubeIndex*/, const SReal* /*baryCoords*/) {return 0;}
     virtual int createPointInCube(const typename Out::Coord& /*p*/, int /*cubeIndex*/, const typename In::VecCoord* /*points*/) {return 0;}
 
 protected:
@@ -207,18 +212,18 @@ public:
 
     void clear(int reserve=0);
 
-    int addPointInLine(int lineIndex, const SReal* baryCoords);
+    int addPointInLine(const int lineIndex, const SReal* baryCoords);
     int createPointInLine(const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points);
 
-    int addPointInTriangle(int triangleIndex, const SReal* baryCoords);
+    int addPointInTriangle(const int triangleIndex, const SReal* baryCoords);
     int createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points);
 
-    int addPointInQuad(int quadIndex, const SReal* baryCoords);
+    int addPointInQuad(const int quadIndex, const SReal* baryCoords);
     int createPointInQuad(const typename Out::Coord& p, int quadIndex, const typename In::VecCoord* points);
 
-    int addPointInTetra(int tetraIndex, const SReal* baryCoords);
+    int addPointInTetra(const int tetraIndex, const SReal* baryCoords);
 
-    int addPointInCube(int cubeIndex, const SReal* baryCoords);
+    int addPointInCube(const int cubeIndex, const SReal* baryCoords);
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
@@ -428,7 +433,7 @@ public:
 
     void clear(int reserve=0);
 
-    int addPointInLine(int edgeIndex, const SReal* baryCoords);
+    int addPointInLine(const int edgeIndex, const SReal* baryCoords);
     int createPointInLine(const typename Out::Coord& p, int edgeIndex, const typename In::VecCoord* points);
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
@@ -500,7 +505,7 @@ public:
 
     void clear(int reserve=0);
 
-    int addPointInTriangle(int triangleIndex, const SReal* baryCoords);
+    int addPointInTriangle(const int triangleIndex, const SReal* baryCoords);
     int createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points);
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
@@ -572,7 +577,7 @@ public:
 
     void clear(int reserve=0);
 
-    int addPointInQuad(int index, const SReal* baryCoords);
+    int addPointInQuad(const int index, const SReal* baryCoords);
     int createPointInQuad(const typename Out::Coord& p, int index, const typename In::VecCoord* points);
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
@@ -642,8 +647,7 @@ public:
 
     void clear(int reserve=0);
 
-    int addPointInTetra(int index, const SReal* baryCoords);
-//		  int createPointInTetra(const typename Out::Coord& p, int index, const typename In::VecCoord* points);
+    int addPointInTetra(const int index, const SReal* baryCoords);
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
@@ -712,8 +716,9 @@ public:
 
     void clear(int reserve=0);
 
-    int addPointInCube(int index, const SReal* baryCoords);
-//		  int createPointInCube(const typename Out::Coord& p, int index, const typename In::VecCoord* points);
+    int addPointInCube(const int index, const SReal* baryCoords);
+
+    int setPointInCube(const int pointIndex, const int cubeIndex, const SReal* baryCoords);
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
 

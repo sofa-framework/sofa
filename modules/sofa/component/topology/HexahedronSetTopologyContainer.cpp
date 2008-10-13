@@ -91,7 +91,7 @@ void HexahedronSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoa
     // load points
     PointSetTopologyContainer::loadFromMeshLoader(loader);
     d_hexahedron.beginEdit();
-    m_hexahedron = loader->getHexas();
+    loader->getHexas(m_hexahedron);
     d_hexahedron.endEdit();
 }
 

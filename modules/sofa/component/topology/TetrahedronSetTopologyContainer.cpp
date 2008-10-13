@@ -119,7 +119,7 @@ void TetrahedronSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLo
     // load points
     PointSetTopologyContainer::loadFromMeshLoader(loader);
     d_tetrahedron.beginEdit();
-    m_tetrahedron = loader->getTetras();
+    loader->getTetras(m_tetrahedron);
     d_tetrahedron.endEdit();
 }
 

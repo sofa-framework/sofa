@@ -87,7 +87,7 @@ void EdgeSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoader* l
     // load points
     PointSetTopologyContainer::loadFromMeshLoader(loader);
     d_edge.beginEdit();
-    m_edge = loader->getEdges();
+    loader->getEdges(m_edge);
     d_edge.endEdit();
 }
 

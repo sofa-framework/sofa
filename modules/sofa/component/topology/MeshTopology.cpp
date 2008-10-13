@@ -137,12 +137,12 @@ void MeshTopology::init()
 void MeshTopology::loadFromMeshLoader(sofa::component::MeshLoader* loader)
 {
     nbPoints = loader->getNbPoints();
-    seqPoints = loader->getPoints();
-    seqEdges = loader->getEdges();
-    seqTriangles = loader->getTriangles();
-    seqQuads = loader->getQuads();
-    seqTetras = loader->getTetras();
-    seqHexas = loader->getHexas();
+    loader->getPoints(seqPoints);
+    loader->getEdges(*seqEdges.beginEdit()); seqEdges.endEdit();
+    loader->getTriangles(*seqTriangles.beginEdit()); seqTriangles.endEdit();
+    loader->getQuads(*seqQuads.beginEdit()); seqQuads.endEdit();
+    loader->getTetras(*seqTetras.beginEdit()); seqTetras.endEdit();
+    loader->getHexas(*seqHexas.beginEdit()); seqHexas.endEdit();
 }
 
 void MeshTopology::clear()

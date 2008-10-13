@@ -86,7 +86,7 @@ void QuadSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoader* l
     // load points
     PointSetTopologyContainer::loadFromMeshLoader(loader);
     d_quad.beginEdit();
-    m_quad = loader->getQuads();
+    loader->getQuads(m_quad);
     d_quad.endEdit();
 }
 

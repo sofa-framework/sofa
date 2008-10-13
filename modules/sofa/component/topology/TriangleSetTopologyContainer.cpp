@@ -87,7 +87,7 @@ void TriangleSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoade
     // load points
     PointSetTopologyContainer::loadFromMeshLoader(loader);
     d_triangle.beginEdit();
-    m_triangle = loader->getTriangles();
+    loader->getTriangles(m_triangle);
     d_triangle.endEdit();
 }
 
