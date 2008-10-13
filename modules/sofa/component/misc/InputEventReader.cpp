@@ -46,16 +46,16 @@ int InputEventReaderClass = core::RegisterObject("Read events from file")
         .add< InputEventReader >();
 
 InputEventReader::InputEventReader()
-//: filename( initData(&filename, std::string("/dev/input/mouse2"), "filename", "input events file name"))
+    : filename( initData(&filename, std::string("/dev/input/mouse2"), "filename", "input events file name"))
 //, timeout( initData(&timeout, 0, "timeout", "time out to get an event from file" ))
-    : fd(-1)
+    , fd(-1)
     , deplX(0), deplY(0)
 {
 }
 void InputEventReader::init()
 {
-    if((fd = open("/dev/input/event4" /*filename.getValue().c_str()*/, O_RDONLY)) < 0)
-        std::cout << "ERROR: impossible to open the file: " /*<< filename.getValue()*/ << std::endl;
+    if((fd = open(filename.getValue().c_str(), O_RDONLY)) < 0)
+        std::cout << "ERROR: impossible to open the file: " << filename.getValue() << std::endl;
 }
 
 InputEventReader::~InputEventReader()
