@@ -273,7 +273,7 @@ protected:
 
     void clearHexahedronQuadShell();
 
-private:
+protected:
     /** \brief Creates the array of edge indices for each hexahedron
     *
     * This function is only called if the HexahedronEdge array is required.

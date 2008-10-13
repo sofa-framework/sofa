@@ -319,12 +319,12 @@ typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeEl
 }
 
 template< class DataTypes>
-int HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElement(const Coord pos, Vector3& baryC, Real& distance) const
+int HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElement(const Coord& pos, Vector3& baryC, Real& distance) const
 {
     int index=-1;
     distance = 1e10;
 
-    for (int c=0; c<this->m_topology->getNbHexas(); ++c)
+    for(int c=0; c<this->m_topology->getNbHexas(); ++c)
     {
         const Real d = computeElementDistanceMeasure(c, pos);
 
@@ -339,6 +339,18 @@ int HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElement(const Coord
         baryC = computeHexahedronBarycentricCoeficients(index, pos);
 
     return index;
+}
+
+template< class DataTypes>
+void HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElements(const VecCoord& pos,
+        helper::vector<int>& elem,
+        helper::vector<defaulttype::Vector3>& baryC,
+        helper::vector<Real>& dist) const
+{
+    for(unsigned int i=0; i<pos.size(); ++i)
+    {
+        elem[i] = findNearestElement(pos[i], baryC[i], dist[i]);
+    }
 }
 
 template< class DataTypes>

@@ -101,7 +101,11 @@ public:
     Coord getRestPointPositionInHexahedron(const HexaID h, const Real baryC[3]) const;
 
     /// finds a hexahedron which is nearest to a given point. Computes barycentric coordinates and a distance measure.
-    int findNearestElement(const Coord p, defaulttype::Vector3& baryC, Real& distance) const;
+    virtual int findNearestElement(const Coord& pos, defaulttype::Vector3& baryC, Real& distance) const;
+
+    /// given a vector of points, find the nearest hexa for each point. Computes barycentric coordinates and a distance measure.
+    virtual void findNearestElements(const VecCoord& pos, helper::vector<int>& elem,
+            helper::vector<defaulttype::Vector3>& baryC, helper::vector<Real>& dist) const;
 
     /// If the point is inside the element, the distance measure is < 0. If the point is outside the element, the distance measure is a squared distance to the element center.
     virtual Real computeElementDistanceMeasure(const HexaID h, const Coord p) const;

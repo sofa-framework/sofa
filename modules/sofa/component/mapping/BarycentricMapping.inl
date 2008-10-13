@@ -84,7 +84,7 @@ void BarycentricMapperRegularGridTopology<In,Out>::clear(int reserve)
 }
 
 template <class In, class Out>
-int BarycentricMapperRegularGridTopology<In,Out>::addPointInCube(int cubeIndex, const SReal* baryCoords)
+int BarycentricMapperRegularGridTopology<In,Out>::addPointInCube(const int cubeIndex, const SReal* baryCoords)
 {
     map.resize(map.size()+1);
     CubeData& data = *map.rbegin();
@@ -128,7 +128,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::clear(int reserve)
 }
 
 template <class In, class Out>
-int BarycentricMapperSparseGridTopology<In,Out>::addPointInCube(int cubeIndex, const SReal* baryCoords)
+int BarycentricMapperSparseGridTopology<In,Out>::addPointInCube(const int cubeIndex, const SReal* baryCoords)
 {
     map.resize(map.size()+1);
     CubeData& data = *map.rbegin();
@@ -190,7 +190,7 @@ void BarycentricMapperMeshTopology<In,Out>::clear(int reserve)
 }
 
 template <class In, class Out>
-int BarycentricMapperMeshTopology<In,Out>::addPointInLine(int lineIndex, const SReal* baryCoords)
+int BarycentricMapperMeshTopology<In,Out>::addPointInLine(const int lineIndex, const SReal* baryCoords)
 {
     map1d.resize(map1d.size()+1);
     MappingData1D& data = *map1d.rbegin();
@@ -200,7 +200,7 @@ int BarycentricMapperMeshTopology<In,Out>::addPointInLine(int lineIndex, const S
 }
 
 template <class In, class Out>
-int BarycentricMapperMeshTopology<In,Out>::addPointInTriangle(int triangleIndex, const SReal* baryCoords)
+int BarycentricMapperMeshTopology<In,Out>::addPointInTriangle(const int triangleIndex, const SReal* baryCoords)
 {
     map2d.resize(map2d.size()+1);
     MappingData2D& data = *map2d.rbegin();
@@ -211,7 +211,7 @@ int BarycentricMapperMeshTopology<In,Out>::addPointInTriangle(int triangleIndex,
 }
 
 template <class In, class Out>
-int BarycentricMapperMeshTopology<In,Out>::addPointInQuad(int quadIndex, const SReal* baryCoords)
+int BarycentricMapperMeshTopology<In,Out>::addPointInQuad(const int quadIndex, const SReal* baryCoords)
 {
     map2d.resize(map2d.size()+1);
     MappingData2D& data = *map2d.rbegin();
@@ -222,7 +222,7 @@ int BarycentricMapperMeshTopology<In,Out>::addPointInQuad(int quadIndex, const S
 }
 
 template <class In, class Out>
-int BarycentricMapperMeshTopology<In,Out>::addPointInTetra(int tetraIndex, const SReal* baryCoords)
+int BarycentricMapperMeshTopology<In,Out>::addPointInTetra(const int tetraIndex, const SReal* baryCoords)
 {
     map3d.resize(map3d.size()+1);
     MappingData3D& data = *map3d.rbegin();
@@ -234,7 +234,7 @@ int BarycentricMapperMeshTopology<In,Out>::addPointInTetra(int tetraIndex, const
 }
 
 template <class In, class Out>
-int BarycentricMapperMeshTopology<In,Out>::addPointInCube(int cubeIndex, const SReal* baryCoords)
+int BarycentricMapperMeshTopology<In,Out>::addPointInCube(const int cubeIndex, const SReal* baryCoords)
 {
     map3d.resize(map3d.size()+1);
     MappingData3D& data = *map3d.rbegin();
@@ -480,7 +480,7 @@ void BarycentricMapperEdgeSetTopology<In,Out>::clear(int reserve)
 
 
 template <class In, class Out>
-int BarycentricMapperEdgeSetTopology<In,Out>::addPointInLine(int edgeIndex, const SReal* baryCoords)
+int BarycentricMapperEdgeSetTopology<In,Out>::addPointInLine(const int edgeIndex, const SReal* baryCoords)
 {
     map.resize(map.size()+1);
     MappingData& data = *map.rbegin();
@@ -517,7 +517,7 @@ void BarycentricMapperTriangleSetTopology<In,Out>::clear(int reserve)
 }
 
 template <class In, class Out>
-int BarycentricMapperTriangleSetTopology<In,Out>::addPointInTriangle(int triangleIndex, const SReal* baryCoords)
+int BarycentricMapperTriangleSetTopology<In,Out>::addPointInTriangle(const int triangleIndex, const SReal* baryCoords)
 {
     map.resize(map.size()+1);
     MappingData& data = *map.rbegin();
@@ -600,7 +600,7 @@ void BarycentricMapperQuadSetTopology<In,Out>::clear(int reserve)
 }
 
 template <class In, class Out>
-int BarycentricMapperQuadSetTopology<In,Out>::addPointInQuad(int quadIndex, const SReal* baryCoords)
+int BarycentricMapperQuadSetTopology<In,Out>::addPointInQuad(const int quadIndex, const SReal* baryCoords)
 {
     map.resize(map.size()+1);
     MappingData& data = *map.rbegin();
@@ -686,7 +686,7 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::clear(int reserve)
 }
 
 template <class In, class Out>
-int BarycentricMapperTetrahedronSetTopology<In,Out>::addPointInTetra(int tetraIndex, const SReal* baryCoords)
+int BarycentricMapperTetrahedronSetTopology<In,Out>::addPointInTetra(const int tetraIndex, const SReal* baryCoords)
 {
     map.resize(map.size()+1);
     MappingData& data = *map.rbegin();
@@ -757,7 +757,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::clear(int reserve)
 }
 
 template <class In, class Out>
-int BarycentricMapperHexahedronSetTopology<In,Out>::addPointInCube(int cubeIndex, const SReal* baryCoords)
+int BarycentricMapperHexahedronSetTopology<In,Out>::addPointInCube(const int cubeIndex, const SReal* baryCoords)
 {
     map.resize(map.size()+1);
     MappingData& data = *map.rbegin();
@@ -766,6 +766,22 @@ int BarycentricMapperHexahedronSetTopology<In,Out>::addPointInCube(int cubeIndex
     data.baryCoords[1] = (Real)baryCoords[1];
     data.baryCoords[2] = (Real)baryCoords[2];
     return map.size()-1;
+}
+
+template <class In, class Out>
+int BarycentricMapperHexahedronSetTopology<In,Out>::setPointInCube(const int pointIndex,
+        const int cubeIndex,
+        const SReal* baryCoords)
+{
+    if(pointIndex >= (int) map.size())
+        return -1;
+
+    MappingData& data = map[pointIndex];
+    data.in_index = cubeIndex;
+    data.baryCoords[0] = (Real)baryCoords[0];
+    data.baryCoords[1] = (Real)baryCoords[1];
+    data.baryCoords[2] = (Real)baryCoords[2];
+    return pointIndex;
 }
 
 template <class In, class Out>
@@ -781,14 +797,19 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::init(const typename Out::Ve
 
     clear(out.size());
 
-    for (unsigned int i=0; i<out.size(); ++i)
-    {
-        Vector3 coefs;
-        typename In::Real distance;
-        const int index = _geomAlgo->findNearestElement(out[i], coefs, distance);
+    helper::vector<typename In::Coord>	coord;
+    helper::vector<int>		elements(out.size());
+    helper::vector<Vector3> coefs(out.size());
+    helper::vector<Real>	distances(out.size());
 
-        if(index != -1)
-            addPointInCube(index, coefs.ptr());
+    coord.assign(out.begin(), out.end());
+
+    _geomAlgo->findNearestElements(coord, elements, coefs, distances);
+
+    for(unsigned int i=0; i<elements.size(); ++i)
+    {
+        if(elements[i] != -1)
+            addPointInCube(elements[i], coefs[i].ptr());
         else
             std::cerr << "Error [BarycentricMapperHexahedronSetTopology::init] cannot find a cell for barycentric mapping." << std::endl;
     }
@@ -2856,7 +2877,33 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
         {
             //TODO: implementation of BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
         case core::componentmodel::topology::ENDING_EVENT:       ///< To notify the end for the current sequence of topological change events
-            break;
+        {
+            for(unsigned int j=0; j<map.size(); ++j)
+            {
+                if(map[j].in_index == -1) // compute new mapping
+                {
+                    Vector3 coefs;
+                    typename In::Coord pos;
+                    pos[0] = map[j].baryCoords[0];
+                    pos[1] = map[j].baryCoords[1];
+                    pos[2] = map[j].baryCoords[2];
+
+                    // find nearest cell and barycentric coords
+                    // TODO: avoid searching in all Hexa for each point
+                    Real distance = 1e10;
+                    int index = _geomAlgo->findNearestElement(pos, coefs, distance);
+
+                    if(index != -1)
+                    {
+                        map[j].baryCoords[0] = (Real) coefs[0];
+                        map[j].baryCoords[1] = (Real) coefs[1];
+                        map[j].baryCoords[2] = (Real) coefs[2];
+                        map[j].in_index = index;
+                    }
+                }
+            }
+        }
+        break;
         case core::componentmodel::topology::POINTSINDICESSWAP:  ///< For PointsIndicesSwap.
             break;
         case core::componentmodel::topology::POINTSADDED:        ///< For PointsAdded.
@@ -2882,54 +2929,19 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
                 unsigned int cubeId = hexahedra[i];
                 for(unsigned int j=0; j<map.size(); ++j)
                 {
-                    if(map[j].in_index == (int) cubeId) // compute new mapping
+                    if(map[j].in_index == (int) cubeId) // invalidate mapping
                     {
                         Vector3 coefs;
                         coefs[0] = map[j].baryCoords[0];
                         coefs[1] = map[j].baryCoords[1];
                         coefs[2] = map[j].baryCoords[2];
 
-                        typename In::Coord pos = _geomAlgo->getRestPointPositionInHexahedron(cubeId, coefs);
+                        typename In::Coord pos = _geomAlgo->getPointPositionInHexahedron(cubeId, coefs);
 
-                        // find nearest cell and barycentric coords
-                        int index=-1;
-
-                        typename In::Real distance = 1e10;
-                        for (unsigned int c=0; c<nbHexas; ++c)
-                        {
-                            bool validC = true;
-                            // don't search in cubes that are being removed
-                            for(unsigned int k=0; k<hexahedra.size(); ++k)
-                            {
-                                if(c == hexahedra[k])
-                                {
-                                    validC = false;
-                                    break;
-                                }
-                            }
-
-                            if(validC)
-
-                            {
-                                const Real d = _geomAlgo->computeElementRestDistanceMeasure(c, pos);
-
-                                if (d<distance)
-                                {
-                                    distance = d;
-                                    index = c;
-                                }
-                            }
-                        }
-
-                        if(index != -1)
-                        {
-                            const Vector3 bc = _geomAlgo->computeHexahedronRestBarycentricCoeficients(index, pos);
-
-                            map[j].baryCoords[0] = (Real) bc[0];
-                            map[j].baryCoords[1] = (Real) bc[1];
-                            map[j].baryCoords[2] = (Real) bc[2];
-                            map[j].in_index = index;
-                        }
+                        map[j].in_index = -1;
+                        map[j].baryCoords[0] = pos[0];
+                        map[j].baryCoords[1] = pos[1];
+                        map[j].baryCoords[2] = pos[2];
                     }
                 }
             }
