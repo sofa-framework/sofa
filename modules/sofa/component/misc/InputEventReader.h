@@ -52,8 +52,8 @@ public:
 
 private:
 
-    //Data<std::string> filename;
-    //Data<double> timeout;
+    Data<std::string> filename;
+//	Data<double> timeout;
     int fd;
 
     int deplX, deplY;
