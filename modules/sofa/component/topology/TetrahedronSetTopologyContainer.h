@@ -78,6 +78,7 @@ public:
     /// Procedural creation methods
     /// @{
     virtual void clear();
+    virtual void addTriangle( int, int, int ) {}
     virtual void addTetra( int a, int b, int c, int d );
     /// @}
 

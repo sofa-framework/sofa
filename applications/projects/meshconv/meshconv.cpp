@@ -198,8 +198,11 @@ int main(int argc, char** argv)
         obj.distmap->mat = xform * obj.distmap->mat;
         std::cout << obj.distmap->mat<<std::endl;
     }
-
-    std::cout << "Mesh bbox="<<obj.calcBBox()<<std::endl;
+    {
+        BBox bb = obj.calcBBox();
+        std::cout << "Mesh bbox = "<<bb<<std::endl;
+        std::cout << "Mesh center and radius = "<<(bb.a+bb.b)*0.5<<"  "<<(bb.b-bb.a)*0.5 << std::endl;
+    }
     if (flip)
     {
         std::cout << "Flipping mesh..."<<std::endl;

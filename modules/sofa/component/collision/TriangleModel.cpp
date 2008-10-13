@@ -25,6 +25,7 @@
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/component/collision/Triangle.h>
+#include <sofa/component/topology/TriangleData.inl>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/core/CollisionElement.h>
@@ -183,8 +184,9 @@ void TriangleModel::updateFromTopology()
     meshRevision = revision;
 }
 
-void TriangleModel::updateFlags(int ntri)
+void TriangleModel::updateFlags(int /*ntri*/)
 {
+#if 0
     if (ntri < 0) ntri = triangles->size();
     //VecCoord& x = *mstate->getX();
     //VecDeriv& v = *mstate->getV();
@@ -223,11 +225,39 @@ void TriangleModel::updateFlags(int ntri)
         }
         elems[i].flags = f;
     }
+#endif
+}
+
+int TriangleModel::getTriangleFlags(int i)
+{
+    int f = 0;
+    sofa::core::componentmodel::topology::BaseMeshTopology::Triangle t = (*triangles)[i];
+    if (i < _topology->getNbTriangles())
+    {
+        if (_topology->getTriangleVertexShell(t[0])[0] == (sofa::core::componentmodel::topology::BaseMeshTopology::TriangleID)i)
+            f |= FLAG_P1;
+        if (_topology->getTriangleVertexShell(t[1])[0] == (sofa::core::componentmodel::topology::BaseMeshTopology::TriangleID)i)
+            f |= FLAG_P2;
+        if (_topology->getTriangleVertexShell(t[2])[0] == (sofa::core::componentmodel::topology::BaseMeshTopology::TriangleID)i)
+            f |= FLAG_P3;
+        const sofa::core::componentmodel::topology::BaseMeshTopology::TriangleEdges& e = _topology->getEdgeTriangleShell(i);
+        if (_topology->getTriangleEdgeShell(e[0])[0] == (sofa::core::componentmodel::topology::BaseMeshTopology::TriangleID)i)
+            f |= FLAG_E12;
+        if (_topology->getTriangleEdgeShell(e[0])[0] == (sofa::core::componentmodel::topology::BaseMeshTopology::TriangleID)i)
+            f |= FLAG_E23;
+        if (_topology->getTriangleEdgeShell(e[0])[0] == (sofa::core::componentmodel::topology::BaseMeshTopology::TriangleID)i)
+            f |= FLAG_E31;
+    }
+    else
+    {
+        /// \TODO flags for quads
+    }
+    return f;
 }
 
 void TriangleModel::handleTopologyChange()
 {
-    bool debug_mode = false;
+    //bool debug_mode = false;
 
     if (triangles != &mytriangles)
     {
@@ -235,6 +265,7 @@ void TriangleModel::handleTopologyChange()
 
         std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=_topology->firstChange();
         std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=_topology->lastChange();
+        elems.handleTopologyEvents(itBegin,itEnd);
 
         while( itBegin != itEnd )
         {
@@ -250,7 +281,7 @@ void TriangleModel::handleTopologyChange()
                 resize(_topology->getNbTriangles());
                 needsUpdate=true;
                 updateFlags();
-                updateNormals();
+                //updateNormals();
                 break;
             }
             default: break;
@@ -259,7 +290,7 @@ void TriangleModel::handleTopologyChange()
         }
         return;
     }
-
+#if 0
     sofa::core::componentmodel::topology::TopologyModifier* topoMod;
     this->getContext()->get(topoMod);
 
@@ -509,6 +540,7 @@ void TriangleModel::handleTopologyChange()
     {
         updateFlags();
     }
+#endif
 }
 
 void TriangleModel::draw(int index)

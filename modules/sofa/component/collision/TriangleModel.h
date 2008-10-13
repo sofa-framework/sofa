@@ -27,6 +27,7 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/component/MechanicalObject.h>
+#include <sofa/component/topology/TriangleData.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
@@ -101,11 +102,11 @@ protected:
     struct TriangleInfo
     {
         //int i1,i2,i3;
-        int flags;
+        //int flags;
         Vector3 normal;
     };
 
-    sofa::helper::vector<TriangleInfo> elems;
+    topology::TriangleData<TriangleInfo> elems;
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles* triangles;
 
     sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles mytriangles;
@@ -113,6 +114,7 @@ protected:
     bool needsUpdate;
     virtual void updateFromTopology();
     virtual void updateFlags(int ntri=-1);
+    int getTriangleFlags(int i);
     virtual void updateNormals();
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
@@ -173,7 +175,7 @@ inline const Vector3& Triangle::v3() const { return (*model->mstate->getV())[(*(
 inline const Vector3& Triangle::n() const { return model->elems[index].normal; }
 inline       Vector3& Triangle::n()       { return model->elems[index].normal; }
 
-inline int            Triangle::flags() const { return model->elems[index].flags; }
+inline int            Triangle::flags() const { return model->getTriangleFlags(index); }
 
 } // namespace collision
 

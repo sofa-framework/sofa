@@ -207,7 +207,7 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingBottomUp()
             case core::componentmodel::topology::TETRAHEDRAREMOVED:
             {
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TetrahedraRemoved *>( *changeIt ) )->getArray();
-                std::cout << "OUTPUT REMOVE TETRAS "<<tab << std::endl;
+                //std::cout << "OUTPUT REMOVE TETRAS "<<tab << std::endl;
                 removeOutputTetras( tab );
                 break;
             }
@@ -334,7 +334,7 @@ void SimpleTesselatedTetraTopologicalMapping::removeOutputTetras( const sofa::he
             }
             else
             {
-                std::cout << "SimpleTesselatedTetraTopologicalMapping: source tetra "<<source<<" now has "<<nbt<<" / 8 childs."<<std::endl;
+                //std::cout << "SimpleTesselatedTetraTopologicalMapping: source tetra "<<source<<" now has "<<nbt<<" / 8 childs."<<std::endl;
             }
             --last;
         }
