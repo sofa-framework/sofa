@@ -129,20 +129,24 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
     if (broadPhaseDetection==NULL) return; // can't go further
     VERBOSE(std::cout << "DefaultPipeline::doCollisionDetection, BroadPhaseDetection "<<broadPhaseDetection->getName()<<std::endl);
     if (node) t0 = node->startTime();
+    intersectionMethod->beginBroadPhase();
     broadPhaseDetection->beginBroadPhase();
     broadPhaseDetection->addCollisionModels(vectBoundingVolume);  // detection is done there
     broadPhaseDetection->endBroadPhase();
+    intersectionMethod->endBroadPhase();
     if (node) t0 = node->endTime(t0, category, broadPhaseDetection, this);
 
     // then we start the narrow phase
     if (narrowPhaseDetection==NULL) return; // can't go further
     VERBOSE(std::cout << "DefaultPipeline::doCollisionDetection, NarrowPhaseDetection "<<narrowPhaseDetection->getName()<<std::endl);
     if (node) t0 = node->startTime();
+    intersectionMethod->beginNarrowPhase();
     narrowPhaseDetection->beginNarrowPhase();
     sofa::helper::vector<std::pair<CollisionModel*, CollisionModel*> >& vectCMPair = broadPhaseDetection->getCollisionModelPairs();
     VERBOSE(std::cout << "DefaultPipeline::doCollisionDetection, "<< vectCMPair.size()<<" colliding model pairs"<<std::endl);
     narrowPhaseDetection->addCollisionPairs(vectCMPair);
     narrowPhaseDetection->endNarrowPhase();
+    intersectionMethod->endNarrowPhase();
     if (node) t0 = node->endTime(t0, category, narrowPhaseDetection, this);
 }
 

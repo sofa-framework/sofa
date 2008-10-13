@@ -107,6 +107,9 @@ public:
 
     void draw();
 
+    /// Actions to accomplish when the broadPhase is started. By default do nothing.
+    virtual void beginBroadPhase();
+
 private:
     double mainAlarmDistance;
     double mainContactDistance;

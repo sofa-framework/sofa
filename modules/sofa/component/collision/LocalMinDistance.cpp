@@ -948,6 +948,7 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
             return false;
 
     }
+    //std::cout<<"triangleEdgeShell.size()"<<triangleEdgeShell.size()<<std::endl;
     return true;
 
 
