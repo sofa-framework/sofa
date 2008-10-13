@@ -94,9 +94,10 @@ void EdgeSetController<DataTypes>::init()
     computeVertexT();
 
     if (vertexT.size() >= 2)
-        edgeTLength = vertexT[1]-vertexT[0];
+        edgeTLength = fabs(vertexT[1]-vertexT[0]);
     else
         edgeTLength = 1;
+
 }
 
 
