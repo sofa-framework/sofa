@@ -24,11 +24,14 @@
 ******************************************************************************/
 #include <sofa/component/misc/InputEventReader.h>
 #include <sofa/core/ObjectFactory.h>
-#include <linux/input.h>
 #include <poll.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+
+#ifdef __linux__
+#include <linux/input.h>
+#endif
 
 namespace sofa
 {
@@ -71,7 +74,7 @@ void InputEventReader::getInputEvents()
     pfd.fd = fd;
     pfd.events = POLLIN;
     pfd.revents = 0;
-
+#ifdef __linux__
     while (poll(&pfd, 1, 0 /*timeout.getValue()*/)>0 && (pfd.revents & POLLIN))
     {
         input_event ev;
@@ -86,6 +89,7 @@ void InputEventReader::getInputEvents()
             }
         }
     }
+#endif
 }
 
 void InputEventReader::handleEvent(core::objectmodel::Event *event)
