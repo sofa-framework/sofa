@@ -127,7 +127,7 @@ float4 * Dv2tet_gpu = 0;
 // float* force = 0;
 // float* blablaCPU = 0;
 
-/// Prototypes
+/// Prototype
 __device__ float4 computeForce_tet(const int node, const float4 DhC0, const float4 DhC1, const float4 DhC2,
         const float3 Node1Disp, const float3 Node2Disp, const float3 Node3Disp,
         const float3 Node4Disp, const float * SPK, const int tid);

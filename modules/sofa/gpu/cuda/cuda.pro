@@ -59,7 +59,9 @@ HEADERS += mycuda.h \
            CudaVisualModel.inl \
            CudaTetrahedralVisualModel.h \
            CudaTetrahedralVisualModel.inl \
-           CudaTestForceField.h
+           CudaTestForceField.h \
+           CudaTetrahedronTLEDForceField.h \
+           CudaHexahedronTLEDForceField.h
 
 SOURCES += mycuda.cpp \
            CudaMechanicalObject.cpp \
@@ -82,7 +84,7 @@ SOURCES += mycuda.cpp \
            CudaVisualModel.cpp \
            CudaTetrahedralVisualModel.cpp \
            CudaTestForceField.cpp \
-           CudaSetTopology.cpp
+           CudaSetTopology.cpp 
 
 CUDA_SOURCES += mycuda.cu \
            CudaMechanicalObject.cu \
@@ -105,26 +107,32 @@ CUDA_SOURCES += mycuda.cu \
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 HEADERS += \
-	   CudaLCP.h \
-           CudaMasterContactSolver.h \
-	   CudaBTDLinearSolver.h \
-	   CudaUnilateralInteractionConstraint.h \
-	   CudaFrictionContact.h \
-	  CudaPrecomputedConstraintCorrection.h
+	   	CudaLCP.h \
+       	CudaMasterContactSolver.h \
+	   	CudaBTDLinearSolver.h \
+	   	CudaUnilateralInteractionConstraint.h \
+	   	CudaFrictionContact.h \
+	  	CudaPrecomputedConstraintCorrection.h \
+        CudaTetrahedronTLEDForceField.h \
+       	CudaHexahedronTLEDForceField.h
 
 SOURCES += \
-	   CudaBTDLinearSolver.cpp  \
-	   CudaLCP.cpp \
-           CudaMasterContactSolver.cpp \
-           CudaSpatialGridContainer.cpp \
-	   CudaUnilateralInteractionConstraint.cpp \
-	   CudaFrictionContact.cpp \
-	  CudaPrecomputedConstraintCorrection.cpp
+	   	CudaBTDLinearSolver.cpp  \
+	   	CudaLCP.cpp \
+       	CudaMasterContactSolver.cpp \
+       	CudaSpatialGridContainer.cpp \
+	   	CudaUnilateralInteractionConstraint.cpp \
+	   	CudaFrictionContact.cpp \
+	  	CudaPrecomputedConstraintCorrection.cpp \
+     	CudaTetrahedronTLEDForceField.cpp \
+       	CudaHexahedronTLEDForceField.cpp
 
 CUDA_SOURCES += \
-	   CudaComputeMinv.cu \
-	   CudaLCP.cu \
-           CudaSpatialGridContainer.cu
+	   	CudaComputeMinv.cu \
+	   	CudaLCP.cu \
+       	CudaSpatialGridContainer.cu \
+       	CudaTetrahedronTLEDForceField.cu \
+       	CudaHexahedronTLEDForceField.cu
 
 HEADERS += radixsort.cuh radixsort_kernel.cu
 CUDA_SOURCES += radixsort.cu
