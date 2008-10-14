@@ -1,4 +1,4 @@
-#include "CudaTLEDForceField.h"
+#include "CudaHexahedronTLEDForceField.h"
 #include "mycuda.h"
 #include <sofa/core/componentmodel/behavior/ForceField.inl>
 #include <sofa/core/ObjectFactory.h>
@@ -12,16 +12,16 @@ namespace gpu
 namespace cuda
 {
 
-SOFA_DECL_CLASS(CudaTLEDForceField)
+SOFA_DECL_CLASS(CudaHexahedronTLEDForceField)
 
-int CudaTLEDForceFieldCudaClass = core::RegisterObject("GPU-side test forcefield using CUDA")
-        .add< CudaTLEDForceField >()
+int CudaHexahedronTLEDForceFieldCudaClass = core::RegisterObject("GPU-side test forcefield using CUDA")
+        .add< CudaHexahedronTLEDForceField >()
         ;
 
 extern "C"
 {
-    void CudaTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const void* x, const void* x0, void* f);
-    void CudaTLEDForceField3f_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, const void* velems, void* df, const void* dx);
+    void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const void* x, const void* x0, void* f);
+    void CudaHexahedronTLEDForceField3f_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, const void* velems, void* df, const void* dx);
     void InitGPU_TLED(int* NodesPerElement, float* DhC0, float* DhC1, float* DhC2, float* DetJ, float* HG, int* FCrds, int valence, int nbVertex, int nbElements);
     void InitGPU_Visco(float * Ai, float * Av, int Ni, int Nv, int nbElements);
     void InitGPU_Aniso(void);
@@ -29,7 +29,7 @@ extern "C"
     void ClearGPU_Visco(void);
 }
 
-CudaTLEDForceField::CudaTLEDForceField()
+CudaHexahedronTLEDForceField::CudaHexahedronTLEDForceField()
     : nbVertex(0), nbElementPerVertex(0)
     , poissonRatio(initData(&poissonRatio,(Real)0.45,"poissonRatio","Poisson ratio in Hooke's law"))
     , youngModulus(initData(&youngModulus,(Real)3000.,"youngModulus","Young modulus in Hooke's law"))
@@ -39,7 +39,7 @@ CudaTLEDForceField::CudaTLEDForceField()
 {
 }
 
-CudaTLEDForceField::~CudaTLEDForceField()
+CudaHexahedronTLEDForceField::~CudaHexahedronTLEDForceField()
 {
     ClearGPU_TLED();
     if (viscoelasticity.getValue())
@@ -48,19 +48,19 @@ CudaTLEDForceField::~CudaTLEDForceField()
     }
 }
 
-void CudaTLEDForceField::init()
+void CudaHexahedronTLEDForceField::init()
 {
     core::componentmodel::behavior::ForceField<CudaVec3fTypes>::init();
     reinit();
 }
 
-void CudaTLEDForceField::reinit()
+void CudaHexahedronTLEDForceField::reinit()
 {
     /// Gets the mesh
     component::topology::MeshTopology* topology = getContext()->get<component::topology::MeshTopology>();
     if (topology==NULL || topology->getNbHexas()==0)
     {
-        std::cerr << "ERROR(CudaTLEDForceField): no elements found.\n";
+        std::cerr << "ERROR(CudaHexahedronTLEDForceField): no elements found.\n";
         return;
     }
     VecElement inputElems = topology->getHexas();
@@ -110,13 +110,13 @@ void CudaTLEDForceField::reinit()
         nbv = nelems.rbegin()->first + 1;
     }
 
-    std::cout << "CudaTLEDForceField: "<<inputElems.size()<<" elements, "<<nbv<<" nodes, max "<<nmax<<" elements per node"<<std::endl;
+    std::cout << "CudaHexahedronTLEDForceField: "<<inputElems.size()<<" elements, "<<nbv<<" nodes, max "<<nmax<<" elements per node"<<std::endl;
 
 
     /** Precomputations
     */
     init(inputElems.size(), nbv, nmax);
-    std::cout << "CudaTLEDForceField: precomputations..." << std::endl;
+    std::cout << "CudaHexahedronTLEDForceField: precomputations..." << std::endl;
 
     const VecCoord& x = *this->mstate->getX();
     nelems.clear();
@@ -311,16 +311,16 @@ void CudaTLEDForceField::reinit()
     }
 
 
-    std::cout << "CudaTLEDForceField::reinit() DONE."<<std::endl;
+    std::cout << "CudaHexahedronTLEDForceField::reinit() DONE."<<std::endl;
 }
 
-void CudaTLEDForceField::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void CudaHexahedronTLEDForceField::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 {
     // Gets initial positions (allow to compute displacements by doing the difference between initial and current positions)
     const VecCoord& x0 = *mstate->getX0();
 
     f.resize(x.size());
-    CudaTLEDForceField3f_addForce(
+    CudaHexahedronTLEDForceField3f_addForce(
         Lambda,
         Mu,
         elems.size(),
@@ -333,10 +333,10 @@ void CudaTLEDForceField::addForce (VecDeriv& f, const VecCoord& x, const VecDeri
         f.deviceWrite());
 }
 
-void CudaTLEDForceField::addDForce (VecDeriv& df, const VecDeriv& dx)
+void CudaHexahedronTLEDForceField::addDForce (VecDeriv& df, const VecDeriv& dx)
 {
     df.resize(dx.size());
-    CudaTLEDForceField3f_addDForce(
+    CudaHexahedronTLEDForceField3f_addDForce(
         elems.size(),
         nbVertex,
         nbElementPerVertex,
@@ -350,7 +350,7 @@ void CudaTLEDForceField::addDForce (VecDeriv& df, const VecDeriv& dx)
 
 /**Compute Jacobian determinant
 */
-float CudaTLEDForceField::ComputeDetJ(const Element& e, const VecCoord& x, float DhDr[8][3])
+float CudaHexahedronTLEDForceField::ComputeDetJ(const Element& e, const VecCoord& x, float DhDr[8][3])
 {
     float J[3][3];
     for (int j = 0; j < 3; j++)
@@ -376,7 +376,7 @@ float CudaTLEDForceField::ComputeDetJ(const Element& e, const VecCoord& x, float
 
 /** Compute element volumes for hexahedral elements
  */
-float CudaTLEDForceField::CompElVolHexa(const Element& e, const VecCoord& x)
+float CudaHexahedronTLEDForceField::CompElVolHexa(const Element& e, const VecCoord& x)
 {
     // Calc CIJK first
     float C[8][8][8];
@@ -397,7 +397,7 @@ float CudaTLEDForceField::CompElVolHexa(const Element& e, const VecCoord& x)
     return Vol;
 }
 
-void CudaTLEDForceField::ComputeCIJK(float C[8][8][8])
+void CudaHexahedronTLEDForceField::ComputeCIJK(float C[8][8][8])
 {
     float a = (float)(1./12);
     float Ctemp[8*8*8] =
@@ -481,7 +481,7 @@ void CudaTLEDForceField::ComputeCIJK(float C[8][8][8])
 
 /** Compute shape function global derivatives DhDx for hexahedral helements
  */
-void CudaTLEDForceField::ComputeDhDxHexa(const Element& e, const VecCoord& x, float Vol, float DhDx[8][3])
+void CudaHexahedronTLEDForceField::ComputeDhDxHexa(const Element& e, const VecCoord& x, float Vol, float DhDx[8][3])
 {
     // Calc B matrix
     float B[8][3];
@@ -496,7 +496,7 @@ void CudaTLEDForceField::ComputeDhDxHexa(const Element& e, const VecCoord& x, fl
     }
 }
 
-void CudaTLEDForceField::ComputeBmat(const Element& e, const VecCoord& x, float B[8][3])
+void CudaHexahedronTLEDForceField::ComputeBmat(const Element& e, const VecCoord& x, float B[8][3])
 {
     // Calc CIJK first
     float C[8][8][8];
@@ -519,7 +519,7 @@ void CudaTLEDForceField::ComputeBmat(const Element& e, const VecCoord& x, float 
 
 /** Compute parameters for hourglass control
  */
-void CudaTLEDForceField::ComputeHGParams(const Element& e, const VecCoord& x, float DhDx[8][3], float volume, float HG[8][8])
+void CudaHexahedronTLEDForceField::ComputeHGParams(const Element& e, const VecCoord& x, float DhDx[8][3], float volume, float HG[8][8])
 {
     float a = 0;
     for (int i = 0; i < 8; i++)
@@ -617,7 +617,7 @@ void CudaTLEDForceField::ComputeHGParams(const Element& e, const VecCoord& x, fl
 
 /** Compute lambda and mu based on the Young modulus and Poisson ratio
  */
-void CudaTLEDForceField::updateLameCoefficients(void)
+void CudaHexahedronTLEDForceField::updateLameCoefficients(void)
 {
     Lambda = youngModulus.getValue()*poissonRatio.getValue()/((1 + poissonRatio.getValue())*(1 - 2*poissonRatio.getValue()));
     Mu = youngModulus.getValue()/(2*(1 + poissonRatio.getValue()));

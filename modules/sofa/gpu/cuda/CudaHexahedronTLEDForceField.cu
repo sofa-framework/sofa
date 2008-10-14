@@ -13,8 +13,8 @@ namespace cuda
 
 extern "C"
 {
-    void CudaTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const void* x, const void* x0, void* f);
-    void CudaTLEDForceField3f_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, const void* velems, void* df, const void* dx);
+    void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const void* x, const void* x0, void* f);
+    void CudaHexahedronTLEDForceField3f_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, const void* velems, void* df, const void* dx);
     void InitGPU_TLED(int* NodesPerElement, float* DhC0, float* DhC1, float* DhC2, float* DetJ, float* HG, int* FCrds, int valence, int nbVertex, int nbElements);
     void InitGPU_Visco(float * Ai, float * Av, int Ni, int Nv, int nbElements);
     void InitGPU_Aniso(void);
@@ -198,7 +198,7 @@ static void setX0(const void* x0)
 
 #endif
 
-__global__ void CudaTLEDForceField3f_calcForce_kernel0(float Lambda, float Mu, int nbElem, float4* F0_gpu, float4* F1_gpu, float4* F2_gpu, float4* F3_gpu, float4* F4_gpu, float4* F5_gpu, float4* F6_gpu, float4* F7_gpu/*, float* test*/)
+__global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel0(float Lambda, float Mu, int nbElem, float4* F0_gpu, float4* F1_gpu, float4* F2_gpu, float4* F3_gpu, float4* F4_gpu, float4* F5_gpu, float4* F6_gpu, float4* F7_gpu/*, float* test*/)
 {
     int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
     int index1 = threadIdx.x;
@@ -380,7 +380,7 @@ __global__ void CudaTLEDForceField3f_calcForce_kernel0(float Lambda, float Mu, i
 
 }
 
-__global__ void CudaTLEDForceField3f_calcForce_kernel1(float Lambda, float Mu, int nbElem, float4* F0_gpu, float4* F1_gpu, float4* F2_gpu, float4* F3_gpu, float4* F4_gpu, float4* F5_gpu, float4* F6_gpu, float4* F7_gpu)
+__global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel1(float Lambda, float Mu, int nbElem, float4* F0_gpu, float4* F1_gpu, float4* F2_gpu, float4* F3_gpu, float4* F4_gpu, float4* F5_gpu, float4* F6_gpu, float4* F7_gpu)
 {
     int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
     int index1 = threadIdx.x;
@@ -564,7 +564,7 @@ __global__ void CudaTLEDForceField3f_calcForce_kernel1(float Lambda, float Mu, i
 
 }
 
-__global__ void CudaTLEDForceField3f_calcForce_kernel2(float Lambda, float Mu, int nbElem, float4 * Di1, float4 * Di2, float4 * Dv1, float4 * Dv2, float4* F0_gpu, float4* F1_gpu, float4* F2_gpu, float4* F3_gpu, float4* F4_gpu, float4* F5_gpu, float4* F6_gpu, float4* F7_gpu)
+__global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel2(float Lambda, float Mu, int nbElem, float4 * Di1, float4 * Di2, float4 * Dv1, float4 * Dv2, float4* F0_gpu, float4* F1_gpu, float4* F2_gpu, float4* F3_gpu, float4* F4_gpu, float4* F5_gpu, float4* F6_gpu, float4* F7_gpu)
 {
     int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
     int index1 = threadIdx.x;
@@ -790,7 +790,7 @@ __global__ void CudaTLEDForceField3f_calcForce_kernel2(float Lambda, float Mu, i
 
 }
 
-__global__ void CudaTLEDForceField3f_calcForce_kernel3(float Lambda, float Mu, int nbElem, float4 * Di1, float4 * Di2, float4 * Dv1, float4 * Dv2, float4* F0_gpu, float4* F1_gpu, float4* F2_gpu, float4* F3_gpu, float4* F4_gpu, float4* F5_gpu, float4* F6_gpu, float4* F7_gpu)
+__global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel3(float Lambda, float Mu, int nbElem, float4 * Di1, float4 * Di2, float4 * Dv1, float4 * Dv2, float4* F0_gpu, float4* F1_gpu, float4* F2_gpu, float4* F3_gpu, float4* F4_gpu, float4* F5_gpu, float4* F6_gpu, float4* F7_gpu)
 {
     int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
     int index1 = threadIdx.x;
@@ -1189,7 +1189,7 @@ __device__ float4 computeForce_hex(const int node, const float4 Dh0_a, const flo
 }
 
 
-__global__ void CudaTLEDForceField3f_addForce_kernel(int nbVertex, unsigned int valence, float* f/*, float* test*/)
+__global__ void CudaHexahedronTLEDForceField3f_addForce_kernel(int nbVertex, unsigned int valence, float* f/*, float* test*/)
 {
     int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
     int index1 = threadIdx.x;
@@ -1279,7 +1279,7 @@ __global__ void CudaTLEDForceField3f_addForce_kernel(int nbVertex, unsigned int 
 }
 
 
-__global__ void CudaTLEDForceField3f_calcDForce_kernel(int nbElem, const GPUElement* elems, GPUElementState* state, const float* x)
+__global__ void CudaHexahedronTLEDForceField3f_calcDForce_kernel(int nbElem, const GPUElement* elems, GPUElementState* state, const float* x)
 {
     int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
     int index1 = threadIdx.x;
@@ -1505,7 +1505,7 @@ void ClearGPU_Visco(void)
     myprintf("Memory on GPU for viscoelasticity cleared\n");
 }
 
-void CudaTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const void* x, const void* x0, void* f)
+void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const void* x, const void* x0, void* f)
 {
     setX(x);
     setX0(x0);
@@ -1522,25 +1522,25 @@ void CudaTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, 
     switch(2*viscoelasticity + anisotropy)
     {
     case 0 :
-        CudaTLEDForceField3f_calcForce_kernel0<<< grid1, threads1>>>(Lambda, Mu, nbElem, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu/*, test*/);
+        CudaHexahedronTLEDForceField3f_calcForce_kernel0<<< grid1, threads1>>>(Lambda, Mu, nbElem, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu/*, test*/);
         break;
 
     case 1 :
-        CudaTLEDForceField3f_calcForce_kernel1<<< grid1, threads1>>>(Lambda, Mu, nbElem, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu);
+        CudaHexahedronTLEDForceField3f_calcForce_kernel1<<< grid1, threads1>>>(Lambda, Mu, nbElem, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu);
         break;
 
     case 2 :
-        CudaTLEDForceField3f_calcForce_kernel2<<< grid1, threads1>>>(Lambda, Mu, nbElem, Di1_gpu, Di2_gpu, Dv1_gpu, Dv2_gpu, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu);
+        CudaHexahedronTLEDForceField3f_calcForce_kernel2<<< grid1, threads1>>>(Lambda, Mu, nbElem, Di1_gpu, Di2_gpu, Dv1_gpu, Dv2_gpu, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu);
         break;
 
     case 3 :
-        CudaTLEDForceField3f_calcForce_kernel3<<< grid1, threads1>>>(Lambda, Mu, nbElem, Di1_gpu, Di2_gpu, Dv1_gpu, Dv2_gpu, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu);
+        CudaHexahedronTLEDForceField3f_calcForce_kernel3<<< grid1, threads1>>>(Lambda, Mu, nbElem, Di1_gpu, Di2_gpu, Dv1_gpu, Dv2_gpu, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu);
         break;
     }
 
     dim3 threads2(BSIZE,1);
     dim3 grid2((nbVertex+BSIZE-1)/BSIZE,1);
-    CudaTLEDForceField3f_addForce_kernel<<< grid2, threads2, BSIZE*3*sizeof(float) >>>(nbVertex, nbElemPerVertex, (float*)f/*, force*/);
+    CudaHexahedronTLEDForceField3f_addForce_kernel<<< grid2, threads2, BSIZE*3*sizeof(float) >>>(nbVertex, nbElemPerVertex, (float*)f/*, force*/);
 
     cudaThreadSynchronize();
 
@@ -1561,14 +1561,14 @@ void CudaTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, 
 //     myprintf("\n");
 }
 
-void CudaTLEDForceField3f_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, const void* velems, void* df, const void* dx)
+void CudaHexahedronTLEDForceField3f_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, const void* velems, void* df, const void* dx)
 {
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
-    //CudaTLEDForceField3f_calcDForce_kernel<<< grid1, threads1>>>(nbElem, (const GPUElement*)elems, (GPUElementState*)state, (const float*)dx);
+    //CudaHexahedronTLEDForceField3f_calcDForce_kernel<<< grid1, threads1>>>(nbElem, (const GPUElement*)elems, (GPUElementState*)state, (const float*)dx);
     dim3 threads2(BSIZE,1);
     dim3 grid2((nbVertex+BSIZE-1)/BSIZE,1);
-    //CudaTLEDForceField3f_addForce_kernel<<< grid2, threads2, BSIZE*3*sizeof(float) >>>(nbVertex, nbElemPerVertex, (const GPUElement*)elems, (GPUElementState*)state, (const int*)velems, (float*)df, (const float*)dx);
+    //CudaHexahedronTLEDForceField3f_addForce_kernel<<< grid2, threads2, BSIZE*3*sizeof(float) >>>(nbVertex, nbElemPerVertex, (const GPUElement*)elems, (GPUElementState*)state, (const int*)velems, (float*)df, (const float*)dx);
 }
 
 #if defined(__cplusplus)

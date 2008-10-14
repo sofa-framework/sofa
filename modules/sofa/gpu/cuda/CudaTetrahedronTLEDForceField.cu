@@ -151,13 +151,13 @@ static void setX(const void* x)
     }
 }
 
-__device__ float3 getX(int i)
+__device__ CudaVec3f getX(int i)
 {
     int i3 = umul24(i,3);
     float x1 = tex1Dfetch(texX, i3);
     float x2 = tex1Dfetch(texX, i3+1);
     float x3 = tex1Dfetch(texX, i3+2);
-    return make_float3(x1,x2,x3);
+    return CudaVec3f::make(x1,x2,x3);
 }
 
 static void setX0(const void* x0)
@@ -169,13 +169,13 @@ static void setX0(const void* x0)
     }
 }
 
-__device__ float3 getX0(int i)
+__device__ CudaVec3f getX0(int i)
 {
     int i3 = umul24(i,3);
     float x1 = tex1Dfetch(texX0, i3);
     float x2 = tex1Dfetch(texX0, i3+1);
     float x3 = tex1Dfetch(texX0, i3+2);
-    return make_float3(x1,x2,x3);
+    return CudaVec3f::make(x1,x2,x3);
 }
 
 #else
@@ -188,8 +188,8 @@ static void setX0(const void* x0)
 {
 }
 
-#define getX(i) (((const float3*)x)[i])
-#define getX0(i) (((const float3*)x0)[i])
+#define getX(i) (((const CudaVec3f*)x)[i])
+#define getX0(i) (((const CudaVec3f*)x0)[i])
 
 #endif
 
@@ -207,10 +207,10 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet0(float Lamb
         float4 Dh2 = tex1Dfetch(texDhC2, index);
 
         int4 NodesPerElement = tex1Dfetch(texNodesPerElement, index);
-        float3 Node1Disp = getX0(NodesPerElement.x) - getX(NodesPerElement.x);
-        float3 Node2Disp = getX0(NodesPerElement.y) - getX(NodesPerElement.y);
-        float3 Node3Disp = getX0(NodesPerElement.z) - getX(NodesPerElement.z);
-        float3 Node4Disp = getX0(NodesPerElement.w) - getX(NodesPerElement.w);
+        CudaVec3f Node1Disp = getX0(NodesPerElement.x) - getX(NodesPerElement.x);
+        CudaVec3f Node2Disp = getX0(NodesPerElement.y) - getX(NodesPerElement.y);
+        CudaVec3f Node3Disp = getX0(NodesPerElement.z) - getX(NodesPerElement.z);
+        CudaVec3f Node4Disp = getX0(NodesPerElement.w) - getX(NodesPerElement.w);
 
         /**
         * Computes the transpose of deformation gradient
@@ -340,10 +340,10 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet1(float Lamb
         float4 Dh2 = tex1Dfetch(texDhC2, index);
 
         int4 NodesPerElement = tex1Dfetch(texNodesPerElement, index);
-        float3 Node1Disp = getX0(NodesPerElement.x) - getX(NodesPerElement.x);
-        float3 Node2Disp = getX0(NodesPerElement.y) - getX(NodesPerElement.y);
-        float3 Node3Disp = getX0(NodesPerElement.z) - getX(NodesPerElement.z);
-        float3 Node4Disp = getX0(NodesPerElement.w) - getX(NodesPerElement.w);
+        CudaVec3f Node1Disp = getX0(NodesPerElement.x) - getX(NodesPerElement.x);
+        CudaVec3f Node2Disp = getX0(NodesPerElement.y) - getX(NodesPerElement.y);
+        CudaVec3f Node3Disp = getX0(NodesPerElement.z) - getX(NodesPerElement.z);
+        CudaVec3f Node4Disp = getX0(NodesPerElement.w) - getX(NodesPerElement.w);
 
         /**
         * Computes the transpose of deformation gradient
@@ -478,10 +478,10 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet2(float Lamb
         float4 Dh2 = tex1Dfetch(texDhC2, index);
 
         int4 NodesPerElement = tex1Dfetch(texNodesPerElement, index);
-        float3 Node1Disp = getX0(NodesPerElement.x) - getX(NodesPerElement.x);
-        float3 Node2Disp = getX0(NodesPerElement.y) - getX(NodesPerElement.y);
-        float3 Node3Disp = getX0(NodesPerElement.z) - getX(NodesPerElement.z);
-        float3 Node4Disp = getX0(NodesPerElement.w) - getX(NodesPerElement.w);
+        CudaVec3f Node1Disp = getX0(NodesPerElement.x) - getX(NodesPerElement.x);
+        CudaVec3f Node2Disp = getX0(NodesPerElement.y) - getX(NodesPerElement.y);
+        CudaVec3f Node3Disp = getX0(NodesPerElement.z) - getX(NodesPerElement.z);
+        CudaVec3f Node4Disp = getX0(NodesPerElement.w) - getX(NodesPerElement.w);
 
         /**
         * Computes the transpose of deformation gradient
@@ -657,10 +657,10 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet3(float Lamb
         float4 Dh2 = tex1Dfetch(texDhC2, index);
 
         int4 NodesPerElement = tex1Dfetch(texNodesPerElement, index);
-        float3 Node1Disp = getX0(NodesPerElement.x) - getX(NodesPerElement.x);
-        float3 Node2Disp = getX0(NodesPerElement.y) - getX(NodesPerElement.y);
-        float3 Node3Disp = getX0(NodesPerElement.z) - getX(NodesPerElement.z);
-        float3 Node4Disp = getX0(NodesPerElement.w) - getX(NodesPerElement.w);
+        CudaVec3f Node1Disp = getX0(NodesPerElement.x) - getX(NodesPerElement.x);
+        CudaVec3f Node2Disp = getX0(NodesPerElement.y) - getX(NodesPerElement.y);
+        CudaVec3f Node3Disp = getX0(NodesPerElement.z) - getX(NodesPerElement.z);
+        CudaVec3f Node4Disp = getX0(NodesPerElement.w) - getX(NodesPerElement.w);
 
         /**
         * Computes the transpose of deformation gradient

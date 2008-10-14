@@ -1,5 +1,5 @@
-#ifndef SOFA_GPU_CUDA_CUDATLEDFORCEFIELD_H
-#define SOFA_GPU_CUDA_CUDATLEDFORCEFIELD_H
+#ifndef SOFA_CUDA_CUDA_HEXAHEDRON_TLED_FORCEFIELD_H
+#define SOFA_CUDA_CUDA_HEXAHEDRON_TLED_FORCEFIELD_H
 
 #include "CudaTypes.h"
 #include <sofa/core/componentmodel/behavior/ForceField.h>
@@ -16,7 +16,7 @@ namespace cuda
 
 using namespace sofa::defaulttype;
 
-class CudaTLEDForceField : public core::componentmodel::behavior::ForceField<CudaVec3fTypes>
+class CudaHexahedronTLEDForceField : public core::componentmodel::behavior::ForceField<CudaVec3fTypes>
 {
 public:
     typedef CudaVec3fTypes::Real Real;
@@ -62,8 +62,8 @@ public:
     Data<unsigned int> viscoelasticity;
     Data<unsigned int> anisotropy;
 
-    CudaTLEDForceField();
-    virtual ~CudaTLEDForceField();
+    CudaHexahedronTLEDForceField();
+    virtual ~CudaHexahedronTLEDForceField();
     void init();
     void reinit();
     void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/);
