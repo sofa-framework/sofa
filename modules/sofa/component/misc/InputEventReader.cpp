@@ -24,13 +24,13 @@
 ******************************************************************************/
 #include <sofa/component/misc/InputEventReader.h>
 #include <sofa/core/ObjectFactory.h>
-#include <poll.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 
 #ifdef __linux__
 #include <linux/input.h>
+#include <poll.h>
 #endif
 
 namespace sofa
@@ -57,24 +57,29 @@ InputEventReader::InputEventReader()
 }
 void InputEventReader::init()
 {
+#ifdef __linux__
     if((fd = open(filename.getValue().c_str(), O_RDONLY)) < 0)
         std::cout << "ERROR: impossible to open the file: " << filename.getValue() << std::endl;
+#endif
 }
 
 InputEventReader::~InputEventReader()
 {
+#ifdef __linux__
     if (fd >= 0)
         close(fd);
+#endif
 }
 
 void InputEventReader::getInputEvents()
 {
+#ifdef __linux__
     if (fd < 0) return;
     pollfd pfd;
     pfd.fd = fd;
     pfd.events = POLLIN;
     pfd.revents = 0;
-#ifdef __linux__
+
     while (poll(&pfd, 1, 0 /*timeout.getValue()*/)>0 && (pfd.revents & POLLIN))
     {
         input_event ev;
@@ -94,6 +99,7 @@ void InputEventReader::getInputEvents()
 
 void InputEventReader::handleEvent(core::objectmodel::Event *event)
 {
+
     if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
     {
         getInputEvents();
