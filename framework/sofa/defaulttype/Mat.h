@@ -490,6 +490,56 @@ public:
         return invertMatrix(*this, m);
     }
 
+    static Mat<L,C,real> transformTranslation(const Vec<C-1,real>& t)
+    {
+        Mat<L,C,real> m;
+        m.identity();
+        for (int i=0; i<C-1; ++i)
+            m.elems[i][C-1] = t[i];
+        return m;
+    }
+
+    static Mat<L,C,real> transformScale(real s)
+    {
+        Mat<L,C,real> m;
+        m.identity();
+        for (int i=0; i<C-1; ++i)
+            m.elems[i][i] = s;
+        return m;
+    }
+
+    static Mat<L,C,real> transformScale(const Vec<C-1,real>& s)
+    {
+        Mat<L,C,real> m;
+        m.identity();
+        for (int i=0; i<C-1; ++i)
+            m.elems[i][i] = s[i];
+        return m;
+    }
+
+    template<class Quat>
+    static Mat<L,C,real> transformRotation(const Quat& q)
+    {
+        Mat<L,C,real> m;
+        m.identity();
+        q.toMatrix(m);
+        return m;
+    }
+
+    /// Multiplication operator Matrix * Vector considering the matrix as a transformation.
+    Vec<C-1,real> transform(const Vec<C-1,real>& v) const
+    {
+        Vec<C-1,real> r(NOINIT);
+        for(int i=0; i<C-1; i++)
+        {
+            r[i]=(*this)[i][0] * v[0];
+            for(int j=1; j<C-1; j++)
+                r[i] += (*this)[i][j] * v[j];
+            r[i] += (*this)[i][C-1];
+        }
+        return r;
+    }
+
 };
 
 /// Same as Mat except the values are not initialized by default
