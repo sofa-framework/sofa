@@ -146,6 +146,9 @@ public:
 
 protected:
     Data<Real> step;
+    Data<Real> minLength; ///< deternine the minimun length of the edge set
+    Data<Real> maxLength; ///< deternine the maximum length of the edge set
+    Data<Real> maxDepl; ///< determine the maximum deplacement in a time step
     Data<Real> speed;
     Real depl;
 

@@ -62,6 +62,9 @@ namespace controller
 template <class DataTypes>
 EdgeSetController<DataTypes>::EdgeSetController()
     : step(initData(&step,(Real)0.1,"step","base step when changing beam length"))
+    , minLength(initData(&minLength,(Real)1.0,"minLength","min beam length"))
+    , maxLength(initData(&maxLength,(Real)200.0,"maxLength","max beam length"))
+    , maxDepl(initData(&maxDepl,(Real)0.5,"maxDepl","max depl when changing beam length"))
     , speed(initData(&speed,(Real)0.0,"speed","continuous beam length increase/decrease"))
     , depl(0.0)
 {
@@ -195,9 +198,40 @@ void EdgeSetController<DataTypes>::applyController()
         if (this->mState)
         {
             Coord& pos = (*this->mState->getX0())[0];
-            pos = getNewRestPos(pos, vertexT[0], depl);
-            vertexT[0] -= depl;
-            depl = 0;
+            double d;
+            if (maxDepl.getValue() == 0 || fabs(depl) < maxDepl.getValue())
+            {
+                d = depl;
+                depl = 0;
+            }
+            else
+            {
+                d = (depl < 0) ? -maxDepl.getValue() : maxDepl.getValue();
+                depl -= d;
+            }
+            double endT = vertexT[vertexT.size()-1];
+            double newT = vertexT[0];
+            double sign = (endT > newT) ? 1.0 : -1.0;
+            newT -= d;
+            //std::cout << "length = " << sign*(endT-newT) << std::endl;
+            if (sign*(endT-newT) > maxLength.getValue())
+            {
+                //std::cout << "max length" << std::endl;
+                newT = endT - sign*maxLength.getValue();
+                d = vertexT[0] - newT;
+            }
+            else if (sign*(endT-newT) < minLength.getValue())
+            {
+                //std::cout << "min length" << std::endl;
+                newT = endT - sign*minLength.getValue();
+                d = vertexT[0] - newT;
+            }
+            if (newT != vertexT[0])
+            {
+                pos = getNewRestPos(pos, vertexT[0], d);
+                vertexT[0] = newT;
+            }
+            else return;
         }
 
         sofa::simulation::tree::GNode *node = static_cast<sofa::simulation::tree::GNode*> (this->getContext());
