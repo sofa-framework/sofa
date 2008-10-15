@@ -116,8 +116,10 @@ void MasterConstraintSolver::step ( double dt )
 
     gaussSeidelConstraint(numConstraints, _dFree.ptr(), _W.lptr(), _force.ptr(), _d.ptr(), _constraintsResolutions);
 
-//	helper::afficheLCP(_dFree.ptr(), _W.lptr(), _force.ptr(),  numConstraints);
+    helper::afficheLCP(_dFree.ptr(), _W.lptr(), _force.ptr(),  numConstraints);
+//	helper::afficheLCP(_dFree.ptr(), _W.lptr(), _result.ptr(),  numConstraints);
 
+//	fprintf(stderr, "applyContactForce\n");
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
         core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
