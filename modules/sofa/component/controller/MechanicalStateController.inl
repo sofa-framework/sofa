@@ -122,6 +122,7 @@ void MechanicalStateController<DataTypes>::onMouseEvent(core::objectmodel::Mouse
 template <class DataTypes>
 void MechanicalStateController<DataTypes>::onOmniEvent(core::objectmodel::OmniEvent *oev)
 {
+    std::cout << "void MechanicalStateController<DataTypes>::onOmniEvent()\n";
     omni = true;
     omniX = oev->getPosX();
     omniY = oev->getPosY();
@@ -152,32 +153,29 @@ void MechanicalStateController<DataTypes>::applyController()
     {
         if(mState)
         {
-
-            //cout << "youyou " << mState << endl;
-            //if(mState->getXfree())
+//			if(mState->getXfree())
             {
-                //cout << "yoyo" << endl;
-//					(*mState->getXfree())[0].getCenter()[0] = (Real)omniX;
-//					//(*mState->getX())[0].getCenter()[0] = omniX;
-//					(*mState->getXfree())[0].getCenter()[1] = (Real)omniY;
-//					//(*mSt ate->getX())[0].getCenter()[1] = omniY;
-//					(*mState->getXfree())[0].getCenter()[2] = (Real)omniZ;
-//					//(*mState->getX())[0].getCenter()[2] = omniZ;
+//				(*mState->getXfree())[0].getCenter()[0] = (Real)omniX;
+//			//	(*mState->getX())[0].getCenter()[0] = omniX;
+//				(*mState->getXfree())[0].getCenter()[1] = (Real)omniY;
+//			//	(*mSt ate->getX())[0].getCenter()[1] = omniY;
+//				(*mState->getXfree())[0].getCenter()[2] = (Real)omniZ;
+//			//	(*mState->getX())[0].getCenter()[2] = omniZ;
 
                 (*mState->getXfree())[0].getCenter() = position;
                 (*mState->getX())[0].getCenter() = position;
 
-//					(*mState->getXfree())[0].getOrientation()[0] = 0.0;
-//					(*mState->getXfree())[0].getOrientation()[1] = 0.0;
-//					(*mState->getXfree())[0].getOrientation()[2] = 0.0;
-//					(*mState->getXfree())[0].getOrientation()[3] = 1.0;
+//				(*mState->getXfree())[0].getOrientation()[0] = 0.0;
+//				(*mState->getXfree())[0].getOrientation()[1] = 0.0;
+//				(*mState->getXfree())[0].getOrientation()[2] = 0.0;
+//				(*mState->getXfree())[0].getOrientation()[3] = 1.0;
 
                 (*mState->getXfree())[0].getOrientation() = orientation;
 
-//					(*mState->getX())[0].getOrientation()[0] = 0.0;
-//					(*mState->getX())[0].getOrientation()[1] = 0.0;
-//					(*mState->getX())[0].getOrientation()[2] = 0.0;
-//					(*mState->getX())[0].getOrientation()[3] = 1.0;
+//				(*mState->getX())[0].getOrientation()[0] = 0.0;
+//				(*mState->getX())[0].getOrientation()[1] = 0.0;
+//				(*mState->getX())[0].getOrientation()[2] = 0.0;
+//				(*mState->getX())[0].getOrientation()[3] = 1.0;
 
                 (*mState->getX())[0].getOrientation() = orientation;
 
@@ -188,6 +186,7 @@ void MechanicalStateController<DataTypes>::applyController()
         }
         omni = false;
     }
+
     if ((mouseMode==BtLeft) || (mouseMode==BtRight))
     {
         int dx = eventX - mouseSavedPosX;
@@ -213,13 +212,21 @@ void MechanicalStateController<DataTypes>::applyController()
                 sofa::helper::Quater<Real>& quatrot = (*mState->getX())[i].getOrientation();
                 sofa::defaulttype::Vec<3,Real> vectrans(dy * mainDirection[0] * (Real)0.05, dy * mainDirection[1] * (Real)0.05, dy * mainDirection[2] * (Real)0.05);
                 vectrans = quatrot.rotate(vectrans);
-                (*mState->getXfree())[i].getCenter() += vectrans;
-                (*mState->getX())[i].getCenter() += vectrans;
 
-                (*mState->getXfree())[i].getOrientation() = (*mState->getX())[i].getOrientation() * Quat(x, dx * (Real)0.001);
+                (*mState->getX())[i].getCenter() += vectrans;
                 (*mState->getX())[i].getOrientation() = (*mState->getX())[i].getOrientation() * Quat(x, dx * (Real)0.001);
+
+                //	(*mState->getX0())[i].getCenter() += vectrans;
+                //	(*mState->getX0())[i].getOrientation() = (*mState->getX0())[i].getOrientation() * Quat(x, dx * (Real)0.001);
+
+                if(mState->getXfree())
+                {
+                    (*mState->getXfree())[i].getCenter() += vectrans;
+                    (*mState->getXfree())[i].getOrientation() = (*mState->getX())[i].getOrientation() * Quat(x, dx * (Real)0.001);
+                }
             }
         }
+
         sofa::simulation::tree::GNode *node = static_cast<sofa::simulation::tree::GNode*> (this->getContext());
         sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
         sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
