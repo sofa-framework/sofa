@@ -59,9 +59,14 @@ void ConstantForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, c
     f1.resize(p1.size());
     const VecIndex& indices = points.getValue();
     const VecDeriv& f = forces.getValue();
-    for (unsigned int i=0; i<indices.size(); i++)
+    unsigned int i = 0;
+    for (; i<f.size(); i++)
     {
         f1[indices[i]]+=f[i];
+    }
+    for (; i<indices.size(); i++)
+    {
+        f1[indices[i]]+=f[f.size()-1];
     }
 }
 
@@ -73,9 +78,14 @@ double ConstantForceField<DataTypes>::getPotentialEnergy(const VecCoord& x)
     const VecIndex& indices = points.getValue();
     const VecDeriv& f = forces.getValue();
     double e=0;
-    for (unsigned int i=0; i<indices.size(); i++)
+    unsigned int i = 0;
+    for (; i<f.size(); i++)
     {
         e -= f[i]*x[indices[i]];
+    }
+    for (; i<indices.size(); i++)
+    {
+        e -= f[f.size()-1]*x[indices[i]];
     }
     return e;
 }
@@ -121,7 +131,7 @@ void ConstantForceField<DataTypes>::draw()
     {
         Real xx,xy,xz,fx,fy,fz;
         DataTypes::get(xx,xy,xz,x[indices[i]]);
-        DataTypes::get(fx,fy,fz,f[i]);
+        DataTypes::get(fx,fy,fz,f[(i<f.size()) ? i : f.size()-1]);
         glVertex3f( (GLfloat)xx, (GLfloat)xy, (GLfloat)xz );
         glVertex3f( (GLfloat)(xx+fx), (GLfloat)(xy+fy), (GLfloat)(xz+fz) );
     }
