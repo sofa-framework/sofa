@@ -88,19 +88,25 @@ CudaMasterContactSolver<real>::CudaMasterContactSolver()
     ,maxIt( initData(&maxIt, 1000, "maxIt", ""))
     ,mu( initData(&mu, 0.6, "mu", ""))
     ,useGPU_d(initData(&useGPU_d,8, "useGPU", "compute LCP using GPU"))
-//		, lcp1(MAX_NUM_CONSTRAINTS)
-//		, lcp2(MAX_NUM_CONSTRAINTS)
-//		, _A(&lcp1.A)
-//		, _W(&lcp1.W)
-//		, _dFree(&lcp1.dFree)
-//		, _result(&lcp1.f)
-//    , lcp(&lcp1)
+    , constraintGroups( initData(&constraintGroups, "group", "list of ID of groups of constraints to be handled by this solver.") )
+//, lcp1(MAX_NUM_CONSTRAINTS)
+//, lcp2(MAX_NUM_CONSTRAINTS)
+//, _A(&lcp1.A)
+//, _W(&lcp1.W)
+//, _dFree(&lcp1.dFree)
+//, _result(&lcp1.f)
+//, lcp(&lcp1)
+#ifdef CHECK
+    ,check_gpu(initData(&check_gpu, true, "checkGPU", "verification of lcp error"))
+#endif
 {
     _W.resize(MAX_NUM_CONSTRAINTS,MAX_NUM_CONSTRAINTS);
     _dFree.resize(MAX_NUM_CONSTRAINTS);
     _f.resize(MAX_NUM_CONSTRAINTS);
     _numConstraints = 0;
     _mu = mu.getValue();
+    constraintGroups.beginEdit()->insert(0);
+    constraintGroups.endEdit();
 
     _numPreviousContact=0;
     _PreviousContactList = (contactBuf *)malloc(MAX_NUM_CONSTRAINTS * sizeof(contactBuf));
@@ -123,7 +129,7 @@ void CudaMasterContactSolver<real>::build_LCP()
 
     simulation::MechanicalResetConstraintVisitor().execute(context);
     _mu = mu.getValue();
-    simulation::MechanicalAccumulateConstraint(_numConstraints, _mu).execute(context);
+    simulation::MechanicalAccumulateConstraint(_numConstraints).execute(context);
     _mu = mu.getValue();
 
     if (_numConstraints > MAX_NUM_CONSTRAINTS)
@@ -138,7 +144,6 @@ void CudaMasterContactSolver<real>::build_LCP()
         _cont_id_list = (long *)malloc(MAX_NUM_CONSTRAINTS * sizeof(long));
     }
 
-    //lcp->getMu() = _mu;
 
     if (_mu>0.0)
     {
@@ -155,18 +160,6 @@ void CudaMasterContactSolver<real>::build_LCP()
 
     _W.clear();
 
-    /*
-    MechanicalGetConstraintValueVisitor(_dFree->ptr()).execute(context);
-
-    if (this->f_printLog.getValue()) std::cout<<"CudaMasterContactSolver: "<<_numConstraints<<" constraints, mu = "<<_mu<<std::endl;
-
-    for (unsigned int i=0;i<constraintCorrections.size();i++) {
-    	core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-    	cc->getCompliance(_W);
-     }
-    */
-
-    //if (useGPU_d.getValue()) {
     CudaMechanicalGetConstraintValueVisitor(&_dFree).execute(context);
 
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
@@ -174,22 +167,7 @@ void CudaMasterContactSolver<real>::build_LCP()
         core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->getCompliance(&_W);
     }
-    /*
-    } else {
-    	MechanicalGetConstraintValueVisitor<real>(&_dFree).execute(context);
 
-    	for (unsigned int i=0;i<constraintCorrections.size();i++) {
-    		core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-
-    		real * data = _W.getCudaMatrix().hostWrite();
-    		FullMatrix<real> * w = new FullMatrix<real>(data,_W.colSize(),_W.rowSize());
-
-    		cc->getCompliance(w);
-
-    		delete w;
-    	}
-    }
-    */
     if (initial_guess.getValue())
     {
         CudaMechanicalGetContactIDVisitor(_cont_id_list).execute(context);
@@ -278,9 +256,10 @@ void CudaMasterContactSolver<real>::step(double dt)
     context = dynamic_cast<simulation::tree::GNode *>(this->getContext()); // access to current node
 
 #ifdef DISPLAY_TIME
+    CTime *timer;
+    double time = 0.0;
     double timeScale = 1.0 / (double)CTime::getRefTicksPerSec();
-    CTime *timer = new CTime();
-    double time = 0;
+    timer = new CTime();
     time = (double) timer->getTime();
     std::cout<<"********* Start Iteration : " << _numConstraints << " contacts *********" <<std::endl;
 #endif
@@ -293,7 +272,7 @@ void CudaMasterContactSolver<real>::step(double dt)
     context->execute(&beginVisitor);
 
     // Free Motion
-    simulation::SolveVisitor freeMotion(dt);
+    simulation::SolveVisitor freeMotion(dt, true);
     context->execute(&freeMotion);
     simulation::MechanicalPropagateFreePositionVisitor().execute(context);
 

@@ -33,6 +33,7 @@
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
 #include <sofa/simulation/common/OdeSolverImpl.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
+#include <sofa/helper/set.h>
 #include <sofa/gpu/cuda/CudaLCP.h>
 #include "CudaTypesBase.h"
 
@@ -207,6 +208,8 @@ public:
     Data < double > mu;
 
     Data<int> useGPU_d;
+    Data < helper::set<int> > constraintGroups;
+
 
     CudaMasterContactSolver();
 
@@ -225,16 +228,12 @@ private:
     unsigned int _numConstraints;
     double _mu;
     simulation::tree::GNode *context;
-    //LCP lcp1, lcp2;
-    //CudaBaseMatrix<real> _A;
 
     CudaBaseMatrix<real> _W;
     CudaBaseVector<real> _dFree, _f;
 #ifdef CHECK
     CudaBaseVector<real> f_check;
 #endif
-
-    //LCP* lcp;
 
     typedef struct
     {
