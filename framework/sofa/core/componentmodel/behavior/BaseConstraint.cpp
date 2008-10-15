@@ -40,7 +40,7 @@ void BaseConstraint::projectResponse(double **)
 {
 }
 
-void BaseConstraint::applyConstraint(unsigned int&, double&)
+void BaseConstraint::applyConstraint(unsigned int&)
 {
 }
 

@@ -22,10 +22,8 @@ void BilateralInteractionConstraint<DataTypes>::init()
 }
 
 template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::applyConstraint(unsigned int &constraintId, double &mu)
+void BilateralInteractionConstraint<DataTypes>::applyConstraint(unsigned int &constraintId)
 {
-    //std::cout<<"applyConstraint is called"<<std::endl;
-    mu=0;
     int tm1, tm2;
     tm1 = m1.getValue();
     tm2 = m2.getValue();
@@ -72,18 +70,19 @@ void BilateralInteractionConstraint<DataTypes>::applyConstraint(unsigned int &co
 }
 
 template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::getConstraintValue(double* v, bool freeMotion)
+void BilateralInteractionConstraint<DataTypes>::getConstraintValue(defaulttype::BaseVector* v, bool freeMotion)
 {
-    //std::cout<<"getConstraintValue"<<std::endl;
+    if (!freeMotion)
+        std::cout<<"WARNING has to be implemented for method based on non freeMotion"<<std::endl;
+
     if (freeMotion)
         dfree = (*this->object2->getXfree())[m2.getValue()] - (*this->object1->getXfree())[m1.getValue()];
     else
         dfree = (*this->object2->getX())[m2.getValue()] - (*this->object1->getX())[m1.getValue()];
 
-
-    v[cid] = dfree[0];
-    v[cid+1] = dfree[1];
-    v[cid+2] = dfree[2];
+    v->set(cid, dfree[0]);
+    v->set(cid+1, dfree[1]);
+    v->set(cid+2, dfree[2]);
 }
 
 template<class DataTypes>
@@ -104,6 +103,8 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintId(long* id, unsign
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vector<core::componentmodel::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
+//	resTab[offset] = new BilateralConstraintResolution3Dof();
+//	offset += 3;
     for(int i=0; i<3; i++)
         resTab[offset++] = new BilateralConstraintResolution();
 }

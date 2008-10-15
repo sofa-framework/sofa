@@ -505,7 +505,7 @@ Visitor::Result MechanicalResetConstraintVisitor::fwdMappedMechanicalState(simul
 
 Visitor::Result MechanicalAccumulateConstraint::fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
 {
-    c->applyConstraint(contactId, mu);
+    c->applyConstraint(contactId);
     return RESULT_CONTINUE;
 }
 

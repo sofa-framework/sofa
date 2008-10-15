@@ -6,6 +6,9 @@
 #include <sofa/core/VisualModel.h>
 #include <iostream>
 
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/Vec.h>
+
 namespace sofa
 {
 
@@ -23,6 +26,41 @@ public:
     {
         force[line] = - d[line] / w[line][line];
     }
+};
+
+class BilateralConstraintResolution3Dof : public core::componentmodel::behavior::ConstraintResolution
+{
+public:
+
+    BilateralConstraintResolution3Dof() { nbLines=3; }
+    virtual void init(int line, double** w)
+    {
+        sofa::defaulttype::Mat<3,3,double> temp;
+        temp[0][0] = w[line][line];
+        temp[0][1] = w[line][line+1];
+        temp[0][2] = w[line][line+2];
+        temp[1][0] = w[line+1][line];
+        temp[1][1] = w[line+1][line+1];
+        temp[1][2] = w[line+1][line+2];
+        temp[2][0] = w[line+2][line];
+        temp[2][1] = w[line+2][line+1];
+        temp[2][2] = w[line+2][line+2];
+
+        invertMatrix(invW, temp);
+    }
+
+    virtual void resolution(int line, double** /*w*/, double* d, double* force)
+    {
+        for(int i=0; i<3; i++)
+        {
+            force[line+i] = 0;
+            for(int j=0; j<3; j++)
+                force[line+i] -= d[line+j] * invW[i][j];
+        }
+    }
+
+protected:
+    sofa::defaulttype::Mat<3,3,double> invW;
 };
 #endif
 template<class DataTypes>
@@ -91,9 +129,9 @@ public:
 
     virtual void init();
 
-    virtual void applyConstraint(unsigned int & /*constraintId*/, double & /*unused*/);
+    virtual void applyConstraint(unsigned int & /*constraintId*/);
 
-    virtual void getConstraintValue(double* v /*, unsigned int &numContacts */, bool freeMotion);
+    virtual void getConstraintValue(defaulttype::BaseVector *, bool /* freeMotion */ = true );
 
     virtual void getConstraintId(long* id, unsigned int &offset);
 

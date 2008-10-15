@@ -16,6 +16,8 @@
 #include <iostream>
 #include <map>
 
+//#define DEBUG_CONVERGENCE
+
 namespace sofa
 {
 
@@ -32,7 +34,6 @@ using namespace core::componentmodel::behavior;
 
 MasterConstraintSolver::MasterConstraintSolver()
     :_tol( initData(&_tol, 0.00001, "tolerance", "Tolerance of the Gauss-Seidel")),
-     _mu( initData(&_mu, 0.6, "mu", "Friction coefficient")),
      _maxIt( initData(&_maxIt, 1000, "maxIterations", "Maximum number of iterations of the Gauss-Seidel"))
 {
 }
@@ -87,9 +88,13 @@ void MasterConstraintSolver::step ( double dt )
 
     // mechanical action executed from root node to propagate the constraints
     simulation::MechanicalResetConstraintVisitor().execute(context);
-    double unused=0;
     // calling applyConstraint
-    simulation::MechanicalAccumulateConstraint(numConstraints, unused).execute(context);
+//	simulation::MechanicalAccumulateConstraint(numConstraints).execute(context);
+    MechanicalSetConstraint(numConstraints).execute(context);
+
+    // calling accumulateConstraint
+    MechanicalAccumulateConstraint2().execute(context);
+
 
     _dFree.resize(numConstraints);
     _d.resize(numConstraints);
@@ -99,11 +104,10 @@ void MasterConstraintSolver::step ( double dt )
     _constraintsResolutions.resize(numConstraints); // _constraintsResolutions.clear();
 
     // calling getConstraintValue
-    MechanicalGetConstraintValueVisitor(_dFree.ptr()).execute(context);
+    MechanicalGetConstraintValueVisitor(&_dFree).execute(context);
     // calling getConstraintResolution
     MechanicalGetConstraintResolutionVisitor(_constraintsResolutions).execute(context);
 
-//	fprintf(stderr, "getCompliance\n");
     for (unsigned int i=0; i<constraintCorrections.size(); i++ )
     {
         core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
@@ -112,9 +116,8 @@ void MasterConstraintSolver::step ( double dt )
 
     gaussSeidelConstraint(numConstraints, _dFree.ptr(), _W.lptr(), _force.ptr(), _d.ptr(), _constraintsResolutions);
 
-//	helper::afficheLCP(_dFree.ptr(), _W.lptr(), _result.ptr(),  numConstraints);
+//	helper::afficheLCP(_dFree.ptr(), _W.lptr(), _force.ptr(),  numConstraints);
 
-//	fprintf(stderr, "applyContactForce\n");
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
         core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
@@ -137,8 +140,7 @@ void MasterConstraintSolver::step ( double dt )
 void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, double** w, double* force,
         double* d, std::vector<ConstraintResolution*>& res)
 {
-//	fprintf(stderr, "gaussSeidelConstraint\n");
-    std::cout<<"------------------------------------ new iteration ---------------------------------"<<std::endl;
+//	std::cout<<"------------------------------------ new iteration ---------------------------------"<<std::endl;
     int i, j, k, l, nb;
 
     double errF[6];
@@ -146,10 +148,11 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
 
     double tolerance = _tol.getValue();
     int numItMax = _maxIt.getValue();
+    bool convergence = false;
 
     for(i=0; i<dim; )
     {
-        res[i]->init(i, w);
+        res[i]->init(i, w, force);
         i += res[i]->nbLines;
     }
 
@@ -195,20 +198,35 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
 
         if(error < tolerance && i>0) // do not stop at the first iteration (that is used for initial guess computation)
         {
-            std::cout<<" ------------------ convergence after "<<i<<" iterations ------------------"<<std::endl;
+//			std::cout<<" ------------------ convergence after "<<i<<" iterations ------------------"<<std::endl;
+            convergence = true;
             break;
         }
     }
 
+#ifdef DEBUG_CONVERGENCE
+    static int nbFrames = 0, nbIter = 0;
+    nbFrames++;
+    nbIter += i+1;
+    if(nbFrames>99)
+    {
+
+        std::cout << (float)nbIter/nbFrames << std::endl;
+        nbFrames = 0;
+        nbIter = 0;
+    }
+#endif
+
     for(i=0; i<dim; )
     {
+        res[i]->store(i, force, convergence);
         int t = res[i]->nbLines;
         delete res[i];
         res[i] = NULL;
         i += t;
     }
 
-    if(error >= tolerance)
+    if(!convergence)
         std::cerr << "No convergence in gaussSeidelConstraint : error = " << error << std::endl;
 }
 

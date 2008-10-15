@@ -44,6 +44,54 @@ private:
     unsigned int _offset;
 };
 
+class MechanicalSetConstraint : public simulation::MechanicalVisitor
+{
+public:
+    MechanicalSetConstraint(unsigned int &_contactId)
+        :contactId(_contactId)
+    {}
+
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    {
+        c->applyConstraint(contactId);
+        return RESULT_CONTINUE;
+    }
+
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalSetConstraint"; }
+
+    virtual bool isThreadSafe() const
+    {
+        return false;
+    }
+
+protected:
+    unsigned int &contactId;
+};
+
+class MechanicalAccumulateConstraint2 : public simulation::MechanicalVisitor
+{
+public:
+    MechanicalAccumulateConstraint2()
+    {}
+
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
+    {
+        map->accumulateConstraint();
+    }
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalAccumulateConstraint2"; }
+
+    virtual bool isThreadSafe() const
+    {
+        return false;
+    }
+};
+
 class MasterConstraintSolver : public sofa::simulation::MasterSolverImpl//, public sofa::simulation::tree::OdeSolverImpl
 {
 public:
@@ -69,7 +117,7 @@ private:
 
     std::vector<core::componentmodel::behavior::ConstraintResolution*> _constraintsResolutions;
 
-    Data<double> _tol, _mu;
+    Data<double> _tol;
     Data<int> _maxIt;
 };
 

@@ -59,7 +59,62 @@ void UnilateralConstraintResolutionWithFriction::resolution(int line, double** /
     d[line+1] += _W[1]*force[line] + _W[3]*force[line+1] + _W[4]*force[line+2];
     d[line+2] += _W[2]*force[line] + _W[4]*force[line+1] + _W[5]*force[line+2];
 }
-#endif
+
+void UnilateralConstraintResolutionSticky::resolution(int line, double** /*w*/, double* d, double* force)
+{
+    /*	force[line] =- d[line] / _W[0];
+    	if(d[line]>0)
+    	{
+    		if(_delta>d[line] || force[line]<-0.1)
+    			force[line] = 0.0;
+    	}
+    */
+    double td[3];
+    double normFt;
+
+    // evaluation of the current normal position
+    td[0] = _W[0]*force[line] + _W[1]*force[line+1] + _W[2]*force[line+2] + d[line];
+    // evaluation of the new contact force
+    force[line] -= td[0]/_W[0];
+
+    bool bSticky = false;
+    // TODO : coefficient de "collage" à calculer ou à définir à l'extérieur
+    if(force[line] < 0)
+    {
+        if(_delta>td[0] || force[line]<-0.2)
+        {
+            force[line]=0; force[line+1]=0; force[line+2]=0;
+            return;
+        }
+        bSticky = true;
+        force[line] = -force[line];
+    }
+
+    // evaluation of the current tangent positions
+    td[1] = _W[1]*force[line] + _W[3]*force[line+1] + _W[4]*force[line+2] + d[line+1];
+    td[2] = _W[2]*force[line] + _W[4]*force[line+1] + _W[5]*force[line+2] + d[line+2];
+
+    // evaluation of the new fricton forces
+    force[line+1] -= 2*td[1]/(_W[3]+_W[5]);
+    force[line+2] -= 2*td[2]/(_W[3]+_W[5]);
+
+    normFt = sqrt(force[line+1]*force[line+1] + force[line+2]*force[line+2]);
+
+    if(normFt > _mu*force[line])
+    {
+        force[line+1] *= _mu*force[line]/normFt;
+        force[line+2] *= _mu*force[line]/normFt;
+    }
+
+    if(bSticky)
+        force[line] = -force[line];
+
+    d[line]   += _W[0]*force[line] + _W[1]*force[line+1] + _W[2]*force[line+2];
+    d[line+1] += _W[1]*force[line] + _W[3]*force[line+1] + _W[4]*force[line+2];
+    d[line+2] += _W[2]*force[line] + _W[4]*force[line+1] + _W[5]*force[line+2];
+}
+
+#endif // SOFA_DEV
 
 template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id)
@@ -134,7 +189,7 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
 
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::applyConstraint(unsigned int &contactId, double &mu)
+void UnilateralInteractionConstraint<DataTypes>::applyConstraint(unsigned int &contactId)
 {
     assert(this->object1);
     assert(this->object2);
@@ -146,7 +201,7 @@ void UnilateralInteractionConstraint<DataTypes>::applyConstraint(unsigned int &c
     {
         Contact& c = contacts[i];
 
-        mu = c.mu;
+        //mu = c.mu;
         //c.mu = mu;
         c.id = contactId++;
 
@@ -202,24 +257,6 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintValue(defaulttype:
 }
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::getConstraintValue(double * v, bool freeMotion)
-{
-    if (!freeMotion)
-        std::cout<<"WARNING Not Implemented for resolution non based on freeMotion"<<std::endl;
-
-    for (unsigned int i=0; i<contacts.size(); i++)
-    {
-        Contact& c = contacts[i]; // get each contact detected
-        v[c.id] = c.dfree;
-        if (c.mu > 0.0)
-        {
-            v[c.id+1] = c.dfree_t; // dfree_t & dfree_s are added to v to compute the friction
-            v[c.id+2] = c.dfree_s;
-        }
-    }
-}
-
-template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::getConstraintId(long* id, unsigned int &offset)
 {
     if (!yetIntegrated)
@@ -252,6 +289,7 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::ve
         if(c.mu > 0.0)
         {
             resTab[offset] = new UnilateralConstraintResolutionWithFriction(c.mu);
+            //	resTab[offset] = new UnilateralConstraintResolutionSticky(c.mu, c.delta);
             offset += 3;
         }
         else

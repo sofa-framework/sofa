@@ -32,7 +32,8 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 
 //compliance computation include
-#include <sofa/component/odesolver/CGImplicitSolver.h>
+// #include <sofa/component/odesolver/CGImplicitSolver.h>
+#include <sofa/component/odesolver/EulerImplicitSolver.h>
 //#include <glib.h>
 #include <sstream>
 #include <list>
@@ -134,7 +135,8 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
         force.resize(nbNodes);
         //v.clear();
         //v.resize(v0.size());//computeDf
-        CGImplicitSolver* odeSolver = dynamic_cast<CGImplicitSolver*>(dynamic_cast<simulation::tree::GNode *>(this->getContext())->solver[0]);
+// 	    CGImplicitSolver* odeSolver = dynamic_cast<CGImplicitSolver*>(dynamic_cast<simulation::tree::GNode *>(this->getContext())->solver[0]);
+        EulerImplicitSolver* odeSolver = dynamic_cast<EulerImplicitSolver*>(dynamic_cast<simulation::tree::GNode *>(this->getContext())->solver[0]);
 
         if (odeSolver==NULL)
         {
@@ -146,13 +148,13 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
             std::cout << "use solver CGImplicitSolver " << std::endl;
 
         ///////////////////////// CHANGE THE PARAMETERS OF THE SOLVER /////////////////////////////////
-        double buf_tolerance = (double) odeSolver->f_tolerance.getValue();
-        int	   buf_maxIter   = (int) odeSolver->f_maxIter.getValue();
-        double buf_threshold = (double) odeSolver->f_smallDenominatorThreshold.getValue();
-        odeSolver->f_tolerance.setValue(1e-20);
-        odeSolver->f_maxIter.setValue(500);
-        odeSolver->f_smallDenominatorThreshold.setValue(1e-35);
-        ///////////////////////////////////////////////////////////////////////////////////////////////
+        /*	    double buf_tolerance = (double) odeSolver->f_tolerance.getValue();
+        	    int	   buf_maxIter   = (int) odeSolver->f_maxIter.getValue();
+        	    double buf_threshold = (double) odeSolver->f_smallDenominatorThreshold.getValue();
+        	    odeSolver->f_tolerance.setValue(1e-20);
+        	    odeSolver->f_maxIter.setValue(500);
+        	    odeSolver->f_smallDenominatorThreshold.setValue(1e-35);
+        */	    ///////////////////////////////////////////////////////////////////////////////////////////////
 
         VecDeriv& velocity = *mstate->getV();
         VecCoord& pos=*mstate->getX();
@@ -179,7 +181,8 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
 
 
                 //odeSolver->computeContactForce(force);
-                odeSolver->solve(dt);
+                //odeSolver->solve(dt);
+                odeSolver->solve(dt, core::componentmodel::behavior::BaseMechanicalState::VecId::position(), core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
                 velocity = *mstate->getV();
 
                 for (unsigned int v=0; v<nbNodes; v++)
@@ -197,10 +200,10 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
         ///////////////////////// RESET PARAMETERS AT THEIR PREVIOUS VALUE /////////////////////////////////
         // gravity is reset at its previous value
         this->getContext()->setGravityInWorld(gravity);
-        odeSolver->f_tolerance.setValue(buf_tolerance);
-        odeSolver->f_maxIter.setValue(buf_maxIter);
-        odeSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
-        ///////////////////////////////////////////////////////////////////////////////////////////////
+        /*	    odeSolver->f_tolerance.setValue(buf_tolerance);
+        	    odeSolver->f_maxIter.setValue(buf_maxIter);
+        	    odeSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
+        */	    ///////////////////////////////////////////////////////////////////////////////////////////////
         std::ofstream compFileOut(ss.str().c_str(), std::fstream::out | std::fstream::binary);
         compFileOut.write((char*)appCompliance, nbCols * nbRows*sizeof(double));
         compFileOut.close();
