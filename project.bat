@@ -32,7 +32,7 @@ goto common
 set QMAKESPEC=win32-msvc2005
 @echo on
 @echo Making Visual project 8
-qmake -tp vc -recursive -o Sofa.sln Sofa.pro QT_INSTALL_PREFIX="%QTDIR%"
+qmake -tp vc -recursive -o Sofa Sofa.pro QT_INSTALL_PREFIX="%QTDIR%"
 goto common
 
 :vc9
