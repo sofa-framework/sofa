@@ -25,9 +25,12 @@
 
 #include "CudaCommon.h"
 #include "CudaMath.h"
+#include "cuda.h"
 #include "mycuda.h"
 
-#if defined(__cplusplus)
+using namespace sofa::gpu::cuda;
+
+#if defined(__cplusplus) && CUDA_VERSION != 2000
 namespace sofa
 {
 namespace gpu
@@ -1248,7 +1251,7 @@ void CudaTetrahedronTLEDForceField3f_addDForce(unsigned int nbElem, unsigned int
     //CudaTetrahedronTLEDForceField3f_addForce_kernel<<< grid2, threads2, BSIZE*3*sizeof(float) >>>(nbVertex, nbElemPerVertex, (const GPUElement*)elems, (GPUElementState*)state, (const int*)velems, (float*)df, (const float*)dx);
 }
 
-#if defined(__cplusplus)
+#if defined(__cplusplus) && CUDA_VERSION != 2000
 } // namespace cuda
 } // namespace gpu
 } // namespace sofa
