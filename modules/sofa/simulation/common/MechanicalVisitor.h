@@ -688,8 +688,8 @@ public:
 class MechanicalAccumulateConstraint : public MechanicalVisitor
 {
 public:
-    MechanicalAccumulateConstraint(unsigned int &_contactId, double &_mu)
-        :contactId(_contactId), mu(_mu)
+    MechanicalAccumulateConstraint(unsigned int &_contactId)
+        :contactId(_contactId)
     {}
 
     virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
@@ -707,7 +707,6 @@ public:
 
 protected:
     unsigned int &contactId;
-    double &mu;
 };
 
 /** Apply the constraints as filters to the given vector.

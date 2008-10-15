@@ -38,7 +38,19 @@ protected:
     double _mu;
     double _W[6];
 };
-#endif
+
+class UnilateralConstraintResolutionSticky : public UnilateralConstraintResolutionWithFriction
+{
+public:
+    UnilateralConstraintResolutionSticky(double mu, double delta) : UnilateralConstraintResolutionWithFriction(mu), _delta(delta)  { nbLines=3; }
+    virtual void resolution(int line, double** w, double* d, double* force);
+
+protected:
+    double _delta;
+};
+
+#endif // SOFA_DEV	
+
 template<class DataTypes>
 class UnilateralInteractionConstraint : public core::componentmodel::behavior::InteractionConstraint
 {
@@ -116,12 +128,11 @@ public:
             contacts.reserve(reserve);
     }
 
-    virtual void applyConstraint(unsigned int & /*contactId*/, double & /*mu*/);
+    virtual void applyConstraint(unsigned int & /*contactId*/);
 
     virtual void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree = Coord(), Coord Qfree = Coord(), long id=0);
 
     virtual void getConstraintValue(defaulttype::BaseVector *, bool freeMotion);
-    virtual void getConstraintValue(double *, bool freeMotion);
 
     virtual void getConstraintId(long* id, unsigned int &offset);
 #ifdef SOFA_DEV

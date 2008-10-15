@@ -80,9 +80,9 @@ public:
 
     virtual void init();
 
-    virtual void applyConstraint(unsigned int & /*constraintId*/, double & /*unused*/);
+    virtual void applyConstraint(unsigned int & /*constraintId*/);
 
-    virtual void getConstraintValue(double* v /*, unsigned int &numContacts */, bool freeMotion);
+    virtual void getConstraintValue(defaulttype::BaseVector *, bool /* freeMotion */ = true );
 
     virtual void getConstraintId(long* id, unsigned int &offset);
 #ifdef SOFA_DEV

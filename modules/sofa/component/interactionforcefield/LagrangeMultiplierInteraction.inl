@@ -50,6 +50,9 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/tree/GNode.h>
 
+#include <sofa/component/linearsolver/FullVector.h>
+using namespace sofa::component::linearsolver;
+
 namespace sofa
 {
 
@@ -129,15 +132,14 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addForce(VecDeriv1& 
 {
 
     unsigned int count=0;
-    double mu=0.0;
 
     for (unsigned int i=0; i<list_interaction_constraint.size(); i++)
     {
-        list_interaction_constraint[i]->applyConstraint(count, mu);
+        list_interaction_constraint[i]->applyConstraint(count);
         std::cout<< "constraint count"<<count<<std::endl;
     }
     unsigned int count1=0;
-    constraint->applyConstraint(count1, mu);
+    constraint->applyConstraint(count1);
 
 
     /// @TODO clear the MechanicalState of the lagrange Multiplier during Begin visitor
@@ -152,12 +154,12 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addForce(VecDeriv1& 
     Dlambda.clear();
     Dlambda.resize(numLagMult);
 
-    double *_violation;
+    FullVector<double> _violation;
 
     /// @TODO automatically adapt the size of the LagMult state to the num of constraints: for now it is based the scene file entries
-    _violation = new double[numLagMult];
+    _violation.resize(numLagMult);
 
-    constraint->getConstraintValue(_violation, false);
+    constraint->getConstraintValue(&_violation, false);
     //std::cout<<"violation:" <<_violation[0] << " "<<_violation[1] << " "<<_violation[2] << " "<<std::endl;
 
     for (unsigned int i=0; i<lambda.size(); i++)
@@ -185,10 +187,8 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addDForce(VecDeriv1&
     //std::cout<<"addDForce : dLambda "<< dLambda << " -  dx2:" << dx2 <<std::endl;
 
 
-
     sofa::simulation::tree::GNode *context = dynamic_cast<sofa::simulation::tree::GNode *>(this->getContext()); // access to current node (which is supposed to be the root)
     sofa::simulation::MechanicalResetConstraintVisitor().execute(context);
-
 
     VecConst2& c2= *this->mstate2->getC();
     //std::cout<<" constraint size :"<<c2.size()<<std::endl;

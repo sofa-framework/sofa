@@ -44,7 +44,6 @@ namespace componentmodel
 
 namespace behavior
 {
-/// @TODO  The classes applyConstraint, getConstraintValue && getConstraintId need to be commented
 #ifdef SOFA_DEV
 
 /**
@@ -59,9 +58,14 @@ public:
 
     virtual ~ConstraintResolution() {}
 
-    virtual void init(int /*line*/, double** /*w*/) {}
+    /// The resolution object can do precomputation with the compliance matrix, and give an initial guess.
+    virtual void init(int /*line*/, double** /*w*/, double* /*force*/) {}
+    /// Resolution of the constraint for one Gauss-Seidel iteration
     virtual void resolution(int line, double** w, double* d, double* force) = 0;
+    /// Called after Gauss-Seidel last iteration, in order to store last computed forces for the inital guess
+    virtual void store(int /*line*/, double* /*force*/, bool /*convergence*/) {}
 
+    /// Number of dof used by this particular constraint. To be modified in the object's constructor.
     unsigned char nbLines;
 };
 #endif // SOFA_DEV
@@ -120,9 +124,8 @@ public:
     /// Project the compliance Matrix to constrained space.
     virtual void projectResponse(double **);
 
-    /// @}
-
-    virtual void applyConstraint(unsigned int&, double&);
+    /// Project to constrained space using offset parameter
+    virtual void applyConstraint(unsigned int&);
 
     /// Project the global Mechanical Matrix to constrained space using offset parameter
     virtual void applyConstraint(defaulttype::BaseMatrix *, unsigned int & /*offset*/);
@@ -130,8 +133,10 @@ public:
     /// Project the global Mechanical Vector to constrained space using offset parameter
     virtual void applyConstraint(defaulttype::BaseVector *, unsigned int & /*offset*/);
 
+    /// Set the violation of each constraint
     virtual void getConstraintValue(defaulttype::BaseVector *, bool /* freeMotion */ = true ) {}
-    virtual void getConstraintValue(double *, bool /* freeMotion */ = true ) {}
+
+    /// Set an Id for each constraint
     virtual void getConstraintId(long * /*id*/, unsigned int & /*offset*/) {}
 
 #ifdef SOFA_DEV

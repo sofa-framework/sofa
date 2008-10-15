@@ -26,9 +26,8 @@ void SlidingConstraint<DataTypes>::init()
 }
 
 template<class DataTypes>
-void SlidingConstraint<DataTypes>::applyConstraint(unsigned int &constraintId, double &mu)
+void SlidingConstraint<DataTypes>::applyConstraint(unsigned int &constraintId)
 {
-    mu=0;
     int tm1, tm2a, tm2b;
     tm1 = m1.getValue();
     tm2a = m2a.getValue();
@@ -119,21 +118,20 @@ void SlidingConstraint<DataTypes>::applyConstraint(unsigned int &constraintId, d
 }
 
 template<class DataTypes>
-void SlidingConstraint<DataTypes>::getConstraintValue(double* v, bool freeMotion)
+void SlidingConstraint<DataTypes>::getConstraintValue(defaulttype::BaseVector* v, bool freeMotion)
 {
-
     if (!freeMotion)
         std::cout<<"WARNING has to be implemented for method based on non freeMotion"<<std::endl;
 
-    v[cid] = dist;
-    v[cid+1] = 0.0;
+    v->set(cid, dist);
+    v->set(cid+1, 0.0);
 
     if(thirdConstraint)
     {
         if(thirdConstraint>0)
-            v[cid+2] = -thirdConstraint;
+            v->set(cid+2, -thirdConstraint);
         else
-            v[cid+2] = thirdConstraint;
+            v->set(cid+2, thirdConstraint);
     }
 }
 
