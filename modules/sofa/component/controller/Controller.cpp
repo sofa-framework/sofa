@@ -60,7 +60,7 @@ namespace controller
 
 
 Controller::Controller()
-    : handleEventTriggersUpdate( initData(&handleEventTriggersUpdate, "handleEventTriggersUpdate", "Event handling frequency controls the controller update frequency" ) )
+    : handleEventTriggersUpdate( initData(&handleEventTriggersUpdate, false, "handleEventTriggersUpdate", "Event handling frequency controls the controller update frequency" ) )
 {
 
 }

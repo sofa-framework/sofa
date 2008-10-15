@@ -63,7 +63,7 @@ namespace controller
  * Provides a Mouse & Keyboard user control on an EdgeSet Topology.
  */
 template<class DataTypes>
-class EdgeSetController : public MechanicalStateController<DataTypes>
+class EdgeSetController : public MechanicalStateController<DataTypes>, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -150,6 +150,7 @@ protected:
     Data<Real> maxLength; ///< deternine the maximum length of the edge set
     Data<Real> maxDepl; ///< determine the maximum deplacement in a time step
     Data<Real> speed;
+    Data<bool> reversed;
     Real depl;
 
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
