@@ -303,16 +303,23 @@ void EdgeSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector<
             const unsigned int p0 = inv_index[ m_container->m_edge[i][0]  ];
             const unsigned int p1 = inv_index[ m_container->m_edge[i][1]  ];
 
-            if(p0<p1)
+            // FIXME : Edges should not be flipped during simulations as it will break code such as FEM storing a rest shape.
+            // Commented by pierre-jean.bensoussan@digital-trainers.com
+            /*
+            if(p0 < p1)
             {
-                m_container->m_edge[i][0] = p0;
-                m_container->m_edge[i][1] = p1;
+            	m_container->m_edge[i][0] = p0;
+            	m_container->m_edge[i][1] = p1;
             }
             else
             {
-                m_container->m_edge[i][0] = p1;
-                m_container->m_edge[i][1] = p0;
+            	m_container->m_edge[i][0] = p1;
+            	m_container->m_edge[i][1] = p0;
             }
+            */
+
+            m_container->m_edge[i][0] = p0;
+            m_container->m_edge[i][1] = p1;
         }
     }
 
