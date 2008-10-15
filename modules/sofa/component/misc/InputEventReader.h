@@ -38,26 +38,50 @@ namespace component
 
 namespace misc
 {
-
+/**
+ * @brief InputEventReader Class
+ *
+ * Reads mouse Linux events from file /dev/input/eventX and propagate them as SOFA MouseEvents.
+ */
 class InputEventReader : public core::objectmodel::BaseObject
 {
 public:
 
+    /**
+     * @brief Default Constructor.
+     */
     InputEventReader();
+
+    /**
+     * @brief Default Destructor.
+     */
     ~InputEventReader();
 
+    /**
+     * @brief SceneGraph callback initialization method.
+     */
     void init();
 
+    /**
+     * @brief handle an event.
+     *
+     * At every simulation step transforms the mouse Linux events in SOFA mouse events and propagates them
+     */
     virtual void handleEvent(core::objectmodel::Event *event);
 
 private:
 
-    Data<std::string> filename;
+    Data<std::string> filename; ///< file in which the events are stored.
 //	Data<double> timeout;
-    int fd;
+    int fd; ///< desciptor to open and read the file.
 
-    int deplX, deplY;
+    int deplX, deplY; ///< mouse relative deplacements.
 
+    /**
+     * @brief getInputEvents gets the mouse relative deplacements.
+     *
+     * This method reads from file /dev/input/eventX and gets the mouse relative deplacements.
+     */
     void getInputEvents();
 };
 
