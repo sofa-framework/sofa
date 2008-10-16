@@ -90,23 +90,6 @@ void CudaHexahedronTLEDForceField::reinit()
     }
     VecElement inputElems = topology->getHexas();
 
-    /// Changes the winding order (faces given in counterclockwise instead of giving edges)
-    for (unsigned int i=0; i<inputElems.size(); i++)
-    {
-        Element& e = inputElems[i];
-        int temp;
-        temp = e[2];
-        e[2] = e[3];
-        e[3] = temp;
-
-        temp = e[6];
-        e[6] = e[7];
-        e[7] = temp;
-
-        inputElems[i] = e;
-    }
-
-
     /// Number of elements attached to each node
     std::map<int,int> nelems;
     for (unsigned int i=0; i<inputElems.size(); i++)

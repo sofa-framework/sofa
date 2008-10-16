@@ -27,6 +27,7 @@
 #include "mycuda.h"
 #include <sofa/core/componentmodel/behavior/ForceField.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/component/topology/RegularGridTopology.h>
 
 namespace sofa
 {
@@ -83,15 +84,72 @@ void CudaTetrahedronTLEDForceField::reinit()
 {
     /// Gets the mesh
     component::topology::MeshTopology* topology = getContext()->get<component::topology::MeshTopology>();
-    if (topology==NULL || topology->getNbTetras()==0)
+    if (topology==NULL)
     {
-        std::cerr << "ERROR(CudaTetrahedronTLEDForceField): no elements found.\n";
+        std::cerr << "ERROR(CudaTetrahedronTLEDForceField): no topology found.\n";
         return;
     }
     VecElement inputElems = topology->getTetras();
+    if (inputElems.empty())
+    {
+        if (topology->getNbHexas() == 0)
+            return;
+        int nbcubes = topology->getNbHexas();
+        // These values are only correct if the mesh is a grid topology
+        int nx = 2;
+        int ny = 1;
+        int nz = 1;
+        {
+            component::topology::GridTopology* grid = dynamic_cast<component::topology::GridTopology*>(topology);
+            if (grid != NULL)
+            {
+                nx = grid->getNx()-1;
+                ny = grid->getNy()-1;
+                nz = grid->getNz()-1;
+            }
+        }
 
-    /// Changes the winding order (faces given in counterclockwise instead of giving edges)
-    /// Needed ?
+        // Tesselation of each cube into 6 tetrahedra
+        inputElems.reserve(nbcubes*6);
+        for (int i=0; i<nbcubes; i++)
+        {
+            // if (flags && !flags->isCubeActive(i)) continue;
+            core::componentmodel::topology::BaseMeshTopology::Hexa c = topology->getHexa(i);
+#define swap(a,b) { int t = a; a = b; b = t; }
+            if (!((i%nx)&1))
+            {
+                // swap all points on the X edges
+                swap(c[0],c[1]);
+                swap(c[3],c[2]);
+                swap(c[4],c[5]);
+                swap(c[7],c[6]);
+            }
+            if (((i/nx)%ny)&1)
+            {
+                // swap all points on the Y edges
+                swap(c[0],c[3]);
+                swap(c[1],c[2]);
+                swap(c[4],c[7]);
+                swap(c[5],c[6]);
+            }
+            if ((i/(nx*ny))&1)
+            {
+                // swap all points on the Z edges
+                swap(c[0],c[4]);
+                swap(c[1],c[5]);
+                swap(c[2],c[6]);
+                swap(c[3],c[7]);
+            }
+#undef swap
+            typedef core::componentmodel::topology::BaseMeshTopology::Tetra Tetra;
+            inputElems.push_back(Tetra(c[0],c[5],c[1],c[6]));
+            inputElems.push_back(Tetra(c[0],c[1],c[3],c[6]));
+            inputElems.push_back(Tetra(c[1],c[3],c[6],c[2]));
+            inputElems.push_back(Tetra(c[6],c[3],c[0],c[7]));
+            inputElems.push_back(Tetra(c[6],c[7],c[0],c[5]));
+            inputElems.push_back(Tetra(c[7],c[5],c[4],c[0]));
+        }
+    }
 
     /// Number of elements attached to each node
     std::map<int,int> nelems;
