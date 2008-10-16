@@ -28,6 +28,9 @@
 #include <sofa/helper/system/gl.h>
 #endif
 #include <cuda_gl_interop.h>
+
+#include <sofa/helper/BackTrace.h>
+
 #if defined(__cplusplus)
 namespace sofa
 {
@@ -42,6 +45,7 @@ bool cudaCheck(cudaError_t err, const char* src="?")
     if (err == cudaSuccess) return true;
     //fprintf(stderr, "CUDA: Error %d returned from %s.\n",(int)err,src);
     mycudaLogError(err, src);
+    sofa::helper::BackTrace::dump();
     return false;
 }
 
