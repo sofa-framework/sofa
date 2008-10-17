@@ -71,6 +71,8 @@ public:
     /// Handles Cutting (activated only for a triangular topology), using global variables to register the two last input points
     bool incisionCollisionModel(sofa::core::CollisionElementIterator, Vector3&, bool, bool);
 
+    void removeItemsFromTriangleModel(sofa::core::CollisionModel* model, const std::vector<int>& indices) const;
+
 protected:
 
 private:
@@ -79,9 +81,12 @@ private:
     bool incisionTriangleSetTopology(sofa::core::componentmodel::topology::BaseMeshTopology*);
     bool incisionTriangleSetTopology(sofa::core::CollisionElementIterator, Vector3&, bool, bool, sofa::core::componentmodel::topology::BaseMeshTopology*);
 
-    void removeItemsFromTriangleModel(sofa::core::CollisionElementIterator) const;
-    void removeItemsFromTriangleSetModel(sofa::core::CollisionElementIterator) const;
-    void removeItemsFromTriangleMeshModel(sofa::core::CollisionElementIterator) const;
+    void removeItemsFromTriangleModel(sofa::core::CollisionElementIterator e) const
+    {
+        std::vector<int> id;
+        id.push_back(e.getIndex());
+        removeItemsFromTriangleModel(e.getCollisionModel(), id);
+    }
 
 private:
     /// Global variables to register the two last input points (for incision along one segment in a triangular mesh)
