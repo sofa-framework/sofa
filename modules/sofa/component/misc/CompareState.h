@@ -68,14 +68,18 @@ public:
     }
 
     /// Return the total errors (position and velocity)
-    double getError() {return totalError_X + totalError_V;}
+    double getTotalError() {return totalError_X + totalError_V;}
+    /// Return the total errors (position and velocity)
+    double getErrorByDof() {return dofError_X + dofError_V;}
 
 protected :
 
     /// total error for positions
     double totalError_X;
+    double dofError_X;
     /// total error for velocities
     double totalError_V;
+    double dofError_V;
 };
 
 /// Create CompareState component in the graph each time needed
@@ -101,12 +105,16 @@ protected:
 class CompareStateResult: public Visitor
 {
 public:
-    CompareStateResult() { error=0; }
+    CompareStateResult() { error=errorByDof=0; numCompareState=0;}
     virtual Result processNodeTopDown( simulation::Node*  );
 
-    double getError() { return error; }
+    double getTotalError() { return error; }
+    double getErrorByDof() { return errorByDof; }
+    unsigned int getNumCompareState() { return numCompareState; }
 protected:
     double error;
+    double errorByDof;
+    unsigned int numCompareState;
 };
 
 } // namespace misc
