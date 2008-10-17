@@ -62,6 +62,20 @@ Context::Context()
     setGravityInWorld(objectmodel::BaseContext::getLocalGravity());
     setVelocityInWorld(objectmodel::BaseContext::getVelocityInWorld());
     setVelocityBasedLinearAccelerationInWorld(objectmodel::BaseContext::getVelocityBasedLinearAccelerationInWorld());
+
+    addAlias(&showVisualModels_,           "showAll"); addAlias(&showVisualModels_,           "showVisual");
+
+    addAlias(&showBehaviorModels_,         "showAll"); addAlias(&showBehaviorModels_,         "showBehavior");
+    addAlias(&showForceFields_,            "showAll"); addAlias(&showForceFields_,            "showBehavior");
+    addAlias(&showInteractionForceFields_, "showAll"); addAlias(&showInteractionForceFields_, "showBehavior");
+
+
+    addAlias(&showCollisionModels_,        "showAll"); addAlias(&showCollisionModels_,        "showCollision");
+    addAlias(&showBoundingCollisionModels_,"showAll"); addAlias(&showBoundingCollisionModels_,"showCollision");
+
+    addAlias(&showMappings_,               "showAll"); addAlias(&showMappings_,               "showMapping");
+    addAlias(&showMechanicalMappings_,     "showAll"); addAlias(&showMechanicalMappings_,     "showMapping");
+
     //setDt(objectmodel::BaseContext::getDt());
     //setTime(objectmodel::BaseContext::getTime());
     //setAnimate(objectmodel::BaseContext::getAnimate());
