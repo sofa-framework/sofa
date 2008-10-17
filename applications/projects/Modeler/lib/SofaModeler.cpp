@@ -43,7 +43,6 @@
 #include <QGridLayout>
 #include <QTextEdit>
 #include <Q3TextBrowser>
-#include <QComboBox>
 #include <QLabel>
 #include <QApplication>
 #include <QMenuBar>
@@ -52,7 +51,6 @@
 #include <qlayout.h>
 #include <qtextedit.h>
 #include <qtextbrowser.h>
-#include <qcombobox.h>
 #include <qapplication.h>
 #include <qmenubar.h>
 #endif
@@ -82,8 +80,8 @@ SofaModeler::SofaModeler()
     fileMenu->removeAction(Action);
 
     //Temporary: desactivate with Qt4 the filter
-    LabelSearch->hide();
-    SearchEdit->hide();
+    //LabelSearch->hide();
+    //SearchEdit->hide();
 #endif
     connect(GNodeButton, SIGNAL(pressed()), this, SLOT( releaseButton()));
 
@@ -186,10 +184,16 @@ SofaModeler::SofaModeler()
 
     for (it = setType.begin(); it != setType.end(); it++)
     {
+
+
         itMap = inventory.find( (*it) );
         unsigned int numRows = inventory.count( (*it) );
         QString s=QString(it->c_str());
+
+
+        std::multimap< QWidget*, std::pair< QPushButton*, QComboBox*> > pageMap;
         QWidget* gridWidget = new QWidget(SofaComponents, s);
+
         QGridLayout* gridLayout = new QGridLayout( gridWidget, numRows+1,1);
 
         //Insert all the components belonging to the same family
@@ -278,12 +282,16 @@ SofaModeler::SofaModeler()
             button->setText(QString(entry->className.c_str()));
 
             mapComponents.insert(std::make_pair(button, std::make_pair(entry, combo)));
+            pageMap.insert(std::make_pair(gridWidget,std::make_pair(button, combo)));
             itMap++;
 
             //connect(button, SIGNAL(pressed() ), this, SLOT( newComponent() ));
             counterElem++;
         }
         gridLayout->addItem(new QSpacerItem(1,1,QSizePolicy::Minimum, QSizePolicy::Expanding ), counterElem,0);
+
+        pages.push_back(pageMap);
+
     }
 
     connect( this->infoItem, SIGNAL(linkClicked( const QString &)), this, SLOT(fileOpen(const QString &)));
@@ -796,7 +804,7 @@ void SofaModeler::dragMoveEvent( QDragMoveEvent* event)
     }
 }
 
-/// Quick Filter of te components
+#if 0
 void SofaModeler::searchText(const QString& text)
 {
     int index=-1;
@@ -804,6 +812,7 @@ void SofaModeler::searchText(const QString& text)
     QWidget *currentTab=NULL;
     bool toHide=true;
     unsigned int displayed=0;
+    //Iterates on all the components of the library
     for (it=mapComponents.begin(); it!=mapComponents.end(); it++)
     {
         QPushButton *button=(QPushButton *)it->first;
@@ -814,6 +823,7 @@ void SofaModeler::searchText(const QString& text)
             {
                 index++;
                 if (!toHide && SofaComponents->indexOf(currentTab) == -1) SofaComponents->insertItem(index, currentTab, currentTab->name());
+
             }
             currentTab = (QWidget*)button->parent(); SofaComponents->removeItem(currentTab);
             toHide=true;
@@ -838,12 +848,73 @@ void SofaModeler::searchText(const QString& text)
     {
         index++;
         if (!toHide && SofaComponents->indexOf(currentTab) == -1) SofaComponents->insertItem(index, currentTab, currentTab->name());
+
     }
     displayComponents = displayed;
     changeLibraryLabel(SofaComponents->currentIndex());
 
     SofaComponents->update();
 }
+#else
+/// Quick Filter of te components
+void SofaModeler::searchText(const QString& text)
+{
+    unsigned int displayed=0;
+
+    std::multimap< QWidget*, std::pair< QPushButton*, QComboBox*> >::iterator itMap;
+    for (int p=0; p<(int)pages.size(); ++p)
+    {
+        QWidget* page=pages[p].begin()->first;
+        const unsigned int numComponents=pages[p].size();
+        unsigned int counterHiddenComponents=0;
+        for (itMap=pages[p].begin(); itMap!=pages[p].end(); itMap++)
+        {
+            QPushButton* button= itMap->second.first;
+            QComboBox* combo= itMap->second.second;
+            if (!button->text().contains(text,false))
+            {
+                counterHiddenComponents++;
+                button->hide();
+                if (combo) combo->hide();
+            }
+            else
+            {
+                displayed++;
+                button->show();
+                if (combo) combo->show();
+            }
+        }
+
+
+
+        int idx=SofaComponents->indexOf(page);
+        if (counterHiddenComponents == numComponents)
+        {
+            //Hide the page
+            if (idx >= 0)
+            {
+#ifdef SOFA_QT4
+                SofaComponents->removeItem(idx);
+#else
+                SofaComponents->removeItem(page);
+#endif
+            }
+        }
+        else
+        {
+            if (idx < 0)
+            {
+                SofaComponents->insertItem(p,page,page->name());
+            }
+        }
+    }
+
+    displayComponents = displayed;
+    changeLibraryLabel(SofaComponents->currentIndex());
+
+    SofaComponents->update();
+}
+#endif
 }
 }
 }

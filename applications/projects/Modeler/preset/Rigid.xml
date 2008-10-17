@@ -5,7 +5,7 @@
 	<Object type="MechanicalObject" template="Rigid"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"  />
 	<Object type="UniformMass" />
 	<Node name="VisualNode">
-		<Object type="OglModel" name="Visual" fileMesh="file" color="gray"   />
+		<Object type="OglModel" name="Visual" fileMesh="file" color="gray" scale="1"  />
 		<Object type="RigidMapping" object1="../.." object2="Visual" />
 	</Node>
 	<Node name="CollisionNode">

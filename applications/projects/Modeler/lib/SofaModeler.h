@@ -47,6 +47,7 @@
 #include <QTabBar>
 #include <Q3PopupMenu>
 #include <QAction>
+#include <QComboBox>
 #else
 #include <qlistview.h>
 #include <qdragobject.h>
@@ -55,6 +56,7 @@
 #include <qtabbar.h>
 #include <qpopupmenu.h>
 #include <qaction.h>
+#include <qcombobox.h>
 #endif
 
 
@@ -201,6 +203,8 @@ protected:
     /// Map between an index of tabulation to the tabulation itself
     std::map< int, QWidget*> mapWindow;
 
+
+    std::vector< std::multimap< QWidget*, std::pair< QPushButton*, QComboBox*> > > pages;
 private:
     std::string presetPath;
     std::string examplePath;
