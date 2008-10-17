@@ -124,20 +124,20 @@ BaseElement* createNode(xmlNodePtr root, const char *basefilename, bool isRoot =
     }
     else
     {
-        if (classType != "Node" && classType != "Attribute" && classType != "Data")
-        {
-            type=classType;
-            classType="Object";
-        }
-        else
-            type = "default";
+        type = "default";
     }
     BaseElement* node = BaseElement::Create(classType,name,type);
 
     if (node == NULL)
     {
-        std::cerr << "Node "<<root->name<<" name "<<name<<" type "<<type<<" creation failed.\n";
-        return NULL;
+        type=classType;
+        classType="Object";
+        node = BaseElement::Create(classType,name,type);
+        if (node==NULL)
+        {
+            std::cerr << "Node "<<root->name<<" name "<<name<<" type "<<type<<" creation failed.\n";
+            return NULL;
+        }
     }
 
     if (isRoot)

@@ -132,6 +132,12 @@ GLuint g_DepthTexture;
 // This is our global shader object that will load the shader files
 GLSLShader g_Shader;
 
+
+GLuint ShadowTextureMask;
+
+// End of Shadow Mapping Parameters
+#endif // SOFA_HAVE_GLEW
+
 //float g_DepthOffset[2] = { 3.0f, 0.0f };
 float g_DepthOffset[2] = { 10.0f, 0.0f };
 float g_DepthBias[2] = { 0.0f, 0.0f };
@@ -141,10 +147,6 @@ float g_mProjection[16] = {0};
 float g_mModelView[16] = {0};
 //float g_mCameraInverse[16] = {0};
 
-GLuint ShadowTextureMask;
-
-// End of Shadow Mapping Parameters
-#endif // SOFA_HAVE_GLEW
 
 static bool enabled = false;
 sofa::core::ObjectFactory::ClassEntry* classVisualModel;

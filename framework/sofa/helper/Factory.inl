@@ -62,7 +62,7 @@ TObject* Factory<TKey, TObject, TArgument>::createObject(Key key, Argument arg)
         }
         ++it;
     }
-    std::cerr<<"Object type "<<key<<" creation failed."<<std::endl;
+//	std::cerr<<"Object type "<<key<<" creation failed."<<std::endl;
     return NULL;
 }
 
