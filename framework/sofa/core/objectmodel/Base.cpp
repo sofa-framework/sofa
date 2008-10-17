@@ -349,14 +349,17 @@ void  Base::parseFields ( std::list<std::string> str )
     {
         name = str.front();
         str.pop_front();
-
         // field name
-        unsigned int index = findField(name);
-        if( index!=m_fieldVec.size() )
+        std::vector< BaseData* > fields=findGlobalField(name);
+        std::cout << fields.size() << " number Found\n";
+        if( fields.size() != 0 )
         {
             std::string s = str.front();
-            if( !(m_fieldVec[ index ].second->read( s )))
-                std::cerr<< "ERROR: could not read value for option " << name <<": "<< s << std::endl;
+            for (unsigned int i=0; i<fields.size(); ++i)
+            {
+                if( !(fields[i]->read( s )))
+                    std::cerr<< "ERROR: could not read value for option " << name <<": "<< s << std::endl;
+            }
         }
         else
         {
@@ -377,11 +380,15 @@ void  Base::parseFields ( const std::map<std::string,std::string*>& args )
         {
             key=(*i).first;
             val=*(*i).second;
-            unsigned int index = findField(key);
-            if( index!=m_fieldVec.size() )
+            std::vector< BaseData* > fields=findGlobalField(key);
+            std::cout << fields.size() << " number Found for  "<< key << "\n";
+            if( fields.size() != 0 )
             {
-                if( !(m_fieldVec[ index ].second->read( val )))
-                    std::cerr<< "ERROR: could not read value for option " << key <<": "<< val << std::endl;
+                for (unsigned int i=0; i<fields.size(); ++i)
+                {
+                    if( !(fields[i]->read( val )))
+                        std::cerr<< "ERROR: could not read value for option " << key <<": "<< val << std::endl;
+                }
             }
             else
             {
@@ -396,14 +403,20 @@ void  Base::parseFields ( const std::map<std::string,std::string*>& args )
 void  Base::parse ( BaseObjectDescription* arg )
 {
     //this->parseFields ( arg->getAttributeMap() );
-    for (unsigned int i=0; i<m_fieldVec.size(); i++)
+    std::vector< std::string > attributeList;
+    arg->getAttributeList(attributeList);
+    for (unsigned int i=0; i<attributeList.size(); ++i)
     {
-        const char* val = arg->getAttribute(m_fieldVec[i].first);
-        if (val)
+        std::vector< BaseData* > dataModif = findGlobalField(attributeList[i]);
+        for (unsigned int d=0; d<dataModif.size(); ++d)
         {
-            string valueString = val;
-            if( !(m_fieldVec[ i ].second->read( valueString )))
-                std::cerr<< "ERROR: could not read value for option " << m_fieldVec[ i ].first <<": "<< val << std::endl;
+            const char* val = arg->getAttribute(attributeList[i]);
+            if (val)
+            {
+                std::string valueString(val);
+                if( !(dataModif[d]->read( valueString )))
+                    std::cerr<< "ERROR: could not read value for option " << attributeList[i] <<": "<< val << std::endl;
+            }
         }
     }
 }
