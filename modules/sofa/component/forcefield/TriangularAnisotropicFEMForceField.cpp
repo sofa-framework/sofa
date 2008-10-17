@@ -145,8 +145,6 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     else
     {
         double theta = (double)f_theta.getValue()*M_PI/180.0;
-        //double theta_ref;
-
         fiberDir = Coord((Real)cos(theta), (Real)sin(theta), 0);
     }
     bary.transpose();
@@ -168,12 +166,22 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     s4 = s2*s2;
     c4 = c2*c2;
 
-    Real K11= c4 * Q11 + 2 *c2*s2 *(Q12+2*Q66) + s4 * Q22;
-    Real K12 = c2*s2 * (Q11+Q22-4*Q66) + (c4+ s4) * Q12;
-    Real K22 = s4* Q11 + 2  *c2*s2 * (Q12+2*Q66) + c4 * Q22;
-    Real K16 = c3 * s * (Q11 - Q12) + c*s3* (Q12 - Q22) - 2*c*s* (c2 -s2) * Q66;
-    Real K26 = c*s3 * (Q11-Q12) + c3*s* (Q12 - Q22) + 2*c*s* (c2 -s2) * Q66;
-    Real K66 = c2*s2 * (Q11+Q22-2*Q12 - 2*Q66) + (c4+ s4) * Q66;
+    // K(1,1)=Q11*COS(THETA)^4 * + 2.0*(Q12+2*Q66)*SIN(THETA)^2*COS(THETA)^2 + Q22*SIN(THETA)^4 => c4*Q11+2*s2*c2*(Q12+2*Q66)+s4*Q22
+    // K(1,2)=(Q11+Q22-4*Q66)*SIN(THETA)^2*COS(THETA)^2 + Q12*(SIN(THETA)^4+COS(THETA)^4) => s2*c2*(Q11+Q22-4*Q66) + (s4+c4)*Q12
+    // K(2,1)=K(1,2)
+    // K(2,2)=Q11*SIN(THETA)^4 + 2.0*(Q12+2*Q66)*SIN(THETA)^2*COS(THETA)^2 + Q22*COS(THETA)^4 => s4*Q11 + 2.0*s2*c2*(Q12+2*Q66) + c4*Q22
+    // K(6,1)=(Q11-Q12-2*Q66)*SIN(THETA)*COS(THETA)^3 + (Q12-Q22+2*Q66)*SIN(THETA)^3*COS(THETA) => s*c3*(Q11-Q12-2*Q66)+s3*c*(Q12-Q22+2*Q66)
+    // K(1,6)=K(6,1)
+    // K(6,2)=(Q11-Q12-2*Q66)*SIN(THETA)^3*COS(THETA)+(Q12-Q22+2*Q66)*SIN(THETA)*COS(THETA)^3 => (Q11-Q12-2*Q66)*s3*c + (Q12-Q22+2*Q66)*s*c3
+    // K(2,6)=K(6,2)
+    // K(6,6)=(Q11+Q22-2*Q12-2*Q66)*SIN(THETA)^2 * COS(THETA)^2+ Q66*(SIN(THETA)^4+COS(THETA)^4) => (Q11+Q22-2*Q12-2*Q66)*s2*c2+ Q66*(s4+c4)
+
+    Real K11= c4 * Q11 + 2 * c2 * s2 * (Q12+2*Q66) + s4 * Q22; // c4*Q11+2*s2*c2*(Q12+2*Q66)+s4*Q22
+    Real K12 = c2 * s2 * (Q11+Q22-4*Q66) + (c4+s4) * Q12; // s2*c2*(Q11+Q22-4*Q66) + (s4+c4)*Q12
+    Real K22 = s4* Q11 + 2 * c2 * s2 * (Q12+2*Q66) + c4 * Q22; // s4*Q11 + 2.0*s2*c2*(Q12+2*Q66) + c4*Q22
+    Real K16 = s * c3 * (Q11-Q12-2*Q66) + s3 * c * (Q12-Q22+2*Q66);
+    Real K26 = s3 * c * (Q11-Q12-2*Q66) + s * c3 * (Q12-Q22+2*Q66);
+    Real K66 = c2 * s2 * (Q11+Q22-2*Q12-2*Q66) + (c4+s4) * Q66; // s2*c2*(Q11+Q22-2*Q12-2*Q66) + (s4+c4)*Q66
 
     tinfo->materialMatrix[0][0] = K11;
     tinfo->materialMatrix[0][1] = K12;
@@ -187,12 +195,11 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
 
     tinfo->materialMatrix *= (Real)(1.0/12.0);
 
-    cout << "Young1=" << Inherited::f_young.getValue() << endl;
-    cout << "Young2=" << f_young2.getValue() << endl;
-    cout << "Poisson1=" << Inherited::f_poisson.getValue() << endl;
-    cout << "Poisson2=" << f_poisson2.getValue() << endl;
+    //cout << "Young1=" << Inherited::f_young.getValue() << endl;
+    //cout << "Young2=" << f_young2.getValue() << endl;
+    //cout << "Poisson1=" << Inherited::f_poisson.getValue() << endl;
+    //cout << "Poisson2=" << f_poisson2.getValue() << endl;
 }
-
 
 template <class DataTypes>void TriangularAnisotropicFEMForceField<DataTypes>::draw()
 {
