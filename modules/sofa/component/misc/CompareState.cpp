@@ -51,6 +51,8 @@ CompareState::CompareState(): ReadState()
 {
     totalError_X=0.0;
     totalError_V=0.0;
+    dofError_X=0.0;
+    dofError_V=0.0;
 }
 
 
@@ -71,11 +73,11 @@ void CompareState::processCompareState()
 {
     if (infile && mmodel)
     {
-        double time = getContext()->getTime() + f_shift.getValue();
-        lastTime = time;
+        double time = getContext()->getTime() /*+ f_shift.getValue()*/;
+        lastTime = time+0.00001;
         std::vector<std::string> validLines;
         std::string line, cmd;
-        while (nextTime <= time && !infile->eof())
+        while (nextTime <= lastTime && !infile->eof())
         {
             getline(*infile, line);
             std::istringstream str(line);
@@ -88,19 +90,23 @@ void CompareState::processCompareState()
 
             if (nextTime <= time) validLines.push_back(line);
         }
-
         for (std::vector<std::string>::iterator it=validLines.begin(); it!=validLines.end(); ++it)
         {
             std::istringstream str(*it);
             cmd.clear();
             str >> cmd;
+            double currentError=0;
             if (cmd == "X=")
             {
-                totalError_X += mmodel->compareX(str);
+                currentError = mmodel->compareX(str);
+                totalError_X +=currentError;
+                dofError_X +=currentError/(double)this->mmodel->getSize();
             }
             else if (cmd == "V=")
             {
-                totalError_V += mmodel->compareV(str);
+                currentError = mmodel->compareV(str);
+                totalError_V +=currentError;
+                dofError_V += currentError/(double)this->mmodel->getSize();
             }
         }
     }
@@ -157,7 +163,9 @@ simulation::Visitor::Result CompareStateResult::processNodeTopDown( simulation::
     gnode->get(cv);
     if (!cv)   return simulation::Visitor::RESULT_CONTINUE;
     //We have a mechanical state
-    error += cv->getError();
+    error += cv->getTotalError();
+    errorByDof += cv->getErrorByDof();
+    numCompareState++;
     return simulation::Visitor::RESULT_CONTINUE;
 }
 

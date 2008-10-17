@@ -47,6 +47,8 @@ void apply(std::vector< std::string> &files, unsigned int iterations, bool reini
 {
     using namespace sofa::helper::system;
     sofa::simulation::tree::GNode* groot = NULL;
+
+    //Launch the comparison for each scenes
     for (unsigned int i=0; i<files.size(); ++i)
     {
         groot = dynamic_cast< sofa::simulation::tree::GNode* >( sofa::simulation::tree::getSimulation()->load(files[i].c_str()));
@@ -57,22 +59,25 @@ void apply(std::vector< std::string> &files, unsigned int iterations, bool reini
         }
 
 
-
+        //Filename where the simulation of the current scene will be saved (in Sofa/applications/projects/sofaVerification/simulation/)
         std::string file = SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str());
         file = file + std::string("/applications/projects/sofaVerification/simulation/") + SetDirectory::GetFileName(files[i].c_str());
 
+
+        //If we initialize the system, we add only WriteState components, to store the reference states
         if (reinit)
         {
-            sofa::component::misc::WriteStateCreator compareVisitor;
-            compareVisitor.setCreateInMapping(true);
-            compareVisitor.setSceneName(file);
-            compareVisitor.execute(groot);
+            sofa::component::misc::WriteStateCreator writeVisitor;
+            writeVisitor.setCreateInMapping(true);
+            writeVisitor.setSceneName(file);
+            writeVisitor.execute(groot);
 
             sofa::component::misc::WriteStateActivator v_write(true);
             v_write.execute(groot);
         }
         else
         {
+            //We add CompareState components: as it derives from the ReadState, we use the ReadStateActivator to enable them.
             sofa::component::misc::CompareStateCreator compareVisitor;
             compareVisitor.setCreateInMapping(true);
             compareVisitor.setSceneName(file);
@@ -81,23 +86,27 @@ void apply(std::vector< std::string> &files, unsigned int iterations, bool reini
             sofa::component::misc::ReadStateActivator v_read(true);
             v_read.execute(groot);
         }
+
+        //Save the initial time
         clock_t curtime = clock();
+
+        //Do as many iterations as specified in entry of the program. At each step, the compare state will compare the computed states to the recorded states
         std::cout << "Computing " <<  iterations << " for " << files[i] <<  std::endl;
-        for (unsigned int i=0; i<iterations; i++)
-        {
-            sofa::simulation::tree::getSimulation()->animate(groot);
-        }
+        for (unsigned int i=0; i<iterations; i++) sofa::simulation::tree::getSimulation()->animate(groot);
         double t = (clock() - curtime)/((double)CLOCKS_PER_SEC);
 
-        std::cout << iterations << " iterations done in " << t  << " seconds" <<std::endl;
+        std::cout <<"ITERATIONS " <<  iterations << " TIME " << t  << " seconds" <<std::endl;
 
+
+        //We read the final error: the summation of all the error made at each time step
         if (!reinit)
         {
             sofa::component::misc::CompareStateResult result;
             result.execute(groot);
-            std::cout << "ERROR : " << result.getError() << "\n";
-
+            std::cout << "ERROR " << result.getTotalError() << "\n";
+            std::cout << "ERRORBYDOF " << result.getErrorByDof()/(double)result.getNumCompareState() << "\n";
         }
+        //Clear and prepare for next scene
         sofa::simulation::tree::getSimulation()->unload(groot);
     }
 }
@@ -114,7 +123,7 @@ int main(int argc, char** argv)
 
 
 
-    sofa::helper::parse(&files, "This is a SOFA verification. Here are the command line arguments")
+    sofa::helper::parse(&files, "This is a SOFA verification. To use it, specify in the command line a \".ini\" file containing the path to the scenes you want to test. ")
     .option(&reinit,'r',"reinit","Recreate the references state files")
     .option(&iterations, 'i',"iteration", "Number of iterations for testing")
     (argc,argv);
@@ -122,20 +131,29 @@ int main(int argc, char** argv)
 
     if (!files.empty()) fileName = files[0];
 
-    sofa::helper::system::DataRepository.findFile(fileName);
-
-
-    //Get the list of scenes to test
     files.clear();
-    std::ifstream end(fileName.c_str());
-    std::string s;
-    while( end >> s )
-    {
-        sofa::helper::system::DataRepository.findFile(s);
-        files.push_back(s);
-    }
-    end.close();
 
+
+    sofa::helper::system::DataRepository.findFile(fileName);
+    std::string extension=fileName.substr(fileName.size()-4);
+    std::cout << "Extension : " << extension << "\n";
+    if (extension == std::string(".ini"))
+    {
+        //Get the list of scenes to test
+        std::ifstream end(fileName.c_str());
+        std::string s;
+        while( end >> s )
+        {
+            sofa::helper::system::DataRepository.findFile(s);
+            files.push_back(s);
+        }
+        end.close();
+    }
+    else
+        files.push_back(fileName);
+
+
+    std::cout << "Files : " << files[0] << "\n";
 
     if (reinit) apply(files, iterations, true);
     else
