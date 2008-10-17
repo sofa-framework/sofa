@@ -62,7 +62,7 @@ void XMLPrintVisitor::processObject(T obj)
     std::string classname = obj->getClassName();
     std::string templatename = obj->getTemplateName();
 
-    m_out << "<Object type=\"" << xmlencode(classname) << "\"";
+    m_out << "<" << xmlencode(classname);
     if (!templatename.empty())
         m_out << " template=\"" << xmlencode(templatename) << "\"";
 
@@ -73,7 +73,7 @@ void XMLPrintVisitor::processObject(T obj)
 
     for (int i=0; i<level; i++)
         m_out << "\t";
-    m_out << "</Object>" << std::endl;
+    m_out << "</" << xmlencode(classname)  <<">" << std::endl;
 }
 
 template<class Seq>
