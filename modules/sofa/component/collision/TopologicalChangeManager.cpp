@@ -61,25 +61,29 @@ TopologicalChangeManager::~TopologicalChangeManager()
 {
 }
 
-void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::core::CollisionElementIterator elem2) const
+void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::core::CollisionModel* model, const std::vector<int>& indices) const
 {
-    TriangleModel* my_triangle_model = (dynamic_cast<TriangleModel*>(elem2.getCollisionModel()));
+    TriangleModel* my_triangle_model = (dynamic_cast<TriangleModel*>(model));
     if (my_triangle_model)
     {
         sofa::core::componentmodel::topology::BaseMeshTopology* topo_curr;
-        topo_curr = elem2.getCollisionModel()->getContext()->getMeshTopology();
+        topo_curr = my_triangle_model->getContext()->getMeshTopology();
 
-        unsigned int ind_curr = elem2.getIndex();
+        std::set< unsigned int > items;
 
         simulation::tree::GNode *node_curr = dynamic_cast<simulation::tree::GNode*>(topo_curr->getContext());
 
-        std::set< unsigned int > items;
         if (topo_curr->getNbTetras() > 0)
         {
-            // get the index of the tetra linked to this triangle
-            ind_curr = topo_curr->getTetraTriangleShell(ind_curr)[0];
+            // get the index of the tetra linked to each triangle
+            for (unsigned int i=0; i<indices.size(); ++i)
+                items.insert(topo_curr->getTetraTriangleShell(indices[i])[0]);
         }
-        items.insert(ind_curr);
+        else
+        {
+            for (unsigned int i=0; i<indices.size(); ++i)
+                items.insert(indices[i]);
+        }
 
         bool is_topoMap = true;
 
@@ -114,6 +118,7 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::core::Collisio
                 }
             }
         }
+
         sofa::helper::vector<unsigned int> vitems;
         vitems.reserve(items.size());
         vitems.insert(vitems.end(), items.rbegin(), items.rend());
