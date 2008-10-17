@@ -77,13 +77,13 @@ void TriangularFEMForceField<DataTypes>::TRQSTriangleCreationFunction (	int tria
         switch(ff->method)
         {
         case SMALL :
+            ff->initSmall(triangleIndex,a,b,c);
             ff->computeMaterialStiffness(triangleIndex,a,b,c);
-            ff->initSmall();
 
             break;
         case LARGE :
-            ff->computeMaterialStiffness(triangleIndex,a,b,c);
             ff->initLarge(triangleIndex,a,b,c);
+            ff->computeMaterialStiffness(triangleIndex,a,b,c);
             break;
         }
     }
@@ -592,11 +592,11 @@ void TriangularFEMForceField<DataTypes>::computeForce( Displacement &F, const Di
     // K[2][0]
     // K[2][1]
 
-    KJtD[0] = K[0][0] * JtD[0] + K[0][1] * JtD[1] /* + K[0][2] * JtD[2] */;
+    KJtD[0] = K[0][0] * JtD[0] + K[0][1] * JtD[1] + K[0][2] * JtD[2];
 
-    KJtD[1] = K[1][0] * JtD[0] + K[1][1] * JtD[1] /* + K[1][2] * JtD[2] */;
+    KJtD[1] = K[1][0] * JtD[0] + K[1][1] * JtD[1] + K[1][2] * JtD[2];
 
-    KJtD[2] = /* K[2][0] * JtD[0] + K[2][1] * JtD[1] */ + K[2][2] * JtD[2];
+    KJtD[2] = K[2][0] * JtD[0] + K[2][1] * JtD[1] + K[2][2] * JtD[2];
 
     //	F = J * KJtD;
 
@@ -632,12 +632,22 @@ void TriangularFEMForceField<DataTypes>::computeForce( Displacement &F, const Di
 
 
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::initSmall()
+void TriangularFEMForceField<DataTypes>::initSmall(int i, Index&a, Index&b, Index&c)
 {
 
 #ifdef DEBUG_TRIANGLEFEM
     std::cout << "TriangularFEMForceField::initSmall\n";
 #endif
+
+    TriangleInformation *tinfo = &triangleInfo[i];
+    tinfo->initialTransformation.identity();
+    tinfo->rotatedInitialElements[0] = (*_initialPoints)[a]; //_rotatedInitialElements ... (*_initialPoints)
+    tinfo->rotatedInitialElements[1] = (*_initialPoints)[b];
+    tinfo->rotatedInitialElements[2] = (*_initialPoints)[c];
+
+    tinfo->rotatedInitialElements[1] -= tinfo->rotatedInitialElements[0];
+    tinfo->rotatedInitialElements[2] -= tinfo->rotatedInitialElements[0];
+    tinfo->rotatedInitialElements[0] = Coord(0,0,0);
 
 }
 
@@ -763,6 +773,7 @@ void TriangularFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Inde
     //cerr<<"TriangularFEMForceField<DataTypes>::initLarge(), x.size() = "<<_object->getX()->size()<<", (*_initialPoints).size() = "<<(*_initialPoints).size()<<endl;
     computeRotationLarge( R_0_1, (*_initialPoints), a, b, c );
 
+    tinfo->initialTransformation = R_0_1;
     tinfo->rotatedInitialElements[0] = R_0_1 * (*_initialPoints)[a]; //_rotatedInitialElements ... (*_initialPoints)
     tinfo->rotatedInitialElements[1] = R_0_1 * (*_initialPoints)[b];
     tinfo->rotatedInitialElements[2] = R_0_1 * (*_initialPoints)[c];
