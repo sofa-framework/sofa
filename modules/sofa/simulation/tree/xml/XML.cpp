@@ -98,11 +98,11 @@ BaseElement* createNode(xmlNodePtr root, const char *basefilename, bool isRoot =
         return includeNode(root, basefilename);
     }
 
-    std::string name, type;
+    std::string classType,name, type;
 
     xmlChar *pname = xmlGetProp(root, (const xmlChar*) "name");
     xmlChar *ptype = xmlGetProp(root, (const xmlChar*) "type");
-
+    classType=(const char*)root->name;
     if (pname != NULL)
     {
         name = (const char*)pname;
@@ -124,10 +124,15 @@ BaseElement* createNode(xmlNodePtr root, const char *basefilename, bool isRoot =
     }
     else
     {
-        type = "default";
+        if (classType != "Node" && classType != "Attribute" && classType != "Data")
+        {
+            type=classType;
+            classType="Object";
+        }
+        else
+            type = "default";
     }
-
-    BaseElement* node = BaseElement::Create((const char*)root->name,name,type);
+    BaseElement* node = BaseElement::Create(classType,name,type);
 
     if (node == NULL)
     {
