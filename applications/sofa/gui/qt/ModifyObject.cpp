@@ -3419,9 +3419,9 @@ bool ModifyObject::createQtTable(Data< sofa::helper::vector< Vec<N,T> > > *ff, Q
         objectGUI.push_back(std::make_pair(ff,vectorTable));
         if (N<=2)
         {
-            if (N>=0) {vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);}
-            if (N>=1) {vectorTable->horizontalHeader()->setLabel(1,QString("Y"));   vectorTable->setColumnStretchable(1,true);}
-            if (N>=2) {vectorTable->horizontalHeader()->setLabel(2,QString("Z"));   vectorTable->setColumnStretchable(2,true);}
+            if (N>0) {vectorTable->horizontalHeader()->setLabel(0,QString("X"));   vectorTable->setColumnStretchable(0,true);}
+            if (N>1) {vectorTable->horizontalHeader()->setLabel(1,QString("Y"));   vectorTable->setColumnStretchable(1,true);}
+            if (N>2) {vectorTable->horizontalHeader()->setLabel(2,QString("Z"));   vectorTable->setColumnStretchable(2,true);}
         }
         connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
     }
@@ -3482,9 +3482,9 @@ bool ModifyObject::createQtTable(DataPtr< sofa::helper::vector< Vec<N,T> > > *ff
         objectGUI.push_back(std::make_pair(ff,vectorTable));
         if (N<=2)
         {
-            if (N>=0) {vectorTable->horizontalHeader()->setLabel(0,QString("X"));   vectorTable->setColumnStretchable(0,true);}
-            if (N>=1) {vectorTable->horizontalHeader()->setLabel(1,QString("Y"));   vectorTable->setColumnStretchable(1,true);}
-            if (N>=2) {vectorTable->horizontalHeader()->setLabel(2,QString("Z"));   vectorTable->setColumnStretchable(2,true);}
+            if (N>0) {vectorTable->horizontalHeader()->setLabel(0,QString("X"));   vectorTable->setColumnStretchable(0,true);}
+            if (N>1) {vectorTable->horizontalHeader()->setLabel(1,QString("Y"));   vectorTable->setColumnStretchable(1,true);}
+            if (N>2) {vectorTable->horizontalHeader()->setLabel(2,QString("Z"));   vectorTable->setColumnStretchable(2,true);}
         }
         connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
     }
