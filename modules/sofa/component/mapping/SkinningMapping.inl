@@ -38,7 +38,7 @@
 #include <iostream>
 
 #ifdef SOFA_DEV
-#include <sofa/helper/DualQuat.inl>
+#include <sofa/helper/DualQuat.h>
 #endif
 
 using std::cerr;

@@ -352,7 +352,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
             if (loader.empty())
                 objLoader = helper::io::Mesh::Create(filename);
             else
-                objLoader = helper::io::Mesh::FactoryMesh::CreateObject(loader, filename);
+                objLoader = helper::io::Mesh::Create(loader, filename);
 
             if (!objLoader)
             {

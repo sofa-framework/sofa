@@ -28,7 +28,7 @@
 #define SOFA_HELPER_GL_TEXTURE_H
 
 #include <sofa/helper/system/gl.h>
-
+#include <sofa/helper/helper.h>
 #include <sofa/helper/io/Image.h>
 
 namespace sofa
@@ -42,7 +42,7 @@ namespace gl
 
 //using namespace sofa::defaulttype;
 
-class Texture
+class SOFA_HELPER_API Texture
 {
 private:
     io::Image *image;

@@ -28,6 +28,7 @@
 #define SOFA_HELPER_IO_MESHTOPOLOGYLOADER_H
 
 #include <stdio.h>
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {
@@ -38,7 +39,7 @@ namespace helper
 namespace io
 {
 
-class MeshTopologyLoader
+class SOFA_HELPER_API MeshTopologyLoader
 {
 public:
     virtual ~MeshTopologyLoader() {}

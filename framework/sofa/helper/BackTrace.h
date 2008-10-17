@@ -27,13 +27,15 @@
 #ifndef SOFA_HELPER_BACKTRACE_H
 #define SOFA_HELPER_BACKTRACE_H
 
+#include <sofa/helper/helper.h>
+
 namespace sofa
 {
 
 namespace helper
 {
 
-class BackTrace
+class SOFA_HELPER_API BackTrace
 {
 public:
     /// Dump current backtrace to stderr.

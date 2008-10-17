@@ -31,6 +31,8 @@
 #include <string>
 #include <vector>
 
+#include <sofa/helper/helper.h>
+
 namespace sofa
 {
 
@@ -40,7 +42,7 @@ namespace helper
 namespace system
 {
 
-class PipeProcess
+class SOFA_HELPER_API PipeProcess
 {
 public:
     virtual ~PipeProcess();

@@ -27,6 +27,8 @@
 #ifndef SOFA_HELPER_IO_BVH_BVHOFFSET_H
 #define SOFA_HELPER_IO_BVH_BVHOFFSET_H
 
+#include <sofa/helper/helper.h>
+
 namespace sofa
 {
 
@@ -39,7 +41,7 @@ namespace io
 namespace bvh
 {
 
-class BVHOffset
+class SOFA_HELPER_API BVHOffset
 {
 public:
     BVHOffset(double _x, double _y, double _z)

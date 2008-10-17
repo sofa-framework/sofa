@@ -28,6 +28,7 @@
 #define SOFA_HELPER_IO_MESHOBJ_H
 
 #include <sofa/helper/io/Mesh.h>
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {
@@ -40,7 +41,7 @@ namespace io
 
 using namespace sofa::defaulttype;
 
-class MeshOBJ : public Mesh
+class SOFA_HELPER_API MeshOBJ : public Mesh
 {
 private:
 

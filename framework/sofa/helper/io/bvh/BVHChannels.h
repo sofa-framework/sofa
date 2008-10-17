@@ -28,6 +28,7 @@
 #define SOFA_HELPER_IO_BVH_BVHCHANNELS_H
 
 #include <vector>
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {
@@ -41,7 +42,7 @@ namespace io
 namespace bvh
 {
 
-class BVHChannels
+class SOFA_HELPER_API BVHChannels
 {
 public:
     BVHChannels(unsigned int _size)

@@ -33,6 +33,8 @@
 #include <assert.h>
 #include <iostream>
 
+#include <sofa/helper/helper.h>
+
 namespace sofa
 {
 
@@ -40,7 +42,7 @@ namespace helper
 {
 
 template<class Real>
-class Quater
+class SOFA_HELPER_API Quater
 {
 private:
     Real _q[4];

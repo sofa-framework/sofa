@@ -28,6 +28,7 @@
 #define SOFA_HELPER_IO_MESHTRIAN_H
 
 #include <sofa/helper/io/Mesh.h>
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {
@@ -47,7 +48,7 @@ using namespace sofa::defaulttype;
 /// nombre de faces
 ///liste de toutes les faces ex 1 2 3 0 0 0 les 3 derniers chiffres ne sont pas utilises pour le moment
 
-class MeshTrian : public Mesh
+class SOFA_HELPER_API MeshTrian : public Mesh
 {
 private:
 

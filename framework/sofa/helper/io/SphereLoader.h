@@ -27,6 +27,7 @@
 #ifndef SOFA_HELPER_IO_SPHERELOADER_H
 #define SOFA_HELPER_IO_SPHERELOADER_H
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/helper/helper.h>
 namespace sofa
 {
 
@@ -36,7 +37,7 @@ namespace helper
 namespace io
 {
 
-class SphereLoader
+class SOFA_HELPER_API SphereLoader
 {
 public:
     virtual ~SphereLoader() {}

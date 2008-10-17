@@ -27,6 +27,8 @@
 #ifndef MARCHINGCUBEUTILITY_H
 #define MARCHINGCUBEUTILITY_H
 
+#include <sofa/helper/helper.h>
+
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/io/Mesh.h>
@@ -42,7 +44,7 @@ using sofa::defaulttype::Vec;
 using sofa::defaulttype::Vector3;
 using sofa::helper::vector;
 
-class MarchingCubeUtility
+class SOFA_HELPER_API MarchingCubeUtility
 {
 public:
     typedef unsigned int PointID;
@@ -127,8 +129,8 @@ private:
 
 };
 
-extern const int MarchingCubeEdgeTable[256];
-extern const int MarchingCubeTriTable[256][16];
+extern SOFA_HELPER_API const int MarchingCubeEdgeTable[256];
+extern SOFA_HELPER_API const int MarchingCubeTriTable[256][16];
 
 } // namespace helper
 

@@ -88,7 +88,7 @@ namespace polygon_cube_intersection
  * Only tests faces not represented in "mask".
  */
 
-static inline unsigned long
+static inline  unsigned long
 face_plane(const real p[3], unsigned long mask)
 {
     register unsigned long outcode = 0L;

@@ -32,6 +32,8 @@
 #ifndef SOFA_HELPER_ARGUMENTPARSER_H
 #define SOFA_HELPER_ARGUMENTPARSER_H
 
+#include <sofa/helper/helper.h>
+
 #include <iostream>
 #include <stdlib.h>
 #include <sstream>
@@ -52,7 +54,7 @@ namespace helper
 typedef std::istringstream istrstream;
 
 /// Abstract base class for all command line arguments
-class ArgumentBase
+class SOFA_HELPER_API ArgumentBase
 {
 public:
     /// character string
@@ -228,7 +230,7 @@ The special option -h or --help displays help on all arguments.
 See examples argumentParserLine_test.cpp and argumentParserFile_test.cpp
 @see Argument
 */
-class ArgumentParser
+class SOFA_HELPER_API ArgumentParser
 {
     /// String
     typedef std::string string;

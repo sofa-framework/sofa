@@ -34,6 +34,8 @@
 #include <iostream>
 #include <stdlib.h>
 
+#include <sofa/helper/helper.h>
+
 namespace sofa
 {
 

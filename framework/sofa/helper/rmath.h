@@ -27,7 +27,7 @@
 #ifndef SOFA_HELPER_RMATH_H
 #define SOFA_HELPER_RMATH_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/helper/helper.h>
 #include <math.h>
 
 namespace sofa

@@ -29,6 +29,8 @@
 
 #include <string>
 
+#include <sofa/helper/helper.h>
+
 namespace sofa
 {
 
@@ -39,7 +41,7 @@ namespace system
 {
 
 // A small utility class to temporarly set the current directory to the same as a specified file
-class SetDirectory
+class SOFA_HELPER_API SetDirectory
 {
 public:
     std::string previousDir;

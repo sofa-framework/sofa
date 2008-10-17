@@ -55,6 +55,7 @@
 #pragma once
 #endif
 
+#include <sofa/helper/helper.h>
 #include <sofa/helper/static_assert.h>
 
 #include <cstddef>
@@ -62,6 +63,7 @@
 #include <iterator>
 #include <algorithm>
 #include <math.h>
+
 
 namespace sofa
 {

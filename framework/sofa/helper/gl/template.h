@@ -28,6 +28,7 @@
 #define SOFA_HELPER_GL_TEMPLATE_H
 
 #include <sofa/helper/system/gl.h>
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {

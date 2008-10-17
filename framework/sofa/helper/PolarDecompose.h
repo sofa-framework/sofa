@@ -28,6 +28,7 @@
 #define SOFA_HELPER_POLARDECOMPOSE_H
 
 #include <sofa/defaulttype/Mat.h>
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {

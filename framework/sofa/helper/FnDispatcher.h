@@ -30,13 +30,15 @@
 #include <map>
 #include <typeinfo>
 
+#include <sofa/helper/helper.h>
+
 namespace sofa
 {
 
 namespace helper
 {
 
-class TypeInfo
+class SOFA_HELPER_API TypeInfo
 {
 public:
     const std::type_info* pt;

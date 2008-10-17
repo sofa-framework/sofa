@@ -30,6 +30,8 @@
 #include <stdlib.h>
 #include <sofa/helper/Factory.h>
 
+#include <sofa/helper/helper.h>
+
 namespace sofa
 {
 
@@ -39,7 +41,7 @@ namespace helper
 namespace io
 {
 
-class Image
+class SOFA_HELPER_API Image
 {
 protected:
     int width, height, nbBits;

@@ -79,6 +79,8 @@
 
 #include <sofa/defaulttype/Quat.h>
 
+#include <sofa/helper/helper.h>
+
 namespace sofa
 {
 
@@ -88,7 +90,7 @@ namespace helper
 namespace gl
 {
 
-class   Trackball
+class SOFA_HELPER_API Trackball
 {
 public:
 // 	typedef Quater<double> Quaternion;
