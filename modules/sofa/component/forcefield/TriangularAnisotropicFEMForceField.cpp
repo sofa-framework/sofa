@@ -93,12 +93,12 @@ void TriangularAnisotropicFEMForceField<DataTypes>::TRQSTriangleCreationFunction
         switch(ff->method)
         {
         case SMALL :
+            ff->initSmall(triangleIndex,a,b,c);
             ff->computeMaterialStiffness(triangleIndex, a, b, c);
-            ff->initSmall();
             break;
         case LARGE :
-            ff->computeMaterialStiffness(triangleIndex, a, b, c);
             ff->initLarge(triangleIndex,a,b,c);
+            ff->computeMaterialStiffness(triangleIndex, a, b, c);
             break;
         }
     }
@@ -156,9 +156,12 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     fiberDirRef[2] = 0;
     fiberDirRef.normalize();
 
+    if (this->method != SMALL) // use the co-rotational transformation
+        fiberDir = tinfo->initialTransformation * fiberDir;
+    fiberDir.normalize();
     Real c, s, c2, s2, c3, s3,c4, s4;
-    c = fiberDirRef[0]; //cos(theta_ref);
-    s = fiberDirRef[1]; //sin(theta_ref);
+    c = fiberDir[0]; //cos(theta_ref);
+    s = fiberDir[1]; //sin(theta_ref);
     c2 = c*c;
     s2 = s*s;
     c3 = c2*c;

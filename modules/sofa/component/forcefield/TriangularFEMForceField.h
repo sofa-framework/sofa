@@ -215,7 +215,7 @@ protected :
     void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J );
 
     ////////////// small displacements method
-    void initSmall(void);
+    void initSmall(int i, Index&a, Index&b, Index&c);
     void accumulateForceSmall( VecCoord& f, const VecCoord & p, Index elementIndex, bool implicit = false );
     void accumulateDampingSmall( VecCoord& f, Index elementIndex );
     void applyStiffnessSmall( VecCoord& f, Real h, const VecCoord& x );
