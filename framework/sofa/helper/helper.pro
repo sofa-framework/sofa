@@ -21,6 +21,7 @@ INCLUDEPATH -= $$SOFA_DIR/modules
 INCLUDEPATH -= $$SOFA_DIR/applications
 
 HEADERS += \
+          helper.h \
           ArgumentParser.h \
           BackTrace.h \
           fixed_array.h \
