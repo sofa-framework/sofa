@@ -36,6 +36,8 @@
 
 #include <sofa/component/topology/PointSetTopologyChange.h>
 
+#include <sofa/component/topology/GridTopology.h>
+
 #include <sofa/defaulttype/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
@@ -112,6 +114,20 @@ void Quad2TriangleTopologicalMapping::init()
             Loc2GlobVec.clear();
             In2OutMap.clear();
 
+            // These values are only correct if the mesh is a grid topology
+            int nx = 2;
+            int ny = 1;
+            int nz = 1;
+            {
+                topology::GridTopology* grid = dynamic_cast<topology::GridTopology*>(fromModel);
+                if (grid != NULL)
+                {
+                    nx = grid->getNx()-1;
+                    ny = grid->getNy()-1;
+                    nz = grid->getNz()-1;
+                }
+            }
+
             for (unsigned int i=0; i<quadArray.size(); ++i)
             {
 
@@ -122,8 +138,16 @@ void Quad2TriangleTopologicalMapping::init()
                 unsigned int p1 = quadArray[i][1];
                 unsigned int p2 = quadArray[i][2];
                 unsigned int p3 = quadArray[i][3];
-                to_tstm->addTriangleProcess(Triangle(helper::make_array<unsigned int>((unsigned int) p0, (unsigned int) p1, (unsigned int) p2)));
-                to_tstm->addTriangleProcess(Triangle(helper::make_array<unsigned int>((unsigned int) p0, (unsigned int) p2, (unsigned int) p3)));
+                if (((i%nx) ^ (i/nx)) & 1)
+                {
+                    to_tstm->addTriangleProcess(Triangle(helper::make_array<unsigned int>((unsigned int) p0, (unsigned int) p1, (unsigned int) p3)));
+                    to_tstm->addTriangleProcess(Triangle(helper::make_array<unsigned int>((unsigned int) p2, (unsigned int) p3, (unsigned int) p1)));
+                }
+                else
+                {
+                    to_tstm->addTriangleProcess(Triangle(helper::make_array<unsigned int>((unsigned int) p1, (unsigned int) p2, (unsigned int) p0)));
+                    to_tstm->addTriangleProcess(Triangle(helper::make_array<unsigned int>((unsigned int) p3, (unsigned int) p0, (unsigned int) p2)));
+                }
 
                 Loc2GlobVec.push_back(i);
                 Loc2GlobVec.push_back(i);
