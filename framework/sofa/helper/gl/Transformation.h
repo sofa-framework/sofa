@@ -28,6 +28,7 @@
 #define SOFA_HELPER_GL_TRANSFORMATION_H
 
 #include <sofa/helper/system/config.h>
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {
@@ -38,7 +39,7 @@ namespace helper
 namespace gl
 {
 
-class   		Transformation
+class SOFA_HELPER_API Transformation
 {
 public:
 

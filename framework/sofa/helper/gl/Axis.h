@@ -35,6 +35,8 @@
 
 #include <map>
 
+#include <sofa/helper/helper.h>
+
 namespace sofa
 {
 
@@ -46,7 +48,7 @@ namespace gl
 
 using namespace sofa::defaulttype;
 
-class Axis
+class SOFA_HELPER_API Axis
 {
 public:
 

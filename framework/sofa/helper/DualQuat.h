@@ -30,6 +30,8 @@
 #include <iostream>
 #include <NewMAT/newmat.h>
 
+#include <sofa/helper/helper.h>
+
 namespace sofa
 {
 
@@ -37,7 +39,7 @@ namespace helper
 {
 
 template<class Real>
-class DualQuat
+class SOFA_HELPER_API DualQuat
 {
     typedef typename sofa::defaulttype::Vec<3,Real> Vec;
     typedef typename sofa::helper::Quater<Real> Quat;

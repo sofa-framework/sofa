@@ -32,6 +32,7 @@
 #include <sofa/helper/io/bvh/BVHMotion.h>
 #include <cstdio>
 #include <string.h>
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {
@@ -52,7 +53,7 @@ namespace bvh
 *		A Motion that contains a set of key positions. Each of them contains the channels value that must be set at the current timestep.
 *		The EndOfSite Flag is set to true if the Joint is a Leaf.
 */
-class BVHJoint
+class SOFA_HELPER_API BVHJoint
 {
 public:
     BVHJoint(const char *_name, bool _endSite=false, BVHJoint *_parent=NULL);

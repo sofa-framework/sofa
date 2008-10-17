@@ -27,6 +27,7 @@
 #ifndef SOFA_HELPER_IO_MASSSPRINGLOADER_H
 #define SOFA_HELPER_IO_MASSSPRINGLOADER_H
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/helper/helper.h>
 namespace sofa
 {
 
@@ -36,7 +37,7 @@ namespace helper
 namespace io
 {
 
-class MassSpringLoader
+class SOFA_HELPER_API MassSpringLoader
 {
 public:
     virtual ~MassSpringLoader() {}

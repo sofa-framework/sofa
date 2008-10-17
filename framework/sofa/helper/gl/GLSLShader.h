@@ -33,6 +33,8 @@
 #include <string>
 #include <string.h>
 
+#include <sofa/helper/helper.h>
+
 
 namespace sofa
 {
@@ -47,7 +49,7 @@ namespace gl
 #error GL Shader support requires GLEW. Please define SOFA_HAVE_GLEW to use shaders.
 #endif
 
-class GLSLShader
+class SOFA_HELPER_API GLSLShader
 {
 public:
 

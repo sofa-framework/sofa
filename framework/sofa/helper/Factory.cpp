@@ -38,7 +38,7 @@ namespace helper
 {
 
 /// Decode the type's name to a more readable form if possible
-std::string gettypename(const std::type_info& t)
+std::string SOFA_HELPER_API gettypename(const std::type_info& t)
 {
     std::string name = t.name();
 #ifdef __GNUC__
@@ -79,14 +79,14 @@ static std::string& getFactoryLog()
 }
 
 /// Log classes registered in the factory
-void logFactoryRegister(std::string baseclass, std::string classname, std::string key, bool multi)
+void SOFA_HELPER_API logFactoryRegister(std::string baseclass, std::string classname, std::string key, bool multi)
 {
     getFactoryLog() += baseclass + (multi?" template class ":" class ")
             + classname + " registered as " + key + "\n";
 }
 
 /// Print factory log
-void printFactoryLog(std::ostream& out)
+void SOFA_HELPER_API printFactoryLog(std::ostream& out)
 {
     out << getFactoryLog();
 }

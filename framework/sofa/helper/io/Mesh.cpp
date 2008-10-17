@@ -24,6 +24,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/helper/system/config.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/Factory.inl>
 
@@ -33,11 +34,13 @@ namespace sofa
 namespace helper
 {
 
+template class Factory<std::string, io::Mesh, std::string>;
+
 namespace io
 {
 
-// commented by Sylvere
-// template class Factory<std::string, Mesh, std::string>;
+SOFA_LINK_CLASS(MeshOBJ)
+SOFA_LINK_CLASS(MeshTrian)
 
 Mesh::Material::Material()
 {
@@ -74,6 +77,11 @@ Mesh* Mesh::Create(std::string filename)
     std::string::size_type p = filename.rfind('.');
     if (p!=std::string::npos)
         loader = std::string(filename, p+1);
+    return FactoryMesh::CreateObject(loader, filename);
+}
+
+Mesh* Mesh::Create(std::string loader, std::string filename)
+{
     return FactoryMesh::CreateObject(loader, filename);
 }
 

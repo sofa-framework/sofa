@@ -24,6 +24,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/helper/system/config.h>
 #include <sofa/helper/io/Image.h>
 #include <sofa/helper/Factory.inl>
 
@@ -38,7 +39,8 @@ template class Factory<std::string, sofa::helper::io::Image, std::string>;
 namespace io
 {
 
-
+SOFA_LINK_CLASS(ImageBMP)
+SOFA_LINK_CLASS(ImagePNG)
 
 Image::Image()
     : width(0), height(0), nbBits(0), data(NULL)

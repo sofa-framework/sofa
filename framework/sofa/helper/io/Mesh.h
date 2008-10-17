@@ -31,6 +31,8 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/Factory.h>
 //#include <sofa/core/objectmodel/Data.h>
+#include <sofa/helper/helper.h>
+
 namespace sofa
 {
 
@@ -45,11 +47,11 @@ using sofa::defaulttype::Vector3;
 
 using sofa::defaulttype::Vec4f;
 
-class Mesh
+class SOFA_HELPER_API Mesh
 {
 public:
 
-    class Material
+    class SOFA_HELPER_API Material
     {
     public:
         std::string 	name;		/* name of material */
@@ -130,6 +132,7 @@ public:
     typedef Factory<std::string, Mesh, std::string> FactoryMesh;
 
     static Mesh* Create(std::string filename);
+    static Mesh* Create(std::string loader, std::string filename);
 
     template<class Object>
     static void create(Object*& obj, std::string arg)

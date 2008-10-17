@@ -31,6 +31,9 @@
 #include <string>
 #include <assert.h>
 
+#include <sofa/helper/system/config.h>
+#include <sofa/helper/helper.h>
+
 namespace sofa
 {
 
@@ -44,7 +47,7 @@ namespace io
 
 #ifdef SOFA_HAVE_PNG
 
-class ImagePNG : public Image
+class SOFA_HELPER_API ImagePNG : public Image
 {
 public:
     ImagePNG ()

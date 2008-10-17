@@ -31,6 +31,9 @@
 #include <string>
 #include <assert.h>
 
+#include <sofa/helper/system/config.h>
+#include <sofa/helper/helper.h>
+
 namespace sofa
 {
 
@@ -42,7 +45,7 @@ namespace io
 
 //using namespace sofa::defaulttype;
 
-class ImageBMP : public Image
+class SOFA_HELPER_API ImageBMP : public Image
 {
 public:
     ImageBMP ()

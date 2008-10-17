@@ -31,6 +31,8 @@
 
 #include <sofa/helper/io/Image.h>
 
+#include <sofa/helper/helper.h>
+
 namespace sofa
 {
 
@@ -42,7 +44,7 @@ namespace gl
 
 //using namespace sofa::defaulttype;
 
-class Capture
+class SOFA_HELPER_API Capture
 {
 protected:
     std::string prefix;

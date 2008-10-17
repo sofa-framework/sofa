@@ -30,6 +30,8 @@
 #include <string>
 #include <vector>
 
+#include <sofa/helper/helper.h>
+
 namespace sofa
 {
 
@@ -54,7 +56,7 @@ namespace system
 ///
 /// A path is considered as a concatenation of directories separated by :
 // A small utility class to temporarly set the current directory to the same as a specified file
-class FileRepository
+class SOFA_HELPER_API FileRepository
 {
 public:
 
@@ -114,7 +116,7 @@ protected:
     static bool findFileIn(std::string& filename, const std::string& path);
 };
 
-extern FileRepository DataRepository; ///< Default repository
+extern SOFA_HELPER_API FileRepository DataRepository; ///< Default repository
 
 } // namespace system
 

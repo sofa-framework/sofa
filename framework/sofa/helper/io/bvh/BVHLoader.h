@@ -29,6 +29,7 @@
 
 #include <sofa/helper/io/bvh/BVHJoint.h>
 #include <sofa/helper/io/bvh/BVHMotion.h>
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {
@@ -47,7 +48,7 @@ namespace bvh
 *	This files describe a hierarchical articulated model and also an associated motion
 *	see http://www.cs.wisc.edu/graphics/Courses/cs-838-1999/Jeff/BVH.html for the file format specification
 */
-class BVHLoader
+class SOFA_HELPER_API BVHLoader
 {
 public:
     BVHLoader() {};

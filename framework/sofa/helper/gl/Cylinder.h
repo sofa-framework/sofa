@@ -33,6 +33,8 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
 
+#include <sofa/helper/helper.h>
+
 #include <map>
 
 namespace sofa
@@ -46,7 +48,7 @@ namespace gl
 
 using namespace sofa::defaulttype;
 
-class Cylinder
+class SOFA_HELPER_API Cylinder
 {
 public:
 
