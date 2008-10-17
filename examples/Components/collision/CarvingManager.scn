@@ -1,3 +1,6 @@
+<!-- CAUTION: to be able to test this example you must compile first SOFA with the flag SOFA_HAVE_SENSABLE active 
+              and then you must run the sensAble project-->
+
 <Node name="root" dt="0.005" showBehaviorModels="0" showCollisionModels="1" showMappings="0" showForceFields="0" >
 	<Object type="CollisionPipeline" name="pipeline" depth="6" verbose="0"/>
 	<Object type="BruteForceDetection" name="detection" />
