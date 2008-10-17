@@ -179,6 +179,8 @@ int main(int argc, char** argv)
     torusFEM->addObject(meshTorusFEM);
 
     MechanicalObject3* dofFEM = new MechanicalObject3; dofFEM->setName("FEM Object");
+    dofFEM->setTranslation(2.5,0,0);
+    dofFEM->setRotation(90,0,0);
     torusFEM->addObject(dofFEM);
 
     UniformMass3* uniMassFEM = new UniformMass3;
@@ -202,6 +204,8 @@ int main(int argc, char** argv)
     visualFEM->setName("visual");
     visualFEM->load(sofa::helper::system::DataRepository.getFile("mesh/torus.obj"),"","");
     visualFEM->setColor("red");
+    visualFEM->setTranslation(2.5,0,0);
+    visualFEM->setRotation(90,0,0);
     FEMVisualNode->addObject(visualFEM);
 
     BarycentricMapping3_to_Ext3* mappingFEM = new BarycentricMapping3_to_Ext3(dofFEM, visualFEM);
@@ -222,6 +226,8 @@ int main(int argc, char** argv)
     FEMCollisionNode->addObject(meshTorusFEM_surf);
 
     MechanicalObject3* dofFEM_surf = new MechanicalObject3;  dofFEM_surf->setName("Collision Object FEM");
+    dofFEM_surf->setTranslation(2.5,0,0);
+    dofFEM_surf->setRotation(90,0,0);
     FEMCollisionNode->addObject(dofFEM_surf);
 
     TriangleModel* triangleFEM = new TriangleModel; triangleFEM->setName("TriangleCollision FEM");
@@ -260,6 +266,7 @@ int main(int argc, char** argv)
     torusSpring->addObject(meshTorusSpring);
 
     MechanicalObject3* dofSpring = new MechanicalObject3; dofSpring->setName("Spring Object");
+    dofSpring->setTranslation(5,0.0,0.0);
     torusSpring->addObject(dofSpring);
 
     UniformMass3* uniMassSpring = new UniformMass3;
@@ -281,6 +288,7 @@ int main(int argc, char** argv)
     visualSpring->setName("visual");
     visualSpring->load(sofa::helper::system::DataRepository.getFile("mesh/torus.obj"),"","");
     visualSpring->setColor("green");
+    visualSpring->setTranslation(5,0.0,0.0);
     SpringVisualNode->addObject(visualSpring);
 
     BarycentricMapping3_to_Ext3* mappingSpring = new BarycentricMapping3_to_Ext3(dofSpring, visualSpring);
@@ -301,6 +309,7 @@ int main(int argc, char** argv)
     SpringCollisionNode->addObject(meshTorusSpring_surf);
 
     MechanicalObject3* dofSpring_surf = new MechanicalObject3; dofSpring_surf->setName("Collision Object Spring");
+    dofSpring_surf->setTranslation(5,0.0,0.0);
     SpringCollisionNode->addObject(dofSpring_surf);
 
     TriangleModel* triangleSpring = new TriangleModel; triangleSpring->setName("TriangleCollision Spring");
@@ -331,6 +340,8 @@ int main(int argc, char** argv)
     torusFFD->addObject(linearFFD);
 
     MechanicalObject3* dofFFD = new MechanicalObject3; dofFFD->setName("FFD Object");
+    dofFFD->setTranslation(7.5,0,0);
+    dofFFD->setRotation(90,0,0);
     torusFFD->addObject(dofFFD);
 
     UniformMass3* uniMassFFD = new UniformMass3;
@@ -360,6 +371,7 @@ int main(int argc, char** argv)
     visualFFD->setName("visual");
     visualFFD->load(sofa::helper::system::DataRepository.getFile("mesh/torus.obj"),"","");
     visualFFD->setColor("yellow");
+    visualFFD->setTranslation(7.5,0,0);
     FFDVisualNode->addObject(visualFFD);
 
     BarycentricMapping3_to_Ext3* mappingFFD = new BarycentricMapping3_to_Ext3(dofFFD, visualFFD);
@@ -381,6 +393,7 @@ int main(int argc, char** argv)
     FFDCollisionNode->addObject(meshTorusFFD_surf);
 
     MechanicalObject3* dofFFD_surf = new MechanicalObject3; dofFFD_surf->setName("Collision Object FFD");
+    dofFFD_surf->setTranslation(7.5,0,0);
     FFDCollisionNode->addObject(dofFFD_surf);
 
     TriangleModel* triangleFFD = new TriangleModel;  triangleFFD->setName("TriangleCollision FFD");
@@ -411,6 +424,7 @@ int main(int argc, char** argv)
     torusRigid->addObject(linearRigid);
 
     MechanicalObjectRigid3* dofRigid = new MechanicalObjectRigid3; dofRigid->setName("Rigid Object");
+    dofRigid->setTranslation(10,0,0);
     torusRigid->addObject(dofRigid);
 
     UniformMassRigid3* uniMassRigid = new UniformMassRigid3;
@@ -455,35 +469,13 @@ int main(int argc, char** argv)
     RigidCollisionNode->addObject(mechaMappingRigid);
 
 
-
-
-
+    groot->setAnimate(false);
 
 
 
 
     getSimulation()->init(groot);
 
-    //Set the initial position: must be done AFTER the initialization of the scene
-    sofa::simulation::TransformationVisitor transform;
-    transform.setTranslation(2.5,0.0,0.0);
-    transform.setRotation(90,0,0);
-    transform.execute(torusFEM);
-
-    transform.setTranslation(5.0,0.0,0.0);
-    transform.setRotation(0,0,0);
-    transform.execute(torusSpring);
-
-    transform.setTranslation(7.5,0.0,0.0);
-    transform.setRotation(90,0,0);
-    transform.execute(torusFFD);
-
-    transform.setTranslation(10.0,0.0,0.0);
-    transform.setRotation(00,0,0);
-    transform.execute(torusRigid);
-
-
-    groot->setAnimate(false);
 
     //=======================================
     // Run the main loop
