@@ -322,7 +322,7 @@ void CudaHexahedronTLEDForceField::reinit()
     std::cout << "CudaHexahedronTLEDForceField::reinit() DONE."<<std::endl;
 }
 
-void CudaHexahedronTLEDForceField::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void CudaHexahedronTLEDForceField::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/)
 {
     // Gets initial positions (allow to compute displacements by doing the difference between initial and current positions)
     const VecCoord& x0 = *mstate->getX0();
