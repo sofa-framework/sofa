@@ -153,7 +153,6 @@ void TriangularFEMForceField<DataTypes>::init()
     reinit();
 }
 
-
 template <class DataTypes>void TriangularFEMForceField<DataTypes>::reinit()
 {
     if (f_method.getValue() == "small")
@@ -341,7 +340,7 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
 
             if ((mostDeformableVertexIndex!=-1) && (max > THRESHOLD))
             {
-                std::cout << "max=" << max << std::endl;
+                //std::cout << "max=" << max << std::endl;
                 double minDotProduct = 1000.0;
                 unsigned int fracturableIndex = 0;
                 bool fracture(false);
@@ -416,7 +415,7 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
 
                 if (fracture)
                 {
-                    std::cout << "fracture at edge "<<fracturableIndex<<std::endl;
+                    //std::cout << "fracture at edge "<<fracturableIndex<<std::endl;
                     edgeInfo[fracturableIndex].fracturable = true;
                     lastFracturedEdgeIndex = fracturableIndex;
                 }

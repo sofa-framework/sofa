@@ -90,7 +90,9 @@ public:
     Data<VecCoord> f_fiberCenter;
     Data<bool> showFiber;
 
-    VecDeriv fiberDirRefs;
+    TriangleData<Deriv> fiberDirRefs;
+
+    virtual void handleTopologyChange();
 
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 

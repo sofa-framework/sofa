@@ -107,19 +107,27 @@ void TriangularAnisotropicFEMForceField<DataTypes>::TRQSTriangleCreationFunction
 template< class DataTypes>
 void TriangularAnisotropicFEMForceField<DataTypes>::init()
 {
-    Inherited::init();
-
     _topology = getContext()->getMeshTopology();
 
+    Inherited::init();
     //reinit();
 }
 
 template <class DataTypes>void TriangularAnisotropicFEMForceField<DataTypes>::reinit()
 {
     f_poisson2.setValue(Inherited::f_poisson.getValue()*(f_young2.getValue()/Inherited::f_young.getValue()));
+    fiberDirRefs.resize(_topology->getNbTriangles());
     Inherited::reinit();
 }
 
+template <class DataTypes>void TriangularAnisotropicFEMForceField<DataTypes>::handleTopologyChange()
+{
+    std::list<const TopologyChange *>::const_iterator itBegin=_topology->firstChange();
+    std::list<const TopologyChange *>::const_iterator itEnd=_topology->lastChange();
+
+    fiberDirRefs.handleTopologyEvents(itBegin,itEnd);
+    Inherited::handleTopologyChange();
+}
 template <class DataTypes>
 void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index& v1, Index& v2, Index& v3)
 {
@@ -212,7 +220,7 @@ template <class DataTypes>void TriangularAnisotropicFEMForceField<DataTypes>::dr
     glDisable(GL_POLYGON_OFFSET_FILL);
     if (!getContext()->getShowForceFields())
         return;
-    if (showFiber.getValue() && !fiberDirRefs.empty())
+    if (showFiber.getValue() && fiberDirRefs.size() == _topology->getNbTriangles())
     {
         const VecCoord& x = *this->mstate->getX();
         int nbTriangles=_topology->getNbTriangles();
