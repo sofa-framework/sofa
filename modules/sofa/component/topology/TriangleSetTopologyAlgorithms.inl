@@ -1768,9 +1768,9 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
     m_container->getTriangleVertexShellArray();
 
     //const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
-    unsigned int nb_points =  m_container->getTriangleVertexShellArray().size() - 1; //vect_c.size();
+    unsigned int nb_points =  m_container->getTriangleVertexShellArray().size(); //vect_c.size();
     const sofa::helper::vector<Triangle> &vect_t=m_container->getTriangleArray();
-    unsigned int nb_triangles =  vect_t.size() -1;
+    unsigned int nb_triangles =  vect_t.size();
 
     // Variables to accumulate the number of elements registered to be created (so as to remember their indices)
     unsigned int acc_nb_points=nb_points;
