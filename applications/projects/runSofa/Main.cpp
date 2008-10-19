@@ -72,6 +72,7 @@ int main(int argc, char** argv)
     std::string fileName ;
     bool        startAnim = false;
     bool        printFactory = false;
+    bool        loadRecent = false;
     std::string gui = sofa::gui::SofaGUI::GetGUIName();
     std::vector<std::string> plugins;
     std::vector<std::string> files;
@@ -81,12 +82,11 @@ int main(int argc, char** argv)
     gui_help += ")";
 
     sofa::helper::parse(&files, "This is a SOFA application. Here are the command line arguments")
-//	.option(&fileName,'f',"file","scene file")
     .option(&startAnim,'s',"start","start the animation loop")
     .option(&printFactory,'p',"factory","print factory logs")
-    //.option(&nogui,'g',"nogui","use no gui, run a number of iterations and exit")
     .option(&gui,'g',"gui",gui_help.c_str())
     .option(&plugins,'l',"load","load given plugins")
+    .option(&loadRecent,'r',"recent","load most recently opened file")
     (argc,argv);
 
     sofa::component::init();
@@ -111,6 +111,14 @@ int main(int argc, char** argv)
     if (fileName.empty())
     {
         fileName = "Demos/liver.scn";
+        if (loadRecent) // try to reload the latest scene
+        {
+            std::string scenes = "config/Sofa.ini";
+            sofa::helper::system::DataRepository.findFile( scenes );
+            std::ifstream mrulist(scenes.c_str());
+            std::getline(mrulist,fileName);
+            mrulist.close();
+        }
         sofa::helper::system::DataRepository.findFile(fileName);
     }
 
