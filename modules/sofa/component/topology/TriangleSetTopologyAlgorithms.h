@@ -98,7 +98,7 @@ public:
     /** \brief Duplicates the given edge. Only works of at least one of its points is adjacent to a border.
      * @returns the number of newly created points, or -1 if the incision failed.
      */
-    virtual int InciseAlongEdge(unsigned int edge);
+    virtual int InciseAlongEdge(unsigned int edge, int* createdPoints = NULL);
 
 private:
     TriangleSetTopologyContainer*					m_container;

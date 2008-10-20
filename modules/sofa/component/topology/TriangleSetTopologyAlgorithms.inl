@@ -1663,7 +1663,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
 
 // Duplicate the given edge. Only works of at least one of its points is adjacent to a border.
 template<class DataTypes>
-int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_edge)
+int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_edge, int* createdPoints)
 {
     const Edge & edge0=m_container->getEdge(ind_edge);
     unsigned ind_pa = edge0[0];
@@ -1794,6 +1794,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
         ancestors.push_back(ind_pa);
         p_ancestors.push_back(ancestors);
         p_baryCoefs.push_back(defaultCoefs);
+        if (createdPoints) *(createdPoints++) = new_pa;
     }
     else
         new_pa = ind_pa;
@@ -1806,6 +1807,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
         ancestors[0] = ind_pb;
         p_ancestors.push_back(ancestors);
         p_baryCoefs.push_back(defaultCoefs);
+        if (createdPoints) *(createdPoints++) = new_pb;
     }
     else
         new_pb = ind_pb;
