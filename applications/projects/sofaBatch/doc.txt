@@ -1,0 +1,21 @@
+ sofaBatch permits to automatically save states of several simulations without open the GUI (and so without X-server).
+ It is useful to run several simulations during the night on a distant server.
+ 
+A list of scenes .scn are given, and for each a number of time steps to compute and a .simu output namefile.
+Resulting  .simu and simulation files will be saved in the 'simulation' directory.
+ 
+Theses tasks must be written as a list in a text file (see the file Sofa/applications/projects/sofaBatch/tasks as an example):
+//.scn names    #time steps     output name
+scene1.scn       100              mysimu1
+scene2.scn       1876             mysimu2
+scene3.scn       15               mysimu3
+...
+
+Running command: sofaBatch listFileName
+(example: Sofa/bin/sofaBatch Sofa/applications/projects/sofaBatch/tasks)
+
+Files mysimu1.simu, mysimu2.simu, mysimu3.simu, ... are created in Sofa/applications/projects/sofaBatch/simulation and they can be loaded with runSofa to visualize results.
+
+
+see help : Sofa/bin/sofaBatch --help
+
