@@ -128,6 +128,23 @@ template <class DataTypes>void TriangularAnisotropicFEMForceField<DataTypes>::ha
     fiberDirRefs.handleTopologyEvents(itBegin,itEnd);
     Inherited::handleTopologyChange();
 }
+
+template <class DataTypes>
+void TriangularAnisotropicFEMForceField<DataTypes>::getFiberDir(int element, Deriv& dir)
+{
+    if ((unsigned)element < fiberDirRefs.size())
+    {
+        const Deriv& ref = fiberDirRefs[element];
+        const VecCoord& x = *this->mstate->getX();
+        topology::Triangle t = _topology->getTriangle(element);
+        dir = (x[t[1]]-x[t[0]])*ref[0] + (x[t[2]]-x[t[0]])*ref[1];
+    }
+    else
+    {
+        dir.clear();
+    }
+}
+
 template <class DataTypes>
 void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index& v1, Index& v2, Index& v3)
 {
@@ -220,7 +237,7 @@ template <class DataTypes>void TriangularAnisotropicFEMForceField<DataTypes>::dr
     glDisable(GL_POLYGON_OFFSET_FILL);
     if (!getContext()->getShowForceFields())
         return;
-    if (showFiber.getValue() && fiberDirRefs.size() == _topology->getNbTriangles())
+    if (showFiber.getValue() && fiberDirRefs.size() == (unsigned)_topology->getNbTriangles())
     {
         const VecCoord& x = *this->mstate->getX();
         int nbTriangles=_topology->getNbTriangles();

@@ -190,6 +190,8 @@ public:
     void setMethod(int val) { method = val; }
     int getFracturedEdge();
 
+    void getFractureCriteria(int element, Deriv& direction, Real& value);
+
 protected :
 
     void computeEigenStrain( Coord &v, StrainDisplacement &J, Displacement &Depl , double &maxEigenValue);

@@ -905,6 +905,21 @@ void TriangularFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const
     }
 }
 
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::getFractureCriteria(int element, Deriv& direction, Real& value)
+{
+    /// @TODO evaluate the criteria on the current position instead of relying on the computations during the force evaluation (based on the previous position)
+    if ((unsigned)element < triangleInfo.size())
+    {
+        direction = triangleInfo[element].principalStrainDirection;
+        value = triangleInfo[element].eigenValue;
+    }
+    else
+    {
+        direction.clear();
+        value = 0;
+    }
+}
 
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::accumulateDampingLarge(VecCoord &, Index )
