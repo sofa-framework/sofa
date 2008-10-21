@@ -40,6 +40,7 @@ HEADERS += \
           componentmodel/behavior/MultiVector.h \
           componentmodel/behavior/MultiMatrix.h \
           componentmodel/behavior/OdeSolver.h \
+          componentmodel/behavior/State.h \
           componentmodel/collision/BroadPhaseDetection.h \
           componentmodel/collision/CollisionAlgorithm.h \
           componentmodel/collision/CollisionGroupManager.h \
