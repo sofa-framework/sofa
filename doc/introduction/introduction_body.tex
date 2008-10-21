@@ -72,7 +72,7 @@ Consequently, the particles and the rigid body necessarily belong to different n
 In this example, the masses are stored in \texttt{UniformMass} components.
 The types of their values are related to the types of their associated DOF.
 \texttt{UniformMass} is derived from the abstract \texttt{Mass} class, and stores only one value, for the case where all the associated objects have the same mass. 
-If necessary, it can replaced by a \texttt{DiagonalMass} instanciated on the same DOF types, for the case where the associated objects have different masses. 
+If necessary, it can be replaced by a \texttt{DiagonalMass} instanciated on the same DOF types, for the case where the associated objects have different masses. 
 This is an important feature of \sofa: each component can be replaced by another one deriving from the same abstract class and instantiated on the same DOF types. 
 This results in a high flexibility.
 
@@ -242,7 +242,7 @@ It first fires a \texttt{MechanicalResetForceVisitor} to reset the force vectors
 It then fires a  \texttt{MechanicalComputeForceVisitor}. 
 During the TDT, each component derived from \texttt{core::componentmodel::behavior::BaseForceField} computes and accumulates its force in its sibling \texttt{MechanicalObject}. 
 In the example shown in figure~\ref{fig:mixedPendulum}, \texttt{F13} adds its contribution to \texttt{Dof1} and \texttt{Dof3}, then \texttt{F1} and \texttt{M1} add their contributions to \texttt{Dof1}, then \texttt{M2} to \texttt{Dof2}. 
-Then during the BUT, the mechanical mappings sum up the forces of their chid DOF to their parent DOF, \textit{i.e.}, the force in \texttt{Dof3} to \texttt{Dof2} through \texttt{M23} in the same example.
+Then during the BUT, the mechanical mappings sum up the forces of their child DOF to their parent DOF, \textit{i.e.}, the force in \texttt{Dof3} to \texttt{Dof2} through \texttt{M23} in the same example.
 Note that branches \texttt{deformableBody} and \texttt{rigidBody} can be processed in parallel.
 At the end, the force vector in \texttt{Dof1} contains the net force applied to the particles, and the force vector in \texttt{Dof2} contains the net (six-dimensional) force applied to the rigid body.
 
@@ -258,7 +258,7 @@ Here again, visitors are used to perform the desired operation in each traversed
 MultiVector operations are pruned at the first level for efficiency, because the solvers deal with the mechanically independent state variables rather than the mapped variables.
 Moreover, the mapped coordinates can not be assumed to vary linearly along with their parent variables.
 Applying a \\ \texttt{MechanicalPropagatePositionAndVelocityVisitor} is thus necessary to update the mapped DOFs based on the mechanically independent DOFs.
-This visitor is automatically performed after time integration, as one can see in the code of method \\ \texttt{MechanicalIntegrationVisitor::fwdOdeSolver}.
+This visitor is automatically performed after time integration, as one can see in the code of method \texttt{MechanicalIntegrationVisitor::fwdOdeSolver}.
 It is also used by some solvers when auxiliary states are needed, as discussed in section~\ref{sec:statevectors}, in order to update the mapped DOFs.
 
 \todo{Call tree of AnimateVisitor, restricted to sofa::core and sofa::simulation}
@@ -319,7 +319,7 @@ Interaction forces can also occur between objects which do not belong to the sam
 In this case, the interaction force is located at a higher hierarchical level than the objects it applies to, as shown in figure~\ref{fig:twoSolvers}.
 It can not be traversed by visitors fired by the solvers.
 Its evaluation is performed by the \texttt{AnimateVisitor}, and accumulated as external forces in the associated \texttt{MechanicalObject} components.
-Consequently, it acts as a constant constant force during each whole animation step.
+Consequently, it acts as a constant force during each whole animation step.
 In a \texttt{RungeKutta2Solver}, during the force computation at midpoint, its value is the same as at the starting point.
 In a \texttt{CGImplicitSolver}, its stiffness is not taken into account, which may introduce instabilities if its actual stiffness is high.
 

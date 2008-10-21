@@ -349,7 +349,7 @@ There are actually a few generic lines of code to add in a component for it to h
 
 If the component is based on topological elements like edges, the main idea is to introduce an object {\em edgeinfo} of type {\em EdgeData} 
 and to template it by a data structure {\em EdgeInformation} that is attached to each edge (this data structure has to be defined by the component, to which it is specific).
-By calling the method {\em handleTopologyEvents} on the object {\em edgeinfo} (of type {\em EdgeData} $<${\em EdgeInformation}$>$), the component-related data structure is automatically updated (code has been implement in file {\em EdgeData.inl}).
+By calling the method {\em handleTopologyEvents} on the object {\em edgeinfo} (of type {\em EdgeData} $<${\em EdgeInformation}$>$), the component-related data structure is automatically updated (code has been implemented in file {\em EdgeData.inl}).
 \\
 
 Here : {\em edgeinfo}$[i]$ is the data structure attached to the edge indexed by $i$ in the topological component {\em EdgeSetTopology}.
