@@ -88,8 +88,8 @@ void OglShader::init()
     std::string tempStr = vertFilename.getValue();
     std::string file;
     const std::string SEPARATOR = ";";
-    unsigned int pos = 0;
-    unsigned int oldPos = 0;
+    unsigned long int pos = 0;
+    unsigned long int oldPos = 0;
 
     pos = tempStr.find(SEPARATOR, oldPos);
 
