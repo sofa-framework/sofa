@@ -38,7 +38,7 @@ namespace sofa
 namespace helper
 {
 
-class SOFA_HELPER_API TypeInfo
+class TypeInfo
 {
 public:
     const std::type_info* pt;
