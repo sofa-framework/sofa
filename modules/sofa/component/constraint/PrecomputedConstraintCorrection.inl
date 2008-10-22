@@ -32,8 +32,13 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 
 //compliance computation include
-// #include <sofa/component/odesolver/CGImplicitSolver.h>
+#include <sofa/component/odesolver/CGImplicitSolver.h>
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
+
+#include <sofa/component/linearsolver/SparseMatrix.h>
+#include <sofa/component/linearsolver/CGLinearSolver.h>
+
+
 //#include <glib.h>
 #include <sstream>
 #include <list>
@@ -50,6 +55,8 @@ namespace constraint
 #define EPS_UNITARY_FORCE 0.01
 
 using namespace sofa::component::odesolver;
+using namespace sofa::component::linearsolver;
+using namespace sofa::simulation;
 
 template<class DataTypes>
 PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(behavior::MechanicalState<DataTypes> *mm)
@@ -135,26 +142,51 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
         force.resize(nbNodes);
         //v.clear();
         //v.resize(v0.size());//computeDf
-// 	    CGImplicitSolver* odeSolver = dynamic_cast<CGImplicitSolver*>(dynamic_cast<simulation::tree::GNode *>(this->getContext())->solver[0]);
-        EulerImplicitSolver* odeSolver = dynamic_cast<EulerImplicitSolver*>(dynamic_cast<simulation::tree::GNode *>(this->getContext())->solver[0]);
 
-        if (odeSolver==NULL)
+        CGImplicitSolver* odeSolver;
+        EulerImplicitSolver* EulerSolver;
+        CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* linearSolver;
+
+        this->getContext()->get(odeSolver);
+        this->getContext()->get(EulerSolver);
+        this->getContext()->get(linearSolver);
+
+        if(odeSolver)
+            std::cout << "use CGImplicitSolver " << std::endl;
+        else if(EulerSolver && linearSolver)
+            std::cout << "use EulerImplicitSolver &  CGLinearSolver" << std::endl;
+        else
         {
-            std::cout << "WARNING : PrecomputedContactCorrection Must be associated with CGImplicitSolver for the precomputation " << std::endl;
+            std::cout << "WARNING : PrecomputedContactCorrection must be associated with CGImplicitSolver or EulerImplicitSolver+CGLinearSolver for the precomputation " << std::endl;
             std::cout << "No Precomputation " << std::endl;
             return;
         }
-        else
-            std::cout << "use solver CGImplicitSolver " << std::endl;
+
+
+
 
         ///////////////////////// CHANGE THE PARAMETERS OF THE SOLVER /////////////////////////////////
-        /*	    double buf_tolerance = (double) odeSolver->f_tolerance.getValue();
-        	    int	   buf_maxIter   = (int) odeSolver->f_maxIter.getValue();
-        	    double buf_threshold = (double) odeSolver->f_smallDenominatorThreshold.getValue();
-        	    odeSolver->f_tolerance.setValue(1e-20);
-        	    odeSolver->f_maxIter.setValue(500);
-        	    odeSolver->f_smallDenominatorThreshold.setValue(1e-35);
-        */	    ///////////////////////////////////////////////////////////////////////////////////////////////
+        double buf_tolerance, buf_threshold;
+        int	   buf_maxIter;
+        if(odeSolver)
+        {
+            buf_tolerance = (double) odeSolver->f_tolerance.getValue();
+            buf_maxIter   = (int) odeSolver->f_maxIter.getValue();
+            buf_threshold = (double) odeSolver->f_smallDenominatorThreshold.getValue();
+            odeSolver->f_tolerance.setValue(1e-20);
+            odeSolver->f_maxIter.setValue(500);
+            odeSolver->f_smallDenominatorThreshold.setValue(1e-35);
+        }
+        else/* if(linearSolver) */
+        {
+            buf_tolerance = (double) linearSolver->f_tolerance.getValue();
+            buf_maxIter   = (int) linearSolver->f_maxIter.getValue();
+            buf_threshold = (double) linearSolver->f_smallDenominatorThreshold.getValue();
+            linearSolver->f_tolerance.setValue(1e-20);
+            linearSolver->f_maxIter.setValue(500);
+            linearSolver->f_smallDenominatorThreshold.setValue(1e-35);
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////////////
 
         VecDeriv& velocity = *mstate->getV();
         VecCoord& pos=*mstate->getX();
@@ -181,8 +213,12 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
 
 
                 //odeSolver->computeContactForce(force);
-                //odeSolver->solve(dt);
-                odeSolver->solve(dt, core::componentmodel::behavior::BaseMechanicalState::VecId::position(), core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
+
+                if(odeSolver)
+                    odeSolver->solve(dt);
+                else if(EulerSolver)
+                    EulerSolver->solve(dt, core::componentmodel::behavior::BaseMechanicalState::VecId::position(), core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
+
                 velocity = *mstate->getV();
 
                 for (unsigned int v=0; v<nbNodes; v++)
@@ -200,10 +236,19 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
         ///////////////////////// RESET PARAMETERS AT THEIR PREVIOUS VALUE /////////////////////////////////
         // gravity is reset at its previous value
         this->getContext()->setGravityInWorld(gravity);
-        /*	    odeSolver->f_tolerance.setValue(buf_tolerance);
-        	    odeSolver->f_maxIter.setValue(buf_maxIter);
-        	    odeSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
-        */	    ///////////////////////////////////////////////////////////////////////////////////////////////
+        if(odeSolver)
+        {
+            odeSolver->f_tolerance.setValue(buf_tolerance);
+            odeSolver->f_maxIter.setValue(buf_maxIter);
+            odeSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
+        }
+        else/* if(linearSolver) */
+        {
+            linearSolver->f_tolerance.setValue(buf_tolerance);
+            linearSolver->f_maxIter.setValue(buf_maxIter);
+            linearSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////////////
         std::ofstream compFileOut(ss.str().c_str(), std::fstream::out | std::fstream::binary);
         compFileOut.write((char*)appCompliance, nbCols * nbRows*sizeof(double));
         compFileOut.close();
@@ -215,15 +260,17 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
 
 
     ////  debug print 100 first row and column of the matrix
-    //std::cout << "Matrix compliance" ;
+    /*	std::cout << "Matrix compliance" ;
 
-    //for (unsigned int i=0; i<100 && i<nbCols; i++){
-    //	std::cout << std::endl;
-    //	for (unsigned int j=0; j<100 && j<nbCols; j++)
-    //	{
-    //		std::cout <<" \t "<< appCompliance[j*nbCols + i];
-    //	}
-    //}
+    	for (unsigned int i=0; i<100 && i<nbCols; i++){
+    		std::cout << std::endl;
+    		for (unsigned int j=0; j<100 && j<nbCols; j++)
+    		{
+    			std::cout <<" \t "<< appCompliance[j*nbCols + i];
+    		}
+    	}
+
+    	std::cout << std::endl;*/
     //std::cout << "quit init "  << endl;
 
     std::cout << "----------- Test Quaternions --------------" << std::endl;
