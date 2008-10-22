@@ -113,7 +113,7 @@ void SimpleTesselatedTetraMechanicalMapping<BaseMapping>::applyJT( typename In::
     if (pointMap.empty() && edgeMap.empty()) return;
     const core::componentmodel::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
 
-    out.resize(outputTopo->getNbPoints());
+    out.resize(inputTopo->getNbPoints());
     for(unsigned int i = 0; i < pointMap.size(); ++i)
     {
         if (pointMap[i] != -1)
