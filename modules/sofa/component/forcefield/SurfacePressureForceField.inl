@@ -48,7 +48,9 @@ SurfacePressureForceField<DataTypes>::SurfacePressureForceField():
     min(initData(&min, Coord(), "min", "Lower bond of the selection box")),
     max(initData(&max, Coord(), "max", "Lower bond of the selection box")),
     pulseMode(initData(&pulseMode, false, "pulseMode", "Cyclic pressure application")),
-    pressureSpeed(initData(&pressureSpeed, (Real)0.0, "pressureSpeed", "Continuous pressure application in Pascal per second. Only active in pulse mode"))
+    pressureSpeed(initData(&pressureSpeed, (Real)0.0, "pressureSpeed", "Continuous pressure application in Pascal per second. Only active in pulse mode")),
+    volumeConservationMode(initData(&volumeConservationMode, false, "volumeConservationMode", "Pressure variation follow the inverse of the volume variation")),
+    defaultVolume(initData(&defaultVolume, (Real)-1.0, "defaultVolume", "Default Volume"))
 {
 
 }
@@ -87,6 +89,18 @@ void SurfacePressureForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord&
 
     if (_topology)
     {
+        if (volumeConservationMode.getValue())
+        {
+            if(defaultVolume == -1)
+            {
+                defaultVolume = computeMeshVolume(f,x);
+            }
+            else if(defaultVolume != 0)
+            {
+                p *= defaultVolume.getValue() / computeMeshVolume(f,x);
+            }
+        }
+
         if (_topology->getNbTriangles() > 0)
         {
             addTriangleSurfacePressure(f,x,v,p);
@@ -99,6 +113,38 @@ void SurfacePressureForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord&
     }
 }
 
+
+template <class DataTypes>
+typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceField<DataTypes>::computeMeshVolume(const VecDeriv& /*f*/, const VecCoord& x)
+{
+    typedef BaseMeshTopology::Triangle Triangle;
+    typedef BaseMeshTopology::Quad Quad;
+
+    Real volume = 0;
+    int i = 0;
+
+    for (i = 0; i < _topology->getNbTriangles(); i++)
+    {
+        Triangle t = _topology->getTriangle(i);
+        Deriv ab = x[t[1]] - x[t[0]];
+        Deriv ac = x[t[2]] - x[t[0]];
+        volume += (ab.cross(ac))[2] * (x[t[0]][2] + x[t[1]][2] + x[t[2]][2]) / static_cast<Real>(6.0);
+    }
+
+    for (i = 0; i < _topology->getNbQuads(); i++)
+    {
+        Quad q = _topology->getQuad(i);
+
+        Deriv ab = x[q[1]] - x[q[0]];
+        Deriv ac = x[q[2]] - x[q[0]];
+        Deriv ad = x[q[3]] - x[q[0]];
+
+        volume += ab.cross(ac)[2] * (x[q[0]][2] + x[q[1]][2] + x[q[2]][2]) / static_cast<Real>(6.0);
+        volume += ac.cross(ad)[2] * (x[q[0]][2] + x[q[2]][2] + x[q[3]][2]) / static_cast<Real>(6.0);
+    }
+
+    return volume;
+}
 
 
 template <class DataTypes>
@@ -142,15 +188,15 @@ void SurfacePressureForceField<DataTypes>::addQuadSurfacePressure(VecDeriv& f, c
             Deriv ac = x[q[2]] - x[q[0]];
             Deriv ad = x[q[3]] - x[q[0]];
 
-            Deriv p1 = pressure * (ab.cross(ac)) / static_cast<Real>(8.0);
-            Deriv p2 = pressure * (ac.cross(ad)) / static_cast<Real>(8.0);
+            Deriv p1 = pressure * (ab.cross(ac)) / static_cast<Real>(6.0);
+            Deriv p2 = pressure * (ac.cross(ad)) / static_cast<Real>(6.0);
 
             Deriv p = p1 + p2;
 
             f[q[0]] += p;
-            f[q[1]] += p;
+            f[q[1]] += p1;
             f[q[2]] += p;
-            f[q[3]] += p;
+            f[q[3]] += p2;
         }
 
     }
@@ -193,34 +239,26 @@ const typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceFi
     {
         Real pUpperBound = (pressure.getValue() > 0) ? pressure.getValue() : 0.0;
 
-        if ((p + pressureSpeed.getValue() * dt) <= pUpperBound)
-        {
-            p += pressureSpeed.getValue() * dt;
-            return p;
-        }
-        else
+        p += pressureSpeed.getValue() * dt;
+        if (p >= pUpperBound)
         {
             p = pUpperBound;
             state = DECREASE;
-            return p;
         }
+        return p;
     }
 
     if (state == DECREASE)
     {
         Real pLowerBound = (pressure.getValue() > 0) ? 0.0 : pressure.getValue();
 
-        if ((p - pressureSpeed.getValue() * dt) >= pLowerBound)
-        {
-            p -= pressureSpeed.getValue() * dt;
-            return p;
-        }
-        else
+        p -= pressureSpeed.getValue() * dt;
+        if (p<= pLowerBound)
         {
             p = pLowerBound;
             state = INCREASE;
-            return p;
         }
+        return p;
     }
 
     return 0.0;

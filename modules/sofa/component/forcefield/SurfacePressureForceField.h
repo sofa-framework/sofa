@@ -69,6 +69,8 @@ protected:
     Data< Coord > max; ///< Upper bound of the pressured box.
     Data< bool > pulseMode; ///< In this mode, the pressure increases (or decreases) from 0 to pressure cyclicly.
     Data< Real > pressureSpeed; ///< Pressure variation in Pascal by second.
+    Data< bool > volumeConservationMode; ///< In this mode, pressure variation is related to the object volume variation.
+    Data< Real > defaultVolume; ///< Default Volume.
 
     State state; ///< In pulse mode, says wether pressure is increasing or decreasing.
 
@@ -91,6 +93,11 @@ public:
     }
 
 protected:
+
+    /**
+     * @brief Compute mesh volume.
+     */
+    Real computeMeshVolume(const VecDeriv& f,const VecCoord& x);
 
     /**
      * @brief Triangle based surface pressure computation method.
@@ -117,6 +124,7 @@ protected:
      * Pressure is computed according to the pressureSpeed attribute and the simulation time step.
      */
     const Real computePulseModePressure(void);
+
 };
 
 
