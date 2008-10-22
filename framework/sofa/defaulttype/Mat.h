@@ -540,6 +540,9 @@ public:
         return r;
     }
 
+
+
+
 };
 
 /// Same as Mat except the values are not initialized by default
@@ -764,6 +767,45 @@ std::istream& operator>>(std::istream& in, sofa::defaulttype::Mat<L,C,real>& m)
     }
     return in;
 }
+
+
+
+
+/// printing in other software formats
+
+template <int L, int C, typename real>
+void printMatlab(std::ostream& o, const Mat<L,C,real>& m)
+{
+    o<<"[";
+    for(int l=0; l<L; ++l)
+    {
+        for(int c=0; c<C; ++c)
+        {
+            o<<m[l][c];
+            if( c!=C-1 ) o<<",\t";
+        }
+        if( l!=L-1 ) o<<";"<<endl;
+    }
+    o<<"]"<<endl;
+}
+
+
+template <int L, int C, typename real>
+void printMaple(std::ostream& o, const Mat<L,C,real>& m)
+{
+    o<<"matrix("<<L<<","<<C<<", [";
+    for(int l=0; l<L; ++l)
+    {
+        for(int c=0; c<C; ++c)
+        {
+            o<<m[l][c];
+            o<<",\t";
+        }
+        if( l!=L-1 ) o<<endl;
+    }
+    o<<"])"<<endl;
+}
+
 
 
 /// return the max of two values
