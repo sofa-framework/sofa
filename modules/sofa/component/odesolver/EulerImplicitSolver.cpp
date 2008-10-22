@@ -138,9 +138,11 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
     MultiVector newVel(this, vResult);
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     //vel.peq( x );                       // vel = vel + x
-    newVel.eq(vel, x);
+    newVel.eq(vel);
+    newVel.peq(x);
     //pos.peq( vel, h );                  // pos = pos + h vel
-    newPos.eq(pos, newVel, h);
+    newPos.eq(pos);
+    newPos.peq(newVel,h);
 #else // single-operation optimization
     {
         simulation::MechanicalVMultiOpVisitor vmop;
