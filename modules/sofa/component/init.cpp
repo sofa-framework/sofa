@@ -228,6 +228,7 @@ SOFA_LINK_CLASS(SpotLight)
 SOFA_LINK_CLASS(LightManager)
 SOFA_LINK_CLASS(VoxelGridLoader)
 SOFA_LINK_CLASS(SurfacePressureForceField)
+SOFA_LINK_CLASS(SimpleTesselatedTetraTopologicalMapping)
 
 #ifdef SOFA_HAVE_GLEW
 SOFA_LINK_CLASS(OglShader)

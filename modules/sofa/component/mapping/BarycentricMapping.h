@@ -317,7 +317,7 @@ public:
     void setTopology(topology::RegularGridTopology* _topology) {this->topology = _topology;}
     topology::RegularGridTopology *getTopology() {return dynamic_cast<topology::RegularGridTopology *>(this->topology);}
 
-    int addPointInCube(int cubeIndex, const SReal* baryCoords);
+    int addPointInCube(const int cubeIndex, const SReal* baryCoords);
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
@@ -363,7 +363,7 @@ public:
 
     void clear(int reserve=0);
 
-    int addPointInCube(int cubeIndex, const SReal* baryCoords);
+    int addPointInCube(const int cubeIndex, const SReal* baryCoords);
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
 

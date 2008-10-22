@@ -244,6 +244,20 @@ public:
     void operator+=(const Quater& q2);
     void operator*=(const Quater& q2);
 
+    bool operator==(const Quater& q) const
+    {
+        for (int i=0; i<4; i++)
+            if ( fabs( _q[i] - q._q[i] ) > EQUALITY_THRESHOLD ) return false;
+        return true;
+    }
+
+    bool operator!=(const Quater& q) const
+    {
+        for (int i=0; i<4; i++)
+            if ( fabs( _q[i] - q._q[i] ) > EQUALITY_THRESHOLD ) return true;
+        return false;
+    }
+
     /// write to an output stream
     inline friend std::ostream& operator << ( std::ostream& out, const Quater& v )
     {
