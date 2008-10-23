@@ -95,6 +95,7 @@ public:
 */
 
 
+
 class MechanicalResetContactForceVisitor : public simulation::MechanicalVisitor
 {
 public:
@@ -149,19 +150,21 @@ class MechanicalGetConstraintValueVisitor : public simulation::MechanicalVisitor
 {
 public:
 
-    MechanicalGetConstraintValueVisitor(defaulttype::BaseVector * v)
+    MechanicalGetConstraintValueVisitor(BaseVector * v)  // , _numContacts(numContacts)
     {
         real * data = ((CudaBaseVector<real> *) v)->getCudaVector().hostWrite();
         _v = new FullVector<real>(data,0);
     }
 
-    virtual Result fwdConstraint(simulation::Node*,core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
-        c->getConstraintValue(_v);
+        //std::cout << c->getName()<<"->getConstraintValue()"<<std::endl;
+        c->getConstraintValue(_v /*, _numContacts*/);
         return RESULT_CONTINUE;
     }
 private:
-    FullVector<real> * _v;
+    FullVector<real> * _v; // vector for constraint values
+    // unsigned int &_numContacts; // we need an offset to fill the vector _v if differents contact class are created
 };
 
 class CudaMechanicalGetConstraintValueVisitor : public simulation::MechanicalVisitor
@@ -178,13 +181,15 @@ private:
     defaulttype::BaseVector * _v;
 };
 
-class CudaMechanicalGetContactIDVisitor : public simulation::MechanicalVisitor
+class MechanicalGetContactIDVisitor : public simulation::MechanicalVisitor
 {
 public:
-    CudaMechanicalGetContactIDVisitor(long *id, unsigned int offset = 0)
-        : _id(id),_offset(offset) {}
+    MechanicalGetContactIDVisitor(long *id, unsigned int offset = 0)
+        : _id(id),_offset(offset)
+    {
+    }
 
-    virtual Result fwdConstraint(simulation::Node*,core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         c->getConstraintId(_id, _offset);
         return RESULT_CONTINUE;
@@ -195,25 +200,28 @@ private:
     unsigned int _offset;
 };
 
+
 template<class real>
-class CudaMasterContactSolver : public sofa::simulation::MasterSolverImpl
+class CudaMasterContactSolver : public sofa::simulation::MasterSolverImpl//, public sofa::simulation::OdeSolverImpl
 {
 public:
-    Data<bool> initial_guess;
+    Data<int> useGPU_d;
 #ifdef CHECK
     Data<bool> check_gpu;
 #endif
+    Data<bool> initial_guess;
     Data < double > tol;
     Data < int > maxIt;
     Data < double > mu;
 
-    Data<int> useGPU_d;
     Data < helper::set<int> > constraintGroups;
 
-
     CudaMasterContactSolver();
+    // virtual const char* getTypeName() const { return "MasterSolver"; }
 
     void step (double dt);
+
+    //virtual void propagatePositionAndVelocity(double t, VecId x, VecId v);
 
     virtual void init();
     //LCP* getLCP(void) {return (lcp == &lcp1) ? &lcp2 : &lcp1;};
