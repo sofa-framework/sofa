@@ -77,18 +77,21 @@ using namespace core::componentmodel::behavior;
 
 
 static unsigned MAX_NUM_CONSTRAINTS=1024;
+//#define DISPLAY_TIME
 
 template<class real>
 CudaMasterContactSolver<real>::CudaMasterContactSolver()
-    :initial_guess(initData(&initial_guess, true, "initial_guess","activate LCP results history to improve its resolution performances."))
+    :
+    useGPU_d(initData(&useGPU_d,8, "useGPU", "compute LCP using GPU"))
 #ifdef CHECK
     ,check_gpu(initData(&check_gpu, true, "checkGPU", "verification of lcp error"))
 #endif
+    ,initial_guess(initData(&initial_guess, true, "initial_guess","activate LCP results history to improve its resolution performances."))
     ,tol( initData(&tol, 0.001, "tolerance", ""))
     ,maxIt( initData(&maxIt, 1000, "maxIt", ""))
     ,mu( initData(&mu, 0.6, "mu", ""))
-    ,useGPU_d(initData(&useGPU_d,8, "useGPU", "compute LCP using GPU"))
     , constraintGroups( initData(&constraintGroups, "group", "list of ID of groups of constraints to be handled by this solver.") )
+    ,_mu(0.6)
 //, lcp1(MAX_NUM_CONSTRAINTS)
 //, lcp2(MAX_NUM_CONSTRAINTS)
 //, _A(&lcp1.A)
@@ -96,9 +99,6 @@ CudaMasterContactSolver<real>::CudaMasterContactSolver()
 //, _dFree(&lcp1.dFree)
 //, _result(&lcp1.f)
 //, lcp(&lcp1)
-#ifdef CHECK
-    ,check_gpu(initData(&check_gpu, true, "checkGPU", "verification of lcp error"))
-#endif
 {
     _W.resize(MAX_NUM_CONSTRAINTS,MAX_NUM_CONSTRAINTS);
     _dFree.resize(MAX_NUM_CONSTRAINTS);
@@ -126,11 +126,16 @@ template<class real>
 void CudaMasterContactSolver<real>::build_LCP()
 {
     _numConstraints = 0;
+    //std::cout<<" accumulateConstraint "  <<std::endl;
 
+    // mechanical action executed from root node to propagate the constraints
     simulation::MechanicalResetConstraintVisitor().execute(context);
     _mu = mu.getValue();
     simulation::MechanicalAccumulateConstraint(_numConstraints).execute(context);
     _mu = mu.getValue();
+
+
+    //std::cout<<" accumulateConstraint_done "  <<std::endl;
 
     if (_numConstraints > MAX_NUM_CONSTRAINTS)
     {
@@ -161,16 +166,20 @@ void CudaMasterContactSolver<real>::build_LCP()
     _W.clear();
 
     CudaMechanicalGetConstraintValueVisitor(&_dFree).execute(context);
+//	simulation::MechanicalComputeComplianceVisitor(_W).execute(context);
+
+//std::cout<<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" <<std::endl;
 
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
         core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->getCompliance(&_W);
     }
+    //std::cout<<" computeCompliance_done "  <<std::endl;
 
     if (initial_guess.getValue())
     {
-        CudaMechanicalGetContactIDVisitor(_cont_id_list).execute(context);
+        MechanicalGetContactIDVisitor(_cont_id_list).execute(context);
         computeInitialGuess();
     }
 }
@@ -227,7 +236,7 @@ void CudaMasterContactSolver<real>::keepContactForcesValue()
     {
         if (_mu>0.0)
         {
-            if (_f[3*c]>0.0)
+            if (_f[3*c]>0.0)//((_result[3*c]>0.0)||(_result[3*c+1]>0.0)||(_result[3*c+2]>0.0))
             {
                 _PreviousContactList[_numPreviousContact].id = (_cont_id_list[c] >= 0) ? _cont_id_list[c] : -_cont_id_list[c];
                 _PreviousContactList[_numPreviousContact].F.x() = _f[3*c];
@@ -254,7 +263,6 @@ void CudaMasterContactSolver<real>::step(double dt)
 {
 
     context = dynamic_cast<simulation::tree::GNode *>(this->getContext()); // access to current node
-
 #ifdef DISPLAY_TIME
     CTime *timer;
     double time = 0.0;
@@ -263,6 +271,9 @@ void CudaMasterContactSolver<real>::step(double dt)
     time = (double) timer->getTime();
     std::cout<<"********* Start Iteration : " << _numConstraints << " contacts *********" <<std::endl;
 #endif
+
+    // Update the BehaviorModels
+    // Required to allow the RayPickInteractor interaction
 
     simulation::BehaviorUpdatePositionVisitor updatePos(dt);
     context->execute(&updatePos);
@@ -283,6 +294,7 @@ void CudaMasterContactSolver<real>::step(double dt)
 
 #ifdef DISPLAY_TIME
     std::cout<<" Free Motion " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<std::endl;
+
     time = (double) timer->getTime();
 #endif
 
@@ -293,6 +305,7 @@ void CudaMasterContactSolver<real>::step(double dt)
     std::cout<<" computeCollision " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<std::endl;
     time = (double) timer->getTime();
 #endif
+//	MechanicalResetContactForceVisitor().execute(context);
 
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
@@ -321,6 +334,7 @@ void CudaMasterContactSolver<real>::step(double dt)
     	else
     	{
 
+    //		helper::lcp_lexicolemke(_numConstraints, _dFree->ptr(), _W->lptr(), _A.lptr(), _result->ptr());
     		helper::gaussSeidelLCP1(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _tol, _maxIt);
     		if (this->f_printLog.getValue()) helper::afficheLCP(_dFree->ptr(), _W->lptr(), _result->ptr(),_numConstraints);
     	}
@@ -381,8 +395,11 @@ void CudaMasterContactSolver<real>::step(double dt)
     time = (double) timer->getTime();
 #endif
 
-    if (initial_guess.getValue())	keepContactForcesValue();
+    if (initial_guess.getValue())
+        keepContactForcesValue();
 
+
+//	MechanicalApplyContactForceVisitor(_result).execute(context);
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
         core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
@@ -392,6 +409,8 @@ void CudaMasterContactSolver<real>::step(double dt)
     simulation::MechanicalPropagateAndAddDxVisitor().execute( context);
     simulation::MechanicalPropagatePositionAndVelocityVisitor().execute(context);
 
+
+//	MechanicalResetContactForceVisitor().execute(context);
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
         core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
@@ -399,13 +418,33 @@ void CudaMasterContactSolver<real>::step(double dt)
     }
 #ifdef DISPLAY_TIME
     std::cout<<" contactCorrections" <<( (double) timer->getTime() - time)*timeScale <<" ms" <<std::endl;
+    //std::cout << "<<<<<< End display MasterContactSolver time." << std::endl;
 #endif
 
-//	lcp = (lcp == &lcp1) ? &lcp2 : &lcp1;
-//	_A =&lcp->A;
-//	_W = &lcp->W;
-//	_dFree = &lcp->dFree;
-//	_result = &lcp->f;
+
+    //switch lcp
+    //cout << "switch lcp : " << lcp << endl;
+
+    //lcp1.wait();
+    //lcp1.lock();
+    //lcp2.wait();
+    //lcp2.lock();
+
+    //	lcp = (lcp == &lcp1) ? &lcp2 : &lcp1;
+    //	_A =&lcp->A;
+    //	_W = &lcp->W;
+    //	_dFree = &lcp->dFree;
+    //	_result = &lcp->f;
+
+
+    //lcp1.unlock();
+    //lcp2.unlock();
+    //cout << "new lcp : " << lcp << endl;
+
+    //struct timespec ts;
+    //ts.tv_sec = 0;
+    //ts.tv_nsec = 60 *1000 *1000;
+//	nanosleep(&ts, NULL);
 
     simulation::MechanicalEndIntegrationVisitor endVisitor(dt);
     context->execute(&endVisitor);
