@@ -179,11 +179,11 @@ void TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::Collisi
 // Intermediate method to handle cutting
 bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::componentmodel::topology::BaseMeshTopology* _topology)
 {
-    const Vec<3,double>& a= (const Vec<3,double>) incision.a_init;
-    const Vec<3,double>& b= (const Vec<3,double>) incision.b_init;
+    const Vec<3,double>& a= incision.a_init;
+    const Vec<3,double>& b= incision.b_init;
 
-    const unsigned int &ind_ta = (const unsigned int) incision.ind_ta_init;
-    const unsigned int &ind_tb = (const unsigned int) incision.ind_tb_init;
+    const unsigned int &ind_ta = incision.ind_ta_init;
+    unsigned int &ind_tb = incision.ind_tb_init;
 
     unsigned int& a_last = incision.a_last_init;
     sofa::helper::vector< unsigned int >& a_p12_last = incision.a_p12_last_init;
@@ -197,10 +197,8 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
 
     if(is_prepared)
     {
-        sofa::helper::vector< sofa::helper::vector<unsigned int> > new_points_init;
-        sofa::helper::vector< sofa::helper::vector<unsigned int> > closest_vertices_init;
-        sofa::helper::vector< sofa::helper::vector<unsigned int> > &new_points = new_points_init;
-        sofa::helper::vector< sofa::helper::vector<unsigned int> > &closest_vertices = closest_vertices_init;
+        sofa::helper::vector<unsigned int> new_points;
+        sofa::helper::vector<unsigned int> closest_vertices;
 
         sofa::component::topology::TriangleSetTopologyModifier* triangleMod;
         _topology->getContext()->get(triangleMod);

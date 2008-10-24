@@ -72,17 +72,19 @@ public:
     bool Suture2Points(unsigned int ind_ta, unsigned int ind_tb, unsigned int &ind1, unsigned int &ind2);
 
     /** \brief  Incises along the list of points (ind_edge,coord) intersected by the vector from point a to point b and the triangular mesh
+             // Point a belongs to the triangle indexed by ind_ta.
+             // Point b belongs to the triangle indexed by ind_tb, unless it is (unsigned)-1, in which case it is automatically computed
     */
     bool InciseAlongPointsList(bool is_first_cut,
             const sofa::defaulttype::Vec<3,double>& a,
             const sofa::defaulttype::Vec<3,double>& b,
-            const unsigned int ind_ta, const unsigned int ind_tb,
+            const unsigned int ind_ta, unsigned int& ind_tb,
             unsigned int& a_last, sofa::helper::vector< unsigned int > &a_p12_last,
             sofa::helper::vector< unsigned int > &a_i123_last,
             unsigned int& b_last, sofa::helper::vector< unsigned int > &b_p12_last,
             sofa::helper::vector< unsigned int > &b_i123_last,
-            sofa::helper::vector< sofa::helper::vector<unsigned int> > &new_points,
-            sofa::helper::vector< sofa::helper::vector<unsigned int> > &closest_vertices);
+            sofa::helper::vector< unsigned int > &new_points,
+            sofa::helper::vector< unsigned int > &closest_vertices);
 
     /** \brief Removes triangles along the list of points (ind_edge,coord) intersected by the vector from point a to point b and the triangular mesh
     */
@@ -95,10 +97,31 @@ public:
     void InciseAlongLinesList(const sofa::helper::vector< sofa::defaulttype::Vec<3,double> >& input_points,
             const sofa::helper::vector< unsigned int > &input_triangles);
 
-    /** \brief Duplicates the given edge. Only works of at least one of its points is adjacent to a border.
+    /** \brief Duplicates the given edge. Only works if at least one of its points is adjacent to a border.
      * @returns the number of newly created points, or -1 if the incision failed.
      */
     virtual int InciseAlongEdge(unsigned int edge, int* createdPoints = NULL);
+
+
+    /** \brief Split triangles to create edges along a path given as a the list of existing edges and triangles crossed by it.
+        Each end of the path is given either by an existing point or a point inside the first/last triangle. If the first/last triangle is (TriangleID)-1, it means that to path crosses the boundary of the surface.
+     * @returns the indice of the end point, or -1 if the incision failed.
+     */
+    virtual int SplitAlongPath(unsigned int pa, const Coord& a, unsigned int pb, const Coord& b,
+            const sofa::helper::vector<TriangleID>& triangles_list, const sofa::helper::vector<EdgeID>& edges_list,
+            const sofa::helper::vector<double>& coords_list, sofa::helper::vector<EdgeID>& new_edges);
+
+    /** \brief Duplicates the given edges. Only works if at least the first or last point is adjacent to a border.
+     * @returns true if the incision succeeded.
+     */
+    virtual bool InciseAlongEdgeList(const sofa::helper::vector<unsigned int>& edges, sofa::helper::vector<unsigned int>& new_points, sofa::helper::vector<unsigned int>& end_points);
+
+    unsigned int getOtherPointInTriangle(const Triangle& t, unsigned int p1, unsigned int p2) const
+    {
+        if (t[0] != p1 && t[0] != p2) return t[0];
+        else if (t[1] != p1 && t[1] != p2) return t[1];
+        else return t[2];
+    }
 
 private:
     TriangleSetTopologyContainer*					m_container;
