@@ -73,6 +73,7 @@ RigidDistanceGridCollisionModel::RigidDistanceGridCollisionModel()
     , usePoints( initData( &usePoints, true, "usePoints", "use mesh vertices for collision detection"))
 {
     rigid = NULL;
+    addAlias(&fileRigidDistanceGrid,"filename");
 }
 
 RigidDistanceGridCollisionModel::~RigidDistanceGridCollisionModel()
@@ -373,6 +374,7 @@ FFDDistanceGridCollisionModel::FFDDistanceGridCollisionModel()
 {
     ffd = NULL;
     ffdGrid = NULL;
+    addAlias(&fileFFDDistanceGrid,"filename");
 }
 
 FFDDistanceGridCollisionModel::~FFDDistanceGridCollisionModel()

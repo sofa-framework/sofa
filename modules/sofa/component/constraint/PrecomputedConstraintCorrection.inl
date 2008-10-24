@@ -98,7 +98,7 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
 
     if (nbNodes==0)
     {
-        std::cout << "WARNING : No degree of freedom" << endl;;
+        logWarning("No degree of freedom");
         return;
     }
     dof_on_node = v0[0].size();
@@ -157,8 +157,7 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
             std::cout << "use EulerImplicitSolver &  CGLinearSolver" << std::endl;
         else
         {
-            std::cout << "WARNING : PrecomputedContactCorrection must be associated with CGImplicitSolver or EulerImplicitSolver+CGLinearSolver for the precomputation " << std::endl;
-            std::cout << "No Precomputation " << std::endl;
+            logWarning("PrecomputedContactCorrection must be associated with CGImplicitSolver or EulerImplicitSolver+CGLinearSolver for the precomputation\nNo Precomputation");
             return;
         }
 

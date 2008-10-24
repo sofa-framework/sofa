@@ -54,6 +54,7 @@ public:
     virtual const char* getClass() const;
 
     void setValue(const std::string _value) {value=_value;}
+    std::string getValue() {return value;}
 private:
     std::string value;
 };

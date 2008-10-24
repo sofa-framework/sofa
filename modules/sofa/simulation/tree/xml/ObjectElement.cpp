@@ -66,6 +66,12 @@ bool ObjectElement::init()
     return initNode();
 }
 
+/// Set an attribute. Override any existing value
+void ObjectElement::setAttribute(const std::string& attr, const char* val)
+{
+    attributes[attr] = val;
+}
+
 bool ObjectElement::initNode()
 {
     //if (!Element<core::objectmodel::BaseObject>::initNode()) return false;
@@ -73,13 +79,23 @@ bool ObjectElement::initNode()
 
 //     std::cout << "ObjectElement: creating "<<getAttribute( "type", "" )<<std::endl;
 
+    for (AttributeMap::iterator it = attributes.begin(), itend = attributes.end(); it != itend; ++it)
+    {
+        if (replaceAttribute.find(it->first) != replaceAttribute.end())
+        {
+            setAttribute(it->first,replaceAttribute[it->first].c_str());
+        }
+    }
 
     core::objectmodel::BaseObject *obj = core::ObjectFactory::CreateObject(ctx, this);
 
     if (obj == NULL)
         obj = Factory::CreateObject(this->getType(), this);
     if (obj == NULL)
+    {
+        getParent()->logWarning(std::string("Object type \"" + getType() + "\" creation Failed" ));
         return false;
+    }
     setObject(obj);
     obj->setName(getName());
 
@@ -95,10 +111,11 @@ bool ObjectElement::initNode()
             obj->logWarning(std::string("Unused Attribute: \"") + it->first + std::string("\" with value: \"" ) + it->second.c_str() + std::string("\"") );
         }
     }
-    if (!unused.empty())
-    {
-        std::cerr << "WARNING: Unused attribute(s) in "<<getFullName()<<" :"<<unused<<std::endl;
-    }
+//     if (!unused.empty())
+//     {
+//         std::cerr << "WARNING: Unused attribute(s) in "<<getFullName()<<" :"<<unused<<std::endl;
+//     }
+
     return true;
 }
 

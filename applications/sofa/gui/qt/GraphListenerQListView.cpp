@@ -219,9 +219,18 @@ void GraphListenerQListView::addChild(GNode* parent, GNode* child)
         //	    if (std::string(child->getName(),0,7) != "default")
         item->setDropEnabled(true);
         item->setText(0, child->getName().c_str());
-        QPixmap* pix = getPixmap(child);
-        if (pix)
-            item->setPixmap(0, *pix);
+        if (child->getLogWarning().size() == 0)
+        {
+            QPixmap* pix = getPixmap(child);
+            if (pix)
+                item->setPixmap(0, *pix);
+        }
+        else
+        {
+            static QPixmap pixWarning((const char**)iconwarning_xpm);
+            item->setPixmap(0,pixWarning);
+        }
+
         item->setOpen(true);
         items[child] = item;
     }

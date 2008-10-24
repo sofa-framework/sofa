@@ -63,7 +63,7 @@ void SPHFluidForceField<DataTypes>::init()
     this->Inherit::init();
     this->getContext()->get(grid); //new Grid(particleRadius.getValue());
     if (grid==NULL)
-        std::cout << "WARNING: SpatialGridContainer not found by SPHFluidForceField, slow O(n2) method will be used !!!" << std::endl;
+        logWarning("SpatialGridContainer not found by SPHFluidForceField, slow O(n2) method will be used !!!");
     int n = (*this->mstate->getX()).size();
     particles.resize(n);
     for (int i=0; i<n; i++)

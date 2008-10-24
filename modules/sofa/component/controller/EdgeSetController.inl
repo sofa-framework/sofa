@@ -82,10 +82,10 @@ void EdgeSetController<DataTypes>::init()
     this->getContext()->get(edgeMod);
 
     if (edgeGeo == NULL)
-        std::cerr << "WARNING. EdgeSetController has no binding EdgeSetGeometryAlgorithms\n";
+        logWarning("EdgeSetController has no binding EdgeSetGeometryAlgorithms");
 
     if (edgeMod == NULL)
-        std::cerr << "WARNING. EdgeSetController has no binding EdgeSetTopologyModifier\n";
+        logWarning("EdgeSetController has no binding EdgeSetTopologyModifier");
 
     Inherit::init();
 

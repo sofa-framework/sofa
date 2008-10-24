@@ -47,6 +47,7 @@ using helper::fixed_array;
 BaseMeshTopology::BaseMeshTopology()
     : fileTopology(initData(&fileTopology,"fileTopology","Filename of the mesh"))
 {
+    addAlias(&fileTopology,"filename");
 }
 
 /// Returns the set of edges adjacent to a given vertex.

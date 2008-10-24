@@ -351,20 +351,18 @@ void  Base::parseFields ( std::list<std::string> str )
         str.pop_front();
         // field name
         std::vector< BaseData* > fields=findGlobalField(name);
-        std::cout << fields.size() << " number Found\n";
         if( fields.size() != 0 )
         {
             std::string s = str.front();
             for (unsigned int i=0; i<fields.size(); ++i)
             {
-                if( !(fields[i]->read( s )))
-                    std::cerr<< "ERROR: could not read value for option " << name <<": "<< s << std::endl;
+                if( !(fields[i]->read( s ))) logWarning("could not read value for option " + name +std::string(": ")+ s);
             }
         }
         else
         {
             str.pop_front();
-            std::cerr << "\nUnknown option: " << name << std::endl << std::endl;
+            logWarning("Unknown option: " + name );
         }
     }
 }
@@ -381,19 +379,16 @@ void  Base::parseFields ( const std::map<std::string,std::string*>& args )
             key=(*i).first;
             val=*(*i).second;
             std::vector< BaseData* > fields=findGlobalField(key);
-            std::cout << fields.size() << " number Found for  "<< key << "\n";
             if( fields.size() != 0 )
             {
                 for (unsigned int i=0; i<fields.size(); ++i)
                 {
-                    if( !(fields[i]->read( val )))
-                        std::cerr<< "ERROR: could not read value for option " << key <<": "<< val << std::endl;
+                    if( !(fields[i]->read( val ))) logWarning("could not read value for option " +key+std::string(": ") +val);
                 }
             }
             else
             {
-                if ((key!="name") && (key!="type"))
-                    std::cerr <<"\nUnknown option: " << key << std::endl;
+                if ((key!="name") && (key!="type")) logWarning("Unknown option: " + key);
             }
         }
     }
@@ -414,8 +409,7 @@ void  Base::parse ( BaseObjectDescription* arg )
             if (val)
             {
                 std::string valueString(val);
-                if( !(dataModif[d]->read( valueString )))
-                    std::cerr<< "ERROR: could not read value for option " << attributeList[i] <<": "<< val << std::endl;
+                if( !(dataModif[d]->read( valueString ))) logWarning(std::string("could not read value for option ") + attributeList[i] + std::string(": ") + val);
             }
         }
     }
@@ -482,7 +476,10 @@ void  Base::xmlWriteDatas ( std::ostream& out, unsigned level )
         }
     }
 }
-
+void  Base::logWarning(std::string l)
+{
+    logWarnings.push_back(l); std::cerr<<"in " << getName() << "(" << getTypeName() << "): WARNING: " << l << "\n";
+}
 } // namespace objectmodel
 
 } // namespace core

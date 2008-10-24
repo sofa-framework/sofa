@@ -67,12 +67,15 @@ bool NodeElement::initNode()
 // 		std::cout << "Adding Child "<<getName()<<" to "<<getParentElement()->getName()<<std::endl;
         dynamic_cast<core::objectmodel::BaseNode*>(getParentElement()->getObject())->addChild(getTypedObject());
     }
+
     return true;
 }
 
 bool NodeElement::init()
 {
     bool res = Element<core::objectmodel::BaseNode>::init();
+    //Store the warnings created by the objects
+    for (unsigned int i=0; i<warnings.size(); ++i) getObject()->logWarning(warnings[i]);
     /*
     if (getTypedObject()!=NULL)
     {

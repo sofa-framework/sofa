@@ -80,11 +80,11 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
         texturename.setValue( sofa::helper::system::DataRepository.getFile ( file ));
     }
 
-    file=(arg->getAttribute("fileMesh",""));
+//      file=(arg->getAttribute("fileMesh",""));
     //// Temporary commented in case of IdentityMapping without obj file :
     //if (!file.empty() && sofa::helper::system::DataRepository.findFile (file))
     //{
-    fileMesh.setValue( sofa::helper::system::DataRepository.getFile ( file ));
+//        fileMesh.setValue( sofa::helper::system::DataRepository.getFile ( file ));
     //}
 
 
@@ -146,6 +146,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
        material(initData(&material,"material","Material")) //, tex(NULL)
 {
     inputVertices = &vertices;
+    addAlias(&fileMesh, "filename");
 }
 
 VisualModelImpl::~VisualModelImpl()

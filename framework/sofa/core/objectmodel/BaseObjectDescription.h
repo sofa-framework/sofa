@@ -27,6 +27,7 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASEOBJECTDESCRIPTION_H
 #define SOFA_CORE_OBJECTMODEL_BASEOBJECTDESCRIPTION_H
 
+#include <sofa/helper/vector.h>
 #include <string>
 #include <list>
 #include <map>
@@ -112,8 +113,10 @@ public:
     /// Get the full name of this object (i.e. concatenation if all the names of its ancestors and itself)
     virtual std::string getFullName();
 
+    virtual void logWarning(std::string s) {warnings.push_back(s);};
 protected:
     AttributeMap attributes;
+    std::vector< std::string > warnings;
 };
 
 } // namespace objectmodel
