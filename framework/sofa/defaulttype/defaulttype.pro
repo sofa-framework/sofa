@@ -6,14 +6,19 @@ include($${SOFA_DIR}/sofa.cfg)
 
 TARGET = sofadefaulttype$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES
+
+CONFIG -= staticlib
+CONFIG += dll
+
 LIBS += -lsofahelper$$LIBSUFFIX
 LIBS += $$SOFA_EXT_LIBS
-
+DEFINES += SOFA_BUILD_DEFAULTTYPE
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_DIR/modules
 INCLUDEPATH -= $$SOFA_DIR/applications
 
 HEADERS += \
+        defaulttype.h \
 	  BaseMatrix.h \
 	  BaseVector.h \
 	  DataTypeInfo.h \
