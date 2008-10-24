@@ -110,7 +110,11 @@ public:
     /** \brief Computes the point defined by 2 indices of vertex and 1 barycentric coordinate
     *
     */
-    sofa::defaulttype::Vec<3,double> computeBaryEdgePoint(sofa::helper::vector< unsigned int>& indices, const double &coord_p) const;
+    sofa::defaulttype::Vec<3,double> computeBaryEdgePoint(unsigned int p0, unsigned int p1, double coord_p) const;
+    sofa::defaulttype::Vec<3,double> computeBaryEdgePoint(Edge e, double coord_p) const
+    {
+        return computeBaryEdgePoint(e[0], e[1], coord_p);
+    }
 
     /** \brief Computes the normal vector of a triangle indexed by ind_t (not normed)
     *
@@ -124,10 +128,18 @@ public:
             const sofa::defaulttype::Vec<3,double>& p_q2,
             unsigned int ind_q3, unsigned int ind_q4) const;
 
+    /** \brief Tests how to triangularize a quad whose vertices are defined by (p1, p2, p3, p4) according to the Delaunay criterion
+     *
+     */
+    bool isQuadDeulaunayOriented(const sofa::defaulttype::Vec<3,double>& p1,
+            const sofa::defaulttype::Vec<3,double>& p2,
+            const sofa::defaulttype::Vec<3,double>& p3,
+            const sofa::defaulttype::Vec<3,double>& p4) const;
+
     /** \brief Computes the opposite point to ind_p
     *
     */
-    sofa::defaulttype::Vec<3,double> getOppositePoint(unsigned int ind_p, sofa::helper::vector< unsigned int>& indices, const double &coord_p) const;
+    sofa::defaulttype::Vec<3,double> getOppositePoint(unsigned int ind_p, const Edge& indices, double coord_p) const;
 
     /** \brief Tests if a triangle indexed by ind_t (and incident to the vertex indexed by ind_p) is included or not in the plane defined by (ind_p, plane_vect)
     *
@@ -140,8 +152,8 @@ public:
     */
     void prepareVertexDuplication(const unsigned int ind_p,
             const TriangleID ind_t_from, const TriangleID ind_t_to,
-            const sofa::helper::vector< unsigned int>& indices_from, const double &coord_from,
-            const sofa::helper::vector< unsigned int>& indices_to, const double &coord_to,
+            const Edge& indices_from, const double &coord_from,
+            const Edge& indices_to, const double &coord_to,
             sofa::helper::vector< unsigned int > &triangles_list_1,
             sofa::helper::vector< unsigned int > &triangles_list_2) const;
 
@@ -162,9 +174,13 @@ public:
             const sofa::defaulttype::Vec<3,double>& b,
             const unsigned int ind_ta, unsigned int& ind_tb,
             sofa::helper::vector< unsigned int > &triangles_list,
-            sofa::helper::vector< sofa::helper::vector< unsigned int> > &indices_list,
+            sofa::helper::vector< unsigned int > &edges_list,
             sofa::helper::vector< double >& coords_list,
             bool& is_on_boundary) const;
+
+    /** \brief Get the triangle in a given direction from a point.
+     */
+    int getTriangleInDirection(PointID p, const sofa::defaulttype::Vec<3,double>& dir) const;
 
     /** \brief Write the current mesh into a msh file
     */

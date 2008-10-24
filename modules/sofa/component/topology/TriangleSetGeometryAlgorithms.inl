@@ -118,27 +118,20 @@ void TriangleSetGeometryAlgorithms<DataTypes>::computeTriangleArea( BasicArrayIn
 
 // Computes the point defined by 2 indices of vertex and 1 barycentric coordinate
 template<class DataTypes>
-Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::computeBaryEdgePoint(sofa::helper::vector< unsigned int>& indices,
-        const double &coord_p) const
+Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::computeBaryEdgePoint(unsigned int p0, unsigned int p1, double coord_p) const
 {
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
-    const typename DataTypes::Coord& c1 = vect_c[indices[0]];
-    const typename DataTypes::Coord& c2 = vect_c[indices[1]];
-
-    Vec<3,Real> p;
-    p[0] = (Real) ((1.0-coord_p)*c1[0] + coord_p*c2[0]);
-    p[1] = (Real) ((1.0-coord_p)*c1[1] + coord_p*c2[1]);
-    p[2] = (Real) ((1.0-coord_p)*c1[2] + coord_p*c2[2]);
-
-    return ((Vec<3,double>) p);
+    Vec<3,double> c0; c0 = vect_c[p0];
+    Vec<3,double> c1; c1 = vect_c[p1];
+    return c0*(1-coord_p) + c1*coord_p;
 }
 
 // Computes the opposite point to ind_p
 template<class DataTypes>
 Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::getOppositePoint(unsigned int ind_p,
-        sofa::helper::vector< unsigned int>& indices,
-        const double &coord_p) const
+        const Edge& indices,
+        double coord_p) const
 {
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
@@ -207,53 +200,8 @@ sofa::helper::vector< double > TriangleSetGeometryAlgorithms< DataTypes >::compu
     const TriangleID ind_t,
     const Vec<3,double> &p) const
 {
-    sofa::helper::vector< double > baryCoefs;
-
     const Triangle &t=this->m_topology->getTriangle(ind_t);
-    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
-
-    const typename DataTypes::Coord& c0=vect_c[t[0]];
-    const typename DataTypes::Coord& c1=vect_c[t[1]];
-    const typename DataTypes::Coord& c2=vect_c[t[2]];
-
-    Vec<3,Real> a;
-    a[0] = (Real) (c0[0]);
-    a[1] = (Real) (c0[1]);
-    a[2] = (Real) (c0[2]);
-    Vec<3,Real> b;
-    b[0] = (Real) (c1[0]);
-    b[1] = (Real) (c1[1]);
-    b[2] = (Real) (c1[2]);
-    Vec<3,Real> c;
-    c[0] = (Real) (c2[0]);
-    c[1] = (Real) (c2[1]);
-    c[2] = (Real) (c2[2]);
-
-    Vec<3,double> M = (Vec<3,double>) (b-a).cross(c-a);
-    double norm2_M = M*(M);
-
-    double coef_a, coef_b, coef_c;
-
-    if(norm2_M==0.0) // triangle (a,b,c) is flat
-    {
-        coef_a = (double) (1.0/3.0);
-        coef_b = (double) (1.0/3.0);
-        coef_c = (double) (1.0 - (coef_a + coef_b));
-    }
-    else
-    {
-        Vec<3,Real> N =  M/norm2_M;
-
-        coef_a = N*((b-p).cross(c-p));
-        coef_b = N*((c-p).cross(a-p));
-        coef_c = (double) (1.0 - (coef_a + coef_b)); //N*((a-p).cross(b-p));
-    }
-
-    baryCoefs.push_back(coef_a);
-    baryCoefs.push_back(coef_b);
-    baryCoefs.push_back(coef_c);
-
-    return baryCoefs;
+    return compute3PointsBarycoefs(p, t[0], t[1], t[2]);
 }
 
 // barycentric coefficients of point p in triangle whose vertices are indexed by (ind_p1,ind_p2,ind_p3)
@@ -514,19 +462,23 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const V
     const typename DataTypes::Coord& c3 = vect_c[ind_q3];
     const typename DataTypes::Coord& c4 = vect_c[ind_q4];
 
-    Vec<3,Real> q1 = (Vec<3,Real>) p_q1;
-    Vec<3,Real> q2 = (Vec<3,Real>) p_q2;
+    Vec<3,double> p1 = p_q1;
+    Vec<3,double> p2 = p_q2;
+    Vec<3,double> p3; p3 = c3;
+    Vec<3,double> p4; p4 = c4;
+    return isQuadDeulaunayOriented(p1, p2, p3, p4);
+}
 
-    Vec<3,Real> q3;
-    q3[0] = (Real) (c3[0]);
-    q3[1] = (Real) (c3[1]);
-    q3[2] = (Real) (c3[2]);
-    Vec<3,Real> q4;
-    q4[0] = (Real) (c4[0]);
-    q4[1] = (Real) (c4[1]);
-    q4[2] = (Real) (c4[2]);
-
-    Vec<3,Real> G = (q1+q2+q3)/3.0;
+/** \brief Tests how to triangularize a quad whose vertices are defined by (p1, p2, p3, p4) according to the Delaunay criterion
+ *
+ */
+template<class DataTypes>
+bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const Vec<3,double>& q1,
+        const sofa::defaulttype::Vec<3,double>& q2,
+        const sofa::defaulttype::Vec<3,double>& q3,
+        const sofa::defaulttype::Vec<3,double>& q4) const
+{
+    Vec<3,double> G = (q1+q2+q3)/3.0;
 
     if((G-q2)*(G-q2) <= (G-q4)*(G-q4))
     {
@@ -597,9 +549,9 @@ template<class DataTypes>
 void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const unsigned int ind_p,
         const TriangleID ind_t_from,
         const TriangleID ind_t_to,
-        const sofa::helper::vector< unsigned int>& indices_from,
+        const Edge& indices_from,
         const double &coord_from,
-        const sofa::helper::vector< unsigned int>& indices_to,
+        const Edge& indices_to,
         const double &coord_to,
         sofa::helper::vector< unsigned int > &triangles_list_1,
         sofa::helper::vector< unsigned int > &triangles_list_2) const
@@ -614,8 +566,8 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
     point_p[1]= (Real) c_p[1];
     point_p[2]= (Real) c_p[2];
 
-    Vec<3,Real> point_from=(Vec<3,Real>) getOppositePoint(ind_p, (sofa::helper::vector< unsigned int>&) indices_from, coord_from);
-    Vec<3,Real> point_to=(Vec<3,Real>) getOppositePoint(ind_p, (sofa::helper::vector< unsigned int>&) indices_to, coord_to);
+    Vec<3,Real> point_from=(Vec<3,Real>) getOppositePoint(ind_p, indices_from, coord_from);
+    Vec<3,Real> point_to=(Vec<3,Real>) getOppositePoint(ind_p, indices_to, coord_to);
 
     //Vec<3,Real> point_from=(Vec<3,Real>) computeBaryEdgePoint((sofa::helper::vector< unsigned int>&) indices_from, coord_from);
     //Vec<3,Real> point_to=(Vec<3,Real>) computeBaryEdgePoint((sofa::helper::vector< unsigned int>&) indices_to, coord_to);
@@ -898,7 +850,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
         v_normal/=norm_v_normal;
 
         Vec<3,Real> v_ab = pb-pa;
-        Vec<3,Real> v_ab_proj = v_ab - v_ab.linearProduct(v_normal).linearProduct(v_normal); // projection
+        Vec<3,Real> v_ab_proj = v_ab - v_normal * dot(v_ab,v_normal); // projection
         Vec<3,Real> pb_proj = v_ab_proj + pa;
 
         Vec<3,Real> v_01 = p1-p0;
@@ -914,15 +866,11 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
 
         if(norm2_v_ab_proj != 0.0) // pb_proj != pa
         {
-            double init_t=0.0;
-            double init_k=0.0;
-            double init_kmin=0.0;
-
-            double& coord_t=init_t;
-            double& coord_k=init_k;
+            double coord_t=0.0;
+            double coord_k=0.0;
 
             double is_initialized=false;
-            coord_kmin=init_kmin;
+            coord_kmin=0.0;
 
             double coord_test1;
             double coord_test2;
@@ -1133,7 +1081,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
         const unsigned int ind_ta,
         unsigned int& ind_tb,
         sofa::helper::vector< unsigned int > &triangles_list,
-        sofa::helper::vector< sofa::helper::vector<unsigned int> > &indices_list,
+        sofa::helper::vector<unsigned int> &edges_list,
         sofa::helper::vector< double >& coords_list, bool& is_on_boundary) const
 {
     bool is_validated=true;
@@ -1143,15 +1091,11 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
     is_on_boundary = false;
 
-    sofa::helper::vector<unsigned int> init_indices;
-    sofa::helper::vector<unsigned int> &indices=init_indices;
+    sofa::helper::vector<unsigned int> indices;
 
-    double init_t=0.0;
-    double init_k=0.0;
-    double init_k_test=0.0;
-
-    double& coord_t=init_t;
-    double& coord_k=init_k;
+    double coord_t=0.0;
+    double coord_k=0.0;
+    double coord_k_test=0.0;
 
     Vec<3,double> p_current=a;
     unsigned int ind_t_current=ind_ta;
@@ -1159,13 +1103,10 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
     unsigned int ind_edge;
     unsigned int ind_index;
     unsigned int ind_triangle = ind_ta;
-    double coord_k_test=init_k_test;
-
-    const Vec<3,double>& p_const=p_current;
 
     double dist_min=0.0;
 
-    is_intersected=computeSegmentTriangleIntersection(false, p_const, b, (const unsigned int) ind_t_current, indices, coord_t, coord_k);
+    is_intersected=computeSegmentTriangleIntersection(false, p_current, b, (const unsigned int) ind_t_current, indices, coord_t, coord_k);
 
     coord_k_test=coord_k;
     dist_min=(b-a)*(b-a);
@@ -1173,11 +1114,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
     while((coord_k_test<1.0 && is_validated) && is_intersected)
     {
         ind_edge=this->m_topology->getEdgeIndex(indices[0],indices[1]);
-        sofa::helper::vector< unsigned int > indices_first_list;
-        indices_first_list.push_back(indices[0]);
-        indices_first_list.push_back(indices[1]);
+        edges_list.push_back(ind_edge);
         triangles_list.push_back(ind_t_current);
-        indices_list.push_back(indices_first_list);
         coords_list.push_back(coord_t);
 
         const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
@@ -1246,8 +1184,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                             p2_aux[1] = (Real) (c2[1]);
                             p2_aux[2] = (Real) (c2[2]);
 
-                            const Vec<3,double>& p_const_current=p_current;
-                            is_intersected=computeSegmentTriangleIntersection(true, p_const_current, b, ind_triangle, indices, coord_t, coord_k);
+                            is_intersected=computeSegmentTriangleIntersection(true, p_current, b, ind_triangle, indices, coord_t, coord_k);
 
                             if(is_intersected)
                             {
@@ -1337,8 +1274,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                             p2_aux[1] = (Real) (c2[1]);
                             p2_aux[2] = (Real) (c2[2]);
 
-                            const Vec<3,double>& p_const_current=p_current;
-                            is_intersected=computeSegmentTriangleIntersection(true, p_const_current, b, ind_triangle, indices, coord_t, coord_k);
+                            is_intersected=computeSegmentTriangleIntersection(true, p_current, b, ind_triangle, indices, coord_t, coord_k);
 
                             if(is_intersected)
                             {
@@ -1386,6 +1322,9 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
         }
     }
 
+    if (ind_tb == (unsigned int)-1)
+        ind_tb = ind_triangle;
+
     bool is_reached = (ind_tb==ind_triangle && coord_k_test>=1.0);
 
     if(is_reached)
@@ -1405,6 +1344,57 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
     }
 
     return (is_reached && is_validated && is_intersected); // b is in triangle indexed by ind_t_current
+}
+
+/// Get the triangle in a given direction from a point.
+template <typename DataTypes>
+int TriangleSetGeometryAlgorithms<DataTypes>::getTriangleInDirection(PointID p, const sofa::defaulttype::Vec<3,double>& dir) const
+{
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
+    const sofa::helper::vector<TriangleID> &shell=this->m_topology->getTriangleVertexShell(p);
+    Vec<3,Real> dtest = dir;
+    for (unsigned int i=0; i<shell.size(); ++i)
+    {
+        unsigned int ind_t = shell[i];
+        const Triangle &t=this->m_topology->getTriangle(ind_t);
+
+        const typename DataTypes::Coord& c0=vect_c[t[0]];
+        const typename DataTypes::Coord& c1=vect_c[t[1]];
+        const typename DataTypes::Coord& c2=vect_c[t[2]];
+
+        Vec<3,Real> p0;
+        p0[0] = (Real) (c0[0]);
+        p0[1] = (Real) (c0[1]);
+        p0[2] = (Real) (c0[2]);
+        Vec<3,Real> p1;
+        p1[0] = (Real) (c1[0]);
+        p1[1] = (Real) (c1[1]);
+        p1[2] = (Real) (c1[2]);
+        Vec<3,Real> p2;
+        p2[0] = (Real) (c2[0]);
+        p2[1] = (Real) (c2[1]);
+        p2[2] = (Real) (c2[2]);
+
+        Vec<3,Real> e1, e2;
+        if (t[0] == p) { e1 = p1-p0; e2 = p2-p0; }
+        else if (t[1] == p) { e1 = p2-p1; e2 = p0-p1; }
+        else { e1 = p0-p2; e2 = p1-p2; }
+
+        Vec<3,Real> v_normal = (e2).cross(e1);
+
+        if(v_normal.norm2() > 1e-20)
+        {
+            Vec<3,Real> n_01 = e1.cross(v_normal);
+            Vec<3,Real> n_02 = e2.cross(v_normal);
+
+            double v_01 = (double) ((dtest)*(n_01));
+            double v_02 = (double) ((dtest)*(n_02));
+
+            bool is_inside = (v_01 >= 0.0) && (v_02 < 0.0);
+            if (is_inside) return ind_t;
+        }
+    }
+    return (TriangleID)-1;
 }
 
 /// Write the current mesh into a msh file

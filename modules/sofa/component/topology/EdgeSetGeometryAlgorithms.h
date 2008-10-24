@@ -75,7 +75,7 @@ public:
     /// computes the length of edge no i and returns it
     Real computeEdgeLength(const EdgeID i) const;
 
-    /// computes the edge length of all edges are store in the array interface
+    /// computes the edge length of all edges and stores it in the array interface
     void computeEdgeLength( BasicArrayInterface<Real> &ai) const;
 
     /// computes the initial length of edge no i and returns it
