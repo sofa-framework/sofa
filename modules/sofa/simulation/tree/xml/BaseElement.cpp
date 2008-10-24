@@ -112,6 +112,11 @@ bool BaseElement::removeAttribute(const std::string& attr)
     return true;
 }
 
+void BaseElement::addReplaceAttribute(const std::string &attr, const char* val)
+{
+    replaceAttribute[attr]=val;
+}
+
 bool BaseElement::addChild(BaseElement* child)
 {
     if (child->getParent()==this) return false;

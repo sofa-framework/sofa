@@ -458,6 +458,7 @@ CudaRigidDistanceGridCollisionModel::CudaRigidDistanceGridCollisionModel()
     , usePoints( initData( &usePoints, true, "usePoints", "use mesh vertices for collision detection"))
 {
     rigid = NULL;
+    addAlias(&fileCudaRigidDistanceGrid,"filename");
 }
 
 CudaRigidDistanceGridCollisionModel::~CudaRigidDistanceGridCollisionModel()

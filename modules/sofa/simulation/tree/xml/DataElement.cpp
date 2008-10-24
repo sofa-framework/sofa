@@ -58,23 +58,8 @@ bool DataElement::initNode()
 {
     AttributeElement *p = dynamic_cast< AttributeElement *>( getParentElement());
     std::string info;
-    getAttribute( "type", "");
-    info = getAttribute( "name", "");
-
-    if (info.find("default") == std::string::npos)
-    {
-        p->setValue(info);
-        return true;
-    }
-
-    for (AttributeMap::iterator it = attributes.begin(), itend = attributes.end(); it != itend; ++it)
-    {
-        if (!it->second.isAccessed())
-        {
-            p->setValue(it->second);
-        }
-    }
-
+    info = getAttribute( "value", "");
+    p->setValue(info);
     return true;
 }
 

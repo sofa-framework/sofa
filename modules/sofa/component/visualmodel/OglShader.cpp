@@ -73,11 +73,15 @@ OglShader::OglShader():
 
 OglShader::~OglShader()
 {
+    if (shaderVector.size() == 0) return;
     shaderVector[indexActiveShader.getValue()]->TurnOff();
     for (unsigned int i=0 ; i<shaderVector.size() ; i++)
     {
-        shaderVector[i]->Release();
-        delete shaderVector[i];
+        if (shaderVector[i])
+        {
+            shaderVector[i]->Release();
+            delete shaderVector[i];
+        }
     }
 }
 

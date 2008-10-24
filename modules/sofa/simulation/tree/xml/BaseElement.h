@@ -57,6 +57,8 @@ private:
     typedef std::list<BaseElement*> ChildList;
     ChildList children;
     bool groupType;       //type of Node Element: only its objects have to be taken into account
+protected:
+    std::map< std::string, std::string > replaceAttribute;
 public:
     BaseElement(const std::string& name, const std::string& type, BaseElement* newParent=NULL);
 
@@ -90,6 +92,7 @@ public:
     BaseElement* getParentElement() const
     { return parent; }
 
+
     /// Get the file where this description was read from. Useful to resolve relative file paths.
     std::string getBaseFile();
 
@@ -122,6 +125,8 @@ public:
     /// Remove an attribute. Fails if this attribute is "name" or "type"
     virtual bool removeAttribute(const std::string& attr);
 
+    /// List of parameters to be replaced
+    virtual void addReplaceAttribute(const std::string &attr, const char* val);
     /// Find a node given its name
     virtual BaseElement* findNode(const char* nodeName, bool absolute=false);
 

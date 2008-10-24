@@ -48,11 +48,11 @@ void LCPForceFeedback::init()
 
     mState = dynamic_cast<MechanicalState<Rigid3dTypes> *> (this->getContext()->getMechanicalState());
     if (!mState)
-        std::cerr << "WARNING - LCPForceFeedback has no binding MechanicalState\n";
+        logWarning("LCPForceFeedback has no binding MechanicalState");
 
 
     if (!mastersolver)
-        std::cerr << "WARNING - LCPForceFeedback has no binding MasterContactSolver\n" ;
+        logWarning("LCPForceFeedback has no binding MasterContactSolver");
 
     lcp = mastersolver->getLCP();
 

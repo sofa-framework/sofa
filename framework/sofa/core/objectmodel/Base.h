@@ -28,6 +28,7 @@
 #define SOFA_CORE_OBJECTMODEL_BASE_H
 
 #include <sofa/helper/system/config.h>
+#include <sofa/helper/vector.h>
 #include <sofa/core/objectmodel/DataPtr.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
@@ -161,24 +162,22 @@ public:
     void xmlWriteDatas (std::ostream& out, unsigned level);
 
     /// Find a field given its name, if not found, the index is the size of the vector
-    unsigned int findField( const char* name ) const
+    BaseData* findField( const char* name ) const
     {
         std::string ln(name);
-        unsigned int i;
-        for ( i=0; i<m_fieldVec.size(); i++)
+        for ( unsigned int i=0; i<m_fieldVec.size(); i++)
         {
-            if (m_fieldVec[i].first == ln) return i;
+            if (m_fieldVec[i].first == ln) return m_fieldVec[i].second;
         }
-        return i;
+        return NULL;
     }
-    unsigned int findField( const std::string &name ) const
+    BaseData* findField( const std::string &name ) const
     {
-        unsigned int i;
-        for ( i=0; i<m_fieldVec.size(); i++)
+        for ( unsigned int i=0; i<m_fieldVec.size(); i++)
         {
-            if (m_fieldVec[i].first == name) return i;
+            if (m_fieldVec[i].first == name) return m_fieldVec[i].second;
         }
-        return i;
+        return NULL;
     }
 
     /// Find fields given a name: several can be found as we look into the alias map
@@ -187,8 +186,8 @@ public:
         std::string ln(name);
         std::vector<BaseData*> dataCorresponding;
         //Search in the list of Datas
-        unsigned int idx=findField(name);
-        if (idx != m_fieldVec.size()) dataCorresponding.push_back(m_fieldVec[idx].second);
+        BaseData *f=findField(name);
+        if (f) dataCorresponding.push_back(f);
         //Search in the aliases
         typedef std::multimap< std::string, BaseData* >::const_iterator multimapIterator;
         std::pair< multimapIterator, multimapIterator> range;
@@ -203,8 +202,8 @@ public:
         std::string ln(name);
         std::vector<BaseData*> dataCorresponding;
         //Search in the list of Datas
-        unsigned int idx=findField(name);
-        if (idx != m_fieldVec.size()) dataCorresponding.push_back(m_fieldVec[idx].second);
+        BaseData *f=findField(name);
+        if (f) dataCorresponding.push_back(f);
         //Search in the aliases
         typedef std::multimap< std::string, BaseData* >::const_iterator multimapIterator;
         std::pair< multimapIterator, multimapIterator> range;
@@ -220,7 +219,7 @@ public:
     Data<T> initData( Data<T>* field, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false )
     {
         std::string ln(name);
-        if( ln.size()>0 && findField(ln)!=m_fieldVec.size() )
+        if( ln.size()>0 && findField(ln) )
         {
             std::cerr << "field name " << ln << " already used in this class or in a parent class !...aborting" << std::endl;
             exit( 1 );
@@ -235,7 +234,7 @@ public:
     Data<T> initData( Data<T>* field, const T& value, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false  )
     {
         std::string ln(name);
-        if( ln.size()>0 && findField(ln)!=m_fieldVec.size()  )
+        if( ln.size()>0 && findField(ln)  )
         {
             std::cerr << "field name " << ln << " already used in this class or in a parent class !...aborting" << std::endl;
             exit( 1 );
@@ -250,7 +249,7 @@ public:
     DataPtr<T> initDataPtr( DataPtr<T>* field, T* ptr, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false  )
     {
         std::string ln(name);
-        if( ln.size()>0 && findField(ln)!=m_fieldVec.size() )
+        if( ln.size()>0 && findField(ln) )
         {
             std::cerr << "field name " << ln << " already used in this class or in a parent class !...aborting" << std::endl;
             exit( 1 );
@@ -261,17 +260,10 @@ public:
     }
 
     /// Helper method used to add an alias to a DataPtr
-    template<class T>
-    void addAlias( Data<T>* field, const char* alias)
-    {
-        m_aliasData.insert(std::make_pair(alias,field));
-    }
 
-    /// Helper method used to add an alias to a DataPtr
-    template<class T>
-    void addAlias( DataPtr<T>* field, const char* alias)
+    void addAlias( BaseData* field, const char* alias)
     {
-        m_aliasData.insert(std::make_pair(alias,field));
+        m_aliasData.insert(std::make_pair(std::string(alias),field));
     }
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
@@ -282,16 +274,22 @@ public:
     /// Accessor to the map containing all the aliases of this object
     std::multimap< std::string, BaseData* > getAliases() { return m_aliasData; }
 
+
+    const sofa::helper::vector<std::string> & getLogWarning() {return logWarnings;}
+
+    void logWarning(std::string l);
 protected:
     /// name -> Field object
     std::vector< std::pair<std::string, BaseData*> > m_fieldVec;
     std::multimap< std::string, BaseData* > m_aliasData;
 
+    sofa::helper::vector< std::string > logWarnings;
+
     /// Add a field. Note that this method should only be called if the field was not initialized with the initData<T> of field<T> methods
     void addField( BaseData* f, const char* name )
     {
         std::string ln(name);
-        if( ln.size()>0 && findField(ln)!=m_fieldVec.size() )
+        if( ln.size()>0 && findField(ln) )
         {
             std::cerr << "field name " << ln << " already used in this class or in a parent class !...aborting" << std::endl;
             exit( 1 );

@@ -34,7 +34,6 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
-#include <sofa/helper/vector.h>
 
 namespace sofa
 {
@@ -161,10 +160,6 @@ public:
      */
     virtual void draw() {}
 
-    const sofa::helper::vector<std::string> & getLogWarning() {return logWarnings;}
-
-    void logWarning(std::string l) {logWarnings.push_back(l); std::cerr<<"WARNING: " << l << "\n";}
-
     ///@}
 
     /// @name data access
@@ -178,7 +173,6 @@ public:
 
 protected:
     BaseContext* context_;
-    sofa::helper::vector< std::string > logWarnings;
 };
 
 } // namespace objectmodel

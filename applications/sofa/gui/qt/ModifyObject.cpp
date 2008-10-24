@@ -1091,7 +1091,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             }
 
             //Log of initialization
-            core::objectmodel::BaseObject *obj = dynamic_cast< core::objectmodel::BaseObject* >(node_clicked);
+            core::objectmodel::Base *obj = dynamic_cast< core::objectmodel::Base* >(node_clicked);
             if (obj && obj->getLogWarning().size() != 0)
             {
                 const sofa::helper::vector< std::string > &log = obj->getLogWarning();

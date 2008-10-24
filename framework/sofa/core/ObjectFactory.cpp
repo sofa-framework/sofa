@@ -120,19 +120,23 @@ objectmodel::BaseObject* ObjectFactory::createObject(objectmodel::BaseContext* c
     }
     if (creators.empty())
     {
-        std::cerr<<"ERROR: ObjectFactory: Object type "<<classname<<"<"<<templatename<<"> creation failed."<<std::endl;
+// 	  std::cerr<<"ERROR: ObjectFactory: Object type "<<classname<<"<"<<templatename<<"> creation failed."<<std::endl;
+        arg->logWarning("Object type " + classname + std::string("<") + templatename + std::string("> creation failed"));
     }
     else
     {
-        if (creators.size()>1)
-        {
-            std::cerr<<"WARNING: ObjectFactory: Several possibilities found for type "<<classname<<"<"<<templatename<<">:\n"; //<<std::endl;
-            for(unsigned int i=0; i<creators.size(); ++i)
-                std::cerr << "  " << objectmodel::Base::decodeTemplateName(creators[i]->type()) << std::endl;
-            std::cerr << std::endl;
-        }
 // 	    std::cout << "Create Instance : " << arg->getFullName() << "\n";
         object = creators[0]->createInstance(context, arg);
+        if (creators.size()>1)
+        {
+//                 std::cerr<<"WARNING: ObjectFactory: Several possibilities found for type "<<classname<<"<"<<templatename<<">:\n"; //<<std::endl;
+            std::string w= "Template Unknown: <"+templatename+std::string("> : default used: <")+object->getTemplateName()+std::string(">"); w+="in the list: ";
+            for(unsigned int i=0; i<creators.size(); ++i)
+            {
+                w += std::string("\n\t* ") + objectmodel::Base::decodeTemplateName(creators[i]->type());
+            }
+            object->logWarning(w);
+        }
     }
     return object;
 }

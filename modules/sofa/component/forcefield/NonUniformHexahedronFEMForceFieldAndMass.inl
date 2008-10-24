@@ -106,7 +106,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
     if( !this->_nbVirtualFinerLevels.getValue() || !this->_sparseGrid || this->_sparseGrid->getNbVirtualFinerLevels() < this->_nbVirtualFinerLevels.getValue()  )
     {
         // 		this->_nbVirtualFinerLevels.setValue(0);
-        cerr<<"WARNING: NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init    conflict in nb of virtual levels between ForceField "<<this->getName()<<" and SparseGrid "<<this->_sparseGrid->getName()<<" -> classical uniform properties are used"<<endl;
+        logWarning("Conflict in nb of virtual levels between ForceField "+this->getName()+std::string(" and SparseGrid ")+this->_sparseGrid->getName()+std::string(" -> classical uniform properties are used"));
     }
 
 

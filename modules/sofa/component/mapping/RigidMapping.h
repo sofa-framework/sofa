@@ -81,6 +81,7 @@ public:
           indexFromEnd( initData ( &indexFromEnd,false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") ),
           repartition ( initData ( &repartition,"repartition","number of dest dofs per entry dof" ) )
     {
+        addAlias(&fileRigidMapping,"filename");
     }
 
     virtual ~RigidMapping()

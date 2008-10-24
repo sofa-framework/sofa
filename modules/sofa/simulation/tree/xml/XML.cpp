@@ -58,17 +58,12 @@ void recReplaceAttribute(BaseElement* node, const char* attr, const char* value,
     {
         if (node->getName() == nodename)
         {
-//             std::cout << "XML: Replacing attribute " << attr << " in " << node->getName() << " by " << value << std::endl;
-            node->setAttribute(attr, value);
+            node->addReplaceAttribute(attr,value);
         }
     }
     else
     {
-        if (node->getAttribute( attr ))
-        {
-//             std::cout << "XML: Replacing attribute " << attr << " in " << node->getName() << " by " << value << std::endl;
-            node->setAttribute(attr, value);
-        }
+        node->addReplaceAttribute(attr,value);
     }
     BaseElement::child_iterator<> it = node->begin();
     BaseElement::child_iterator<> end = node->end();
@@ -151,7 +146,6 @@ BaseElement* createNode(xmlNodePtr root, const char *basefilename, bool isRoot =
         if (attr->children==NULL) continue;
         if (!xmlStrcmp(attr->name,(const xmlChar*)"name")) continue;
         if (!xmlStrcmp(attr->name,(const xmlChar*)"type")) continue;
-        //std::cout << attr->name << " = " << attr->children->content << std::endl;
         node->setAttribute((const char*)attr->name, (const char*)attr->children->content);
     }
 

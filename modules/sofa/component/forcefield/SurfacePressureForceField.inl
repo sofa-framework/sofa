@@ -75,7 +75,7 @@ void SurfacePressureForceField<DataTypes>::init()
 
     if (pulseMode.getValue() && (pressureSpeed.getValue() == 0.0))
     {
-        std::cerr << "WARNING Default pressure speed value has been set in SurfacePressureForceField\n";
+        logWarning("Default pressure speed value has been set in SurfacePressureForceField");
         pressureSpeed.setValue((Real)fabs( pressure.getValue()));
     }
 }

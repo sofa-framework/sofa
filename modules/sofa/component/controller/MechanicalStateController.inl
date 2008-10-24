@@ -75,7 +75,7 @@ void MechanicalStateController<DataTypes>::init()
     mainDirectionPtr.beginEdit();
     mState = dynamic_cast<MechanicalState<DataTypes> *> (this->getContext()->getMechanicalState());
     if (!mState)
-        std::cerr << "WARNING - MechanicalStateController has no binding MechanicalState\n";
+        logWarning("MechanicalStateController has no binding MechanicalState");
     omni = false;
 }
 

@@ -86,6 +86,7 @@ public:
           axisLength(initData( &axisLength, 0.7, "axisLength", "axis length for display")),
           indexFromEnd( initData ( &indexFromEnd,false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") )
     {
+        addAlias(&fileRigidRigidMapping,"filename");
     }
 
     virtual ~RigidRigidMapping()

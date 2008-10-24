@@ -510,12 +510,13 @@ void RigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typen
             n += w_n ;
         }
 
-        if (n.norm() < 0.9999 || n.norm() > 1.00001)
-            printf("\n WARNING : constraint direction is not normalized !!!");
+//   		if (n.norm() < 0.9999 || n.norm() > 1.00001)
+//  			printf("\n WARNING : constraint direction is not normalized !!!\n");
 
         // apply Jt.n as a constraint for the center of mass
         // Jt = [ I   ]
         //      [ OM^ ]
+//                 typename Out::Deriv _n=n; _n.normalize();
         typename Out::Deriv omega_n = cross(ApplicationPoint,n);
 
         InDeriv direction;

@@ -44,7 +44,7 @@ void EnslavementForceFeedback::init()
 
     mState = dynamic_cast<MechanicalState<Rigid3dTypes> *> (this->getContext()->getMechanicalState());
     if (!mState)
-        std::cerr << "WARNING - EnslavementForceFeedback has no binding MechanicalState\n";
+        logWarning("EnslavementForceFeedback has no binding MechanicalState");
     simulation::tree::GNode* context = dynamic_cast<simulation::tree::GNode*>(getContext());
     context->getTreeObjects<core::CollisionModel>(&collisionModels);
 }
