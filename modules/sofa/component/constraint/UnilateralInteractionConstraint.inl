@@ -13,14 +13,20 @@ namespace component
 namespace constraint
 {
 #ifdef SOFA_DEV
-void UnilateralConstraintResolutionWithFriction::init(int line, double** w)
+void UnilateralConstraintResolutionWithFriction::init(int line, double** w, double* force)
 {
+    //std::cout<<"Init is called"<<std::endl;
     _W[0]=w[line  ][line  ];
     _W[1]=w[line  ][line+1];
     _W[2]=w[line  ][line+2];
     _W[3]=w[line+1][line+1];
     _W[4]=w[line+1][line+2];
     _W[5]=w[line+2][line+2];
+
+    // pour l'instant on met "force" à zero
+    force[line  ] = 0.0;
+    force[line+1] = 0.0;
+    force[line+2] = 0.0;
 }
 
 void UnilateralConstraintResolutionWithFriction::resolution(int line, double** /*w*/, double* d, double* force)
@@ -30,12 +36,16 @@ void UnilateralConstraintResolutionWithFriction::resolution(int line, double** /
 
     // evaluation of the current normal position
     td[0] = _W[0]*force[line] + _W[1]*force[line+1] + _W[2]*force[line+2] + d[line];
+
+
+
     // evaluation of the new contact force
     force[line] -= td[0]/_W[0];
 
     if(force[line] < 0)
     {
         force[line]=0; force[line+1]=0; force[line+2]=0;
+        //std::cout<< "no contact" <<std::endl;
         return;
     }
 
@@ -43,16 +53,23 @@ void UnilateralConstraintResolutionWithFriction::resolution(int line, double** /
     td[1] = _W[1]*force[line] + _W[3]*force[line+1] + _W[4]*force[line+2] + d[line+1];
     td[2] = _W[2]*force[line] + _W[4]*force[line+1] + _W[5]*force[line+2] + d[line+2];
 
+    //std::cout<< "td = "<<td[0] <<" "<<td[1] <<" "<<td[2] <<std::endl;
+
     // evaluation of the new fricton forces
     force[line+1] -= 2*td[1]/(_W[3]+_W[5]);
     force[line+2] -= 2*td[2]/(_W[3]+_W[5]);
 
     normFt = sqrt(force[line+1]*force[line+1] + force[line+2]*force[line+2]);
 
+    //std::cout<< "force adh: "<<force[line]<<"  "<<force[line+1]<<"  "<<force[line+2]<<std::endl;
+
+    //std::cout<<"_mu = "<<_mu<<std::endl;
+
     if(normFt > _mu*force[line])
     {
         force[line+1] *= _mu*force[line]/normFt;
         force[line+2] *= _mu*force[line]/normFt;
+        //std::cout<< "force gliss: "<<force[line]<<"  "<<force[line+1]<<"  "<<force[line+2]<<std::endl;
     }
 
     d[line]   += _W[0]*force[line] + _W[1]*force[line+1] + _W[2]*force[line+2];
