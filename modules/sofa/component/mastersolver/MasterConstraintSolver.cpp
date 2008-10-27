@@ -49,6 +49,9 @@ void MasterConstraintSolver::init()
 
 void MasterConstraintSolver::step ( double dt )
 {
+    bool debug =false;
+    if (debug)
+        std::cerr<<"MasterConstraintSolver::step is called"<<std::endl;
     simulation::tree::GNode *context = dynamic_cast<simulation::tree::GNode *>(this->getContext()); // access to current node
 
     // Update the BehaviorModels
@@ -58,6 +61,8 @@ void MasterConstraintSolver::step ( double dt )
         for (unsigned i=0; i<(*it)->behaviorModel.size(); i++)
             (*it)->behaviorModel[i]->updatePosition(dt);
     }
+    if (debug)
+        std::cerr<<"Free Motion is called"<<std::endl;
 
     simulation::MechanicalBeginIntegrationVisitor beginVisitor(dt);
     context->execute(&beginVisitor);
@@ -76,6 +81,8 @@ void MasterConstraintSolver::step ( double dt )
     simulation::MechanicalPropagateDxVisitor(dx_id).execute(context);
     simulation::MechanicalVOpVisitor(dx_id).execute(context);
 
+    if (debug)
+        std::cerr<<"computeCollision is called"<<std::endl;
     computeCollision();
 
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
@@ -83,6 +90,9 @@ void MasterConstraintSolver::step ( double dt )
         core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->resetContactForce();
     }
+
+    if (debug)
+        std::cerr<<"constraints Matrix construction is called"<<std::endl;
 
     unsigned int numConstraints = 0;
 
@@ -95,6 +105,8 @@ void MasterConstraintSolver::step ( double dt )
     // calling accumulateConstraint
     MechanicalAccumulateConstraint2().execute(context);
 
+    if (debug)
+        std::cerr<<"   1. resize constraints : numConstraints="<< numConstraints<<std::endl;
 
     _dFree.resize(numConstraints);
     _d.resize(numConstraints);
@@ -108,18 +120,26 @@ void MasterConstraintSolver::step ( double dt )
     // calling getConstraintResolution
     MechanicalGetConstraintResolutionVisitor(_constraintsResolutions).execute(context);
 
+    if (debug)
+        std::cerr<<"   2. getCompliance is called"<< numConstraints<<std::endl;
+
     for (unsigned int i=0; i<constraintCorrections.size(); i++ )
     {
         core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->getCompliance(&_W); // getDelassusOperator(_W) = H*C*Ht
     }
 
+    if (debug)
+        std::cerr<<"Gauss-Seidel solver is called"<<std::endl;
     gaussSeidelConstraint(numConstraints, _dFree.ptr(), _W.lptr(), _force.ptr(), _d.ptr(), _constraintsResolutions);
 
-    helper::afficheLCP(_dFree.ptr(), _W.lptr(), _force.ptr(),  numConstraints);
+//	helper::afficheLCP(_dFree.ptr(), _W.lptr(), _force.ptr(),  numConstraints);
 //	helper::afficheLCP(_dFree.ptr(), _W.lptr(), _result.ptr(),  numConstraints);
 
 //	fprintf(stderr, "applyContactForce\n");
+
+    if (debug)
+        std::cout<<"constraintCorrections motion is called"<<std::endl;
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
         core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];

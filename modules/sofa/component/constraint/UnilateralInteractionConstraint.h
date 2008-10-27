@@ -31,7 +31,7 @@ class UnilateralConstraintResolutionWithFriction : public core::componentmodel::
 {
 public:
     UnilateralConstraintResolutionWithFriction(double mu) : _mu(mu) { nbLines=3; }
-    virtual void init(int line, double** w);
+    virtual void init(int line, double** w, double* force);
     virtual void resolution(int line, double** w, double* d, double* force);
 
 protected:
