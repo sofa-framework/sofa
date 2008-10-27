@@ -70,7 +70,7 @@ TriangularAnisotropicFEMForceField<DataTypes>::TriangularAnisotropicFEMForceFiel
     , f_fiberCenter(initData(&f_fiberCenter,"fiberCenter","Concentric fiber center in global reference frame"))
     , showFiber(initData(&showFiber,true,"showFiber","Flag activating rendering of fiber directions within each triangle"))
 {
-
+    this->_anisotropicMaterial = true;
 }
 
 template< class DataTypes>
@@ -116,7 +116,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::init()
 template <class DataTypes>void TriangularAnisotropicFEMForceField<DataTypes>::reinit()
 {
     f_poisson2.setValue(Inherited::f_poisson.getValue()*(f_young2.getValue()/Inherited::f_young.getValue()));
-    fiberDirRefs.resize(_topology->getNbTriangles());
+    localFiberDirection.resize(_topology->getNbTriangles());
     Inherited::reinit();
 }
 
@@ -125,16 +125,16 @@ template <class DataTypes>void TriangularAnisotropicFEMForceField<DataTypes>::ha
     std::list<const TopologyChange *>::const_iterator itBegin=_topology->firstChange();
     std::list<const TopologyChange *>::const_iterator itEnd=_topology->lastChange();
 
-    fiberDirRefs.handleTopologyEvents(itBegin,itEnd);
+    localFiberDirection.handleTopologyEvents(itBegin,itEnd);
     Inherited::handleTopologyChange();
 }
 
 template <class DataTypes>
 void TriangularAnisotropicFEMForceField<DataTypes>::getFiberDir(int element, Deriv& dir)
 {
-    if ((unsigned)element < fiberDirRefs.size())
+    if ((unsigned)element < localFiberDirection.size())
     {
-        const Deriv& ref = fiberDirRefs[element];
+        const Deriv& ref = localFiberDirection[element];
         const VecCoord& x = *this->mstate->getX();
         topology::Triangle t = _topology->getTriangle(element);
         dir = (x[t[1]]-x[t[0]])*ref[0] + (x[t[2]]-x[t[0]])*ref[1];
@@ -148,45 +148,59 @@ void TriangularAnisotropicFEMForceField<DataTypes>::getFiberDir(int element, Der
 template <class DataTypes>
 void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index& v1, Index& v2, Index& v3)
 {
+    Real Q11, Q12, Q22, Q66;
+    Coord fiberDirGlobal;  // orientation of the fiber in the global frame of reference
+
+    Coord fiberDirLocalOrtho; //  // orientation of the fiber in the local orthonormal frame of the element
+    Mat<3,3,Real> T, Tinv;
     TriangleInformation *tinfo = &Inherited::triangleInfo[i];
 
-    Real Q11, Q12, Q22, Q66;
     Q11 = Inherited::f_young.getValue()/(1-Inherited::f_poisson.getValue()*f_poisson2.getValue());
     Q12 = Inherited::f_poisson.getValue()*f_young2.getValue()/(1-Inherited::f_poisson.getValue()*f_poisson2.getValue());
     Q22 = f_young2.getValue()/(1-Inherited::f_poisson.getValue()*f_poisson2.getValue());
     Q66 = (Real)(Inherited::f_young.getValue() / (2.0*(1 + Inherited::f_poisson.getValue())));
 
-    Mat<3,3,Real> bary,baryInv;
-    bary[0] = (*Inherited::_initialPoints)[v2]-(*Inherited::_initialPoints)[v1];
-    bary[1] = (*Inherited::_initialPoints)[v3]-(*Inherited::_initialPoints)[v1];
-    bary[2] = cross(bary[0],bary[1]);
-    Coord fiberDir;
-    if (!f_fiberCenter.getValue().empty())
+    if (i >= (int) localFiberDirection.size())
+        localFiberDirection.resize(i+1);
+    Deriv& fiberDirLocal = localFiberDirection[i]; // orientation of the fiber in the local frame of the element (orthonormal frame)
+
+    T[0] = (*Inherited::_initialPoints)[v2]-(*Inherited::_initialPoints)[v1];
+    T[1] = (*Inherited::_initialPoints)[v3]-(*Inherited::_initialPoints)[v1];
+    T[2] = cross(T[0], T[1]);
+    T[1] = cross(T[2], T[0]);
+    T[0].normalize();
+    T[1].normalize();
+    T[2].normalize();
+
+    if (!f_fiberCenter.getValue().empty()) // in case we have concentric fibers
     {
         Coord tcenter = ((*Inherited::_initialPoints)[v1]+(*Inherited::_initialPoints)[v2]+(*Inherited::_initialPoints)[v3])*(Real)(1.0/3.0);
         Coord fcenter = f_fiberCenter.getValue()[0];
-        fiberDir = cross(bary[2],fcenter-tcenter);
+        fiberDirGlobal = cross(T[2], fcenter-tcenter);  // was fiberDir
     }
-    else
+    else // for unidirectional fibers
     {
         double theta = (double)f_theta.getValue()*M_PI/180.0;
-        fiberDir = Coord((Real)cos(theta), (Real)sin(theta), 0);
+        fiberDirGlobal = Coord((Real)cos(theta), (Real)sin(theta), 0); // was fiberDir
     }
-    bary.transpose();
-    baryInv.invert(bary);
-    if (i >= (int) fiberDirRefs.size())
-        fiberDirRefs.resize(i+1);
-    Deriv& fiberDirRef = fiberDirRefs[i];
-    fiberDirRef = baryInv * fiberDir;
-    fiberDirRef[2] = 0;
-    fiberDirRef.normalize();
+    T.transpose();
+    Tinv.invert(T);
+    fiberDirLocal = Tinv * fiberDirGlobal;
+    fiberDirLocal[2] = 0;
+    fiberDirLocal.normalize();
 
-    if (this->method != SMALL) // use the co-rotational transformation
-        fiberDir = tinfo->initialTransformation * fiberDir;
-    fiberDir.normalize();
+    /*	if (this->method != SMALL) {
+    	  fiberDirLocal = tinfo->initialTransformation * fiberDirLocal;
+    		fiberDirLocal.normalize();
+    	}
+    */
     Real c, s, c2, s2, c3, s3,c4, s4;
-    c = fiberDir[0]; //cos(theta_ref);
-    s = fiberDir[1]; //sin(theta_ref);
+    c = fiberDirLocal[0];
+    s = fiberDirLocal[1];
+
+//	std::cout << "fiberDirGlobal = (" << fiberDirGlobal[0] << ", " << fiberDirGlobal[1] << ")" << std::endl;
+//	std::cout << "fiberDirLocal  = (" << fiberDirLocal[0] << ", " << fiberDirLocal[1] << ")" << std::endl;
+
     c2 = c*c;
     s2 = s*s;
     c3 = c2*c;
@@ -204,12 +218,12 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     // K(2,6)=K(6,2)
     // K(6,6)=(Q11+Q22-2*Q12-2*Q66)*SIN(THETA)^2 * COS(THETA)^2+ Q66*(SIN(THETA)^4+COS(THETA)^4) => (Q11+Q22-2*Q12-2*Q66)*s2*c2+ Q66*(s4+c4)
 
-    Real K11= c4 * Q11 + 2 * c2 * s2 * (Q12+2*Q66) + s4 * Q22; // c4*Q11+2*s2*c2*(Q12+2*Q66)+s4*Q22
-    Real K12 = c2 * s2 * (Q11+Q22-4*Q66) + (c4+s4) * Q12; // s2*c2*(Q11+Q22-4*Q66) + (s4+c4)*Q12
-    Real K22 = s4* Q11 + 2 * c2 * s2 * (Q12+2*Q66) + c4 * Q22; // s4*Q11 + 2.0*s2*c2*(Q12+2*Q66) + c4*Q22
+    Real K11= c4 * Q11 + 2 * c2 * s2 * (Q12+2*Q66) + s4 * Q22;
+    Real K12 = c2 * s2 * (Q11+Q22-4*Q66) + (c4+s4) * Q12;
+    Real K22 = s4* Q11 + 2 * c2 * s2 * (Q12+2*Q66) + c4 * Q22;
     Real K16 = s * c3 * (Q11-Q12-2*Q66) + s3 * c * (Q12-Q22+2*Q66);
     Real K26 = s3 * c * (Q11-Q12-2*Q66) + s * c3 * (Q12-Q22+2*Q66);
-    Real K66 = c2 * s2 * (Q11+Q22-2*Q12-2*Q66) + (c4+s4) * Q66; // s2*c2*(Q11+Q22-2*Q12-2*Q66) + (s4+c4)*Q66
+    Real K66 = c2 * s2 * (Q11+Q22-2*Q12-2*Q66) + (c4+s4) * Q66;
 
     tinfo->materialMatrix[0][0] = K11;
     tinfo->materialMatrix[0][1] = K12;
@@ -237,22 +251,56 @@ template <class DataTypes>void TriangularAnisotropicFEMForceField<DataTypes>::dr
     glDisable(GL_POLYGON_OFFSET_FILL);
     if (!getContext()->getShowForceFields())
         return;
-    if (showFiber.getValue() && fiberDirRefs.size() == (unsigned)_topology->getNbTriangles())
+    if (showFiber.getValue() && localFiberDirection.size() == (unsigned)_topology->getNbTriangles())
     {
         const VecCoord& x = *this->mstate->getX();
         int nbTriangles=_topology->getNbTriangles();
         glColor3f(1,1,1);
         glBegin(GL_LINES);
-        //typename VecElement::const_iterator it;
-        int i;
-        for(i=0; i<nbTriangles; ++i) //it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it
+
+        for(int i=0; i<nbTriangles; ++i)
         {
-            Index a = _topology->getTriangle(i)[0];//(*it)[0];
-            Index b = _topology->getTriangle(i)[1];//(*it)[1];
-            Index c = _topology->getTriangle(i)[2];//(*it)[2];
+            Index a = _topology->getTriangle(i)[0];
+            Index b = _topology->getTriangle(i)[1];
+            Index c = _topology->getTriangle(i)[2];
+
+            Mat<3,3,Real> T, Tinv;
+            /*T[0] = x[b]-x[a];
+            T[0].normalize();
+            T[1] = x[c]-x[a];
+            T[1].normalize();
+            T[2] = cross(T[0], T[1]);
+            T[2].normalize();
+            T[1] = cross(T[2], T[0]);
+            T[1].normalize(); */
+
+            T[0] = (*Inherited::_initialPoints)[b]-(*Inherited::_initialPoints)[a];
+            T[1] = (*Inherited::_initialPoints)[c]-(*Inherited::_initialPoints)[a];
+            T[2] = cross(T[0], T[1]);
+            T[1] = cross(T[2], T[0]);
+            T[1].normalize();
+
+            //	std::cout << T << std::endl;
+
+//			double theta = (double)f_theta.getValue()*M_PI/180.0;
+            Coord y = T[1];
+            //Coord ab = x[b]-x[a];
+            Coord ab = (*Inherited::_initialPoints)[b]-(*Inherited::_initialPoints)[a];
+            y *= ab.norm();
+            //		helper::gl::glVertexT(x[a]);
+            //	helper::gl::glVertexT(x[a]+y);
+
+            /*			T.transpose();
+            			Tinv.invert(T);
+            			Coord fiber;
+            			fiber = Tinv * Coord((Real)cos(theta), (Real)sin(theta), 0);
+            			fiber[2] = 0;
+            			fiber.normalize();*/
+
             Coord center = (x[a]+x[b]+x[c])/3;
-            Coord d = (x[b]-x[a])*fiberDirRefs[i][0] + (x[c]-x[a])*fiberDirRefs[i][1];
-            d*=0.4;
+//		Coord d = (x[b]-x[a])*localFiberDirection[i][0] + (x[c]-x[a])*localFiberDirection[i][1];
+            Coord d = (x[b]-x[a])*localFiberDirection[i][0] + y*localFiberDirection[i][1];
+            d*=0.25;
             helper::gl::glVertexT(center-d);
             helper::gl::glVertexT(center+d);
         }
