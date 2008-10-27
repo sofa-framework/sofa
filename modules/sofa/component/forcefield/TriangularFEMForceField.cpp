@@ -889,8 +889,16 @@ void TriangularFEMForceField<DataTypes>::getFractureCriteria(int elementIndex, D
 
     if ((unsigned)elementIndex < triangleInfo.size())
     {
+        //direction = triangleInfo[elementIndex].principalStrainDirection;
+        //value = triangleInfo[elementIndex].maxStrain;
+        computePrincipalStress(elementIndex, triangleInfo[elementIndex].stress);
         direction = triangleInfo[elementIndex].principalStrainDirection;
-        value = triangleInfo[elementIndex].maxStrain;
+        value = triangleInfo[elementIndex].maxStress;
+        if (value < 0)
+        {
+            direction.clear();
+            value = 0;
+        }
     }
     else
     {
