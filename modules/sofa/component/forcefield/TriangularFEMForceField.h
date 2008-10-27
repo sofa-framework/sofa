@@ -84,13 +84,12 @@ public:
     typedef sofa::core::componentmodel::topology::BaseMeshTopology::Triangle Element;
     typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles VecElement;
 
-    static const int SMALL = 1;										///< Symbol of small displacements triangle solver
-    static const int LARGE = 0;										///< Symbol of large displacements triangle solver
-
+    static const int SMALL = 1;										    ///< Symbol of small displacements triangle solver
+    static const int LARGE = 0;									    	///< Symbol of large displacements triangle solver
 
 protected:
-//    component::MechanicalObject<DataTypes>* _object;
 
+    bool _anisotropicMaterial;						// used to turn on / off optimizations
     typedef Vec<6, Real> Displacement;								///< the displacement vector
     typedef Mat<3, 3, Real> MaterialStiffness;						///< the matrix of material stiffness
     typedef sofa::helper::vector<MaterialStiffness> VecMaterialStiffness;    ///< a vector of material stiffness matrices
@@ -108,15 +107,16 @@ protected:
         // large displacement method
         helper::fixed_array<Coord,3> rotatedInitialElements;
         Transformation rotation;
-        /// polar method
+        // strain vector
+        Vec<3,Real> strain;
+        // stress vector
+        Vec<3,Real> stress;
         Transformation initialTransformation;
-
+        Coord principalStressDirection;
+        Real maxStress;
         Coord principalStrainDirection;
-        double eigenValue;
-
-        TriangleInformation()
-        {
-        }
+        Real maxStrain;
+        TriangleInformation() { }
     };
 
     class EdgeInformation
@@ -146,10 +146,8 @@ protected:
     //const VecElement *_indexedElements;
     //Data< VecCoord > _initialPoints; ///< the intial positions of the points
     VecCoord* _initialPoints;
-//     int _method; ///< the computation method of the displacements
-//     Real _poissonRatio;
-//     Real _youngModulus;
-//     Real _dampingRatio;
+    //     int _method; ///< the computation method of the displacements
+
 
     bool updateMatrix;
     int lastFracturedEdgeIndex;
@@ -176,7 +174,6 @@ public:
     Data<Real> f_young;
     Data<Real> f_damping;
     Data<bool> f_fracturable;
-
     Data<bool> showStressValue;
     Data<bool> showStressVector;
 
@@ -188,37 +185,29 @@ public:
     void setDamping(Real val) { f_damping.setValue(val); }
     int  getMethod() { return method; }
     void setMethod(int val) { method = val; }
-    int getFracturedEdge();
-
+    int  getFracturedEdge();
     void getFractureCriteria(int element, Deriv& direction, Real& value);
 
 protected :
 
-    void computeEigenStrain( Coord &v, StrainDisplacement &J, Displacement &Depl , double &maxEigenValue);
+    void computeDisplacementSmall(Displacement &D, Index elementIndex, const VecCoord &p);
+    void computeDisplacementLarge(Displacement &D, Index elementIndex, const Transformation &R_2_0, const VecCoord &p);
+    void computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c );
+    void computeStrain(Vec<3,Real> &strain, const StrainDisplacement &J, const Displacement &D);
+    void computeStress(Vec<3,Real> &stress, MaterialStiffness &K, Vec<3,Real> &strain);
+    void computeForce(Displacement &F, Index elementIndex, const VecCoord &p);
+    void computePrincipalStrain(Index elementIndex, Vec<3,Real> &strain);
+    void computePrincipalStress(Index elementIndex, Vec<3,Real> &stress);
 
-    //EdgeData<EdgeInformation> &getEdgeInfo() {return edgeInfo;}
-
-    /*
-        static void TRQSEdgeCreationFunction(int edgeIndex, void* param, EdgeInformation &ei,
-                                             const Edge& ,  const sofa::helper::vector< unsigned int > &,
-                                             const sofa::helper::vector< double >&);
-    */
-    static void TRQSTriangleCreationFunction (int , void* ,
-            TriangleInformation &,
-            const Triangle& , const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
-
-
-    //static void TRQSTriangleDestroyFunction ( int , void* , TriangleInformation &);
+    static void TRQSTriangleCreationFunction (int , void* , TriangleInformation &, const Triangle& , const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&);
 
     /// f += Kx where K is the stiffness matrix and x a displacement
     virtual void applyStiffness( VecCoord& f, Real h, const VecCoord& x );
     virtual void computeMaterialStiffness(int i, Index& a, Index& b, Index& c);
-    void computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c);
-    void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J );
 
     ////////////// small displacements method
     void initSmall(int i, Index&a, Index&b, Index&c);
-    void accumulateForceSmall( VecCoord& f, const VecCoord & p, Index elementIndex, bool implicit = false );
+    void accumulateForceSmall( VecCoord& f, const VecCoord & p, Index elementIndex);
     void accumulateDampingSmall( VecCoord& f, Index elementIndex );
     void applyStiffnessSmall( VecCoord& f, Real h, const VecCoord& x );
 
@@ -227,7 +216,7 @@ protected :
     //sofa::helper::vector< Transformation > _rotations;
     void initLarge(int i, Index&a, Index&b, Index&c);
     void computeRotationLarge( Transformation &r, const VecCoord &p, const Index &a, const Index &b, const Index &c);
-    void accumulateForceLarge( VecCoord& f, const VecCoord & p, Index elementIndex, bool implicit=false );
+    void accumulateForceLarge( VecCoord& f, const VecCoord & p, Index elementIndex);
     void accumulateDampingLarge( VecCoord& f, Index elementIndex );
     void applyStiffnessLarge( VecCoord& f, Real h, const VecCoord& x );
 };
