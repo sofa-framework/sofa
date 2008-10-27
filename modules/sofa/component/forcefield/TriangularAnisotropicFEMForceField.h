@@ -92,7 +92,7 @@ public:
     Data<VecCoord> f_fiberCenter;
     Data<bool> showFiber;
 
-    TriangleData<Deriv> fiberDirRefs;
+    TriangleData<Deriv> localFiberDirection;
 
     virtual void handleTopologyChange();
 
