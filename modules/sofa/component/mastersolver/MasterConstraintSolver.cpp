@@ -115,13 +115,18 @@ void MasterConstraintSolver::step ( double dt )
     _force.resize(numConstraints);
     _constraintsResolutions.resize(numConstraints); // _constraintsResolutions.clear();
 
+    if (debug)
+        std::cerr<<"   2. compute violation"<<std::endl;
     // calling getConstraintValue
     MechanicalGetConstraintValueVisitor(&_dFree).execute(context);
+
+    if (debug)
+        std::cerr<<"   3. get resolution method for each constraint"<<std::endl;
     // calling getConstraintResolution
     MechanicalGetConstraintResolutionVisitor(_constraintsResolutions).execute(context);
 
     if (debug)
-        std::cerr<<"   2. getCompliance is called"<< numConstraints<<std::endl;
+        std::cerr<<"   4. get Compliance "<<std::endl;
 
     for (unsigned int i=0; i<constraintCorrections.size(); i++ )
     {

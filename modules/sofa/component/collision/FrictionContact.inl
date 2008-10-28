@@ -52,7 +52,7 @@ FrictionContact<TCollisionModel1,TCollisionModel2>::FrictionContact(CollisionMod
     mapper1.setCollisionModel(model1);
     mapper2.setCollisionModel(model2);
 
-    mu = 0.6;
+    mu = 0.1;
 }
 
 template < class TCollisionModel1, class TCollisionModel2 >
