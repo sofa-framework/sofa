@@ -31,10 +31,13 @@ public:
     MechanicalGetConstraintResolutionVisitor(std::vector<core::componentmodel::behavior::ConstraintResolution*>& res, unsigned int offset = 0)
         : _res(res),_offset(offset)
     {
+        //std::cerr<<"creation of the visitor"<<std::endl;
     }
 
     virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
+        //std::cerr<<"fwdConstraint called on "<<c->getName()<<std::endl;
+
         c->getConstraintResolution(_res, _offset);
         return RESULT_CONTINUE;
     }
