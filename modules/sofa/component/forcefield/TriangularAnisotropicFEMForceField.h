@@ -74,8 +74,8 @@ public:
     typedef sofa::core::componentmodel::topology::BaseMeshTopology::Triangle Element;
     typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles VecElement;
 
-    static const int SMALL = 1;		///< Symbol of small displacements triangle solver
-    static const int LARGE = 0;		///< Symbol of large displacements triangle solver
+    static const int SMALL = 1;
+    static const int LARGE = 0;
 
     void init();
     void reinit();
@@ -83,7 +83,7 @@ public:
 
     TriangularAnisotropicFEMForceField();
     void computeMaterialStiffness(int i, Index& a, Index& b, Index& c);
-
+    void computeStressAlongDirection(Real &stress_along_dir, Index elementIndex, Coord &direction, Vec<3,Real> &stress);
     void getFiberDir(int element, Deriv& dir);
 
     Data<Real> f_poisson2;

@@ -189,17 +189,9 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     fiberDirLocal[2] = 0;
     fiberDirLocal.normalize();
 
-    /*	if (this->method != SMALL) {
-    	  fiberDirLocal = tinfo->initialTransformation * fiberDirLocal;
-    		fiberDirLocal.normalize();
-    	}
-    */
     Real c, s, c2, s2, c3, s3,c4, s4;
     c = fiberDirLocal[0];
     s = fiberDirLocal[1];
-
-//	std::cout << "fiberDirGlobal = (" << fiberDirGlobal[0] << ", " << fiberDirGlobal[1] << ")" << std::endl;
-//	std::cout << "fiberDirLocal  = (" << fiberDirLocal[0] << ", " << fiberDirLocal[1] << ")" << std::endl;
 
     c2 = c*c;
     s2 = s*s;
@@ -243,7 +235,37 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     //cout << "Poisson2=" << f_poisson2.getValue() << endl;
 }
 
-template <class DataTypes>void TriangularAnisotropicFEMForceField<DataTypes>::draw()
+// ----------------------------------------------------------------------------------------------------------------------------------------
+// ---	Compute value of stress along a given direction (typically the fiber direction and transverse direction in anisotropic materials)
+// ----------------------------------------------------------------------------------------------------------------------------------------
+template <class DataTypes>
+void TriangularAnisotropicFEMForceField<DataTypes>::computeStressAlongDirection(Real &stress_along_dir, Index elementIndex, Coord &dir, Vec<3,Real> &stress)
+{
+    Mat<3,3,Real> R, Rt;
+
+    // stress in local coordinates
+    Coord s_local(stress[0], stress[1], stress[2]);
+
+    // transform 'dir' into local coordinates
+    R = Inherited::triangleInfo[elementIndex].rotation;
+    Rt.transpose(R);
+    Coord dir_local = Rt * dir;
+    dir_local.normalize();
+//	cout << "dir_local : " << dir_local << endl;
+
+    // compute stress along specified direction 'dir'
+    Real cos_theta = dir_local[0];
+    Real sin_theta = dir_local[1];
+    stress_along_dir = stress[0]*cos_theta*cos_theta + stress[1]*sin_theta*sin_theta + stress[2]*cos_theta*sin_theta;
+//	cout << "computeStressAlongDirection :: stress along direction = (" << dir << ") = " <<  stress_along_dir << endl;
+}
+
+
+// ----------------------------------------------------------------
+// ---	Display
+// ----------------------------------------------------------------
+template <class DataTypes>
+void TriangularAnisotropicFEMForceField<DataTypes>::draw()
 {
     glPolygonOffset(1.0, 2.0);
     glEnable(GL_POLYGON_OFFSET_FILL);
@@ -264,15 +286,7 @@ template <class DataTypes>void TriangularAnisotropicFEMForceField<DataTypes>::dr
             Index b = _topology->getTriangle(i)[1];
             Index c = _topology->getTriangle(i)[2];
 
-            Mat<3,3,Real> T, Tinv;
-            /*T[0] = x[b]-x[a];
-            T[0].normalize();
-            T[1] = x[c]-x[a];
-            T[1].normalize();
-            T[2] = cross(T[0], T[1]);
-            T[2].normalize();
-            T[1] = cross(T[2], T[0]);
-            T[1].normalize(); */
+            Mat<3,3,Real> T;
 
             T[0] = (*Inherited::_initialPoints)[b]-(*Inherited::_initialPoints)[a];
             T[1] = (*Inherited::_initialPoints)[c]-(*Inherited::_initialPoints)[a];
@@ -280,29 +294,18 @@ template <class DataTypes>void TriangularAnisotropicFEMForceField<DataTypes>::dr
             T[1] = cross(T[2], T[0]);
             T[1].normalize();
 
-            //	std::cout << T << std::endl;
-
-//			double theta = (double)f_theta.getValue()*M_PI/180.0;
             Coord y = T[1];
-            //Coord ab = x[b]-x[a];
             Coord ab = (*Inherited::_initialPoints)[b]-(*Inherited::_initialPoints)[a];
             y *= ab.norm();
-            //		helper::gl::glVertexT(x[a]);
-            //	helper::gl::glVertexT(x[a]+y);
-
-            /*			T.transpose();
-            			Tinv.invert(T);
-            			Coord fiber;
-            			fiber = Tinv * Coord((Real)cos(theta), (Real)sin(theta), 0);
-            			fiber[2] = 0;
-            			fiber.normalize();*/
-
             Coord center = (x[a]+x[b]+x[c])/3;
-//		Coord d = (x[b]-x[a])*localFiberDirection[i][0] + (x[c]-x[a])*localFiberDirection[i][1];
             Coord d = (x[b]-x[a])*localFiberDirection[i][0] + y*localFiberDirection[i][1];
             d*=0.25;
             helper::gl::glVertexT(center-d);
             helper::gl::glVertexT(center+d);
+
+            //Coord testDir(1, 0, 0);
+            //Real s;
+            //computeStressAlongDirection(s, i, testDir, Inherited::triangleInfo[i].stress);
         }
         glEnd();
     }
