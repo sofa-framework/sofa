@@ -85,6 +85,7 @@ void Mesh2PointMechanicalMapping<BaseMapping>::apply( typename Out::VecCoord& ou
     {
         for(unsigned int j = 0; j < pointMap[i].size(); ++j)
         {
+            if (pointMap[i][j] == -1) continue;
             out[pointMap[i][j]] = in[i]+topoMap->getPointBaryCoords()[j];
         }
     }
@@ -93,6 +94,7 @@ void Mesh2PointMechanicalMapping<BaseMapping>::apply( typename Out::VecCoord& ou
     {
         for(unsigned int j = 0; j < edgeMap[i].size(); ++j)
         {
+            if (edgeMap[i][j] == -1) continue;
             double fx = topoMap->getEdgeBaryCoords()[j][0];
             out[edgeMap[i][j]] = in[ edges[i][0] ] * (1-fx)
                     +in[ edges[i][1] ] * fx;
@@ -103,6 +105,7 @@ void Mesh2PointMechanicalMapping<BaseMapping>::apply( typename Out::VecCoord& ou
     {
         for(unsigned int j = 0; j < triangleMap[i].size(); ++j)
         {
+            if (triangleMap[i][j] == -1) continue;
             double fx = topoMap->getTriangleBaryCoords()[j][0];
             double fy = topoMap->getTriangleBaryCoords()[j][1];
             out[triangleMap[i][j]] = in[ triangles[i][0] ] * (1-fx-fy)
@@ -115,6 +118,7 @@ void Mesh2PointMechanicalMapping<BaseMapping>::apply( typename Out::VecCoord& ou
     {
         for(unsigned int j = 0; j < quadMap[i].size(); ++j)
         {
+            if (quadMap[i][j] == -1) continue;
             double fx = topoMap->getQuadBaryCoords()[j][0];
             double fy = topoMap->getQuadBaryCoords()[j][1];
             out[quadMap[i][j]] = in[ quads[i][0] ] * ((1-fx) * (1-fy))
@@ -128,6 +132,7 @@ void Mesh2PointMechanicalMapping<BaseMapping>::apply( typename Out::VecCoord& ou
     {
         for(unsigned int j = 0; j < tetraMap[i].size(); ++j)
         {
+            if (tetraMap[i][j] == -1) continue;
             double fx = topoMap->getTetraBaryCoords()[j][0];
             double fy = topoMap->getTetraBaryCoords()[j][1];
             double fz = topoMap->getTetraBaryCoords()[j][2];
@@ -142,6 +147,7 @@ void Mesh2PointMechanicalMapping<BaseMapping>::apply( typename Out::VecCoord& ou
     {
         for(unsigned int j = 0; j < hexaMap[i].size(); ++j)
         {
+            if (hexaMap[i][j] == -1) continue;
             double fx = topoMap->getHexaBaryCoords()[j][0];
             double fy = topoMap->getHexaBaryCoords()[j][1];
             double fz = topoMap->getHexaBaryCoords()[j][2];
@@ -182,6 +188,7 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJ( typename Out::VecDeriv& o
     {
         for(unsigned int j = 0; j < pointMap[i].size(); ++j)
         {
+            if (pointMap[i][j] == -1) continue;
             out[pointMap[i][j]] = in[i]+topoMap->getPointBaryCoords()[j];
         }
     }
@@ -190,6 +197,7 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJ( typename Out::VecDeriv& o
     {
         for(unsigned int j = 0; j < edgeMap[i].size(); ++j)
         {
+            if (edgeMap[i][j] == -1) continue;
             double fx = topoMap->getEdgeBaryCoords()[j][0];
             out[edgeMap[i][j]] = in[ edges[i][0] ] * (1-fx)
                     +in[ edges[i][1] ] * fx;
@@ -200,6 +208,7 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJ( typename Out::VecDeriv& o
     {
         for(unsigned int j = 0; j < triangleMap[i].size(); ++j)
         {
+            if (triangleMap[i][j] == -1) continue;
             double fx = topoMap->getTriangleBaryCoords()[j][0];
             double fy = topoMap->getTriangleBaryCoords()[j][1];
             out[triangleMap[i][j]] = in[ triangles[i][0] ] * (1-fx-fy)
@@ -212,6 +221,7 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJ( typename Out::VecDeriv& o
     {
         for(unsigned int j = 0; j < quadMap[i].size(); ++j)
         {
+            if (quadMap[i][j] == -1) continue;
             double fx = topoMap->getQuadBaryCoords()[j][0];
             double fy = topoMap->getQuadBaryCoords()[j][1];
             out[quadMap[i][j]] = in[ quads[i][0] ] * ((1-fx) * (1-fy))
@@ -225,6 +235,7 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJ( typename Out::VecDeriv& o
     {
         for(unsigned int j = 0; j < tetraMap[i].size(); ++j)
         {
+            if (tetraMap[i][j] == -1) continue;
             double fx = topoMap->getTetraBaryCoords()[j][0];
             double fy = topoMap->getTetraBaryCoords()[j][1];
             double fz = topoMap->getTetraBaryCoords()[j][2];
@@ -239,6 +250,7 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJ( typename Out::VecDeriv& o
     {
         for(unsigned int j = 0; j < hexaMap[i].size(); ++j)
         {
+            if (hexaMap[i][j] == -1) continue;
             double fx = topoMap->getHexaBaryCoords()[j][0];
             double fy = topoMap->getHexaBaryCoords()[j][1];
             double fz = topoMap->getHexaBaryCoords()[j][2];
@@ -279,6 +291,7 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecDeriv& o
     {
         for(unsigned int j = 0; j < pointMap[i].size(); ++j)
         {
+            if (pointMap[i][j] == -1) continue;
             out[i] += in[pointMap[i][j]];
         }
     }
@@ -287,6 +300,7 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecDeriv& o
     {
         for(unsigned int j = 0; j < edgeMap[i].size(); ++j)
         {
+            if (edgeMap[i][j] == -1) continue;
             double fx = topoMap->getEdgeBaryCoords()[j][0];
             out[edges[i][0]] += in[ edgeMap[i][j] ] * (1-fx);
             out[edges[i][1]] += in[ edgeMap[i][j] ] * fx;
@@ -297,6 +311,7 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecDeriv& o
     {
         for(unsigned int j = 0; j < triangleMap[i].size(); ++j)
         {
+            if (triangleMap[i][j] == -1) continue;
             double fx = topoMap->getTriangleBaryCoords()[j][0];
             double fy = topoMap->getTriangleBaryCoords()[j][1];
             out[ triangles[i][0] ] += in[triangleMap[i][j]] * (1-fx-fy);
@@ -309,6 +324,7 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecDeriv& o
     {
         for(unsigned int j = 0; j < quadMap[i].size(); ++j)
         {
+            if (quadMap[i][j] == -1) continue;
             double fx = topoMap->getQuadBaryCoords()[j][0];
             double fy = topoMap->getQuadBaryCoords()[j][1];
             out[ quads[i][0] ] += in[quadMap[i][j]] * ((1-fx) * (1-fy));
@@ -322,6 +338,7 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecDeriv& o
     {
         for(unsigned int j = 0; j < tetraMap[i].size(); ++j)
         {
+            if (tetraMap[i][j] == -1) continue;
             double fx = topoMap->getTetraBaryCoords()[j][0];
             double fy = topoMap->getTetraBaryCoords()[j][1];
             double fz = topoMap->getTetraBaryCoords()[j][2];
@@ -336,6 +353,7 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecDeriv& o
     {
         for(unsigned int j = 0; j < hexaMap[i].size(); ++j)
         {
+            if (hexaMap[i][j] == -1) continue;
             double fx = topoMap->getHexaBaryCoords()[j][0];
             double fy = topoMap->getHexaBaryCoords()[j][1];
             double fz = topoMap->getHexaBaryCoords()[j][2];
