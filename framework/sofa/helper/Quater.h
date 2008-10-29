@@ -138,6 +138,9 @@ public:
     Quater<Real> operator*(const Quater<Real> &q1) const;
 
     Quater<Real> operator*(const Real &r) const;
+    Quater<Real> operator/(const Real &r) const;
+    void operator*=(const Real &r);
+    void operator/=(const Real &r);
 
     /// Given two Quaters, multiply them together to get a third quaternion.
     //template <class T>

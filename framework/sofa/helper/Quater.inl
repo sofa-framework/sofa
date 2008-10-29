@@ -155,6 +155,40 @@ Quater<Real> Quater<Real>::operator*(const Real& r) const
     return ret;
 }
 
+
+template<class Real>
+Quater<Real> Quater<Real>::operator/(const Real& r) const
+{
+    Quater<Real>  ret;
+    ret[0] = _q[0] / r;
+    ret[1] = _q[1] / r;
+    ret[2] = _q[2] / r;
+    ret[3] = _q[3] / r;
+    return ret;
+}
+
+template<class Real>
+void Quater<Real>::operator*=(const Real& r)
+{
+    Quater<Real>  ret;
+    _q[0] *= r;
+    _q[1] *= r;
+    _q[2] *= r;
+    _q[3] *= r;
+}
+
+
+template<class Real>
+void Quater<Real>::operator/=(const Real& r)
+{
+    Quater<Real>  ret;
+    _q[0] /= r;
+    _q[1] /= r;
+    _q[2] /= r;
+    _q[3] /= r;
+}
+
+
 template<class Real>
 Quater<Real> Quater<Real>::quatVectMult(const defaulttype::Vec<3,Real>& vect)
 {
