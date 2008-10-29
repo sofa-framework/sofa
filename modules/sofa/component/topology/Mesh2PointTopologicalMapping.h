@@ -202,6 +202,11 @@ protected:
     void removeInputTetras( const sofa::helper::vector<unsigned int>& index );
     void swapInputHexas(int i1, int i2);
     void removeInputHexas( const sofa::helper::vector<unsigned int>& index );
+
+    void swapOutputPoints(int i1, int i2, bool removeLast = false);
+    void removeOutputPoints( const sofa::helper::vector<unsigned int>& tab );
+
+    int nbOutputPoints;
 };
 
 } // namespace topology

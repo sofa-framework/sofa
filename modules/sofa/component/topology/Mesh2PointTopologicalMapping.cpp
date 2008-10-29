@@ -252,6 +252,7 @@ void Mesh2PointTopologicalMapping::init()
                     }
                 }
             }
+            nbOutputPoints = toModelLastPointIndex;
         }
     }
 }
@@ -361,6 +362,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             }
             case core::componentmodel::topology::ENDING_EVENT:
             {
+                pointsToRemove.erase(-1);
                 if (to_pstm != NULL && !pointsToRemove.empty())
                 {
                     sofa::helper::vector<unsigned int> vitems;
@@ -370,7 +372,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
                     to_pstm->removePointsWarning(vitems);
                     to_pstm->propagateTopologicalChanges();
                     to_pstm->removePointsProcess(vitems);
-
+                    removeOutputPoints(vitems);
                     pointsToRemove.clear();
                 }
 
@@ -403,11 +405,8 @@ void Mesh2PointTopologicalMapping::removeInputPoints( const sofa::helper::vector
 
     for (unsigned int i = 0; i < index.size(); ++i)
     {
-//	swapInputPoints( index[i], last );
-        for (unsigned int j = 0; j < pointsMappedFromPoint[index[i]].size(); ++j)
-        {
-            pointsToRemove.insert(pointsMappedFromPoint[index[i]][j]);
-        }
+        swapInputPoints( index[i], last );
+        pointsToRemove.insert(pointsMappedFromPoint[last].begin(), pointsMappedFromPoint[last].end());
         --last;
     }
 
@@ -443,6 +442,7 @@ void Mesh2PointTopologicalMapping::removeInputEdges( const sofa::helper::vector<
     for (unsigned int i = 0; i < index.size(); ++i)
     {
         swapInputEdges( index[i], last );
+        pointsToRemove.insert(pointsMappedFromEdge[last].begin(), pointsMappedFromEdge[last].end());
         --last;
     }
     pointsMappedFromEdge.resize( last + 1 );
@@ -466,6 +466,7 @@ void Mesh2PointTopologicalMapping::removeInputTriangles( const sofa::helper::vec
     for (unsigned int i = 0; i < index.size(); ++i)
     {
         swapInputTriangles( index[i], last );
+        pointsToRemove.insert(pointsMappedFromTriangle[last].begin(), pointsMappedFromTriangle[last].end());
         --last;
     }
     pointsMappedFromTriangle.resize( last + 1 );
@@ -489,6 +490,7 @@ void Mesh2PointTopologicalMapping::removeInputQuads( const sofa::helper::vector<
     for (unsigned int i = 0; i < index.size(); ++i)
     {
         swapInputQuads( index[i], last );
+        pointsToRemove.insert(pointsMappedFromQuad[last].begin(), pointsMappedFromQuad[last].end());
         --last;
     }
     pointsMappedFromQuad.resize( last + 1 );
@@ -511,6 +513,7 @@ void Mesh2PointTopologicalMapping::removeInputTetras( const sofa::helper::vector
     for (unsigned int i = 0; i < index.size(); ++i)
     {
         swapInputTetras( index[i], last );
+        pointsToRemove.insert(pointsMappedFromTetra[last].begin(), pointsMappedFromTetra[last].end());
         --last;
     }
     pointsMappedFromTetra.resize( last + 1 );
@@ -534,9 +537,46 @@ void Mesh2PointTopologicalMapping::removeInputHexas( const sofa::helper::vector<
     for (unsigned int i = 0; i < index.size(); ++i)
     {
         swapInputHexas( index[i], last );
+        pointsToRemove.insert(pointsMappedFromHexa[last].begin(), pointsMappedFromHexa[last].end());
         --last;
     }
     pointsMappedFromHexa.resize( last + 1 );
+}
+
+
+
+void Mesh2PointTopologicalMapping::swapOutputPoints(int i1, int i2, bool removeLast)
+{
+    for (unsigned int i=0; i<pointsMappedFromPoint.size(); ++i)
+    {
+        vector<int> & pts = pointsMappedFromPoint[i];
+        for (unsigned int j = 0; j < pts.size(); ++j)
+        {
+            if (pts[j] == i2)
+                pts[j] = i1;
+            else if (pts[j] == i1)
+            {
+                if (removeLast)
+                    pts[j] = -1;
+                else
+                    pts[j] = i2;
+            }
+        }
+    }
+}
+
+void Mesh2PointTopologicalMapping::removeOutputPoints( const sofa::helper::vector<unsigned int>& index )
+{
+    if (pointsMappedFromPoint.empty()) return;
+    unsigned int last = nbOutputPoints - 1;
+
+    for (unsigned int i = 0; i < index.size(); ++i)
+    {
+        swapOutputPoints( index[i], last, true );
+        --last;
+    }
+
+    nbOutputPoints = last + 1;
 }
 
 } // namespace topology
