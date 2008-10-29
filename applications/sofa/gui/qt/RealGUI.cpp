@@ -231,10 +231,10 @@ SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& 
 {
     {
         int argc=1;
-        char* argv[1];
+        char **argv=new char*[2];
         argv[0] = strdup ( SofaGUI::GetProgramName() );
+        argv[1]=NULL;
         application = new QSOFAApplication ( argc,argv );
-        free ( argv[0] );
     }
     // create interface
     gui = new RealGUI ( name, options );
