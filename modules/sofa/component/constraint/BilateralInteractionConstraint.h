@@ -33,7 +33,7 @@ class BilateralConstraintResolution3Dof : public core::componentmodel::behavior:
 public:
 
     BilateralConstraintResolution3Dof() { nbLines=3; }
-    virtual void init(int line, double** w, int *force)
+    virtual void init(int line, double** w, double *force)
     {
         sofa::defaulttype::Mat<3,3,double> temp;
         temp[0][0] = w[line][line];
