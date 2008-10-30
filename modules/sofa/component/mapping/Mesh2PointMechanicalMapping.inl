@@ -372,35 +372,99 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecDeriv& o
 template <class BaseMapping>
 void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
 {
-    /*
-        if (!topoMap) return;
-        const topology::PointData<int>& pointSource = topoMap->getPointSource();
-        if (pointSource.empty()) return;
-        const core::componentmodel::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
 
-        int offset = out.size();
-        out.resize(offset+in.size());
+    if (!topoMap) return;
+    const sofa::helper::vector< std::pair<topology::Mesh2PointTopologicalMapping::Element,int> >& pointSource = topoMap->getPointSource();
+    if (pointSource.empty()) return;
+    const core::componentmodel::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
+    const core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = inputTopo->getTriangles();
+    const core::componentmodel::topology::BaseMeshTopology::SeqQuads& quads = inputTopo->getQuads();
+    const core::componentmodel::topology::BaseMeshTopology::SeqTetras& tetras = inputTopo->getTetras();
+    const core::componentmodel::topology::BaseMeshTopology::SeqHexas& hexas = inputTopo->getHexas();
 
-        for(unsigned int c = 0; c < in.size(); ++c)
+    int offset = out.size();
+    out.resize(offset+in.size());
+
+    for(unsigned int c = 0; c < in.size(); ++c)
+    {
+        for(unsigned int j=0; j<in[c].size(); j++)
         {
-    	for(unsigned int j=0;j<in[c].size();j++)
+            const typename Out::SparseDeriv cIn = in[c][j];
+            std::pair<topology::Mesh2PointTopologicalMapping::Element,int> source = pointSource[cIn.index];
+            switch (source.first)
             {
-                const typename Out::SparseDeriv cIn = in[c][j];
-    	    int source = pointSource[cIn.index];
-    	    if (source > 0)
-    	    {
-    		out[c+offset].push_back(typename In::SparseDeriv( source-1 , (typename In::Deriv) cIn.data ));
-    	    }
-    	    else if (source < 0)
-    	    {
-    		core::componentmodel::topology::BaseMeshTopology::Edge e = edges[-source-1];
-    		typename In::Deriv f = (typename In::Deriv) cIn.data;
-    		f*=0.5f;
-    		out[c+offset].push_back(typename In::SparseDeriv( e[0] , f ));
-    		out[c+offset].push_back(typename In::SparseDeriv( e[1] , f ));
-    	    }
-    	}
-        }*/
+            case topology::Mesh2PointTopologicalMapping::POINT:
+            {
+                out[c+offset].push_back(typename In::SparseDeriv( source.second , (typename In::Deriv) cIn.data ));
+                break;
+            }
+            case topology::Mesh2PointTopologicalMapping::EDGE:
+            {
+                core::componentmodel::topology::BaseMeshTopology::Edge e = edges[source.second];
+                typename In::Deriv f = (typename In::Deriv) cIn.data;
+                double fx = topoMap->getEdgeBaryCoords()[cIn.index][0];
+                out[c+offset].push_back(typename In::SparseDeriv( e[0] , f*(1-fx) ));
+                out[c+offset].push_back(typename In::SparseDeriv( e[1] , f*fx ));
+                break;
+            }
+            case topology::Mesh2PointTopologicalMapping::TRIANGLE:
+            {
+                core::componentmodel::topology::BaseMeshTopology::Triangle t = triangles[source.second];
+                typename In::Deriv f = (typename In::Deriv) cIn.data;
+                double fx = topoMap->getTriangleBaryCoords()[cIn.index][0];
+                double fy = topoMap->getTriangleBaryCoords()[cIn.index][1];
+                out[c+offset].push_back(typename In::SparseDeriv( t[0] , f*(1-fx-fy) ));
+                out[c+offset].push_back(typename In::SparseDeriv( t[1] , f*fx ));
+                out[c+offset].push_back(typename In::SparseDeriv( t[2] , f*fy ));
+                break;
+            }
+            case topology::Mesh2PointTopologicalMapping::QUAD:
+            {
+                core::componentmodel::topology::BaseMeshTopology::Quad q = quads[source.second];
+                typename In::Deriv f = (typename In::Deriv) cIn.data;
+                double fx = topoMap->getQuadBaryCoords()[cIn.index][0];
+                double fy = topoMap->getQuadBaryCoords()[cIn.index][1];
+                out[c+offset].push_back(typename In::SparseDeriv( q[0] , f*((1-fx) * (1-fy)) ));
+                out[c+offset].push_back(typename In::SparseDeriv( q[1] , f*((  fx) * (1-fy)) ));
+                out[c+offset].push_back(typename In::SparseDeriv( q[0] , f*((1-fx) * (  fy)) ));
+                out[c+offset].push_back(typename In::SparseDeriv( q[1] , f*((  fx) * (  fy)) ));
+                break;
+            }
+            case topology::Mesh2PointTopologicalMapping::TETRA:
+            {
+                core::componentmodel::topology::BaseMeshTopology::Tetra t = tetras[source.second];
+                typename In::Deriv f = (typename In::Deriv) cIn.data;
+                double fx = topoMap->getTetraBaryCoords()[cIn.index][0];
+                double fy = topoMap->getTetraBaryCoords()[cIn.index][1];
+                double fz = topoMap->getTetraBaryCoords()[cIn.index][2];
+                out[c+offset].push_back(typename In::SparseDeriv( t[0] , f*(1-fx-fy-fz) ));
+                out[c+offset].push_back(typename In::SparseDeriv( t[1] , f*fx ));
+                out[c+offset].push_back(typename In::SparseDeriv( t[0] , f*fy ));
+                out[c+offset].push_back(typename In::SparseDeriv( t[1] , f*fz ));
+                break;
+            }
+            case topology::Mesh2PointTopologicalMapping::HEXA:
+            {
+                core::componentmodel::topology::BaseMeshTopology::Hexa h = hexas[source.second];
+                typename In::Deriv f = (typename In::Deriv) cIn.data;
+                double fx = topoMap->getHexaBaryCoords()[cIn.index][0];
+                double fy = topoMap->getHexaBaryCoords()[cIn.index][1];
+                double fz = topoMap->getHexaBaryCoords()[cIn.index][2];
+                out[c+offset].push_back(typename In::SparseDeriv( h[0] , f*((1-fx) * (1-fy) * (1-fz)) ));
+                out[c+offset].push_back(typename In::SparseDeriv( h[1] , f*((  fx) * (1-fy) * (1-fz)) ));
+                out[c+offset].push_back(typename In::SparseDeriv( h[0] , f*((1-fx) * (  fy) * (1-fz)) ));
+                out[c+offset].push_back(typename In::SparseDeriv( h[1] , f*((  fx) * (  fy) * (1-fz)) ));
+                out[c+offset].push_back(typename In::SparseDeriv( h[0] , f*((1-fx) * (1-fy) * (  fz)) ));
+                out[c+offset].push_back(typename In::SparseDeriv( h[1] , f*((  fx) * (1-fy) * (  fz)) ));
+                out[c+offset].push_back(typename In::SparseDeriv( h[0] , f*((  fx) * (  fy) * (  fz)) ));
+                out[c+offset].push_back(typename In::SparseDeriv( h[1] , f*((1-fx) * (  fy) * (  fz)) ));
+                break;
+            }
+            default:
+                break;
+            }
+        }
+    }
 }
 
 } // namespace mapping

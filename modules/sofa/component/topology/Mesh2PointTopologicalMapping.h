@@ -155,12 +155,23 @@ public:
         if ( arg ) obj->parse ( arg );
     }
 
-    const PointData< vector<int> >& getPointsMappedFromPoint() const { return pointsMappedFromPoint; }
-    const EdgeData< vector<int> >& getPointsMappedFromEdge() const { return pointsMappedFromEdge; }
-    const TriangleData< vector<int> >& getPointsMappedFromTriangle() const { return pointsMappedFromTriangle; }
-    const QuadData< vector<int> >& getPointsMappedFromQuad() const { return pointsMappedFromQuad; }
-    const TetrahedronData< vector<int> >& getPointsMappedFromTetra() const { return pointsMappedFromTetra; }
-    const HexahedronData< vector<int> >& getPointsMappedFromHexa() const { return pointsMappedFromHexa; }
+    enum Element
+    {
+        POINT = 0,
+        EDGE,
+        TRIANGLE,
+        QUAD,
+        TETRA,
+        HEXA,
+        NB_ELEMENTS
+    };
+
+    const vector< vector<int> >& getPointsMappedFromPoint() const { return pointsMappedFrom[POINT]; }
+    const vector< vector<int> >& getPointsMappedFromEdge() const { return pointsMappedFrom[EDGE]; }
+    const vector< vector<int> >& getPointsMappedFromTriangle() const { return pointsMappedFrom[TRIANGLE]; }
+    const vector< vector<int> >& getPointsMappedFromQuad() const { return pointsMappedFrom[QUAD]; }
+    const vector< vector<int> >& getPointsMappedFromTetra() const { return pointsMappedFrom[TETRA]; }
+    const vector< vector<int> >& getPointsMappedFromHexa() const { return pointsMappedFrom[HEXA]; }
 
     const vector< Vec3d >& getPointBaryCoords() const { return pointBaryCoords.getValue(); }
     const vector< Vec3d >& getEdgeBaryCoords() const { return edgeBaryCoords.getValue(); }
@@ -169,44 +180,31 @@ public:
     const vector< Vec3d >& getTetraBaryCoords() const { return tetraBaryCoords.getValue(); }
     const vector< Vec3d >& getHexaBaryCoords() const { return hexaBaryCoords.getValue(); }
 
+    const vector< std::pair<Element,int> >& getPointSource() const { return pointSource;}
+
 protected:
     Data< std::string > object1;
     Data< std::string > object2;
 
-    Data< vector< Vec3d > > pointBaryCoords;
-    Data< vector< Vec3d > > edgeBaryCoords;
-    Data< vector< Vec3d > > triangleBaryCoords;
-    Data< vector< Vec3d > > quadBaryCoords;
-    Data< vector< Vec3d > > tetraBaryCoords;
-    Data< vector< Vec3d > > hexaBaryCoords;
+    Data< vector< Vec3d > > pointBaryCoords; ///< Coordinates for the points of the output topology created from the points of the input topology
+    Data< vector< Vec3d > > edgeBaryCoords; ///< Coordinates for the points of the output topology created from the edges of the input topology
+    Data< vector< Vec3d > > triangleBaryCoords; ///< Coordinates for the points of the output topology created from the triangles of the input topology
+    Data< vector< Vec3d > > quadBaryCoords; ///< Coordinates for the points of the output topology created from the quads of the input topology
+    Data< vector< Vec3d > > tetraBaryCoords; ///< Coordinates for the points of the output topology created from the tetra of the input topology
+    Data< vector< Vec3d > > hexaBaryCoords; ///< Coordinates for the points of the output topology created from the hexa of the input topology
 
-    PointData< vector<int> > pointsMappedFromPoint;
-    EdgeData< vector<int> > pointsMappedFromEdge;
-    TriangleData< vector<int> > pointsMappedFromTriangle;
-    QuadData< vector<int> > pointsMappedFromQuad;
-    TetrahedronData< vector<int> > pointsMappedFromTetra;
-    HexahedronData< vector<int> > pointsMappedFromHexa;
+    vector< vector<int> > pointsMappedFrom[NB_ELEMENTS]; ///< Points mapped from the differents elements (see the enum Element declared before)
+
+    vector< std::pair<Element,int> > pointSource; ///< Correspondance between the points mapped and the elements from which are mapped
 
     std::set<unsigned int> pointsToRemove;
 
-    void swapInputPoints(int i1, int i2);
-    void removeInputPoints( const sofa::helper::vector<unsigned int>& tab );
-    void renumberInputPoints( const sofa::helper::vector<unsigned int>& index );
-    void swapInputEdges(int i1, int i2);
-    void removeInputEdges( const sofa::helper::vector<unsigned int>& index );
-    void swapInputTriangles(int i1, int i2);
-    void removeInputTriangles( const sofa::helper::vector<unsigned int>& index );
-    void swapInputQuads(int i1, int i2);
-    void removeInputQuads( const sofa::helper::vector<unsigned int>& index );
-    void swapInputTetras(int i1, int i2);
-    void removeInputTetras( const sofa::helper::vector<unsigned int>& index );
-    void swapInputHexas(int i1, int i2);
-    void removeInputHexas( const sofa::helper::vector<unsigned int>& index );
+    void swapInput(Element elem, int i1, int i2);
+    void removeInput(Element elem, const sofa::helper::vector<unsigned int>& tab );
+    void renumberInput(Element elem, const sofa::helper::vector<unsigned int>& index );
 
     void swapOutputPoints(int i1, int i2, bool removeLast = false);
     void removeOutputPoints( const sofa::helper::vector<unsigned int>& tab );
-
-    int nbOutputPoints;
 };
 
 } // namespace topology
