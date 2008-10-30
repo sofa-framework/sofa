@@ -51,7 +51,7 @@ namespace component
 
 namespace constraint
 {
-#define	MAX_NUM_CONSTRAINT_PER_NODE 100
+#define	MAX_NUM_CONSTRAINT_PER_NODE 10000
 #define EPS_UNITARY_FORCE 0.01
 
 using namespace sofa::component::odesolver;
