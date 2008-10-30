@@ -83,13 +83,14 @@ void Mesh2PointTopologicalMapping::init()
             // point to point mapping
             if (!pointBaryCoords.getValue().empty())
             {
-                pointsMappedFromPoint.resize(fromModel->getNbPoints());
+                pointsMappedFrom[POINT].resize(fromModel->getNbPoints());
                 for (int i=0; i<fromModel->getNbPoints(); i++)
                 {
                     for (unsigned int j=0; j<pointBaryCoords.getValue().size(); j++)
                     {
                         toModel->addPoint(fromModel->getPX(i)+pointBaryCoords.getValue()[j][0], fromModel->getPY(i)+pointBaryCoords.getValue()[j][1], fromModel->getPZ(i)+pointBaryCoords.getValue()[j][2]);
-                        pointsMappedFromPoint[i].push_back(toModelLastPointIndex);
+                        pointsMappedFrom[POINT][i].push_back(toModelLastPointIndex);
+                        pointSource.push_back(std::make_pair(POINT,i));
                         toModelLastPointIndex++;
                     }
                 }
@@ -98,7 +99,7 @@ void Mesh2PointTopologicalMapping::init()
             // edge to point mapping
             if (!edgeBaryCoords.getValue().empty())
             {
-                pointsMappedFromEdge.resize(fromModel->getNbEdges());
+                pointsMappedFrom[EDGE].resize(fromModel->getNbEdges());
                 for (int i=0; i<fromModel->getNbEdges(); i++)
                 {
                     for (unsigned int j=0; j<edgeBaryCoords.getValue().size(); j++)
@@ -115,7 +116,8 @@ void Mesh2PointTopologicalMapping::init()
 
                         toModel->addPoint(result[0], result[1], result[2]);
 
-                        pointsMappedFromEdge[i].push_back(toModelLastPointIndex);
+                        pointsMappedFrom[EDGE][i].push_back(toModelLastPointIndex);
+                        pointSource.push_back(std::make_pair(EDGE,i));
                         toModelLastPointIndex++;
                     }
                 }
@@ -124,7 +126,7 @@ void Mesh2PointTopologicalMapping::init()
             // triangle to point mapping
             if (!triangleBaryCoords.getValue().empty())
             {
-                pointsMappedFromTriangle.resize(fromModel->getNbTriangles());
+                pointsMappedFrom[TRIANGLE].resize(fromModel->getNbTriangles());
                 for (int i=0; i<fromModel->getNbTriangles(); i++)
                 {
                     for (unsigned int j=0; j<triangleBaryCoords.getValue().size(); j++)
@@ -144,7 +146,8 @@ void Mesh2PointTopologicalMapping::init()
 
                         toModel->addPoint(result[0], result[1], result[2]);
 
-                        pointsMappedFromTriangle[i].push_back(toModelLastPointIndex);
+                        pointsMappedFrom[TRIANGLE][i].push_back(toModelLastPointIndex);
+                        pointSource.push_back(std::make_pair(TRIANGLE,i));
                         toModelLastPointIndex++;
                     }
                 }
@@ -153,7 +156,7 @@ void Mesh2PointTopologicalMapping::init()
             // quad to point mapping
             if (!quadBaryCoords.getValue().empty())
             {
-                pointsMappedFromQuad.resize(fromModel->getNbQuads());
+                pointsMappedFrom[QUAD].resize(fromModel->getNbQuads());
                 for (int i=0; i<fromModel->getNbQuads(); i++)
                 {
                     for (unsigned int j=0; j<quadBaryCoords.getValue().size(); j++)
@@ -175,7 +178,8 @@ void Mesh2PointTopologicalMapping::init()
 
                         toModel->addPoint(result[0], result[1], result[2]);
 
-                        pointsMappedFromQuad[i].push_back(toModelLastPointIndex);
+                        pointsMappedFrom[QUAD][i].push_back(toModelLastPointIndex);
+                        pointSource.push_back(std::make_pair(QUAD,i));
                         toModelLastPointIndex++;
                     }
                 }
@@ -184,7 +188,7 @@ void Mesh2PointTopologicalMapping::init()
             // tetrahedron to point mapping
             if (!tetraBaryCoords.getValue().empty())
             {
-                pointsMappedFromTetra.resize(fromModel->getNbTetras());
+                pointsMappedFrom[TETRA].resize(fromModel->getNbTetras());
                 for (int i=0; i<fromModel->getNbTetras(); i++)
                 {
                     for (unsigned int j=0; j<tetraBaryCoords.getValue().size(); j++)
@@ -207,7 +211,8 @@ void Mesh2PointTopologicalMapping::init()
 
                         toModel->addPoint(result[0], result[1], result[2]);
 
-                        pointsMappedFromTetra[i].push_back(toModelLastPointIndex);
+                        pointsMappedFrom[TETRA][i].push_back(toModelLastPointIndex);
+                        pointSource.push_back(std::make_pair(TETRA,i));
                         toModelLastPointIndex++;
                     }
                 }
@@ -216,7 +221,7 @@ void Mesh2PointTopologicalMapping::init()
             // hexahedron to point mapping
             if (!tetraBaryCoords.getValue().empty())
             {
-                pointsMappedFromHexa.resize(fromModel->getNbHexas());
+                pointsMappedFrom[HEXA].resize(fromModel->getNbHexas());
                 for (int i=0; i<fromModel->getNbHexas(); i++)
                 {
                     for (unsigned int j=0; j<hexaBaryCoords.getValue().size(); j++)
@@ -247,12 +252,12 @@ void Mesh2PointTopologicalMapping::init()
 
                         toModel->addPoint(result[0], result[1], result[2]);
 
-                        pointsMappedFromHexa[i].push_back(toModelLastPointIndex);
+                        pointsMappedFrom[HEXA][i].push_back(toModelLastPointIndex);
+                        pointSource.push_back(std::make_pair(HEXA,i));
                         toModelLastPointIndex++;
                     }
                 }
             }
-            nbOutputPoints = toModelLastPointIndex;
         }
     }
 }
@@ -277,8 +282,8 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             {
                 unsigned int i1 = ( static_cast< const PointsIndicesSwap * >( *changeIt ) )->index[0];
                 unsigned int i2 = ( static_cast< const PointsIndicesSwap* >( *changeIt ) )->index[1];
-                std::cout << "INPUT SWAP POINTS "<<i1 << " " << i2 << std::endl;
-                swapInputPoints(i1,i2);
+//				std::cout << "INPUT SWAP POINTS "<<i1 << " " << i2 << std::endl;
+                swapInput(POINT,i1,i2);
                 break;
             }
             case core::componentmodel::topology::POINTSADDED:
@@ -289,15 +294,15 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             case core::componentmodel::topology::POINTSREMOVED:
             {
                 const sofa::helper::vector<unsigned int>& tab = ( static_cast< const PointsRemoved * >( *changeIt ) )->getArray();
-                std::cout << "INPUT REMOVE POINTS "<<tab << std::endl;
-                removeInputPoints( tab );
+//				 std::cout << "INPUT REMOVE POINTS "<<tab << std::endl;
+                removeInput(POINT, tab );
                 break;
             }
             case core::componentmodel::topology::POINTSRENUMBERING:
             {
                 const sofa::helper::vector<unsigned int>& tab = ( static_cast< const PointsRenumbering * >( *changeIt ) )->getinv_IndexArray();
-                std::cout << "INPUT RENUMBER POINTS "<<tab << std::endl;
-                renumberInputPoints( tab );
+//				 std::cout << "INPUT RENUMBER POINTS "<<tab << std::endl;
+                renumberInput(POINT, tab );
                 break;
             }
             case core::componentmodel::topology::EDGESADDED:
@@ -308,8 +313,8 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             case core::componentmodel::topology::EDGESREMOVED:
             {
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const EdgesRemoved *>( *changeIt ) )->getArray();
-                std::cout << "INPUT REMOVE EDGES "<<tab << std::endl;
-                removeInputEdges( tab );
+//				std::cout << "INPUT REMOVE EDGES "<<tab << std::endl;
+                removeInput(EDGE, tab );
                 break;
             }
             case core::componentmodel::topology::TRIANGLESADDED:
@@ -320,8 +325,8 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             case core::componentmodel::topology::TRIANGLESREMOVED:
             {
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TrianglesRemoved *>( *changeIt ) )->getArray();
-                std::cout << "INPUT REMOVE TRIANGLES "<<tab << std::endl;
-                removeInputTriangles( tab );
+//				std::cout << "INPUT REMOVE TRIANGLES "<<tab << std::endl;
+                removeInput(TRIANGLE, tab );
                 break;
             }
             case core::componentmodel::topology::QUADSADDED:
@@ -332,8 +337,8 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             case core::componentmodel::topology::QUADSREMOVED:
             {
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const QuadsRemoved *>( *changeIt ) )->getArray();
-                std::cout << "INPUT REMOVE QUADS "<<tab << std::endl;
-                removeInputQuads( tab );
+//				std::cout << "INPUT REMOVE QUADS "<<tab << std::endl;
+                removeInput(QUAD, tab );
                 break;
             }
             case core::componentmodel::topology::TETRAHEDRAADDED:
@@ -344,8 +349,8 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             case core::componentmodel::topology::TETRAHEDRAREMOVED:
             {
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TetrahedraRemoved *>( *changeIt ) )->getArray();
-                std::cout << "INPUT REMOVE TETRAS "<<tab << std::endl;
-                removeInputTetras( tab );
+//				std::cout << "INPUT REMOVE TETRAS "<<tab << std::endl;
+                removeInput(TETRA, tab );
                 break;
             }
             case core::componentmodel::topology::HEXAHEDRAADDED:
@@ -356,8 +361,8 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             case core::componentmodel::topology::HEXAHEDRAREMOVED:
             {
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const HexahedraRemoved *>( *changeIt ) )->getArray();
-                std::cout << "INPUT REMOVE HEXAS "<<tab << std::endl;
-                removeInputHexas( tab );
+//				std::cout << "INPUT REMOVE HEXAS "<<tab << std::endl;
+                removeInput(HEXA, tab );
                 break;
             }
             case core::componentmodel::topology::ENDING_EVENT:
@@ -388,173 +393,78 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
     }
 }
 
-void Mesh2PointTopologicalMapping::swapInputPoints(int i1, int i2)
+void Mesh2PointTopologicalMapping::swapInput(Element elem, int i1, int i2)
 {
-    if (pointsMappedFromPoint.empty()) return;
-    vector<int> i1Map = pointsMappedFromPoint[i1];
-    vector<int> i2Map = pointsMappedFromPoint[i2];
+    if (pointsMappedFrom[elem].empty()) return;
+    vector<int> i1Map = pointsMappedFrom[elem][i1];
+    vector<int> i2Map = pointsMappedFrom[elem][i2];
 
-    pointsMappedFromPoint[i1] = i2Map;
-    pointsMappedFromPoint[i2] = i1Map;
+    pointsMappedFrom[elem][i1] = i2Map;
+    for(unsigned int i = 0; i < i2Map.size(); ++i)
+    {
+        if (i2Map[i] != -1) pointSource[i2Map[i]].second = i1;
+    }
+
+    pointsMappedFrom[elem][i2] = i1Map;
+    for(unsigned int i = 0; i < i1Map.size(); ++i)
+    {
+        if (i1Map[i] != -1) pointSource[i1Map[i]].second = i2;
+    }
 }
 
-void Mesh2PointTopologicalMapping::removeInputPoints( const sofa::helper::vector<unsigned int>& index )
+void Mesh2PointTopologicalMapping::removeInput(Element elem,  const sofa::helper::vector<unsigned int>& index )
 {
-    if (pointsMappedFromPoint.empty()) return;
-    unsigned int last = pointsMappedFromPoint.size() -1;
+    if (pointsMappedFrom[elem].empty()) return;
+    unsigned int last = pointsMappedFrom[elem].size() -1;
 
     for (unsigned int i = 0; i < index.size(); ++i)
     {
-        swapInputPoints( index[i], last );
-        pointsToRemove.insert(pointsMappedFromPoint[last].begin(), pointsMappedFromPoint[last].end());
+        swapInput(elem, index[i], last );
+        for (unsigned int j = 0; j < pointsMappedFrom[elem][last].size(); ++j)
+        {
+            int map = pointsMappedFrom[elem][last][j];
+            if (map != -1)
+            {
+                pointsToRemove.insert(map);
+                pointSource[map].second = -1;
+            }
+        }
         --last;
     }
 
-    pointsMappedFromPoint.resize( last + 1 );
+    pointsMappedFrom[elem].resize( last + 1 );
 }
 
-void Mesh2PointTopologicalMapping::renumberInputPoints( const sofa::helper::vector<unsigned int>& index )
+void Mesh2PointTopologicalMapping::renumberInput(Element elem, const sofa::helper::vector<unsigned int>& index )
 {
-    if (pointsMappedFromPoint.empty()) return;
-    helper::vector< vector<int> > copy = pointsMappedFromPoint;
+    if (pointsMappedFrom[elem].empty()) return;
+    helper::vector< vector<int> > copy = pointsMappedFrom[elem];
     for (unsigned int i = 0; i < index.size(); ++i)
     {
-        vector<int> map = copy[index[i]];
-        pointsMappedFromPoint[i] = map;
+        const vector<int>& map = copy[index[i]];
+        pointsMappedFrom[elem][i] = map;
+        for (unsigned int j = 0; j < map.size(); ++j)
+        {
+            int m = map[j];
+            if (m != -1)
+                pointSource[m].second = i;
+        }
     }
 }
-
-void Mesh2PointTopologicalMapping::swapInputEdges(int i1, int i2)
-{
-    if (pointsMappedFromEdge.empty()) return;
-    vector<int> i1Map = pointsMappedFromEdge[i1];
-    vector<int> i2Map = pointsMappedFromEdge[i2];
-    pointsMappedFromEdge[i1] = i2Map;
-    pointsMappedFromEdge[i2] = i1Map;
-}
-
-void Mesh2PointTopologicalMapping::removeInputEdges( const sofa::helper::vector<unsigned int>& index )
-{
-    if (pointsMappedFromEdge.empty()) return;
-
-    unsigned int last = pointsMappedFromEdge.size() -1;
-
-    for (unsigned int i = 0; i < index.size(); ++i)
-    {
-        swapInputEdges( index[i], last );
-        pointsToRemove.insert(pointsMappedFromEdge[last].begin(), pointsMappedFromEdge[last].end());
-        --last;
-    }
-    pointsMappedFromEdge.resize( last + 1 );
-}
-
-void Mesh2PointTopologicalMapping::swapInputTriangles(int i1, int i2)
-{
-    if (pointsMappedFromTriangle.empty()) return;
-    vector<int> i1Map = pointsMappedFromTriangle[i1];
-    vector<int> i2Map = pointsMappedFromTriangle[i2];
-    pointsMappedFromTriangle[i1] = i2Map;
-    pointsMappedFromTriangle[i2] = i1Map;
-}
-
-void Mesh2PointTopologicalMapping::removeInputTriangles( const sofa::helper::vector<unsigned int>& index )
-{
-    if (pointsMappedFromTriangle.empty()) return;
-
-    unsigned int last = pointsMappedFromTriangle.size() -1;
-
-    for (unsigned int i = 0; i < index.size(); ++i)
-    {
-        swapInputTriangles( index[i], last );
-        pointsToRemove.insert(pointsMappedFromTriangle[last].begin(), pointsMappedFromTriangle[last].end());
-        --last;
-    }
-    pointsMappedFromTriangle.resize( last + 1 );
-}
-
-void Mesh2PointTopologicalMapping::swapInputQuads(int i1, int i2)
-{
-    if (pointsMappedFromQuad.empty()) return;
-    vector<int> i1Map = pointsMappedFromQuad[i1];
-    vector<int> i2Map = pointsMappedFromQuad[i2];
-    pointsMappedFromQuad[i1] = i2Map;
-    pointsMappedFromQuad[i2] = i1Map;
-}
-
-void Mesh2PointTopologicalMapping::removeInputQuads( const sofa::helper::vector<unsigned int>& index )
-{
-    if (pointsMappedFromQuad.empty()) return;
-
-    unsigned int last = pointsMappedFromQuad.size() -1;
-
-    for (unsigned int i = 0; i < index.size(); ++i)
-    {
-        swapInputQuads( index[i], last );
-        pointsToRemove.insert(pointsMappedFromQuad[last].begin(), pointsMappedFromQuad[last].end());
-        --last;
-    }
-    pointsMappedFromQuad.resize( last + 1 );
-}
-
-void Mesh2PointTopologicalMapping::swapInputTetras(int i1, int i2)
-{
-    if (pointsMappedFromTetra.empty()) return;
-    vector<int> i1Map = pointsMappedFromTetra[i1];
-    vector<int> i2Map = pointsMappedFromTetra[i2];
-    pointsMappedFromTetra[i1] = i2Map;
-    pointsMappedFromTetra[i2] = i1Map;
-}
-
-void Mesh2PointTopologicalMapping::removeInputTetras( const sofa::helper::vector<unsigned int>& index )
-{
-    if (pointsMappedFromTetra.empty()) return;
-    unsigned int last = pointsMappedFromTetra.size() -1;
-
-    for (unsigned int i = 0; i < index.size(); ++i)
-    {
-        swapInputTetras( index[i], last );
-        pointsToRemove.insert(pointsMappedFromTetra[last].begin(), pointsMappedFromTetra[last].end());
-        --last;
-    }
-    pointsMappedFromTetra.resize( last + 1 );
-}
-
-void Mesh2PointTopologicalMapping::swapInputHexas(int i1, int i2)
-{
-    if (pointsMappedFromHexa.empty()) return;
-    vector<int> i1Map = pointsMappedFromHexa[i1];
-    vector<int> i2Map = pointsMappedFromHexa[i2];
-    pointsMappedFromHexa[i1] = i2Map;
-    pointsMappedFromHexa[i2] = i1Map;
-}
-
-void Mesh2PointTopologicalMapping::removeInputHexas( const sofa::helper::vector<unsigned int>& index )
-{
-    if (pointsMappedFromHexa.empty()) return;
-
-    unsigned int last = pointsMappedFromHexa.size() -1;
-
-    for (unsigned int i = 0; i < index.size(); ++i)
-    {
-        swapInputHexas( index[i], last );
-        pointsToRemove.insert(pointsMappedFromHexa[last].begin(), pointsMappedFromHexa[last].end());
-        --last;
-    }
-    pointsMappedFromHexa.resize( last + 1 );
-}
-
-
 
 void Mesh2PointTopologicalMapping::swapOutputPoints(int i1, int i2, bool removeLast)
 {
-    for (unsigned int i=0; i<pointsMappedFromPoint.size(); ++i)
+    std::pair<Element, int> i1Source = pointSource[i1];
+    std::pair<Element, int> i2Source = pointSource[i2];
+    pointSource[i1] = i2Source;
+    pointSource[i2] = i1Source;
+    if (i1Source.second != -1)
     {
-        vector<int> & pts = pointsMappedFromPoint[i];
+        // replace i1 by i2 in pointsMappedFrom[i1Source.first][i1Source.second]
+        vector<int> & pts = pointsMappedFrom[i1Source.first][i1Source.second];
         for (unsigned int j = 0; j < pts.size(); ++j)
         {
-            if (pts[j] == i2)
-                pts[j] = i1;
-            else if (pts[j] == i1)
+            if (pts[j] == i1)
             {
                 if (removeLast)
                     pts[j] = -1;
@@ -563,12 +473,21 @@ void Mesh2PointTopologicalMapping::swapOutputPoints(int i1, int i2, bool removeL
             }
         }
     }
+    if (i2Source.second != -1)
+    {
+        // replace i2 by i1 in pointsMappedFrom[i2Source.first][i1Source.second]
+        vector<int> & pts = pointsMappedFrom[i2Source.first][i2Source.second];
+        for (unsigned int j = 0; j < pts.size(); ++j)
+        {
+            if (pts[j] == i2)
+                pts[j] = i1;
+        }
+    }
 }
 
 void Mesh2PointTopologicalMapping::removeOutputPoints( const sofa::helper::vector<unsigned int>& index )
 {
-    if (pointsMappedFromPoint.empty()) return;
-    unsigned int last = nbOutputPoints - 1;
+    unsigned int last = pointSource.size() - 1;
 
     for (unsigned int i = 0; i < index.size(); ++i)
     {
@@ -576,7 +495,7 @@ void Mesh2PointTopologicalMapping::removeOutputPoints( const sofa::helper::vecto
         --last;
     }
 
-    nbOutputPoints = last + 1;
+    pointSource.resize(last + 1);
 }
 
 } // namespace topology
