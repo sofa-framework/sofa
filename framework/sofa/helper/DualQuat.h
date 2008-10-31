@@ -65,18 +65,18 @@ public:
     void normalize(); // Normalize the dual quaternion
     void fromTransQuat ( const Vec& vec, const Quat& q);
     void toTransQuat ( Vec& vec, Quat& quat ) const;
-    inline void toMatrix( defaulttype::Matrix4& M) const;
-    inline void fromMatrix( const defaulttype::Matrix4 M);
-    inline void toGlMatrix( double M[16]) const;
+    void toMatrix( defaulttype::Matrix4& M) const;
+    void fromMatrix( const defaulttype::Matrix4 M);
+    void toGlMatrix( double M[16]) const;
     Vec transform( const Vec& vec); // Apply the QD transformation to a point
 
-    inline DualQuat<Real> operator+ ( const DualQuat<Real>& dq ) const;
-    inline DualQuat<Real> operator* ( const Real r ) const;
-    inline DualQuat<Real> operator/ ( const Real r ) const;
-    inline DualQuat<Real> operator= ( const DualQuat<Real>& quat );
-    inline DualQuat<Real>& operator+= ( const DualQuat<Real>& quat );
-    inline const Quat& operator[] ( unsigned int i ) const;
-    inline Quat& operator[] ( unsigned int i );
+    DualQuat<Real> operator+ ( const DualQuat<Real>& dq ) const;
+    DualQuat<Real> operator* ( const Real r ) const;
+    DualQuat<Real> operator/ ( const Real r ) const;
+    DualQuat<Real> operator= ( const DualQuat<Real>& quat );
+    DualQuat<Real>& operator+= ( const DualQuat<Real>& quat );
+    const Quat& operator[] ( unsigned int i ) const;
+    Quat& operator[] ( unsigned int i );
 
     inline friend std::ostream& operator<< ( std::ostream& os, const DualQuat<Real>& dq )
     { os << dq[0] << " " << dq[1]; return os;}
