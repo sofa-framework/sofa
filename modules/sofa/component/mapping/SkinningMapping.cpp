@@ -28,10 +28,6 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
 
-#ifdef SOFA_DEV
-#include <sofa/helper/DualQuat.inl>
-#endif
-
 namespace sofa
 {
 
