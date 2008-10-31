@@ -36,8 +36,6 @@ namespace component
 
 namespace topology
 {
-using namespace sofa::defaulttype;
-
 template< class DataTypes>
 void TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleAABB(const TriangleID i, Coord& minCoord, Coord& maxCoord) const
 {
@@ -58,6 +56,32 @@ typename DataTypes::Coord TriangleSetGeometryAlgorithms<DataTypes>::computeTrian
     const typename DataTypes::VecCoord& p = *(this->object->getX());
 
     return (p[t[0]] + p[t[1]] + p[t[2]]) / (Real) 3.0;
+}
+
+template<class DataTypes>
+void TriangleSetGeometryAlgorithms<DataTypes>::computeTriangleCircumcenterBaryCoefs(Vec<3,Real> &baryCoord, const TriangleID i) const
+{
+    const Triangle &t = this->m_topology->getTriangle(i);
+    const typename DataTypes::VecCoord& p = *(this->object->getX());
+    Real a2, b2, c2; // square legths of the 3 edges
+    a2 = (p[t[1]]-p[t[0]]).norm2();
+    b2 = (p[t[2]]-p[t[1]]).norm2();
+    c2 = (p[t[0]]-p[t[2]]).norm2();
+
+    // barycentric coordinates are defined as
+    baryCoord = Vec<3,Real>(a2*(-a2+b2+c2), b2*(a2-b2+c2), c2*(a2+b2-c2));
+}
+
+template<class DataTypes>
+typename DataTypes::Coord TriangleSetGeometryAlgorithms<DataTypes>::computeTriangleCircumcenter(const TriangleID i) const
+{
+    const Triangle &t = this->m_topology->getTriangle(i);
+    const typename DataTypes::VecCoord& p = *(this->object->getX());
+
+    Vec<3,Real> barycentricCoords;
+    computeTriangleCircumcenterBaryCoefs(barycentricCoords, i);
+
+    return (barycentricCoords[0]*p[t[0]] + barycentricCoords[1]*p[t[1]] + barycentricCoords[2]*p[t[2]]);
 }
 
 template< class DataTypes>

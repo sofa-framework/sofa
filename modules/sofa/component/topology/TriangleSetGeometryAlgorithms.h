@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_TRIANGLESETGEOMETRYALGORITHMS_H
 
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
+#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
@@ -36,6 +37,8 @@ namespace component
 namespace topology
 {
 using core::componentmodel::topology::BaseMeshTopology;
+using namespace sofa::defaulttype;
+
 typedef BaseMeshTopology::TriangleID TriangleID;
 typedef BaseMeshTopology::Triangle Triangle;
 typedef BaseMeshTopology::SeqTriangles SeqTriangles;
@@ -63,6 +66,9 @@ public:
     void computeTriangleAABB(const TriangleID i, Coord& minCoord, Coord& maxCoord) const;
 
     Coord computeTriangleCenter(const TriangleID i) const;
+
+    void computeTriangleCircumcenterBaryCoefs(Vec<3,Real> &baryCoord, const TriangleID i) const;
+    Coord computeTriangleCircumcenter(const TriangleID i) const;
 
     void getTriangleVertexCoordinates(const TriangleID i, Coord[3]) const;
 
