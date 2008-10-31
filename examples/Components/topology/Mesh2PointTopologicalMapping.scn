@@ -15,7 +15,7 @@
 		<Node name="PointSetTopology">
 			<Object type="PointSetTopologyContainer" name="Container2"/>
 			<Object type="PointSetTopologyModifier"/>
-			<Object type="Mesh2PointTopologicalMapping" object1="Container1" object2="Container2" pointBaryCoords="5 0 0 10 0 0"/>
+			<Object type="Mesh2PointTopologicalMapping" object1="Container1" object2="Container2" pointBaryCoords="0 0 0" edgeBaryCoords="0.5 0 0" tetraBaryCoords="0.33 0.33 0.33" />
 			<Object type="MechanicalObject" />
  			<Object type="Mesh2PointMechanicalMapping"/>
 			<Object type="Point"/>
