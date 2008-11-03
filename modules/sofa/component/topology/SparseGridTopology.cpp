@@ -202,8 +202,11 @@ void SparseGridTopology::init()
 
 // 		  cerr<<"_nodeCubesAdjacency :"<<_nodeCubesAdjacency<<endl;
 
-// 		  cerr<<"SparseGridTopology::init() :   "<<this->getName()<<"    cubes size = ";
-// 		  cerr<<seqHexas.getValue().size()<<"       ";
+    /*		  cerr<<"SparseGridTopology::init() :   "<<this->getName()<<"    cubes size = ";
+    		  cerr<<seqHexas.getValue().size()<<"       ";*/
+
+
+
 // 		  cerr<<_types.size()<<endl;
 
 }

@@ -33,7 +33,7 @@ using std::set;
 
 
 
-
+#include <sofa/component/topology/SparseGridMultipleTopology.h>
 
 namespace sofa
 {
@@ -45,7 +45,7 @@ namespace forcefield
 {
 
 using namespace sofa::defaulttype;
-
+using topology::SparseGridMultipleTopology;
 
 
 template <class DataTypes>
@@ -56,6 +56,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
 
 
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
+
 
     if( this->getContext()->getMeshTopology()==NULL )
     {
@@ -110,6 +111,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
     }
 
 
+
     this->_elementStiffnesses.beginEdit()->resize(this->_indexedElements->size());
     this->_elementMasses.beginEdit()->resize(this->_indexedElements->size());
 
@@ -123,11 +125,8 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
     else if (this->f_method.getValue() == "polar")
         this->setMethod(HexahedronFEMForceFieldT::POLAR);
 
-
     for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
     {
-
-
         Vec<8,Coord> nodes;
         for(int w=0; w<8; ++w)
 #ifndef SOFA_NEW_HEXA
@@ -155,24 +154,23 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
 #else
             this->_rotatedInitialElements[i][w] = R_0_1*this->_initialPoints.getValue()[(*this->_indexedElements)[i][w]];
 #endif
-
-
-        // compute mechanichal matrices (mass and stiffness) by condensating from _nbVirtualFinerLevels
-        computeMechanicalMatricesByCondensation( (*this->_elementStiffnesses.beginEdit())[i],
-                (*this->_elementMasses.beginEdit())[i],i,0);
     }
     //////////////////////
 
 
+    // compute mechanichal matrices (mass and stiffness) by condensating from _nbVirtualFinerLevels
+    computeMechanicalMatricesByCondensation( );
+
+
     // 	post-traitement of non-uniform stiffness
-    if( this->_nbVirtualFinerLevels.getValue() )
-    {
-        this->_sparseGrid->setNbVirtualFinerLevels(0);
-        //delete undesirable sparsegrids and hexa
-        for(int i=0; i<this->_sparseGrid->getNbVirtualFinerLevels(); ++i)
-            delete this->_sparseGrid->_virtualFinerLevels[i];
-        this->_sparseGrid->_virtualFinerLevels.resize(0);
-    }
+//         if( this->_nbVirtualFinerLevels.getValue() )
+//         {
+//           this->_sparseGrid->setNbVirtualFinerLevels(0);
+//           //delete undesirable sparsegrids and hexa
+//           for(int i=0;i<this->_sparseGrid->getNbVirtualFinerLevels();++i)
+//             delete this->_sparseGrid->_virtualFinerLevels[i];
+//           this->_sparseGrid->_virtualFinerLevels.resize(0);
+//         }
 
 
 
@@ -246,37 +244,22 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
 /////////////////////////////////////////////////
 
 
-
+template<class T>
+void NonUniformHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCondensation( )
+{
+    for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
+    {
+        computeMechanicalMatricesByCondensation( (*this->_elementStiffnesses.beginEdit())[i],
+                (*this->_elementMasses.beginEdit())[i],i,0);
+    }
+}
 
 template<class T>
 void NonUniformHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCondensation( ElementStiffness &K, ElementMass &M, const int elementIndice,  int level)
 {
 
     if (level == this->_nbVirtualFinerLevels.getValue())
-    {
-
-        //Get the 8 indices of the coarser Hexa
-        const helper::fixed_array<unsigned int,8>& points = this->_sparseGrid->_virtualFinerLevels[0]->getHexas()[elementIndice];
-        //Get the 8 points of the coarser Hexa
-        helper::fixed_array<Coord,8> nodes;
-#ifndef SOFA_NEW_HEXA
-        for (unsigned int k=0; k<8; ++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[0]->getPointPos(points[this->_indices[k]]);
-#else
-        for (unsigned int k=0; k<8; ++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[0]->getPointPos(points[k]);
-#endif
-
-
-        //       //given an elementIndice, find the 8 others from the sparse grid
-        //       //compute MaterialStiffness
-        MaterialStiffness material;
-        computeMaterialStiffness(material, this->f_youngModulus.getValue(),this->f_poissonRatio.getValue());
-
-        //Nodes are found using Sparse Grid
-        HexahedronFEMForceFieldAndMassT::computeElementStiffness(K,material,nodes,elementIndice, this->_sparseGrid->_virtualFinerLevels[0]->getType(elementIndice)==topology::SparseGridTopology::BOUNDARY?.5:1.0); // classical stiffness
-
-        HexahedronFEMForceFieldAndMassT::computeElementMass(M,nodes,elementIndice,this->_sparseGrid->_virtualFinerLevels[0]->getType(elementIndice)==topology::SparseGridTopology::BOUNDARY?.5:1.0);
-
-    }
+        computeClassicalMechanicalMatrices(K,M,elementIndice,this->_sparseGrid->getNbVirtualFinerLevels()-level);
     else
     {
         helper::fixed_array<int,8> finerChildren;
@@ -286,7 +269,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
         }
         else
         {
-            finerChildren = this->_sparseGrid->_virtualFinerLevels[this->_nbVirtualFinerLevels.getValue()-level]->_hierarchicalCubeMap[elementIndice];
+            finerChildren = this->_sparseGrid->_virtualFinerLevels[this->_sparseGrid->getNbVirtualFinerLevels()-level]->_hierarchicalCubeMap[elementIndice];
         }
 
         for ( int i=0; i<8; ++i) //for 8 virtual finer element
@@ -306,7 +289,37 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
 
 
 
+template<class T>
+void NonUniformHexahedronFEMForceFieldAndMass<T>::computeClassicalMechanicalMatrices( ElementStiffness &K, ElementMass &M, const int elementIndice, int level)
+{
+    //Get the 8 indices of the coarser Hexa
+    const helper::fixed_array<unsigned int,8>& points = this->_sparseGrid->_virtualFinerLevels[level]->getHexas()[elementIndice];
+    //Get the 8 points of the coarser Hexa
+    helper::fixed_array<Coord,8> nodes;
+#ifndef SOFA_NEW_HEXA
+    for (unsigned int k=0; k<8; ++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[level]->getPointPos(points[this->_indices[k]]);
+#else
+    for (unsigned int k=0; k<8; ++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[level]->getPointPos(points[k]);
+#endif
 
+
+    //       //given an elementIndice, find the 8 others from the sparse grid
+    //       //compute MaterialStiffness
+    MaterialStiffness material;
+    computeMaterialStiffness(material, this->f_youngModulus.getValue(),this->f_poissonRatio.getValue());
+
+    //Nodes are found using Sparse Grid
+    Real stiffnessCoef = 1.0;
+    if(SparseGridMultipleTopology* sgmt =  dynamic_cast<SparseGridMultipleTopology*>( this->_sparseGrid->_virtualFinerLevels[level] ) )
+        stiffnessCoef = sgmt->getStiffnessCoef( elementIndice );
+    else if( this->_sparseGrid->_virtualFinerLevels[level]->getType(elementIndice)==topology::SparseGridTopology::BOUNDARY )
+        stiffnessCoef = .5;
+
+
+    HexahedronFEMForceFieldAndMassT::computeElementStiffness(K,material,nodes,elementIndice, stiffnessCoef); // classical stiffness
+
+    HexahedronFEMForceFieldAndMassT::computeElementMass(M,nodes,elementIndice,this->_sparseGrid->_virtualFinerLevels[level]->getType(elementIndice)==topology::SparseGridTopology::BOUNDARY?.5:1.0);
+}
 
 
 
