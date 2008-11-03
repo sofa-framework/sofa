@@ -54,7 +54,7 @@ void SparseGridMultipleTopology::buildAsFinest(  )
         if (! sofa::helper::system::DataRepository.findFile ( filename ))
             continue;
 
-        if(filename.length() > 4 && filename.compare(filename.length()-4, 4, ".obj")==0 || filename.length() > 6 && filename.compare(filename.length()-6, 6, ".trian")==0)
+        if( (filename.length() > 4 && filename.compare(filename.length()-4, 4, ".obj")==0) || (filename.length() > 6 && filename.compare(filename.length()-6, 6, ".trian")==0))
         {
             meshes[i] = helper::io::Mesh::Create(filename.c_str());
 
