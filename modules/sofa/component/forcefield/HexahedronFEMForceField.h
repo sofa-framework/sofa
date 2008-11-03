@@ -114,7 +114,6 @@ protected:
     Data<VecElementStiffness> _elementStiffnesses;
 
     typedef Mat<3, 3, Real> Mat33;
-    typedef Mat33 Transformation; ///< matrix for rigid transformations like rotations
 
 
     typedef std::pair<int,Real> Col_Value;
@@ -139,6 +138,9 @@ protected:
 #endif
 
 public:
+
+
+    typedef Mat33 Transformation; ///< matrix for rigid transformations like rotations
 
     int method;
     Data<std::string> f_method; ///< the computation method of the displacements
@@ -223,6 +225,8 @@ public:
 
     virtual double getPotentialEnergy(const VecCoord& x);
 
+    const Transformation& getRotation(const unsigned elemidx);
+
     void addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset);
 
 
@@ -251,6 +255,9 @@ protected:
     void computeRotationPolar( Transformation &r, Vec<8,Coord> &nodes);
     virtual void accumulateForcePolar( Vector& f, const Vector & p, int i, const Element&elem  );
 
+
+
+    helper::vector<Real> _stiffnessCoefs; // a possible different coefficient for each element (for exemple BOUNDARY hexa in SparseGridTopology)
 
 
     bool _alreadyInit;
