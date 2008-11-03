@@ -41,7 +41,11 @@ namespace mapping
 
 using namespace sofa::core::componentmodel::behavior;
 
-
+/** mapping computing the center of mass of an object.
+	the output of the mapping has to be a single dof.
+	Its position is then set from the input DOFs, proportionally to their mass.
+	This allow to control an object by setting forces on its center of mass.
+ */
 template <class BasicMapping>
 class CenterOfMassMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
 {
@@ -73,8 +77,10 @@ public:
 
 
 protected :
+    ///pointer on the input DOFs mass
     BaseMass * masses;
 
+    /// the total mass of the input object
     double totalMass;
 
 };

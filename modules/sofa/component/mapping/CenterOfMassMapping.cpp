@@ -51,14 +51,14 @@ int CenterOfMassMappingClass = core::RegisterObject("Set the point to the center
         .add< CenterOfMassMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Vec2dTypes> > > >()
         .add< CenterOfMassMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > > >()
         .add< CenterOfMassMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > > >()
-// .add< CenterOfMassMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > > >()
+        .add< CenterOfMassMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > > >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< CenterOfMassMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > > >()
         .add< CenterOfMassMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Vec2fTypes> > > >()
-// .add< CenterOfMassMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > > >()
+        .add< CenterOfMassMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > > >()
         .add< CenterOfMassMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > > >()
-// .add< CenterOfMassMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3dTypes> > > >()
+        .add< CenterOfMassMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3dTypes> > > >()
 #endif
 //
 #ifndef SOFA_FLOAT

@@ -93,13 +93,13 @@ void JointSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy
     //compute elongation
     Mp1p2.getCenter() -= spring.initTrans;
     //compute torsion
-    Mp1p2.getOrientation() =  Mp1p2.getOrientation() * spring.initRot.inverse();
+    Mp1p2.getOrientation() = Mp1p2.getOrientation() * spring.initRot.inverse();
 
     //-- decomposing spring torsion in 2 parts (lawful rotation and illicit rotation) to fix bug with large rotations
     Vector dRangles = Mp1p2.getOrientation().toEulerVector();
     //lawful torsion = spring torsion in the axis where ksr is null
     Vector lawfulRots( (Real)spring.freeMovements[3], (Real)spring.freeMovements[4], (Real)spring.freeMovements[5] );
-    spring.lawfulTorsion = Quat::createFromRotationVector(dRangles.linearProduct(lawfulRots));
+    spring.lawfulTorsion = Quat::createQuaterFromEuler(dRangles.linearProduct(lawfulRots));
     Mat MRLT;
     spring.lawfulTorsion.toMatrix(MRLT);
     //extra torsion = spring torsion in the other axis (ksr not null), expressed in the lawful torsion reference axis
