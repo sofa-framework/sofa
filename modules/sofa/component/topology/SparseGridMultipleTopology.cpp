@@ -41,7 +41,7 @@ void SparseGridMultipleTopology::buildAsFinest(  )
     helper::vector< helper::io::Mesh*> meshes(_fileTopologies.getValue().size());
 
 
-    SReal xMing, xMaxg, yMing, yMaxg, zMing, zMaxg;
+    SReal xMing=99999999, xMaxg=-99999999, yMing=99999999, yMaxg=-99999999, zMing=99999999, zMaxg=-99999999;
 
 
     for(unsigned i=0; i<_fileTopologies.getValue().size(); ++i)
@@ -65,7 +65,7 @@ void SparseGridMultipleTopology::buildAsFinest(  )
             }
 
 
-            SReal xMin=999999, xMax=-999999, yMin=999999, yMax=-999999, zMin=999999, zMax=-999999;
+            SReal xMin, xMax, yMin, yMax, zMin, zMax;
             computeBoundingBox(meshes[i]->getVertices(), xMin, xMax, yMin, yMax, zMin, zMax);
 
 
@@ -151,4 +151,3 @@ float SparseGridMultipleTopology::getStiffnessCoef(int elementIdx)
 }
 }
 }
-
