@@ -55,12 +55,14 @@ using namespace sofa::defaulttype;
 template <class BasicMapping>
 void CenterOfMassMapping<BasicMapping>::init()
 {
+    //get the pointer on the input dofs mass
     masses = dynamic_cast<BaseMass*> (this->fromModel->getContext()->getMass());
     if(!masses)
         return;
 
     totalMass = 0.0;
 
+    //compute the total mass of the object
     for (unsigned int i=0 ; i<this->fromModel->getX()->size() ; i++)
         totalMass += masses->getElementMass(i);
 
@@ -78,6 +80,8 @@ void CenterOfMassMapping<BasicMapping>::apply ( typename Out::VecCoord& childPos
 
     OutCoord outX;
 
+    //compute the center of mass position with the relation X = sum(Xi*Mi)/Mt
+    //with Xi: position of the dof i, Mi: mass of the dof i, and Mt : total mass of the object
     for (unsigned int i=0 ; i<parentPositions.size() ; i++)
     {
         outX += parentPositions[i].getCenter() * masses->getElementMass(i);
@@ -98,6 +102,8 @@ void CenterOfMassMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& childFo
 
     OutDeriv outF;
 
+    //compute the forces applied on the center of mass with the relation F = sum(Fi*Mi)/Mt
+    //with Fi: force of the dof i, Mi: mass of the dof i, and Mt : total mass of the object
     for (unsigned int i=0 ; i<parentForces.size() ; i++)
     {
         outF += parentForces[i].getVCenter() * masses->getElementMass(i);
@@ -117,6 +123,9 @@ void CenterOfMassMapping<BasicMapping>::applyJT ( typename In::VecDeriv& parentF
         return;
     }
 
+    //compute the force applied on each object Dof from the force applied on the center of mass
+    //the force on a dof is proportional to its mass
+    //relation is Fi = Fc * (Mi/Mt), with Fc: force of center of mass, Mi: dof mass, Mt: total mass
     for (unsigned int i=0 ; i<parentForces.size() ; i++)
         parentForces[i].getVCenter() += childForces[0] * (masses->getElementMass(i) / totalMass);
 }
