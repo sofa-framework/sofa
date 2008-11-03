@@ -119,15 +119,15 @@ protected:
     /// recursive function
     /// if level is the finest level, matrices are built as usual
     /// else  finer matrices are built by condensation and added to the current matrices by addFineToCoarse
-    void computeMechanicalMatricesByCondensation( ElementStiffness &K, ElementMass &M, const int elementIndice,  int level);
+    virtual void computeMechanicalMatricesByCondensation( ElementStiffness &K, ElementMass &M, const int elementIndice,  int level);
+    virtual void computeMechanicalMatricesByCondensation(); // call previous method for all elements
 
+
+    void computeClassicalMechanicalMatrices( ElementStiffness &K, ElementMass &M, const int elementIndice, int level);
 
 
     /// compute the hookean material matrix
     void computeMaterialStiffness(MaterialStiffness &m, double youngModulus, double poissonRatio);
-
-
-
 
 };
 
