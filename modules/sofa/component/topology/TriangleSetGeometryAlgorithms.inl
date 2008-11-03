@@ -81,7 +81,7 @@ typename DataTypes::Coord TriangleSetGeometryAlgorithms<DataTypes>::computeTrian
     Vec<3,Real> barycentricCoords;
     computeTriangleCircumcenterBaryCoefs(barycentricCoords, i);
 
-    return (barycentricCoords[0]*p[t[0]] + barycentricCoords[1]*p[t[1]] + barycentricCoords[2]*p[t[2]]);
+    return (p[t[0]]*barycentricCoords[0] + p[t[1]]*barycentricCoords[1] + p[t[2]]*barycentricCoords[2]);
 }
 
 template< class DataTypes>
