@@ -26,6 +26,8 @@
 #define SOFA_COMPONENT_MAPPING_CENTERPOINTMAPPING_INL
 
 #include "CenterPointMechanicalMapping.h"
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+
 
 namespace sofa
 {
@@ -107,7 +109,7 @@ void CenterPointMechanicalMapping<BaseMapping>::applyJT( typename In::VecDeriv& 
 
     for(unsigned int i = 0; i <hexas.size(); ++i)
     {
-        Out::Deriv val = in[i] * 0.125f;
+        typename Out::Deriv val = in[i] * 0.125f;
 
         out[ hexas[i][0] ] += val;
         out[ hexas[i][1] ] += val;

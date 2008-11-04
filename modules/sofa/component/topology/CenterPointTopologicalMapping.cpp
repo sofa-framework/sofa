@@ -110,6 +110,8 @@ void CenterPointTopologicalMapping::updateTopologicalMappingTopDown()
                 to_pstm->removePointsProcess(tab, true);
                 break;
             }
+            default:
+                break;
             }
             ++changeIt;
         }
