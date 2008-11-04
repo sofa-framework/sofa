@@ -307,15 +307,15 @@ public:
 };
 
 /// Mapper for SphereModel
-template<class TInDataTypes, class DataTypes>
-class ContactMapper<TSphereModel<TInDataTypes>, DataTypes> : public IdentityContactMapper<TSphereModel<TInDataTypes>, DataTypes>
+template<class DataTypes>
+class ContactMapper<SphereModel, DataTypes> : public IdentityContactMapper<SphereModel, DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     int addPoint(const Coord& /*P*/, int index, Real& r)
     {
-        TSphere<TInDataTypes> e(this->model, index);
+        Sphere e(this->model, index);
         r = e.r();
         return index;
     }

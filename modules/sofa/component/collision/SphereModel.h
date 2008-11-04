@@ -27,7 +27,9 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/component/MechanicalObject.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
+#include <vector>
 
 namespace sofa
 {
@@ -40,78 +42,46 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-template<class DataTypes>
-class TSphereModel;
+class SphereModel;
 
-template<class DataTypes>
-class TSphere;
-
-typedef TSphereModel<Vec3Types> SphereModel;
-typedef TSphere<Vec3Types> Sphere;
-
-template<class DataTypes>
-class TSphere : public core::TCollisionElementIterator<TSphereModel<DataTypes> >
+class Sphere : public core::TCollisionElementIterator<SphereModel>
 {
 public:
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    TSphere(TSphereModel<DataTypes>* model, int index);
+    typedef SReal Real;
+    typedef Vector3	Coord;
 
-    explicit TSphere(core::CollisionElementIterator& i);
+    Sphere(SphereModel* model, int index);
+
+    explicit Sphere(core::CollisionElementIterator& i);
 
     const Coord& center() const;
-
-    const Deriv& v() const;
-
-    Real r() const;
+    const Coord& p() const;
+    const Coord& pFree() const;
+    const Coord& v() const;
+    const SReal r() const;
 };
 
-template<class TDataTypes>
-class TSphereModel : public component::MechanicalObject<TDataTypes>, public core::CollisionModel
+class SphereModel : public core::CollisionModel
 {
 public:
-    typedef TDataTypes InDataTypes;
-    typedef component::MechanicalObject<InDataTypes> Inherit;
-    typedef typename InDataTypes::Real Real;
-    typedef typename InDataTypes::VecReal VecReal;
-    //typedef typename InDataTypes::VecCoord VecCoord;
+    typedef Vec3Types InDataTypes;
+    typedef Vec3Types DataTypes;
+    typedef DataTypes::VecCoord VecCoord;
+    typedef DataTypes::VecDeriv VecDeriv;
+    typedef DataTypes::Coord Coord;
+    typedef DataTypes::Deriv Deriv;
+    typedef DataTypes::Real Real;
+    typedef DataTypes::VecReal VecReal;
+    typedef Sphere Element;
+    friend class Sphere;
 
-    typedef TDataTypes DataTypes;
-    typedef TSphere<DataTypes> Element;
-    friend class TSphere<DataTypes>;
-
-protected:
-    Data< VecReal > radius;
-
-    Data< SReal > defaultRadius;
-    class Loader;
-public:
-
-    TSphereModel();
-
-    TSphereModel(SReal radius);
-
-    int addSphere(const Vector3& pos, SReal radius);
-    void setSphere(int index, const Vector3& pos, SReal radius);
-
-    virtual bool load(const char* filename);
-    void applyScale (const SReal s);
-
-    sofa::core::componentmodel::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return this; }
-
-    Real getRadius(int i) const { return this->radius.getValue()[i]; }
-    void setRadius(int i, Real r) { (*this->radius.beginEdit())[i] = r; this->radius.endEdit(); }
-    void setRadius(Real r) { VecReal& radii = *this->radius.beginEdit(); radii.fill(r); this->radius.endEdit(); }
-
-    const VecReal& getR() const { return this->radius.getValue(); }
+    SphereModel();
 
     virtual void init();
 
-    // -- CollisionModel interface
+    virtual void parse(BaseObjectDescription* arg);
 
-    // remove ambiguity
-    int getSize() const { return this->Inherit::getSize(); }
+    // -- CollisionModel interface
 
     virtual void resize(int size);
 
@@ -122,36 +92,48 @@ public:
     void draw(int index);
 
     void draw();
+
+    core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
+
+    virtual bool load(const char* filename);
+
+    int addSphere(const Vector3& pos, Real r);
+    void setSphere(int i, const Vector3& pos, Real r);
+
+    Real getRadius(const int i) const;
+    void setRadius(const int i, const Real r);
+    void setRadius(const Real r);
+
+protected:
+
+    core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
+
+    Data< VecReal > radius;
+    Data< SReal > defaultRadius;
+
+    Data< std::string > filename;
+
+    class Loader;
 };
 
-template<class TDataTypes>
-inline TSphere<TDataTypes>::TSphere(TSphereModel<TDataTypes>* model, int index)
-    : core::TCollisionElementIterator<TSphereModel<TDataTypes> >(model, index)
+inline Sphere::Sphere(SphereModel* model, int index)
+    : core::TCollisionElementIterator<SphereModel>(model, index)
 {}
 
-template<class TDataTypes>
-inline TSphere<TDataTypes>::TSphere(core::CollisionElementIterator& i)
-    : core::TCollisionElementIterator<TSphereModel<TDataTypes> >(static_cast<TSphereModel<TDataTypes>*>(i.getCollisionModel()), i.getIndex())
+inline Sphere::Sphere(core::CollisionElementIterator& i)
+    : core::TCollisionElementIterator<SphereModel>(static_cast<SphereModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
 
-template<class TDataTypes>
-inline const typename TDataTypes::Coord& TSphere<TDataTypes>::center() const
-{
-    return (*this->model->getX())[this->index];
-}
+inline const Sphere::Coord& Sphere::center() const { return (*model->mstate->getX())[index]; }
 
-template<class TDataTypes>
-inline const typename TDataTypes::Deriv& TSphere<TDataTypes>::v() const
-{
-    return (*this->model->getV())[this->index];
-}
+inline const Sphere::Coord& Sphere::p() const { return (*model->mstate->getX())[index]; }
 
-template<class TDataTypes>
-inline typename TDataTypes::Real TSphere<TDataTypes>::r() const
-{
-    return this->model->getRadius(this->index);
-}
+inline const Sphere::Coord& Sphere::pFree() const { return (*model->mstate->getXfree())[index]; }
+
+inline const Sphere::Coord& Sphere::v() const { return (*model->mstate->getV())[index]; }
+
+inline const Sphere::Real Sphere::r() const { return (Real) model->getRadius((unsigned)index); }
 
 } // namespace collision
 
