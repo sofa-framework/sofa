@@ -227,7 +227,7 @@ void SphereModel::computeContinuousBoundingTree(double dt, int maxDepth)
 
 SphereModel::Real SphereModel::getRadius(const int i) const
 {
-    if(i<this->radius.getValue().size())
+    if(i < (int) this->radius.getValue().size())
         return radius.getValue()[i];
     else
         return defaultRadius.getValue();
@@ -279,7 +279,7 @@ int SphereModel::addSphere(const Vector3& pos, Real r)
 {
     int i = size;
     resize(i+1);
-    if(mstate->getX()->size() != i+1)
+    if((int) mstate->getX()->size() != i+1)
         mstate->resize(i+1);
 
     setSphere(i, pos, r);

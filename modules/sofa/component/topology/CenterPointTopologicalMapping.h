@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_CENTERPOINTTOPOLOGICALMAPPING_H
 #define SOFA_COMPONENT_TOPOLOGY_CENTERPOINTTOPOLOGICALMAPPING_H
 
+#include <sofa/core/BaseMapping.h>
 #include <sofa/core/componentmodel/topology/TopologicalMapping.h>
 
 namespace sofa
@@ -44,7 +45,7 @@ using namespace sofa::core;
  * INPUT TOPOLOGY = any MeshTopology
  * OUTPUT TOPOLOGY = A PointSetTopologie, as the boundary of the INPUT TOPOLOGY
  *
- * Each primitive in the input Topology will be mapped to a point in the output topology computed from a parameter vector (pointBaryCoords, edgeBaryCoords, triangleBaryCoords, quadBaryCoords, tetraBaryCoords, hexaBaryCoords)
+ * Each primitive in the input Topology will be mapped to a point in the output topology.
  *
  * CenterPointTopologicalMapping class is templated by the pair (INPUT TOPOLOGY, OUTPUT TOPOLOGY)
  *
