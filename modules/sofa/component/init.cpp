@@ -286,6 +286,10 @@ SOFA_LINK_CLASS(NonUniformHexahedronFEMForceFieldDensity)
 SOFA_LINK_CLASS(TetrahedralBiquadraticSpringsForceField)
 SOFA_LINK_CLASS(TetrahedralQuadraticSpringsForceField)
 SOFA_LINK_CLASS(WashingMachineForceField)
+SOFA_LINK_CLASS(Triangle2DFEMForceField)
+// material
+SOFA_LINK_CLASS(HookeanMaterial)
+SOFA_LINK_CLASS(PlasticMaterial)
 // interactionforcefield
 SOFA_LINK_CLASS(LagrangeMultiplierInteraction)
 //mastersolver
