@@ -19,9 +19,8 @@
 		</Node>
 		<Node name="Surf">
 			<Object type="Sphere" name="CollisionModel" filename="mesh/liver.sph" />
+			<MechanicalObject/>
 			<Object type="BarycentricMapping" name="sphere mapping"/>
 		</Node>
 	</Node>
-	<!--<Object type="Sphere" name="Floor" filename="CollisionModels/floor.sph" simulated="0" moving="0" dy="-2.5" />
-	<Object type="OglModel" name="FloorV" filename="VisualModels/floor.obj" texturename="VisualModels/floor.bmp" dy="-2.5" />-->
 </Node>

@@ -26,6 +26,7 @@
 		</Node>
 		<Node name="Surf">
 			<Object type="Sphere" filename="mesh/dragon.sph" />
+			<MechanicalObject/>
 			<Object type="BarycentricMapping"  />
 		</Node>
 	</Node>

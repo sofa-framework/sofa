@@ -16,7 +16,8 @@
 		<Object type="MeshLoader" filename="mesh/smCube27.mesh"/>
 		<Object type="Mesh"/>
 		<Node name="Surf">
-			<Object type="Sphere" filename="mesh/smCube27b.sph" dx="0" dy="-10.5" dz="0"/>
+			<Object type="Sphere" filename="mesh/smCube27b.sph"/>
+			<MechanicalObject dx="0" dy="-10.5" dz="0"/>
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
@@ -31,6 +32,7 @@
 		</Node>
 		<Node name="Surf">
 			<Object type="Sphere" filename="mesh/smCube27b.sph" />
+			<MechanicalObject/>
 			<Object type="RigidMapping"/>
 		</Node>
 		<Node name="Visu">
@@ -51,7 +53,8 @@
 		<Object type="MeshLoader" filename="mesh/smCube27.mesh"/>
 		<Object type="Mesh"/>
 		<Node name="Surf">
-			<Object type="Sphere" filename="mesh/smCube27b.sph" dx="0" dy="10.5" dz="-4"/>
+			<Object type="Sphere" filename="mesh/smCube27b.sph"/>
+			<MechanicalObject dx="0" dy="10.5" dz="-4"/>
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
@@ -70,6 +73,7 @@
 		</Node>
 		<Node name="Surf">
 			<Object type="Sphere" filename="mesh/smCube27b.sph" />
+			<MechanicalObject/>
 			<Object type="RigidMapping"/>
 		</Node>
 	</Node>
@@ -86,7 +90,8 @@
 		<Object type="MeshLoader" filename="mesh/smCube27.mesh"/>
 		<Object type="Mesh"/>
 		<Node name="Surf">
-			<Object type="Sphere" filename="mesh/smCube27b.sph" dx="-4" dy="31.5" dz="-4"/>
+			<Object type="Sphere" filename="mesh/smCube27b.sph"/>
+			<MechanicalObject dx="-4" dy="31.5" dz="-4"/>
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
@@ -105,9 +110,11 @@
 		</Node>
 		<Node name="Surf">
 			<Object type="Sphere" filename="mesh/dragon.sph" />
+			<MechanicalObject/>
 			<Object type="RigidMapping" />
 		</Node>
 	</Node>
-	<Object type="Sphere" name="Floor" filename="mesh/floor.sph" simulated="0" moving="0" dy="-20" />
+	<Object type="Sphere" name="Floor" filename="mesh/floor.sph" simulated="0" moving="0" />
+	<MechanicalObject dy="-20"/>
 	<Object type="OglModel" name="FloorV" filename="mesh/floor.obj" texturename="textures/floor.bmp" dy="-20" />
 </Node>

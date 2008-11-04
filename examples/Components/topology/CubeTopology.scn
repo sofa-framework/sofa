@@ -22,7 +22,7 @@
 		</Node>
 		<Node name="Surf">
 			<Object type="TriangleSet" name="CollisionModel" />
-			<Object type="IdentityMapping" name="sphere mapping"/>
+			<Object type="IdentityMapping" name="mapping"/>
 		</Node>
 	</Node>
 </Node>

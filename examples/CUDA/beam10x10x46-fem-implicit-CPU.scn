@@ -40,6 +40,7 @@
 				zmin="-5.5" zmax="6.5"
 			/>
 			<Object type="SphereModel" radius="1.0" />
+			<MechanicalObject/>
 			<Object type="BarycentricMapping" />
 		</Node>
 		<Node>
