@@ -22,6 +22,7 @@
 		</Node>
 		<Node name="Surf">
 			<Object type="Sphere" name="CollisionModel" filename="mesh/liver.sph" />
+			<MechanicalObject/>
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
@@ -39,7 +40,8 @@
 			<Object type="BarycentricMapping" object1="../.." object2="VisualModel" />
 		</Node>
 		<Node name="Surf">
-			<Object type="Sphere" name="CollisionModel" filename="mesh/liver.sph"   dx="10" ry="180" />
+			<Object type="Sphere" name="CollisionModel" filename="mesh/liver.sph"  />
+			<MechanicalObject  dx="10" ry="180"/>
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>		
@@ -58,7 +60,8 @@
 			<Object type="BarycentricMapping" object1="../.." object2="VisualModel" />
 		</Node>
 		<Node name="Surf">
-			<Object type="Sphere" name="CollisionModel" filename="mesh/liver.sph"   dx="20" ry="90"/>
+			<Object type="Sphere" name="CollisionModel" filename="mesh/liver.sph"/>
+			<MechanicalObject   dx="20" ry="90"/>
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>

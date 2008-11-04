@@ -48,6 +48,7 @@
     </Node>
     <Node name="Surf">
       <Object type="Sphere" name="CollisionModel" filename="mesh/liver.sph" />
+	  <Object type="MechanicalObject" />
       <Object type="RigidMapping" name="sphere mapping"/>
     </Node>
   </Node>
