@@ -25,12 +25,14 @@
 #include "TopologicalChangeManager.h"
 
 #include <sofa/component/collision/TriangleModel.h>
+#include <sofa/component/collision/SphereModel.h>
 
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/simulation/tree/GNode.h>
 
 #include <sofa/core/componentmodel/topology/TopologicalMapping.h>
 
+#include <sofa/component/topology/PointSetTopologyContainer.h>
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
 #include <sofa/component/topology/TriangleSetTopologyModifier.h>
@@ -61,120 +63,153 @@ TopologicalChangeManager::~TopologicalChangeManager()
 {
 }
 
-void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::core::CollisionModel* model, const std::vector<int>& indices) const
+void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::collision::TriangleModel* model, const std::vector<int>& indices) const
 {
-    TriangleModel* my_triangle_model = (dynamic_cast<TriangleModel*>(model));
-    if (my_triangle_model)
+    sofa::core::componentmodel::topology::BaseMeshTopology* topo_curr;
+    topo_curr = model->getContext()->getMeshTopology();
+
+    if(topo_curr == NULL)
+        return;
+
+    std::set< unsigned int > items;
+
+    simulation::tree::GNode *node_curr = dynamic_cast<simulation::tree::GNode*>(topo_curr->getContext());
+
+    if (topo_curr->getNbTetras() > 0)
     {
-        sofa::core::componentmodel::topology::BaseMeshTopology* topo_curr;
-        topo_curr = my_triangle_model->getContext()->getMeshTopology();
+        // get the index of the tetra linked to each triangle
+        for (unsigned int i=0; i<indices.size(); ++i)
+            items.insert(topo_curr->getTetraTriangleShell(indices[i])[0]);
+    }
+    else
+    {
+        for (unsigned int i=0; i<indices.size(); ++i)
+            items.insert(indices[i]);
+    }
 
-        std::set< unsigned int > items;
+    bool is_topoMap = true;
 
-        simulation::tree::GNode *node_curr = dynamic_cast<simulation::tree::GNode*>(topo_curr->getContext());
-
-        if (topo_curr->getNbTetras() > 0)
+    while(is_topoMap)
+    {
+        is_topoMap = false;
+        for(simulation::tree::GNode::ObjectIterator it = node_curr->object.begin(); it != node_curr->object.end(); ++it)
         {
-            // get the index of the tetra linked to each triangle
-            for (unsigned int i=0; i<indices.size(); ++i)
-                items.insert(topo_curr->getTetraTriangleShell(indices[i])[0]);
-        }
-        else
-        {
-            for (unsigned int i=0; i<indices.size(); ++i)
-                items.insert(indices[i]);
-        }
-
-        bool is_topoMap = true;
-
-        while(is_topoMap)
-        {
-
-            is_topoMap = false;
-            for(simulation::tree::GNode::ObjectIterator it = node_curr->object.begin(); it != node_curr->object.end(); ++it)
+            sofa::core::componentmodel::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping *>(*it);
+            if(topoMap != NULL && !topoMap->propagateFromOutputToInputModel())
             {
-
-                sofa::core::componentmodel::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping *>(*it);
-                if(topoMap != NULL && !topoMap->propagateFromOutputToInputModel())
+                is_topoMap = true;
+                //unsigned int ind_glob = topoMap->getGlobIndex(ind_curr);
+                //ind_curr = topoMap->getFromIndex(ind_glob);
+                std::set< unsigned int > loc_items = items;
+                items.clear();
+                for (std::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
                 {
-
-                    is_topoMap = true;
-                    //unsigned int ind_glob = topoMap->getGlobIndex(ind_curr);
-                    //ind_curr = topoMap->getFromIndex(ind_glob);
-                    std::set< unsigned int > loc_items = items;
-                    items.clear();
-                    for (std::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
-                    {
-                        unsigned int ind_glob = topoMap->getGlobIndex(*it);
-                        unsigned int ind = topoMap->getFromIndex(ind_glob);
-                        //std::cout << *it << " -> "<<ind_glob << " -> "<<ind<<std::endl;
-                        items.insert(ind);
-                    }
-
-                    topo_curr = topoMap->getFrom()->getContext()->getMeshTopology();
-                    node_curr = dynamic_cast<simulation::tree::GNode*>(topo_curr->getContext());
-
-                    break;
+                    unsigned int ind_glob = topoMap->getGlobIndex(*it);
+                    unsigned int ind = topoMap->getFromIndex(ind_glob);
+                    //std::cout << *it << " -> "<<ind_glob << " -> "<<ind<<std::endl;
+                    items.insert(ind);
                 }
+
+                topo_curr = topoMap->getFrom()->getContext()->getMeshTopology();
+                node_curr = dynamic_cast<simulation::tree::GNode*>(topo_curr->getContext());
+
+                break;
             }
         }
-
-        sofa::helper::vector<unsigned int> vitems;
-        vitems.reserve(items.size());
-        vitems.insert(vitems.end(), items.rbegin(), items.rend());
-
-        sofa::core::componentmodel::topology::TopologyModifier* topoMod;
-        topo_curr->getContext()->get(topoMod);
-
-        topoMod->removeItems(vitems);
-
-        topoMod->notifyEndingEvent();
-
-
-        topoMod->propagateTopologicalChanges();
-
-
-        /*
-        //// For APPLICATION 1 : renumber the mesh vertices with the optimal vertex permutation according to the Reverse CuthillMckee algorithm
-
-        sofa::helper::vector<int> init_inverse_permutation;
-        sofa::helper::vector<int>& inverse_permutation = init_inverse_permutation;
-
-        sofa::component::topology::EdgeSetTopologyModifier* edgeMod;
-        topo_curr->getContext()->get(edgeMod);
-
-        edgeMod->resortCuthillMckee(inverse_permutation);
-
-        //std::cout << "inverse_permutation : " << std::endl;
-        sofa::helper::vector<int> permutation;
-        permutation.resize(inverse_permutation.size());
-        for (unsigned int i=0; i<inverse_permutation.size(); ++i){
-        	permutation[inverse_permutation[i]]=i;
-        	//std::cout << i << " -> " << inverse_permutation[i] << std::endl;
-        }
-
-        //std::cout << "permutation : " << std::endl;
-        //for (unsigned int i=0; i<permutation.size(); ++i){
-        	//std::cout << i << " -> " << permutation[i] << std::endl;
-        //}
-
-        sofa::core::componentmodel::topology::TopologyModifier* topoMod;
-        topo_curr->getContext()->get(topoMod);
-        topoMod->renumberPoints((const sofa::helper::vector<unsigned int> &) inverse_permutation, (const sofa::helper::vector<unsigned int> &) permutation);
-
-        */
     }
+
+    sofa::helper::vector<unsigned int> vitems;
+    vitems.reserve(items.size());
+    vitems.insert(vitems.end(), items.rbegin(), items.rend());
+
+    sofa::core::componentmodel::topology::TopologyModifier* topoMod;
+    topo_curr->getContext()->get(topoMod);
+
+    topoMod->removeItems(vitems);
+
+    topoMod->notifyEndingEvent();
+
+
+    topoMod->propagateTopologicalChanges();
+}
+
+void TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collision::SphereModel* model, const std::vector<int>& indices) const
+{
+    sofa::core::componentmodel::topology::BaseMeshTopology* topo_curr;
+    topo_curr = model->getContext()->getMeshTopology();
+
+    if(dynamic_cast<PointSetTopologyContainer*>(topo_curr) == NULL)
+        return;
+
+    std::set< unsigned int > items;
+
+    simulation::tree::GNode *node_curr = dynamic_cast<simulation::tree::GNode*>(topo_curr->getContext());
+
+    for (unsigned int i=0; i<indices.size(); ++i)
+        items.insert(indices[i]);
+
+    bool is_topoMap = true;
+
+    while(is_topoMap)
+    {
+        is_topoMap = false;
+        for(simulation::tree::GNode::ObjectIterator it = node_curr->object.begin(); it != node_curr->object.end(); ++it)
+        {
+            sofa::core::componentmodel::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping *>(*it);
+            if(topoMap != NULL && !topoMap->propagateFromOutputToInputModel())
+            {
+                is_topoMap = true;
+                std::set< unsigned int > loc_items = items;
+                items.clear();
+                for (std::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
+                {
+                    unsigned int ind_glob = topoMap->getGlobIndex(*it);
+                    unsigned int ind = topoMap->getFromIndex(ind_glob);
+                    //std::cout << *it << " -> "<<ind_glob << " -> "<<ind<<std::endl;
+                    items.insert(ind);
+                }
+
+                topo_curr = topoMap->getFrom()->getContext()->getMeshTopology();
+                node_curr = dynamic_cast<simulation::tree::GNode*>(topo_curr->getContext());
+
+                break;
+            }
+        }
+    }
+
+    sofa::helper::vector<unsigned int> vitems;
+    vitems.reserve(items.size());
+    vitems.insert(vitems.end(), items.rbegin(), items.rend());
+
+    sofa::core::componentmodel::topology::TopologyModifier* topoMod;
+    topo_curr->getContext()->get(topoMod);
+
+    topoMod->removeItems(vitems);
+
+    topoMod->notifyEndingEvent();
+
+    topoMod->propagateTopologicalChanges();
 }
 
 // Handle Removing of topological element (from any type of topology)
 void TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::CollisionElementIterator elem2) const
 {
-    if(dynamic_cast<TriangleModel*>(elem2.getCollisionModel())!= NULL)
-    {
-        removeItemsFromTriangleModel(elem2);
-    }
+    std::vector<int> id;
+    id.push_back(elem2.getIndex());
+    removeItemsFromCollisionModel(elem2.getCollisionModel(), id);
 }
 
+void TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const std::vector<int>& indices) const
+{
+    if(dynamic_cast<TriangleModel*>(model)!= NULL)
+    {
+        removeItemsFromTriangleModel(static_cast<TriangleModel*>(model), indices);
+    }
+    else if(dynamic_cast<SphereModel*>(model)!= NULL)
+    {
+        removeItemsFromSphereModel(static_cast<SphereModel*>(model), indices);
+    }
+}
 
 // Intermediate method to handle cutting
 bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::componentmodel::topology::BaseMeshTopology* _topology)
