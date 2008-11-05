@@ -448,31 +448,47 @@ void CudaLCP_FullKernel_V8d(int dim,int itMax,float tol,const void * m,int mP,co
 
 //////////////////version 9
 
-
-
 void CudaLCP_FullKernel_V9f(int dim,int itMax,float tol,const void * m,int mP,const void * q,void * f,void * err,void * share)
 {
-    unsigned dim_n = (dim + V9_NBPROC * 2 - 1) / (V9_NBPROC * 2);
-    dim3 threads(dim_n,dim_n);
-    dim3 grid(1,V9_NBPROC);
+    if (dim>V9_SZMAX)
+    {
+        myprintf("Utilisation de la version 8 car il y a trop de contacts (max = %d , dim = %d)\n",V9_SZMAX,dim);
+        CudaLCP_FullKernel_V8f(dim,itMax,tol,m,mP,q,f,err,share);
+    }
+    else
+    {
+        unsigned dim_n = (dim + V9_NBPROC * 2 - 1) / (V9_NBPROC * 2);
+        dim3 threads(dim_n,dim_n);
+        dim3 grid(1,V9_NBPROC);
 
-    unsigned alloc = dim * dim_n * 2 + dim * 2 + dim_n * dim_n + 2;
+        unsigned alloc = dim * dim_n * 2 + 3 * dim_n + dim_n * dim_n + V9_NBVAR;
 
-    CudaLCP_FullKernel_V9_kernel<<< grid, threads, alloc *  sizeof(float)>>>(dim,dim_n,itMax,tol,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share);
+        printf("allocSize %d maxSize = %d blocsize= %d\n",alloc,V9_SZMAX,dim_n);
+
+        CudaLCP_FullKernel_V9_kernel<<< grid, threads, alloc *  sizeof(float)>>>(dim,dim_n,V9_NBPROC*2,itMax,tol,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share);
+    }
 }
 void CudaLCP_FullKernel_V9d(int dim,int itMax,float tol,const void * m,int mP,const void * q,void * f,void * err,void * share)
 {
+    if (dim>V9_SZMAX)
+    {
+        myprintf("Utilisation de la version 8 car il y a trop de contacts (max = %d , dim = %d)\n",V9_SZMAX,dim);
+        CudaLCP_FullKernel_V8d(dim,itMax,tol,m,mP,q,f,err,share);
+    }
+    else
+    {
 #if !defined(__CUDA_ARCH__) ||  __CUDA_ARCH__ < 130
-    myprintf("CUDA ERROR: double precision not supported.\n");
+        myprintf("CUDA ERROR: double precision not supported.\n");
 #else
-    unsigned dim_n = (dim + V9_NBPROC * 2 - 1) / (V9_NBPROC * 2);
-    dim3 threads(dim_n,dim_n);
-    dim3 grid(1,V9_NBPROC);
+        unsigned dim_n = (dim + V9_NBPROC * 2 - 1) / (V9_NBPROC * 2);
+        dim3 threads(dim_n,dim_n);
+        dim3 grid(1,V9_NBPROC);
 
-    unsigned alloc = dim * dim_n * 2 + dim * 2 + dim_n * dim_n + 2;
+        unsigned alloc = dim * dim_n * 2 + 3 * dim_n + dim_n * dim_n + V9_NBVAR;
 
-    CudaLCP_FullKernel_V9_kernel<<< grid, threads, alloc *  sizeof(double)>>>(dim,dim_n,itMax * V9_NBPROC,tol,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share);
+        CudaLCP_FullKernel_V9_kernel<<< grid, threads, alloc *  sizeof(double)>>>(dim,dim_n,V9_NBPROC*2,itMax * V9_NBPROC,tol,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share);
 #endif
+    }
 }
 
 //////////////////////////////////////////////nlcp
