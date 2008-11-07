@@ -42,17 +42,22 @@ using namespace sofa::defaulttype;
 using namespace sofa::simulation::tree;
 
 ////////////////// ///////////////
+
+
 class ImplicitSurface : public core::objectmodel::BaseObject
 {
+
 public:
     ImplicitSurface( ) { }
     virtual ~ImplicitSurface() { }
     virtual double getValue(defaulttype::Vec3d&) =0;
     virtual double getValue(defaulttype::Vec3d&, int&) =0;  // the second parameter could be useful to identify a domain
-    virtual defaulttype::Vec3d getGradient(defaulttype::Vec3d&) =0;
+    virtual defaulttype::Vec3d getGradient(defaulttype::Vec3d&, int i=0);
 
-    virtual bool computeSegIntersection(defaulttype::Vec3d& posInside, defaulttype::Vec3d& posOutside, defaulttype::Vec3d& intersecPos);
-    virtual void projectPointonSurface(defaulttype::Vec3d& point);
+    virtual bool computeSegIntersection(defaulttype::Vec3d& posInside, defaulttype::Vec3d& posOutside, defaulttype::Vec3d& intersecPos, int i=0);
+    virtual void projectPointonSurface(defaulttype::Vec3d& point, int i=0);
+    virtual bool projectPointonSurface2(defaulttype::Vec3d& point, int i=0, defaulttype::Vec3d& dir = defaulttype::Vec3d(0,0,0)); // TODO mettre les paramètres step=0.1 & countMax=30 en paramètre
+    virtual bool projectPointOutOfSurface(defaulttype::Vec3d& point, int i=0, defaulttype::Vec3d& dir= defaulttype::Vec3d(0,0,0), double &dist_out = 0.0);
 
 };
 
@@ -61,7 +66,8 @@ class SphereSurface  : public ImplicitSurface
 {
 public:
     SphereSurface()
-        : radiusSphere(initData(&radiusSphere, 1.0, "radius", "Radius of the Sphere Surface"))
+        : inside(initData(&inside, false, "inside", "if true the constraint object is inside the sphere"))
+        , radiusSphere(initData(&radiusSphere, 1.0, "radius", "Radius of the Sphere Surface"))
         , centerSphere(initData(&centerSphere, defaulttype::Vec3d(0.0,0.0,0.0), "center", "Position of the Sphere Surface"))
     {init();}
 
@@ -69,7 +75,7 @@ public:
 
     void init()
     {
-        _inside = false;
+        _inside = inside.getValue();
         _Center = centerSphere.getValue();
         _radius = radiusSphere.getValue();
     }
@@ -78,10 +84,12 @@ public:
 
     double getValue(defaulttype::Vec3d& Pos);
     inline	double getValue(defaulttype::Vec3d& Pos, int&) {return getValue(Pos);}
-    defaulttype::Vec3d getGradient(defaulttype::Vec3d &Pos);
+    //defaulttype::Vec3d getGradient(defaulttype::Vec3d &Pos);
 
+    Data<bool> inside;
     Data<double> radiusSphere;
     Data<defaulttype::Vec3d> centerSphere;
+
 
 private:
 

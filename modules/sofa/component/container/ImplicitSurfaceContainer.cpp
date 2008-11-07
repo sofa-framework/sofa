@@ -42,72 +42,193 @@ int SphereSurfaceClass = core::RegisterObject("")
         .add< SphereSurface >()
         ;
 
-
-bool ImplicitSurface::computeSegIntersection(defaulttype::Vec3d& posInside, defaulttype::Vec3d& posOutside, defaulttype::Vec3d& intersecPos)
+defaulttype::Vec3d ImplicitSurface::getGradient(defaulttype::Vec3d& Pos, int i)
 {
 
-    intersecPos = posInside*0.5 + posOutside*0.5;
+    double epsilon=0.0001;
+    double v = getValue(Pos, i);
+    defaulttype::Vec3d Result;
+    Pos[0] += epsilon;
+    Result[0] = (getValue(Pos, i)-v)/epsilon;
+    Pos[0] -= epsilon;
+    Pos[1] += epsilon;
+    Result[1] = (getValue(Pos, i)-v)/epsilon;
+    Pos[1] -= epsilon;
+    Pos[2] += epsilon;
+    Result[2] = (getValue(Pos, i)-v)/epsilon;
+    Pos[2] -= epsilon;
 
-    defaulttype::Vec3d s = posOutside - posInside;
-    int it;
-    for (it=0; it<10; it++)						// TODO : mettre le epsilon en parametre
+    return Result;
+
+}
+bool ImplicitSurface::computeSegIntersection(defaulttype::Vec3d& posInside, defaulttype::Vec3d& posOutside, defaulttype::Vec3d& intersecPos, int i)
+{
+
+
+    double tolerance = 0.00001; // tolerance sur la précision m
+
+    float a = getValue(posInside, i);
+    float b = getValue(posOutside, i);
+
+    if (a*b>0)
     {
-        double value = getValue(intersecPos);
+        std::cerr<<"WARNING : les deux points sont du même côté de la surface \n"<<std::endl;
+        return false;
+    }
+
+    if(b<0)
+    {
+        std::cerr<<"WARNING : posOutside is inside"<<std::endl;
+        return false;
+    }
 
 
-        if(value*value<0.00000001)
+
+    Vec3d Seg = posInside-posOutside;
+    if (Seg.norm() < tolerance) // TODO : macro on the global precision
+    {
+        intersecPos = posOutside;
+        return true;
+    }
+
+    // we start on posInside and search for the first point outside with a step given by scale //
+    int count=0;
+    Vec3d step = Seg;
+    double val = b;
+    intersecPos = posOutside;
+
+    double step_incr=0.1;
+
+    while(step.norm()> tolerance && count < 1000)
+    {
+        step *= step_incr;
+
+        while (val >= 0 && count < (1/step_incr + 1))
         {
-            break;
+            count++;
+            intersecPos += step;
+            val = getValue(intersecPos, i);
         }
-        defaulttype::Vec3d grad = getGradient(intersecPos);
-        double a;
-        if(fabs( dot (grad,s) ) < 0.00000001 * fabs(value) )
-        {
-            std::cout<<"++++WARNING:++++++  in computeSegIntersection  dot (grad,s) =" << dot (grad,s) <<std::endl;
-            a=0.1; // valeur mise au hasard
-        }
-        else
-            a = value/( dot (grad,s) );
 
+        // we restart with more precision
+        intersecPos -=step;
 
-
-        intersecPos -= s*a;
-        if (this->f_printLog.getValue())
-        {
-            std::cout<<"it "<< it<<" ---  value:"<< value;
-            std::cout<<" grad ="<< grad <<" s"<< s;
-            std::cout<<" correction ="<<a<<"intersecPos"<<intersecPos<< std::endl;
-        }
+        val = getValue(intersecPos, i);
+        if (val < 0)
+            std::cerr<<"WARNING : val is negative\n"<<std::endl;
 
     }
-    if(it==10)
-        std::cout<<"++++WARNING:++++++  no convergence in computeSegIntersection : posIn=" << posInside <<" -- posOut="<< posInside<< std::endl;
+
+    if (count>998)
+    {
+        std::cerr<<"ERROR in computeSegIntersection: Seg : "<<Seg<<std::endl;
+
+
+    }
+
 
 
     return true;
 
+
+
+
+
 }
 
-void ImplicitSurface::projectPointonSurface(defaulttype::Vec3d& point)
+void ImplicitSurface::projectPointonSurface(defaulttype::Vec3d& point, int i)
 {
 
     defaulttype::Vec3d grad;
-    double value= getValue(point);
+    double value= getValue(point, i);
     int it;
     for (it=0; it<10; it++)
     {
-        grad = getGradient(point);
+        grad = getGradient(point, i);
         point -= grad * (value / dot(grad,grad) );
-        value = getValue(point);
+        value = getValue(point, i);
 
         if (value*value < 0.0000000001)
             break;
     }
 
     if (it==10)
+    {
         std::cout<<"No Convergence in projecting the contact point"<<std::endl;
-    std::cout<<"-  grad :"	<< grad <<std::endl;
+        std::cout<<"-  grad :"	<< grad <<std::endl;
+    }
 }
+
+
+
+bool ImplicitSurface::projectPointonSurface2(defaulttype::Vec3d& point, int i, defaulttype::Vec3d& dir)
+{
+
+
+    defaulttype::Vec3d posInside, posOutside;
+    if (dir.norm()< 0.001)
+    {
+        printf("Warning : grad is null \n");
+        return false;
+    }
+
+    dir.normalize();
+    double value= getValue(point, i);
+
+    double step=0.1;
+
+    int count = 0;
+    if(value>0)
+    {
+        posInside = point;
+        while(value>0 && count < 30)
+        {
+            count++;
+            posInside -= dir * step;
+            value = getValue(posInside, i);
+        }
+        posOutside = point;
+    }
+    else
+    {
+        posOutside = point;
+        while(value<0 && count < 30)
+        {
+            count++;
+            posOutside += dir * step;
+            value = getValue(posOutside, i);
+        }
+        posInside = point;
+
+    }
+    if (count == 30)
+    {
+        printf("\n WARNING : no projection found in  ImplSurf::projectPointonSurface(Vec3d& point, Vec3d& dir)");
+        return false;
+    }
+    return computeSegIntersection(posInside, posOutside, point, i);
+
+
+}
+
+
+bool ImplicitSurface::projectPointOutOfSurface(defaulttype::Vec3d& point, int i, defaulttype::Vec3d& dir, double &dist_out)
+{
+
+
+    if (projectPointonSurface2(point, i, dir))
+    {
+        defaulttype::Vec3d grad = getGradient(point, i);
+        grad.normalize();
+        point += grad*dist_out;
+        return true;
+    }
+    printf(" pb in projectPointOutOfSurface \n");
+    return false;
+
+
+}
+
 
 
 double SphereSurface::getValue(defaulttype::Vec3d& Pos)
@@ -124,26 +245,27 @@ double SphereSurface::getValue(defaulttype::Vec3d& Pos)
     return result;
 }
 
+/*
 defaulttype::Vec3d SphereSurface::getGradient(defaulttype::Vec3d &Pos)
 {
-    defaulttype::Vec3d g;
-    if (_inside)
-    {
-        g[0] = -2* (Pos[0] - _Center[0]);
-        g[1] = -2* (Pos[1] - _Center[1]);
-        g[2] = -2* (Pos[2] - _Center[2]);
-    }
-    else
-    {
-        g[0] = 2* (Pos[0] - _Center[0]);
-        g[1] = 2* (Pos[1] - _Center[1]);
-        g[2] = 2* (Pos[2] - _Center[2]);
-    }
+	defaulttype::Vec3d g;
+	if (_inside)
+	{
+		g[0] = -2* (Pos[0] - _Center[0]);
+		g[1] = -2* (Pos[1] - _Center[1]);
+		g[2] = -2* (Pos[2] - _Center[2]);
+	}
+	else
+	{
+		g[0] = 2* (Pos[0] - _Center[0]);
+		g[1] = 2* (Pos[1] - _Center[1]);
+		g[2] = 2* (Pos[2] - _Center[2]);
+	}
 
-    return g;
+	return g;
 }
 
-
+*/
 
 
 
