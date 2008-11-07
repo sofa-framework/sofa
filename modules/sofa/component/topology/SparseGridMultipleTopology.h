@@ -55,6 +55,8 @@ public :
     }
 
     virtual void buildAsFinest();
+    virtual void buildVirtualFinerLevels();
+    virtual void buildFromFiner();
 
     float getStiffnessCoef(int elementIdx);
 
@@ -70,7 +72,8 @@ protected :
     void buildFromTriangleMesh(helper::io::Mesh*, unsigned fileIdx);
     helper::vector< RegularGridTopology > _regularGrids;
     helper::vector< helper::vector<Type> > _regularGridTypes;
-    void assembleRegularGrids(helper::vector<Type>& regularGridTypes);
+// 		helper::vector< float > _regularStiffnessCoefs;
+    void assembleRegularGrids(helper::vector<Type>& regularGridTypes,helper::vector< float >& regularStiffnessCoefs);
 };
 
 

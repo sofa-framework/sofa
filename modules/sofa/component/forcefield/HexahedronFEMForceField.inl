@@ -33,6 +33,8 @@
 #include <iostream>
 #include <set>
 
+#include <sofa/component/topology/SparseGridMultipleTopology.h>
+
 using std::cerr;
 using std::endl;
 using std::set;
@@ -65,6 +67,7 @@ namespace forcefield
 {
 
 using namespace sofa::defaulttype;
+using topology::SparseGridMultipleTopology;
 
 #ifndef SOFA_NEW_HEXA
 template<class DataTypes> const int HexahedronFEMForceField<DataTypes>::_indices[8] = {0,1,3,2,4,5,7,6};
@@ -141,6 +144,23 @@ void HexahedronFEMForceField<DataTypes>::init()
 // 	if( _elementStiffnesses.getValue().empty() )
 // 		_elementStiffnesses.beginEdit()->resize(_indexedElements->size());
     // 	_stiffnesses.resize( _initialPoints.getValue().size()*3 ); // assembly ?
+
+
+    _stiffnessCoefs.resize( _indexedElements->size());
+    _stiffnessCoefs.fill(1.0);
+    if( _sparseGrid )
+    {
+        if(SparseGridMultipleTopology* sgmt =  dynamic_cast<SparseGridMultipleTopology*>( _sparseGrid ) )
+        {
+            for(unsigned i=0; i<_stiffnessCoefs.size(); ++i)
+                _stiffnessCoefs[i] = sgmt->getStiffnessCoef( i );
+        }
+        else
+        {
+            for(unsigned i=0; i<_stiffnessCoefs.size(); ++i)
+                if( _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY ) _stiffnessCoefs[i] = .5;
+        }
+    }
 
     reinit();
 
@@ -261,8 +281,8 @@ void HexahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv&
         if (_trimgrid && !_trimgrid->isCubeActive(i)) continue;
 #endif // SOFA_DEV
 
-        Transformation R_0_2;
-        R_0_2.transpose(_rotations[i]);
+// 					Transformation R_0_2;
+// 					R_0_2.transpose(_rotations[i]);
 
         Displacement X;
 
@@ -270,9 +290,9 @@ void HexahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv&
         {
             Coord x_2;
 #ifndef SOFA_NEW_HEXA
-            x_2 = R_0_2 * x[(*it)[_indices[w]]];
+            x_2 = _rotations[i] * x[(*it)[_indices[w]]];
 #else
-            x_2 = R_0_2 * x[(*it)[w]];
+            x_2 = _rotations[i] * x[(*it)[w]];
 #endif
             X[w*3] = x_2[0];
             X[w*3+1] = x_2[1];
@@ -284,9 +304,9 @@ void HexahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv&
 
         for(int w=0; w<8; ++w)
 #ifndef SOFA_NEW_HEXA
-            v[(*it)[_indices[w]]] -= _rotations[i] * Deriv( F[w*3],  F[w*3+1],  F[w*3+2]  );
+            v[(*it)[_indices[w]]] -= _rotations[i].multTranspose( Deriv( F[w*3],  F[w*3+1],  F[w*3+2]  ) );
 #else
-            v[(*it)[w]] -= _rotations[i] * Deriv( F[w*3],  F[w*3+1],  F[w*3+2]  );
+            v[(*it)[w]] -= _rotations[i].multTranspose( Deriv( F[w*3],  F[w*3+1],  F[w*3+2]  ) );
 #endif
     }
 
@@ -301,7 +321,11 @@ double HexahedronFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 
 
 
-
+template <class DataTypes>
+const typename HexahedronFEMForceField<DataTypes>::Transformation& HexahedronFEMForceField<DataTypes>::getRotation(const unsigned elemidx)
+{
+    return _rotations[elemidx];
+}
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -861,7 +885,8 @@ void HexahedronFEMForceField<DataTypes>::initLarge(int i, const Element &elem)
     {
         _elementStiffnesses.beginEdit()->resize( _elementStiffnesses.getValue().size()+1 );
     }
-    computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], _rotatedInitialElements[i], i, _sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0 );
+
+    computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], _rotatedInitialElements[i], i, _stiffnessCoefs[i]);
 
 
 }
@@ -917,15 +942,15 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const 
     Coord vertical;
     vertical = (nodes[3]-nodes[0] + nodes[2]-nodes[1] + nodes[7]-nodes[4] + nodes[6]-nodes[5])*.25;
 
-    Transformation R_0_2; // Rotation matrix (deformed and displaced Tetrahedron/world)
-    computeRotationLarge( R_0_2, horizontal,vertical);
+// 	Transformation R_0_2; // Rotation matrix (deformed and displaced Tetrahedron/world)
+    computeRotationLarge( _rotations[i], horizontal,vertical);
 
-    _rotations[i].transpose(R_0_2);
+// 	_rotations[i].transpose(R_0_2);
 
     // positions of the deformed and displaced Tetrahedre in its frame
     Vec<8,Coord> deformed;
     for(int w=0; w<8; ++w)
-        deformed[w] = R_0_2 * nodes[w];
+        deformed[w] = _rotations[i] * nodes[w];
 
 
     // displacement
@@ -940,7 +965,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const 
 
     if(f_updateStiffnessMatrix.getValue())
 // 		computeElementStiffness( _elementStiffnesses[i], _materialsStiffnesses[i], deformed );
-        computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], deformed, i, _sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0 );
+        computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], deformed, i, _stiffnessCoefs[i] );
 
 
     Displacement F; //forces
@@ -948,9 +973,9 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const 
 
     for(int w=0; w<8; ++w)
 #ifndef SOFA_NEW_HEXA
-        f[elem[_indices[w]]] += _rotations[i] * Deriv( F[w*3],  F[w*3+1],   F[w*3+2]  );
+        f[elem[_indices[w]]] += _rotations[i].multTranspose( Deriv( F[w*3],  F[w*3+1],   F[w*3+2]  ) );
 #else
-        f[elem[w]] += _rotations[i] * Deriv( F[w*3],  F[w*3+1],   F[w*3+2]  );
+        f[elem[w]] += _rotations[i].multTranspose( Deriv( F[w*3],  F[w*3+1],   F[w*3+2]  ) );
 #endif
 }
 
@@ -992,7 +1017,9 @@ void HexahedronFEMForceField<DataTypes>::initPolar(int i, const Element& elem)
     {
         _elementStiffnesses.beginEdit()->resize( _elementStiffnesses.getValue().size()+1 );
     }
-    computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], _rotatedInitialElements[i], i, _sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0 );
+
+
+    computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], _rotatedInitialElements[i], i, _stiffnessCoefs[i]);
 }
 
 
@@ -1040,16 +1067,16 @@ void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const 
         nodes[j] = p[elem[j]];
 #endif
 
-    Transformation R_0_2; // Rotation matrix (deformed and displaced Tetrahedron/world)
-    computeRotationPolar( R_0_2, nodes );
+// 	Transformation R_0_2; // Rotation matrix (deformed and displaced Tetrahedron/world)
+    computeRotationPolar( _rotations[i], nodes );
 
-    _rotations[i].transpose( R_0_2 );
+// 	_rotations[i].transpose( R_0_2 );
 
 
     // positions of the deformed and displaced Tetrahedre in its frame
     Vec<8,Coord> deformed;
     for(int j=0; j<8; ++j)
-        deformed[j] = R_0_2 * nodes[j];
+        deformed[j] = _rotations[i] * nodes[j];
 
 
 
@@ -1067,7 +1094,8 @@ void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const 
 
     if(f_updateStiffnessMatrix.getValue())
 // 		computeElementStiffness( _elementStiffnesses[i], _materialsStiffnesses[i], deformed );
-        computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], deformed, i, _sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0 );
+        computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], deformed, i, _stiffnessCoefs[i]);
+
 
     // compute force on element
     computeForce( F, D, _elementStiffnesses.getValue()[i] );
@@ -1075,9 +1103,9 @@ void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const 
 
     for(int j=0; j<8; ++j)
 #ifndef SOFA_NEW_HEXA
-        f[elem[_indices[j]]] += _rotations[i] * Deriv( F[j*3],  F[j*3+1],   F[j*3+2]  );
+        f[elem[_indices[j]]] += _rotations[i].multTranspose( Deriv( F[j*3],  F[j*3+1],   F[j*3+2]  ) );
 #else
-        f[elem[j]] += _rotations[i] * Deriv( F[j*3],  F[j*3+1],   F[j*3+2]  );
+        f[elem[j]] += _rotations[i].multTranspose( Deriv( F[j*3],  F[j*3+1],   F[j*3+2]  ) );
 #endif
 }
 
@@ -1103,8 +1131,8 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMat
     for(it = _indexedElements->begin(), e=0 ; it != _indexedElements->end() ; ++it,++e)
     {
         const ElementStiffness &Ke = _elementStiffnesses.getValue()[e];
-        const Transformation& Rt = _rotations[e];
-        Transformation R; R.transpose(Rt);
+//         const Transformation& Rt = _rotations[e];
+//         Transformation R; R.transpose(Rt);
 
         // find index of node 1
         for (n1=0; n1<8; n1++)
@@ -1122,9 +1150,9 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMat
 #else
                 node2 = (*it)[n2];
 #endif
-                Mat33 tmp = Rt * Mat33(Coord(Ke[3*n1+0][3*n2+0],Ke[3*n1+0][3*n2+1],Ke[3*n1+0][3*n2+2]),
+                Mat33 tmp = _rotations[e].multTranspose( Mat33(Coord(Ke[3*n1+0][3*n2+0],Ke[3*n1+0][3*n2+1],Ke[3*n1+0][3*n2+2]),
                         Coord(Ke[3*n1+1][3*n2+0],Ke[3*n1+1][3*n2+1],Ke[3*n1+1][3*n2+2]),
-                        Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) * R;
+                        Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) ) * _rotations[e];
                 for(i=0; i<3; i++)
                     for (j=0; j<3; j++)
                         mat->add(offset+3*node1+i, offset+3*node2+j, - tmp[i][j]*k);
