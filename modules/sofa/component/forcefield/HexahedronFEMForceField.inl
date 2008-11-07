@@ -33,7 +33,9 @@
 #include <iostream>
 #include <set>
 
+#ifdef SOFA_DEV
 #include <sofa/component/topology/SparseGridMultipleTopology.h>
+#endif
 
 using std::cerr;
 using std::endl;
@@ -67,7 +69,6 @@ namespace forcefield
 {
 
 using namespace sofa::defaulttype;
-using topology::SparseGridMultipleTopology;
 
 #ifndef SOFA_NEW_HEXA
 template<class DataTypes> const int HexahedronFEMForceField<DataTypes>::_indices[8] = {0,1,3,2,4,5,7,6};
@@ -150,12 +151,14 @@ void HexahedronFEMForceField<DataTypes>::init()
     _stiffnessCoefs.fill(1.0);
     if( _sparseGrid )
     {
-        if(SparseGridMultipleTopology* sgmt =  dynamic_cast<SparseGridMultipleTopology*>( _sparseGrid ) )
+#ifdef SOFA_DEV
+        if(topology::SparseGridMultipleTopology* sgmt =  dynamic_cast<topology::SparseGridMultipleTopology*>( _sparseGrid ) )
         {
             for(unsigned i=0; i<_stiffnessCoefs.size(); ++i)
                 _stiffnessCoefs[i] = sgmt->getStiffnessCoef( i );
         }
         else
+#endif
         {
             for(unsigned i=0; i<_stiffnessCoefs.size(); ++i)
                 if( _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY ) _stiffnessCoefs[i] = .5;
