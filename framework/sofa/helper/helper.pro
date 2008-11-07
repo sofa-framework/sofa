@@ -41,6 +41,7 @@ HEADERS += \
           io/Image.h \
           io/ImageBMP.h \
           io/ImagePNG.h \
+          io/ImageRAW.h \
           io/MassSpringLoader.h \
           io/Mesh.h \
           io/MeshOBJ.h \
@@ -48,11 +49,11 @@ HEADERS += \
           io/MeshTrian.h \
           io/SphereLoader.h \
           io/TriangleLoader.h \
-	  io/bvh/BVHChannels.h \
-	  io/bvh/BVHJoint.h \
-	  io/bvh/BVHLoader.h \
-	  io/bvh/BVHMotion.h \
-	  io/bvh/BVHOffset.h \
+          io/bvh/BVHChannels.h \
+          io/bvh/BVHJoint.h \
+          io/bvh/BVHLoader.h \
+          io/bvh/BVHMotion.h \
+          io/bvh/BVHOffset.h \
           LCPcalc.h \
           LCPSolver.h \
           LCPSolver.inl \
@@ -73,8 +74,8 @@ HEADERS += \
           system/thread/debug.h \
           system/PipeProcess.h \
           vector.h \
-	  polygon_cube_intersection/vec.h \
-	  polygon_cube_intersection/polygon_cube_intersection.h
+          polygon_cube_intersection/vec.h \
+          polygon_cube_intersection/polygon_cube_intersection.h
 
 SOURCES += \
           ArgumentParser.cpp \
@@ -90,16 +91,17 @@ SOURCES += \
           io/Image.cpp \
           io/ImageBMP.cpp \
           io/ImagePNG.cpp \
+          io/ImageRAW.cpp \
           io/MassSpringLoader.cpp \
           io/Mesh.cpp \
           io/MeshOBJ.cpp \
           io/MeshTopologyLoader.cpp \
           io/MeshTrian.cpp \
           io/SphereLoader.cpp \
-          io/TriangleLoader.cpp \
-	  io/bvh/BVHJoint.cpp \
-	  io/bvh/BVHLoader.cpp \
-	  io/bvh/BVHMotion.cpp \
+          io/TriangleLoader.cpp \          
+          io/bvh/BVHJoint.cpp \
+          io/bvh/BVHLoader.cpp \
+          io/bvh/BVHMotion.cpp \
           LCPcalc.cpp \         
           MarchingCubeUtility.cpp \
           Quater.cpp \
@@ -108,8 +110,8 @@ SOURCES += \
           system/thread/CTime.cpp \
           system/thread/debug.cpp \
           system/PipeProcess.cpp \
-	  polygon_cube_intersection/polygon_cube_intersection.cpp \
-	  polygon_cube_intersection/fast_polygon_cube_intersection.cpp
+          polygon_cube_intersection/polygon_cube_intersection.cpp \
+          polygon_cube_intersection/fast_polygon_cube_intersection.cpp
 
 
 contains(DEFINES,SOFA_HAVE_GLEW){
