@@ -56,9 +56,19 @@ public:
 
     virtual bool computeSegIntersection(defaulttype::Vec3d& posInside, defaulttype::Vec3d& posOutside, defaulttype::Vec3d& intersecPos, int i=0);
     virtual void projectPointonSurface(defaulttype::Vec3d& point, int i=0);
-    virtual bool projectPointonSurface2(defaulttype::Vec3d& point, int i=0, defaulttype::Vec3d& dir = defaulttype::Vec3d(0,0,0)); // TODO mettre les paramètres step=0.1 & countMax=30 en paramètre
-    virtual bool projectPointOutOfSurface(defaulttype::Vec3d& point, int i=0, defaulttype::Vec3d& dir= defaulttype::Vec3d(0,0,0), double &dist_out = 0.0);
-
+    virtual bool projectPointonSurface2(defaulttype::Vec3d& point, int i, defaulttype::Vec3d& dir); // TODO mettre les paramètres step=0.1 & countMax=30 en paramètre
+    bool projectPointonSurface2(defaulttype::Vec3d& point, int i=0)
+    {
+        defaulttype::Vec3d dir = defaulttype::Vec3d(0,0,0);
+        return projectPointonSurface2(point, i, dir);
+    }
+    virtual bool projectPointOutOfSurface(defaulttype::Vec3d& point, int i, defaulttype::Vec3d& dir, double &dist_out);
+    bool projectPointOutOfSurface(defaulttype::Vec3d& point, int i=0)
+    {
+        defaulttype::Vec3d dir;
+        double dist_out = 0.0;
+        return projectPointOutOfSurface(point, i, dir, dist_out);
+    }
 };
 
 
