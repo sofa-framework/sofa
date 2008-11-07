@@ -321,3 +321,8 @@ SOFA_LINK_CLASS(LCPForceFeedback)
 SOFA_LINK_CLASS(VectorSpringForceField)
 
 #endif //SOFA_HAVE_SENSABLE
+
+
+#ifdef SOFA_HAVE_ARBORIS
+SOFA_LINK_CLASS(ArborisMapping)
+#endif //SOFA_HAVE_ARBORIS
