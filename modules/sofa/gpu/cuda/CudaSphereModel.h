@@ -38,9 +38,9 @@ namespace gpu
 namespace cuda
 {
 
-typedef sofa::component::collision::TSphereModel<gpu::cuda::CudaVec3fTypes> CudaSphereModel;
+typedef sofa::component::collision::SphereModel /*<gpu::cuda::CudaVec3fTypes>*/ CudaSphereModel;
 
-typedef sofa::component::collision::TSphere<gpu::cuda::CudaVec3fTypes> CudaSphere;
+typedef sofa::component::collision::Sphere /*<gpu::cuda::CudaVec3fTypes>*/ CudaSphere;
 
 } // namespace cuda
 
