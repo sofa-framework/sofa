@@ -65,8 +65,8 @@ public:
     bool save(std::string filename, int compression_level = -1);
 
 private:
-    int depth;
     int headerSize;
+    int depth;
 
     unsigned char *header;
 };
