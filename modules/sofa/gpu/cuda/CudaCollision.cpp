@@ -104,55 +104,56 @@ void BarycentricPenalityContact<CudaPointModel,CudaRigidDistanceGridCollisionMod
 template <>
 void BarycentricPenalityContact<CudaSphereModel,CudaRigidDistanceGridCollisionModel,CudaVec3fTypes>::setDetectionOutputs(OutputVector* o)
 {
-    TOutputVector& outputs = *static_cast<TOutputVector*>(o);
-    //const bool printLog = this->f_printLog.getValue();
-    if (ff==NULL)
-    {
-        MechanicalState1* mstate1 = mapper1.createMapping("contactPointsCUDA");
-        MechanicalState2* mstate2 = mapper2.createMapping("contactPointsCUDA");
-        ff = new ResponseForceField(mstate1,mstate2); ff->setName( getName());
-    }
+    /*
+      TOutputVector& outputs = *static_cast<TOutputVector*>(o);
+      //const bool printLog = this->f_printLog.getValue();
+      if (ff==NULL)
+      {
+          MechanicalState1* mstate1 = mapper1.createMapping("contactPointsCUDA");
+          MechanicalState2* mstate2 = mapper2.createMapping("contactPointsCUDA");
+          ff = new ResponseForceField(mstate1,mstate2); ff->setName( getName());
+      }
 
-    mapper1.setPoints1(&outputs);
-    mapper2.setPoints2(&outputs);
-    const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
-#if 0
-    int insize = outputs.size();
-    int size = insize;
-    ff->clear(size);
-    //int i = 0;
-    for (int i=0; i<insize; i++)
-    {
-        int index = i; //oldIndex[i];
-        if (index < 0) continue; // this contact is ignored
-        //DetectionOutput* o = &outputs[i];
-        //CollisionElement1 elem1(o->elem.first);
-        //CollisionElement2 elem2(o->elem.second);
-        //int index1 = elem1.getIndex();
-        //int index2 = elem2.getIndex();
-        int index1 = index;
-        int index2 = index;
-        //// Create mapping for first point
-        //index1 = mapper1.addPoint(o->point[0], index1);
-        //// Create mapping for second point
-        //index2 = mapper2.addPoint(o->point[1], index2);
-        double distance = d0 + outputs.get(i)->distance; // + mapper1.radius(elem1) + mapper2.radius(elem2);
-        double stiffness = (model1->getContactStiffness(0) * model1->getContactStiffness(0))/distance;
-        double mu_v = (model1->getContactFriction(0) + model1->getContactFriction(0));
-        ff->addContact(index1, index2, outputs.get(i)->normal, (float)distance, (float)stiffness, (float)mu_v, (float)mu_v, index);
-    }
-#else
-    double distance = d0; // + mapper1.radius(elem1) + mapper2.radius(elem2);
-    double stiffness = (model1->getContactStiffness(0) * model1->getContactStiffness(0)); ///distance;
-    ff->setContacts((float)distance, (float)stiffness, &outputs, true);
-#endif
-    // Update mappings
-    mapper1.update();
-    mapper2.update();
+      mapper1.setPoints1(&outputs);
+      mapper2.setPoints2(&outputs);
+      const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
+    #if 0
+      int insize = outputs.size();
+      int size = insize;
+      ff->clear(size);
+      //int i = 0;
+      for (int i=0; i<insize; i++)
+      {
+          int index = i; //oldIndex[i];
+          if (index < 0) continue; // this contact is ignored
+          //DetectionOutput* o = &outputs[i];
+          //CollisionElement1 elem1(o->elem.first);
+          //CollisionElement2 elem2(o->elem.second);
+          //int index1 = elem1.getIndex();
+          //int index2 = elem2.getIndex();
+          int index1 = index;
+          int index2 = index;
+          //// Create mapping for first point
+          //index1 = mapper1.addPoint(o->point[0], index1);
+          //// Create mapping for second point
+          //index2 = mapper2.addPoint(o->point[1], index2);
+          double distance = d0 + outputs.get(i)->distance; // + mapper1.radius(elem1) + mapper2.radius(elem2);
+          double stiffness = (model1->getContactStiffness(0) * model1->getContactStiffness(0))/distance;
+          double mu_v = (model1->getContactFriction(0) + model1->getContactFriction(0));
+          ff->addContact(index1, index2, outputs.get(i)->normal, (float)distance, (float)stiffness, (float)mu_v, (float)mu_v, index);
+      }
+    #else
+      double distance = d0; // + mapper1.radius(elem1) + mapper2.radius(elem2);
+      double stiffness = (model1->getContactStiffness(0) * model1->getContactStiffness(0)); ///distance;
+      ff->setContacts((float)distance, (float)stiffness, &outputs, true);
+    #endif
+      // Update mappings
+      mapper1.update();
+      mapper2.update();
+    */
 }
 
-//ContactMapperCreator< ContactMapper<CudaSphereModel> > CudaSphereContactMapperClass("default",true);
-ContactMapperCreator< ContactMapper<CudaSphereModel, CudaVec3fTypes> > CudaSphereCudaContactMapperClass("default",true);
+//ContactMapperCreator< ContactMapper<CudaSphereModel, CudaVec3fTypes> > CudaSphereCudaContactMapperClass("default",true);
 
 template<>
 void DefaultPickingManager<CudaVec3fTypes,forcefield::StiffSpringForceField<CudaVec3fTypes> >::addContact(forcefield::StiffSpringForceField<CudaVec3fTypes>* ff, int index1, int index2, double stiffness, double mu_v, double length, const Vector3& /*p1*/, const Vector3& /*p2*/)

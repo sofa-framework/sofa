@@ -385,49 +385,54 @@ CudaCollisionDetection::SphereRigidTest::SphereRigidTest( CudaSphereModel* model
 /// Returns how many tests are required
 int CudaCollisionDetection::SphereRigidTest::init()
 {
-    results.clear();
-    if (!model1->isActive() || !model2->isActive()) return 0;
-    const CudaVector<Vec3f>& p1 = *model1->getMechanicalState()->getX();
-    if (p1.empty()) return 0;
+    /*
+      results.clear();
+      if (!model1->isActive() || !model2->isActive()) return 0;
+      const CudaVector<Vec3f>& p1 = *model1->getMechanicalState()->getX();
+      if (p1.empty()) return 0;
 
-    for (CudaRigidDistanceGridCollisionElement e2 = CudaRigidDistanceGridCollisionElement(model2->begin()); e2!=model2->end(); ++e2)
-    {
-        CudaDistanceGrid* g2 = e2.getGrid();
-        if (g2)
-            results.addTest(std::make_pair(0, e2.getIndex()), p1.size());
-    }
-    return results.nbTests();
+      for (CudaRigidDistanceGridCollisionElement e2 = CudaRigidDistanceGridCollisionElement(model2->begin()); e2!=model2->end();++e2)
+      {
+          CudaDistanceGrid* g2 = e2.getGrid();
+          if (g2)
+              results.addTest(std::make_pair(0, e2.getIndex()), p1.size());
+      }
+      return results.nbTests();
+    */
+    return 0;
 }
 
 /// Fill the info to send to the graphics card
 void CudaCollisionDetection::SphereRigidTest::fillInfo(GPUTest* tests)
 {
-    if (results.nbTests()==0) return;
-    GPUContact* gresults = (GPUContact*)results.results.deviceWrite();
-    const CudaVector<Vec3f>& p1 = *model1->getMechanicalState()->getX();
-    for (unsigned int i=0; i<results.nbTests(); i++)
-    {
-        const GPUOutputVector::TestEntry& e = results.rtest(i);
-        GPUTest& test = tests[i];
-        //CudaRigidDistanceGridCollisionElement elem1((e.elems.first  < i0)?model1:model2,(e.elems.first  < i0)?e.elems.first :e.elems.first -i0);
-        CudaRigidDistanceGridCollisionElement elem2(model2, e.elems.second);
-        CudaDistanceGrid* g2 = elem2.getGrid();
-        test.nbPoints = p1.size();
-        test.result = gresults + e.firstIndex;
-        test.points = p1.deviceRead();
-        test.radius = model1->getR().deviceRead();
-        test.grid = g2->getDists().deviceRead();
-        test.gridnx = g2->getNx();
-        test.gridny = g2->getNy();
-        test.gridnz = g2->getNz();
-        test.gridbbmin = g2->getBBMin();
-        test.gridbbmax = g2->getBBMax();
-        test.gridp0 = g2->getPMin();
-        test.gridinvdp = g2->getInvCellWidth();
-        test.margin = 0; //model1->getRadius(0);
-        test.rotation.transpose(Mat3x3f(elem2.getRotation()));
-        test.translation = test.rotation*(-elem2.getTranslation());
-    }
+    /*
+      if (results.nbTests()==0) return;
+      GPUContact* gresults = (GPUContact*)results.results.deviceWrite();
+      const CudaVector<Vec3f>& p1 = *model1->getMechanicalState()->getX();
+      for (unsigned int i=0;i<results.nbTests();i++)
+      {
+          const GPUOutputVector::TestEntry& e = results.rtest(i);
+          GPUTest& test = tests[i];
+          //CudaRigidDistanceGridCollisionElement elem1((e.elems.first  < i0)?model1:model2,(e.elems.first  < i0)?e.elems.first :e.elems.first -i0);
+          CudaRigidDistanceGridCollisionElement elem2(model2, e.elems.second);
+          CudaDistanceGrid* g2 = elem2.getGrid();
+          test.nbPoints = p1.size();
+          test.result = gresults + e.firstIndex;
+          test.points = p1.deviceRead();
+          test.radius = model1->getR().deviceRead();
+          test.grid = g2->getDists().deviceRead();
+          test.gridnx = g2->getNx();
+          test.gridny = g2->getNy();
+          test.gridnz = g2->getNz();
+          test.gridbbmin = g2->getBBMin();
+          test.gridbbmax = g2->getBBMax();
+          test.gridp0 = g2->getPMin();
+          test.gridinvdp = g2->getInvCellWidth();
+          test.margin = 0; //model1->getRadius(0);
+          test.rotation.transpose(Mat3x3f(elem2.getRotation()));
+          test.translation = test.rotation*(-elem2.getTranslation());
+      }
+    */
 }
 
 /*
