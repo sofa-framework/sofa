@@ -81,8 +81,9 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
         printf("\n WARNING : node is not found => massValue could be false in getCompliance function");
     }
 
-    unsigned int numConstraints = constraints.size();
 
+    //std::cout<<"Mass Value  = "<< massValue[1] <<std::endl;
+    unsigned int numConstraints = constraints.size();
     double dt = this->getContext()->getDt();
 
     for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
@@ -108,10 +109,14 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
                 for(int j = 0; j < sizeCurColConst; j++)
                 {
                     //W[indexCurRowConst][indexCurColConst] +=  constraints[curColConst][j].data * InvM_wN;
-                    double w =  constraints[curColConst][j].data * InvM_wN;
-                    W->add(indexCurRowConst, indexCurColConst, w);
-                    if (indexCurRowConst != indexCurColConst)
-                        W->add(indexCurColConst, indexCurRowConst, w);
+
+                    if (constraints[curRowConst][i].index == constraints[curColConst][j].index)
+                    {
+                        double w =  constraints[curColConst][j].data * InvM_wN;
+                        W->add(indexCurRowConst, indexCurColConst, w);
+                        if (indexCurRowConst != indexCurColConst)
+                            W->add(indexCurColConst, indexCurRowConst, w);
+                    }
                 }
             }
             /*
@@ -145,15 +150,16 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::applyContactForce(
     else
     {
         massValue = new sofa::defaulttype::Rigid3Mass();
-        printf("\n WARNING : node is not found => massValue could be false in getCompliance function");
+        printf("\n WARNING : node is not found => massValue could be false in applyContactForce function");
     }
 
 
     double dt = this->getContext()->getDt();
 
-    force.resize(0);
-    force.resize(1);
-    force[0] = Deriv();
+    //force.resize(0);
+    //force.resize(1);
+    //force[0] = Deriv();
+    force.resize((*mstate->getX()).size());
 
     int numConstraints = constraints.size();
 
@@ -168,8 +174,8 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::applyContactForce(
             for(int i = 0; i < sizeC1; i++)
             {
                 weighedNormal = constraints[c1][i].data; // weighted normal
-                force[0].getVCenter() += weighedNormal.getVCenter() * fC1;
-                force[0].getVOrientation() += weighedNormal.getVOrientation() * fC1;
+                force[constraints[c1][i].index].getVCenter() += weighedNormal.getVCenter() * fC1;
+                force[constraints[c1][i].index].getVOrientation() += weighedNormal.getVOrientation() * fC1;
             }
         }
     }
@@ -181,20 +187,33 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::applyContactForce(
     VecDeriv& v_free = *mstate->getVfree();
     VecCoord& x_free = *mstate->getXfree();
 
-
-//	mstate->setX(x_free);
-//	mstate->setV(v_free);
-    x[0]=x_free[0];
-    v[0]=v_free[0];
-
-    // Euler integration... will be done in the "integrator" as soon as it exists !
+// Euler integration... will be done in the "integrator" as soon as it exists !
     dx.resize(v.size());
-    dx[0] = force[0] / (*massValue);
-    dx[0] *= dt;
-    v[0] += dx[0];
-    dx[0] *= dt;
-    x[0] += dx[0];
+
+    for (unsigned int i=0; i<dx.size(); i++)
+    {
+        x[i] = x_free[i];
+        v[i] = v_free[i];
+        dx[i] = force[i] / (*massValue);
+        dx[i] *= dt;
+        v[i] += dx[i];
+        dx[i] *= dt;
+        x[i] += dx[i];
+    }
+
 //	simulation::tree::MechanicalPropagateAndAddDxVisitor(dx).execute(this->getContext());
+
+
+////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
 
 }
 
