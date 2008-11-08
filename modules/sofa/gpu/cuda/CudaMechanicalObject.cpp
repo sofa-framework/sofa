@@ -24,7 +24,6 @@
 ******************************************************************************/
 #include "CudaTypes.h"
 #include "CudaMechanicalObject.inl"
-#include <sofa/component/collision/SphereModel.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/MappedObject.inl>
 
@@ -69,18 +68,18 @@ int MechanicalObjectCudaClass = core::RegisterObject("Supports GPU-side computat
 #endif // SOFA_GPU_CUDA_DOUBLE
 #endif // SOFA_DEV
         ;
-
+/*
 int CudaSphereModelClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::collision::TSphereModel<CudaVec3fTypes> >()
+.add< component::collision::TSphereModel<CudaVec3fTypes> >()
 //.add< component::collision::TSphereModel<CudaVec3f1Types> >()
 #ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::collision::TSphereModel<CudaVec3dTypes> >()
+.add< component::collision::TSphereModel<CudaVec3dTypes> >()
 //.add< component::collision::TSphereModel<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
 #endif // SOFA_DEV
-        ;
-
+;
+*/
 int MappedObjectCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::MappedObject<CudaVec3fTypes> >()
         .add< component::MappedObject<CudaVec3f1Types> >()
