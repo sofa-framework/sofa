@@ -16,7 +16,7 @@
 #include <iostream>
 #include <map>
 
-//#define DEBUG_CONVERGENCE
+
 
 namespace sofa
 {
@@ -32,8 +32,11 @@ using namespace sofa::defaulttype;
 using namespace helper::system::thread;
 using namespace core::componentmodel::behavior;
 
+
+
 MasterConstraintSolver::MasterConstraintSolver()
-    :_tol( initData(&_tol, 0.00001, "tolerance", "Tolerance of the Gauss-Seidel")),
+    :displayTime(initData(&displayTime, false, "displayTime","Display time for each important step of MasterConstraintSolver.")),
+     _tol( initData(&_tol, 0.00001, "tolerance", "Tolerance of the Gauss-Seidel")),
      _maxIt( initData(&_maxIt, 1000, "maxIterations", "Maximum number of iterations of the Gauss-Seidel"))
 {
 }
@@ -49,6 +52,17 @@ void MasterConstraintSolver::init()
 
 void MasterConstraintSolver::step ( double dt )
 {
+
+    CTime *timer;
+    double time = 0.0;
+    double timeScale = 1.0 / (double)CTime::getRefTicksPerSec();
+    if ( displayTime.getValue() )
+    {
+        timer = new CTime();
+        time = (double) timer->getTime();
+        std::cout<<"********* Start Iteration in MasterConstraintSolver::step *********" <<std::endl;
+    }
+
     bool debug =false;
     if (debug)
         std::cerr<<"MasterConstraintSolver::step is called"<<std::endl;
@@ -64,10 +78,9 @@ void MasterConstraintSolver::step ( double dt )
     if (debug)
         std::cerr<<"Free Motion is called"<<std::endl;
 
+    ///////////////////////////////////////////// FREE MOTION /////////////////////////////////////////////////////////////
     simulation::MechanicalBeginIntegrationVisitor beginVisitor(dt);
     context->execute(&beginVisitor);
-
-    // Free Motion
     for (simulation::tree::GNode::ChildIterator it = context->child.begin(); it != context->child.end(); ++it)
     {
         for (unsigned i=0; i<(*it)->solver.size(); i++)
@@ -80,10 +93,27 @@ void MasterConstraintSolver::step ( double dt )
     simulation::MechanicalVOpVisitor(dx_id).execute(context);
     simulation::MechanicalPropagateDxVisitor(dx_id).execute(context);
     simulation::MechanicalVOpVisitor(dx_id).execute(context);
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    if ( displayTime.getValue() )
+    {
+        std::cout << " >>>>> Begin display MasterContactSolver time" << std::endl;
+        std::cout<<" Free Motion " << ( (double) timer->getTime() - time)*timeScale <<" s" <<std::endl;
+        time = (double) timer->getTime();
+    }
 
     if (debug)
         std::cerr<<"computeCollision is called"<<std::endl;
+
+    ////////////////// COLLISION DETECTION///////////////////////////////////////////////////////////////////////////////////////////
     computeCollision();
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    if ( displayTime.getValue() )
+    {
+        std::cout<<" computeCollision " << ( (double) timer->getTime() - time)*timeScale <<" s" <<std::endl;
+        time = (double) timer->getTime();
+    }
 
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
@@ -91,6 +121,8 @@ void MasterConstraintSolver::step ( double dt )
         cc->resetContactForce();
     }
 
+
+    //////////////////////////////////////CONSTRAINTS RESOLUTION//////////////////////////////////////////////////////////////////////
     if (debug)
         std::cerr<<"constraints Matrix construction is called"<<std::endl;
 
@@ -134,9 +166,22 @@ void MasterConstraintSolver::step ( double dt )
         cc->getCompliance(&_W); // getDelassusOperator(_W) = H*C*Ht
     }
 
+    if ( displayTime.getValue() )
+    {
+        std::cout<<" build problem in the constraint space " << ( (double) timer->getTime() - time)*timeScale<<" s" <<std::endl;
+        time = (double) timer->getTime();
+    }
+
     if (debug)
         std::cerr<<"Gauss-Seidel solver is called"<<std::endl;
     gaussSeidelConstraint(numConstraints, _dFree.ptr(), _W.lptr(), _force.ptr(), _d.ptr(), _constraintsResolutions);
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    if ( displayTime.getValue() )
+    {
+        std::cout<<" Solve with GaussSeidel " <<( (double) timer->getTime() - time)*timeScale<<" s" <<std::endl;
+        time = (double) timer->getTime();
+    }
 
 //	helper::afficheLCP(_dFree.ptr(), _W.lptr(), _force.ptr(),  numConstraints);
 //	helper::afficheLCP(_dFree.ptr(), _W.lptr(), _result.ptr(),  numConstraints);
@@ -145,6 +190,8 @@ void MasterConstraintSolver::step ( double dt )
 
     if (debug)
         std::cout<<"constraintCorrections motion is called"<<std::endl;
+
+    ///////////////////////////////////////CORRECTIVE MOTION //////////////////////////////////////////////////////////////////////////
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
         core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
@@ -160,8 +207,15 @@ void MasterConstraintSolver::step ( double dt )
         cc->resetContactForce();
     }
 
+    if ( displayTime.getValue() )
+    {
+        std::cout<<" contactCorrections" <<( (double) timer->getTime() - time)*timeScale <<" s" <<std::endl;
+        std::cout << "<<<<<< End display MasterContactSolver time." << std::endl;
+    }
+
     simulation::MechanicalEndIntegrationVisitor endVisitor(dt);
     context->execute(&endVisitor);
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, double** w, double* force,
@@ -225,7 +279,7 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
 
         if(error < tolerance && i>0) // do not stop at the first iteration (that is used for initial guess computation)
         {
-//			std::cout<<" ------------------ convergence after "<<i<<" iterations ------------------"<<std::endl;
+            std::cout<<" ------------------ convergence after "<<i<<" iterations ------------------"<<std::endl;
             convergence = true;
             break;
         }
@@ -254,7 +308,7 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
     }
 
     if(!convergence)
-        std::cerr << "No convergence in gaussSeidelConstraint : error = " << error << std::endl;
+        std::cerr << "------------------  No convergence in gaussSeidelConstraint : error = " << error <<" ------------------" <<std::endl;
 }
 
 

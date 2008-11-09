@@ -144,12 +144,14 @@ void ImplicitSurface::projectPointonSurface(defaulttype::Vec3d& point, int i)
     int it;
     for (it=0; it<10; it++)
     {
+        if (value*value < 0.0000000001)
+            break;
+
         grad = getGradient(point, i);
         point -= grad * (value / dot(grad,grad) );
         value = getValue(point, i);
 
-        if (value*value < 0.0000000001)
-            break;
+
     }
 
     if (it==10)

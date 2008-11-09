@@ -109,6 +109,10 @@ public:
 
     virtual void init();
 
+    Data<bool> displayTime;
+    Data<double> _tol;
+    Data<int> _maxIt;
+
 private:
     void gaussSeidelConstraint(int dim, double* dfree, double** w, double* force, double* d, std::vector<core::componentmodel::behavior::ConstraintResolution*>& res);
 
@@ -120,8 +124,7 @@ private:
 
     std::vector<core::componentmodel::behavior::ConstraintResolution*> _constraintsResolutions;
 
-    Data<double> _tol;
-    Data<int> _maxIt;
+
 };
 
 } // namespace odesolver
