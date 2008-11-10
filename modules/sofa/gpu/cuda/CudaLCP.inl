@@ -469,7 +469,7 @@ void CudaLCP_FullKernel_V9f(int dim,int itMax,float tol,const void * m,int mP,co
         dim3 threads(dim_n,dim_n);
         dim3 grid(1,V9_NBPROC);
 
-        printf("\nallocSize %d maxSize = %d blocsize= %d\n",alloc,V9_SZMAX,dim_n);
+        //printf("\nallocSize %d maxSize = %d blocsize= %d\n",alloc,V9_SZMAX,dim_n);
 
         CudaLCP_FullKernel_V9_kernel<<< grid, threads, alloc *  sizeof(float)>>>(dim,dim_n,V9_NBPROC*2,V9_NBPROC*itMax,tol,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share);
     }
