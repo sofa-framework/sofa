@@ -85,6 +85,23 @@ public:
     /// Method called at each topological changes propagation which comes from the INPUT topology to adapt the OUTPUT topology :
     virtual void updateTopologicalMappingTopDown();
 
+    virtual unsigned int getGlobIndex(unsigned int ind)
+    {
+        if(ind<pointSource.size())
+        {
+            return pointSource[ind].second;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    virtual unsigned int getFromIndex(unsigned int ind)
+    {
+        return ind;
+    }
+
     /// Pre-construction check method called by ObjectFactory.
     ///
     /// This implementation read the object1 and object2 attributes and check

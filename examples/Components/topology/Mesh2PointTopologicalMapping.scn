@@ -11,14 +11,13 @@
 		<Object type="FixedConstraint" name="FixedConstraint" indices="3 39 64" /> 
 		<Object type="DiagonalMass" massDensity="1" name="computed using mass density"/>
 		<Object type="TetrahedralCorotationalFEMForceField" name="FEM" youngModulus="500" poissonRatio="0.3" computeGlobalMatrix="false" method="large"/>  
-		<Object type="Triangle" />
 		<Node name="PointSetTopology">
 			<Object type="PointSetTopologyContainer" name="Container2"/>
 			<Object type="PointSetTopologyModifier"/>
-			<Object type="Mesh2PointTopologicalMapping" object1="Container1" object2="Container2" pointBaryCoords="0 0 0" edgeBaryCoords="0.5 0 0" tetraBaryCoords="0.33 0.33 0.33" />
+			<Object type="Mesh2PointTopologicalMapping" object1="Container1" object2="Container2" tetraBaryCoords="0.25 0.25 0.25" />
 			<Object type="MechanicalObject" />
- 			<Object type="Mesh2PointMechanicalMapping"/>
-			<Object type="Point"/>
+			<Object type="Mesh2PointMechanicalMapping"/>
+			<Object type="SphereModel" radius="0.25" />
 		</Node>
 	</Node>
 </Node>
