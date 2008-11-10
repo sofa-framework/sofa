@@ -179,12 +179,16 @@ protected:
     Data< std::string > object1;
     Data< std::string > object2;
 
-    PointData<int> pointMappedFromPoint; ///< each point of the input topology is mapped to the same point.
-    EdgeData<int> pointMappedFromEdge; ///< each edge of the input topology is mapped to his midpoint.
-    TetrahedronData< fixed_array<int, 8> > tetrasMappedFromTetra; ///< each Tetrahedron of the input topology is mapped to the 8 tetrahedrons in which it can be divided.
+    PointData<int> pointMappedFromPoint; ///< Each point of the input topology is mapped to the same point.
+    EdgeData<int> pointMappedFromEdge; ///< Each edge of the input topology is mapped to his midpoint.
+    TetrahedronData< fixed_array<int, 8> > tetrasMappedFromTetra; ///< Each Tetrahedron of the input topology is mapped to the 8 tetrahedrons in which it can be divided.
 
     PointData<int> pointSource; ///< Which input topology element map to a given point in the output topology : 0 -> none, > 0 -> point index + 1, < 0 , - edge index -1
     TetrahedronData<int> tetraSource; ///<Which tetra from the input topology map to a given tetra in the output topology (-1 if none)
+
+    DataPtr< helper::vector<int> > d_pointMappedFromPoint; ///< Show d_pointMappedFromPoint in the gui for debug
+    DataPtr< helper::vector<int> > d_pointMappedFromEdge; ///< Show d_pointMappedFromEdge in the gui for debug
+    DataPtr< helper::vector<int> > d_pointSource; ///< show d_pointSource in the gui for debug
 
     void swapOutputPoints(int i1, int i2);
     void removeOutputPoints( const sofa::helper::vector<unsigned int>& tab );
