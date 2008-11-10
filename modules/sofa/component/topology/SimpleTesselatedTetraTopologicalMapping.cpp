@@ -58,7 +58,10 @@ int SimpleTesselatedTetraTopologicalMappingClass = core::RegisterObject ( "Speci
 SimpleTesselatedTetraTopologicalMapping::SimpleTesselatedTetraTopologicalMapping ( In* from, Out* to )
     : TopologicalMapping ( from, to ),
       object1 ( initData ( &object1, std::string ( "../.." ), "object1", "First object to map" ) ),
-      object2 ( initData ( &object2, std::string ( ".." ), "object2", "Second object to map" ) )
+      object2 ( initData ( &object2, std::string ( ".." ), "object2", "Second object to map" ) ),
+      d_pointMappedFromPoint( initDataPtr ( &d_pointMappedFromPoint, (sofa::helper::vector<int>*)&pointMappedFromPoint, "pointMappedFromPoint", "Each point of the input topology is mapped to the same point")),
+      d_pointMappedFromEdge( initDataPtr ( &d_pointMappedFromEdge, (sofa::helper::vector<int>*)&pointMappedFromEdge, "pointMappedFromEdge", "Each edge of the input topology is mapped to his midpoint")),
+      d_pointSource( initDataPtr ( &d_pointSource, (sofa::helper::vector<int>*)&pointSource, "pointSource", "Which input topology element map to a given point in the output topology : 0 -> none, > 0 -> point index + 1, < 0 , - edge index -1"))
 {
 }
 
@@ -438,9 +441,9 @@ void SimpleTesselatedTetraTopologicalMapping::swapInputPoints(int i1, int i2)
     int i1Map = pointMappedFromPoint[i1];
     int i2Map = pointMappedFromPoint[i2];
     pointMappedFromPoint[i1] = i2Map;
-    if (i2Map != -1) pointSource[i2Map] = i1;
+    if (i2Map != -1) pointSource[i2Map] = i1+1;
     pointMappedFromPoint[i2] = i1Map;
-    if (i1Map != -1) pointSource[i1Map] = i2;
+    if (i1Map != -1) pointSource[i1Map] = i2+1;
 }
 
 void SimpleTesselatedTetraTopologicalMapping::removeInputPoints( const sofa::helper::vector<unsigned int>& index )
