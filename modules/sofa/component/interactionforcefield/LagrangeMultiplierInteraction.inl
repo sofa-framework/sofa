@@ -75,7 +75,7 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::init()
 
 
     // nouveau mécanisme: plusieurs contraintes
-    test->get<baseConstraint>(&list_base_constraint, core::objectmodel::BaseContext::SearchDown);
+    test->get<core::componentmodel::behavior::BaseConstraint>(&list_base_constraint, core::objectmodel::BaseContext::SearchDown);
 
 
     // debug //

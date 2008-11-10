@@ -90,9 +90,8 @@ typedef QScrollView Q3ScrollView;
 
 
 
-ModifyObject::ModifyObject(void *Id_, core::objectmodel::Base* node_clicked, Q3ListViewItem* item_clicked,  QWidget* parent_, const char* name, bool, Qt::WFlags // f
-                          ):
-    parent(parent_), node(NULL), Id(Id_),visualContentModified(false)
+ModifyObject::ModifyObject(void *Id_, core::objectmodel::Base* node_clicked, Q3ListViewItem* item_clicked,  QWidget* parent_, const char* name, bool, Qt::WFlags /*f*/ )
+    : parent(parent_), node(NULL), Id(Id_),visualContentModified(false)
 {
     //Title of the Dialog
     setCaption(name);
@@ -108,10 +107,7 @@ ModifyObject::ModifyObject(void *Id_, core::objectmodel::Base* node_clicked, Q3L
     setNode(node_clicked, item_clicked);
     connect ( this, SIGNAL( objectUpdated() ), parent_, SLOT( redraw() ));
     connect ( this, SIGNAL( dialogClosed(void *) ) , parent_, SLOT( modifyUnlock(void *)));
-
-
 }
-
 
 //Set the default file
 void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem* item_clicked)
