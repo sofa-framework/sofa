@@ -47,8 +47,8 @@ class SphereModel;
 class Sphere : public core::TCollisionElementIterator<SphereModel>
 {
 public:
-    typedef SReal Real;
-    typedef Vector3	Coord;
+    typedef SReal   Real;
+    typedef Vector3 Coord;
 
     Sphere(SphereModel* model, int index);
 
@@ -58,7 +58,7 @@ public:
     const Coord& p() const;
     const Coord& pFree() const;
     const Coord& v() const;
-    const SReal r() const;
+    Real r() const;
 };
 
 class SphereModel : public core::CollisionModel
@@ -133,7 +133,7 @@ inline const Sphere::Coord& Sphere::pFree() const { return (*model->mstate->getX
 
 inline const Sphere::Coord& Sphere::v() const { return (*model->mstate->getV())[index]; }
 
-inline const Sphere::Real Sphere::r() const { return (Real) model->getRadius((unsigned)index); }
+inline Sphere::Real Sphere::r() const { return (Real) model->getRadius((unsigned)index); }
 
 } // namespace collision
 

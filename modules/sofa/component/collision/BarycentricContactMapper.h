@@ -233,7 +233,7 @@ public:
 
     MMechanicalState* createMapping(const char* name="contactPoints");
 
-    void resize(int size)
+    void resize(int /*size*/)
     {
     }
 

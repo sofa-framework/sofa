@@ -55,9 +55,10 @@ class BaseMaterial
 public:
 
     BaseMaterial();
+    virtual ~BaseMaterial() {}
 
-    virtual void computeStress (Vector3& /*Stress*/, Vector3 /*Strain*/, int /*elementIndex*/) {};
-    virtual void computeDStress (Vector3& /*dStress*/, Vector3 /*dStrain*/) {};
+    virtual void computeStress (Vector3& /*Stress*/, Vector3 /*Strain*/, int /*elementIndex*/) {}
+    virtual void computeDStress (Vector3& /*dStress*/, Vector3 /*dStrain*/) {}
 };
 
 } // namespace material
