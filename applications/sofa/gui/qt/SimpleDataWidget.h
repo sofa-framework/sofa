@@ -33,6 +33,7 @@
 //#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/fixed_array.h>
 #include "WFloatLineEdit.h"
+#include <limits.h>
 
 namespace sofa
 {

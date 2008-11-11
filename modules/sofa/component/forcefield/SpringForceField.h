@@ -57,12 +57,12 @@ public:
     Real  initpos; ///< rest length of the spring
 
     LinearSpring(int m1=0, int m2=0, double ks=0.0, double kd=0.0, double initpos=0.0)
-        : m1((Real)m1), m2((Real)m2), ks((Real)ks), kd((Real)kd), initpos((Real)initpos)
+        : m1(m1), m2(m2), ks((Real)ks), kd((Real)kd), initpos((Real)initpos)
     {
     }
 
     LinearSpring(int m1, int m2, float ks, float kd=0, float initpos=0)
-        : m1((Real)m1), m2((Real)m2), ks((Real)ks), kd((Real)kd), initpos((Real)initpos)
+        : m1(m1), m2(m2), ks((Real)ks), kd((Real)kd), initpos((Real)initpos)
     {
     }
 
