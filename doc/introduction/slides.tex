@@ -357,6 +357,35 @@ Sofa Visitors:
 \end{frame}
 
 
+\begin{frame}[fragile]
+ \frametitle{Abstract state vectors}
+\begin{itemize}
+ \item Reserved indices are used to denote x,v,f,dx
+ \item Auxiliary vectors can be used, e.g. in Runge-Kutta2:
+\end{itemize}
+\begin{code_cpp}
+    // Allocate auxiliary vectors 
+    MultiVector acc(this, VecId::V_DERIV);
+    MultiVector newX(this, VecId::V_COORD);
+    MultiVector newV(this, VecId::V_DERIV);
+
+    // Compute state derivative. vel is the derivative of pos  
+    computeAcc (startTime, acc, pos, vel); // acc is the derivative of vel 
+
+    // Perform a dt/2 step along the derivative
+    newX = pos;
+    newX.peq(vel, dt/2.); // newX = pos + vel dt/2
+    newV = vel;
+    newV.peq(acc, dt/2.); // newV = vel + acc dt/2
+
+    // compute the midpoint derivative
+    computeAcc ( startTime+dt/2., acc, newX, newV);
+    
+    // use the midpoint derivative for the whole time step
+    pos.peq(newV,dt);
+    vel.peq(acc,dt);
+\end{code_cpp}
+\end{frame}
 
 \begin{frame}[fragile]
  \frametitle{Degrees of Freedom (DOF)}
@@ -385,7 +414,7 @@ class Vec3fTypes
 
 
 \begin{frame}
- \frametitle{Abstract state vectors}
+ \frametitle{State vectors containers}
 \begin{itemize}
  \item Due to different DataTypes, the state vectors (x,v,f,a,aux,...) are scattered in the MechanicalObjects
  %\begin{center}
@@ -398,41 +427,52 @@ class Vec3fTypes
 
 \end{frame}
 
-\begin{frame}[fragile]
- \frametitle{Using state vectors}
-\begin{itemize}
- \item Reserved indices are used to denote x,v,f,dx
- \item Auxiliary vectors can be used, e.g. in the beginning of Runge-Kutta2:
-\end{itemize}
-\begin{code_cpp}
-    // Allocate auxiliary vectors 
-    MultiVector acc(this, VecId::V_DERIV);
-    MultiVector newX(this, VecId::V_COORD);
-    MultiVector newV(this, VecId::V_DERIV);
-
-    // Compute state derivative. vel is the derivative of pos  
-    computeAcc (startTime, acc, pos, vel); // acc is the derivative of vel 
-
-    // Perform a dt/2 step along the derivative
-    newX = pos;
-    newX.peq(vel, dt/2.); // newX = pos + vel dt/2
-    newV = vel;
-    newV.peq(acc, dt/2.); // newV = vel + acc dt/2
-\end{code_cpp}
-\end{frame}
-
 
 
 \begin{frame}
- \frametitle{Algorithms}
-At each time step:
-\begin{enumerate}
- \item Collisions are modeled by springs using a CollisionVisitor
- \item Differential Equation solvers update x and v 
- \item Mappings propagate the new state to all the layers and external buffers (rendering)
-\end{enumerate}
-ODE solvers and collision modeling modules are easily customizable.
+ \frametitle{Control}
+Simulation::init()
+\begin{itemize}
+ \item InitVisitor
+\end{itemize}
+
+
+Simulation::animate()
+\begin{itemize}
+ \item AnimateVisitor::processNodeTopDown
+	\begin{itemize}
+	 \item if MasterSolver:
+		\begin{itemize}
+		 \item process MasterSolver
+		 \item return
+		\end{itemize}
+         \item process CollisionPipeline
+	 \item if OdeSolvers
+	\begin{itemize}
+	 \item process each OdeSolver
+	 \item propagate position and velocity
+	 \item return
+	\end{itemize}
+
+	\item traverse children nodes
+		 
+	 
+	\end{itemize}
+
+\end{itemize}
 \end{frame}
+
+
+% \begin{frame}
+%  \frametitle{Algorithms}
+% At each time step:
+% \begin{enumerate}
+%  \item Collisions are modeled by springs using a CollisionVisitor
+%  \item Differential Equation solvers update x and v 
+%  \item Mappings propagate the new state to all the layers and external buffers (rendering)
+% \end{enumerate}
+% ODE solvers and collision modeling modules are easily customizable.
+% \end{frame}
 
 
 \begin{frame}
@@ -445,16 +485,14 @@ Strengths:
 \end{itemize}
 Weaknesses:
 \begin{itemize}
- \item Documentation is not complete 
- \item Main loop is not yet customizable 
- \item Constraint-based methods are difficult to implement
- \item Still a lot to do: friction, haptics, faster collision detection...
+ \item Documentation
+ \item Multiple control layers (need to simplify this)
 \end{itemize}
-Future work:
+Ongoing work:
 \begin{itemize}
- \item get rid of weaknesses
- \item parallelisation (clusters, and more GPU)
- \item easy debugging
+ \item Parallelisation (clusters, and more GPU)
+ \item Constraint-based methods 
+ \item Traces and profiling
 \end{itemize}
 
 \end{frame}
