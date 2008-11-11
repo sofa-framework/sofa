@@ -270,7 +270,7 @@ public:
         w = new QLineEdit(parent);
         if (w == NULL) return false;
         std::string s = data->getValueString();
-        w->setText(s);
+        w->setText(QString(s.c_str()));
         if (this->readOnly)
             w->setEnabled(false);
         else
@@ -280,7 +280,7 @@ public:
     virtual void readFromData()
     {
         std::string s = data->getValueString();
-        w->setText(s);
+        w->setText(QString(s.c_str()));
         modified = false;
     }
     virtual bool isModified() { return modified; }
