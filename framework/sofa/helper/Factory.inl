@@ -67,6 +67,27 @@ TObject* Factory<TKey, TObject, TArgument>::createObject(Key key, Argument arg)
 }
 
 template <typename TKey, class TObject, typename TArgument>
+TObject* Factory<TKey, TObject, TArgument>::createAnyObject(Argument arg)
+{
+    Object* object;
+    Creator* creator;
+    typename std::multimap<Key, Creator*>::iterator it = registry.begin();
+    typename std::multimap<Key, Creator*>::iterator end = registry.end();
+    while (it != end)
+    {
+        creator = (*it).second;
+        object = creator->createInstance(arg);
+        if (object != NULL)
+        {
+            return object;
+        }
+        ++it;
+    }
+//	std::cerr<<"Object type "<<key<<" creation failed."<<std::endl;
+    return NULL;
+}
+
+template <typename TKey, class TObject, typename TArgument>
 Factory<TKey, TObject, TArgument>* Factory<TKey, TObject, TArgument>::getInstance()
 {
     static Factory<Key, Object, Argument> instance;

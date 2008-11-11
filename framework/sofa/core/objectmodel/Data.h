@@ -50,11 +50,70 @@ namespace objectmodel
 {
 
 /**
- *  \brief Pointer to data, readable and writable from/to a string.
+ *  \brief Abstract templated data, readable and writable from/to a string.
  *
  */
 template < class T = void* >
-class Data : public sofa::core::objectmodel::BaseData
+class TData : public sofa::core::objectmodel::BaseData
+{
+public:
+    typedef T value_type;
+
+    TData( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false )
+        : BaseData(helpMsg, isDisplayed, isReadOnly)
+    {
+    }
+
+    virtual ~TData()
+    {}
+
+    inline void printValue(std::ostream& out) const;
+    inline std::string getValueString() const;
+    inline std::string getValueTypeString() const; // { return std::string(typeid(m_value).name()); }
+
+    const T& virtualGetValue() const
+    {
+        return value();
+    }
+
+    void virtualSetValue(const T& v)
+    {
+        m_isSet = true;
+        value() = v;
+    }
+
+    /** Try to read argument value from an input stream.
+    Return false if failed
+     */
+    virtual bool read( std::string& s )
+    {
+        if (s.empty())
+            return false;
+        //std::cerr<<"Field::read "<<s.c_str()<<std::endl;
+        std::istringstream istr( s.c_str() );
+        istr >> value();
+        if( istr.fail() )
+        {
+            return false;
+        }
+        else
+        {
+            m_isSet = true;
+            return true;
+        }
+    }
+
+protected:
+    virtual const T& value() const = 0;
+    virtual T& value() = 0;
+};
+
+/**
+ *  \brief Container of data, readable and writable from/to a string.
+ *
+ */
+template < class T = void* >
+class Data : public TData<T>
 {
 public:
 
@@ -62,11 +121,9 @@ public:
     \param helpMsg help on the field
      */
     Data( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false )
-        : BaseData(helpMsg)
+        : TData<T>(helpMsg, isDisplayed, isReadOnly)
         , m_value(T())// BUGFIX (Jeremie A.): Force initialization of basic types to 0 (bool, int, float, etc).
     {
-        m_isDisplayed = isDisplayed;
-        m_isReadOnly = isReadOnly;
     }
 
     /** Constructor
@@ -74,23 +131,17 @@ public:
     \param helpMsg help on the field
      */
     Data( const T& value, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false  )
-        : BaseData(helpMsg)
+        : TData<T>(helpMsg, isDisplayed, isReadOnly)
         , m_value(value)
     {
-        m_isDisplayed=isDisplayed;
-        m_isReadOnly=isReadOnly;
     }
 
     virtual ~Data()
     {}
 
-    inline void setHelpMsg( const char* msg ) { this->help = msg; }
-    inline void printValue(std::ostream& out) const ;
-    inline std::string getValueString() const ;
-    inline std::string getValueTypeString() const; // { return std::string(typeid(m_value).name()); }
     inline T* beginEdit()
     {
-        m_isSet = true;
+        this->m_isSet = true;
         return &m_value;
     }
     inline void endEdit()
@@ -125,40 +176,19 @@ public:
     {
         this->setValue(value);
     }
-
-    /** Try to read argument value from an input stream.
-    Return false if failed
-     */
-    virtual bool read( std::string& s )
-    {
-        if (s.empty())
-            return false;
-        //std::cerr<<"Field::read "<<s.c_str()<<std::endl;
-        std::istringstream istr( s.c_str() );
-        istr >> m_value;
-        if( istr.fail() )
-        {
-            return false;
-        }
-        else
-        {
-            m_isSet = true;
-            return true;
-        }
-    }
 protected:
     /// Value
     T m_value;
-
-
+    const T& value() const { return m_value; }
+    T& value() { return m_value; }
 };
 
 /// Specialization for reading strings
 template<>
 inline
-bool Data<std::string>::read( std::string& str )
+bool TData<std::string>::read( std::string& str )
 {
-    m_value = str;
+    value() = str;
     m_isSet = true;
     return true;
 }
@@ -166,16 +196,16 @@ bool Data<std::string>::read( std::string& str )
 /// Specialization for reading booleans
 template<>
 inline
-bool Data<bool>::read( std::string& str )
+bool TData<bool>::read( std::string& str )
 {
     if (str.empty())
         return false;
     if (str[0] == 'T' || str[0] == 't')
-        m_value = true;
+        value() = true;
     else if (str[0] == 'F' || str[0] == 'f')
-        m_value = false;
+        value() = false;
     else if ((str[0] >= '0' && str[0] <= '9') || str[0] == '-')
-        m_value = (atoi(str.c_str()) != 0);
+        value() = (atoi(str.c_str()) != 0);
     else return false;
     m_isSet = true;
     return true;
@@ -184,28 +214,27 @@ bool Data<bool>::read( std::string& str )
 /// General case for printing default value
 template<class T>
 inline
-void Data<T>::printValue( std::ostream& out=std::cout ) const
+void TData<T>::printValue( std::ostream& out=std::cout ) const
 {
-    out << m_value << " ";
+    out << value() << " ";
 }
 
 /// General case for printing default value
 template<class T>
 inline
-std::string Data<T>::getValueString() const
+std::string TData<T>::getValueString() const
 {
     std::ostringstream out;
-    out << m_value;
+    out << value();
     return out.str();
 }
 
 template<class T>
 inline
-std::string Data<T>::getValueTypeString() const
+std::string TData<T>::getValueTypeString() const
 {
-    return BaseData::typeName(&m_value);
+    return BaseData::typeName(&value());
 }
-
 
 } // namespace objectmodel
 

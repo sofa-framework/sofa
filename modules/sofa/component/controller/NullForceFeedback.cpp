@@ -41,7 +41,7 @@ void NullForceFeedback::init()
     cout << "init NullForceFeedback" << driver << " done " << std::endl;
 };
 
-void NullForceFeedback::computeForce(double x, double y, double z, double u, double v, double w, double q, double& fx, double& fy, double& fz)
+void NullForceFeedback::computeForce(double /*x*/, double /*y*/, double /*z*/, double /*u*/, double /*v*/, double /*w*/, double /*q*/, double& fx, double& fy, double& fz)
 {
     fx = fy = fz = 0.0;
 };

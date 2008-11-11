@@ -55,9 +55,9 @@ public:
      *  \param h help
      *  \param m true iff the argument is mandatory
      */
-    BaseData( const char* h)
-        : help(h)
-        , m_isSet(false), m_isDisplayed(true), m_isReadOnly(false)
+    BaseData( const char* h, bool isDisplayed=true, bool isReadOnly=false )
+        : help(h), group(""), widget("")
+        , m_isSet(false), m_isDisplayed(isDisplayed), m_isReadOnly(isReadOnly)
     {}
 
     /// Base destructor: does nothing.
@@ -75,23 +75,48 @@ public:
     /// Print the value type of the associated variable
     virtual std::string getValueTypeString() const=0;
 
-    /// Help message
-    const char* help;
+    /// Get help message
+    const char* getHelp() const { return help; }
+
+    /// Set help message
+    void setHelp(const char* val) { help = val; }
+
+    /// @deprecated Set help message
+    void setHelpMsg(const char* val) { help = val; }
+
+    /// Get group
+    const char* getGroup() const { return group; }
+
+    /// Set group
+    void setGroup(const char* val) { group = val; }
+
+    /// Get widget
+    const char* getWidget() const { return widget; }
+
+    /// Set widget
+    void setWidget(const char* val) { widget = val; }
 
     /// True if the value has been modified
-    inline bool isSet() const { return m_isSet; }
+    bool isSet() const { return m_isSet; }
 
     /// True if the Data has to be displayed in the GUI
-    inline bool isDisplayed() const { return m_isDisplayed; }
+    bool isDisplayed() const { return m_isDisplayed; }
 
     /// True if the Data will be readable only in the GUI
-    inline bool isReadOnly() const { return m_isReadOnly; }
+    bool isReadOnly() const { return m_isReadOnly; }
 
     /// Can dynamically change the status of a Data, by making it appear or disappear
     void setDisplayed(bool b) {m_isDisplayed = b;}
     /// Can dynamically change the status of a Data, by making it readOnly
     void setReadOnly(bool b) {m_isReadOnly = b;}
 protected:
+
+    /// Help message
+    const char* help;
+    /// group
+    const char* group;
+    /// widget
+    const char* widget;
     /// True if a value has been read on the command line
     bool m_isSet;
     /// True if the Data will be displayed in the GUI

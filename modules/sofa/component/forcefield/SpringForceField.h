@@ -45,6 +45,42 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
+/// This class contains the description of one linear spring
+template<class T>
+class LinearSpring
+{
+public:
+    typedef T Real;
+    int     m1, m2;  ///< the two extremities of the spring: masses m1 and m2
+    Real  ks;      ///< spring stiffness
+    Real  kd;      ///< damping factor
+    Real  initpos; ///< rest length of the spring
+
+    LinearSpring(int m1=0, int m2=0, double ks=0.0, double kd=0.0, double initpos=0.0)
+        : m1((Real)m1), m2((Real)m2), ks((Real)ks), kd((Real)kd), initpos((Real)initpos)
+    {
+    }
+
+    LinearSpring(int m1, int m2, float ks, float kd=0, float initpos=0)
+        : m1((Real)m1), m2((Real)m2), ks((Real)ks), kd((Real)kd), initpos((Real)initpos)
+    {
+    }
+
+    inline friend std::istream& operator >> ( std::istream& in, LinearSpring<Real>& s )
+    {
+        in>>s.m1>>s.m2>>s.ks>>s.kd>>s.initpos;
+        return in;
+    }
+
+    inline friend std::ostream& operator << ( std::ostream& out, const LinearSpring<Real>& s )
+    {
+        out<<s.m1<<" "<<s.m2<<" "<<s.ks<<" "<<s.kd<<" "<<s.initpos<<"\n";
+        return out;
+    }
+
+};
+
+
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template<class DataTypes>
 class SpringForceFieldInternalData
@@ -52,7 +88,7 @@ class SpringForceFieldInternalData
 public:
 };
 
-/** Define a set of springs between particles */
+/// Set of simple springs between particles
 template<class DataTypes>
 class SpringForceField : public core::componentmodel::behavior::PairInteractionForceField<DataTypes>, public virtual core::objectmodel::BaseObject
 {
@@ -65,32 +101,8 @@ public:
     typedef typename Coord::value_type Real;
     typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
 
-    class Spring
-    {
-    public:
-        int     m1, m2;  ///< the two extremities of the spring: masses m1 and m2
-        SReal  ks;      ///< spring stiffness
-        SReal  kd;      ///< damping factor
-        SReal  initpos; ///< rest length of the spring
+    typedef LinearSpring<Real> Spring;
 
-        Spring(int m1=0, int m2=0, SReal ks=0.0, SReal kd=0.0, SReal initpos=0.0)
-            : m1(m1), m2(m2), ks(ks), kd(kd), initpos(initpos)
-        {
-        }
-
-        inline friend std::istream& operator >> ( std::istream& in, Spring& s )
-        {
-            in>>s.m1>>s.m2>>s.ks>>s.kd>>s.initpos;
-            return in;
-        }
-
-        inline friend std::ostream& operator << ( std::ostream& out, const Spring& s )
-        {
-            out<<s.m1<<" "<<s.m2<<" "<<s.ks<<" "<<s.kd<<" "<<s.initpos<<"\n";
-            return out;
-        }
-
-    };
 protected:
 
     SReal m_potentialEnergy;

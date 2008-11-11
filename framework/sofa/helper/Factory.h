@@ -82,12 +82,18 @@ public:
     }
 
     Object* createObject(Key key, Argument arg);
+    Object* createAnyObject(Argument arg);
 
     static Factory<Key, Object, Argument>* getInstance();
 
     static Object* CreateObject(Key key, Argument arg)
     {
         return getInstance()->createObject(key, arg);
+    }
+
+    static Object* CreateAnyObject(Argument arg)
+    {
+        return getInstance()->createAnyObject(arg);
     }
 
     typedef typename std::multimap<Key, Creator*>::iterator iterator;

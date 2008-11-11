@@ -41,6 +41,9 @@ HEADERS += viewer/SofaViewer.h \
            RealGUI.h \
            DisplayFlagWidget.h \
            ModifyObject.h \
+           SimpleDataWidget.h \
+           StructDataWidget.h \
+           TableDataWidget.h \
            WFloatLineEdit.h \
            FileManagement.h
 
@@ -54,6 +57,9 @@ SOURCES += Main.cpp \
            RealGUI.cpp \
            DisplayFlagWidget.cpp \
            ModifyObject.cpp \
+           SimpleDataWidget.cpp \
+           StructDataWidget.cpp \
+           TableDataWidget.cpp \
            WFloatLineEdit.cpp \
            FileManagement.cpp
 

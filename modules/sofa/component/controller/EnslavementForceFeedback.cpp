@@ -49,7 +49,7 @@ void EnslavementForceFeedback::init()
     context->getTreeObjects<core::CollisionModel>(&collisionModels);
 }
 
-void EnslavementForceFeedback::computeForce(double x, double y, double z, double u, double v, double w, double q, double& fx, double& fy, double& fz)
+void EnslavementForceFeedback::computeForce(double x, double y, double z, double /*u*/, double /*v*/, double /*w*/, double /*q*/, double& fx, double& fy, double& fz)
 {
     if (f_activate.getValue())
     {

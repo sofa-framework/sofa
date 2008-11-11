@@ -327,12 +327,12 @@ bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
                         out << "<span class=\"field-value\">"<<xmlencode(f->getValueString())<<"</span>";
                         out << "</td>";
                         out << "</tr>\n";
-                        if (f->help && *f->help && strncmp(f->help,"TODO",4))
+                        if (f->getHelp() && *f->getHelp() && strncmp(f->getHelp(),"TODO",4))
                         {
                             out << "<tr class=\"sofa-field-description\">";
                             out << "<td></td>";
                             out << "<td class=\"sofa-field-description\" colspan=\""<<nbcol - 1<<"\">";
-                            out << "<div class=\"field-description\">"<<f->help<<"</div>";
+                            out << "<div class=\"field-description\">"<<f->getHelp()<<"</div>";
                             out << "</td>";
                             out << "</tr>\n";
                         }
