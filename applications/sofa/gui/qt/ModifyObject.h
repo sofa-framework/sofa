@@ -226,7 +226,7 @@ public:
     {
         readFromData();
     }
-
+    virtual unsigned int sizeWidget() {return 1;}
     //
     // Factory related code
     //

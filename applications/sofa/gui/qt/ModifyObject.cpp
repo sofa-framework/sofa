@@ -57,7 +57,7 @@
 #endif
 
 
-#define WIDGET_BY_TAB 10
+#define WIDGET_BY_TAB 15
 #define SIZE_TEXT     75
 
 namespace sofa
@@ -360,6 +360,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 {
                     //std::cout << "WIDGET created for data " << dwarg.name << " : " << dwarg.data->getValueTypeString() << std::endl;
                     dataWidgets[dwarg.data] = dw;
+                    counterWidget+=dw->sizeWidget();
                 }
                 //********************************************************************************************************//
                 //Types that needs a QTable: vector of elements

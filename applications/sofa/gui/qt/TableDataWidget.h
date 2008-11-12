@@ -520,6 +520,7 @@ public:
     typedef sofa::core::objectmodel::TData<T> MyData;
 public:
     TableDataWidget(MyData* d) : Inherit(d) {}
+    virtual unsigned int sizeWidget() {return 3;}
 };
 
 
