@@ -206,6 +206,7 @@ public:
     typedef sofa::core::objectmodel::TData<T> MyData;
 public:
     GraphDataWidget(MyData* d) : Inherit(d) {}
+    virtual unsigned int sizeWidget() {return 3;}
 };
 
 } // namespace qt
