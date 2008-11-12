@@ -52,10 +52,6 @@
 
 #include <qwt_legend.h>
 
-#if !defined(INFINITY)
-#define INFINITY 9.0e10
-#endif
-
 
 #define WIDGET_BY_TAB 15
 #define SIZE_TEXT     75

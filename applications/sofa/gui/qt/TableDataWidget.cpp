@@ -95,6 +95,7 @@ Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<fixed_array<uns
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<fixed_array<int,8> > > > DWClass_vectorA8i("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<fixed_array<unsigned int,8> > > > DWClass_vectorA8u("default",true);
 
+#ifndef WIN32
 Creator<DataWidgetFactory, TableDataWidget< std::vector<fixed_array<int,1> > > > DWClass_stdvectorA1i("default",true);
 Creator<DataWidgetFactory, TableDataWidget< std::vector<fixed_array<unsigned int,1> > > > DWClass_stdvectorA1u("default",true);
 Creator<DataWidgetFactory, TableDataWidget< std::vector<fixed_array<int,2> > > > DWClass_stdvectorA2i("default",true);
@@ -107,6 +108,7 @@ Creator<DataWidgetFactory, TableDataWidget< std::vector<fixed_array<int,6> > > >
 Creator<DataWidgetFactory, TableDataWidget< std::vector<fixed_array<unsigned int,6> > > > DWClass_stdvectorA6u("default",true);
 Creator<DataWidgetFactory, TableDataWidget< std::vector<fixed_array<int,8> > > > DWClass_stdvectorA8i("default",true);
 Creator<DataWidgetFactory, TableDataWidget< std::vector<fixed_array<unsigned int,8> > > > DWClass_stdvectorA8u("default",true);
+#endif
 
 Creator<DataWidgetFactory, TableDataWidget< sofa::defaulttype::ResizableExtVector<int>, TABLE_HORIZONTAL > > DWClass_ResizableExtVectori("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::defaulttype::ResizableExtVector<unsigned int>, TABLE_HORIZONTAL > > DWClass_ResizableExtVectoru("default",true);
