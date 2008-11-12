@@ -838,16 +838,16 @@ public:
     }
 
 
-    /*    /// Dot product.
+    /// Dot product.
     template<class real2>
     inline friend real operator*(const Vec<N,real2>& v1, const Vec3r1<real>& v2)
     {
         real r = (real)(v1[0]*v2[0]);
-        for (int i=1;i<N;i++)
+        for (int i=1; i<N; i++)
             r += (real)(v1[i]*v2[i]);
         return r;
     }
-    */
+
 
     /// Dot product.
     real operator*(const Vec3r1& v) const
