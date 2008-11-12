@@ -73,44 +73,14 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
 
     //projectResponse(vel);          // initial velocities are projected to the constrained space
 
-#if 1
-
     // compute the right-hand term of the equation system
     // accumulation through mappings is disabled as it will be done by addMBKv after all factors are computed
     computeForce(b, true, false);             // b = f0
-
-    //computeDfV(f);                // f = df/dx v
-    //b.peq(f,h+f_rayleighStiffness.getValue());      // b = f0 + (h+rs)df/dx v
-    //addMdx(b,vel,-f_rayleighMass.getValue()); // no need to propagate vel as dx again
-    //f.teq(-1);
-    //addMBKv(f, 0 /* (f_rayleighMass.getValue() == 0.0 ? 0.0 : -f_rayleighMass.getValue()) */, 0, 1);
-    //cerr<<"EulerImplicitSolver, diff = "<< f <<endl;
 
     // new more powerful visitors
     // b += (h+rs)df/dx v - rd M v
     // values are not cleared so that contributions from computeForces are kept and accumulated through mappings once at the end
     addMBKv(b, (f_rayleighMass.getValue() == 0.0 ? 0.0 : -f_rayleighMass.getValue()), 0, h+f_rayleighStiffness.getValue(), false, true);
-
-#else
-
-    // compute the right-hand term of the equation system
-    computeForce(b);             // b = f0
-
-    //propagateDx(vel);            // dx = v
-    //computeDf(f);                // f = df/dx v
-    computeDfV(f);                // f = df/dx v
-    b.peq(f,h+f_rayleighStiffness.getValue());      // b = f0 + (h+rs)df/dx v
-
-    if (f_rayleighMass.getValue() != 0.0)
-    {
-        //f.clear();
-        //addMdx(f,vel);
-        //b.peq(f,-f_rayleighMass.getValue());     // b = f0 + (h+rs)df/dx v - rd M v
-        //addMdx(b,VecId(),-f_rayleighMass.getValue()); // no need to propagate vel as dx again
-        addMdx(b,vel,-f_rayleighMass.getValue()); // no need to propagate vel as dx again
-    }
-
-#endif
 
     b.teq(h);                           // b = h(f0 + (h+rs)df/dx v - rd M v)
 

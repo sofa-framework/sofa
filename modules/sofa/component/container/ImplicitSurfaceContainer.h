@@ -44,7 +44,7 @@ using namespace sofa::simulation::tree;
 ////////////////// ///////////////
 
 
-class ImplicitSurface : public core::objectmodel::BaseObject
+class ImplicitSurface : public virtual core::objectmodel::BaseObject
 {
 
 public:
