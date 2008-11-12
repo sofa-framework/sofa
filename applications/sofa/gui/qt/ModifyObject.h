@@ -75,6 +75,10 @@
 #include <qwt_plot_curve.h>
 #include <sofa/gui/qt/DisplayFlagWidget.h>
 
+#if !defined(INFINITY)
+#define INFINITY 9.0e10
+#endif
+
 namespace sofa
 {
 
