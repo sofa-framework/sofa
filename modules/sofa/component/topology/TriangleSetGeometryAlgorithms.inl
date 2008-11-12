@@ -1140,7 +1140,10 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
         ind_edge=this->m_topology->getEdgeIndex(indices[0],indices[1]);
         edges_list.push_back(ind_edge);
         triangles_list.push_back(ind_t_current);
-        coords_list.push_back(coord_t);
+        if (this->m_topology->getEdge(ind_edge)[0] == indices[0])
+            coords_list.push_back(coord_t);
+        else
+            coords_list.push_back(1.0-coord_t);
 
         const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
