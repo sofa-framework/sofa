@@ -69,6 +69,7 @@ namespace gui
 namespace qt
 {
 
+SOFA_LINK_CLASS(GraphDataWidget);
 SOFA_LINK_CLASS(SimpleDataWidget);
 SOFA_LINK_CLASS(StructDataWidget);
 SOFA_LINK_CLASS(TableDataWidget);
@@ -767,6 +768,11 @@ void ModifyObject::updateTables()
 {
     updateHistory();
     updateTextEdit();
+    for (DataWidgetMap::iterator it = dataWidgets.begin(), itend = dataWidgets.end(); it != itend; ++it)
+    {
+        DataWidget* dw = it->second;
+        dw->update();
+    }
     std::list< std::pair< Q3Table*, BaseData*> >::iterator it_list_Table;
     bool skip;
     for (it_list_Table = list_Table.begin(); it_list_Table != list_Table.end(); it_list_Table++)

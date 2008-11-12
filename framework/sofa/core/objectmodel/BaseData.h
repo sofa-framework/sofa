@@ -57,7 +57,7 @@ public:
      */
     BaseData( const char* h, bool isDisplayed=true, bool isReadOnly=false )
         : help(h), group(""), widget("")
-        , m_isSet(false), m_isDisplayed(isDisplayed), m_isReadOnly(isReadOnly)
+        , m_counter(0), m_isDisplayed(isDisplayed), m_isReadOnly(isReadOnly)
     {}
 
     /// Base destructor: does nothing.
@@ -97,7 +97,7 @@ public:
     void setWidget(const char* val) { widget = val; }
 
     /// True if the value has been modified
-    bool isSet() const { return m_isSet; }
+    bool isSet() const { return m_counter > 0; }
 
     /// True if the Data has to be displayed in the GUI
     bool isDisplayed() const { return m_isDisplayed; }
@@ -109,6 +109,10 @@ public:
     void setDisplayed(bool b) {m_isDisplayed = b;}
     /// Can dynamically change the status of a Data, by making it readOnly
     void setReadOnly(bool b) {m_isReadOnly = b;}
+
+    /// Return the number of changes since creation
+    /// This can be used to efficiently detect changes
+    int getCounter() const { return m_counter; }
 protected:
 
     /// Help message
@@ -117,8 +121,8 @@ protected:
     const char* group;
     /// widget
     const char* widget;
-    /// True if a value has been read on the command line
-    bool m_isSet;
+    /// Number of changes since creation
+    int m_counter;
     /// True if the Data will be displayed in the GUI
     bool m_isDisplayed;
     /// True if the Data will be readable only in the GUI
