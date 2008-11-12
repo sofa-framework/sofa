@@ -123,7 +123,7 @@ public slots:
     void updateValues();              //update the node with the values of the field
     void updateTextEdit();            //update the text fields due to unknown data field
     void updateTables();              //update the tables of value at each step of the simulation
-    void saveTables();                //Save in datafield the content of a QTalbe
+    void saveTables();                //Save in datafield the content of a QTable
     void saveTextEdit();                //Save in datafield the content of a QTextEdit
     void changeValue();               //each time a field is modified
     void changeVisualValue();               //each time a field of the Visualization tab is modified
@@ -222,6 +222,10 @@ public:
     virtual void writeToData() {}
     virtual bool processChange(const QObject* /*sender*/) { return false; }
     virtual bool isModified() { return false; }
+    virtual void update()
+    {
+        readFromData();
+    }
 
     //
     // Factory related code
@@ -262,15 +266,17 @@ protected:
     typedef QLineEdit Widget;
     MyData* data;
     Widget* w;
+    int counter;
     bool modified;
 public:
-    DefaultDataWidget(MyData* d) : DataWidget(d), data(d), w(NULL), modified(false) {}
+    DefaultDataWidget(MyData* d) : DataWidget(d), data(d), w(NULL), counter(-1), modified(false) {}
     virtual bool createWidgets(QWidget* parent)
     {
         w = new QLineEdit(parent);
         if (w == NULL) return false;
         std::string s = data->getValueString();
         w->setText(QString(s.c_str()));
+        counter = data->getCounter();
         if (this->readOnly)
             w->setEnabled(false);
         else
@@ -282,6 +288,7 @@ public:
         std::string s = data->getValueString();
         w->setText(QString(s.c_str()));
         modified = false;
+        counter = data->getCounter();
     }
     virtual bool isModified() { return modified; }
     virtual void writeToData()
@@ -289,6 +296,7 @@ public:
         if (!modified) return;
         std::string s = w->text().ascii();
         data->read(s);
+        counter = data->getCounter();
     }
     virtual bool processChange(const QObject* sender)
     {
@@ -298,6 +306,11 @@ public:
             return true;
         }
         else return false;
+    }
+    virtual void update()
+    {
+        if (counter != data->getCounter())
+            readFromData();
     }
 };
 

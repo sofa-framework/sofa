@@ -78,7 +78,7 @@ public:
 
     void virtualSetValue(const T& v)
     {
-        m_isSet = true;
+        ++this->m_counter;
         value() = v;
     }
 
@@ -98,7 +98,7 @@ public:
         }
         else
         {
-            m_isSet = true;
+            ++this->m_counter;
             return true;
         }
     }
@@ -141,7 +141,7 @@ public:
 
     inline T* beginEdit()
     {
-        this->m_isSet = true;
+        ++this->m_counter;
         return &m_value;
     }
     inline void endEdit()
@@ -189,7 +189,7 @@ inline
 bool TData<std::string>::read( std::string& str )
 {
     value() = str;
-    m_isSet = true;
+    ++m_counter;
     return true;
 }
 
@@ -207,7 +207,7 @@ bool TData<bool>::read( std::string& str )
     else if ((str[0] >= '0' && str[0] <= '9') || str[0] == '-')
         value() = (atoi(str.c_str()) != 0);
     else return false;
-    m_isSet = true;
+    ++m_counter;
     return true;
 }
 

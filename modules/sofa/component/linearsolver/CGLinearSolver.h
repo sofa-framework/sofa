@@ -28,6 +28,7 @@
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
 #include <sofa/simulation/common/MatrixLinearSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/helper/map.h>
 #include <math.h>
 
 namespace sofa
@@ -50,13 +51,17 @@ public:
     Data<double> f_tolerance;
     Data<double> f_smallDenominatorThreshold;
     Data<bool> f_verbose;
+    Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
 
     CGLinearSolver()
         : f_maxIter( initData(&f_maxIter,(unsigned)25,"iterations","maximum number of iterations of the Conjugate Gradient solution") )
         , f_tolerance( initData(&f_tolerance,1e-5,"tolerance","desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)") )
         , f_smallDenominatorThreshold( initData(&f_smallDenominatorThreshold,1e-5,"threshold","minimum value of the denominator in the conjugate Gradient solution") )
         , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
+        , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
     {
+        f_graph.setWidget("graph");
+        f_graph.setReadOnly(true);
     }
 protected:
     /// This method is separated from the rest to be able to use custom/optimized versions depending on the types of vectors.
@@ -91,7 +96,12 @@ public:
 
         double normb2 = b.dot(b);
         double normb = sqrt(normb2);
-
+        std::map < std::string, sofa::helper::vector<double> >& graph = *f_graph.beginEdit();
+        sofa::helper::vector<double>& graph_error = graph["Error"];
+        graph_error.clear();
+        sofa::helper::vector<double>& graph_den = graph["Denominator"];
+        graph_den.clear();
+        graph_error.push_back(1);
         unsigned nb_iter;
         const char* endcond = "iterations";
         for( nb_iter=1; nb_iter<=f_maxIter.getValue(); nb_iter++ )
@@ -106,7 +116,9 @@ public:
             if (nb_iter>1)
             {
                 double normr = sqrt(rho); //sqrt(r.dot(r));
-                if (normr/normb <= f_tolerance.getValue())
+                double err = normr/normb;
+                graph_error.push_back(err);
+                if (err <= f_tolerance.getValue())
                 {
                     endcond = "tolerance";
                     break;
@@ -137,6 +149,7 @@ public:
 
             double den = p.dot(q);
 
+            graph_den.push_back(den);
 
             if( fabs(den)<f_smallDenominatorThreshold.getValue() )
             {
@@ -160,6 +173,7 @@ public:
 
             rho_1 = rho;
         }
+        f_graph.endEdit();
         // x is the solution of the system
         if( printLog )
         {

@@ -134,9 +134,10 @@ protected:
     Container container;
     typedef data_widget_trait<data_type> helper;
     MyData* data;
+    int counter;
     bool modified;
 public:
-    SimpleDataWidget(MyData* d) : DataWidget(d), data(d), modified(false) {}
+    SimpleDataWidget(MyData* d) : DataWidget(d), data(d), counter(-1), modified(false) {}
     virtual bool createWidgets(QWidget* parent)
     {
         const data_type& d = data->virtualGetValue();
@@ -148,6 +149,7 @@ public:
     {
         container.readFromData(data->virtualGetValue());
         modified = false;
+        counter = data->getCounter();
     }
     virtual bool isModified() { return modified; }
     virtual void writeToData()
@@ -156,6 +158,7 @@ public:
         data_type d = data->virtualGetValue();
         container.writeToData(d);
         data->virtualSetValue(d);
+        counter = data->getCounter();
     }
     virtual bool processChange(const QObject* sender)
     {
@@ -165,6 +168,11 @@ public:
             return true;
         }
         else return false;
+    }
+    virtual void update()
+    {
+        if (counter != data->getCounter())
+            readFromData();
     }
 };
 

@@ -630,6 +630,56 @@ public:
     }
 };
 
+////////////////////////////////////////////////////////////////
+/// std::map from strings support
+////////////////////////////////////////////////////////////////
+
+template<class T>
+class vector_data_trait < std::map<std::string, T> >
+{
+public:
+    typedef std::map<std::string, T> data_type;
+    typedef T value_type;
+    enum { NDIM = 1 };
+    static int size(const data_type& d) { return d.size(); }
+    static const char* header(const data_type& d, int i = 0)
+    {
+        typename data_type::const_iterator it = d.begin();
+        while (i > 0 && it != d.end())
+        {
+            ++it;
+            --i;
+        }
+        if (i == 0) return it->first.c_str();
+        else return NULL;
+    }
+    static const value_type* get(const data_type& d, int i = 0)
+    {
+        typename data_type::const_iterator it = d.begin();
+        while (i > 0 && it != d.end())
+        {
+            ++it;
+            --i;
+        }
+        if (i == 0) return &(it->second);
+        else return NULL;
+    }
+    static void set( const value_type& v, data_type& d, int i = 0)
+    {
+        typename data_type::iterator it = d.begin();
+        while (i > 0 && it != d.end())
+        {
+            ++it;
+            --i;
+        }
+        if (i == 0) it->second = v;
+    }
+    static void resize( int s, data_type& d)
+    {
+        //d.resize(s);
+    }
+};
+
 } // namespace qt
 
 } // namespace gui
