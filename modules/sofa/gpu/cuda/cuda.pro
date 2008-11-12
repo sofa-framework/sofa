@@ -79,6 +79,7 @@ SOURCES += mycuda.cpp \
            CudaDistanceGridCollisionModel.cpp \
            CudaCollision.cpp \
            CudaCollisionDetection.cpp \
+		   CudaSphereModel.cpp \
            CudaPointModel.cpp \
            CudaPenalityContactForceField.cpp \
            CudaVisualModel.cpp \

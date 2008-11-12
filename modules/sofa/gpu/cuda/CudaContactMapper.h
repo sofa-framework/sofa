@@ -28,6 +28,7 @@
 #include <sofa/component/collision/BarycentricContactMapper.h>
 #include <sofa/gpu/cuda/CudaDistanceGridCollisionModel.h>
 #include <sofa/gpu/cuda/CudaPointModel.h>
+#include <sofa/gpu/cuda/CudaSphereModel.h>
 #include <sofa/gpu/cuda/CudaCollisionDetection.h>
 #include <sofa/gpu/cuda/CudaRigidMapping.h>
 #include <sofa/gpu/cuda/CudaSubsetMapping.h>
@@ -148,7 +149,7 @@ public:
 };
 
 
-/*template <class DataTypes>
+template <class DataTypes>
 class ContactMapper<sofa::gpu::cuda::CudaSphereModel,DataTypes> : public SubsetContactMapper<sofa::gpu::cuda::CudaSphereModel,DataTypes>
 {
 public:
@@ -169,13 +170,13 @@ public:
         int n = outputs->size();
         int nt = outputs->nbTests();
         int maxp = 0;
-        for (int i=0;i<nt;i++)
+        for (int i=0; i<nt; i++)
             if (outputs->rtest(i).curSize > maxp) maxp = outputs->rtest(i).curSize;
         this->mapping->data.map.fastResize(n);
         SubsetContactMapperCuda3f_setPoints1(n, nt, maxp, 0, outputs->tests.deviceRead(), outputs->results.deviceRead(), this->mapping->data.map.deviceWrite());
     }
 };
-*/
+
 
 
 } // namespace collision
