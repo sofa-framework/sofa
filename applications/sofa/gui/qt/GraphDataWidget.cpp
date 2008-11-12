@@ -27,6 +27,7 @@
 
 #include <sofa/gui/qt/GraphDataWidget.h>
 #include <sofa/helper/Factory.inl>
+#include <sofa/helper/map.h>
 #include <iostream>
 
 namespace sofa
@@ -44,10 +45,10 @@ using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(GraphDataWidget);
 
-#ifndef WIN32
+
 Creator<DataWidgetFactory, GraphDataWidget< std::map< std::string, sofa::helper::vector<float> > > > DWClass_mapvectorf("graph",true);
 Creator<DataWidgetFactory, GraphDataWidget< std::map< std::string, sofa::helper::vector<double> > > > DWClass_mapvectord("graph",true);
-#endif
+
 
 } // namespace qt
 
