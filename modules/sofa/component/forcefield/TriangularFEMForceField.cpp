@@ -702,6 +702,54 @@ void TriangularFEMForceField<DataTypes>::computeForce(Displacement &F, Index ele
     }
 }
 
+/// Compute current stress
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::computeStress(Vec<3,Real> &stress, Index elementIndex)
+{
+    //	sofa::helper::system::thread::Trace::print(1, "Hello from computeForce()\n");
+
+    Displacement D;
+    StrainDisplacement J;
+    Vec<3,Real> strain;
+    Transformation R_0_2, R_2_0;
+    const VecCoord& p = *this->mstate->getX();
+    Index a = _topology->getTriangle(elementIndex)[0];
+    Index b = _topology->getTriangle(elementIndex)[1];
+    Index c = _topology->getTriangle(elementIndex)[2];
+
+    if (method == SMALL)   // classic linear elastic method
+    {
+        R_0_2.identity();
+        computeDisplacementSmall(D, elementIndex, p);
+        if (_anisotropicMaterial)
+            computeStrainDisplacement(J, Coord(0,0,0), (p[b]-p[a]), (p[c]-p[a]));
+        else
+            J = triangleInfo[elementIndex].strainDisplacementMatrix;
+        computeStrain(strain, J, D);
+        computeStress(stress, triangleInfo[elementIndex].materialMatrix, strain);
+    }
+    else   // co-rotational method
+    {
+        // first, compute rotation matrix into co-rotational frame
+        computeRotationLarge( R_0_2, p, a, b, c);
+        // then compute displacement in this frame
+        computeDisplacementLarge(D, elementIndex, R_0_2, p);
+        // and compute postions of a, b, c in the co-rotational frame
+        Coord A = Coord(0, 0, 0);
+        Coord B = R_0_2 * (p[b]-p[a]);
+        Coord C = R_0_2 * (p[c]-p[a]);
+
+        computeStrainDisplacement(J, A, B, C);
+        computeStrain(strain, J, D);
+        computeStress(stress, triangleInfo[elementIndex].materialMatrix, strain);
+    }
+    // store newly computed values for next time
+    R_2_0.transpose(R_0_2);
+    triangleInfo[elementIndex].strainDisplacementMatrix = J;
+    triangleInfo[elementIndex].rotation = R_2_0;
+    triangleInfo[elementIndex].strain = strain;
+    triangleInfo[elementIndex].stress = stress;
+}
 
 // --------------------------------------------------------------------------------------
 // ---
@@ -890,10 +938,10 @@ void TriangularFEMForceField<DataTypes>::getFractureCriteria(int elementIndex, D
     if ((unsigned)elementIndex < triangleInfo.size())
     {
         //direction = triangleInfo[elementIndex].principalStrainDirection;
-        //value = triangleInfo[elementIndex].maxStrain;
+        //value = fabs(triangleInfo[elementIndex].maxStrain);
         computePrincipalStress(elementIndex, triangleInfo[elementIndex].stress);
-        direction = triangleInfo[elementIndex].principalStrainDirection;
-        value = triangleInfo[elementIndex].maxStress;
+        direction = triangleInfo[elementIndex].principalStressDirection;
+        value = fabs(triangleInfo[elementIndex].maxStress);
         if (value < 0)
         {
             direction.clear();
@@ -905,6 +953,62 @@ void TriangularFEMForceField<DataTypes>::getFractureCriteria(int elementIndex, D
         direction.clear();
         value = 0;
     }
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------
+// ---	Compute value of stress along a given direction (typically the fiber direction and transverse direction in anisotropic materials)
+// ----------------------------------------------------------------------------------------------------------------------------------------
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::computeStressAlongDirection(Real &stress_along_dir, Index elementIndex, const Coord &dir, const Vec<3,Real> &stress)
+{
+    Mat<3,3,Real> R, Rt;
+
+    // transform 'dir' into local coordinates
+    R = this->triangleInfo[elementIndex].rotation;
+    Rt.transpose(R);
+    Coord dir_local = Rt * dir;
+    dir_local[2] = 0; // project direction
+    dir_local.normalize();
+    //	cout << "dir_local : " << dir_local << endl;
+
+    // compute stress along specified direction 'dir'
+    Real cos_theta = dir_local[0];
+    Real sin_theta = dir_local[1];
+    stress_along_dir = stress[0]*cos_theta*cos_theta + stress[1]*sin_theta*sin_theta + stress[2]*2*cos_theta*sin_theta;
+    //cout << "computeStressAlongDirection :: stress ( " << stress << ") along local direction = (" << dir_local << ") = " <<  stress_along_dir << endl;
+}
+
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::computeStressAcrossDirection(Real &stress_across_dir, Index elementIndex, const Coord &dir, const Vec<3,Real> &stress)
+{
+    Index a = _topology->getTriangle(elementIndex)[0];
+    Index b = _topology->getTriangle(elementIndex)[1];
+    Index c = _topology->getTriangle(elementIndex)[2];
+    const VecCoord& x = *this->mstate->getX();
+    Coord n = cross(x[b]-x[a],x[c]-x[a]);
+    Coord dir_t = cross(dir,n);
+    this->computeStressAlongDirection(stress_across_dir, elementIndex, dir_t, stress);
+}
+
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::computeStressAcrossDirection(Real &stress_across_dir, Index elementIndex, const Coord &dir)
+{
+    Index a = _topology->getTriangle(elementIndex)[0];
+    Index b = _topology->getTriangle(elementIndex)[1];
+    Index c = _topology->getTriangle(elementIndex)[2];
+    const VecCoord& x = *this->mstate->getX();
+    Coord n = cross(x[b]-x[a],x[c]-x[a]);
+    Coord dir_t = cross(dir,n);
+    this->computeStressAlongDirection(stress_across_dir, elementIndex, dir_t);
+}
+
+
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::computeStressAlongDirection(Real &stress_along_dir, Index elementIndex, const Coord &dir)
+{
+    Vec<3,Real> stress;
+    this->computeStress(stress, elementIndex);
+    this->computeStressAlongDirection(stress_along_dir, elementIndex, dir, stress);
 }
 
 // --------------------------------------------------------------------------------------

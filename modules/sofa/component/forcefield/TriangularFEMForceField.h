@@ -187,6 +187,16 @@ public:
     void setMethod(int val) { method = val; }
     int  getFracturedEdge();
     void getFractureCriteria(int element, Deriv& direction, Real& value);
+    /// Compute value of stress along a given direction (typically the fiber direction and transverse direction in anisotropic materials)
+    void computeStressAlongDirection(Real &stress_along_dir, Index elementIndex, const Coord &direction, const Vec<3,Real> &stress);
+    /// Compute value of stress along a given direction (typically the fiber direction and transverse direction in anisotropic materials)
+    void computeStressAlongDirection(Real &stress_along_dir, Index elementIndex, const Coord &direction);
+    /// Compute value of stress across a given direction (typically the fracture direction)
+    void computeStressAcrossDirection(Real &stress_across_dir, Index elementIndex, const Coord &direction, const Vec<3,Real> &stress);
+    /// Compute value of stress across a given direction (typically the fracture direction)
+    void computeStressAcrossDirection(Real &stress_across_dir, Index elementIndex, const Coord &direction);
+    /// Compute current stress
+    void computeStress(Vec<3,Real> &stress, Index elementIndex);
 
 protected :
 

@@ -160,17 +160,12 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     Q22 = f_young2.getValue()/(1-Inherited::f_poisson.getValue()*f_poisson2.getValue());
     Q66 = (Real)(Inherited::f_young.getValue() / (2.0*(1 + Inherited::f_poisson.getValue())));
 
-    if (i >= (int) localFiberDirection.size())
-        localFiberDirection.resize(i+1);
-    Deriv& fiberDirLocal = localFiberDirection[i]; // orientation of the fiber in the local frame of the element (orthonormal frame)
+    //if (i >= (int) localFiberDirection.size())
+    //	localFiberDirection.resize(i+1);
 
     T[0] = (*Inherited::_initialPoints)[v2]-(*Inherited::_initialPoints)[v1];
     T[1] = (*Inherited::_initialPoints)[v3]-(*Inherited::_initialPoints)[v1];
     T[2] = cross(T[0], T[1]);
-    T[1] = cross(T[2], T[0]);
-    T[0].normalize();
-    T[1].normalize();
-    T[2].normalize();
 
     if (!f_fiberCenter.getValue().empty()) // in case we have concentric fibers
     {
@@ -183,15 +178,34 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
         double theta = (double)f_theta.getValue()*M_PI/180.0;
         fiberDirGlobal = Coord((Real)cos(theta), (Real)sin(theta), 0); // was fiberDir
     }
+
+    Deriv& fiberDirLocal = localFiberDirection[i]; // orientation of the fiber in the local frame of the element (orthonormal frame)
+    //[1] = cross(T[2], T[0]);
+    //T[0].normalize();
+    //T[1].normalize();
+    //T[2].normalize();
     T.transpose();
     Tinv.invert(T);
     fiberDirLocal = Tinv * fiberDirGlobal;
     fiberDirLocal[2] = 0;
     fiberDirLocal.normalize();
 
+    T[0] = (*Inherited::_initialPoints)[v2]-(*Inherited::_initialPoints)[v1];
+    T[1] = (*Inherited::_initialPoints)[v3]-(*Inherited::_initialPoints)[v1];
+    T[2] = cross(T[0], T[1]);
+    T[1] = cross(T[2], T[0]);
+    T[0].normalize();
+    T[1].normalize();
+    T[2].normalize();
+    T.transpose();
+    Tinv.invert(T);
+    fiberDirLocalOrtho = Tinv * fiberDirGlobal;
+    fiberDirLocalOrtho[2] = 0;
+    fiberDirLocalOrtho.normalize();
+
     Real c, s, c2, s2, c3, s3,c4, s4;
-    c = fiberDirLocal[0];
-    s = fiberDirLocal[1];
+    c = fiberDirLocalOrtho[0];
+    s = fiberDirLocalOrtho[1];
 
     c2 = c*c;
     s2 = s*s;
@@ -235,32 +249,6 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     //cout << "Poisson2=" << f_poisson2.getValue() << endl;
 }
 
-// ----------------------------------------------------------------------------------------------------------------------------------------
-// ---	Compute value of stress along a given direction (typically the fiber direction and transverse direction in anisotropic materials)
-// ----------------------------------------------------------------------------------------------------------------------------------------
-template <class DataTypes>
-void TriangularAnisotropicFEMForceField<DataTypes>::computeStressAlongDirection(Real &stress_along_dir, Index elementIndex, Coord &dir, Vec<3,Real> &stress)
-{
-    Mat<3,3,Real> R, Rt;
-
-    // stress in local coordinates
-    Coord s_local(stress[0], stress[1], stress[2]);
-
-    // transform 'dir' into local coordinates
-    R = Inherited::triangleInfo[elementIndex].rotation;
-    Rt.transpose(R);
-    Coord dir_local = Rt * dir;
-    dir_local.normalize();
-//	cout << "dir_local : " << dir_local << endl;
-
-    // compute stress along specified direction 'dir'
-    Real cos_theta = dir_local[0];
-    Real sin_theta = dir_local[1];
-    stress_along_dir = stress[0]*cos_theta*cos_theta + stress[1]*sin_theta*sin_theta + stress[2]*cos_theta*sin_theta;
-//	cout << "computeStressAlongDirection :: stress along direction = (" << dir << ") = " <<  stress_along_dir << endl;
-}
-
-
 // ----------------------------------------------------------------
 // ---	Display
 // ----------------------------------------------------------------
@@ -273,11 +261,11 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw()
     glDisable(GL_POLYGON_OFFSET_FILL);
     if (!getContext()->getShowForceFields())
         return;
-    if (showFiber.getValue() && localFiberDirection.size() == (unsigned)_topology->getNbTriangles())
+    if (showFiber.getValue() && localFiberDirection.size() >= (unsigned)_topology->getNbTriangles())
     {
         const VecCoord& x = *this->mstate->getX();
         int nbTriangles=_topology->getNbTriangles();
-        glColor3f(1,1,1);
+        glColor3f(0,0,0);
         glBegin(GL_LINES);
 
         for(int i=0; i<nbTriangles; ++i)
@@ -285,7 +273,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw()
             Index a = _topology->getTriangle(i)[0];
             Index b = _topology->getTriangle(i)[1];
             Index c = _topology->getTriangle(i)[2];
-
+            /*
             Mat<3,3,Real> T;
 
             T[0] = (*Inherited::_initialPoints)[b]-(*Inherited::_initialPoints)[a];
@@ -296,9 +284,10 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw()
 
             Coord y = T[1];
             Coord ab = (*Inherited::_initialPoints)[b]-(*Inherited::_initialPoints)[a];
-            y *= ab.norm();
+            y *= ab.norm();*/
             Coord center = (x[a]+x[b]+x[c])/3;
-            Coord d = (x[b]-x[a])*localFiberDirection[i][0] + y*localFiberDirection[i][1];
+            //Coord d = (x[b]-x[a])*localFiberDirection[i][0] + y*localFiberDirection[i][1];
+            Coord d = (x[b]-x[a])*localFiberDirection[i][0] + (x[c]-x[a])*localFiberDirection[i][1];
             d*=0.25;
             helper::gl::glVertexT(center-d);
             helper::gl::glVertexT(center+d);
