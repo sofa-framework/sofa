@@ -83,7 +83,6 @@ public:
 
     TriangularAnisotropicFEMForceField();
     void computeMaterialStiffness(int i, Index& a, Index& b, Index& c);
-    void computeStressAlongDirection(Real &stress_along_dir, Index elementIndex, Coord &direction, Vec<3,Real> &stress);
     void getFiberDir(int element, Deriv& dir);
 
     Data<Real> f_poisson2;

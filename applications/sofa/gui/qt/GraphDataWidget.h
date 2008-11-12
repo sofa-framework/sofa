@@ -55,7 +55,7 @@ public:
     typedef vector_data_trait<value_type> vtrait;
     typedef typename vtrait::value_type real_type;
     QwtDataAccess() : data0(NULL) { pdata = &data0; }
-    QwtDataAccess(const QwtDataAccess<T>& c) : data0(c.data0), pdata(c.pdata) {}
+    QwtDataAccess(const QwtDataAccess<T>& c) : QwtData(c), data0(c.data0), pdata(c.pdata) {}
     void setData(const T** p) { pdata = p; }
     void setData(const T* p) { data0 = p; pdata = &data0; }
     virtual QwtData* copy() const { return new QwtDataAccess<T>(*this); }
