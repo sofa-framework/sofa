@@ -156,6 +156,9 @@ public:
     /// return the type of the i-th cube
     virtual Type getType( int i );
 
+    /// return the stiffness coefficient of the i-th cube
+    virtual float getStiffnessCoef(int elementIdx);
+
     SparseGridTopology* getFinerSparseGrid() const {return _finerSparseGrid;}
     void setFinerSparseGrid( SparseGridTopology* fsp ) {_finerSparseGrid=fsp;}
     SparseGridTopology* getCoarserSparseGrid() const {return _coarserSparseGrid;}
@@ -212,6 +215,8 @@ protected:
     bool                                _usingMC;
 
     sofa::helper::vector<Type> _types; ///< BOUNDARY or FULL filled cells
+
+    helper::vector< float > _stiffnessCoefs; ///< a stiffness coefficient per hexa (BOUNDARY=.5, FULL=1)
 
     /// start from a seed cell (i,j,k) the OUTSIDE filling is propagated to neighboor cells until meet a BOUNDARY cell (this function is called from all border cells of the RegularGrid)
     void propagateFrom( const int i, const int j, const int k,

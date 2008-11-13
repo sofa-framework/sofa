@@ -256,10 +256,6 @@ protected:
     virtual void accumulateForcePolar( Vector& f, const Vector & p, int i, const Element&elem  );
 
 
-
-    helper::vector<Real> _stiffnessCoefs; // a possible different coefficient for each element (for exemple BOUNDARY hexa in SparseGridTopology)
-
-
     bool _alreadyInit;
 };
 
