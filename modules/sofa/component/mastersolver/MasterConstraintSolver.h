@@ -112,6 +112,7 @@ public:
     Data<bool> displayTime;
     Data<double> _tol;
     Data<int> _maxIt;
+    Data<bool> doCollisionsFirst;
 
 private:
     void gaussSeidelConstraint(int dim, double* dfree, double** w, double* force, double* d, std::vector<core::componentmodel::behavior::ConstraintResolution*>& res);
