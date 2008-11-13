@@ -60,6 +60,8 @@ public:
     /// to display the center of gravity of the system
     Data< bool > showCenterOfGravity;
     Data< float > showAxisSize;
+    /// to display the rest positions
+    Data< bool > showX0;
 
     Data<bool> compute_mapping_inertia;
     Data<bool> showInitialCenterOfGravity;
