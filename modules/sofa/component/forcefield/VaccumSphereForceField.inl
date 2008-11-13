@@ -33,6 +33,8 @@
 #include <sofa/helper/system/glut.h>
 #include <assert.h>
 #include <iostream>
+#include <sofa/core/objectmodel/KeypressedEvent.h>
+#include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
 namespace sofa
 {
@@ -46,6 +48,7 @@ namespace forcefield
 template<class DataTypes>
 void VaccumSphereForceField<DataTypes>::init()
 {
+    this->Inherit::init();
     if (centerState.getValue().empty())
     {
         centerDOF = NULL;
@@ -54,7 +57,7 @@ void VaccumSphereForceField<DataTypes>::init()
     {
         this->getContext()->get(centerDOF, centerState.getValue());
         if (centerDOF == NULL)
-            std::cout << "Error charging centerState" << std::endl;
+            std::cerr << "Error loading centerState" << std::endl;
     }
 }
 // f  = -stiffness * (x -c ) * (|x-c|-r)/|x-c|
@@ -76,6 +79,8 @@ void VaccumSphereForceField<DataTypes>::init()
 template<class DataTypes>
 void VaccumSphereForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1)
 {
+    if (!active.getValue()) return;
+
     if (centerDOF)
         sphereCenter.setValue((*centerDOF->getX())[0]);
 
@@ -87,6 +92,7 @@ void VaccumSphereForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p
     for (unsigned int i=0; i<p1.size(); i++)
     {
         Coord dp = p1[i] - center;
+        if (dp.norm() <= filter.getValue()) continue;
         Real norm2 = dp.norm2();
         if (norm2<r2)
         {
@@ -109,6 +115,8 @@ void VaccumSphereForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p
 template<class DataTypes>
 void VaccumSphereForceField<DataTypes>::addDForce(VecDeriv& df1, const VecDeriv& dx1, double kFactor, double /*bFactor*/)
 {
+    if (!active.getValue()) return;
+
     df1.resize(dx1.size());
     const Real fact = (Real)(-this->stiffness.getValue()*kFactor);
     for (unsigned int i=0; i<this->contacts.getValue().size(); i++)
@@ -124,6 +132,11 @@ void VaccumSphereForceField<DataTypes>::addDForce(VecDeriv& df1, const VecDeriv&
 template<class DataTypes>
 void VaccumSphereForceField<DataTypes>::updateStiffness( const VecCoord& x )
 {
+    if (!active.getValue()) return;
+
+    if (centerDOF)
+        sphereCenter.setValue((*centerDOF->getX())[0]);
+
     const Coord center = sphereCenter.getValue();
     const Real r = sphereRadius.getValue();
     const Real r2 = r*r;
@@ -152,9 +165,31 @@ double VaccumSphereForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
     return 0;
 }
 
+template <class DataTypes>
+void VaccumSphereForceField<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
+{
+    if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
+    {
+        if (ev->getKey() == keyEvent.getValue())
+        {
+            active.setValue(true);
+        }
+    }
+    else if (sofa::core::objectmodel::KeyreleasedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeyreleasedEvent*>(event))
+    {
+        if (ev->getKey() == keyEvent.getValue())
+        {
+            active.setValue(false);
+        }
+    }
+}
+
+
 template<class DataTypes>
 void VaccumSphereForceField<DataTypes>::draw()
 {
+    if (!active.getValue()) return;
+
     if (!getContext()->getShowForceFields()) return;
     if (!bDraw.getValue()) return;
 

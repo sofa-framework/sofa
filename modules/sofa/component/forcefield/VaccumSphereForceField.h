@@ -28,6 +28,7 @@
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/objectmodel/Event.h>
 
 namespace sofa
 {
@@ -84,7 +85,10 @@ protected:
 
     Data<sofa::helper::vector<Contact> > contacts;
 
+    core::componentmodel::behavior::MechanicalState<DataTypes> * centerDOF;
+
     VaccumSphereForceFieldInternalData<DataTypes> data;
+
 public:
 
     Data<Coord> sphereCenter;
@@ -94,10 +98,13 @@ public:
     Data<defaulttype::Vec3f> color;
     Data<bool> bDraw;
     Data<std::string> centerState;
-    core::componentmodel::behavior::MechanicalState<DataTypes> * centerDOF;
+    Data < bool > active;
+    Data < char > keyEvent;
+    Data < Real > filter;
 
     VaccumSphereForceField()
         : contacts(initData(&contacts,"contacts", "Contacts"))
+        , centerDOF(NULL)
         , sphereCenter(initData(&sphereCenter, "center", "sphere center"))
         , sphereRadius(initData(&sphereRadius, (Real)1, "radius", "sphere radius"))
         , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness"))
@@ -105,7 +112,9 @@ public:
         , color(initData(&color, defaulttype::Vec3f(0.0f,0.0f,1.0f), "color", "sphere color"))
         , bDraw(initData(&bDraw, true, "draw", "enable/disable drawing of the sphere"))
         , centerState(initData(&centerState, "centerState", "path to the MechanicalState controlling the center point"))
-        , centerDOF(NULL)
+        , active( initData(&active, false, "active", "Activate this object.\nNote that this can be dynamically controlled by using a key") )
+        , keyEvent( initData(&keyEvent, '1', "key", "key to press to activate this object until the key is released") )
+        , filter(initData(&filter, (Real)0, "filter", "filter"))
     {
     }
 
@@ -134,6 +143,8 @@ public:
     virtual double getPotentialEnergy(const VecCoord& x);
 
     virtual void updateStiffness( const VecCoord& x );
+
+    virtual void handleEvent(sofa::core::objectmodel::Event* event);
 
     void draw();
 };
