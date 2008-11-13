@@ -45,8 +45,8 @@ int SparseGridRamificationTopologyClass = core::RegisterObject("Sparse grid in 3
         .add< SparseGridRamificationTopology >()
         ;
 
-SparseGridRamificationTopology::SparseGridRamificationTopology(bool _isVirtual)
-    : SparseGridTopology(_isVirtual)
+SparseGridRamificationTopology::SparseGridRamificationTopology(bool isVirtual)
+    : SparseGridTopology(isVirtual)
 {}
 
 SparseGridRamificationTopology::~SparseGridRamificationTopology()
@@ -57,8 +57,8 @@ void SparseGridRamificationTopology::init()
 {
     SparseGridTopology::init();
 
-
-    findCoarsestParents(); // in order to compute findCube by beginning by the finnest, by going up and give the coarsest parent
+    if( this->isVirtual || _nbVirtualFinerLevels.getValue() > 0)
+        findCoarsestParents(); // in order to compute findCube by beginning by the finnest, by going up and give the coarsest parent
 }
 
 void SparseGridRamificationTopology::buildAsFinest()
@@ -68,8 +68,15 @@ void SparseGridRamificationTopology::buildAsFinest()
 
     SparseGridTopology::buildAsFinest();
 
-    // find the connexion graph between the finest hexas
 
+    if(  this->isVirtual || _nbVirtualFinerLevels.getValue() > 0 ) // else it is a classical SparseGridTopology
+        // find the connexion graph between the finest hexas
+        findConnexionsAtFinestLevel();
+}
+
+
+void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
+{
 
     _connexions.resize( getNbHexas() );
     for( unsigned i=0; i<_connexions.size(); ++i)
@@ -571,6 +578,26 @@ void SparseGridRamificationTopology::buildFromFiner()
 
 
 
+    // compute stiffness coefficient from children
+    _stiffnessCoefs.resize( this->getNbHexas() );
+    for(int i=0; i<this->getNbHexas(); ++i)
+    {
+        helper::fixed_array<int,8> finerChildren = this->_hierarchicalCubeMap[i];
+        unsigned nbchildren = 0;
+        for(int w=0; w<8; ++w)
+        {
+            if( finerChildren[w] != -1 )
+            {
+                _stiffnessCoefs[i] += this->_finerSparseGrid->getStiffnessCoef(finerChildren[w]);
+                ++nbchildren;
+            }
+        }
+        _stiffnessCoefs[i] /= (float)nbchildren;
+    }
+
+
+
+
 
 // 				cerr<<"nbPoints : "<<seqPoints.size()<<endl;
 
@@ -628,6 +655,11 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
 
 int SparseGridRamificationTopology::findCube(const Vector3 &pos, SReal &fx, SReal &fy, SReal &fz)
 {
+
+    if(  !this->isVirtual && _nbVirtualFinerLevels.getValue() == 0 )
+        return SparseGridTopology::findCube(pos, fx, fy, fz);
+
+
     SparseGridRamificationTopology* finestSparseGridTopology = dynamic_cast<SparseGridRamificationTopology*>(_virtualFinerLevels[0]);
 
     int finestSparseCube = finestSparseGridTopology->SparseGridTopology::findCube(pos,fx,fy,fz);
@@ -644,6 +676,11 @@ int SparseGridRamificationTopology::findCube(const Vector3 &pos, SReal &fx, SRea
 
 int SparseGridRamificationTopology::findNearestCube(const Vector3 &pos, SReal &fx, SReal &fy, SReal &fz)
 {
+    if( !this->isVirtual && _nbVirtualFinerLevels.getValue() == 0 )
+        return SparseGridTopology::findNearestCube(pos, fx, fy, fz);
+
+
+
     SparseGridRamificationTopology* finestSparseGridTopology = dynamic_cast<SparseGridRamificationTopology*>(_virtualFinerLevels[0]);
 
     int finestSparseCube = finestSparseGridTopology->SparseGridTopology::findNearestCube(pos,fx,fy,fz);

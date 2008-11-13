@@ -28,7 +28,7 @@
 #include <string>
 
 
-#include <sofa/component/topology/SparseGridTopology.h>
+#include <sofa/component/topology/SparseGridRamificationTopology.h>
 
 
 namespace sofa
@@ -44,11 +44,11 @@ namespace topology
 Build a SparseGridTopology for several given Triangular meshes.
 A stiffness coefficient has to be assigned for each mesh. The last found stiffness coefficient is used for an element shared by several meshes => The mesh ordering is important, and so, more specific stiffness informations must appear in last.
 */
-class SparseGridMultipleTopology : public SparseGridTopology
+class SparseGridMultipleTopology : public SparseGridRamificationTopology
 {
 public :
 
-    SparseGridMultipleTopology( bool _isVirtual=false ) : SparseGridTopology(_isVirtual),
+    SparseGridMultipleTopology( bool _isVirtual=false ) : SparseGridRamificationTopology(_isVirtual),
         _fileTopologies(initData(&_fileTopologies, helper::vector< std::string >() , "fileTopologies", "All topology filenames")),
         _dataStiffnessCoefs(initData(&_dataStiffnessCoefs, helper::vector< float >() , "stiffnessCoefs", "A stiffness coefficient for each topology filename"))
     {
@@ -56,9 +56,7 @@ public :
 
     virtual void buildAsFinest();
     virtual void buildVirtualFinerLevels();
-    virtual void buildFromFiner();
 
-    float getStiffnessCoef(int elementIdx);
 
 protected :
 
@@ -67,7 +65,7 @@ protected :
     Data< helper::vector< float > > _dataStiffnessCoefs;
 
 
-    helper::vector< float > _stiffnessCoefs;
+
 
     void buildFromTriangleMesh(helper::io::Mesh*, unsigned fileIdx);
     helper::vector< RegularGridTopology > _regularGrids;

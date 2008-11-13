@@ -250,6 +250,16 @@ void SparseGridTopology::buildAsFinest(  )
     {
         buildFromVoxelFile(_filename);
     }
+
+
+    // default stiffness coefficient : BOUNDAR=.5, INSIDE=1
+    _stiffnessCoefs.resize( this->getNbHexas());
+    for(int i=0; i<this->getNbHexas(); ++i)
+    {
+        if( getType(i)==BOUNDARY ) _stiffnessCoefs[i] = .5;
+        else _stiffnessCoefs[i] = 1.0;
+    }
+
 }
 
 void SparseGridTopology::buildFromVoxelFile(const std::string& filename)
@@ -1002,6 +1012,24 @@ void SparseGridTopology::buildFromFiner(  )
             if(_hierarchicalCubeMap[i][w] != -1)
                 _finerSparseGrid->_inverseHierarchicalCubeMap[ _hierarchicalCubeMap[i][w] ] = i;
         }
+
+
+    // compute stiffness coefficient from children
+    _stiffnessCoefs.resize( this->getNbHexas() );
+    for(int i=0; i<this->getNbHexas(); ++i)
+    {
+        helper::fixed_array<int,8> finerChildren = this->_hierarchicalCubeMap[i];
+        unsigned nbchildren = 0;
+        for(int w=0; w<8; ++w)
+        {
+            if( finerChildren[w] != -1 )
+            {
+                _stiffnessCoefs[i] += _finerSparseGrid->_stiffnessCoefs[finerChildren[w]];
+                ++nbchildren;
+            }
+        }
+        _stiffnessCoefs[i] /= (float)nbchildren;
+    }
 }
 
 
@@ -1150,6 +1178,12 @@ helper::fixed_array<int,6> SparseGridTopology::findneighboorCubes( int indice )
 SparseGridTopology::Type SparseGridTopology::getType( int i )
 {
     return _types[i];
+}
+
+
+float SparseGridTopology::getStiffnessCoef(int elementIdx)
+{
+    return _stiffnessCoefs[ elementIdx ];
 }
 
 ///////////////////////////////////////////

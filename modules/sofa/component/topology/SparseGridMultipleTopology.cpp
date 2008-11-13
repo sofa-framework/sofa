@@ -109,6 +109,10 @@ void SparseGridMultipleTopology::buildAsFinest(  )
     }
 
 
+
+    findConnexionsAtFinestLevel();
+
+
 }
 
 
@@ -145,17 +149,12 @@ void SparseGridMultipleTopology::assembleRegularGrids(helper::vector<Type>& regu
             else if(  _regularGridTypes[i][w] == BOUNDARY && regularGridTypes[w] != INSIDE )
             {
                 regularGridTypes[w] = BOUNDARY;
-                regularStiffnessCoefs[w] = _dataStiffnessCoefs.getValue()[i] * .5;
+                regularStiffnessCoefs[w] = _dataStiffnessCoefs.getValue()[i] /** .5*/;
             }
         }
     }
 }
 
-
-float SparseGridMultipleTopology::getStiffnessCoef(int elementIdx)
-{
-    return _stiffnessCoefs[ elementIdx ];
-}
 
 
 
@@ -208,33 +207,6 @@ void SparseGridMultipleTopology::buildVirtualFinerLevels()
 
 }
 
-
-void SparseGridMultipleTopology::buildFromFiner()
-{
-    SparseGridTopology::buildFromFiner();
-
-    _stiffnessCoefs.resize( this->getNbHexas() );
-
-
-
-    for(int i=0; i<this->getNbHexas(); ++i)
-    {
-        helper::fixed_array<int,8> finerChildren = this->_hierarchicalCubeMap[i];
-
-        unsigned nbchildren = 0;
-
-        for(int w=0; w<8; ++w)
-        {
-            if( finerChildren[w] != -1 )
-            {
-                _stiffnessCoefs[i] += dynamic_cast<SparseGridMultipleTopology*>(this->_finerSparseGrid)->_stiffnessCoefs[finerChildren[w]];
-                ++nbchildren;
-            }
-        }
-
-        _stiffnessCoefs[i] /= (float)nbchildren;
-    }
-}
 
 
 }

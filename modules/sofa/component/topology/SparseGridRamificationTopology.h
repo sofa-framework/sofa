@@ -72,6 +72,9 @@ public:
     virtual void buildFromFiner();
     virtual void buildVirtualFinerLevels();
 
+    /// find the connexion graph between the finest hexas
+    void findConnexionsAtFinestLevel();
+
 
     /// debug printings
     void printNeighborhood();

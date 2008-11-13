@@ -33,9 +33,7 @@
 #include <iostream>
 #include <set>
 
-#ifdef SOFA_DEV
-#include <sofa/component/topology/SparseGridMultipleTopology.h>
-#endif
+
 
 using std::cerr;
 using std::endl;
@@ -146,24 +144,6 @@ void HexahedronFEMForceField<DataTypes>::init()
 // 		_elementStiffnesses.beginEdit()->resize(_indexedElements->size());
     // 	_stiffnesses.resize( _initialPoints.getValue().size()*3 ); // assembly ?
 
-
-    _stiffnessCoefs.resize( _indexedElements->size());
-    _stiffnessCoefs.fill(1.0);
-    if( _sparseGrid )
-    {
-#ifdef SOFA_DEV
-        if(topology::SparseGridMultipleTopology* sgmt =  dynamic_cast<topology::SparseGridMultipleTopology*>( _sparseGrid ) )
-        {
-            for(unsigned i=0; i<_stiffnessCoefs.size(); ++i)
-                _stiffnessCoefs[i] = sgmt->getStiffnessCoef( i );
-        }
-        else
-#endif
-        {
-            for(unsigned i=0; i<_stiffnessCoefs.size(); ++i)
-                if( _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY ) _stiffnessCoefs[i] = .5;
-        }
-    }
 
     reinit();
 
@@ -889,8 +869,10 @@ void HexahedronFEMForceField<DataTypes>::initLarge(int i, const Element &elem)
         _elementStiffnesses.beginEdit()->resize( _elementStiffnesses.getValue().size()+1 );
     }
 
-    computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], _rotatedInitialElements[i], i, _stiffnessCoefs[i]);
+    computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], _rotatedInitialElements[i], i, _sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0 );
 
+
+// 	printMatlab( cerr,this->_elementStiffnesses.getValue()[0] );
 
 }
 
@@ -968,7 +950,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const 
 
     if(f_updateStiffnessMatrix.getValue())
 // 		computeElementStiffness( _elementStiffnesses[i], _materialsStiffnesses[i], deformed );
-        computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], deformed, i, _stiffnessCoefs[i] );
+        computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], deformed, i, _sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0 );
 
 
     Displacement F; //forces
@@ -1022,7 +1004,7 @@ void HexahedronFEMForceField<DataTypes>::initPolar(int i, const Element& elem)
     }
 
 
-    computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], _rotatedInitialElements[i], i, _stiffnessCoefs[i]);
+    computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], _rotatedInitialElements[i], i, _sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0);
 }
 
 
@@ -1097,7 +1079,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const 
 
     if(f_updateStiffnessMatrix.getValue())
 // 		computeElementStiffness( _elementStiffnesses[i], _materialsStiffnesses[i], deformed );
-        computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], deformed, i, _stiffnessCoefs[i]);
+        computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], deformed, i, _sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0);
 
 
     // compute force on element
@@ -1240,45 +1222,44 @@ void HexahedronFEMForceField<DataTypes>::draw()
         }
 
 
-// 		if( _sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY )
-// 			continue;
 
-        glColor4f(0.7f, 0.7f, 0.1f, (_sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5f:1.0f));
+
+        glColor4f(0.7f, 0.7f, 0.1f, (_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f));
         glBegin(GL_POLYGON);
         helper::gl::glVertexT(pa);
         helper::gl::glVertexT(pb);
         helper::gl::glVertexT(pc);
         helper::gl::glVertexT(pd);
         glEnd();
-        glColor4f(0.7f, 0, 0, (_sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5f:1.0f));
+        glColor4f(0.7f, 0, 0, (_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f));
         glBegin(GL_POLYGON);
         helper::gl::glVertexT(pe);
         helper::gl::glVertexT(pf);
         helper::gl::glVertexT(pg);
         helper::gl::glVertexT(ph);
         glEnd();
-        glColor4f(0, 0.7f, 0, (_sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5f:1.0f));
+        glColor4f(0, 0.7f, 0, (_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f));
         glBegin(GL_POLYGON);
         helper::gl::glVertexT(pc);
         helper::gl::glVertexT(pd);
         helper::gl::glVertexT(ph);
         helper::gl::glVertexT(pg);
         glEnd();
-        glColor4f(0, 0, 0.7f, (_sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5f:1.0f));
+        glColor4f(0, 0, 0.7f, (_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f));
         glBegin(GL_POLYGON);
         helper::gl::glVertexT(pa);
         helper::gl::glVertexT(pb);
         helper::gl::glVertexT(pf);
         helper::gl::glVertexT(pe);
         glEnd();
-        glColor4f(0.1f, 0.7f, 0.7f, (_sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5f:1.0f));
+        glColor4f(0.1f, 0.7f, 0.7f, (_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f));
         glBegin(GL_POLYGON);
         helper::gl::glVertexT(pa);
         helper::gl::glVertexT(pd);
         helper::gl::glVertexT(ph);
         helper::gl::glVertexT(pe);
         glEnd();
-        glColor4f(0.7f, 0.1f, 0.7f, (_sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5f:1.0f));
+        glColor4f(0.7f, 0.1f, 0.7f, (_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f));
         glBegin(GL_POLYGON);
         helper::gl::glVertexT(pb);
         helper::gl::glVertexT(pc);

@@ -33,9 +33,9 @@
 			<Object type="MeshLoader" name="meshLoader"  filename="mesh/c.obj"/>
 			<Object type="Mesh"/>
 			<Object type="MechanicalObject"/>
-			<Object type="Triangle" name="Triangle Mesh"/>
-			<Object type="Line"/> 
-			<Object type="Point"/> 
+			<Object type="Triangle" />
+			<Object type="Point" />
+			<Object type="Line" />
 			<Object type="BarycentricMapping"  /> 
 		</Node>
 	</Node>
@@ -64,13 +64,15 @@
 			<Object type="MeshLoader" name="meshLoader"  filename="mesh/c.obj"/>
 			<Object type="Mesh"/>
 			<Object type="MechanicalObject"/>
-			<Object type="Triangle" name="Triangle Mesh"/>
-			<Object type="Line"/> 
-			<Object type="Point"/> 
+			<Object type="Triangle" />
+			<Object type="Point" />
+			<Object type="Line" />
 			<Object type="BarycentricMapping"  /> 
 		</Node>
 	</Node>
 	
+
+
 		
 	
 </Node>
