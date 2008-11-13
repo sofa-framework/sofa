@@ -292,6 +292,14 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     continue;
                 }
             }
+            else if ((*it).second->getGroup() == std::string("BIG"))
+            {
+                std::cout << (*it).first << " in new tab" << std::endl;
+                emptyTab = true;
+                currentTab= new QWidget();
+                currentTabLayout = new QVBoxLayout( currentTab, 0, 1, QString("tabBIGLayout") + QString::number(counterWidget));
+                dialogTab->addTab(currentTab, QString((*it).first.c_str()));
+            }
 
             {
                 if (hideData(it->second)) continue;
