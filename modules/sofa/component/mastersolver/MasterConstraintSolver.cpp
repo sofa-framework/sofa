@@ -37,7 +37,8 @@ using namespace core::componentmodel::behavior;
 MasterConstraintSolver::MasterConstraintSolver()
     :displayTime(initData(&displayTime, false, "displayTime","Display time for each important step of MasterConstraintSolver.")),
      _tol( initData(&_tol, 0.00001, "tolerance", "Tolerance of the Gauss-Seidel")),
-     _maxIt( initData(&_maxIt, 1000, "maxIterations", "Maximum number of iterations of the Gauss-Seidel"))
+     _maxIt( initData(&_maxIt, 1000, "maxIterations", "Maximum number of iterations of the Gauss-Seidel")),
+     doCollisionsFirst(initData(&doCollisionsFirst, false, "doCollisionsFirst","Compute the collisions first (to support penality-based contacts)"))
 {
 }
 
@@ -52,7 +53,6 @@ void MasterConstraintSolver::init()
 
 void MasterConstraintSolver::step ( double dt )
 {
-
     CTime *timer;
     double time = 0.0;
     double timeScale = 1.0 / (double)CTime::getRefTicksPerSec();
@@ -63,10 +63,27 @@ void MasterConstraintSolver::step ( double dt )
         std::cout<<"********* Start Iteration in MasterConstraintSolver::step *********" <<std::endl;
     }
 
-    bool debug =false;
+    bool debug =this->f_printLog.getValue();
     if (debug)
         std::cerr<<"MasterConstraintSolver::step is called"<<std::endl;
     simulation::tree::GNode *context = dynamic_cast<simulation::tree::GNode *>(this->getContext()); // access to current node
+
+
+    if (doCollisionsFirst.getValue())
+    {
+        if (debug)
+            std::cerr<<"computeCollision is called"<<std::endl;
+
+        ////////////////// COLLISION DETECTION///////////////////////////////////////////////////////////////////////////////////////////
+        computeCollision();
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        if ( displayTime.getValue() )
+        {
+            std::cout<<" computeCollision " << ( (double) timer->getTime() - time)*timeScale <<" s" <<std::endl;
+            time = (double) timer->getTime();
+        }
+    }
 
     // Update the BehaviorModels
     // Required to allow the RayPickInteractor interaction
@@ -102,17 +119,20 @@ void MasterConstraintSolver::step ( double dt )
         time = (double) timer->getTime();
     }
 
-    if (debug)
-        std::cerr<<"computeCollision is called"<<std::endl;
-
-    ////////////////// COLLISION DETECTION///////////////////////////////////////////////////////////////////////////////////////////
-    computeCollision();
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    if ( displayTime.getValue() )
+    if (!doCollisionsFirst.getValue())
     {
-        std::cout<<" computeCollision " << ( (double) timer->getTime() - time)*timeScale <<" s" <<std::endl;
-        time = (double) timer->getTime();
+        if (debug)
+            std::cerr<<"computeCollision is called"<<std::endl;
+
+        ////////////////// COLLISION DETECTION///////////////////////////////////////////////////////////////////////////////////////////
+        computeCollision();
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        if ( displayTime.getValue() )
+        {
+            std::cout<<" computeCollision " << ( (double) timer->getTime() - time)*timeScale <<" s" <<std::endl;
+            time = (double) timer->getTime();
+        }
     }
 
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
