@@ -59,7 +59,7 @@ UniformMass<DataTypes, MassType>::UniformMass()
     , showAxisSize( initData(&showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
     , compute_mapping_inertia( initData(&compute_mapping_inertia, true, "compute_mapping_inertia", "to be used if the mass is placed under a mapping" ) )
     , showInitialCenterOfGravity( initData(&showInitialCenterOfGravity, false, "showInitialCenterOfGravity", "display the initial center of gravity of the system" ) )
-    , showX0( initData(&showX0, false, "showX0", "display the rest positions" ) );
+    , showX0( initData(&showX0, false, "showX0", "display the rest positions" ) )
 {}
 
 template <class DataTypes, class MassType>
