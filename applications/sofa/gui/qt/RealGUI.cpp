@@ -205,7 +205,7 @@ extern RealGUI* gui;
 class QSOFAApplication : public QApplication
 {
 public:
-    QSOFAApplication(int argc, char ** argv)
+    QSOFAApplication(int &argc, char ** argv)
         : QApplication(argc,argv)
     {
     }
