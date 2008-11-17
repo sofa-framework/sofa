@@ -480,7 +480,7 @@ void CudaLCP_FullKernel_V9f(int dim,int itMax,float tol,const void * m,int mP,co
         {
 #define CASE(N) \
 			case N: \
-			CudaLCP_FullKernel_V9_kernel<float,N><<< grid, threads, alloc *  sizeof(float)>>>(dim,itMax*V9_NBPROC*2*dim_n,tol,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share); \
+			CudaLCP_FullKernel_V9_kernel<float,N><<< grid, threads, alloc *  sizeof(float)>>>(dim,itMax*V9_NBPROC_2*dim_n,tol,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share); \
 				break
             CASE(1);
             CASE(2);
@@ -533,7 +533,7 @@ void CudaLCP_FullKernel_V10f(int dim,int itMax,float tol,const void * m,int mP,c
         dim3 threads(V10_NB_THREADS,V10_NB_THREADS);
         dim3 grid(1,nbBlock);
 
-        CudaLCP_FullKernel_V9_kernel<float,V10_NB_THREADS><<< grid, threads, alloc *  sizeof(float)>>>(dim,itMax*V9_NBPROC*2*V10_NB_THREADS,tol,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share);
+        CudaLCP_FullKernel_V10_kernel<float,V10_NB_THREADS><<< grid, threads, alloc *  sizeof(float)>>>(dim,itMax*V9_NBPROC*2*V10_NB_THREADS,tol,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share);
     }
 }
 void CudaLCP_FullKernel_V10d(int dim,int itMax,float tol,const void * m,int mP,const void * q,void * f,void * err,void * share)
