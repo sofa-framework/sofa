@@ -447,7 +447,6 @@ void CudaLCP_FullKernel_V8d(int dim,int itMax,float tol,const void * m,int mP,co
 }
 
 //////////////////version 9
-
 void CudaLCP_FullKernel_V9f(int dim,int itMax,float tol,const void * m,int mP,const void * q,void * f,void * err,void * share)
 {
     double dim_n_d = (dim + V9_NBPROC * 2.0 - 1.0) / (V9_NBPROC * 2.0);
@@ -481,7 +480,7 @@ void CudaLCP_FullKernel_V9f(int dim,int itMax,float tol,const void * m,int mP,co
         {
 #define CASE(N) \
 			case N: \
-				CudaLCP_FullKernel_V9_kernel<float,N,V9_NBPROC*2><<< grid, threads, alloc *  sizeof(float)>>>(dim,itMax,tol,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share); \
+			CudaLCP_FullKernel_V9_kernel<float,N><<< grid, threads, alloc *  sizeof(float)>>>(dim,itMax*V9_NBPROC*2*dim_n,tol,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share); \
 				break
             CASE(1);
             CASE(2);
@@ -512,26 +511,36 @@ void CudaLCP_FullKernel_V9f(int dim,int itMax,float tol,const void * m,int mP,co
 }
 void CudaLCP_FullKernel_V9d(int dim,int itMax,float tol,const void * m,int mP,const void * q,void * f,void * err,void * share)
 {
-    if (dim>V9_SZMAX)
+
+}
+void CudaLCP_FullKernel_V10f(int dim,int itMax,float tol,const void * m,int mP,const void * q,void * f,void * err,void * share)
+{
+    if (V10_NB_THREADS*V10_NB_THREADS*V9_NBREG_USED>V9_NBREG)
+    {
+        myprintf("Utilisation de la version 8 car il y a trop de registres utilisés (used = %d , max = %d)\n",V10_NB_THREADS*V10_NB_THREADS*V9_NBREG_USED,V9_NBREG);
+        //CudaLCP_FullKernel_V8f(dim,itMax,tol,m,mP,q,f,err,share);
+    }
+    else if (dim>V9_SZMAX)
     {
         myprintf("Utilisation de la version 8 car il y a trop de contacts (max = %d , dim = %d)\n",V9_SZMAX,dim);
-        CudaLCP_FullKernel_V8d(dim,itMax,tol,m,mP,q,f,err,share);
+        //CudaLCP_FullKernel_V8f(dim,itMax,tol,m,mP,q,f,err,share);
     }
     else
     {
-#if !defined(__CUDA_ARCH__) ||  __CUDA_ARCH__ < 130
-        myprintf("CUDA ERROR: double precision not supported.\n");
-#else
-        unsigned dim_n = (dim + V9_NBPROC * 2 - 1) / (V9_NBPROC * 2);
-        dim3 threads(dim_n,dim_n);
-        dim3 grid(1,V9_NBPROC);
+        unsigned alloc = 5 * V10_NB_THREADS + dim * V10_NB_THREADS * 2 + V10_NB_THREADS * V10_NB_THREADS;
+        unsigned nbBlock = (dim + V10_NB_THREADS - 1) / V10_NB_THREADS;
 
-        unsigned alloc = dim_n + dim_n + dim_n + dim * dim_n + dim * dim_n + dim_n * dim_n;
+        dim3 threads(V10_NB_THREADS,V10_NB_THREADS);
+        dim3 grid(1,nbBlock);
 
-        CudaLCP_FullKernel_V9_kernel<<< grid, threads, alloc *  sizeof(double)>>>(dim,dim_n,V9_NBPROC*2,itMax * V9_NBPROC,tol,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share);
-#endif
+        CudaLCP_FullKernel_V9_kernel<float,V10_NB_THREADS><<< grid, threads, alloc *  sizeof(float)>>>(dim,itMax*V9_NBPROC*2*V10_NB_THREADS,tol,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share);
     }
 }
+void CudaLCP_FullKernel_V10d(int dim,int itMax,float tol,const void * m,int mP,const void * q,void * f,void * err,void * share)
+{
+
+}
+
 
 //////////////////////////////////////////////nlcp
 
