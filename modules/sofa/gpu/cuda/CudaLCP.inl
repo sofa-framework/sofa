@@ -515,25 +515,20 @@ void CudaLCP_FullKernel_V9d(int dim,int itMax,float tol,const void * m,int mP,co
 }
 void CudaLCP_FullKernel_V10f(int dim,int itMax,float tol,const void * m,int mP,const void * q,void * f,void * err,void * share)
 {
-    if (V10_NB_THREADS*V10_NB_THREADS*V9_NBREG_USED>V9_NBREG)
-    {
-        myprintf("Utilisation de la version 8 car il y a trop de registres utilisés (used = %d , max = %d)\n",V10_NB_THREADS*V10_NB_THREADS*V9_NBREG_USED,V9_NBREG);
-        //CudaLCP_FullKernel_V8f(dim,itMax,tol,m,mP,q,f,err,share);
-    }
-    else if (dim>V9_SZMAX)
-    {
-        myprintf("Utilisation de la version 8 car il y a trop de contacts (max = %d , dim = %d)\n",V9_SZMAX,dim);
-        //CudaLCP_FullKernel_V8f(dim,itMax,tol,m,mP,q,f,err,share);
-    }
-    else
-    {
-        unsigned alloc = 5 * V10_NB_THREADS + dim * V10_NB_THREADS * 2 + V10_NB_THREADS * V10_NB_THREADS;
-        unsigned nbBlock = (dim + V10_NB_THREADS - 1) / V10_NB_THREADS;
+    unsigned alloc = 5 * V10_NB_THREADS + dim * V10_NB_THREADS * 2 + V10_NB_THREADS * V10_NB_THREADS;
+    unsigned nbBlock = (dim + V10_NB_THREADS*2 - 1) / (V10_NB_THREADS*2);
 
+    if (nbBlock<=V10_NB_PROC)
+    {
         dim3 threads(V10_NB_THREADS,V10_NB_THREADS);
         dim3 grid(1,nbBlock);
 
-        CudaLCP_FullKernel_V10_kernel<float,V10_NB_THREADS><<< grid, threads, alloc *  sizeof(float)>>>(dim,itMax*V9_NBPROC*2*V10_NB_THREADS,tol,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share);
+        CudaLCP_FullKernel_V10_kernel<float><<< grid, threads, alloc *  sizeof(float)>>>(dim,itMax*nbBlock*2*V10_NB_THREADS,tol,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share);
+    }
+    else
+    {
+        myprintf("Utilisation de la version 8 car il y a trop de multiprocesseurs utilisés (max = %d , dim = %d)\n",nbBlock,V10_NB_PROC);
+        //CudaLCP_FullKernel_V8f(dim,itMax,tol,m,mP,q,f,err,share);
     }
 }
 void CudaLCP_FullKernel_V10d(int dim,int itMax,float tol,const void * m,int mP,const void * q,void * f,void * err,void * share)
