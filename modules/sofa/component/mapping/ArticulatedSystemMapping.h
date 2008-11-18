@@ -76,10 +76,15 @@ public:
 
     InRoot* rootModel;
 
+    /*
     ArticulatedSystemMapping(In* from, Out* to)
-        : Inherit(from, to), rootModel(NULL), ahc(NULL)
+    : Inherit(from, to), rootModel(NULL), ahc(NULL)
+    , m_rootModelName(initData(&m_rootModelName, std::string(""), "rootModel", "Root position if a rigid root model is specified."))
     {
     }
+    */
+
+    ArticulatedSystemMapping(In* from, Out* to);
 
     virtual ~ArticulatedSystemMapping()
     {
@@ -155,6 +160,8 @@ public:
     vector<ArticulatedHierarchyContainer::ArticulationCenter*> articulationCenters;
 
     ArticulatedHierarchyContainer* ahc;
+
+    Data<std::string> m_rootModelName;
 
 private:
     Vec<1,Quat> Buf_Rotation;

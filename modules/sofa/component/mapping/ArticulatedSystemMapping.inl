@@ -40,9 +40,19 @@ namespace mapping
 {
 
 template <class BasicMapping>
+ArticulatedSystemMapping<BasicMapping>::ArticulatedSystemMapping(In* from, Out* to)
+    : Inherit(from, to)
+    , rootModel(NULL), ahc(NULL)
+    , m_rootModelName(initData(&m_rootModelName, std::string(""), "rootModel", "Root position if a rigid root model is specified."))
+{
+
+}
+
+
+
+template <class BasicMapping>
 void ArticulatedSystemMapping<BasicMapping>::init()
 {
-    std::cout<<"INIT"<<std::endl;
     GNode* context = dynamic_cast<GNode*>(this->fromModel->getContext());
     context->getNodeObject(ahc);
     articulationCenters = ahc->getArticulationCenters();
@@ -55,7 +65,50 @@ void ArticulatedSystemMapping<BasicMapping>::init()
     ArticulationPos.resize(xfrom.size());
     ArticulationAxis.resize(xfrom.size());
 
-    context->parent->getNodeObject(rootModel);
+    if (!m_rootModelName.getValue().empty())
+    {
+        std::vector< std::string > tokens(0);
+        std::string str = m_rootModelName.getValue();
+        std::string::size_type begin_index = 0;
+        std::string::size_type end_index = 0;
+
+        while ( (end_index = str.find("/", begin_index)) != std::string::npos )
+        {
+            tokens.push_back(str.substr(begin_index, end_index - begin_index));
+            begin_index = end_index + 1;
+        }
+
+        tokens.push_back(str.substr(begin_index));
+
+        GNode* node = context;
+
+        std::vector< std::string >::iterator it = tokens.begin();
+        std::vector< std::string >::iterator itEnd = tokens.end();
+
+        while (it != itEnd)
+        {
+            if ( it->compare("..") == 0 )
+            {
+                if (node != 0)
+                    node = node->parent;
+            }
+            else
+            {
+                if (node != 0)
+                    node = node->getChild(*it);
+            }
+
+            ++it;
+        }
+
+        if (node != 0)
+            node->getNodeObject(rootModel);
+
+    }
+    else
+    {
+        context->parent->getNodeObject(rootModel);
+    }
 
     CoordinateBuf.clear();
     CoordinateBuf.resize(xfrom.size());
@@ -73,14 +126,20 @@ void ArticulatedSystemMapping<BasicMapping>::init()
         (*ac)->DisplacementArticulationCenter.clear();
         (*ac)->Disp_Rotation.clear();
 
-        std::cout<<"-  (*ac)->OrientationArticulationCenter"<<  (*ac)->OrientationArticulationCenter;
-
-// todo : warning if a (*a)->articulationIndex.getValue() exceed xfrom size !
+        // std::cout << "(*ac)->OrientationArticulationCenter : " << (*ac)->OrientationArticulationCenter << std::endl;
+        // todo : warning if a (*a)->articulationIndex.getValue() exceed xfrom size !
     }
 
     apply(xto, xfrom);
 
+    /*
+    OutVecDeriv& vto = *this->toModel->getV();
+    InVecDeriv& vfrom = *this->fromModel->getV();
+    applyJT(vfrom, vto);
+    */
 }
+
+
 
 template <class BasicMapping>
 void ArticulatedSystemMapping<BasicMapping>::reset()
@@ -90,17 +149,9 @@ void ArticulatedSystemMapping<BasicMapping>::reset()
 
 
 
-
 template <class BasicMapping>
 void ArticulatedSystemMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    //std::cout<<"Apply"<<std::endl;
-
-    //applyOld(out,in);
-    //return;
-
-
-
     // Copy the root position if a rigid root model is present
     if (rootModel)
     {
@@ -355,6 +406,8 @@ void ArticulatedSystemMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out
     }
 }
 
+
+
 template <class BasicMapping>
 void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in, typename InRoot::VecDeriv* outroot )
 {
@@ -417,15 +470,14 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecDeriv& out
     {
         (*outroot)[outroot->size()-1] += fObjects6DBuf[0];
     }
-
-
-
 }
+
+
 
 template <class BasicMapping>
 void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in, typename InRoot::VecConst* outRoot )
 {
-    std::cout<<" ApplyJT const  - size in="<< in.size() <<std::endl;
+//	std::cout << "ApplyJT const  - size in = " << in.size() << std::endl;
 
     OutVecCoord& xto = *this->toModel->getX();
 
@@ -498,16 +550,12 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out
                 OutSparseDeriv constraintT(indexT, T);
 
                 (*outRoot)[i].push_back(constraintT);
-                std::cout<< "constraintT = data : "<< T << "index : "<< indexT<<std::endl;
+                //	std::cout<< "constraintT = data : "<< T << "index : "<< indexT<<std::endl;
             }
-
-
-
         }
     }
 
-
-    std::cout<<"End ApplyJT const"<<std::endl;
+//	std::cout<<"End ApplyJT const"<<std::endl;
 
 }
 
