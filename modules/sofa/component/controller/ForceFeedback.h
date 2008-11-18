@@ -25,16 +25,7 @@
 #ifndef SOFA_COMPONENT_CONTROLLER_FORCEFEEDBACK_H
 #define SOFA_COMPONENT_CONTROLLER_FORCEFEEDBACK_H
 
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/simulation/common/OdeSolverImpl.h>
 #include <sofa/simulation/tree/GNode.h>
-#include <sofa/component/linearsolver/NewMatMatrix.h>
-#include <sofa/component/linearsolver/NewMatVector.h>
-#include <sofa/component/MechanicalObject.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/component/container/ArticulatedHierarchyContainer.h>
-
 #include <sofa/core/componentmodel/behavior/BaseController.h>
 
 namespace sofa
