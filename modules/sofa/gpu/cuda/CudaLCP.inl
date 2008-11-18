@@ -426,9 +426,9 @@ void CudaLCP_FullKernel_V7d(int dim,int itMax,float tol,const void * m,int mP,co
 void CudaLCP_FullKernel_V8f(int dim,int itMax,float tol,const void * m,int mP,const void * q,void * f,void * err,void * share)
 {
 
-    dim3 threads(BSIZE_C,BSIZE_C);
-    dim3 grid(1,NB_MULTIPROC);
-    int dim_n = (dim+BSIZE_C-1)/BSIZE_C * BSIZE_C;
+    dim3 threads(V8_BSIZE,V8_BSIZE);
+    dim3 grid(1,V8_NBPROC);
+    int dim_n = (dim+V8_BSIZE-1)/V8_BSIZE * V8_BSIZE;
 
     CudaLCP_FullKernel_V8_kernel<<< grid, threads,0>>>(dim,dim_n,dim_n*itMax,tol,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share);
 }
@@ -437,9 +437,9 @@ void CudaLCP_FullKernel_V8d(int dim,int itMax,float tol,const void * m,int mP,co
 #if !defined(__CUDA_ARCH__) ||  __CUDA_ARCH__ < 130
     myprintf("CUDA ERROR: double precision not supported.\n");
 #else
-    dim3 threads(BSIZE_C,BSIZE_C);
-    dim3 grid(1,NB_MULTIPROC);
-    int dim_n = (dim+BSIZE_C-1)/BSIZE_C * BSIZE_C;
+    dim3 threads(V8_BSIZE,V8_BSIZE);
+    dim3 grid(1,V8_NBPROC);
+    int dim_n = (dim+V8_BSIZE-1)/V8_BSIZE * V8_BSIZE;
 
     CudaLCP_FullKernel_V8_kernel<<< grid, threads,0>>>(dim,dim_n,dim_n*itMax,(double)tol,(const double *) m,mP,(const double *) q,(double *) f,(double *) err,(int *) share);
 
