@@ -539,8 +539,8 @@ public:
         else pitch = ((x+WARP_SIZE-1)/WARP_SIZE)*WARP_SIZE*sizeof(T);
 
         size_type ypitch = y;
-        if (WARP_SIZE==0) ypitch = y;
-        else ypitch = ((y+WARP_SIZE-1)/WARP_SIZE)*WARP_SIZE;
+        //if (WARP_SIZE==0) ypitch = y;
+        //else ypitch = ((y+WARP_SIZE-1)/WARP_SIZE)*WARP_SIZE;
 
         if ( ypitch*pitch > deviceAllocSize )
         {
