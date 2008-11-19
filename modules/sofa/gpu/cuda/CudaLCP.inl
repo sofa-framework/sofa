@@ -513,24 +513,79 @@ void CudaLCP_FullKernel_V9d(int dim,int itMax,float tol,const void * m,int mP,co
 {
 
 }
+
+/*
+void CudaLCP_FullKernel_V10f(int dim,int itMax,float tol,const void * m,int mP,const void * q,void * f,void * err,void * share) {
+	unsigned dim_n = 9;
+
+	if ((dim>0) && (dim<56)) dim_n = 9;
+	else dim_n = 9;
+
+	unsigned alloc = 5 * dim_n + dim * dim_n * 2 + dim_n * dim_n;
+	unsigned nbBlock = (dim + dim_n*2 - 1) / (dim_n*2);
+
+	if (nbBlock<=V10_NB_PROC) {
+		dim3 threads(dim_n,dim_n);
+		dim3 grid(1,nbBlock);
+
+		switch(dim_n)
+		{
+#define CASE(N) \
+			case N: \
+			CudaLCP_FullKernel_V10_kernel<float,N><<< grid, threads, alloc *  sizeof(float)>>>(dim,itMax*nbBlock*2*dim_n,tol,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share); \
+			break
+			CASE(1);
+			CASE(2);
+			CASE(3);
+			CASE(4);
+			CASE(5);
+			CASE(6);
+			CASE(7);
+			CASE(8);
+			CASE(9);
+			CASE(10);
+			CASE(11);
+			CASE(12);
+			CASE(13);
+			CASE(14);
+			CASE(15);
+			CASE(16);
+			CASE(17);
+			CASE(18);
+			CASE(19);
+			CASE(20);
+			CASE(21);
+			CASE(22);
+#undef CASE
+		}
+
+		//CudaLCP_FullKernel_V10_kernel<float,dim_n><<< grid, threads, alloc *  sizeof(float)>>>(dim,itMax*nbBlock*2*dim_n,tol,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share);
+	} else {
+		myprintf("Utilisation de la version 8 car il y a trop de multiprocesseurs utilisés (max = %d , dim = %d)\n",V10_NB_PROC,nbBlock);
+		//CudaLCP_FullKernel_V8f(dim,itMax,tol,m,mP,q,f,err,share);
+	}
+}
+*/
+
 void CudaLCP_FullKernel_V10f(int dim,int itMax,float tol,const void * m,int mP,const void * q,void * f,void * err,void * share)
 {
-    unsigned alloc = 5 * V10_NB_THREADS + dim * V10_NB_THREADS * 2 + V10_NB_THREADS * V10_NB_THREADS;
-    unsigned nbBlock = (dim + V10_NB_THREADS*2 - 1) / (V10_NB_THREADS*2);
+    unsigned alloc = 5 * V10_DIM_N + dim * V10_DIM_N * 2 + V10_DIM_N * V10_DIM_N;
+    unsigned nbBlock = (dim + V10_DIM_N*2 - 1) / (V10_DIM_N*2);
 
     if (nbBlock<=V10_NB_PROC)
     {
-        dim3 threads(V10_NB_THREADS,V10_NB_THREADS);
+        dim3 threads(V10_DIM_N,V10_DIM_N);
         dim3 grid(1,nbBlock);
 
-        CudaLCP_FullKernel_V10_kernel<float><<< grid, threads, alloc *  sizeof(float)>>>(dim,itMax*nbBlock*2*V10_NB_THREADS,tol,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share);
+        CudaLCP_FullKernel_V10_kernel<float,V10_DIM_N><<< grid, threads, alloc *  sizeof(float)>>>(dim,itMax*nbBlock*2*V10_DIM_N,tol,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share);
     }
     else
     {
-        myprintf("Utilisation de la version 8 car il y a trop de multiprocesseurs utilisés (max = %d , dim = %d)\n",nbBlock,V10_NB_PROC);
+        myprintf("Utilisation de la version 8 car il y a trop de multiprocesseurs utilisés (max = %d , dim = %d)\n",V10_NB_PROC,nbBlock);
         //CudaLCP_FullKernel_V8f(dim,itMax,tol,m,mP,q,f,err,share);
     }
 }
+
 void CudaLCP_FullKernel_V10d(int dim,int itMax,float tol,const void * m,int mP,const void * q,void * f,void * err,void * share)
 {
 
