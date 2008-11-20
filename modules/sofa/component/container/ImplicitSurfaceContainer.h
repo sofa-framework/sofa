@@ -50,26 +50,32 @@ class ImplicitSurface : public virtual core::objectmodel::BaseObject
 public:
     ImplicitSurface( ) { }
     virtual ~ImplicitSurface() { }
-    virtual double getValue(defaulttype::Vec3d& pos) =0;
-    virtual double getValue(defaulttype::Vec3d& pos, int& /*domain*/) { return getValue(pos); };  // the second parameter could be useful to identify a domain
-    virtual defaulttype::Vec3d getGradient(defaulttype::Vec3d&, int domain=0);
+    virtual double getValue(defaulttype::Vec3d&) =0;
+    virtual double getValue(defaulttype::Vec3d&, int&) =0;  // the second parameter could be useful to identify a domain
+    virtual defaulttype::Vec3d getGradient(defaulttype::Vec3d&, int i=0);
+    virtual unsigned int getDomain(sofa::defaulttype::Vec3d &, int ref_domain) =0;
 
-    virtual bool computeSegIntersection(defaulttype::Vec3d& posInside, defaulttype::Vec3d& posOutside, defaulttype::Vec3d& intersecPos, int domain=0);
-    virtual void projectPointonSurface(defaulttype::Vec3d& point, int domain=0);
-    virtual bool projectPointonSurface2(defaulttype::Vec3d& point, int domain, defaulttype::Vec3d& dir); // TODO mettre les paramètres step=0.1 & countMax=30 en paramètre
+
+    virtual bool computeSegIntersection(defaulttype::Vec3d& posInside, defaulttype::Vec3d& posOutside, defaulttype::Vec3d& intersecPos, int i=0);
+    virtual void projectPointonSurface(defaulttype::Vec3d& point, int i=0);
+    virtual bool projectPointonSurface2(defaulttype::Vec3d& point, int i=0, defaulttype::Vec3d& dir = defaulttype::Vec3d(0,0,0)); // TODO mettre les paramètres step=0.1 & countMax=30 en paramètre
+    virtual bool projectPointOutOfSurface(defaulttype::Vec3d& point, int i=0, defaulttype::Vec3d& dir= defaulttype::Vec3d(0,0,0), double &dist_out = 0.0);
+
+
     bool projectPointonSurface2(defaulttype::Vec3d& point, int i=0)
     {
         defaulttype::Vec3d dir = defaulttype::Vec3d(0,0,0);
         return projectPointonSurface2(point, i, dir);
     }
-    virtual bool projectPointOutOfSurface(defaulttype::Vec3d& point, int domain, defaulttype::Vec3d& dir, double &dist_out);
-    bool projectPointOutOfSurface(defaulttype::Vec3d& point, int domain=0)
+
+    bool projectPointOutOfSurface(defaulttype::Vec3d& point, int i=0)
     {
         defaulttype::Vec3d dir;
         double dist_out = 0.0;
-        return projectPointOutOfSurface(point, domain, dir, dist_out);
+        return projectPointOutOfSurface(point, i, dir, dist_out);
     }
-    virtual int getDomain(sofa::defaulttype::Vec3d &/*pos*/) { return 0; }
+
+
 };
 
 
@@ -94,7 +100,8 @@ public:
     void reinit() {init();}
 
     double getValue(defaulttype::Vec3d& Pos);
-    //inline	double getValue(defaulttype::Vec3d& Pos, int&){return getValue(Pos);}
+    inline	double getValue(defaulttype::Vec3d& Pos, int&) {return getValue(Pos);}
+    unsigned int getDomain(sofa::defaulttype::Vec3d &, int ref_domain)	{return 0;}
     //defaulttype::Vec3d getGradient(defaulttype::Vec3d &Pos);
 
     Data<bool> inside;
