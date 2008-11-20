@@ -93,7 +93,7 @@ public:
     /// fixed-size neighbors arrays
     /// @{
     typedef fixed_array<EdgeID,3>		TriangleEdges;
-    typedef fixed_array<QuadID,4>		QuadEdges;
+    typedef fixed_array<EdgeID,4>		QuadEdges;
     typedef fixed_array<TriangleID,4>	TetraTriangles;
     typedef fixed_array<EdgeID,6>		TetraEdges;
     typedef fixed_array<QuadID,6>		HexaQuads;
