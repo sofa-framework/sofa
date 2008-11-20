@@ -29,6 +29,7 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>
 
+
 namespace sofa
 {
 
@@ -37,6 +38,25 @@ namespace component
 
 namespace forcefield
 {
+
+template<class DataTypes>
+EulerianFluidModel<DataTypes>::EulerianFluidModel()
+    :
+    m_bAddForces(initData(&m_bAddForces, bool(0), "addFroces", "Add Forces")),
+    m_viscosity  (initData(&m_viscosity, Real(0), "viscosity", "Fluid Viscosity")),
+    m_bDisplayBoundary  (initData(&m_bDisplayBoundary, bool(0), "displayBoundary", "Display Boundary")),
+    m_bDisplayVorticity  (initData(&m_bDisplayVorticity, bool(0), "displayVorticity", "Display Vorticity")),
+    m_bDisplayVelocity  (initData(&m_bDisplayVelocity, bool(0), "displayVelocity", "Display Velocity")),
+    m_harmonicVx(initData(&m_harmonicVx, Real(0), "harmonicVx", "Harmonic Velocity x")),
+    m_harmonicVy(initData(&m_harmonicVy, Real(0), "harmonicVy", "Harmonic Velocity y")),
+    m_harmonicVz(initData(&m_harmonicVz, Real(0), "harmonicVz", "Harmonic Velocity z")),
+    m_bdX  (initData(&m_bdX, Real(0), "bdX", "BoundaryX")),
+    m_bdY  (initData(&m_bdY, Real(0), "bdY", "BoundaryY")),
+    m_bdZ  (initData(&m_bdZ, Real(0), "bdZ", "BoundaryZ")),
+    m_centerType  (initData(&m_centerType, CenterType(0), "centerType", "Center Type")),
+    m_mstate(NULL), m_topology(NULL), m_triGeo(NULL), m_quadGeo(NULL), m_nbPoints(0), m_nbEdges(0), m_nbFaces(0), m_nbVolumes(0)
+{
+}
 
 template<class DataTypes>
 EulerianFluidModel<DataTypes>::~EulerianFluidModel()
@@ -119,7 +139,7 @@ void EulerianFluidModel<DataTypes>::init()
         m_nbFaces = m_topology->getNbTriangles();
     else
         m_nbFaces = m_topology->getNbQuads();
-    m_nbVolumes = 0;
+//	m_nbVolumes = 0;
 
     //initialize the size of state variables
     m_vorticity.ReSize(m_nbPoints);
@@ -215,9 +235,6 @@ void EulerianFluidModel<DataTypes>::draw()
 {
     assert(this->m_mstate);
 
-    // Compute topological springs
-    const VecCoord& p1 = *this->m_mstate->getX();
-
     if (m_topology != NULL)
     {
         normalizeDisplayValues();
@@ -238,7 +255,7 @@ void EulerianFluidModel<DataTypes>::draw()
                     Triangle face = m_topology->getTriangle(i);
                     for(PointID j = 0; j < face.size(); ++j)
                     {
-                        if(abs(m_pInfo.m_values[face[j]]) < 0.005)
+                        if(fabs(m_pInfo.m_values[face[j]]) < 0.005)
                             glColor3f(0.0, 0.0, 1.0);
                         else
                         {
@@ -269,7 +286,7 @@ void EulerianFluidModel<DataTypes>::draw()
                     Quad face = m_topology->getQuad(i);
                     for(PointID j = 0; j < face.size(); ++j)
                     {
-                        if(abs(m_pInfo.m_values[face[j]]) < 0.005)
+                        if(fabs(m_pInfo.m_values[face[j]]) < 0.005)
                             glColor3f(0.0, 0.0, 1.0);
                         else
                         {
@@ -445,7 +462,7 @@ void EulerianFluidModel<DataTypes>::computeDualFaces()
                 if(m_pInfo.m_isBoundary[i])
                     //for a boundary point, dual face is not only composed of face centers, but also the point itself and two edge centers
                 {
-                    PointInformation::Normal norm1, norm2, norm3, norm4;
+                    Normal norm1, norm2, norm3, norm4;
                     Edge e;
                     EdgeFaces eFaces;
 
@@ -460,7 +477,7 @@ void EulerianFluidModel<DataTypes>::computeDualFaces()
                     norm2 = m_fInfo.m_centers[eFaces[0]] - m_eInfo.m_centers[pEdges.back()];
 
                     // point
-                    m_pInfo.m_dualFaces[i].push_back(PointInformation::VertexOfDualFace(p.x(), p.y(), p.z()));
+                    m_pInfo.m_dualFaces[i].push_back(typename PointInformation::VertexOfDualFace(p.x(), p.y(), p.z()));
 
                     // the other edge center
                     m_pInfo.m_dualFaces[i].push_back(m_eInfo.m_centers[pEdges.front()]);
@@ -472,7 +489,7 @@ void EulerianFluidModel<DataTypes>::computeDualFaces()
                     if(e[1] == i)
                         norm4 = -norm4;
 
-                    PointInformation::VertexNormal vNorms;
+                    VertexNormal vNorms;
                     //VertexNormal for eCenter1
                     vNorms[0] = norm1, vNorms[1] = norm2;
                     m_pInfo.m_dualFaceVertexNormals[i].push_back(vNorms);
@@ -492,7 +509,7 @@ void EulerianFluidModel<DataTypes>::computeDualFaces()
                 {
                     m_pInfo.m_dualFaces[i].push_back(m_fInfo.m_centers[pFaces[j]]);
 
-                    PointInformation::VertexNormal vNorms;
+                    VertexNormal vNorms;
                     vNorms[0] = m_triGeo->computeEdgeDirection(pEdges[j]);
                     Edge e = m_topology->getEdge(pEdges[j]);
                     if(e[1] == i)
@@ -519,7 +536,7 @@ void EulerianFluidModel<DataTypes>::computeDualFaces()
                 if(m_pInfo.m_isBoundary[i])
                     //for a boundary point, dual face is not only composed of face centers, but also the point itself and edgecenters
                 {
-                    PointInformation::Normal norm1, norm2, norm3, norm4;
+                    Normal norm1, norm2, norm3, norm4;
                     Edge e;
                     EdgeFaces eFaces;
 
@@ -534,7 +551,7 @@ void EulerianFluidModel<DataTypes>::computeDualFaces()
                     norm2 = m_fInfo.m_centers[eFaces[0]] - m_eInfo.m_centers[pEdges.back()];
 
                     // point
-                    m_pInfo.m_dualFaces[i].push_back(PointInformation::VertexOfDualFace(p.x(), p.y(), p.z()));
+                    m_pInfo.m_dualFaces[i].push_back(VertexOfDualFace(p.x(), p.y(), p.z()));
 
                     // the other edge center
                     m_pInfo.m_dualFaces[i].push_back(m_eInfo.m_centers[pEdges.front()]);
@@ -546,7 +563,7 @@ void EulerianFluidModel<DataTypes>::computeDualFaces()
                     if(e[1] == i)
                         norm4 = -norm4;
 
-                    PointInformation::VertexNormal vNorms;
+                    VertexNormal vNorms;
                     //VertexNormal for eCenter1
                     vNorms[0] = norm1, vNorms[1] = norm2;
                     m_pInfo.m_dualFaceVertexNormals[i].push_back(vNorms);
@@ -566,7 +583,7 @@ void EulerianFluidModel<DataTypes>::computeDualFaces()
                 {
                     m_pInfo.m_dualFaces[i].push_back(m_fInfo.m_centers[pFaces[j]]);
 
-                    PointInformation::VertexNormal vNorms;
+                    VertexNormal vNorms;
                     vNorms[0] = m_quadGeo->computeEdgeDirection(pEdges[j]);
                     Edge e = m_topology->getEdge(pEdges[j]);
                     if(e[1] == i)
@@ -660,16 +677,16 @@ void EulerianFluidModel<DataTypes>::computeOperators()
         for(PointID j = 0 ; j < m_nbPoints; ++j)
             m_d0.element(i, j) = d0.element(i, j);
 
-    //�߽��ϵ�phiָ��Ϊ0
+    //±ﬂΩÁ…œµƒphi÷∏∂®Œ™0
     m_laplace.ReSize(m_nbPoints, m_nbPoints);
     m_laplace = 0.0;
-    for(int i = 0; i < m_nbPoints; ++i)
+    for(unsigned int i = 0; i < m_nbPoints; ++i)
     {
         if(m_pInfo.m_isBoundary[i])
             m_laplace.element(i, i) = 1.0;
         else
         {
-            for(int j = 0; j < m_nbPoints; ++j)
+            for(unsigned int j = 0; j < m_nbPoints; ++j)
                 m_laplace.element(i, j) = laplace.element(i, j);
         }
     }
@@ -974,7 +991,7 @@ void EulerianFluidModel<DataTypes>::setBdConstraints(double xMin, double xMax, d
                     m_bdConstraints.insert(make_pair(i, 0));
                     continue;
                 }
-                const EdgeFaces& eFaces = (m_meshType == MeshType::TriangleMesh) ?
+                const EdgeFaces& eFaces = (m_meshType == TriangleMesh) ?
                         m_topology->getTriangleEdgeShell(i) : m_topology->getQuadEdgeShell(i);
                 //double value = 1.0 * d1.element(eFaces[0], i);
                 double value = 0;
@@ -1005,7 +1022,7 @@ void EulerianFluidModel<DataTypes>::setBdConstraints(double xMin, double xMax, d
                     m_bdConstraints.insert(make_pair(i, 0));
                     continue;
                 }
-                const EdgeFaces& eFaces = (m_meshType == MeshType::TriangleMesh) ?
+                const EdgeFaces& eFaces = (m_meshType == TriangleMesh) ?
                         m_topology->getTriangleEdgeShell(i) : m_topology->getQuadEdgeShell(i);
 
                 //double value = 1.0 * d1.element(eFaces[0], i);
@@ -1089,17 +1106,17 @@ unsigned int EulerianFluidModel<DataTypes>::searchFaceForTriMesh(const sofa::def
     //at present, only for triangle mesh
     assert(m_meshType == TriangleMesh);
 
-    if(startFace < 0 || startFace >= m_nbFaces)
+    if(startFace == sofa::core::componentmodel::topology::BaseMeshTopology::InvalidID || startFace >= m_nbFaces)
         startFace = 0;
 
-    sofa::helper::vector<bool> flag(m_nbFaces, false);
+    sofa::helper::vector<bool> flag((int)m_nbFaces, false);
     sofa::helper::vector<FaceID> faces;
 
     flag[startFace] = true;
     faces.push_back(startFace);
 
     unsigned int temp;
-    for(int i = 0; i < faces.size(); ++i)
+    for(unsigned int i = 0; i < faces.size(); ++i)
     {
         if(m_triGeo->isPointInTriangle(faces[i], false, pt, temp))
             return faces[i];
@@ -1182,17 +1199,21 @@ unsigned int EulerianFluidModel<DataTypes>::searchDualFaceForTriMesh(const Coord
     break;
     case Barycenter:
         std::cerr << "At present, not implemented: searchDualFaceForTriMesh() for Barycenter" << endl;
+        return sofa::core::componentmodel::topology::BaseMeshTopology::InvalidID;
         break;
+
+    default:
+        return sofa::core::componentmodel::topology::BaseMeshTopology::InvalidID;
     }
 }
 
 template<class DataTypes>
 unsigned int EulerianFluidModel<DataTypes>::searchDualFaceForQuadMesh(const Coord & pt, PointID startDualFace) const
 {
-    if(startDualFace < 0 || startDualFace >= m_nbPoints)
+    if(startDualFace == sofa::core::componentmodel::topology::BaseMeshTopology::InvalidID || startDualFace >= m_nbPoints)
         startDualFace = 0;
 
-    sofa::helper::vector<bool> flag(m_nbPoints, false);
+    sofa::helper::vector<bool> flag((int)m_nbPoints, false);
     sofa::helper::vector<PointID> dualFaceIDs;
 
     flag[startDualFace] = true;
@@ -1200,9 +1221,9 @@ unsigned int EulerianFluidModel<DataTypes>::searchDualFaceForQuadMesh(const Coor
 
     sofa::defaulttype::Vec<3, double> p(pt.x(), pt.y(), pt.z());
 
-    for(int i = 0; i < dualFaceIDs.size(); ++i)
+    for(unsigned int i = 0; i < dualFaceIDs.size(); ++i)
     {
-        PointInformation::DualFace dualFace = m_pInfo.m_dualFaces[dualFaceIDs[i]];
+        DualFace dualFace = m_pInfo.m_dualFaces[dualFaceIDs[i]];
         if(!m_pInfo.m_isBoundary[dualFaceIDs[i]])
         {
             if(sofa::component::topology::is_point_in_quad(p, dualFace[0], dualFace[1], dualFace[2], dualFace[3]))
@@ -1282,6 +1303,8 @@ typename DataTypes::Deriv EulerianFluidModel<DataTypes>:: interpolateVelocity(co
     case RegularQuadMesh:
         ind_p = searchDualFaceForQuadMesh(pt, start);
         break;
+    default:
+        ind_p = sofa::core::componentmodel::topology::BaseMeshTopology::InvalidID;
     }
 
     if(ind_p == sofa::core::componentmodel::topology::BaseMeshTopology::InvalidID)

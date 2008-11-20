@@ -87,26 +87,38 @@ public:
     enum MeshType {TriangleMesh = 3, QuadMesh, RegularQuadMesh};
     enum { Barycenter = 0, Circumcenter = 1};
 
+protected:
+
+    //arguments
+    Data< bool > m_bAddForces;
+    Data< Real > m_viscosity;
+    Data< bool > m_bDisplayBoundary;
+    Data< bool > m_bDisplayVorticity;
+    Data< bool > m_bDisplayVelocity;
+    Data< Real > m_harmonicVx;
+    Data< Real > m_harmonicVy;
+    Data< Real > m_harmonicVz;
+    Data< Real > m_bdX;
+    Data< Real > m_bdY;
+    Data< Real > m_bdZ;
+    Data< CenterType > m_centerType;
+
+    //topology and geometry related data
+    MechanicalState *m_mstate;
+    topology::MeshTopology* m_topology;
+    MeshType m_meshType;
+    sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* m_triGeo;
+    sofa::component::topology::QuadSetGeometryAlgorithms<DataTypes>* m_quadGeo;
+    std::map<int, double> m_bdConstraints;	//boundary constraints
+
+    unsigned int m_nbPoints;
+    unsigned int m_nbEdges;
+    unsigned int m_nbFaces;
+    unsigned int m_nbVolumes;
+
 public:
 
-    EulerianFluidModel()
-        :
-        m_bAddForces(initData(&m_bAddForces, bool(0), "addFroces", "Add Forces")),
-        m_viscosity  (initData(&m_viscosity, Real(0), "viscosity", "Fluid Viscosity")),
-        m_bDisplayBoundary  (initData(&m_bDisplayBoundary, bool(0), "displayBoundary", "Display Boundary")),
-        m_bDisplayVorticity  (initData(&m_bDisplayVorticity, bool(0), "displayVorticity", "Display Vorticity")),
-        m_bDisplayVelocity  (initData(&m_bDisplayVelocity, bool(0), "displayVelocity", "Display Velocity")),
-        m_harmonicVx(initData(&m_harmonicVx, Real(0), "harmonicVx", "Harmonic Velocity x")),
-        m_harmonicVy(initData(&m_harmonicVy, Real(0), "harmonicVy", "Harmonic Velocity y")),
-        m_harmonicVz(initData(&m_harmonicVz, Real(0), "harmonicVz", "Harmonic Velocity z")),
-        m_bdX  (initData(&m_bdX, Real(0), "bdX", "BoundaryX")),
-        m_bdY  (initData(&m_bdY, Real(0), "bdY", "BoundaryY")),
-        m_bdZ  (initData(&m_bdZ, Real(0), "bdZ", "BoundaryZ")),
-        m_centerType  (initData(&m_centerType, CenterType(0), "centerType", "Center Type")),
-        m_mstate(NULL), m_topology(NULL), m_nbPoints(0), m_nbEdges(0), m_nbFaces(0), m_nbVolumes(0), m_triGeo(NULL), m_quadGeo(NULL)
-    {
-    }
-
+    EulerianFluidModel();
     ~EulerianFluidModel();
 
     Real getBdX() const { return m_bdX.getValue(); }
@@ -187,32 +199,10 @@ protected:
     EdgeInformation m_eInfo;
     FaceInformation m_fInfo;
 
-    //arguments
-    Data< bool > m_bAddForces;
-    Data< bool > m_bDisplayBoundary;
-    Data< bool > m_bDisplayVorticity;
-    Data< bool > m_bDisplayVelocity;
-    Data< Real > m_harmonicVx;
-    Data< Real > m_harmonicVy;
-    Data< Real > m_harmonicVz;
-    Data< Real > m_bdX;
-    Data< Real > m_bdY;
-    Data< Real > m_bdZ;
-    Data< Real > m_viscosity;
-    Data< CenterType > m_centerType;
-
-    //topology and geometry related data
-    MechanicalState *m_mstate;
-    topology::MeshTopology* m_topology;
-    MeshType m_meshType;
-    sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* m_triGeo;
-    sofa::component::topology::QuadSetGeometryAlgorithms<DataTypes>* m_quadGeo;
-    std::map<int, double> m_bdConstraints;	//boundary constraints
-
-    unsigned int m_nbPoints;
-    unsigned int m_nbEdges;
-    unsigned int m_nbFaces;
-    unsigned int m_nbVolumes;
+    typedef typename PointInformation::Normal Normal;
+    typedef typename PointInformation::VertexNormal VertexNormal;
+    typedef typename PointInformation::VertexOfDualFace VertexOfDualFace;
+    typedef typename PointInformation::DualFace DualFace;
 
     //operators
     sofa::component::linearsolver::SparseMatrix<int> d0;
