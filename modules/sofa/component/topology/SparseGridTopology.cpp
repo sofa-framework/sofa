@@ -1198,6 +1198,24 @@ void SparseGridTopology::updateEdges()
     for(unsigned i=0; i<seqHexas.getValue().size(); ++i)
     {
         Hexa c = seqHexas.getValue()[i];
+
+#ifdef SOFA_NEW_HEXA
+        // horizontal
+        edgesMap[pair<int,int>(c[0],c[1])]=0;
+        edgesMap[pair<int,int>(c[2],c[3])]=0;
+        edgesMap[pair<int,int>(c[4],c[5])]=0;
+        edgesMap[pair<int,int>(c[6],c[7])]=0;
+        // vertical
+        edgesMap[pair<int,int>(c[0],c[3])]=0;
+        edgesMap[pair<int,int>(c[1],c[2])]=0;
+        edgesMap[pair<int,int>(c[4],c[7])]=0;
+        edgesMap[pair<int,int>(c[5],c[6])]=0;
+        // profondeur
+        edgesMap[pair<int,int>(c[0],c[4])]=0;
+        edgesMap[pair<int,int>(c[1],c[5])]=0;
+        edgesMap[pair<int,int>(c[3],c[7])]=0;
+        edgesMap[pair<int,int>(c[2],c[6])]=0;
+#else
         // horizontal
         edgesMap[pair<int,int>(c[0],c[1])]=0;
         edgesMap[pair<int,int>(c[2],c[3])]=0;
@@ -1213,6 +1231,7 @@ void SparseGridTopology::updateEdges()
         edgesMap[pair<int,int>(c[1],c[5])]=0;
         edgesMap[pair<int,int>(c[2],c[6])]=0;
         edgesMap[pair<int,int>(c[3],c[7])]=0;
+#endif
     }
 
 
@@ -1230,8 +1249,23 @@ void SparseGridTopology::updateQuads()
     for(unsigned i=0; i<seqHexas.getValue().size(); ++i)
     {
         Hexa c = seqHexas.getValue()[i];
-
         fixed_array<int,4> v;
+
+#ifdef SOFA_NEW_HEXA
+        v[0]=c[0]; v[1]=c[1]; v[2]=c[2]; v[3]=c[3];
+        quadsMap[v]=0;
+        v[0]=c[4]; v[1]=c[5]; v[2]=c[6]; v[3]=c[7];
+        quadsMap[v]=0;
+        v[0]=c[0]; v[1]=c[1]; v[2]=c[5]; v[3]=c[4];
+        quadsMap[v]=0;
+        v[0]=c[3]; v[1]=c[2]; v[2]=c[6]; v[3]=c[7];
+        quadsMap[v]=0;
+        v[0]=c[0]; v[1]=c[4]; v[2]=c[7]; v[3]=c[3];
+        quadsMap[v]=0;
+        v[0]=c[1]; v[1]=c[5]; v[2]=c[6]; v[3]=c[2];
+        quadsMap[v]=0;
+#else
+
         v[0]=c[0]; v[1]=c[1]; v[2]=c[3]; v[3]=c[2];
         quadsMap[v]=0;
         v[0]=c[4]; v[1]=c[5]; v[2]=c[7]; v[3]=c[6];
@@ -1244,7 +1278,7 @@ void SparseGridTopology::updateQuads()
         quadsMap[v]=0;
         v[0]=c[1]; v[1]=c[5]; v[2]=c[7]; v[3]=c[3];
         quadsMap[v]=0;
-
+#endif
     }
     SeqQuads& quads = *seqQuads.beginEdit();
     quads.clear();

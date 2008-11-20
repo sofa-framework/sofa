@@ -655,8 +655,10 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
 
 int SparseGridRamificationTopology::findCube(const Vector3 &pos, SReal &fx, SReal &fy, SReal &fz)
 {
+// 				if(  !this->isVirtual && _nbVirtualFinerLevels.getValue() == 0 )
+// 					return SparseGridTopology::findCube(pos, fx, fy, fz);
 
-    if(  !this->isVirtual && _nbVirtualFinerLevels.getValue() == 0 )
+    if(  _nbVirtualFinerLevels.getValue() == 0 )
         return SparseGridTopology::findCube(pos, fx, fy, fz);
 
 
@@ -668,6 +670,7 @@ int SparseGridRamificationTopology::findCube(const Vector3 &pos, SReal &fx, SRea
 
     Connexion * finestConnexion = finestSparseGridTopology->_connexions[ finestSparseCube ][0];
 
+
     _regularGrid.findCube( pos,fx,fy,fz); // only to compute fx,fy,fz
 
     return finestConnexion->_coarsestParent;
@@ -676,9 +679,12 @@ int SparseGridRamificationTopology::findCube(const Vector3 &pos, SReal &fx, SRea
 
 int SparseGridRamificationTopology::findNearestCube(const Vector3 &pos, SReal &fx, SReal &fy, SReal &fz)
 {
-    if( !this->isVirtual && _nbVirtualFinerLevels.getValue() == 0 )
-        return SparseGridTopology::findNearestCube(pos, fx, fy, fz);
+// 				if( !this->isVirtual && _nbVirtualFinerLevels.getValue() == 0 )
+// 					return SparseGridTopology::findNearestCube(pos, fx, fy, fz);
 
+
+    if( _nbVirtualFinerLevels.getValue() == 0 )
+        return SparseGridTopology::findNearestCube(pos, fx, fy, fz);
 
 
     SparseGridRamificationTopology* finestSparseGridTopology = dynamic_cast<SparseGridRamificationTopology*>(_virtualFinerLevels[0]);

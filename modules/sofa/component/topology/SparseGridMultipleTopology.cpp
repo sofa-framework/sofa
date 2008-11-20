@@ -179,6 +179,11 @@ void SparseGridMultipleTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->setNx( newnx );
     _virtualFinerLevels[0]->setNy( newny );
     _virtualFinerLevels[0]->setNz( newnz );
+
+    std::stringstream nameg; nameg << "virtual grid "<< 0;
+    _virtualFinerLevels[0]->setName( nameg.str().c_str() );
+
+
 // 		  _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
     sgmt->_fileTopologies.setValue(this->_fileTopologies.getValue());
     sgmt->_dataStiffnessCoefs.setValue(this->_dataStiffnessCoefs.getValue());
@@ -190,6 +195,9 @@ void SparseGridMultipleTopology::buildVirtualFinerLevels()
     for(int i=1; i<nb; ++i)
     {
         _virtualFinerLevels[i] = new SparseGridMultipleTopology(true);
+
+        std::stringstream nameg; nameg << "virtual grid "<< i;
+        _virtualFinerLevels[i]->setName( nameg.str().c_str() );
 
 
         _virtualFinerLevels[i]->setFinerSparseGrid(_virtualFinerLevels[i-1]);
