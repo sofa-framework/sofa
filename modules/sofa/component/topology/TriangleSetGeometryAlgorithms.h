@@ -68,6 +68,7 @@ public:
     Coord computeTriangleCenter(const TriangleID i) const;
 
     void computeTriangleCircumcenterBaryCoefs(Vec<3,Real> &baryCoord, const TriangleID i) const;
+
     Coord computeTriangleCircumcenter(const TriangleID i) const;
 
     void getTriangleVertexCoordinates(const TriangleID i, Coord[3]) const;
@@ -111,7 +112,11 @@ public:
     /** \brief Tests if a point is included in the triangle indexed by ind_t
     *
     */
+    bool isPointInsideTriangle(const TriangleID ind_t, bool is_tested, const sofa::defaulttype::Vec<3,Real>& p, unsigned int &ind_t_test) const;
+
     bool isPointInTriangle(const TriangleID ind_t, bool is_tested, const sofa::defaulttype::Vec<3,Real>& p, unsigned int &ind_t_test) const;
+
+
 
     /** \brief Computes the point defined by 2 indices of vertex and 1 barycentric coordinate
     *
@@ -194,11 +199,15 @@ public:
 };
 
 
-template< class Real>
+/*template< class Real>
 bool is_point_in_triangle(const sofa::defaulttype::Vec<3,Real>& p,
-        const sofa::defaulttype::Vec<3,Real>& a,
-        const sofa::defaulttype::Vec<3,Real>& b,
-        const sofa::defaulttype::Vec<3,Real>& c);
+						const sofa::defaulttype::Vec<3,Real>& a,
+						const sofa::defaulttype::Vec<3,Real>& b,
+						const sofa::defaulttype::Vec<3,Real>& c);*/
+template<class Real>
+bool is_point_in_triangle(const Vec<3,Real>& p,
+        const Vec<3,Real>& a, const Vec<3,Real>& b, const Vec<3,Real>& c);
+
 
 template< class Real>
 bool is_point_in_halfplane(const sofa::defaulttype::Vec<3,Real>& p,

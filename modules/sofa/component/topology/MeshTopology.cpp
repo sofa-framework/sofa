@@ -438,6 +438,141 @@ void MeshTopology::createTriangleVertexShellArray ()
     }
 }
 
+void MeshTopology::createOrientedTriangleVertexShellArray()
+{
+    if (m_edgeVertexShell.size() == 0)
+        createEdgeVertexShellArray();
+
+    const SeqEdges& edges = getEdges();
+    m_orientedTriangleVertexShell.clear();
+    m_orientedTriangleVertexShell.resize(nbPoints);
+    m_orientedEdgeVertexShell.clear();
+    m_orientedEdgeVertexShell.resize(nbPoints);
+
+    for(unsigned int i = 0; i < nbPoints; ++i)
+        //for each point: i
+    {
+        unsigned int startEdge = InvalidID;
+        unsigned int currentEdge = InvalidID;
+        unsigned int nextEdge = InvalidID;
+        unsigned int lastTri = InvalidID;
+
+        //find the start edge for a boundary point
+        for(unsigned int j = 0; j < m_edgeVertexShell[i].size() && startEdge == InvalidID; ++j)
+            //for each edge adjacent to the point: m_edgeVertexShell[i][j]
+        {
+            const EdgeTriangles& eTris = getTriangleEdgeShell(m_edgeVertexShell[i][j]);
+            if(eTris.size() == 1)
+                //m_edgeVertexShell[i][j] is a boundary edge, test whether it is the start edge
+            {
+                //find out if there is a next edge in the right orientation around the point i
+                const TriangleEdges& tEdges = getEdgeTriangleShell(eTris[0]);
+                for(unsigned int k = 0; k < tEdges.size() && startEdge == InvalidID; ++k)
+                    //for each edge of the triangle: tEdges[k]
+                {
+                    if(tEdges[k] != m_edgeVertexShell[i][j])
+                        // pick up the edge which is not the current one
+                    {
+                        for(unsigned int p = 0; p < 2; ++p)
+                            //for each end point of the edge: edges[tEdges[k]][p]
+                        {
+                            if(edges[tEdges[k]][p] == i)
+                                // pick up the edge starting from point i
+                            {
+                                if(-1 == computeRelativeOrientationInTri(i, edges[tEdges[k]][(p+1)%2], eTris[0]))
+                                    // pick up the edge with the consistent orientation (the same orientation as the triangle)
+                                {
+                                    startEdge = m_edgeVertexShell[i][j];
+                                    currentEdge = startEdge;
+                                    nextEdge = tEdges[k];
+                                    m_orientedTriangleVertexShell[i].push_back(eTris[0]);
+                                    m_orientedEdgeVertexShell[i].push_back(currentEdge);
+                                    lastTri = eTris[0];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //set a start edge for the non-boundary point
+        if(startEdge == InvalidID)
+        {
+            startEdge = m_edgeVertexShell[i][0];
+            currentEdge = startEdge;
+            //find the next edge around the point i
+            const EdgeTriangles& eTris = getTriangleEdgeShell(currentEdge);
+            for(unsigned int j = 0; j < eTris.size() && nextEdge == InvalidID; ++j)
+                //for each triangle adjacent to the currentEdge: eTris[j]
+            {
+                const TriangleEdges& tEdges = getEdgeTriangleShell(eTris[j]);
+                for(unsigned int k = 0; k < tEdges.size() && nextEdge == InvalidID; ++k)
+                    //for each edge of the triangle: tEdges[k]
+                {
+                    if(tEdges[k] != currentEdge)
+                        // pick up the edge which is not the current one
+                    {
+                        for(unsigned int p = 0; p < 2; ++p)
+                            //for each end point of the edge: edges[tEdges[k]][p]
+                        {
+                            if(edges[tEdges[k]][p] == i)
+                                // pick up the edge starting from point i
+                            {
+                                if(-1 == computeRelativeOrientationInTri(i, edges[tEdges[k]][(p+1)%2], eTris[j]))
+                                    // pick up the edge with the consistent orientation (the same orientation as the triangle)
+                                {
+                                    nextEdge = tEdges[k];
+                                    m_orientedTriangleVertexShell[i].push_back(eTris[j]);
+                                    m_orientedEdgeVertexShell[i].push_back(currentEdge);
+                                    lastTri = eTris[j];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //begin the loop to find the next edge around the point i
+        currentEdge = nextEdge;
+        nextEdge = InvalidID;
+        while(currentEdge != startEdge)
+        {
+            const EdgeTriangles& eTris = getTriangleEdgeShell(currentEdge);
+            if(eTris.size() == 1)
+            {
+                m_orientedEdgeVertexShell[i].push_back(currentEdge);
+                break;
+            }
+            for(unsigned int j = 0; j < eTris.size() && nextEdge == InvalidID; ++j)
+                // for each triangle adjacent to the currentEdge: eTris[j]
+            {
+                if(eTris[j] != lastTri)
+                {
+                    m_orientedTriangleVertexShell[i].push_back(eTris[j]);
+                    m_orientedEdgeVertexShell[i].push_back(currentEdge);
+                    lastTri = eTris[j];
+                    //find the nextEdge
+                    const TriangleEdges& tEdges = getEdgeTriangleShell(eTris[j]);
+                    for(unsigned int k = 0; k < tEdges.size(); ++k)
+                    {
+                        if(tEdges[k] != currentEdge && (edges[tEdges[k]][0] == i || edges[tEdges[k]][1] == i))
+                        {
+                            nextEdge = tEdges[k];
+                            break;
+                        }
+                    }
+                }
+            }
+            currentEdge = nextEdge;
+            nextEdge = InvalidID;
+        }
+    }
+}
+
 void MeshTopology::createTriangleEdgeShellArray ()
 {
     const SeqTriangles& triangles = getTriangles(); // do not use seqTriangles directly as it might not be up-to-date
@@ -494,6 +629,144 @@ void MeshTopology::createQuadVertexShellArray ()
         // adding quad i in the quad shell of all points
         for (unsigned j=0; j<4; ++j)
             m_quadVertexShell[ quads[i][j]  ].push_back( i );
+    }
+}
+
+void MeshTopology::createOrientedQuadVertexShellArray()
+{
+    if(m_edgeVertexShell.size() == 0)
+        createEdgeVertexShellArray();
+    //test
+    if(m_quadVertexShell.size() == 0)
+        createQuadVertexShellArray();
+
+    const SeqEdges& edges = getEdges();
+    m_orientedQuadVertexShell.clear();
+    m_orientedQuadVertexShell.resize(nbPoints);
+    m_orientedEdgeVertexShell.clear();
+    m_orientedEdgeVertexShell.resize(nbPoints);
+
+    for(unsigned int i = 0; i < nbPoints; ++i)
+        //for each point: i
+    {
+        unsigned int startEdge = InvalidID;
+        unsigned int currentEdge = InvalidID;
+        unsigned int nextEdge = InvalidID;
+        unsigned int lastQuad = InvalidID;
+
+        //find the start edge for a boundary point
+        for(unsigned int j = 0; j < m_edgeVertexShell[i].size() && startEdge == InvalidID; ++j)
+            //for each edge adjacent to the point: m_edgeVertexShell[i][j]
+        {
+            const EdgeQuads& eQuads = getQuadEdgeShell(m_edgeVertexShell[i][j]);
+            if(eQuads.size() == 1)
+                //m_edgeVertexShell[i][j] is a boundary edge, test whether it is the start edge
+            {
+                //find out if there is a next edge in the right orientation around the point i
+                const QuadEdges& qEdges = getEdgeQuadShell(eQuads[0]);
+                for(unsigned int k = 0; k < qEdges.size() && startEdge == InvalidID; ++k)
+                    //for each edge of the quad: qEdges[k]
+                {
+                    if(qEdges[k] != m_edgeVertexShell[i][j])
+                        // pick up the edge which is not the current one
+                    {
+                        for(unsigned int p = 0; p < 2; ++p)
+                            //for each end point of the edge: edges[qEdges[k]][p]
+                        {
+                            if(edges[qEdges[k]][p] == i)
+                                // pick up the edge starting from point i
+                            {
+                                if(-1 == computeRelativeOrientationInQuad(i, edges[qEdges[k]][(p+1)%2], eQuads[0]))
+                                    // pick up the edge with the consistent orientation (the same orientation as the quad)
+                                {
+                                    startEdge = m_edgeVertexShell[i][j];
+                                    currentEdge = startEdge;
+                                    nextEdge = qEdges[k];
+                                    m_orientedQuadVertexShell[i].push_back(eQuads[0]);
+                                    m_orientedEdgeVertexShell[i].push_back(currentEdge);
+                                    lastQuad = eQuads[0];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //set a start edge for the non-boundary point
+        if(startEdge == InvalidID)
+        {
+            startEdge = m_edgeVertexShell[i][0];
+            currentEdge = startEdge;
+            //find the next edge around the point i
+            const EdgeQuads& eQuads = getQuadEdgeShell(currentEdge);
+            for(unsigned int j = 0; j < eQuads.size() && nextEdge == InvalidID; ++j)
+                //for each quad adjacent to the currentEdge: eQuads[j]
+            {
+                const QuadEdges& qEdges = getEdgeQuadShell(eQuads[j]);
+                for(unsigned int k = 0; k < qEdges.size() && nextEdge == InvalidID; ++k)
+                    //for each edge of the quad: qEdges[k]
+                {
+                    if(qEdges[k] != currentEdge)
+                        // pick up the edge which is not the current one
+                    {
+                        for(unsigned int p = 0; p < 2; ++p)
+                            //for each end point of the edge: edges[qEdges[k]][p]
+                        {
+                            if(edges[qEdges[k]][p] == i)
+                                // pick up the edge starting from point i
+                            {
+                                if(-1 == computeRelativeOrientationInQuad(i, edges[qEdges[k]][(p+1)%2], eQuads[j]))
+                                    // pick up the edge with the consistent orientation (the same orientation as the quad)
+                                {
+                                    nextEdge = qEdges[k];
+                                    m_orientedQuadVertexShell[i].push_back(eQuads[j]);
+                                    m_orientedEdgeVertexShell[i].push_back(currentEdge);
+                                    lastQuad = eQuads[j];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //begin the loop to find the next edge around the point i
+        currentEdge = nextEdge;
+        nextEdge = InvalidID;
+        while(currentEdge != startEdge)
+        {
+            const EdgeQuads& eQuads = getQuadEdgeShell(currentEdge);
+            if(eQuads.size() == 1)
+            {
+                m_orientedEdgeVertexShell[i].push_back(currentEdge);
+                break;
+            }
+            for(unsigned int j = 0; j < eQuads.size() && nextEdge == InvalidID; ++j)
+                // for each quad adjacent to the currentEdge: eQuads[j]
+            {
+                if(eQuads[j] != lastQuad)
+                {
+                    m_orientedQuadVertexShell[i].push_back(eQuads[j]);
+                    m_orientedEdgeVertexShell[i].push_back(currentEdge);
+                    lastQuad = eQuads[j];
+                    //find the nextEdge
+                    const QuadEdges& qEdges = getEdgeQuadShell(eQuads[j]);
+                    for(unsigned int k = 0; k < qEdges.size(); ++k)
+                    {
+                        if(qEdges[k] != currentEdge && (edges[qEdges[k]][0] == i || edges[qEdges[k]][1] == i))
+                        {
+                            nextEdge = qEdges[k];
+                            break;
+                        }
+                    }
+                }
+            }
+            currentEdge = nextEdge;
+            nextEdge = InvalidID;
+        }
     }
 }
 
@@ -643,6 +916,24 @@ const MeshTopology::VertexEdges& MeshTopology::getEdgeVertexShell(PointID i)
     return m_edgeVertexShell[i];
 }
 
+const MeshTopology::VertexEdges& MeshTopology::getOrientedEdgeVertexShell(PointID i)
+{
+    if (!m_orientedEdgeVertexShell.size() || i > m_orientedEdgeVertexShell.size()-1)
+    {
+        if(getNbTriangles() != 0)
+        {
+            createOrientedTriangleVertexShellArray();
+        }
+        else
+        {
+            if(getNbQuads() != 0)
+                createOrientedQuadVertexShellArray();
+        }
+    }
+    return m_orientedEdgeVertexShell[i];
+}
+
+
 const MeshTopology::TriangleEdges& MeshTopology::getEdgeTriangleShell(TriangleID i)
 {
     if (m_edgeTriangleShell.empty() || i > m_edgeTriangleShell.size()-1)
@@ -677,6 +968,12 @@ const MeshTopology::VertexTriangles& MeshTopology::getTriangleVertexShell(PointI
         createTriangleVertexShellArray();
     return m_triangleVertexShell[i];
 }
+const MeshTopology::VertexTriangles& MeshTopology::getOrientedTriangleVertexShell(PointID i)
+{
+    if (!m_orientedTriangleVertexShell.size() || i > m_orientedTriangleVertexShell.size()-1)
+        createOrientedTriangleVertexShellArray();
+    return m_orientedTriangleVertexShell[i];
+}
 
 const MeshTopology::EdgeTriangles& MeshTopology::getTriangleEdgeShell(EdgeID i)
 {
@@ -684,7 +981,6 @@ const MeshTopology::EdgeTriangles& MeshTopology::getTriangleEdgeShell(EdgeID i)
         createTriangleEdgeShellArray();
     return m_triangleEdgeShell[i];
 }
-
 const MeshTopology::TetraTriangles& MeshTopology::getTriangleTetraShell(TetraID i)
 {
     if (!m_triangleTetraShell.size() || i > m_triangleTetraShell.size()-1)
@@ -697,6 +993,13 @@ const MeshTopology::VertexQuads& MeshTopology::getQuadVertexShell(PointID i)
     if (m_quadVertexShell.empty() || i > m_quadVertexShell.size()-1)
         createQuadVertexShellArray();
     return m_quadVertexShell[i];
+}
+
+const MeshTopology::VertexQuads& MeshTopology::getOrientedQuadVertexShell(PointID i)
+{
+    if (m_orientedQuadVertexShell.empty() || i > m_orientedQuadVertexShell.size()-1)
+        createOrientedQuadVertexShellArray();
+    return m_orientedQuadVertexShell[i];
 }
 
 const vector< MeshTopology::QuadID >& MeshTopology::getQuadEdgeShell(EdgeID i)
@@ -1107,11 +1410,54 @@ MeshTopology::Edge MeshTopology::getLocalTetrahedronEdges (const unsigned int i)
     return MeshTopology::Edge (tetrahedronEdgeArray[i][0], tetrahedronEdgeArray[i][1]);
 }
 
+int MeshTopology::computeRelativeOrientationInTri(const unsigned int ind_p0, const unsigned int ind_p1, const unsigned int ind_t)
+{
+    const Triangle& t = getTriangles()[ind_t];
+    int i = 0;
+    while(i < t.size())
+    {
+        if(ind_p0 == t[i])
+            break;
+        ++i;
+    }
+
+    if(i == t.size()) //ind_p0 is not a PointID in the triangle ind_t
+        return 0;
+
+    if(ind_p1 == t[(i+1)%3]) //p0p1 has the same direction of t
+        return 1;
+    if(ind_p1 == t[(i+2)%3]) //p0p1 has the opposite direction of t
+        return -1;
+
+    return 0;
+}
+
+int MeshTopology::computeRelativeOrientationInQuad(const unsigned int ind_p0, const unsigned int ind_p1, const unsigned int ind_q)
+{
+    const Quad& q = getQuads()[ind_q];
+    int i = 0;
+    while(i < q.size())
+    {
+        if(ind_p0 == q[i])
+            break;
+        ++i;
+    }
+
+    if(i == q.size()) //ind_p0 is not a PointID in the quad ind_q
+        return 0;
+
+    if(ind_p1 == q[(i+1)%4]) //p0p1 has the same direction of q
+        return 1;
+    if(ind_p1 == q[(i+3)%4]) //p0p1 has the opposite direction of q
+        return -1;
+
+    return 0;
+}
+
 bool MeshTopology::hasPos() const
 {
     return !seqPoints.empty();
 }
-
 double MeshTopology::getPX(int i) const
 {
     return ((unsigned)i<seqPoints.size()?seqPoints[i][0]:0.0);

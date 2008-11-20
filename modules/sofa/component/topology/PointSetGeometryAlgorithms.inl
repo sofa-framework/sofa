@@ -143,6 +143,25 @@ const typename DataTypes::Coord& PointSetGeometryAlgorithms<DataTypes>::getPoint
     return p[pointId];
 }
 
+template<class DataTypes>
+typename PointSetGeometryAlgorithms<DataTypes>::Angle
+PointSetGeometryAlgorithms<DataTypes>::computeAngle(PointID ind_p0, PointID ind_p1, PointID ind_p2) const
+{
+    const double ZERO = 1e-10;
+    const typename DataTypes::VecCoord& p = *(object->getX());
+    Coord p0 = p[ind_p0];
+    Coord p1 = p[ind_p1];
+    Coord p2 = p[ind_p2];
+    double t = (p1 - p0)*(p2 - p0);
+
+    if(abs(t) < ZERO)
+        return RIGHT;
+    if(t > 0.0)
+        return ACUTE;
+    else
+        return OBTUSE;
+}
+
 } // namespace topology
 
 } // namespace component

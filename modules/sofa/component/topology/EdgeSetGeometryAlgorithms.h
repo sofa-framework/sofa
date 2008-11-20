@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_H
 
 #include <sofa/component/topology/PointSetGeometryAlgorithms.h>
+#include <sofa/component/topology/CommonAlgorithms.h>
 
 namespace sofa
 {
@@ -88,9 +89,17 @@ public:
 
     Coord computeEdgeCenter(const EdgeID i) const;
 
+    Coord computeEdgeDirection(const EdgeID i) const;
+
     void getEdgeVertexCoordinates(const EdgeID i, Coord[2]) const;
 
     void getRestEdgeVertexCoordinates(const EdgeID i, Coord[2]) const;
+
+    // test if a point is on the triangle indexed by ind_e
+    bool isPointOnEdge(const sofa::defaulttype::Vec<3,double> &pt, const unsigned int ind_e) const;
+
+    // compute barycentric coefficients
+    sofa::helper::vector< double > compute2PointsBarycoefs(const Vec<3,double> &p, unsigned int ind_p1, unsigned int ind_p2) const;
 
     void writeMSHfile(const char *filename) const;
 };
