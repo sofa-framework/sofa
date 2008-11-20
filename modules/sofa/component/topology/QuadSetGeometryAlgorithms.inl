@@ -208,6 +208,54 @@ bool QuadSetGeometryAlgorithms< DataTypes >::isQuadInPlane(const QuadID ind_q,
     return((p1-p0)*( plane_vect)>=0.0 && (p2-p0)*( plane_vect)>=0.0 && (p3-p0)*( plane_vect)>=0.0);
 }
 
+template<class DataTypes>
+bool QuadSetGeometryAlgorithms< DataTypes >::isPointInQuad(const QuadID ind_q, const sofa::defaulttype::Vec<3,Real>& p) const
+{
+    const double ZERO = 1e-6;
+    const Quad &q = this->m_topology->getQuad(ind_q);
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
+
+    Vec<3,Real> ptest = p;
+    Vec<3,Real> p0(vect_c[q[0]][0], vect_c[q[0]][1], vect_c[q[0]][2]);
+    Vec<3,Real> p1(vect_c[q[1]][0], vect_c[q[1]][1], vect_c[q[1]][2]);
+    Vec<3,Real> p2(vect_c[q[2]][0], vect_c[q[2]][1], vect_c[q[2]][2]);
+    Vec<3,Real> p3(vect_c[q[3]][0], vect_c[q[3]][1], vect_c[q[3]][2]);
+
+    Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
+    Real norm_v_normal = v_normal*(v_normal);
+    if(norm_v_normal > ZERO)
+    {
+        if(abs((ptest-p0)*(v_normal)) < ZERO) // p is in the plane defined by the triangle (p0,p1,p2)
+        {
+
+            Vec<3,Real> n_01 = (p1-p0).cross(v_normal);
+            Vec<3,Real> n_12 = (p2-p1).cross(v_normal);
+            Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
+
+            if(((ptest-p0)*(n_01) > -ZERO) && ((ptest-p1)*(n_12) > -ZERO) && ((ptest-p2)*(n_20) > -ZERO))
+                return true;
+        }
+    }
+
+    v_normal = (p2-p0).cross(p3-p0);
+    norm_v_normal = v_normal*(v_normal);
+    if(norm_v_normal > ZERO)
+    {
+        if(abs((ptest-p0)*(v_normal)) < ZERO) // p is in the plane defined by the triangle (p0,p3,p2)
+        {
+
+            Vec<3,Real> n_01 = (p3-p0).cross(v_normal);
+            Vec<3,Real> n_12 = (p2-p3).cross(v_normal);
+            Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
+
+            if(((ptest-p0)*(n_01) > -ZERO) && ((ptest-p1)*(n_12) > -ZERO) && ((ptest-p2)*(n_20) > -ZERO))
+                return true;
+        }
+
+    }
+    return false;
+}
+
 /// Write the current mesh into a msh file
 template <typename DataTypes>
 void QuadSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) const
@@ -248,6 +296,55 @@ void QuadSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) co
     myfile.close();
 }
 
+template<class Real>
+bool is_point_in_quad(const Vec<3,Real>& p,
+        const Vec<3,Real>& a, const Vec<3,Real>& b,
+        const Vec<3,Real>& c, const Vec<3,Real>& d)
+
+{
+    const double ZERO = 1e-6;
+
+    Vec<3,Real> ptest = p;
+    Vec<3,Real> p0 = a;
+    Vec<3,Real> p1 = b;
+    Vec<3,Real> p2 = c;
+    Vec<3,Real> p3 = c;
+
+    Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
+    Real norm_v_normal = v_normal*(v_normal);
+    if(norm_v_normal > ZERO)
+    {
+        if(abs((ptest-p0)*(v_normal)) < ZERO) // p is in the plane defined by the triangle (p0,p1,p2)
+        {
+
+            Vec<3,Real> n_01 = (p1-p0).cross(v_normal);
+            Vec<3,Real> n_12 = (p2-p1).cross(v_normal);
+            Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
+
+            if(((ptest-p0)*(n_01) > -ZERO) && ((ptest-p1)*(n_12) > -ZERO) && ((ptest-p2)*(n_20) > -ZERO))
+                return true;
+        }
+    }
+
+    v_normal = (p2-p0).cross(p3-p0);
+    norm_v_normal = v_normal*(v_normal);
+    if(norm_v_normal > ZERO)
+    {
+        if(abs((ptest-p0)*(v_normal)) < ZERO) // p is in the plane defined by the triangle (p0,p3,p2)
+        {
+
+            Vec<3,Real> n_01 = (p3-p0).cross(v_normal);
+            Vec<3,Real> n_12 = (p2-p3).cross(v_normal);
+            Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
+
+            if(((ptest-p0)*(n_01) > -ZERO) && ((ptest-p1)*(n_12) > -ZERO) && ((ptest-p2)*(n_20) > -ZERO))
+                return true;
+        }
+
+    }
+
+    return false;
+}
 } // namespace topology
 
 } // namespace component

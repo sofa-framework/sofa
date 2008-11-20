@@ -126,6 +126,81 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeCente
     return (p[e[0]] + p[e[1]]) * (Real) 0.5;
 }
 
+template<class DataTypes>
+typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeDirection(const EdgeID i) const
+{
+    const Edge &e = this->m_topology->getEdge(i);
+    const typename DataTypes::VecCoord& p = *(this->object->getX());
+    return (p[e[1]] - p[e[0]]);
+}
+
+// test if a point is on the triangle indexed by ind_e
+template<class DataTypes>
+bool EdgeSetGeometryAlgorithms<DataTypes>::isPointOnEdge(const sofa::defaulttype::Vec<3,double> &pt, const unsigned int ind_e) const
+{
+    const double ZERO = 1e-12;
+
+    sofa::defaulttype::Vec<3,double> p0 = pt;
+
+    Coord vertices[2];
+    getEdgeVertexCoordinates(ind_e, vertices);
+
+    sofa::defaulttype::Vec<3,double> p1(vertices[0][0], vertices[0][1], vertices[0][2]);
+    sofa::defaulttype::Vec<3,double> p2(vertices[1][0], vertices[1][1], vertices[1][2]);
+
+    sofa::defaulttype::Vec<3,double> v = (p0 - p1).cross(p0 - p2);
+
+    if(v.norm2() < ZERO)
+        return true;
+    else
+        return false;
+}
+
+//
+template<class DataTypes>
+sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::compute2PointsBarycoefs(
+    const Vec<3,double> &p,
+    unsigned int ind_p1,
+    unsigned int ind_p2) const
+{
+    const double ZERO = 1e-6;
+
+    sofa::helper::vector< double > baryCoefs;
+
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
+    const typename DataTypes::Coord& c0 = vect_c[ind_p1];
+    const typename DataTypes::Coord& c1 = vect_c[ind_p2];
+
+    Vec<3,Real> a;
+    a[0] = (Real) (c0[0]);
+    a[1] = (Real) (c0[1]);
+    a[2] = (Real) (c0[2]);
+    Vec<3,Real> b;
+    b[0] = (Real) (c1[0]);
+    b[1] = (Real) (c1[1]);
+    b[2] = (Real) (c1[2]);
+
+    double dis = (b - a).norm();
+    double coef_a, coef_b;
+
+    if(dis < ZERO)
+    {
+        coef_a = 0.5;
+        coef_b = 0.5;
+    }
+    else
+    {
+        coef_a = (p - b).norm() / dis;
+        coef_b = (p - a).norm() / dis;
+    }
+
+    baryCoefs.push_back(coef_a);
+    baryCoefs.push_back(coef_b);
+
+    return baryCoefs;
+
+}
+
 /// Write the current mesh into a msh file
 template <typename DataTypes>
 void EdgeSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) const
@@ -164,6 +239,46 @@ void EdgeSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) co
     myfile << "$ENDELM\n";
 
     myfile.close();
+}
+
+
+template<class Vec>
+bool is_point_on_edge(const Vec& p, const Vec& a, const Vec& b)
+{
+    const double ZERO = 1e-12;
+    Vec v = (p - a).cross(p - b);
+
+    if(v.norm2() < ZERO)
+        return true;
+    else
+        return false;
+}
+
+template<class Vec>
+sofa::helper::vector< double > compute_2points_barycoefs(const Vec& p, const Vec& a, const Vec& b)
+{
+    const double ZERO = 1e-6;
+
+    sofa::helper::vector< double > baryCoefs;
+
+    double dis = (b - a).norm();
+    double coef_a, coef_b;
+
+    if(dis < ZERO)
+    {
+        coef_a = 0.5;
+        coef_b = 0.5;
+    }
+    else
+    {
+        coef_a = (p - b).norm() / dis;
+        coef_b = (p - a).norm() / dis;
+    }
+
+    baryCoefs.push_back(coef_a);
+    baryCoefs.push_back(coef_b);
+
+    return baryCoefs;
 }
 } // namespace topology
 

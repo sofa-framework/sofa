@@ -68,8 +68,14 @@ void TriangleSetGeometryAlgorithms<DataTypes>::computeTriangleCircumcenterBaryCo
     b2 = (p[t[2]]-p[t[1]]).norm2();
     c2 = (p[t[0]]-p[t[2]]).norm2();
 
+    Real n = a2*(-a2+b2+c2) + b2*(a2-b2+c2) + c2*(a2+b2-c2);
+
+    baryCoord[2] = a2*(-a2+b2+c2) / n;
+    baryCoord[0] = b2*(a2-b2+c2) / n;
+    baryCoord[1] = c2*(a2+b2-c2) / n;
+
     // barycentric coordinates are defined as
-    baryCoord = Vec<3,Real>(a2*(-a2+b2+c2), b2*(a2-b2+c2), c2*(a2+b2-c2));
+    //baryCoord = Vec<3,Real>(a2*(-a2+b2+c2) / n, b2*(a2-b2+c2) / n, c2*(a2+b2-c2) / n);
 }
 
 template<class DataTypes>
@@ -236,6 +242,7 @@ sofa::helper::vector< double > TriangleSetGeometryAlgorithms< DataTypes >::compu
     unsigned int ind_p2,
     unsigned int ind_p3) const
 {
+    const double ZERO = 1e-12;
     sofa::helper::vector< double > baryCoefs;
 
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
@@ -262,7 +269,8 @@ sofa::helper::vector< double > TriangleSetGeometryAlgorithms< DataTypes >::compu
 
     double coef_a, coef_b, coef_c;
 
-    if(norm2_M==0.0) // triangle (a,b,c) is flat
+    //if(norm2_M==0.0) // triangle (a,b,c) is flat
+    if(norm2_M < ZERO) // triangle (a,b,c) is flat
     {
         coef_a = (double) (1.0/3.0);
         coef_b = (double) (1.0/3.0);
@@ -338,7 +346,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::computeClosestIndexPair(const T
 
 // test if a point is included in the triangle indexed by ind_t
 template<class DataTypes>
-bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInTriangle(const TriangleID ind_t,
+bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInsideTriangle(const TriangleID ind_t,
         bool is_tested,
         const Vec<3,Real>& p,
         unsigned int &ind_t_test) const
@@ -410,6 +418,150 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInTriangle(const Triangl
                 if(v_12 < 0.0)
                 {
                     if(v_20 < 0.0) /// vertex 2
+                    {
+                        shell =(sofa::helper::vector< unsigned int >) (this->m_topology->getTriangleVertexShell(t[2]));
+
+                    }
+                    else // v_12 < 0.0
+                    {
+                        ind_edge=this->m_topology->getEdgeIndex(t[1],t[2]);
+                        shell =(sofa::helper::vector< unsigned int >) (this->m_topology->getTriangleEdgeShell(ind_edge));
+                    }
+                }
+                else // v_20 < 0.0
+                {
+                    ind_edge=this->m_topology->getEdgeIndex(t[2],t[0]);
+                    shell =(sofa::helper::vector< unsigned int >) (this->m_topology->getTriangleEdgeShell(ind_edge));
+                }
+            }
+
+            unsigned int i =0;
+            bool is_in_next_triangle=false;
+            unsigned int ind_triangle=0;
+            unsigned ind_t_false_init;
+            unsigned int &ind_t_false = ind_t_false_init;
+
+            if(shell.size()>1)
+            {
+                while(i < shell.size() && !is_in_next_triangle)
+                {
+                    ind_triangle=shell[i];
+
+                    if(ind_triangle != ind_t)
+                    {
+                        is_in_next_triangle = isPointInTriangle(ind_triangle, false, p, ind_t_false);
+                    }
+                    i++;
+                }
+
+                if(is_in_next_triangle)
+                {
+                    ind_t_test=ind_triangle;
+                    //std::cout << "correct to triangle indexed by " << ind_t_test << std::endl;
+                }
+                else // not found
+                {
+                    //std::cout << "not found !!! " << std::endl;
+                    ind_t_test=ind_t;
+                }
+            }
+            else
+            {
+                ind_t_test=ind_t;
+            }
+        }
+        return is_inside;
+
+    }
+    else // triangle is flat
+    {
+        //std::cout << "INFO_print : triangle is flat" << std::endl;
+        return false;
+    }
+}
+
+// test if a point is included in the triangle indexed by ind_t
+template<class DataTypes>
+bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInTriangle(const TriangleID ind_t,
+        bool is_tested,
+        const Vec<3,Real>& p,
+        unsigned int &ind_t_test) const
+{
+    const double ZERO = 1e-6;
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
+    const Triangle &t=this->m_topology->getTriangle(ind_t);
+
+    const typename DataTypes::Coord& c0=vect_c[t[0]];
+    const typename DataTypes::Coord& c1=vect_c[t[1]];
+    const typename DataTypes::Coord& c2=vect_c[t[2]];
+
+    Vec<3,Real> ptest = p;
+
+    Vec<3,Real> p0;
+    p0[0] = (Real) (c0[0]);
+    p0[1] = (Real) (c0[1]);
+    p0[2] = (Real) (c0[2]);
+    Vec<3,Real> p1;
+    p1[0] = (Real) (c1[0]);
+    p1[1] = (Real) (c1[1]);
+    p1[2] = (Real) (c1[2]);
+    Vec<3,Real> p2;
+    p2[0] = (Real) (c2[0]);
+    p2[1] = (Real) (c2[1]);
+    p2[2] = (Real) (c2[2]);
+
+    Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
+
+    Real norm_v_normal = v_normal*(v_normal);
+    //if(norm_v_normal != 0.0)
+    if(norm_v_normal > ZERO)
+    {
+        Vec<3,Real> n_01 = (p1-p0).cross(v_normal);
+        Vec<3,Real> n_12 = (p2-p1).cross(v_normal);
+        Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
+
+        double v_01 = (double) ((ptest-p0)*(n_01));
+        double v_12 = (double) ((ptest-p1)*(n_12));
+        double v_20 = (double) ((ptest-p2)*(n_20));
+
+        //bool is_inside = (v_01 > 0.0) && (v_12 > 0.0) && (v_20 > 0.0);
+        bool is_inside = (v_01 >= -ZERO) && (v_12 >= -ZERO) && (v_20 >= -ZERO);
+
+        if(is_tested && (!is_inside))
+        {
+            sofa::helper::vector< unsigned int > shell;
+            unsigned int ind_edge = 0;
+
+            //if(v_01 < 0.0)
+            if(v_01 < -ZERO)
+            {
+                //if(v_12 < 0.0) /// vertex 1
+                if(v_12 < -ZERO) /// vertex 1
+                {
+                    shell =(sofa::helper::vector< unsigned int >) (this->m_topology->getTriangleVertexShell(t[1]));
+                }
+                else
+                {
+                    //if(v_20 < 0.0) /// vertex 0
+                    if(v_20 < -ZERO) /// vertex 0
+                    {
+                        shell =(sofa::helper::vector< unsigned int >) (this->m_topology->getTriangleVertexShell(t[0]));
+
+                    }
+                    else // v_01 < 0.0
+                    {
+                        ind_edge=this->m_topology->getEdgeIndex(t[0],t[1]);
+                        shell =(sofa::helper::vector< unsigned int >) (this->m_topology->getTriangleEdgeShell(ind_edge));
+                    }
+                }
+            }
+            else
+            {
+                //if(v_12 < 0.0)
+                if(v_12 < -ZERO)
+                {
+                    //if(v_20 < 0.0) /// vertex 2
+                    if(v_20 < -ZERO) /// vertex 2
                     {
                         shell =(sofa::helper::vector< unsigned int >) (this->m_topology->getTriangleVertexShell(t[2]));
 
@@ -1466,11 +1618,52 @@ void TriangleSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename
 
 /// Test for REAL if a point p is in a triangle indexed by (a,b,c)
 
+//template<class Real>
+//bool is_point_in_triangle(const Vec<3,Real>& p, const Vec<3,Real>& a, const Vec<3,Real>& b, const Vec<3,Real>& c)
+//{
+//	Vec<3,Real> ptest = p;
+
+//	Vec<3,Real> p0 = a;
+//	Vec<3,Real> p1 = b;
+//	Vec<3,Real> p2 = c;
+
+//	Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
+
+//	Real norm_v_normal = v_normal*(v_normal);
+//	if(norm_v_normal != 0.0)
+//	{
+//		//v_normal/=norm_v_normal;
+
+//		if((ptest-p0)*(v_normal)==0.0) // p is in the plane defined by the triangle (p0,p1,p2)
+//		{
+
+//			Vec<3,Real> n_01 = (p1-p0).cross(v_normal);
+//			Vec<3,Real> n_12 = (p2-p1).cross(v_normal);
+//			Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
+
+//			return (((ptest-p0)*(n_01) >= 0.0) && ((ptest-p1)*(n_12) >= 0.0) && ((ptest-p2)*(n_20) >= 0.0));
+
+//		}
+//		else // p is not in the plane defined by the triangle (p0,p1,p2)
+//		{
+//			//std::cout << "INFO_print : p is not in the plane defined by the triangle (p0,p1,p2)" << std::endl;
+//			return false;
+//		}
+
+//	}
+//	else // triangle is flat
+//	{
+//		//std::cout << "INFO_print : triangle is flat" << std::endl;
+//		return false;
+//	}
+//}
+
 template<class Real>
 bool is_point_in_triangle(const Vec<3,Real>& p, const Vec<3,Real>& a, const Vec<3,Real>& b, const Vec<3,Real>& c)
 {
-    Vec<3,Real> ptest = p;
+    const double ZERO = 1e-6;
 
+    Vec<3,Real> ptest = p;
     Vec<3,Real> p0 = a;
     Vec<3,Real> p1 = b;
     Vec<3,Real> p2 = c;
@@ -1478,18 +1671,16 @@ bool is_point_in_triangle(const Vec<3,Real>& p, const Vec<3,Real>& a, const Vec<
     Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
 
     Real norm_v_normal = v_normal*(v_normal);
-    if(norm_v_normal != 0.0)
+    if(norm_v_normal > ZERO)
     {
-        //v_normal/=norm_v_normal;
-
-        if((ptest-p0)*(v_normal)==0.0) // p is in the plane defined by the triangle (p0,p1,p2)
+        if(abs((ptest-p0)*(v_normal)) < ZERO) // p is in the plane defined by the triangle (p0,p1,p2)
         {
 
             Vec<3,Real> n_01 = (p1-p0).cross(v_normal);
             Vec<3,Real> n_12 = (p2-p1).cross(v_normal);
             Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
 
-            return (((ptest-p0)*(n_01) >= 0.0) && ((ptest-p1)*(n_12) >= 0.0) && ((ptest-p2)*(n_20) >= 0.0));
+            return (((ptest-p0)*(n_01) > -ZERO) && ((ptest-p1)*(n_12) > -ZERO) && ((ptest-p2)*(n_20) > -ZERO));
 
         }
         else // p is not in the plane defined by the triangle (p0,p1,p2)
@@ -1505,6 +1696,8 @@ bool is_point_in_triangle(const Vec<3,Real>& p, const Vec<3,Real>& a, const Vec<
         return false;
     }
 }
+
+
 
 /// Test if a point p is in the right halfplane
 

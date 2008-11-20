@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_H
 
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
+#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
@@ -93,15 +94,21 @@ public:
     bool isQuadInPlane(const QuadID ind_q, const unsigned int ind_p,
             const defaulttype::Vec<3,Real>& plane_vect) const;
 
+    bool isPointInQuad(const QuadID ind_q, const sofa::defaulttype::Vec<3,Real>& p) const;
+
     /** \brief Write the current mesh into a msh file
     */
     void writeMSHfile(const char *filename) const;
 };
 
-template< class Real>
+/*template< class Real>
 bool is_point_in_quad(const defaulttype::Vec<3,Real>& p, const defaulttype::Vec<3,Real>& a,
-        const defaulttype::Vec<3,Real>& b, const defaulttype::Vec<3,Real>& c,
-        const defaulttype::Vec<3,Real>& d);
+					const defaulttype::Vec<3,Real>& b, const defaulttype::Vec<3,Real>& c,
+					const defaulttype::Vec<3,Real>& d);*/
+template<class Real>
+bool is_point_in_quad(const Vec<3,Real>& p,
+        const Vec<3,Real>& a, const Vec<3,Real>& b,
+        const Vec<3,Real>& c, const Vec<3,Real>& d);
 
 void snapping_test_quad(double epsilon, double alpha0, double alpha1, double alpha2, double alpha3,
         bool& is_snap_0, bool& is_snap_1, bool& is_snap_2, bool& is_snap_3);

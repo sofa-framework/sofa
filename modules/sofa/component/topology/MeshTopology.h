@@ -90,6 +90,8 @@ public:
     /// @{
     /// Returns the set of edges adjacent to a given vertex.
     virtual const VertexEdges &getEdgeVertexShell(PointID i);
+    /// Returns the set of edges adjacent to a given vertex.
+    virtual const VertexEdges &getOrientedEdgeVertexShell(PointID i);
     /// Returns the set of edges adjacent to a given triangle.
     virtual const TriangleEdges &getEdgeTriangleShell(TriangleID i);
     /// Returns the set of edges adjacent to a given quad.
@@ -100,12 +102,16 @@ public:
     virtual const HexaEdges& getEdgeHexaShell(HexaID i);
     /// Returns the set of triangle adjacent to a given vertex.
     virtual const VertexTriangles &getTriangleVertexShell(PointID i);
+    /// Returns the set of oriented triangle adjacent to a given vertex.
+    virtual const VertexTriangles &getOrientedTriangleVertexShell(PointID i);
     /// Returns the set of triangle adjacent to a given edge.
     virtual const EdgeTriangles &getTriangleEdgeShell(EdgeID i);
     /// Returns the set of triangles adjacent to a given tetrahedron.
     virtual const TetraTriangles& getTriangleTetraShell(TetraID i);
     /// Returns the set of quad adjacent to a given vertex.
     virtual const VertexQuads &getQuadVertexShell(PointID i);
+    /// Returns the set of oriented quad adjacent to a given vertex.
+    virtual const VertexQuads &getOrientedQuadVertexShell(PointID i);
     /// Returns the set of quad adjacent to a given edge.
     virtual const EdgeQuads &getQuadEdgeShell(EdgeID i);
     /// Returns the set of quads adjacent to a given hexahedron.
@@ -157,6 +163,18 @@ public:
     virtual bool isSurface() { return !hasVolume() && hasSurface(); }
     virtual bool isLines() { return !hasVolume() && !hasSurface() && hasLines(); }
 
+    // test whether p0p1 has the same orientation as triangle t
+    // opposite dirction: return -1
+    // same direction: return 1
+    // otherwise: return 0
+    int computeRelativeOrientationInTri(const unsigned int ind_p0, const unsigned int ind_p1, const unsigned int ind_t);
+
+    // test whether p0p1 has the same orientation as triangle t
+    // opposite dirction: return -1
+    // same direction: return 1
+    // otherwise: return 0
+    int computeRelativeOrientationInQuad(const unsigned int ind_p0, const unsigned int ind_p1, const unsigned int ind_q);
+
 protected:
     int nbPoints;
     vector< fixed_array<SReal,3> > seqPoints;
@@ -184,9 +202,11 @@ protected:
 #endif
     bool         validHexas;
 
-
     /** the array that stores the set of edge-vertex shells, ie for each vertex gives the set of adjacent edges */
     vector< VertexEdges > m_edgeVertexShell;
+
+    /** the array that stores the set of oriented edge-vertex shells, ie for each vertex gives the set of adjacent edges */
+    vector< VertexEdges > m_orientedEdgeVertexShell;
 
     /** the array that stores the set of edge-triangle shells, ie for each triangle gives the 3 adjacent edges */
     vector< TriangleEdges > m_edgeTriangleShell;
@@ -203,6 +223,9 @@ protected:
     /// for each vertex provides the set of triangles adjacent to that vertex
     vector< VertexTriangles > m_triangleVertexShell;
 
+    /// for each vertex provides the set of oriented triangles adjacent to that vertex
+    vector< VertexTriangles > m_orientedTriangleVertexShell;
+
     /// for each edge provides the set of triangles adjacent to that edge
     vector< EdgeTriangles > m_triangleEdgeShell;
 
@@ -211,6 +234,9 @@ protected:
 
     /// for each vertex provides the set of quads adjacent to that vertex
     vector< VertexQuads > m_quadVertexShell;
+
+    /// for each vertex provides the set of oriented quads adjacent to that vertex
+    vector< VertexQuads > m_orientedQuadVertexShell;
 
     /// for each edge provides the set of quads adjacent to that edge
     vector< EdgeQuads > m_quadEdgeShell;
@@ -279,6 +305,13 @@ protected:
      */
     void createTriangleVertexShellArray();
 
+    /** \brief Creates the oriented Triangle Vertex Shell Array
+    *
+    * This function is only called if the OrientedTriangleVertexShell array is required.
+    * m_orientedTriangleVertexShell[i] contains the indices of all triangles adjacent to the ith vertex
+    */
+    void createOrientedTriangleVertexShellArray();
+
     /** \brief Creates the Triangle Edge Shell Array
      *
      * This function is only called if the TriangleEdgeShell array is required.
@@ -299,6 +332,13 @@ protected:
      * m_quadVertexShell[i] contains the indices of all quads adjacent to the ith vertex
      */
     void createQuadVertexShellArray ();
+
+    /** \brief Creates the Quad Vertex Shell Array
+     *
+     * This function is only called if the QuadVertexShell array is required.
+     * m_quadVertexShell[i] contains the indices of all quads adjacent to the ith vertex
+     */
+    void createOrientedQuadVertexShellArray ();
 
     /** \brief Creates the Quad Edge Shell Array
      *
@@ -369,12 +409,13 @@ protected:
     const vector< VertexQuads >& getQuadVertexShellArray();
 
 
-
+public:
     /** \brief Returns the index of the edge joining vertex v1 and vertex v2; returns -1 if no edge exists
      *
      */
     int getEdgeIndex(PointID v1, PointID v2);
 
+protected:
     /** Returns the indices of a triangle given three vertex indices : returns -1 if none */
     int getTriangleIndex(PointID v1, PointID v2, PointID v3);
 
@@ -396,6 +437,7 @@ protected:
     /** \brief Returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex. Returns -1 if none
     *
     */
+
     int getVertexIndexInTriangle(const Triangle &t, PointID vertexIndex) const;
 
     /** \brief Returns the index (either 0, 1 ,2) of the edge whose global index is edgeIndex. Returns -1 if none

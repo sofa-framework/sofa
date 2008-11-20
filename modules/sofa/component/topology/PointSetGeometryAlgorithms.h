@@ -62,6 +62,10 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
 
+    enum Angle {ACUTE, RIGHT, OBTUSE};
+
+    Angle computeAngle(PointID ind_p0, PointID ind_p1, PointID ind_p2) const;
+
     PointSetGeometryAlgorithms()
         : GeometryAlgorithms()
     {}
