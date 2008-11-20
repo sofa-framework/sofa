@@ -348,8 +348,8 @@ public:
 
     friend std::ostream& operator << (std::ostream& out, const SparseMatrix<T>& v )
     {
-        int nx = v.Ncols();
-        int ny = v.Nrows();
+        int nx = v.colSize();
+        int ny = v.rowSize();
         out << "[";
         for (int y=0; y<ny; ++y)
         {
