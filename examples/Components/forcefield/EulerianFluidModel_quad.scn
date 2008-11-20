@@ -1,0 +1,30 @@
+<Node name="root"  dt="0.05" showVisualModels ="0" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0">
+  <Node name="EulerianFluid">
+    <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
+    <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
+    <Object type="RegularGrid" name="mesh" 
+            nx="51" ny="21" nz="1"
+            xmin="-25" xmax="25"
+            ymin="-10" ymax="10"
+            zmin="0" zmax="0"
+		/>
+    <Object type="QuadSetGeometryAlgorithms" name="QuadGeo"  />
+   
+
+
+
+    <Object type="MechanicalObject" name="mechanical" />
+    <Object type="EulerianFluidModel" name="fluid" viscosity="0" centerType="1"
+            bdX="24.5" bdY="9.5" bdZ="0"
+            harmonicVx="0" harmonicVy="0" harmonicVz="0"
+            addFroces="0" displayBoundary="0" displayVorticity="1" displayVelocity="1"/>
+    <!--  Barycenter = 0, Circumcenter = 1 -->
+
+    <Node name="VisualGrid">
+      <Object type="OglModel" name="Visual" color="green"/>
+      <Object type="IdentityMapping" name="mapping" object1="../.." object2="Visual"/>
+    </Node>
+    
+  </Node>
+</Node>
