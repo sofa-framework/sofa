@@ -371,10 +371,11 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
                 indices.push_back(baseEdge[0]);
 
                 edgeMod->splitEdges(indices);
+                Coord& pos = (*this->mState->getX0())[this->mState->getSize()-1];
+                pos = getNewRestPos((*this->mState->getX0())[0], vertexT[0], (vertexT[1] - vertexT[0])/static_cast<Real>(2.0));
 
                 // Update vertexT
                 vertexT.insert(vertexT.begin()+1, (vertexT[0] + vertexT[1])/static_cast<Real>(2.0));
-
                 // Renumber vertices
                 unsigned int numPoints = _topology->getNbPoints();
 
