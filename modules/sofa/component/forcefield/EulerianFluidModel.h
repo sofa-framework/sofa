@@ -56,6 +56,8 @@ namespace component
 namespace forcefield
 {
 
+using namespace sofa::helper::system::thread;
+
 template<class DataTypes>
 class EulerianFluidModel : public sofa::core::BehaviorModel
 {
@@ -88,6 +90,9 @@ public:
     enum { Barycenter = 0, Circumcenter = 1};
 
 protected:
+
+    // profiling information
+    ctime_t m_dTime1, m_dTime2;
 
     //arguments
     Data< bool > m_bAddForces;
@@ -213,6 +218,7 @@ protected:
     sofa::component::linearsolver::SparseMatrix<double> curl;
     sofa::component::linearsolver::SparseMatrix<double> laplace;
     NewMAT::Matrix m_laplace;
+    NewMAT::Matrix m_laplace_inv;
     NewMAT::Matrix m_d0;
 
     //state variables
@@ -257,7 +263,7 @@ protected:
     PointID searchDualFaceForTriMesh(const Coord& pt, const FaceID startFace) const;
     PointID searchDualFaceForQuadMesh(const Coord & pt, PointID startDualFace) const;
     //interpolate velocity
-    Deriv interpolateVelocity(const Coord& pt, unsigned int start) const;
+    Deriv interpolateVelocity(const Coord& pt, unsigned int start);
     //backtrack face centers
     void backtrack(double dt);
     //calculate vorticity
@@ -266,7 +272,7 @@ protected:
     void addForces();
 
     // Omega => Phi
-    void calcPhi();
+    void calcPhi(bool reset);
 
     // Phi => U
     void calcFlux();
