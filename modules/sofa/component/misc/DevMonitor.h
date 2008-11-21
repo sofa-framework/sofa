@@ -43,11 +43,11 @@ template <class TDataTypes>
 class DevMonitor: public virtual core::DevBaseMonitor
 {
 public:
-
     typedef TDataTypes DataTypes;
+    typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
     //typedef double Real;
-    typedef typename std::pair< DataTypes,Real > TData;
+    typedef typename std::pair< Coord,Real > TData;
 
 
     Data < double > f_period;
@@ -72,9 +72,9 @@ public:
     {
         if (dynamic_cast<simulation::AnimateEndEvent*>(event))
         {
-            double time = getContext()->getTime();
+            timestamp = getContext()->getTime();
             // write the state using a period
-            if (time+getContext()->getDt()/2 >= (lastTime + f_period.getValue()))
+            if (timestamp+getContext()->getDt()/2 >= (lastTime + f_period.getValue()))
             {
                 eval();
                 lastTime += f_period.getValue();
@@ -84,6 +84,7 @@ public:
 
 protected:
     double lastTime;
+    double timestamp;
     sofa::helper::vector<TData> data;
 };
 
