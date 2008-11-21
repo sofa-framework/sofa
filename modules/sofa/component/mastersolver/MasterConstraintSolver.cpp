@@ -299,7 +299,7 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
 
         if(error < tolerance && i>0) // do not stop at the first iteration (that is used for initial guess computation)
         {
-            std::cout<<" ------------------ convergence after "<<i<<" iterations ------------------"<<std::endl;
+            //	std::cout<<" ------------------ convergence after "<<i<<" iterations ------------------"<<std::endl;
             convergence = true;
             break;
         }
