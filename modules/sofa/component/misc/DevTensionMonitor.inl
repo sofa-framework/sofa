@@ -33,6 +33,8 @@ namespace component
 namespace misc
 {
 
+using namespace sofa::defaulttype;
+
 template <class DataTypes>
 void DevTensionMonitor<DataTypes>::init()
 {
@@ -44,14 +46,25 @@ void DevTensionMonitor<DataTypes>::eval()
 
     if (f_indices.getValue().empty())
     {
-        std::cout << "measuring metrics..." << std::endl;
+        /*std::cout << "measuring metrics..." << std::endl;
         std::cout << "first point position " << xPos[0].getCenter() << std::endl;
         std::cout << "first point orientation " << xPos[0].getOrientation() << std::endl;
 
         std::cout << "last point position " << xPos[xPos.size()-1].getCenter() << std::endl;
-        std::cout << "last point orientation " << xPos[xPos.size()-1].getOrientation() << std::endl;
+        std::cout << "last point orientation " << xPos[xPos.size()-1].getOrientation() << std::endl;*/
+
+        //Compute tension
+        // ....
+        Vec1d tension = Vec1d(xPos[0].getOrientation()[0]);
+        std::pair<Vec1d, Real> temp;
+        temp.first = tension;
+        temp.second = timestamp;
+
+        data.push_back(temp);
     }
 }
+
+
 
 } // namespace misc
 
