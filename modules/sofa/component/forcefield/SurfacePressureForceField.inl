@@ -78,6 +78,8 @@ void SurfacePressureForceField<DataTypes>::init()
         logWarning("Default pressure speed value has been set in SurfacePressureForceField");
         pressureSpeed.setValue((Real)fabs( pressure.getValue()));
     }
+
+    m_pulseModePressure = 0.0;
 }
 
 
@@ -232,33 +234,32 @@ double SurfacePressureForceField<DataTypes>::getPotentialEnergy(const VecCoord& 
 template<class DataTypes>
 const typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceField<DataTypes>::computePulseModePressure()
 {
-    static Real p = 0;
     double dt = this->getContext()->getDt();
 
     if (state == INCREASE)
     {
         Real pUpperBound = (pressure.getValue() > 0) ? pressure.getValue() : 0.0;
 
-        p += pressureSpeed.getValue() * dt;
-        if (p >= pUpperBound)
+        m_pulseModePressure += pressureSpeed.getValue() * dt;
+        if (m_pulseModePressure >= pUpperBound)
         {
-            p = pUpperBound;
+            m_pulseModePressure = pUpperBound;
             state = DECREASE;
         }
-        return p;
+        return m_pulseModePressure;
     }
 
     if (state == DECREASE)
     {
-        Real pLowerBound = (pressure.getValue() > 0) ? 0.0 : pressure.getValue();
+        Real pLowerBound = (pressure.getValue() > 0) ? -pressure.getValue() : pressure.getValue();
 
-        p -= pressureSpeed.getValue() * dt;
-        if (p<= pLowerBound)
+        m_pulseModePressure -= pressureSpeed.getValue() * dt;
+        if (m_pulseModePressure <= pLowerBound)
         {
-            p = pLowerBound;
+            m_pulseModePressure = pLowerBound;
             state = INCREASE;
         }
-        return p;
+        return m_pulseModePressure;
     }
 
     return 0.0;
