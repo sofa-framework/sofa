@@ -47,6 +47,9 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/simulation/tree/xml/Element.h>
 
+// allow catheter navigation using the tracking system (very simple version, surely will be modified)
+//#define TRACKING
+
 namespace sofa
 {
 
@@ -75,7 +78,12 @@ class QtViewer :public QGLWidget,  public sofa::gui::qt::viewer::SofaViewer
     Q_OBJECT
 
 private:
-
+#ifdef TRACKING
+    double savedX;
+    double savedY;
+    bool firstTime;
+    bool tracking;
+#endif // TRACKING
     enum
     {
         TRACKBALL_MODE = 1,
