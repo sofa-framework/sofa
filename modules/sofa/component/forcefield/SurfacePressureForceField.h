@@ -73,6 +73,7 @@ protected:
     Data< Real > defaultVolume; ///< Default Volume.
 
     State state; ///< In pulse mode, says wether pressure is increasing or decreasing.
+    Real m_pulseModePressure; ///< Current pressure computed in pulse mode.
 
 public:
 
@@ -124,7 +125,6 @@ protected:
      * Pressure is computed according to the pressureSpeed attribute and the simulation time step.
      */
     const Real computePulseModePressure(void);
-
 };
 
 
