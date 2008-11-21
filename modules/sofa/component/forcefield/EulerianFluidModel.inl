@@ -189,12 +189,10 @@ void EulerianFluidModel<DataTypes>::updatePosition(double dt)
     static double time_LE = 0.0;
     static double time_BT = 0.0;
 
-    using namespace sofa::helper::system::thread;
-
     ctime_t startTime = CTime::getTime();
     // Omega => Phi
     //std::cout << "Omega => Phi" << endl;
-    calcPhi();
+    calcPhi(false);
     //savePhi();
 
     // Phi => U
@@ -204,7 +202,6 @@ void EulerianFluidModel<DataTypes>::updatePosition(double dt)
     ctime_t endTime = CTime::getTime();
     time_LE += endTime - startTime;
     std::cout << "time_linear_equations = " << (endTime - startTime)/1e6 << endl;
-
 
     // U => v
     //std::cout << "U => v" << endl;
@@ -223,10 +220,11 @@ void EulerianFluidModel<DataTypes>::updatePosition(double dt)
 
     //add Forces
     if(m_bAddForces.getValue())
+    {
         addForces();
+        m_bAddForces.setValue(false);
+    }
     //saveVorticity();
-
-
 }
 
 
@@ -691,6 +689,8 @@ void EulerianFluidModel<DataTypes>::computeOperators()
         }
     }
 
+    m_laplace_inv = m_laplace.i();
+
     /*
     //unsymmetric L
     m_laplace.ReSize(m_nbPoints, m_nbPoints);
@@ -1116,7 +1116,7 @@ unsigned int EulerianFluidModel<DataTypes>::searchFaceForTriMesh(const sofa::def
     faces.push_back(startFace);
 
     unsigned int temp;
-    for(unsigned int i = 0; i < faces.size(); ++i)
+    for(unsigned int i = 0; i < 20/*faces.size()*/; ++i)
     {
         if(m_triGeo->isPointInTriangle(faces[i], false, pt, temp))
             return faces[i];
@@ -1221,7 +1221,7 @@ unsigned int EulerianFluidModel<DataTypes>::searchDualFaceForQuadMesh(const Coor
 
     sofa::defaulttype::Vec<3, double> p(pt.x(), pt.y(), pt.z());
 
-    for(unsigned int i = 0; i < dualFaceIDs.size(); ++i)
+    for(unsigned int i = 0; i < 20/*dualFaceIDs.size()*/; ++i)
     {
         DualFace dualFace = m_pInfo.m_dualFaces[dualFaceIDs[i]];
         if(!m_pInfo.m_isBoundary[dualFaceIDs[i]])
@@ -1285,10 +1285,15 @@ unsigned int EulerianFluidModel<DataTypes>::searchDualFaceForQuadMesh(const Coor
 }
 
 template<class DataTypes>
-typename DataTypes::Deriv EulerianFluidModel<DataTypes>:: interpolateVelocity(const Coord& pt, unsigned int start) const
+typename DataTypes::Deriv EulerianFluidModel<DataTypes>:: interpolateVelocity(const Coord& pt, unsigned int start)
 //for TriangleMesh start = startFace
 //for QuadMesh start = startDualFace (i.e.startPoint)
 {
+    ctime_t startTime1, endTime1;
+    ctime_t startTime2, endTime2;
+
+    startTime1 = CTime::getTime();
+
     Deriv vel;
     vel.fill(0);
 
@@ -1307,11 +1312,19 @@ typename DataTypes::Deriv EulerianFluidModel<DataTypes>:: interpolateVelocity(co
         ind_p = sofa::core::componentmodel::topology::BaseMeshTopology::InvalidID;
     }
 
+    endTime1 = CTime::getTime();
+    //cout << "before cumulating: time 1 = " << m_dTime1 << endl;
+    //cout << "one step time 1 = " << endTime1-startTime1 << endl;
+    m_dTime1 += endTime1-startTime1;
+    //cout << "after cumulating: time 1 = " << m_dTime1 << endl;
+
     if(ind_p == sofa::core::componentmodel::topology::BaseMeshTopology::InvalidID)
         //pt is out of boundary
     {
         return vel;
     }
+
+    startTime2 = CTime::getTime();
 
     //calculate velocities on the vertices of dual face
     VecDeriv vels;
@@ -1374,6 +1387,12 @@ typename DataTypes::Deriv EulerianFluidModel<DataTypes>:: interpolateVelocity(co
         vel += vels.at(i) * w;
     }
 
+    endTime2 = CTime::getTime();
+    //cout << "before cumulating: time 2 = " << m_dTime2 << endl;
+    //cout << "one step time 2 = " << endTime2-startTime2 << endl;
+    m_dTime2 += endTime2-startTime2;
+    //cout << "after cumulating: time 2 = " << m_dTime2 << endl;
+
     return vel / wNormalize;
 
 }
@@ -1381,28 +1400,56 @@ typename DataTypes::Deriv EulerianFluidModel<DataTypes>:: interpolateVelocity(co
 template<class DataTypes>
 void EulerianFluidModel<DataTypes>::backtrack(double dt)
 {
-    for(FaceID i = 0; i < m_nbFaces; ++i)
+    m_dTime1 = 0.0;
+    m_dTime2 = 0.0;
+    ctime_t dTime = 0.0;
+    ctime_t startTime, endTime;
+
+    switch(m_meshType)
     {
-        Coord c(m_fInfo.m_centers[i][0], m_fInfo.m_centers[i][1], m_fInfo.m_centers[i][2]);
-        m_bkCenters[i] = c + m_vels[i] * (-dt);
-        switch(m_meshType)
+    case TriangleMesh:
+        for(FaceID i = 0; i < m_nbFaces; ++i)
         {
-        case TriangleMesh:
+            startTime = CTime::getTime();
+            Coord c(m_fInfo.m_centers[i][0], m_fInfo.m_centers[i][1], m_fInfo.m_centers[i][2]);
+            m_bkCenters[i] = c + m_vels[i] * (-dt);
             m_bkVels[i] = interpolateVelocity(m_bkCenters[i], i);
-            break;
-        case QuadMesh:
-        case RegularQuadMesh:
+            endTime = CTime::getTime();
+            dTime += endTime-startTime;
+            //cout << "backtrack() => one step time = " << (endTime-startTime) << endl;
+        }
+        break;
+
+    case QuadMesh:
+    case RegularQuadMesh:
+        for(FaceID i = 0; i < m_nbFaces; ++i)
+        {
+            startTime = CTime::getTime();
+            Coord c(m_fInfo.m_centers[i][0], m_fInfo.m_centers[i][1], m_fInfo.m_centers[i][2]);
+            m_bkCenters[i] = c + m_vels[i] * (-dt);
             Quad f = m_topology->getQuad(i);
             m_bkVels[i] = interpolateVelocity(m_bkCenters[i], f[0]);
-            break;
+            endTime = CTime::getTime();
+            dTime += endTime-startTime;
+            //cout << "backtrack() => one step time = " << (endTime-startTime) << endl;
         }
+        break;
+    default:
+        break;
     }
+
+    cout << "interpolateVelocity() => m_dTime1 = " << m_dTime1/1e6 << endl;
+    cout << "interpolateVelocity() => m_dTime2 = " << m_dTime2/1e6 << endl;
+    cout << "backtrack() => dTime = " << dTime/1e6 << endl;
 }
 
 template<class DataTypes>
 void EulerianFluidModel<DataTypes>::calcVorticity()
 {
     m_vorticity = 0.0;
+//	ctime_t startTime, endTime;
+
+//	startTime = CTime::getTime();
 
     for(PointID i = 0; i < m_nbPoints; ++i)
     {
@@ -1419,6 +1466,8 @@ void EulerianFluidModel<DataTypes>::calcVorticity()
             }
         }
     }
+//	endTime = CTime::getTime();
+    //cout << "calcVorticity() => time = " << (endTime-startTime)/1e6 << endl;
 }
 
 template<class DataTypes>
@@ -1435,9 +1484,11 @@ void EulerianFluidModel<DataTypes>::addForces()
 }
 
 template<class DataTypes>
-void EulerianFluidModel<DataTypes>::calcPhi()
+void EulerianFluidModel<DataTypes>::calcPhi(bool reset)
 {
-    m_phi = m_laplace.i() * m_vorticity;
+    if (reset)
+        m_laplace_inv =  m_laplace.i();
+    m_phi = m_laplace_inv * m_vorticity;
 }
 
 template<class DataTypes>
