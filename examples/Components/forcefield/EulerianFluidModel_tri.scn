@@ -11,8 +11,8 @@
 
     <Object type="MechanicalObject" name="mechanical" />
     <Object type="EulerianFluidModel" name="fluid" viscosity="0" centerType="1"
-            bdXmin1="-1" bdYmin1="-1" bdZmin1="-1" bdXmax1="1" bdYmax1="11" bdZmax1="1" bdValue1="0"
-            bdXmin2="9" bdYmin2="-1" bdZmin2="-1" bdXmax2="11" bdYmax2="11" bdZmax2="1" bdValue2="0"
+            bdXmin1="-0.1" bdYmin1="0" bdZmin1="-1" bdXmax1="0.1" bdYmax1="10" bdZmax1="1" bdValue1="-1"
+            bdXmin2="9.9" bdYmin2="0" bdZmin2="-1" bdXmax2="10.1" bdYmax2="10" bdZmax2="1" bdValue2="1"
             harmonicVx="0" harmonicVy="0" harmonicVz="0"
             addFroces="0" displayBoundary="1" displayVorticity="1" displayVelocity="1"/>
     <!--  Barycenter = 0, Circumcenter = 1 -->
