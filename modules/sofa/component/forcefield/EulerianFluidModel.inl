@@ -50,9 +50,20 @@ EulerianFluidModel<DataTypes>::EulerianFluidModel()
     m_harmonicVx(initData(&m_harmonicVx, Real(0), "harmonicVx", "Harmonic Velocity x")),
     m_harmonicVy(initData(&m_harmonicVy, Real(0), "harmonicVy", "Harmonic Velocity y")),
     m_harmonicVz(initData(&m_harmonicVz, Real(0), "harmonicVz", "Harmonic Velocity z")),
-    m_bdX  (initData(&m_bdX, Real(0), "bdX", "BoundaryX")),
-    m_bdY  (initData(&m_bdY, Real(0), "bdY", "BoundaryY")),
-    m_bdZ  (initData(&m_bdZ, Real(0), "bdZ", "BoundaryZ")),
+    m_bdXmin1 (initData(&m_bdXmin1, Real(0), "bdXmin1", "BoundaryX")),
+    m_bdYmin1 (initData(&m_bdYmin1, Real(0), "bdYmin1", "BoundaryY")),
+    m_bdZmin1 (initData(&m_bdZmin1, Real(0), "bdZmin1", "BoundaryZ")),
+    m_bdXmax1 (initData(&m_bdXmax1, Real(0), "bdXmax1", "BoundaryX")),
+    m_bdYmax1 (initData(&m_bdYmax1, Real(0), "bdYmax1", "BoundaryY")),
+    m_bdZmax1 (initData(&m_bdZmax1, Real(0), "bdZmax1", "BoundaryZ")),
+    m_bdXmin2 (initData(&m_bdXmin2, Real(0), "bdXmin2", "BoundaryX")),
+    m_bdYmin2 (initData(&m_bdYmin2, Real(0), "bdYmin2", "BoundaryY")),
+    m_bdZmin2 (initData(&m_bdZmin2, Real(0), "bdZmin2", "BoundaryZ")),
+    m_bdXmax2 (initData(&m_bdXmax2, Real(0), "bdXmax2", "BoundaryX")),
+    m_bdYmax2 (initData(&m_bdYmax2, Real(0), "bdYmax2", "BoundaryY")),
+    m_bdZmax2 (initData(&m_bdZmax2, Real(0), "bdZmax2", "BoundaryZ")),
+    m_bdValue1 (initData(&m_bdValue1, Real(0), "bdValue1", "Value")),
+    m_bdValue2 (initData(&m_bdValue2, Real(0), "bdValue2", "Value")),
     m_centerType  (initData(&m_centerType, CenterType(0), "centerType", "Center Type")),
     m_mstate(NULL), m_topology(NULL), m_triGeo(NULL), m_quadGeo(NULL), m_nbPoints(0), m_nbEdges(0), m_nbFaces(0), m_nbVolumes(0)
 {
@@ -141,17 +152,9 @@ void EulerianFluidModel<DataTypes>::init()
         m_nbFaces = m_topology->getNbQuads();
 //	m_nbVolumes = 0;
 
-    //initialize the size of state variables
-    m_vorticity.ReSize(m_nbPoints);
-    m_flux.ReSize(m_nbEdges);
-
-    m_vels.resize(m_nbFaces);
-    m_bkCenters.resize(m_nbFaces);
-    m_bkVels.resize(m_nbFaces);
-
-    //initialize the size of visualization variables
-    m_pInfo.m_values.resize(m_nbPoints);
-    m_fInfo.m_vectors.resize(m_nbFaces);
+    cout << "Number of nodes: " << m_nbPoints << endl;
+    cout << "Number of edges: " << m_nbEdges << endl;
+    cout << "Number of faces: " << m_nbFaces << endl;
 
     //initialize Boundary
     computeBoundary2D();
@@ -167,10 +170,23 @@ void EulerianFluidModel<DataTypes>::init()
     computeOperators();
 
     //initialize boundary constraints
-    setBdConstraints(-m_bdX.getValue(), m_bdX.getValue(), -m_bdY.getValue(), m_bdY.getValue(), -m_bdZ.getValue(), m_bdZ.getValue());
+    setBdConstraints(m_bdXmin1.getValue(), m_bdXmax1.getValue(), m_bdYmin1.getValue(), m_bdYmax1.getValue(), m_bdZmin1.getValue(), m_bdZmax1.getValue(), m_bdValue1.getValue());
+    setBdConstraints(m_bdXmin2.getValue(), m_bdXmax2.getValue(), m_bdYmin2.getValue(), m_bdYmax2.getValue(), m_bdZmin2.getValue(), m_bdZmax2.getValue(), m_bdValue2.getValue());
 
     //initialize project matrices
     computeProjectMats();
+
+    //initialize the size of state variables
+    m_vorticity.ReSize(m_nbPoints + m_bdConstraints.size());
+    m_flux.ReSize(m_nbEdges);
+
+    m_vels.resize(m_nbFaces);
+    m_bkCenters.resize(m_nbFaces);
+    m_bkVels.resize(m_nbFaces);
+
+    //initialize the size of visualization variables
+    m_pInfo.m_values.resize(m_nbPoints);
+    m_fInfo.m_vectors.resize(m_nbFaces);
 
     //save data for testing
     //std::cout<<"save()"<<endl;
@@ -330,7 +346,7 @@ void EulerianFluidModel<DataTypes>::draw()
                 Edge e = m_topology->getEdge(it->first);
                 glBegin(GL_LINES);
                 if(it->second > 0.0)
-                    glColor3f(0.0, 1.0, 0.0);
+                    glColor3f(0.0, 0.0, 1.0);
                 else
                 {
                     if(it->second < 0.0)
@@ -368,6 +384,13 @@ void EulerianFluidModel<DataTypes>::computeBoundary2D()
             m_eInfo.m_isBoundary[i] = true;
             m_fInfo.m_isBoundary[faces[0]] = true;
         }
+    }
+
+    m_bdConstraints.clear();
+    for(EdgeID i = 0; i < m_nbEdges; ++i)
+    {
+        if(m_eInfo.m_isBoundary[i])
+            m_bdConstraints.insert(make_pair(i, 0));
     }
 }
 
@@ -666,7 +689,6 @@ void EulerianFluidModel<DataTypes>::computeOperators()
             laplace.set(i, j, value);
             laplace.set(j, i, value);
         }
-
     }
 
     m_d0.ReSize(m_nbEdges, m_nbPoints);
@@ -675,22 +697,25 @@ void EulerianFluidModel<DataTypes>::computeOperators()
         for(PointID j = 0 ; j < m_nbPoints; ++j)
             m_d0.element(i, j) = d0.element(i, j);
 
-    //±ﬂΩÁ…œµƒphi÷∏∂®Œ™0
-    m_laplace.ReSize(m_nbPoints, m_nbPoints);
-    m_laplace = 0.0;
-    for(unsigned int i = 0; i < m_nbPoints; ++i)
-    {
-        if(m_pInfo.m_isBoundary[i])
-            m_laplace.element(i, i) = 1.0;
-        else
-        {
-            for(unsigned int j = 0; j < m_nbPoints; ++j)
-                m_laplace.element(i, j) = laplace.element(i, j);
-        }
-    }
+    /*
+    	//±ﬂΩÁ…œµƒphi÷∏∂®Œ™0
+    	m_laplace.ReSize(m_nbPoints, m_nbPoints);
+    	m_laplace = 0.0;
+    	for(unsigned int i = 0; i < m_nbPoints; ++i)
+    	{
+    		if(m_pInfo.m_isBoundary[i])
+    				m_laplace.element(i, i) = 1.0;
+    		else
+    		{
+    			for(unsigned int j = 0; j < m_nbPoints; ++j)
+    				m_laplace.element(i, j) = laplace.element(i, j);
+    		}
+    	}
 
-    m_laplace_inv = m_laplace.i();
-
+    	cout << "Computing inv(L)...";
+    	m_laplace_inv = m_laplace.i();
+    	cout << "done" << endl;
+    */
     /*
     //unsymmetric L
     m_laplace.ReSize(m_nbPoints, m_nbPoints);
@@ -711,6 +736,30 @@ void EulerianFluidModel<DataTypes>::computeOperators()
     			m_laplace.element(i, j) = laplace.element(i, j);
     	}
     }*/
+
+    unsigned int nb_constraints = m_bdConstraints.size();
+    m_laplace.ReSize(m_nbPoints + nb_constraints, m_nbPoints + nb_constraints);
+    m_laplace = 0.0;
+    for(unsigned int i = 0; i < m_nbPoints; ++i)
+        for(unsigned int j = 0; j < m_nbPoints; ++j)
+            m_laplace.element(i, j) = laplace.element(i, j);
+
+    std::map<int, double>::iterator it = m_bdConstraints.begin();
+    sofa::component::linearsolver::SparseMatrix<int>::LElementIterator ele3;
+    for(unsigned int i = 0; i < nb_constraints; ++i,it++)
+    {
+        for (ele3 = d0[it->first].begin(); ele3 != d0[it->first].end(); ele3++)
+        {
+            //  ele3->first = index of the column containing the first non-zero value of d0
+            //  ele3->second = value of the non-zero element at this index
+            m_laplace.element(m_nbPoints+i, ele3->first) = ele3->second;
+            m_laplace.element(ele3->first, m_nbPoints+i) = ele3->second;
+        }
+    }
+
+    cout << "Computing inv(L)...";
+    m_laplace_inv = m_laplace.i();
+    cout << "done" << endl;
 }
 
 template<class DataTypes>
@@ -975,70 +1024,18 @@ void EulerianFluidModel<DataTypes>::computeProjectMats()
 }
 
 template<class DataTypes>
-void EulerianFluidModel<DataTypes>::setBdConstraints(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax)
+void EulerianFluidModel<DataTypes>::setBdConstraints(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax, double value)
 {
-    m_bdConstraints.clear();
-
-    if(xMin == xMax)
-        //for yz plane
+    std::map<int, double>::iterator it = m_bdConstraints.begin();
+    for(; it !=  m_bdConstraints.end(); it++)
     {
-        for(EdgeID i = 0; i < m_nbEdges; ++i)
+        if(m_eInfo.m_centers[it->first].x() > xMin && m_eInfo.m_centers[it->first].x() < xMax &&
+           m_eInfo.m_centers[it->first].y() > yMin && m_eInfo.m_centers[it->first].y() < yMax &&
+           m_eInfo.m_centers[it->first].z() > zMin && m_eInfo.m_centers[it->first].z() < zMax)
         {
-            if(m_eInfo.m_isBoundary[i])
-            {
-                if(m_eInfo.m_centers[i].y() < yMin || m_eInfo.m_centers[i].y() > yMax)
-                {
-                    m_bdConstraints.insert(make_pair(i, 0));
-                    continue;
-                }
-                const EdgeFaces& eFaces = (m_meshType == TriangleMesh) ?
-                        m_topology->getTriangleEdgeShell(i) : m_topology->getQuadEdgeShell(i);
-                //double value = 1.0 * d1.element(eFaces[0], i);
-                double value = 0;
-                if(m_eInfo.m_centers[i].z() < zMin)
-                {
-                    m_bdConstraints.insert(make_pair(i, value));
-                    continue;
-                }
-                if(m_eInfo.m_centers[i].z() > zMax)
-                {
-                    m_bdConstraints.insert(make_pair(i, -value));
-                    continue;
-                }
-
-            }
-        }
-    }
-
-    if(zMin == zMax)
-        //for xy plane
-    {
-        for(EdgeID i = 0; i < m_nbEdges; ++i)
-        {
-            if(m_eInfo.m_isBoundary[i])
-            {
-                if(m_eInfo.m_centers[i].y() < yMin || m_eInfo.m_centers[i].y() > yMax)
-                {
-                    m_bdConstraints.insert(make_pair(i, 0));
-                    continue;
-                }
-                const EdgeFaces& eFaces = (m_meshType == TriangleMesh) ?
-                        m_topology->getTriangleEdgeShell(i) : m_topology->getQuadEdgeShell(i);
-
-                //double value = 1.0 * d1.element(eFaces[0], i);
-                double value = 0;
-                if(m_eInfo.m_centers[i].x() < xMin)
-                {
-                    m_bdConstraints.insert(make_pair(i, value));
-                    continue;
-                }
-                if(m_eInfo.m_centers[i].x() > xMax)
-                {
-                    m_bdConstraints.insert(make_pair(i, -value));
-                    continue;
-                }
-
-            }
+            const EdgeFaces eFaces = m_meshType == TriangleMesh ?
+                    m_topology->getTriangleEdgeShell(it->first) : m_topology->getQuadEdgeShell(it->first);
+            it->second = value * d1.element(eFaces[0], it->first);
         }
     }
 }
@@ -1477,8 +1474,8 @@ void EulerianFluidModel<DataTypes>::addForces()
     {
         Coord p = (m_meshType == TriangleMesh) ?
                 m_triGeo->getPointPosition(i) : m_quadGeo->getPointPosition(i);
-        Coord o(0.0, 0.0, 0.0);
-        if((o-p).norm2() < 5)
+        Coord o(5.0, 5.0, 0.0);
+        if((o-p).norm2() < 2.0)
             m_vorticity.element(i) += 3.0;
     }
 }
@@ -1486,16 +1483,26 @@ void EulerianFluidModel<DataTypes>::addForces()
 template<class DataTypes>
 void EulerianFluidModel<DataTypes>::calcPhi(bool reset)
 {
+    NewMAT::Matrix phi;
+
     if (reset)
         m_laplace_inv =  m_laplace.i();
-    m_phi = m_laplace_inv * m_vorticity;
+
+    std::map<int, double>::iterator it = m_bdConstraints.begin();
+    for(unsigned int i = 0; i < m_bdConstraints.size(); ++i,it++)
+    {
+        m_vorticity.element(m_nbPoints+i) = it->second;
+    }
+
+    phi = m_laplace_inv * m_vorticity;
+    m_phi = phi.Rows(1, m_nbPoints);
 }
 
 template<class DataTypes>
 void EulerianFluidModel<DataTypes>::calcFlux()
 {
     m_flux = m_d0 * m_phi;
-    setBoundaryFlux();
+    //setBoundaryFlux();
 }
 
 template<class DataTypes>
