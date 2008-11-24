@@ -3,16 +3,18 @@
     <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
     <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
-    <Object type="MeshLoader" filename="mesh/plane_loop_2.obj" />
+    <!-- <Object type="MeshLoader" filename="mesh/plane_loop_2.obj" /> -->
+    <Object type="MeshLoader" filename="mesh/square_864_triangles.obj" /> 
     <Object type="MeshTopology"  name="TriangleMesh" />
     <Object type="TriangleSetGeometryAlgorithms" name="TriGeo"   template="Vec3d" />
 
 
     <Object type="MechanicalObject" name="mechanical" />
     <Object type="EulerianFluidModel" name="fluid" viscosity="0" centerType="1"
-            bdX="0" bdY="10" bdZ="10"
-            harmonicVx="0" harmonicVy="0" harmonicVz="-0.2"
-            addFroces="0" displayBoundary="0" displayVorticity="1" displayVelocity="1"/>
+            bdXmin1="-1" bdYmin1="-1" bdZmin1="-1" bdXmax1="1" bdYmax1="11" bdZmax1="1" bdValue1="-1"
+            bdXmin2="9" bdYmin2="-1" bdZmin2="-1" bdXmax2="11" bdYmax2="11" bdZmax2="1" bdValue2="1"
+            harmonicVx="0.0" harmonicVy="0" harmonicVz="0"
+            addFroces="0" displayBoundary="1" displayVorticity="1" displayVelocity="1"/>
     <!--  Barycenter = 0, Circumcenter = 1 -->
 
     <Node name="VisualGrid">
@@ -21,3 +23,4 @@
     </Node>
   </Node>
 </Node>
+
