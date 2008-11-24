@@ -103,9 +103,20 @@ protected:
     Data< Real > m_harmonicVx;
     Data< Real > m_harmonicVy;
     Data< Real > m_harmonicVz;
-    Data< Real > m_bdX;
-    Data< Real > m_bdY;
-    Data< Real > m_bdZ;
+    Data< Real > m_bdXmin1;
+    Data< Real > m_bdYmin1;
+    Data< Real > m_bdZmin1;
+    Data< Real > m_bdXmax1;
+    Data< Real > m_bdYmax1;
+    Data< Real > m_bdZmax1;
+    Data< Real > m_bdXmin2;
+    Data< Real > m_bdYmin2;
+    Data< Real > m_bdZmin2;
+    Data< Real > m_bdXmax2;
+    Data< Real > m_bdYmax2;
+    Data< Real > m_bdZmax2;
+    Data< Real> m_bdValue1;
+    Data< Real> m_bdValue2;
     Data< CenterType > m_centerType;
 
     //topology and geometry related data
@@ -126,12 +137,34 @@ public:
     EulerianFluidModel();
     ~EulerianFluidModel();
 
-    Real getBdX() const { return m_bdX.getValue(); }
-    void setBdX(Real val) { m_bdX.setValue(val); }
-    Real getBdY() const { return m_bdY.getValue(); }
-    void setBdY(Real val) { m_bdY.setValue(val); }
-    Real getBdZ() const { return m_bdZ.getValue(); }
-    void setBdZ(Real val) { m_bdZ.setValue(val); }
+    Real getBdXmin1() const { return m_bdXmin1.getValue(); }
+    void setBdXmin1(Real val) { m_bdXmin1.setValue(val); }
+    Real getBdYmin1() const { return m_bdYmin1.getValue(); }
+    void setBdYmin1(Real val) { m_bdYmin1.setValue(val); }
+    Real getBdZmin1() const { return m_bdZmin1.getValue(); }
+    void setBdZmin1(Real val) { m_bdZmin1.setValue(val); }
+    Real getBdXmin2() const { return m_bdXmin2.getValue(); }
+    void setBdXmin2(Real val) { m_bdXmin2.setValue(val); }
+    Real getBdYmin2() const { return m_bdYmin2.getValue(); }
+    void setBdYmin2(Real val) { m_bdYmin2.setValue(val); }
+    Real getBdZmin2() const { return m_bdZmin2.getValue(); }
+    void setBdZmin2(Real val) { m_bdZmin2.setValue(val); }
+    Real getBdXmax1() const { return m_bdXmax1.getValue(); }
+    void setBdXmax1(Real val) { m_bdXmax1.setValue(val); }
+    Real getBdYmax1() const { return m_bdYmax1.getValue(); }
+    void setBdYmax1(Real val) { m_bdYmax1.setValue(val); }
+    Real getBdZmax1() const { return m_bdZmax1.getValue(); }
+    void setBdZmax1(Real val) { m_bdZmax1.setValue(val); }
+    Real getBdXmax2() const { return m_bdXmax2.getValue(); }
+    void setBdXmax2(Real val) { m_bdXmax2.setValue(val); }
+    Real getBdYmax2() const { return m_bdYmax2.getValue(); }
+    void setBdYmax2(Real val) { m_bdYmax2.setValue(val); }
+    Real getBdZmax2() const { return m_bdZmax2.getValue(); }
+    void setBdZmax2(Real val) { m_bdZmax2.setValue(val); }
+    Real getBdValue1() const { return m_bdValue1.getValue(); }
+    void setBdValue1(Real val) { m_bdValue1.setValue(val); }
+    Real getBdValue2() const { return m_bdValue2.getValue(); }
+    void setBdValue2(Real val) { m_bdValue2.setValue(val); }
     bool getDisplayBoundary() const { return m_bDisplayBoundary.getValue(); }
     void setDisplayBoundary(bool val) { m_bDisplayBoundary.setValue(val); }
     bool getDisplayVorticity() const { return m_bDisplayVorticity.getValue(); }
@@ -248,7 +281,7 @@ protected:
     void computeProjectMats();
 
     //set boundary contraints
-    void setBdConstraints(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
+    void setBdConstraints(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax, double value);
     //set initial values
     void setInitialVorticity();
 
