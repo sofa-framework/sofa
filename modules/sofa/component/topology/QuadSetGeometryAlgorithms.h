@@ -101,14 +101,10 @@ public:
     void writeMSHfile(const char *filename) const;
 };
 
-/*template< class Real>
-bool is_point_in_quad(const defaulttype::Vec<3,Real>& p, const defaulttype::Vec<3,Real>& a,
-					const defaulttype::Vec<3,Real>& b, const defaulttype::Vec<3,Real>& c,
-					const defaulttype::Vec<3,Real>& d);*/
-template<class Real>
-bool is_point_in_quad(const Vec<3,Real>& p,
-        const Vec<3,Real>& a, const Vec<3,Real>& b,
-        const Vec<3,Real>& c, const Vec<3,Real>& d);
+template<class Coord>
+bool is_point_in_quad(const Coord& p,
+        const Coord& a, const Coord& b,
+        const Coord& c, const Coord& d);
 
 void snapping_test_quad(double epsilon, double alpha0, double alpha1, double alpha2, double alpha3,
         bool& is_snap_0, bool& is_snap_1, bool& is_snap_2, bool& is_snap_3);

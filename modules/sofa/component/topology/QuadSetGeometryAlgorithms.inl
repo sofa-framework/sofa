@@ -296,30 +296,30 @@ void QuadSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) co
     myfile.close();
 }
 
-template<class Real>
-bool is_point_in_quad(const Vec<3,Real>& p,
-        const Vec<3,Real>& a, const Vec<3,Real>& b,
-        const Vec<3,Real>& c, const Vec<3,Real>& d)
-
+template<class Coord>
+bool is_point_in_quad(const Coord& p,
+        const Coord& a, const Coord& b,
+        const Coord& c, const Coord& d)
 {
     const double ZERO = 1e-6;
 
-    Vec<3,Real> ptest = p;
-    Vec<3,Real> p0 = a;
-    Vec<3,Real> p1 = b;
-    Vec<3,Real> p2 = c;
-    Vec<3,Real> p3 = d;
+    Coord ptest = p;
+    Coord p0 = a;
+    Coord p1 = b;
+    Coord p2 = c;
+    Coord p3 = d;
 
-    Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
-    Real norm_v_normal = v_normal*(v_normal);
+    Coord v_normal = (p2-p0).cross(p1-p0);
+
+    double norm_v_normal = v_normal*(v_normal);
     if(norm_v_normal > ZERO)
     {
         if(fabs((ptest-p0)*(v_normal)) < ZERO) // p is in the plane defined by the triangle (p0,p1,p2)
         {
 
-            Vec<3,Real> n_01 = (p1-p0).cross(v_normal);
-            Vec<3,Real> n_12 = (p2-p1).cross(v_normal);
-            Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
+            Coord n_01 = (p1-p0).cross(v_normal);
+            Coord n_12 = (p2-p1).cross(v_normal);
+            Coord n_20 = (p0-p2).cross(v_normal);
 
             if(((ptest-p0)*(n_01) > -ZERO) && ((ptest-p1)*(n_12) > -ZERO) && ((ptest-p2)*(n_20) > -ZERO))
                 return true;
@@ -333,9 +333,9 @@ bool is_point_in_quad(const Vec<3,Real>& p,
         if(fabs((ptest-p0)*(v_normal)) < ZERO) // p is in the plane defined by the triangle (p0,p3,p2)
         {
 
-            Vec<3,Real> n_01 = (p3-p0).cross(v_normal);
-            Vec<3,Real> n_12 = (p2-p3).cross(v_normal);
-            Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
+            Coord n_01 = (p3-p0).cross(v_normal);
+            Coord n_12 = (p2-p3).cross(v_normal);
+            Coord n_20 = (p0-p2).cross(v_normal);
 
             if(((ptest-p0)*(n_01) > -ZERO) && ((ptest-p1)*(n_12) > -ZERO) && ((ptest-p2)*(n_20) > -ZERO))
                 return true;
