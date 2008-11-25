@@ -89,51 +89,6 @@ public:
     enum MeshType {TriangleMesh = 3, QuadMesh, RegularQuadMesh};
     enum { Barycenter = 0, Circumcenter = 1};
 
-protected:
-
-    // profiling information
-    ctime_t m_dTime1, m_dTime2;
-
-    //arguments
-    Data< bool > m_bAddForces;
-    Data< Real > m_viscosity;
-    Data< bool > m_bDisplayBoundary;
-    Data< bool > m_bDisplayVorticity;
-    Data< bool > m_bDisplayVelocity;
-    Data< Real > m_harmonicVx;
-    Data< Real > m_harmonicVy;
-    Data< Real > m_harmonicVz;
-    Data< Real > m_bdXmin1;
-    Data< Real > m_bdYmin1;
-    Data< Real > m_bdZmin1;
-    Data< Real > m_bdXmax1;
-    Data< Real > m_bdYmax1;
-    Data< Real > m_bdZmax1;
-    Data< Real > m_bdXmin2;
-    Data< Real > m_bdYmin2;
-    Data< Real > m_bdZmin2;
-    Data< Real > m_bdXmax2;
-    Data< Real > m_bdYmax2;
-    Data< Real > m_bdZmax2;
-    Data< Real> m_bdValue1;
-    Data< Real> m_bdValue2;
-    Data< CenterType > m_centerType;
-
-    //topology and geometry related data
-    MechanicalState *m_mstate;
-    topology::MeshTopology* m_topology;
-    MeshType m_meshType;
-    sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* m_triGeo;
-    sofa::component::topology::QuadSetGeometryAlgorithms<DataTypes>* m_quadGeo;
-    std::map<int, double> m_bdConstraints;	//boundary constraints
-
-    unsigned int m_nbPoints;
-    unsigned int m_nbEdges;
-    unsigned int m_nbFaces;
-    unsigned int m_nbVolumes;
-
-public:
-
     EulerianFluidModel();
     ~EulerianFluidModel();
 
@@ -192,12 +147,51 @@ public:
     virtual void draw();
 
 protected:
-    //Information on the mesh
+
+    // profiling information
+    ctime_t m_dTime1, m_dTime2;
+
+    //arguments
+    Data< bool > m_bAddForces;
+    Data< bool > m_bDisplayBoundary;
+    Data< bool > m_bDisplayVorticity;
+    Data< bool > m_bDisplayVelocity;
+    Data< Real > m_harmonicVx;
+    Data< Real > m_harmonicVy;
+    Data< Real > m_harmonicVz;
+    Data< Real > m_bdXmin1;
+    Data< Real > m_bdYmin1;
+    Data< Real > m_bdZmin1;
+    Data< Real > m_bdXmax1;
+    Data< Real > m_bdYmax1;
+    Data< Real > m_bdZmax1;
+    Data< Real > m_bdXmin2;
+    Data< Real > m_bdYmin2;
+    Data< Real > m_bdZmin2;
+    Data< Real > m_bdXmax2;
+    Data< Real > m_bdYmax2;
+    Data< Real > m_bdZmax2;
+    Data< Real> m_bdValue1;
+    Data< Real> m_bdValue2;
+    Data< Real > m_viscosity;
+    Data< CenterType > m_centerType;
+
+    //topology and geometry related data
+    MechanicalState *m_mstate;
+    topology::MeshTopology* m_topology;
+    MeshType m_meshType;
+    sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* m_triGeo;
+    sofa::component::topology::QuadSetGeometryAlgorithms<DataTypes>* m_quadGeo;
+    unsigned int m_nbPoints;
+    unsigned int m_nbEdges;
+    unsigned int m_nbFaces;
+//		unsigned int m_nbVolumes;
+
+    //mesh element information
     class PointInformation
     {
     public:
-        typedef sofa::defaulttype::Vec<3, double> VertexOfDualFace;
-        typedef sofa::helper::vector<VertexOfDualFace> DualFace;
+        typedef VecCoord DualFace;
         typedef Coord Normal;
         typedef sofa::defaulttype::Vec<2, Normal> VertexNormal;
         typedef sofa::helper::vector<VertexNormal> DualFaceVertexNormal;
@@ -217,30 +211,58 @@ protected:
     {
     public:
         sofa::helper::vector<bool> m_isBoundary;
-        sofa::helper::vector< sofa::defaulttype::Vec<3, double> > m_centers;
+        sofa::helper::vector<double> m_lengths;
+        VecCoord m_unitTangentVectors;
+        VecCoord m_centers;
     };
     class FaceInformation
     {
     public:
         sofa::helper::vector<bool> m_isBoundary;
-        sofa::helper::vector< sofa::defaulttype::Vec<3, double> > m_centers;
+        VecCoord m_centers;
 
         typedef NewMAT::SymmetricMatrix ProjectMatrix;
         sofa::helper::vector< ProjectMatrix > m_AtAInv;
         sofa::helper::vector< NewMAT::Matrix > m_At;
 
-        //values for display
-        sofa::helper::vector< sofa::defaulttype::Vec<3, double> > m_vectors;
+        //vectors for display
+        VecCoord m_vectors;
     };
+    class BoundaryPointInformation
+    {
+    public:
+        Coord m_bdVel;	//boundary velocity
+        Coord m_vector;	//vector for display
+        BoundaryPointInformation(const Coord& vel)
+            : m_bdVel(vel), m_vector(Coord(0, 0, 0)) {};
+        BoundaryPointInformation()
+            : m_bdVel(Coord(0, 0, 0)), m_vector(Coord(0, 0, 0)) {};
+    };
+    class BoundaryEdgeInformation
+    {
+    public:
+        double m_bdConstraint;	//boundary constraints
+        Coord m_bdVel;			//boundary velocity
+        Coord m_unitFluxVector;	//unit vector of flux
+        Coord m_vector;			//vector for display
+        BoundaryEdgeInformation(const double c, const Coord& vel, const Coord& vec)
+            : m_bdConstraint(c), m_bdVel(vel), m_unitFluxVector(vec), m_vector(Coord(0, 0, 0)) {};
+        BoundaryEdgeInformation()
+            : m_bdConstraint(0.0), m_bdVel(Coord(0, 0, 0)), m_unitFluxVector(Coord(0, 0, 0)), m_vector(Coord(0, 0, 0)) {};
+    };
+
+
+    typedef typename PointInformation::Normal Normal;
+    typedef typename PointInformation::VertexNormal VertexNormal;
+    typedef typename PointInformation::DualFace DualFace;
 
     PointInformation m_pInfo;
     EdgeInformation m_eInfo;
     FaceInformation m_fInfo;
+    std::map<PointID, BoundaryPointInformation> m_bdPointInfo;
+    std::map<EdgeID, BoundaryEdgeInformation> m_bdEdgeInfo;
 
-    typedef typename PointInformation::Normal Normal;
-    typedef typename PointInformation::VertexNormal VertexNormal;
-    typedef typename PointInformation::VertexOfDualFace VertexOfDualFace;
-    typedef typename PointInformation::DualFace DualFace;
+
 
     //operators
     sofa::component::linearsolver::SparseMatrix<int> d0;
@@ -255,20 +277,15 @@ protected:
     NewMAT::Matrix m_d0;
 
     //state variables
-    //sofa::component::linearsolver::FullVector<double> m_flux;	//flux on the edge
     NewMAT::ColumnVector m_flux;
     NewMAT::ColumnVector m_vorticity;
     NewMAT::ColumnVector m_phi;
-    VecDeriv m_vels;											//velocity on the dual vertices
+    VecDeriv m_vels;											//velocity at the dual vertices
+    VecDeriv m_bkVels;											//velocity at the backtrack centers
     VecCoord m_bkCenters;										//backtrack centers
-    VecDeriv m_bkVels;											//velocity on the backtrack centers
 
-    //compute isBoundary
-    void computeBoundary2D();
-    //compute the centers of face, barycenter or circumcenter
-    void computeFaceCenters();
-    //compute the centers of edge
-    void computeEdgeCenters();
+    //compute element information: point, edge, face
+    void computeElementInformation();
     //compute vertices of dual face
     void computeDualFaces();
     //calculate operators d, star, curl, laplace
@@ -286,12 +303,12 @@ protected:
     void setInitialVorticity();
 
     // U => v
-    //calculate velocity at dual vertex
-    void calcVelocityAtDualVertex();
+    //calculate velocity at dual vertices (face centers), boudary edge centers and boundary points
+    void calcVelocity();
 
     // v => Omega
     //search the face(tri/quad) index in which pt is in
-    FaceID searchFaceForTriMesh(const sofa::defaulttype::Vec<3, double>& pt, FaceID startFace) const;
+    FaceID searchFaceForTriMesh(const Coord& pt, FaceID startFace) const;
     //search the dual face in which pt is, with the start face iFace
     PointID searchDualFaceForTriMesh(const Coord& pt, const FaceID startFace) const;
     PointID searchDualFaceForQuadMesh(const Coord & pt, PointID startDualFace) const;
