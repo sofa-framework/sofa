@@ -344,7 +344,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::computeClosestIndexPair(const T
     return;
 }
 
-// test if a point is included in the triangle indexed by ind_t
+// test if a point is inside the triangle indexed by ind_t
 template<class DataTypes>
 bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInsideTriangle(const TriangleID ind_t,
         bool is_tested,
@@ -480,7 +480,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInsideTriangle(const Tri
     }
 }
 
-// test if a point is included in the triangle indexed by ind_t
+// test if a point is in the triangle indexed by ind_t
 template<class DataTypes>
 bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInTriangle(const TriangleID ind_t,
         bool is_tested,
@@ -1615,48 +1615,6 @@ void TriangleSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename
 
     myfile.close();
 }
-
-/// Test for REAL if a point p is in a triangle indexed by (a,b,c)
-
-//template<class Real>
-//bool is_point_in_triangle(const Vec<3,Real>& p, const Vec<3,Real>& a, const Vec<3,Real>& b, const Vec<3,Real>& c)
-//{
-//	Vec<3,Real> ptest = p;
-
-//	Vec<3,Real> p0 = a;
-//	Vec<3,Real> p1 = b;
-//	Vec<3,Real> p2 = c;
-
-//	Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
-
-//	Real norm_v_normal = v_normal*(v_normal);
-//	if(norm_v_normal != 0.0)
-//	{
-//		//v_normal/=norm_v_normal;
-
-//		if((ptest-p0)*(v_normal)==0.0) // p is in the plane defined by the triangle (p0,p1,p2)
-//		{
-
-//			Vec<3,Real> n_01 = (p1-p0).cross(v_normal);
-//			Vec<3,Real> n_12 = (p2-p1).cross(v_normal);
-//			Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
-
-//			return (((ptest-p0)*(n_01) >= 0.0) && ((ptest-p1)*(n_12) >= 0.0) && ((ptest-p2)*(n_20) >= 0.0));
-
-//		}
-//		else // p is not in the plane defined by the triangle (p0,p1,p2)
-//		{
-//			//std::cout << "INFO_print : p is not in the plane defined by the triangle (p0,p1,p2)" << std::endl;
-//			return false;
-//		}
-
-//	}
-//	else // triangle is flat
-//	{
-//		//std::cout << "INFO_print : triangle is flat" << std::endl;
-//		return false;
-//	}
-//}
 
 template<class Real>
 bool is_point_in_triangle(const Vec<3,Real>& p, const Vec<3,Real>& a, const Vec<3,Real>& b, const Vec<3,Real>& c)
