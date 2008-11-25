@@ -449,7 +449,7 @@ void MeshTopology::createOrientedTriangleVertexShellArray()
     m_orientedEdgeVertexShell.clear();
     m_orientedEdgeVertexShell.resize(nbPoints);
 
-    for(unsigned int i = 0; i < nbPoints; ++i)
+    for(unsigned int i = 0; i < (unsigned int)nbPoints; ++i)
         //for each point: i
     {
         unsigned int startEdge = InvalidID;
@@ -646,7 +646,7 @@ void MeshTopology::createOrientedQuadVertexShellArray()
     m_orientedEdgeVertexShell.clear();
     m_orientedEdgeVertexShell.resize(nbPoints);
 
-    for(unsigned int i = 0; i < nbPoints; ++i)
+    for(unsigned int i = 0; i < (unsigned int)nbPoints; ++i)
         //for each point: i
     {
         unsigned int startEdge = InvalidID;
@@ -1414,14 +1414,14 @@ int MeshTopology::computeRelativeOrientationInTri(const unsigned int ind_p0, con
 {
     const Triangle& t = getTriangles()[ind_t];
     int i = 0;
-    while(i < t.size())
+    while(i < (int)t.size())
     {
         if(ind_p0 == t[i])
             break;
         ++i;
     }
 
-    if(i == t.size()) //ind_p0 is not a PointID in the triangle ind_t
+    if(i == (int)t.size()) //ind_p0 is not a PointID in the triangle ind_t
         return 0;
 
     if(ind_p1 == t[(i+1)%3]) //p0p1 has the same direction of t
@@ -1436,14 +1436,14 @@ int MeshTopology::computeRelativeOrientationInQuad(const unsigned int ind_p0, co
 {
     const Quad& q = getQuads()[ind_q];
     int i = 0;
-    while(i < q.size())
+    while(i < (int)q.size())
     {
         if(ind_p0 == q[i])
             break;
         ++i;
     }
 
-    if(i == q.size()) //ind_p0 is not a PointID in the quad ind_q
+    if(i == (int)q.size()) //ind_p0 is not a PointID in the quad ind_q
         return 0;
 
     if(ind_p1 == q[(i+1)%4]) //p0p1 has the same direction of q

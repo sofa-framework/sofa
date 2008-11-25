@@ -50,10 +50,10 @@ class ImplicitSurface : public virtual core::objectmodel::BaseObject
 public:
     ImplicitSurface( ) { }
     virtual ~ImplicitSurface() { }
-    virtual double getValue(defaulttype::Vec3d&) =0;
-    virtual double getValue(defaulttype::Vec3d&, int&) =0;  // the second parameter could be useful to identify a domain
-    virtual defaulttype::Vec3d getGradient(defaulttype::Vec3d&, int i=0);
-    virtual unsigned int getDomain(sofa::defaulttype::Vec3d &, int ref_domain) =0;
+    virtual double getValue(defaulttype::Vec3d& pos) = 0;
+    virtual double getValue(defaulttype::Vec3d& pos, int& domain) = 0;  ///< the second parameter is used to identify a domain
+    virtual defaulttype::Vec3d getGradient(defaulttype::Vec3d& pos, int i=0);
+    virtual unsigned int getDomain(sofa::defaulttype::Vec3d& pos, int ref_domain) = 0;
 
 
     virtual bool computeSegIntersection(defaulttype::Vec3d& posInside, defaulttype::Vec3d& posOutside, defaulttype::Vec3d& intersecPos, int i=0);
@@ -100,8 +100,8 @@ public:
     void reinit() {init();}
 
     double getValue(defaulttype::Vec3d& Pos);
-    inline	double getValue(defaulttype::Vec3d& Pos, int&) {return getValue(Pos);}
-    unsigned int getDomain(sofa::defaulttype::Vec3d &, int ref_domain)	{return 0;}
+    double getValue(defaulttype::Vec3d& pos, int& /*domain*/) { return getValue(pos); }
+    unsigned int getDomain(sofa::defaulttype::Vec3d& /*pos*/, int /*ref_domain*/) { return 0; }
     //defaulttype::Vec3d getGradient(defaulttype::Vec3d &Pos);
 
     Data<bool> inside;
