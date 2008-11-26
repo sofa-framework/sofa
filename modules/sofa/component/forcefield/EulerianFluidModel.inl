@@ -46,6 +46,9 @@ EulerianFluidModel<DataTypes>::EulerianFluidModel()
     m_bDisplayBoundary  (initData(&m_bDisplayBoundary, bool(0), "displayBoundary", "Display Boundary")),
     m_bDisplayVorticity  (initData(&m_bDisplayVorticity, bool(0), "displayVorticity", "Display Vorticity")),
     m_bDisplayVelocity  (initData(&m_bDisplayVelocity, bool(0), "displayVelocity", "Display Velocity")),
+    m_visCoef1(initData(&m_visCoef1, Real(0.2), "visCoef1", "Visualization Coefficent 1")),
+    m_visCoef2(initData(&m_visCoef2, Real(0.2), "visCoef2", "Visualization Coefficent 2")),
+    m_visCoef3(initData(&m_visCoef3, Real(10), "visCoef3", "Visualization Coefficent 3")),
     m_harmonicVx(initData(&m_harmonicVx, Real(0), "harmonicVx", "Harmonic Velocity x")),
     m_harmonicVy(initData(&m_harmonicVy, Real(0), "harmonicVy", "Harmonic Velocity y")),
     m_harmonicVz(initData(&m_harmonicVz, Real(0), "harmonicVz", "Harmonic Velocity z")),
@@ -1474,40 +1477,63 @@ void EulerianFluidModel<DataTypes>::backtrack(double dt)
 {
     m_dTime1 = 0.0;
     m_dTime2 = 0.0;
-    ctime_t dTime = 0.0;
-    ctime_t startTime, endTime;
+
 
     switch(m_meshType)
     {
     case TriangleMesh:
+        //backtrack face centers
         for(FaceID i = 0; i < m_nbFaces; ++i)
         {
-            startTime = CTime::getTime();
             m_bkCenters[i] = m_fInfo.m_centers[i] + m_vels[i] * (-dt);
             m_bkVels[i] = interpolateVelocity(m_bkCenters[i], i);
-            endTime = CTime::getTime();
-            dTime += endTime-startTime;
         }
+        ////backtrack boundary edge centers
+        //for(std::map<EdgeID, BoundaryEdgeInformation>::iterator it = m_bdEdgeInfo.begin(); it !=  m_bdEdgeInfo.end(); ++it)
+        //{
+        //	const EdgeFaces eFaces = m_topology->getTriangleEdgeShell(it->first);
+        //	it->second.m_bkECenter = m_eInfo.m_centers[it->first] + it->second.m_bdVel * (-dt);
+        //	it->second.m_bkVel = interpolateVelocity(it->second.m_bkECenter, eFaces[0]);
+        //}
+        ////backtrack boundary points
+        //for(std::map<PointID, BoundaryPointInformation>::iterator it = m_bdPointInfo.begin(); it !=  m_bdPointInfo.end(); ++it)
+        //{
+        //	const VertexFaces vFaces = m_topology->getOrientedTriangleVertexShell(it->first);
+        //	Coord p(m_topology->getPX(it->first), m_topology->getPY(it->first), m_topology->getPZ(it->first));
+        //	it->second.m_bkPoint = p + it->second.m_bdVel * (-dt);
+        //	it->second.m_bkVel = interpolateVelocity(it->second.m_bkPoint, vFaces[0]);
+        //}
         break;
-
     case QuadMesh:
     case RegularQuadMesh:
+        //backtrack face centers
         for(FaceID i = 0; i < m_nbFaces; ++i)
         {
-            startTime = CTime::getTime();
             m_bkCenters[i] = m_fInfo.m_centers[i] + m_vels[i] * (-dt);
             Quad f = m_topology->getQuad(i);
             m_bkVels[i] = interpolateVelocity(m_bkCenters[i], f[0]);
-            endTime = CTime::getTime();
-            dTime += endTime-startTime;
         }
+        ////backtrack boundary edge centers
+        //for(std::map<EdgeID, BoundaryEdgeInformation>::iterator it = m_bdEdgeInfo.begin(); it !=  m_bdEdgeInfo.end(); ++it)
+        //{
+        //	const Edge e = m_topology->getEdge(it->first);
+        //	it->second.m_bkECenter = m_eInfo.m_centers[it->first] + it->second.m_bdVel * (-dt);
+        //	it->second.m_bkVel = interpolateVelocity(it->second.m_bkECenter, e[0]);
+        //}
+        ////backtrack boundary points
+        //for(std::map<PointID, BoundaryPointInformation>::iterator it = m_bdPointInfo.begin(); it !=  m_bdPointInfo.end(); ++it)
+        //{
+        //	Coord p(m_topology->getPX(it->first), m_topology->getPY(it->first), m_topology->getPZ(it->first));
+        //	it->second.m_bkPoint = p + it->second.m_bdVel * (-dt);
+        //	it->second.m_bkVel = interpolateVelocity(it->second.m_bkPoint, it->first);
+        //}
         break;
     default:
         break;
     }
+
     //cout << "interpolateVelocity() => m_dTime1 = " << m_dTime1/1e6 << endl;
     //cout << "interpolateVelocity() => m_dTime2 = " << m_dTime2/1e6 << endl;
-    //cout << "backtrack() => dTime = " << dTime/1e6 << endl;
 }
 
 template<class DataTypes>
@@ -1517,33 +1543,64 @@ void EulerianFluidModel<DataTypes>::calcVorticity()
     switch(m_meshType)
     {
     case TriangleMesh:
+        //calculate inner vorticity
         for(PointID i = 0; i < m_nbPoints; ++i)
         {
             if(!m_pInfo.m_isBoundary[i])
-                //at present, set the boundary voritcity to be zero
             {
                 const VertexFaces vFaces = m_topology->getOrientedTriangleVertexShell(i);
                 for(FaceID j = 0; j < vFaces.size(); ++j)
-                    m_vorticity.element(i) += 0.5 * (
-                            (m_bkVels[vFaces[j]] + m_bkVels[vFaces[(j+1)%vFaces.size()]]) *
-                            (m_bkCenters[vFaces[(j+1)%vFaces.size()]] - m_bkCenters[vFaces[j]]) );
+                    m_vorticity.element(i) += (m_bkVels[vFaces[(j+1)%vFaces.size()]] + m_bkVels[vFaces[j]]) * (m_bkCenters[vFaces[(j+1)%vFaces.size()]] - m_bkCenters[vFaces[j]]);
+                m_vorticity.element(i) *= 0.5;
             }
         }
+        ////calculate boundary vorticity
+        //for(std::map<PointID, BoundaryPointInformation>::iterator it = m_bdPointInfo.begin(); it !=  m_bdPointInfo.end(); ++it)
+        //{
+        //	const VertexEdges vEdges = m_topology->getOrientedEdgeVertexShell(it->first);
+        //	const VertexFaces vFaces = m_topology->getOrientedTriangleVertexShell(it->first);
+        //	m_vorticity.element(it->first) =
+        //		(m_bdEdgeInfo[vEdges.back()].m_bkVel + m_bkVels[vFaces.back()]) * (m_bdEdgeInfo[vEdges.back()].m_bkECenter - m_bkCenters[vFaces.back()]) +		//fCenter_last->eCenter_last
+        //		(it->second.m_bkVel + m_bdEdgeInfo[vEdges.back()].m_bkVel) * (it->second.m_bkPoint - m_bdEdgeInfo[vEdges.back()].m_bkECenter) +					//eCenter_last->p
+        //		(m_bdEdgeInfo[vEdges.front()].m_bkVel + it->second.m_bkVel) * (m_bdEdgeInfo[vEdges.front()].m_bkECenter - it->second.m_bkPoint) +				//p->eCenter_first
+        //		(m_bkVels[vFaces.front()] + m_bdEdgeInfo[vEdges.front()].m_bkVel) * (m_bkCenters[vFaces.front()] - m_bdEdgeInfo[vEdges.front()].m_bkECenter);	//eCenter_fisrt->fCenter_first
+        //	for(FaceID i = 0; i < vFaces.size()-1; ++i)
+        //	{
+        //		m_vorticity.element(it->first) += (m_bkVels[vFaces[i+1]] + m_bkVels[vFaces[i]]) * (m_bkCenters[vFaces[i+1]] - m_bkCenters[vFaces[i]]);
+        //	}
+        //	m_vorticity.element(it->first) *= 0.5;
+        //}
+
         break;
     case QuadMesh:
     case RegularQuadMesh:
+        //calculate inner vorticity
         for(PointID i = 0; i < m_nbPoints; ++i)
         {
             if(!m_pInfo.m_isBoundary[i])
-                //at present, set the boundary voritcity to be zero
             {
                 const VertexFaces vFaces = m_topology->getOrientedQuadVertexShell(i);
                 for(FaceID j = 0; j < vFaces.size(); ++j)
-                    m_vorticity.element(i) += 0.5 * (
-                            (m_bkVels[vFaces[j]] + m_bkVels[vFaces[(j+1)%vFaces.size()]]) *
-                            (m_bkCenters[vFaces[(j+1)%vFaces.size()]] - m_bkCenters[vFaces[j]]) );
+                    m_vorticity.element(i) += (m_bkVels[vFaces[(j+1)%vFaces.size()]] + m_bkVels[vFaces[j]]) * (m_bkCenters[vFaces[(j+1)%vFaces.size()]] - m_bkCenters[vFaces[j]]);
+                m_vorticity.element(i) *= 0.5 ;
             }
         }
+        ////calculate boundary vorticity
+        //for(std::map<PointID, BoundaryPointInformation>::iterator it = m_bdPointInfo.begin(); it !=  m_bdPointInfo.end(); ++it)
+        //{
+        //	const VertexEdges vEdges = m_topology->getOrientedEdgeVertexShell(it->first);
+        //	const VertexFaces vFaces = m_topology->getOrientedQuadVertexShell(it->first);
+        //	m_vorticity.element(it->first) =
+        //		(m_bdEdgeInfo[vEdges.back()].m_bkVel + m_bkVels[vFaces.back()]) * (m_bdEdgeInfo[vEdges.back()].m_bkECenter - m_bkCenters[vFaces.back()]) +		//fCenter_last->eCenter_last
+        //		(it->second.m_bkVel + m_bdEdgeInfo[vEdges.back()].m_bkVel) * (it->second.m_bkPoint - m_bdEdgeInfo[vEdges.back()].m_bkECenter) +					//eCenter_last->p
+        //		(m_bdEdgeInfo[vEdges.front()].m_bkVel + it->second.m_bkVel) * (m_bdEdgeInfo[vEdges.front()].m_bkECenter - it->second.m_bkPoint) +				//p->eCenter_first
+        //		(m_bkVels[vFaces.front()] + m_bdEdgeInfo[vEdges.front()].m_bkVel) * (m_bkCenters[vFaces.front()] - m_bdEdgeInfo[vEdges.front()].m_bkECenter);	//eCenter_fisrt->fCenter_first
+        //	for(FaceID i = 0; i < vFaces.size()-1; ++i)
+        //	{
+        //		m_vorticity.element(it->first) += (m_bkVels[vFaces[i+1]] + m_bkVels[vFaces[i]]) * (m_bkCenters[vFaces[i+1]] - m_bkCenters[vFaces[i]]);
+        //	}
+        //	m_vorticity.element(it->first) *= 0.5;
+        //}
         break;
     default:
         break;
@@ -1602,25 +1659,23 @@ template<class DataTypes>
 void EulerianFluidModel<DataTypes>::normalizeDisplayValues()
 {
     //normailize the velocity
-    double vel_coef = 0.2;
     //velocity at face centers
     for(FaceID i = 0; i < m_nbFaces; ++i)
-        m_fInfo.m_vectors[i] =  m_vels[i] * vel_coef;
+        m_fInfo.m_vectors[i] =  m_vels[i] * m_visCoef1.getValue();
     //velocity at boundary points
     for(std::map<PointID, BoundaryPointInformation>::iterator it = m_bdPointInfo.begin(); it !=  m_bdPointInfo.end(); ++it)
-        it->second.m_vector = it->second.m_bdVel * vel_coef;
+        it->second.m_vector = it->second.m_bdVel * m_visCoef1.getValue();
     //velocity at boudary edge centers
     for(std::map<EdgeID, BoundaryEdgeInformation>::iterator it = m_bdEdgeInfo.begin(); it !=  m_bdEdgeInfo.end(); ++it)
-        it->second.m_vector = it->second.m_bdVel * vel_coef;
+        it->second.m_vector = it->second.m_bdVel * m_visCoef1.getValue();
 
     //normailize the vorticity
-    double vor_coef1 = 0.3, vor_coef2 = 5;
     for(PointID i = 0; i < m_nbPoints; ++i)
     {
         if(m_vorticity.element(i) > 0)
-            m_pInfo.m_values[i] = vor_coef1 * log(1 + vor_coef2 * m_vorticity.element(i));
+            m_pInfo.m_values[i] = m_visCoef2.getValue() * log(1 + m_visCoef3.getValue() * m_vorticity.element(i));
         else
-            m_pInfo.m_values[i] = -vor_coef1 * log(1 - vor_coef2 * m_vorticity.element(i));
+            m_pInfo.m_values[i] = -m_visCoef2.getValue() * log(1 - m_visCoef3.getValue() * m_vorticity.element(i));
     }
 }
 

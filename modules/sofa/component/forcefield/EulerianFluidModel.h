@@ -134,6 +134,12 @@ public:
     void setHarmonicVz(Real val) { m_harmonicVz.setValue(val); }
     Real getViscosity() const { return m_viscosity.getValue(); }
     void setViscosity(Real val) { m_viscosity.setValue(val); }
+    Real getVisCoef1() const { return m_visCoef1.getValue(); }
+    void setVisCoef1(Real val) { m_visCoef1.setValue(val); }
+    Real getVisCoef2() const { return m_visCoef2.getValue(); }
+    void setVisCoef2(Real val) { m_visCoef2.setValue(val); }
+    Real getVisCoef3() const { return m_visCoef3.getValue(); }
+    void setVisCoef3(Real val) { m_visCoef3.setValue(val); }
 
     CenterType getCenterType() const { return m_centerType.getValue(); }
     void setCenterType(CenterType ct) { m_centerType.setValue(ct); }
@@ -156,6 +162,9 @@ protected:
     Data< bool > m_bDisplayBoundary;
     Data< bool > m_bDisplayVorticity;
     Data< bool > m_bDisplayVelocity;
+    Data< Real > m_visCoef1;	//visualization coef
+    Data< Real > m_visCoef2;	//visualization coef
+    Data< Real > m_visCoef3;	//visualization coef
     Data< Real > m_harmonicVx;
     Data< Real > m_harmonicVy;
     Data< Real > m_harmonicVz;
@@ -232,11 +241,13 @@ protected:
     {
     public:
         Coord m_bdVel;	//boundary velocity
+        Coord m_bkPoint;//backtrack point position
+        Coord m_bkVel;	//velocity at backtrack point
         Coord m_vector;	//vector for display
         BoundaryPointInformation(const Coord& vel)
-            : m_bdVel(vel), m_vector(Coord(0, 0, 0)) {};
+            : m_bdVel(vel), m_bkPoint(Coord(0, 0, 0)), m_bkVel(Coord(0, 0, 0)), m_vector(Coord(0, 0, 0)) {};
         BoundaryPointInformation()
-            : m_bdVel(Coord(0, 0, 0)), m_vector(Coord(0, 0, 0)) {};
+            : m_bdVel(Coord(0, 0, 0)), m_bkPoint(Coord(0, 0, 0)), m_bkVel(Coord(0, 0, 0)), m_vector(Coord(0, 0, 0)) {};
     };
     class BoundaryEdgeInformation
     {
@@ -244,11 +255,15 @@ protected:
         double m_bdConstraint;	//boundary constraints
         Coord m_bdVel;			//boundary velocity
         Coord m_unitFluxVector;	//unit vector of flux
+        Coord m_bkECenter;		//backtrack edge center
+        Coord m_bkVel;			//velocity at backtrack edge center
         Coord m_vector;			//vector for display
         BoundaryEdgeInformation(const double c, const Coord& vel, const Coord& vec)
-            : m_bdConstraint(c), m_bdVel(vel), m_unitFluxVector(vec), m_vector(Coord(0, 0, 0)) {};
+            : m_bdConstraint(c), m_bdVel(vel), m_unitFluxVector(vec),
+              m_bkECenter(Coord(0, 0, 0)), m_bkVel(Coord(0, 0, 0)),m_vector(Coord(0, 0, 0)) {};
         BoundaryEdgeInformation()
-            : m_bdConstraint(0.0), m_bdVel(Coord(0, 0, 0)), m_unitFluxVector(Coord(0, 0, 0)), m_vector(Coord(0, 0, 0)) {};
+            : m_bdConstraint(0.0), m_bdVel(Coord(0, 0, 0)), m_unitFluxVector(Coord(0, 0, 0)),
+              m_bkECenter(Coord(0, 0, 0)), m_bkVel(Coord(0, 0, 0)), m_vector(Coord(0, 0, 0)) {};
     };
 
 
