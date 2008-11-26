@@ -236,6 +236,9 @@ protected:
 
         //vectors for display
         VecCoord m_vectors;
+
+        // list of incorrect (obtuse) triangles
+        sofa::helper::vector< FaceID > m_obtuseTris;
     };
     class BoundaryPointInformation
     {
@@ -270,14 +273,14 @@ protected:
     typedef typename PointInformation::Normal Normal;
     typedef typename PointInformation::VertexNormal VertexNormal;
     typedef typename PointInformation::DualFace DualFace;
+    typedef typename std::map<EdgeID, BoundaryEdgeInformation>::iterator BoundaryEdgeIterator;
+    typedef typename std::map<PointID, BoundaryPointInformation>::iterator BoundaryPointIterator;
 
     PointInformation m_pInfo;
     EdgeInformation m_eInfo;
     FaceInformation m_fInfo;
     std::map<PointID, BoundaryPointInformation> m_bdPointInfo;
     std::map<EdgeID, BoundaryEdgeInformation> m_bdEdgeInfo;
-
-
 
     //operators
     sofa::component::linearsolver::SparseMatrix<int> d0;

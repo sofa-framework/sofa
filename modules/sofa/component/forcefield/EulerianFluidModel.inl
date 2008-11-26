@@ -155,9 +155,10 @@ void EulerianFluidModel<DataTypes>::init()
         m_nbFaces = m_topology->getNbQuads();
     //m_nbVolumes = 0;
 
-    //cout << "Number of nodes: " << m_nbPoints << endl;
-    //cout << "Number of edges: " << m_nbEdges << endl;
-    //cout << "Number of faces: " << m_nbFaces << endl;
+    cout << "Number of nodes: " << m_nbPoints << endl;
+    cout << "Number of edges: " << m_nbEdges << endl;
+    cout << "Number of faces: " << m_nbFaces << endl;
+    cout << "Euler-Poincarre formula: " << m_nbPoints - m_nbEdges + m_nbFaces << endl;
 
     //initialize m_pInfo, m_eInfo, m_fInfo, m_bdEdgeInfo, m_bdPointInfo
     computeElementInformation();
@@ -335,7 +336,7 @@ void EulerianFluidModel<DataTypes>::draw()
                 glEnd();
             }
             //velocity at boundary points
-            for(std::map<PointID, BoundaryPointInformation>::iterator it = m_bdPointInfo.begin(); it != m_bdPointInfo.end(); ++it)
+            for(BoundaryPointIterator it = m_bdPointInfo.begin(); it != m_bdPointInfo.end(); ++it)
             {
                 Coord pt1(m_topology->getPX(it->first), m_topology->getPY(it->first), m_topology->getPZ(it->first));
                 Coord pt2 = pt1 + it->second.m_vector;
@@ -347,7 +348,7 @@ void EulerianFluidModel<DataTypes>::draw()
                 glEnd();
             }
             //velocity at boundary edge centers
-            for(std::map<PointID, BoundaryPointInformation>::iterator it = m_bdPointInfo.begin(); it != m_bdPointInfo.end(); ++it)
+            for(BoundaryEdgeIterator it = m_bdEdgeInfo.begin(); it != m_bdEdgeInfo.end(); ++it)
             {
                 Coord pt = m_eInfo.m_centers[it->first] + it->second.m_vector;
                 glBegin(GL_LINES);
@@ -364,7 +365,21 @@ void EulerianFluidModel<DataTypes>::draw()
             glDisable(GL_LIGHTING);
             glLineWidth(3.0f);
 
-            for(std::map<EdgeID, BoundaryEdgeInformation>::iterator it = m_bdEdgeInfo.begin(); it != m_bdEdgeInfo.end(); ++it)
+            // display obtuse triangles
+            if(m_meshType == TriangleMesh)
+                for(unsigned int i = 0; i < m_fInfo.m_obtuseTris.size(); ++i)
+                {
+                    glBegin(GL_TRIANGLES);
+                    Triangle face = m_topology->getTriangle(m_fInfo.m_obtuseTris[i]);
+                    for(PointID j = 0; j < face.size(); ++j)
+                    {
+                        glColor3f(1.0, 1.0, 1.0);
+                        glVertex3f(m_topology->getPX(face[j]), m_topology->getPY(face[j]), m_topology->getPZ(face[j]));
+                    }
+                    glEnd();
+                }
+
+            for(BoundaryEdgeIterator it = m_bdEdgeInfo.begin(); it != m_bdEdgeInfo.end(); ++it)
             {
                 Edge e = m_topology->getEdge(it->first);
                 glBegin(GL_LINES);
@@ -791,7 +806,7 @@ void EulerianFluidModel<DataTypes>::computeOperators()
             }
     }
 
-    std::map<EdgeID, BoundaryEdgeInformation>::iterator it = m_bdEdgeInfo.begin();
+    BoundaryEdgeIterator it = m_bdEdgeInfo.begin();
     sofa::component::linearsolver::SparseMatrix<int>::LElementIterator ele3;
     for(unsigned int i = 0; i < nb_constraints; ++i, ++it)
     {
@@ -871,6 +886,7 @@ template<class DataTypes>
 void EulerianFluidModel<DataTypes>::computeHodgeStarsForTriMesh()
 {
     assert(!m_eInfo.m_centers.empty() && !m_fInfo.m_centers.empty());
+    m_fInfo.m_obtuseTris.clear();
 
     Coord p, m, c, c0, c1;
     double dualEdgeLength, dualFaceArea;
@@ -898,7 +914,10 @@ void EulerianFluidModel<DataTypes>::computeHodgeStarsForTriMesh()
             if(m_triGeo->computeAngle(f[k], e[0], e[1]) == sofa::component::topology::PointSetGeometryAlgorithms<DataTypes> :: ACUTE)
                 dualEdgeLength += (m - c).norm();
             else
+            {
                 dualEdgeLength -= (m - c).norm();
+                m_fInfo.m_obtuseTris.push_back(eFaces[j]);
+            }
         }
         //star1.set(i, dualEdgeLength / m_triGeo->computeEdgeLength(i));
         star1.set(i, dualEdgeLength / m_eInfo.m_lengths[i]);
@@ -1012,7 +1031,13 @@ void EulerianFluidModel<DataTypes>::computeProjectMats()
                 c1 = m_eInfo.m_centers[fEdges[j]];
                 v = (c1 - c0) * (double)d1.element(i, fEdges[j]) * m_eInfo.m_lengths[fEdges[j]] / (c1 - c0).norm();
 
-                if(star1.element(fEdges[j]) < 0.0)
+                Triangle f = m_topology->getTriangle(i);
+                const Edge e = m_topology->getEdge(fEdges[j]);
+                PointID k = 0;
+                while(f[k] == e[0] || f[k] == e[1])
+                    ++k;
+                assert(k < f.size() && f[k] != e[0] && f[k] != e[1]);
+                if(m_triGeo->computeAngle(f[k], e[0], e[1]) == sofa::component::topology::PointSetGeometryAlgorithms<DataTypes> :: OBTUSE)
                     v = -v;
 
                 //for each col of mat: k
@@ -1076,7 +1101,7 @@ void EulerianFluidModel<DataTypes>::computeProjectMats()
 template<class DataTypes>
 void EulerianFluidModel<DataTypes>::setBdConstraints(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax, double value)
 {
-    for(std::map<EdgeID, BoundaryEdgeInformation>::iterator it = m_bdEdgeInfo.begin(); it !=  m_bdEdgeInfo.end(); ++it)
+    for(BoundaryEdgeIterator it = m_bdEdgeInfo.begin(); it !=  m_bdEdgeInfo.end(); ++it)
     {
         if(m_eInfo.m_centers[it->first].x() > xMin && m_eInfo.m_centers[it->first].x() < xMax &&
            m_eInfo.m_centers[it->first].y() > yMin && m_eInfo.m_centers[it->first].y() < yMax &&
@@ -1124,7 +1149,7 @@ void EulerianFluidModel<DataTypes>::calcVelocity()
         }
 
         //calculate velocity at boundary edge centers
-        for(std::map<EdgeID, BoundaryEdgeInformation>::iterator it = m_bdEdgeInfo.begin(); it !=  m_bdEdgeInfo.end(); ++it)
+        for(BoundaryEdgeIterator it = m_bdEdgeInfo.begin(); it !=  m_bdEdgeInfo.end(); ++it)
         {
             //it->first: index of a boundary edge
             //it->second: info of this edge
@@ -1138,7 +1163,7 @@ void EulerianFluidModel<DataTypes>::calcVelocity()
         }
 
         //calculate velocity at boundary points
-        for(std::map<PointID, BoundaryPointInformation>::iterator it = m_bdPointInfo.begin(); it !=  m_bdPointInfo.end(); ++it)
+        for(BoundaryPointIterator it = m_bdPointInfo.begin(); it !=  m_bdPointInfo.end(); ++it)
         {
             //it->first: index of a boundary point
             //it->second: info of this point
@@ -1167,7 +1192,7 @@ void EulerianFluidModel<DataTypes>::calcVelocity()
         }
 
         //calculate velocity at boundary edge centers
-        for(std::map<EdgeID, BoundaryEdgeInformation>::iterator it = m_bdEdgeInfo.begin(); it !=  m_bdEdgeInfo.end(); ++it)
+        for(BoundaryEdgeIterator it = m_bdEdgeInfo.begin(); it !=  m_bdEdgeInfo.end(); ++it)
         {
             //it->first: index of a boundary edge
             //it->second: info of this edge
@@ -1181,7 +1206,7 @@ void EulerianFluidModel<DataTypes>::calcVelocity()
         }
 
         //calculate velocity at boundary points
-        for(std::map<PointID, BoundaryPointInformation>::iterator it = m_bdPointInfo.begin(); it !=  m_bdPointInfo.end(); ++it)
+        for(BoundaryPointIterator it = m_bdPointInfo.begin(); it !=  m_bdPointInfo.end(); ++it)
         {
             //it->first: index of a boundary point
             //it->second: info of this point
@@ -1532,8 +1557,9 @@ void EulerianFluidModel<DataTypes>::backtrack(double dt)
         break;
     }
 
-    //cout << "interpolateVelocity() => m_dTime1 = " << m_dTime1/1e6 << endl;
-    //cout << "interpolateVelocity() => m_dTime2 = " << m_dTime2/1e6 << endl;
+//  cout << "interpolateVelocity() => m_dTime1 = " << m_dTime1/1e6 << endl;
+//	cout << "interpolateVelocity() => m_dTime2 = " << m_dTime2/1e6 << endl;
+//	cout << "backtrack() => dTime = " << dTime/1e6 << endl;
 }
 
 template<class DataTypes>
@@ -1627,7 +1653,7 @@ void EulerianFluidModel<DataTypes>::calcPhi(bool reset)
         m_laplace_inv =  m_laplace.i();
 
     //set constraints, using Lagragian Multiplier method
-    std::map<EdgeID, BoundaryEdgeInformation>::iterator it = m_bdEdgeInfo.begin();
+    BoundaryEdgeIterator it = m_bdEdgeInfo.begin();
     for(unsigned int i = 0; i < m_bdEdgeInfo.size(); ++i, ++it)
     {
         m_vorticity.element(m_nbPoints+i) = it->second.m_bdConstraint;
@@ -1649,7 +1675,7 @@ template<class DataTypes>
 void EulerianFluidModel<DataTypes>::setBoundaryFlux()
 {
     assert(!m_bdEdgeInfo.empty());
-    for(std::map<EdgeID, BoundaryEdgeInformation>::iterator it = m_bdEdgeInfo.begin(); it != m_bdEdgeInfo.end(); ++it)
+    for(BoundaryEdgeIterator it = m_bdEdgeInfo.begin(); it != m_bdEdgeInfo.end(); ++it)
     {
         m_flux.element(it->first) = it->second.m_bdConstraint;
     }
@@ -1663,10 +1689,10 @@ void EulerianFluidModel<DataTypes>::normalizeDisplayValues()
     for(FaceID i = 0; i < m_nbFaces; ++i)
         m_fInfo.m_vectors[i] =  m_vels[i] * m_visCoef1.getValue();
     //velocity at boundary points
-    for(std::map<PointID, BoundaryPointInformation>::iterator it = m_bdPointInfo.begin(); it !=  m_bdPointInfo.end(); ++it)
+    for(BoundaryPointIterator it = m_bdPointInfo.begin(); it !=  m_bdPointInfo.end(); ++it)
         it->second.m_vector = it->second.m_bdVel * m_visCoef1.getValue();
     //velocity at boudary edge centers
-    for(std::map<EdgeID, BoundaryEdgeInformation>::iterator it = m_bdEdgeInfo.begin(); it !=  m_bdEdgeInfo.end(); ++it)
+    for(BoundaryEdgeIterator it = m_bdEdgeInfo.begin(); it !=  m_bdEdgeInfo.end(); ++it)
         it->second.m_vector = it->second.m_bdVel * m_visCoef1.getValue();
 
     //normailize the vorticity
