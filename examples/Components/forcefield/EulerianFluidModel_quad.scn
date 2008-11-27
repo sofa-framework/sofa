@@ -4,9 +4,9 @@
     <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
     <Object type="RegularGrid" name="mesh" 
-            nx="51" ny="21" nz="1"
-            xmin="-25" xmax="25"
-            ymin="-10" ymax="10"
+            nx="31" ny="31" nz="1"
+            xmin="0" xmax="10"
+            ymin="0" ymax="10"
             zmin="0" zmax="0"
 		/>
     <Object type="QuadSetGeometryAlgorithms" name="QuadGeo"  />
@@ -16,7 +16,8 @@
 
     <Object type="MechanicalObject" name="mechanical" />
     <Object type="EulerianFluidModel" name="fluid" viscosity="0" centerType="1"
-            bdX="24.5" bdY="9.5" bdZ="0"
+            bdXmin1="-0.1" bdYmin1="0" bdZmin1="-1" bdXmax1="0.1" bdYmax1="10" bdZmax1="1" bdValue1="-1"
+            bdXmin2="9.9" bdYmin2="0" bdZmin2="-1" bdXmax2="10.1" bdYmax2="10" bdZmax2="1" bdValue2="1"
             harmonicVx="0" harmonicVy="0" harmonicVz="0"
             addFroces="0" displayBoundary="0" displayVorticity="1" displayVelocity="1"/>
     <!--  Barycenter = 0, Circumcenter = 1 -->

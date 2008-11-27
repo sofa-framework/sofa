@@ -1,9 +1,11 @@
-<Node name="root"  dt="0.05" showVisualModels ="0" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0">
+<Node name="root"  dt="0.01" showVisualModels ="0" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0">
   <Node name="EulerianFluid">
     <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
     <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
     <!-- <Object type="MeshLoader" filename="mesh/plane_loop_2.obj" /> -->
+    <!-- square_2594_triangles.obj -->
+    <!-- square_864_triangles.obj -->
     <Object type="MeshLoader" filename="mesh/square_2594_triangles.obj" /> 
     <Object type="MeshTopology"  name="TriangleMesh" />
     <Object type="TriangleSetGeometryAlgorithms" name="TriGeo"   template="Vec3d" />
@@ -11,10 +13,12 @@
 
     <Object type="MechanicalObject" name="mechanical" />
     <Object type="EulerianFluidModel" name="fluid" viscosity="0" centerType="1"
-            bdXmin1="-0.1" bdYmin1="0" bdZmin1="-1" bdXmax1="0.1" bdYmax1="10" bdZmax1="1" bdValue1="-1"
-            bdXmin2="9.9" bdYmin2="0" bdZmin2="-1" bdXmax2="10.1" bdYmax2="10" bdZmax2="1" bdValue2="1"
+            bdXmin1="-0.1" bdYmin1="0" bdZmin1="-1" bdXmax1="0.1" bdYmax1="10" bdZmax1="1" bdValue1="0"
+            bdXmin2="9.9" bdYmin2="0" bdZmin2="-1" bdXmax2="10.1" bdYmax2="10" bdZmax2="1" bdValue2="0"
             harmonicVx="0" harmonicVy="0" harmonicVz="0"
-            addFroces="0" displayBoundary="1" displayVorticity="1" displayVelocity="1"/>
+            addFroces="1" force="2.0"
+            displayBoundary="0" displayDualMesh="1" displayBkMesh="1" 
+            displayVorticity="1" displayVelocity="1" displayBkVelocity="0"/>
     <!--  Barycenter = 0, Circumcenter = 1 -->
 
     <Node name="VisualGrid">
