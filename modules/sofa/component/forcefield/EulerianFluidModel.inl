@@ -43,29 +43,39 @@ template<class DataTypes>
 EulerianFluidModel<DataTypes>::EulerianFluidModel()
     :
     m_bAddForces(initData(&m_bAddForces, bool(0), "addFroces", "Add Forces")),
+    m_force(initData(&m_force, Real(1.0), "force", "External force")),
+
     m_bDisplayBoundary  (initData(&m_bDisplayBoundary, bool(0), "displayBoundary", "Display Boundary")),
-    m_bDisplayVorticity  (initData(&m_bDisplayVorticity, bool(0), "displayVorticity", "Display Vorticity")),
+    m_bDisplayDualMesh(initData(&m_bDisplayDualMesh, bool(0), "displayDualMesh", "Display Dual Mesh")),
+    m_bDisplayBkMesh(initData(&m_bDisplayBkMesh, bool(0), "displayBkMesh", "Display Backtrack Mesh")),
     m_bDisplayVelocity  (initData(&m_bDisplayVelocity, bool(0), "displayVelocity", "Display Velocity")),
+    m_bDisplayBkVelocity  (initData(&m_bDisplayBkVelocity, bool(0), "displayBkVelocity", "Display Backtrack Velocity")),
     m_visCoef1(initData(&m_visCoef1, Real(0.2), "visCoef1", "Visualization Coefficent 1")),
+
+    m_bDisplayVorticity(initData(&m_bDisplayVorticity, bool(0), "displayVorticity", "Display Vorticity")),
     m_visCoef2(initData(&m_visCoef2, Real(0.2), "visCoef2", "Visualization Coefficent 2")),
     m_visCoef3(initData(&m_visCoef3, Real(10), "visCoef3", "Visualization Coefficent 3")),
+
     m_harmonicVx(initData(&m_harmonicVx, Real(0), "harmonicVx", "Harmonic Velocity x")),
     m_harmonicVy(initData(&m_harmonicVy, Real(0), "harmonicVy", "Harmonic Velocity y")),
     m_harmonicVz(initData(&m_harmonicVz, Real(0), "harmonicVz", "Harmonic Velocity z")),
+
     m_bdXmin1 (initData(&m_bdXmin1, Real(0), "bdXmin1", "BoundaryX")),
-    m_bdYmin1 (initData(&m_bdYmin1, Real(0), "bdYmin1", "BoundaryY")),
-    m_bdZmin1 (initData(&m_bdZmin1, Real(0), "bdZmin1", "BoundaryZ")),
     m_bdXmax1 (initData(&m_bdXmax1, Real(0), "bdXmax1", "BoundaryX")),
+    m_bdYmin1 (initData(&m_bdYmin1, Real(0), "bdYmin1", "BoundaryY")),
     m_bdYmax1 (initData(&m_bdYmax1, Real(0), "bdYmax1", "BoundaryY")),
+    m_bdZmin1 (initData(&m_bdZmin1, Real(0), "bdZmin1", "BoundaryZ")),
     m_bdZmax1 (initData(&m_bdZmax1, Real(0), "bdZmax1", "BoundaryZ")),
-    m_bdXmin2 (initData(&m_bdXmin2, Real(0), "bdXmin2", "BoundaryX")),
-    m_bdYmin2 (initData(&m_bdYmin2, Real(0), "bdYmin2", "BoundaryY")),
-    m_bdZmin2 (initData(&m_bdZmin2, Real(0), "bdZmin2", "BoundaryZ")),
-    m_bdXmax2 (initData(&m_bdXmax2, Real(0), "bdXmax2", "BoundaryX")),
-    m_bdYmax2 (initData(&m_bdYmax2, Real(0), "bdYmax2", "BoundaryY")),
-    m_bdZmax2 (initData(&m_bdZmax2, Real(0), "bdZmax2", "BoundaryZ")),
     m_bdValue1 (initData(&m_bdValue1, Real(0), "bdValue1", "Value")),
+
+    m_bdXmin2 (initData(&m_bdXmin2, Real(0), "bdXmin2", "BoundaryX")),
+    m_bdXmax2 (initData(&m_bdXmax2, Real(0), "bdXmax2", "BoundaryX")),
+    m_bdYmin2 (initData(&m_bdYmin2, Real(0), "bdYmin2", "BoundaryY")),
+    m_bdYmax2 (initData(&m_bdYmax2, Real(0), "bdYmax2", "BoundaryY")),
+    m_bdZmin2 (initData(&m_bdZmin2, Real(0), "bdZmin2", "BoundaryZ")),
+    m_bdZmax2 (initData(&m_bdZmax2, Real(0), "bdZmax2", "BoundaryZ")),
     m_bdValue2 (initData(&m_bdValue2, Real(0), "bdValue2", "Value")),
+
     m_viscosity  (initData(&m_viscosity, Real(0), "viscosity", "Fluid Viscosity")),
     m_centerType  (initData(&m_centerType, CenterType(0), "centerType", "Center Type")),
     m_mstate(NULL), m_topology(NULL), m_triGeo(NULL), m_quadGeo(NULL), m_nbPoints(0), m_nbEdges(0), m_nbFaces(0)/*, m_nbVolumes(0)*/
@@ -195,7 +205,7 @@ void EulerianFluidModel<DataTypes>::init()
 
     //set boudary contditions and intial value
     setInitialVorticity();
-    addForces();
+    //addForces();
     //saveVorticity();
 }
 
@@ -204,6 +214,14 @@ void EulerianFluidModel<DataTypes>::updatePosition(double dt)
 {
     static double time_LE = 0.0;
     static double time_BT = 0.0;
+
+    //add Forces
+    if(m_bAddForces.getValue())
+    {
+        addForces();
+        m_bAddForces.setValue(false);
+    }
+    //saveVorticity();
 
     ctime_t startTime = CTime::getTime();
     // Omega => Phi
@@ -233,14 +251,6 @@ void EulerianFluidModel<DataTypes>::updatePosition(double dt)
     endTime = CTime::getTime();
     time_BT += endTime - startTime;
 //	std::cout << "time_backtrack = " << (endTime - startTime)/1e6 << endl;
-
-    //add Forces
-    if(m_bAddForces.getValue())
-    {
-        addForces();
-        m_bAddForces.setValue(false);
-    }
-    //saveVorticity();
 }
 
 
@@ -329,7 +339,7 @@ void EulerianFluidModel<DataTypes>::draw()
             {
                 Coord pt = m_fInfo.m_centers[i] + m_fInfo.m_vectors[i];
                 glBegin(GL_LINES);
-                glColor3f(0.0, 0.0, 0.0);
+                glColor3f(0.0, 1.0, 1.0);
                 glVertex3f(m_fInfo.m_centers[i][0], m_fInfo.m_centers[i][1], m_fInfo.m_centers[i][2]);
                 glColor3f(1.0, 1.0, 1.0);
                 glVertex3f(pt[0], pt[1], pt[2]);
@@ -359,6 +369,7 @@ void EulerianFluidModel<DataTypes>::draw()
                 glEnd();
             }
         }
+
         // draw constraint boudary
         if(getContext()->getShowBehaviorModels() && m_bDisplayBoundary.getValue())
         {
@@ -394,6 +405,108 @@ void EulerianFluidModel<DataTypes>::draw()
                 }
                 glVertex3f(m_topology->getPX(e[0]), m_topology->getPY(e[0]), m_topology->getPZ(e[0]));
                 glVertex3f(m_topology->getPX(e[1]), m_topology->getPY(e[1]), m_topology->getPZ(e[1]));
+                glEnd();
+            }
+        }
+
+        //draw dual mesh
+        if(getContext()->getShowBehaviorModels() && m_bDisplayDualMesh.getValue())
+        {
+            glDisable(GL_LIGHTING);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            glColor3f(0.0, 1.0, 1.0);
+
+            switch(m_meshType)
+            {
+            case TriangleMesh:
+                for(PointID i = 0; i < m_nbPoints; ++i)
+                {
+                    if(!m_pInfo.m_isBoundary[i])
+                    {
+                        glBegin(GL_POLYGON);
+                        for(unsigned int j = 0; j < m_pInfo.m_dualFaces.at(i).size(); ++j)
+                            glVertex3f(m_pInfo.m_dualFaces.at(i)[j][0], m_pInfo.m_dualFaces.at(i)[j][1], m_pInfo.m_dualFaces.at(i)[j][2]);
+                        glEnd();
+                    }
+                }
+                break;
+
+            case QuadMesh:
+            case RegularQuadMesh:
+                for(PointID i = 0; i < m_nbPoints; ++i)
+                {
+                    if(!m_pInfo.m_isBoundary[i])
+                    {
+                        const VertexFaces vFaces = m_topology->getOrientedQuadVertexShell(i);
+                        glBegin(GL_POLYGON);
+                        for(unsigned int j = 0; j < vFaces.size(); ++j)
+                            glVertex3f(m_bkCenters[vFaces[j]][0], m_bkCenters[vFaces[j]][1], m_bkCenters[vFaces[j]][2]);
+                        glEnd();
+                    }
+                }
+                break;
+
+            default:
+                break;
+            }
+        }
+
+        //draw backtrack dual mesh
+        if(getContext()->getShowBehaviorModels() && m_bDisplayBkMesh.getValue())
+        {
+            glDisable(GL_LIGHTING);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            glColor3f(1.0, 1.0, 0.0);
+
+            switch(m_meshType)
+            {
+            case TriangleMesh:
+                for(PointID i = 0; i < m_nbPoints; ++i)
+                {
+                    if(!m_pInfo.m_isBoundary[i])
+                    {
+                        const VertexFaces vFaces = m_topology->getOrientedTriangleVertexShell(i);
+                        glBegin(GL_POLYGON);
+                        for(unsigned int j = 0; j < vFaces.size(); ++j)
+                            glVertex3f(m_bkCenters[vFaces[j]][0], m_bkCenters[vFaces[j]][1], m_bkCenters[vFaces[j]][2]);
+                        glEnd();
+                    }
+                }
+                break;
+
+            case QuadMesh:
+            case RegularQuadMesh:
+
+                for(PointID i = 0; i < m_nbPoints; ++i)
+                {
+                    if(!m_pInfo.m_isBoundary[i])
+                    {
+                        const VertexFaces vFaces = m_topology->getOrientedQuadVertexShell(i);
+                        glBegin(GL_POLYGON);
+                        for(unsigned int j = 0; j < vFaces.size(); ++j)
+                            glVertex3f(m_bkCenters[vFaces[j]][0], m_bkCenters[vFaces[j]][1], m_bkCenters[vFaces[j]][2]);
+                        glEnd();
+                    }
+                }
+                break;
+
+            default:
+                break;
+            }
+        }
+
+        // draw backtrack velocity
+        if(getContext()->getShowBehaviorModels() && m_bDisplayBkVelocity.getValue())
+        {
+            //velocity at backtrack centers
+            for(FaceID i = 0; i < m_nbFaces; ++i)
+            {
+                Coord pt = m_bkCenters[i] + m_visCoef1.getValue() * m_bkVels[i];
+                glBegin(GL_LINES);
+                glColor3f(1.0, 1.0, 0.0);
+                glVertex3f(m_bkCenters[i][0], m_bkCenters[i][1], m_bkCenters[i][2]);
+                glColor3f(0.0, 0.0, 0.0);
+                glVertex3f(pt[0], pt[1], pt[2]);
                 glEnd();
             }
         }
@@ -1160,6 +1273,10 @@ void EulerianFluidModel<DataTypes>::calcVelocity()
             else
                 //the velocity is in the direction of flux
                 it->second.m_bdVel = it->second.m_unitFluxVector * it->second.m_bdConstraint / m_eInfo.m_lengths[it->first];
+
+            it->second.m_bdVel.x() += m_harmonicVx.getValue();
+            it->second.m_bdVel.y() += m_harmonicVy.getValue();
+            it->second.m_bdVel.z() += m_harmonicVz.getValue();
         }
 
         //calculate velocity at boundary points
@@ -1169,6 +1286,10 @@ void EulerianFluidModel<DataTypes>::calcVelocity()
             //it->second: info of this point
             const VertexEdges vEdges = m_topology->getOrientedEdgeVertexShell(it->first);
             it->second.m_bdVel = (m_bdEdgeInfo[vEdges.front()].m_bdVel + m_bdEdgeInfo[vEdges.back()].m_bdVel) * 0.5;
+
+            it->second.m_bdVel.x() += m_harmonicVx.getValue();
+            it->second.m_bdVel.y() += m_harmonicVy.getValue();
+            it->second.m_bdVel.z() += m_harmonicVz.getValue();
         }
         break;
     case QuadMesh:
@@ -1203,6 +1324,9 @@ void EulerianFluidModel<DataTypes>::calcVelocity()
             else
                 //the velocity is in the direction of flux
                 it->second.m_bdVel = it->second.m_unitFluxVector * it->second.m_bdConstraint / m_eInfo.m_lengths[it->first];
+            it->second.m_bdVel.x() += m_harmonicVx.getValue();
+            it->second.m_bdVel.y() += m_harmonicVy.getValue();
+            it->second.m_bdVel.z() += m_harmonicVz.getValue();
         }
 
         //calculate velocity at boundary points
@@ -1212,6 +1336,10 @@ void EulerianFluidModel<DataTypes>::calcVelocity()
             //it->second: info of this point
             const VertexEdges vEdges = m_topology->getOrientedEdgeVertexShell(it->first);
             it->second.m_bdVel = (m_bdEdgeInfo[vEdges.front()].m_bdVel + m_bdEdgeInfo[vEdges.back()].m_bdVel) * 0.5;
+
+            it->second.m_bdVel.x() += m_harmonicVx.getValue();
+            it->second.m_bdVel.y() += m_harmonicVy.getValue();
+            it->second.m_bdVel.z() += m_harmonicVz.getValue();
         }
         break;
     default:
@@ -1234,7 +1362,7 @@ unsigned int EulerianFluidModel<DataTypes>::searchFaceForTriMesh(const Coord& pt
     faces.push_back(startFace);
 
     unsigned int temp;
-    for(unsigned int i = 0; i < 20/*faces.size()*/; ++i)
+    for(unsigned int i = 0; i < /*20*/faces.size(); ++i)
     {
         if(m_triGeo->isPointInTriangle(faces[i], false, p, temp))
             return faces[i];
@@ -1334,7 +1462,7 @@ unsigned int EulerianFluidModel<DataTypes>::searchDualFaceForQuadMesh(const Coor
 
     sofa::defaulttype::Vec<3, double> p(pt.x(), pt.y(), pt.z());
 
-    for(unsigned int i = 0; i < 20/*dualFaceIDs.size()*/; ++i)
+    for(unsigned int i = 0; i < /*20*/dualFaceIDs.size(); ++i)
     {
         DualFace dualFace = m_pInfo.m_dualFaces[dualFaceIDs[i]];
         if(!m_pInfo.m_isBoundary[dualFaceIDs[i]])
@@ -1641,8 +1769,8 @@ void EulerianFluidModel<DataTypes>::addForces()
     {
         Coord p(m_topology->getPX(i), m_topology->getPY(i), m_topology->getPZ(i));
         Coord o(5.0, 5.0, 0.0);
-        if((o-p).norm2() < 2.0)
-            m_vorticity.element(i) += 3.0;
+        if((o-p).norm2() < 0.5)
+            m_vorticity.element(i) += m_force.getValue();
     }
 }
 
@@ -1668,7 +1796,7 @@ template<class DataTypes>
 void EulerianFluidModel<DataTypes>::calcFlux()
 {
     m_flux = m_d0 * m_phi;
-    //setBoundaryFlux();
+    setBoundaryFlux();
 }
 
 template<class DataTypes>
