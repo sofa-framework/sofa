@@ -87,59 +87,71 @@ public:
 
     //at present only for 2D
     enum MeshType {TriangleMesh = 3, QuadMesh, RegularQuadMesh};
-    enum { Barycenter = 0, Circumcenter = 1};
+    enum {Barycenter = 0, Circumcenter = 1};
 
     EulerianFluidModel();
     ~EulerianFluidModel();
 
-    Real getBdXmin1() const { return m_bdXmin1.getValue(); }
-    void setBdXmin1(Real val) { m_bdXmin1.setValue(val); }
-    Real getBdYmin1() const { return m_bdYmin1.getValue(); }
-    void setBdYmin1(Real val) { m_bdYmin1.setValue(val); }
-    Real getBdZmin1() const { return m_bdZmin1.getValue(); }
-    void setBdZmin1(Real val) { m_bdZmin1.setValue(val); }
-    Real getBdXmin2() const { return m_bdXmin2.getValue(); }
-    void setBdXmin2(Real val) { m_bdXmin2.setValue(val); }
-    Real getBdYmin2() const { return m_bdYmin2.getValue(); }
-    void setBdYmin2(Real val) { m_bdYmin2.setValue(val); }
-    Real getBdZmin2() const { return m_bdZmin2.getValue(); }
-    void setBdZmin2(Real val) { m_bdZmin2.setValue(val); }
-    Real getBdXmax1() const { return m_bdXmax1.getValue(); }
-    void setBdXmax1(Real val) { m_bdXmax1.setValue(val); }
-    Real getBdYmax1() const { return m_bdYmax1.getValue(); }
-    void setBdYmax1(Real val) { m_bdYmax1.setValue(val); }
-    Real getBdZmax1() const { return m_bdZmax1.getValue(); }
-    void setBdZmax1(Real val) { m_bdZmax1.setValue(val); }
-    Real getBdXmax2() const { return m_bdXmax2.getValue(); }
-    void setBdXmax2(Real val) { m_bdXmax2.setValue(val); }
-    Real getBdYmax2() const { return m_bdYmax2.getValue(); }
-    void setBdYmax2(Real val) { m_bdYmax2.setValue(val); }
-    Real getBdZmax2() const { return m_bdZmax2.getValue(); }
-    void setBdZmax2(Real val) { m_bdZmax2.setValue(val); }
-    Real getBdValue1() const { return m_bdValue1.getValue(); }
-    void setBdValue1(Real val) { m_bdValue1.setValue(val); }
-    Real getBdValue2() const { return m_bdValue2.getValue(); }
-    void setBdValue2(Real val) { m_bdValue2.setValue(val); }
+    Real getForce() const { return m_force.getValue(); }
+    void setForce(Real val) { m_force.setValue(val); }
+
     bool getDisplayBoundary() const { return m_bDisplayBoundary.getValue(); }
     void setDisplayBoundary(bool val) { m_bDisplayBoundary.setValue(val); }
+    bool getDisplayDualMesh() const { return m_bDisplayDualMesh.getValue(); }
+    void setDisplayDualMesh(bool val) { m_bDisplayDualMesh.setValue(val); }
+    bool getDisplayBkMesh() const { return m_bDisplayBkMesh.getValue(); }
+    void setDisplayBkMesh(bool val) { m_bDisplayBkMesh.setValue(val); }
     bool getDisplayVorticity() const { return m_bDisplayVorticity.getValue(); }
     void setDisplayVorticity(bool val) { m_bDisplayVorticity.setValue(val); }
     bool getDisplayVelocity() const { return m_bDisplayVelocity.getValue(); }
     void setDisplayVelocity(bool val) { m_bDisplayVelocity.setValue(val); }
-    Real getHarmonicVx() const { return m_harmonicVx.getValue(); }
-    void setHarmonicVx(Real val) { m_harmonicVx.setValue(val); }
-    Real getHarmonicVy() const { return m_harmonicVy.getValue(); }
-    void setHarmonicVy(Real val) { m_harmonicVy.setValue(val); }
-    Real getHarmonicVz() const { return m_harmonicVz.getValue(); }
-    void setHarmonicVz(Real val) { m_harmonicVz.setValue(val); }
-    Real getViscosity() const { return m_viscosity.getValue(); }
-    void setViscosity(Real val) { m_viscosity.setValue(val); }
     Real getVisCoef1() const { return m_visCoef1.getValue(); }
     void setVisCoef1(Real val) { m_visCoef1.setValue(val); }
     Real getVisCoef2() const { return m_visCoef2.getValue(); }
     void setVisCoef2(Real val) { m_visCoef2.setValue(val); }
     Real getVisCoef3() const { return m_visCoef3.getValue(); }
     void setVisCoef3(Real val) { m_visCoef3.setValue(val); }
+
+    Real getBdXmin1() const { return m_bdXmin1.getValue(); }
+    void setBdXmin1(Real val) { m_bdXmin1.setValue(val); }
+    Real getBdXmax1() const { return m_bdXmax1.getValue(); }
+    void setBdXmax1(Real val) { m_bdXmax1.setValue(val); }
+    Real getBdYmin1() const { return m_bdYmin1.getValue(); }
+    void setBdYmin1(Real val) { m_bdYmin1.setValue(val); }
+    Real getBdYmax1() const { return m_bdYmax1.getValue(); }
+    void setBdYmax1(Real val) { m_bdYmax1.setValue(val); }
+    Real getBdZmin1() const { return m_bdZmin1.getValue(); }
+    void setBdZmin1(Real val) { m_bdZmin1.setValue(val); }
+    Real getBdZmax1() const { return m_bdZmax1.getValue(); }
+    void setBdZmax1(Real val) { m_bdZmax1.setValue(val); }
+    Real getBdValue1() const { return m_bdValue1.getValue(); }
+    void setBdValue1(Real val) { m_bdValue1.setValue(val); }
+
+    Real getBdXmin2() const { return m_bdXmin2.getValue(); }
+    void setBdXmin2(Real val) { m_bdXmin2.setValue(val); }
+    Real getBdXmax2() const { return m_bdXmax2.getValue(); }
+    void setBdXmax2(Real val) { m_bdXmax2.setValue(val); }
+    Real getBdYmin2() const { return m_bdYmin2.getValue(); }
+    void setBdYmin2(Real val) { m_bdYmin2.setValue(val); }
+    Real getBdYmax2() const { return m_bdYmax2.getValue(); }
+    void setBdYmax2(Real val) { m_bdYmax2.setValue(val); }
+    Real getBdZmin2() const { return m_bdZmin2.getValue(); }
+    void setBdZmin2(Real val) { m_bdZmin2.setValue(val); }
+    Real getBdZmax2() const { return m_bdZmax2.getValue(); }
+    void setBdZmax2(Real val) { m_bdZmax2.setValue(val); }
+    Real getBdValue2() const { return m_bdValue2.getValue();}
+    void setBdValue2(Real val) { m_bdValue2.setValue(val); }
+
+
+    Real getHarmonicVx() const { return m_harmonicVx.getValue();}
+    void setHarmonicVx(Real val) { m_harmonicVx.setValue(val);}
+    Real getHarmonicVy() const { return m_harmonicVy.getValue();}
+    void setHarmonicVy(Real val) { m_harmonicVy.setValue(val);}
+    Real getHarmonicVz() const { return m_harmonicVz.getValue();}
+    void setHarmonicVz(Real val) { m_harmonicVz.setValue(val);}
+
+    Real getViscosity() const { return m_viscosity.getValue();}
+    void setViscosity(Real val) { m_viscosity.setValue(val);}
 
     CenterType getCenterType() const { return m_centerType.getValue(); }
     void setCenterType(CenterType ct) { m_centerType.setValue(ct); }
@@ -159,29 +171,38 @@ protected:
 
     //arguments
     Data< bool > m_bAddForces;
+    Data< Real > m_force;
+
     Data< bool > m_bDisplayBoundary;
+    Data< bool > m_bDisplayDualMesh;
+    Data< bool > m_bDisplayBkMesh;
     Data< bool > m_bDisplayVorticity;
-    Data< bool > m_bDisplayVelocity;
     Data< Real > m_visCoef1;	//visualization coef
+    Data< bool > m_bDisplayVelocity;
+    Data< bool > m_bDisplayBkVelocity;
     Data< Real > m_visCoef2;	//visualization coef
     Data< Real > m_visCoef3;	//visualization coef
+
     Data< Real > m_harmonicVx;
     Data< Real > m_harmonicVy;
     Data< Real > m_harmonicVz;
+
     Data< Real > m_bdXmin1;
-    Data< Real > m_bdYmin1;
-    Data< Real > m_bdZmin1;
     Data< Real > m_bdXmax1;
+    Data< Real > m_bdYmin1;
     Data< Real > m_bdYmax1;
+    Data< Real > m_bdZmin1;
     Data< Real > m_bdZmax1;
-    Data< Real > m_bdXmin2;
-    Data< Real > m_bdYmin2;
-    Data< Real > m_bdZmin2;
-    Data< Real > m_bdXmax2;
-    Data< Real > m_bdYmax2;
-    Data< Real > m_bdZmax2;
     Data< Real> m_bdValue1;
+
+    Data< Real > m_bdXmin2;
+    Data< Real > m_bdXmax2;
+    Data< Real > m_bdYmin2;
+    Data< Real > m_bdYmax2;
+    Data< Real > m_bdZmin2;
+    Data< Real > m_bdZmax2;
     Data< Real> m_bdValue2;
+
     Data< Real > m_viscosity;
     Data< CenterType > m_centerType;
 
