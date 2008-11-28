@@ -90,7 +90,12 @@ public:
     virtual double getElementMass(unsigned int index)=0;
 
     /// @}
-
+    virtual void buildSystemMatrix(defaulttype::BaseMatrix &/* invM_Jtrans */, defaulttype::BaseMatrix &/* A */,
+            const sofa::helper::vector< sofa::helper::vector<unsigned int>  >&/* constraintId */,
+            const sofa::helper::vector< double > /* factor */,
+            const sofa::helper::vector< unsigned int > /* offset */,
+            const defaulttype::BaseVector& /* FixedPoints */) {};
+    virtual void buildInvMassDenseMatrix(defaulttype::BaseMatrix &) {};
 
     /// Member specifying if the gravity is added separately to the DOFs velocities (in solve method),
     /// or if is added with the other forces(addForceMethod)

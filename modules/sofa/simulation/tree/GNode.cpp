@@ -312,11 +312,16 @@ const sofa::helper::vector< core::objectmodel::BaseNode* > GNode::getChildren() 
 /// This method bypass the actionScheduler of this node if any.
 void GNode::doExecuteVisitor(simulation::Visitor* action)
 {
+#ifdef DUMP_VISITOR_INFO
+    action->setNode(this);
+    action->printInfo(getContext(), true);
+#endif
     if (getLogTime())
     {
         const ctime_t t0 = CTime::getTime();
         ctime_t tChild = 0;
         actionStack.push(action);
+
         if(action->processNodeTopDown(this) != simulation::Visitor::RESULT_PRUNE)
         {
             ctime_t ct0 = CTime::getTime();
@@ -327,6 +332,10 @@ void GNode::doExecuteVisitor(simulation::Visitor* action)
             tChild = CTime::getTime() - ct0;
         }
         action->processNodeBottomUp(this);
+
+#ifdef DUMP_VISITOR_INFO
+        action->printInfo(getContext(), false);
+#endif
         actionStack.pop();
         ctime_t tTree = CTime::getTime() - t0;
         ctime_t tNode = tTree - tChild;
@@ -358,7 +367,11 @@ void GNode::doExecuteVisitor(simulation::Visitor* action)
                 child[i]->executeVisitor(action);
             }
         }
+
         action->processNodeBottomUp(this);
+#ifdef DUMP_VISITOR_INFO
+        action->printInfo(getContext(), false);
+#endif
     }
 }
 

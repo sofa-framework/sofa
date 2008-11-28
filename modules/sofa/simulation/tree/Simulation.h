@@ -31,6 +31,7 @@
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/simulation/tree/xml/XML.h>
+
 namespace sofa
 {
 

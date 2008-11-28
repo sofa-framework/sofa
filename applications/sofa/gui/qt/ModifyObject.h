@@ -211,6 +211,7 @@ class DataWidget
 protected:
     core::objectmodel::Base* node;
     core::objectmodel::BaseData* baseData;
+    QWidget* parent;
     ModifyObject* dialog;
     bool readOnly;
 public:
@@ -221,6 +222,7 @@ public:
     void setNode(core::objectmodel::Base* n) { node = n; }
     void setDialog(ModifyObject* d) { dialog = d; }
     void setReadOnly(bool b) { readOnly = b; }
+    void setParent(QWidget *p) { parent=p; }
     virtual bool createWidgets(QWidget* parent) = 0;
     virtual void readFromData() = 0;
     virtual void writeToData() {}
@@ -230,6 +232,11 @@ public:
     {
         readFromData();
     }
+    virtual void updateVisibility()
+    {
+        parent->setShown(baseData->isDisplayed());
+    };
+
     virtual unsigned int sizeWidget() {return 1;}
     //
     // Factory related code
@@ -254,11 +261,13 @@ public:
         instance->setNode(arg.node);
         instance->setDialog(arg.dialog);
         instance->setReadOnly(arg.readOnly);
+        instance->setParent(arg.parent);
         if (!instance->createWidgets(arg.parent))
         {
             delete instance;
             instance = NULL;
         }
+        else instance->updateVisibility();
     }
 };
 

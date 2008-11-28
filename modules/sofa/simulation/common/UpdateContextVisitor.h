@@ -46,6 +46,7 @@ public:
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
     virtual const char* getCategoryName() const { return "context"; }
+    virtual const char* getClassName() const { return "UpdateContextVisitor"; }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const { return true; }
@@ -57,6 +58,7 @@ class UpdateSimulationContextVisitor : public UpdateContextVisitor
 {
 public:
     virtual Result processNodeTopDown(simulation::Node* node);
+    virtual const char* getClassName() const { return "UpdateSimulationContextVisitor"; }
 };
 
 class UpdateVisualContextVisitor : public UpdateContextVisitor
@@ -67,6 +69,7 @@ public:
     UpdateVisualContextVisitor(int FILTER=10):filter(FILTER)
     {};
     virtual Result processNodeTopDown(simulation::Node* node);
+    virtual const char* getClassName() const { return "UpdateVisualContextVisitor"; }
 
 };
 

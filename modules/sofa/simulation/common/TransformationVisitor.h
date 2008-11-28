@@ -66,6 +66,7 @@ public:
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
     virtual const char* getCategoryName() const { return "instrument"; }
+    virtual const char* getClassName() const { return "TransformationVisitor"; }
 
 protected:
     Vector3 translation;

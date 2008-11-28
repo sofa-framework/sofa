@@ -302,7 +302,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             }
 
             {
-                if (hideData(it->second)) continue;
+// 		  if (hideData(it->second)) continue;
                 std::string box_name(oss.str());
                 box = new Q3GroupBox(currentTab, QString(box_name.c_str()));
                 box->setColumns(4);
@@ -669,6 +669,12 @@ void ModifyObject::updateValues()
     visualContentModified = false;
 
 
+    for (DataWidgetMap::iterator it = dataWidgets.begin(), itend = dataWidgets.end(); it != itend; ++it)
+    {
+        DataWidget* dw = it->second;
+        dw->updateVisibility();
+    }
+
     setUpdates.clear();
 }
 
@@ -745,10 +751,10 @@ void ModifyObject::updateEnergy()
 
     if (dialogTab->currentPageIndex() == dialogTab->count()-2)
     {
-        energy_curve[0]->setRawData(&history[0],&(energy_history[0][0]), history.size());
-        energy_curve[1]->setRawData(&history[0],&(energy_history[1][0]), history.size());
-        energy_curve[2]->setRawData(&history[0],&(energy_history[2][0]), history.size());
-        graphEnergy->replot();
+        if (energy_curve[0]) energy_curve[0]->setRawData(&history[0],&(energy_history[0][0]), history.size());
+        if (energy_curve[1]) energy_curve[1]->setRawData(&history[0],&(energy_history[1][0]), history.size());
+        if (energy_curve[2]) energy_curve[2]->setRawData(&history[0],&(energy_history[2][0]), history.size());
+        if (graphEnergy) graphEnergy->replot();
     }
 
 }
@@ -771,7 +777,7 @@ void ModifyObject::updateTextEdit()
 //Called each time a new step of the simulation if computed
 void ModifyObject::updateTables()
 {
-    updateHistory();
+    if (graphEnergy) updateHistory();
     updateTextEdit();
     for (DataWidgetMap::iterator it = dataWidgets.begin(), itend = dataWidgets.end(); it != itend; ++it)
     {

@@ -88,14 +88,14 @@ void LineModel::init()
 
     if (mstate==NULL)
     {
-        std::cerr << "ERROR: LineModel requires a Vec3 Mechanical Model.\n";
+        logWarning("LineModel requires a Vec3 Mechanical Model");
         return;
     }
 
     core::componentmodel::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
     if (!bmt)
     {
-        std::cerr << "ERROR: LineModel requires a MeshTopology.\n";
+        logWarning("LineModel requires a MeshTopology");
         return;
     }
 

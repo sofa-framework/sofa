@@ -106,7 +106,11 @@ public:
         const char* endcond = "iterations";
         for( nb_iter=1; nb_iter<=f_maxIter.getValue(); nb_iter++ )
         {
-
+#ifdef DUMP_VISITOR_INFO
+            std::ostringstream comment;
+            comment << "Iteration : " << nb_iter;
+            simulation::Visitor::printComment(comment.str());
+#endif
             // 		printWithElapsedTime( x, helper::system::thread::CTime::getTime()-time0,std::cout );
 
             //z = r; // no precond
@@ -216,14 +220,16 @@ inline void CGLinearSolver<simulation::GraphScatteredMatrix,simulation::GraphSca
     x.peq(p,alpha);                 // x = x + alpha p
     r.peq(q,-alpha);                // r = r - alpha q
 #else // single-operation optimization
-    simulation::tree::MechanicalVMultiOpVisitor vmop;
-    vmop.ops.resize(2);
-    vmop.ops[0].first = (VecId)x;
-    vmop.ops[0].second.push_back(std::make_pair((VecId)x,1.0));
-    vmop.ops[0].second.push_back(std::make_pair((VecId)p,alpha));
-    vmop.ops[1].first = (VecId)r;
-    vmop.ops[1].second.push_back(std::make_pair((VecId)r,1.0));
-    vmop.ops[1].second.push_back(std::make_pair((VecId)q,-alpha));
+    typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+    VMultiOp ops;
+    ops.resize(2);
+    ops[0].first = (VecId)x;
+    ops[0].second.push_back(std::make_pair((VecId)x,1.0));
+    ops[0].second.push_back(std::make_pair((VecId)p,alpha));
+    ops[1].first = (VecId)r;
+    ops[1].second.push_back(std::make_pair((VecId)r,1.0));
+    ops[1].second.push_back(std::make_pair((VecId)q,-alpha));
+    simulation::tree::MechanicalVMultiOpVisitor vmop(ops);
     vmop.execute(this->getContext());
 #endif
 }

@@ -50,6 +50,7 @@ public:
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
     virtual const char* getCategoryName() const { return "stateChange"; }
+    virtual const char* getClassName() const { return "StateChangeVisitor"; }
 
 protected:
     bool root;

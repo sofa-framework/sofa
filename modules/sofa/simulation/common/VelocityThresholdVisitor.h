@@ -54,6 +54,7 @@ public:
     {
         return "threshold";
     }
+    virtual const char* getClassName() const { return "VelocityThresholdVisitor"; }
 
 protected:
     VecId vid; ///< Id of the vector to process

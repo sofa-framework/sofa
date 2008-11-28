@@ -56,7 +56,7 @@ public:
     ~AnimateBeginEvent();
 
     double getDt() const { return dt; }
-
+    virtual const char* getClassName() const { return "AnimateBeginEvent"; }
 protected:
     double dt;
 };

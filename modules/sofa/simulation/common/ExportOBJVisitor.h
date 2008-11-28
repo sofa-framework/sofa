@@ -50,6 +50,7 @@ public:
 
     virtual Result processNodeTopDown(Node* node);
     virtual void processNodeBottomUp(Node* node);
+    virtual const char* getClassName() const { return "ExportOBJVisitor"; }
 
 protected:
     int ID;

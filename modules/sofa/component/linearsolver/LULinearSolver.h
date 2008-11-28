@@ -125,8 +125,8 @@ public:
     template<class RMatrix, class JMatrix>
     bool addJMInvJt(RMatrix& result, JMatrix& J, double fact)
     {
-        const int Jrows = J.rowSize();
-        const int Jcols = J.colSize();
+        const unsigned int Jrows = J.rowSize();
+        const unsigned int Jcols = J.colSize();
         if (Jcols != this->systemMatrix->rowSize())
         {
             std::cerr << "LULinearSolver::addJMInvJt ERROR: incompatible J matrix size." << std::endl;

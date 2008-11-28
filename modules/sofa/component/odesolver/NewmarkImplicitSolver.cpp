@@ -156,19 +156,21 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::componentmodel::behavio
     newVel.eq(vel, a, h*(1-gamma));
     newVel.peq(aResult, h*gamma);
 #else // single-operation optimization
-    simulation::MechanicalVMultiOpVisitor vmop;
-    vmop.ops.resize(3);
-    vmop.ops[0].first = (VecId)b;
-    vmop.ops[0].second.push_back(std::make_pair((VecId)vel,1.0));
-    vmop.ops[0].second.push_back(std::make_pair((VecId)a, h*(0.5-beta)));
-    vmop.ops[0].second.push_back(std::make_pair((VecId)aResult, h*beta));
-    vmop.ops[1].first = (VecId)newPos;
-    vmop.ops[1].second.push_back(std::make_pair((VecId)pos,1.0));
-    vmop.ops[1].second.push_back(std::make_pair((VecId)b,h));
-    vmop.ops[2].first = (VecId)newVel;
-    vmop.ops[2].second.push_back(std::make_pair((VecId)vel,1.0));
-    vmop.ops[2].second.push_back(std::make_pair((VecId)a, h*(1-gamma)));
-    vmop.ops[2].second.push_back(std::make_pair((VecId)aResult, h*gamma));
+    typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+    VMultiOp ops;
+    ops.resize(3);
+    ops[0].first = (VecId)b;
+    ops[0].second.push_back(std::make_pair((VecId)vel,1.0));
+    ops[0].second.push_back(std::make_pair((VecId)a, h*(0.5-beta)));
+    ops[0].second.push_back(std::make_pair((VecId)aResult, h*beta));
+    ops[1].first = (VecId)newPos;
+    ops[1].second.push_back(std::make_pair((VecId)pos,1.0));
+    ops[1].second.push_back(std::make_pair((VecId)b,h));
+    ops[2].first = (VecId)newVel;
+    ops[2].second.push_back(std::make_pair((VecId)vel,1.0));
+    ops[2].second.push_back(std::make_pair((VecId)a, h*(1-gamma)));
+    ops[2].second.push_back(std::make_pair((VecId)aResult, h*gamma));
+    simulation::MechanicalVMultiOpVisitor vmop(ops);
     vmop.execute(this->getContext());
 #endif
 

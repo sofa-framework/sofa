@@ -195,6 +195,7 @@ protected:
     /// Main Sofa Ressources: contains all the component, with many info, and creators
     typedef std::map<  const QObject* , std::pair<ClassInfo*, QObject*> >::const_iterator libraryIterator;
     std::map<  const QObject* , std::pair<ClassInfo*, QObject*> > mapComponents;
+    /// Number of components currently displayed in the library
     unsigned int displayComponents;
     /// Map between a tabulation from the modeler to an object of type GraphModeler
     std::map<  const QWidget*, GraphModeler*> mapGraph;
@@ -202,8 +203,7 @@ protected:
     std::map<  const QWidget*, sofa::gui::qt::RealGUI*> mapSofa;
     /// Map between an index of tabulation to the tabulation itself
     std::map< int, QWidget*> mapWindow;
-
-
+    /// Map between a widget corresponding to a tab of the library, and a pair of button and combo box, corresponding to a component and its template
     std::vector< std::multimap< QWidget*, std::pair< QPushButton*, QComboBox*> > > pages;
 private:
     std::string presetPath;

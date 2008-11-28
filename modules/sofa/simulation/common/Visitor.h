@@ -27,8 +27,12 @@
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/LocalStorage.h>
+
 #include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
 #include <iostream>
+
+
+#define DUMP_VISITOR_INFO
 
 namespace sofa
 {
@@ -43,6 +47,9 @@ class LocalStorage;
 class Visitor
 {
 public:
+#ifdef DUMP_VISITOR_INFO
+    Visitor() {enteringBase=NULL; infoPrinted=false; }
+#endif
     virtual ~Visitor() {}
 
     enum Result { RESULT_CONTINUE, RESULT_PRUNE };
@@ -60,6 +67,10 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "Visitor"; }
+
+    /// Return eventual information on the behavior of the visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getInfos() const { return ""; }
 
 #ifdef SOFA_VERBOSE_TRAVERSAL
     void debug_write_state_before( core::objectmodel::BaseObject* obj ) ;
@@ -144,8 +155,22 @@ public:
 
     /// Optional helper method to call before handling an object if not using the for_each method.
     /// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
-    ctime_t begin(simulation::Node* node, core::objectmodel::BaseObject* /*obj*/)
+    ctime_t begin(simulation::Node* node, core::objectmodel::BaseObject*
+#ifdef DUMP_VISITOR_INFO
+            obj
+#endif
+                 )
     {
+#ifdef DUMP_VISITOR_INFO
+        if (printActivated)
+        {
+            std::string info;
+            for (unsigned int i=0; i<depthLevel; ++i) info += "\t";
+            info+= "<Component type=\"" + obj->getClassName() + "\" name=\"" + obj->getName() + "\">\n";
+            dumpInfo(info);
+            Visitor::depthLevel++;
+        }
+#endif
         return node->startTime();
     }
 
@@ -154,6 +179,17 @@ public:
     void end(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t t0)
     {
         node->endTime(t0, getCategoryName(), obj);
+#ifdef DUMP_VISITOR_INFO
+        if (printActivated)
+        {
+            Visitor::depthLevel--;
+            std::string info;
+            for (unsigned int i=0; i<depthLevel; ++i) info += "\t";
+            info += "</Component>\n";
+            dumpInfo(info);
+
+        }
+#endif
     }
 
     /// Alias for context->executeVisitor(this)
@@ -170,8 +206,40 @@ public:
     /// Callback method called after child node have been processed and before going back to the parent node.
     /// This version is offered a LocalStorage to store temporary data
     virtual void processNodeBottomUp(simulation::Node* node, LocalStorage*) { processNodeBottomUp(node); }
-};
 
+
+#ifdef DUMP_VISITOR_INFO
+    //DEBUG Purposes
+
+protected:
+    static std::ostream *outputVisitor;  //Ouput stream to dump the info
+    static bool printActivated;          //bool to know if the stream is opened or not
+    static unsigned int depthLevel;      //Level in the hierarchy
+
+    core::objectmodel::Base* enteringBase;
+    bool infoPrinted;
+public:
+    static void startDumpVisitor(std::ostream *s, double time)
+    {
+        printActivated=true; outputVisitor=s;
+        std::string initDump;
+        std::ostringstream ff; ff << "<TraceVisitor time=\"" << time << "\">\n";
+        dumpInfo(ff.str()); depthLevel++;
+    };
+    static void stopDumpVisitor()
+    {
+        std::string endDump("</TraceVisitor>\n");
+        depthLevel--;  dumpInfo(endDump);
+        printActivated=false;
+    };
+    static void dumpInfo( const std::string &info) { if (printActivated) {(*outputVisitor) << info; outputVisitor->flush();}}
+    static void printComment(const std::string &s) ;
+    static unsigned int getLevel() {return depthLevel;};
+    static void resetLevel() {depthLevel=0;};
+    virtual void printInfo(const core::objectmodel::BaseContext* context, bool dirDown);
+    void setNode(core::objectmodel::Base* c);
+#endif
+};
 } // namespace simulation
 
 } // namespace sofa

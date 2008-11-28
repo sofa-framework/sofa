@@ -157,7 +157,7 @@ public:
         data[i] +=  (Real)v;
     }
 
-    int size() const
+    unsigned int size() const
     {
         return cursize;
     }

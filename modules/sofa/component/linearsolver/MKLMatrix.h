@@ -60,12 +60,12 @@ public:
         //	(*impl) = 0.0;
     };
 
-    virtual int rowSize(void)
+    virtual unsigned  int rowSize(void)
     {
         return impl->rows;
     };
 
-    virtual int colSize(void)
+    virtual unsigned int colSize(void)
     {
         return impl->columns;
     };

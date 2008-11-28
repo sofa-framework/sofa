@@ -55,6 +55,7 @@ public:
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
     virtual const char* getCategoryName() const { return "behavior update position"; }
+    virtual const char* getClassName() const { return "SolveVisitor"; }
 
     void setDt(double _dt) {dt = _dt;}
     double getDt() {return dt;}

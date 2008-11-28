@@ -204,6 +204,18 @@ void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, 
     }
 }
 
+// Matrix Integration interface
+template <class DataTypes>
+void FixedConstraint<DataTypes>::applyInvMassConstraint(defaulttype::BaseVector *vec, unsigned int &offset)
+{
+    //std::cout << "applyConstraint in Matrix with offset = " << offset << std::endl;
+//     const unsigned int N = Deriv::size();
+    const SetIndexArray & indices = f_indices.getValue().getArray();
+    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    {
+        vec->clear(offset +  (*it));
+    }
+}
 
 template <class DataTypes>
 void FixedConstraint<DataTypes>::draw()

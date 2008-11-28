@@ -29,6 +29,7 @@
 
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sstream>
@@ -155,25 +156,109 @@ public:
         VecId(Type t, unsigned int i) : type(t), index(i) { }
         VecId() : type(V_NULL), index(0) { }
         bool isNull() const { return type==V_NULL; }
-        static VecId null()     { return VecId(V_NULL,0); }
-        static VecId position() { return VecId(V_COORD,0); }
-        static VecId restPosition() { return VecId(V_COORD,1); }
-        static VecId velocity() { return VecId(V_DERIV,0); }
-        static VecId restVelocity() { return VecId(V_DERIV,1); }
-        static VecId force() { return VecId(V_DERIV,3); }
-        static VecId dx() { return VecId(V_DERIV,4); }
-        static VecId acceleration() { return VecId(V_DERIV,5); }
-        static VecId freePosition() { return VecId(V_COORD,2); }
-        static VecId freeVelocity() { return VecId(V_DERIV,2); }
-        static VecId holonomicC() {return VecId(V_CONST,0);}
-        static VecId nonHolonomicC() {return VecId(V_CONST,1);}
+        static VecId null()          { return VecId(V_NULL, 0);}
+        static VecId position()      { return VecId(V_COORD,0);}
+        static VecId restPosition()  { return VecId(V_COORD,1);}
+        static VecId velocity()      { return VecId(V_DERIV,0);}
+        static VecId restVelocity()  { return VecId(V_DERIV,1);}
+        static VecId force()         { return VecId(V_DERIV,3);}
+        static VecId dx()            { return VecId(V_DERIV,4);}
+        static VecId acceleration()  { return VecId(V_DERIV,5);}
+        static VecId freePosition()  { return VecId(V_COORD,2);}
+        static VecId freeVelocity()  { return VecId(V_DERIV,2);}
+        static VecId holonomicC()    { return VecId(V_CONST,0);}
+        static VecId nonHolonomicC() { return VecId(V_CONST,1);}
 
         /// Test if two VecId identify the same vector
         bool operator==(const VecId& v) const
         {
             return type == v.type && index == v.index;
         }
+        /// Test if two VecId identify the same vector
+        bool operator!=(const VecId& v) const
+        {
+            return type != v.type || index != v.index;
+        }
+
+        std::string getName() const
+        {
+            std::string result;
+            switch (type)
+            {
+            case BaseMechanicalState::VecId::V_NULL:
+            {
+                result+="NULL";
+                break;
+            }
+            case BaseMechanicalState::VecId::V_COORD:
+            {
+                switch(index)
+                {
+                case 0: result+= "position";
+                    break;
+                case 1: result+= "restPosition";
+                    break;
+                case 2: result+= "freePosition";
+                    break;
+                    std::ostringstream out;
+                    out << index;
+                    result+= out.str();
+                    break;
+                }
+                result+= "(V_COORD)";
+                break;
+            }
+            case BaseMechanicalState::VecId::V_DERIV:
+            {
+                switch(index)
+                {
+                case 0: result+= "velocity";
+                    break;
+                case 1: result+= "restVelocity";
+                    break;
+                case 2: result+= "freeVelocity";
+                    break;
+                case 3: result+= "force";
+                    break;
+                case 4: result+= "dx";
+                    break;
+                case 5: result+= "acceleration";
+                    break;
+                default:
+                    std::ostringstream out;
+                    out << index;
+                    result+= out.str();
+                    break;
+                }
+                result+= "(V_DERIV)";
+                break;
+            }
+            case BaseMechanicalState::VecId::V_CONST:
+            {
+                switch(index)
+                {
+                case 0: result+= "holonomic";
+                    break;
+                case 1: result+= "nonHolonolmic";
+                    break;
+                    std::ostringstream out;
+                    out << index;
+                    result+= out.str();
+                    break;
+                }
+                result+= "(V_CONST)";
+                break;
+            }
+            }
+            return result;
+        }
     };
+
+    /// Express the constraint J as a dense matrix
+    virtual void buildConstraintMatrix(const sofa::helper::vector<unsigned int> &/*constraintId*/, const double /* factor */, defaulttype::BaseMatrix& /*m*/, unsigned int /* numConstraint */, unsigned int /* offset */) {};
+
+    /// Compute the violation of the constraint and store them in a vector
+    virtual void computeConstraintProjection(const sofa::helper::vector<unsigned int> &/*constraintId*/, VecId /* Id */, defaulttype::BaseVector& /*v*/,  unsigned int /* offset */) {};
 
     /// Increment the index of the given VecId, so that all 'allocated' vectors in this state have a lower index
     virtual void vAvail(VecId& v) = 0;
@@ -328,18 +413,24 @@ public:
 
 };
 
-inline std::ostream& operator<<(std::ostream& o, const BaseMechanicalState::VecId& v)
+// inline std::ostream& operator<<(std::ostream& o, const BaseMechanicalState::VecId& v)
+// {
+//     switch (v.type)
+//     {
+//     case BaseMechanicalState::VecId::V_NULL: o << "vNull"; break;
+//     case BaseMechanicalState::VecId::V_COORD: o << "vCoord"; break;
+//     case BaseMechanicalState::VecId::V_DERIV: o << "vDeriv"; break;
+//     case BaseMechanicalState::VecId::V_CONST: o << "vConst"; break;
+//     default: o << "vUNKNOWN"; break;
+//     }
+//     o << '[' << v.index << ']';
+//     return o;
+// }
+
+inline std::ostream& operator << ( std::ostream& out, const BaseMechanicalState::VecId& v )
 {
-    switch (v.type)
-    {
-    case BaseMechanicalState::VecId::V_NULL: o << "vNull"; break;
-    case BaseMechanicalState::VecId::V_COORD: o << "vCoord"; break;
-    case BaseMechanicalState::VecId::V_DERIV: o << "vDeriv"; break;
-    case BaseMechanicalState::VecId::V_CONST: o << "vConst"; break;
-    default: o << "vUNKNOWN"; break;
-    }
-    o << '[' << v.index << ']';
-    return o;
+    out << v.getName();
+    return out;
 }
 
 } // namespace behavior

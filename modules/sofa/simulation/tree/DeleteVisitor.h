@@ -44,6 +44,7 @@ public:
 
     virtual Result processNodeTopDown(GNode* node);
     virtual void processNodeBottomUp(GNode* node);
+    virtual const char* getClassName() const { return "CleanupVisitor"; }
 };
 
 class DeleteVisitor : public GNodeVisitor
@@ -53,6 +54,7 @@ public:
 
     virtual Result processNodeTopDown(GNode* node);
     virtual void processNodeBottomUp(GNode* node);
+    virtual const char* getClassName() const { return "DeleteVisitor"; }
 };
 
 } // namespace tree

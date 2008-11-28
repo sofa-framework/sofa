@@ -60,6 +60,10 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
+    //Constraint typedef
+    typedef typename DataTypes::VecConst VecConst;
+    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
+    typedef typename DataTypes::SparseDeriv SparseDeriv;
 
     Mass(MechanicalState<DataTypes> *mm = NULL);
 
@@ -149,6 +153,14 @@ public:
     /// perform  v += dt*g operation. Used if mass wants to added G separately from the other forces to v.
     virtual void addGravityToV(double dt)=0;
 
+
+    virtual void buildSystemMatrix(defaulttype::BaseMatrix &/* invM_Jtrans */, defaulttype::BaseMatrix &/* A */,
+            const sofa::helper::vector< sofa::helper::vector<unsigned int>  >&/* constraintId */,
+            const sofa::helper::vector< double > /* factor */,
+            const sofa::helper::vector< unsigned int > /* offset */,
+            const defaulttype::BaseVector& /* FixedPoints */);
+
+    virtual void buildInvMassDenseMatrix(defaulttype::BaseMatrix &m);
 
 protected:
     /// stream to export Kinematic, Potential and Mechanical Energy to gnuplot files

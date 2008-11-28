@@ -48,6 +48,7 @@
 
 #include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/FindByTypeVisitor.h>
 #include <sofa/simulation/tree/GNode.h>
 
 #include <sofa/component/linearsolver/FullVector.h>
@@ -75,7 +76,9 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::init()
 
 
     // nouveau mécanisme: plusieurs contraintes
-    test->get<core::componentmodel::behavior::BaseConstraint>(&list_base_constraint, core::objectmodel::BaseContext::SearchDown);
+    simulation::FindByTypeVisitor< core::componentmodel::behavior::BaseConstraint > findConstraint;
+    findConstraint.execute(getContext());
+    list_base_constraint = findConstraint.found;
 
 
     // debug //

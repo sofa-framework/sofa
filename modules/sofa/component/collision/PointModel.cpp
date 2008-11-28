@@ -84,7 +84,7 @@ void PointModel::init()
 
     if (mstate==NULL)
     {
-        std::cerr << "ERROR: PointModel requires a Vec3 Mechanical Model.\n";
+        logWarning("ERROR: PointModel requires a Vec3 Mechanical Model");
         return;
     }
 

@@ -102,6 +102,9 @@ public:
     VecId force;
     MechanicalResetContactForceVisitor()
     {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
     }
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms)
@@ -115,6 +118,11 @@ public:
         ms->resetForce();
         return RESULT_CONTINUE;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+    }
+#endif
 };
 
 /* ACTION 2 : Apply the Contact Forces on mechanical models & Compute displacements */
@@ -124,6 +132,9 @@ public:
     VecId force;
     MechanicalApplyContactForceVisitor(double *f):_f(f)
     {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
     }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms)
     {
@@ -136,6 +147,11 @@ public:
         ms->applyContactForce(_f);
         return RESULT_CONTINUE;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+    }
+#endif
 
 private:
     double *_f; // vector of contact forces from lcp //
@@ -154,6 +170,9 @@ public:
     {
         real * data = ((CudaBaseVector<real> *) v)->getCudaVector().hostWrite();
         _v = new FullVector<real>(data,0);
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
     }
 
     virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
@@ -162,6 +181,11 @@ public:
         c->getConstraintValue(_v /*, _numContacts*/);
         return RESULT_CONTINUE;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+    }
+#endif
 private:
     FullVector<real> * _v; // vector for constraint values
     // unsigned int &_numContacts; // we need an offset to fill the vector _v if differents contact class are created
@@ -170,13 +194,23 @@ private:
 class CudaMechanicalGetConstraintValueVisitor : public simulation::MechanicalVisitor
 {
 public:
-    CudaMechanicalGetConstraintValueVisitor(defaulttype::BaseVector * v): _v(v) {}
+    CudaMechanicalGetConstraintValueVisitor(defaulttype::BaseVector * v): _v(v)
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
 
     virtual Result fwdConstraint(simulation::Node*,core::componentmodel::behavior::BaseConstraint* c)
     {
         c->getConstraintValue(_v);
         return RESULT_CONTINUE;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+    }
+#endif
 private:
     defaulttype::BaseVector * _v;
 };
@@ -187,6 +221,9 @@ public:
     MechanicalGetContactIDVisitor(long *id, unsigned int offset = 0)
         : _id(id),_offset(offset)
     {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
     }
 
     virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
@@ -195,6 +232,11 @@ public:
         return RESULT_CONTINUE;
     }
 
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+    }
+#endif
 private:
     long *_id;
     unsigned int _offset;

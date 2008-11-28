@@ -48,6 +48,7 @@ public:
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const { return true; }
+    virtual const char* getClassName() const { return "ResetVisitor"; }
 };
 
 class StoreResetStateVisitor : public Visitor
@@ -62,6 +63,7 @@ public:
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const { return true; }
+    virtual const char* getClassName() const { return "StoreResetStateVisitor"; }
 };
 
 } // namespace simulation

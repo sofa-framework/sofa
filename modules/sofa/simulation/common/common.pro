@@ -12,6 +12,7 @@ HEADERS += Node.h \
            ClassSystem.h \  
            CollisionVisitor.h \  
            Colors.h \
+           ConstraintVisitor.h \
            DesactivatedNodeVisitor.h \
            ExportGnuplotVisitor.h \
            ExportOBJVisitor.h \
@@ -50,6 +51,7 @@ SOURCES += Node.cpp \
            AnimateVisitor.cpp \
            BehaviorUpdatePositionVisitor.cpp \
            CactusStackStorage.cpp \
+           ConstraintVisitor.cpp \
            CollisionVisitor.cpp \
            DesactivatedNodeVisitor.cpp \
            ExportGnuplotVisitor.cpp \

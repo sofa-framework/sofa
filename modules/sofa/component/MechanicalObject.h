@@ -267,6 +267,12 @@ public:
     /// @}
 
 
+
+    /// Express the constraint J as a dense matrix
+    virtual void buildConstraintMatrix(const sofa::helper::vector<unsigned int> &constraintId, const double factor, defaulttype::BaseMatrix& m,unsigned int numConstraint,  unsigned int offset);
+
+    virtual void computeConstraintProjection(const sofa::helper::vector<unsigned int> &constraintId, VecId Id, defaulttype::BaseVector& v, unsigned int offset);
+
     void setFilename(std::string s) {filename.setValue(s);};
     void setTranslation(double dx,double dy,double dz) {translation.setValue(Vector3(dx,dy,dz));};
     void setRotation(double rx,double ry,double rz) {rotation.setValue(Vector3(rx,ry,rz));};

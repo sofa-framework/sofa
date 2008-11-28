@@ -122,7 +122,6 @@ BaseElement* createNode(xmlNodePtr root, const char *basefilename, bool isRoot =
         type = "default";
     }
     BaseElement* node = BaseElement::Create(classType,name,type);
-
     if (node == NULL)
     {
         type=classType;

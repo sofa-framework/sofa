@@ -113,14 +113,17 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
     newPos.eq(pos, newVel, h);
 #else // single-operation optimization
     {
-        simulation::MechanicalVMultiOpVisitor vmop;
-        vmop.ops.resize(2);
-        vmop.ops[0].first = (VecId)newVel;
-        vmop.ops[0].second.push_back(std::make_pair((VecId)vel,1.0));
-        vmop.ops[0].second.push_back(std::make_pair((VecId)x,1.0));
-        vmop.ops[1].first = (VecId)newPos;
-        vmop.ops[1].second.push_back(std::make_pair((VecId)pos,1.0));
-        vmop.ops[1].second.push_back(std::make_pair((VecId)newVel,h));
+        typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+        VMultiOp ops;
+        ops.resize(2);
+        ops[0].first = (VecId)newVel;
+        ops[0].second.push_back(std::make_pair((VecId)vel,1.0));
+        ops[0].second.push_back(std::make_pair((VecId)x,1.0));
+        ops[1].first = (VecId)newPos;
+        ops[1].second.push_back(std::make_pair((VecId)pos,1.0));
+        ops[1].second.push_back(std::make_pair((VecId)newVel,h));
+        simulation::MechanicalVMultiOpVisitor vmop(ops);
+
         vmop.execute(this->getContext());
     }
 #endif

@@ -61,6 +61,7 @@ public:
     Visitor::Result processNodeTopDown(simulation::Node* node);
     void processObject(simulation::Node*, core::objectmodel::BaseObject* obj);
 
+    virtual const char* getClassName() const { return "PropagateEventVisitor"; }
 protected:
     sofa::core::objectmodel::Event* m_event;
 };

@@ -84,6 +84,9 @@ public:
     /// advancing the state from time t to t+dt.
     virtual void solve (double dt) { solve(dt, BaseMechanicalState::VecId::position(), BaseMechanicalState::VecId::velocity()); }
 
+    /// Solve specific constraint
+    virtual void solveConstraint(BaseMechanicalState::VecId, bool /* propagateVelocityToConstraint */ ) {};
+
     /// Propagate the given state (time, position and velocity) through all mappings
     ///
     /// @TODO Why is this necessary in the OdeSolver API ? (Jeremie A. 03/02/2008)

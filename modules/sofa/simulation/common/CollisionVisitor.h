@@ -46,6 +46,7 @@ public:
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
     virtual const char* getCategoryName() const { return "collision"; }
+    virtual const char* getClassName() const { return "CollisionVisitor"; }
 };
 
 /// Remove collision response from last step
@@ -53,6 +54,7 @@ class CollisionResetVisitor : public CollisionVisitor
 {
 public:
     void processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::Pipeline* obj);
+    virtual const char* getClassName() const { return "CollisionResetVisitor"; }
 };
 
 /// Compute collision detection
@@ -60,6 +62,7 @@ class CollisionDetectionVisitor : public CollisionVisitor
 {
 public:
     void processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::Pipeline* obj);
+    virtual const char* getClassName() const { return "CollisionDetectionVisitor"; }
 };
 
 /// Compute collision response
@@ -67,6 +70,7 @@ class CollisionResponseVisitor : public CollisionVisitor
 {
 public:
     void processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::Pipeline* obj);
+    virtual const char* getClassName() const { return "CollisionResponseVisitor"; }
 };
 
 

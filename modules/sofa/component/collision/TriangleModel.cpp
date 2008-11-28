@@ -84,13 +84,13 @@ void TriangleModel::init()
 
     if (mstate==NULL)
     {
-        std::cerr << "ERROR: TriangleModel requires a Vec3 Mechanical Model.\n";
+        logWarning("TriangleModel requires a Vec3 Mechanical Model");
         return;
     }
 
     if (!_topology)
     {
-        std::cerr << "ERROR: TriangleModel requires a BaseMeshTopology.\n";
+        logWarning("TriangleModel requires a BaseMeshTopology");
         return;
     }
 

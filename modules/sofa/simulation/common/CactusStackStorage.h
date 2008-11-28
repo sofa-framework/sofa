@@ -70,6 +70,7 @@ public:
     void* pop();
     void* top() const;
     bool empty() const;
+    virtual const char* getClassName() const { return "CactusStackStorage"; }
 };
 
 } // namespace simulation

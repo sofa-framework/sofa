@@ -1,0 +1,87 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>VisitorGUI</class>
+<widget class="QMainWindow">
+    <property name="name">
+        <cstring>VisitorGUI</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>615</width>
+            <height>453</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>VisitorGUI</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QListView" row="0" column="0">
+            <column>
+                <property name="text">
+                    <string>Graph</string>
+                </property>
+                <property name="clickable">
+                    <bool>false</bool>
+                </property>
+                <property name="resizable">
+                    <bool>true</bool>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Type</string>
+                </property>
+                <property name="clickable">
+                    <bool>false</bool>
+                </property>
+                <property name="resizable">
+                    <bool>false</bool>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Value</string>
+                </property>
+                <property name="clickable">
+                    <bool>false</bool>
+                </property>
+                <property name="resizable">
+                    <bool>true</bool>
+                </property>
+            </column>
+            <property name="name">
+                <cstring>graphView</cstring>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="1" column="0">
+            <property name="name">
+                <cstring>clearButton</cstring>
+            </property>
+            <property name="text">
+                <string>Clear</string>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<toolbars>
+</toolbars>
+<connections>
+    <connection>
+        <sender>clearButton</sender>
+        <signal>clicked()</signal>
+        <receiver>VisitorGUI</receiver>
+        <slot>clearGraph()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>graphView</tabstop>
+</tabstops>
+<slots>
+    <slot>clearGraph()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

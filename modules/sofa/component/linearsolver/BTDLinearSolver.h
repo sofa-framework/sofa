@@ -298,7 +298,7 @@ public:
     bool addJMInvJt(RMatrix& result, JMatrix& J, double fact)
     {
         //const int Jrows = J.rowSize();
-        const int Jcols = J.colSize();
+        const unsigned int Jcols = J.colSize();
         if (Jcols != Minv.rowSize())
         {
             std::cerr << "BTDLinearSolver::addJMInvJt ERROR: incompatible J matrix size." << std::endl;
@@ -327,10 +327,10 @@ public:
         {
 // debug christian: print of the inverse matrix:
             std::cout<< "C = ["<<std::endl;
-            for  (int mr=0; mr<Minv.rowSize(); mr++)
+            for  (unsigned int mr=0; mr<Minv.rowSize(); mr++)
             {
                 std::cout<<" "<<std::endl;
-                for (int mc=0; mc<Minv.colSize(); mc++)
+                for (unsigned int mc=0; mc<Minv.colSize(); mc++)
                 {
                     std::cout<<" "<< getMinvElement(mr,mc);
                 }
@@ -339,10 +339,10 @@ public:
 
 // debug christian: print of matrix J:
             std::cout<< "J = ["<<std::endl;
-            for  (int jr=0; jr<J.rowSize(); jr++)
+            for  (unsigned int jr=0; jr<J.rowSize(); jr++)
             {
                 std::cout<<" "<<std::endl;
-                for (int jc=0; jc<J.colSize(); jc++)
+                for (unsigned int jc=0; jc<J.colSize(); jc++)
                 {
                     std::cout<<" "<< J.element(jr, jc) ;
                 }

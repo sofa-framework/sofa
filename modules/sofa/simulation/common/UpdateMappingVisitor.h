@@ -48,6 +48,7 @@ public:
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
     virtual const char* getCategoryName() const { return "mapping"; }
+    virtual const char* getClassName() const { return "UpdateMappingVisitor"; }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const { return true; }

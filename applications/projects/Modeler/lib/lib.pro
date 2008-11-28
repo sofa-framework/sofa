@@ -32,3 +32,7 @@ else {
 	  FORMS += DialogAddPreset.ui
 }
 
+
+#add local libraries to the modeler
+!include(lib-local.cfg) {
+}

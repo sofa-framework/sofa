@@ -102,7 +102,6 @@ void BarycentricMapperRegularGridTopology<In,Out>::init(const typename Out::VecC
 
     int outside = 0;
     clear(out.size());
-
     if (topology->isVolume())
     {
         for (unsigned int i=0; i<out.size(); i++)
@@ -343,8 +342,9 @@ void BarycentricMapperMeshTopology<In,Out>::init(const typename Out::VecCoord& o
                     SReal lengthEdge = lengthEdges[e];
                     Vector3 V12 =unitaryVectors[e];
 
-                    coef = 1-(V12)*Vector3(out[i]-in[edges[e][0]])/lengthEdge;
+                    coef = (V12)*Vector3(out[i]-in[edges[e][0]])/lengthEdge;
                     if (coef >= 0 && coef <= 1) {addPointInLine(e,&coef);  break; }
+
                 }
                 //If no good coefficient has been found, we add to the last element
                 if (e == edges.size()) addPointInLine(edges.size()-1,&coef);
@@ -978,7 +978,6 @@ void BarycentricMapperMeshTopology<In,Out>::apply( typename Out::VecCoord& out, 
             const Real fx = map2d[i].baryCoords[0];
             const Real fy = map2d[i].baryCoords[1];
             int index = map2d[i].in_index;
-//	    std::cout << index << " " << triangles.size() << " !!!!!!!\n";
             if (index<c0)
             {
                 const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& triangle = triangles[index];
