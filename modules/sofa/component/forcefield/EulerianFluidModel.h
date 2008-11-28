@@ -315,6 +315,9 @@ protected:
     NewMAT::Matrix m_laplace_inv;
     NewMAT::Matrix m_d0;
 
+    NewMAT::Matrix m_constraint;
+    NewMAT::Matrix m_constraint_inv;
+
     //state variables
     NewMAT::ColumnVector m_flux;
     NewMAT::ColumnVector m_vorticity;

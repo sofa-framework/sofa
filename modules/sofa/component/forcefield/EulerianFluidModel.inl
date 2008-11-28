@@ -234,7 +234,13 @@ void EulerianFluidModel<DataTypes>::updatePosition(double dt)
     //saveFlux();
     ctime_t endTime = CTime::getTime();
     time_LE += endTime - startTime;
-//	std::cout << "time_linear_equations = " << (endTime - startTime)/1e6 << endl;
+    //std::cout << "time_linear_equations = " << (endTime - startTime)/1e6 << endl;
+    double test = 0.0;
+    for(std::map<EdgeID, BoundaryEdgeInformation>::iterator it = m_bdEdgeInfo.begin(); it !=  m_bdEdgeInfo.end(); ++it)
+    {
+        test += fabs(m_flux.element(it->first) - it->second.m_bdConstraint);
+    }
+    std::cout << "difference between boundary flux and boundary constraints = " << test << endl;
 
     // U => v
     //std::cout << "U => v" << endl;
@@ -992,10 +998,15 @@ void EulerianFluidModel<DataTypes>::computeOperators()
         }
     }
     // additional constraint : Phi(d0[m_bdEdgeInfo[0].first][0]) = 0
-    it = m_bdEdgeInfo.begin();
-    ele3 = d0[it->first].begin();
-    m_laplace.element(m_nbPoints+nb_constraints-1, ele3->first) = 1;
-    m_laplace.element(ele3->first, m_nbPoints+nb_constraints-1) = 1;
+    //it = m_bdEdgeInfo.begin();
+    //ele3 = d0[it->first].begin();
+    //m_laplace.element(m_nbPoints+nb_constraints-1, ele3->first) = 1;
+    //m_laplace.element(ele3->first, m_nbPoints+nb_constraints-1) = 1;
+
+    // additional constraint: Phi[FirstBoundaryPoint] = 0;
+    BoundaryPointIterator pIt = m_bdPointInfo.begin();
+    m_laplace.element(m_nbPoints+nb_constraints-1, pIt->first) = 1;
+    m_laplace.element(pIt->first, m_nbPoints+nb_constraints-1) = 1;
 
     m_laplace_inv = m_laplace.i();
 }
@@ -1427,7 +1438,7 @@ unsigned int EulerianFluidModel<DataTypes>::searchFaceForTriMesh(const Coord& pt
     faces.push_back(startFace);
 
     unsigned int temp;
-    for(unsigned int i = 0; i < /*20*/faces.size(); ++i)
+    for(unsigned int i = 0; i < 20/*faces.size()*/; ++i)
     {
         if(m_triGeo->isPointInTriangle(faces[i], false, p, temp))
             return faces[i];
@@ -1527,7 +1538,7 @@ unsigned int EulerianFluidModel<DataTypes>::searchDualFaceForQuadMesh(const Coor
 
     sofa::defaulttype::Vec<3, double> p(pt.x(), pt.y(), pt.z());
 
-    for(unsigned int i = 0; i < /*20*/dualFaceIDs.size(); ++i)
+    for(unsigned int i = 0; i < 20/*dualFaceIDs.size()*/; ++i)
     {
         DualFace dualFace = m_pInfo.m_dualFaces[dualFaceIDs[i]];
         if(!m_pInfo.m_isBoundary[dualFaceIDs[i]])
@@ -1773,6 +1784,24 @@ void EulerianFluidModel<DataTypes>::calcVorticity()
                 m_vorticity.element(i) *= 0.5;
             }
         }
+        ////calculate boundary vorticity using current data, but not backtrack one
+        //for(std::map<PointID, BoundaryPointInformation>::iterator it = m_bdPointInfo.begin(); it !=  m_bdPointInfo.end(); ++it)
+        //{
+        //	const VertexEdges vEdges = m_topology->getOrientedEdgeVertexShell(it->first);
+        //	const VertexFaces vFaces = m_topology->getOrientedTriangleVertexShell(it->first);
+        //	const Coord p(m_topology->getPX(it->first), m_topology->getPY(it->first), m_topology->getPZ(it->first));
+        //	m_vorticity.element(it->first) =
+        //		(m_bdEdgeInfo[vEdges.back()].m_bdVel + m_bkVels[vFaces.back()]) * (m_eInfo.m_centers[vEdges.back()] - m_bkCenters[vFaces.back()]) +				//fCenter_last->eCenter_last
+        //		(it->second.m_bdVel + m_bdEdgeInfo[vEdges.back()].m_bdVel) * (p - m_eInfo.m_centers[vEdges.back()]) +											//eCenter_last->p
+        //		(m_bdEdgeInfo[vEdges.front()].m_bdVel + it->second.m_bdVel) * (m_eInfo.m_centers[vEdges.front()] - p) +											//p->eCenter_first
+        //		(m_bkVels[vFaces.front()] + m_bdEdgeInfo[vEdges.front()].m_bdVel) * (m_bkCenters[vFaces.front()] - m_eInfo.m_centers[vEdges.front()]);			//eCenter_fisrt->fCenter_first
+        //	for(FaceID i = 0; i < vFaces.size()-1; ++i)
+        //	{
+        //		m_vorticity.element(it->first) += (m_bkVels[vFaces[i+1]] + m_bkVels[vFaces[i]]) * (m_bkCenters[vFaces[i+1]] - m_bkCenters[vFaces[i]]);
+        //	}
+        //	m_vorticity.element(it->first) *= 0.5;
+        //}
+
         ////calculate boundary vorticity
         //for(std::map<PointID, BoundaryPointInformation>::iterator it = m_bdPointInfo.begin(); it !=  m_bdPointInfo.end(); ++it)
         //{
@@ -1804,6 +1833,25 @@ void EulerianFluidModel<DataTypes>::calcVorticity()
                 m_vorticity.element(i) *= 0.5 ;
             }
         }
+
+        ////calculate boundary vorticity using current data, but not backtrack one
+        //for(std::map<PointID, BoundaryPointInformation>::iterator it = m_bdPointInfo.begin(); it !=  m_bdPointInfo.end(); ++it)
+        //{
+        //	const VertexEdges vEdges = m_topology->getOrientedEdgeVertexShell(it->first);
+        //	const VertexFaces vFaces = m_topology->getOrientedQuadVertexShell(it->first);
+        //	const Coord p(m_topology->getPX(it->first), m_topology->getPY(it->first), m_topology->getPZ(it->first));
+        //	m_vorticity.element(it->first) =
+        //		(m_bdEdgeInfo[vEdges.back()].m_bdVel + m_bkVels[vFaces.back()]) * (m_eInfo.m_centers[vEdges.back()] - m_bkCenters[vFaces.back()]) +				//fCenter_last->eCenter_last
+        //		(it->second.m_bdVel + m_bdEdgeInfo[vEdges.back()].m_bdVel) * (p - m_eInfo.m_centers[vEdges.back()]) +											//eCenter_last->p
+        //		(m_bdEdgeInfo[vEdges.front()].m_bdVel + it->second.m_bdVel) * (m_eInfo.m_centers[vEdges.front()] - p) +											//p->eCenter_first
+        //		(m_bkVels[vFaces.front()] + m_bdEdgeInfo[vEdges.front()].m_bdVel) * (m_bkCenters[vFaces.front()] - m_eInfo.m_centers[vEdges.front()]);			//eCenter_fisrt->fCenter_first
+        //	for(FaceID i = 0; i < vFaces.size()-1; ++i)
+        //	{
+        //		m_vorticity.element(it->first) += (m_bkVels[vFaces[i+1]] + m_bkVels[vFaces[i]]) * (m_bkCenters[vFaces[i+1]] - m_bkCenters[vFaces[i]]);
+        //	}
+        //	m_vorticity.element(it->first) *= 0.5;
+        //}
+
         ////calculate boundary vorticity
         //for(std::map<PointID, BoundaryPointInformation>::iterator it = m_bdPointInfo.begin(); it !=  m_bdPointInfo.end(); ++it)
         //{
@@ -1866,7 +1914,7 @@ template<class DataTypes>
 void EulerianFluidModel<DataTypes>::calcFlux()
 {
     m_flux = m_d0 * m_phi;
-    setBoundaryFlux();
+    //setBoundaryFlux();
 }
 
 template<class DataTypes>
