@@ -74,7 +74,8 @@ public:
 
     /// find the connexion graph between the finest hexas
     void findConnexionsAtFinestLevel();
-
+    /// do 2 neighbors cubes share triangles ?
+    bool sharingTriangle(helper::io::Mesh* mesh, int cubeIdx, int neighborIdx, unsigned where);
 
     /// debug printings
     void printNeighborhood();
@@ -88,6 +89,8 @@ public:
     // just to remember
     enum {UP,DOWN,RIGHT,LEFT,BEFORE,BEHIND,NUM_CONNECTED_NODES};
 
+    // Does the connectivity test have to be done at the finest level? (more precise but slow)
+    Data<bool> _finestConnectivity;
 
 protected:
 
