@@ -42,7 +42,7 @@ namespace forcefield
 template<class DataTypes>
 EulerianFluidModel<DataTypes>::EulerianFluidModel()
     :
-    m_bAddForces(initData(&m_bAddForces, bool(0), "addFroces", "Add Forces")),
+    m_bAddForces(initData(&m_bAddForces, bool(0), "addForces", "Add Forces")),
     m_force(initData(&m_force, Real(1.0), "force", "External force")),
 
     m_bDisplayBoundary  (initData(&m_bDisplayBoundary, bool(0), "displayBoundary", "Display Boundary")),
@@ -50,9 +50,8 @@ EulerianFluidModel<DataTypes>::EulerianFluidModel()
     m_bDisplayBkMesh(initData(&m_bDisplayBkMesh, bool(0), "displayBkMesh", "Display Backtrack Mesh")),
     m_bDisplayVelocity  (initData(&m_bDisplayVelocity, bool(0), "displayVelocity", "Display Velocity")),
     m_bDisplayBkVelocity  (initData(&m_bDisplayBkVelocity, bool(0), "displayBkVelocity", "Display Backtrack Velocity")),
-    m_visCoef1(initData(&m_visCoef1, Real(0.2), "visCoef1", "Visualization Coefficent 1")),
-
     m_bDisplayVorticity(initData(&m_bDisplayVorticity, bool(0), "displayVorticity", "Display Vorticity")),
+    m_visCoef1(initData(&m_visCoef1, Real(0.2), "visCoef1", "Visualization Coefficent 1")),
     m_visCoef2(initData(&m_visCoef2, Real(0.2), "visCoef2", "Visualization Coefficent 2")),
     m_visCoef3(initData(&m_visCoef3, Real(10), "visCoef3", "Visualization Coefficent 3")),
 
@@ -187,7 +186,7 @@ void EulerianFluidModel<DataTypes>::init()
     computeProjectMats();
 
     //initialize the size of state variables
-    m_vorticity.ReSize(m_nbPoints + m_bdEdgeInfo.size());
+    m_vorticity.ReSize(m_nbPoints + m_bdEdgeInfo.size()+1);
     m_flux.ReSize(m_nbEdges);
 
     m_vels.resize(m_nbFaces);
@@ -258,10 +257,69 @@ template<class DataTypes>
 void EulerianFluidModel<DataTypes>::draw()
 {
     assert(this->m_mstate);
+    glDisable(GL_LIGHTING);
 
     if (m_topology != NULL)
     {
         normalizeDisplayValues();
+        glColor3f(0.75, 0.75, 0.75);
+        glBegin(GL_LINE_LOOP);
+        glVertex3f(getBdXmin1(), getBdYmin1(), getBdZmin1());
+        glVertex3f(getBdXmin1(), getBdYmax1(), getBdZmin1());
+        glVertex3f(getBdXmax1(), getBdYmax1(), getBdZmin1());
+        glVertex3f(getBdXmax1(), getBdYmin1(), getBdZmin1());
+        glEnd();
+        glBegin(GL_LINE_LOOP);
+        glVertex3f(getBdXmin1(), getBdYmin1(), getBdZmax1());
+        glVertex3f(getBdXmin1(), getBdYmax1(), getBdZmax1());
+        glVertex3f(getBdXmax1(), getBdYmax1(), getBdZmax1());
+        glVertex3f(getBdXmax1(), getBdYmin1(), getBdZmax1());
+        glEnd();
+        glBegin(GL_LINES);
+        glVertex3f(getBdXmin1(), getBdYmin1(), getBdZmin1());
+        glVertex3f(getBdXmin1(), getBdYmin1(), getBdZmax1());
+        glEnd();
+        glBegin(GL_LINES);
+        glVertex3f(getBdXmin1(), getBdYmax1(), getBdZmin1());
+        glVertex3f(getBdXmin1(), getBdYmax1(), getBdZmax1());
+        glEnd();
+        glBegin(GL_LINES);
+        glVertex3f(getBdXmax1(), getBdYmax1(), getBdZmin1());
+        glVertex3f(getBdXmax1(), getBdYmax1(), getBdZmax1());
+        glEnd();
+        glBegin(GL_LINES);
+        glVertex3f(getBdXmax1(), getBdYmin1(), getBdZmin1());
+        glVertex3f(getBdXmax1(), getBdYmin1(), getBdZmax1());
+        glEnd();
+
+        glBegin(GL_LINE_LOOP);
+        glVertex3f(getBdXmin2(), getBdYmin2(), getBdZmin2());
+        glVertex3f(getBdXmin2(), getBdYmax2(), getBdZmin2());
+        glVertex3f(getBdXmax2(), getBdYmax2(), getBdZmin2());
+        glVertex3f(getBdXmax2(), getBdYmin2(), getBdZmin2());
+        glEnd();
+        glBegin(GL_LINE_LOOP);
+        glVertex3f(getBdXmin2(), getBdYmin2(), getBdZmax2());
+        glVertex3f(getBdXmin2(), getBdYmax2(), getBdZmax2());
+        glVertex3f(getBdXmax2(), getBdYmax2(), getBdZmax2());
+        glVertex3f(getBdXmax2(), getBdYmin2(), getBdZmax2());
+        glEnd();
+        glBegin(GL_LINES);
+        glVertex3f(getBdXmin2(), getBdYmin2(), getBdZmin2());
+        glVertex3f(getBdXmin2(), getBdYmin2(), getBdZmax2());
+        glEnd();
+        glBegin(GL_LINES);
+        glVertex3f(getBdXmin2(), getBdYmax2(), getBdZmin2());
+        glVertex3f(getBdXmin2(), getBdYmax2(), getBdZmax2());
+        glEnd();
+        glBegin(GL_LINES);
+        glVertex3f(getBdXmax2(), getBdYmax2(), getBdZmin2());
+        glVertex3f(getBdXmax2(), getBdYmax2(), getBdZmax2());
+        glEnd();
+        glBegin(GL_LINES);
+        glVertex3f(getBdXmax2(), getBdYmin2(), getBdZmin2());
+        glVertex3f(getBdXmax2(), getBdYmin2(), getBdZmax2());
+        glEnd();
 
         switch(m_meshType)
         {
@@ -269,7 +327,6 @@ void EulerianFluidModel<DataTypes>::draw()
             // draw vorticity
             if(getContext()->getShowBehaviorModels() && m_bDisplayVorticity.getValue())
             {
-                glDisable(GL_LIGHTING);
                 glShadeModel(GL_SMOOTH);
                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
@@ -407,6 +464,7 @@ void EulerianFluidModel<DataTypes>::draw()
                 glVertex3f(m_topology->getPX(e[1]), m_topology->getPY(e[1]), m_topology->getPZ(e[1]));
                 glEnd();
             }
+            glLineWidth(1.0f);
         }
 
         //draw dual mesh
@@ -905,23 +963,24 @@ void EulerianFluidModel<DataTypes>::computeOperators()
         for(PointID j = 0 ; j < m_nbPoints; ++j)
             m_d0.element(i, j) = d0.element(i, j);
 
-    unsigned int nb_constraints = m_bdEdgeInfo.size();
+    unsigned int nb_constraints = m_bdEdgeInfo.size() + 1; // +1 because we need an additional constraint
     m_laplace.ReSize(m_nbPoints + nb_constraints, m_nbPoints + nb_constraints);
     m_laplace = 0.0;
     for(unsigned int i = 0; i < m_nbPoints; ++i)
     {
-        if(m_pInfo.m_isBoundary[i])
-            m_laplace.element(i, i) = 1.0;
-        else
-            for(unsigned int j = 0; j < m_nbPoints; ++j)
-            {
-                m_laplace.element(i, j) = laplace.element(i, j);
-            }
+//		if(m_pInfo.m_isBoundary[i])
+//		m_laplace.element(i, i) = 1.0;
+//		else
+        for(unsigned int j = 0; j < m_nbPoints; ++j)
+        {
+            m_laplace.element(i, j) = laplace.element(i, j);
+        }
     }
 
+    // extend L with Lagrange multipliers for boundary conditions
     BoundaryEdgeIterator it = m_bdEdgeInfo.begin();
     sofa::component::linearsolver::SparseMatrix<int>::LElementIterator ele3;
-    for(unsigned int i = 0; i < nb_constraints; ++i, ++it)
+    for(unsigned int i = 0; i < nb_constraints-1; ++i, ++it)
     {
         for (ele3 = d0[it->first].begin(); ele3 != d0[it->first].end(); ++ele3)
         {
@@ -929,8 +988,14 @@ void EulerianFluidModel<DataTypes>::computeOperators()
             //  ele3->second = value of the non-zero element at this index
             m_laplace.element(m_nbPoints+i, ele3->first) = ele3->second;
             m_laplace.element(ele3->first, m_nbPoints+i) = ele3->second;
+            //cout << "L[" << m_nbPoints+i << "][" << ele3->first << "] = " << ele3->second << endl;
         }
     }
+    // additional constraint : Phi(d0[m_bdEdgeInfo[0].first][0]) = 0
+    it = m_bdEdgeInfo.begin();
+    ele3 = d0[it->first].begin();
+    m_laplace.element(m_nbPoints+nb_constraints-1, ele3->first) = 1;
+    m_laplace.element(ele3->first, m_nbPoints+nb_constraints-1) = 1;
 
     m_laplace_inv = m_laplace.i();
 }
@@ -1781,11 +1846,16 @@ void EulerianFluidModel<DataTypes>::calcPhi(bool reset)
         m_laplace_inv =  m_laplace.i();
 
     //set constraints, using Lagragian Multiplier method
+    unsigned int nb_constraints = m_bdEdgeInfo.size() + 1;
     BoundaryEdgeIterator it = m_bdEdgeInfo.begin();
-    for(unsigned int i = 0; i < m_bdEdgeInfo.size(); ++i, ++it)
+    for(unsigned int i = 0; i < nb_constraints-1; ++i, ++it)
     {
         m_vorticity.element(m_nbPoints+i) = it->second.m_bdConstraint;
+        //cout << "vorticity[" << m_nbPoints+i << "] = " <<  it->second.m_bdConstraint << endl;
     }
+    m_vorticity.element(m_nbPoints+nb_constraints-1) = 0.0;
+    //cout << "vorticity[" << m_nbPoints+nb_constraints-1 << "] = 0.0 " << endl;
+
     //solve the equations
     NewMAT::Matrix phi = m_laplace_inv * m_vorticity;
     //discard extra solutions

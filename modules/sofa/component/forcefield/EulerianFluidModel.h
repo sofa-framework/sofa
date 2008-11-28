@@ -176,10 +176,10 @@ protected:
     Data< bool > m_bDisplayBoundary;
     Data< bool > m_bDisplayDualMesh;
     Data< bool > m_bDisplayBkMesh;
-    Data< bool > m_bDisplayVorticity;
-    Data< Real > m_visCoef1;	//visualization coef
     Data< bool > m_bDisplayVelocity;
     Data< bool > m_bDisplayBkVelocity;
+    Data< bool > m_bDisplayVorticity;
+    Data< Real > m_visCoef1;	//visualization coef
     Data< Real > m_visCoef2;	//visualization coef
     Data< Real > m_visCoef3;	//visualization coef
 
