@@ -170,11 +170,11 @@ void DistanceConstraint<DataTypes>::draw()
         const SeqEdges &edges =  vecConstraint.getValue();
         for (unsigned int i=0; i<edges.size(); ++i)
         {
-            double length     = lengthEdge(edges[i],x1,x2);
-            double restLength = this->l0[i];
-            double factor = fabs(length - restLength)/length;
+            float length     = lengthEdge(edges[i],x1,x2);
+            float restLength = this->l0[i];
+            float factor = fabs(length - restLength)/length;
 
-            glColor4f(factor,(1-factor)*(1-factor),0,1);
+            glColor4f(factor,(1-factor)*(1-factor),0.0f,1.0f);
 
             helper::gl::glVertexT(x1[edges[i][0]]);
             helper::gl::glVertexT(x2[edges[i][1]]);
