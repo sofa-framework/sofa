@@ -40,6 +40,7 @@
 #include <sofa/core/componentmodel/behavior/BaseForceField.h>
 #include <sofa/core/componentmodel/behavior/InteractionForceField.h>
 #include <sofa/core/componentmodel/behavior/BaseConstraint.h>
+#include <sofa/core/componentmodel/behavior/BaseLMConstraint.h>
 #include <sofa/core/componentmodel/behavior/BaseMechanicalMapping.h>
 #include <sofa/core/componentmodel/behavior/BaseMass.h>
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
@@ -301,6 +302,8 @@ public:
             entry.baseClasses.insert("ForceField");
         if (implements<RealObject,core::componentmodel::behavior::InteractionForceField>())
             entry.baseClasses.insert("InteractionForceField");
+        if (implements<RealObject,core::componentmodel::behavior::BaseLMConstraint>())
+            entry.baseClasses.insert("Constraint");
         if (implements<RealObject,core::componentmodel::behavior::BaseConstraint>())
             entry.baseClasses.insert("Constraint");
         if (implements<RealObject,core::BaseMapping>())
@@ -314,7 +317,7 @@ public:
         if (implements<RealObject,core::componentmodel::behavior::OdeSolver>())
             entry.baseClasses.insert("OdeSolver");
         if (implements<RealObject,core::componentmodel::behavior::LinearSolver>())
-            entry.baseClasses.insert("Linear Solver");
+            entry.baseClasses.insert("LinearSolver");
         if (implements<RealObject,core::componentmodel::behavior::MasterSolver>())
             entry.baseClasses.insert("MasterSolver");
         if (implements<RealObject,core::componentmodel::topology::Topology>())

@@ -289,6 +289,7 @@ public:
         REINIT_FLAG = false;
         //remove the qwt graphes
         energy_curve[0]=energy_curve[1]=energy_curve[2]=NULL;
+        graphEnergy=NULL;
         //Initialization of the Widget
         setNode(node_clicked, item_clicked);
         connect ( this, SIGNAL( dialogClosed(void *) ) , parent_, SLOT( modifyUnlock(void *)));
