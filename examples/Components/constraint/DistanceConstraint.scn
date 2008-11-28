@@ -96,7 +96,7 @@
 				<Data value="default6"/>
 			</Attribute>
 			<Attribute type="filename">
-				<Data value="/home/falipou-local/sofa-dev/share/mesh/ball.obj"/>
+				<Data value="mesh/ball.obj"/>
 			</Attribute>
 		</MeshLoader>
 		<MeshTopology>
@@ -159,7 +159,7 @@
 				<Data value="Visual"/>
 			</Attribute>
 			<Attribute type="fileMesh">
-				<Data value="/home/falipou-local/sofa-dev/share/mesh/ball.obj"/>
+				<Data value="mesh/ball.obj"/>
 			</Attribute>
 			<Attribute type="translation">
 				<Data value="0 0 0"/>
@@ -193,7 +193,7 @@
 				<Data value="default18"/>
 			</Attribute>
 			<Attribute type="filename">
-				<Data value="/home/falipou-local/sofa-dev/share/mesh/ball.obj"/>
+				<Data value="mesh/ball.obj"/>
 			</Attribute>
 		</MeshLoader>
 		<MeshTopology>
@@ -256,7 +256,7 @@
 				<Data value="Visual"/>
 			</Attribute>
 			<Attribute type="fileMesh">
-				<Data value="/home/falipou-local/sofa-dev/share/mesh/ball.obj"/>
+				<Data value="mesh/ball.obj"/>
 			</Attribute>
 			<Attribute type="translation">
 				<Data value="4 0 0"/>
@@ -309,7 +309,7 @@
 				<Data value="default154"/>
 			</Attribute>
 			<Attribute type="fileTopology">
-				<Data value="/home/falipou-local/sofa-dev/share/mesh/ball.obj"/>
+				<Data value="mesh/ball.obj"/>
 			</Attribute>
 			<Attribute type="n">
 				<Data value="6 6 6"/>
@@ -372,7 +372,7 @@
 					<Data value="Visual"/>
 				</Attribute>
 				<Attribute type="fileMesh">
-					<Data value="/home/falipou-local/sofa-dev/share/mesh/ball.obj"/>
+					<Data value="mesh/ball.obj"/>
 				</Attribute>
 				<Attribute type="translation">
 					<Data value="0 0 0"/>
@@ -414,7 +414,7 @@
 					<Data value="collisionLoader"/>
 				</Attribute>
 				<Attribute type="filename">
-					<Data value="/home/falipou-local/sofa-dev/share/mesh/ball.obj"/>
+					<Data value="mesh/ball.obj"/>
 				</Attribute>
 			</MeshLoader>
 			<MeshTopology>
