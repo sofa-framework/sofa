@@ -63,9 +63,6 @@ void SparseGridRamificationTopology::init()
 
     if( this->isVirtual || _nbVirtualFinerLevels.getValue() > 0)
         findCoarsestParents(); // in order to compute findCube by beginning by the finnest, by going up and give the coarsest parent
-
-
-    cerr<<"SparseGridRamificationTopology::init : the _finestConnectivity is : "<<_finestConnectivity.getValue()<<endl;
 }
 
 void SparseGridRamificationTopology::buildAsFinest()
