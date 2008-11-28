@@ -51,6 +51,7 @@ public:
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
     virtual const char* getCategoryName() const { return "desactivatednode"; }
+    virtual const char* getClassName() const { return "DesactivationVisitor"; }
 
 
     void setValue(bool _active) {active = _active;}

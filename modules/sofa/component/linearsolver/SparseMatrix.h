@@ -103,12 +103,12 @@ public:
         nCol = nbCol;
     }
 
-    int rowSize(void) const
+    unsigned int rowSize(void) const
     {
         return nRow;
     }
 
-    int colSize(void) const
+    unsigned int colSize(void) const
     {
         return nCol;
     }

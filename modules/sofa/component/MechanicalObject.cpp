@@ -25,6 +25,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/component/MechanicalObject.inl>
+#include <sofa/helper/Quater.h>
 
 
 namespace sofa
@@ -98,6 +99,59 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaultty
     }
 }
 
+template <>
+void MechanicalObject<defaulttype::Rigid3dTypes>::addBaseVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset)
+{
+    if (dest.type == VecId::V_COORD)
+    {
+        VecCoord* vDest = getVecCoord(dest.index);
+        const unsigned int coordDim = DataTypeInfo<Coord>::size();
+
+        for (unsigned int i=0; i<vDest->size(); i++)
+        {
+            for (unsigned int j=0; j<3; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Coord>::getValue((*vDest)[i],j,tmp);
+                DataTypeInfo<Coord>::setValue((*vDest)[i],j,tmp + src->element(offset + i * coordDim + j));
+            }
+
+            helper::Quater<double> q_src;
+            helper::Quater<double> q_dest;
+            for (unsigned int j=0; j<4; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Coord>::getValue((*vDest)[i],j+3,tmp);
+                q_dest[j]=tmp;
+                q_src[j]=src->element(offset + i * coordDim + j+3);
+            }
+            //q_dest = q_dest*q_src;
+            q_dest = q_src*q_dest;
+            for (unsigned int j=0; j<4; j++)
+            {
+                Real tmp=q_dest[j];
+                DataTypeInfo<Coord>::setValue((*vDest)[i], j+3, tmp);
+            }
+        }
+
+        offset += vDest->size() * coordDim;
+    }
+    else
+    {
+        VecDeriv* vDest = getVecDeriv(dest.index);
+        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
+        for (unsigned int i=0; i<vDest->size(); i++)
+        {
+            for (unsigned int j=0; j<derivDim; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Deriv>::getValue((*vDest)[i],j,tmp);
+                DataTypeInfo<Deriv>::setValue((*vDest)[i], j, tmp + src->element(offset + i * derivDim + j));
+            }
+        }
+        offset += vDest->size() * derivDim;
+    }
+};
 // template <>
 //     bool MechanicalObject<Vec1dTypes>::addBBox(double* /*minBBox*/, double* /*maxBBox*/)
 // {
@@ -117,14 +171,73 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaultty
     }
 }
 
+template <>
+void MechanicalObject<defaulttype::Rigid3fTypes>::addBaseVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset)
+{
+    if (dest.type == VecId::V_COORD)
+    {
+        VecCoord* vDest = getVecCoord(dest.index);
+        const unsigned int coordDim = DataTypeInfo<Coord>::size();
+
+        for (unsigned int i=0; i<vDest->size(); i++)
+        {
+            for (unsigned int j=0; j<3; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Coord>::getValue((*vDest)[i],j,tmp);
+                DataTypeInfo<Coord>::setValue((*vDest)[i],j,tmp + src->element(offset + i * coordDim + j));
+            }
+
+            helper::Quater<double> q_src;
+            helper::Quater<double> q_dest;
+            for (unsigned int j=0; j<4; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Coord>::getValue((*vDest)[i],j+3,tmp);
+                q_dest[j]=tmp;
+                q_src[j]=src->element(offset + i * coordDim + j+3);
+            }
+            //q_dest = q_dest*q_src;
+            q_dest = q_src*q_dest;
+            for (unsigned int j=0; j<4; j++)
+            {
+                Real tmp=q_dest[j];
+                DataTypeInfo<Coord>::setValue((*vDest)[i], j+3, tmp);
+            }
+        }
+
+        offset += vDest->size() * coordDim;
+    }
+    else
+    {
+        VecDeriv* vDest = getVecDeriv(dest.index);
+        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
+        for (unsigned int i=0; i<vDest->size(); i++)
+        {
+            for (unsigned int j=0; j<derivDim; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Deriv>::getValue((*vDest)[i],j,tmp);
+                DataTypeInfo<Deriv>::setValue((*vDest)[i], j, tmp + src->element(offset + i * derivDim + j));
+            }
+        }
+        offset += vDest->size() * derivDim;
+    }
+};
+
 // template <>
 //     bool MechanicalObject<Vec1fTypes>::addBBox(double* /*minBBox*/, double* /*maxBBox*/)
 // {
 //     return false; // ignore 1D DOFs for 3D bbox
 // }
+
 #endif
 
 
+template <>
+void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::buildConstraintMatrix(const sofa::helper::vector<unsigned int> &, const double , defaulttype::BaseMatrix&,unsigned int ,  unsigned int  ) {}
+template <>
+void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::computeConstraintProjection(const sofa::helper::vector<unsigned int> &, VecId , defaulttype::BaseVector&, unsigned int  ) {};
 } // namespace component
 
 } // namespace sofa

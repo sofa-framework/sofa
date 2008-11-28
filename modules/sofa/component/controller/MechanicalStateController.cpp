@@ -80,6 +80,97 @@ template class MechanicalStateController<Rigid3fTypes>;
 //template class MechanicalStateController<Rigid2fTypes>;
 
 
+template <>
+void MechanicalStateController<Vec1dTypes>::applyController()
+{
+    using sofa::defaulttype::Quat;
+    using sofa::defaulttype::Vec;
+
+
+    //std::cout<<" applyController() : omni "<< omni << "  buttonOmni " <<buttonOmni<<std::endl;
+
+    if(omni)
+    {
+        if(mState)
+        {
+
+            if(buttonOmni)
+            {
+                if ((*mState->getX0())[0].x() < -0.001)
+                    (*mState->getX0())[0].x() += 0.05;
+                else
+                    (*mState->getX0())[0].x() =  -0.001;
+
+                if ((*mState->getX0())[1].x() > 0.001)
+                    (*mState->getX0())[1].x() -= 0.05;
+                else
+                    (*mState->getX0())[1].x() = 0.001;
+            }
+            else
+            {
+                //std::cout<<"mouseMode==Release"<<std::endl;
+
+                if ((*mState->getX0())[0].x() > -0.7)
+                    (*mState->getX0())[0].x() -= 0.05;
+                else
+                    (*mState->getX0())[0].x() = -0.7;
+
+                if ((*mState->getX0())[1].x() < 0.7)
+                    (*mState->getX0())[1].x() += 0.05;
+                else
+                    (*mState->getX0())[1].x() = 0.7;
+
+            }
+
+
+        }
+
+    }
+    else
+    {
+        //if (mState)
+        //{
+        //	if (mouseMode==BtLeft || mouseMode==BtRight)
+        //	{
+        //			//std::cout<<"mouseMode==BtLeft"<<std::endl;
+
+        //			if ((*mState->getX0())[0].x() < -0.01)
+        //				(*mState->getX0())[0].x() += 0.01;
+        //			else
+        //				(*mState->getX0())[0].x() =  -0.01;
+        //
+        //			if ((*mState->getX0())[1].x() > 0.01)
+        //				(*mState->getX0())[1].x() -= 0.01;
+        //			else
+        //				(*mState->getX0())[1].x() = 0.01;
+
+        //	}
+        //	else
+        //	{
+        //			//std::cout<<"mouseMode==Release"<<std::endl;
+
+        //			if ((*mState->getX0())[0].x() > -0.7)
+        //				(*mState->getX0())[0].x() -= 0.01;
+        //			else
+        //				(*mState->getX0())[0].x() = -0.7;
+        //
+        //			if ((*mState->getX0())[1].x() < 0.7)
+        //				(*mState->getX0())[1].x() += 0.01;
+        //			else
+        //				(*mState->getX0())[1].x() = 0.7;
+
+        //	}
+        //}
+    }
+
+
+
+    //	//sofa::simulation::tree::GNode *node = static_cast<sofa::simulation::tree::GNode*> (this->getContext());
+    //	//sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
+    //	//sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
+    //}
+};
+
 } // namespace controller
 
 } // namespace component

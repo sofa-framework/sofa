@@ -103,6 +103,7 @@ public:
         }
     }
 
+    virtual const char* getClassName() const { return "GNodeVisitor"; }
     /// Helper method to enumerate objects in the given list. The callback gets the pointer to node
     template < class Act, class Container, class Object >
     void for_each(Act* action, GNode* node, const Container& list, void (Act::*fn)(GNode*, Object*))

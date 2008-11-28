@@ -339,7 +339,7 @@ public:
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return " MechanicalMultiVector2BaseVectorVisitor"; }
+    virtual const char* getClassName() const { return "MechanicalMultiVector2BaseVectorVisitor"; }
 
     MechanicalMultiVector2BaseVectorVisitor(VecId _src, defaulttype::BaseVector * _vect, unsigned int _offset=0)
         : src(_src),vect(_vect),offset(_offset)

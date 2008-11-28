@@ -33,6 +33,7 @@
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 
+#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
@@ -855,6 +856,15 @@ void MechanicalObject<DataTypes>::loadInBaseVector(defaulttype::BaseVector * des
     }
 }
 
+#ifndef SOFA_FLOAT
+template <>
+void MechanicalObject<defaulttype::Rigid3dTypes>::addBaseVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset);
+#endif
+#ifndef SOFA_DOUBLE
+template <>
+void MechanicalObject<defaulttype::Rigid3fTypes>::addBaseVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset);
+#endif
+
 template <class DataTypes>
 void MechanicalObject<DataTypes>::addBaseVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset)
 {
@@ -1086,6 +1096,7 @@ double MechanicalObject<DataTypes>::compareX(std::istream &in)
     unsigned int count=0;
     while (compareX_ref >> value_ref && compareX_cur >> value_cur )
     {
+// /* if ( fabs(value_ref-value_cur) != 0) */std::cout << " Eroor ! " << fabs(value_ref-value_cur) << " for " << this->getName() << "at time: " << this->getContext()->getTime() << " between " << value_ref << " && " << value_cur << "\n";
         error += fabs(value_ref-value_cur);
         count ++;
     }
@@ -1984,6 +1995,86 @@ sofa::helper::vector<unsigned int>& MechanicalObject<DataTypes>::getConstraintId
 {
     return constraintId;
 }
+
+
+template <>
+void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::buildConstraintMatrix(const sofa::helper::vector<unsigned int> &constraintId, const double factor, defaulttype::BaseMatrix& m,unsigned int numConstraint, unsigned int offset);
+
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::buildConstraintMatrix(const sofa::helper::vector<unsigned int> &constraintId, const double factor, defaulttype::BaseMatrix& m,unsigned int numConstraint, unsigned int offset)
+{
+    const VecConst& c = *getC();
+    unsigned int dimension=DataTypeInfo< Deriv >::size();
+    if (m.colSize()!=this->getSize()*dimension) m.resize(numConstraint, this->getSize()*dimension);
+
+
+    for (unsigned int i=0; i<constraintId.size(); ++i)
+    {
+        for (unsigned int j=0; j<c[ constraintId[i] ].size(); ++j)
+        {
+            unsigned int dof=c[ constraintId[i] ][j].index;
+            Deriv v=c[ constraintId[i] ][j].data;
+            for (unsigned int d=0; d<dimension; ++d)  m.add(i+offset,dimension*dof+d, factor*v[d]);
+        }
+    }
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::computeConstraintProjection(const sofa::helper::vector<unsigned int> &constraintId, VecId Id, defaulttype::BaseVector& vec,unsigned int offset)
+{
+
+    const VecConst& c   = *getC();
+    if (Id==VecId::velocity())
+    {
+        const VecDeriv& v   = *getV();
+        for (unsigned int i=0; i<constraintId.size(); ++i)
+        {
+            double value=0;
+            for (unsigned int j=0; j<c[ constraintId[i] ].size(); ++j)
+            {
+                unsigned int dof=c[ constraintId[i] ][j].index;
+                Deriv direction=c[ constraintId[i] ][j].data;
+                value+=v[dof]*direction;
+            }
+            vec.add(i+offset,value);
+        }
+    }
+    else if (Id==VecId::dx())
+    {
+        const VecDeriv& acc = *getDx();
+        for (unsigned int i=0; i<constraintId.size(); ++i)
+        {
+            double value=0;
+            for (unsigned int j=0; j<c[ constraintId[i] ].size(); ++j)
+            {
+                unsigned int dof=c[ constraintId[i] ][j].index;
+                Deriv direction=c[ constraintId[i] ][j].data;
+                value+=acc[dof]*direction;
+            }
+            vec.add(i+offset,value);
+        }
+    }
+    else if (Id==VecId::position())
+    {
+        std::cerr << "Does Nothing!\n";
+//       const VecCoord& pos = *getX();
+//       for (unsigned int i=0;i<constraintId.size();++i)
+// 	{
+// 	  double value=0;
+// 	  for (unsigned int j=0;j<c[ constraintId[i] ].size();++j)
+// 	    {
+// 	      unsigned int dof=c[ constraintId[i] ][j].index;
+// 	      Deriv direction=c[ constraintId[i] ][j].data;
+// 	      value+=pos[dof]*direction;
+// 	    }
+// 	  vec.add(i+offset,value);
+// 	}
+    }
+}
+template <>
+void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::computeConstraintProjection(const sofa::helper::vector<unsigned int> &, VecId , defaulttype::BaseVector&, unsigned int  );
+
 
 
 template <class DataTypes>

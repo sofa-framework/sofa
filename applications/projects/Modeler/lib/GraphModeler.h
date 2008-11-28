@@ -135,7 +135,7 @@ public:
     void dragMoveEvent( QDragMoveEvent* event);
     void dropEvent(QDropEvent* event);
 
-    /// collaspe all the nodes below the current one
+    /// collapse all the nodes below the current one
     void collapseNode(Q3ListViewItem* item);
     /// expande all the nodes below the current one
     void expandNode(Q3ListViewItem* item);

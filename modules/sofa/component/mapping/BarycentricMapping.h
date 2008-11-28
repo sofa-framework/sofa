@@ -139,7 +139,7 @@ public:
     virtual void clear( int reserve=0 ) =0;
 
     // TODO: make it pure virtual. Get the barycentric coefficients and the coordinates of the parents of a given mapped dof.
-    void getJ(unsigned int /*Idx*/, sofa::helper::vector< double > &/*factor*/, sofa::helper::vector< unsigned int > &/*indices*/)
+    virtual void getJ(unsigned int /*Idx*/, sofa::helper::vector< double > &/*factor*/, sofa::helper::vector< unsigned int > &/*indices*/)
     {std::cerr<< "getJ NOT implemented yet\n"; };
 
     //Nothing to do
@@ -832,7 +832,7 @@ public:
     void draw();
 
 
-    void getJ(unsigned int Idx, sofa::helper::vector< double > &factor, sofa::helper::vector< unsigned int > &indices) { mapper->getJ(Idx,factor,indices);}
+    void getJ(unsigned int Idx, sofa::helper::vector< double > &factor, sofa::helper::vector< unsigned int > &indices) {mapper->getJ(Idx,factor,indices);}
     // handle topological changes
     virtual void handleTopologyChange();
 

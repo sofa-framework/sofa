@@ -64,7 +64,7 @@ public:
         return impl->operator[](i);
     };
 
-    virtual int size(void)
+    virtual unsigned int size(void)
     {
         return impl->size();
     };

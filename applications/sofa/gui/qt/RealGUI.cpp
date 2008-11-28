@@ -58,6 +58,7 @@
 
 #include <sofa/component/visualmodel/VisualModelImpl.h>
 
+#include <sofa/simulation/common/Visitor.h>
 #include <sofa/simulation/tree/xml/XML.h>
 #include <sofa/simulation/common/TransformationVisitor.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -423,6 +424,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect ( ExportGraphButton, SIGNAL ( clicked() ), this, SLOT ( exportGraph() ) );
     connect ( dumpStateCheckBox, SIGNAL ( toggled ( bool ) ), this, SLOT ( dumpState ( bool ) ) );
     connect ( exportGnuplotFilesCheckbox, SIGNAL ( toggled ( bool ) ), this, SLOT ( setExportGnuplot ( bool ) ) );
+    connect ( exportVisitorCheckbox, SIGNAL ( toggled ( bool ) ), this, SLOT ( setExportVisitor ( bool ) ) );
     connect ( displayComputationTimeCheckBox, SIGNAL ( toggled ( bool ) ), this, SLOT ( displayComputationTime ( bool ) ) );
 
     connect ( record, SIGNAL (toggled (bool) ),              this, SLOT( slot_recordSimulation( bool) ) );
@@ -446,7 +448,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
         ofile << "";
         ofile.close();
     }
-
+    pathDumpVisitor = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/dumpVisitor.xml" );
     scenes = sofa::helper::system::DataRepository.getFile ( scenes );
 
     updateRecentlyOpened("");
@@ -545,6 +547,10 @@ RealGUI::~RealGUI()
         lmlreader = NULL;
     }
 #endif
+    delete displayFlag;
+    delete windowTraceVisitor;
+    delete handleTraceVisitor;
+    if (dialog) delete dialog;
 }
 
 void RealGUI::init()
@@ -567,6 +573,17 @@ void RealGUI::init()
     map_modifyDialogOpened.clear();
 
 
+
+#ifndef DUMP_VISITOR_INFO
+    //Remove option to see visitor trace
+    this->exportVisitorCheckbox->hide();
+#endif
+    //Main window containing a QListView only
+    windowTraceVisitor = new WindowVisitor;
+    windowTraceVisitor->graphView->setSorting(-1);
+    windowTraceVisitor->hide();
+    connect(windowTraceVisitor, SIGNAL(WindowVisitorClosed(bool)), this->exportVisitorCheckbox, SLOT(setChecked(bool)));
+    handleTraceVisitor = new GraphVisitor(windowTraceVisitor->graphView);
     //*********************************************************************************************************************************
     //List of objects
     //Read the object.txt that contains the information about the objects which can be added to the scenes whithin a given BoundingBox and scale range
@@ -832,7 +849,7 @@ void RealGUI::fileOpen ( std::string filename )
     else
         return;
 
-
+    startDumpVisitor();
 
     frameCounter = 0;
     sofa::simulation::tree::xml::numDefault = 0;
@@ -868,6 +885,7 @@ void RealGUI::fileOpen ( std::string filename )
     if ( groot == NULL )
     {
         qFatal ( "Failed to load %s",filename.c_str() );
+        stopDumpVisitor();
         return;
     }
 
@@ -878,6 +896,7 @@ void RealGUI::fileOpen ( std::string filename )
     setExportGnuplot(exportGnuplotFilesCheckbox->isChecked());
 
     displayComputationTime(m_displayComputationTime);
+    stopDumpVisitor();
 }
 
 #ifdef SOFA_PML
@@ -1300,7 +1319,31 @@ void RealGUI::setGUI ( void )
 }
 //###################################################################################################################
 
-
+void RealGUI::startDumpVisitor()
+{
+#ifdef DUMP_VISITOR_INFO
+    GNode* groot = viewer->getScene();
+    if (groot && this->exportVisitorCheckbox->isOn())
+    {
+        m_dumpVisitorStream = new std::ofstream(pathDumpVisitor.c_str());
+        Visitor::startDumpVisitor(m_dumpVisitorStream, groot->getTime());
+    }
+#endif
+}
+void RealGUI::stopDumpVisitor()
+{
+#ifdef DUMP_VISITOR_INFO
+    if (this->exportVisitorCheckbox->isOn())
+    {
+        Visitor::stopDumpVisitor();
+        m_dumpVisitorStream->flush();
+        delete m_dumpVisitorStream;
+        m_dumpVisitorStream=0;
+        //Creation of the graph
+        if (!handleTraceVisitor->load(pathDumpVisitor)) std::cerr<< "Error while processing dumpVisitor.xml\n";
+    }
+#endif
+}
 //*****************************************************************************************
 //called at each step of the rendering
 
@@ -1308,6 +1351,8 @@ void RealGUI::step()
 {
     GNode* groot = viewer->getScene();
     if ( groot == NULL ) return;
+
+    startDumpVisitor();
 
 #ifdef SOFA_DEV
 
@@ -1327,7 +1372,7 @@ void RealGUI::step()
     }
     else
 
-#endif // SOFA_DEV
+#endif // SOFA_DEV 
 
     {
         if ( viewer->ready() ) return;
@@ -1365,6 +1410,8 @@ void RealGUI::step()
             ++_animationOBJcounter;
         }
     }
+
+    stopDumpVisitor();
     emit newStep();
 }
 
@@ -1626,6 +1673,22 @@ void RealGUI::setExportGnuplot ( bool exp )
     {
         getSimulation()->initGnuplot ( groot );
         getSimulation()->exportGnuplot ( groot, groot->getTime() );
+    }
+}
+
+//*****************************************************************************************
+//
+void RealGUI::setExportVisitor ( bool exp )
+{
+    if (exp)
+    {
+        std::string pFilename = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/dumpVisitor.xml" );
+        windowTraceVisitor->show();
+        handleTraceVisitor->clear();
+    }
+    else
+    {
+        windowTraceVisitor->hide();
     }
 }
 

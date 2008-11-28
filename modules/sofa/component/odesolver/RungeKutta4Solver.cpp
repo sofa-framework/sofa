@@ -87,14 +87,17 @@ void RungeKutta4Solver::solve(double dt)
     k2v.peq(k1a, stepBy2);
 #else // single-operation optimization
     {
-        simulation::MechanicalVMultiOpVisitor vmop;
-        vmop.ops.resize(2);
-        vmop.ops[0].first = (VecId)newX;
-        vmop.ops[0].second.push_back(std::make_pair((VecId)pos,1.0));
-        vmop.ops[0].second.push_back(std::make_pair((VecId)k1v,stepBy2));
-        vmop.ops[1].first = (VecId)k2v;
-        vmop.ops[1].second.push_back(std::make_pair((VecId)vel,1.0));
-        vmop.ops[1].second.push_back(std::make_pair((VecId)k1a,stepBy2));
+
+        typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+        VMultiOp ops;
+        ops.resize(2);
+        ops[0].first = (VecId)newX;
+        ops[0].second.push_back(std::make_pair((VecId)pos,1.0));
+        ops[0].second.push_back(std::make_pair((VecId)k1v,stepBy2));
+        ops[1].first = (VecId)k2v;
+        ops[1].second.push_back(std::make_pair((VecId)vel,1.0));
+        ops[1].second.push_back(std::make_pair((VecId)k1a,stepBy2));
+        simulation::MechanicalVMultiOpVisitor vmop(ops);
         vmop.execute(this->getContext());
     }
 #endif
@@ -110,14 +113,16 @@ void RungeKutta4Solver::solve(double dt)
     k3v.peq(k2a, stepBy2);
 #else // single-operation optimization
     {
-        simulation::MechanicalVMultiOpVisitor vmop;
-        vmop.ops.resize(2);
-        vmop.ops[0].first = (VecId)newX;
-        vmop.ops[0].second.push_back(std::make_pair((VecId)pos,1.0));
-        vmop.ops[0].second.push_back(std::make_pair((VecId)k2v,stepBy2));
-        vmop.ops[1].first = (VecId)k3v;
-        vmop.ops[1].second.push_back(std::make_pair((VecId)vel,1.0));
-        vmop.ops[1].second.push_back(std::make_pair((VecId)k2a,stepBy2));
+        typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+        VMultiOp ops;
+        ops.resize(2);
+        ops[0].first = (VecId)newX;
+        ops[0].second.push_back(std::make_pair((VecId)pos,1.0));
+        ops[0].second.push_back(std::make_pair((VecId)k2v,stepBy2));
+        ops[1].first = (VecId)k3v;
+        ops[1].second.push_back(std::make_pair((VecId)vel,1.0));
+        ops[1].second.push_back(std::make_pair((VecId)k2a,stepBy2));
+        simulation::MechanicalVMultiOpVisitor vmop(ops);
         vmop.execute(this->getContext());
     }
 #endif
@@ -133,14 +138,16 @@ void RungeKutta4Solver::solve(double dt)
     k4v.peq(k3a, dt);
 #else // single-operation optimization
     {
-        simulation::MechanicalVMultiOpVisitor vmop;
-        vmop.ops.resize(2);
-        vmop.ops[0].first = (VecId)newX;
-        vmop.ops[0].second.push_back(std::make_pair((VecId)pos,1.0));
-        vmop.ops[0].second.push_back(std::make_pair((VecId)k3v,dt));
-        vmop.ops[1].first = (VecId)k4v;
-        vmop.ops[1].second.push_back(std::make_pair((VecId)vel,1.0));
-        vmop.ops[1].second.push_back(std::make_pair((VecId)k3a,dt));
+        typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+        VMultiOp ops;
+        ops.resize(2);
+        ops[0].first = (VecId)newX;
+        ops[0].second.push_back(std::make_pair((VecId)pos,1.0));
+        ops[0].second.push_back(std::make_pair((VecId)k3v,dt));
+        ops[1].first = (VecId)k4v;
+        ops[1].second.push_back(std::make_pair((VecId)vel,1.0));
+        ops[1].second.push_back(std::make_pair((VecId)k3a,dt));
+        simulation::MechanicalVMultiOpVisitor vmop(ops);
         vmop.execute(this->getContext());
     }
 #endif
@@ -159,20 +166,22 @@ void RungeKutta4Solver::solve(double dt)
     vel.peq(k4a,stepBy6);
 #else // single-operation optimization
     {
-        simulation::MechanicalVMultiOpVisitor vmop;
-        vmop.ops.resize(2);
-        vmop.ops[0].first = (VecId)pos;
-        vmop.ops[0].second.push_back(std::make_pair((VecId)pos,1.0));
-        vmop.ops[0].second.push_back(std::make_pair((VecId)k1v,stepBy6));
-        vmop.ops[0].second.push_back(std::make_pair((VecId)k2v,stepBy3));
-        vmop.ops[0].second.push_back(std::make_pair((VecId)k3v,stepBy3));
-        vmop.ops[0].second.push_back(std::make_pair((VecId)k4v,stepBy6));
-        vmop.ops[1].first = (VecId)vel;
-        vmop.ops[1].second.push_back(std::make_pair((VecId)vel,1.0));
-        vmop.ops[1].second.push_back(std::make_pair((VecId)k1a,stepBy6));
-        vmop.ops[1].second.push_back(std::make_pair((VecId)k2a,stepBy3));
-        vmop.ops[1].second.push_back(std::make_pair((VecId)k3a,stepBy3));
-        vmop.ops[1].second.push_back(std::make_pair((VecId)k4a,stepBy6));
+        typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+        VMultiOp ops;
+        ops.resize(2);
+        ops[0].first = (VecId)pos;
+        ops[0].second.push_back(std::make_pair((VecId)pos,1.0));
+        ops[0].second.push_back(std::make_pair((VecId)k1v,stepBy6));
+        ops[0].second.push_back(std::make_pair((VecId)k2v,stepBy3));
+        ops[0].second.push_back(std::make_pair((VecId)k3v,stepBy3));
+        ops[0].second.push_back(std::make_pair((VecId)k4v,stepBy6));
+        ops[1].first = (VecId)vel;
+        ops[1].second.push_back(std::make_pair((VecId)vel,1.0));
+        ops[1].second.push_back(std::make_pair((VecId)k1a,stepBy6));
+        ops[1].second.push_back(std::make_pair((VecId)k2a,stepBy3));
+        ops[1].second.push_back(std::make_pair((VecId)k3a,stepBy3));
+        ops[1].second.push_back(std::make_pair((VecId)k4a,stepBy6));
+        simulation::MechanicalVMultiOpVisitor vmop(ops);
         vmop.execute(this->getContext());
     }
 #endif

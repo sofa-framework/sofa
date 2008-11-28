@@ -56,6 +56,7 @@ public:
     virtual ~WriteStateVisitor();
 
     virtual Result processNodeTopDown( simulation::Node*  );
+    virtual const char* getClassName() const { return "WriteStateVisitor"; }
 
 protected:
     std::ostream& m_out;

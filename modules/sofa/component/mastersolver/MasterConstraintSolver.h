@@ -31,17 +31,27 @@ public:
     MechanicalGetConstraintResolutionVisitor(std::vector<core::componentmodel::behavior::ConstraintResolution*>& res, unsigned int offset = 0)
         : _res(res),_offset(offset)
     {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
         //std::cerr<<"creation of the visitor"<<std::endl;
     }
 
-    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* node, core::componentmodel::behavior::BaseConstraint* c)
     {
         //std::cerr<<"fwdConstraint called on "<<c->getName()<<std::endl;
 
+        ctime_t t0 = begin(node, c);
         c->getConstraintResolution(_res, _offset);
+        end(node, c, t0);
         return RESULT_CONTINUE;
     }
 
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+    }
+#endif
 private:
     std::vector<core::componentmodel::behavior::ConstraintResolution*>& _res;
     unsigned int _offset;
@@ -52,11 +62,17 @@ class MechanicalSetConstraint : public simulation::MechanicalVisitor
 public:
     MechanicalSetConstraint(unsigned int &_contactId)
         :contactId(_contactId)
-    {}
-
-    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+
+    virtual Result fwdConstraint(simulation::Node* node, core::componentmodel::behavior::BaseConstraint* c)
+    {
+        ctime_t t0 = begin(node, c);
         c->applyConstraint(contactId);
+        end(node, c, t0);
         return RESULT_CONTINUE;
     }
 
@@ -69,6 +85,11 @@ public:
     {
         return false;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+    }
+#endif
 
 protected:
     unsigned int &contactId;
@@ -78,11 +99,17 @@ class MechanicalAccumulateConstraint2 : public simulation::MechanicalVisitor
 {
 public:
     MechanicalAccumulateConstraint2()
-    {}
-
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
     {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+
+    virtual void bwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map)
+    {
+        ctime_t t0 = begin(node, map);
         map->accumulateConstraint();
+        end(node, map, t0);
     }
 
     /// Return a class name for this visitor
@@ -93,6 +120,11 @@ public:
     {
         return false;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+    }
+#endif
 };
 
 class MasterConstraintSolver : public sofa::simulation::MasterSolverImpl//, public sofa::simulation::tree::OdeSolverImpl

@@ -266,7 +266,6 @@ void Simulation::init ( Node* root )
 void Simulation::getInstruments( Node *node)
 {
     InstrumentVisitor fetchInstrument;
-    node->execute<InstrumentVisitor>();
     fetchInstrument.execute(node);
     instruments = fetchInstrument.getInstruments();
 }
@@ -278,6 +277,9 @@ void Simulation::animate ( Node* root, double dt )
     if ( root->getMultiThreadSimulation() )
         return;
 
+#ifdef DUMP_VISITOR_INFO
+    simulation::Visitor::printComment(std::string("Begin Step"));
+#endif
     {
         AnimateBeginEvent ev ( dt );
         PropagateEventVisitor act ( &ev );
@@ -316,6 +318,9 @@ void Simulation::animate ( Node* root, double dt )
         root->execute ( act );
     }
     root->execute<VisualUpdateVisitor>();
+#ifdef DUMP_VISITOR_INFO
+    simulation::Visitor::printComment(std::string("End Step"));
+#endif
 }
 
 /// Reset to initial state

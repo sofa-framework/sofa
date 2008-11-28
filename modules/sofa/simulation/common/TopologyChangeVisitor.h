@@ -56,6 +56,7 @@ public:
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
     virtual const char* getCategoryName() const { return "topologyChange"; }
+    virtual const char* getClassName() const { return "TopologyChangeVisitor"; }
 
 protected:
     /// Flag to know the number of iterations of the overloaded method processNodeTopDown

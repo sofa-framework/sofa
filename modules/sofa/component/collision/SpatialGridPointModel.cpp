@@ -56,7 +56,7 @@ void SpatialGridPointModel::init()
 
     if (grid==NULL)
     {
-        std::cerr << "ERROR: SpatialGridPointModel requires a Vec3 SpatialGridContainer.\n";
+        logWarning("SpatialGridPointModel requires a Vec3 SpatialGridContainer");
         return;
     }
 }

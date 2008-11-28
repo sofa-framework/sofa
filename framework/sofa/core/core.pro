@@ -12,6 +12,7 @@ HEADERS += \
           componentmodel/behavior/BaseConstraint.h \
           componentmodel/behavior/BaseConstraintCorrection.h \
           componentmodel/behavior/BaseForceField.h \
+          componentmodel/behavior/BaseLMConstraint.h \
           componentmodel/behavior/BaseMass.h \
           componentmodel/behavior/BaseMechanicalMapping.h \
           componentmodel/behavior/BaseMechanicalState.h \
@@ -22,6 +23,7 @@ HEADERS += \
           componentmodel/behavior/InteractionForceField.h \
           componentmodel/behavior/InteractionConstraint.h \
           componentmodel/behavior/LinearSolver.h \
+          componentmodel/behavior/LMConstraint.h \
           componentmodel/behavior/PairInteractionForceField.h \
           componentmodel/behavior/PairInteractionForceField.inl \
 	  componentmodel/behavior/MixedInteractionForceField.h \
@@ -111,8 +113,10 @@ SOURCES +=  \
           componentmodel/topology/BaseMeshTopology.cpp \
           componentmodel/topology/BaseTopology.cpp \
           componentmodel/behavior/BaseConstraint.cpp \
-          componentmodel/behavior/BaseForceField.cpp \
+          componentmodel/behavior/BaseForceField.cpp \   
+          componentmodel/behavior/BaseLMConstraint.cpp \
           componentmodel/behavior/ForceField.cpp \
+          componentmodel/behavior/LMConstraint.cpp \
           componentmodel/behavior/Mass.cpp \
           componentmodel/behavior/Constraint.cpp \
           componentmodel/behavior/MechanicalMapping.cpp \

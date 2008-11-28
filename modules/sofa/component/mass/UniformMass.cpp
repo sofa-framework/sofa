@@ -80,8 +80,6 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::reinit()
 {
     this->mass.beginEdit()->recalc();
     this->mass.endEdit();
-
-    std::cout << "this->mass.getValue() = " << this->mass.getValue() << std::endl;
 }
 
 template<>
@@ -110,14 +108,14 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
                 //if (fgets(cmd, 7, file) != NULL && !strcmp(cmd,"Xsp 3.0"))
                 {
                     skipToEOL(file);
-
+                    int result;
                     while (fscanf(file, "%s", cmd) != EOF)
                     {
                         if (!strcmp(cmd,"inrt"))
                         {
                             for (int i = 0; i < 9; i++)
                             {
-                                fscanf(file, "%lf", &(m.inertiaMatrix.ptr()[i]));
+                                result=fscanf(file, "%lf", &(m.inertiaMatrix.ptr()[i]));
                             }
                         }
                         else if (!strcmp(cmd,"cntr") || !strcmp(cmd,"center") )
@@ -125,54 +123,54 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
                             Vec3d center;
                             for (int i = 0; i < 3; ++i)
                             {
-                                fscanf(file, "%lf", &(center[i]));
+                                result=fscanf(file, "%lf", &(center[i]));
                             }
                         }
                         else if (!strcmp(cmd,"mass"))
                         {
                             double mass;
-                            fscanf(file, "%lf", &mass);
+                            result=fscanf(file, "%lf", &mass);
                             if (!this->mass.isSet())
                                 m.mass = mass;
                         }
                         else if (!strcmp(cmd,"volm"))
                         {
-                            fscanf(file, "%lf", &(m.volume));
+                            result=fscanf(file, "%lf", &(m.volume));
                         }
                         else if (!strcmp(cmd,"frme"))
                         {
                             Quatd orient;
                             for (int i = 0; i < 4; ++i)
                             {
-                                fscanf(file, "%lf", &(orient[i]));
+                                result=fscanf(file, "%lf", &(orient[i]));
                             }
                             orient.normalize();
                         }
                         else if (!strcmp(cmd,"grav"))
                         {
                             Vec3d gravity;
-                            fscanf(file, "%lf %lf %lf\n", &(gravity.x()),
+                            result=fscanf(file, "%lf %lf %lf\n", &(gravity.x()),
                                     &(gravity.y()), &(gravity.z()));
                         }
                         else if (!strcmp(cmd,"visc"))
                         {
                             double viscosity = 0;
-                            fscanf(file, "%lf", &viscosity);
+                            result=fscanf(file, "%lf", &viscosity);
                         }
                         else if (!strcmp(cmd,"stck"))
                         {
                             double tmp;
-                            fscanf(file, "%lf", &tmp); //&(MSparams.default_stick));
+                            result=fscanf(file, "%lf", &tmp); //&(MSparams.default_stick));
                         }
                         else if (!strcmp(cmd,"step"))
                         {
                             double tmp;
-                            fscanf(file, "%lf", &tmp); //&(MSparams.default_dt));
+                            result=fscanf(file, "%lf", &tmp); //&(MSparams.default_dt));
                         }
                         else if (!strcmp(cmd,"prec"))
                         {
                             double tmp;
-                            fscanf(file, "%lf", &tmp); //&(MSparams.default_prec));
+                            result=fscanf(file, "%lf", &tmp); //&(MSparams.default_prec));
                         }
                         else if (cmd[0] == '#')	// it's a comment
                         {
@@ -400,14 +398,14 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::loadRigidMass(std::string filename)
                 //if (fgets(cmd, 7, file) != NULL && !strcmp(cmd,"Xsp 3.0"))
                 {
                     skipToEOL(file);
-
+                    int result;
                     while (fscanf(file, "%s", cmd) != EOF)
                     {
                         if (!strcmp(cmd,"inrt"))
                         {
                             for (int i = 0; i < 9; i++)
                             {
-                                fscanf(file, "%f", &(m.inertiaMatrix.ptr()[i]));
+                                result=fscanf(file, "%f", &(m.inertiaMatrix.ptr()[i]));
                             }
                         }
                         else if (!strcmp(cmd,"cntr"))
@@ -415,54 +413,54 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::loadRigidMass(std::string filename)
                             Vec3d center;
                             for (int i = 0; i < 3; ++i)
                             {
-                                fscanf(file, "%lf", &(center[i]));
+                                result=fscanf(file, "%lf", &(center[i]));
                             }
                         }
                         else if (!strcmp(cmd,"mass"))
                         {
                             float mass;
-                            fscanf(file, "%f", &mass);
+                            result=fscanf(file, "%f", &mass);
                             if (!this->mass.isSet())
                                 m.mass = mass;
                         }
                         else if (!strcmp(cmd,"volm"))
                         {
-                            fscanf(file, "%f", &(m.volume));
+                            result=fscanf(file, "%f", &(m.volume));
                         }
                         else if (!strcmp(cmd,"frme"))
                         {
                             Quatd orient;
                             for (int i = 0; i < 4; ++i)
                             {
-                                fscanf(file, "%lf", &(orient[i]));
+                                result=fscanf(file, "%lf", &(orient[i]));
                             }
                             orient.normalize();
                         }
                         else if (!strcmp(cmd,"grav"))
                         {
                             Vec3d gravity;
-                            fscanf(file, "%lf %lf %lf\n", &(gravity.x()),
+                            result=fscanf(file, "%lf %lf %lf\n", &(gravity.x()),
                                     &(gravity.y()), &(gravity.z()));
                         }
                         else if (!strcmp(cmd,"visc"))
                         {
                             double viscosity = 0;
-                            fscanf(file, "%lf", &viscosity);
+                            result=fscanf(file, "%lf", &viscosity);
                         }
                         else if (!strcmp(cmd,"stck"))
                         {
                             double tmp;
-                            fscanf(file, "%lf", &tmp); //&(MSparams.default_stick));
+                            result=fscanf(file, "%lf", &tmp); //&(MSparams.default_stick));
                         }
                         else if (!strcmp(cmd,"step"))
                         {
                             double tmp;
-                            fscanf(file, "%lf", &tmp); //&(MSparams.default_dt));
+                            result=fscanf(file, "%lf", &tmp); //&(MSparams.default_dt));
                         }
                         else if (!strcmp(cmd,"prec"))
                         {
                             double tmp;
-                            fscanf(file, "%lf", &tmp); //&(MSparams.default_prec));
+                            result=fscanf(file, "%lf", &tmp); //&(MSparams.default_prec));
                         }
                         else if (cmd[0] == '#')	// it's a comment
                         {

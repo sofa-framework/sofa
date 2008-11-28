@@ -51,6 +51,7 @@
 #include <sofa/core/componentmodel/behavior/InteractionForceField.h>
 #include <sofa/core/componentmodel/behavior/Mass.h>
 #include <sofa/core/componentmodel/behavior/Constraint.h>
+#include <sofa/core/componentmodel/behavior/BaseLMConstraint.h>
 #include <sofa/core/componentmodel/topology/Topology.h>
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
@@ -307,6 +308,7 @@ public:
     Sequence<core::componentmodel::behavior::BaseForceField> forceField;
     Sequence<core::componentmodel::behavior::InteractionForceField> interactionForceField;
     Sequence<core::componentmodel::behavior::BaseConstraint> constraint;
+    Sequence<core::componentmodel::behavior::BaseLMConstraint> LMConstraint;
     Sequence<core::objectmodel::ContextObject> contextObject;
 
     Sequence<core::BaseMapping> mapping;

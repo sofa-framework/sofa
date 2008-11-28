@@ -28,7 +28,9 @@
 #define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_MASS_INL
 
 #include <sofa/core/componentmodel/behavior/Mass.h>
+#include <sofa/core/componentmodel/behavior/BaseConstraint.h>
 #include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/defaulttype/DataTypeInfo.h>
 
 namespace sofa
 {
@@ -124,6 +126,96 @@ void Mass<DataTypes>::exportGnuplot(double time)
     }
 }
 
+
+
+template<class DataTypes>
+void Mass<DataTypes>::buildSystemMatrix(defaulttype::BaseMatrix &invM_Jtrans , defaulttype::BaseMatrix & A ,
+        const sofa::helper::vector< sofa::helper::vector<unsigned int>  >& constraintId ,
+        const sofa::helper::vector< double >  factor ,
+        const sofa::helper::vector< unsigned int >  offset,
+        const defaulttype::BaseVector &FixedPoints)
+{
+
+    const unsigned int dimension=defaulttype::DataTypeInfo< Deriv >::size();
+    const unsigned int numDofs=this->mstate->getSize();
+    const unsigned int numConstraints=A.rowSize();
+
+    if (invM_Jtrans.rowSize()*invM_Jtrans.colSize() == 0)
+        invM_Jtrans.resize(numDofs*dimension,A.rowSize());
+
+    const VecConst& unordered_c = *this->mstate->getC();
+
+    //Pre-process the Vec Const to order them, and remove duplication
+    sofa::helper::vector< std::map< unsigned int, Deriv > > c; c.resize(numConstraints);
+    for (unsigned int system=0; system<constraintId.size(); ++system)
+    {
+        for (unsigned int i=0; i<constraintId[system].size(); ++i)
+        {
+            std::map< unsigned int, Deriv > &orderedConstraint=c[i+offset[system]];
+            //typename std::map< unsigned int, Deriv >::iterator it;
+
+            const SparseVecDeriv &V=unordered_c[ constraintId[system][i] ];
+            for (unsigned int j=0; j<V.size(); ++j)
+            {
+                unsigned int dof=V[j].index;
+                orderedConstraint[ dof ]+=V[j].data*factor[system];
+            }
+        }
+    }
+
+
+
+//     for (unsigned int n1=0;n1<c.size();++n1)
+//       {
+// 	typename std::map< unsigned int, Deriv >::iterator itdebug;
+// 	std::cout << "Constraint " << n1 << ":\n";
+// 	for (itdebug=c[n1].begin();itdebug!=c[n1].end();itdebug++)
+// 	  {
+// 	    std::cout << "\t[Dof=" << itdebug->first << ",Direction=" << itdebug->second << "] \n";
+// 	  }
+// 	std::cout << "\n";
+//       }
+    //In c, we have ordered the contraints.
+    //Filling the sparse matrices
+    for (unsigned int n1=0; n1<c.size(); ++n1)
+    {
+        typename std::map< unsigned int, Deriv >::iterator it1;
+        for (it1=c[n1].begin(); it1!=c[n1].end(); it1++)
+        {
+            unsigned int dof=it1->first;
+            double invMassElement=1.0/this->getElementMass(dof);
+            //Building M^-1.J^T
+            Deriv v=it1->second;
+            for (unsigned int d=0; d<dimension; ++d)
+            {
+                invM_Jtrans.add(dimension*dof+d,
+                        n1,
+                        v[d]*FixedPoints.element(dof)*invMassElement);
+            }
+
+            //Accumulating A=J.M^-1.J^T
+            for (unsigned int n2=0; n2<c.size(); ++n2)
+            {
+                A.add(n1,n2,c[n1][dof]*c[n2][dof]*FixedPoints.element(dof)*invMassElement);
+            }
+        }
+    }
+}
+
+template<class DataTypes>
+void Mass<DataTypes>::buildInvMassDenseMatrix(defaulttype::BaseMatrix &m)
+{
+    unsigned int dimension=defaulttype::DataTypeInfo< Coord >::size();
+    unsigned int numDofs=this->mstate->getSize();
+    m.resize(dimension*numDofs,dimension*numDofs);
+    for (unsigned int i=0; i<numDofs; ++i)
+    {
+        for (unsigned int j=0; j<dimension; ++j)
+        {
+            m.set(i*dimension+j,i*dimension+j,1.0/this->getElementMass(i));
+        }
+    }
+}
 
 } // namespace behavior
 

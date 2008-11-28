@@ -130,6 +130,12 @@ public:
         return RESULT_CONTINUE;
     }
 
+    /// Process all the BaseLMConstraint
+    virtual Result fwdLMConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseLMConstraint* /*c*/)
+    {
+        return RESULT_CONTINUE;
+    }
+
     /// Process all the InteractionConstraint
     virtual Result fwdInteractionConstraint(simulation::Node* node, core::componentmodel::behavior::InteractionConstraint* c)
     {
@@ -180,6 +186,23 @@ public:
     {
         return "animate";
     }
+
+    ctime_t beginProcess(simulation::Node* node, core::objectmodel::BaseObject* obj);
+    void endProcess(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t t0);
+
+#ifdef DUMP_VISITOR_INFO
+    virtual void setReadWriteVectors()=0;
+    virtual void addReadVector(VecId &id) {readVector.push_back(id);}
+    virtual void addWriteVector(VecId &id) {writeVector.push_back(id);}
+    virtual void addReadWriteVector(VecId &id) {readVector.push_back(id); writeVector.push_back(id);}
+    void printReadVectors(core::componentmodel::behavior::BaseMechanicalState* mm, std::string &info);
+    void printReadVectors(simulation::Node* node, core::objectmodel::BaseObject* obj);
+    void printWriteVectors(core::componentmodel::behavior::BaseMechanicalState* mm, std::string &info);
+    void printWriteVectors(simulation::Node* node, core::objectmodel::BaseObject* obj);
+protected:
+    sofa::helper::vector< VecId > readVector;
+    sofa::helper::vector< VecId > writeVector;
+#endif
 };
 
 /** Find the first available index for a VecId
@@ -189,18 +212,28 @@ class MechanicalVAvailVisitor : public MechanicalVisitor
 public:
     VecId& v;
     MechanicalVAvailVisitor(VecId& v) : v(v)
-    {}
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalVAvailVisitor"; }
-
+    virtual const char* getInfos() const { std::string name="[" + v.getName() + "]"; return name.c_str();  }
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
         return false;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addReadWriteVector(v);
+    }
+#endif
 };
 
 /** Reserve an auxiliary vector identified by a symbolic constant.
@@ -210,18 +243,28 @@ class MechanicalVAllocVisitor : public MechanicalVisitor
 public:
     VecId v;
     MechanicalVAllocVisitor(VecId v) : v(v)
-    {}
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalVAllocVisitor"; }
-
+    virtual const char* getInfos() const {std::string name="[" + v.getName() + "]"; return name.c_str();}
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
         return true;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addReadWriteVector(v);
+    }
+#endif
 };
 
 /** Free an auxiliary vector identified by a symbolic constant */
@@ -230,18 +273,27 @@ class MechanicalVFreeVisitor : public MechanicalVisitor
 public:
     VecId v;
     MechanicalVFreeVisitor(VecId v) : v(v)
-    {}
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalVFreeVisitor"; }
-
+    virtual const char* getInfos() const {std::string name="[" + v.getName() + "]"; return name.c_str();}
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
         return true;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+    }
+#endif
 };
 
 /** Perform a vector operation v=a+b*f
@@ -255,11 +307,52 @@ public:
     double f;
     MechanicalVOpVisitor(VecId v, VecId a = VecId::null(), VecId b = VecId::null(), double f=1.0)
         : v(v), a(a), b(b), f(f)
-    {}
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/);
 
+    virtual const char* getClassName() const { return "MechanicalVOpVisitor";}
+    virtual const char* getInfos() const
+    {
+        std::string info="v=";
+        std::string aLabel;
+        std::string bLabel;
+        std::string fLabel;
+
+        std::ostringstream out;
+        out << "f["<<f<<"]";
+        fLabel+= out.str();
+
+        if (a != VecId::null())
+        {
+            info+="a";
+            aLabel="a[" + a.getName() + "] ";
+            if (b != VecId::null() )
+            {
+                info += "+b*f";
+                bLabel += "b[" + b.getName() + "] ";
+            }
+        }
+        else
+        {
+            if (b != VecId::null())
+            {
+                info += "b*f";
+                bLabel += "b[" + b.getName() + "] ";
+            }
+            else
+            {
+                info+="zero"; fLabel.clear();
+            }
+        }
+        info += " : with v[" + v.getName() + "] " + aLabel + bLabel + fLabel;
+        return info.c_str();
+    }
     //virtual void processNodeBottomUp(simulation::Node* node);
 
     /// Specify whether this action can be parallelized.
@@ -267,6 +360,14 @@ public:
     {
         return true;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        if (a!=VecId::null()) addReadVector(a);
+        if (b!=VecId::null()) addReadVector(b);
+        addWriteVector(v);
+    }
+#endif
 };
 
 /** Perform a sequence of linear vector accumulation operation $r_i = sum_j (v_j*f_{ij})
@@ -278,23 +379,49 @@ class MechanicalVMultiOpVisitor : public MechanicalVisitor
 {
 public:
     typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
-    VMultiOp ops;
-    MechanicalVMultiOpVisitor()
-    {}
+//     MechanicalVMultiOpVisitor()
+//     {}
     MechanicalVMultiOpVisitor(const VMultiOp& o)
         : ops(o)
-    {}
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/);
 
     //virtual void processNodeBottomUp(simulation::Node* node);
 
+    virtual const char* getClassName() const { return "MechanicalVMultiOpVisitor"; }
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
         return true;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        for (unsigned int i=0; i<ops.size(); ++i)
+        {
+            addWriteVector(ops[i].first);
+            for (unsigned int j=0; j<ops[i].second.size(); ++j)
+            {
+                addReadVector(ops[i].second[j].first);
+            }
+        }
+    }
+#endif
+    void setVMultiOp(VMultiOp &o)
+    {
+        ops = o;
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+protected:
+    VMultiOp ops;
 };
 
 /** Compute the dot product of two vectors */
@@ -305,15 +432,23 @@ public:
     VecId b;
     double* total;
     MechanicalVDotVisitor(VecId a, VecId b, double* t) : a(a), b(b), total(t)
-    {}
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
 
     /// Sequential code
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalVDotVisitor"; }
-
+    virtual const char* getClassName() const { return "MechanicalVDotVisitor";}
+    virtual const char* getInfos() const
+    {
+        std::string name="v=a*b with a[" + a.getName() + "] and b[" + b.getName() + "]";
+        return name.c_str();
+    }
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
@@ -325,6 +460,13 @@ public:
     /// Parallel code
     virtual void processNodeBottomUp(simulation::Node* /*node*/, LocalStorage* stack);
 
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addReadVector(a);
+        addReadVector(b);
+    }
+#endif
 };
 
 /** Apply a hypothetical displacement.
@@ -337,19 +479,32 @@ class MechanicalPropagateDxVisitor : public MechanicalVisitor
 public:
     VecId dx;
     MechanicalPropagateDxVisitor(VecId dx) : dx(dx)
-    {}
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalPropagateDxVisitor"; }
-
+    virtual const char* getInfos() const
+    {
+        std::string name="["+dx.getName()+"]"; return name.c_str();
+    }
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
         return true;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addWriteVector(dx);
+    }
+#endif
 };
 
 
@@ -360,20 +515,32 @@ class MechanicalPropagateDxAndResetForceVisitor : public MechanicalVisitor
 public:
     VecId dx,f;
     MechanicalPropagateDxAndResetForceVisitor(VecId dx, VecId f) : dx(dx), f(f)
-    {}
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalPropagateDxAndResetForceVisitor"; }
+    virtual const char* getClassName() const { return "MechanicalPropagateDxAndResetForceVisitor";}
+    virtual const char* getInfos() const { std::string name= "dx["+dx.getName()+"] f["+f.getName()+"]"; return name.c_str();}
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
         return true;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addWriteVector(dx);
+        addWriteVector(f);
+    }
+#endif
 };
 
 
@@ -382,11 +549,17 @@ class MechanicalPropagateAndAddDxVisitor : public MechanicalVisitor
 public:
     VecId dx, v;
     MechanicalPropagateAndAddDxVisitor(VecId dx = VecId::dx(), VecId v =VecId::velocity()) : dx(dx) , v(v)
-    {}
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalPropagateAndAddDxVisitor"; }
+    virtual const char* getInfos() const { std::string name= "["+dx.getName()+"]"; return name.c_str(); }
+
 
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
@@ -396,6 +569,12 @@ public:
     {
         return true;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addWriteVector(dx);
+    }
+#endif
 };
 
 
@@ -411,44 +590,26 @@ public:
     double factor;
     MechanicalAddMDxVisitor(VecId res, VecId dx=VecId(), double factor = 1.0)
         : res(res), dx(dx), factor(factor)
-    {}
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* mass);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalAddMDxVisitor"; }
+    virtual const char* getInfos() const { std::string name="dx["+dx.getName()+"] in res[" + res.getName()+"]"; return name.c_str(); }
 
 #ifdef SOFA_SUPPORT_MAPPED_MASS
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
-    {
-        if (!dx.isNull())
-            map->propagateDx();
-        return RESULT_CONTINUE;
-    }
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
 #else
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
-    {
-        return RESULT_PRUNE;
-    }
-#endif
-#ifdef SOFA_SUPPORT_MAPPED_MASS
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
-    {
-        mm->resetForce();
-        return RESULT_CONTINUE;
-    }
-#else
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
-    {
-        return RESULT_PRUNE;
-    }
-#endif
-#ifdef SOFA_SUPPORT_MAPPED_MASS
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
-    {
-        map->accumulateForce();
-    }
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/);
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/);
 #endif
 
     /// Specify whether this action can be parallelized.
@@ -456,6 +617,19 @@ public:
     {
         return true;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addReadVector(res);
+
+#ifdef SOFA_SUPPORT_MAPPED_MASS
+        if (dx != VecId::null()) addReadWriteVector(dx);
+        else addReadVector(dx);
+#else
+        addReadVector(dx);
+#endif
+    }
+#endif
 };
 
 /** Compute accelerations generated by given forces
@@ -466,19 +640,31 @@ public:
     VecId a;
     VecId f;
     MechanicalAccFromFVisitor(VecId a, VecId f) : a(a), f(f)
-    {}
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* mass);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalAccFromFVisitor"; }
+    virtual const char* getInfos() const { std::string name="a["+a.getName()+"] f["+f.getName()+"]"; return name.c_str(); }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
         return true;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addWriteVector(a);
+        addReadVector(f);
+    }
+#endif
 };
 
 /** Propagate positions and velocities to all the levels of the hierarchy.
@@ -509,13 +695,21 @@ public:
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalPropagatePositionAndVelocityVisitor"; }
+    virtual const char* getClassName() const { return "MechanicalPropagatePositionAndVelocityVisitor";}
+    virtual const char* getInfos() const { std::string name="x["+x.getName()+"] v["+v.getName()+"]"; return name.c_str(); }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
         return true;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addWriteVector(x);
+        addWriteVector(v);
+    }
+#endif
 };
 
 
@@ -532,6 +726,9 @@ public:
     VecId v;
     MechanicalPropagateFreePositionVisitor(double time=0, VecId x = VecId::freePosition(), VecId v = VecId::freeVelocity()): t(time), x(x), v(v)
     {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
     }
     virtual Result processNodeTopDown(simulation::Node* node);
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
@@ -540,13 +737,21 @@ public:
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalPropagateFreePositionVisitor"; }
+    virtual const char* getClassName() const { return "MechanicalPropagateFreePositionVisitor";}
+    virtual const char* getInfos() const { std::string name="x["+x.getName()+"] v["+v.getName()+"]"; return name.c_str(); }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
         return true;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addWriteVector(x);
+        addWriteVector(v);
+    }
+#endif
 };
 
 
@@ -559,19 +764,35 @@ public:
     VecId res;
     bool onlyMapped;
     MechanicalResetForceVisitor(VecId res, bool onlyMapped = false) : res(res), onlyMapped(onlyMapped)
-    {}
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalResetForceVisitor"; }
+    virtual const char* getClassName() const {  return "MechanicalResetForceVisitor";}
+    virtual const char* getInfos() const
+    {
+        std::string name="["+res.getName()+"]";
+        if (onlyMapped) name+= " Only Mapped";
+        return name.c_str();
+    }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
         return true;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addWriteVector(res);
+    }
+#endif
 };
 
 /** Accumulate the forces (internal and interactions).
@@ -583,7 +804,11 @@ public:
     VecId res;
     bool accumulate; ///< Accumulate everything back to the DOFs through the mappings
     MechanicalComputeForceVisitor(VecId res, bool accumulate = true) : res(res), accumulate(accumulate)
-    {}
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdForceField(simulation::Node* /*node*/, core::componentmodel::behavior::BaseForceField* ff);
@@ -592,13 +817,26 @@ public:
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalComputeForceVisitor"; }
+    virtual const char* getClassName() const {return "MechanicalComputeForceVisitor";}
+    virtual const char* getInfos() const
+    {
+        std::string name="["+res.getName()+"]";
+        if (accumulate) name+= " Accumulating";
+        else            name+= " Not Accumulating";
+        return name.c_str();
+    }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
         return true;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addWriteVector(res);
+    }
+#endif
 };
 
 /** Compute the variation of force corresponding to a variation of position.
@@ -611,7 +849,11 @@ public:
     bool useV;
     bool accumulate; ///< Accumulate everything back to the DOFs through the mappings
     MechanicalComputeDfVisitor(VecId res, bool useV=false, bool accumulate=true) : res(res), useV(useV), accumulate(accumulate)
-    {}
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdForceField(simulation::Node* /*node*/, core::componentmodel::behavior::BaseForceField* ff);
@@ -619,13 +861,28 @@ public:
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalComputeDfVisitor"; }
+    virtual const char* getClassName() const {return "MechanicalComputeDfVisitor";}
+    virtual const char* getInfos() const
+    {
+        std::string name="["+res.getName()+"]";
+        if (useV) name+= " Using V";
+        else      name+= " Not Using V";
+        if (accumulate) name+= " Accumulating";
+        else            name+= " Not Accumulating";
+        return name.c_str();
+    }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
         return true;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addWriteVector(res);
+    }
+#endif
 };
 
 
@@ -645,7 +902,11 @@ public:
     bool accumulate; ///< Accumulate everything back to the DOFs through the mappings
     MechanicalAddMBKdxVisitor(VecId res, double mFactor, double bFactor, double kFactor, bool useV=false, bool accumulate = true)
         : res(res), mFactor(mFactor), bFactor(bFactor), kFactor(kFactor), useV(useV), accumulate(accumulate)
-    {}
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdForceField(simulation::Node* /*node*/, core::componentmodel::behavior::BaseForceField* ff);
@@ -654,12 +915,19 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalAddMBKdxVisitor"; }
+    virtual const char* getInfos() const { std::string name= "["+res.getName()+"]"; return name.c_str(); }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
         return true;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addWriteVector(res);
+    }
+#endif
 };
 
 class MechanicalResetConstraintVisitor : public MechanicalVisitor
@@ -667,7 +935,11 @@ class MechanicalResetConstraintVisitor : public MechanicalVisitor
 public:
     //VecId res;
     MechanicalResetConstraintVisitor(/*VecId res*/) //: res(res)
-    {}
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
@@ -682,15 +954,69 @@ public:
     {
         return true;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+    }
+#endif
 };
 
+class MechanicalAccumulateLMConstraint : public MechanicalVisitor
+{
+public:
+    struct ConstraintData
+    {
+        core::componentmodel::behavior::BaseLMConstraint *data;
+        //independent dofs associated
+        core::componentmodel::behavior::BaseMechanicalState *independentMState[2]; //independentMechanicalState
+    };
+
+
+    MechanicalAccumulateLMConstraint()
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    };
+
+    virtual Result fwdLMConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseLMConstraint* c);
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
+
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalAccumulateConstraint"; }
+
+
+    virtual void clear() {datasC.clear();}
+    virtual ConstraintData &getConstraint(unsigned int i) {return datasC[i];}
+    virtual unsigned int numConstraintDatas() {return datasC.size();}
+
+
+    virtual bool isThreadSafe() const
+    {
+        return false;
+    }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+    }
+#endif
+
+protected:
+    std::vector< ConstraintData > datasC;
+};
 
 class MechanicalAccumulateConstraint : public MechanicalVisitor
 {
 public:
     MechanicalAccumulateConstraint(unsigned int &_contactId)
         :contactId(_contactId)
-    {}
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
 
     virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
     virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
@@ -704,6 +1030,11 @@ public:
     {
         return false;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+    }
+#endif
 
 protected:
     unsigned int &contactId;
@@ -718,7 +1049,11 @@ public:
     VecId res;
     double **W;
     MechanicalApplyConstraintsVisitor(VecId res, double **W = NULL) : res(res), W(W)
-    {}
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/);
     virtual void bwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
@@ -726,12 +1061,19 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalApplyConstraintsVisitor"; }
+    virtual const char* getInfos() const { std::string name= "["+res.getName()+"]"; return name.c_str(); }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
         return true;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addReadWriteVector(res);
+    }
+#endif
 };
 
 /** Visitor used to prepare a time integration step. Typically, does nothing.
@@ -742,7 +1084,11 @@ public:
     double dt;
     MechanicalBeginIntegrationVisitor (double dt)
         : dt(dt)
-    {}
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
 
@@ -755,6 +1101,11 @@ public:
     {
         return true;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+    }
+#endif
 };
 
 /** Visitor applied after a time step has been applied. Does typically nothing.
@@ -765,7 +1116,11 @@ public:
     double dt;
     MechanicalEndIntegrationVisitor (double dt)
         : dt(dt)
-    {}
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
 
@@ -778,6 +1133,11 @@ public:
     {
         return true;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+    }
+#endif
 };
 
 /** Visitor used to do a time integration step using OdeSolvers
@@ -788,7 +1148,11 @@ public:
     double dt;
     MechanicalIntegrationVisitor (double dt)
         : dt(dt)
-    {}
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
     virtual Result fwdOdeSolver(simulation::Node* node, core::componentmodel::behavior::OdeSolver* obj);
     virtual void bwdOdeSolver(simulation::Node* /*node*/, core::componentmodel::behavior::OdeSolver* /*obj*/)
     {
@@ -803,6 +1167,11 @@ public:
     {
         return true;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+    }
+#endif
 };
 
 
@@ -813,6 +1182,9 @@ class MechanicalComputeComplianceVisitor : public MechanicalVisitor
 public:
     MechanicalComputeComplianceVisitor( double **W):_W(W)
     {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
     }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms);
@@ -821,6 +1193,11 @@ public:
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalComputeComplianceVisitor"; }
 
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+    }
+#endif
 private:
     double **_W;
 };
@@ -834,20 +1211,30 @@ class MechanicalComputeContactForceVisitor : public MechanicalVisitor
 public:
     VecId res;
     MechanicalComputeContactForceVisitor(VecId res) : res(res)
-    {}
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalComputeContactForceVisitor"; }
+    virtual const char* getClassName() const { std::string name= "MechanicalComputeContactForceVisitor["+res.getName()+"]"; return name.c_str(); }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
         return true;
     }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addReadWriteVector(res);
+    }
+#endif
 };
 
 /** Add dt*mass*Gravity to the velocity
@@ -860,7 +1247,11 @@ public:
     double dt;
     VecId res;
     MechanicalAddSeparateGravityVisitor(double dt, VecId res) : dt(dt), res(res)
-    {}
+    {
+#ifdef DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
 
     /// Process the BaseMass
     virtual Result fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* mass);
@@ -868,7 +1259,13 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalAddSeparateGravityVisitor"; }
-
+    virtual const char* getInfos() const { std::string name= "["+res.getName()+"]"; return name.c_str(); }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addReadWriteVector(res);
+    }
+#endif
 };
 
 

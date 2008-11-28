@@ -45,6 +45,7 @@ public:
     MechanicalVPrintVisitor( VecId v, std::ostream& =std::cerr );
     virtual Result processNodeTopDown(simulation::Node* node);
 
+    virtual const char* getClassName() const { return "MechanicalVPrintVisitor"; }
 protected:
     VecId v_;
     std::ostream& out_;
@@ -63,6 +64,7 @@ protected:
 public:
     MechanicalVPrintWithElapsedTimeVisitor( VecId v, unsigned time, std::ostream& =std::cerr );
     virtual Result processNodeTopDown(simulation::Node* node);
+    virtual const char* getClassName() const { return "MechanicalVPrintWithElapsedTimeVisitor"; }
 };
 
 } // namespace simulation

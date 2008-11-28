@@ -63,6 +63,7 @@ public:
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
     virtual const char* getCategoryName() const { return "animate"; }
+    virtual const char* getClassName() const { return "AnimateVisitor"; }
 };
 
 } // namespace simulation

@@ -55,6 +55,7 @@ public:
     {
         return "initGnuplot";
     }
+    virtual const char* getClassName() const { return "InitGnuplotVisitor"; }
 };
 
 class ExportGnuplotVisitor : public simulation::Visitor
@@ -70,6 +71,7 @@ public:
     {
         return "exportGnuplot";
     }
+    virtual const char* getClassName() const { return "ExportGnuplotVisitor"; }
 protected:
     double m_time;
 };

@@ -27,6 +27,7 @@
 #ifndef SOFA_DEFAULTTYPE_BASEVECTOR_H
 #define SOFA_DEFAULTTYPE_BASEVECTOR_H
 
+#include <sofa/helper/system/config.h>
 namespace sofa
 {
 
@@ -43,7 +44,7 @@ public:
     virtual ~BaseVector() {}
 
     /// Number of elements
-    virtual int size(void) const = 0;
+    virtual unsigned int size(void) const = 0;
     /// Read the value of element i
     virtual SReal element(int i) const = 0;
 

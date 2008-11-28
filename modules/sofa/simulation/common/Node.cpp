@@ -178,6 +178,7 @@ void Node::doAddObject(BaseObject* obj)
     if (!isInteractionForceField)
         forceField.add(dynamic_cast< core::componentmodel::behavior::BaseForceField* >(obj));
     inserted+= constraint.add(dynamic_cast< core::componentmodel::behavior::BaseConstraint* >(obj));
+    inserted+= LMConstraint.add(dynamic_cast< core::componentmodel::behavior::BaseLMConstraint* >(obj));
     inserted+= behaviorModel.add(dynamic_cast< core::BehaviorModel* >(obj));
     inserted+= visualModel.add(dynamic_cast< core::VisualModel* >(obj));
     inserted+= collisionModel.add(dynamic_cast< core::CollisionModel* >(obj));
@@ -214,6 +215,7 @@ void Node::doRemoveObject(BaseObject* obj)
     forceField.remove(dynamic_cast< core::componentmodel::behavior::BaseForceField* >(obj));
     interactionForceField.remove(dynamic_cast< core::componentmodel::behavior::InteractionForceField* >(obj));
     constraint.remove(dynamic_cast< core::componentmodel::behavior::BaseConstraint* >(obj));
+    LMConstraint.remove(dynamic_cast< core::componentmodel::behavior::BaseLMConstraint* >(obj));
     mapping.remove(dynamic_cast< core::BaseMapping* >(obj));
     behaviorModel.remove(dynamic_cast< core::BehaviorModel* >(obj));
     visualModel.remove(dynamic_cast< core::VisualModel* >(obj));
@@ -522,6 +524,9 @@ void Node::printComponents()
         cerr<<(*i)->getName()<<" ";
     cerr<<endl<<"Constraint: ";
     for ( Sequence<BaseConstraint>::iterator i=constraint.begin(), iend=constraint.end(); i!=iend; i++ )
+        cerr<<(*i)->getName()<<" ";
+    cerr<<endl<<"LMConstraint: ";
+    for ( Sequence<BaseLMConstraint>::iterator i=LMConstraint.begin(), iend=LMConstraint.end(); i!=iend; i++ )
         cerr<<(*i)->getName()<<" ";
     cerr<<endl<<"BehaviorModel: ";
     for ( Sequence<BehaviorModel>::iterator i=behaviorModel.begin(), iend=behaviorModel.end(); i!=iend; i++ )

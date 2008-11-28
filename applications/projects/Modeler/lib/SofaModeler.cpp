@@ -94,8 +94,8 @@ SofaModeler::SofaModeler()
     connect(windowMenu, SIGNAL(activated(int)), this, SLOT( changeCurrentScene(int)));
 
     examplePath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/examples/" );
-    presetPath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/applications/projects/Modeler/preset/" );
-    std::string presetFile = presetPath + std::string("preset.ini" );
+    presetPath = examplePath + std::string("Objects/");
+    std::string presetFile = std::string("config/preset.ini" );
 
     presetFile = sofa::helper::system::DataRepository.getFile ( presetFile );
 
@@ -155,6 +155,7 @@ SofaModeler::SofaModeler()
     {
 #ifdef	    TEST_CREATION_COMPONENT
         sofa::core::objectmodel::BaseObject *object;
+        std::cout << "Creating " << entries[i]->className << "\n";
         if (entries[i]->creatorMap.find(entries[i]->defaultTemplate) != entries[i]->creatorMap.end())
         {
             object = entries[i]->creatorMap.find(entries[i]->defaultTemplate)->second->createInstance(NULL, NULL);
@@ -163,6 +164,7 @@ SofaModeler::SofaModeler()
         {
             object = entries[i]->creatorList.begin()->second->createInstance(NULL, NULL);
         }
+        std::cout << "Deleting " << entries[i]->className << "\n";
         delete object;
 #endif
         std::set< std::string >::iterator it;

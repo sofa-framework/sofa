@@ -58,6 +58,7 @@ public:
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
     virtual const char* getCategoryName() const { return "visual"; }
+    virtual const char* getClassName() const { return "VisualVisitor"; }
 };
 
 class VisualDrawVisitor : public VisualVisitor
@@ -76,18 +77,24 @@ public:
     virtual void processVisualModel(simulation::Node* node, core::VisualModel* vm);
     virtual void processObject(simulation::Node* node, core::objectmodel::BaseObject* o);
     virtual void bwdVisualModel(simulation::Node* node, core::VisualModel* vm);
+    virtual const char* getClassName() const { return "VisualDrawVisitor"; }
+#ifdef DUMP_VISITOR_INFO
+    virtual void printInfo(const core::objectmodel::BaseContext*,bool )  {return;}
+#endif
 };
 
 class VisualUpdateVisitor : public VisualVisitor
 {
 public:
     virtual void processVisualModel(simulation::Node*, core::VisualModel* vm);
+    virtual const char* getClassName() const { return "VisualUpdateVisitor"; }
 };
 
 class VisualInitVisitor : public VisualVisitor
 {
 public:
     virtual void processVisualModel(simulation::Node*, core::VisualModel* vm);
+    virtual const char* getClassName() const { return "VisualInitVisitor"; }
 };
 
 class VisualComputeBBoxVisitor : public Visitor
@@ -107,6 +114,7 @@ public:
 
         return RESULT_CONTINUE;
     }
+    virtual const char* getClassName() const { return "VisualComputeBBoxVisitor"; }
 
 
 };

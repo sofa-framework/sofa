@@ -59,12 +59,12 @@ public :
         m.resize(nbCol,nbRow,ws);
     }
 
-    int rowSize() const
+    unsigned int rowSize() const
     {
         return m.getSizeY();
     }
 
-    int colSize() const
+    unsigned int colSize() const
     {
         return m.getSizeX();
     }
@@ -143,7 +143,7 @@ public :
         v.resize(nbRow,warp_size);
     }
 
-    int size() const
+    unsigned int size() const
     {
         return v.size();
     }
@@ -155,7 +155,7 @@ public :
 
     void clear()
     {
-        for (int i=0; i<size(); i++) v[i]=(T)(0.0);
+        for (unsigned int i=0; i<size(); i++) v[i]=(T)(0.0);
     }
 
     void set(int i, SReal val)

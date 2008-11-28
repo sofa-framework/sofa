@@ -58,6 +58,7 @@ public:
 
     double getDt() const { return dt; }
 
+    virtual const char* getClassName() const { return "AnimateEndEvent"; }
 protected:
     double dt;
 };

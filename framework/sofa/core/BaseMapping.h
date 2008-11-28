@@ -53,6 +53,7 @@ public:
     /// Destructor
     virtual ~BaseMapping() { }
 
+
     /// Apply the transformation from the input model to the output model (like apply displacement from BehaviorModel to VisualModel)
     virtual void updateMapping() = 0;
 
@@ -64,6 +65,7 @@ public:
 
     /// Disable the mapping to get the original coordinates of the mapped model.
     virtual void disable()=0;
+
 
 };
 

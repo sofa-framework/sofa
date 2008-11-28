@@ -29,6 +29,14 @@
 #include <sofa/simulation/common/MatrixLinearSolver.h>
 #include "FullVector.h"
 
+//Lapack
+#include <cblas.h>
+#include <atlas_enum.h>
+extern "C"
+{
+#include "clapack.h"
+}
+
 #include <map>
 
 namespace sofa
@@ -171,12 +179,12 @@ public:
         clear();
     }
 
-    int rowSize(void) const
+    unsigned int rowSize(void) const
     {
         return nRow;
     }
 
-    int colSize(void) const
+    unsigned int colSize(void) const
     {
         return nCol;
     }
@@ -368,6 +376,9 @@ public:
     //operator T**() { return ldata; }
     //operator const T**() const { return ldata; }
 };
+
+
+
 } // namespace linearsolver
 
 } // namespace component

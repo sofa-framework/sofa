@@ -110,16 +110,19 @@ void CentralDifferenceSolver::solve(double dt)
         vel.peq( dx, dt );                  // vel = vel + dt M^{-1} ( P_n - K u_n )
         pos.peq( vel, dt );                    // pos = pos + h vel
 #else // single-operation optimization
-        simulation::MechanicalVMultiOpVisitor vmop;
-        vmop.ops.resize(2);
+
+        typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+        VMultiOp ops;
+        ops.resize(2);
         // vel += dx * dt
-        vmop.ops[0].first = (VecId)vel;
-        vmop.ops[0].second.push_back(std::make_pair((VecId)vel,1.0));
-        vmop.ops[0].second.push_back(std::make_pair((VecId)dx,dt));
+        ops[0].first = (VecId)vel;
+        ops[0].second.push_back(std::make_pair((VecId)vel,1.0));
+        ops[0].second.push_back(std::make_pair((VecId)dx,dt));
         // pos += vel * dt
-        vmop.ops[1].first = (VecId)pos;
-        vmop.ops[1].second.push_back(std::make_pair((VecId)pos,1.0));
-        vmop.ops[1].second.push_back(std::make_pair((VecId)vel,dt));
+        ops[1].first = (VecId)pos;
+        ops[1].second.push_back(std::make_pair((VecId)pos,1.0));
+        ops[1].second.push_back(std::make_pair((VecId)vel,dt));
+        simulation::MechanicalVMultiOpVisitor vmop(ops);
         vmop.execute(getContext());
 #endif
     }
@@ -130,14 +133,16 @@ void CentralDifferenceSolver::solve(double dt)
         vel.peq( dx, 1/(1/dt + r/2) );     // vel = \frac{\frac{1}{dt} - \frac{r}{2}}{\frac{1}{dt} + \frac{r}{2}} vel + \frac{1}{\frac{1}{dt} + \frac{r}{2}} M^{-1} ( P_n - K u_n )
         pos.peq( vel, dt );                    // pos = pos + h vel
 #else // single-operation optimization
-        simulation::MechanicalVMultiOpVisitor vmop;
-        vmop.ops.resize(2);
-        vmop.ops[0].first = (VecId)vel;
-        vmop.ops[0].second.push_back(std::make_pair((VecId)vel,(1/dt - r/2)/(1/dt + r/2)));
-        vmop.ops[0].second.push_back(std::make_pair((VecId)dx,1/(1/dt + r/2)));
-        vmop.ops[1].first = (VecId)pos;
-        vmop.ops[1].second.push_back(std::make_pair((VecId)pos,1.0));
-        vmop.ops[1].second.push_back(std::make_pair((VecId)vel,dt));
+        typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+        VMultiOp ops;
+        ops.resize(2);
+        ops[0].first = (VecId)vel;
+        ops[0].second.push_back(std::make_pair((VecId)vel,(1/dt - r/2)/(1/dt + r/2)));
+        ops[0].second.push_back(std::make_pair((VecId)dx,1/(1/dt + r/2)));
+        ops[1].first = (VecId)pos;
+        ops[1].second.push_back(std::make_pair((VecId)pos,1.0));
+        ops[1].second.push_back(std::make_pair((VecId)vel,dt));
+        simulation::MechanicalVMultiOpVisitor vmop(ops);
         vmop.execute(getContext());
 #endif
     }

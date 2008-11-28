@@ -389,7 +389,7 @@ void DiagonalMass<DataTypes, MassType>::reinit()
 {
     if (_topology && (m_massDensity.getValue() > 0 || f_mass.getValue().size() == 0))
     {
-        if (_topology->getNbTetras()>0)
+        if (_topology->getNbTetras()>0 && tetraGeo)
         {
 
             VecMass& masses = *f_mass.beginEdit();
@@ -420,7 +420,7 @@ void DiagonalMass<DataTypes, MassType>::reinit()
             }
             f_mass.endEdit();
         }
-        else if (_topology->getNbTriangles()>0)
+        else if (_topology->getNbTriangles()>0 && triangleGeo)
         {
             VecMass& masses = *f_mass.beginEdit();
             topologyType=TOPOLOGY_TRIANGLESET;
@@ -460,7 +460,7 @@ void DiagonalMass<DataTypes, MassType>::reinit()
           topologyType=TOPOLOGY_QUADSET;
           }
         */
-        else if (_topology->getNbEdges()>0)
+        else if (_topology->getNbEdges()>0 && edgeGeo)
         {
 
             VecMass& masses = *f_mass.beginEdit();

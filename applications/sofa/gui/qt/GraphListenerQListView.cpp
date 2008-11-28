@@ -87,7 +87,8 @@ QPixmap* getPixmap(core::objectmodel::Base* obj)
             flags |= 1 << CMODEL;
         if (dynamic_cast<core::componentmodel::behavior::BaseMechanicalState*>(obj))
             flags |= 1 << MMODEL;
-        if (dynamic_cast<core::componentmodel::behavior::BaseConstraint*>(obj))
+        if (dynamic_cast<core::componentmodel::behavior::BaseConstraint*>(obj) ||
+            dynamic_cast<core::componentmodel::behavior::BaseLMConstraint*>(obj))
             flags |= 1 << CONSTRAINT;
         if (dynamic_cast<core::componentmodel::behavior::InteractionForceField*>(obj) &&
             dynamic_cast<core::componentmodel::behavior::InteractionForceField*>(obj)->getMechModel1()!=dynamic_cast<core::componentmodel::behavior::InteractionForceField*>(obj)->getMechModel2())

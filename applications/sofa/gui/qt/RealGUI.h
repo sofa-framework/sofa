@@ -44,6 +44,8 @@
 #include <sofa/gui/qt/AddObject.h>
 #include <sofa/gui/qt/ModifyObject.h>
 #include <sofa/gui/qt/DisplayFlagWidget.h>
+#include <sofa/gui/qt/WindowVisitor.h>
+#include <sofa/gui/qt/GraphVisitor.h>
 
 #include <sofa/simulation/tree/xml/XML.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -201,6 +203,7 @@ public slots:
     void dumpState(bool);
     void displayComputationTime(bool);
     void setExportGnuplot(bool);
+    void setExportVisitor(bool);
     void currentTabChanged(QWidget*);
 
 signals:
@@ -226,8 +229,12 @@ protected:
 
     bool isErasable(core::objectmodel::Base* element);
 
+    void startDumpVisitor();
+    void stopDumpVisitor();
+
     bool m_dumpState;
     std::ofstream* m_dumpStateStream;
+    std::ofstream* m_dumpVisitorStream;
     bool m_exportGnuplot;
     bool _animationOBJ; int _animationOBJcounter;// save a succession of .obj indexed by _animationOBJcounter
     bool m_displayComputationTime;
@@ -271,6 +278,7 @@ protected:
     std::string record_directory;
     std::string gnuplot_directory;
     std::string writeSceneName;
+    std::string pathDumpVisitor;
 
     QWidgetStack* left_stack;
     AddObject *dialog;
@@ -324,6 +332,8 @@ private:
 #endif
 
     DisplayFlagWidget *displayFlag;
+    WindowVisitor* windowTraceVisitor;
+    GraphVisitor* handleTraceVisitor;
 
 };
 

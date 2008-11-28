@@ -30,6 +30,8 @@
 #include <sofa/core/VisualModel.h>
 #include <sofa/helper/system/gl.h>
 #include <iostream>
+#include <typeinfo>
+
 
 using std::cerr;
 using std::endl;
@@ -59,6 +61,8 @@ public:
         }
         return RESULT_CONTINUE;
     }
+    virtual const char* getClassName() const { return "FindByTypeVisitor"; }
+    virtual const char* getInfos() const { std::string name="["+sofa::helper::gettypename(typeid(T))+"]"; return name.c_str(); }
 
 };
 

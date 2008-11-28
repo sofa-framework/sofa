@@ -103,7 +103,7 @@ void SphereModel::init()
 
     if (mstate==NULL)
     {
-        std::cerr << "ERROR: SphereModel requires a Vec3 Mechanical Model.\n";
+        logWarning("SphereModel requires a Vec3 Mechanical Model");
         return;
     }
 

@@ -55,6 +55,7 @@ public:
 
     virtual Result processNodeTopDown(simulation::Node* node);
     virtual void processNodeBottomUp(simulation::Node* node);
+    virtual const char* getClassName() const { return "PrintVisitor"; }
 };
 
 } // namespace simulation

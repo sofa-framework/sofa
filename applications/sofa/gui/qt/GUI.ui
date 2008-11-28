@@ -352,6 +352,17 @@
                                         <string>Create gnuplot files for each named element of the simulation</string>
                                     </property>
                                 </widget>
+                                <widget class="QCheckBox">
+                                    <property name="name">
+                                        <cstring>exportVisitorCheckbox</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>export visitor execution</string>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>Create a xml description of the execution of the visitors</string>
+                                    </property>
+                                </widget>
                                 <widget class="QLabel">
                                     <property name="name">
                                         <cstring>statsLabel</cstring>
