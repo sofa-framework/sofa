@@ -83,119 +83,7 @@ void SparseGridRamificationTopology::buildAsFinest()
     if( _finestConnectivity.getValue() )
     {
 
-        SeqHexas& hexas = *seqHexas.beginEdit();
-
-
-        vector< CubeCorners > cubeCorners; // saving temporary positions of all cube corners
-        for(unsigned i=0; i<hexas.size(); ++i)
-        {
-            CubeCorners c;
-            for(int w=0; w<8; ++w)
-                c[w]=getPointPos( hexas[i][w] );
-            cubeCorners.push_back( c );
-        }
-
-
-
-        hexas.clear();
-
-        nbPoints = 0;
-
-        for(unsigned i=0 ; i<_connexions.size(); ++i)
-        {
-            for( helper::vector<Connexion*>::iterator it = _connexions[i].begin(); it != _connexions[i].end() ; ++it)
-            {
-                hexas.push_back( Hexa(nbPoints, nbPoints+1, nbPoints+2, nbPoints+3, nbPoints+4, nbPoints+5, nbPoints+6, nbPoints+7) );
-                (*it)->_hexaIdx = hexas.size()-1;
-                (*it)->_nonRamifiedHexaIdx = i;
-                nbPoints += 8;
-            }
-        }
-
-
-
-
-        // which cube is neigbor of which cube? in order to link similar vertices (link entiere faces)
-        for(unsigned i=0 ; i<_connexions.size(); ++i)
-        {
-            for( helper::vector<Connexion*>::iterator it = _connexions[i].begin(); it != _connexions[i].end() ; ++it)
-            {
-
-                Hexa& hexa = hexas[ (*it)->_hexaIdx ]; // the hexa corresponding to the connexion
-
-
-                for(std::set<Connexion*>::iterator neig = (*it)->_neighbors[BEFORE].begin();
-                    neig != (*it)->_neighbors[BEFORE].end(); ++neig)
-                {
-                    Hexa& neighbor = hexas[ (*neig)->_hexaIdx ]; // the hexa corresponding to the neighbor connexion
-
-                    changeIndices( hexa[0], neighbor[4] );
-                    changeIndices( hexa[1], neighbor[5] );
-                    changeIndices( hexa[2], neighbor[6] );
-                    changeIndices( hexa[3], neighbor[7] );
-                }
-
-                for(std::set<Connexion*>::iterator neig = (*it)->_neighbors[DOWN].begin();
-                    neig != (*it)->_neighbors[DOWN].end(); ++neig)
-                {
-                    Hexa& neighbor = hexas[ (*neig)->_hexaIdx ]; // the hexa corresponding to the neighbor connexion
-
-                    changeIndices( hexa[0], neighbor[3] );
-                    changeIndices( hexa[4], neighbor[7] );
-                    changeIndices( hexa[5], neighbor[6] );
-                    changeIndices( hexa[1], neighbor[2] );
-                }
-
-                for(std::set<Connexion*>::iterator neig = (*it)->_neighbors[LEFT].begin();
-                    neig != (*it)->_neighbors[LEFT].end(); ++neig)
-                {
-                    Hexa& neighbor = hexas[ (*neig)->_hexaIdx ]; // the hexa corresponding to the neighbor connexion
-
-                    changeIndices( hexa[0], neighbor[1] );
-                    changeIndices( hexa[4], neighbor[5] );
-                    changeIndices( hexa[7], neighbor[6] );
-                    changeIndices( hexa[3], neighbor[2] );
-                }
-
-            }
-        }
-
-        // saving incident hexas for each points in order to be able to link or not vertices
-        helper::vector< helper::vector< helper::fixed_array<unsigned,3> > > hexasConnectedToThePoint(nbPoints);
-        unsigned c=0;
-        for(unsigned i=0 ; i<_connexions.size(); ++i)
-        {
-            for( helper::vector<Connexion*>::iterator it = _connexions[i].begin(); it != _connexions[i].end() ; ++it)
-            {
-                for(unsigned p=0; p<8; ++p)
-                {
-                    hexasConnectedToThePoint[hexas[c][p]].push_back( helper::fixed_array<unsigned,3>  (c, p, i) );
-                }
-                c++;
-            }
-        }
-
-        seqPoints.clear();
-        nbPoints=0;
-        for(unsigned i=0; i<hexasConnectedToThePoint.size(); ++i)
-        {
-            if( !hexasConnectedToThePoint[i].empty() )
-            {
-                for(unsigned j=0; j<hexasConnectedToThePoint[i].size(); ++j)
-                {
-                    hexas[ hexasConnectedToThePoint[i][j][0] ][ hexasConnectedToThePoint[i][j][1] ] = nbPoints;
-                }
-
-
-                // find corresponding 3D coordinate
-                seqPoints.push_back( cubeCorners[ hexasConnectedToThePoint[i][0][2] ][ hexasConnectedToThePoint[i][0][1] ] );
-
-                ++nbPoints;
-            }
-        }
-
-        seqHexas.endEdit();
-
+        buildRamifiedFinestLevel();
     }
 }
 
@@ -290,8 +178,16 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
 
 bool SparseGridRamificationTopology::sharingTriangle(helper::io::Mesh* mesh, int cubeIdx, int neighborIdx, unsigned where )
 {
-    if(!_finestConnectivity.getValue() || mesh==NULL )
+// 				return true;
+
+
+    if(!_finestConnectivity.getValue() )
         return true;
+    if( mesh==NULL )
+    {
+        cerr<<"Warning: SparseGridRamificationTopology::sharingTriangle -- fileTopology (so mesh) is NULL\n";
+        return true;
+    }
 
 
     // it is not necessary to analyse connectivity between non-boundary cells
@@ -299,10 +195,9 @@ bool SparseGridRamificationTopology::sharingTriangle(helper::io::Mesh* mesh, int
         return true;
 
 
-    const Hexa& hexa=getHexa( cubeIdx );
-// 				for(int i=0;i<8;++i)
-// 					cerr<<i <<" "<<getPointPos( hexa[i] )<<endl;
+// 				cerr<<"SparseGridRamificationTopology::sharingTriangle "<<this->fileTopology.getValue()<<"\n";
 
+    const Hexa& hexa=getHexa( cubeIdx );
 
     Vector3 a,b,c,d,P,Q;
 
@@ -354,6 +249,127 @@ bool SparseGridRamificationTopology::sharingTriangle(helper::io::Mesh* mesh, int
 
     return false;
 }
+
+
+void SparseGridRamificationTopology::buildRamifiedFinestLevel()
+{
+
+    SeqHexas& hexas = *seqHexas.beginEdit();
+
+
+    vector< CubeCorners > cubeCorners; // saving temporary positions of all cube corners
+    for(unsigned i=0; i<hexas.size(); ++i)
+    {
+        CubeCorners c;
+        for(int w=0; w<8; ++w)
+            c[w]=getPointPos( hexas[i][w] );
+        cubeCorners.push_back( c );
+    }
+
+
+
+    hexas.clear();
+
+    nbPoints = 0;
+
+    for(unsigned i=0 ; i<_connexions.size(); ++i)
+    {
+        for( helper::vector<Connexion*>::iterator it = _connexions[i].begin(); it != _connexions[i].end() ; ++it)
+        {
+            hexas.push_back( Hexa(nbPoints, nbPoints+1, nbPoints+2, nbPoints+3, nbPoints+4, nbPoints+5, nbPoints+6, nbPoints+7) );
+            (*it)->_hexaIdx = hexas.size()-1;
+            (*it)->_nonRamifiedHexaIdx = i;
+            nbPoints += 8;
+        }
+    }
+
+
+
+
+    // which cube is neigbor of which cube? in order to link similar vertices (link entiere faces)
+    for(unsigned i=0 ; i<_connexions.size(); ++i)
+    {
+        for( helper::vector<Connexion*>::iterator it = _connexions[i].begin(); it != _connexions[i].end() ; ++it)
+        {
+
+            Hexa& hexa = hexas[ (*it)->_hexaIdx ]; // the hexa corresponding to the connexion
+
+
+            for(std::set<Connexion*>::iterator neig = (*it)->_neighbors[BEFORE].begin();
+                neig != (*it)->_neighbors[BEFORE].end(); ++neig)
+            {
+                Hexa& neighbor = hexas[ (*neig)->_hexaIdx ]; // the hexa corresponding to the neighbor connexion
+
+                changeIndices( hexa[0], neighbor[4] );
+                changeIndices( hexa[1], neighbor[5] );
+                changeIndices( hexa[2], neighbor[6] );
+                changeIndices( hexa[3], neighbor[7] );
+            }
+
+            for(std::set<Connexion*>::iterator neig = (*it)->_neighbors[DOWN].begin();
+                neig != (*it)->_neighbors[DOWN].end(); ++neig)
+            {
+                Hexa& neighbor = hexas[ (*neig)->_hexaIdx ]; // the hexa corresponding to the neighbor connexion
+
+                changeIndices( hexa[0], neighbor[3] );
+                changeIndices( hexa[4], neighbor[7] );
+                changeIndices( hexa[5], neighbor[6] );
+                changeIndices( hexa[1], neighbor[2] );
+            }
+
+            for(std::set<Connexion*>::iterator neig = (*it)->_neighbors[LEFT].begin();
+                neig != (*it)->_neighbors[LEFT].end(); ++neig)
+            {
+                Hexa& neighbor = hexas[ (*neig)->_hexaIdx ]; // the hexa corresponding to the neighbor connexion
+
+                changeIndices( hexa[0], neighbor[1] );
+                changeIndices( hexa[4], neighbor[5] );
+                changeIndices( hexa[7], neighbor[6] );
+                changeIndices( hexa[3], neighbor[2] );
+            }
+
+        }
+    }
+
+    // saving incident hexas for each points in order to be able to link or not vertices
+    helper::vector< helper::vector< helper::fixed_array<unsigned,3> > > hexasConnectedToThePoint(nbPoints);
+    unsigned c=0;
+    for(unsigned i=0 ; i<_connexions.size(); ++i)
+    {
+        for( helper::vector<Connexion*>::iterator it = _connexions[i].begin(); it != _connexions[i].end() ; ++it)
+        {
+            for(unsigned p=0; p<8; ++p)
+            {
+                hexasConnectedToThePoint[hexas[c][p]].push_back( helper::fixed_array<unsigned,3>  (c, p, i) );
+            }
+            c++;
+        }
+    }
+
+    seqPoints.clear();
+    nbPoints=0;
+    for(unsigned i=0; i<hexasConnectedToThePoint.size(); ++i)
+    {
+        if( !hexasConnectedToThePoint[i].empty() )
+        {
+            for(unsigned j=0; j<hexasConnectedToThePoint[i].size(); ++j)
+            {
+                hexas[ hexasConnectedToThePoint[i][j][0] ][ hexasConnectedToThePoint[i][j][1] ] = nbPoints;
+            }
+
+
+            // find corresponding 3D coordinate
+            seqPoints.push_back( cubeCorners[ hexasConnectedToThePoint[i][0][2] ][ hexasConnectedToThePoint[i][0][1] ] );
+
+            ++nbPoints;
+        }
+    }
+
+    seqHexas.endEdit();
+
+}
+
+
 
 void SparseGridRamificationTopology::buildFromFiner()
 {

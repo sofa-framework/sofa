@@ -74,6 +74,8 @@ public:
 
     /// find the connexion graph between the finest hexas
     void findConnexionsAtFinestLevel();
+    /// Once the finest connectivity is computed, some nodes can be dobled
+    void buildRamifiedFinestLevel();
     /// do 2 neighbors cubes share triangles ?
     bool sharingTriangle(helper::io::Mesh* mesh, int cubeIdx, int neighborIdx, unsigned where);
 
