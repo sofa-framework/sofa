@@ -54,6 +54,7 @@ public :
     {
     }
 
+    virtual void init() {SparseGridRamificationTopology::init(); this->fileTopology.setValue("");};
     virtual void buildAsFinest();
     virtual void buildVirtualFinerLevels();
 

@@ -24,7 +24,7 @@ int SparseGridMultipleTopologyClass = core::RegisterObject("Sparse grid in 3D")
 
 void SparseGridMultipleTopology::buildAsFinest(  )
 {
-    cerr<<"SparseGridMultipleTopology::buildAsFinest\n";
+// 		  cerr<<"SparseGridMultipleTopology::buildAsFinest\n";
 
     if( _dataStiffnessCoefs.getValue().size() < _fileTopologies.getValue().size() )
     {
@@ -184,7 +184,7 @@ void SparseGridMultipleTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->setName( nameg.str().c_str() );
 
 
-// 		  _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
+    _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
     sgmt->_fileTopologies.setValue(this->_fileTopologies.getValue());
     sgmt->_dataStiffnessCoefs.setValue(this->_dataStiffnessCoefs.getValue());
     _virtualFinerLevels[0]->init();

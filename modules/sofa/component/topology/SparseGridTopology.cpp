@@ -252,7 +252,7 @@ void SparseGridTopology::buildAsFinest(  )
     }
 
 
-    // default stiffness coefficient : BOUNDAR=.5, INSIDE=1
+    // default stiffness coefficient : BOUNDARY=.5, INSIDE=1
     _stiffnessCoefs.resize( this->getNbHexas());
     for(int i=0; i<this->getNbHexas(); ++i)
     {
@@ -1028,7 +1028,7 @@ void SparseGridTopology::buildFromFiner(  )
                 ++nbchildren;
             }
         }
-        _stiffnessCoefs[i] /= (float)nbchildren;
+        _stiffnessCoefs[i] /= 8.0;//(float)nbchildren;
     }
 }
 
