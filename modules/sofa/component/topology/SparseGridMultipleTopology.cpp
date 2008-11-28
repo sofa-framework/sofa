@@ -110,8 +110,17 @@ void SparseGridMultipleTopology::buildAsFinest(  )
 
 
 
-    findConnexionsAtFinestLevel();
+    if( _finestConnectivity.getValue() || this->isVirtual || _nbVirtualFinerLevels.getValue() > 0 )
+    {
+        // find the connexion graph between the finest hexas
+        findConnexionsAtFinestLevel();
+    }
 
+    if( _finestConnectivity.getValue() )
+    {
+
+        buildRamifiedFinestLevel();
+    }
 
 }
 
