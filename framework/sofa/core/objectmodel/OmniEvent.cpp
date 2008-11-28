@@ -46,11 +46,12 @@ OmniEvent::OmniEvent(State state, double posX, double posY, double posZ)
 
 }
 
-OmniEvent::OmniEvent(State state, Vector3 position, Quat orientation)
+OmniEvent::OmniEvent(State state, Vector3 position, Quat orientation, bool button)
     : sofa::core::objectmodel::Event()
     , m_state(state)
     , m_position(position)
     , m_orientation(orientation)
+    , m_button(button)
 {
     m_posX = position[0];
     m_posY = position[1];

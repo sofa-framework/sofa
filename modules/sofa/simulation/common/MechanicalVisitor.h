@@ -380,8 +380,8 @@ public:
 class MechanicalPropagateAndAddDxVisitor : public MechanicalVisitor
 {
 public:
-    VecId dx;
-    MechanicalPropagateAndAddDxVisitor(VecId dx = VecId::dx()) : dx(dx)
+    VecId dx, v;
+    MechanicalPropagateAndAddDxVisitor(VecId dx = VecId::dx(), VecId v =VecId::velocity()) : dx(dx) , v(v)
     {}
 
     /// Return a class name for this visitor

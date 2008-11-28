@@ -66,7 +66,7 @@ public:
     /**
      * @brief Constructor.
      */
-    OmniEvent(State state, Vector3 position, Quat orientation);
+    OmniEvent(State state, Vector3 position, Quat orientation, bool button);
 
     /**
      * @brief Destructor.
@@ -103,12 +103,18 @@ public:
      */
     Quat getOrientation(void) const {return m_orientation;}
 
+    /**
+     * @brief Get the PHANTOM® button state.
+     */
+    bool getButton(void) const {return m_button;}
+
 private:
 
     State m_state; ///< SensAble PHANTOM® buttons state on the event propagation.
     double m_posX, m_posY, m_posZ; ///< SensAble PHANTOM® coordinates.
     Vector3 m_position;///< SensAble PHANTOM® coordinates in a Vec3d type.
     Quat m_orientation;///< SensAble PHANTOM® orientation.
+    bool m_button;
 };
 
 } // namespace objectmodel

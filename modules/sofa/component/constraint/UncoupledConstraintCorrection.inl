@@ -43,6 +43,7 @@ namespace constraint
 template<class DataTypes>
 UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(behavior::MechanicalState<DataTypes> *mm)
     : mstate(mm)
+    ,compliance(initData(&compliance, "compliance", "compliance value on each dof"))
 {
 }
 
@@ -55,6 +56,29 @@ template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::init()
 {
     mstate = dynamic_cast< behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
+    const VecCoord& x = *mstate->getX();
+
+    if (x.size() != compliance.getValue().size())
+    {
+        std::cout<<"Warning compliance size is not the size of the mstate"<<std::endl;
+        VecReal UsedComp;
+        if (compliance.getValue().size()>0)
+        {
+            for (unsigned int i=0; i<x.size(); i++)
+            {
+                UsedComp.push_back(compliance.getValue()[0]);
+            }
+        }
+        else
+        {
+            for (unsigned int i=0; i<x.size(); i++)
+            {
+                Real random_value = (Real)0.00001;
+                UsedComp.push_back(random_value);
+            }
+        }
+        compliance.setValue(UsedComp);
+    }
 }
 
 #ifndef SOFA_FLOAT
@@ -91,13 +115,19 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
         int sizeCurRowConst = constraints[curRowConst].size();
         int indexCurRowConst = mstate->getConstraintId()[curRowConst];
 
+        //std::cout<<"constraint["<<curRowConst<<"] : ";
+
+
+
         for(int i = 0; i < sizeCurRowConst; i++)
         {
             weighedNormal.getVCenter() = constraints[curRowConst][i].data.getVCenter(); // weighed normal
             weighedNormal.getVOrientation() = constraints[curRowConst][i].data.getVOrientation();
 
+            //std::cout<<" - "<<weighedNormal;
+
             InvM_wN = weighedNormal / (*massValue);
-            InvM_wN *= dt*dt;
+            InvM_wN *= dt*dt ;
 
             int indexCurColConst;
 
@@ -119,6 +149,7 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
                     }
                 }
             }
+
             /*
                   for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
                   {
@@ -127,6 +158,7 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
                 }
             */
         }
+        //std::cout<<" end"<<std::endl;
     }
 }
 
@@ -227,13 +259,16 @@ void UncoupledConstraintCorrection<defaulttype::Vec1dTypes>::getCompliance(defau
     {
         int sizeCurRowConst = constraints[curRowConst].size();
         int indexCurRowConst = mstate->getConstraintId()[curRowConst];
-
+        //std::cout<<"constraint["<<curRowConst<<"] : ";
         for(int i = 0; i < sizeCurRowConst; i++)
         {
             int indexCurColConst;
+            //  std::cout<<" : "<<constraints[curRowConst][i].data.x();
 
             for(unsigned int curColConst = curRowConst; curColConst < numConstraints; curColConst++)
             {
+
+
                 int sizeCurColConst = constraints[curColConst].size();
                 indexCurColConst = mstate->getConstraintId()[curColConst];
 
@@ -242,7 +277,7 @@ void UncoupledConstraintCorrection<defaulttype::Vec1dTypes>::getCompliance(defau
                     if (constraints[curRowConst][i].index == constraints[curColConst][j].index)
                     {
                         //W[indexCurRowConst][indexCurColConst] += (1.0/10000.0) * constraints[curRowConst][i].data.x() * constraints[curColConst][j].data.x();
-                        double w = (1.0/10000.0) * constraints[curRowConst][i].data.x() * constraints[curColConst][j].data.x();
+                        double w = compliance.getValue()[constraints[curRowConst][i].index] * constraints[curRowConst][i].data.x() * constraints[curColConst][j].data.x();
                         W->add(indexCurRowConst, indexCurColConst, w);
                         if (indexCurRowConst != indexCurColConst)
                             W->add(indexCurColConst, indexCurRowConst, w);
@@ -257,6 +292,7 @@ void UncoupledConstraintCorrection<defaulttype::Vec1dTypes>::getCompliance(defau
                 }
             */
         }
+        //std::cout<<" : "<<std::endl;
     }
 
 // debug : verifie qu'il n'y a pas de 0 sur la diagonale de W
@@ -314,10 +350,11 @@ void UncoupledConstraintCorrection<defaulttype::Vec1dTypes>::applyContactForce(c
     {
         x[i] = x_free[i];
         v[i] = v_free[i];
-        dx[i] = force[i]/10000.0;
+        dx[i] = force[i] *compliance.getValue()[i];
         x[i] += dx[i];
         v[i] += dx[i]/dt;
     }
+    //std::cout<<" dx on articulations"<<dx<<std::endl;
 }
 
 #endif

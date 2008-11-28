@@ -201,6 +201,7 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
             for (unsigned int i=0; i<dof_on_node; i++)
             {
                 unitary_force.clear();
+                //std::cerr<<"dof n:"<<i<<std::endl;
                 unitary_force[i]=1.0;
                 force[f] = unitary_force;
                 ////// reset Position and Velocities ///////
@@ -209,17 +210,26 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
                 for (unsigned int n=0; n<nbNodes; n++)
                     pos[n] = pos0[n];
                 ////////////////////////////////////////////
+                //std::cerr<<"pos0 set"<<std::endl;
 
 
                 //odeSolver->computeContactForce(force);
 
                 if(odeSolver)
+                {
+                    //std::cerr<<"odeSolver"<<std::endl;
                     odeSolver->solve(dt);
+                }
                 else if(EulerSolver)
+                {
+                    //std::cerr<<"EulerSolver"<<std::endl;
                     EulerSolver->solve(dt, core::componentmodel::behavior::BaseMechanicalState::VecId::position(), core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
+                }
+
+                //std::cerr<<"solve reussi"<<std::endl;
 
                 velocity = *mstate->getV();
-
+                //std::cerr<<"getV : "<<velocity<<std::endl;
                 for (unsigned int v=0; v<nbNodes; v++)
                 {
 
@@ -228,6 +238,7 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
                         appCompliance[(v*dof_on_node+j)*nbCols + (f*dof_on_node+i) ] = velocity[v][j] / unitary_force[i];
                     }
                 }
+                //std::cerr<<"put in appComp"<<std::endl;
             }
             unitary_force.clear();
             force[f] = unitary_force;
@@ -259,48 +270,49 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
 
 
     ////  debug print 100 first row and column of the matrix
-    /*	std::cout << "Matrix compliance" ;
+    std::cout << "Matrix compliance" ;
 
-    	for (unsigned int i=0; i<100 && i<nbCols; i++){
-    		std::cout << std::endl;
-    		for (unsigned int j=0; j<100 && j<nbCols; j++)
-    		{
-    			std::cout <<" \t "<< appCompliance[j*nbCols + i];
-    		}
-    	}
+    for (unsigned int i=0; i<10 && i<nbCols; i++)
+    {
+        std::cout << std::endl;
+        for (unsigned int j=0; j<10 && j<nbCols; j++)
+        {
+            std::cout <<" \t "<< appCompliance[j*nbCols + i];
+        }
+    }
 
-    	std::cout << std::endl;*/
-    //std::cout << "quit init "  << endl;
+    std::cout << std::endl;
+    ////std::cout << "quit init "  << endl;
 
-    std::cout << "----------- Test Quaternions --------------" << std::endl;
+    //std::cout << "----------- Test Quaternions --------------" << std::endl;
 
-    // rotation de -Pi/2 autour de z en init
-    Quat q0(0,0,-0.7071067811865475, 0.7071067811865475);
-    q0.normalize();
-
-
-    // rotation de -Pi/2 autour de x dans le repËre dÈfini par q0; (=rotation Pi/2 autour de l'axe y dans le repËre global)
-    Quat q_q0(-0.7071067811865475,0,0,0.7071067811865475);
-    q_q0.normalize();
+    //// rotation de -Pi/2 autour de z en init
+    //Quat q0(0,0,-0.7071067811865475, 0.7071067811865475);
+    //q0.normalize();
 
 
-    // calcul de la rotation Èquivalente dans le repËre global;
-    Quat q = q0 * q_q0;
-    q.normalize();
-
-    // test des rotations:
-    std::cout<<"VecX = "<<q.rotate( Vec3d(1.0,0.0,0.0) )<<std::endl;
-    std::cout<<"VecY = "<<q.rotate( Vec3d(0.0,1.0,0.0) )<<std::endl;
-    std::cout<<"VecZ = "<<q.rotate( Vec3d(0.0,0.0,1.0) )<<std::endl;
+    //// rotation de -Pi/2 autour de x dans le repËre dÈfini par q0; (=rotation Pi/2 autour de l'axe y dans le repËre global)
+    //Quat q_q0(-0.7071067811865475,0,0,0.7071067811865475);
+    //q_q0.normalize();
 
 
-    // on veut maintenant retrouver l'Èquivalent de q_q0 dans le repËre global
-    // c'est ‡ dire une rotation de Pi/2 autour de l'axe y
-    Quat q_test = q * q0.inverse();
+    //// calcul de la rotation Èquivalente dans le repËre global;
+    //Quat q = q0 * q_q0;
+    //q.normalize();
 
-    std::cout<<"q_test = "<<q_test<<std::endl;
+    //// test des rotations:
+    //std::cout<<"VecX = "<<q.rotate( Vec3d(1.0,0.0,0.0) )<<std::endl;
+    //std::cout<<"VecY = "<<q.rotate( Vec3d(0.0,1.0,0.0) )<<std::endl;
+    //std::cout<<"VecZ = "<<q.rotate( Vec3d(0.0,0.0,1.0) )<<std::endl;
 
-    std::cout<<"Alpha = "<<q_test.toEulerVector()<< " doit valoir une rotation de Pi/2 autour de l'axe y"<<std::endl;
+
+    //// on veut maintenant retrouver l'Èquivalent de q_q0 dans le repËre global
+    //// c'est ‡ dire une rotation de Pi/2 autour de l'axe y
+    //Quat q_test = q * q0.inverse();
+
+    //std::cout<<"q_test = "<<q_test<<std::endl;
+
+    //std::cout<<"Alpha = "<<q_test.toEulerVector()<< " doit valoir une rotation de Pi/2 autour de l'axe y"<<std::endl;
 
 
 

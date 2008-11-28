@@ -95,8 +95,12 @@ public:
 
 
     //void applyOld( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
+    {
+        apply(out, in, NULL);
+    }
 
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in, const typename InRoot::VecCoord* inroot  );
 
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in, const typename InRoot::VecDeriv* inroot );
 
@@ -124,6 +128,16 @@ public:
      * @name
      */
     //@{
+    /**
+     * @brief
+     */
+    void propagateX();
+
+    /**
+     * @brief
+     */
+    void propagateXfree();
+
 
     /**
      * @brief

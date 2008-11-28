@@ -159,6 +159,7 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, 
 void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x*/, const VecDeriv& /*v*/)
 #endif
 {
+
     //if gravity was added separately (in solver's "solve" method), then nothing to do here
     if(this->m_separateGravity.getValue())
         return;
@@ -193,6 +194,7 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x
 //     cerr<<"UniformMass<DataTypes, MassType>::computeForce(), mg in local coordinates= "<<mg<<endl;
 #endif
 
+
     // add weight and inertia force
     for (unsigned int i=0; i<f.size(); i++)
     {
@@ -210,6 +212,8 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x
     {
         VecDeriv& acc =  *this->mstate->getDx();
         // add inertia force due to acceleration from the motion of the mapping (coriolis type force)
+        if (acc.size() != f.size())
+            return;
         for (unsigned int i=0; i<f.size(); i++)
         {
             Deriv coriolis = -acc[i]*m;

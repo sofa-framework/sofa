@@ -144,6 +144,11 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
     contacts.resize(i+1);
     Contact& c = contacts[i];
 
+    //std::cout<<"delta : "<<delta<<" - deltaFree : "<<deltaFree <<std::endl;
+    //std::cout<<"P : "<<P<<" - PFree : "<<Pfree <<std::endl;
+    //std::cout<<"Q : "<<Q<<" - QFree : "<<Qfree <<std::endl;
+
+
 // for visu
     c.P = P;
     c.Q = Q;
@@ -202,6 +207,9 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
         c.dfree_s = 0;
         //printf("\n dt = %f, c.dfree = %f, deltaFree=%f, delta = %f", dt, c.dfree, deltaFree, delta);
     }
+
+
+    //std::cout<<"R_nts = ["<<c.norm<<" ; "<<c.t<<" ; "<<c.s<<" ];"<<std::endl;
 }
 
 
