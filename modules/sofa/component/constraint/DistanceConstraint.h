@@ -78,10 +78,10 @@ protected:
     friend class DistanceConstraintInternalData<DataTypes>;
 
 public:
-    DistanceConstraint( MechanicalState */* dof */):
+    DistanceConstraint( MechanicalState * /*dof*/):
         vecConstraint(Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
     {};
-    DistanceConstraint( MechanicalState */* dof1 */, MechanicalState */* dof2 */):
+    DistanceConstraint( MechanicalState * /*dof1*/, MechanicalState */* dof2 */):
         vecConstraint(Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
     {};
     DistanceConstraint():

@@ -29,14 +29,6 @@
 #include <sofa/simulation/common/MatrixLinearSolver.h>
 #include "FullVector.h"
 
-//Lapack
-#include <cblas.h>
-#include <atlas_enum.h>
-extern "C"
-{
-#include "clapack.h"
-}
-
 #include <map>
 
 namespace sofa
