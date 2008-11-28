@@ -176,6 +176,7 @@ protected:
     int mouseSavedPosX, mouseSavedPosY; ///< Last recorded mouse position
     Vector3 position;
     Quat orientation;
+    bool buttonOmni;
 };
 
 } // namespace controller

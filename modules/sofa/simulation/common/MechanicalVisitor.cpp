@@ -284,6 +284,7 @@ Visitor::Result MechanicalPropagateDxAndResetForceVisitor::fwdMappedMechanicalSt
 Visitor::Result MechanicalPropagateAndAddDxVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
 {
     map->propagateDx();
+    map->propagateV();
     return RESULT_CONTINUE;
 }
 Visitor::Result MechanicalPropagateAndAddDxVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
@@ -413,20 +414,25 @@ Visitor::Result MechanicalResetForceVisitor::fwdMappedMechanicalState(simulation
 
 Visitor::Result MechanicalComputeForceVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
 {
+
     mm->setF(res);
     mm->accumulateForce();
+
     return RESULT_CONTINUE;
 }
 Visitor::Result MechanicalComputeForceVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
 {
+
     mm->accumulateForce();
+
     return RESULT_CONTINUE;
 }
 
 Visitor::Result MechanicalComputeForceVisitor::fwdForceField(simulation::Node* /*node*/, core::componentmodel::behavior::BaseForceField* ff)
 {
-    //cerr<<"MechanicalComputeForceVisitor::fwdForceField "<<ff->getName()<<endl;
+    // cerr<<"MechanicalComputeForceVisitor::fwdForceField "<<ff->getName()<<endl;
     ff->addForce();
+
     return RESULT_CONTINUE;
 }
 

@@ -22,12 +22,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINT_UNCOUPLEDCONSTRAINTCORRECTION_H
-#define SOFA_COMPONENT_CONSTRAINT_UNCOUPLEDCONSTRAINTCORRECTION_H
+#ifndef SOFA_COMPONENT_CONSTANTFORCEFIELD_H
+#define SOFA_COMPONENT_CONSTANTFORCEFIELD_H
 
-#include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
+#include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {
@@ -35,69 +36,45 @@ namespace sofa
 namespace component
 {
 
-namespace constraint
+namespace forcefield
 {
 
-using namespace sofa::core;
-using namespace sofa::core::componentmodel;
-/**
- *  \brief Component computing contact forces within a simulated body using the compliance method.
- */
-template<class TDataTypes>
-class UncoupledConstraintCorrection : public componentmodel::behavior::BaseConstraintCorrection
+/** Apply constant forces to given degrees of freedom.  */
+template<class DataTypes>
+class RestShapeSpringsForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
 {
 public:
-    typedef TDataTypes DataTypes;
+    typedef core::componentmodel::behavior::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::VecConst VecConst;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+    typedef helper::vector<unsigned> VecIndex;
     typedef helper::vector<Real>	 VecReal;
+public:
 
-    UncoupledConstraintCorrection(behavior::MechanicalState<DataTypes> *mm = NULL);
+    Data< VecIndex > points;
+    Data< VecReal > stiffness;
 
-    virtual ~UncoupledConstraintCorrection();
+    RestShapeSpringsForceField();
 
-    virtual void init();
+    /// Add the forces
+    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
-    Data< VecReal > compliance;
+    /// Constant force has null variation
+    virtual void addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double );
 
-    /// Retrieve the associated MechanicalState
-    behavior::MechanicalState<DataTypes>* getMState() { return mstate; }
 
-    virtual void getCompliance(defaulttype::BaseMatrix *W);
+    virtual double getPotentialEnergy(const VecCoord& ) {std::cout<<"getPotentialEnergy not implemented"<<std::endl; return 0.0;}
 
-    virtual void applyContactForce(const defaulttype::BaseVector *f);
 
-    virtual void resetContactForce();
+    void draw();
+    bool addBBox(double* minBBox, double* maxBBox);
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
-    {
-        if (dynamic_cast<behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
-            return false;
-        return BaseObject::canCreate(obj, context, arg);
-    }
-
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const UncoupledConstraintCorrection<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
-protected:
-    behavior::MechanicalState<DataTypes> *mstate;
 };
 
-} // namespace collision
+} // namespace forcefield
 
 } // namespace component
 

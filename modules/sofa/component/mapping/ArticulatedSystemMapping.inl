@@ -71,7 +71,11 @@ void ArticulatedSystemMapping<BasicMapping>::init()
         std::string str = m_rootModelName.getValue();
         std::string::size_type begin_index = 0;
         std::string::size_type end_index = 0;
+        if (rootModel)
+        {
+            std::cerr << "Root Model found : Name = " << rootModel->getName() << std::endl;
 
+        }
         while ( (end_index = str.find("/", begin_index)) != std::string::npos )
         {
             tokens.push_back(str.substr(begin_index, end_index - begin_index));
@@ -130,7 +134,7 @@ void ArticulatedSystemMapping<BasicMapping>::init()
         // todo : warning if a (*a)->articulationIndex.getValue() exceed xfrom size !
     }
 
-    apply(xto, xfrom);
+    apply(xto, xfrom, (rootModel==NULL ? NULL : rootModel->getX()));
 
     /*
     OutVecDeriv& vto = *this->toModel->getV();
@@ -150,13 +154,14 @@ void ArticulatedSystemMapping<BasicMapping>::reset()
 
 
 template <class BasicMapping>
-void ArticulatedSystemMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
+void ArticulatedSystemMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in, const typename InRoot::VecCoord* inroot  )
 {
     // Copy the root position if a rigid root model is present
     if (rootModel)
     {
+        out[0] = (*inroot)[rootModel->getSize()-1];
         //	std::cout << "Root Model Name = " << rootModel->getName() << std::endl;
-        out[0] = (*rootModel->getX())[rootModel->getSize()-1];
+        //   out[0] = (*rootModel->getX())[rootModel->getSize()-1];
     }
 
     vector<ArticulatedHierarchyContainer::ArticulationCenter*>::const_iterator ac = articulationCenters.begin();
@@ -482,9 +487,13 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out
     OutVecCoord& xto = *this->toModel->getX();
 
     out.resize(in.size());
+    unsigned int sizeOutRoot;
 
     if (rootModel!=NULL)
-        outRoot->resize(in.size()); // the constraints are all transmitted to the root
+    {
+        sizeOutRoot = outRoot->size();
+        outRoot->resize(in.size() + sizeOutRoot); // the constraints are all transmitted to the root
+    }
 
 
     for(unsigned int i=0; i<in.size(); i++)
@@ -542,14 +551,17 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out
 
             if (rootModel!=NULL)
             {
-                Vec<3,OutReal> posRoot = xto[0].getCenter();
+                unsigned int indexT = rootModel->getSize()-1; // On applique sur le dernier noeud
+                Vec<3,OutReal> posRoot = xto[indexT].getCenter();
                 OutDeriv T;
                 T.getVCenter() = valueConst.getVCenter();
                 T.getVOrientation() = valueConst.getVOrientation() + cross(C - posRoot, valueConst.getVCenter());
-                unsigned int indexT = 7; //ALLER CHERCHER CETTE INFO!!
+
                 OutSparseDeriv constraintT(indexT, T);
 
-                (*outRoot)[i].push_back(constraintT);
+                (*outRoot)[sizeOutRoot+i].push_back(constraintT);
+                //std::cout<< "constraintT = data : "<< T << "index : "<< indexT<<std::endl;
+                //(*outRoot)[i].push_back(constraintT);
                 //	std::cout<< "constraintT = data : "<< T << "index : "<< indexT<<std::endl;
             }
         }
@@ -559,6 +571,20 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out
 
 }
 
+
+template <class BasicMapping>
+void ArticulatedSystemMapping<BasicMapping>::propagateX()
+{
+    if (this->fromModel!=NULL && this->toModel->getX()!=NULL && this->fromModel->getX()!=NULL)
+        apply(*this->toModel->getX(), *this->fromModel->getX(), (rootModel==NULL ? NULL : rootModel->getX()));
+}
+
+template <class BasicMapping>
+void ArticulatedSystemMapping<BasicMapping>::propagateXfree()
+{
+    if (this->fromModel!=NULL && this->toModel->getXfree()!=NULL && this->fromModel->getXfree()!=NULL)
+        apply(*this->toModel->getXfree(), *this->fromModel->getXfree(), (rootModel==NULL ? NULL : rootModel->getXfree()));
+}
 
 
 template <class BasicMapping>

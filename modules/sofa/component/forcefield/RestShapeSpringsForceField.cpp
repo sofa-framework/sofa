@@ -22,24 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Implementation : MechanicalStateController
-//
-// Description:
-//
-//
-// Author: Pierre-Jean Bensoussan, Digital Trainers (2008)
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-
-#include <sofa/component/controller/MechanicalStateController.inl>
-
+#include <sofa/component/forcefield/RestShapeSpringsForceField.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-
 
 namespace sofa
 {
@@ -47,40 +31,50 @@ namespace sofa
 namespace component
 {
 
-namespace controller
+namespace forcefield
 {
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(MechanicalStateController)
 
-// Register in the Factory
-int MechanicalStateControllerClass = core::RegisterObject("")
-//.add< MechanicalStateController<Vec3dTypes> >()
-//.add< MechanicalStateController<Vec3fTypes> >()
-//.add< MechanicalStateController<Vec2dTypes> >()
-//.add< MechanicalStateController<Vec2fTypes> >()
-        .add< MechanicalStateController<Vec1dTypes> >()
-//.add< MechanicalStateController<Vec1fTypes> >()
-        .add< MechanicalStateController<Rigid3dTypes> >()
-        .add< MechanicalStateController<Rigid3fTypes> >()
-//.add< MechanicalStateController<Rigid2dTypes> >()
-//.add< MechanicalStateController<Rigid2fTypes> >()
+SOFA_DECL_CLASS(RestShapeSpringsForceField)
+
+int RestShapeSpringsForceFieldClass = core::RegisterObject("Simple elastic springs applied to given degrees of freedom between their current and rest shape position")
+#ifndef SOFA_FLOAT
+//.add< RestShapeSpringsForceField<Vec3dTypes> >()
+//.add< RestShapeSpringsForceField<Vec2dTypes> >()
+        .add< RestShapeSpringsForceField<Vec1dTypes> >()
+//.add< RestShapeSpringsForceField<Vec6dTypes> >()
+//.add< RestShapeSpringsForceField<Rigid3dTypes> >()
+//.add< RestShapeSpringsForceField<Rigid2dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+//.add< RestShapeSpringsForceField<Vec3fTypes> >()
+//.add< RestShapeSpringsForceField<Vec2fTypes> >()
+        .add< RestShapeSpringsForceField<Vec1fTypes> >()
+//.add< RestShapeSpringsForceField<Vec6fTypes> >()
+//.add< RestShapeSpringsForceField<Rigid3fTypes> >()
+//.add< RestShapeSpringsForceField<Rigid2fTypes> >()
+#endif
         ;
+#ifndef SOFA_FLOAT
+//template class RestShapeSpringsForceField<Vec3dTypes>;
+//template class RestShapeSpringsForceField<Vec2dTypes>;
+template class RestShapeSpringsForceField<Vec1dTypes>;
+//template class RestShapeSpringsForceField<Vec6dTypes>;
+//template class RestShapeSpringsForceField<Rigid3dTypes>;
+//template class RestShapeSpringsForceField<Rigid2dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+//template class RestShapeSpringsForceField<Vec3fTypes>;
+//template class RestShapeSpringsForceField<Vec2fTypes>;
+template class RestShapeSpringsForceField<Vec1fTypes>;
+//template class RestShapeSpringsForceField<Vec6fTypes>;
+//template class RestShapeSpringsForceField<Rigid3fTypes>;
+//template class RestShapeSpringsForceField<Rigid2fTypes>;
+#endif
 
-//template class MechanicalStateController<Vec3dTypes>;
-//template class MechanicalStateController<Vec3fTypes>;
-//template class MechanicalStateController<Vec2dTypes>;
-//template class MechanicalStateController<Vec2fTypes>;
-template class MechanicalStateController<Vec1dTypes>;
-//template class MechanicalStateController<Vec1fTypes>;
-template class MechanicalStateController<Rigid3dTypes>;
-template class MechanicalStateController<Rigid3fTypes>;
-//template class MechanicalStateController<Rigid2dTypes>;
-//template class MechanicalStateController<Rigid2fTypes>;
-
-
-} // namespace controller
+} // namespace forcefield
 
 } // namespace component
 
