@@ -33,6 +33,8 @@
 #include <sofa/helper/gl/template.h>
 #include <assert.h>
 #include <iostream>
+#include <sofa/helper/gl/BasicShapes.h>
+
 using std::cerr;
 using std::endl;
 
@@ -50,6 +52,7 @@ template<class DataTypes>
 ConstantForceField<DataTypes>::ConstantForceField()
     : points(initData(&points, "points", "points where the forces are applied"))
     , forces(initData(&forces, "forces", "applied forces"))
+    , arrowSizeCoef(initData(&arrowSizeCoef,0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
 {}
 
 
@@ -124,18 +127,51 @@ void ConstantForceField<DataTypes>::draw()
     const VecIndex& indices = points.getValue();
     const VecDeriv& f = forces.getValue();
     const VecCoord& x = *this->mstate->getX();
-    glDisable(GL_LIGHTING);
-    glBegin(GL_LINES);
-    glColor3f(0,1,0);
-    for (unsigned int i=0; i<indices.size(); i++)
+
+    double aSC = arrowSizeCoef.getValue();
+
+    if( fabs(aSC)<1.0e-10 )
     {
-        Real xx,xy,xz,fx,fy,fz;
-        DataTypes::get(xx,xy,xz,x[indices[i]]);
-        DataTypes::get(fx,fy,fz,f[(i<f.size()) ? i : f.size()-1]);
-        glVertex3f( (GLfloat)xx, (GLfloat)xy, (GLfloat)xz );
-        glVertex3f( (GLfloat)(xx+fx), (GLfloat)(xy+fy), (GLfloat)(xz+fz) );
+        glDisable(GL_LIGHTING);
+        glBegin(GL_LINES);
+        glColor3f(0,1,0);
+        for (unsigned int i=0; i<indices.size(); i++)
+        {
+            Real xx,xy,xz,fx,fy,fz;
+            DataTypes::get(xx,xy,xz,x[indices[i]]);
+            DataTypes::get(fx,fy,fz,f[(i<f.size()) ? i : f.size()-1]);
+            glVertex3f( (GLfloat)xx, (GLfloat)xy, (GLfloat)xz );
+            glVertex3f( (GLfloat)(xx+fx), (GLfloat)(xy+fy), (GLfloat)(xz+fz) );
+        }
+        glEnd();
     }
-    glEnd();
+    else
+    {
+        glEnable(GL_LIGHTING);
+        glEnable(GL_COLOR_MATERIAL);
+        glColor3f(1,.4,.4);
+        for (unsigned int i=0; i<indices.size(); i++)
+        {
+            Real xx,xy,xz,fx,fy,fz;
+            DataTypes::get(xx,xy,xz,x[indices[i]]);
+            DataTypes::get(fx,fy,fz,f[(i<f.size()) ? i : f.size()-1]);
+
+
+            defaulttype::Vec3f p1( xx, xy, xz);
+            defaulttype::Vec3f p2( aSC*fx+xx, aSC*fy+xy, aSC*fz+xz );
+
+            float norm = (p2-p1).norm();
+
+            if( aSC > 0)
+            {
+                helper::gl::drawArrow( p1,p2, norm/20.0);
+            }
+            else
+            {
+                helper::gl::drawArrow( p2,p1, norm/20.0);
+            }
+        }
+    }
 }
 
 
