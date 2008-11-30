@@ -18,8 +18,6 @@ using namespace sofa::defaulttype;
 template <typename V>
 void drawCone(const V& p1, const V& p2, const float& rad1, const float& rad2, const int subd=8)
 {
-    glPushMatrix();
-
     V tmp = p2-p1;
 
     /* create Vectors p and q, co-planar with the cylinder's cross-sectional disk */
@@ -46,9 +44,7 @@ void drawCone(const V& p1, const V& p2, const float& rad1, const float& rad2, co
         st = sin(theta);
         ct = cos(theta);
         /* construct normal */
-        tmp[0] = ct * p[0] + st * q[0];
-        tmp[1] = ct * p[1] + st * q[1];
-        tmp[2] = ct * p[2] + st * q[2];
+        tmp = p*ct+q*st;
         /* set the normal for the two subseqent points */
         helper::gl::glNormalT(tmp);
         /* point on disk 1 */
@@ -61,8 +57,6 @@ void drawCone(const V& p1, const V& p2, const float& rad1, const float& rad2, co
         helper::gl::glVertexT(w);
     }
     glEnd();
-
-    glPopMatrix();
 }
 
 
