@@ -160,6 +160,66 @@ inline void glTranslate(const double& c1, const double& c2, const double& c3)
     glTranslated(c1, c2, c3);
 }
 
+template<int N>
+inline void glTranslateNv(const float* p)
+{
+    glTranslatef(p[0],p[1],p[2]);
+}
+
+template<>
+inline void glTranslateNv<2>(const float* p)
+{
+    glTranslatef(p[0],p[1],0.0f);
+}
+
+template<>
+inline void glTranslateNv<1>(const float* p)
+{
+    glTranslatef(p[0],0.0f,0.0f);
+}
+
+template<int N>
+inline void glTranslateNv(const double* p)
+{
+    glTranslated(p[0],p[1],p[2]);
+}
+
+template<>
+inline void glTranslateNv<2>(const double* p)
+{
+    glTranslated(p[0],p[1],0.0);
+}
+
+template<>
+inline void glTranslateNv<1>(const double* p)
+{
+    glTranslated(p[0],0.0,0.0);
+}
+
+template<class Coord>
+inline void glTranslateT(const Coord& c)
+{
+    glTranslateNv<Coord::static_size>(c.ptr());
+}
+
+template<>
+inline void glTranslateT<double>(const double& c)
+{
+    glTranslated(c,0.0,0.0);
+}
+
+template<>
+inline void glTranslateT<float>(const float& c)
+{
+    glTranslatef(c,0.0f,0.0f);
+}
+
+
+////////////
+
+
+
+
 inline void glScale(const float& c1, const float& c2, const float& c3)
 {
     glScalef(c1, c2, c3);

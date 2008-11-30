@@ -30,6 +30,7 @@ HEADERS += \
           FnDispatcher.h \
           FnDispatcher.inl \
           gl/Axis.h \
+	  gl/BasicShapes.h \
           gl/Cylinder.h \
           gl/Capture.h \
           gl/glfont.h \
