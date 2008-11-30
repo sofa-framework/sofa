@@ -55,6 +55,7 @@ public:
 
     Data< VecIndex > points;
     Data< VecDeriv > forces;
+    Data< double > arrowSizeCoef; // for drawing. The sign changes the direction, 0 doesn't draw arrow
 
     ConstantForceField();
 
