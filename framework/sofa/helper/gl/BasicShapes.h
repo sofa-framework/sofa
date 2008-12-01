@@ -16,7 +16,7 @@ using namespace sofa::defaulttype;
 
 
 template <typename V>
-void drawCone(const typename V& p1, const typename V& p2, const float& radius1, const float& radius2, const int subd=8)
+void drawCone(const V& p1, const V& p2, const float& radius1, const float& radius2, const int subd=8)
 {
     V tmp = p2-p1;
 
