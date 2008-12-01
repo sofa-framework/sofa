@@ -44,13 +44,15 @@ using namespace core::componentmodel::topology;
 
 template <class DataTypes>
 SurfacePressureForceField<DataTypes>::SurfacePressureForceField():
-    pressure(initData(&pressure, (Real)0.0, "pressure", "Pressure force per unit area")),
-    min(initData(&min, Coord(), "min", "Lower bond of the selection box")),
-    max(initData(&max, Coord(), "max", "Lower bond of the selection box")),
-    pulseMode(initData(&pulseMode, false, "pulseMode", "Cyclic pressure application")),
-    pressureSpeed(initData(&pressureSpeed, (Real)0.0, "pressureSpeed", "Continuous pressure application in Pascal per second. Only active in pulse mode")),
-    volumeConservationMode(initData(&volumeConservationMode, false, "volumeConservationMode", "Pressure variation follow the inverse of the volume variation")),
-    defaultVolume(initData(&defaultVolume, (Real)-1.0, "defaultVolume", "Default Volume"))
+    m_pressure(initData(&m_pressure, (Real)0.0, "pressure", "Pressure force per unit area")),
+    m_min(initData(&m_min, Coord(), "min", "Lower bond of the selection box")),
+    m_max(initData(&m_max, Coord(), "max", "Lower bond of the selection box")),
+    m_pulseMode(initData(&m_pulseMode, false, "pulseMode", "Cyclic pressure application")),
+    m_pressureLowerBound(initData(&m_pressureLowerBound, (Real)0.0, "pressureLowerBound", "Pressure lower bound force per unit area (active in pulse mode)")),
+    m_pressureSpeed(initData(&m_pressureSpeed, (Real)0.0, "pressureSpeed", "Continuous pressure application in Pascal per second. Only active in pulse mode")),
+    m_volumeConservationMode(initData(&m_volumeConservationMode, false, "volumeConservationMode", "Pressure variation follow the inverse of the volume variation")),
+    m_defaultVolume(initData(&m_defaultVolume, (Real)-1.0, "defaultVolume", "Default Volume")),
+    m_mainDirection(initData(&m_mainDirection, Deriv(), "mainDirection", "Main direction for pressure application"))
 {
 
 }
@@ -69,14 +71,14 @@ template <class DataTypes>
 void SurfacePressureForceField<DataTypes>::init()
 {
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
-    _topology = getContext()->getMeshTopology();
+    m_topology = getContext()->getMeshTopology();
 
-    state = ( pressure.getValue() > 0 ) ? INCREASE : DECREASE;
+    state = ( m_pressure.getValue() > 0 ) ? INCREASE : DECREASE;
 
-    if (pulseMode.getValue() && (pressureSpeed.getValue() == 0.0))
+    if (m_pulseMode.getValue() && (m_pressureSpeed.getValue() == 0.0))
     {
         logWarning("Default pressure speed value has been set in SurfacePressureForceField");
-        pressureSpeed.setValue((Real)fabs( pressure.getValue()));
+        m_pressureSpeed.setValue((Real)fabs( m_pressure.getValue()));
     }
 
     m_pulseModePressure = 0.0;
@@ -87,28 +89,28 @@ void SurfacePressureForceField<DataTypes>::init()
 template <class DataTypes>
 void SurfacePressureForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 {
-    Real p = pulseMode.getValue() ? computePulseModePressure() : pressure.getValue();
+    Real p = m_pulseMode.getValue() ? computePulseModePressure() : m_pressure.getValue();
 
-    if (_topology)
+    if (m_topology)
     {
-        if (volumeConservationMode.getValue())
+        if (m_volumeConservationMode.getValue())
         {
-            if(defaultVolume == -1)
+            if (m_defaultVolume.getValue() == -1)
             {
-                defaultVolume = computeMeshVolume(f,x);
+                m_defaultVolume.setValue(computeMeshVolume(f,x));
             }
-            else if(defaultVolume != 0)
+            else if (m_defaultVolume.getValue() != 0)
             {
-                p *= defaultVolume.getValue() / computeMeshVolume(f,x);
+                p *= m_defaultVolume.getValue() / computeMeshVolume(f,x);
             }
         }
 
-        if (_topology->getNbTriangles() > 0)
+        if (m_topology->getNbTriangles() > 0)
         {
             addTriangleSurfacePressure(f,x,v,p);
         }
 
-        if (_topology->getNbQuads() > 0)
+        if (m_topology->getNbQuads() > 0)
         {
             addQuadSurfacePressure(f,x,v,p);
         }
@@ -125,17 +127,17 @@ typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceField<Da
     Real volume = 0;
     int i = 0;
 
-    for (i = 0; i < _topology->getNbTriangles(); i++)
+    for (i = 0; i < m_topology->getNbTriangles(); i++)
     {
-        Triangle t = _topology->getTriangle(i);
+        Triangle t = m_topology->getTriangle(i);
         Deriv ab = x[t[1]] - x[t[0]];
         Deriv ac = x[t[2]] - x[t[0]];
         volume += (ab.cross(ac))[2] * (x[t[0]][2] + x[t[1]][2] + x[t[2]][2]) / static_cast<Real>(6.0);
     }
 
-    for (i = 0; i < _topology->getNbQuads(); i++)
+    for (i = 0; i < m_topology->getNbQuads(); i++)
     {
-        Quad q = _topology->getQuad(i);
+        Quad q = m_topology->getQuad(i);
 
         Deriv ab = x[q[1]] - x[q[0]];
         Deriv ac = x[q[2]] - x[q[0]];
@@ -154,9 +156,9 @@ void SurfacePressureForceField<DataTypes>::addTriangleSurfacePressure(VecDeriv& 
 {
     typedef BaseMeshTopology::Triangle Triangle;
 
-    for (int i = 0; i < _topology->getNbTriangles(); i++)
+    for (int i = 0; i < m_topology->getNbTriangles(); i++)
     {
-        Triangle t = _topology->getTriangle(i);
+        Triangle t = m_topology->getTriangle(i);
 
         if ( isInPressuredBox(x[t[0]]) && isInPressuredBox(x[t[1]]) && isInPressuredBox(x[t[2]]) )
         {
@@ -165,6 +167,14 @@ void SurfacePressureForceField<DataTypes>::addTriangleSurfacePressure(VecDeriv& 
             Deriv ac = x[t[2]] - x[t[0]];
 
             Deriv p = pressure * (ab.cross(ac)) / static_cast<Real>(6.0);
+
+            if (m_mainDirection.getValue() != Deriv())
+            {
+                Deriv n = ab.cross(ac);
+                n.normalize();
+                Real scal = n * m_mainDirection.getValue();
+                p *= fabs(scal);
+            }
 
             f[t[0]] += p;
             f[t[1]] += p;
@@ -180,9 +190,9 @@ void SurfacePressureForceField<DataTypes>::addQuadSurfacePressure(VecDeriv& f, c
 {
     typedef BaseMeshTopology::Quad Quad;
 
-    for (int i = 0; i < _topology->getNbQuads(); i++)
+    for (int i = 0; i < m_topology->getNbQuads(); i++)
     {
-        Quad q = _topology->getQuad(i);
+        Quad q = m_topology->getQuad(i);
 
         if ( isInPressuredBox(x[q[0]]) && isInPressuredBox(x[q[1]]) && isInPressuredBox(x[q[2]]) && isInPressuredBox(x[q[3]]) )
         {
@@ -209,15 +219,15 @@ void SurfacePressureForceField<DataTypes>::addQuadSurfacePressure(VecDeriv& f, c
 template <class DataTypes>
 bool SurfacePressureForceField<DataTypes>::isInPressuredBox(const Coord &x) const
 {
-    if ( (max == Coord()) && (min == Coord()) )
+    if ( (m_max == Coord()) && (m_min == Coord()) )
         return true;
 
-    return ( (x[0] >= min.getValue()[0])
-            && (x[0] <= max.getValue()[0])
-            && (x[1] >= min.getValue()[1])
-            && (x[1] <= max.getValue()[1])
-            && (x[2] >= min.getValue()[2])
-            && (x[2] <= max.getValue()[2]) );
+    return ( (x[0] >= m_min.getValue()[0])
+            && (x[0] <= m_max.getValue()[0])
+            && (x[1] >= m_min.getValue()[1])
+            && (x[1] <= m_max.getValue()[1])
+            && (x[2] >= m_min.getValue()[2])
+            && (x[2] <= m_max.getValue()[2]) );
 }
 
 
@@ -225,7 +235,7 @@ bool SurfacePressureForceField<DataTypes>::isInPressuredBox(const Coord &x) cons
 template <class DataTypes>
 double SurfacePressureForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
 {
-    cerr<<"TrianglePressureForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    cerr << "TrianglePressureForceField::getPotentialEnergy-not-implemented !!!" << endl;
     return 0;
 }
 
@@ -238,27 +248,31 @@ const typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceFi
 
     if (state == INCREASE)
     {
-        Real pUpperBound = (pressure.getValue() > 0) ? pressure.getValue() : 0.0;
+        Real pUpperBound = (m_pressure.getValue() > 0) ? m_pressure.getValue() : m_pressureLowerBound.getValue();
 
-        m_pulseModePressure += pressureSpeed.getValue() * dt;
+        m_pulseModePressure += m_pressureSpeed.getValue() * dt;
+
         if (m_pulseModePressure >= pUpperBound)
         {
             m_pulseModePressure = pUpperBound;
             state = DECREASE;
         }
+
         return m_pulseModePressure;
     }
 
     if (state == DECREASE)
     {
-        Real pLowerBound = (pressure.getValue() > 0) ? -pressure.getValue() : pressure.getValue();
+        Real pLowerBound = (m_pressure.getValue() > 0) ? m_pressureLowerBound.getValue() : m_pressure.getValue();
 
-        m_pulseModePressure -= pressureSpeed.getValue() * dt;
+        m_pulseModePressure -= m_pressureSpeed.getValue() * dt;
+
         if (m_pulseModePressure <= pLowerBound)
         {
             m_pulseModePressure = pLowerBound;
             state = INCREASE;
         }
+
         return m_pulseModePressure;
     }
 
@@ -279,34 +293,34 @@ void SurfacePressureForceField<DataTypes>::draw()
 
     glDisable(GL_LIGHTING);
 
-    glColor4f(0,1,0,1);
+    glColor4f(0.f,0.8f,0.3f,1.f);
 
     glBegin(GL_LINE_LOOP);
-    glVertex3d(min.getValue()[0],min.getValue()[1],min.getValue()[2]);
-    glVertex3d(max.getValue()[0],min.getValue()[1],min.getValue()[2]);
-    glVertex3d(max.getValue()[0],min.getValue()[1],max.getValue()[2]);
-    glVertex3d(min.getValue()[0],min.getValue()[1],max.getValue()[2]);
+    glVertex3d(m_min.getValue()[0],m_min.getValue()[1],m_min.getValue()[2]);
+    glVertex3d(m_max.getValue()[0],m_min.getValue()[1],m_min.getValue()[2]);
+    glVertex3d(m_max.getValue()[0],m_min.getValue()[1],m_max.getValue()[2]);
+    glVertex3d(m_min.getValue()[0],m_min.getValue()[1],m_max.getValue()[2]);
     glEnd();
 
     glBegin(GL_LINE_LOOP);
-    glVertex3d(min.getValue()[0],max.getValue()[1],min.getValue()[2]);
-    glVertex3d(max.getValue()[0],max.getValue()[1],min.getValue()[2]);
-    glVertex3d(max.getValue()[0],max.getValue()[1],max.getValue()[2]);
-    glVertex3d(min.getValue()[0],max.getValue()[1],max.getValue()[2]);
+    glVertex3d(m_min.getValue()[0],m_max.getValue()[1],m_min.getValue()[2]);
+    glVertex3d(m_max.getValue()[0],m_max.getValue()[1],m_min.getValue()[2]);
+    glVertex3d(m_max.getValue()[0],m_max.getValue()[1],m_max.getValue()[2]);
+    glVertex3d(m_min.getValue()[0],m_max.getValue()[1],m_max.getValue()[2]);
     glEnd();
 
     glBegin(GL_LINES);
-    glVertex3d(min.getValue()[0],min.getValue()[1],min.getValue()[2]);
-    glVertex3d(min.getValue()[0],max.getValue()[1],min.getValue()[2]);
+    glVertex3d(m_min.getValue()[0],m_min.getValue()[1],m_min.getValue()[2]);
+    glVertex3d(m_min.getValue()[0],m_max.getValue()[1],m_min.getValue()[2]);
 
-    glVertex3d(max.getValue()[0],min.getValue()[1],min.getValue()[2]);
-    glVertex3d(max.getValue()[0],max.getValue()[1],min.getValue()[2]);
+    glVertex3d(m_max.getValue()[0],m_min.getValue()[1],m_min.getValue()[2]);
+    glVertex3d(m_max.getValue()[0],m_max.getValue()[1],m_min.getValue()[2]);
 
-    glVertex3d(max.getValue()[0],min.getValue()[1],max.getValue()[2]);
-    glVertex3d(max.getValue()[0],max.getValue()[1],max.getValue()[2]);
+    glVertex3d(m_max.getValue()[0],m_min.getValue()[1],m_max.getValue()[2]);
+    glVertex3d(m_max.getValue()[0],m_max.getValue()[1],m_max.getValue()[2]);
 
-    glVertex3d(min.getValue()[0],min.getValue()[1],max.getValue()[2]);
-    glVertex3d(min.getValue()[0],max.getValue()[1],max.getValue()[2]);
+    glVertex3d(m_min.getValue()[0],m_min.getValue()[1],m_max.getValue()[2]);
+    glVertex3d(m_min.getValue()[0],m_max.getValue()[1],m_max.getValue()[2]);
     glEnd();
 
 
