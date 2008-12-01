@@ -171,6 +171,8 @@ void ConstantForceField<DataTypes>::draw()
                 helper::gl::drawArrow( p2,p1, norm/20.0);
             }
         }
+        glDisable(GL_LIGHTING);
+        glDisable(GL_COLOR_MATERIAL);
     }
 }
 
