@@ -63,17 +63,20 @@ public:
 
 protected:
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
-    Data< Real > pressure; ///< Scalar pressure value applied on the surfaces.
-    Data< Coord > min; ///< Lower bound of the pressured box.
-    Data< Coord > max; ///< Upper bound of the pressured box.
-    Data< bool > pulseMode; ///< In this mode, the pressure increases (or decreases) from 0 to pressure cyclicly.
-    Data< Real > pressureSpeed; ///< Pressure variation in Pascal by second.
-    Data< bool > volumeConservationMode; ///< In this mode, pressure variation is related to the object volume variation.
-    Data< Real > defaultVolume; ///< Default Volume.
+    sofa::core::componentmodel::topology::BaseMeshTopology* m_topology;
 
-    State state; ///< In pulse mode, says wether pressure is increasing or decreasing.
-    Real m_pulseModePressure; ///< Current pressure computed in pulse mode.
+    Data< Real >	m_pressure;					///< Scalar pressure value applied on the surfaces.
+    Data< Coord >	m_min;						///< Lower bound of the pressured box.
+    Data< Coord >	m_max;						///< Upper bound of the pressured box.
+    Data< bool >	m_pulseMode;				///< In this mode, the pressure increases (or decreases) from 0 to m_pressure cyclicly.
+    Data< Real >	m_pressureLowerBound;		///< In pulseMode, the pressure increases(or decreases) from m_pressureLowerBound to m_pressure cyclicly.
+    Data< Real >	m_pressureSpeed;			///< Pressure variation in Pascal by second.
+    Data< bool >	m_volumeConservationMode;	///< In this mode, pressure variation is related to the object volume variation.
+    Data< Real >	m_defaultVolume;			///< Default Volume.
+    Data< Deriv >	m_mainDirection;			///< Main axis for pressure application.
+
+    State state;								///< In pulse mode, says wether pressure is increasing or decreasing.
+    Real m_pulseModePressure;					///< Current pressure computed in pulse mode.
 
 public:
 
@@ -90,7 +93,7 @@ public:
 
     void setPressure(const Real _pressure)
     {
-        this->pressure = _pressure;
+        this->m_pressure.setValue(_pressure);
     }
 
 protected:
