@@ -16,7 +16,7 @@ using namespace sofa::defaulttype;
 
 
 template <typename V>
-void drawCone(const V& p1, const V& p2, const float& rad1, const float& rad2, const int subd=8)
+void drawCone(const typename V& p1, const typename V& p2, const float& radius1, const float& radius2, const int subd=8)
 {
     V tmp = p2-p1;
 
@@ -49,11 +49,11 @@ void drawCone(const V& p1, const V& p2, const float& rad1, const float& rad2, co
         helper::gl::glNormalT(tmp);
         /* point on disk 1 */
         V w(p1);
-        w += tmp*rad1;
+        w += tmp*radius1;
         helper::gl::glVertexT(w);
         /* point on disk 2 */
         w=p2;
-        w += tmp*rad2;
+        w += tmp*radius2;
         helper::gl::glVertexT(w);
     }
     glEnd();
