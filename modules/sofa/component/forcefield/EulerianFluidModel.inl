@@ -170,9 +170,6 @@ void EulerianFluidModel<DataTypes>::init()
     //initialize m_pInfo, m_eInfo, m_fInfo, m_bdPointInfo, m_bdEdgeInfo
     computeElementInformation();
 
-    //initialize dual faces
-    computeDualFaces();
-
     //calculate Operators
     computeOperators();
 
@@ -630,6 +627,8 @@ void EulerianFluidModel<DataTypes>::computeElementInformation()
 {
     m_pInfo.m_isBoundary.resize(m_nbPoints);
     m_pInfo.m_isBoundary.fill(false);
+    m_pInfo.m_dualFaces.clear();
+    m_pInfo.m_dualFaces.resize(m_nbPoints);
 
     m_eInfo.m_isBoundary.resize(m_nbEdges);
     m_eInfo.m_isBoundary.fill(false);
@@ -690,6 +689,23 @@ void EulerianFluidModel<DataTypes>::computeElementInformation()
                 m_bdPointInfo.insert(make_pair(e[1], pInfo));
             }
         }
+
+        //compute m_pInfo.m_dualFaces
+        for(PointID i = 0; i < m_nbPoints; ++i)
+        {
+            VertexEdges pEdges = m_topology->getOrientedEdgeVertexShell(i);
+            VertexFaces pFaces = m_topology->getOrientedTriangleVertexShell(i);
+            //for a boundary point, dual face includes the point itself and two edge centers
+            if(m_pInfo.m_isBoundary[i])
+            {
+                m_pInfo.m_dualFaces[i].push_back(m_eInfo.m_centers[pEdges.back()]);
+                m_pInfo.m_dualFaces[i].push_back(m_triGeo->getPointPosition(i));
+                m_pInfo.m_dualFaces[i].push_back(m_eInfo.m_centers[pEdges.front()]);
+            }
+            //dual face is composed of face centers
+            for(FaceID j = 0; j < pFaces.size(); ++j)
+                m_pInfo.m_dualFaces[i].push_back(m_fInfo.m_centers[pFaces[j]]);
+        }
         break;
 
     case QuadMesh:
@@ -729,6 +745,23 @@ void EulerianFluidModel<DataTypes>::computeElementInformation()
                 m_bdPointInfo.insert(make_pair(e[1], pInfo));
             }
         }
+
+        //compute m_pInfo.m_dualFaces
+        for(PointID i = 0; i < m_nbPoints; ++i)
+        {
+            VertexEdges pEdges = m_topology->getOrientedEdgeVertexShell(i);
+            VertexFaces pFaces = m_topology->getOrientedQuadVertexShell(i);
+            //for a boundary point, dual face includes the point itself and two edge centers
+            if(m_pInfo.m_isBoundary[i])
+            {
+                m_pInfo.m_dualFaces[i].push_back(m_eInfo.m_centers[pEdges.back()]);
+                m_pInfo.m_dualFaces[i].push_back(m_quadGeo->getPointPosition(i));
+                m_pInfo.m_dualFaces[i].push_back(m_eInfo.m_centers[pEdges.front()]);
+            }
+            //dual face is composed of face centers
+            for(FaceID j = 0; j < pFaces.size(); ++j)
+                m_pInfo.m_dualFaces[i].push_back(m_fInfo.m_centers[pFaces[j]]);
+        }
         break;
 
     case RegularQuadMesh:
@@ -765,175 +798,27 @@ void EulerianFluidModel<DataTypes>::computeElementInformation()
                 m_bdPointInfo.insert(make_pair(e[1], pInfo));
             }
         }
+
+        //compute m_pInfo.m_dualFaces
+        for(PointID i = 0; i < m_nbPoints; ++i)
+        {
+            VertexEdges pEdges = m_topology->getOrientedEdgeVertexShell(i);
+            VertexFaces pFaces = m_topology->getOrientedQuadVertexShell(i);
+            //for a boundary point, dual face includes the point itself and two edge centers
+            if(m_pInfo.m_isBoundary[i])
+            {
+                m_pInfo.m_dualFaces[i].push_back(m_eInfo.m_centers[pEdges.back()]);
+                m_pInfo.m_dualFaces[i].push_back(m_quadGeo->getPointPosition(i));
+                m_pInfo.m_dualFaces[i].push_back(m_eInfo.m_centers[pEdges.front()]);
+            }
+            //dual face is composed of face centers
+            for(FaceID j = 0; j < pFaces.size(); ++j)
+                m_pInfo.m_dualFaces[i].push_back(m_fInfo.m_centers[pFaces[j]]);
+        }
         break;
 
     default:
         break;
-    }
-}
-
-template<class DataTypes>
-void EulerianFluidModel<DataTypes>::computeDualFaces()
-{
-    assert(!m_pInfo.m_isBoundary.empty() && !m_eInfo.m_centers.empty());
-    m_pInfo.m_dualFaces.clear();
-    m_pInfo.m_dualFaceVertexNormals.clear();
-    m_pInfo.m_dualFaceVertexVolumes.clear();
-
-    m_pInfo.m_dualFaces.resize(m_nbPoints);
-    m_pInfo.m_dualFaceVertexNormals.resize(m_nbPoints);
-    m_pInfo.m_dualFaceVertexVolumes.resize(m_nbPoints);
-
-    if(m_centerType == Barycenter)
-        std::cerr << "At present, not implemented: ComputeDualFaces() for barycenter" <<endl;
-    else
-    {
-        switch(m_meshType)
-        {
-        case TriangleMesh:
-
-            for(PointID i = 0; i < m_nbPoints; ++i)
-            {
-                Coord p = m_triGeo->getPointPosition(i);
-                VertexEdges pEdges = m_topology->getOrientedEdgeVertexShell(i);
-                VertexFaces pFaces = m_topology->getOrientedTriangleVertexShell(i);
-
-                if(m_pInfo.m_isBoundary[i])
-                    //for a boundary point, dual face is not only composed of face centers, but also the point itself and two edge centers
-                {
-                    Normal norm1, norm2, norm3, norm4;
-                    Edge e;
-                    EdgeFaces eFaces;
-
-                    // one of the edge center
-                    m_pInfo.m_dualFaces[i].push_back(m_eInfo.m_centers[pEdges.back()]);
-                    e = m_topology->getEdge(pEdges.back());
-                    norm1 = m_triGeo->computeEdgeDirection(pEdges.back());
-                    if(e[1] == i)
-                        norm1 = -norm1;
-                    eFaces = m_topology->getTriangleEdgeShell(pEdges.back());
-                    norm2 = m_fInfo.m_centers[eFaces[0]] - m_eInfo.m_centers[pEdges.back()];
-
-                    // point
-                    m_pInfo.m_dualFaces[i].push_back(p);
-
-                    // the other edge center
-                    m_pInfo.m_dualFaces[i].push_back(m_eInfo.m_centers[pEdges.front()]);
-                    e = m_topology->getEdge(pEdges.front());
-                    eFaces = m_topology->getTriangleEdgeShell(pEdges.front());
-                    norm3 = m_fInfo.m_centers[eFaces[0]] - m_eInfo.m_centers[pEdges.front()];
-                    norm4 = m_triGeo->computeEdgeDirection(pEdges.back());
-                    if(e[1] == i)
-                        norm4 = -norm4;
-
-                    VertexNormal vNorms;
-                    //VertexNormal for eCenter1
-                    vNorms[0] = norm1, vNorms[1] = norm2;
-                    m_pInfo.m_dualFaceVertexNormals[i].push_back(vNorms);
-                    m_pInfo.m_dualFaceVertexVolumes[i].push_back((vNorms[0].cross(vNorms[1]).norm()));
-                    //VertexNormal for p
-                    vNorms[0] = norm2, vNorms[1] = norm3;
-                    m_pInfo.m_dualFaceVertexNormals[i].push_back(vNorms);
-                    m_pInfo.m_dualFaceVertexVolumes[i].push_back((vNorms[0].cross(vNorms[1]).norm()));
-                    //VertexNormal for eCenter2
-                    vNorms[0] = norm3, vNorms[1] = norm4;
-                    m_pInfo.m_dualFaceVertexNormals[i].push_back(vNorms);
-                    m_pInfo.m_dualFaceVertexVolumes[i].push_back((vNorms[0].cross(vNorms[1]).norm()));
-                }
-
-                //dual face is composed of face centers
-                for(FaceID j = 0; j < pFaces.size(); ++j)
-                {
-                    m_pInfo.m_dualFaces[i].push_back(m_fInfo.m_centers[pFaces[j]]);
-
-                    VertexNormal vNorms;
-                    vNorms[0] = m_triGeo->computeEdgeDirection(pEdges[j]);
-                    Edge e = m_topology->getEdge(pEdges[j]);
-                    if(e[1] == i)
-                        vNorms[0] = -vNorms[0];
-                    vNorms[1] = m_triGeo->computeEdgeDirection(pEdges[(j+1)%pEdges.size()]);
-                    e = m_topology->getEdge(pEdges[(j+1)%pEdges.size()]);
-                    if(e[1] == i)
-                        vNorms[1] = -vNorms[1];
-
-                    m_pInfo.m_dualFaceVertexNormals[i].push_back(vNorms);
-                    m_pInfo.m_dualFaceVertexVolumes[i].push_back((vNorms[0].cross(vNorms[1]).norm()));
-                }
-            }
-            break;
-
-        case QuadMesh:
-        case RegularQuadMesh:
-            for(PointID i = 0; i < m_nbPoints; ++i)
-            {
-                Coord p = m_quadGeo->getPointPosition(i);
-                VertexEdges pEdges = m_topology->getOrientedEdgeVertexShell(i);
-                VertexFaces pFaces = m_topology->getOrientedQuadVertexShell(i);
-
-                if(m_pInfo.m_isBoundary[i])
-                    //for a boundary point, dual face is not only composed of face centers, but also the point itself and edgecenters
-                {
-                    Normal norm1, norm2, norm3, norm4;
-                    Edge e;
-                    EdgeFaces eFaces;
-
-                    // one of the edge center
-                    m_pInfo.m_dualFaces[i].push_back(m_eInfo.m_centers[pEdges.back()]);
-                    e = m_topology->getEdge(pEdges.back());
-                    norm1 = m_quadGeo->computeEdgeDirection(pEdges.back());
-                    if(e[1] == i)
-                        norm1 = -norm1;
-                    eFaces = m_topology->getQuadEdgeShell(pEdges.back());
-                    norm2 = m_fInfo.m_centers[eFaces[0]] - m_eInfo.m_centers[pEdges.back()];
-
-                    // point
-                    m_pInfo.m_dualFaces[i].push_back(p);
-
-                    // the other edge center
-                    m_pInfo.m_dualFaces[i].push_back(m_eInfo.m_centers[pEdges.front()]);
-                    e = m_topology->getEdge(pEdges.front());
-                    eFaces = m_topology->getQuadEdgeShell(pEdges.front());
-                    norm3 = m_fInfo.m_centers[eFaces[0]] - m_eInfo.m_centers[pEdges.front()];
-                    norm4 = m_quadGeo->computeEdgeDirection(pEdges.back());
-                    if(e[1] == i)
-                        norm4 = -norm4;
-
-                    VertexNormal vNorms;
-                    //VertexNormal for eCenter1
-                    vNorms[0] = norm1, vNorms[1] = norm2;
-                    m_pInfo.m_dualFaceVertexNormals[i].push_back(vNorms);
-                    m_pInfo.m_dualFaceVertexVolumes[i].push_back((vNorms[0].cross(vNorms[1]).norm()));
-                    //VertexNormal for p
-                    vNorms[0] = norm2, vNorms[1] = norm3;
-                    m_pInfo.m_dualFaceVertexNormals[i].push_back(vNorms);
-                    m_pInfo.m_dualFaceVertexVolumes[i].push_back((vNorms[0].cross(vNorms[1]).norm()));
-                    //VertexNormal for eCenter2
-                    vNorms[0] = norm3, vNorms[1] = norm4;
-                    m_pInfo.m_dualFaceVertexNormals[i].push_back(vNorms);
-                    m_pInfo.m_dualFaceVertexVolumes[i].push_back((vNorms[0].cross(vNorms[1]).norm()));
-                }
-
-                //dual face is composed of face centers
-                for(FaceID j = 0; j < pFaces.size(); ++j)
-                {
-                    m_pInfo.m_dualFaces[i].push_back(m_fInfo.m_centers[pFaces[j]]);
-
-                    VertexNormal vNorms;
-                    vNorms[0] = m_quadGeo->computeEdgeDirection(pEdges[j]);
-                    Edge e = m_topology->getEdge(pEdges[j]);
-                    if(e[1] == i)
-                        vNorms[0] = -vNorms[0];
-                    vNorms[1] = m_quadGeo->computeEdgeDirection(pEdges[(j+1)%pEdges.size()]);
-                    e = m_topology->getEdge(pEdges[(j+1)%pEdges.size()]);
-                    if(e[1] == i)
-                        vNorms[1] = -vNorms[1];
-
-                    m_pInfo.m_dualFaceVertexNormals[i].push_back(vNorms);
-                    m_pInfo.m_dualFaceVertexVolumes[i].push_back((vNorms[0].cross(vNorms[1]).norm()));
-                }
-            }
-            break;
-        }
     }
 }
 
@@ -1108,7 +993,9 @@ void EulerianFluidModel<DataTypes>::computeDerivativesForQuadMesh()
 template<class DataTypes>
 void EulerianFluidModel<DataTypes>::computeHodgeStarsForTriMesh()
 {
-    assert(!m_eInfo.m_centers.empty() && !m_fInfo.m_centers.empty());
+    if(m_eInfo.m_centers.empty() || m_fInfo.m_centers.empty())
+        std::cerr << "WARNING: computeElementInfomation() before computeOperators()" << endl;
+
     m_fInfo.m_obtuseTris.clear();
 
     Coord p, m, c, c0, c1;
@@ -1133,7 +1020,6 @@ void EulerianFluidModel<DataTypes>::computeHodgeStarsForTriMesh()
             PointID k = 0;
             while(f[k] == e[0] || f[k] == e[1])
                 ++k;
-            assert(k < f.size() && f[k] != e[0] && f[k] != e[1]);
             if(m_triGeo->computeAngle(f[k], e[0], e[1]) == sofa::component::topology::PointSetGeometryAlgorithms<DataTypes> :: ACUTE)
                 dualEdgeLength += (m - c).norm();
             else
@@ -1142,7 +1028,6 @@ void EulerianFluidModel<DataTypes>::computeHodgeStarsForTriMesh()
                 m_fInfo.m_obtuseTris.push_back(eFaces[j]);
             }
         }
-        //star1.set(i, dualEdgeLength / m_triGeo->computeEdgeLength(i));
         star1.set(i, dualEdgeLength / m_eInfo.m_lengths[i]);
     }
 
@@ -1169,7 +1054,8 @@ void EulerianFluidModel<DataTypes>::computeHodgeStarsForTriMesh()
 template<class DataTypes>
 void EulerianFluidModel<DataTypes>::computeHodgeStarsForQuadMesh()
 {
-    assert(!m_eInfo.m_centers.empty() && !m_fInfo.m_centers.empty());
+    if(m_eInfo.m_centers.empty() || m_fInfo.m_centers.empty())
+        std::cerr << "WARNING: computeElementInfomation() before computeOperators()" << endl;
 
     Coord p, c0, c1;
     double dualEdgeLength, dualFaceArea;
@@ -1189,7 +1075,6 @@ void EulerianFluidModel<DataTypes>::computeHodgeStarsForQuadMesh()
         else
             c1 = m_eInfo.m_centers[i];
         dualEdgeLength = (c0 - c1).norm();
-        //star1.set(i, dualEdgeLength / m_quadGeo->computeEdgeLength(i));
         star1.set(i, dualEdgeLength / m_eInfo.m_lengths[i]);
 
     }
@@ -1217,7 +1102,8 @@ void EulerianFluidModel<DataTypes>::computeHodgeStarsForQuadMesh()
 template<class DataTypes>
 void EulerianFluidModel<DataTypes>::computeProjectMats()
 {
-    assert(!m_eInfo.m_centers.empty() && !m_fInfo.m_centers.empty());
+    if(m_eInfo.m_centers.empty() || m_fInfo.m_centers.empty())
+        std::cerr << "WARNING: computeElementInfomation() before computeOperators()" << endl;
 
     //initialize
     m_fInfo.m_At.clear();
@@ -1259,7 +1145,6 @@ void EulerianFluidModel<DataTypes>::computeProjectMats()
                 PointID k = 0;
                 while(f[k] == e[0] || f[k] == e[1])
                     ++k;
-                assert(k < f.size() && f[k] != e[0] && f[k] != e[1]);
                 if(m_triGeo->computeAngle(f[k], e[0], e[1]) == sofa::component::topology::PointSetGeometryAlgorithms<DataTypes> :: OBTUSE)
                     v = -v;
 
@@ -1298,7 +1183,6 @@ void EulerianFluidModel<DataTypes>::computeProjectMats()
             for(EdgeID j = 0; j < fEdges.size(); ++j)
             {
                 c1 = m_eInfo.m_centers[fEdges[j]];
-                //v = (c1 - c0) * (double)d1.element(i, fEdges[j]) * m_quadGeo->computeEdgeLength(fEdges[j]) / (c1 - c0).norm();
                 v = (c1 - c0) * (double)d1.element(i, fEdges[j]) * m_eInfo.m_lengths[fEdges[j]] / (c1 - c0).norm();
 
                 //for each col of mat: k
@@ -1688,42 +1572,22 @@ typename DataTypes::Deriv EulerianFluidModel<DataTypes>:: interpolateVelocity(co
     VertexFaces pFaces = (m_meshType == TriangleMesh) ?
             m_topology->getOrientedTriangleVertexShell(ind_p) : m_topology->getOrientedQuadVertexShell(ind_p);
     for(FaceID j = 0; j < pFaces.size(); ++j)
-    {
         vels.push_back(m_vels[pFaces[j]]);
-    }
 
-    //interpolate
+    //interpolate by distance method
     int nbVertices = m_pInfo.m_dualFaces[ind_p].size();
-
-    const double ZERO = 1e-6;
-    const double ZERO2 = 1e-12;
-    Coord p = (m_meshType == TriangleMesh) ?
-            m_triGeo->getPointPosition(ind_p) : m_quadGeo->getPointPosition(ind_p);
-    double w, wNormalize = 0;
+    const double ZERO = 1e-12;
+    double dis_2, w, wNormalize = 0;
     for(int i = 0; i < nbVertices; ++i)
     {
         Coord c = m_pInfo.m_dualFaces[ind_p].at(i);
-        Deriv pc = c - p;
+        Deriv pc = c - pt;
+        dis_2 = pc.norm2();
 
-        if( pc.norm2() < ZERO2 ) // p == c
+        if( dis_2 < ZERO ) // p == c
             return vels.at(i);
 
-        double dis0 = pc * m_pInfo.m_dualFaceVertexNormals[ind_p].at(i)[0];
-        double dis1 = pc * m_pInfo.m_dualFaceVertexNormals[ind_p].at(i)[1];
-        if(dis0 < ZERO) // p is on the dual edge c[i-1]c[i]
-        {
-            Coord c1 = m_pInfo.m_dualFaces[ind_p].at((i+nbVertices-1)%nbVertices);
-            sofa::helper::vector< double > baryCoefs = sofa::component::topology::compute_2points_barycoefs(p, c, c1);
-            return vels.at(i) * baryCoefs[0] + vels.at((i+nbVertices-1)%nbVertices) * baryCoefs[1];
-        }
-        if(dis1 < ZERO) // p is on the dual edge c[i]c[i+1]
-        {
-            Coord c1 = m_pInfo.m_dualFaces[ind_p].at((i+1)%nbVertices);
-            sofa::helper::vector< double > baryCoefs = sofa::component::topology::compute_2points_barycoefs(p, c, c1);
-            return vels.at(i) * baryCoefs[0] + vels.at((i+1)%nbVertices) * baryCoefs[1];
-        }
-
-        w = m_pInfo.m_dualFaceVertexVolumes[ind_p].at(i) / dis0 * dis1;
+        w = 1 / dis_2;
         wNormalize += w;
         vel += vels.at(i) * w;
     }
@@ -1732,7 +1596,6 @@ typename DataTypes::Deriv EulerianFluidModel<DataTypes>:: interpolateVelocity(co
     m_dTime2 += endTime2-startTime2;
 
     return vel / wNormalize;
-
 }
 
 template<class DataTypes>
