@@ -50,20 +50,20 @@ int EulerianFluidModelClass = core::RegisterObject("Eulerian Fluid Model based o
         .add< EulerianFluidModel<Vec3fTypes> >() // default template
 #endif
 #endif
-#ifndef SOFA_FLOAT
-        .add< EulerianFluidModel<Vec2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< EulerianFluidModel<Vec2fTypes> >()
-#endif
+//#ifndef SOFA_FLOAT
+//.add< EulerianFluidModel<Vec2dTypes> >()
+//#endif
+//#ifndef SOFA_DOUBLE
+//.add< EulerianFluidModel<Vec2fTypes> >()
+//#endif
         ;
 #ifndef SOFA_FLOAT
 template class EulerianFluidModel<Vec3dTypes>;
-template class EulerianFluidModel<Vec2dTypes>;
+//template class EulerianFluidModel<Vec2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 template class EulerianFluidModel<Vec3fTypes>;
-template class EulerianFluidModel<Vec2fTypes>;
+//template class EulerianFluidModel<Vec2fTypes>;
 #endif
 
 } // namespace forcefield

@@ -215,7 +215,6 @@ protected:
     unsigned int m_nbPoints;
     unsigned int m_nbEdges;
     unsigned int m_nbFaces;
-//		unsigned int m_nbVolumes;
 
     //mesh element information
     class PointInformation
@@ -377,11 +376,14 @@ protected:
 
     //save data
     void saveMeshData() const;
-    void saveOperators() const;
+    void saveOperators();
     void saveVorticity() const;
     void savePhi() const;
     void saveFlux() const;
     void saveVelocity() const;
+
+    //test
+    void test();
 };
 
 } // namespace forcefield
