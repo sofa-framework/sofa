@@ -221,17 +221,8 @@ protected:
     {
     public:
         typedef VecCoord DualFace;
-        typedef Coord Normal;
-        typedef sofa::defaulttype::Vec<2, Normal> VertexNormal;
-        typedef sofa::helper::vector<VertexNormal> DualFaceVertexNormal;
-        typedef sofa::helper::vector<double> Volumes;
-
         sofa::helper::vector<bool> m_isBoundary;
-        sofa::helper::vector<DualFace> m_dualFaces;	//the poistions of vertices of dual face according to the points
-
-        //values for interpolation
-        sofa::helper::vector<DualFaceVertexNormal> m_dualFaceVertexNormals;
-        sofa::helper::vector<Volumes> m_dualFaceVertexVolumes;
+        sofa::helper::vector<VecCoord> m_dualFaces;
 
         //values for display
         sofa::helper::vector<float> m_values;
@@ -289,9 +280,6 @@ protected:
               m_bkECenter(Coord(0, 0, 0)), m_bkVel(Coord(0, 0, 0)), m_vector(Coord(0, 0, 0)) {};
     };
 
-
-    typedef typename PointInformation::Normal Normal;
-    typedef typename PointInformation::VertexNormal VertexNormal;
     typedef typename PointInformation::DualFace DualFace;
     typedef typename std::map<EdgeID, BoundaryEdgeInformation>::iterator BoundaryEdgeIterator;
     typedef typename std::map<PointID, BoundaryPointInformation>::iterator BoundaryPointIterator;
@@ -327,8 +315,6 @@ protected:
 
     //compute element information: point, edge, face
     void computeElementInformation();
-    //compute vertices of dual face
-    void computeDualFaces();
     //calculate operators d, star, curl, laplace
     void computeOperators();
     void computeDerivativesForTriMesh();
