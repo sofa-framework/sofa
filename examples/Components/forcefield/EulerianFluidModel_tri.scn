@@ -13,8 +13,8 @@
 
     <Object type="MechanicalObject" name="mechanical" />
     <Object type="EulerianFluidModel" name="fluid" viscosity="0" centerType="1"
-            bdXmin1="-0.1" bdYmin1="3" bdZmin1="-0.1" bdXmax1="0.1" bdYmax1="7" bdZmax1="0.1" bdValue1="0.75"
-            bdXmin2="9.9" bdYmin2="3" bdZmin2="-0.1" bdXmax2="10.1" bdYmax2="7" bdZmax2="0.1" bdValue2="-0.75"
+            bdXmin1="-0.1" bdYmin1="3" bdZmin1="-0.1" bdXmax1="0.1" bdYmax1="7" bdZmax1="0.1" bdValue1="-1"
+            bdXmin2="9.9" bdYmin2="3" bdZmin2="-0.1" bdXmax2="10.1" bdYmax2="7" bdZmax2="0.1" bdValue2="1"
             harmonicVx="0" harmonicVy="0" harmonicVz="0"
             addForces="1" force="2.0"
             displayBoundary="0" displayDualMesh="0" displayBkMesh="0" 
