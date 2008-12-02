@@ -237,18 +237,18 @@ bool QuadSetGeometryAlgorithms< DataTypes >::isPointInQuad(const QuadID ind_q, c
         }
     }
 
-    v_normal = (p2-p0).cross(p3-p0);
+    v_normal = (p3-p0).cross(p2-p0);
     norm_v_normal = v_normal*(v_normal);
     if(norm_v_normal > ZERO)
     {
         if(fabs((ptest-p0)*(v_normal)) < ZERO) // p is in the plane defined by the triangle (p0,p3,p2)
         {
 
-            Vec<3,Real> n_01 = (p3-p0).cross(v_normal);
-            Vec<3,Real> n_12 = (p2-p3).cross(v_normal);
-            Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
+            Vec<3,Real> n_01 = (p2-p0).cross(v_normal);
+            Vec<3,Real> n_12 = (p3-p2).cross(v_normal);
+            Vec<3,Real> n_20 = (p0-p3).cross(v_normal);
 
-            if(((ptest-p0)*(n_01) > -ZERO) && ((ptest-p1)*(n_12) > -ZERO) && ((ptest-p2)*(n_20) > -ZERO))
+            if(((ptest-p0)*(n_01) > -ZERO) && ((ptest-p2)*(n_12) > -ZERO) && ((ptest-p3)*(n_20) > -ZERO))
                 return true;
         }
 
@@ -326,18 +326,18 @@ bool is_point_in_quad(const Coord& p,
         }
     }
 
-    v_normal = (p2-p0).cross(p3-p0);
+    v_normal = (p3-p0).cross(p2-p0);
     norm_v_normal = v_normal*(v_normal);
     if(norm_v_normal > ZERO)
     {
-        if(fabs((ptest-p0)*(v_normal)) < ZERO) // p is in the plane defined by the triangle (p0,p3,p2)
+        if(fabs((ptest-p0)*(v_normal)) < ZERO) // p is in the plane defined by the triangle (p0,p2,p3)
         {
 
-            Coord n_01 = (p3-p0).cross(v_normal);
-            Coord n_12 = (p2-p3).cross(v_normal);
-            Coord n_20 = (p0-p2).cross(v_normal);
+            Coord n_01 = (p2-p0).cross(v_normal);
+            Coord n_12 = (p3-p2).cross(v_normal);
+            Coord n_20 = (p0-p3).cross(v_normal);
 
-            if(((ptest-p0)*(n_01) > -ZERO) && ((ptest-p1)*(n_12) > -ZERO) && ((ptest-p2)*(n_20) > -ZERO))
+            if(((ptest-p0)*(n_01) > -ZERO) && ((ptest-p2)*(n_12) > -ZERO) && ((ptest-p3)*(n_20) > -ZERO))
                 return true;
         }
 
