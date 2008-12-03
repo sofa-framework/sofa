@@ -523,6 +523,7 @@ void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
     // if not given sizes -> bounding box
     if( _min.getValue()== Vector3() && _max.getValue()== Vector3())
     {
+
         SReal xMin, xMax, yMin, yMax, zMin, zMax;
         computeBoundingBox(mesh->getVertices(), xMin, xMax, yMin, yMax, zMin, zMax);
 
@@ -775,6 +776,7 @@ void SparseGridTopology::buildFromFiner(  )
     _regularGrid.setSize(getNx(),getNy(),getNz());
 
     setMin(_finerSparseGrid->getMin());
+    setMax(_finerSparseGrid->getMax());
 
     // the cube size of the coarser mesh is twice the cube size of the finer mesh
     // if the finer mesh contains an odd number of cubes in any direction,
@@ -1055,6 +1057,9 @@ void SparseGridTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->setNx( newnx );
     _virtualFinerLevels[0]->setNy( newny );
     _virtualFinerLevels[0]->setNz( newnz );
+    _virtualFinerLevels[0]->setMin( _min.getValue() );
+    _virtualFinerLevels[0]->setMax( _max.getValue() );
+
     _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
     _virtualFinerLevels[0]->init();
 
@@ -1065,11 +1070,9 @@ void SparseGridTopology::buildVirtualFinerLevels()
     {
         _virtualFinerLevels[i] = new SparseGridTopology(true);
 
-
         _virtualFinerLevels[i]->setFinerSparseGrid(_virtualFinerLevels[i-1]);
 
         _virtualFinerLevels[i]->init();
-
 
         cerr<<"("<<_virtualFinerLevels[i]->getNx()<<"x"<<_virtualFinerLevels[i]->getNy()<<"x"<<_virtualFinerLevels[i]->getNz()<<") -> "<< _virtualFinerLevels[i]->getNbHexas() <<" elements , ";
     }
