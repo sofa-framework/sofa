@@ -96,6 +96,10 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
         _connexions[i].push_back( new Connexion() ); // at the finest level, each hexa corresponds exatly to one connexion
 
     helper::io::Mesh* mesh = helper::io::Mesh::Create(this->fileTopology.getValue().c_str());
+    if( mesh==NULL && _finestConnectivity.getValue() )
+    {
+        cerr<<"Warning: SparseGridRamificationTopology::findConnexionsAtFinestLevel -- mesh is NULL (check if fileTopology=\""<< fileTopology.getValue()<<"\" is valid)\n";
+    }
 
 
     // loop on every cubes
@@ -160,6 +164,7 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
     {
         _connexions[i][0]->_hexaIdx = i;
         _connexions[i][0]->_nonRamifiedHexaIdx = i;
+        _mapHexa_Connexion[ i ] = std::pair<helper::vector<Connexion*>,int>(_connexions[i],0);
     }
 
 
@@ -181,13 +186,9 @@ bool SparseGridRamificationTopology::sharingTriangle(helper::io::Mesh* mesh, int
 // 				return true;
 
 
-    if(!_finestConnectivity.getValue() )
+    if(!_finestConnectivity.getValue() || mesh==NULL )
         return true;
-    if( mesh==NULL )
-    {
-        cerr<<"Warning: SparseGridRamificationTopology::sharingTriangle -- fileTopology (so mesh) is NULL\n";
-        return true;
-    }
+
 
 
     // it is not necessary to analyse connectivity between non-boundary cells
@@ -283,6 +284,14 @@ void SparseGridRamificationTopology::buildRamifiedFinestLevel()
         }
     }
 
+
+    for(unsigned i=0 ; i<_connexions.size(); ++i)
+    {
+        for( unsigned j=0; j<_connexions[i].size(); ++j)
+        {
+            _mapHexa_Connexion[ _connexions[i][j]->_hexaIdx ] = std::pair<helper::vector<Connexion*>,int>(_connexions[i],j);
+        }
+    }
 
 
 
@@ -390,7 +399,7 @@ void SparseGridRamificationTopology::buildFromFiner()
     _regularGrid.setSize(getNx(),getNy(),getNz());
 
     setMin(_finerSparseGrid->getMin());
-
+    setMax(_finerSparseGrid->getMax());
 
 
     // the cube size of the coarser mesh is twice the cube size of the finer mesh
@@ -493,6 +502,8 @@ void SparseGridRamificationTopology::buildFromFiner()
     for(unsigned idx=0; idx<_connexions.size(); ++idx) // for all the coarse hexa
     {
         helper::vector< Connexion* > allFineConnexions; // to save all fine connexions included in the coarse hexa
+        helper::vector< unsigned > allFineConnexionsPlace;
+
 
         fixed_array<int,8>& children = nonRamifiedHierarchicalCubeMap[idx]; // the child hexa
 
@@ -506,6 +517,7 @@ void SparseGridRamificationTopology::buildFromFiner()
 
                 for(helper::vector<Connexion*>::iterator fineConnexion = childConnexions.begin() ; fineConnexion != childConnexions.end() ; ++fineConnexion)
                 {
+                    allFineConnexionsPlace.push_back( child );
                     allFineConnexions.push_back( *fineConnexion );
                     (*fineConnexion)->_tmp = -1;
                 }
@@ -540,7 +552,7 @@ void SparseGridRamificationTopology::buildFromFiner()
             {
                 if( allFineConnexions[i]->_tmp == (*it).first )
                 {
-                    newConnexion->_children.push_back( allFineConnexions[i] );
+                    newConnexion->_children.push_back( Connexion::Children( allFineConnexionsPlace[i],allFineConnexions[i]) );
                     allFineConnexions[i]->_parent = newConnexion;
                 }
             }
@@ -647,6 +659,16 @@ void SparseGridRamificationTopology::buildFromFiner()
             (*it)->_hexaIdx = hexas.size()-1;
             (*it)->_nonRamifiedHexaIdx = i;
             nbPoints += 8;
+        }
+    }
+
+
+
+    for(unsigned i=0 ; i<_connexions.size(); ++i)
+    {
+        for( unsigned j=0; j<_connexions[i].size(); ++j)
+        {
+            _mapHexa_Connexion[ _connexions[i][j]->_hexaIdx ] = std::pair<helper::vector<Connexion*>,int>(_connexions[i],j);
         }
     }
 
@@ -772,13 +794,13 @@ void SparseGridRamificationTopology::buildFromFiner()
             {
                 fixed_array<int,8> fineIndices;
 
-                for( std::list<Connexion*>::iterator child=(*it)->_children.begin(); child!=(*it)->_children.end(); ++child)
+                for( std::list<Connexion::Children>::iterator child=(*it)->_children.begin(); child!=(*it)->_children.end(); ++child)
                 {
-                    unsigned childIdx=(*child)->_nonRamifiedHexaIdx;
+                    unsigned childIdx=(*child).second->_nonRamifiedHexaIdx;
                     for(unsigned p=0; p<8; ++p)
                     {
                         if( childIdx == (unsigned)nonRamifiedFineIndices[p] )
-                            fineIndices[p] = (*child)->_hexaIdx;
+                            fineIndices[p] = (*child).second->_hexaIdx;
                         else
                             fineIndices[p] = -1;
                     }
@@ -788,6 +810,78 @@ void SparseGridRamificationTopology::buildFromFiner()
             }
         }
     }
+
+
+
+    _hierarchicalCubeMapRamification.resize(this->getNbHexas());
+    for(int i=0; i<this->getNbHexas(); ++i)
+    {
+        Connexion*& coarsecon = _mapHexa_Connexion[ i ].first[ _mapHexa_Connexion[ i ].second ];
+
+        for( std::list<Connexion::Children>::iterator child=coarsecon->_children.begin(); child!=coarsecon->_children.end(); ++child)
+        {
+            _hierarchicalCubeMapRamification[i][(*child).first].push_back( (*child).second->_hexaIdx );
+        }
+    }
+
+
+
+// 				cerr<<"_connexions : "<<endl;
+// 				for(unsigned i=0;i<_connexions.size();++i)
+// 				{
+// 					cerr<<i<<" -> ";
+// 					for(unsigned j=0;j<_connexions[i].size();++j)
+// 					{
+// 						cerr<<"[ ";
+// 						for( std::list<Connexion::Children>::iterator child=_connexions[i][j]->_children.begin();child!=_connexions[i][j]->_children.end();++child)
+// 							cerr<<(*child).second->_hexaIdx<<" ";
+// 						cerr<<"] , ";
+// 					}
+// 					cerr<<endl;
+// 				}
+//
+// 				cerr<<"_hierarchicalCubeMap : "<<endl;
+// 				for(unsigned i=0;i<_hierarchicalCubeMap.size();++i)
+// 				{
+// 					cerr<<i<<" -> ";
+// 					for(int w=0;w<8;++w)
+// 					{
+// 						cerr<<_hierarchicalCubeMap[i][w]<<" ";
+// 					}
+// 					cerr<<endl;
+// 				}
+//
+// 				cerr<<"_mapHexa_Connexion : "<<endl;
+// 				for(unsigned i=0;i<_mapHexa_Connexion.size();++i)
+// 				{
+// 					cerr<<i<<" -> ";
+// 					cerr<<"["<<_mapHexa_Connexion[i].first[0]->_nonRamifiedHexaIdx<<"]  ";
+// 					cerr<<_mapHexa_Connexion[i].second;
+// 					cerr<<endl;
+// 				}
+//
+//
+// 				cerr<<_finerSparseGrid->getNbHexas()<<endl;
+// 				cerr<<"_hierarchicalCubeMapRamification : "<<endl;
+// 				for(unsigned i=0;i<_hierarchicalCubeMapRamification.size();++i)
+// 				{
+// 					cerr<<i<<" -> ";
+// 					for(int w=0;w<8;++w)
+// 					{
+// 						cerr<<"[ ";
+// 						for(unsigned j=0;j<_hierarchicalCubeMapRamification[i][w].size();++j)
+// 						{
+// 							cerr<<_hierarchicalCubeMapRamification[i][w][j]<<" ";
+// 						}
+// 						cerr<<"] , ";
+// 					}
+// 					cerr<<endl;
+// 				}
+
+
+
+
+
 
 
 
@@ -838,10 +932,13 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->setNx( newnx );
     _virtualFinerLevels[0]->setNy( newny );
     _virtualFinerLevels[0]->setNz( newnz );
+
+    _virtualFinerLevels[0]->setMin( _min.getValue() );
+    _virtualFinerLevels[0]->setMax( _max.getValue() );
     _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
     _virtualFinerLevels[0]->init();
 
-    cerr<<"SparseGridTopology "<<getName()<<" buildVirtualFinerLevels : ";
+    cerr<<"SparseGridRamificationTopology "<<getName()<<" buildVirtualFinerLevels : ";
     cerr<<"("<<newnx<<"x"<<newny<<"x"<<newnz<<") -> "<< _virtualFinerLevels[0]->getNbHexas() <<" elements , ";
 
     for(int i=1; i<nb; ++i)

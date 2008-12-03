@@ -123,7 +123,7 @@ public:
     void setZmin(SReal val) { _min.setValue(Vector3(_min.getValue()[0],_min.getValue()[1],val)             ); }
 
 
-    void setMax(Vector3 val) {_min.setValue(val);}
+    void setMax(Vector3 val) {_max.setValue(val);}
 
     void setXmax(SReal val) { _max.setValue(Vector3(val             ,_max.getValue()[1],_max.getValue()[2])); }
     void setYmax(SReal val) { _max.setValue(Vector3(_max.getValue()[0],val             ,_max.getValue()[2])); }
