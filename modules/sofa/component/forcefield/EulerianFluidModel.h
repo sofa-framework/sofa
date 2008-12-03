@@ -33,6 +33,7 @@
 #include <sofa/core/BehaviorModel.h>
 
 #include <sofa/helper/fixed_array.h>
+#include <sofa/helper/vector.h>
 #include <sofa/helper/system/thread/ctime.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
@@ -45,6 +46,8 @@
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.inl>
 #include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
 #include <sofa/component/topology/QuadSetGeometryAlgorithms.inl>
+//#include <sofa/component/topology/PointSubset.h>
+//#include <sofa/component/topology/EdgeSubsetData.h>
 
 
 namespace sofa
@@ -84,6 +87,8 @@ public:
     typedef typename topology::MeshTopology::TriangleEdges TriangleEdges;
     typedef typename topology::MeshTopology::QuadEdges QuadEdges;
     typedef bool CenterType;
+
+    typedef sofa::helper::vector< unsigned int > SetIndex;
 
     //at present only for 2D
     enum MeshType {TriangleMesh = 3, QuadMesh, RegularQuadMesh};
@@ -186,6 +191,13 @@ protected:
     Data< Real > m_harmonicVx;
     Data< Real > m_harmonicVy;
     Data< Real > m_harmonicVz;
+
+    Data<SetIndex> m_cstrEdgeSet_1;
+    Data<SetIndex> m_cstrEdgeSet_2;
+    Data<SetIndex> m_cstrEdgeSet_3;
+    Data< Real > m_cstrValue_1;
+    Data< Real > m_cstrValue_2;
+    Data< Real > m_cstrValue_3;
 
     Data< Real > m_bdXmin1;
     Data< Real > m_bdXmax1;
@@ -326,6 +338,7 @@ protected:
 
     //set boundary contraints
     void setBdConstraints(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax, double value);
+    void setBdConstraints();
     //set initial values
     void setInitialVorticity();
 

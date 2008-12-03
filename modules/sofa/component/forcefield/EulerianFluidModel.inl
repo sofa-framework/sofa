@@ -59,6 +59,13 @@ EulerianFluidModel<DataTypes>::EulerianFluidModel()
     m_harmonicVy(initData(&m_harmonicVy, Real(0), "harmonicVy", "Harmonic Velocity y")),
     m_harmonicVz(initData(&m_harmonicVz, Real(0), "harmonicVz", "Harmonic Velocity z")),
 
+    m_cstrEdgeSet_1(initData(&m_cstrEdgeSet_1,"constraintEdgeSet_1","Indices of the constraint edges 1")),
+    m_cstrEdgeSet_2(initData(&m_cstrEdgeSet_2,"constraintEdgeSet_2","Indices of the constraint edges 2")),
+    m_cstrEdgeSet_3(initData(&m_cstrEdgeSet_3,"constraintEdgeSet_3","Indices of the constraint edges 3")),
+    m_cstrValue_1(initData(&m_cstrValue_1, Real(0), "constraintValue_1", "constraint value 1")),
+    m_cstrValue_2(initData(&m_cstrValue_2, Real(0), "constraintValue_2", "constraint value 2")),
+    m_cstrValue_3(initData(&m_cstrValue_3, Real(0), "constraintValue_3", "constraint value 3")),
+
     m_bdXmin1 (initData(&m_bdXmin1, Real(0), "bdXmin1", "BoundaryX")),
     m_bdXmax1 (initData(&m_bdXmax1, Real(0), "bdXmax1", "BoundaryX")),
     m_bdYmin1 (initData(&m_bdYmin1, Real(0), "bdYmin1", "BoundaryY")),
@@ -174,8 +181,9 @@ void EulerianFluidModel<DataTypes>::init()
     computeOperators();
 
     //initialize boundary constraints
-    setBdConstraints(m_bdXmin1.getValue(), m_bdXmax1.getValue(), m_bdYmin1.getValue(), m_bdYmax1.getValue(), m_bdZmin1.getValue(), m_bdZmax1.getValue(), m_bdValue1.getValue());
-    setBdConstraints(m_bdXmin2.getValue(), m_bdXmax2.getValue(), m_bdYmin2.getValue(), m_bdYmax2.getValue(), m_bdZmin2.getValue(), m_bdZmax2.getValue(), m_bdValue2.getValue());
+    //setBdConstraints(m_bdXmin1.getValue(), m_bdXmax1.getValue(), m_bdYmin1.getValue(), m_bdYmax1.getValue(), m_bdZmin1.getValue(), m_bdZmax1.getValue(), m_bdValue1.getValue());
+    //setBdConstraints(m_bdXmin2.getValue(), m_bdXmax2.getValue(), m_bdYmin2.getValue(), m_bdYmax2.getValue(), m_bdZmin2.getValue(), m_bdZmax2.getValue(), m_bdValue2.getValue());
+    setBdConstraints();
 
     //initialize project matrices
     computeProjectMats();
@@ -1219,6 +1227,49 @@ void EulerianFluidModel<DataTypes>::setBdConstraints(double xMin, double xMax, d
             it->second.m_bdConstraint = value * d1.element(eFaces[0], it->first);
         }
     }
+}
+
+template<class DataTypes>
+void EulerianFluidModel<DataTypes>::setBdConstraints()
+{
+    double totalFlux = 0.0;
+    for(unsigned int i = 0; i < m_cstrEdgeSet_1.getValue().size(); ++i)
+    {
+        EdgeID ind_e = m_cstrEdgeSet_1.getValue()[i];
+        if(m_eInfo.m_isBoundary[ind_e])
+        {
+            const EdgeFaces eFaces = (m_meshType == TriangleMesh) ?
+                    m_topology->getTriangleEdgeShell(ind_e) : m_topology->getQuadEdgeShell(ind_e);
+            m_bdEdgeInfo[ind_e].m_bdConstraint = m_cstrValue_1.getValue() * d1.element(eFaces[0], ind_e);
+            totalFlux += m_cstrValue_1.getValue() * m_eInfo.m_lengths[ind_e];
+        }
+    }
+
+    for(unsigned int i = 0; i < m_cstrEdgeSet_2.getValue().size(); ++i)
+    {
+        EdgeID ind_e = m_cstrEdgeSet_2.getValue()[i];
+        if(m_eInfo.m_isBoundary[ind_e])
+        {
+            const EdgeFaces eFaces = (m_meshType == TriangleMesh) ?
+                    m_topology->getTriangleEdgeShell(ind_e) : m_topology->getQuadEdgeShell(ind_e);
+            m_bdEdgeInfo[ind_e].m_bdConstraint = m_cstrValue_2.getValue() * d1.element(eFaces[0], ind_e);
+            totalFlux += m_cstrValue_2.getValue() * m_eInfo.m_lengths[ind_e];
+        }
+    }
+
+    for(unsigned int i = 0; i < m_cstrEdgeSet_3.getValue().size(); ++i)
+    {
+        EdgeID ind_e = m_cstrEdgeSet_3.getValue()[i];
+        if(m_eInfo.m_isBoundary[ind_e])
+        {
+            const EdgeFaces eFaces = (m_meshType == TriangleMesh) ?
+                    m_topology->getTriangleEdgeShell(ind_e) : m_topology->getQuadEdgeShell(ind_e);
+            m_bdEdgeInfo[ind_e].m_bdConstraint = m_cstrValue_3.getValue() * d1.element(eFaces[0], ind_e);
+            totalFlux += m_cstrValue_3.getValue() * m_eInfo.m_lengths[ind_e];
+        }
+    }
+
+    std::cout << "total flux = " << totalFlux << endl;
 }
 
 
