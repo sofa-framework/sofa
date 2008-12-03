@@ -5,20 +5,20 @@
 
     <!-- <Object type="MeshLoader" filename="mesh/plane_loop_2.obj" /> -->
     <!-- square_2594_triangles.obj -->
-    <!-- square_864_triangles.obj -->
-    <Object type="MeshLoader" filename="mesh/square_2594_triangles.obj" /> 
+    <Object type="MeshLoader" filename="mesh/aneurysm2D_hires.obj" /> 
     <Object type="MeshTopology"  name="TriangleMesh" />
     <Object type="TriangleSetGeometryAlgorithms" name="TriGeo"   template="Vec3d" />
 
 
     <Object type="MechanicalObject" name="mechanical" />
     <Object type="EulerianFluidModel" name="fluid" viscosity="0" centerType="1"
-            bdXmin1="-0.1" bdYmin1="3" bdZmin1="-0.1" bdXmax1="0.1" bdYmax1="7" bdZmax1="0.1" bdValue1="-1"
-            bdXmin2="9.9" bdYmin2="3" bdZmin2="-0.1" bdXmax2="10.1" bdYmax2="7" bdZmax2="0.1" bdValue2="1"
-            harmonicVx="0" harmonicVy="0" harmonicVz="0"
-            addForces="1" force="2.0"
-            displayBoundary="0" displayDualMesh="0" displayBkMesh="0" 
-            displayVorticity="1" displayVelocity="1" displayBkVelocity="0"/>
+	constraintEdgeSet_1 ="868 877 859 874 865 871 862" constraintValue_1 ="-2"
+	constraintEdgeSet_2 ="1326 1320 1332 1323 1329 1317" constraintValue_2 ="1"
+	constraintEdgeSet_3 ="923 932 920 935 917 929 926" constraintValue_3 ="1"
+	harmonicVx="0" harmonicVy="0" harmonicVz="0"
+	addForces="1" force="2.0"
+	displayBoundary="1" displayDualMesh="0" displayBkMesh="0" 
+	displayVorticity="1" displayVelocity="1" displayBkVelocity="0"/>
     <!--  Barycenter = 0, Circumcenter = 1 -->
 
     <Node name="VisualGrid">
