@@ -29,7 +29,7 @@
 
 
 #include <sofa/component/linearsolver/NewMatMatrix.h>
-
+#include <sofa/component/topology/SparseGridMultipleTopology.h>
 // #include <sofa/simulation/tree/GNode.h>
 
 // #include <sofa/simulation/common/InitVisitor.h>
@@ -41,6 +41,8 @@
 // #include <sofa/component/visualmodel/VisualModelImpl.h>
 
 #include <iomanip>
+
+#include <sofa/helper/gl/BasicShapes.h>
 
 
 using std::cerr;
@@ -435,13 +437,15 @@ const int HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::WEIGHT_MASK_CROS
 };
 
 
-
-
+template <class DataTypes>
+const float HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::RIGID_STIFFNESS[8*3][8*3]=
+{{2.26667e+11,4.25e+10,4.25e+10,-5.66667e+10,-4.25e+10,-4.25e+10,-7.08333e+10,-4.25e+10,-2.125e+10,2.83333e+10,4.25e+10,2.125e+10,2.83333e+10,2.125e+10,4.25e+10,-7.08333e+10,-2.125e+10,-4.25e+10,-5.66667e+10,-2.125e+10,-2.125e+10,-2.83333e+10,2.125e+10,2.125e+10},{4.25e+10,2.26667e+11,4.25e+10,4.25e+10,2.83333e+10,2.125e+10,-4.25e+10,-7.08333e+10,-2.125e+10,-4.25e+10,-5.66667e+10,-4.25e+10,2.125e+10,2.83333e+10,4.25e+10,2.125e+10,-2.83333e+10,2.125e+10,-2.125e+10,-5.66667e+10,-2.125e+10,-2.125e+10,-7.08333e+10,-4.25e+10},{4.25e+10,4.25e+10,2.26667e+11,4.25e+10,2.125e+10,2.83333e+10,2.125e+10,2.125e+10,-2.83333e+10,2.125e+10,4.25e+10,2.83333e+10,-4.25e+10,-4.25e+10,-5.66667e+10,-4.25e+10,-2.125e+10,-7.08333e+10,-2.125e+10,-2.125e+10,-5.66667e+10,-2.125e+10,-4.25e+10,-7.08333e+10},{-5.66667e+10,4.25e+10,4.25e+10,2.26667e+11,-4.25e+10,-4.25e+10,2.83333e+10,-4.25e+10,-2.125e+10,-7.08333e+10,4.25e+10,2.125e+10,-7.08333e+10,2.125e+10,4.25e+10,2.83333e+10,-2.125e+10,-4.25e+10,-2.83333e+10,-2.125e+10,-2.125e+10,-5.66667e+10,2.125e+10,2.125e+10},{-4.25e+10,2.83333e+10,2.125e+10,-4.25e+10,2.26667e+11,4.25e+10,4.25e+10,-5.66667e+10,-4.25e+10,4.25e+10,-7.08333e+10,-2.125e+10,-2.125e+10,-2.83333e+10,2.125e+10,-2.125e+10,2.83333e+10,4.25e+10,2.125e+10,-7.08333e+10,-4.25e+10,2.125e+10,-5.66667e+10,-2.125e+10},{-4.25e+10,2.125e+10,2.83333e+10,-4.25e+10,4.25e+10,2.26667e+11,-2.125e+10,4.25e+10,2.83333e+10,-2.125e+10,2.125e+10,-2.83333e+10,4.25e+10,-2.125e+10,-7.08333e+10,4.25e+10,-4.25e+10,-5.66667e+10,2.125e+10,-4.25e+10,-7.08333e+10,2.125e+10,-2.125e+10,-5.66667e+10},{-7.08333e+10,-4.25e+10,2.125e+10,2.83333e+10,4.25e+10,-2.125e+10,2.26667e+11,4.25e+10,-4.25e+10,-5.66667e+10,-4.25e+10,4.25e+10,-5.66667e+10,-2.125e+10,2.125e+10,-2.83333e+10,2.125e+10,-2.125e+10,2.83333e+10,2.125e+10,-4.25e+10,-7.08333e+10,-2.125e+10,4.25e+10},{-4.25e+10,-7.08333e+10,2.125e+10,-4.25e+10,-5.66667e+10,4.25e+10,4.25e+10,2.26667e+11,-4.25e+10,4.25e+10,2.83333e+10,-2.125e+10,-2.125e+10,-5.66667e+10,2.125e+10,-2.125e+10,-7.08333e+10,4.25e+10,2.125e+10,2.83333e+10,-4.25e+10,2.125e+10,-2.83333e+10,-2.125e+10},{-2.125e+10,-2.125e+10,-2.83333e+10,-2.125e+10,-4.25e+10,2.83333e+10,-4.25e+10,-4.25e+10,2.26667e+11,-4.25e+10,-2.125e+10,2.83333e+10,2.125e+10,2.125e+10,-5.66667e+10,2.125e+10,4.25e+10,-7.08333e+10,4.25e+10,4.25e+10,-5.66667e+10,4.25e+10,2.125e+10,-7.08333e+10},{2.83333e+10,-4.25e+10,2.125e+10,-7.08333e+10,4.25e+10,-2.125e+10,-5.66667e+10,4.25e+10,-4.25e+10,2.26667e+11,-4.25e+10,4.25e+10,-2.83333e+10,-2.125e+10,2.125e+10,-5.66667e+10,2.125e+10,-2.125e+10,-7.08333e+10,2.125e+10,-4.25e+10,2.83333e+10,-2.125e+10,4.25e+10},{4.25e+10,-5.66667e+10,4.25e+10,4.25e+10,-7.08333e+10,2.125e+10,-4.25e+10,2.83333e+10,-2.125e+10,-4.25e+10,2.26667e+11,-4.25e+10,2.125e+10,-7.08333e+10,4.25e+10,2.125e+10,-5.66667e+10,2.125e+10,-2.125e+10,-2.83333e+10,-2.125e+10,-2.125e+10,2.83333e+10,-4.25e+10},{2.125e+10,-4.25e+10,2.83333e+10,2.125e+10,-2.125e+10,-2.83333e+10,4.25e+10,-2.125e+10,2.83333e+10,4.25e+10,-4.25e+10,2.26667e+11,-2.125e+10,4.25e+10,-7.08333e+10,-2.125e+10,2.125e+10,-5.66667e+10,-4.25e+10,2.125e+10,-7.08333e+10,-4.25e+10,4.25e+10,-5.66667e+10},{2.83333e+10,2.125e+10,-4.25e+10,-7.08333e+10,-2.125e+10,4.25e+10,-5.66667e+10,-2.125e+10,2.125e+10,-2.83333e+10,2.125e+10,-2.125e+10,2.26667e+11,4.25e+10,-4.25e+10,-5.66667e+10,-4.25e+10,4.25e+10,-7.08333e+10,-4.25e+10,2.125e+10,2.83333e+10,4.25e+10,-2.125e+10},{2.125e+10,2.83333e+10,-4.25e+10,2.125e+10,-2.83333e+10,-2.125e+10,-2.125e+10,-5.66667e+10,2.125e+10,-2.125e+10,-7.08333e+10,4.25e+10,4.25e+10,2.26667e+11,-4.25e+10,4.25e+10,2.83333e+10,-2.125e+10,-4.25e+10,-7.08333e+10,2.125e+10,-4.25e+10,-5.66667e+10,4.25e+10},{4.25e+10,4.25e+10,-5.66667e+10,4.25e+10,2.125e+10,-7.08333e+10,2.125e+10,2.125e+10,-5.66667e+10,2.125e+10,4.25e+10,-7.08333e+10,-4.25e+10,-4.25e+10,2.26667e+11,-4.25e+10,-2.125e+10,2.83333e+10,-2.125e+10,-2.125e+10,-2.83333e+10,-2.125e+10,-4.25e+10,2.83333e+10},{-7.08333e+10,2.125e+10,-4.25e+10,2.83333e+10,-2.125e+10,4.25e+10,-2.83333e+10,-2.125e+10,2.125e+10,-5.66667e+10,2.125e+10,-2.125e+10,-5.66667e+10,4.25e+10,-4.25e+10,2.26667e+11,-4.25e+10,4.25e+10,2.83333e+10,-4.25e+10,2.125e+10,-7.08333e+10,4.25e+10,-2.125e+10},{-2.125e+10,-2.83333e+10,-2.125e+10,-2.125e+10,2.83333e+10,-4.25e+10,2.125e+10,-7.08333e+10,4.25e+10,2.125e+10,-5.66667e+10,2.125e+10,-4.25e+10,2.83333e+10,-2.125e+10,-4.25e+10,2.26667e+11,-4.25e+10,4.25e+10,-5.66667e+10,4.25e+10,4.25e+10,-7.08333e+10,2.125e+10},{-4.25e+10,2.125e+10,-7.08333e+10,-4.25e+10,4.25e+10,-5.66667e+10,-2.125e+10,4.25e+10,-7.08333e+10,-2.125e+10,2.125e+10,-5.66667e+10,4.25e+10,-2.125e+10,2.83333e+10,4.25e+10,-4.25e+10,2.26667e+11,2.125e+10,-4.25e+10,2.83333e+10,2.125e+10,-2.125e+10,-2.83333e+10},{-5.66667e+10,-2.125e+10,-2.125e+10,-2.83333e+10,2.125e+10,2.125e+10,2.83333e+10,2.125e+10,4.25e+10,-7.08333e+10,-2.125e+10,-4.25e+10,-7.08333e+10,-4.25e+10,-2.125e+10,2.83333e+10,4.25e+10,2.125e+10,2.26667e+11,4.25e+10,4.25e+10,-5.66667e+10,-4.25e+10,-4.25e+10},{-2.125e+10,-5.66667e+10,-2.125e+10,-2.125e+10,-7.08333e+10,-4.25e+10,2.125e+10,2.83333e+10,4.25e+10,2.125e+10,-2.83333e+10,2.125e+10,-4.25e+10,-7.08333e+10,-2.125e+10,-4.25e+10,-5.66667e+10,-4.25e+10,4.25e+10,2.26667e+11,4.25e+10,4.25e+10,2.83333e+10,2.125e+10},{-2.125e+10,-2.125e+10,-5.66667e+10,-2.125e+10,-4.25e+10,-7.08333e+10,-4.25e+10,-4.25e+10,-5.66667e+10,-4.25e+10,-2.125e+10,-7.08333e+10,2.125e+10,2.125e+10,-2.83333e+10,2.125e+10,4.25e+10,2.83333e+10,4.25e+10,4.25e+10,2.26667e+11,4.25e+10,2.125e+10,2.83333e+10},{-2.83333e+10,-2.125e+10,-2.125e+10,-5.66667e+10,2.125e+10,2.125e+10,-7.08333e+10,2.125e+10,4.25e+10,2.83333e+10,-2.125e+10,-4.25e+10,2.83333e+10,-4.25e+10,-2.125e+10,-7.08333e+10,4.25e+10,2.125e+10,-5.66667e+10,4.25e+10,4.25e+10,2.26667e+11,-4.25e+10,-4.25e+10},{2.125e+10,-7.08333e+10,-4.25e+10,2.125e+10,-5.66667e+10,-2.125e+10,-2.125e+10,-2.83333e+10,2.125e+10,-2.125e+10,2.83333e+10,4.25e+10,4.25e+10,-5.66667e+10,-4.25e+10,4.25e+10,-7.08333e+10,-2.125e+10,-4.25e+10,2.83333e+10,2.125e+10,-4.25e+10,2.26667e+11,4.25e+10},{2.125e+10,-4.25e+10,-7.08333e+10,2.125e+10,-2.125e+10,-5.66667e+10,4.25e+10,-2.125e+10,-7.08333e+10,4.25e+10,-4.25e+10,-5.66667e+10,-2.125e+10,4.25e+10,2.83333e+10,-2.125e+10,2.125e+10,-2.83333e+10,-4.25e+10,2.125e+10,2.83333e+10,-4.25e+10,4.25e+10,2.26667e+11}};
 
 
 template <class DataTypes>
 void HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::init()
 {
+
 // 		  cerr<<"HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::init()\n";
     // init topology, virtual levels, calls computeMechanicalMatricesByCondensation, handles masses
     NonUniformHexahedronFEMForceFieldAndMassT::init();
@@ -522,7 +526,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::init()
 
 
 
-
+    _drawSize = (this->_sparseGrid->getMax()[0]-this->_sparseGrid->getMin()[0]) * .004;
 
 
 }
@@ -540,6 +544,42 @@ void HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::init()
 template<class T>
 void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCondensation( )
 {
+    if( this->_nbVirtualFinerLevels.getValue() == 0 )
+    {
+        for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
+        {
+            //Get the 8 indices of the coarser Hexa
+            const helper::fixed_array<unsigned int,8>& points = this->_sparseGrid->getHexas()[i];
+            //Get the 8 points of the coarser Hexa
+            helper::fixed_array<Coord,8> nodes;
+
+            for (unsigned int k=0; k<8; ++k) nodes[k] =  this->_sparseGrid->getPointPos(points[k]);
+
+
+            //       //given an elementIndice, find the 8 others from the sparse grid
+            //       //compute MaterialStiffness
+            MaterialStiffness material;
+            computeMaterialStiffness(material, this->f_youngModulus.getValue(),this->f_poissonRatio.getValue());
+
+            //Nodes are found using Sparse Grid
+            Real stiffnessCoef = 1.0;
+            if (topology::SparseGridMultipleTopology* sgmt =  dynamic_cast<topology::SparseGridMultipleTopology*>( this->_sparseGrid ) )
+                stiffnessCoef = sgmt->getStiffnessCoef( i );
+            else if( this->_sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY )
+                stiffnessCoef = .5;
+
+
+            HexahedronFEMForceFieldAndMassT::computeElementStiffness((*this->_elementStiffnesses.beginEdit())[i],material,nodes,i, stiffnessCoef); // classical stiffness
+
+            HexahedronFEMForceFieldAndMassT::computeElementMass((*this->_elementMasses.beginEdit())[i],nodes,i,this->_sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0);
+        }
+        return;
+    }
+
+
+
+
+
     _weights.resize( this->_nbVirtualFinerLevels.getValue() );
     int finestLevel = this->_sparseGrid->getNbVirtualFinerLevels()-this->_nbVirtualFinerLevels.getValue();
 
@@ -551,12 +591,18 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCo
     _finalWeights.resize( _weights[0].size() );
 
 
-    for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
-    {
-        if( _finestToCoarse.getValue() && this->_nbVirtualFinerLevels.getValue()!=0 )
+
+    if( _finestToCoarse.getValue() )
+        for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
             computeMechanicalMatricesDirectlyFromTheFinestToCoarse( (*this->_elementStiffnesses.beginEdit())[i], (*this->_elementMasses.beginEdit())[i], i );
+    else
+    {
+        if( dynamic_cast<topology::SparseGridRamificationTopology*>( this->_sparseGrid ) )
+            for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
+                computeMechanicalMatricesIterativlyWithRamifications( (*this->_elementStiffnesses.beginEdit())[i], (*this->_elementMasses.beginEdit())[i], i, 0 );
         else
-            computeMechanicalMatricesIterativly( (*this->_elementStiffnesses.beginEdit())[i], (*this->_elementMasses.beginEdit())[i], i, 0 );
+            for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
+                computeMechanicalMatricesIterativly( (*this->_elementStiffnesses.beginEdit())[i], (*this->_elementMasses.beginEdit())[i], i, 0 );
     }
 
 
@@ -626,10 +672,10 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
         sizeass = (sizeass-1)*2+1;
     sizeass = sizeass*sizeass*sizeass;
 
-    NewMatMatrix assembledMatrix(sizeass*3),assembledMass(sizeass*3);
-    assembledMatrix.resize(sizeass*3,sizeass*3);
+    NewMatMatrix assembledStiffness(sizeass*3),assembledMass(sizeass*3);
+    assembledStiffness.resize(sizeass*3,sizeass*3);
     assembledMass.resize(sizeass*3,sizeass*3);
-    cerr<<assembledMatrix.rowSize()<<"x"<<assembledMatrix.colSize()<<endl;
+    cerr<<assembledStiffness.rowSize()<<"x"<<assembledStiffness.colSize()<<endl;
 
 
 
@@ -674,7 +720,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
                 for(int m=0; m<3; ++m)
                     for(int n=0; n<3; ++n)
                     {
-                        assembledMatrix.add( v1*3+m, v2*3+n, finestStiffnesses[i][j*3+m][k*3+n] );
+                        assembledStiffness.add( v1*3+m, v2*3+n, finestStiffnesses[i][j*3+m][k*3+n] );
                         assembledMass.add( v1*3+m, v2*3+n, finestMasses[i][j*3+m][k*3+n] );
                     }
             }
@@ -809,7 +855,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
             {
                 for(int m=0; m<3; ++m)
                     for(int n=0; n<3; ++n)
-                        Kg.add( lig*3+m,col*3+n,assembledMatrix.element(lig*3+m,i*3+n) );
+                        Kg.add( lig*3+m,col*3+n,assembledStiffness.element(lig*3+m,i*3+n) );
             }
         }
         else
@@ -818,7 +864,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
             {
                 for(int m=0; m<3; ++m)
                     for(int n=0; n<3; ++n)
-                        A.add( lig*3+m,col*3+n,assembledMatrix.element(lig*3+m,i*3+n) );
+                        A.add( lig*3+m,col*3+n,assembledStiffness.element(lig*3+m,i*3+n) );
             }
         }
     }
@@ -883,7 +929,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
 
 
 // 		cerr<<"KB2 = ";
-// 		assembledMatrix.printMatlab(cerr);
+// 		assembledStiffness.printMatlab(cerr);
 // 		cerr<<"A2 = ";
 // 		A.printMatlab(cerr);
 // 		cerr<<"Kg2 = ";
@@ -1098,7 +1144,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
 
 
 // 		cerr<<"WB : "<<WB<<endl;
-    cerr<<"WBmeca : "<<WBmeca<<endl;
+    cerr<<"WBmeca brut : "<<WBmeca<<endl;
 
 
 
@@ -1119,14 +1165,14 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
 
     // 		cerr<<"mask : "<<mask<<endl;
 // 		cerr<<"WB : "<<WB<<endl;
-// 		cerr<<"WBmeca : "<<WBmeca<<endl;
+    cerr<<"WBmeca normalized : "<<WBmeca<<endl;
 
 // 		WBmeca=WB;
 
     NewMatMatrix Kc, Mc; // coarse stiffness
 // 		Kc.resize(8*3,8*3);
 // 		Mc.resize(8*3,8*3);
-    Kc = WBmeca.t() * assembledMatrix * WBmeca;
+    Kc = WBmeca.t() * assembledStiffness * WBmeca;
     Mc = WBmeca.t() * assembledMass * WBmeca;
 
 
@@ -1258,7 +1304,8 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 
 
         // assemble the matrix of 8 child
-        Mat<27*3, 27*3, Real> assembledMatrix;
+        Mat<27*3, 27*3, Real> assembledStiffness;
+        Mat<27*3, 27*3, Real> assembledStiffnessWithRigidVoid;
         Mat<27*3, 27*3, Real> assembledMass;
 
 
@@ -1277,14 +1324,32 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
                         for(int m=0; m<3; ++m)
                             for(int n=0; n<3; ++n)
                             {
-                                assembledMatrix[ v1*3+m ][ v2*3+n ] += finerK[i][j*3+m][k*3+n];
+                                assembledStiffness[ v1*3+m ][ v2*3+n ] += finerK[i][j*3+m][k*3+n];
+                                assembledStiffnessWithRigidVoid[ v1*3+m ][ v2*3+n ] += finerK[i][j*3+m][k*3+n];
                                 assembledMass[ v1*3+m ][ v2*3+n ] += finerM[i][j*3+m][k*3+n];
                             }
                     }
                 }
             }
             else
-                cerr<<"WARNING: a child is void (during assembly)\n";
+            {
+// 				cerr<<"WARNING: a child is void (during assembly)\n";
+                for(int j=0; j<8; ++j) // vertices1
+                {
+                    int v1 = FineHexa_FineNode_IndiceForAssembling[i][j];
+
+                    for(int k=0; k<8; ++k) // vertices2
+                    {
+                        int v2 = FineHexa_FineNode_IndiceForAssembling[i][k];
+
+                        for(int m=0; m<3; ++m)
+                            for(int n=0; n<3; ++n)
+                            {
+                                assembledStiffnessWithRigidVoid[ v1*3+m ][ v2*3+n ] += RIGID_STIFFNESS[j*3+m][k*3+n];
+                            }
+                    }
+                }
+            }
         }
 
 
@@ -1303,7 +1368,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
                 {
                     for(int m=0; m<3; ++m)
                         for(int n=0; n<3; ++n)
-                            Kg[ lig*3+m ][ col*3+n ] = assembledMatrix[lig*3+m][i*3+n];
+                            Kg[ lig*3+m ][ col*3+n ] = assembledStiffnessWithRigidVoid[lig*3+m][i*3+n];
                 }
             }
             else
@@ -1312,7 +1377,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
                 {
                     for(int m=0; m<3; ++m)
                         for(int n=0; n<3; ++n)
-                            A[ lig*3+m ][ col*3+n ] = assembledMatrix[lig*3+m][i*3+n];
+                            A[ lig*3+m ][ col*3+n ] = assembledStiffnessWithRigidVoid[lig*3+m][i*3+n];
                 }
             }
 
@@ -1328,7 +1393,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
         }
 
 
-// 		  cerr<<"KB = "; printMatlab( cerr, assembledMatrix );
+// 		  cerr<<"KB = "; printMatlab( cerr, assembledStiffness );
 // 		  cerr<<"A = ";
 // 		  printMatlab( cerr, A );
 // 		  cerr<<"Kg = ";
@@ -1426,7 +1491,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 // 		  printMatlab( cerr, WB );
 
 
-        K = WBmeca.multTranspose( assembledMatrix * WBmeca );
+        K = WBmeca.multTranspose( assembledStiffness * WBmeca );
 
 
 // 		  cerr<<"\nWsofa = ";
@@ -1451,6 +1516,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 // 		  cerr<<WB[16*3+1]<<endl;
 
 // 		  helper::fixed_array< Mat<8*3, 8*3, Real>, 8 >  Welem; // weights matrices per elem : from the coarse elem to each fine element
+
 
 
         if( !_completeInterpolation.getValue() ) // take WBmeca as the object interpolation
@@ -1497,7 +1563,8 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
                         WB[i][j] = WBmeca[i][j];
                     else
                     {
-                        WB[i][j] *= WEIGHT_MASK_CROSSED_DIFF[i][j]*2.5;
+// 						  WB[i][j] *= WEIGHT_MASK_CROSSED_DIFF[i][j]*2.5;
+                        WB[i][j] = WB[i][j]/fabs(WB[i][j]) * WEIGHT_MASK_CROSSED_DIFF[i][j] * this->f_poissonRatio.getValue() * .3;
                     }
                 }
             }
@@ -1512,15 +1579,18 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 
         for(int elem=0; elem<8; ++elem)
         {
-            for(int i=0; i<8; ++i)
+            if( finerChildren[elem] != -1)
             {
-// 				  Welem[elem][i*3  ] = WB [ FineHexa_FineNode_IndiceForAssembling[ elem ][ i ]*3 ];
-// 				  Welem[elem][i*3+1] = WB [ FineHexa_FineNode_IndiceForAssembling[ elem ][ i ]*3+1 ];
-// 				  Welem[elem][i*3+2] = WB [ FineHexa_FineNode_IndiceForAssembling[ elem ][ i ]*3+2 ];
+                for(int i=0; i<8; ++i)
+                {
+                    // 				  Welem[elem][i*3  ] = WB [ FineHexa_FineNode_IndiceForAssembling[ elem ][ i ]*3 ];
+                    // 				  Welem[elem][i*3+1] = WB [ FineHexa_FineNode_IndiceForAssembling[ elem ][ i ]*3+1 ];
+                    // 				  Welem[elem][i*3+2] = WB [ FineHexa_FineNode_IndiceForAssembling[ elem ][ i ]*3+2 ];
 
-                _weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildren[elem]][i*3  ] = WB [ FineHexa_FineNode_IndiceForAssembling[ elem ][ i ]*3  ];
-                _weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildren[elem]][i*3+1] = WB [ FineHexa_FineNode_IndiceForAssembling[ elem ][ i ]*3+1];
-                _weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildren[elem]][i*3+2] = WB [ FineHexa_FineNode_IndiceForAssembling[ elem ][ i ]*3+2];
+                    _weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildren[elem]][i*3  ] = WB [ FineHexa_FineNode_IndiceForAssembling[ elem ][ i ]*3  ];
+                    _weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildren[elem]][i*3+1] = WB [ FineHexa_FineNode_IndiceForAssembling[ elem ][ i ]*3+1];
+                    _weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildren[elem]][i*3+2] = WB [ FineHexa_FineNode_IndiceForAssembling[ elem ][ i ]*3+2];
+                }
             }
 
 // 			  if(finerChildren[elem]==2)
@@ -1587,6 +1657,452 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 }
 
 
+
+
+
+
+template<class T>
+void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIterativlyWithRamifications( ElementStiffness &K, ElementMass &M, const int elementIndice,  int level)
+{
+    cerr<<"\n\nNonUniformHexahedronFEMForceFieldAndMassT::computeMechanicalMatricesIterativlyWithRamifications(K,M,"<<elementIndice<<" "<<level<<"\n";
+
+
+    if (level == this->_nbVirtualFinerLevels.getValue())
+    {
+        computeClassicalMechanicalMatrices(K,M,elementIndice,this->_sparseGrid->getNbVirtualFinerLevels()-level);
+    }
+    else
+    {
+
+        topology::SparseGridRamificationTopology* sparseGrid,*finerSparseGrid;
+
+        if (level == 0)
+        {
+            sparseGrid = dynamic_cast<topology::SparseGridRamificationTopology*>(this->_sparseGrid);
+            finerSparseGrid = dynamic_cast<topology::SparseGridRamificationTopology*>(this->_sparseGrid->_virtualFinerLevels[this->_sparseGrid->getNbVirtualFinerLevels()-1]);
+        }
+        else
+        {
+            sparseGrid = dynamic_cast<topology::SparseGridRamificationTopology*>(this->_sparseGrid->_virtualFinerLevels[this->_sparseGrid->getNbVirtualFinerLevels()-level]);
+            finerSparseGrid = dynamic_cast<topology::SparseGridRamificationTopology*>(this->_sparseGrid->_virtualFinerLevels[this->_sparseGrid->getNbVirtualFinerLevels()-level-1]);
+        }
+
+
+
+        // trouver les finer elements par ramification
+        helper::fixed_array<helper::vector<int>,8 >& finerChildrenRamification = sparseGrid->_hierarchicalCubeMapRamification[ elementIndice ];
+// 			  helper::vector<int> finerChildren;
+
+
+        helper::fixed_array<helper::vector<ElementStiffness>,8> finerK;
+        helper::fixed_array<helper::vector<ElementMass>,8> finerM;
+
+        map<int,int> mapFinerNodes; // just to count how many finer nodes and who is dobled
+
+
+
+        std::map<int,int> map_idxq_idxass; // map a fine point idx to a assembly (local) idx
+        int idxass = 27;
+
+
+        for ( int i=0; i<8; ++i) //for 8 virtual finer element positions
+        {
+            finerK[i].resize( finerChildrenRamification[i].size() );
+            finerM[i].resize( finerChildrenRamification[i].size() );
+
+            for(unsigned j=0; j<finerChildrenRamification[i].size(); ++j) // for all finer elements
+            {
+                computeMechanicalMatricesIterativly(finerK[i][j], finerM[i][j], finerChildrenRamification[i][j], level+1);
+
+// 					  finerChildren.push_back( finerChildrenRamification[i][j] );
+
+                const SparseGridTopology::Hexa& finehexa = finerSparseGrid->getHexa( finerChildrenRamification[i][j] );
+                for( int k=0; k<8; ++k) //fine nodes
+                {
+                    mapFinerNodes[ finehexa[k] ] = 1;
+
+
+                    if( map_idxq_idxass[ finehexa[k] ] == 0 )
+                    {
+                        if( j == 0 )
+                        {
+                            map_idxq_idxass[ finehexa[k] ] = FineHexa_FineNode_IndiceForAssembling[i][k];
+                        }
+                        else
+                        {
+                            map_idxq_idxass[ finehexa[k] ] = idxass;
+                            ++idxass;
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+// 			  cerr<<"map_idxq_idxass : "<<endl;
+// 			  for(std::map<int,int>::iterator it = map_idxq_idxass.begin();it != map_idxq_idxass.end();++it)
+// 			  {
+// 				  cerr<<(*it).first<<" "<<(*it).second<<endl;
+// 			  }
+
+
+
+        int sizeass = idxass; // taille de l'assemblage i.e., le nombre de noeuds fins
+
+
+
+// 			  cerr<<"sizeass : "<<sizeass<<endl;
+        NewMatMatrix assembledStiffness,assembledStiffnessStatic,assembledMass;
+        assembledStiffness.resize(sizeass*3,sizeass*3);
+        assembledStiffnessStatic.resize(sizeass*3,sizeass*3);
+        assembledMass.resize(sizeass*3,sizeass*3);
+        cerr<<assembledStiffness.rowSize()<<"x"<<assembledStiffness.colSize()<<endl;
+
+
+
+
+
+        for(int i=0 ; i < 8 ; ++i ) // finer places
+        {
+            if( finerChildrenRamification[i].empty() ) //void
+            {
+                // WARNING: what happen if next to the void there are 2 independants elements ??
+                // idee : quand elem dedouble, regarder ses voisins, si vide, fabriquer le voisin avec des indices de points (existants ou -1)
+                for(int j=0; j<8; ++j) // vertices1
+                {
+                    int v1 = FineHexa_FineNode_IndiceForAssembling[i][j];
+
+                    for(int k=0; k<8; ++k) // vertices2
+                    {
+                        int v2 = FineHexa_FineNode_IndiceForAssembling[i][k];
+
+                        for(int m=0; m<3; ++m)
+                            for(int n=0; n<3; ++n)
+                            {
+                                assembledStiffnessStatic.add( v1*3+m, v2*3+n, RIGID_STIFFNESS[j*3+m][k*3+n] );
+                            }
+                    }
+                }
+            }
+            else
+            {
+                for( unsigned c=0; c<finerChildrenRamification[i].size(); ++c)
+                {
+
+                    const SparseGridTopology::Hexa& finehexa = finerSparseGrid->getHexa( finerChildrenRamification[i][c] );
+
+                    // assembly
+                    for(int j=0; j<8; ++j) // vertices1
+                    {
+                        int v1 = map_idxq_idxass[finehexa[j]];
+
+                        for(int k=0; k<8; ++k) // vertices2
+                        {
+                            int v2 = map_idxq_idxass[finehexa[k]];
+
+                            for(int m=0; m<3; ++m)
+                                for(int n=0; n<3; ++n)
+                                {
+                                    assembledStiffness.add( v1*3+m, v2*3+n, finerK[i][c][j*3+m][k*3+n] );
+                                    assembledStiffnessStatic.add( v1*3+m, v2*3+n, finerK[i][c][j*3+m][k*3+n] );
+                                    assembledMass.add( v1*3+m, v2*3+n, finerM[i][c][j*3+m][k*3+n] );
+                                }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        std::map<int,int> map_idxq_idxcutass; // map a fine point idx to a the cut assembly (local) idx
+        int idxcutass = 0,idxcutasscoarse = 0;
+        std::map<int,bool> map_idxq_coarse;
+        helper::fixed_array<helper::vector<int> ,8> map_idxcoarse_idxfine;
+        const SparseGridTopology::Hexa& coarsehexa = this->_sparseGrid->getHexa( elementIndice );
+
+
+        for(int i=0; i<sizeass; ++i)
+        {
+            std::map<int,int>::iterator it;
+            for( it = map_idxq_idxass.begin(); it!=map_idxq_idxass.end(); ++it)
+            {
+                if( (*it).second==i)
+                {
+                    // 					cerr<<(*it).first<<" "<<(*it).second<<endl;
+                    bool ok=false;
+                    Coord finesommet = finerSparseGrid->getPointPos( (*it).first );
+                    for( unsigned sc=0; sc<8; ++sc)
+                    {
+                        Coord coarsesommet = this->_sparseGrid->getPointPos( coarsehexa[sc] );
+                        if( fabs( (coarsesommet-finesommet).norm2() )<1.0e-7 )
+                        {
+                            map_idxq_idxcutass[(*it).second] = idxcutasscoarse;
+                            ++idxcutasscoarse;
+                            map_idxq_coarse[  (*it).second] = true;
+                            map_idxcoarse_idxfine[ sc ].push_back( (*it).second );
+                            ok=true;
+                            break;
+                        }
+                    }
+                    if( !ok )
+                    {
+                        map_idxq_idxcutass[ (*it).second] = idxcutass;
+                        map_idxq_coarse[(*it).second] = false;
+                        idxcutass++;
+                    }
+                }
+            }
+            if( it == map_idxq_idxass.end() ) // pas trouve ==> car est dans un vide
+            {
+                map_idxq_idxcutass[ i ] =  FineHexa_FineNode_IndiceForCutAssembling_27[i];
+            }
+        }
+
+// 			  cerr<<"map_idxq_idxcutass : "<<endl;
+// 			  for(std::map<int,int>::iterator it = map_idxq_idxcutass.begin();it != map_idxq_idxcutass.end();++it)
+// 			  {
+// 				  cerr<<(*it).first<<" "<<(*it).second<<endl;
+// 			  }
+
+
+        //ajouter les coins dans le vide
+        for(int i=0; i<8; ++i) // for all constrained nodes
+        {
+            if( map_idxcoarse_idxfine[i].empty() )
+                ++idxcutasscoarse; // nb constrained nodes
+        }
+
+
+        NewMatMatrix Kg; // stiffness of contrained nodes
+        Kg.resize(sizeass*3,idxcutasscoarse*3);
+        NewMatMatrix  A; // [Kf -G] ==  Kf (stiffness of free nodes) with the constaints
+        A.resize(sizeass*3,sizeass*3);
+        NewMatMatrix  Ainv;
+
+
+
+        for ( int i=0; i<sizeass; ++i)
+        {
+            int col = map_idxq_idxcutass[i];
+
+            if( map_idxq_coarse[i] )
+            {
+                for(int lig=0; lig<sizeass; ++lig)
+                {
+                    for(int m=0; m<3; ++m)
+                        for(int n=0; n<3; ++n)
+                            Kg.add( lig*3+m,col*3+n,assembledStiffnessStatic.element(lig*3+m,i*3+n) );
+                }
+            }
+            else
+            {
+                for(int lig=0; lig<sizeass; ++lig)
+                {
+                    for(int m=0; m<3; ++m)
+                        for(int n=0; n<3; ++n)
+                            A.add( lig*3+m,col*3+n,assembledStiffnessStatic.element(lig*3+m,i*3+n) );
+                }
+            }
+        }
+
+
+// 		  put -G entries into A
+
+
+        int d=0;
+        for(int i=0; i<8; ++i) // for all constrained nodes
+        {
+            if( map_idxcoarse_idxfine[i].empty() )
+            {
+                A.add( CoarseToFine[i]*3   , (sizeass-idxcutasscoarse+d)*3   , -1.0);
+                A.add( CoarseToFine[i]*3+1 , (sizeass-idxcutasscoarse+d)*3+1 , -1.0);
+                A.add( CoarseToFine[i]*3+2 , (sizeass-idxcutasscoarse+d)*3+2 , -1.0);
+                ++d;
+            }
+            else
+            {
+                for(unsigned j=0; j<map_idxcoarse_idxfine[i].size(); ++j)
+                {
+                    A.add( map_idxcoarse_idxfine[i][j]*3   , (sizeass-idxcutasscoarse+d)*3   , -1.0);
+                    A.add( map_idxcoarse_idxfine[i][j]*3+1 , (sizeass-idxcutasscoarse+d)*3+1 , -1.0);
+                    A.add( map_idxcoarse_idxfine[i][j]*3+2 , (sizeass-idxcutasscoarse+d)*3+2 , -1.0);
+                    ++d;
+                }
+            }
+        }
+
+// 			  A.printMatlab(cerr);
+
+        Ainv = A.i();
+
+        NewMatMatrix  Ainvf;
+        Ainv.getSubMatrix( 0,0, (sizeass-idxcutasscoarse)*3,sizeass*3,Ainvf);
+
+        NewMatMatrix  W;
+        W = - Ainvf * Kg;
+
+        //// TODO TODO TODO ajouter un H qui lie tous les coins superposés ensemble et n'en garder que 8 pour avoir un W 27x8
+
+
+        cerr<<"W : "<<W.rowSize()<<"x"<<W.colSize()<<endl;
+
+
+// 			  NewMatMatrix  WB;
+// 			  WB.resize(sizeass*3,8*3);
+// 			  for(int i=0;i<sizeass*3;++i)
+// 			  {
+// 				  int idx = i/3;
+// 				  int mod = i%3;
+// 				  if( map_idxq_coarse[idx] )
+// 					  WB.add( i , map_idxq_idxcutass[idx]*3+mod , 1.0);
+// 				  else
+// 					  for(int j=0;j<8*3;++j)
+// 				  {
+// 					  WB.add( i,j, W.element( map_idxq_idxcutass[idx]*3+mod, j));
+// 				  }
+// 			  }
+//
+//
+// 			  NewMatMatrix  mask;
+// 			  mask.resize(sizeass*3,8*3);
+//
+// 			  Coord a = this->_sparseGrid->getPointPos(coarsehexa[0]);
+// 			  Coord b = this->_sparseGrid->getPointPos(coarsehexa[6]);
+// 			  Coord dx( b[0]-a[0],0,0),dy( 0,b[1]-a[1],0), dz( 0,0,b[2]-a[2]);
+// 			  Coord inv_d2( 1.0/(dx*dx),1.0/(dy*dy),1.0/(dz*dz) );
+// 			  for( map<int,int>::iterator it = map_idxq_idxass.begin(); it!=map_idxq_idxass.end();++it)
+// 			  {
+// 				  int localidx = (*it).second; // indice du noeud fin dans l'assemblage
+//
+//
+// 				  if( map_idxq_coarse[ (*it).second ] )
+// 				  {
+// 					  int localcoarseidx = map_idxq_idxcutass[ (*it).second ];
+// 					  mask.set( localidx*3  , localcoarseidx*3   , 1);
+// 					  mask.set( localidx*3+1, localcoarseidx*3+1 , 1);
+// 					  mask.set( localidx*3+2, localcoarseidx*3+2 , 1);
+// 				  }
+// 				  else
+// 				  {
+//
+// 				// find barycentric coord
+// 					  Coord p = finestSparseGrid->getPointPos( (*it).first ) - a;
+//
+// 					  Real fx = p*dx*inv_d2[0];
+// 					  Real fy = p*dy*inv_d2[1];
+// 					  Real fz = p*dz*inv_d2[2];
+//
+//
+// 					  helper::fixed_array<Real,8> baryCoefs;
+// 					  baryCoefs[0] = (1-fx) * (1-fy) * (1-fz);
+// 					  baryCoefs[1] = fx * (1-fy) * (1-fz);
+// 					  baryCoefs[2] = fx * (fy) * (1-fz);
+// 					  baryCoefs[3] = (1-fx) * (fy) * (1-fz);
+// 					  baryCoefs[4] = (1-fx) * (1-fy) * (fz);
+// 					  baryCoefs[5] = fx * (1-fy) * (fz);
+// 					  baryCoefs[6] = fx * (fy) * (fz);
+// 					  baryCoefs[7] = (1-fx) * (fy) * fz;
+//
+//
+// 					  for(int i=0;i<8;++i)
+// 					  {
+// 						  if( baryCoefs[i]>1.0e-5 )
+// 						  {
+// 							  mask.set( localidx*3  , i*3   , 1);
+// 							  mask.set( localidx*3+1, i*3+1 , 1);
+// 							  mask.set( localidx*3+2, i*3+2 , 1);
+// 						  }
+// 					  }
+// 				  }
+// 			  }
+//
+//
+// 		  // apply the mask to take only concerned values (an edge stays an edge, a face stays a face, if corner=1 opposite borders=0....)
+// 			  NewMatMatrix WBmeca;
+// 			  WBmeca.resize(sizeass*3,8*3);
+// 			  for(int i=0;i<sizeass*3;++i)
+// 			  {
+// 				  for(int j=0;j<8*3;++j)
+// 				  {
+// 					  if( mask.element(i,j) /*WEIGHT_MASK[i][j]*/ )
+// 						  WBmeca.set(i,j,WB.element(i,j));
+// 				  }
+// 			  }
+//
+//
+//
+//
+// 		  // normalize the coefficient to obtain sum(coefs)==1
+// 			  for(int i=0;i<sizeass*3;++i)
+// 			  {
+// 				  Real sum = 0.0;
+// 				  for(int j=0;j<8*3;++j)
+// 				  {
+// 					  sum += WBmeca.element(i,j);
+// 				  }
+// 				  for(int j=0;j<8*3;++j)
+// 				  {
+// 					  WBmeca.set(i,j, WBmeca.element(i,j) / sum );
+// 				  }
+// 			  }
+//
+//
+// 			  NewMatMatrix Kc, Mc; // coarse stiffness
+// 			  Kc = WBmeca.t() * assembledStiffness * WBmeca;
+// 			  Mc = WBmeca.t() * assembledMass * WBmeca;
+//
+//
+//
+//
+//
+// 			  for(int i=0;i<8*3;++i)
+// 				  for(int j=0;j<8*3;++j)
+// 			  {
+// 				  K[i][j]=Kc.element(i,j);
+// 				  M[i][j]=Mc.element(i,j);
+// 			  }
+//
+//
+//
+//
+// 			  if( !_completeInterpolation.getValue() ) // take WBmeca as the object interpolation
+// 			  {
+// 				  WB = WBmeca;
+// 			  }
+//
+//
+// 			  for(unsigned i=0 ; i < finestChildren.size() ; ++i )
+// 			  {
+// 				  const SparseGridTopology::Hexa& hexa = finestSparseGrid->getHexa( finestChildren[i] );
+// 				  for(int j=0;j<8;++j)
+// 				  {
+// 					  for( int k=0;k<8*3;++k)
+// 					  {
+// 						  _finalWeights[finestChildren[i]].second[j*3  ][k] = WB.element( map_idxq_idxass[ hexa[j] ]*3   ,k);
+// 						  _finalWeights[finestChildren[i]].second[j*3+1][k] = WB.element( map_idxq_idxass[ hexa[j] ]*3+1 ,k);
+// 						  _finalWeights[finestChildren[i]].second[j*3+2][k] = WB.element( map_idxq_idxass[ hexa[j] ]*3+2 ,k);
+// 					  }
+// 				  }
+// 				  _finalWeights[finestChildren[i]].first = elementIndice;
+// 			  }
+//
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
 template<class T>
 void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeFinalWeights( const Weight &W, const int coarseElementIndice, const int elementIndice,  int level)
 {
@@ -1623,6 +2139,51 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeFinalWeights( const We
     }
 }
 
+
+template<class T>
+void HomogenizedHexahedronFEMForceFieldAndMass<T>::draw()
+{
+
+
+    if (!this->getContext()->getShowForceFields()) return;
+    if (!this->mstate) return;
+    if (this->getContext()->getShowWireFrame()) return;
+
+
+
+    const VecCoord& x = *this->mstate->getX();
+
+
+// 		  glDisable(GL_LIGHTING);
+
+    glColor3f(0.9, 0.9, 0.2);
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_COLOR_MATERIAL);
+
+
+    glLineWidth( 3 );
+    glBegin(GL_LINES);
+    for( SparseGridTopology::SeqEdges::const_iterator it = this->_sparseGrid->getEdges().begin() ; it != this->_sparseGrid->getEdges().end(); ++it)
+    {
+// 			  helper::gl::drawCylinder( x[(*it)[0]], x[(*it)[1]], _drawSize );
+
+        helper::gl::glVertexT( x[(*it)[0]] );
+        helper::gl::glVertexT( x[(*it)[1]] );
+    }
+    glEnd();
+
+
+    glColor3f(0.95, 0.95, 0.7);
+    for(unsigned i=0; i<x.size(); ++i)
+    {
+        helper::gl::drawSphere( x[i], _drawSize*1.5 );
+    }
+
+    glDisable(GL_LIGHTING);
+    glDisable(GL_COLOR_MATERIAL);
+
+}
 
 
 } // namespace forcefield

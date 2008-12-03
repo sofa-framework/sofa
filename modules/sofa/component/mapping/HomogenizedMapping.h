@@ -70,14 +70,13 @@ public:
     typedef typename forcefield::HomogenizedHexahedronFEMForceFieldAndMass<typename In::DataTypes> HomogenizedHexahedronFEMForceFieldAndMassT;
 
 
-    typedef Mat<3,8*3> Weight;
+// 	typedef Mat<3,8*3> Weight;
     typedef typename HomogenizedHexahedronFEMForceFieldAndMassT::Transformation Transformation;
     typedef helper::fixed_array< InCoord, 8 > Nodes;
 
 
     HomogenizedMapping ( In* from, Out* to ): Inherit ( from, to )
     {
-// 		_method = initData(&this->_method,0,"method","0: auto, 1: coarseNodes->surface, 2: coarseNodes->finestNodes->surface");
         _alreadyInit=false;
     }
 
@@ -103,22 +102,22 @@ protected :
     helper::vector< OutCoord > _finePos;
 
     // in order to treat large dispacements in translation (rotation is given by the corotational force field)
-// 	  InVecCoord _baycenters0;
-// 	  InCoord computeTranslation( const SparseGridTopologyT::Hexa& hexa, unsigned idx );
     OutVecCoord _p0; // intial position of the interpolated vertices
-    InVecCoord _qCoarse0, _qFine0; // intial position of the element nodes
-
-// 	  helper::vector< helper::Quater<Real> > _rotations;
-    helper::vector< Transformation >  _rotations;
+    InVecCoord _qCoarse0; // intial position of the element nodes
 
 
-// 	  helper::vector< helper::vector<unsigned > > _pointsCorrespondingToElem; // in which element is the interpolated vertex?
-    helper::vector< Weight > _weights; // a weight matrix for each vertex, such as dp=W.dq with q the 8 values of the embedding element
+    helper::vector< const Transformation* >  _rotations;
+
+
+
+// 	  helper::vector< Weight > _weights; // a weight matrix for each vertex, such as dp=W.dq with q the 8 values of the embedding element
 
     // for method 2
     helper::vector< std::pair< int, helper::fixed_array<Real,8> > > _finestBarycentricCoord; // barycentric coordinates for each mapped points into the finest elements (fine element idx + weights)
 
-    helper::vector< helper::vector< std::pair< int, Weight > > > _finestWeights; // for each fine nodes -> a list of incident coarse element idx and the corresponding weight
+// 	  helper::vector< helper::vector< std::pair< int, Weight > > > _finestWeights; // for each fine nodes -> a list of incident coarse element idx and the corresponding weight
+    helper::vector< helper::vector< std::pair < int, helper::fixed_array<InCoord ,8> > > > _finestWeights;// for each fine nodes -> a list of incident coarse elem idx -> the 8 the corresponding weights in each direction
+
 
     // necessary objects
     SparseGridTopologyT* _sparseGrid;
