@@ -115,6 +115,8 @@ public:
     virtual void init();
     virtual void reinit()  { std::cerr<<"WARNING : homogenized mechanical properties can't be updated, changes on mechanical properties (young, poisson, density) are not taken into account.\n"; }
 
+    virtual void draw();
+
 
     Data<bool> _finestToCoarse;
     Data<int> _homogenizationMethod;
@@ -129,6 +131,7 @@ public:
     void findFinestChildren( helper::vector<int>& finestChildren, const int elementIndice,  int level=0);
     void computeMechanicalMatricesDirectlyFromTheFinestToCoarse( ElementStiffness &K, ElementMass &M, const int elementIndice);
     void computeMechanicalMatricesIterativly( ElementStiffness &K, ElementMass &M, const int elementIndice,  int level);
+    void computeMechanicalMatricesIterativlyWithRamifications( ElementStiffness &K, ElementMass &M, const int elementIndice,  int level);
 
     /// multiply all weights for all levels and go to the finest level to obtain the final weights from the coarsest to the finest directly
     void computeFinalWeights( const Weight &W, const int coarseElementIndice, const int elementIndice,  int level);
@@ -142,6 +145,14 @@ public:
 // 		MechanicalObjectT* _finestDOF; // the nodes of the finest virtual level
 // 		MappingT* _mapping; // the homogenized from the true DOFs to the finest DOFs
 
+
+    helper::vector< helper::vector<Weight> > _weights;
+    helper::vector< std::pair<int, Weight> > _finalWeights; // for each fine element -> the coarse element idx and corresponding Weight
+
+protected:
+    float _drawSize;
+
+
     static const int FineHexa_FineNode_IndiceForAssembling[8][8]; // give an assembled idx for each node or each fine element
     static const int FineHexa_FineNode_IndiceForCutAssembling_27[27];// give an cutted assembled idx for each node or each fine element, if constrained -> idx in Kg, if not constrained -> idx in Kf
 
@@ -153,8 +164,7 @@ public:
     static const int WEIGHT_MASK_CROSSED[27*3][8*3];
     static const int WEIGHT_MASK_CROSSED_DIFF[27*3][8*3];
 
-    helper::vector< helper::vector<Weight> > _weights;
-    helper::vector< std::pair<int, Weight> > _finalWeights; // for each fine element -> the coarse element idx and corresponding Weight
+    static const float RIGID_STIFFNESS[8*3][8*3];
 
 };
 
