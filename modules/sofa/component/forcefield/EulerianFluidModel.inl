@@ -292,7 +292,6 @@ void EulerianFluidModel<DataTypes>::updatePosition(double dt)
     //std::cout << "difference between boundary flux and boundary constraints = " << test << endl;
 
 
-
     // U => v
     //std::cout << "U => v" << endl;
     calcVelocity();
@@ -493,19 +492,19 @@ void EulerianFluidModel<DataTypes>::draw()
             glLineWidth(3.0f);
 
             // display obtuse triangles
-            if(m_meshType == TriangleMesh)
-                for(unsigned int i = 0; i < m_fInfo.m_obtuseTris.size(); ++i)
-                {
-                    glBegin(GL_TRIANGLES);
-                    Triangle face = m_topology->getTriangle(m_fInfo.m_obtuseTris[i]);
-                    for(PointID j = 0; j < face.size(); ++j)
-                    {
-                        glColor3f(1.0, 1.0, 1.0);
-                        glVertex3f(m_topology->getPX(face[j]), m_topology->getPY(face[j]), m_topology->getPZ(face[j]));
-                    }
-                    glEnd();
-                }
-
+            /*			if(m_meshType == TriangleMesh)
+            			  for(unsigned int i = 0; i < m_fInfo.m_obtuseTris.size(); ++i)
+            			  {
+            			    glBegin(GL_TRIANGLES);
+            					Triangle face = m_topology->getTriangle(m_fInfo.m_obtuseTris[i]);
+            					for(PointID j = 0; j < face.size(); ++j)
+            					{
+            						glColor3f(1.0, 1.0, 1.0);
+            						glVertex3f(m_topology->getPX(face[j]), m_topology->getPY(face[j]), m_topology->getPZ(face[j]));
+            					}
+            					glEnd();
+            				}
+            */
             for(BoundaryEdgeIterator it = m_bdEdgeInfo.begin(); it != m_bdEdgeInfo.end(); ++it)
             {
                 Edge e = m_topology->getEdge(it->first);
@@ -532,6 +531,8 @@ void EulerianFluidModel<DataTypes>::draw()
             glDisable(GL_LIGHTING);
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             glColor3f(0.0, 1.0, 1.0);
+            glPolygonOffset(1.0, 2.0);
+            glEnable(GL_POLYGON_OFFSET_FILL);
 
             switch(m_meshType)
             {
@@ -566,6 +567,7 @@ void EulerianFluidModel<DataTypes>::draw()
             default:
                 break;
             }
+            glDisable(GL_POLYGON_OFFSET_FILL);
         }
 
         //draw backtrack dual mesh
@@ -574,6 +576,8 @@ void EulerianFluidModel<DataTypes>::draw()
             glDisable(GL_LIGHTING);
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             glColor3f(1.0, 1.0, 0.0);
+            glPolygonOffset(1.0, 2.0);
+            glEnable(GL_POLYGON_OFFSET_FILL);
 
             switch(m_meshType)
             {
@@ -610,6 +614,7 @@ void EulerianFluidModel<DataTypes>::draw()
             default:
                 break;
             }
+            glDisable(GL_POLYGON_OFFSET_FILL);
         }
 
         // draw backtrack velocity
@@ -1829,7 +1834,7 @@ void EulerianFluidModel<DataTypes>::addForces()
     for(PointID i = 0; i < m_nbPoints; ++i)
     {
         Coord p(m_topology->getPX(i), m_topology->getPY(i), m_topology->getPZ(i));
-        Coord o(5.0, 5.0, 0.0);
+        Coord o(-1.45752,10.4964,0);
         if((o-p).norm2() < 0.5)
             m_vorticity.element(i) += m_force.getValue();
     }
@@ -1967,10 +1972,10 @@ void EulerianFluidModel<DataTypes>::saveOperators()
 
     //outfile << d0.rowSize() << "*" << d0.colSize() << endl;
     //outfile << d0;
-    for(int i = 0; i < d0.rowSize(); ++i)
+    for(unsigned int i = 0; i < d0.rowSize(); ++i)
     {
 
-        for(int j = 0; j < d0.colSize(); ++j)
+        for(unsigned int j = 0; j < d0.colSize(); ++j)
         {
             outfile << d0.element(i, j) << " ";
         }
@@ -2016,10 +2021,10 @@ void EulerianFluidModel<DataTypes>::saveOperators()
 
     str = "laplace.txt";
     outfile.open(str.c_str(), std::ios::out);
-    for(int i = 0; i < laplace.rowSize(); ++i)
+    for(unsigned int i = 0; i < laplace.rowSize(); ++i)
     {
 
-        for(int j = 0; j < laplace.rowSize(); ++j)
+        for(unsigned int j = 0; j < laplace.rowSize(); ++j)
         {
             outfile << laplace.element(i, j) << " ";
         }
@@ -2082,7 +2087,7 @@ void EulerianFluidModel<DataTypes>::saveVorticity() const
     std::ofstream outfile(str.c_str());
     outfile << "number of points = " << m_nbPoints << endl;
     outfile << "size of vorticity = " << m_vorticity.Nrows() << endl;
-    for(PointID i = 0; i < m_vorticity.Nrows(); ++i)
+    for(int i = 0; i < m_vorticity.Nrows(); ++i)
     {
         outfile << "[" << i << "] "<< m_vorticity.element(i) << endl;
         //outfile << m_vorticity.element(i) << endl;
