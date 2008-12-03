@@ -40,8 +40,9 @@ namespace componentmodel
 namespace behavior
 {
 
-OdeSolver::OdeSolver():
+OdeSolver::OdeSolver()
 #ifdef SOFA_HAVE_LAPACK
+    :
     constraintAcc( initData( &constraintAcc, false, "constraintAcc", "Constraint the acceleration")),
     constraintVel( initData( &constraintVel, false, "constraintVel", "Constraint the velocity")),
     constraintPos( initData( &constraintPos, false, "constraintPos", "Constraint the position")),
