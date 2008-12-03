@@ -146,6 +146,10 @@ void CentralDifferenceSolver::solve(double dt)
         vmop.execute(getContext());
 #endif
     }
+
+#ifdef SOFA_HAVE_LAPACK
+    applyConstraints();
+#endif
 }
 
 SOFA_DECL_CLASS(CentralDifferenceSolver)

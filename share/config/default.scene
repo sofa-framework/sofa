@@ -7,7 +7,7 @@
 
     <node name="Omni01">
             <position x="-5" y="5" z="-9" />
-            <light name="Omni01" type="omni" castShadows="false">
+            <light name="Omni01" type="omni" castShadows="true">
                 <colourDiffuse r="0.4" g="0.4" b="0.4" />
                 <colourSpecular r="0.5" g="0.5" b="0.5" />
             </light>

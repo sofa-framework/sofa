@@ -111,6 +111,7 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
     newVel.eq(vel, x);
     //pos.peq( vel, h );                  // pos = pos + h vel
     newPos.eq(pos, newVel, h);
+
 #else // single-operation optimization
     {
         typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
@@ -137,6 +138,12 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
         cerr<<"EulerImplicitSolver, final x = "<< newPos <<endl;
         cerr<<"EulerImplicitSolver, final v = "<< newVel <<endl;
     }
+
+#ifdef SOFA_HAVE_LAPACK
+    applyConstraints();
+#endif
+
+
 }
 
 SOFA_DECL_CLASS(EulerImplicitSolver)

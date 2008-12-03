@@ -85,6 +85,11 @@ void StaticSolver::solve(double dt)
     if( f_printLog.getValue() )
         cerr<<"StaticSolver, solution = "<< x <<endl;
     pos.peq( x );
+
+
+#ifdef SOFA_HAVE_LAPACK
+    applyConstraints();
+#endif
     /*    cerr<<"StaticSolver::solve, new pos = "<<pos<<endl;*/
 }
 

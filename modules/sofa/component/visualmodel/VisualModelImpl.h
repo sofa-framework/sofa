@@ -150,6 +150,8 @@ protected:
     ResizableExtVector<int> vertNormIdx;
 
     float scaleTex;
+    TexCoord  translationTex;
+
     Data< std::string > fileMesh;
     Data< std::string > texturename;
     Data< Vector3 > translation;

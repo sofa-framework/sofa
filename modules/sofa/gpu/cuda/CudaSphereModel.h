@@ -61,7 +61,7 @@ public:
     const Coord& p() const;
     const Coord& pFree() const;
     const Coord& v() const;
-    const SReal r() const;
+    SReal r() const;
 };
 
 class CudaSphereModel : public core::CollisionModel
@@ -127,7 +127,7 @@ inline const CudaSphere::Coord& CudaSphere::pFree() const { return (*model->msta
 
 inline const CudaSphere::Coord& CudaSphere::v() const { return (*model->mstate->getV())[index]; }
 
-inline const CudaSphere::Real CudaSphere::r() const { return (CudaSphere::Real) model->getRadius((unsigned)index); }
+inline CudaSphere::Real CudaSphere::r() const { return (CudaSphere::Real) model->getRadius((unsigned)index); }
 
 } // namespace cuda
 

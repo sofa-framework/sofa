@@ -32,6 +32,7 @@
 #include <cstdlib>
 #include <sofa/gui/qt/FileManagement.h> //static functions to manage opening/ saving of files
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/system/FileRepository.h>
 
 #ifdef SOFA_QT4
 #include <Q3FileDialog>
@@ -177,16 +178,27 @@ void AddPreset::accept()
 void AddPreset::fileOpen()
 {
     QString s  = getOpenFileName(this, QString(fileName.c_str()), "Mesh File (*.msh *.mesh *.obj *.sph *.xs3 *.bvh *.rigid)", "open file dialog",  "Choose a file to open" );
+    const std::string SofaPath (sofa::helper::system::DataRepository.getFirstPath().c_str());
 
     if (s.isNull() ) return;
     fileName=std::string (s.ascii());
 
+    std::string::size_type loc = fileName.find( SofaPath, 0 );
+    if (loc==0) fileName = fileName.substr(SofaPath.size()+1);
+
+
     if (sender() == openFileButton0)
+    {
         openFilePath0->setText(QString(fileName.c_str()));
+    }
     else if (sender() == openFileButton1)
+    {
         openFilePath1->setText(QString(fileName.c_str()));
+    }
     else if (sender() == openFileButton2)
+    {
         openFilePath2->setText(QString(fileName.c_str()));
+    }
 }
 
 } // namespace qt

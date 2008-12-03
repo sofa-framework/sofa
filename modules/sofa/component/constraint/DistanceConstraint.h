@@ -109,6 +109,8 @@ public:
 protected :
     ///Compute the length of an edge given the vector of coordinates corresponding
     double lengthEdge(const Edge &e, const VecCoord &x1,const VecCoord &x2);
+    ///Compute the direction of the constraint
+    Deriv getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2);
     void updateRestLength();
 
     // Base Components of the current context

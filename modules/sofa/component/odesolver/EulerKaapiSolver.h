@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_ODESOLVER_EULERKAAPISOLVER_H
 
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/simulation/tree/OdeSolverImpl.h>
+#include <sofa/component/odesolver/OdeSolverImpl.h>
 
 namespace sofa
 {
@@ -42,7 +42,7 @@ Two variants are available, depending on the value of field "symplectic".
 If true (the default), the symplectic variant of Euler's method is applied:
 If false, the basic Euler's method is applied (less robust)
 */
-class EulerKaapiSolver : public sofa::simulation::tree::OdeSolverImpl
+class EulerKaapiSolver : public sofa::component::odesolver::OdeSolverImpl
 {
 public:
     EulerKaapiSolver();

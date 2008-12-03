@@ -187,7 +187,6 @@ public:
             for (unsigned int i=0; i<depthLevel; ++i) info += "\t";
             info += "</Component>\n";
             dumpInfo(info);
-
         }
 #endif
     }
@@ -221,6 +220,7 @@ protected:
 public:
     static void startDumpVisitor(std::ostream *s, double time)
     {
+        depthLevel=0;
         printActivated=true; outputVisitor=s;
         std::string initDump;
         std::ostringstream ff; ff << "<TraceVisitor time=\"" << time << "\">\n";
@@ -231,6 +231,7 @@ public:
         std::string endDump("</TraceVisitor>\n");
         depthLevel--;  dumpInfo(endDump);
         printActivated=false;
+        depthLevel=0;
     };
     static void dumpInfo( const std::string &info) { if (printActivated) {(*outputVisitor) << info; outputVisitor->flush();}}
     static void printComment(const std::string &s) ;

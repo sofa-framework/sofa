@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_ODESOLVER_NEWMARKIMPLICITSOLVER_H
 
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/simulation/common/OdeSolverImpl.h>
+#include <sofa/component/odesolver/OdeSolverImpl.h>
 
 namespace sofa
 {
@@ -57,7 +57,7 @@ using namespace sofa::defaulttype;
  * The current implementation first computes $a_t$ directly (as in the explicit solvers), then solves the previous system to compute $a_{t+dt}$, and finally computes the new position and velocity.
  *
 */
-class NewmarkImplicitSolver : public sofa::simulation::OdeSolverImpl
+class NewmarkImplicitSolver : public sofa::component::odesolver::OdeSolverImpl
 {
 public:
 

@@ -30,6 +30,7 @@
 #include <sofa/component/constraint/DistanceConstraint.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/gl/template.h>
 #include <iostream>
@@ -86,6 +87,22 @@ void DistanceConstraint<DataTypes>::updateRestLength()
     }
 }
 
+#ifndef SOFA_FLOAT
+template<>
+Rigid3dTypes::Deriv DistanceConstraint<Rigid3dTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2);
+#endif
+#ifndef SOFA_DOUBLE
+template<>
+Rigid3fTypes::Deriv DistanceConstraint<Rigid3fTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2);
+#endif
+
+template<class DataTypes>
+typename DataTypes::Deriv DistanceConstraint<DataTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2)
+{
+    Deriv V12 = (x2[e[1]] - x1[e[0]]);
+    V12.normalize();
+    return V12;
+}
 
 
 template<class DataTypes>
@@ -110,7 +127,7 @@ void DistanceConstraint<DataTypes>::writeConstraintEquations()
         double length     = lengthEdge(edges[i],x1,x2);
         double restLength = this->l0[i];
 
-        Deriv V12 = (x2[idx2] - x1[idx1]); V12.normalize();
+        Deriv V12 = getDirection(edges[i], x1, x2);
         //VecConst interface:
         //index where the direction will be found
         const unsigned int idxInVecConst[2]= {c1.size(),c2.size()};

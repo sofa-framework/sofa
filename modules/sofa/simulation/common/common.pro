@@ -21,19 +21,18 @@ HEADERS += Node.h \
            InstrumentVisitor.h \
            LocalStorage.h \
            MasterSolverImpl.h \
-           MatrixLinearSolver.h \
            MechanicalComputeEnergyVisitor.h \
 	   MechanicalMatrixVisitor.h \
            MechanicalVPrintVisitor.h \
            MechanicalVisitor.h \  
-           OdeSolverImpl.h \
            PipelineImpl.h \
            PrintVisitor.h \
            PropagateEventVisitor.h \
            ResetVisitor.h \
            SolveVisitor.h \
+           SolverImpl.h \
+           StateChangeVisitor.h \
            TopologyChangeVisitor.h \
-	     StateChangeVisitor.h \
            TransformationVisitor.h \
            UpdateContextVisitor.h \
            UpdateMappingEndEvent.h \
@@ -59,17 +58,16 @@ SOURCES += Node.cpp \
            InitVisitor.cpp \   
            InstrumentVisitor.cpp \
            MasterSolverImpl.cpp \
-           MatrixLinearSolver.cpp \
            MechanicalComputeEnergyVisitor.cpp \
 	   MechanicalMatrixVisitor.cpp \
            MechanicalVPrintVisitor.cpp \
            MechanicalVisitor.cpp \
-           OdeSolverImpl.cpp \
            PipelineImpl.cpp \
            PrintVisitor.cpp \
            PropagateEventVisitor.cpp \
            ResetVisitor.cpp \     
            SolveVisitor.cpp \
+           SolverImpl.cpp \
            TopologyChangeVisitor.cpp \
            StateChangeVisitor.cpp \   
            TransformationVisitor.cpp \

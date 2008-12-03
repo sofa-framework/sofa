@@ -667,6 +667,41 @@ public:
 #endif
 };
 
+/** Propagate positions  to all the levels of the hierarchy.
+At each level, the mappings form the parent to the child is applied.
+ */
+class MechanicalPropagatePositionVisitor : public MechanicalVisitor
+{
+public:
+    double t;
+    VecId x;
+    MechanicalPropagatePositionVisitor(double time=0, VecId x = VecId::position());
+
+    virtual Result processNodeTopDown(simulation::Node* node);
+    virtual void processNodeBottomUp(simulation::Node* node);
+
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
+
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalPropagatePositionVisitor";}
+    virtual const char* getInfos() const { std::string name="x["+x.getName()+"]"; return name.c_str(); }
+
+    /// Specify whether this action can be parallelized.
+    virtual bool isThreadSafe() const
+    {
+        return true;
+    }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addWriteVector(x);
+    }
+#endif
+};
 /** Propagate positions and velocities to all the levels of the hierarchy.
 At each level, the mappings form the parent to the child is applied.
 After the execution of this action, all the (mapped) degrees of freedom are consistent with the independent degrees of freedom.
