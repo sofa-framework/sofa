@@ -487,7 +487,7 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out
     OutVecCoord& xto = *this->toModel->getX();
 
     out.resize(in.size());
-    unsigned int sizeOutRoot;
+    unsigned int sizeOutRoot =0;
 
     if (rootModel!=NULL)
     {
