@@ -35,6 +35,8 @@
 #include <iostream>
 
 
+#include <sofa/helper/gl/BasicShapes.h>
+
 using std::cerr;
 using std::endl;
 
@@ -86,6 +88,7 @@ FixedConstraint<DataTypes>::FixedConstraint()
     : core::componentmodel::behavior::Constraint<DataTypes>(NULL)
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
     , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
+    , _drawSize( initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
 {
     // default to indice 0
     f_indices.beginEdit()->push_back(0);
@@ -224,23 +227,49 @@ void FixedConstraint<DataTypes>::draw()
         getShowBehaviorModels()) return;
     const VecCoord& x = *this->mstate->getX();
     //std::cerr<<"FixedConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<endl;
-    glDisable (GL_LIGHTING);
-    glPointSize(10);
-    glColor4f (1,0.5,0.5,1);
-    glBegin (GL_POINTS);
+
+
+
+
     const SetIndexArray & indices = f_indices.getValue().getArray();
-    //std::cerr<<"FixedConstraint<DataTypes>::draw(), indices = "<<indices<<endl;
-    if( f_fixAll.getValue()==true ) for (unsigned i=0; i<x.size(); i++ )
-        {
-            gl::glVertexT(x[i]);
-        }
-    else for (SetIndexArray::const_iterator it = indices.begin();
-                it != indices.end();
-                ++it)
-        {
-            gl::glVertexT(x[*it]);
-        }
-    glEnd();
+
+    if( _drawSize.getValue() == 0) // old classical drawing by points
+    {
+        glColor4f (1,0.5,0.5,1);
+        glDisable (GL_LIGHTING);
+        glPointSize(10);
+        glBegin (GL_POINTS);
+        //std::cerr<<"FixedConstraint<DataTypes>::draw(), indices = "<<indices<<endl;
+        if( f_fixAll.getValue()==true ) for (unsigned i=0; i<x.size(); i++ )
+            {
+                gl::glVertexT(x[i]);
+            }
+        else for (SetIndexArray::const_iterator it = indices.begin();
+                    it != indices.end();
+                    ++it)
+            {
+                gl::glVertexT(x[*it]);
+            }
+        glEnd();
+    }
+    else // new drawing by spheres
+    {
+        glColor4f (1,0.35,0.35,1);
+        glEnable(GL_LIGHTING);
+        glEnable(GL_COLOR_MATERIAL);
+        if( f_fixAll.getValue()==true ) for (unsigned i=0; i<x.size(); i++ )
+            {
+                helper::gl::drawSphere( x[i], _drawSize.getValue() );
+            }
+        else for (SetIndexArray::const_iterator it = indices.begin();
+                    it != indices.end();
+                    ++it)
+            {
+                helper::gl::drawSphere( x[*it], _drawSize.getValue() );
+            }
+        glDisable(GL_LIGHTING);
+        glDisable(GL_COLOR_MATERIAL);
+    }
 }
 
 // Specialization for rigids
