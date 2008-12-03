@@ -75,6 +75,7 @@ protected:
 public:
     Data<SetIndex> f_indices;
     Data<bool> f_fixAll;
+    Data<double> _drawSize;
 
     FixedConstraint();
 
