@@ -62,7 +62,6 @@ public:
 
     virtual void init();
 
-    Data< VecReal > compliance;
 
     /// Retrieve the associated MechanicalState
     behavior::MechanicalState<DataTypes>* getMState() { return mstate; }
@@ -95,6 +94,11 @@ public:
 
 protected:
     behavior::MechanicalState<DataTypes> *mstate;
+
+public:
+    Data< VecReal > compliance;
+
+
 };
 
 } // namespace collision
