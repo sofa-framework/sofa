@@ -239,6 +239,9 @@ void ComplianceCGImplicitSolver::solve(double dt)
         cerr<<"ComplianceCGImplicitSolver, final x = "<< pos <<endl;
         cerr<<"ComplianceCGImplicitSolver, final v = "<< vel <<endl;
     }
+#ifdef SOFA_HAVE_LAPACK
+    applyConstraints();
+#endif
 }
 
 

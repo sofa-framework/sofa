@@ -31,7 +31,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/simulation/common/OdeSolverImpl.h>
+#include <sofa/component/odesolver/OdeSolverImpl.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/helper/set.h>
 #include <sofa/gpu/cuda/CudaLCP.h>
@@ -244,7 +244,7 @@ private:
 
 
 template<class real>
-class CudaMasterContactSolver : public sofa::simulation::MasterSolverImpl//, public sofa::simulation::OdeSolverImpl
+class CudaMasterContactSolver : public sofa::simulation::MasterSolverImpl//, public sofa::component::odesolver::OdeSolverImpl
 {
 public:
     Data<int> useGPU_d;

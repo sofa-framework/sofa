@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/common/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/MatrixLinearSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/MechanicalMatrixVisitor.h>
 #include <sofa/simulation/common/MechanicalVPrintVisitor.h>
@@ -35,9 +35,11 @@
 namespace sofa
 {
 
-namespace simulation
+namespace component
 {
 
+namespace linearsolver
+{
 
 using sofa::core::componentmodel::behavior::LinearSolver;
 using sofa::core::objectmodel::BaseContext;
@@ -64,7 +66,7 @@ void GraphScatteredMatrix::apply(GraphScatteredVector& res, GraphScatteredVector
     }
     else if (mFact != 0.0)
     {
-        parent->addMdx(res,SolverImpl::VecId(),mFact); // no need to propagate p as dx again
+        parent->addMdx(res,simulation::SolverImpl::VecId(),mFact); // no need to propagate p as dx again
     }
     // q = (m M + k K) p
 
@@ -161,6 +163,8 @@ defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredV
 // Force template instantiation
 template class MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>;
 
-} // namespace simulation
+} // namespace linearsolver
+
+} // namespace component
 
 } // namespace sofa

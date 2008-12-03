@@ -7,7 +7,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/simulation/common/OdeSolverImpl.h>
+#include <sofa/component/odesolver/OdeSolverImpl.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 
 #include <vector>
@@ -152,7 +152,7 @@ private:
     std::vector<core::componentmodel::behavior::BaseConstraintCorrection*> constraintCorrections;
 
     LPtrFullMatrix<double> _W;
-    FullVector<double> _dFree, _force, _d;		// cf. These Duriez
+    FullVector<double> _dFree, _force, _d;              // cf. These Duriez
     FullVector<bool> _constraintsType;
 
     std::vector<core::componentmodel::behavior::ConstraintResolution*> _constraintsResolutions;

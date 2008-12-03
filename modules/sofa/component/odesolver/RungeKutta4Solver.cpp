@@ -185,6 +185,10 @@ void RungeKutta4Solver::solve(double dt)
         vmop.execute(this->getContext());
     }
 #endif
+
+#ifdef SOFA_HAVE_LAPACK
+    applyConstraints();
+#endif
 }
 
 

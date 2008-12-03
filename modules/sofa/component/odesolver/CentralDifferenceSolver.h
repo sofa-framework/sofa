@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_ODESOLVER_CENTRALDIFFERENCESOLVER_H
 
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/simulation/common/OdeSolverImpl.h>
+#include <sofa/component/odesolver/OdeSolverImpl.h>
 
 namespace sofa
 {
@@ -45,7 +45,7 @@ using namespace sofa::defaulttype;
  * @see http://en.wikipedia.org/wiki/Leapfrog_method
  *
  */
-class CentralDifferenceSolver : public sofa::simulation::OdeSolverImpl
+class CentralDifferenceSolver : public sofa::component::odesolver::OdeSolverImpl
 {
 public:
 

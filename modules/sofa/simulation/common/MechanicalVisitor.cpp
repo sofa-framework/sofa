@@ -506,6 +506,14 @@ MechanicalPropagatePositionAndVelocityVisitor::MechanicalPropagatePositionAndVel
 }
 #endif
 
+MechanicalPropagatePositionVisitor::MechanicalPropagatePositionVisitor(double t, VecId x) : t(t), x(x)
+{
+#ifdef DUMP_VISITOR_INFO
+    setReadWriteVectors();
+#endif
+    //cerr<<"::MechanicalPropagatePositionAndVelocityVisitor"<<endl;
+}
+
 #ifdef SOFA_SUPPORT_MAPPED_MASS
 Visitor::Result MechanicalAddMDxVisitor::fwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map)
 {
@@ -540,6 +548,47 @@ Visitor::Result MechanicalAddMDxVisitor::fwdMappedMechanicalState(simulation::No
     return RESULT_PRUNE;
 }
 #endif
+
+
+Visitor::Result MechanicalPropagatePositionVisitor::processNodeTopDown(simulation::Node* node)
+{
+    //cerr<<" MechanicalPropagatePositionVisitor::processNodeTopDown "<<node->getName()<<endl;
+    node->setTime(t);
+    node->updateSimulationContext();
+    return MechanicalVisitor::processNodeTopDown( node);
+}
+
+void MechanicalPropagatePositionVisitor::processNodeBottomUp(simulation::Node* node)
+{
+    //cerr<<" MechanicalPropagatePositionVisitor::processNodeBottomUp "<<node->getName()<<endl;
+    //for_each(this, node, node->constraint, &MechanicalPropagatePositionVisitor::bwdConstraint);
+    MechanicalVisitor::processNodeBottomUp( node);
+
+}
+
+
+Visitor::Result MechanicalPropagatePositionVisitor::fwdMechanicalState(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalState* mm)
+{
+    ctime_t t0 = beginProcess(node, mm);
+    mm->setX(x);
+    endProcess(node, mm, t0);
+    return RESULT_CONTINUE;
+}
+Visitor::Result MechanicalPropagatePositionVisitor::fwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map)
+{
+    ctime_t t0 = beginProcess(node, map);
+    map->propagateX();
+    endProcess(node, map, t0);
+    return RESULT_CONTINUE;
+}
+Visitor::Result MechanicalPropagatePositionVisitor::fwdConstraint(simulation::Node* node, core::componentmodel::behavior::BaseConstraint* c)
+{
+    ctime_t t0 = beginProcess(node, c);
+    c->projectPosition();
+    endProcess(node, c, t0);
+    return RESULT_CONTINUE;
+}
+
 
 Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::processNodeTopDown(simulation::Node* node)
 {

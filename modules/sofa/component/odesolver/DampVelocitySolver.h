@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_ODESOLVER_DampVelocitySolver_H
 
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/simulation/common/OdeSolverImpl.h>
+#include <sofa/component/odesolver/OdeSolverImpl.h>
 
 namespace sofa
 {
@@ -40,7 +40,7 @@ namespace odesolver
 /** Velocity damping and thresholding.
 This is not an ODE solver, but it can be used as a post-process after a real ODE solver.
 */
-class DampVelocitySolver : public sofa::simulation::OdeSolverImpl
+class DampVelocitySolver : public sofa::component::odesolver::OdeSolverImpl
 {
 public:
     DampVelocitySolver();

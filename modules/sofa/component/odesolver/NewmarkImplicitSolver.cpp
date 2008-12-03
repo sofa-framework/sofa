@@ -183,6 +183,11 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::componentmodel::behavio
         cerr<<"NewmarkImplicitSolver, final x = "<< newPos <<endl;
         cerr<<"NewmarkImplicitSolver, final v = "<< newVel <<endl;
     }
+
+#ifdef SOFA_HAVE_LAPACK
+    applyConstraints();
+#endif
+
 }
 
 SOFA_DECL_CLASS(NewmarkImplicitSolver)

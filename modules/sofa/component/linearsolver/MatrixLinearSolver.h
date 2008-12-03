@@ -22,16 +22,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_MATRIXLINEARSOLVER_H
-#define SOFA_SIMULATION_MATRIXLINEARSOLVER_H
+#ifndef SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_H
+#define SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_H
 
-#include <sofa/simulation/common/OdeSolverImpl.h>
+#include <sofa/simulation/common/SolverImpl.h>
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
 
 namespace sofa
 {
 
-namespace simulation
+namespace component
+{
+
+namespace linearsolver
 {
 
 
@@ -44,7 +47,7 @@ public:
 };
 
 template<class Matrix, class Vector>
-class MatrixLinearSolver : public sofa::core::componentmodel::behavior::LinearSolver, public SolverImpl
+class MatrixLinearSolver : public sofa::core::componentmodel::behavior::LinearSolver, public sofa::simulation::SolverImpl
 {
 public:
     typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
@@ -251,10 +254,10 @@ public:
 class GraphScatteredMatrix
 {
 protected:
-    SolverImpl* parent;
+    simulation::SolverImpl* parent;
     double mFact, bFact, kFact;
 public:
-    GraphScatteredMatrix(SolverImpl* p)
+    GraphScatteredMatrix(simulation::SolverImpl* p)
         : parent(p), mFact(0.0), bFact(0.0), kFact(0.0)
     {
     }
@@ -275,15 +278,15 @@ public:
 };
 
 
-class GraphScatteredVector : public sofa::core::componentmodel::behavior::MultiVector<SolverImpl>
+class GraphScatteredVector : public sofa::core::componentmodel::behavior::MultiVector<simulation::SolverImpl>
 {
 public:
-    typedef sofa::core::componentmodel::behavior::MultiVector<SolverImpl> Inherit;
-    GraphScatteredVector(SolverImpl* p, VecId id)
+    typedef sofa::core::componentmodel::behavior::MultiVector<simulation::SolverImpl> Inherit;
+    GraphScatteredVector(simulation::SolverImpl* p, VecId id)
         : Inherit(p, id)
     {
     }
-    GraphScatteredVector(SolverImpl* p, VecId::Type t = VecId::V_DERIV)
+    GraphScatteredVector(simulation::SolverImpl* p, VecId::Type t = VecId::V_DERIV)
         : Inherit(p, t)
     {
     }
@@ -350,7 +353,9 @@ defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredV
 template<>
 defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::getSystemLHBaseVector();
 
-} // namespace simulation
+} // namespace linearsolver
+
+} // namespace component
 
 } // namespace sofa
 

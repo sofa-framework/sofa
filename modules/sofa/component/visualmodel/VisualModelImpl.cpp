@@ -101,11 +101,10 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     {
         //obj->applyUVScale(atof(arg->getAttribute("scaleTex","1.0")), atof(arg->getAttribute("scaleTex","1.0")));
         scaleTex=(float)(atof(arg->getAttribute("scaleTex","1.0")));
-        obj->applyUVScale(scaleTex, scaleTex);
     }
     if (arg->getAttribute("du")!=NULL || arg->getAttribute("dv")!=NULL)
     {
-        obj->applyUVTranslation(atof(arg->getAttribute("du","0.0")), atof(arg->getAttribute("dv","0.0")));
+        translationTex = TexCoord(atof(arg->getAttribute("du","0.0")),atof(arg->getAttribute("dv","0.0")));
     }
 
 
@@ -138,7 +137,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
        field_vtexcoords  (initDataPtr(&field_vtexcoords, &vtexcoords, "texcoords",  "coordinates of the texture") ),
        field_triangles   (initDataPtr(&field_triangles, &triangles,"triangles" ,  "triangles of the model") ),
        field_quads       (initDataPtr(&field_quads, &quads,   "quads",    "quads of the model") ),
-       fileMesh          (initData   (&fileMesh,    "fileMesh","Path to the model", false)),
+       fileMesh          (initData   (&fileMesh,    "fileMesh","Path to the model")),
        texturename       (initData                            (&texturename, "texturename","Name of the Texture")),
        translation       (initData   (&translation, Vector3(), "translation", "Initial Translation of the object")),
        rotation          (initData   (&rotation, Vector3(), "rotation", "Initial Rotation of the object")),
@@ -384,6 +383,9 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
         // add one identity matrix
         xforms.resize(1);
     }
+
+    applyUVScale(scaleTex, scaleTex);
+    applyUVTranslation(translationTex[0],translationTex[1]);
     return true;
 }
 

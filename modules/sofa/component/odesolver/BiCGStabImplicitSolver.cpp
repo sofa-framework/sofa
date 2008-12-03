@@ -186,7 +186,19 @@ void BiCGStabImplicitSolver::solve(double dt)
 
     // apply the solution
     vel.peq( x );                       // vel = vel + x
+#ifdef SOFA_HAVE_LAPACK
+    if (constraintVel.getValue())
+    {
+        solveConstraint(VecId::velocity());
+    }
+#endif
     pos.peq( vel, h );                  // pos = pos + h vel
+#ifdef SOFA_HAVE_LAPACK
+    if (constraintPos.getValue())
+    {
+        solveConstraint(VecId::position(), !constraintVel.getValue());
+    }
+#endif
 
     if( getDebug() )
     {

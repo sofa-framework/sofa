@@ -1,8 +1,8 @@
 <Node name="Root"  dt="0.02" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0">
 <!-- when creating a new scene from the GUI -->
-	<Object type="CollisionPipeline" name="DefaultCollisionPipeline" depth="6" verbose="0" draw="0"/>
-	<Object type="BruteForceDetection" name="Detection" />
-	<Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
-	<Object type="CollisionResponse" name="Response" response="default" />
-	<Object type="CollisionGroup" name="Group" />
+	<CollisionPipeline name="DefaultCollisionPipeline" depth="6" verbose="0" draw="0"/>
+	<BruteForceDetection name="Detection" />
+	<MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
+	<CollisionResponse name="Response" response="default" />
+	<CollisionGroup name="Group" />
 </Node>

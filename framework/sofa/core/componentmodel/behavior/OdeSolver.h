@@ -84,7 +84,11 @@ public:
     /// advancing the state from time t to t+dt.
     virtual void solve (double dt) { solve(dt, BaseMechanicalState::VecId::position(), BaseMechanicalState::VecId::velocity()); }
 
-    /// Solve specific constraint
+
+    /** Find all the LMConstraint present in the scene graph and solve a part of them
+     * @param Id nature of the constraint to be solved
+     * @param propagateVelocityToPosition need to update the position once the velocity has been constrained
+     **/
     virtual void solveConstraint(BaseMechanicalState::VecId, bool /* propagateVelocityToConstraint */ ) {};
 
     /// Propagate the given state (time, position and velocity) through all mappings
@@ -130,6 +134,23 @@ public:
     {
         return getSolutionIntegrationFactor(0);
     }
+
+    //Constraint resolution using Lapack
+#ifdef SOFA_HAVE_LAPACK
+
+    Data<bool> constraintAcc;
+    Data<bool> constraintVel;
+    Data<bool> constraintPos;
+
+    Data<bool> constraintResolution;
+    Data<unsigned int> numIterations;
+    Data<double> maxError;
+    void reinit()
+    {
+        numIterations.setDisplayed(constraintResolution.getValue());
+        maxError.setDisplayed(constraintResolution.getValue());
+    }
+#endif
 
 };
 

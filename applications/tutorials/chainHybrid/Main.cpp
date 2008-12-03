@@ -47,7 +47,7 @@
 //Including Solvers
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/CGLinearSolver.h>
-#include <sofa/simulation/common/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/MatrixLinearSolver.h>
 
 #include <sofa/component/visualmodel/OglModel.h>
 
@@ -62,8 +62,8 @@ using namespace sofa::component::topology;
 using sofa::component::MeshLoader;
 using sofa::component::odesolver::EulerImplicitSolver;
 using sofa::component::linearsolver::CGLinearSolver;
-using sofa::simulation::GraphScatteredMatrix;
-using sofa::simulation::GraphScatteredVector;
+using sofa::component::linearsolver::GraphScatteredMatrix;
+using sofa::component::linearsolver::GraphScatteredVector;
 typedef CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector> CGLinearSolverGraph;
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.

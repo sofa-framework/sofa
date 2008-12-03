@@ -30,7 +30,7 @@
 #define SOFA_COMPONENT_ODESOLVER_COMPLIANCECGIMPLICITSOLVER_H
 
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/simulation/common/OdeSolverImpl.h>
+#include <sofa/component/odesolver/OdeSolverImpl.h>
 
 namespace sofa
 {
@@ -43,7 +43,7 @@ namespace odesolver
 
 using namespace sofa::defaulttype;
 
-class ComplianceCGImplicitSolver : public sofa::simulation::OdeSolverImpl
+class ComplianceCGImplicitSolver : public sofa::component::odesolver::OdeSolverImpl
 {
 public:
     ComplianceCGImplicitSolver();

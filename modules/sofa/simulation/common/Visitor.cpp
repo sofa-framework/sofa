@@ -72,22 +72,7 @@ void Visitor::printInfo(const core::objectmodel::BaseContext* context, bool dirD
         dumpInfo(info);
         return;
     }
-    //Ending the traversal: The visitor has finished its work
-    if (this->infoPrinted)
-    {
-        std::string info;
-        if (enteringBase)
-        {
-            Visitor::depthLevel--;
-            for (unsigned int i=0; i<Visitor::depthLevel; ++i) info+="\t";
-            info += "</Node>\n";
-        }
-        Visitor::depthLevel--;
-        for (unsigned int i=0; i<Visitor::depthLevel; ++i) info+= "\t";
-        info +="</" + std::string(this->getClassName()) + ">\n";
-        dumpInfo(info);
-    }
-    else
+    else if (!this->infoPrinted)
     {
         //Beginning processing: Visitor entered its first node
         this->infoPrinted=true;
@@ -111,6 +96,27 @@ void Visitor::printInfo(const core::objectmodel::BaseContext* context, bool dirD
         info+= "<Node name=\"" + NodeName + "\">\n";
         Visitor::depthLevel++;
         dumpInfo(info);
+    }
+    else
+    {
+        //Ending the traversal: The visitor has finished its work
+        if (this->infoPrinted)
+        {
+            std::string info;
+            if (enteringBase)
+            {
+                Visitor::depthLevel--;
+                for (unsigned int i=0; i<Visitor::depthLevel; ++i) info+="\t";
+                info += "</Node>\n";
+            }
+            Visitor::depthLevel--;
+            for (unsigned int i=0; i<Visitor::depthLevel; ++i) info+= "\t";
+            info +="</" + std::string(this->getClassName()) + ">\n";
+            dumpInfo(info);
+        }
+        //Reinit the Visitor debug variables
+        enteringBase=NULL;
+        infoPrinted=false;
     }
 
 }

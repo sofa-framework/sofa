@@ -308,7 +308,7 @@ SolverSet createSolverCGImplicitCGImplicit(odesolver::CGImplicitSolver& solver1,
     return SolverSet(solver, NULL);
 }
 
-typedef linearsolver::CGLinearSolver<simulation::GraphScatteredMatrix,simulation::GraphScatteredVector> DefaultCGLinearSolver;
+typedef linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector> DefaultCGLinearSolver;
 
 LinearSolver* createLinearSolver(OdeSolver* solver1, OdeSolver* solver2)
 {
@@ -391,7 +391,15 @@ using namespace SolverMergers;
 SolverSet SolverMerger::merge(core::componentmodel::behavior::OdeSolver* solver1, core::componentmodel::behavior::OdeSolver* solver2)
 {
     static SolverMerger instance;
-    return instance.solverDispatcher.go(*solver1, *solver2);
+    SolverSet obj=instance.solverDispatcher.go(*solver1, *solver2);
+    obj.first->constraintAcc.setValue( (solver1->constraintAcc.getValue() || solver2->constraintAcc.getValue() ) );
+    obj.first->constraintVel.setValue( (solver1->constraintVel.getValue() || solver2->constraintVel.getValue() ) );
+    obj.first->constraintPos.setValue( (solver1->constraintPos.getValue() || solver2->constraintPos.getValue() ) );
+    obj.first->constraintResolution.setValue( (solver1->constraintResolution.getValue() && solver2->constraintResolution.getValue() ) );
+    obj.first->numIterations.setValue( std::max(solver1->numIterations.getValue(), solver2->numIterations.getValue() ) );
+    obj.first->maxError.setValue( std::min(solver1->maxError.getValue(), solver2->maxError.getValue() ) );
+
+    return obj;
 }
 
 SolverMerger::SolverMerger()

@@ -104,8 +104,21 @@ void ComplianceEulerSolver::solve(double dt)
     computeAcc(getTime(), acc, pos, vel);
     vel.eq(vel);
     vel.peq(acc,dt);
+#ifdef SOFA_HAVE_LAPACK
+    if (constraintVel.getValue())
+    {
+        solveConstraint(VecId::velocity());
+    }
+#endif
     pos.eq(pos);
     pos.peq(vel,dt);
+#ifdef SOFA_HAVE_LAPACK
+    if (constraintPos.getValue())
+    {
+        solveConstraint(VecId::position(), !constraintVel.getValue());
+    }
+#endif
+
     //simulation::tree::MechanicalPropagateFreePositionVisitor().execute(context);
 
 //}

@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_ODESOLVER_EULERSOLVER_H
 
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/simulation/common/OdeSolverImpl.h>
+#include <sofa/component/odesolver/OdeSolverImpl.h>
 
 namespace sofa
 {
@@ -40,7 +40,7 @@ namespace odesolver
 /** The simplest time integration.
 the symplectic variant of Euler's method is applied
 */
-class ComplianceEulerSolver : public sofa::simulation::OdeSolverImpl
+class ComplianceEulerSolver : public sofa::component::odesolver::OdeSolverImpl
 {
 public:
     ComplianceEulerSolver();
