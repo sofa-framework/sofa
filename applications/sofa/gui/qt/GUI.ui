@@ -1088,6 +1088,12 @@
         <slot>fileSaveAs()</slot>
     </connection>
     <connection>
+        <sender>exportGraphAction</sender>
+        <signal>activated()</signal>
+        <receiver>GUI</receiver>
+        <slot>exportGraph()</slot>
+    </connection>
+    <connection>
         <sender>fileExitAction</sender>
         <signal>activated()</signal>
         <receiver>GUI</receiver>
@@ -1202,6 +1208,7 @@
     <slot>fileReload()</slot>
     <slot>fileSave()</slot>
     <slot>fileSaveAs()</slot>
+    <slot>exportGraph()</slot>
     <slot>fileExit()</slot>
     <slot>editUndo()</slot>
     <slot>editRedo()</slot>

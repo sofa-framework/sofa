@@ -126,14 +126,10 @@ contains( DEFINES, SOFA_GUI_QTOGREVIEWER){
         SOURCES += viewer/qtogre/DotSceneLoader.cpp \
                    viewer/qtogre/QtOgreViewer.cpp\ 
                    viewer/qtogre/QtOgreViewer_slots.cpp\ 
-                   viewer/qtogre/OgreVisualModel.cpp \
-                   viewer/qtogre/tinyxml.cpp \
-                   viewer/qtogre/tinyxmlerror.cpp \
-                   viewer/qtogre/tinyxmlparser.cpp
+                   viewer/qtogre/OgreVisualModel.cpp 
 			   
 	HEADERS += viewer/qtogre/DotSceneLoader.h \
                    viewer/qtogre/QtOgreViewer.h \
-                   viewer/qtogre/OgreVisualModel.h \
-                   viewer/qtogre/tinyxml.h
+                   viewer/qtogre/OgreVisualModel.h 
                
 }
