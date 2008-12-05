@@ -24,7 +24,7 @@ class BilateralConstraintResolution : public core::componentmodel::behavior::Con
 public:
     virtual void resolution(int line, double** w, double* d, double* force)
     {
-        force[line] = - d[line] / w[line][line];
+        force[line] -= d[line] / w[line][line];
     }
 };
 
@@ -57,7 +57,7 @@ public:
     {
         for(int i=0; i<3; i++)
         {
-            force[line+i] = 0;
+            //	force[line+i] = 0;
             for(int j=0; j<3; j++)
                 force[line+i] -= d[line+j] * invW[i][j];
         }

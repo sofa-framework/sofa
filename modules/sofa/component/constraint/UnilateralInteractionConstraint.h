@@ -4,6 +4,7 @@
 #include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <iostream>
+#include <deque>
 
 
 namespace sofa
@@ -21,7 +22,7 @@ public:
     virtual void resolution(int line, double** w, double* d, double* force)
     {
         if(d[line]<0)
-            force[line] =- d[line] / w[line][line];
+            force[line] -= d[line] / w[line][line];
         else
             force[line] = 0.0;
     }
@@ -30,13 +31,15 @@ public:
 class UnilateralConstraintResolutionWithFriction : public core::componentmodel::behavior::ConstraintResolution
 {
 public:
-    UnilateralConstraintResolutionWithFriction(double mu) : _mu(mu) { nbLines=3; }
+    UnilateralConstraintResolutionWithFriction(double mu, std::deque<double>* vec=NULL) : _mu(mu), _vec(vec) { nbLines=3; }
     virtual void init(int line, double** w, double* force);
     virtual void resolution(int line, double** w, double* d, double* force);
+    virtual void store(int line, double* force, bool /*convergence*/);
 
 protected:
     double _mu;
     double _W[6];
+    std::deque<double>* _vec;
 };
 
 class UnilateralConstraintResolutionSticky : public UnilateralConstraintResolutionWithFriction
@@ -92,6 +95,8 @@ protected:
     sofa::helper::vector<Contact> contacts;
     Real epsilon;
     bool yetIntegrated;
+
+    std::deque<double> prevForces;
 
 public:
 
