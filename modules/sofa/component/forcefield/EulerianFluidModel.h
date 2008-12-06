@@ -86,6 +86,9 @@ public:
     typedef typename sofa::helper::vector<FaceID> EdgeFaces;
     typedef typename topology::MeshTopology::TriangleEdges TriangleEdges;
     typedef typename topology::MeshTopology::QuadEdges QuadEdges;
+
+    typedef typename topology::PointSetGeometryAlgorithms<DataTypes>::Angle Angle;
+
     typedef bool CenterType;
 
     typedef sofa::helper::vector< unsigned int > SetIndex;
@@ -162,11 +165,9 @@ public:
     void setCenterType(CenterType ct) { m_centerType.setValue(ct); }
 
     virtual void parse(core::objectmodel::BaseObjectDescription* arg);
-
     virtual void init();
-
+    virtual void reinit();
     virtual void updatePosition(double dt);
-
     virtual void draw();
 
 protected:
@@ -175,8 +176,12 @@ protected:
     ctime_t m_dTime1, m_dTime2;
 
     //arguments
+    Data< bool > m_bViscous;
+    Data< Real > m_viscosity;
+
     Data< bool > m_bAddForces;
     Data< Real > m_force;
+    Data<SetIndex> m_addForcePointSet;
 
     Data< bool > m_bDisplayBoundary;
     Data< bool > m_bDisplayDualMesh;
@@ -215,7 +220,6 @@ protected:
     Data< Real > m_bdZmax2;
     Data< Real> m_bdValue2;
 
-    Data< Real > m_viscosity;
     Data< CenterType > m_centerType;
 
     //topology and geometry related data
@@ -310,12 +314,12 @@ protected:
     sofa::component::linearsolver::FullVector<double> star2;
     sofa::component::linearsolver::SparseMatrix<double> curl;
     sofa::component::linearsolver::SparseMatrix<double> laplace;
+    NewMAT::Matrix m_d0;
     NewMAT::Matrix m_laplace;
     NewMAT::Matrix m_laplace_inv;
-    NewMAT::Matrix m_d0;
-
-    NewMAT::Matrix m_constraint;
-    NewMAT::Matrix m_constraint_inv;
+    NewMAT::Matrix m_diffusion;
+    NewMAT::Matrix m_diffusion_inv;
+    bool m_bFirstComputation;
 
     //state variables
     NewMAT::ColumnVector m_flux;
@@ -348,18 +352,21 @@ protected:
 
     // v => Omega
     //search the face(tri/quad) index in which pt is in
-    FaceID searchFaceForTriMesh(const Coord& pt, FaceID startFace) const;
+    unsigned int searchFaceForTriMesh(const Coord& pt, FaceID startFace) const;
     //search the dual face in which pt is, with the start face iFace
-    PointID searchDualFaceForTriMesh(const Coord& pt, const FaceID startFace) const;
-    PointID searchDualFaceForQuadMesh(const Coord & pt, PointID startDualFace) const;
+    unsigned int searchDualFaceForTriMesh(const Coord& pt, PointID startDualFace) const;
+    unsigned int searchDualFaceForQuadMesh(const Coord & pt, PointID startDualFace) const;
     //interpolate velocity
-    Deriv interpolateVelocity(const Coord& pt, unsigned int start);
+    Deriv interpolateVelocity(const Coord& pt, const PointID start);
     //backtrack face centers
     void backtrack(double dt);
     //calculate vorticity
     void calcVorticity();
     //add forces
     void addForces();
+    //add diffusion for viscous fluid
+    void calcDiffusion(double dt);
+    void addDiffusion();
 
     // Omega => Phi
     void calcPhi(bool reset);
@@ -376,6 +383,7 @@ protected:
     //save data
     void saveMeshData() const;
     void saveOperators();
+    void saveDiffusion();
     void saveVorticity() const;
     void savePhi() const;
     void saveFlux() const;
