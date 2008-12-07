@@ -95,6 +95,9 @@ public:
     Data<defaulttype::Vec3f> color;
     Data<bool> bDraw;
 
+    /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
+    Data< defaulttype::Vec<2,int> > localRange;
+
     SphereForceField()
         : contacts(initData(&contacts,"contacts", "Contacts"))
         , sphereCenter(initData(&sphereCenter, "center", "sphere center"))
@@ -103,6 +106,7 @@ public:
         , damping(initData(&damping, (Real)5, "damping", "force damping"))
         , color(initData(&color, defaulttype::Vec3f(0.0f,0.0f,1.0f), "color", "sphere color"))
         , bDraw(initData(&bDraw, true, "draw", "enable/disable drawing of the sphere"))
+        , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
     {
     }
 

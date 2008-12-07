@@ -70,6 +70,9 @@ public:
     Data<defaulttype::Vec3f> color;
     Data<bool> bDraw;
 
+    /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
+    Data< defaulttype::Vec<2,int> > localRange;
+
     PlaneForceField()
         : planeNormal(initData(&planeNormal, "normal", "plane normal"))
         , planeD(initData(&planeD, (Real)0, "d", "plane d coef"))
@@ -77,6 +80,7 @@ public:
         , damping(initData(&damping, (Real)5, "damping", "force damping"))
         , color(initData(&color, defaulttype::Vec3f(0.0f,.5f,.2f), "color", "plane color"))
         , bDraw(initData(&bDraw, false, "draw", "enable/disable drawing of plane"))
+        , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
     {
         Deriv n;
         DataTypes::set(n, 0, 1, 0);

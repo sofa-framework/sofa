@@ -67,7 +67,17 @@ void SphereForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, con
     const Real r2 = r*r;
     this->contacts.beginEdit()->clear();
     f1.resize(p1.size());
-    for (unsigned int i=0; i<p1.size(); i++)
+
+    unsigned int ibegin = 0;
+    unsigned int iend = p1.size();
+
+    if (localRange.getValue()[0] >= 0)
+        ibegin = localRange.getValue()[0];
+
+    if (localRange.getValue()[1] >= 0 && (unsigned int)localRange.getValue()[1]+1 < iend)
+        iend = localRange.getValue()[1]+1;
+
+    for (unsigned int i=ibegin; i<iend; i++)
     {
         Coord dp = p1[i] - center;
         Real norm2 = dp.norm2();
@@ -111,7 +121,17 @@ void SphereForceField<DataTypes>::updateStiffness( const VecCoord& x )
     const Real r = sphereRadius.getValue();
     const Real r2 = r*r;
     this->contacts.beginEdit()->clear();
-    for (unsigned int i=0; i<x.size(); i++)
+
+    unsigned int ibegin = 0;
+    unsigned int iend = x.size();
+
+    if (localRange.getValue()[0] >= 0)
+        ibegin = localRange.getValue()[0];
+
+    if (localRange.getValue()[1] >= 0 && (unsigned int)localRange.getValue()[1]+1 < iend)
+        iend = localRange.getValue()[1]+1;
+
+    for (unsigned int i=ibegin; i<iend; i++)
     {
         Coord dp = x[i] - center;
         Real norm2 = dp.norm2();

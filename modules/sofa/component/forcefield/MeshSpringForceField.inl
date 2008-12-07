@@ -51,6 +51,15 @@ double MeshSpringForceField<DataTypes>::getPotentialEnergy()
 template<class DataTypes>
 void MeshSpringForceField<DataTypes>::addSpring(std::set<std::pair<int,int> >& sset, int m1, int m2, Real stiffness, Real damping)
 {
+    if (localRange.getValue()[0] >= 0)
+    {
+        if (m1 < localRange.getValue()[0] || m2 < localRange.getValue()[0]) return;
+    }
+    if (localRange.getValue()[1] >= 0)
+    {
+        if (m1 > localRange.getValue()[1] && m2 > localRange.getValue()[1]) return;
+    }
+
     if (m1<m2)
     {
         if (sset.count(std::make_pair(m1,m2))>0) return;

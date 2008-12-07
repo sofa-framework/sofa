@@ -51,7 +51,17 @@ void PlaneForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, cons
     //this->dfdd.resize(p1.size());
     this->contacts.clear();
     f1.resize(p1.size());
-    for (unsigned int i=0; i<p1.size(); i++)
+
+    unsigned int ibegin = 0;
+    unsigned int iend = p1.size();
+
+    if (localRange.getValue()[0] >= 0)
+        ibegin = localRange.getValue()[0];
+
+    if (localRange.getValue()[1] >= 0 && (unsigned int)localRange.getValue()[1]+1 < iend)
+        iend = localRange.getValue()[1]+1;
+
+    for (unsigned int i=ibegin; i<iend; i++)
     {
         Real d = p1[i]*planeNormal.getValue()-planeD.getValue();
         if (d<0)
@@ -87,7 +97,17 @@ template<class DataTypes>
 void PlaneForceField<DataTypes>::updateStiffness( const VecCoord& x )
 {
     this->contacts.clear();
-    for (unsigned int i=0; i<x.size(); i++)
+
+    unsigned int ibegin = 0;
+    unsigned int iend = x.size();
+
+    if (localRange.getValue()[0] >= 0)
+        ibegin = localRange.getValue()[0];
+
+    if (localRange.getValue()[1] >= 0 && (unsigned int)localRange.getValue()[1]+1 < iend)
+        iend = localRange.getValue()[1]+1;
+
+    for (unsigned int i=ibegin; i<iend; i++)
     {
         Real d = x[i]*planeNormal.getValue()-planeD.getValue();
         if (d<0)
@@ -173,7 +193,17 @@ void PlaneForceField<DataTypes>::drawPlane(float size)
     glDisable(GL_LIGHTING);
     // lines for points penetrating the plane
     glBegin(GL_LINES);
-    for (unsigned int i=0; i<p1.size(); i++)
+
+    unsigned int ibegin = 0;
+    unsigned int iend = p1.size();
+
+    if (localRange.getValue()[0] >= 0)
+        ibegin = localRange.getValue()[0];
+
+    if (localRange.getValue()[1] >= 0 && (unsigned int)localRange.getValue()[1]+1 < iend)
+        iend = localRange.getValue()[1]+1;
+
+    for (unsigned int i=ibegin; i<iend; i++)
     {
         Real d = p1[i]*planeNormal.getValue()-planeD.getValue();
         Coord p2 = p1[i];

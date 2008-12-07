@@ -67,6 +67,9 @@ public:
     /// to display the rest positions
     Data< bool > showX0;
 
+    /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
+    Data< defaulttype::Vec<2,int> > localRange;
+
 public:
     UniformMass();
 
