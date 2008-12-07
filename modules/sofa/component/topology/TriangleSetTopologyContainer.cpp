@@ -239,16 +239,24 @@ void TriangleSetTopologyContainer::createTriangleEdgeArray()
         clearTriangleEdges();
 
     const unsigned int numTriangles = getNumberOfTriangles();
+    const unsigned int numEdges = getNumberOfEdges();
 
     m_triangleEdge.resize(numTriangles);
     for(unsigned int i=0; i<numTriangles; ++i)
     {
         Triangle &t = m_triangle[i];
         // adding edge i in the edge shell of both points
+
         for(unsigned int j=0; j<3; ++j)
         {
-            int edgeIndex = getEdgeIndex(t[(j+1)%3],t[(j+2)%3]);
-            m_triangleEdge[i][j] = edgeIndex;
+            //finding edge i in edge array
+            for(unsigned int edge=0; edge<numEdges; ++edge)
+            {
+                if ( (m_edge[edge][0] == t[(j+1)%3] && m_edge[edge][1] == t[(j+2)%3]) || (m_edge[edge][0] == t[(j+2)%3] && m_edge[edge][1] == t[(j+1)%3]))
+                {
+                    m_triangleEdge[i][j] = edge;
+                }
+            }
         }
     }
 }
@@ -470,6 +478,9 @@ bool TriangleSetTopologyContainer::checkTopology() const
 
     if (hasTriangleVertexShell())
     {
+        std::set <int> triangleSet;
+        std::set<int>::iterator it;
+
         for (unsigned int i=0; i<m_triangleVertexShell.size(); ++i)
         {
             const sofa::helper::vector<unsigned int> &tvs = m_triangleVertexShell[i];
@@ -483,12 +494,27 @@ bool TriangleSetTopologyContainer::checkTopology() const
                     std::cout << "*** CHECK FAILED : check_triangle_vertex_shell, i = " << i << " , j = " << j << std::endl;
                     ret = false;
                 }
+
+                it=triangleSet.find(tvs[j]);
+                if(it == triangleSet.end())
+                {
+                    triangleSet.insert (tvs[j]);
+                }
             }
+        }
+
+        if(triangleSet.size()  != m_triangle.size())
+        {
+            std::cout << "*** CHECK FAILED : check_triangle_vertex_shell, triangle are missing in m_triangleVertexShell" <<std::endl;
+            ret = false;
         }
     }
 
     if (hasTriangleEdgeShell())
     {
+        std::set <int> triangleSet;
+        std::set<int>::iterator it;
+
         for (unsigned int i=0; i<m_triangleEdgeShell.size(); ++i)
         {
             const sofa::helper::vector<unsigned int> &tes=m_triangleEdgeShell[i];
@@ -502,11 +528,26 @@ bool TriangleSetTopologyContainer::checkTopology() const
                     std::cout << "*** CHECK FAILED : check_triangle_edge_shell, i = " << i << " , j = " << j << std::endl;
                     ret = false;
                 }
+
+                it=triangleSet.find(tes[j]);
+                if(it == triangleSet.end())
+                {
+                    triangleSet.insert (tes[j]);
+                }
+
             }
         }
+
+        if(triangleSet.size()  != m_triangle.size())
+        {
+            std::cout << "*** CHECK FAILED : check_triangle_edge_shell, triangle are missing in m_triangleEdgeShell" <<std::endl;
+            ret = false;
+        }
+
     }
 
     return ret && EdgeSetTopologyContainer::checkTopology();
+
 #else
     return true;
 #endif
