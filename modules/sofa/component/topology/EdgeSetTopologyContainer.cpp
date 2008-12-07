@@ -197,6 +197,9 @@ bool EdgeSetTopologyContainer::checkTopology() const
 
     if(hasEdgeVertexShell())
     {
+        std::set<int> edgeSet;
+        std::set<int>::iterator it;
+
         for (unsigned int i=0; i<m_edgeVertexShell.size(); ++i)
         {
             const sofa::helper::vector<unsigned int> &es = m_edgeVertexShell[i];
@@ -209,7 +212,19 @@ bool EdgeSetTopologyContainer::checkTopology() const
                     std::cout << "*** CHECK FAILED : check_edge_vertex_shell, i = " << i << " , j = " << j << std::endl;
                     ret = false;
                 }
+
+                it=edgeSet.find(es[j]);
+                if (it == edgeSet.end())
+                {
+                    edgeSet.insert (es[j]);
+                }
             }
+        }
+
+        if (edgeSet.size() != m_edge.size())
+        {
+            std::cout << "*** CHECK FAILED : check_edge_vertex_shell, edge are missing in m_edgeVertexShell" << std::endl;
+            ret = false;
         }
     }
 

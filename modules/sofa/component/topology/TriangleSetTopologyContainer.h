@@ -158,6 +158,28 @@ protected:
     */
     virtual void createEdgeSetArray();
 
+    /** \brief Creates the array of edge indices for each triangle
+    *
+    * This function is only called if the TriangleEdge array is required.
+    * m_triangleEdge[i] contains the 3 indices of the 3 edges opposite to the ith vertex
+    */
+    void createTriangleEdgeArray();
+
+    /** \brief Creates the Triangle Vertex Shell Array
+    *
+    * This function is only called if the TriangleVertexShell array is required.
+    * m_triangleVertexShell[i] contains the indices of all triangles adjacent to the ith vertex
+    */
+    virtual void createTriangleVertexShellArray();
+
+    /** \brief Creates the Triangle Edge Shell Array
+    *
+    * This function is only called if the TriangleVertexShell array is required.
+    * m_triangleEdgeShell[i] contains the indices of all triangles adjacent to the ith edge
+    */
+    virtual void createTriangleEdgeShellArray();
+
+
     bool hasTriangles() const;
 
     bool hasTriangleEdges() const;
@@ -174,27 +196,8 @@ protected:
 
     void clearTriangleEdgeShell();
 
+
 private:
-    /** \brief Creates the array of edge indices for each triangle
-    *
-    * This function is only called if the TriangleEdge array is required.
-    * m_triangleEdge[i] contains the 3 indices of the 3 edges opposite to the ith vertex
-    */
-    void createTriangleEdgeArray();
-    /** \brief Creates the Triangle Vertex Shell Array
-    *
-    * This function is only called if the TriangleVertexShell array is required.
-    * m_triangleVertexShell[i] contains the indices of all triangles adjacent to the ith vertex
-    */
-    void createTriangleVertexShellArray();
-
-    /** \brief Creates the Triangle Edge Shell Array
-    *
-    * This function is only called if the TriangleVertexShell array is required.
-    * m_triangleEdgeShell[i] contains the indices of all triangles adjacent to the ith edge
-    */
-    void createTriangleEdgeShellArray();
-
     /** \brief Returns a non-const triangle vertex shell given a vertex index for subsequent modification
     *
     */
