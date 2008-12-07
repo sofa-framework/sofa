@@ -42,7 +42,8 @@ using namespace core::componentmodel::behavior;
 
 template<class DataTypes>
 QuadBendingSprings<DataTypes>::QuadBendingSprings()
-    : dof(NULL)
+    : localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+    , dof(NULL)
 {
 }
 
@@ -54,6 +55,14 @@ QuadBendingSprings<DataTypes>::~QuadBendingSprings()
 template<class DataTypes>
 void QuadBendingSprings<DataTypes>::addSpring( unsigned a, unsigned b, std::set<IndexPair>& springSet )
 {
+    if (localRange.getValue()[0] >= 0)
+    {
+        if ((int)a < localRange.getValue()[0] && (int)b < localRange.getValue()[0]) return;
+    }
+    if (localRange.getValue()[1] >= 0)
+    {
+        if ((int)a > localRange.getValue()[1] && (int)b > localRange.getValue()[1]) return;
+    }
     IndexPair ab(a<b?a:b, a<b?b:a);
     if (springSet.find(ab) != springSet.end()) return;
     springSet.insert(ab);

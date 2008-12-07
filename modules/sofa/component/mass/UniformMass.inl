@@ -60,6 +60,7 @@ UniformMass<DataTypes, MassType>::UniformMass()
     , compute_mapping_inertia( initData(&compute_mapping_inertia, true, "compute_mapping_inertia", "to be used if the mass is placed under a mapping" ) )
     , showInitialCenterOfGravity( initData(&showInitialCenterOfGravity, false, "showInitialCenterOfGravity", "display the initial center of gravity of the system" ) )
     , showX0( initData(&showX0, false, "showX0", "display the rest positions" ) )
+    , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
 {}
 
 template <class DataTypes, class MassType>
@@ -105,10 +106,20 @@ void UniformMass<DataTypes, MassType>::init()
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
 {
+    unsigned int ibegin = 0;
+    unsigned int iend = dx.size();
+
+    if (localRange.getValue()[0] >= 0)
+        ibegin = localRange.getValue()[0];
+
+    if (localRange.getValue()[1] >= 0 && (unsigned int)localRange.getValue()[1]+1 < iend)
+        iend = localRange.getValue()[1]+1;
+
     MassType m = mass.getValue();
     if (factor != 1.0)
         m *= (typename DataTypes::Real)factor;
-    for (unsigned int i=0; i<dx.size(); i++)
+
+    for (unsigned int i=ibegin; i<iend; i++)
     {
         res[i] += dx[i] * m;
         //cerr<<"dx[i] = "<<dx[i]<<", m = "<<m<<", dx[i] * m = "<<dx[i] * m<<endl;
@@ -118,8 +129,18 @@ void UniformMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx,
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
 {
+
+    unsigned int ibegin = 0;
+    unsigned int iend = f.size();
+
+    if (localRange.getValue()[0] >= 0)
+        ibegin = localRange.getValue()[0];
+
+    if (localRange.getValue()[1] >= 0 && (unsigned int)localRange.getValue()[1]+1 < iend)
+        iend = localRange.getValue()[1]+1;
+
     const MassType& m = mass.getValue();
-    for (unsigned int i=0; i<f.size(); i++)
+    for (unsigned int i=ibegin; i<iend; i++)
     {
         a[i] = f[i] / m;
         // cerr<<"f[i] = "<<f[i]<<", m = "<<m<<", f[i] / m = "<<f[i] / m<<endl;
@@ -164,6 +185,15 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x
     if(this->m_separateGravity.getValue())
         return;
 
+    unsigned int ibegin = 0;
+    unsigned int iend = f.size();
+
+    if (localRange.getValue()[0] >= 0)
+        ibegin = localRange.getValue()[0];
+
+    if (localRange.getValue()[1] >= 0 && (unsigned int)localRange.getValue()[1]+1 < iend)
+        iend = localRange.getValue()[1]+1;
+
     // weight
     const SReal* g = this->getContext()->getLocalGravity().ptr();
     Deriv theGravity;
@@ -196,7 +226,7 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x
 
 
     // add weight and inertia force
-    for (unsigned int i=0; i<f.size(); i++)
+    for (unsigned int i=ibegin; i<iend; i++)
     {
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
         f[i] += mg + core::componentmodel::behavior::inertiaForce(vframe,aframe,m,x[i],v[i]);
@@ -207,7 +237,7 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x
         //cerr<<"UniformMass<DataTypes, MassType>::computeForce() = "<<mg + Core::inertiaForce(vframe,aframe,mass,x[i],v[i])<<endl;
     }
 
-//#ifdef SOFA_SUPPORT_MAPPED_MASS
+#ifdef SOFA_SUPPORT_MAPPED_MASS
     if (compute_mapping_inertia.getValue())
     {
         VecDeriv& acc =  *this->mstate->getDx();
@@ -218,24 +248,27 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x
         {
             Deriv coriolis = -acc[i]*m;
             f[i] += coriolis;
-
-
         }
-
     }
-
-
-//#endif
-
-
+#endif
 }
 
 template <class DataTypes, class MassType>
 double UniformMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
 {
+
+    unsigned int ibegin = 0;
+    unsigned int iend = v.size();
+
+    if (localRange.getValue()[0] >= 0)
+        ibegin = localRange.getValue()[0];
+
+    if (localRange.getValue()[1] >= 0 && (unsigned int)localRange.getValue()[1]+1 < iend)
+        iend = localRange.getValue()[1]+1;
+
     double e=0;
     const MassType& m = mass.getValue();
-    for (unsigned int i=0; i<v.size(); i++)
+    for (unsigned int i=ibegin; i<iend; i++)
     {
         e+= v[i]*m*v[i];
     }
@@ -246,6 +279,15 @@ double UniformMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
 template <class DataTypes, class MassType>
 double UniformMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x )
 {
+    unsigned int ibegin = 0;
+    unsigned int iend = x.size();
+
+    if (localRange.getValue()[0] >= 0)
+        ibegin = localRange.getValue()[0];
+
+    if (localRange.getValue()[1] >= 0 && (unsigned int)localRange.getValue()[1]+1 < iend)
+        iend = localRange.getValue()[1]+1;
+
     double e = 0;
     const MassType& m = mass.getValue();
     // gravity
@@ -255,7 +297,7 @@ double UniformMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x )
     ( theGravity, g[0], g[1], g[2]);
     Deriv mg = theGravity * m;
     //cerr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, theGravity = "<<theGravity<<endl;
-    for (unsigned int i=0; i<x.size(); i++)
+    for (unsigned int i=ibegin; i<iend; i++)
     {
         /*        cerr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, mass = "<<mass<<endl;
                 cerr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, x = "<<x[i]<<endl;
@@ -291,13 +333,23 @@ void UniformMass<DataTypes, MassType>::draw()
     if (!getContext()->getShowBehaviorModels())
         return;
     const VecCoord& x = *this->mstate->getX();
+
+    unsigned int ibegin = 0;
+    unsigned int iend = x.size();
+
+    if (localRange.getValue()[0] >= 0)
+        ibegin = localRange.getValue()[0];
+
+    if (localRange.getValue()[1] >= 0 && (unsigned int)localRange.getValue()[1]+1 < iend)
+        iend = localRange.getValue()[1]+1;
+
     //cerr<<"UniformMass<DataTypes, MassType>::draw() "<<x<<endl;
     Coord gravityCenter;
     glDisable (GL_LIGHTING);
     glPointSize(2);
     glColor4f (1,1,1,1);
     glBegin (GL_POINTS);
-    for (unsigned int i=0; i<x.size(); i++)
+    for (unsigned int i=ibegin; i<iend; i++)
     {
         helper::gl::glVertexT(x[i]);
         gravityCenter += x[i];
@@ -390,6 +442,3 @@ void UniformMass<Vec6fTypes,float>::draw();
 } // namespace sofa
 
 #endif
-
-
-
