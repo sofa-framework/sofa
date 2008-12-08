@@ -108,6 +108,7 @@ public:
         _homogenizationMethod = initData(&this->_homogenizationMethod,0,"homogenizationMethod","0->static, 1->constrained static, 2->modal analysis");
         _finestToCoarse = initData(&this->_finestToCoarse,false,"finestToCoarse","Does the homogenization is done directly from the finest level to the coarse one?");
         _completeInterpolation = initData(&this->_completeInterpolation,false,"completeInterpolation","Is the non-linear, complete interpolation used?");
+        _useRamification = initData(&this->_useRamification,true,"useRamification","If SparseGridRamification, are ramifications taken into account?");
     }
 
 
@@ -121,6 +122,7 @@ public:
     Data<bool> _finestToCoarse;
     Data<int> _homogenizationMethod;
     Data<bool> _completeInterpolation;
+    Data<bool> _useRamification;
 
 
 
@@ -135,6 +137,7 @@ public:
 
     /// multiply all weights for all levels and go to the finest level to obtain the final weights from the coarsest to the finest directly
     void computeFinalWeights( const Weight &W, const int coarseElementIndice, const int elementIndice,  int level);
+    void computeFinalWeightsRamification( const Weight &W, const int coarseElementIndice, const int elementIndice,  int level);
 
 
     // surcharge NonUniformHexahedronFEMForceFieldAndMass::computeMechanicalMatricesByCondensation
@@ -163,6 +166,9 @@ protected:
     static const int WEIGHT_MASK[27*3][8*3];
     static const int WEIGHT_MASK_CROSSED[27*3][8*3];
     static const int WEIGHT_MASK_CROSSED_DIFF[27*3][8*3];
+    static  const float MIDDLE_INTERPOLATION[27][8];
+    static  const int MIDDLE_AXES[27];
+    static const int FINE_ELEM_IN_COARSE_IN_ASS_FRAME[8][8];
 
     static const float RIGID_STIFFNESS[8*3][8*3];
 
