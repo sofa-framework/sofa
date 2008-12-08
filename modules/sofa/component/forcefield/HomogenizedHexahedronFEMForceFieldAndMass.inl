@@ -437,6 +437,74 @@ const int HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::WEIGHT_MASK_CROS
 };
 
 
+
+template <class DataTypes>
+const float HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::MIDDLE_INTERPOLATION[27][8]=
+{
+    {1,0,0,0,0,0,0,0},
+    {0.5,0.5,0,0,0,0,0,0},
+    {0,1,0,0,0,0,0,0},
+    {0.5,0,0,0.5,0,0,0,0},
+    {0.25,0.25,0.25,0.25,0,0,0,0},
+    {0,0.5,0.5,0,0,0,0,0},
+    {0,0,0,1,0,0,0,0},
+    {0,0,0.5,0.5,0,0,0,0},
+    {0,0,1,0,0,0,0,0},
+    {0.5,0,0,0,0.5,0,0,0},
+    {0.25,0.25,0,0,0.25,0.25,0,0},
+    {0,0.5,0,0,0,0.5,0,0},
+    {0.25,0,0,0.25,0.25,0,0,0.25},
+    {0.125,0.125,0.125,0.125,0.125,0.125,0.125,0.125},
+    {0,0.25,0.25,0,0,0.25,0.25,0},
+    {0,0,0,0.5,0,0,0,0.5},
+    {0,0,0.25,0.25,0,0,0.25,0.25},
+    {0,0,0.5,0,0,0,0.5,0},
+    {0,0,0,0,1,0,0,0},
+    {0,0,0,0,0.5,0.5,0,0},
+    {0,0,0,0,0,1,0,0},
+    {0,0,0,0,0.5,0,0,0.5},
+    {0,0,0,0,0.25,0.25,0.25,0.25},
+    {0,0,0,0,0,0.5,0.5,0},
+    {0,0,0,0,0,0,0,1},
+    {0,0,0,0,0,0,0.5,0.5},
+    {0,0,0,0,0,0,1,0}
+};
+
+
+
+// linked with MIDDLE_INTERPOLATION: in which axes do we want the interpolatio? (0->all, 1->x, 2->y, 3->z)
+template <class DataTypes>
+const int HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::MIDDLE_AXES[27]=
+{
+    0,   	1,          	0,
+    2,  		3,		        2,
+    0,		1,				0,
+
+    3,			2,		3,
+    1,	0,			 1,
+    3,			2,		3,
+
+    0,   	1,          	0,
+    2,  		3,		2,
+    0,   	1,          	0
+};
+
+
+
+template <class DataTypes>
+const int HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::FINE_ELEM_IN_COARSE_IN_ASS_FRAME[8][8]=
+{
+    {0,1,4,3,9,10,13,12},
+    {1,2,5,4,10,11,14,13},
+    {3,4,7,6,12,13,16,15},
+    {4,5,8,7,13,14,17,16},
+    {9,10,13,12,18,19,22,23},
+    {10,11,14,13,19,20,23,22},
+    {12,13,16,15,21,22,25,24},
+    {13,14,17,16,22,23,26,25}
+};
+
+
 template <class DataTypes>
 const float HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::RIGID_STIFFNESS[8*3][8*3]=
 {{2.26667e+11,4.25e+10,4.25e+10,-5.66667e+10,-4.25e+10,-4.25e+10,-7.08333e+10,-4.25e+10,-2.125e+10,2.83333e+10,4.25e+10,2.125e+10,2.83333e+10,2.125e+10,4.25e+10,-7.08333e+10,-2.125e+10,-4.25e+10,-5.66667e+10,-2.125e+10,-2.125e+10,-2.83333e+10,2.125e+10,2.125e+10},{4.25e+10,2.26667e+11,4.25e+10,4.25e+10,2.83333e+10,2.125e+10,-4.25e+10,-7.08333e+10,-2.125e+10,-4.25e+10,-5.66667e+10,-4.25e+10,2.125e+10,2.83333e+10,4.25e+10,2.125e+10,-2.83333e+10,2.125e+10,-2.125e+10,-5.66667e+10,-2.125e+10,-2.125e+10,-7.08333e+10,-4.25e+10},{4.25e+10,4.25e+10,2.26667e+11,4.25e+10,2.125e+10,2.83333e+10,2.125e+10,2.125e+10,-2.83333e+10,2.125e+10,4.25e+10,2.83333e+10,-4.25e+10,-4.25e+10,-5.66667e+10,-4.25e+10,-2.125e+10,-7.08333e+10,-2.125e+10,-2.125e+10,-5.66667e+10,-2.125e+10,-4.25e+10,-7.08333e+10},{-5.66667e+10,4.25e+10,4.25e+10,2.26667e+11,-4.25e+10,-4.25e+10,2.83333e+10,-4.25e+10,-2.125e+10,-7.08333e+10,4.25e+10,2.125e+10,-7.08333e+10,2.125e+10,4.25e+10,2.83333e+10,-2.125e+10,-4.25e+10,-2.83333e+10,-2.125e+10,-2.125e+10,-5.66667e+10,2.125e+10,2.125e+10},{-4.25e+10,2.83333e+10,2.125e+10,-4.25e+10,2.26667e+11,4.25e+10,4.25e+10,-5.66667e+10,-4.25e+10,4.25e+10,-7.08333e+10,-2.125e+10,-2.125e+10,-2.83333e+10,2.125e+10,-2.125e+10,2.83333e+10,4.25e+10,2.125e+10,-7.08333e+10,-4.25e+10,2.125e+10,-5.66667e+10,-2.125e+10},{-4.25e+10,2.125e+10,2.83333e+10,-4.25e+10,4.25e+10,2.26667e+11,-2.125e+10,4.25e+10,2.83333e+10,-2.125e+10,2.125e+10,-2.83333e+10,4.25e+10,-2.125e+10,-7.08333e+10,4.25e+10,-4.25e+10,-5.66667e+10,2.125e+10,-4.25e+10,-7.08333e+10,2.125e+10,-2.125e+10,-5.66667e+10},{-7.08333e+10,-4.25e+10,2.125e+10,2.83333e+10,4.25e+10,-2.125e+10,2.26667e+11,4.25e+10,-4.25e+10,-5.66667e+10,-4.25e+10,4.25e+10,-5.66667e+10,-2.125e+10,2.125e+10,-2.83333e+10,2.125e+10,-2.125e+10,2.83333e+10,2.125e+10,-4.25e+10,-7.08333e+10,-2.125e+10,4.25e+10},{-4.25e+10,-7.08333e+10,2.125e+10,-4.25e+10,-5.66667e+10,4.25e+10,4.25e+10,2.26667e+11,-4.25e+10,4.25e+10,2.83333e+10,-2.125e+10,-2.125e+10,-5.66667e+10,2.125e+10,-2.125e+10,-7.08333e+10,4.25e+10,2.125e+10,2.83333e+10,-4.25e+10,2.125e+10,-2.83333e+10,-2.125e+10},{-2.125e+10,-2.125e+10,-2.83333e+10,-2.125e+10,-4.25e+10,2.83333e+10,-4.25e+10,-4.25e+10,2.26667e+11,-4.25e+10,-2.125e+10,2.83333e+10,2.125e+10,2.125e+10,-5.66667e+10,2.125e+10,4.25e+10,-7.08333e+10,4.25e+10,4.25e+10,-5.66667e+10,4.25e+10,2.125e+10,-7.08333e+10},{2.83333e+10,-4.25e+10,2.125e+10,-7.08333e+10,4.25e+10,-2.125e+10,-5.66667e+10,4.25e+10,-4.25e+10,2.26667e+11,-4.25e+10,4.25e+10,-2.83333e+10,-2.125e+10,2.125e+10,-5.66667e+10,2.125e+10,-2.125e+10,-7.08333e+10,2.125e+10,-4.25e+10,2.83333e+10,-2.125e+10,4.25e+10},{4.25e+10,-5.66667e+10,4.25e+10,4.25e+10,-7.08333e+10,2.125e+10,-4.25e+10,2.83333e+10,-2.125e+10,-4.25e+10,2.26667e+11,-4.25e+10,2.125e+10,-7.08333e+10,4.25e+10,2.125e+10,-5.66667e+10,2.125e+10,-2.125e+10,-2.83333e+10,-2.125e+10,-2.125e+10,2.83333e+10,-4.25e+10},{2.125e+10,-4.25e+10,2.83333e+10,2.125e+10,-2.125e+10,-2.83333e+10,4.25e+10,-2.125e+10,2.83333e+10,4.25e+10,-4.25e+10,2.26667e+11,-2.125e+10,4.25e+10,-7.08333e+10,-2.125e+10,2.125e+10,-5.66667e+10,-4.25e+10,2.125e+10,-7.08333e+10,-4.25e+10,4.25e+10,-5.66667e+10},{2.83333e+10,2.125e+10,-4.25e+10,-7.08333e+10,-2.125e+10,4.25e+10,-5.66667e+10,-2.125e+10,2.125e+10,-2.83333e+10,2.125e+10,-2.125e+10,2.26667e+11,4.25e+10,-4.25e+10,-5.66667e+10,-4.25e+10,4.25e+10,-7.08333e+10,-4.25e+10,2.125e+10,2.83333e+10,4.25e+10,-2.125e+10},{2.125e+10,2.83333e+10,-4.25e+10,2.125e+10,-2.83333e+10,-2.125e+10,-2.125e+10,-5.66667e+10,2.125e+10,-2.125e+10,-7.08333e+10,4.25e+10,4.25e+10,2.26667e+11,-4.25e+10,4.25e+10,2.83333e+10,-2.125e+10,-4.25e+10,-7.08333e+10,2.125e+10,-4.25e+10,-5.66667e+10,4.25e+10},{4.25e+10,4.25e+10,-5.66667e+10,4.25e+10,2.125e+10,-7.08333e+10,2.125e+10,2.125e+10,-5.66667e+10,2.125e+10,4.25e+10,-7.08333e+10,-4.25e+10,-4.25e+10,2.26667e+11,-4.25e+10,-2.125e+10,2.83333e+10,-2.125e+10,-2.125e+10,-2.83333e+10,-2.125e+10,-4.25e+10,2.83333e+10},{-7.08333e+10,2.125e+10,-4.25e+10,2.83333e+10,-2.125e+10,4.25e+10,-2.83333e+10,-2.125e+10,2.125e+10,-5.66667e+10,2.125e+10,-2.125e+10,-5.66667e+10,4.25e+10,-4.25e+10,2.26667e+11,-4.25e+10,4.25e+10,2.83333e+10,-4.25e+10,2.125e+10,-7.08333e+10,4.25e+10,-2.125e+10},{-2.125e+10,-2.83333e+10,-2.125e+10,-2.125e+10,2.83333e+10,-4.25e+10,2.125e+10,-7.08333e+10,4.25e+10,2.125e+10,-5.66667e+10,2.125e+10,-4.25e+10,2.83333e+10,-2.125e+10,-4.25e+10,2.26667e+11,-4.25e+10,4.25e+10,-5.66667e+10,4.25e+10,4.25e+10,-7.08333e+10,2.125e+10},{-4.25e+10,2.125e+10,-7.08333e+10,-4.25e+10,4.25e+10,-5.66667e+10,-2.125e+10,4.25e+10,-7.08333e+10,-2.125e+10,2.125e+10,-5.66667e+10,4.25e+10,-2.125e+10,2.83333e+10,4.25e+10,-4.25e+10,2.26667e+11,2.125e+10,-4.25e+10,2.83333e+10,2.125e+10,-2.125e+10,-2.83333e+10},{-5.66667e+10,-2.125e+10,-2.125e+10,-2.83333e+10,2.125e+10,2.125e+10,2.83333e+10,2.125e+10,4.25e+10,-7.08333e+10,-2.125e+10,-4.25e+10,-7.08333e+10,-4.25e+10,-2.125e+10,2.83333e+10,4.25e+10,2.125e+10,2.26667e+11,4.25e+10,4.25e+10,-5.66667e+10,-4.25e+10,-4.25e+10},{-2.125e+10,-5.66667e+10,-2.125e+10,-2.125e+10,-7.08333e+10,-4.25e+10,2.125e+10,2.83333e+10,4.25e+10,2.125e+10,-2.83333e+10,2.125e+10,-4.25e+10,-7.08333e+10,-2.125e+10,-4.25e+10,-5.66667e+10,-4.25e+10,4.25e+10,2.26667e+11,4.25e+10,4.25e+10,2.83333e+10,2.125e+10},{-2.125e+10,-2.125e+10,-5.66667e+10,-2.125e+10,-4.25e+10,-7.08333e+10,-4.25e+10,-4.25e+10,-5.66667e+10,-4.25e+10,-2.125e+10,-7.08333e+10,2.125e+10,2.125e+10,-2.83333e+10,2.125e+10,4.25e+10,2.83333e+10,4.25e+10,4.25e+10,2.26667e+11,4.25e+10,2.125e+10,2.83333e+10},{-2.83333e+10,-2.125e+10,-2.125e+10,-5.66667e+10,2.125e+10,2.125e+10,-7.08333e+10,2.125e+10,4.25e+10,2.83333e+10,-2.125e+10,-4.25e+10,2.83333e+10,-4.25e+10,-2.125e+10,-7.08333e+10,4.25e+10,2.125e+10,-5.66667e+10,4.25e+10,4.25e+10,2.26667e+11,-4.25e+10,-4.25e+10},{2.125e+10,-7.08333e+10,-4.25e+10,2.125e+10,-5.66667e+10,-2.125e+10,-2.125e+10,-2.83333e+10,2.125e+10,-2.125e+10,2.83333e+10,4.25e+10,4.25e+10,-5.66667e+10,-4.25e+10,4.25e+10,-7.08333e+10,-2.125e+10,-4.25e+10,2.83333e+10,2.125e+10,-4.25e+10,2.26667e+11,4.25e+10},{2.125e+10,-4.25e+10,-7.08333e+10,2.125e+10,-2.125e+10,-5.66667e+10,4.25e+10,-2.125e+10,-7.08333e+10,4.25e+10,-4.25e+10,-5.66667e+10,-2.125e+10,4.25e+10,2.83333e+10,-2.125e+10,2.125e+10,-2.83333e+10,-4.25e+10,2.125e+10,2.83333e+10,-4.25e+10,4.25e+10,2.26667e+11}};
@@ -597,28 +665,41 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCo
             computeMechanicalMatricesDirectlyFromTheFinestToCoarse( (*this->_elementStiffnesses.beginEdit())[i], (*this->_elementMasses.beginEdit())[i], i );
     else
     {
-        if( dynamic_cast<topology::SparseGridRamificationTopology*>( this->_sparseGrid ) )
+        topology::SparseGridRamificationTopology* sparseGridRamification = dynamic_cast<topology::SparseGridRamificationTopology*>( this->_sparseGrid );
+        if( _useRamification.getValue() && sparseGridRamification )
+        {
             for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
                 computeMechanicalMatricesIterativlyWithRamifications( (*this->_elementStiffnesses.beginEdit())[i], (*this->_elementMasses.beginEdit())[i], i, 0 );
+
+
+            for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
+            {
+                Weight A; A.identity();
+
+                helper::fixed_array<helper::vector<int>,8 >& finerChildrenRamification = sparseGridRamification->_hierarchicalCubeMapRamification[ i ];
+
+                for(int w=0; w<8; ++w)
+                    for(unsigned v=0; v<finerChildrenRamification[w].size(); ++v)
+                        computeFinalWeightsRamification( A, i, finerChildrenRamification[w][v], 1 );
+            }
+
+        }
         else
+        {
             for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
                 computeMechanicalMatricesIterativly( (*this->_elementStiffnesses.beginEdit())[i], (*this->_elementMasses.beginEdit())[i], i, 0 );
-    }
 
+            for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
+            {
+                Weight A; A.identity();
 
-    if( !_finestToCoarse.getValue())
-        for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
-        {
-            Weight A; A.identity();
+                helper::fixed_array<int,8> finerChildren = this->_sparseGrid->_hierarchicalCubeMap[i];
 
-            helper::fixed_array<int,8> finerChildren = this->_sparseGrid->_hierarchicalCubeMap[i];
-
-            for(int w=0; w<8; ++w)
-                computeFinalWeights( A, i, finerChildren[w], 1 );
+                for(int w=0; w<8; ++w)
+                    computeFinalWeights( A, i, finerChildren[w], 1 );
+            }
         }
-
-
-
+    }
 
 // 			  	for( unsigned i=0;i<_weights.size();++i)
 // 				{
@@ -645,8 +726,11 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCo
 
     _weights.resize(0);
 
-
-
+// 			  for(unsigned i=0;i<this->_elementStiffnesses.getValue().size();++i)
+// 			  {
+// 				  cerr<<"K"<<i<<"=";
+// 				  printMatlab(cerr,this->_elementStiffnesses.getValue()[i]);
+// 			  }
 
 // 			  printMatlab( cerr,this->_elementStiffnesses.getValue()[0] );
 }
@@ -1511,7 +1595,23 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 // 		  printMatlab( cerr, K );
 
 
-        M = WBmeca.multTranspose( assembledMass * WBmeca );
+// 		  M = WBmeca.multTranspose( assembledMass * WBmeca );
+
+
+        for ( int i=0; i<8; ++i) //for 8 virtual finer element
+        {
+            if (finerChildren[i] != -1)
+            {
+                this->addFineToCoarse(M, finerM[i], i);
+            }
+        }
+
+
+
+
+
+
+
 
 // 		  cerr<<WB[16*3+1]<<endl;
 
@@ -1664,7 +1764,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 template<class T>
 void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIterativlyWithRamifications( ElementStiffness &K, ElementMass &M, const int elementIndice,  int level)
 {
-    cerr<<"\n\nNonUniformHexahedronFEMForceFieldAndMassT::computeMechanicalMatricesIterativlyWithRamifications(K,M,"<<elementIndice<<" "<<level<<"\n";
+//         		 cerr<<"\n\nNonUniformHexahedronFEMForceFieldAndMassT::computeMechanicalMatricesIterativlyWithRamifications(K,M,"<<elementIndice<<" "<<level<<"\n";
 
 
     if (level == this->_nbVirtualFinerLevels.getValue())
@@ -1673,7 +1773,6 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
     }
     else
     {
-
         topology::SparseGridRamificationTopology* sparseGrid,*finerSparseGrid;
 
         if (level == 0)
@@ -1687,56 +1786,129 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
             finerSparseGrid = dynamic_cast<topology::SparseGridRamificationTopology*>(this->_sparseGrid->_virtualFinerLevels[this->_sparseGrid->getNbVirtualFinerLevels()-level-1]);
         }
 
-
-
         // trouver les finer elements par ramification
-        helper::fixed_array<helper::vector<int>,8 >& finerChildrenRamification = sparseGrid->_hierarchicalCubeMapRamification[ elementIndice ];
-// 			  helper::vector<int> finerChildren;
-
+        helper::fixed_array<helper::vector<int>,8 >& finerChildrenRamificationOriginal = sparseGrid->_hierarchicalCubeMapRamification[ elementIndice ];
 
         helper::fixed_array<helper::vector<ElementStiffness>,8> finerK;
         helper::fixed_array<helper::vector<ElementMass>,8> finerM;
 
-        map<int,int> mapFinerNodes; // just to count how many finer nodes and who is dobled
+
+        const SparseGridTopology::Hexa& coarsehexa = sparseGrid->getHexa( elementIndice );
 
 
+        helper::fixed_array< Coord, 27 > finePositions; // coord of each fine positions
+        for(int i=0; i<27; ++i)
+        {
+            for(int j=0; j<8; ++j)
+            {
+                finePositions[i] += sparseGrid->getPointPos( coarsehexa[j] ) * MIDDLE_INTERPOLATION[i][j];
+            }
+        }
 
-        std::map<int,int> map_idxq_idxass; // map a fine point idx to a assembly (local) idx
-        int idxass = 27;
 
-
+        helper::fixed_array< std::set<int>, 27 > fineNodesPerPositions; // list of fine nodes at each fine positions
         for ( int i=0; i<8; ++i) //for 8 virtual finer element positions
         {
-            finerK[i].resize( finerChildrenRamification[i].size() );
-            finerM[i].resize( finerChildrenRamification[i].size() );
+            finerK[i].resize( finerChildrenRamificationOriginal[i].size() );
+            finerM[i].resize( finerChildrenRamificationOriginal[i].size() );
 
-            for(unsigned j=0; j<finerChildrenRamification[i].size(); ++j) // for all finer elements
+            for(unsigned j=0; j<finerChildrenRamificationOriginal[i].size(); ++j) // for all finer elements
             {
-                computeMechanicalMatricesIterativly(finerK[i][j], finerM[i][j], finerChildrenRamification[i][j], level+1);
+                computeMechanicalMatricesIterativlyWithRamifications(finerK[i][j], finerM[i][j], finerChildrenRamificationOriginal[i][j], level+1);
 
-// 					  finerChildren.push_back( finerChildrenRamification[i][j] );
-
-                const SparseGridTopology::Hexa& finehexa = finerSparseGrid->getHexa( finerChildrenRamification[i][j] );
+                const SparseGridTopology::Hexa& finehexa = finerSparseGrid->getHexa( finerChildrenRamificationOriginal[i][j] );
                 for( int k=0; k<8; ++k) //fine nodes
                 {
-                    mapFinerNodes[ finehexa[k] ] = 1;
-
-
-                    if( map_idxq_idxass[ finehexa[k] ] == 0 )
+                    for(int l=0; l<27; ++l)
                     {
-                        if( j == 0 )
+                        if( fabs(  (finePositions[l]-finerSparseGrid->getPointPos( finehexa[k] ) ).norm2() )<1.0e-5 )
                         {
-                            map_idxq_idxass[ finehexa[k] ] = FineHexa_FineNode_IndiceForAssembling[i][k];
-                        }
-                        else
-                        {
-                            map_idxq_idxass[ finehexa[k] ] = idxass;
-                            ++idxass;
+                            fineNodesPerPositions[l].insert( finehexa[k] );
+                            break;
                         }
                     }
                 }
             }
         }
+        // donner un indice fictif <0 aux points vides
+        int fictifidx = -1;
+        for(int i=0; i<27; ++i)
+        {
+            if( fineNodesPerPositions[i].empty() ) // pas de points ici
+            {
+                fineNodesPerPositions[i].insert(fictifidx);
+                --fictifidx;
+            }
+        }
+
+
+// 			  cerr<<"fineNodesPerPositions : "<<endl;
+// 			  for(int i=0;i<27;++i)
+// 			  {
+// 				  cerr<<i<<" : ";
+// 				  for(std::set<int>::iterator it=fineNodesPerPositions[i].begin();it!=fineNodesPerPositions[i].end();++it)
+// 					  cerr<<*it<<", ";
+// 				  cerr<<endl;
+// 			  }
+
+
+        helper::fixed_array<helper::vector<helper::fixed_array<int,8 > >,8 > finerChildrenRamification; // listes des hexas à chaque position, avec des indices fictifs pour les vides
+        helper::fixed_array<helper::vector<bool>,8 > isFinerChildrenVirtual; // a boolean, true if ficitf, only created for void
+        for ( int i=0; i<8; ++i) //for 8 virtual finer element positions
+        {
+            if( finerChildrenRamificationOriginal[i].empty() ) // vide
+            {
+                // construire un element fictif
+                helper::fixed_array<int,8 > fictifelem;
+                for(int j=0; j<8; ++j) // fine fictif nodes
+                {
+                    fictifelem[j] = *fineNodesPerPositions[FINE_ELEM_IN_COARSE_IN_ASS_FRAME[i][j]].begin();
+                    // TODO: plutot que de prendre que le premier voisin non vide, il faudrait creer plusieurs vides en consequence...
+                }
+                finerChildrenRamification[i].push_back( fictifelem );
+                isFinerChildrenVirtual[i].push_back( 1 );
+            }
+            else
+            {
+                for(unsigned j=0; j<finerChildrenRamificationOriginal[i].size(); ++j)
+                {
+                    const SparseGridTopology::Hexa& finehexa = finerSparseGrid->getHexa( finerChildrenRamificationOriginal[i][j] );
+                    helper::fixed_array<int,8 > elem;
+                    for(int k=0; k<8; ++k) // fine fictif nodes
+                    {
+                        elem[k] = finehexa[k];
+                    }
+                    finerChildrenRamification[i].push_back(elem);
+                    isFinerChildrenVirtual[i].push_back( 0 );
+                }
+            }
+        }
+
+
+
+
+
+
+// 			  helper::vector<int> finerChildren;
+
+
+
+
+
+        std::map<int,int> map_idxq_idxass; // map a fine point idx to a assembly (local) idx
+        int idxass = 0;
+
+
+        for(int i=0; i<27; ++i)
+        {
+            for( std::set<int>::iterator it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
+            {
+                map_idxq_idxass[*it] = idxass;
+                idxass++;
+            }
+        }
+
+        int sizeass = idxass; // taille de l'assemblage i.e., le nombre de noeuds fins
 
 
 
@@ -1748,16 +1920,13 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 
 
 
-        int sizeass = idxass; // taille de l'assemblage i.e., le nombre de noeuds fins
-
-
 
 // 			  cerr<<"sizeass : "<<sizeass<<endl;
         NewMatMatrix assembledStiffness,assembledStiffnessStatic,assembledMass;
         assembledStiffness.resize(sizeass*3,sizeass*3);
         assembledStiffnessStatic.resize(sizeass*3,sizeass*3);
         assembledMass.resize(sizeass*3,sizeass*3);
-        cerr<<assembledStiffness.rowSize()<<"x"<<assembledStiffness.colSize()<<endl;
+// 			  cerr<<assembledStiffness.rowSize()<<"x"<<assembledStiffness.colSize()<<endl;
 
 
 
@@ -1765,32 +1934,31 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 
         for(int i=0 ; i < 8 ; ++i ) // finer places
         {
-            if( finerChildrenRamification[i].empty() ) //void
+            for( unsigned c=0; c<finerChildrenRamification[i].size(); ++c)
             {
-                // WARNING: what happen if next to the void there are 2 independants elements ??
-                // idee : quand elem dedouble, regarder ses voisins, si vide, fabriquer le voisin avec des indices de points (existants ou -1)
-                for(int j=0; j<8; ++j) // vertices1
+
+                helper::fixed_array<int,8>& finehexa = finerChildrenRamification[i][c];
+
+                if( isFinerChildrenVirtual[i][c] ) // void
                 {
-                    int v1 = FineHexa_FineNode_IndiceForAssembling[i][j];
-
-                    for(int k=0; k<8; ++k) // vertices2
+                    for(int j=0; j<8; ++j) // vertices1
                     {
-                        int v2 = FineHexa_FineNode_IndiceForAssembling[i][k];
+                        int v1 = map_idxq_idxass[finehexa[j]];
 
-                        for(int m=0; m<3; ++m)
-                            for(int n=0; n<3; ++n)
-                            {
-                                assembledStiffnessStatic.add( v1*3+m, v2*3+n, RIGID_STIFFNESS[j*3+m][k*3+n] );
-                            }
+                        for(int k=0; k<8; ++k) // vertices2
+                        {
+                            int v2 = map_idxq_idxass[finehexa[k]];
+
+                            for(int m=0; m<3; ++m)
+                                for(int n=0; n<3; ++n)
+                                {
+                                    assembledStiffnessStatic.add( v1*3+m, v2*3+n, RIGID_STIFFNESS[j*3+m][k*3+n] );
+                                }
+                        }
                     }
                 }
-            }
-            else
-            {
-                for( unsigned c=0; c<finerChildrenRamification[i].size(); ++c)
+                else
                 {
-
-                    const SparseGridTopology::Hexa& finehexa = finerSparseGrid->getHexa( finerChildrenRamification[i][c] );
 
                     // assembly
                     for(int j=0; j<8; ++j) // vertices1
@@ -1815,49 +1983,102 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
         }
 
 
+// 			  cerr<<"KB2=";
+// 			  assembledStiffnessStatic.printMatlab( cerr );
+
+
         std::map<int,int> map_idxq_idxcutass; // map a fine point idx to a the cut assembly (local) idx
         int idxcutass = 0,idxcutasscoarse = 0;
-        std::map<int,bool> map_idxq_coarse;
+        std::map<int,int> map_idxq_coarse; // a fine idx -> -1->non coarse, x-> idx coarse node
         helper::fixed_array<helper::vector<int> ,8> map_idxcoarse_idxfine;
-        const SparseGridTopology::Hexa& coarsehexa = this->_sparseGrid->getHexa( elementIndice );
+
+// 			  NewMatMatrix  mask;
+// 			  mask.resize(sizeass*3,8*3);
+
+// 			  std::map<int,std::pair< helper::vector<int>,unsigned > > map_mask; // for each fine node -> a list of depensing coase nodes and in which axes (0==all, 1==x, 2==y, 3==z)
 
 
-        for(int i=0; i<sizeass; ++i)
+        for(int i=0; i<27; ++i)
         {
-            std::map<int,int>::iterator it;
-            for( it = map_idxq_idxass.begin(); it!=map_idxq_idxass.end(); ++it)
+            if( i==0 || i==2||i==6||i==8||i==18||i==20||i==24||i==26)// est un sommet coarse
             {
-                if( (*it).second==i)
+                int whichCoarseNode = -1; // what is the idx for this coarse node?
+                switch(i)
                 {
-                    // 					cerr<<(*it).first<<" "<<(*it).second<<endl;
-                    bool ok=false;
-                    Coord finesommet = finerSparseGrid->getPointPos( (*it).first );
-                    for( unsigned sc=0; sc<8; ++sc)
-                    {
-                        Coord coarsesommet = this->_sparseGrid->getPointPos( coarsehexa[sc] );
-                        if( fabs( (coarsesommet-finesommet).norm2() )<1.0e-7 )
-                        {
-                            map_idxq_idxcutass[(*it).second] = idxcutasscoarse;
-                            ++idxcutasscoarse;
-                            map_idxq_coarse[  (*it).second] = true;
-                            map_idxcoarse_idxfine[ sc ].push_back( (*it).second );
-                            ok=true;
-                            break;
-                        }
-                    }
-                    if( !ok )
-                    {
-                        map_idxq_idxcutass[ (*it).second] = idxcutass;
-                        map_idxq_coarse[(*it).second] = false;
-                        idxcutass++;
-                    }
+                case 0:
+                    whichCoarseNode=0;
+                    break;
+                case 2:
+                    whichCoarseNode=1;
+                    break;
+                case 6:
+                    whichCoarseNode=3;
+                    break;
+                case 8:
+                    whichCoarseNode=2;
+                    break;
+                case 18:
+                    whichCoarseNode=4;
+                    break;
+                case 20:
+                    whichCoarseNode=5;
+                    break;
+                case 24:
+                    whichCoarseNode=7;
+                    break;
+                case 26:
+                    whichCoarseNode=6;
+                    break;
+                }
+
+                for( std::set<int>::iterator it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
+                {
+                    map_idxq_idxcutass[*it] = idxcutasscoarse;
+                    map_idxq_coarse[*it] = whichCoarseNode;
+                    map_idxcoarse_idxfine[ whichCoarseNode ].push_back( *it );
+                    idxcutasscoarse++;
+
+                    //mask
+// 						  int localidx = map_idxq_idxass[*it];
+// 						  mask.set( localidx*3  , whichCoarseNode*3   , 1);
+// 						  mask.set( localidx*3+1, whichCoarseNode*3+1 , 1);
+// 						  mask.set( localidx*3+2, whichCoarseNode*3+2 , 1);
+
+
+// 						  helper::vector<int> coarsedepending; coarsedepending.push_back(whichCoarseNode);
+// 						  map_mask[ *it ] = std::pair< helper::vector<int> ,unsigned >( coarsedepending, 0 );
                 }
             }
-            if( it == map_idxq_idxass.end() ) // pas trouve ==> car est dans un vide
+            else
             {
-                map_idxq_idxcutass[ i ] =  FineHexa_FineNode_IndiceForCutAssembling_27[i];
+                for( std::set<int>::iterator it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
+                {
+                    map_idxq_idxcutass[*it] = idxcutass;
+                    map_idxq_coarse[*it] = -1;
+                    idxcutass++;
+
+// 						helper::vector<int> coarsedepending;
+
+                    //mask
+// 						int localidx = map_idxq_idxass[*it];
+// 						for(int j=0;j<8;++j)
+// 						{
+// 							if( MIDDLE_INTERPOLATION[i][j] != 0 )
+// 							{
+// 								mask.set( localidx*3  , j*3   , 1);
+// 								mask.set( localidx*3+1, j*3+1 , 1);
+// 								mask.set( localidx*3+2, j*3+2 , 1);
+//
+// // 								coarsedepending.push_back(j);
+// 							}
+// 						}
+
+
+// 						map_mask[ *it ] = std::pair< helper::vector<int> ,unsigned >( coarsedepending, MIDDLE_AXES[i] );
+                }
             }
         }
+
 
 // 			  cerr<<"map_idxq_idxcutass : "<<endl;
 // 			  for(std::map<int,int>::iterator it = map_idxq_idxcutass.begin();it != map_idxq_idxcutass.end();++it)
@@ -1866,33 +2087,35 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 // 			  }
 
 
-        //ajouter les coins dans le vide
-        for(int i=0; i<8; ++i) // for all constrained nodes
-        {
-            if( map_idxcoarse_idxfine[i].empty() )
-                ++idxcutasscoarse; // nb constrained nodes
-        }
-
-
         NewMatMatrix Kg; // stiffness of contrained nodes
         Kg.resize(sizeass*3,idxcutasscoarse*3);
         NewMatMatrix  A; // [Kf -G] ==  Kf (stiffness of free nodes) with the constaints
         A.resize(sizeass*3,sizeass*3);
         NewMatMatrix  Ainv;
 
+// 			  cerr<<"map_idxq_coarse : \n";
+// 			  for( std::map<int,int>::iterator it = map_idxq_coarse.begin();it!= map_idxq_coarse.end();++it)
+// 			  {
+// 				  cerr<<(*it).second<<endl;
+// 			  }
 
-
-        for ( int i=0; i<sizeass; ++i)
+// 			  cerr<<"cutting :\n";
+// 			  for ( int i=0;i<sizeass;++i)
+        for( std::map<int,int>::iterator it = map_idxq_idxcutass.begin(); it!=map_idxq_idxcutass.end(); ++it)
         {
-            int col = map_idxq_idxcutass[i];
+// 				  int col = map_idxq_idxcutass[i];
+            int colcut = (*it).second;
+            int colnoncut = map_idxq_idxass[(*it).first];
 
-            if( map_idxq_coarse[i] )
+// 				  cerr<<(*it).first<<" "<<colcut<<endl;
+
+            if( map_idxq_coarse[(*it).first] != -1 )
             {
                 for(int lig=0; lig<sizeass; ++lig)
                 {
                     for(int m=0; m<3; ++m)
                         for(int n=0; n<3; ++n)
-                            Kg.add( lig*3+m,col*3+n,assembledStiffnessStatic.element(lig*3+m,i*3+n) );
+                            Kg.add( lig*3+m,colcut*3+n,assembledStiffnessStatic.element(lig*3+m,colnoncut*3+n) );
                 }
             }
             else
@@ -1901,204 +2124,333 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
                 {
                     for(int m=0; m<3; ++m)
                         for(int n=0; n<3; ++n)
-                            A.add( lig*3+m,col*3+n,assembledStiffnessStatic.element(lig*3+m,i*3+n) );
+                            A.add( lig*3+m,colcut*3+n,assembledStiffnessStatic.element(lig*3+m,colnoncut*3+n) );
                 }
             }
         }
 
 
 // 		  put -G entries into A
-
-
         int d=0;
         for(int i=0; i<8; ++i) // for all constrained nodes
         {
-            if( map_idxcoarse_idxfine[i].empty() )
+            for(unsigned j=0; j<map_idxcoarse_idxfine[i].size(); ++j)
             {
-                A.add( CoarseToFine[i]*3   , (sizeass-idxcutasscoarse+d)*3   , -1.0);
-                A.add( CoarseToFine[i]*3+1 , (sizeass-idxcutasscoarse+d)*3+1 , -1.0);
-                A.add( CoarseToFine[i]*3+2 , (sizeass-idxcutasscoarse+d)*3+2 , -1.0);
+                A.add( map_idxq_idxass[map_idxcoarse_idxfine[i][j]]*3   , (sizeass-idxcutasscoarse+d)*3   , -1.0);
+                A.add( map_idxq_idxass[map_idxcoarse_idxfine[i][j]]*3+1 , (sizeass-idxcutasscoarse+d)*3+1 , -1.0);
+                A.add( map_idxq_idxass[map_idxcoarse_idxfine[i][j]]*3+2 , (sizeass-idxcutasscoarse+d)*3+2 , -1.0);
                 ++d;
-            }
-            else
-            {
-                for(unsigned j=0; j<map_idxcoarse_idxfine[i].size(); ++j)
-                {
-                    A.add( map_idxcoarse_idxfine[i][j]*3   , (sizeass-idxcutasscoarse+d)*3   , -1.0);
-                    A.add( map_idxcoarse_idxfine[i][j]*3+1 , (sizeass-idxcutasscoarse+d)*3+1 , -1.0);
-                    A.add( map_idxcoarse_idxfine[i][j]*3+2 , (sizeass-idxcutasscoarse+d)*3+2 , -1.0);
-                    ++d;
-                }
             }
         }
 
-// 			  A.printMatlab(cerr);
+// 			  cerr<<"A2 = ";
+// 			  A.printMatlab( cerr );
+// 			  cerr<<"Kg2 = ";
+// 			  Kg.printMatlab( cerr );
 
         Ainv = A.i();
 
         NewMatMatrix  Ainvf;
         Ainv.getSubMatrix( 0,0, (sizeass-idxcutasscoarse)*3,sizeass*3,Ainvf);
 
+
+
+        //// ajouter un H qui lie tous les coins superposés ensemble et n'en garder que 8 pour avoir un W 27x8
+        NewMatMatrix H;
+        H.resize( idxcutasscoarse*3, 8*3 );
+        for(int i=0; i<8; ++i)
+        {
+            for(unsigned j=0; j<map_idxcoarse_idxfine[i].size(); ++j)
+            {
+// 					  cerr<<i<<" "<<j<<" "<<map_idxcoarse_idxfine[i]<<endl;
+                H.set( map_idxq_idxcutass[map_idxcoarse_idxfine[i][j]]*3  , i*3  ,1);
+                H.set( map_idxq_idxcutass[map_idxcoarse_idxfine[i][j]]*3+1, i*3+1,1);
+                H.set( map_idxq_idxcutass[map_idxcoarse_idxfine[i][j]]*3+2, i*3+2,1);
+            }
+        }
+
+// 			  cerr<<"H = ";
+// 			  H.printMatlab(cerr);
+// 			  NewMatMatrix HKg2;
+// 			  HKg2 = Kg*H;
+// 			  cerr<<"HKg2 = ";
+// 			  HKg2.printMatlab(cerr);
+
+
+
+
         NewMatMatrix  W;
-        W = - Ainvf * Kg;
+        W = - Ainvf * Kg * H;
 
-        //// TODO TODO TODO ajouter un H qui lie tous les coins superposés ensemble et n'en garder que 8 pour avoir un W 27x8
+// 			  cerr<<"W"<<elementIndice<<"=";
+// 			  W.printMatlab( cerr );
+//
+//
+// 			  cerr<<"W : "<<W.rowSize()<<"x"<<W.colSize()<<endl;
+//
+//
+        NewMatMatrix  WB;
+        WB.resize(sizeass*3,8*3);
+// 			  cerr<<"WB : "<<WB.rowSize()<<"x"<<WB.colSize()<<endl;
 
 
-        cerr<<"W : "<<W.rowSize()<<"x"<<W.colSize()<<endl;
+        for( std::map<int,int>::iterator it= map_idxq_coarse.begin(); it!=map_idxq_coarse.end(); ++it)
+        {
+            if( it->second != -1 )
+            {
+// 					  cerr<<it->first<<" "<<it->second<<endl;
+                WB.add( map_idxq_idxass[it->first]*3  , it->second*3  , 1.0);
+                WB.add( map_idxq_idxass[it->first]*3+1, it->second*3+1, 1.0);
+                WB.add( map_idxq_idxass[it->first]*3+2, it->second*3+2, 1.0);
+            }
+            else
+            {
+                for(int j=0; j<8*3; ++j)
+                {
+                    WB.add( map_idxq_idxass[it->first]*3  ,j, W.element( map_idxq_idxcutass[it->first]*3  , j));
+                    WB.add( map_idxq_idxass[it->first]*3+1,j, W.element( map_idxq_idxcutass[it->first]*3+1, j));
+                    WB.add( map_idxq_idxass[it->first]*3+2,j, W.element( map_idxq_idxcutass[it->first]*3+2, j));
+                }
+            }
+        }
 
 
-// 			  NewMatMatrix  WB;
-// 			  WB.resize(sizeass*3,8*3);
-// 			  for(int i=0;i<sizeass*3;++i)
-// 			  {
-// 				  int idx = i/3;
-// 				  int mod = i%3;
-// 				  if( map_idxq_coarse[idx] )
-// 					  WB.add( i , map_idxq_idxcutass[idx]*3+mod , 1.0);
-// 				  else
-// 					  for(int j=0;j<8*3;++j)
-// 				  {
-// 					  WB.add( i,j, W.element( map_idxq_idxcutass[idx]*3+mod, j));
-// 				  }
-// 			  }
-//
-//
-// 			  NewMatMatrix  mask;
-// 			  mask.resize(sizeass*3,8*3);
-//
-// 			  Coord a = this->_sparseGrid->getPointPos(coarsehexa[0]);
-// 			  Coord b = this->_sparseGrid->getPointPos(coarsehexa[6]);
-// 			  Coord dx( b[0]-a[0],0,0),dy( 0,b[1]-a[1],0), dz( 0,0,b[2]-a[2]);
-// 			  Coord inv_d2( 1.0/(dx*dx),1.0/(dy*dy),1.0/(dz*dz) );
-// 			  for( map<int,int>::iterator it = map_idxq_idxass.begin(); it!=map_idxq_idxass.end();++it)
-// 			  {
-// 				  int localidx = (*it).second; // indice du noeud fin dans l'assemblage
-//
-//
-// 				  if( map_idxq_coarse[ (*it).second ] )
-// 				  {
-// 					  int localcoarseidx = map_idxq_idxcutass[ (*it).second ];
-// 					  mask.set( localidx*3  , localcoarseidx*3   , 1);
-// 					  mask.set( localidx*3+1, localcoarseidx*3+1 , 1);
-// 					  mask.set( localidx*3+2, localcoarseidx*3+2 , 1);
-// 				  }
-// 				  else
-// 				  {
-//
-// 				// find barycentric coord
-// 					  Coord p = finestSparseGrid->getPointPos( (*it).first ) - a;
-//
-// 					  Real fx = p*dx*inv_d2[0];
-// 					  Real fy = p*dy*inv_d2[1];
-// 					  Real fz = p*dz*inv_d2[2];
-//
-//
-// 					  helper::fixed_array<Real,8> baryCoefs;
-// 					  baryCoefs[0] = (1-fx) * (1-fy) * (1-fz);
-// 					  baryCoefs[1] = fx * (1-fy) * (1-fz);
-// 					  baryCoefs[2] = fx * (fy) * (1-fz);
-// 					  baryCoefs[3] = (1-fx) * (fy) * (1-fz);
-// 					  baryCoefs[4] = (1-fx) * (1-fy) * (fz);
-// 					  baryCoefs[5] = fx * (1-fy) * (fz);
-// 					  baryCoefs[6] = fx * (fy) * (fz);
-// 					  baryCoefs[7] = (1-fx) * (fy) * fz;
-//
-//
-// 					  for(int i=0;i<8;++i)
-// 					  {
-// 						  if( baryCoefs[i]>1.0e-5 )
-// 						  {
-// 							  mask.set( localidx*3  , i*3   , 1);
-// 							  mask.set( localidx*3+1, i*3+1 , 1);
-// 							  mask.set( localidx*3+2, i*3+2 , 1);
-// 						  }
-// 					  }
-// 				  }
-// 			  }
-//
-//
-// 		  // apply the mask to take only concerned values (an edge stays an edge, a face stays a face, if corner=1 opposite borders=0....)
-// 			  NewMatMatrix WBmeca;
-// 			  WBmeca.resize(sizeass*3,8*3);
-// 			  for(int i=0;i<sizeass*3;++i)
-// 			  {
-// 				  for(int j=0;j<8*3;++j)
-// 				  {
-// 					  if( mask.element(i,j) /*WEIGHT_MASK[i][j]*/ )
-// 						  WBmeca.set(i,j,WB.element(i,j));
-// 				  }
-// 			  }
+// 			  cerr<<"WB2 = ";
+// 			  WB.printMatlab( cerr );
 //
 //
 //
+// 			  cerr<<"mask = ";
+// 			  mask.printMatlab( cerr );
+
+
+        // apply the mask to take only concerned values (an edge stays an edge, a face stays a face, if corner=1 opposite borders=0....)
+        NewMatMatrix WBmeca;
+        WBmeca.resize(sizeass*3,8*3);
+
+
+        for(int i=0; i<27; ++i)
+        {
+            for( std::set<int>::iterator it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
+            {
+                int localidx = map_idxq_idxass[ *it ];
+
+                int nbDependingCoarseNodes = 0;
+                for(int j=0; j<8; ++j)
+                {
+                    if( MIDDLE_INTERPOLATION[i][j] )
+                    {
+                        ++nbDependingCoarseNodes;
+                    }
+                }
+
+
+                if( nbDependingCoarseNodes==1 || nbDependingCoarseNodes==8 ) // fine node on a coarse node or in the middle of the coarse cube
+                {
+                    for(int j=0; j<8*3; ++j)
+                    {
+                        WBmeca.set( localidx*3  , j, WB.element(localidx*3  , j) ); // directly copy all
+                        WBmeca.set( localidx*3+1, j, WB.element(localidx*3+1, j) );
+                        WBmeca.set( localidx*3+2, j, WB.element(localidx*3+2, j) );
+                    }
+                }
+                else if( nbDependingCoarseNodes==2 ) // fine node on an edge
+                {
+                    switch( MIDDLE_AXES[i] )
+                    {
+                    case 1: //x
+                        for(int j=0; j<8; ++j)
+                        {
+                            if( MIDDLE_INTERPOLATION[i][j] )
+                            {
+                                WBmeca.set( localidx*3  , j*3, WB.element(localidx*3  , j*3) ); // copy just the right influence in the right axe
+                                WBmeca.set( localidx*3+1, j*3+1, WB.element(localidx*3, j*3) );
+                                WBmeca.set( localidx*3+2, j*3+2, WB.element(localidx*3, j*3) );
+                            }
+                        }
+                        break;
+                    case 2: //y
+                        for(int j=0; j<8; ++j)
+                        {
+                            if( MIDDLE_INTERPOLATION[i][j] )
+                            {
+                                WBmeca.set( localidx*3  , j*3, WB.element(localidx*3+1  , j*3+1) );
+                                WBmeca.set( localidx*3+1, j*3+1, WB.element(localidx*3+1, j*3+1) );
+                                WBmeca.set( localidx*3+2, j*3+2, WB.element(localidx*3+1, j*3+1) );
+                            }
+                        }
+                        break;
+                    case 3: //z
+                        for(int j=0; j<8; ++j)
+                        {
+                            if( MIDDLE_INTERPOLATION[i][j] )
+                            {
+                                WBmeca.set( localidx*3  , j*3, WB.element(localidx*3+2  , j*3+2) );
+                                WBmeca.set( localidx*3+1, j*3+1, WB.element(localidx*3+2, j*3+2) );
+                                WBmeca.set( localidx*3+2, j*3+2, WB.element(localidx*3+2, j*3+2) );
+                            }
+                        }
+                        break;
+                    }
+                }
+                else if( nbDependingCoarseNodes==4 ) // fine node on a face
+                {
+                    switch( MIDDLE_AXES[i] )
+                    {
+                    case 1: //x
+                        for(int j=0; j<8; ++j)
+                        {
+                            if( MIDDLE_INTERPOLATION[i][j] )
+                            {
+                                Real coef = WB.element(localidx*3+1, j*3+1)+WB.element(localidx*3+2, j*3+2);
+                                WBmeca.set( localidx*3  , j*3, coef );
+                                WBmeca.set( localidx*3+1, j*3+1, coef );
+                                WBmeca.set( localidx*3+2, j*3+2, coef );
+                            }
+                        }
+                        break;
+                    case 2: //y
+                        for(int j=0; j<8; ++j)
+                        {
+                            if( MIDDLE_INTERPOLATION[i][j] )
+                            {
+                                Real coef = WB.element(localidx*3, j*3)+WB.element(localidx*3+2, j*3+2);
+                                WBmeca.set( localidx*3  , j*3, coef );
+                                WBmeca.set( localidx*3+1, j*3+1, coef );
+                                WBmeca.set( localidx*3+2, j*3+2, coef );
+                            }
+                        }
+                        break;
+                    case 3: //z
+                        for(int j=0; j<8; ++j)
+                        {
+                            if( MIDDLE_INTERPOLATION[i][j] )
+                            {
+                                Real coef = WB.element(localidx*3, j*3)+WB.element(localidx*3+1, j*3+1);
+                                WBmeca.set( localidx*3  , j*3, coef );
+                                WBmeca.set( localidx*3+1, j*3+1, coef );
+                                WBmeca.set( localidx*3+2, j*3+2, coef );
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        // normalize the coefficient to obtain sum(coefs)==1
+        for(int i=0; i<sizeass*3; ++i)
+        {
+            Real sum = 0.0;
+            for(int j=0; j<8*3; ++j)
+            {
+                sum += WBmeca.element(i,j);
+            }
+            for(int j=0; j<8*3; ++j)
+            {
+                WBmeca.set(i,j, WBmeca.element(i,j) / sum );
+            }
+        }
+
+
+        NewMatMatrix Kc, Mc; // coarse stiffness
+        Kc = WBmeca.t() * assembledStiffness * WBmeca;
+        Mc = WBmeca.t() * assembledMass * WBmeca;
+
+
+
+
+
+        for(int i=0; i<8*3; ++i)
+            for(int j=0; j<8*3; ++j)
+            {
+                K[i][j]=Kc.element(i,j);
+                M[i][j]=Mc.element(i,j);
+            }
+
+// 			  cerr<<"K"<<elementIndice<<"=";
+// 			  printMatlab( cerr, K);cerr<<endl;
+// 			  cerr<<"M"<<elementIndice<<"=";
+// 			  printMatlab( cerr, M);cerr<<endl;
+
+
+
+
+        if( !_completeInterpolation.getValue() ) // take WBmeca as the object interpolation
+        {
+            WB = WBmeca;
+        }
+
+
+        for(int i=0 ; i < 8 ; ++i ) // finer places
+        {
+            for(unsigned j=0; j<finerChildrenRamificationOriginal[i].size(); ++j) // finer element
+            {
+                const SparseGridTopology::Hexa& finehexa = finerSparseGrid->getHexa( finerChildrenRamificationOriginal[i][j] );
+                for(int k=0 ; k < 8 ; ++k ) // fine nodes
+                {
+                    for( int l=0; l<8*3; ++l) // toutes les cols de W
+                    {
+                        _weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildrenRamificationOriginal[i][j]][k*3  ][l] = WB.element( map_idxq_idxass[ finehexa[k] ]*3   ,l);
+                        _weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildrenRamificationOriginal[i][j]][k*3+1][l] = WB.element( map_idxq_idxass[ finehexa[k] ]*3+1 ,l);
+                        _weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildrenRamificationOriginal[i][j]][k*3+2][l] = WB.element( map_idxq_idxass[ finehexa[k] ]*3+2 ,l);
+                    }
+                }
+            }
+        }
+
+// 			  cerr<<"WBmeca =";
+// 			  WBmeca.printMatlab(cerr);
+// 			  cerr<<"WB =";
+// 			  WB.printMatlab(cerr);
+
+
+// 			  for( int l=0;l<8*3;++l) // toutes les cols de W
+// 				  cerr<< WB.element( map_idxq_idxass[ 9 ]*3   ,l)<<" ";
+// 			  cerr<<endl;
+// 			  for( int l=0;l<8*3;++l) // toutes les cols de W
+// 				  cerr<< WB.element( map_idxq_idxass[ 9 ]*3+1   ,l)<<" ";
+// 			  cerr<<endl;
+// 			  for( int l=0;l<8*3;++l) // toutes les cols de W
+// 				  cerr<< WB.element( map_idxq_idxass[ 9 ]*3+2   ,l)<<" ";
+// 			  cerr<<endl;cerr<<endl;
 //
-// 		  // normalize the coefficient to obtain sum(coefs)==1
-// 			  for(int i=0;i<sizeass*3;++i)
-// 			  {
-// 				  Real sum = 0.0;
-// 				  for(int j=0;j<8*3;++j)
-// 				  {
-// 					  sum += WBmeca.element(i,j);
-// 				  }
-// 				  for(int j=0;j<8*3;++j)
-// 				  {
-// 					  WBmeca.set(i,j, WBmeca.element(i,j) / sum );
-// 				  }
-// 			  }
+// 			  for( int l=0;l<8*3;++l) // toutes les cols de W
+// 				  cerr<< WBmeca.element( map_idxq_idxass[ 9 ]*3   ,l)<<" ";
+// 			  cerr<<endl;
+// 			  for( int l=0;l<8*3;++l) // toutes les cols de W
+// 				  cerr<< WBmeca.element( map_idxq_idxass[ 9 ]*3+1   ,l)<<" ";
+// 			  cerr<<endl;
+// 			  for( int l=0;l<8*3;++l) // toutes les cols de W
+// 				  cerr<< WBmeca.element( map_idxq_idxass[ 9 ]*3+2   ,l)<<" ";
+// 			  cerr<<endl;cerr<<endl;
 //
+// 			  for( int l=0;l<8*3;++l) // toutes les cols de W
+// 				  cerr<< WB.element( map_idxq_idxass[ 16 ]*3   ,l)<<" ";
+// 			  cerr<<endl;
+// 			  for( int l=0;l<8*3;++l) // toutes les cols de W
+// 				  cerr<< WB.element( map_idxq_idxass[ 16 ]*3+1   ,l)<<" ";
+// 			  cerr<<endl;
+// 			  for( int l=0;l<8*3;++l) // toutes les cols de W
+// 				  cerr<< WB.element( map_idxq_idxass[ 16 ]*3+2   ,l)<<" ";
+// 			  cerr<<endl;cerr<<endl;
 //
-// 			  NewMatMatrix Kc, Mc; // coarse stiffness
-// 			  Kc = WBmeca.t() * assembledStiffness * WBmeca;
-// 			  Mc = WBmeca.t() * assembledMass * WBmeca;
-//
-//
-//
-//
-//
-// 			  for(int i=0;i<8*3;++i)
-// 				  for(int j=0;j<8*3;++j)
-// 			  {
-// 				  K[i][j]=Kc.element(i,j);
-// 				  M[i][j]=Mc.element(i,j);
-// 			  }
-//
-//
-//
-//
-// 			  if( !_completeInterpolation.getValue() ) // take WBmeca as the object interpolation
-// 			  {
-// 				  WB = WBmeca;
-// 			  }
-//
-//
-// 			  for(unsigned i=0 ; i < finestChildren.size() ; ++i )
-// 			  {
-// 				  const SparseGridTopology::Hexa& hexa = finestSparseGrid->getHexa( finestChildren[i] );
-// 				  for(int j=0;j<8;++j)
-// 				  {
-// 					  for( int k=0;k<8*3;++k)
-// 					  {
-// 						  _finalWeights[finestChildren[i]].second[j*3  ][k] = WB.element( map_idxq_idxass[ hexa[j] ]*3   ,k);
-// 						  _finalWeights[finestChildren[i]].second[j*3+1][k] = WB.element( map_idxq_idxass[ hexa[j] ]*3+1 ,k);
-// 						  _finalWeights[finestChildren[i]].second[j*3+2][k] = WB.element( map_idxq_idxass[ hexa[j] ]*3+2 ,k);
-// 					  }
-// 				  }
-// 				  _finalWeights[finestChildren[i]].first = elementIndice;
-// 			  }
-//
+// 			  for( int l=0;l<8*3;++l) // toutes les cols de W
+// 				  cerr<< WBmeca.element( map_idxq_idxass[ 16 ]*3   ,l)<<" ";
+// 			  cerr<<endl;
+// 			  for( int l=0;l<8*3;++l) // toutes les cols de W
+// 				  cerr<< WBmeca.element( map_idxq_idxass[ 16 ]*3+1   ,l)<<" ";
+// 			  cerr<<endl;
+// 			  for( int l=0;l<8*3;++l) // toutes les cols de W
+// 				  cerr<< WBmeca.element( map_idxq_idxass[ 16 ]*3+2   ,l)<<" ";
+// 			  cerr<<endl;cerr<<endl;
+
 
     }
 
 
 }
-
-
-
-
-
-
-
 
 
 
@@ -2138,6 +2490,46 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeFinalWeights( const We
             computeFinalWeights( A, coarseElementIndice, finerChildren[i], level+1);
     }
 }
+
+
+
+template<class T>
+void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeFinalWeightsRamification( const Weight &W, const int coarseElementIndice, const int elementIndice,  int level)
+{
+// 		  for(int i=0;i<level*3;++i)cerr<<" ";
+// 		  cerr<<"computeFinalWeights "<<elementIndice<<"  "<<level<<endl;
+
+    if( elementIndice == -1 ) return;
+
+    Weight A = _weights[ this->_nbVirtualFinerLevels.getValue()-level ][elementIndice]* W;
+
+    if (level == this->_nbVirtualFinerLevels.getValue())
+    {
+// 			  if( elementIndice==2 )
+// 			  {
+// 				  cerr<<"COMPUTE_FINAL\n";
+// 				  cerr<<this->_nbVirtualFinerLevels.getValue()-level<<endl;
+// 				  printMatlab(cerr,_weights[0][2]);
+// 				  printMatlab(cerr,W);
+// 			  }
+
+// 			  _weights[ this->_nbVirtualFinerLevels.getValue()-level ][elementIndice] = A;
+        _finalWeights[ elementIndice ] = std::pair<int,Weight>(coarseElementIndice, A);
+    }
+    else
+    {
+        topology::SparseGridRamificationTopology* sparseGrid;
+
+        sparseGrid = dynamic_cast< topology::SparseGridRamificationTopology*>(this->_sparseGrid->_virtualFinerLevels[this->_sparseGrid->getNbVirtualFinerLevels()-level]);
+
+        helper::fixed_array<helper::vector<int>,8 >& finerChildrenRamification = sparseGrid->_hierarchicalCubeMapRamification[ elementIndice ];
+
+        for(int w=0; w<8; ++w)
+            for(unsigned v=0; v<finerChildrenRamification[w].size(); ++v)
+                computeFinalWeights( A, coarseElementIndice, finerChildrenRamification[w][v], level+1);
+    }
+}
+
 
 
 template<class T>
