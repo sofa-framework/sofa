@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_HomogenizedMAPPING_H
-#define SOFA_COMPONENT_MAPPING_HomogenizedMAPPING_H
+#ifndef SOFA_COMPONENT_MAPPING_HomogenizedEdgeBasedMapping_H
+#define SOFA_COMPONENT_MAPPING_HomogenizedEdgeBasedMapping_H
 
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
@@ -31,8 +31,7 @@
 
 #include <sofa/defaulttype/Mat.h>
 
-#include <sofa/component/topology/SparseGridTopology.h>
-#include <sofa/component/forcefield/HomogenizedHexahedronFEMForceFieldAndMass.h>
+#include <sofa/component/mapping/HomogenizedMapping.h>
 
 namespace sofa
 {
@@ -50,10 +49,10 @@ using namespace sofa::core::componentmodel::behavior;
 using namespace sofa::defaulttype;
 
 template <class BasicMapping>
-class HomogenizedMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
+class HomogenizedEdgeBasedMapping : public HomogenizedMapping<BasicMapping>
 {
 public:
-    typedef BasicMapping Inherit;
+    typedef HomogenizedMapping<BasicMapping> Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;
     typedef typename Out::Coord OutCoord;
@@ -65,67 +64,32 @@ public:
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
     typedef typename OutCoord::value_type Real;
-
-    typedef topology::SparseGridTopology SparseGridTopologyT;
-    typedef typename forcefield::HomogenizedHexahedronFEMForceFieldAndMass<typename In::DataTypes> HomogenizedHexahedronFEMForceFieldAndMassT;
+    typedef typename Inherit::Weight Weight;
 
 
-    typedef Mat<3,8*3> Weight;
-    typedef typename HomogenizedHexahedronFEMForceFieldAndMassT::Transformation Transformation;
-    typedef helper::fixed_array< InCoord, 8 > Nodes;
 
 
-    HomogenizedMapping ( In* from, Out* to ): Inherit ( from, to )
+    HomogenizedEdgeBasedMapping ( In* from, Out* to ): Inherit ( from, to )
     {
-// 		_method = initData(&this->_method,0,"method","0: auto, 1: coarseNodes->surface, 2: coarseNodes->finestNodes->surface");
-        _alreadyInit=false;
     }
 
-    virtual ~HomogenizedMapping() {}
+    virtual ~HomogenizedEdgeBasedMapping() {}
 
     virtual void init();
 
     virtual void apply ( OutVecCoord& out, const InVecCoord& in );
 
-    virtual void applyJ ( OutVecDeriv& out, const InVecDeriv& in );
 
-    virtual void applyJT ( InVecDeriv& out, const OutVecDeriv& in );
-
-    void draw();
-
-// 	Data<int> _method;
 
 protected :
 
-    bool _alreadyInit;
 
-
-    helper::vector< OutCoord > _finePos;
-
-    // in order to treat large dispacements in translation (rotation is given by the corotational force field)
-// 	  InVecCoord _baycenters0;
-// 	  InCoord computeTranslation( const SparseGridTopologyT::Hexa& hexa, unsigned idx );
-    OutVecCoord _p0; // intial position of the interpolated vertices
-    InVecCoord _qCoarse0, _qFine0; // intial position of the element nodes
-    InVecCoord _qFine; // only for drawing
-
-// 	  helper::vector< helper::Quater<Real> > _rotations;
-    helper::vector< Transformation >  _rotations;
-
-
-// 	  helper::vector< helper::vector<unsigned > > _pointsCorrespondingToElem; // in which element is the interpolated vertex?
-    helper::vector< Weight > _weights; // a weight matrix for each vertex, such as dp=W.dq with q the 8 values of the embedding element
-
-    // for method 2
-    helper::vector< std::pair< int, helper::fixed_array<Real,8> > > _finestBarycentricCoord; // barycentric coordinates for each mapped points into the finest elements (fine element idx + weights)
-
-    helper::vector< std::map< int, Weight > > _finestWeights; // for each fine nodes -> a list of incident coarse element idx and the corresponding weight
-
-    // necessary objects
-    SparseGridTopologyT* _sparseGrid;
-    SparseGridTopologyT* _finestSparseGrid;
-    HomogenizedHexahedronFEMForceFieldAndMassT* _forcefield;
-
+    static const int EDGES[12][3]; // 2 indices + dir (0=x,1=y,2=z)
+    typedef helper::fixed_array<int,3> Edge;// 2 indices + dir (0=x,1=y,2=z)
+    helper::vector< Edge > _edges;
+    helper::vector<std::map<int,Real> > _weightsEdge; // for each fine nodes -> list of edges with coef
+    InCoord _size0;
+    helper::vector< std::map< int, Real > > _coarseBarycentricCoord; // barycentric coordinates for each fine points into the coarse elements (coarse nodes idx + weights)
 };
 
 } // namespace mapping

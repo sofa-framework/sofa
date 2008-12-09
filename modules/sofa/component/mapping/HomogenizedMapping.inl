@@ -126,20 +126,20 @@ void HomogenizedMapping<BasicMapping>::init()
     for (unsigned int i=0; i<_p0.size(); i++)
     {
         Vec3d coefs;
-        int elementIdx = _sparseGrid->findCube( _p0[i] , coefs[0], coefs[1], coefs[2] );
-        if (elementIdx==-1)
-        {
-            elementIdx = _sparseGrid->findNearestCube( _p0[i] , coefs[0], coefs[1], coefs[2] );
-        }
+// 		int elementIdx = _sparseGrid->findCube( _p0[i] , coefs[0], coefs[1], coefs[2] );
+// 		if (elementIdx==-1)
+// 		{
+// 			elementIdx = _sparseGrid->findNearestCube( _p0[i] , coefs[0], coefs[1], coefs[2] );
+// 		}
 
 
-        if (elementIdx!=-1)
+// 		if (elementIdx!=-1)
         {
 // 			_pointsCorrespondingToElem[elementIdx].push_back( i );
 
 
             // find barycentric coordinate in the finest element
-            elementIdx = _finestSparseGrid->findCube( _p0[i] , coefs[0], coefs[1], coefs[2] );
+            int elementIdx = _finestSparseGrid->findCube( _p0[i] , coefs[0], coefs[1], coefs[2] );
             if (elementIdx==-1)
             {
                 elementIdx = _finestSparseGrid->findNearestCube( _p0[i] , coefs[0], coefs[1], coefs[2] );
@@ -162,14 +162,12 @@ void HomogenizedMapping<BasicMapping>::init()
             else
                 cerr<<"HomogenizedMapping::init()   error finding the corresponding finest cube of vertex "<<_p0[i]<<endl;
         }
-        else
-            cerr<<"HomogenizedMapping::init()   error finding the corresponding coarse cube of vertex "<<_p0[i]<<endl;
+// 		else
+// 			cerr<<"HomogenizedMapping::init()   error finding the corresponding coarse cube of vertex "<<_p0[i]<<endl;
     }
 
     cerr<<"HomogenizedMapping::init() before \n";
 // 	cerr<<_forcefield->_finalWeights.size()<<" "<<_finestSparseGrid->getNbHexas()<<endl;
-
-// 	helper::vector<bool> deja(_finestSparseGrid->getNbPoints(),false);
 
 
     for (unsigned int i=0; i<_forcefield->_finalWeights.size(); i++)
@@ -179,7 +177,6 @@ void HomogenizedMapping<BasicMapping>::init()
 
         const SparseGridTopologyT::Hexa& finehexa = _finestSparseGrid->getHexa(i);
 
-
         for(int w=0; w<8; ++w)
         {
             Weight W;
@@ -187,27 +184,11 @@ void HomogenizedMapping<BasicMapping>::init()
             W[1] = _forcefield->_finalWeights[i].second[ w*3+1 ];
             W[2] = _forcefield->_finalWeights[i].second[ w*3+2 ];
 
-
-// 			if( deja[ finehexa[w] ])
-// 				if( (W[0] - _finestWeights[ finehexa[w] ][0].second[0]).norm() > 1.0e-3 ) cerr<<"hum "<<(W[0] - _finestWeights[ finehexa[w] ][0].second[0]).norm()<<"\n";
-// 			else cerr<<"tout pareil\n";
-
-
-// 			if( !deja[ finehexa[w] ])
-            {
-                _finestWeights[ finehexa[w] ].push_back( std::pair<int,Weight>( _forcefield->_finalWeights[i].first ,  W  ) );
-
-// 			if( finehexa[w]==5 ) cerr<<finehexa[w]<<" "<<_forcefield->_finalWeights[i].first<<" "<<i<<" "<<w<<endl;
-// 			if( finehexa[w]==5 ) cerr<<finehexa[w]<<" "<<W<<endl;
-// 			if( finehexa[w]==23 ) cerr<<finehexa[w]<<" "<<W<<endl;
-
-// 			if( i==0 && w==3 ) cerr<<finehexa[w]<<endl;
-// 			if( i==1 && w==2 ) cerr<<finehexa[w]<<endl;
-
-// 			deja[ finehexa[w] ] = true;
-            }
+            _finestWeights[ finehexa[w] ][_forcefield->_finalWeights[i].first] =  W ;
         }
     }
+
+
 
 // 	cerr<<_finestWeights[17].size( )<<endl;
 // 	for(int i=0;i<_finestWeights[17].size( );++i)
@@ -232,6 +213,24 @@ void HomogenizedMapping<BasicMapping>::init()
     // non necessary memory optimisation
 // 	_forcefield->_finalWeights.resize(0);
 
+
+
+// 	for(unsigned i=0;i<_finestWeights.size();++i)
+// 	{
+// 		std::map< int, Weight >::iterator it = _finestWeights[i].begin();
+//
+// 		SparseGridTopologyT::Hexa& coarsehexa = _sparseGrid.getHexa( (*it).first );
+//
+//
+// 		for(int j=0;j<8;++j)
+// 			if( fabs( (*it).second[0][j*3] ) > 1.0e-5 || fabs( (*it).second[1][j*3+1] ) > 1.0e-5 || fabs( (*it).second[2][j*3+2] ) > 1.0e-5 )
+//
+//
+// 	}
+
+
+
+
 }
 
 
@@ -239,6 +238,8 @@ void HomogenizedMapping<BasicMapping>::init()
 template <class BasicMapping>
 void HomogenizedMapping<BasicMapping>::apply ( OutVecCoord& out, const InVecCoord& in )
 {
+
+
     // les deplacements des noeuds grossiers
     helper::vector< Vec< 24 >  > coarseDisplacements( _sparseGrid->getNbHexas() );
     for(int i=0; i<_sparseGrid->getNbHexas(); ++i)
@@ -262,8 +263,6 @@ void HomogenizedMapping<BasicMapping>::apply ( OutVecCoord& out, const InVecCoor
         }
     }
 
-// 	cerr<<"coarseDisplacements: "<<coarseDisplacements<<endl;
-
 
 
 
@@ -276,32 +275,17 @@ void HomogenizedMapping<BasicMapping>::apply ( OutVecCoord& out, const InVecCoor
     {
         _qFine[i] = InCoord();
 // 		helper::Quater<Real> meanRotation;
-        for( unsigned j=0; j<_finestWeights[i].size(); ++j)
+        for(std::map< int, Weight >::iterator it = _finestWeights[i].begin(); it!=_finestWeights[i].end(); ++it)
         {
 // 			meanRotation += _rotations[ _finestWeights[i][j].first ];
-            Transformation& rotation = _rotations[ _finestWeights[i][j].first ];
+            Transformation& rotation = _rotations[(*it).first ];
 
-// 			cerr<<rotation<<endl;
-
-            _qFine[i] += rotation.multTranspose( _qFine0[i] + _finestWeights[i][j].second * coarseDisplacements[ _finestWeights[i][j].first ] );
+            _qFine[i] += rotation.multTranspose( _qFine0[i] + (*it).second * coarseDisplacements[ (*it).first ] );
         }
 // 		meanRotation /= _finestWeights[i].size(); meanRotation.toMatrix( meanRotations[i] );
         _qFine[i] /= _finestWeights[i].size();
 
-// 		fineDisplacements[i] += _qFine0[i];
     }
-
-
-// 	cerr<<in<<" ==> "<<coarseDisplacements<<" ==> "<<fineDisplacements[5]<<endl;
-// 	cerr<<fineDisplacements[5]<<endl;
-// 	cerr<<fineDisplacements[23]<<endl;
-
-// 	cerr<<"fineDisplacements: "<<fineDisplacements<<endl;
-// 	_finePos.resize( fineDisplacements.size());
-// 	_finePos=fineDisplacements;
-
-
-
 
 
 
@@ -324,39 +308,6 @@ void HomogenizedMapping<BasicMapping>::apply ( OutVecCoord& out, const InVecCoor
 
 
 
-
-// 	// les déplacements des noeuds fins décomposés par element grossier
-// 	helper::vector< helper::vector< OutCoord > > fineDisplacements( _finestWeights.size() );
-// 	for(unsigned i=0;i<_finestWeights.size();++i)
-// 	{
-// 		fineDisplacements[i].resize(_finestWeights[i].size());
-//
-//
-// 		for( unsigned j=0;j<_finestWeights[i].size();++j)
-// 		{
-// 			const Transformation& rotation = _forcefield->getRotation(_finestWeights[i][j].first);
-// 			fineDisplacements[i][j] = (/*_qFine0[i] +*/ rotation.multTranspose( _finestWeights[i][j].second * coarseDisplacements[ _finestWeights[i][j].first ] ) ) / _finestWeights[i].size();
-// 		}
-// 	}
-//
-//
-// 	// les déplacements des points mappés
-// 	for(unsigned i=0;i<_p0.size();++i)
-// 	{
-// 		//out[i] = OutCoord();
-// 		out[i] = _p0[i] /*+ translation*/;
-//
-// 		const SparseGridTopologyT::Hexa& finehexa = _finestSparseGrid->getHexa( _finestBarycentricCoord[i].first );
-//
-// 		for(int w=0;w<8;++w)
-// 		{
-// 			for( unsigned j=0;j<fineDisplacements[finehexa[w]].size();++j)
-// 			{
-// 				out[i] += fineDisplacements[ finehexa[w] ][j]  * _finestBarycentricCoord[i].second[w];
-// 			}
-// 		}
-//
-// 	}
 }
 
 
@@ -385,11 +336,11 @@ void HomogenizedMapping<BasicMapping>::applyJ ( OutVecDeriv& out, const InVecDer
 
     for(unsigned i=0; i<_finestWeights.size(); ++i)
     {
-        for( unsigned j=0; j<_finestWeights[i].size(); ++j)
+        for(std::map< int, Weight >::iterator it = _finestWeights[i].begin(); it!=_finestWeights[i].end(); ++it)
         {
-            Transformation& rotation = _rotations[ _finestWeights[i][j].first ];
+            Transformation& rotation = _rotations[ (*it).first ];
 
-            fineDisplacements[i] += rotation.multTranspose( _finestWeights[i][j].second * coarseDisplacements[ _finestWeights[i][j].first ] );
+            fineDisplacements[i] += rotation.multTranspose((*it).second * coarseDisplacements[ (*it).first ] );
         }
         fineDisplacements[i] /= _finestWeights[i].size();
     }
@@ -433,13 +384,13 @@ void HomogenizedMapping<BasicMapping>::applyJT ( InVecDeriv& out, const OutVecDe
     for(unsigned i=0; i<fineForces.size(); ++i)
     {
 
-        for( unsigned j=0; j<_finestWeights[i].size(); ++j)
+        for(std::map< int, Weight >::iterator it = _finestWeights[i].begin(); it!=_finestWeights[i].end(); ++it)
         {
-            Transformation& rotation = _rotations[ _finestWeights[i][j].first];
+            Transformation& rotation = _rotations[ (*it).first];
 
-            Vec< 24 > dfplat = _finestWeights[i][j].second.multTranspose( rotation * fineForces[i] ) / _finestWeights[i].size();
+            Vec< 24 > dfplat = (*it).second.multTranspose( rotation * fineForces[i] ) / _finestWeights[i].size();
 
-            const SparseGridTopologyT::Hexa& hexa = _sparseGrid->getHexa( _finestWeights[i][j].first );
+            const SparseGridTopologyT::Hexa& hexa = _sparseGrid->getHexa( (*it).first );
             for(int w=0; w<8; ++w)
             {
                 out[ hexa[ w ] ] += rotation.multTranspose( InCoord( dfplat[w*3],dfplat[w*3+1],dfplat[w*3+2]));

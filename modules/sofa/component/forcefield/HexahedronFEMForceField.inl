@@ -160,9 +160,6 @@ void HexahedronFEMForceField<DataTypes>::init()
 // 		}
 // 		cerr<<"------\n";
 // 	}
-
-
-
 }
 
 
@@ -854,14 +851,13 @@ void HexahedronFEMForceField<DataTypes>::initLarge(int i, const Element &elem)
     horizontal = (nodes[1]-nodes[0] + nodes[2]-nodes[3] + nodes[5]-nodes[4] + nodes[6]-nodes[7])*.25;
     Coord vertical;
     vertical = (nodes[3]-nodes[0] + nodes[2]-nodes[1] + nodes[7]-nodes[4] + nodes[6]-nodes[5])*.25;
-    Transformation R_0_1;
-    computeRotationLarge( R_0_1, horizontal,vertical);
+    computeRotationLarge( _rotations[i], horizontal,vertical);
 
     for(int w=0; w<8; ++w)
 #ifndef SOFA_NEW_HEXA
-        _rotatedInitialElements[i][w] = R_0_1*_initialPoints.getValue()[elem[_indices[w]]];
+        _rotatedInitialElements[i][w] =  _rotations[i]*_initialPoints.getValue()[elem[_indices[w]]];
 #else
-        _rotatedInitialElements[i][w] = R_0_1*_initialPoints.getValue()[elem[w]];
+        _rotatedInitialElements[i][w] =  _rotations[i]*_initialPoints.getValue()[elem[w]];
 #endif
 
     if( _elementStiffnesses.getValue().size() <= (unsigned)i )
@@ -870,6 +866,7 @@ void HexahedronFEMForceField<DataTypes>::initLarge(int i, const Element &elem)
     }
 
     computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], _rotatedInitialElements[i], i, _sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0 );
+// 	computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], _rotatedInitialElements[i], i, i==1?10.0:1.0 );
 
 
 // 	printMatlab( cerr,this->_elementStiffnesses.getValue()[0] );
@@ -988,13 +985,12 @@ void HexahedronFEMForceField<DataTypes>::initPolar(int i, const Element& elem)
         nodes[j] = _initialPoints.getValue()[elem[j]];
 #endif
 
-    Transformation R_0_1; // Rotation matrix (deformed and displaced Tetrahedron/world)
-    computeRotationPolar( R_0_1, nodes );
+    computeRotationPolar( _rotations[i], nodes );
 
 
     for(int j=0; j<8; ++j)
     {
-        _rotatedInitialElements[i][j] = R_0_1 * nodes[j];
+        _rotatedInitialElements[i][j] =  _rotations[i] * nodes[j];
     }
 
 

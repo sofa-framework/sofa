@@ -47,8 +47,11 @@ template<class DataTypes>
 HexahedronFEMForceFieldAndMass<DataTypes>::HexahedronFEMForceFieldAndMass()
     : MassT()
     , HexahedronFEMForceFieldT()
+    ,_elementMasses(initData(&_elementMasses,"massMatrices", "Mass matrices per element (M_i)"))
     , _density(initData(&_density,(Real)1.0,"density","density == volumetric mass in english (kg.m-3)"))
-{}
+{
+    _lumpedMass = this->initData(&_lumpedMass,false,"lumpedMass","Does it use lumped masses?");
+}
 
 
 template<class DataTypes>
@@ -80,7 +83,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
         Real volume = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
 
         if( this->_sparseGrid ) // if sparseGrid -> the filling ratio is taken into account
-            volume *= (Real) (this->_sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0);
+            volume *= this->_sparseGrid->getStiffnessCoef(i);
 
         // mass of a particle...
         Real mass = Real (( volume * _density.getValue() ) / 8.0 );
@@ -88,6 +91,29 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
         // ... is added to each particle of the element
         for(int w=0; w<8; ++w)
             _particleMasses[ (*it)[w] ] += mass;
+    }
+
+
+
+    if( _lumpedMass.getValue() )
+    {
+        _lumpedMasses.resize( this->_initialPoints.getValue().size() );
+        i=0;
+        for(typename VecElement::const_iterator it = this->_indexedElements->begin() ; it != this->_indexedElements->end() ; ++it, ++i)
+        {
+
+            const ElementMass& mass=_elementMasses.getValue()[i];
+
+            for(int w=0; w<8; ++w)
+            {
+                for(int j=0; j<8*3; ++j)
+                {
+                    _lumpedMasses[ (*it)[w] ][0] += mass[w*3  ][j];
+                    _lumpedMasses[ (*it)[w] ][1] += mass[w*3+1][j];
+                    _lumpedMasses[ (*it)[w] ][2] += mass[w*3+2][j];
+                }
+            }
+        }
     }
 
 
@@ -135,8 +161,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
         {
             _elementMasses.beginEdit()->resize( _elementMasses.getValue().size()+1 );
 // 			  computeElementMass( (*_elementMasses.beginEdit())[i], nodes,i );
-            computeElementMass( (*_elementMasses.beginEdit())[i], this->_rotatedInitialElements[i],i,
-                    (this->_sparseGrid && this->_sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY)?.5:1.0 );
+            computeElementMass( (*_elementMasses.beginEdit())[i], this->_rotatedInitialElements[i],i,	this->_sparseGrid?this->_sparseGrid->getStiffnessCoef(i):1.0 );
         }
 
 
@@ -189,7 +214,8 @@ typename HexahedronFEMForceFieldAndMass<DataTypes>::Real HexahedronFEMForceField
     Real t2 = (Real)(signy*signy);
     Real t3 = (Real)(signz*signz);
     Real t9 = (Real)(t1*t2);
-    return (Real)(t1*t3/72.0+t2*t3/72.0+t9*t3/216.0+t3/24.0+1.0/8.0+t9/72.0+t1/24.0+t2/24.0*_density.getValue());
+
+    return (Real)(t1*t3/72.0+t2*t3/72.0+t9*t3/216.0+t3/24.0+1.0/8.0+t9/72.0+t1/24.0+t2/24.0)*_density.getValue();
 
 
 // 		  Real t1 = l0*l0;
@@ -214,41 +240,47 @@ std::string HexahedronFEMForceFieldAndMass<DataTypes>::getTemplateName() const
 template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(VecDeriv& f, const VecDeriv& dx, double factor)
 {
-    unsigned int i=0;
-    typename VecElement::const_iterator it;
-
-    for(it=this->_indexedElements->begin(); it!=this->_indexedElements->end(); ++it,++i)
+    if( ! _lumpedMass.getValue() )
     {
-        if (this->_trimgrid && !this->_trimgrid->isCubeActive(i/6)) continue;
+        unsigned int i=0;
+        typename VecElement::const_iterator it;
 
-        Vec<24, Real> actualDx, actualF;
-
-        for(int k=0 ; k<8 ; ++k )
+        for(it=this->_indexedElements->begin(); it!=this->_indexedElements->end(); ++it,++i)
         {
-            int indice = k*3;
-            for(int j=0 ; j<3 ; ++j )
+            if (this->_trimgrid && !this->_trimgrid->isCubeActive(i/6)) continue;
+
+            Vec<24, Real> actualDx, actualF;
+
+            for(int k=0 ; k<8 ; ++k )
+            {
+                int indice = k*3;
+                for(int j=0 ; j<3 ; ++j )
 #ifndef SOFA_NEW_HEXA
-                actualDx[indice+j] = dx[(*it)[this->_indices[k]]][j];
+                    actualDx[indice+j] = dx[(*it)[this->_indices[k]]][j];
 #else
-                actualDx[indice+j] = dx[(*it)[k]][j];
+                    actualDx[indice+j] = dx[(*it)[k]][j];
+#endif
+
+            }
+
+            actualF = _elementMasses.getValue()[i] * actualDx;
+
+
+            for(int w=0; w<8; ++w)
+#ifndef SOFA_NEW_HEXA
+                f[(*it)[this->_indices[w]]] += Deriv( actualF[w*3],  actualF[w*3+1],   actualF[w*3+2]  ) * factor;
+#else
+                f[(*it)[w]] += Deriv( actualF[w*3],  actualF[w*3+1],   actualF[w*3+2]  ) * factor;
 #endif
 
         }
-
-        actualF = _elementMasses.getValue()[i] * actualDx;
-
-
-        for(int w=0; w<8; ++w)
-#ifndef SOFA_NEW_HEXA
-            f[(*it)[this->_indices[w]]] += Deriv( actualF[w*3],  actualF[w*3+1],   actualF[w*3+2]  ) * factor;
-#else
-            f[(*it)[w]] += Deriv( actualF[w*3],  actualF[w*3+1],   actualF[w*3+2]  ) * factor;
-#endif
-
     }
-
-// 		  for(unsigned i=0;i<_particleMasses.size();++i)
-// 		  		f[i] += _particleMasses[i] * dx[i] *factor;
+    else // lumped matrices
+    {
+        for(unsigned i=0; i<_lumpedMasses.size(); ++i)
+            for(int j=0; j<3; ++j)
+                f[i][j] += _lumpedMasses[i][j] * dx[i][j] *factor;
+    }
 }
 
 
