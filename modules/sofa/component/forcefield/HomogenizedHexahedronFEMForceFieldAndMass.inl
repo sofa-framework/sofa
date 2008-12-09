@@ -498,7 +498,7 @@ const int HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::FINE_ELEM_IN_COA
     {1,2,5,4,10,11,14,13},
     {3,4,7,6,12,13,16,15},
     {4,5,8,7,13,14,17,16},
-    {9,10,13,12,18,19,22,23},
+    {9,10,13,12,18,19,22,21},
     {10,11,14,13,19,20,23,22},
     {12,13,16,15,21,22,25,24},
     {13,14,17,16,22,23,26,25}
@@ -659,7 +659,6 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCo
     _finalWeights.resize( _weights[0].size() );
 
 
-
     if( _finestToCoarse.getValue() )
         for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
             computeMechanicalMatricesDirectlyFromTheFinestToCoarse( (*this->_elementStiffnesses.beginEdit())[i], (*this->_elementMasses.beginEdit())[i], i );
@@ -699,6 +698,8 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCo
                     computeFinalWeights( A, i, finerChildren[w], 1 );
             }
         }
+
+
     }
 
 // 			  	for( unsigned i=0;i<_weights.size();++i)
@@ -1595,16 +1596,16 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 // 		  printMatlab( cerr, K );
 
 
-// 		  M = WBmeca.multTranspose( assembledMass * WBmeca );
+        M = WBmeca.multTranspose( assembledMass * WBmeca );
 
 
-        for ( int i=0; i<8; ++i) //for 8 virtual finer element
-        {
-            if (finerChildren[i] != -1)
-            {
-                this->addFineToCoarse(M, finerM[i], i);
-            }
-        }
+// 		  for ( int i=0;i<8;++i) //for 8 virtual finer element
+// 		  {
+// 			  if (finerChildren[i] != -1)
+// 			  {
+// 				  this->addFineToCoarse(M, finerM[i], i);
+// 			  }
+// 		  }
 
 
 
@@ -1874,8 +1875,9 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
                 {
                     const SparseGridTopology::Hexa& finehexa = finerSparseGrid->getHexa( finerChildrenRamificationOriginal[i][j] );
                     helper::fixed_array<int,8 > elem;
-                    for(int k=0; k<8; ++k) // fine fictif nodes
+                    for(int k=0; k<8; ++k) // fine nodes
                     {
+// 							  cerr<<i<<" "<<k<<" "<<finehexa[k]<<" "<<finerSparseGrid->getPointPos( finehexa[k] )<<endl;
                         elem[k] = finehexa[k];
                     }
                     finerChildrenRamification[i].push_back(elem);
@@ -1886,8 +1888,14 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 
 
 
-
-
+// 			  cerr<<"finerChildrenRamification :\n";
+// 			  for(int i=0 ; i < 8 ; ++i ) // finer places
+// 			  {
+// 				  for( unsigned c=0;c<finerChildrenRamification[i].size();++c)
+// 				  {
+// 					  cerr<<finerChildrenRamification[i][c]<<endl;
+// 				  }
+// 			  }
 
 // 			  helper::vector<int> finerChildren;
 
@@ -1992,8 +2000,8 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
         std::map<int,int> map_idxq_coarse; // a fine idx -> -1->non coarse, x-> idx coarse node
         helper::fixed_array<helper::vector<int> ,8> map_idxcoarse_idxfine;
 
-// 			  NewMatMatrix  mask;
-// 			  mask.resize(sizeass*3,8*3);
+        NewMatMatrix  mask;
+        mask.resize(sizeass*3,8*3);
 
 // 			  std::map<int,std::pair< helper::vector<int>,unsigned > > map_mask; // for each fine node -> a list of depensing coase nodes and in which axes (0==all, 1==x, 2==y, 3==z)
 
@@ -2039,10 +2047,10 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
                     idxcutasscoarse++;
 
                     //mask
-// 						  int localidx = map_idxq_idxass[*it];
-// 						  mask.set( localidx*3  , whichCoarseNode*3   , 1);
-// 						  mask.set( localidx*3+1, whichCoarseNode*3+1 , 1);
-// 						  mask.set( localidx*3+2, whichCoarseNode*3+2 , 1);
+                    int localidx = map_idxq_idxass[*it];
+                    mask.set( localidx*3  , whichCoarseNode*3   , 1);
+                    mask.set( localidx*3+1, whichCoarseNode*3+1 , 1);
+                    mask.set( localidx*3+2, whichCoarseNode*3+2 , 1);
 
 
 // 						  helper::vector<int> coarsedepending; coarsedepending.push_back(whichCoarseNode);
@@ -2059,19 +2067,19 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 
 // 						helper::vector<int> coarsedepending;
 
-                    //mask
-// 						int localidx = map_idxq_idxass[*it];
-// 						for(int j=0;j<8;++j)
-// 						{
-// 							if( MIDDLE_INTERPOLATION[i][j] != 0 )
-// 							{
-// 								mask.set( localidx*3  , j*3   , 1);
-// 								mask.set( localidx*3+1, j*3+1 , 1);
-// 								mask.set( localidx*3+2, j*3+2 , 1);
-//
-// // 								coarsedepending.push_back(j);
-// 							}
-// 						}
+// 						mask
+                    int localidx = map_idxq_idxass[*it];
+                    for(int j=0; j<8; ++j)
+                    {
+                        if( MIDDLE_INTERPOLATION[i][j] != 0 )
+                        {
+                            mask.set( localidx*3  , j*3   , 1);
+                            mask.set( localidx*3+1, j*3+1 , 1);
+                            mask.set( localidx*3+2, j*3+2 , 1);
+
+// 								coarsedepending.push_back(j);
+                        }
+                    }
 
 
 // 						map_mask[ *it ] = std::pair< helper::vector<int> ,unsigned >( coarsedepending, MIDDLE_AXES[i] );
@@ -2224,119 +2232,141 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 // 			  mask.printMatlab( cerr );
 
 
+
+
+
+
         // apply the mask to take only concerned values (an edge stays an edge, a face stays a face, if corner=1 opposite borders=0....)
         NewMatMatrix WBmeca;
         WBmeca.resize(sizeass*3,8*3);
 
 
-        for(int i=0; i<27; ++i)
+        for(int i=0; i<sizeass*3; ++i)
         {
-            for( std::set<int>::iterator it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
+            for(int j=0; j<8*3; ++j)
             {
-                int localidx = map_idxq_idxass[ *it ];
-
-                int nbDependingCoarseNodes = 0;
-                for(int j=0; j<8; ++j)
-                {
-                    if( MIDDLE_INTERPOLATION[i][j] )
-                    {
-                        ++nbDependingCoarseNodes;
-                    }
-                }
-
-
-                if( nbDependingCoarseNodes==1 || nbDependingCoarseNodes==8 ) // fine node on a coarse node or in the middle of the coarse cube
-                {
-                    for(int j=0; j<8*3; ++j)
-                    {
-                        WBmeca.set( localidx*3  , j, WB.element(localidx*3  , j) ); // directly copy all
-                        WBmeca.set( localidx*3+1, j, WB.element(localidx*3+1, j) );
-                        WBmeca.set( localidx*3+2, j, WB.element(localidx*3+2, j) );
-                    }
-                }
-                else if( nbDependingCoarseNodes==2 ) // fine node on an edge
-                {
-                    switch( MIDDLE_AXES[i] )
-                    {
-                    case 1: //x
-                        for(int j=0; j<8; ++j)
-                        {
-                            if( MIDDLE_INTERPOLATION[i][j] )
-                            {
-                                WBmeca.set( localidx*3  , j*3, WB.element(localidx*3  , j*3) ); // copy just the right influence in the right axe
-                                WBmeca.set( localidx*3+1, j*3+1, WB.element(localidx*3, j*3) );
-                                WBmeca.set( localidx*3+2, j*3+2, WB.element(localidx*3, j*3) );
-                            }
-                        }
-                        break;
-                    case 2: //y
-                        for(int j=0; j<8; ++j)
-                        {
-                            if( MIDDLE_INTERPOLATION[i][j] )
-                            {
-                                WBmeca.set( localidx*3  , j*3, WB.element(localidx*3+1  , j*3+1) );
-                                WBmeca.set( localidx*3+1, j*3+1, WB.element(localidx*3+1, j*3+1) );
-                                WBmeca.set( localidx*3+2, j*3+2, WB.element(localidx*3+1, j*3+1) );
-                            }
-                        }
-                        break;
-                    case 3: //z
-                        for(int j=0; j<8; ++j)
-                        {
-                            if( MIDDLE_INTERPOLATION[i][j] )
-                            {
-                                WBmeca.set( localidx*3  , j*3, WB.element(localidx*3+2  , j*3+2) );
-                                WBmeca.set( localidx*3+1, j*3+1, WB.element(localidx*3+2, j*3+2) );
-                                WBmeca.set( localidx*3+2, j*3+2, WB.element(localidx*3+2, j*3+2) );
-                            }
-                        }
-                        break;
-                    }
-                }
-                else if( nbDependingCoarseNodes==4 ) // fine node on a face
-                {
-                    switch( MIDDLE_AXES[i] )
-                    {
-                    case 1: //x
-                        for(int j=0; j<8; ++j)
-                        {
-                            if( MIDDLE_INTERPOLATION[i][j] )
-                            {
-                                Real coef = WB.element(localidx*3+1, j*3+1)+WB.element(localidx*3+2, j*3+2);
-                                WBmeca.set( localidx*3  , j*3, coef );
-                                WBmeca.set( localidx*3+1, j*3+1, coef );
-                                WBmeca.set( localidx*3+2, j*3+2, coef );
-                            }
-                        }
-                        break;
-                    case 2: //y
-                        for(int j=0; j<8; ++j)
-                        {
-                            if( MIDDLE_INTERPOLATION[i][j] )
-                            {
-                                Real coef = WB.element(localidx*3, j*3)+WB.element(localidx*3+2, j*3+2);
-                                WBmeca.set( localidx*3  , j*3, coef );
-                                WBmeca.set( localidx*3+1, j*3+1, coef );
-                                WBmeca.set( localidx*3+2, j*3+2, coef );
-                            }
-                        }
-                        break;
-                    case 3: //z
-                        for(int j=0; j<8; ++j)
-                        {
-                            if( MIDDLE_INTERPOLATION[i][j] )
-                            {
-                                Real coef = WB.element(localidx*3, j*3)+WB.element(localidx*3+1, j*3+1);
-                                WBmeca.set( localidx*3  , j*3, coef );
-                                WBmeca.set( localidx*3+1, j*3+1, coef );
-                                WBmeca.set( localidx*3+2, j*3+2, coef );
-                            }
-                        }
-                        break;
-                    }
-                }
+                if( mask.element(i,j)  )
+                    WBmeca.set(i,j,WB.element(i,j));
             }
         }
+
+
+
+// 			  for(int i=0;i<27;++i)
+// 			  {
+// 					  for( std::set<int>::iterator it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
+// 					  {
+// 						  int localidx = map_idxq_idxass[ *it ];
+//
+// 						  int nbDependingCoarseNodes = 0;
+// 						  for(int j=0;j<8;++j)
+// 						  {
+// 							  if( MIDDLE_INTERPOLATION[i][j] )
+// 							  {
+// 								  ++nbDependingCoarseNodes;
+// 							  }
+// 						  }
+//
+//
+// 						  if( nbDependingCoarseNodes==1 || nbDependingCoarseNodes==8 ) // fine node on a coarse node or in the middle of the coarse cube
+// 						  {
+// 							for(int j=0;j<8;++j)
+// 							{
+// 								WBmeca.set( localidx*3  , j*3, WB.element(localidx*3  , j*3) ); // directly copy all
+// 								WBmeca.set( localidx*3+1, j*3+1, WB.element(localidx*3+1, j*3+1) );
+// 								WBmeca.set( localidx*3+2, j*3+2, WB.element(localidx*3+2, j*3+2) );
+// 							}
+// 						  }
+// 						  else if( nbDependingCoarseNodes==2 ) // fine node on an edge
+// 						  {
+// 							  switch( MIDDLE_AXES[i] )
+// 							  {
+// 								  case 1: //x
+// 									  for(int j=0;j<8;++j)
+// 									  {
+// 										  if( MIDDLE_INTERPOLATION[i][j] )
+// 										  {
+// 											WBmeca.set( localidx*3  , j*3, WB.element(localidx*3  , j*3) ); // copy just the right influence in the right axe
+// 										  	WBmeca.set( localidx*3+1, j*3+1, WB.element(localidx*3, j*3) );
+// 										  	WBmeca.set( localidx*3+2, j*3+2, WB.element(localidx*3, j*3) );
+// 										  }
+// 									  }
+// 									  break;
+// 									  case 2: //y
+// 									  for(int j=0;j<8;++j)
+// 									  {
+// 										  if( MIDDLE_INTERPOLATION[i][j] )
+// 										  {
+// 											  WBmeca.set( localidx*3  , j*3, WB.element(localidx*3+1  , j*3+1) );
+// 											  WBmeca.set( localidx*3+1, j*3+1, WB.element(localidx*3+1, j*3+1) );
+// 											  WBmeca.set( localidx*3+2, j*3+2, WB.element(localidx*3+1, j*3+1) );
+// 										  }
+// 									  }
+// 									  break;
+// 									  case 3: //z
+// 									  for(int j=0;j<8;++j)
+// 									  {
+// 											if( MIDDLE_INTERPOLATION[i][j] )
+// 											{
+// 												WBmeca.set( localidx*3  , j*3, WB.element(localidx*3+2  , j*3+2) );
+// 												WBmeca.set( localidx*3+1, j*3+1, WB.element(localidx*3+2, j*3+2) );
+// 												WBmeca.set( localidx*3+2, j*3+2, WB.element(localidx*3+2, j*3+2) );
+// 											}
+// 									  }
+// 									  break;
+// 							  }
+// 						  }
+// 						  else if( nbDependingCoarseNodes==4 ) // fine node on a face
+// 						  {
+// 							  switch( MIDDLE_AXES[i] )
+// 							  {
+// 								  case 1: //x
+// 									  for(int j=0;j<8;++j)
+// 									  {
+// 										  if( MIDDLE_INTERPOLATION[i][j] )
+// 										  {
+// 											  Real coef = (WB.element(localidx*3+1, j*3+1)+WB.element(localidx*3+2, j*3+2))/2.0;
+// 											  WBmeca.set( localidx*3  , j*3, coef );
+// // 											  WBmeca.set( localidx*3+1, j*3+1, WB.element(localidx*3+1, j*3+1) );
+// // 											  WBmeca.set( localidx*3+2, j*3+2, WB.element(localidx*3+2, j*3+2) );
+// 											  WBmeca.set( localidx*3+1, j*3+1, coef );
+// 											  WBmeca.set( localidx*3+2, j*3+2, coef );
+// 										  }
+// 									  }
+// 									  break;
+// 									  case 2: //y
+// 										  for(int j=0;j<8;++j)
+// 										  {
+// 											  if( MIDDLE_INTERPOLATION[i][j] )
+// 											  {
+// 												  Real coef = (WB.element(localidx*3, j*3)+WB.element(localidx*3+2, j*3+2))/2.0;
+// // 												  WBmeca.set( localidx*3  , j*3, WB.element(localidx*3, j*3) );
+// 												  WBmeca.set( localidx*3  , j*3, coef );
+// 												  WBmeca.set( localidx*3+1, j*3+1, coef );
+// // 												  WBmeca.set( localidx*3+2, j*3+2, WB.element(localidx*3+2, j*3+2) );
+// 												  WBmeca.set( localidx*3+2, j*3+2, coef );
+//
+// 											  }
+// 										  }
+// 										  break;
+// 										  case 3: //z
+// 											  for(int j=0;j<8;++j)
+// 											  {
+// 												  if( MIDDLE_INTERPOLATION[i][j] )
+// 												  {
+// 													  Real coef = (WB.element(localidx*3, j*3)+WB.element(localidx*3+1, j*3+1))/2.0;
+// // 													  WBmeca.set( localidx*3  , j*3, WB.element(localidx*3, j*3) );
+// // 													  WBmeca.set( localidx*3+1, j*3+1, WB.element(localidx*3+1, j*3+1) );
+// 													  WBmeca.set( localidx*3  , j*3, coef );
+// 													  WBmeca.set( localidx*3+1, j*3+1, coef );
+// 													  WBmeca.set( localidx*3+2, j*3+2, coef );
+// 												  }
+// 											  }
+// 											  break;
+// 							  }
+// 						  }
+// 					  }
+// 			  }
 
 
         // normalize the coefficient to obtain sum(coefs)==1
@@ -2396,9 +2426,26 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
                         _weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildrenRamificationOriginal[i][j]][k*3+1][l] = WB.element( map_idxq_idxass[ finehexa[k] ]*3+1 ,l);
                         _weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildrenRamificationOriginal[i][j]][k*3+2][l] = WB.element( map_idxq_idxass[ finehexa[k] ]*3+2 ,l);
                     }
+
+
+
                 }
             }
         }
+
+
+
+// 			  for(int i=0 ; i < 8 ; ++i ) // finer places
+// 			  {
+// 				  for(unsigned j=0;j<finerChildrenRamificationOriginal[i].size();++j) // finer element
+// 				  {
+// 					  cerr<<"_weights"<<" "<<this->_nbVirtualFinerLevels.getValue()-level-1<<" "<<finerChildrenRamificationOriginal[i][j]<<"=\n";
+// 					  printMatlab( cerr, _weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildrenRamificationOriginal[i][j]] );
+// 				  }
+// 			  }
+
+
+
 
 // 			  cerr<<"WBmeca =";
 // 			  WBmeca.printMatlab(cerr);
@@ -2477,6 +2524,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeFinalWeights( const We
 
 // 			  _weights[ this->_nbVirtualFinerLevels.getValue()-level ][elementIndice] = A;
         _finalWeights[ elementIndice ] = std::pair<int,Weight>(coarseElementIndice, A);
+
     }
     else
     {

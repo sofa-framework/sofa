@@ -1005,7 +1005,8 @@ int SparseGridRamificationTopology::findNearestCube(const Vector3 &pos, SReal &f
 
     Connexion * finestConnexion = finestSparseGridTopology->_connexions[ finestSparseCube ][0];
 
-    _regularGrid.findCube( pos,fx,fy,fz); // only to compute fx,fy,fz
+
+    _regularGrid.findNearestCube( pos,fx,fy,fz); // only to compute fx,fy,fz
 
     return finestConnexion->_coarsestParent;
 }
