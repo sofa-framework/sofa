@@ -16,65 +16,81 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                              SOFA :: Framework                              *
+*                               SOFA :: Modules                               *
 *                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_IMAGERAW_H
-#define SOFA_HELPER_IO_IMAGERAW_H
+#ifndef SOFA_COMPONENT_VISUALMODEL_POINTSPLATMODEL_H
+#define SOFA_COMPONENT_VISUALMODEL_POINTSPLATMODEL_H
 
-#include <sofa/helper/io/Image.h>
-#include <string>
-
-#include <sofa/helper/system/config.h>
-#include <sofa/helper/helper.h>
+#include <sofa/core/VisualModel.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/component/topology/PointData.h>
 
 namespace sofa
 {
+namespace core
+{
+namespace componentmodel
+{
+namespace topology
+{
+class BaseMeshTopology;
+}
+namespace behavior
+{
+class BaseMechanicalState;
+}
+}
+}
 
-namespace helper
+namespace component
 {
 
-namespace io
+namespace visualmodel
 {
 
-class SOFA_HELPER_API ImageRAW : public Image
+class PointSplatModel : public core::VisualModel
 {
 public:
-    ImageRAW ();
-    virtual ~ImageRAW() {}
+    PointSplatModel();
+    virtual ~PointSplatModel();
 
-    void init(int w, int h, int d, int nbb, int hsize);
+    virtual void init();
 
-    // header size in Bytes
-    int getHeaderSize() const             { return headerSize; }
+    virtual void reinit();
 
-    int getDataSize() const               { return getLineSize()*height*depth; }
+    virtual bool isTransparent() {return true;}
 
-    // number of slices of a 3D image
-    int getDepth() const                  { return depth; }
-
-    unsigned char * getHeader()           { return header; }
-    const unsigned char * getHeader() const { return header; }
-
-    bool load(std::string filename);
-    bool save(std::string filename, int compression_level = -1);
+    virtual void drawTransparent();
 
 private:
-    int depth;
-    int headerSize;
+    void setColor(float r, float g, float b, float a);
+    void setColor(std::string color);
 
-    unsigned char *header;
+private:
+    Data<float>		radius;
+    Data<int>		textureSize;
+    Data<float>		alpha;
+    Data<std::string>	color;
+
+    core::componentmodel::topology::BaseMeshTopology*	_topology;
+    core::componentmodel::behavior::BaseMechanicalState* _mstate;
+
+    unsigned char *texture_data;
+    float r,g,b,a;
+    component::topology::PointData<unsigned char>		pointData;
+
+    typedef defaulttype::ExtVec3fTypes::Coord Coord;
+    typedef defaulttype::ExtVec3fTypes::VecCoord VecCoord;
+    typedef defaulttype::ExtVec3fTypes::Real Real;
 };
 
+} // namespace visualmodel
 
-} // namespace io
-
-} // namespace helper
+} // namespace component
 
 } // namespace sofa
 
