@@ -668,7 +668,7 @@ int ManifoldTriangleSetTopologyContainer::getOppositeTriangleEdgeShell(EdgeID ed
     {
 #ifndef NDEBUG
         std::cout << "Error. [ManifoldTriangleSetTopologyContainer::getOppositeTriangleEdgeShell] The mapping is not manifold.";
-        std::cout << "There are more than 2 triangles adjacents to the Edge: " << EdgeIndex << std::endl;
+        std::cout << "There are more than 2 triangles adjacents to the Edge: " << edgeIndex << std::endl;
 #endif
         return -2;
     }
