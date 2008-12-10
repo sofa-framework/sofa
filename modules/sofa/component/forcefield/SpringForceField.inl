@@ -31,6 +31,7 @@
 #include <sofa/component/forcefield/SpringForceField.h>
 #include <sofa/core/componentmodel/behavior/PairInteractionForceField.inl>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/component/topology/PointSetTopologyChange.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/config.h>
@@ -108,8 +109,8 @@ void SpringForceField<DataTypes>::reinit()
 {
     for (unsigned int i=0; i<springs.getValue().size(); ++i)
     {
-        (*springs.beginEdit())[i].ks = ks.getValue();
-        (*springs.beginEdit())[i].kd = kd.getValue();
+        (*springs.beginEdit())[i].ks = (Real) ks.getValue();
+        (*springs.beginEdit())[i].kd = (Real) kd.getValue();
     }
 }
 
@@ -195,6 +196,98 @@ void SpringForceField<DataTypes>::draw()
         helper::gl::glVertexT(p2[springs[i].m2]);
     }
     glEnd();
+}
+
+template<class DataTypes>
+void SpringForceField<DataTypes>::handleTopologyChange(core::componentmodel::topology::Topology *topo)
+{
+    if(this->mstate1->getContext()->getTopology() == topo)
+    {
+        core::componentmodel::topology::BaseMeshTopology*	_topology = dynamic_cast<core::componentmodel::topology::BaseMeshTopology*> (topo);
+
+        if(_topology != NULL)
+        {
+            std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=_topology->firstChange();
+            std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=_topology->lastChange();
+
+            while( itBegin != itEnd )
+            {
+                core::componentmodel::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
+
+                switch( changeType )
+                {
+                case core::componentmodel::topology::POINTSREMOVED:
+                {
+
+                    break;
+                }
+
+                default:
+                    break;
+                }; // switch( changeType )
+
+                ++itBegin;
+            } // while( changeIt != last; )
+        }
+    }
+
+    if(this->mstate2->getContext()->getTopology() == topo)
+    {
+        core::componentmodel::topology::BaseMeshTopology*	_topology = dynamic_cast<core::componentmodel::topology::BaseMeshTopology*> (topo);
+
+        if(_topology != NULL)
+        {
+            std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator changeIt=_topology->firstChange();
+            std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=_topology->lastChange();
+
+            while( changeIt != itEnd )
+            {
+                core::componentmodel::topology::TopologyChangeType changeType = (*changeIt)->getChangeType();
+
+                switch( changeType )
+                {
+                case core::componentmodel::topology::POINTSREMOVED:
+                {
+                    int nbPoints = _topology->getNbPoints();
+                    const sofa::helper::vector<unsigned int>& tab = (static_cast<const component::topology::PointsRemoved *>(*changeIt))->getArray();
+
+                    helper::vector<Spring>& springs = *this->springs.beginEdit();
+                    // springs.push_back(Spring(m1,m2,ks,kd,initpos));
+
+                    for(unsigned int i=0; i<tab.size(); ++i)
+                    {
+                        unsigned int pntId = tab[i];
+                        nbPoints -= 1;
+
+                        for(unsigned int j=0; j<springs.size(); ++j)
+                        {
+                            Spring& spring = springs[j];
+                            if(spring.m2 == pntId)
+                            {
+                                spring = springs[springs.size() - 1];
+                                springs.resize(springs.size() - 1);
+                            }
+
+                            if(spring.m2 == nbPoints)
+                            {
+                                spring.m2 = pntId;
+                            }
+                        }
+                    }
+
+                    this->springs.endEdit();
+
+                    break;
+                }
+
+                default:
+                    break;
+                }; // switch( changeType )
+
+                ++changeIt;
+            } // while( changeIt != last; )
+        }
+    }
 }
 
 } // namespace forcefield

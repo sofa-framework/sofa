@@ -157,6 +157,8 @@ public:
         springs.beginEdit()->push_back(Spring(m1,m2,ks,kd,initlen));
         springs.endEdit();
     }
+
+    virtual void handleTopologyChange(core::componentmodel::topology::Topology *topo);
 };
 
 } // namespace forcefield
