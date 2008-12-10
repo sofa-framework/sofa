@@ -2193,6 +2193,47 @@ void QtViewer::resetView()
     //ResetScene();
 }
 
+void QtViewer::getView(float pos[3], float ori[4]) const
+{
+    pos[0] = _sceneTransform.translation[0];
+    pos[1] = _sceneTransform.translation[1];
+    pos[2] = _sceneTransform.translation[2];
+
+    ori[0] = _newQuat[0];
+    ori[1] = _newQuat[1];
+    ori[2] = _newQuat[2];
+    ori[3] = _newQuat[3];
+}
+
+void QtViewer::setView(float pos[3], float ori[4])
+{
+    _sceneTransform.translation[0] = pos[0];
+    _sceneTransform.translation[1] = pos[1];
+    _sceneTransform.translation[2] = pos[2];
+
+    _newQuat[0] = ori[0];
+    _newQuat[1] = ori[1];
+    _newQuat[2] = ori[2];
+    _newQuat[3] = ori[3];
+    _newQuat.normalize();
+
+    update();
+}
+
+void QtViewer::moveView(float pos[3], float ori[4])
+{
+    _sceneTransform.translation[0] += pos[0];
+    _sceneTransform.translation[1] += pos[1];
+    _sceneTransform.translation[2] += pos[2];
+
+    Quaternion quat(ori[0], ori[1], ori[2], ori[3]);
+    quat.normalize();
+
+    _newQuat += quat;
+
+    update();
+}
+
 #ifdef SOFA_DEV
 
 // -------------------------------------------------------------------
