@@ -60,9 +60,9 @@ PointSplatModel::PointSplatModel() //const std::string &name, std::string filena
       textureSize(initData(&textureSize, 32, "textureSize", "Size of the billboard texture.")),
       alpha(initData(&alpha, 1.0f, "alpha", "Opacity of the billboards. 1.0 is 100% opaque.")),
       color(initData(&color, std::string("white"), "color", "Billboard color.")),
-      texture_data(NULL),
       _topology(NULL),
-      _mstate(NULL)
+      _mstate(NULL),
+      texture_data(NULL)
 {
 }
 
@@ -86,7 +86,7 @@ void PointSplatModel::init()
     getContext()->get(loader);
     if(loader && _mstate)
     {
-        int nbPoints = _mstate->getSize();
+        unsigned int nbPoints = _mstate->getSize();
 
         helper::vector<unsigned int> idxInRegularGrid;
         loader->getIndicesInRegularGrid(idxInRegularGrid);
@@ -95,7 +95,7 @@ void PointSplatModel::init()
         {
             const unsigned char *imageData = loader->getData();
 
-            for(int i=0; i<nbPoints; ++i)
+            for(unsigned int i=0; i<nbPoints; ++i)
                 pointData.push_back(imageData[idxInRegularGrid[i]]);
         }
     }
@@ -186,7 +186,7 @@ void PointSplatModel::drawTransparent()
     Coord vUp( mat[1], mat[5], mat[9] );
     Coord vView(vRight.cross(vUp));
 
-    std::multimap<Real, unsigned int, std::less<Real>>	mapPnt;
+    std::multimap< Real, unsigned int, std::less<Real> >	mapPnt;
 
     for(unsigned int i=0; i<vertices.size(); ++i)
     {
