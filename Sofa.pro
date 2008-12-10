@@ -3,7 +3,7 @@ TEMPLATE = subdirs
 
 include($${SOFA_DIR}/sofa.cfg) 
 
-SUBDIRS += extlibs/NewMAT
+SUBDIRS += extlibs/newmat
 
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 #SUBDIRS += extlibs/SLC
