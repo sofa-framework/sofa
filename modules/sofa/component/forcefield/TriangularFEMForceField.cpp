@@ -536,13 +536,13 @@ void TriangularFEMForceField<DataTypes>::computeStress(Vec<3,Real> &stress, Mate
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementIndex, Vec<3,Real> &strain )
 {
-    NewMAT::SymmetricMatrix e(2);
+    NEWMAT::SymmetricMatrix e(2);
     e = 0.0;
 
-    NewMAT::DiagonalMatrix D(2);
+    NEWMAT::DiagonalMatrix D(2);
     D = 0.0;
 
-    NewMAT::Matrix V(2,2);
+    NEWMAT::Matrix V(2,2);
     V = 0.0;
 
     e(1,1) = strain[0];
@@ -550,7 +550,7 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementInd
     e(2,1) = strain[2];
     e(2,2) = strain[1];
 
-    NewMAT::Jacobi(e, D, V);
+    NEWMAT::Jacobi(e, D, V);
 
     Coord v((Real)V(1,1), (Real)V(2,1), 0.0);
     v.normalize();
@@ -574,13 +574,13 @@ template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementIndex, Vec<3,Real> &stress)
 {
 
-    NewMAT::SymmetricMatrix e(2);
+    NEWMAT::SymmetricMatrix e(2);
     e = 0.0;
 
-    NewMAT::DiagonalMatrix D(2);
+    NEWMAT::DiagonalMatrix D(2);
     D = 0.0;
 
-    NewMAT::Matrix V(2,2);
+    NEWMAT::Matrix V(2,2);
     V = 0.0;
 
     e(1,1) = stress[0];
@@ -588,7 +588,7 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementInd
     e(2,1) = stress[2];
     e(2,2) = stress[1];
 
-    NewMAT::Jacobi(e, D, V);
+    NEWMAT::Jacobi(e, D, V);
 
     Coord v((Real)V(1,1), (Real)V(2,1), 0.0);
     v.normalize();

@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_NEWMATVECTOR_H
 #define SOFA_COMPONENT_LINEARSOLVER_NEWMATVECTOR_H
 
-#include "NewMAT/newmat.h"
+#include <newmat/newmat.h>
 #define WANT_STREAM
-#include "NewMAT/newmatio.h"
+#include <newmat/newmatio.h>
 #include <sofa/defaulttype/BaseVector.h>
 
 namespace sofa
@@ -39,11 +39,11 @@ namespace component
 namespace linearsolver
 {
 
-class NewMatVector : public NewMAT::ColumnVector, public defaulttype::BaseVector
+class NewMatVector : public NEWMAT::ColumnVector, public defaulttype::BaseVector
 {
 public:
 
-    typedef NewMAT::ColumnVector SubVector;
+    typedef NEWMAT::ColumnVector SubVector;
 
     NewMatVector()
     {
@@ -61,27 +61,27 @@ public:
 
     virtual SReal element(int i) const
     {
-        return NewMAT::ColumnVector::element(i);
+        return NEWMAT::ColumnVector::element(i);
     }
 
     void set(int i, SReal v)
     {
-        NewMAT::ColumnVector::element(i) = v;
+        NEWMAT::ColumnVector::element(i) = v;
     }
 
     void add(int i, SReal v)
     {
-        NewMAT::ColumnVector::element(i) += v;
+        NEWMAT::ColumnVector::element(i) += v;
     }
 
     SReal& operator[](int i)
     {
-        return NewMAT::ColumnVector::element(i);
+        return NEWMAT::ColumnVector::element(i);
     }
 
     SReal operator[](int i) const
     {
-        return NewMAT::ColumnVector::element(i);
+        return NEWMAT::ColumnVector::element(i);
     }
 
     unsigned int size() const
@@ -89,21 +89,21 @@ public:
         return Nrows();
     }
 
-    NewMAT::GetSubMatrix sub(int i, int n)
+    NEWMAT::GetSubMatrix sub(int i, int n)
     {
-        return NewMAT::ColumnVector::SubMatrix(i+1,i+n,1,1);
+        return NEWMAT::ColumnVector::SubMatrix(i+1,i+n,1,1);
     }
 
     template<class T>
     void getsub(int i, int n, T& v)
     {
-        v = NewMAT::ColumnVector::SubMatrix(i+1,i+n,1,1);
+        v = NEWMAT::ColumnVector::SubMatrix(i+1,i+n,1,1);
     }
 
     template<class T>
     void setsub(int i, int n, const T& v)
     {
-        NewMAT::ColumnVector::SubMatrix(i+1,i+n,1,1) = v;
+        NEWMAT::ColumnVector::SubMatrix(i+1,i+n,1,1) = v;
     }
 
     /// v = 0
@@ -131,7 +131,7 @@ public:
     /// \return v.a
     double dot(const NewMatVector& a) const
     {
-        return NewMAT::DotProduct(*this,a);
+        return NEWMAT::DotProduct(*this,a);
     }
 
     /// \return sqrt(v.v)
@@ -140,10 +140,10 @@ public:
         return NormFrobenius();
     }
 
-    //void operator=(double f) { NewMAT::ColumnVector::operator=(f); }
+    //void operator=(double f) { NEWMAT::ColumnVector::operator=(f); }
 
     template<class T>
-    void operator=(const T& m) { NewMAT::ColumnVector::operator=(m); }
+    void operator=(const T& m) { NEWMAT::ColumnVector::operator=(m); }
 
     friend std::ostream& operator << (std::ostream& out, const NewMatVector& v )
     {

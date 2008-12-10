@@ -28,7 +28,7 @@
 #include <sofa/helper/Quater.h>
 #include <sofa/defaulttype/Vec.h>
 #include <iostream>
-#include <NewMAT/newmat.h>
+#include <newmat/newmat.h>
 
 #include <sofa/helper/helper.h>
 
