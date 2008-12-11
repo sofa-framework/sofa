@@ -174,9 +174,9 @@ public slots:
     virtual void setSizeW(int);
     virtual void setSizeH(int);
 
-    virtual void getView(float pos[3], float ori[4]) const;
-    virtual void setView(float pos[3], float ori[4]);
-    virtual void moveView(float pos[3], float ori[4]);
+    virtual void getView(float* pos, float* ori) const;
+    virtual void setView(float* pos, float* ori);
+    virtual void moveView(float* pos, float* ori);
 
 signals:
     void redrawn();

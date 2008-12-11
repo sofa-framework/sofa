@@ -256,7 +256,7 @@ void SpringForceField<DataTypes>::handleTopologyChange(core::componentmodel::top
 
                     for(unsigned int i=0; i<tab.size(); ++i)
                     {
-                        unsigned int pntId = tab[i];
+                        int pntId = tab[i];
                         nbPoints -= 1;
 
                         for(unsigned int j=0; j<springs.size(); ++j)
