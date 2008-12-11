@@ -94,7 +94,66 @@ inline void glVertexT<float>(const float& c)
 }
 
 
+////////////////////////////////////////
 
+
+template<int N>
+inline void glTexCoordNv(const float* p)
+{
+    glTexCoord3f(p[0],p[1],p[2]);
+}
+
+template<>
+inline void glTexCoordNv<2>(const float* p)
+{
+    glTexCoord2f(p[0],p[1]);
+}
+
+template<>
+inline void glTexCoordNv<1>(const float* p)
+{
+    glTexCoord2f(p[0],0.0f);
+}
+
+template<int N>
+inline void glTexCoordNv(const double* p)
+{
+    glTexCoord3d(p[0],p[1],p[2]);
+}
+
+template<>
+inline void glTexCoordNv<2>(const double* p)
+{
+    glTexCoord2d(p[0],p[1]);
+}
+
+template<>
+inline void glTexCoordNv<1>(const double* p)
+{
+    glTexCoord2d(p[0],0.0);
+}
+
+template<class Coord>
+inline void glTexCoordT(const Coord& c)
+{
+    glTexCoordNv<Coord::static_size>(c.ptr());
+}
+
+template<>
+inline void glTexCoordT<double>(const double& c)
+{
+    glTexCoord3d(c,0.0,0.0);
+}
+
+template<>
+inline void glTexCoordT<float>(const float& c)
+{
+    glTexCoord3f(c,0.0f,0.0f);
+}
+
+
+
+///////////////////////////////////////
 
 template<int N>
 inline void glNormalNv(const float* p)
