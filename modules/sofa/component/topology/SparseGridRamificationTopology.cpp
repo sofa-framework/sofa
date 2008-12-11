@@ -49,8 +49,8 @@ int SparseGridRamificationTopologyClass = core::RegisterObject("Sparse grid in 3
 
 SparseGridRamificationTopology::SparseGridRamificationTopology(bool isVirtual)
     : SparseGridTopology(isVirtual)
-    , _finestConnectivity( initData(&_finestConnectivity,true,"finestConnectivity","Test for connectivity at the finest level? (more precise but slower by testing all intersections between the model mesh and the faces between boundary cubes)") )
 {
+    _finestConnectivity = this->initData(&_finestConnectivity,true,"finestConnectivity","Test for connectivity at the finest level? (more precise but slower by testing all intersections between the model mesh and the faces between boundary cubes)");
 }
 
 SparseGridRamificationTopology::~SparseGridRamificationTopology()
@@ -82,7 +82,6 @@ void SparseGridRamificationTopology::buildAsFinest()
 
     if( _finestConnectivity.getValue() )
     {
-
         buildRamifiedFinestLevel();
     }
 }
@@ -183,13 +182,8 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
 
 bool SparseGridRamificationTopology::sharingTriangle(helper::io::Mesh* mesh, int cubeIdx, int neighborIdx, unsigned where )
 {
-// 				return true;
-
-
     if(!_finestConnectivity.getValue() || mesh==NULL )
         return true;
-
-
 
     // it is not necessary to analyse connectivity between non-boundary cells
     if( getType(cubeIdx)!=BOUNDARY || getType(neighborIdx)!=BOUNDARY)
@@ -242,9 +236,9 @@ bool SparseGridRamificationTopology::sharingTriangle(helper::io::Mesh* mesh, int
             static collision::DistanceSegTri proximitySolver;
 
             proximitySolver.NewComputation( a,b,c, A, B,P,Q);
-            if( (Q-P).norm2() < 1.0e-3 ) return true;
+            if( (Q-P).norm2() < 1.0e-6 ) return true;
             proximitySolver.NewComputation( a,c,d, A, B,P,Q);
-            if( (Q-P).norm2() < 1.0e-3 ) return true;
+            if( (Q-P).norm2() < 1.0e-6 ) return true;
         }
     }
 
@@ -928,10 +922,15 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
         newnz = (newnz-1)*2+1;
     }
 
-    _virtualFinerLevels[0] = new SparseGridRamificationTopology(true);
+
+    SparseGridRamificationTopology* sgrt = new SparseGridRamificationTopology(true);
+
+    _virtualFinerLevels[0] = sgrt;
     _virtualFinerLevels[0]->setNx( newnx );
     _virtualFinerLevels[0]->setNy( newny );
     _virtualFinerLevels[0]->setNz( newnz );
+
+    sgrt->_finestConnectivity.setValue( _finestConnectivity.getValue() );
 
     _virtualFinerLevels[0]->setMin( _min.getValue() );
     _virtualFinerLevels[0]->setMax( _max.getValue() );
