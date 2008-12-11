@@ -2193,7 +2193,7 @@ void QtViewer::resetView()
     //ResetScene();
 }
 
-void QtViewer::getView(float pos[3], float ori[4]) const
+void QtViewer::getView(float* pos, float* ori) const
 {
     pos[0] = _sceneTransform.translation[0];
     pos[1] = _sceneTransform.translation[1];
@@ -2205,7 +2205,7 @@ void QtViewer::getView(float pos[3], float ori[4]) const
     ori[3] = _newQuat[3];
 }
 
-void QtViewer::setView(float pos[3], float ori[4])
+void QtViewer::setView(float* pos, float* ori)
 {
     _sceneTransform.translation[0] = pos[0];
     _sceneTransform.translation[1] = pos[1];
@@ -2220,7 +2220,7 @@ void QtViewer::setView(float pos[3], float ori[4])
     update();
 }
 
-void QtViewer::moveView(float pos[3], float ori[4])
+void QtViewer::moveView(float* pos, float* ori)
 {
     _sceneTransform.translation[0] += pos[0];
     _sceneTransform.translation[1] += pos[1];
