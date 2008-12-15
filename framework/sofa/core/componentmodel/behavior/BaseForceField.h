@@ -59,7 +59,7 @@ namespace behavior
  *  ( df, given a displacement dx ).
  *
  */
-class BaseForceField : public virtual objectmodel::BaseObject
+class SOFA_CORE_API BaseForceField : public virtual objectmodel::BaseObject
 {
 public:
     virtual ~BaseForceField() {}

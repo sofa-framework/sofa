@@ -54,7 +54,7 @@ namespace objectmodel
  *
  * Implements an Event that notifies about a Mouse Interaction.
  */
-class MouseEvent : public sofa::core::objectmodel::Event
+class SOFA_CORE_API MouseEvent : public sofa::core::objectmodel::Event
 {
 public:
 

@@ -67,7 +67,7 @@ class TopologicalMapping;
 
 
 /** A class that contains a set of high-level (user friendly) methods that perform topological changes */
-class TopologyAlgorithms : public sofa::core::componentmodel::topology::BaseTopologyObject
+class SOFA_CORE_API TopologyAlgorithms : public sofa::core::componentmodel::topology::BaseTopologyObject
 {
 protected:
     /** \brief Constructor.
@@ -94,7 +94,7 @@ protected:
 };
 
 /** A class that contains a set of methods that describes the geometry of the object */
-class GeometryAlgorithms : public sofa::core::componentmodel::topology::BaseTopologyObject
+class SOFA_CORE_API GeometryAlgorithms : public sofa::core::componentmodel::topology::BaseTopologyObject
 {
 protected:
     /** \brief Constructor.
@@ -112,7 +112,7 @@ public:
 };
 
 /** A class that contains a set of low-level methods that perform topological changes */
-class TopologyModifier : public sofa::core::componentmodel::topology::BaseTopologyObject
+class SOFA_CORE_API TopologyModifier : public sofa::core::componentmodel::topology::BaseTopologyObject
 {
 protected:
     /** \brief Constructor.
@@ -174,7 +174,7 @@ protected:
 };
 
 /** A class that contains a description of the topology (set of edges, triangles, adjacency information, ...) */
-class TopologyContainer : public sofa::core::componentmodel::topology::BaseTopologyObject,
+class SOFA_CORE_API TopologyContainer : public sofa::core::componentmodel::topology::BaseTopologyObject,
     public core::componentmodel::topology::BaseMeshTopology
 {
 protected:

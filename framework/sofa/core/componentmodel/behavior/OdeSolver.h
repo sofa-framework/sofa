@@ -63,7 +63,7 @@ namespace behavior
  *  (some computations can be executed in parallel).
  *
  */
-class OdeSolver : public virtual objectmodel::BaseObject
+class SOFA_CORE_API OdeSolver : public virtual objectmodel::BaseObject
 {
 public:
     typedef BaseMechanicalState::VecId VecId;

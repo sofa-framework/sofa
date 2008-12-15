@@ -48,7 +48,7 @@ namespace behavior
  *  \brief Abstract interface for linear system solvers
  *
  */
-class LinearSolver : public virtual objectmodel::BaseObject
+class SOFA_CORE_API LinearSolver : public virtual objectmodel::BaseObject
 {
 public:
     typedef BaseMechanicalState::VecId VecId;

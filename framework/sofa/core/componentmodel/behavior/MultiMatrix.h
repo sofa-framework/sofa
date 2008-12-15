@@ -43,7 +43,7 @@ namespace behavior
 
 /// Helper class allowing to construct mechanical expressions
 ///
-class MechanicalMatrix
+class SOFA_CORE_API MechanicalMatrix
 {
 protected:
     enum { MFACT = 0, BFACT = 1, KFACT = 2 };

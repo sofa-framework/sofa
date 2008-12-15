@@ -35,6 +35,8 @@
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
 
+#include <sofa/core/core.h>
+
 namespace sofa
 {
 
@@ -53,7 +55,7 @@ using helper::fixed_array;
 
 #define SOFA_NEW_HEXA
 
-class BaseMeshTopology : public core::componentmodel::topology::Topology
+class SOFA_CORE_API BaseMeshTopology : public core::componentmodel::topology::Topology
 {
 public:
     //typedef int index_type;

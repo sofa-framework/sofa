@@ -41,7 +41,13 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-//template class Factory< std::string, Contact, std::pair<core::CollisionModel*,core::CollisionModel*> >;
+//template class Factory<std::string, Contact, std::pair<core::CollisionModel*,core::CollisionModel*> >;
+
+Contact::Factory* Contact::Factory::getInstance()
+{
+    static Factory instance;
+    return &instance;
+}
 
 Contact* Contact::Create(const std::string& type, core::CollisionModel* model1, core::CollisionModel* model2, Intersection* intersectionMethod)
 {

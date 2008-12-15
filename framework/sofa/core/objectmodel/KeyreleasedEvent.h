@@ -42,7 +42,7 @@ namespace objectmodel
 	@author Juan Pablo de la Plata
 	@brief This event is propagated along the objects when a key on the keyboard is released.
 */
-class KeyreleasedEvent : public core::objectmodel::Event
+class SOFA_CORE_API KeyreleasedEvent : public core::objectmodel::Event
 {
 public:
     /// Constructor

@@ -27,7 +27,8 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/componentmodel/behavior/MappedModel.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
+#include <sofa/core/Mapping.inl>
+#include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
 
 namespace sofa
 {

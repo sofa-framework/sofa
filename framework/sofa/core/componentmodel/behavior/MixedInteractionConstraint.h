@@ -49,7 +49,7 @@ namespace behavior
  *  between a pair of bodies using a given type of DOFs.
  */
 template<class TDataTypes1, class TDataTypes2>
-class MixedInteractionConstraint : public InteractionConstraint
+class SOFA_CORE_API MixedInteractionConstraint : public InteractionConstraint
 {
 public:
     typedef TDataTypes1 DataTypes1;

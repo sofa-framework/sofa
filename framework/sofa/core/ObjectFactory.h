@@ -72,7 +72,7 @@ namespace core
  *  \see RegisterObject for how new classes should be registered.
  *
  */
-class ObjectFactory
+class SOFA_CORE_API ObjectFactory
 {
 public:
 
@@ -214,7 +214,7 @@ public:
  *  \endcode
  *
  */
-class RegisterObject
+class SOFA_CORE_API RegisterObject
 {
 protected:
     /// Class entry being constructed
@@ -245,7 +245,7 @@ public:
     /// that is, if T is derived from U
     /// taken from Modern C++ Design
     template <class T, class U>
-    class Conversion
+    class SOFA_CORE_API Conversion
     {
         typedef char Small;
         class Big {char dummy[2];};

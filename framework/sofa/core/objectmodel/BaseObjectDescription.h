@@ -32,6 +32,8 @@
 #include <list>
 #include <map>
 
+#include <sofa/core/core.h>
+
 namespace sofa
 {
 
@@ -50,7 +52,7 @@ class Base;
  *  This default implementation simply stores an attributes map and does not support any hierarchy.
  *
  */
-class BaseObjectDescription
+class SOFA_CORE_API BaseObjectDescription
 {
 public:
     class Attribute

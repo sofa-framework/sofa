@@ -42,7 +42,7 @@ namespace objectmodel
 	@author Francois Faure
 	@brief This event is propagated along the objects when a key on the keyboard is pressed.
 */
-class KeypressedEvent : public Event
+class SOFA_CORE_API KeypressedEvent : public Event
 {
 public:
     /// Constructor

@@ -39,8 +39,6 @@ namespace component
 namespace mapping
 {
 
-
-
 template <class BasicMapping>
 class TubularMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
 {
