@@ -95,7 +95,7 @@ protected:
 
 
     bool _first;
-    unsigned int _texname;
+    GLuint _texname;
     int _width,_height,_depth;
     Coord vRight,vUp,_planeNormal;
     Real _radius;
