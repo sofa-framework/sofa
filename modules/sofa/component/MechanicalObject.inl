@@ -933,7 +933,7 @@ void MechanicalObject<DataTypes>::init()
         sofa::component::MeshLoader* m_loader;
         this->getContext()->get(m_loader);
 
-        if(m_loader)
+        if(m_loader && m_loader->getFillMState())
         {
 
             int nbp = m_loader->getNbPoints();
