@@ -109,6 +109,8 @@ void CenterPointMechanicalMapping<BaseMapping>::applyJT( typename In::VecDeriv& 
 
     for(unsigned int i = 0; i <hexas.size(); ++i)
     {
+        if( in.size() <= i ) continue;
+
         typename Out::Deriv val = in[i] * 0.125f;
 
         out[ hexas[i][0] ] += val;
