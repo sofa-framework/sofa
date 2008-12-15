@@ -49,7 +49,7 @@ namespace objectmodel
  *  \brief Implementation of BaseContext, storing all shared parameters in Datas.
  *
  */
-class Context : public BaseContext
+class SOFA_CORE_API Context : public BaseContext
 {
 public:
 

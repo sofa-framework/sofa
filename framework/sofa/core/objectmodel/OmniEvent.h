@@ -45,7 +45,7 @@ using namespace sofa::defaulttype;
 /**
  * @brief This event notifies about SensAble PHANTOM® device interaction.
  */
-class OmniEvent : public sofa::core::objectmodel::Event
+class SOFA_CORE_API OmniEvent : public sofa::core::objectmodel::Event
 {
 public:
 

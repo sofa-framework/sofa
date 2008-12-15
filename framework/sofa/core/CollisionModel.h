@@ -60,7 +60,7 @@ namespace core
  *    to the final elements)
  *
  */
-class CollisionModel : public virtual objectmodel::BaseObject
+class SOFA_CORE_API CollisionModel : public virtual objectmodel::BaseObject
 {
 public:
 

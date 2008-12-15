@@ -61,7 +61,7 @@ namespace collision
  *
  * - Contact object dynamically appears in the scenegraph
  */
-class Contact : public virtual objectmodel::BaseObject
+class SOFA_CORE_API Contact : public virtual objectmodel::BaseObject
 {
 public:
 
@@ -87,10 +87,24 @@ public:
     virtual void getCorrespondingCollisionModels( const core::componentmodel::behavior::InteractionForceField *,
             core::CollisionModel*& /* */, core::CollisionModel*& /* */) {};
 
-    typedef helper::Factory< std::string, Contact, std::pair<std::pair<core::CollisionModel*,core::CollisionModel*>,Intersection*> > Factory;
+    class Factory : public helper::Factory< std::string, Contact, std::pair<std::pair<core::CollisionModel*,core::CollisionModel*>,Intersection*> >
+    {
+    public:
+        static Factory SOFA_CORE_API *getInstance();
+
+        static Object* CreateObject(Key key, Argument arg)
+        {
+            return getInstance()->createObject(key, arg);
+        }
+
+        static Object* CreateAnyObject(Argument arg)
+        {
+            return getInstance()->createAnyObject(arg);
+        }
+    };
 
     /// Create a new contact given 2 collision elements and an intersection method
-    static Contact* Create(const std::string& type, core::CollisionModel* model1, core::CollisionModel* model2, Intersection* intersectionMethod);
+    static Contact *Create(const std::string& type, core::CollisionModel* model1, core::CollisionModel* model2, Intersection* intersectionMethod);
 
     template<class RealContact>
     static void create(RealContact*& obj, std::pair<std::pair<core::CollisionModel*,core::CollisionModel*>,Intersection*> arg)

@@ -28,6 +28,7 @@
 #define SOFA_CORE_COLLISIONELEMENT_H
 
 #include <vector>
+#include <sofa/core/core.h>
 
 namespace sofa
 {
@@ -125,7 +126,7 @@ protected:
     int index;      ///< index of the referenced element inside the CollisionModel.
     VIterator it; ///< current position in a vector of indices, in case this iterator traverse a non-contiguous set of indices
     VIterator itend; ///< end position in a vector of indices, in case this iterator traverse a non-contiguous set of indices
-    static std::vector<int> emptyVector; ///< empty vector to be able to initialize the iterator to an empty pair
+    static std::vector<int> SOFA_CORE_API emptyVector; ///< empty vector to be able to initialize the iterator to an empty pair
 };
 
 /**

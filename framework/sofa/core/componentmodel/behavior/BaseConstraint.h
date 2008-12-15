@@ -82,7 +82,7 @@ public:
  *  see the InteractionConstraint class).
  *
  */
-class BaseConstraint : public virtual objectmodel::BaseObject
+class SOFA_CORE_API BaseConstraint : public virtual objectmodel::BaseObject
 {
 public:
     BaseConstraint()

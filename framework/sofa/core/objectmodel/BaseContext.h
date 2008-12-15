@@ -70,7 +70,7 @@ class Event;
  *
  * \author Jeremie Allard
  */
-class BaseContext : public virtual Base
+class SOFA_CORE_API BaseContext : public virtual Base
 {
 public:
 
@@ -398,7 +398,7 @@ public:
 
     /// @}
 
-    friend std::ostream& operator << (std::ostream& out, const BaseContext& c );
+    friend std::ostream SOFA_CORE_API & operator << (std::ostream& out, const BaseContext& c );
 };
 
 } // namespace objectmodel

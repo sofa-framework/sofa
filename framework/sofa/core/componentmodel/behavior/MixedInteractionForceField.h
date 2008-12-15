@@ -50,7 +50,7 @@ namespace behavior
  *  between a pair of bodies using a given type of DOFs.
  */
 template<class TDataTypes1, class TDataTypes2>
-class MixedInteractionForceField : public InteractionForceField
+class SOFA_CORE_API MixedInteractionForceField : public InteractionForceField
 {
 public:
     typedef TDataTypes1 DataTypes1;

@@ -54,7 +54,7 @@ namespace objectmodel
  *  Most importantly it defines how to retrieve information about an object (name, type, fields).
  *
  */
-class Base
+class SOFA_CORE_API Base
 {
 public:
     Base();

@@ -54,7 +54,7 @@ class Base;
  *  This class contains reflection-like features to analyse a class deriving from Base
  *
  */
-class ClassInfo
+class SOFA_CORE_API ClassInfo
 {
 protected:
     const std::type_info* pt;

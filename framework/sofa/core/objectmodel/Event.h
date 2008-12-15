@@ -27,6 +27,8 @@
 #ifndef SOFA_CORE_OBJECTMODEL_EVENT_H
 #define SOFA_CORE_OBJECTMODEL_EVENT_H
 
+#include <sofa/core/core.h>
+
 namespace sofa
 {
 
@@ -43,7 +45,7 @@ namespace objectmodel
  *
  * @author Francois Faure
  */
-class Event
+class SOFA_CORE_API Event
 {
 public:
     Event();

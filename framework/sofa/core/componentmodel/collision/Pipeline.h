@@ -54,7 +54,7 @@ namespace collision
  * @brief Pipeline component gather list of collision models and control the sequence of computations
 */
 
-class Pipeline : public virtual sofa::core::objectmodel::BaseObject
+class SOFA_CORE_API Pipeline : public virtual sofa::core::objectmodel::BaseObject
 {
 protected:
     //sofa::helper::vector<DetectionOutput*> detectionOutputs;

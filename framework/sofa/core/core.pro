@@ -4,6 +4,7 @@
 # Target is a library:  sofacore$$LIBSUFFIX
 
 HEADERS += \
+          core.h\ 
           BaseMapping.h \
           BehaviorModel.h \
           CollisionElement.h \
@@ -132,8 +133,14 @@ include($${SOFA_DIR}/sofa.cfg){
 }
 TARGET = sofacore$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES
+
+CONFIG -= staticlib
+CONFIG += dll
+
 LIBS += -lsofahelper$$LIBSUFFIX -lsofadefaulttype$$LIBSUFFIX
 LIBS += $$SOFA_EXT_LIBS
+
+DEFINES += SOFA_BUILD_CORE
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_DIR/modules

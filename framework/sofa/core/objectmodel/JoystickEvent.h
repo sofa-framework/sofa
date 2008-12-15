@@ -64,7 +64,7 @@ namespace objectmodel
 *
 *
 */
-class JoystickEvent : public sofa::core::objectmodel::Event
+class SOFA_CORE_API JoystickEvent : public sofa::core::objectmodel::Event
 {
 public:
 

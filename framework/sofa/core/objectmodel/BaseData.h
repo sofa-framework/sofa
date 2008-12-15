@@ -34,6 +34,7 @@
 #include <list>
 #include <iostream>
 #include <typeinfo>
+#include <sofa/core/core.h>
 namespace sofa
 {
 
@@ -47,7 +48,7 @@ namespace objectmodel
  *  \brief Abstract base class for all fields, independently of their type.
  *
  */
-class BaseData
+class SOFA_CORE_API BaseData
 {
 public:
     /** Constructor
