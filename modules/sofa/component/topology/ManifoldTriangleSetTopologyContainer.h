@@ -131,7 +131,16 @@ public:
     */
     int getPreviousEdgeVertexShell(PointID vertexIndex, EdgeID edgeIndex);
 
+    /** \brief: Return a vector of TriangleID which are on a border. I.e which have at least
+    * one edge not adjacent to an other Triangle.
+    * To Do: For the moment use TriangleEdgeShellArray(), check if has to be reimplemented in an other way
+    */
+    sofa::helper::vector <TriangleID> getTrianglesBorder();
 
+    /** \brief: Return a vector of EdgeID which are on a border. I.e which are adjacent to only one Triangle.
+    * To Do: For the moment use TriangleEdgeShellArray(), check if has to be reimplemented in an other way
+    */
+    sofa::helper::vector <EdgeID> getEdgesBorder();
 
 protected:
 
