@@ -629,17 +629,10 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCo
             MaterialStiffness material;
             computeMaterialStiffness(material, this->f_youngModulus.getValue(),this->f_poissonRatio.getValue());
 
-            //Nodes are found using Sparse Grid
-            Real stiffnessCoef = 1.0;
-            if (topology::SparseGridMultipleTopology* sgmt =  dynamic_cast<topology::SparseGridMultipleTopology*>( this->_sparseGrid ) )
-                stiffnessCoef = sgmt->getStiffnessCoef( i );
-            else if( this->_sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY )
-                stiffnessCoef = .5;
 
+            HexahedronFEMForceFieldAndMassT::computeElementStiffness((*this->_elementStiffnesses.beginEdit())[i],material,nodes,i, this->_sparseGrid->getStiffnessCoef( i )); // classical stiffness
 
-            HexahedronFEMForceFieldAndMassT::computeElementStiffness((*this->_elementStiffnesses.beginEdit())[i],material,nodes,i, stiffnessCoef); // classical stiffness
-
-            HexahedronFEMForceFieldAndMassT::computeElementMass((*this->_elementMasses.beginEdit())[i],nodes,i,this->_sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0);
+            HexahedronFEMForceFieldAndMassT::computeElementMass((*this->_elementMasses.beginEdit())[i],nodes,i,this->_sparseGrid->getMassCoef( i ));
         }
         return;
     }
@@ -2590,15 +2583,28 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::draw()
     if (this->getContext()->getShowWireFrame()) return;
 
 
+    if( _drawColor.getValue() == 2 ) return;
+
 
     const VecCoord& x = *this->mstate->getX();
 
 
-// 		  glDisable(GL_LIGHTING);
+    switch(_drawColor.getValue() )
+    {
 
-    glColor3f(0.9, 0.9, 0.2);
+    case 1:
+        glColor3f(0.95, 0.3, 0.2);
+        break;
 
-    glEnable(GL_LIGHTING);
+    case 0:
+    default:
+        glColor3f(0.9, 0.9, 0.2);
+    }
+
+
+
+    glDisable(GL_LIGHTING);
+// 		  glEnable(GL_LIGHTING);
     glEnable(GL_COLOR_MATERIAL);
 
 
@@ -2614,7 +2620,13 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::draw()
     glEnd();
 
 
+
+
     glColor3f(0.95, 0.95, 0.7);
+
+
+
+
     for(unsigned i=0; i<x.size(); ++i)
     {
         helper::gl::drawSphere( x[i], _drawSize*1.5 );

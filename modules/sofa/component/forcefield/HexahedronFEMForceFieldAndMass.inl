@@ -83,7 +83,8 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
         Real volume = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
 
         if( this->_sparseGrid ) // if sparseGrid -> the filling ratio is taken into account
-            volume *= this->_sparseGrid->getStiffnessCoef(i);
+            volume *= this->_sparseGrid->getMassCoef(i);
+// 				volume *= (Real) (this->_sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0);
 
         // mass of a particle...
         Real mass = Real (( volume * _density.getValue() ) / 8.0 );
@@ -160,8 +161,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
         if( _elementMasses.getValue().size() <= (unsigned)i )
         {
             _elementMasses.beginEdit()->resize( _elementMasses.getValue().size()+1 );
-// 			  computeElementMass( (*_elementMasses.beginEdit())[i], nodes,i );
-            computeElementMass( (*_elementMasses.beginEdit())[i], this->_rotatedInitialElements[i],i,	this->_sparseGrid?this->_sparseGrid->getStiffnessCoef(i):1.0 );
+            computeElementMass( (*_elementMasses.beginEdit())[i], this->_rotatedInitialElements[i],i,	this->_sparseGrid?this->_sparseGrid->getMassCoef(i):1.0 );
         }
 
 
