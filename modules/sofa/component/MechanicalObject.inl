@@ -38,6 +38,8 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/helper/system/glut.h>
+#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/tree/Simulation.h>
 
 #include <assert.h>
 #include <iostream>
@@ -2098,11 +2100,17 @@ bool MechanicalObject<DataTypes>::addBBox(double* minBBox, double* maxBBox)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::draw()
 {
+    Mat<4,4, GLfloat> modelviewM;
+    Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
+    sofa::simulation::tree::GNode* context;
     if (debugViewIndices.getValue())
     {
+        context = dynamic_cast<sofa::simulation::tree::GNode*>(this->getContext());
         glColor3f(1.0,1.0,1.0);
         glDisable(GL_LIGHTING);
-        float scale = debugViewIndicesScale.getValue();
+        sofa::simulation::tree::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+        float scale = (sceneMaxBBox - sceneMinBBox).norm() * debugViewIndicesScale.getValue();
+
         for (int i=0 ; i< vsize ; i++)
         {
             std::ostringstream oss;
@@ -2111,14 +2119,30 @@ void MechanicalObject<DataTypes>::draw()
             const char* s = tmp.c_str();
             //glVertex3f(getPX(i),getPY(i),getPZ(i) );
             glPushMatrix();
-            glTranslatef(getPX(i), getPY(i), getPZ(i));
 
+            glTranslatef(getPX(i), getPY(i), getPZ(i));
             glScalef(scale,scale,scale);
+
+            // Makes text always face the viewer by removing the scene rotation
+            // get the current modelview matrix
+            glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
+            modelviewM.transpose();
+
+            Vec3d temp(getPX(i), getPY(i), getPZ(i));
+            temp = modelviewM.transform(temp);
+
+            //glLoadMatrixf(modelview);
+            glLoadIdentity();
+
+            glTranslatef(temp[0], temp[1], temp[2]);
+            glScalef(scale,scale,scale);
+
             while(*s)
             {
                 glutStrokeCharacter(GLUT_STROKE_ROMAN, *s);
                 s++;
             }
+
             glPopMatrix();
 
         }
