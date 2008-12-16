@@ -31,6 +31,8 @@
 #include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
+#include <sofa/component/topology/SparseGridTopology.h>
+
 #include <sofa/component/VoxelGridLoader.h>
 
 #include <sofa/component/visualmodel/SlicedVolumetricModel.h>
@@ -103,9 +105,21 @@ void SlicedVolumetricModel::init()
     }
 
 
-    _minBBox[0]=_minBBox[1]=_minBBox[2]=999999999;
-    _maxBBox[0]=_maxBBox[1]=_maxBBox[2]=-999999999;
-    _mstate->addBBox(_minBBox, _maxBBox);
+    if( topology::SparseGridTopology* sparseGrid = dynamic_cast<topology::SparseGridTopology*>(_topology ) )
+    {
+        _minBBox[0] = sparseGrid->getXmin();
+        _minBBox[1] = sparseGrid->getYmin();
+        _minBBox[2] = sparseGrid->getZmin();
+        _maxBBox[0] = sparseGrid->getXmax();
+        _maxBBox[1] = sparseGrid->getYmax();
+        _maxBBox[2] = sparseGrid->getZmax();
+    }
+    else
+    {
+        _minBBox[0]=_minBBox[1]=_minBBox[2]=999999999;
+        _maxBBox[0]=_maxBBox[1]=_maxBBox[2]=-999999999;
+        _mstate->addBBox(_minBBox, _maxBBox);
+    }
 
     _nbPlanesOld = _nbPlanes.getValue();
 

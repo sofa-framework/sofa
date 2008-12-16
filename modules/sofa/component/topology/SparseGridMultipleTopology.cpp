@@ -28,10 +28,18 @@ void SparseGridMultipleTopology::buildAsFinest(  )
 
     if( _dataStiffnessCoefs.getValue().size() < _fileTopologies.getValue().size() )
     {
-        cerr<<"SparseGridMultipleTopology  ERROR: not enough stiffnessCoefs\n";
-        return;
+        cerr<<"WARNING: SparseGridMultipleTopology: not enough stiffnessCoefs\n";
+        for(unsigned i=_dataStiffnessCoefs.getValue().size(); i<_fileTopologies.getValue().size(); ++i)
+            _dataStiffnessCoefs.beginEdit()->push_back( 1.0 );
+//           return;
     }
-
+    if( _dataMassCoefs.getValue().size() < _fileTopologies.getValue().size() )
+    {
+        cerr<<"WARNING: SparseGridMultipleTopology: not enough massCoefs\n";
+        for(unsigned i=_dataMassCoefs.getValue().size(); i<_fileTopologies.getValue().size(); ++i)
+            _dataMassCoefs.beginEdit()->push_back( 1.0 );
+// 			return;
+    }
 
 
     _regularGrids.resize(  _fileTopologies.getValue().size() );
@@ -96,16 +104,18 @@ void SparseGridMultipleTopology::buildAsFinest(  )
 
 
     helper::vector<Type> regularGridTypes; // to compute filling types (OUTSIDE, INSIDE, BOUNDARY)
-    helper::vector< float > regularStiffnessCoefs;
+    helper::vector< float > regularStiffnessCoefs,regularMassCoefs;
 
-    assembleRegularGrids( regularGridTypes, regularStiffnessCoefs );
+    assembleRegularGrids( regularGridTypes, regularStiffnessCoefs, regularMassCoefs );
 
     buildFromRegularGridTypes(_regularGrid, regularGridTypes);
 
     _stiffnessCoefs.resize( this->getNbHexas());
+    _massCoefs.resize( this->getNbHexas());
     for(int i=0; i<this->getNbHexas(); ++i)
     {
         _stiffnessCoefs[i] = regularStiffnessCoefs[ this->_indicesOfCubeinRegularGrid[i] ];
+        _massCoefs[i] = regularStiffnessCoefs[ this->_indicesOfCubeinRegularGrid[i] ];
     }
 
 
@@ -137,7 +147,7 @@ void SparseGridMultipleTopology::buildFromTriangleMesh(helper::io::Mesh* mesh, u
 
 
 
-void SparseGridMultipleTopology::assembleRegularGrids(helper::vector<Type>& regularGridTypes,helper::vector< float >& regularStiffnessCoefs)
+void SparseGridMultipleTopology::assembleRegularGrids(helper::vector<Type>& regularGridTypes,helper::vector< float >& regularStiffnessCoefs,helper::vector< float >& regularMassCoefs)
 {
     _regularGrid.setSize(getNx(),getNy(),getNz());
     _regularGrid.setPos(getXmin(),getXmax(),getYmin(),getYmax(),getZmin(),getZmax());
@@ -145,6 +155,7 @@ void SparseGridMultipleTopology::assembleRegularGrids(helper::vector<Type>& regu
     regularGridTypes.resize( _regularGridTypes[0].size() );
     regularGridTypes.fill(OUTSIDE);
     regularStiffnessCoefs.resize( _regularGridTypes[0].size() );
+    regularMassCoefs.resize( _regularGridTypes[0].size() );
 
     for(unsigned i=0; i<_regularGrids.size(); ++i)
     {
@@ -154,11 +165,13 @@ void SparseGridMultipleTopology::assembleRegularGrids(helper::vector<Type>& regu
             {
                 regularGridTypes[w] = INSIDE;
                 regularStiffnessCoefs[w] = _dataStiffnessCoefs.getValue()[i];
+                regularMassCoefs[w] = _dataMassCoefs.getValue()[i];
             }
             else if(  _regularGridTypes[i][w] == BOUNDARY && regularGridTypes[w] != INSIDE )
             {
                 regularGridTypes[w] = BOUNDARY;
                 regularStiffnessCoefs[w] = _dataStiffnessCoefs.getValue()[i] /** .5*/;
+                regularMassCoefs[w] = _dataMassCoefs.getValue()[i] /** .5*/;
             }
         }
     }
@@ -192,11 +205,12 @@ void SparseGridMultipleTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->setMax( _max.getValue() );
     std::stringstream nameg; nameg << "virtual grid "<< 0;
     _virtualFinerLevels[0]->setName( nameg.str().c_str() );
-
+    _virtualFinerLevels[0]->setContext( this->getContext() );
 
     _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
     sgmt->_fileTopologies.setValue(this->_fileTopologies.getValue());
     sgmt->_dataStiffnessCoefs.setValue(this->_dataStiffnessCoefs.getValue());
+    sgmt->_dataMassCoefs.setValue(this->_dataMassCoefs.getValue());
     sgmt->_finestConnectivity.setValue( _finestConnectivity.getValue() );
     _virtualFinerLevels[0]->init();
 

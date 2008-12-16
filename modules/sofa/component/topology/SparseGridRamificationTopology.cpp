@@ -67,11 +67,9 @@ void SparseGridRamificationTopology::init()
 
 void SparseGridRamificationTopology::buildAsFinest()
 {
-
 // 				cerr<<"SparseGridRamificationTopology::buildAsFinest()\n";
 
     SparseGridTopology::buildAsFinest();
-
 
 
     if( _finestConnectivity.getValue() || this->isVirtual || _nbVirtualFinerLevels.getValue() > 0 )
@@ -159,11 +157,30 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
                 }
             }
 
+
+
+
+
+    // HACK: delete the connexions with no-neighbours
     for(unsigned i=0 ; i<_connexions.size(); ++i)
     {
-        _connexions[i][0]->_hexaIdx = i;
-        _connexions[i][0]->_nonRamifiedHexaIdx = i;
-        _mapHexa_Connexion[ i ] = std::pair<helper::vector<Connexion*>,int>(_connexions[i],0);
+        int nb=0;
+        for(int j=0; j<NUM_CONNECTED_NODES; ++j)
+            nb += _connexions[i][0]->_neighbors[j].size();
+        if( nb == 0 )
+            _connexions[i].resize(0);
+    }
+    // end HACK
+
+
+    for(unsigned i=0 ; i<_connexions.size(); ++i)
+    {
+        if( !_connexions[i].empty() )
+        {
+            _connexions[i][0]->_hexaIdx = i;
+            _connexions[i][0]->_nonRamifiedHexaIdx = i;
+            _mapHexa_Connexion[ i ] = std::pair<helper::vector<Connexion*>,int>(_connexions[i],0);
+        }
     }
 
 
@@ -638,6 +655,9 @@ void SparseGridRamificationTopology::buildFromFiner()
 // 				printNeighborhood();
 
 
+
+
+
     // build an new coarse hexa for each independnnt connexion
 
     SeqHexas& hexas = *seqHexas.beginEdit();
@@ -881,6 +901,7 @@ void SparseGridRamificationTopology::buildFromFiner()
 
     // compute stiffness coefficient from children
     _stiffnessCoefs.resize( this->getNbHexas() );
+    _massCoefs.resize( this->getNbHexas() );
     for(int i=0; i<this->getNbHexas(); ++i)
     {
         helper::fixed_array<int,8> finerChildren = this->_hierarchicalCubeMap[i];
@@ -889,11 +910,13 @@ void SparseGridRamificationTopology::buildFromFiner()
         {
             if( finerChildren[w] != -1 )
             {
+                _massCoefs[i] += this->_finerSparseGrid->getMassCoef(finerChildren[w]);
                 _stiffnessCoefs[i] += this->_finerSparseGrid->getStiffnessCoef(finerChildren[w]);
                 ++nbchildren;
             }
         }
         _stiffnessCoefs[i] /= 8.0;//(float)nbchildren;
+        _massCoefs[i] /= 8.0;//(float)nbchildren;
     }
 
 
@@ -929,7 +952,7 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->setNx( newnx );
     _virtualFinerLevels[0]->setNy( newny );
     _virtualFinerLevels[0]->setNz( newnz );
-
+    _virtualFinerLevels[0]->setContext( this->getContext() );
     sgrt->_finestConnectivity.setValue( _finestConnectivity.getValue() );
 
     _virtualFinerLevels[0]->setMin( _min.getValue() );
