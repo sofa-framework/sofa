@@ -891,6 +891,64 @@ int ManifoldTriangleSetTopologyContainer::getPreviousEdgeVertexShell(PointID ver
 
 
 
+sofa::helper::vector <TriangleID> ManifoldTriangleSetTopologyContainer::getTrianglesBorder()
+{
+    if(!hasTriangleEdgeShell())	// this method should only be called when the shell array exists
+    {
+#ifndef NDEBUG
+        std::cout << "Warning. [ManifoldTriangleSetTopologyContainer::getTrianglesBorder] Triangle edge shell array is empty." << std::endl;
+#endif
+
+        createTriangleEdgeShellArray();
+    }
+
+    const unsigned int nbrEdges = getNumberOfEdges();
+    sofa::helper::vector <TriangleID> TrianglesBorder;
+
+
+    for (unsigned int i = 0; i < nbrEdges; ++i)
+    {
+        if (m_triangleEdgeShell[i].size() == 1)
+        {
+            TrianglesBorder.push_back (m_triangleEdgeShell[i][0]);
+        }
+    }
+
+    return TrianglesBorder;
+}
+
+
+
+sofa::helper::vector <EdgeID> ManifoldTriangleSetTopologyContainer::getEdgesBorder()
+{
+
+    if(!hasTriangleEdgeShell())	// this method should only be called when the shell array exists
+    {
+#ifndef NDEBUG
+        std::cout << "Warning. [ManifoldTriangleSetTopologyContainer::getEdgesBorder] Triangle edge shell array is empty." << std::endl;
+#endif
+
+        createTriangleEdgeShellArray();
+    }
+
+    const unsigned int nbrEdges = getNumberOfEdges();
+    sofa::helper::vector <EdgeID> edgesBorder;
+
+
+    for (unsigned int i = 0; i < nbrEdges; ++i)
+    {
+        if (m_triangleEdgeShell[i].size() == 1)
+        {
+            edgesBorder.push_back (i);
+        }
+    }
+
+    return edgesBorder;
+
+}
+
+
+
 } // namespace topology
 
 } // namespace component
