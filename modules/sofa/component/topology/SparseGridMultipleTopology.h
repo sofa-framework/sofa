@@ -50,11 +50,12 @@ public :
 
     SparseGridMultipleTopology( bool _isVirtual=false ) : SparseGridRamificationTopology(_isVirtual),
         _fileTopologies(initData(&_fileTopologies, helper::vector< std::string >() , "fileTopologies", "All topology filenames")),
-        _dataStiffnessCoefs(initData(&_dataStiffnessCoefs, helper::vector< float >() , "stiffnessCoefs", "A stiffness coefficient for each topology filename"))
+        _dataStiffnessCoefs(initData(&_dataStiffnessCoefs, helper::vector< float >() , "stiffnessCoefs", "A stiffness coefficient for each topology filename")),
+        _dataMassCoefs(initData(&_dataMassCoefs, helper::vector< float >() , "massCoefs", "A stiffness coefficient for each topology filename"))
     {
     }
 
-    virtual void init() {SparseGridRamificationTopology::init(); this->fileTopology.setValue("");};
+// 		virtual void init(){SparseGridRamificationTopology::init(); this->fileTopology.setValue("");};
     virtual void buildAsFinest();
     virtual void buildVirtualFinerLevels();
 
@@ -64,6 +65,7 @@ protected :
 
     Data< helper::vector< std::string > > _fileTopologies;
     Data< helper::vector< float > > _dataStiffnessCoefs;
+    Data< helper::vector< float > > _dataMassCoefs;
 
 
 
@@ -72,7 +74,7 @@ protected :
     helper::vector< RegularGridTopology > _regularGrids;
     helper::vector< helper::vector<Type> > _regularGridTypes;
 // 		helper::vector< float > _regularStiffnessCoefs;
-    void assembleRegularGrids(helper::vector<Type>& regularGridTypes,helper::vector< float >& regularStiffnessCoefs);
+    void assembleRegularGrids(helper::vector<Type>& regularGridTypes,helper::vector< float >& regularStiffnessCoefs,helper::vector< float >& regularMassCoefs);
 };
 
 
