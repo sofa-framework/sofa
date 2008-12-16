@@ -109,6 +109,7 @@ public:
         _finestToCoarse = initData(&this->_finestToCoarse,false,"finestToCoarse","Does the homogenization is done directly from the finest level to the coarse one?");
         _completeInterpolation = initData(&this->_completeInterpolation,false,"completeInterpolation","Is the non-linear, complete interpolation used?");
         _useRamification = initData(&this->_useRamification,true,"useRamification","If SparseGridRamification, are ramifications taken into account?");
+        _drawColor = initData(&this->_drawColor,0,"drawColor","");
     }
 
 
@@ -123,7 +124,7 @@ public:
     Data<int> _homogenizationMethod;
     Data<bool> _completeInterpolation;
     Data<bool> _useRamification;
-
+    Data<int> _drawColor;
 
 
 

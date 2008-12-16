@@ -205,7 +205,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
             // volume of a element
             Real volume = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
 
-            volume *= (Real) (this->_sparseGrid->getStiffnessCoef(i));
+            volume *= (Real) (this->_sparseGrid->getMassCoef(i));
 
 
             // mass of a particle...
@@ -358,6 +358,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeClassicalMechanicalMatr
 
     //Nodes are found using Sparse Grid
     Real stiffnessCoef = this->_sparseGrid->_virtualFinerLevels[level]->getStiffnessCoef(elementIndice);
+    Real massCoef = this->_sparseGrid->_virtualFinerLevels[level]->getStiffnessCoef(elementIndice);
 // 		  if (SparseGridMultipleTopology* sgmt =  dynamic_cast<SparseGridMultipleTopology*>( this->_sparseGrid->_virtualFinerLevels[level] ) )
 // 			  stiffnessCoef = sgmt->getStiffnessCoef( elementIndice );
 // 		  else if( this->_sparseGrid->_virtualFinerLevels[level]->getType(elementIndice)==topology::SparseGridTopology::BOUNDARY )
@@ -366,7 +367,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeClassicalMechanicalMatr
 
     HexahedronFEMForceFieldAndMassT::computeElementStiffness(K,material,nodes,elementIndice, stiffnessCoef); // classical stiffness
 
-    HexahedronFEMForceFieldAndMassT::computeElementMass(M,nodes,elementIndice,stiffnessCoef);
+    HexahedronFEMForceFieldAndMassT::computeElementMass(M,nodes,elementIndice,massCoef);
 }
 
 
