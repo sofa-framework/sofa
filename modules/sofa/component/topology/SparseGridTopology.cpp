@@ -216,50 +216,69 @@ void SparseGridTopology::init()
 void SparseGridTopology::buildAsFinest(  )
 {
     // 		  cerr<<"SparseGridTopology::buildAsFinest(  )\n";
-    std::string _filename=fileTopology.getValue();
-    if (_filename.empty())
-    {
-        std::cerr << "SparseGridTopology: no filename specified." << std::endl;
-        return;
-    }
-    if (! sofa::helper::system::DataRepository.findFile ( _filename ))
-        return;
 
-    // initialize the following datafields:
-    // xmin, xmax, ymin, ymax, zmin, zmax, evtl. nx, ny, nz
-    // _regularGrid, _indicesOfRegularCubeInSparseGrid, _types
-    // seqPoints, seqHexas.getValue(), nbPoints
-    if(_filename.length() > 4 && _filename.compare(_filename.length()-4, 4, ".obj")==0)
+    VoxelGridLoader *loader;
+    getContext()->get(loader);
+    if( loader )
     {
-        //			std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
-        buildFromTriangleMesh(_filename);
+        buildFromVoxelGridLoader(loader);
     }
-    else if(_filename.length() > 6 && _filename.compare(_filename.length()-6, 6, ".trian")==0)
+    else
     {
-        //			std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
-        buildFromTriangleMesh(_filename);
-    }
-    else if(_filename.length() > 4 && _filename.compare(_filename.length()-4, 4, ".raw")==0)
-    {
-        //			std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
-        _usingMC = true;
-
-        buildFromRawVoxelFile(_filename);
-    }
-    else if(_filename.length() > 6 && _filename.compare(_filename.length()-6, 6, ".voxel")==0)
-    {
-        buildFromVoxelFile(_filename);
-    }
+        std::string _filename=fileTopology.getValue();
+        if (_filename.empty())
+        {
+            std::cerr << "SparseGridTopology: no filename specified." << std::endl;
+            return;
+        }
+        if (! sofa::helper::system::DataRepository.findFile ( _filename ))
+            return;
 
 
-    // default stiffness coefficient : BOUNDARY=.5, INSIDE=1
-    _stiffnessCoefs.resize( this->getNbHexas());
-    for(int i=0; i<this->getNbHexas(); ++i)
-    {
-        if( getType(i)==BOUNDARY ) _stiffnessCoefs[i] = .5;
-        else _stiffnessCoefs[i] = 1.0;
-    }
+        // initialize the following datafields:
+        // xmin, xmax, ymin, ymax, zmin, zmax, evtl. nx, ny, nz
+        // _regularGrid, _indicesOfRegularCubeInSparseGrid, _types
+        // seqPoints, seqHexas.getValue(), nbPoints
+        if(_filename.length() > 4 && _filename.compare(_filename.length()-4, 4, ".obj")==0)
+        {
+            //			std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
+            buildFromTriangleMesh(_filename);
+        }
+        else if(_filename.length() > 6 && _filename.compare(_filename.length()-6, 6, ".trian")==0)
+        {
+            //			std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
+            buildFromTriangleMesh(_filename);
+        }
+        else if(_filename.length() > 4 && _filename.compare(_filename.length()-4, 4, ".raw")==0)
+        {
+            //			std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
+            _usingMC = true;
 
+            buildFromRawVoxelFile(_filename);
+        }
+        else if(_filename.length() > 6 && _filename.compare(_filename.length()-6, 6, ".voxel")==0)
+        {
+            buildFromVoxelFile(_filename);
+        }
+
+
+        // default stiffness coefficient : BOUNDARY=.5, INSIDE=1
+        _stiffnessCoefs.resize( this->getNbHexas());
+        _massCoefs.resize( this->getNbHexas());
+        for(int i=0; i<this->getNbHexas(); ++i)
+        {
+            if( getType(i)==BOUNDARY )
+            {
+                _stiffnessCoefs[i] = .5;
+                _massCoefs[i] = .5;
+            }
+            else
+            {
+                _stiffnessCoefs[i] = 1.0;
+                _massCoefs[i] = 1.0;
+            }
+        }
+    }
 }
 
 void SparseGridTopology::buildFromVoxelFile(const std::string& filename)
@@ -399,6 +418,83 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
     if (!isVirtual)
         updateMesh();
 
+}
+
+
+
+void SparseGridTopology::buildFromVoxelGridLoader(VoxelGridLoader * loader)
+{
+    cerr<<"SparseGridTopology::buildFromVoxelGridLoader(VoxelGridLoader * loader)\n";
+
+
+
+    unsigned char *textureData;
+    int width,height,depth;
+    loader->createSegmentation3DTexture( &textureData, width, height, depth );
+
+
+
+    _regularGrid.setSize(getNx(),getNy(),getNz());
+
+    Vector3 vsize;
+    loader->getVoxelSize( vsize );
+
+    _regularGrid.setPos(0,width*vsize[0],0,height*vsize[1],0,depth*vsize[2]);
+
+    _min.setValue( Vector3(0,0,0) );
+    _max.setValue( Vector3(width*vsize[0],height*vsize[1],depth*vsize[2]) );
+
+    const int nbCubesRG = _regularGrid.getNbHexas();
+
+    _indicesOfRegularCubeInSparseGrid.resize(nbCubesRG, -1); // to redirect an indice of a cube in the regular grid to its indice in the sparse grid
+    vector<Type> regularGridTypes(nbCubesRG, OUTSIDE); // to compute filling types (OUTSIDE, INSIDE, BOUNDARY)
+
+    vector<float> regularstiffnessCoef(nbCubesRG, 0.0);
+
+
+    for(int i=0; i<nbCubesRG; ++i)
+    {
+        const Vec3i& hexacoord = _regularGrid.getCubeCoordinate(i);
+        const RegularGridTopology::Hexa& hexa = _regularGrid.getHexa( hexacoord[0],hexacoord[1], hexacoord[2] );
+
+        double p0x = _regularGrid.getPX( hexa[0] ) / vsize[0];
+        double p0y = _regularGrid.getPY( hexa[0] ) / vsize[1];
+        double p0z = _regularGrid.getPZ( hexa[0] ) / vsize[2];
+        double p6x = _regularGrid.getPX( hexa[6] ) / vsize[0];
+        double p6y = _regularGrid.getPY( hexa[6] ) / vsize[1];
+        double p6z = _regularGrid.getPZ( hexa[6] ) / vsize[2];
+
+
+        for(int x=(int)p0x; x<(int)p6x; ++x)
+            for(int y=(int)p0y; y<(int)p6y; ++y)
+                for(int z=(int)p0z; z<(int)p6z; ++z)
+                {
+                    unsigned int idx = x + y * width + z * width * height;
+
+                    regularstiffnessCoef[i] += textureData[idx];
+                }
+
+        regularstiffnessCoef[i] /= (p6x-p0x)*(p6y-p0y)*(p6z-p0z);
+// 			  regularstiffnessCoef[i] /= 256.0;
+
+        if( regularstiffnessCoef[i] !=0.0 )
+            regularGridTypes[i] = INSIDE;
+    }
+
+    buildFromRegularGridTypes(_regularGrid, regularGridTypes);
+
+    if (!isVirtual)
+        updateMesh();
+
+
+
+    _stiffnessCoefs.resize( this->getNbHexas());
+    _massCoefs.resize( this->getNbHexas());
+    for(int i=0; i<this->getNbHexas(); ++i)
+    {
+        _stiffnessCoefs[i] = regularstiffnessCoef[ _indicesOfCubeinRegularGrid[i] ];
+        _massCoefs[i] = 1.0;//regularstiffnessCoef[ _indicesOfCubeinRegularGrid[i] ];
+    }
 }
 
 
@@ -1018,6 +1114,7 @@ void SparseGridTopology::buildFromFiner(  )
 
     // compute stiffness coefficient from children
     _stiffnessCoefs.resize( this->getNbHexas() );
+    _massCoefs.resize( this->getNbHexas() );
     for(int i=0; i<this->getNbHexas(); ++i)
     {
         helper::fixed_array<int,8> finerChildren = this->_hierarchicalCubeMap[i];
@@ -1027,10 +1124,12 @@ void SparseGridTopology::buildFromFiner(  )
             if( finerChildren[w] != -1 )
             {
                 _stiffnessCoefs[i] += _finerSparseGrid->_stiffnessCoefs[finerChildren[w]];
+                _massCoefs[i] += _finerSparseGrid->_massCoefs[finerChildren[w]];
                 ++nbchildren;
             }
         }
         _stiffnessCoefs[i] /= 8.0;//(float)nbchildren;
+        _massCoefs[i] /= 8.0;
     }
 }
 
@@ -1059,7 +1158,7 @@ void SparseGridTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->setNz( newnz );
     _virtualFinerLevels[0]->setMin( _min.getValue() );
     _virtualFinerLevels[0]->setMax( _max.getValue() );
-
+    _virtualFinerLevels[0]->setContext( this->getContext( ) );
     _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
     _virtualFinerLevels[0]->init();
 
@@ -1187,6 +1286,11 @@ SparseGridTopology::Type SparseGridTopology::getType( int i )
 float SparseGridTopology::getStiffnessCoef(int elementIdx)
 {
     return _stiffnessCoefs[ elementIdx ];
+}
+
+float SparseGridTopology::getMassCoef(int elementIdx)
+{
+    return _massCoefs[ elementIdx ];
 }
 
 ///////////////////////////////////////////
