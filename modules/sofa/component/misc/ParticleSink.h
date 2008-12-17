@@ -46,7 +46,7 @@
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/component/topology/PointSetTopologyModifier.h>
 #include <sofa/component/topology/PointSetTopologyChange.h>
-#include <sofa/component/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include <vector>
 #include <iterator>
 #include <iostream>

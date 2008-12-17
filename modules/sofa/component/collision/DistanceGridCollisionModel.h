@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_DISTANCEGRIDCOLLISIONMODEL_H
 
 #include <sofa/core/CollisionModel.h>
-#include <sofa/component/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/io/Mesh.h>

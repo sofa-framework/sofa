@@ -28,7 +28,7 @@
 #include "CudaTypes.h"
 
 #include <sofa/core/CollisionModel.h>
-#include <sofa/component/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include "CudaMechanicalObject.h"
 
 namespace sofa

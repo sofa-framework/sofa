@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MECHANICALOBJECT_INL
 #define SOFA_COMPONENT_MECHANICALOBJECT_INL
 
-#include <sofa/component/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 #include <sofa/component/topology/PointSetTopologyChange.h>
@@ -44,7 +44,7 @@
 #include <assert.h>
 #include <iostream>
 
-#include <sofa/component/MeshLoader.h>
+#include <sofa/component/misc/MeshLoader.h>
 
 namespace sofa
 {

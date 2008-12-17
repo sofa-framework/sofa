@@ -42,7 +42,7 @@
 //Including component for topological description of the objects
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/topology/RegularGridTopology.h>
-#include <sofa/component/MeshLoader.h>
+#include <sofa/component/misc/MeshLoader.h>
 
 //Including Solvers
 #include <sofa/component/odesolver/EulerImplicitSolver.h>

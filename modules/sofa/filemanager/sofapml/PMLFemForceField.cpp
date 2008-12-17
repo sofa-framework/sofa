@@ -34,7 +34,7 @@
 
 #include "PMLFemForceField.h"
 
-#include <sofa/component/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/component/forcefield/TetrahedronFEMForceField.h>
 #include <sofa/component/forcefield/StiffSpringForceField.h>
 #include <sofa/component/mass/UniformMass.h>

@@ -34,7 +34,7 @@
 
 #include "PMLInteractionForceField.h"
 
-#include "sofa/component/MechanicalObject.h"
+#include "sofa/component/container/MechanicalObject.h"
 #include "sofa/component/forcefield/StiffSpringForceField.h"
 using namespace sofa::component::forcefield;
 

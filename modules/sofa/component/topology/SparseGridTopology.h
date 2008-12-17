@@ -34,7 +34,7 @@
 #include <sofa/component/topology/RegularGridTopology.h>
 
 #include <sofa/helper/io/Mesh.h>
-#include <sofa/component/VoxelGridLoader.h>
+#include <sofa/component/misc/VoxelGridLoader.h>
 
 namespace sofa
 {

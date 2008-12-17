@@ -33,7 +33,7 @@
 
 #include <sofa/component/topology/SparseGridTopology.h>
 
-#include <sofa/component/VoxelGridLoader.h>
+#include <sofa/component/misc/VoxelGridLoader.h>
 
 #include <sofa/component/visualmodel/SlicedVolumetricModel.h>
 
@@ -423,7 +423,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 
 
 
-            for(unsigned int i=2; i<intersections.size(); ++i) // les cas 0 et 1 sont traités à la mano
+            for(unsigned int i=2; i<intersections.size(); ++i) // les cas 0 et 1 sont traitï¿½s ï¿½ la mano
             {
                 Coord actualline = intersections[i].first-intersections[0].first;
 
@@ -439,7 +439,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
             }
 
 
-// 			for(unsigned int i=1;i<intersections.size();++i) // les cas 0 et 1 sont traités à la mano
+// 			for(unsigned int i=1;i<intersections.size();++i) // les cas 0 et 1 sont traitï¿½s ï¿½ la mano
 // 			{
 // 				Coord actualline = intersections[i].first-middle;
             //

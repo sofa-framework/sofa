@@ -26,7 +26,7 @@
 #include <sofa/component/topology/HexahedronSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/MeshLoader.h>
+#include <sofa/component/misc/MeshLoader.h>
 
 namespace sofa
 {

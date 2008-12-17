@@ -32,7 +32,7 @@
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/PointSetTopologyChange.h>
 
-#include <sofa/component/VoxelGridLoader.h>
+#include <sofa/component/misc/VoxelGridLoader.h>
 
 #include <sofa/component/visualmodel/PointSplatModel.h>
 
