@@ -723,6 +723,7 @@ void VisualModelImpl::updateVisual()
         computePositions();
         computeNormals();
         computeBBox();
+        updateBuffers();
         modified = false;
     }
 }

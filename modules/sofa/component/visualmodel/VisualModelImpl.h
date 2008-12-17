@@ -221,6 +221,8 @@ public:
     virtual void computeNormals();
     virtual void computeBBox();
 
+    virtual void updateBuffers() { };
+
     virtual void updateVisual();
 
     // handle topological changes

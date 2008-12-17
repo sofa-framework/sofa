@@ -31,6 +31,8 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sstream>
+#include <string.h>
+
 
 namespace sofa
 {
@@ -52,7 +54,8 @@ int OglModelClass = core::RegisterObject("Generic visual model for OpenGL displa
 
 OglModel::OglModel()
     : premultipliedAlpha(initData(&premultipliedAlpha, (bool) false, "premultipliedAlpha", "is alpha premultiplied ?"))
-    , tex(NULL)
+    , useVBO(initData(&useVBO, (bool) true, "useVBO", "Use VBO for rendering"))
+    , tex(NULL), canUseVBO(false), VBOGenDone(false), initDone(false), useTriangles(false), useQuads(false)
 {
 }
 
@@ -65,6 +68,7 @@ void OglModel::internalDraw()
 {
     //std::cerr<<" OglModel::internalDraw()"<<std::endl;
     if (!getContext()->getShowVisualModels()) return;
+
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -98,15 +102,37 @@ void OglModel::internalDraw()
     glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive.ptr());
     glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, shininess);
 
-    glVertexPointer (3, GL_FLOAT, 0, vertices.getData());
-    glNormalPointer (GL_FLOAT, 0, vnormals.getData());
+    if(VBOGenDone && useVBO.getValue())
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+        glVertexPointer(3, GL_FLOAT, 0, (char*)NULL + 0);
+        glNormalPointer(GL_FLOAT, 0, (char*)NULL + (vertices.size()*sizeof(vertices[0])));
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+    else
+    {
+        glVertexPointer (3, GL_FLOAT, 0, vertices.getData());
+        glNormalPointer (GL_FLOAT, 0, vnormals.getData());
+    }
+
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_VERTEX_ARRAY);
     if (tex)
     {
         glEnable(GL_TEXTURE_2D);
         tex->bind();
-        glTexCoordPointer(2, GL_FLOAT, 0, vtexcoords.getData());
+        if(VBOGenDone && useVBO.getValue())
+        {
+            glBindBuffer(GL_ARRAY_BUFFER, vbo);
+            glTexCoordPointer(2, GL_FLOAT, 0, (char*)NULL + (vertices.size()*sizeof(vertices[0])) + (vnormals.size()*sizeof(vnormals[0])) );
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+        }
+        else
+        {
+            glTexCoordPointer(2, GL_FLOAT, 0, vtexcoords.getData());
+        }
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     }
 
@@ -122,14 +148,32 @@ void OglModel::internalDraw()
             xforms[i].writeOpenGlMatrix(matrix);
             glPushMatrix();
             glMultMatrixf(matrix);
-
-            if (!triangles.empty())
-                glDrawElements(GL_TRIANGLES, triangles.size() * 3, GL_UNSIGNED_INT, triangles.getData());
-            if (!quads.empty())
-                glDrawElements(GL_QUADS, quads.size() * 4, GL_UNSIGNED_INT, quads.getData());
-
-            glPopMatrix();
+            if(VBOGenDone)
+            {
+                if (!triangles.empty())
+                {
+                    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
+                    glDrawElements(GL_TRIANGLES, triangles.size() * 3, GL_UNSIGNED_INT, (char*)NULL + 0);
+                    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+                }
+                if (!quads.empty())
+                {
+                    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
+                    glDrawElements(GL_QUADS, quads.size() * 4, GL_UNSIGNED_INT, (char*)NULL + 0);
+                    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+                }
+            }
+            else
+            {
+                if (!triangles.empty())
+                    glDrawElements(GL_TRIANGLES, triangles.size() * 3, GL_UNSIGNED_INT, triangles.getData());
+                if (!quads.empty())
+                    glDrawElements(GL_QUADS, quads.size() * 4, GL_UNSIGNED_INT, quads.getData());
+            }
         }
+
+        glPopMatrix();
+
         if (premultipliedAlpha.getValue())
             glBlendFunc(GL_ONE, GL_ONE);
         else
@@ -146,10 +190,29 @@ void OglModel::internalDraw()
         glMultMatrixf(matrix);
 
         //glutWireCube( 3 );
-        if (!triangles.empty())
-            glDrawElements(GL_TRIANGLES, triangles.size() * 3, GL_UNSIGNED_INT, triangles.getData());
-        if (!quads.empty())
-            glDrawElements(GL_QUADS, quads.size() * 4, GL_UNSIGNED_INT, quads.getData());
+
+        if (VBOGenDone)
+        {
+            if (!triangles.empty())
+            {
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
+                glDrawElements(GL_TRIANGLES, triangles.size() * 3, GL_UNSIGNED_INT, (char*)NULL + 0);
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+            }
+            if (!quads.empty())
+            {
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
+                glDrawElements(GL_QUADS, quads.size() * 4, GL_UNSIGNED_INT, (char*)NULL + 0);
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+            }
+        }
+        else
+        {
+            if (!triangles.empty())
+                glDrawElements(GL_TRIANGLES, triangles.size() * 3, GL_UNSIGNED_INT, triangles.getData());
+            if (!quads.empty())
+                glDrawElements(GL_QUADS, quads.size() * 4, GL_UNSIGNED_INT, quads.getData());
+        }
 
         glPopMatrix();
     }
@@ -212,6 +275,15 @@ void OglModel::initVisual()
     {
         tex->init();
     }
+
+    initDone = true;
+    canUseVBO = (GLEW_ARB_vertex_buffer_object);
+
+    if (useVBO.getValue() && !canUseVBO)
+    {
+        std::cerr << "OglModel : VBO is not supported by your GPU ; will use display list instead" << std::endl;
+    }
+    updateBuffers();
 }
 
 void OglModel::initTextures()
@@ -220,6 +292,175 @@ void OglModel::initTextures()
     {
         tex->init();
     }
+}
+
+void OglModel::createVertexBuffer()
+{
+    unsigned int positionsBufferSize, normalsBufferSize, textureCoordsBufferSize = 0;
+    positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
+    normalsBufferSize = (vnormals.size()*sizeof(vnormals[0]));
+    if (tex)
+        textureCoordsBufferSize = vtexcoords.size() * sizeof(vtexcoords[0]);
+
+    unsigned int totalSize = positionsBufferSize + normalsBufferSize + textureCoordsBufferSize;
+
+    glGenBuffers(1, &vbo);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    //Vertex Buffer creation
+    glBufferData(GL_ARRAY_BUFFER,
+            totalSize,
+            NULL,
+            GL_DYNAMIC_DRAW);
+
+    //Positions
+    glBufferSubData(GL_ARRAY_BUFFER,
+            0,
+            positionsBufferSize,
+            vertices.getData());
+
+    //Normals
+    glBufferSubData(GL_ARRAY_BUFFER,
+            positionsBufferSize,
+            normalsBufferSize,
+            vnormals.getData());
+    //Texture coords
+    if(tex)
+    {
+        glBufferSubData(GL_ARRAY_BUFFER,
+                positionsBufferSize + normalsBufferSize,
+                textureCoordsBufferSize,
+                vtexcoords.getData());
+    }
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    VBOGenDone = true;
+}
+
+void OglModel::createTrianglesIndicesBuffer()
+{
+    glGenBuffers(1, &iboTriangles);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
+
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, triangles.size()*sizeof(triangles[0]), NULL, GL_DYNAMIC_DRAW);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, triangles.size()*sizeof(triangles[0]), &triangles[0]);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    useTriangles = true;
+}
+
+void OglModel::createQuadsIndicesBuffer()
+{
+    glGenBuffers(1, &iboQuads);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
+
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, quads.size()*sizeof(quads[0]), NULL, GL_DYNAMIC_DRAW);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, quads.size()*sizeof(quads[0]), &quads[0]);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    useQuads = true;
+}
+
+bool OglModel::updateVertexBuffer()
+{
+    unsigned int positionsBufferSize, normalsBufferSize, textureCoordsBufferSize = 0;
+    positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
+    normalsBufferSize = (vnormals.size()*sizeof(vnormals[0]));
+    if (tex)
+        textureCoordsBufferSize = vtexcoords.size() * sizeof(vtexcoords[0]);
+
+    GLvoid* pos_bo = NULL;
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    pos_bo = (GLvoid*) glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+
+    if(pos_bo == NULL)
+    {
+        std::cerr << "OglModel : Unknown error when updating vertex buffer "<< std::endl;
+        return false;
+    }
+
+    memcpy((char*) pos_bo, vertices.getData(), positionsBufferSize);
+    memcpy((char*) pos_bo + (positionsBufferSize) , vnormals.getData(), normalsBufferSize);
+    if (tex)
+        memcpy((char*) pos_bo + positionsBufferSize + normalsBufferSize , vtexcoords.getData(), textureCoordsBufferSize);
+
+    glUnmapBuffer(GL_ARRAY_BUFFER);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    return true;
+}
+
+bool OglModel::updateTrianglesIndicesBuffer()
+{
+    GLvoid* pos_bo = NULL;
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
+    pos_bo = (GLvoid*) glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
+
+    if(pos_bo == NULL)
+    {
+        std::cerr << "OglModel : Unknown error when updating triangles indices buffer "<< std::endl;
+        return false;
+    }
+    memcpy(pos_bo, &(triangles[0]), triangles.size()*sizeof(triangles[0]));
+    glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    return true;
+}
+
+bool OglModel::updateQuadsIndicesBuffer()
+{
+    GLvoid* pos_bo = NULL;
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
+    pos_bo = (GLvoid*) glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
+
+    if(pos_bo == NULL)
+    {
+        std::cerr << "OglModel : Unknown error when updating quads indices buffer "<< std::endl;
+        return false;
+    }
+    memcpy(pos_bo, &(quads[0]), quads.size()*sizeof(quads[0]));
+    glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    return true;
+}
+
+void OglModel::updateBuffers()
+{
+    if (initDone)
+    {
+        if (useVBO.getValue() && canUseVBO)
+        {
+            if(!VBOGenDone)
+            {
+                createVertexBuffer();
+                //Index Buffer Object
+                //Triangles indices
+                if(triangles.size() > 0)
+                    createTrianglesIndicesBuffer();
+                //Quads indices
+                if(quads.size() > 0)
+                    createQuadsIndicesBuffer();
+            }
+            //Update VBO & IBO
+            else
+            {
+                updateVertexBuffer();
+                //Indices
+                //Triangles
+                if(useTriangles)
+                    updateTrianglesIndicesBuffer();
+                else if (triangles.size() > 0)
+                    createTrianglesIndicesBuffer();
+
+                //Quads
+                if (useQuads)
+                    updateQuadsIndicesBuffer();
+                else if (quads.size() > 0)
+                    createQuadsIndicesBuffer();
+            }
+        }
+    }
+
 }
 
 } // namespace visualmodel
