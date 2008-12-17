@@ -301,6 +301,8 @@ SOFA_LINK_CLASS(HookeanMaterial)
 SOFA_LINK_CLASS(PlasticMaterial)
 // interactionforcefield
 SOFA_LINK_CLASS(LagrangeMultiplierInteraction)
+// mapping
+SOFA_LINK_CLASS(CircumcenterMapping)
 //mastersolver
 SOFA_LINK_CLASS(MasterConstraintSolver)
 //misc
