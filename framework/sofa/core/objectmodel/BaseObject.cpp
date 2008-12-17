@@ -81,7 +81,7 @@ void BaseObject::bwdInit()
 
 /// Update method called when variables used in precomputation are modified.
 void BaseObject::reinit()
-{ std::cout<<"WARNING: the reinit method of the object "<<this->getName()<<" does nothing.\n";}
+{ sout<<"WARNING: the reinit method of the object "<<this->getName()<<" does nothing."<<sendl;}
 
 /// Save the initial state for later uses in reset()
 void BaseObject::storeResetState()
