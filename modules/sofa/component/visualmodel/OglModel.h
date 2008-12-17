@@ -60,8 +60,10 @@ namespace visualmodel
 class OglModel : public VisualModelImpl
 {
 private:
-    Data<bool> premultipliedAlpha;
+    Data<bool> premultipliedAlpha, useVBO;
     helper::gl::Texture *tex;
+    GLuint vbo, iboTriangles, iboQuads;
+    bool canUseVBO, VBOGenDone, initDone, useTriangles, useQuads;
 
     void internalDraw();
 
@@ -75,6 +77,14 @@ public:
 
     void initTextures();
     void initVisual();
+
+    void updateBuffers();
+    void createVertexBuffer();
+    void createTrianglesIndicesBuffer();
+    void createQuadsIndicesBuffer();
+    bool updateVertexBuffer();
+    bool updateTrianglesIndicesBuffer();
+    bool updateQuadsIndicesBuffer();
 };
 
 typedef sofa::defaulttype::Vec<3,GLfloat> GLVec3f;
