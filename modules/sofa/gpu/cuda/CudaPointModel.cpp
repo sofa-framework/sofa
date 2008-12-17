@@ -64,7 +64,7 @@ void CudaPointModel::init()
 
     if (mstate==NULL)
     {
-        std::cerr << "ERROR: CudaPointModel requires a CudaVec3f Mechanical Model.\n";
+        serr << "ERROR: CudaPointModel requires a CudaVec3f Mechanical Model.\n";
         return;
     }
 

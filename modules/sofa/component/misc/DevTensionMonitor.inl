@@ -46,12 +46,12 @@ void DevTensionMonitor<DataTypes>::eval()
 
     if (f_indices.getValue().empty())
     {
-        /*std::cout << "measuring metrics..." << std::endl;
-        std::cout << "first point position " << xPos[0].getCenter() << std::endl;
-        std::cout << "first point orientation " << xPos[0].getOrientation() << std::endl;
+        /*sout << "measuring metrics..." << sendl;
+        sout << "first point position " << xPos[0].getCenter() << sendl;
+        sout << "first point orientation " << xPos[0].getOrientation() << sendl;
 
-        std::cout << "last point position " << xPos[xPos.size()-1].getCenter() << std::endl;
-        std::cout << "last point orientation " << xPos[xPos.size()-1].getOrientation() << std::endl;*/
+        sout << "last point position " << xPos[xPos.size()-1].getCenter() << sendl;
+        sout << "last point orientation " << xPos[xPos.size()-1].getOrientation() << sendl;*/
 
         //Compute tension
         // ....

@@ -27,8 +27,8 @@
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
+
+
 
 
 namespace sofa

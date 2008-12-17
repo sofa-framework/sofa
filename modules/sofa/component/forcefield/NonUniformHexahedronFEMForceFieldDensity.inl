@@ -30,8 +30,8 @@
 #include <sofa/helper/system/FileRepository.h>
 
 #include <fstream>
-using std::cerr;
-using std::endl;
+
+
 using std::set;
 
 
@@ -54,7 +54,7 @@ using namespace sofa::defaulttype;
 template <class DataTypes>
 void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
 {
-//  	cerr<<"NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()\n";
+//  	serr<<"NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()"<<sendl;
 
     if(this->_alreadyInit)return;
     else this->_alreadyInit=true;
@@ -65,14 +65,14 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
 
     if( this->getContext()->getMeshTopology()==NULL )
     {
-        std::cerr << "ERROR(NonUniformHexahedronFEMForceFieldDensity): object must have a Topology.\n";
+        serr << "ERROR(NonUniformHexahedronFEMForceFieldDensity): object must have a Topology."<<sendl;
         return;
     }
 
     this->_mesh = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>(this->getContext()->getMeshTopology());
     if ( this->_mesh==NULL)
     {
-        std::cerr << "ERROR(NonUniformHexahedronFEMForceFieldDensity): object must have a MeshTopology.\n";
+        serr << "ERROR(NonUniformHexahedronFEMForceFieldDensity): object must have a MeshTopology."<<sendl;
         return;
     }
 #ifdef SOFA_NEW_HEXA
@@ -81,10 +81,10 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
     else if( this->_mesh->getNbCubes()<=0 )
 #endif
     {
-        std::cerr << "ERROR(NonUniformHexahedronFEMForceFieldDensity): object must have a hexahedric MeshTopology.\n";
-        std::cerr << this->_mesh->getName()<<std::endl;
-        std::cerr << this->_mesh->getTypeName()<<std::endl;
-        cerr<<this->_mesh->getNbPoints()<<endl;
+        serr << "ERROR(NonUniformHexahedronFEMForceFieldDensity): object must have a hexahedric MeshTopology."<<sendl;
+        serr << this->_mesh->getName()<<sendl;
+        serr << this->_mesh->getTypeName()<<sendl;
+        serr<<this->_mesh->getNbPoints()<<sendl;
         return;
     }
 #ifdef SOFA_NEW_HEXA
@@ -115,7 +115,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
     if( !this->_nbVirtualFinerLevels.getValue() || !this->_sparseGrid || this->_sparseGrid->getNbVirtualFinerLevels() < this->_nbVirtualFinerLevels.getValue()  )
     {
 // 		this->_nbVirtualFinerLevels.setValue(0);
-        logWarning("Conflict in nb of virtual levels between ForceField "+this->getName()+std::string(" and SparseGrid ")+this->_sparseGrid->getName()+std::string(" -> classical uniform properties are used"));
+        serr<<"Conflict in nb of virtual levels between ForceField "<<this->getName()<<" and SparseGrid "<<this->_sparseGrid->getName()<<" -> classical uniform properties are used" << sendl;
     }
     else
     {
@@ -295,7 +295,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::computeCoarseElementSt
             {
                 grayScale = 1+10*exp(1-256/((float)(voxels[(int)(factor[2]*coordinates[2])][(int)(factor[0]*coordinates[0])][(int)(factor[1]*coordinates[1])])));
             }
-//       std::cout << grayScale << " \n";
+//       sout << grayScale << " "<<sendl;
         }
         computeMaterialStiffness(mat,  this->f_youngModulus.getValue()*grayScale,this->f_poissonRatio.getValue());
 
@@ -316,7 +316,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::computeCoarseElementSt
             finerChildren = this->_sparseGrid->_virtualFinerLevels[this->_nbVirtualFinerLevels.getValue()-level]->_hierarchicalCubeMap[elementIndice];
         }
 
-//     std::cerr<<finerChildren<<"\n";
+//     serr<<finerChildren<<""<<sendl;
         //Get the 8 points of the coarser Hexa
         for ( int i=0; i<8; ++i)
         {

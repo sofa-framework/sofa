@@ -66,7 +66,7 @@ public:
     virtual void addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double );
 
 
-    virtual double getPotentialEnergy(const VecCoord& ) {std::cout<<"getPotentialEnergy not implemented"<<std::endl; return 0.0;}
+    virtual double getPotentialEnergy(const VecCoord& ) {sout<<"getPotentialEnergy not implemented"<<sendl; return 0.0;}
 
 
     void draw();

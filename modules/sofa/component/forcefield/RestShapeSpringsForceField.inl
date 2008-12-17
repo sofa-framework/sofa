@@ -33,8 +33,8 @@
 #include <sofa/helper/gl/template.h>
 #include <assert.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {
@@ -66,7 +66,7 @@ void RestShapeSpringsForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord
 
     if (k.size()!= indices.size() )
     {
-        std::cout<<"WARNING : stiffness is not defined on each point, first stiffness is used"<<std::endl;
+        sout<<"WARNING : stiffness is not defined on each point, first stiffness is used"<<sendl;
 
         for (unsigned int i=0; i<indices.size(); i++)
         {
@@ -96,7 +96,7 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(VecDeriv& df, const VecDer
 
     if (k.size()!= indices.size() )
     {
-        std::cout<<"WARNING : stiffness is not defined on each point, first stiffness is used"<<std::endl;
+        sout<<"WARNING : stiffness is not defined on each point, first stiffness is used"<<sendl;
 
         for (unsigned int i=0; i<indices.size(); i++)
         {

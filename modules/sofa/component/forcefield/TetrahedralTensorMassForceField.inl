@@ -43,9 +43,9 @@ using namespace sofa::defaulttype;
 using namespace	sofa::component::topology;
 using namespace core::componentmodel::topology;
 
-using std::cerr;
-using std::cout;
-using std::endl;
+
+
+
 
 using core::componentmodel::topology::BaseMeshTopology;
 
@@ -283,14 +283,14 @@ template <class DataTypes> TetrahedralTensorMassForceField<DataTypes>::~Tetrahed
 
 template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init()
 {
-    std::cerr << "initializing TetrahedralTensorMassForceField" << std::endl;
+    serr << "initializing TetrahedralTensorMassForceField" << sendl;
     this->Inherited::init();
 
     _topology = getContext()->getMeshTopology();
 
     if (_topology->getNbTetras()==0)
     {
-        std::cerr << "ERROR(TetrahedralTensorMassForceField): object must have a Tetrahedral Set Topology.\n";
+        serr << "ERROR(TetrahedralTensorMassForceField): object must have a Tetrahedral Set Topology."<<sendl;
         return;
     }
     updateLameCoefficients();
@@ -333,7 +333,7 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
 template <class DataTypes>
 double TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
 {
-    std::cerr<<"TetrahedralTensorMassForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    serr<<"TetrahedralTensorMassForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 template <class DataTypes>
@@ -397,7 +397,7 @@ void TetrahedralTensorMassForceField<DataTypes>::updateLameCoefficients()
 {
     lambda= f_youngModulus.getValue()*f_poissonRatio.getValue()/((1-2*f_poissonRatio.getValue())*(1+f_poissonRatio.getValue()));
     mu = f_youngModulus.getValue()/(2*(1+f_poissonRatio.getValue()));
-//	std::cerr << "initialized Lame coef : lambda=" <<lambda<< " mu="<<mu<<std::endl;
+//	serr << "initialized Lame coef : lambda=" <<lambda<< " mu="<<mu<<sendl;
 }
 
 

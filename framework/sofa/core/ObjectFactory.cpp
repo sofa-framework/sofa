@@ -95,20 +95,20 @@ objectmodel::BaseObject* ObjectFactory::createObject(objectmodel::BaseContext* c
     }
     else
     {
-// 	  std::cout << "ObjectFactory: class "<<classname<<" FOUND."<<std::endl;
+//        std::cout << "ObjectFactory: class "<<classname<<" FOUND."<<std::endl;
         ClassEntry* entry = it->second;
         if(templatename.empty()) templatename = entry->defaultTemplate;
         std::map<std::string, Creator*>::iterator it2 = entry->creatorMap.find(templatename);
         if (it2 != entry->creatorMap.end())
         {
-// 	      std::cout << "ObjectFactory: template "<<templatename<<" FOUND."<<std::endl;
+//            std::cout << "ObjectFactory: template "<<templatename<<" FOUND."<<std::endl;
             Creator* c = it2->second;
             if (c->canCreate(context, arg))
                 creators.push_back(c);
         }
         else
         {
-// 	      std::cout << "ObjectFactory: template "<<templatename<<" NOT FOUND."<<std::endl;
+//            std::cout << "ObjectFactory: template "<<templatename<<" NOT FOUND."<<std::endl;
             std::list< std::pair< std::string, Creator*> >::iterator it3;
             for (it3 = entry->creatorList.begin(); it3 != entry->creatorList.end(); ++it3)
             {
@@ -120,12 +120,12 @@ objectmodel::BaseObject* ObjectFactory::createObject(objectmodel::BaseContext* c
     }
     if (creators.empty())
     {
-// 	  std::cerr<<"ERROR: ObjectFactory: Object type "<<classname<<"<"<<templatename<<"> creation failed."<<std::endl;
+//        std::cerr<<"ERROR: ObjectFactory: Object type "<<classname<<"<"<<templatename<<"> creation failed."<<std::endl;
         arg->logWarning("Object type " + classname + std::string("<") + templatename + std::string("> creation failed"));
     }
     else
     {
-// 	    std::cout << "Create Instance : " << arg->getFullName() << "\n";
+//          std::cout << "Create Instance : " << arg->getFullName() << "\n";
         object = creators[0]->createInstance(context, arg);
         if (creators.size()>1)
         {
@@ -135,7 +135,7 @@ objectmodel::BaseObject* ObjectFactory::createObject(objectmodel::BaseContext* c
             {
                 w += std::string("\n\t* ") + objectmodel::Base::decodeTemplateName(creators[i]->type());
             }
-            object->logWarning(w);
+            object->serr<<w<<object->sendl;
         }
     }
     return object;
@@ -400,26 +400,26 @@ RegisterObject::operator int()
 
 // void ObjectFactory::ClassEntry::print()
 // {
-//   cout<<"className = "<<className<<endl;
-//   cout<<"  baseClasses: ";
+//   std::cout<<"className = "<<className<<endl;
+//   std::cout<<"  baseClasses: ";
 //   for( std::set<std::string>::const_iterator i=baseClasses.begin(), iend=baseClasses.end(); i!=iend; i++ )
-//     cout<<*i<<", ";
-//   cout<<endl;
-//   cout<<"  aliases: ";
+//     std::cout<<*i<<", ";
+//   std::cout<<std::endl;
+//   std::cout<<"  aliases: ";
 //   for( std::set<std::string>::const_iterator i=aliases.begin(), iend=aliases.end(); i!=iend; i++ )
-//     cout<<*i<<", ";
-//   cout<<endl;
-//   cout<<"  description: "<<description<<endl;
-//   cout<<"  authors: "<<authors<<endl;
-//   cout<<"  license: "<<license<<endl;
-//   cout<<"  creators: ";
+//     std::cout<<*i<<", ";
+//   std::cout<<std::endl;
+//   std::cout<<"  description: "<<description<<std::endl;
+//   std::cout<<"  authors: "<<authors<<std::endl;
+//   std::cout<<"  license: "<<license<<std::endl;
+//   std::cout<<"  creators: ";
 //   for( std::list< std::pair<std::string, Creator*> >::const_iterator i=creatorList.begin(), iend=creatorList.end(); i!=iend; i++ )
-//     cout<<(*i).first<<", ";
-//   cout<<endl;
-//   cout<<"  creatorMap: ";
+//     std::cout<<(*i).first<<", ";
+//   std::cout<<std::endl;
+//   std::cout<<"  creatorMap: ";
 //   for( std::map<std::string, Creator*>::const_iterator i=creatorMap.begin(), iend=creatorMap.end(); i!=iend; i++ )
-//     cout<<(*i).first<<", ";
-//   cout<<endl;
+//     std::cout<<(*i).first<<", ";
+//   std::cout<<std::endl;
 //
 // }
 

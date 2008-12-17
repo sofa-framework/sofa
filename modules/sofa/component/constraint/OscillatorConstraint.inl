@@ -106,7 +106,7 @@ void OscillatorConstraint<DataTypes>::projectPosition(VecCoord& res)
 {
     const helper::vector< Oscillator > &oscillators = constraints.getValue();
     Real t = (Real) getContext()->getTime();
-    //std::cerr<<"OscillatorConstraint<DataTypes>::projectPosition, t = "<<t<<endl;
+    //serr<<"OscillatorConstraint<DataTypes>::projectPosition, t = "<<t<<sendl;
     for( unsigned i=0; i<oscillators.size(); ++i )
     {
         const unsigned& index = oscillators[i].index;

@@ -38,8 +38,8 @@
 #include <sofa/component/topology/TriangleSetTopologyChange.h>
 
 
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {
@@ -84,18 +84,18 @@ void TriangleModel::init()
 
     if (mstate==NULL)
     {
-        logWarning("TriangleModel requires a Vec3 Mechanical Model");
+        serr << "TriangleModel requires a Vec3 Mechanical Model" << sendl;
         return;
     }
 
     if (!_topology)
     {
-        logWarning("TriangleModel requires a BaseMeshTopology");
+        serr << "TriangleModel requires a BaseMeshTopology" << sendl;
         return;
     }
 
-    //std::cout << "INFO_print : Col - init TRIANGLE " << std::endl;
-    std::cout << "TriangleModel: initially "<<_topology->getNbTriangles()<<" triangles." << std::endl;
+    //sout << "INFO_print : Col - init TRIANGLE " << sendl;
+    sout << "TriangleModel: initially "<<_topology->getNbTriangles()<<" triangles." << sendl;
     triangles = &_topology->getTriangles();
     resize(_topology->getNbTriangles());
 
@@ -114,7 +114,7 @@ void TriangleModel::updateNormals()
 
         t.n() = cross(pt2-pt1,pt3-pt1);
         t.n().normalize();
-        //std::cout << i << " " << t.n() << std::endl;
+        //sout << i << " " << t.n() << sendl;
     }
 }
 
@@ -150,7 +150,7 @@ void TriangleModel::updateFromTopology()
             topology::BaseMeshTopology::Triangle idx = _topology->getTriangle(i);
             if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints)
             {
-                std::cerr << "ERROR: Out of range index in triangle "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" ( total points="<<npoints<<")\n";
+                serr << "ERROR: Out of range index in triangle "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" ( total points="<<npoints<<")"<<sendl;
                 if (idx[0] >= npoints) idx[0] = npoints-1;
                 if (idx[1] >= npoints) idx[1] = npoints-1;
                 if (idx[2] >= npoints) idx[2] = npoints-1;
@@ -163,7 +163,7 @@ void TriangleModel::updateFromTopology()
             topology::BaseMeshTopology::Quad idx = _topology->getQuad(i);
             if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints || idx[3] >= npoints)
             {
-                std::cerr << "ERROR: Out of range index in quad "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" "<<idx[3]<<" ( total points="<<npoints<<")\n";
+                serr << "ERROR: Out of range index in quad "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" "<<idx[3]<<" ( total points="<<npoints<<")"<<sendl;
                 if (idx[0] >= npoints) idx[0] = npoints-1;
                 if (idx[1] >= npoints) idx[1] = npoints-1;
                 if (idx[2] >= npoints) idx[2] = npoints-1;
@@ -277,7 +277,7 @@ void TriangleModel::handleTopologyChange()
 
             case core::componentmodel::topology::ENDING_EVENT:
             {
-                std::cout << "TriangleModel: now "<<_topology->getNbTriangles()<<" triangles." << std::endl;
+                sout << "TriangleModel: now "<<_topology->getNbTriangles()<<" triangles." << sendl;
                 resize(_topology->getNbTriangles());
                 needsUpdate=true;
                 updateFlags();
@@ -311,7 +311,7 @@ void TriangleModel::handleTopologyChange()
 
             case core::componentmodel::topology::ENDING_EVENT:
             {
-                //std::cout << "INFO_print : Col - ENDING_EVENT" << std::endl;
+                //sout << "INFO_print : Col - ENDING_EVENT" << sendl;
                 needsUpdate=true;
                 break;
             }
@@ -319,7 +319,7 @@ void TriangleModel::handleTopologyChange()
 
             case core::componentmodel::topology::TRIANGLESADDED:
             {
-                //std::cout << "INFO_print : Col - TRIANGLESADDED" << std::endl;
+                //sout << "INFO_print : Col - TRIANGLESADDED" << sendl;
                 TriangleInfo t;
                 const sofa::component::topology::TrianglesAdded *ta=static_cast< const sofa::component::topology::TrianglesAdded * >( *itBegin );
                 for (unsigned int i=0; i<ta->getNbAddedTriangles(); ++i)
@@ -334,7 +334,7 @@ void TriangleModel::handleTopologyChange()
 
             case core::componentmodel::topology::TRIANGLESREMOVED:
             {
-                //std::cout << "INFO_print : Col - TRIANGLESREMOVED" << std::endl;
+                //sout << "INFO_print : Col - TRIANGLESREMOVED" << sendl;
                 unsigned int last;
                 unsigned int ind_last;
 
@@ -386,7 +386,7 @@ void TriangleModel::handleTopologyChange()
 
             case core::componentmodel::topology::POINTSREMOVED:
             {
-                //std::cout << "INFO_print : Col - POINTSREMOVED" << std::endl;
+                //sout << "INFO_print : Col - POINTSREMOVED" << sendl;
                 if (_topology->getNbTriangles()>0)
                 {
 
@@ -479,7 +479,7 @@ void TriangleModel::handleTopologyChange()
 
                                     if(!is_in_shell)
                                     {
-                                        std::cout << "INFO_print : Col - triangle is forgotten in SHELL !!! global index = "  << ind_forgotten << std::endl;
+                                        sout << "INFO_print : Col - triangle is forgotten in SHELL !!! global index = "  << ind_forgotten << sendl;
                                     }
 
                                 }
@@ -501,7 +501,7 @@ void TriangleModel::handleTopologyChange()
 
             case core::componentmodel::topology::POINTSRENUMBERING:
             {
-                //std::cout << "INFO_print : Vis - POINTSRENUMBERING" << std::endl;
+                //sout << "INFO_print : Vis - POINTSRENUMBERING" << sendl;
 
                 if (_topology->getNbTriangles()>0)
                 {
@@ -742,19 +742,19 @@ void TriangleModel::computeContinuousBoundingTree(double dt, int maxDepth)
 void TriangleModel::buildOctree()
 {
     /*
-    	cerr<<"TriangleModel::buildOctree(), coords = "<<*mstate->getX()<<endl;
+    	serr<<"TriangleModel::buildOctree(), coords = "<<*mstate->getX()<<sendl;
     	const int ntris = mesh->getNbTriangles();
     	const int nquads = mesh->getNbQuads();
     	for (int i=0; i<ntris; i++)
     	{
     		topology::MeshTopology::Triangle idx = mesh->getTriangle(i);
-    		cerr<<"  triangle "<< idx[0] <<", "<<idx[1]<<", "<<idx[2]<<endl;;
+    		serr<<"  triangle "<< idx[0] <<", "<<idx[1]<<", "<<idx[2]<<sendl;;
     	}
     	for (int i=0; i<nquads; i++)
     	{
     		topology::MeshTopology::Quad idx = mesh->getQuad(i);
-    		cerr<<"  triangle "<< idx[0] <<", "<<idx[1]<<", "<<idx[2]<<endl;;
-    		cerr<<"  triangle "<< idx[0] <<", "<<idx[2]<<", "<<idx[3]<<endl;;
+    		serr<<"  triangle "<< idx[0] <<", "<<idx[1]<<", "<<idx[2]<<sendl;;
+    		serr<<"  triangle "<< idx[0] <<", "<<idx[2]<<", "<<idx[3]<<sendl;;
     	}
     */
 }

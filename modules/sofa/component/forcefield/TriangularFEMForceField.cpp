@@ -54,9 +54,9 @@ using namespace sofa::defaulttype;
 using namespace	sofa::component::topology;
 using namespace core::componentmodel::topology;
 
-using std::cerr;
-using std::cout;
-using std::endl;
+
+
+
 
 static Vec3d ColorMap[64] =
 {
@@ -201,7 +201,7 @@ TriangularFEMForceField<DataTypes>::~TriangularFEMForceField()
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::init()
 {
-    std::cerr << "initializing TriangularFEMForceField" << std::endl;
+    serr << "initializing TriangularFEMForceField" << sendl;
     this->Inherited::init();
 
     _topology = getContext()->getMeshTopology();
@@ -213,7 +213,7 @@ void TriangularFEMForceField<DataTypes>::init()
 
     if (_topology->getNbTriangles()==0)
     {
-        std::cerr << "ERROR(TriangularFEMForceField): object must have a Triangular Set Topology.\n";
+        serr << "ERROR(TriangularFEMForceField): object must have a Triangular Set Topology."<<sendl;
         return;
     }
 
@@ -256,7 +256,7 @@ template <class DataTypes>void TriangularFEMForceField<DataTypes>::reinit()
 template <class DataTypes>
 double TriangularFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
 {
-    cerr<<"TriangularFEMForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    serr<<"TriangularFEMForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 
@@ -268,7 +268,7 @@ void TriangularFEMForceField<DataTypes>::computeRotationLarge( Transformation &r
 {
 
 #ifdef DEBUG_TRIANGLEFEM
-    std::cout << "TriangularFEMForceField::computeRotationLarge\n";
+    sout << "TriangularFEMForceField::computeRotationLarge"<<sendl;
 #endif
 
     // first vector on first edge
@@ -307,7 +307,7 @@ void TriangularFEMForceField<DataTypes>::initSmall(int i, Index&a, Index&b, Inde
 {
 
 #ifdef DEBUG_TRIANGLEFEM
-    std::cout << "TriangularFEMForceField::initSmall\n";
+    sout << "TriangularFEMForceField::initSmall"<<sendl;
 #endif
 
     TriangleInformation *tinfo = &triangleInfo[i];
@@ -329,7 +329,7 @@ void TriangularFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Inde
 {
 
 #ifdef DEBUG_TRIANGLEFEM
-    std::cout << "TriangularFEMForceField::initLarge\n";
+    sout << "TriangularFEMForceField::initLarge"<<sendl;
 #endif
 
     TriangleInformation *tinfo = &triangleInfo[i];
@@ -675,12 +675,12 @@ void TriangularFEMForceField<DataTypes>::computeForce(Displacement &F, Index ele
         computeStrain(strain, J, D);
         computeStress(stress, triangleInfo[elementIndex].materialMatrix, strain);
 
-//		cout << endl;
-//		cout << "p[a]=(" << p[a] << ") - p[b]=(" << p[b] << ") - p[c]=(" << p[c] << ")" << endl;
-//		cout << "D: " << D << endl;
-//		cout << "J: " << J << endl;
-//		cout << "Strain: " << strain << endl;
-//		cout << "Stress: " << stress << endl;
+//		sout << endl;
+//		sout << "p[a]=(" << p[a] << ") - p[b]=(" << p[b] << ") - p[c]=(" << p[c] << ")" << endl;
+//		sout << "D: " << D << endl;
+//		sout << "J: " << J << endl;
+//		sout << "Strain: " << strain << endl;
+//		sout << "Stress: " << stress << endl;
 
         // Compute F = J * stress;
         // Optimisations: The following values are 0 (per computeStrainDisplacement )
@@ -759,7 +759,7 @@ void TriangularFEMForceField<DataTypes>::accumulateDampingSmall(VecCoord&, Index
 {
 
 #ifdef DEBUG_TRIANGLEFEM
-    std::cout << "TriangularFEMForceField::accumulateDampingSmall\n";
+    sout << "TriangularFEMForceField::accumulateDampingSmall"<<sendl;
 #endif
 
 }
@@ -772,7 +772,7 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h
 {
 
 #ifdef DEBUG_TRIANGLEFEM
-    std::cout << "TriangularFEMForceField::applyStiffnessSmall\n";
+    sout << "TriangularFEMForceField::applyStiffnessSmall"<<sendl;
 #endif
 
     Mat<6,3,Real> J;
@@ -814,7 +814,7 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h
 {
 
 #ifdef DEBUG_TRIANGLEFEM
-    std::cout << "TriangularFEMForceField::applyStiffnessLarge\n";
+    sout << "TriangularFEMForceField::applyStiffnessLarge"<<sendl;
 #endif
 
     Mat<6,3,Real> J;
@@ -882,7 +882,7 @@ void TriangularFEMForceField<DataTypes>::accumulateForceSmall( VecCoord &f, cons
 {
 
 #ifdef DEBUG_TRIANGLEFEM
-    std::cout << "TriangularFEMForceField::accumulateForceSmall\n";
+    sout << "TriangularFEMForceField::accumulateForceSmall"<<sendl;
 #endif
 
     Displacement F;
@@ -907,7 +907,7 @@ template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const VecCoord &p, Index elementIndex )
 {
 #ifdef DEBUG_TRIANGLEFEM
-    std::cout << "TriangularFEMForceField::accumulateForceLarge\n";
+    sout << "TriangularFEMForceField::accumulateForceLarge"<<sendl;
 #endif
 
     Displacement F;
@@ -969,13 +969,13 @@ void TriangularFEMForceField<DataTypes>::computeStressAlongDirection(Real &stres
     Coord dir_local = Rt * dir;
     dir_local[2] = 0; // project direction
     dir_local.normalize();
-    //	cout << "dir_local : " << dir_local << endl;
+    //	sout << "dir_local : " << dir_local << endl;
 
     // compute stress along specified direction 'dir'
     Real cos_theta = dir_local[0];
     Real sin_theta = dir_local[1];
     stress_along_dir = stress[0]*cos_theta*cos_theta + stress[1]*sin_theta*sin_theta + stress[2]*2*cos_theta*sin_theta;
-    //cout << "computeStressAlongDirection :: stress ( " << stress << ") along local direction = (" << dir_local << ") = " <<  stress_along_dir << endl;
+    //sout << "computeStressAlongDirection :: stress ( " << stress << ") along local direction = (" << dir_local << ") = " <<  stress_along_dir << endl;
 }
 
 template <class DataTypes>
@@ -1019,7 +1019,7 @@ void TriangularFEMForceField<DataTypes>::accumulateDampingLarge(VecCoord &, Inde
 {
 
 #ifdef DEBUG_TRIANGLEFEM
-    std::cout << "TriangularFEMForceField::accumulateDampingLarge\n";
+    sout << "TriangularFEMForceField::accumulateDampingLarge"<<sendl;
 #endif
 
 }
@@ -1143,9 +1143,9 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
     //			std::sort( mostDeformableVertexIndexA.begin(), mostDeformableVertexIndexA.end() );
     //		for( unsigned int i=0; i<nbPoints; i++ )
     //			{
-    //				std::cout << mostDeformableVertexIndexA[i].first << " ";
+    //				sout << mostDeformableVertexIndexA[i].first << " ";
     //			}
-    //			std::cout << "\n";
+    //			sout << ""<<sendl;
 
 
     //			bool vertexOnBorder(false);
@@ -1165,7 +1165,7 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
 
     if ((mostDeformableVertexIndex!=-1) && (max > THRESHOLD))
     {
-    //std::cout << "max=" << max << std::endl;
+    //sout << "max=" << max << sendl;
     double minDotProduct = 1000.0;
     unsigned int fracturableIndex = 0;
     bool fracture(false);
@@ -1239,7 +1239,7 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
     }
 
     if (fracture) {
-    //std::cout << "fracture at edge "<<fracturableIndex<<std::endl;
+    //sout << "fracture at edge "<<fracturableIndex<<sendl;
     edgeInfo[fracturableIndex].fracturable = true;
     lastFracturedEdgeIndex = fracturableIndex;
     }
@@ -1248,7 +1248,7 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
     }
     */
 
-    //	std::cout << "EOF AddForce\n";
+    //	sout << "EOF AddForce"<<sendl;
 }
 
 // --------------------------------------------------------------------------------------

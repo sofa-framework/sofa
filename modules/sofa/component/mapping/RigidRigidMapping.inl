@@ -38,8 +38,8 @@
 #include <string.h>
 #include <iostream>
 
-using std::cerr;
-using std::endl;
+
+
 
 
 
@@ -218,7 +218,7 @@ void RigidRigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const 
     default: //n values are specified : heterogen repartition.getValue() mapping on the input dofs
         if (repartition.getValue().size() != in.size())
         {
-            std::cerr<<"Error : mapping dofs repartition.getValue() is not correct"<<std::endl;
+            serr<<"Error : mapping dofs repartition.getValue() is not correct"<<sendl;
             return;
         }
         cptOut=0;
@@ -291,7 +291,7 @@ void RigidRigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& childForce
     default:
         if (repartition.getValue().size() != parentForces.size())
         {
-            std::cerr<<"Error : mapping dofs repartition.getValue() is not correct"<<std::endl;
+            serr<<"Error : mapping dofs repartition.getValue() is not correct"<<sendl;
             return;
         }
         cptchildForces=0;
@@ -367,7 +367,7 @@ void RigidRigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& parentForc
     default :
         if (repartition.getValue().size() != parentForces.size())
         {
-            std::cerr<<"Error : mapping dofs repartition.getValue() is not correct"<<std::endl;
+            serr<<"Error : mapping dofs repartition.getValue() is not correct"<<sendl;
             return;
         }
         cpt=0;
@@ -444,7 +444,7 @@ void RigidRigidMapping<BasicMapping>::computeAccFromMapping(  typename Out::VecD
     default:
         if (repartition.getValue().size() != v_in.size())
         {
-            std::cerr<<"Error : mapping dofs repartition.getValue() is not correct"<<std::endl;
+            serr<<"Error : mapping dofs repartition.getValue() is not correct"<<sendl;
             return;
         }
         cptchildV=0;

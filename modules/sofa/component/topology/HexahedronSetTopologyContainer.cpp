@@ -98,7 +98,7 @@ void HexahedronSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoa
 void HexahedronSetTopologyContainer::createHexahedronSetArray()
 {
 #ifndef NDEBUG
-    cout << "Error. [HexahedronSetTopologyContainer::createHexahedronSetArray] This method must be implemented by a child topology." << endl;
+    sout << "Error. [HexahedronSetTopologyContainer::createHexahedronSetArray] This method must be implemented by a child topology." << endl;
 #endif
 }
 
@@ -450,7 +450,7 @@ const sofa::helper::vector<Hexahedron> &HexahedronSetTopologyContainer::getHexah
     if(!hasHexahedra() && getNbPoints()>0)
     {
 #ifndef NDEBUG
-        cout << "Warning. [HexahedronSetTopologyContainer::getHexahedronArray] creating hexahedron array." << endl;
+        sout << "Warning. [HexahedronSetTopologyContainer::getHexahedronArray] creating hexahedron array." << endl;
 #endif
         createHexahedronSetArray();
     }

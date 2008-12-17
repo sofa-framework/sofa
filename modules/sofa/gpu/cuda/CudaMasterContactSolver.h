@@ -177,7 +177,7 @@ public:
 
     virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
-        //std::cout << c->getName()<<"->getConstraintValue()"<<std::endl;
+        //sout << c->getName()<<"->getConstraintValue()"<<sendl;
         c->getConstraintValue(_v /*, _numContacts*/);
         return RESULT_CONTINUE;
     }

@@ -184,9 +184,9 @@ void ArticulatedHierarchyController::dumpActiveArticulations(void) const
     while (it != itEnd)
     {
         if (*it)
-            std::cout << "-------------> Articulation " << articulationsIndices.getValue()[i] << " active\n";
+            std::cout << "-------------> Articulation " << articulationsIndices.getValue()[i] << " active"<<std::endl;
         else
-            std::cout << "-------------> Articulation " << articulationsIndices.getValue()[i] << " inactive\n";
+            std::cout << "-------------> Articulation " << articulationsIndices.getValue()[i] << " inactive"<<std::endl;
 
         ++it;
         i++;
@@ -197,7 +197,7 @@ void ArticulatedHierarchyController::dumpActiveArticulations(void) const
 
 void ArticulatedHierarchyController::dumpArticulationsAndBindingKeys(void) const
 {
-    std::cout << "ARTICULATIONS_KEYBOARD_CONTROLER : Controled Articulations & Binding Keys\n";
+    std::cout << "ARTICULATIONS_KEYBOARD_CONTROLER : Controled Articulations & Binding Keys"<<std::endl;
 
     vector<int>::const_iterator articulationsIndicesIt = articulationsIndices.getValue().begin();
     vector<int>::const_iterator articulationsIndicesItEnd = articulationsIndices.getValue().end();

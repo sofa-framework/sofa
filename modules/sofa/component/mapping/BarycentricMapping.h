@@ -700,6 +700,8 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::MappingData3D MappingData;
+
+
 protected:
     topology::PointData< MappingData >  map;
     topology::HexahedronSetTopologyContainer*		_container;
@@ -786,6 +788,9 @@ public:
 
     typedef core::componentmodel::topology::BaseMeshTopology BaseMeshTopology;
 
+    using Inherit::sout;
+    using Inherit::serr;
+    using Inherit::sendl;
 protected:
 
     typedef TopologyBarycentricMapper<InDataTypes,OutDataTypes> Mapper;

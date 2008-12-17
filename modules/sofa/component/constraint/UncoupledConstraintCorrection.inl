@@ -60,7 +60,7 @@ void UncoupledConstraintCorrection<DataTypes>::init()
 
     if (x.size() != compliance.getValue().size())
     {
-        std::cout<<"Warning compliance size is not the size of the mstate"<<std::endl;
+        sout<<"Warning compliance size is not the size of the mstate"<<sendl;
         VecReal UsedComp;
         if (compliance.getValue().size()>0)
         {
@@ -106,7 +106,7 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
     }
 
 
-    //std::cout<<"Mass Value  = "<< massValue[1] <<std::endl;
+    //sout<<"Mass Value  = "<< massValue[1] <<sendl;
     unsigned int numConstraints = constraints.size();
     double dt = this->getContext()->getDt();
 
@@ -115,7 +115,7 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
         int sizeCurRowConst = constraints[curRowConst].size();
         int indexCurRowConst = mstate->getConstraintId()[curRowConst];
 
-        //std::cout<<"constraint["<<curRowConst<<"] : ";
+        //sout<<"constraint["<<curRowConst<<"] : ";
 
 
 
@@ -124,7 +124,7 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
             weighedNormal.getVCenter() = constraints[curRowConst][i].data.getVCenter(); // weighed normal
             weighedNormal.getVOrientation() = constraints[curRowConst][i].data.getVOrientation();
 
-            //std::cout<<" - "<<weighedNormal;
+            //sout<<" - "<<weighedNormal;
 
             InvM_wN = weighedNormal / (*massValue);
             InvM_wN *= dt*dt ;
@@ -158,7 +158,7 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
                 }
             */
         }
-        //std::cout<<" end"<<std::endl;
+        //sout<<" end"<<sendl;
     }
 }
 
@@ -259,11 +259,11 @@ void UncoupledConstraintCorrection<defaulttype::Vec1dTypes>::getCompliance(defau
     {
         int sizeCurRowConst = constraints[curRowConst].size();
         int indexCurRowConst = mstate->getConstraintId()[curRowConst];
-        //std::cout<<"constraint["<<curRowConst<<"] : ";
+        //sout<<"constraint["<<curRowConst<<"] : ";
         for(int i = 0; i < sizeCurRowConst; i++)
         {
             int indexCurColConst;
-            //  std::cout<<" : "<<constraints[curRowConst][i].data.x();
+            //  sout<<" : "<<constraints[curRowConst][i].data.x();
 
             for(unsigned int curColConst = curRowConst; curColConst < numConstraints; curColConst++)
             {
@@ -292,7 +292,7 @@ void UncoupledConstraintCorrection<defaulttype::Vec1dTypes>::getCompliance(defau
                 }
             */
         }
-        //std::cout<<" : "<<std::endl;
+        //sout<<" : "<<sendl;
     }
 
 // debug : verifie qu'il n'y a pas de 0 sur la diagonale de W
@@ -354,7 +354,7 @@ void UncoupledConstraintCorrection<defaulttype::Vec1dTypes>::applyContactForce(c
         x[i] += dx[i];
         v[i] += dx[i]/dt;
     }
-    //std::cout<<" dx on articulations"<<dx<<std::endl;
+    //sout<<" dx on articulations"<<dx<<sendl;
 }
 
 #endif

@@ -50,7 +50,7 @@ SOFA_DECL_CLASS(RungeKutta4);
 
 void RungeKutta4Solver::solve(double dt)
 {
-    //std::cout << "RK4 Init\n";
+    //sout << "RK4 Init"<<sendl;
     MultiVector pos(this, VecId::position());
     MultiVector vel(this, VecId::velocity());
     MultiVector k1a(this, VecId::V_DERIV);
@@ -74,12 +74,12 @@ void RungeKutta4Solver::solve(double dt)
     addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
     //First step
-    if (log) std::cout << "RK4 Step 1\n";
+    if (log) sout << "RK4 Step 1"<<sendl;
     //k1v = vel;
     computeAcc (startTime, k1a, pos, vel);
 
     //Step 2
-    if (log) std::cout << "RK4 Step 2\n";
+    if (log) sout << "RK4 Step 2"<<sendl;
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     newX = pos;
     k2v = vel;
@@ -105,7 +105,7 @@ void RungeKutta4Solver::solve(double dt)
     computeAcc ( startTime+stepBy2, k2a, newX, k2v );
 
     // step 3
-    if (log) std::cout << "RK4 Step 3\n";
+    if (log) sout << "RK4 Step 3"<<sendl;
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     newX = pos;
     k3v = vel;
@@ -130,7 +130,7 @@ void RungeKutta4Solver::solve(double dt)
     computeAcc ( startTime+stepBy2, k3a, newX, k3v );
 
     // step 4
-    if (log) std::cout << "RK4 Step 4\n";
+    if (log) sout << "RK4 Step 4"<<sendl;
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     newX = pos;
     k4v = vel;
@@ -154,7 +154,7 @@ void RungeKutta4Solver::solve(double dt)
 
     computeAcc( startTime+dt, k4a, newX, k4v);
 
-    if (log) std::cout << "RK4 Final\n";
+    if (log) sout << "RK4 Final"<<sendl;
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     pos.peq(k1v,stepBy6);
     vel.peq(k1a,stepBy6);

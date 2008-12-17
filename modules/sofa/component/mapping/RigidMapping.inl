@@ -39,8 +39,8 @@
 #include <string.h>
 #include <iostream>
 
-using std::cerr;
-using std::endl;
+
+
 
 
 
@@ -145,18 +145,18 @@ template <class BasicMapping>
 void RigidMapping<BasicMapping>::init()
 {
     if ( !fileRigidMapping.getValue().empty() ) this->load ( fileRigidMapping.getValue().c_str() );
-    //cerr<<"RigidMapping<BasicMapping>::init begin "<<getName()<<endl;
+    //serr<<"RigidMapping<BasicMapping>::init begin "<<getName()<<sendl;
     if (this->points.getValue().empty() && this->toModel!=NULL && !useX0.getValue())
     {
         VecCoord& x = *this->toModel->getX();
-        //std::cout << "RigidMapping: init "<<x.size()<<" points."<<std::endl;
+        //sout << "RigidMapping: init "<<x.size()<<" points."<<sendl;
         points.beginEdit()->resize(x.size());
         for (unsigned int i=0; i<x.size(); i++)
             (*points.beginEdit())[i] = x[i];
     }
-    //cerr<<"RigidMapping<BasicMapping>::init now doing  BasicMapping::init()"<<getName()<<endl;
+    //serr<<"RigidMapping<BasicMapping>::init now doing  BasicMapping::init()"<<getName()<<sendl;
     this->BasicMapping::init();
-    //cerr<<"RigidMapping<BasicMapping>::init end "<<getName()<<endl;
+    //serr<<"RigidMapping<BasicMapping>::init end "<<getName()<<sendl;
 }
 /*
 template <class BasicMapping>
@@ -225,7 +225,7 @@ const typename RigidMapping<BasicMapping>::VecCoord & RigidMapping<BasicMapping>
     {
         const VecCoord* v = M_getX0(this->toModel);
         if (v) return *v;
-        else std::cerr << "RigidMapping: ERROR useX0 can only be used in MechanicalMappings." << std::endl;
+        else serr << "RigidMapping: ERROR useX0 can only be used in MechanicalMappings." << sendl;
     }
     return points.getValue();
 }
@@ -233,7 +233,7 @@ const typename RigidMapping<BasicMapping>::VecCoord & RigidMapping<BasicMapping>
 template <class BasicMapping>
 void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    //cerr<<"RigidMapping<BasicMapping>::apply "<<getName()<<endl;
+    //serr<<"RigidMapping<BasicMapping>::apply "<<getName()<<sendl;
     unsigned int cptOut;
     unsigned int val;
     Coord translation;
@@ -291,7 +291,7 @@ void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typen
     default: //n values are specified : heterogen repartition mapping on the input dofs
         if (repartition.getValue().size() != in.size())
         {
-            std::cerr<<"Error : mapping dofs repartition is not correct"<<std::endl;
+            serr<<"Error : mapping dofs repartition is not correct"<<sendl;
             return;
         }
         cptOut=0;
@@ -364,7 +364,7 @@ void RigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const type
     default:
         if (repartition.getValue().size() != in.size())
         {
-            std::cerr<<"Error : mapping dofs repartition is not correct"<<std::endl;
+            serr<<"Error : mapping dofs repartition is not correct"<<sendl;
             return;
         }
 
@@ -406,11 +406,11 @@ void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
             // -OM^t = OM^
 
             Deriv f = in[i];
-            //cerr<<"RigidMapping<BasicMapping>::applyJT, f = "<<f<<endl;
+            //serr<<"RigidMapping<BasicMapping>::applyJT, f = "<<f<<sendl;
             v += f;
             omega += cross(rotatedPoints[i],f);
-            //cerr<<"RigidMapping<BasicMapping>::applyJT, new v = "<<v<<endl;
-            //cerr<<"RigidMapping<BasicMapping>::applyJT, new omega = "<<omega<<endl;
+            //serr<<"RigidMapping<BasicMapping>::applyJT, new v = "<<v<<sendl;
+            //serr<<"RigidMapping<BasicMapping>::applyJT, new omega = "<<omega<<sendl;
         }
 
         if (indexFromEnd.getValue())
@@ -446,7 +446,7 @@ void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
     default :
         if (repartition.getValue().size() != out.size())
         {
-            std::cerr<<"Error : mapping dofs repartition is not correct"<<std::endl;
+            serr<<"Error : mapping dofs repartition is not correct"<<sendl;
             return;
         }
 

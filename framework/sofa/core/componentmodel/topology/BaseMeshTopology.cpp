@@ -242,14 +242,14 @@ bool BaseMeshTopology::load(const char* filename)
     std::string meshFilename(filename);
     if (!sofa::helper::system::DataRepository.findFile (meshFilename))
     {
-        logWarning(std::string("Mesh \"") + filename +std::string("\" not found"));
+        serr << "Mesh \""<< filename <<"\" not found"<< sendl;
         return false;
     }
     this->fileTopology.setValue( meshFilename );
     DefaultMeshTopologyLoader loader(this);
     if (!loader.load(meshFilename.c_str()))
     {
-        logWarning(std::string("Unable to load Mesh \"") + filename );
+        serr << "Unable to load Mesh \""<<filename << sendl;
         return false;
     }
     return true;
@@ -293,7 +293,8 @@ void BaseMeshTopology::addHexa(int, int, int, int, int, int, int, int)
 
 std::list<const TopologyChange *>::const_iterator BaseMeshTopology::firstChange() const
 {
-    std::cerr << "WARNING: "<<this->getClassName()<<"::firstChange() not supported." << std::endl;
+    std::cerr << "WARNING: "<<this->getClassName()<<"::firstChange() not supported." ;
+    std::cerr<< std::endl;
     std::list<const TopologyChange *>::const_iterator l;
     return l;
 }

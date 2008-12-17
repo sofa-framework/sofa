@@ -39,6 +39,7 @@
 #include <qpushbutton.h>
 #include <qlayout.h>
 #include <qtabwidget.h>
+#include <qtextedit.h>
 #endif
 
 #include <sofa/core/ObjectFactory.h>
@@ -91,6 +92,9 @@ ModifyObject::ModifyObject(void *Id_, core::objectmodel::Base* node_clicked, Q3L
     REINIT_FLAG = true;
 
     energy_curve[0]=NULL;	        energy_curve[1]=NULL;	        energy_curve[2]=NULL;
+
+    logWarningEdit=NULL; logOutputEdit=NULL;
+
     //Initialization of the Widget
     setNode(node_clicked, item_clicked);
     connect ( this, SIGNAL( objectUpdated() ), parent_, SLOT( redraw() ));
@@ -491,21 +495,10 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 tabLayout->addWidget( box );
             }
 
-            //Log of initialization
-            core::objectmodel::Base *obj = dynamic_cast< core::objectmodel::Base* >(node_clicked);
-            if (obj && obj->getLogWarning().size() != 0)
-            {
-                const sofa::helper::vector< std::string > &log = obj->getLogWarning();
-                Q3GroupBox *box = new Q3GroupBox(tab, QString("Log"));
-                box->setColumns(1);
-                box->setTitle(QString("Log"));
-                for (unsigned int idLog=0; idLog<log.size(); ++idLog)
-                {
-                    new QLabel(QString(log[idLog].c_str()), box);
-                }
-                tabLayout->addWidget( box );
-            }
+
             tabLayout->addStretch();
+
+            updateConsole();
         }
 
         //Adding buttons at the bottom of the dialog
@@ -544,6 +537,61 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
 }
 
+
+//******************************************************************************************
+void ModifyObject::updateConsole()
+{
+    //Console Warnings
+    if ( !node->sendl.getWarnings().empty())
+    {
+        if (!logWarningEdit)
+        {
+            QWidget* tab = new QWidget();
+            QVBoxLayout* tabLayout = new QVBoxLayout( tab, 0, 1, QString("tabWarningLayout"));
+
+            QPushButton *buttonClearWarnings = new QPushButton(tab, "buttonClearWarnings");
+            tabLayout->addWidget(buttonClearWarnings);
+            buttonClearWarnings->setText( tr("&Clear"));
+            connect( buttonClearWarnings, SIGNAL( clicked()), this, SLOT( clearWarnings()));
+
+            logWarningEdit = new QTextEdit( tab, QString("WarningEdit"));
+            tabLayout->addWidget( logWarningEdit );
+
+            dialogTab->addTab(tab, QString("Warnings"));
+            logWarningEdit->setReadOnly(true);
+        }
+
+        logWarningEdit->setText(QString(node->sendl.getWarnings().c_str()));
+        logWarningEdit->moveCursor(QTextEdit::MoveEnd, false);
+        logWarningEdit->ensureCursorVisible();
+
+    }
+    //Console Outputs
+    if ( !node->sendl.getOutputs().empty())
+    {
+        if (!logOutputEdit)
+        {
+            QWidget* tab = new QWidget();
+            QVBoxLayout* tabLayout = new QVBoxLayout( tab, 0, 1, QString("tabOutputLayout"));
+
+            QPushButton *buttonClearOutputs = new QPushButton(tab, "buttonClearOutputs");
+            tabLayout->addWidget(buttonClearOutputs);
+            buttonClearOutputs->setText( tr("&Clear"));
+            connect( buttonClearOutputs, SIGNAL( clicked()), this, SLOT( clearOutputs()));
+
+            logOutputEdit = new QTextEdit( tab, QString("OutputEdit"));
+            tabLayout->addWidget( logOutputEdit );
+
+
+            dialogTab->addTab(tab, QString("Outputs"));
+            logOutputEdit->setReadOnly(true);
+        }
+
+        logOutputEdit->setText(QString(node->sendl.getOutputs().c_str()));
+        logOutputEdit->moveCursor(QTextEdit::MoveEnd, false);
+        logOutputEdit->ensureCursorVisible();
+    }
+}
 
 //*******************************************************************************************************************
 void ModifyObject::changeValue()
@@ -592,9 +640,9 @@ void ModifyObject::updateValues()
             if (!(transformation[0]->getFloatValue() == 0 &&
                     transformation[1]->getFloatValue() == 0 &&
                     transformation[2]->getFloatValue() == 0 &&
-                    transformation[3]->getFloatValue()    == 0 &&
-                    transformation[4]->getFloatValue()    == 0 &&
-                    transformation[5]->getFloatValue()    == 0 &&
+                    transformation[3]->getFloatValue() == 0 &&
+                    transformation[4]->getFloatValue() == 0 &&
+                    transformation[5]->getFloatValue() == 0 &&
                     transformation[6]->getFloatValue() == 1 ))
             {
 
@@ -764,6 +812,8 @@ void ModifyObject::updateEnergy()
 
 void ModifyObject::updateTextEdit()
 {
+    updateConsole();
+
     std::list< std::pair< Q3TextEdit*, BaseData*> >::iterator it_list_TextEdit;
     for (it_list_TextEdit = list_TextEdit.begin(); it_list_TextEdit != list_TextEdit.end(); it_list_TextEdit++)
     {

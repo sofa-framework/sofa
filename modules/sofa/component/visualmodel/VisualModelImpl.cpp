@@ -174,7 +174,7 @@ void VisualModelImpl::drawShadow()
 {
     if (!isTransparent() && getCastShadow())
     {
-        //std::cout << "drawShadow for "<<getName()<<std::endl;
+        //sout << "drawShadow for "<<getName()<<sendl;
         internalDraw();
     }
 }
@@ -195,7 +195,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         material.setValue(M);
     }
 
-//             std::cout << "Vertices Import size : " << verticesImport.size() << " (" << normalsImport.size() << " normals)." << std::endl;
+//             sout << "Vertices Import size : " << verticesImport.size() << " (" << normalsImport.size() << " normals)." << sendl;
 
     int nbVIn = verticesImport.size();
     // First we compute for each point how many pair of normal/texcoord indices are used
@@ -275,9 +275,9 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     if (!vsplit) nbNOut = nbVOut;
     else if (nbNOut == nbVOut) vertNormIdx.resize(0);
 
-//             std::cout << "Vertices Export size : " << nbVOut << " (" << nbNOut << " normals)." << std::endl;
+//             sout << "Vertices Export size : " << nbVOut << " (" << nbNOut << " normals)." << sendl;
 
-//             std::cout << "Facets Import size : " << facetsImport.size() << std::endl;
+//             sout << "Facets Import size : " << facetsImport.size() << sendl;
 
     // Then we create the triangles and quads
 
@@ -295,7 +295,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
             idxs[j] = vertTexNormMap[verts[j]][std::make_pair((tex?texs[j]:-1), (useNormals?norms[j]:0))];
             if ((unsigned)idxs[j] >= (unsigned)nbVOut)
             {
-                std::cerr << "ERROR(VisualModelImpl): index "<<idxs[j]<<" out of range\n";
+                serr << "ERROR(VisualModelImpl): index "<<idxs[j]<<" out of range"<<sendl;
                 idxs[j] = 0;
             }
         }
@@ -315,15 +315,15 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         }
     }
 
-//             std::cout << "Facets Export size : ";
+//             sout << "Facets Export size : ";
 //             if (!triangles.empty())
-//                 std::cout << triangles.size() << " triangles";
+//                 sout << triangles.size() << " triangles";
 //             if (!quads.empty())
-//                 std::cout << quads.size() << " quads";
-//             std::cout << "." << std::endl;
+//                 sout << quads.size() << " quads";
+//             sout << "." << sendl;
 
     //for (unsigned int i = 0; i < triangles.size() ; i++)
-    //    std::cout << "T"<<i<<": "<<triangles[i][0]<<" "<<triangles[i][1]<<" "<<triangles[i][2]<<std::endl;
+    //    sout << "T"<<i<<": "<<triangles[i][0]<<" "<<triangles[i][1]<<" "<<triangles[i][2]<<sendl;
 
     computeNormals();
     computeBBox();
@@ -338,7 +338,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
         if (sofa::helper::system::DataRepository.findFile (textureFilename))
             tex = loadTexture(textureName);
         else
-            logWarning(std::string("Texture \"") + textureName +std::string("\" not found"));
+            serr <<"Texture \""<<textureName <<"\" not found" << sendl;
     }
     tex = !textureName.empty();
 
@@ -361,17 +361,17 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
             else
             {
                 setMesh(*objLoader,tex);
-                //std::cout << "VisualModel::load, vertices.size = "<< vertices.size() <<std::endl;
+                //sout << "VisualModel::load, vertices.size = "<< vertices.size() <<sendl;
             }
         }
         else
-            logWarning(std::string("Mesh \"") + filename +std::string("\" not found"));
+            serr <<"Mesh \""<< filename <<"\" not found" << sendl;
     }
     else
     {
         if (vertices.size() == 0)
         {
-            std::cout << "VisualModel: will use Topology."<<std::endl;
+            sout << "VisualModel: will use Topology."<<sendl;
             useTopology = true;
         }
         else  computeBBox();
@@ -475,8 +475,8 @@ void VisualModelImpl::computeNormals()
     if (vertNormIdx.empty())
     {
         int nbn = vertices.size();
-// 		std::cerr << "nb of visual vertices"<<nbn<<std::endl;
-// 		std::cerr << "nb of visual triangles"<<triangles.size()<<std::endl;
+// 		serr << "nb of visual vertices"<<nbn<<sendl;
+// 		serr << "nb of visual triangles"<<triangles.size()<<sendl;
 
         ResizableExtVector<Coord>& normals = vnormals;
 
@@ -687,7 +687,7 @@ void VisualModelImpl::setColor(std::string color)
     else if (color == "gray")     { r = 0.5f; g = 0.5f; b = 0.5f; }
     else
     {
-        std::cerr << "Unknown color "<<color<<std::endl;
+        serr << "Unknown color "<<color<<sendl;
         return;
     }
     setColor(r,g,b,a);
@@ -695,7 +695,7 @@ void VisualModelImpl::setColor(std::string color)
 
 void VisualModelImpl::updateVisual()
 {
-    //std::cout << "VisualModelImpl::updateVisual()"<<std::endl;
+    //sout << "VisualModelImpl::updateVisual()"<<sendl;
     if (modified && (!vertices.empty() || useTopology))
     {
         if (useTopology)
@@ -748,18 +748,18 @@ void VisualModelImpl::computeMesh()
 
             if (sofa::component::topology::SparseGridTopology * spTopo = dynamic_cast< sofa::component::topology::SparseGridTopology *>(_topology))
             {
-                std::cout << "VisualModel: getting marching cube mesh from topology : ";
+                sout << "VisualModel: getting marching cube mesh from topology : ";
                 sofa::helper::io::Mesh m;
                 spTopo->getMesh(m);
                 setMesh(m, !texturename.getValue().empty());
-                std::cout
+                sout
                         <<m.getVertices().size()<<" points, "
-                                <<m.getFacets().size()  << " triangles."<<std::endl;
+                                <<m.getFacets().size()  << " triangles."<<sendl;
                 useTopology = false; //visual model needs to be created only once at initial time
                 return;
             }
             if (this->f_printLog.getValue())
-                std::cout << "VisualModel: copying "<<_topology->getNbPoints()<<" points from topology."<<std::endl;
+                sout << "VisualModel: copying "<<_topology->getNbPoints()<<" points from topology."<<sendl;
             vertices.resize(_topology->getNbPoints());
 
             for (unsigned int i=0; i<vertices.size(); i++)
@@ -776,7 +776,7 @@ void VisualModelImpl::computeMesh()
             if (mstate)
             {
                 if (this->f_printLog.getValue())
-                    std::cout << "VisualModel: copying "<<mstate->getSize()<<" points from mechanical state."<<std::endl;
+                    sout << "VisualModel: copying "<<mstate->getSize()<<" points from mechanical state."<<sendl;
                 vertices.resize(mstate->getSize());
 
                 for (unsigned int i=0; i<vertices.size(); i++)
@@ -792,7 +792,7 @@ void VisualModelImpl::computeMesh()
     lastMeshRev = _topology->getRevision();
     const vector<sofa::core::componentmodel::topology::BaseMeshTopology::Triangle>& inputTriangles = _topology->getTriangles();
     if (this->f_printLog.getValue())
-        std::cout << "VisualModel: copying "<<inputTriangles.size()<<" triangles from topology."<<std::endl;
+        sout << "VisualModel: copying "<<inputTriangles.size()<<" triangles from topology."<<sendl;
 
     triangles.resize(inputTriangles.size());
 
@@ -803,7 +803,7 @@ void VisualModelImpl::computeMesh()
 
     const vector<sofa::core::componentmodel::topology::BaseMeshTopology::Quad>& inputQuads = _topology->getQuads();
     if (this->f_printLog.getValue())
-        std::cout << "VisualModel: copying "<<inputQuads.size()<<" quads from topology."<<std::endl;
+        sout << "VisualModel: copying "<<inputQuads.size()<<" quads from topology."<<sendl;
     quads.resize(inputQuads.size());
     for (unsigned int i=0; i<quads.size(); ++i)
         quads[i] = inputQuads[i];
@@ -825,14 +825,14 @@ void VisualModelImpl::handleTopologyChange()
         {
         case core::componentmodel::topology::ENDING_EVENT:
         {
-            //std::cout << "INFO_print : Vis - ENDING_EVENT" << std::endl;
+            //sout << "INFO_print : Vis - ENDING_EVENT" << sendl;
             updateVisual();
             break;
         }
 
         case core::componentmodel::topology::TRIANGLESADDED:
         {
-            //std::cout << "INFO_print : Vis - TRIANGLESADDED" << std::endl;
+            //sout << "INFO_print : Vis - TRIANGLESADDED" << sendl;
 
             const sofa::component::topology::TrianglesAdded *ta=static_cast< const sofa::component::topology::TrianglesAdded * >( *itBegin );
             Triangle t;
@@ -851,7 +851,7 @@ void VisualModelImpl::handleTopologyChange()
 
         case core::componentmodel::topology::QUADSADDED:
         {
-            //std::cout << "INFO_print : Vis - QUADSADDED" << std::endl;
+            //sout << "INFO_print : Vis - QUADSADDED" << sendl;
 
             const sofa::component::topology::QuadsAdded *ta_const=static_cast< const sofa::component::topology::QuadsAdded * >( *itBegin );
             sofa::component::topology::QuadsAdded *ta = const_cast< sofa::component::topology::QuadsAdded * >(ta_const);
@@ -872,7 +872,7 @@ void VisualModelImpl::handleTopologyChange()
 
         case core::componentmodel::topology::TRIANGLESREMOVED:
         {
-            //std::cout << "INFO_print : Vis - TRIANGLESREMOVED" << std::endl;
+            //sout << "INFO_print : Vis - TRIANGLESREMOVED" << sendl;
 
             unsigned int last;
             unsigned int ind_last;
@@ -912,7 +912,7 @@ void VisualModelImpl::handleTopologyChange()
 
         case core::componentmodel::topology::QUADSREMOVED:
         {
-            //std::cout << "INFO_print : Vis - QUADSREMOVED" << std::endl;
+            //sout << "INFO_print : Vis - QUADSREMOVED" << sendl;
 
             unsigned int last;
             unsigned int ind_last;
@@ -956,7 +956,7 @@ void VisualModelImpl::handleTopologyChange()
 
         case core::componentmodel::topology::POINTSREMOVED:
         {
-            //std::cout << "INFO_print : Vis - POINTSREMOVED" << std::endl;
+            //sout << "INFO_print : Vis - POINTSREMOVED" << sendl;
 
             if (_topology->getNbTriangles()>0)
             {
@@ -1051,16 +1051,16 @@ void VisualModelImpl::handleTopologyChange()
 
                                 if(!is_in_shell)
                                 {
-                                    std::cout << "INFO_print : Vis - triangle is forgotten in SHELL !!! global indices (point, triangle) = ( "  << last << " , " << ind_forgotten  << " )" << std::endl;
+                                    sout << "INFO_print : Vis - triangle is forgotten in SHELL !!! global indices (point, triangle) = ( "  << last << " , " << ind_forgotten  << " )" << sendl;
 
                                     if(ind_forgotten<_topology->getNbTriangles())
                                     {
                                         const sofa::component::topology::Triangle t_forgotten = _topology->getTriangle(ind_forgotten);
-                                        std::cout << "INFO_print : Vis - last = " << last << std::endl;
-                                        std::cout << "INFO_print : Vis - lastIndexVec[i] = " << lastIndexVec[i] << std::endl;
-                                        std::cout << "INFO_print : Vis - tab.size() = " << tab.size() << " , tab = " << tab << std::endl;
-                                        std::cout << "INFO_print : Vis - t_local rectified = " << triangles[j_loc] << std::endl;
-                                        std::cout << "INFO_print : Vis - t_global = " << t_forgotten << std::endl;
+                                        sout << "INFO_print : Vis - last = " << last << sendl;
+                                        sout << "INFO_print : Vis - lastIndexVec[i] = " << lastIndexVec[i] << sendl;
+                                        sout << "INFO_print : Vis - tab.size() = " << tab.size() << " , tab = " << tab << sendl;
+                                        sout << "INFO_print : Vis - t_local rectified = " << triangles[j_loc] << sendl;
+                                        sout << "INFO_print : Vis - t_global = " << t_forgotten << sendl;
 
 
                                     }
@@ -1150,7 +1150,7 @@ void VisualModelImpl::handleTopologyChange()
 
         case core::componentmodel::topology::POINTSRENUMBERING:
         {
-            //std::cout << "INFO_print : Vis - POINTSRENUMBERING" << std::endl;
+            //sout << "INFO_print : Vis - POINTSRENUMBERING" << sendl;
 
             if (_topology->getNbTriangles()>0)
             {
@@ -1319,7 +1319,7 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
         }
         *out << '\n';
     }
-    *out << std::endl;
+    *out << sendl;
     vindex+=nbv;
     nindex+=nbn;
     tindex+=nbt;

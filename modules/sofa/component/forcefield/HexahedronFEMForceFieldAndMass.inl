@@ -40,7 +40,7 @@ namespace forcefield
 {
 
 using namespace sofa::defaulttype;
-using std::cerr; using std::endl;
+
 
 
 template<class DataTypes>
@@ -59,7 +59,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
 {
     if(this->_alreadyInit)return;
 
-// 		  cerr<<"HexahedronFEMForceFieldAndMass<DataTypes>::init( ) "<<this->getName()<<endl;
+// 		  serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::init( ) "<<this->getName()<<sendl;
     HexahedronFEMForceFieldT::init();
     MassT::init();
 
@@ -124,7 +124,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
 // 		{
 // 			totalmass+=_particleMasses[i];
 // 		}
-// 		cerr<<"TOTAL MASS = "<<totalmass<<endl;
+// 		serr<<"TOTAL MASS = "<<totalmass<<sendl;
 }
 
 
@@ -132,7 +132,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
 template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::reinit( )
 {
-// 		  cerr<<"HexahedronFEMForceFieldAndMass<DataTypes>::reinit( )"<<endl;
+// 		  serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::reinit( )"<<sendl;
     HexahedronFEMForceFieldT::reinit();
 //         Mass::reinit();
 
@@ -288,13 +288,13 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(VecDeriv& f, const VecDer
 template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(defaulttype::BaseMatrix * /*matrix*/, double /*mFact*/, unsigned int &/*offset*/)
 {
-    cerr<<"HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix not yet implemented\n";
+    serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix not yet implemented"<<sendl;
 }
 
 template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::accFromF(VecDeriv& /*a*/, const VecDeriv& /*f*/)
 {
-    cerr<<"HexahedronFEMForceFieldAndMass<DataTypes>::accFromF not yet implemented\n";
+    serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::accFromF not yet implemented"<<sendl;
     // need to built the big global mass matrix and to inverse it...
 }
 
@@ -378,14 +378,14 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addDForce(VecDeriv& df, const Ve
 template<class DataTypes>
 double HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass(unsigned int /*index*/)
 {
-    std::cerr<<"HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass not yet implemented\n"; return 0.0;
+    serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass not yet implemented"<<sendl; return 0.0;
 }
 
 
 template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::draw()
 {
-// 		  cerr<<"HexahedronFEMForceFieldAndMass<DataTypes>::draw()  "<<this->_indexedElements->size()<<"\n";
+// 		  serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::draw()  "<<this->_indexedElements->size()<<""<<sendl;
     HexahedronFEMForceFieldT::draw();
 
     if (!this->getContext()->getShowBehaviorModels())

@@ -212,7 +212,7 @@ void IdentityMapping<BaseMapping>::applyJT( typename In::VecConst& out, const ty
             //for (unsigned int k=0;k<N;++k)
             //    value[k] = (Real) cIn.data[k];
             eq(value, cIn.data);
-            //std::cout << "n= "<<cIn.data<<" -> "<<value<<std::endl;
+            //sout << "n= "<<cIn.data<<" -> "<<value<<sendl;
             o.push_back( typename In::SparseDeriv(cIn.index, value) );
         }
     }

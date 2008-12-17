@@ -29,8 +29,8 @@
 #include <sofa/component/forcefield/StiffSpringForceField.inl>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {
@@ -44,7 +44,7 @@ namespace forcefield
 template <class DataTypes>
 double MeshSpringForceField<DataTypes>::getPotentialEnergy()
 {
-    cerr<<"MeshSpringForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    serr<<"MeshSpringForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 

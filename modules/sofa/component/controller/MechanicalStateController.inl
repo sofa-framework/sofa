@@ -75,7 +75,7 @@ void MechanicalStateController<DataTypes>::init()
     mainDirectionPtr.beginEdit();
     mState = dynamic_cast<MechanicalState<DataTypes> *> (this->getContext()->getMechanicalState());
     if (!mState)
-        logWarning("MechanicalStateController has no binding MechanicalState");
+        serr << "MechanicalStateController has no binding MechanicalState" << sendl;
     omni = false;
 }
 
@@ -179,7 +179,7 @@ void MechanicalStateController<Vec1dTypes>::applyController();
 template <>
 void MechanicalStateController<Vec1dTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)
 {
-    //std::cout<<"MouseEvent detected"<<std::endl;
+    //sout<<"MouseEvent detected"<<sendl;
     eventX = mev->getPosX();
     eventY = mev->getPosY();
 
@@ -214,7 +214,7 @@ void MechanicalStateController<Vec1dTypes>::onMouseEvent(core::objectmodel::Mous
 template <>
 void MechanicalStateController<Rigid3dTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)
 {
-    //std::cout<<"MouseEvent detected"<<std::endl;
+    //sout<<"MouseEvent detected"<<sendl;
     eventX = mev->getPosX();
     eventY = mev->getPosY();
 
@@ -253,7 +253,7 @@ void MechanicalStateController<Rigid3dTypes>::onMouseEvent(core::objectmodel::Mo
 template <>
 void MechanicalStateController<Rigid3fTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)
 {
-    //std::cout<<"MouseEvent detected"<<std::endl;
+    //sout<<"MouseEvent detected"<<sendl;
     eventX = mev->getPosX();
     eventY = mev->getPosY();
 
@@ -292,10 +292,10 @@ void MechanicalStateController<Rigid3fTypes>::onMouseEvent(core::objectmodel::Mo
 template <class DataTypes>
 void MechanicalStateController<DataTypes>::onOmniEvent(core::objectmodel::OmniEvent *oev)
 {
-    //std::cout << "void MechanicalStateController<DataTypes>::onOmniEvent()\n";
+    //sout << "void MechanicalStateController<DataTypes>::onOmniEvent()"<<sendl;
     //if (oev->getButton())
     //{
-    //		std::cout<<" Button1 pressed"<<std::endl;
+    //		sout<<" Button1 pressed"<<sendl;
 
     //}
 

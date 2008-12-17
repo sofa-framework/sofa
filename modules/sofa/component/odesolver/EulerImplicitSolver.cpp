@@ -32,8 +32,8 @@
 #include <iostream>
 #include "sofa/helper/system/thread/CTime.h"
 
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {
@@ -85,18 +85,18 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
     b.teq(h);                           // b = h(f0 + (h+rs)df/dx v - rd M v)
 
     if( verbose )
-        cerr<<"EulerImplicitSolver, f0 = "<< b <<endl;
+        serr<<"EulerImplicitSolver, f0 = "<< b <<sendl;
 
     projectResponse(b);          // b is projected to the constrained space
 
     if( verbose )
-        cerr<<"EulerImplicitSolver, projected f0 = "<< b <<endl;
+        serr<<"EulerImplicitSolver, projected f0 = "<< b <<sendl;
 
     MultiMatrix matrix(this);
     matrix = MechanicalMatrix::K * (-h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::M * (1+h*f_rayleighMass.getValue());
 
     //if( verbose )
-//	cerr<<"EulerImplicitSolver, matrix = "<< (MechanicalMatrix::K * (-h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::M * (1+h*f_rayleighMass.getValue())) << " = " << matrix <<endl;
+//	serr<<"EulerImplicitSolver, matrix = "<< (MechanicalMatrix::K * (-h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::M * (1+h*f_rayleighMass.getValue())) << " = " << matrix <<sendl;
 
     matrix.solve(x, b);
     // projectResponse(x);
@@ -135,8 +135,8 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
 
     if( verbose )
     {
-        cerr<<"EulerImplicitSolver, final x = "<< newPos <<endl;
-        cerr<<"EulerImplicitSolver, final v = "<< newVel <<endl;
+        serr<<"EulerImplicitSolver, final x = "<< newPos <<sendl;
+        serr<<"EulerImplicitSolver, final v = "<< newVel <<sendl;
     }
 
 #ifdef SOFA_HAVE_LAPACK

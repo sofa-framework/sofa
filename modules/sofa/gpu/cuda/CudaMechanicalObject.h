@@ -61,6 +61,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
 
+
     typedef gpu::cuda::CudaKernelsMechanicalObject<DataTypes> Kernels;
 
     /// Temporary storate for dot product operation

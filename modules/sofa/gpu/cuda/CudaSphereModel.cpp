@@ -63,7 +63,7 @@ void CudaSphereModel::init()
 
     if (mstate==NULL)
     {
-        std::cerr << "ERROR: CudaSphereModel requires a CudaVec3f Mechanical Model.\n";
+        serr << "ERROR: CudaSphereModel requires a CudaVec3f Mechanical Model.\n";
         return;
     }
 
@@ -96,10 +96,10 @@ void CudaSphereModel::draw(int index)
 
 void CudaSphereModel::draw()
 {
-    /*	std::cerr<<"CudaSphereModel::draw()"<<endl; */
+    /*	serr<<"CudaSphereModel::draw()"<<endl; */
     if(getContext()->getShowCollisionModels())
     {
-        /*		std::cerr<<"CudaSphereModel::draw : yes"<<endl; */
+        /*		serr<<"CudaSphereModel::draw : yes"<<endl; */
         glEnable(GL_LIGHTING);
         glEnable(GL_COLOR_MATERIAL);
         glColor4fv(getColor4f());

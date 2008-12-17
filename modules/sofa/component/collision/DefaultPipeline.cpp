@@ -69,7 +69,7 @@ void DefaultPipeline::doCollisionReset()
     ctime_t t0 = 0;
     const std::string category = "collision";
 
-    VERBOSE(std::cout << "DefaultPipeline::doCollisionReset, Reset collisions"<<std::endl);
+    VERBOSE(sout << "DefaultPipeline::doCollisionReset, Reset collisions"<<sendl);
     // clear all contacts
     if (contactManager!=NULL)
     {
@@ -90,7 +90,7 @@ void DefaultPipeline::doCollisionReset()
 
 void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::CollisionModel*>& collisionModels)
 {
-    //std::cerr<<"DefaultPipeline::doCollisionDetection"<<std::endl;
+    //serr<<"DefaultPipeline::doCollisionDetection"<<sendl;
 
     core::objectmodel::BaseContext* scene = getContext();
     simulation::Node* node = dynamic_cast<simulation::Node*>(scene);
@@ -98,7 +98,7 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
     ctime_t t0 = 0;
     const std::string category = "collision";
 
-    VERBOSE(std::cout << "DefaultPipeline::doCollisionDetection, Compute Bounding Trees"<<std::endl);
+    VERBOSE(sout << "DefaultPipeline::doCollisionDetection, Compute Bounding Trees"<<sendl);
     // First, we compute a bounding volume for the collision model (for example bounding sphere)
     // or we have loaded a collision model that knows its other model
 
@@ -113,7 +113,7 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
         int nActive = 0;
         for (; it != itEnd; it++)
         {
-            VERBOSE(std::cout << "DefaultPipeline::doCollisionDetection, consider model "<<(*it)->getName()<<std::endl);
+            VERBOSE(sout << "DefaultPipeline::doCollisionDetection, consider model "<<(*it)->getName()<<sendl);
             if (!(*it)->isActive()) continue;
             if (continuous)
                 (*it)->computeContinuousBoundingTree(dt, depth.getValue());
@@ -123,11 +123,11 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
             ++nActive;
         }
         if (node) t0 = node->endTime(t0, "collision/bbox", this);
-        VERBOSE(std::cout << "DefaultPipeline::doCollisionDetection, Computed "<<nActive<<" BBoxs"<<std::endl);
+        VERBOSE(sout << "DefaultPipeline::doCollisionDetection, Computed "<<nActive<<" BBoxs"<<sendl);
     }
     // then we start the broad phase
     if (broadPhaseDetection==NULL) return; // can't go further
-    VERBOSE(std::cout << "DefaultPipeline::doCollisionDetection, BroadPhaseDetection "<<broadPhaseDetection->getName()<<std::endl);
+    VERBOSE(sout << "DefaultPipeline::doCollisionDetection, BroadPhaseDetection "<<broadPhaseDetection->getName()<<sendl);
     if (node) t0 = node->startTime();
     intersectionMethod->beginBroadPhase();
     broadPhaseDetection->beginBroadPhase();
@@ -138,12 +138,12 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
 
     // then we start the narrow phase
     if (narrowPhaseDetection==NULL) return; // can't go further
-    VERBOSE(std::cout << "DefaultPipeline::doCollisionDetection, NarrowPhaseDetection "<<narrowPhaseDetection->getName()<<std::endl);
+    VERBOSE(sout << "DefaultPipeline::doCollisionDetection, NarrowPhaseDetection "<<narrowPhaseDetection->getName()<<sendl);
     if (node) t0 = node->startTime();
     intersectionMethod->beginNarrowPhase();
     narrowPhaseDetection->beginNarrowPhase();
     sofa::helper::vector<std::pair<CollisionModel*, CollisionModel*> >& vectCMPair = broadPhaseDetection->getCollisionModelPairs();
-    VERBOSE(std::cout << "DefaultPipeline::doCollisionDetection, "<< vectCMPair.size()<<" colliding model pairs"<<std::endl);
+    VERBOSE(sout << "DefaultPipeline::doCollisionDetection, "<< vectCMPair.size()<<" colliding model pairs"<<sendl);
     narrowPhaseDetection->addCollisionPairs(vectCMPair);
     narrowPhaseDetection->endNarrowPhase();
     intersectionMethod->endNarrowPhase();
@@ -160,7 +160,7 @@ void DefaultPipeline::doCollisionResponse()
 
     // then we start the creation of contacts
     if (contactManager==NULL) return; // can't go further
-    VERBOSE(std::cout << "Create Contacts "<<contactManager->getName()<<std::endl);
+    VERBOSE(sout << "Create Contacts "<<contactManager->getName()<<sendl);
     if (node) t0 = node->startTime();
     contactManager->createContacts(narrowPhaseDetection->getDetectionOutputs());
     if (node) t0 = node->endTime(t0, category, contactManager, this);
@@ -190,7 +190,7 @@ void DefaultPipeline::doCollisionResponse()
 
     if (groupManager==NULL)
     {
-        VERBOSE(std::cout << "Linking all contacts to Scene"<<std::endl);
+        VERBOSE(sout << "Linking all contacts to Scene"<<sendl);
         for (sofa::helper::vector<Contact*>::const_iterator it = notStaticContacts.begin(); it!=notStaticContacts.end(); it++)
         {
             (*it)->createResponse(scene);
@@ -198,7 +198,7 @@ void DefaultPipeline::doCollisionResponse()
     }
     else
     {
-        VERBOSE(std::cout << "Create Groups "<<groupManager->getName()<<std::endl);
+        VERBOSE(sout << "Create Groups "<<groupManager->getName()<<sendl);
         if (node) t0 = node->startTime();
         groupManager->createGroups(scene, notStaticContacts);
         if (node) t0 = node->endTime(t0, category, groupManager, this);

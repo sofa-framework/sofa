@@ -58,9 +58,9 @@ using namespace sofa::defaulttype;
 using namespace	sofa::component::topology;
 using namespace core::componentmodel::topology;
 
-using std::cerr;
-using std::cout;
-using std::endl;
+
+
+
 
 using namespace core::componentmodel::behavior;
 using core::componentmodel::topology::BaseMeshTopology;
@@ -315,7 +315,7 @@ TriangularBendingSprings<DataTypes>::TriangularBendingSprings(/*component::Mecha
     , f_ks(initData(&f_ks,(double) 100000.0,"stiffness","uniform stiffness for the all springs")) //(Real)0.3 ??
     , f_kd(initData(&f_kd,(double) 1.0,"damping","uniform damping for the all springs")) // (Real)1000. ??
 {
-    //std::cerr<<"TriangularBendingSprings<DataTypes>::TriangularBendingSprings"<<std::endl;
+    //serr<<"TriangularBendingSprings<DataTypes>::TriangularBendingSprings"<<sendl;
 }
 
 template<class DataTypes>
@@ -385,14 +385,14 @@ template <class DataTypes> void TriangularBendingSprings<DataTypes>::handleTopol
                     if (edgeInfo[ind_j].m1 == (int) last)
                     {
                         edgeInfo[ind_j].m1=(int) tab[i];
-                        //std::cout << "INFO_print : OK m1 for ind_j =" << ind_j << std::endl;
+                        //sout << "INFO_print : OK m1 for ind_j =" << ind_j << sendl;
                     }
                     else
                     {
                         if (edgeInfo[ind_j].m2 == (int) last)
                         {
                             edgeInfo[ind_j].m2=(int) tab[i];
-                            //std::cout << "INFO_print : OK m2 for ind_j =" << ind_j << std::endl;
+                            //sout << "INFO_print : OK m2 for ind_j =" << ind_j << sendl;
                         }
                     }
                 }
@@ -408,7 +408,7 @@ template <class DataTypes> void TriangularBendingSprings<DataTypes>::handleTopol
                         {
                             edgeInfo[j_loc].m1 =(int) tab[i];
                             is_forgotten=true;
-                            //std::cout << "INFO_print : TriangularBendingSprings - MISS m1 for j_loc =" << j_loc << std::endl;
+                            //sout << "INFO_print : TriangularBendingSprings - MISS m1 for j_loc =" << j_loc << sendl;
 
                         }
                         else
@@ -417,7 +417,7 @@ template <class DataTypes> void TriangularBendingSprings<DataTypes>::handleTopol
                             {
                                 edgeInfo[j_loc].m2 =(int) tab[i];
                                 is_forgotten=true;
-                                //std::cout << "INFO_print : TriangularBendingSprings - MISS m2 for j_loc =" << j_loc << std::endl;
+                                //sout << "INFO_print : TriangularBendingSprings - MISS m2 for j_loc =" << j_loc << sendl;
 
                             }
 
@@ -457,14 +457,14 @@ template <class DataTypes> void TriangularBendingSprings<DataTypes>::handleTopol
 template<class DataTypes>
 void TriangularBendingSprings<DataTypes>::init()
 {
-    //std::cerr << "initializing TriangularBendingSprings" << std::endl;
+    //serr << "initializing TriangularBendingSprings" << sendl;
     this->Inherited::init();
 
     _topology = getContext()->getMeshTopology();
 
     if (_topology->getNbTriangles()==0)
     {
-        std::cerr << "ERROR(TriangularBendingSprings): object must have a Triangular Set Topology.\n";
+        serr << "ERROR(TriangularBendingSprings): object must have a Triangular Set Topology."<<sendl;
         return;
     }
 
@@ -501,7 +501,7 @@ void TriangularBendingSprings<DataTypes>::init()
 template <class DataTypes>
 double TriangularBendingSprings<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
 {
-    std::cerr<<"TriangularBendingSprings::getPotentialEnergy-not-implemented !!!"<<endl;
+    serr<<"TriangularBendingSprings::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 
@@ -517,7 +517,7 @@ void TriangularBendingSprings<DataTypes>::addForce(VecDeriv& f, const VecCoord& 
     //this->dfdx.resize(nbEdges); //m_springs.size()
     f.resize(x.size());
     m_potentialEnergy = 0;
-    /*        cerr<<"TriangularBendingSprings<DataTypes>::addForce()"<<endl;*/
+    /*        serr<<"TriangularBendingSprings<DataTypes>::addForce()"<<sendl;*/
 
 #if 0
     const VecCoord& x_rest = *this->mstate->getX0();
@@ -551,19 +551,19 @@ void TriangularBendingSprings<DataTypes>::addForce(VecDeriv& f, const VecCoord& 
                 }
             }
 
-            if (e2.is_activated != einfo->is_activated) std::cerr << "ERROR: EdgeInfo["<<i<<"].is_activated = "<<einfo->is_activated<<" while it should be "<<e2.is_activated<<"\n";
+            if (e2.is_activated != einfo->is_activated) serr << "ERROR: EdgeInfo["<<i<<"].is_activated = "<<einfo->is_activated<<" while it should be "<<e2.is_activated<<""<<sendl;
             else if (e2.is_activated)
             {
                 if (!((e2.m1 == einfo->m1 && e2.m2 == einfo->m2) || (e2.m1 == einfo->m2 && e2.m2 == einfo->m1)))
-                    std::cerr << "ERROR: EdgeInfo["<<i<<"] points = "<<einfo->m1<<"-"<<einfo->m2<<" while it should be "<<e2.m1<<"-"<<e2.m2<<"\n";
+                    serr << "ERROR: EdgeInfo["<<i<<"] points = "<<einfo->m1<<"-"<<einfo->m2<<" while it should be "<<e2.m1<<"-"<<e2.m2<<""<<sendl;
                 if (e2.restlength != einfo->restlength)
-                    std::cerr << "ERROR: EdgeInfo["<<i<<"] length = "<<einfo->restlength<<" while it should be "<<e2.restlength<<"\n";
+                    serr << "ERROR: EdgeInfo["<<i<<"] length = "<<einfo->restlength<<" while it should be "<<e2.restlength<<""<<sendl;
             }
         }
 
 #endif
 
-        /*            cerr<<"TriangularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2<<endl;*/
+        /*            serr<<"TriangularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2<<sendl;*/
 
         if(einfo->is_activated)
         {
@@ -579,9 +579,9 @@ void TriangularBendingSprings<DataTypes>::addForce(VecDeriv& f, const VecCoord& 
                 u *= inverseLength;
                 Real elongation = (Real)(d - einfo->restlength);
                 m_potentialEnergy += elongation * elongation * einfo->ks / 2;
-                /*      cerr<<"TriangularBendingSprings<DataTypes>::addSpringForce, p = "<<p<<endl;
+                /*      serr<<"TriangularBendingSprings<DataTypes>::addSpringForce, p = "<<p<<sendl;
 
-                		cerr<<"TriangularBendingSprings<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy<<endl;*/
+                		serr<<"TriangularBendingSprings<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy<<sendl;*/
                 Deriv relativeVelocity = v[b]-v[a];
                 Real elongationVelocity = dot(u,relativeVelocity);
                 Real forceIntensity = (Real)(einfo->ks*elongation+einfo->kd*elongationVelocity);
@@ -619,7 +619,7 @@ void TriangularBendingSprings<DataTypes>::addForce(VecDeriv& f, const VecCoord& 
 
     //for (unsigned int i=0; i<springs.size(); i++)
     //{
-    /*            cerr<<"TriangularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2<<endl;*/
+    /*            serr<<"TriangularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2<<sendl;*/
     //    this->addSpringForce(m_potentialEnergy,f,x,v, i, springs[i]);
     //}
 }
@@ -632,15 +632,15 @@ void TriangularBendingSprings<DataTypes>::addDForce(VecDeriv& df, const VecDeriv
     EdgeInformation *einfo;
 
     df.resize(dx.size());
-    //cerr<<"TriangularBendingSprings<DataTypes>::addDForce, dx1 = "<<dx1<<endl;
-    //cerr<<"TriangularBendingSprings<DataTypes>::addDForce, df1 before = "<<f1<<endl;
+    //serr<<"TriangularBendingSprings<DataTypes>::addDForce, dx1 = "<<dx1<<sendl;
+    //serr<<"TriangularBendingSprings<DataTypes>::addDForce, df1 before = "<<f1<<sendl;
     //const helper::vector<Spring>& springs = this->springs.getValue();
 
     for(int i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInfo[i];
 
-        /*            cerr<<"TriangularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2<<endl;*/
+        /*            serr<<"TriangularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2<<sendl;*/
 
         if(einfo->is_activated)
         {
@@ -652,7 +652,7 @@ void TriangularBendingSprings<DataTypes>::addDForce(VecDeriv& df, const VecDeriv
             const Deriv dforce = einfo->DfDx*d; //this->dfdx[i]*d;
             df[a]+=dforce;
             df[b]-=dforce;
-            //cerr<<"TriangularBendingSprings<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", dforce ="<<dforce<<endl;
+            //serr<<"TriangularBendingSprings<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", dforce ="<<dforce<<sendl;
 
             if(updateMatrix)
             {
@@ -666,7 +666,7 @@ void TriangularBendingSprings<DataTypes>::addDForce(VecDeriv& df, const VecDeriv
     //{
     //    this->addSpringDForce(df,dx, i, springs[i]);
     //}
-    //cerr<<"TriangularBendingSprings<DataTypes>::addDForce, df = "<<f<<endl;
+    //serr<<"TriangularBendingSprings<DataTypes>::addDForce, df = "<<f<<sendl;
 }
 
 
@@ -676,7 +676,7 @@ void TriangularBendingSprings<DataTypes>::updateLameCoefficients()
 {
 	lambda= f_youngModulus.getValue()*f_poissonRatio.getValue()/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
 	mu = f_youngModulus.getValue()*(1-f_poissonRatio.getValue())/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
-//	std::cerr << "initialized Lame coef : lambda=" <<lambda<< " mu="<<mu<<std::endl;
+//	serr << "initialized Lame coef : lambda=" <<lambda<< " mu="<<mu<<sendl;
 }
 */
 

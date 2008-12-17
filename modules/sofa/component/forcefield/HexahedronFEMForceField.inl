@@ -35,8 +35,8 @@
 
 
 
-using std::cerr;
-using std::endl;
+
+
 using std::set;
 
 
@@ -89,14 +89,14 @@ void HexahedronFEMForceField<DataTypes>::init()
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
     if( this->getContext()->getMeshTopology()==NULL )
     {
-        std::cerr << "ERROR(HexahedronFEMForceField): object must have a Topology.\n";
+        serr << "ERROR(HexahedronFEMForceField): object must have a Topology."<<sendl;
         return;
     }
 
     _mesh = dynamic_cast<sofa::core::componentmodel::topology::BaseMeshTopology*>(this->getContext()->getMeshTopology());
     if ( _mesh==NULL)
     {
-        std::cerr << "ERROR(HexahedronFEMForceField): object must have a MeshTopology.\n";
+        serr << "ERROR(HexahedronFEMForceField): object must have a MeshTopology."<<sendl;
         return;
     }
 #ifdef SOFA_NEW_HEXA
@@ -105,10 +105,10 @@ void HexahedronFEMForceField<DataTypes>::init()
     else if( _mesh->getNbCubes()<=0 )
 #endif
     {
-        std::cerr << "ERROR(HexahedronFEMForceField): object must have a hexahedric MeshTopology.\n";
-        std::cerr << _mesh->getName()<<std::endl;
-        std::cerr << _mesh->getTypeName()<<std::endl;
-        cerr<<_mesh->getNbPoints()<<endl;
+        serr << "ERROR(HexahedronFEMForceField): object must have a hexahedric MeshTopology."<<sendl;
+        serr << _mesh->getName()<<sendl;
+        serr << _mesh->getTypeName()<<sendl;
+        serr<<_mesh->getNbPoints()<<sendl;
         return;
     }
 // 	if (!_mesh->getCubes().empty())
@@ -156,9 +156,9 @@ void HexahedronFEMForceField<DataTypes>::init()
 // 		Element c = *it;
 // 		for(int w=0;w<8;++w)
 // 		{
-// 			cerr<<"sparse w : "<<c[w]<<"    "<<_initialPoints.getValue()[c[w]]<<endl;
+// 			serr<<"sparse w : "<<c[w]<<"    "<<_initialPoints.getValue()[c[w]]<<sendl;
 // 		}
-// 		cerr<<"------\n";
+// 		serr<<"------"<<sendl;
 // 	}
 }
 
@@ -295,7 +295,7 @@ void HexahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv&
 template <class DataTypes>
 double HexahedronFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 {
-    std::cerr<<"HexahedronFEMForceField::getPotentialEnergy-not-implemented !!!"<<std::endl;
+    serr<<"HexahedronFEMForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 
@@ -326,7 +326,7 @@ const typename HexahedronFEMForceField<DataTypes>::Transformation& HexahedronFEM
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const helper::fixed_array<Coord,8> &nodes, const int elementIndice, double stiffnessFactor)
 {
-// 	cerr<<"HexahedronFEMForceField<DataTypes>::computeElementStiffnessAsFinest\n";
+// 	serr<<"HexahedronFEMForceField<DataTypes>::computeElementStiffnessAsFinest"<<sendl;
 
     const bool verbose = this->f_printLog.getValue() && (elementIndice==0);
     // X = n0 (1-x1)(1-x2)(1-x3)/8 + n1 (1+x1)(1-x2)(1-x3)/8 + n2 (1+x1)(1+x2)(1-x3)/8 + n3 (1-x1)(1+x2)(1-x3)/8 + n4 (1-x1)(1-x2)(1+x3)/8 + n5 (1+x1)(1-x2)(1+x3)/8 + n6 (1+x1)(1+x2)(1+x3)/8 + n7 (1-x1)(1+x2)(1+x3)/8
@@ -368,13 +368,13 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
         J_1t.transpose(J_1);
         if (verbose)
         {
-            std::cout << "J = "<<J<<std::endl;
-            std::cout << "invJ = "<<J_1<<std::endl;
-            std::cout << "detJ = "<<detJ<<std::endl;
+            sout << "J = "<<J<<sendl;
+            sout << "invJ = "<<J_1<<sendl;
+            sout << "detJ = "<<detJ<<sendl;
         }
     }
 //     else
-//         std::cout << "Hexa "<<elementIndice<<" is NOT a parallelepiped.\n";
+//         sout << "Hexa "<<elementIndice<<" is NOT a parallelepiped."<<sendl;
 
     const Real U = M[0][0];
     const Real V = M[0][1];
@@ -407,9 +407,9 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
                     J_1t.transpose(J_1);
                     if (verbose)
                     {
-                        std::cout << "J = "<<J<<std::endl;
-                        std::cout << "invJ = "<<J_1<<std::endl;
-                        std::cout << "detJ = "<<detJ<<std::endl;
+                        sout << "J = "<<J<<sendl;
+                        sout << "invJ = "<<J_1<<sendl;
+                        sout << "detJ = "<<detJ<<sendl;
                     }
                 }
                 Real qx[8];
@@ -422,12 +422,12 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
                     Real dNi_dx1 =(Real)( (_coef[i][0])*(1+_coef[i][1]*x2)*(1+_coef[i][2]*x3)/8.0);
                     Real dNi_dx2 =(Real)((1+_coef[i][0]*x1)*(_coef[i][1])*(1+_coef[i][2]*x3)/8.0);
                     Real dNi_dx3 =(Real)((1+_coef[i][0]*x1)*(1+_coef[i][1]*x2)*(_coef[i][2])/8.0);
-                    if (verbose) std::cout << "dN"<<i<<"/dxi = "<<dNi_dx1<<" "<<dNi_dx2<<" "<<dNi_dx3<<"\n";
+                    if (verbose) sout << "dN"<<i<<"/dxi = "<<dNi_dx1<<" "<<dNi_dx2<<" "<<dNi_dx3<<""<<sendl;
 #ifdef DN_USE_J
                     qx[i] = dNi_dx1*J_1[0][0] + dNi_dx2*J_1[1][0] + dNi_dx3*J_1[2][0];
                     qy[i] = dNi_dx1*J_1[0][1] + dNi_dx2*J_1[1][1] + dNi_dx3*J_1[2][1];
                     qz[i] = dNi_dx1*J_1[0][2] + dNi_dx2*J_1[1][2] + dNi_dx3*J_1[2][2];
-                    if (verbose) std::cout << "q"<<i<<" = "<<qx[i]<<" "<<qy[i]<<" "<<qz[i]<<"\n";
+                    if (verbose) sout << "q"<<i<<" = "<<qx[i]<<" "<<qy[i]<<" "<<qz[i]<<""<<sendl;
 #else
                     qx[i] = dNi_dx1;
                     qy[i] = dNi_dx2;
@@ -449,7 +449,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
                     MBi[3][0] = W * qy[i]; MBi[3][1] = W * qx[i]; MBi[3][2] = (Real)0;
                     MBi[4][0] = (Real)0;   MBi[4][1] = W * qz[i]; MBi[4][2] = W * qy[i];
                     MBi[5][0] = W * qz[i]; MBi[5][1] = (Real)0;   MBi[5][2] = W * qx[i];
-                    if (verbose) std::cout << "MB"<<i<<" = "<<MBi<<"\n";
+                    if (verbose) sout << "MB"<<i<<" = "<<MBi<<""<<sendl;
                     for(int j=i; j<8; ++j)
                     {
                         Mat33 k; // k = BjtMBi
@@ -467,7 +467,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
 #ifndef DN_USE_J
                         k = J_1t*k*J_1;
 #endif
-                        if (verbose) std::cout << "K"<<i<<j<<" += "<<k<<" * "<<detJ<<"\n";
+                        if (verbose) sout << "K"<<i<<j<<" += "<<k<<" * "<<detJ<<""<<sendl;
                         k *= detJ;
                         for(int m=0; m<3; ++m)
                             for(int l=0; l<3; ++l)
@@ -538,14 +538,14 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
         }
 // 	if (elementIndice==0)
 // 	{
-// 		std::cout << "nodes = "<<nodes[0]<<"  "<<nodes[1]<<"  "<<nodes[2]<<"  "<<nodes[3]<<"  "<<nodes[4]<<"  "<<nodes[5]<<"  "<<nodes[6]<<"  "<<nodes[7]<<std::endl;
-// 		std::cout << "M = "<<M<<std::endl;
-// 		std::cout << "K = "<<std::endl;
+// 		sout << "nodes = "<<nodes[0]<<"  "<<nodes[1]<<"  "<<nodes[2]<<"  "<<nodes[3]<<"  "<<nodes[4]<<"  "<<nodes[5]<<"  "<<nodes[6]<<"  "<<nodes[7]<<sendl;
+// 		sout << "M = "<<M<<sendl;
+// 		sout << "K = "<<sendl;
 // 		for (int i=0;i<24;i++)
-// 			std::cout << K[i] << std::endl;
-// 		std::cout << "K1 = "<<std::endl;
+// 			sout << K[i] << sendl;
+// 		sout << "K1 = "<<sendl;
 // 		for (int i=0;i<24;i++)
-// 			std::cout << K1[i] << std::endl;
+// 			sout << K1[i] << sendl;
 // 	}
 #ifdef GENERIC_STIFFNESS_MATRIX
     K=K1;
@@ -869,7 +869,7 @@ void HexahedronFEMForceField<DataTypes>::initLarge(int i, const Element &elem)
 // 	computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], _rotatedInitialElements[i], i, i==1?10.0:1.0 );
 
 
-// 	printMatlab( cerr,this->_elementStiffnesses.getValue()[0] );
+// 	printMatlab( serr,this->_elementStiffnesses.getValue()[0] );
 
 }
 
@@ -1148,7 +1148,7 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMat
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::draw()
 {
-// 	cerr<<"HexahedronFEMForceField<DataTypes>::draw()\n";
+// 	serr<<"HexahedronFEMForceField<DataTypes>::draw()"<<sendl;
     if (!getContext()->getShowForceFields()) return;
     if (!this->mstate) return;
 

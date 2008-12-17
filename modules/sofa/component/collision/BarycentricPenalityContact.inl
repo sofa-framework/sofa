@@ -119,7 +119,7 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
             if (!index)
             {
                 ++nbnew;
-                if (printLog) std::cout << "BarycentricPenalityContact: New contact "<<o->id<<std::endl;
+                if (printLog) sout << "BarycentricPenalityContact: New contact "<<o->id<<sendl;
             }
         }
         index = -1-i; // save this index as a negative value in contactIndex map.
@@ -144,7 +144,7 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
         int& index = it->second;
         if (index >= 0)
         {
-            if (printLog) std::cout << "BarycentricPenalityContact: Removed contact "<<it->first<<std::endl;
+            if (printLog) sout << "BarycentricPenalityContact: Removed contact "<<it->first<<sendl;
             ContactIndexMap::iterator oldit = it;
             ++it;
             contactIndex.erase(oldit);
@@ -155,7 +155,7 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
             ++it;
         }
     }
-    if (printLog) std::cout << "BarycentricPenalityContact: "<<insize<<" input contacts, "<<size<<" contacts used for response ("<<nbnew<<" new)."<<std::endl;
+    if (printLog) sout << "BarycentricPenalityContact: "<<insize<<" input contacts, "<<size<<" contacts used for response ("<<nbnew<<" new)."<<sendl;
 
     //int size = contacts.size();
     ff->clear(size);
@@ -207,7 +207,7 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
         parent = group;
         if (parent!=NULL)
         {
-            //std::cout << "Attaching contact response to "<<parent->getName()<<std::endl;
+            //sout << "Attaching contact response to "<<parent->getName()<<sendl;
             parent->addObject(this);
             parent->addObject(ff);
         }
@@ -221,7 +221,7 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
     {
         if (parent!=NULL)
         {
-            //std::cout << "Removing contact response from "<<parent->getName()<<std::endl;
+            //sout << "Removing contact response from "<<parent->getName()<<sendl;
             parent->removeObject(this);
             parent->removeObject(ff);
         }

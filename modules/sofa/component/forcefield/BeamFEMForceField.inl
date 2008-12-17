@@ -41,8 +41,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/simulation/tree/GNode.h>
-using std::cerr;
-using std::endl;
+
+
 using std::set;
 
 
@@ -75,14 +75,14 @@ void BeamFEMForceField<DataTypes>::init()
 
     if (_topology==NULL)
     {
-        std::cerr << "ERROR(BeamFEMForceField): object must have a BaseMeshTopology (i.e. EdgeSetTopology or MeshTopology).\n";
+        serr << "ERROR(BeamFEMForceField): object must have a BaseMeshTopology (i.e. EdgeSetTopology or MeshTopology)."<<sendl;
         return;
     }
     else
     {
         if(_topology->getNbEdges()==0)
         {
-            std::cerr << "ERROR(BeamFEMForceField): topology is empty.\n";
+            serr << "ERROR(BeamFEMForceField): topology is empty."<<sendl;
             return;
         }
         _indexedElements = &_topology->getEdges();
@@ -106,7 +106,7 @@ void BeamFEMForceField<DataTypes>::reinit()
     initBeams( n );
     for (unsigned int i=0; i<n; ++i)
         reinitBeam(i);
-    std::cout << "BeamFEMForceField: init OK, "<<n<<" elements."<<std::endl;
+    sout << "BeamFEMForceField: init OK, "<<n<<" elements."<<sendl;
 }
 
 template <class DataTypes>
@@ -116,7 +116,7 @@ void BeamFEMForceField<DataTypes>::reinitBeam(unsigned int i)
     Index a = (*_indexedElements)[i][0];
     Index b = (*_indexedElements)[i][1];
     const VecCoord& x0 = *this->mstate->getX0();
-//    std::cout << "Beam "<<i<<" : ("<<a<<' '<<b<<") : beamsData size = "<<beamsData.size()<<" mstate size = "<<this->mstate->getSize()<<" x0 size = "<<x0.size()<<std::endl;
+//    sout << "Beam "<<i<<" : ("<<a<<' '<<b<<") : beamsData size = "<<beamsData.size()<<" mstate size = "<<this->mstate->getSize()<<" x0 size = "<<x0.size()<<sendl;
     //if (needInit)
     //if (stiffnessContainer)
     //	stiffness = stiffnessContainer->getStiffness(i) ;
@@ -146,7 +146,7 @@ void BeamFEMForceField<DataTypes>::BeamFEMEdgeCreationFunction(int edgeIndex, vo
         const topology::Edge& /*e*/,  const sofa::helper::vector< unsigned int > & /*a*/,
         const sofa::helper::vector< double >&)
 {
-//    std::cout << "Create beam "<<edgeIndex<<" ("<<e<<") from "<<a<<std::endl;
+//    sout << "Create beam "<<edgeIndex<<" ("<<e<<") from "<<a<<sendl;
     BeamFEMForceField<DataTypes>* p = static_cast<BeamFEMForceField<DataTypes>*>(param);
     // p->beamsData.resize(edgeIndex+1);
     static_cast<BeamFEMForceField<DataTypes>*>(param)->reinitBeam(edgeIndex);
@@ -293,7 +293,7 @@ inline Quat qDiff(Quat a, const Quat& b)
         a[3] = -a[3];
     }
     Quat q = b.inverse() * a;
-    //std::cout << "qDiff("<<a<<","<<b<<")="<<q<<", bq="<<(b*q)<<std::endl;
+    //sout << "qDiff("<<a<<","<<b<<")="<<q<<", bq="<<(b*q)<<sendl;
     return q;
 }
 
@@ -469,7 +469,7 @@ void BeamFEMForceField<DataTypes>::draw()
 
     const VecCoord& x = *this->mstate->getX();
 
-    //std::cout << 	_indexedElements->size() << " edges, " << x.size() << " points."<<std::endl;
+    //sout << 	_indexedElements->size() << " edges, " << x.size() << " points."<<sendl;
 
     glDisable(GL_LIGHTING);
     glBegin(GL_LINES);
@@ -479,7 +479,7 @@ void BeamFEMForceField<DataTypes>::draw()
     {
         Index a = (*it)[0];
         Index b = (*it)[1];
-        //std::cout << "edge " << i << " : "<<a<<" "<<b<<" = "<<x[a].getCenter()<<"  -  "<<x[b].getCenter()<<" = "<<beamsData[i]._L<<std::endl;
+        //sout << "edge " << i << " : "<<a<<" "<<b<<" = "<<x[a].getCenter()<<"  -  "<<x[b].getCenter()<<" = "<<beamsData[i]._L<<sendl;
         defaulttype::Vec3d p; p = (x[a].getCenter()+x[b].getCenter())*0.5;
         Vec3d beamVec;
         beamVec[0]=beamsData[i]._L*0.5; beamVec[1] = 0.0; beamVec[2] = 0.0;
@@ -611,7 +611,7 @@ void BeamInfo::localStiffness()
 // 			_k_flex(i,i) = FLEXIBILITY * _k_flex(i,i);
 
 	}
-	CatchAll { cout << "ERROR while computing '_k_loc'" << NewMAT::Exception::what() << endl;
+	CatchAll { sout << "ERROR while computing '_k_loc'" << NewMAT::Exception::what() << endl;
 	}
 }
 */
@@ -642,7 +642,7 @@ void BeamInfo::computeUinit(Vec3d &P1, Vec3d &P2, Vec3d &LoX1, Vec3d &LoY1, Vec3
 		K.SubMatrix(1,6,1,6) = _k_loc.SubMatrix(7,12,7,12);
 	}
 	CatchAll {
-		cout << "ERROR while computing 'K' in ComputeUinit" << NewMAT::Exception::what() << endl;
+		sout << "ERROR while computing 'K' in ComputeUinit" << NewMAT::Exception::what() << endl;
 	}
 
 	P1P2 = P2 - P1;
@@ -672,7 +672,7 @@ void BeamInfo::computeUinit(Vec3d &P1, Vec3d &P2, Vec3d &LoX1, Vec3d &LoY1, Vec3
 	}
 	CatchAll
 	{
-		cout << "ERROR while computing 'Uinit = K.i() * Finit' in ComputeUinit" << NewMAT::Exception::what() << endl;
+		sout << "ERROR while computing 'Uinit = K.i() * Finit' in ComputeUinit" << NewMAT::Exception::what() << endl;
 	}
 	_u_init=0.0;
  	_u_init.SubMatrix(7,12,1,1) = Uinit.SubMatrix(1,6,1,1);

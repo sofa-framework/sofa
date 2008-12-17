@@ -38,7 +38,7 @@ void init()
     static bool first = true;
     if (first)
     {
-//         std::cout << "Sofa components initialized."<<std::endl;
+//         sout << "Sofa components initialized."<<sendl;
 
         //std::ofstream ofile("sofa-classes.html");
         //ofile << "<html><body>\n";

@@ -85,7 +85,7 @@ void CudaHexahedronTLEDForceField::reinit()
     component::topology::MeshTopology* topology = getContext()->get<component::topology::MeshTopology>();
     if (topology==NULL || topology->getNbHexas()==0)
     {
-        std::cerr << "ERROR(CudaHexahedronTLEDForceField): no elements found.\n";
+        serr << "ERROR(CudaHexahedronTLEDForceField): no elements found.\n";
         return;
     }
     VecElement inputElems = topology->getHexas();
@@ -118,13 +118,13 @@ void CudaHexahedronTLEDForceField::reinit()
         nbv = nelems.rbegin()->first + 1;
     }
 
-    std::cout << "CudaHexahedronTLEDForceField: "<<inputElems.size()<<" elements, "<<nbv<<" nodes, max "<<nmax<<" elements per node"<<std::endl;
+    sout << "CudaHexahedronTLEDForceField: "<<inputElems.size()<<" elements, "<<nbv<<" nodes, max "<<nmax<<" elements per node"<<sendl;
 
 
     /** Precomputations
     */
     init(inputElems.size(), nbv, nmax);
-    std::cout << "CudaHexahedronTLEDForceField: precomputations..." << std::endl;
+    sout << "CudaHexahedronTLEDForceField: precomputations..." << sendl;
 
     const VecCoord& x = *this->mstate->getX();
     nelems.clear();
@@ -172,11 +172,11 @@ void CudaHexahedronTLEDForceField::reinit()
 
         /// Compute Jacobian (J = DhDr^T * x)
         DetJ[i] = ComputeDetJ(e, x, DhDr);
-//         std::cout << "detJ el" << i << ":  = " << DetJ[i] << std::endl;
+//         sout << "detJ el" << i << ":  = " << DetJ[i] << sendl;
 
         /// Compute element volume
         Volume[i] = CompElVolHexa(e, x);
-//         std::cout << "volume el" << i << ":  = " << Volume[i] << std::endl;
+//         sout << "volume el" << i << ":  = " << Volume[i] << sendl;
 
         /// Compute shape function global derivatives DhDx
         float DhDx[8][3];
@@ -184,9 +184,9 @@ void CudaHexahedronTLEDForceField::reinit()
 
 //         for (int y = 0; y < 8; y++)
 //         {
-//             std::cout << DhDx[y][0] << " " << DhDx[y][1] << " " << DhDx[y][2] << " " << std::endl;
+//             sout << DhDx[y][0] << " " << DhDx[y][1] << " " << DhDx[y][2] << " " << sendl;
 //         }
-//         std::cout << std::endl;
+//         sout << sendl;
 
         /// Hourglass control
         float HG[8][8];
@@ -207,11 +207,11 @@ void CudaHexahedronTLEDForceField::reinit()
 //         {
 //             for (int z = 0; z < 8; z++)
 //             {
-//                 std::cout << HG[y][z] << " ";
+//                 sout << HG[y][z] << " ";
 //             }
-//             std::cout << std::endl;
+//             sout << sendl;
 //         }
-//         std::cout << std::endl;
+//         sout << sendl;
 
         /// Write the list of vertices for each element
 //         setE(i, e);
@@ -240,18 +240,18 @@ void CudaHexahedronTLEDForceField::reinit()
 //     {
 //         for (int j = 0; j<8; j++)
 //         {
-//             std::cout << DhC0[8*i+j] << " " ;
+//             sout << DhC0[8*i+j] << " " ;
 //         }
-//         std::cout << std::endl;
+//         sout << sendl;
 //     }
 
 //     for (int i = 0; i < nbv; i++)
 //     {
 //         for (int val = 0; val<nmax; val++)
 //         {
-//             std::cout << "(" << FCrds[ 2*nmax * i + 2*val ] << "," << FCrds[ 2*nmax * i + 2*val+1 ] << ") ";
+//             sout << "(" << FCrds[ 2*nmax * i + 2*val ] << "," << FCrds[ 2*nmax * i + 2*val+1 ] << ") ";
 //         }
-//         std::cout << std::endl;
+//         sout << sendl;
 //     }
 
     /** Initialise GPU textures with the precomputed array for the TLED algorithm
@@ -319,7 +319,7 @@ void CudaHexahedronTLEDForceField::reinit()
     }
 
 
-    std::cout << "CudaHexahedronTLEDForceField::reinit() DONE."<<std::endl;
+    sout << "CudaHexahedronTLEDForceField::reinit() DONE."<<sendl;
 }
 
 void CudaHexahedronTLEDForceField::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/)
@@ -616,9 +616,9 @@ void CudaHexahedronTLEDForceField::ComputeHGParams(const Element& e, const VecCo
 //     {
 //         for (int j = 0; j < 8; j++)
 //         {
-//             cout << HG[i][j] << ", " ;
+//             sout << HG[i][j] << ", " ;
 //         }
-//         cout << endl;
+//         sout << endl;
 //     }
 
 }

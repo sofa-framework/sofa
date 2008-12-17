@@ -59,7 +59,7 @@ void QuadSetTopologyModifier::addQuadProcess(Quad t)
     if((t[0]==t[1]) || (t[0]==t[2]) || (t[0]==t[3])
        || (t[1]==t[2]) || (t[1]==t[3]) || (t[2]==t[3]))
     {
-        cout << "Error: [QuadSetTopologyModifier::addQuad] : invalid quad: "
+        sout << "Error: [QuadSetTopologyModifier::addQuad] : invalid quad: "
                 << t[0] << ", " << t[1] << ", " << t[2] <<  ", " << t[3] <<  endl;
 
         return;
@@ -71,7 +71,7 @@ void QuadSetTopologyModifier::addQuadProcess(Quad t)
     {
         if(m_container->getQuadIndex(t[0],t[1],t[2],t[3]) != -1)
         {
-            cout << "Error: [QuadSetTopologyModifier::addQuad] : Quad "
+            sout << "Error: [QuadSetTopologyModifier::addQuad] : Quad "
                     << t[0] << ", " << t[1] << ", " << t[2] <<  ", " << t[3] << " already exists." << endl;
             return;
         }
@@ -179,7 +179,7 @@ void QuadSetTopologyModifier::removeQuadsProcess(const sofa::helper::vector<unsi
     if(!m_container->hasQuads()) // this method should only be called when quads exist
     {
 #ifndef NDEBUG
-        cout << "Error. [QuadSetTopologyModifier::removeQuadsProcess] quad array is empty." << endl;
+        sout << "Error. [QuadSetTopologyModifier::removeQuadsProcess] quad array is empty." << endl;
 #endif
         return;
     }

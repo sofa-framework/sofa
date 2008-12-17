@@ -135,9 +135,9 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
     contacts.resize(i+1);
     Contact& c = contacts[i];
 
-    //std::cout<<"delta : "<<delta<<" - deltaFree : "<<deltaFree <<std::endl;
-    //std::cout<<"P : "<<P<<" - PFree : "<<Pfree <<std::endl;
-    //std::cout<<"Q : "<<Q<<" - QFree : "<<Qfree <<std::endl;
+    //sout<<"delta : "<<delta<<" - deltaFree : "<<deltaFree <<sendl;
+    //sout<<"P : "<<P<<" - PFree : "<<Pfree <<sendl;
+    //sout<<"Q : "<<Q<<" - QFree : "<<Qfree <<sendl;
 
 
 // for visu
@@ -200,7 +200,7 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
     }
 
 
-    //std::cout<<"R_nts = ["<<c.norm<<" ; "<<c.t<<" ; "<<c.s<<" ];"<<std::endl;
+    //sout<<"R_nts = ["<<c.norm<<" ; "<<c.t<<" ; "<<c.s<<" ];"<<sendl;
 }
 
 
@@ -258,7 +258,7 @@ template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::getConstraintValue(defaulttype::BaseVector * v, bool freeMotion)
 {
     if (!freeMotion)
-        std::cout<<"WARNING Not Implemented for resolution non based on freeMotion"<<std::endl;
+        sout<<"WARNING Not Implemented for resolution non based on freeMotion"<<sendl;
 
     for (unsigned int i=0; i<contacts.size(); i++)
     {

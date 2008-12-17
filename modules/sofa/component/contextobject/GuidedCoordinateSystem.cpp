@@ -35,8 +35,8 @@
 //
 #include <sofa/component/contextobject/GuidedCoordinateSystem.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {
@@ -65,7 +65,7 @@ GuidedCoordinateSystem::~GuidedCoordinateSystem()
 //     double length = v.norm();
 //     if( length < 1.0e-6 )
 //     {
-//         std::cerr<<"GuidedCoordinateSystem:: axis too short"<<std::endl;
+//         serr<<"GuidedCoordinateSystem:: axis too short"<<sendl;
 //         return;
 //     }
 //     axis_ = v * 1/length;
@@ -112,9 +112,9 @@ void GuidedCoordinateSystem::apply()
 //     SpatialVector velo;
 //     velo.setAngularVelocity( axis_*omega_ );
 //     velo.setLinearVelocity( translationVelocity_ );
-//     //cerr<<endl<<"GuidedCoordinateSystem::projectVelocity(), velo= "<<velo<<endl<<endl;
+//     //serr<<sendl<<"GuidedCoordinateSystem::projectVelocity(), velo= "<<velo<<sendl<<sendl;
 //     this->setVelocity( velo );
-//     //cerr<<endl<<"GuidedCoordinateSystem::apply(), new relative velocity= "<< this->getRelativeVelocity() <<endl<<endl;
+//     //serr<<sendl<<"GuidedCoordinateSystem::apply(), new relative velocity= "<< this->getRelativeVelocity() <<sendl<<sendl;
 //
 //     CoordinateSystem::apply();
 // }

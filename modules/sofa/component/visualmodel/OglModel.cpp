@@ -66,7 +66,7 @@ OglModel::~OglModel()
 
 void OglModel::internalDraw()
 {
-    //std::cerr<<" OglModel::internalDraw()"<<std::endl;
+    //serr<<" OglModel::internalDraw()"<<sendl;
     if (!getContext()->getShowVisualModels()) return;
 
     if (getContext()->getShowWireFrame())
@@ -182,10 +182,10 @@ void OglModel::internalDraw()
 
     for (unsigned int i=0; i<xforms.size(); i++)
     {
-        //std::cerr<<"OglModel::internalDraw() 4, quads.size() = "<<quads.size()<<endl;
+        //serr<<"OglModel::internalDraw() 4, quads.size() = "<<quads.size()<<sendl;
         float matrix[16];
         xforms[i].writeOpenGlMatrix(matrix);
-        //for( int k=0; k<16; k++ ) std::cerr<<matrix[k]<<" "; std::cerr<<endl;
+        //for( int k=0; k<16; k++ ) serr<<matrix[k]<<" "; serr<<sendl;
         glPushMatrix();
         glMultMatrixf(matrix);
 

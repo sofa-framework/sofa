@@ -789,7 +789,7 @@ bool LocalMinDistance::testIntersection(Ray &t1,Triangle &t2)
 
     if (PQ.norm2() < alarmDist*alarmDist)
     {
-        //std::cout<<"Collision between Line - Triangle"<<std::endl;
+        //sout<<"Collision between Line - Triangle"<<sendl;
         return true;
     }
     else
@@ -977,7 +977,7 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
             return false;
 
     }
-    //std::cout<<"triangleEdgeShell.size()"<<triangleEdgeShell.size()<<std::endl;
+    //sout<<"triangleEdgeShell.size()"<<triangleEdgeShell.size()<<sendl;
     return true;
 
 

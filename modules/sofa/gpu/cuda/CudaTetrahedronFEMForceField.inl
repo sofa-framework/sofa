@@ -248,9 +248,9 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
         Mat3x3f Rdiff = Rt-s.Rt;
         if ((Rdiff[0].norm2()+Rdiff[1].norm2()+Rdiff[2].norm2()) > 0.000001f)
         {
-            std::cout << "CPU Rt "<<i<<" = "<<Rt<<std::endl;
-            std::cout << "GPU Rt "<<i<<" = "<<s.Rt<<std::endl;
-            std::cout << "DIFF   "<<i<<" = "<<Rdiff<<std::endl;
+            sout << "CPU Rt "<<i<<" = "<<Rt<<sendl;
+            sout << "GPU Rt "<<i<<" = "<<s.Rt<<sendl;
+            sout << "DIFF   "<<i<<" = "<<Rdiff<<sendl;
         }
         Coord xb = Rt*(x[b]-x[a]);
         Coord xc = Rt*(x[c]-x[a]);
@@ -275,10 +275,10 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 
         if (Sdiff.norm2() > 0.0001f)
         {
-            std::cout << "    D "<<i<<" = "<<D<<std::endl;
-            std::cout << "CPU S "<<i<<" = "<<S<<std::endl;
-            std::cout << "GPU S "<<i<<" = "<<s.S<<std::endl;
-            std::cout << "DIFF   "<<i<<" = "<<Sdiff<<std::endl;
+            sout << "    D "<<i<<" = "<<D<<sendl;
+            sout << "CPU S "<<i<<" = "<<S<<sendl;
+            sout << "GPU S "<<i<<" = "<<s.S<<sendl;
+            sout << "DIFF   "<<i<<" = "<<Sdiff<<sendl;
         }
 
     }

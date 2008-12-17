@@ -46,8 +46,8 @@ using namespace core::componentmodel::topology;
 using namespace sofa::defaulttype;
 using namespace sofa::core::componentmodel::behavior;
 
-using std::cerr;
-using std::endl;
+
+
 
 
 
@@ -110,20 +110,20 @@ void MatrixMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx, 
 template <class DataTypes, class MassType>
 void MatrixMass<DataTypes, MassType>::accFromF(VecDeriv& , const VecDeriv& )
 {
-    cerr<<"void MatrixMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f) not yet implemented (need the matrix assembly and inversion)\n";
+    serr<<"void MatrixMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f) not yet implemented (need the matrix assembly and inversion)"<<sendl;
 }
 
 template <class DataTypes, class MassType>
 double MatrixMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv&  )
 {
-    cerr<<"void MatrixMass<DataTypes, MassType>::getKineticEnergy not yet implemented\n";
+    serr<<"void MatrixMass<DataTypes, MassType>::getKineticEnergy not yet implemented"<<sendl;
     return 0;
 }
 
 template <class DataTypes, class MassType>
 double MatrixMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord&  )
 {
-    cerr<<"void MatrixMass<DataTypes, MassType>::getPotentialEnergy not yet implemented\n";
+    serr<<"void MatrixMass<DataTypes, MassType>::getPotentialEnergy not yet implemented"<<sendl;
     return 0;
 }
 

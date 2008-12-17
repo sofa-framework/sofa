@@ -84,7 +84,7 @@ void PointModel::init()
 
     if (mstate==NULL)
     {
-        logWarning("ERROR: PointModel requires a Vec3 Mechanical Model");
+        serr<<"ERROR: PointModel requires a Vec3 Mechanical Model" << sendl;
         return;
     }
 
@@ -147,7 +147,7 @@ bool PointModel::canCollideWithElement(int index, CollisionModel* model2, int in
     if (this->getContext() != model2->getContext()) return true;
     if (model2 == this)
     {
-        //std::cout << "point self test "<<index<<" - "<<index2<<std::endl;
+        //sout << "point self test "<<index<<" - "<<index2<<sendl;
         return index < index2-2; // || index > index2+1;
     }
     else

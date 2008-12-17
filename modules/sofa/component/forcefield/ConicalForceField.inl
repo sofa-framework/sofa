@@ -102,7 +102,7 @@ void ConicalForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, co
                     pp_prime = p_prime - p;
                     d = pp_prime.norm();
                     dir = pp_prime/pp_prime.norm();
-                    //std::cout << t << " " << alpha << std::endl;
+                    //sout << t << " " << alpha << sendl;
                 }
                 //top of the cone
                 else
@@ -144,13 +144,13 @@ void ConicalForceField<DataTypes>::addDForce(VecDeriv& df1, const VecDeriv& dx1)
 template<class DataTypes>
 void ConicalForceField<DataTypes>::updateStiffness( const VecCoord&  )
 {
-    std::cerr<<"SphereForceField::updateStiffness-not-implemented !!!"<<std::endl;
+    serr<<"SphereForceField::updateStiffness-not-implemented !!!"<<sendl;
 }
 
 template <class DataTypes>
 double ConicalForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 {
-    std::cerr<<"ConicalForceField::getPotentialEnergy-not-implemented !!!"<<std::endl;
+    serr<<"ConicalForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 

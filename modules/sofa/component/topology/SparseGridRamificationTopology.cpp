@@ -38,7 +38,7 @@ namespace component
 namespace topology
 {
 
-using std::cerr; using std::cout; using std::endl;
+
 
 SOFA_DECL_CLASS(SparseGridRamificationTopology)
 
@@ -67,7 +67,7 @@ void SparseGridRamificationTopology::init()
 
 void SparseGridRamificationTopology::buildAsFinest()
 {
-// 				cerr<<"SparseGridRamificationTopology::buildAsFinest()\n";
+// 				serr<<"SparseGridRamificationTopology::buildAsFinest()"<<sendl;
 
     SparseGridTopology::buildAsFinest();
 
@@ -95,7 +95,7 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
     helper::io::Mesh* mesh = helper::io::Mesh::Create(this->fileTopology.getValue().c_str());
     if( mesh==NULL && _finestConnectivity.getValue() )
     {
-        cerr<<"Warning: SparseGridRamificationTopology::findConnexionsAtFinestLevel -- mesh is NULL (check if fileTopology=\""<< fileTopology.getValue()<<"\" is valid)\n";
+        serr<<"Warning: SparseGridRamificationTopology::findConnexionsAtFinestLevel -- mesh is NULL (check if fileTopology=\""<< fileTopology.getValue()<<"\" is valid)"<<sendl;
     }
 
 
@@ -192,7 +192,7 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
 
 
 
-// 				cerr<<"END SparseGridRamificationTopology::buildAsFinest()\n";
+// 				serr<<"END SparseGridRamificationTopology::buildAsFinest()"<<sendl;
 
 }
 
@@ -207,7 +207,7 @@ bool SparseGridRamificationTopology::sharingTriangle(helper::io::Mesh* mesh, int
         return true;
 
 
-// 				cerr<<"SparseGridRamificationTopology::sharingTriangle "<<this->fileTopology.getValue()<<"\n";
+// 				serr<<"SparseGridRamificationTopology::sharingTriangle "<<this->fileTopology.getValue()<<""<<sendl;
 
     const Hexa& hexa=getHexa( cubeIdx );
 
@@ -393,7 +393,7 @@ void SparseGridRamificationTopology::buildRamifiedFinestLevel()
 
 void SparseGridRamificationTopology::buildFromFiner()
 {
-// 				cerr<<"SparseGridRamificationTopology::buildFromFiner()\n";
+// 				serr<<"SparseGridRamificationTopology::buildFromFiner()"<<sendl;
 
 // 				SparseGridTopology::buildFromFiner();	return;
 
@@ -582,15 +582,15 @@ void SparseGridRamificationTopology::buildFromFiner()
 // 							const int cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
 //
 // 							if( cubeIdx==-1)
-// 								cout << "  ";
+// 								sout << "  ";
 // 							else
 // 							{
-// 								cout << _connexions[cubeIdx].size() << " ";
+// 								sout << _connexions[cubeIdx].size() << " ";
 // 							}
 // 						}
-// 						std::cout << std::endl;
+// 						sout << sendl;
 // 					}
-// 					std::cout << " -- " << std::endl;
+// 					sout << " -- " << sendl;
 // 				}
 
 
@@ -633,12 +633,12 @@ void SparseGridRamificationTopology::buildFromFiner()
                                 Connexion* coarseConnexion2 = fineConnexion2->_parent;
                                 int coarseHexa2 = coarseConnexion2->_tmp;
 
-// 											cerr<<"coarseHexa : "<<coarseHexa1<<" "<<coarseHexa2<<endl;
+// 											serr<<"coarseHexa : "<<coarseHexa1<<" "<<coarseHexa2<<sendl;
 
 // 											if( coarseConnexion1 != coarseConnexion2 )
                                 if( coarseHexa1 != coarseHexa2 ) // the both fine hexas are not in the same coarse hexa
                                 {
-                                    // 											cout<<"coarseConnexion1 : "<<coarseConnexion1<<"   "<<(coarseConnexion1==NULL?"NULL":"not")<<endl;
+                                    // 											sout<<"coarseConnexion1 : "<<coarseConnexion1<<"   "<<(coarseConnexion1==NULL?"NULL":"not")<<sendl;
                                     coarseConnexion1->_neighbors[i].insert( coarseConnexion2 );
                                     coarseConnexion2->_neighbors[ !(i%2)?i+1:i-1 ].insert( coarseConnexion1 );
                                 }
@@ -737,7 +737,7 @@ void SparseGridRamificationTopology::buildFromFiner()
 
 
 
-// 				cerr<<hexas<<endl;
+// 				serr<<hexas<<sendl;
 
 
 
@@ -757,7 +757,7 @@ void SparseGridRamificationTopology::buildFromFiner()
         }
     }
 
-// 				cerr<<seqPoints.size()<<" "<<hexas.size()<<endl;
+// 				serr<<seqPoints.size()<<" "<<hexas.size()<<sendl;
 
 
     seqPoints.clear();
@@ -779,7 +779,7 @@ void SparseGridRamificationTopology::buildFromFiner()
             ///DEBUG  FAAALLLSSSSEEEE
 // 						if( hexasConnectedToThePoint[i].size() == 1 )
 // 						{
-// 							seqPoints.back()[2] -= hexasConnectedToThePoint[i][0][0]*3; // decale les particles dedoublées du nb de leur connexion pour bien les différencier
+// 							seqPoints.back()[2] -= hexasConnectedToThePoint[i][0][0]*3; // decale les particles dedoublï¿½es du nb de leur connexion pour bien les diffï¿½rencier
 // 						}
 
 
@@ -796,7 +796,7 @@ void SparseGridRamificationTopology::buildFromFiner()
     {
         fixed_array<int,8> nonRamifiedFineIndices = nonRamifiedHierarchicalCubeMap[ i ];
 
-        if( _connexions[i].size()==1 ) // 1 seule connexion pour l'element ==> element normal non ramifié ==> meme enfants
+        if( _connexions[i].size()==1 ) // 1 seule connexion pour l'element ==> element normal non ramifiï¿½ ==> meme enfants
         {
             _hierarchicalCubeMap.push_back( nonRamifiedFineIndices );
             _types.push_back( nonRamifiedTypes[i] );
@@ -840,56 +840,56 @@ void SparseGridRamificationTopology::buildFromFiner()
 
 
 
-// 				cerr<<"_connexions : "<<endl;
+// 				serr<<"_connexions : "<<sendl;
 // 				for(unsigned i=0;i<_connexions.size();++i)
 // 				{
-// 					cerr<<i<<" -> ";
+// 					serr<<i<<" -> ";
 // 					for(unsigned j=0;j<_connexions[i].size();++j)
 // 					{
-// 						cerr<<"[ ";
+// 						serr<<"[ ";
 // 						for( std::list<Connexion::Children>::iterator child=_connexions[i][j]->_children.begin();child!=_connexions[i][j]->_children.end();++child)
-// 							cerr<<(*child).second->_hexaIdx<<" ";
-// 						cerr<<"] , ";
+// 							serr<<(*child).second->_hexaIdx<<" ";
+// 						serr<<"] , ";
 // 					}
-// 					cerr<<endl;
+// 					serr<<sendl;
 // 				}
 //
-// 				cerr<<"_hierarchicalCubeMap : "<<endl;
+// 				serr<<"_hierarchicalCubeMap : "<<sendl;
 // 				for(unsigned i=0;i<_hierarchicalCubeMap.size();++i)
 // 				{
-// 					cerr<<i<<" -> ";
+// 					serr<<i<<" -> ";
 // 					for(int w=0;w<8;++w)
 // 					{
-// 						cerr<<_hierarchicalCubeMap[i][w]<<" ";
+// 						serr<<_hierarchicalCubeMap[i][w]<<" ";
 // 					}
-// 					cerr<<endl;
+// 					serr<<sendl;
 // 				}
 //
-// 				cerr<<"_mapHexa_Connexion : "<<endl;
+// 				serr<<"_mapHexa_Connexion : "<<sendl;
 // 				for(unsigned i=0;i<_mapHexa_Connexion.size();++i)
 // 				{
-// 					cerr<<i<<" -> ";
-// 					cerr<<"["<<_mapHexa_Connexion[i].first[0]->_nonRamifiedHexaIdx<<"]  ";
-// 					cerr<<_mapHexa_Connexion[i].second;
-// 					cerr<<endl;
+// 					serr<<i<<" -> ";
+// 					serr<<"["<<_mapHexa_Connexion[i].first[0]->_nonRamifiedHexaIdx<<"]  ";
+// 					serr<<_mapHexa_Connexion[i].second;
+// 					serr<<sendl;
 // 				}
 //
 //
-// 				cerr<<_finerSparseGrid->getNbHexas()<<endl;
-// 				cerr<<"_hierarchicalCubeMapRamification : "<<endl;
+// 				serr<<_finerSparseGrid->getNbHexas()<<sendl;
+// 				serr<<"_hierarchicalCubeMapRamification : "<<sendl;
 // 				for(unsigned i=0;i<_hierarchicalCubeMapRamification.size();++i)
 // 				{
-// 					cerr<<i<<" -> ";
+// 					serr<<i<<" -> ";
 // 					for(int w=0;w<8;++w)
 // 					{
-// 						cerr<<"[ ";
+// 						serr<<"[ ";
 // 						for(unsigned j=0;j<_hierarchicalCubeMapRamification[i][w].size();++j)
 // 						{
-// 							cerr<<_hierarchicalCubeMapRamification[i][w][j]<<" ";
+// 							serr<<_hierarchicalCubeMapRamification[i][w][j]<<" ";
 // 						}
-// 						cerr<<"] , ";
+// 						serr<<"] , ";
 // 					}
-// 					cerr<<endl;
+// 					serr<<sendl;
 // 				}
 
 
@@ -923,9 +923,9 @@ void SparseGridRamificationTopology::buildFromFiner()
 
 
 
-// 				cerr<<"nbPoints : "<<seqPoints.size()<<endl;
+// 				serr<<"nbPoints : "<<seqPoints.size()<<sendl;
 
-// 				cerr<<"END SparseGridRamificationTopology::buildFromFiner()\n";
+// 				serr<<"END SparseGridRamificationTopology::buildFromFiner()"<<sendl;
 }
 
 
@@ -960,8 +960,8 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
     _virtualFinerLevels[0]->init();
 
-    cerr<<"SparseGridRamificationTopology "<<getName()<<" buildVirtualFinerLevels : ";
-    cerr<<"("<<newnx<<"x"<<newny<<"x"<<newnz<<") -> "<< _virtualFinerLevels[0]->getNbHexas() <<" elements , ";
+    serr<<"SparseGridRamificationTopology "<<getName()<<" buildVirtualFinerLevels : ";
+    serr<<"("<<newnx<<"x"<<newny<<"x"<<newnz<<") -> "<< _virtualFinerLevels[0]->getNbHexas() <<" elements , ";
 
     for(int i=1; i<nb; ++i)
     {
@@ -973,10 +973,10 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
         _virtualFinerLevels[i]->init();
 
 
-        cerr<<"("<<_virtualFinerLevels[i]->getNx()<<"x"<<_virtualFinerLevels[i]->getNy()<<"x"<<_virtualFinerLevels[i]->getNz()<<") -> "<< _virtualFinerLevels[i]->getNbHexas() <<" elements , ";
+        serr<<"("<<_virtualFinerLevels[i]->getNx()<<"x"<<_virtualFinerLevels[i]->getNy()<<"x"<<_virtualFinerLevels[i]->getNz()<<") -> "<< _virtualFinerLevels[i]->getNbHexas() <<" elements , ";
     }
 
-    cerr<<endl;
+    serr<<sendl;
 
     this->setFinerSparseGrid(_virtualFinerLevels[nb-1]);
 
@@ -1121,7 +1121,7 @@ void SparseGridRamificationTopology::changeIndices(unsigned oldidx, unsigned new
 void SparseGridRamificationTopology::printNeighborhood()
 {
     // 				// print draw neighbors
-    cerr<<endl<<endl;
+    serr<<sendl<<sendl;
     for(int z=0; z<getNz()-1; ++z)
     {
         for(int y=getNy()-2; y>=0; --y)
@@ -1135,17 +1135,17 @@ void SparseGridRamificationTopology::printNeighborhood()
                 const int cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
 
                 if( cubeIdx==-1)
-                    cout << "     ";
+                    sout << "     ";
                 else
                 {
                     for( helper::vector<Connexion*>::iterator it = _connexions[cubeIdx].begin(); it != _connexions[cubeIdx].end() ; ++it)
                     {
-                        if( ! (*it)->_neighbors[UP].empty() ) cout<<"  | ";
-                        else cout<<"   ";
+                        if( ! (*it)->_neighbors[UP].empty() ) sout<<"  | ";
+                        else sout<<"   ";
                     }
                 }
             }
-            std::cout << std::endl;
+            sout << sendl;
 
 
 
@@ -1158,33 +1158,33 @@ void SparseGridRamificationTopology::printNeighborhood()
 
 
                 if( cubeIdx==-1)
-                    cout << "     ";
+                    sout << "     ";
                 else
                 {
-                    cout<<"[";
+                    sout<<"[";
                     for( helper::vector<Connexion*>::iterator it = _connexions[cubeIdx].begin(); it != _connexions[cubeIdx].end() ; ++it)
                     {
-                        if( it!= _connexions[cubeIdx].begin() ) cout<<",";
+                        if( it!= _connexions[cubeIdx].begin() ) sout<<",";
 
-                        if( ! (*it)->_neighbors[LEFT].empty() ) cout<<"-";
-                        else cout<<" ";
+                        if( ! (*it)->_neighbors[LEFT].empty() ) sout<<"-";
+                        else sout<<" ";
 
-                        if( ! (*it)->_neighbors[BEFORE].empty() ) cout<<"X";
-                        else cout<<"0";
+                        if( ! (*it)->_neighbors[BEFORE].empty() ) sout<<"X";
+                        else sout<<"0";
                     }
-                    cout<<"]";
+                    sout<<"]";
                 }
 
 
 
             }
-            std::cout << std::endl;
+            sout << sendl;
 
 
 
 
         }
-        std::cout << " -- " << std::endl;
+        sout << " -- " << sendl;
     }
 }
 
@@ -1201,18 +1201,18 @@ void SparseGridRamificationTopology::printNeighbors()
                 const int cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
 
                 if( cubeIdx==-1)
-                    cout << "  ";
+                    sout << "  ";
                 else
                 {
                     int sum=0;
                     for(int i=0; i<NUM_CONNECTED_NODES; ++i)
                         sum+=_connexions[cubeIdx][0]->_neighbors[i].size();
-                    cout << sum << " ";
+                    sout << sum << " ";
                 }
             }
-            std::cout << std::endl;
+            sout << sendl;
         }
-        std::cout << " -- " << std::endl;
+        sout << " -- " << sendl;
     }
 }
 
@@ -1229,26 +1229,26 @@ void SparseGridRamificationTopology::printNbConnexions()
                 const int cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
 
                 if( cubeIdx==-1)
-                    cout << "  ";
+                    sout << "  ";
                 else
                 {
-                    cout << _connexions[cubeIdx].size() << " ";
+                    sout << _connexions[cubeIdx].size() << " ";
                 }
             }
-            std::cout << std::endl;
+            sout << sendl;
         }
-        std::cout << " -- " << std::endl;
+        sout << " -- " << sendl;
     }
 }
 
 
 void SparseGridRamificationTopology::printParents()
 {
-    cerr<<"\n\nPARENTS\n\n";
+    serr<<"\n\nPARENTS\n"<<sendl;
 
     for( unsigned i=0; i<_virtualFinerLevels.size(); ++i)
     {
-        cerr<<"level "<<i<<" :\n";
+        serr<<"level "<<i<<" :"<<sendl;
 
         SparseGridRamificationTopology* finestSGRT = dynamic_cast<SparseGridRamificationTopology*>(_virtualFinerLevels[i]);
 
@@ -1262,23 +1262,23 @@ void SparseGridRamificationTopology::printParents()
                     const int cubeIdx = finestSGRT->_indicesOfRegularCubeInSparseGrid[cubeIdxRG];
 
                     if( cubeIdx==-1)
-                        cout << " ";
+                        sout << " ";
                     else
                     {
-                        cout<<"[";
+                        sout<<"[";
                         for( helper::vector<Connexion*>::iterator it = finestSGRT->_connexions[cubeIdx].begin(); it != finestSGRT->_connexions[cubeIdx].end() ; ++it)
                         {
-                            if( it!= finestSGRT->_connexions[cubeIdx].begin() ) cout<<",";
+                            if( it!= finestSGRT->_connexions[cubeIdx].begin() ) sout<<",";
 
-                            cout << cubeIdx << "->"<<(*it)->_coarsestParent;
+                            sout << cubeIdx << "->"<<(*it)->_coarsestParent;
                         }
-                        cout<<"]";
-                        cout<<" ";
+                        sout<<"]";
+                        sout<<" ";
                     }
                 }
-                std::cout << std::endl;
+                sout << sendl;
             }
-            std::cout << " -- " << std::endl;
+            sout << " -- " << sendl;
         }
     }
 
@@ -1292,22 +1292,22 @@ void SparseGridRamificationTopology::printParents()
                 const int cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
 
                 if( cubeIdx==-1)
-                    cout << " ";
+                    sout << " ";
                 else
                 {
-                    cout<<"[";
+                    sout<<"[";
                     for( helper::vector<Connexion*>::iterator it = _connexions[cubeIdx].begin(); it != _connexions[cubeIdx].end() ; ++it)
                     {
-                        if( it!= _connexions[cubeIdx].begin() ) cout<<",";
-                        cout << (*it)->_coarsestParent;
+                        if( it!= _connexions[cubeIdx].begin() ) sout<<",";
+                        sout << (*it)->_coarsestParent;
                     }
-                    cout<<"]";
-                    cout<<" ";
+                    sout<<"]";
+                    sout<<" ";
                 }
             }
-            std::cout << std::endl;
+            sout << sendl;
         }
-        std::cout << " -- " << std::endl;
+        sout << " -- " << sendl;
     }
 }
 
@@ -1325,22 +1325,22 @@ void SparseGridRamificationTopology::printHexaIdx()
                 const int cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
 
                 if( cubeIdx==-1)
-                    cout << "  ";
+                    sout << "  ";
                 else
                 {
-                    cout<<"[";
+                    sout<<"[";
                     for( helper::vector<Connexion*>::iterator it = _connexions[cubeIdx].begin(); it != _connexions[cubeIdx].end() ; ++it)
                     {
-                        if( it!= _connexions[cubeIdx].begin() ) cout<<",";
-                        cout << (*it)->_hexaIdx;
+                        if( it!= _connexions[cubeIdx].begin() ) sout<<",";
+                        sout << (*it)->_hexaIdx;
                     }
-                    cout<<"]";
-                    cout<<" ";
+                    sout<<"]";
+                    sout<<" ";
                 }
             }
-            std::cout << std::endl;
+            sout << sendl;
         }
-        std::cout << " -- " << std::endl;
+        sout << " -- " << sendl;
     }
 }
 

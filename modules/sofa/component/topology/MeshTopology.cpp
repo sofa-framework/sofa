@@ -1498,7 +1498,7 @@ void MeshTopology::invalidate()
     m_hexaEdgeShell.clear();
     m_hexaQuadShell.clear();
     ++revision;
-    //std::cout << "MeshTopology::invalidate()"<<std::endl;
+    //sout << "MeshTopology::invalidate()"<<sendl;
 }
 
 void MeshTopology::updateEdges()

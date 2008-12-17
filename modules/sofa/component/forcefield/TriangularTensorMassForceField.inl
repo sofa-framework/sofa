@@ -43,9 +43,9 @@ using namespace sofa::defaulttype;
 using namespace	sofa::component::topology;
 using namespace core::componentmodel::topology;
 
-using std::cerr;
-using std::cout;
-using std::endl;
+
+
+
 
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::TriangleEdges TriangleEdges;
@@ -278,14 +278,14 @@ template <class DataTypes> TriangularTensorMassForceField<DataTypes>::~Triangula
 
 template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init()
 {
-    std::cerr << "initializing TriangularTensorMassForceField" << std::endl;
+    serr << "initializing TriangularTensorMassForceField" << sendl;
     this->Inherited::init();
 
     _topology = getContext()->getMeshTopology();
 
     if (_topology->getNbTriangles()==0)
     {
-        std::cerr << "ERROR(TriangularTensorMassForceField): object must have a Triangular Set Topology.\n";
+        serr << "ERROR(TriangularTensorMassForceField): object must have a Triangular Set Topology."<<sendl;
         return;
     }
     updateLameCoefficients();
@@ -328,7 +328,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
 template <class DataTypes>
 double TriangularTensorMassForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
 {
-    std::cerr<<"TriangularTensorMassForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    serr<<"TriangularTensorMassForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 template <class DataTypes>
@@ -392,7 +392,7 @@ void TriangularTensorMassForceField<DataTypes>::updateLameCoefficients()
 {
     lambda= f_youngModulus.getValue()*f_poissonRatio.getValue()/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
     mu = f_youngModulus.getValue()*(1-f_poissonRatio.getValue())/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
-//	std::cerr << "initialized Lame coef : lambda=" <<lambda<< " mu="<<mu<<std::endl;
+//	serr << "initialized Lame coef : lambda=" <<lambda<< " mu="<<mu<<sendl;
 }
 
 

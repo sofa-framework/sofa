@@ -64,6 +64,9 @@ public:
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
 
+    using Inherited::sout;
+    using Inherited::serr;
+    using Inherited::sendl;
 
     class Mat3 : public helper::fixed_array<Deriv,3>
     {

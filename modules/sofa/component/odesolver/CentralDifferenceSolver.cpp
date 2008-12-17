@@ -29,8 +29,8 @@
 #include <iostream>
 #include "sofa/helper/system/thread/CTime.h"
 
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {

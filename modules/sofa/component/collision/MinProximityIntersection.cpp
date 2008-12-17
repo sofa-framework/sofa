@@ -716,7 +716,7 @@ bool MinProximityIntersection::testIntersection(Ray &t1,Triangle &t2)
 
 	if (PQ.norm2() < alarmDist*alarmDist)
 	{
-		//std::cout<<"Collision between Line - Triangle"<<std::endl;
+		//sout<<"Collision between Line - Triangle"<<sendl;
 		return true;
 	}
 	else

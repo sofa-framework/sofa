@@ -60,9 +60,9 @@ void StiffSpringForceField<DataTypes>::addSpringForce( double& potentialEnergy, 
         u *= inverseLength;
         Real elongation = (Real)(d - spring.initpos);
         potentialEnergy += elongation * elongation * spring.ks / 2;
-        /*                    cerr<<"StiffSpringForceField<DataTypes>::addSpringForce, p1 = "<<p1<<endl;
-                            cerr<<"StiffSpringForceField<DataTypes>::addSpringForce, p2 = "<<p2<<endl;
-                            cerr<<"StiffSpringForceField<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy<<endl;*/
+        /*                    serr<<"StiffSpringForceField<DataTypes>::addSpringForce, p1 = "<<p1<<sendl;
+                            serr<<"StiffSpringForceField<DataTypes>::addSpringForce, p2 = "<<p2<<sendl;
+                            serr<<"StiffSpringForceField<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy<<sendl;*/
         Deriv relativeVelocity = v2[b]-v1[a];
         Real elongationVelocity = dot(u,relativeVelocity);
         Real forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);
@@ -105,7 +105,7 @@ void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDe
     dforce *= kFactor;
     f1[a]+=dforce;
     f2[b]-=dforce;
-    //cerr<<"StiffSpringForceField<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", dforce ="<<dforce<<endl;
+    //serr<<"StiffSpringForceField<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", dforce ="<<dforce<<sendl;
 }
 
 template<class DataTypes>
@@ -116,10 +116,10 @@ void StiffSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, cons
     f1.resize(x1.size());
     f2.resize(x2.size());
     m_potentialEnergy = 0;
-    //cerr<<"StiffSpringForceField<DataTypes>::addForce()"<<endl;
+    //serr<<"StiffSpringForceField<DataTypes>::addForce()"<<sendl;
     for (unsigned int i=0; i<springs.size(); i++)
     {
-        //cerr<<"StiffSpringForceField<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2<<endl;
+        //serr<<"StiffSpringForceField<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2<<sendl;
         this->addSpringForce(m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i]);
     }
 }
@@ -129,15 +129,15 @@ void StiffSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, c
 {
     df1.resize(dx1.size());
     df2.resize(dx2.size());
-    //cerr<<"StiffSpringForceField<DataTypes>::addDForce, dx1 = "<<dx1<<endl;
-    //cerr<<"StiffSpringForceField<DataTypes>::addDForce, df1 before = "<<f1<<endl;
+    //serr<<"StiffSpringForceField<DataTypes>::addDForce, dx1 = "<<dx1<<sendl;
+    //serr<<"StiffSpringForceField<DataTypes>::addDForce, df1 before = "<<f1<<sendl;
     const helper::vector<Spring>& springs = this->springs.getValue();
     for (unsigned int i=0; i<springs.size(); i++)
     {
         this->addSpringDForce(df1,dx1,df2,dx2, i, springs[i], kFactor, bFactor);
     }
-    //cerr<<"StiffSpringForceField<DataTypes>::addDForce, df1 = "<<f1<<endl;
-    //cerr<<"StiffSpringForceField<DataTypes>::addDForce, df2 = "<<f2<<endl;
+    //serr<<"StiffSpringForceField<DataTypes>::addDForce, df1 = "<<f1<<sendl;
+    //serr<<"StiffSpringForceField<DataTypes>::addDForce, df2 = "<<f2<<sendl;
 }
 
 } // namespace forcefield

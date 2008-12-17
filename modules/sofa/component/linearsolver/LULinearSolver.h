@@ -74,15 +74,15 @@ public:
     /// Solve Mx=b
     void solve (Matrix& M, Vector& x, Vector& b)
     {
-        using std::cerr;
-        using std::endl;
+
+
 
         const bool verbose  = f_verbose.getValue();
 
         if( verbose )
         {
-            cerr<<"LULinearSolver, b = "<< b <<endl;
-            cerr<<"LULinearSolver, M = "<< M <<endl;
+            serr<<"LULinearSolver, b = "<< b <<sendl;
+            serr<<"LULinearSolver, M = "<< M <<sendl;
         }
         if (solver)
             M.solve(&x,&b, solver);
@@ -92,7 +92,7 @@ public:
         // x is the solution of the system
         if( verbose )
         {
-            cerr<<"LULinearSolver::solve, solution = "<<x<<endl;
+            serr<<"LULinearSolver::solve, solution = "<<x<<sendl;
         }
     }
 
@@ -113,7 +113,7 @@ public:
             {
                 double err = I.element(i,j)-((i==j)?1.0:0.0);
                 if (fabs(err) > 1.0e-6)
-                    std::cerr << "ERROR: I("<<i<<","<<j<<") error "<<err<<std::endl;
+                    serr << "ERROR: I("<<i<<","<<j<<") error "<<err<<sendl;
             }*/
     }
 
@@ -129,7 +129,7 @@ public:
         const unsigned int Jcols = J.colSize();
         if (Jcols != this->systemMatrix->rowSize())
         {
-            std::cerr << "LULinearSolver::addJMInvJt ERROR: incompatible J matrix size." << std::endl;
+            serr << "LULinearSolver::addJMInvJt ERROR: incompatible J matrix size." << sendl;
             return false;
         }
 
@@ -156,7 +156,7 @@ public:
                     }
                 }
                 acc *= fact;
-                //std::cout << "W("<<row1<<","<<row2<<") += "<<acc<<" * "<<fact<<std::endl;
+                //sout << "W("<<row1<<","<<row2<<") += "<<acc<<" * "<<fact<<sendl;
                 result.add(row1,row2,acc);
                 if (row1!=row2)
                     result.add(row2,row1,acc);

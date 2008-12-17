@@ -57,7 +57,7 @@ public:
 
     virtual void CudaGetCompliance(defaulttype::BaseMatrix* W)
     {
-        std::cout << "warning : CudaGetCompliance(defaulttype::BaseMatrix* W) is not implemented in " << this->getTypeName() << std::endl;
+        sout << "warning : CudaGetCompliance(defaulttype::BaseMatrix* W) is not implemented in " << this->getTypeName() << sendl;
         getCompliance(W); // par defaut si la methode cuda n'est pas implementé on resoud sur CPU
     }
 

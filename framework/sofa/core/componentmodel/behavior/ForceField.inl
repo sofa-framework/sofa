@@ -59,10 +59,10 @@ ForceField<DataTypes>::~ForceField()
 template<class DataTypes>
 void ForceField<DataTypes>::init()
 {
-    //cerr<<"ForceField<DataTypes>::init() "<<getName()<<" start"<<endl;
+    //serr<<"ForceField<DataTypes>::init() "<<getName()<<" start"<<sendl;
     BaseForceField::init();
     mstate = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
-    //cerr<<"ForceField<DataTypes>::init() "<<getName()<<" done"<<endl;
+    //serr<<"ForceField<DataTypes>::init() "<<getName()<<" done"<<sendl;
 }
 
 template<class DataTypes>
@@ -88,7 +88,7 @@ void ForceField<DataTypes>::addDForceV(double kFactor, double bFactor)
 template<class DataTypes>
 void ForceField<DataTypes>::addDForce(VecDeriv& /*df*/, const VecDeriv& /*dx*/)
 {
-    std::cerr << "ERROR("<<getClassName()<<"): addDForce not implemented.\n";
+    serr << "ERROR("<<getClassName()<<"): addDForce not implemented." << sendl;
 }
 
 template<class DataTypes>

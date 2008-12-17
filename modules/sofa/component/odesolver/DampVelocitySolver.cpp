@@ -27,8 +27,8 @@
 #include <math.h>
 #include <iostream>
 
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {
@@ -61,8 +61,8 @@ void DampVelocitySolver::solve(double dt)
 
     if( printLog )
     {
-        cerr<<"DampVelocitySolver, dt = "<< dt <<endl;
-        cerr<<"DampVelocitySolver, initial v = "<< vel <<endl;
+        serr<<"DampVelocitySolver, dt = "<< dt <<sendl;
+        serr<<"DampVelocitySolver, initial v = "<< vel <<sendl;
     }
 
     addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
@@ -73,7 +73,7 @@ void DampVelocitySolver::solve(double dt)
 
     if( printLog )
     {
-        cerr<<"DampVelocitySolver, final v = "<< vel <<endl;
+        serr<<"DampVelocitySolver, final v = "<< vel <<sendl;
     }
 }
 

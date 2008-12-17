@@ -138,9 +138,9 @@ void SPHFluidSurfaceMapping<In,Out>::createFaces(OutVecCoord& out, const Cell** 
                 cells[edgecell[tri[1]]]->data.p[edgepts[tri[1]]],
                 cells[edgecell[tri[2]]]->data.p[edgepts[tri[2]]], out.size())<0)
         {
-            std::cerr << "  mk=0x"<<std::hex<<mk<<std::dec<<" p1="<<tri[0]<<" p2="<<tri[1]<<" p3="<<tri[2]<<std::endl;
-            for (int e=0; e<12; e++) std::cerr << "  e"<<e<<"="<<cells[edgecell[e]]->data.p[edgepts[e]];
-            std::cerr<<std::endl;
+            serr << "  mk=0x"<<std::hex<<mk<<std::dec<<" p1="<<tri[0]<<" p2="<<tri[1]<<" p3="<<tri[2]<<sendl;
+            for (int e=0; e<12; e++) serr << "  e"<<e<<"="<<cells[edgecell[e]]->data.p[edgepts[e]];
+            serr<<sendl;
         }
         tri+=3;
     }
@@ -339,7 +339,7 @@ void SPHFluidSurfaceMapping<In,Out>::apply( OutVecCoord& out, const InVecCoord& 
         }
     }
 
-    //std::cout << out.size() << " points, "<<seqTriangles.size()<<" faces."<<std::endl;
+    //sout << out.size() << " points, "<<seqTriangles.size()<<" faces."<<sendl;
 }
 
 template <class In, class Out>

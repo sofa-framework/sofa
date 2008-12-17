@@ -35,8 +35,8 @@
 
 #include <sofa/component/topology/PointSubset.h>
 
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {

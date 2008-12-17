@@ -98,7 +98,7 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
 
     if (nbNodes==0)
     {
-        logWarning("No degree of freedom");
+        serr<<"No degree of freedom" << sendl;
         return;
     }
     dof_on_node = v0[0].size();
@@ -106,7 +106,7 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
 
     nbRows = nbNodes*dof_on_node;
     nbCols = nbNodes*dof_on_node;
-    std::cout << "size : " << nbRows << " " << nbCols << std::endl;
+    sout << "size : " << nbRows << " " << nbCols << sendl;
     appCompliance = new Real[nbRows * nbCols];
 
 
@@ -118,18 +118,18 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
 
     std::ifstream compFileIn(ss.str().c_str(), std::ifstream::binary);
 
-    std::cout << "try to open : " << ss.str() << endl;
+    sout << "try to open : " << ss.str() << endl;
 
     if(compFileIn.good())
     {
-        std::cout << "file open : " << ss.str() << " compliance being loaded" << endl;
+        sout << "file open : " << ss.str() << " compliance being loaded" << endl;
         //complianceLoaded = true;
         compFileIn.read((char*)appCompliance, nbCols * nbRows*sizeof(double));
         compFileIn.close();
     }
     else
     {
-        std::cout << "can not open : " << ss.str() << " compliance being built" << endl;
+        sout << "can not open : " << ss.str() << " compliance being built" << endl;
 
         // for the intial computation, the gravity has to be put at 0
         const Vec3d gravity = this->getContext()->getGravityInWorld();
@@ -152,12 +152,12 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
         this->getContext()->get(linearSolver);
 
         if(odeSolver)
-            std::cout << "use CGImplicitSolver " << std::endl;
+            sout << "use CGImplicitSolver " << sendl;
         else if(EulerSolver && linearSolver)
-            std::cout << "use EulerImplicitSolver &  CGLinearSolver" << std::endl;
+            sout << "use EulerImplicitSolver &  CGLinearSolver" << sendl;
         else
         {
-            logWarning("PrecomputedContactCorrection must be associated with CGImplicitSolver or EulerImplicitSolver+CGLinearSolver for the precomputation\nNo Precomputation");
+            serr<<"PrecomputedContactCorrection must be associated with CGImplicitSolver or EulerImplicitSolver+CGLinearSolver for the precomputation\nNo Precomputation" << sendl;
             return;
         }
 
@@ -195,13 +195,13 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
 
         for(unsigned int f = 0 ; f < nbNodes ; f++)
         {
-            std::cout << "inverse cols node : " << f << std::endl;
+            sout << "inverse cols node : " << f << sendl;
             Deriv unitary_force;
 
             for (unsigned int i=0; i<dof_on_node; i++)
             {
                 unitary_force.clear();
-                //std::cerr<<"dof n:"<<i<<std::endl;
+                //serr<<"dof n:"<<i<<sendl;
                 unitary_force[i]=1.0;
                 force[f] = unitary_force;
                 ////// reset Position and Velocities ///////
@@ -210,26 +210,26 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
                 for (unsigned int n=0; n<nbNodes; n++)
                     pos[n] = pos0[n];
                 ////////////////////////////////////////////
-                //std::cerr<<"pos0 set"<<std::endl;
+                //serr<<"pos0 set"<<sendl;
 
 
                 //odeSolver->computeContactForce(force);
 
                 if(odeSolver)
                 {
-                    //std::cerr<<"odeSolver"<<std::endl;
+                    //serr<<"odeSolver"<<sendl;
                     odeSolver->solve(dt);
                 }
                 else if(EulerSolver)
                 {
-                    //std::cerr<<"EulerSolver"<<std::endl;
+                    //serr<<"EulerSolver"<<sendl;
                     EulerSolver->solve(dt, core::componentmodel::behavior::BaseMechanicalState::VecId::position(), core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
                 }
 
-                //std::cerr<<"solve reussi"<<std::endl;
+                //serr<<"solve reussi"<<sendl;
 
                 velocity = *mstate->getV();
-                //std::cerr<<"getV : "<<velocity<<std::endl;
+                //serr<<"getV : "<<velocity<<sendl;
                 for (unsigned int v=0; v<nbNodes; v++)
                 {
 
@@ -238,7 +238,7 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
                         appCompliance[(v*dof_on_node+j)*nbCols + (f*dof_on_node+i) ] = velocity[v][j] / unitary_force[i];
                     }
                 }
-                //std::cerr<<"put in appComp"<<std::endl;
+                //serr<<"put in appComp"<<sendl;
             }
             unitary_force.clear();
             force[f] = unitary_force;
@@ -270,21 +270,21 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
 
 
     ////  debug print 100 first row and column of the matrix
-    std::cout << "Matrix compliance" ;
+    sout << "Matrix compliance" ;
 
     for (unsigned int i=0; i<10 && i<nbCols; i++)
     {
-        std::cout << std::endl;
+        sout << sendl;
         for (unsigned int j=0; j<10 && j<nbCols; j++)
         {
-            std::cout <<" \t "<< appCompliance[j*nbCols + i];
+            sout <<" \t "<< appCompliance[j*nbCols + i];
         }
     }
 
-    std::cout << std::endl;
-    ////std::cout << "quit init "  << endl;
+    sout << sendl;
+    ////sout << "quit init "  << endl;
 
-    //std::cout << "----------- Test Quaternions --------------" << std::endl;
+    //sout << "----------- Test Quaternions --------------" << sendl;
 
     //// rotation de -Pi/2 autour de z en init
     //Quat q0(0,0,-0.7071067811865475, 0.7071067811865475);
@@ -301,18 +301,18 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
     //q.normalize();
 
     //// test des rotations:
-    //std::cout<<"VecX = "<<q.rotate( Vec3d(1.0,0.0,0.0) )<<std::endl;
-    //std::cout<<"VecY = "<<q.rotate( Vec3d(0.0,1.0,0.0) )<<std::endl;
-    //std::cout<<"VecZ = "<<q.rotate( Vec3d(0.0,0.0,1.0) )<<std::endl;
+    //sout<<"VecX = "<<q.rotate( Vec3d(1.0,0.0,0.0) )<<sendl;
+    //sout<<"VecY = "<<q.rotate( Vec3d(0.0,1.0,0.0) )<<sendl;
+    //sout<<"VecZ = "<<q.rotate( Vec3d(0.0,0.0,1.0) )<<sendl;
 
 
     //// on veut maintenant retrouver l'Èquivalent de q_q0 dans le repËre global
     //// c'est ‡ dire une rotation de Pi/2 autour de l'axe y
     //Quat q_test = q * q0.inverse();
 
-    //std::cout<<"q_test = "<<q_test<<std::endl;
+    //sout<<"q_test = "<<q_test<<sendl;
 
-    //std::cout<<"Alpha = "<<q_test.toEulerVector()<< " doit valoir une rotation de Pi/2 autour de l'axe y"<<std::endl;
+    //sout<<"Alpha = "<<q_test.toEulerVector()<< " doit valoir une rotation de Pi/2 autour de l'axe y"<<sendl;
 
 
 
@@ -356,11 +356,11 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::Base
             activeDof.push_back(constraints[c1][i].index);
     }
     //unsigned int numNodes1 = activeDof.size();
-    //std::cout<< "numNodes : avant = "<<numNodes1;
+    //sout<< "numNodes : avant = "<<numNodes1;
     activeDof.sort();
     activeDof.unique();
     //	unsigned int numNodes = activeDof.size();
-    //std::cout<< " apres = "<<numNodes<<std::endl;
+    //sout<< " apres = "<<numNodes<<sendl;
 
 
     ////////////////////////////////////////////////////////////
@@ -424,7 +424,7 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::Base
                 indexCurColConst = mstate->getConstraintId()[curColConst];
                 double w = _sparseCompliance[toto + curColConst]*n1;
                 //W[indexCurRowConst][indexCurColConst] += w;
-                //std::cout << "W("<<indexCurRowConst<<","<<indexCurColConst<<") = "<<w<<std::endl;
+                //sout << "W("<<indexCurRowConst<<","<<indexCurColConst<<") = "<<w<<sendl;
                 W->add(indexCurRowConst, indexCurColConst, w);
                 if (indexCurRowConst != indexCurColConst)
                     W->add(indexCurColConst, indexCurRowConst, w);
@@ -466,13 +466,13 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
 
     std::list<int> activeDof;
 
-    //	std::cout<<"First list:"<<std::endl;
+    //	sout<<"First list:"<<sendl;
     for(unsigned int c1 = 0; c1 < numConstraints; c1++)
     {
         int indexC1 = mstate->getConstraintId()[c1];
 
         double fC1 = (Real)f->element(indexC1);
-        //std::cout << "fC("<<indexC1<<")="<<fC1<<std::endl;
+        //sout << "fC("<<indexC1<<")="<<fC1<<sendl;
 
         if (fC1 != 0.0)
         {
@@ -493,7 +493,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
     activeDof.unique();
 
     //for (unsigned int i=0; i< force.size(); i++)
-    //    std::cout << "f("<<i<<")="<<force[i]<<std::endl;
+    //    sout << "f("<<i<<")="<<force[i]<<sendl;
 
     std::list<int>::iterator IterateurListe;
     unsigned int i;
@@ -532,7 +532,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
 
     for (unsigned int i=0; i< dx.size(); i++)
     {
-        //std::cout << "dx("<<i<<")="<<dx[i]<<std::endl;
+        //sout << "dx("<<i<<")="<<dx[i]<<sendl;
         x[i] = x_free[i];
         v[i] = v_free[i];
 
@@ -695,12 +695,12 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints
     }
     else
     {
-        cout << "No rotation defined : only defined for TetrahedronFEMForceField !";
+        sout << "No rotation defined : only defined for TetrahedronFEMForceField !";
         return;
     }
 
 
-    //std::cout << "start rotating normals " << g_timer_elapsed(timer, &micro) << std::endl;
+    //sout << "start rotating normals " << g_timer_elapsed(timer, &micro) << sendl;
     //	int sizemax=0;
     //	int index_const = -1;
     // on fait tourner les normales (en les ramenant dans le "pseudo" repere initial) //
@@ -790,7 +790,7 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateResponse()
     }
     else
     {
-        cout << "No rotation defined  !";
+        sout << "No rotation defined  !";
         return;
     }
     VecDeriv& dx = *mstate->getDx();
@@ -851,12 +851,12 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateConstraints
     }
     else
     {
-        cout << "No rotation defined : only defined for TetrahedronFEMForceField !";
+        sout << "No rotation defined : only defined for TetrahedronFEMForceField !";
         return;
     }
 
 
-    //std::cout << "start rotating normals " << g_timer_elapsed(timer, &micro) << std::endl;
+    //sout << "start rotating normals " << g_timer_elapsed(timer, &micro) << sendl;
     //	int sizemax=0;
     //	int index_const = -1;
     // on fait tourner les normales (en les ramenant dans le "pseudo" repere initial) //
@@ -943,7 +943,7 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateResponse()
     }
     else
     {
-        cout << "No rotation defined  !";
+        sout << "No rotation defined  !";
         return;
     }
     VecDeriv& dx = *mstate->getDx();

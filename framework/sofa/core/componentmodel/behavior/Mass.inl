@@ -122,7 +122,7 @@ void Mass<DataTypes>::exportGnuplot(double time)
 {
     if( m_gnuplotFileEnergy!=NULL )
     {
-        (*m_gnuplotFileEnergy) << time <<"\t"<< this->getKineticEnergy() <<"\t"<< this->getPotentialEnergy() <<"\t"<< this->getPotentialEnergy()+this->getKineticEnergy()<< std::endl;
+        (*m_gnuplotFileEnergy) << time <<"\t"<< this->getKineticEnergy() <<"\t"<< this->getPotentialEnergy() <<"\t"<< this->getPotentialEnergy()+this->getKineticEnergy()<< sendl;
     }
 }
 
@@ -167,13 +167,13 @@ void Mass<DataTypes>::buildSystemMatrix(defaulttype::BaseMatrix &invM_Jtrans , d
 
 //     for (unsigned int n1=0;n1<c.size();++n1)
 //       {
-// 	typename std::map< unsigned int, Deriv >::iterator itdebug;
-// 	std::cout << "Constraint " << n1 << ":\n";
-// 	for (itdebug=c[n1].begin();itdebug!=c[n1].end();itdebug++)
-// 	  {
-// 	    std::cout << "\t[Dof=" << itdebug->first << ",Direction=" << itdebug->second << "] \n";
-// 	  }
-// 	std::cout << "\n";
+//      typename std::map< unsigned int, Deriv >::iterator itdebug;
+//      sout << "Constraint " << n1 << ":" << sendl;
+//      for (itdebug=c[n1].begin();itdebug!=c[n1].end();itdebug++)
+//        {
+//          sout << "\t[Dof=" << itdebug->first << ",Direction=" << itdebug->second << "] " << sendl;
+//        }
+//      sout << "" << sendl;
 //       }
     //In c, we have ordered the contraints.
     //Filling the sparse matrices

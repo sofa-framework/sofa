@@ -77,7 +77,7 @@ Tetra2TriangleTopologicalMapping::~Tetra2TriangleTopologicalMapping()
 
 void Tetra2TriangleTopologicalMapping::init()
 {
-    //std::cout << "INFO_print : init Tetra2TriangleTopologicalMapping" << std::endl;
+    //sout << "INFO_print : init Tetra2TriangleTopologicalMapping" << sendl;
 
     // INITIALISATION of TRIANGULAR mesh from TETRAHEDRAL mesh :
 
@@ -85,12 +85,12 @@ void Tetra2TriangleTopologicalMapping::init()
     if (fromModel)
     {
 
-        std::cout << "INFO_print : Tetra2TriangleTopologicalMapping - from = tetra" << std::endl;
+        sout << "INFO_print : Tetra2TriangleTopologicalMapping - from = tetra" << sendl;
 
         if (toModel)
         {
 
-            std::cout << "INFO_print : Tetra2TriangleTopologicalMapping - to = triangle" << std::endl;
+            sout << "INFO_print : Tetra2TriangleTopologicalMapping - to = triangle" << sendl;
 
             TriangleSetTopologyContainer *to_tstc;
             toModel->getContext()->get(to_tstc);
@@ -172,7 +172,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::componentmodel::topology::ENDING_EVENT:
                 {
-                    //std::cout << "INFO_print : Tetra2TriangleTopologicalMapping - ENDING_EVENT" << std::endl;
+                    //sout << "INFO_print : Tetra2TriangleTopologicalMapping - ENDING_EVENT" << sendl;
                     to_tstm->propagateTopologicalChanges();
                     to_tstm->notifyEndingEvent();
                     to_tstm->propagateTopologicalChanges();
@@ -181,7 +181,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::componentmodel::topology::TRIANGLESREMOVED:
                 {
-                    //std::cout << "INFO_print : Tetra2TriangleTopologicalMapping - TRIANGLESREMOVED" << std::endl;
+                    //sout << "INFO_print : Tetra2TriangleTopologicalMapping - TRIANGLESREMOVED" << sendl;
 
                     int last;
                     int ind_last;
@@ -259,8 +259,8 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                         else
                         {
 
-                            std::cout << "INFO_print : Tetra2TriangleTopologicalMapping - Glob2LocMap should have the visible triangle " << tab[i] << std::endl;
-                            std::cout << "INFO_print : Tetra2TriangleTopologicalMapping - nb triangles = " << ind_last << std::endl;
+                            sout << "INFO_print : Tetra2TriangleTopologicalMapping - Glob2LocMap should have the visible triangle " << tab[i] << sendl;
+                            sout << "INFO_print : Tetra2TriangleTopologicalMapping - nb triangles = " << ind_last << sendl;
                         }
 
                         --last;
@@ -271,7 +271,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::componentmodel::topology::TETRAHEDRAREMOVED:
                 {
-                    //std::cout << "INFO_print : Tetra2TriangleTopologicalMapping - TETRAHEDRAREMOVED" << std::endl;
+                    //sout << "INFO_print : Tetra2TriangleTopologicalMapping - TETRAHEDRAREMOVED" << sendl;
 
                     if (fromModel)
                     {
@@ -351,7 +351,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                                         std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
                                         if(iter_1 != Glob2LocMap.end() )
                                         {
-                                            std::cout << "INFO_print : Tetra2TriangleTopologicalMapping - fail to add triangle " << k << "which already exists" << std::endl;
+                                            sout << "INFO_print : Tetra2TriangleTopologicalMapping - fail to add triangle " << k << "which already exists" << sendl;
                                             Glob2LocMap.erase(Glob2LocMap.find(k));
                                         }
                                         Glob2LocMap[k]=Loc2GlobVec.size()-1;
@@ -370,7 +370,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::componentmodel::topology::POINTSREMOVED:
                 {
-                    //std::cout << "INFO_print : Tetra2TriangleTopologicalMapping - POINTSREMOVED" << std::endl;
+                    //sout << "INFO_print : Tetra2TriangleTopologicalMapping - POINTSREMOVED" << sendl;
 
                     const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
@@ -394,7 +394,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::componentmodel::topology::POINTSRENUMBERING:
                 {
-                    //std::cout << "INFO_print : Hexa2QuadTopologicalMapping - POINTSREMOVED" << std::endl;
+                    //sout << "INFO_print : Hexa2QuadTopologicalMapping - POINTSREMOVED" << sendl;
 
                     const sofa::helper::vector<unsigned int> &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
                     const sofa::helper::vector<unsigned int> &inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
@@ -405,7 +405,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     for(unsigned int i = 0; i < tab.size(); ++i)
                     {
 
-                        //std::cout << "INFO_print : Hexa2QuadTopologicalMapping - point = " << tab[i] << std::endl;
+                        //sout << "INFO_print : Hexa2QuadTopologicalMapping - point = " << tab[i] << sendl;
                         indices.push_back(tab[i]);
                         inv_indices.push_back(inv_tab[i]);
                     }

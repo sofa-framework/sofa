@@ -32,8 +32,8 @@
 #include <vector>
 #include <sofa/helper/system/gl.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {
@@ -72,13 +72,13 @@ void TetrahedronModel::init()
 
     if (mstate==NULL)
     {
-        logWarning("TetrahedronModel requires a Vec3 Mechanical Model");
+        serr<<"TetrahedronModel requires a Vec3 Mechanical Model" << sendl;
         return;
     }
 
     if (!_topology)
     {
-        logWarning("TetrahedronModel requires a BaseMeshTopology");
+        serr<<"TetrahedronModel requires a BaseMeshTopology" << sendl;
         return;
     }
 

@@ -88,11 +88,11 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
         {
             data.minIndex = *sortedIndices.begin();
             data.maxIndex = *sortedIndices.rbegin();
-            //std::cout << "CudaFixedConstraint: "<<sortedIndices.size()<<" contiguous fixed indices, "<<data.minIndex<<" - "<<data.maxIndex<<std::endl;
+            //std::cout << "CudaFixedConstraint: "<<sortedIndices.size()<<" contiguous fixed indices, "<<data.minIndex<<" - "<<data.maxIndex<<sendl;
         }
         else
         {
-            //std::cout << "CudaFixedConstraint: "<<sortedIndices.size()<<" non-contiguous fixed indices"<<std::endl;
+            //std::cout << "CudaFixedConstraint: "<<sortedIndices.size()<<" non-contiguous fixed indices"<<sendl;
             data.cudaIndices.reserve(sortedIndices.size());
             for (std::set<int>::const_iterator it = sortedIndices.begin(); it!=sortedIndices.end(); it++)
                 data.cudaIndices.push_back(*it);

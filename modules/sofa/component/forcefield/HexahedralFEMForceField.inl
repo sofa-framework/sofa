@@ -35,8 +35,8 @@
 
 #include <sofa/component/topology/HexahedronData.inl>
 
-using std::cerr;
-using std::endl;
+
+
 using std::set;
 
 
@@ -124,7 +124,7 @@ void HexahedralFEMForceField<DataTypes>::init()
 
     if (_topology->getNbHexas()==0)
     {
-        std::cerr << "ERROR(HexahedralFEMForceField): object must have a Hexahedral Set Topology.\n";
+        serr << "ERROR(HexahedralFEMForceField): object must have a Hexahedral Set Topology."<<sendl;
         return;
     }
 
@@ -132,21 +132,21 @@ void HexahedralFEMForceField<DataTypes>::init()
     /*
     if( this->getContext()->getMeshTopology()==NULL )
     {
-    	std::cerr << "ERROR(HexahedralFEMForceField): object must have a Topology.\n";
+    	serr << "ERROR(HexahedralFEMForceField): object must have a Topology."<<sendl;
     	return;
     }
 
     if ( _topology==NULL)
     {
-    	std::cerr << "ERROR(HexahedralFEMForceField): object must have a MeshTopology.\n";
+    	serr << "ERROR(HexahedralFEMForceField): object must have a MeshTopology."<<sendl;
     	return;
     }
     else if( _topology->getNbCubes()<=0 )
     {
-    	std::cerr << "ERROR(HexahedralFEMForceField): object must have a hexahedric MeshTopology.\n";
-    	std::cerr << _topology->getName()<<std::endl;
-    	std::cerr << _topology->getTypeName()<<std::endl;
-    	cerr<<_topology->getNbPoints()<<endl;
+    	serr << "ERROR(HexahedralFEMForceField): object must have a hexahedric MeshTopology."<<sendl;
+    	serr << _topology->getName()<<sendl;
+    	serr << _topology->getTypeName()<<sendl;
+    	serr<<_topology->getNbPoints()<<sendl;
     	return;
     }
 
@@ -184,9 +184,9 @@ void HexahedralFEMForceField<DataTypes>::init()
 // 		Element c = *it;
 // 		for(int w=0;w<8;++w)
 // 		{
-// 			cerr<<"sparse w : "<<c[w]<<"    "<<_initialPoints.getValue()[c[w]]<<endl;
+// 			serr<<"sparse w : "<<c[w]<<"    "<<_initialPoints.getValue()[c[w]]<<sendl;
 // 		}
-// 		cerr<<"------\n";
+// 		serr<<"------"<<sendl;
 // 	}
 
 
@@ -294,7 +294,7 @@ void HexahedralFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv&
 template <class DataTypes>
 double HexahedralFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 {
-    std::cerr<<"HexahedralFEMForceField::getPotentialEnergy-not-implemented !!!"<<std::endl;
+    serr<<"HexahedralFEMForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 
@@ -600,7 +600,7 @@ void HexahedralFEMForceField<DataTypes>::initLarge(int i)
     computeElementStiffness( hexahedronInfo[i].stiffness, hexahedronInfo[i].materialMatrix, nodes, i );//computeElementStiffness( hexahedronInfo[i].stiffness, hexahedronInfo[i].materialMatrix, nodes, i );
 
 
-// 		if(i==0) cerr<<hexahedronInfo[i].stiffness<<endl;
+// 		if(i==0) serr<<hexahedronInfo[i].stiffness<<sendl;
 }
 
 template<class DataTypes>
@@ -810,7 +810,7 @@ void HexahedralFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const 
 template<class DataTypes>
 void HexahedralFEMForceField<DataTypes>::draw()
 {
-// 	cerr<<"HexahedralFEMForceField<DataTypes>::draw()\n";
+// 	serr<<"HexahedralFEMForceField<DataTypes>::draw()"<<sendl;
     if (!getContext()->getShowForceFields()) return;
     if (!this->mstate) return;
 

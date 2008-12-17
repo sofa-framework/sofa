@@ -32,8 +32,8 @@
 #include <sofa/helper/gl/template.h>
 #include <assert.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {
@@ -66,13 +66,13 @@ void PlaneForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, cons
         Real d = p1[i]*planeNormal.getValue()-planeD.getValue();
         if (d<0)
         {
-            //cerr<<"PlaneForceField<DataTypes>::addForce, d = "<<d<<endl;
+            //serr<<"PlaneForceField<DataTypes>::addForce, d = "<<d<<sendl;
             Real forceIntensity = -this->stiffness.getValue()*d;
-            //cerr<<"PlaneForceField<DataTypes>::addForce, stiffness = "<<stiffness.getValue()<<endl;
+            //serr<<"PlaneForceField<DataTypes>::addForce, stiffness = "<<stiffness.getValue()<<sendl;
             Real dampingIntensity = -this->damping.getValue()*d;
-            //cerr<<"PlaneForceField<DataTypes>::addForce, dampingIntensity = "<<dampingIntensity<<endl;
+            //serr<<"PlaneForceField<DataTypes>::addForce, dampingIntensity = "<<dampingIntensity<<sendl;
             Deriv force = planeNormal.getValue()*forceIntensity - v1[i]*dampingIntensity;
-            //cerr<<"PlaneForceField<DataTypes>::addForce, force = "<<force<<endl;
+            //serr<<"PlaneForceField<DataTypes>::addForce, force = "<<force<<sendl;
             f1[i]+=force;
             //this->dfdd[i] = -this->stiffness;
             this->contacts.push_back(i);
@@ -121,7 +121,7 @@ void PlaneForceField<DataTypes>::updateStiffness( const VecCoord& x )
 template <class DataTypes>
 double PlaneForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 {
-    std::cerr<<"PlaneForceField::getPotentialEnergy-not-implemented !!!"<<std::endl;
+    serr<<"PlaneForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 

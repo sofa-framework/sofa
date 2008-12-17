@@ -41,9 +41,9 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace core::componentmodel::collision;
 using simulation::tree::GNode;
-using std::cout;
-using std::cerr;
-using std::endl;
+
+
+
 
 template < class TCollisionModel1, class TCollisionModel2 >
 FrictionContact<TCollisionModel1,TCollisionModel2>::FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
@@ -106,7 +106,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
 
     if (contacts.size()<outputs.size())
     {
-        //std::cout << "Removed " << (outputs.size()-contacts.size()) <<" / " << outputs.size() << " collision points." << std::endl;
+        //sout << "Removed " << (outputs.size()-contacts.size()) <<" / " << outputs.size() << " collision points." << sendl;
     }
 
     if (c==NULL)
@@ -142,7 +142,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
         index2 = mapper2.addPoint(o->point[1], index2, r2);
         // Checks if friction is considered
         if (mu < 0.0 || mu > 1.0)
-            cerr << endl << "Error: mu has to take values between 0.0 and 1.0" << endl;
+            serr << endl << "Error: mu has to take values between 0.0 and 1.0" << endl;
 
         double distance = d0 + r1 + r2;
         // Polynome de Cantor de N� sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
@@ -157,7 +157,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
 template < class TCollisionModel1, class TCollisionModel2 >
 void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(OutputVector*)
 {
-    cerr << endl << "ERROR: FrictionContact requires DETECTIONOUTPUT_FREEMOTION to be defined in DetectionOutput.h" << endl;
+    serr << endl << "ERROR: FrictionContact requires DETECTIONOUTPUT_FREEMOTION to be defined in DetectionOutput.h" << endl;
 }
 #endif
 
@@ -174,7 +174,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::createResponse(core::ob
         parent = group;
         if (parent!=NULL)
         {
-            //std::cout << "Attaching contact response to "<<parent->getName()<<std::endl;
+            //sout << "Attaching contact response to "<<parent->getName()<<sendl;
             parent->addObject(this);
             parent->addObject(c);
         }
@@ -188,7 +188,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::removeResponse()
     {
         if (parent!=NULL)
         {
-            //std::cout << "Removing contact response from "<<parent->getName()<<std::endl;
+            //sout << "Removing contact response from "<<parent->getName()<<sendl;
             parent->removeObject(this);
             parent->removeObject(c);
         }

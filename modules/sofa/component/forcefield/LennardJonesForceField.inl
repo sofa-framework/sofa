@@ -31,8 +31,8 @@
 #include <math.h>
 #include <iostream>
 
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {
@@ -53,19 +53,19 @@ void LennardJonesForceField<DataTypes>::init()
 
     a = (p0.getValue() * (Real)pow(d0.getValue(),alpha.getValue())) / (1-alpha.getValue()/beta.getValue());
     b = (p0.getValue() * (Real)pow(d0.getValue(),beta.getValue())) / (beta.getValue()/alpha.getValue()-1);
-    std::cout << "Lennard-Jones initialized: alpha="<<alpha.getValue()<<" beta="<<beta.getValue()<<" d0="<<d0.getValue()<<" p0="<<p0.getValue()<<" a="<<a<<" b="<<b<<std::endl;
+    sout << "Lennard-Jones initialized: alpha="<<alpha.getValue()<<" beta="<<beta.getValue()<<" d0="<<d0.getValue()<<" p0="<<p0.getValue()<<" a="<<a<<" b="<<b<<sendl;
     // Validity check: compute force and potential at d0
     Real f0 = a*alpha.getValue()*(Real)pow(d0.getValue(),-alpha.getValue()-1)-b*beta.getValue()*(Real)pow(d0.getValue(),-beta.getValue()-1);
     if (fabs(f0)>0.001)
-        std::cerr << "Lennard-Jones initialization failed: f0="<<f0<<std::endl;
+        serr << "Lennard-Jones initialization failed: f0="<<f0<<sendl;
     Real cp0 = (a*(Real)pow(d0.getValue(),-alpha.getValue())-b*(Real)pow(d0.getValue(),-beta.getValue()));
     if (fabs(cp0/p0.getValue()-1)>0.001)
-        std::cerr << "Lennard-Jones initialization failed: cp0="<<cp0<<std::endl;
+        serr << "Lennard-Jones initialization failed: cp0="<<cp0<<sendl;
     // Debug
     for (Real d = 0; d<dmax.getValue(); d+= dmax.getValue()/60)
     {
         Real f = a*alpha.getValue()*(Real)pow(d,-alpha.getValue()-1)-b*beta.getValue()*(Real)pow(d,-beta.getValue()-1);
-        std::cout << "f("<<d<<")="<<f<<std::endl;
+        sout << "f("<<d<<")="<<f<<sendl;
     }
 }
 
@@ -88,7 +88,7 @@ void LennardJonesForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p
             const Real fa = a*alpha.getValue()*(Real)pow(d,-alpha.getValue()-1);
             const Real fb = b*beta.getValue()*(Real)pow(d,-beta.getValue()-1);
             Real forceIntensity = fa - fb;
-            //std::cout << ia<<"-"<<ib<<" d="<<d<<" f="<<forceIntensity<<std::endl;
+            //sout << ia<<"-"<<ib<<" d="<<d<<" f="<<forceIntensity<<sendl;
             DForce df;
             df.a = ia;
             df.b = ib;
@@ -134,7 +134,7 @@ void LennardJonesForceField<DataTypes>::addDForce(VecDeriv& f1, const VecDeriv& 
 template <class DataTypes>
 double LennardJonesForceField<DataTypes>::getPotentialEnergy(const VecCoord& )
 {
-    cerr<<"LennardJonesForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    serr<<"LennardJonesForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 

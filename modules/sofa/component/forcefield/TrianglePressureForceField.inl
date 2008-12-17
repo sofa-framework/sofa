@@ -44,9 +44,9 @@ using namespace sofa::defaulttype;
 using namespace core::componentmodel::topology;
 
 
-using std::cerr;
-using std::cout;
-using std::endl;
+
+
+
 
 template <class DataTypes> TrianglePressureForceField<DataTypes>::~TrianglePressureForceField()
 {
@@ -63,7 +63,7 @@ template <class DataTypes> void  TrianglePressureForceField<DataTypes>::handleTo
 }
 template <class DataTypes> void TrianglePressureForceField<DataTypes>::init()
 {
-    //std::cerr << "initializing TrianglePressureForceField" << std::endl;
+    //serr << "initializing TrianglePressureForceField" << sendl;
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
 
     _topology = getContext()->getMeshTopology();
@@ -102,7 +102,7 @@ void TrianglePressureForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord
 template <class DataTypes>
 double TrianglePressureForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
 {
-    cerr<<"TrianglePressureForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    serr<<"TrianglePressureForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 

@@ -75,6 +75,7 @@ HEADERS += \
           system/thread/CTime.h \
           system/thread/debug.h \
           system/PipeProcess.h \
+          system/SofaOStream.h \
           vector.h \
           polygon_cube_intersection/vec.h \
           polygon_cube_intersection/polygon_cube_intersection.h
@@ -112,6 +113,7 @@ SOURCES += \
           system/thread/CTime.cpp \
           system/thread/debug.cpp \
           system/PipeProcess.cpp \
+          system/SofaOStream.cpp \
           polygon_cube_intersection/polygon_cube_intersection.cpp \
           polygon_cube_intersection/fast_polygon_cube_intersection.cpp
 

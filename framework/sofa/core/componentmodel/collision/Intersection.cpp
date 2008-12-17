@@ -82,7 +82,7 @@ ElementIntersector* IntersectorMap::get(core::CollisionModel* model1, core::Coll
 
     std::cerr << "ERROR: Element Intersector "
             << gettypename(t1) << "-"
-            << gettypename(t2) << " NOT FOUND.\n";
+            << gettypename(t2) << " NOT FOUND." << std::endl;
     (*this)[std::make_pair(t1,t2)] = NULL;
     return NULL;
 }

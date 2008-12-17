@@ -66,7 +66,7 @@ class TopologyContainer;
 class TopologicalMapping;
 
 
-/** A class that contains a set of high-level (user friendly) methods that perform topological changes */
+/** A class that contains a set of high-level (user frisendly) methods that perform topological changes */
 class SOFA_CORE_API TopologyAlgorithms : public sofa::core::componentmodel::topology::BaseTopologyObject
 {
 protected:

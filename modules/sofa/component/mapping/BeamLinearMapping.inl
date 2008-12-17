@@ -62,7 +62,7 @@ void BeamLinearMapping<BasicMapping>::init()
         if (xfrom.size()>=2)
             beamLength[xfrom.size()-1] = beamLength[xfrom.size()-2];
         VecCoord& x = *this->toModel->getX();
-        std::cout << "BeamLinearMapping: init "<<x.size()<<" points."<<std::endl;
+        sout << "BeamLinearMapping: init "<<x.size()<<" points."<<sendl;
         points.resize(x.size());
         if (local)
         {

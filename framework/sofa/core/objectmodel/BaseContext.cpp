@@ -268,12 +268,12 @@ BaseObject* BaseContext::getShader() const
 /// Propagate an event
 void BaseContext::propagateEvent( Event* )
 {
-    cerr<<"WARNING !!! BaseContext::propagateEvent not overloaded, does nothing"<<endl;
+    serr<<"WARNING !!! BaseContext::propagateEvent not overloaded, does nothing"<<sendl;
 }
 
 void BaseContext::executeVisitor( simulation::Visitor* )
 {
-    cerr<<"WARNING !!! BaseContext::executeVisitor not overloaded, does nothing"<<endl;
+    serr<<"WARNING !!! BaseContext::executeVisitor not overloaded, does nothing"<<sendl;
     //assert(false);
 }
 

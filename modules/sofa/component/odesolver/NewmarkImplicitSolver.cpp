@@ -29,8 +29,8 @@
 #include <iostream>
 #include "sofa/helper/system/thread/CTime.h"
 
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {
@@ -108,7 +108,7 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::componentmodel::behavio
     projectResponse(a);          // b is projected to the constrained space
 
     if( verbose )
-        cerr<<"NewmarkImplicitSolver, a0 = "<< a <<endl;
+        serr<<"NewmarkImplicitSolver, a0 = "<< a <<sendl;
 
     // 2. Compute right hand term of equation on a_{t+h}
 
@@ -121,12 +121,12 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::componentmodel::behavio
     addMBKv(b, 0, 0, h);                                                       // b += -h K v
 
     if( verbose )
-        cerr<<"NewmarkImplicitSolver, b = "<< b <<endl;
+        serr<<"NewmarkImplicitSolver, b = "<< b <<sendl;
 
     projectResponse(b);          // b is projected to the constrained space
 
     if( verbose )
-        cerr<<"NewmarkImplicitSolver, projected b = "<< b <<endl;
+        serr<<"NewmarkImplicitSolver, projected b = "<< b <<sendl;
 
     // 3. Solve system of equations on a_{t+h}
 
@@ -134,13 +134,13 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::componentmodel::behavio
     matrix = MechanicalMatrix::K * (-h*h*beta - h*rK) + MechanicalMatrix::M * (1 + h*gamma*rM);
 
     //if( verbose )
-    //	cerr<<"NewmarkImplicitSolver, matrix = "<< MechanicalMatrix::K * (h*h*beta + h*rK) + MechanicalMatrix::M * (1 + h*gamma*rM) << " = " << matrix <<endl;
+    //	serr<<"NewmarkImplicitSolver, matrix = "<< MechanicalMatrix::K * (h*h*beta + h*rK) + MechanicalMatrix::M * (1 + h*gamma*rM) << " = " << matrix <<sendl;
 
     matrix.solve(aResult, b);
     projectResponse(aResult);
 
     if( verbose )
-        cerr<<"NewmarkImplicitSolver, a1 = "<< aResult <<endl;
+        serr<<"NewmarkImplicitSolver, a1 = "<< aResult <<sendl;
 
 
     // 4. Compute the new position and velocity
@@ -180,8 +180,8 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::componentmodel::behavio
 
     if( verbose )
     {
-        cerr<<"NewmarkImplicitSolver, final x = "<< newPos <<endl;
-        cerr<<"NewmarkImplicitSolver, final v = "<< newVel <<endl;
+        serr<<"NewmarkImplicitSolver, final x = "<< newPos <<sendl;
+        serr<<"NewmarkImplicitSolver, final v = "<< newVel <<sendl;
     }
 
 #ifdef SOFA_HAVE_LAPACK

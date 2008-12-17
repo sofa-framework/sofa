@@ -37,8 +37,8 @@
 #include <math.h>
 #include <iostream>
 
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {
@@ -126,7 +126,7 @@ template<class real>
 void CudaMasterContactSolver<real>::build_LCP()
 {
     _numConstraints = 0;
-    //std::cout<<" accumulateConstraint "  <<std::endl;
+    //sout<<" accumulateConstraint "  <<sendl;
 
     // mechanical action executed from root node to propagate the constraints
     simulation::MechanicalResetConstraintVisitor().execute(context);
@@ -135,11 +135,11 @@ void CudaMasterContactSolver<real>::build_LCP()
     _mu = mu.getValue();
 
 
-    //std::cout<<" accumulateConstraint_done "  <<std::endl;
+    //sout<<" accumulateConstraint_done "  <<sendl;
 
     if (_numConstraints > MAX_NUM_CONSTRAINTS)
     {
-        cerr<<endl<<"Error in CudaMasterContactSolver, maximum number of contacts exceeded, "<< _numConstraints/3 <<" contacts detected"<<endl;
+        serr<<endl<<"Error in CudaMasterContactSolver, maximum number of contacts exceeded, "<< _numConstraints/3 <<" contacts detected"<<endl;
         MAX_NUM_CONSTRAINTS=MAX_NUM_CONSTRAINTS+MAX_NUM_CONSTRAINTS;
 
         free(_PreviousContactList);
@@ -168,14 +168,14 @@ void CudaMasterContactSolver<real>::build_LCP()
     CudaMechanicalGetConstraintValueVisitor(&_dFree).execute(context);
 //	simulation::MechanicalComputeComplianceVisitor(_W).execute(context);
 
-//std::cout<<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" <<std::endl;
+//sout<<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" <<sendl;
 
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
         core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->getCompliance(&_W);
     }
-    //std::cout<<" computeCompliance_done "  <<std::endl;
+    //sout<<" computeCompliance_done "  <<sendl;
 
     if (initial_guess.getValue())
     {
@@ -269,7 +269,7 @@ void CudaMasterContactSolver<real>::step(double dt)
     double timeScale = 1.0 / (double)CTime::getRefTicksPerSec();
     timer = new CTime();
     time = (double) timer->getTime();
-    std::cout<<"********* Start Iteration : " << _numConstraints << " contacts *********" <<std::endl;
+    sout<<"********* Start Iteration : " << _numConstraints << " contacts *********" <<sendl;
 #endif
 
     // Update the BehaviorModels
@@ -293,7 +293,7 @@ void CudaMasterContactSolver<real>::step(double dt)
     simulation::MechanicalVOpVisitor(dx_id).execute( context);
 
 #ifdef DISPLAY_TIME
-    std::cout<<" Free Motion " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<std::endl;
+    sout<<" Free Motion " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
 
     time = (double) timer->getTime();
 #endif
@@ -302,7 +302,7 @@ void CudaMasterContactSolver<real>::step(double dt)
     computeCollision();
 
 #ifdef DISPLAY_TIME
-    std::cout<<" computeCollision " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<std::endl;
+    sout<<" computeCollision " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
     time = (double) timer->getTime();
 #endif
 //	MechanicalResetContactForceVisitor().execute(context);
@@ -316,7 +316,7 @@ void CudaMasterContactSolver<real>::step(double dt)
     build_LCP();
 
 #ifdef DISPLAY_TIME
-    std::cout<<" build_LCP " << ( (double) timer->getTime() - time)*timeScale<<" ms" <<std::endl;
+    sout<<" build_LCP " << ( (double) timer->getTime() - time)*timeScale<<" ms" <<sendl;
     time = (double) timer->getTime();
 #endif
 
@@ -366,7 +366,7 @@ void CudaMasterContactSolver<real>::step(double dt)
 
         if ((t1-t2>CHECK) || (t1-t2<-CHECK))
         {
-            std::cout << "Error(" << useGPU_d.getValue() << ") dim(" << _numConstraints << ") : (cpu," << t1 << ") (gpu,(" << t2 << ")" << std::endl;
+            sout << "Error(" << useGPU_d.getValue() << ") dim(" << _numConstraints << ") : (cpu," << t1 << ") (gpu,(" << t2 << ")" << sendl;
         }
 
     }
@@ -384,14 +384,14 @@ void CudaMasterContactSolver<real>::step(double dt)
             error = sofa::gpu::cuda::CudaLCP<real>::CudaGaussSeidelLCP1(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _tol, _maxIt);
         }
 
-        if (error > _tol) std::cout << "No convergence in gaussSeidelLCP1 : error = " << error << std::endl;
+        if (error > _tol) sout << "No convergence in gaussSeidelLCP1 : error = " << error << sendl;
 
 #ifdef CHECK
     }
 #endif
 
 #ifdef DISPLAY_TIME
-    std::cout<<" solve_LCP" <<( (double) timer->getTime() - time)*timeScale<<" ms" <<std::endl;
+    sout<<" solve_LCP" <<( (double) timer->getTime() - time)*timeScale<<" ms" <<sendl;
     time = (double) timer->getTime();
 #endif
 
@@ -417,13 +417,13 @@ void CudaMasterContactSolver<real>::step(double dt)
         cc->resetContactForce();
     }
 #ifdef DISPLAY_TIME
-    std::cout<<" contactCorrections" <<( (double) timer->getTime() - time)*timeScale <<" ms" <<std::endl;
-    //std::cout << "<<<<<< End display MasterContactSolver time." << std::endl;
+    sout<<" contactCorrections" <<( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
+    //sout << "<<<<<< End display MasterContactSolver time." << sendl;
 #endif
 
 
     //switch lcp
-    //cout << "switch lcp : " << lcp << endl;
+    //sout << "switch lcp : " << lcp << endl;
 
     //lcp1.wait();
     //lcp1.lock();
@@ -439,7 +439,7 @@ void CudaMasterContactSolver<real>::step(double dt)
 
     //lcp1.unlock();
     //lcp2.unlock();
-    //cout << "new lcp : " << lcp << endl;
+    //sout << "new lcp : " << lcp << endl;
 
     //struct timespec ts;
     //ts.tv_sec = 0;

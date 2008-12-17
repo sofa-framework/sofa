@@ -86,19 +86,19 @@ Quad2TriangleTopologicalMapping::~Quad2TriangleTopologicalMapping()
 
 void Quad2TriangleTopologicalMapping::init()
 {
-    //std::cout << "INFO_print : init Quad2TriangleTopologicalMapping" << std::endl;
+    //sout << "INFO_print : init Quad2TriangleTopologicalMapping" << sendl;
 
     // INITIALISATION of TRIANGULAR mesh from QUADULAR mesh :
 
     if (fromModel)
     {
 
-        std::cout << "INFO_print : Quad2TriangleTopologicalMapping - from = quad" << std::endl;
+        sout << "INFO_print : Quad2TriangleTopologicalMapping - from = quad" << sendl;
 
         if (toModel)
         {
 
-            std::cout << "INFO_print : Quad2TriangleTopologicalMapping - to = triangle" << std::endl;
+            sout << "INFO_print : Quad2TriangleTopologicalMapping - to = triangle" << sendl;
 
             TriangleSetTopologyContainer *to_tstc;
             toModel->getContext()->get(to_tstc);
@@ -131,8 +131,8 @@ void Quad2TriangleTopologicalMapping::init()
             for (unsigned int i=0; i<quadArray.size(); ++i)
             {
 
-                //std::cout << "INFO_print : Quad2TriangleTopologicalMapping - i = " << i << std::endl;
-                //std::cout << "INFO_print : Quad2TriangleTopologicalMapping - quad = " << quadArray[i] << std::endl;
+                //sout << "INFO_print : Quad2TriangleTopologicalMapping - i = " << i << sendl;
+                //sout << "INFO_print : Quad2TriangleTopologicalMapping - quad = " << quadArray[i] << sendl;
 
                 unsigned int p0 = quadArray[i][0];
                 unsigned int p1 = quadArray[i][1];
@@ -198,7 +198,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::componentmodel::topology::ENDING_EVENT:
                 {
-                    //std::cout << "INFO_print : TopologicalMapping - ENDING_EVENT" << std::endl;
+                    //sout << "INFO_print : TopologicalMapping - ENDING_EVENT" << sendl;
                     to_tstm->propagateTopologicalChanges();
                     to_tstm->notifyEndingEvent();
                     to_tstm->propagateTopologicalChanges();
@@ -207,7 +207,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::componentmodel::topology::QUADSADDED:
                 {
-                    //std::cout << "INFO_print : TopologicalMapping - QUADSADDED" << std::endl;
+                    //sout << "INFO_print : TopologicalMapping - QUADSADDED" << sendl;
                     if (fromModel)
                     {
 
@@ -253,7 +253,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                 }
                 case core::componentmodel::topology::QUADSREMOVED:
                 {
-                    //std::cout << "INFO_print : TopologicalMapping - QUADSREMOVED" << std::endl;
+                    //sout << "INFO_print : TopologicalMapping - QUADSREMOVED" << sendl;
 
                     if (fromModel)
                     {
@@ -269,7 +269,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                         for (unsigned int i = 0; i < tab.size(); ++i)
                         {
-                            //std::cout << "INFO_print : Quad2TriangleTopologicalMapping - remove quad " << tab[i] << std::endl;
+                            //sout << "INFO_print : Quad2TriangleTopologicalMapping - remove quad " << tab[i] << sendl;
 
                             unsigned int k = tab[i];
                             sofa::helper::vector<unsigned int> ind_k;
@@ -312,7 +312,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                                 }
                                 else
                                 {
-                                    std::cout << "INFO_print : Quad2TriangleTopologicalMapping - In2OutMap should have the quad " << last << std::endl;
+                                    sout << "INFO_print : Quad2TriangleTopologicalMapping - In2OutMap should have the quad " << last << sendl;
                                 }
 
                                 if((int) ind_k[1] != ind_last)
@@ -358,7 +358,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                             }
                             else
                             {
-                                std::cout << "INFO_print : Quad2TriangleTopologicalMapping - In2OutMap should have the quad " << k << std::endl;
+                                sout << "INFO_print : Quad2TriangleTopologicalMapping - In2OutMap should have the quad " << k << sendl;
                             }
 
                             --last;
@@ -370,7 +370,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::componentmodel::topology::POINTSREMOVED:
                 {
-                    //std::cout << "INFO_print : TopologicalMapping - POINTSREMOVED" << std::endl;
+                    //sout << "INFO_print : TopologicalMapping - POINTSREMOVED" << sendl;
 
                     const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
@@ -379,7 +379,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     for(unsigned int i = 0; i < tab.size(); ++i)
                     {
 
-                        //std::cout << "INFO_print : Quad2TriangleTopologicalMapping - point = " << tab[i] << std::endl;
+                        //sout << "INFO_print : Quad2TriangleTopologicalMapping - point = " << tab[i] << sendl;
                         indices.push_back(tab[i]);
                     }
 
@@ -395,7 +395,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::componentmodel::topology::POINTSRENUMBERING:
                 {
-                    //std::cout << "INFO_print : Hexa2QuadTopologicalMapping - POINTSREMOVED" << std::endl;
+                    //sout << "INFO_print : Hexa2QuadTopologicalMapping - POINTSREMOVED" << sendl;
 
                     const sofa::helper::vector<unsigned int> &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
                     const sofa::helper::vector<unsigned int> &inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
@@ -406,7 +406,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     for(unsigned int i = 0; i < tab.size(); ++i)
                     {
 
-                        //std::cout << "INFO_print : Hexa2QuadTopologicalMapping - point = " << tab[i] << std::endl;
+                        //sout << "INFO_print : Hexa2QuadTopologicalMapping - point = " << tab[i] << sendl;
                         indices.push_back(tab[i]);
                         inv_indices.push_back(inv_tab[i]);
                     }
@@ -424,7 +424,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::componentmodel::topology::POINTSADDED:
                 {
-                    //std::cout << "INFO_print : Quad2TriangleTopologicalMapping - POINTSADDED" << std::endl;
+                    //sout << "INFO_print : Quad2TriangleTopologicalMapping - POINTSADDED" << sendl;
 
                     const sofa::component::topology::PointsAdded *ta=static_cast< const sofa::component::topology::PointsAdded * >( *itBegin );
 

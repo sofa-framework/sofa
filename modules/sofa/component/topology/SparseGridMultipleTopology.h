@@ -71,7 +71,7 @@ protected :
 
 
     void buildFromTriangleMesh(helper::io::Mesh*, unsigned fileIdx);
-    helper::vector< RegularGridTopology > _regularGrids;
+    helper::vector< RegularGridTopology* > _regularGrids;
     helper::vector< helper::vector<Type> > _regularGridTypes;
 // 		helper::vector< float > _regularStiffnessCoefs;
     void assembleRegularGrids(helper::vector<Type>& regularGridTypes,helper::vector< float >& regularStiffnessCoefs,helper::vector< float >& regularMassCoefs);

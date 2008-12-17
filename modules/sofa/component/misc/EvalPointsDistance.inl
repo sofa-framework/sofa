@@ -88,12 +88,12 @@ void EvalPointsDistance<DataTypes>::init()
         outfile = new std::ofstream(filename.c_str());
         if( !outfile->is_open() )
         {
-            std::cerr << "Error creating file "<<filename<<std::endl;
+            serr << "Error creating file "<<filename<<sendl;
             delete outfile;
             outfile = NULL;
         }
         else
-            (*outfile) << "# name\ttime\tmean\tmin\tmax\tdev\tmean(%)\tmin(%)\tmax(%)\tdev(%)" << std::endl;
+            (*outfile) << "# name\ttime\tmean\tmin\tmax\tdev\tmean(%)\tmin(%)\tmax(%)\tdev(%)" << sendl;
     }
 
 }
@@ -208,7 +208,7 @@ void EvalPointsDistance<DataTypes>::handleEvent(sofa::core::objectmodel::Event* 
 {
     if (!mstate1 || !mstate2)
         return;
-    std::ostream *out = (outfile==NULL)? &std::cout : outfile;
+    std::ostream *out = (outfile==NULL)? (std::ostream *)(&sout) : outfile;
     if (dynamic_cast<simulation::UpdateMappingEndEvent*>(event))
     {
         double time = getContext()->getTime();
@@ -217,11 +217,11 @@ void EvalPointsDistance<DataTypes>::handleEvent(sofa::core::objectmodel::Event* 
         {
             eval();
             if (outfile==NULL)
-                std::cout << "# name\ttime\tmean\tmin\tmax\tdev\tmean(%)\tmin(%)\tmax(%)\tdev(%)" << std::endl;
+                sout << "# name\ttime\tmean\tmin\tmax\tdev\tmean(%)\tmin(%)\tmax(%)\tdev(%)" << sendl;
             (*out) << this->getName() << "\t" << time
                     << "\t" << distMean.getValue() << "\t" << distMin.getValue() << "\t" << distMax.getValue() << "\t" << distDev.getValue()
                     << "\t" << 100*rdistMean.getValue() << "\t" << 100*rdistMin.getValue() << "\t" << 100*rdistMax.getValue() << "\t" << 100*rdistDev.getValue()
-                    << std::endl;
+                    << sendl;
             lastTime += f_period.getValue();
         }
     }

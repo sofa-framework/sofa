@@ -106,8 +106,8 @@ void Mapping<In,Out>::updateMapping()
     if (this->toModel->getX()!=NULL && this->fromModel->getX()!=NULL)
     {
         apply(*this->toModel->getX(), *this->fromModel->getX());
-        //cerr<<"Mapping<In,Out>::updateMapping(), *this->fromModel->getX() = "<<*this->fromModel->getX()<<endl;
-        //cerr<<"Mapping<In,Out>::updateMapping(), *this->toModel->getX() = "<<*this->toModel->getX()<<endl;
+        //serr<<"Mapping<In,Out>::updateMapping(), *this->fromModel->getX() = "<<*this->fromModel->getX()<<sendl;
+        //serr<<"Mapping<In,Out>::updateMapping(), *this->toModel->getX() = "<<*this->toModel->getX()<<sendl;
     }
     if (this->toModel->getV()!=NULL && this->fromModel->getV()!=NULL)
     {

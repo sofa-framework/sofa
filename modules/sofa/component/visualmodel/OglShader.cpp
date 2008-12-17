@@ -103,7 +103,7 @@ void OglShader::init()
 
         if (!helper::system::DataRepository.findFile(file))
         {
-            std::cerr << "OglShader : vertex shader file " << file <<" was not found." << std::endl;
+            serr << "OglShader : vertex shader file " << file <<" was not found." << sendl;
             return;
         }
         vertexFilenames.push_back( file );
@@ -116,7 +116,7 @@ void OglShader::init()
 
     if (!helper::system::DataRepository.findFile(file))
     {
-        std::cerr << "OglShader : vertex shader file " << file <<" was not found." << std::endl;
+        serr << "OglShader : vertex shader file " << file <<" was not found." << sendl;
         return;
     }
     vertexFilenames.push_back( file );
@@ -133,7 +133,7 @@ void OglShader::init()
 
         if (!helper::system::DataRepository.findFile(file))
         {
-            std::cerr << "OglShader : fragment shader file " << file <<" was not found." << std::endl;
+            serr << "OglShader : fragment shader file " << file <<" was not found." << sendl;
             return;
         }
         fragmentFilenames.push_back( file );
@@ -145,7 +145,7 @@ void OglShader::init()
     file = tempStr.substr( oldPos );
     if (!helper::system::DataRepository.findFile(file))
     {
-        std::cerr << "OglShader : fragment shader file " << file <<" was not found." << std::endl;
+        serr << "OglShader : fragment shader file " << file <<" was not found." << sendl;
         return;
     }
     fragmentFilenames.push_back( file );
@@ -162,7 +162,7 @@ void OglShader::init()
 
         if (fragmentFilenames.size() != vertexFilenames.size())
         {
-            std::cerr << "OglShader : The number of Vertex shaders is different from the number of Fragment Shaders." << std::endl;
+            serr << "OglShader : The number of Vertex shaders is different from the number of Fragment Shaders." << sendl;
             return;
         }
 
@@ -187,7 +187,7 @@ void OglShader::init()
 
                 if (!helper::system::DataRepository.findFile(file))
                 {
-                    std::cerr << "OglShader : geometry shader file " << file <<" was not found." << std::endl;
+                    serr << "OglShader : geometry shader file " << file <<" was not found." << sendl;
                     return;
                 }
                 geometryFilenames.push_back( file );
@@ -199,7 +199,7 @@ void OglShader::init()
         file = tempStr.substr( oldPos );
         if (!helper::system::DataRepository.findFile(file))
         {
-            std::cerr << "OglShader : geometry shader file " << file <<" was not found." << std::endl;
+            serr << "OglShader : geometry shader file " << file <<" was not found." << sendl;
             return;
         }
         geometryFilenames.push_back( file );
@@ -207,7 +207,7 @@ void OglShader::init()
 
         if (fragmentFilenames.size() != vertexFilenames.size() && geometryFilenames.size() !=  vertexFilenames.size())
         {
-            std::cerr << "OglShader : The number of indicated shaders is not coherent (not the same number for each triplet." << std::endl;
+            serr << "OglShader : The number of indicated shaders is not coherent (not the same number for each triplet." << sendl;
             return;
         }
 
@@ -230,7 +230,7 @@ void OglShader::initVisual()
 
     if (!sofa::helper::gl::GLSLShader::InitGLSL())
     {
-        std::cerr << "OglShader : InitGLSL failed" << std::endl;
+        serr << "OglShader : InitGLSL failed" << sendl;
         return;
     }
 
@@ -483,7 +483,7 @@ void OglShaderElement::init()
 
     if (!shader)
     {
-        std::cerr << "OglShaderElement: shader not found "<< std::endl;
+        serr << "OglShaderElement: shader not found "<< sendl;
         return;
     }
 }

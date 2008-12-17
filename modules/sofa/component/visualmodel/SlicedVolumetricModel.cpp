@@ -363,7 +363,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
                     }
                     else if(howmany==2)
                     {
-// 						cerr<<"intersect une ligne entiere\n";
+// 						cerr<<"intersect une ligne entiere"<<sendl;
 
                         Intersection inter( s0, _textureCoordinates[cell[e0]]);
                         intersections.push_back( inter );
@@ -378,7 +378,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 // 			cerr<<"intersections.size() : "<<intersections.size()<<endl;
 
             if( intersections.size() <2 ) continue;
-// 			else cerr<<"pas assez inter\n";
+// 			else cerr<<"pas assez inter"<<sendl;
 
 
 
@@ -419,7 +419,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 // 		// 	Coord tmp,referenceLine2;
 // 		// 	animal::v_eq_cross( tmp,referenceLine, intersections[2] - intersections[0]);
 // 		// 	animal::v_eq_cross( referenceLine2,referenceLine, tmp); // est-ce que la line2 a besoin d'etre dans le plan ???
-// 		// 	cerr<<"---\n\n";
+// 		// 	cerr<<"---\n"<<sendl;
 
 
 

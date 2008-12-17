@@ -82,12 +82,12 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::init()
 
 
     // debug //
-    //std::cout<<"************** list of constraints : *************"<<std::endl;
+    //sout<<"************** list of constraints : *************"<<sendl;
     long id[100];
     unsigned int offset;
     for (unsigned int i=0; i<list_base_constraint.size(); i++)
     {
-        std::cout<<list_base_constraint[i]->getName()<<std::endl;
+        sout<<list_base_constraint[i]->getName()<<sendl;
 
         baseConstraint* bc =list_base_constraint[i];
 
@@ -95,7 +95,7 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::init()
         if (sc != NULL)
         {
             //debug
-            //std::cerr<< "simple constraint applied on object "<<sc->getMState()->getName() <<std::endl;
+            //serr<< "simple constraint applied on object "<<sc->getMState()->getName() <<sendl;
             list_constraint.push_back(sc);
         }
 
@@ -103,27 +103,27 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::init()
         if (ic != NULL)
         {
             // debug
-            //std::cerr<< "interaction constraint applied on object "<<ic->getMechModel1()->getName() <<"  and on object "<< ic->getMechModel2()->getName()<<std::endl;
-            //std::cerr<< "mstate1 : "<<this->mstate2->getName()<<std::endl;
+            //serr<< "interaction constraint applied on object "<<ic->getMechModel1()->getName() <<"  and on object "<< ic->getMechModel2()->getName()<<sendl;
+            //serr<< "mstate1 : "<<this->mstate2->getName()<<sendl;
 
             core::objectmodel::BaseContext* context_model1 = ic->getMechModel1()->getContext();
             core::objectmodel::BaseContext* context_model2 = ic->getMechModel2()->getContext();
             if (this->mstate2==context_model1->getMechanicalState() || this->mstate2==context_model2->getMechanicalState() )
             {
-                std::cout<<" - this constraint must be handled - "<<std::endl;
+                sout<<" - this constraint must be handled - "<<sendl;
                 list_interaction_constraint.push_back(ic);
 
 
                 offset=0;
                 ic->getConstraintId(id, offset);
-                std::cout<< "constraint offset"<<offset<<std::endl;
+                sout<< "constraint offset"<<offset<<sendl;
             }
         }
     }
 
     for (unsigned int i=0; i<offset; i++)
     {
-        std::cout<< "id : "<< id[i] <<std::endl;
+        sout<< "id : "<< id[i] <<sendl;
     }
 }
 
@@ -139,7 +139,7 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addForce(VecDeriv1& 
     for (unsigned int i=0; i<list_interaction_constraint.size(); i++)
     {
         list_interaction_constraint[i]->applyConstraint(count);
-        std::cout<< "constraint count"<<count<<std::endl;
+        sout<< "constraint count"<<count<<sendl;
     }
     unsigned int count1=0;
     constraint->applyConstraint(count1);
@@ -163,7 +163,7 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addForce(VecDeriv1& 
     _violation.resize(numLagMult);
 
     constraint->getConstraintValue(&_violation, false);
-    //std::cout<<"violation:" <<_violation[0] << " "<<_violation[1] << " "<<_violation[2] << " "<<std::endl;
+    //sout<<"violation:" <<_violation[0] << " "<<_violation[1] << " "<<_violation[2] << " "<<sendl;
 
     for (unsigned int i=0; i<lambda.size(); i++)
     {
@@ -187,23 +187,23 @@ template<class DataTypes1, class DataTypes2>
 void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addDForce(VecDeriv1& dViolation, VecDeriv2& df2, const VecDeriv1& dLambda, const VecDeriv2& dx2)
 {
 
-    //std::cout<<"addDForce : dLambda "<< dLambda << " -  dx2:" << dx2 <<std::endl;
+    //sout<<"addDForce : dLambda "<< dLambda << " -  dx2:" << dx2 <<sendl;
 
 
     sofa::simulation::tree::GNode *context = dynamic_cast<sofa::simulation::tree::GNode *>(this->getContext()); // access to current node (which is supposed to be the root)
     sofa::simulation::MechanicalResetConstraintVisitor().execute(context);
 
     VecConst2& c2= *this->mstate2->getC();
-    //std::cout<<" constraint size :"<<c2.size()<<std::endl;
+    //sout<<" constraint size :"<<c2.size()<<sendl;
 
 
     for (unsigned int i=0; i< c2.size(); i++)
     {
         SparseVecDeriv2 constraint = c2[i];
-        //std::cout<<" i= "<<i <<"   constraint size= "<< constraint.size() <<std::endl;
+        //sout<<" i= "<<i <<"   constraint size= "<< constraint.size() <<sendl;
         for (unsigned int j=0; j<constraint.size(); j++)
         {
-            //std::cout<<" constraint : i "<< constraint[j].index  << "  data"<< constraint[j].data << std::endl;
+            //sout<<" constraint : i "<< constraint[j].index  << "  data"<< constraint[j].data << sendl;
             /// @TODO : use the constraint ID
             //Deriv2 dV0 = constraint[j].data * dx2[constraint[j].index];
             dViolation[i].x() += constraint[j].data * dx2[constraint[j].index];
@@ -213,7 +213,7 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addDForce(VecDeriv1&
     }
 
 
-    //std::cout<<"addDForce : dViolation "<< dViolation << " -  df2:" << df2 <<std::endl;
+    //sout<<"addDForce : dViolation "<< dViolation << " -  df2:" << df2 <<sendl;
 
 
 }
@@ -222,7 +222,7 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addDForce(VecDeriv1&
 template <class DataTypes1, class DataTypes2>
     double LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::getPotentialEnergy(const VecCoord1& x1 , const VecCoord2& x2 )
 {
-    std::cerr<<"LagrangeMultiplierInteraction::getPotentialEnergy-not-implemented !!!"<<std::endl;
+    serr<<"LagrangeMultiplierInteraction::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 */

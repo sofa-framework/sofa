@@ -41,8 +41,8 @@
 #include <sofa/helper/DualQuat.h>
 #endif
 
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {

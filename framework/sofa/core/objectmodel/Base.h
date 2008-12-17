@@ -28,6 +28,7 @@
 #define SOFA_CORE_OBJECTMODEL_BASE_H
 
 #include <sofa/helper/system/config.h>
+#include <sofa/helper/system/SofaOStream.h>
 #include <sofa/helper/vector.h>
 #include <sofa/core/objectmodel/DataPtr.h>
 #include <sofa/core/objectmodel/Data.h>
@@ -221,7 +222,7 @@ public:
         std::string ln(name);
         if( ln.size()>0 && findField(ln) )
         {
-            std::cerr << "field name " << ln << " already used in this class or in a parent class !...aborting" << std::endl;
+            serr << "field name " << ln << " already used in this class or in a parent class !...aborting" << sendl;
             exit( 1 );
         }
         //field = tmp;
@@ -236,7 +237,7 @@ public:
         std::string ln(name);
         if( ln.size()>0 && findField(ln)  )
         {
-            std::cerr << "field name " << ln << " already used in this class or in a parent class !...aborting" << std::endl;
+            serr << "field name " << ln << " already used in this class or in a parent class !...aborting" << sendl;
             exit( 1 );
         }
         //field = tmp;
@@ -251,7 +252,7 @@ public:
         std::string ln(name);
         if( ln.size()>0 && findField(ln) )
         {
-            std::cerr << "field name " << ln << " already used in this class or in a parent class !...aborting" << std::endl;
+            serr << "field name " << ln << " already used in this class or in a parent class !...aborting" << sendl;
             exit( 1 );
         }
         //field = tmp;
@@ -274,16 +275,16 @@ public:
     /// Accessor to the map containing all the aliases of this object
     std::multimap< std::string, BaseData* > getAliases() { return m_aliasData; }
 
+    sofa::helper::system::SofaOStream sendl;
+    std::ostringstream               &serr;
+    std::ostringstream               &sout;
 
-    const sofa::helper::vector<std::string> & getLogWarning() {return logWarnings;}
-
-    void logWarning(std::string l);
 protected:
+
+
     /// name -> Field object
     std::vector< std::pair<std::string, BaseData*> > m_fieldVec;
     std::multimap< std::string, BaseData* > m_aliasData;
-
-    sofa::helper::vector< std::string > logWarnings;
 
     /// Add a field. Note that this method should only be called if the field was not initialized with the initData<T> of field<T> methods
     void addField( BaseData* f, const char* name )
@@ -291,7 +292,7 @@ protected:
         std::string ln(name);
         if( ln.size()>0 && findField(ln) )
         {
-            std::cerr << "field name " << ln << " already used in this class or in a parent class !...aborting" << std::endl;
+            serr << "field name " << ln << " already used in this class or in a parent class !...aborting" << sendl;
             exit( 1 );
         }
         m_fieldVec.push_back( std::make_pair(ln,f));
@@ -303,6 +304,8 @@ protected:
 } // namespace core
 
 } // namespace sofa
+
+
 
 #endif
 

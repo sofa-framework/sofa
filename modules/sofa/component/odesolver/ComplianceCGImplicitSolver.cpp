@@ -31,8 +31,8 @@
 #include <math.h>
 #include <iostream>
 
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {
@@ -121,11 +121,11 @@ void ComplianceCGImplicitSolver::solve(double dt)
 
     if( printLog )
     {
-        cerr<<"ComplianceCGImplicitSolver, dt = "<< dt <<endl;
-        cerr<<"ComplianceCGImplicitSolver, initial x = "<< pos <<endl;
-        cerr<<"ComplianceCGImplicitSolver, initial v = "<< vel <<endl;
-        cerr<<"ComplianceCGImplicitSolver, f0 = "<< b <<endl;
-        cerr<<"ComplianceCGImplicitSolver, r0 = "<< r <<endl;
+        serr<<"ComplianceCGImplicitSolver, dt = "<< dt <<sendl;
+        serr<<"ComplianceCGImplicitSolver, initial x = "<< pos <<sendl;
+        serr<<"ComplianceCGImplicitSolver, initial v = "<< vel <<sendl;
+        serr<<"ComplianceCGImplicitSolver, f0 = "<< b <<sendl;
+        serr<<"ComplianceCGImplicitSolver, r0 = "<< r <<sendl;
     }
 
     unsigned nb_iter;
@@ -149,7 +149,7 @@ void ComplianceCGImplicitSolver::solve(double dt)
 
         if( printLog )
         {
-            cerr<<"p : "<<p<<endl;
+            serr<<"p : "<<p<<sendl;
         }
 
         // matrix-vector product
@@ -158,18 +158,18 @@ void ComplianceCGImplicitSolver::solve(double dt)
 
         if( printLog )
         {
-            cerr<<"q = df/dx p : "<<q<<endl;
+            serr<<"q = df/dx p : "<<q<<sendl;
         }
 
         q *= -h*(h+f_rayleighStiffness.getValue());  // q = -h(h+rs) df/dx p
 
         if( printLog )
         {
-            cerr<<"q = -h(h+rs) df/dx p : "<<q<<endl;
+            serr<<"q = -h(h+rs) df/dx p : "<<q<<sendl;
         }
         //
-        // 		cerr<<"-h(h+rs) df/dx p : "<<q<<endl;
-        // 		cerr<<"f_rayleighMass.getValue() : "<<f_rayleighMass.getValue()<<endl;
+        // 		serr<<"-h(h+rs) df/dx p : "<<q<<sendl;
+        // 		serr<<"f_rayleighMass.getValue() : "<<f_rayleighMass.getValue()<<sendl;
 
         // apply global Rayleigh damping
         if (f_rayleighMass.getValue()==0.0)
@@ -182,7 +182,7 @@ void ComplianceCGImplicitSolver::solve(double dt)
         }
         if( printLog )
         {
-            cerr<<"q = Mp -h(h+rs) df/dx p +hr Mp  =  "<<q<<endl;
+            serr<<"q = Mp -h(h+rs) df/dx p +hr Mp  =  "<<q<<sendl;
         }
 
         // filter the product to take the constraints into account
@@ -190,7 +190,7 @@ void ComplianceCGImplicitSolver::solve(double dt)
         projectResponse(q);     // q is projected to the constrained space
         if( printLog )
         {
-            cerr<<"q after constraint projection : "<<q<<endl;
+            serr<<"q after constraint projection : "<<q<<sendl;
         }
 
         double den = p.dot(q);
@@ -201,7 +201,7 @@ void ComplianceCGImplicitSolver::solve(double dt)
             endcond = "threshold";
             if( printLog )
             {
-                //                 cerr<<"CGImplicitSolver, den = "<<den<<", smallDenominatorThreshold = "<<f_smallDenominatorThreshold.getValue()<<endl;
+                //                 serr<<"CGImplicitSolver, den = "<<den<<", smallDenominatorThreshold = "<<f_smallDenominatorThreshold.getValue()<<sendl;
             }
             break;
         }
@@ -210,9 +210,9 @@ void ComplianceCGImplicitSolver::solve(double dt)
         r.peq(q,-alpha);                // r = r - alpha r
         if( printLog )
         {
-            cerr<<"den = "<<den<<", alpha = "<<alpha<<endl;
-            cerr<<"x : "<<x<<endl;
-            cerr<<"r : "<<r<<endl;
+            serr<<"den = "<<den<<", alpha = "<<alpha<<sendl;
+            serr<<"x : "<<x<<sendl;
+            serr<<"r : "<<r<<sendl;
         }
 
 
@@ -234,10 +234,10 @@ void ComplianceCGImplicitSolver::solve(double dt)
 
     if( printLog )
     {
-        cerr<<"ComplianceCGImplicitSolver::solve, nbiter = "<<nb_iter<<" stop because of "<<endcond<<endl;
-        cerr<<"ComplianceCGImplicitSolver::solve, solution = "<<x<<endl;
-        cerr<<"ComplianceCGImplicitSolver, final x = "<< pos <<endl;
-        cerr<<"ComplianceCGImplicitSolver, final v = "<< vel <<endl;
+        serr<<"ComplianceCGImplicitSolver::solve, nbiter = "<<nb_iter<<" stop because of "<<endcond<<sendl;
+        serr<<"ComplianceCGImplicitSolver::solve, solution = "<<x<<sendl;
+        serr<<"ComplianceCGImplicitSolver, final x = "<< pos <<sendl;
+        serr<<"ComplianceCGImplicitSolver, final v = "<< vel <<sendl;
     }
 #ifdef SOFA_HAVE_LAPACK
     applyConstraints();

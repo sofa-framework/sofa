@@ -23,19 +23,18 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/collision/DefaultCollisionGroupManager.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/CollisionModel.h>
-#include <sofa/helper/system/config.h>
+// #include <sofa/helper/system/config.h>
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/helper/FnDispatcher.inl>
-#include <sofa/component/collision/DefaultCollisionGroupManager.h>
 #include <sofa/component/odesolver/EulerSolver.h>
 #include <sofa/component/odesolver/RungeKutta4Solver.h>
 #include <sofa/component/odesolver/CGImplicitSolver.h>
 #include <sofa/component/odesolver/StaticSolver.h>
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/CGLinearSolver.h>
-#include <sofa/core/ObjectFactory.h>
-#include <string.h>
+// #include <string.h>
 #include <sofa/simulation/tree/GNode.h>
 
 
@@ -93,7 +92,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     simulation::tree::GNode* groot = dynamic_cast<simulation::tree::GNode*>(scene);
     if (groot==NULL)
     {
-        std::cerr << "DefaultCollisionGroupManager only support graph-based scenes.\n";
+        serr << "DefaultCollisionGroupManager only support graph-based scenes."<<sendl;
         return;
     }
 
@@ -237,7 +236,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     for (std::set<simulation::tree::GNode*>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
         groups.push_back(*it);
     //if (!groups.empty())
-    //	std::cout << groups.size()<<" collision groups created."<<std::endl;
+    //	sout << groups.size()<<" collision groups created."<<sendl;
 }
 
 void DefaultCollisionGroupManager::clearGroups(core::objectmodel::BaseContext* /*scene*/)

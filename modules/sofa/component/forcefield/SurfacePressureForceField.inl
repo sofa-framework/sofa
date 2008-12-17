@@ -77,7 +77,7 @@ void SurfacePressureForceField<DataTypes>::init()
 
     if (m_pulseMode.getValue() && (m_pressureSpeed.getValue() == 0.0))
     {
-        logWarning("Default pressure speed value has been set in SurfacePressureForceField");
+        serr<<"Default pressure speed value has been set in SurfacePressureForceField" << sendl;
         m_pressureSpeed.setValue((Real)fabs( m_pressure.getValue()));
     }
 
@@ -235,7 +235,7 @@ bool SurfacePressureForceField<DataTypes>::isInPressuredBox(const Coord &x) cons
 template <class DataTypes>
 double SurfacePressureForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
 {
-    cerr << "TrianglePressureForceField::getPotentialEnergy-not-implemented !!!" << endl;
+    serr << "TrianglePressureForceField::getPotentialEnergy-not-implemented !!!" << endl;
     return 0;
 }
 

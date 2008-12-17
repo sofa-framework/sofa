@@ -75,8 +75,8 @@ public:
     /// Solve Mx=b
     void solve (Matrix& M, Vector& x, Vector& b)
     {
-        using std::cerr;
-        using std::endl;
+
+
 
         Vector& p = *this->createVector();
         Vector& q = *this->createVector();
@@ -89,7 +89,7 @@ public:
         double rho, rho_1=0, alpha, beta;
 
         if( verbose )
-            cerr<<"CGLinearSolver, b = "<< b <<endl;
+            serr<<"CGLinearSolver, b = "<< b <<sendl;
 
         x.clear();
         r = b; // initial residual
@@ -111,7 +111,7 @@ public:
             comment << "Iteration : " << nb_iter;
             simulation::Visitor::printComment(comment.str());
 #endif
-            // 		printWithElapsedTime( x, helper::system::thread::CTime::getTime()-time0,std::cout );
+            // 		printWithElapsedTime( x, helper::system::thread::CTime::getTime()-time0,sout );
 
             //z = r; // no precond
             //rho = r.dot(z);
@@ -140,7 +140,7 @@ public:
 
             if( verbose )
             {
-                cerr<<"p : "<<p<<endl;
+                serr<<"p : "<<p<<sendl;
             }
 
             // matrix-vector product
@@ -148,7 +148,7 @@ public:
 
             if( verbose )
             {
-                cerr<<"q = M p : "<<q<<endl;
+                serr<<"q = M p : "<<q<<sendl;
             }
 
             double den = p.dot(q);
@@ -160,7 +160,7 @@ public:
                 endcond = "threshold";
                 if( verbose )
                 {
-                    cerr<<"CGLinearSolver, den = "<<den<<", smallDenominatorThreshold = "<<f_smallDenominatorThreshold.getValue()<<endl;
+                    serr<<"CGLinearSolver, den = "<<den<<", smallDenominatorThreshold = "<<f_smallDenominatorThreshold.getValue()<<sendl;
                 }
                 break;
             }
@@ -170,9 +170,9 @@ public:
             cgstep_alpha(x,r,p,q,alpha);
             if( verbose )
             {
-                cerr<<"den = "<<den<<", alpha = "<<alpha<<endl;
-                cerr<<"x : "<<x<<endl;
-                cerr<<"r : "<<r<<endl;
+                serr<<"den = "<<den<<", alpha = "<<alpha<<sendl;
+                serr<<"x : "<<x<<sendl;
+                serr<<"r : "<<r<<sendl;
             }
 
             rho_1 = rho;
@@ -181,11 +181,11 @@ public:
         // x is the solution of the system
         if( printLog )
         {
-            cerr<<"CGLinearSolver::solve, nbiter = "<<nb_iter<<" stop because of "<<endcond<<endl;
+            serr<<"CGLinearSolver::solve, nbiter = "<<nb_iter<<" stop because of "<<endcond<<sendl;
         }
         if( verbose )
         {
-            cerr<<"CGLinearSolver::solve, solution = "<<x<<endl;
+            serr<<"CGLinearSolver::solve, solution = "<<x<<sendl;
         }
         this->deleteVector(&p);
         this->deleteVector(&q);

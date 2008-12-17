@@ -24,8 +24,8 @@
 ******************************************************************************/
 #include <sofa/component/collision/DefaultContactManager.h>
 #include <sofa/core/ObjectFactory.h>
-using std::cerr;
-using std::endl;
+
+
 
 
 namespace sofa
@@ -71,7 +71,7 @@ void DefaultContactManager::clear()
 
 void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
 {
-    //cerr<<"DefaultContactManager::createContacts"<<endl;
+    //serr<<"DefaultContactManager::createContacts"<<sendl;
 
     //outputsMap.clear();
     //for (sofa::helper::vector<core::componentmodel::collision::DetectionOutput*>::const_iterator it = outputs.begin(); it!=outputs.end(); ++it)
@@ -90,12 +90,12 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
         if (outputsIt!=outputsMap.end() && (contactIt == contactMap.end() || outputsIt->first < contactIt->first))
         {
             // new contact
-            //std::cout << "Creation new "<<contacttype<<" contact"<<std::endl;
+            //sout << "Creation new "<<contacttype<<" contact"<<sendl;
             core::CollisionModel* model1 = outputsIt->first.first;
             core::CollisionModel* model2 = outputsIt->first.second;
             std::string responseUsed = getContactResponse(model1, model2);
             core::componentmodel::collision::Contact* contact = core::componentmodel::collision::Contact::Create(responseUsed, model1, model2, intersectionMethod);
-            if (contact == NULL) std::cerr << "Contact "<<responseUsed<<" between " << model1->getClassName()<<" and "<<model2->getClassName() << " creation failed"<<std::endl;
+            if (contact == NULL) serr << "Contact "<<responseUsed<<" between " << model1->getClassName()<<" and "<<model2->getClassName() << " creation failed"<<sendl;
             else
             {
                 contactMap[std::make_pair(model1, model2)] = contact;
@@ -110,7 +110,7 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
         else if (contactIt!=contactMap.end() && (outputsIt == outputsMap.end() || contactIt->first < outputsIt->first))
         {
             // inactive contact
-            //std::cout << "Deleting inactive "<<contacttype<<" contact"<<std::endl;
+            //sout << "Deleting inactive "<<contacttype<<" contact"<<sendl;
             if (contactIt->second->keepAlive())
             {
                 contactIt->second->setDetectionOutputs(NULL);

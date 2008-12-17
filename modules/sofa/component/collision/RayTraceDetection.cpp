@@ -341,8 +341,8 @@ void RayTraceDetection::draw ()
             glVertex3d (it2->point[1][0], it2->point[1][1],
                     it2->point[1][2]);
             glEnd ();
-            std::cerr << it2->point[0] << " " << it2->
-                    point[0] << std::endl;
+            serr << it2->point[0] << " " << it2->
+                    point[0] << sendl;
             it2->elem.first.draw ();
             it2->elem.second.draw ();
         }

@@ -344,7 +344,7 @@ int NewProximityIntersection::computeIntersection(Sphere& e1, Sphere& e2, Output
 template<class Sphere>
 bool NewProximityIntersection::testIntersection(Line&, Sphere&)
 {
-    std::cerr << "Unnecessary call to NewProximityIntersection::testIntersection(Line,Sphere).\n";
+    serr << "Unnecessary call to NewProximityIntersection::testIntersection(Line,Sphere)."<<sendl;
     return true;
 }
 
@@ -368,7 +368,7 @@ int NewProximityIntersection::computeIntersection(Line& e1, Sphere& e2, OutputVe
 template<class Sphere>
 bool NewProximityIntersection::testIntersection(Triangle&, Sphere&)
 {
-    std::cerr << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle,Sphere).\n";
+    serr << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle,Sphere)."<<sendl;
     return true;
 }
 

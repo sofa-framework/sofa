@@ -57,7 +57,7 @@ void VaccumSphereForceField<DataTypes>::init()
     {
         this->getContext()->get(centerDOF, centerState.getValue());
         if (centerDOF == NULL)
-            std::cerr << "Error loading centerState" << std::endl;
+            serr << "Error loading centerState" << sendl;
     }
 }
 // f  = -stiffness * (x -c ) * (|x-c|-r)/|x-c|
@@ -161,7 +161,7 @@ void VaccumSphereForceField<DataTypes>::updateStiffness( const VecCoord& x )
 template <class DataTypes>
 double VaccumSphereForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 {
-    std::cerr<<"VaccumSphereForceField::getPotentialEnergy-not-implemented !!!"<<std::endl;
+    serr<<"VaccumSphereForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 

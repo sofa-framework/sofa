@@ -70,7 +70,7 @@ void LightManager::putLight(Light* light)
 {
     if (lights.size() >= MAX_NUMBER_OF_LIGHTS)
     {
-        std::cerr << "The maximum of lights permitted ( "<< MAX_NUMBER_OF_LIGHTS << " ) has been reached." << std::endl;
+        serr << "The maximum of lights permitted ( "<< MAX_NUMBER_OF_LIGHTS << " ) has been reached." << sendl;
         return ;
     }
 

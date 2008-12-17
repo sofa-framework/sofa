@@ -48,7 +48,7 @@ void DevAngleCollisionMonitor<DataTypes>::init()
 {
     if (!this->mstate1 || !this->mstate2)
     {
-        std::cerr << "DevAngleCollisionMonitor ERROR: mstate1 or mstate2 not found."<<std::endl;
+        serr << "DevAngleCollisionMonitor ERROR: mstate1 or mstate2 not found."<<sendl;
         return;
     }
 
@@ -56,14 +56,14 @@ void DevAngleCollisionMonitor<DataTypes>::init()
     c1->get(pointsCM, BaseContext::SearchDown);
     if (pointsCM == NULL)
     {
-        std::cerr << "DevAngleCollisionMonitor ERROR: object1 PointModel not found."<<std::endl;
+        serr << "DevAngleCollisionMonitor ERROR: object1 PointModel not found."<<sendl;
         return;
     }
     sofa::core::objectmodel::BaseContext* c2 = this->mstate2->getContext();
     c2->get(surfaceCM, BaseContext::SearchDown);
     if (surfaceCM == NULL)
     {
-        std::cerr << "DevAngleCollisionMonitor ERROR: object2 TriangleModel not found."<<std::endl;
+        serr << "DevAngleCollisionMonitor ERROR: object2 TriangleModel not found."<<sendl;
         return;
     }
 
@@ -92,7 +92,7 @@ void DevAngleCollisionMonitor<DataTypes>::eval()
     vectCMPair.push_back(std::make_pair(surfaceCM->getFirst(), pointsCM->getFirst()));
 
     detection->beginNarrowPhase();
-    std::cout << "narrow phase detection between " <<surfaceCM->getClassName()<< " and " << pointsCM->getClassName() << std::endl;
+    sout << "narrow phase detection between " <<surfaceCM->getClassName()<< " and " << pointsCM->getClassName() << sendl;
     detection->addCollisionPairs(vectCMPair);
     detection->endNarrowPhase();
 
@@ -113,7 +113,7 @@ void DevAngleCollisionMonitor<DataTypes>::eval()
 
             double minNorm = ((*contacts)[0].point[0] - (*contacts)[0].point[1]).norm();
 
-            std::cout << contacts->size() << " contacts detected." << std::endl;
+            sout << contacts->size() << " contacts detected." << sendl;
             for (unsigned int i=0; i<contacts->size(); i++)
             {
                 if ((*contacts)[i].elem.first.getCollisionModel() == surfaceCM)
@@ -165,8 +165,8 @@ void DevAngleCollisionMonitor<DataTypes>::eval()
             {
                 if (c.elem.first.getCollisionModel() == pointsCM)
                 {
-                    std::cout << "tip point " << c.point[0] << std::endl;
-                    std::cout << "nearest skeleton point " << c.point[1] << std::endl;
+                    sout << "tip point " << c.point[0] << sendl;
+                    sout << "nearest skeleton point " << c.point[1] << sendl;
                 }
             }
             else
@@ -175,8 +175,8 @@ void DevAngleCollisionMonitor<DataTypes>::eval()
                 {
                     if (c.elem.second.getCollisionModel() == pointsCM)
                     {
-                        std::cout << "tip point " << c.point[1] << std::endl;
-                        std::cout << "nearest skeleton point " << c.point[0] << std::endl;
+                        sout << "tip point " << c.point[1] << sendl;
+                        sout << "nearest skeleton point " << c.point[0] << sendl;
                     }
                 }
             }

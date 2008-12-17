@@ -51,6 +51,10 @@ class PointSetTopologyAlgorithms : public core::componentmodel::topology::Topolo
 {
     // no methods implemented yet
 public:
+
+    using core::componentmodel::topology::TopologyAlgorithms::sout;
+    using core::componentmodel::topology::TopologyAlgorithms::serr;
+    using core::componentmodel::topology::TopologyAlgorithms::sendl;
     PointSetTopologyAlgorithms()
         : TopologyAlgorithms()
     {}

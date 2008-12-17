@@ -125,7 +125,7 @@ int NewProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVe
 
 bool NewProximityIntersection::testIntersection(Line&, Point&)
 {
-    std::cerr << "Unnecessary call to NewProximityIntersection::testIntersection(Line,Point).\n";
+    serr << "Unnecessary call to NewProximityIntersection::testIntersection(Line,Point)."<<sendl;
     return true;
 }
 
@@ -147,7 +147,7 @@ int NewProximityIntersection::computeIntersection(Line& e1, Point& e2, OutputVec
 
 bool NewProximityIntersection::testIntersection(Line&, Line&)
 {
-    std::cerr << "Unnecessary call to NewProximityIntersection::testIntersection(Line,Line).\n";
+    serr << "Unnecessary call to NewProximityIntersection::testIntersection(Line,Line)."<<sendl;
     return true;
 }
 
@@ -171,7 +171,7 @@ int NewProximityIntersection::computeIntersection(Line& e1, Line& e2, OutputVect
 
 bool NewProximityIntersection::testIntersection(Triangle&, Point&)
 {
-    std::cerr << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle,Point).\n";
+    serr << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle,Point)."<<sendl;
     return true;
 }
 
@@ -194,7 +194,7 @@ int NewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, Outpu
 
 bool NewProximityIntersection::testIntersection(Triangle&, Line&)
 {
-    std::cerr << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle& e1, Line& e2).\n";
+    serr << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle& e1, Line& e2)."<<sendl;
     return true;
 }
 
@@ -244,7 +244,7 @@ int NewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Output
 
 bool NewProximityIntersection::testIntersection(Triangle&, Triangle&)
 {
-    std::cerr << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle& e1, Triangle& e2).\n";
+    serr << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle& e1, Triangle& e2)."<<sendl;
     return true;
 }
 
@@ -252,12 +252,12 @@ int NewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2, Ou
 {
     if (e1.getIndex() >= e1.getCollisionModel()->getSize())
     {
-        std::cerr << "NewProximityIntersection::computeIntersection(Triangle, Triangle): ERROR invalid e1 index "<<e1.getIndex()<<" on CM "<<e1.getCollisionModel()->getName()<<" of size "<<e1.getCollisionModel()->getSize()<<std::endl;
+        serr << "NewProximityIntersection::computeIntersection(Triangle, Triangle): ERROR invalid e1 index "<<e1.getIndex()<<" on CM "<<e1.getCollisionModel()->getName()<<" of size "<<e1.getCollisionModel()->getSize()<<sendl;
         return 0;
     }
     if (e2.getIndex() >= e2.getCollisionModel()->getSize())
     {
-        std::cerr << "NewProximityIntersection::computeIntersection(Triangle, Triangle): ERROR invalid e2 index "<<e2.getIndex()<<" on CM "<<e2.getCollisionModel()->getName()<<" of size "<<e2.getCollisionModel()->getSize()<<std::endl;
+        serr << "NewProximityIntersection::computeIntersection(Triangle, Triangle): ERROR invalid e2 index "<<e2.getIndex()<<" on CM "<<e2.getCollisionModel()->getName()<<" of size "<<e2.getCollisionModel()->getSize()<<sendl;
         return 0;
     }
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
@@ -327,7 +327,7 @@ bool NewProximityIntersection::testIntersection(Ray &t1,Triangle &t2)
 
     if (PQ.norm2() < alarmDist*alarmDist)
     {
-        //std::cout<<"Collision between Line - Triangle"<<std::endl;
+        //sout<<"Collision between Line - Triangle"<<sendl;
         return true;
     }
     else

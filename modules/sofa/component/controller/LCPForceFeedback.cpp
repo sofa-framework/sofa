@@ -48,15 +48,15 @@ void LCPForceFeedback::init()
 
     mState = dynamic_cast<MechanicalState<Rigid3dTypes> *> (this->getContext()->getMechanicalState());
     if (!mState)
-        logWarning("LCPForceFeedback has no binding MechanicalState");
+        serr << "LCPForceFeedback has no binding MechanicalState" << sendl;
 
 
     if (!mastersolver)
-        logWarning("LCPForceFeedback has no binding MasterContactSolver");
+        serr << "LCPForceFeedback has no binding MasterContactSolver" << sendl;
 
     lcp = mastersolver->getLCP();
 
-    cout << "init LCPForceFeedback " << driver << " done " << std::endl;
+    sout << "init LCPForceFeedback " << driver << " done " << sendl;
 };
 
 void LCPForceFeedback::computeForce(double x, double y, double z, double /*u*/, double /*v*/, double /*w*/, double /*q*/, double& fx, double& fy, double& fz)
@@ -87,7 +87,7 @@ void LCPForceFeedback::computeForce(double x, double y, double z, double /*u*/, 
     if (lcp_buf!=lcp)
     {
         //////////////////// NEW LCP //////////////////////
-        //std::cout<<"new LCP detected"<<std::endl;
+        //sout<<"new LCP detected"<<sendl;
 
         mx = (*mState->getX())[0].getCenter()[0];
         my = (*mState->getX())[0].getCenter()[1];
@@ -113,7 +113,7 @@ void LCPForceFeedback::computeForce(double x, double y, double z, double /*u*/, 
     }
     else
     {
-        //std::cout<<"old LCP "<<std::endl;
+        //sout<<"old LCP "<<sendl;
     }
     lcp_buf = lcp;
     //lcp->wait();
@@ -128,12 +128,12 @@ void LCPForceFeedback::computeForce(double x, double y, double z, double /*u*/, 
 
 /////// Fordebug /////////
 //	if(lcp)
-//		std::cout<<"numConst" <<constraints->size()<<std::endl;
+//		sout<<"numConst" <<constraints->size()<<sendl;
 //	else
-//		std::cout<<"WARNING : LCP is null"<<std::endl;
+//		sout<<"WARNING : LCP is null"<<sendl;
 /////////////////////////
 
-//	std::cout << "LCPForceFeedback::computeForce " << constraints->size() << std::endl;
+//	sout << "LCPForceFeedback::computeForce " << constraints->size() << sendl;
 
     if(lcp)
     {
@@ -157,7 +157,7 @@ void LCPForceFeedback::computeForce(double x, double y, double z, double /*u*/, 
             double dy = (y - my);
             double dz = (z - mz);
 
-            //cout << "two !" << endl;
+            //sout << "two !" << endl;
 
             for(unsigned int c1 = 0; c1 < numConstraints; c1++)
             {
@@ -165,15 +165,15 @@ void LCPForceFeedback::computeForce(double x, double y, double z, double /*u*/, 
                 int sizeC1 = (*constraints)[c1].size();
                 for(int i = 0; i < sizeC1; i++)
                 {
-                    //cout << "constraint ID :  " << indexC1 << endl;
+                    //sout << "constraint ID :  " << indexC1 << endl;
                     (lcp)->getDfree()[indexC1] += (*constraints)[c1][i].data[0] * dx;
                     (lcp)->getDfree()[indexC1] += (*constraints)[c1][i].data[1] * dy;
                     (lcp)->getDfree()[indexC1] += (*constraints)[c1][i].data[2] * dz;
-                    //cout << "data : " << constraints[c1][i].data[0] << " " << constraints[c1][i].data[1] << " " << constraints[c1][i].data[2] << endl;
+                    //sout << "data : " << constraints[c1][i].data[0] << " " << constraints[c1][i].data[1] << " " << constraints[c1][i].data[2] << endl;
                 }
             }
 
-            //cout << "three !" << endl;
+            //sout << "three !" << endl;
 
             double tol = lcp->getTolerance();
             int max = 100;
@@ -184,7 +184,7 @@ void LCPForceFeedback::computeForce(double x, double y, double z, double /*u*/, 
             //helper::afficheLCP((lcp)->getDfree(), (lcp)->getW(), (lcp)->getF(),(lcp)->getNbConst());
 
 
-            //cout << "four !" << endl;
+            //sout << "four !" << endl;
 
             for(unsigned int c1 = 0; c1 < numConstraints; c1++)
             {
@@ -198,7 +198,7 @@ void LCPForceFeedback::computeForce(double x, double y, double z, double /*u*/, 
                 }
             }
 
-            //cout << "five !" << endl;
+            //sout << "five !" << endl;
 
             for(unsigned int c1 = 0; c1 < numConstraints; c1++)
             {
@@ -214,23 +214,23 @@ void LCPForceFeedback::computeForce(double x, double y, double z, double /*u*/, 
                 }
             }
 
-            //cout << "six !" << endl;
+            //sout << "six !" << endl;
 
             fx = force[0][0]*forceCoef.getValue() ;//0.0003;
             fy = force[0][1]*forceCoef.getValue() ;//0.0003;
             fz = force[0][2]*forceCoef.getValue();//0.0003;
 
-            //cout << "seven !" << endl;
+            //sout << "seven !" << endl;
 
-            //cout << "haptic forces : " << fx << " " << fy << " " << fz << endl;
-            //cout << "forces : " << force << end;
-            //cout << "haptic diff : " << DX[0][0] << " " << DX[1][0] << " " << DX[2][0]  << endl;
+            //sout << "haptic forces : " << fx << " " << fy << " " << fz << endl;
+            //sout << "forces : " << force << end;
+            //sout << "haptic diff : " << DX[0][0] << " " << DX[1][0] << " " << DX[2][0]  << endl;
         }
-        //cout << "eight" << endl;
+        //sout << "eight" << endl;
 
     }
 
-    //cout << "nine !" << endl;
+    //sout << "nine !" << endl;
     //lcp->unlock();
 
 };
