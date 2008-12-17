@@ -554,7 +554,7 @@ void ModifyObject::updateConsole()
             buttonClearWarnings->setText( tr("&Clear"));
             connect( buttonClearWarnings, SIGNAL( clicked()), this, SLOT( clearWarnings()));
 
-            logWarningEdit = new QTextEdit( tab, QString("WarningEdit"));
+            logWarningEdit = new Q3TextEdit( tab, QString("WarningEdit"));
             tabLayout->addWidget( logWarningEdit );
 
             dialogTab->addTab(tab, QString("Warnings"));
@@ -562,7 +562,7 @@ void ModifyObject::updateConsole()
         }
 
         logWarningEdit->setText(QString(node->sendl.getWarnings().c_str()));
-        logWarningEdit->moveCursor(QTextEdit::MoveEnd, false);
+        logWarningEdit->moveCursor(Q3TextEdit::MoveEnd, false);
         logWarningEdit->ensureCursorVisible();
 
     }
@@ -579,7 +579,7 @@ void ModifyObject::updateConsole()
             buttonClearOutputs->setText( tr("&Clear"));
             connect( buttonClearOutputs, SIGNAL( clicked()), this, SLOT( clearOutputs()));
 
-            logOutputEdit = new QTextEdit( tab, QString("OutputEdit"));
+            logOutputEdit = new Q3TextEdit( tab, QString("OutputEdit"));
             tabLayout->addWidget( logOutputEdit );
 
 
@@ -588,7 +588,7 @@ void ModifyObject::updateConsole()
         }
 
         logOutputEdit->setText(QString(node->sendl.getOutputs().c_str()));
-        logOutputEdit->moveCursor(QTextEdit::MoveEnd, false);
+        logOutputEdit->moveCursor(Q3TextEdit::MoveEnd, false);
         logOutputEdit->ensureCursorVisible();
     }
 }
