@@ -27,7 +27,7 @@
 
 #include <sofa/component/constraint/LagrangianMultiplierContactConstraint.h>
 #include <sofa/core/componentmodel/behavior/Constraint.inl>
-#include <sofa/component/MechanicalObject.inl>
+#include <sofa/component/container/MechanicalObject.inl>
 #include <sofa/helper/system/config.h>
 #include <assert.h>
 #include <sofa/helper/gl/template.h>

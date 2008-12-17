@@ -35,6 +35,8 @@
 #include <algorithm>
 #include <sofa/helper/gl/template.h>
 
+#include <sofa/simulation/tree/GNode.h>
+
 #define DYNAMIC_CONE_ANGLE_COMPUTATION
 
 namespace sofa
@@ -837,13 +839,31 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ)
 {
     Vector3 pt = p.p();
 
+    sofa::simulation::tree::GNode* node = dynamic_cast<sofa::simulation::tree::GNode*>(p.getCollisionModel()->getContext());
+    if ( !(node->get< LineModel >()) )
+        return true;
+
     BaseMeshTopology* topology = p.getCollisionModel()->getMeshTopology();
     helper::vector<Vector3>& x = *(p.getCollisionModel()->getMechanicalState()->getX());
 
     const helper::vector <unsigned int>& triangleVertexShell = topology->getTriangleVertexShell(p.getIndex());
     const helper::vector <unsigned int>& edgeVertexShell = topology->getEdgeVertexShell(p.getIndex());
-
-
+/////////
+    /*std::cout << "LocalMinDistance::testValidity(Point &p, const Vector3 &PQ) : " << std::endl;
+    std::cout << "triangleVertexShell : " << std::endl;
+    for (unsigned int i=0 ; i<triangleVertexShell.size() ; i++)
+    {
+    	std::cout << triangleVertexShell[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "edgeVertexShell : " << std::endl;
+    for (unsigned int i=0 ; i<edgeVertexShell.size() ; i++)
+    {
+    	std::cout << edgeVertexShell[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "end LMD " << std::endl;*/
+////////
     Vector3 nMean;
 
     for (unsigned int i=0; i<triangleVertexShell.size(); i++)
@@ -904,7 +924,16 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
     helper::vector<Vector3>& x = *(l.getCollisionModel()->getMechanicalState()->getX());
 
     const sofa::helper::vector<unsigned int>& triangleEdgeShell = topology->getTriangleEdgeShell(l.getIndex());
-
+    /*
+    	std::cout << "LocalMinDistance::testValidity(Point &p, const Vector3 &PQ) : " << std::endl;
+    	std::cout << "triangleEdgeShell : " << std::endl;
+    	for (unsigned int i=0 ; i<triangleEdgeShell.size() ; i++)
+    	{
+    		std::cout << triangleEdgeShell[i] << " ";
+    	}
+    	std::cout << std::endl;
+    	std::cout << "end LMD " << std::endl;
+    */
     // filter if there are two triangles around the edge
     if (triangleEdgeShell.size() == 2)
     {

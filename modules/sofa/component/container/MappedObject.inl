@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPEDOBJECT_INL
 #define SOFA_COMPONENT_MAPPEDOBJECT_INL
 
-#include <sofa/component/MappedObject.h>
+#include <sofa/component/container/MappedObject.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 namespace sofa

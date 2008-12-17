@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/helper/io/bvh/BVHLoader.h>
-#include <sofa/component/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa

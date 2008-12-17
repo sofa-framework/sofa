@@ -27,7 +27,7 @@
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/SphereModel.h>
 
-#include <sofa/component/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/simulation/tree/GNode.h>
 
 #include <sofa/core/componentmodel/topology/TopologicalMapping.h>

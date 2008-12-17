@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_H
 #define SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_H
 
-#include <sofa/component/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include <map>
 #include <set>
 

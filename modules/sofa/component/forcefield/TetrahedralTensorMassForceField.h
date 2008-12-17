@@ -30,7 +30,7 @@
 #endif
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/component/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>

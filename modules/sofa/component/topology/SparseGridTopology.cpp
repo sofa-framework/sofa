@@ -25,7 +25,7 @@
 #include <fstream>
 #include <string>
 
-#include <sofa/component/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/component/topology/SparseGridTopology.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>

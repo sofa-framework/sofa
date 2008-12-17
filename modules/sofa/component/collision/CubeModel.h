@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_CUBEMODEL_H
 
 #include <sofa/core/CollisionModel.h>
-#include <sofa/component/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
 namespace sofa

@@ -30,7 +30,7 @@
 #include <sofa/component/topology/TriangleSetTopologyAlgorithms.h>
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 
-#include <sofa/component/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 
 #include <algorithm>
 #include <functional>

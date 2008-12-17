@@ -38,7 +38,7 @@
 #include <boost/graph/cuthill_mckee_ordering.hpp>
 #include <boost/graph/bandwidth.hpp>
 
-#include <sofa/component/MeshLoader.h>
+#include <sofa/component/misc/MeshLoader.h>
 
 namespace sofa
 {

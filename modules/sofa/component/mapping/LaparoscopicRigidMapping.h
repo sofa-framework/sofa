@@ -31,7 +31,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/component/topology/PointSubset.h>
-#include <sofa/component/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/defaulttype/VecTypes.h>
 

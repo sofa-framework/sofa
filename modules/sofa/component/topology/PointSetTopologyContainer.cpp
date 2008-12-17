@@ -25,7 +25,7 @@
 #include <sofa/component/topology/PointSetTopologyContainer.h>
 
 #include <sofa/simulation/tree/GNode.h>
-#include <sofa/component/MeshLoader.h>
+#include <sofa/component/misc/MeshLoader.h>
 
 #include <sofa/core/ObjectFactory.h>
 namespace sofa

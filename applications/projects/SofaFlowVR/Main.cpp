@@ -49,7 +49,7 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/tree/DeleteVisitor.h>
-#include <sofa/component/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/MinProximityIntersection.h>
 #include <sofa/component/collision/BruteForceDetection.h>

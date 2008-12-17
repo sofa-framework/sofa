@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
-#include <sofa/component/MechanicalObject.inl>
+#include <sofa/component/container/MechanicalObject.inl>
 #include <sofa/helper/Quater.h>
 
 

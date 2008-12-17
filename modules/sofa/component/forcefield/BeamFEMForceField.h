@@ -27,14 +27,14 @@
 
 #include <sofa/component/topology/EdgeData.inl>
 #include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/component/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/component/StiffnessContainer.h>
-#include <sofa/component/PoissonContainer.h>
-#include <sofa/component/LengthContainer.h>
-#include <sofa/component/RadiusContainer.h>
+#include <sofa/component/container/StiffnessContainer.h>
+#include <sofa/component/container/PoissonContainer.h>
+#include <sofa/component/container/LengthContainer.h>
+#include <sofa/component/container/RadiusContainer.h>
 
 
 

@@ -26,7 +26,7 @@
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/component/MappedObject.inl>
+#include <sofa/component/container/MappedObject.inl>
 
 namespace sofa
 {
