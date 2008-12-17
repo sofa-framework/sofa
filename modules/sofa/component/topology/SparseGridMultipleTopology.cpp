@@ -41,17 +41,17 @@ void SparseGridMultipleTopology::buildAsFinest(  )
 // 			return;
     }
 
-
-    if (_regularGrids.size() < _fileTopologies.getValue().size())
+    unsigned regularGridsSize = _regularGrids.size();
+    if (regularGridsSize < _fileTopologies.getValue().size())
     {
-        for (unsigned int i=0; i<_fileTopologies.getValue().size()-_regularGrids.size(); ++i)
+        for (unsigned int i=0; i<_fileTopologies.getValue().size()-regularGridsSize; ++i)
         {
             _regularGrids.push_back(new RegularGridTopology());
         }
     }
     else
     {
-        for (unsigned int i=0; i<_regularGrids.size()-_fileTopologies.getValue().size(); ++i)
+        for (unsigned int i=0; i<regularGridsSize-_fileTopologies.getValue().size(); ++i)
         {
             delete _regularGrids[i+_regularGrids.size()];
         }
@@ -151,8 +151,8 @@ void SparseGridMultipleTopology::buildAsFinest(  )
 
 void SparseGridMultipleTopology::buildFromTriangleMesh(helper::io::Mesh* mesh, unsigned fileIdx)
 {
-    _regularGrids[fileIdx]->setSize(getNx(),getNy(),getNz());
-    _regularGrids[fileIdx]->setPos(getXmin(),getXmax(),getYmin(),getYmax(),getZmin(),getZmax());
+    _regularGrids[fileIdx]->setSize(this->getNx(),this->getNy(),this->getNz());
+    _regularGrids[fileIdx]->setPos(this->getXmin(),this->getXmax(),this->getYmin(),this->getYmax(),this->getZmin(),this->getZmax());
 
     voxelizeTriangleMesh(mesh, *_regularGrids[fileIdx], _regularGridTypes[fileIdx]);
 
