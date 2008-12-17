@@ -67,7 +67,9 @@ SphereModel::SphereModel()
     : mstate(NULL)
     , radius(initData(&radius, "listRadius","Radius of each sphere"))
     , defaultRadius(initData(&defaultRadius,(SReal)(1.0), "radius","Default Radius"))
+    , filename(initData(&filename, std::string("fileSphere"), "fileSphere", "File .sph describing the spheres"))
 {
+    addAlias(&filename,"filename");
 }
 
 void SphereModel::resize(int size)
