@@ -49,21 +49,21 @@ void DevMonitorManager::init()
     for (it = monitors.begin() ; (*it) != dynamic_cast<core::DevBaseMonitor*>(this) || it == monitors.end() ; it++) ;
     monitors.erase(it);
 
-    std::cout << "Number of Monitors detected = " << monitors.size()  <<std::endl;
+    sout << "Number of Monitors detected = " << monitors.size()  <<sendl;
 
     for (unsigned int j=0 ; j<monitors.size() ; j++)
-        std::cout << "Monitor " << j << " " << monitors[j]->getName() << std::endl;
+        sout << "Monitor " << j << " " << monitors[j]->getName() << sendl;
 
 }
 
 void DevMonitorManager::eval()
 {
     sofa::helper::vector<core::DevBaseMonitor*>::iterator it;
-    std::cout << " Monitor Manager results :" << std::endl;
+    sout << " Monitor Manager results :" << sendl;
 
     for (it = monitors.begin() ; it != monitors.end() ; it++)
     {
-        std::cout << "Data from Monitor " << (*it)->getName() << " : " ;
+        sout << "Data from Monitor " << (*it)->getName() << " : " ;
 
         //add cast for every monitor you want to fetch the data
         if (dynamic_cast<DevTensionMonitor<RigidTypes>*>(*it))
@@ -72,9 +72,9 @@ void DevMonitorManager::eval()
 
             sofa::helper::vector<std::pair<Vec1d, double> > d = tm->getData();
             for (unsigned int i=0 ; i<d.size() ; i++)
-                std::cout << "Tension is " << d[i].first << " at " << d[i].second << std::endl;
+                sout << "Tension is " << d[i].first << " at " << d[i].second << sendl;
         }
-        std::cout << std::endl;
+        sout << sendl;
     }
 
 }

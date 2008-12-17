@@ -55,7 +55,7 @@ namespace objectmodel
 
 using std::string;
 
-Base::Base()
+Base::Base():serr(*(sendl.serr)), sout(*(sendl.sout))
 {
     name = initData(&name,std::string("unnamed"),"name","object name");
 }
@@ -65,14 +65,14 @@ Base::~Base()
 
 std::string Base::getName() const
 {
-    //if( name.getValue().empty() )
-    //    return getTypeName();
     return name.getValue();
 }
 
 void Base::setName(const std::string& na)
 {
     name.setValue(na);
+    sendl.nameComponent = na;
+    sendl.nameClass = getClassName();
 }
 
 
@@ -93,7 +93,7 @@ std::string Base::decodeTypeName(const std::type_info& t)
     int start = 0;
     int dest = 0;
     char cprev = '\0';
-    //std::cout << "name = "<<realname<<std::endl;
+    //sout << "name = "<<realname<<sendl;
     for (int i=0; i<len; i++)
     {
         char c = realname[i];
@@ -115,7 +115,7 @@ std::string Base::decodeTypeName(const std::type_info& t)
             }
         }
         cprev = c;
-        //std::cout << "i = "<<i<<" start = "<<start<<" dest = "<<dest<<" newname = "<<newname<<std::endl;
+        //sout << "i = "<<i<<" start = "<<start<<" dest = "<<dest<<" newname = "<<newname<<sendl;
     }
     while (start < len)
     {
@@ -123,7 +123,7 @@ std::string Base::decodeTypeName(const std::type_info& t)
         newname[dest] = 0;
     }
     newname[dest] = '\0';
-    //std::cout << "newname = "<<newname<<std::endl;
+    //sout << "newname = "<<newname<<sendl;
     name = newname;
     free(newname);
     //if (allocname)
@@ -140,7 +140,7 @@ std::string Base::decodeTypeName(const std::type_info& t)
             if (first == std::string::npos) first = 0;
             else first++;
             name.erase(first,pos-first+2);
-            //std::cout << "name="<<name<<std::endl;
+            //sout << "name="<<name<<sendl;
         }
         // Remove "class "
         for(;;)
@@ -149,7 +149,7 @@ std::string Base::decodeTypeName(const std::type_info& t)
             if (pos == std::string::npos) break;
             name.erase(pos,6);
         }
-        //std::cout << "TYPE NAME="<<name<<std::endl;
+        //sout << "TYPE NAME="<<name<<sendl;
         return name;
     */
 }
@@ -172,7 +172,7 @@ std::string Base::decodeClassName(const std::type_info& t)
     int dest = 0;
     int i;
     char cprev = '\0';
-    //std::cout << "name = "<<realname<<std::endl;
+    //sout << "name = "<<realname<<sendl;
     for (i=0; i<len; i++)
     {
         char c = realname[i];
@@ -199,7 +199,7 @@ std::string Base::decodeClassName(const std::type_info& t)
             }
         }
         cprev = c;
-        //std::cout << "i = "<<i<<" start = "<<start<<" dest = "<<dest<<" newname = "<<newname<<std::endl;
+        //sout << "i = "<<i<<" start = "<<start<<" dest = "<<dest<<" newname = "<<newname<<sendl;
     }
 
     while (start < i)
@@ -208,7 +208,7 @@ std::string Base::decodeClassName(const std::type_info& t)
         newname[dest] = 0;
     }
     newname[dest] = '\0';
-    //std::cout << "newname = "<<newname<<std::endl;
+    //sout << "newname = "<<newname<<sendl;
     name = newname;
     free(newname);
     //if (allocname)
@@ -222,7 +222,7 @@ std::string Base::decodeClassName(const std::type_info& t)
         {
             name.erase(pos,name.length()-pos);
         }
-        //std::cout << "CLASS NAME="<<name<<std::endl;
+        //sout << "CLASS NAME="<<name<<sendl;
         return name;
     */
 }
@@ -285,7 +285,7 @@ std::string Base::decodeTemplateName(const std::type_info& t)
     int dest = 0;
     int i = 0;
     char cprev = '\0';
-    //std::cout << "name = "<<realname<<std::endl;
+    //sout << "name = "<<realname<<sendl;
     while (i < len && realname[i]!='<')
         ++i;
     start = i+1; ++i;
@@ -311,7 +311,7 @@ std::string Base::decodeTemplateName(const std::type_info& t)
             }
         }
         cprev = c;
-        //std::cout << "i = "<<i<<" start = "<<start<<" dest = "<<dest<<" newname = "<<newname<<std::endl;
+        //sout << "i = "<<i<<" start = "<<start<<" dest = "<<dest<<" newname = "<<newname<<sendl;
     }
     while (start < i)
     {
@@ -319,7 +319,7 @@ std::string Base::decodeTemplateName(const std::type_info& t)
         newname[dest] = 0;
     }
     newname[dest] = '\0';
-    //std::cout << "newname = "<<newname<<std::endl;
+    //sout << "newname = "<<newname<<sendl;
     name = newname;
     free(newname);
     //if (allocname)
@@ -337,7 +337,7 @@ std::string Base::decodeTemplateName(const std::type_info& t)
         {
             name = "";
         }
-        //std::cout << "TEMPLATE NAME="<<name<<std::endl;
+        //sout << "TEMPLATE NAME="<<name<<sendl;
         return name;
     */
 }
@@ -356,13 +356,13 @@ void  Base::parseFields ( std::list<std::string> str )
             std::string s = str.front();
             for (unsigned int i=0; i<fields.size(); ++i)
             {
-                if( !(fields[i]->read( s ))) logWarning("could not read value for option " + name +std::string(": ")+ s);
+                if( !(fields[i]->read( s ))) serr<<"could not read value for option " << name <<": "<< s << sendl;
             }
         }
         else
         {
             str.pop_front();
-            logWarning("Unknown option: " + name );
+            serr<<"Unknown option: "<< name << sendl;
         }
     }
 }
@@ -383,12 +383,12 @@ void  Base::parseFields ( const std::map<std::string,std::string*>& args )
             {
                 for (unsigned int i=0; i<fields.size(); ++i)
                 {
-                    if( !(fields[i]->read( val ))) logWarning("could not read value for option " +key+std::string(": ") +val);
+                    if( !(fields[i]->read( val ))) serr<<"could not read value for option "<<key<<": "<<val << sendl;
                 }
             }
             else
             {
-                if ((key!="name") && (key!="type")) logWarning("Unknown option: " + key);
+                if ((key!="name") && (key!="type")) serr<<"Unknown option: " << key << sendl;
             }
         }
     }
@@ -409,7 +409,7 @@ void  Base::parse ( BaseObjectDescription* arg )
             if (val)
             {
                 std::string valueString(val);
-                if( !(dataModif[d]->read( valueString ))) logWarning(std::string("could not read value for option ") + attributeList[i] + std::string(": ") + val);
+                if( !(dataModif[d]->read( valueString ))) serr<<"could not read value for option "<< attributeList[i] <<": " << val << sendl;
             }
         }
     }
@@ -450,7 +450,7 @@ void Base::xmlWriteNodeDatas (std::ostream& out, unsigned level )
         {
             for (unsigned l=0; i!=0 && l<level; l++)
                 out << "\t";
-            out << m_fieldVec[ i ].first << "=\""<< field->getValueString() << "\" "<<std::endl;
+            out << m_fieldVec[ i ].first << "=\""<< field->getValueString() << "\" ";
         }
     }
 }
@@ -475,10 +475,6 @@ void  Base::xmlWriteDatas ( std::ostream& out, unsigned level )
             out << "</Attribute>\n";
         }
     }
-}
-void  Base::logWarning(std::string l)
-{
-    logWarnings.push_back(l); std::cerr<<"in " << getName() << "(" << getTypeName() << "): WARNING: " << l << "\n";
 }
 } // namespace objectmodel
 

@@ -46,9 +46,9 @@ namespace forcefield
 using namespace sofa::defaulttype;
 using namespace core::componentmodel::topology;
 
-using std::cerr;
-using std::cout;
-using std::endl;
+
+
+
 
 template <class DataTypes> EdgePressureForceField<DataTypes>::~EdgePressureForceField()
 {
@@ -65,7 +65,7 @@ template <class DataTypes> void  EdgePressureForceField<DataTypes>::handleTopolo
 }
 template <class DataTypes> void EdgePressureForceField<DataTypes>::init()
 {
-    //std::cerr << "initializing EdgePressureForceField" << std::endl;
+    //serr << "initializing EdgePressureForceField" << sendl;
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
 
     _topology = this->getContext()->getMeshTopology();
@@ -75,7 +75,7 @@ template <class DataTypes> void EdgePressureForceField<DataTypes>::init()
 
     if (edgeGeo==NULL)
     {
-        std::cerr << "ERROR(EdgePressureForceField): object must have an EdgeSetTopology.\n";
+        serr << "ERROR(EdgePressureForceField): object must have an EdgeSetTopology."<<sendl;
         return;
     }
 
@@ -112,7 +112,7 @@ void EdgePressureForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& /*
 template <class DataTypes>
 double EdgePressureForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
 {
-    cerr<<"EdgePressureForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    serr<<"EdgePressureForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 

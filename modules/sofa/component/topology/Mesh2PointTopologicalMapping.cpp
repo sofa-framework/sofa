@@ -282,7 +282,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             {
                 unsigned int i1 = ( static_cast< const PointsIndicesSwap * >( *changeIt ) )->index[0];
                 unsigned int i2 = ( static_cast< const PointsIndicesSwap* >( *changeIt ) )->index[1];
-//				std::cout << "INPUT SWAP POINTS "<<i1 << " " << i2 << std::endl;
+//				sout << "INPUT SWAP POINTS "<<i1 << " " << i2 << sendl;
                 swapInput(POINT,i1,i2);
                 break;
             }
@@ -294,14 +294,14 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             case core::componentmodel::topology::POINTSREMOVED:
             {
                 const sofa::helper::vector<unsigned int>& tab = ( static_cast< const PointsRemoved * >( *changeIt ) )->getArray();
-//				 std::cout << "INPUT REMOVE POINTS "<<tab << std::endl;
+//				 sout << "INPUT REMOVE POINTS "<<tab << sendl;
                 removeInput(POINT, tab );
                 break;
             }
             case core::componentmodel::topology::POINTSRENUMBERING:
             {
                 const sofa::helper::vector<unsigned int>& tab = ( static_cast< const PointsRenumbering * >( *changeIt ) )->getinv_IndexArray();
-//				 std::cout << "INPUT RENUMBER POINTS "<<tab << std::endl;
+//				 sout << "INPUT RENUMBER POINTS "<<tab << sendl;
                 renumberInput(POINT, tab );
                 break;
             }
@@ -313,7 +313,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             case core::componentmodel::topology::EDGESREMOVED:
             {
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const EdgesRemoved *>( *changeIt ) )->getArray();
-//				std::cout << "INPUT REMOVE EDGES "<<tab << std::endl;
+//				sout << "INPUT REMOVE EDGES "<<tab << sendl;
                 removeInput(EDGE, tab );
                 break;
             }
@@ -325,7 +325,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             case core::componentmodel::topology::TRIANGLESREMOVED:
             {
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TrianglesRemoved *>( *changeIt ) )->getArray();
-//				std::cout << "INPUT REMOVE TRIANGLES "<<tab << std::endl;
+//				sout << "INPUT REMOVE TRIANGLES "<<tab << sendl;
                 removeInput(TRIANGLE, tab );
                 break;
             }
@@ -337,7 +337,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             case core::componentmodel::topology::QUADSREMOVED:
             {
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const QuadsRemoved *>( *changeIt ) )->getArray();
-//				std::cout << "INPUT REMOVE QUADS "<<tab << std::endl;
+//				sout << "INPUT REMOVE QUADS "<<tab << sendl;
                 removeInput(QUAD, tab );
                 break;
             }
@@ -349,7 +349,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             case core::componentmodel::topology::TETRAHEDRAREMOVED:
             {
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TetrahedraRemoved *>( *changeIt ) )->getArray();
-//				std::cout << "INPUT REMOVE TETRAS "<<tab << std::endl;
+//				sout << "INPUT REMOVE TETRAS "<<tab << sendl;
                 removeInput(TETRA, tab );
                 break;
             }
@@ -361,7 +361,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             case core::componentmodel::topology::HEXAHEDRAREMOVED:
             {
                 const sofa::helper::vector<unsigned int> &tab = ( static_cast< const HexahedraRemoved *>( *changeIt ) )->getArray();
-//				std::cout << "INPUT REMOVE HEXAS "<<tab << std::endl;
+//				sout << "INPUT REMOVE HEXAS "<<tab << sendl;
                 removeInput(HEXA, tab );
                 break;
             }

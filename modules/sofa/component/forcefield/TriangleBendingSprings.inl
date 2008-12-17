@@ -55,7 +55,7 @@ template<class DataTypes>
 TriangleBendingSprings<DataTypes>::TriangleBendingSprings()
     : dof(NULL)
 {
-    //std::cerr<<"TriangleBendingSprings<DataTypes>::TriangleBendingSprings"<<std::endl;
+    //serr<<"TriangleBendingSprings<DataTypes>::TriangleBendingSprings"<<sendl;
 }
 
 
@@ -71,13 +71,13 @@ void TriangleBendingSprings<DataTypes>::addSpring( unsigned a, unsigned b )
     Real d = (Real)this->kd.getValue();
     Real l = (x[a]-x[b]).norm();
     this->SpringForceField<DataTypes>::addSpring(a,b, s, d, l );
-    //std::cout<<"=================================TriangleBendingSprings<DataTypes>::addSpring "<<a<<", "<<b<<std::endl;
+    //sout<<"=================================TriangleBendingSprings<DataTypes>::addSpring "<<a<<", "<<b<<sendl;
 }
 
 template<class DataTypes>
 void TriangleBendingSprings<DataTypes>::registerTriangle( unsigned a, unsigned b, unsigned c, std::map<IndexPair, unsigned>& edgeMap)
 {
-    //std::cout<<"=================================TriangleBendingSprings<DataTypes>::registerTriangle "<<a<<", "<<b<<", "<<c<<std::endl;
+    //sout<<"=================================TriangleBendingSprings<DataTypes>::registerTriangle "<<a<<", "<<b<<", "<<c<<sendl;
     using namespace std;
     {
         IndexPair edge(a<b ? a : b,a<b ? b : a);
@@ -140,7 +140,7 @@ void TriangleBendingSprings<DataTypes>::init()
     assert( topology );
 
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = topology->getTriangles();
-    //std::cout<<"==================================TriangleBendingSprings<DataTypes>::init(), triangles size = "<<triangles.size()<<std::endl;
+    //sout<<"==================================TriangleBendingSprings<DataTypes>::init(), triangles size = "<<triangles.size()<<sendl;
     for( unsigned i= 0; i<triangles.size(); ++i )
     {
         const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& face = triangles[i];
@@ -151,7 +151,7 @@ void TriangleBendingSprings<DataTypes>::init()
     }
 
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqQuads& quads = topology->getQuads();
-    //std::cout<<"==================================TriangleBendingSprings<DataTypes>::init(), quad size = "<<topology->getQuads().size()<<std::endl;
+    //sout<<"==================================TriangleBendingSprings<DataTypes>::init(), quad size = "<<topology->getQuads().size()<<sendl;
     for( unsigned i= 0; i<quads.size(); ++i )
     {
         const sofa::core::componentmodel::topology::BaseMeshTopology::Quad& face = quads[i];

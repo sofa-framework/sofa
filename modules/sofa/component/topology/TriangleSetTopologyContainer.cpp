@@ -94,7 +94,7 @@ void TriangleSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoade
 void TriangleSetTopologyContainer::createTriangleSetArray()
 {
 #ifndef NDEBUG
-    cout << "Error. [TriangleSetTopologyContainer::createTriangleSetArray] This method must be implemented by a child topology." << endl;
+    sout << "Error. [TriangleSetTopologyContainer::createTriangleSetArray] This method must be implemented by a child topology." << endl;
 #endif
 }
 
@@ -103,7 +103,7 @@ void TriangleSetTopologyContainer::createTriangleVertexShellArray ()
     if(!hasTriangles()) // this method should only be called when triangles exist
     {
 #ifndef NDEBUG
-        cout << "Warning. [TriangleSetTopologyContainer::createTriangleVertexShellArray] triangle array is empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::createTriangleVertexShellArray] triangle array is empty." << endl;
 #endif
         createTriangleSetArray();
     }
@@ -128,7 +128,7 @@ void TriangleSetTopologyContainer::createTriangleEdgeShellArray ()
     if(!hasTriangles()) // this method should only be called when triangles exist
     {
 #ifndef NDEBUG
-        cout << "Warning. [TriangleSetTopologyContainer::createTriangleEdgeShellArray] triangle array is empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::createTriangleEdgeShellArray] triangle array is empty." << endl;
 #endif
         createTriangleSetArray();
     }
@@ -136,7 +136,7 @@ void TriangleSetTopologyContainer::createTriangleEdgeShellArray ()
     if(!hasEdges()) // this method should only be called when edges exist
     {
 #ifndef NDEBUG
-        cout << "Warning. [TriangleSetTopologyContainer::createTriangleEdgeShellArray] edge array is empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::createTriangleEdgeShellArray] edge array is empty." << endl;
 #endif
         createEdgeSetArray();
     }
@@ -170,7 +170,7 @@ void TriangleSetTopologyContainer::createEdgeSetArray()
     if(!hasTriangles()) // this method should only be called when triangles exist
     {
 #ifndef NDEBUG
-        cout << "Warning. [TriangleSetTopologyContainer::createEdgeSetArray] triangle array is empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::createEdgeSetArray] triangle array is empty." << endl;
 #endif
         createTriangleSetArray();
     }
@@ -178,7 +178,7 @@ void TriangleSetTopologyContainer::createEdgeSetArray()
     if(hasEdges())
     {
 #ifndef NDEBUG
-        cout << "Warning. [TriangleSetTopologyContainer::createEdgeSetArray] edge array is not empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::createEdgeSetArray] edge array is not empty." << endl;
 #endif
 
         // clear edges and all shells that depend on edges
@@ -222,7 +222,7 @@ void TriangleSetTopologyContainer::createTriangleEdgeArray()
     if(!hasTriangles()) // this method should only be called when triangles exist
     {
 #ifndef NDEBUG
-        cout << "Warning. [TriangleSetTopologyContainer::createTriangleEdgeArray] triangle array is empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::createTriangleEdgeArray] triangle array is empty." << endl;
 #endif
         createTriangleSetArray();
     }
@@ -230,7 +230,7 @@ void TriangleSetTopologyContainer::createTriangleEdgeArray()
     if(!hasEdges()) // this method should only be called when edges exist
     {
 #ifndef NDEBUG
-        cout << "Warning. [TriangleSetTopologyContainer::createTriangleEdgeArray] edge array is empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::createTriangleEdgeArray] edge array is empty." << endl;
 #endif
         createEdgeSetArray();
     }
@@ -266,7 +266,7 @@ const sofa::helper::vector<Triangle> & TriangleSetTopologyContainer::getTriangle
     if(!hasTriangles() && getNbPoints()>0)
     {
 #ifndef NDEBUG
-        cout << "[TriangleSetTopologyContainer::getTriangleArray] creating triangle array." << endl;
+        sout << "[TriangleSetTopologyContainer::getTriangleArray] creating triangle array." << endl;
 #endif
         createTriangleSetArray();
     }
@@ -301,7 +301,7 @@ int TriangleSetTopologyContainer::getTriangleIndex(PointID v1, PointID v2, Point
 
 #ifndef NDEBUG
     if(out2.size() > 1)
-        cout << "Warning. [TriangleSetTopologyContainer::getTriangleIndex] more than one triangle found" << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::getTriangleIndex] more than one triangle found" << endl;
 #endif
 
     if (out2.size()==1)
@@ -320,7 +320,7 @@ const sofa::helper::vector< sofa::helper::vector<unsigned int> > &TriangleSetTop
     if(!hasTriangleVertexShell())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
-        cout << "Warning. [TriangleSetTopologyContainer::getTriangleVertexShellArray] triangle vertex shell array is empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::getTriangleVertexShellArray] triangle vertex shell array is empty." << endl;
 #endif
         createTriangleVertexShellArray();
     }
@@ -333,7 +333,7 @@ const sofa::helper::vector< sofa::helper::vector<unsigned int> > &TriangleSetTop
     if(!hasTriangleEdgeShell())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
-        cout << "Warning. [TriangleSetTopologyContainer::getTriangleEdgeShellArray] triangle edge shell array is empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::getTriangleEdgeShellArray] triangle edge shell array is empty." << endl;
 #endif
         createTriangleEdgeShellArray();
     }
@@ -354,14 +354,14 @@ const VertexTriangles& TriangleSetTopologyContainer::getTriangleVertexShell(Poin
     if(!hasTriangleVertexShell())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
-        cout << "Warning. [TriangleSetTopologyContainer::getTriangleVertexShell] triangle vertex shell array is empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::getTriangleVertexShell] triangle vertex shell array is empty." << endl;
 #endif
         createTriangleVertexShellArray();
     }
     else if( i >= m_triangleVertexShell.size())
     {
 #ifndef NDEBUG
-        cout << "Error. [TriangleSetTopologyContainer::getTriangleVertexShell] index out of bounds." << endl;
+        sout << "Error. [TriangleSetTopologyContainer::getTriangleVertexShell] index out of bounds." << endl;
 #endif
         createTriangleVertexShellArray();
     }
@@ -374,14 +374,14 @@ const EdgeTriangles& TriangleSetTopologyContainer::getTriangleEdgeShell(EdgeID i
     if(!hasTriangleEdgeShell())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
-        cout << "Warning. [TriangleSetTopologyContainer::getTriangleEdgeShell] triangle edge shell array is empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::getTriangleEdgeShell] triangle edge shell array is empty." << endl;
 #endif
         createTriangleEdgeShellArray();
     }
     else if( i >= m_triangleEdgeShell.size())
     {
 #ifndef NDEBUG
-        cout << "Error. [TriangleSetTopologyContainer::getTriangleEdgeShell] index out of bounds." << endl;
+        sout << "Error. [TriangleSetTopologyContainer::getTriangleEdgeShell] index out of bounds." << endl;
 #endif
         createTriangleEdgeShellArray();
     }
@@ -397,7 +397,7 @@ const TriangleEdges &TriangleSetTopologyContainer::getTriangleEdge(const unsigne
     if( i >= m_triangleEdge.size())
     {
 #ifndef NDEBUG
-        cout << "Error. [TriangleSetTopologyContainer::getTriangleEdge] index out of bounds." << endl;
+        sout << "Error. [TriangleSetTopologyContainer::getTriangleEdge] index out of bounds." << endl;
 #endif
         createTriangleEdgeArray();
     }
@@ -434,7 +434,7 @@ sofa::helper::vector< unsigned int > &TriangleSetTopologyContainer::getTriangleE
     if(!hasTriangleEdgeShell())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
-        cout << "Warning. [TriangleSetTopologyContainer::getTriangleEdgeShellForModification] triangle edge shell array is empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::getTriangleEdgeShellForModification] triangle edge shell array is empty." << endl;
 #endif
         createTriangleEdgeShellArray();
     }
@@ -442,7 +442,7 @@ sofa::helper::vector< unsigned int > &TriangleSetTopologyContainer::getTriangleE
     if( i >= m_triangleEdgeShell.size())
     {
 #ifndef NDEBUG
-        cout << "Error. [TriangleSetTopologyContainer::getTriangleEdgeShellForModification] index out of bounds." << endl;
+        sout << "Error. [TriangleSetTopologyContainer::getTriangleEdgeShellForModification] index out of bounds." << endl;
 #endif
         createTriangleEdgeShellArray();
     }
@@ -455,7 +455,7 @@ sofa::helper::vector< unsigned int > &TriangleSetTopologyContainer::getTriangleV
     if(!hasTriangleVertexShell())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
-        cout << "Warning. [TriangleSetTopologyContainer::getTriangleVertexShellForModification] triangle vertex shell array is empty." << endl;
+        sout << "Warning. [TriangleSetTopologyContainer::getTriangleVertexShellForModification] triangle vertex shell array is empty." << endl;
 #endif
         createTriangleVertexShellArray();
     }
@@ -463,7 +463,7 @@ sofa::helper::vector< unsigned int > &TriangleSetTopologyContainer::getTriangleV
     if( i >= m_triangleVertexShell.size())
     {
 #ifndef NDEBUG
-        cout << "Error. [TriangleSetTopologyContainer::getTriangleVertexShellForModification] index out of bounds." << endl;
+        sout << "Error. [TriangleSetTopologyContainer::getTriangleVertexShellForModification] index out of bounds." << endl;
 #endif
         createTriangleVertexShellArray();
     }

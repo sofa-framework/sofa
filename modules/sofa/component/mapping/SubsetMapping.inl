@@ -117,7 +117,7 @@ void SubsetMapping<BaseMapping>::init()
             }
             if (!found)
             {
-                std::cerr<<"ERROR(SubsetMapping): point "<<i<<"="<<out[i]<<" not found in input model within a radius of "<<rmax<<"."<<std::endl;
+                serr<<"ERROR(SubsetMapping): point "<<i<<"="<<out[i]<<" not found in input model within a radius of "<<rmax<<"."<<sendl;
                 indices[i] = 0;
             }
         }
@@ -130,7 +130,7 @@ void SubsetMapping<BaseMapping>::init()
         {
             if ((unsigned)indices[i] >= inSize)
             {
-                std::cerr << "ERROR(SubsetMapping): incorrect index "<<indices[i]<<" (input size "<<inSize<<")\n";
+                serr << "ERROR(SubsetMapping): incorrect index "<<indices[i]<<" (input size "<<inSize<<")"<<sendl;
                 indices.erase(indices.begin()+i);
                 --i;
             }

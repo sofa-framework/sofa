@@ -55,8 +55,8 @@
 #include <sofa/component/topology/HexahedronData.h>
 #include <sofa/component/topology/HexahedronData.inl>
 
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {
@@ -424,7 +424,7 @@ void BarycentricMapperMeshTopology<In,Out>::init(const typename Out::VecCoord& o
             mt.transpose(m);
             bases[t].invert(mt);
             centers[t] = (in[tetras[t][0]]+in[tetras[t][1]]+in[tetras[t][2]]+in[tetras[t][3]])*0.25;
-            //std::cout << "Tetra "<<t<<" center="<<centers[t]<<" base="<<m<<std::endl;
+            //sout << "Tetra "<<t<<" center="<<centers[t]<<" base="<<m<<sendl;
         }
         for (unsigned int c = 0; c < cubes.size(); c++)
         {
@@ -792,7 +792,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::init(const typename Out::Ve
 
     if(_geomAlgo == NULL)
     {
-        std::cerr << "Error [BarycentricMapperHexahedronSetTopology::init] cannot find GeometryAlgorithms component." << endl;
+        std::cerr << "Error [BarycentricMapperHexahedronSetTopology::init] cannot find GeometryAlgorithms component." << std::endl;
     }
 
     clear(out.size());
@@ -930,7 +930,7 @@ void BarycentricMapping<BasicMapping>::init()
     }
     else
     {
-        std::cerr << "ERROR: Barycentric mapping does not understand topology."<<std::endl;
+        serr << "ERROR: Barycentric mapping does not understand topology."<<sendl;
     }
 
     this->BasicMapping::init();
@@ -1181,8 +1181,8 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::apply( typename Out::VecCo
                 + in[tetra[2]] * fy
                 + in[tetra[3]] * fz;
     }
-    //cerr<<"BarycentricMapperTetrahedronSetTopology<In,Out>::apply, in = "<<in<<endl;
-    //cerr<<"BarycentricMapperTetrahedronSetTopology<In,Out>::apply, out = "<<out<<endl;
+    //serr<<"BarycentricMapperTetrahedronSetTopology<In,Out>::apply, in = "<<in<<sendl;
+    //serr<<"BarycentricMapperTetrahedronSetTopology<In,Out>::apply, out = "<<out<<sendl;
 }
 
 template <class In, class Out>
@@ -1219,7 +1219,7 @@ void BarycentricMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, cons
 template <class In, class Out>
 void BarycentricMapperMeshTopology<In,Out>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    //cerr<<"    BarycentricMapping<BasicMapping>::MeshMapper::applyJ"<<endl;
+    //serr<<"    BarycentricMapping<BasicMapping>::MeshMapper::applyJ"<<sendl;
     out.resize(map1d.size()+map2d.size()+map3d.size());
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqLines& lines = this->topology->getLines();
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = this->topology->getTriangles();

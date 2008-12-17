@@ -67,6 +67,9 @@ public:
     typedef typename Inherit::Weight Weight;
 
 
+    using Inherit::sout;
+    using Inherit::serr;
+    using Inherit::sendl;
 
 
     HomogenizedEdgeBasedMapping ( In* from, Out* to ): Inherit ( from, to )

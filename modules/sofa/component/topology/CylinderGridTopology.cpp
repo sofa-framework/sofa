@@ -36,8 +36,8 @@ namespace topology
 {
 
 using namespace sofa::defaulttype;
-using std::cout;
-using std::endl;
+
+
 
 SOFA_DECL_CLASS(CylinderGridTopology)
 

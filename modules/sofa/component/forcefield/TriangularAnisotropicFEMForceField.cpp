@@ -57,9 +57,9 @@ using namespace sofa::defaulttype;
 using namespace	sofa::component::topology;
 using namespace core::componentmodel::topology;
 
-using std::cerr;
-using std::cout;
-using std::endl;
+
+
+
 
 SOFA_DECL_CLASS(TriangularAnisotropicFEMForceField)
 
@@ -243,10 +243,10 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
 
     tinfo->materialMatrix *= (Real)(1.0/12.0);
 
-    //cout << "Young1=" << Inherited::f_young.getValue() << endl;
-    //cout << "Young2=" << f_young2.getValue() << endl;
-    //cout << "Poisson1=" << Inherited::f_poisson.getValue() << endl;
-    //cout << "Poisson2=" << f_poisson2.getValue() << endl;
+    //sout << "Young1=" << Inherited::f_young.getValue() << endl;
+    //sout << "Young2=" << f_young2.getValue() << endl;
+    //sout << "Poisson1=" << Inherited::f_poisson.getValue() << endl;
+    //sout << "Poisson2=" << f_poisson2.getValue() << endl;
 }
 
 // ----------------------------------------------------------------

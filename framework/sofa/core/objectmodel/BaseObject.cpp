@@ -49,7 +49,9 @@ BaseObject::BaseObject()
     , context_(NULL)
 /*        , m_isListening(false)
         , m_printLog(false)*/
-{}
+{
+    sendl.setOutputConsole(f_printLog.beginEdit()); f_printLog.endEdit();
+}
 
 BaseObject::~BaseObject()
 {}
@@ -79,7 +81,7 @@ void BaseObject::bwdInit()
 
 /// Update method called when variables used in precomputation are modified.
 void BaseObject::reinit()
-{ std::cout<<"WARNING: for this object, the reinit method does nothing.\n\n";}
+{ sout<<"WARNING: for this object, the reinit method does nothing.\n" << sendl;}
 
 /// Save the initial state for later uses in reset()
 void BaseObject::storeResetState()
@@ -102,10 +104,10 @@ void BaseObject::cleanup()
 void BaseObject::handleEvent( Event* /*e*/ )
 {
     /*
-    cerr<<"BaseObject "<<getName()<<" ("<<getTypeName()<<") gets an event"<<endl;
+    serr<<"BaseObject "<<getName()<<" ("<<getTypeName()<<") gets an event"<<sendl;
     if( KeypressedEvent* ke = dynamic_cast<KeypressedEvent*>( e ) )
     {
-        cerr<<"BaseObject "<<getName()<<" gets a key event: "<<ke->getKey()<<endl;
+        serr<<"BaseObject "<<getName()<<" gets a key event: "<<ke->getKey()<<sendl;
     }
     */
 }
@@ -115,7 +117,7 @@ void BaseObject::handleTopologyChange(core::componentmodel::topology::Topology* 
 {
     if (t == this->getContext()->getTopology())
     {
-        //	std::cout << getClassName() << " " << getName() << " processing topology changes from " << t->getName() << std::endl;
+        //	sout << getClassName() << " " << getName() << " processing topology changes from " << t->getName() << sendl;
         handleTopologyChange();
     }
 }

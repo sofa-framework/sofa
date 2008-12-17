@@ -106,7 +106,7 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::col
                 {
                     unsigned int ind_glob = topoMap->getGlobIndex(*it);
                     unsigned int ind = topoMap->getFromIndex(ind_glob);
-                    //std::cout << *it << " -> "<<ind_glob << " -> "<<ind<<std::endl;
+                    //sout << *it << " -> "<<ind_glob << " -> "<<ind<<sendl;
                     items.insert(ind);
                 }
 
@@ -165,7 +165,7 @@ void TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::colli
                 {
                     unsigned int ind_glob = topoMap->getGlobIndex(*it);
                     unsigned int ind = topoMap->getFromIndex(ind_glob);
-                    //std::cout << *it << " -> "<<ind_glob << " -> "<<ind<<std::endl;
+                    //sout << *it << " -> "<<ind_glob << " -> "<<ind<<sendl;
                     items.insert(ind);
                 }
 
@@ -287,7 +287,7 @@ bool TopologicalChangeManager::incisionTriangleModel(sofa::core::CollisionElemen
 
     for (simulation::tree::GNode::ObjectIterator it = parent2->object.begin(); it != parent2->object.end(); ++it)
     {
-        //std::cout << "INFO : name of GNode = " << (*it)->getName() <<  std::endl;
+        //sout << "INFO : name of GNode = " << (*it)->getName() <<  sendl;
 
         if (dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping *>(*it)!= NULL)
         {
@@ -339,10 +339,10 @@ bool TopologicalChangeManager::incisionTriangleModel(sofa::core::CollisionElemen
                     topo_curr->getContext()->get(edgeCont);
 
                     int num = edgeCont->getNumberConnectedComponents(components);
-                    std::cout << "Number of connected components : " << num << endl;
+                    std::cout << "Number of connected components : " << num << std::endl;
                     //sofa::helper::vector<int>::size_type i;
                     //for (i = 0; i != components.size(); ++i)
-                    //  std::cout << "Vertex " << i <<" is in component " << components[i] << endl;
+                    //  sout << "Vertex " << i <<" is in component " << components[i] << endl;
                 }
                 else
                 {
@@ -353,10 +353,10 @@ bool TopologicalChangeManager::incisionTriangleModel(sofa::core::CollisionElemen
                     topo_curr->getContext()->get(edgeCont);
 
                     int num = edgeCont->getNumberConnectedComponents(components);
-                    std::cout << "Number of connected components : " << num << endl;
+                    std::cout << "Number of connected components : " << num << std::endl;
                     //sofa::helper::vector<int>::size_type i;
                     //for (i = 0; i != components.size(); ++i)
-                    //  std::cout << "Vertex " << i <<" is in component " << components[i] << endl;
+                    //  sout << "Vertex " << i <<" is in component " << components[i] << endl;
                     return true; // change state to ATTACHED;
                 }
             }

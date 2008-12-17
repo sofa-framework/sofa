@@ -12,7 +12,7 @@ namespace component
 namespace topology
 {
 
-using std::cerr; using std::cout; using std::endl;
+
 
 SOFA_DECL_CLASS(SparseGridMultipleTopology)
 
@@ -24,11 +24,11 @@ int SparseGridMultipleTopologyClass = core::RegisterObject("Sparse grid in 3D")
 
 void SparseGridMultipleTopology::buildAsFinest(  )
 {
-// 		  cerr<<"SparseGridMultipleTopology::buildAsFinest\n";
+// 		  serr<<"SparseGridMultipleTopology::buildAsFinest"<<sendl;
 
     if( _dataStiffnessCoefs.getValue().size() < _fileTopologies.getValue().size() )
     {
-        cerr<<"WARNING: SparseGridMultipleTopology: not enough stiffnessCoefs\n";
+        serr<<"WARNING: SparseGridMultipleTopology: not enough stiffnessCoefs"<<sendl;
         for(unsigned i=_dataStiffnessCoefs.getValue().size(); i<_fileTopologies.getValue().size(); ++i)
             _dataStiffnessCoefs.beginEdit()->push_back( 1.0 );
 //           return;
@@ -42,7 +42,21 @@ void SparseGridMultipleTopology::buildAsFinest(  )
     }
 
 
-    _regularGrids.resize(  _fileTopologies.getValue().size() );
+    if (_regularGrids.size() < _fileTopologies.getValue().size())
+    {
+        for (unsigned int i=0; i<_fileTopologies.getValue().size()-_regularGrids.size(); ++i)
+        {
+            _regularGrids.push_back(new RegularGridTopology());
+        }
+    }
+    else
+    {
+        for (unsigned int i=0; i<_regularGrids.size()-_fileTopologies.getValue().size(); ++i)
+        {
+            delete _regularGrids[i+_regularGrids.size()];
+        }
+        _regularGrids.resize(_fileTopologies.getValue().size());
+    }
     _regularGridTypes.resize(  _fileTopologies.getValue().size() );
 
 
@@ -58,7 +72,7 @@ void SparseGridMultipleTopology::buildAsFinest(  )
 
         std::string filename = _fileTopologies.getValue()[i];
 
-        cerr<<"SparseGridMultipleTopology open "<<filename<<endl;
+        serr<<"SparseGridMultipleTopology open "<<filename<<sendl;
 
         if (! sofa::helper::system::DataRepository.findFile ( filename ))
             continue;
@@ -69,7 +83,7 @@ void SparseGridMultipleTopology::buildAsFinest(  )
 
             if(meshes[i] == NULL)
             {
-                std::cerr << "SparseGridTopology: loading mesh " << filename << " failed." <<std::endl;
+                serr << "SparseGridTopology: loading mesh " << filename << " failed." <<sendl;
                 return;
             }
 
@@ -137,10 +151,10 @@ void SparseGridMultipleTopology::buildAsFinest(  )
 
 void SparseGridMultipleTopology::buildFromTriangleMesh(helper::io::Mesh* mesh, unsigned fileIdx)
 {
-    _regularGrids[fileIdx].setSize(getNx(),getNy(),getNz());
-    _regularGrids[fileIdx].setPos(getXmin(),getXmax(),getYmin(),getYmax(),getZmin(),getZmax());
+    _regularGrids[fileIdx]->setSize(getNx(),getNy(),getNz());
+    _regularGrids[fileIdx]->setPos(getXmin(),getXmax(),getYmin(),getYmax(),getZmin(),getZmax());
 
-    voxelizeTriangleMesh(mesh, _regularGrids[fileIdx], _regularGridTypes[fileIdx]);
+    voxelizeTriangleMesh(mesh, *_regularGrids[fileIdx], _regularGridTypes[fileIdx]);
 
     delete mesh;
 }
@@ -159,7 +173,7 @@ void SparseGridMultipleTopology::assembleRegularGrids(helper::vector<Type>& regu
 
     for(unsigned i=0; i<_regularGrids.size(); ++i)
     {
-        for(int w=0; w<_regularGrids[i].getNbHexas(); ++w)
+        for(int w=0; w<_regularGrids[i]->getNbHexas(); ++w)
         {
             if( _regularGridTypes[i][w] == INSIDE )
             {
@@ -214,8 +228,8 @@ void SparseGridMultipleTopology::buildVirtualFinerLevels()
     sgmt->_finestConnectivity.setValue( _finestConnectivity.getValue() );
     _virtualFinerLevels[0]->init();
 
-    cerr<<"SparseGridTopology "<<getName()<<" buildVirtualFinerLevels : ";
-    cerr<<"("<<newnx<<"x"<<newny<<"x"<<newnz<<") -> "<< _virtualFinerLevels[0]->getNbHexas() <<" elements , ";
+    serr<<"SparseGridTopology "<<getName()<<" buildVirtualFinerLevels : ";
+    serr<<"("<<newnx<<"x"<<newny<<"x"<<newnz<<") -> "<< _virtualFinerLevels[0]->getNbHexas() <<" elements , ";
 
     for(int i=1; i<nb; ++i)
     {
@@ -230,10 +244,10 @@ void SparseGridMultipleTopology::buildVirtualFinerLevels()
         _virtualFinerLevels[i]->init();
 
 
-        cerr<<"("<<_virtualFinerLevels[i]->getNx()<<"x"<<_virtualFinerLevels[i]->getNy()<<"x"<<_virtualFinerLevels[i]->getNz()<<") -> "<< _virtualFinerLevels[i]->getNbHexas() <<" elements , ";
+        serr<<"("<<_virtualFinerLevels[i]->getNx()<<"x"<<_virtualFinerLevels[i]->getNy()<<"x"<<_virtualFinerLevels[i]->getNz()<<") -> "<< _virtualFinerLevels[i]->getNbHexas() <<" elements , ";
     }
 
-    cerr<<endl;
+    serr<<sendl;
 
     this->setFinerSparseGrid(_virtualFinerLevels[nb-1]);
 

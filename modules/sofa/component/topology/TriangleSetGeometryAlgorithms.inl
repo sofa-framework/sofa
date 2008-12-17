@@ -457,11 +457,11 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInsideTriangle(const Tri
                 if(is_in_next_triangle)
                 {
                     ind_t_test=ind_triangle;
-                    //std::cout << "correct to triangle indexed by " << ind_t_test << std::endl;
+                    //sout << "correct to triangle indexed by " << ind_t_test << sendl;
                 }
                 else // not found
                 {
-                    //std::cout << "not found !!! " << std::endl;
+                    //sout << "not found !!! " << sendl;
                     ind_t_test=ind_t;
                 }
             }
@@ -475,7 +475,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInsideTriangle(const Tri
     }
     else // triangle is flat
     {
-        //std::cout << "INFO_print : triangle is flat" << std::endl;
+        //sout << "INFO_print : triangle is flat" << sendl;
         return false;
     }
 }
@@ -601,11 +601,11 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInTriangle(const Triangl
                 if(is_in_next_triangle)
                 {
                     ind_t_test=ind_triangle;
-                    //std::cout << "correct to triangle indexed by " << ind_t_test << std::endl;
+                    //sout << "correct to triangle indexed by " << ind_t_test << sendl;
                 }
                 else // not found
                 {
-                    //std::cout << "not found !!! " << std::endl;
+                    //sout << "not found !!! " << sendl;
                     ind_t_test=ind_t;
                 }
             }
@@ -619,7 +619,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInTriangle(const Triangl
     }
     else // triangle is flat
     {
-        //std::cout << "INFO_print : triangle is flat" << std::endl;
+        //sout << "INFO_print : triangle is flat" << sendl;
         return false;
     }
 }
@@ -751,8 +751,8 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
     Vec<3,Real> vect_from = point_from - point_p;
     Vec<3,Real> vect_to = point_p - point_to;
 
-    //std::cout << "INFO_print : vect_from = " << vect_from <<  std::endl;
-    //std::cout << "INFO_print : vect_to = " << vect_to <<  std::endl;
+    //sout << "INFO_print : vect_from = " << vect_from <<  sendl;
+    //sout << "INFO_print : vect_to = " << vect_to <<  sendl;
 
     Vec<3,Real> normal_from;
     Vec<3,Real> normal_to;
@@ -895,8 +895,8 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
 
             if(value_test<=0.0)
             {
-                //std::cout << "INFO_print : CONVEXE, value_test = " << value_test <<  std::endl;
-                //std::cout << "INFO_print : shell.size() = " << shell.size() << ", ind_t_from = " << ind_t_from << ", ind_t_to = " << ind_t_to <<  std::endl;
+                //sout << "INFO_print : CONVEXE, value_test = " << value_test <<  sendl;
+                //sout << "INFO_print : shell.size() = " << shell.size() << ", ind_t_from = " << ind_t_from << ", ind_t_to = " << ind_t_to <<  sendl;
 
                 while(i < shell.size())
                 {
@@ -921,8 +921,8 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
             }
             else // value_test>0.0
             {
-                //std::cout << "INFO_print : CONCAVE, value_test = " << value_test <<  std::endl;
-                //std::cout << "INFO_print : shell.size() = " << shell.size() << ", ind_t_from = " << ind_t_from << ", ind_t_to = " << ind_t_to <<  std::endl;
+                //sout << "INFO_print : CONCAVE, value_test = " << value_test <<  sendl;
+                //sout << "INFO_print : shell.size() = " << shell.size() << ", ind_t_from = " << ind_t_from << ", ind_t_to = " << ind_t_to <<  sendl;
 
                 while(i < shell.size())
                 {
@@ -1313,7 +1313,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
         if(coord_t==0.0 || coord_t==1.0) // current point indexed by ind_t_current is on a vertex
         {
-            //std::cout << "INFO_print : INPUT ON A VERTEX !!!" <<  std::endl;
+            //sout << "INFO_print : INPUT ON A VERTEX !!!" <<  sendl;
 
             if(coord_t==0.0)
             {
@@ -1643,14 +1643,14 @@ bool is_point_in_triangle(const Vec<3,Real>& p, const Vec<3,Real>& a, const Vec<
         }
         else // p is not in the plane defined by the triangle (p0,p1,p2)
         {
-            //std::cout << "INFO_print : p is not in the plane defined by the triangle (p0,p1,p2)" << std::endl;
+            //sout << "INFO_print : p is not in the plane defined by the triangle (p0,p1,p2)" << sendl;
             return false;
         }
 
     }
     else // triangle is flat
     {
-        //std::cout << "INFO_print : triangle is flat" << std::endl;
+        //sout << "INFO_print : triangle is flat" << sendl;
         return false;
     }
 }
@@ -1706,7 +1706,7 @@ bool is_point_in_halfplane(const Vec<3,Real>& p, unsigned int e0, unsigned int e
     }
     else // triangle is flat
     {
-        //std::cout << "INFO_print : triangle is flat" << std::endl;
+        //sout << "INFO_print : triangle is flat" << sendl;
         return false;
     }
 }

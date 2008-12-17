@@ -120,7 +120,7 @@ void CurveMapping<BasicMapping>::init()
     for (int i=0; i<nin-1; i++)
     {
         lengthElements[i] = (Real)(x0[i+1]-x0[i]).norm();
-        //std::cout << "l["<<i<<"] = "<<lengthElements[i]<<std::endl;
+        //sout << "l["<<i<<"] = "<<lengthElements[i]<<sendl;
     }
 
     helper::vector<Real> &a = *angle.beginEdit();
@@ -357,14 +357,14 @@ void CurveMapping<BaseMapping>::handleEvent(sofa::core::objectmodel::Event* even
             helper::vector<Real> ab;
             ab = abscissa.getValue();
             Real s = velocity.getValue() * (Real)this->getContext()->getDt();
-//            std::cout << "abscissa += "<<s<<std::endl;
+//            sout << "abscissa += "<<s<<sendl;
             for(unsigned int i=0; i<abscissa.getValue().size(); i++)
             {
                 //ab[i] += s;
                 ab[i] = advanceAbscissa(ab[i], s);
                 //if (ab[i] > this->fromModel->getSize())
                 //    ab[i] = this->fromModel->getSize();
-//                std::cout << "abscissa["<<i<<"] = "<<ab[i]<<std::endl;
+//                sout << "abscissa["<<i<<"] = "<<ab[i]<<sendl;
             }
             if (distNode.getValue() != 0)
             {

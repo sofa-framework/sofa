@@ -43,9 +43,9 @@ using namespace sofa::defaulttype;
 using namespace	sofa::component::topology;
 using namespace core::componentmodel::topology;
 
-using std::cerr;
-using std::cout;
-using std::endl;
+
+
+
 
 template< class DataTypes>
 void TriangularQuadraticSpringsForceField<DataTypes>::TRQSEdgeCreationFunction(int edgeIndex, void* param, EdgeRestInformation &ei,
@@ -104,9 +104,9 @@ void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleCreationFuncti
         {
             cotangent[j]=(squareRestLength[(j+1)%3] +squareRestLength[(j+2)%3]-squareRestLength[j])/(4*area);
             /*	if (cotangent[j]<0)
-            std::cerr<<"negative cotangent["<<i<<"]["<<j<<"]"<<std::endl;
+            serr<<"negative cotangent["<<i<<"]["<<j<<"]"<<sendl;
             else
-            std::cerr<<"cotangent="<<cotangent[j]<<std::endl;*/
+            serr<<"cotangent="<<cotangent[j]<<sendl;*/
 
         }
         for(j=0; j<3; ++j)
@@ -171,14 +171,14 @@ template <class DataTypes> TriangularQuadraticSpringsForceField<DataTypes>::~Tri
 
 template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>::init()
 {
-    std::cerr << "initializing TriangularQuadraticSpringsForceField" << std::endl;
+    serr << "initializing TriangularQuadraticSpringsForceField" << sendl;
     this->Inherited::init();
 
     _topology = getContext()->getMeshTopology();
 
     if (_topology->getNbTriangles()==0)
     {
-        std::cerr << "ERROR(TriangularQuadraticSpringsForceField): object must have a Triangular Set Topology.\n";
+        serr << "ERROR(TriangularQuadraticSpringsForceField): object must have a Triangular Set Topology."<<sendl;
         return;
     }
     updateLameCoefficients();
@@ -222,7 +222,7 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
 template <class DataTypes>
 double TriangularQuadraticSpringsForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
 {
-    std::cerr<<"TriangularQuadraticSpringsForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    serr<<"TriangularQuadraticSpringsForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 template <class DataTypes>
@@ -253,13 +253,13 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addForce(VecDeriv& f, cons
         L=einfo->currentLength=dp.norm();
         einfo->dl=einfo->currentLength-einfo->restLength +_dampingRatio*dot(dv,dp)/L;
         /*if (i==0) {
-        	cerr << "dl= " <<  einfo->dl<<std::endl;
-        	cerr << "damping= " <<  (_dampingRatio*dot(dv,dp)*einfo->restLength/(L*L))<<std::endl;
+        	serr << "dl= " <<  einfo->dl<<sendl;
+        	serr << "damping= " <<  (_dampingRatio*dot(dv,dp)*einfo->restLength/(L*L))<<sendl;
         }*/
         val=einfo->stiffness*(einfo->dl)/L;
         f[v1]+=dp*val;
         f[v0]-=dp*val;
-        //	std::cerr << "einfo->stiffness= "<<einfo->stiffness<<std::endl;
+        //	serr << "einfo->stiffness= "<<einfo->stiffness<<sendl;
     }
     if (f_useAngularSprings.getValue()==true)
     {
@@ -282,12 +282,12 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addForce(VecDeriv& f, cons
                 f[ta[k]]-=force;
             }
         }
-        //	std::cerr << "tinfo->gamma[0] "<<tinfo->gamma[0]<<std::endl;
+        //	serr << "tinfo->gamma[0] "<<tinfo->gamma[0]<<sendl;
 
     }
 
     updateMatrix=true;
-    //std::cerr << "end addForce" << std::endl;
+    //serr << "end addForce" << sendl;
 }
 
 
@@ -299,7 +299,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, co
 
     TriangleRestInformation *tinfo;
 
-//	std::cerr << "start addDForce" << std::endl;
+//	serr << "start addDForce" << sendl;
 
 
     assert(this->mstate);
@@ -314,7 +314,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, co
         Real val1,val2,vali,valj,valk;
         Coord dpj,dpk,dpi;
 
-        //	std::cerr <<"updating matrix"<<std::endl;
+        //	serr <<"updating matrix"<<sendl;
         updateMatrix=false;
         for(int l=0; l<nbTriangles; l++ )
         {
@@ -413,7 +413,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::updateLameCoefficients()
 {
     lambda= f_youngModulus.getValue()*f_poissonRatio.getValue()/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
     mu = f_youngModulus.getValue()*(1-f_poissonRatio.getValue())/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
-//	std::cerr << "initialized Lame coef : lambda=" <<lambda<< " mu="<<mu<<std::endl;
+//	serr << "initialized Lame coef : lambda=" <<lambda<< " mu="<<mu<<sendl;
 }
 
 

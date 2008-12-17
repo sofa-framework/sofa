@@ -198,7 +198,7 @@ public:
         else
         {
             if (methodName != "large")
-                std::cerr << "unknown method: large method will be used. Remark: Available method are \"small\", \"polar\", \"large\" \n";
+                serr << "unknown method: large method will be used. Remark: Available method are \"small\", \"polar\", \"large\" "<<sendl;
             this->setMethod(LARGE);
         }
     }

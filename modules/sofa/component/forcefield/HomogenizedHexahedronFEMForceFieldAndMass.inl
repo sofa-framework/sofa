@@ -45,8 +45,8 @@
 #include <sofa/helper/gl/BasicShapes.h>
 
 
-using std::cerr;
-using std::endl;
+
+
 using std::set;
 
 
@@ -514,7 +514,7 @@ template <class DataTypes>
 void HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::init()
 {
 
-// 		  cerr<<"HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::init()\n";
+// 		  serr<<"HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::init()"<<sendl;
     // init topology, virtual levels, calls computeMechanicalMatricesByCondensation, handles masses
     NonUniformHexahedronFEMForceFieldAndMassT::init();
 
@@ -565,7 +565,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::init()
 //
 // 			for(GNode::ObjectIterator it = gNodes[i]->object.begin(); it != gNodes[i]->object.end(); ++it)
 // 			{
-// // 				cerr<<(*it)->getTypeName()<<endl;
+// // 				serr<<(*it)->getTypeName()<<sendl;
 //
 // 				//since previous mapping are moved (but already initialize bu create(...) fonction, we have to manually map the fromModel with the new created dofs
 //
@@ -573,13 +573,13 @@ void HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::init()
 // 				{
 // 					// VISUAL MAPPING
 // 					map->setModels( _finestDOF, dynamic_cast<core::componentmodel::behavior::MappedModel<ExtVec3fTypes>*>(map->getTo()) );
-// // 					cerr<<"core::Mapping<DataTypes,MappedModel* "<<map->getName()<<endl;
+// // 					serr<<"core::Mapping<DataTypes,MappedModel* "<<map->getName()<<sendl;
 // 				}
 // 				else if( MechanicalMappingT* map = dynamic_cast<MechanicalMappingT*>(*it) )
 // 				{
 // 					//MECHANICAL MAPPING
 // 					map->setModels( _finestDOF, dynamic_cast<MechanicalStateT*>(map->getTo()) );
-// // 					cerr<<"MechanicalMappingT* "<<map->getName()<<endl;
+// // 					serr<<"MechanicalMappingT* "<<map->getName()<<sendl;
 // 				}
 // 			}
 //           }
@@ -697,11 +697,11 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCo
 
 // 			  	for( unsigned i=0;i<_weights.size();++i)
 // 				{
-// 					printMatlab(cerr,_weights[i][0]);
-// 					cerr<<"\n-----------------\n";
+// 					printMatlab(serr,_weights[i][0]);
+// 					serr<<"\n-----------------"<<sendl;
 // 				}
-// 				printMatlab(cerr,_finalWeights[0].second);
-// 				cerr<<endl;
+// 				printMatlab(serr,_finalWeights[0].second);
+// 				serr<<sendl;
 
 
 // 				//VERIF
@@ -713,7 +713,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCo
 // 						sum += _finalWeights[0].second[i][j];
 // 					}
 // 					if( fabs(sum-1.0)>1.0e-3 )
-// 						cerr<<"WARNING HomogenizedHexahedronFEMForceFieldAndMass _finalWeights sum != 1  "<<sum<<endl;
+// 						serr<<"WARNING HomogenizedHexahedronFEMForceFieldAndMass _finalWeights sum != 1  "<<sum<<sendl;
 // 				}
 
 
@@ -722,11 +722,11 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCo
 
 // 			  for(unsigned i=0;i<this->_elementStiffnesses.getValue().size();++i)
 // 			  {
-// 				  cerr<<"K"<<i<<"=";
-// 				  printMatlab(cerr,this->_elementStiffnesses.getValue()[i]);
+// 				  serr<<"K"<<i<<"=";
+// 				  printMatlab(serr,this->_elementStiffnesses.getValue()[i]);
 // 			  }
 
-// 			  printMatlab( cerr,this->_elementStiffnesses.getValue()[0] );
+// 			  printMatlab( serr,this->_elementStiffnesses.getValue()[0] );
 }
 
 
@@ -742,8 +742,8 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
 
     SparseGridTopology*finestSparseGrid = this->_sparseGrid->_virtualFinerLevels[ this->_sparseGrid->getNbVirtualFinerLevels()-this->_nbVirtualFinerLevels.getValue() ];
 
-    cerr<<"finestChildren.size() : "<<finestChildren.size()<<endl;
-    cerr<<"finestSparseGrid->getNbHexas() : "<<finestSparseGrid->getNbHexas()<<endl;
+    serr<<"finestChildren.size() : "<<finestChildren.size()<<sendl;
+    serr<<"finestSparseGrid->getNbHexas() : "<<finestSparseGrid->getNbHexas()<<sendl;
 
     int sizeass=2;
     for(int i=0; i<this->_nbVirtualFinerLevels.getValue(); ++i)
@@ -753,7 +753,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
     NewMatMatrix assembledStiffness(sizeass*3),assembledMass(sizeass*3);
     assembledStiffness.resize(sizeass*3,sizeass*3);
     assembledMass.resize(sizeass*3,sizeass*3);
-    cerr<<assembledStiffness.rowSize()<<"x"<<assembledStiffness.colSize()<<endl;
+    serr<<assembledStiffness.rowSize()<<"x"<<assembledStiffness.colSize()<<sendl;
 
 
 
@@ -814,14 +814,14 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
     helper::fixed_array<int,8> map_idxcoarse_idxfine;
     const SparseGridTopology::Hexa& coarsehexa = this->_sparseGrid->getHexa( elementIndice );
 
-// 		cerr<<"BUILT\n";
+// 		serr<<"BUILT"<<sendl;
 
     for(int i=0; i<sizeass; ++i)
     {
         for( std::map<int,int>::iterator it = map_idxq_idxass.begin(); it!=map_idxq_idxass.end(); ++it)
             if( (*it).second==i)
             {
-// 					cerr<<(*it).first<<" "<<(*it).second<<endl;
+// 					serr<<(*it).first<<" "<<(*it).second<<sendl;
                 bool ok=false;
                 Coord finesommet = finestSparseGrid->getPointPos( (*it).first );
                 for( unsigned sc=0; sc<8; ++sc)
@@ -887,31 +887,31 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
 // 			for(int w=0;w<8;++w) // sommets
 // 			{
 //
-// 				cerr<<map_idxq_idxass[ hexa[w] ] <<",";
+// 				serr<<map_idxq_idxass[ hexa[w] ] <<",";
 // 			}
-// 			cerr<<endl;
+// 			serr<<sendl;
 // 		}
 
 
 // 		for( std::map<int,int>::iterator it = map_idxq_idxass.begin();it!=map_idxq_idxass.end();++it)
 // 		{
-// 			cerr<<(*it).first<<" "<<(*it).second<<endl;
+// 			serr<<(*it).first<<" "<<(*it).second<<sendl;
 // 		}
 //
 // 		for( std::map<int,int>::iterator it = map_idxq_idxcutass.begin();it!=map_idxq_idxcutass.end();++it)
 // 		{
-// 			cerr<<(*it).second<<",";
+// 			serr<<(*it).second<<",";
 // 		}
-// 		cerr<<endl;
+// 		serr<<sendl;
 //
 // 		for( std::map<int,bool>::iterator it = map_idxq_coarse.begin();it!=map_idxq_coarse.end();++it)
 // 		{
-// 			cerr<<(*it).second<<",";
+// 			serr<<(*it).second<<",";
 // 		}
-// 		cerr<<endl;
+// 		serr<<sendl;
 
 
-// 		cerr<<map_idxcoarse_idxfine<<endl;
+// 		serr<<map_idxcoarse_idxfine<<sendl;
 
 
     NewMatMatrix Kg; // stiffness of contrained nodes
@@ -1006,26 +1006,26 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
     }
 
 
-// 		cerr<<"KB2 = ";
-// 		assembledStiffness.printMatlab(cerr);
-// 		cerr<<"A2 = ";
-// 		A.printMatlab(cerr);
-// 		cerr<<"Kg2 = ";
-// 		Kg.printMatlab(cerr);
-// 		cerr<<"Ainv2 = ";
-// 		Ainv.printMatlab(cerr);
-// 		cerr<<"Ainvf2 = ";
-// 		Ainvf.printMatlab(cerr);
-// 		cerr<<"W2 = ";
-// 		W.printMatlab(cerr);
-// 		cerr<<"WB2 = ";
-// 		WB.printMatlab(cerr);
+// 		serr<<"KB2 = ";
+// 		assembledStiffness.printMatlab(serr);
+// 		serr<<"A2 = ";
+// 		A.printMatlab(serr);
+// 		serr<<"Kg2 = ";
+// 		Kg.printMatlab(serr);
+// 		serr<<"Ainv2 = ";
+// 		Ainv.printMatlab(serr);
+// 		serr<<"Ainvf2 = ";
+// 		Ainvf.printMatlab(serr);
+// 		serr<<"W2 = ";
+// 		W.printMatlab(serr);
+// 		serr<<"WB2 = ";
+// 		WB.printMatlab(serr);
 
 
 // 		for( map<int,int>::iterator it = map_idxq_idxass.begin(); it!=map_idxq_idxass.end();++it)
 // 		{
 // 			if( map_idxq_coarse[ (*it).second ] )
-// 				cerr<< map_idxq_idxcutass[(*it).second] <<" "<<finestSparseGrid->getPointPos( (*it).first )<<endl;
+// 				serr<< map_idxq_idxcutass[(*it).second] <<" "<<finestSparseGrid->getPointPos( (*it).first )<<sendl;
 // 		}
 
 
@@ -1043,7 +1043,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
 
         if( map_idxq_coarse[ (*it).second ] )
         {
-// 				cerr<<map_idxq_idxcutass[ (*it).second ]<<" "<<finestSparseGrid->getPointPos( (*it).first )<<endl;
+// 				serr<<map_idxq_idxcutass[ (*it).second ]<<" "<<finestSparseGrid->getPointPos( (*it).first )<<sendl;
             int localcoarseidx = map_idxq_idxcutass[ (*it).second ];
             mask.set( localidx*3  , localcoarseidx*3   , 1);
             mask.set( localidx*3+1, localcoarseidx*3+1 , 1);
@@ -1071,19 +1071,19 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
             baryCoefs[7] = (1-fx) * (fy) * fz;
 
 
-// 				cerr<<localidx<<"        "<<baryCoefs<<endl<<finestSparseGrid->getPointPos( (*it).first )<<" = ";
+// 				serr<<localidx<<"        "<<baryCoefs<<sendl<<finestSparseGrid->getPointPos( (*it).first )<<" = ";
 
             for(int i=0; i<8; ++i)
             {
                 if( baryCoefs[i]>1.0e-5 )
                 {
-// 						cerr<<"("<<i<<") "<<this->_sparseGrid->getPointPos( i )<<" + "<<endl;
+// 						serr<<"("<<i<<") "<<this->_sparseGrid->getPointPos( i )<<" + "<<sendl;
                     mask.set( localidx*3  , i*3   , 1);
                     mask.set( localidx*3+1, i*3+1 , 1);
                     mask.set( localidx*3+2, i*3+2 , 1);
                 }
             }
-// 				cerr<<endl<<endl<<endl;
+// 				serr<<sendl<<sendl<<sendl;
         }
     }
 
@@ -1094,7 +1094,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
 // 			{
 // 				if( mask.element(i,j) != WEIGHT_MASK[i][j])
 // 				{
-// 					cerr<<"MASK ERROR "<<i/3<<" "<<mask.Row(i).Sum()<<"\n";
+// 					serr<<"MASK ERROR "<<i/3<<" "<<mask.Row(i).Sum()<<""<<sendl;
 // 					break;
 // 				}
 // 			}
@@ -1199,7 +1199,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
 // 								case 3: // a coarse node
 // 									break;
 // 					default:
-// 						cerr<<"HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDirectlyFromTheFinestToCoarse   ERROR  WEIGHT_MASK\n";
+// 						serr<<"HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDirectlyFromTheFinestToCoarse   ERROR  WEIGHT_MASK"<<sendl;
 //  				}
 //
 // 			}
@@ -1221,8 +1221,8 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
     }
 
 
-// 		cerr<<"WB : "<<WB<<endl;
-    cerr<<"WBmeca brut : "<<WBmeca<<endl;
+// 		serr<<"WB : "<<WB<<sendl;
+    serr<<"WBmeca brut : "<<WBmeca<<sendl;
 
 
 
@@ -1241,9 +1241,9 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
         }
     }
 
-    // 		cerr<<"mask : "<<mask<<endl;
-// 		cerr<<"WB : "<<WB<<endl;
-    cerr<<"WBmeca normalized : "<<WBmeca<<endl;
+    // 		serr<<"mask : "<<mask<<sendl;
+// 		serr<<"WB : "<<WB<<sendl;
+    serr<<"WBmeca normalized : "<<WBmeca<<sendl;
 
 // 		WBmeca=WB;
 
@@ -1289,10 +1289,10 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
     }
 
     /*
-    		cerr<<"Kf = ";
-    		printMatlab( cerr,finestStiffnesses[0] );
-    		cerr<<"Kc = ";
-    		printMatlab( cerr,K );*/
+    		serr<<"Kf = ";
+    		printMatlab( serr,finestStiffnesses[0] );
+    		serr<<"Kc = ";
+    		printMatlab( serr,K );*/
 
 
 }
@@ -1338,7 +1338,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
     if (level == this->_nbVirtualFinerLevels.getValue())
     {
         computeClassicalMechanicalMatrices(K,M,elementIndice,this->_sparseGrid->getNbVirtualFinerLevels()-level);
-// 		  printMatlab( cerr, K );
+// 		  printMatlab( serr, K );
     }
     else
     {
@@ -1370,14 +1370,14 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
                 computeMechanicalMatricesIterativly(finerK[i], finerM[i], finerChildren[i], level+1);
             }
 
-// 			cerr<<"K "<<i<<" : "<<finerK[i]<<endl;
+// 			serr<<"K "<<i<<" : "<<finerK[i]<<sendl;
 
         }
 
 
 
 
-//           cerr<<"\n***LEVEL "<<level<<"    element "<<elementIndice<<endl;
+//           serr<<"\n***LEVEL "<<level<<"    element "<<elementIndice<<sendl;
 
 
 
@@ -1411,7 +1411,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
             }
             else
             {
-// 				cerr<<"WARNING: a child is void (during assembly)\n";
+// 				serr<<"WARNING: a child is void (during assembly)"<<sendl;
                 for(int j=0; j<8; ++j) // vertices1
                 {
                     int v1 = FineHexa_FineNode_IndiceForAssembling[i][j];
@@ -1471,11 +1471,11 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
         }
 
 
-// 		  cerr<<"KB = "; printMatlab( cerr, assembledStiffness );
-// 		  cerr<<"A = ";
-// 		  printMatlab( cerr, A );
-// 		  cerr<<"Kg = ";
-// 		  printMatlab( cerr, Kg );
+// 		  serr<<"KB = "; printMatlab( serr, assembledStiffness );
+// 		  serr<<"A = ";
+// 		  printMatlab( serr, A );
+// 		  serr<<"Kg = ";
+// 		  printMatlab( serr, Kg );
 
 
 
@@ -1526,14 +1526,14 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 
 
 
-// 		  cerr<<"Ainv = ";
-// 		  printMatlab( cerr, Ainv );
-// 		  cerr<<"Ainvf = ";
-// 		  printMatlab( cerr, Ainvf );
-// 		  cerr<<"W = ";
-// 		  printMatlab( cerr, W );
-// 		  cerr<<"WB = ";
-// 		  printMatlab( cerr, WB );
+// 		  serr<<"Ainv = ";
+// 		  printMatlab( serr, Ainv );
+// 		  serr<<"Ainvf = ";
+// 		  printMatlab( serr, Ainvf );
+// 		  serr<<"W = ";
+// 		  printMatlab( serr, W );
+// 		  serr<<"WB = ";
+// 		  printMatlab( serr, WB );
 
 
 
@@ -1565,28 +1565,28 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
         }
 
 
-// 		  cerr<<"\nWsofa = ";
-// 		  printMatlab( cerr, WB );
+// 		  serr<<"\nWsofa = ";
+// 		  printMatlab( serr, WB );
 
 
         K = WBmeca.multTranspose( assembledStiffness * WBmeca );
 
 
-// 		  cerr<<"\nWsofa = ";
-// 		  printMatlab( cerr, W );
-// 		  cerr<<"\nWBsofa = ";
-// 		  printMatlab( cerr, WB );
+// 		  serr<<"\nWsofa = ";
+// 		  printMatlab( serr, W );
+// 		  serr<<"\nWBsofa = ";
+// 		  printMatlab( serr, WB );
 
 
 
-// 		  cerr<<"K is sym : "<<K.isSymetric()<<endl;
+// 		  serr<<"K is sym : "<<K.isSymetric()<<sendl;
 
 
 
-// 		  cerr<<"\nAinv1sofa = ";
-// 		  printMatlab( cerr, Ainv1 );
-// 		  cerr<<"\nKsofa = ";
-// 		  printMatlab( cerr, K );
+// 		  serr<<"\nAinv1sofa = ";
+// 		  printMatlab( serr, Ainv1 );
+// 		  serr<<"\nKsofa = ";
+// 		  printMatlab( serr, K );
 
 
         M = WBmeca.multTranspose( assembledMass * WBmeca );
@@ -1607,7 +1607,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 
 
 
-// 		  cerr<<WB[16*3+1]<<endl;
+// 		  serr<<WB[16*3+1]<<sendl;
 
 // 		  helper::fixed_array< Mat<8*3, 8*3, Real>, 8 >  Welem; // weights matrices per elem : from the coarse elem to each fine element
 
@@ -1628,8 +1628,8 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 // 			  }
 //
 //
-// // 			  cerr<<"WEIGHT_MASK_CROSSED : \n";
-// // 			  cerr<<WB[16*3+1]<<endl;
+// // 			  serr<<"WEIGHT_MASK_CROSSED : "<<sendl;
+// // 			  serr<<WB[16*3+1]<<sendl;
 //
 //
 // 		  // normalize the coefficient to obtain sum(coefs)==1
@@ -1667,8 +1667,8 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 
         }
 
-// 		  cerr<<"normalize : \n";
-// 		  cerr<<WB[16*3+1]<<endl;
+// 		  serr<<"normalize : "<<sendl;
+// 		  serr<<WB[16*3+1]<<sendl;
 
 
         for(int elem=0; elem<8; ++elem)
@@ -1689,9 +1689,9 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 
 // 			  if(finerChildren[elem]==2)
 // 			  {
-// 				  cerr<<"BUILD\n";
-// 				  cerr<<this->_nbVirtualFinerLevels.getValue()-level-1<<endl;
-// 				  cerr<<_weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildren[elem]]<<endl;
+// 				  serr<<"BUILD"<<sendl;
+// 				  serr<<this->_nbVirtualFinerLevels.getValue()-level-1<<sendl;
+// 				  serr<<_weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildren[elem]]<<sendl;
 // 			  }
         }
 
@@ -1699,15 +1699,15 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 
 
 
-// 		  cerr<<FineHexa_FineNode_IndiceForAssembling[ 1 ][ 2 ]<<" : "<<WB [ FineHexa_FineNode_IndiceForAssembling[ 0 ][ 3 ]*3  ]<<endl;
+// 		  serr<<FineHexa_FineNode_IndiceForAssembling[ 1 ][ 2 ]<<" : "<<WB [ FineHexa_FineNode_IndiceForAssembling[ 0 ][ 3 ]*3  ]<<sendl;
 
 
 
 
-// 		  cerr<<"\nWcsofa = ";
-// 		  printMatlab( cerr, _weights[0][0] );
-// 		  cerr<<"\nKcsofa = ";
-// 		  printMatlab( cerr, finerK[0] );
+// 		  serr<<"\nWcsofa = ";
+// 		  printMatlab( serr, _weights[0][0] );
+// 		  serr<<"\nKcsofa = ";
+// 		  printMatlab( serr, finerK[0] );
 
 // // 		  std::map<int,helper::fixed_array<int,8> > maptmp;
 // //
@@ -1719,15 +1719,15 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 // // 			  for(int j=0;j<8;++j)
 // // 				  maptmp[ FineHexa_FineNode_IndiceForAssembling[i][j] ][i] = j;
 // //
-// // 		  cerr<<"MAP = {";
+// // 		  serr<<"MAP = {";
 // // 		  for( std::map<int,helper::fixed_array<int,8> >::iterator it = maptmp.begin();it != maptmp.end() ;++it)
 // // 		  {
-// // 			  cerr<<"{";
+// // 			  serr<<"{";
 // // 			  for(int i=0;i<8;++i)
-// // 				  cerr<<(*it).second[i]<<",";
-// // 			cerr<<"},\n";
+// // 				  serr<<(*it).second[i]<<",";
+// // 			serr<<"},"<<sendl;
 // // 		  }
-// // 		  cerr<<"}\n";
+// // 		  serr<<"}"<<sendl;
 
 
         // put weights into the mapping
@@ -1758,7 +1758,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 template<class T>
 void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIterativlyWithRamifications( ElementStiffness &K, ElementMass &M, const int elementIndice,  int level)
 {
-//         		 cerr<<"\n\nNonUniformHexahedronFEMForceFieldAndMassT::computeMechanicalMatricesIterativlyWithRamifications(K,M,"<<elementIndice<<" "<<level<<"\n";
+//         		 serr<<"\n\nNonUniformHexahedronFEMForceFieldAndMassT::computeMechanicalMatricesIterativlyWithRamifications(K,M,"<<elementIndice<<" "<<level<<""<<sendl;
 
 
     if (level == this->_nbVirtualFinerLevels.getValue())
@@ -1836,17 +1836,17 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
         }
 
 
-// 			  cerr<<"fineNodesPerPositions : "<<endl;
+// 			  serr<<"fineNodesPerPositions : "<<sendl;
 // 			  for(int i=0;i<27;++i)
 // 			  {
-// 				  cerr<<i<<" : ";
+// 				  serr<<i<<" : ";
 // 				  for(std::set<int>::iterator it=fineNodesPerPositions[i].begin();it!=fineNodesPerPositions[i].end();++it)
-// 					  cerr<<*it<<", ";
-// 				  cerr<<endl;
+// 					  serr<<*it<<", ";
+// 				  serr<<sendl;
 // 			  }
 
 
-        helper::fixed_array<helper::vector<helper::fixed_array<int,8 > >,8 > finerChildrenRamification; // listes des hexas à chaque position, avec des indices fictifs pour les vides
+        helper::fixed_array<helper::vector<helper::fixed_array<int,8 > >,8 > finerChildrenRamification; // listes des hexas ï¿½ chaque position, avec des indices fictifs pour les vides
         helper::fixed_array<helper::vector<bool>,8 > isFinerChildrenVirtual; // a boolean, true if ficitf, only created for void
         for ( int i=0; i<8; ++i) //for 8 virtual finer element positions
         {
@@ -1870,7 +1870,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
                     helper::fixed_array<int,8 > elem;
                     for(int k=0; k<8; ++k) // fine nodes
                     {
-// 							  cerr<<i<<" "<<k<<" "<<finehexa[k]<<" "<<finerSparseGrid->getPointPos( finehexa[k] )<<endl;
+// 							  serr<<i<<" "<<k<<" "<<finehexa[k]<<" "<<finerSparseGrid->getPointPos( finehexa[k] )<<sendl;
                         elem[k] = finehexa[k];
                     }
                     finerChildrenRamification[i].push_back(elem);
@@ -1881,12 +1881,12 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 
 
 
-// 			  cerr<<"finerChildrenRamification :\n";
+// 			  serr<<"finerChildrenRamification :"<<sendl;
 // 			  for(int i=0 ; i < 8 ; ++i ) // finer places
 // 			  {
 // 				  for( unsigned c=0;c<finerChildrenRamification[i].size();++c)
 // 				  {
-// 					  cerr<<finerChildrenRamification[i][c]<<endl;
+// 					  serr<<finerChildrenRamification[i][c]<<sendl;
 // 				  }
 // 			  }
 
@@ -1913,21 +1913,21 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 
 
 
-// 			  cerr<<"map_idxq_idxass : "<<endl;
+// 			  serr<<"map_idxq_idxass : "<<sendl;
 // 			  for(std::map<int,int>::iterator it = map_idxq_idxass.begin();it != map_idxq_idxass.end();++it)
 // 			  {
-// 				  cerr<<(*it).first<<" "<<(*it).second<<endl;
+// 				  serr<<(*it).first<<" "<<(*it).second<<sendl;
 // 			  }
 
 
 
 
-// 			  cerr<<"sizeass : "<<sizeass<<endl;
+// 			  serr<<"sizeass : "<<sizeass<<sendl;
         NewMatMatrix assembledStiffness,assembledStiffnessStatic,assembledMass;
         assembledStiffness.resize(sizeass*3,sizeass*3);
         assembledStiffnessStatic.resize(sizeass*3,sizeass*3);
         assembledMass.resize(sizeass*3,sizeass*3);
-// 			  cerr<<assembledStiffness.rowSize()<<"x"<<assembledStiffness.colSize()<<endl;
+// 			  serr<<assembledStiffness.rowSize()<<"x"<<assembledStiffness.colSize()<<sendl;
 
 
 
@@ -1984,8 +1984,8 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
         }
 
 
-// 			  cerr<<"KB2=";
-// 			  assembledStiffnessStatic.printMatlab( cerr );
+// 			  serr<<"KB2=";
+// 			  assembledStiffnessStatic.printMatlab( serr );
 
 
         std::map<int,int> map_idxq_idxcutass; // map a fine point idx to a the cut assembly (local) idx
@@ -2081,10 +2081,10 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
         }
 
 
-// 			  cerr<<"map_idxq_idxcutass : "<<endl;
+// 			  serr<<"map_idxq_idxcutass : "<<sendl;
 // 			  for(std::map<int,int>::iterator it = map_idxq_idxcutass.begin();it != map_idxq_idxcutass.end();++it)
 // 			  {
-// 				  cerr<<(*it).first<<" "<<(*it).second<<endl;
+// 				  serr<<(*it).first<<" "<<(*it).second<<sendl;
 // 			  }
 
 
@@ -2094,13 +2094,13 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
         A.resize(sizeass*3,sizeass*3);
         NewMatMatrix  Ainv;
 
-// 			  cerr<<"map_idxq_coarse : \n";
+// 			  serr<<"map_idxq_coarse : "<<sendl;
 // 			  for( std::map<int,int>::iterator it = map_idxq_coarse.begin();it!= map_idxq_coarse.end();++it)
 // 			  {
-// 				  cerr<<(*it).second<<endl;
+// 				  serr<<(*it).second<<sendl;
 // 			  }
 
-// 			  cerr<<"cutting :\n";
+// 			  serr<<"cutting :"<<sendl;
 // 			  for ( int i=0;i<sizeass;++i)
         for( std::map<int,int>::iterator it = map_idxq_idxcutass.begin(); it!=map_idxq_idxcutass.end(); ++it)
         {
@@ -2108,7 +2108,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
             int colcut = (*it).second;
             int colnoncut = map_idxq_idxass[(*it).first];
 
-// 				  cerr<<(*it).first<<" "<<colcut<<endl;
+// 				  serr<<(*it).first<<" "<<colcut<<sendl;
 
             if( map_idxq_coarse[(*it).first] != -1 )
             {
@@ -2144,10 +2144,10 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
             }
         }
 
-// 			  cerr<<"A2 = ";
-// 			  A.printMatlab( cerr );
-// 			  cerr<<"Kg2 = ";
-// 			  Kg.printMatlab( cerr );
+// 			  serr<<"A2 = ";
+// 			  A.printMatlab( serr );
+// 			  serr<<"Kg2 = ";
+// 			  Kg.printMatlab( serr );
 
         Ainv = A.i();
 
@@ -2156,26 +2156,26 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 
 
 
-        //// ajouter un H qui lie tous les coins superposés ensemble et n'en garder que 8 pour avoir un W 27x8
+        //// ajouter un H qui lie tous les coins superposï¿½s ensemble et n'en garder que 8 pour avoir un W 27x8
         NewMatMatrix H;
         H.resize( idxcutasscoarse*3, 8*3 );
         for(int i=0; i<8; ++i)
         {
             for(unsigned j=0; j<map_idxcoarse_idxfine[i].size(); ++j)
             {
-// 					  cerr<<i<<" "<<j<<" "<<map_idxcoarse_idxfine[i]<<endl;
+// 					  serr<<i<<" "<<j<<" "<<map_idxcoarse_idxfine[i]<<sendl;
                 H.set( map_idxq_idxcutass[map_idxcoarse_idxfine[i][j]]*3  , i*3  ,1);
                 H.set( map_idxq_idxcutass[map_idxcoarse_idxfine[i][j]]*3+1, i*3+1,1);
                 H.set( map_idxq_idxcutass[map_idxcoarse_idxfine[i][j]]*3+2, i*3+2,1);
             }
         }
 
-// 			  cerr<<"H = ";
-// 			  H.printMatlab(cerr);
+// 			  serr<<"H = ";
+// 			  H.printMatlab(serr);
 // 			  NewMatMatrix HKg2;
 // 			  HKg2 = Kg*H;
-// 			  cerr<<"HKg2 = ";
-// 			  HKg2.printMatlab(cerr);
+// 			  serr<<"HKg2 = ";
+// 			  HKg2.printMatlab(serr);
 
 
 
@@ -2183,23 +2183,23 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
         NewMatMatrix  W;
         W = - Ainvf * Kg * H;
 
-// 			  cerr<<"W"<<elementIndice<<"=";
-// 			  W.printMatlab( cerr );
+// 			  serr<<"W"<<elementIndice<<"=";
+// 			  W.printMatlab( serr );
 //
 //
-// 			  cerr<<"W : "<<W.rowSize()<<"x"<<W.colSize()<<endl;
+// 			  serr<<"W : "<<W.rowSize()<<"x"<<W.colSize()<<sendl;
 //
 //
         NewMatMatrix  WB;
         WB.resize(sizeass*3,8*3);
-// 			  cerr<<"WB : "<<WB.rowSize()<<"x"<<WB.colSize()<<endl;
+// 			  serr<<"WB : "<<WB.rowSize()<<"x"<<WB.colSize()<<sendl;
 
 
         for( std::map<int,int>::iterator it= map_idxq_coarse.begin(); it!=map_idxq_coarse.end(); ++it)
         {
             if( it->second != -1 )
             {
-// 					  cerr<<it->first<<" "<<it->second<<endl;
+// 					  serr<<it->first<<" "<<it->second<<sendl;
                 WB.add( map_idxq_idxass[it->first]*3  , it->second*3  , 1.0);
                 WB.add( map_idxq_idxass[it->first]*3+1, it->second*3+1, 1.0);
                 WB.add( map_idxq_idxass[it->first]*3+2, it->second*3+2, 1.0);
@@ -2216,13 +2216,13 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
         }
 
 
-// 			  cerr<<"WB2 = ";
-// 			  WB.printMatlab( cerr );
+// 			  serr<<"WB2 = ";
+// 			  WB.printMatlab( serr );
 //
 //
 //
-// 			  cerr<<"mask = ";
-// 			  mask.printMatlab( cerr );
+// 			  serr<<"mask = ";
+// 			  mask.printMatlab( serr );
 
 
 
@@ -2392,10 +2392,10 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
                 M[i][j]=Mc.element(i,j);
             }
 
-// 			  cerr<<"K"<<elementIndice<<"=";
-// 			  printMatlab( cerr, K);cerr<<endl;
-// 			  cerr<<"M"<<elementIndice<<"=";
-// 			  printMatlab( cerr, M);cerr<<endl;
+// 			  serr<<"K"<<elementIndice<<"=";
+// 			  printMatlab( serr, K);serr<<sendl;
+// 			  serr<<"M"<<elementIndice<<"=";
+// 			  printMatlab( serr, M);serr<<sendl;
 
 
 
@@ -2432,59 +2432,59 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 // 			  {
 // 				  for(unsigned j=0;j<finerChildrenRamificationOriginal[i].size();++j) // finer element
 // 				  {
-// 					  cerr<<"_weights"<<" "<<this->_nbVirtualFinerLevels.getValue()-level-1<<" "<<finerChildrenRamificationOriginal[i][j]<<"=\n";
-// 					  printMatlab( cerr, _weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildrenRamificationOriginal[i][j]] );
+// 					  serr<<"_weights"<<" "<<this->_nbVirtualFinerLevels.getValue()-level-1<<" "<<finerChildrenRamificationOriginal[i][j]<<"="<<sendl;
+// 					  printMatlab( serr, _weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildrenRamificationOriginal[i][j]] );
 // 				  }
 // 			  }
 
 
 
 
-// 			  cerr<<"WBmeca =";
-// 			  WBmeca.printMatlab(cerr);
-// 			  cerr<<"WB =";
-// 			  WB.printMatlab(cerr);
+// 			  serr<<"WBmeca =";
+// 			  WBmeca.printMatlab(serr);
+// 			  serr<<"WB =";
+// 			  WB.printMatlab(serr);
 
 
 // 			  for( int l=0;l<8*3;++l) // toutes les cols de W
-// 				  cerr<< WB.element( map_idxq_idxass[ 9 ]*3   ,l)<<" ";
-// 			  cerr<<endl;
+// 				  serr<< WB.element( map_idxq_idxass[ 9 ]*3   ,l)<<" ";
+// 			  serr<<sendl;
 // 			  for( int l=0;l<8*3;++l) // toutes les cols de W
-// 				  cerr<< WB.element( map_idxq_idxass[ 9 ]*3+1   ,l)<<" ";
-// 			  cerr<<endl;
+// 				  serr<< WB.element( map_idxq_idxass[ 9 ]*3+1   ,l)<<" ";
+// 			  serr<<sendl;
 // 			  for( int l=0;l<8*3;++l) // toutes les cols de W
-// 				  cerr<< WB.element( map_idxq_idxass[ 9 ]*3+2   ,l)<<" ";
-// 			  cerr<<endl;cerr<<endl;
+// 				  serr<< WB.element( map_idxq_idxass[ 9 ]*3+2   ,l)<<" ";
+// 			  serr<<sendl;serr<<sendl;
 //
 // 			  for( int l=0;l<8*3;++l) // toutes les cols de W
-// 				  cerr<< WBmeca.element( map_idxq_idxass[ 9 ]*3   ,l)<<" ";
-// 			  cerr<<endl;
+// 				  serr<< WBmeca.element( map_idxq_idxass[ 9 ]*3   ,l)<<" ";
+// 			  serr<<sendl;
 // 			  for( int l=0;l<8*3;++l) // toutes les cols de W
-// 				  cerr<< WBmeca.element( map_idxq_idxass[ 9 ]*3+1   ,l)<<" ";
-// 			  cerr<<endl;
+// 				  serr<< WBmeca.element( map_idxq_idxass[ 9 ]*3+1   ,l)<<" ";
+// 			  serr<<sendl;
 // 			  for( int l=0;l<8*3;++l) // toutes les cols de W
-// 				  cerr<< WBmeca.element( map_idxq_idxass[ 9 ]*3+2   ,l)<<" ";
-// 			  cerr<<endl;cerr<<endl;
+// 				  serr<< WBmeca.element( map_idxq_idxass[ 9 ]*3+2   ,l)<<" ";
+// 			  serr<<sendl;serr<<sendl;
 //
 // 			  for( int l=0;l<8*3;++l) // toutes les cols de W
-// 				  cerr<< WB.element( map_idxq_idxass[ 16 ]*3   ,l)<<" ";
-// 			  cerr<<endl;
+// 				  serr<< WB.element( map_idxq_idxass[ 16 ]*3   ,l)<<" ";
+// 			  serr<<sendl;
 // 			  for( int l=0;l<8*3;++l) // toutes les cols de W
-// 				  cerr<< WB.element( map_idxq_idxass[ 16 ]*3+1   ,l)<<" ";
-// 			  cerr<<endl;
+// 				  serr<< WB.element( map_idxq_idxass[ 16 ]*3+1   ,l)<<" ";
+// 			  serr<<sendl;
 // 			  for( int l=0;l<8*3;++l) // toutes les cols de W
-// 				  cerr<< WB.element( map_idxq_idxass[ 16 ]*3+2   ,l)<<" ";
-// 			  cerr<<endl;cerr<<endl;
+// 				  serr<< WB.element( map_idxq_idxass[ 16 ]*3+2   ,l)<<" ";
+// 			  serr<<sendl;serr<<sendl;
 //
 // 			  for( int l=0;l<8*3;++l) // toutes les cols de W
-// 				  cerr<< WBmeca.element( map_idxq_idxass[ 16 ]*3   ,l)<<" ";
-// 			  cerr<<endl;
+// 				  serr<< WBmeca.element( map_idxq_idxass[ 16 ]*3   ,l)<<" ";
+// 			  serr<<sendl;
 // 			  for( int l=0;l<8*3;++l) // toutes les cols de W
-// 				  cerr<< WBmeca.element( map_idxq_idxass[ 16 ]*3+1   ,l)<<" ";
-// 			  cerr<<endl;
+// 				  serr<< WBmeca.element( map_idxq_idxass[ 16 ]*3+1   ,l)<<" ";
+// 			  serr<<sendl;
 // 			  for( int l=0;l<8*3;++l) // toutes les cols de W
-// 				  cerr<< WBmeca.element( map_idxq_idxass[ 16 ]*3+2   ,l)<<" ";
-// 			  cerr<<endl;cerr<<endl;
+// 				  serr<< WBmeca.element( map_idxq_idxass[ 16 ]*3+2   ,l)<<" ";
+// 			  serr<<sendl;serr<<sendl;
 
 
     }
@@ -2498,8 +2498,8 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 template<class T>
 void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeFinalWeights( const Weight &W, const int coarseElementIndice, const int elementIndice,  int level)
 {
-// 		  for(int i=0;i<level*3;++i)cerr<<" ";
-// 		  cerr<<"computeFinalWeights "<<elementIndice<<"  "<<level<<endl;
+// 		  for(int i=0;i<level*3;++i)serr<<" ";
+// 		  serr<<"computeFinalWeights "<<elementIndice<<"  "<<level<<sendl;
 
     if( elementIndice == -1 ) return;
 
@@ -2509,10 +2509,10 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeFinalWeights( const We
     {
 // 			  if( elementIndice==2 )
 // 			  {
-// 				  cerr<<"COMPUTE_FINAL\n";
-// 				  cerr<<this->_nbVirtualFinerLevels.getValue()-level<<endl;
-// 				  printMatlab(cerr,_weights[0][2]);
-// 				  printMatlab(cerr,W);
+// 				  serr<<"COMPUTE_FINAL"<<sendl;
+// 				  serr<<this->_nbVirtualFinerLevels.getValue()-level<<sendl;
+// 				  printMatlab(serr,_weights[0][2]);
+// 				  printMatlab(serr,W);
 // 			  }
 
 // 			  _weights[ this->_nbVirtualFinerLevels.getValue()-level ][elementIndice] = A;
@@ -2537,8 +2537,8 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeFinalWeights( const We
 template<class T>
 void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeFinalWeightsRamification( const Weight &W, const int coarseElementIndice, const int elementIndice,  int level)
 {
-// 		  for(int i=0;i<level*3;++i)cerr<<" ";
-// 		  cerr<<"computeFinalWeights "<<elementIndice<<"  "<<level<<endl;
+// 		  for(int i=0;i<level*3;++i)serr<<" ";
+// 		  serr<<"computeFinalWeights "<<elementIndice<<"  "<<level<<sendl;
 
     if( elementIndice == -1 ) return;
 
@@ -2548,10 +2548,10 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeFinalWeightsRamificati
     {
 // 			  if( elementIndice==2 )
 // 			  {
-// 				  cerr<<"COMPUTE_FINAL\n";
-// 				  cerr<<this->_nbVirtualFinerLevels.getValue()-level<<endl;
-// 				  printMatlab(cerr,_weights[0][2]);
-// 				  printMatlab(cerr,W);
+// 				  serr<<"COMPUTE_FINAL"<<sendl;
+// 				  serr<<this->_nbVirtualFinerLevels.getValue()-level<<sendl;
+// 				  printMatlab(serr,_weights[0][2]);
+// 				  printMatlab(serr,W);
 // 			  }
 
 // 			  _weights[ this->_nbVirtualFinerLevels.getValue()-level ][elementIndice] = A;

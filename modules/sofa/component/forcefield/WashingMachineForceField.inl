@@ -31,8 +31,8 @@
 #include <sofa/helper/system/gl.h>
 #include <assert.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {

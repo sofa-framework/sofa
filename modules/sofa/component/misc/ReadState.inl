@@ -74,7 +74,7 @@ void ReadState::reset()
         infile = new std::ifstream(filename.c_str());
         if( !infile->is_open() )
         {
-            std::cerr << "Error opening file "<<filename<<std::endl;
+            serr << "Error opening file "<<filename<<sendl;
             delete infile;
             infile = NULL;
         }
@@ -120,7 +120,7 @@ void ReadState::processReadState()
         while (nextTime <= time && !infile->eof())
         {
             getline(*infile, line);
-            //std::cout << "line= "<<line<<std::endl;
+            //sout << "line= "<<line<<sendl;
             std::istringstream str(line);
             str >> cmd;
             if (cmd == "T=")
@@ -151,7 +151,7 @@ void ReadState::processReadState()
     }
     if (updated)
     {
-        //std::cout<<"update from file"<<std::endl;
+        //sout<<"update from file"<<sendl;
         sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor action1;
         this->getContext()->executeVisitor(&action1);
         sofa::simulation::UpdateMappingVisitor action2;

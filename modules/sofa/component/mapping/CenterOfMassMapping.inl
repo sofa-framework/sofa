@@ -34,8 +34,8 @@
 #include <string>
 #include <iostream>
 
-using std::cerr;
-using std::endl;
+
+
 
 
 namespace sofa
@@ -74,7 +74,7 @@ void CenterOfMassMapping<BasicMapping>::apply ( typename Out::VecCoord& childPos
 {
     if(!masses || totalMass==0.0)
     {
-        cerr<<"Error in CenterOfMassMapping : no mass found corresponding to the DOFs"<<endl;
+        serr<<"Error in CenterOfMassMapping : no mass found corresponding to the DOFs"<<sendl;
         return;
     }
 
@@ -96,7 +96,7 @@ void CenterOfMassMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& childFo
 {
     if(!masses || totalMass==0.0)
     {
-        cerr<<"Error in CenterOfMassMapping : no mass found corresponding to the DOFs"<<endl;
+        serr<<"Error in CenterOfMassMapping : no mass found corresponding to the DOFs"<<sendl;
         return;
     }
 
@@ -119,7 +119,7 @@ void CenterOfMassMapping<BasicMapping>::applyJT ( typename In::VecDeriv& parentF
 {
     if(!masses || totalMass==0.0)
     {
-        cerr<<"Error in CenterOfMassMapping : no mass found corresponding to the DOFs"<<endl;
+        serr<<"Error in CenterOfMassMapping : no mass found corresponding to the DOFs"<<sendl;
         return;
     }
 

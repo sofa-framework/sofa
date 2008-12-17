@@ -34,8 +34,8 @@
 #include <iostream>
 
 
-using std::cerr;
-using std::endl;
+
+
 
 
 namespace sofa
@@ -62,7 +62,7 @@ void HomogenizedMapping<BasicMapping>::init()
     _sparseGrid = dynamic_cast<SparseGridTopologyT*> (this->fromModel->getContext()->getTopology());
     if(!_sparseGrid)
     {
-        cerr<<"HomogenizedMapping can only be used with a SparseGridTopology\n";
+        serr<<"HomogenizedMapping can only be used with a SparseGridTopology"<<sendl;
         exit(0);
     }
 
@@ -70,7 +70,7 @@ void HomogenizedMapping<BasicMapping>::init()
     this->fromModel->getContext()->get(_forcefield);
     if(!_forcefield)
     {
-        cerr<<"HomogenizedMapping can only be used with a HomogenizedHexahedronFEMForceFieldAndMass\n";
+        serr<<"HomogenizedMapping can only be used with a HomogenizedHexahedronFEMForceFieldAndMass"<<sendl;
         exit(0);
     }
 
@@ -94,10 +94,10 @@ void HomogenizedMapping<BasicMapping>::init()
     _qFine = _qFine0;
 
 
-// 	cerr<<_qCoarse0[0]<<endl;
+// 	serr<<_qCoarse0[0]<<sendl;
 
 // 	for(int i=0;i<_qFine0.size();++i)
-// 		cerr<<i<<" : "<<_qFine0[i]<<endl;
+// 		serr<<i<<" : "<<_qFine0[i]<<sendl;
 
 
 // 	_pointsCorrespondingToElem.resize(_sparseGrid->getNbHexas());
@@ -160,14 +160,14 @@ void HomogenizedMapping<BasicMapping>::init()
                 _finestBarycentricCoord[i] = std::pair<int,helper::fixed_array<Real,8> >(elementIdx, baryCoefs);
             }
             else
-                cerr<<"HomogenizedMapping::init()   error finding the corresponding finest cube of vertex "<<_p0[i]<<endl;
+                serr<<"HomogenizedMapping::init()   error finding the corresponding finest cube of vertex "<<_p0[i]<<sendl;
         }
 // 		else
-// 			cerr<<"HomogenizedMapping::init()   error finding the corresponding coarse cube of vertex "<<_p0[i]<<endl;
+// 			serr<<"HomogenizedMapping::init()   error finding the corresponding coarse cube of vertex "<<_p0[i]<<sendl;
     }
 
-    cerr<<"HomogenizedMapping::init() before \n";
-// 	cerr<<_forcefield->_finalWeights.size()<<" "<<_finestSparseGrid->getNbHexas()<<endl;
+    serr<<"HomogenizedMapping::init() before "<<sendl;
+// 	serr<<_forcefield->_finalWeights.size()<<" "<<_finestSparseGrid->getNbHexas()<<sendl;
 
 
     for (unsigned int i=0; i<_forcefield->_finalWeights.size(); i++)
@@ -190,23 +190,23 @@ void HomogenizedMapping<BasicMapping>::init()
 
 
 
-// 	cerr<<_finestWeights[17].size( )<<endl;
+// 	serr<<_finestWeights[17].size( )<<sendl;
 // 	for(int i=0;i<_finestWeights[17].size( );++i)
-// 		cerr<<_finestWeights[17][i].second<<"\n";
+// 		serr<<_finestWeights[17][i].second<<""<<sendl;
 
 
 
 // 	for (unsigned int i=0;i<_forcefield->_finalWeights.size();i++)
 // 	{
 // 		const SparseGridTopologyT::Hexa& finehexa = _finestSparseGrid->getHexa(i);
-// 		cerr<<_finestWeights[ finehexa[i] ].size()<<endl;
+// 		serr<<_finestWeights[ finehexa[i] ].size()<<sendl;
 // 		for(int w=0;w<_finestWeights[ finehexa[w] ].size();++w)
 // 		{
-// 			cerr<< _finestWeights[ finehexa[w] ][w].first<<endl;
-// 			cerr<< _finestWeights[ finehexa[w] ][w].second<<endl;
-// 			cerr<<"-------\n";
+// 			serr<< _finestWeights[ finehexa[w] ][w].first<<sendl;
+// 			serr<< _finestWeights[ finehexa[w] ][w].second<<sendl;
+// 			serr<<"-------"<<sendl;
 // 		}
-// 		cerr<<"****************\n";
+// 		serr<<"****************"<<sendl;
 // 	}
 
 
@@ -267,7 +267,7 @@ void HomogenizedMapping<BasicMapping>::apply ( OutVecCoord& out, const InVecCoor
 
 
 
-    // les déplacements des noeuds fins
+    // les dï¿½placements des noeuds fins
 // 	helper::vector< OutCoord > fineDisplacements( _finestWeights.size() );
 // 	helper::vector< Transformation > meanRotations( _finestWeights.size() );
 
@@ -289,7 +289,7 @@ void HomogenizedMapping<BasicMapping>::apply ( OutVecCoord& out, const InVecCoor
 
 
 
-    // les déplacements des points mappés
+    // les dï¿½placements des points mappï¿½s
     for(unsigned i=0; i<_p0.size(); ++i)
     {
         out[i] = OutCoord(); //_p0[i] /*+ translation*/;
@@ -331,7 +331,7 @@ void HomogenizedMapping<BasicMapping>::applyJ ( OutVecDeriv& out, const InVecDer
     }
 
 
-    // les déplacements des noeuds fins
+    // les dï¿½placements des noeuds fins
     helper::vector< OutCoord > fineDisplacements( _finestWeights.size() );
 
     for(unsigned i=0; i<_finestWeights.size(); ++i)
@@ -346,7 +346,7 @@ void HomogenizedMapping<BasicMapping>::applyJ ( OutVecDeriv& out, const InVecDer
     }
 
 
-    // les déplacements des points mappés
+    // les dï¿½placements des points mappï¿½s
     for(unsigned i=0; i<_p0.size(); ++i)
     {
         out[i] = OutCoord();

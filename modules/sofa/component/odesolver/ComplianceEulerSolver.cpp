@@ -28,8 +28,8 @@
 #include <math.h>
 #include <iostream>
 
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {
@@ -71,9 +71,9 @@ void ComplianceEulerSolver::solve(double dt)
 
     if( printLog )
     {
-        cerr<<"ComplianceEulerSolver, dt = "<< dt <<endl;
-        cerr<<"ComplianceEulerSolver, initial x = "<< pos <<endl;
-        cerr<<"ComplianceEulerSolver, initial v = "<< vel <<endl;
+        serr<<"ComplianceEulerSolver, dt = "<< dt <<sendl;
+        serr<<"ComplianceEulerSolver, initial x = "<< pos <<sendl;
+        serr<<"ComplianceEulerSolver, initial v = "<< vel <<sendl;
     }
 
 
@@ -128,9 +128,9 @@ void ComplianceEulerSolver::solve(double dt)
 
     if( printLog )
     {
-        cerr<<"ComplianceEulerSolver, acceleration = "<< acc <<endl;
-        cerr<<"ComplianceEulerSolver, final x = "<< pos <<endl;
-        cerr<<"ComplianceEulerSolver, final v = "<< vel <<endl;
+        serr<<"ComplianceEulerSolver, acceleration = "<< acc <<sendl;
+        serr<<"ComplianceEulerSolver, final x = "<< pos <<sendl;
+        serr<<"ComplianceEulerSolver, final v = "<< vel <<sendl;
     }
 }
 

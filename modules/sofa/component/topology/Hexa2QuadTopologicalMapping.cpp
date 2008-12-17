@@ -78,19 +78,19 @@ Hexa2QuadTopologicalMapping::~Hexa2QuadTopologicalMapping()
 
 void Hexa2QuadTopologicalMapping::init()
 {
-    //std::cout << "INFO_print : init Hexa2QuadTopologicalMapping" << std::endl;
+    //sout << "INFO_print : init Hexa2QuadTopologicalMapping" << sendl;
 
     // INITIALISATION of QUADULAR mesh from HEXAHEDRAL mesh :
 
     if (fromModel)
     {
 
-        std::cout << "INFO_print : Hexa2QuadTopologicalMapping - from = hexa" << std::endl;
+        sout << "INFO_print : Hexa2QuadTopologicalMapping - from = hexa" << sendl;
 
         if (toModel)
         {
 
-            std::cout << "INFO_print : Hexa2QuadTopologicalMapping - to = quad" << std::endl;
+            sout << "INFO_print : Hexa2QuadTopologicalMapping - to = quad" << sendl;
 
             QuadSetTopologyContainer *to_tstc;
             toModel->getContext()->get(to_tstc);
@@ -170,7 +170,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::componentmodel::topology::ENDING_EVENT:
                 {
-                    //std::cout << "INFO_print : Hexa2QuadTopologicalMapping - ENDING_EVENT" << std::endl;
+                    //sout << "INFO_print : Hexa2QuadTopologicalMapping - ENDING_EVENT" << sendl;
                     to_tstm->propagateTopologicalChanges();
                     to_tstm->notifyEndingEvent();
                     to_tstm->propagateTopologicalChanges();
@@ -179,7 +179,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::componentmodel::topology::QUADSREMOVED:
                 {
-                    //std::cout << "INFO_print : Hexa2QuadTopologicalMapping - QUADSREMOVED" << std::endl;
+                    //sout << "INFO_print : Hexa2QuadTopologicalMapping - QUADSREMOVED" << sendl;
 
                     int last;
                     int ind_last;
@@ -255,8 +255,8 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                         else
                         {
 
-                            std::cout << "INFO_print : Hexa2QuadTopologicalMapping - Glob2LocMap should have the visible quad " << tab[i] << std::endl;
-                            std::cout << "INFO_print : Hexa2QuadTopologicalMapping - nb quads = " << ind_last << std::endl;
+                            sout << "INFO_print : Hexa2QuadTopologicalMapping - Glob2LocMap should have the visible quad " << tab[i] << sendl;
+                            sout << "INFO_print : Hexa2QuadTopologicalMapping - nb quads = " << ind_last << sendl;
                         }
 
                         --last;
@@ -266,7 +266,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::componentmodel::topology::HEXAHEDRAREMOVED:
                 {
-                    //std::cout << "INFO_print : Hexa2QuadTopologicalMapping - HEXAHEDRAREMOVED" << std::endl;
+                    //sout << "INFO_print : Hexa2QuadTopologicalMapping - HEXAHEDRAREMOVED" << sendl;
 
                     if (fromModel)
                     {
@@ -396,7 +396,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                                         std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
                                         if(iter_1 != Glob2LocMap.end() )
                                         {
-                                            std::cout << "INFO_print : Hexa2QuadTopologicalMapping - fail to add quad " << k << "which already exists" << std::endl;
+                                            sout << "INFO_print : Hexa2QuadTopologicalMapping - fail to add quad " << k << "which already exists" << sendl;
                                             Glob2LocMap.erase(Glob2LocMap.find(k));
                                         }
                                         Glob2LocMap[k]=Loc2GlobVec.size()-1;
@@ -415,7 +415,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::componentmodel::topology::POINTSREMOVED:
                 {
-                    //std::cout << "INFO_print : Hexa2QuadTopologicalMapping - POINTSREMOVED" << std::endl;
+                    //sout << "INFO_print : Hexa2QuadTopologicalMapping - POINTSREMOVED" << sendl;
 
                     const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
@@ -424,7 +424,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                     for(unsigned int i = 0; i < tab.size(); ++i)
                     {
 
-                        //std::cout << "INFO_print : Hexa2QuadTopologicalMapping - point = " << tab[i] << std::endl;
+                        //sout << "INFO_print : Hexa2QuadTopologicalMapping - point = " << tab[i] << sendl;
                         indices.push_back(tab[i]);
                     }
 
@@ -439,7 +439,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::componentmodel::topology::POINTSRENUMBERING:
                 {
-                    //std::cout << "INFO_print : Hexa2QuadTopologicalMapping - POINTSREMOVED" << std::endl;
+                    //sout << "INFO_print : Hexa2QuadTopologicalMapping - POINTSREMOVED" << sendl;
 
                     const sofa::helper::vector<unsigned int> &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
                     const sofa::helper::vector<unsigned int> &inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
@@ -450,7 +450,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                     for(unsigned int i = 0; i < tab.size(); ++i)
                     {
 
-                        //std::cout << "INFO_print : Hexa2QuadTopologicalMapping - point = " << tab[i] << std::endl;
+                        //sout << "INFO_print : Hexa2QuadTopologicalMapping - point = " << tab[i] << sendl;
                         indices.push_back(tab[i]);
                         inv_indices.push_back(inv_tab[i]);
                     }

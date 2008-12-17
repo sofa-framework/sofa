@@ -48,6 +48,11 @@ public:
     typedef typename Coord::value_type Real;
     typedef typename Inherit::Mat Mat;
     typedef typename Inherit::Spring Spring;
+
+    using Inherit::sout;
+    using Inherit::serr;
+    using Inherit::sendl;
+
     enum { N = Inherit::N };
 public:
 

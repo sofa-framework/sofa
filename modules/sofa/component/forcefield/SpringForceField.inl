@@ -47,8 +47,8 @@ namespace component
 namespace forcefield
 {
 
-using std::cerr;
-using std::endl;
+
+
 
 template<class DataTypes>
 SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, MechanicalState* mstate2, SReal _ks, SReal _kd)
@@ -156,7 +156,7 @@ void SpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const Vec
 template<class DataTypes>
 void SpringForceField<DataTypes>::addDForce(VecDeriv&, VecDeriv&, const VecDeriv&, const VecDeriv&)
 {
-    std::cerr << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead.\n";
+    serr << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead."<<sendl;
 }
 
 template<class DataTypes>
@@ -165,10 +165,10 @@ void SpringForceField<DataTypes>::draw()
     if (!((this->mstate1 == this->mstate2)?getContext()->getShowForceFields():getContext()->getShowInteractionForceFields())) return;
     const VecCoord& p1 = *this->mstate1->getX();
     const VecCoord& p2 = *this->mstate2->getX();
-    /*        cerr<<"SpringForceField<DataTypes>::draw() "<<getName()<<endl;
-            cerr<<"SpringForceField<DataTypes>::draw(), p1.size = "<<p1.size()<<endl;
-            cerr<<"SpringForceField<DataTypes>::draw(), p1 = "<<p1<<endl;
-            cerr<<"SpringForceField<DataTypes>::draw(), p2 = "<<p2<<endl;*/
+    /*        serr<<"SpringForceField<DataTypes>::draw() "<<getName()<<sendl;
+            serr<<"SpringForceField<DataTypes>::draw(), p1.size = "<<p1.size()<<sendl;
+            serr<<"SpringForceField<DataTypes>::draw(), p1 = "<<p1<<sendl;
+            serr<<"SpringForceField<DataTypes>::draw(), p2 = "<<p2<<sendl;*/
     glDisable(GL_LIGHTING);
     bool external = (this->mstate1!=this->mstate2);
     //if (!external)

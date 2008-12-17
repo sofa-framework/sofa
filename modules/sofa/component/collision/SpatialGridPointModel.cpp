@@ -56,7 +56,7 @@ void SpatialGridPointModel::init()
 
     if (grid==NULL)
     {
-        logWarning("SpatialGridPointModel requires a Vec3 SpatialGridContainer");
+        serr <<"SpatialGridPointModel requires a Vec3 SpatialGridContainer" << sendl;
         return;
     }
 }
@@ -104,7 +104,7 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
     Grid* g = grid->getGrid();
     Grid::const_iterator itgbegin = g->gridBegin();
     Grid::const_iterator itgend = g->gridEnd();
-    //std::cout << "input: ";
+    //sout << "input: ";
     bool sorted = true;
     for (Grid::const_iterator itg = itgbegin; itg != itgend; ++itg)
     {
@@ -139,7 +139,7 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
                             }
                     if (pfirst == -1) continue;
                     cells.push_back(OctreeCell(k2, pfirst, plast));
-                    //std::cout << "  " << k2;
+                    //sout << "  " << k2;
                 }
         /*
         int pfirst = -1;
@@ -164,25 +164,25 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
             }
         }
         cells.push_back(OctreeCell(k, pfirst, plast));
-        //std::cout << "  " << k;
+        //sout << "  " << k;
         */
     }
     if (!sorted)
     {
-        std::cerr << "ERROR(SpatialGridPointModel): points are not sorted in spatial grid."<<std::endl;
+        serr << "ERROR(SpatialGridPointModel): points are not sorted in spatial grid."<<sendl;
     }
-    //std::cout << std::endl;
+    //sout << sendl;
     cubeModel->resize(cells.size());
     if (cells.empty()) return;
     OctreeSorter s(maxDepth);
     Vector3::value_type cellSize = g->getCellWidth()*ldim; // *GRIDDIM;
     std::sort(cells.begin(), cells.end(), s);
 
-    //std::cout << "sorted: ";
+    //sout << "sorted: ";
     for (unsigned int i=0; i<cells.size(); i++)
     {
         Grid::Key k = cells[i].k;
-        //std::cout << "  " << k;
+        //sout << "  " << k;
         int pfirst = cells[i].pfirst;
         int plast = cells[i].plast;
         Vector3 minElem, maxElem;
@@ -193,24 +193,24 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
         }
         cubeModel->setLeafCube(i, std::make_pair(Iterator(this,pfirst),Iterator(this,plast+1)), minElem, maxElem); // define the bounding box of the current cell
     }
-    //std::cout << std::endl;
+    //sout << sendl;
     //cubeModel->computeBoundingTree(maxDepth);
     int depth = 0;
     while (depth < maxDepth && cells.size() > 8)
     {
-        if (verbose) std::cout << "SpatialGridPointModel: cube depth "<<depth<<": "<<cells.size()<<" cells ("<<(size*100/cells.size())*0.01<<" points/cell)."<<std::endl;
+        if (verbose) sout << "SpatialGridPointModel: cube depth "<<depth<<": "<<cells.size()<<" cells ("<<(size*100/cells.size())*0.01<<" points/cell)."<<sendl;
         // compact cells inplace
         int parent = -1;
         for (unsigned int i=0; i<cells.size(); ++i)
         {
             Grid::Key k = cells[i].k;
-            //std::cout << "  " << k;
+            //sout << "  " << k;
             for (unsigned int c=0; c<k.size(); ++c)
                 k[c] >>= 1;
             if (parent == -1 || !(k == cells[parent].k))
             {
                 // new parent
-                //std::cout << "->"<<k;
+                //sout << "->"<<k;
                 ++parent;
                 cells[parent].k = k;
                 cells[parent].pfirst = i;
@@ -222,7 +222,7 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
                 cells[parent].plast = i;
             }
         }
-        //std::cout << std::endl;
+        //sout << sendl;
         if (cells.size() > (unsigned int)parent+1)
         {
             cells.resize(parent+1);

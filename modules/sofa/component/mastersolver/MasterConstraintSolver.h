@@ -34,12 +34,12 @@ public:
 #ifdef DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
-        //std::cerr<<"creation of the visitor"<<std::endl;
+        //serr<<"creation of the visitor"<<sendl;
     }
 
     virtual Result fwdConstraint(simulation::Node* node, core::componentmodel::behavior::BaseConstraint* c)
     {
-        //std::cerr<<"fwdConstraint called on "<<c->getName()<<std::endl;
+        //serr<<"fwdConstraint called on "<<c->getName()<<sendl;
 
         ctime_t t0 = begin(node, c);
         c->getConstraintResolution(_res, _offset);

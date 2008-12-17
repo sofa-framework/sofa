@@ -35,8 +35,8 @@
 #include <iostream>
 #include <sofa/helper/gl/BasicShapes.h>
 
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {

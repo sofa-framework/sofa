@@ -86,7 +86,7 @@ void CudaTetrahedronTLEDForceField::reinit()
     component::topology::MeshTopology* topology = getContext()->get<component::topology::MeshTopology>();
     if (topology==NULL)
     {
-        std::cerr << "ERROR(CudaTetrahedronTLEDForceField): no topology found.\n";
+        serr << "ERROR(CudaTetrahedronTLEDForceField): no topology found.\n";
         return;
     }
     VecElement inputElems = topology->getTetras();
@@ -179,13 +179,13 @@ void CudaTetrahedronTLEDForceField::reinit()
         nbv = nelems.rbegin()->first + 1;
     }
 
-    std::cout << "CudaTetrahedronTLEDForceField: "<<inputElems.size()<<" elements, "<<nbv<<" nodes, max "<<nmax<<" elements per node"<<std::endl;
+    sout << "CudaTetrahedronTLEDForceField: "<<inputElems.size()<<" elements, "<<nbv<<" nodes, max "<<nmax<<" elements per node"<<sendl;
 
 
     /** Precomputations
     */
     init(inputElems.size(), nbv, nmax);
-    std::cout << "CudaTetrahedronTLEDForceField: precomputations..." << std::endl;
+    sout << "CudaTetrahedronTLEDForceField: precomputations..." << sendl;
 
     const VecCoord& x = *this->mstate->getX();
     nelems.clear();
@@ -252,18 +252,18 @@ void CudaTetrahedronTLEDForceField::reinit()
 //     {
 //         for (int j = 0; j<4; j++)
 //         {
-//             std::cout << DhC0[4*i+j] << " " ;
+//             sout << DhC0[4*i+j] << " " ;
 //         }
-//         std::cout << std::endl;
+//         sout << sendl;
 //     }
 
 //     for (int i = 0; i < nbv; i++)
 //     {
 //         for (int val = 0; val<nmax; val++)
 //         {
-//             std::cout << "(" << FCrds[ 2*nmax * i + 2*val ] << "," << FCrds[ 2*nmax * i + 2*val+1 ] << ") ";
+//             sout << "(" << FCrds[ 2*nmax * i + 2*val ] << "," << FCrds[ 2*nmax * i + 2*val+1 ] << ") ";
 //         }
-//         std::cout << std::endl;
+//         sout << sendl;
 //     }
 
     /** Initialise GPU textures with the precomputed array for the TLED algorithm
@@ -333,7 +333,7 @@ void CudaTetrahedronTLEDForceField::reinit()
     /// Set up Lame coefficients
     updateLameCoefficients();
 
-    std::cout << "CudaTetrahedronTLEDForceField::reinit() DONE."<<std::endl;
+    sout << "CudaTetrahedronTLEDForceField::reinit() DONE."<<sendl;
 }
 
 void CudaTetrahedronTLEDForceField::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/)

@@ -266,9 +266,9 @@ public:
         //RealClass* p1=NULL;
         //BaseClass* p2=NULL;
         //if (res)
-        //    std::cout << "class "<<RealClass::typeName(p1)<<" implements "<<BaseClass::typeName(p2)<<std::endl;
+        //    sout << "class "<<RealClass::typeName(p1)<<" implements "<<BaseClass::typeName(p2)<<sendl;
         //else
-        //    std::cout << "class "<<RealClass::typeName(p1)<<" does not implement "<<BaseClass::typeName(p2)<<std::endl;
+        //    sout << "class "<<RealClass::typeName(p1)<<" does not implement "<<BaseClass::typeName(p2)<<sendl;
         return res;
     }
 

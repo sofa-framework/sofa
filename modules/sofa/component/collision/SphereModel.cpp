@@ -103,7 +103,7 @@ void SphereModel::init()
 
     if (mstate==NULL)
     {
-        logWarning("SphereModel requires a Vec3 Mechanical Model");
+        serr<<"SphereModel requires a Vec3 Mechanical Model" << sendl;
         return;
     }
 
@@ -269,7 +269,7 @@ bool SphereModel::load(const char* filename)
     this->resize(0);
     std::string sphereFilename(filename);
     if (!sofa::helper::system::DataRepository.findFile (sphereFilename))
-        logWarning(std::string("Sphere File \"") + filename +std::string("\" not found"));
+        serr<<"Sphere File \""<< filename <<"\" not found"<< sendl;
 
     Loader loader(this);
     return loader.load(filename);

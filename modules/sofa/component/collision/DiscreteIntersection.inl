@@ -49,7 +49,7 @@ using namespace sofa::core::componentmodel::collision;
 template<class Sphere>
 bool DiscreteIntersection::testIntersection(Sphere& sph1, Sphere& sph2)
 {
-    //std::cout<<"Collision between Sphere - Sphere"<<std::endl;
+    //sout<<"Collision between Sphere - Sphere"<<sendl;
     typename Sphere::Coord sph1Pos(sph1.center());
     typename Sphere::Coord sph2Pos(sph2.center());
     typename Sphere::Real radius1 = sph1.r(), radius2 = sph2.r();
@@ -133,7 +133,7 @@ bool DiscreteIntersection::testIntersection( Sphere& sph, Triangle& triangle)
 template<class Sphere>
 bool DiscreteIntersection::testIntersection(Ray& ray1, Sphere& sph2)
 {
-    //std::cout<<"intersectionSphereRay: Collision between Sphere - Ray"<<std::endl;
+    //sout<<"intersectionSphereRay: Collision between Sphere - Ray"<<sendl;
     // Center of the sphere
     const Vector3 sph2Pos(sph2.center());
     // Radius of the sphere
@@ -349,7 +349,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
     if (!grid1->inBBox( p1, margin )) return 0;
     if (!grid1->inGrid( p1 ))
     {
-        std::cerr << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e1.getCollisionModel()->getName()<<std::endl;
+        serr << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e1.getCollisionModel()->getName()<<sendl;
         return 0;
     }
 
@@ -407,7 +407,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
         DistanceGrid::Coord diff = p1-pdeform;
         SReal err = diff.norm();
         if (iter>3)
-            std::cout << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid1->interp(c1.initpos(b))<<"\n";
+            sout << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid1->interp(c1.initpos(b))<<""<<sendl;
         SReal berr = err*cubesize; if (berr>0.5f) berr=0.5f;
         if (b[0] < -berr || b[0] > 1+berr
             || b[1] < -berr || b[1] > 1+berr
@@ -458,7 +458,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
         if (b[0] > 0.001f && b[0] < 0.999f
             && b[1] > 0.001f && b[1] < 0.999f
             && b[2] > 0.001f && b[2] < 0.999f)
-            std::cerr << "ERROR: FFD-FFD collision failed to converge to undeformed point: p1 = "<<p1<<" b = "<<b<<" c000 = "<<c1.corners[0]<<" c100 = "<<c1.corners[1]<<" c010 = "<<c1.corners[2]<<" c110 = "<<c1.corners[3]<<" c001 = "<<c1.corners[4]<<" c101 = "<<c1.corners[5]<<" c011 = "<<c1.corners[6]<<" c111 = "<<c1.corners[7]<<" pinit = "<<c1.initpos(b)<<" pdeform = "<<c1.deform(b)<<" err = "<<err1<<std::endl;
+            serr << "ERROR: FFD-FFD collision failed to converge to undeformed point: p1 = "<<p1<<" b = "<<b<<" c000 = "<<c1.corners[0]<<" c100 = "<<c1.corners[1]<<" c010 = "<<c1.corners[2]<<" c110 = "<<c1.corners[3]<<" c001 = "<<c1.corners[4]<<" c101 = "<<c1.corners[5]<<" c011 = "<<c1.corners[6]<<" c111 = "<<c1.corners[7]<<" pinit = "<<c1.initpos(b)<<" pdeform = "<<c1.deform(b)<<" err = "<<err1<<sendl;
     }
 
     return 0;

@@ -114,6 +114,7 @@ public:
 class Topology : public virtual core::objectmodel::BaseObject
 {
 public:
+    Topology():BaseObject() {}
     virtual ~Topology()
     {}
 

@@ -45,9 +45,9 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-using std::cerr;
-using std::cout;
-using std::endl;
+
+
+
 
 SOFA_DECL_CLASS(TriangularTensorMassForceField)
 

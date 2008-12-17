@@ -27,8 +27,8 @@
 
 #include <sofa/component/forcefield/NonUniformHexahedronFEMForceFieldAndMass.h>
 
-using std::cerr;
-using std::endl;
+
+
 using std::set;
 
 
@@ -60,14 +60,14 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
 
     if( this->getContext()->getMeshTopology()==NULL )
     {
-        std::cerr << "ERROR(NonUniformHexahedronFEMForceFieldDensity): object must have a Topology.\n";
+        serr << "ERROR(NonUniformHexahedronFEMForceFieldDensity): object must have a Topology."<<sendl;
         return;
     }
 
     this->_mesh = this->getContext()->getMeshTopology();
     if ( this->_mesh==NULL)
     {
-        std::cerr << "ERROR(NonUniformHexahedronFEMForceFieldDensity): object must have a MeshTopology.\n";
+        serr << "ERROR(NonUniformHexahedronFEMForceFieldDensity): object must have a MeshTopology."<<sendl;
         return;
     }
 #ifdef SOFA_NEW_HEXA
@@ -76,10 +76,10 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
     else if( this->_mesh->getNbCubes()<=0 )
 #endif
     {
-        std::cerr << "ERROR(NonUniformHexahedronFEMForceFieldDensity): object must have a hexahedric MeshTopology.\n";
-        std::cerr << this->_mesh->getName()<<std::endl;
-        std::cerr << this->_mesh->getTypeName()<<std::endl;
-        cerr<<this->_mesh->getNbPoints()<<endl;
+        serr << "ERROR(NonUniformHexahedronFEMForceFieldDensity): object must have a hexahedric MeshTopology."<<sendl;
+        serr << this->_mesh->getName()<<sendl;
+        serr << this->_mesh->getTypeName()<<sendl;
+        serr<<this->_mesh->getNbPoints()<<sendl;
         return;
     }
 #ifdef SOFA_NEW_HEXA
@@ -106,17 +106,17 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
     // verify if it is wanted and possible to compute non-uniform stiffness
     if( !this->_nbVirtualFinerLevels.getValue() )
     {
-        logWarning("ForceField "+this->getName()+std::string(" need 0 VirtualFinerLevels -> classical uniform properties are used."));
+        serr<<"ForceField "<<this->getName()<<" need 0 VirtualFinerLevels -> classical uniform properties are used." << sendl;
     }
     else if( !this->_sparseGrid )
     {
         this->_nbVirtualFinerLevels.setValue(0);
-        logWarning("ForceField "+this->getName()+std::string(" must be used with a SparseGrid in order to handle VirtualFinerLevels -> classical uniform properties are used.."));
+        serr<<"ForceField "<<this->getName()<<" must be used with a SparseGrid in order to handle VirtualFinerLevels -> classical uniform properties are used.." << sendl;
     }
     else if( this->_sparseGrid->getNbVirtualFinerLevels() < this->_nbVirtualFinerLevels.getValue()  )
     {
         this->_nbVirtualFinerLevels.setValue(0);
-        logWarning("Conflict in nb of virtual levels between ForceField "+this->getName()+std::string(" and SparseGrid ")+this->_sparseGrid->getName()+std::string(" -> classical uniform properties are used"));
+        serr<<"Conflict in nb of virtual levels between ForceField "<<this->getName()<<" and SparseGrid "<<this->_sparseGrid->getName()<<" -> classical uniform properties are used" << sendl;
     }
 
 
@@ -245,7 +245,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
                 for(int k=0; k<3; ++k)
                     if( this->_lumpedMasses[j][k] < 0 )
                     {
-// 					  cerr<<"WARNING lumped mass\n";
+// 					  serr<<"WARNING lumped mass"<<sendl;
                         this->_lumpedMasses[ j ][k] = -this->_lumpedMasses[ j ][k];
                     }
             }

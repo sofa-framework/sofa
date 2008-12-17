@@ -126,7 +126,7 @@ void TetrahedronSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLo
 void TetrahedronSetTopologyContainer::createTetrahedronSetArray()
 {
 #ifndef NDEBUG
-    cout << "Error. [TetrahedronSetTopologyContainer::createTetrahedronSetArray] This method must be implemented by a child topology." << endl;
+    sout << "Error. [TetrahedronSetTopologyContainer::createTetrahedronSetArray] This method must be implemented by a child topology." << endl;
 #endif
 }
 
@@ -338,7 +338,7 @@ const sofa::helper::vector<Tetrahedron> &TetrahedronSetTopologyContainer::getTet
     if (!hasTetrahedra() && getNbPoints()>0)
     {
 #ifndef NDEBUG
-        cout << "[TetrahedronSetTopologyContainer::getTetrahedronArray] creating tetrahedron array." << endl;
+        sout << "[TetrahedronSetTopologyContainer::getTetrahedronArray] creating tetrahedron array." << endl;
 #endif
         createTetrahedronSetArray();
     }

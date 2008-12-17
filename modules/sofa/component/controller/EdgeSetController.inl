@@ -82,10 +82,10 @@ void EdgeSetController<DataTypes>::init()
     this->getContext()->get(edgeMod);
 
     if (edgeGeo == NULL)
-        logWarning("EdgeSetController has no binding EdgeSetGeometryAlgorithms");
+        serr << "EdgeSetController has no binding EdgeSetGeometryAlgorithms" << sendl;
 
     if (edgeMod == NULL)
-        logWarning("EdgeSetController has no binding EdgeSetTopologyModifier");
+        serr << "EdgeSetController has no binding EdgeSetTopologyModifier" << sendl;
 
     Inherit::init();
 
@@ -258,17 +258,17 @@ void EdgeSetController<DataTypes>::applyController()
                 double newT = vertexT[0];
                 double sign = (endT > newT) ? 1.0 : -1.0;
                 newT -= d;
-                //std::cout << "length = " << sign*(endT-newT) << std::endl;
+                //sout << "length = " << sign*(endT-newT) << sendl;
 
                 if (sign*(endT-newT) > maxLength.getValue())
                 {
-                    //std::cout << "max length" << std::endl;
+                    //sout << "max length" << sendl;
                     newT = endT - sign*maxLength.getValue();
                     d = vertexT[0] - newT;
                 }
                 else if (sign*(endT-newT) < minLength.getValue())
                 {
-                    //std::cout << "min length" << std::endl;
+                    //sout << "min length" << sendl;
                     newT = endT - sign*minLength.getValue();
                     d = vertexT[0] - newT;
                 }

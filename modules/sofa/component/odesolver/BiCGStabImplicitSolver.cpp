@@ -30,8 +30,8 @@
 #include <iostream>
 #include <sofa/core/ObjectFactory.h>
 
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {
@@ -80,9 +80,9 @@ void BiCGStabImplicitSolver::solve(double dt)
 
     if( getDebug() )
     {
-        cerr<<"BiCGStabImplicitSolver, dt = "<< dt <<endl;
-        cerr<<"BiCGStabImplicitSolver, initial x = "<< pos <<endl;
-        cerr<<"BiCGStabImplicitSolver, initial v = "<< vel <<endl;
+        serr<<"BiCGStabImplicitSolver, dt = "<< dt <<sendl;
+        serr<<"BiCGStabImplicitSolver, initial x = "<< pos <<sendl;
+        serr<<"BiCGStabImplicitSolver, initial v = "<< vel <<sendl;
     }
 
     addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
@@ -90,7 +90,7 @@ void BiCGStabImplicitSolver::solve(double dt)
     // compute the right-hand term of the equation system
     group->computeForce(b);             // b = f0
     if( getDebug() )
-        cerr<<"BiCGStabImplicitSolver, f0 = "<< b <<endl;
+        serr<<"BiCGStabImplicitSolver, f0 = "<< b <<sendl;
     group->propagateDx(vel);            // dx = v
     group->computeDf(f);                // f = df/dx v
     b.peq(f,h);                         // b = f0+hdf/dx v
@@ -107,7 +107,7 @@ void BiCGStabImplicitSolver::solve(double dt)
     rtilde = r;
 
     if( getDebug() )
-        cerr<<"BiCGStabImplicitSolver, r0 = "<< r <<endl;
+        serr<<"BiCGStabImplicitSolver, r0 = "<< r <<sendl;
 
     unsigned nb_iter;
     const char* endcond = "iterations";
@@ -182,7 +182,7 @@ void BiCGStabImplicitSolver::solve(double dt)
         rho_2 = rho_1;
     }
     // x is the solution of the system
-    cerr<<"BiCGStabImplicitSolver::solve, nbiter = "<<nb_iter<<" stop because of "<<endcond<<endl;
+    serr<<"BiCGStabImplicitSolver::solve, nbiter = "<<nb_iter<<" stop because of "<<endcond<<sendl;
 
     // apply the solution
     vel.peq( x );                       // vel = vel + x
@@ -202,8 +202,8 @@ void BiCGStabImplicitSolver::solve(double dt)
 
     if( getDebug() )
     {
-        cerr<<"BiCGStabImplicitSolver, final x = "<< pos <<endl;
-        cerr<<"BiCGStabImplicitSolver, final v = "<< vel <<endl;
+        serr<<"BiCGStabImplicitSolver, final x = "<< pos <<sendl;
+        serr<<"BiCGStabImplicitSolver, final v = "<< vel <<sendl;
     }
 }
 

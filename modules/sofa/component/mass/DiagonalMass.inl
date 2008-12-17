@@ -171,9 +171,9 @@ inline void MassTriangleDestroyFunction(const sofa::helper::vector<unsigned int>
             masses[t[1]]-=mass;
             masses[t[2]]-=mass;
             // Commented to prevent from printing in case of triangle removal
-            //std::cerr<< "mass vertex " << t[0]<< " = " << masses[t[0]]<<std::endl;
-            //std::cerr<< "mass vertex " << t[1]<< " = " << masses[t[1]]<<std::endl;
-            //std::cerr<< "mass vertex " << t[2]<< " = " << masses[t[2]]<<std::endl;
+            //serr<< "mass vertex " << t[0]<< " = " << masses[t[0]]<<sendl;
+            //serr<< "mass vertex " << t[1]<< " = " << masses[t[1]]<<sendl;
+            //serr<< "mass vertex " << t[2]<< " = " << masses[t[2]]<<sendl;
         }
 
     }

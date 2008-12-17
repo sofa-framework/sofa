@@ -81,6 +81,9 @@ public:
     typedef typename HexahedronFEMForceFieldAndMassT::MassT MassT;
     typedef typename HexahedronFEMForceFieldAndMassT::ElementMass ElementMass;
 
+    using HexahedronFEMForceFieldAndMassT::sout;
+    using HexahedronFEMForceFieldAndMassT::serr;
+    using HexahedronFEMForceFieldAndMassT::sendl;
 
 public:
 
@@ -99,7 +102,7 @@ public:
 
 
     virtual void init();
-    virtual void reinit()  { std::cerr<<"WARNING : non-uniform mechanical properties can't be updated, changes on mechanical properties (young, poisson, density) are not taken into account.\n"; }
+    virtual void reinit()  { serr<<"WARNING : non-uniform mechanical properties can't be updated, changes on mechanical properties (young, poisson, density) are not taken into account."<<sendl; }
 
 
 

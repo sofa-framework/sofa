@@ -124,19 +124,19 @@ Base* BaseObjectDescription::findObject(const char* nodeName)
     BaseObjectDescription* node = find(nodeName);
     if (node!=NULL)
     {
-        //std::cout << "Found node "<<nodeName<<": "<<node->getName()<<std::endl;
+        //sout << "Found node "<<nodeName<<": "<<node->getName()<<sendl;
         Base* obj = node->getObject();
         BaseContext* ctx = dynamic_cast<BaseContext*>(obj);
         if (ctx != NULL)
         {
-            //std::cout << "Node "<<nodeName<<" is a context, returning MechanicalState."<<std::endl;
+            //sout << "Node "<<nodeName<<" is a context, returning MechanicalState."<<sendl;
             obj = ctx->getMechanicalState();
         }
         return obj;
     }
     else
     {
-        std::cout << "Node "<<nodeName<<" NOT FOUND."<<std::endl;
+        std::cerr << "Node "<<nodeName<<" NOT FOUND."<<std::endl;
         return NULL;
     }
 }

@@ -55,7 +55,7 @@ void TubularMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const ty
 {
     // Propagation of positions from the input DOFs to the output DOFs
 
-    //std::cout << "TubularMapping<BasicMapping>::apply\n";
+    //sout << "TubularMapping<BasicMapping>::apply"<<sendl;
 
     if(out.size() != rotatedPoints.size())
     {
@@ -91,7 +91,7 @@ void TubularMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const ty
 
             rotatedPoints[i*N+j] = (Y*cos((Real) (2.0*j*M_PI/N)) + Z*sin((Real) (2.0*j*M_PI/N)))*((Real) rho);
             Vec x = curPos + rotatedPoints[i*N+j];
-            //std::cout << "INFO_print : TubularMapping  DO move point - j = " << j << " , curPos = " << curPos <<  " , x = " << x << std::endl;
+            //sout << "INFO_print : TubularMapping  DO move point - j = " << j << " , curPos = " << curPos <<  " , x = " << x << sendl;
 
             out[i*N+j] = x;
         }
@@ -125,7 +125,7 @@ void TubularMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const ty
         {
 
             out[i*N+j] = v - cross(rotatedPoints[i*N+j],omega);
-            //std::cout << "INFO_print : TubularMapping  DO moveJ point - j = " << j << " , curPos = " << v <<  " , x = " << out[i*N+j] << std::endl;
+            //sout << "INFO_print : TubularMapping  DO moveJ point - j = " << j << " , curPos = " << v <<  " , x = " << out[i*N+j] << sendl;
         }
     }
 }
@@ -136,7 +136,7 @@ void TubularMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const ty
 {
     // usefull for a Mechanical Mapping that propagates forces from the output DOFs to the input DOFs
 
-    //std::cout << "INFO_print : pass HERE applyJT !!!" << std::endl;
+    //sout << "INFO_print : pass HERE applyJT !!!" << sendl;
 
     if(in.size() != rotatedPoints.size())
     {
@@ -159,7 +159,7 @@ void TubularMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const ty
 
         out[i].getVCenter() += v;
         out[i].getVOrientation() += omega;
-        //std::cout << "INFO_print : TubularMapping  DO moveJT point - i = " << i << std::endl;
+        //sout << "INFO_print : TubularMapping  DO moveJT point - i = " << i << sendl;
     }
 
 }
@@ -168,7 +168,7 @@ void TubularMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const ty
 template <class BasicMapping>
 void TubularMapping<BasicMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
 {
-	std::cout << "INFO_print : pass HERE applyJT CONST !!!" << std::endl;
+	sout << "INFO_print : pass HERE applyJT CONST !!!" << sendl;
 
 	Deriv v0;
 	v0[0] = (Real) (0.0); v0[1] = (Real) (0.0); v0[2] = (Real) (0.0);
@@ -177,7 +177,7 @@ void TubularMapping<BasicMapping>::applyJT( typename In::VecConst& out, const ty
 	{
 			out[i].getVCenter() = v0;
 			out[i].getVOrientation() = v0;
-			std::cout << "INFO_print : TubularMapping  DO moveJT point - i = " << i << std::endl;
+			sout << "INFO_print : TubularMapping  DO moveJT point - i = " << i << sendl;
 	}
 }
 */

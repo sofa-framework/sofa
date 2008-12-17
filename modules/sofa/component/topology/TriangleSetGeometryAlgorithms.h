@@ -57,6 +57,10 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
 
+    using core::componentmodel::topology::GeometryAlgorithms::sout;
+    using core::componentmodel::topology::GeometryAlgorithms::serr;
+    using core::componentmodel::topology::GeometryAlgorithms::sendl;
+
     TriangleSetGeometryAlgorithms()
         : EdgeSetGeometryAlgorithms<DataTypes>()
     {}

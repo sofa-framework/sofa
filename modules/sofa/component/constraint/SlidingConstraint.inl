@@ -121,7 +121,7 @@ template<class DataTypes>
 void SlidingConstraint<DataTypes>::getConstraintValue(defaulttype::BaseVector* v, bool freeMotion)
 {
     if (!freeMotion)
-        std::cout<<"WARNING has to be implemented for method based on non freeMotion"<<std::endl;
+        sout<<"WARNING has to be implemented for method based on non freeMotion"<<sendl;
 
     v->set(cid, dist);
     v->set(cid+1, 0.0);
@@ -175,8 +175,8 @@ void SlidingConstraint<DataTypes>::draw()
     else
         glColor4f(1,0,1,1);
     helper::gl::glVertexT((*this->object1->getX())[m1.getValue()]);
-//	helper::gl::glVertexT((*this->object2->getX())[m3]);
-//	helper::gl::glVertexT(proj);
+//      helper::gl::glVertexT((*this->object2->getX())[m3]);
+//      helper::gl::glVertexT(proj);
     glEnd();
 
     glBegin(GL_LINES);

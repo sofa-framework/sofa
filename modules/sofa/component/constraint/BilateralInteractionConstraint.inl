@@ -73,7 +73,7 @@ template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::getConstraintValue(defaulttype::BaseVector* v, bool freeMotion)
 {
     if (!freeMotion)
-        std::cout<<"WARNING has to be implemented for method based on non freeMotion"<<std::endl;
+        sout<<"WARNING has to be implemented for method based on non freeMotion"<<sendl;
 
     if (freeMotion)
         dfree = (*this->object2->getXfree())[m2.getValue()] - (*this->object1->getXfree())[m1.getValue()];

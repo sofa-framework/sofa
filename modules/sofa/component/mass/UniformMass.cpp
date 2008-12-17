@@ -91,7 +91,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
         Rigid3dMass m = this->getMass();
         if (!sofa::helper::system::DataRepository.findFile(filename))
         {
-            std::cerr << "ERROR: cannot find file '" << filename << "'." << std::endl;
+            serr << "ERROR: cannot find file '" << filename << "'." << sendl;
         }
         else
         {
@@ -99,11 +99,11 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
             FILE*	file;
             if ((file = fopen(filename.c_str(), "r")) == NULL)
             {
-                std::cerr << "ERROR: cannot read file '" << filename << "'." << std::endl;
+                serr << "ERROR: cannot read file '" << filename << "'." << sendl;
             }
             else
             {
-                //std::cout << "Loading rigid model '" << filename << "'" << std::endl;
+                //sout << "Loading rigid model '" << filename << "'" << sendl;
                 // Check first line
                 //if (fgets(cmd, 7, file) != NULL && !strcmp(cmd,"Xsp 3.0"))
                 {
@@ -381,7 +381,7 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::loadRigidMass(std::string filename)
         Rigid3fMass m = this->getMass();
         if (!sofa::helper::system::DataRepository.findFile(filename))
         {
-            std::cerr << "ERROR: cannot find file '" << filename << "'." << std::endl;
+            serr << "ERROR: cannot find file '" << filename << "'." << sendl;
         }
         else
         {
@@ -389,11 +389,11 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::loadRigidMass(std::string filename)
             FILE*	file;
             if ((file = fopen(filename.c_str(), "r")) == NULL)
             {
-                std::cerr << "ERROR: cannot read file '" << filename << "'." << std::endl;
+                serr << "ERROR: cannot read file '" << filename << "'." << sendl;
             }
             else
             {
-                //std::cout << "Loading rigid model '" << filename << "'" << std::endl;
+                //sout << "Loading rigid model '" << filename << "'" << sendl;
                 // Check first line
                 //if (fgets(cmd, 7, file) != NULL && !strcmp(cmd,"Xsp 3.0"))
                 {

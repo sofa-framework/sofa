@@ -31,8 +31,8 @@
 #include <assert.h>
 #include <sofa/helper/gl/template.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {
@@ -125,7 +125,7 @@ void PenalityContactForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df
 template <class DataTypes>
 double PenalityContactForceField<DataTypes>::getPotentialEnergy(const VecCoord&, const VecCoord&)
 {
-    cerr<<"PenalityContactForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    serr<<"PenalityContactForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 

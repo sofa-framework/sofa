@@ -87,14 +87,14 @@ void WriteState::init()
 // 	    std::ifstream infile(filename.c_str());
 // 	    if( infile.is_open() )
 // 	      {
-// 		std::cerr << "ERROR: file "<<filename<<" already exists. Remove it to record new motion."<<std::endl;
+// 		serr << "ERROR: file "<<filename<<" already exists. Remove it to record new motion."<<sendl;
 // 	      }
 // 	    else
         {
             outfile = new std::ofstream(filename.c_str());
             if( !outfile->is_open() )
             {
-                std::cerr << "Error creating file "<<filename<<std::endl;
+                serr << "Error creating file "<<filename<<sendl;
                 delete outfile;
                 outfile = NULL;
             }
@@ -132,7 +132,7 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                         if (!gnode->mass)
                         {
                             // Error: the mechanical model has no mass
-                            std::cerr << "Error: Kinetic energy can not be computed. The mass for " << mmodel->getName() << " has no been defined" << std::endl;
+                            serr << "Error: Kinetic energy can not be computed. The mass for " << mmodel->getName() << " has no been defined" << sendl;
                             exit(-1);
                         }
                         else
@@ -140,7 +140,7 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                             // computes the energy increase
                             if (fabs(gnode->mass->getKineticEnergy() - savedKineticEnergy) < f_stopAt.getValue())
                             {
-                                std::cout << "WriteState has been stopped. Kinetic energy threshold has been reached" << std::endl;
+                                sout << "WriteState has been stopped. Kinetic energy threshold has been reached" << sendl;
                                 kineticEnergyThresholdReached = true;
                             }
                             else

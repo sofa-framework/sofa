@@ -231,7 +231,7 @@ void OglIntVector2Variable::init()
     helper::vector<GLint> temp = iv.getValue();
     if (iv.getValue().size() %2 != 0)
     {
-        std::cerr << "The number of values is not even ; padding with one zero" << std::endl;
+        serr << "The number of values is not even ; padding with one zero" << sendl;
         temp.push_back(0);
         iv.setValue(temp);
 
@@ -245,7 +245,7 @@ void OglIntVector3Variable::init()
 
     if (iv.getValue().size() %3 != 0)
     {
-        std::cerr << "The number of values is not a multiple of 3 ; padding with zero(s)" << std::endl;
+        serr << "The number of values is not a multiple of 3 ; padding with zero(s)" << sendl;
         while (iv.getValue().size() %3 != 0)
             temp.push_back(0);
         iv.setValue(temp);
@@ -259,7 +259,7 @@ void OglIntVector4Variable::init()
 
     if (iv.getValue().size() %4 != 0)
     {
-        std::cerr << "The number of values is not a multiple of 4 ; padding with zero(s)" << std::endl;
+        serr << "The number of values is not a multiple of 4 ; padding with zero(s)" << sendl;
         while (iv.getValue().size() %4 != 0)
             temp.push_back(0);
         iv.setValue(temp);
@@ -345,7 +345,7 @@ void OglFloatVector2Variable::init()
     helper::vector<float> temp = fv.getValue();
     if (fv.getValue().size() %2 != 0)
     {
-        std::cerr << "The number of values is not even ; padding with one zero" << std::endl;
+        serr << "The number of values is not even ; padding with one zero" << sendl;
         temp.push_back(0.0);
         fv.setValue(temp);
     }
@@ -358,7 +358,7 @@ void OglFloatVector3Variable::init()
 
     if (fv.getValue().size() %3 != 0)
     {
-        std::cerr << "The number of values is not a multiple of 3 ; padding with zero(s)" << std::endl;
+        serr << "The number of values is not a multiple of 3 ; padding with zero(s)" << sendl;
         while (fv.getValue().size() %3 != 0)
             temp.push_back(0.0);
         fv.setValue(temp);
@@ -372,7 +372,7 @@ void OglFloatVector4Variable::init()
 
     if (fv.getValue().size() %4 != 0)
     {
-        std::cerr << "The number of values is not a multiple of 4 ; padding with zero(s)" << std::endl;
+        serr << "The number of values is not a multiple of 4 ; padding with zero(s)" << sendl;
         while (fv.getValue().size() %4 != 0)
             temp.push_back(0.0);
         fv.setValue(temp);

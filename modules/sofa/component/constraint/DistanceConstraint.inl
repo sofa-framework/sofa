@@ -36,8 +36,8 @@
 #include <iostream>
 
 
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {
@@ -130,11 +130,15 @@ void DistanceConstraint<DataTypes>::writeConstraintEquations()
         Deriv V12 = getDirection(edges[i], x1, x2);
         //VecConst interface:
         //index where the direction will be found
-        const unsigned int idxInVecConst[2]= {c1.size(),c2.size()};
-        SparseVecDeriv V1; V1.push_back(SparseDeriv(idx1,V12));
-        c1.push_back(V1);
-        SparseVecDeriv V2; V2.push_back(SparseDeriv(idx2,V12));
-        c2.push_back(V2);
+        const unsigned int idxInVecConst[2]= {c1.size(), c2.size()};
+        SparseVecDeriv V1;
+        V1.push_back(SparseDeriv(idx1,V12)); c1.push_back(V1);
+
+        if (this->object1 != this->object2)
+        {
+            SparseVecDeriv V2;
+            V2.push_back(SparseDeriv(idx2,V12)); c2.push_back(V2);
+        }
 
         //BaseLMConstraint interface
         addSingleConstraint(this->ACC, idxInVecConst[0], idxInVecConst[1],
@@ -145,7 +149,6 @@ void DistanceConstraint<DataTypes>::writeConstraintEquations()
                 restLength-length, this->CORRECTION); //we apply a constraint to correct the current length to the rest length
 
     }
-
 }
 
 template <class DataTypes>

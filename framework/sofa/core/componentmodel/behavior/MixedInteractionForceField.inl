@@ -89,7 +89,7 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForceV(double kFact
 template<class DataTypes1, class DataTypes2>
 void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(VecDeriv1& /*df1*/, VecDeriv2& /*df2*/, const VecDeriv1& /*dx1*/, const VecDeriv2& /*dx2*/)
 {
-    std::cerr << "ERROR("<<getClassName()<<"): addDForce not implemented.\n";
+    serr << "ERROR("<<getClassName()<<"): addDForce not implemented." << sendl;
 }
 
 template<class DataTypes1, class DataTypes2>

@@ -241,13 +241,13 @@ public:
 
     void setE(int i, const Element& indices, const Coord& /*a*/, const Coord& b, const Coord& c, const Coord& d, const MaterialStiffness& K, const StrainDisplacement& /*J*/)
     {
-        /*std::cout << "CPU Info:\n a = "<<a<<"\n b = "<<b<<"\n c = "<<c<<"\n d = "<<d<<"\n K = "
+        /*sout << "CPU Info:\n a = "<<a<<"\n b = "<<b<<"\n c = "<<c<<"\n d = "<<d<<"\n K = "
             <<K[0]<<"\n     "<<K[1]<<"\n     "<<K[2]<<"\n     "
             <<K[3]<<"\n     "<<K[4]<<"\n     "<<K[5]<<"\n J="
             <<J[0]<<"\n     "<<J[1]<<"\n     "<<J[2]<<"\n     "
             <<J[3]<<"\n     "<<J[4]<<"\n     "<<J[5]<<"\n     "
             <<J[6]<<"\n     "<<J[7]<<"\n     "<<J[8]<<"\n     "
-            <<J[9]<<"\n     "<<J[10]<<"\n     "<<J[11]<<std::endl;*/
+            <<J[9]<<"\n     "<<J[10]<<"\n     "<<J[11]<<sendl;*/
         GPUElement& e = elems[i/BSIZE]; i = i%BSIZE;
         e.ia[i] = indices[0] - vertex0;
         e.ib[i] = indices[1] - vertex0;
@@ -263,7 +263,7 @@ public:
         e.Jby_bx[i] = (-e.cx[i] * e.dz[i]) / e.bx[i];
         e.Jbz_bx[i] = (e.cx[i]*e.dy[i] - e.cy[i]*e.dx[i]) / e.bx[i];
         //e.dummy[i] = 0;
-        /*std::cout << "GPU Info:\n b = "<<e.bx<<"\n c = "<<e.cx<<" "<<e.cy<<"\n d = "<<e.dx<<" "<<e.dy<<" "<<e.dz<<"\n K = "
+        /*sout << "GPU Info:\n b = "<<e.bx<<"\n c = "<<e.cx<<" "<<e.cy<<"\n d = "<<e.dx<<" "<<e.dy<<" "<<e.dz<<"\n K = "
             <<(e.gamma_bx2+e.mu2_bx2)/bx2<<" "<<(e.gamma_bx2)/bx2<<" "<<(e.gamma_bx2)/bx2<<" 0 0 0\n     "
             <<(e.gamma_bx2)/bx2<<" "<<(e.gamma_bx2+e.mu2_bx2)/bx2<<" "<<(e.gamma_bx2)/bx2<<" 0 0 0\n     "
             <<(e.gamma_bx2)/bx2<<" "<<(e.gamma_bx2)/bx2<<" "<<(e.gamma_bx2+e.mu2_bx2)/bx2<<" 0 0 0\n     "
@@ -286,7 +286,7 @@ public:
 
             <<(0)*e.bx<<" 0 0 "<<(0)*e.bx<<" 0 "<<(e.cy)*e.bx<<"\n     "
             <<"0 "<<(0)*e.bx<<" 0 "<<(0)*e.bx<<" "<<(e.cy)*e.bx<<" 0\n     "
-            <<"0 0 "<<(e.cy)*e.bx<<" 0 "<<(0)*e.bx<<" "<<(0)*e.bx<<std::endl;*/
+            <<"0 0 "<<(e.cy)*e.bx<<" 0 "<<(0)*e.bx<<" "<<(0)*e.bx<<sendl;*/
     }
 
     static void reinit(Main* m);

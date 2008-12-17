@@ -32,8 +32,8 @@
 #include <math.h>
 #include <iostream>
 
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {
@@ -63,7 +63,7 @@ void SPHFluidForceField<DataTypes>::init()
     this->Inherit::init();
     this->getContext()->get(grid); //new Grid(particleRadius.getValue());
     if (grid==NULL)
-        logWarning("SpatialGridContainer not found by SPHFluidForceField, slow O(n2) method will be used !!!");
+        serr<<"SpatialGridContainer not found by SPHFluidForceField, slow O(n2) method will be used !!!" << sendl;
     int n = (*this->mstate->getX()).size();
     particles.resize(n);
     for (int i=0; i<n; i++)
@@ -168,8 +168,8 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
         {
             if (particles[i].neighbors.size() != particles[i].neighbors2.size())
             {
-                std::cerr << "particle "<<i<<" "<< x[i] <<" : "<<particles[i].neighbors.size()<<" neighbors on grid, "<< particles[i].neighbors2.size() << " neighbors on bruteforce.\n";
-                std::cerr << "grid-only neighbors:";
+                serr << "particle "<<i<<" "<< x[i] <<" : "<<particles[i].neighbors.size()<<" neighbors on grid, "<< particles[i].neighbors2.size() << " neighbors on bruteforce."<<sendl;
+                serr << "grid-only neighbors:";
                 for (unsigned int j=0; j<particles[i].neighbors.size(); j++)
                 {
                     int index = particles[i].neighbors[j].first;
@@ -177,10 +177,10 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
                     while (j2 < particles[i].neighbors2.size() && particles[i].neighbors2[j2].first != index)
                         ++j2;
                     if (j2 == particles[i].neighbors2.size())
-                        std::cerr << " "<< x[index] << "<"<< particles[i].neighbors[j].first<<","<<particles[i].neighbors[j].second<<">";
+                        serr << " "<< x[index] << "<"<< particles[i].neighbors[j].first<<","<<particles[i].neighbors[j].second<<">";
                 }
-                std::cerr << "\n";
-                std::cerr << "bruteforce-only neighbors:";
+                serr << ""<<sendl;
+                serr << "bruteforce-only neighbors:";
                 for (unsigned int j=0; j<particles[i].neighbors2.size(); j++)
                 {
                     int index = particles[i].neighbors2[j].first;
@@ -188,9 +188,9 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
                     while (j2 < particles[i].neighbors.size() && particles[i].neighbors[j2].first != index)
                         ++j2;
                     if (j2 == particles[i].neighbors.size())
-                        std::cerr << " "<< x[index] << "<"<< particles[i].neighbors2[j].first<<","<<particles[i].neighbors2[j].second<<">";
+                        serr << " "<< x[index] << "<"<< particles[i].neighbors2[j].first<<","<<particles[i].neighbors2[j].second<<">";
                 }
-                std::cerr << "\n";
+                serr << ""<<sendl;
             }
         }
 #endif
@@ -294,7 +294,7 @@ void SPHFluidForceField<DataTypes>::addDForce(VecDeriv& f1,  const VecDeriv& dx1
 template <class DataTypes>
 double SPHFluidForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 {
-    cerr<<"SPHFluidForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    serr<<"SPHFluidForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 

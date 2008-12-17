@@ -45,7 +45,7 @@ namespace component
 
 namespace constraint
 {
-#define	MAX_NUM_CONSTRAINT_PER_NODE 100
+#define MAX_NUM_CONSTRAINT_PER_NODE 100
 #define EPS_UNITARY_FORCE 0.01
 
 using namespace sofa::component::odesolver;
@@ -78,12 +78,12 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
     linearsolver=getLinearSolver(c);
     if (odesolver == NULL)
     {
-        std::cerr << "LinearSolverConstraintCorrection: ERROR no OdeSolver found."<<std::endl;
+        serr << "LinearSolverConstraintCorrection: ERROR no OdeSolver found."<<sendl;
         return;
     }
     if (linearsolver == NULL)
     {
-        std::cerr << "LinearSolverConstraintCorrection: ERROR no LinearSolver found."<<std::endl;
+        serr << "LinearSolverConstraintCorrection: ERROR no LinearSolver found."<<sendl;
         return;
     }
 
@@ -95,11 +95,11 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
 
     std::ifstream compFileIn(ss.str().c_str(), std::ifstream::binary);
 
-    std::cout << "try to open : " << ss.str() << endl;
+    sout << "try to open : " << ss.str() << endl;
 
     if(compFileIn.good())
     {
-        std::cout << "file open : " << ss.str() << " compliance being loaded" << endl;
+        sout << "file open : " << ss.str() << " compliance being loaded" << endl;
         refMinv.resize(n,n);
         //complianceLoaded = true;
         compFileIn.read((char*)refMinv.ptr(), n*n*sizeof(double));
@@ -133,7 +133,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getCompliance(defaulttype::Bas
         for (unsigned int i=0; i<numDOFReals; ++i)
             for (unsigned int j=0; j<numDOFReals; ++j)
             {
-                //std::cout << "Minv("<<i<<","<<j<<") = "<<Minv.element(i,j)<<"\t refMinv("<<i<<","<<j<<") = "<<refMinv.element(i,j)<<std::endl;
+                //sout << "Minv("<<i<<","<<j<<") = "<<Minv.element(i,j)<<"\t refMinv("<<i<<","<<j<<") = "<<refMinv.element(i,j)<<sendl;
                 if (fabs(refMinv.element(i,j)) > 1.0e-30)
                 {
                     err += fabs(Minv.element(i,j)-refMinv.element(i,j))/refMinv.element(i,j);
@@ -145,8 +145,8 @@ void LinearSolverConstraintCorrection<DataTypes>::getCompliance(defaulttype::Bas
                     fact += 1.0f;
                 }
             }
-        std::cout << "LinearSolverConstraintCorrection: mean relative error: "<<err/(numDOFReals*numDOFReals)<<std::endl;
-        std::cout << "LinearSolverConstraintCorrection: mean relative factor: "<<fact/(numDOFReals*numDOFReals)<<std::endl;
+        sout << "LinearSolverConstraintCorrection: mean relative error: "<<err/(numDOFReals*numDOFReals)<<sendl;
+        sout << "LinearSolverConstraintCorrection: mean relative factor: "<<fact/(numDOFReals*numDOFReals)<<sendl;
         refMinv.resize(0,0);
     }
     // Compute J
@@ -223,20 +223,20 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     {
         int indexC1 = mstate->getConstraintId()[c1];
         double fC1 = f->element(indexC1);
-        //std::cout << "fC("<<indexC1<<")="<<fC1<<std::endl;
+        //sout << "fC("<<indexC1<<")="<<fC1<<sendl;
         if (fC1 != 0.0)
         {
             int sizeC1 = constraints[c1].size();
             for(int i = 0; i < sizeC1; i++)
             {
-                //std::cout << "f("<<constraints[c1][i].index<<") += "<< (constraints[c1][i].data * fC1) << std::endl;
+                //sout << "f("<<constraints[c1][i].index<<") += "<< (constraints[c1][i].data * fC1) << sendl;
                 force[constraints[c1][i].index] += constraints[c1][i].data * fC1;
             }
         }
     }
 #endif
     //for (unsigned int i=0; i< numDOFs; i++)
-    //    std::cout << "f("<<i<<")="<<force[i]<<std::endl;
+    //    sout << "f("<<i<<")="<<force[i]<<sendl;
     linearsolver->setSystemRHVector(forceID);
     linearsolver->setSystemLHVector(dxID);
     linearsolver->solveSystem(); //TODO: tell the solver not to recompute the matrix
@@ -249,7 +249,7 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
 
     for (unsigned int i=0; i< numDOFs; i++)
     {
-        //std::cout << "dx("<<i<<")="<<dx[i]<<std::endl;
+        //sout << "dx("<<i<<")="<<dx[i]<<sendl;
         Deriv dxi = dx[i]*positionFactor;
         Deriv dvi = dx[i]*velocityFactor;
         x[i] = x_free[i] + dxi;

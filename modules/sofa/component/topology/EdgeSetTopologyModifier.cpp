@@ -73,7 +73,7 @@ void EdgeSetTopologyModifier::addEdgeProcess(Edge e)
     // check if the 2 vertices are different
     if(e[0] == e[1])
     {
-        cout << "Error: [EdgeSetTopologyModifier::addEdge] : invalid edge: "
+        sout << "Error: [EdgeSetTopologyModifier::addEdge] : invalid edge: "
                 << e[0] << ", " << e[1] << endl;
 
         return;
@@ -85,7 +85,7 @@ void EdgeSetTopologyModifier::addEdgeProcess(Edge e)
     {
         if(m_container->getEdgeIndex(e[0],e[1]) != -1)
         {
-            cout << "Error: [EdgeSetTopologyModifier::addEdgesProcess] : Edge "
+            sout << "Error: [EdgeSetTopologyModifier::addEdgesProcess] : Edge "
                     << e[0] << ", " << e[1] << " already exists." << endl;
             return;
         }
@@ -172,7 +172,7 @@ void EdgeSetTopologyModifier::removeEdgesProcess(const sofa::helper::vector<unsi
 {
     if(!m_container->hasEdges())	// this method should only be called when edges exist
     {
-        cout << "Warning. [EdgeSetTopologyModifier::removeEdgesProcess] edge array is empty." << endl;
+        sout << "Warning. [EdgeSetTopologyModifier::removeEdgesProcess] edge array is empty." << endl;
         return;
     }
 
@@ -700,7 +700,7 @@ void EdgeSetTopologyModifier::resortCuthillMckee(sofa::helper::vector<int>& inve
 
     property_map<Graph, vertex_index_t>::type index_map = get(vertex_index, G);
 
-    std::cout << "original bandwidth: " << bandwidth(G) << std::endl;
+    sout << "original bandwidth: " << bandwidth(G) << sendl;
 
     std::vector<Vertex> inv_perm(num_vertices(G));
     std::vector<size_type> perm(num_vertices(G));
@@ -708,23 +708,23 @@ void EdgeSetTopologyModifier::resortCuthillMckee(sofa::helper::vector<int>& inve
     //reverse cuthill_mckee_ordering
     cuthill_mckee_ordering(G, inv_perm.rbegin());
 
-    //std::cout << "Reverse Cuthill-McKee ordering:" << endl;
-    //std::cout << "  ";
+    //sout << "Reverse Cuthill-McKee ordering:" << endl;
+    //sout << "  ";
     unsigned int ind_i = 0;
     for (std::vector<Vertex>::const_iterator it = inv_perm.begin();
             it != inv_perm.end(); ++it)
     {
-        //std::cout << index_map[*it] << " ";
+        //sout << index_map[*it] << " ";
         inverse_permutation[ind_i++]=index_map[*it];
     }
-    //std::cout << endl;
+    //sout << endl;
 
     for (size_type c=0; c!=inv_perm.size(); ++c)
         perm[index_map[inv_perm[c]]] = c;
 
-    std::cout << "  bandwidth: "
+    sout << "  bandwidth: "
             << bandwidth(G, make_iterator_property_map(&perm[0], index_map, perm[0]))
-            << std::endl;
+            << sendl;
 }
 
 

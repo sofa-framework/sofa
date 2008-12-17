@@ -99,9 +99,9 @@ public:
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
         if (arg->findObject(arg->getAttribute("object1","../..")) == NULL)
-            std::cerr << "Cannot create "<<className(obj)<<" as object1 is missing.\n";
+            context->serr << "Cannot create "<<className(obj)<<" as object1 is missing."<<context->sendl;
         if (arg->findObject(arg->getAttribute("object2","..")) == NULL)
-            std::cerr << "Cannot create "<<className(obj)<<" as object2 is missing.\n";
+            context->serr << "Cannot create "<<className(obj)<<" as object2 is missing."<<context->sendl;
 
         if (arg->findObject(arg->getAttribute("object1","../..")) == NULL || arg->findObject(arg->getAttribute("object2","..")) == NULL)
             return false;

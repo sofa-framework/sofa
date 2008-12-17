@@ -67,7 +67,7 @@ void PipelineImpl::init()
 
     if (intersectionMethod==NULL)
     {
-        logWarning("no intersectionMethod defined. Using DiscreteIntersection");
+        serr <<"no intersectionMethod defined. Using DiscreteIntersection" << sendl;
         sofa::core::objectmodel::BaseObjectDescription discreteIntersectionDesc("Default Intersection","DiscreteIntersection");
         intersectionMethod = dynamic_cast<Intersection*>(sofa::core::ObjectFactory::CreateObject(getContext(), &discreteIntersectionDesc));
         //intersectionMethod = new sofa::component::collision::DiscreteIntersection;

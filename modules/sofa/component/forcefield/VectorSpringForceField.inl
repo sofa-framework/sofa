@@ -34,8 +34,8 @@
 #include <sofa/helper/system/gl.h>
 #include <assert.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {
@@ -203,7 +203,7 @@ void VectorSpringForceField<DataTypes>::init()
 template <class DataTypes>
 void VectorSpringForceField<DataTypes>::createDefaultSprings()
 {
-    std::cout << "Creating "<< _topology->getNbEdges() <<" Vector Springs from EdgeSetTopology"<<std::endl;
+    sout << "Creating "<< _topology->getNbEdges() <<" Vector Springs from EdgeSetTopology"<<sendl;
     springArray.resize(_topology->getNbEdges());
     //EdgeLengthArrayInterface<Real,DataTypes> elai(springArray);
     //edgeGEO->computeEdgeLength(elai);

@@ -50,9 +50,9 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-using std::cerr;
-using std::cout;
-using std::endl;
+
+
+
 
 template <class DataTypes>
 TriangleFEMForceField<DataTypes>::
@@ -82,12 +82,12 @@ void TriangleFEMForceField<DataTypes>::init()
     else if (f_method.getValue() == "large")
         method = LARGE;
 
-    cerr<<"TriangleFEMForceField<DataTypes>::init(), node = "<<this->getContext()->getName()<<endl;
+    serr<<"TriangleFEMForceField<DataTypes>::init(), node = "<<this->getContext()->getName()<<sendl;
     _mesh = this->getContext()->getMeshTopology();
 
     if (_mesh==NULL || (_mesh->getTriangles().empty() && _mesh->getNbQuads()<=0))
     {
-        std::cerr << "ERROR(TriangleFEMForceField): object must have a triangular MeshTopology.\n";
+        serr << "ERROR(TriangleFEMForceField): object must have a triangular MeshTopology."<<sendl;
         return;
     }
     if (!_mesh->getTriangles().empty())
@@ -209,7 +209,7 @@ void TriangleFEMForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& d
 template <class DataTypes>
 double TriangleFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
 {
-    cerr<<"TriangleFEMForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    serr<<"TriangleFEMForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 
@@ -231,7 +231,7 @@ template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::computeStrainDisplacement( StrainDisplacement &J, Coord /*a*/, Coord b, Coord c )
 {
 #ifdef DEBUG_TRIANGLEFEM
-    std::cout << "TriangleFEMForceField::computeStrainDisplacement\n";
+    sout << "TriangleFEMForceField::computeStrainDisplacement"<<sendl;
 #endif
 
     //Coord ab_cross_ac = cross(b, c);
@@ -355,7 +355,7 @@ void TriangleFEMForceField<DataTypes>::initSmall()
 {
 
 #ifdef DEBUG_TRIANGLEFEM
-    std::cout << "TriangleFEMForceField::initSmall\n";
+    sout << "TriangleFEMForceField::initSmall"<<sendl;
 #endif
 
 }
@@ -366,7 +366,7 @@ void TriangleFEMForceField<DataTypes>::accumulateForceSmall( VecCoord &f, const 
 {
 
 #ifdef DEBUG_TRIANGLEFEM
-    std::cout << "TriangleFEMForceField::accumulateForceSmall\n";
+    sout << "TriangleFEMForceField::accumulateForceSmall"<<sendl;
 #endif
 
     Index a = (*_indexedElements)[elementIndex][0];
@@ -408,7 +408,7 @@ void TriangleFEMForceField<DataTypes>::accumulateDampingSmall(VecCoord&, Index )
 {
 
 #ifdef DEBUG_TRIANGLEFEM
-    std::cout << "TriangleFEMForceField::accumulateDampingSmall\n";
+    sout << "TriangleFEMForceField::accumulateDampingSmall"<<sendl;
 #endif
 
 }
@@ -419,7 +419,7 @@ void TriangleFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h, 
 {
 
 #ifdef DEBUG_TRIANGLEFEM
-    std::cout << "TriangleFEMForceField::applyStiffnessSmall\n";
+    sout << "TriangleFEMForceField::applyStiffnessSmall"<<sendl;
 #endif
 
     typename VecElement::const_iterator it;
@@ -461,7 +461,7 @@ void TriangleFEMForceField<DataTypes>::initLarge()
 {
 
 #ifdef DEBUG_TRIANGLEFEM
-    std::cout << "TriangleFEMForceField::initLarge\n";
+    sout << "TriangleFEMForceField::initLarge"<<sendl;
 #endif
 
     _rotatedInitialElements.resize(_indexedElements->size());
@@ -480,7 +480,7 @@ void TriangleFEMForceField<DataTypes>::initLarge()
         // second vector in the plane of the two first edges
         // third vector orthogonal to first and second
         Transformation R_0_1;
-        //cerr<<"TriangleFEMForceField<DataTypes>::initLarge(), x.size() = "<<_object->getX()->size()<<", _initialPoints.getValue().size() = "<<_initialPoints.getValue().size()<<endl;
+        //serr<<"TriangleFEMForceField<DataTypes>::initLarge(), x.size() = "<<_object->getX()->size()<<", _initialPoints.getValue().size() = "<<_initialPoints.getValue().size()<<sendl;
         computeRotationLarge( R_0_1, _initialPoints.getValue(), a, b, c );
 
         _rotatedInitialElements[i][0] = R_0_1 * _initialPoints.getValue()[a];
@@ -499,7 +499,7 @@ void TriangleFEMForceField<DataTypes>::computeRotationLarge( Transformation &r, 
 {
 
 #ifdef DEBUG_TRIANGLEFEM
-    std::cout << "TriangleFEMForceField::computeRotationLarge\n";
+    sout << "TriangleFEMForceField::computeRotationLarge"<<sendl;
 #endif
 
     // first vector on first edge
@@ -536,7 +536,7 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const V
 {
 
 #ifdef DEBUG_TRIANGLEFEM
-    std::cout << "TriangleFEMForceField::accumulateForceLarge\n";
+    sout << "TriangleFEMForceField::accumulateForceLarge"<<sendl;
 #endif
 
     Index a = (*_indexedElements)[elementIndex][0];
@@ -594,7 +594,7 @@ void TriangleFEMForceField<DataTypes>::accumulateDampingLarge(VecCoord &, Index 
 {
 
 #ifdef DEBUG_TRIANGLEFEM
-    std::cout << "TriangleFEMForceField::accumulateDampingLarge\n";
+    sout << "TriangleFEMForceField::accumulateDampingLarge"<<sendl;
 #endif
 
 }
@@ -605,7 +605,7 @@ void TriangleFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h, 
 {
 
 #ifdef DEBUG_TRIANGLEFEM
-    std::cout << "TriangleFEMForceField::applyStiffnessLarge\n";
+    sout << "TriangleFEMForceField::applyStiffnessLarge"<<sendl;
 #endif
 
     typename VecElement::const_iterator it;

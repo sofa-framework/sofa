@@ -38,13 +38,13 @@ void EnslavementForceFeedback::init()
 {
     this->ForceFeedback::init();
     OmniDriver* driver = context->get<OmniDriver>();
-    cout << "init EnslavementForceFeedback" << driver << " done " << std::endl;
+    sout << "init EnslavementForceFeedback" << driver << " done " << sendl;
 
     driver->setForceFeedback(this);
 
     mState = dynamic_cast<MechanicalState<Rigid3dTypes> *> (this->getContext()->getMechanicalState());
     if (!mState)
-        logWarning("EnslavementForceFeedback has no binding MechanicalState");
+        serr << "EnslavementForceFeedback has no binding MechanicalState" << sendl;
     simulation::tree::GNode* context = dynamic_cast<simulation::tree::GNode*>(getContext());
     context->getTreeObjects<core::CollisionModel>(&collisionModels);
 }

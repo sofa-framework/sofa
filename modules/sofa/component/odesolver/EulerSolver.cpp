@@ -31,8 +31,8 @@
 
 #define SOFA_NO_VMULTIOP
 
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {
@@ -81,16 +81,16 @@ void EulerSolver::solve(double dt)
     computeForce(f);
 // 	if( printLog )
 // 	  {
-// 	    cerr<<"EulerSolver, dt = "<< dt <<endl;
-// 	    cerr<<"EulerSolver, initial x = "<< pos <<endl;
-// 	    cerr<<"EulerSolver, initial v = "<< vel <<endl;
-// 	    cerr<<"EulerSolver, f = "<< f <<endl;
+// 	    serr<<"EulerSolver, dt = "<< dt <<sendl;
+// 	    serr<<"EulerSolver, initial x = "<< pos <<sendl;
+// 	    serr<<"EulerSolver, initial v = "<< vel <<sendl;
+// 	    serr<<"EulerSolver, f = "<< f <<sendl;
 // 	  }
     accFromF(acc, f);
     projectResponse(acc);
 // 	if( printLog )
 // 	  {
-// 	    cerr<<"EulerSolver, a = "<< acc <<endl;
+// 	    serr<<"EulerSolver, a = "<< acc <<sendl;
 // 	  }
 
 
@@ -180,8 +180,8 @@ void EulerSolver::solve(double dt)
 
 // 	if( printLog )
 // 	  {
-// 	    cerr<<"EulerSolver, final x = "<< pos <<endl;
-// 	    cerr<<"EulerSolver, final v = "<< vel <<endl;
+// 	    serr<<"EulerSolver, final x = "<< pos <<sendl;
+// 	    serr<<"EulerSolver, final v = "<< vel <<sendl;
 // 	  }
 }
 

@@ -74,13 +74,13 @@ void OglTexture::initVisual()
 
     if (textureUnit.getValue() > MAX_NUMBER_OF_TEXTURE_UNIT)
     {
-        std::cerr << "Unit Texture too high ; set it at the unit texture n°1" << std::endl;
+        serr << "Unit Texture too high ; set it at the unit texture n°1" << sendl;
         textureUnit.setValue(1);
     }
 
     /*if (textureUnit.getValue() < 1)
     	{
-    		std::cerr << "Unit Texture 0 not permitted ; set it at the unit texture n°1" << std::endl;
+    		serr << "Unit Texture 0 not permitted ; set it at the unit texture n°1" << sendl;
     		textureUnit.setValue(1);
     	}*/
 }
@@ -89,7 +89,7 @@ void OglTexture::reinit()
 {
     if (textureUnit.getValue() > MAX_NUMBER_OF_TEXTURE_UNIT)
     {
-        std::cerr << "Unit Texture too high ; set it at the unit texture n°1" << std::endl;
+        serr << "Unit Texture too high ; set it at the unit texture n°1" << sendl;
         textureUnit.setValue(1);
     }
 
@@ -155,7 +155,7 @@ void OglTexture2D::initVisual()
 
     if (!img)
     {
-        std::cerr << "OglTexture2D: Error : OglTexture2D file " << texture2DFilename.getValue() << " not found." << std::endl;
+        serr << "OglTexture2D: Error : OglTexture2D file " << texture2DFilename.getValue() << " not found." << sendl;
         return;
     }
 

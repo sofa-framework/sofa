@@ -118,7 +118,7 @@ public:
         lastparticles.setTestParameter( (void *) this );
         lastparticles.setRemovalParameter( (void *) this );
 
-        std::cout << "ParticleSource: center="<<f_center.getValue()<<" radius="<<f_radius.getValue()<<" delay="<<f_delay.getValue()<<" start="<<f_start.getValue()<<" stop="<<f_stop.getValue()<<std::endl;
+        sout << "ParticleSource: center="<<f_center.getValue()<<" radius="<<f_radius.getValue()<<" delay="<<f_delay.getValue()<<" start="<<f_start.getValue()<<" stop="<<f_stop.getValue()<<sendl;
     }
 
     virtual void reset()
@@ -136,7 +136,7 @@ public:
 
     virtual void animateBegin(double /*dt*/, double time)
     {
-        //std::cout << "ParticleSource: animate begin time="<<time<<std::endl;
+        //sout << "ParticleSource: animate begin time="<<time<<sendl;
         if (!this->mstate) return;
         if (time < f_start.getValue() || time > f_stop.getValue()) return;
         int i0 = this->mstate->getX()->size();
@@ -144,7 +144,7 @@ public:
         int nparticles = (int)((time - lasttime) / f_delay.getValue());
         if (nparticles>0)
         {
-            //std::cout << "ParticleSource: Creating "<<nparticles<<" particles, total "<<i0+nparticles<<" particles."<<std::endl;
+            //sout << "ParticleSource: Creating "<<nparticles<<" particles, total "<<i0+nparticles<<" particles."<<sendl;
             sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
             _topology = this->getContext()->getMeshTopology();
 
@@ -193,21 +193,21 @@ public:
         {
             if (this->f_printLog.getValue())
             {
-                std::cout << "ParticleSource: handleTopologyChange()"<<std::endl;
-                std::cout << "lastparticles = ";
-                std::copy(lastparticles.begin(),lastparticles.end(),std::ostream_iterator<unsigned int>(std::cout," "));
-                std::cout << std::endl;
+                sout << "ParticleSource: handleTopologyChange()"<<sendl;
+                sout << "lastparticles = ";
+                std::copy(lastparticles.begin(),lastparticles.end(),std::ostream_iterator<unsigned int>(sout," "));
+                sout << sendl;
             }
             int s1 = lastparticles.size();
             lastparticles.handleTopologyEvents(itBegin, itEnd, this->mstate->getSize());
             int s2 = lastparticles.size();
-            if (s2 > s1) std::cout << "ParticleSource: handleTopologyChange(): "<<s2-s1<<" points added!"<<std::endl;
-            if (s2 < s1) std::cout << "ParticleSource: handleTopologyChange(): "<<s1-s2<<" points removed!"<<std::endl;
+            if (s2 > s1) sout << "ParticleSource: handleTopologyChange(): "<<s2-s1<<" points added!"<<sendl;
+            if (s2 < s1) sout << "ParticleSource: handleTopologyChange(): "<<s1-s2<<" points removed!"<<sendl;
             if (this->f_printLog.getValue())
             {
-                std::cout << "NEW lastparticles = ";
-                std::copy(lastparticles.begin(),lastparticles.end(),std::ostream_iterator<unsigned int>(std::cout," "));
-                std::cout << std::endl;
+                sout << "NEW lastparticles = ";
+                std::copy(lastparticles.begin(),lastparticles.end(),std::ostream_iterator<unsigned int>(sout," "));
+                sout << sendl;
             }
         }
     }
@@ -216,7 +216,7 @@ public:
     {
         if (!this->mstate) return;
         if (lastparticles.empty()) return;
-        //std::cout << "ParticleSource: projectResponse of last particle ("<<lastparticle<<")."<<std::endl;
+        //sout << "ParticleSource: projectResponse of last particle ("<<lastparticle<<")."<<sendl;
         double time = getContext()->getTime();
         if (time < f_start.getValue() || time > f_stop.getValue()) return;
         // constraint the last value

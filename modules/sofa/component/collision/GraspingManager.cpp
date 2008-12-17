@@ -77,12 +77,12 @@ void GraspingManager::init()
     }
     for (std::set<ToolModel*>::iterator it=modelTools.begin(), itend=modelTools.end(); it != itend; ++it)
         (*it)->setActive(false);
-    std::cout << "GraspingManager: "<<modelTools.size()<<"/"<<models.size()<<" collision models selected."<<std::endl;
+    sout << "GraspingManager: "<<modelTools.size()<<"/"<<models.size()<<" collision models selected."<<sendl;
     mstateTool = getContext()->get<ToolDOFs>(core::objectmodel::BaseContext::SearchDown);
-    if (mstateTool) std::cout << "GraspingManager: tool DOFs found"<<std::endl;
+    if (mstateTool) sout << "GraspingManager: tool DOFs found"<<sendl;
     contactManager = getContext()->get<core::componentmodel::collision::ContactManager>();
-    if (contactManager) std::cout << "GraspingManager: ContactManager found"<<std::endl;
-    std::cout << "GraspingManager: init OK." << std::endl;
+    if (contactManager) sout << "GraspingManager: ContactManager found"<<sendl;
+    sout << "GraspingManager: init OK." << sendl;
 }
 
 void GraspingManager::reset()
@@ -94,7 +94,7 @@ void GraspingManager::doGrasp()
     bool newActive = active.getValue();
     if (newActive && ! wasActive)
     {
-        std::cout << "GraspingManager activated" << std::endl;
+        sout << "GraspingManager activated" << sendl;
         // activate CMs for one iteration
         for (std::set<ToolModel*>::iterator it=modelTools.begin(), itend=modelTools.end(); it != itend; ++it)
             (*it)->setActive(true);
@@ -108,7 +108,7 @@ void GraspingManager::doGrasp()
 
     if (!newActive && wasActive)
     {
-        std::cout << "GraspingManager released" << std::endl;
+        sout << "GraspingManager released" << sendl;
         // clear existing contacts
         if (contactManager)
         {
@@ -125,7 +125,7 @@ void GraspingManager::doGrasp()
     if (mstateTool)
     {
         double value = (newActive ? closedAngle.getValue() : openAngle.getValue());
-        std::cout << value << std::endl;
+        sout << value << sendl;
         ToolDOFs::VecCoord& x = *mstateTool->getX();
         if (x.size() >= 1)
             x[0] = value;

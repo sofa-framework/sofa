@@ -94,8 +94,8 @@ void HomogenizedEdgeBasedMapping<BasicMapping>::init()
         if (elementIdx==-1)
         {
             elementIdx = this->_sparseGrid->findNearestCube( this->_qFine0[i] , coefs[0], coefs[1], coefs[2] );
-// 			cerr<<"a cote : " <<elementIdx<<"     "<<coefs<<endl;
-// 			cerr<<i<<endl;
+// 			cerr<<"a cote : " <<elementIdx<<"     "<<coefs<<sendl;
+// 			cerr<<i<<sendl;
         }
 
 
@@ -113,7 +113,7 @@ void HomogenizedEdgeBasedMapping<BasicMapping>::init()
             _coarseBarycentricCoord[i][coarsehexa[7]] = (1-coefs[0]) * (coefs[1]) * (coefs[2]);
         }
         else
-            cerr<<"HomogenizedEdgeBasedMapping::init()   error finding the corresponding coarest cube of vertex "<<this->_qFine0[i]<<endl;
+            cerr<<"HomogenizedEdgeBasedMapping::init()   error finding the corresponding coarest cube of vertex "<<this->_qFine0[i]<<sendl;
     }
 
 
@@ -148,9 +148,9 @@ void HomogenizedEdgeBasedMapping<BasicMapping>::init()
 
 
 
-// 					cerr<<coef0<<" "<<coef1<<" "<<barycoef0<<endl;
+// 					cerr<<coef0<<" "<<coef1<<" "<<barycoef0<<sendl;
 
-// 					cerr<<edgecoef<<endl;
+// 					cerr<<edgecoef<<sendl;
 
 
                     if( fabs(edgecoef) > 1.0e-5 )
@@ -192,7 +192,7 @@ void HomogenizedEdgeBasedMapping<BasicMapping>::apply ( OutVecCoord& out, const 
     {
         InCoord e = in[ _edges[i][1] ] - in[ _edges[i][0] ];
         Real n = e.norm();
-        if( n==0.0 ) cerr<<"HomogenizedEdgeBasedMapping apply div 0\n";
+        if( n==0.0 ) serr<<"HomogenizedEdgeBasedMapping apply div 0"<<sendl;
         elongations[i] = (n -_size0[_edges[i][2]])/2.0;
         directions[i] = e/n;
     }
@@ -200,7 +200,7 @@ void HomogenizedEdgeBasedMapping<BasicMapping>::apply ( OutVecCoord& out, const 
 
     for(unsigned i=0; i<_weightsEdge.size(); ++i)
     {
-// 		cerr<<i<<":\n";
+// 		cerr<<i<<":"<<sendl;
         this->_qFine[i] = InCoord(); // TODO interpola baryc
         for( typename std::map< int, Real >::iterator it=_coarseBarycentricCoord[i].begin(); it!=_coarseBarycentricCoord[i].end(); ++it)
         {
@@ -210,14 +210,14 @@ void HomogenizedEdgeBasedMapping<BasicMapping>::apply ( OutVecCoord& out, const 
         for( typename std::map<int,Real>::iterator it = _weightsEdge[i].begin(); it!=_weightsEdge[i].end(); ++it)
         {
             this->_qFine[i] += directions[it->first]*(elongations[ it->first ] * it->second);
-// 			cerr<<it->first<<" "<< it->second<<"     "<<elongations[ it->first ]<<endl;
+// 			cerr<<it->first<<" "<< it->second<<"     "<<elongations[ it->first ]<<sendl;
         }
-// 		cerr<<endl;
+// 		cerr<<sendl;
 
     }
 
 
-    // les déplacements des points mappés
+    // les dï¿½placements des points mappï¿½s
     for(unsigned i=0; i<this->_p0.size(); ++i)
     {
         out[i] = OutCoord();

@@ -392,14 +392,14 @@ void FFDDistanceGridCollisionModel::init()
     ffdGrid = dynamic_cast< topology::RegularGridTopology* > (getContext()->getMeshTopology());
     if (!ffd || !ffdGrid)
     {
-        logWarning("FFDDistanceGridCollisionModel requires a Vec3-based deformable model with associated RegularGridTopology");
+        serr <<"FFDDistanceGridCollisionModel requires a Vec3-based deformable model with associated RegularGridTopology" << sendl;
         return;
     }
 
     DistanceGrid* grid = NULL;
     if (fileFFDDistanceGrid.getValue().empty())
     {
-        logWarning("ERROR: FFDDistanceGridCollisionModel requires an input filename");
+        serr<<"ERROR: FFDDistanceGridCollisionModel requires an input filename" << sendl;
         return;
     }
     std::cout << "FFDDistanceGridCollisionModel: creating "<<nx.getValue()<<"x"<<ny.getValue()<<"x"<<nz.getValue()<<" DistanceGrid from file "<<fileFFDDistanceGrid.getValue();

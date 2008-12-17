@@ -234,9 +234,9 @@ void ImplicitSurfaceMapping<In,Out>::apply( OutVecCoord& out, const InVecCoord& 
                             (b+edgecube[tri[1]])->p[edgepts[tri[1]]],
                             (b+edgecube[tri[2]])->p[edgepts[tri[2]]], out.size())<0)
                     {
-                        std::cerr << "  mk=0x"<<std::hex<<mk<<std::dec<<" p1="<<tri[0]<<" p2="<<tri[1]<<" p3="<<tri[2]<<std::endl;
-                        for (int e=0; e<12; e++) std::cerr << "  e"<<e<<"="<<(b+edgecube[e])->p[edgepts[e]];
-                        std::cerr<<std::endl;
+                        serr << "  mk=0x"<<std::hex<<mk<<std::dec<<" p1="<<tri[0]<<" p2="<<tri[1]<<" p3="<<tri[2]<<sendl;
+                        for (int e=0; e<12; e++) serr << "  e"<<e<<"="<<(b+edgecube[e])->p[edgepts[e]];
+                        serr<<sendl;
                     }
                     tri+=3;
                 }
@@ -244,7 +244,7 @@ void ImplicitSurfaceMapping<In,Out>::apply( OutVecCoord& out, const InVecCoord& 
             }
         }
     }
-    //        std::cout << out.size() << " points, "<<seqTriangles.getValue().size()<<" faces."<<std::endl;
+    //        sout << out.size() << " points, "<<seqTriangles.getValue().size()<<" faces."<<sendl;
 }
 
 template <class In, class Out>

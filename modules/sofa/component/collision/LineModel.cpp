@@ -88,14 +88,14 @@ void LineModel::init()
 
     if (mstate==NULL)
     {
-        logWarning("LineModel requires a Vec3 Mechanical Model");
+        serr << "LineModel requires a Vec3 Mechanical Model" << sendl;
         return;
     }
 
     core::componentmodel::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
     if (!bmt)
     {
-        logWarning("LineModel requires a MeshTopology");
+        serr <<"LineModel requires a MeshTopology" << sendl;
         return;
     }
 
@@ -147,7 +147,7 @@ void LineModel::handleTopologyChange()
             {
             case core::componentmodel::topology::ENDING_EVENT :
             {
-                //	std::cout << "INFO_print : Col - ENDING_EVENT" << std::endl;
+                //	sout << "INFO_print : Col - ENDING_EVENT" << sendl;
                 needsUpdate = true;
                 break;
             }
@@ -155,7 +155,7 @@ void LineModel::handleTopologyChange()
 
             case core::componentmodel::topology::EDGESADDED :
             {
-                //	std::cout << "INFO_print : Col - EDGESADDED" << std::endl;
+                //	sout << "INFO_print : Col - EDGESADDED" << sendl;
                 const sofa::component::topology::EdgesAdded *ta = static_cast< const sofa::component::topology::EdgesAdded * >( *itBegin );
 
                 for (unsigned int i = 0; i < ta->getNbAddedEdges(); ++i)
@@ -172,7 +172,7 @@ void LineModel::handleTopologyChange()
 
             case core::componentmodel::topology::EDGESREMOVED :
             {
-                //std::cout << "INFO_print : Col - EDGESREMOVED" << std::endl;
+                //sout << "INFO_print : Col - EDGESREMOVED" << sendl;
                 unsigned int last;
                 unsigned int ind_last;
 
@@ -198,9 +198,9 @@ void LineModel::handleTopologyChange()
                     elems[ind_k] = elems[last];
                     elems[last] = tmp;
 
-                    //std::cout << "INFO_print : Col - myedges.size() = " << myedges.size() << std::endl;
-                    //std::cout << "INFO_print : Col - ind_k = " << ind_k << std::endl;
-                    //std::cout << "INFO_print : Col - last = " << last << std::endl;
+                    //sout << "INFO_print : Col - myedges.size() = " << myedges.size() << sendl;
+                    //sout << "INFO_print : Col - ind_k = " << ind_k << sendl;
+                    //sout << "INFO_print : Col - last = " << last << sendl;
 
                     //tmp2 = myedges[ind_k];
                     //myedges[ind_k] = myedges[last];
@@ -232,7 +232,7 @@ void LineModel::handleTopologyChange()
 
             case core::componentmodel::topology::POINTSREMOVED :
             {
-                //std::cout << "INFO_print : Col - POINTSREMOVED" << std::endl;
+                //sout << "INFO_print : Col - POINTSREMOVED" << sendl;
                 if (bmt)
                 {
                     unsigned int last = bmt->getNbPoints() - 1;
@@ -288,7 +288,7 @@ void LineModel::handleTopologyChange()
 
             case core::componentmodel::topology::POINTSRENUMBERING:
             {
-                //std::cout << "INFO_print : Vis - POINTSRENUMBERING" << std::endl;
+                //sout << "INFO_print : Vis - POINTSRENUMBERING" << sendl;
                 if (bmt)
                 {
                     unsigned int i;
@@ -340,7 +340,7 @@ void LineModel::updateFromTopology()
 
             if (idx[0] >= nbPoints || idx[1] >= nbPoints)
             {
-                std::cerr << "ERROR: Out of range index in Line " << i << ": " << idx[0] << " " << idx[1] << " ( total points = " << nbPoints << " )\n";
+                serr << "ERROR: Out of range index in Line " << i << ": " << idx[0] << " " << idx[1] << " ( total points = " << nbPoints << " )"<<sendl;
                 continue;
             }
 
@@ -393,12 +393,12 @@ bool LineModel::canCollideWithElement(int index, CollisionModel* model2, int ind
     if (this->getContext() != model2->getContext()) return true;
     if (model2 == this)
     {
-        //std::cout << "line self test "<<index<<" - "<<index2<<std::endl;
+        //sout << "line self test "<<index<<" - "<<index2<<sendl;
         return index < index2-2; // || index > index2+1;
     }
     else if (model2 == mpoints)
     {
-        //std::cout << "line-point self test "<<index<<" - "<<index2<<std::endl;
+        //sout << "line-point self test "<<index<<" - "<<index2<<sendl;
         return index2 < elems[index].i1-1 || index2 > elems[index].i2+1;
     }
     else

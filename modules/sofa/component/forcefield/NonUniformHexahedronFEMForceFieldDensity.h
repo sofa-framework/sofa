@@ -81,6 +81,9 @@ public:
     typedef typename HexahedronFEMForceFieldAndMassT::MassT MassT;
     typedef typename HexahedronFEMForceFieldAndMassT::ElementMass ElementMass;
 
+    using HexahedronFEMForceFieldAndMassT::sout;
+    using HexahedronFEMForceFieldAndMassT::serr;
+    using HexahedronFEMForceFieldAndMassT::sendl;
 
 public:
 

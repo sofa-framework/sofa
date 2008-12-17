@@ -86,6 +86,10 @@ public:
     typedef typename NonUniformHexahedronFEMForceFieldAndMassT::ElementMass ElementMass;
 
 
+    using NonUniformHexahedronFEMForceFieldAndMassT::sout;
+    using NonUniformHexahedronFEMForceFieldAndMassT::serr;
+    using NonUniformHexahedronFEMForceFieldAndMassT::sendl;
+
     typedef typename NonUniformHexahedronFEMForceFieldAndMassT::VecElement VecElement;
 
     typedef Mat<8*3, 8*3, Real> Weight;
@@ -115,7 +119,7 @@ public:
 
 
     virtual void init();
-    virtual void reinit()  { std::cerr<<"WARNING : homogenized mechanical properties can't be updated, changes on mechanical properties (young, poisson, density) are not taken into account.\n"; }
+    virtual void reinit()  { serr<<"WARNING : homogenized mechanical properties can't be updated, changes on mechanical properties (young, poisson, density) are not taken into account."<<sendl; }
 
     virtual void draw();
 

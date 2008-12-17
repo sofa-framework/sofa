@@ -44,9 +44,9 @@ using namespace sofa::defaulttype;
 using namespace	sofa::component::topology;
 using namespace core::componentmodel::topology;
 
-using std::cerr;
-using std::cout;
-using std::endl;
+
+
+
 
 using core::componentmodel::topology::BaseMeshTopology;
 
@@ -179,14 +179,14 @@ template <class DataTypes> TriangularBiquadraticSpringsForceField<DataTypes>::~T
 
 template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes>::init()
 {
-    std::cerr << "initializing TriangularBiquadraticSpringsForceField" << std::endl;
+    serr << "initializing TriangularBiquadraticSpringsForceField" << sendl;
     this->Inherited::init();
 
     _topology = getContext()->getMeshTopology();
 
     if (_topology->getNbTriangles()==0)
     {
-        std::cerr << "ERROR(TriangularBiquadraticSpringsForceField): object must have a Triangular Set Topology.\n";
+        serr << "ERROR(TriangularBiquadraticSpringsForceField): object must have a Triangular Set Topology."<<sendl;
         return;
     }
     updateLameCoefficients();
@@ -230,7 +230,7 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
 template <class DataTypes>
 double TriangularBiquadraticSpringsForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
 {
-    std::cerr<<"TriangularBiquadraticSpringsForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    serr<<"TriangularBiquadraticSpringsForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 template <class DataTypes>
@@ -287,7 +287,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(VecDeriv& f, co
                 f[ta[k]]-=force;
             }
         }
-        //	std::cerr << "tinfo->gamma[0] "<<tinfo->gamma[0]<<std::endl;
+        //	serr << "tinfo->gamma[0] "<<tinfo->gamma[0]<<sendl;
 
     }
 
@@ -303,7 +303,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, 
 
     TriangleRestInformation *tinfo;
 
-//	std::cerr << "start addDForce" << std::endl;
+//	serr << "start addDForce" << sendl;
 
 
     assert(this->mstate);
@@ -318,7 +318,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, 
         Real val1,val2,vali,valj,valk;
         Coord dpj,dpk,dpi;
 
-        //	std::cerr <<"updating matrix"<<std::endl;
+        //	serr <<"updating matrix"<<sendl;
         updateMatrix=false;
         for(int l=0; l<nbTriangles; l++ )
         {
@@ -410,7 +410,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::updateLameCoefficients()
 {
     lambda= f_youngModulus.getValue()*f_poissonRatio.getValue()/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
     mu = f_youngModulus.getValue()*(1-f_poissonRatio.getValue())/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
-//	std::cerr << "initialized Lame coef : lambda=" <<lambda<< " mu="<<mu<<std::endl;
+//	serr << "initialized Lame coef : lambda=" <<lambda<< " mu="<<mu<<sendl;
 }
 
 

@@ -133,7 +133,7 @@ void EllipsoidForceField<DataTypes>::addDForce(VecDeriv& df1, const VecDeriv& dx
 template <class DataTypes>
 double EllipsoidForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 {
-    std::cerr<<"EllipsoidForceField::getPotentialEnergy-not-implemented !!!"<<std::endl;
+    serr<<"EllipsoidForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 

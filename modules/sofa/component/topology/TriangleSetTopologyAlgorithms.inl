@@ -61,8 +61,8 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::Suture2Points(unsigned int ind_
     // Access the topology
     m_geometryAlgorithms->computeClosestIndexPair(ind_ta, ind_tb, ind1, ind2);
 
-    //std::cout << "INFO_print : ind1 = " << ind1 << std::endl;
-    //std::cout << "INFO_print : ind2 = " << ind2 << std::endl;
+    //sout << "INFO_print : ind1 = " << ind1 << sendl;
+    //sout << "INFO_print : ind2 = " << ind2 << sendl;
 
     Vec<3,double> point_created = m_geometryAlgorithms->computeBaryEdgePoint(ind1, ind2, 0.5);
 
@@ -129,14 +129,14 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
         bool is_a_inside = m_geometryAlgorithms->isPointInTriangle(ind_ta_new, true, a_new, ind_ta_test);
         if(is_a_inside)
         {
-            std::cout << "a is inside" <<  std::endl;
+            sout << "a is inside" <<  sendl;
         }
         else
         {
-            std::cout << "a is NOT inside !!!" <<  std::endl;
+            sout << "a is NOT inside !!!" <<  sendl;
             if(ind_ta_new == ind_ta_test) // fail
             {
-                //std::cout << "fail !!!" <<  std::endl;
+                //sout << "fail !!!" <<  sendl;
                 return false;
             }
             else
@@ -150,14 +150,14 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
         bool is_b_inside = m_geometryAlgorithms->isPointInTriangle(ind_tb_new, true, b_new, ind_tb_test);
         if(is_b_inside)
         {
-            std::cout << "b is inside" <<  std::endl;
+            sout << "b is inside" <<  sendl;
         }
         else
         {
-            std::cout << "b is NOT inside !!!" <<  std::endl;
+            sout << "b is NOT inside !!!" <<  sendl;
             if(ind_tb_new==ind_tb_test) // fail
             {
-                //std::cout << "fail !!!" <<  std::endl;
+                //sout << "fail !!!" <<  sendl;
                 return false;
             }
             else
@@ -288,7 +288,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
     }
     if (ind_tb == (unsigned)-1)
     {
-        std::cout << "Final triangle is " << ind_tb_final <<" : " << m_container->getTriangle(ind_tb_final) << std::endl;
+        sout << "Final triangle is " << ind_tb_final <<" : " << m_container->getTriangle(ind_tb_final) << sendl;
         ind_tb = ind_tb_final;
     }
 
@@ -332,7 +332,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
 
         double is_snapping_a = is_snap_a0 || is_snap_a1 || is_snap_a2;
 
-        //std::cout << "a_baryCoefs = " << a_baryCoefs[0] << ", " << a_baryCoefs[1] << ", " << a_baryCoefs[2] <<  std::endl;
+        //sout << "a_baryCoefs = " << a_baryCoefs[0] << ", " << a_baryCoefs[1] << ", " << a_baryCoefs[2] <<  sendl;
 
         sofa::helper::vector< unsigned int > a_first_ancestors;
         sofa::helper::vector< double > a_first_baryCoefs;
@@ -570,24 +570,24 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
                         ind_p=p2;
                     }
 
-                    // std::cout << "INFO_print : DO is_snapping_p, i = " << i << " on vertex " << ind_p <<  std::endl;
+                    // sout << "INFO_print : DO is_snapping_p, i = " << i << " on vertex " << ind_p <<  sendl;
 
                     sofa::helper::vector< unsigned int > triangles_list_1;
 
                     sofa::helper::vector< unsigned int > triangles_list_2;
 
-                    // std::cout << "INFO_print : DO Prepare_VertexDuplication " <<  std::endl;
+                    // sout << "INFO_print : DO Prepare_VertexDuplication " <<  sendl;
                     m_geometryAlgorithms->prepareVertexDuplication(ind_p, triangles_list[i], triangles_list[i+1], m_container->getEdge(edges_list[i-1]), coords_list[i-1], m_container->getEdge(edges_list[i+1]), coords_list[i+1], triangles_list_1, triangles_list_2);
-                    // std::cout << "INFO_print : DONE Prepare_VertexDuplication " <<  std::endl;
+                    // sout << "INFO_print : DONE Prepare_VertexDuplication " <<  sendl;
 
-                    // std::cout << "INFO_print : triangles_list_1.size() = " << triangles_list_1.size() <<  std::endl;
+                    // sout << "INFO_print : triangles_list_1.size() = " << triangles_list_1.size() <<  sendl;
                     //for (unsigned int k=0;k<triangles_list_1.size();k++){
-                    // std::cout << "INFO_print : triangles_list_1 number " << k << " = " << triangles_list_1[k] <<  std::endl;
+                    // sout << "INFO_print : triangles_list_1 number " << k << " = " << triangles_list_1[k] <<  sendl;
                     //}
 
-                    // std::cout << "INFO_print : triangles_list_2.size() = " << triangles_list_2.size() <<  std::endl;
+                    // sout << "INFO_print : triangles_list_2.size() = " << triangles_list_2.size() <<  sendl;
                     //for (unsigned int k=0;k<triangles_list_2.size();k++){
-                    // std::cout << "INFO_print : triangles_list_2 number " << k << " = " << triangles_list_2[k] <<  std::endl;
+                    // sout << "INFO_print : triangles_list_2 number " << k << " = " << triangles_list_2[k] <<  sendl;
                     //}
                 }
 
@@ -720,7 +720,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
 
             double is_snapping_b = is_snap_b0 || is_snap_b1 || is_snap_b2;
 
-            //std::cout << "b_baryCoefs = " << b_baryCoefs[0] << ", " << b_baryCoefs[1] << ", " << b_baryCoefs[2] <<  std::endl;
+            //sout << "b_baryCoefs = " << b_baryCoefs[0] << ", " << b_baryCoefs[1] << ", " << b_baryCoefs[2] <<  sendl;
 
             sofa::helper::vector< unsigned int > b_first_ancestors;
             sofa::helper::vector< double > b_first_baryCoefs;
@@ -987,7 +987,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
         // Create all the triangles registered to be created
         m_modifier->addTrianglesProcess((const sofa::helper::vector< Triangle > &) triangles_to_create) ; // WARNING called after the creation process by the method "addTrianglesProcess"
 
-        //cout<<"INFO, number to create = "<< triangles_to_create.size() <<endl;
+        //sout<<"INFO, number to create = "<< triangles_to_create.size() <<sendl;
 
         // Warn for the creation of all the triangles registered to be created
         m_modifier->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList);
@@ -998,7 +998,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
         // Remove all the triangles registered to be removed
         m_modifier->removeTriangles(triangles_to_remove, true, true); // (WARNING then PROPAGATION) called before the removal process by the method "removeTriangles"
 
-        //cout<<"INFO, number to remove = "<< triangles_to_remove.size() <<endl;
+        //sout<<"INFO, number to remove = "<< triangles_to_remove.size() <<sendl;
 
         // Propagate the topological changes *** not necessary
         //m_modifier->propagateTopologicalChanges();
@@ -1139,10 +1139,10 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
 
     /*
     if(is_snapping_a){
-    std::cout << "INFO_print : is_snapping_a" <<  std::endl;
+    sout << "INFO_print : is_snapping_a" <<  sendl;
     }
     if(is_snapping_b){
-    std::cout << "INFO_print : is_snapping_b" <<  std::endl;
+    sout << "INFO_print : is_snapping_b" <<  sendl;
     }
     */
 
@@ -1370,24 +1370,24 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
                         ind_p=p2;
                     }
 
-                    //std::cout << "INFO_print : is_snapping_p, i = " << i << " on vertex " << ind_p <<  std::endl;
+                    //sout << "INFO_print : is_snapping_p, i = " << i << " on vertex " << ind_p <<  sendl;
 
                     sofa::helper::vector< unsigned int > triangles_list_1;
 
                     sofa::helper::vector< unsigned int > triangles_list_2;
 
-                    //std::cout << "INFO_print : DO Prepare_VertexDuplication " <<  std::endl;
+                    //sout << "INFO_print : DO Prepare_VertexDuplication " <<  sendl;
                     m_geometryAlgorithms->prepareVertexDuplication(ind_p, triangles_list[i], triangles_list[i+1], m_container->getEdge(edges_list[i-1]), coords_list[i-1], m_container->getEdge(edges_list[i+1]), coords_list[i+1], triangles_list_1, triangles_list_2);
-                    //std::cout << "INFO_print : DONE Prepare_VertexDuplication " <<  std::endl;
+                    //sout << "INFO_print : DONE Prepare_VertexDuplication " <<  sendl;
 
-                    //std::cout << "INFO_print : triangles_list_1.size() = " << triangles_list_1.size() <<  std::endl;
+                    //sout << "INFO_print : triangles_list_1.size() = " << triangles_list_1.size() <<  sendl;
                     //for (unsigned int k=0;k<triangles_list_1.size();k++){
-                    //		std::cout << "INFO_print : triangles_list_1 number " << k << " = " << triangles_list_1[k] <<  std::endl;
+                    //		sout << "INFO_print : triangles_list_1 number " << k << " = " << triangles_list_1[k] <<  sendl;
                     //}
 
-                    //std::cout << "INFO_print : triangles_list_2.size() = " << triangles_list_2.size() <<  std::endl;
+                    //sout << "INFO_print : triangles_list_2.size() = " << triangles_list_2.size() <<  sendl;
                     //for (unsigned int k=0;k<triangles_list_2.size();k++){
-                    //		std::cout << "INFO_print : triangles_list_2 number " << k << " = " << triangles_list_2[k] <<  std::endl;
+                    //		sout << "INFO_print : triangles_list_2 number " << k << " = " << triangles_list_2[k] <<  sendl;
                     //}
                 }
 
@@ -1729,7 +1729,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, co
             for (corner = 0; corner < 3 && (edge[0]==t[corner] || edge[1]==t[corner]); ++corner) {}
             if (corner == 3)
             {
-                std::cerr << "ERROR: Degenerate triangle " << tid << " : " << t << std::endl;
+                serr << "ERROR: Degenerate triangle " << tid << " : " << t << sendl;
                 continue;
             }
             if (p != t[corner])
@@ -1761,7 +1761,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, co
             for (corner = 0; corner < 3 && ((edge1[0]!=t[corner] && edge1[1]!=t[corner]) || (edge2[0]!=t[corner] && edge2[1]!=t[corner])); ++corner) {}
             if (corner == 3)
             {
-                std::cerr << "ERROR: triangle " << tid << " ( " << t << " ) does not contain edges " << e1 << " ( " << edge1 << " ) and " << e2 << " ( " << edge2 << " )." << std::endl;
+                serr << "ERROR: triangle " << tid << " ( " << t << " ) does not contain edges " << e1 << " ( " << edge1 << " ) and " << e2 << " ( " << edge2 << " )." << sendl;
                 continue;
             }
             PointID p = t[corner];
@@ -1856,7 +1856,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, co
         }
         EdgeID e = m_container->getEdgeIndex(p1, p2);
         if (e == (EdgeID)-1)
-            std::cerr << "ERROR: Edge " << p1 << " - " << p2 << " NOT FOUND." << std::endl;
+            serr << "ERROR: Edge " << p1 << " - " << p2 << " NOT FOUND." << sendl;
         else
             new_edges.push_back(e);
     }
@@ -1904,13 +1904,13 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
                 init_points.push_back(edge[0]);
             else
             {
-                std::cerr << "ERROR: edges are not connected after number " << i-1 << " : " << edges << std::endl;
+                serr << "ERROR: edges are not connected after number " << i-1 << " : " << edges << sendl;
                 return false;
             }
         }
     }
 
-    std::cout << "Points on the path: " << init_points << std::endl;
+    sout << "Points on the path: " << init_points << sendl;
 
     sofa::helper::vector< std::pair<TriangleID,TriangleID> > init_triangles;
     for (int i=0; i<nbEdges; ++i)
@@ -1918,7 +1918,7 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
         const sofa::helper::vector<TriangleID>& shell = m_container->getTriangleEdgeShell(edges[i]);
         if (shell.size() != 2)
         {
-            std::cerr << "ERROR: cannot split an edge with " << shell.size() << "!=2 attached triangles." << std::endl;
+            serr << "ERROR: cannot split an edge with " << shell.size() << "!=2 attached triangles." << sendl;
             return false;
         }
         init_triangles.push_back(std::make_pair(shell[0],shell[1]));
@@ -1928,13 +1928,13 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
     bool endOnBorder = (m_container->getTriangleVertexShell(init_points.back()).size() < m_container->getEdgeVertexShell(init_points.back()).size());
     if (!beginOnBorder && !endOnBorder && nbEdges == 1)
     {
-        std::cerr << "ERROR: cannot split a single edge not on the border." << std::endl;
+        serr << "ERROR: cannot split a single edge not on the border." << sendl;
         return false;
     }
 
     if (!beginOnBorder) end_points.push_back(init_points.front());
     if (!endOnBorder) end_points.push_back(init_points.back());
-    std::cout << "End points : " << end_points << std::endl;
+    sout << "End points : " << end_points << sendl;
 
     /// STEP 1: Create the new points corresponding the one of the side of the now separated edges
     int first_new_point = beginOnBorder ? 0 : 1;
@@ -2046,7 +2046,7 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
         }
         if (!changed)
         {
-            std::cerr << "ERROR: Triangle " << tid << " ( " << t << " ) was flagged as updated but no change was found." << std::endl;
+            serr << "ERROR: Triangle " << tid << " ( " << t << " ) was flagged as updated but no change was found." << sendl;
         }
         else
         {
@@ -2093,7 +2093,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
     const helper::vector<unsigned>& triangles0 = m_container->getTriangleEdgeShell(ind_edge);
     if (triangles0.size() != 2)
     {
-        std::cerr << "InciseAlongEdge: ERROR edge "<<ind_edge<<" is not attached to 2 triangles." << std::endl;
+        serr << "InciseAlongEdge: ERROR edge "<<ind_edge<<" is not attached to 2 triangles." << sendl;
         return -1;
     }
 
@@ -2121,7 +2121,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
         }
         if (j == 3)
         {
-            std::cerr << "InciseAlongEdge: ERROR in triangle "<<ind_tria<<std::endl;
+            serr << "InciseAlongEdge: ERROR in triangle "<<ind_tria<<sendl;
             return -1;
         }
 
@@ -2153,7 +2153,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
         }
         if (j == 3)
         {
-            std::cerr << "InciseAlongEdge: ERROR in triangle "<<ind_trib<<std::endl;
+            serr << "InciseAlongEdge: ERROR in triangle "<<ind_trib<<sendl;
             return -1;
         }
 
@@ -2177,7 +2177,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
 
     if (!pa_is_on_border && !pb_is_on_border)
     {
-        std::cerr << "InciseAlongEdge: ERROR edge "<<ind_edge<<" is not on border." << std::endl;
+        serr << "InciseAlongEdge: ERROR edge "<<ind_edge<<" is not on border." << sendl;
         return -1;
     }
 

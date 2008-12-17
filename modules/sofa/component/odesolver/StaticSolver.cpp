@@ -30,9 +30,9 @@
 #include <math.h>
 #include <iostream>
 
-using std::cout;
-using std::cerr;
-using std::endl;
+
+
+
 
 namespace sofa
 {
@@ -67,30 +67,30 @@ void StaticSolver::solve(double dt)
     b.teq(-1);
 
     if( f_printLog.getValue() )
-        cerr<<"StaticSolver, f0 = "<< b <<endl;
+        serr<<"StaticSolver, f0 = "<< b <<sendl;
     MultiMatrix matrix(this);
     //matrix = MechanicalMatrix::K;
     matrix = MechanicalMatrix(massCoef.getValue(),dampingCoef.getValue(),stiffnessCoef.getValue());
 
     if( f_printLog.getValue() )
-        cerr<<"StaticSolver, matrix = "<< (MechanicalMatrix::K) << " = " << matrix <<endl;
+        serr<<"StaticSolver, matrix = "<< (MechanicalMatrix::K) << " = " << matrix <<sendl;
 
     matrix.solve(x,b);
     // x is the solution of the system
 
     // apply the solution
-    /*    cerr<<"StaticSolver::solve, nb iter = "<<nb_iter<<endl;
-     cerr<<"StaticSolver::solve, solution = "<<x<<endl;*/
+    /*    serr<<"StaticSolver::solve, nb iter = "<<nb_iter<<sendl;
+     serr<<"StaticSolver::solve, solution = "<<x<<sendl;*/
 
     if( f_printLog.getValue() )
-        cerr<<"StaticSolver, solution = "<< x <<endl;
+        serr<<"StaticSolver, solution = "<< x <<sendl;
     pos.peq( x );
 
 
 #ifdef SOFA_HAVE_LAPACK
     applyConstraints();
 #endif
-    /*    cerr<<"StaticSolver::solve, new pos = "<<pos<<endl;*/
+    /*    serr<<"StaticSolver::solve, new pos = "<<pos<<sendl;*/
 }
 
 int StaticSolverClass = core::RegisterObject("A solver which seeks the static equilibrium of the scene it monitors")

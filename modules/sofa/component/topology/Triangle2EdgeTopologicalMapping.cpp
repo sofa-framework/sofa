@@ -76,19 +76,19 @@ Triangle2EdgeTopologicalMapping::~Triangle2EdgeTopologicalMapping()
 
 void Triangle2EdgeTopologicalMapping::init()
 {
-    std::cout << "INFO_print : init Triangle2EdgeTopologicalMapping" << std::endl;
+    sout << "INFO_print : init Triangle2EdgeTopologicalMapping" << sendl;
 
     // INITIALISATION of EDGE mesh from TRIANGULAR mesh :
 
     if (fromModel)
     {
 
-        std::cout << "INFO_print : Triangle2EdgeTopologicalMapping - from = triangle" << std::endl;
+        sout << "INFO_print : Triangle2EdgeTopologicalMapping - from = triangle" << sendl;
 
         if (toModel)
         {
 
-            std::cout << "INFO_print : Triangle2EdgeTopologicalMapping - to = edge" << std::endl;
+            sout << "INFO_print : Triangle2EdgeTopologicalMapping - to = edge" << sendl;
 
             EdgeSetTopologyContainer *to_tstc;
             toModel->getContext()->get(to_tstc);
@@ -168,7 +168,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::componentmodel::topology::ENDING_EVENT:
                 {
-                    //std::cout << "INFO_print : Triangle2EdgeTopologicalMapping - ENDING_EVENT" << std::endl;
+                    //sout << "INFO_print : Triangle2EdgeTopologicalMapping - ENDING_EVENT" << sendl;
                     to_tstm->propagateTopologicalChanges();
                     to_tstm->notifyEndingEvent();
                     to_tstm->propagateTopologicalChanges();
@@ -177,7 +177,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::componentmodel::topology::EDGESREMOVED:
                 {
-                    //std::cout << "INFO_print : Triangle2EdgeTopologicalMapping - EDGESREMOVED" << std::endl;
+                    //sout << "INFO_print : Triangle2EdgeTopologicalMapping - EDGESREMOVED" << sendl;
 
                     int last;
                     int ind_last;
@@ -252,8 +252,8 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                         else
                         {
 
-                            std::cout << "INFO_print : Triangle2EdgeTopologicalMapping - Glob2LocMap should have the visible edge " << tab[i] << std::endl;
-                            std::cout << "INFO_print : Triangle2EdgeTopologicalMapping - nb edges = " << ind_last << std::endl;
+                            sout << "INFO_print : Triangle2EdgeTopologicalMapping - Glob2LocMap should have the visible edge " << tab[i] << sendl;
+                            sout << "INFO_print : Triangle2EdgeTopologicalMapping - nb edges = " << ind_last << sendl;
                         }
 
                         --last;
@@ -267,7 +267,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                 case core::componentmodel::topology::TRIANGLESREMOVED:
                 {
 
-                    //std::cout << "INFO_print : Triangle2EdgeTopologicalMapping - TRIANGLESREMOVED" << std::endl;
+                    //sout << "INFO_print : Triangle2EdgeTopologicalMapping - TRIANGLESREMOVED" << sendl;
 
                     if (fromModel)
                     {
@@ -339,7 +339,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                                         std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
                                         if(iter_1 != Glob2LocMap.end() )
                                         {
-                                            std::cout << "INFO_print : Triangle2EdgeTopologicalMapping - fail to add edge " << k << "which already exists" << std::endl;
+                                            sout << "INFO_print : Triangle2EdgeTopologicalMapping - fail to add edge " << k << "which already exists" << sendl;
                                             Glob2LocMap.erase(Glob2LocMap.find(k));
                                         }
                                         Glob2LocMap[k]=Loc2GlobVec.size()-1;
@@ -359,7 +359,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::componentmodel::topology::POINTSREMOVED:
                 {
-                    //std::cout << "INFO_print : Triangle2EdgeTopologicalMapping - POINTSREMOVED" << std::endl;
+                    //sout << "INFO_print : Triangle2EdgeTopologicalMapping - POINTSREMOVED" << sendl;
 
                     const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
@@ -382,7 +382,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::componentmodel::topology::POINTSRENUMBERING:
                 {
-                    //std::cout << "INFO_print : Hexa2TriangleTopologicalMapping - POINTSREMOVED" << std::endl;
+                    //sout << "INFO_print : Hexa2TriangleTopologicalMapping - POINTSREMOVED" << sendl;
 
                     const sofa::helper::vector<unsigned int> &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
                     const sofa::helper::vector<unsigned int> &inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
@@ -393,7 +393,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                     for(unsigned int i = 0; i < tab.size(); ++i)
                     {
 
-                        //std::cout << "INFO_print : Hexa2TriangleTopologicalMapping - point = " << tab[i] << std::endl;
+                        //sout << "INFO_print : Hexa2TriangleTopologicalMapping - point = " << tab[i] << sendl;
                         indices.push_back(tab[i]);
                         inv_indices.push_back(inv_tab[i]);
                     }
@@ -412,7 +412,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                 case core::componentmodel::topology::EDGESADDED:
                 {
 
-                	//std::cout << "INFO_print : Triangle2EdgeTopologicalMapping - EDGESADDED" << std::endl;
+                	//sout << "INFO_print : Triangle2EdgeTopologicalMapping - EDGESADDED" << sendl;
 
                 	if (fromModel) {
 
@@ -437,7 +437,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                 			Loc2GlobVec.push_back(k);
                 			std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
                 			if(iter_1 != Glob2LocMap.end() ) {
-                				std::cout << "INFO_print : Triangle2EdgeTopologicalMapping - fail to add edge " << k << "which already exists" << std::endl;
+                				sout << "INFO_print : Triangle2EdgeTopologicalMapping - fail to add edge " << k << "which already exists" << sendl;
                 				Glob2LocMap.erase(Glob2LocMap.find(k));
                 			}
                 			Glob2LocMap[k]=Loc2GlobVec.size()-1;
@@ -456,7 +456,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                 case core::componentmodel::topology::TRIANGLESADDED:
                 {
 
-                    //std::cout << "INFO_print : Triangle2EdgeTopologicalMapping - TRIANGLESADDED" << std::endl;
+                    //sout << "INFO_print : Triangle2EdgeTopologicalMapping - TRIANGLESADDED" << sendl;
 
                     if (fromModel)
                     {
@@ -521,7 +521,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                                         std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
                                         if(iter_1 != Glob2LocMap.end() )
                                         {
-                                            std::cout << "INFO_print : Triangle2EdgeTopologicalMapping - fail to add edge " << k << "which already exists" << std::endl;
+                                            sout << "INFO_print : Triangle2EdgeTopologicalMapping - fail to add edge " << k << "which already exists" << sendl;
                                             Glob2LocMap.erase(Glob2LocMap.find(k));
                                         }
                                         Glob2LocMap[k]=Loc2GlobVec.size()-1;
@@ -547,7 +547,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::componentmodel::topology::POINTSADDED:
                 {
-                    //std::cout << "INFO_print : Triangle2EdgeTopologicalMapping - POINTSADDED" << std::endl;
+                    //sout << "INFO_print : Triangle2EdgeTopologicalMapping - POINTSADDED" << sendl;
 
                     const sofa::component::topology::PointsAdded *ta=static_cast< const sofa::component::topology::PointsAdded * >( *itBegin );
                     to_tstm->addPointsProcess(ta->getNbAddedVertices());

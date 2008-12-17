@@ -71,14 +71,14 @@ void EvalSurfaceDistance<DataTypes>::init()
     c1->get(pointsCM);
     if (pointsCM == NULL)
     {
-        std::cerr << "EvalSurfaceDistance ERROR: object1 PointModel not found."<<std::endl;
+        serr << "EvalSurfaceDistance ERROR: object1 PointModel not found."<<sendl;
         return;
     }
     sofa::core::objectmodel::BaseContext* c2 = this->mstate2->getContext();
     c2->get(surfaceCM);
     if (surfaceCM == NULL)
     {
-        std::cerr << "EvalSurfaceDistance ERROR: object2 TriangleModel not found."<<std::endl;
+        serr << "EvalSurfaceDistance ERROR: object2 TriangleModel not found."<<sendl;
         return;
     }
 
@@ -109,7 +109,7 @@ SReal EvalSurfaceDistance<DataTypes>::eval()
     vectCMPair.push_back(std::make_pair(surfaceCM->getFirst(), pointsCM->getFirst()));
 
     detection->beginNarrowPhase();
-    std::cout << "narrow phase detection between " <<surfaceCM->getClassName()<< " and " << pointsCM->getClassName() << std::endl;
+    sout << "narrow phase detection between " <<surfaceCM->getClassName()<< " and " << pointsCM->getClassName() << sendl;
     detection->addCollisionPairs(vectCMPair);
     detection->endNarrowPhase();
 
@@ -128,7 +128,7 @@ SReal EvalSurfaceDistance<DataTypes>::eval()
         const ContactVector* contacts = dynamic_cast<const ContactVector*>(it->second);
         if (contacts != NULL)
         {
-            std::cout << contacts->size() << " contacts detected." << std::endl;
+            sout << contacts->size() << " contacts detected." << sendl;
             for (unsigned int i=0; i<contacts->size(); i++)
             {
                 if ((*contacts)[i].elem.first.getCollisionModel() == surfaceCM)

@@ -73,7 +73,7 @@ void ArticulatedSystemMapping<BasicMapping>::init()
         std::string::size_type end_index = 0;
         if (rootModel)
         {
-            std::cerr << "Root Model found : Name = " << rootModel->getName() << std::endl;
+            serr << "Root Model found : Name = " << rootModel->getName() << sendl;
 
         }
         while ( (end_index = str.find("/", begin_index)) != std::string::npos )
@@ -130,7 +130,7 @@ void ArticulatedSystemMapping<BasicMapping>::init()
         (*ac)->DisplacementArticulationCenter.clear();
         (*ac)->Disp_Rotation.clear();
 
-        // std::cout << "(*ac)->OrientationArticulationCenter : " << (*ac)->OrientationArticulationCenter << std::endl;
+        // sout << "(*ac)->OrientationArticulationCenter : " << (*ac)->OrientationArticulationCenter << sendl;
         // todo : warning if a (*a)->articulationIndex.getValue() exceed xfrom size !
     }
 
@@ -160,7 +160,7 @@ void ArticulatedSystemMapping<BasicMapping>::apply( typename Out::VecCoord& out,
     if (rootModel)
     {
         out[0] = (*inroot)[rootModel->getSize()-1];
-        //	std::cout << "Root Model Name = " << rootModel->getName() << std::endl;
+        //	sout << "Root Model Name = " << rootModel->getName() << sendl;
         //   out[0] = (*rootModel->getX())[rootModel->getSize()-1];
     }
 
@@ -228,7 +228,7 @@ void ArticulatedSystemMapping<BasicMapping>::apply( typename Out::VecCoord& out,
         }
         case 1: // the axis of the articulations are linked to the parent - rotations are treated by successive increases -
         {
-            //std::cout<<"Case 1"<<std::endl;
+            //sout<<"Case 1"<<sendl;
             // no reset of the position of the child its position is corrected at the end to respect the articulation center.
 
             for (; a != aEnd; a++)
@@ -281,7 +281,7 @@ void ArticulatedSystemMapping<BasicMapping>::apply( typename Out::VecCoord& out,
 
         case 2: // the axis of the articulations are linked to the child (previous pos) - rotations are treated by successive increases -
         {
-            //std::cout<<"Case 2"<<std::endl;
+            //sout<<"Case 2"<<sendl;
             // no reset of the position of the child its position is corrected at the end to respect the articulation center.
             //Quat dq(0,0,0,1);
             Vec<3,Real> disp(0,0,0);
@@ -351,7 +351,7 @@ template <class BasicMapping>
 void ArticulatedSystemMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in, const typename InRoot::VecDeriv* inroot )
 {
 
-    //std::cout<<" \n ApplyJ ";
+    //sout<<" \n ApplyJ ";
     OutVecCoord& xto = *this->toModel->getX();
 
     out.clear();
@@ -360,7 +360,7 @@ void ArticulatedSystemMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out
     // Copy the root position if a rigid root model is present
     if (inroot)
     {
-        // std::cout << "Root Model Name = " << rootModel->getName() << std::endl;
+        // sout << "Root Model Name = " << rootModel->getName() << sendl;
         out[0] = (*inroot)[inroot->size()-1];
     }
     else
@@ -382,7 +382,7 @@ void ArticulatedSystemMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out
         Vec<3,OutReal> P = xto[parent].getCenter();
         Vec<3,OutReal> C = xto[child].getCenter();
         out[child].getVCenter() = out[parent].getVCenter() + cross(P-C, out[parent].getVOrientation());
-        //std::cout<<"P:"<< P  <<"- C: "<< C;
+        //sout<<"P:"<< P  <<"- C: "<< C;
 
         vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*> articulations = (*ac)->getArticulations();
         vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*>::const_iterator a = articulations.begin();
@@ -417,7 +417,7 @@ template <class BasicMapping>
 void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in, typename InRoot::VecDeriv* outroot )
 {
 
-    //std::cout<<"\n ApplyJt";
+    //sout<<"\n ApplyJt";
     OutVecCoord& xto = *this->toModel->getX();
 //	InVecCoord &xfrom= *this->fromModel->getX();
 
@@ -482,7 +482,7 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecDeriv& out
 template <class BasicMapping>
 void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in, typename InRoot::VecConst* outRoot )
 {
-//	std::cout << "ApplyJT const  - size in = " << in.size() << std::endl;
+//	sout << "ApplyJT const  - size in = " << in.size() << sendl;
 
     OutVecCoord& xto = *this->toModel->getX();
 
@@ -560,14 +560,14 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out
                 OutSparseDeriv constraintT(indexT, T);
 
                 (*outRoot)[sizeOutRoot+i].push_back(constraintT);
-                //std::cout<< "constraintT = data : "<< T << "index : "<< indexT<<std::endl;
+                //sout<< "constraintT = data : "<< T << "index : "<< indexT<<sendl;
                 //(*outRoot)[i].push_back(constraintT);
-                //	std::cout<< "constraintT = data : "<< T << "index : "<< indexT<<std::endl;
+                //	sout<< "constraintT = data : "<< T << "index : "<< indexT<<sendl;
             }
         }
     }
 
-//	std::cout<<"End ApplyJT const"<<std::endl;
+//	sout<<"End ApplyJT const"<<sendl;
 
 }
 

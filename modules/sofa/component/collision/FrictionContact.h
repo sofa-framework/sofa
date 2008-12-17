@@ -56,7 +56,7 @@ public:
         else
             id = cpt++;
 
-        //	std::cout << id << std::endl;
+        //	sout << id << sendl;
     }
 
     virtual ~Identifier()
@@ -118,7 +118,7 @@ public:
 
 long cantorPolynomia(unsigned long x, unsigned long y)
 {
-    // Polynome de Cantor de N² sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
+    // Polynome de Cantor de Nï¿½ sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
     return ((x+y)*(x+y)+3*x+y)/2;
 }
 

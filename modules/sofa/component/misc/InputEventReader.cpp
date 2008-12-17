@@ -59,7 +59,7 @@ void InputEventReader::init()
 {
 #ifdef __linux__
     if((fd = open(filename.getValue().c_str(), O_RDONLY)) < 0)
-        std::cout << "ERROR: impossible to open the file: " << filename.getValue() << std::endl;
+        sout << "ERROR: impossible to open the file: " << filename.getValue() << sendl;
 #endif
 }
 
@@ -84,7 +84,7 @@ void InputEventReader::getInputEvents()
     {
         input_event ev;
         read(fd, &ev, sizeof(input_event));
-//		std::cout << "event type 0x" << std::hex << ev.type << std::dec << " code 0x" << std::hex << ev.code << std::dec << " value " << ev.value << std::endl;
+//		sout << "event type 0x" << std::hex << ev.type << std::dec << " code 0x" << std::hex << ev.code << std::dec << " value " << ev.value << sendl;
         if (ev.type == EV_REL)
         {
             switch (ev.code)

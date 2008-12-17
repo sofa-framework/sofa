@@ -73,6 +73,9 @@ public:
 
     typedef typename core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
 
+    using core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>::sout;
+    using core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>::serr;
+    using core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>::sendl;
 protected:
     DistanceConstraintInternalData<DataTypes> data;
     friend class DistanceConstraintInternalData<DataTypes>;

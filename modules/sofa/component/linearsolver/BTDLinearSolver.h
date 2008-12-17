@@ -149,7 +149,7 @@ public:
 
         if( verbose )
         {
-            std::cerr<<"BTDLinearSolver, M = "<< M <<std::endl;
+            serr<<"BTDLinearSolver, M = "<< M <<sendl;
         }
 
         const int bsize = f_blockSize.getValue();
@@ -163,32 +163,32 @@ public:
         SubMatrix A, C;
         //int ndiag = 0;
         M.getSubMatrix(0*bsize,0*bsize,bsize,bsize,A);
-        //if (verbose) std::cout << "A[0] = " << A << std::endl;
+        //if (verbose) sout << "A[0] = " << A << sendl;
         M.getSubMatrix(0*bsize,1*bsize,bsize,bsize,C);
-        //if (verbose) std::cout << "C[0] = " << C << std::endl;
+        //if (verbose) sout << "C[0] = " << C << sendl;
         //alpha[0] = A;
         invert(alpha_inv[0],A);
-        if (verbose) std::cout << "alpha_inv[0] = " << alpha_inv[0] << std::endl;
+        if (verbose) sout << "alpha_inv[0] = " << alpha_inv[0] << sendl;
         lambda[0] = alpha_inv[0]*C;
-        if (verbose) std::cout << "lambda[0] = " << lambda[0] << std::endl;
-        //if (verbose) std::cout << "C[0] = alpha[0]*lambda[0] = " << alpha[0]*lambda[0] << std::endl;
+        if (verbose) sout << "lambda[0] = " << lambda[0] << sendl;
+        //if (verbose) sout << "C[0] = alpha[0]*lambda[0] = " << alpha[0]*lambda[0] << sendl;
         for (int i=1; i<nb; ++i)
         {
             M.getSubMatrix((i  )*bsize,(i  )*bsize,bsize,bsize,A);
-            //if (verbose) std::cout << "A["<<i<<"] = " << A << std::endl;
+            //if (verbose) sout << "A["<<i<<"] = " << A << sendl;
             M.getSubMatrix((i  )*bsize,(i-1)*bsize,bsize,bsize,B[i]);
-            //if (verbose) std::cout << "B["<<i<<"] = " << B[i] << std::endl;
+            //if (verbose) sout << "B["<<i<<"] = " << B[i] << sendl;
             //alpha[i] = (A - B[i]*lambda[i-1]);
             invert(alpha_inv[i], (A - B[i]*lambda[i-1]));
-            if (verbose) std::cout << "alpha_inv["<<i<<"] = " << alpha_inv[i] << std::endl;
-            //if (verbose) std::cout << "A["<<i<<"] = B["<<i<<"]*lambda["<<i-1<<"]+alpha["<<i<<"] = " << B[i]*lambda[i-1]+alpha[i] << std::endl;
+            if (verbose) sout << "alpha_inv["<<i<<"] = " << alpha_inv[i] << sendl;
+            //if (verbose) sout << "A["<<i<<"] = B["<<i<<"]*lambda["<<i-1<<"]+alpha["<<i<<"] = " << B[i]*lambda[i-1]+alpha[i] << sendl;
             if (i<nb-1)
             {
                 M.getSubMatrix((i  )*bsize,(i+1)*bsize,bsize,bsize,C);
-                //if (verbose) std::cout << "C["<<i<<"] = " << C << std::endl;
+                //if (verbose) sout << "C["<<i<<"] = " << C << sendl;
                 lambda[i] = alpha_inv[i]*C;
-                if (verbose) std::cout << "lambda["<<i<<"] = " << lambda[i] << std::endl;
-                //if (verbose) std::cout << "C["<<i<<"] = alpha["<<i<<"]*lambda["<<i<<"] = " << alpha[i]*lambda[i] << std::endl;
+                if (verbose) sout << "lambda["<<i<<"] = " << lambda[i] << sendl;
+                //if (verbose) sout << "C["<<i<<"] = alpha["<<i<<"]*lambda["<<i<<"] = " << alpha[i]*lambda[i] << sendl;
             }
         }
         nBlockComputedMinv.resize(nb);
@@ -197,7 +197,7 @@ public:
         Minv.resize(nb*bsize,nb*bsize);
         Minv.setSubMatrix((nb-1)*bsize,(nb-1)*bsize,bsize,bsize,alpha_inv[nb-1]);
         nBlockComputedMinv[nb-1] = 1;
-        //std::cout << "BTDLinearSolver: "<<ndiag<<"/"<<nb<<"diagonal blocs."<<std::endl;
+        //sout << "BTDLinearSolver: "<<ndiag<<"/"<<nb<<"diagonal blocs."<<sendl;
     }
 
     ///
@@ -261,7 +261,7 @@ public:
 
         if( verbose )
         {
-            std::cerr<<"BTDLinearSolver, b = "<< b <<std::endl;
+            serr<<"BTDLinearSolver, b = "<< b <<sendl;
         }
 
         //invert(M);
@@ -270,27 +270,27 @@ public:
         const int nb = b.size() / bsize;
         if (nb == 0) return;
 
-        //if (verbose) std::cout << "D["<<0<<"] = " << b.sub(0,bsize) << std::endl;
+        //if (verbose) sout << "D["<<0<<"] = " << b.sub(0,bsize) << sendl;
         x.sub(0,bsize) = alpha_inv[0] * b.sub(0,bsize);
-        //if (verbose) std::cout << "Y["<<0<<"] = " << x.sub(0,bsize) << std::endl;
+        //if (verbose) sout << "Y["<<0<<"] = " << x.sub(0,bsize) << sendl;
         for (int i=1; i<nb; ++i)
         {
-            //if (verbose) std::cout << "D["<<i<<"] = " << b.sub(i*bsize,bsize) << std::endl;
+            //if (verbose) sout << "D["<<i<<"] = " << b.sub(i*bsize,bsize) << sendl;
             x.sub(i*bsize,bsize) = alpha_inv[i]*(b.sub(i*bsize,bsize) - B[i]*x.sub((i-1)*bsize,bsize));
-            //if (verbose) std::cout << "Y["<<i<<"] = " << x.sub(i*bsize,bsize) << std::endl;
+            //if (verbose) sout << "Y["<<i<<"] = " << x.sub(i*bsize,bsize) << sendl;
         }
         //x.sub((nb-1)*bsize,bsize) = Y.sub((nb-1)*bsize,bsize);
-        //if (verbose) std::cout << "x["<<nb-1<<"] = " << x.sub((nb-1)*bsize,bsize) << std::endl;
+        //if (verbose) sout << "x["<<nb-1<<"] = " << x.sub((nb-1)*bsize,bsize) << sendl;
         for (int i=nb-2; i>=0; --i)
         {
             x.sub(i*bsize,bsize) /* = Y.sub(i*bsize,bsize)- */ -= lambda[i]*x.sub((i+1)*bsize,bsize);
-            //if (verbose) std::cout << "x["<<i<<"] = " << x.sub(i*bsize,bsize) << std::endl;
+            //if (verbose) sout << "x["<<i<<"] = " << x.sub(i*bsize,bsize) << sendl;
         }
 
         // x is the solution of the system
         if( verbose )
         {
-            std::cerr<<"BTDLinearSolver::solve, solution = "<<x<<std::endl;
+            serr<<"BTDLinearSolver::solve, solution = "<<x<<sendl;
         }
     }
 
@@ -301,7 +301,7 @@ public:
         const unsigned int Jcols = J.colSize();
         if (Jcols != Minv.rowSize())
         {
-            std::cerr << "BTDLinearSolver::addJMInvJt ERROR: incompatible J matrix size." << std::endl;
+            serr << "BTDLinearSolver::addJMInvJt ERROR: incompatible J matrix size." << sendl;
             return false;
         }
 
@@ -326,28 +326,28 @@ public:
         if (f_verbose.getValue())
         {
 // debug christian: print of the inverse matrix:
-            std::cout<< "C = ["<<std::endl;
+            sout<< "C = ["<<sendl;
             for  (unsigned int mr=0; mr<Minv.rowSize(); mr++)
             {
-                std::cout<<" "<<std::endl;
+                sout<<" "<<sendl;
                 for (unsigned int mc=0; mc<Minv.colSize(); mc++)
                 {
-                    std::cout<<" "<< getMinvElement(mr,mc);
+                    sout<<" "<< getMinvElement(mr,mc);
                 }
             }
-            std::cout<< "];"<<std::endl;
+            sout<< "];"<<sendl;
 
 // debug christian: print of matrix J:
-            std::cout<< "J = ["<<std::endl;
+            sout<< "J = ["<<sendl;
             for  (unsigned int jr=0; jr<J.rowSize(); jr++)
             {
-                std::cout<<" "<<std::endl;
+                sout<<" "<<sendl;
                 for (unsigned int jc=0; jc<J.colSize(); jc++)
                 {
-                    std::cout<<" "<< J.element(jr, jc) ;
+                    sout<<" "<< J.element(jr, jc) ;
                 }
             }
-            std::cout<< "];"<<std::endl;
+            sout<< "];"<<sendl;
         }
 
 
@@ -370,7 +370,7 @@ public:
                         acc += val1 * getMinvElement(col1,col2) * val2;
                     }
                 }
-                //std::cout << "W("<<row1<<","<<row2<<") += "<<acc<<" * "<<fact<<std::endl;
+                //sout << "W("<<row1<<","<<row2<<") += "<<acc<<" * "<<fact<<sendl;
                 acc *= fact;
                 result.add(row1,row2,acc);
                 if (row1!=row2)

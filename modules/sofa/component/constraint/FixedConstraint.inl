@@ -37,8 +37,8 @@
 
 #include <sofa/helper/gl/BasicShapes.h>
 
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {
@@ -157,7 +157,7 @@ template <class DataTypes>
 void FixedConstraint<DataTypes>::projectResponse(VecDeriv& res)
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
-    //std::cerr<<"FixedConstraint<DataTypes>::projectResponse, res.size()="<<res.size()<<endl;
+    //serr<<"FixedConstraint<DataTypes>::projectResponse, res.size()="<<res.size()<<sendl;
     if( f_fixAll.getValue()==true )    // fix everyting
     {
         for( unsigned i=0; i<res.size(); i++ )
@@ -178,7 +178,7 @@ void FixedConstraint<DataTypes>::projectResponse(VecDeriv& res)
 template <class DataTypes>
 void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int &offset)
 {
-    //std::cout << "applyConstraint in Matrix with offset = " << offset << std::endl;
+    //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
     const unsigned int N = Deriv::size();
     const SetIndexArray & indices = f_indices.getValue().getArray();
 
@@ -196,7 +196,7 @@ void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, u
 template <class DataTypes>
 void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int &offset)
 {
-    //std::cout << "applyConstraint in Vector with offset = " << offset << std::endl;
+    //sout << "applyConstraint in Vector with offset = " << offset << sendl;
     const unsigned int N = Deriv::size();
 
     const SetIndexArray & indices = f_indices.getValue().getArray();
@@ -211,7 +211,7 @@ void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, 
 template <class DataTypes>
 void FixedConstraint<DataTypes>::applyInvMassConstraint(defaulttype::BaseVector *vec, unsigned int &offset)
 {
-    //std::cout << "applyConstraint in Matrix with offset = " << offset << std::endl;
+    //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
 //     const unsigned int N = Deriv::size();
     const SetIndexArray & indices = f_indices.getValue().getArray();
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
@@ -226,7 +226,7 @@ void FixedConstraint<DataTypes>::draw()
     if (!getContext()->
         getShowBehaviorModels()) return;
     const VecCoord& x = *this->mstate->getX();
-    //std::cerr<<"FixedConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<endl;
+    //serr<<"FixedConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
 
 
 
@@ -239,7 +239,7 @@ void FixedConstraint<DataTypes>::draw()
         glDisable (GL_LIGHTING);
         glPointSize(10);
         glBegin (GL_POINTS);
-        //std::cerr<<"FixedConstraint<DataTypes>::draw(), indices = "<<indices<<endl;
+        //serr<<"FixedConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
         if( f_fixAll.getValue()==true ) for (unsigned i=0; i<x.size(); i++ )
             {
                 gl::glVertexT(x[i]);

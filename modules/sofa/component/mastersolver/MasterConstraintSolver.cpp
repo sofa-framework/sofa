@@ -59,19 +59,19 @@ void MasterConstraintSolver::step ( double dt )
         timer = new CTime();
         time = (double) timer->getTime();
         totaltime = time;
-        std::cout<<std::endl;
+        sout<<sendl;
     }
 
     bool debug =this->f_printLog.getValue();
     if (debug)
-        std::cerr<<"MasterConstraintSolver::step is called"<<std::endl;
+        serr<<"MasterConstraintSolver::step is called"<<sendl;
     simulation::tree::GNode *context = dynamic_cast<simulation::tree::GNode *>(this->getContext()); // access to current node
 
 
     if (doCollisionsFirst.getValue())
     {
         if (debug)
-            std::cerr<<"computeCollision is called"<<std::endl;
+            serr<<"computeCollision is called"<<sendl;
 
         ////////////////// COLLISION DETECTION///////////////////////////////////////////////////////////////////////////////////////////
         computeCollision();
@@ -79,7 +79,7 @@ void MasterConstraintSolver::step ( double dt )
 
         if ( displayTime.getValue() )
         {
-            std::cout<<" computeCollision " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<std::endl;
+            sout<<" computeCollision " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
             time = (double) timer->getTime();
         }
     }
@@ -92,7 +92,7 @@ void MasterConstraintSolver::step ( double dt )
             (*it)->behaviorModel[i]->updatePosition(dt);
     }
     if (debug)
-        std::cerr<<"Free Motion is called"<<std::endl;
+        serr<<"Free Motion is called"<<sendl;
 
     ///////////////////////////////////////////// FREE MOTION /////////////////////////////////////////////////////////////
     simulation::MechanicalBeginIntegrationVisitor beginVisitor(dt);
@@ -113,15 +113,15 @@ void MasterConstraintSolver::step ( double dt )
 
     if ( displayTime.getValue() )
     {
-        std::cout << ">>>>> Begin display MasterContactSolver time" << std::endl;
-        std::cout<<" Free Motion                           " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<std::endl;
+        sout << ">>>>> Begin display MasterContactSolver time" << sendl;
+        sout<<" Free Motion                           " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
         time = (double) timer->getTime();
     }
 
     if (!doCollisionsFirst.getValue())
     {
         if (debug)
-            std::cerr<<"computeCollision is called"<<std::endl;
+            serr<<"computeCollision is called"<<sendl;
 
         ////////////////// COLLISION DETECTION///////////////////////////////////////////////////////////////////////////////////////////
         computeCollision();
@@ -129,7 +129,7 @@ void MasterConstraintSolver::step ( double dt )
 
         if ( displayTime.getValue() )
         {
-            std::cout<<" ComputeCollision                      " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<std::endl;
+            sout<<" ComputeCollision                      " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
             time = (double) timer->getTime();
         }
     }
@@ -143,7 +143,7 @@ void MasterConstraintSolver::step ( double dt )
 
     //////////////////////////////////////CONSTRAINTS RESOLUTION//////////////////////////////////////////////////////////////////////
     if (debug)
-        std::cerr<<"constraints Matrix construction is called"<<std::endl;
+        serr<<"constraints Matrix construction is called"<<sendl;
 
     unsigned int numConstraints = 0;
 
@@ -157,7 +157,7 @@ void MasterConstraintSolver::step ( double dt )
     MechanicalAccumulateConstraint2().execute(context);
 
     if (debug)
-        std::cerr<<"   1. resize constraints : numConstraints="<< numConstraints<<std::endl;
+        serr<<"   1. resize constraints : numConstraints="<< numConstraints<<sendl;
 
     _dFree.resize(numConstraints);
     _d.resize(numConstraints);
@@ -167,17 +167,17 @@ void MasterConstraintSolver::step ( double dt )
     _constraintsResolutions.resize(numConstraints); // _constraintsResolutions.clear();
 
     if (debug)
-        std::cerr<<"   2. compute violation"<<std::endl;
+        serr<<"   2. compute violation"<<sendl;
     // calling getConstraintValue
     MechanicalGetConstraintValueVisitor(&_dFree).execute(context);
 
     if (debug)
-        std::cerr<<"   3. get resolution method for each constraint"<<std::endl;
+        serr<<"   3. get resolution method for each constraint"<<sendl;
     // calling getConstraintResolution
     MechanicalGetConstraintResolutionVisitor(_constraintsResolutions).execute(context);
 
     if (debug)
-        std::cerr<<"   4. get Compliance "<<std::endl;
+        serr<<"   4. get Compliance "<<sendl;
 
     for (unsigned int i=0; i<constraintCorrections.size(); i++ )
     {
@@ -187,25 +187,25 @@ void MasterConstraintSolver::step ( double dt )
 
     if ( displayTime.getValue() )
     {
-        std::cout<<" Build problem in the constraint space " << ( (double) timer->getTime() - time)*timeScale<<" ms" <<std::endl;
+        sout<<" Build problem in the constraint space " << ( (double) timer->getTime() - time)*timeScale<<" ms" <<sendl;
         time = (double) timer->getTime();
     }
 
     if (debug)
-        std::cerr<<"Gauss-Seidel solver is called"<<std::endl;
+        serr<<"Gauss-Seidel solver is called"<<sendl;
     gaussSeidelConstraint(numConstraints, _dFree.ptr(), _W.lptr(), _force.ptr(), _d.ptr(), _constraintsResolutions);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     if ( displayTime.getValue() )
     {
-        std::cout<<" Solve with GaussSeidel                " <<( (double) timer->getTime() - time)*timeScale<<" ms" <<std::endl;
+        sout<<" Solve with GaussSeidel                " <<( (double) timer->getTime() - time)*timeScale<<" ms" <<sendl;
         time = (double) timer->getTime();
     }
 
 //	helper::afficheLCP(_dFree.ptr(), _W.lptr(), _force.ptr(),  numConstraints);
 
     if (debug)
-        std::cout<<"constraintCorrections motion is called"<<std::endl;
+        sout<<"constraintCorrections motion is called"<<sendl;
 
     ///////////////////////////////////////CORRECTIVE MOTION //////////////////////////////////////////////////////////////////////////
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
@@ -225,9 +225,9 @@ void MasterConstraintSolver::step ( double dt )
 
     if ( displayTime.getValue() )
     {
-        std::cout<<" ContactCorrections                    " <<( (double) timer->getTime() - time)*timeScale <<" ms" <<std::endl;
-        std::cout<<"  = Total                              " <<( (double) timer->getTime() - totaltime)*timeScale <<" ms" <<std::endl;
-        std::cout << "<<<<< End display MasterContactSolver time." << std::endl;
+        sout<<" ContactCorrections                    " <<( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
+        sout<<"  = Total                              " <<( (double) timer->getTime() - totaltime)*timeScale <<" ms" <<sendl;
+        sout << "<<<<< End display MasterContactSolver time." << sendl;
     }
 
     simulation::MechanicalEndIntegrationVisitor endVisitor(dt);
@@ -238,7 +238,7 @@ void MasterConstraintSolver::step ( double dt )
 void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, double** w, double* force,
         double* d, std::vector<ConstraintResolution*>& res)
 {
-//	std::cout<<"------------------------------------ new iteration ---------------------------------"<<std::endl;
+//	sout<<"------------------------------------ new iteration ---------------------------------"<<sendl;
     int i, j, k, l, nb;
 
     double errF[6];
@@ -297,9 +297,9 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
     }
 
     if(!convergence)
-        std::cerr << "------  No convergence in gaussSeidelConstraint : error = " << error <<" ------" <<std::endl;
+        serr << "------  No convergence in gaussSeidelConstraint : error = " << error <<" ------" <<sendl;
     else if ( displayTime.getValue() )
-        std::cout<<" Convergence after " << i+1 << " iterations " << std::endl;
+        sout<<" Convergence after " << i+1 << " iterations " << sendl;
 
     for(i=0; i<dim; )
     {

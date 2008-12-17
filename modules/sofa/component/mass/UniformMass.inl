@@ -35,8 +35,8 @@
 #include <iostream>
 #include <string.h>
 
-using std::cerr;
-using std::endl;
+
+
 
 namespace sofa
 {
@@ -122,7 +122,7 @@ void UniformMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx,
     for (unsigned int i=ibegin; i<iend; i++)
     {
         res[i] += dx[i] * m;
-        //cerr<<"dx[i] = "<<dx[i]<<", m = "<<m<<", dx[i] * m = "<<dx[i] * m<<endl;
+        //serr<<"dx[i] = "<<dx[i]<<", m = "<<m<<", dx[i] * m = "<<dx[i] * m<<sendl;
     }
 }
 
@@ -143,7 +143,7 @@ void UniformMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
     for (unsigned int i=ibegin; i<iend; i++)
     {
         a[i] = f[i] / m;
-        // cerr<<"f[i] = "<<f[i]<<", m = "<<m<<", f[i] / m = "<<f[i] / m<<endl;
+        // serr<<"f[i] = "<<f[i]<<", m = "<<m<<", f[i] / m = "<<f[i] / m<<sendl;
     }
 }
 
@@ -165,7 +165,7 @@ void UniformMass<DataTypes, MassType>::addGravityToV(double dt)
         DataTypes::set( theGravity, g[0], g[1], g[2]);
         Deriv hg = theGravity * (Real)dt;
         if (this->f_printLog.getValue())
-            std::cerr << "UniformMass::addGravityToV hg = "<<theGravity<<"*"<<dt<<"="<<hg<<std::endl;
+            serr << "UniformMass::addGravityToV hg = "<<theGravity<<"*"<<dt<<"="<<hg<<sendl;
         for (unsigned int i=0; i<v.size(); i++)
         {
             v[i] += hg;
@@ -202,7 +202,7 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x
     const MassType& m = mass.getValue();
     Deriv mg = theGravity * m;
     if (this->f_printLog.getValue())
-        cerr<<"UniformMass::addForce, mg = "<<mass<<" * "<<theGravity<<" = "<<mg<<endl;
+        serr<<"UniformMass::addForce, mg = "<<mass<<" * "<<theGravity<<" = "<<mg<<sendl;
 
 
 
@@ -212,16 +212,16 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x
     // velocity-based stuff
     core::objectmodel::BaseContext::SpatialVector vframe = getContext()->getVelocityInWorld();
     core::objectmodel::BaseContext::Vec3 aframe = getContext()->getVelocityBasedLinearAccelerationInWorld() ;
-//     cerr<<"UniformMass<DataTypes, MassType>::computeForce(), vFrame in world coordinates = "<<vframe<<endl;
-    //cerr<<"UniformMass<DataTypes, MassType>::computeForce(), aFrame in world coordinates = "<<aframe<<endl;
-//     cerr<<"UniformMass<DataTypes, MassType>::computeForce(), getContext()->getLocalToWorld() = "<<getContext()->getPositionInWorld()<<endl;
+//     serr<<"UniformMass<DataTypes, MassType>::computeForce(), vFrame in world coordinates = "<<vframe<<sendl;
+    //serr<<"UniformMass<DataTypes, MassType>::computeForce(), aFrame in world coordinates = "<<aframe<<sendl;
+//     serr<<"UniformMass<DataTypes, MassType>::computeForce(), getContext()->getLocalToWorld() = "<<getContext()->getPositionInWorld()<<sendl;
 
     // project back to local frame
     vframe = getContext()->getPositionInWorld() / vframe;
     aframe = getContext()->getPositionInWorld().backProjectVector( aframe );
-//     cerr<<"UniformMass<DataTypes, MassType>::computeForce(), vFrame in local coordinates= "<<vframe<<endl;
-//     cerr<<"UniformMass<DataTypes, MassType>::computeForce(), aFrame in local coordinates= "<<aframe<<endl;
-//     cerr<<"UniformMass<DataTypes, MassType>::computeForce(), mg in local coordinates= "<<mg<<endl;
+//     serr<<"UniformMass<DataTypes, MassType>::computeForce(), vFrame in local coordinates= "<<vframe<<sendl;
+//     serr<<"UniformMass<DataTypes, MassType>::computeForce(), aFrame in local coordinates= "<<aframe<<sendl;
+//     serr<<"UniformMass<DataTypes, MassType>::computeForce(), mg in local coordinates= "<<mg<<sendl;
 #endif
 
 
@@ -233,8 +233,8 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x
 #else
         f[i] += mg;
 #endif
-        //cerr<<"UniformMass<DataTypes, MassType>::computeForce(), vframe = "<<vframe<<", aframe = "<<aframe<<", x = "<<x[i]<<", v = "<<v[i]<<endl;
-        //cerr<<"UniformMass<DataTypes, MassType>::computeForce() = "<<mg + Core::inertiaForce(vframe,aframe,mass,x[i],v[i])<<endl;
+        //serr<<"UniformMass<DataTypes, MassType>::computeForce(), vframe = "<<vframe<<", aframe = "<<aframe<<", x = "<<x[i]<<", v = "<<v[i]<<sendl;
+        //serr<<"UniformMass<DataTypes, MassType>::computeForce() = "<<mg + Core::inertiaForce(vframe,aframe,mass,x[i],v[i])<<sendl;
     }
 
 #ifdef SOFA_SUPPORT_MAPPED_MASS
@@ -272,7 +272,7 @@ double UniformMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
     {
         e+= v[i]*m*v[i];
     }
-    //cerr<<"UniformMass<DataTypes, MassType>::getKineticEnergy = "<<e/2<<endl;
+    //serr<<"UniformMass<DataTypes, MassType>::getKineticEnergy = "<<e/2<<sendl;
     return e/2;
 }
 
@@ -296,12 +296,12 @@ double UniformMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x )
     DataTypes::set
     ( theGravity, g[0], g[1], g[2]);
     Deriv mg = theGravity * m;
-    //cerr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, theGravity = "<<theGravity<<endl;
+    //serr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, theGravity = "<<theGravity<<sendl;
     for (unsigned int i=ibegin; i<iend; i++)
     {
-        /*        cerr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, mass = "<<mass<<endl;
-                cerr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, x = "<<x[i]<<endl;
-                cerr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, remove "<<theGravity*mass*x[i]<<endl;*/
+        /*        serr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, mass = "<<mass<<sendl;
+                serr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, x = "<<x[i]<<sendl;
+                serr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, remove "<<theGravity*mass*x[i]<<sendl;*/
         e -= mg*x[i];
     }
     return e;
@@ -343,7 +343,7 @@ void UniformMass<DataTypes, MassType>::draw()
     if (localRange.getValue()[1] >= 0 && (unsigned int)localRange.getValue()[1]+1 < iend)
         iend = localRange.getValue()[1]+1;
 
-    //cerr<<"UniformMass<DataTypes, MassType>::draw() "<<x<<endl;
+    //serr<<"UniformMass<DataTypes, MassType>::draw() "<<x<<sendl;
     Coord gravityCenter;
     glDisable (GL_LIGHTING);
     glPointSize(2);

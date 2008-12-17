@@ -103,12 +103,12 @@ public:
         this->core::componentmodel::behavior::Constraint<TDataTypes>::init();
         if (!this->mstate) return;
 
-        std::cout << "ParticleSink: normal="<<planeNormal.getValue()<<" d0="<<planeD0.getValue()<<" d1="<<planeD1.getValue()<<std::endl;
+        sout << "ParticleSink: normal="<<planeNormal.getValue()<<" d0="<<planeD0.getValue()<<" d1="<<planeD1.getValue()<<sendl;
     }
 
     virtual void animateBegin(double /*dt*/, double time)
     {
-        //std::cout << "ParticleSink: animate begin time="<<time<<std::endl;
+        //sout << "ParticleSink: animate begin time="<<time<<sendl;
         if (!this->mstate) return;
         const VecCoord& x = *this->mstate->getX();
         const VecDeriv& v = *this->mstate->getV();
@@ -121,7 +121,7 @@ public:
             if (d<0)
             {
                 if (log)
-                    std::cout << "SINK particle "<<i<<" time "<<time<<" position "<<x[i]<<" velocity "<<v[i]<<std::endl;
+                    sout << "SINK particle "<<i<<" time "<<time<<" position "<<x[i]<<" velocity "<<v[i]<<sendl;
                 remove.push_back(i);
             }
         }
@@ -135,14 +135,14 @@ public:
 
             if (pointMod != NULL)
             {
-                std::cout << "ParticleSink: remove "<<remove.size()<<" particles using PointSetTopologyModifier."<<std::endl;
+                sout << "ParticleSink: remove "<<remove.size()<<" particles using PointSetTopologyModifier."<<sendl;
                 pointMod->removePointsWarning(remove);
                 pointMod->propagateTopologicalChanges();
                 pointMod->removePointsProcess(remove);
             }
             else if(MechanicalObject<DataTypes>* object = dynamic_cast<MechanicalObject<DataTypes>*>(this->mstate))
             {
-                std::cout << "ParticleSink: remove "<<remove.size()<<" particles using MechanicalObject."<<std::endl;
+                sout << "ParticleSink: remove "<<remove.size()<<" particles using MechanicalObject."<<sendl;
                 // deleting the vertices
                 for (unsigned int i = 0; i < remove.size(); ++i)
                 {
@@ -154,7 +154,7 @@ public:
             }
             else
             {
-                std::cout << "ERROR(ParticleSink): no external object supporting removing points!"<<std::endl;
+                sout << "ERROR(ParticleSink): no external object supporting removing points!"<<sendl;
             }
         }
     }

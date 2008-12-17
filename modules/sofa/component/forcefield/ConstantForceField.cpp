@@ -78,13 +78,13 @@ template class ConstantForceField<Rigid2fTypes>;
 template <>
 double ConstantForceField<Rigid3dTypes>::getPotentialEnergy(const VecCoord& )
 {
-    std::cerr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<std::endl;
+    serr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 template <>
 double ConstantForceField<Rigid2dTypes>::getPotentialEnergy(const VecCoord& )
 {
-    std::cerr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<std::endl;
+    serr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 #endif
@@ -93,14 +93,14 @@ double ConstantForceField<Rigid2dTypes>::getPotentialEnergy(const VecCoord& )
 template <>
 double ConstantForceField<Rigid3fTypes>::getPotentialEnergy(const VecCoord& )
 {
-    std::cerr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<std::endl;
+    serr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 
 template <>
 double ConstantForceField<Rigid2fTypes>::getPotentialEnergy(const VecCoord& )
 {
-    std::cerr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<std::endl;
+    serr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 #endif

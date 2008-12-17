@@ -37,8 +37,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 
-using std::cerr;
-using std::endl;
+
+
 using std::pair;
 
 namespace sofa
@@ -122,7 +122,7 @@ bool SparseGridTopology::load(const char* filename)
     std::string f(filename);
     if ( sofa::helper::system::DataRepository.findFile ( f ) )
         this->fileTopology.setValue( f );
-// 		cerr<<"SparseGridTopology::load : "<<filename<<"    "<<this->filename.getValue()<<endl;
+// 		serr<<"SparseGridTopology::load : "<<filename<<"    "<<this->filename.getValue()<<sendl;
     return true;
 }
 
@@ -200,14 +200,14 @@ void SparseGridTopology::init()
         }
     }
 
-// 		  cerr<<"_nodeCubesAdjacency :"<<_nodeCubesAdjacency<<endl;
+// 		  serr<<"_nodeCubesAdjacency :"<<_nodeCubesAdjacency<<sendl;
 
-    /*		  cerr<<"SparseGridTopology::init() :   "<<this->getName()<<"    cubes size = ";
-    		  cerr<<seqHexas.getValue().size()<<"       ";*/
+    /*		  serr<<"SparseGridTopology::init() :   "<<this->getName()<<"    cubes size = ";
+    		  serr<<seqHexas.getValue().size()<<"       ";*/
 
 
 
-// 		  cerr<<_types.size()<<endl;
+// 		  serr<<_types.size()<<sendl;
 
 }
 
@@ -215,7 +215,7 @@ void SparseGridTopology::init()
 
 void SparseGridTopology::buildAsFinest(  )
 {
-    // 		  cerr<<"SparseGridTopology::buildAsFinest(  )\n";
+    // 		  serr<<"SparseGridTopology::buildAsFinest(  )"<<sendl;
 
     VoxelGridLoader *loader;
     getContext()->get(loader);
@@ -228,7 +228,7 @@ void SparseGridTopology::buildAsFinest(  )
         std::string _filename=fileTopology.getValue();
         if (_filename.empty())
         {
-            std::cerr << "SparseGridTopology: no filename specified." << std::endl;
+            serr << "SparseGridTopology: no filename specified." << sendl;
             return;
         }
         if (! sofa::helper::system::DataRepository.findFile ( _filename ))
@@ -288,7 +288,7 @@ void SparseGridTopology::buildFromVoxelFile(const std::string& filename)
         std::ifstream file( filename.c_str() );
         if ( file == NULL )
         {
-            std::cerr << "SparseGridTopology: failed to open file " << filename << std::endl;
+            serr << "SparseGridTopology: failed to open file " << filename << sendl;
             return;
         }
 
@@ -364,7 +364,7 @@ void SparseGridTopology::buildFromVoxelFile(const std::string& filename)
 //Building from a RAW file
 void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
 {
-// 		  cerr<<"SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)\n";
+// 		  serr<<"SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)"<<sendl;
 
 
     _regularGrid.setSize(getNx(),getNy(),getNz());
@@ -377,7 +377,7 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
     if (dataVoxels.getValue().size() == 0)
     {
         FILE *file = fopen( filename.c_str(), "r" );
-        if (!file) { std::cerr<< "FILE " << filename << " not found\n"; return;}
+        if (!file) { serr<< "FILE " << filename << " not found"<<sendl; return;}
         //Get the voxels from the file
         dataVoxels.beginEdit()->resize(dataResolution.getValue()[0]*dataResolution.getValue()[1]*dataResolution.getValue()[2]/8, (unsigned char)0);
 
@@ -524,7 +524,7 @@ void SparseGridTopology::updateMesh()
     {
         if (m_temp[i] != this) {collisionTopology = m_temp[i]; break;}
     }
-// 	      std::cout << m_temp << " " <<  (m_temp != this) << " " << m_temp->getNbTriangles()  << " !!!! test to enter \n";
+// 	      sout << m_temp << " " <<  (m_temp != this) << " " << m_temp->getNbTriangles()  << " !!!! test to enter "<<sendl;
     if (   collisionTopology != NULL && collisionTopology->getNbTriangles() == 0)
     {
 #ifndef SOFA_FLOAT
@@ -612,7 +612,7 @@ void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
 
     if(mesh == NULL)
     {
-        std::cerr << "SparseGridTopology: loading mesh " << filename << " failed." <<std::endl;
+        serr << "SparseGridTopology: loading mesh " << filename << " failed." <<sendl;
         return;
     }
 
@@ -862,7 +862,7 @@ void SparseGridTopology::computeBoundingBox(const helper::vector<Vector3>& verti
 
 void SparseGridTopology::buildFromFiner(  )
 {
-// 		cerr<<"SparseGridTopology::buildFromFiner(  )\n";
+// 		serr<<"SparseGridTopology::buildFromFiner(  )"<<sendl;
 
 
     setNx( _finerSparseGrid->getNx()/2+1 );
@@ -1000,7 +1000,7 @@ void SparseGridTopology::buildFromFiner(  )
             for(int vertex=0; vertex<8; ++vertex)
             {
 // 					if( fineCorners[cornerIndicesFromFineToCoarse[fineCube][vertex]]!=-1 && fineCorners[cornerIndicesFromFineToCoarse[fineCube][vertex]]!=cube[vertex] )
-// 						cerr<<"couille fineCorners\n";
+// 						serr<<"couille fineCorners"<<sendl;
                 fineCorners[cornerIndicesFromFineToCoarse[fineCube][vertex]]=cube[vertex];
             }
 
@@ -1027,8 +1027,8 @@ void SparseGridTopology::buildFromFiner(  )
                     if( WEIGHT27[coarseCornerLocalIndice][fineVertexLocalIndice] == 1.0 )
                     {
                         _finerSparseGrid->_inversePointMap[fineVertexGlobalIndice] = coarseCornerGlobalIndice;
-// 							cerr<<getPX(coarseCornerGlobalIndice)<<" "<<getPY(coarseCornerGlobalIndice)<<" "<<getPZ(coarseCornerGlobalIndice)<<" ----- ";
-// 							cerr<<_finerSparseGrid->getPX(fineVertexGlobalIndice)<<" "<<_finerSparseGrid->getPY(fineVertexGlobalIndice)<<" "<<_finerSparseGrid->getPZ(fineVertexGlobalIndice)<<endl;
+// 							serr<<getPX(coarseCornerGlobalIndice)<<" "<<getPY(coarseCornerGlobalIndice)<<" "<<getPZ(coarseCornerGlobalIndice)<<" ----- ";
+// 							serr<<_finerSparseGrid->getPX(fineVertexGlobalIndice)<<" "<<_finerSparseGrid->getPY(fineVertexGlobalIndice)<<" "<<_finerSparseGrid->getPZ(fineVertexGlobalIndice)<<sendl;
                     }
                 }
             }
@@ -1045,12 +1045,12 @@ void SparseGridTopology::buildFromFiner(  )
 
 // 		for(unsigned i=0;i<_finerSparseGrid->seqPoints.size();++i)
 // 		{
-// 			cerr<<i<<" : "<<_finerSparseGrid->seqPoints[i]<<endl;
+// 			serr<<i<<" : "<<_finerSparseGrid->seqPoints[i]<<sendl;
 // 		}
 //
 // 		for(unsigned i=0;i<_finerSparseGrid->seqHexas.getValue().size();++i)
 // 		{
-// 			cerr<<i<<" : "<<_finerSparseGrid->seqHexas.getValue()[i]<<endl;
+// 			serr<<i<<" : "<<_finerSparseGrid->seqHexas.getValue()[i]<<sendl;
 //
 // 		}
 
@@ -1060,45 +1060,45 @@ void SparseGridTopology::buildFromFiner(  )
 // // 		afficher la _hierarchicalPointMap
 // 		for(unsigned i=0;i<_hierarchicalPointMap.size();++i)
 // 		{
-// 			cerr<<"POINT "<<i<<" "<<seqPoints[i]<<" : "<<_hierarchicalPointMap[i].size()<<" : ";
+// 			serr<<"POINT "<<i<<" "<<seqPoints[i]<<" : "<<_hierarchicalPointMap[i].size()<<" : ";
 // 			for(std::map<int,float>::iterator it = _hierarchicalPointMap[i].begin();it != _hierarchicalPointMap[i].end() ; ++it )
 // 			{
-// 				cerr<<(*it).first<<", "<<(*it).second<<" # ";
+// 				serr<<(*it).first<<", "<<(*it).second<<" # ";
 // 			}
-// 			cerr<<endl;
+// 			serr<<sendl;
 // 		}
 // //
 // // 		// // 		afficher la _inverseHierarchicalPointMap
 
-// 		cerr<<"_inverseHierarchicalPointMap :"<<endl;
+// 		serr<<"_inverseHierarchicalPointMap :"<<sendl;
 // 		for(unsigned i=0;i<_finerSparseGrid->_inverseHierarchicalPointMap.size();++i)
 // 		{
-// 			cerr<<"POINT "<<i<<" "<<seqPoints[i]<<" : "<<_finerSparseGrid->_inverseHierarchicalPointMap[i].size()<<" : ";
+// 			serr<<"POINT "<<i<<" "<<seqPoints[i]<<" : "<<_finerSparseGrid->_inverseHierarchicalPointMap[i].size()<<" : ";
 // 			for(std::map<int,float>::iterator it = _finerSparseGrid->_inverseHierarchicalPointMap[i].begin();it != _finerSparseGrid->_inverseHierarchicalPointMap[i].end() ; ++it )
 // 			{
-// 				cerr<<(*it).first<<", "<<(*it).second<<" # ";
+// 				serr<<(*it).first<<", "<<(*it).second<<" # ";
 // 			}
-// 			cerr<<endl;
+// 			serr<<sendl;
 // 		}
 
-// 		cerr<<"_inversePointMap :"<<endl;
+// 		serr<<"_inversePointMap :"<<sendl;
 // 		for(unsigned i=0;i<_finerSparseGrid->_inversePointMap.size();++i)
 // 		{
-// 			cerr<<"POINT "<<i<<" -> "<<_finerSparseGrid->_inversePointMap[i]<<endl;
+// 			serr<<"POINT "<<i<<" -> "<<_finerSparseGrid->_inversePointMap[i]<<sendl;
 // 		}
 
 
 // 		for(int o=0;o<_hierarchicalPointMap.size();++o)
 // 		{
-// 			cerr<<o<<" : ";
+// 			serr<<o<<" : ";
 // 			for(std::set<int>::iterator it=_hierarchicalPointMap[o].begin();it!=_hierarchicalPointMap[o].end();++it)
-// 				cerr<<*it<<" ";
-// 			cerr<<endl;
+// 				serr<<*it<<" ";
+// 			serr<<sendl;
 // 		}
 
 
-// 		cerr<<"seqHexas.getValue() : "<<seqHexas.getValue()<<endl;
-// 		cerr<<"seqPoints : "<<seqPoints<<endl;
+// 		serr<<"seqHexas.getValue() : "<<seqHexas.getValue()<<sendl;
+// 		serr<<"seqPoints : "<<seqPoints<<sendl;
 
 
 
@@ -1162,8 +1162,8 @@ void SparseGridTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
     _virtualFinerLevels[0]->init();
 
-    cerr<<"SparseGridTopology "<<getName()<<" buildVirtualFinerLevels : ";
-    cerr<<"("<<newnx<<"x"<<newny<<"x"<<newnz<<") -> "<< _virtualFinerLevels[0]->getNbHexas() <<" elements , ";
+    serr<<"SparseGridTopology "<<getName()<<" buildVirtualFinerLevels : ";
+    serr<<"("<<newnx<<"x"<<newny<<"x"<<newnz<<") -> "<< _virtualFinerLevels[0]->getNbHexas() <<" elements , ";
 
     for(int i=1; i<nb; ++i)
     {
@@ -1173,10 +1173,10 @@ void SparseGridTopology::buildVirtualFinerLevels()
 
         _virtualFinerLevels[i]->init();
 
-        cerr<<"("<<_virtualFinerLevels[i]->getNx()<<"x"<<_virtualFinerLevels[i]->getNy()<<"x"<<_virtualFinerLevels[i]->getNz()<<") -> "<< _virtualFinerLevels[i]->getNbHexas() <<" elements , ";
+        serr<<"("<<_virtualFinerLevels[i]->getNx()<<"x"<<_virtualFinerLevels[i]->getNy()<<"x"<<_virtualFinerLevels[i]->getNz()<<") -> "<< _virtualFinerLevels[i]->getNbHexas() <<" elements , ";
     }
 
-    cerr<<endl;
+    serr<<sendl;
 
     this->setFinerSparseGrid(_virtualFinerLevels[nb-1]);
 
@@ -1261,11 +1261,11 @@ int SparseGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &fy
 
 helper::fixed_array<int,6> SparseGridTopology::findneighboorCubes( int indice )
 {
-    cerr<<"SparseGridTopology::findneighboorCubes : "<<indice<<" -> "<<_indicesOfCubeinRegularGrid[indice]<<endl;
-    cerr<<_indicesOfRegularCubeInSparseGrid[ _indicesOfCubeinRegularGrid[indice] ] <<endl;
+    serr<<"SparseGridTopology::findneighboorCubes : "<<indice<<" -> "<<_indicesOfCubeinRegularGrid[indice]<<sendl;
+    serr<<_indicesOfRegularCubeInSparseGrid[ _indicesOfCubeinRegularGrid[indice] ] <<sendl;
     helper::fixed_array<int,6> result;
     Vector3 c = _regularGrid.getCubeCoordinate( _indicesOfCubeinRegularGrid[indice] );
-    cerr<<c<<endl;
+    serr<<c<<sendl;
     result[0] = c[0]<=0 ? -1 : _indicesOfRegularCubeInSparseGrid[ _regularGrid.getCubeIndex( (int)c[0]-1,(int)c[1],(int)c[2] )];
     result[1] = c[0]>=getNx()-2 ? -1 : _indicesOfRegularCubeInSparseGrid[ _regularGrid.getCubeIndex( (int)c[0]+1,(int)c[1],(int)c[2] )];
     result[2] = c[1]<=0 ? -1 : _indicesOfRegularCubeInSparseGrid[ _regularGrid.getCubeIndex( (int)c[0],(int)c[1]-1,(int)c[2] )];

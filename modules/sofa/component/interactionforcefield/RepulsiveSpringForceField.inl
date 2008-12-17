@@ -36,8 +36,8 @@ namespace component
 
 namespace interactionforcefield
 {
-using std::cerr;
-using std::endl;
+
+
 
 template<class DataTypes>
 void RepulsiveSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
@@ -90,7 +90,7 @@ void RepulsiveSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, 
 template <class DataTypes>
 double RepulsiveSpringForceField<DataTypes>::getPotentialEnergy()
 {
-    cerr<<"RepulsiveSpringForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    serr<<"RepulsiveSpringForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 
