@@ -162,14 +162,14 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
 
 
     // HACK: delete the connexions with no-neighbours
-    for(unsigned i=0 ; i<_connexions.size(); ++i)
-    {
-        int nb=0;
-        for(int j=0; j<NUM_CONNECTED_NODES; ++j)
-            nb += _connexions[i][0]->_neighbors[j].size();
-        if( nb == 0 )
-            _connexions[i].resize(0);
-    }
+// 				for(unsigned i=0 ; i<_connexions.size();++i)
+// 				{
+// 					int nb=0;
+// 					for(int j=0;j<NUM_CONNECTED_NODES;++j)
+// 						nb += _connexions[i][0]->_neighbors[j].size();
+// 					if( nb == 0 )
+// 						_connexions[i].resize(0);
+// 				}
     // end HACK
 
 

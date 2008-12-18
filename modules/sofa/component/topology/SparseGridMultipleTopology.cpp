@@ -35,7 +35,7 @@ void SparseGridMultipleTopology::buildAsFinest(  )
     }
     if( _dataMassCoefs.getValue().size() < _fileTopologies.getValue().size() )
     {
-        cerr<<"WARNING: SparseGridMultipleTopology: not enough massCoefs\n";
+        serr<<"WARNING: SparseGridMultipleTopology: not enough massCoefs\n";
         for(unsigned i=_dataMassCoefs.getValue().size(); i<_fileTopologies.getValue().size(); ++i)
             _dataMassCoefs.beginEdit()->push_back( 1.0 );
 // 			return;
@@ -129,7 +129,7 @@ void SparseGridMultipleTopology::buildAsFinest(  )
     for(int i=0; i<this->getNbHexas(); ++i)
     {
         _stiffnessCoefs[i] = regularStiffnessCoefs[ this->_indicesOfCubeinRegularGrid[i] ];
-        _massCoefs[i] = regularStiffnessCoefs[ this->_indicesOfCubeinRegularGrid[i] ];
+        _massCoefs[i] = regularMassCoefs[ this->_indicesOfCubeinRegularGrid[i] ];
     }
 
 
@@ -181,11 +181,11 @@ void SparseGridMultipleTopology::assembleRegularGrids(helper::vector<Type>& regu
                 regularStiffnessCoefs[w] = _dataStiffnessCoefs.getValue()[i];
                 regularMassCoefs[w] = _dataMassCoefs.getValue()[i];
             }
-            else if(  _regularGridTypes[i][w] == BOUNDARY && regularGridTypes[w] != INSIDE )
+            else if(  _regularGridTypes[i][w] == BOUNDARY )
             {
-                regularGridTypes[w] = BOUNDARY;
-                regularStiffnessCoefs[w] = _dataStiffnessCoefs.getValue()[i] /** .5*/;
-                regularMassCoefs[w] = _dataMassCoefs.getValue()[i] /** .5*/;
+                if( regularGridTypes[w] != INSIDE ) regularGridTypes[w] = BOUNDARY;
+                regularStiffnessCoefs[w] = (regularStiffnessCoefs[w]+_dataStiffnessCoefs.getValue()[i]) * .5;
+                regularMassCoefs[w] = (regularMassCoefs[w]+_dataMassCoefs.getValue()[i]) * .5;
             }
         }
     }
