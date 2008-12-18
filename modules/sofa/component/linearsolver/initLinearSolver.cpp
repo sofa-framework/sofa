@@ -26,24 +26,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 
-#include <sofa/component/behaviormodel/initBehaviorModel.h>
-#include <sofa/component/collision/initCollision.h>
-#include <sofa/component/constraint/initConstraint.h>
-#include <sofa/component/container/initContainer.h>
-#include <sofa/component/contextobject/initContextObject.h>
-#include <sofa/component/controller/initController.h>
-#include <sofa/component/fem/initFEM.h>
-#include <sofa/component/forcefield/initForceField.h>
-#include <sofa/component/interactionforcefield/initInteractionForceField.h>
-#include <sofa/component/linearsolver/initLinearSolver.h>
-#include <sofa/component/mapping/initMapping.h>
-#include <sofa/component/mass/initMass.h>
-#include <sofa/component/mastersolver/initMasterSolver.h>
-#include <sofa/component/misc/initMisc.h>
-#include <sofa/component/odesolver/initOdeSolver.h>
-#include <sofa/component/topology/initTopology.h>
-#include <sofa/component/visualmodel/initVisualModel.h>
-
 namespace sofa
 {
 
@@ -51,28 +33,17 @@ namespace component
 {
 
 
-void init()
+void initLinearSolver()
 {
     static bool first = true;
     if (first)
     {
-        initBehaviorModel();
-        initCollision();
-        initConstraint();
-        initContainer();
-        initContextObject();
-        initController();
-        initFEM();
-        initForceField();
-        initInteractionForceField();
-        initLinearSolver();
-        initMapping();
-        initMass();
-        initMasterSolver();
-        initMisc();
-        initOdeSolver();
-        initTopology();
-        initVisualModel();
+//         sout << "Sofa components initialized."<<sendl;
+
+        //std::ofstream ofile("sofa-classes.html");
+        //ofile << "<html><body>\n";
+        //sofa::core::ObjectFactory::getInstance()->dumpHTML(ofile);
+        //ofile << "</body></html>\n";
         first = false;
     }
 }
@@ -80,3 +51,11 @@ void init()
 } // namespace component
 
 } // namespace sofa
+
+////////// BEGIN CLASS LIST //////////
+SOFA_LINK_CLASS(BTDLinearSolver)
+SOFA_LINK_CLASS(CGLinearSolver)
+SOFA_LINK_CLASS(LULinearSolver)
+#ifdef SOFA_DEV
+
+#endif // SOFA_DEV
