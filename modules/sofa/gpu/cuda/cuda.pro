@@ -115,7 +115,8 @@ HEADERS += \
 	   	CudaFrictionContact.h \
 	  	CudaPrecomputedConstraintCorrection.h \
         CudaTetrahedronTLEDForceField.h \
-       	CudaHexahedronTLEDForceField.h
+       	CudaHexahedronTLEDForceField.h \
+       	CudaUncoupledConstraintCorrection.h
 
 SOURCES += \
 	   	CudaBTDLinearSolver.cpp  \
@@ -126,7 +127,8 @@ SOURCES += \
 	   	CudaFrictionContact.cpp \
 	  	CudaPrecomputedConstraintCorrection.cpp \
      	CudaTetrahedronTLEDForceField.cpp \
-       	CudaHexahedronTLEDForceField.cpp
+       	CudaHexahedronTLEDForceField.cpp \
+       	CudaUncoupledConstraintCorrection.cpp
 
 CUDA_SOURCES += \
 	   	CudaComputeMinv.cu \
