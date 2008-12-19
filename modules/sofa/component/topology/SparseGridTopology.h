@@ -211,6 +211,8 @@ protected:
     Data< unsigned int >    marchingCubeStep;
     Data< unsigned int >    convolutionSize;
 
+    Data<bool> _fillWeighted; // is quantity of matter inside a cell taken into account?
+
     virtual void updateEdges();
     virtual void updateQuads();
     virtual void updateHexas();

@@ -2583,7 +2583,9 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::draw()
     if (this->getContext()->getShowWireFrame()) return;
 
 
-    if( _drawColor.getValue() == 2 ) return;
+    if( _drawColor.getValue() == -1 ) return;
+
+    if( _drawType.getValue() == -1 ) return HexahedronFEMForceFieldAndMassT::draw();
 
 
     const VecCoord& x = *this->mstate->getX();
@@ -2591,6 +2593,13 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::draw()
 
     switch(_drawColor.getValue() )
     {
+    case 3:
+        glColor3f(0.2, 0.8, 0.2);
+        break;
+
+    case 2:
+        glColor3f(0.2, 0.3, 0.8);
+        break;
 
     case 1:
         glColor3f(0.95, 0.3, 0.2);
@@ -2602,22 +2611,33 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::draw()
     }
 
 
-
-    glDisable(GL_LIGHTING);
-// 		  glEnable(GL_LIGHTING);
-    glEnable(GL_COLOR_MATERIAL);
-
-
-    glLineWidth( 3 );
-    glBegin(GL_LINES);
-    for( SparseGridTopology::SeqEdges::const_iterator it = this->_sparseGrid->getEdges().begin() ; it != this->_sparseGrid->getEdges().end(); ++it)
+    if( _drawType.getValue() == 0 )
     {
-// 			  helper::gl::drawCylinder( x[(*it)[0]], x[(*it)[1]], _drawSize );
+        glEnable(GL_LIGHTING);
+        glEnable(GL_COLOR_MATERIAL);
 
-        helper::gl::glVertexT( x[(*it)[0]] );
-        helper::gl::glVertexT( x[(*it)[1]] );
+        glBegin(GL_LINES);
+        for( SparseGridTopology::SeqEdges::const_iterator it = this->_sparseGrid->getEdges().begin() ; it != this->_sparseGrid->getEdges().end(); ++it)
+        {
+            helper::gl::drawCylinder( x[(*it)[0]], x[(*it)[1]], _drawSize );
+        }
+        glEnd();
     }
-    glEnd();
+    else
+    {
+        glDisable(GL_LIGHTING);
+        glEnable(GL_COLOR_MATERIAL);
+
+
+        glLineWidth( 3 );
+        glBegin(GL_LINES);
+        for( SparseGridTopology::SeqEdges::const_iterator it = this->_sparseGrid->getEdges().begin() ; it != this->_sparseGrid->getEdges().end(); ++it)
+        {
+            helper::gl::glVertexT( x[(*it)[0]] );
+            helper::gl::glVertexT( x[(*it)[1]] );
+        }
+        glEnd();
+    }
 
 
 
@@ -2634,6 +2654,109 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::draw()
 
     glDisable(GL_LIGHTING);
     glDisable(GL_COLOR_MATERIAL);
+
+
+    if( _drawType.getValue()!=2 ) return;
+    topology::SparseGridRamificationTopology* sgr = dynamic_cast<topology::SparseGridRamificationTopology*>(this->_sparseGrid);
+    if( sgr==NULL) return;
+
+
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+
+
+    for(unsigned i=0; i<sgr->getConnexions()->size(); ++i)
+    {
+        helper::vector<topology::SparseGridRamificationTopology::Connexion*>& con = (*sgr->getConnexions())[i];
+
+        if( con.empty() ) continue;
+
+
+
+        int a = (*this->_indexedElements)[con[0]->_hexaIdx][0];
+        int b = (*this->_indexedElements)[con[0]->_hexaIdx][1];
+        int d = (*this->_indexedElements)[con[0]->_hexaIdx][3];
+        int c = (*this->_indexedElements)[con[0]->_hexaIdx][2];
+        int e = (*this->_indexedElements)[con[0]->_hexaIdx][4];
+        int f = (*this->_indexedElements)[con[0]->_hexaIdx][5];
+        int h = (*this->_indexedElements)[con[0]->_hexaIdx][7];
+        int g = (*this->_indexedElements)[con[0]->_hexaIdx][6];
+
+
+
+        Coord pa = x[a];
+        Coord pb = x[b];
+        Coord pc = x[c];
+        Coord pd = x[d];
+        Coord pe = x[e];
+        Coord pf = x[f];
+        Coord pg = x[g];
+        Coord ph = x[h];
+
+
+        switch( con.size() )
+        {
+        case 1:
+            glColor4f(0.7f, 0.7f, 0.1f, .4f);
+            break;
+        case 2:
+            glColor4f(0.1f, 0.9f, 0.1f, .4f);
+            break;
+        case 3:
+            glColor4f(0.9f, 0.1f, 0.1f, .4f);
+            break;
+        case 4:
+            glColor4f(0.1f, 0.1f, 0.9f, .4f);
+            break;
+        case 5:
+        default:
+            glColor4f(0.2f, 0.2f, 0.2f, .4f);
+            break;
+        }
+
+
+        glBegin(GL_POLYGON);
+        helper::gl::glVertexT(pa);
+        helper::gl::glVertexT(pb);
+        helper::gl::glVertexT(pc);
+        helper::gl::glVertexT(pd);
+        glEnd();
+        glBegin(GL_POLYGON);
+        helper::gl::glVertexT(pe);
+        helper::gl::glVertexT(pf);
+        helper::gl::glVertexT(pg);
+        helper::gl::glVertexT(ph);
+        glEnd();
+        glBegin(GL_POLYGON);
+        helper::gl::glVertexT(pc);
+        helper::gl::glVertexT(pd);
+        helper::gl::glVertexT(ph);
+        helper::gl::glVertexT(pg);
+        glEnd();
+        glBegin(GL_POLYGON);
+        helper::gl::glVertexT(pa);
+        helper::gl::glVertexT(pb);
+        helper::gl::glVertexT(pf);
+        helper::gl::glVertexT(pe);
+        glEnd();
+        glBegin(GL_POLYGON);
+        helper::gl::glVertexT(pa);
+        helper::gl::glVertexT(pd);
+        helper::gl::glVertexT(ph);
+        helper::gl::glVertexT(pe);
+        glEnd();
+        glBegin(GL_POLYGON);
+        helper::gl::glVertexT(pb);
+        helper::gl::glVertexT(pc);
+        helper::gl::glVertexT(pg);
+        helper::gl::glVertexT(pf);
+        glEnd();
+    }
+
+    glDisable(GL_BLEND);
 
 }
 
