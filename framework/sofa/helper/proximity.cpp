@@ -28,12 +28,8 @@
 namespace sofa
 {
 
-namespace component
+namespace helper
 {
-
-namespace collision
-{
-
 using namespace sofa::helper;
 using namespace sofa::defaulttype;
 
@@ -297,8 +293,6 @@ NewComputation(const Vector3 &P1, const Vector3 &P2, const Vector3 &P3, const Ve
 }
 
 
-} // namespace collision
-
-} // namespace component
+} // namespace helper
 
 } // namespace sofa
