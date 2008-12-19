@@ -107,7 +107,8 @@ SparseGridTopology::SparseGridTopology(bool _isVirtual)
     dataResolution(initData(&dataResolution, Vec3i(0,0,0), "dataResolution", "Dimension of the voxel File")),
     voxelSize(initData(&voxelSize, Vector3(1.0f,1.0f,1.0f), "voxelSize", "Dimension of one voxel")),
     marchingCubeStep(initData(&marchingCubeStep, (unsigned int) 1, "marchingCubeStep", "Step of the Marching Cube algorithm")),
-    convolutionSize(initData(&convolutionSize, (unsigned int) 0, "convolutionSize", "Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required."))
+    convolutionSize(initData(&convolutionSize, (unsigned int) 0, "convolutionSize", "Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required.")),
+    _fillWeighted(initData(&_fillWeighted, true, "fillWeighted", "Is quantity of matter inside a cell taken into account?"))
 {
     isVirtual = _isVirtual;
     _alreadyInit = false;
@@ -267,7 +268,7 @@ void SparseGridTopology::buildAsFinest(  )
         _massCoefs.resize( this->getNbHexas());
         for(int i=0; i<this->getNbHexas(); ++i)
         {
-            if( getType(i)==BOUNDARY )
+            if( getType(i)==BOUNDARY && _fillWeighted.getValue() )
             {
                 _stiffnessCoefs[i] = .5;
                 _massCoefs[i] = .5;
@@ -492,8 +493,15 @@ void SparseGridTopology::buildFromVoxelGridLoader(VoxelGridLoader * loader)
     _massCoefs.resize( this->getNbHexas());
     for(int i=0; i<this->getNbHexas(); ++i)
     {
-        _stiffnessCoefs[i] = regularstiffnessCoef[ _indicesOfCubeinRegularGrid[i] ];
-        _massCoefs[i] = 1.0;//regularstiffnessCoef[ _indicesOfCubeinRegularGrid[i] ];
+        if( _fillWeighted.getValue() )
+        {
+            _stiffnessCoefs[i] = regularstiffnessCoef[ _indicesOfCubeinRegularGrid[i] ];
+            _massCoefs[i] = 1.0;//regularstiffnessCoef[ _indicesOfCubeinRegularGrid[i] ];
+        }
+        else
+        {
+            _stiffnessCoefs[i] = _massCoefs[i] = 1.0;
+        }
     }
 }
 

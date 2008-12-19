@@ -166,13 +166,10 @@ void HomogenizedMapping<BasicMapping>::init()
 // 			serr<<"HomogenizedMapping::init()   error finding the corresponding coarse cube of vertex "<<_p0[i]<<sendl;
     }
 
-    serr<<"HomogenizedMapping::init() before "<<sendl;
-// 	serr<<_forcefield->_finalWeights.size()<<" "<<_finestSparseGrid->getNbHexas()<<sendl;
-
 
     for (unsigned int i=0; i<_forcefield->_finalWeights.size(); i++)
     {
-        if( _finestSparseGrid->getType(i) != SparseGridTopologyT::BOUNDARY ) continue; // optimisation : regarde un element fin que si boundary == contient un triangle
+// 		if( _finestSparseGrid->getType(i) != SparseGridTopologyT::BOUNDARY ) continue; // optimisation : regarde un element fin que si boundary == contient un triangle
 
 
         const SparseGridTopologyT::Hexa& finehexa = _finestSparseGrid->getHexa(i);
