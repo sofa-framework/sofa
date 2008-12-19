@@ -250,7 +250,7 @@ bool SparseGridRamificationTopology::sharingTriangle(helper::io::Mesh* mesh, int
 
             //tester si la face commune intersecte facet
             // pour les 3 aretes de facet avec le carre
-            static collision::DistanceSegTri proximitySolver;
+            static helper::DistanceSegTri proximitySolver;
 
             proximitySolver.NewComputation( a,b,c, A, B,P,Q);
             if( (Q-P).norm2() < 1.0e-6 ) return true;

@@ -31,10 +31,7 @@
 namespace sofa
 {
 
-namespace component
-{
-
-namespace collision
+namespace helper
 {
 
 //-----------------------------------------------------------------------------
@@ -124,11 +121,10 @@ private:
     //double *_result;
 };
 
-} // namespace collision
-
-} // namespace component
+} // namespace helper
 
 } // namespace sofa
+
 
 #endif
 
