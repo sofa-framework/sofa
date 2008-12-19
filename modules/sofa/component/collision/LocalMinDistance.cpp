@@ -26,7 +26,7 @@
 #include <sofa/component/collision/LocalMinDistance.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/collision/proximity.h>
+#include <sofa/helper/proximity.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/componentmodel/collision/Intersection.inl>
@@ -784,7 +784,7 @@ bool LocalMinDistance::testIntersection(Ray &t1,Triangle &t2)
     Vector3 A = t1.origin();
     Vector3 B = A + t1.direction() * t1.l();
 
-    proximitySolver.NewComputation( &t2, A, B,P,Q);
+    proximitySolver.NewComputation( t2.p1(), t2.p2(), t2.p3(), A, B,P,Q);
     PQ = Q-P;
 
     if (PQ.norm2() < alarmDist*alarmDist)
@@ -810,7 +810,7 @@ int LocalMinDistance::computeIntersection(Ray &t1, Triangle &t2, OutputVector* c
     Vector3 P,Q,PQ;
     static DistanceSegTri proximitySolver;
 
-    proximitySolver.NewComputation( &t2, A,B,P,Q);
+    proximitySolver.NewComputation( t2.p1(), t2.p2(), t2.p3(), A,B,P,Q);
     PQ = Q-P;
 
     if (PQ.norm2() >= alarmDist*alarmDist)
