@@ -78,7 +78,8 @@ HEADERS += \
           system/SofaOStream.h \
           vector.h \
           polygon_cube_intersection/vec.h \
-          polygon_cube_intersection/polygon_cube_intersection.h
+          polygon_cube_intersection/polygon_cube_intersection.h \
+	  proximity.h
 
 SOURCES += \
           ArgumentParser.cpp \
@@ -115,7 +116,8 @@ SOURCES += \
           system/PipeProcess.cpp \
           system/SofaOStream.cpp \
           polygon_cube_intersection/polygon_cube_intersection.cpp \
-          polygon_cube_intersection/fast_polygon_cube_intersection.cpp
+          polygon_cube_intersection/fast_polygon_cube_intersection.cpp \
+	  proximity.cpp
 
 
 contains(DEFINES,SOFA_HAVE_GLEW){

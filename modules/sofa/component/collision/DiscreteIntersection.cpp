@@ -29,7 +29,7 @@
 #include <sofa/core/componentmodel/collision/Intersection.inl>
 //#include <sofa/component/collision/RayPickInteractor.h>
 //#include <sofa/component/collision/ProximityIntersection.h>
-#include <sofa/component/collision/proximity.h>
+#include <sofa/helper/proximity.h>
 #include <iostream>
 #include <algorithm>
 
