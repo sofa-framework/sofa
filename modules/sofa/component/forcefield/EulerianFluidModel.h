@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_EULERIANFLUIDMODEL_H
 #define SOFA_COMPONENT_FORCEFIELD_EULERIANFLUIDMODEL_H
 
-#include <NewMAT/newmat.h>
-#include <NewMAT/newmatap.h>
+#include <newmat/newmat.h>
+#include <newmat/newmatap.h>
 
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
@@ -257,9 +257,9 @@ protected:
         sofa::helper::vector<bool> m_isBoundary;
         VecCoord m_centers;
 
-        typedef NewMAT::SymmetricMatrix ProjectMatrix;
+        typedef NEWMAT::SymmetricMatrix ProjectMatrix;
         sofa::helper::vector< ProjectMatrix > m_AtAInv;
-        sofa::helper::vector< NewMAT::Matrix > m_At;
+        sofa::helper::vector< NEWMAT::Matrix > m_At;
 
         //vectors for display
         VecCoord m_vectors;
@@ -314,17 +314,17 @@ protected:
     sofa::component::linearsolver::FullVector<double> star2;
     sofa::component::linearsolver::SparseMatrix<double> curl;
     sofa::component::linearsolver::SparseMatrix<double> laplace;
-    NewMAT::Matrix m_d0;
-    NewMAT::Matrix m_laplace;
-    NewMAT::Matrix m_laplace_inv;
-    NewMAT::Matrix m_diffusion;
-    NewMAT::Matrix m_diffusion_inv;
+    NEWMAT::Matrix m_d0;
+    NEWMAT::Matrix m_laplace;
+    NEWMAT::Matrix m_laplace_inv;
+    NEWMAT::Matrix m_diffusion;
+    NEWMAT::Matrix m_diffusion_inv;
     bool m_bFirstComputation;
 
     //state variables
-    NewMAT::ColumnVector m_flux;
-    NewMAT::ColumnVector m_vorticity;
-    NewMAT::ColumnVector m_phi;
+    NEWMAT::ColumnVector m_flux;
+    NEWMAT::ColumnVector m_vorticity;
+    NEWMAT::ColumnVector m_phi;
     VecDeriv m_vels;											//velocity at the dual vertices
     VecDeriv m_bkVels;											//velocity at the backtrack centers
     VecCoord m_bkCenters;										//backtrack centers
