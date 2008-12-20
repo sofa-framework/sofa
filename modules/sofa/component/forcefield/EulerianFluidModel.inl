@@ -223,7 +223,9 @@ void EulerianFluidModel<DataTypes>::init()
         addForces();
         m_bAddForces.setValue(false);
     }
-    saveVorticity();
+    //saveVorticity();
+
+    normalizeDisplayValues();
 
     //test();
 }
@@ -299,6 +301,8 @@ void EulerianFluidModel<DataTypes>::updatePosition(double dt)
     {
         addDiffusion();
     }
+
+    normalizeDisplayValues();
 }
 
 
@@ -310,8 +314,6 @@ void EulerianFluidModel<DataTypes>::draw()
 
     if (m_topology != NULL)
     {
-        normalizeDisplayValues();
-
         ////draw boundary box
         //glColor3f(0.75, 0.75, 0.75);
         //glBegin(GL_LINE_LOOP);
@@ -481,7 +483,7 @@ void EulerianFluidModel<DataTypes>::draw()
         if(getContext()->getShowBehaviorModels() && m_bDisplayVelocity.getValue())
         {
             glDisable(GL_LIGHTING);
-            glLineWidth(2.0f);
+            glLineWidth(1.0f);
             //velocity at face centers
             for(FaceID i = 0; i < m_nbFaces; ++i)
             {
@@ -1056,8 +1058,6 @@ void EulerianFluidModel<DataTypes>::computeHodgeStarsForTriMesh()
             star1.set(i, dualEdgeLength / m_eInfo.m_lengths[i]);
         }
         break;
-    default:
-        break;
     }
 
     //calculate star0
@@ -1155,68 +1155,158 @@ void EulerianFluidModel<DataTypes>::computeProjectMats()
     case TriangleMesh:
         nRows = 4;
         nCols = 3;
-        //for each face: i
-        for(FaceID i = 0; i < m_nbFaces; ++i)
+        if(m_centerType == Barycenter)
         {
-            NewMAT::Matrix A(nRows, nCols);
-            A = 0.0;
-            c0 = m_fInfo.m_centers[i];
-            const TriangleEdges fEdges = m_topology->getEdgeTriangleShell(i);
-            //for each edge adjacent to face i: fEdges[j]
-            //for each row of mat: j
-            for(EdgeID j = 0; j < fEdges.size(); ++j)
+            //for each face: i
+            for(FaceID i = 0; i < m_nbFaces; ++i)
             {
-                c1 = m_eInfo.m_centers[fEdges[j]];
-                v = (c1 - c0) * (double)d1.element(i, fEdges[j]) * m_eInfo.m_lengths[fEdges[j]];
-
-                Triangle f = m_topology->getTriangle(i);
-                const Edge e = m_topology->getEdge(fEdges[j]);
-                PointID k = 0;
-                while(f[k] == e[0] || f[k] == e[1])
-                    ++k;
-                Angle angle = m_triGeo->computeAngle(f[k], e[0], e[1]);
-                switch(angle)
+                NEWMAT::Matrix A(nRows, nCols);
+                A = 0.0;
+                c0 = m_fInfo.m_centers[i];
+                const TriangleEdges fEdges = m_topology->getEdgeTriangleShell(i);
+                //for each edge adjacent to face i: fEdges[j]
+                //for each row of mat: j
+                for(EdgeID j = 0; j < fEdges.size(); ++j)
                 {
-                case topology::PointSetGeometryAlgorithms<DataTypes>::ACUTE:
-                    v /= (c1 - c0).norm();
-                    break;
-                case topology::PointSetGeometryAlgorithms<DataTypes>::OBTUSE:
-                    v /= -(c1 - c0).norm();
-                    break;
-                case topology::PointSetGeometryAlgorithms<DataTypes>::RIGHT:
-                    std::cout << "WARNING: triangle[" << i << "] has a perpendicular angle." <<endl;
-                    break;
-                default:
-                    break;
+                    if(m_eInfo.m_isBoundary[fEdges[j]])
+                        c1 = m_eInfo.m_centers[fEdges[j]];
+                    else
+                    {
+                        const EdgeFaces eFaces = m_topology->getTriangleEdgeShell(fEdges[j]);
+                        c1 = (eFaces[0] != i) ? m_fInfo.m_centers[eFaces[0]] : m_fInfo.m_centers[eFaces[1]];
+                    }
+                    v = (c1 - c0) * (double)d1.element(i, fEdges[j]) * m_eInfo.m_lengths[fEdges[j]] / (c1 - c0).norm();
+
+                    //for each col of mat: k
+                    for(int k = 0; k < nCols; ++k)
+                        A.element(j, k) = v[k];
                 }
 
-                //for each col of mat: k
+                //calculate the equation of the plane, set the last row to be the plane eqation
+                norm = m_triGeo->computeTriangleNormal(i);
                 for(int k = 0; k < nCols; ++k)
-                    A.element(j, k) = v[k];
+                    A.element(nRows-1, k) = norm[k];
+
+                //calculate AtA.i()
+                NEWMAT::SymmetricMatrix AtA;
+                AtA << A.t() * A;
+                m_fInfo.m_At[i] = A.t();
+                m_fInfo.m_AtAInv[i] = AtA.i();
+
             }
+        }
+        else	//Circumcenter
+        {
+            //for each face: i
+            for(FaceID i = 0; i < m_nbFaces; ++i)
+            {
+                NEWMAT::Matrix A(nRows, nCols);
+                A = 0.0;
+                c0 = m_fInfo.m_centers[i];
+                const TriangleEdges fEdges = m_topology->getEdgeTriangleShell(i);
+                //for each edge adjacent to face i: fEdges[j]
+                //for each row of mat: j
+                for(EdgeID j = 0; j < fEdges.size(); ++j)
+                {
+                    c1 = m_eInfo.m_centers[fEdges[j]];
+                    v = (c1 - c0) * (double)d1.element(i, fEdges[j]) * m_eInfo.m_lengths[fEdges[j]];
 
-            //calculate the equation of the plane, set the last row to be the plane eqation
-            norm = m_triGeo->computeTriangleNormal(i);
-            for(int k = 0; k < nCols; ++k)
-                A.element(nRows-1, k) = norm[k];
+                    Triangle f = m_topology->getTriangle(i);
+                    const Edge e = m_topology->getEdge(fEdges[j]);
+                    PointID k = 0;
+                    while(f[k] == e[0] || f[k] == e[1])
+                        ++k;
+                    Angle angle = m_triGeo->computeAngle(f[k], e[0], e[1]);
+                    switch(angle)
+                    {
+                    case topology::PointSetGeometryAlgorithms<DataTypes>::ACUTE:
+                        v /= (c1 - c0).norm();
+                        break;
+                    case topology::PointSetGeometryAlgorithms<DataTypes>::OBTUSE:
+                        v /= -(c1 - c0).norm();
+                        break;
+                    case topology::PointSetGeometryAlgorithms<DataTypes>::RIGHT:
+                        std::cout << "WARNING: triangle[" << i << "] has a perpendicular angle." <<endl;
+                        break;
+                    default:
+                        break;
+                    }
 
-            //calculate AtA.i()
-            NewMAT::SymmetricMatrix AtA;
-            AtA << A.t() * A;
-            m_fInfo.m_At[i] = A.t();
-            m_fInfo.m_AtAInv[i] = AtA.i();
+                    //for each col of mat: k
+                    for(int k = 0; k < nCols; ++k)
+                        A.element(j, k) = v[k];
+                }
 
+                //calculate the equation of the plane, set the last row to be the plane eqation
+                norm = m_triGeo->computeTriangleNormal(i);
+                for(int k = 0; k < nCols; ++k)
+                    A.element(nRows-1, k) = norm[k];
+
+                //calculate AtA.i()
+                NEWMAT::SymmetricMatrix AtA;
+                AtA << A.t() * A;
+                m_fInfo.m_At[i] = A.t();
+                m_fInfo.m_AtAInv[i] = AtA.i();
+
+            }
         }
         break;
 
     case QuadMesh:
+        nRows = 5;
+        nCols = 3;
+        if(m_centerType == Barycenter)
+        {
+            //for each face: i
+            for(FaceID i = 0; i < m_nbFaces; ++i)
+            {
+                NEWMAT::Matrix A(nRows, nCols);
+                A = 0.0;
+                c0 = m_fInfo.m_centers[i];
+                const QuadEdges fEdges = m_topology->getEdgeQuadShell(i);
+                //for each edge adjacent to i: fEdges[j]
+                //for each row of mat: j
+                for(EdgeID j = 0; j < fEdges.size(); ++j)
+                {
+                    if(m_eInfo.m_isBoundary[fEdges[j]])
+                        c1 = m_eInfo.m_centers[fEdges[j]];
+                    else
+                    {
+                        const EdgeFaces eFaces = m_topology->getQuadEdgeShell(fEdges[j]);
+                        c1 = (eFaces[0] != i) ? m_fInfo.m_centers[eFaces[0]] : m_fInfo.m_centers[eFaces[1]];
+                    }
+                    v = (c1 - c0) * (double)d1.element(i, fEdges[j]) * m_eInfo.m_lengths[fEdges[j]] / (c1 - c0).norm();
+
+                    //for each col of mat: k
+                    for(int k = 0; k < nCols; ++k)
+                        A.element(j, k) = v[k];
+                }
+
+                //calculate the equation of the plane, set the last row to be the plane eqation
+                norm = m_quadGeo->computeQuadNormal(i);
+                for(int k = 0; k < nCols; ++k)
+                    A.element(nRows-1, k) = norm[k];
+
+                //calculate AtA.i()
+                NEWMAT::SymmetricMatrix AtA;
+                AtA << A.t() * A;
+                m_fInfo.m_At[i] = A.t();
+                m_fInfo.m_AtAInv[i] = AtA.i();
+            }
+        }
+        else	//Circumcenter
+        {
+            std::cerr << "WARNING: No circumcentric dual mesh for Quad Mesh"<<endl;
+        }
+        break;
+
     case RegularQuadMesh:
         nRows = 5;
         nCols = 3;
         //for each face: i
         for(FaceID i = 0; i < m_nbFaces; ++i)
         {
-            NewMAT::Matrix A(nRows, nCols);
+            NEWMAT::Matrix A(nRows, nCols);
             A = 0.0;
             c0 = m_fInfo.m_centers[i];
             const QuadEdges fEdges = m_topology->getEdgeQuadShell(i);
@@ -1238,7 +1328,7 @@ void EulerianFluidModel<DataTypes>::computeProjectMats()
                 A.element(nRows-1, k) = norm[k];
 
             //calculate AtA.i()
-            NewMAT::SymmetricMatrix AtA;
+            NEWMAT::SymmetricMatrix AtA;
             AtA << A.t() * A;
             m_fInfo.m_At[i] = A.t();
             m_fInfo.m_AtAInv[i] = AtA.i();
@@ -1258,8 +1348,9 @@ void EulerianFluidModel<DataTypes>::setBdConstraints(double xMin, double xMax, d
         {
             const EdgeFaces eFaces = (m_meshType == TriangleMesh) ?
                     m_topology->getTriangleEdgeShell(it->first) : m_topology->getQuadEdgeShell(it->first);
-            it->second.m_bdConstraint = 3- 3*((o.y()-p.y())*(o.y()-p.y())) / ((o.y()-yMax)*(o.y()-yMax));
-            it->second.m_bdConstraint *= value * d1.element(eFaces[0], it->first);
+            //it->second.m_bdConstraint = 3- 3*((o.y()-p.y())*(o.y()-p.y())) / ((o.y()-yMax)*(o.y()-yMax));
+            //it->second.m_bdConstraint *= value * d1.element(eFaces[0], it->first);
+            it->second.m_bdConstraint = value * d1.element(eFaces[0], it->first);
         }
     }
 }
@@ -1311,7 +1402,7 @@ void EulerianFluidModel<DataTypes>::setBdConstraints()
 template<class DataTypes>
 void EulerianFluidModel<DataTypes>::setInitialVorticity()
 {
-    for(PointID i = 0; i < m_vorticity.Nrows(); ++i)
+    for(int i = 0; i < m_vorticity.Nrows(); ++i)
     {
         m_vorticity.element(i) = 0.0;
     }
@@ -1328,14 +1419,14 @@ void EulerianFluidModel<DataTypes>::calcVelocity()
         {
             //calculate right-hand side U
             const TriangleEdges fEdges = m_topology->getEdgeTriangleShell(i);
-            NewMAT::ColumnVector u(fEdges.size()+1);
+            NEWMAT::ColumnVector u(fEdges.size()+1);
             u = 0.0;
             for(EdgeID j = 0; j < fEdges.size(); ++j)
             {
                 u.element(j) = m_flux.element(fEdges[j]);
             }
             //solver the project equations
-            NewMAT::ColumnVector v = m_fInfo.m_AtAInv[i] * (m_fInfo.m_At[i] * u);
+            NEWMAT::ColumnVector v = m_fInfo.m_AtAInv[i] * (m_fInfo.m_At[i] * u);
             m_vels[i][0] = m_harmonicVx.getValue() + v.element(0);
             m_vels[i][1] = m_harmonicVy.getValue() + v.element(1);
             m_vels[i][2] = m_harmonicVz.getValue() + v.element(2);
@@ -1375,14 +1466,14 @@ void EulerianFluidModel<DataTypes>::calcVelocity()
         {
             //calculate right-hand side U
             const QuadEdges fEdges = m_topology->getEdgeQuadShell(i);
-            NewMAT::ColumnVector u(fEdges.size()+1);
+            NEWMAT::ColumnVector u(fEdges.size()+1);
             u = 0.0;
             for(EdgeID j = 0; j < fEdges.size(); ++j)
             {
                 u.element(j) = m_flux.element(fEdges[j]);
             }
             //solver the project equations
-            NewMAT::ColumnVector v = m_fInfo.m_AtAInv[i] * (m_fInfo.m_At[i] * u);
+            NEWMAT::ColumnVector v = m_fInfo.m_AtAInv[i] * (m_fInfo.m_At[i] * u);
             m_vels[i][0] = m_harmonicVx.getValue() + v.element(0);
             m_vels[i][1] = m_harmonicVy.getValue() + v.element(1);
             m_vels[i][2] = m_harmonicVz.getValue() + v.element(2);
@@ -1792,8 +1883,8 @@ void EulerianFluidModel<DataTypes>::calcDiffusion(double dt)
 template<class DataTypes>
 void EulerianFluidModel<DataTypes>::addDiffusion()
 {
-    NewMAT::ColumnVector vorticity = m_vorticity.Rows(1, m_nbPoints);
-    NewMAT::ColumnVector temp = m_diffusion_inv * vorticity;
+    NEWMAT::ColumnVector vorticity = m_vorticity.Rows(1, m_nbPoints);
+    NEWMAT::ColumnVector temp = m_diffusion_inv * vorticity;
     for(PointID i = 0; i < m_nbPoints; ++i)
         m_vorticity.element(i) = temp.element(i) * star0.element(i);
 }
@@ -1814,7 +1905,7 @@ void EulerianFluidModel<DataTypes>::calcPhi(bool reset)
     m_vorticity.element(m_nbPoints+nb_constraints-1) = 0.0;
 
     //solve the equations
-    NewMAT::ColumnVector phi = m_laplace_inv * m_vorticity;
+    NEWMAT::ColumnVector phi = m_laplace_inv * m_vorticity;
 
     //discard extra solutions
     m_phi = phi.Rows(1, m_nbPoints);
@@ -1944,29 +2035,42 @@ void EulerianFluidModel<DataTypes>::saveOperators()
 
     str = "d1.txt";
     outfile.open(str.c_str(), std::ios::out);
-    outfile << d1.rowSize() << "*" << d1.colSize() << endl;
-    outfile << d1;
+    for(unsigned int i = 0; i < d1.rowSize(); ++i)
+    {
+
+        for(unsigned int j = 0; j < d1.colSize(); ++j)
+        {
+            outfile << d1.element(i, j) << " ";
+        }
+        outfile << endl;
+    }
     outfile.close();
     outfile.clear();
 
     str = "star0.txt";
     outfile.open(str.c_str(), std::ios::out);
-    outfile << star0.size() << endl;
-    outfile << star0;
+    for(unsigned int i = 0; i < star0.size(); ++i)
+    {
+        outfile << star0.element(i)<<endl;
+    }
     outfile.close();
     outfile.clear();
 
     str = "star1.txt";
     outfile.open(str.c_str(), std::ios::out);
-    outfile << star1.size() << endl;
-    outfile << star1;
+    for(unsigned int i = 0; i < star1.size(); ++i)
+    {
+        outfile << star1.element(i)<<endl;
+    }
     outfile.close();
     outfile.clear();
 
     str = "star2.txt";
     outfile.open(str.c_str(), std::ios::out);
-    outfile << star2.size() << endl;
-    outfile << star2;
+    for(unsigned int i = 0; i < star2.size(); ++i)
+    {
+        outfile << star2.element(i)<<endl;
+    }
     outfile.close();
     outfile.clear();
 
