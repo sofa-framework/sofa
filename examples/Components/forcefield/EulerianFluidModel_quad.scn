@@ -1,32 +1,34 @@
-<Node name="root"  dt="0.02" showVisualModels ="0" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0">
+<Node name="Root"  dt="0.005" showVisualModels ="0" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0">
   <Node name="EulerianFluid">
-    <Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
-    <Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+    <Object type="EulerImplicit" name="Odesolver" printLog="false"/>
+    <Object type="CGLinearSolver" iterations="25" name="LinearSolver" tolerance="1.0e-9" threshold="1.0e-9" />
 
-    <Object type="RegularGrid" name="mesh" 
-            nx="41" ny="41" nz="1"
+    <Object type="RegularGrid" name="Mesh" 
+            nx="31" ny="31" nz="1"
             xmin="0" xmax="10"
             ymin="0" ymax="10"
-            zmin="0" zmax="0"
-		/>
-    <Object type="QuadSetGeometryAlgorithms" name="QuadGeo"  />
-   
+            zmin="0" zmax="0"/>
+    <Object type="QuadSetGeometryAlgorithms" name="Geo"  />
+    <!--for 51*51: addForcePointSet ="1143-1148 1194-1199 1245-1250 1296-1301 1347-1352 1398-1403" -->
+    <!--for 31*31: addForcePointSet ="1143-1148 1194-1199 1245-1250 1296-1301 1347-1352 1398-1403" -->
 
-
-
-    <Object type="MechanicalObject" name="mechanical" />
-    <Object type="EulerianFluidModel" name="fluid" viscosity="0" centerType="1"
-            bdXmin1="-0.1" bdYmin1="3" bdZmin1="-0.1" bdXmax1="0.1" bdYmax1="7" bdZmax1="0.1" bdValue1="-0.5"
-            bdXmin2="9.9" bdYmin2="3" bdZmin2="-0.1" bdXmax2="10.1" bdYmax2="7" bdZmax2="0.1" bdValue2="0.5"
-            harmonicVx="0" harmonicVy="0" harmonicVz="0"
-            addForces="1" force="3.0"
+    <Object type="MechanicalObject" name="Mechanical" />
+    <Object type="EulerianFluidModel" name="Fluid" centerType="1"
+            
+            viscousFluid ="0" viscosity ="0.0" 
+            addForces="1" force="2.0"
+            addForcePointSet ="446-450 477-481 508-512 539-543" 
+            
+            bdXmin1="-0.1" bdXmax1="0.1" bdYmin1="0" bdYmax1="10" bdZmin1="-1" bdZmax1="1" bdValue1 ="-1"
+            bdXmin2="9.9" bdXmax2="10.1" bdYmin2="0" bdYmax2="10" bdZmin2="-1" bdZmax2="1" bdValue2 ="1"
             displayBoundary="0" displayDualMesh="0" displayBkMesh="0" 
-            displayVorticity="1" displayVelocity="1" displayBkVelocity="0"/>
+            displayVorticity="1" displayVelocity="1" displayBkVelocity="0"
+            visCoef1="0.2" visCoef2="0.3" visCoef3="30"/>
     <!--  Barycenter = 0, Circumcenter = 1 -->
 
-    <Node name="VisualGrid">
-      <Object type="OglModel" name="Visual" color="green"/>
-      <Object type="IdentityMapping" name="mapping" object1="../.." object2="Visual"/>
+    <Node name="VisualModel">
+      <Object type="OglModel" name="Space" color="green"/>
+      <Object type="IdentityMapping" name="mapping" object1="../.." object2="Space"/>
     </Node>
     
   </Node>
