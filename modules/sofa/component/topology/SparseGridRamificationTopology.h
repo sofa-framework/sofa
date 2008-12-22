@@ -92,8 +92,6 @@ public:
     // Does the connectivity test have to be done at the finest level? (more precise but slow)
     Data<bool> _finestConnectivity;
 
-protected:
-
 
     /// a connexion corresponds to a connexe component in each regular hexa (each non-void hexa has at less one connexion)
     struct Connexion
@@ -126,6 +124,7 @@ protected:
         }
     };
 
+protected:
 
     helper::vector<helper::vector<Connexion*> > _connexions; // for each initial, regular SparseGrid::hexa -> a list of independant connexion
 
