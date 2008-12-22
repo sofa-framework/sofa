@@ -34,6 +34,7 @@
 #include <assert.h>
 #include <iostream>
 #include <sofa/helper/gl/BasicShapes.h>
+#include <sofa/simulation/tree/Simulation.h>
 
 
 
@@ -133,17 +134,22 @@ void ConstantForceField<DataTypes>::draw()
     if( fabs(aSC)<1.0e-10 )
     {
         glDisable(GL_LIGHTING);
-        glBegin(GL_LINES);
-        glColor3f(0,1,0);
+        std::vector<defaulttype::Vector3> points;
+        std::vector<defaulttype::Vec<2,int> > indicesDraw;
+        int index=0;
         for (unsigned int i=0; i<indices.size(); i++)
         {
             Real xx,xy,xz,fx,fy,fz;
             DataTypes::get(xx,xy,xz,x[indices[i]]);
             DataTypes::get(fx,fy,fz,f[(i<f.size()) ? i : f.size()-1]);
-            glVertex3f( (GLfloat)xx, (GLfloat)xy, (GLfloat)xz );
-            glVertex3f( (GLfloat)(xx+fx), (GLfloat)(xy+fy), (GLfloat)(xz+fz) );
+            points.push_back(defaulttype::Vector3(xx, xy, xz ));
+            points.push_back(defaulttype::Vector3(xx+fx, xy+fy, xz+fz ));
+            indicesDraw.push_back(defaulttype::Vec<2,int>(index,index+1));
+            index+=2;
         }
-        glEnd();
+
+        simulation::tree::getSimulation()->DrawUtility.drawLines(points, indicesDraw, defaulttype::Vec<4,float>(0,1,0,1));
+
     }
     else
     {
@@ -157,18 +163,20 @@ void ConstantForceField<DataTypes>::draw()
             DataTypes::get(fx,fy,fz,f[(i<f.size()) ? i : f.size()-1]);
 
 
-            defaulttype::Vec3f p1( xx, xy, xz);
-            defaulttype::Vec3f p2( aSC*fx+xx, aSC*fy+xy, aSC*fz+xz );
+            defaulttype::Vector3 p1( xx, xy, xz);
+            defaulttype::Vector3 p2( aSC*fx+xx, aSC*fy+xy, aSC*fz+xz );
 
             float norm = (p2-p1).norm();
 
             if( aSC > 0)
             {
-                helper::gl::drawArrow( p1,p2, norm/20.0);
+                //helper::gl::drawArrow(p1,p2, norm/20.0);
+                simulation::tree::getSimulation()->DrawUtility.drawArrow(p1,p2, norm/20.0, defaulttype::Vec<4,float>(1,.4,.4,1.0f));
             }
             else
             {
-                helper::gl::drawArrow( p2,p1, norm/20.0);
+                //helper::gl::drawArrow(p2,p1, norm/20.0);
+                simulation::tree::getSimulation()->DrawUtility.drawArrow(p2,p1, norm/20.0, defaulttype::Vec<4,float>(1,.4,.4,1.0f));
             }
         }
         glDisable(GL_LIGHTING);

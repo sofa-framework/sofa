@@ -39,6 +39,7 @@
 #include <sofa/helper/system/glut.h>
 
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/simulation/tree/Simulation.h>
 
 namespace sofa
 {
@@ -142,10 +143,16 @@ void SphereModel::draw()
         // Check topological modifications
         const int npoints = mstate->getX()->size();
 
+        std::vector<Vector3> points;
+        std::vector<float> radius;
         for (int i=0; i<npoints; i++)
         {
-            draw(i);
+            Sphere t(this,i);
+            Vector3 p = t.p();
+            points.push_back(p);
+            radius.push_back(t.r());
         }
+        simulation::tree::getSimulation()->DrawUtility.drawSpheres(points, radius, Vec<4,float>(getColor4f()));
 
         glDisable(GL_LIGHTING);
         glDisable(GL_COLOR_MATERIAL);

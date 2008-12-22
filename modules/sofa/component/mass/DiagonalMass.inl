@@ -34,6 +34,7 @@
 #include <sofa/component/topology/PointData.inl>
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/component/mass/AddMToMatrixFunctor.h>
+#include <sofa/simulation/tree/Simulation.h>
 
 namespace sofa
 {
@@ -610,15 +611,23 @@ void DiagonalMass<DataTypes, MassType>::draw()
     Real totalMass=0.0;
     glDisable (GL_LIGHTING);
     glPointSize(2);
-    glColor4f (1,1,1,1);
-    glBegin (GL_POINTS);
+
+    std::vector<  Vector3 > points;
+    std::vector< Vec<2,int> > indices;
+
     for (unsigned int i=0; i<x.size(); i++)
     {
-        helper::gl::glVertexT(x[i]);
+        Vector3 p;
+        for (unsigned int j=0; j< Coord::static_size; ++j)
+            p[j] = x[i][j];
+
+        points.push_back(p);
         gravityCenter += x[i]*masses[i];
         totalMass += masses[i];
     }
-    glEnd();
+
+    simulation::tree::getSimulation()->DrawUtility.drawPoints(points, Vec<4,float>(1,1,1,1));
+
     if(showCenterOfGravity.getValue())
     {
         glBegin (GL_LINES);

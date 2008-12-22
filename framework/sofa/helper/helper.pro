@@ -33,6 +33,7 @@ HEADERS += \
 	  gl/BasicShapes.h \
           gl/Cylinder.h \
           gl/Capture.h \
+          gl/DrawManager.h \
           gl/glfont.h \
           gl/RAII.h \
           gl/template.h \
@@ -88,6 +89,7 @@ SOURCES += \
           gl/Axis.cpp \
           gl/Cylinder.cpp \
           gl/Capture.cpp \
+          gl/DrawManager.cpp \
           gl/glfont.cpp \
           gl/Texture.cpp \
           gl/Trackball.cpp \
@@ -129,6 +131,7 @@ contains(DEFINES,SOFA_HAVE_GLEW){
           gl/GLSLShader.cpp
 
 }
+
 
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
