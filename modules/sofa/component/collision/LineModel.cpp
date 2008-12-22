@@ -33,6 +33,8 @@
 #include <sofa/component/topology/PointSetTopologyChange.h>
 #include <sofa/component/topology/EdgeSetTopologyChange.h>
 
+#include <sofa/simulation/tree/Simulation.h>
+
 namespace sofa
 {
 
@@ -377,6 +379,21 @@ void LineModel::draw()
             if (elems[i].i1 < elems[i].i2) // only display non-edge lines
                 draw(i);
         }
+
+
+        std::vector< Vector3 > points;
+        std::vector< Vec<2,int> > indices;
+        int index=0;
+        for (int i=0; i<size; i++)
+        {
+            Line t(this,i);
+            points.push_back(t.p1());
+            points.push_back(t.p2());
+            indices.push_back(Vec<2,int>(index,index+1));
+            index+=2;
+        }
+        simulation::tree::getSimulation()->DrawUtility.drawLines(points, indices, Vec<4,float>(getColor4f()));
+
 
         glColor3f(1.0f, 1.0f, 1.0f);
         glDisable(GL_LIGHTING);

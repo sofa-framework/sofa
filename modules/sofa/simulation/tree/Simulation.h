@@ -31,6 +31,7 @@
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/simulation/tree/xml/XML.h>
+#include <sofa/helper/gl/DrawManager.h>
 
 namespace sofa
 {
@@ -125,6 +126,8 @@ public:
 
     helper::vector< Node* > instruments;
     Data< int > instrumentInUse;
+
+    sofa::helper::gl::DrawManager DrawUtility;
 };
 
 /// Set the (unique) simulation which controls the scene
@@ -134,7 +137,6 @@ void setSimulation(Simulation*);
 Automatically creates one if no Simulation has been set.
 */
 Simulation* getSimulation();
-
 } // namespace tree
 
 } // namespace simulation

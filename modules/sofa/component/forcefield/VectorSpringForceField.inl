@@ -32,6 +32,7 @@
 #include <sofa/component/topology/TopologyChangedEvent.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/gl.h>
+#include <sofa/simulation/tree/Simulation.h>
 #include <assert.h>
 #include <iostream>
 
@@ -351,10 +352,14 @@ void VectorSpringForceField<DataTypes>::draw()
     const VecCoord& x1 = *this->mstate1->getX();
     const VecCoord& x2 = *this->mstate2->getX();
 
+
+    std::vector< Vector3 > points;
+    std::vector< Vec<2,int> > indices;
+
     glDisable(GL_LIGHTING);
 
-    glBegin(GL_LINES);
 
+    int idx=0;
     if(useTopology)
     {
         for (unsigned int i=0; i<springArray.size(); i++)
@@ -362,10 +367,10 @@ void VectorSpringForceField<DataTypes>::draw()
             const topology::Edge &e=_topology->getEdge(i);
             //const Spring &s=springArray[i];
 
-            glColor4f(0,1,1,0.5f);
-
-            glVertex3d(x1[e[0]][0],x1[e[0]][1],x1[e[0]][2]);
-            glVertex3d(x2[e[1]][0],x2[e[1]][1],x2[e[1]][2]);
+            points.push_back(Vector3(x1[e[0]]));
+            points.push_back(Vector3(x2[e[1]]));
+            indices.push_back(Vec<2,int>(idx,idx+1));
+            idx+=2;
         }
 
     }
@@ -377,14 +382,13 @@ void VectorSpringForceField<DataTypes>::draw()
             const topology::Edge &e=edgeArray[i];
             //const Spring &s=springArray[i];
 
-            glColor4f(0,1,1,0.5f);
-
-            glVertex3d(x1[e[0]][0],x1[e[0]][1],x1[e[0]][2]);
-            glVertex3d(x2[e[1]][0],x2[e[1]][1],x2[e[1]][2]);
+            points.push_back(Vector3(x1[e[0]]));
+            points.push_back(Vector3(x2[e[1]]));
+            indices.push_back(Vec<2,int>(idx,idx+1));
+            idx+=2;
         }
     }
-
-    glEnd();
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points, indices, Vec<4,float>(0,1,1,0.5f));
 }
 
 } // namespace forcefield

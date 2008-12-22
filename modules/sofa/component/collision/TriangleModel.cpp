@@ -37,7 +37,7 @@
 #include <sofa/component/topology/PointSetTopologyChange.h>
 #include <sofa/component/topology/TriangleSetTopologyChange.h>
 
-
+#include <sofa/simulation/tree/Simulation.h>
 
 
 
@@ -572,10 +572,21 @@ void TriangleModel::draw()
         glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular);
         glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, 20);
 
+        std::vector< Vector3 > points;
+        std::vector< Vec<3,int> > indices;
+        std::vector< Vector3 > normals;
+        int index=0;
         for (int i=0; i<size; i++)
         {
-            draw(i);
+            Triangle t(this,i);
+            normals.push_back(t.n());
+            points.push_back(t.p1());
+            points.push_back(t.p2());
+            points.push_back(t.p3());
+            indices.push_back(Vec<3,int>(index,index+1,index+2));
+            index+=3;
         }
+        simulation::tree::getSimulation()->DrawUtility.drawTriangles(points, indices, normals, Vec<4,float>(getColor4f()));
 
         glColor3f(1.0f, 1.0f, 1.0f);
         glDisable(GL_LIGHTING);

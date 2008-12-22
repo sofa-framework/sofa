@@ -32,6 +32,8 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/component/mass/AddMToMatrixFunctor.h>
+#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/helper/gl/DrawManager.h>
 #include <iostream>
 #include <string.h>
 
@@ -344,20 +346,28 @@ void UniformMass<DataTypes, MassType>::draw()
         iend = localRange.getValue()[1]+1;
 
     //serr<<"UniformMass<DataTypes, MassType>::draw() "<<x<<sendl;
+
+
+    std::vector<  Vector3 > points;
+    std::vector< Vec<2,int> > indices;
+
     Coord gravityCenter;
     glDisable (GL_LIGHTING);
     glPointSize(2);
-    glColor4f (1,1,1,1);
-    glBegin (GL_POINTS);
     for (unsigned int i=ibegin; i<iend; i++)
     {
-        helper::gl::glVertexT(x[i]);
+        Vector3 p;
+        for (unsigned int j=0; j< Coord::static_size; ++j)
+            p[j] = x[i][j];
+
+        points.push_back(p);
         gravityCenter += x[i];
     }
-    glEnd();
+    simulation::tree::getSimulation()->DrawUtility.drawPoints(points, Vec<4,float>(1,1,1,1));
 
     if(showCenterOfGravity.getValue())
     {
+        points.clear();
         glBegin (GL_LINES);
         glColor4f (1,1,0,1);
         gravityCenter /= x.size();

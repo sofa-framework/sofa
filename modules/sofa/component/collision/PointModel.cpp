@@ -43,6 +43,8 @@
 
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
+#include <sofa/simulation/tree/Simulation.h>
+
 namespace sofa
 {
 
@@ -126,10 +128,25 @@ void PointModel::draw()
             resize(npoints);
         }
 
+        std::vector< Vector3 > pointsP;
+        std::vector< Vector3 > pointsL;
+        std::vector< Vec<2,int> > indices;
+        int index=0;
         for (int i = 0; i < size; i++)
         {
-            draw(i);
+            Point t(this,index);
+            pointsP.push_back(t.p());
+            if ((unsigned)index < normals.size())
+            {
+                pointsL.push_back(t.p());
+                pointsL.push_back(t.p()+normals[index]*0.1f);
+                indices.push_back(Vec<2,int>(index,index+1));
+                index+=2;
+            }
         }
+
+        simulation::tree::getSimulation()->DrawUtility.drawPoints(pointsP,  Vec<4,float>(getColor4f()));
+        simulation::tree::getSimulation()->DrawUtility.drawLines(pointsL, indices, Vec<4,float>(getColor4f()));
 
         glColor3f(1.0f, 1.0f, 1.0f);
         glDisable(GL_LIGHTING);
