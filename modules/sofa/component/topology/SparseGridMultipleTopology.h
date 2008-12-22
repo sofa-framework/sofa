@@ -51,12 +51,46 @@ public :
     SparseGridMultipleTopology( bool _isVirtual=false ) : SparseGridRamificationTopology(_isVirtual),
         _fileTopologies(initData(&_fileTopologies, helper::vector< std::string >() , "fileTopologies", "All topology filenames")),
         _dataStiffnessCoefs(initData(&_dataStiffnessCoefs, helper::vector< float >() , "stiffnessCoefs", "A stiffness coefficient for each topology filename")),
-        _dataMassCoefs(initData(&_dataMassCoefs, helper::vector< float >() , "massCoefs", "A stiffness coefficient for each topology filename"))
+        _dataMassCoefs(initData(&_dataMassCoefs, helper::vector< float >() , "massCoefs", "A stiffness coefficient for each topology filename")),
+        _computeRamifications(initData(&_computeRamifications, true , "computeRamifications", "Are ramifications wanted?"))
     {
     }
 
+    virtual void init()
+    {
+        if(_computeRamifications.getValue())
+            SparseGridRamificationTopology::init(  );
+        else
+            SparseGridTopology::init(  );
+    }
+
     virtual void buildAsFinest();
+    virtual void buildFromFiner()
+    {
+        if(_computeRamifications.getValue())
+            SparseGridRamificationTopology::buildFromFiner(  );
+        else
+            SparseGridTopology::buildFromFiner(  );
+    }
     virtual void buildVirtualFinerLevels();
+
+
+    virtual int findCube(const Vector3 &pos, SReal &fx, SReal &fy, SReal &fz)
+    {
+        if(_computeRamifications.getValue())
+            return SparseGridRamificationTopology::findCube( pos,fx,fy,fz  );
+        else
+            return SparseGridTopology::findCube( pos,fx,fy,fz );
+    }
+
+    virtual int findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
+    {
+        if(_computeRamifications.getValue())
+            return SparseGridRamificationTopology::findNearestCube( pos,fx,fy,fz );
+        else
+            return SparseGridTopology::findNearestCube( pos,fx,fy,fz );
+    }
+
 
 
 protected :
@@ -65,6 +99,7 @@ protected :
     Data< helper::vector< std::string > > _fileTopologies;
     Data< helper::vector< float > > _dataStiffnessCoefs;
     Data< helper::vector< float > > _dataMassCoefs;
+    Data<bool> _computeRamifications;
 
 
 

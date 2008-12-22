@@ -132,20 +132,21 @@ void SparseGridMultipleTopology::buildAsFinest(  )
         _massCoefs[i] = regularMassCoefs[ this->_indicesOfCubeinRegularGrid[i] ];
     }
 
-
-
-    if( _finestConnectivity.getValue() || this->isVirtual || _nbVirtualFinerLevels.getValue() > 0 )
-    {
-        // find the connexion graph between the finest hexas
-        findConnexionsAtFinestLevel();
-    }
-
-    if( _finestConnectivity.getValue() )
+    if(_computeRamifications.getValue())
     {
 
-        buildRamifiedFinestLevel();
-    }
+        if( _finestConnectivity.getValue() || this->isVirtual || _nbVirtualFinerLevels.getValue() > 0 )
+        {
+            // find the connexion graph between the finest hexas
+            findConnexionsAtFinestLevel();
+        }
 
+        if( _finestConnectivity.getValue() )
+        {
+
+            buildRamifiedFinestLevel();
+        }
+    }
 }
 
 
@@ -190,7 +191,6 @@ void SparseGridMultipleTopology::assembleRegularGrids(helper::vector<Type>& regu
         }
     }
 }
-
 
 
 
