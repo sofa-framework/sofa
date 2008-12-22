@@ -93,6 +93,7 @@ public:
     virtual double getPX(int /*i*/) const { return 0.0; }
     virtual double getPY(int /*i*/) const { return 0.0; }
     virtual double getPZ(int /*i*/) const { return 0.0; }
+    virtual double getScale() const { return 0.0; }
 
     /// @name Integration related methods
     /// @{

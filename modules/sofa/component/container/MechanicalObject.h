@@ -164,7 +164,7 @@ public:
     virtual const VecCoord* getXfree() const { return xfree; }
     virtual const VecDeriv* getVfree()  const { return vfree;  }
 
-// 	SReal getScale(){return scale.getValue();};
+    virtual double getScale() const {return scale.getValue();};
 
     virtual void init();
     virtual void reinit();

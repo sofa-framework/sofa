@@ -344,12 +344,14 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeClassicalMechanicalMatr
     const helper::fixed_array<unsigned int,8>& points = this->_sparseGrid->_virtualFinerLevels[level]->getHexas()[elementIndice];
     //Get the 8 points of the coarser Hexa
     helper::fixed_array<Coord,8> nodes;
-#ifndef SOFA_NEW_HEXA
-    for (unsigned int k=0; k<8; ++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[level]->getPointPos(points[this->_indices[k]]);
-#else
-    for (unsigned int k=0; k<8; ++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[level]->getPointPos(points[k]);
-#endif
 
+#ifndef SOFA_NEW_HEXA
+//           for (unsigned int k=0;k<8;++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[level]->getPointPos(points[this->_indices[k]]);
+    for (unsigned int k=0; k<8; ++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[level]->getPointPos(points[this->_indices[k]]) * this->mstate->getScale();
+#else
+//           for (unsigned int k=0;k<8;++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[level]->getPointPos(points[k]);
+    for (unsigned int k=0; k<8; ++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[level]->getPointPos(points[k])* this->mstate->getScale();
+#endif
 
     //       //given an elementIndice, find the 8 others from the sparse grid
     //       //compute MaterialStiffness
