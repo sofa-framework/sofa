@@ -39,8 +39,8 @@ namespace io
 
 ImageRAW::ImageRAW ()
     : Image(),
-      headerSize(0),
-      depth(1)
+      depth(1),
+      headerSize(0)
 {}
 
 void ImageRAW::init(int w, int h, int d, int nbb, int hsize)
