@@ -49,7 +49,8 @@ void SofaOStream::processStream(std::ostream& out)
     if (out == *serr)
     {
         *serr << "\n";
-        if (isOutputConsole()) std::cerr<< "WARNING[" << nameComponent << "(" << nameClass << ")]: "<<serr->str();
+        // if (isOutputConsole())
+        std::cerr<< "WARNING[" << nameComponent << "(" << nameClass << ")]: "<<serr->str();
         warnings += serr->str();
         serr->str("");
     }

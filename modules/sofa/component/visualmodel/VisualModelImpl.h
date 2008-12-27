@@ -149,8 +149,7 @@ protected:
     /// If it is empty then each vertex correspond to one normal
     ResizableExtVector<int> vertNormIdx;
 
-    float scaleTex;
-    TexCoord  translationTex;
+
 
     Data< std::string > fileMesh;
     Data< std::string > texturename;
@@ -158,6 +157,8 @@ protected:
     Data< Vector3 > rotation;
     Data< SReal > scale;
 
+    Data< TexCoord >  scaleTex;
+    Data< TexCoord >  translationTex;
     Vec3f bbox[2];
 
     virtual void internalDraw()

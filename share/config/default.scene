@@ -1,38 +1,41 @@
 <scene formatVersion="">
-    <environment>
-       <colourBackground r="0.0" g="0.0" b="0.0" a="0" />
-       <colourAmbient r="0.1" g="0.1" b="0.1" />
-    </environment>
-    <nodes>
+  <environment>
+    <colourBackground r="0.0" g="0.0" b="0.0" a="0" />
+    <colourAmbient r="0.1" g="0.1" b="0.1" />
+  </environment>
+  <nodes>
 
-    <node name="Omni01">
-            <position x="-5" y="5" z="-9" />
-            <light name="Omni01" type="omni" castShadows="true">
-                <colourDiffuse r="0.4" g="0.4" b="0.4" />
-                <colourSpecular r="0.5" g="0.5" b="0.5" />
-            </light>
+<!-- Simulate the sun if the gravity is along Y: change the normal to adapt the direction of the light-->
+    <node name="DirectionalLightNode">
+      <!-- No need to specify the position as it is a directional light -->
+      <light name="DirLight" type="directional" castShadows="true">
+	<!-- Direction -->
+        <normal x="0" y="-1" z="0" />
+        <colourDiffuse r="0.4" g="0.4" b="0.4" />
+        <colourSpecular r="0.5" g="0.5" b="0.5" />
+      </light>
     </node>
-    
-    <node name="Spot01" id="5">
-            <position x="50" y="100" z="50" />
-            <lookTarget>
-                <position x="0" y="-10" z="0" />
-                <localDirection x="0" y="0" z="1" />
-            </lookTarget>
-            <scale x="1" y="1" z="1" />
-            <light name="Spot01" type="spot" intensity="1" contrast="0"  castShadows="true">
-                <colourDiffuse r="1.0" g="1.0" b="1.0" />
-                <colourSpecular r="0.95" g="0.95" b="0.95" />
-                <lightRange inner="30" outer="50" />
-            </light>
-        </node>
-    </nodes>
 
-    <camera name="Camera01">
-        <clipping near="0.5" far="1000"/>
-        <position x="0" y="50" z="75" />
-            <lookTarget>
-                <position x="0" y="0" z="0" />
-            </lookTarget>
-    </camera>
+<!--
+    <node name="PointLightNode">
+      <light name="PointLight" type="point" castShadows="true">
+        <position x="100" y="100" z="0" />
+        <colourDiffuse r="0.0" g="0.0" b="0.4" />
+        <colourSpecular r="0.5" g="0.5" b="0.5" />
+      </light>
+    </node>
+-->
+
+
+    <node name="SpotLightNode">           
+      <light name="SpotLight" type="spot" castShadows="true">
+        <position x="0" y="100" z="0" />
+        <normal x="0" y="-1" z="0" />
+        <colourDiffuse r="0.4" g="0.4" b="0.1" />
+        <colourSpecular r="0.5" g="0.5" b="0.5" />
+        <lightRange inner="30" outer="60" fallof="1.0"/>
+      </light>
+    </node>
+
+  </nodes>
 </scene>
