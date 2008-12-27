@@ -278,7 +278,7 @@ void OglModel::initVisual()
 
     initDone = true;
     canUseVBO = (GLEW_ARB_vertex_buffer_object);
-
+    canUseVBO=false;
     if (useVBO.getValue() && !canUseVBO)
     {
         std::cerr << "OglModel : VBO is not supported by your GPU ; will use display list instead" << std::endl;

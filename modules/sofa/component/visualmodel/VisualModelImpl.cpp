@@ -71,21 +71,12 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     if (arg->getAttribute("castshadow")!=NULL)
         obj->setCastShadow(atoi(arg->getAttribute("castshadow"))!=0);
 
-    std::string loader = arg->getAttribute("loader","");
-
     std::string file;
     file=(arg->getAttribute("texturename",""));
     if (!file.empty())
     {
         texturename.setValue( sofa::helper::system::DataRepository.getFile ( file ));
     }
-
-//      file=(arg->getAttribute("fileMesh",""));
-    //// Temporary commented in case of IdentityMapping without obj file :
-    //if (!file.empty() && sofa::helper::system::DataRepository.findFile (file))
-    //{
-//        fileMesh.setValue( sofa::helper::system::DataRepository.getFile ( file ));
-    //}
 
 
     if (arg->getAttribute("flip")!=NULL)
@@ -96,26 +87,21 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     {
         obj->setColor(arg->getAttribute("color"));
     }
-    scaleTex= 1.0f;
-    if (arg->getAttribute("scaleTex")!=NULL)
+
+
+    if (arg->getAttribute("su")!=NULL || arg->getAttribute("sv")!=NULL)
     {
-        //obj->applyUVScale(atof(arg->getAttribute("scaleTex","1.0")), atof(arg->getAttribute("scaleTex","1.0")));
-        scaleTex=(float)(atof(arg->getAttribute("scaleTex","1.0")));
+        scaleTex = TexCoord(atof(arg->getAttribute("su","1.0")),atof(arg->getAttribute("sv","1.0")));
     }
     if (arg->getAttribute("du")!=NULL || arg->getAttribute("dv")!=NULL)
     {
         translationTex = TexCoord(atof(arg->getAttribute("du","0.0")),atof(arg->getAttribute("dv","0.0")));
     }
 
-
-//       if (arg->getAttribute("scale")!=NULL) {
-// 	scale.setValue(atof(arg->getAttribute("scale","1.0")));
-//       }
     if (arg->getAttribute("rx")!=NULL || arg->getAttribute("ry")!=NULL || arg->getAttribute("rz")!=NULL)
     {
         rotation.setValue(Vector3((SReal)(atof(arg->getAttribute("rx","0.0"))),(SReal)(atof(arg->getAttribute("ry","0.0"))),(SReal)(atof(arg->getAttribute("rz","0.0")))));
     }
-
     if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
     {
         translation.setValue(Vector3((SReal)atof(arg->getAttribute("dx","0.0")), (SReal)atof(arg->getAttribute("dy","0.0")), (SReal)atof(arg->getAttribute("dz","0.0"))));
@@ -142,6 +128,8 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
        translation       (initData   (&translation, Vector3(), "translation", "Initial Translation of the object")),
        rotation          (initData   (&rotation, Vector3(), "rotation", "Initial Rotation of the object")),
        scale             (initData   (&scale, (SReal)(1.0), "scale", "Initial Scale of the object")),
+       scaleTex          (initData   (&scaleTex, TexCoord(1.0,1.0), "scaleTex", "Scale of the texture")),
+       translationTex    (initData   (&translationTex, TexCoord(1.0,1.0), "translationTex", "Translation of the texture")),
        material(initData(&material,"material","Material")) //, tex(NULL)
 {
     inputVertices = &vertices;
@@ -384,8 +372,10 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
         xforms.resize(1);
     }
 
-    applyUVScale(scaleTex, scaleTex);
-    applyUVTranslation(translationTex[0],translationTex[1]);
+    applyUVScale(scaleTex.getValue()[0], scaleTex.getValue()[1]);
+    applyUVTranslation(translationTex.getValue()[0],translationTex.getValue()[1]);
+    scaleTex.setValue(TexCoord(1,1));
+    translationTex.setValue(TexCoord(0,0));
     return true;
 }
 
