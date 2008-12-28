@@ -148,7 +148,7 @@ void ConstantForceField<DataTypes>::draw()
             index+=2;
         }
 
-        simulation::tree::getSimulation()->DrawUtility.drawLines(points, indicesDraw, defaulttype::Vec<4,float>(0,1,0,1));
+        simulation::tree::getSimulation()->DrawUtility.drawLines(points, indicesDraw, 2, defaulttype::Vec<4,float>(0,1,0,1));
 
     }
     else

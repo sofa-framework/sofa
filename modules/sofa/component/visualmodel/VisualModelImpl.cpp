@@ -371,12 +371,16 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
         // add one identity matrix
         xforms.resize(1);
     }
+    applyUVTransformation();
+    return true;
+}
 
+void VisualModelImpl::applyUVTransformation()
+{
     applyUVScale(scaleTex.getValue()[0], scaleTex.getValue()[1]);
     applyUVTranslation(translationTex.getValue()[0],translationTex.getValue()[1]);
     scaleTex.setValue(TexCoord(1,1));
     translationTex.setValue(TexCoord(0,0));
-    return true;
 }
 
 void VisualModelImpl::applyTranslation(const double dx, const double dy, const double dz)

@@ -356,7 +356,6 @@ void VectorSpringForceField<DataTypes>::draw()
     std::vector< Vector3 > points;
     std::vector< Vec<2,int> > indices;
 
-    glDisable(GL_LIGHTING);
 
 
     int idx=0;
@@ -388,7 +387,9 @@ void VectorSpringForceField<DataTypes>::draw()
             idx+=2;
         }
     }
-    simulation::tree::getSimulation()->DrawUtility.drawLines(points, indices, Vec<4,float>(0,1,1,0.5f));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points, indices, 3, Vec<4,float>(0,1,1,0.5f));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 } // namespace forcefield

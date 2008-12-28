@@ -118,7 +118,6 @@ void PointModel::draw()
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glDisable(GL_LIGHTING);
-        glPointSize(3);
         glColor4fv(getColor4f());
 
         // Check topological modifications
@@ -145,8 +144,8 @@ void PointModel::draw()
             }
         }
 
-        simulation::tree::getSimulation()->DrawUtility.drawPoints(pointsP,  Vec<4,float>(getColor4f()));
-        simulation::tree::getSimulation()->DrawUtility.drawLines(pointsL, indices, Vec<4,float>(getColor4f()));
+        simulation::tree::getSimulation()->DrawUtility.drawPoints(pointsP, 3, Vec<4,float>(getColor4f()));
+        simulation::tree::getSimulation()->DrawUtility.drawLines(pointsL, indices, 1, Vec<4,float>(getColor4f()));
 
         glColor3f(1.0f, 1.0f, 1.0f);
         glDisable(GL_LIGHTING);
