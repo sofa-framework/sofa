@@ -159,6 +159,16 @@ void SpringForceField<DataTypes>::addDForce(VecDeriv&, VecDeriv&, const VecDeriv
     serr << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead."<<sendl;
 }
 
+
+
+template<class DataTypes>
+void SpringForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *, double, unsigned int &)
+{
+    serr << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead."<<sendl;
+}
+
+
+
 template<class DataTypes>
 void SpringForceField<DataTypes>::draw()
 {

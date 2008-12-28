@@ -60,6 +60,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
     typedef typename HexahedronFEMForceFieldT::Mat33 Mat33;
+    typedef typename HexahedronFEMForceFieldT::Displacement Displacement;
     typedef typename HexahedronFEMForceFieldT::VecElement VecElement;
     typedef typename HexahedronFEMForceFieldT::VecElementStiffness VecElementMass;
     typedef typename HexahedronFEMForceFieldT::ElementStiffness ElementMass;
