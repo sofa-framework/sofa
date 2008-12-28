@@ -30,6 +30,7 @@
 #include "HexahedronFEMForceField.inl"
 #include <sofa/component/topology/SparseGridTopology.h>
 
+
 namespace sofa
 {
 
@@ -286,9 +287,44 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(VecDeriv& f, const VecDer
 
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(defaulttype::BaseMatrix * /*matrix*/, double /*mFact*/, unsigned int &/*offset*/)
+void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset)
 {
-    serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix not yet implemented"<<sendl;
+    // Build Matrix Block for this ForceField
+    int i,j,n1, n2, e;
+
+    typename VecElement::const_iterator it;
+
+    int node1, node2;
+
+    for(it = this->_indexedElements->begin(), e=0 ; it != this->_indexedElements->end() ; ++it,++e)
+    {
+        const ElementMass &Me = _elementMasses.getValue()[e];
+
+        // find index of node 1
+        for (n1=0; n1<8; n1++)
+        {
+#ifndef SOFA_NEW_HEXA
+            node1 = (*it)[_indices[n1]];
+#else
+            node1 = (*it)[n1];
+#endif
+            // find index of node 2
+            for (n2=0; n2<8; n2++)
+            {
+#ifndef SOFA_NEW_HEXA
+                node2 = (*it)[_indices[n2]];
+#else
+                node2 = (*it)[n2];
+#endif
+                Mat33 tmp = Mat33(Coord(Me[3*n1+0][3*n2+0],Me[3*n1+0][3*n2+1],Me[3*n1+0][3*n2+2]),
+                        Coord(Me[3*n1+1][3*n2+0],Me[3*n1+1][3*n2+1],Me[3*n1+1][3*n2+2]),
+                        Coord(Me[3*n1+2][3*n2+0],Me[3*n1+2][3*n2+1],Me[3*n1+2][3*n2+2]));
+                for(i=0; i<3; i++)
+                    for (j=0; j<3; j++)
+                        mat->add(offset+3*node1+i, offset+3*node2+j, tmp[i][j]*mFact);
+            }
+        }
+    }
 }
 
 template<class DataTypes>
