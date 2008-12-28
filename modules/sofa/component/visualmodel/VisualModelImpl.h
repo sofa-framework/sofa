@@ -188,6 +188,7 @@ public:
     void applyRotation (const double rx, const double ry, const double rz);
     void applyRotation(const Quat q);
     void applyScale(const double s);
+    virtual void applyUVTransformation();
     void applyUVTranslation(const double dU, const double dV);
     void applyUVScale(const double su, const double sv);
 

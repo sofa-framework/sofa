@@ -352,8 +352,6 @@ void UniformMass<DataTypes, MassType>::draw()
     std::vector< Vec<2,int> > indices;
 
     Coord gravityCenter;
-    glDisable (GL_LIGHTING);
-    glPointSize(2);
     for (unsigned int i=ibegin; i<iend; i++)
     {
         Vector3 p;
@@ -363,8 +361,9 @@ void UniformMass<DataTypes, MassType>::draw()
         points.push_back(p);
         gravityCenter += x[i];
     }
-    simulation::tree::getSimulation()->DrawUtility.drawPoints(points, Vec<4,float>(1,1,1,1));
-
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawPoints(points, 2, Vec<4,float>(1,1,1,1));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
     if(showCenterOfGravity.getValue())
     {
         points.clear();

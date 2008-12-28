@@ -392,7 +392,7 @@ void LineModel::draw()
             indices.push_back(Vec<2,int>(index,index+1));
             index+=2;
         }
-        simulation::tree::getSimulation()->DrawUtility.drawLines(points, indices, Vec<4,float>(getColor4f()));
+        simulation::tree::getSimulation()->DrawUtility.drawLines(points, indices, 1, Vec<4,float>(getColor4f()));
 
 
         glColor3f(1.0f, 1.0f, 1.0f);

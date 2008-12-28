@@ -609,8 +609,6 @@ void DiagonalMass<DataTypes, MassType>::draw()
     const VecCoord& x = *this->mstate->getX();
     Coord gravityCenter;
     Real totalMass=0.0;
-    glDisable (GL_LIGHTING);
-    glPointSize(2);
 
     std::vector<  Vector3 > points;
     std::vector< Vec<2,int> > indices;
@@ -625,8 +623,9 @@ void DiagonalMass<DataTypes, MassType>::draw()
         gravityCenter += x[i]*masses[i];
         totalMass += masses[i];
     }
-
-    simulation::tree::getSimulation()->DrawUtility.drawPoints(points, Vec<4,float>(1,1,1,1));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawPoints(points, 2, Vec<4,float>(1,1,1,1));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 
     if(showCenterOfGravity.getValue())
     {

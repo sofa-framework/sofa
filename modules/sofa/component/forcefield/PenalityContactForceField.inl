@@ -32,6 +32,7 @@
 #include <sofa/helper/gl/template.h>
 #include <iostream>
 
+#include <sofa/simulation/tree/Simulation.h>
 
 
 namespace sofa
@@ -137,41 +138,79 @@ void PenalityContactForceField<DataTypes>::draw()
     const VecCoord& p2 = *this->mstate2->getX();
     glDisable(GL_LIGHTING);
 
-    glBegin(GL_LINES);
+    std::vector< defaulttype::Vector3 > points[4];
+    std::vector< defaulttype::Vec<2,int> > indices[4];
+    int index[4]= {0,0,0,0};
+
     for (unsigned int i=0; i<contacts.getValue().size(); i++)
     {
         const Contact& c = contacts.getValue()[i];
         Real d = c.dist - (p2[c.m2]-p1[c.m1])*c.norm;
         if (c.age > 10) //c.spen > c.mu_s * c.ks * 0.99)
             if (d > 0)
-                glColor4f(1,0,1,1);
-            else
-                glColor4f(0,1,1,1);
-        else if (d > 0)
-            glColor4f(1,0,0,1);
-        else
-            glColor4f(0,1,0,1);
-        helper::gl::glVertexT(p1[c.m1]);
-        helper::gl::glVertexT(p2[c.m2]);
-    }
-    glEnd();
+            {
+                points[0].push_back(p1[c.m1]);
+                points[0].push_back(p2[c.m2]);
+                indices[0].push_back(defaulttype::Vec<2,int>(index[0],index[0]+1));
+                index[0]+=2;
 
+            }
+            else
+            {
+                points[1].push_back(p1[c.m1]);
+                points[1].push_back(p2[c.m2]);
+                indices[1].push_back(defaulttype::Vec<2,int>(index[1],index[1]+1));
+                index[1]+=2;
+
+            }
+        else if (d > 0)
+        {
+            points[2].push_back(p1[c.m1]);
+            points[2].push_back(p2[c.m2]);
+            indices[2].push_back(defaulttype::Vec<2,int>(index[2],index[2]+1));
+            index[2]+=2;
+
+        }
+        else
+        {
+            points[3].push_back(p1[c.m1]);
+            points[3].push_back(p2[c.m2]);
+            indices[3].push_back(defaulttype::Vec<2,int>(index[3],index[3]+1));
+            index[3]+=2;
+
+        }
+    }
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points[0], indices[0], 1, defaulttype::Vec<4,float>(1,0,1));
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points[1], indices[1], 1, defaulttype::Vec<4,float>(0,1,1));
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points[2], indices[2], 1, defaulttype::Vec<4,float>(1,0,0));
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points[3], indices[3], 1, defaulttype::Vec<4,float>(0,1,0));
+
+
+    std::vector< defaulttype::Vector3 > pointsN;
+    std::vector< defaulttype::Vec<2,int> > indicesN;
+    int indexN=0;
     if (getContext()->getShowNormals())
     {
-        glColor4f(1,1,0,1);
-        glBegin(GL_LINES);
         for (unsigned int i=0; i<contacts.getValue().size(); i++)
         {
             const Contact& c = contacts.getValue()[i];
             Coord p = p1[c.m1] - c.norm;
-            helper::gl::glVertexT(p1[c.m1]);
-            helper::gl::glVertexT(p);
+            pointsN.push_back(p1[c.m1]);
+            pointsN.push_back(p);
+            indicesN.push_back(defaulttype::Vec<2,int>(indexN,indexN+1));
+            indexN+=2;
+
+
             p = p2[c.m2] + c.norm;
-            helper::gl::glVertexT(p2[c.m2]);
-            helper::gl::glVertexT(p);
+            pointsN.push_back(p2[c.m2]);
+            pointsN.push_back(p);
+            indicesN.push_back(defaulttype::Vec<2,int>(indexN,indexN+1));
+            indexN+=2;
         }
-        glEnd();
+        simulation::tree::getSimulation()->DrawUtility.drawLines(pointsN, indicesN, 1, defaulttype::Vec<4,float>(1,1,0));
     }
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 
