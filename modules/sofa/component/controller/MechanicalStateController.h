@@ -162,6 +162,8 @@ public:
 protected:
 
     Data< unsigned int > index; ///< Controlled DOF index.
+    Data< bool > onlyTranslation; ///< Controlling the DOF only in translation
+
     core::componentmodel::behavior::MechanicalState<DataTypes> *mState; ///< Controlled MechanicalState.
 
     sofa::defaulttype::Vec<3,Real> mainDirection; ///< Direction corresponding to the Mouse vertical axis. Default value is (0.0,0.0,-1.0), Z axis.

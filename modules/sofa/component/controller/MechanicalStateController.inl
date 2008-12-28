@@ -61,6 +61,7 @@ namespace controller
 template <class DataTypes>
 MechanicalStateController<DataTypes>::MechanicalStateController()
     : index( initData(&index, (unsigned int)0, "index", "Index of the controlled DOF") )
+    , onlyTranslation( initData(&onlyTranslation, false, "onlyTranslation", "Controlling the DOF only in translation") )
     , mainDirection(sofa::defaulttype::Vec<3,Real>((Real)0.0, (Real)0.0, (Real)-1.0))
     , mainDirectionPtr( initDataPtr(&mainDirectionPtr, &mainDirection, "mainDirection", "Main direction and orientation of the controlled DOF") )
 {
@@ -86,6 +87,7 @@ void MechanicalStateController<DataTypes>::applyController()
 
     using sofa::defaulttype::Quat;
     using sofa::defaulttype::Vec;
+
 
     if(omni)
     {
@@ -117,15 +119,13 @@ void MechanicalStateController<DataTypes>::applyController()
 
                 (*mState->getX())[0].getOrientation() = orientation;
 
-                sofa::simulation::tree::GNode *node = static_cast<sofa::simulation::tree::GNode*> (this->getContext());
-                sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
-                sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
+
             }
         }
         omni = false;
     }
 
-    if ((mouseMode==BtLeft) || (mouseMode==BtRight))
+    if ( !onlyTranslation.getValue()  && ((mouseMode==BtLeft) || (mouseMode==BtRight)))
     {
         int dx = eventX - mouseSavedPosX;
         int dy = eventY - mouseSavedPosY;
@@ -164,11 +164,45 @@ void MechanicalStateController<DataTypes>::applyController()
                 }
             }
         }
-
-        sofa::simulation::tree::GNode *node = static_cast<sofa::simulation::tree::GNode*> (this->getContext());
-        sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
-        sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
     }
+    else if( onlyTranslation.getValue() )
+    {
+        if( mouseMode )
+        {
+            int dx = eventX - mouseSavedPosX;
+            int dy = eventY - mouseSavedPosY;
+            mouseSavedPosX = eventX;
+            mouseSavedPosY = eventY;
+
+// 			Real d = sqrt(dx*dx+dy*dy);
+// 			if( dx<0 || dy<0 ) d = -d;
+
+            if (mState)
+            {
+                unsigned int i = index.getValue();
+
+                switch( mouseMode )
+                {
+                case BtLeft:
+                    (*mState->getX())[i].getCenter() += Vec<3,Real>(dx,0,0);
+                    break;
+                case BtRight :
+                    (*mState->getX())[i].getCenter() += Vec<3,Real>(0,dy,0);
+                    break;
+                case BtMiddle :
+                    (*mState->getX())[i].getCenter() += Vec<3,Real>(0,0,dy);
+                    break;
+                default :
+                    break;
+                }
+            }
+        }
+    }
+
+
+    sofa::simulation::tree::GNode *node = static_cast<sofa::simulation::tree::GNode*> (this->getContext());
+    sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
+    sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
 };
 
 template <>
@@ -200,6 +234,14 @@ void MechanicalStateController<Vec1dTypes>::onMouseEvent(core::objectmodel::Mous
         break;
 
     case sofa::core::objectmodel::MouseEvent::RightReleased :
+        mouseMode = None;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::MiddlePressed :
+        mouseMode = BtMiddle;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::MiddleReleased :
         mouseMode = None;
         break;
 
@@ -240,6 +282,16 @@ void MechanicalStateController<Rigid3dTypes>::onMouseEvent(core::objectmodel::Mo
         mouseMode = None;
         break;
 
+    case sofa::core::objectmodel::MouseEvent::MiddlePressed :
+        mouseMode = BtMiddle;
+        mouseSavedPosX = eventX;
+        mouseSavedPosY = eventY;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::MiddleReleased :
+        mouseMode = None;
+        break;
+
     case sofa::core::objectmodel::MouseEvent::Move :
         if (handleEventTriggersUpdate.getValue())
             applyController();
@@ -276,6 +328,16 @@ void MechanicalStateController<Rigid3fTypes>::onMouseEvent(core::objectmodel::Mo
         break;
 
     case sofa::core::objectmodel::MouseEvent::RightReleased :
+        mouseMode = None;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::MiddlePressed :
+        mouseMode = BtMiddle;
+        mouseSavedPosX = eventX;
+        mouseSavedPosY = eventY;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::MiddleReleased :
         mouseMode = None;
         break;
 
