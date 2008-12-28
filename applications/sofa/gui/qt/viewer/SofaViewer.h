@@ -469,13 +469,15 @@ protected:
                     // Mouse middle button is pushed
                     else if (e->button() == Qt::MidButton)
                     {
-
+                        sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::MiddlePressed, eventX, eventY);
+                        if (groot)
+                            groot->propagateEvent(&mouseEvent);
                     }
                     break;
 
                 case QEvent::MouseMove:
                 {
-                    if (e->state()&(Qt::LeftButton|Qt::RightButton))
+                    if (e->state()&(Qt::LeftButton|Qt::RightButton|Qt::MidButton))
                     {
                         sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::Move, eventX, eventY);
                         if (groot)
@@ -502,7 +504,9 @@ protected:
                     // Mouse middle button is released
                     else if (e->button() == Qt::MidButton)
                     {
-
+                        sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::MiddleReleased, eventX, eventY);
+                        if (groot)
+                            groot->propagateEvent(&mouseEvent);
                     }
                     break;
 

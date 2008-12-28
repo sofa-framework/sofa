@@ -68,6 +68,8 @@ public:
         LeftReleased,
         RightPressed,
         RightReleased,
+        MiddlePressed,
+        MiddleReleased,
         Wheel,
         Reset
     } State;
