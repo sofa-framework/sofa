@@ -593,8 +593,8 @@ void HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::init()
 //         }
 
 
-
-    _drawSize = (this->_sparseGrid->getMax()[0]-this->_sparseGrid->getMin()[0]) * .004;
+    if(_drawSize.getValue()==-1)
+        _drawSize.setValue( (this->_sparseGrid->getMax()[0]-this->_sparseGrid->getMin()[0]) * .004 );
 
 
 }
@@ -2619,7 +2619,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::draw()
         glBegin(GL_LINES);
         for( SparseGridTopology::SeqEdges::const_iterator it = this->_sparseGrid->getEdges().begin() ; it != this->_sparseGrid->getEdges().end(); ++it)
         {
-            helper::gl::drawCylinder( x[(*it)[0]], x[(*it)[1]], _drawSize );
+            helper::gl::drawCylinder( x[(*it)[0]], x[(*it)[1]], _drawSize.getValue() );
         }
         glEnd();
     }
@@ -2649,7 +2649,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::draw()
 
     for(unsigned i=0; i<x.size(); ++i)
     {
-        helper::gl::drawSphere( x[i], _drawSize*1.5 );
+        helper::gl::drawSphere( x[i], _drawSize.getValue()*1.5 );
     }
 
     glDisable(GL_LIGHTING);
