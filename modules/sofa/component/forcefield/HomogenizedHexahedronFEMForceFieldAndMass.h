@@ -115,12 +115,18 @@ public:
         _useRamification = initData(&this->_useRamification,true,"useRamification","If SparseGridRamification, are ramifications taken into account?");
         _drawType = initData(&this->_drawType,0,"drawType","");
         _drawColor = initData(&this->_drawColor,0,"drawColor","");
+        _drawSize = initData(&this->_drawSize,(float)-1.0,"drawSize","");
     }
 
 
 
     virtual void init();
-    virtual void reinit()  { serr<<"WARNING : homogenized mechanical properties can't be updated, changes on mechanical properties (young, poisson, density) are not taken into account."<<sendl; }
+    virtual void reinit()
+    {
+        serr<<"WARNING : homogenized mechanical properties can't be updated, changes on mechanical properties (young, poisson, density) are not taken into account."<<sendl;
+        if(_drawSize.getValue()==-1)
+            _drawSize.setValue( (this->_sparseGrid->getMax()[0]-this->_sparseGrid->getMin()[0]) * .004 );
+    }
 
     virtual void draw();
 
@@ -131,7 +137,7 @@ public:
     Data<bool> _useRamification;
     Data<int> _drawType;
     Data<int> _drawColor;
-
+    Data<float> _drawSize;
 
 
 //       protected:
@@ -160,7 +166,6 @@ public:
     helper::vector< std::pair<int, Weight> > _finalWeights; // for each fine element -> the coarse element idx and corresponding Weight
 
 protected:
-    float _drawSize;
 
 
     static const int FineHexa_FineNode_IndiceForAssembling[8][8]; // give an assembled idx for each node or each fine element
