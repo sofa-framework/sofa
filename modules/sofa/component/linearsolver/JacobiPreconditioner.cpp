@@ -51,15 +51,29 @@ using namespace sofa::core::objectmodel;
 using std::cerr;
 using std::endl;
 
+template<class TMatrix, class TVector>
+JacobiPreconditioner<TMatrix,TVector>::JacobiPreconditioner()
+    : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
+    , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
+{
+    f_graph.setWidget("graph");
+    f_graph.setReadOnly(true);
+}
+
 /// Solve P^-1 Mx= P^-1 b
 // P[i][j] = M[i][j] ssi i=j
 //P^-1[i][j] = 1/M[i][j]
 template<class TMatrix, class TVector>
 void JacobiPreconditioner<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
 {
-    //z.clear();
-    for (unsigned i=0; i<z.size(); i++) z[i] = 1/M.element(i,i) * r[i]; //si i==j;
-    //z = r;
+    if (this->systemMatrix->bandWidth == 1)
+    {
+        for (unsigned i=0; i<z.size(); i++) z.set(i,r.element(i) / M.element(i,i)); //si i==j;
+    }
+    else
+    {
+        z = r;
+    }
     //cout << "solve JacobiPreconditioner" << endl;
 }
 
@@ -67,14 +81,12 @@ SOFA_DECL_CLASS(JacobiPreconditioner)
 
 int JacobiPreconditionerClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
 //.add< JacobiPreconditioner<GraphScatteredMatrix,GraphScatteredVector> >(true)
-        .add< JacobiPreconditioner< SparseMatrix<double>, FullVector<double> > >(true)
-        .add< JacobiPreconditioner<NewMatBandMatrix,NewMatVector> >()
-        .add< JacobiPreconditioner<NewMatMatrix,NewMatVector> >()
-        .add< JacobiPreconditioner<NewMatSymmetricMatrix,NewMatVector> >()
-
-        .add< JacobiPreconditioner<NewMatSymmetricBandMatrix,NewMatVector> >()
-        .add< JacobiPreconditioner< FullMatrix<double>, FullVector<double> > >()
-
+//.add< JacobiPreconditioner< SparseMatrix<double>, FullVector<double> > >()
+        .add< JacobiPreconditioner<NewMatBandMatrix,NewMatVector> >(true)
+//.add< JacobiPreconditioner<NewMatMatrix,NewMatVector> >()
+//.add< JacobiPreconditioner<NewMatSymmetricMatrix,NewMatVector> >()
+//.add< JacobiPreconditioner<NewMatSymmetricBandMatrix,NewMatVector> >()
+//.add< JacobiPreconditioner< FullMatrix<double>, FullVector<double> > >()
         .addAlias("JCGSolver")
         .addAlias("JConjugateGradient")
         ;

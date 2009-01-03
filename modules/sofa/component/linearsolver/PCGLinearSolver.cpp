@@ -147,7 +147,7 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
         }
         else
         {
-            for (unsigned int i=0; i<this->preconditioners.size(); ++i)
+            for (unsigned int i=0; i<this->preconditioners.size(); i++)
             {
                 //r = M * xi
                 //Solve P * z = r

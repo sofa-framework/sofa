@@ -50,26 +50,12 @@ public:
     typedef TVector Vector;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
     typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
-    Data<unsigned> f_maxIter;
-    Data<double> f_tolerance;
-    Data<double> f_smallDenominatorThreshold;
     Data<bool> f_verbose;
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
 
-    JacobiPreconditioner()
-        : f_maxIter( initData(&f_maxIter,(unsigned)25,"iterations","maximum number of iterations of the Conjugate Gradient solution") )
-        , f_tolerance( initData(&f_tolerance,1e-5,"tolerance","desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)") )
-        , f_smallDenominatorThreshold( initData(&f_smallDenominatorThreshold,1e-5,"threshold","minimum value of the denominator in the conjugate Gradient solution") )
-        , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-        , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
-    {
-        f_graph.setWidget("graph");
-        f_graph.setReadOnly(true);
-    }
-
+    JacobiPreconditioner();
     void solve (Matrix& M, Vector& x, Vector& b);
 };
-
 
 } // namespace linearsolver
 

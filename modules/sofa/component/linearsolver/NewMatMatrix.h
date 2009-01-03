@@ -363,12 +363,10 @@ inline void TNewMatMatrix<NEWMAT::BandMatrix>::set(int i, int j, double v)
         return;
     }
 #endif
-    if (j < i-bandWidth || j > i+bandWidth)
+    if (j >= i-bandWidth && j <= i+bandWidth)
     {
-        std::cerr << "ERROR: trying to set "<<v<<" to element ("<<i<<","<<j<<") in NEWMAT::BandMatrix of bandwidth "<<bandWidth<<std::endl;
-        return;
+        M::element(i,j) = v;
     }
-    M::element(i,j) = v;
 }
 
 template<>
@@ -384,12 +382,10 @@ inline void TNewMatMatrix<NEWMAT::BandMatrix>::add(int i, int j, double v)
         return;
     }
 #endif
-    if (j < i-bandWidth || j > i+bandWidth)
+    if (j >= i-bandWidth && j <= i+bandWidth)
     {
-        std::cerr << "ERROR: trying to set "<<v<<" to element ("<<i<<","<<j<<") in NEWMAT::BandMatrix of bandwidth "<<bandWidth<<std::endl;
-        return;
+        M::element(i,j) += v;
     }
-    M::element(i,j) += v;
 }
 
 template<>
