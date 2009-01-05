@@ -142,6 +142,10 @@ void PointModel::draw()
                 indices.push_back(Vec<2,int>(index,index+1));
                 index+=2;
             }
+            else
+            {
+                ++index;
+            }
         }
 
         simulation::tree::getSimulation()->DrawUtility.drawPoints(pointsP, 3, Vec<4,float>(getColor4f()));
