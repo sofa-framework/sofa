@@ -27,7 +27,7 @@
 
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/component/topology/Mesh2PointTopologicalMapping.h>
+#include <sofa/component/base/topology/Mesh2PointTopologicalMapping.h>
 #include <sofa/helper/vector.h>
 
 namespace sofa

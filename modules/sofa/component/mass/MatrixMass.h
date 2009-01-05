@@ -30,7 +30,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/componentmodel/behavior/Mass.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/component/topology/PointData.h>
+#include <sofa/component/base/topology/PointData.h>
 #include <sofa/helper/vector.h>
 
 namespace sofa

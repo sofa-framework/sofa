@@ -38,7 +38,7 @@
 #define SOFA_COMPONENT_CONTROLLER_EDGESETCONTROLLER_H
 
 #include <sofa/component/controller/MechanicalStateController.h>
-#include <sofa/component/topology/EdgeSetTopologyModifier.h>
+#include <sofa/component/base/topology/EdgeSetTopologyModifier.h>
 
 
 namespace sofa

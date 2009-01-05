@@ -27,7 +27,7 @@
 
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/component/topology/SimpleTesselatedTetraTopologicalMapping.h>
+#include <sofa/component/base/topology/SimpleTesselatedTetraTopologicalMapping.h>
 #include <sofa/helper/vector.h>
 
 namespace sofa

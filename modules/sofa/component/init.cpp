@@ -27,7 +27,7 @@
 #include <sofa/component/behaviormodel/initBehaviorModel.h>
 #include <sofa/component/collision/initCollision.h>
 #include <sofa/component/constraint/initConstraint.h>
-#include <sofa/component/container/initContainer.h>
+#include <sofa/component/base/container/initContainer.h>
 #include <sofa/component/contextobject/initContextObject.h>
 #include <sofa/component/controller/initController.h>
 #include <sofa/component/fem/initFEM.h>
@@ -39,7 +39,7 @@
 #include <sofa/component/mastersolver/initMasterSolver.h>
 #include <sofa/component/misc/initMisc.h>
 #include <sofa/component/odesolver/initOdeSolver.h>
-#include <sofa/component/topology/initTopology.h>
+#include <sofa/component/base/topology/initTopology.h>
 #include <sofa/component/visualmodel/initVisualModel.h>
 
 

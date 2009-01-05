@@ -26,9 +26,9 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/component/topology/TriangleData.inl>
-#include <sofa/component/topology/EdgeData.inl>
-#include <sofa/component/topology/PointData.inl>
+#include <sofa/component/base/topology/TriangleData.inl>
+#include <sofa/component/base/topology/EdgeData.inl>
+#include <sofa/component/base/topology/PointData.inl>
 #include <sofa/helper/system/gl.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging

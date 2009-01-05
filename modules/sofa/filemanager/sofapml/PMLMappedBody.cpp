@@ -35,7 +35,7 @@
 
 #include "PMLMappedBody.h"
 
-#include "sofa/component/container/MechanicalObject.h"
+#include "sofa/component/base/container/MechanicalObject.h"
 #include "sofa/component/mapping/BarycentricMapping.h"
 using namespace sofa::component::mapping;
 using namespace sofa::component;

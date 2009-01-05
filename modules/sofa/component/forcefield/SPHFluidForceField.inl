@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_INL
 
 #include <sofa/component/forcefield/SPHFluidForceField.h>
-#include <sofa/component/container/SpatialGridContainer.inl>
+#include <sofa/component/base/container/SpatialGridContainer.inl>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/gl/template.h>
 #include <math.h>

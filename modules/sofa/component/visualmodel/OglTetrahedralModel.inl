@@ -82,17 +82,19 @@ void OglTetrahedralModel<DataTypes>::drawTransparent()
         glDepthMask(GL_FALSE);
 
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    //core::componentmodel::topology::BaseMeshTopology::SeqHexas::const_iterator it;
     core::componentmodel::topology::BaseMeshTopology::SeqTetras::const_iterator it;
 
 #ifdef GL_LINES_ADJACENCY_EXT
+
     const core::componentmodel::topology::BaseMeshTopology::SeqTetras& vec = topo->getTetras();
+
     VecCoord& x = *nodes->getX();
     Coord v;
 
     glBegin(GL_LINES_ADJACENCY_EXT);
     for(it = vec.begin() ; it != vec.end() ; it++)
     {
-
         for (unsigned int i=0 ; i< 4 ; i++)
         {
             v = x[(*it)[i]];
@@ -100,6 +102,39 @@ void OglTetrahedralModel<DataTypes>::drawTransparent()
         }
     }
     glEnd();
+    /*
+    	const core::componentmodel::topology::BaseMeshTopology::SeqHexas& vec = topo->getHexas();
+
+    	VecCoord& x = *nodes->getX();
+    	Coord v;
+
+
+    	const unsigned int hexa2tetras[24] = { 0, 5, 1, 6,
+    										   0, 1, 3, 6,
+    										   1, 3, 6, 2,
+    										   6, 3, 0, 7,
+    										   6, 7, 0, 5,
+    										   7, 5, 4, 0 };
+
+
+
+    	glBegin(GL_LINES_ADJACENCY_EXT);
+    	for(it = vec.begin() ; it != vec.end() ; it++)
+    	{
+
+    		for (unsigned int i=0 ; i<6 ; i++)
+    		{
+    			for (unsigned int j=0 ; j<4 ; j++)
+    			{
+    				//glVertex3f((GLfloat)x[(*it)[hexa2tetras[i][j]]][0], (GLfloat)x[(*it)[hexa2tetras[i][j]]][1], (GLfloat)x[(*it)[hexa2tetras[i][j]]][2]);
+    				glVertex3f((GLfloat)x[(*it)[hexa2tetras[i*4 + j]]][0], (GLfloat)x[(*it)[hexa2tetras[i*4 + j]]][1], (GLfloat)x[(*it)[hexa2tetras[i*4 + j]]][2]);
+    			}
+    		}
+    	}
+    	glEnd();
+    	*/
+#else
+
 #endif
     glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);

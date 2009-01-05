@@ -26,12 +26,12 @@
 #define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_H
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <sofa/component/base/container/MechanicalObject.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #ifdef SOFA_DEV
-#include <sofa/component/topology/FittedRegularGridTopology.h>
+#include <sofa/component/base/topology/FittedRegularGridTopology.h>
 #endif // SOFA_DEV
-#include <sofa/component/topology/SparseGridTopology.h>
+#include <sofa/component/base/topology/SparseGridTopology.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>

@@ -27,7 +27,7 @@
 
 #include <sofa/core/VisualModel.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/component/topology/PointData.h>
+#include <sofa/component/base/topology/PointData.h>
 
 #include <sofa/helper/gl/template.h>
 

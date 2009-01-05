@@ -30,11 +30,11 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/component/topology/EdgeData.h>
-#include <sofa/component/topology/TopologyChangedEvent.h>
+#include <sofa/component/base/topology/EdgeData.h>
+#include <sofa/component/base/topology/TopologyChangedEvent.h>
 
-#include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
-#include <sofa/component/topology/EdgeSetTopologyModifier.h>
+#include <sofa/component/base/topology/EdgeSetGeometryAlgorithms.h>
+#include <sofa/component/base/topology/EdgeSetTopologyModifier.h>
 
 
 namespace sofa

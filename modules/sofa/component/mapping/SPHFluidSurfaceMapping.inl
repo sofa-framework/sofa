@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_SPHFLUIDSURFACEMAPPING_INL
 
 #include <sofa/component/mapping/SPHFluidSurfaceMapping.h>
-#include <sofa/component/container/SpatialGridContainer.inl>
+#include <sofa/component/base/container/SpatialGridContainer.inl>
 #include <sofa/core/Mapping.inl>
 #include <sofa/helper/rmath.h>
 #include <sofa/simulation/tree/GNode.h>

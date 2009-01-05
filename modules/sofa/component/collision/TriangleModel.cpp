@@ -25,17 +25,17 @@
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/component/collision/Triangle.h>
-#include <sofa/component/topology/TriangleData.inl>
+#include <sofa/component/base/topology/TriangleData.inl>
 #include <sofa/simulation/tree/GNode.h>
-#include <sofa/component/topology/RegularGridTopology.h>
+#include <sofa/component/base/topology/RegularGridTopology.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/ObjectFactory.h>
 #include <vector>
 #include <sofa/helper/gl/template.h>
 #include <iostream>
 
-#include <sofa/component/topology/PointSetTopologyChange.h>
-#include <sofa/component/topology/TriangleSetTopologyChange.h>
+#include <sofa/component/base/topology/PointSetTopologyChange.h>
+#include <sofa/component/base/topology/TriangleSetTopologyChange.h>
 
 #include <sofa/simulation/tree/Simulation.h>
 

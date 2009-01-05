@@ -30,9 +30,9 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/component/topology/PointSetTopologyChange.h>
+#include <sofa/component/base/topology/PointSetTopologyChange.h>
 
-#include <sofa/component/misc/VoxelGridLoader.h>
+#include <sofa/component/base/container/VoxelGridLoader.h>
 
 #include <sofa/component/visualmodel/PointSplatModel.h>
 
