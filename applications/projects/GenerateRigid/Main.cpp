@@ -26,6 +26,7 @@
 ******************************************************************************/
 #include "GenerateRigid.h"
 #include <sofa/component/init.h>
+#include <sofa/simulation/tree/xml/initXml.h>
 #include <iostream>
 #include <fstream>
 
@@ -40,6 +41,7 @@ int main(int argc, char** argv)
     }
 
     sofa::component::init();
+    sofa::simulation::tree::xml::initXml();
 
     sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create(argv[1]);
 
