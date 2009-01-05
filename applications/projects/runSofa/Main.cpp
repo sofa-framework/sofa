@@ -27,6 +27,7 @@
 #include <iostream>
 #include <fstream>
 #include <sofa/helper/ArgumentParser.h>
+#include <sofa/simulation/tree/xml/initXml.h>
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/component/init.h>
 #include <sofa/helper/Factory.h>
@@ -51,7 +52,7 @@ bool loadPlugin(const char* filename)
     return true;
 }
 #else
-bool loadPlugin(const char* filename)
+bool loadPlugin(const char* /*filename*/)
 {
     std::cerr << "Plugin loading not supported on this platform.\n";
     return false;
@@ -90,6 +91,7 @@ int main(int argc, char** argv)
     (argc,argv);
 
     sofa::component::init();
+    sofa::simulation::tree::xml::initXml();
 
     if (!files.empty()) fileName = files[0];
 

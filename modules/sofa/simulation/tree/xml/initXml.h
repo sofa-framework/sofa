@@ -22,60 +22,29 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-
-#include <sofa/component/behaviormodel/initBehaviorModel.h>
-#include <sofa/component/collision/initCollision.h>
-#include <sofa/component/constraint/initConstraint.h>
-#include <sofa/component/container/initContainer.h>
-#include <sofa/component/contextobject/initContextObject.h>
-#include <sofa/component/controller/initController.h>
-#include <sofa/component/fem/initFEM.h>
-#include <sofa/component/forcefield/initForceField.h>
-#include <sofa/component/interactionforcefield/initInteractionForceField.h>
-#include <sofa/component/linearsolver/initLinearSolver.h>
-#include <sofa/component/mapping/initMapping.h>
-#include <sofa/component/mass/initMass.h>
-#include <sofa/component/mastersolver/initMasterSolver.h>
-#include <sofa/component/misc/initMisc.h>
-#include <sofa/component/odesolver/initOdeSolver.h>
-#include <sofa/component/topology/initTopology.h>
-#include <sofa/component/visualmodel/initVisualModel.h>
-
+#ifndef SOFA_SIMULATION_TREE_XML_INIT_H
+#define SOFA_SIMULATION_TREE_XML_INIT_H
 
 namespace sofa
 {
 
-namespace component
+namespace simulation
 {
 
-
-void init()
+namespace tree
 {
-    static bool first = true;
-    if (first)
-    {
-        initBehaviorModel();
-        initCollision();
-        initConstraint();
-        initContainer();
-        initContextObject();
-        initController();
-        initFEM();
-        initForceField();
-        initInteractionForceField();
-        initLinearSolver();
-        initMapping();
-        initMass();
-        initMasterSolver();
-        initMisc();
-        initOdeSolver();
-        initTopology();
-        initVisualModel();
-        first = false;
-    }
-}
 
-} // namespace component
+namespace xml
+{
+
+void initXml();
+
+} // namespace xml
+
+} // namespace tree
+
+} // namespace simulation
 
 } // namespace sofa
+
+#endif // SOFA_SIMULATION_TREE_XML_INIT_H

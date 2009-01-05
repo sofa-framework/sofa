@@ -2670,7 +2670,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::draw()
 
     for(unsigned i=0; i<sgr->getConnexions()->size(); ++i)
     {
-        helper::vector<topology::SparseGridRamificationTopology::Connexion*>& con = (*sgr->getConnexions())[i];
+        helper::vector< topology::SparseGridRamificationTopology::Connexion *>& con = (*sgr->getConnexions())[i];
 
         if( con.empty() ) continue;
 

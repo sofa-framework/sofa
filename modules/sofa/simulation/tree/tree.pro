@@ -13,6 +13,7 @@ HEADERS += DeleteVisitor.h \
            xml/BaseElement.h \
            xml/Element.h \
            xml/Element.inl \
+		   xml/initXml.h \
            xml/NodeElement.h \
            xml/ObjectElement.h \
            xml/AttributeElement.h \
@@ -26,6 +27,7 @@ SOURCES += DeleteVisitor.cpp \
            ParallelVisitorScheduler.cpp \
            Simulation.cpp \
            xml/BaseElement.cpp \
+		   xml/initXml.cpp \
            xml/NodeElement.cpp \
            xml/ObjectElement.cpp \
            xml/AttributeElement.cpp \

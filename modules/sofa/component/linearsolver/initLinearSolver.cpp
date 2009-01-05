@@ -23,8 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
-#include <sofa/core/ObjectFactory.h>
-#include <iostream>
+
 
 namespace sofa
 {
