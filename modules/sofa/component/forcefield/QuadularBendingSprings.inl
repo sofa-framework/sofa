@@ -30,10 +30,10 @@
 
 #include <sofa/helper/gl/template.h>
 
-#include <sofa/component/base/topology/QuadData.inl>
-#include <sofa/component/base/topology/EdgeData.inl>
+#include <sofa/component/topology/QuadData.inl>
+#include <sofa/component/topology/EdgeData.inl>
 
-#include <sofa/component/base/topology/PointSetTopologyChange.h>
+#include <sofa/component/topology/PointSetTopologyChange.h>
 
 namespace sofa
 {

@@ -25,16 +25,16 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_H
 
-#include <sofa/component/base/topology/EdgeData.inl>
+#include <sofa/component/topology/EdgeData.inl>
 #include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/component/base/container/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/component/base/container/StiffnessContainer.h>
-#include <sofa/component/base/container/PoissonContainer.h>
-#include <sofa/component/base/container/LengthContainer.h>
-#include <sofa/component/base/container/RadiusContainer.h>
+#include <sofa/component/container/StiffnessContainer.h>
+#include <sofa/component/container/PoissonContainer.h>
+#include <sofa/component/container/LengthContainer.h>
+#include <sofa/component/container/RadiusContainer.h>
 
 
 

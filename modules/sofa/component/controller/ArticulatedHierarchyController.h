@@ -39,7 +39,7 @@
 
 #include <sofa/component/controller/Controller.h>
 
-#include <sofa/component/base/container/ArticulatedHierarchyContainer.h>
+#include <sofa/component/container/ArticulatedHierarchyContainer.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/vector.h>
 

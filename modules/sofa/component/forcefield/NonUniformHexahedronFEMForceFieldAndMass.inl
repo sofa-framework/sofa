@@ -33,7 +33,7 @@ using std::set;
 
 
 
-#include <sofa/component/base/topology/SparseGridMultipleTopology.h>
+#include <sofa/component/topology/SparseGridMultipleTopology.h>
 
 namespace sofa
 {

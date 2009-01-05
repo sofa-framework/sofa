@@ -27,19 +27,19 @@
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/SphereModel.h>
 
-#include <sofa/component/base/container/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/simulation/tree/GNode.h>
 
 #include <sofa/core/componentmodel/topology/TopologicalMapping.h>
 
-#include <sofa/component/base/topology/PointSetTopologyContainer.h>
-#include <sofa/component/base/topology/EdgeSetTopologyContainer.h>
-#include <sofa/component/base/topology/TriangleSetTopologyContainer.h>
-#include <sofa/component/base/topology/TriangleSetTopologyModifier.h>
-#include <sofa/component/base/topology/TriangleSetTopologyAlgorithms.h>
-#include <sofa/component/base/topology/TetrahedronSetTopologyContainer.h>
-#include <sofa/component/base/topology/QuadSetTopologyContainer.h>
-#include <sofa/component/base/topology/HexahedronSetTopologyContainer.h>
+#include <sofa/component/topology/PointSetTopologyContainer.h>
+#include <sofa/component/topology/EdgeSetTopologyContainer.h>
+#include <sofa/component/topology/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/TriangleSetTopologyModifier.h>
+#include <sofa/component/topology/TriangleSetTopologyAlgorithms.h>
+#include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/QuadSetTopologyContainer.h>
+#include <sofa/component/topology/HexahedronSetTopologyContainer.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 

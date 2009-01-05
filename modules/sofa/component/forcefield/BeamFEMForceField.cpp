@@ -25,7 +25,7 @@
 #include <sofa/component/forcefield/BeamFEMForceField.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/component/base/container/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 //#include <typeinfo>
 

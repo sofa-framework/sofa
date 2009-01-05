@@ -14,6 +14,25 @@ LIBS += -lsofatree$$LIBSUFFIX
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 LIBS += -lsofaautomatescheduler$$LIBSUFFIX
 } # END SOFA_DEV
+LIBS += -lsofasimulation$$LIBSUFFIX
+LIBS += -lsofatree$$LIBSUFFIX
+LIBS += -lsofacomponentbase$$LIBSUFFIX
+LIBS += -lsofacomponentmastersolver$$LIBSUFFIX
+LIBS += -lsofacomponentfem$$LIBSUFFIX
+LIBS += -lsofacomponentinteractionforcefield$$LIBSUFFIX
+LIBS += -lsofacomponentcontextobject$$LIBSUFFIX
+LIBS += -lsofacomponentbehaviormodel$$LIBSUFFIX
+LIBS += -lsofacomponentlinearsolver$$LIBSUFFIX
+LIBS += -lsofacomponentodesolver$$LIBSUFFIX
+LIBS += -lsofacomponentbase$$LIBSUFFIX
+LIBS += -lsofacomponentcontroller$$LIBSUFFIX
+LIBS += -lsofacomponentvisualmodel$$LIBSUFFIX
+LIBS += -lsofacomponentmass$$LIBSUFFIX
+LIBS += -lsofacomponentforcefield$$LIBSUFFIX
+LIBS += -lsofacomponentmapping$$LIBSUFFIX
+LIBS += -lsofacomponentconstraint$$LIBSUFFIX
+LIBS += -lsofacomponentcollision$$LIBSUFFIX
+LIBS += -lsofacomponentmisc$$LIBSUFFIX
 LIBS += -lsofacomponent$$LIBSUFFIX
 LIBS += $$SOFA_EXT_LIBS
 

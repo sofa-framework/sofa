@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/forcefield/EdgePressureForceField.h>
-#include <sofa/component/base/topology/EdgeSubsetData.inl>
+#include <sofa/component/topology/EdgeSubsetData.inl>
 #include <sofa/helper/gl/template.h>
 #include <vector>
 #include <set>

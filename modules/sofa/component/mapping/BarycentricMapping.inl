@@ -34,26 +34,26 @@
 #include <iostream>
 
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/component/base/topology/RegularGridTopology.h>
-#include <sofa/component/base/topology/SparseGridTopology.h>
+#include <sofa/component/topology/RegularGridTopology.h>
+#include <sofa/component/topology/SparseGridTopology.h>
 
-#include <sofa/component/base/topology/EdgeSetTopologyContainer.h>
-#include <sofa/component/base/topology/TriangleSetTopologyContainer.h>
-#include <sofa/component/base/topology/QuadSetTopologyContainer.h>
-#include <sofa/component/base/topology/TetrahedronSetTopologyContainer.h>
-#include <sofa/component/base/topology/HexahedronSetTopologyContainer.h>
+#include <sofa/component/topology/EdgeSetTopologyContainer.h>
+#include <sofa/component/topology/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/QuadSetTopologyContainer.h>
+#include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/HexahedronSetTopologyContainer.h>
 
-#include <sofa/component/base/topology/EdgeSetGeometryAlgorithms.h>
-#include <sofa/component/base/topology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/component/base/topology/QuadSetGeometryAlgorithms.h>
-#include <sofa/component/base/topology/TetrahedronSetGeometryAlgorithms.h>
-#include <sofa/component/base/topology/HexahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
+#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
+#include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
+#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
 
-#include <sofa/component/base/topology/PointData.h>
-#include <sofa/component/base/topology/PointData.inl>
+#include <sofa/component/topology/PointData.h>
+#include <sofa/component/topology/PointData.inl>
 
-#include <sofa/component/base/topology/HexahedronData.h>
-#include <sofa/component/base/topology/HexahedronData.inl>
+#include <sofa/component/topology/HexahedronData.h>
+#include <sofa/component/topology/HexahedronData.inl>
 
 
 

@@ -34,9 +34,9 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/forcefield/TriangularFEMForceField.h>
-#include <sofa/component/base/topology/TriangleData.h>
-#include <sofa/component/base/topology/EdgeData.h>
-#include <sofa/component/base/topology/PointData.h>
+#include <sofa/component/topology/TriangleData.h>
+#include <sofa/component/topology/EdgeData.h>
+#include <sofa/component/topology/PointData.h>
 #include <newmat/newmat.h>
 #include <newmat/newmatap.h>
 

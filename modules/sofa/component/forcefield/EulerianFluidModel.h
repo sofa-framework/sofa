@@ -38,16 +38,16 @@
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 
-#include <sofa/component/base/topology/MeshTopology.h>
-#include <sofa/component/base/topology/RegularGridTopology.h>
-#include <sofa/component/base/topology/EdgeSetGeometryAlgorithms.h>
-#include <sofa/component/base/topology/EdgeSetGeometryAlgorithms.inl>
-#include <sofa/component/base/topology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/component/base/topology/TriangleSetGeometryAlgorithms.inl>
-#include <sofa/component/base/topology/QuadSetGeometryAlgorithms.h>
-#include <sofa/component/base/topology/QuadSetGeometryAlgorithms.inl>
-//#include <sofa/component/base/topology/PointSubset.h>
-//#include <sofa/component/base/topology/EdgeSubsetData.h>
+#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/component/topology/RegularGridTopology.h>
+#include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
+#include <sofa/component/topology/EdgeSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
+#include <sofa/component/topology/TriangleSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
+#include <sofa/component/topology/QuadSetGeometryAlgorithms.inl>
+//#include <sofa/component/topology/PointSubset.h>
+//#include <sofa/component/topology/EdgeSubsetData.h>
 
 
 namespace sofa

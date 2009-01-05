@@ -28,7 +28,7 @@
 
 #include "HexahedronFEMForceFieldAndMass.h"
 #include "HexahedronFEMForceField.inl"
-#include <sofa/component/base/topology/SparseGridTopology.h>
+#include <sofa/component/topology/SparseGridTopology.h>
 
 
 namespace sofa

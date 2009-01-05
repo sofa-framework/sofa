@@ -29,7 +29,7 @@
 
 
 #include <sofa/component/linearsolver/NewMatMatrix.h>
-#include <sofa/component/base/topology/SparseGridMultipleTopology.h>
+#include <sofa/component/topology/SparseGridMultipleTopology.h>
 // #include <sofa/simulation/tree/GNode.h>
 
 // #include <sofa/simulation/common/InitVisitor.h>

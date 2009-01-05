@@ -31,7 +31,7 @@
 #include <sofa/component/forcefield/SpringForceField.h>
 #include <sofa/core/componentmodel/behavior/PairInteractionForceField.inl>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/component/base/topology/PointSetTopologyChange.h>
+#include <sofa/component/topology/PointSetTopologyChange.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/config.h>

@@ -38,7 +38,7 @@
 #define SOFA_GPU_CUDA_CUDASPATIALGRIDCONTAINER_INL
 
 #include <sofa/gpu/cuda/CudaSpatialGridContainer.h>
-#include <sofa/component/base/container/SpatialGridContainer.inl>
+#include <sofa/component/container/SpatialGridContainer.inl>
 
 namespace sofa
 {

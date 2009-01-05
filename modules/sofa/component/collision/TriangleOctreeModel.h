@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_TRIANGLEOCTREEMDEL_H
 
 #include <sofa/core/CollisionModel.h>
-#include <sofa/component/base/container/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/component/collision/TriangleModel.h>

@@ -29,7 +29,7 @@
 #include <sofa/component/forcefield/NonUniformHexahedronFEMForceFieldAndMass.h>
 
 
-// #include <sofa/component/base/container/MechanicalObject.h>
+// #include <sofa/component/container/MechanicalObject.h>
 
 
 // #include <sofa/component/mapping/BarycentricMapping.h>
@@ -37,7 +37,7 @@
 
 // #include <sofa/component/mapping/IdentityMapping.h>
 // #include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
-// #include <sofa/component/base/topology/MeshTopology.h>
+// #include <sofa/component/topology/MeshTopology.h>
 
 
 

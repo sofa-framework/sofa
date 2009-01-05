@@ -33,7 +33,7 @@
 #include <iostream>
 #include <set>
 
-#include <sofa/component/base/topology/HexahedronData.inl>
+#include <sofa/component/topology/HexahedronData.inl>
 
 
 

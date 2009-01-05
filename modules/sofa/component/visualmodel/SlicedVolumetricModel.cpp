@@ -31,9 +31,9 @@
 #include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
-#include <sofa/component/base/topology/SparseGridTopology.h>
+#include <sofa/component/topology/SparseGridTopology.h>
 
-#include <sofa/component/base/container/VoxelGridLoader.h>
+#include <sofa/component/container/VoxelGridLoader.h>
 
 #include <sofa/component/visualmodel/SlicedVolumetricModel.h>
 
