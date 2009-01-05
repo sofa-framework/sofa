@@ -27,7 +27,7 @@
 
 #include <sofa/core/componentmodel/behavior/ForceField.inl>
 #include <sofa/component/forcefield/TetrahedronFEMForceField.h>
-#include <sofa/component/topology/GridTopology.h>
+#include <sofa/component/base/topology/GridTopology.h>
 #include <sofa/helper/PolarDecompose.h>
 #include <sofa/helper/gl/template.h>
 #include <assert.h>

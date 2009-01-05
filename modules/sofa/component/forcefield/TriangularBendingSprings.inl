@@ -37,13 +37,13 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_INL
 
 #include <sofa/component/forcefield/TriangularBendingSprings.h>
-#include <sofa/component/topology/PointSetTopologyChange.h>
+#include <sofa/component/base/topology/PointSetTopologyChange.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 
 #include <sofa/helper/gl/template.h>
-#include <sofa/component/topology/TriangleData.inl>
-#include <sofa/component/topology/EdgeData.inl>
+#include <sofa/component/base/topology/TriangleData.inl>
+#include <sofa/component/base/topology/EdgeData.inl>
 
 namespace sofa
 {

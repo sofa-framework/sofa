@@ -34,7 +34,7 @@
 
 #include "LMLForce.inl"
 #include "sofa/defaulttype/Vec3Types.h"
-#include "sofa/component/container/MechanicalObject.h"
+#include "sofa/component/base/container/MechanicalObject.h"
 #include <sofa/core/ObjectFactory.h>
 using namespace sofa::defaulttype;
 using namespace sofa::component;

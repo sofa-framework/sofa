@@ -31,7 +31,7 @@
 #include <sofa/component/mapping/IdentityMapping.h>
 #include <sofa/component/mapping/RigidMapping.h>
 #include <sofa/component/mapping/SubsetMapping.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <sofa/component/base/container/MechanicalObject.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/component/collision/SphereModel.h>

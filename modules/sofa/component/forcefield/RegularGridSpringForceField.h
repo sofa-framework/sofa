@@ -26,9 +26,9 @@
 #define SOFA_COMPONENT_FORCEFIELD_REGULARGRIDSPRINGFORCEFIELD_H
 
 #include <sofa/component/forcefield/StiffSpringForceField.h>
-#include <sofa/component/topology/RegularGridTopology.h>
+#include <sofa/component/base/topology/RegularGridTopology.h>
 #ifdef SOFA_DEV
-#include <sofa/component/topology/FittedRegularGridTopology.h>
+#include <sofa/component/base/topology/FittedRegularGridTopology.h>
 #endif // SOFA_DEV
 
 namespace sofa

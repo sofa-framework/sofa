@@ -48,7 +48,7 @@
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
-#include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
+#include <sofa/component/base/topology/EdgeSetGeometryAlgorithms.h>
 
 namespace sofa
 {

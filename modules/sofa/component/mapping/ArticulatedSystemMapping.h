@@ -34,7 +34,7 @@
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <vector>
-#include <sofa/component/container/ArticulatedHierarchyContainer.h>
+#include <sofa/component/base/container/ArticulatedHierarchyContainer.h>
 #include <sofa/simulation/tree/GNode.h>
 
 namespace sofa

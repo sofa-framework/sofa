@@ -31,7 +31,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 
-#include <sofa/component/topology/PointSubset.h>
+#include <sofa/component/base/topology/PointSubset.h>
 
 
 

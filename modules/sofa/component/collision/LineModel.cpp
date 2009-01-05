@@ -30,8 +30,8 @@
 #include <vector>
 #include <sofa/helper/gl/template.h>
 #include <sofa/simulation/tree/GNode.h>
-#include <sofa/component/topology/PointSetTopologyChange.h>
-#include <sofa/component/topology/EdgeSetTopologyChange.h>
+#include <sofa/component/base/topology/PointSetTopologyChange.h>
+#include <sofa/component/base/topology/EdgeSetTopologyChange.h>
 
 #include <sofa/simulation/tree/Simulation.h>
 

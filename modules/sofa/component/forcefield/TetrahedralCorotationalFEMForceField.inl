@@ -27,10 +27,10 @@
 
 #include <sofa/core/componentmodel/behavior/ForceField.inl>
 #include <sofa/component/forcefield/TetrahedralCorotationalFEMForceField.h>
-#include <sofa/component/topology/GridTopology.h>
+#include <sofa/component/base/topology/GridTopology.h>
 #include <sofa/helper/PolarDecompose.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/component/topology/TetrahedronData.inl>
+#include <sofa/component/base/topology/TetrahedronData.inl>
 #include <assert.h>
 #include <iostream>
 #include <set>

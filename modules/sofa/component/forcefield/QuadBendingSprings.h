@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_QUADBENDINGSPRINGS_H
 
 #include <sofa/component/forcefield/StiffSpringForceField.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <sofa/component/base/container/MechanicalObject.h>
 #include <map>
 #include <set>
 

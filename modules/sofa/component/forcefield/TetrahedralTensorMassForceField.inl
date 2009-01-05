@@ -26,8 +26,8 @@
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <sofa/helper/gl/template.h>
-#include <sofa/component/topology/TetrahedronData.inl>
-#include <sofa/component/topology/EdgeData.inl>
+#include <sofa/component/base/topology/TetrahedronData.inl>
+#include <sofa/component/base/topology/EdgeData.inl>
 
 
 namespace sofa

@@ -29,7 +29,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <set>
-#include <sofa/component/topology/PointSubset.h>
+#include <sofa/component/base/topology/PointSubset.h>
 
 
 namespace sofa

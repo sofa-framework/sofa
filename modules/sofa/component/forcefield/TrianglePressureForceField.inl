@@ -23,8 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/forcefield/TrianglePressureForceField.h>
-#include <sofa/component/topology/TriangleSubsetData.inl>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
+#include <sofa/component/base/topology/TriangleSubsetData.inl>
+#include <sofa/component/base/topology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/helper/gl/template.h>
 #include <vector>
 #include <set>

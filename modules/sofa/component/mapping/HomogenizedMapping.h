@@ -31,7 +31,7 @@
 
 #include <sofa/defaulttype/Mat.h>
 
-#include <sofa/component/topology/SparseGridTopology.h>
+#include <sofa/component/base/topology/SparseGridTopology.h>
 #include <sofa/component/forcefield/HomogenizedHexahedronFEMForceFieldAndMass.h>
 
 namespace sofa

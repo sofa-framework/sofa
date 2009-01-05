@@ -37,7 +37,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGLEBENDINGSPRINGS_H
 
 #include <sofa/component/forcefield/StiffSpringForceField.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <sofa/component/base/container/MechanicalObject.h>
 #include <map>
 
 namespace sofa

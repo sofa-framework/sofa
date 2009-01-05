@@ -29,8 +29,8 @@
 
 #include <sofa/gui/qt/ModifyObject.h>
 #include <sofa/gui/qt/StructDataWidget.h>
-#include <sofa/component/topology/PointSubset.h>
-#include <sofa/component/topology/PointData.h>
+#include <sofa/component/base/topology/PointSubset.h>
+#include <sofa/component/base/topology/PointData.h>
 
 namespace sofa
 {

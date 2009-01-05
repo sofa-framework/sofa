@@ -28,7 +28,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <sofa/component/base/container/MechanicalObject.h>
 
 typedef sofa::defaulttype::Vec1fTypes   Particles1f;
 typedef Particles1f::VecDeriv           VecDeriv1f;
