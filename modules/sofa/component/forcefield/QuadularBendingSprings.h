@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_H
 #define SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_H
 
-#include <sofa/component/base/container/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include <map>
 #include <set>
 
@@ -34,8 +34,8 @@
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/component/base/topology/QuadData.h>
-#include <sofa/component/base/topology/EdgeData.h>
+#include <sofa/component/topology/QuadData.h>
+#include <sofa/component/topology/EdgeData.h>
 
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/fixed_array.h>

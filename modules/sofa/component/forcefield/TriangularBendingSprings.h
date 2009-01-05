@@ -41,7 +41,7 @@
 #endif
 
 //#include <sofa/component/forcefield/StiffSpringForceField.h>
-#include <sofa/component/base/container/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include <map>
 
 #include <sofa/core/componentmodel/behavior/ForceField.h> // or "BaseForceField.h" ?
@@ -50,7 +50,7 @@
 #include <sofa/defaulttype/Mat.h>
 
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/component/base/topology/EdgeData.h>
+#include <sofa/component/topology/EdgeData.h>
 
 namespace sofa
 {

@@ -28,8 +28,8 @@
 #define SOFA_GUI_QT_GRAPHDATAWIDGET_H
 
 #include <sofa/gui/qt/TableDataWidget.h>
-#include <sofa/component/base/topology/PointSubset.h>
-#include <sofa/component/base/topology/PointData.h>
+#include <sofa/component/topology/PointSubset.h>
+#include <sofa/component/topology/PointData.h>
 #include <qwt_plot.h>
 #include <qwt_legend.h>
 #include <qwt_scale_engine.h>

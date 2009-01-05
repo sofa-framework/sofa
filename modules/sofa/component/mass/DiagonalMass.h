@@ -33,14 +33,14 @@
 #include <sofa/core/componentmodel/behavior/Mass.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/component/base/topology/PointData.h>
+#include <sofa/component/topology/PointData.h>
 #include <sofa/helper/vector.h>
 
-#include <sofa/component/base/topology/EdgeSetGeometryAlgorithms.h>
-#include <sofa/component/base/topology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/component/base/topology/TetrahedronSetGeometryAlgorithms.h>
-#include <sofa/component/base/topology/QuadSetGeometryAlgorithms.h>
-#include <sofa/component/base/topology/HexahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
+#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
+#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
+#include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
 
 namespace sofa
 {

@@ -28,7 +28,7 @@
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/core/componentmodel/behavior/Constraint.inl>
 #include <sofa/component/constraint/FixedConstraint.h>
-#include <sofa/component/base/topology/PointSubset.h>
+#include <sofa/component/topology/PointSubset.h>
 
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>

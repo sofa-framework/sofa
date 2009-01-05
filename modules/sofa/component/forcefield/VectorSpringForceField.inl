@@ -28,8 +28,8 @@
 #include "VectorSpringForceField.h"
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/component/base/topology/EdgeData.inl>
-#include <sofa/component/base/topology/TopologyChangedEvent.h>
+#include <sofa/component/topology/EdgeData.inl>
+#include <sofa/component/topology/TopologyChangedEvent.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/simulation/tree/Simulation.h>

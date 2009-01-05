@@ -28,7 +28,7 @@
 #include <sofa/core/componentmodel/behavior/Constraint.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/helper/vector.h>
-#include <sofa/component/base/topology/PointSubset.h>
+#include <sofa/component/topology/PointSubset.h>
 
 
 namespace sofa

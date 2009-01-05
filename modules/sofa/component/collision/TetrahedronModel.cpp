@@ -26,7 +26,7 @@
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/simulation/tree/GNode.h>
-#include <sofa/component/base/topology/RegularGridTopology.h>
+#include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/ObjectFactory.h>
 #include <vector>

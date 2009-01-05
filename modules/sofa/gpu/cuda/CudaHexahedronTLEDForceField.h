@@ -28,7 +28,7 @@
 
 #include "CudaTypes.h"
 #include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/component/base/topology/MeshTopology.h>
+#include <sofa/component/topology/MeshTopology.h>
 
 // Total Lagrangian Explicit Dynamics algorithm from
 // @InProceedings{Comas2008ISBMS,

@@ -27,7 +27,7 @@
 
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/component/base/container/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.h>
 
 
 namespace sofa

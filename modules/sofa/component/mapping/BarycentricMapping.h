@@ -26,9 +26,9 @@
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_H
 
 #include <sofa/helper/vector.h>
-#include <sofa/component/base/topology/PointData.h>
-#include <sofa/component/base/topology/HexahedronData.h>
-#include <sofa/component/base/topology/RegularGridTopology.h>
+#include <sofa/component/topology/PointData.h>
+#include <sofa/component/topology/HexahedronData.h>
+#include <sofa/component/topology/RegularGridTopology.h>
 
 // forward declarations
 namespace sofa

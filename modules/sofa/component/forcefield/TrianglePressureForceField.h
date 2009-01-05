@@ -27,7 +27,7 @@
 
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/component/base/topology/TriangleSubsetData.h>
+#include <sofa/component/topology/TriangleSubsetData.h>
 
 
 

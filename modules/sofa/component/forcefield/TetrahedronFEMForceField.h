@@ -28,7 +28,7 @@
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #ifdef SOFA_DEV
-#include <sofa/component/base/topology/FittedRegularGridTopology.h>
+#include <sofa/component/topology/FittedRegularGridTopology.h>
 #endif // SOFA_DEV
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>

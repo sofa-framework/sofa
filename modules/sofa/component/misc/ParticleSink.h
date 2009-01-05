@@ -43,10 +43,10 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/component/base/topology/PointSubset.h>
-#include <sofa/component/base/topology/PointSetTopologyModifier.h>
-#include <sofa/component/base/topology/PointSetTopologyChange.h>
-#include <sofa/component/base/container/MechanicalObject.h>
+#include <sofa/component/topology/PointSubset.h>
+#include <sofa/component/topology/PointSetTopologyModifier.h>
+#include <sofa/component/topology/PointSetTopologyChange.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include <vector>
 #include <iterator>
 #include <iostream>

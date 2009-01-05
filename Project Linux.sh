@@ -1,4 +1,4 @@
 #! /bin/sh
 
-find . -name Makefile -exec rm '{}' ';'
+find . -name .svn -prune -o '-(' -name Makefile -o -name 'Makefile.*' '-)' -exec rm '{}' ';'
 qmake

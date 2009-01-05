@@ -40,9 +40,9 @@
 #include <sofa/component/collision/TriangleModel.h>
 
 //Including component for topological description of the objects
-#include <sofa/component/base/topology/MeshTopology.h>
-#include <sofa/component/base/topology/RegularGridTopology.h>
-#include <sofa/component/base/container/MeshLoader.h>
+#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/component/topology/RegularGridTopology.h>
+#include <sofa/component/container/MeshLoader.h>
 
 //Including Solvers
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
