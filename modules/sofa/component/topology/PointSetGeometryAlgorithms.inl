@@ -154,7 +154,7 @@ PointSetGeometryAlgorithms<DataTypes>::computeAngle(PointID ind_p0, PointID ind_
     Coord p2 = p[ind_p2];
     double t = (p1 - p0)*(p2 - p0);
 
-    if(abs(t) < ZERO)
+    if(fabs(t) < ZERO)
         return RIGHT;
     if(t > 0.0)
         return ACUTE;
