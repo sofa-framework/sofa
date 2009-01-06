@@ -209,6 +209,7 @@ void DefaultPipeline::draw()
 {
     if (!bDraw.getValue()) return;
     if (!narrowPhaseDetection) return;
+#if 0
     glDisable(GL_LIGHTING);
     glLineWidth(2);
     glBegin(GL_LINES);
@@ -231,6 +232,7 @@ void DefaultPipeline::draw()
     }
     glEnd();
     glLineWidth(1);
+#endif
 }
 } // namespace collision
 

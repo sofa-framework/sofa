@@ -32,6 +32,7 @@
 #include <sofa/core/componentmodel/behavior/PairInteractionForceField.inl>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/PointSetTopologyChange.h>
+#include <sofa/simulation/tree/Simulation.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/config.h>
@@ -179,33 +180,59 @@ void SpringForceField<DataTypes>::draw()
             serr<<"SpringForceField<DataTypes>::draw(), p1.size = "<<p1.size()<<sendl;
             serr<<"SpringForceField<DataTypes>::draw(), p1 = "<<p1<<sendl;
             serr<<"SpringForceField<DataTypes>::draw(), p2 = "<<p2<<sendl;*/
-    glDisable(GL_LIGHTING);
+
+    std::vector< Vector3 > points[4];
     bool external = (this->mstate1!=this->mstate2);
     //if (!external)
     //	glColor4f(1,1,1,1);
     const helper::vector<Spring>& springs = this->springs.getValue();
-    glBegin(GL_LINES);
+
     for (unsigned int i=0; i<springs.size(); i++)
     {
         Real d = (p2[springs[i].m2]-p1[springs[i].m1]).norm();
+        Vector3 point1,point2;
+        unsigned int sizePoints= (Coord::static_size <=3)?Coord::static_size:3;
+        for (unsigned int s=0; s<sizePoints; ++s)
+        {
+            point1[s] = p1[springs[i].m1][s];
+            point2[s] = p2[springs[i].m2][s];
+        }
         if (external)
         {
             if (d<springs[i].initpos*0.9999)
-                glColor4f(1,0,0,1);
+            {
+                points[0].push_back(point1);
+                points[0].push_back(point2);
+            }
             else
-                glColor4f(0,1,0,1);
+            {
+                points[1].push_back(point1);
+                points[1].push_back(point2);
+            }
         }
         else
         {
             if (d<springs[i].initpos*0.9999)
-                glColor4f(1,0.5f,0,1);
+            {
+                points[2].push_back(point1);
+                points[2].push_back(point2);
+            }
             else
-                glColor4f(0,1,0.5f,1);
+            {
+                points[3].push_back(point1);
+                points[3].push_back(point2);
+            }
         }
-        helper::gl::glVertexT(p1[springs[i].m1]);
-        helper::gl::glVertexT(p2[springs[i].m2]);
     }
-    glEnd();
+
+
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points[0], 1, Vec<4,float>(1,0,0,1));
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points[1], 1, Vec<4,float>(0,1,0,1));
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points[2], 1, Vec<4,float>(1,0.5,0,1));
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points[3], 1, Vec<4,float>(0,1,0.5,1));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
+
 }
 
 template<class DataTypes>

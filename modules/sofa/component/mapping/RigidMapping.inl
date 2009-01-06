@@ -36,6 +36,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/Mapping.h>
 #include <sofa/core/componentmodel/behavior/MappedModel.h>
+#include <sofa/simulation/tree/Simulation.h>
 #include <string.h>
 #include <iostream>
 
@@ -605,16 +606,19 @@ template <class BasicMapping>
 void RigidMapping<BasicMapping>::draw()
 {
     if (!this->getShow()) return;
-    glDisable (GL_LIGHTING);
-    glPointSize(7);
-    glColor4f (1,1,0,1);
-    glBegin (GL_POINTS);
+    std::vector< Vector3 > points;
+    Vector3 point;
+    unsigned int sizePoints= (Coord::static_size <=3)?Coord::static_size:3;
+
     const typename Out::VecCoord& x = *this->toModel->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {
-        helper::gl::glVertexT(x[i]);
+        for (unsigned int s=0; s<sizePoints; ++s) point[s] = x[i][s];
+        points.push_back(point);
     }
-    glEnd();
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawPoints(points, 7, Vec<4,float>(1,1,0,1));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 } // namespace mapping

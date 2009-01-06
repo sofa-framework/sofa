@@ -29,7 +29,7 @@
 #include <sofa/core/componentmodel/behavior/Constraint.inl>
 #include <sofa/component/constraint/FixedConstraint.h>
 #include <sofa/component/topology/PointSubset.h>
-
+#include <sofa/simulation/tree/Simulation.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
@@ -235,41 +235,52 @@ void FixedConstraint<DataTypes>::draw()
 
     if( _drawSize.getValue() == 0) // old classical drawing by points
     {
-        glColor4f (1,0.5,0.5,1);
-        glDisable (GL_LIGHTING);
-        glPointSize(10);
-        glBegin (GL_POINTS);
+        std::vector< Vector3 > points;
+        Vector3 point;
+        unsigned int sizePoints= (Coord::static_size <=3)?Coord::static_size:3;
         //serr<<"FixedConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
-        if( f_fixAll.getValue()==true ) for (unsigned i=0; i<x.size(); i++ )
+        if( f_fixAll.getValue()==true )
+            for (unsigned i=0; i<x.size(); i++ )
             {
-                gl::glVertexT(x[i]);
+                for (unsigned int s=0; s<sizePoints; ++s) point[s] = x[i][s];
+                points.push_back(point);
             }
-        else for (SetIndexArray::const_iterator it = indices.begin();
+        else
+            for (SetIndexArray::const_iterator it = indices.begin();
                     it != indices.end();
                     ++it)
             {
-                gl::glVertexT(x[*it]);
+                for (unsigned int s=0; s<sizePoints; ++s) point[s] = x[*it][s];
+                points.push_back(point);
             }
-        glEnd();
+        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+        simulation::tree::getSimulation()->DrawUtility.drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
     }
     else // new drawing by spheres
     {
+        std::vector< Vector3 > points;
+        Vector3 point;
+        unsigned int sizePoints= (Coord::static_size <=3)?Coord::static_size:3;
         glColor4f (1,0.35,0.35,1);
-        glEnable(GL_LIGHTING);
-        glEnable(GL_COLOR_MATERIAL);
-        if( f_fixAll.getValue()==true ) for (unsigned i=0; i<x.size(); i++ )
+        if( f_fixAll.getValue()==true )
+            for (unsigned i=0; i<x.size(); i++ )
             {
-                helper::gl::drawSphere( x[i], _drawSize.getValue() );
+                for (unsigned int s=0; s<sizePoints; ++s) point[s] = x[i][s];
+                points.push_back(point);
             }
-        else for (SetIndexArray::const_iterator it = indices.begin();
+        else
+            for (SetIndexArray::const_iterator it = indices.begin();
                     it != indices.end();
                     ++it)
             {
-                helper::gl::drawSphere( x[*it], _drawSize.getValue() );
+                for (unsigned int s=0; s<sizePoints; ++s) point[s] = x[*it][s];
+                points.push_back(point);
             }
-        glDisable(GL_LIGHTING);
-        glDisable(GL_COLOR_MATERIAL);
+        simulation::tree::getSimulation()->DrawUtility.drawSpheres(points, _drawSize.getValue(), Vec<4,float>(1,0.35,0.35,1));
+
     }
+
 }
 
 // Specialization for rigids

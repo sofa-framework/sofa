@@ -29,6 +29,7 @@
 #include <sofa/component/forcefield/BeamFEMForceField.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/GridTopology.h>
+#include <sofa/simulation/tree/Simulation.h>
 #include <sofa/helper/PolarDecompose.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/Axis.h>
@@ -471,36 +472,38 @@ void BeamFEMForceField<DataTypes>::draw()
 
     //sout << 	_indexedElements->size() << " edges, " << x.size() << " points."<<sendl;
 
-    glDisable(GL_LIGHTING);
-    glBegin(GL_LINES);
     typename VecElement::const_iterator it;
     int i;
+
+    std::vector< Vector3 > points[3];
     for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
     {
         Index a = (*it)[0];
         Index b = (*it)[1];
         //sout << "edge " << i << " : "<<a<<" "<<b<<" = "<<x[a].getCenter()<<"  -  "<<x[b].getCenter()<<" = "<<beamsData[i]._L<<sendl;
-        defaulttype::Vec3d p; p = (x[a].getCenter()+x[b].getCenter())*0.5;
+        Vec3d p; p = (x[a].getCenter()+x[b].getCenter())*0.5;
         Vec3d beamVec;
         beamVec[0]=beamsData[i]._L*0.5; beamVec[1] = 0.0; beamVec[2] = 0.0;
 
         const Quat& q = beamQuat(i);
         // axis X
-        glColor3f(1,0,0);
-        helper::gl::glVertexT(p - q.rotate(beamVec) );
-        helper::gl::glVertexT(p + q.rotate(beamVec) );
+        points[0].push_back(p - q.rotate(beamVec) );
+        points[0].push_back(p + q.rotate(beamVec) );
         // axis Y
         beamVec[0]=0.0; beamVec[1] = beamsData[i]._L*0.5;
-        glColor3f(0,1,0);
-        helper::gl::glVertexT(p); // - R.col(1)*len);
-        helper::gl::glVertexT(p + q.rotate(beamVec) );
+        points[1].push_back(p );
+        points[1].push_back(p + q.rotate(beamVec) );
         // axis Z
         beamVec[1]=0.0; beamVec[2] = beamsData[i]._L*0.5;
-        glColor3f(0,0,1);
-        helper::gl::glVertexT(p); // - R.col(2)*len);
-        helper::gl::glVertexT(p + q.rotate(beamVec) );
+        points[2].push_back(p);
+        points[2].push_back(p + q.rotate(beamVec) );
     }
-    glEnd();
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points[0], 1, Vec<4,float>(1,0,0,1));
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points[1], 1, Vec<4,float>(0,1,0,1));
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points[2], 1, Vec<4,float>(0,0,1,1));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
+
 }
 
 template<class DataTypes>

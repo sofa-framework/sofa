@@ -369,10 +369,7 @@ void LineModel::draw()
     if (getContext()->getShowCollisionModels())
     {
         if (getContext()->getShowWireFrame())
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-        glDisable(GL_LIGHTING);
-        glColor4fv(getColor4f()); //glColor3f(0.0f, 0.0f, 1.0f);
+            simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,true);
 
         for (int i=0; i<size; i++) //elems.size()
         {
@@ -382,23 +379,19 @@ void LineModel::draw()
 
 
         std::vector< Vector3 > points;
-        std::vector< Vec<2,int> > indices;
-        int index=0;
         for (int i=0; i<size; i++)
         {
             Line t(this,i);
             points.push_back(t.p1());
             points.push_back(t.p2());
-            indices.push_back(Vec<2,int>(index,index+1));
-            index+=2;
         }
-        simulation::tree::getSimulation()->DrawUtility.drawLines(points, indices, 1, Vec<4,float>(getColor4f()));
 
+        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+        simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(getColor4f()));
+        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 
-        glColor3f(1.0f, 1.0f, 1.0f);
-        glDisable(GL_LIGHTING);
         if (getContext()->getShowWireFrame())
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,false);
     }
     if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
         getPrevious()->draw();

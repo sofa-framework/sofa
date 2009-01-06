@@ -133,10 +133,7 @@ void ConstantForceField<DataTypes>::draw()
 
     if( fabs(aSC)<1.0e-10 )
     {
-        glDisable(GL_LIGHTING);
         std::vector<defaulttype::Vector3> points;
-        std::vector<defaulttype::Vec<2,int> > indicesDraw;
-        int index=0;
         for (unsigned int i=0; i<indices.size(); i++)
         {
             Real xx,xy,xz,fx,fy,fz;
@@ -144,17 +141,13 @@ void ConstantForceField<DataTypes>::draw()
             DataTypes::get(fx,fy,fz,f[(i<f.size()) ? i : f.size()-1]);
             points.push_back(defaulttype::Vector3(xx, xy, xz ));
             points.push_back(defaulttype::Vector3(xx+fx, xy+fy, xz+fz ));
-            indicesDraw.push_back(defaulttype::Vec<2,int>(index,index+1));
-            index+=2;
         }
-
-        simulation::tree::getSimulation()->DrawUtility.drawLines(points, indicesDraw, 2, defaulttype::Vec<4,float>(0,1,0,1));
+        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+        simulation::tree::getSimulation()->DrawUtility.drawLines(points, 2, defaulttype::Vec<4,float>(0,1,0,1));
+        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
     }
     else
     {
-        glEnable(GL_LIGHTING);
-        glEnable(GL_COLOR_MATERIAL);
-        glColor3f(1,.4,.4);
         for (unsigned int i=0; i<indices.size(); i++)
         {
             Real xx,xy,xz,fx,fy,fz;
@@ -178,8 +171,6 @@ void ConstantForceField<DataTypes>::draw()
                 simulation::tree::getSimulation()->DrawUtility.drawArrow(p2,p1, norm/20.0, defaulttype::Vec<4,float>(1,.4,.4,1.0f));
             }
         }
-        glDisable(GL_LIGHTING);
-        glDisable(GL_COLOR_MATERIAL);
     }
 }
 

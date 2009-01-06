@@ -27,6 +27,7 @@
 
 #include <sofa/component/mapping/SPHFluidSurfaceMapping.h>
 #include <sofa/component/container/SpatialGridContainer.inl>
+#include <sofa/simulation/tree/Simulation.h>
 #include <sofa/core/Mapping.inl>
 #include <sofa/helper/rmath.h>
 #include <sofa/simulation/tree/GNode.h>
@@ -358,9 +359,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw()
     typename Grid::iterator end = grid->gridEnd();
     typename Grid::iterator it;
 
-    glPointSize(3);
-    glColor4f(1,1,1,1);
-    glBegin(GL_POINTS);
+    std::vector< Vector3 > points1;
     for (it = grid->gridBegin(); it!=end; ++it)
     {
         typename Grid::Key p0 = it->first;
@@ -377,29 +376,26 @@ void SPHFluidSurfaceMapping<In,Out>::draw()
                 for (x=0; x<GRIDDIM; x++)
                 {
                     if (c->data.val > mIsoValue.getValue())
-                        glVertex3f((x0+x)*scale,(y0+y)*scale,(z0+z)*scale);
+                        points1.push_back(defaulttype::Vector3((x0+x)*scale,(y0+y)*scale,(z0+z)*scale));
                     c+=DX;
                 }
             }
         }
     }
-    glEnd();
-    glPointSize(1);
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawPoints(points1, 3, Vec<4,float>(1,1,1,1));
 
-    glPointSize(5);
-    glColor4f(0.5f,1,0.5f,1);
-    glBegin(GL_POINTS);
+
+    std::vector< Vector3 > points2;
     const OutVecCoord& out = *this->toModel->getX();
     for (unsigned int i=0; i<out.size(); ++i)
     {
-        helper::gl::glVertexT(out[i]);
+        points2.push_back(out[i]);
     }
-    glEnd();
-    glPointSize(1);
+    simulation::tree::getSimulation()->DrawUtility.drawPoints(points2, 5, Vec<4,float>(0.5,1,0.5,1));
 
-    //glLineSize(3);
-    glColor4f(0,1,0,1);
-    glBegin(GL_LINES);
+
+    std::vector< Vector3 > points3;
     for (it = grid->gridBegin(); it!=end; ++it)
     {
         typename Grid::Key p0 = it->first;
@@ -417,26 +413,26 @@ void SPHFluidSurfaceMapping<In,Out>::draw()
                 {
                     if (c->data.p[0]>0)
                     {
-                        glVertex3f((x0+x)*scale,(y0+y)*scale,(z0+z)*scale);
-                        glVertex3f((x0+x+1)*scale,(y0+y)*scale,(z0+z)*scale);
+                        points3.push_back(defaulttype::Vector3((x0+x)*scale,(y0+y)*scale,(z0+z)*scale));
+                        points3.push_back(defaulttype::Vector3((x0+x+1)*scale,(y0+y)*scale,(z0+z)*scale));
                     }
                     if (c->data.p[1]>0)
                     {
-                        glVertex3f((x0+x)*scale,(y0+y)*scale,(z0+z)*scale);
-                        glVertex3f((x0+x)*scale,(y0+y+1)*scale,(z0+z)*scale);
+                        points3.push_back(defaulttype::Vector3((x0+x)*scale,(y0+y)*scale,(z0+z)*scale));
+                        points3.push_back(defaulttype::Vector3((x0+x)*scale,(y0+y+1)*scale,(z0+z)*scale));
                     }
                     if (c->data.p[2]>0)
                     {
-                        glVertex3f((x0+x)*scale,(y0+y)*scale,(z0+z)*scale);
-                        glVertex3f((x0+x)*scale,(y0+y)*scale,(z0+z+1)*scale);
+                        points3.push_back(defaulttype::Vector3((x0+x)*scale,(y0+y)*scale,(z0+z)*scale));
+                        points3.push_back(defaulttype::Vector3((x0+x)*scale,(y0+y)*scale,(z0+z+1)*scale));
                     }
                     c+=DX;
                 }
             }
         }
     }
-    glEnd();
-    //glLineSize(1);
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points3, 1, Vec<4,float>(0,1,0,1));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 } // namespace mapping

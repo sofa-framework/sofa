@@ -354,11 +354,6 @@ void VectorSpringForceField<DataTypes>::draw()
 
 
     std::vector< Vector3 > points;
-    std::vector< Vec<2,int> > indices;
-
-
-
-    int idx=0;
     if(useTopology)
     {
         for (unsigned int i=0; i<springArray.size(); i++)
@@ -368,8 +363,6 @@ void VectorSpringForceField<DataTypes>::draw()
 
             points.push_back(Vector3(x1[e[0]]));
             points.push_back(Vector3(x2[e[1]]));
-            indices.push_back(Vec<2,int>(idx,idx+1));
-            idx+=2;
         }
 
     }
@@ -383,12 +376,10 @@ void VectorSpringForceField<DataTypes>::draw()
 
             points.push_back(Vector3(x1[e[0]]));
             points.push_back(Vector3(x2[e[1]]));
-            indices.push_back(Vec<2,int>(idx,idx+1));
-            idx+=2;
         }
     }
     simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
-    simulation::tree::getSimulation()->DrawUtility.drawLines(points, indices, 3, Vec<4,float>(0,1,1,0.5f));
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points, 3, Vec<4,float>(0,1,1,1));
     simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
