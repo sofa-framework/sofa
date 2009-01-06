@@ -51,7 +51,7 @@ void ExportOBJVisitor::processVisualModel(Node* /*node*/, core::VisualModel* vm)
 // 		std::string name = node->getPathName() + "/" + oglmodel->getName();
 
     std::ostringstream oname;
-    oname << ++ID << " " << vm->getName();
+    oname << ++ID << "_" << vm->getName();
 
 // 	name += oglmodel->getName();
 
