@@ -904,7 +904,7 @@ void SimpleIntArray::operator=(const SimpleIntArray& b)
 // construct a new array equal to an existing array
 // check that space is available
 
-SimpleIntArray::SimpleIntArray(const SimpleIntArray& b) : n(b.n)
+SimpleIntArray::SimpleIntArray(const SimpleIntArray& b) : Janitor(b), n(b.n)
 {
    if (n == 0) { REPORT  a = 0; }
    else

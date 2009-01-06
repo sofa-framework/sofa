@@ -102,7 +102,7 @@ public:
     helper::vector<CurveData*> cdata;
     data_type currentData;
     QwtDoubleRect rect;
-    graph_data_widget_container() : w(NULL), curve(NULL), cdata(NULL) {}
+    graph_data_widget_container() : w(NULL) {}
 
     template<class Dialog, class Slot>
     bool createWidgets(Dialog* /*dialog*/, Slot /*s*/, QWidget* parent, const data_type& d, bool /*readOnly*/)
