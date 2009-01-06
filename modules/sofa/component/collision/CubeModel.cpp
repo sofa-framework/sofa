@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/collision/CubeModel.h>
+#include <sofa/simulation/tree/Simulation.h>
 #include <sofa/core/ObjectFactory.h>
 #include <algorithm>
 #include <math.h>
@@ -181,7 +182,7 @@ void CubeModel::draw(int index)
 void CubeModel::draw()
 {
     if (!isActive() || !((getNext()==NULL)?getContext()->getShowCollisionModels():getContext()->getShowBoundingCollisionModels())) return;
-    glDisable(GL_LIGHTING);
+
     int level=0;
     CollisionModel* m = getPrevious();
     float color = 1.0f;
@@ -191,25 +192,51 @@ void CubeModel::draw()
         ++level;
         color *= 0.5f;
     }
+    Vec<4,float> c;
     if (isSimulated())
-        glColor4f(1.0f, 1.0f, 1.0f, color);
+        c=Vec<4,float>(1.0f, 1.0f, 1.0f, color);
     else
-        glColor4f(1.0f, 1.0f, 0.0f, color);
-    if (color < 1.0f)
-    {
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glDepthMask(0);
-    }
+        c=Vec<4,float>(1.0f, 1.0f, 1.0f, color);
+
+    std::vector< Vector3 > points;
     for (int i=0; i<size; i++)
     {
-        draw(i);
+        const Vector3& vmin = elems[i].minBBox;
+        const Vector3& vmax = elems[i].maxBBox;
+
+        points.push_back(Vector3(vmin[0], vmin[1], vmin[2]));
+        points.push_back(Vector3(vmin[0], vmin[1], vmax[2]));
+        points.push_back(Vector3(vmin[0], vmax[1], vmin[2]));
+        points.push_back(Vector3(vmin[0], vmax[1], vmax[2]));
+        points.push_back(Vector3(vmax[0], vmin[1], vmin[2]));
+        points.push_back(Vector3(vmax[0], vmin[1], vmax[2]));
+        points.push_back(Vector3(vmax[0], vmax[1], vmin[2]));
+        points.push_back(Vector3(vmax[0], vmax[1], vmax[2]));
+
+        points.push_back(Vector3(vmin[0], vmin[1], vmin[2]));
+        points.push_back(Vector3(vmin[0], vmax[1], vmin[2]));
+        points.push_back(Vector3(vmin[0], vmin[1], vmax[2]));
+        points.push_back(Vector3(vmin[0], vmax[1], vmax[2]));
+        points.push_back(Vector3(vmax[0], vmin[1], vmin[2]));
+        points.push_back(Vector3(vmax[0], vmax[1], vmin[2]));
+        points.push_back(Vector3(vmax[0], vmin[1], vmax[2]));
+        points.push_back(Vector3(vmax[0], vmax[1], vmax[2]));
+
+        points.push_back(Vector3(vmin[0], vmin[1], vmin[2]));
+        points.push_back(Vector3(vmax[0], vmin[1], vmin[2]));
+        points.push_back(Vector3(vmin[0], vmax[1], vmin[2]));
+        points.push_back(Vector3(vmax[0], vmax[1], vmin[2]));
+        points.push_back(Vector3(vmin[0], vmin[1], vmax[2]));
+        points.push_back(Vector3(vmax[0], vmin[1], vmax[2]));
+        points.push_back(Vector3(vmin[0], vmax[1], vmax[2]));
+        points.push_back(Vector3(vmax[0], vmax[1], vmax[2]));
     }
-    if (color < 1.0f)
-    {
-        glDisable(GL_BLEND);
-        glDepthMask(1);
-    }
+
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(c));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
+
+
     if (getPrevious()!=NULL)
         getPrevious()->draw();
 }

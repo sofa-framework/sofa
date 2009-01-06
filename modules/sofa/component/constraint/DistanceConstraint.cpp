@@ -72,6 +72,31 @@ Rigid3dTypes::Deriv DistanceConstraint<Rigid3dTypes>::getDirection(const Edge &e
     Vector3 V12=(x2[e[1]].getCenter() - x1[e[0]].getCenter()); V12.normalize();
     return Deriv(V12, Vector3());
 }
+template<>
+void DistanceConstraint<Rigid3dTypes>::draw()
+{
+    if (this->l0.size() != vecConstraint.getValue().size()) updateRestLength();
+
+    if (this->getContext()->getShowBehaviorModels())
+    {
+        const VecCoord &x1=*(this->object1->getX());
+        const VecCoord &x2=*(this->object2->getX());
+
+        std::vector< Vector3 > points;
+        const SeqEdges &edges =  vecConstraint.getValue();
+        for (unsigned int i=0; i<edges.size(); ++i)
+        {
+//                 double length     = lengthEdge(edges[i],x1,x2);
+//                 double restLength = this->l0[i];
+//                 double factor = fabs(length - restLength)/length;
+            points.push_back(x1[edges[i][0]].getCenter());
+            points.push_back(x2[edges[i][1]].getCenter());
+        }
+        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+        simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0.0,1.0,0.0f,1.0f));
+        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
+    }
+}
 #endif
 
 #ifndef SOFA_DOUBLE
@@ -80,6 +105,31 @@ Rigid3fTypes::Deriv DistanceConstraint<Rigid3fTypes>::getDirection(const Edge &e
 {
     Vector3 V12=(x2[e[1]].getCenter() - x1[e[0]].getCenter()); V12.normalize();
     return Deriv(V12, Vector3());
+}
+template<>
+void DistanceConstraint<Rigid3fTypes>::draw()
+{
+    if (this->l0.size() != vecConstraint.getValue().size()) updateRestLength();
+
+    if (this->getContext()->getShowBehaviorModels())
+    {
+        const VecCoord &x1=*(this->object1->getX());
+        const VecCoord &x2=*(this->object2->getX());
+
+        std::vector< Vector3 > points;
+        const SeqEdges &edges =  vecConstraint.getValue();
+        for (unsigned int i=0; i<edges.size(); ++i)
+        {
+//                 double length     = lengthEdge(edges[i],x1,x2);
+//                 double restLength = this->l0[i];
+//                 double factor = fabs(length - restLength)/length;
+            points.push_back(x1[edges[i][0]].getCenter());
+            points.push_back(x2[edges[i][1]].getCenter());
+        }
+        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+        simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0.0,1.0,0.0f,1.0f));
+        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
+    }
 }
 #endif
 } // namespace constraint

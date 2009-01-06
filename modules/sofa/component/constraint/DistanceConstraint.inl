@@ -28,6 +28,7 @@
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/core/componentmodel/behavior/BaseLMConstraint.h>
 #include <sofa/component/constraint/DistanceConstraint.h>
+#include <sofa/simulation/tree/Simulation.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -172,6 +173,14 @@ double DistanceConstraint<DataTypes>::getError()
     return error;
 }
 
+#ifndef SOFA_FLOAT
+template <>
+void DistanceConstraint<defaulttype::Rigid3dTypes>::draw();
+#endif
+#ifndef SOFA_DOUBLE
+template <>
+void DistanceConstraint<defaulttype::Rigid3fTypes>::draw();
+#endif
 
 template <class DataTypes>
 void DistanceConstraint<DataTypes>::draw()
@@ -183,23 +192,19 @@ void DistanceConstraint<DataTypes>::draw()
         const VecCoord &x1=*(this->object1->getX());
         const VecCoord &x2=*(this->object2->getX());
 
-        glDisable(GL_LIGHTING);
-
-        glBegin(GL_LINES);
-
+        std::vector< Vector3 > points;
         const SeqEdges &edges =  vecConstraint.getValue();
         for (unsigned int i=0; i<edges.size(); ++i)
         {
-            double length     = lengthEdge(edges[i],x1,x2);
-            double restLength = this->l0[i];
-            double factor = fabs(length - restLength)/length;
-
-            glColor4d(factor,(1-factor)*(1-factor),0.0f,1.0f);
-
-            helper::gl::glVertexT(x1[edges[i][0]]);
-            helper::gl::glVertexT(x2[edges[i][1]]);
+//                 double length     = lengthEdge(edges[i],x1,x2);
+//                 double restLength = this->l0[i];
+//                 double factor = fabs(length - restLength)/length;
+            points.push_back(x1[edges[i][0]]);
+            points.push_back(x2[edges[i][1]]);
         }
-        glEnd();
+        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+        simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0.0,1.0,0.0f,1.0f));
+        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
     }
 }
 

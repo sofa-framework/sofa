@@ -559,18 +559,7 @@ void TriangleModel::draw()
     if (getContext()->getShowCollisionModels())
     {
         if (getContext()->getShowWireFrame())
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-        glEnable(GL_LIGHTING);
-        //Enable<GL_BLEND> blending;
-        //glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-
-        glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, getColor4f());
-        static const float emissive[4] = { 0.0f, 0.0f, 0.0f, 0.0f};
-        static const float specular[4] = { 1.0f, 1.0f, 1.0f, 1.0f};
-        glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive);
-        glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular);
-        glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, 20);
+            simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,true);
 
         std::vector< Vector3 > points;
         std::vector< Vec<3,int> > indices;
@@ -588,10 +577,8 @@ void TriangleModel::draw()
         }
         simulation::tree::getSimulation()->DrawUtility.drawTriangles(points, indices, normals, Vec<4,float>(getColor4f()));
 
-        glColor3f(1.0f, 1.0f, 1.0f);
-        glDisable(GL_LIGHTING);
         if (getContext()->getShowWireFrame())
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,false);
     }
     if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
         getPrevious()->draw();

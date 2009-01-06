@@ -514,9 +514,10 @@ void RegularGridSpringForceField<DataTypes>::draw()
     // Compute topological springs
     const VecCoord& p1 = *this->mstate1->getX();
     const VecCoord& p2 = *this->mstate2->getX();
-    glDisable(GL_LIGHTING);
-    glColor4f(0.5,0.5,0.5,1);
-    glBegin(GL_LINES);
+
+    std::vector< Vector3 > points;
+    Vector3 point1,point2;
+    unsigned int sizePoints= (Coord::static_size <=3)?Coord::static_size:3;
     if (this->mstate1==this->mstate2)
     {
         if (topology != NULL)
@@ -546,8 +547,13 @@ void RegularGridSpringForceField<DataTypes>::draw()
 #endif // SOFA_DEV
                             spring.m1 = topology->point(x,y,z);
                             spring.m2 = topology->point(x+1,y,z);
-                            helper::gl::glVertexT(p1[spring.m1]);
-                            helper::gl::glVertexT(p2[spring.m2]);
+                            for (unsigned int s=0; s<sizePoints; ++s)
+                            {
+                                point1[s] = p1[spring.m1][s];
+                                point2[s] = p2[spring.m2][s];
+                            }
+                            points.push_back(point1);
+                            points.push_back(point2);
                         }
                 // lines along Y
                 spring.initpos = topology->getDy().norm();
@@ -567,8 +573,14 @@ void RegularGridSpringForceField<DataTypes>::draw()
 #endif // SOFA_DEV
                             spring.m1 = topology->point(x,y,z);
                             spring.m2 = topology->point(x,y+1,z);
-                            helper::gl::glVertexT(p1[spring.m1]);
-                            helper::gl::glVertexT(p2[spring.m2]);
+
+                            for (unsigned int s=0; s<sizePoints; ++s)
+                            {
+                                point1[s] = p1[spring.m1][s];
+                                point2[s] = p2[spring.m2][s];
+                            }
+                            points.push_back(point1);
+                            points.push_back(point2);
                         }
                 // lines along Z
                 spring.initpos = topology->getDz().norm();
@@ -588,8 +600,13 @@ void RegularGridSpringForceField<DataTypes>::draw()
 #endif // SOFA_DEV
                             spring.m1 = topology->point(x,y,z);
                             spring.m2 = topology->point(x,y,z+1);
-                            helper::gl::glVertexT(p1[spring.m1]);
-                            helper::gl::glVertexT(p2[spring.m2]);
+                            for (unsigned int s=0; s<sizePoints; ++s)
+                            {
+                                point1[s] = p1[spring.m1][s];
+                                point2[s] = p2[spring.m2][s];
+                            }
+                            points.push_back(point1);
+                            points.push_back(point2);
                         }
 
             }
@@ -613,12 +630,22 @@ void RegularGridSpringForceField<DataTypes>::draw()
                         {
                             spring1.m1 = topology->point(x,y,z);
                             spring1.m2 = topology->point(x+1,y+1,z);
-                            helper::gl::glVertexT(p1[spring1.m1]);
-                            helper::gl::glVertexT(p2[spring1.m2]);
+                            for (unsigned int s=0; s<sizePoints; ++s)
+                            {
+                                point1[s] = p1[spring.m1][s];
+                                point2[s] = p2[spring.m2][s];
+                            }
+                            points.push_back(point1);
+                            points.push_back(point2);
                             spring2.m1 = topology->point(x+1,y,z);
                             spring2.m2 = topology->point(x,y+1,z);
-                            helper::gl::glVertexT(p1[spring2.m1]);
-                            helper::gl::glVertexT(p2[spring2.m2]);
+                            for (unsigned int s=0; s<sizePoints; ++s)
+                            {
+                                point1[s] = p1[spring.m1][s];
+                                point2[s] = p2[spring.m2][s];
+                            }
+                            points.push_back(point1);
+                            points.push_back(point2);
                         }
                 // quads along XZ plane
                 // lines (x,y,z) -> (x+1,y,z+1)
@@ -635,12 +662,22 @@ void RegularGridSpringForceField<DataTypes>::draw()
                         {
                             spring1.m1 = topology->point(x,y,z);
                             spring1.m2 = topology->point(x+1,y,z+1);
-                            helper::gl::glVertexT(p1[spring1.m1]);
-                            helper::gl::glVertexT(p2[spring1.m2]);
+                            for (unsigned int s=0; s<sizePoints; ++s)
+                            {
+                                point1[s] = p1[spring.m1][s];
+                                point2[s] = p2[spring.m2][s];
+                            }
+                            points.push_back(point1);
+                            points.push_back(point2);
                             spring2.m1 = topology->point(x+1,y,z);
                             spring2.m2 = topology->point(x,y,z+1);
-                            helper::gl::glVertexT(p1[spring2.m1]);
-                            helper::gl::glVertexT(p2[spring2.m2]);
+                            for (unsigned int s=0; s<sizePoints; ++s)
+                            {
+                                point1[s] = p1[spring.m1][s];
+                                point2[s] = p2[spring.m2][s];
+                            }
+                            points.push_back(point1);
+                            points.push_back(point2);
                         }
                 // quads along YZ plane
                 // lines (x,y,z) -> (x,y+1,z+1)
@@ -657,12 +694,22 @@ void RegularGridSpringForceField<DataTypes>::draw()
                         {
                             spring1.m1 = topology->point(x,y,z);
                             spring1.m2 = topology->point(x,y+1,z+1);
-                            helper::gl::glVertexT(p1[spring1.m1]);
-                            helper::gl::glVertexT(p2[spring1.m2]);
+                            for (unsigned int s=0; s<sizePoints; ++s)
+                            {
+                                point1[s] = p1[spring.m1][s];
+                                point2[s] = p2[spring.m2][s];
+                            }
+                            points.push_back(point1);
+                            points.push_back(point2);
                             spring2.m1 = topology->point(x,y+1,z);
                             spring2.m2 = topology->point(x,y,z+1);
-                            helper::gl::glVertexT(p1[spring2.m1]);
-                            helper::gl::glVertexT(p2[spring2.m2]);
+                            for (unsigned int s=0; s<sizePoints; ++s)
+                            {
+                                point1[s] = p1[spring.m1][s];
+                                point2[s] = p2[spring.m2][s];
+                            }
+                            points.push_back(point1);
+                            points.push_back(point2);
                         }
             }
             if (this->quadsStiffness.getValue() != 0.0 || this->quadsDamping.getValue() != 0.0)
@@ -693,26 +740,49 @@ void RegularGridSpringForceField<DataTypes>::draw()
                         {
                             spring1.m1 = topology->point(x,y,z);
                             spring1.m2 = topology->point(x+1,y+1,z+1);
-                            helper::gl::glVertexT(p1[spring1.m1]);
-                            helper::gl::glVertexT(p2[spring1.m2]);
+                            for (unsigned int s=0; s<sizePoints; ++s)
+                            {
+                                point1[s] = p1[spring.m1][s];
+                                point2[s] = p2[spring.m2][s];
+                            }
+                            points.push_back(point1);
+                            points.push_back(point2);
                             spring2.m1 = topology->point(x+1,y,z);
                             spring2.m2 = topology->point(x,y+1,z+1);
-                            helper::gl::glVertexT(p1[spring2.m1]);
-                            helper::gl::glVertexT(p2[spring2.m2]);
+                            for (unsigned int s=0; s<sizePoints; ++s)
+                            {
+                                point1[s] = p1[spring.m1][s];
+                                point2[s] = p2[spring.m2][s];
+                            }
+                            points.push_back(point1);
+                            points.push_back(point2);
                             spring3.m1 = topology->point(x,y+1,z);
                             spring3.m2 = topology->point(x+1,y,z+1);
-                            helper::gl::glVertexT(p1[spring3.m1]);
-                            helper::gl::glVertexT(p2[spring3.m2]);
+                            for (unsigned int s=0; s<sizePoints; ++s)
+                            {
+                                point1[s] = p1[spring.m1][s];
+                                point2[s] = p2[spring.m2][s];
+                            }
+                            points.push_back(point1);
+                            points.push_back(point2);
                             spring4.m1 = topology->point(x,y,z+1);
                             spring4.m2 = topology->point(x+1,y+1,z);
-                            helper::gl::glVertexT(p1[spring4.m1]);
-                            helper::gl::glVertexT(p2[spring4.m2]);
+                            for (unsigned int s=0; s<sizePoints; ++s)
+                            {
+                                point1[s] = p1[spring.m1][s];
+                                point2[s] = p2[spring.m2][s];
+                            }
+                            points.push_back(point1);
+                            points.push_back(point2);
                         }
             }
 #endif
         }
     }
-    glEnd();
+
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0.5,0.5,0.5,1));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 } // namespace forcefield

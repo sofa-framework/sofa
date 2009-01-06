@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_CENTEROFMASSMAPPING_INL
 
 #include <sofa/component/mapping/CenterOfMassMapping.h>
+#include <sofa/simulation/tree/Simulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/gl/template.h>
@@ -136,16 +137,26 @@ template <class BasicMapping>
 void CenterOfMassMapping<BasicMapping>::draw()
 {
     const typename Out::VecCoord &X = *this->toModel->getX();
-    glBegin (GL_LINES);
-    glColor4f (1,1,0,1);
+
+    std::vector< Vector3 > points;
+    Vector3 point1,point2;
+    unsigned int sizePoints= (OutCoord::static_size <=3)?OutCoord::static_size:3;
     for(unsigned int i=0 ; i<OutCoord::static_size ; i++)
     {
         OutCoord v;
         v[i] = (Real)0.1;
-        helper::gl::glVertexT(X[0] -v);
-        helper::gl::glVertexT(X[0] +v);
+        for (unsigned int s=0; s<sizePoints; ++s)
+        {
+            point1[s] = (X[0] -v)[s];
+            point2[s] = (X[0] +v)[s];
+        }
+        points.push_back(point1);
+        points.push_back(point2);
     }
-    glEnd();
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(1,1,0,1));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
+
 }
 
 

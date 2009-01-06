@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_INL
 
 #include <sofa/component/forcefield/LennardJonesForceField.h>
+#include <sofa/simulation/tree/Simulation.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/gl/template.h>
 #include <math.h>
@@ -144,20 +145,29 @@ void LennardJonesForceField<DataTypes>::draw()
 {
     if (!getContext()->getShowForceFields()) return;
     const VecCoord& p1 = *this->mstate->getX();
-    glDisable(GL_LIGHTING);
-    glBegin(GL_LINES);
+
+    std::vector< defaulttype::Vector3 > points[2];
+
     const Real d02 = this->d0.getValue()*this->d0.getValue();
     for (unsigned int i=0; i<this->dforces.size(); i++)
     {
         const DForce& df = this->dforces[i];
         if ((p1[df.b]-p1[df.a]).norm2() < d02)
-            glColor4f(1,1,1,1);
+        {
+            points[0].push_back(p1[df.a]);
+            points[0].push_back(p1[df.b]);
+        }
         else
-            glColor4f(0,0,1,1);
-        helper::gl::glVertexT(p1[df.a]);
-        helper::gl::glVertexT(p1[df.b]);
+        {
+            points[1].push_back(p1[df.a]);
+            points[1].push_back(p1[df.b]);
+        }
     }
-    glEnd();
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points[0], 1, defaulttype::Vec<4,float>(1,1,1,1));
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points[1], 1, defaulttype::Vec<4,float>(0,0,1,1));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
+
 }
 
 } // namespace forcefield

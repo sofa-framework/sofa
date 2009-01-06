@@ -28,6 +28,7 @@
 #include <sofa/core/componentmodel/behavior/ForceField.inl>
 #include <sofa/component/forcefield/TetrahedralCorotationalFEMForceField.h>
 #include <sofa/component/topology/GridTopology.h>
+#include <sofa/simulation/tree/Simulation.h>
 #include <sofa/helper/PolarDecompose.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/component/topology/TetrahedronData.inl>
@@ -1026,12 +1027,10 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw()
     const VecCoord& x = *this->mstate->getX();
 
     if (getContext()->getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,true);
 
-    glDisable(GL_LIGHTING);
 
-    glBegin(GL_TRIANGLES);
-
+    std::vector< Vector3 > points[4];
     for(int i = 0 ; i<_topology->getNbTetras(); ++i)
     {
         const Tetrahedron &t=_topology->getTetra(i);
@@ -1046,30 +1045,36 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw()
         Coord pc = (x[c]+center)*(Real)0.666667;
         Coord pd = (x[d]+center)*(Real)0.666667;
 
-        glColor4f(0,0,1,1);
-        helper::gl::glVertexT(pa);
-        helper::gl::glVertexT(pb);
-        helper::gl::glVertexT(pc);
+// 		glColor4f(0,0,1,1);
+        points[0].push_back(pa);
+        points[0].push_back(pb);
+        points[0].push_back(pc);
 
-        glColor4f(0,0.5,1,1);
-        helper::gl::glVertexT(pb);
-        helper::gl::glVertexT(pc);
-        helper::gl::glVertexT(pd);
+// 		glColor4f(0,0.5,1,1);
+        points[1].push_back(pb);
+        points[1].push_back(pc);
+        points[1].push_back(pd);
 
-        glColor4f(0,1,1,1);
-        helper::gl::glVertexT(pc);
-        helper::gl::glVertexT(pd);
-        helper::gl::glVertexT(pa);
+// 		glColor4f(0,1,1,1);
+        points[2].push_back(pc);
+        points[2].push_back(pd);
+        points[2].push_back(pa);
 
-        glColor4f(0.5,1,1,1);
-        helper::gl::glVertexT(pd);
-        helper::gl::glVertexT(pa);
-        helper::gl::glVertexT(pb);
+// 		glColor4f(0.5,1,1,1);
+        points[3].push_back(pd);
+        points[3].push_back(pa);
+        points[3].push_back(pb);
     }
-    glEnd();
+
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[0], Vec<4,float>(0.0,0.0,1.0,1.0));
+    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[1], Vec<4,float>(0.0,0.5,1.0,1.0));
+    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[2], Vec<4,float>(0.0,1.0,1.0,1.0));
+    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[3], Vec<4,float>(0.5,1.0,1.0,1.0));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 
     if (getContext()->getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,false);
 }
 
 

@@ -18,7 +18,7 @@
 		<Object type="PlaneForceField" normal="0 0 1" d="-4"/>
 		<Object type="PlaneForceField" normal="0 0 -1" d="-4"/>
 		<Node id="Visual">
-			<Object type="OglModel" name="VModel" color="blue" />
+			<Object type="OglModel" name="VModel" color="blue" useVBO="false"/>
 			<Object type="SPHFluidSurfaceMapping" name="MarchingCube" object1="../../MModel" object2="VModel" isoValue="0.5" radius="0.75" step="0.25"/>
 		</Node>
 	</Node>

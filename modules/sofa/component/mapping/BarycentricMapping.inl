@@ -55,7 +55,7 @@
 #include <sofa/component/topology/HexahedronData.h>
 #include <sofa/component/topology/HexahedronData.inl>
 
-
+#include <sofa/simulation/tree/Simulation.h>
 
 
 namespace sofa
@@ -1851,19 +1851,20 @@ template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::draw()
 {
     if (!this->getShow()) return;
-    glDisable (GL_LIGHTING);
-    glPointSize(7);
-    glColor4f (1,1,0,1);
+
     const OutVecCoord& out = *this->toModel->getX();
-    glBegin (GL_POINTS);
+    std::vector< Vector3 > points;
     for (unsigned int i=0; i<out.size(); i++)
     {
-        helper::gl::glVertexT(out[i]);
+        points.push_back(out[i]);
     }
     glEnd();
     const InVecCoord& in = *this->fromModel->getX();
     if (mapper!=NULL) mapper->draw(out, in);
-    glPointSize(1);
+
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawPoints(points, 7, Vec<4,float>(1,1,0,1));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 template <class In, class Out>
@@ -1878,7 +1879,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw(const typename Out::VecCoord& o
 #else
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqCubes& cubes = this->topology->getCubes();
 #endif
-    glBegin (GL_LINES);
+    std::vector< Vector3 > points;
     // 1D elements
     {
         const int i0 = 0;
@@ -1895,9 +1896,9 @@ void BarycentricMapperMeshTopology<In,Out>::draw(const typename Out::VecCoord& o
                 {
                     if (f[j]<=-0.0001 || f[j]>=0.0001)
                     {
-                        glColor3f((float)f[j],1,(float)f[j]);
-                        helper::gl::glVertexT(out[i+i0]);
-                        helper::gl::glVertexT(in[line[j]]);
+//                         glColor3f((float)f[j],1,(float)f[j]);
+                        points.push_back(out[i+i0]);
+                        points.push_back(in[line[j]]);
                     }
                 }
             }
@@ -1923,9 +1924,9 @@ void BarycentricMapperMeshTopology<In,Out>::draw(const typename Out::VecCoord& o
                 {
                     if (f[j]<=-0.0001 || f[j]>=0.0001)
                     {
-                        glColor3f((float)f[j],1,(float)f[j]);
-                        helper::gl::glVertexT(out[i+i0]);
-                        helper::gl::glVertexT(in[triangle[j]]);
+//                         glColor3f((float)f[j],1,(float)f[j]);
+                        points.push_back(out[i+i0]);
+                        points.push_back(in[triangle[j]]);
                     }
                 }
             }
@@ -1941,9 +1942,9 @@ void BarycentricMapperMeshTopology<In,Out>::draw(const typename Out::VecCoord& o
                 {
                     if (f[j]<=-0.0001 || f[j]>=0.0001)
                     {
-                        glColor3f((float)f[j],1,(float)f[j]);
-                        helper::gl::glVertexT(out[i+i0]);
-                        helper::gl::glVertexT(in[quad[j]]);
+//                         glColor3f((float)f[j],1,(float)f[j]);
+                        points.push_back(out[i+i0]);
+                        points.push_back(in[quad[j]]);
                     }
                 }
             }
@@ -1971,9 +1972,9 @@ void BarycentricMapperMeshTopology<In,Out>::draw(const typename Out::VecCoord& o
                 {
                     if (f[j]<=-0.0001 || f[j]>=0.0001)
                     {
-                        glColor3f((float)f[j],1,(float)f[j]);
-                        helper::gl::glVertexT(out[i+i0]);
-                        helper::gl::glVertexT(in[tetra[j]]);
+//                         glColor3f((float)f[j],1,(float)f[j]);
+                        points.push_back(out[i+i0]);
+                        points.push_back(in[tetra[j]]);
                     }
                 }
             }
@@ -2007,21 +2008,24 @@ void BarycentricMapperMeshTopology<In,Out>::draw(const typename Out::VecCoord& o
                 {
                     if (f[j]<=-0.0001 || f[j]>=0.0001)
                     {
-                        glColor3f((float)f[j],1,1);
-                        helper::gl::glVertexT(out[i+i0]);
-                        helper::gl::glVertexT(in[cube[j]]);
+//                         glColor3f((float)f[j],1,1);
+                        points.push_back(out[i+i0]);
+                        points.push_back(in[cube[j]]);
                     }
                 }
             }
         }
     }
-    glEnd();
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0,1,0,1));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 template <class In, class Out>
 void BarycentricMapperRegularGridTopology<In,Out>::draw(const typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
-    glBegin (GL_LINES);
+    std::vector< Vector3 > points;
+
     for (unsigned int i=0; i<map.size(); i++)
     {
 #ifdef SOFA_NEW_HEXA
@@ -2055,19 +2059,22 @@ void BarycentricMapperRegularGridTopology<In,Out>::draw(const typename Out::VecC
         {
             if (f[j]<=-0.0001 || f[j]>=0.0001)
             {
-                glColor3f((float)f[j],(float)f[j],1);
-                helper::gl::glVertexT(out[i]);
-                helper::gl::glVertexT(in[cube[j]]);
+                //glColor3f((float)f[j],(float)f[j],1);
+                points.push_back(out[i]);
+                points.push_back(in[cube[j]]);
             }
         }
     }
-    glEnd();
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0,0,1,1));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
+
 }
 
 template <class In, class Out>
 void BarycentricMapperSparseGridTopology<In,Out>::draw(const typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
-    glBegin (GL_LINES);
+    std::vector< Vector3 > points;
     for (unsigned int i=0; i<map.size(); i++)
     {
 #ifdef SOFA_NEW_HEXA
@@ -2101,13 +2108,16 @@ void BarycentricMapperSparseGridTopology<In,Out>::draw(const typename Out::VecCo
         {
             if (f[j]<=-0.0001 || f[j]>=0.0001)
             {
-                glColor3f((float)f[j],(float)f[j],1);
-                helper::gl::glVertexT(out[i]);
-                helper::gl::glVertexT(in[cube[j]]);
+                //glColor3f((float)f[j],(float)f[j],1);
+                points.push_back(out[i]);
+                points.push_back(in[cube[j]]);
             }
         }
     }
-    glEnd();
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0,0,1,1));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
+
 }
 
 template <class In, class Out>
@@ -2115,7 +2125,7 @@ void BarycentricMapperEdgeSetTopology<In,Out>::draw(const typename Out::VecCoord
 {
     const sofa::helper::vector<topology::Edge>& edges = this->topology->getEdges();
 
-    glBegin (GL_LINES);
+    std::vector< Vector3 > points;
     {
         for(unsigned int i=0; i<map.size(); i++)
         {
@@ -2126,23 +2136,25 @@ void BarycentricMapperEdgeSetTopology<In,Out>::draw(const typename Out::VecCoord
                 const Real f = Real(1.0)-fx;
                 if (f<=-0.0001 || f>=0.0001)
                 {
-                    glColor3f((float)f,1,(float)f);
-                    helper::gl::glVertexT(out[i]);
-                    helper::gl::glVertexT(in[edge[0]]);
+//                     glColor3f((float)f,1,(float)f);
+                    points.push_back(out[i]);
+                    points.push_back(in[edge[0]]);
                 }
             }
             {
                 const Real f = fx;
                 if (f<=-0.0001 || f>=0.0001)
                 {
-                    glColor3f((float)f,1,(float)f);
-                    helper::gl::glVertexT(out[i]);
-                    helper::gl::glVertexT(in[edge[1]]);
+//                     glColor3f((float)f,1,(float)f);
+                    points.push_back(out[i]);
+                    points.push_back(in[edge[1]]);
                 }
             }
         }
     }
-    glEnd();
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0,1,0,1));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 template <class In, class Out>
@@ -2150,7 +2162,7 @@ void BarycentricMapperTriangleSetTopology<In,Out>::draw(const typename Out::VecC
 {
     const sofa::helper::vector<topology::Triangle>& triangles = this->topology->getTriangles();
 
-    glBegin (GL_LINES);
+    std::vector< Vector3 > points;
     {
         for(unsigned int i=0; i<map.size(); i++)
         {
@@ -2166,21 +2178,23 @@ void BarycentricMapperTriangleSetTopology<In,Out>::draw(const typename Out::VecC
             {
                 if (f[j]<=-0.0001 || f[j]>=0.0001)
                 {
-                    glColor3f((float)f[j],1,(float)f[j]);
-                    helper::gl::glVertexT(out[i]);
-                    helper::gl::glVertexT(in[triangle[j]]);
+//                     glColor3f((float)f[j],1,(float)f[j]);
+                    points.push_back(out[i]);
+                    points.push_back(in[triangle[j]]);
                 }
             }
         }
     }
-    glEnd();
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0,1,0,1));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 template <class In, class Out>
 void BarycentricMapperQuadSetTopology<In,Out>::draw(const typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
     const sofa::helper::vector<topology::Quad>& quads = this->topology->getQuads();
-    glBegin (GL_LINES);
+    std::vector< Vector3 > points;
     {
         for(unsigned int i=0; i<map.size(); i++)
         {
@@ -2197,21 +2211,24 @@ void BarycentricMapperQuadSetTopology<In,Out>::draw(const typename Out::VecCoord
             {
                 if (f[j]<=-0.0001 || f[j]>=0.0001)
                 {
-                    glColor3f((float)f[j],1,(float)f[j]);
-                    helper::gl::glVertexT(out[i]);
-                    helper::gl::glVertexT(in[quad[j]]);
+//                     glColor3f((float)f[j],1,(float)f[j]);
+                    points.push_back(out[i]);
+                    points.push_back(in[quad[j]]);
                 }
             }
         }
     }
-    glEnd();
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0,1,0,1));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopology<In,Out>::draw(const typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
     const sofa::helper::vector<topology::Tetrahedron>& tetras = this->topology->getTetras();
-    glBegin (GL_LINES);
+
+    std::vector< Vector3 > points;
     {
         for(unsigned int i=0; i<map.size(); i++)
         {
@@ -2229,21 +2246,24 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::draw(const typename Out::V
             {
                 if (f[j]<=-0.0001 || f[j]>=0.0001)
                 {
-                    glColor3f((float)f[j],1,(float)f[j]);
-                    helper::gl::glVertexT(out[i]);
-                    helper::gl::glVertexT(in[tetra[j]]);
+//                     glColor3f((float)f[j],1,(float)f[j]);
+                    points.push_back(out[i]);
+                    points.push_back(in[tetra[j]]);
                 }
             }
         }
     }
-    glEnd();
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0,1,0,1));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 template <class In, class Out>
 void BarycentricMapperHexahedronSetTopology<In,Out>::draw(const typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
     const sofa::helper::vector<topology::Hexahedron>& cubes = this->topology->getHexas();
-    glBegin (GL_LINES);
+
+    std::vector< Vector3 > points;
     {
         for(unsigned int i=0; i<map.size(); i++)
         {
@@ -2265,14 +2285,16 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::draw(const typename Out::Ve
             {
                 if (f[j]<=-0.0001 || f[j]>=0.0001)
                 {
-                    glColor3f((float)f[j],1,1);
-                    helper::gl::glVertexT(out[i]);
-                    helper::gl::glVertexT(in[cube[j]]);
+//                     glColor3f((float)f[j],1,1);
+                    points.push_back(out[i]);
+                    points.push_back(in[cube[j]]);
                 }
             }
         }
     }
-    glEnd();
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0,1,0,1));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 /************************************* PropagateConstraint ***********************************/

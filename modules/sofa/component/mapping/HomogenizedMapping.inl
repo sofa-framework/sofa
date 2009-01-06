@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_HomogenizedMAPPING_INL
 
 #include <sofa/component/mapping/HomogenizedMapping.h>
+#include <sofa/simulation/tree/Simulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
@@ -402,22 +403,21 @@ template <class BasicMapping>
 void HomogenizedMapping<BasicMapping>::draw()
 {
     if (!this->getShow()) return;
-    glDisable (GL_LIGHTING);
-    glPointSize(7);
-    glColor4f (.2,1,0,1);
 
-    glBegin (GL_POINTS);
-
+    std::vector< Vector3 > points;
+    Vector3 point;
+    unsigned int sizePoints= (OutCoord::static_size <=3)?OutCoord::static_size:3;
 
     for(unsigned int i=0; i<_qFine.size(); i++)
     {
-        helper::gl::glVertexT(_qFine[i]);
+        for (unsigned int s=0; s<sizePoints; ++s) point[s] = _qFine[i][s];
+        points.push_back(point);
     }
 
 
-    glEnd();
-// 	glPointSize(1);
-
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawPoints(points, 7, Vec<4,float>(0.2,1,0,1));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 

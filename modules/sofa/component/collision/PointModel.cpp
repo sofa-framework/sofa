@@ -115,10 +115,8 @@ void PointModel::draw()
     if (getContext()->getShowCollisionModels())
     {
         if (getContext()->getShowWireFrame())
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,true);
 
-        glDisable(GL_LIGHTING);
-        glColor4fv(getColor4f());
 
         // Check topological modifications
         const int npoints = mstate->getX()->size();
@@ -129,33 +127,23 @@ void PointModel::draw()
 
         std::vector< Vector3 > pointsP;
         std::vector< Vector3 > pointsL;
-        std::vector< Vec<2,int> > indices;
-        int index=0;
         for (int i = 0; i < size; i++)
         {
-            Point t(this,index);
+            Point t(this,i);
             pointsP.push_back(t.p());
-            if ((unsigned)index < normals.size())
+            if ((unsigned)i < normals.size())
             {
                 pointsL.push_back(t.p());
-                pointsL.push_back(t.p()+normals[index]*0.1f);
-                indices.push_back(Vec<2,int>(index,index+1));
-                index+=2;
-            }
-            else
-            {
-                ++index;
+                pointsL.push_back(t.p()+normals[i]*0.1f);
             }
         }
-
+        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
         simulation::tree::getSimulation()->DrawUtility.drawPoints(pointsP, 3, Vec<4,float>(getColor4f()));
-        simulation::tree::getSimulation()->DrawUtility.drawLines(pointsL, indices, 1, Vec<4,float>(getColor4f()));
+        simulation::tree::getSimulation()->DrawUtility.drawLines(pointsL, 1, Vec<4,float>(getColor4f()));
+        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 
-        glColor3f(1.0f, 1.0f, 1.0f);
-        glDisable(GL_LIGHTING);
-        glPointSize(1);
         if (getContext()->getShowWireFrame())
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,false);
     }
     if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
         getPrevious()->draw();

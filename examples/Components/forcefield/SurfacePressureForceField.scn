@@ -20,9 +20,9 @@
 		</Node>
 		
 		<Node name="TriangleSurf">
-			<Object type="MechanicalObject" />
 			<Object type="MeshLoader" name="meshLoader" filename="mesh/frog.obj"/>
 			<Object type="Mesh"/>
+			<Object type="MechanicalObject" />
 			<Object type="Triangle"/>	
 			<Object type="Line"/>
 			<Object type="Point"/>
@@ -46,9 +46,12 @@
 		</Node>
 		
 		<Node name="QuadSurf">
-			<Object type="MechanicalObject"/>
 			<Object type="MeshLoader" name="meshLoader" filename="mesh/frog_quads.obj"/>
 			<Object type="Mesh"/>
+			<Object type="MechanicalObject" />
+			<Object type="Triangle"/>	
+			<Object type="Line"/>
+			<Object type="Point"/>
 			<Object type="SurfacePressureForceField" pressure="50000.0" pulseMode="true" pressureSpeed="20000.0"/>
 			<Object type="BarycentricMapping" />
 		</Node>

@@ -231,7 +231,7 @@
 			showNormals="0" 
 			multiThreadSimulation="0" 
 			 >
-			<Object type="TSphereModel" template="Vec3d">
+			<Object type="MechanicalObject" template="Vec3d">
 				<Attribute type="name">
 					<Data value="default88"/>
 				</Attribute>
@@ -264,6 +264,11 @@
 				</Attribute>
 				<Attribute type="rest_position">
 					<Data value="0 0 0"/>
+				</Attribute>
+			</Object>
+			<Object type="SphereModel">
+				<Attribute type="name">
+					<Data value="default88Sphere"/>
 				</Attribute>
 				<Attribute type="active">
 					<Data value="1"/>

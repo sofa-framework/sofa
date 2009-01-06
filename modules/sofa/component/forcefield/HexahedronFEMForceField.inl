@@ -27,6 +27,7 @@
 
 #include <sofa/core/componentmodel/behavior/ForceField.inl>
 #include <sofa/component/forcefield/HexahedronFEMForceField.h>
+#include <sofa/simulation/tree/Simulation.h>
 #include <sofa/helper/PolarDecompose.h>
 #include <sofa/helper/gl/template.h>
 #include <assert.h>
@@ -506,7 +507,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
 
     for(int i=0; i<8; ++i)
     {
-        Mat33 k = vol*integrateStiffness(  _coef[i][0], _coef[i][1],_coef[i][2],  _coef[i][0], _coef[i][1],_coef[i][2], M[0][0], M[0][1],M[3][3], J_1  );
+        Mat33 k = integrateStiffness(  _coef[i][0], _coef[i][1],_coef[i][2],  _coef[i][0], _coef[i][1],_coef[i][2], M[0][0], M[0][1],M[3][3], J_1  )*vol;
 
 
         for(int m=0; m<3; ++m)
@@ -519,7 +520,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
 
         for(int j=i+1; j<8; ++j)
         {
-            Mat33 k = vol*integrateStiffness(  _coef[i][0], _coef[i][1],_coef[i][2],  _coef[j][0], _coef[j][1],_coef[j][2], M[0][0], M[0][1],M[3][3], J_1  );
+            Mat33 k = integrateStiffness(  _coef[i][0], _coef[i][1],_coef[i][2],  _coef[j][0], _coef[j][1],_coef[j][2], M[0][0], M[0][1],M[3][3], J_1  )*vol;
 
 
             for(int m=0; m<3; ++m)
@@ -1156,9 +1157,10 @@ void HexahedronFEMForceField<DataTypes>::draw()
     const VecCoord& x = *this->mstate->getX();
 
     if (getContext()->getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,true);
 
-    glDisable(GL_LIGHTING);
+
+    std::vector< Vector3 > points[6];
 
     typename VecElement::const_iterator it;
     int i;
@@ -1220,52 +1222,71 @@ void HexahedronFEMForceField<DataTypes>::draw()
 
 
 
-        glColor4f(0.7f, 0.7f, 0.1f, (_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f));
-        glBegin(GL_POLYGON);
-        helper::gl::glVertexT(pa);
-        helper::gl::glVertexT(pb);
-        helper::gl::glVertexT(pc);
-        helper::gl::glVertexT(pd);
-        glEnd();
-        glColor4f(0.7f, 0, 0, (_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f));
-        glBegin(GL_POLYGON);
-        helper::gl::glVertexT(pe);
-        helper::gl::glVertexT(pf);
-        helper::gl::glVertexT(pg);
-        helper::gl::glVertexT(ph);
-        glEnd();
-        glColor4f(0, 0.7f, 0, (_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f));
-        glBegin(GL_POLYGON);
-        helper::gl::glVertexT(pc);
-        helper::gl::glVertexT(pd);
-        helper::gl::glVertexT(ph);
-        helper::gl::glVertexT(pg);
-        glEnd();
-        glColor4f(0, 0, 0.7f, (_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f));
-        glBegin(GL_POLYGON);
-        helper::gl::glVertexT(pa);
-        helper::gl::glVertexT(pb);
-        helper::gl::glVertexT(pf);
-        helper::gl::glVertexT(pe);
-        glEnd();
-        glColor4f(0.1f, 0.7f, 0.7f, (_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f));
-        glBegin(GL_POLYGON);
-        helper::gl::glVertexT(pa);
-        helper::gl::glVertexT(pd);
-        helper::gl::glVertexT(ph);
-        helper::gl::glVertexT(pe);
-        glEnd();
-        glColor4f(0.7f, 0.1f, 0.7f, (_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f));
-        glBegin(GL_POLYGON);
-        helper::gl::glVertexT(pb);
-        helper::gl::glVertexT(pc);
-        helper::gl::glVertexT(pg);
-        helper::gl::glVertexT(pf);
-        glEnd();
+// 		glColor4f(0.7f, 0.7f, 0.1f, (_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f));
+        points[0].push_back(pa);
+        points[0].push_back(pb);
+        points[0].push_back(pc);
+        points[0].push_back(pa);
+        points[0].push_back(pc);
+        points[0].push_back(pd);
+// 		glColor4f(0.7f, 0, 0, (_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f));
+
+        points[1].push_back(pe);
+        points[1].push_back(pf);
+        points[1].push_back(pg);
+        points[1].push_back(pe);
+        points[1].push_back(pg);
+        points[1].push_back(ph);
+
+// 		glColor4f(0, 0.7f, 0, (_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f));
+
+        points[2].push_back(pc);
+        points[2].push_back(pd);
+        points[2].push_back(ph);
+        points[2].push_back(pc);
+        points[2].push_back(ph);
+        points[2].push_back(pg);
+
+// 		glColor4f(0, 0, 0.7f, (_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f));
+
+        points[3].push_back(pa);
+        points[3].push_back(pb);
+        points[3].push_back(pf);
+        points[3].push_back(pa);
+        points[3].push_back(pf);
+        points[3].push_back(pe);
+
+// 		glColor4f(0.1f, 0.7f, 0.7f, (_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f));
+
+        points[4].push_back(pa);
+        points[4].push_back(pd);
+        points[4].push_back(ph);
+        points[4].push_back(pa);
+        points[4].push_back(ph);
+        points[4].push_back(pe);
+
+// 		glColor4f(0.7f, 0.1f, 0.7f, (_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f));
+
+        points[5].push_back(pb);
+        points[5].push_back(pc);
+        points[5].push_back(pg);
+        points[5].push_back(pb);
+        points[5].push_back(pg);
+        points[5].push_back(pf);
+
     }
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[0], Vec<4,float>(0.7,0.7,0.1,1.0));
+    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[1], Vec<4,float>(0.7,0.0,0.0,1.0));
+    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[2], Vec<4,float>(0.0,0.7,0.0,1.0));
+    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[3], Vec<4,float>(0.0,0.0,0.7,1.0));
+    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[4], Vec<4,float>(0.1,0.7,0.7,1.0));
+    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[5], Vec<4,float>(0.7,0.1,0.7,1.0));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
+
 
     if (getContext()->getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,false);
 
     if(_sparseGrid )
         glDisable(GL_BLEND);

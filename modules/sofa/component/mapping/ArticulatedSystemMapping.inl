@@ -27,6 +27,7 @@
 #define SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_INL
 
 #include <sofa/component/mapping/ArticulatedSystemMapping.h>
+#include <sofa/simulation/tree/Simulation.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/helper/gl/template.h>
 
@@ -653,8 +654,9 @@ void ArticulatedSystemMapping<BasicMapping>::draw()
 {
 
     if (!this->getShow()) return;
-    glDisable (GL_LIGHTING);
-    glPointSize(10);
+    std::vector< Vector3 > points;
+    std::vector< Vector3 > pointsLine;
+
     vector<ArticulatedHierarchyContainer::ArticulationCenter*>::const_iterator ac = articulationCenters.begin();
     vector<ArticulatedHierarchyContainer::ArticulationCenter*>::const_iterator acEnd = articulationCenters.end();
     unsigned int i=0;
@@ -667,24 +669,23 @@ void ArticulatedSystemMapping<BasicMapping>::draw()
         vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*>::const_iterator aEnd = articulations.end();
         for (; a != aEnd; a++)
         {
-            glBegin (GL_POINTS);
-            glColor4f (1,0.5,0.5,1);
+
             // Articulation Pos and Axis are based on the configuration of the parent
             int ind= (*a)->articulationIndex.getValue();
-            helper::gl::glVertexT(ArticulationPos[ind]);
-            glEnd();
-            glBegin(GL_LINES);
-            glColor4f(0,0,1,1);
-            helper::gl::glVertexT(ArticulationPos[ind]);
-            Vec<3,OutReal> Pos_axis = ArticulationPos[ind] + ArticulationAxis[ind];
-            helper::gl::glVertexT(Pos_axis);
+            points.push_back(ArticulationPos[ind]);
 
-            glEnd();
+            pointsLine.push_back(ArticulationPos[ind]);
+            Vec<3,OutReal> Pos_axis = ArticulationPos[ind] + ArticulationAxis[ind];
+            pointsLine.push_back(Pos_axis);
 
             i++;
         }
     }
-    glPointSize(1);
+
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+    simulation::tree::getSimulation()->DrawUtility.drawLines(pointsLine, 1, Vec<4,float>(0,0,1,1));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 
 
 

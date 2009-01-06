@@ -245,14 +245,14 @@ void OglModel::internalDraw()
             glPushMatrix();
             glMultMatrixf(matrix);
 
+            glBegin(GL_LINES);
             for (unsigned int i = 0; i < vertices.size(); i++)
             {
-                glBegin(GL_LINES);
                 glVertex3fv (vertices[i].ptr());
                 Coord p = vertices[i] + vnormals[i];
                 glVertex3fv (p.ptr());
-                glEnd();
             }
+            glEnd();
 
             glPopMatrix();
         }

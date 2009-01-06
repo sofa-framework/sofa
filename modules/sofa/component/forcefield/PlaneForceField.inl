@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_PLANEFORCEFIELD_INL
 
 #include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/simulation/tree/Simulation.h>
 #include "PlaneForceField.h"
 #include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -173,26 +174,29 @@ void PlaneForceField<DataTypes>::drawPlane(float size)
     corners[2] = center+v1*size+v2*size;
     corners[3] = center-v1*size+v2*size;
 
-    // glEnable(GL_LIGHTING);
+
     glEnable(GL_CULL_FACE);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glCullFace(GL_FRONT);
 
-    glColor3f(color.getValue()[0],color.getValue()[1],color.getValue()[2]);
 
-    glBegin(GL_QUADS);
-    helper::gl::glVertexT(corners[0]);
-    helper::gl::glVertexT(corners[1]);
-    helper::gl::glVertexT(corners[2]);
-    helper::gl::glVertexT(corners[3]);
-    glEnd();
+    std::vector< defaulttype::Vector3 > points;
 
+    points.push_back(corners[0]);
+    points.push_back(corners[1]);
+    points.push_back(corners[2]);
+
+    points.push_back(corners[0]);
+    points.push_back(corners[2]);
+    points.push_back(corners[3]);
+
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+    simulation::tree::getSimulation()->DrawUtility.setPolygonMode(2,false); //Cull Front face
+    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points, defaulttype::Vec<4,float>(color.getValue()[0],color.getValue()[1],color.getValue()[2],1.0));
+    simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,false); //No Culling
     glDisable(GL_CULL_FACE);
 
-    glColor4f(1,0,0,1);
-    glDisable(GL_LIGHTING);
+    std::vector< defaulttype::Vector3 > pointsLine;
     // lines for points penetrating the plane
-    glBegin(GL_LINES);
 
     unsigned int ibegin = 0;
     unsigned int iend = p1.size();
@@ -203,6 +207,9 @@ void PlaneForceField<DataTypes>::drawPlane(float size)
     if (localRange.getValue()[1] >= 0 && (unsigned int)localRange.getValue()[1]+1 < iend)
         iend = localRange.getValue()[1]+1;
 
+
+    defaulttype::Vector3 point1,point2;
+    unsigned int sizePoints= (Coord::static_size <=3)?Coord::static_size:3;
     for (unsigned int i=ibegin; i<iend; i++)
     {
         Real d = p1[i]*planeNormal.getValue()-planeD.getValue();
@@ -210,11 +217,17 @@ void PlaneForceField<DataTypes>::drawPlane(float size)
         p2 += planeNormal.getValue()*(-d);
         if (d<0)
         {
-            helper::gl::glVertexT(p1[i]);
-            helper::gl::glVertexT(p2);
+            for (unsigned int s=0; s<sizePoints; ++s)
+            {
+                point1[s] = p1[i][s];
+                point2[s] = p2[s];
+            }
         }
+        pointsLine.push_back(point1);
+        pointsLine.push_back(point2);
     }
-    glEnd();
+    simulation::tree::getSimulation()->DrawUtility.drawLines(pointsLine, 1, defaulttype::Vec<4,float>(1,0,0,1));
+    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 template <class DataTypes>

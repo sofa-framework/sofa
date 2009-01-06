@@ -139,8 +139,6 @@ void PenalityContactForceField<DataTypes>::draw()
     glDisable(GL_LIGHTING);
 
     std::vector< defaulttype::Vector3 > points[4];
-    std::vector< defaulttype::Vec<2,int> > indices[4];
-    int index[4]= {0,0,0,0};
 
     for (unsigned int i=0; i<contacts.getValue().size(); i++)
     {
@@ -151,45 +149,31 @@ void PenalityContactForceField<DataTypes>::draw()
             {
                 points[0].push_back(p1[c.m1]);
                 points[0].push_back(p2[c.m2]);
-                indices[0].push_back(defaulttype::Vec<2,int>(index[0],index[0]+1));
-                index[0]+=2;
-
             }
             else
             {
                 points[1].push_back(p1[c.m1]);
                 points[1].push_back(p2[c.m2]);
-                indices[1].push_back(defaulttype::Vec<2,int>(index[1],index[1]+1));
-                index[1]+=2;
-
             }
         else if (d > 0)
         {
             points[2].push_back(p1[c.m1]);
             points[2].push_back(p2[c.m2]);
-            indices[2].push_back(defaulttype::Vec<2,int>(index[2],index[2]+1));
-            index[2]+=2;
-
         }
         else
         {
             points[3].push_back(p1[c.m1]);
             points[3].push_back(p2[c.m2]);
-            indices[3].push_back(defaulttype::Vec<2,int>(index[3],index[3]+1));
-            index[3]+=2;
-
         }
     }
     simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
-    simulation::tree::getSimulation()->DrawUtility.drawLines(points[0], indices[0], 1, defaulttype::Vec<4,float>(1,0,1));
-    simulation::tree::getSimulation()->DrawUtility.drawLines(points[1], indices[1], 1, defaulttype::Vec<4,float>(0,1,1));
-    simulation::tree::getSimulation()->DrawUtility.drawLines(points[2], indices[2], 1, defaulttype::Vec<4,float>(1,0,0));
-    simulation::tree::getSimulation()->DrawUtility.drawLines(points[3], indices[3], 1, defaulttype::Vec<4,float>(0,1,0));
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points[0], 1, defaulttype::Vec<4,float>(1,0,1));
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points[1], 1, defaulttype::Vec<4,float>(0,1,1));
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points[2], 1, defaulttype::Vec<4,float>(1,0,0));
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points[3], 1, defaulttype::Vec<4,float>(0,1,0));
 
 
     std::vector< defaulttype::Vector3 > pointsN;
-    std::vector< defaulttype::Vec<2,int> > indicesN;
-    int indexN=0;
     if (getContext()->getShowNormals())
     {
         for (unsigned int i=0; i<contacts.getValue().size(); i++)
@@ -198,17 +182,13 @@ void PenalityContactForceField<DataTypes>::draw()
             Coord p = p1[c.m1] - c.norm;
             pointsN.push_back(p1[c.m1]);
             pointsN.push_back(p);
-            indicesN.push_back(defaulttype::Vec<2,int>(indexN,indexN+1));
-            indexN+=2;
 
 
             p = p2[c.m2] + c.norm;
             pointsN.push_back(p2[c.m2]);
             pointsN.push_back(p);
-            indicesN.push_back(defaulttype::Vec<2,int>(indexN,indexN+1));
-            indexN+=2;
         }
-        simulation::tree::getSimulation()->DrawUtility.drawLines(pointsN, indicesN, 1, defaulttype::Vec<4,float>(1,1,0));
+        simulation::tree::getSimulation()->DrawUtility.drawLines(pointsN, 1, defaulttype::Vec<4,float>(1,1,0));
     }
     simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
