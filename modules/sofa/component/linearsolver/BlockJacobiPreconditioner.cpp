@@ -25,7 +25,7 @@
 // Author: François Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
-#include <sofa/component/linearsolver/JacobiPreconditioner.h>
+#include <sofa/component/linearsolver/BlockJacobiPreconditioner.h>
 #include <sofa/component/linearsolver/NewMatMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
@@ -34,6 +34,7 @@
 #include "sofa/helper/system/thread/CTime.h"
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <math.h>
 
 namespace sofa
 {
@@ -52,7 +53,7 @@ using std::cerr;
 using std::endl;
 
 template<class TMatrix, class TVector>
-JacobiPreconditioner<TMatrix,TVector>::JacobiPreconditioner()
+BlockJacobiPreconditioner<TMatrix,TVector>::BlockJacobiPreconditioner()
     : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
 {
@@ -60,32 +61,45 @@ JacobiPreconditioner<TMatrix,TVector>::JacobiPreconditioner()
     f_graph.setReadOnly(true);
 }
 
-/// Solve P^-1 Mx= P^-1 b
-// P[i][j] = M[i][j] ssi i=j
-//P^-1[i][j] = 1/M[i][j]
 template<class TMatrix, class TVector>
-void JacobiPreconditioner<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
+void BlockJacobiPreconditioner<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
 {
-    //if (! this->systemMatrix->bandWidth) {
-    for (unsigned i=0; i<z.size(); i++) z.set(i,r.element(i) / M.element(i,i)); //si i==j;
-    //} else {
-    //	z = r;
-    //}
-    //cout << "solve JacobiPreconditioner" << endl;
+    for (unsigned l=0; l<z.size(); l+=bsize)
+    {
+        for (unsigned j=0; j<bsize; j++)
+        {
+            z.set(j+l,0);
+            for (unsigned i=0; i<bsize; i++)
+            {
+                z.add(j+l,M.element(l+i,l+j) * r.element(i+l));
+            }
+        }
+    }
 }
 
-SOFA_DECL_CLASS(JacobiPreconditioner)
+template<class TMatrix, class TVector>
+void BlockJacobiPreconditioner<TMatrix,TVector>::invert(Matrix& M)
+{
+    bsize = this->systemMatrix->bandWidth+1;
 
-int JacobiPreconditionerClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
-//.add< JacobiPreconditioner<GraphScatteredMatrix,GraphScatteredVector> >(true)
-        .add< JacobiPreconditioner< SparseMatrix<double>, FullVector<double> > >()
-        .add< JacobiPreconditioner<NewMatBandMatrix,NewMatVector> >(true)
-        .add< JacobiPreconditioner<NewMatMatrix,NewMatVector> >()
-        .add< JacobiPreconditioner<NewMatSymmetricMatrix,NewMatVector> >()
-        .add< JacobiPreconditioner<NewMatSymmetricBandMatrix,NewMatVector> >()
-        .add< JacobiPreconditioner< FullMatrix<double>, FullVector<double> > >()
-        .addAlias("JCGSolver")
-        .addAlias("JConjugateGradient")
+    for (unsigned l=0; l<M.rowSize(); l+=bsize)
+    {
+        M.setSubMatrix(l,l,bsize,bsize,M.sub(l,l,bsize,bsize).i());
+    }
+}
+
+SOFA_DECL_CLASS(BlockJacobiPreconditioner)
+
+int BlockJacobiPreconditionerClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
+//.add< BlockJacobiPreconditioner<GraphScatteredMatrix,GraphScatteredVector> >(true)
+//.add< BlockJacobiPreconditioner< SparseMatrix<double>, FullVector<double> > >(true)
+        .add< BlockJacobiPreconditioner<NewMatBandMatrix,NewMatVector> >(true)
+        .add< BlockJacobiPreconditioner<NewMatMatrix,NewMatVector> >()
+        .add< BlockJacobiPreconditioner<NewMatSymmetricMatrix,NewMatVector> >()
+        .add< BlockJacobiPreconditioner<NewMatSymmetricBandMatrix,NewMatVector> >()
+//.add< BlockJacobiPreconditioner< FullMatrix<double>, FullVector<double> > >()
+        .addAlias("BJCGSolver")
+        .addAlias("BJConjugateGradient")
         ;
 
 } // namespace linearsolver
