@@ -34,7 +34,12 @@ namespace component
 class RadiusContainer : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
-    virtual double getRadius(unsigned int index) = 0;
+    /// Get the radius around a given point
+    virtual double getPointRadius(unsigned int index) = 0;
+    /// Get the radius around a given edge
+    virtual double getEdgeRadius(unsigned int index) = 0;
+    /// Deprecated alias for getEdgeRadius
+    double getRadius(unsigned int index) { return getEdgeRadius(index); }
 };
 
 }
