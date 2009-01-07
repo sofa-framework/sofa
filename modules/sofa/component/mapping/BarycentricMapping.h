@@ -840,6 +840,8 @@ public:
     void getJ(unsigned int Idx, sofa::helper::vector< double > &factor, sofa::helper::vector< unsigned int > &indices) {mapper->getJ(Idx,factor,indices);}
     // handle topological changes
     virtual void handleTopologyChange();
+    // handle topology changes depending on the topology
+    virtual void handleTopologyChange(core::componentmodel::topology::Topology* t);
 
     TopologyBarycentricMapper<InDataTypes,OutDataTypes>*	getMapper() {return mapper;}
 
