@@ -189,10 +189,7 @@ public:
 
     bool getVoxel(unsigned int index) const
     {
-        ///OLD///
-        //const int i = index%8;
-        //unsigned char c = dataVoxels.getValue()[index>>3];
-        return dataVoxels.getValue()[index]==1;//((c&((int)(pow(2.0f, i)))) >> i) == 1;
+        return dataVoxels.getValue()[index]==1;
     };
 
 
@@ -270,16 +267,11 @@ protected:
     {
         if (value)
         {
-            ///OLD/// (*dataVoxels.beginEdit())[index>>3] |= (int) pow(2.0f, (int)(index%8)); ///OLD///
-            (*dataVoxels.beginEdit())[index] = 1.0;
+            (*dataVoxels.beginEdit())[index] = 1;
         }
         else
         {
-            ///OLD///
-            //const int i = index%8;
-            //const int mask = (int) pow(2.0f, i);
-            //if (((*dataVoxels.beginEdit())[index>>3]&mask)>>i) (*dataVoxels.beginEdit())[index>>3] -= mask;
-            (*dataVoxels.beginEdit())[index] = 0.0;
+            (*dataVoxels.beginEdit())[index] = 0;
         }
     };
 
