@@ -32,6 +32,7 @@
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/gl/template.h>
+#include <sofa/helper/gl/Axis.h>
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <string>
@@ -123,18 +124,18 @@ void SkinningMapping<BasicMapping>::computeInitPos ( )
 #ifdef SOFA_DEV
     case INTERPOLATION_DUAL_QUATERNION:
     {
-        initBlendedPos.resize( xto.size());
+        initBlendedPos.resize ( xto.size() );
         for ( unsigned int i = 0; i < xto.size(); i++ )
         {
             DualQuat dq;
             for ( unsigned int m = 0 ; m < nbRefs.getValue(); m++ )
             {
                 DualQuat dqi ( -initPosDOFs[m_reps[nbRefs.getValue() *i+m]].getCenter(),
-                        initPosDOFs[m_reps[nbRefs.getValue() *i+m]].getOrientation().inverse());
+                        initPosDOFs[m_reps[nbRefs.getValue() *i+m]].getOrientation().inverse() );
 
                 // Blend all the transformations
                 dq += dqi * m_coefs[nbRefs.getValue() *i+m];
-                initPos[ nbRefs.getValue()*i+m] = dqi.transform ( xto[i] );
+                initPos[ nbRefs.getValue() *i+m] = dqi.transform ( xto[i] );
             }
             dq.normalize();
             initBlendedPos[i] = dq.transform ( xto[i] );
@@ -378,10 +379,10 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
             for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
             {
                 // Save rotated points for applyJ/JT
-                rotatedPoints[nbRefs.getValue() *i+m] = in[m_reps[nbRefs.getValue() *i+m] ].getOrientation().rotate( initPos[nbRefs.getValue() *i+m] );
+                rotatedPoints[nbRefs.getValue() *i+m] = in[m_reps[nbRefs.getValue() *i+m] ].getOrientation().rotate ( initPos[nbRefs.getValue() *i+m] );
 
                 // And add each reference frames contributions to the new position out[i]
-                out[i] += ( in[m_reps[nbRefs.getValue() *i+m] ].getCenter() + rotatedPoints[nbRefs.getValue() *i+m]) * m_coefs[nbRefs.getValue() *i+m];
+                out[i] += ( in[m_reps[nbRefs.getValue() *i+m] ].getCenter() + rotatedPoints[nbRefs.getValue() *i+m] ) * m_coefs[nbRefs.getValue() *i+m];
             }
         }
         break;
@@ -503,56 +504,63 @@ void SkinningMapping<BasicMapping>::draw()
     sofa::helper::vector<unsigned int> m_reps = repartition.getValue();
     sofa::helper::vector<double> m_coefs = coefs.getValue();
 
-    glDisable ( GL_LIGHTING );
-    glPointSize ( 1 );
-    glColor4f ( 1,1,0,1 );
-    glBegin ( GL_LINES );
-
-    for ( unsigned int i=0; i<xOut.size(); i++ )
+    if ( interpolation != INTERPOLATION_DUAL_QUATERNION )
     {
-        for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
+        glDisable ( GL_LIGHTING );
+        glPointSize ( 1 );
+        glColor4f ( 1,1,0,1 );
+        glBegin ( GL_LINES );
+
+        for ( unsigned int i=0; i<xOut.size(); i++ )
         {
-            if ( m_coefs[nbRefs.getValue() *i+m] > 0.0 )
+            for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
             {
-                glColor4d ( m_coefs[nbRefs.getValue() *i+m],m_coefs[nbRefs.getValue() *i+m],0,1 );
-                helper::gl::glVertexT ( xIn[m_reps[nbRefs.getValue() *i+m] ].getCenter() );
-                helper::gl::glVertexT ( xOut[i] );
+                if ( m_coefs[nbRefs.getValue() *i+m] > 0.0 )
+                {
+                    glColor4d ( m_coefs[nbRefs.getValue() *i+m],m_coefs[nbRefs.getValue() *i+m],0,1 );
+                    helper::gl::glVertexT ( xIn[m_reps[nbRefs.getValue() *i+m] ].getCenter() );
+                    helper::gl::glVertexT ( xOut[i] );
+                }
             }
         }
+        glEnd();
     }
-    glEnd();
 
 #ifdef SOFA_DEV
-    /*  Animation continue des repères le long de la poutre.
-    bool anim = true;
-    static unsigned int step = 0;
-    double transfoM4[16];
-    unsigned int nbSteps = 500;
-    step++;
-    if ( step > nbSteps ) step = 0;
-
-    for ( unsigned int i=1; i<xIn.size(); i++ )
+    //*  Animation continue des repères le long de la poutre.
+    if ( interpolation == INTERPOLATION_DUAL_QUATERNION )
     {
-      DualQuat dq1 ( Vec3d ( 0,0,0 ), Quat::identity(), xIn[i-1].getCenter(), xIn[i-1].getOrientation() );
-      DualQuat dq2 ( Vec3d ( 0,0,0 ), Quat::identity(), xIn[i].getCenter(), xIn[i].getOrientation() );
+        bool anim = true;
+        static unsigned int step = 0;
+        double transfoM4[16];
+        unsigned int nbSteps = 500;
+        step++;
+        if ( step > nbSteps ) step = 0;
 
-      if ( anim )
-      {
-        DualQuat dqi = dq1 * ( step/ ( ( float ) nbSteps ) ) + dq2 * ( 1- ( step/ ( ( float ) nbSteps ) ) );
-        dqi.normalize();
-        dqi.toGlMatrix ( transfoM4 );
-        sofa::helper::gl::Axis::draw ( transfoM4, 0.5 );
-      }
-      else
-      {
-        for ( unsigned int j = 0; j < nbSteps; j++ )
+        for ( unsigned int i=1; i<xIn.size(); i++ )
         {
-          DualQuat dqi = dq1 * ( 1 - ( j/ ( ( float ) nbSteps ) ) ) + dq2 * ( j/ ( ( float ) nbSteps ) );
-          dqi.normalize();
-          dqi.toGlMatrix ( transfoM4 );
-          sofa::helper::gl::Axis::draw ( transfoM4, 0.5 );
+            DualQuat dq1 ( Vec3d ( 0,0,0 ), Quat::identity(), xIn[i-1].getCenter(), xIn[i-1].getOrientation() );
+            DualQuat dq2 ( Vec3d ( 0,0,0 ), Quat::identity(), xIn[i].getCenter(), xIn[i].getOrientation() );
+
+            if ( anim )
+            {
+                DualQuat dqi = dq1 * ( step/ ( ( float ) nbSteps ) ) + dq2 * ( 1- ( step/ ( ( float ) nbSteps ) ) );
+                dqi.normalize();
+                dqi.toGlMatrix ( transfoM4 );
+                sofa::helper::gl::Axis::draw ( transfoM4, 0.5 );
+            }
+            else
+            {
+                unsigned int nbReferenceFrame = 10;
+                for ( unsigned int j = 0; j < nbReferenceFrame; j++ )
+                {
+                    DualQuat dqi = dq1 * ( 1 - ( j/ ( ( float ) nbReferenceFrame ) ) ) + dq2 * ( j/ ( ( float ) nbReferenceFrame ) );
+                    dqi.normalize();
+                    dqi.toGlMatrix ( transfoM4 );
+                    sofa::helper::gl::Axis::draw ( transfoM4, 0.5 );
+                }
+            }
         }
-      }
     }
     //*/
 #endif

@@ -52,6 +52,9 @@
 #include <sofa/component/topology/PointData.h>
 #include <sofa/component/topology/PointData.inl>
 
+#include <sofa/component/topology/TriangleData.h>
+#include <sofa/component/topology/TriangleData.inl>
+
 #include <sofa/component/topology/HexahedronData.h>
 #include <sofa/component/topology/HexahedronData.inl>
 
@@ -1188,10 +1191,13 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::apply( typename Out::VecCo
 template <class In, class Out>
 void BarycentricMapperHexahedronSetTopology<In,Out>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
+//TODO! faire un cout pour trouver ce qu'il se passe.
+// std::cout << "Map size: " << map.size();
     out.resize(map.size());
     const sofa::helper::vector<topology::Hexahedron>& cubes = this->topology->getHexas();
     for(unsigned int i=0; i<map.size(); i++)
     {
+        typename Out::Coord plop = out[i];
         const Real fx = map[i].baryCoords[0];
         const Real fy = map[i].baryCoords[1];
         const Real fz = map[i].baryCoords[2];
@@ -1205,6 +1211,12 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::apply( typename Out::VecCoo
                 + in[cube[5]] * ((  fx) * (1-fy) * (  fz))
                 + in[cube[7]] * ((1-fx) * (  fy) * (  fz))
                 + in[cube[6]] * ((  fx) * (  fy) * (  fz));
+        /*    if( plop != out[i])
+            {
+              std::cout << ". Old pos: " << plop;
+              std::cout << ". New pos: " << out[i];
+              std::cout << ". Associated with: " << index << ". Cube index: " << cubes[index] << std::endl;
+            }*/
     }
 }
 
@@ -1729,6 +1741,16 @@ template <class In, class Out>
 void BarycentricMapperHexahedronSetTopology<In,Out>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
     const sofa::helper::vector<topology::Hexahedron>& cubes = this->topology->getHexas();
+
+//////////////  DEBUG  /////////////
+// unsigned int mapSize = map.size();
+// std::cout << "Map size: " << mapSize << std::endl;
+// for(unsigned int i=0;i<map.size();i++)
+// {
+//   std::cout << "index " << map[i].in_index << ", baryCoord ( " << (OutReal)map[i].baryCoords[0] << ", " << (OutReal)map[i].baryCoords[1] << ", " << (OutReal)map[i].baryCoords[2] << ")." << std::endl;
+// }
+////////////////////////////////////
+
     for(unsigned int i=0; i<map.size(); i++)
     {
         const typename Out::Deriv v = in[i];
@@ -2803,7 +2825,7 @@ void BarycentricMapperTriangleSetTopology<In,Out>::handleTopologyChange()
             break;
         case core::componentmodel::topology::TRIANGLESADDED:     ///< For TrianglesAdded.
             break;
-        case core::componentmodel::topology::TRIANGLESREMOVED:   ///< For TrianglesRemoved.
+        case core::componentmodel::topology::TRIANGLESREMOVED:  ///< For Triangles Removed.
             break;
         case core::componentmodel::topology::TRIANGLESRENUMBERING: ///< For TrianglesRenumbering.
             break;
@@ -2901,6 +2923,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
             //TODO: implementation of BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
         case core::componentmodel::topology::ENDING_EVENT:       ///< To notify the end for the current sequence of topological change events
         {
+// std::cout << "BarycentricMapperHexahedronSetTopology() ENDING_EVENT" << std::endl;
             for(unsigned int j=0; j<map.size(); ++j)
             {
                 if(map[j].in_index == -1) // compute new mapping
@@ -2935,16 +2958,21 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
             break;
         case core::componentmodel::topology::POINTSRENUMBERING:  ///< For PointsRenumbering.
             break;
+        case core::componentmodel::topology::TRIANGLESADDED:  ///< For Triangles Added.
+            break;
+        case core::componentmodel::topology::TRIANGLESREMOVED:  ///< For Triangles Removed.
+            break;
         case core::componentmodel::topology::HEXAHEDRAADDED:     ///< For HexahedraAdded.
         {
         }
         break;
         case core::componentmodel::topology::HEXAHEDRAREMOVED:   ///< For HexahedraRemoved.
         {
+// std::cout << "BarycentricMapperHexahedronSetTopology() HEXAHEDRAREMOVED" << std::endl;
             const unsigned int nbHexas = this->topology->getNbHexas();
 
-            const sofa::helper::vector<unsigned int> &tab = (static_cast< const component::topology::HexahedraRemoved *> (*changeIt))->getArray();
-            sofa::helper::vector<unsigned int> hexahedra(tab);
+            const sofa::helper::vector<unsigned int> &hexahedra = (static_cast< const component::topology::HexahedraRemoved *> (*changeIt))->getArray();
+// 				sofa::helper::vector<unsigned int> hexahedra(tab);
 
             for(unsigned int i=0; i<hexahedra.size(); ++i)
             {
@@ -3045,6 +3073,31 @@ void BarycentricMapping<BasicMapping>::handleTopologyChange()
 
                 topoMapper->handlePointEvents(itBegin, itEnd);
             }
+        }
+    }
+}
+
+// handle topology changes depending on the topology
+template <class BasicMapping>
+void BarycentricMapping<BasicMapping>::handleTopologyChange( core::componentmodel::topology::Topology* t)
+{
+    BarycentricMapperDynamicTopology* topoMapper = dynamic_cast<BarycentricMapperDynamicTopology*>(mapper);
+    if(topoMapper != NULL)
+    {
+        if(( t == topology_to) && (topology_to != NULL))
+        {
+            if(topology_to->firstChange() != topology_to->lastChange()) // may not be necessary
+            {
+                const std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = topology_to->firstChange();
+                const std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = topology_to->lastChange();
+
+                topoMapper->handlePointEvents(itBegin, itEnd);
+            }
+        }
+        else
+        {
+            // handle changes in the From topology
+            topoMapper->handleTopologyChange();
         }
     }
 }
