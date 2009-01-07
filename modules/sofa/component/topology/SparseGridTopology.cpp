@@ -380,14 +380,14 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
         FILE *file = fopen( filename.c_str(), "r" );
         if (!file) { serr<< "FILE " << filename << " not found"<<sendl; return;}
         //Get the voxels from the file
-        dataVoxels.beginEdit()->resize(dataResolution.getValue()[0]*dataResolution.getValue()[1]*dataResolution.getValue()[2]/8, (unsigned char)0);
+        dataVoxels.beginEdit()->resize(dataResolution.getValue()[0]*dataResolution.getValue()[1]*dataResolution.getValue()[2], (unsigned char)0);
 
         unsigned char value;
         const Vector3 transform(                (getNx()-1)/(float)dataResolution.getValue()[0],
                 (getNy()-1)/(float)dataResolution.getValue()[1],
                 (getNz()-1)/(float)dataResolution.getValue()[2]);
 
-        for (unsigned int i=0; i<dataVoxels.beginEdit()->size()*8; i++)
+        for (unsigned int i=0; i<dataVoxels.beginEdit()->size(); i++)
         {
             value=getc(file);
             if ((int)value != 0)
@@ -410,9 +410,9 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
         }
         fclose(file);
     }
-    unsigned int max_dim_voxels = std::max(dataResolution.getValue()[0],std::max(dataResolution.getValue()[1],dataResolution.getValue()[2]));
-    _min.setValue(voxelSize.getValue()*max_dim_voxels*(-0.5));
-    _max.setValue(voxelSize.getValue()*max_dim_voxels*0.5);
+    _min.setValue( Vector3( 0, 0, 0));
+    _max.setValue( voxelSize.getValue().linearProduct(dataResolution.getValue())*(1));
+
 
     _regularGrid.setPos(getXmin(),getXmax(),getYmin(),getYmax(),getZmin(),getZmax());
     buildFromRegularGridTypes(_regularGrid, regularGridTypes);
@@ -511,9 +511,8 @@ void SparseGridTopology::updateMesh()
 {
     if (!_usingMC || dataVoxels.beginEdit()->size() == 0) return;
 
-    unsigned int max_dim_voxels = std::max(dataResolution.getValue()[0],std::max(dataResolution.getValue()[1],dataResolution.getValue()[2]));
-    _min.setValue(voxelSize.getValue()*max_dim_voxels*(-0.5));
-    _max.setValue(voxelSize.getValue()*max_dim_voxels*0.5);
+    _min.setValue( Vector3( 0, 0, 0));
+    _max.setValue( voxelSize.getValue().linearProduct(dataResolution.getValue())*(1));
 
     //Creating if needed collision models and visual models
     using sofa::simulation::tree::GNode;

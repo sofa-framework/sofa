@@ -161,6 +161,11 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
 {
     if (m_container->firstChange() == m_container->lastChange()) return; // nothing to do if no event is stored
     sofa::simulation::TopologyChangeVisitor a(m_container);
+
+// std::cout << getName() << " propagation du truc: " << getContext()->getName() << std::endl;
+// for( std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator it = m_container->firstChange(); it != m_container->lastChange(); it++)
+// std:: cout << (*it)->getChangeType() << std::endl;
+
     getContext()->executeVisitor(&a);
 
     // remove the changes we just propagated, so that we don't send then again next time
