@@ -36,8 +36,10 @@
 #include <QEvent>
 #include <QMouseEvent>
 #include <QKeyEvent>
+#include <QTabWidget>
 #else
 #include <qevent.h>
+#include <qtabwidget.h>
 #endif
 
 #ifdef SOFA_DEV
@@ -165,6 +167,10 @@ public:
     virtual void getView(float* /*pos*/, float* /*ori*/) const {};
     virtual void setView(float* /*pos*/, float* /*ori*/) {};
     virtual void moveView(float* /*pos*/, float* /*ori*/) {};
+
+
+    virtual void removeViewerTab(QTabWidget *t) {};
+    virtual void configureViewerTab(QTabWidget *t) {};
 
 protected:
 

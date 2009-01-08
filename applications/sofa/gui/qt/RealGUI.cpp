@@ -461,7 +461,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect ( this, SIGNAL( newStep()), viewer->getQWidget(), SLOT( update()));
     currentTabChanged ( tabs->currentPage() );
 
-
 #ifdef SOFA_PML
     pmlreader = NULL;
     lmlreader = NULL;
@@ -673,6 +672,7 @@ void RealGUI::addViewer()
     viewer->getQWidget()->setMouseTracking ( TRUE );
 
     viewer->setup();
+    viewer->configureViewerTab(tabs);
 
 
     connect ( ResetViewButton, SIGNAL ( clicked() ), viewer->getQWidget(), SLOT ( resetView() ) );
@@ -727,10 +727,12 @@ void RealGUI::viewerOGRE()
     viewerOpenGLAction->setOn(false);
     viewerQGLViewerAction->setOn(false);
     viewerOGREAction->setOn(true);
+
 }
 
 bool RealGUI::setViewer ( const char* name )
 {
+
     if ( !strcmp ( name,viewerName ) )
         return true; // nothing to do
     if ( !strcmp ( name,"qt" ) )
@@ -779,6 +781,10 @@ bool RealGUI::setViewer ( const char* name )
 // 	fileOpen(filename);
 // 	GNode* groot = new GNode; // empty scene to do the transition
 // 	setScene ( groot,filename.c_str() ); // keep the current display flags
+
+
+    viewer->removeViewerTab(tabs);
+
     left_stack->removeWidget ( viewer->getQWidget() );
     delete viewer;
     viewer = NULL;
@@ -831,6 +837,10 @@ bool RealGUI::setViewer ( const char* name )
     viewerName = name;
 
     addViewer();
+
+    viewer->configureViewerTab(tabs);
+
+
 
     if (filename.rfind(".simu") != std::string::npos)
         fileOpenSimu(filename.c_str() );
