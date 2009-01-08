@@ -25,7 +25,7 @@
 // Author: François Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
-#include <sofa/component/linearsolver/BlockJacobiPreconditioner.h>
+#include <sofa/component/linearsolver/SSORPreconditioner.h>
 #include <sofa/component/linearsolver/NewMatMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
@@ -53,53 +53,67 @@ using std::cerr;
 using std::endl;
 
 template<class TMatrix, class TVector>
-BlockJacobiPreconditioner<TMatrix,TVector>::BlockJacobiPreconditioner()
+SSORPreconditioner<TMatrix,TVector>::SSORPreconditioner()
     : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
 {
     f_graph.setWidget("graph");
     f_graph.setReadOnly(true);
+    u2 = *this->createVector();
+    u3 = *this->createVector();
 }
 
 template<class TMatrix, class TVector>
-void BlockJacobiPreconditioner<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
+void SSORPreconditioner<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
 {
-    for (unsigned l=0; l<z.size(); l+=bsize)
+    //Solve (D+U) * u3 = r;
+    for (int j=M.rowSize()-1; j>=0; j--)
     {
-        for (unsigned j=0; j<bsize; j++)
+        double temp = 0.0;
+        for (unsigned i=j+1; i<M.rowSize(); i++)
         {
-            z.set(j+l,0);
-            for (unsigned i=0; i<bsize; i++)
-            {
-                z.add(j+l,M.element(l+i,l+j) * r.element(i+l));
-            }
+            temp += u3[i] * M.element(i,j);
         }
+        u3[j] = (r[j] - temp) / M.element(j,j);
+    }
+
+    //Solve D-1 * u2 = u3;
+    for (unsigned j=0; j<M.rowSize(); j++)
+    {
+        u2[j] = u3[j] * M.element(j,j);
+    }
+
+    //Solve (L+D) * z = u2
+    for (unsigned j=0; j<M.rowSize(); j++)
+    {
+        double temp = 0.0;
+        for (unsigned i=0; i<j; i++)
+        {
+            temp += z[i] * M.element(i,j);
+        }
+        z[j] = (u2[j] - temp) / M.element(j,j);
     }
 }
 
 template<class TMatrix, class TVector>
-void BlockJacobiPreconditioner<TMatrix,TVector>::invert(Matrix& M)
+void SSORPreconditioner<TMatrix,TVector>::invert(Matrix& M)
 {
-    bsize = this->systemMatrix->bandWidth+1;
-
-    for (unsigned l=0; l<M.rowSize(); l+=bsize)
-    {
-        M.setSubMatrix(l,l,bsize,bsize,M.sub(l,l,bsize,bsize).i());
-    }
+    u2.resize(M.rowSize());
+    u3.resize(M.rowSize());
 }
 
-SOFA_DECL_CLASS(BlockJacobiPreconditioner)
+SOFA_DECL_CLASS(SSORPreconditioner)
 
-int BlockJacobiPreconditionerClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
-//.add< BlockJacobiPreconditioner<GraphScatteredMatrix,GraphScatteredVector> >(true)
-//.add< BlockJacobiPreconditioner< SparseMatrix<double>, FullVector<double> > >(true)
-        .add< BlockJacobiPreconditioner<NewMatBandMatrix,NewMatVector> >(true)
-//.add< BlockJacobiPreconditioner<NewMatMatrix,NewMatVector> >()
-//.add< BlockJacobiPreconditioner<NewMatSymmetricMatrix,NewMatVector> >()
-        .add< BlockJacobiPreconditioner<NewMatSymmetricBandMatrix,NewMatVector> >()
-//.add< BlockJacobiPreconditioner< FullMatrix<double>, FullVector<double> > >()
-        .addAlias("BJCGSolver")
-        .addAlias("BJConjugateGradient")
+int SSORPreconditionerClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
+//.add< SSORPreconditioner<GraphScatteredMatrix,GraphScatteredVector> >(true)
+        .add< SSORPreconditioner< SparseMatrix<double>, FullVector<double> > >(true)
+//.add< SSORPreconditioner<NewMatBandMatrix,NewMatVector> >(true)
+//.add< SSORPreconditioner<NewMatMatrix,NewMatVector> >()
+//.add< SSORPreconditioner<NewMatSymmetricMatrix,NewMatVector> >()
+//.add< SSORPreconditioner<NewMatSymmetricBandMatrix,NewMatVector> >()
+//.add< SSORPreconditioner< FullMatrix<double>, FullVector<double> > >()
+        .addAlias("SSORSolver")
+        .addAlias("SSORConjugateGradient")
         ;
 
 } // namespace linearsolver
