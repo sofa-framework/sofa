@@ -169,8 +169,8 @@ public:
     virtual void moveView(float* /*pos*/, float* /*ori*/) {};
 
 
-    virtual void removeViewerTab(QTabWidget *t) {};
-    virtual void configureViewerTab(QTabWidget *t) {};
+    virtual void removeViewerTab(QTabWidget *) {};
+    virtual void configureViewerTab(QTabWidget *) {};
 
 protected:
 
