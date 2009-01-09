@@ -34,6 +34,7 @@
 #include "sofa/helper/system/thread/CTime.h"
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/helper/system/thread/CTime.h>
 
 namespace sofa
 {
@@ -48,6 +49,8 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::componentmodel::behavior;
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
+using sofa::helper::system::thread::CTime;
+using sofa::helper::system::thread::ctime_t;
 using std::cerr;
 using std::endl;
 
@@ -98,6 +101,8 @@ void PCGLinearSolver<TMatrix,TVector>::setSystemLHVector(VecId v) {
 }
 */
 
+using sofa::helper::system::thread::CTime;
+
 template<class TMatrix, class TVector>
 void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
 {
@@ -134,6 +139,8 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
     for( nb_iter=1; nb_iter<=f_maxIter.getValue(); nb_iter++ )
     {
 
+        //double time1= CTime::getRefTime();
+
 #ifdef DUMP_VISITOR_INFO
         std::ostringstream comment;
         comment << "Iteration : " << nb_iter;
@@ -152,9 +159,11 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
                 //r = M * xi
                 //Solve P * z = r
 
+
                 preconditioners[i]->setSystemLHVector(z);
                 preconditioners[i]->setSystemRHVector(r);
                 preconditioners[i]->solveSystem();
+
 
                 //z = M * A * xi
             }
@@ -222,7 +231,12 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
         }
 
         rho_1 = rho;
+
+        //printf("%f\n",(CTime::getRefTime() - time1)  / (double)CTime::getRefTicksPerSec());
     }
+
+
+
     f_graph.endEdit();
     // x is the solution of the system
     if( printLog )
