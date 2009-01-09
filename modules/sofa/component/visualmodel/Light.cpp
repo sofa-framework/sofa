@@ -67,11 +67,13 @@ int SpotLightClass = core::RegisterObject("Spot Light")
         .add< SpotLight >()
         ;
 
+Light::Light()
+    : color(initData(&color, (Vector3) Vector3(1,1,1), "color", "Set the color of the light"))
+    , zNear(initData(&zNear, (float) 4.0, "zNear", "Set minimum distance for view field"))
+    , zFar(initData(&zFar, (float) 50.0, "zFar", "Set minimum distance for view field"))
 
-Light::Light():
-    color(initData(&color, (Vector3) Vector3(1,1,1), "color", "Set the color of the light"))
 {
-    lightID = GL_LIGHT0;
+    lightID = 0;
 }
 
 Light::~Light()
@@ -94,13 +96,19 @@ void Light::init()
 
 void Light::initVisual()
 {
-
-    glLightf(lightID, GL_SPOT_CUTOFF, 180.0);
+    //Init Light part
+    glLightf(GL_LIGHT0+lightID, GL_SPOT_CUTOFF, 180.0);
     GLfloat c[4] = { (GLfloat) color.getValue()[0], (GLfloat)color.getValue()[1], (GLfloat)color.getValue()[2], 1.0 };
-    glLightfv(lightID, GL_AMBIENT, c);
-    glLightfv(lightID, GL_DIFFUSE, c);
-    glLightfv(lightID, GL_SPECULAR, c);
-    glLightf(lightID, GL_LINEAR_ATTENUATION, 0.0);
+    glLightfv(GL_LIGHT0+lightID, GL_AMBIENT, c);
+    glLightfv(GL_LIGHT0+lightID, GL_DIFFUSE, c);
+    glLightfv(GL_LIGHT0+lightID, GL_SPECULAR, c);
+    glLightf(GL_LIGHT0+lightID, GL_LINEAR_ATTENUATION, 0.0);
+
+    //init Shadow part
+    computeShadowMapSize();
+    //Shadow part
+    //Shadow texture init
+    shadowFBO.init(shadowTexWidth, shadowTexHeight);
 
 }
 
@@ -115,6 +123,63 @@ void Light::drawLight()
 {
 
 }
+
+void Light::preDrawShadow()
+{
+    computeShadowMapSize();
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+
+    shadowFBO.start();
+}
+
+void Light::postDrawShadow()
+{
+    //Unbind fbo
+    shadowFBO.stop();
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+}
+
+void Light::computeShadowMapSize()
+{
+    // Current viewport
+    GLint		viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    GLint windowWidth = viewport[2];
+    GLint windowHeight = viewport[3];
+
+    //Get the size of the shadow map
+    if (windowWidth >= 1024 && windowHeight >= 1024)
+    {
+        shadowTexWidth = shadowTexHeight = 1024;
+    }
+    else if (windowWidth >= 512 && windowHeight >= 512)
+    {
+        shadowTexWidth = shadowTexHeight = 512;
+    }
+    else if (windowWidth >= 256 && windowHeight >= 256)
+    {
+        shadowTexWidth = shadowTexHeight = 256;
+    }
+    else
+    {
+        shadowTexWidth = shadowTexHeight = 128;
+    }
+}
+
+
+GLuint Light::getShadowMapSize()
+{
+    return shadowTexWidth;
+}
+
 
 DirectionalLight::DirectionalLight():
     direction(initData(&direction, (Vector3) Vector3(0,0,-1), "direction", "Set the direction of the light"))
@@ -148,7 +213,7 @@ void DirectionalLight::drawLight()
     dir[2]=(GLfloat)(direction.getValue()[2]);
     dir[3]=0.0; // directional
 
-    glLightfv(lightID, GL_POSITION, dir);
+    glLightfv(GL_LIGHT0+lightID, GL_POSITION, dir);
 }
 
 PositionalLight::PositionalLight():
@@ -184,9 +249,9 @@ void PositionalLight::drawLight()
     pos[1]=(GLfloat)(position.getValue()[1]);
     pos[2]=(GLfloat)(position.getValue()[2]);
     pos[3]=1.0; // positional
-    glLightfv(lightID, GL_POSITION, pos);
+    glLightfv(GL_LIGHT0+lightID, GL_POSITION, pos);
 
-    glLightf(lightID, GL_LINEAR_ATTENUATION, attenuation.getValue());
+    glLightf(GL_LIGHT0+lightID, GL_LINEAR_ATTENUATION, attenuation.getValue());
 
 }
 
@@ -221,10 +286,60 @@ void SpotLight::drawLight()
     PositionalLight::drawLight();
 
     GLfloat dir[]= {(GLfloat)(direction.getValue()[0]), (GLfloat)(direction.getValue()[1]), (GLfloat)(direction.getValue()[2])};
-    glLightf(lightID, GL_SPOT_CUTOFF, cutoff.getValue());
-    glLightfv(lightID, GL_SPOT_DIRECTION, dir);
-    glLightf(lightID, GL_SPOT_EXPONENT, exponent.getValue());
+    glLightf(GL_LIGHT0+lightID, GL_SPOT_CUTOFF, cutoff.getValue());
+    glLightfv(GL_LIGHT0+lightID, GL_SPOT_DIRECTION, dir);
+    glLightf(GL_LIGHT0+lightID, GL_SPOT_EXPONENT, exponent.getValue());
 
+}
+
+void SpotLight::preDrawShadow()
+{
+    Light::preDrawShadow();
+
+    //float d = 4.0 * tan(cutoff.getValue()*3.14159/180);
+
+    //Projection matrix
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    //glFrustum(-d, d, -d, d, ZNEAR, ZFAR);
+    gluPerspective(2*cutoff.getValue(),1.0, zNear.getValue(), zFar.getValue());
+
+    //Modelview matrix
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+//	gluLookAt(position.getValue()[0], position.getValue()[1], position.getValue()[2],
+//			position.getValue()[0] + direction.getValue()[0],
+//			position.getValue()[1] + direction.getValue()[1],
+//			position.getValue()[2] + direction.getValue()[2],
+//			0,1,0);
+    gluLookAt(position.getValue()[0], position.getValue()[1], position.getValue()[2],0 ,0 ,0, direction.getValue()[0], direction.getValue()[1], direction.getValue()[2]);
+
+    //Save the two matrices
+    glGetFloatv(GL_PROJECTION_MATRIX, lightMatProj);
+    glGetFloatv(GL_MODELVIEW_MATRIX, lightMatModelview);
+
+    //glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, shadowFBO);
+
+    glViewport(0, 0, shadowTexWidth, shadowTexHeight);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+}
+
+GLuint SpotLight::getShadowTexture()
+{
+    //return debugVisualShadowTexture;
+    //return shadowTexture;
+    return shadowFBO.getDepthTexture();
+}
+
+GLfloat* SpotLight::getProjectionMatrix()
+{
+    return lightMatProj;
+}
+
+GLfloat* SpotLight::getModelviewMatrix()
+{
+    return lightMatModelview;
 }
 
 }

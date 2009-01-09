@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 //
-// C++ Interface: LightManager
+// C++ Implementation: Shader
 //
 // Description:
 //
@@ -33,15 +33,10 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-
-#ifndef SOFA_COMPONENT_LIGHTMANAGER_H
-#define SOFA_COMPONENT_LIGHTMANAGER_H
-
-#include <sofa/defaulttype/SolidTypes.h>
-#include <sofa/component/visualmodel/Light.h>
-#include <sofa/core/VisualManager.h>
-#include <sofa/core/objectmodel/Event.h>
 #include <sofa/component/visualmodel/OglShadowShader.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/FileRepository.h>
+
 
 namespace sofa
 {
@@ -52,60 +47,60 @@ namespace component
 namespace visualmodel
 {
 
-/**
- *  \brief Utility to manage lights into an Opengl scene
- *
- *  This class must be used with the Light class.
- *  It centralizes all the Lights and managed them.
- *
- */
 
-class LightManager : public core::VisualManager
+SOFA_DECL_CLASS(OglShadowShader)
+
+//Register OglShader in the Object Factory
+int OglShadowShaderClass = core::RegisterObject("OglShadowShader")
+        .add< OglShadowShader >()
+        ;
+
+const std::string OglShadowShader::PATH_TO_SHADOW_VERTEX_SHADERS = "shaders/shadowMapping.vert";
+const std::string OglShadowShader::PATH_TO_SHADOW_FRAGMENT_SHADERS = "shaders/shadowMapping.frag";
+
+OglShadowShader::OglShadowShader()
 {
-private:
-    static const unsigned int MAX_NUMBER_OF_LIGHTS = GL_MAX_LIGHTS;
-    std::vector<Light*> lights;
-    bool shadowEnabled;
-
-    OglShadowShader* shadowShader;
-    void makeShadowMatrix(unsigned int i);
-
-public:
-    Data<bool> debugViewDepthBuffer;
-    LightManager();
-    virtual ~LightManager();
-
-    void init();
-    void reinit();
-    void initVisual();
-    void update() { };
-
-    void preDrawScene(helper::gl::VisualParameters* vp);
-    bool drawScene(helper::gl::VisualParameters* vp);
-    void postDrawScene(helper::gl::VisualParameters* vp);
 
 
-    void draw();
-    void fwdDraw(Pass);
-    void bwdDraw(Pass);
+}
 
-    ///Register a light into the LightManager
-    void putLight(Light* light);
+OglShadowShader::~OglShadowShader()
+{
 
-    ///Register a vector of lights into the LightManager
-    void putLights(std::vector<Light*> lights);
+}
 
-    ///Remove all lights of the LightManager
-    void clear();
+void OglShadowShader::init()
+{
+    passive.setValue(true);
+    turnOn.setValue(true);
+}
 
-    void handleEvent(sofa::core::objectmodel::Event* event);
+void OglShadowShader::initShaders(unsigned int numberOfLights)
+{
+    std::string tempFragment="";
+    std::string tempVertex="";
 
-};
+    for (unsigned int i=0 ; i<numberOfLights ; i++)
+    {
+        vertexFilenames.push_back( PATH_TO_SHADOW_VERTEX_SHADERS );
+        fragmentFilenames.push_back( PATH_TO_SHADOW_FRAGMENT_SHADERS );
+        shaderVector.push_back(new sofa::helper::gl::GLSLShader());
+    }
+    for (unsigned int i=0 ; i<numberOfLights ; i++)
+    {
+        for (unsigned int j=0 ; j<numberOfLights ; j++)
+        {
+            //if (i==0)
+            this->addDefineMacro(i,std::string("SHADOW_LIGHT0"), std::string("1"));
+            //if (i==0)
+            this->addDefineMacro(i,std::string("SHADOW_LIGHT1"), std::string("1"));
+        }
+
+    }
+}
 
 }//namespace visualmodel
 
-}//namespace component
+} //namespace component
 
-}//namespace sofa
-
-#endif //SOFA_COMPONENT_LIGHT_MANAGER_H
+} //namespace sofa

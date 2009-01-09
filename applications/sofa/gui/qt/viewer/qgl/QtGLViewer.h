@@ -42,6 +42,7 @@
 #include <sofa/helper/gl/Transformation.h>
 #include <sofa/helper/gl/Trackball.h>
 #include <sofa/helper/gl/Texture.h>
+#include <sofa/helper/gl/VisualParameters.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/simulation/tree/xml/Element.h>
 
@@ -89,7 +90,8 @@ private:
 
     double lastProjectionMatrix[16];
     double lastModelviewMatrix[16];
-    GLint lastViewport[4];
+
+    VisualParameters visualParameters;
 
 
 
@@ -120,10 +122,6 @@ private:
 
     bool _waitForRender;
 
-
-    Vector3 sceneMinBBox;
-    Vector3 sceneMaxBBox;
-
 public:
 
     /// Activate this class of viewer.
@@ -148,9 +146,6 @@ protected:
     virtual void draw();
     void viewAll();
     void resizeGL( int w, int h );
-    void ApplyShadowMap();
-    void CreateRenderTexture(GLuint& textureID, int sizeX, int sizeY, int channels, int type);
-    void StoreLightMatrices();
 
 public:
 // 	      void setScene(sofa::simulation::tree::GNode* scene, const char* filename=NULL, bool keepParams=false);
@@ -206,7 +201,7 @@ private:
     //int     loadBMP(char *filename, TextureImage *texture);
     //void	LoadGLTexture(char *Filename);
     void	DrawLogo(void);
-    void	DisplayOBJs(bool shadowPass = false);
+    void	DisplayOBJs();
     void	DisplayMenu(void);
     void	DrawScene();
 
