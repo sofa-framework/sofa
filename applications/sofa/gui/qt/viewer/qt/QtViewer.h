@@ -44,6 +44,7 @@
 #include <sofa/helper/gl/Transformation.h>
 #include <sofa/helper/gl/Trackball.h>
 #include <sofa/helper/gl/Texture.h>
+#include <sofa/helper/gl/VisualParameters.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/simulation/tree/xml/Element.h>
 
@@ -99,6 +100,7 @@ private:
 
     enum { MINMOVE = 10 };
 
+    VisualParameters visualParameters;
 
     QTimer* timerAnimate;
     int				_W, _H;
@@ -117,7 +119,7 @@ private:
 
     float			_zoomSpeed;
     float			_panSpeed;
-    Transformation	_sceneTransform;
+
     Vector3			_previousEyePos;
     GLUquadricObj*	_arrow;
     GLUquadricObj*	_tube;
@@ -130,7 +132,6 @@ private:
     int				_renderingMode;
 
     bool _waitForRender;
-
 
     //GLuint			_logoTexture;
     Texture			*texLogo;
@@ -145,9 +146,7 @@ private:
 
     double lastProjectionMatrix[16];
     double lastModelviewMatrix[16];
-    GLint lastViewport[4];
-    Vector3 sceneMinBBox;
-    Vector3 sceneMaxBBox;
+
 public:
 
     /// Activate this class of viewer.
@@ -191,9 +190,6 @@ protected:
     void initializeGL();
     void paintGL();
     void resizeGL( int w, int h );
-    void ApplyShadowMap();
-    void CreateRenderTexture(GLuint& textureID, int sizeX, int sizeY, int channels, int type);
-    void StoreLightMatrices();
 
 public:
     void setScene(sofa::simulation::tree::GNode* scene, const char* filename=NULL, bool keepParams=false);
@@ -265,7 +261,7 @@ private:
     //int     loadBMP(char *filename, TextureImage *texture);
     //void	LoadGLTexture(char *Filename);
     void	DrawLogo(void);
-    void	DisplayOBJs(bool shadowPass = false);
+    void	DisplayOBJs();
     void	DisplayMenu(void);
     void	DrawScene();
 

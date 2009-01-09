@@ -30,6 +30,8 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/VisualModel.h>
+#include <sofa/helper/gl/FrameBufferObject.h>
+
 namespace sofa
 {
 
@@ -57,8 +59,20 @@ class Light : public virtual sofa::core::VisualModel
 {
 protected:
     Data<Vector3> color;
+    Data<float> zNear;
+    Data<float> zFar;
     GLint lightID;
 
+    helper::gl::FrameBufferObject shadowFBO;
+    GLuint shadowTexWidth, shadowTexHeight;
+    //GLuint shadowTexture;
+    //GLuint shadowFBO;
+    GLuint debugVisualShadowTexture;
+
+    GLfloat lightMatProj[16];
+    GLfloat lightMatModelview[16];
+
+    void computeShadowMapSize();
 public:
 
     Light();
@@ -66,12 +80,21 @@ public:
 
     void setID(const GLint& id);
 
+    //VisualModel
     virtual void initVisual() ;
     void init();
     virtual void drawLight();
     void draw() { } ;
     virtual void reinit();
     void update() {} ;
+
+    //CastShadowModel
+    virtual void preDrawShadow();
+    virtual void postDrawShadow();
+    virtual GLuint getShadowMapSize();
+    virtual GLuint getShadowTexture() { return 0 ;};
+    virtual GLfloat* getProjectionMatrix() { return NULL ;};
+    virtual GLfloat* getModelviewMatrix() { return NULL ;};
 };
 
 class DirectionalLight : public Light
@@ -119,6 +142,11 @@ public:
     virtual void initVisual() ;
     virtual void drawLight();
     virtual void reinit();
+
+    void preDrawShadow();
+    GLuint getShadowTexture();
+    GLfloat* getProjectionMatrix();
+    GLfloat* getModelviewMatrix();
 
 
 };

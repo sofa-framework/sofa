@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 //
-// C++ Interface: LightManager
+// C++ Interface: Shader
 //
 // Description:
 //
@@ -33,15 +33,10 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+#ifndef SOFA_COMPONENT_OGLSHADOWSHADER
+#define SOFA_COMPONENT_OGLSHADOWSHADER
 
-#ifndef SOFA_COMPONENT_LIGHTMANAGER_H
-#define SOFA_COMPONENT_LIGHTMANAGER_H
-
-#include <sofa/defaulttype/SolidTypes.h>
-#include <sofa/component/visualmodel/Light.h>
-#include <sofa/core/VisualManager.h>
-#include <sofa/core/objectmodel/Event.h>
-#include <sofa/component/visualmodel/OglShadowShader.h>
+#include <sofa/component/visualmodel/OglShader.h>
 
 namespace sofa
 {
@@ -52,60 +47,28 @@ namespace component
 namespace visualmodel
 {
 
-/**
- *  \brief Utility to manage lights into an Opengl scene
- *
- *  This class must be used with the Light class.
- *  It centralizes all the Lights and managed them.
- *
- */
-
-class LightManager : public core::VisualManager
+class OglShadowShader : public sofa::component::visualmodel::OglShader
 {
-private:
-    static const unsigned int MAX_NUMBER_OF_LIGHTS = GL_MAX_LIGHTS;
-    std::vector<Light*> lights;
-    bool shadowEnabled;
-
-    OglShadowShader* shadowShader;
-    void makeShadowMatrix(unsigned int i);
-
 public:
-    Data<bool> debugViewDepthBuffer;
-    LightManager();
-    virtual ~LightManager();
+    OglShadowShader();
+    virtual ~OglShadowShader();
 
     void init();
-    void reinit();
-    void initVisual();
-    void update() { };
 
-    void preDrawScene(helper::gl::VisualParameters* vp);
-    bool drawScene(helper::gl::VisualParameters* vp);
-    void postDrawScene(helper::gl::VisualParameters* vp);
+    void initShaders(unsigned int numberOfLights);
+
+protected:
+    static const std::string PATH_TO_SHADOW_VERTEX_SHADERS;
+    static const std::string PATH_TO_SHADOW_FRAGMENT_SHADERS;
 
 
-    void draw();
-    void fwdDraw(Pass);
-    void bwdDraw(Pass);
-
-    ///Register a light into the LightManager
-    void putLight(Light* light);
-
-    ///Register a vector of lights into the LightManager
-    void putLights(std::vector<Light*> lights);
-
-    ///Remove all lights of the LightManager
-    void clear();
-
-    void handleEvent(sofa::core::objectmodel::Event* event);
 
 };
 
 }//namespace visualmodel
 
-}//namespace component
+} //namespace component
 
-}//namespace sofa
+} //namespace sofa
 
-#endif //SOFA_COMPONENT_LIGHT_MANAGER_H
+#endif //SOFA_COMPONENT_OGLSHADOWSHADER
