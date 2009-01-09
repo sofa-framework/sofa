@@ -65,7 +65,7 @@ void WriteStateCreator::addWriteState(sofa::core::componentmodel::behavior::Base
     if ( createInMapping || mapping == NULL)
     {
         sofa::component::misc::WriteState *ws;
-        context->get(ws);
+        context->get(ws, core::objectmodel::BaseContext::Local);
         if ( ws == NULL )
         {
             ws = new sofa::component::misc::WriteState(); gnode->addObject(ws);
