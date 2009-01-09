@@ -84,6 +84,7 @@ HEADERS += \
           objectmodel/VDataPtr.h \
           objectmodel/XDataPtr.h \
           VisualModel.h \
+          VisualManager.h \
           ObjectFactory.h
 
 SOURCES +=  \

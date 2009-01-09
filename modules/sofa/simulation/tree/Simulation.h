@@ -32,6 +32,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/simulation/tree/xml/XML.h>
 #include <sofa/helper/gl/DrawManager.h>
+#include <sofa/helper/gl/VisualParameters.h>
 
 namespace sofa
 {
@@ -98,7 +99,7 @@ public:
     virtual void computeBBox(Node* root, SReal* minBBox, SReal* maxBBox);
 
     /// Render the scene
-    virtual void draw(Node* root);
+    virtual void draw(Node* root, helper::gl::VisualParameters* params = NULL);
 
     /// Render the scene - Shadows pass
     virtual void drawShadows(Node* root);

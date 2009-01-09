@@ -43,6 +43,7 @@
 #include <sofa/core/objectmodel/ContextObject.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/VisualModel.h>
+#include <sofa/core/VisualManager.h>
 #include <sofa/core/Shader.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/Mapping.h>
@@ -314,6 +315,7 @@ public:
     Sequence<core::BaseMapping> mapping;
     Sequence<core::BehaviorModel> behaviorModel;
     Sequence<core::VisualModel> visualModel;
+    Sequence<core::VisualManager> visualManager;
     Sequence<core::CollisionModel> collisionModel;
 
     Single<core::componentmodel::collision::Pipeline> collisionPipeline;
