@@ -60,8 +60,9 @@ int LightManagerClass = core::RegisterObject("LightManager")
         ;
 
 LightManager::LightManager()
-    :debugViewDepthBuffer(initData(&debugViewDepthBuffer, (bool) false, "debugViewDepthBuffer", "DEBUG : View the buffer depth as seen by the light(s)"))
-    ,shadowEnabled(false)
+    :shadowEnabled(false)
+    ,debugViewDepthBuffer(initData(&debugViewDepthBuffer, (bool) false, "debugViewDepthBuffer", "DEBUG : View the buffer depth as seen by the light(s)"))
+
 {
 
 }
