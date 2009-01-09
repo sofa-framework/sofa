@@ -30,7 +30,7 @@ HEADERS += \
           FnDispatcher.h \
           FnDispatcher.inl \
           gl/Axis.h \
-	  gl/BasicShapes.h \
+	 	  gl/BasicShapes.h \
           gl/Cylinder.h \
           gl/Capture.h \
           gl/DrawManager.h \
@@ -40,7 +40,8 @@ HEADERS += \
           gl/Texture.h \
           gl/Trackball.h \
           gl/Transformation.h \
-          io/Image.h \
+          gl/VisualParameters.h \
+		  io/Image.h \
           io/ImageBMP.h \
           io/ImagePNG.h \
           io/ImageRAW.h \
@@ -125,11 +126,13 @@ SOURCES += \
 contains(DEFINES,SOFA_HAVE_GLEW){
 
     HEADERS += \
-          gl/GLSLShader.h
+          gl/FrameBufferObject.h \
+          gl/GLSLShader.h 
 
     SOURCES += \
-          gl/GLSLShader.cpp
-
+    	  gl/FrameBufferObject.cpp \
+          gl/GLSLShader.cpp 
+          
 }
 
 
