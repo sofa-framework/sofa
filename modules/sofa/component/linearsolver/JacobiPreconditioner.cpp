@@ -34,6 +34,7 @@
 #include "sofa/helper/system/thread/CTime.h"
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/helper/system/thread/CTime.h>
 
 namespace sofa
 {
@@ -48,6 +49,8 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::componentmodel::behavior;
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
+using sofa::helper::system::thread::CTime;
+using sofa::helper::system::thread::ctime_t;
 using std::cerr;
 using std::endl;
 
@@ -66,12 +69,11 @@ JacobiPreconditioner<TMatrix,TVector>::JacobiPreconditioner()
 template<class TMatrix, class TVector>
 void JacobiPreconditioner<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
 {
-    //if (! this->systemMatrix->bandWidth) {
+    //double t2 = CTime::getRefTime();
+
     for (unsigned i=0; i<z.size(); i++) z.set(i,r.element(i) / M.element(i,i)); //si i==j;
-    //} else {
-    //	z = r;
-    //}
-    //cout << "solve JacobiPreconditioner" << endl;
+
+    //printf("%f ",(CTime::getRefTime() - t2) / (double)CTime::getRefTicksPerSec());
 }
 
 SOFA_DECL_CLASS(JacobiPreconditioner)

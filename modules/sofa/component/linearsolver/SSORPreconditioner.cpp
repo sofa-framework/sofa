@@ -35,6 +35,8 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
 #include <math.h>
+#include <sofa/helper/system/thread/CTime.h>
+
 
 namespace sofa
 {
@@ -49,6 +51,8 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::componentmodel::behavior;
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
+using sofa::helper::system::thread::CTime;
+using sofa::helper::system::thread::ctime_t;
 using std::cerr;
 using std::endl;
 
@@ -59,47 +63,110 @@ SSORPreconditioner<TMatrix,TVector>::SSORPreconditioner()
 {
     f_graph.setWidget("graph");
     f_graph.setReadOnly(true);
-    u2 = *this->createVector();
-    u3 = *this->createVector();
 }
 
+/*
+// solve (D+U) * D^-1 * (D+L)
+template<class TMatrix, class TVector>
+void SSORPreconditioner<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r) {
+	double t2 = CTime::getRefTime();
+
+	//Solve (D+U) * u3 = r;
+	for (int j=M.rowSize()-1;j>=0;j--) {
+		double temp = 0.0;
+		for (unsigned i=j+1;i<M.rowSize();i++) {
+			temp += u3[i] * M.element(i,j);
+		}
+		u3[j] = (r[j] - temp) / M.element(j,j);
+	}
+
+	//Solve D-1 * u2 = u3;
+	for (unsigned j=0;j<M.rowSize();j++) {
+		u2[j] = u3[j] * M.element(j,j);
+	}
+
+	//Solve (L+D) * z = u2
+	for (unsigned j=0;j<M.rowSize();j++) {
+		double temp = 0.0;
+		for (unsigned i=0;i<j;i++) {
+			temp += z[i] * M.element(i,j);
+		}
+		z[j] = (u2[j] - temp) / M.element(j,j);
+	}
+
+	printf("%f ",(CTime::getRefTime() - t2) / (double)CTime::getRefTicksPerSec());
+}
+*/
+
+// solve (D+U) * ( I + D^-1 * U)
 template<class TMatrix, class TVector>
 void SSORPreconditioner<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
 {
+    //double t2 = CTime::getRefTime();
+
     //Solve (D+U) * u3 = r;
     for (int j=M.rowSize()-1; j>=0; j--)
     {
         double temp = 0.0;
         for (unsigned i=j+1; i<M.rowSize(); i++)
         {
-            temp += u3[i] * M.element(i,j);
+            temp += z[i] * M.element(i,j);
         }
-        u3[j] = (r[j] - temp) / M.element(j,j);
+        z[j] = (r[j] - temp) / M.element(j,j);
     }
 
-    //Solve D-1 * u2 = u3;
-    for (unsigned j=0; j<M.rowSize(); j++)
-    {
-        u2[j] = u3[j] * M.element(j,j);
-    }
-
-    //Solve (L+D) * z = u2
+    //Solve (I + D^-1 * L) * z = u3
     for (unsigned j=0; j<M.rowSize(); j++)
     {
         double temp = 0.0;
         for (unsigned i=0; i<j; i++)
         {
-            temp += z[i] * M.element(i,j);
+            temp += z[i] * M.element(i,j) / M.element(j,j);
         }
-        z[j] = (u2[j] - temp) / M.element(j,j);
+        z[j] = z[j] - temp;
+        // we can reuse z because all values that we read are updated
     }
+
 }
 
+template<>
+void SSORPreconditioner<SparseMatrix<double>, FullVector<double> >::solve (Matrix& M, Vector& z, Vector& r)
+{
+    int n = M.rowSize();
+
+    //Solve (D+U) * t = r;
+    for (int j=n-1; j>=0; j--)
+    {
+        double temp = 0.0;
+        for (Matrix::LElementConstIterator it = ++M[j].find(j), end = M[j].end(); it != end; ++it)
+        {
+            int i = it->first;
+            double e = it->second;
+            temp += z[i] * e;
+        }
+        z[j] = (r[j] - temp) * inv_diag[j];
+    }
+
+    //Solve (I + D^-1 * L) * z = t
+    for (int j=0; j<n; j++)
+    {
+        double temp = 0.0;
+        for (Matrix::LElementConstIterator it = M[j].begin(), end = M[j].find(j); it != end; ++it)
+        {
+            int i = it->first;
+            double e = it->second;
+            temp += z[i] * e;
+        }
+        z[j] -= temp * inv_diag[j];
+        // we can reuse z because all values that we read are updated
+    }
+}
 template<class TMatrix, class TVector>
 void SSORPreconditioner<TMatrix,TVector>::invert(Matrix& M)
 {
-    u2.resize(M.rowSize());
-    u3.resize(M.rowSize());
+    int n = M.rowSize();
+    inv_diag.resize(n);
+    for (int j=0; j<n; j++) inv_diag[j] = 1.0 / M.element(j,j);
 }
 
 SOFA_DECL_CLASS(SSORPreconditioner)
@@ -109,9 +176,9 @@ int SSORPreconditionerClass = core::RegisterObject("Linear system solver using t
         .add< SSORPreconditioner< SparseMatrix<double>, FullVector<double> > >(true)
 //.add< SSORPreconditioner<NewMatBandMatrix,NewMatVector> >(true)
 //.add< SSORPreconditioner<NewMatMatrix,NewMatVector> >()
-//.add< SSORPreconditioner<NewMatSymmetricMatrix,NewMatVector> >()
+        .add< SSORPreconditioner<NewMatSymmetricMatrix,NewMatVector> >()
 //.add< SSORPreconditioner<NewMatSymmetricBandMatrix,NewMatVector> >()
-//.add< SSORPreconditioner< FullMatrix<double>, FullVector<double> > >()
+        .add< SSORPreconditioner< FullMatrix<double>, FullVector<double> > >()
         .addAlias("SSORSolver")
         .addAlias("SSORConjugateGradient")
         ;

@@ -62,8 +62,7 @@ public:
 
 private :
     unsigned bsize;
-    Vector u2;
-    Vector u3;
+    std::vector<double> inv_diag;
 };
 
 } // namespace linearsolver

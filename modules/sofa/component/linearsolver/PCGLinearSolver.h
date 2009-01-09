@@ -81,7 +81,6 @@ protected:
     /// This method is separated from the rest to be able to use custom/optimized versions depending on the types of vectors.
     /// It computes: x += p*alpha, r -= q*alpha
     inline void cgstep_alpha(Vector& x, Vector& r, Vector& p, Vector& q, double alpha);
-
 };
 
 template<class TMatrix, class TVector>
