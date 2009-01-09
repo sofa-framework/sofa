@@ -138,7 +138,7 @@ void CompareStateCreator::addCompareState(sofa::core::componentmodel::behavior::
     sofa::core::BaseMapping *mapping; context->get(mapping);
     if (createInMapping || mapping== NULL)
     {
-        sofa::component::misc::CompareState *rs; context->get(rs);
+        sofa::component::misc::CompareState *rs; context->get(rs, core::objectmodel::BaseContext::Local);
         if (  rs == NULL )
         {
             rs = new sofa::component::misc::CompareState(); gnode->addObject(rs);

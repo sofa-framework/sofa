@@ -59,7 +59,7 @@ void ReadStateCreator::addReadState(sofa::core::componentmodel::behavior::BaseMe
     sofa::core::BaseMapping *mapping; context->get(mapping);
     if (createInMapping || mapping== NULL)
     {
-        sofa::component::misc::ReadState *rs; context->get(rs);
+        sofa::component::misc::ReadState *rs; context->get(rs, core::objectmodel::BaseContext::Local);
         if (  rs == NULL )
         {
             rs = new sofa::component::misc::ReadState(); gnode->addObject(rs);
