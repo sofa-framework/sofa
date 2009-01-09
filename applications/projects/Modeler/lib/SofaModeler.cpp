@@ -760,7 +760,7 @@ void SofaModeler::runInSofa()
     //=======================================
     // Run Sofa
     QStringList argv;
-    argv << "runSofa" << filename;
+    argv << "runSofa" << QString(filename.c_str());
     Q3Process *p = new Q3Process(argv, this);
     p->setCommunication(0);
     p->start();
