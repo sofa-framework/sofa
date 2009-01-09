@@ -181,6 +181,7 @@ void Node::doAddObject(BaseObject* obj)
     inserted+= LMConstraint.add(dynamic_cast< core::componentmodel::behavior::BaseLMConstraint* >(obj));
     inserted+= behaviorModel.add(dynamic_cast< core::BehaviorModel* >(obj));
     inserted+= visualModel.add(dynamic_cast< core::VisualModel* >(obj));
+    inserted+= visualManager.add(dynamic_cast< core::VisualManager* >(obj));
     inserted+= collisionModel.add(dynamic_cast< core::CollisionModel* >(obj));
     inserted+= contextObject.add(dynamic_cast< core::objectmodel::ContextObject* >(obj));
     inserted+= collisionPipeline.add(dynamic_cast< core::componentmodel::collision::Pipeline* >(obj));
@@ -219,6 +220,7 @@ void Node::doRemoveObject(BaseObject* obj)
     mapping.remove(dynamic_cast< core::BaseMapping* >(obj));
     behaviorModel.remove(dynamic_cast< core::BehaviorModel* >(obj));
     visualModel.remove(dynamic_cast< core::VisualModel* >(obj));
+    visualManager.remove(dynamic_cast< core::VisualManager* >(obj));
     collisionModel.remove(dynamic_cast< core::CollisionModel* >(obj));
     contextObject.remove(dynamic_cast<core::objectmodel::ContextObject* >(obj));
     collisionPipeline.remove(dynamic_cast< core::componentmodel::collision::Pipeline* >(obj));

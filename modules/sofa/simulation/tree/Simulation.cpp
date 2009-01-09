@@ -374,23 +374,52 @@ void Simulation::updateVisualContext ( Node* root, int FILTER)
     vis.execute(root);
 }
 /// Render the scene
-void Simulation::draw ( Node* root )
+void Simulation::draw ( Node* root, helper::gl::VisualParameters* params )
 {
     if ( !root ) return;
-    VisualDrawVisitor act ( core::VisualModel::Std );
-    root->execute ( &act );
 
-    VisualDrawVisitor act2 ( core::VisualModel::Transparent );
-    root->execute ( &act2 );
+    if (root->visualManager.empty())
+    {
+        VisualDrawVisitor act ( core::VisualModel::Std );
+        root->execute ( &act );
+
+        VisualDrawVisitor act2 ( core::VisualModel::Transparent );
+        root->execute ( &act2 );
+    }
+    else
+    {
+        Node::Sequence<core::VisualManager>::iterator begin = root->visualManager.begin(), end = root->visualManager.end(), it;
+        for (it = begin; it != end; ++it)
+            (*it)->preDrawScene(params);
+        bool rendered = false; // true if a manager did the rendering
+        for (it = begin; it != end; ++it)
+            if ((*it)->drawScene(params))
+            {
+                rendered = true;
+                break;
+            }
+        if (!rendered) // do the rendering
+        {
+            VisualDrawVisitor act ( core::VisualModel::Std );
+            root->execute ( &act );
+
+            VisualDrawVisitor act2 ( core::VisualModel::Transparent );
+            root->execute ( &act2 );
+        }
+        Node::Sequence<core::VisualManager>::reverse_iterator rbegin = root->visualManager.rbegin(), rend = root->visualManager.rend(), rit;
+        for (rit = rbegin; rit != rend; ++rit)
+            (*rit)->postDrawScene(params);
+    }
 }
+
 
 /// Render the scene - shadow pass
 void Simulation::drawShadows ( Node* root )
 {
     if ( !root ) return;
-    //std::cout << "drawShadows\n";
-    VisualDrawVisitor act ( core::VisualModel::Shadow );
-    root->execute ( &act );
+
+    //VisualDrawVisitor act ( core::VisualModel::Shadow );
+    //root->execute ( &act );
 }
 
 /// Delete a scene from memory. After this call the pointer is invalid
