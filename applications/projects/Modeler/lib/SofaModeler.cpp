@@ -407,7 +407,7 @@ void SofaModeler::closeTab()
     if (mapSofa.size() &&
         mapSofa.find(curTab) != mapSofa.end())
     {
-        mapSofa[curTab]->fileExit();
+        mapSofa[curTab]->kill();
         mapSofa .erase(curTab);
     }
 
@@ -758,17 +758,14 @@ void SofaModeler::runInSofa()
 
     if (count > '9') count = '0';
     //=======================================
-    // Run the GUI
-    std::string gui = sofa::gui::SofaGUI::GetGUIName();
-    std::vector<std::string> plugins;
-
-    if (sofa::gui::SofaGUI::Init("Modeler",gui.c_str())) return ;
-    sofa::gui::qt::RealGUI *guiSofa = new sofa::gui::qt::RealGUI(gui.c_str());
-
-    guiSofa->fileOpen(filename);
-    guiSofa->show();
-    guiSofa->setFocus();
-    mapSofa.insert(std::make_pair(tabGraph, guiSofa));
+    // Run Sofa
+    QStringList argv;
+    argv << "runSofa" << filename;
+    Q3Process *p = new Q3Process(argv, this);
+    p->setCommunication(0);
+    p->start();
+    mapSofa.insert(std::make_pair(tabGraph, p));
+    //Maybe switch to a multimap as several sofa can be launch from the same tab
 }
 
 void SofaModeler::releaseButton()
