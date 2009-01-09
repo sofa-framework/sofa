@@ -48,6 +48,7 @@
 #include <Q3PopupMenu>
 #include <QAction>
 #include <QComboBox>
+#include <Q3Process>
 #else
 #include <qlistview.h>
 #include <qdragobject.h>
@@ -57,6 +58,8 @@
 #include <qpopupmenu.h>
 #include <qaction.h>
 #include <qcombobox.h>
+#include <qprocess.h>
+typedef QProcess Q3Process;
 #endif
 
 
@@ -200,7 +203,7 @@ protected:
     /// Map between a tabulation from the modeler to an object of type GraphModeler
     std::map<  const QWidget*, GraphModeler*> mapGraph;
     /// Map between a tabulation from the modeler to a Sofa Application
-    std::map<  const QWidget*, sofa::gui::qt::RealGUI*> mapSofa;
+    std::map<  const QWidget*, Q3Process*> mapSofa;
     /// Map between an index of tabulation to the tabulation itself
     std::map< int, QWidget*> mapWindow;
     /// Map between a widget corresponding to a tab of the library, and a pair of button and combo box, corresponding to a component and its template
