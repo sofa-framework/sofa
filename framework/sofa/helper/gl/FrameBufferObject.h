@@ -23,7 +23,7 @@ class FrameBufferObject
 private:
     unsigned int width, height;
     GLuint id;
-    GLuint depthTexture;
+    GLuint depthTexture, colorTexture;
     bool initialized;
 public:
     FrameBufferObject();
@@ -35,6 +35,7 @@ public:
     void stop();
 
     GLuint getDepthTexture();
+    GLuint getColorTexture();
 
 };
 
