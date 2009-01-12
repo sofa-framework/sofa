@@ -54,6 +54,15 @@ using namespace sofa::core::componentmodel::behavior;
 template<>
 inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
 {
+    // do nothing if distance between x2 & x1 is bigger than f_minDistance
+    if (f_minDistance.getValue() != -1 &&
+        (x2.getCenter() - x1.getCenter()).norm() > f_minDistance.getValue())
+    {
+        constraintReleased[index] = true;
+        return;
+    }
+    constraintReleased[index] = false;
+
     x2.getCenter() = x1.getCenter();
     if (!freeRotations)
     {
@@ -77,32 +86,62 @@ inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectPosition(Coord& 
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned /*index*/)
+inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
 {
+    // do nothing if distance between x2 & x1 is bigger than f_minDistance
+    if (f_minDistance.getValue() != -1 &&
+        (x2.getCenter() - x1.getCenter()).norm() > f_minDistance.getValue())
+    {
+        constraintReleased[index] = true;
+        return;
+    }
+    constraintReleased[index] = false;
+
     x2.getCenter() = x1.getCenter();
     if (!freeRotations)
         x2.getOrientation() = x1.getOrientation();
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned /*index*/)
+inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
 {
+    // do nothing if distance between x2 & x1 is bigger than f_minDistance
+    if (f_minDistance.getValue() != -1 &&
+        (x2.getCenter() - x1.getCenter()).norm() > f_minDistance.getValue())
+    {
+        constraintReleased[index] = true;
+        return;
+    }
+    constraintReleased[index] = false;
+
     x2.getCenter() = x1.getCenter();
     if (!freeRotations)
         x2.getOrientation() = x1.getOrientation();
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned /*index*/)
+inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
 {
+    // do nothing if distance between x2 & x1 is bigger than f_minDistance
+    if (f_minDistance.getValue() != -1 &&
+        (x2.getCenter() - x1.getCenter()).norm() > f_minDistance.getValue())
+    {
+        constraintReleased[index] = true;
+        return;
+    }
+    constraintReleased[index] = false;
+
     x2.getCenter() = x1.getCenter();
     if (!freeRotations)
         x2.getOrientation() = x1.getOrientation();
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned /*index*/)
+inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index)
 {
+    // do nothing if distance between x2 & x1 is bigger than f_minDistance
+    if (constraintReleased[index]) return;
+
     x2.getVCenter() = x1.getVCenter();
     if (!freeRotations)
         x2.getVOrientation() = x1.getVOrientation();
@@ -110,32 +149,44 @@ inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectVelocity(Deriv& 
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned /*index*/)
+inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index)
 {
+    // do nothing if distance between x2 & x1 is bigger than f_minDistance
+    if (constraintReleased[index]) return;
+
     x2.getVCenter() = x1.getVCenter();
     if (!freeRotations)
         x2.getVOrientation() = x1.getVOrientation();
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned /*index*/)
+inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index)
 {
+    // do nothing if distance between x2 & x1 is bigger than f_minDistance
+    if (constraintReleased[index]) return;
+
     x2.getVCenter() = x1.getVCenter();
     if (!freeRotations)
         x2.getVOrientation() = x1.getVOrientation();
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned /*index*/)
+inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned index)
 {
+    // do nothing if distance between x2 & x1 is bigger than f_minDistance
+    if (constraintReleased[index]) return;
+
     x2.getVCenter() = x1.getVCenter();
     if (!freeRotations)
         x2.getVOrientation() = x1.getVOrientation();
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned /*index*/)
+inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index)
 {
+    // do nothing if distance between x2 & x1 is bigger than f_minDistance
+    if (constraintReleased[index]) return;
+
     if (!twoway)
     {
         if (!freeRotations)
@@ -159,8 +210,11 @@ inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectResponse(Deriv& 
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned /*index*/)
+inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index)
 {
+    // do nothing if distance between x2 & x1 is bigger than f_minDistance
+    if (constraintReleased[index]) return;
+
     if (!twoway)
     {
         if (!freeRotations)
@@ -184,8 +238,11 @@ inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectResponse(Deriv& 
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned /*index*/)
+inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index)
 {
+    // do nothing if distance between x2 & x1 is bigger than f_minDistance
+    if (constraintReleased[index]) return;
+
     if (!twoway)
     {
         if (!freeRotations)
@@ -209,8 +266,11 @@ inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectResponse(Deriv& 
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned /*index*/)
+inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool twoway, unsigned index)
 {
+    // do nothing if distance between x2 & x1 is bigger than f_minDistance
+    if (constraintReleased[index]) return;
+
     if (!twoway)
     {
         if (!freeRotations)
@@ -310,6 +370,7 @@ AttachConstraint<DataTypes>::AttachConstraint()
     , f_lastPos( initData(&f_lastPos,"lastPos", "position at which the attach constraint should become inactive") )
     , f_lastDir( initData(&f_lastDir,"lastDir", "direction from lastPos at which the attach coustraint should become inactive") )
     , f_clamp( initData(&f_clamp, false,"clamp", "true to clamp particles at lastPos instead of freeing them.") )
+    , f_minDistance( initData(&f_minDistance, (Real)-1,"minDistance", "the constraint become inactive if the distance between the points attached is bigger than minDistance.") )
 {
     // default to indice 0
 //     f_indices1.beginEdit()->push_back(0);
@@ -361,6 +422,8 @@ void AttachConstraint<DataTypes>::init()
     this->core::componentmodel::behavior::PairInteractionConstraint<DataTypes>::init();
 
     topology = getContext()->getMeshTopology();
+
+    constraintReleased.resize(f_indices2.getValue().size());
 
     if (f_radius.getValue() >= 0 && f_indices1.getValue().size()==0 && f_indices2.getValue().size()==0 && this->mstate1 && this->mstate2)
     {
