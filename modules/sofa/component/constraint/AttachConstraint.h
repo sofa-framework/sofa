@@ -85,8 +85,10 @@ public:
     Data<defaulttype::Vector3> f_lastPos;
     Data<defaulttype::Vector3> f_lastDir;
     Data<bool> f_clamp;
+    Data<Real> f_minDistance;
 
     helper::vector<bool> activeFlags;
+    helper::vector<bool> constraintReleased;
     helper::vector<Real> lastDist;
     helper::vector<defaulttype::Quat> restRotations;
 
@@ -116,10 +118,31 @@ public:
     bool isHolonomic() {return true;}
 
 protected :
-    void projectPosition(Coord& x1, Coord& x2, bool /*freeRotations*/, unsigned /*index*/) { x2 = x1; }
-    void projectVelocity(Deriv& x1, Deriv& x2, bool /*freeRotations*/, unsigned /*index*/) { x2 = x1; }
-    void projectResponse(Deriv& dx1, Deriv& dx2, bool /*freeRotations*/, bool twoway, unsigned /*index*/)
+    void projectPosition(Coord& x1, Coord& x2, bool /*freeRotations*/, unsigned index)
     {
+        // do nothing if distance between x2 & x1 is bigger than f_minDistance
+        if (f_minDistance.getValue() != -1 &&
+            (x2 - x1).norm() > f_minDistance.getValue())
+        {
+            constraintReleased[index] = true;
+            return;
+        }
+        constraintReleased[index] = false;
+
+        x2 = x1;
+    }
+    void projectVelocity(Deriv& x1, Deriv& x2, bool /*freeRotations*/, unsigned index)
+    {
+        // do nothing if distance between x2 & x1 is bigger than f_minDistance
+        if (constraintReleased[index]) return;
+
+        x2 = x1;
+    }
+    void projectResponse(Deriv& dx1, Deriv& dx2, bool /*freeRotations*/, bool twoway, unsigned index)
+    {
+        // do nothing if distance between x2 & x1 is bigger than f_minDistance
+        if (constraintReleased[index]) return;
+
         if (!twoway)
         {
             dx2 = Deriv();
