@@ -46,6 +46,8 @@
 #include <QLabel>
 #include <QApplication>
 #include <QMenuBar>
+#include <QMessageBox>
+#include <QDir>
 #else
 #include <qtoolbox.h>
 #include <qlayout.h>
@@ -53,6 +55,8 @@
 #include <qtextbrowser.h>
 #include <qapplication.h>
 #include <qmenubar.h>
+#include <qmessagebox.h>
+#include <qdir.h>
 #endif
 
 namespace sofa
@@ -73,6 +77,8 @@ SofaModeler::SofaModeler()
 {
     count='0';
     displayComponents=0;
+    isPasteReady=false;
+    editPasteAction->setEnabled(false);
     QWidget *GraphSupport = new QWidget((QWidget*)splitter2);
     QGridLayout* GraphLayout = new QGridLayout(GraphSupport, 1,1,5,2,"GraphLayout");
 
@@ -85,11 +91,42 @@ SofaModeler::SofaModeler()
 #endif
     connect(GNodeButton, SIGNAL(pressed()), this, SLOT( releaseButton()));
 
+    int menuIndex=4;
+    //----------------------------------------------------------------------
+    //Add menu runSofa
+    Q3PopupMenu *runSofaMenu = new Q3PopupMenu(this);
+    this->menubar->insertItem(tr(QString("&RunSofa")), runSofaMenu, menuIndex++);
+
+    runSofaMenu->insertItem("Sofa Binary...", this, SLOT( changeSofaBinary()));
+    sofaBinary="runSofa";
+
+    Q3PopupMenu *runSofaGUI = new Q3PopupMenu(this);
+    runSofaMenu->insertItem(QIconSet(), tr("GUI"), runSofaGUI);
+
+    //Set the different available GUI
+    std::vector<std::string> listGUI = sofa::gui::SofaGUI::ListSupportedGUI();
+    for (unsigned int i=0; i<listGUI.size(); ++i)
+    {
+        QAction *act= new QAction(this, QString(listGUI[i].c_str())+QString("Action"));
+        act->setText( QString(listGUI[i].c_str()));
+        act->setToggleAction( true );
+        act->addTo( runSofaGUI);
+
+        if (listGUI[i] == sofa::gui::SofaGUI::GetGUIName()) act->setOn(true);
+        listActionGUI.push_back(act);
+        connect(act, SIGNAL( activated()), this, SLOT( GUIChanged() ));
+    }
+
+
+    //----------------------------------------------------------------------
     //Add menu Preset
     preset = new Q3PopupMenu(this);
-    this->menubar->insertItem(tr(QString("&Preset")), preset, 4);
+    this->menubar->insertItem(tr(QString("&Preset")), preset, menuIndex++);
+
+    //----------------------------------------------------------------------
+    //Add menu Window: to quickly find an opened simulation
     windowMenu = new Q3PopupMenu(this);
-    this->menubar->insertItem(tr(QString("&Scenes")), windowMenu, 5);
+    this->menubar->insertItem(tr(QString("&Scenes")), windowMenu, menuIndex++);
 
     connect(windowMenu, SIGNAL(activated(int)), this, SLOT( changeCurrentScene(int)));
 
@@ -326,6 +363,9 @@ SofaModeler::SofaModeler()
 
     const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
     this->move(  ( screen.width()- this->width()  ) / 2,  ( screen.height() - this->height()) / 2  );
+
+
+
 };
 
 
@@ -407,8 +447,12 @@ void SofaModeler::closeTab()
     if (mapSofa.size() &&
         mapSofa.find(curTab) != mapSofa.end())
     {
-        mapSofa[curTab]->kill();
-        mapSofa .erase(curTab);
+        typedef std::multimap< const QWidget*, Q3Process* >::iterator multimapIterator;
+        std::pair< multimapIterator,multimapIterator > range;
+        range=mapSofa.equal_range(curTab);
+        for (multimapIterator it=range.first; it!=range.second; it++)
+            it->second->kill();
+        mapSofa.erase(range.first, range.second);
     }
 
     //Find the scene in the window menu
@@ -760,12 +804,40 @@ void SofaModeler::runInSofa()
     //=======================================
     // Run Sofa
     QStringList argv;
-    argv << "runSofa" << QString(filename.c_str());
+    argv << QString(sofaBinary.c_str()) << QString(filename.c_str());
+
+    //Setting the GUI
+    for (unsigned int i=0; i<listActionGUI.size(); ++i)
+    {
+        if (listActionGUI[i]->isOn()) argv << "-g" << listActionGUI[i]->text();
+    }
+
     Q3Process *p = new Q3Process(argv, this);
+    connect(p, SIGNAL(processExited()), this, SLOT(sofaExited()));
+    QDir dir(QString(sofa::helper::system::SetDirectory::GetParentDir(graph->getFilename().c_str()).c_str()));
+    p->setWorkingDirectory(dir);
     p->setCommunication(0);
     p->start();
     mapSofa.insert(std::make_pair(tabGraph, p));
+
     //Maybe switch to a multimap as several sofa can be launch from the same tab
+}
+
+void SofaModeler::sofaExited()
+{
+    Q3Process *p = ((Q3Process*) sender());
+    if (p->normalExit()) return;
+    typedef std::multimap< const QWidget*, Q3Process* >::iterator multimapIterator;
+    for (multimapIterator it=mapSofa.begin(); it!=mapSofa.end(); it++)
+    {
+        if (it->second == p)
+        {
+            const QString caption("SegFault");
+            const QString warning("Error while launching Sofa");
+            QMessageBox::critical( this, caption,warning, QMessageBox::Ok | QMessageBox::Escape, QMessageBox::NoButton );
+            return;
+        }
+    }
 }
 
 void SofaModeler::releaseButton()
@@ -803,58 +875,6 @@ void SofaModeler::dragMoveEvent( QDragMoveEvent* event)
     }
 }
 
-#if 0
-void SofaModeler::searchText(const QString& text)
-{
-    int index=-1;
-    libraryIterator it;
-    QWidget *currentTab=NULL;
-    bool toHide=true;
-    unsigned int displayed=0;
-    //Iterates on all the components of the library
-    for (it=mapComponents.begin(); it!=mapComponents.end(); it++)
-    {
-        QPushButton *button=(QPushButton *)it->first;
-
-        if (currentTab != button->parent())
-        {
-            if (currentTab)
-            {
-                index++;
-                if (!toHide && SofaComponents->indexOf(currentTab) == -1) SofaComponents->insertItem(index, currentTab, currentTab->name());
-
-            }
-            currentTab = (QWidget*)button->parent(); SofaComponents->removeItem(currentTab);
-            toHide=true;
-        }
-
-        QComboBox   *combo =(QComboBox *)it->second.second;
-        if (it->second.first->className.find(text.ascii()) != std::string::npos)
-        {
-            button->show();
-            if (combo) combo->show();
-            toHide=false;
-            displayed++;
-        }
-        else
-        {
-            button->hide();
-            if (combo) combo->hide();
-        }
-    }
-
-    if (currentTab)
-    {
-        index++;
-        if (!toHide && SofaComponents->indexOf(currentTab) == -1) SofaComponents->insertItem(index, currentTab, currentTab->name());
-
-    }
-    displayComponents = displayed;
-    changeLibraryLabel(SofaComponents->currentIndex());
-
-    SofaComponents->update();
-}
-#else
 /// Quick Filter of te components
 void SofaModeler::searchText(const QString& text)
 {
@@ -913,7 +933,56 @@ void SofaModeler::searchText(const QString& text)
 
     SofaComponents->update();
 }
-#endif
+
+
+/*****************************************************************************************************************/
+//runSofa Options
+void SofaModeler::changeSofaBinary()
+{
+    QString s = getOpenFileName ( this, QString("*"),"bin", "open sofa binary",  "Choose a binary to use" );
+    if (s.length() >0)
+    {
+        sofaBinary=s.ascii();
+    }
+}
+
+void SofaModeler::GUIChanged()
+{
+    QAction *act=(QAction*) sender();
+    for (unsigned int i=0; i<listActionGUI.size(); ++i)
+    {
+        listActionGUI[i]->setOn(listActionGUI[i] == act);
+    }
+}
+
+/*****************************************************************************************************************/
+//Cut/Copy Paste management
+void SofaModeler::editCut()
+{
+    if (graph)
+    {
+        graph->editCut(presetPath+"copyBuffer.scn");
+        isPasteReady=true;
+        editPasteAction->setEnabled(true);
+    }
+}
+void SofaModeler::editCopy()
+{
+    if (graph)
+    {
+        graph->editCopy(presetPath+"copyBuffer.scn");
+        isPasteReady=true;
+        editPasteAction->setEnabled(true);
+    }
+}
+void SofaModeler::editPaste()
+{
+    if (graph)
+    {
+        graph->editPaste(presetPath+"copyBuffer.scn");
+    }
+}
+
 }
 }
 }

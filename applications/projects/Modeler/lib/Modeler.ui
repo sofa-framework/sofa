@@ -186,6 +186,10 @@
     <item text="&amp;Edit" name="editMenu">
       <action name="editUndoAction"/>
       <action name="editRedoAction"/>
+      <separator/>
+      <action name="editCutAction"/>
+      <action name="editCopyAction"/>
+      <action name="editPasteAction"/>
     </item>
   </menubar>
   <toolbars>
@@ -386,7 +390,7 @@
         <cstring>editCutAction</cstring>
       </property>
       <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
       </property>
       <property name="iconSet">
         <iconset>image7</iconset>
@@ -406,7 +410,7 @@
         <cstring>editCopyAction</cstring>
       </property>
       <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
       </property>
       <property name="iconSet">
         <iconset>image8</iconset>

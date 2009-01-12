@@ -141,8 +141,12 @@ public:
     void expandNode(Q3ListViewItem* item);
     /// load a node as a child of the current one
     GNode *loadNode(Q3ListViewItem* item, std::string filename="");
-    /// Save a node
+    /// Save a node: call the GUI to get the file name
     void saveNode(Q3ListViewItem* item);
+    /// Directly save a node
+    void saveNode(GNode* node, std::string file);
+    /// Save a component
+    void saveComponent(BaseObject* object, std::string file);
     /// Open the window to configure a component
     void openModifyObject(Q3ListViewItem *);
     /// Delete a componnent
@@ -158,6 +162,10 @@ public slots:
     void editUndo();
     void editRedo();
 
+    void editCut(std::string path);
+    void editCopy(std::string path);
+    void editPaste(std::string path);
+
     //Right Click Menu
 #ifdef SOFA_QT4
     void doubleClick(Q3ListViewItem *);
@@ -172,6 +180,8 @@ public slots:
     void expandNode();
     /// Context Menu Operation: loading a node as a child of the current one
     GNode *loadNode();
+    /// Load a file given the node in which it will be added
+    GNode *loadNode(GNode*, std::string);
     /// Context Menu Operation: loading a preset: open the window of configuration
     void loadPreset(std::string presetName);
     /// Context Menu Operation: loading a preset: actually creating the node, given its parameters (path to files, and initial position)
