@@ -154,6 +154,7 @@ public slots:
 
     /// Launch the current simulation into Sofa
     void runInSofa();
+    void sofaExited();
 
     /// Change of simulation by changing the current opened tabulation
     void changeCurrentScene( QWidget*);
@@ -164,6 +165,11 @@ public slots:
     void editUndo() {graph->editUndo();}
     /// Propagate the action Redo to the graph
     void editRedo() {graph->editRedo();}
+
+
+    void editCut();
+    void editCopy();
+    void editPaste();
 
     /// Load a preset stored in the menu preset: add a node to the current simulation
     void loadPreset(int);
@@ -181,6 +187,10 @@ public slots:
 
     /// Filter in the library all the components containing the text written
     void searchText(const QString&);
+
+    void changeSofaBinary();
+    void GUIChanged();
+
 protected:
     /// Widget containing all the graphs
     QTabWidget *sceneTab;
@@ -188,12 +198,17 @@ protected:
     GraphModeler *graph; //currentGraph in Use
     /// Current opened Tab
     QWidget *tabGraph;
+    /// Menu runSofa for the GUI
+    std::vector< QAction* > listActionGUI;
     /// Menu preset
     Q3PopupMenu *preset;
     /// Menu containing the opened simulations in the Modeler
     Q3PopupMenu *windowMenu;
     /// Correspondance between a name clicked in the menu and a path to the preset
     std::map< std::string, std::string > mapPreset;
+    /// Is ready to do a paste operation?
+    bool isPasteReady;
+
 
     /// Main Sofa Ressources: contains all the component, with many info, and creators
     typedef std::map<  const QObject* , std::pair<ClassInfo*, QObject*> >::const_iterator libraryIterator;
@@ -203,12 +218,13 @@ protected:
     /// Map between a tabulation from the modeler to an object of type GraphModeler
     std::map<  const QWidget*, GraphModeler*> mapGraph;
     /// Map between a tabulation from the modeler to a Sofa Application
-    std::map<  const QWidget*, Q3Process*> mapSofa;
+    std::multimap<  const QWidget*, Q3Process*> mapSofa;
     /// Map between an index of tabulation to the tabulation itself
     std::map< int, QWidget*> mapWindow;
     /// Map between a widget corresponding to a tab of the library, and a pair of button and combo box, corresponding to a component and its template
     std::vector< std::multimap< QWidget*, std::pair< QPushButton*, QComboBox*> > > pages;
 private:
+    std::string sofaBinary;
     std::string presetPath;
     std::string examplePath;
     char count;

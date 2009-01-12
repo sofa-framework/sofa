@@ -33,6 +33,7 @@
 #include <sofa/helper/system/SetDirectory.h>
 
 #include <sofa/simulation/tree/xml/ObjectElement.h>
+#include <sofa/simulation/common/XMLPrintVisitor.h>
 
 #ifdef SOFA_QT4
 #include <Q3Header>
@@ -433,13 +434,45 @@ GNode *GraphModeler::loadNode(Q3ListViewItem* item, std::string filename)
         }
         else return NULL;
     }
+    return loadNode(node,filename);
+}
+
+GNode* GraphModeler::loadNode(GNode *node, std::string path)
+{
     xml::BaseElement* newXML=NULL;
 
-    newXML = xml::loadFromFile (filename.c_str() );
+    newXML = xml::loadFromFile (path.c_str() );
     if (newXML == NULL) return NULL;
     if (!newXML->init()) std::cerr<< "Objects initialization failed.\n";
     GNode *newNode = dynamic_cast<GNode*> ( newXML->getObject() );
-    if (newNode) addGNode(node,newNode);
+    if (newNode)
+    {
+        if (newNode->getName() == "Group") //Special Node: means that we load the content directly inside the current node
+        {
+            std::vector< core::objectmodel::BaseObject *> listObject;
+            newNode->get< core::objectmodel::BaseObject> (&listObject, core::objectmodel::BaseContext::Local);
+            for (unsigned int i=0; i<listObject.size(); ++i)
+            {
+                node->addObject(listObject[i]);
+
+                Operation adding(listObject[i], Operation::ADD_OBJECT);
+                adding.info=std::string("Adding Object ") + listObject[i]->getClassName();
+                storeHistory(adding);
+            }
+
+            std::vector< core::objectmodel::BaseNode *> listNode;
+            listNode = newNode->getChildren();
+            for (unsigned int i=0; i<listNode.size(); ++i)
+            {
+                addGNode(node, static_cast< GNode *>(listNode[i]), true);
+            }
+            newNode=node;
+        }
+        else
+        {
+            addGNode(node,newNode);
+        }
+    }
     return newNode;
 }
 
@@ -575,11 +608,25 @@ void GraphModeler::saveNode(Q3ListViewItem* item)
 {
     if (!item) return;
     GNode *node = getGNode(item);
-    if (!node) return;
+    if (!node)  return;
 
     QString s = sofa::gui::qt::getSaveFileName ( this, NULL, "Scenes (*.scn *.xml)", "save file dialog", "Choose where the scene will be saved" );
     if ( s.length() >0 )
-        getSimulation()->printXML(node, s.ascii());
+        saveNode(node, s.ascii());
+}
+
+void GraphModeler::saveNode(GNode* node, std::string file)
+{
+    getSimulation()->printXML(node, file.c_str());
+}
+
+void GraphModeler::saveComponent(BaseObject* object, std::string file)
+{
+    std::ofstream out(file.c_str());
+    simulation::XMLPrintVisitor print(out);
+    out << "<Node name=\"Group\">\n";
+    print.processObject(object);
+    out << "</Node>\n";
 }
 
 void GraphModeler::clearGraph(bool saveHistory)
@@ -885,6 +932,45 @@ void GraphModeler::closeDialogs()
         delete it->second;
     }
 }
+
+/*****************************************************************************************************************/
+//History of operations management
+void GraphModeler::editCut(std::string path)
+{
+    if (currentItem())
+    {
+        editCopy(path);
+        deleteComponent(currentItem(), true);
+    }
+}
+void GraphModeler::editCopy(std::string path)
+{
+    if (currentItem())
+    {
+        BaseObject *object = getObject(currentItem());
+        if (!object)
+        {
+            GNode *node = getGNode(currentItem());
+            saveNode(node, path);
+        }
+        else
+        {
+            saveComponent(object,path);
+        }
+    }
+}
+void GraphModeler::editPaste(std::string path)
+{
+    if (currentItem())
+    {
+        GNode *node = getGNode(currentItem());
+        loadNode(node, path);
+        Q3ListViewItem *pasteItem=currentItem();
+        Q3ListViewItem *insertedItem=currentItem();
+        while(insertedItem->nextSibling()) insertedItem=insertedItem->nextSibling();
+        initItem(insertedItem, pasteItem);
+    }
+}
 /*****************************************************************************************************************/
 //History of operations management
 
@@ -920,6 +1006,7 @@ void GraphModeler::storeHistory(Operation &o)
     historyOperation.push_back(o);
     emit( undo(true) );
 }
+
 
 }
 }
