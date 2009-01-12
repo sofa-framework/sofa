@@ -9,6 +9,7 @@
 #define FRAMEBUFFEROBJECT_H_
 
 #include <sofa/helper/gl/Texture.h>
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {
@@ -17,7 +18,7 @@ namespace helper
 namespace gl
 {
 
-class FrameBufferObject
+class SOFA_HELPER_API FrameBufferObject
 {
 
 private:
