@@ -38,6 +38,7 @@ void FrameBufferObject::init(unsigned int width, unsigned height)
         glGenFramebuffersEXT(1, &id);
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, id);
 
+        //Depth Texture
         glEnable(GL_TEXTURE_2D);
         glGenTextures(1, &depthTexture);
         glBindTexture(GL_TEXTURE_2D, depthTexture);
@@ -54,8 +55,30 @@ void FrameBufferObject::init(unsigned int width, unsigned height)
 
         glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, depthTexture, 0);
 
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        //Color Texture
+        glEnable(GL_TEXTURE_2D);
+        glGenTextures(1, &colorTexture);
+        glBindTexture(GL_TEXTURE_2D, colorTexture);
+
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8,  width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, colorTexture, 0);
+
         glDrawBuffer(GL_NONE);
-        glReadBuffer(GL_NONE);
+
+        //debug
+        //if (glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) == GL_FRAMEBUFFER_COMPLETE_EXT)
+        //	std::cout << "FBO OK" << std::endl;
+
+
+        //glReadBuffer(GL_NONE);
 
         /*
         switch(glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT))
@@ -76,7 +99,7 @@ void FrameBufferObject::init(unsigned int width, unsigned height)
         */
 
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-        glBindTexture(GL_TEXTURE_2D, 0);
+
 
         initialized=true;
     }
@@ -98,6 +121,11 @@ void FrameBufferObject::stop()
 GLuint FrameBufferObject::getDepthTexture()
 {
     return depthTexture;
+}
+
+GLuint FrameBufferObject::getColorTexture()
+{
+    return colorTexture;
 }
 
 } //gl
