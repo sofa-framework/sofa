@@ -1,11 +1,11 @@
-varying vec3 lightDir,normal;
+varying vec3 normal;
+varying vec3 lightDir;
 
 void main()
 {
-	lightDir = normalize(vec3(gl_LightSource[0].position));
-
+	vec4 pos = gl_ModelViewMatrix * gl_Vertex;
+	vec3 lightpos = gl_LightSource[0].position.xyz;
+	lightDir =  lightpos - pos.xyz;
 	normal = gl_NormalMatrix * gl_Normal;
-
 	gl_Position = ftransform();
-
-} 
+}
