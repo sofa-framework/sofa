@@ -623,9 +623,7 @@ void DiagonalMass<DataTypes, MassType>::draw()
         gravityCenter += x[i]*masses[i];
         totalMass += masses[i];
     }
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
     simulation::tree::getSimulation()->DrawUtility.drawPoints(points, 2, Vec<4,float>(1,1,1,1));
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 
     if(showCenterOfGravity.getValue())
     {

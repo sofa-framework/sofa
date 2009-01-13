@@ -575,8 +575,10 @@ void TriangleModel::draw()
             indices.push_back(Vec<3,int>(index,index+1,index+2));
             index+=3;
         }
-        simulation::tree::getSimulation()->DrawUtility.drawTriangles(points, indices, normals, Vec<4,float>(getColor4f()));
 
+        sofa::simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
+        simulation::tree::getSimulation()->DrawUtility.drawTriangles(points, indices, normals, Vec<4,float>(getColor4f()));
+        sofa::simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
         if (getContext()->getShowWireFrame())
             simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,false);
     }

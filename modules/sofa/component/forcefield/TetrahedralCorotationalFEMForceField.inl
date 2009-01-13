@@ -1066,12 +1066,10 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw()
         points[3].push_back(pb);
     }
 
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
     simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[0], Vec<4,float>(0.0,0.0,1.0,1.0));
     simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[1], Vec<4,float>(0.0,0.5,1.0,1.0));
     simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[2], Vec<4,float>(0.0,1.0,1.0,1.0));
     simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[3], Vec<4,float>(0.5,1.0,1.0,1.0));
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 
     if (getContext()->getShowWireFrame())
         simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,false);

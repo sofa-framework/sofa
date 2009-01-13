@@ -92,9 +92,7 @@ void DistanceConstraint<Rigid3dTypes>::draw()
             points.push_back(x1[edges[i][0]].getCenter());
             points.push_back(x2[edges[i][1]].getCenter());
         }
-        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
         simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0.0,1.0,0.0f,1.0f));
-        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
     }
 }
 #endif
@@ -126,9 +124,7 @@ void DistanceConstraint<Rigid3fTypes>::draw()
             points.push_back(x1[edges[i][0]].getCenter());
             points.push_back(x2[edges[i][1]].getCenter());
         }
-        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
         simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0.0,1.0,0.0f,1.0f));
-        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
     }
 }
 #endif

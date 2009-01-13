@@ -415,9 +415,7 @@ void HomogenizedMapping<BasicMapping>::draw()
     }
 
 
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
     simulation::tree::getSimulation()->DrawUtility.drawPoints(points, 7, Vec<4,float>(0.2f,1.0f,0.0f,1.0f));
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 

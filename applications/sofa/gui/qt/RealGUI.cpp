@@ -329,7 +329,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     left_stack = new QWidgetStack ( splitter2 );
     connect ( startButton, SIGNAL ( toggled ( bool ) ), this , SLOT ( playpauseGUI ( bool ) ) );
 
-
     //Status Bar Configuration
     fpsLabel = new QLabel ( "9999.9 FPS", statusBar() );
     fpsLabel->setMinimumSize ( fpsLabel->sizeHint() );
@@ -447,6 +446,29 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect ( this, SIGNAL( newStep()), viewer->getQWidget(), SLOT( update()));
     currentTabChanged ( tabs->currentPage() );
 
+    //ADD GUI for Background
+    //------------------------------------------------------------------------
+    //Informations
+    Q3GroupBox *groupInfo = new Q3GroupBox(QString("Information"), tabs->page(3));
+    groupInfo->setColumns(4);
+    QWidget     *global    = new QWidget(groupInfo);
+    QGridLayout *globalLayout = new QGridLayout(global);
+
+
+    globalLayout->addWidget(new QLabel(QString("Background"),global),1,0);
+    for (unsigned int i=0; i<3; ++i)
+    {
+        std::ostringstream s;
+        s<<"background" <<i;
+        background[i] = new WFloatLineEdit(global,s.str().c_str());
+        background[i]->setMinFloatValue( 0.0f);
+        background[i]->setMaxFloatValue( 1.0f);
+        globalLayout->addWidget(background[i],1,i+1);
+        connect( background[i], SIGNAL( returnPressed() ), this, SLOT( updateViewerParameters() ) );
+    }
+
+    TabPageLayout->insertWidget(1,groupInfo);
+    //---------------------------------------------------------------------------------------------------
 #ifdef SOFA_PML
     pmlreader = NULL;
     lmlreader = NULL;
@@ -1908,7 +1930,11 @@ void RealGUI::dropEvent(QDropEvent* event)
     else  	                                    fileOpen(filename);
 }
 
-
+void RealGUI::updateViewerParameters()
+{
+    viewer->setBackgroundColour(atof(background[0]->text().ascii()),atof(background[1]->text().ascii()),atof(background[2]->text().ascii()));
+    gui->viewer->getQWidget()->update();
+}
 
 void RealGUI::showhideElements(int FILTER, bool value)
 {

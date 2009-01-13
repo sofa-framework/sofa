@@ -40,6 +40,7 @@
 // #include <sofa/core/componentmodel/behavior/State.h>
 // #include <sofa/component/visualmodel/VisualModelImpl.h>
 
+#include <sofa/simulation/tree/Simulation.h>
 #include <iomanip>
 
 #include <sofa/helper/gl/BasicShapes.h>
@@ -2615,69 +2616,60 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::draw()
     const VecCoord& x = *this->mstate->getX();
 
 
+    Vec<4,float> colour;
     switch(_drawColor.getValue() )
     {
     case 3:
-        glColor3f(0.2f, 0.8f, 0.2f);
+        colour=Vec<4,float>(0.2f, 0.8f, 0.2f,1.0f);
         break;
 
     case 2:
-        glColor3f(0.2f, 0.3f, 0.8f);
+        colour=Vec<4,float>(0.2f, 0.3f, 0.8f,1.0f);
         break;
 
     case 1:
-        glColor3f(0.95f, 0.3f, 0.2f);
+        colour=Vec<4,float>(0.95f, 0.3f, 0.2f,1.0f);
         break;
 
     case 0:
     default:
-        glColor3f(0.9f, 0.9f, 0.2f);
+        colour=Vec<4,float>(0.9f, 0.9f, 0.2f,1.0f);
     }
 
 
     if( _drawType.getValue() == 0 )
     {
-        glEnable(GL_LIGHTING);
-        glEnable(GL_COLOR_MATERIAL);
+        sofa::simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 
-        glBegin(GL_LINES);
         for( SparseGridTopology::SeqEdges::const_iterator it = this->_sparseGrid->getEdges().begin() ; it != this->_sparseGrid->getEdges().end(); ++it)
         {
-            helper::gl::drawCylinder( x[(*it)[0]], x[(*it)[1]], _drawSize.getValue() );
+            sofa::simulation::tree::getSimulation()->DrawUtility.drawCylinder( x[(*it)[0]], x[(*it)[1]], _drawSize.getValue(), colour );
         }
-        glEnd();
+
+        sofa::simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
     }
     else
     {
-        glDisable(GL_LIGHTING);
-        glEnable(GL_COLOR_MATERIAL);
+        std::vector< Vector3 > points;
 
-
-        glLineWidth( 3 );
-        glBegin(GL_LINES);
         for( SparseGridTopology::SeqEdges::const_iterator it = this->_sparseGrid->getEdges().begin() ; it != this->_sparseGrid->getEdges().end(); ++it)
         {
-            helper::gl::glVertexT( x[(*it)[0]] );
-            helper::gl::glVertexT( x[(*it)[1]] );
+            points.push_back( x[(*it)[0]] );
+            points.push_back( x[(*it)[1]] );
         }
-        glEnd();
+        simulation::tree::getSimulation()->DrawUtility.drawLines(points, 3,colour);
     }
 
 
 
-
-    glColor3f(0.95f, 0.95f, 0.7f);
-
+    colour=Vec<4,float>(0.95f, 0.95f, 0.7f,1.0f);
 
 
-
-    for(unsigned i=0; i<x.size(); ++i)
     {
-        helper::gl::drawSphere( x[i], _drawSize.getValue()*1.5f );
+        std::vector< Vector3 > points;
+        for(unsigned i=0; i<x.size(); ++i) points.push_back( x[i] );
+        simulation::tree::getSimulation()->DrawUtility.drawSpheres(points, _drawSize.getValue()*1.5f,colour);
     }
-
-    glDisable(GL_LIGHTING);
-    glDisable(GL_COLOR_MATERIAL);
 
 
     if( _drawType.getValue()!=2 ) return;
@@ -2686,101 +2678,120 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::draw()
 
 
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-
-
-
-    for(unsigned i=0; i<sgr->getConnexions()->size(); ++i)
     {
-        helper::vector< topology::SparseGridRamificationTopology::Connexion *>& con = (*sgr->getConnexions())[i];
 
-        if( con.empty() ) continue;
-
-
-
-        int a = (*this->_indexedElements)[con[0]->_hexaIdx][0];
-        int b = (*this->_indexedElements)[con[0]->_hexaIdx][1];
-        int d = (*this->_indexedElements)[con[0]->_hexaIdx][3];
-        int c = (*this->_indexedElements)[con[0]->_hexaIdx][2];
-        int e = (*this->_indexedElements)[con[0]->_hexaIdx][4];
-        int f = (*this->_indexedElements)[con[0]->_hexaIdx][5];
-        int h = (*this->_indexedElements)[con[0]->_hexaIdx][7];
-        int g = (*this->_indexedElements)[con[0]->_hexaIdx][6];
-
-
-
-        Coord pa = x[a];
-        Coord pb = x[b];
-        Coord pc = x[c];
-        Coord pd = x[d];
-        Coord pe = x[e];
-        Coord pf = x[f];
-        Coord pg = x[g];
-        Coord ph = x[h];
-
-
-        switch( con.size() )
+        std::vector< Vector3 > points;
+        for(unsigned i=0; i<sgr->getConnexions()->size(); ++i)
         {
-        case 1:
-            glColor4f(0.7f, 0.7f, 0.1f, .4f);
-            break;
-        case 2:
-            glColor4f(0.1f, 0.9f, 0.1f, .4f);
-            break;
-        case 3:
-            glColor4f(0.9f, 0.1f, 0.1f, .4f);
-            break;
-        case 4:
-            glColor4f(0.1f, 0.1f, 0.9f, .4f);
-            break;
-        case 5:
-        default:
-            glColor4f(0.2f, 0.2f, 0.2f, .4f);
-            break;
+            helper::vector< topology::SparseGridRamificationTopology::Connexion *>& con = (*sgr->getConnexions())[i];
+
+            if( con.empty() ) continue;
+
+
+
+            int a = (*this->_indexedElements)[con[0]->_hexaIdx][0];
+            int b = (*this->_indexedElements)[con[0]->_hexaIdx][1];
+            int d = (*this->_indexedElements)[con[0]->_hexaIdx][3];
+            int c = (*this->_indexedElements)[con[0]->_hexaIdx][2];
+            int e = (*this->_indexedElements)[con[0]->_hexaIdx][4];
+            int f = (*this->_indexedElements)[con[0]->_hexaIdx][5];
+            int h = (*this->_indexedElements)[con[0]->_hexaIdx][7];
+            int g = (*this->_indexedElements)[con[0]->_hexaIdx][6];
+
+
+
+            Coord pa = x[a];
+            Coord pb = x[b];
+            Coord pc = x[c];
+            Coord pd = x[d];
+            Coord pe = x[e];
+            Coord pf = x[f];
+            Coord pg = x[g];
+            Coord ph = x[h];
+
+
+            switch( con.size() )
+            {
+            case 1:
+                colour=Vec<4,float>(0.7f, 0.7f, 0.1f, .4f);
+                break;
+            case 2:
+                colour=Vec<4,float>(0.1f, 0.9f, 0.1f, .4f);
+                break;
+            case 3:
+                colour=Vec<4,float>(0.9f, 0.1f, 0.1f, .4f);
+                break;
+            case 4:
+                colour=Vec<4,float>(0.1f, 0.1f, 0.9f, .4f);
+                break;
+            case 5:
+            default:
+                colour=Vec<4,float>(0.2f, 0.2f, 0.2f, .4f);
+                break;
+            }
+
+            points.push_back(pa);
+            points.push_back(pb);
+            points.push_back(pc);
+
+            points.push_back(pa);
+            points.push_back(pc);
+            points.push_back(pd);
+
+
+
+
+            points.push_back(pe);
+            points.push_back(pf);
+            points.push_back(pg);
+
+            points.push_back(pe);
+            points.push_back(pg);
+            points.push_back(ph);
+
+
+
+            points.push_back(pc);
+            points.push_back(pd);
+            points.push_back(ph);
+
+            points.push_back(pc);
+            points.push_back(ph);
+            points.push_back(pg);
+
+
+
+
+            points.push_back(pa);
+            points.push_back(pb);
+            points.push_back(pf);
+
+            points.push_back(pa);
+            points.push_back(pf);
+            points.push_back(pe);
+
+
+
+            points.push_back(pa);
+            points.push_back(pd);
+            points.push_back(ph);
+
+            points.push_back(pa);
+            points.push_back(ph);
+            points.push_back(pe);
+
+
+            points.push_back(pb);
+            points.push_back(pc);
+            points.push_back(pg);
+
+            points.push_back(pb);
+            points.push_back(pg);
+            points.push_back(pf);
+
         }
-
-
-        glBegin(GL_POLYGON);
-        helper::gl::glVertexT(pa);
-        helper::gl::glVertexT(pb);
-        helper::gl::glVertexT(pc);
-        helper::gl::glVertexT(pd);
-        glEnd();
-        glBegin(GL_POLYGON);
-        helper::gl::glVertexT(pe);
-        helper::gl::glVertexT(pf);
-        helper::gl::glVertexT(pg);
-        helper::gl::glVertexT(ph);
-        glEnd();
-        glBegin(GL_POLYGON);
-        helper::gl::glVertexT(pc);
-        helper::gl::glVertexT(pd);
-        helper::gl::glVertexT(ph);
-        helper::gl::glVertexT(pg);
-        glEnd();
-        glBegin(GL_POLYGON);
-        helper::gl::glVertexT(pa);
-        helper::gl::glVertexT(pb);
-        helper::gl::glVertexT(pf);
-        helper::gl::glVertexT(pe);
-        glEnd();
-        glBegin(GL_POLYGON);
-        helper::gl::glVertexT(pa);
-        helper::gl::glVertexT(pd);
-        helper::gl::glVertexT(ph);
-        helper::gl::glVertexT(pe);
-        glEnd();
-        glBegin(GL_POLYGON);
-        helper::gl::glVertexT(pb);
-        helper::gl::glVertexT(pc);
-        helper::gl::glVertexT(pg);
-        helper::gl::glVertexT(pf);
-        glEnd();
+        simulation::tree::getSimulation()->DrawUtility.drawTriangles(points, colour);
     }
-
-    glDisable(GL_BLEND);
 
 }
 

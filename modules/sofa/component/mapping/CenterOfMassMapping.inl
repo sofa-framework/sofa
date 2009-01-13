@@ -153,9 +153,7 @@ void CenterOfMassMapping<BasicMapping>::draw()
         points.push_back(point1);
         points.push_back(point2);
     }
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
     simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(1,1,0,1));
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 
 }
 

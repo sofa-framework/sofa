@@ -386,9 +386,7 @@ void LineModel::draw()
             points.push_back(t.p2());
         }
 
-        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
         simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(getColor4f()));
-        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 
         if (getContext()->getShowWireFrame())
             simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,false);
