@@ -118,6 +118,8 @@ public:
 
     virtual void updateStiffness( const VecCoord& x );
 
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *, SReal, unsigned int &);
+
     void draw();
     void drawPlane(float size=1000.0f);
     bool addBBox(double* minBBox, double* maxBBox);

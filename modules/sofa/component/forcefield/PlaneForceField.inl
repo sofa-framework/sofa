@@ -95,6 +95,22 @@ void PlaneForceField<DataTypes>::addDForce(VecDeriv& f1, const VecDeriv& dx1, do
 }
 
 template<class DataTypes>
+void PlaneForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal kFactor, unsigned int &offset)
+{
+    const Real fact = (Real)(-this->stiffness.getValue()*kFactor);
+    const Deriv& normal = planeNormal.getValue();
+    for (unsigned int i=0; i<this->contacts.size(); i++)
+    {
+        unsigned int p = this->contacts[i];
+        for (int l=0; l<Deriv::static_size; ++l)
+            for (int c=0; c<Deriv::static_size; ++c)
+            {
+                SReal coef = normal[l] * fact * normal[c];
+                mat->add(offset + p*Deriv::static_size + l, offset + p*Deriv::static_size + c, coef);
+            }
+    }
+}
+template<class DataTypes>
 void PlaneForceField<DataTypes>::updateStiffness( const VecCoord& x )
 {
     this->contacts.clear();
@@ -190,6 +206,7 @@ void PlaneForceField<DataTypes>::drawPlane(float size)
     points.push_back(corners[3]);
 
     simulation::tree::getSimulation()->DrawUtility.setPolygonMode(2,false); //Cull Front face
+
     simulation::tree::getSimulation()->DrawUtility.drawTriangles(points, defaulttype::Vec<4,float>(color.getValue()[0],color.getValue()[1],color.getValue()[2],1.0));
     simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,false); //No Culling
     glDisable(GL_CULL_FACE);
