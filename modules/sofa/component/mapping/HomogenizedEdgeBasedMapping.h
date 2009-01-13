@@ -59,6 +59,7 @@ public:
     typedef typename Out::Deriv OutDeriv;
     typedef typename Out::VecCoord OutVecCoord;
     typedef typename Out::VecDeriv OutVecDeriv;
+    typedef typename In::Real InReal;
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
     typedef typename In::VecCoord InVecCoord;

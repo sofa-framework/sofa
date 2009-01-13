@@ -116,7 +116,7 @@ int main(int, char** argv)
     m->mass=0.3;
     UniformMassRigid3::MassType::Mat3x3 inertia;
     inertia.fill(0.0);
-    float in = 0.1;
+    float in = 0.1f;
     inertia[0][0] = in;
     inertia[1][1] = in;
     inertia[2][2] = in;

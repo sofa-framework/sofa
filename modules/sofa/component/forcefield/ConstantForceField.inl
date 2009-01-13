@@ -158,17 +158,17 @@ void ConstantForceField<DataTypes>::draw()
             defaulttype::Vector3 p1( xx, xy, xz);
             defaulttype::Vector3 p2( aSC*fx+xx, aSC*fy+xy, aSC*fz+xz );
 
-            float norm = (p2-p1).norm();
+            float norm = (float)(p2-p1).norm();
 
             if( aSC > 0)
             {
                 //helper::gl::drawArrow(p1,p2, norm/20.0);
-                simulation::tree::getSimulation()->DrawUtility.drawArrow(p1,p2, norm/20.0, defaulttype::Vec<4,float>(1,.4,.4,1.0f));
+                simulation::tree::getSimulation()->DrawUtility.drawArrow(p1,p2, norm/20.0f, defaulttype::Vec<4,float>(1.0f,0.4f,0.4f,1.0f));
             }
             else
             {
                 //helper::gl::drawArrow(p2,p1, norm/20.0);
-                simulation::tree::getSimulation()->DrawUtility.drawArrow(p2,p1, norm/20.0, defaulttype::Vec<4,float>(1,.4,.4,1.0f));
+                simulation::tree::getSimulation()->DrawUtility.drawArrow(p2,p1, norm/20.0f, defaulttype::Vec<4,float>(1.0f,0.4f,0.4f,1.0f));
             }
         }
     }

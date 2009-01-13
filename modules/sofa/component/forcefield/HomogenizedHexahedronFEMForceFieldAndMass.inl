@@ -507,8 +507,32 @@ const int HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::FINE_ELEM_IN_COA
 
 template <class DataTypes>
 const float HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::RIGID_STIFFNESS[8*3][8*3]=
-{{2.26667e+11,4.25e+10,4.25e+10,-5.66667e+10,-4.25e+10,-4.25e+10,-7.08333e+10,-4.25e+10,-2.125e+10,2.83333e+10,4.25e+10,2.125e+10,2.83333e+10,2.125e+10,4.25e+10,-7.08333e+10,-2.125e+10,-4.25e+10,-5.66667e+10,-2.125e+10,-2.125e+10,-2.83333e+10,2.125e+10,2.125e+10},{4.25e+10,2.26667e+11,4.25e+10,4.25e+10,2.83333e+10,2.125e+10,-4.25e+10,-7.08333e+10,-2.125e+10,-4.25e+10,-5.66667e+10,-4.25e+10,2.125e+10,2.83333e+10,4.25e+10,2.125e+10,-2.83333e+10,2.125e+10,-2.125e+10,-5.66667e+10,-2.125e+10,-2.125e+10,-7.08333e+10,-4.25e+10},{4.25e+10,4.25e+10,2.26667e+11,4.25e+10,2.125e+10,2.83333e+10,2.125e+10,2.125e+10,-2.83333e+10,2.125e+10,4.25e+10,2.83333e+10,-4.25e+10,-4.25e+10,-5.66667e+10,-4.25e+10,-2.125e+10,-7.08333e+10,-2.125e+10,-2.125e+10,-5.66667e+10,-2.125e+10,-4.25e+10,-7.08333e+10},{-5.66667e+10,4.25e+10,4.25e+10,2.26667e+11,-4.25e+10,-4.25e+10,2.83333e+10,-4.25e+10,-2.125e+10,-7.08333e+10,4.25e+10,2.125e+10,-7.08333e+10,2.125e+10,4.25e+10,2.83333e+10,-2.125e+10,-4.25e+10,-2.83333e+10,-2.125e+10,-2.125e+10,-5.66667e+10,2.125e+10,2.125e+10},{-4.25e+10,2.83333e+10,2.125e+10,-4.25e+10,2.26667e+11,4.25e+10,4.25e+10,-5.66667e+10,-4.25e+10,4.25e+10,-7.08333e+10,-2.125e+10,-2.125e+10,-2.83333e+10,2.125e+10,-2.125e+10,2.83333e+10,4.25e+10,2.125e+10,-7.08333e+10,-4.25e+10,2.125e+10,-5.66667e+10,-2.125e+10},{-4.25e+10,2.125e+10,2.83333e+10,-4.25e+10,4.25e+10,2.26667e+11,-2.125e+10,4.25e+10,2.83333e+10,-2.125e+10,2.125e+10,-2.83333e+10,4.25e+10,-2.125e+10,-7.08333e+10,4.25e+10,-4.25e+10,-5.66667e+10,2.125e+10,-4.25e+10,-7.08333e+10,2.125e+10,-2.125e+10,-5.66667e+10},{-7.08333e+10,-4.25e+10,2.125e+10,2.83333e+10,4.25e+10,-2.125e+10,2.26667e+11,4.25e+10,-4.25e+10,-5.66667e+10,-4.25e+10,4.25e+10,-5.66667e+10,-2.125e+10,2.125e+10,-2.83333e+10,2.125e+10,-2.125e+10,2.83333e+10,2.125e+10,-4.25e+10,-7.08333e+10,-2.125e+10,4.25e+10},{-4.25e+10,-7.08333e+10,2.125e+10,-4.25e+10,-5.66667e+10,4.25e+10,4.25e+10,2.26667e+11,-4.25e+10,4.25e+10,2.83333e+10,-2.125e+10,-2.125e+10,-5.66667e+10,2.125e+10,-2.125e+10,-7.08333e+10,4.25e+10,2.125e+10,2.83333e+10,-4.25e+10,2.125e+10,-2.83333e+10,-2.125e+10},{-2.125e+10,-2.125e+10,-2.83333e+10,-2.125e+10,-4.25e+10,2.83333e+10,-4.25e+10,-4.25e+10,2.26667e+11,-4.25e+10,-2.125e+10,2.83333e+10,2.125e+10,2.125e+10,-5.66667e+10,2.125e+10,4.25e+10,-7.08333e+10,4.25e+10,4.25e+10,-5.66667e+10,4.25e+10,2.125e+10,-7.08333e+10},{2.83333e+10,-4.25e+10,2.125e+10,-7.08333e+10,4.25e+10,-2.125e+10,-5.66667e+10,4.25e+10,-4.25e+10,2.26667e+11,-4.25e+10,4.25e+10,-2.83333e+10,-2.125e+10,2.125e+10,-5.66667e+10,2.125e+10,-2.125e+10,-7.08333e+10,2.125e+10,-4.25e+10,2.83333e+10,-2.125e+10,4.25e+10},{4.25e+10,-5.66667e+10,4.25e+10,4.25e+10,-7.08333e+10,2.125e+10,-4.25e+10,2.83333e+10,-2.125e+10,-4.25e+10,2.26667e+11,-4.25e+10,2.125e+10,-7.08333e+10,4.25e+10,2.125e+10,-5.66667e+10,2.125e+10,-2.125e+10,-2.83333e+10,-2.125e+10,-2.125e+10,2.83333e+10,-4.25e+10},{2.125e+10,-4.25e+10,2.83333e+10,2.125e+10,-2.125e+10,-2.83333e+10,4.25e+10,-2.125e+10,2.83333e+10,4.25e+10,-4.25e+10,2.26667e+11,-2.125e+10,4.25e+10,-7.08333e+10,-2.125e+10,2.125e+10,-5.66667e+10,-4.25e+10,2.125e+10,-7.08333e+10,-4.25e+10,4.25e+10,-5.66667e+10},{2.83333e+10,2.125e+10,-4.25e+10,-7.08333e+10,-2.125e+10,4.25e+10,-5.66667e+10,-2.125e+10,2.125e+10,-2.83333e+10,2.125e+10,-2.125e+10,2.26667e+11,4.25e+10,-4.25e+10,-5.66667e+10,-4.25e+10,4.25e+10,-7.08333e+10,-4.25e+10,2.125e+10,2.83333e+10,4.25e+10,-2.125e+10},{2.125e+10,2.83333e+10,-4.25e+10,2.125e+10,-2.83333e+10,-2.125e+10,-2.125e+10,-5.66667e+10,2.125e+10,-2.125e+10,-7.08333e+10,4.25e+10,4.25e+10,2.26667e+11,-4.25e+10,4.25e+10,2.83333e+10,-2.125e+10,-4.25e+10,-7.08333e+10,2.125e+10,-4.25e+10,-5.66667e+10,4.25e+10},{4.25e+10,4.25e+10,-5.66667e+10,4.25e+10,2.125e+10,-7.08333e+10,2.125e+10,2.125e+10,-5.66667e+10,2.125e+10,4.25e+10,-7.08333e+10,-4.25e+10,-4.25e+10,2.26667e+11,-4.25e+10,-2.125e+10,2.83333e+10,-2.125e+10,-2.125e+10,-2.83333e+10,-2.125e+10,-4.25e+10,2.83333e+10},{-7.08333e+10,2.125e+10,-4.25e+10,2.83333e+10,-2.125e+10,4.25e+10,-2.83333e+10,-2.125e+10,2.125e+10,-5.66667e+10,2.125e+10,-2.125e+10,-5.66667e+10,4.25e+10,-4.25e+10,2.26667e+11,-4.25e+10,4.25e+10,2.83333e+10,-4.25e+10,2.125e+10,-7.08333e+10,4.25e+10,-2.125e+10},{-2.125e+10,-2.83333e+10,-2.125e+10,-2.125e+10,2.83333e+10,-4.25e+10,2.125e+10,-7.08333e+10,4.25e+10,2.125e+10,-5.66667e+10,2.125e+10,-4.25e+10,2.83333e+10,-2.125e+10,-4.25e+10,2.26667e+11,-4.25e+10,4.25e+10,-5.66667e+10,4.25e+10,4.25e+10,-7.08333e+10,2.125e+10},{-4.25e+10,2.125e+10,-7.08333e+10,-4.25e+10,4.25e+10,-5.66667e+10,-2.125e+10,4.25e+10,-7.08333e+10,-2.125e+10,2.125e+10,-5.66667e+10,4.25e+10,-2.125e+10,2.83333e+10,4.25e+10,-4.25e+10,2.26667e+11,2.125e+10,-4.25e+10,2.83333e+10,2.125e+10,-2.125e+10,-2.83333e+10},{-5.66667e+10,-2.125e+10,-2.125e+10,-2.83333e+10,2.125e+10,2.125e+10,2.83333e+10,2.125e+10,4.25e+10,-7.08333e+10,-2.125e+10,-4.25e+10,-7.08333e+10,-4.25e+10,-2.125e+10,2.83333e+10,4.25e+10,2.125e+10,2.26667e+11,4.25e+10,4.25e+10,-5.66667e+10,-4.25e+10,-4.25e+10},{-2.125e+10,-5.66667e+10,-2.125e+10,-2.125e+10,-7.08333e+10,-4.25e+10,2.125e+10,2.83333e+10,4.25e+10,2.125e+10,-2.83333e+10,2.125e+10,-4.25e+10,-7.08333e+10,-2.125e+10,-4.25e+10,-5.66667e+10,-4.25e+10,4.25e+10,2.26667e+11,4.25e+10,4.25e+10,2.83333e+10,2.125e+10},{-2.125e+10,-2.125e+10,-5.66667e+10,-2.125e+10,-4.25e+10,-7.08333e+10,-4.25e+10,-4.25e+10,-5.66667e+10,-4.25e+10,-2.125e+10,-7.08333e+10,2.125e+10,2.125e+10,-2.83333e+10,2.125e+10,4.25e+10,2.83333e+10,4.25e+10,4.25e+10,2.26667e+11,4.25e+10,2.125e+10,2.83333e+10},{-2.83333e+10,-2.125e+10,-2.125e+10,-5.66667e+10,2.125e+10,2.125e+10,-7.08333e+10,2.125e+10,4.25e+10,2.83333e+10,-2.125e+10,-4.25e+10,2.83333e+10,-4.25e+10,-2.125e+10,-7.08333e+10,4.25e+10,2.125e+10,-5.66667e+10,4.25e+10,4.25e+10,2.26667e+11,-4.25e+10,-4.25e+10},{2.125e+10,-7.08333e+10,-4.25e+10,2.125e+10,-5.66667e+10,-2.125e+10,-2.125e+10,-2.83333e+10,2.125e+10,-2.125e+10,2.83333e+10,4.25e+10,4.25e+10,-5.66667e+10,-4.25e+10,4.25e+10,-7.08333e+10,-2.125e+10,-4.25e+10,2.83333e+10,2.125e+10,-4.25e+10,2.26667e+11,4.25e+10},{2.125e+10,-4.25e+10,-7.08333e+10,2.125e+10,-2.125e+10,-5.66667e+10,4.25e+10,-2.125e+10,-7.08333e+10,4.25e+10,-4.25e+10,-5.66667e+10,-2.125e+10,4.25e+10,2.83333e+10,-2.125e+10,2.125e+10,-2.83333e+10,-4.25e+10,2.125e+10,2.83333e+10,-4.25e+10,4.25e+10,2.26667e+11}};
-
+{
+    {(float)2.26667e+11,(float)4.25e+10,(float)4.25e+10,(float)-5.66667e+10,(float)-4.25e+10,(float)-4.25e+10,(float)-7.08333e+10,(float)-4.25e+10,(float)-2.125e+10,(float)2.83333e+10,(float)4.25e+10,(float)2.125e+10,(float)2.83333e+10,(float)2.125e+10,(float)4.25e+10,(float)-7.08333e+10,(float)-2.125e+10,(float)-4.25e+10,(float)-5.66667e+10,(float)-2.125e+10,(float)-2.125e+10,(float)-2.83333e+10,(float)2.125e+10,(float)2.125e+10},
+    {(float)4.25e+10,(float)2.26667e+11,(float)4.25e+10,(float)4.25e+10,(float)2.83333e+10,(float)2.125e+10,(float)-4.25e+10,(float)-7.08333e+10,(float)-2.125e+10,(float)-4.25e+10,(float)-5.66667e+10,(float)-4.25e+10,(float)2.125e+10,(float)2.83333e+10,(float)4.25e+10,(float)2.125e+10,(float)-2.83333e+10,(float)2.125e+10,(float)-2.125e+10,(float)-5.66667e+10,(float)-2.125e+10,(float)-2.125e+10,(float)-7.08333e+10,(float)-4.25e+10},
+    {(float)4.25e+10,(float)4.25e+10,(float)2.26667e+11,(float)4.25e+10,(float)2.125e+10,(float)2.83333e+10,(float)2.125e+10,(float)2.125e+10,(float)-2.83333e+10,(float)2.125e+10,(float)4.25e+10,(float)2.83333e+10,(float)-4.25e+10,(float)-4.25e+10,(float)-5.66667e+10,(float)-4.25e+10,(float)-2.125e+10,(float)-7.08333e+10,(float)-2.125e+10,(float)-2.125e+10,(float)-5.66667e+10,(float)-2.125e+10,(float)-4.25e+10,(float)-7.08333e+10},
+    {(float)-5.66667e+10,(float)4.25e+10,(float)4.25e+10,(float)2.26667e+11,(float)-4.25e+10,(float)-4.25e+10,(float)2.83333e+10,(float)-4.25e+10,(float)-2.125e+10,(float)-7.08333e+10,(float)4.25e+10,(float)2.125e+10,(float)-7.08333e+10,(float)2.125e+10,(float)4.25e+10,(float)2.83333e+10,(float)-2.125e+10,(float)-4.25e+10,(float)-2.83333e+10,(float)-2.125e+10,(float)-2.125e+10,(float)-5.66667e+10,(float)2.125e+10,(float)2.125e+10},
+    {(float)-4.25e+10,(float)2.83333e+10,(float)2.125e+10,(float)-4.25e+10,(float)2.26667e+11,(float)4.25e+10,(float)4.25e+10,(float)-5.66667e+10,(float)-4.25e+10,(float)4.25e+10,(float)-7.08333e+10,(float)-2.125e+10,(float)-2.125e+10,(float)-2.83333e+10,(float)2.125e+10,(float)-2.125e+10,(float)2.83333e+10,(float)4.25e+10,(float)2.125e+10,(float)-7.08333e+10,(float)-4.25e+10,(float)2.125e+10,(float)-5.66667e+10,(float)-2.125e+10},
+    {(float)-4.25e+10,(float)2.125e+10,(float)2.83333e+10,(float)-4.25e+10,(float)4.25e+10,(float)2.26667e+11,(float)-2.125e+10,(float)4.25e+10,(float)2.83333e+10,(float)-2.125e+10,(float)2.125e+10,(float)-2.83333e+10,(float)4.25e+10,(float)-2.125e+10,(float)-7.08333e+10,(float)4.25e+10,(float)-4.25e+10,(float)-5.66667e+10,(float)2.125e+10,(float)-4.25e+10,(float)-7.08333e+10,(float)2.125e+10,(float)-2.125e+10,(float)-5.66667e+10},
+    {(float)-7.08333e+10,(float)-4.25e+10,(float)2.125e+10,(float)2.83333e+10,(float)4.25e+10,(float)-2.125e+10,(float)2.26667e+11,(float)4.25e+10,(float)-4.25e+10,(float)-5.66667e+10,(float)-4.25e+10,(float)4.25e+10,(float)-5.66667e+10,(float)-2.125e+10,(float)2.125e+10,(float)-2.83333e+10,(float)2.125e+10,(float)-2.125e+10,(float)2.83333e+10,(float)2.125e+10,(float)-4.25e+10,(float)-7.08333e+10,(float)-2.125e+10,(float)4.25e+10},
+    {(float)-4.25e+10,(float)-7.08333e+10,(float)2.125e+10,(float)-4.25e+10,(float)-5.66667e+10,(float)4.25e+10,(float)4.25e+10,(float)2.26667e+11,(float)-4.25e+10,(float)4.25e+10,(float)2.83333e+10,(float)-2.125e+10,(float)-2.125e+10,(float)-5.66667e+10,(float)2.125e+10,(float)-2.125e+10,(float)-7.08333e+10,(float)4.25e+10,(float)2.125e+10,(float)2.83333e+10,(float)-4.25e+10,(float)2.125e+10,(float)-2.83333e+10,(float)-2.125e+10},
+    {(float)-2.125e+10,(float)-2.125e+10,(float)-2.83333e+10,(float)-2.125e+10,(float)-4.25e+10,(float)2.83333e+10,(float)-4.25e+10,(float)-4.25e+10,(float)2.26667e+11,(float)-4.25e+10,(float)-2.125e+10,(float)2.83333e+10,(float)2.125e+10,(float)2.125e+10,(float)-5.66667e+10,(float)2.125e+10,(float)4.25e+10,(float)-7.08333e+10,(float)4.25e+10,(float)4.25e+10,(float)-5.66667e+10,(float)4.25e+10,(float)2.125e+10,(float)-7.08333e+10},
+    {(float)2.83333e+10,(float)-4.25e+10,(float)2.125e+10,(float)-7.08333e+10,(float)4.25e+10,(float)-2.125e+10,(float)-5.66667e+10,(float)4.25e+10,(float)-4.25e+10,(float)2.26667e+11,(float)-4.25e+10,(float)4.25e+10,(float)-2.83333e+10,(float)-2.125e+10,(float)2.125e+10,(float)-5.66667e+10,(float)2.125e+10,(float)-2.125e+10,(float)-7.08333e+10,(float)2.125e+10,(float)-4.25e+10,(float)2.83333e+10,(float)-2.125e+10,(float)4.25e+10},
+    {(float)4.25e+10,(float)-5.66667e+10,(float)4.25e+10,(float)4.25e+10,(float)-7.08333e+10,(float)2.125e+10,(float)-4.25e+10,(float)2.83333e+10,(float)-2.125e+10,(float)-4.25e+10,(float)2.26667e+11,(float)-4.25e+10,(float)2.125e+10,(float)-7.08333e+10,(float)4.25e+10,(float)2.125e+10,(float)-5.66667e+10,(float)2.125e+10,(float)-2.125e+10,(float)-2.83333e+10,(float)-2.125e+10,(float)-2.125e+10,(float)2.83333e+10,(float)-4.25e+10},
+    {(float)2.125e+10,(float)-4.25e+10,(float)2.83333e+10,(float)2.125e+10,(float)-2.125e+10,(float)-2.83333e+10,(float)4.25e+10,(float)-2.125e+10,(float)2.83333e+10,(float)4.25e+10,(float)-4.25e+10,(float)2.26667e+11,(float)-2.125e+10,(float)4.25e+10,(float)-7.08333e+10,(float)-2.125e+10,(float)2.125e+10,(float)-5.66667e+10,(float)-4.25e+10,(float)2.125e+10,(float)-7.08333e+10,(float)-4.25e+10,(float)4.25e+10,(float)-5.66667e+10},
+    {(float)2.83333e+10,(float)2.125e+10,(float)-4.25e+10,(float)-7.08333e+10,(float)-2.125e+10,(float)4.25e+10,(float)-5.66667e+10,(float)-2.125e+10,(float)2.125e+10,(float)-2.83333e+10,(float)2.125e+10,(float)-2.125e+10,(float)2.26667e+11,(float)4.25e+10,(float)-4.25e+10,(float)-5.66667e+10,(float)-4.25e+10,(float)4.25e+10,(float)-7.08333e+10,(float)-4.25e+10,(float)2.125e+10,(float)2.83333e+10,(float)4.25e+10,(float)-2.125e+10},
+    {(float)2.125e+10,(float)2.83333e+10,(float)-4.25e+10,(float)2.125e+10,(float)-2.83333e+10,(float)-2.125e+10,(float)-2.125e+10,(float)-5.66667e+10,(float)2.125e+10,(float)-2.125e+10,(float)-7.08333e+10,(float)4.25e+10,(float)4.25e+10,(float)2.26667e+11,(float)-4.25e+10,(float)4.25e+10,(float)2.83333e+10,(float)-2.125e+10,(float)-4.25e+10,(float)-7.08333e+10,(float)2.125e+10,(float)-4.25e+10,(float)-5.66667e+10,(float)4.25e+10},
+    {(float)4.25e+10,(float)4.25e+10,(float)-5.66667e+10,(float)4.25e+10,(float)2.125e+10,(float)-7.08333e+10,(float)2.125e+10,(float)2.125e+10,(float)-5.66667e+10,(float)2.125e+10,(float)4.25e+10,(float)-7.08333e+10,(float)-4.25e+10,(float)-4.25e+10,(float)2.26667e+11,(float)-4.25e+10,(float)-2.125e+10,(float)2.83333e+10,(float)-2.125e+10,(float)-2.125e+10,(float)-2.83333e+10,(float)-2.125e+10,(float)-4.25e+10,(float)2.83333e+10},
+    {(float)-7.08333e+10,(float)2.125e+10,(float)-4.25e+10,(float)2.83333e+10,(float)-2.125e+10,(float)4.25e+10,(float)-2.83333e+10,(float)-2.125e+10,(float)2.125e+10,(float)-5.66667e+10,(float)2.125e+10,(float)-2.125e+10,(float)-5.66667e+10,(float)4.25e+10,(float)-4.25e+10,(float)2.26667e+11,(float)-4.25e+10,(float)4.25e+10,(float)2.83333e+10,(float)-4.25e+10,(float)2.125e+10,(float)-7.08333e+10,(float)4.25e+10,(float)-2.125e+10},
+    {(float)-2.125e+10,(float)-2.83333e+10,(float)-2.125e+10,(float)-2.125e+10,(float)2.83333e+10,(float)-4.25e+10,(float)2.125e+10,(float)-7.08333e+10,(float)4.25e+10,(float)2.125e+10,(float)-5.66667e+10,(float)2.125e+10,(float)-4.25e+10,(float)2.83333e+10,(float)-2.125e+10,(float)-4.25e+10,(float)2.26667e+11,(float)-4.25e+10,(float)4.25e+10,(float)-5.66667e+10,(float)4.25e+10,(float)4.25e+10,(float)-7.08333e+10,(float)2.125e+10},
+    {(float)-4.25e+10,(float)2.125e+10,(float)-7.08333e+10,(float)-4.25e+10,(float)4.25e+10,(float)-5.66667e+10,(float)-2.125e+10,(float)4.25e+10,(float)-7.08333e+10,(float)-2.125e+10,(float)2.125e+10,(float)-5.66667e+10,(float)4.25e+10,(float)-2.125e+10,(float)2.83333e+10,(float)4.25e+10,(float)-4.25e+10,(float)2.26667e+11,(float)2.125e+10,(float)-4.25e+10,(float)2.83333e+10,(float)2.125e+10,(float)-2.125e+10,(float)-2.83333e+10},
+    {(float)-5.66667e+10,(float)-2.125e+10,(float)-2.125e+10,(float)-2.83333e+10,(float)2.125e+10,(float)2.125e+10,(float)2.83333e+10,(float)2.125e+10,(float)4.25e+10,(float)-7.08333e+10,(float)-2.125e+10,(float)-4.25e+10,(float)-7.08333e+10,(float)-4.25e+10,(float)-2.125e+10,(float)2.83333e+10,(float)4.25e+10,(float)2.125e+10,(float)2.26667e+11,(float)4.25e+10,(float)4.25e+10,(float)-5.66667e+10,(float)-4.25e+10,(float)-4.25e+10},
+    {(float)-2.125e+10,(float)-5.66667e+10,(float)-2.125e+10,(float)-2.125e+10,(float)-7.08333e+10,(float)-4.25e+10,(float)2.125e+10,(float)2.83333e+10,(float)4.25e+10,(float)2.125e+10,(float)-2.83333e+10,(float)2.125e+10,(float)-4.25e+10,(float)-7.08333e+10,(float)-2.125e+10,(float)-4.25e+10,(float)-5.66667e+10,(float)-4.25e+10,(float)4.25e+10,(float)2.26667e+11,(float)4.25e+10,(float)4.25e+10,(float)2.83333e+10,(float)2.125e+10},
+    {(float)-2.125e+10,(float)-2.125e+10,(float)-5.66667e+10,(float)-2.125e+10,(float)-4.25e+10,(float)-7.08333e+10,(float)-4.25e+10,(float)-4.25e+10,(float)-5.66667e+10,(float)-4.25e+10,(float)-2.125e+10,(float)-7.08333e+10,(float)2.125e+10,(float)2.125e+10,(float)-2.83333e+10,(float)2.125e+10,(float)4.25e+10,(float)2.83333e+10,(float)4.25e+10,(float)4.25e+10,(float)2.26667e+11,(float)4.25e+10,(float)2.125e+10,(float)2.83333e+10},
+    {(float)-2.83333e+10,(float)-2.125e+10,(float)-2.125e+10,(float)-5.66667e+10,(float)2.125e+10,(float)2.125e+10,(float)-7.08333e+10,(float)2.125e+10,(float)4.25e+10,(float)2.83333e+10,(float)-2.125e+10,(float)-4.25e+10,(float)2.83333e+10,(float)-4.25e+10,(float)-2.125e+10,(float)-7.08333e+10,(float)4.25e+10,(float)2.125e+10,(float)-5.66667e+10,(float)4.25e+10,(float)4.25e+10,(float)2.26667e+11,(float)-4.25e+10,(float)-4.25e+10},
+    {(float)2.125e+10,(float)-7.08333e+10,(float)-4.25e+10,(float)2.125e+10,(float)-5.66667e+10,(float)-2.125e+10,(float)-2.125e+10,(float)-2.83333e+10,(float)2.125e+10,(float)-2.125e+10,(float)2.83333e+10,(float)4.25e+10,(float)4.25e+10,(float)-5.66667e+10,(float)-4.25e+10,(float)4.25e+10,(float)-7.08333e+10,(float)-2.125e+10,(float)-4.25e+10,(float)2.83333e+10,(float)2.125e+10,(float)-4.25e+10,(float)2.26667e+11,(float)4.25e+10},
+    {(float)2.125e+10,(float)-4.25e+10,(float)-7.08333e+10,(float)2.125e+10,(float)-2.125e+10,(float)-5.66667e+10,(float)4.25e+10,(float)-2.125e+10,(float)-7.08333e+10,(float)4.25e+10,(float)-4.25e+10,(float)-5.66667e+10,(float)-2.125e+10,(float)4.25e+10,(float)2.83333e+10,(float)-2.125e+10,(float)2.125e+10,(float)-2.83333e+10,(float)-4.25e+10,(float)2.125e+10,(float)2.83333e+10,(float)-4.25e+10,(float)4.25e+10,(float)2.26667e+11}
+};
 
 template <class DataTypes>
 void HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::init()
@@ -594,7 +618,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::init()
 
 
     if(_drawSize.getValue()==-1)
-        _drawSize.setValue( (this->_sparseGrid->getMax()[0]-this->_sparseGrid->getMin()[0]) * .004 );
+        _drawSize.setValue( (float)((this->_sparseGrid->getMax()[0]-this->_sparseGrid->getMin()[0]) * .004f) );
 
 
 }
@@ -1035,7 +1059,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
     Coord a = this->_sparseGrid->getPointPos(coarsehexa[0]);
     Coord b = this->_sparseGrid->getPointPos(coarsehexa[6]);
     Coord dx( b[0]-a[0],0,0),dy( 0,b[1]-a[1],0), dz( 0,0,b[2]-a[2]);
-    Coord inv_d2( 1.0/(dx*dx),1.0/(dy*dy),1.0/(dz*dz) );
+    Coord inv_d2( 1.0f/(dx*dx),1.0f/(dy*dy),1.0f/(dz*dz) );
     for( map<int,int>::iterator it = map_idxq_idxass.begin(); it!=map_idxq_idxass.end(); ++it)
     {
         int localidx = (*it).second; // indice du noeud fin dans l'assemblage
@@ -1229,7 +1253,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
     // normalize the coefficient to obtain sum(coefs)==1
     for(int i=0; i<sizeass*3; ++i)
     {
-        Real sum = 0.0;
+        SReal sum = 0.0;
         for(int j=0; j<8*3; ++j)
         {
             sum += WBmeca.element(i,j);
@@ -1260,8 +1284,8 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
     for(int i=0; i<8*3; ++i)
         for(int j=0; j<8*3; ++j)
         {
-            K[i][j]=Kc.element(i,j);
-            M[i][j]=Mc.element(i,j);
+            K[i][j]=(Real)Kc.element(i,j);
+            M[i][j]=(Real)Mc.element(i,j);
         }
 
 
@@ -1280,9 +1304,9 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
         {
             for( int k=0; k<8*3; ++k)
             {
-                _finalWeights[finestChildren[i]].second[j*3  ][k] = WB.element( map_idxq_idxass[ hexa[j] ]*3   ,k);
-                _finalWeights[finestChildren[i]].second[j*3+1][k] = WB.element( map_idxq_idxass[ hexa[j] ]*3+1 ,k);
-                _finalWeights[finestChildren[i]].second[j*3+2][k] = WB.element( map_idxq_idxass[ hexa[j] ]*3+2 ,k);
+                _finalWeights[finestChildren[i]].second[j*3  ][k] = (Real)WB.element( map_idxq_idxass[ hexa[j] ]*3   ,k);
+                _finalWeights[finestChildren[i]].second[j*3+1][k] = (Real)WB.element( map_idxq_idxass[ hexa[j] ]*3+1 ,k);
+                _finalWeights[finestChildren[i]].second[j*3+2][k] = (Real)WB.element( map_idxq_idxass[ hexa[j] ]*3+2 ,k);
             }
         }
         _finalWeights[finestChildren[i]].first = elementIndice;
@@ -1658,7 +1682,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
                     else
                     {
 // 						  WB[i][j] *= WEIGHT_MASK_CROSSED_DIFF[i][j]*2.5;
-                        WB[i][j] = WB[i][j]/fabs(WB[i][j]) * WEIGHT_MASK_CROSSED_DIFF[i][j] * this->f_poissonRatio.getValue() * .3;
+                        WB[i][j] = (Real)(WB[i][j]/fabs(WB[i][j]) * WEIGHT_MASK_CROSSED_DIFF[i][j] * this->f_poissonRatio.getValue() * .3);
                     }
                 }
             }
@@ -2365,7 +2389,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
         // normalize the coefficient to obtain sum(coefs)==1
         for(int i=0; i<sizeass*3; ++i)
         {
-            Real sum = 0.0;
+            SReal sum = 0.0;
             for(int j=0; j<8*3; ++j)
             {
                 sum += WBmeca.element(i,j);
@@ -2388,8 +2412,8 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
         for(int i=0; i<8*3; ++i)
             for(int j=0; j<8*3; ++j)
             {
-                K[i][j]=Kc.element(i,j);
-                M[i][j]=Mc.element(i,j);
+                K[i][j]=(Real)Kc.element(i,j);
+                M[i][j]=(Real)Mc.element(i,j);
             }
 
 // 			  serr<<"K"<<elementIndice<<"=";
@@ -2415,9 +2439,9 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
                 {
                     for( int l=0; l<8*3; ++l) // toutes les cols de W
                     {
-                        _weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildrenRamificationOriginal[i][j]][k*3  ][l] = WB.element( map_idxq_idxass[ finehexa[k] ]*3   ,l);
-                        _weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildrenRamificationOriginal[i][j]][k*3+1][l] = WB.element( map_idxq_idxass[ finehexa[k] ]*3+1 ,l);
-                        _weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildrenRamificationOriginal[i][j]][k*3+2][l] = WB.element( map_idxq_idxass[ finehexa[k] ]*3+2 ,l);
+                        _weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildrenRamificationOriginal[i][j]][k*3  ][l] = (Real)WB.element( map_idxq_idxass[ finehexa[k] ]*3   ,l);
+                        _weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildrenRamificationOriginal[i][j]][k*3+1][l] = (Real)WB.element( map_idxq_idxass[ finehexa[k] ]*3+1 ,l);
+                        _weights[this->_nbVirtualFinerLevels.getValue()-level-1][finerChildrenRamificationOriginal[i][j]][k*3+2][l] = (Real)WB.element( map_idxq_idxass[ finehexa[k] ]*3+2 ,l);
                     }
 
 
@@ -2594,20 +2618,20 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::draw()
     switch(_drawColor.getValue() )
     {
     case 3:
-        glColor3f(0.2, 0.8, 0.2);
+        glColor3f(0.2f, 0.8f, 0.2f);
         break;
 
     case 2:
-        glColor3f(0.2, 0.3, 0.8);
+        glColor3f(0.2f, 0.3f, 0.8f);
         break;
 
     case 1:
-        glColor3f(0.95, 0.3, 0.2);
+        glColor3f(0.95f, 0.3f, 0.2f);
         break;
 
     case 0:
     default:
-        glColor3f(0.9, 0.9, 0.2);
+        glColor3f(0.9f, 0.9f, 0.2f);
     }
 
 
@@ -2642,14 +2666,14 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::draw()
 
 
 
-    glColor3f(0.95, 0.95, 0.7);
+    glColor3f(0.95f, 0.95f, 0.7f);
 
 
 
 
     for(unsigned i=0; i<x.size(); ++i)
     {
-        helper::gl::drawSphere( x[i], _drawSize.getValue()*1.5 );
+        helper::gl::drawSphere( x[i], _drawSize.getValue()*1.5f );
     }
 
     glDisable(GL_LIGHTING);

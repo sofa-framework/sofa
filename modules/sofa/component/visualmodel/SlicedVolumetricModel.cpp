@@ -38,7 +38,7 @@
 #include <sofa/component/visualmodel/SlicedVolumetricModel.h>
 
 
-#define GETCOORD(i) Coord(_mstate->getPX(i),_mstate->getPY(i), _mstate->getPZ(i) )
+#define GETCOORD(i) Coord((Real)_mstate->getPX(i), (Real)_mstate->getPY(i), (Real)_mstate->getPZ(i) )
 
 
 
@@ -125,7 +125,7 @@ void SlicedVolumetricModel::init()
 
     const Coord& p0 = GETCOORD(_topology->getHexa(0)[0]);
     const Coord& p7 = GETCOORD(_topology->getHexa(0)[6]);
-    _radius = (p7-p0).norm() / 2.0;
+    _radius = (p7-p0).norm() / 2;
 
 
 
@@ -134,9 +134,9 @@ void SlicedVolumetricModel::init()
     for( int i=0; i<_mstate->getSize(); ++i)
     {
         const Coord& p = GETCOORD( i );
-        _textureCoordinates[i][0] = (p[0]- _minBBox[0]) / (_maxBBox[0] - _minBBox[0]);
-        _textureCoordinates[i][1] = (p[1]- _minBBox[1]) / (_maxBBox[1] - _minBBox[1]);
-        _textureCoordinates[i][2] = (p[2]- _minBBox[2]) / (_maxBBox[2] - _minBBox[2]);
+        _textureCoordinates[i][0] = (Real)((p[0]- _minBBox[0]) / (_maxBBox[0] - _minBBox[0]));
+        _textureCoordinates[i][1] = (Real)((p[1]- _minBBox[1]) / (_maxBBox[1] - _minBBox[1]));
+        _textureCoordinates[i][2] = (Real)((p[2]- _minBBox[2]) / (_maxBBox[2] - _minBBox[2]));
     }
 
     reinit();
@@ -152,7 +152,7 @@ void SlicedVolumetricModel::reinit()
     {
         // 	if( _nbPlanes.getValue()>2048)_nbPlanes.setValue(2048);
         alpha.setValue((alpha.getValue()*Real(_nbPlanesOld))/Real(_nbPlanes.getValue()));
-        _planeSeparations = (_maxBBox[0]-_minBBox[0]) / (Real)_nbPlanes.getValue();
+        _planeSeparations = (Real)((_maxBBox[0]-_minBBox[0]) / (Real)_nbPlanes.getValue());
 // 		cerr<<"_planeSeparations : "<<_planeSeparations<<endl;
         _nbPlanesOld = _nbPlanes.getValue();
     }
@@ -257,7 +257,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 
 
     Coord lastPoint;
-    Real maxLastPoint = 999999999;
+    Real maxLastPoint = (Real)999999999;
 
 
 

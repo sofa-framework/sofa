@@ -278,7 +278,7 @@ void OglModel::initVisual()
 
     initDone = true;
     //This test is not enough to detect if we can enable the VBO.
-    canUseVBO = (GLEW_ARB_vertex_buffer_object);
+    canUseVBO = (GLEW_ARB_vertex_buffer_object!=0);
     if (useVBO.getValue() && !canUseVBO)
     {
         std::cerr << "OglModel : VBO is not supported by your GPU ; will use display list instead" << std::endl;

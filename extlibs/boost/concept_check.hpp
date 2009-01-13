@@ -224,11 +224,14 @@ struct require_same { typedef T type; };
 #endif
       const_constraints(a);
     }
-    void const_constraints(const TT& b) {
 #if !defined(_ITERATOR_) // back_insert_iterator broken for VC++ STL
+    void const_constraints(const TT& b) {
       a = b;              // const required for argument to assignment
-#endif
     }
+#else
+    void const_constraints(const TT&) {
+    }
+#endif
     TT a;
   };
 

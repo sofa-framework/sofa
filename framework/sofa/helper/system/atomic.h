@@ -1,6 +1,8 @@
 #ifndef SOFA_HELPER_SYSTEM_ATOMIC_H
 #define SOFA_HELPER_SYSTEM_ATOMIC_H
 
+#include <sofa/helper/system/config.h>
+
 #if defined(SOFA_USE_ASM_ATOMIC)
 #include <asm/atomic.h>
 #include <bits/atomicity.h> // for __exchange_and_add
@@ -191,14 +193,14 @@ public:
         // no atomic set operation in stdc++ :(
         val = i;
     }
-    void add(int i) { InterlockedAdd(&val,(LONG)i); }
-    void sub(int i) { InterlockedAdd(&val,(LONG)-i); }
+    void add(int i) { InterlockedExchangeAdd(&val,(LONG)i); }
+    void sub(int i) { InterlockedExchangeAdd(&val,(LONG)-i); }
     void inc() { InterlockedIncrement(&val); }
     void dec() { InterlockedDecrement(&val); }
     //bool sub_and_test_null(int i) { return __exchange_and_add(&val,-i)==i; }
     bool dec_and_test_null() { return InterlockedDecrement(&val)==0; }
     //bool inc_and_test_null() { return __exchange_and_add(&val,1)==-1; }
-    bool add_and_test_neg(int i) { return InterlockedAdd(&val,(LONG)i) < 0; }
+    bool add_and_test_neg(int i) { return InterlockedExchangeAdd(&val,(LONG)i) < -i; }
     void operator=(int i) { set(i); }
     void operator+=(int i) { add(i); }
     void operator-=(int i) { sub(i); }

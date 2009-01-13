@@ -149,14 +149,14 @@ void HomogenizedMapping<BasicMapping>::init()
             if( elementIdx!=-1)
             {
                 helper::fixed_array<Real,8> baryCoefs;
-                baryCoefs[0] = (1-coefs[0]) * (1-coefs[1]) * (1-coefs[2]);
-                baryCoefs[1] = (coefs[0]) * (1-coefs[1]) * (1-coefs[2]);
-                baryCoefs[2] = (coefs[0]) * (coefs[1]) * (1-coefs[2]);
-                baryCoefs[3] = (1-coefs[0]) * (coefs[1]) * (1-coefs[2]);
-                baryCoefs[4] = (1-coefs[0]) * (1-coefs[1]) * (coefs[2]);
-                baryCoefs[5] = (coefs[0]) * (1-coefs[1]) * (coefs[2]);
-                baryCoefs[6] = (coefs[0]) * (coefs[1]) * (coefs[2]);
-                baryCoefs[7] = (1-coefs[0]) * (coefs[1]) * (coefs[2]);
+                baryCoefs[0] = (Real)((1-coefs[0]) * (1-coefs[1]) * (1-coefs[2]));
+                baryCoefs[1] = (Real)((coefs[0]) * (1-coefs[1]) * (1-coefs[2]));
+                baryCoefs[2] = (Real)((coefs[0]) * (coefs[1]) * (1-coefs[2]));
+                baryCoefs[3] = (Real)((1-coefs[0]) * (coefs[1]) * (1-coefs[2]));
+                baryCoefs[4] = (Real)((1-coefs[0]) * (1-coefs[1]) * (coefs[2]));
+                baryCoefs[5] = (Real)((coefs[0]) * (1-coefs[1]) * (coefs[2]));
+                baryCoefs[6] = (Real)((coefs[0]) * (coefs[1]) * (coefs[2]));
+                baryCoefs[7] = (Real)((1-coefs[0]) * (coefs[1]) * (coefs[2]));
 
                 _finestBarycentricCoord[i] = std::pair<int,helper::fixed_array<Real,8> >(elementIdx, baryCoefs);
             }
@@ -255,9 +255,9 @@ void HomogenizedMapping<BasicMapping>::apply ( OutVecCoord& out, const InVecCoor
         {
             InCoord u = _rotations[i] * in[ hexa[w] ] /*-translation*/ - _qCoarse0[hexa[w]];
 
-            coarseDisplacements[i][w*3  ] = u[0];
-            coarseDisplacements[i][w*3+1] = u[1];
-            coarseDisplacements[i][w*3+2] = u[2];
+            coarseDisplacements[i][w*3  ] = (float)u[0];
+            coarseDisplacements[i][w*3+1] = (float)u[1];
+            coarseDisplacements[i][w*3+2] = (float)u[2];
         }
     }
 
@@ -322,9 +322,9 @@ void HomogenizedMapping<BasicMapping>::applyJ ( OutVecDeriv& out, const InVecDer
         {
             InCoord u = _rotations[i] * in[ hexa[w] ];
 
-            coarseDisplacements[i][w*3  ] = u[0];
-            coarseDisplacements[i][w*3+1] = u[1];
-            coarseDisplacements[i][w*3+2] = u[2];
+            coarseDisplacements[i][w*3  ] = (float)u[0];
+            coarseDisplacements[i][w*3+1] = (float)u[1];
+            coarseDisplacements[i][w*3+2] = (float)u[2];
         }
     }
 
@@ -416,7 +416,7 @@ void HomogenizedMapping<BasicMapping>::draw()
 
 
     simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
-    simulation::tree::getSimulation()->DrawUtility.drawPoints(points, 7, Vec<4,float>(0.2,1,0,1));
+    simulation::tree::getSimulation()->DrawUtility.drawPoints(points, 7, Vec<4,float>(0.2f,1.0f,0.0f,1.0f));
     simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 

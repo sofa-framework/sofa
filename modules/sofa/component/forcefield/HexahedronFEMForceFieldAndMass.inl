@@ -280,7 +280,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(VecDeriv& f, const VecDer
     {
         for(unsigned i=0; i<_lumpedMasses.size(); ++i)
             for(int j=0; j<3; ++j)
-                f[i][j] += _lumpedMasses[i][j] * dx[i][j] *factor;
+                f[i][j] += (Real)(_lumpedMasses[i][j] * dx[i][j] *factor);
     }
 }
 

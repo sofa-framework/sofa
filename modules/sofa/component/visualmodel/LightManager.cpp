@@ -122,8 +122,8 @@ void LightManager::makeShadowMatrix(unsigned int i)
 {
     glMatrixMode(GL_TEXTURE);
     glLoadIdentity();
-    glTranslatef(0.5, 0.5, 0.5 +( -0.006) );
-    glScalef(0.5, 0.5, 0.5);
+    glTranslatef(0.5f, 0.5f, 0.5f +( -0.006f) );
+    glScalef(0.5f, 0.5f, 0.5f);
 
     glMultMatrixf(lights[i]->getProjectionMatrix()); // now multiply by the matrices we have retrieved before
     glMultMatrixf(lights[i]->getModelviewMatrix());

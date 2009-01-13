@@ -91,11 +91,11 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
 
     if (arg->getAttribute("su")!=NULL || arg->getAttribute("sv")!=NULL)
     {
-        scaleTex = TexCoord(atof(arg->getAttribute("su","1.0")),atof(arg->getAttribute("sv","1.0")));
+        scaleTex = TexCoord((float)atof(arg->getAttribute("su","1.0")),(float)atof(arg->getAttribute("sv","1.0")));
     }
     if (arg->getAttribute("du")!=NULL || arg->getAttribute("dv")!=NULL)
     {
-        translationTex = TexCoord(atof(arg->getAttribute("du","0.0")),atof(arg->getAttribute("dv","0.0")));
+        translationTex = TexCoord((float)atof(arg->getAttribute("du","0.0")),(float)atof(arg->getAttribute("dv","0.0")));
     }
 
     if (arg->getAttribute("rx")!=NULL || arg->getAttribute("ry")!=NULL || arg->getAttribute("rz")!=NULL)

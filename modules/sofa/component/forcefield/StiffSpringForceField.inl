@@ -158,7 +158,7 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatri
         for(int i=0; i<N; i++)
             for (int j=0; j<N; j++)
             {
-                Real k = this->dfdx[e][i][j]*kFact;
+                Real k = (Real)(this->dfdx[e][i][j]*kFact);
 
                 mat->add(p1+i,p1+j, -k);
                 mat->add(p1+i,p2+j, k);

@@ -28,6 +28,9 @@
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/helper/rmath.h>
 
+#include <iostream>
+#include <vector>
+
 namespace sofa
 {
 
@@ -86,7 +89,7 @@ public:
     T* ptr() { return data; }
     const T* ptr() const { return data; }
 
-    void setptr(T* p) { ptr = p; }
+    void setptr(T* p) { data = p; }
 
     Index capacity() const { if (allocsize < 0) return -allocsize; else return allocsize; }
 
@@ -186,10 +189,9 @@ public:
         std::copy(a.begin(), a.end(), begin());
     }
 
-    void operator=(T a)
+    void operator=(const T& a)
     {
-        fastResize(a.size());
-        std::fill(a.begin(), a.end(), a);
+        std::fill(begin(), end(), a);
     }
 
     /// v += a
@@ -241,6 +243,14 @@ public:
         return out;
     }
 };
+
+template<> void FullVector<bool>::set(int i, SReal v);
+
+template<> void FullVector<bool>::add(int i, SReal v);
+
+template<> bool FullVector<bool>::dot(const FullVector<Real>& a) const;
+
+template<> double FullVector<bool>::norm() const;
 
 } // namespace linearsolver
 

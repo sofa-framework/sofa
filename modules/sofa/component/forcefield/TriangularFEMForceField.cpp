@@ -561,7 +561,7 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementInd
 
 //	const VecCoord& x = *this->mstate->getX();
 
-    triangleInfo[elementIndex].maxStrain = D(1,1);
+    triangleInfo[elementIndex].maxStrain = (Real)D(1,1);
 //	triangleInfo[elementIndex].principalStrainDirection = (x[b]-x[a])*v[0] + (x[c]-x[a])*v[1];
     triangleInfo[elementIndex].principalStrainDirection = triangleInfo[elementIndex].rotation * Coord(v[0], v[1], v[2]);
     triangleInfo[elementIndex].principalStrainDirection *= triangleInfo[elementIndex].maxStrain/100.0;
@@ -599,7 +599,7 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementInd
 
 //	const VecCoord& x = *this->mstate->getX();
 
-    triangleInfo[elementIndex].maxStress = D(1,1);
+    triangleInfo[elementIndex].maxStress = (Real)D(1,1);
 //	triangleInfo[elementIndex].principalStressDirection = (x[b]-x[a])*v[0] + (x[c]-x[a])*v[1];
     triangleInfo[elementIndex].principalStressDirection = triangleInfo[elementIndex].rotation * Coord(v[0], v[1], v[2]);
     triangleInfo[elementIndex].principalStressDirection *= triangleInfo[elementIndex].maxStress/100.0;
@@ -1356,7 +1356,7 @@ void TriangularFEMForceField<DataTypes>::draw()
             Index a = _topology->getTriangle(i)[0];
             Index b = _topology->getTriangle(i)[1];
             Index c = _topology->getTriangle(i)[2];
-            float v = fabs(triangleInfo[i].maxStress);
+            float v = (float)fabs(triangleInfo[i].maxStress);
             v /= (float)(0.8*max);
             if (v > 1.0) v=1.0;
             Vec3d color = ColorMap[(int)(v*63)];
