@@ -76,6 +76,11 @@ void XMLPrintVisitor::processObject(T obj)
     m_out << "</" << xmlencode(classname)  <<">" << std::endl;
 }
 
+void XMLPrintVisitor::processBaseObject(core::objectmodel::BaseObject* obj)
+{
+    processObject(obj);
+}
+
 template<class Seq>
 void XMLPrintVisitor::processObjects(Seq& list)
 {
