@@ -146,6 +146,9 @@ Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::forcefield::JointSpring<sofa::defaulttype::Rigid3dTypes> > > > DWClass_vectorJointSpring3d("default",true);
 
 
+// Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::DiscreteElementModelInternalData<sofa::defaulttype::Vec3fTypes> > > > DWClass_vectorDiscreteElementModelInternalData3f("default", true);
+// Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::DiscreteElementModelInternalData<sofa::defaulttype::Vec3dTypes> > > > DWClass_vectorDiscreteElementModelInternalData3d("default", true);
+
 } // namespace qt
 
 } // namespace gui
