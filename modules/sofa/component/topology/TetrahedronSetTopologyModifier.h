@@ -54,7 +54,7 @@ typedef TetraTriangles TetrahedronTriangles;
 /**
 * A class that modifies the topology by adding and removing tetrahedra
 */
-class TetrahedronSetTopologyModifier : public TriangleSetTopologyModifier
+class SOFA_COMPONENT_CONTAINER_API TetrahedronSetTopologyModifier : public TriangleSetTopologyModifier
 {
 public:
     TetrahedronSetTopologyModifier()

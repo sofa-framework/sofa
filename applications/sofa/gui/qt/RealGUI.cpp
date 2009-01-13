@@ -64,18 +64,7 @@
 #include <sofa/helper/system/FileRepository.h>
 
 #ifdef SOFA_DEV
-
-namespace sofa
-{
-namespace simulation
-{
-namespace automatescheduler
-{
-extern simulation::tree::GNode* groot;
-}
-}
-}
-
+#include <sofa/simulation/automatescheduler/automateUtils.h>
 #endif // SOFA_DEV
 
 

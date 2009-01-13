@@ -36,7 +36,7 @@ namespace simulation
 
 
 /// Compute collision reset, detection and response in one step
-class CollisionVisitor : public Visitor
+class SOFA_SIMULATION_COMMON_API CollisionVisitor : public Visitor
 {
 public:
     virtual void processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::Pipeline* obj);
@@ -50,7 +50,7 @@ public:
 };
 
 /// Remove collision response from last step
-class CollisionResetVisitor : public CollisionVisitor
+class SOFA_SIMULATION_COMMON_API CollisionResetVisitor : public CollisionVisitor
 {
 public:
     void processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::Pipeline* obj);
@@ -58,7 +58,7 @@ public:
 };
 
 /// Compute collision detection
-class CollisionDetectionVisitor : public CollisionVisitor
+class SOFA_SIMULATION_COMMON_API CollisionDetectionVisitor : public CollisionVisitor
 {
 public:
     void processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::Pipeline* obj);
@@ -66,7 +66,7 @@ public:
 };
 
 /// Compute collision response
-class CollisionResponseVisitor : public CollisionVisitor
+class SOFA_SIMULATION_COMMON_API CollisionResponseVisitor : public CollisionVisitor
 {
 public:
     void processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::Pipeline* obj);

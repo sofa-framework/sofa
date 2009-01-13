@@ -36,7 +36,7 @@ namespace simulation
 {
 
 
-class PrintVisitor : public Visitor
+class SOFA_SIMULATION_COMMON_API PrintVisitor : public Visitor
 {
 protected:
     int verbose;

@@ -41,7 +41,7 @@ namespace odesolver
 {
 /** Implicit integration solver able to handle degenerate equation systems.
 */
-class BiCGStabImplicitSolver : public sofa::component::odesolver::OdeSolverImpl
+class SOFA_COMPONENT_ODESOLVER_API BiCGStabImplicitSolver : public sofa::component::odesolver::OdeSolverImpl
 {
 public:
     typedef core::componentmodel::behavior::OdeSolver Inherited;

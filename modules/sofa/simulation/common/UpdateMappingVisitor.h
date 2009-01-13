@@ -36,7 +36,7 @@ namespace simulation
 {
 
 
-class UpdateMappingVisitor : public Visitor
+class SOFA_SIMULATION_COMMON_API UpdateMappingVisitor : public Visitor
 {
 public:
 

@@ -58,7 +58,7 @@ typedef TetraEdges		TetrahedronEdges;
 typedef TetraTriangles	TetrahedronTriangles;
 
 /** a class that stores a set of tetrahedra and provides access with adjacent triangles, edges and vertices */
-class TetrahedronSetTopologyContainer : public TriangleSetTopologyContainer
+class SOFA_COMPONENT_CONTAINER_API TetrahedronSetTopologyContainer : public TriangleSetTopologyContainer
 {
     friend class TetrahedronSetTopologyModifier;
 

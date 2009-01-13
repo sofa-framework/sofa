@@ -43,6 +43,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/helper/rmath.h>
+#include <sofa/component/component.h>
 #include <list>
 
 

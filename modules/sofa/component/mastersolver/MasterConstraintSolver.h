@@ -25,7 +25,7 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::linearsolver;
 using namespace helper::system::thread;
 
-class MechanicalGetConstraintResolutionVisitor : public simulation::MechanicalVisitor
+class SOFA_COMPONENT_MASTERSOLVER_API MechanicalGetConstraintResolutionVisitor : public simulation::MechanicalVisitor
 {
 public:
     MechanicalGetConstraintResolutionVisitor(std::vector<core::componentmodel::behavior::ConstraintResolution*>& res, unsigned int offset = 0)
@@ -57,7 +57,7 @@ private:
     unsigned int _offset;
 };
 
-class MechanicalSetConstraint : public simulation::MechanicalVisitor
+class SOFA_COMPONENT_MASTERSOLVER_API MechanicalSetConstraint : public simulation::MechanicalVisitor
 {
 public:
     MechanicalSetConstraint(unsigned int &_contactId)
@@ -95,7 +95,7 @@ protected:
     unsigned int &contactId;
 };
 
-class MechanicalAccumulateConstraint2 : public simulation::MechanicalVisitor
+class SOFA_COMPONENT_MASTERSOLVER_API MechanicalAccumulateConstraint2 : public simulation::MechanicalVisitor
 {
 public:
     MechanicalAccumulateConstraint2()
@@ -127,7 +127,7 @@ public:
 #endif
 };
 
-class MasterConstraintSolver : public sofa::simulation::MasterSolverImpl//, public sofa::simulation::tree::OdeSolverImpl
+class SOFA_COMPONENT_MASTERSOLVER_API MasterConstraintSolver : public sofa::simulation::MasterSolverImpl//, public sofa::simulation::tree::OdeSolverImpl
 {
 public:
 

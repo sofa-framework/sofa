@@ -40,7 +40,7 @@ namespace odesolver
 /** The simplest time integration.
 the symplectic variant of Euler's method is applied
 */
-class ComplianceEulerSolver : public sofa::component::odesolver::OdeSolverImpl
+class SOFA_COMPONENT_ODESOLVER_API ComplianceEulerSolver : public sofa::component::odesolver::OdeSolverImpl
 {
 public:
     ComplianceEulerSolver();

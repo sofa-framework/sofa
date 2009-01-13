@@ -35,7 +35,7 @@ namespace simulation
 {
 
 
-class TopologyChangeVisitor : public Visitor
+class SOFA_SIMULATION_COMMON_API TopologyChangeVisitor : public Visitor
 {
 
 public:

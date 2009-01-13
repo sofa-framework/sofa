@@ -25,8 +25,11 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYALGORITHMS_H
 #define SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYALGORITHMS_H
 
-#include <sofa/helper/vector.h>
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
+#include <sofa/helper/vector.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -77,6 +80,25 @@ private:
     PointSetTopologyModifier*					m_modifier;
     PointSetGeometryAlgorithms< DataTypes >*	m_geometryAlgorithms;
 };
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYALGORITHMS_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Vec3dTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Vec2dTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Vec1dTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Rigid3dTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Rigid2dTypes>;
+#endif
+
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Vec3fTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Vec2fTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Vec1fTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Rigid3fTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Rigid2fTypes>;
+#endif
+#endif
 
 } // namespace topology
 

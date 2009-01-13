@@ -117,6 +117,25 @@ public:
     void writeMSHfile(const char *filename) const;
 };
 
+#if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETGEOMETRYALGORITHMS_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetGeometryAlgorithms<defaulttype::Vec3dTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetGeometryAlgorithms<defaulttype::Vec2dTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetGeometryAlgorithms<defaulttype::Vec1dTypes>;
+//extern template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetGeometryAlgorithms<defaulttype::Rigid3dTypes>;
+//extern template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetGeometryAlgorithms<defaulttype::Rigid2dTypes>;
+#endif
+
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetGeometryAlgorithms<defaulttype::Vec3fTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetGeometryAlgorithms<defaulttype::Vec2fTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetGeometryAlgorithms<defaulttype::Vec1fTypes>;
+//extern template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetGeometryAlgorithms<defaulttype::Rigid3fTypes>;
+//extern template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetGeometryAlgorithms<defaulttype::Rigid2fTypes>;
+#endif
+#endif
+
 } // namespace topology
 
 } // namespace component

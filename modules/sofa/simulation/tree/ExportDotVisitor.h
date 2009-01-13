@@ -39,7 +39,7 @@ namespace simulation
 namespace tree
 {
 
-class ExportDotVisitor : public GNodeVisitor
+class SOFA_SIMULATION_TREE_API ExportDotVisitor : public GNodeVisitor
 {
 public:
     std::ostream* out;

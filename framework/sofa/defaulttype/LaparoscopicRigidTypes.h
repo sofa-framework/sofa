@@ -57,6 +57,8 @@ public:
         Vector3 vOrientation;
     public:
         typedef Real value_type;
+        typedef Real Pos;
+        typedef Vector3 Rot;
         friend class Coord;
 
         Deriv (const Real &velTranslation, const Vector3 &velOrient)
@@ -131,6 +133,8 @@ public:
         Quat orientation;
     public:
         typedef Real value_type;
+        typedef Real Pos;
+        typedef Quat Rot;
         Coord (const Real &posTranslation, const Quat &orient)
             : translation(posTranslation), orientation(orient) {}
         Coord () { clear(); }
@@ -234,6 +238,20 @@ public:
         }
     };
 
+    typedef Coord::Pos CPos;
+    typedef Coord::Rot CRot;
+    static const CPos& getCPos(const Coord& c) { return c.getTranslation(); }
+    static void setCPos(Coord& c, const CPos& v) { c.getTranslation() = v; }
+    static const CRot& getCRot(const Coord& c) { return c.getOrientation(); }
+    static void setCRot(Coord& c, const CRot& v) { c.getOrientation() = v; }
+
+    typedef Deriv::Pos DPos;
+    typedef Deriv::Rot DRot;
+    static const DPos& getDPos(const Deriv& d) { return d.getVTranslation(); }
+    static void setDPos(Deriv& d, const DPos& v) { d.getVTranslation() = v; }
+    static const DRot& getDRot(const Deriv& d) { return d.getVOrientation(); }
+    static void setDRot(Deriv& d, const DRot& v) { d.getVOrientation() = v; }
+
     template <class T>
     class SparseData
     {
@@ -275,23 +293,23 @@ public:
     }
 
     template<typename T>
-    static void set(Deriv& c, T x, T, T)
+    static void set(Deriv& d, T x, T, T)
     {
-        c.getVTranslation() = (Real)x;
+        d.getVTranslation() = (Real)x;
     }
 
     template<typename T>
-    static void get(T& x, T& y, T& z, const Deriv& c)
+    static void get(T& x, T& y, T& z, const Deriv& d)
     {
-        x = (T)c.getVTranslation();
+        x = (T)d.getVTranslation();
         y = (T)0;
         z = (T)0;
     }
 
     template<typename T>
-    static void add(Deriv& c, T x, T, T)
+    static void add(Deriv& d, T x, T, T)
     {
-        c.getVTranslation() += (T)x;
+        d.getVTranslation() += (T)x;
     }
     static const char* Name()
     {

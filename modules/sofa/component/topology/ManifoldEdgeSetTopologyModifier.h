@@ -46,7 +46,7 @@ typedef BaseMeshTopology::VertexEdges VertexEdges;
 /**
 * A class that can apply basic transformations on a set of points.
 */
-class ManifoldEdgeSetTopologyModifier : public EdgeSetTopologyModifier
+class SOFA_COMPONENT_CONTAINER_API ManifoldEdgeSetTopologyModifier : public EdgeSetTopologyModifier
 {
 public:
     ManifoldEdgeSetTopologyModifier()

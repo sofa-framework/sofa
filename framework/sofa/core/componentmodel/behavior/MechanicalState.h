@@ -169,10 +169,10 @@ public:
         return DataTypes::Name();
     }
 
-    static std::string Name(const State<DataTypes>* = NULL)
-    {
-        return std::string("MechanicalState");
-    }
+    //static std::string Name(const MechanicalState<DataTypes>* = NULL)
+    //{
+    //  return std::string("MechanicalState");
+    //}
 
 };
 

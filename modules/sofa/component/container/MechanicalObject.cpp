@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
+#define SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP
 #include <sofa/component/container/MechanicalObject.inl>
 #include <sofa/helper/Quater.h>
 
@@ -68,22 +68,22 @@ int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
 // template specialization must be in the same namespace as original namespace for GCC 4.1
 // g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
 #ifndef SOFA_FLOAT
-template class MechanicalObject<Vec3dTypes>;
-template class MechanicalObject<Vec2dTypes>;
-template class MechanicalObject<Vec1dTypes>;
-template class MechanicalObject<Vec6dTypes>;
-template class MechanicalObject<Rigid3dTypes>;
-template class MechanicalObject<Rigid2dTypes>;
+template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Vec3dTypes>;
+template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Vec2dTypes>;
+template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Vec1dTypes>;
+template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Vec6dTypes>;
+template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Rigid3dTypes>;
+template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class MechanicalObject<Vec3fTypes>;
-template class MechanicalObject<Vec2fTypes>;
-template class MechanicalObject<Vec1fTypes>;
-template class MechanicalObject<Vec6fTypes>;
-template class MechanicalObject<Rigid3fTypes>;
-template class MechanicalObject<Rigid2fTypes>;
+template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Vec3fTypes>;
+template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Vec2fTypes>;
+template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Vec1fTypes>;
+template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Vec6fTypes>;
+template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Rigid3fTypes>;
+template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Rigid2fTypes>;
 #endif
-template class MechanicalObject<LaparoscopicRigid3Types>;
+template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<LaparoscopicRigid3Types>;
 
 
 

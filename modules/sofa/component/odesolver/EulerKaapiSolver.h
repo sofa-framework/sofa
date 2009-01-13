@@ -42,7 +42,7 @@ Two variants are available, depending on the value of field "symplectic".
 If true (the default), the symplectic variant of Euler's method is applied:
 If false, the basic Euler's method is applied (less robust)
 */
-class EulerKaapiSolver : public sofa::component::odesolver::OdeSolverImpl
+class SOFA_COMPONENT_ODESOLVER_API EulerKaapiSolver : public sofa::component::odesolver::OdeSolverImpl
 {
 public:
     EulerKaapiSolver();

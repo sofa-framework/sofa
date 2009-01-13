@@ -37,6 +37,7 @@
 #define SOFA_SIMULATION_ANIMATEENDEVENT_H
 
 #include <sofa/core/objectmodel/Event.h>
+#include <sofa/simulation/common/common.h>
 
 namespace sofa
 {
@@ -49,7 +50,7 @@ namespace simulation
   Event fired by Simulation::animate() after computing a new animation step.
   @author Jeremie Allard
 */
-class AnimateEndEvent : public sofa::core::objectmodel::Event
+class SOFA_SIMULATION_COMMON_API AnimateEndEvent : public sofa::core::objectmodel::Event
 {
 public:
     AnimateEndEvent( double dt );

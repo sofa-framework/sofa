@@ -25,11 +25,11 @@
 #ifndef SOFA_SIMULATION_TREE_XML_BASEELEMENT_H
 #define SOFA_SIMULATION_TREE_XML_BASEELEMENT_H
 
-
 #include <sofa/helper/Factory.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
+#include <sofa/simulation/tree/tree.h>
 #include <string>
 #include <list>
 #include <map>
@@ -46,7 +46,7 @@ namespace tree
 namespace xml
 {
 
-class BaseElement : public core::objectmodel::BaseObjectDescription
+class SOFA_SIMULATION_TREE_API BaseElement : public core::objectmodel::BaseObjectDescription
 {
 private:
     //std::string name;

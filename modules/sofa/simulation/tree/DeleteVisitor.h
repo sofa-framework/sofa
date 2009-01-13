@@ -37,7 +37,7 @@ namespace simulation
 namespace tree
 {
 
-class CleanupVisitor : public GNodeVisitor
+class SOFA_SIMULATION_TREE_API CleanupVisitor : public GNodeVisitor
 {
 public:
     CleanupVisitor() {}
@@ -47,7 +47,7 @@ public:
     virtual const char* getClassName() const { return "CleanupVisitor"; }
 };
 
-class DeleteVisitor : public GNodeVisitor
+class SOFA_SIMULATION_TREE_API DeleteVisitor : public GNodeVisitor
 {
 public:
     DeleteVisitor() {}

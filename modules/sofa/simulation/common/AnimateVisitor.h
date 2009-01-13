@@ -25,6 +25,7 @@
 #ifndef SOFA_SIMULATION_ANIMATEACTION_H
 #define SOFA_SIMULATION_ANIMATEACTION_H
 
+#include <sofa/simulation/common/common.h>
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/componentmodel/behavior/InteractionForceField.h>
@@ -38,7 +39,7 @@ namespace sofa
 namespace simulation
 {
 
-class AnimateVisitor : public Visitor
+class SOFA_SIMULATION_COMMON_API AnimateVisitor : public Visitor
 {
 protected:
     double dt;

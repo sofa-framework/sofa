@@ -47,7 +47,7 @@ namespace tree
 Defines how the scene is inited at the beginning, and updated at each time step.
 Derives from BaseObject in order to model the parameters as Datas, which makes their edition easy in the GUI.
 */
-class Simulation: public virtual sofa::core::objectmodel::BaseObject
+class SOFA_SIMULATION_TREE_API Simulation: public virtual sofa::core::objectmodel::BaseObject
 {
 private:
     ///load a scene from memory (typically : an xml into a string)
@@ -132,12 +132,12 @@ public:
 };
 
 /// Set the (unique) simulation which controls the scene
-void setSimulation(Simulation*);
+void SOFA_SIMULATION_TREE_API setSimulation(Simulation*);
 
 /** Get the (unique) simulation which controls the scene.
 Automatically creates one if no Simulation has been set.
 */
-Simulation* getSimulation();
+SOFA_SIMULATION_TREE_API Simulation* getSimulation();
 } // namespace tree
 
 } // namespace simulation

@@ -33,6 +33,7 @@
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -50,7 +51,7 @@ using helper::vector;
 using helper::fixed_array;
 
 
-class MeshTopology : public core::componentmodel::topology::BaseMeshTopology
+class SOFA_COMPONENT_CONTAINER_API MeshTopology : public core::componentmodel::topology::BaseMeshTopology
 {
 public:
 

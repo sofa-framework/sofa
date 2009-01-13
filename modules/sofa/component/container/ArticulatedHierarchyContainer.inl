@@ -81,16 +81,6 @@ vector<ArticulatedHierarchyContainer::ArticulationCenter*> ArticulatedHierarchyC
     return acendantList;
 }
 
-vector<ArticulatedHierarchyContainer::ArticulationCenter*> ArticulatedHierarchyContainer::getArticulationCenters()
-{
-    return articulationCenters;
-}
-
-vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*> ArticulatedHierarchyContainer::ArticulationCenter::getArticulations()
-{
-    return articulations;
-}
-
 ArticulatedHierarchyContainer::ArticulatedHierarchyContainer():
     filename(initData(&filename, "filename", "BVH File to load the articulation", false))
 {

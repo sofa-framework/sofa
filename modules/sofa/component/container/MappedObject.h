@@ -28,6 +28,7 @@
 #include <sofa/core/componentmodel/behavior/MappedModel.h>
 #include <sofa/core/objectmodel/XDataPtr.h>
 #include <sofa/core/objectmodel/VDataPtr.h>
+#include <sofa/component/component.h>
 #include <vector>
 #include <assert.h>
 #include <fstream>

@@ -49,7 +49,7 @@ typedef BaseMeshTopology::EdgeQuads			EdgeQuads;
 
 /** Object that stores a set of quads and provides access
 to each quad and its edges and vertices */
-class QuadSetTopologyContainer : public EdgeSetTopologyContainer
+class SOFA_COMPONENT_CONTAINER_API QuadSetTopologyContainer : public EdgeSetTopologyContainer
 {
     friend class QuadSetTopologyModifier;
 

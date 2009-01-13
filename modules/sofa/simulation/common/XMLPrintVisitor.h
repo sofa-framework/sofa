@@ -40,7 +40,7 @@ namespace simulation
 {
 
 
-class XMLPrintVisitor : public Visitor
+class SOFA_SIMULATION_COMMON_API XMLPrintVisitor : public Visitor
 {
 protected:
     std::ostream& m_out;

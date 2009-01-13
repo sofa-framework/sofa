@@ -27,6 +27,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/simulation/tree/GNode.h>
+#include <sofa/component/component.h>
 
 
 namespace sofa
@@ -44,7 +45,7 @@ using namespace sofa::simulation::tree;
 ////////////////// ///////////////
 
 
-class ImplicitSurface : public virtual core::objectmodel::BaseObject
+class SOFA_COMPONENT_CONTAINER_API ImplicitSurface : public virtual core::objectmodel::BaseObject
 {
 
 public:

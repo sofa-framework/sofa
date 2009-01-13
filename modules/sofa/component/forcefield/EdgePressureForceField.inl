@@ -136,7 +136,7 @@ void EdgePressureForceField<DataTypes>::updateEdgeInformation()
 
     for(it=edgePressureMap.begin(); it!=edgePressureMap.end(); it++ )
     {
-        (*it).second.force=((*it).second.length)*pressure.getValue();
+        (*it).second.force=pressure.getValue()*((*it).second.length);
     }
 }
 

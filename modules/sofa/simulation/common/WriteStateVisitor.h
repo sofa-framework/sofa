@@ -49,7 +49,7 @@ namespace sofa
 namespace simulation
 {
 
-class WriteStateVisitor: public Visitor
+class SOFA_SIMULATION_COMMON_API WriteStateVisitor: public Visitor
 {
 public:
     WriteStateVisitor( std::ostream& out );

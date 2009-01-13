@@ -26,6 +26,7 @@
 #define SOFA_SIMULATION_TREE_GNODE_H
 
 #include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/tree/tree.h>
 #include <sofa/simulation/tree/MutationListener.h>
 #include <sofa/simulation/tree/xml/NodeElement.h>
 #include <stdlib.h>
@@ -52,7 +53,7 @@ class MutationListener;
 
 /** Define the structure of the scene. Contains (as pointer lists) Component objects and children GNode objects.
 */
-class GNode : public simulation::Node, public core::objectmodel::BaseNode
+class SOFA_SIMULATION_TREE_API GNode : public simulation::Node, public core::objectmodel::BaseNode
 {
 public:
     GNode( const std::string& name="", GNode* parent=NULL  );

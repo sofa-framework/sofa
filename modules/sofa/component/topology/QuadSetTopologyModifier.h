@@ -48,7 +48,7 @@ typedef BaseMeshTopology::QuadEdges QuadEdges;
 /**
 * A class that modifies the topology by adding and removing quads
 */
-class QuadSetTopologyModifier : public EdgeSetTopologyModifier
+class SOFA_COMPONENT_CONTAINER_API QuadSetTopologyModifier : public EdgeSetTopologyModifier
 {
 public:
     QuadSetTopologyModifier()

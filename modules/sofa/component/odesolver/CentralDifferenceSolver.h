@@ -45,7 +45,7 @@ using namespace sofa::defaulttype;
  * @see http://en.wikipedia.org/wiki/Leapfrog_method
  *
  */
-class CentralDifferenceSolver : public sofa::component::odesolver::OdeSolverImpl
+class SOFA_COMPONENT_ODESOLVER_API CentralDifferenceSolver : public sofa::component::odesolver::OdeSolverImpl
 {
 public:
 

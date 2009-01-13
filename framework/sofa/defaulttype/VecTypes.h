@@ -54,6 +54,12 @@ public:
     typedef vector<Deriv> VecDeriv;
     typedef vector<Real> VecReal;
 
+    typedef Coord CPos;
+    static const CPos& getCPos(const Coord& c) { return c; }
+    static void setCPos(Coord& c, const CPos& v) { c = v; }
+    typedef Deriv DPos;
+    static const DPos& getDPos(const Deriv& d) { return d; }
+    static void setDPos(Deriv& d, const DPos& v) { d = v; }
 
     template <class T>
     class SparseData
@@ -297,6 +303,13 @@ public:
     typedef ResizableExtVector<Coord> VecCoord;
     typedef ResizableExtVector<Deriv> VecDeriv;
     typedef ResizableExtVector<Real> VecReal;
+
+    typedef Coord CPos;
+    static const CPos& getCPos(const Coord& c) { return c; }
+    static void setCPos(Coord& c, const CPos& v) { c = v; }
+    typedef Deriv DPos;
+    static const DPos& getDPos(const Deriv& d) { return d; }
+    static void setDPos(Deriv& d, const DPos& v) { d = v; }
 
     template <class T>
     class SparseData

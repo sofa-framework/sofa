@@ -37,7 +37,7 @@ namespace simulation
 
 
 using namespace sofa::defaulttype;
-class VelocityThresholdVisitor : public Visitor
+class SOFA_SIMULATION_COMMON_API VelocityThresholdVisitor : public Visitor
 {
 public:
     typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;

@@ -22,10 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_CPP
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.inl>
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 namespace sofa
@@ -63,19 +64,19 @@ int EdgeSetGeometryAlgorithmsClass = core::RegisterObject("Edge set geometry alg
         ;
 
 #ifndef SOFA_FLOAT
-template class EdgeSetGeometryAlgorithms<Vec3dTypes>;
-template class EdgeSetGeometryAlgorithms<Vec2dTypes>;
-template class EdgeSetGeometryAlgorithms<Vec1dTypes>;
-template class EdgeSetGeometryAlgorithms<Rigid3dTypes>;
-template class EdgeSetGeometryAlgorithms<Rigid2dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API EdgeSetGeometryAlgorithms<Vec3dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API EdgeSetGeometryAlgorithms<Vec2dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API EdgeSetGeometryAlgorithms<Vec1dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API EdgeSetGeometryAlgorithms<Rigid3dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API EdgeSetGeometryAlgorithms<Rigid2dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class EdgeSetGeometryAlgorithms<Vec3fTypes>;
-template class EdgeSetGeometryAlgorithms<Vec2fTypes>;
-template class EdgeSetGeometryAlgorithms<Vec1fTypes>;
-template class EdgeSetGeometryAlgorithms<Rigid3fTypes>;
-template class EdgeSetGeometryAlgorithms<Rigid2fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API EdgeSetGeometryAlgorithms<Vec3fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API EdgeSetGeometryAlgorithms<Vec2fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API EdgeSetGeometryAlgorithms<Vec1fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API EdgeSetGeometryAlgorithms<Rigid3fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API EdgeSetGeometryAlgorithms<Rigid2fTypes>;
 #endif
 
 } // namespace topology

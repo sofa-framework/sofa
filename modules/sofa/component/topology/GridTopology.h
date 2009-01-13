@@ -38,7 +38,7 @@ namespace topology
 
 using namespace sofa::defaulttype;
 
-class GridTopology : public MeshTopology
+class SOFA_COMPONENT_CONTAINER_API GridTopology : public MeshTopology
 {
 public:
     GridTopology();

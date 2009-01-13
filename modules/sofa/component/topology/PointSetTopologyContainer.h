@@ -28,6 +28,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -45,7 +46,7 @@ typedef BaseMeshTopology::PointID			PointID;
 
 /** The container class that stores a set of points and provides access
 to each point. This set of point may be a subset of the DOF of the mechanical model */
-class PointSetTopologyContainer : public core::componentmodel::topology::TopologyContainer
+class SOFA_COMPONENT_CONTAINER_API PointSetTopologyContainer : public core::componentmodel::topology::TopologyContainer
 {
 public:
 

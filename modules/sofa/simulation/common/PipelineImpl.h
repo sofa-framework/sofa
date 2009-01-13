@@ -26,6 +26,7 @@
 #define SOFA_SIMULATION_PIPELINEIMPL_H
 
 #include <sofa/core/componentmodel/collision/Pipeline.h>
+#include <sofa/simulation/common/common.h>
 
 #include <vector>
 
@@ -38,7 +39,7 @@ namespace simulation
 
 using namespace sofa::core::componentmodel::collision;
 
-class PipelineImpl : public virtual sofa::core::componentmodel::collision::Pipeline
+class SOFA_SIMULATION_COMMON_API PipelineImpl : public virtual sofa::core::componentmodel::collision::Pipeline
 {
 
 public:
