@@ -22,6 +22,17 @@ int SparseGridMultipleTopologyClass = core::RegisterObject("Sparse grid in 3D")
         ;
 
 
+SparseGridMultipleTopology::SparseGridMultipleTopology( bool _isVirtual ) : SparseGridRamificationTopology(_isVirtual),
+    _fileTopologies(initData(&_fileTopologies, helper::vector< std::string >() , "fileTopologies", "All topology filenames")),
+    _dataStiffnessCoefs(initData(&_dataStiffnessCoefs, helper::vector< float >() , "stiffnessCoefs", "A stiffness coefficient for each topology filename")),
+    _dataMassCoefs(initData(&_dataMassCoefs, helper::vector< float >() , "massCoefs", "A mass coefficient for each topology filename")),
+    _computeRamifications(initData(&_computeRamifications, true , "computeRamifications", "Are ramifications wanted?")),
+    _erasePreviousCoef(initData(&_erasePreviousCoef, false , "erasePreviousCoef", "Does a new stiffness/mass coefficient replace the previous or blend half/half with it?"))
+{
+}
+
+
+
 void SparseGridMultipleTopology::buildAsFinest(  )
 {
 // 		  serr<<"SparseGridMultipleTopology::buildAsFinest"<<sendl;
@@ -185,8 +196,9 @@ void SparseGridMultipleTopology::assembleRegularGrids(helper::vector<Type>& regu
             else if(  _regularGridTypes[i][w] == BOUNDARY && this->_fillWeighted.getValue() )
             {
                 if( regularGridTypes[w] != INSIDE ) regularGridTypes[w] = BOUNDARY;
-                regularStiffnessCoefs[w] = (float)((regularStiffnessCoefs[w]+_dataStiffnessCoefs.getValue()[i]) * .5f);
-                regularMassCoefs[w] = (float)((regularMassCoefs[w]+_dataMassCoefs.getValue()[i]) * .5f);
+
+                regularStiffnessCoefs[w] = (float)(_erasePreviousCoef.getValue()?_dataStiffnessCoefs.getValue()[i]:(regularStiffnessCoefs[w]+_dataStiffnessCoefs.getValue()[i]) * .5f);
+                regularMassCoefs[w] = (float)(_erasePreviousCoef.getValue()?_dataMassCoefs.getValue()[i]:(regularMassCoefs[w]+_dataMassCoefs.getValue()[i]) * .5f);
             }
         }
     }
@@ -217,10 +229,11 @@ void SparseGridMultipleTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->setNz( newnz );
     _virtualFinerLevels[0]->setMin( _min.getValue() );
     _virtualFinerLevels[0]->setMax( _max.getValue() );
+    _virtualFinerLevels[0]->_fillWeighted.setValue( _fillWeighted.getValue() );
     std::stringstream nameg; nameg << "virtual grid "<< 0;
     _virtualFinerLevels[0]->setName( nameg.str().c_str() );
     _virtualFinerLevels[0]->setContext( this->getContext() );
-
+    sgmt->_erasePreviousCoef.setValue(_erasePreviousCoef.getValue());
     _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
     sgmt->_fileTopologies.setValue(this->_fileTopologies.getValue());
     sgmt->_dataStiffnessCoefs.setValue(this->_dataStiffnessCoefs.getValue());

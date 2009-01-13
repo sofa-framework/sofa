@@ -1160,12 +1160,15 @@ void HexahedronFEMForceField<DataTypes>::draw()
         simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,true);
 
 
-    std::vector< Vector3 > points[6];
 
     typename VecElement::const_iterator it;
     int i;
     for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
     {
+
+
+        std::vector< Vector3 > points[6];
+
 #ifdef SOFA_DEV
         if (_trimgrid && !_trimgrid->isCubeActive(i)) continue;
 #endif // SOFA_DEV
@@ -1274,13 +1277,17 @@ void HexahedronFEMForceField<DataTypes>::draw()
         points[5].push_back(pg);
         points[5].push_back(pf);
 
+
+        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+        simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[0], Vec<4,float>(0.7,0.7,0.1,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
+        simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[1], Vec<4,float>(0.7,0.0,0.0,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
+        simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[2], Vec<4,float>(0.0,0.7,0.0,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
+        simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[3], Vec<4,float>(0.0,0.0,0.7,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
+        simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[4], Vec<4,float>(0.1,0.7,0.7,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
+        simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[5], Vec<4,float>(0.7,0.1,0.7,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
+        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
+
     }
-    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[0], Vec<4,float>(0.7f,0.7f,0.1f,1.0f));
-    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[1], Vec<4,float>(0.7f,0.0f,0.0f,1.0f));
-    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[2], Vec<4,float>(0.0f,0.7f,0.0f,1.0f));
-    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[3], Vec<4,float>(0.0f,0.0f,0.7f,1.0f));
-    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[4], Vec<4,float>(0.1f,0.7f,0.7f,1.0f));
-    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[5], Vec<4,float>(0.7f,0.1f,0.7f,1.0f));
 
 
     if (getContext()->getShowWireFrame())

@@ -194,7 +194,7 @@ public:
 
 
     Data< vector< unsigned char > >     dataVoxels;
-
+    Data<bool> _fillWeighted; // is quantity of matter inside a cell taken into account?
 
 protected:
     bool isVirtual;
@@ -209,7 +209,6 @@ protected:
     Data< unsigned int >    marchingCubeStep;
     Data< unsigned int >    convolutionSize;
 
-    Data<bool> _fillWeighted; // is quantity of matter inside a cell taken into account?
 
     virtual void updateEdges();
     virtual void updateQuads();

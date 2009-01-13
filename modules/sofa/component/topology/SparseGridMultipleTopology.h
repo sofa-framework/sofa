@@ -48,13 +48,7 @@ class SOFA_COMPONENT_CONTAINER_API SparseGridMultipleTopology : public SparseGri
 {
 public :
 
-    SparseGridMultipleTopology( bool _isVirtual=false ) : SparseGridRamificationTopology(_isVirtual),
-        _fileTopologies(initData(&_fileTopologies, helper::vector< std::string >() , "fileTopologies", "All topology filenames")),
-        _dataStiffnessCoefs(initData(&_dataStiffnessCoefs, helper::vector< float >() , "stiffnessCoefs", "A stiffness coefficient for each topology filename")),
-        _dataMassCoefs(initData(&_dataMassCoefs, helper::vector< float >() , "massCoefs", "A stiffness coefficient for each topology filename")),
-        _computeRamifications(initData(&_computeRamifications, true , "computeRamifications", "Are ramifications wanted?"))
-    {
-    }
+    SparseGridMultipleTopology( bool _isVirtual=false );
 
     virtual void init()
     {
@@ -100,6 +94,7 @@ protected :
     Data< helper::vector< float > > _dataStiffnessCoefs;
     Data< helper::vector< float > > _dataMassCoefs;
     Data<bool> _computeRamifications;
+    Data<bool> _erasePreviousCoef;
 
 
 
