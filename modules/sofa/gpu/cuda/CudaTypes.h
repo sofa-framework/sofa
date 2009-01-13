@@ -701,6 +701,13 @@ public:
     typedef CudaVector<Deriv> VecDeriv;
     typedef CudaVector<Real> VecReal;
 
+    typedef Coord CPos;
+    static const CPos& getCPos(const Coord& c) { return c; }
+    static void setCPos(Coord& c, const CPos& v) { c = v; }
+    typedef Deriv DPos;
+    static const DPos& getDPos(const Deriv& d) { return d; }
+    static void setDPos(Deriv& d, const DPos& v) { d = v; }
+
     template <class T>
     class SparseData
     {
@@ -1012,6 +1019,21 @@ public:
     typedef CudaVector<Coord> VecCoord;
     typedef CudaVector<Deriv> VecDeriv;
     typedef CudaVector<Real> VecReal;
+
+
+    typedef typename Coord::Pos CPos;
+    typedef typename Coord::Rot CRot;
+    static const CPos& getCPos(const Coord& c) { return c.getCenter(); }
+    static void setCPos(Coord& c, const CPos& v) { c.getCenter() = v; }
+    static const CRot& getCRot(const Coord& c) { return c.getOrientation(); }
+    static void setCRot(Coord& c, const CRot& v) { c.getOrientation() = v; }
+
+    typedef typename Deriv::Pos DPos;
+    typedef typename Deriv::Rot DRot;
+    static const DPos& getDPos(const Deriv& d) { return d.getVCenter(); }
+    static void setDPos(Deriv& d, const DPos& v) { d.getVCenter() = v; }
+    static const DRot& getDRot(const Deriv& d) { return d.getVOrientation(); }
+    static void setDRot(Deriv& d, const DRot& v) { d.getVOrientation() = v; }
 
     template <class T>
     class SparseData
