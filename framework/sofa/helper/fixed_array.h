@@ -55,8 +55,9 @@
 #pragma once
 #endif
 
+#include <sofa/helper/system/config.h>
 #include <sofa/helper/helper.h>
-#include <sofa/helper/static_assert.h>
+#include <boost/static_assert.hpp>
 
 #include <cstddef>
 #include <stdexcept>

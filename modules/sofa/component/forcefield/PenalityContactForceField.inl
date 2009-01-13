@@ -167,10 +167,10 @@ void PenalityContactForceField<DataTypes>::draw()
         }
     }
     simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
-    simulation::tree::getSimulation()->DrawUtility.drawLines(points[0], 1, defaulttype::Vec<4,float>(1,0,1));
-    simulation::tree::getSimulation()->DrawUtility.drawLines(points[1], 1, defaulttype::Vec<4,float>(0,1,1));
-    simulation::tree::getSimulation()->DrawUtility.drawLines(points[2], 1, defaulttype::Vec<4,float>(1,0,0));
-    simulation::tree::getSimulation()->DrawUtility.drawLines(points[3], 1, defaulttype::Vec<4,float>(0,1,0));
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points[0], 1, defaulttype::Vec<4,float>(1,0,1,1));
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points[1], 1, defaulttype::Vec<4,float>(0,1,1,1));
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points[2], 1, defaulttype::Vec<4,float>(1,0,0,1));
+    simulation::tree::getSimulation()->DrawUtility.drawLines(points[3], 1, defaulttype::Vec<4,float>(0,1,0,1));
 
 
     std::vector< defaulttype::Vector3 > pointsN;
@@ -188,7 +188,7 @@ void PenalityContactForceField<DataTypes>::draw()
             pointsN.push_back(p2[c.m2]);
             pointsN.push_back(p);
         }
-        simulation::tree::getSimulation()->DrawUtility.drawLines(pointsN, 1, defaulttype::Vec<4,float>(1,1,0));
+        simulation::tree::getSimulation()->DrawUtility.drawLines(pointsN, 1, defaulttype::Vec<4,float>(1,1,0,1));
     }
     simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }

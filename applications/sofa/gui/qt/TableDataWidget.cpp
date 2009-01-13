@@ -140,8 +140,8 @@ Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaultty
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::forcefield::LinearSpring<float> > > > DWClass_vectorLinearSpringf("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::forcefield::LinearSpring<double> > > > DWClass_vectorLinearSpringd("default",true);
 
-Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::forcefield::JointSpring<sofa::defaulttype::Rigid2fTypes> > > > DWClass_vectorJointSpring2f("default",true);
-Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::forcefield::JointSpring<sofa::defaulttype::Rigid2dTypes> > > > DWClass_vectorJointSpring2d("default",true);
+//Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::forcefield::JointSpring<sofa::defaulttype::Rigid2fTypes> > > > DWClass_vectorJointSpring2f("default",true);
+//Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::forcefield::JointSpring<sofa::defaulttype::Rigid2dTypes> > > > DWClass_vectorJointSpring2d("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::forcefield::JointSpring<sofa::defaulttype::Rigid3fTypes> > > > DWClass_vectorJointSpring3f("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::forcefield::JointSpring<sofa::defaulttype::Rigid3dTypes> > > > DWClass_vectorJointSpring3d("default",true);
 
