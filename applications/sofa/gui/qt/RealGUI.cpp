@@ -466,8 +466,12 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
         globalLayout->addWidget(background[i],1,i+1);
         connect( background[i], SIGNAL( returnPressed() ), this, SLOT( updateViewerParameters() ) );
     }
-
+#ifdef SOFA_QT4
+    vboxLayout4->insertWidget(1,groupInfo);
+#else
     TabPageLayout->insertWidget(1,groupInfo);
+#endif
+
     //---------------------------------------------------------------------------------------------------
 #ifdef SOFA_PML
     pmlreader = NULL;
