@@ -38,6 +38,7 @@
 #define SOFA_COMPONENT_CONTROLLER_CONTROLLER_H
 
 #include <sofa/core/componentmodel/behavior/BaseController.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -72,7 +73,7 @@ namespace controller
  * Provides also an interface for BeginAnimation and EndAnimation events
  * launched at the beginning and the end of a time step.
  */
-class Controller : public virtual core::componentmodel::behavior::BaseController
+class SOFA_COMPONENT_CONTROLLER_API Controller : public virtual core::componentmodel::behavior::BaseController
 {
 
 public:
@@ -80,6 +81,11 @@ public:
     * @brief Default constructor.
     */
     Controller();
+
+    /**
+    * @brief Destructor.
+    */
+    virtual ~Controller();
 
     /**
     * @brief Mouse event callback.

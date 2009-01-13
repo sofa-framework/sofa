@@ -28,6 +28,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/rmath.h>
+#include <sofa/component/component.h>
 #include <iostream>
 
 
@@ -50,7 +51,7 @@ using namespace sofa::helper;
 #define DEBUGGRID
 #endif
 
-class Grid3D
+class SOFA_COMPONENT_BEHAVIORMODEL_API Grid3D
 {
 public:
 

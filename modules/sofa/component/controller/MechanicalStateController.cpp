@@ -33,7 +33,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-
+#define SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_CPP
 #include <sofa/component/controller/MechanicalStateController.inl>
 
 #include <sofa/core/ObjectFactory.h>
@@ -61,23 +61,12 @@ int MechanicalStateControllerClass = core::RegisterObject("")
 //.add< MechanicalStateController<Vec2dTypes> >()
 //.add< MechanicalStateController<Vec2fTypes> >()
         .add< MechanicalStateController<Vec1dTypes> >()
-//.add< MechanicalStateController<Vec1fTypes> >()
+        .add< MechanicalStateController<Vec1fTypes> >()
         .add< MechanicalStateController<Rigid3dTypes> >()
         .add< MechanicalStateController<Rigid3fTypes> >()
 //.add< MechanicalStateController<Rigid2dTypes> >()
 //.add< MechanicalStateController<Rigid2fTypes> >()
         ;
-
-//template class MechanicalStateController<Vec3dTypes>;
-//template class MechanicalStateController<Vec3fTypes>;
-//template class MechanicalStateController<Vec2dTypes>;
-//template class MechanicalStateController<Vec2fTypes>;
-template class MechanicalStateController<Vec1dTypes>;
-//template class MechanicalStateController<Vec1fTypes>;
-template class MechanicalStateController<Rigid3dTypes>;
-template class MechanicalStateController<Rigid3fTypes>;
-//template class MechanicalStateController<Rigid2dTypes>;
-//template class MechanicalStateController<Rigid2fTypes>;
 
 
 template <>
@@ -170,6 +159,108 @@ void MechanicalStateController<Vec1dTypes>::applyController()
     //	//sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
     //}
 };
+
+template <>
+void MechanicalStateController<Vec1fTypes>::applyController()
+{
+    using sofa::defaulttype::Quat;
+    using sofa::defaulttype::Vec;
+
+
+    //sout<<" applyController() : omni "<< omni << "  buttonOmni " <<buttonOmni<<sendl;
+
+    if(omni)
+    {
+        if(mState)
+        {
+
+            if(buttonOmni)
+            {
+                if ((*mState->getX0())[0].x() < -0.001f)
+                    (*mState->getX0())[0].x() += 0.05f;
+                else
+                    (*mState->getX0())[0].x() =  -0.001f;
+
+                if ((*mState->getX0())[1].x() > 0.001f)
+                    (*mState->getX0())[1].x() -= 0.05f;
+                else
+                    (*mState->getX0())[1].x() = 0.001f;
+            }
+            else
+            {
+                //sout<<"mouseMode==Release"<<sendl;
+
+                if ((*mState->getX0())[0].x() > -0.7f)
+                    (*mState->getX0())[0].x() -= 0.05f;
+                else
+                    (*mState->getX0())[0].x() = -0.7f;
+
+                if ((*mState->getX0())[1].x() < 0.7f)
+                    (*mState->getX0())[1].x() += 0.05f;
+                else
+                    (*mState->getX0())[1].x() = 0.7f;
+
+            }
+
+
+        }
+
+    }
+    else
+    {
+        //if (mState)
+        //{
+        //	if (mouseMode==BtLeft || mouseMode==BtRight)
+        //	{
+        //			//sout<<"mouseMode==BtLeft"<<sendl;
+
+        //			if ((*mState->getX0())[0].x() < -0.01f)
+        //				(*mState->getX0())[0].x() += 0.01f;
+        //			else
+        //				(*mState->getX0())[0].x() =  -0.01f;
+        //
+        //			if ((*mState->getX0())[1].x() > 0.01f)
+        //				(*mState->getX0())[1].x() -= 0.01f;
+        //			else
+        //				(*mState->getX0())[1].x() = 0.01f;
+
+        //	}
+        //	else
+        //	{
+        //			//sout<<"mouseMode==Release"<<sendl;
+
+        //			if ((*mState->getX0())[0].x() > -0.7f)
+        //				(*mState->getX0())[0].x() -= 0.01f;
+        //			else
+        //				(*mState->getX0())[0].x() = -0.7f;
+        //
+        //			if ((*mState->getX0())[1].x() < 0.7f)
+        //				(*mState->getX0())[1].x() += 0.01f;
+        //			else
+        //				(*mState->getX0())[1].x() = 0.7f;
+
+        //	}
+        //}
+    }
+
+
+
+    //	//sofa::simulation::tree::GNode *node = static_cast<sofa::simulation::tree::GNode*> (this->getContext());
+    //	//sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
+    //	//sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
+    //}
+};
+
+//template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec3dTypes>;
+//template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec3fTypes>;
+//template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec2dTypes>;
+//template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec2fTypes>;
+template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec1dTypes>;
+template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec1fTypes>;
+template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Rigid3dTypes>;
+template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Rigid3fTypes>;
+//template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Rigid2dTypes>;
+//template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Rigid2fTypes>;
 
 } // namespace controller
 

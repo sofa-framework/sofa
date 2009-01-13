@@ -208,7 +208,53 @@ void MechanicalStateController<DataTypes>::applyController()
 template <>
 void MechanicalStateController<Vec1dTypes>::applyController();
 
+template <>
+void MechanicalStateController<Vec1fTypes>::applyController();
 
+
+
+template <>
+void MechanicalStateController<Vec1fTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)
+{
+    //sout<<"MouseEvent detected"<<sendl;
+    eventX = mev->getPosX();
+    eventY = mev->getPosY();
+
+    switch (mev->getState())
+    {
+    case sofa::core::objectmodel::MouseEvent::LeftPressed :
+        mouseMode = BtLeft;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::LeftReleased :
+        mouseMode = None;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::RightPressed :
+        mouseMode = BtRight;
+        mouseSavedPosX = eventX;
+        mouseSavedPosY = eventY;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::RightReleased :
+        mouseMode = None;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::MiddlePressed :
+        mouseMode = BtMiddle;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::MiddleReleased :
+        mouseMode = None;
+        break;
+
+    default :
+        break;
+    }
+    if (handleEventTriggersUpdate.getValue())
+        applyController();
+
+}
 
 template <>
 void MechanicalStateController<Vec1dTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)

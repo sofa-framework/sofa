@@ -28,6 +28,8 @@
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -121,6 +123,20 @@ public:
     bool addBBox(double* minBBox, double* maxBBox);
 
 };
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_PLANEFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<defaulttype::Vec3dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<defaulttype::Vec2dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<defaulttype::Vec1dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<defaulttype::Vec3fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<defaulttype::Vec2fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<defaulttype::Vec1fTypes>;
+#endif
+#endif
 
 } // namespace forcefield
 

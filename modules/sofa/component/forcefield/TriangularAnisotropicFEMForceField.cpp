@@ -22,7 +22,9 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
+#define SOFA_COMPONENT_FORCEFIELD_TRIANGULARANISOTROPICFEMFORCEFIELD_CPP
 #include <sofa/component/forcefield/TriangularAnisotropicFEMForceField.h>
+#include <sofa/core/componentmodel/behavior/ForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/helper/gl/template.h>
@@ -312,10 +314,10 @@ int TriangularAnisotropicFEMForceFieldClass = core::RegisterObject("Triangular f
         ;
 
 #ifndef SOFA_FLOAT
-template class TriangularAnisotropicFEMForceField<Vec3dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API TriangularAnisotropicFEMForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class TriangularAnisotropicFEMForceField<Vec3fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API TriangularAnisotropicFEMForceField<Vec3fTypes>;
 #endif
 
 

@@ -64,6 +64,10 @@ JointSpringForceField<DataTypes>::JointSpringForceField()
 {
 }
 
+template<class DataTypes>
+JointSpringForceField<DataTypes>::~JointSpringForceField()
+{
+}
 
 template <class DataTypes>
 void JointSpringForceField<DataTypes>::init()

@@ -31,7 +31,7 @@
 #include <sofa/component/topology/FittedRegularGridTopology.h>
 #endif // SOFA_DEV
 #include <sofa/helper/vector.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 
 
@@ -148,7 +148,7 @@ protected:
 
 public:
     //For a faster contact handling with simplified compliance
-    void getRotation(Transformation& R, unsigned int nodeIdx);
+    inline void getRotation(Transformation& R, unsigned int nodeIdx);
 
 
     DataPtr< VecCoord > f_initialPoints; ///< the intial positions of the points
@@ -269,6 +269,16 @@ protected:
         needUpdateTopology = true;
     }
 };
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API TetrahedronFEMForceField<defaulttype::Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API TetrahedronFEMForceField<defaulttype::Vec3fTypes>;
+#endif
+#endif
 
 } // namespace forcefield
 

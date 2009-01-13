@@ -31,6 +31,7 @@
 #include <sofa/core/objectmodel/ContextObject.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -62,7 +63,7 @@ namespace contextobject
 
 /** Defines the local coordinate system with respect to its parent.
 */
-class CoordinateSystem : public core::objectmodel::ContextObject
+class SOFA_COMPONENT_CONTEXTOBJECT_API CoordinateSystem : public core::objectmodel::ContextObject
 {
 public:
     typedef core::objectmodel::BaseContext::SolidTypes SolidTypes;

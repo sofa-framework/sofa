@@ -25,7 +25,9 @@
 // Author: François Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
+#define SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_CPP
 #include <sofa/component/forcefield/SpringForceField.inl>
+#include <sofa/core/componentmodel/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/ObjectFactory.h>
@@ -62,16 +64,16 @@ int SpringForceFieldClass = core::RegisterObject("Springs")
 #endif
         ;
 #ifndef SOFA_FLOAT
-template class SpringForceField<Vec3dTypes>;
-template class SpringForceField<Vec2dTypes>;
-template class SpringForceField<Vec1dTypes>;
-template class SpringForceField<Vec6dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<Vec3dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<Vec2dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<Vec1dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<Vec6dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SpringForceField<Vec3fTypes>;
-template class SpringForceField<Vec2fTypes>;
-template class SpringForceField<Vec1fTypes>;
-template class SpringForceField<Vec6fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<Vec3fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<Vec2fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<Vec1fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<Vec6fTypes>;
 #endif
 
 

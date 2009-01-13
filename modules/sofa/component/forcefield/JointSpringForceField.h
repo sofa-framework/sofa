@@ -28,9 +28,10 @@
 
 #include <sofa/core/componentmodel/behavior/PairInteractionForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/defaulttype/Vec.h>
-#include <vector>
+#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Mat.h>
+#include <sofa/component/component.h>
+#include <vector>
 using namespace sofa::defaulttype;
 
 
@@ -303,6 +304,8 @@ public:
     JointSpringForceField(MechanicalState* object1, MechanicalState* object2);
     JointSpringForceField();
 
+    virtual ~JointSpringForceField();
+
     core::componentmodel::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
     core::componentmodel::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }
 
@@ -347,6 +350,11 @@ public:
 
 };
 
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+extern template class SOFA_COMPONENT_FORCEFIELD_API JointSpringForceField<defaulttype::Rigid3dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API JointSpringForceField<defaulttype::Rigid3fTypes>;
+#endif
 } // namespace forcefield
 
 } // namespace component
