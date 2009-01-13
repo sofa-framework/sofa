@@ -30,8 +30,9 @@
 
 #include <sofa/core/componentmodel/behavior/PairInteractionForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/vector.h>
+#include <sofa/component/component.h>
 
 
 namespace sofa
@@ -164,6 +165,22 @@ public:
 
     virtual void handleTopologyChange(core::componentmodel::topology::Topology *topo);
 };
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<defaulttype::Vec3dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<defaulttype::Vec2dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<defaulttype::Vec1dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<defaulttype::Vec6dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<defaulttype::Vec3fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<defaulttype::Vec2fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<defaulttype::Vec1fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<defaulttype::Vec6fTypes>;
+#endif
+#endif
 
 } // namespace forcefield
 

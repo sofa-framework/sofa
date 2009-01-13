@@ -25,7 +25,9 @@
 // Author: François Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
+#define SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_CPP
 #include <sofa/component/forcefield/JointSpringForceField.inl>
+#include <sofa/core/componentmodel/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/ObjectFactory.h>
@@ -57,10 +59,10 @@ int JointSpringForceFieldClass = core::RegisterObject("Springs for Rigids")
         ;
 
 #ifndef SOFA_FLOAT
-template class JointSpringForceField<Rigid3dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API JointSpringForceField<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class JointSpringForceField<Rigid3fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API JointSpringForceField<defaulttype::Rigid3fTypes>;
 #endif
 
 

@@ -65,7 +65,10 @@ Controller::Controller()
 
 }
 
+Controller::~Controller()
+{
 
+}
 
 void Controller::handleEvent(core::objectmodel::Event *event)
 {

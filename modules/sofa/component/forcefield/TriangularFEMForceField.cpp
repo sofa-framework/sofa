@@ -22,8 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_CPP
 #include <sofa/component/forcefield/TriangularFEMForceField.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/componentmodel/behavior/ForceField.inl>
 #include <sofa/helper/gl/template.h>
 #include <sofa/component/topology/TriangleData.inl>
 #include <sofa/component/topology/EdgeData.inl>
@@ -1442,10 +1444,10 @@ int TriangularFEMForceFieldClass = core::RegisterObject("Triangular finite eleme
         ;
 
 #ifndef SOFA_FLOAT
-template class TriangularFEMForceField<Vec3dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API TriangularFEMForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class TriangularFEMForceField<Vec3fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API TriangularFEMForceField<Vec3fTypes>;
 #endif
 
 

@@ -23,7 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/forcefield/HexahedronFEMForceFieldAndMass.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/componentmodel/behavior/Mass.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

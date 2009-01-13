@@ -64,7 +64,7 @@ using sofa::component::container::ArticulatedHierarchyContainer;
  * Mouse Buttons and Wheel are controlling the value.
  * Keyboard is used to select the controlled articulation.
  */
-class ArticulatedHierarchyController : public Controller
+class SOFA_COMPONENT_CONTROLLER_API ArticulatedHierarchyController : public Controller
 {
 public:
     typedef std::vector< ArticulatedHierarchyContainer::ArticulationCenter * > ArtCenterVec;
@@ -162,6 +162,7 @@ protected:
 
     ArtCenterVec m_artCenterVec; ///< List of ArticulationCenters controlled by the controller.
 };
+
 
 } // namespace controller
 

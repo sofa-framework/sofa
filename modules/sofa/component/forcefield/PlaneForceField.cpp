@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_PLANEFORCEFIELD_CPP
 #include <sofa/component/forcefield/PlaneForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
@@ -55,16 +56,16 @@ int PlaneForceFieldClass = core::RegisterObject("Repulsion applied by a plane to
 #endif
         ;
 #ifndef SOFA_FLOAT
-template class PlaneForceField<Vec3dTypes>;
-template class PlaneForceField<Vec2dTypes>;
-template class PlaneForceField<Vec1dTypes>;
-template class PlaneForceField<Vec6dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<Vec3dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<Vec2dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<Vec1dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<Vec6dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class PlaneForceField<Vec3fTypes>;
-template class PlaneForceField<Vec2fTypes>;
-template class PlaneForceField<Vec1fTypes>;
-template class PlaneForceField<Vec6fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<Vec3fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<Vec2fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<Vec1fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<Vec6fTypes>;
 #endif
 
 } // namespace forcefield

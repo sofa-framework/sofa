@@ -27,6 +27,7 @@
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/objectmodel/ContextObject.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -48,7 +49,7 @@ namespace contextobject
 using namespace sofa::defaulttype;
 
 /** Override the default gravity */
-class Gravity : public core::objectmodel::ContextObject
+class SOFA_COMPONENT_CONTEXTOBJECT_API Gravity : public core::objectmodel::ContextObject
 {
 public:
     Gravity();

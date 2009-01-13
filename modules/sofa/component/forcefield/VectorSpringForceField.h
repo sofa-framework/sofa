@@ -28,7 +28,7 @@
 #include <sofa/component/forcefield/SpringForceField.h>
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/topology/EdgeData.h>
 #include <sofa/component/topology/TopologyChangedEvent.h>
@@ -165,6 +165,16 @@ public:
     friend class Loader;
 
 };
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_VECTORSPRINGFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API VectorSpringForceField<defaulttype::Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API VectorSpringForceField<defaulttype::Vec3fTypes>;
+#endif
+#endif
 
 } // namespace forcefield
 

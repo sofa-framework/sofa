@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_CPP
 #include <sofa/component/forcefield/BeamFEMForceField.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -55,10 +56,10 @@ int BeamFEMForceFieldClass = core::RegisterObject("Beam finite elements")
         ;
 
 #ifndef SOFA_FLOAT
-template class BeamFEMForceField<Rigid3dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API BeamFEMForceField<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class BeamFEMForceField<Rigid3fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API BeamFEMForceField<Rigid3fTypes>;
 #endif
 
 } // namespace forcefield

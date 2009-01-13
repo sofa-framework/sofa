@@ -222,6 +222,16 @@ protected:
 
 };
 
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API BeamFEMForceField<defaulttype::Rigid3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API BeamFEMForceField<defaulttype::Rigid3fTypes>;
+#endif
+#endif
+
 } // namespace forcefield
 
 } // namespace component

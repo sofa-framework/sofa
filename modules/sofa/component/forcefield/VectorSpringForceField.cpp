@@ -22,7 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_FORCEFIELD_VECTORSPRINGFORCEFIELD_CPP
 #include <sofa/component/forcefield/VectorSpringForceField.inl>
+#include <sofa/core/componentmodel/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -49,10 +51,10 @@ int VectorSpringForceFieldClass = core::RegisterObject("Spring force field actin
         ;
 
 #ifndef SOFA_FLOAT
-template class VectorSpringForceField<Vec3dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API VectorSpringForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class VectorSpringForceField<Vec3fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API VectorSpringForceField<Vec3fTypes>;
 #endif
 
 

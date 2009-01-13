@@ -31,7 +31,7 @@
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/topology/TriangleData.h>
 #include <sofa/component/topology/EdgeData.h>
@@ -231,6 +231,16 @@ protected :
     void applyStiffnessLarge( VecCoord& f, Real h, const VecCoord& x );
 };
 
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API TriangularFEMForceField<defaulttype::Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API TriangularFEMForceField<defaulttype::Vec3fTypes>;
+#endif
+#endif
 
 } // namespace forcefield
 

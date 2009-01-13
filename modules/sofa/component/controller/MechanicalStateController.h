@@ -38,11 +38,10 @@
 #define SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_H
 
 #include <sofa/component/controller/Controller.h>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/Quat.h>
-
-namespace sofa { namespace core { namespace componentmodel { namespace behavior { template<class DataTypes> class MechanicalState; } } } }
-
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -180,6 +179,26 @@ protected:
     Quat orientation;
     bool buttonOmni;
 };
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_CPP)
+#pragma warning(disable : 4231)
+//#ifndef SOFA_FLOAT
+//extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Vec3dTypes>;
+//extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Vec2dTypes>;
+extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Vec1dTypes>;
+//extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Vec6dTypes>;
+extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Rigid3dTypes>;
+//extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Rigid2dTypes>;
+//#endif
+//#ifndef SOFA_DOUBLE
+//extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Vec3fTypes>;
+//extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Vec2fTypes>;
+extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Vec1fTypes>;
+//extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Vec6fTypes>;
+extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Rigid3fTypes>;
+//extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Rigid2fTypes>;
+//#endif
+#endif
 
 } // namespace controller
 
