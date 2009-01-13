@@ -625,7 +625,7 @@ void GraphModeler::saveComponent(BaseObject* object, std::string file)
     std::ofstream out(file.c_str());
     simulation::XMLPrintVisitor print(out);
     out << "<Node name=\"Group\">\n";
-    print.processObject(object);
+    print.processBaseObject(object);
     out << "</Node>\n";
 }
 

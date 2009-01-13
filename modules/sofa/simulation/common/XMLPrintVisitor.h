@@ -54,6 +54,8 @@ public:
     template<class Seq>
     void processObjects(Seq& list);
 
+    void processBaseObject(core::objectmodel::BaseObject* obj);
+
     virtual Result processNodeTopDown(simulation::Node* node);
     virtual void processNodeBottomUp(simulation::Node* node);
     virtual const char* getClassName() const { return "XMLPrintVisitor"; }
