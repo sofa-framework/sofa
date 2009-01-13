@@ -567,7 +567,7 @@ public:
     static const DPos& getDPos(const Deriv& d) { return d.getVCenter(); }
     static void setDPos(Deriv& d, const DPos& v) { d.getVCenter() = v; }
     static const DRot& getDRot(const Deriv& d) { return d.getVOrientation(); }
-    static void setDRot(Deriv& d, const DRot& v) { c.getVOrientation() = v; }
+    static void setDRot(Deriv& d, const DRot& v) { d.getVOrientation() = v; }
 
     template <class T>
     class SparseData
@@ -1175,7 +1175,7 @@ public:
     static const DPos& getDPos(const Deriv& d) { return d.getVCenter(); }
     static void setDPos(Deriv& d, const DPos& v) { d.getVCenter() = v; }
     static const DRot& getDRot(const Deriv& d) { return d.getVOrientation(); }
-    static void setDRot(Deriv& d, const DRot& v) { c.getVOrientation() = v; }
+    static void setDRot(Deriv& d, const DRot& v) { d.getVOrientation() = v; }
 
     static const char* Name();
 
