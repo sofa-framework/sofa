@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: François Faure, INRIA-UJF, (C) 2006
+// Author: Hadrien Courtecuisse
 //
 // Copyright: See COPYING file that comes with this distribution
 #include <sofa/component/linearsolver/JacobiPreconditioner.h>
