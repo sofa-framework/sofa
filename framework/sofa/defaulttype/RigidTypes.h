@@ -69,6 +69,8 @@ class RigidDeriv<3, real>
 public:
     typedef real value_type;
     typedef real Real;
+    typedef Vec<3,Real> Pos;
+    typedef Vec<3,Real> Rot;
     typedef Vec<3,Real> Vec3;
     typedef helper::Quater<Real> Quat;
 
@@ -122,6 +124,13 @@ public:
     {
         vCenter *= a;
         vOrientation *= a;
+    }
+
+    template<typename real2>
+    void operator/=(real2 a)
+    {
+        vCenter /= a;
+        vOrientation /= a;
     }
 
     RigidDeriv<3,real> operator*(float a) const
@@ -214,6 +223,8 @@ class RigidCoord<3,real>
 public:
     typedef real value_type;
     typedef real Real;
+    typedef Vec<3,Real> Pos;
+    typedef helper::Quater<Real> Rot;
     typedef Vec<3,Real> Vec3;
     typedef helper::Quater<Real> Quat;
 
@@ -293,6 +304,14 @@ public:
         //std::cout << "*="<<std::endl;
         center *= a;
         //orientation *= a;
+    }
+
+    template<typename real2>
+    void operator/=(real2 a)
+    {
+        //std::cout << "/="<<std::endl;
+        center /= a;
+        //orientation /= a;
     }
 
     template<typename real2>
@@ -499,6 +518,12 @@ public:
         inertiaMassMatrix *= fact;
         invInertiaMassMatrix /= fact;
     }
+    void operator /=(Real fact)
+    {
+        mass /= fact;
+        inertiaMassMatrix /= fact;
+        invInertiaMassMatrix *= fact;
+    }
 };
 
 template<int N, typename real>
@@ -529,6 +554,20 @@ public:
     typedef RigidDeriv<3,real> Deriv;
     typedef typename Coord::Vec3 Vec3;
     typedef typename Coord::Quat Quat;
+
+    typedef typename Coord::Pos CPos;
+    typedef typename Coord::Rot CRot;
+    static const CPos& getCPos(const Coord& c) { return c.getCenter(); }
+    static void setCPos(Coord& c, const CPos& v) { c.getCenter() = v; }
+    static const CRot& getCRot(const Coord& c) { return c.getOrientation(); }
+    static void setCRot(Coord& c, const CRot& v) { c.getOrientation() = v; }
+
+    typedef typename Deriv::Pos DPos;
+    typedef typename Deriv::Rot DRot;
+    static const DPos& getDPos(const Deriv& d) { return d.getVCenter(); }
+    static void setDPos(Deriv& d, const DPos& v) { d.getVCenter() = v; }
+    static const DRot& getDRot(const Deriv& d) { return d.getVOrientation(); }
+    static void setDRot(Deriv& d, const DRot& v) { c.getVOrientation() = v; }
 
     template <class T>
     class SparseData
@@ -689,6 +728,8 @@ class RigidDeriv<2,real>
 public:
     typedef real value_type;
     typedef real Real;
+    typedef Vec<2,Real> Pos;
+    typedef Real Rot;
     typedef Vec<2,Real> Vec2;
 private:
     Vec2 vCenter;
@@ -721,6 +762,13 @@ public:
     {
         vCenter *= a;
         vOrientation *= (Real)a;
+    }
+
+    template<typename real2>
+    void operator/=(real2 a)
+    {
+        vCenter /= a;
+        vOrientation /= (Real)a;
     }
 
     RigidDeriv<2,real> operator*(float a) const
@@ -798,6 +846,8 @@ class RigidCoord<2,real>
 public:
     typedef real value_type;
     typedef real Real;
+    typedef Vec<2,Real> Pos;
+    typedef Real Rot;
     typedef Vec<2,Real> Vec2;
 private:
     Vec2 center;
@@ -846,6 +896,14 @@ public:
 //         std::cout << "*="<<std::endl;
         center *= a;
         orientation *= (Real)a;
+    }
+
+    template<typename real2>
+    void operator/=(real2 a)
+    {
+//         std::cout << "/="<<std::endl;
+        center /= a;
+        orientation /= (Real)a;
     }
 
     template<typename real2>
@@ -1085,6 +1143,12 @@ public:
         inertiaMassMatrix *= fact;
         invInertiaMassMatrix /= fact;
     }
+    void operator /=(Real fact)
+    {
+        mass /= fact;
+        inertiaMassMatrix /= fact;
+        invInertiaMassMatrix *= fact;
+    }
 };
 
 /** Degrees of freedom of 2D rigid bodies.
@@ -1098,6 +1162,20 @@ public:
 
     typedef RigidDeriv<2,Real> Deriv;
     typedef RigidCoord<2,Real> Coord;
+
+    typedef typename Coord::Pos CPos;
+    typedef typename Coord::Rot CRot;
+    static const CPos& getCPos(const Coord& c) { return c.getCenter(); }
+    static void setCPos(Coord& c, const CPos& v) { c.getCenter() = v; }
+    static const CRot& getCRot(const Coord& c) { return c.getOrientation(); }
+    static void setCRot(Coord& c, const CRot& v) { c.getOrientation() = v; }
+
+    typedef typename Deriv::Pos DPos;
+    typedef typename Deriv::Rot DRot;
+    static const DPos& getDPos(const Deriv& d) { return d.getVCenter(); }
+    static void setDPos(Deriv& d, const DPos& v) { d.getVCenter() = v; }
+    static const DRot& getDRot(const Deriv& d) { return d.getVOrientation(); }
+    static void setDRot(Deriv& d, const DRot& v) { c.getVOrientation() = v; }
 
     static const char* Name();
 

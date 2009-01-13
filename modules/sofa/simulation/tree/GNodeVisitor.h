@@ -33,8 +33,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef sofa_simulation_treeGNodeVisitor_h
-#define sofa_simulation_treeGNodeVisitor_h
+#ifndef sofa_simulation_tree_GNodeVisitor_h
+#define sofa_simulation_tree_GNodeVisitor_h
 
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/simulation/tree/GNode.h>
@@ -53,7 +53,7 @@ Base class for the Visitors which deal with GNodes specifically rather than Node
 
 	@author The SOFA team </www.sofa-framework.org>
 */
-class GNodeVisitor : public sofa::simulation::Visitor
+class SOFA_SIMULATION_TREE_API GNodeVisitor : public sofa::simulation::Visitor
 {
 public:
     GNodeVisitor();

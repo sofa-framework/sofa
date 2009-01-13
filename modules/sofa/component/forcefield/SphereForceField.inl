@@ -109,7 +109,7 @@ void SphereForceField<DataTypes>::addDForce(VecDeriv& df1, const VecDeriv& dx1, 
         const Contact& c = (this->contacts.getValue())[i];
         assert((unsigned)c.index<dx1.size());
         Deriv du = dx1[c.index];
-        Deriv dforce; dforce = fact*(c.normal * ((du*c.normal)*c.fact) + du * (1 - c.fact));
+        Deriv dforce; dforce = (c.normal * ((du*c.normal)*c.fact) + du * (1 - c.fact)) * fact;
         df1[c.index] += dforce;
     }
 }

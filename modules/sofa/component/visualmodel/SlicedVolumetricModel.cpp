@@ -289,7 +289,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
         nbintersections = 0;
 
         // trouver le centre du plan de coupe
-        Coord planeCenter = lastPoint + actualPlane * _planeSeparations * _planeNormal;
+        Coord planeCenter = lastPoint + _planeNormal * (actualPlane * _planeSeparations);
         Real planeConstant = _planeNormal * planeCenter;
 
         EdgesMap _edgesMap;
@@ -349,14 +349,14 @@ void SlicedVolumetricModel::findAndDrawTriangles()
                     if( howmany == 1 )
                     {
 
-                        Coord w = s0 + where * dir;
+                        Coord w = s0 + dir * where;
 
 
                         Coord st0 ( _textureCoordinates[cell[e0]] );
                         Coord dir2 = _textureCoordinates[cell[e1]]-st0;
 
 
-                        Intersection inter( w, st0 + where*dir2);
+                        Intersection inter( w, st0 + dir2 * where);
                         intersections.push_back( inter );
 
                         _edgesMap[e]=inter;

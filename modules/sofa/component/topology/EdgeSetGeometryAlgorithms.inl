@@ -44,7 +44,7 @@ typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeEdgeLeng
 {
     const Edge &e = this->m_topology->getEdge(i);
     const VecCoord& p = *(this->object->getX());
-    const Real length = (p[e[0]]-p[e[1]]).norm();
+    const Real length = (DataTypes::getCPos(p[e[0]])-DataTypes::getCPos(p[e[1]])).norm();
     return length;
 }
 
@@ -53,7 +53,7 @@ typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeRestEdge
 {
     const Edge &e = this->m_topology->getEdge(i);
     const VecCoord& p = *(this->object->getX0());
-    const Real length = (p[e[0]]-p[e[1]]).norm();
+    const Real length = (DataTypes::getCPos(p[e[0]])-DataTypes::getCPos(p[e[1]])).norm();
     return length;
 }
 
@@ -62,7 +62,7 @@ typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeRestSqua
 {
     const Edge &e = this->m_topology->getEdge(i);
     const VecCoord& p = *(this->object->getX0());
-    const Real length = (p[e[0]]-p[e[1]]).norm2();
+    const Real length = (DataTypes::getCPos(p[e[0]])-DataTypes::getCPos(p[e[1]])).norm2();
     return length;
 }
 
@@ -76,25 +76,20 @@ void EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeLength( BasicArrayInterfac
     for (unsigned int i=0; i<ea.size(); ++i)
     {
         const Edge &e = ea[i];
-        ai[i] = (p[e[0]]-p[e[1]]).norm();
+        ai[i] = (DataTypes::getCPos(p[e[0]])-DataTypes::getCPos(p[e[1]])).norm();
     }
 }
 
 template<class DataTypes>
-void EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeAABB(const EdgeID i, Coord& minCoord, Coord& maxCoord) const
+void EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeAABB(const EdgeID i, CPos& minCoord, CPos& maxCoord) const
 {
     const Edge &e = this->m_topology->getEdge(i);
     const typename DataTypes::VecCoord& p = *(this->object->getX());
-
-    const Coord sum(p[e[0]] + p[e[1]]);
-    Coord dif(p[e[1]] - p[e[0]]);
-
-    if(dif[0] < 0) dif[0] = p[e[0]][0] - p[e[1]][0];
-    if(dif[1] < 0) dif[1] = p[e[0]][1] - p[e[1]][1];
-    if(dif[2] < 0) dif[2] = p[e[0]][2] - p[e[1]][2];
-
-    minCoord = (sum-dif) * (Real) 0.5;
-    maxCoord = (sum+dif) * (Real) 0.5;
+    const CPos& a = DataTypes::getCPos(p[e[0]]);
+    const CPos& b = DataTypes::getCPos(p[e[1]]);
+    for (int c=0; c<NC; ++c)
+        if (a[c] < b[c]) { minCoord[c] = a[c]; maxCoord[c] = b[c]; }
+        else             { minCoord[c] = b[c]; maxCoord[c] = a[c]; }
 }
 
 template<class DataTypes>
@@ -145,8 +140,10 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::isPointOnEdge(const sofa::defaulttype
     Coord vertices[2];
     getEdgeVertexCoordinates(ind_e, vertices);
 
-    sofa::defaulttype::Vec<3,double> p1(vertices[0][0], vertices[0][1], vertices[0][2]);
-    sofa::defaulttype::Vec<3,double> p2(vertices[1][0], vertices[1][1], vertices[1][2]);
+    sofa::defaulttype::Vec<3,double> p1; //(vertices[0][0], vertices[0][1], vertices[0][2]);
+    sofa::defaulttype::Vec<3,double> p2; //(vertices[1][0], vertices[1][1], vertices[1][2]);
+    DataTypes::get(p1[0], p1[1], p1[2], vertices[0]);
+    DataTypes::get(p2[0], p2[1], p2[2], vertices[1]);
 
     sofa::defaulttype::Vec<3,double> v = (p0 - p1).cross(p0 - p2);
 
@@ -171,14 +168,8 @@ sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::compute2Poi
     const typename DataTypes::Coord& c0 = vect_c[ind_p1];
     const typename DataTypes::Coord& c1 = vect_c[ind_p2];
 
-    Vec<3,Real> a;
-    a[0] = (Real) (c0[0]);
-    a[1] = (Real) (c0[1]);
-    a[2] = (Real) (c0[2]);
-    Vec<3,Real> b;
-    b[0] = (Real) (c1[0]);
-    b[1] = (Real) (c1[1]);
-    b[2] = (Real) (c1[2]);
+    Vec<3,double> a; DataTypes::get(a[0], a[1], a[2], c0);
+    Vec<3,double> b; DataTypes::get(a[0], a[1], a[2], c1);
 
     double dis = (b - a).norm();
     double coef_a, coef_b;
@@ -217,9 +208,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) co
 
     for (unsigned int i=0; i<numVertices; ++i)
     {
-        double x = (double) vect_c[i][0];
-        double y = (double) vect_c[i][1];
-        double z = (double) vect_c[i][2];
+        double x=0,y=0,z=0; DataTypes::get(x,y,z, vect_c[i]);
 
         myfile << i+1 << " " << x << " " << y << " " << z <<"\n";
     }

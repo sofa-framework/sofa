@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
+#define SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYALGORITHMS_CPP
 #include <sofa/component/topology/PointSetTopologyAlgorithms.inl>
 
 
@@ -55,17 +56,23 @@ int PointSetTopologyAlgorithmsClass = core::RegisterObject("Point set topology a
         .add< PointSetTopologyAlgorithms<Vec1fTypes> >()
 #endif
         ;
+
 #ifndef SOFA_FLOAT
-template class PointSetTopologyAlgorithms<Vec3dTypes>;
-template class PointSetTopologyAlgorithms<Vec2dTypes>;
-template class PointSetTopologyAlgorithms<Vec1dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<Vec3dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<Vec2dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<Vec1dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<Rigid3dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<Rigid2dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class PointSetTopologyAlgorithms<Vec3fTypes>;
-template class PointSetTopologyAlgorithms<Vec2fTypes>;
-template class PointSetTopologyAlgorithms<Vec1fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<Vec3fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<Vec2fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<Vec1fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<Rigid3fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API PointSetTopologyAlgorithms<Rigid2fTypes>;
 #endif
+
 } // namespace topology
 
 } // namespace component

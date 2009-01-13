@@ -42,7 +42,7 @@ namespace sofa
 namespace simulation
 {
 
-class VisualVisitor : public Visitor
+class SOFA_SIMULATION_COMMON_API VisualVisitor : public Visitor
 {
 public:
     virtual void processVisualModel(simulation::Node* node, core::VisualModel* vm) = 0;
@@ -61,7 +61,7 @@ public:
     virtual const char* getClassName() const { return "VisualVisitor"; }
 };
 
-class VisualDrawVisitor : public VisualVisitor
+class SOFA_SIMULATION_COMMON_API VisualDrawVisitor : public VisualVisitor
 {
 public:
     typedef core::VisualModel::Pass Pass;
@@ -83,21 +83,21 @@ public:
 #endif
 };
 
-class VisualUpdateVisitor : public VisualVisitor
+class SOFA_SIMULATION_COMMON_API VisualUpdateVisitor : public VisualVisitor
 {
 public:
     virtual void processVisualModel(simulation::Node*, core::VisualModel* vm);
     virtual const char* getClassName() const { return "VisualUpdateVisitor"; }
 };
 
-class VisualInitVisitor : public VisualVisitor
+class SOFA_SIMULATION_COMMON_API VisualInitVisitor : public VisualVisitor
 {
 public:
     virtual void processVisualModel(simulation::Node*, core::VisualModel* vm);
     virtual const char* getClassName() const { return "VisualInitVisitor"; }
 };
 
-class VisualComputeBBoxVisitor : public Visitor
+class SOFA_SIMULATION_COMMON_API VisualComputeBBoxVisitor : public Visitor
 {
 public:
     double minBBox[3];

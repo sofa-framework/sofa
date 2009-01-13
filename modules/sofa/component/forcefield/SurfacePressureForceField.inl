@@ -166,7 +166,7 @@ void SurfacePressureForceField<DataTypes>::addTriangleSurfacePressure(VecDeriv& 
             Deriv ab = x[t[1]] - x[t[0]];
             Deriv ac = x[t[2]] - x[t[0]];
 
-            Deriv p = pressure * (ab.cross(ac)) / static_cast<Real>(6.0);
+            Deriv p = (ab.cross(ac)) * (pressure / static_cast<Real>(6.0));
 
             if (m_mainDirection.getValue() != Deriv())
             {
@@ -200,8 +200,8 @@ void SurfacePressureForceField<DataTypes>::addQuadSurfacePressure(VecDeriv& f, c
             Deriv ac = x[q[2]] - x[q[0]];
             Deriv ad = x[q[3]] - x[q[0]];
 
-            Deriv p1 = pressure * (ab.cross(ac)) / static_cast<Real>(6.0);
-            Deriv p2 = pressure * (ac.cross(ad)) / static_cast<Real>(6.0);
+            Deriv p1 = (ab.cross(ac)) * (pressure / static_cast<Real>(6.0));
+            Deriv p2 = (ac.cross(ad)) * (pressure / static_cast<Real>(6.0));
 
             Deriv p = p1 + p2;
 

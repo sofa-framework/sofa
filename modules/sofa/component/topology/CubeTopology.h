@@ -39,7 +39,7 @@ namespace topology
 
 using namespace sofa::defaulttype;
 
-class CubeTopology : public MeshTopology
+class SOFA_COMPONENT_CONTAINER_API CubeTopology : public MeshTopology
 {
 public:
 

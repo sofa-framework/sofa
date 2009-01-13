@@ -429,6 +429,12 @@ public:
         return r;
     }
 
+    /// Scalar matrix multiplication operator.
+    friend Mat<L,C,real> operator*(real r, const Mat<L,C,real>& m)
+    {
+        return m*r;
+    }
+
     /// Scalar division operator.
     Mat<L,C,real> operator/(real f) const
     {
@@ -1202,14 +1208,5 @@ inline Mat<L,C,T> dyad( const Vec<L,T>& u, const Vec<C,T>& v )
 } // namespace sofa
 
 // iostream
-
-
-
-/// Scalar matrix multiplication operator.
-template <int L, int C, typename real>
-sofa::defaulttype::Mat<L,C,real> operator*(real r, const sofa::defaulttype::Mat<L,C,real>& m)
-{
-    return m*r;
-}
 
 #endif

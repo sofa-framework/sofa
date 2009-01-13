@@ -61,7 +61,7 @@ During the second traversal (bottom-up), method processNodeBottomUp(simulation::
 The default behavior of the fwd* and bwd* is to do nothing. Derived actions typically overload these methods to implement the desired processing.
 
 */
-class MechanicalMatrixVisitor : public Visitor
+class SOFA_SIMULATION_COMMON_API MechanicalMatrixVisitor : public Visitor
 {
 public:
     typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
@@ -181,7 +181,7 @@ public:
 
 
 /** Compute the size of a dynamics matrix (mass or stiffness) of the whole scene */
-class MechanicalGetMatrixDimensionVisitor : public MechanicalMatrixVisitor
+class SOFA_SIMULATION_COMMON_API MechanicalGetMatrixDimensionVisitor : public MechanicalMatrixVisitor
 {
 public:
     unsigned int * const nbRow;
@@ -203,7 +203,7 @@ public:
 
 
 /** Accumulate the entries of a dynamics matrix (mass or stiffness) of the whole scene */
-class MechanicalAddMBK_ToMatrixVisitor : public MechanicalMatrixVisitor
+class SOFA_SIMULATION_COMMON_API MechanicalAddMBK_ToMatrixVisitor : public MechanicalMatrixVisitor
 {
 public:
     BaseMatrix *mat;
@@ -266,7 +266,7 @@ public:
 
 #if 0 // deprecated: as dx is stored in MechanicalState, compute df there and then convert to BaseVector using MechanicalMultiVector2BaseVectorVisitor
 /** Accumulate the entries of a dynamics vector (e.g. force) of the whole scene */
-class MechanicalAddMBKdx_ToVectorVisitor : public MechanicalMatrixVisitor
+class SOFA_SIMULATION_COMMON_API MechanicalAddMBKdx_ToVectorVisitor : public MechanicalMatrixVisitor
 {
 public:
     BaseVector *vect;
@@ -330,7 +330,7 @@ public:
 };
 #endif
 
-class MechanicalMultiVector2BaseVectorVisitor : public MechanicalMatrixVisitor
+class SOFA_SIMULATION_COMMON_API MechanicalMultiVector2BaseVectorVisitor : public MechanicalMatrixVisitor
 {
 public:
     VecId src;
@@ -357,7 +357,7 @@ public:
     }
 };
 
-class MechanicalMultiVectorPeqBaseVectorVisitor : public MechanicalMatrixVisitor
+class SOFA_SIMULATION_COMMON_API MechanicalMultiVectorPeqBaseVectorVisitor : public MechanicalMatrixVisitor
 {
 public:
     BaseVector *src;

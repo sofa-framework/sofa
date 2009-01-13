@@ -36,6 +36,7 @@
 #include <sofa/gui/SofaGUI.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
+#include <sofa/helper/system/atomic.h>
 
 #ifndef WIN32
 #include <dlfcn.h>
@@ -64,6 +65,8 @@ bool loadPlugin(const char* /*filename*/)
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
+    std::cout << "Using " << sofa::helper::system::atomic<int>::getImplName()<<" atomics." << std::endl;
+
     sofa::helper::BackTrace::autodump();
 
 

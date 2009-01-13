@@ -82,7 +82,7 @@ void  PointSetGeometryAlgorithms<DataTypes>::getEnclosingSphere(typename DataTyp
 
     for(unsigned int i=0; i<numVertices; ++i)
     {
-        const Coord dp = center-p[i];
+        const CPos dp = DataTypes::getCPos(center)-DataTypes::getCPos(p[i]);
         const Real val = dot(dp,dp);
         if(val > radius)
             radius = val;
@@ -93,35 +93,32 @@ void  PointSetGeometryAlgorithms<DataTypes>::getEnclosingSphere(typename DataTyp
 template<class DataTypes>
 void  PointSetGeometryAlgorithms<DataTypes>::getAABB(typename DataTypes::Real bb[6] ) const
 {
-    Coord minCoord, maxCoord;
+    CPos minCoord, maxCoord;
     getAABB(minCoord, maxCoord);
 
-    bb[0] = minCoord[0];
-    bb[1] = minCoord[1];
-    bb[2] = minCoord[2];
-    bb[3] = maxCoord[0];
-    bb[4] = maxCoord[1];
-    bb[5] = maxCoord[2];
+    bb[0] = (NC>0) ? minCoord[0] : (Real)0;
+    bb[1] = (NC>1) ? minCoord[1] : (Real)0;
+    bb[2] = (NC>2) ? minCoord[2] : (Real)0;
+    bb[3] = (NC>0) ? maxCoord[0] : (Real)0;
+    bb[4] = (NC>1) ? maxCoord[1] : (Real)0;
+    bb[5] = (NC>2) ? maxCoord[2] : (Real)0;
 }
 
 template<class DataTypes>
-void PointSetGeometryAlgorithms<DataTypes>::getAABB(Coord& minCoord, Coord& maxCoord) const
+void PointSetGeometryAlgorithms<DataTypes>::getAABB(CPos& minCoord, CPos& maxCoord) const
 {
     // get current positions
-    typename DataTypes::VecCoord& p = *(object->getX());
+    const VecCoord& p = *(object->getX());
 
-    minCoord = p[0];
-    maxCoord = p[0];
+    minCoord = DataTypes::getCPos(p[0]);
+    maxCoord = minCoord;
 
     for(unsigned int i=1; i<p.size(); ++i)
     {
-        if(minCoord[0] > p[i][0]) minCoord[0] = p[i][0];
-        if(minCoord[1] > p[i][1]) minCoord[1] = p[i][1];
-        if(minCoord[2] > p[i][2]) minCoord[2] = p[i][2];
-
-        if(maxCoord[0] < p[i][0]) maxCoord[0] = p[i][0];
-        if(maxCoord[1] < p[i][1]) maxCoord[1] = p[i][1];
-        if(maxCoord[2] < p[i][2]) maxCoord[2] = p[i][2];
+        CPos pi = DataTypes::getCPos(p[i]);
+        for (unsigned int c=0; c<pi.size(); ++c)
+            if(minCoord[c] > pi[c]) minCoord[c] = pi[c];
+            else if(maxCoord[c] < pi[c]) maxCoord[c] = pi[c];
     }
 }
 

@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#define SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_CPP
 #include <sofa/component/topology/TetrahedronSetTopologyAlgorithms.h>
 #include <sofa/component/topology/TetrahedronSetTopologyAlgorithms.inl>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -59,15 +59,15 @@ int TetrahedronSetTopologyAlgorithmsClass = core::RegisterObject("Tetrahedron se
         ;
 
 #ifndef SOFA_FLOAT
-template class TetrahedronSetTopologyAlgorithms<Vec3dTypes>;
-template class TetrahedronSetTopologyAlgorithms<Vec2dTypes>;
-template class TetrahedronSetTopologyAlgorithms<Vec1dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<Vec3dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<Vec2dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<Vec1dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class TetrahedronSetTopologyAlgorithms<Vec3fTypes>;
-template class TetrahedronSetTopologyAlgorithms<Vec2fTypes>;
-template class TetrahedronSetTopologyAlgorithms<Vec1fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<Vec3fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<Vec2fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<Vec1fTypes>;
 #endif
 
 } // namespace topology

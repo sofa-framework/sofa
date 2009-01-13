@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_CPP
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/MechanicalMatrixVisitor.h>
@@ -161,7 +162,7 @@ template<>
 defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::getSystemLHBaseVector() { return NULL; }
 
 // Force template instantiation
-template class MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>;
+template class SOFA_COMPONENT_LINEARSOLVER_API MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>;
 
 } // namespace linearsolver
 

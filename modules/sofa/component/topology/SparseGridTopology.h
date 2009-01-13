@@ -52,7 +52,7 @@ using sofa::helper::MarchingCubeUtility;
 Valid cells are tagged by a Type BOUNDARY or INSIDE
 WARNING: the corresponding node in the XML file has to be placed BEFORE the MechanicalObject node, in order to excute its init() before the MechanicalObject one in order to be able to give dofs
    */
-class SparseGridTopology : public MeshTopology
+class SOFA_COMPONENT_CONTAINER_API SparseGridTopology : public MeshTopology
 {
 public:
 

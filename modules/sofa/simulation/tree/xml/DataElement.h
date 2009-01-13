@@ -40,7 +40,7 @@ namespace tree
 namespace xml
 {
 
-class DataElement : public Element<core::objectmodel::BaseObject>
+class SOFA_SIMULATION_TREE_API DataElement : public Element<core::objectmodel::BaseObject>
 {
 public:
     DataElement(const std::string& name, const std::string& type, BaseElement* parent=NULL);

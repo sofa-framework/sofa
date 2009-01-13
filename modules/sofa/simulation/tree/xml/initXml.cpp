@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
+#include <sofa/simulation/tree/xml/initXml.h>
 
 
 namespace sofa

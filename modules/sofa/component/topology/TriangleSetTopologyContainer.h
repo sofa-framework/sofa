@@ -51,7 +51,7 @@ typedef BaseMeshTopology::EdgeTriangles		EdgeTriangles;
 
 /** Object that stores a set of triangles and provides access
 to each triangle and its edges and vertices */
-class TriangleSetTopologyContainer : public EdgeSetTopologyContainer
+class SOFA_COMPONENT_CONTAINER_API TriangleSetTopologyContainer : public EdgeSetTopologyContainer
 {
     friend class TriangleSetTopologyModifier;
 

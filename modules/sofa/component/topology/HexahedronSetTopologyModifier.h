@@ -52,7 +52,7 @@ typedef HexaQuads HexahedronQuads;
 /**
 * A class that modifies the topology by adding and removing hexahedra
 */
-class HexahedronSetTopologyModifier : public QuadSetTopologyModifier
+class SOFA_COMPONENT_CONTAINER_API HexahedronSetTopologyModifier : public QuadSetTopologyModifier
 {
 public:
     HexahedronSetTopologyModifier()

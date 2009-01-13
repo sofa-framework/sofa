@@ -38,7 +38,7 @@ namespace tree
 {
 
 /// Specialized VisitorScheduler for parallel implementations.
-class ParallelVisitorScheduler : public simulation::VisitorScheduler
+class SOFA_SIMULATION_TREE_API ParallelVisitorScheduler : public simulation::VisitorScheduler
 {
 public:
     ParallelVisitorScheduler(bool propagate=false);

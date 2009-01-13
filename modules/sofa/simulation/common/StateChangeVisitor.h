@@ -34,7 +34,7 @@ namespace sofa
 namespace simulation
 {
 
-class StateChangeVisitor : public Visitor
+class SOFA_SIMULATION_COMMON_API StateChangeVisitor : public Visitor
 {
 
 public:

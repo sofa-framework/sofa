@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#define SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETGEOMETRYALGORITHMS_CPP
 #include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
 #include <sofa/component/topology/HexahedronSetGeometryAlgorithms.inl>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -57,15 +57,15 @@ int HexahedronSetGeometryAlgorithmsClass = core::RegisterObject("Hexahedron set 
         ;
 
 #ifndef SOFA_FLOAT
-template class HexahedronSetGeometryAlgorithms<Vec3dTypes>;
-template class HexahedronSetGeometryAlgorithms<Vec2dTypes>;
-template class HexahedronSetGeometryAlgorithms<Vec1dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec3dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec2dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec1dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class HexahedronSetGeometryAlgorithms<Vec3fTypes>;
-template class HexahedronSetGeometryAlgorithms<Vec2fTypes>;
-template class HexahedronSetGeometryAlgorithms<Vec1fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec3fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec2fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec1fTypes>;
 #endif
 
 } // namespace topology

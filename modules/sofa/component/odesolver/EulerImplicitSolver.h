@@ -42,7 +42,7 @@ using namespace sofa::defaulttype;
 
 /** Implicit time integrator using backward Euler scheme.
 */
-class EulerImplicitSolver : public sofa::component::odesolver::OdeSolverImpl
+class SOFA_COMPONENT_ODESOLVER_API EulerImplicitSolver : public sofa::component::odesolver::OdeSolverImpl
 {
 public:
 

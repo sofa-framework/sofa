@@ -34,7 +34,7 @@ namespace sofa
 namespace simulation
 {
 
-class UpdateContextVisitor : public Visitor
+class SOFA_SIMULATION_COMMON_API UpdateContextVisitor : public Visitor
 {
 public:
     UpdateContextVisitor():Visitor(), startingNode(NULL)
@@ -54,14 +54,14 @@ protected:
     Node* startingNode;
 };
 
-class UpdateSimulationContextVisitor : public UpdateContextVisitor
+class SOFA_SIMULATION_COMMON_API UpdateSimulationContextVisitor : public UpdateContextVisitor
 {
 public:
     virtual Result processNodeTopDown(simulation::Node* node);
     virtual const char* getClassName() const { return "UpdateSimulationContextVisitor"; }
 };
 
-class UpdateVisualContextVisitor : public UpdateContextVisitor
+class SOFA_SIMULATION_COMMON_API UpdateVisualContextVisitor : public UpdateContextVisitor
 {
 
 public:

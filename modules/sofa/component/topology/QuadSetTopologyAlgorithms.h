@@ -64,6 +64,25 @@ private:
     QuadSetGeometryAlgorithms< DataTypes >*		m_geometryAlgorithms;
 };
 
+#if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_QUADSETTOPOLOGYALGORITHMS_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_TOPOLOGY_API QuadSetTopologyAlgorithms<defaulttype::Vec3dTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API QuadSetTopologyAlgorithms<defaulttype::Vec2dTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API QuadSetTopologyAlgorithms<defaulttype::Vec1dTypes>;
+//extern template class SOFA_COMPONENT_TOPOLOGY_API QuadSetTopologyAlgorithms<defaulttype::Rigid3dTypes>;
+//extern template class SOFA_COMPONENT_TOPOLOGY_API QuadSetTopologyAlgorithms<defaulttype::Rigid2dTypes>;
+#endif
+
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_TOPOLOGY_API QuadSetTopologyAlgorithms<defaulttype::Vec3fTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API QuadSetTopologyAlgorithms<defaulttype::Vec2fTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API QuadSetTopologyAlgorithms<defaulttype::Vec1fTypes>;
+//extern template class SOFA_COMPONENT_TOPOLOGY_API QuadSetTopologyAlgorithms<defaulttype::Rigid3fTypes>;
+//extern template class SOFA_COMPONENT_TOPOLOGY_API QuadSetTopologyAlgorithms<defaulttype::Rigid2fTypes>;
+#endif
+#endif
+
 } // namespace topology
 
 } // namespace component

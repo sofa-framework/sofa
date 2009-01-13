@@ -68,4 +68,12 @@ typedef double SReal;
 #define SOFA_DECL_CLASS(name) extern "C" { int sofa_concat(class_,name) = 0; }
 #define SOFA_LINK_CLASS(name) extern "C" { extern int sofa_concat(class_,name); int sofa_concat(link_,name) = sofa_concat(class_,name); }
 
+#ifndef WIN32
+#	define SOFA_EXPORT_DYNAMIC_LIBRARY
+#   define SOFA_IMPORT_DYNAMIC_LIBRARY
+#else
+#	define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
+#   define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
+#endif
+
 #endif

@@ -43,7 +43,7 @@ namespace odesolver
 
 using namespace sofa::defaulttype;
 
-class ComplianceCGImplicitSolver : public sofa::component::odesolver::OdeSolverImpl
+class SOFA_COMPONENT_ODESOLVER_API ComplianceCGImplicitSolver : public sofa::component::odesolver::OdeSolverImpl
 {
 public:
     ComplianceCGImplicitSolver();

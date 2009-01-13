@@ -44,7 +44,7 @@ Two variants are available, depending on the value of field "symplectic".
 If true (the default), the symplectic variant of Euler's method is applied:
 If false, the basic Euler's method is applied (less robust)
 */
-class EulerSolver : public OdeSolverImpl
+class SOFA_COMPONENT_ODESOLVER_API EulerSolver : public OdeSolverImpl
 {
 public:
 

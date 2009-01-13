@@ -41,7 +41,7 @@ namespace simulation
 /** Used by the master solver: send the solve signal to the others solvers
 
  */
-class SolveVisitor : public Visitor
+class SOFA_SIMULATION_COMMON_API SolveVisitor : public Visitor
 {
 
 public:

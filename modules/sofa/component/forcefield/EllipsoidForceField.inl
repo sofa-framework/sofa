@@ -95,7 +95,7 @@ void EllipsoidForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, 
             //grad /= gnorm; //.normalize();
             Real forceIntensity = -stiffabs*v/gnorm;
             Real dampingIntensity = this->damping.getValue()*helper::rabs(v);
-            Deriv force = forceIntensity*grad - v1[i]*dampingIntensity;
+            Deriv force = grad*forceIntensity - v1[i]*dampingIntensity;
             f1[i]+=force;
             Contact c;
             c.index = i;

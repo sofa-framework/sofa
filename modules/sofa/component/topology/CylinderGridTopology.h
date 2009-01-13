@@ -39,7 +39,7 @@ namespace topology
 
 using namespace sofa::defaulttype;
 
-class CylinderGridTopology : public GridTopology
+class SOFA_COMPONENT_CONTAINER_API CylinderGridTopology : public GridTopology
 {
 public:
 

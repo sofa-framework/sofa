@@ -62,6 +62,7 @@
 #include <sofa/core/componentmodel/collision/Pipeline.h>
 #include <sofa/core/objectmodel/Event.h>
 
+#include <sofa/simulation/common/common.h>
 #include <sofa/simulation/common/VisitorScheduler.h>
 using sofa::simulation::VisitorScheduler;
 namespace sofa
@@ -90,7 +91,7 @@ The other nodes are not visible (unknown scene graph).
 
 	@author The SOFA team </www.sofa-framework.org>
 */
-class Node : public sofa::core::objectmodel::Context
+class SOFA_SIMULATION_COMMON_API Node : public sofa::core::objectmodel::Context
 {
 
 public:

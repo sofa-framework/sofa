@@ -36,7 +36,7 @@ namespace sofa
 namespace simulation
 {
 
-class ResetVisitor : public Visitor
+class SOFA_SIMULATION_COMMON_API ResetVisitor : public Visitor
 {
 public:
     ResetVisitor() {}
@@ -51,7 +51,7 @@ public:
     virtual const char* getClassName() const { return "ResetVisitor"; }
 };
 
-class StoreResetStateVisitor : public Visitor
+class SOFA_SIMULATION_COMMON_API StoreResetStateVisitor : public Visitor
 {
 public:
     StoreResetStateVisitor() {}

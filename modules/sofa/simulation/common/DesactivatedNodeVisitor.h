@@ -37,9 +37,8 @@ namespace sofa
 namespace simulation
 {
 
-class DesactivationVisitor : public Visitor
+class SOFA_SIMULATION_COMMON_API DesactivationVisitor : public Visitor
 {
-
 public:
     DesactivationVisitor(bool _active=false):active(_active) {}
 

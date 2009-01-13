@@ -52,7 +52,7 @@ void SlidingConstraint<DataTypes>::applyConstraint(unsigned int &constraintId)
     // projection of the point on the axis
     Real r = (P-A) * uniAB;
     Real r2 = r / ab;
-    proj = A + r * uniAB;
+    proj = A + uniAB * r;
 
     // We move the constraint point onto the projection
     dir1 = P-proj;

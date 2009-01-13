@@ -41,7 +41,7 @@ namespace simulation
 {
 using namespace sofa::defaulttype;
 
-class TransformationVisitor : public Visitor
+class SOFA_SIMULATION_COMMON_API TransformationVisitor : public Visitor
 {
 public:
     TransformationVisitor()

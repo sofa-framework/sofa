@@ -44,7 +44,7 @@ typedef BaseMeshTopology::SeqEdges			SeqEdges;
 typedef BaseMeshTopology::VertexEdges		VertexEdges;
 
 /** a class that stores a set of edges  and provides access to the adjacency between points and edges */
-class EdgeSetTopologyContainer : public PointSetTopologyContainer
+class SOFA_COMPONENT_CONTAINER_API EdgeSetTopologyContainer : public PointSetTopologyContainer
 {
     friend class EdgeSetTopologyModifier;
 

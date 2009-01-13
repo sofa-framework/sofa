@@ -77,7 +77,7 @@ typedef HexaEdges	HexahedronEdges;
 typedef HexaQuads	HexahedronQuads;
 
 /** a class that stores a set of hexahedra and provides access with adjacent quads, edges and vertices */
-class HexahedronSetTopologyContainer : public QuadSetTopologyContainer
+class SOFA_COMPONENT_CONTAINER_API HexahedronSetTopologyContainer : public QuadSetTopologyContainer
 {
     friend class HexahedronSetTopologyModifier;
 

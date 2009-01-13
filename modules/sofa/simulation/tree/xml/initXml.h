@@ -25,6 +25,8 @@
 #ifndef SOFA_SIMULATION_TREE_XML_INIT_H
 #define SOFA_SIMULATION_TREE_XML_INIT_H
 
+#include <sofa/simulation/tree/tree.h>
+
 namespace sofa
 {
 
@@ -37,7 +39,7 @@ namespace tree
 namespace xml
 {
 
-void initXml();
+SOFA_SIMULATION_TREE_API void initXml();
 
 } // namespace xml
 

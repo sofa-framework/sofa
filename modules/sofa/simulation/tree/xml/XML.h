@@ -40,16 +40,16 @@ namespace tree
 namespace xml
 {
 
-BaseElement* processXMLLoading(const char *filename, const xmlDocPtr &doc);
+SOFA_SIMULATION_TREE_API BaseElement* processXMLLoading(const char *filename, const xmlDocPtr &doc);
 
-BaseElement* loadFromFile(const char *filename);
+SOFA_SIMULATION_TREE_API BaseElement* loadFromFile(const char *filename);
 
-BaseElement* loadFromMemory(const char *filename, const char *data, unsigned int size );
+SOFA_SIMULATION_TREE_API BaseElement* loadFromMemory(const char *filename, const char *data, unsigned int size );
 
 
-bool save(const char *filename, BaseElement* root);
+SOFA_SIMULATION_TREE_API bool save(const char *filename, BaseElement* root);
 
-extern int numDefault;
+extern int SOFA_SIMULATION_TREE_API numDefault;
 
 } // namespace xml
 

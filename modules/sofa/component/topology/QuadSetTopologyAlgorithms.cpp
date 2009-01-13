@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#define SOFA_COMPONENT_TOPOLOGY_QUADSETTOPOLOGYALGORITHMS_CPP
 #include <sofa/component/topology/QuadSetTopologyAlgorithms.h>
 #include <sofa/component/topology/QuadSetTopologyAlgorithms.inl>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -56,15 +56,15 @@ int QuadSetTopologyAlgorithmsClass = core::RegisterObject("Quad set topology alg
 #endif
         ;
 #ifndef SOFA_FLOAT
-template class QuadSetTopologyAlgorithms<Vec3dTypes>;
-template class QuadSetTopologyAlgorithms<Vec2dTypes>;
-template class QuadSetTopologyAlgorithms<Vec1dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API QuadSetTopologyAlgorithms<Vec3dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API QuadSetTopologyAlgorithms<Vec2dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API QuadSetTopologyAlgorithms<Vec1dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class QuadSetTopologyAlgorithms<Vec3fTypes>;
-template class QuadSetTopologyAlgorithms<Vec2fTypes>;
-template class QuadSetTopologyAlgorithms<Vec1fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API QuadSetTopologyAlgorithms<Vec3fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API QuadSetTopologyAlgorithms<Vec2fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API QuadSetTopologyAlgorithms<Vec1fTypes>;
 #endif
 
 } // namespace topology

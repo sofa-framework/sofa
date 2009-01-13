@@ -29,8 +29,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/helper/io/bvh/BVHLoader.h>
+#include <sofa/component/component.h>
 #include <sofa/component/container/MechanicalObject.h>
-#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -49,7 +49,7 @@ using namespace sofa::simulation::tree;
 * @see ArticulatedCenter
 * @see Articulation
 */
-class ArticulatedHierarchyContainer : public virtual core::objectmodel::BaseObject
+class SOFA_COMPONENT_CONTAINER_API ArticulatedHierarchyContainer : public virtual core::objectmodel::BaseObject
 {
 public:
 
@@ -193,7 +193,7 @@ public:
 
         }
 
-        vector<Articulation*> getArticulations();
+        vector<Articulation*>& getArticulations() { return articulations; }
 
         Quat OrientationArticulationCenter;
         Vector3 DisplacementArticulationCenter;
@@ -212,7 +212,7 @@ public:
 
     void setFilename(std::string f) {filename.setValue(f);}
 
-    vector<ArticulationCenter*> getArticulationCenters();
+    vector<ArticulationCenter*> getArticulationCenters() { return articulationCenters; }
     ArticulationCenter* getArticulationCenterAsChild(int index);
     vector<ArticulationCenter*> getAcendantList(int index);
 

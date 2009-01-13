@@ -37,7 +37,7 @@ namespace simulation
 
 
 /** Print a vector */
-class MechanicalVPrintVisitor : public Visitor
+class SOFA_SIMULATION_COMMON_API MechanicalVPrintVisitor : public Visitor
 {
 public:
     typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
@@ -53,7 +53,7 @@ protected:
 
 
 /** Print a vector with an elapsed time, useful to compare convergence in odeSolver in function of time */
-class MechanicalVPrintWithElapsedTimeVisitor : public Visitor
+class SOFA_SIMULATION_COMMON_API MechanicalVPrintWithElapsedTimeVisitor : public Visitor
 {
     typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
 protected:

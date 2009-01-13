@@ -135,7 +135,7 @@ void ConicalForceField<DataTypes>::addDForce(VecDeriv& df1, const VecDeriv& dx1)
         const Contact& c = (*this->contacts.beginEdit())[i];
         assert((unsigned)c.index<dx1.size());
         Deriv du = dx1[c.index];
-        Deriv dforce; dforce = -this->stiffness.getValue()*(c.normal * ((du*c.normal)));
+        Deriv dforce; dforce = (c.normal * ((du*c.normal)))*(-this->stiffness.getValue());
         df1[c.index] += dforce;
     }
     this->contacts.endEdit();

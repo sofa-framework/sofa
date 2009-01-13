@@ -27,6 +27,9 @@
 
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -61,6 +64,8 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::CPos CPos;
+    enum { NC = CPos::static_size };
 
     enum Angle {ACUTE, RIGHT, OBTUSE};
 
@@ -85,7 +90,7 @@ public:
     void getAABB(Real bb[6]) const;
 
     /** \brief Returns the axis aligned bounding box */
-    void getAABB(Coord& minCoord, Coord& maxCoord) const;
+    void getAABB(CPos& minCoord, CPos& maxCoord) const;
 
     const Coord& getPointPosition(const PointID pointId) const;
 
@@ -109,6 +114,25 @@ protected:
     sofa::core::componentmodel::behavior::MechanicalState<DataTypes> *object;
     sofa::core::componentmodel::topology::BaseMeshTopology* m_topology;
 };
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec3dTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec2dTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec1dTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Rigid3dTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Rigid2dTypes>;
+#endif
+
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec3fTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec2fTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec1fTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Rigid3fTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Rigid2fTypes>;
+#endif
+#endif
 
 } // namespace topology
 

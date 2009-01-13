@@ -50,7 +50,7 @@ Compute the amount of mechanical energy
 
 	@author Francois Faure
 */
-class MechanicalComputeEnergyVisitor : public sofa::simulation::MechanicalVisitor
+class SOFA_SIMULATION_COMMON_API MechanicalComputeEnergyVisitor : public sofa::simulation::MechanicalVisitor
 {
     SReal m_kineticEnergy;
     SReal m_potentialEnergy;

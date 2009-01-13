@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_TOPOLOGY_TRIANGLESETGEOMETRYALGORITHMS_CPP
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.inl>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -57,15 +58,15 @@ int TriangleSetGeometryAlgorithmsClass = core::RegisterObject("Triangle set geom
         ;
 
 #ifndef SOFA_FLOAT
-template class TriangleSetGeometryAlgorithms<Vec3dTypes>;
-template class TriangleSetGeometryAlgorithms<Vec2dTypes>;
-template class TriangleSetGeometryAlgorithms<Vec1dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec3dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec2dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec1dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class TriangleSetGeometryAlgorithms<Vec3fTypes>;
-template class TriangleSetGeometryAlgorithms<Vec2fTypes>;
-template class TriangleSetGeometryAlgorithms<Vec1fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec3fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec2fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec1fTypes>;
 #endif
 
 } // namespace topology

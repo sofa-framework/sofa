@@ -129,7 +129,7 @@ void TrianglePressureForceField<DataTypes>::updateTriangleInformation()
 
     for(it=trianglePressureMap.begin(); it!=trianglePressureMap.end(); it++ )
     {
-        (*it).second.force=((*it).second.area)*pressure.getValue();
+        (*it).second.force=(pressure.getValue()*(*it).second.area);
     }
 }
 
