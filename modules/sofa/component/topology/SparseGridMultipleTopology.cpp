@@ -185,8 +185,8 @@ void SparseGridMultipleTopology::assembleRegularGrids(helper::vector<Type>& regu
             else if(  _regularGridTypes[i][w] == BOUNDARY && this->_fillWeighted.getValue() )
             {
                 if( regularGridTypes[w] != INSIDE ) regularGridTypes[w] = BOUNDARY;
-                regularStiffnessCoefs[w] = (regularStiffnessCoefs[w]+_dataStiffnessCoefs.getValue()[i]) * .5;
-                regularMassCoefs[w] = (regularMassCoefs[w]+_dataMassCoefs.getValue()[i]) * .5;
+                regularStiffnessCoefs[w] = (float)((regularStiffnessCoefs[w]+_dataStiffnessCoefs.getValue()[i]) * .5f);
+                regularMassCoefs[w] = (float)((regularMassCoefs[w]+_dataMassCoefs.getValue()[i]) * .5f);
             }
         }
     }

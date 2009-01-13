@@ -226,7 +226,7 @@ void EdgeSetController<DataTypes>::applyController()
 
     if (depl != 0 || speed.getValue() != 0) //this->mouseMode == Inherit::Wheel)
     {
-        depl += speed.getValue() * this->getContext()->getDt();
+        depl += (Real)(speed.getValue() * this->getContext()->getDt());
         this->mouseMode = Inherit::None;
 
         if (this->mState)
@@ -241,7 +241,7 @@ void EdgeSetController<DataTypes>::applyController()
                 */
 
                 Coord& pos = (*this->mState->getX0())[0];
-                double d;
+                Real d;
 
                 if (maxDepl.getValue() == 0 || fabs(depl) < maxDepl.getValue())
                 {
@@ -254,9 +254,9 @@ void EdgeSetController<DataTypes>::applyController()
                     depl -= d;
                 }
 
-                double endT = vertexT[vertexT.size()-1];
-                double newT = vertexT[0];
-                double sign = (endT > newT) ? 1.0 : -1.0;
+                Real endT = vertexT[vertexT.size()-1];
+                Real newT = vertexT[0];
+                Real sign = (endT > newT) ? 1.0f : -1.0f;
                 newT -= d;
                 //sout << "length = " << sign*(endT-newT) << sendl;
 
@@ -275,8 +275,8 @@ void EdgeSetController<DataTypes>::applyController()
 
                 if (newT != vertexT[0])
                 {
-                    pos = getNewRestPos(pos, vertexT[0], d);
-                    vertexT[0] = newT;
+                    pos = getNewRestPos(pos, vertexT[0], (Real)d);
+                    vertexT[0] = (Real)newT;
                 }
                 else
                     return;
@@ -299,7 +299,7 @@ void EdgeSetController<DataTypes>::applyController()
                 if (n > 0)
                 {
                     Coord& pos = (*this->mState->getX0())[n-1];
-                    double d;
+                    Real d;
 
                     if (maxDepl.getValue() == 0 || fabs(depl) < maxDepl.getValue())
                     {
@@ -312,9 +312,9 @@ void EdgeSetController<DataTypes>::applyController()
                         depl -= d;
                     }
 
-                    double endT = vertexT[0];
-                    double newT = vertexT[n-1];
-                    double sign = (endT > newT) ? 1.0 : -1.0;
+                    Real endT = vertexT[0];
+                    Real newT = vertexT[n-1];
+                    Real sign = (endT > newT) ? 1.0f : -1.0f;
 
                     newT -= d;
 
@@ -331,8 +331,8 @@ void EdgeSetController<DataTypes>::applyController()
 
                     if (newT != vertexT[n-1])
                     {
-                        pos = getNewRestPos(pos, vertexT[n-1], d);
-                        vertexT[n-1] = newT;
+                        pos = getNewRestPos(pos, vertexT[n-1], (Real)d);
+                        vertexT[n-1] = (Real)newT;
                     }
                     else
                         return;

@@ -103,14 +103,14 @@ void HomogenizedEdgeBasedMapping<BasicMapping>::init()
         if( elementIdx!=-1)
         {
             const topology::SparseGridTopology::Hexa& coarsehexa = this->_sparseGrid->getHexa( elementIdx );
-            _coarseBarycentricCoord[i][coarsehexa[0]] = (1-coefs[0]) * (1-coefs[1]) * (1-coefs[2]);
-            _coarseBarycentricCoord[i][coarsehexa[1]] = (coefs[0]) * (1-coefs[1]) * (1-coefs[2]);
-            _coarseBarycentricCoord[i][coarsehexa[2]] = (coefs[0]) * (coefs[1]) * (1-coefs[2]);
-            _coarseBarycentricCoord[i][coarsehexa[3]] = (1-coefs[0]) * (coefs[1]) * (1-coefs[2]);
-            _coarseBarycentricCoord[i][coarsehexa[4]] = (1-coefs[0]) * (1-coefs[1]) * (coefs[2]);
-            _coarseBarycentricCoord[i][coarsehexa[5]] = (coefs[0]) * (1-coefs[1]) * (coefs[2]);
-            _coarseBarycentricCoord[i][coarsehexa[6]] = (coefs[0]) * (coefs[1]) * (coefs[2]);
-            _coarseBarycentricCoord[i][coarsehexa[7]] = (1-coefs[0]) * (coefs[1]) * (coefs[2]);
+            _coarseBarycentricCoord[i][coarsehexa[0]] = (Real)((1-coefs[0]) * (1-coefs[1]) * (1-coefs[2]));
+            _coarseBarycentricCoord[i][coarsehexa[1]] = (Real)((coefs[0]) * (1-coefs[1]) * (1-coefs[2]));
+            _coarseBarycentricCoord[i][coarsehexa[2]] = (Real)((coefs[0]) * (coefs[1]) * (1-coefs[2]));
+            _coarseBarycentricCoord[i][coarsehexa[3]] = (Real)((1-coefs[0]) * (coefs[1]) * (1-coefs[2]));
+            _coarseBarycentricCoord[i][coarsehexa[4]] = (Real)((1-coefs[0]) * (1-coefs[1]) * (coefs[2]));
+            _coarseBarycentricCoord[i][coarsehexa[5]] = (Real)((coefs[0]) * (1-coefs[1]) * (coefs[2]));
+            _coarseBarycentricCoord[i][coarsehexa[6]] = (Real)((coefs[0]) * (coefs[1]) * (coefs[2]));
+            _coarseBarycentricCoord[i][coarsehexa[7]] = (Real)((1-coefs[0]) * (coefs[1]) * (coefs[2]));
         }
         else
             cerr<<"HomogenizedEdgeBasedMapping::init()   error finding the corresponding coarest cube of vertex "<<this->_qFine0[i]<<sendl;
@@ -172,9 +172,9 @@ void HomogenizedEdgeBasedMapping<BasicMapping>::init()
         }
     }
 
-    _size0[0] = this->_sparseGrid->_regularGrid.getDx()[0];
-    _size0[1] = this->_sparseGrid->_regularGrid.getDy()[1];
-    _size0[2] = this->_sparseGrid->_regularGrid.getDz()[2];
+    _size0[0] = (InReal)(this->_sparseGrid->_regularGrid.getDx()[0]);
+    _size0[1] = (InReal)(this->_sparseGrid->_regularGrid.getDy()[1]);
+    _size0[2] = (InReal)(this->_sparseGrid->_regularGrid.getDz()[2]);
 }
 
 
@@ -191,9 +191,9 @@ void HomogenizedEdgeBasedMapping<BasicMapping>::apply ( OutVecCoord& out, const 
     for(unsigned i=0; i<_edges.size(); ++i)
     {
         InCoord e = in[ _edges[i][1] ] - in[ _edges[i][0] ];
-        Real n = e.norm();
+        Real n = (Real)e.norm();
         if( n==0.0 ) serr<<"HomogenizedEdgeBasedMapping apply div 0"<<sendl;
-        elongations[i] = (n -_size0[_edges[i][2]])/2.0;
+        elongations[i] = (Real)((n -_size0[_edges[i][2]])/2.0f);
         directions[i] = e/n;
     }
 

@@ -67,8 +67,8 @@ bool ImplicitSurface::computeSegIntersection(defaulttype::Vec3d& posInside, defa
 
     double tolerance = 0.00001; // tolerance sur la précision m
 
-    float a = getValue(posInside, i);
-    float b = getValue(posOutside, i);
+    float a = (float)getValue(posInside, i);
+    float b = (float)getValue(posOutside, i);
 
     if (a*b>0)
     {

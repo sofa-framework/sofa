@@ -475,7 +475,7 @@ void SparseGridTopology::buildFromVoxelGridLoader(VoxelGridLoader * loader)
                     regularstiffnessCoef[i] += textureData[idx];
                 }
 
-        regularstiffnessCoef[i] /= (p6x-p0x)*(p6y-p0y)*(p6z-p0z);
+        regularstiffnessCoef[i] /= (float)((p6x-p0x)*(p6y-p0y)*(p6z-p0z));
 // 			  regularstiffnessCoef[i] /= 256.0;
 
         if( regularstiffnessCoef[i] !=0.0 )

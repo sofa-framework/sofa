@@ -250,7 +250,7 @@ const typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceFi
     {
         Real pUpperBound = (m_pressure.getValue() > 0) ? m_pressure.getValue() : m_pressureLowerBound.getValue();
 
-        m_pulseModePressure += m_pressureSpeed.getValue() * dt;
+        m_pulseModePressure += (Real)(m_pressureSpeed.getValue() * dt);
 
         if (m_pulseModePressure >= pUpperBound)
         {
@@ -265,7 +265,7 @@ const typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceFi
     {
         Real pLowerBound = (m_pressure.getValue() > 0) ? m_pressureLowerBound.getValue() : m_pressure.getValue();
 
-        m_pulseModePressure -= m_pressureSpeed.getValue() * dt;
+        m_pulseModePressure -= (Real)(m_pressureSpeed.getValue() * dt);
 
         if (m_pulseModePressure <= pLowerBound)
         {

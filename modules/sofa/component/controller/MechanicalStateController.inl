@@ -184,13 +184,13 @@ void MechanicalStateController<DataTypes>::applyController()
                 switch( mouseMode )
                 {
                 case BtLeft:
-                    (*mState->getX())[i].getCenter() += Vec<3,Real>(dx,0,0);
+                    (*mState->getX())[i].getCenter() += Vec<3,Real>((Real)dx,(Real)0,(Real)0);
                     break;
                 case BtRight :
-                    (*mState->getX())[i].getCenter() += Vec<3,Real>(0,dy,0);
+                    (*mState->getX())[i].getCenter() += Vec<3,Real>((Real)0,(Real)dy,(Real)0);
                     break;
                 case BtMiddle :
-                    (*mState->getX())[i].getCenter() += Vec<3,Real>(0,0,dy);
+                    (*mState->getX())[i].getCenter() += Vec<3,Real>((Real)0,(Real)0,(Real)dy);
                     break;
                 default :
                     break;

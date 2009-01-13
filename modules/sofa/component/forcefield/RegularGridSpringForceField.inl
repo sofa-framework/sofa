@@ -96,7 +96,7 @@ void RegularGridSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2
             {
                 Spring spring;
                 // lines along X
-                spring.initpos = topology->getDx().norm();
+                spring.initpos = (Real)topology->getDx().norm();
                 spring.ks = this->linesStiffness.getValue() / spring.initpos;
                 spring.kd = this->linesDamping.getValue() / spring.initpos;
                 for (int z=0; z<nz; z++)
@@ -116,7 +116,7 @@ void RegularGridSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2
                             this->addSpringForce(m_potentialEnergy,f1,x1,v1,f2,x2,v2, index++, spring);
                         }
                 // lines along Y
-                spring.initpos = topology->getDy().norm();
+                spring.initpos = (Real)topology->getDy().norm();
                 spring.ks = this->linesStiffness.getValue() / spring.initpos;
                 spring.kd = this->linesDamping.getValue() / spring.initpos;
                 for (int z=0; z<nz; z++)
@@ -136,7 +136,7 @@ void RegularGridSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2
                             this->addSpringForce(m_potentialEnergy,f1,x1,v1,f2,x2,v2, index++, spring);
                         }
                 // lines along Z
-                spring.initpos = topology->getDz().norm();
+                spring.initpos = (Real)topology->getDz().norm();
                 spring.ks = this->linesStiffness.getValue() / spring.initpos;
                 spring.kd = this->linesDamping.getValue() / spring.initpos;
                 for (int z=0; z<nz-1; z++)
@@ -163,11 +163,11 @@ void RegularGridSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2
                 typename RegularGridSpringForceField<DataTypes>::Spring spring2;
                 // quads along XY plane
                 // lines (x,y,z) -> (x+1,y+1,z)
-                spring1.initpos = (topology->getDx()+topology->getDy()).norm();
+                spring1.initpos = (Real)(topology->getDx()+topology->getDy()).norm();
                 spring1.ks = this->quadsStiffness.getValue() / spring1.initpos;
                 spring1.kd = this->quadsDamping.getValue() / spring1.initpos;
                 // lines (x+1,y,z) -> (x,y+1,z)
-                spring2.initpos = (topology->getDx()-topology->getDy()).norm();
+                spring2.initpos = (Real)(topology->getDx()-topology->getDy()).norm();
                 spring2.ks = this->quadsStiffness.getValue() / spring2.initpos;
                 spring2.kd = this->quadsDamping.getValue() / spring2.initpos;
                 for (int z=0; z<nz; z++)
@@ -189,11 +189,11 @@ void RegularGridSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2
                         }
                 // quads along XZ plane
                 // lines (x,y,z) -> (x+1,y,z+1)
-                spring1.initpos = (topology->getDx()+topology->getDz()).norm();
+                spring1.initpos = (Real)(topology->getDx()+topology->getDz()).norm();
                 spring1.ks = this->quadsStiffness.getValue() / spring1.initpos;
                 spring1.kd = this->quadsDamping.getValue() / spring1.initpos;
                 // lines (x+1,y,z) -> (x,y,z+1)
-                spring2.initpos = (topology->getDx()-topology->getDz()).norm();
+                spring2.initpos = (Real)(topology->getDx()-topology->getDz()).norm();
                 spring2.ks = this->quadsStiffness.getValue() / spring2.initpos;
                 spring2.kd = this->quadsDamping.getValue() / spring2.initpos;
                 for (int z=0; z<nz-1; z++)
@@ -215,11 +215,11 @@ void RegularGridSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2
                         }
                 // quads along YZ plane
                 // lines (x,y,z) -> (x,y+1,z+1)
-                spring1.initpos = (topology->getDy()+topology->getDz()).norm();
+                spring1.initpos = (Real)(topology->getDy()+topology->getDz()).norm();
                 spring1.ks = this->quadsStiffness.getValue() / spring1.initpos;
                 spring1.kd = this->quadsDamping.getValue() / spring1.initpos;
                 // lines (x,y+1,z) -> (x,y,z+1)
-                spring2.initpos = (topology->getDy()-topology->getDz()).norm();
+                spring2.initpos = (Real)(topology->getDy()-topology->getDz()).norm();
                 spring2.ks = this->quadsStiffness.getValue() / spring1.initpos;
                 spring2.kd = this->quadsDamping.getValue() / spring1.initpos;
                 for (int z=0; z<nz-1; z++)
@@ -247,19 +247,19 @@ void RegularGridSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2
                 typename RegularGridSpringForceField<DataTypes>::Spring spring3;
                 typename RegularGridSpringForceField<DataTypes>::Spring spring4;
                 // lines (x,y,z) -> (x+1,y+1,z+1)
-                spring1.initpos = (topology->getDx()+topology->getDy()+topology->getDz()).norm();
+                spring1.initpos = (Real)(topology->getDx()+topology->getDy()+topology->getDz()).norm();
                 spring1.ks = this->cubesStiffness.getValue() / spring1.initpos;
                 spring1.kd = this->cubesDamping.getValue() / spring1.initpos;
                 // lines (x+1,y,z) -> (x,y+1,z+1)
-                spring2.initpos = (-topology->getDx()+topology->getDy()+topology->getDz()).norm();
+                spring2.initpos = (Real)(-topology->getDx()+topology->getDy()+topology->getDz()).norm();
                 spring2.ks = this->cubesStiffness.getValue() / spring2.initpos;
                 spring2.kd = this->cubesDamping.getValue() / spring2.initpos;
                 // lines (x,y+1,z) -> (x+1,y,z+1)
-                spring3.initpos = (topology->getDx()-topology->getDy()+topology->getDz()).norm();
+                spring3.initpos = (Real)(topology->getDx()-topology->getDy()+topology->getDz()).norm();
                 spring3.ks = this->cubesStiffness.getValue() / spring3.initpos;
                 spring3.kd = this->cubesDamping.getValue() / spring3.initpos;
                 // lines (x,y,z+1) -> (x+1,y+1,z)
-                spring4.initpos = (topology->getDx()+topology->getDy()-topology->getDz()).norm();
+                spring4.initpos = (Real)(topology->getDx()+topology->getDy()-topology->getDz()).norm();
                 spring4.ks = this->cubesStiffness.getValue() / spring4.initpos;
                 spring4.kd = this->cubesDamping.getValue() / spring4.initpos;
                 for (int z=0; z<nz-1; z++)
@@ -308,7 +308,7 @@ void RegularGridSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& 
             {
                 typename RegularGridSpringForceField<DataTypes>::Spring spring;
                 // lines along X
-                spring.initpos = topology->getDx().norm();
+                spring.initpos = (Real)topology->getDx().norm();
                 spring.ks = this->linesStiffness.getValue() / spring.initpos;
                 spring.kd = this->linesDamping.getValue() / spring.initpos;
                 for (int z=0; z<nz; z++)
@@ -328,7 +328,7 @@ void RegularGridSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& 
                             this->addSpringDForce(df1,dx1,df2,dx2, index++, spring, kFactor, bFactor);
                         }
                 // lines along Y
-                spring.initpos = topology->getDy().norm();
+                spring.initpos = (Real)topology->getDy().norm();
                 spring.ks = this->linesStiffness.getValue() / spring.initpos;
                 spring.kd = this->linesDamping.getValue() / spring.initpos;
                 for (int z=0; z<nz; z++)
@@ -348,7 +348,7 @@ void RegularGridSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& 
                             this->addSpringDForce(df1,dx1,df2,dx2, index++, spring, kFactor, bFactor);
                         }
                 // lines along Z
-                spring.initpos = topology->getDz().norm();
+                spring.initpos = (Real)topology->getDz().norm();
                 spring.ks = this->linesStiffness.getValue() / spring.initpos;
                 spring.kd = this->linesDamping.getValue() / spring.initpos;
                 for (int z=0; z<nz-1; z++)
@@ -375,11 +375,11 @@ void RegularGridSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& 
                 typename RegularGridSpringForceField<DataTypes>::Spring spring2;
                 // quads along XY plane
                 // lines (x,y,z) -> (x+1,y+1,z)
-                spring1.initpos = (topology->getDx()+topology->getDy()).norm();
+                spring1.initpos = (Real)(topology->getDx()+topology->getDy()).norm();
                 spring1.ks = this->quadsStiffness.getValue() / spring1.initpos;
                 spring1.kd = this->quadsDamping.getValue() / spring1.initpos;
                 // lines (x+1,y,z) -> (x,y+1,z)
-                spring2.initpos = (topology->getDx()-topology->getDy()).norm();
+                spring2.initpos = (Real)(topology->getDx()-topology->getDy()).norm();
                 spring2.ks = this->quadsStiffness.getValue() / spring2.initpos;
                 spring2.kd = this->quadsDamping.getValue() / spring2.initpos;
                 for (int z=0; z<nz; z++)
@@ -401,11 +401,11 @@ void RegularGridSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& 
                         }
                 // quads along XZ plane
                 // lines (x,y,z) -> (x+1,y,z+1)
-                spring1.initpos = (topology->getDx()+topology->getDz()).norm();
+                spring1.initpos = (Real)(topology->getDx()+topology->getDz()).norm();
                 spring1.ks = this->quadsStiffness.getValue() / spring1.initpos;
                 spring1.kd = this->quadsDamping.getValue() / spring1.initpos;
                 // lines (x+1,y,z) -> (x,y,z+1)
-                spring2.initpos = (topology->getDx()-topology->getDz()).norm();
+                spring2.initpos = (Real)(topology->getDx()-topology->getDz()).norm();
                 spring2.ks = this->quadsStiffness.getValue() / spring2.initpos;
                 spring2.kd = this->quadsDamping.getValue() / spring2.initpos;
                 for (int z=0; z<nz-1; z++)
@@ -427,11 +427,11 @@ void RegularGridSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& 
                         }
                 // quads along YZ plane
                 // lines (x,y,z) -> (x,y+1,z+1)
-                spring1.initpos = (topology->getDy()+topology->getDz()).norm();
+                spring1.initpos = (Real)(topology->getDy()+topology->getDz()).norm();
                 spring1.ks = this->quadsStiffness.getValue() / spring1.initpos;
                 spring1.kd = this->quadsDamping.getValue() / spring1.initpos;
                 // lines (x,y+1,z) -> (x,y,z+1)
-                spring1.initpos = (topology->getDy()-topology->getDz()).norm();
+                spring1.initpos = (Real)(topology->getDy()-topology->getDz()).norm();
                 spring1.ks = this->linesStiffness.getValue() / spring1.initpos;
                 spring1.kd = this->linesDamping.getValue() / spring1.initpos;
                 for (int z=0; z<nz-1; z++)
@@ -459,19 +459,19 @@ void RegularGridSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& 
                 typename RegularGridSpringForceField<DataTypes>::Spring spring3;
                 typename RegularGridSpringForceField<DataTypes>::Spring spring4;
                 // lines (x,y,z) -> (x+1,y+1,z+1)
-                spring1.initpos = (topology->getDx()+topology->getDy()+topology->getDz()).norm();
+                spring1.initpos = (Real)(topology->getDx()+topology->getDy()+topology->getDz()).norm();
                 spring1.ks = this->cubesStiffness.getValue() / spring1.initpos;
                 spring1.kd = this->cubesDamping.getValue() / spring1.initpos;
                 // lines (x+1,y,z) -> (x,y+1,z+1)
-                spring2.initpos = (-topology->getDx()+topology->getDy()+topology->getDz()).norm();
+                spring2.initpos = (Real)(-topology->getDx()+topology->getDy()+topology->getDz()).norm();
                 spring2.ks = this->cubesStiffness.getValue() / spring2.initpos;
                 spring2.kd = this->cubesDamping.getValue() / spring2.initpos;
                 // lines (x,y+1,z) -> (x+1,y,z+1)
-                spring3.initpos = (topology->getDx()-topology->getDy()+topology->getDz()).norm();
+                spring3.initpos = (Real)(topology->getDx()-topology->getDy()+topology->getDz()).norm();
                 spring3.ks = this->cubesStiffness.getValue() / spring3.initpos;
                 spring3.kd = this->cubesDamping.getValue() / spring3.initpos;
                 // lines (x,y,z+1) -> (x+1,y+1,z)
-                spring4.initpos = (topology->getDx()+topology->getDy()-topology->getDz()).norm();
+                spring4.initpos = (Real)(topology->getDx()+topology->getDy()-topology->getDz()).norm();
                 spring4.ks = this->cubesStiffness.getValue() / spring4.initpos;
                 spring4.kd = this->cubesDamping.getValue() / spring4.initpos;
                 for (int z=0; z<nz-1; z++)
@@ -530,7 +530,7 @@ void RegularGridSpringForceField<DataTypes>::draw()
             {
                 typename RegularGridSpringForceField<DataTypes>::Spring spring;
                 // lines along X
-                spring.initpos = topology->getDx().norm();
+                spring.initpos = (Real)topology->getDx().norm();
                 spring.ks = this->linesStiffness.getValue() / spring.initpos;
                 spring.kd = this->linesDamping.getValue() / spring.initpos;
                 for (int z=0; z<nz; z++)
@@ -556,7 +556,7 @@ void RegularGridSpringForceField<DataTypes>::draw()
                             points.push_back(point2);
                         }
                 // lines along Y
-                spring.initpos = topology->getDy().norm();
+                spring.initpos = (Real)topology->getDy().norm();
                 spring.ks = this->linesStiffness.getValue() / spring.initpos;
                 spring.kd = this->linesDamping.getValue() / spring.initpos;
                 for (int z=0; z<nz; z++)
@@ -583,7 +583,7 @@ void RegularGridSpringForceField<DataTypes>::draw()
                             points.push_back(point2);
                         }
                 // lines along Z
-                spring.initpos = topology->getDz().norm();
+                spring.initpos = (Real)topology->getDz().norm();
                 spring.ks = this->linesStiffness.getValue() / spring.initpos;
                 spring.kd = this->linesDamping.getValue() / spring.initpos;
                 for (int z=0; z<nz-1; z++)

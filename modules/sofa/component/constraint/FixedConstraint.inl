@@ -262,7 +262,7 @@ void FixedConstraint<DataTypes>::draw()
         std::vector< Vector3 > points;
         Vector3 point;
         unsigned int sizePoints= (Coord::static_size <=3)?Coord::static_size:3;
-        glColor4f (1,0.35,0.35,1);
+        glColor4f (1.0f,0.35f,0.35f,1.0f);
         if( f_fixAll.getValue()==true )
             for (unsigned i=0; i<x.size(); i++ )
             {
@@ -277,7 +277,7 @@ void FixedConstraint<DataTypes>::draw()
                 for (unsigned int s=0; s<sizePoints; ++s) point[s] = x[*it][s];
                 points.push_back(point);
             }
-        simulation::tree::getSimulation()->DrawUtility.drawSpheres(points, _drawSize.getValue(), Vec<4,float>(1,0.35,0.35,1));
+        simulation::tree::getSimulation()->DrawUtility.drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
 
     }
 

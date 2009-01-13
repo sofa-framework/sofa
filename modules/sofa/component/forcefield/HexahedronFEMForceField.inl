@@ -1276,12 +1276,12 @@ void HexahedronFEMForceField<DataTypes>::draw()
 
     }
     simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
-    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[0], Vec<4,float>(0.7,0.7,0.1,1.0));
-    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[1], Vec<4,float>(0.7,0.0,0.0,1.0));
-    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[2], Vec<4,float>(0.0,0.7,0.0,1.0));
-    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[3], Vec<4,float>(0.0,0.0,0.7,1.0));
-    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[4], Vec<4,float>(0.1,0.7,0.7,1.0));
-    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[5], Vec<4,float>(0.7,0.1,0.7,1.0));
+    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[0], Vec<4,float>(0.7f,0.7f,0.1f,1.0f));
+    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[1], Vec<4,float>(0.7f,0.0f,0.0f,1.0f));
+    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[2], Vec<4,float>(0.0f,0.7f,0.0f,1.0f));
+    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[3], Vec<4,float>(0.0f,0.0f,0.7f,1.0f));
+    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[4], Vec<4,float>(0.1f,0.7f,0.7f,1.0f));
+    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[5], Vec<4,float>(0.7f,0.1f,0.7f,1.0f));
     simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 
 

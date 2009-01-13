@@ -131,6 +131,8 @@ void BackTrace::sig(int sig)
     dump();
     signal(sig,SIG_DFL);
     raise(sig);
+#else
+    fprintf(stderr,"\nERROR: BackTrace::sig(%d) not supported.\n",sig);
 #endif
 }
 

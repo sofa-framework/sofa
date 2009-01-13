@@ -2,6 +2,7 @@
 #define SOFA_HELPER_GL_BASICSHAPES_H
 
 #include <sofa/helper/gl/template.h>
+#include <math.h>
 
 namespace sofa
 {
@@ -40,9 +41,9 @@ void drawCone(const V& p1, const V& p2, const float& radius1, const float& radiu
     for (i2=0 ; i2<=subd ; i2++)
     {
         /* sweep out a circle */
-        theta =  i2 * 2.0 * 3.14 / subd;
-        st = sin(theta);
-        ct = cos(theta);
+        theta =  (float)(i2 * 2.0 * M_PI / subd);
+        st = (float)sin(theta);
+        ct = (float)cos(theta);
         /* construct normal */
         tmp = p*ct+q*st;
         /* set the normal for the two subseqent points */

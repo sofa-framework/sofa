@@ -125,7 +125,7 @@ public:
     {
         serr<<"WARNING : homogenized mechanical properties can't be updated, changes on mechanical properties (young, poisson, density) are not taken into account."<<sendl;
         if(_drawSize.getValue()==-1)
-            _drawSize.setValue( (this->_sparseGrid->getMax()[0]-this->_sparseGrid->getMin()[0]) * .004 );
+            _drawSize.setValue( (float)((this->_sparseGrid->getMax()[0]-this->_sparseGrid->getMin()[0]) * .004f) );
     }
 
     virtual void draw();
