@@ -59,7 +59,7 @@ public:
     bool testLMD(const Vector3 &, double &, double &);
 };
 
-class PointModel : public core::CollisionModel
+class SOFA_COMPONENT_COLLISION_API PointModel : public core::CollisionModel
 {
 public:
     typedef Vec3Types InDataTypes;

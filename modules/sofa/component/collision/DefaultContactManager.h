@@ -27,6 +27,7 @@
 
 #include <sofa/core/componentmodel/collision/ContactManager.h>
 #include <sofa/simulation/tree/GNode.h>
+#include <sofa/component/component.h>
 #include <vector>
 
 
@@ -39,7 +40,7 @@ namespace component
 namespace collision
 {
 
-class DefaultContactManager : public core::componentmodel::collision::ContactManager
+class SOFA_COMPONENT_COLLISION_API DefaultContactManager : public core::componentmodel::collision::ContactManager
 {
 protected:
     typedef std::map<std::pair<core::CollisionModel*,core::CollisionModel*>,core::componentmodel::collision::Contact*> ContactMap;

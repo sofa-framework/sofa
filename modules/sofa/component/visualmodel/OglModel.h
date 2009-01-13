@@ -30,6 +30,7 @@
 #include <sofa/helper/gl/Texture.h>
 #include <sofa/core/VisualModel.h>
 #include <sofa/core/componentmodel/behavior/MappedModel.h>
+#include <sofa/component/component.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/component/visualmodel/VisualModelImpl.h>
@@ -57,7 +58,7 @@ namespace visualmodel
  *
  */
 
-class OglModel : public VisualModelImpl
+class SOFA_COMPONENT_VISUALMODEL_API OglModel : public VisualModelImpl
 {
 private:
     Data<bool> premultipliedAlpha, useVBO;

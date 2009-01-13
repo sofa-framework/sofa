@@ -45,7 +45,7 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-class DistanceGrid
+class SOFA_COMPONENT_COLLISION_API DistanceGrid
 {
 public:
     static SReal maxDist() { return (SReal)1e10; }
@@ -437,7 +437,7 @@ public:
     void setNewState(double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
 };
 
-class RigidDistanceGridCollisionModel : public core::CollisionModel
+class SOFA_COMPONENT_COLLISION_API RigidDistanceGridCollisionModel : public core::CollisionModel
 {
 protected:
 
@@ -593,7 +593,7 @@ public:
     void setGrid(DistanceGrid* surf);
 };
 
-class FFDDistanceGridCollisionModel : public core::CollisionModel
+class SOFA_COMPONENT_COLLISION_API FFDDistanceGridCollisionModel : public core::CollisionModel
 {
 public:
     typedef SReal GSReal;

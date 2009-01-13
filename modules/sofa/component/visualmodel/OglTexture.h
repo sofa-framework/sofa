@@ -50,7 +50,7 @@ namespace visualmodel
  *  At the moment, only texture2D is supported.
  */
 
-class OglTexture :  public core::VisualModel, public OglShaderElement
+class SOFA_COMPONENT_VISUALMODEL_API OglTexture :  public core::VisualModel, public OglShaderElement
 {
 
 protected:
@@ -85,7 +85,7 @@ protected:
     virtual void backwardDraw() = 0;
 };
 
-class OglTexture2D : public OglTexture
+class SOFA_COMPONENT_VISUALMODEL_API OglTexture2D : public OglTexture
 {
 private:
     Data<std::string> texture2DFilename;

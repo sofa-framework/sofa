@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_CONSTRAINT_BASELMCONSTRAINT_H
 
 #include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
+#include <sofa/core/core.h>
 
 namespace sofa
 {
@@ -45,7 +46,7 @@ namespace behavior
  *        They can be constraint on acceleration, velocity, or position.
  *        They can be grouped or individual. The resolution is then done in the OdeSolver.
  **/
-class BaseLMConstraint: public virtual core::objectmodel::BaseObject
+class SOFA_CORE_API BaseLMConstraint: public virtual core::objectmodel::BaseObject
 {
 public:
     ///Description of the nature of the constraint

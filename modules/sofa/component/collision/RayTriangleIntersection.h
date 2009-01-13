@@ -43,7 +43,7 @@ namespace collision
 // this class computes if a Triangle P intersects a line segment
 //-----------------------------------------------------------------------------
 
-class RayTriangleIntersection
+class SOFA_COMPONENT_COLLISION_API RayTriangleIntersection
 {
 public:
     RayTriangleIntersection(); // start a Proximity solver

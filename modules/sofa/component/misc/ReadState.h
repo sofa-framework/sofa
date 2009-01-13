@@ -32,6 +32,7 @@
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/simulation/common/Visitor.h>
+#include <sofa/component/component.h>
 
 #include <fstream>
 
@@ -46,7 +47,7 @@ namespace misc
 
 /** Read State vectors from file at each timestep
 */
-class ReadState: public core::objectmodel::BaseObject
+class SOFA_COMPONENT_MISC_API ReadState: public core::objectmodel::BaseObject
 {
 public:
 
@@ -90,7 +91,7 @@ public:
 
 
 ///Create ReadState component in the graph each time needed
-class ReadStateCreator: public Visitor
+class SOFA_COMPONENT_MISC_API ReadStateCreator: public Visitor
 {
 public:
     ReadStateCreator():sceneName(""), createInMapping(false), counterReadState(0) {}
@@ -108,7 +109,7 @@ protected:
     int counterReadState; //avoid to have two same files if two mechanical objects has the same name
 };
 
-class ReadStateActivator: public Visitor
+class SOFA_COMPONENT_MISC_API ReadStateActivator: public Visitor
 {
 public:
     ReadStateActivator( bool active):state(active) {}
@@ -122,7 +123,7 @@ protected:
     bool state;
 };
 
-class ReadStateModifier: public simulation::Visitor
+class SOFA_COMPONENT_MISC_API ReadStateModifier: public simulation::Visitor
 {
 public:
     ReadStateModifier( double _time):time(_time) {}

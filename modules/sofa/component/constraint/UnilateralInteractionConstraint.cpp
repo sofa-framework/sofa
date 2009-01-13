@@ -1,3 +1,4 @@
+#define SOFA_COMPONENT_CONSTRAINT_UNILATERALINTERACTIONCONSTRAINT_CPP
 #include <sofa/component/constraint/UnilateralInteractionConstraint.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/component/container/MechanicalObject.h>
@@ -28,10 +29,10 @@ int UnilateralInteractionConstraintClass = core::RegisterObject("TODO-Unilateral
 
 
 #ifndef SOFA_FLOAT
-template class UnilateralInteractionConstraint<Vec3dTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API UnilateralInteractionConstraint<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class UnilateralInteractionConstraint<Vec3fTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API UnilateralInteractionConstraint<Vec3fTypes>;
 #endif
 
 

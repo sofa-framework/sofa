@@ -44,7 +44,7 @@ namespace component
 namespace collision
 {
 
-class GraspingManager : public core::componentmodel::behavior::BaseController
+class SOFA_COMPONENT_COLLISION_API GraspingManager : public core::componentmodel::behavior::BaseController
 {
 public:
     typedef TriangleModel::DataTypes DataTypes;

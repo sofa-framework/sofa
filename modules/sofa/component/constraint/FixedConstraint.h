@@ -31,6 +31,8 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
 #include <sofa/component/topology/PointSubset.h>
 #include <set>
@@ -114,6 +116,26 @@ protected :
     static void FCRemovalFunction ( int , void*);
 
 };
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINT_FIXEDCONSTRAINT_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_CONSTRAINT_API FixedConstraint<defaulttype::Vec3dTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINT_API FixedConstraint<defaulttype::Vec2dTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINT_API FixedConstraint<defaulttype::Vec1dTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINT_API FixedConstraint<defaulttype::Vec6dTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINT_API FixedConstraint<defaulttype::Rigid3dTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINT_API FixedConstraint<defaulttype::Rigid2dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_CONSTRAINT_API FixedConstraint<defaulttype::Vec3fTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINT_API FixedConstraint<defaulttype::Vec2fTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINT_API FixedConstraint<defaulttype::Vec1fTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINT_API FixedConstraint<defaulttype::Vec6fTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINT_API FixedConstraint<defaulttype::Rigid3fTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINT_API FixedConstraint<defaulttype::Rigid2fTypes>;
+#endif
+#endif
 
 } // namespace constraint
 

@@ -28,6 +28,7 @@
 #include <sofa/core/VisualModel.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/component/component.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
 namespace sofa

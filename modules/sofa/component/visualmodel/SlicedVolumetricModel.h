@@ -28,6 +28,7 @@
 #include <sofa/core/VisualModel.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/topology/PointData.h>
+#include <sofa/component/component.h>
 
 #include <sofa/helper/gl/template.h>
 
@@ -54,7 +55,7 @@ namespace component
 namespace visualmodel
 {
 
-class SlicedVolumetricModel : public core::VisualModel
+class SOFA_COMPONENT_VISUALMODEL_API SlicedVolumetricModel : public core::VisualModel
 {
 public:
 

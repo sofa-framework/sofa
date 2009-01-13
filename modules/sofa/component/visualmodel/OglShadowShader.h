@@ -47,7 +47,7 @@ namespace component
 namespace visualmodel
 {
 
-class OglShadowShader : public sofa::component::visualmodel::OglShader
+class SOFA_COMPONENT_VISUALMODEL_API OglShadowShader : public sofa::component::visualmodel::OglShader
 {
 public:
     OglShadowShader();

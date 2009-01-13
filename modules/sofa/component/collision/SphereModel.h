@@ -28,7 +28,8 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/component/component.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <vector>
 
 namespace sofa
@@ -61,7 +62,7 @@ public:
     Real r() const;
 };
 
-class SphereModel : public core::CollisionModel
+class SOFA_COMPONENT_COLLISION_API SphereModel : public core::CollisionModel
 {
 public:
     typedef Vec3Types InDataTypes;

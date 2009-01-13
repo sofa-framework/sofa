@@ -33,7 +33,7 @@
 #endif // SOFA_DEV
 #include <sofa/component/topology/SparseGridTopology.h>
 #include <sofa/helper/vector.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 
 namespace sofa
@@ -258,6 +258,16 @@ protected:
 
     bool _alreadyInit;
 };
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API HexahedronFEMForceField<defaulttype::Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API HexahedronFEMForceField<defaulttype::Vec3fTypes>;
+#endif
+#endif
 
 } // namespace forcefield
 

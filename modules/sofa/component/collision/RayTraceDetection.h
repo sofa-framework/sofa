@@ -50,7 +50,7 @@ using namespace sofa::defaulttype;
  *    up to find a triangle in the other object. Both triangles are tested to evaluate if they are in
  * colliding state. It must be used with a TriangleOctreeModel,as an octree is used to traverse the object.
  */
-class RayTraceDetection :public core::componentmodel::collision::
+class SOFA_COMPONENT_COLLISION_API RayTraceDetection :public core::componentmodel::collision::
     BroadPhaseDetection,
 public core::componentmodel::collision::NarrowPhaseDetection
 {

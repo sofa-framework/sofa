@@ -33,6 +33,7 @@
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/simulation/common/Visitor.h>
+#include <sofa/component/component.h>
 
 #include <fstream>
 
@@ -51,7 +52,7 @@ namespace misc
  * Stop to write the state if the kinematic energy reach a given threshold (stopAt)
  * The energy will be measured at each period determined by keperiod
 */
-class WriteState: public core::objectmodel::BaseObject
+class SOFA_COMPONENT_MISC_API WriteState: public core::objectmodel::BaseObject
 {
 public:
     Data < std::string > f_filename;
@@ -99,7 +100,7 @@ public:
 };
 
 ///Create WriteState component in the graph each time needed
-class WriteStateCreator: public Visitor
+class SOFA_COMPONENT_MISC_API WriteStateCreator: public Visitor
 {
 public:
     WriteStateCreator(): sceneName(""), recordX(true),recordV(true), createInMapping(false), counterWriteState(0) {};
@@ -123,7 +124,7 @@ protected:
 
 };
 
-class WriteStateActivator: public simulation::Visitor
+class SOFA_COMPONENT_MISC_API WriteStateActivator: public simulation::Visitor
 {
 public:
     WriteStateActivator( bool active) : state(active) {}

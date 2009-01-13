@@ -31,6 +31,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/VisualModel.h>
 #include <sofa/helper/gl/FrameBufferObject.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -55,7 +56,7 @@ namespace visualmodel
 
 using sofa::defaulttype::Vector3;
 
-class Light : public virtual sofa::core::VisualModel
+class SOFA_COMPONENT_VISUALMODEL_API Light : public virtual sofa::core::VisualModel
 {
 protected:
     Data<Vector3> color;
@@ -113,7 +114,7 @@ public:
 
 };
 
-class PositionalLight : public Light
+class SOFA_COMPONENT_VISUALMODEL_API PositionalLight : public Light
 {
 protected:
     Data<Vector3> position;
@@ -129,7 +130,7 @@ public:
 
 };
 
-class SpotLight : public PositionalLight
+class SOFA_COMPONENT_VISUALMODEL_API SpotLight : public PositionalLight
 {
 protected:
     Data<Vector3> direction;

@@ -42,6 +42,7 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/GLSLShader.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -62,7 +63,7 @@ namespace visualmodel
  *  and Ati's >2K series.
  */
 
-class OglShader : public core::Shader, public core::VisualModel
+class SOFA_COMPONENT_VISUALMODEL_API OglShader : public core::Shader, public core::VisualModel
 {
 public:
     ///Activates or not the shader
@@ -157,7 +158,7 @@ public:
  *  and the id (or name) of the element.
  */
 
-class OglShaderElement : public core::ShaderElement
+class SOFA_COMPONENT_VISUALMODEL_API OglShaderElement : public core::ShaderElement
 {
 protected:
     ///Name of element (corresponding with the shader)

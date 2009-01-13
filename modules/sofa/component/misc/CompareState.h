@@ -44,7 +44,7 @@ namespace misc
 
 /** Compare State vectors from file at each timestep
 */
-class CompareState: public ReadState
+class SOFA_COMPONENT_MISC_API CompareState: public ReadState
 {
 public:
 
@@ -83,7 +83,7 @@ protected :
 };
 
 /// Create CompareState component in the graph each time needed
-class CompareStateCreator: public Visitor
+class SOFA_COMPONENT_MISC_API CompareStateCreator: public Visitor
 {
 public:
     CompareStateCreator() : sceneName(""), counterCompareState(0), createInMapping(false) {}
@@ -102,7 +102,7 @@ protected:
     bool createInMapping;
 };
 
-class CompareStateResult: public Visitor
+class SOFA_COMPONENT_MISC_API CompareStateResult: public Visitor
 {
 public:
     CompareStateResult() { error=errorByDof=0; numCompareState=0;}

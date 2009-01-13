@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_RAYCONTACT_H
 
 #include <sofa/core/componentmodel/collision/Contact.h>
+#include <sofa/component/component.h>
 #include <sofa/helper/Factory.h>
 
 namespace sofa
@@ -41,7 +42,7 @@ using namespace sofa::defaulttype;
 
 class RayModel;
 
-class BaseRayContact : public core::componentmodel::collision::Contact
+class SOFA_COMPONENT_COLLISION_API BaseRayContact : public core::componentmodel::collision::Contact
 {
 public:
     typedef RayModel CollisionModel1;

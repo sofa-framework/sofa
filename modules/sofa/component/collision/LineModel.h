@@ -68,7 +68,7 @@ public:
 //	const Vector3* tLeft() const;
 };
 
-class LineModel : public core::CollisionModel
+class SOFA_COMPONENT_COLLISION_API LineModel : public core::CollisionModel
 {
 protected:
     struct LineData

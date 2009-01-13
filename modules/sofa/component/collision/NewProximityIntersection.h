@@ -43,7 +43,7 @@ namespace component
 namespace collision
 {
 
-class NewProximityIntersection : public DiscreteIntersection
+class SOFA_COMPONENT_COLLISION_API NewProximityIntersection : public DiscreteIntersection
 {
 public:
     Data<double> alarmDistance;
