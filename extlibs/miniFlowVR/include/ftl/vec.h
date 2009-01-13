@@ -29,10 +29,7 @@
 
 #include <math.h>
 #include "fixed_array.h"
-//#include <boost/static_assert.hpp>
-#ifndef BOOST_STATIC_ASSERT
-#define BOOST_STATIC_ASSERT(a)
-#endif
+#include <boost/static_assert.hpp>
 
 #include "type.h"
 

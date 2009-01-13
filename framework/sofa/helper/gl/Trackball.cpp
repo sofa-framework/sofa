@@ -73,8 +73,8 @@
  *     June 1998
  */
 
-#include <math.h>
 #include <sofa/helper/gl/Trackball.h>
+#include <math.h>
 
 namespace sofa
 {

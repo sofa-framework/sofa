@@ -27,9 +27,10 @@
 #ifndef SOFA_DEFAULTTYPE_MAT_H
 #define SOFA_DEFAULTTYPE_MAT_H
 
+#include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/Vec.h>
 #include <assert.h>
-#include <sofa/helper/static_assert.h>
+#include <boost/static_assert.hpp>
 #include <iostream>
 using std::cerr;
 using std::endl;

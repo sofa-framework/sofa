@@ -28,7 +28,7 @@
 #define SOFA_DEFAULTTYPE_VEC_H
 
 #include <sofa/helper/fixed_array.h>
-#include <sofa/helper/static_assert.h>
+#include <boost/static_assert.hpp>
 #include <sofa/helper/rmath.h>
 #include <functional>
 

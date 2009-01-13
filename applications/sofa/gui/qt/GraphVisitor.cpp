@@ -28,10 +28,10 @@
 #include "WindowVisitor.h"
 
 
-#include <tinyxml/tinyxml.cpp>
-#include <tinyxml/tinyxmlerror.cpp>
-#include <tinyxml/tinystr.cpp>
-#include <tinyxml/tinyxmlparser.cpp>
+#include <tinyxml.cpp>
+#include <tinyxmlerror.cpp>
+#include <tinystr.cpp>
+#include <tinyxmlparser.cpp>
 
 #ifndef SOFA_QT4
 typedef QListViewItem Q3ListViewItem;
