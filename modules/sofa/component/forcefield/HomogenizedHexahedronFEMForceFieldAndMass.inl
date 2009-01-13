@@ -2652,6 +2652,10 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::draw()
     {
         std::vector< Vector3 > points;
 
+
+// 			glLineWidth( _drawSize.getValue() );
+// 			glBegin(GL_LINES);
+
         for( SparseGridTopology::SeqEdges::const_iterator it = this->_sparseGrid->getEdges().begin() ; it != this->_sparseGrid->getEdges().end(); ++it)
         {
             points.push_back( x[(*it)[0]] );
@@ -2662,10 +2666,19 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::draw()
 
 
 
-    colour=Vec<4,float>(0.95f, 0.95f, 0.7f,1.0f);
 
 
+    if (this->getContext()->getShowBehaviorModels())
     {
+// 					glColor3f(0.95, 0.95, 0.7);
+// 			  for(unsigned i=0;i<x.size();++i)
+// 			  {
+// 				  helper::gl::drawSphere( x[i], _drawSize.getValue()*1.5 );
+// 			  }
+
+        colour=Vec<4,float>(0.95f, 0.95f, 0.7f,1.0f);
+
+
         std::vector< Vector3 > points;
         for(unsigned i=0; i<x.size(); ++i) points.push_back( x[i] );
         simulation::tree::getSimulation()->DrawUtility.drawSpheres(points, _drawSize.getValue()*1.5f,colour);

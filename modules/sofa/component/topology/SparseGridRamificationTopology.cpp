@@ -27,7 +27,7 @@
 
 #include "SparseGridRamificationTopology.h"
 
-#include <sofa/helper/proximity.h>
+// #include <sofa/helper/proximity.h>
 
 namespace sofa
 {
@@ -211,7 +211,7 @@ bool SparseGridRamificationTopology::sharingTriangle(helper::io::Mesh* mesh, int
 
     const Hexa& hexa=getHexa( cubeIdx );
 
-    Vector3 a,b,c,d,P,Q;
+    Vector3 a,b,c,d;//P,Q;
 
     //trouver la face commune
     switch(where)
@@ -250,12 +250,15 @@ bool SparseGridRamificationTopology::sharingTriangle(helper::io::Mesh* mesh, int
 
             //tester si la face commune intersecte facet
             // pour les 3 aretes de facet avec le carre
-            static helper::DistanceSegTri proximitySolver;
+// 						static helper::DistanceSegTri proximitySolver;
+// 						proximitySolver.NewComputation( a,b,c, A, B,P,Q);
+// 						if( (Q-P).norm2() < 1.0e-6 ) return true;
+// 						proximitySolver.NewComputation( a,c,d, A, B,P,Q);
+// 						if( (Q-P).norm2() < 1.0e-6 ) return true;
 
-            proximitySolver.NewComputation( a,b,c, A, B,P,Q);
-            if( (Q-P).norm2() < 1.0e-6 ) return true;
-            proximitySolver.NewComputation( a,c,d, A, B,P,Q);
-            if( (Q-P).norm2() < 1.0e-6 ) return true;
+            if (intersectionSegmentTriangle( A,B,a,b,c) ) return true;
+            if( intersectionSegmentTriangle( A,B,a,c,d) ) return true;
+
         }
     }
 
@@ -954,7 +957,7 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->setNz( newnz );
     _virtualFinerLevels[0]->setContext( this->getContext() );
     sgrt->_finestConnectivity.setValue( _finestConnectivity.getValue() );
-
+    _virtualFinerLevels[0]->_fillWeighted.setValue( _fillWeighted.getValue() );
     _virtualFinerLevels[0]->setMin( _min.getValue() );
     _virtualFinerLevels[0]->setMax( _max.getValue() );
     _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
@@ -1342,6 +1345,71 @@ void SparseGridRamificationTopology::printHexaIdx()
         }
         sout << " -- " << sendl;
     }
+}
+
+
+
+
+bool SparseGridRamificationTopology::intersectionSegmentTriangle(Vector3 s0, Vector3 s1, Vector3 t0, Vector3 t1, Vector3 t2)
+{
+    // compute the offset origin, edges, and normal
+    Vector3 kDiff = s0 - t0;
+    Vector3 kEdge1 = t1 - t0;
+    Vector3 kEdge2 = t2 - t0;
+    Vector3 kNormal = kEdge1.cross(kEdge2);
+
+    Vector3 dir = s1-s0;
+    SReal norm = (s1-s0).norm();
+    dir /= norm;
+
+    // Solve Q + t*D = b1*E1 + b2*E2 (Q = kDiff, D = segment direction,
+    // E1 = kEdge1, E2 = kEdge2, N = Cross(E1,E2)) by
+    //   |Dot(D,N)|*b1 = sign(Dot(D,N))*Dot(D,Cross(Q,E2))
+    //   |Dot(D,N)|*b2 = sign(Dot(D,N))*Dot(D,Cross(E1,Q))
+    //   |Dot(D,N)|*t = -sign(Dot(D,N))*Dot(Q,N)
+    SReal fDdN = dir * kNormal;
+    SReal fSign;
+    if (fDdN > 1.0e-10)
+    {
+        fSign = (SReal)1.0;
+    }
+    else if (fDdN < -1.0e-10)
+    {
+        fSign = (SReal)-1.0;
+        fDdN = -fDdN;
+    }
+    else
+    {
+        // Segment and triangle are parallel, call it a "no intersection"
+        // even if the segment does intersect.
+        return false;
+    }
+
+    SReal fDdQxE2 = fSign * dir * kDiff.cross(kEdge2);
+    if (fDdQxE2 >= (SReal)0.0)
+    {
+        SReal fDdE1xQ = fSign* dir * kEdge1.cross(kDiff);
+        if (fDdE1xQ >= (SReal)0.0)
+        {
+            if (fDdQxE2 + fDdE1xQ <= fDdN)
+            {
+                // line intersects triangle, check if segment does
+                SReal fQdN = -fSign*kDiff*kNormal;
+                SReal fExtDdN = norm*fDdN;
+                if (-fExtDdN <= fQdN && fQdN <= fExtDdN)
+                {
+                    // segment intersects triangle
+                    return true;
+                }
+                // else: |t| > extent, no intersection
+            }
+            // else: b1+b2 > 1, no intersection
+        }
+        // else: b2 < 0, no intersection
+    }
+    // else: b1 < 0, no intersection
+
+    return false;
 }
 
 } // namespace topology

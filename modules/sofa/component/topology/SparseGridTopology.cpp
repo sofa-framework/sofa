@@ -100,6 +100,7 @@ const int SparseGridTopology::cornerIndicesFromFineToCoarse[8][8]=
 
 SparseGridTopology::SparseGridTopology(bool _isVirtual)
     :
+    _fillWeighted(initData(&_fillWeighted, true, "fillWeighted", "Is quantity of matter inside a cell taken into account? (.5 for boundary, 1 for inside)")),
     n(initData(&n, Vec3i(2,2,2), "n", "grid resolution")),
     _min(initData(&_min, Vector3(0,0,0), "min","Min")),
     _max(initData(&_max, Vector3(0,0,0), "max","Max")),
@@ -107,8 +108,7 @@ SparseGridTopology::SparseGridTopology(bool _isVirtual)
     dataResolution(initData(&dataResolution, Vec3i(0,0,0), "dataResolution", "Dimension of the voxel File")),
     voxelSize(initData(&voxelSize, Vector3(1.0f,1.0f,1.0f), "voxelSize", "Dimension of one voxel")),
     marchingCubeStep(initData(&marchingCubeStep, (unsigned int) 1, "marchingCubeStep", "Step of the Marching Cube algorithm")),
-    convolutionSize(initData(&convolutionSize, (unsigned int) 0, "convolutionSize", "Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required.")),
-    _fillWeighted(initData(&_fillWeighted, true, "fillWeighted", "Is quantity of matter inside a cell taken into account?"))
+    convolutionSize(initData(&convolutionSize, (unsigned int) 0, "convolutionSize", "Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required."))
 {
     isVirtual = _isVirtual;
     _alreadyInit = false;
@@ -1167,6 +1167,7 @@ void SparseGridTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->setMax( _max.getValue() );
     _virtualFinerLevels[0]->setContext( this->getContext( ) );
     _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
+    _virtualFinerLevels[0]->_fillWeighted.setValue( _fillWeighted.getValue() );
     _virtualFinerLevels[0]->init();
 
     serr<<"SparseGridTopology "<<getName()<<" buildVirtualFinerLevels : ";
