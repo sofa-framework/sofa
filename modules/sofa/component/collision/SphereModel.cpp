@@ -152,7 +152,10 @@ void SphereModel::draw()
             points.push_back(p);
             radius.push_back(t.r());
         }
+
+        sofa::simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true); //Enable lightning
         simulation::tree::getSimulation()->DrawUtility.drawSpheres(points, radius, Vec<4,float>(getColor4f()));
+        sofa::simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false); //Disable lightning
 
         glDisable(GL_LIGHTING);
         glDisable(GL_COLOR_MATERIAL);

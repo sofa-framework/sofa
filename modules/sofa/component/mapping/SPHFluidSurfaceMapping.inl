@@ -382,7 +382,6 @@ void SPHFluidSurfaceMapping<In,Out>::draw()
             }
         }
     }
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
     simulation::tree::getSimulation()->DrawUtility.drawPoints(points1, 3, Vec<4,float>(1,1,1,1));
 
 
@@ -432,7 +431,6 @@ void SPHFluidSurfaceMapping<In,Out>::draw()
         }
     }
     simulation::tree::getSimulation()->DrawUtility.drawLines(points3, 1, Vec<4,float>(0,1,0,1));
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 } // namespace mapping

@@ -1884,9 +1884,7 @@ void BarycentricMapping<BasicMapping>::draw()
     const InVecCoord& in = *this->fromModel->getX();
     if (mapper!=NULL) mapper->draw(out, in);
 
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
     simulation::tree::getSimulation()->DrawUtility.drawPoints(points, 7, Vec<4,float>(1,1,0,1));
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 template <class In, class Out>
@@ -2038,9 +2036,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw(const typename Out::VecCoord& o
             }
         }
     }
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
     simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0,1,0,1));
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 template <class In, class Out>
@@ -2087,9 +2083,7 @@ void BarycentricMapperRegularGridTopology<In,Out>::draw(const typename Out::VecC
             }
         }
     }
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
     simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0,0,1,1));
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 
 }
 
@@ -2136,9 +2130,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::draw(const typename Out::VecCo
             }
         }
     }
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
     simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0,0,1,1));
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 
 }
 
@@ -2174,9 +2166,7 @@ void BarycentricMapperEdgeSetTopology<In,Out>::draw(const typename Out::VecCoord
             }
         }
     }
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
     simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0,1,0,1));
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 template <class In, class Out>
@@ -2207,9 +2197,7 @@ void BarycentricMapperTriangleSetTopology<In,Out>::draw(const typename Out::VecC
             }
         }
     }
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
     simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0,1,0,1));
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 template <class In, class Out>
@@ -2240,9 +2228,7 @@ void BarycentricMapperQuadSetTopology<In,Out>::draw(const typename Out::VecCoord
             }
         }
     }
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
     simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0,1,0,1));
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 template <class In, class Out>
@@ -2275,9 +2261,7 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::draw(const typename Out::V
             }
         }
     }
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
     simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0,1,0,1));
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 template <class In, class Out>
@@ -2314,9 +2298,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::draw(const typename Out::Ve
             }
         }
     }
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
     simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0,1,0,1));
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 /************************************* PropagateConstraint ***********************************/

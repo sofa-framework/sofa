@@ -175,6 +175,7 @@ public slots:
     void slot_loadrecord_timevalue(bool updateTime=true);
 
 
+    void updateViewerParameters();
 
     void changeInstrument(int);
 
@@ -250,6 +251,8 @@ protected:
     QTimer* timerRecordStep;
     QLabel* fpsLabel;
     QLabel* timeLabel;
+    WFloatLineEdit *background[3];
+
 
     void setPixmap(std::string pixmap_filename, QPushButton* b);
 

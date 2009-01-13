@@ -137,10 +137,8 @@ void PointModel::draw()
                 pointsL.push_back(t.p()+normals[i]*0.1f);
             }
         }
-        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
         simulation::tree::getSimulation()->DrawUtility.drawPoints(pointsP, 3, Vec<4,float>(getColor4f()));
         simulation::tree::getSimulation()->DrawUtility.drawLines(pointsL, 1, Vec<4,float>(getColor4f()));
-        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 
         if (getContext()->getShowWireFrame())
             simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,false);

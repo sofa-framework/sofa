@@ -189,7 +189,6 @@ void PlaneForceField<DataTypes>::drawPlane(float size)
     points.push_back(corners[2]);
     points.push_back(corners[3]);
 
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
     simulation::tree::getSimulation()->DrawUtility.setPolygonMode(2,false); //Cull Front face
     simulation::tree::getSimulation()->DrawUtility.drawTriangles(points, defaulttype::Vec<4,float>(color.getValue()[0],color.getValue()[1],color.getValue()[2],1.0));
     simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,false); //No Culling
@@ -227,7 +226,6 @@ void PlaneForceField<DataTypes>::drawPlane(float size)
         pointsLine.push_back(point2);
     }
     simulation::tree::getSimulation()->DrawUtility.drawLines(pointsLine, 1, defaulttype::Vec<4,float>(1,0,0,1));
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 template <class DataTypes>

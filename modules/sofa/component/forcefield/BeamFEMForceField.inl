@@ -498,11 +498,9 @@ void BeamFEMForceField<DataTypes>::draw()
         points[2].push_back(p);
         points[2].push_back(p + q.rotate(beamVec) );
     }
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
     simulation::tree::getSimulation()->DrawUtility.drawLines(points[0], 1, Vec<4,float>(1,0,0,1));
     simulation::tree::getSimulation()->DrawUtility.drawLines(points[1], 1, Vec<4,float>(0,1,0,1));
     simulation::tree::getSimulation()->DrawUtility.drawLines(points[2], 1, Vec<4,float>(0,0,1,1));
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 
 }
 

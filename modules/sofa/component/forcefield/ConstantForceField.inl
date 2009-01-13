@@ -142,9 +142,7 @@ void ConstantForceField<DataTypes>::draw()
             points.push_back(defaulttype::Vector3(xx, xy, xz ));
             points.push_back(defaulttype::Vector3(xx+fx, xy+fy, xz+fz ));
         }
-        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
         simulation::tree::getSimulation()->DrawUtility.drawLines(points, 2, defaulttype::Vec<4,float>(0,1,0,1));
-        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
     }
     else
     {

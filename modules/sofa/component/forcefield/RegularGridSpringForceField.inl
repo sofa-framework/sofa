@@ -780,9 +780,7 @@ void RegularGridSpringForceField<DataTypes>::draw()
         }
     }
 
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
     simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0.5,0.5,0.5,1));
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 } // namespace forcefield

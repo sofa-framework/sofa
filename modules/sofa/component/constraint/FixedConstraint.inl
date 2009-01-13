@@ -253,9 +253,7 @@ void FixedConstraint<DataTypes>::draw()
                 for (unsigned int s=0; s<sizePoints; ++s) point[s] = x[*it][s];
                 points.push_back(point);
             }
-        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
         simulation::tree::getSimulation()->DrawUtility.drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
-        simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
     }
     else // new drawing by spheres
     {

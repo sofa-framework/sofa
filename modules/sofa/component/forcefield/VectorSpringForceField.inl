@@ -378,9 +378,7 @@ void VectorSpringForceField<DataTypes>::draw()
             points.push_back(Vector3(x2[e[1]]));
         }
     }
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
     simulation::tree::getSimulation()->DrawUtility.drawLines(points, 3, Vec<4,float>(0,1,1,1));
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 } // namespace forcefield

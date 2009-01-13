@@ -166,7 +166,6 @@ void PenalityContactForceField<DataTypes>::draw()
             points[3].push_back(p2[c.m2]);
         }
     }
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
     simulation::tree::getSimulation()->DrawUtility.drawLines(points[0], 1, defaulttype::Vec<4,float>(1,0,1,1));
     simulation::tree::getSimulation()->DrawUtility.drawLines(points[1], 1, defaulttype::Vec<4,float>(0,1,1,1));
     simulation::tree::getSimulation()->DrawUtility.drawLines(points[2], 1, defaulttype::Vec<4,float>(1,0,0,1));
@@ -190,7 +189,6 @@ void PenalityContactForceField<DataTypes>::draw()
         }
         simulation::tree::getSimulation()->DrawUtility.drawLines(pointsN, 1, defaulttype::Vec<4,float>(1,1,0,1));
     }
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 

@@ -103,7 +103,7 @@ class SofaViewer
 
 public:
     SofaViewer ()
-        : groot(NULL), m_isControlPressed(false), _video(false), _shadow(false), _gl_shadow(false), _axis(false), camera_type(CAMERA_PERSPECTIVE)
+        : groot(NULL), m_isControlPressed(false), _video(false), _shadow(false), _gl_shadow(false), _axis(false), camera_type(CAMERA_PERSPECTIVE), backgroundColour(Vector3()), ambientColour(Vector3())
     {}
     virtual ~SofaViewer() {}
 
@@ -171,6 +171,14 @@ public:
 
     virtual void removeViewerTab(QTabWidget *) {};
     virtual void configureViewerTab(QTabWidget *) {};
+
+    virtual void setBackgroundColour(float r, float g, float b)
+    {
+        _background=2;
+        backgroundColour[0]=r;
+        backgroundColour[1]=g;
+        backgroundColour[2]=b;
+    }
 
 protected:
 
@@ -560,6 +568,9 @@ protected:
     int _background;
     bool initTexturesDone;
     bool sceneBBoxIsValid;
+
+    Vector3 backgroundColour;
+    Vector3 ambientColour;
     sofa::component::collision::RayPickInteractor* interactor;
 
     //instruments handling

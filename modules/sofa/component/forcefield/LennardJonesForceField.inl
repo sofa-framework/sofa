@@ -163,10 +163,8 @@ void LennardJonesForceField<DataTypes>::draw()
             points[1].push_back(p1[df.b]);
         }
     }
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
     simulation::tree::getSimulation()->DrawUtility.drawLines(points[0], 1, defaulttype::Vec<4,float>(1,1,1,1));
     simulation::tree::getSimulation()->DrawUtility.drawLines(points[1], 1, defaulttype::Vec<4,float>(0,0,1,1));
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 
 }
 

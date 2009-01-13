@@ -616,9 +616,7 @@ void RigidMapping<BasicMapping>::draw()
         for (unsigned int s=0; s<sizePoints; ++s) point[s] = x[i][s];
         points.push_back(point);
     }
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
     simulation::tree::getSimulation()->DrawUtility.drawPoints(points, 7, Vec<4,float>(1,1,0,1));
-    simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 } // namespace mapping

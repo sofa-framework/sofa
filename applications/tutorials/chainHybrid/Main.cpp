@@ -54,6 +54,13 @@
 #include <sofa/simulation/common/TransformationVisitor.h>
 #include <sofa/helper/system/glut.h>
 
+
+#include <sofa/simulation/common/WriteStateVisitor.h>
+#include <sofa/component/misc/ReadState.h>
+#include <sofa/component/misc/WriteState.h>
+#include <sofa/component/misc/CompareState.h>
+#include <sofa/helper/system/SetDirectory.h>
+
 using sofa::component::visualmodel::OglModel;
 
 using namespace sofa::simulation::tree;
@@ -471,7 +478,16 @@ int main(int argc, char** argv)
 
     groot->setAnimate(false);
 
+    std::string file = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str());
+    file = file + std::string("/applications/projects/sofaVerification/simulation/toto");
 
+    sofa::component::misc::WriteStateCreator writeVisitor;
+    writeVisitor.setCreateInMapping(true);
+    writeVisitor.setSceneName(file);
+    writeVisitor.execute(groot);
+
+    sofa::component::misc::WriteStateActivator v_write(true);
+    v_write.execute(groot);
 
 
     getSimulation()->init(groot);
