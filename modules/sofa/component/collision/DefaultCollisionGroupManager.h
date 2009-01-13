@@ -28,6 +28,7 @@
 #include <sofa/core/componentmodel/collision/CollisionGroupManager.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/tree/GNode.h>
+#include <sofa/component/component.h>
 #include <set>
 
 
@@ -40,7 +41,7 @@ namespace component
 namespace collision
 {
 
-class DefaultCollisionGroupManager : public core::componentmodel::collision::CollisionGroupManager
+class SOFA_COMPONENT_COLLISION_API DefaultCollisionGroupManager : public core::componentmodel::collision::CollisionGroupManager
 {
 public:
     typedef std::set<simulation::tree::GNode*> GroupSet;

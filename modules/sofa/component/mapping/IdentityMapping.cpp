@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_CPP
 #include <sofa/component/mapping/IdentityMapping.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -117,41 +118,41 @@ int IdentityMappingClass = core::RegisterObject("Special case of mapping where t
 
 
 #ifndef SOFA_FLOAT
-template class IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > >;
-template class IdentityMapping< MechanicalMapping< MechanicalState<Vec2dTypes>, MechanicalState<Vec2dTypes> > >;
-template class IdentityMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1dTypes> > >;
-template class IdentityMapping< MechanicalMapping< MechanicalState<Vec6dTypes>, MechanicalState<Vec6dTypes> > >;
-template class IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > >;
-// template class IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > >;
-template class IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >;
-template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > >;
-template class IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<Rigid3dTypes> > >;
-template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Rigid2dTypes> > >;
-template class IdentityMapping< Mapping< State<Rigid2dTypes>, MappedModel<Rigid2dTypes> > >;
-template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > >;
-template class IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > >;
-// template class IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > >;
-template class IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > >;
-template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Vec2dTypes> > >;
-template class IdentityMapping< Mapping< State<Rigid2dTypes>, MappedModel<Vec2dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Vec2dTypes>, MechanicalState<Vec2dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Vec6dTypes>, MechanicalState<Vec6dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > >;
+// template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<Rigid3dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Rigid2dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid2dTypes>, MappedModel<Rigid2dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > >;
+// template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Vec2dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid2dTypes>, MappedModel<Vec2dTypes> > >;
 #endif
 #ifndef SOFA_DOUBLE
-template class IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > >;
-template class IdentityMapping< MechanicalMapping< MechanicalState<Vec2fTypes>, MechanicalState<Vec2fTypes> > >;
-template class IdentityMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1fTypes> > >;
-template class IdentityMapping< MechanicalMapping< MechanicalState<Vec6fTypes>, MechanicalState<Vec6fTypes> > >;
-template class IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > >;
-template class IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >;
-// template class IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > >;
-template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3fTypes> > >;
-template class IdentityMapping< Mapping< State<Rigid3fTypes>, MappedModel<Rigid3fTypes> > >;
-template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Rigid2fTypes> > >;
-template class IdentityMapping< Mapping< State<Rigid2fTypes>, MappedModel<Rigid2fTypes> > >;
-template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > >;
-template class IdentityMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > >;
-template class IdentityMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > >;
-template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Vec2fTypes> > >;
-template class IdentityMapping< Mapping< State<Rigid2fTypes>, MappedModel<Vec2fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Vec2fTypes>, MechanicalState<Vec2fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Vec6fTypes>, MechanicalState<Vec6fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >;
+// template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid3fTypes>, MappedModel<Rigid3fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Rigid2fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid2fTypes>, MappedModel<Rigid2fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Vec2fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Mapping< State<Rigid2fTypes>, MappedModel<Vec2fTypes> > >;
 #endif
 
 #ifndef SOFA_FLOAT

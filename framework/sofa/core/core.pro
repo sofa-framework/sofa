@@ -25,6 +25,7 @@ HEADERS += \
           componentmodel/behavior/InteractionConstraint.h \
           componentmodel/behavior/LinearSolver.h \
           componentmodel/behavior/LMConstraint.h \
+          componentmodel/behavior/LMConstraint.inl \
           componentmodel/behavior/PairInteractionForceField.h \
           componentmodel/behavior/PairInteractionForceField.inl \
 	  componentmodel/behavior/MixedInteractionForceField.h \

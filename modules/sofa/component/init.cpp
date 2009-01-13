@@ -41,6 +41,7 @@
 #include <sofa/component/odesolver/initOdeSolver.h>
 #include <sofa/component/topology/initTopology.h>
 #include <sofa/component/visualmodel/initVisualModel.h>
+#include <sofa/component/init.h>
 
 
 namespace sofa

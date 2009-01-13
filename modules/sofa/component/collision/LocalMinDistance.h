@@ -43,7 +43,7 @@ namespace component
 namespace collision
 {
 
-class LocalMinDistance : public DiscreteIntersection
+class SOFA_COMPONENT_COLLISION_API LocalMinDistance : public DiscreteIntersection
 {
 public:
     // Data<bool> useSphereTriangle;

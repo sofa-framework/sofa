@@ -33,6 +33,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/io/Mesh.h>
+#include <sofa/component/component.h>
 
 #include <map>
 
@@ -100,7 +101,7 @@ public:
  *
  */
 
-class VisualModelImpl : public core::VisualModel, public ExtVec3fMappedModel, public RigidMappedModel
+class SOFA_COMPONENT_VISUALMODEL_API VisualModelImpl : public core::VisualModel, public ExtVec3fMappedModel, public RigidMappedModel
 {
 protected:
     // use types from ExtVec3fTypes

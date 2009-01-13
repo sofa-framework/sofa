@@ -27,6 +27,7 @@
 
 #include <sofa/core/componentmodel/collision/BroadPhaseDetection.h>
 #include <sofa/core/componentmodel/collision/NarrowPhaseDetection.h>
+#include <sofa/component/component.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/defaulttype/Vec.h>
 #include <set>
@@ -43,7 +44,7 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-class BruteForceDetection :
+class SOFA_COMPONENT_COLLISION_API BruteForceDetection :
     public core::componentmodel::collision::BroadPhaseDetection,
     public core::componentmodel::collision::NarrowPhaseDetection
 {

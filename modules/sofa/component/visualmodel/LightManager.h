@@ -38,6 +38,7 @@
 #define SOFA_COMPONENT_LIGHTMANAGER_H
 
 #include <sofa/defaulttype/SolidTypes.h>
+#include <sofa/component/component.h>
 #include <sofa/component/visualmodel/Light.h>
 #include <sofa/core/VisualManager.h>
 #include <sofa/core/objectmodel/Event.h>
@@ -60,7 +61,7 @@ namespace visualmodel
  *
  */
 
-class LightManager : public core::VisualManager
+class SOFA_COMPONENT_VISUALMODEL_API LightManager : public core::VisualManager
 {
 private:
     static const unsigned int MAX_NUMBER_OF_LIGHTS = GL_MAX_LIGHTS;

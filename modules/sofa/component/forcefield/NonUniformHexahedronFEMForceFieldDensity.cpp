@@ -24,8 +24,8 @@
 ******************************************************************************/
 
 #include <sofa/component/forcefield/NonUniformHexahedronFEMForceFieldDensity.inl>
+#include <sofa/core/componentmodel/behavior/ForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 //#include <typeinfo>
 

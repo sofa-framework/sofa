@@ -56,7 +56,7 @@ public:
     const std::pair<Cube,Cube>& subcells() const;
 };
 
-class CubeModel : public core::CollisionModel
+class SOFA_COMPONENT_COLLISION_API CubeModel : public core::CollisionModel
 {
 protected:
 

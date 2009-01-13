@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_CONSTRAINT_ATTACHCONSTRAINT_CPP
 #include <sofa/component/constraint/AttachConstraint.inl>
+#include <sofa/core/componentmodel/behavior/PairInteractionConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
 
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/component/mass/UniformMass.h>
@@ -62,18 +62,18 @@ int AttachConstraintClass = core::RegisterObject("Attach given pair of particles
         ;
 
 #ifndef SOFA_FLOAT
-template class AttachConstraint<Vec3dTypes>;
-template class AttachConstraint<Vec2dTypes>;
-template class AttachConstraint<Vec1dTypes>;
-template class AttachConstraint<Rigid3dTypes>;
-template class AttachConstraint<Rigid2dTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Vec3dTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Vec2dTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Vec1dTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Rigid3dTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class AttachConstraint<Vec3fTypes>;
-template class AttachConstraint<Vec2fTypes>;
-template class AttachConstraint<Vec1fTypes>;
-template class AttachConstraint<Rigid3fTypes>;
-template class AttachConstraint<Rigid2fTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Vec3fTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Vec2fTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Vec1fTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Rigid3fTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Rigid2fTypes>;
 #endif
 } // namespace constraint
 

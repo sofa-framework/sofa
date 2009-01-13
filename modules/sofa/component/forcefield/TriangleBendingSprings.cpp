@@ -34,6 +34,8 @@
 //
 //
 #include <sofa/component/forcefield/TriangleBendingSprings.inl>
+#include <sofa/component/forcefield/StiffSpringForceField.inl>
+#include <sofa/core/componentmodel/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
 

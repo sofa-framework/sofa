@@ -28,6 +28,7 @@
 #include <sofa/core/VisualModel.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/topology/PointData.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -52,7 +53,7 @@ namespace component
 namespace visualmodel
 {
 
-class PointSplatModel : public core::VisualModel
+class SOFA_COMPONENT_VISUALMODEL_API PointSplatModel : public core::VisualModel
 {
 public:
     PointSplatModel();

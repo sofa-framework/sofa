@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/constraint/DistanceConstraint.inl>
+#include <sofa/core/componentmodel/behavior/LMConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
