@@ -47,6 +47,7 @@
 #include <sofa/simulation/automatescheduler/ThreadSimulation.h>
 #include <sofa/simulation/automatescheduler/ExecBus.h>
 #include <sofa/simulation/automatescheduler/Node.h>
+#include <sofa/simulation/automatescheduler/AutomateUtils.h>
 
 #endif // SOFA_DEV
 
@@ -62,10 +63,6 @@
 #include <sofa/simulation/tree/xml/XML.h>
 #include <sofa/simulation/common/TransformationVisitor.h>
 #include <sofa/helper/system/FileRepository.h>
-
-#ifdef SOFA_DEV
-#include <sofa/simulation/automatescheduler/automateUtils.h>
-#endif // SOFA_DEV
 
 
 #ifdef SOFA_QT4
