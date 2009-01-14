@@ -75,10 +75,15 @@ void PCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double b
 {
     Inherit::setSystemMBKMatrix(mFact,bFact,kFact);
 
-    for (unsigned int i=0; i<this->preconditioners.size(); ++i)
+    if (iteration==0)
     {
-        preconditioners[i]->setSystemMBKMatrix(mFact,bFact,kFact);
+        for (unsigned int i=0; i<this->preconditioners.size(); ++i)
+        {
+            preconditioners[i]->setSystemMBKMatrix(mFact,bFact,kFact);
+        }
+        iteration = f_refresh.getValue();
     }
+    iteration--;
 }
 
 /*
