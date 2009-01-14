@@ -42,6 +42,11 @@ namespace forcefield
 {
 
 template <class DataTypes>
+MeshSpringForceField<DataTypes>::~MeshSpringForceField()
+{
+}
+
+template <class DataTypes>
 double MeshSpringForceField<DataTypes>::getPotentialEnergy()
 {
     serr<<"MeshSpringForceField::getPotentialEnergy-not-implemented !!!"<<sendl;

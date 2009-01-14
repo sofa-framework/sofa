@@ -51,7 +51,7 @@ namespace collision
 using namespace sofa::defaulttype;
 
 class TriangleOctreeModel;
-class TriangleOctree
+class SOFA_COMPONENT_COLLISION_API TriangleOctree
 {
 public:
     class vertexData

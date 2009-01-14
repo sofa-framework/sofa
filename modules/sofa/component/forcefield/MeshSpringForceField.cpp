@@ -56,14 +56,14 @@ int MeshSpringForceFieldClass = core::RegisterObject("Spring force field acting 
         ;
 
 #ifndef SOFA_FLOAT
-template class MeshSpringForceField<Vec3dTypes>;
-template class MeshSpringForceField<Vec2dTypes>;
-template class MeshSpringForceField<Vec1dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API MeshSpringForceField<Vec3dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API MeshSpringForceField<Vec2dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API MeshSpringForceField<Vec1dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class MeshSpringForceField<Vec3fTypes>;
-template class MeshSpringForceField<Vec2fTypes>;
-template class MeshSpringForceField<Vec1fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API MeshSpringForceField<Vec3fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API MeshSpringForceField<Vec2fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API MeshSpringForceField<Vec1fTypes>;
 #endif
 } // namespace forcefield
 
