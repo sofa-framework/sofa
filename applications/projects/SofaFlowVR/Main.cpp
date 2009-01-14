@@ -458,7 +458,7 @@ public:
     {
         //std::cout << "Received FlowVRBeginIteration"<<std::endl;
         flowvr::Message points, facets;
-// 	double time = getContext()->getTime();
+        double time = getContext()->getTime();
 
         module->get(pInPoints, points);
         module->get(pInFacets, facets);
@@ -1344,9 +1344,9 @@ public:
         //normModified = true;
     }
 
-    void computeMesh(sofa::core::componentmodel::topology::BaseMeshTopology* topology)
+    void computeMesh(sofa::core::componentmodel::topology::BaseMeshTopology* /*topology*/)
     {
-        Inherit::computeMesh(topology);
+        Inherit::computeMesh();
         meshModified = true;
     }
 
