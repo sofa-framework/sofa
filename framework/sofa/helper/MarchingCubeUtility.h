@@ -91,6 +91,25 @@ public:
         assert( bbox.max[2] <= dataResolution[2]);
     }
 
+    /// Set the border to localy remesh from real coords
+    void setBordersFromRealCoords( const vector<set<Vector3> >& borders)
+    {
+        this->borders.clear();
+
+        Vector3 resolution = dataResolution.linearProduct(dataVoxelSize);
+        resolution = Vector3( 1/resolution[0], 1/resolution[1], 1/resolution[2]);
+        for( vector<set<Vector3> >::const_iterator itBorders = borders.begin(); itBorders != borders.end(); itBorders++)
+        {
+            set<Vec3i> border;
+            for( set<Vector3>::const_iterator it = itBorders->begin(); it != itBorders->end(); it++)
+            {
+                Vec3i cube = ((*it) - dataVoxelSize/2.0).linearProduct( resolution) * 2.0 - Vector3( 1.0f, 1.0f, 1.0f);
+                border.insert( cube);
+            }
+            this->borders.push_back( border);
+        }
+    }
+
     /// Propagate the triangulation surface creation from a cell.
     void propagateFrom ( const Vec3i coord,
             const unsigned char *_data, const float isolevel,
@@ -107,7 +126,7 @@ public:
             sofa::helper::vector< Vector3>  &vertices,
             helper::vector< helper::vector<unsigned int /*regular grid space index*/> > *triangleIndexInRegularGrid = NULL ) const;
 
-//TODO// c null ces graines, ca n'a aucun interet pratique. Virer pour une methode qui propage a partir d'un maillage existant par exemple...
+//TODO// c null ces graines, ca n'a aucun interet pratique. Virer pour une methode qui propage a partir d'un maillage existant par exemple... => se servir des bordures pour ca et virer les graines ! :)
     /// Same as the previous function but the surfaces are constructed by propagating from seeds.
     /// Faster than previous but it need the precomputation of the seeds.
     void run ( const unsigned char *data, const vector<Vec3i>& seeds,
@@ -175,6 +194,7 @@ private:
     Vec3i     dataResolution;
     Vector3     dataVoxelSize;
     BoundingBox bbox;
+    vector<set<Vec3i> > borders;
 };
 
 extern SOFA_HELPER_API const int MarchingCubeEdgeTable[256];
