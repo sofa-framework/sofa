@@ -54,6 +54,7 @@ public:
     Data<double> f_tolerance;
     Data<double> f_smallDenominatorThreshold;
     Data<bool> f_verbose;
+    Data<unsigned> f_refresh;
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
     std::vector<sofa::core::componentmodel::behavior::LinearSolver*> preconditioners;
 
@@ -63,9 +64,11 @@ public:
         , f_smallDenominatorThreshold( initData(&f_smallDenominatorThreshold,1e-5,"threshold","minimum value of the denominator in the conjugate Gradient solution") )
         , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
         , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
+        , f_refresh( initData(&f_refresh,"refresh","Refresh iterations") )
     {
         f_graph.setWidget("graph");
         f_graph.setReadOnly(true);
+        iteration = f_refresh.getValue();
     }
 
     void solve (Matrix& M, Vector& x, Vector& b);
@@ -73,6 +76,8 @@ public:
     void setSystemMBKMatrix(double mFact=0.0, double bFact=0.0, double kFact=0.0);
     //void setSystemRHVector(VecId v);
     //void setSystemLHVector(VecId v);
+private :
+    int iteration;
 
 protected:
     /// This method is separated from the rest to be able to use custom/optimized versions depending on the types of vectors.
