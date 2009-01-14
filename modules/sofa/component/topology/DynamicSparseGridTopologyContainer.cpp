@@ -68,11 +68,20 @@ void DynamicSparseGridTopologyContainer::loadFromMeshLoader ( sofa::component::M
     PointSetTopologyContainer::loadFromMeshLoader ( voxelGridLoader );
     d_hexahedron.beginEdit();
     voxelGridLoader->getIndicesInRegularGrid( idxInRegularGrid);
+    for( unsigned int i = 0; i < idxInRegularGrid.size(); i++)
+    {
+        idInRegularGrid2Hexa.insert( make_pair( idxInRegularGrid[i], i ));
+    }
+
     int dataSize = voxelGridLoader->getDataSize();
     unsigned char* data = voxelGridLoader->getData();
-    voxelsData.resize( dataSize);
+    valuesIndexedInRegularGrid.resize( dataSize);
+    valuesIndexedInTopology.resize( dataSize);
     for( int i = 0; i < dataSize; i++)
-        voxelsData[i] = data[i];
+    {
+        valuesIndexedInRegularGrid[i] = data[i];
+        valuesIndexedInTopology[i] = data[i];
+    }
     voxelGridLoader->getHexas( m_hexahedron);
     d_hexahedron.endEdit();
 

@@ -26,6 +26,8 @@
 #define SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDTOPOLOGYCONTAINER_H
 
 #include <sofa/component/topology/HexahedronSetTopologyContainer.h>
+#include <sofa/component/topology/HexahedronData.h>
+#include <map>
 
 namespace sofa
 {
@@ -46,8 +48,12 @@ public:
     typedef HexaQuads HexahedronQuads;
 
     Data< Vec3i> resolution;
-    helper::vector<unsigned char> voxelsData;
-    helper::vector<unsigned int> idxInRegularGrid;
+
+    sofa::helper::vector<unsigned char> valuesIndexedInRegularGrid;
+    HexahedronData<unsigned char> valuesIndexedInTopology;
+
+    HexahedronData<BaseMeshTopology::HexaID> idxInRegularGrid;
+    std::map< unsigned int, BaseMeshTopology::HexaID> idInRegularGrid2Hexa;
     defaulttype::Vector3 voxelSize;
 
     DynamicSparseGridTopologyContainer();

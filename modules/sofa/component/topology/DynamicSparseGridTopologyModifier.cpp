@@ -36,9 +36,59 @@ namespace component
 {
 namespace topology
 {
-SOFA_DECL_CLASS(DynamicSparseGridTopologyModifier);
-int DynamicSparseGridTopologyModifierClass = core::RegisterObject("Hexahedron set topology modifier")
+SOFA_DECL_CLASS ( DynamicSparseGridTopologyModifier );
+int DynamicSparseGridTopologyModifierClass = core::RegisterObject ( "Hexahedron set topology modifier" )
         .add< DynamicSparseGridTopologyModifier >();
+
+
+
+void DynamicSparseGridTopologyModifier::init()
+{
+    HexahedronSetTopologyModifier::init();
+    this->getContext()->get ( m_container );
+    if( ! m_container)
+    {
+        std::cerr << "ERROR in DynamicSparseGridTopologyModifier::init(): DynamicSparseGridTopologyContainer was not found !" << std::endl;
+    }
+}
+
+
+
+void DynamicSparseGridTopologyModifier::addHexahedraProcess ( const sofa::helper::vector< Hexahedron > &hexahedra )
+{
+//        unsigned int hexaSize = m_container->getNumberOfHexahedra(); // Get the size before adding elements
+    HexahedronSetTopologyModifier::addHexahedraProcess ( hexahedra );
+    /*
+            for ( unsigned int i = 0; i < hexahedra.size(); i++ )  // For each element
+            {
+              // Compute the center
+              const Hexahedron &t = m_container->getHexa( hexaSize + i);
+              const typename DataTypes::VecCoord& p = *(this->object->getX());
+
+              DataTypes::Coord coord = (p[t[0]] + p[t[1]] + p[t[2]] + p[t[3]] + p[t[4]] + p[t[5]] + p[t[6]] + p[t[7]]) * (Real) 0.125;
+
+              // Check if the hexa is in the boundary.
+              assert( true); // assert dans les limites definies.
+
+              // Compute the index
+              unsigned int index = 0; //TODO// coord * sizeDim
+
+              // update the map idInRegularGrid2Hexa.
+              m_container->idInRegularGrid2Hexa.insert ( std::make_pair ( index, hexaSize + i ) );
+            }*/
+}
+
+void DynamicSparseGridTopologyModifier::removeHexahedraProcess ( const sofa::helper::vector<unsigned int> &indices, const bool removeIsolatedItems )
+{
+    HexahedronSetTopologyModifier::removeHexahedraProcess ( indices, removeIsolatedItems );
+    /*
+            //TODO// Update the map idInRegularGrid2Hexa.
+            for ( unsigned int i = 0; i < indices.size(); i++ )  // For each element
+            {
+              m_container->idInRegularGrid2Hexa.erase( indices[i]);
+            }
+    */
+}
 
 } // namespace topology
 
