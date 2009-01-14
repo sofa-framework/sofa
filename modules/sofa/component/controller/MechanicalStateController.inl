@@ -205,197 +205,17 @@ void MechanicalStateController<DataTypes>::applyController()
     sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
 };
 
+#ifndef SOFA_FLOAT
 template <>
 void MechanicalStateController<Vec1dTypes>::applyController();
+#endif
 
+#ifndef SOFA_DOUBLE
 template <>
 void MechanicalStateController<Vec1fTypes>::applyController();
+#endif
 
 
-
-template <>
-void MechanicalStateController<Vec1fTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)
-{
-    //sout<<"MouseEvent detected"<<sendl;
-    eventX = mev->getPosX();
-    eventY = mev->getPosY();
-
-    switch (mev->getState())
-    {
-    case sofa::core::objectmodel::MouseEvent::LeftPressed :
-        mouseMode = BtLeft;
-        break;
-
-    case sofa::core::objectmodel::MouseEvent::LeftReleased :
-        mouseMode = None;
-        break;
-
-    case sofa::core::objectmodel::MouseEvent::RightPressed :
-        mouseMode = BtRight;
-        mouseSavedPosX = eventX;
-        mouseSavedPosY = eventY;
-        break;
-
-    case sofa::core::objectmodel::MouseEvent::RightReleased :
-        mouseMode = None;
-        break;
-
-    case sofa::core::objectmodel::MouseEvent::MiddlePressed :
-        mouseMode = BtMiddle;
-        break;
-
-    case sofa::core::objectmodel::MouseEvent::MiddleReleased :
-        mouseMode = None;
-        break;
-
-    default :
-        break;
-    }
-    if (handleEventTriggersUpdate.getValue())
-        applyController();
-
-}
-
-template <>
-void MechanicalStateController<Vec1dTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)
-{
-    //sout<<"MouseEvent detected"<<sendl;
-    eventX = mev->getPosX();
-    eventY = mev->getPosY();
-
-    switch (mev->getState())
-    {
-    case sofa::core::objectmodel::MouseEvent::LeftPressed :
-        mouseMode = BtLeft;
-        break;
-
-    case sofa::core::objectmodel::MouseEvent::LeftReleased :
-        mouseMode = None;
-        break;
-
-    case sofa::core::objectmodel::MouseEvent::RightPressed :
-        mouseMode = BtRight;
-        mouseSavedPosX = eventX;
-        mouseSavedPosY = eventY;
-        break;
-
-    case sofa::core::objectmodel::MouseEvent::RightReleased :
-        mouseMode = None;
-        break;
-
-    case sofa::core::objectmodel::MouseEvent::MiddlePressed :
-        mouseMode = BtMiddle;
-        break;
-
-    case sofa::core::objectmodel::MouseEvent::MiddleReleased :
-        mouseMode = None;
-        break;
-
-    default :
-        break;
-    }
-    if (handleEventTriggersUpdate.getValue())
-        applyController();
-
-}
-
-template <>
-void MechanicalStateController<Rigid3dTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)
-{
-    //sout<<"MouseEvent detected"<<sendl;
-    eventX = mev->getPosX();
-    eventY = mev->getPosY();
-
-    switch (mev->getState())
-    {
-    case sofa::core::objectmodel::MouseEvent::LeftPressed :
-        mouseMode = BtLeft;
-        mouseSavedPosX = eventX;
-        mouseSavedPosY = eventY;
-        break;
-
-    case sofa::core::objectmodel::MouseEvent::LeftReleased :
-        mouseMode = None;
-        break;
-
-    case sofa::core::objectmodel::MouseEvent::RightPressed :
-        mouseMode = BtRight;
-        mouseSavedPosX = eventX;
-        mouseSavedPosY = eventY;
-        break;
-
-    case sofa::core::objectmodel::MouseEvent::RightReleased :
-        mouseMode = None;
-        break;
-
-    case sofa::core::objectmodel::MouseEvent::MiddlePressed :
-        mouseMode = BtMiddle;
-        mouseSavedPosX = eventX;
-        mouseSavedPosY = eventY;
-        break;
-
-    case sofa::core::objectmodel::MouseEvent::MiddleReleased :
-        mouseMode = None;
-        break;
-
-    case sofa::core::objectmodel::MouseEvent::Move :
-        if (handleEventTriggersUpdate.getValue())
-            applyController();
-        break;
-
-    default :
-        break;
-    }
-}
-
-template <>
-void MechanicalStateController<Rigid3fTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)
-{
-    //sout<<"MouseEvent detected"<<sendl;
-    eventX = mev->getPosX();
-    eventY = mev->getPosY();
-
-    switch (mev->getState())
-    {
-    case sofa::core::objectmodel::MouseEvent::LeftPressed :
-        mouseMode = BtLeft;
-        mouseSavedPosX = eventX;
-        mouseSavedPosY = eventY;
-        break;
-
-    case sofa::core::objectmodel::MouseEvent::LeftReleased :
-        mouseMode = None;
-        break;
-
-    case sofa::core::objectmodel::MouseEvent::RightPressed :
-        mouseMode = BtRight;
-        mouseSavedPosX = eventX;
-        mouseSavedPosY = eventY;
-        break;
-
-    case sofa::core::objectmodel::MouseEvent::RightReleased :
-        mouseMode = None;
-        break;
-
-    case sofa::core::objectmodel::MouseEvent::MiddlePressed :
-        mouseMode = BtMiddle;
-        mouseSavedPosX = eventX;
-        mouseSavedPosY = eventY;
-        break;
-
-    case sofa::core::objectmodel::MouseEvent::MiddleReleased :
-        mouseMode = None;
-        break;
-
-    case sofa::core::objectmodel::MouseEvent::Move :
-        if (handleEventTriggersUpdate.getValue())
-            applyController();
-        break;
-
-    default :
-        break;
-    }
-}
 
 template <class DataTypes>
 void MechanicalStateController<DataTypes>::onOmniEvent(core::objectmodel::OmniEvent *oev)
@@ -422,11 +242,14 @@ void MechanicalStateController<DataTypes>::onOmniEvent(core::objectmodel::OmniEv
 }
 
 
+
 template <class DataTypes>
 void MechanicalStateController<DataTypes>::onBeginAnimationStep()
 {
     applyController();
 }
+
+
 
 template <class DataTypes>
 core::componentmodel::behavior::MechanicalState<DataTypes> *MechanicalStateController<DataTypes>::getMechanicalState() const
