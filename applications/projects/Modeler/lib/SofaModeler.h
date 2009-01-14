@@ -227,6 +227,7 @@ private:
     std::string sofaBinary;
     std::string presetPath;
     std::string examplePath;
+    std::string binPath;
     char count;
 };
 }
