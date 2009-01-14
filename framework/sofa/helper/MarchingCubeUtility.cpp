@@ -604,6 +604,11 @@ void MarchingCubeUtility::propagateFrom ( const Vec3i coord,
         cubeCoord = cubesToGenerate.top(); // Get the last cube on the stack.
         cubesToGenerate.pop();             // Remove it from the stack.
 
+        // If we touch the border, STOP propagating !
+        for( vector<set<Vec3i> >::const_iterator it = borders.begin(); it != borders.end(); it++)
+            if( it->find( cubeCoord) != it->end())
+                continue;
+
         GridCell cell;
         initCell( cell, cubeCoord, data, gridStep, dataGridStep);
 
@@ -611,8 +616,6 @@ void MarchingCubeUtility::propagateFrom ( const Vec3i coord,
 
         counter_triangles += numvert/3;
         if( triangleIndexInRegularGrid) updateTriangleInRegularGridVector( *triangleIndexInRegularGrid, cubeCoord, cell, gridSize, numvert / 3);
-
-//             si triangle appartient a la bordure, stop.  //TODO// !!!!
 
         // Propagate
         generatedCubes.insert( cubeCoord); // spaceIndex cube has been polygonized
@@ -794,13 +797,6 @@ void MarchingCubeUtility::findSeedsFromRealCoords( vector<Vec3i>& mCubeCoords, c
         mCubeCoords.push_back( seed);
     }
     assert( true/* in range of data */); //TODO
-
-
-    /*  Invert of this (in interpolate vertex)
-          float mu = ( isolevel - valp1 ) / ( valp2 - valp1 );
-          p = p1 + ( p2 - p1 ) * mu;
-          p = ((p + Vector3( 1.0f, 1.0f, 1.0f))*0.5f).linearProduct( dataResolution.linearProduct(dataVoxelSize)) + dataVoxelSize/2.0;
-    */
 }
 
 
