@@ -63,8 +63,8 @@ public:
         , f_tolerance( initData(&f_tolerance,1e-5,"tolerance","desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)") )
         , f_smallDenominatorThreshold( initData(&f_smallDenominatorThreshold,1e-5,"threshold","minimum value of the denominator in the conjugate Gradient solution") )
         , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-        , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
         , f_refresh( initData(&f_refresh,"refresh","Refresh iterations") )
+        , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
     {
         f_graph.setWidget("graph");
         f_graph.setReadOnly(true);

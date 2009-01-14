@@ -67,7 +67,6 @@ HEADERS += \
           Quater.inl \
           rmath.h \
           set.h \
-          static_assert.h \
           system/config.h \
           system/gl.h \
           system/glu.h \

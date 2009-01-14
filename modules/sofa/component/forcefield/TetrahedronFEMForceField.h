@@ -148,7 +148,7 @@ protected:
 
 public:
     //For a faster contact handling with simplified compliance
-    inline void getRotation(Transformation& R, unsigned int nodeIdx);
+    void getRotation(Transformation& R, unsigned int nodeIdx);
 
 
     DataPtr< VecCoord > f_initialPoints; ///< the intial positions of the points
