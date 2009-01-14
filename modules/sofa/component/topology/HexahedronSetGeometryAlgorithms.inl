@@ -354,6 +354,38 @@ void HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElements(const Vec
 }
 
 template< class DataTypes>
+int HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElementInRestPos(const Coord& pos, Vector3& baryC, Real& distance) const
+{
+    int index=-1;
+    distance = 1e10;
+
+    for(int c=0; c<this->m_topology->getNbHexas(); ++c)
+    {
+        const Real d = computeElementRestDistanceMeasure(c, pos);
+
+        if(d<distance)
+        {
+            distance = d;
+            index = c;
+        }
+    }
+
+    if(index != -1)
+        baryC = computeHexahedronRestBarycentricCoeficients(index, pos);
+
+    return index;
+}
+
+template< class DataTypes>
+void HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElementsInRestPos( const VecCoord& pos, helper::vector<int>& elem, helper::vector<defaulttype::Vector3>& baryC, helper::vector<Real>& dist) const
+{
+    for(unsigned int i=0; i<pos.size(); ++i)
+    {
+        elem[i] = findNearestElementInRestPos(pos[i], baryC[i], dist[i]);
+    }
+}
+
+template< class DataTypes>
 typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeHexahedronVolume( const HexaID /*h*/) const
 {
     //const Hexahedron &t = this->m_topology->getHexa(h);

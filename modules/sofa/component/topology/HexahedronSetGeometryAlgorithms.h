@@ -88,6 +88,7 @@ public:
     /// computes barycentric coordinates corresponding to a given position. Warning: this method is only correct if the hexahedron is not deformed
     defaulttype::Vector3 computeHexahedronBarycentricCoeficients(const HexaID h, const Coord& p) const;
 
+    /// computes barycentric coordinates corresponding to a given position in the hexa 'h' in its rest position. Warning: this method is only correct if the hexahedron is not deformed
     defaulttype::Vector3 computeHexahedronRestBarycentricCoeficients(const HexaID h, const Coord& p) const;
 
     /// computes a position corresponding to given barycentric coordinates
@@ -104,12 +105,18 @@ public:
     virtual int findNearestElement(const Coord& pos, defaulttype::Vector3& baryC, Real& distance) const;
 
     /// given a vector of points, find the nearest hexa for each point. Computes barycentric coordinates and a distance measure.
-    virtual void findNearestElements(const VecCoord& pos, helper::vector<int>& elem,
-            helper::vector<defaulttype::Vector3>& baryC, helper::vector<Real>& dist) const;
+    virtual void findNearestElements(const VecCoord& pos, helper::vector<int>& elem, helper::vector<defaulttype::Vector3>& baryC, helper::vector<Real>& dist) const;
+
+    /// finds a hexahedron, in its rest position, which is nearest to a given point. Computes barycentric coordinates and a distance measure.
+    virtual int findNearestElementInRestPos(const Coord& pos, defaulttype::Vector3& baryC, Real& distance) const;
+
+    /// given a vector of points, find the nearest hexa, in its rest position, for each point. Computes barycentric coordinates and a distance measure.
+    virtual void findNearestElementsInRestPos(const VecCoord& pos, helper::vector<int>& elem, helper::vector<defaulttype::Vector3>& baryC, helper::vector<Real>& dist) const;
 
     /// If the point is inside the element, the distance measure is < 0. If the point is outside the element, the distance measure is a squared distance to the element center.
     virtual Real computeElementDistanceMeasure(const HexaID h, const Coord p) const;
 
+    /// If the point is inside the element in its rest position, the distance measure is < 0. If the point is outside the element in its rest position, the distance measure is a squared distance to the element center.
     virtual Real computeElementRestDistanceMeasure(const HexaID h, const Coord p) const;
 
     /** \brief Write the current mesh into a msh file
