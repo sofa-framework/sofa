@@ -28,6 +28,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/component/component.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
 #include <map>
@@ -79,7 +80,7 @@ public:
 
 };
 
-class TetrahedronModel : public core::CollisionModel
+class SOFA_COMPONENT_COLLISION_API TetrahedronModel : public core::CollisionModel
 {
 public:
     typedef Vec3Types InDataTypes;

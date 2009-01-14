@@ -80,6 +80,8 @@ public:
     {
     }
 
+    virtual ~MeshSpringForceField();
+
     virtual double getPotentialEnergy();
 
 
@@ -158,6 +160,7 @@ public:
     void parse(core::objectmodel::BaseObjectDescription* arg);
 
 };
+
 #if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_MESHSPRINGFORCEFIELD_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT

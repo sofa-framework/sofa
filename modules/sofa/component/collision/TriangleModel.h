@@ -74,7 +74,7 @@ public:
     int flags() const;
 };
 
-class TriangleModel : public core::CollisionModel
+class SOFA_COMPONENT_COLLISION_API TriangleModel : public core::CollisionModel
 {
 public:
     typedef Vec3Types InDataTypes;
