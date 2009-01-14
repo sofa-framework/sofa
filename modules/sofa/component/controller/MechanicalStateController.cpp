@@ -56,19 +56,38 @@ SOFA_DECL_CLASS(MechanicalStateController)
 
 // Register in the Factory
 int MechanicalStateControllerClass = core::RegisterObject("")
+#ifndef SOFA_FLOAT
 //.add< MechanicalStateController<Vec3dTypes> >()
-//.add< MechanicalStateController<Vec3fTypes> >()
 //.add< MechanicalStateController<Vec2dTypes> >()
-//.add< MechanicalStateController<Vec2fTypes> >()
         .add< MechanicalStateController<Vec1dTypes> >()
-        .add< MechanicalStateController<Vec1fTypes> >()
         .add< MechanicalStateController<Rigid3dTypes> >()
-        .add< MechanicalStateController<Rigid3fTypes> >()
 //.add< MechanicalStateController<Rigid2dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+//.add< MechanicalStateController<Vec3fTypes> >()
+//.add< MechanicalStateController<Vec2fTypes> >()
+        .add< MechanicalStateController<Vec1fTypes> >()
+        .add< MechanicalStateController<Rigid3fTypes> >()
 //.add< MechanicalStateController<Rigid2fTypes> >()
+#endif
         ;
 
+#ifndef SOFA_FLOAT
+//template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec3dTypes>;
+//template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec2dTypes>;
+template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec1dTypes>;
+template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Rigid3dTypes>;
+//template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Rigid2dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+//template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec3fTypes>;
+//template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec2fTypes>;
+template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec1fTypes>;
+template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Rigid3fTypes>;
+//template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Rigid2fTypes>;
+#endif
 
+#ifndef SOFA_FLOAT
 template <>
 void MechanicalStateController<Vec1dTypes>::applyController()
 {
@@ -159,7 +178,10 @@ void MechanicalStateController<Vec1dTypes>::applyController()
     //	//sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
     //}
 };
+#endif
 
+
+#ifndef SOFA_DOUBLE
 template <>
 void MechanicalStateController<Vec1fTypes>::applyController()
 {
@@ -250,17 +272,199 @@ void MechanicalStateController<Vec1fTypes>::applyController()
     //	//sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
     //}
 };
+#endif
 
-//template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec3dTypes>;
-//template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec3fTypes>;
-//template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec2dTypes>;
-//template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec2fTypes>;
-template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec1dTypes>;
-template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec1fTypes>;
-template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Rigid3dTypes>;
-template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Rigid3fTypes>;
-//template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Rigid2dTypes>;
-//template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Rigid2fTypes>;
+#ifndef SOFA_DOUBLE
+template <>
+void MechanicalStateController<Vec1fTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)
+{
+    //sout<<"MouseEvent detected"<<sendl;
+    eventX = mev->getPosX();
+    eventY = mev->getPosY();
+
+    switch (mev->getState())
+    {
+    case sofa::core::objectmodel::MouseEvent::LeftPressed :
+        mouseMode = BtLeft;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::LeftReleased :
+        mouseMode = None;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::RightPressed :
+        mouseMode = BtRight;
+        mouseSavedPosX = eventX;
+        mouseSavedPosY = eventY;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::RightReleased :
+        mouseMode = None;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::MiddlePressed :
+        mouseMode = BtMiddle;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::MiddleReleased :
+        mouseMode = None;
+        break;
+
+    default :
+        break;
+    }
+    if (handleEventTriggersUpdate.getValue())
+        applyController();
+
+}
+#endif
+
+#ifndef SOFA_FLOAT
+template <>
+void MechanicalStateController<Vec1dTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)
+{
+    //sout<<"MouseEvent detected"<<sendl;
+    eventX = mev->getPosX();
+    eventY = mev->getPosY();
+
+    switch (mev->getState())
+    {
+    case sofa::core::objectmodel::MouseEvent::LeftPressed :
+        mouseMode = BtLeft;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::LeftReleased :
+        mouseMode = None;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::RightPressed :
+        mouseMode = BtRight;
+        mouseSavedPosX = eventX;
+        mouseSavedPosY = eventY;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::RightReleased :
+        mouseMode = None;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::MiddlePressed :
+        mouseMode = BtMiddle;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::MiddleReleased :
+        mouseMode = None;
+        break;
+
+    default :
+        break;
+    }
+    if (handleEventTriggersUpdate.getValue())
+        applyController();
+
+}
+#endif
+
+#ifndef SOFA_FLOAT
+template <>
+void MechanicalStateController<Rigid3dTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)
+{
+    //sout<<"MouseEvent detected"<<sendl;
+    eventX = mev->getPosX();
+    eventY = mev->getPosY();
+
+    switch (mev->getState())
+    {
+    case sofa::core::objectmodel::MouseEvent::LeftPressed :
+        mouseMode = BtLeft;
+        mouseSavedPosX = eventX;
+        mouseSavedPosY = eventY;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::LeftReleased :
+        mouseMode = None;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::RightPressed :
+        mouseMode = BtRight;
+        mouseSavedPosX = eventX;
+        mouseSavedPosY = eventY;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::RightReleased :
+        mouseMode = None;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::MiddlePressed :
+        mouseMode = BtMiddle;
+        mouseSavedPosX = eventX;
+        mouseSavedPosY = eventY;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::MiddleReleased :
+        mouseMode = None;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::Move :
+        if (handleEventTriggersUpdate.getValue())
+            applyController();
+        break;
+
+    default :
+        break;
+    }
+}
+#endif
+
+#ifndef SOFA_DOUBLE
+template <>
+void MechanicalStateController<Rigid3fTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)
+{
+    //sout<<"MouseEvent detected"<<sendl;
+    eventX = mev->getPosX();
+    eventY = mev->getPosY();
+
+    switch (mev->getState())
+    {
+    case sofa::core::objectmodel::MouseEvent::LeftPressed :
+        mouseMode = BtLeft;
+        mouseSavedPosX = eventX;
+        mouseSavedPosY = eventY;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::LeftReleased :
+        mouseMode = None;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::RightPressed :
+        mouseMode = BtRight;
+        mouseSavedPosX = eventX;
+        mouseSavedPosY = eventY;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::RightReleased :
+        mouseMode = None;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::MiddlePressed :
+        mouseMode = BtMiddle;
+        mouseSavedPosX = eventX;
+        mouseSavedPosY = eventY;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::MiddleReleased :
+        mouseMode = None;
+        break;
+
+    case sofa::core::objectmodel::MouseEvent::Move :
+        if (handleEventTriggersUpdate.getValue())
+            applyController();
+        break;
+
+    default :
+        break;
+    }
+}
+#endif
 
 } // namespace controller
 
