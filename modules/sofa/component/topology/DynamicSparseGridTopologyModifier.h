@@ -47,6 +47,28 @@ public:
 
     virtual ~DynamicSparseGridTopologyModifier() {}
 
+    virtual void init();
+
+    /** \brief Actually Add some hexahedra to this topology.
+    *
+    * This overloaded function updates relation between hexahedra indices in the topology and hexahedra indices in the regular grid.
+    *
+    * \sa addHexahedraWarning
+    */
+    virtual void addHexahedraProcess ( const sofa::helper::vector< Hexahedron > &hexahedra );
+
+    /** \brief Remove a subset of hexahedra
+    *
+    * Elements corresponding to these points are removed form the mechanical object's state vectors.
+    *
+    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
+    * \sa removeHexahedraWarning
+    * @param removeIsolatedItems if true remove isolated quads, edges and vertices
+    */
+    virtual void removeHexahedraProcess ( const sofa::helper::vector<unsigned int>&indices, const bool removeIsolatedItems = false );
+
+private:
+    DynamicSparseGridTopologyContainer* m_container;
 };
 
 } // namespace topology

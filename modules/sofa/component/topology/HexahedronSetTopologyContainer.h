@@ -297,7 +297,7 @@ protected:
 
     /** \brief Creates the Hexahedron Edge Shell Array
     *
-    * This function is only called if the HexahedronEdheShell array is required.
+    * This function is only called if the HexahedronEdgeShell array is required.
     * m_hexahedronEdgeShell[i] contains the indices of all hexahedra adjacent to the ith edge
     */
     void createHexahedronEdgeShellArray();
