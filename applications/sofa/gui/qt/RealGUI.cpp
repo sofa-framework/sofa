@@ -64,6 +64,7 @@
 #include <sofa/simulation/common/TransformationVisitor.h>
 #include <sofa/helper/system/FileRepository.h>
 
+#define MAX_RECENTLY_OPENED 10
 
 #ifdef SOFA_QT4
 #include <QWidget>
@@ -443,7 +444,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect ( tabs, SIGNAL ( currentChanged ( QWidget* ) ), this, SLOT ( currentTabChanged ( QWidget* ) ) );
 
     addViewer();
-    connect ( this, SIGNAL( newStep()), viewer->getQWidget(), SLOT( update()));
     currentTabChanged ( tabs->currentPage() );
 
     //ADD GUI for Background
@@ -523,7 +523,7 @@ void RealGUI::updateRecentlyOpened(std::string fileLoaded)
 
         recentlyOpened->insertItem(QString(fileLoaded.c_str()));
     }
-    for (unsigned int i=0; i<list_files.size() && i<5 ; ++i)
+    for (unsigned int i=0; i<list_files.size() && i<MAX_RECENTLY_OPENED ; ++i)
     {
         if (fileLoaded != list_files[i])
         {
@@ -1041,6 +1041,10 @@ void RealGUI::setScene ( Node* groot, const char* filename )
     groot->execute(act);
 #endif // SOFA_HAVE_CHAI3D
 
+#ifdef SOFA_GUI_QTOGREVIEWER
+    if (std::string(sofa::gui::SofaGUI::GetGUIName()) == "ogre")
+        resetScene();
+#endif
 
 }
 
@@ -1308,6 +1312,7 @@ void RealGUI::playpauseGUI ( bool value )
 void RealGUI::setGUI ( void )
 {
     textEdit1->setText ( viewer->helpString() );
+    connect ( this, SIGNAL( newStep()), viewer->getQWidget(), SLOT( update()));
     /*
     #ifdef SOFA_GUI_QTOGREVIEWER
     	//Hide unused options

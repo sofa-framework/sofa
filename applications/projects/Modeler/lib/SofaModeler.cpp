@@ -28,7 +28,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 
-
+#define MAX_RECENTLY_OPENED 10
 
 
 #include <map>
@@ -97,8 +97,10 @@ SofaModeler::SofaModeler()
     Q3PopupMenu *runSofaMenu = new Q3PopupMenu(this);
     this->menubar->insertItem(tr(QString("&RunSofa")), runSofaMenu, menuIndex++);
 
-    runSofaMenu->insertItem("Sofa Binary...", this, SLOT( changeSofaBinary()));
-    sofaBinary="runSofa";
+    runInSofaAction->addTo(runSofaMenu);
+
+    runSofaMenu->insertItem("Change Sofa Binary...", this, SLOT( changeSofaBinary()));
+    sofaBinary=std::string();
 
     Q3PopupMenu *runSofaGUI = new Q3PopupMenu(this);
     runSofaMenu->insertItem(QIconSet(), tr("GUI"), runSofaGUI);
@@ -131,6 +133,7 @@ SofaModeler::SofaModeler()
     connect(windowMenu, SIGNAL(activated(int)), this, SLOT( changeCurrentScene(int)));
 
     examplePath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/examples/" );
+    binPath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/bin/" );
     presetPath = examplePath + std::string("Objects/");
     std::string presetFile = std::string("config/preset.ini" );
 
@@ -551,7 +554,7 @@ void SofaModeler::updateRecentlyOpened(std::string fileLoaded)
 
         recentlyOpened->insertItem(QString(fileLoaded.c_str()));
     }
-    for (unsigned int i=0; i<list_files.size() && i<5; ++i)
+    for (unsigned int i=0; i<list_files.size() && i<MAX_RECENTLY_OPENED; ++i)
     {
         recentlyOpened->insertItem(QString(list_files[i].c_str()));
         out << list_files[i] << "\n";
@@ -803,6 +806,11 @@ void SofaModeler::runInSofa()
     if (count > '9') count = '0';
     //=======================================
     // Run Sofa
+    if (sofaBinary.empty())
+    {
+        changeSofaBinary();
+        if (sofaBinary.empty()) return; //No binary found
+    }
     QStringList argv;
     argv << QString(sofaBinary.c_str()) << QString(filename.c_str());
 
@@ -832,7 +840,7 @@ void SofaModeler::sofaExited()
     {
         if (it->second == p)
         {
-            const QString caption("SegFault");
+            const QString caption("Problem");
             const QString warning("Error while launching Sofa");
             QMessageBox::critical( this, caption,warning, QMessageBox::Ok | QMessageBox::Escape, QMessageBox::NoButton );
             return;
@@ -939,10 +947,16 @@ void SofaModeler::searchText(const QString& text)
 //runSofa Options
 void SofaModeler::changeSofaBinary()
 {
-    QString s = getOpenFileName ( this, QString("*"),"bin", "open sofa binary",  "Choose a binary to use" );
+
+    QString s = getOpenFileName ( this, QString(binPath.c_str()),"All Files(*)", "open sofa binary",  "Choose a binary to use" );
     if (s.length() >0)
     {
         sofaBinary=s.ascii();
+        binPath=sofa::helper::system::SetDirectory::GetParentDir(sofaBinary.c_str());
+    }
+    else
+    {
+        sofaBinary.clear();
     }
 }
 

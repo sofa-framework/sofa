@@ -175,7 +175,6 @@
       <action name="fileSaveAction"/>
       <action name="fileSaveAsAction"/>
       <separator/>
-      <action name="runInSofaAction"/>
       <action name="Action"/>
       <item text="Recently Opened Files..." name="recentlyOpened" accel="">
         <action name="TestAction"/>
