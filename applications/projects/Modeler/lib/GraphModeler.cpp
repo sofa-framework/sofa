@@ -442,8 +442,10 @@ GNode* GraphModeler::loadNode(GNode *node, std::string path)
     xml::BaseElement* newXML=NULL;
 
     newXML = xml::loadFromFile (path.c_str() );
+
     if (newXML == NULL) return NULL;
     if (!newXML->init()) std::cerr<< "Objects initialization failed.\n";
+
     GNode *newNode = dynamic_cast<GNode*> ( newXML->getObject() );
     if (newNode)
     {

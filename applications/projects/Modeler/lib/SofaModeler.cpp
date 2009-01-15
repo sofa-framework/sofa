@@ -107,14 +107,22 @@ SofaModeler::SofaModeler()
 
     //Set the different available GUI
     std::vector<std::string> listGUI = sofa::gui::SofaGUI::ListSupportedGUI();
+    //Insert default GUI
+    {
+        QAction *act= new QAction(this, QString("default")+QString("Action"));
+        act->setText( "default");
+        act->setToggleAction( true ); act->setOn(true);
+        act->addTo( runSofaGUI);
+        listActionGUI.push_back(act);
+        connect(act, SIGNAL( activated()), this, SLOT( GUIChanged() ));
+    }
+    //Add content of GUI Factory
     for (unsigned int i=0; i<listGUI.size(); ++i)
     {
         QAction *act= new QAction(this, QString(listGUI[i].c_str())+QString("Action"));
         act->setText( QString(listGUI[i].c_str()));
         act->setToggleAction( true );
         act->addTo( runSofaGUI);
-
-        if (listGUI[i] == sofa::gui::SofaGUI::GetGUIName()) act->setOn(true);
         listActionGUI.push_back(act);
         connect(act, SIGNAL( activated()), this, SLOT( GUIChanged() ));
     }
@@ -800,8 +808,13 @@ void SofaModeler::runInSofa()
     sofa::gui::SofaGUI::Init("Modeler");
 
     //Saving the scene in a temporary file ==> doesn't modify the current GNode of the simulation
-    std::string filename=presetPath+std::string("temp") + (count++) + std::string(".scn");
+    std::string path;
+    if (graph->getFilename().empty()) path=presetPath;
+    else path = sofa::helper::system::SetDirectory::GetParentDir(graph->getFilename().c_str())+std::string("/");
+
+    std::string filename=path + std::string("temp") + (count++) + std::string(".scn");
     getSimulation()->printXML(root,filename.c_str());
+
 
     if (count > '9') count = '0';
     //=======================================
@@ -817,7 +830,12 @@ void SofaModeler::runInSofa()
     //Setting the GUI
     for (unsigned int i=0; i<listActionGUI.size(); ++i)
     {
-        if (listActionGUI[i]->isOn()) argv << "-g" << listActionGUI[i]->text();
+        if (listActionGUI[i]->isOn())
+        {
+            if (std::string(listActionGUI[i]->text().ascii()) != "default")
+                argv << "-g" << listActionGUI[i]->text();
+            break;
+        }
     }
 
     Q3Process *p = new Q3Process(argv, this);
@@ -841,7 +859,7 @@ void SofaModeler::sofaExited()
         if (it->second == p)
         {
             const QString caption("Problem");
-            const QString warning("Error while launching Sofa");
+            const QString warning("Error running Sofa");
             QMessageBox::critical( this, caption,warning, QMessageBox::Ok | QMessageBox::Escape, QMessageBox::NoButton );
             return;
         }
@@ -948,7 +966,13 @@ void SofaModeler::searchText(const QString& text)
 void SofaModeler::changeSofaBinary()
 {
 
-    QString s = getOpenFileName ( this, QString(binPath.c_str()),"All Files(*)", "open sofa binary",  "Choose a binary to use" );
+    QString s = getOpenFileName ( this, QString(binPath.c_str()),
+#ifdef WIN32
+            "All Files(*.exe)",
+#else
+            "All Files(*)",
+#endif
+            "open sofa binary",  "Choose a binary to use" );
     if (s.length() >0)
     {
         sofaBinary=s.ascii();
