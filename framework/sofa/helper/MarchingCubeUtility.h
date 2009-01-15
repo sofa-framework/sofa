@@ -92,23 +92,8 @@ public:
     }
 
     /// Set the border to localy remesh from real coords
-    void setBordersFromRealCoords( const vector<set<Vector3> >& borders)
-    {
-        this->borders.clear();
+    void setBordersFromRealCoords( const vector<set<Vector3> >& borders);
 
-        Vector3 resolution = dataResolution.linearProduct(dataVoxelSize);
-        resolution = Vector3( 1/resolution[0], 1/resolution[1], 1/resolution[2]);
-        for( vector<set<Vector3> >::const_iterator itBorders = borders.begin(); itBorders != borders.end(); itBorders++)
-        {
-            set<Vec3i> border;
-            for( set<Vector3>::const_iterator it = itBorders->begin(); it != itBorders->end(); it++)
-            {
-                Vec3i cube = ((*it) - dataVoxelSize/2.0).linearProduct( resolution) * 2.0 - Vector3( 1.0f, 1.0f, 1.0f);
-                border.insert( cube);
-            }
-            this->borders.push_back( border);
-        }
-    }
 
     /// Propagate the triangulation surface creation from a cell.
     void propagateFrom ( const Vec3i coord,
