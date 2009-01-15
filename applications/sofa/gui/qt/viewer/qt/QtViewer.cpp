@@ -156,6 +156,12 @@ QtViewer::QtViewer(QWidget* parent, const char* name)
 
     groot = NULL;
     initTexturesDone = false;
+
+
+    backgroundColour[0]=1.0f;
+    backgroundColour[1]=1.0f;
+    backgroundColour[2]=1.0f;
+
     // setup OpenGL mode for the window
     //Fl_Gl_Window::mode(FL_RGB | FL_DOUBLE | FL_DEPTH | FL_ALPHA);
     timerAnimate = new QTimer(this);

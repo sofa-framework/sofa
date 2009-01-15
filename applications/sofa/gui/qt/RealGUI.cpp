@@ -463,9 +463,12 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
         background[i] = new WFloatLineEdit(global,s.str().c_str());
         background[i]->setMinFloatValue( 0.0f);
         background[i]->setMaxFloatValue( 1.0f);
+        background[i]->setFloatValue( 1.0f);
         globalLayout->addWidget(background[i],1,i+1);
         connect( background[i], SIGNAL( returnPressed() ), this, SLOT( updateViewerParameters() ) );
     }
+
+
 #ifdef SOFA_QT4
     vboxLayout4->insertWidget(1,groupInfo);
 #else
