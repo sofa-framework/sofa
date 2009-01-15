@@ -600,29 +600,31 @@ void MarchingCubeUtility::propagateFrom ( const Vec3i coord,
     PointID counter_triangles=0;
     int cubeConf;
     unsigned int cptCubeParcourrus = 0;
-    std::cerr << "Voila la bordure du mCube:" << std::endl;
+// std::cerr << "Voila la bordure du mCube:" << std::endl;
     for( vector<set<Vec3i> >::const_iterator itBorders = borders.begin(); itBorders != borders.end(); itBorders++)
     {
         for( set<Vec3i>::const_iterator itBorder = itBorders->begin(); itBorder != itBorders->end(); itBorder++)
         {
-            std::cerr << " " << *itBorder;
+//     std::cerr << " " << *itBorder;
         }
-        std::cerr << std::endl;
+//   std::cerr << std::endl;
     }
-    std::cerr << std::endl << "Et voila maintenant les indices parcourrus:" << std::endl;
+// std::cerr << std::endl << "Et voila maintenant les indices parcourrus:" << std::endl;
 
     while( !cubesToGenerate.empty())
     {
-        cptCubeParcourrus++;
         cubeCoord = cubesToGenerate.top(); // Get the last cube on the stack.
         cubesToGenerate.pop();             // Remove it from the stack.
 
-        std::cerr << cubeCoord << std::endl;
+        if( generatedCubes.find( cubeCoord) != generatedCubes.end()) continue;
 
         // If we touch the border, STOP propagating !
         for( vector<set<Vec3i> >::const_iterator itBorders = borders.begin(); itBorders != borders.end(); itBorders++)
             if( itBorders->find( cubeCoord) != itBorders->end())
                 continue;
+
+        cptCubeParcourrus++;
+// std::cerr << cubeCoord << std::endl;
 
         GridCell cell;
         initCell( cell, cubeCoord, data, gridStep, dataGridStep);
@@ -635,14 +637,14 @@ void MarchingCubeUtility::propagateFrom ( const Vec3i coord,
         // Propagate
         generatedCubes.insert( cubeCoord); // spaceIndex cube has been polygonized
 
-        if(( MarchingCubeFaceTable[cubeConf] &  1) && (cubeCoord[2] > bboxMin[2]  )) {nextCube = cubeCoord + Vec3i( 0, 0,-1); if( generatedCubes.find( nextCube) == generatedCubes.end()) cubesToGenerate.push( nextCube);}
-        if(( MarchingCubeFaceTable[cubeConf] &  2) && (cubeCoord[2] < bboxMax[2]-2)) {nextCube = cubeCoord + Vec3i( 0, 0, 1); if( generatedCubes.find( nextCube) == generatedCubes.end()) cubesToGenerate.push( nextCube);}
-        if(( MarchingCubeFaceTable[cubeConf] &  4) && (cubeCoord[0] < bboxMax[0]-2)) {nextCube = cubeCoord + Vec3i( 1, 0, 0); if( generatedCubes.find( nextCube) == generatedCubes.end()) cubesToGenerate.push( nextCube);}
-        if(( MarchingCubeFaceTable[cubeConf] &  8) && (cubeCoord[0] > bboxMin[0]  )) {nextCube = cubeCoord + Vec3i(-1, 0, 0); if( generatedCubes.find( nextCube) == generatedCubes.end()) cubesToGenerate.push( nextCube);}
-        if(( MarchingCubeFaceTable[cubeConf] & 16) && (cubeCoord[1] > bboxMin[1]  )) {nextCube = cubeCoord + Vec3i( 0,-1, 0); if( generatedCubes.find( nextCube) == generatedCubes.end()) cubesToGenerate.push( nextCube);}
-        if(( MarchingCubeFaceTable[cubeConf] & 32) && (cubeCoord[1] < bboxMax[1]-2)) {nextCube = cubeCoord + Vec3i( 0, 1, 0); if( generatedCubes.find( nextCube) == generatedCubes.end()) cubesToGenerate.push( nextCube);}
+        if(( MarchingCubeFaceTable[cubeConf] &  1) && (cubeCoord[2] > bboxMin[2]  )) { cubesToGenerate.push( cubeCoord + Vec3i( 0, 0,-1));}
+        if(( MarchingCubeFaceTable[cubeConf] &  2) && (cubeCoord[2] < bboxMax[2]-2)) { cubesToGenerate.push( cubeCoord + Vec3i( 0, 0, 1));}
+        if(( MarchingCubeFaceTable[cubeConf] &  4) && (cubeCoord[0] < bboxMax[0]-2)) { cubesToGenerate.push( cubeCoord + Vec3i( 1, 0, 0));}
+        if(( MarchingCubeFaceTable[cubeConf] &  8) && (cubeCoord[0] > bboxMin[0]  )) { cubesToGenerate.push( cubeCoord + Vec3i(-1, 0, 0));}
+        if(( MarchingCubeFaceTable[cubeConf] & 16) && (cubeCoord[1] > bboxMin[1]  )) { cubesToGenerate.push( cubeCoord + Vec3i( 0,-1, 0));}
+        if(( MarchingCubeFaceTable[cubeConf] & 32) && (cubeCoord[1] < bboxMax[1]-2)) { cubesToGenerate.push( cubeCoord + Vec3i( 0, 1, 0));}
     }
-    std::cerr << "nb cube parcourrus: " << cptCubeParcourrus << std::endl;
+// std::cerr << "nb cube parcourrus: " << cptCubeParcourrus << std::endl;
 }
 
 
@@ -771,19 +773,19 @@ void MarchingCubeUtility::setBordersFromRealCoords( const vector<set<Vector3> >&
 
     Vector3 resolution = dataResolution.linearProduct(dataVoxelSize);
     resolution = Vector3( 1/resolution[0], 1/resolution[1], 1/resolution[2]);
-    std::cerr << "Et voila le moment de changer les positions en index pour le mCube:" << std::endl;
+// std::cerr << "Et voila le moment de changer les positions en index pour le mCube:" << std::endl;
     for( vector<set<Vector3> >::const_iterator itBorders = borders.begin(); itBorders != borders.end(); itBorders++)
     {
         set<Vec3i> border;
         for( set<Vector3>::const_iterator it = itBorders->begin(); it != itBorders->end(); it++)
         {
             Vec3i cube = (((*it) - dataVoxelSize/2.0).linearProduct( resolution) * 2.0 - Vector3( 1.0f, 1.0f, 1.0f)).linearProduct(bbox.max - bbox.min) / cubeStep;
-            std::cerr << cube << "(from " << *it << ") ";
+// std::cerr << cube << "(from " << *it << ") ";
 //TODO// les cinquantes assert qui manquent
             border.insert( cube);
         }
         this->borders.push_back( border);
-        std::cerr << std::endl;
+// std::cerr << std::endl;
     }
 }
 

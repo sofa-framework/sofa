@@ -56,7 +56,6 @@ template <typename T>
 void GlText::draw ( const T& text )
 {
     Mat<4,4, GLfloat> modelviewM;
-    glColor3f ( 1.0,1.0,1.0 );
     glDisable ( GL_LIGHTING );
 
     std::ostringstream oss;
@@ -89,7 +88,6 @@ template <typename T>
 void GlText::draw ( const T& text, const Vector3& position )
 {
     Mat<4,4, GLfloat> modelviewM;
-    glColor3f ( 1.0,1.0,1.0 );
     glDisable ( GL_LIGHTING );
 
     std::ostringstream oss;
@@ -126,7 +124,6 @@ template <typename T>
 void GlText::draw ( const T& text, const Vector3& position, const double& scale )
 {
     Mat<4,4, GLfloat> modelviewM;
-    glColor3f ( 1.0,1.0,1.0 );
     glDisable ( GL_LIGHTING );
 
     std::ostringstream oss;
@@ -134,9 +131,6 @@ void GlText::draw ( const T& text, const Vector3& position, const double& scale 
     string tmp = oss.str();
     const char* s = tmp.c_str();
     glPushMatrix();
-
-    glTranslatef ( position[0],  position[1],  position[2]);
-    glScalef ( scale,scale,scale );
 
     // Makes text always face the viewer by removing the scene rotation
     // get the current modelview matrix
