@@ -122,6 +122,7 @@ SOURCES += \
           system/SofaOStream.cpp \
           polygon_cube_intersection/polygon_cube_intersection.cpp \
           polygon_cube_intersection/fast_polygon_cube_intersection.cpp \
+          vector.cpp \
 	  proximity.cpp
 
 
