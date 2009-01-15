@@ -54,7 +54,7 @@ public:
     Data<double> f_tolerance;
     Data<double> f_smallDenominatorThreshold;
     Data<bool> f_verbose;
-    Data<unsigned> f_refresh;
+    Data<int> f_refresh;
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
     std::vector<sofa::core::componentmodel::behavior::LinearSolver*> preconditioners;
 
@@ -68,7 +68,7 @@ public:
     {
         f_graph.setWidget("graph");
         f_graph.setReadOnly(true);
-        iteration = f_refresh.getValue();
+        iteration = 0;
     }
 
     void solve (Matrix& M, Vector& x, Vector& b);

@@ -136,6 +136,8 @@ public:
 
     virtual void updateStiffness( const VecCoord& x );
 
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *, SReal, unsigned int &);
+
     void draw();
 };
 
