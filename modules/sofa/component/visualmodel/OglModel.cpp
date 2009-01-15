@@ -54,7 +54,7 @@ int OglModelClass = core::RegisterObject("Generic visual model for OpenGL displa
 
 OglModel::OglModel()
     : premultipliedAlpha(initData(&premultipliedAlpha, (bool) false, "premultipliedAlpha", "is alpha premultiplied ?"))
-    , useVBO(initData(&useVBO, (bool) true, "useVBO", "Use VBO for rendering"))
+    , useVBO(initData(&useVBO, (bool) false, "useVBO", "Use VBO for rendering"))
     , tex(NULL), canUseVBO(false), VBOGenDone(false), initDone(false), useTriangles(false), useQuads(false)
 {
 }

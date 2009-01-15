@@ -1825,7 +1825,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, co
     m_modifier->addTrianglesWarning(new_triangles.size(), new_triangles, new_triangles_id);
 
     // Propagate the topological changes *** not necessary
-    //m_modifier->propagateTopologicalChanges();
+    m_modifier->propagateTopologicalChanges();
 
     // Remove all the triangles registered to be removed
     m_modifier->removeTriangles(removed_triangles, true, true); // (WARNING then PROPAGATION) called before the removal process by the method "removeTriangles"
@@ -2071,7 +2071,7 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
     m_modifier->addTrianglesWarning(new_triangles.size(), new_triangles, new_triangles_id);
 
     // Propagate the topological changes *** not necessary
-    //m_modifier->propagateTopologicalChanges();
+    m_modifier->propagateTopologicalChanges();
 
     // Remove all the triangles registered to be removed
     m_modifier->removeTriangles(removed_triangles, true, true); // (WARNING then PROPAGATION) called before the removal process by the method "removeTriangles"

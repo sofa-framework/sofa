@@ -33,6 +33,7 @@
 #include <cassert>
 #include <iostream>
 #include <stdlib.h>
+#include <typeinfo>
 
 #include <sofa/helper/helper.h>
 
@@ -41,6 +42,8 @@ namespace sofa
 
 namespace helper
 {
+
+void SOFA_HELPER_API vector_access_failure(const void* vec, unsigned size, unsigned i, const std::type_info& type);
 
 //======================================================================
 /**	Same as std::vector, + range checking on operator[ ]
@@ -97,7 +100,9 @@ public:
     reference operator[](size_type n)
     {
 #ifndef NDEBUG
-        assert( n<this->size() );
+        if (n>=this->size())
+            vector_access_failure(this, this->size(), n, typeid(T));
+        //assert( n<this->size() );
 #endif
         return *(this->begin() + n);
     }
@@ -106,7 +111,9 @@ public:
     const_reference operator[](size_type n) const
     {
 #ifndef NDEBUG
-        assert( n<this->size() );
+        if (n>=this->size())
+            vector_access_failure(this, this->size(), n, typeid(T));
+        //assert( n<this->size() );
 #endif
         return *(this->begin() + n);
     }
@@ -321,13 +328,13 @@ template<class T, class TT>
 void removeIndex( std::vector<T,TT>& v, size_t index )
 {
 #ifndef NDEBUG
-    assert( 0<= static_cast<int>(index) && index <v.size() );
+    //assert( 0<= static_cast<int>(index) && index <v.size() );
+    if (n>=v.size())
+        vector_access_failure(&v, v.size(), n, typeid(T));
 #endif
     v[index] = v.back();
     v.pop_back();
 }
-
-
 
 //@}
 
