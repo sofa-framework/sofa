@@ -263,8 +263,6 @@ public:
         return sortedFind(v, Range(0,v.size()), val, result);
     }
 
-    typedef std::pair<Index, Index> Range;
-
 protected:
     Index nRow,nCol;
     Index nBlocRow,nBlocCol;
