@@ -367,6 +367,13 @@ public:
     static const char* Name() { return "SparseMatrix"; }
 };
 
+#ifdef SPARSEMATRIX_CHECK
+#undef SPARSEMATRIX_CHECK
+#endif
+#ifdef SPARSEMATRIX_VERBOSE
+#undef SPARSEMATRIX_VERBOSE
+#endif
+
 } // namespace linearsolver
 
 } // namespace component
