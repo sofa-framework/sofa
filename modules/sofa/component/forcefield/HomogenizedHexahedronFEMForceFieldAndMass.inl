@@ -2652,16 +2652,14 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::draw()
     {
         std::vector< Vector3 > points;
 
-
-// 			glLineWidth( _drawSize.getValue() );
-// 			glBegin(GL_LINES);
+        sofa::simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
 
         for( SparseGridTopology::SeqEdges::const_iterator it = this->_sparseGrid->getEdges().begin() ; it != this->_sparseGrid->getEdges().end(); ++it)
         {
             points.push_back( x[(*it)[0]] );
             points.push_back( x[(*it)[1]] );
         }
-        simulation::tree::getSimulation()->DrawUtility.drawLines(points, 3,colour);
+        simulation::tree::getSimulation()->DrawUtility.drawLines(points, _drawSize.getValue(),colour);
     }
 
 
