@@ -35,6 +35,8 @@ HEADERS += \
           gl/Capture.h \
           gl/DrawManager.h \
           gl/glfont.h \
+          gl/glText.inl \
+          gl/glText.h \
           gl/RAII.h \
           gl/template.h \
           gl/Texture.h \
@@ -91,6 +93,7 @@ SOURCES += \
           gl/Capture.cpp \
           gl/DrawManager.cpp \
           gl/glfont.cpp \
+          gl/glText.cpp \
           gl/Texture.cpp \
           gl/Trackball.cpp \
           gl/Transformation.cpp \

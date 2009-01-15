@@ -599,14 +599,29 @@ void MarchingCubeUtility::propagateFrom ( const Vec3i coord,
 
     PointID counter_triangles=0;
     int cubeConf;
+    unsigned int cptCubeParcourrus = 0;
+    std::cerr << "Voila la bordure du mCube:" << std::endl;
+    for( vector<set<Vec3i> >::const_iterator itBorders = borders.begin(); itBorders != borders.end(); itBorders++)
+    {
+        for( set<Vec3i>::const_iterator itBorder = itBorders->begin(); itBorder != itBorders->end(); itBorder++)
+        {
+            std::cerr << " " << *itBorder;
+        }
+        std::cerr << std::endl;
+    }
+    std::cerr << std::endl << "Et voila maintenant les indices parcourrus:" << std::endl;
+
     while( !cubesToGenerate.empty())
     {
+        cptCubeParcourrus++;
         cubeCoord = cubesToGenerate.top(); // Get the last cube on the stack.
         cubesToGenerate.pop();             // Remove it from the stack.
 
+        std::cerr << cubeCoord << std::endl;
+
         // If we touch the border, STOP propagating !
-        for( vector<set<Vec3i> >::const_iterator it = borders.begin(); it != borders.end(); it++)
-            if( it->find( cubeCoord) != it->end())
+        for( vector<set<Vec3i> >::const_iterator itBorders = borders.begin(); itBorders != borders.end(); itBorders++)
+            if( itBorders->find( cubeCoord) != itBorders->end())
                 continue;
 
         GridCell cell;
@@ -627,6 +642,7 @@ void MarchingCubeUtility::propagateFrom ( const Vec3i coord,
         if(( MarchingCubeFaceTable[cubeConf] & 16) && (cubeCoord[1] > bboxMin[1]  )) {nextCube = cubeCoord + Vec3i( 0,-1, 0); if( generatedCubes.find( nextCube) == generatedCubes.end()) cubesToGenerate.push( nextCube);}
         if(( MarchingCubeFaceTable[cubeConf] & 32) && (cubeCoord[1] < bboxMax[1]-2)) {nextCube = cubeCoord + Vec3i( 0, 1, 0); if( generatedCubes.find( nextCube) == generatedCubes.end()) cubesToGenerate.push( nextCube);}
     }
+    std::cerr << "nb cube parcourrus: " << cptCubeParcourrus << std::endl;
 }
 
 
@@ -652,6 +668,9 @@ void MarchingCubeUtility::run ( const unsigned char *_data, const sofa::helper::
 
         Vec3i voxel = *it, coord;
         // Test the height voxels 'coord' defined by the vertex 'voxel' (voxel in data space but only vertex in the mCube grid)
+
+//TODO// ne pas tester les 8 cubes autour du sommet... plutot faire cette detection dans findSeeds et appeler directement le bon cube ici. Ce sera mieux avec les lastElts (voir H2T topoMapping)...
+
         for( unsigned int i = 0; i < 2; i++)
             for( unsigned int j = 0; j < 2; j++)
                 for( unsigned int k = 0; k < 2; k++)
@@ -741,6 +760,30 @@ void MarchingCubeUtility::run ( const unsigned char *data, const float isolevel,
         vIndices[0] = triangles[i++];
         vIndices[1] = triangles[i++];
         vIndices[2] = triangles[i++];
+    }
+}
+
+
+
+void MarchingCubeUtility::setBordersFromRealCoords( const vector<set<Vector3> >& borders)
+{
+    this->borders.clear();
+
+    Vector3 resolution = dataResolution.linearProduct(dataVoxelSize);
+    resolution = Vector3( 1/resolution[0], 1/resolution[1], 1/resolution[2]);
+    std::cerr << "Et voila le moment de changer les positions en index pour le mCube:" << std::endl;
+    for( vector<set<Vector3> >::const_iterator itBorders = borders.begin(); itBorders != borders.end(); itBorders++)
+    {
+        set<Vec3i> border;
+        for( set<Vector3>::const_iterator it = itBorders->begin(); it != itBorders->end(); it++)
+        {
+            Vec3i cube = (((*it) - dataVoxelSize/2.0).linearProduct( resolution) * 2.0 - Vector3( 1.0f, 1.0f, 1.0f)).linearProduct(bbox.max - bbox.min) / cubeStep;
+            std::cerr << cube << "(from " << *it << ") ";
+//TODO// les cinquantes assert qui manquent
+            border.insert( cube);
+        }
+        this->borders.push_back( border);
+        std::cerr << std::endl;
     }
 }
 
