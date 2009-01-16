@@ -70,7 +70,6 @@ int main(int argc, char** argv)
     sofa::helper::BackTrace::autodump();
 
 
-    glutInit(&argc,argv);
 
     sofa::gui::SofaGUI::SetProgramName(argv[0]);
     std::string fileName ;
@@ -93,6 +92,8 @@ int main(int argc, char** argv)
     .option(&loadRecent,'r',"recent","load most recently opened file")
     (argc,argv);
 
+    if(gui!="batch")
+        glutInit(&argc,argv);
     sofa::component::init();
     sofa::simulation::tree::xml::initXml();
 
