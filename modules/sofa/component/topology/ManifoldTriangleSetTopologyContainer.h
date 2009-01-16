@@ -77,11 +77,23 @@ public:
 
     /** \brief Checks if the topology is coherent
     *
-    * Check if the shell arrays are coherent
-    * If all the triangles from arrays are detected in the shell arrays
-    * Check if the Topology is manifold.
+    * The function TriangleSetTopologyContainer::CheckTopology() Check if the shell arrays are coherent
+    * from on to the other.
+    * In this class, we check the topology. I.e for m_triangleVertexShell
+    *   - Test if triangles are stocked in counterclockewise direction around each vertex and that they are contiguous.
+    *   - Test if no triangles are missing and if no triangle are badly connected to a vertex.
+    * For m_triangleEdgeShell
+    *   - Test if no triangles are missing.
+    *   - Test if there is at least 1 and not more than 2 triangles adjacent to each edge.
+    *   - Test if triangles are well order in the shell: In the first one, vertices of the
+          correspondant edge are in oriented in counterclockwise direction in this triangle.
+          And in the clockwise direction in the second triangle (if this one exist).
+    *
+
+    * !!PRoblem: TriangleSetTopologyContainer::CheckTopology() is const, but array are required in this one, and shell are created
+    when asked.
     */
-    virtual bool checkTopology() const;
+    virtual bool checkTopology(); //const;
 
 
     /**To Do
