@@ -61,14 +61,185 @@ ManifoldTriangleSetTopologyContainer::ManifoldTriangleSetTopologyContainer(const
 
 
 
-bool ManifoldTriangleSetTopologyContainer::checkTopology() const
+bool ManifoldTriangleSetTopologyContainer::checkTopology()// const
 {
 #ifndef NDEBUG
+
     bool ret = true;
 
-    /**To Do: Either use try catch while creating shellarray which are testing if the topology is manifold
-       or recopy tests in this function if shell exit
-    */
+    //Test the shell m_triangleVertexShell
+    if(hasTriangleVertexShell())
+    {
+
+        //Number of different elements needed for this function
+        const unsigned int nbrVertices = getNbPoints();
+        const unsigned int nbrTriangles = getNumberOfTriangles();
+
+        //Temporary objects
+        Triangle vertexTriangle;
+        unsigned int firstVertex;
+        unsigned int vertex, vertexNext;
+
+        //Temporary containers
+        sofa::helper::vector< std::map<unsigned int, unsigned int> > map_Triangles;
+        std::map<unsigned int, unsigned int>::iterator it1;
+        map_Triangles.resize(nbrVertices);
+
+        //Fill temporary an other TriangleVertexShellarray
+        for (unsigned int triangleIndex = 0; triangleIndex < nbrTriangles; ++triangleIndex)
+        {
+            vertexTriangle = getTriangleArray()[triangleIndex];
+
+            for (unsigned int i=0; i<3; ++i)
+            {
+                // Test if there are several triangles with the same edge in the same order.
+                it1 = map_Triangles[vertexTriangle[i]].find(vertexTriangle[(i+1)%3]);
+                if (it1 != map_Triangles[vertexTriangle[i]].end())
+                {
+                    std::cout << "*** CHECK FAILED: In Manifold_triangle_vertex_shell: Bad connection or triangle orientation between vertices: ";
+                    std::cout << vertexTriangle[i] << " and " << vertexTriangle[(i+1)%3] << std::endl;
+
+                    ret = false;
+                }
+
+                map_Triangles[vertexTriangle[i]].insert(std::pair<unsigned int,unsigned int> (vertexTriangle[(i+1)%3], triangleIndex)); //multi
+            }
+        }
+
+
+        //Check if ManifoldTriangleVertexShellArray is contiguous and if no triangles are missing in the shell
+        for (unsigned int vertexIndex = 0; vertexIndex < nbrVertices; ++vertexIndex)
+        {
+
+            //Test on the size of the shell: If size differ from the previous map, this means the shell is not well fill.
+            if ( m_triangleVertexShell[vertexIndex].size() != map_Triangles[vertexIndex].size())
+            {
+                std::cout << "*** CHECK FAILED: In Manifold_triangle_vertex_shell: Triangles are missing in the shell around the vertex: ";
+                std::cout << vertexIndex << std::endl;
+
+                ret = false;
+            }
+
+            vertexTriangle = getTriangleArray()[ m_triangleVertexShell[vertexIndex][0] ];
+            firstVertex = vertexTriangle[ ( getVertexIndexInTriangle(vertexTriangle, vertexIndex)+1 )%3 ];
+
+            //For each vertex, test if the triangle adjacent are fill in the right contiguous way.
+            //Triangles should be adjacent one to the next other in counterclockwise direction.
+            for (unsigned int triangleIndex = 0; triangleIndex < m_triangleVertexShell[vertexIndex].size()-1; ++triangleIndex)
+            {
+                vertexTriangle = getTriangleArray()[ m_triangleVertexShell[vertexIndex][triangleIndex] ];
+                vertex = vertexTriangle[ ( getVertexIndexInTriangle(vertexTriangle, vertexIndex)+2 )%3 ];
+
+                vertexTriangle = getTriangleArray()[ m_triangleVertexShell[vertexIndex][triangleIndex+1] ];
+                vertexNext = vertexTriangle[ ( getVertexIndexInTriangle(vertexTriangle, vertexIndex)+1 )%3 ];
+
+                if (vertex != vertexNext)
+                {
+                    std::cout << "*** CHECK FAILED: In Manifold_triangle_vertex_shell: Triangles are not contiguous or not well connected around the vertex: ";
+                    std::cout << vertexIndex << std::endl;
+
+                    ret = false;
+                    break;
+                }
+            }
+        }
+    }
+
+
+    //Test the shell m_triangleEdgeShell
+    if (hasTriangleEdgeShell())
+    {
+
+        //Number of different elements needed for this function
+        const unsigned int nbrEdges = getNumberOfEdges();
+        const unsigned int nbrTriangles = getNumberOfTriangles();
+
+        //Temporary objects
+        Triangle vertexTriangle;
+        unsigned int nbrTriangleEdge;
+        unsigned int vertexInTriangle;
+
+        //Temporary containers
+        std::vector <unsigned int> nbr_triangleEdge;
+        nbr_triangleEdge.resize(nbrEdges);
+
+        //Create a vector containing the number of triangle adjacent to each edge
+        for (unsigned int triangleIndex = 0; triangleIndex < nbrTriangles; ++triangleIndex)
+        {
+            // adding triangle i in the triangle shell of all edges
+            for (unsigned int indexEdge = 0; indexEdge<3 ; ++indexEdge)
+            {
+                nbr_triangleEdge[ m_triangleEdge[triangleIndex][indexEdge] ]++;
+            }
+        }
+
+        for (unsigned int indexEdge = 0; indexEdge < nbrEdges; ++indexEdge)
+        {
+
+            nbrTriangleEdge = m_triangleEdgeShell[indexEdge].size();
+
+            //Test on the size of the shell: If size differ from the previous vector, this means the shell is not well fill.
+            if (nbrTriangleEdge != nbr_triangleEdge[indexEdge])
+            {
+                std::cout << "*** CHECK FAILED: In Manifold_triangle_edge_shell: Triangles are missing in the shell around the edge: ";
+                std::cout << indexEdge << std::endl;
+
+                ret = false;
+            }
+
+
+
+            /*
+              Test if there is at least 1 and not more than 2 triangles adjacent to each edge.
+              Test if edges are well oriented in the triangles: in the first triangle of m_triangleEdgeShell, vertices of the
+              correspondant edge are in oriented in counterclockwise direction in this triangle.
+              And in the clockwise direction in the second triangle (if this one exist)
+            */
+            if (nbrTriangleEdge > 0)
+            {
+                vertexTriangle = getTriangleArray()[ m_triangleEdgeShell[indexEdge][0] ];
+                vertexInTriangle = getVertexIndexInTriangle(vertexTriangle, m_edge[indexEdge][0] );
+
+                if ( m_edge[indexEdge][1] != vertexTriangle[ (vertexInTriangle+1)%3 ])
+                {
+                    std::cout << "*** CHECK FAILED: In Manifold_triangle_edge_shell: Edge ";
+                    std::cout << indexEdge << " is not well oriented regarding the first triangle of the shell";
+
+                    ret = false;
+                }
+            }
+            else
+            {
+                std::cout << "*** CHECK FAILED: In Manifold_triangle_edge_shell: Edge ";
+                std::cout << indexEdge << " is not part of a triangle";
+
+                ret = false;
+            }
+
+            if (nbrTriangleEdge == 2)
+            {
+                vertexTriangle = getTriangleArray()[ m_triangleEdgeShell[indexEdge][1] ];
+                vertexInTriangle = getVertexIndexInTriangle(vertexTriangle, m_edge[indexEdge][0] );
+
+                if ( m_edge[indexEdge][1] != vertexTriangle[ (vertexInTriangle+2)%3 ])
+                {
+                    std::cout << "*** CHECK FAILED: In Manifold_triangle_edge_shell: Edge ";
+                    std::cout << indexEdge << " is not well oriented regarding the second triangle of the shell";
+
+                    ret = false;
+                }
+
+            }
+            else if (nbrTriangleEdge >2 )
+            {
+                std::cout << "*** CHECK FAILED: In Manifold_triangle_edge_shell: Edge ";
+                std::cout << indexEdge << " has more than two adjacent triangles";
+
+                ret = false;
+            }
+        }
+    }
+
 
     return ret && TriangleSetTopologyContainer::checkTopology();
 #else
@@ -197,8 +368,8 @@ void ManifoldTriangleSetTopologyContainer::createEdgeVertexShellArray()
 
 
     /*	Creation of the differents maps: For each vertex i of each triangles:
-      - map_NextEdgeVertex: key = vertex i+1, value = index triangle
-      - map_OppositeEdgeVertex: key = vertex i+1, value = index i+2
+      - map_NextEdgeVertex: key = vertex i+1, value = Edge i+2
+      - map_OppositeEdgeVertex: key = vertex i+1, value = vertex i+2
       - map_Adjacents: key = vertex i+1 et i+2, value = Edge i	*/
     for (unsigned int triangleIndex = 0; triangleIndex < nbrTriangles; triangleIndex++)
     {
@@ -227,10 +398,11 @@ void ManifoldTriangleSetTopologyContainer::createEdgeVertexShellArray()
 
             if( cpt > 2)
             {
-#ifndef NDEBUG
-                std::cout << "Error. [ManifoldTriangleSetTopologyContainer::createEdgeVertexShellArray] The mapping is not manifold.";
-                std::cout << "There are more than 2 triangles adjacents to the Edge: vertexIndex,(*it).first. " << std::endl;
-#endif
+                //#ifndef NDEBUG
+                std::cout << "Error. [ManifoldTriangleSetTopologyContainer::createEdgeVertexShellArray] The mapping is not manifold. ";
+                std::cout << "In the neighborhood of the vertex: " << vertexIndex;
+                std::cout << ". There are " << cpt << " edges connected to the vertex: " << (*it_multimap).first << std::endl;
+                //#endif
             }
             else if ( cpt == 1)
             {
@@ -245,11 +417,12 @@ void ManifoldTriangleSetTopologyContainer::createEdgeVertexShellArray()
         m_edgeVertexShell[vertexIndex].push_back(map_NextEdgeVertex[vertexIndex][firstVertex]);
         nextVertex = (*(it_map = map_OppositeEdgeVertex[vertexIndex].find(firstVertex))).second;
 
-        // while?
         for (unsigned int indexEdge = 1; indexEdge < map_OppositeEdgeVertex[vertexIndex].size(); indexEdge++)
         {
             m_edgeVertexShell[vertexIndex].push_back(map_NextEdgeVertex[vertexIndex][nextVertex]);
             nextVertex = (*(it_map = map_OppositeEdgeVertex[vertexIndex].find(nextVertex))).second;
+            //std::cout << "nextVertex: " << nextVertex << std::endl;
+            //si different de fin
         }
 
         if (nextVertex != firstVertex)
@@ -326,13 +499,12 @@ void ManifoldTriangleSetTopologyContainer::createTriangleVertexShellArray ()
 
         for (unsigned int i=0; i<3; ++i)
         {
-            map_Triangles[vertexTriangle[i]].insert(std::pair<unsigned int,unsigned int> (vertexTriangle[(i+1)%3], triangleIndex));
+            map_Triangles[vertexTriangle[i]].insert(std::pair<unsigned int,unsigned int> (vertexTriangle[(i+1)%3], triangleIndex)); //multi
 
             map_NextVertex[vertexTriangle[i]].insert(std::pair<unsigned int,unsigned int> (vertexTriangle[(i+1)%3], vertexTriangle[(i+2)%3]));
             map_PreviousVertex[vertexTriangle[i]].insert(std::pair<unsigned int,unsigned int> (vertexTriangle[(i+2)%3], vertexTriangle[(i+1)%3]));
         }
     }
-
 
     for (unsigned int vertexIndex = 0; vertexIndex < nbrVertices; ++vertexIndex)
     {
@@ -349,7 +521,6 @@ void ManifoldTriangleSetTopologyContainer::createTriangleVertexShellArray ()
                 break;
             }
         }
-
         m_triangleVertexShell[vertexIndex].push_back(map_Triangles[vertexIndex][firstVertex]);
         cpt=1;
 
@@ -357,7 +528,7 @@ void ManifoldTriangleSetTopologyContainer::createTriangleVertexShellArray ()
         {
             it2 = map_NextVertex[vertexIndex].find(firstVertex);
 
-            if(it2 == it1 && it2 == map_NextVertex[vertexIndex].end())
+            if ((*it2).first == (*it1).first && it2 == map_NextVertex[vertexIndex].end())
             {
                 // Contour has been done without reaching the end of the map
                 break;
@@ -372,7 +543,7 @@ void ManifoldTriangleSetTopologyContainer::createTriangleVertexShellArray ()
         {
 #ifndef NDEBUG
             std::cout << "Error. [ManifoldTriangleSetTopologyContainer::createEdgeVertexShellArray] The mapping is not manifold.";
-            std::cout << "There are more than 2 triangles adjacents to the Edge: vertexIndex,(*it).first. " << std::endl;
+            std::cout << "There is a wrong connection between triangles adjacent to the vertex: "<< vertexIndex << std::endl;
 #endif
         }
     }
@@ -450,6 +621,12 @@ void ManifoldTriangleSetTopologyContainer::createTriangleEdgeShellArray()
             std::cout << "Error. [ManifoldTriangleSetTopologyContainer::createTriangleEdgeShellArray] The mapping is not manifold.";
             std::cout << "There are more than 2 triangles adjacents to the Edge: " << indexEdge << std::endl;
 #endif
+
+            //Even if this structure is not Manifold, we chosed to fill the shell with all the triangles:
+            pair_equal_range = map_triangleEdge.equal_range(indexEdge);
+
+            for (it = pair_equal_range.first; it != pair_equal_range.second; ++it)
+                m_triangleEdgeShell[indexEdge].push_back((*it).second);
         }
         else if (cpt == 1)
         {
@@ -904,13 +1081,26 @@ sofa::helper::vector <TriangleID> ManifoldTriangleSetTopologyContainer::getTrian
 
     const unsigned int nbrEdges = getNumberOfEdges();
     sofa::helper::vector <TriangleID> TrianglesBorder;
-
+    bool test = true;
 
     for (unsigned int i = 0; i < nbrEdges; ++i)
     {
         if (m_triangleEdgeShell[i].size() == 1)
         {
-            TrianglesBorder.push_back (m_triangleEdgeShell[i][0]);
+            for (unsigned int j = 0; j < TrianglesBorder.size(); ++j)
+            {
+                if (TrianglesBorder[j] == m_triangleEdgeShell[i][0])
+                {
+                    test = false;
+                    break;
+                }
+            }
+
+            if(test)
+            {
+                TrianglesBorder.push_back (m_triangleEdgeShell[i][0]);
+            }
+            test = true;
         }
     }
 
@@ -934,9 +1124,9 @@ sofa::helper::vector <EdgeID> ManifoldTriangleSetTopologyContainer::getEdgesBord
     const unsigned int nbrEdges = getNumberOfEdges();
     sofa::helper::vector <EdgeID> edgesBorder;
 
-
     for (unsigned int i = 0; i < nbrEdges; ++i)
     {
+
         if (m_triangleEdgeShell[i].size() == 1)
         {
             edgesBorder.push_back (i);
@@ -944,7 +1134,6 @@ sofa::helper::vector <EdgeID> ManifoldTriangleSetTopologyContainer::getEdgesBord
     }
 
     return edgesBorder;
-
 }
 
 
