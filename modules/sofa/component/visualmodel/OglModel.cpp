@@ -55,7 +55,9 @@ int OglModelClass = core::RegisterObject("Generic visual model for OpenGL displa
 OglModel::OglModel()
     : premultipliedAlpha(initData(&premultipliedAlpha, (bool) false, "premultipliedAlpha", "is alpha premultiplied ?"))
     , useVBO(initData(&useVBO, (bool) false, "useVBO", "Use VBO for rendering"))
+    , writeZTransparent(initData(&writeZTransparent, (bool) false, "writeZTransparent", "Write into Z Buffer for Transparent Object"))
     , tex(NULL), canUseVBO(false), VBOGenDone(false), initDone(false), useTriangles(false), useQuads(false)
+    , oldTrianglesSize(0), oldQuadsSize(0)
 {
 }
 
@@ -139,7 +141,10 @@ void OglModel::internalDraw()
     if (isTransparent())
     {
         glEnable(GL_BLEND);
-        glDepthMask(GL_FALSE);
+        if (writeZTransparent.getValue())
+            glDepthMask(GL_TRUE);
+        else glDepthMask(GL_FALSE);
+
         glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
 
         for (unsigned int i=0; i<xforms.size(); i++)
@@ -296,6 +301,31 @@ void OglModel::initTextures()
 
 void OglModel::createVertexBuffer()
 {
+
+
+    glGenBuffers(1, &vbo);
+    initVertexBuffer();
+    VBOGenDone = true;
+}
+
+void OglModel::createTrianglesIndicesBuffer()
+{
+    glGenBuffers(1, &iboTriangles);
+    initTrianglesIndicesBuffer();
+    useTriangles = true;
+}
+
+
+void OglModel::createQuadsIndicesBuffer()
+{
+    glGenBuffers(1, &iboQuads);
+    initQuadsIndicesBuffer();
+    useQuads = true;
+}
+
+
+void OglModel::initVertexBuffer()
+{
     unsigned int positionsBufferSize, normalsBufferSize, textureCoordsBufferSize = 0;
     positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
     normalsBufferSize = (vnormals.size()*sizeof(vnormals[0]));
@@ -303,8 +333,6 @@ void OglModel::createVertexBuffer()
         textureCoordsBufferSize = vtexcoords.size() * sizeof(vtexcoords[0]);
 
     unsigned int totalSize = positionsBufferSize + normalsBufferSize + textureCoordsBufferSize;
-
-    glGenBuffers(1, &vbo);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     //Vertex Buffer creation
@@ -335,30 +363,26 @@ void OglModel::createVertexBuffer()
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    VBOGenDone = true;
+
 }
 
-void OglModel::createTrianglesIndicesBuffer()
+
+void OglModel::initTrianglesIndicesBuffer()
 {
-    glGenBuffers(1, &iboTriangles);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
 
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, triangles.size()*sizeof(triangles[0]), NULL, GL_DYNAMIC_DRAW);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, triangles.size()*sizeof(triangles[0]), &triangles[0]);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    useTriangles = true;
 }
 
-void OglModel::createQuadsIndicesBuffer()
+void OglModel::initQuadsIndicesBuffer()
 {
-    glGenBuffers(1, &iboQuads);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
-
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, quads.size()*sizeof(quads[0]), NULL, GL_DYNAMIC_DRAW);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, quads.size()*sizeof(quads[0]), &quads[0]);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    useQuads = true;
 }
 
 bool OglModel::updateVertexBuffer()
@@ -448,16 +472,24 @@ void OglModel::updateBuffers()
                 //Indices
                 //Triangles
                 if(useTriangles)
-                    updateTrianglesIndicesBuffer();
+                    if(oldTrianglesSize != triangles.size())
+                        initTrianglesIndicesBuffer();
+                    else
+                        updateTrianglesIndicesBuffer();
                 else if (triangles.size() > 0)
                     createTrianglesIndicesBuffer();
 
                 //Quads
                 if (useQuads)
-                    updateQuadsIndicesBuffer();
+                    if(oldQuadsSize != quads.size())
+                        initQuadsIndicesBuffer();
+                    else
+                        updateQuadsIndicesBuffer();
                 else if (quads.size() > 0)
                     createQuadsIndicesBuffer();
             }
+            oldTrianglesSize = triangles.size();
+            oldQuadsSize = quads.size();
         }
     }
 
