@@ -600,16 +600,16 @@ void MarchingCubeUtility::propagateFrom ( const Vec3i coord,
     PointID counter_triangles=0;
     int cubeConf;
     unsigned int cptCubeParcourrus = 0;
-// std::cerr << "Voila la bordure du mCube:" << std::endl;
+    std::cerr << "Voila la bordure du mCube:" << std::endl;
     for( vector<set<Vec3i> >::const_iterator itBorders = borders.begin(); itBorders != borders.end(); itBorders++)
     {
         for( set<Vec3i>::const_iterator itBorder = itBorders->begin(); itBorder != itBorders->end(); itBorder++)
         {
-//     std::cerr << " " << *itBorder;
+            std::cerr << " " << *itBorder;
         }
-//   std::cerr << std::endl;
+        std::cerr << std::endl;
     }
-// std::cerr << std::endl << "Et voila maintenant les indices parcourrus:" << std::endl;
+    std::cerr << std::endl << "Et voila maintenant les indices parcourrus:" << std::endl;
 
     while( !cubesToGenerate.empty())
     {
@@ -624,7 +624,7 @@ void MarchingCubeUtility::propagateFrom ( const Vec3i coord,
                 continue;
 
         cptCubeParcourrus++;
-// std::cerr << cubeCoord << std::endl;
+        std::cerr << cubeCoord << std::endl;
 
         GridCell cell;
         initCell( cell, cubeCoord, data, gridStep, dataGridStep);
@@ -644,7 +644,7 @@ void MarchingCubeUtility::propagateFrom ( const Vec3i coord,
         if(( MarchingCubeFaceTable[cubeConf] & 16) && (cubeCoord[1] > bboxMin[1]  )) { cubesToGenerate.push( cubeCoord + Vec3i( 0,-1, 0));}
         if(( MarchingCubeFaceTable[cubeConf] & 32) && (cubeCoord[1] < bboxMax[1]-2)) { cubesToGenerate.push( cubeCoord + Vec3i( 0, 1, 0));}
     }
-// std::cerr << "nb cube parcourrus: " << cptCubeParcourrus << std::endl;
+    std::cerr << "nb cube parcourrus: " << cptCubeParcourrus << std::endl;
 }
 
 
@@ -771,21 +771,26 @@ void MarchingCubeUtility::setBordersFromRealCoords( const vector<set<Vector3> >&
 {
     this->borders.clear();
 
-    Vector3 resolution = dataResolution.linearProduct(dataVoxelSize);
-    resolution = Vector3( 1/resolution[0], 1/resolution[1], 1/resolution[2]);
-// std::cerr << "Et voila le moment de changer les positions en index pour le mCube:" << std::endl;
+    Vector3 gridGraphicSize = dataResolution.linearProduct(dataVoxelSize);
+    gridGraphicSize = Vector3(1.0 / gridGraphicSize[0], 1.0 / gridGraphicSize[1], 1.0 / gridGraphicSize[2]);
+    Vector3 gridSize = Vector3 ( dataResolution /cubeStep);
+
     for( vector<set<Vector3> >::const_iterator itBorders = borders.begin(); itBorders != borders.end(); itBorders++)
     {
         set<Vec3i> border;
         for( set<Vector3>::const_iterator it = itBorders->begin(); it != itBorders->end(); it++)
         {
-            Vec3i cube = (((*it) - dataVoxelSize/2.0).linearProduct( resolution) * 2.0 - Vector3( 1.0f, 1.0f, 1.0f)).linearProduct(bbox.max - bbox.min) / cubeStep;
-// std::cerr << cube << "(from " << *it << ") ";
+            Vec3i cube = (((*it) - (dataVoxelSize/2.0)).linearProduct( gridGraphicSize)).linearProduct( gridSize);
 //TODO// les cinquantes assert qui manquent
             border.insert( cube);
+            assert( cube[0] >= 0);
+            assert( cube[1] >= 0);
+            assert( cube[2] >= 0);
+            assert( cube[0] < gridSize[0]);
+            assert( cube[1] < gridSize[1]);
+            assert( cube[2] < gridSize[2]);
         }
         this->borders.push_back( border);
-// std::cerr << std::endl;
     }
 }
 
@@ -834,14 +839,21 @@ void MarchingCubeUtility::findSeeds( vector<Vec3i>& seeds, const unsigned char *
 
 void MarchingCubeUtility::findSeedsFromRealCoords( vector<Vec3i>& mCubeCoords, const vector<Vec3i>& realCoords) const
 {
-    Vector3 resolution = dataResolution.linearProduct(dataVoxelSize);
-    resolution = Vector3( 1/resolution[0], 1/resolution[1], 1/resolution[2]);
+    Vector3 gridGraphicSize = dataResolution.linearProduct(dataVoxelSize);
+    gridGraphicSize = Vector3(1.0 / gridGraphicSize[0], 1.0 / gridGraphicSize[1], 1.0 / gridGraphicSize[2]);
+    Vector3 gridSize = Vector3 ( dataResolution /cubeStep);
     for( vector<Vec3i>::const_iterator it = realCoords.begin(); it != realCoords.end(); it++)
     {
-        Vector3 seed = ((*it) - dataVoxelSize/2.0).linearProduct( resolution) * 2.0 - Vector3( 1.0f, 1.0f, 1.0f);
+        Vector3 seed = (((*it) - (dataVoxelSize/2.0)).linearProduct( gridGraphicSize)).linearProduct( gridSize);
+        std::cerr << "Seed: " << seed << " from " << *it << std::endl;
         mCubeCoords.push_back( seed);
+        assert( seed[0] >= 0);
+        assert( seed[1] >= 0);
+        assert( seed[2] >= 0);
+        assert( seed[0] < gridSize[0]);
+        assert( seed[1] < gridSize[1]);
+        assert( seed[2] < gridSize[2]);
     }
-    assert( true/* in range of data */); //TODO
 }
 
 
