@@ -29,6 +29,7 @@
 #include <sofa/component/linearsolver/NewMatMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
+#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 #include "sofa/helper/system/thread/CTime.h"
@@ -161,6 +162,46 @@ void SSORPreconditioner<SparseMatrix<double>, FullVector<double> >::solve (Matri
         // we can reuse z because all values that we read are updated
     }
 }
+
+template<>
+void SSORPreconditioner<CompressedRowSparseMatrix<double>, FullVector<double> >::solve (Matrix& M, Vector& z, Vector& r)
+{
+    int n = M.rowSize();
+    //const Matrix::VecIndex& rowIndex = M.getRowIndex();
+    const Matrix::VecIndex& colsIndex = M.getColsIndex();
+    const Matrix::VecBloc& colsValue = M.getColsValue();
+    //Solve (D+U) * t = r;
+    for (int j=n-1; j>=0; j--)
+    {
+        double temp = 0.0;
+        Matrix::Range rowRange = M.getRowRange(j);
+        int xi = rowRange.begin();
+        while (xi < rowRange.end() && colsIndex[xi] <= j) ++xi;
+        for (; xi < rowRange.end(); ++xi)
+        {
+            int i = colsIndex[xi];
+            double e = colsValue[xi];
+            temp += z[i] * e;
+        }
+        z[j] = (r[j] - temp) * inv_diag[j];
+    }
+
+    //Solve (I + D^-1 * L) * z = t
+    for (int j=0; j<n; j++)
+    {
+        double temp = 0.0;
+        Matrix::Range rowRange = M.getRowRange(j);
+        int xi = rowRange.begin();
+        for (; xi < rowRange.end() && colsIndex[xi] < j; ++xi)
+        {
+            int i = colsIndex[xi];
+            double e = colsValue[xi];
+            temp += z[i] * e;
+        }
+        z[j] -= temp * inv_diag[j];
+        // we can reuse z because all values that we read are updated
+    }
+}
 template<class TMatrix, class TVector>
 void SSORPreconditioner<TMatrix,TVector>::invert(Matrix& M)
 {
@@ -174,6 +215,7 @@ SOFA_DECL_CLASS(SSORPreconditioner)
 int SSORPreconditionerClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
 //.add< SSORPreconditioner<GraphScatteredMatrix,GraphScatteredVector> >(true)
         .add< SSORPreconditioner< SparseMatrix<double>, FullVector<double> > >(true)
+        .add< SSORPreconditioner< CompressedRowSparseMatrix<double>, FullVector<double> > >()
 //.add< SSORPreconditioner<NewMatBandMatrix,NewMatVector> >(true)
 //.add< SSORPreconditioner<NewMatMatrix,NewMatVector> >()
         .add< SSORPreconditioner<NewMatSymmetricMatrix,NewMatVector> >()
