@@ -155,6 +155,7 @@ public slots:
     /// Launch the current simulation into Sofa
     void runInSofa();
     void sofaExited();
+    void removeTemporaryFiles(Q3Process *p);
 
     /// Change of simulation by changing the current opened tabulation
     void changeCurrentScene( QWidget*);
@@ -190,6 +191,8 @@ public slots:
 
     void changeSofaBinary();
     void GUIChanged();
+    //When the window is closed: we close all the Sofa launched, and remove temporary files
+    void closeEvent ( QCloseEvent * e );
 
 protected:
     /// Widget containing all the graphs

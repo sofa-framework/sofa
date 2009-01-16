@@ -28,11 +28,14 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 
+
 #define MAX_RECENTLY_OPENED 10
 
 
 #include <map>
 #include <set>
+#include <cstdio>
+
 
 //Automatically create and destroy all the components available: easy way to verify the default constructor and destructor
 //#define TEST_CREATION_COMPONENT
@@ -103,7 +106,7 @@ SofaModeler::SofaModeler()
     sofaBinary=std::string();
 
     Q3PopupMenu *runSofaGUI = new Q3PopupMenu(this);
-    runSofaMenu->insertItem(QIconSet(), tr("GUI"), runSofaGUI);
+    runSofaMenu->insertItem(QIconSet(), tr("Viewer"), runSofaGUI);
 
     //Set the different available GUI
     std::vector<std::string> listGUI = sofa::gui::SofaGUI::ListSupportedGUI();
@@ -354,7 +357,6 @@ SofaModeler::SofaModeler()
 
 
 
-    newTab();
     changeLibraryLabel(0);
     connect(SofaComponents, SIGNAL(currentChanged(int)), this, SLOT(changeLibraryLabel(int)));
     //Recently Opened Files
@@ -375,10 +377,18 @@ SofaModeler::SofaModeler()
     const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
     this->move(  ( screen.width()- this->width()  ) / 2,  ( screen.height() - this->height()) / 2  );
 
-
-
+    GraphSupport->resize(300,550);
 };
 
+
+
+
+void SofaModeler::closeEvent( QCloseEvent *e)
+{
+    const int numTab=sceneTab->count();
+    for (int i=0; i<numTab; ++i) closeTab();
+    e->accept();
+}
 
 void SofaModeler::fileNew( GNode* root)
 {
@@ -462,7 +472,10 @@ void SofaModeler::closeTab()
         std::pair< multimapIterator,multimapIterator > range;
         range=mapSofa.equal_range(curTab);
         for (multimapIterator it=range.first; it!=range.second; it++)
+        {
+            removeTemporaryFiles(it->second);
             it->second->kill();
+        }
         mapSofa.erase(range.first, range.second);
     }
 
@@ -588,7 +601,10 @@ void SofaModeler::fileSave(std::string filename)
 void SofaModeler::fileSaveAs()
 {
     if (sceneTab->count() == 0) return;
-    QString s = sofa::gui::qt::getSaveFileName ( this, QString(examplePath.c_str()), "Scenes (*.scn *.xml)", "save file dialog", "Choose where the scene will be saved" );
+    std::string path;
+    if (graph->getFilename().empty()) path=examplePath.c_str();
+    else path=sofa::helper::system::SetDirectory::GetParentDir(graph->getFilename().c_str());
+    QString s = sofa::gui::qt::getSaveFileName ( this, QString(path.c_str()), "Scenes (*.scn *.xml)", "save file dialog", "Choose where the scene will be saved" );
     if ( s.length() >0 )
     {
         fileSave ( s.ascii() );
@@ -632,7 +648,6 @@ void SofaModeler::changeInformation(Q3ListViewItem *item)
 
 void SofaModeler::changeLibraryLabel(int index)
 {
-
     Library->setItemLabel(0, QString("Sofa Components[") + QString::number(displayComponents) + QString("] : ")+SofaComponents->itemLabel(index));
 }
 
@@ -839,6 +854,7 @@ void SofaModeler::runInSofa()
     }
 
     Q3Process *p = new Q3Process(argv, this);
+    p->setName(filename.c_str());
     connect(p, SIGNAL(processExited()), this, SLOT(sofaExited()));
     QDir dir(QString(sofa::helper::system::SetDirectory::GetParentDir(graph->getFilename().c_str()).c_str()));
     p->setWorkingDirectory(dir);
@@ -849,9 +865,11 @@ void SofaModeler::runInSofa()
     //Maybe switch to a multimap as several sofa can be launch from the same tab
 }
 
+
 void SofaModeler::sofaExited()
 {
     Q3Process *p = ((Q3Process*) sender());
+    removeTemporaryFiles(p);
     if (p->normalExit()) return;
     typedef std::multimap< const QWidget*, Q3Process* >::iterator multimapIterator;
     for (multimapIterator it=mapSofa.begin(); it!=mapSofa.end(); it++)
@@ -865,6 +883,17 @@ void SofaModeler::sofaExited()
         }
     }
 }
+
+void SofaModeler::removeTemporaryFiles(Q3Process *p)
+{
+    std::string filename(p->name());
+    //Delete Temporary file
+    remove(filename.c_str());
+    filename += ".view";
+    //Remove eventual .view file
+    remove(filename.c_str());
+}
+
 
 void SofaModeler::releaseButton()
 {
@@ -999,18 +1028,16 @@ void SofaModeler::editCut()
 {
     if (graph)
     {
-        graph->editCut(presetPath+"copyBuffer.scn");
-        isPasteReady=true;
-        editPasteAction->setEnabled(true);
+        isPasteReady=graph->editCut(presetPath+"copyBuffer.scn");
+        editPasteAction->setEnabled(isPasteReady);
     }
 }
 void SofaModeler::editCopy()
 {
     if (graph)
     {
-        graph->editCopy(presetPath+"copyBuffer.scn");
-        isPasteReady=true;
-        editPasteAction->setEnabled(true);
+        isPasteReady=graph->editCopy(presetPath+"copyBuffer.scn");
+        editPasteAction->setEnabled(isPasteReady);
     }
 }
 void SofaModeler::editPaste()
