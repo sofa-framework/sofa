@@ -888,10 +888,10 @@ void SofaModeler::removeTemporaryFiles(Q3Process *p)
 {
     std::string filename(p->name());
     //Delete Temporary file
-    remove(filename.c_str());
+    ::remove(filename.c_str());
     filename += ".view";
     //Remove eventual .view file
-    remove(filename.c_str());
+    ::remove(filename.c_str());
 }
 
 
