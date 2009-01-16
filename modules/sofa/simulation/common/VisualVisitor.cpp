@@ -79,19 +79,19 @@ void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::VisualM
     {
     case core::VisualModel::Std:
     {
-        if (shader && !shader->isActive())
+        if (shader && shader->isActive())
             shader->start();
         vm->drawVisual();
-        if (shader && !shader->isActive())
+        if (shader && shader->isActive())
             shader->stop();
         break;
     }
     case core::VisualModel::Transparent:
     {
-        if (shader && !shader->isActive())
+        if (shader && shader->isActive())
             shader->start();
         vm->drawTransparent();
-        if (shader && !shader->isActive())
+        if (shader && shader->isActive())
             shader->stop();
         break;
     }
