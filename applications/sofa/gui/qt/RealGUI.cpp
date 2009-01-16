@@ -1159,9 +1159,9 @@ void RealGUI::fileOpen()
 
     QString s = getOpenFileName ( this, filename.empty() ?NULL:filename.c_str(),
 #ifdef SOFA_PML
-            "Scenes (*.scn *.xml *.simu *.pml *.lml)",
+            "Scenes (*.scn *.xml);;Simulation (*.simu);;Php Scenes (*.pscn);;Pml Lml (*.pml *.lml);;All (*)",
 #else
-            "Scenes (*.scn *.xml *.simu *.pscn)",
+            "Scenes (*.scn *.xml);;Simulation (*.simu);;Php Scenes (*.pscn);;All (*)",
 #endif
             "open file dialog",  "Choose a file to open" );
 

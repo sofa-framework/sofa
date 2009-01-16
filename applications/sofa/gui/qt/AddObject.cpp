@@ -168,7 +168,7 @@ void AddObject::setPath(const std::string path)
 //Open a file Dialog and set the path of the selected path in the text field.
 void AddObject::fileOpen()
 {
-    QString s  = getOpenFileName(this, QString(fileName.c_str()), "Sofa Element (*.xml *.scn)", "open file dialog",  "Choose a file to open" );
+    QString s  = getOpenFileName(this, QString(fileName.c_str()), "Scenes (*.xml *.scn);;All (*)", "open file dialog",  "Choose a file to open" );
 
     if (s.isNull() ) return;
 #ifdef SOFA_QT4

@@ -100,7 +100,7 @@ void SphereForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, con
 }
 
 template<class DataTypes>
-void SphereForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal kFactor, unsigned int &offset)
+void SphereForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*kFactor*/, unsigned int &/*offset*/)
 {
     /*
     	const Coord center = sphereCenter.getValue();

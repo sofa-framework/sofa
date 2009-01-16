@@ -402,7 +402,7 @@ void SofaModeler::fileNew( GNode* root)
 
 void SofaModeler::fileOpen()
 {
-    QString s = getOpenFileName ( this, QString(examplePath.c_str()),"Scenes (*.scn *.xml *.simu *.pscn)", "open file dialog",  "Choose a file to open" );
+    QString s = getOpenFileName ( this, QString(examplePath.c_str()),"Scenes (*.scn *.xml);;Simulation (*.simu);;Php Scenes (*.pscn);;All (*)", "open file dialog",  "Choose a file to open" );
     if (s.length() >0)
     {
         fileOpen(s);
