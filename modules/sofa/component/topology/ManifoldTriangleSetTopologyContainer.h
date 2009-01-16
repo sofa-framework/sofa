@@ -56,7 +56,7 @@ typedef BaseMeshTopology::EdgeTriangles		EdgeTriangles;
 /** A class that stores a set of triangles and provides access
 to each triangle, triangle's edges and vertices.
 This topology is contraint by the manifold property: each edge is adjacent to either one or at most two Triangles.*/
-class ManifoldTriangleSetTopologyContainer : public TriangleSetTopologyContainer
+class SOFA_COMPONENT_CONTAINER_API ManifoldTriangleSetTopologyContainer : public TriangleSetTopologyContainer
 {
     /**To Do
        modify TriangleSetTopologyModifier in ManifoldTriangleSetTopologyModifier
