@@ -329,8 +329,8 @@ void removeIndex( std::vector<T,TT>& v, size_t index )
 {
 #ifndef NDEBUG
     //assert( 0<= static_cast<int>(index) && index <v.size() );
-    if (n>=v.size())
-        vector_access_failure(&v, v.size(), n, typeid(T));
+    if (index>=v.size())
+        vector_access_failure(&v, v.size(), index, typeid(T));
 #endif
     v[index] = v.back();
     v.pop_back();
