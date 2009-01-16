@@ -119,18 +119,18 @@ public:
     static const char* Name();
 };
 
-template<> const char* matrix_bloc_traits<defaulttype::Mat<1,1,float > >::Name() { return "1f"; }
-template<> const char* matrix_bloc_traits<defaulttype::Mat<1,1,double> >::Name() { return "1d"; }
-template<> const char* matrix_bloc_traits<defaulttype::Mat<2,2,float > >::Name() { return "2f"; }
-template<> const char* matrix_bloc_traits<defaulttype::Mat<2,2,double> >::Name() { return "2d"; }
-template<> const char* matrix_bloc_traits<defaulttype::Mat<3,3,float > >::Name() { return "3f"; }
-template<> const char* matrix_bloc_traits<defaulttype::Mat<3,3,double> >::Name() { return "3d"; }
-template<> const char* matrix_bloc_traits<defaulttype::Mat<4,4,float > >::Name() { return "4f"; }
-template<> const char* matrix_bloc_traits<defaulttype::Mat<4,4,double> >::Name() { return "4d"; }
-template<> const char* matrix_bloc_traits<defaulttype::Mat<6,6,float > >::Name() { return "6f"; }
-template<> const char* matrix_bloc_traits<defaulttype::Mat<6,6,double> >::Name() { return "6d"; }
-template<> const char* matrix_bloc_traits<defaulttype::Mat<8,8,float > >::Name() { return "8f"; }
-template<> const char* matrix_bloc_traits<defaulttype::Mat<8,8,double> >::Name() { return "8d"; }
+template<> extern inline const char* matrix_bloc_traits<defaulttype::Mat<1,1,float > >::Name() { return "1f"; }
+template<> extern inline const char* matrix_bloc_traits<defaulttype::Mat<1,1,double> >::Name() { return "1d"; }
+template<> extern inline const char* matrix_bloc_traits<defaulttype::Mat<2,2,float > >::Name() { return "2f"; }
+template<> extern inline const char* matrix_bloc_traits<defaulttype::Mat<2,2,double> >::Name() { return "2d"; }
+template<> extern inline const char* matrix_bloc_traits<defaulttype::Mat<3,3,float > >::Name() { return "3f"; }
+template<> extern inline const char* matrix_bloc_traits<defaulttype::Mat<3,3,double> >::Name() { return "3d"; }
+template<> extern inline const char* matrix_bloc_traits<defaulttype::Mat<4,4,float > >::Name() { return "4f"; }
+template<> extern inline const char* matrix_bloc_traits<defaulttype::Mat<4,4,double> >::Name() { return "4d"; }
+template<> extern inline const char* matrix_bloc_traits<defaulttype::Mat<6,6,float > >::Name() { return "6f"; }
+template<> extern inline const char* matrix_bloc_traits<defaulttype::Mat<6,6,double> >::Name() { return "6d"; }
+template<> extern inline const char* matrix_bloc_traits<defaulttype::Mat<8,8,float > >::Name() { return "8f"; }
+template<> extern inline const char* matrix_bloc_traits<defaulttype::Mat<8,8,double> >::Name() { return "8d"; }
 
 template <>
 class matrix_bloc_traits < float >
@@ -305,7 +305,7 @@ public:
     const VecIndex& getRowBegin() const { return rowBegin; }
     Range getRowRange(int id) const { return Range(rowBegin[id], rowBegin[id+1]); }
     const VecIndex& getColsIndex() const { return colsIndex; }
-    const VecIndex& getColsValue() const { return colsValue; }
+    const VecBloc& getColsValue() const { return colsValue; }
 
     void resizeBloc(int nbBRow, int nbBCol)
     {

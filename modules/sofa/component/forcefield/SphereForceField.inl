@@ -100,45 +100,21 @@ void SphereForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, con
 }
 
 template<class DataTypes>
-void SphereForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*kFactor*/, unsigned int &/*offset*/)
+void SphereForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * mat, SReal kFactor, unsigned int &offset)
 {
-    /*
-    	const Coord center = sphereCenter.getValue();
-        const Real r = sphereRadius.getValue();
-        const Real r2 = r*r;
-        this->contacts.beginEdit()->clear();
-
-        unsigned int ibegin = 0;
-        unsigned int iend = p1.size();
-
-        if (localRange.getValue()[0] >= 0)
-    	ibegin = localRange.getValue()[0];
-
-        if (localRange.getValue()[1] >= 0 && (unsigned int)localRange.getValue()[1]+1 < iend)
-    	iend = localRange.getValue()[1]+1;
-
-        for (unsigned int i=ibegin; i<iend; i++)
-        {
-        	Coord dp = p1[i] - center;
-            Real norm2 = dp.norm2();
-            if (norm2<r2)
+    const Real fact = (Real)(-this->stiffness.getValue()*kFactor);
+    for (unsigned int i=0; i<this->contacts.getValue().size(); i++)
+    {
+        const Contact& c = (this->contacts.getValue())[i];
+        unsigned int p = c.index;
+        assert((unsigned)c.index<dx1.size());
+        for (int l=0; l<Deriv::static_size; ++l)
+            for (int k=0; k<Deriv::static_size; ++k)
             {
-                Real norm = helper::rsqrt(norm2);
-                Real d = norm - r;
-                Real forceIntensity = -this->stiffness.getValue()*d;
-                Real dampingIntensity = -this->damping.getValue()*d;
-                //Deriv force = dp*(forceIntensity/norm) - v1[i]*dampingIntensity;
-                //f1[i]+=force;
-                Contact c;
-                c.index = i;
-                c.normal = dp / norm;
-                c.fact = r / norm;
-                this->contacts.beginEdit()->push_back(c);
+                SReal coef = (c.normal[l] * c.normal[k] * c.fact + (l==k ? (1 - c.fact) : (SReal)0.0)) * fact;
+                mat->add(offset + p*Deriv::static_size + l, offset + p*Deriv::static_size + k, coef);
             }
-
-        }
-        this->contacts.endEdit();
-        */
+    }
 }
 
 template<class DataTypes>
