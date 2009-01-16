@@ -937,22 +937,24 @@ void GraphModeler::closeDialogs()
 
 /*****************************************************************************************************************/
 //History of operations management
-void GraphModeler::editCut(std::string path)
+//TODO: not use the factory to create the elements!
+bool GraphModeler::editCut(std::string path)
 {
-    if (currentItem())
+    if (selectedItem())
     {
         editCopy(path);
-        deleteComponent(currentItem(), true);
+        deleteComponent(selectedItem(), true);
     }
+    return selectedItem();
 }
-void GraphModeler::editCopy(std::string path)
+bool GraphModeler::editCopy(std::string path)
 {
-    if (currentItem())
+    if (selectedItem())
     {
-        BaseObject *object = getObject(currentItem());
+        BaseObject *object = getObject(selectedItem());
         if (!object)
         {
-            GNode *node = getGNode(currentItem());
+            GNode *node = getGNode(selectedItem());
             saveNode(node, path);
         }
         else
@@ -960,18 +962,20 @@ void GraphModeler::editCopy(std::string path)
             saveComponent(object,path);
         }
     }
+    return selectedItem();
 }
-void GraphModeler::editPaste(std::string path)
+bool GraphModeler::editPaste(std::string path)
 {
-    if (currentItem())
+    if (selectedItem())
     {
-        GNode *node = getGNode(currentItem());
+        GNode *node = getGNode(selectedItem());
         loadNode(node, path);
-        Q3ListViewItem *pasteItem=currentItem();
-        Q3ListViewItem *insertedItem=currentItem();
+        Q3ListViewItem *pasteItem=selectedItem();
+        Q3ListViewItem *insertedItem=selectedItem();
         while(insertedItem->nextSibling()) insertedItem=insertedItem->nextSibling();
         initItem(insertedItem, pasteItem);
     }
+    return selectedItem();
 }
 /*****************************************************************************************************************/
 //History of operations management

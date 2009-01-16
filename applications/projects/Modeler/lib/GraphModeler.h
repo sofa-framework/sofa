@@ -162,9 +162,9 @@ public slots:
     void editUndo();
     void editRedo();
 
-    void editCut(std::string path);
-    void editCopy(std::string path);
-    void editPaste(std::string path);
+    bool editCut(std::string path);
+    bool editCopy(std::string path);
+    bool editPaste(std::string path);
 
     //Right Click Menu
 #ifdef SOFA_QT4

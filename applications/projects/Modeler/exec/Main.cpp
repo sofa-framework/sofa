@@ -48,6 +48,7 @@ int main(int argc, char** argv)
         //Try to open the simulations passed in command line
         sofaModeler->fileOpen(std::string(argv[i]));
     }
+    if (argc <= 1 ) sofaModeler->newTab();
 
     return application->exec();
 }
