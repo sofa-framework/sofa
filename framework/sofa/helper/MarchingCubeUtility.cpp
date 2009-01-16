@@ -567,7 +567,7 @@ void MarchingCubeUtility::propagateFrom ( const Vec3i coord,
         const float isolevel,
         sofa::helper::vector< PointID >& mesh,
         sofa::helper::vector< Vector3 >& vertices,
-        helper::vector< helper::vector<unsigned int /*regular grid space index*/> >* triangleIndexInRegularGrid
+        helper::vector< helper::vector<unsigned int> >* triangleIndexInRegularGrid
                                         ) const
 {
     vector< float > data ( dataResolution[0]*dataResolution[1]*dataResolution[2] );
@@ -599,18 +599,6 @@ void MarchingCubeUtility::propagateFrom ( const Vec3i coord,
 
     PointID counter_triangles=0;
     int cubeConf;
-    unsigned int cptCubeParcourrus = 0;
-    std::cerr << "Voila la bordure du mCube:" << std::endl;
-    for( vector<set<Vec3i> >::const_iterator itBorders = borders.begin(); itBorders != borders.end(); itBorders++)
-    {
-        for( set<Vec3i>::const_iterator itBorder = itBorders->begin(); itBorder != itBorders->end(); itBorder++)
-        {
-            std::cerr << " " << *itBorder;
-        }
-        std::cerr << std::endl;
-    }
-    std::cerr << std::endl << "Et voila maintenant les indices parcourrus:" << std::endl;
-
     while( !cubesToGenerate.empty())
     {
         cubeCoord = cubesToGenerate.top(); // Get the last cube on the stack.
@@ -622,9 +610,6 @@ void MarchingCubeUtility::propagateFrom ( const Vec3i coord,
         for( vector<set<Vec3i> >::const_iterator itBorders = borders.begin(); itBorders != borders.end(); itBorders++)
             if( itBorders->find( cubeCoord) != itBorders->end())
                 continue;
-
-        cptCubeParcourrus++;
-        std::cerr << cubeCoord << std::endl;
 
         GridCell cell;
         initCell( cell, cubeCoord, data, gridStep, dataGridStep);
@@ -644,7 +629,6 @@ void MarchingCubeUtility::propagateFrom ( const Vec3i coord,
         if(( MarchingCubeFaceTable[cubeConf] & 16) && (cubeCoord[1] > bboxMin[1]  )) { cubesToGenerate.push( cubeCoord + Vec3i( 0,-1, 0));}
         if(( MarchingCubeFaceTable[cubeConf] & 32) && (cubeCoord[1] < bboxMax[1]-2)) { cubesToGenerate.push( cubeCoord + Vec3i( 0, 1, 0));}
     }
-    std::cerr << "nb cube parcourrus: " << cptCubeParcourrus << std::endl;
 }
 
 
@@ -653,7 +637,7 @@ void MarchingCubeUtility::run ( const unsigned char *_data, const sofa::helper::
         const float isolevel,
         sofa::helper::vector< PointID >& mesh,
         sofa::helper::vector< Vector3>& vertices,
-        helper::vector< helper::vector<unsigned int /*regular grid space index*/> >*triangleIndexInRegularGrid ) const
+        helper::vector< helper::vector<unsigned int> >*triangleIndexInRegularGrid ) const
 {
     Vec3i gridSize = Vec3i ( dataResolution[0]/cubeStep, dataResolution[1]/cubeStep, dataResolution[2]/cubeStep );
     unsigned int originalMeshSize = mesh.size();
@@ -668,19 +652,10 @@ void MarchingCubeUtility::run ( const unsigned char *_data, const sofa::helper::
         for(unsigned int i = 0; i < originalVerticesSize; i++)
             tmpVertices.push_back( vertices[i]);
 
-        Vec3i voxel = *it, coord;
-        // Test the height voxels 'coord' defined by the vertex 'voxel' (voxel in data space but only vertex in the mCube grid)
+        Vec3i voxel = *it;
 
-//TODO// ne pas tester les 8 cubes autour du sommet... plutot faire cette detection dans findSeeds et appeler directement le bon cube ici. Ce sera mieux avec les lastElts (voir H2T topoMapping)...
-
-        for( unsigned int i = 0; i < 2; i++)
-            for( unsigned int j = 0; j < 2; j++)
-                for( unsigned int k = 0; k < 2; k++)
-                {
-                    coord = voxel - Vec3i( i, j, k);
-                    if( (tmpMesh.size() == originalMeshSize) && (coord[0] >= 0) && (coord[1] >= 0) && (coord[2] >= 0))
-                        propagateFrom( coord, _data, isolevel, tmpMesh, tmpVertices, triangleIndexInRegularGrid);
-                }
+        if( (tmpMesh.size() == originalMeshSize) && (voxel[0] >= 0) && (voxel[1] >= 0) && (voxel[2] >= 0))
+            propagateFrom( voxel, _data, isolevel, tmpMesh, tmpVertices, triangleIndexInRegularGrid);
 
         for( sofa::helper::vector< PointID >::iterator it = tmpMesh.begin()+originalMeshSize; it != tmpMesh.end(); it++)
             mesh.push_back( *it);
@@ -695,7 +670,7 @@ void MarchingCubeUtility::run ( const unsigned char *_data, const sofa::helper::
 void MarchingCubeUtility::run ( const unsigned char *_data, const float isolevel,
         sofa::helper::vector< PointID >& mesh,
         sofa::helper::vector< Vector3 >& vertices,
-        helper::vector< helper::vector<unsigned int /*regular grid space index*/> >* triangleIndexInRegularGrid ) const
+        helper::vector< helper::vector<unsigned int> >* triangleIndexInRegularGrid ) const
 {
     vector< float > data ( dataResolution[0]*dataResolution[1]*dataResolution[2] );
     if ( data.size() == 0 )
@@ -781,7 +756,6 @@ void MarchingCubeUtility::setBordersFromRealCoords( const vector<set<Vector3> >&
         for( set<Vector3>::const_iterator it = itBorders->begin(); it != itBorders->end(); it++)
         {
             Vec3i cube = (((*it) - (dataVoxelSize/2.0)).linearProduct( gridGraphicSize)).linearProduct( gridSize);
-//TODO// les cinquantes assert qui manquent
             border.insert( cube);
             assert( cube[0] >= 0);
             assert( cube[1] >= 0);
@@ -796,6 +770,7 @@ void MarchingCubeUtility::setBordersFromRealCoords( const vector<set<Vector3> >&
 
 
 
+// A priori, il n'y a pas de données sur les bords (tout du moins sur le premier voxel)
 void MarchingCubeUtility::findSeeds( vector<Vec3i>& seeds, const unsigned char *_data)
 {
     vector< float > data ( dataResolution[0]*dataResolution[1]*dataResolution[2] );
@@ -828,9 +803,12 @@ void MarchingCubeUtility::findSeeds( vector<Vec3i>& seeds, const unsigned char *
                 if( data[index])
                 {
                     Vec3i currentCube( i, j , k);
-                    if( parsedVoxels.find( currentCube) == parsedVoxels.end()) seeds.push_back( currentCube);
-                    //propager sur les autres voxels et les incrire ds parsedVoxels.
-                    findConnectedVoxels( parsedVoxels, currentCube, data);
+                    if( parsedVoxels.find( currentCube) == parsedVoxels.end())
+                    {
+                        seeds.push_back( currentCube - Vector3(1,0,0));
+                        // propager sur les autres voxels et les incrire ds parsedVoxels.
+                        findConnectedVoxels( parsedVoxels, currentCube, data);
+                    }
                 }
             }
 }
@@ -845,7 +823,6 @@ void MarchingCubeUtility::findSeedsFromRealCoords( vector<Vec3i>& mCubeCoords, c
     for( vector<Vec3i>::const_iterator it = realCoords.begin(); it != realCoords.end(); it++)
     {
         Vector3 seed = (((*it) - (dataVoxelSize/2.0)).linearProduct( gridGraphicSize)).linearProduct( gridSize);
-        std::cerr << "Seed: " << seed << " from " << *it << std::endl;
         mCubeCoords.push_back( seed);
         assert( seed[0] >= 0);
         assert( seed[1] >= 0);
@@ -880,7 +857,7 @@ void MarchingCubeUtility::updateTriangleInRegularGridVector ( helper::vector< he
 
 void MarchingCubeUtility::findConnectedVoxels( std::set<Vec3i>& connectedVoxels, const Vec3i& from, const vector<float>& data)
 {
-    // propager sur les voisins et marquer comme occupe.
+    if( connectedVoxels.find( from) != connectedVoxels.end()) return;
     Vec3i bboxMin = Vec3i( bbox.min / cubeStep);
     Vec3i bboxMax = Vec3i( bbox.max / cubeStep);
     Vec3i gridSize = Vec3i ( bbox.max /cubeStep);
@@ -889,20 +866,16 @@ void MarchingCubeUtility::findConnectedVoxels( std::set<Vec3i>& connectedVoxels,
 
     unsigned int index = from[0] + from[1]*gridSize[0] + from[2]*gridSize[0]*gridSize[1];
 
-    // Si le voxel n'est pas occupé, on arrête la propagation
     if( !data[index]) return;
 
-    // Sinon, marquer le voxel comme occupé
     connectedVoxels.insert( from);
 
-    // Et propager aux voisins
-    Vec3i nextCube;
-    if( from[0] > bboxMin[0]  ) { nextCube = from + Vec3i(-1, 0, 0); if( connectedVoxels.find( nextCube) == connectedVoxels.end()) findConnectedVoxels( connectedVoxels, nextCube, data);}
-    if( from[0] < bboxMax[0]-1) { nextCube = from + Vec3i( 1, 0, 0); if( connectedVoxels.find( nextCube) == connectedVoxels.end()) findConnectedVoxels( connectedVoxels, nextCube, data);}
-    if( from[1] > bboxMin[1]  ) { nextCube = from + Vec3i( 0,-1, 0); if( connectedVoxels.find( nextCube) == connectedVoxels.end()) findConnectedVoxels( connectedVoxels, nextCube, data);}
-    if( from[1] < bboxMax[1]-1) { nextCube = from + Vec3i( 0, 1, 0); if( connectedVoxels.find( nextCube) == connectedVoxels.end()) findConnectedVoxels( connectedVoxels, nextCube, data);}
-    if( from[2] > bboxMin[2]  ) { nextCube = from + Vec3i( 0, 0,-1); if( connectedVoxels.find( nextCube) == connectedVoxels.end()) findConnectedVoxels( connectedVoxels, nextCube, data);}
-    if( from[2] < bboxMax[2]-1) { nextCube = from + Vec3i( 0, 0, 1); if( connectedVoxels.find( nextCube) == connectedVoxels.end()) findConnectedVoxels( connectedVoxels, nextCube, data);}
+    if( from[0] > bboxMin[0]  ) findConnectedVoxels( connectedVoxels, from + Vec3i(-1, 0, 0), data);
+    if( from[0] < bboxMax[0]-1) findConnectedVoxels( connectedVoxels, from + Vec3i( 1, 0, 0), data);
+    if( from[1] > bboxMin[1]  ) findConnectedVoxels( connectedVoxels, from + Vec3i( 0,-1, 0), data);
+    if( from[1] < bboxMax[1]-1) findConnectedVoxels( connectedVoxels, from + Vec3i( 0, 1, 0), data);
+    if( from[2] > bboxMin[2]  ) findConnectedVoxels( connectedVoxels, from + Vec3i( 0, 0,-1), data);
+    if( from[2] < bboxMax[2]-1) findConnectedVoxels( connectedVoxels, from + Vec3i( 0, 0, 1), data);
 }
 
 
@@ -934,7 +907,6 @@ void MarchingCubeUtility::smoothData ( float *data ) const
             {
                 applyConvolution ( &convolutionKernel[0], i,j,k, &input_data[0], data );
             }
-
 }
 
 void  MarchingCubeUtility::applyConvolution ( const float* convolutionKernel,
@@ -985,7 +957,6 @@ void MarchingCubeUtility::createGaussianConvolutionKernel ( vector< float >  &co
     for ( unsigned int i=0; i<convolutionKernel.size(); ++i )
         convolutionKernel[i] *= total;
 }
-
 
 }
 
