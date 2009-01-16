@@ -119,18 +119,18 @@ public:
     static const char* Name();
 };
 
-template<> extern inline const char* matrix_bloc_traits<defaulttype::Mat<1,1,float > >::Name() { return "1f"; }
-template<> extern inline const char* matrix_bloc_traits<defaulttype::Mat<1,1,double> >::Name() { return "1d"; }
-template<> extern inline const char* matrix_bloc_traits<defaulttype::Mat<2,2,float > >::Name() { return "2f"; }
-template<> extern inline const char* matrix_bloc_traits<defaulttype::Mat<2,2,double> >::Name() { return "2d"; }
-template<> extern inline const char* matrix_bloc_traits<defaulttype::Mat<3,3,float > >::Name() { return "3f"; }
-template<> extern inline const char* matrix_bloc_traits<defaulttype::Mat<3,3,double> >::Name() { return "3d"; }
-template<> extern inline const char* matrix_bloc_traits<defaulttype::Mat<4,4,float > >::Name() { return "4f"; }
-template<> extern inline const char* matrix_bloc_traits<defaulttype::Mat<4,4,double> >::Name() { return "4d"; }
-template<> extern inline const char* matrix_bloc_traits<defaulttype::Mat<6,6,float > >::Name() { return "6f"; }
-template<> extern inline const char* matrix_bloc_traits<defaulttype::Mat<6,6,double> >::Name() { return "6d"; }
-template<> extern inline const char* matrix_bloc_traits<defaulttype::Mat<8,8,float > >::Name() { return "8f"; }
-template<> extern inline const char* matrix_bloc_traits<defaulttype::Mat<8,8,double> >::Name() { return "8d"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<1,1,float > >::Name() { return "1f"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<1,1,double> >::Name() { return "1d"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<2,2,float > >::Name() { return "2f"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<2,2,double> >::Name() { return "2d"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<3,3,float > >::Name() { return "3f"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<3,3,double> >::Name() { return "3d"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<4,4,float > >::Name() { return "4f"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<4,4,double> >::Name() { return "4d"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<6,6,float > >::Name() { return "6f"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<6,6,double> >::Name() { return "6d"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<8,8,float > >::Name() { return "8f"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<8,8,double> >::Name() { return "8d"; }
 
 template <>
 class matrix_bloc_traits < float >
