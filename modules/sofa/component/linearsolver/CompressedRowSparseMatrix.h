@@ -554,7 +554,7 @@ public:
             return 0.0;
         }
 #endif
-        int bi, bj; split_row_index(i, bi); split_col_index(j, bj);
+        int bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
         ((Matrix*)this)->compress();
         return traits::v(bloc(i, j), bi, bj);
     }
@@ -609,7 +609,7 @@ public:
             return;
         }
 #endif
-        int bi, bj; split_row_index(i, bi); split_col_index(j, bj);
+        int bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
         compress();
         Bloc* b = wbloc(i,j,false);
         if (b)
@@ -628,7 +628,7 @@ public:
             return;
         }
 #endif
-        int bi; split_row_index(i, bi);
+        int bi=0; split_row_index(i, bi);
         compress();
         /*
         for (int j=0; j<nBlocCol; ++j)
@@ -666,7 +666,7 @@ public:
             return;
         }
 #endif
-        int bj; split_col_index(j, bj);
+        int bj=0; split_col_index(j, bj);
         compress();
         for (int i=0; i<nBlocRow; ++i)
         {
@@ -699,7 +699,7 @@ public:
         else
         {
             // Here we assume the matrix is symmetric
-            int bi; split_row_index(i, bi);
+            int bi=0; split_row_index(i, bi);
             compress();
             int rowId = i * rowIndex.size() / nBlocRow;
             if (sortedFind(rowIndex, i, rowId))
