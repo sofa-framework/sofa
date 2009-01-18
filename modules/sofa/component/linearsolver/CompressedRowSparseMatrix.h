@@ -245,7 +245,7 @@ public:
     static bool sortedFind(const VecIndex& v, Range in, Index val, Index& result)
     {
         if (in.empty()) return false;
-        Index candidate = (result >= in.begin() && result < in.end()) ? result : (in.begin() + in.end()) >> 1;
+        Index candidate = (result >= in.begin() && result < in.end()) ? result : ((in.begin() + in.end()) >> 1);
         for(;;)
         {
             Index i = v[candidate];
@@ -421,7 +421,7 @@ public:
                 rowIndex.push_back(inRowIndex);
                 rowBegin.push_back(outValId);
                 Range inRow( oldRowBegin[inRowId], oldRowBegin[inRowId+1] );
-                Index inColIndex = !inRow.empty() ? oldColsIndex[inRow.begin()] : EndCol;
+                Index inColIndex = (!inRow.empty()) ? oldColsIndex[inRow.begin()] : EndCol;
                 Index bColIndex = (itbtemp != endbtemp && itbtemp->l == inRowIndex) ? itbtemp->c : EndCol;
                 while (inColIndex < EndCol || bColIndex < EndCol)
                 {
@@ -434,7 +434,7 @@ public:
                             ++outValId;
                         }
                         ++inRow;
-                        inColIndex = !inRow.empty() ? oldColsIndex[inRow.begin()] : EndCol;
+                        inColIndex = (!inRow.empty()) ? oldColsIndex[inRow.begin()] : EndCol;
                     }
                     else if (inColIndex > bColIndex)
                     {
@@ -447,7 +447,7 @@ public:
                             value += itbtemp->value;
                             ++itbtemp;
                         }
-                        bColIndex = (itbtemp != endbtemp && itbtemp->l == inRowIndex) ? itbtemp->c : EndCol;
+                        bColIndex = (itbtemp != endbtemp && itbtemp->l == bRowIndex) ? itbtemp->c : EndCol;
                         ++outValId;
                     }
                     else
@@ -455,25 +455,26 @@ public:
                         colsIndex.push_back(inColIndex);
                         colsValue.push_back(oldColsValue[inRow.begin()]);
                         ++inRow;
-                        inColIndex = !inRow.empty() ? oldColsIndex[inRow.begin()] : EndCol;
+                        inColIndex = (!inRow.empty()) ? oldColsIndex[inRow.begin()] : EndCol;
                         Bloc& value = colsValue.back();
                         while (itbtemp != endbtemp && itbtemp->c == bColIndex && itbtemp->l == bRowIndex)
                         {
                             value += itbtemp->value;
                             ++itbtemp;
                         }
-                        bColIndex = (itbtemp != endbtemp && itbtemp->l == inRowIndex) ? itbtemp->c : EndCol;
+                        bColIndex = (itbtemp != endbtemp && itbtemp->l == bRowIndex) ? itbtemp->c : EndCol;
                         ++outValId;
                     }
                 }
+                ++inRowId;
                 inRowIndex = (inRowId < oldNRow ) ? oldRowIndex[inRowId] : EndRow;
                 bRowIndex = (itbtemp != endbtemp) ? itbtemp->l : EndRow;
             }
         }
         rowBegin.push_back(outValId);
-#ifdef SPARSEMATRIX_VERBOSE
+//#ifdef SPARSEMATRIX_VERBOSE
         std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): compressed " << oldColsIndex.size()<<" old blocs and " << btemp.size() << " temp blocs into " << rowIndex.size() << " lines and " << colsIndex.size() << " blocs."<<std::endl;
-#endif
+//#endif
         btemp.clear();
         compressed = true;
     }
@@ -485,7 +486,7 @@ public:
         if (sortedFind(rowIndex, i, rowId))
         {
             Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
-            Index colId = rowRange.begin() + j / rowRange.size();
+            Index colId = rowRange.begin() + j * rowRange.size() / nBlocCol;
             if (sortedFind(colsIndex, rowRange, j, colId))
             {
                 return colsValue[colId];
@@ -500,7 +501,7 @@ public:
         if (sortedFind(rowIndex, i, rowId))
         {
             Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
-            int colId = rowRange.begin() + j / rowRange.size();
+            int colId = rowRange.begin() + j * rowRange.size() / nBlocCol;
             if (sortedFind(colsIndex, rowRange, j, colId))
             {
 #ifdef SPARSEMATRIX_VERBOSE
