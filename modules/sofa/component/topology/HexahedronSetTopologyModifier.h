@@ -97,7 +97,7 @@ public:
     *
     * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
     */
-    void removeHexahedraWarning( sofa::helper::vector<unsigned int> &hexahedra);
+    virtual void removeHexahedraWarning( sofa::helper::vector<unsigned int> &hexahedra);
 
     /** \brief Remove a subset of hexahedra
     *
