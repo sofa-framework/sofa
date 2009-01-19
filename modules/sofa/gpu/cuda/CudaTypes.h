@@ -137,7 +137,7 @@ public:
         if ( s <= allocSize ) return;
         allocSize = ( s>2*allocSize ) ?s:2*allocSize;
         // always allocate multiples of BSIZE values
-        allocSize = ( allocSize+WARP_SIZE-1 ) &-WARP_SIZE;
+        allocSize = ( allocSize+WARP_SIZE-1 ) & (size_type)(-(long)WARP_SIZE);
 
         if (bufferObject)
         {

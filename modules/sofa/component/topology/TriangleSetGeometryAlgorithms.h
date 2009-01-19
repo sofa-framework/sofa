@@ -221,11 +221,11 @@ bool is_point_in_halfplane(const sofa::defaulttype::Vec<3,Real>& p,
         const sofa::defaulttype::Vec<3,Real>& c,
         unsigned int ind_p0, unsigned int ind_p1, unsigned int ind_p2);
 
-void snapping_test_triangle(double epsilon,
+void SOFA_COMPONENT_TOPOLOGY_API snapping_test_triangle(double epsilon,
         double alpha0, double alpha1, double alpha2,
         bool& is_snap_0, bool& is_snap_1, bool& is_snap_2);
 
-void snapping_test_edge(double epsilon,
+void SOFA_COMPONENT_TOPOLOGY_API snapping_test_edge(double epsilon,
         double alpha0, double alpha1,
         bool& is_snap_0, bool& is_snap_1);
 

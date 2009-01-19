@@ -26,6 +26,16 @@
 #define CUDAMATH_H
 
 #include <cuda_runtime.h>
+#include <cuda.h>
+
+#if defined(__cplusplus) && CUDA_VERSION < 2000
+namespace sofa
+{
+namespace gpu
+{
+namespace cuda
+{
+#endif
 
 template<class real>
 class CudaVec2;
@@ -363,5 +373,11 @@ public:
         *data=z.z; data+=blockDim.x;
     }
 };
+
+#if defined(__cplusplus) && CUDA_VERSION < 2000
+} // namespace cuda
+} // namespace gpu
+} // namespace sofa
+#endif
 
 #endif

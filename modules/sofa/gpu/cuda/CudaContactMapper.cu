@@ -26,7 +26,7 @@
 #include "CudaMath.h"
 #include "cuda.h"
 
-#if defined(__cplusplus) && CUDA_VERSION != 2000
+#if defined(__cplusplus) && CUDA_VERSION < 2000
 namespace sofa
 {
 namespace gpu
@@ -116,7 +116,7 @@ void SubsetContactMapperCuda3f_setPoints1(unsigned int size, unsigned int nbTest
 
 }
 
-#if defined(__cplusplus) && CUDA_VERSION != 2000
+#if defined(__cplusplus) && CUDA_VERSION < 2000
 } // namespace cuda
 } // namespace gpu
 } // namespace sofa

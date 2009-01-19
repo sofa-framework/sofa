@@ -29,7 +29,7 @@
 
 //#define umul24(x,y) ((x)*(y))
 
-#if defined(__cplusplus) && CUDA_VERSION != 2000
+#if defined(__cplusplus) && CUDA_VERSION < 2000
 namespace sofa
 {
 namespace gpu
@@ -504,7 +504,7 @@ void CudaVisualModelCuda3d1_calcVNormals(unsigned int nbElem, unsigned int nbVer
 #endif // SOFA_GPU_CUDA_DOUBLE
 #endif // SOFA_DEV
 
-#if defined(__cplusplus) && CUDA_VERSION != 2000
+#if defined(__cplusplus) && CUDA_VERSION < 2000
 } // namespace cuda
 } // namespace gpu
 } // namespace sofa

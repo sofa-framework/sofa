@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include "cuda.h"
 
-#if defined(__cplusplus) && CUDA_VERSION != 2000
+#if defined(__cplusplus) && CUDA_VERSION < 2000
 namespace sofa
 {
 namespace gpu
@@ -190,7 +190,7 @@ void CudaCollisionDetection_runTests(unsigned int nbTests, unsigned int maxPoint
 
 }
 
-#if defined(__cplusplus) && CUDA_VERSION != 2000
+#if defined(__cplusplus) && CUDA_VERSION < 2000
 } // namespace cuda
 } // namespace gpu
 } // namespace sofa

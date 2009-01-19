@@ -457,7 +457,7 @@ void CudaTetrahedronTLEDForceField::ComputeDhDxTetra(const Element& e, const Vec
             DhDx[j][k] = 0;
             for (int m = 0; m < 3; m++)
             {
-                DhDx[j][k] += DhDr[j][m]*invJ[k][m];
+                DhDx[j][k] += (float)(DhDr[j][m]*invJ[k][m]);
             }
         }
     }
