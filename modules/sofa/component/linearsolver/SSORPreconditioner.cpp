@@ -202,6 +202,105 @@ void SSORPreconditioner<CompressedRowSparseMatrix<double>, FullVector<double> >:
         // we can reuse z because all values that we read are updated
     }
 }
+
+#define B 3
+#define Real double
+#define typename
+//template<int B, class Real>
+template<>
+void SSORPreconditioner< CompressedRowSparseMatrix< defaulttype::Mat<B,B,Real> >, FullVector<Real> >::solve(Matrix& M, Vector& z, Vector& r)
+{
+    //int n = M.rowSize();
+    int nb = M.rowBSize();
+    //const Matrix::VecIndex& rowIndex = M.getRowIndex();
+    const typename Matrix::VecIndex& colsIndex = M.getColsIndex();
+    const typename Matrix::VecBloc& colsValue = M.getColsValue();
+    //Solve (D+U) * t = r;
+    for (int jb=nb-1; jb>=0; jb--)
+    {
+        int j0 = jb*B;
+        defaulttype::Vec<B,Real> temp;
+        typename Matrix::Range rowRange = M.getRowRange(jb);
+        int xi = rowRange.begin();
+        while (xi < rowRange.end() && colsIndex[xi] < jb) ++xi;
+        // bloc on the diagonal
+        const typename Matrix::Bloc& bdiag = colsValue[xi];
+        // upper triangle matrix
+        for (++xi; xi < rowRange.end(); ++xi)
+        {
+            int i0 = colsIndex[xi]*B;
+            const typename Matrix::Bloc& b = colsValue[xi];
+            for (int j1=0; j1<B; ++j1)
+            {
+                //int j = j0+j1;
+                for (int i1=0; i1<B; ++i1)
+                {
+                    int i = i0+i1;
+                    temp[j1] += z[i] * b[j1][i1];
+                }
+            }
+        }
+        // then the diagonal
+        {
+            const typename Matrix::Bloc& b = bdiag;
+            for (int j1=B-1; j1>=0; j1--)
+            {
+                int j = j0+j1;
+                for (int i1=j1+1; i1<B; ++i1)
+                {
+                    int i = j0+i1;
+                    temp[j1]+= z[i] * b[j1][i1];
+                }
+                z[j] = (r[j] - temp[j1]) * inv_diag[j];
+            }
+        }
+    }
+
+    //Solve (I + D^-1 * L) * z = t
+    for (int jb=0; jb<nb; jb++)
+    {
+        int j0 = jb*B;
+        defaulttype::Vec<B,Real> temp;
+        typename Matrix::Range rowRange = M.getRowRange(jb);
+        int xi = rowRange.begin();
+        // lower triangle matrix
+        for (; xi < rowRange.end() && colsIndex[xi] < jb; ++xi)
+        {
+            int i0 = colsIndex[xi]*B;
+            const typename Matrix::Bloc& b = colsValue[xi];
+            for (int j1=0; j1<B; ++j1)
+            {
+                //int j = j0+j1;
+                for (int i1=0; i1<B; ++i1)
+                {
+                    int i = i0+i1;
+                    temp[j1] += z[i] * b[j1][i1];
+                }
+            }
+        }
+        // then the diagonal
+        {
+            const typename Matrix::Bloc& b = colsValue[xi];
+            for (int j1=0; j1<B; ++j1)
+            {
+                int j = j0+j1;
+                for (int i1=0; i1<j1; ++i1)
+                {
+                    int i = j0+i1;
+                    temp[j1] += z[i] * b[j1][i1];
+                }
+                // we can reuse z because all values that we read are updated
+                z[j] -= temp[j1] * inv_diag[j];
+            }
+        }
+    }
+}
+
+#undef B
+#undef Real
+#undef typename
+
+
 template<class TMatrix, class TVector>
 void SSORPreconditioner<TMatrix,TVector>::invert(Matrix& M)
 {
@@ -216,6 +315,7 @@ int SSORPreconditionerClass = core::RegisterObject("Linear system solver using t
 //.add< SSORPreconditioner<GraphScatteredMatrix,GraphScatteredVector> >(true)
         .add< SSORPreconditioner< SparseMatrix<double>, FullVector<double> > >(true)
         .add< SSORPreconditioner< CompressedRowSparseMatrix<double>, FullVector<double> > >()
+        .add< SSORPreconditioner< CompressedRowSparseMatrix< defaulttype::Mat<3,3,double> >, FullVector<double> > >()
 //.add< SSORPreconditioner<NewMatBandMatrix,NewMatVector> >(true)
 //.add< SSORPreconditioner<NewMatMatrix,NewMatVector> >()
         .add< SSORPreconditioner<NewMatSymmetricMatrix,NewMatVector> >()
