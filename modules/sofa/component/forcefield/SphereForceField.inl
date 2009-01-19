@@ -107,7 +107,7 @@ void SphereForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * m
     {
         const Contact& c = (this->contacts.getValue())[i];
         unsigned int p = c.index;
-        assert((unsigned)c.index<dx1.size());
+//		assert((unsigned)c.index<dx1.size()); // assert doesn't compile !
         for (int l=0; l<Deriv::static_size; ++l)
             for (int k=0; k<Deriv::static_size; ++k)
             {
