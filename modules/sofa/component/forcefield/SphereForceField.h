@@ -149,9 +149,9 @@ extern template class SOFA_COMPONENT_FORCEFIELD_API SphereForceField<defaulttype
 extern template class SOFA_COMPONENT_FORCEFIELD_API SphereForceField<defaulttype::Vec1dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<defaulttype::Vec3fTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<defaulttype::Vec2fTypes>;
-extern template class SOFA_COMPONENT_FORCEFIELD_API PlaneForceField<defaulttype::Vec1fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API SphereForceField<defaulttype::Vec3fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API SphereForceField<defaulttype::Vec2fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API SphereForceField<defaulttype::Vec1fTypes>;
 #endif
 #endif
 

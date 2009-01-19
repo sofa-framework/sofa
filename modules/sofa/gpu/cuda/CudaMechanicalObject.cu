@@ -27,7 +27,7 @@
 #include "mycuda.h"
 #include "cuda.h"
 
-#if defined(__cplusplus) && CUDA_VERSION != 2000
+#if defined(__cplusplus) && CUDA_VERSION < 2000
 namespace sofa
 {
 namespace gpu
@@ -1469,7 +1469,7 @@ void MechanicalObjectCudaVec3d1_vDot(unsigned int size, double* res, const void*
 #endif // SOFA_GPU_CUDA_DOUBLE
 #endif // SOFA_DEV
 
-#if defined(__cplusplus) && CUDA_VERSION != 2000
+#if defined(__cplusplus) && CUDA_VERSION < 2000
 } // namespace cuda
 } // namespace gpu
 } // namespace sofa

@@ -27,7 +27,7 @@
 #include "cuda.h"
 #include "CudaTexture.h"
 
-#if defined(__cplusplus) && CUDA_VERSION != 2000
+#if defined(__cplusplus) && CUDA_VERSION < 2000
 namespace sofa
 {
 namespace gpu
@@ -1451,7 +1451,7 @@ void StiffSpringForceFieldCuda3d1_addExternalDForce(unsigned int size, unsigned 
 #endif // SOFA_GPU_CUDA_DOUBLE
 #endif // SOFA_DEV
 
-#if defined(__cplusplus) && CUDA_VERSION != 2000
+#if defined(__cplusplus) && CUDA_VERSION < 2000
 } // namespace cuda
 } // namespace gpu
 } // namespace sofa
