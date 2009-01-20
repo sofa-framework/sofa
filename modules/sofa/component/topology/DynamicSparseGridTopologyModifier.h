@@ -67,6 +67,14 @@ public:
     */
     virtual void removeHexahedraProcess ( const sofa::helper::vector<unsigned int>&indices, const bool removeIsolatedItems = false );
 
+    /** \brief Sends a message to warn that some hexahedra are about to be deleted.
+    *
+    * \sa removeHexahedraProcess
+    *
+    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
+    */
+    virtual void removeHexahedraWarning ( sofa::helper::vector<unsigned int> &hexahedra );
+
 private:
     DynamicSparseGridTopologyContainer* m_container;
 };
