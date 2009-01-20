@@ -563,27 +563,17 @@ int MarchingCubeUtility::polygonise ( const GridCell &grid, int& cubeConf, float
 
 
 void MarchingCubeUtility::propagateFrom ( const Vec3i coord,
-        const unsigned char *_data,
+        const vector<float>& data,
         const float isolevel,
         sofa::helper::vector< PointID >& mesh,
         sofa::helper::vector< Vector3 >& vertices,
+        std::set<Vec3i>& generatedCubes,
         helper::vector< helper::vector<unsigned int> >* triangleIndexInRegularGrid
                                         ) const
 {
-    vector< float > data ( dataResolution[0]*dataResolution[1]*dataResolution[2] );
-    if ( data.size() == 0 )
-        return;
-
-    for ( unsigned int i=0; i<data.size(); ++i )
-        data[i] = ( float ) _data[i];
-
-    if ( convolutionSize != 0 )
-        smoothData ( &data[0] );
-
     std::map< Vector3, PointID> map_vertices;
     for( unsigned int i = 0; i < vertices.size(); i++)
         map_vertices.insert( std::make_pair( vertices[i], i));
-    std::set<Vec3i> generatedCubes;
 
     Vec3i bboxMin = Vec3i( bbox.min / cubeStep);
     Vec3i bboxMax = Vec3i( bbox.max / cubeStep);
@@ -607,9 +597,11 @@ void MarchingCubeUtility::propagateFrom ( const Vec3i coord,
         if( generatedCubes.find( cubeCoord) != generatedCubes.end()) continue;
 
         // If we touch the border, STOP propagating !
+        bool onTheBorder = false;
         for( vector<set<Vec3i> >::const_iterator itBorders = borders.begin(); itBorders != borders.end(); itBorders++)
             if( itBorders->find( cubeCoord) != itBorders->end())
-                continue;
+                onTheBorder = true;
+        if( onTheBorder) continue;
 
         GridCell cell;
         initCell( cell, cubeCoord, data, gridStep, dataGridStep);
@@ -640,22 +632,33 @@ void MarchingCubeUtility::run ( const unsigned char *_data, const sofa::helper::
         helper::vector< helper::vector<unsigned int> >*triangleIndexInRegularGrid ) const
 {
     Vec3i gridSize = Vec3i ( dataResolution[0]/cubeStep, dataResolution[1]/cubeStep, dataResolution[2]/cubeStep );
-    unsigned int originalMeshSize = mesh.size();
-    unsigned int originalVerticesSize = vertices.size();
+    std::set<Vec3i> generatedCubes;
+
+    vector< float > data ( dataResolution[0]*dataResolution[1]*dataResolution[2] );
+    if ( data.size() == 0 )
+        return;
+
+    for ( unsigned int i=0; i<data.size(); ++i )
+        data[i] = ( float ) _data[i];
+
+    if ( convolutionSize != 0 )
+        smoothData ( &data[0] );
 
     for( sofa::helper::vector< Vec3i >::const_iterator it = seeds.begin(); it != seeds.end(); it++)
     {
         sofa::helper::vector< PointID > tmpMesh;
+        unsigned int originalMeshSize = mesh.size();
         for(unsigned int i = 0; i < originalMeshSize; i++)
             tmpMesh.push_back( mesh[i]);
         sofa::helper::vector< Vector3> tmpVertices;
+        unsigned int originalVerticesSize = vertices.size();
         for(unsigned int i = 0; i < originalVerticesSize; i++)
             tmpVertices.push_back( vertices[i]);
 
         Vec3i voxel = *it;
 
         if( (tmpMesh.size() == originalMeshSize) && (voxel[0] >= 0) && (voxel[1] >= 0) && (voxel[2] >= 0))
-            propagateFrom( voxel, _data, isolevel, tmpMesh, tmpVertices, triangleIndexInRegularGrid);
+            propagateFrom( voxel, data, isolevel, tmpMesh, tmpVertices, generatedCubes, triangleIndexInRegularGrid);
 
         for( sofa::helper::vector< PointID >::iterator it = tmpMesh.begin()+originalMeshSize; it != tmpMesh.end(); it++)
             mesh.push_back( *it);
@@ -815,14 +818,16 @@ void MarchingCubeUtility::findSeeds( vector<Vec3i>& seeds, const unsigned char *
 
 
 
-void MarchingCubeUtility::findSeedsFromRealCoords( vector<Vec3i>& mCubeCoords, const vector<Vec3i>& realCoords) const
+void MarchingCubeUtility::findSeedsFromRealCoords( vector<Vec3i>& mCubeCoords, const vector<Vector3>& realCoords) const
 {
+    mCubeCoords.clear();
     Vector3 gridGraphicSize = dataResolution.linearProduct(dataVoxelSize);
     gridGraphicSize = Vector3(1.0 / gridGraphicSize[0], 1.0 / gridGraphicSize[1], 1.0 / gridGraphicSize[2]);
     Vector3 gridSize = Vector3 ( dataResolution /cubeStep);
-    for( vector<Vec3i>::const_iterator it = realCoords.begin(); it != realCoords.end(); it++)
+
+    for( vector<Vector3>::const_iterator it = realCoords.begin(); it != realCoords.end(); it++)
     {
-        Vector3 seed = (((*it) - (dataVoxelSize/2.0)).linearProduct( gridGraphicSize)).linearProduct( gridSize);
+        Vec3i seed = (((*it) - (dataVoxelSize/2.0)).linearProduct( gridGraphicSize)).linearProduct( gridSize);
         mCubeCoords.push_back( seed);
         assert( seed[0] >= 0);
         assert( seed[1] >= 0);

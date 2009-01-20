@@ -95,13 +95,6 @@ public:
     void setBordersFromRealCoords( const vector<set<Vector3> >& borders);
 
 
-    /// Propagate the triangulation surface creation from a cell.
-    void propagateFrom ( const Vec3i coord,
-            const unsigned char *_data, const float isolevel,
-            sofa::helper::vector< PointID >& triangles,
-            sofa::helper::vector< Vector3 >& vertices,
-            helper::vector< helper::vector<unsigned int /*regular grid space index*/> >* triangleIndexInRegularGrid = NULL ) const;
-
     /// given a set of data (size of the data and size of the marching cube beeing defined previously),
     /// we construct the surface.
     /// mesh is a vector containing the triangles defined as a sequence of three indices
@@ -109,16 +102,15 @@ public:
     void run ( const unsigned char *data, const float isolevel,
             sofa::helper::vector< PointID > &triangles,
             sofa::helper::vector< Vector3>  &vertices,
-            helper::vector< helper::vector<unsigned int /*regular grid space index*/> > *triangleIndexInRegularGrid = NULL ) const;
+            helper::vector< helper::vector<unsigned int> > *triangleIndexInRegularGrid = NULL ) const;
 
-//TODO// c null ces graines, ca n'a aucun interet pratique. Virer pour une methode qui propage a partir d'un maillage existant par exemple... => se servir des bordures pour ca et virer les graines ! :)
     /// Same as the previous function but the surfaces are constructed by propagating from seeds.
     /// Faster than previous but it need the precomputation of the seeds.
     void run ( const unsigned char *data, const vector<Vec3i>& seeds,
             const float isolevel,
             sofa::helper::vector< PointID > &triangles,
             sofa::helper::vector< Vector3>  &vertices,
-            helper::vector< helper::vector<unsigned int /*regular grid space index*/> > *triangleIndexInRegularGrid = NULL ) const;
+            helper::vector< helper::vector<unsigned int> > *triangleIndexInRegularGrid = NULL ) const;
 
     /// given a set of data (size of the data and size of the marching cube beeing defined previously),
     /// we construct a Sofa mesh.
@@ -128,7 +120,7 @@ public:
     void findSeeds( vector<Vec3i>& seeds, const unsigned char *_data);
 
     /// Given coords in the scene, find seeds coords.
-    void findSeedsFromRealCoords( vector<Vec3i>& mCubeCoords, const vector<Vec3i>& realCoords) const;
+    void findSeedsFromRealCoords( vector<Vec3i>& mCubeCoords, const vector<Vector3>& realCoords) const;
 private:
 
     struct GridCell
@@ -172,6 +164,14 @@ private:
             float *output_data ) const;
 
     void smoothData ( float *data ) const;
+
+    /// Propagate the triangulation surface creation from a cell.
+    void propagateFrom ( const Vec3i coord,
+            const vector<float>& data, const float isolevel,
+            sofa::helper::vector< PointID >& triangles,
+            sofa::helper::vector< Vector3 >& vertices,
+            std::set<Vec3i>& generatedCubes,
+            helper::vector< helper::vector<unsigned int> >* triangleIndexInRegularGrid = NULL ) const;
 
 private:
     unsigned int  cubeStep;
