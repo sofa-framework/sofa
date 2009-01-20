@@ -71,6 +71,8 @@ public:
 
     Coord computeTriangleCenter(const TriangleID i) const;
 
+    Coord computeRestTriangleCenter(const TriangleID i) const;
+
     void computeTriangleCircumcenterBaryCoefs(Vec<3,Real> &baryCoord, const TriangleID i) const;
 
     Coord computeTriangleCircumcenter(const TriangleID i) const;
