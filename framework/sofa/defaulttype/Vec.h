@@ -466,14 +466,14 @@ public:
     bool operator==(const Vec& b) const
     {
         for (int i=0; i<N; i++)
-            if ( fabs( this->elems[i] - b[i] ) > EQUALITY_THRESHOLD ) return false;
+            if ( fabs( (float)(this->elems[i] - b[i]) ) > EQUALITY_THRESHOLD ) return false;
         return true;
     }
 
     bool operator!=(const Vec& b) const
     {
         for (int i=0; i<N; i++)
-            if ( fabs( this->elems[i] - b[i] ) > EQUALITY_THRESHOLD ) return true;
+            if ( fabs( (float)(this->elems[i] - b[i]) ) > EQUALITY_THRESHOLD ) return true;
         return false;
     }
 
