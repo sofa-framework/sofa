@@ -29,7 +29,9 @@ const std::string PostProcessManager::DEPTH_OF_FIELD_VERTEX_SHADER = "shaders/de
 const std::string PostProcessManager::DEPTH_OF_FIELD_FRAGMENT_SHADER = "shaders/depthOfField.frag";
 
 PostProcessManager::PostProcessManager()
-    :postProcessEnabled (true)
+    :zNear(initData(&zNear, (double) 1.0, "zNear", "Set zNear distance (for Depth Buffer)"))
+    ,zFar(initData(&zFar, (double) 100.0, "zFar", "Set zFar distance (for Depth Buffer)"))
+    ,postProcessEnabled (true)
 {
     // TODO Auto-generated constructor stub
 
@@ -66,6 +68,7 @@ void PostProcessManager::initVisual()
 
         fbo.init(windowWidth, windowHeight);
 
+
         /*dofShader = new OglShader();
         dofShader->vertFilename.setValue(vertFilename.getValue());
         dofShader->fragFilename.setValue(fragFilename.getValue());
@@ -83,13 +86,14 @@ void PostProcessManager::preDrawScene(helper::gl::VisualParameters* vp)
 {
     if (postProcessEnabled)
     {
+        fbo.setSize(vp->viewport[2], vp->viewport[3]);
         fbo.start();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
         glMatrixMode(GL_PROJECTION);
         glPushMatrix();
         glLoadIdentity();
-        gluPerspective(60.0,1.0, 1, 5000);
+        gluPerspective(60.0,1.0, zNear.getValue(), zFar.getValue());
 
         glMatrixMode(GL_MODELVIEW);
         simulation::VisualDrawVisitor vdv( core::VisualModel::Std );
@@ -99,13 +103,16 @@ void PostProcessManager::preDrawScene(helper::gl::VisualParameters* vp)
 
         glMatrixMode(GL_PROJECTION);
         glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
+
+        gluPerspective(60.0,1.0, vp->zNear, vp->zFar);
+        glViewport(0,0,vp->viewport[2],vp->viewport[3]);
 
         fbo.stop();
-        glViewport(0,0,vp->viewport[2],vp->viewport[3]);
     }
 }
 
-bool PostProcessManager::drawScene(helper::gl::VisualParameters* /*vp*/)
+bool PostProcessManager::drawScene(helper::gl::VisualParameters* vp)
 {
     if (postProcessEnabled)
     {
@@ -139,10 +146,13 @@ bool PostProcessManager::drawScene(helper::gl::VisualParameters* /*vp*/)
         glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_LUMINANCE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE);
 
+        float pixelSize[2];
+        pixelSize[0] = 1.0/vp->viewport[2];
+        pixelSize[1] = 1.0/vp->viewport[3];
 
-        dofShader->setInt(0, "colorTexture", 0);
-        dofShader->setInt(0, "depthTexture", 1);
-
+        //dofShader->setInt(0, "colorTexture", 0);
+        //dofShader->setInt(0, "depthTexture", 1);
+        dofShader->setFloat2(0, "pixelSize", pixelSize[0], pixelSize[1]);
 
         dofShader->start();
 
