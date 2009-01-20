@@ -155,14 +155,14 @@ CudaDistanceGrid* CudaDistanceGrid::load(const std::string& filename, double sca
         nx = mesh.distmap->nx;
         ny = mesh.distmap->ny;
         nz = mesh.distmap->nz;
-        ftl::Vec3f fpmin = ftl::transform(mesh.distmap->mat,ftl::Vec3f(0,0,0))*scale;
-        ftl::Vec3f fpmax = ftl::transform(mesh.distmap->mat,ftl::Vec3f(nx-1,ny-1,nz-1))*scale;
+        ftl::Vec3f fpmin = ftl::transform(mesh.distmap->mat,ftl::Vec3f(0,0,0))*(float)scale;
+        ftl::Vec3f fpmax = ftl::transform(mesh.distmap->mat,ftl::Vec3f((float)(nx-1),(float)(ny-1),(float)(nz-1)))*(float)scale;
         pmin = Coord(fpmin.ptr());
         pmax = Coord(fpmax.ptr());
         std::cout << "Copying "<<nx<<"x"<<ny<<"x"<<nz<<" distance grid in <"<<pmin<<">-<"<<pmax<<">"<<std::endl;
         CudaDistanceGrid* grid = new CudaDistanceGrid(nx, ny, nz, pmin, pmax);
         for (int i=0; i< grid->nxnynz; i++)
-            grid->dists[i] = mesh.distmap->data[i]*scale;
+            grid->dists[i] = mesh.distmap->data[i]*(float)scale;
 
         if (mesh.getAttrib(flowvr::render::Mesh::MESH_POINTS_GROUP))
         {
