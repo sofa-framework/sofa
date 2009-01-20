@@ -59,6 +59,15 @@ typename DataTypes::Coord TriangleSetGeometryAlgorithms<DataTypes>::computeTrian
 }
 
 template<class DataTypes>
+typename DataTypes::Coord TriangleSetGeometryAlgorithms<DataTypes>::computeRestTriangleCenter(const TriangleID i) const
+{
+    const Triangle &t = this->m_topology->getTriangle(i);
+    const typename DataTypes::VecCoord& p = *(this->object->getX0());
+
+    return (p[t[0]] + p[t[1]] + p[t[2]]) / (Real) 3.0;
+}
+
+template<class DataTypes>
 void TriangleSetGeometryAlgorithms<DataTypes>::computeTriangleCircumcenterBaryCoefs(Vec<3,Real> &baryCoord, const TriangleID i) const
 {
     const Triangle &t = this->m_topology->getTriangle(i);
