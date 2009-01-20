@@ -42,10 +42,11 @@
 	<Object type="OglShadowShader"/>-->
 	
 	<Object type="OglShader" name="dof" passive="true" vertFilename="shaders/depthOfField.vert" fragFilename="shaders/depthOfField.frag"/>
-	<Object type="OglFloatVariable" id="blurIntensity" value="0.3" />
+	<Object type="OglFloatVariable" id="blurIntensity" value="0.2" />
 	<Object type="OglFloatVariable" id="focusDistance" value="0.9" />
 	<Object type="OglFloatVariable" id="focusLength" value="0.05" />
-	<Object type="PostProcessManager"/>
+	<Object type="OglIntVariable" id="showDepthMap" value="0" />
+	<Object type="PostProcessManager" zFar="1000"/>
 
 	
 	

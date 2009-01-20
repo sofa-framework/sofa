@@ -25,6 +25,7 @@ class SOFA_COMPONENT_VISUALMODEL_API PostProcessManager : public core::VisualMan
 private:
     static const std::string DEPTH_OF_FIELD_VERTEX_SHADER;
     static const std::string DEPTH_OF_FIELD_FRAGMENT_SHADER;
+    Data<double> zNear, zFar;
     helper::gl::FrameBufferObject fbo;
     OglShader* dofShader;
     bool postProcessEnabled;

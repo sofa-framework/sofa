@@ -35,8 +35,16 @@ public:
     void start();
     void stop();
 
+    void setSize(unsigned int width, unsigned height);
+
     GLuint getDepthTexture();
     GLuint getColorTexture();
+
+
+    void createDepthBuffer();
+    void createColorBuffer();
+    void initDepthBuffer();
+    void initColorBuffer();
 
 };
 
