@@ -46,7 +46,7 @@ void DynamicSparseGridTopologyModifier::init()
 {
     HexahedronSetTopologyModifier::init();
     this->getContext()->get ( m_container );
-    if( ! m_container)
+    if ( ! m_container )
     {
         std::cerr << "ERROR in DynamicSparseGridTopologyModifier::init(): DynamicSparseGridTopologyContainer was not found !" << std::endl;
     }
@@ -81,13 +81,37 @@ void DynamicSparseGridTopologyModifier::addHexahedraProcess ( const sofa::helper
 void DynamicSparseGridTopologyModifier::removeHexahedraProcess ( const sofa::helper::vector<unsigned int> &indices, const bool removeIsolatedItems )
 {
     HexahedronSetTopologyModifier::removeHexahedraProcess ( indices, removeIsolatedItems );
+
     /*
             //TODO// Update the map idInRegularGrid2Hexa.
             for ( unsigned int i = 0; i < indices.size(); i++ )  // For each element
             {
+    //TODO// verifier s'il y a pas un erase( iterator = find()) pour eviter les surprises.
               m_container->idInRegularGrid2Hexa.erase( indices[i]);
             }
     */
+}
+
+void DynamicSparseGridTopologyModifier::removeHexahedraWarning ( sofa::helper::vector<unsigned int> &hexahedra )
+{
+    HexahedronSetTopologyModifier::removeHexahedraWarning( hexahedra );
+
+    // Update the data
+    unsigned int nbElt = m_container->idxInRegularGrid.size();
+    sofa::helper::vector<unsigned int> vecHexaRemoved = hexahedra; // Is indices ever sorted?
+    sort ( vecHexaRemoved.begin(), vecHexaRemoved.end() );
+    for ( sofa::helper::vector<unsigned int>::const_reverse_iterator it ( vecHexaRemoved.end() ); it != sofa::helper::vector<unsigned int>::const_reverse_iterator ( vecHexaRemoved.begin() ); it++ )
+    {
+        nbElt--;
+
+        // Update the voxels value
+        unsigned int idHexa = m_container->idxInRegularGrid[*it];
+        m_container->valuesIndexedInRegularGrid[idHexa] = 0;
+
+        // Update the indices
+        m_container->idxInRegularGrid[*it] = m_container->idxInRegularGrid[ nbElt ];
+    }
+    m_container->idxInRegularGrid.resize ( nbElt );
 }
 
 } // namespace topology
