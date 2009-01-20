@@ -60,7 +60,7 @@ public:
     void setDataResolution ( const Vec3i   &resolution )
     {
         dataResolution = resolution;
-        setBoundingBox( Vec3i( 0, 0, 0), resolution);
+        setBoundingBox ( Vec3i ( 0, 0, 0 ), resolution );
     }
 
     void setDataVoxelSize ( const Vector3 &voxelSize )
@@ -83,16 +83,16 @@ public:
     {
         this->bbox.min = min;
         this->bbox.max = min + size;
-        assert( bbox.min[0] >= 0);
-        assert( bbox.min[1] >= 0);
-        assert( bbox.min[2] >= 0);
-        assert( bbox.max[0] <= dataResolution[0]);
-        assert( bbox.max[1] <= dataResolution[1]);
-        assert( bbox.max[2] <= dataResolution[2]);
+        assert ( bbox.min[0] >= 0 );
+        assert ( bbox.min[1] >= 0 );
+        assert ( bbox.min[2] >= 0 );
+        assert ( bbox.max[0] <= dataResolution[0] );
+        assert ( bbox.max[1] <= dataResolution[1] );
+        assert ( bbox.max[2] <= dataResolution[2] );
     }
 
     /// Set the border to localy remesh from real coords
-    void setBordersFromRealCoords( const vector<set<Vector3> >& borders);
+    void setBordersFromRealCoords ( const vector<set<Vector3> >& borders );
 
 
     /// given a set of data (size of the data and size of the marching cube beeing defined previously),
@@ -117,10 +117,10 @@ public:
     void run ( const unsigned char *data,  const float isolevel, sofa::helper::io::Mesh &m ) const;
 
     /// given a set of data, find seeds to run quickly.
-    void findSeeds( vector<Vec3i>& seeds, const unsigned char *_data);
+    void findSeeds ( vector<Vec3i>& seeds, const unsigned char *_data );
 
     /// Given coords in the scene, find seeds coords.
-    void findSeedsFromRealCoords( vector<Vec3i>& mCubeCoords, const vector<Vector3>& realCoords) const;
+    void findSeedsFromRealCoords ( vector<Vec3i>& mCubeCoords, const vector<Vector3>& realCoords ) const;
 private:
 
     struct GridCell
@@ -135,13 +135,13 @@ private:
         Vec3i max;
     };
 
-    inline void initCell( GridCell& cell, const Vec3i& coord, const vector< float >& data, const Vector3& gridStep, const Vec3i& dataGridStep) const;
+    inline void initCell ( GridCell& cell, const Vec3i& coord, const vector< float >& data, const Vector3& gridStep, const Vec3i& dataGridStep ) const;
 
     inline void vertexInterp ( Vector3 &p, const float isolevel, const Vector3 &p1, const Vector3 &p2, const float valp1, const float valp2 ) const ;
 
     inline bool testGrid ( const float v, const float isolevel ) const;
 
-    inline void updateTriangleInRegularGridVector ( helper::vector< helper::vector<unsigned int /*regular grid space index*/> >& triangleIndexInRegularGrid, const Vec3i& coord, const GridCell& cell, const Vec3i& gridSize, unsigned int nbTriangles) const;
+    inline void updateTriangleInRegularGridVector ( helper::vector< helper::vector<unsigned int /*regular grid space index*/> >& triangleIndexInRegularGrid, const Vec3i& coord, const GridCell& cell, const Vec3i& gridSize, unsigned int nbTriangles ) const;
 
     int polygonise ( const GridCell &grid, int& cubeConf, const float isolevel,
             sofa::helper::vector< PointID > &triangles,
@@ -154,7 +154,7 @@ private:
         return ( ( dataVoxels[index>>3]& ( ( int ) ( pow ( 2.0f, i ) ) ) ) >> i ) == 1;
     }
 
-    void findConnectedVoxels( set<Vec3i>& connectedVoxels, const Vec3i& from, const vector<float>& data);
+    void findConnectedVoxels ( set<Vec3i>& connectedVoxels, const Vec3i& from, const vector<float>& data );
 
     void createGaussianConvolutionKernel ( vector< float >  &convolutionKernel ) const;
 
