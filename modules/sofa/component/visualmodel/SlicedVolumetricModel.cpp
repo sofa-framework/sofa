@@ -81,7 +81,7 @@ SlicedVolumetricModel::SlicedVolumetricModel() //const std::string &name, std::s
 SlicedVolumetricModel::~SlicedVolumetricModel()
 {
     if(texture_data != NULL)
-        delete [] texture_data;
+        free(texture_data);
 }
 
 void SlicedVolumetricModel::init()
@@ -202,6 +202,7 @@ void SlicedVolumetricModel::drawTransparent()
 
 
         free(texture_data);
+        texture_data = NULL;
         return;
     }
 
@@ -297,7 +298,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 // 		for(Octree::CellPtrList::iterator itcell=_octree->getLeafLists(animal::octree::GEOMETRY).begin();   itcell!=_octree->getLeafLists(animal::octree::GEOMETRY).end();itcell++)
 
         // seulement les nouveaux cubes potentiellement intersectable, ie proches ou devant le plan
-        for(std::list<int>::iterator itcell=positiveCubes.begin(); itcell!=positiveCubes.end(); ++itcell)
+        for(std::list<int>::iterator itcell=positiveCubes.begin(); itcell!=positiveCubes.end(); /*++itcell*/)
         {
             const BaseMeshTopology::Hexa& cell = _topology->getHexa( *itcell );
 
@@ -310,6 +311,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
             {
                 if( dist>0 ) // du bon cote mais plus loin, on garde pour plus tard
                 {
+                    ++itcell;
                     continue;
                 }
                 else // pas du bon cote, on oublie le cube
@@ -377,7 +379,11 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 
 // 			cerr<<"intersections.size() : "<<intersections.size()<<endl;
 
-            if( intersections.size() <2 ) continue;
+            if( intersections.size() <2 )
+            {
+                ++itcell;
+                continue;
+            }
 // 			else cerr<<"pas assez inter"<<sendl;
 
 
@@ -507,6 +513,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 // 			}
 
 
+            ++itcell;
         }
 
         if(actualPlane>_nbPlanes.getValue()*.9 && !nbintersections)break;
