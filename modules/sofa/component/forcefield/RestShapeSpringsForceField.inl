@@ -45,7 +45,6 @@ namespace component
 namespace forcefield
 {
 
-
 template<class DataTypes>
 RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     : points(initData(&points, "points", "points where the forces are applied"))
@@ -63,106 +62,164 @@ void RestShapeSpringsForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord
     const VecIndex& indices = points.getValue();
     const VecReal& k = stiffness.getValue();
 
-
-    if (k.size()!= indices.size() )
+    if ( k.size()!= indices.size() )
     {
-        sout<<"WARNING : stiffness is not defined on each point, first stiffness is used"<<sendl;
+        sout << "WARNING : stiffness is not defined on each point, first stiffness is used" << sendl;
 
         for (unsigned int i=0; i<indices.size(); i++)
         {
-            Deriv dx = p[i] - p_0[i];
-            f[ indices[i] ] -=  dx * k[0] ;
+            const unsigned int index = indices[i];
+
+            Deriv dx = p[index] - p_0[index];
+            f[index] -=  dx * k[0] ;
+
+            //	Deriv dx = p[i] - p_0[i];
+            //	f[ indices[i] ] -=  dx * k[0] ;
         }
     }
     else
     {
         for (unsigned int i=0; i<indices.size(); i++)
         {
-            Deriv dx = p[i] - p_0[i];
-            f[ indices[i] ] -=  dx * k[i] ;
+            const unsigned int index = indices[i];
+
+            Deriv dx = p[index] - p_0[index];
+            f[index] -=  dx * k[index] ;
+
+            //	Deriv dx = p[i] - p_0[i];
+            //	f[ indices[i] ] -=  dx * k[i] ;
         }
     }
-
 }
+
 
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv &dx, double kFactor, double )
 {
-
-
     const VecIndex& indices = points.getValue();
     const VecReal& k = stiffness.getValue();
 
-
     if (k.size()!= indices.size() )
     {
-        sout<<"WARNING : stiffness is not defined on each point, first stiffness is used"<<sendl;
+        sout << "WARNING : stiffness is not defined on each point, first stiffness is used" << sendl;
 
         for (unsigned int i=0; i<indices.size(); i++)
         {
-            df[ indices[i] ] -=  dx[indices[i]] * k[0] * kFactor;
+            df[indices[i]] -=  dx[indices[i]] * k[0] * kFactor;
         }
     }
     else
     {
         for (unsigned int i=0; i<indices.size(); i++)
         {
-            df[ indices[i] ] -=  dx[indices[i]] * k[i] * kFactor ;
+            //	df[ indices[i] ] -=  dx[indices[i]] * k[i] * kFactor ;
+            df[indices[i]] -=  dx[indices[i]] * k[indices[i]] * kFactor ;
         }
     }
-
 }
 
 
+template<class DataTypes>
+void RestShapeSpringsForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * mat, double kFact, unsigned int &offset)
+{
+    const VecIndex& indices = points.getValue();
+    const VecReal& k = stiffness.getValue();
+    const int N = Coord::static_size;
 
-//     template <class DataTypes>
-//  double RestShapeSpringsForceField<DataTypes>::getPotentialEnergy(const VecCoord& x)
-//     {
-//       const VecIndex& indices = points.getValue();
-//       const VecDeriv& f = forces.getValue();
-//       double e=0;
-//unsigned int i = 0;
-//       for (; i<f.size(); i++)
-//       {
-//          e -= f[i]*x[indices[i]];
-//       }
-//       for (; i<indices.size(); i++)
-//       {
-//          e -= f[f.size()-1]*x[indices[i]];
-//       }
-//       return e;
-//     }
+    unsigned int curIndex = 0;
 
-//    template <class DataTypes>
-//  void RestShapeSpringsForceField<DataTypes>::setForce( unsigned i, const Deriv& force )
-//    {
-//      VecIndex& indices = *points.beginEdit();
-//      VecDeriv& f = *forces.beginEdit();
-//      indices.push_back(i);
-//f.push_back( force );
-//points.endEdit();
-//forces.endEdit();
-//    }
+    if (k.size()!= indices.size() )
+    {
+        for (unsigned int index = 0; index < indices.size(); index++)
+        {
+            curIndex = indices[index];
+
+            for(unsigned int i = 0; i < N; i++)
+            {
+
+                //	for (unsigned int j = 0; j < N; j++)
+                //	{
+                //		mat->add(offset + N * curIndex + i, offset + N * curIndex + j, kFact * k[0]);
+                //	}
+
+                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, kFact * k[0]);
+            }
+        }
+    }
+    else
+    {
+        for (unsigned int index = 0; index < indices.size(); index++)
+        {
+            curIndex = indices[index];
+
+            for(unsigned int i = 0; i < N; i++)
+            {
+
+                //	for (unsigned int j = 0; j < N; j++)
+                //	{
+                //		mat->add(offset + N * curIndex + i, offset + N * curIndex + j, kFact * k[curIndex]);
+                //	}
+
+                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, kFact * k[curIndex]);
+            }
+        }
+    }
+}
+
+
+//template <class DataTypes>
+//double RestShapeSpringsForceField<DataTypes>::getPotentialEnergy(const VecCoord& x)
+//{
+//	const VecIndex& indices = points.getValue();
+//	const VecDeriv& f = forces.getValue();
+//	double e=0;
+//	unsigned int i = 0;
+//	for (; i<f.size(); i++)
+//	{
+//		e -= f[i]*x[indices[i]];
+//	}
+//	for (; i<indices.size(); i++)
+//	{
+//		e -= f[f.size()-1]*x[indices[i]];
+//	}
+//	return e;
+//}
+
+
+//template <class DataTypes>
+//void RestShapeSpringsForceField<DataTypes>::setForce( unsigned i, const Deriv& force )
+//{
+//	VecIndex& indices = *points.beginEdit();
+//	VecDeriv& f = *forces.beginEdit();
+//	indices.push_back(i);
+//	f.push_back( force );
+//	points.endEdit();
+//	forces.endEdit();
+//}
+
 
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::draw()
 {
-    /*   if (!getContext()->getShowForceFields()) return;  /// \todo put this in the parent class
-       const VecIndex& indices = points.getValue();
-       const VecDeriv& f = forces.getValue();
-       const VecCoord& x = *this->mstate->getX();
-       glDisable(GL_LIGHTING);
-       glBegin(GL_LINES);
-       glColor3f(0,1,0);
-       for (unsigned int i=0; i<indices.size(); i++)
-       {
-         Real xx,xy,xz,fx,fy,fz;
-         DataTypes::get(xx,xy,xz,x[indices[i]]);
-         DataTypes::get(fx,fy,fz,f[(i<f.size()) ? i : f.size()-1]);
-         glVertex3f( (GLfloat)xx, (GLfloat)xy, (GLfloat)xz );
-         glVertex3f( (GLfloat)(xx+fx), (GLfloat)(xy+fy), (GLfloat)(xz+fz) );
-       }
-       glEnd();*/
+    /*
+    if (!getContext()->getShowForceFields())
+    	return;  /// \todo put this in the parent class
+    const VecIndex& indices = points.getValue();
+    const VecDeriv& f = forces.getValue();
+    const VecCoord& x = *this->mstate->getX();
+    glDisable(GL_LIGHTING);
+    glBegin(GL_LINES);
+    glColor3f(0,1,0);
+    for (unsigned int i=0; i<indices.size(); i++)
+    {
+    	Real xx,xy,xz,fx,fy,fz;
+    	DataTypes::get(xx,xy,xz,x[indices[i]]);
+    	DataTypes::get(fx,fy,fz,f[(i<f.size()) ? i : f.size()-1]);
+    	glVertex3f( (GLfloat)xx, (GLfloat)xy, (GLfloat)xz );
+    	glVertex3f( (GLfloat)(xx+fx), (GLfloat)(xy+fy), (GLfloat)(xz+fz) );
+    }
+    glEnd();
+    */
 }
 
 
@@ -171,6 +228,7 @@ bool RestShapeSpringsForceField<DataTypes>::addBBox(double*, double* )
 {
     return false;
 }
+
 
 } // namespace forcefield
 

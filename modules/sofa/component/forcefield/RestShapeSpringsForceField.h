@@ -66,7 +66,14 @@ public:
     virtual void addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double );
 
 
-    virtual double getPotentialEnergy(const VecCoord& ) {sout<<"getPotentialEnergy not implemented"<<sendl; return 0.0;}
+    virtual double getPotentialEnergy(const VecCoord& )
+    {
+        sout << "getPotentialEnergy not implemented" << sendl;
+        return 0.0;
+    };
+
+
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*kFact*/, unsigned int &/*offset*/);
 
 
     void draw();
