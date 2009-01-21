@@ -134,7 +134,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(sofa::defaulttype::Base
         {
             curIndex = indices[index];
 
-            for(unsigned int i = 0; i < N; i++)
+            for(int i = 0; i < N; i++)
             {
 
                 //	for (unsigned int j = 0; j < N; j++)
@@ -152,7 +152,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(sofa::defaulttype::Base
         {
             curIndex = indices[index];
 
-            for(unsigned int i = 0; i < N; i++)
+            for(int i = 0; i < N; i++)
             {
 
                 //	for (unsigned int j = 0; j < N; j++)
