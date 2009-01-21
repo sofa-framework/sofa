@@ -1640,7 +1640,7 @@ bool is_point_in_triangle(const Vec<3,Real>& p, const Vec<3,Real>& a, const Vec<
     Real norm_v_normal = v_normal*(v_normal);
     if(norm_v_normal > ZERO)
     {
-        if(abs((ptest-p0)*(v_normal)) < ZERO) // p is in the plane defined by the triangle (p0,p1,p2)
+        if(fabs((ptest-p0)*(v_normal)) < ZERO) // p is in the plane defined by the triangle (p0,p1,p2)
         {
 
             Vec<3,Real> n_01 = (p1-p0).cross(v_normal);
