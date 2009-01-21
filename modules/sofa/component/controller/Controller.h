@@ -122,13 +122,14 @@ public:
     */
     virtual void onEndAnimationStep(void) {};
 
+
 protected:
 
     Data< bool > handleEventTriggersUpdate; ///< Event reception triggers object update ?
 
-private:
+public:
 
-    void handleEvent(core::objectmodel::Event *);
+    virtual void handleEvent(core::objectmodel::Event *);
 };
 
 } // namespace controller
