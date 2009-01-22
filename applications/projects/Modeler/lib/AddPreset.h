@@ -51,6 +51,7 @@ public:
     void setParentNode(GNode* parentNode) {node=parentNode;}
     void setPresetFile(std::string p) {presetFile=p;}
     void setPath(std::string p) {fileName=p;}
+    void setRelativePath(std::string p) {relative=p;}
     void clear();
 
 public slots:
@@ -64,6 +65,7 @@ signals:
 
 protected:
     std::string fileName;
+    std::string relative;
     std::string presetFile;
     GNode *node;
 };

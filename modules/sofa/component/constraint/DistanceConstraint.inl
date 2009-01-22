@@ -65,6 +65,12 @@ void DistanceConstraint<DataTypes>::init()
     if (vecConstraint.getValue().size() == 0 && (this->object1==this->object2) ) vecConstraint.setValue(this->topology->getEdges());
 }
 
+template <class DataTypes>
+void DistanceConstraint<DataTypes>::reinit()
+{
+    updateRestLength();
+}
+
 
 
 template <class DataTypes>

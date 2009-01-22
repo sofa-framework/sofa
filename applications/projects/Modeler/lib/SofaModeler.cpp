@@ -51,6 +51,7 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QDir>
+#include <QStatusBar>
 #else
 #include <qtoolbox.h>
 #include <qlayout.h>
@@ -60,6 +61,7 @@
 #include <qmenubar.h>
 #include <qmessagebox.h>
 #include <qdir.h>
+#include <qstatusbar.h>
 #endif
 
 namespace sofa
@@ -832,15 +834,27 @@ void SofaModeler::runInSofa()
 
 
     if (count > '9') count = '0';
+
+    QString messageLaunch;
     //=======================================
     // Run Sofa
     if (sofaBinary.empty())
     {
-        changeSofaBinary();
-        if (sofaBinary.empty()) return; //No binary found
+// 	    changeSofaBinary();
+// 	    if (sofaBinary.empty()) return; //No binary found
+
+        //Set the default parameter: Sofa won't start if they are wrong
+#ifdef WIN32
+        sofaBinary = binPath + "runSofa.exe";
+#else
+        sofaBinary = binPath + "runSofa";
+#endif
     }
     QStringList argv;
     argv << QString(sofaBinary.c_str()) << QString(filename.c_str());
+    messageLaunch = QString("Use command: ")
+            + QString(sofaBinary.c_str())
+            + QString(" ");
 
     //Setting the GUI
     for (unsigned int i=0; i<listActionGUI.size(); ++i)
@@ -848,10 +862,15 @@ void SofaModeler::runInSofa()
         if (listActionGUI[i]->isOn())
         {
             if (std::string(listActionGUI[i]->text().ascii()) != "default")
+            {
                 argv << "-g" << listActionGUI[i]->text();
+                messageLaunch += QString("-g ") + QString(listActionGUI[i]->text());
+            }
             break;
         }
     }
+
+    statusBar()->message(messageLaunch,5000);
 
     Q3Process *p = new Q3Process(argv, this);
     p->setName(filename.c_str());

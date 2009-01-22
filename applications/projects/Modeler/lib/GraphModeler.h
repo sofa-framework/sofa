@@ -151,7 +151,9 @@ public:
     void openModifyObject(Q3ListViewItem *);
     /// Delete a componnent
     void deleteComponent(Q3ListViewItem *item, bool saveHistory=true);
-
+    /// Construct a node from a BaseElement, by passing the factory
+    GNode *buildNodeFromBaseElement(GNode *node,xml::BaseElement *elem);
+    void configureElement(Base* b, xml::BaseElement *elem);
 signals:
     void fileOpen(const QString&);
     void undo(bool);
@@ -210,7 +212,9 @@ protected:
     /// Insert a GNode in the scene
     GNode      *addGNode(GNode *parent, GNode *node=NULL, bool saveHistory=true);
     /// Insert a Component in the scene
-    BaseObject *addComponent(GNode *parent, ClassInfo *entry, std::string templateName, bool saveHistory=true );
+    BaseObject *addComponent(GNode *parent, ClassInfo *entry, std::string templateName, bool saveHistory=true, bool displayWarning=true );
+    /// Find the ClassInfo associated to the name of a component and if needed its template
+    ClassInfo *getCreatorComponent(std::string name);
 
     /// Find the Sofa Component above the item
     Base *getComponentAbove(Q3ListViewItem *item);

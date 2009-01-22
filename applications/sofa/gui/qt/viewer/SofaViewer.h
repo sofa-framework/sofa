@@ -41,6 +41,9 @@
 #include <qevent.h>
 #include <qtabwidget.h>
 #endif
+#include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/SetDirectory.h>
+
 
 #ifdef SOFA_DEV
 
@@ -119,31 +122,10 @@ public:
 //               if (interactor != NULL) delete interactor;
         //interactor = NULL;
         scene->getContext()->get( interactor);
-        std::ostringstream ofilename;
-        std::string screenshot_prefix;
-
-        sceneFileName = (filename==NULL)?"":filename;
-        if (!sceneFileName.empty())
-        {
-            const char* begin = sceneFileName.c_str();
-            const char* end = strrchr(begin,'.');
-            if (!end) end = begin + sceneFileName.length();
-            ofilename << std::string(begin, end);
-            ofilename << "_";
-
-            screenshot_prefix = ofilename.str();
-
-            std::string::size_type position_scene = screenshot_prefix.rfind("scenes/");
-
-            if (position_scene != std::string::npos && position_scene < screenshot_prefix.size()-7)
-            {
-                screenshot_prefix.replace(position_scene, 7, "share/screenshots/");
-            }
-        }
-        else
-            screenshot_prefix = "scene_";
-        capture.setPrefix(screenshot_prefix);
-
+        std::string file=sofa::helper::system::SetDirectory::GetFileName(filename);
+        std::string screenshotPrefix=sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/share/screenshots/" ) + file + std::string("_");
+        capture.setPrefix(screenshotPrefix);
+        sceneFileName=filename;
         groot = scene;
         initTexturesDone = false;
         sceneBBoxIsValid = true;

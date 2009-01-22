@@ -94,6 +94,7 @@ public:
 
     // -- Constraint interface
     void init();
+    void reinit();
     void writeConstraintEquations();
     double getError();
 

@@ -33,7 +33,6 @@
 #include <iostream>
 
 
-#define DUMP_VISITOR_INFO
 
 namespace sofa
 {
