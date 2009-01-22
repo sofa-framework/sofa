@@ -591,6 +591,29 @@ void CudaLCP_FullKernel_V10d(int dim,int itMax,float tol,const void * m,int mP,c
 
 }
 
+void CudaLCP_FullKernel_V11f(int dim,int itMax,float tol,const void * m,int mP,const void * q,void * f,void * err,void * share)
+{
+
+    dim3 threads(V11_BSIZE,V11_BSIZE);
+    dim3 grid(1,V11_NBPROC);
+    int dim_n = (dim+V11_BSIZE-1)/V11_BSIZE * V11_BSIZE;
+
+    CudaLCP_FullKernel_V11_kernel<<< grid, threads,0>>>(dim,dim_n,dim_n*itMax,tol,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share);
+}
+void CudaLCP_FullKernel_V11d(int dim,int itMax,float tol,const void * m,int mP,const void * q,void * f,void * err,void * share)
+{
+#if !defined(__CUDA_ARCH__) ||  __CUDA_ARCH__ < 130
+    myprintf("CUDA ERROR: double precision not supported.\n");
+#else
+    dim3 threads(V11_BSIZE,V11_BSIZE);
+    dim3 grid(1,V11_NBPROC);
+    int dim_n = (dim+V11_BSIZE-1)/V11_BSIZE * V11_BSIZE;
+
+    CudaLCP_FullKernel_V11_kernel<<< grid, threads,0>>>(dim,dim_n,dim_n*itMax,(double)tol,(const double *) m,mP,(const double *) q,(double *) f,(double *) err,(int *) share);
+
+#endif
+}
+
 
 //////////////////////////////////////////////nlcp
 
