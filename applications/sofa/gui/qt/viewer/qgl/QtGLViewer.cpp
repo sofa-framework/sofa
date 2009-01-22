@@ -43,6 +43,7 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
 #include <sofa/helper/system/glut.h>
+#include <sofa/gui/SofaGUI.h>
 #include <qevent.h>
 #include "GenGraphForm.h"
 #include "Main.h"
@@ -904,7 +905,7 @@ void QtGLViewer::resizeGL(int width, int height)
 
 
     QGLViewer::resizeGL( width,  height);
-    camera()->setScreenWidthAndHeight(_W,_H);
+// 	    camera()->setScreenWidthAndHeight(_W,_H);
 
     this->resize(width, height);
     emit( resizeW( _W ) );
@@ -1121,12 +1122,13 @@ void QtGLViewer::moveRayPickInteractor(int eventX, int eventY)
 // -------------------------------------------------------------------
 void QtGLViewer::resetView()
 {
-
     viewAll();
 
     if (!sceneFileName.empty())
     {
-        std::string viewFileName = sceneFileName+".view";
+        //Test if we have a specific view point for the QGLViewer
+        //That case, the camera will be well placed
+        std::string viewFileName = sceneFileName+"."+sofa::gui::SofaGUI::GetGUIName()+".view";
         std::ifstream in(viewFileName.c_str());
         if (!in.fail())
         {
@@ -1135,10 +1137,7 @@ void QtGLViewer::resetView()
             in >> pos[1];
             in >> pos[2];
 
-            camera()->setPosition(pos);
-
             qglviewer::Quaternion q;
-
             in >> q[0];
             in >> q[1];
             in >> q[2];
@@ -1146,10 +1145,42 @@ void QtGLViewer::resetView()
             q.normalize();
 
             camera()->setOrientation(q);
-            camera()->showEntireScene();
+            camera()->setPosition(pos);
+
             in.close();
             update();
+
             return;
+        }
+        else
+        {
+            //If we have the default QtViewer view file, we have to use, showEntireScene
+            //as the FOV of the QtViewer is not constant, so the parameters are not good
+            std::string viewFileName = sceneFileName+".view";
+            std::ifstream in(viewFileName.c_str());
+            if (!in.fail())
+            {
+                qglviewer::Vec pos;
+                in >> pos[0];
+                in >> pos[1];
+                in >> pos[2];
+
+                qglviewer::Quaternion q;
+                in >> q[0];
+                in >> q[1];
+                in >> q[2];
+                in >> q[3];
+                q.normalize();
+
+                camera()->setOrientation(q);
+                camera()->setPosition(pos);
+                camera()->showEntireScene();
+
+                in.close();
+                update();
+
+                return;
+            }
         }
     }
     update();
@@ -1181,7 +1212,7 @@ void QtGLViewer::saveView()
 {
     if (!sceneFileName.empty())
     {
-        std::string viewFileName = sceneFileName+".view";
+        std::string viewFileName = sceneFileName+"."+sofa::gui::SofaGUI::GetGUIName()+".view";
         std::ofstream out(viewFileName.c_str());
         if (!out.fail())
         {

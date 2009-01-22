@@ -33,6 +33,8 @@
 #include <sofa/helper/system/SetDirectory.h>
 
 #include <sofa/simulation/tree/xml/ObjectElement.h>
+#include <sofa/simulation/tree/xml/AttributeElement.h>
+#include <sofa/simulation/tree/xml/DataElement.h>
 #include <sofa/simulation/common/XMLPrintVisitor.h>
 
 #ifdef SOFA_QT4
@@ -99,7 +101,7 @@ GNode *GraphModeler::addGNode(GNode *parent, GNode *child, bool saveHistory)
     return child;
 }
 
-BaseObject *GraphModeler::addComponent(GNode *parent, ClassInfo* entry, std::string templateName, bool saveHistory)
+BaseObject *GraphModeler::addComponent(GNode *parent, ClassInfo* entry, std::string templateName, bool saveHistory, bool displayWarning)
 {
     BaseObject *object=NULL;;
     if (!parent || !entry) return object;
@@ -141,23 +143,29 @@ BaseObject *GraphModeler::addComponent(GNode *parent, ClassInfo* entry, std::str
     {
         BaseObject* reference = parent->getContext()->getMechanicalState();
 
-        if (!reference)
+        if (displayWarning)
         {
-            const QString caption("Creation Impossible");
-            const QString warning=QString("No MechanicalState found in your Node ") + QString(parent->getName().c_str());
-            if ( QMessageBox::warning ( this, caption,warning, QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape, QMessageBox::Ignore ) == QMessageBox::Cancel )
-                return object;
-        }
-        else if (entry->className.find("Mapping") != std::string::npos) ;//we accept the mappings as no initialization of the object has been done
-        else
-        {
-            const QString caption("Creation Impossible");
-            const QString warning=
-                QString("Your component won't be created: \n \t * <")
-                + QString(reference->getTemplateName().c_str()) + QString("> DOFs are used in the Node ") + QString(parent->getName().c_str()) + QString("\n\t * <")
-                + QString(templateName.c_str()) + QString("> is the type of your ") + QString(entry->className.c_str());
-            if ( QMessageBox::warning ( this, caption,warning, QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape, QMessageBox::Ignore ) == QMessageBox::Cancel )
-                return object;
+            if (!reference)
+            {
+                if (entry->className.find("Mapping") == std::string::npos)
+                {
+                    //we accept the mappings as no initialization of the object has been done
+                    const QString caption("Creation Impossible");
+                    const QString warning=QString("No MechanicalState found in your Node ") + QString(parent->getName().c_str());
+                    if ( QMessageBox::warning ( this, caption,warning, QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape, QMessageBox::Ignore ) == QMessageBox::Cancel )
+                        return object;
+                }
+            }
+            else
+            {
+                const QString caption("Creation Impossible");
+                const QString warning=
+                    QString("Your component won't be created: \n \t * <")
+                    + QString(reference->getTemplateName().c_str()) + QString("> DOFs are used in the Node ") + QString(parent->getName().c_str()) + QString("\n\t * <")
+                    + QString(templateName.c_str()) + QString("> is the type of your ") + QString(entry->className.c_str());
+                if ( QMessageBox::warning ( this, caption,warning, QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape, QMessageBox::Ignore ) == QMessageBox::Cancel )
+                    return object;
+            }
         }
         object = c->createInstance(parent->getContext(), NULL);
         // 	    parent->addObject(object);
@@ -437,6 +445,77 @@ GNode *GraphModeler::loadNode(Q3ListViewItem* item, std::string filename)
     return loadNode(node,filename);
 }
 
+
+
+GNode *GraphModeler::buildNodeFromBaseElement(GNode *node,xml::BaseElement *elem)
+{
+    GNode *newNode = new GNode();
+    if (node)
+    {
+        //Add as a child
+        node->addChild(newNode);
+    }
+    //Configure the new Node
+    configureElement(newNode, elem);
+
+    typedef xml::BaseElement::child_iterator<> elem_iterator;
+    for (elem_iterator it=elem->begin(); it != elem->end(); ++it)
+    {
+        if (std::string(it->getClass()) == std::string("Node"))
+        {
+            buildNodeFromBaseElement(newNode, it);
+        }
+        else
+        {
+            //Configure the new Component
+            std::string templatename; std::string templateAttribute("template");
+            templatename = it->getAttribute(templateAttribute, "");
+            ClassInfo *info = getCreatorComponent(it->getType());
+            BaseObject *newComponent=addComponent(newNode, info, templatename, false,true);
+            configureElement(newComponent, it);
+        }
+    }
+    newNode->sendl.clearWarnings();
+
+    return newNode;
+}
+
+ClassInfo *GraphModeler::getCreatorComponent(std::string name)
+{
+
+    ComponentMap::iterator it;
+    for (it=library.begin(); it!=library.end(); it++)
+    {
+        if (it->second.first->className == name)
+            return it->second.first;
+    }
+    return NULL;
+}
+
+void GraphModeler::configureElement(Base* b, xml::BaseElement *elem)
+{
+    //Init the Attributes of the object
+    typedef xml::BaseElement::child_iterator<xml::AttributeElement> attr_iterator;
+    typedef xml::BaseElement::child_iterator<xml::DataElement> data_iterator;
+    for (attr_iterator itAttribute=elem->begin<xml::AttributeElement>(); itAttribute != elem->end<xml::AttributeElement>(); ++itAttribute)
+    {
+        for (data_iterator itData=itAttribute->begin<xml::DataElement>(); itData != itAttribute->end<xml::DataElement>(); ++itData)  itData->initNode();
+        const std::string nameAttribute = itAttribute->getAttribute("type","");
+        const std::string valueAttribute = itAttribute->getValue();
+        elem->setAttribute(nameAttribute, valueAttribute.c_str());
+    }
+
+    std::vector< std::pair<std::string, BaseData*> > vecDatas=b->getFields();
+    for (unsigned int i=0; i<vecDatas.size(); ++i)
+    {
+        std::string result = elem->getAttribute(vecDatas[i].first, "");
+        if (!result.empty())
+        {
+            vecDatas[i].second->read(result);
+        }
+    }
+}
+
 GNode* GraphModeler::loadNode(GNode *node, std::string path)
 {
     xml::BaseElement* newXML=NULL;
@@ -444,9 +523,16 @@ GNode* GraphModeler::loadNode(GNode *node, std::string path)
     newXML = xml::loadFromFile (path.c_str() );
 
     if (newXML == NULL) return NULL;
-    if (!newXML->init()) std::cerr<< "Objects initialization failed.\n";
 
-    GNode *newNode = dynamic_cast<GNode*> ( newXML->getObject() );
+    //-----------------------------------------------------------------
+    //Add the content of a xml file
+    GNode *newNode = buildNodeFromBaseElement(NULL, newXML);
+    //-----------------------------------------------------------------
+
+
+//   	if (!newXML->init()) std::cerr<< "Objects initialization failed.\n";
+
+// 	GNode *newNode = dynamic_cast<GNode*> ( newXML->getObject() );
     if (newNode)
     {
         if (newNode->getName() == "Group") //Special Node: means that we load the content directly inside the current node
@@ -499,6 +585,9 @@ void GraphModeler::loadPreset(std::string presetName)
         DialogAdd = new AddPreset(this,"AddPreset");
         DialogAdd->setPath(sofa::helper::system::DataRepository.getFirstPath());
     }
+
+    DialogAdd->setRelativePath(sofa::helper::system::SetDirectory::GetParentDir(filenameXML.c_str()));
+
     DialogAdd->setElementPresent(elementPresent);
     DialogAdd->setPresetFile(presetName);
     GNode *node=getGNode(currentItem());
@@ -977,6 +1066,8 @@ bool GraphModeler::editPaste(std::string path)
     }
     return selectedItem();
 }
+
+///      void GraphModeler::addBaseElement(GNode *node,
 /*****************************************************************************************************************/
 //History of operations management
 
