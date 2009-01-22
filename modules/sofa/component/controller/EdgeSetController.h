@@ -151,6 +151,7 @@ protected:
     Data<Real> maxDepl; ///< determine the maximum deplacement in a time step
     Data<Real> speed;
     Data<bool> reversed;
+    Data<int>  startingIndex;   ///< index of the edge where a topological change occurs
     Real depl;
 
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
