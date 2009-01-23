@@ -1966,7 +1966,7 @@ void RealGUI::updateBackgroundColour()
 
 void RealGUI::updateBackgroundImage()
 {
-    viewer->setBackgroundImage( backgroundImage->text() );
+    viewer->setBackgroundImage( backgroundImage->text().ascii() );
     updateViewerParameters();
 }
 
