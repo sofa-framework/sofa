@@ -1883,6 +1883,13 @@ void QtViewer::setSizeH( int size )
     updateGL();
 }
 
+void QtViewer::setBackgroundImage(std::string imageFileName)
+{
+    SofaViewer::setBackgroundImage(imageFileName);
+    texLogo = new helper::gl::Texture(new helper::io::ImageBMP( sofa::helper::system::DataRepository.getFile(imageFileName) ));
+    texLogo->init();
+}
+
 
 QString QtViewer::helpString()
 {

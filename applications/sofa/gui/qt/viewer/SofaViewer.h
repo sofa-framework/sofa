@@ -106,7 +106,7 @@ class SofaViewer
 
 public:
     SofaViewer ()
-        : groot(NULL), m_isControlPressed(false), _video(false), _shadow(false), _gl_shadow(false), _axis(false), camera_type(CAMERA_PERSPECTIVE), backgroundColour(Vector3()), ambientColour(Vector3())
+        : groot(NULL), m_isControlPressed(false), _video(false), _shadow(false), _gl_shadow(false), _axis(false), camera_type(CAMERA_PERSPECTIVE), backgroundColour(Vector3()),backgroundImage("textures/SOFA_logo.bmp"), ambientColour(Vector3())
     {}
     virtual ~SofaViewer() {}
 
@@ -160,6 +160,17 @@ public:
         backgroundColour[0]=r;
         backgroundColour[1]=g;
         backgroundColour[2]=b;
+    }
+
+    virtual void setBackgroundImage(std::string imageFileName)
+    {
+        _background=0;
+        backgroundImage = imageFileName;
+    }
+
+    std::string getBackgroundImage()
+    {
+        return backgroundImage;
     }
 
 protected:
@@ -552,6 +563,7 @@ protected:
     bool sceneBBoxIsValid;
 
     Vector3 backgroundColour;
+    std::string backgroundImage;
     Vector3 ambientColour;
     sofa::component::collision::RayPickInteractor* interactor;
 
