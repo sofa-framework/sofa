@@ -159,7 +159,7 @@ public:
         else
         {
             vtype var = *vhelper::get(d);
-            vtrait::setS(v, var);
+            vtrait::setS(v, var,i-s);
             vhelper::set(var, d);
         }
     }
