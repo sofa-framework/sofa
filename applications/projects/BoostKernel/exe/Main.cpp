@@ -24,7 +24,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <GL/glut.h>
+
+#include <sofa/helper/system/gl.h>
+#include <sofa/helper/system/glut.h>
+
 #include "traqueboule.h"
 #include <sofa/helper/ArgumentParser.h>
 #include "BglModeler.h"
