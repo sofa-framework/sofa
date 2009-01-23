@@ -274,7 +274,7 @@ public:
 	static void setChecked(bool b, data_type& d) { d.check = b; } \
     }
 
-// A comma can't appear in an macro argument...
+// A comma can't appear in a macro argument...
 #define COMMA ,
 
 
