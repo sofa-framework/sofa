@@ -176,6 +176,8 @@ public slots:
 
 
     void updateViewerParameters();
+    void updateBackgroundColour();
+    void updateBackgroundImage();
 
     void changeInstrument(int);
 
@@ -252,6 +254,7 @@ protected:
     QLabel* fpsLabel;
     QLabel* timeLabel;
     WFloatLineEdit *background[3];
+    QLineEdit *backgroundImage;
 
 
     void setPixmap(std::string pixmap_filename, QPushButton* b);

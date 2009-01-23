@@ -184,6 +184,8 @@ public:
 
     QString helpString();
 
+    virtual void setBackgroundImage(std::string imageFileName);
+
 private:
 
     void	InitGFX(void);

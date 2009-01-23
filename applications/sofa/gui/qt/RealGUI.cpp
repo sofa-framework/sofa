@@ -449,13 +449,13 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     //ADD GUI for Background
     //------------------------------------------------------------------------
     //Informations
-    Q3GroupBox *groupInfo = new Q3GroupBox(QString("Information"), tabs->page(3));
+    Q3GroupBox *groupInfo = new Q3GroupBox(QString("Background"), tabs->page(3));
     groupInfo->setColumns(4);
     QWidget     *global    = new QWidget(groupInfo);
     QGridLayout *globalLayout = new QGridLayout(global);
 
 
-    globalLayout->addWidget(new QLabel(QString("Background"),global),1,0);
+    globalLayout->addWidget(new QLabel(QString("Colour "),global),1,0);
     for (unsigned int i=0; i<3; ++i)
     {
         std::ostringstream s;
@@ -465,8 +465,18 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
         background[i]->setMaxFloatValue( 1.0f);
         background[i]->setFloatValue( 1.0f);
         globalLayout->addWidget(background[i],1,i+1);
-        connect( background[i], SIGNAL( returnPressed() ), this, SLOT( updateViewerParameters() ) );
+        connect( background[i], SIGNAL( returnPressed() ), this, SLOT( updateBackgroundColour() ) );
     }
+
+    QWidget     *global2    = new QWidget(groupInfo);
+    groupInfo->setColumns(1);
+    QGridLayout *globalLayout2 = new QGridLayout(global2);
+    globalLayout2->addWidget(new QLabel(QString("Image "),global2),2,0);
+    backgroundImage = new QLineEdit(global2,"backgroundImage");
+    backgroundImage->setMinimumWidth( 200 );
+    backgroundImage->setText( viewer->getBackgroundImage() );
+    globalLayout2->addWidget(backgroundImage,2,1);
+    connect( backgroundImage, SIGNAL( returnPressed() ), this, SLOT( updateBackgroundImage() ) );
 
 
 #ifdef SOFA_QT4
@@ -1944,8 +1954,20 @@ void RealGUI::dropEvent(QDropEvent* event)
 
 void RealGUI::updateViewerParameters()
 {
-    viewer->setBackgroundColour(atof(background[0]->text().ascii()),atof(background[1]->text().ascii()),atof(background[2]->text().ascii()));
+// 	viewer->setBackgroundColour(atof(background[0]->text().ascii()),atof(background[1]->text().ascii()),atof(background[2]->text().ascii()));
     gui->viewer->getQWidget()->update();
+}
+
+void RealGUI::updateBackgroundColour()
+{
+    viewer->setBackgroundColour(atof(background[0]->text().ascii()),atof(background[1]->text().ascii()),atof(background[2]->text().ascii()));
+    updateViewerParameters();
+}
+
+void RealGUI::updateBackgroundImage()
+{
+    viewer->setBackgroundImage( backgroundImage->text() );
+    updateViewerParameters();
 }
 
 void RealGUI::showhideElements(int FILTER, bool value)
