@@ -474,7 +474,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     globalLayout2->addWidget(new QLabel(QString("Image "),global2),2,0);
     backgroundImage = new QLineEdit(global2,"backgroundImage");
     backgroundImage->setMinimumWidth( 200 );
-    backgroundImage->setText( viewer->getBackgroundImage() );
+    backgroundImage->setText( QString(viewer->getBackgroundImage()) );
     globalLayout2->addWidget(backgroundImage,2,1);
     connect( backgroundImage, SIGNAL( returnPressed() ), this, SLOT( updateBackgroundImage() ) );
 
