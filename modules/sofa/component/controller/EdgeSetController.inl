@@ -230,6 +230,8 @@ void EdgeSetController<DataTypes>::onBeginAnimationStep()
 template <class DataTypes>
 void EdgeSetController<DataTypes>::applyController()
 {
+
+    //serr<<"applyController called"<<sendl;
     using sofa::defaulttype::Quat;
     using sofa::defaulttype::Vec;
 
@@ -251,60 +253,70 @@ void EdgeSetController<DataTypes>::applyController()
                 				depl = 0;
                 */
 
-                for(int index_it = 0; index_it<=startingIndex.getValue(); index_it++)
+                if(startingIndex.getValue()!=0)
                 {
-                    Coord& pos = (*this->mState->getX0())[index_it];
-                    pos =  getNewRestPos(pos, vertexT[index_it], depl);
-                    vertexT[index_it] -= depl;
+
+                    for(int index_it = 0; index_it<=startingIndex.getValue(); index_it++)
+                    {
+                        Coord& pos = (*this->mState->getX0())[index_it];
+
+
+                        pos =  getNewRestPos(pos, vertexT[index_it], depl);
+                        vertexT[index_it] -= depl;
+
+                    }
+                    depl = 0;
+                }
+                else
+                {
+
+
+
+
+                    Coord& pos = (*this->mState->getX0())[0];
+                    Real d;
+
+                    if (maxDepl.getValue() == 0 || fabs(depl) < maxDepl.getValue())
+                    {
+                        d = depl;
+                        depl = 0;
+                    }
+                    else
+                    {
+                        d = (depl < 0) ? -maxDepl.getValue() : maxDepl.getValue();
+                        depl -= d; //?
+                    }
+
+                    Real endT = vertexT[vertexT.size()-1];
+                    Real newT = vertexT[0];
+                    Real sign = (endT > newT) ? 1.0f : -1.0f;
+                    newT -= d;
+                    //sout << "length = " << sign*(endT-newT) << sendl;
+
+                    if (sign*(endT-newT) > maxLength.getValue())
+                    {
+                        //sout << "max length" << sendl;
+                        newT = endT - sign*maxLength.getValue();   // Edge is too long : A new Edge will be introduced
+                        d = vertexT[0] - newT;
+                    }
+                    else if (sign*(endT-newT) < minLength.getValue())
+                    {
+                        //sout << "min length" << sendl;
+                        newT = endT - sign*minLength.getValue();   // Edge is too small : An Edge will be removed
+                        d = vertexT[0] - newT;
+                    }
+
+                    if (newT != vertexT[0])							// if no displacement (d=0) then newT == vertexT[0]
+                    {
+                        pos = getNewRestPos(pos, vertexT[0], (Real)d);
+                        vertexT[0] = (Real)newT;
+                    }
+                    else
+                        return;
 
                 }
-                depl = 0;
 
 
-                /*
-
-                				Coord& pos = (*this->mState->getX0())[0];
-                				Real d;
-
-                				if (maxDepl.getValue() == 0 || fabs(depl) < maxDepl.getValue())
-                				{
-                					d = depl;
-                					depl = 0;
-                				}
-                				else
-                				{
-                					d = (depl < 0) ? -maxDepl.getValue() : maxDepl.getValue();
-                					depl -= d;
-                				}
-
-                				Real endT = vertexT[vertexT.size()-1];
-                				Real newT = vertexT[0];
-                				Real sign = (endT > newT) ? 1.0f : -1.0f;
-                				newT -= d;
-                				//sout << "length = " << sign*(endT-newT) << sendl;
-
-                				if (sign*(endT-newT) > maxLength.getValue())
-                				{
-                					//sout << "max length" << sendl;
-                					newT = endT - sign*maxLength.getValue();   // Edge is too long : A new Edge will be introduced
-                					d = vertexT[0] - newT;
-                				}
-                				else if (sign*(endT-newT) < minLength.getValue())
-                				{
-                					//sout << "min length" << sendl;
-                					newT = endT - sign*minLength.getValue();   // Edge is too small : An Edge will be removed
-                					d = vertexT[0] - newT;
-                				}
-
-                				if (newT != vertexT[0])							// if no displacement (d=0) then newT == vertexT[0]
-                				{
-                					pos = getNewRestPos(pos, vertexT[0], (Real)d);
-                					vertexT[0] = (Real)newT;
-                				}
-                				else
-                					return;
-
-                				*/
 
             }
             else // reversed  !
@@ -319,61 +331,65 @@ void EdgeSetController<DataTypes>::applyController()
                 	depl = 0;
                 }
                 */
+
+                /*
                 int n = this->mState->getSize();
                 if (n==0)
-                    return;
+                	return;
+
                 for(int index_it = 0; index_it<=startingIndex.getValue(); index_it++)
                 {
-                    Coord& pos = (*this->mState->getX0())[n-1-index_it];
-                    pos =  getNewRestPos(pos, vertexT[n-1-index_it], depl);
-                    vertexT[n-1-index_it] -= depl;
+                	Coord& pos = (*this->mState->getX0())[n-1-index_it];
+                	pos =  getNewRestPos(pos, vertexT[n-1-index_it], depl);
+                	vertexT[n-1-index_it] -= depl;
 
                 }
                 depl = 0;
-                /*
-                				int n = this->mState->getSize();
-                				if (n > 0)
-                				{
-                					Coord& pos = (*this->mState->getX0())[n-1];
-                					Real d;
-
-                					if (maxDepl.getValue() == 0 || fabs(depl) < maxDepl.getValue())
-                					{
-                						d = depl;
-                						depl = 0;
-                					}
-                					else
-                					{
-                						d = (depl < 0) ? -maxDepl.getValue() : maxDepl.getValue();
-                						depl -= d;
-                					}
-
-                					Real endT = vertexT[0];
-                					Real newT = vertexT[n-1];
-                					Real sign = (endT > newT) ? 1.0f : -1.0f;
-
-                					newT -= d;
-
-                					if (sign*(endT-newT) > maxLength.getValue())
-                					{
-                						newT = endT - sign*maxLength.getValue();
-                						d = vertexT[n-1] - newT;
-                					}
-                					else if (sign*(endT-newT) < minLength.getValue())
-                					{
-                						newT = endT - sign*minLength.getValue();
-                						d = vertexT[n-1] - newT;
-                					}
-
-                					if (newT != vertexT[n-1])
-                					{
-                						pos = getNewRestPos(pos, vertexT[n-1], (Real)d);
-                						vertexT[n-1] = (Real)newT;
-                					}
-                					else
-                						return;
-
                 */
+
+                int n = this->mState->getSize();
+                if (n > 0)
+                {
+                    Coord& pos = (*this->mState->getX0())[n-1];
+                    Real d;
+
+                    if (maxDepl.getValue() == 0 || fabs(depl) < maxDepl.getValue())
+                    {
+                        d = depl;
+                        depl = 0;
+                    }
+                    else
+                    {
+                        d = (depl < 0) ? -maxDepl.getValue() : maxDepl.getValue();
+                        depl -= d;
+                    }
+
+                    Real endT = vertexT[0];
+                    Real newT = vertexT[n-1];
+                    Real sign = (endT > newT) ? 1.0f : -1.0f;
+
+                    newT -= d;
+
+                    if (sign*(endT-newT) > maxLength.getValue())
+                    {
+                        newT = endT - sign*maxLength.getValue();
+                        d = vertexT[n-1] - newT;
+                    }
+                    else if (sign*(endT-newT) < minLength.getValue())
+                    {
+                        newT = endT - sign*minLength.getValue();
+                        d = vertexT[n-1] - newT;
+                    }
+
+                    if (newT != vertexT[n-1])
+                    {
+                        pos = getNewRestPos(pos, vertexT[n-1], (Real)d);
+                        vertexT[n-1] = (Real)newT;
+                    }
+                    else
+                        return;
+
+                }
 
             }
         }
@@ -384,6 +400,7 @@ void EdgeSetController<DataTypes>::applyController()
 
         modifyTopology();
     }
+    //serr<<"applyController ended"<<sendl;
 }
 
 
@@ -414,7 +431,7 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
 
         if (baseEdge.size() == 1)
         {
-            std::cout<<"longueur :" <<fabs(vertexT[startingIndex.getValue()+1] - vertexT[startingIndex.getValue()])<<std::endl;
+            //std::cout<<"longueur :" <<fabs(vertexT[startingIndex.getValue()+1] - vertexT[startingIndex.getValue()])<<"edgeTLength :"<<edgeTLength <<std::endl;
 
             if (fabs(vertexT[startingIndex.getValue()+1] - vertexT[startingIndex.getValue()]) > ( 2 * edgeTLength ))
             {
@@ -433,6 +450,7 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
                 // Renumber vertices
                 int numPoints = _topology->getNbPoints();
 
+                //std::cerr<<"point insert"<<std::endl;
                 // Last created vertex must come on the startingIndex.getValue() + 1 position of the position vector.
                 sofa::helper::vector<unsigned int> permutations(numPoints);
                 for (int i = 0 ; i <= startingIndex.getValue(); i++)
@@ -443,11 +461,20 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
                 for ( int i = startingIndex.getValue()+1; i < numPoints - 1; i++)
                     permutations[i] = i + 1;
 
+
+
                 sofa::helper::vector<unsigned int> inverse_permutations(numPoints);
                 for ( int i = 0; i < numPoints; i++)
                     inverse_permutations[permutations[i]] = i;
+                /*
+                std::cerr<<"permutation tables ok :"<<std::endl;
+                for ( int i = 0; i < numPoints; i++)
+                	std::cerr<<"permutations["<<i<<"]="<<permutations[i]<<std::endl;
+                */
+
 
                 edgeMod->renumberPoints((const sofa::helper::vector<unsigned int> &) inverse_permutations, (const sofa::helper::vector<unsigned int> &) permutations);
+                //std::cerr<<"renumberPoints  ok :"<<std::endl;
             }
         }
     }
