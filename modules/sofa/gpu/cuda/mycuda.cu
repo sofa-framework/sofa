@@ -31,6 +31,8 @@
 
 #include <sofa/helper/BackTrace.h>
 
+//#define NO_CUDA
+
 #if defined(__cplusplus)
 namespace sofa
 {
@@ -39,6 +41,88 @@ namespace gpu
 namespace cuda
 {
 #endif
+
+#ifdef NO_CUDA
+
+bool cudaCheck(cudaError_t, const char*)
+{
+    return true;
+}
+
+bool cudaInitCalled = false;
+
+int mycudaInit(int)
+{
+    cudaInitCalled = true;
+    return 0;
+}
+
+void mycudaMalloc(void **devPtr, size_t)
+{
+    *devPtr = NULL;
+}
+
+void mycudaMallocPitch(void **devPtr, size_t*, size_t, size_t)
+{
+    *devPtr = NULL;
+}
+
+void mycudaFree(void *)
+{
+}
+
+void mycudaMallocHost(void **hostPtr, size_t size)
+{
+    *hostPtr = malloc(size);
+}
+
+void mycudaFreeHost(void *hostPtr)
+{
+    free(hostPtr);
+}
+
+void mycudaMemcpyHostToDevice(void *, const void *, size_t)
+{
+}
+
+void mycudaMemcpyDeviceToDevice(void *, const void *, size_t)
+{
+}
+
+void mycudaMemcpyDeviceToHost(void *, const void *, size_t)
+{
+}
+
+void mycudaMemcpyHostToDevice2D(void *, size_t, const void *, size_t, size_t, size_t)
+{
+}
+
+void mycudaMemcpyDeviceToDevice2D(void *, size_t, const void *, size_t, size_t, size_t )
+{
+}
+
+void mycudaMemcpyDeviceToHost2D(void *, size_t, const void *, size_t, size_t, size_t)
+{
+}
+
+void mycudaGLRegisterBufferObject(int)
+{
+}
+
+void mycudaGLUnregisterBufferObject(int)
+{
+}
+
+void mycudaGLMapBufferObject(void** ptr, int)
+{
+    *ptr = NULL;
+}
+
+void mycudaGLUnmapBufferObject(int)
+{
+}
+
+#else
 
 bool cudaCheck(cudaError_t err, const char* src="?")
 {
@@ -181,6 +265,8 @@ void mycudaGLUnmapBufferObject(int id)
 {
     cudaCheck(cudaGLUnmapBufferObject((GLuint)id),"cudaGLUnmapBufferObject");
 }
+
+#endif
 
 #if defined(__cplusplus)
 } // namespace cuda
