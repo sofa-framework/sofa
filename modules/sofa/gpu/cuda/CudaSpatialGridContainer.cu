@@ -55,7 +55,6 @@
 
 #include "CudaCommon.h"
 #include "CudaMath.h"
-#include <stdio.h>
 #include "cuda.h"
 #include "radixsort.cuh"
 
