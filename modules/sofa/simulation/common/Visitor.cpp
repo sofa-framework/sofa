@@ -78,7 +78,7 @@ void Visitor::printInfo(const core::objectmodel::BaseContext* context, bool dirD
         this->infoPrinted=true;
         std::string info;
 
-        std::string infos=this->getInfos();
+        std::string infos(this->getInfos());
         std::string NodeName;
         if (enteringBase) NodeName=enteringBase->getName();
 

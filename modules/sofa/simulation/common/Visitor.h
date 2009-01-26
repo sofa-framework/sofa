@@ -30,6 +30,8 @@
 #include <sofa/simulation/common/LocalStorage.h>
 
 #include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
+
+#include <sofa/helper/set.h>
 #include <iostream>
 
 
@@ -91,22 +93,27 @@ public:
             ctime_t t0 = node->startTime();
             for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
             {
-                debug_write_state_before(*it);
-                (visitor->*fn)(node, *it);
-                debug_write_state_after(*it);
-                t0 = node->endTime(t0, category, *it);
+                if(testTags(*it))
+                {
+                    debug_write_state_before(*it);
+                    (visitor->*fn)(node, *it);
+                    debug_write_state_after(*it);
+                    t0 = node->endTime(t0, category, *it);
+                }
             }
         }
         else
         {
             for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
             {
-                debug_write_state_before(*it);
-                (visitor->*fn)(node, *it);
-                debug_write_state_after(*it);
+                if(testTags(*it))
+                {
+                    debug_write_state_before(*it);
+                    (visitor->*fn)(node, *it);
+                    debug_write_state_after(*it);
+                }
             }
         }
-
     }
 
     /// Helper method to enumerate objects in the given list. The callback gets the pointer to node
@@ -119,25 +126,50 @@ public:
         {
             const std::string category = getCategoryName();
             ctime_t t0 = node->startTime();
+
             for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
             {
-                debug_write_state_before(*it);
-                res = (visitor->*fn)(node, *it);
-                debug_write_state_after(*it);
-                t0 = node->endTime(t0, category, *it);
+                if(testTags(*it))
+                {
+                    debug_write_state_before(*it);
+                    res = (visitor->*fn)(node, *it);
+                    debug_write_state_after(*it);
+                    t0 = node->endTime(t0, category, *it);
+                }
             }
         }
         else
         {
+            //bool processObject;
             for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
             {
-                debug_write_state_before(*it);
-                res = (visitor->*fn)(node, *it);
-                debug_write_state_after(*it);
+                if(testTags(*it))
+                {
+                    debug_write_state_before(*it);
+                    res = (visitor->*fn)(node, *it);
+                    debug_write_state_after(*it);
+                }
             }
         }
         return res;
 
+    }
+
+
+    //method to compare the tags of the objet with the ones of the visitor
+    // return true if the object ahs at least one tag in common with the visitor
+    // or if no tag is set to the visitor
+    bool testTags(core::objectmodel::BaseObject* obj)
+    {
+        if(subsetsToManage.empty())
+            return true;
+        else
+        {
+            for ( sofa::helper::set<unsigned int>::iterator it=subsetsToManage.begin() ; it!=subsetsToManage.end() ; it++)
+                if(obj->hasTag(*it))
+                    return true;
+        }
+        return false;
     }
 
 
@@ -205,6 +237,10 @@ public:
     /// This version is offered a LocalStorage to store temporary data
     virtual void processNodeBottomUp(simulation::Node* node, LocalStorage*) { processNodeBottomUp(node); }
 
+
+public:
+    /// list of the subsets
+    sofa::helper::set<unsigned int>  subsetsToManage;
 
 #ifdef DUMP_VISITOR_INFO
     //DEBUG Purposes

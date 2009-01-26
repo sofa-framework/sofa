@@ -704,7 +704,10 @@ void ModifyObject::updateValues()
         if (REINIT_FLAG)
         {
             if (sofa::core::objectmodel::BaseObject *obj = dynamic_cast< sofa::core::objectmodel::BaseObject* >(node))
+            {
                 obj->reinit();
+                obj->updateTagList();
+            }
             else if (Node *n = dynamic_cast< Node *>(node)) n->reinit();
         }
     }
