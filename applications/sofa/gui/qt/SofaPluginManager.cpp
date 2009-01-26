@@ -57,6 +57,7 @@ namespace qt
 
 SofaPluginManager::SofaPluginManager()
 {
+#ifdef SOFA_QT4
     // SIGNAL / SLOTS CONNECTIONS
     this->connect(buttonAdd, SIGNAL(clicked() ),  this, SLOT( addLibrary() ));
     this->connect(buttonRemove, SIGNAL(clicked() ),  this, SLOT( removeLibrary() ));
@@ -91,12 +92,14 @@ SofaPluginManager::SofaPluginManager()
         }
     }
     settings.endArray();
+#endif
 }
 
 
 
 void SofaPluginManager::addLibrary()
 {
+#ifdef SOFA_QT4
     //get the lib to load
     QString sfile = getOpenFileName ( this, NULL, "dynamic library (*.dll *.so *.dylib)", "load library dialog",  "Choose the component library to load" );
 
@@ -136,12 +139,14 @@ void SofaPluginManager::addLibrary()
         mbox->setText("Unable to load this library");
         mbox->show();
     }
+#endif
 }
 
 
 
 void SofaPluginManager::removeLibrary()
 {
+#ifdef SOFA_QT4
     //get the selected item
     Q3ListViewItem * curItem = listPlugins->selectedItem();
     QString location = curItem->text(1); //get the location value
@@ -166,12 +171,14 @@ void SofaPluginManager::removeLibrary()
     }
 
     settings.endArray();
+#endif
 }
 
 
 
 void SofaPluginManager::updateComponentList(Q3ListViewItem* curItem)
 {
+#ifdef SOFA_QT4
     //update the component list when an item is selected
     listComponents->clear();
     QString location = curItem->text(1); //get the location value
@@ -185,10 +192,12 @@ void SofaPluginManager::updateComponentList(Q3ListViewItem* curItem)
         cpts.replace(",","\n");
         listComponents->setText(cpts);
     }
+#endif
 }
 
 void SofaPluginManager::updateDescription(Q3ListViewItem* curItem)
 {
+#ifdef SOFA_QT4
     //update the component list when an item is selected
     description->clear();
     QString location = curItem->text(1); //get the location value
@@ -200,7 +209,7 @@ void SofaPluginManager::updateDescription(Q3ListViewItem* curItem)
         description->setText(QString(componentDescFunc()));
     }
 }
-
+#endif
 }
 }
 }
