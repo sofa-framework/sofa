@@ -46,6 +46,7 @@
 #include <sofa/gui/qt/DisplayFlagWidget.h>
 #include <sofa/gui/qt/WindowVisitor.h>
 #include <sofa/gui/qt/GraphVisitor.h>
+#include <sofa/gui/qt/SofaPluginManager.h>
 
 #include <sofa/simulation/tree/xml/XML.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -60,6 +61,7 @@
 #include <QTimer>
 #include <Q3TextDrag>
 #include <Q3PopupMenu>
+#include <QLibrary>
 typedef Q3ListViewItem QListViewItem;
 typedef QStackedWidget QWidgetStack;
 typedef Q3PopupMenu QPopupMenu;
@@ -72,6 +74,7 @@ typedef QTextDrag Q3TextDrag;
 #include <qlistview.h>
 #include <qslider.h>
 #include <qpopupmenu.h>
+#include <qlibrary.h>
 #endif
 
 
@@ -145,6 +148,7 @@ public:
 
     virtual void editRecordDirectory();
     virtual void editGnuplotDirectory();
+    virtual void showPluginManager();
 
     void dragEnterEvent( QDragEnterEvent* event) {event->accept();}
     void dropEvent(QDropEvent* event);
@@ -340,6 +344,7 @@ private:
     DisplayFlagWidget *displayFlag;
     WindowVisitor* windowTraceVisitor;
     GraphVisitor* handleTraceVisitor;
+    SofaPluginManager* pluginManager;
 
 };
 

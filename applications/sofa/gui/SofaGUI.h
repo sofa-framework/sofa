@@ -67,6 +67,8 @@ public:
         return Init();
     }
 
+    static int createGUI(sofa::simulation::Node* groot = NULL, const char* filename = NULL);
+
     static int MainLoop(sofa::simulation::Node* groot = NULL, const char* filename = NULL);
 
 
@@ -91,6 +93,7 @@ public:
     virtual int mainLoop()=0;
     virtual void redraw()=0;
     virtual int closeGUI()=0;
+    virtual void setScene(sofa::simulation::Node* groot, const char* filename=NULL)=0;
 
     virtual sofa::simulation::Node* currentSimulation()=0;
 

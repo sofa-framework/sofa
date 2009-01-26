@@ -128,15 +128,24 @@ int main(int argc, char** argv)
         sofa::helper::system::DataRepository.findFile(fileName);
     }
 
-    std::string in_filename(fileName);
-    if (in_filename.rfind(".simu") == std::string::npos)
-        groot = dynamic_cast<sofa::simulation::tree::GNode*>( sofa::simulation::tree::getSimulation()->load(fileName.c_str()));
-
     if (groot==NULL)
     {
         groot = new sofa::simulation::tree::GNode;
         //return 1;
     }
+
+    if (int err=sofa::gui::SofaGUI::createGUI(groot,fileName.c_str()))
+        return err;
+
+    std::string in_filename(fileName);
+    if (in_filename.rfind(".simu") == std::string::npos)
+    {
+        sofa::simulation::tree::getSimulation()->unload ( groot);
+        groot = dynamic_cast<sofa::simulation::tree::GNode*>( sofa::simulation::tree::getSimulation()->load(fileName.c_str()));
+        if(sofa::gui::SofaGUI::CurrentGUI())
+            sofa::gui::SofaGUI::CurrentGUI()->setScene(groot,fileName.c_str());
+    }
+
 
     if (startAnim)
         groot->setAnimate(true);

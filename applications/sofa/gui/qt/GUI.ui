@@ -626,6 +626,7 @@
     <item text="&amp;Edit" name="editMenu">
         <action name="editRecordDirectoryAction"/>
         <action name="editGnuplotDirectoryAction"/>
+        <action name="PluginManagerAction"/>
     </item>
     <item text="&amp;View" name="View">
         <action name="viewerOpenGLAction"/>
@@ -1002,6 +1003,17 @@
         </property>
     </action>
     <action>
+      <property name="name">
+        <cstring>PluginManagerAction</cstring>
+      </property>
+      <property name="text">
+        <string>Plugin Manager...</string>
+      </property>
+      <property name="menuText">
+        <string>Plugin Manager...</string>
+      </property>
+    </action>
+    <action>
         <property name="name">
             <cstring>Action</cstring>
         </property>
@@ -1190,6 +1202,12 @@
         <slot>editRecordDirectory()</slot>
     </connection>
     <connection>
+      <sender>PluginManagerAction</sender>
+      <signal>activated()</signal>
+      <receiver>GUI</receiver>
+      <slot>showPluginManager()</slot>
+    </connection>
+    <connection>
         <sender>editGnuplotDirectoryAction</sender>
         <signal>activated()</signal>
         <receiver>GUI</receiver>
@@ -1227,6 +1245,7 @@
     <slot>RightClickedItemInSceneView( QListViewItem *, const QPoint &amp;, int )</slot>
     <slot>editRecordDirectory()</slot>
     <slot>editGnuplotDirectory()</slot>
+    <slot>showPluginManager()</slot>
     <slot>showVisualModels()</slot>
     <slot>hideVisualModels()</slot>
     <slot>showBehaviorModels()</slot>

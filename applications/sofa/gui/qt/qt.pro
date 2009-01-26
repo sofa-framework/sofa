@@ -24,6 +24,7 @@ contains (DEFINES, SOFA_QT4) {
 	  FORMS3 += BaseGenGraphForm.ui
 	  FORMS3 += DialogAddObject.ui
 	  FORMS3 += VisitorGUI.ui
+	  FORMS3 += PluginManager.ui
 }
 else {
 	  CONFIG += $$CONFIGLIBRARIES qt
@@ -32,6 +33,7 @@ else {
 	  FORMS += BaseGenGraphForm.ui
 	  FORMS += DialogAddObject.ui
 	  FORMS += VisitorGUI.ui
+	  FORMS += PluginManager.ui
 }
 
 
@@ -50,7 +52,8 @@ HEADERS += viewer/SofaViewer.h \
            TableDataWidget.h \
            WFloatLineEdit.h \ 
            WindowVisitor.h \
-           FileManagement.h
+           FileManagement.h \
+           SofaPluginManager.h
 
 
 SOURCES += Main.cpp \
@@ -69,7 +72,8 @@ SOURCES += Main.cpp \
            TableDataWidget.cpp \
            WFloatLineEdit.cpp \
            WindowVisitor.cpp \
-           FileManagement.cpp
+           FileManagement.cpp \
+           SofaPluginManager.cpp
 
 
 

@@ -65,7 +65,7 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node)
                     // stop all mechanical computations
                     return RESULT_PRUNE;
                 }
-                Result res2;
+                Result res2 = RESULT_CONTINUE;
                 if(testTags(node->mechanicalMapping))
                 {
                     debug_write_state_before(node->mechanicalMapping);
