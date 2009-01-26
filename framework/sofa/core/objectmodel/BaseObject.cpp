@@ -186,7 +186,7 @@ void BaseObject::removeTag(std::string sub)
 {
     unsigned int id = sofa::helper::TagFactory::getID(sub);
     f_tagIds.erase(id);
-    for (sofa::helper::vector<std::string>::const_iterator it = f_tagNames.getValue().begin(); it!=f_tagNames.getValue().end(); it++)
+    for (sofa::helper::vector<std::string>::iterator it = f_tagNames.beginEdit()->begin(); it!=f_tagNames.getValue().end(); it++)
     {
         if((*it) ==sub)
         {
@@ -195,13 +195,16 @@ void BaseObject::removeTag(std::string sub)
             return;
         }
     }
+    f_tagNames.endEdit();
 }
 
 void BaseObject::updateTagList()
 {
     f_tagIds.clear();
-    for (sofa::helper::vector<std::string>::const_iterator it = f_tagNames.getValue().begin(); it!=f_tagNames.getValue().end(); it++)
+    for (sofa::helper::vector<std::string>::iterator it = f_tagNames.beginEdit()->begin(); it!=f_tagNames.getValue().end(); it++)
         f_tagIds.insert(sofa::helper::TagFactory::getID(*it));
+
+    f_tagNames.endEdit();
 }
 
 } // namespace objectmodel
