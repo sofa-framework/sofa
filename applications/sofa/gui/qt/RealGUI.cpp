@@ -608,6 +608,10 @@ void RealGUI::init()
     windowTraceVisitor->hide();
     connect(windowTraceVisitor, SIGNAL(WindowVisitorClosed(bool)), this->exportVisitorCheckbox, SLOT(setChecked(bool)));
     handleTraceVisitor = new GraphVisitor(windowTraceVisitor->graphView);
+
+    //--------
+    pluginManager = new SofaPluginManager;
+    pluginManager->hide();
     //*********************************************************************************************************************************
     //List of objects
     //Read the object.txt that contains the information about the objects which can be added to the scenes whithin a given BoundingBox and scale range
@@ -1016,7 +1020,7 @@ void RealGUI::setScene ( Node* groot, const char* filename )
     }
 
 
-
+    graphView->clear();
     viewer->setScene ( dynamic_cast< GNode *>(groot), filename );
     viewer->resetView();
     initial_time = groot->getTime();
@@ -1280,6 +1284,11 @@ void RealGUI::editRecordDirectory()
         if (record_directory.at(record_directory.size()-1) != '/') record_directory+="/";
     }
 
+}
+
+void RealGUI::showPluginManager()
+{
+    pluginManager->show();
 }
 
 void RealGUI::editGnuplotDirectory()
