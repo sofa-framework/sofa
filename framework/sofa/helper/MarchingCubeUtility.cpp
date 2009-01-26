@@ -415,7 +415,7 @@ void MarchingCubeUtility::vertexInterp ( Vector3 &p, const float isolevel,
 {
     float mu = ( isolevel - valp1 ) / ( valp2 - valp1 );
     p = p1 + ( p2 - p1 ) * mu;
-    p = ( ( p + Vector3 ( 1.0f, 1.0f, 1.0f ) ) *0.5f ).linearProduct ( dataResolution.linearProduct ( dataVoxelSize ) ) + dataVoxelSize/2.0;
+    p = ( ( p + Vector3 ( 1.0f, 1.0f, 1.0f ) ) *0.5f ).linearProduct ( dataVoxelSize.linearProduct ( dataResolution ) ) + dataVoxelSize/2.0;
     p[0] = ( int ) ( p[0]*PRECISION ) /PRECISION;
     p[1] = ( int ) ( p[1]*PRECISION ) /PRECISION;
     p[2] = ( int ) ( p[2]*PRECISION ) /PRECISION;
@@ -749,7 +749,7 @@ void MarchingCubeUtility::setBordersFromRealCoords ( const vector<set<Vector3> >
 {
     this->borders.clear();
 
-    Vector3 gridGraphicSize = dataResolution.linearProduct ( dataVoxelSize );
+    Vector3 gridGraphicSize = dataVoxelSize.linearProduct ( dataResolution );
     gridGraphicSize = Vector3 ( 1.0 / gridGraphicSize[0], 1.0 / gridGraphicSize[1], 1.0 / gridGraphicSize[2] );
     Vector3 gridSize = Vector3 ( dataResolution /cubeStep );
 
@@ -821,7 +821,7 @@ void MarchingCubeUtility::findSeeds ( vector<Vec3i>& seeds, const unsigned char 
 void MarchingCubeUtility::findSeedsFromRealCoords ( vector<Vec3i>& mCubeCoords, const vector<Vector3>& realCoords ) const
 {
     mCubeCoords.clear();
-    Vector3 gridGraphicSize = dataResolution.linearProduct ( dataVoxelSize );
+    Vector3 gridGraphicSize = dataVoxelSize.linearProduct ( dataResolution );
     gridGraphicSize = Vector3 ( 1.0 / gridGraphicSize[0], 1.0 / gridGraphicSize[1], 1.0 / gridGraphicSize[2] );
     Vector3 gridSize = Vector3 ( dataResolution /cubeStep );
 
