@@ -208,8 +208,8 @@ void SofaPluginManager::updateDescription(Q3ListViewItem* curItem)
     {
         description->setText(QString(componentDescFunc()));
     }
-}
 #endif
+}
 }
 }
 }
