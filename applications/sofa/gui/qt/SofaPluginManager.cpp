@@ -106,7 +106,7 @@ void SofaPluginManager::addLibrary()
     //try to load the lib
     QLibrary lib(sfile);
     if (!lib.load())
-        std::cout<<lib.errorString().latin1()<<std::endl;
+        std::cout<<"Error : unable to load library file "<<sfile.latin1()<<std::endl;
 
     //get the functions
     typedef void (*componentLoader)();
