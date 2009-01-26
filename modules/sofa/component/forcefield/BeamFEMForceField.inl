@@ -107,26 +107,31 @@ void BeamFEMForceField<DataTypes>::reinit()
     initBeams( n );
     for (unsigned int i=0; i<n; ++i)
         reinitBeam(i);
+    std::cerr<<"reinitBeam Ok"<<std::endl;
     sout << "BeamFEMForceField: init OK, "<<n<<" elements."<<sendl;
 }
 
 template <class DataTypes>
 void BeamFEMForceField<DataTypes>::reinitBeam(unsigned int i)
 {
+
     double stiffness, length, radius, poisson;
     Index a = (*_indexedElements)[i][0];
     Index b = (*_indexedElements)[i][1];
+
     const VecCoord& x0 = *this->mstate->getX0();
 //    sout << "Beam "<<i<<" : ("<<a<<' '<<b<<") : beamsData size = "<<beamsData.size()<<" mstate size = "<<this->mstate->getSize()<<" x0 size = "<<x0.size()<<sendl;
     //if (needInit)
-    //if (stiffnessContainer)
-    //	stiffness = stiffnessContainer->getStiffness(i) ;
-    //else
-    stiffness =  _youngModulus.getValue() ;
+    if (stiffnessContainer)
+        stiffness = stiffnessContainer->getStiffness(i) ;
+    else
+        stiffness =  _youngModulus.getValue() ;
+
     //if (lengthContainer)
     //	length = lengthContainer->getLength(i) ;
     //else
     length = (x0[a].getCenter()-x0[b].getCenter()).norm() ;
+
     //if (radiusContainer)
     //	radius = radiusContainer->getRadius(i) ;
     //else
@@ -136,9 +141,11 @@ void BeamFEMForceField<DataTypes>::reinitBeam(unsigned int i)
     //else
     poisson = _poissonRatio.getValue() ;
 
+
     setBeam(i, stiffness, length, poisson, radius );
 
     computeStiffness(i,a,b);
+
     initLarge(i,a,b);
 }
 
@@ -169,6 +176,8 @@ void BeamFEMForceField<DataTypes>::handleTopologyChange()
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& p, const VecDeriv& /*v*/)
 {
+
+    //std::cout<<" BeamFEMForceField<DataTypes>::addForce  "<<std::endl;
     f.resize(p.size());
     //_beamQuat.resize( _indexedElements->size() );
 
@@ -215,6 +224,7 @@ void BeamFEMForceField<DataTypes>::addDForce (VecDeriv& df, const VecDeriv& dx)
             applyStiffnessLarge( df, dx, i, a, b );
         }
     }
+
 }
 
 template<class DataTypes>
@@ -241,6 +251,8 @@ void BeamFEMForceField<DataTypes>::computeStiffness(int i, Index , Index )
     Real L3 = (Real) (L2 * _L);
     Real EIy = (Real)(_E * _Iy);
     Real EIz = (Real)(_E * _Iz);
+
+    //std::cout<<" Young Modulus :"<<_E<<std::endl;
 
     // Find shear-deformation parameters
     if (_Asy == 0)
