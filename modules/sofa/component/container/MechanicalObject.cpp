@@ -88,7 +88,7 @@ template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<LaparoscopicRigid3T
 
 
 #ifndef SOFA_FLOAT
-template<>
+template<> SOFA_COMPONENT_CONTAINER_API
 void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaulttype::Quat q)
 {
     VecCoord& x = *this->getX();
@@ -99,7 +99,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaultty
     }
 }
 
-template <>
+template <> SOFA_COMPONENT_CONTAINER_API
 void MechanicalObject<defaulttype::Rigid3dTypes>::addBaseVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset)
 {
     if (dest.type == VecId::V_COORD)
@@ -160,7 +160,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::addBaseVectorToState(VecId des
 #endif
 
 #ifndef SOFA_DOUBLE
-template<>
+template<> SOFA_COMPONENT_CONTAINER_API
 void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaulttype::Quat q)
 {
     VecCoord& x = *this->getX();
@@ -171,7 +171,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaultty
     }
 }
 
-template <>
+template <> SOFA_COMPONENT_CONTAINER_API
 void MechanicalObject<defaulttype::Rigid3fTypes>::addBaseVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset)
 {
     if (dest.type == VecId::V_COORD)
