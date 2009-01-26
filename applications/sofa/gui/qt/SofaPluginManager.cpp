@@ -33,12 +33,16 @@
 #include <QMessageBox>
 #include <QLibrary>
 #include <QSettings>
+#include <QTextEdit>
+#include <QPushButton>
 #else
 //#include <qheader.h>
 //#include <qpopupmenu.h>
 #include <qmessagebox.h>
 #include <qlibrary.h>
 #include <qsettings.h>
+#include <qtextedit.h>
+#include <qpushbutton.h>
 #endif
 
 #include <iostream>
@@ -57,81 +61,97 @@ namespace qt
 
 SofaPluginManager::SofaPluginManager()
 {
-#ifdef SOFA_QT4
     // SIGNAL / SLOTS CONNECTIONS
     this->connect(buttonAdd, SIGNAL(clicked() ),  this, SLOT( addLibrary() ));
     this->connect(buttonRemove, SIGNAL(clicked() ),  this, SLOT( removeLibrary() ));
+#ifdef SOFA_QT4
     this->connect(listPlugins, SIGNAL(selectionChanged(Q3ListViewItem*) ), this, SLOT(updateComponentList(Q3ListViewItem*) ));
     this->connect(listPlugins, SIGNAL(selectionChanged(Q3ListViewItem*) ), this, SLOT(updateDescription(Q3ListViewItem*) ));
-
+#else
+    this->connect(listPlugins, SIGNAL(selectionChanged(QListViewItem*) ), this, SLOT(updateComponentList(QListViewItem*) ));
+    this->connect(listPlugins, SIGNAL(selectionChanged(QListViewItem*) ), this, SLOT(updateDescription(QListViewItem*) ));
+#endif
     //read the plugin list in the settings
-    QSettings settings("SOFA-FRAMEWORK", "SOFA");
-    int size = settings.beginReadArray("plugins");
+    QSettings settings;
+    settings.setPath( "SOFA-FRAMEWORK", "SOFA",QSettings::User);
+
+// 			int size = settings.beginReadArray("plugins");
+    settings.beginGroup("/plugins");
+    int size = settings.readNumEntry("/size");
+
     listPlugins->clear();
     typedef void (*componentLoader)();
     typedef char* (*componentStr)();
 
-    for (int i=0 ; i<size; ++i)
+    for (int i=1 ; i<=size; i++)
     {
-        settings.setArrayIndex(i);
-        QString sfile = settings.value("location").toString();
+// 				settings.setArrayIndex(i);
+        QString titi;
+        titi = titi.setNum(i);
+
+        settings.beginGroup(titi);
+        QString sfile = settings.readEntry("/location");
+        settings.endGroup();
 
         //load the plugin libs
         QLibrary lib(sfile);
         componentLoader componentLoaderFunc = (componentLoader) lib.resolve("initExternalModule");
         componentStr componentNameFunc = (componentStr) lib.resolve("getModuleName");
-        //componentStr componentDescFunc = (componentStr) lib.resolve("getModuleDescription");
+
         //fill the list view
-        if (componentLoaderFunc && componentNameFunc/* && componentDescFunc*/)
+        if (componentLoaderFunc && componentNameFunc)
         {
             componentLoaderFunc();
             QString sname(componentNameFunc());
-            //QString sdesc(componentDescFunc());
-            Q3ListViewItem * item = new Q3ListViewItem(listPlugins, sname, sfile/*, sdesc*/);
+
+            Q3ListViewItem * item = new Q3ListViewItem(listPlugins, sname, sfile);
             item->setSelectable(true);
         }
     }
-    settings.endArray();
-#endif
+// 			settings.endArray();
+    settings.endGroup();
 }
 
 
 
 void SofaPluginManager::addLibrary()
 {
-#ifdef SOFA_QT4
     //get the lib to load
     QString sfile = getOpenFileName ( this, NULL, "dynamic library (*.dll *.so *.dylib)", "load library dialog",  "Choose the component library to load" );
+    if(sfile=="")
+        return;
 
     //try to load the lib
     QLibrary lib(sfile);
     if (!lib.load())
-        std::cout<<"Error : unable to load library file "<<sfile.latin1()<<std::endl;
+        std::cout<<"Error loading library " << sfile.latin1() <<std::endl;
 
     //get the functions
     typedef void (*componentLoader)();
     typedef char* (*componentStr)();
     componentLoader componentLoaderFunc = (componentLoader) lib.resolve("initExternalModule");
     componentStr componentNameFunc = (componentStr) lib.resolve("getModuleName");
-    //componentStr componentDescFunc = (componentStr) lib.resolve("getModuleDescription");
 
-    if (componentLoaderFunc && componentNameFunc/* && componentDescFunc*/)
+    if (componentLoaderFunc && componentNameFunc)
     {
         //fill the list view
         componentLoaderFunc();
         QString sname(componentNameFunc());
-        //QString sdesc(componentDescFunc());
-        Q3ListViewItem * item = new Q3ListViewItem(listPlugins, sname, sfile/*, sdesc*/);
+        Q3ListViewItem * item = new Q3ListViewItem(listPlugins, sname, sfile);
         item->setSelectable(true);
 
         //add to the settings (to record it)
-        QSettings settings("SOFA-FRAMEWORK", "SOFA");
-        int size = settings.beginReadArray("plugins");
-        settings.endArray();
-        settings.beginWriteArray("plugins");
-        settings.setArrayIndex(size);
-        settings.setValue("location", sfile);
-        settings.endArray();
+        QSettings settings;
+        settings.setPath( "SOFA-FRAMEWORK", "SOFA",QSettings::User);
+        settings.beginGroup("/plugins");
+        int size = settings.readNumEntry("/size");
+        QString titi;
+        titi = titi.setNum(size+1);
+        settings.beginGroup(titi);
+        settings.writeEntry("/location", sfile);
+        settings.endGroup();
+        settings.writeEntry("/size", size+1);
+        settings.endGroup();
     }
     else
     {
@@ -139,14 +159,12 @@ void SofaPluginManager::addLibrary()
         mbox->setText("Unable to load this library");
         mbox->show();
     }
-#endif
 }
 
 
 
 void SofaPluginManager::removeLibrary()
 {
-#ifdef SOFA_QT4
     //get the selected item
     Q3ListViewItem * curItem = listPlugins->selectedItem();
     QString location = curItem->text(1); //get the location value
@@ -154,31 +172,29 @@ void SofaPluginManager::removeLibrary()
     listPlugins->removeItem(curItem);
 
     //remove it from the settings
-    QSettings settings("SOFA-FRAMEWORK", "SOFA");
-    int size = settings.beginReadArray("plugins");
+    QSettings settings;
+    settings.setPath( "SOFA-FRAMEWORK", "SOFA",QSettings::User);
+    settings.beginGroup("/plugins");
+    int size = settings.readNumEntry("/size");
 
-    for (int i=0 ; i<size; ++i)
+    for (int i=1 ; i<=size; i++)
     {
-        settings.setArrayIndex(i);
-        QString sfile = settings.value("location").toString();
+        QString titi;
+        titi = titi.setNum(i);
+        settings.beginGroup(titi);
+        QString sfile = settings.readEntry("/location");
         if (sfile == location)
-        {
-            settings.endArray();
-            settings.beginWriteArray("plugins");
-            settings.setArrayIndex(i);
-            settings.remove("location");
-        }
+            settings.removeEntry("/location");
+        settings.endGroup();
     }
 
-    settings.endArray();
-#endif
+    settings.endGroup();
 }
 
 
 
 void SofaPluginManager::updateComponentList(Q3ListViewItem* curItem)
 {
-#ifdef SOFA_QT4
     //update the component list when an item is selected
     listComponents->clear();
     QString location = curItem->text(1); //get the location value
@@ -192,12 +208,10 @@ void SofaPluginManager::updateComponentList(Q3ListViewItem* curItem)
         cpts.replace(",","\n");
         listComponents->setText(cpts);
     }
-#endif
 }
 
 void SofaPluginManager::updateDescription(Q3ListViewItem* curItem)
 {
-#ifdef SOFA_QT4
     //update the component list when an item is selected
     description->clear();
     QString location = curItem->text(1); //get the location value
@@ -208,8 +222,8 @@ void SofaPluginManager::updateDescription(Q3ListViewItem* curItem)
     {
         description->setText(QString(componentDescFunc()));
     }
-#endif
 }
+
 }
 }
 }

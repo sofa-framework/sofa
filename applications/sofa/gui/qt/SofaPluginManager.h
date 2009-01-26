@@ -58,8 +58,13 @@ public:
 public slots:
     void addLibrary();
     void removeLibrary();
+#ifdef SOFA_QT4
     void updateComponentList(Q3ListViewItem*);
     void updateDescription(Q3ListViewItem*);
+#else
+    void updateComponentList(QListViewItem*);
+    void updateDescription(QListViewItem*);
+#endif
 };
 
 
