@@ -446,7 +446,8 @@ public:
     virtual const char* getClassName() const { return "MechanicalVDotVisitor";}
     virtual const char* getInfos() const
     {
-        std::string name="v=a*b with a[" + a.getName() + "] and b[" + b.getName() + "]";
+        std::string name("v=a*b with a[");
+        name += a.getName() + "] and b[" + b.getName() + "]";
         return name.c_str();
     }
     /// Specify whether this action can be parallelized.
@@ -542,6 +543,71 @@ public:
     }
 #endif
 };
+
+
+class SOFA_SIMULATION_COMMON_API MechanicalPropagateXVisitor : public MechanicalVisitor
+{
+public:
+    VecId x;
+
+    MechanicalPropagateXVisitor(VecId x, sofa::helper::set<unsigned int> tags=sofa::helper::set<unsigned int>()) : x(x)
+    {
+        subsetsToManage = tags;
+    }
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalPropagateXVisitor"; }
+
+    /// Specify whether this action can be parallelized.
+    virtual bool isThreadSafe() const
+    {
+        return true;
+    }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addWriteVector(x);
+    }
+#endif
+};
+
+
+/** Same as MechanicalPropagateXVisitor followed by MechanicalResetForceVisitor
+ */
+class SOFA_SIMULATION_COMMON_API MechanicalPropagateXAndResetForceVisitor : public MechanicalVisitor
+{
+public:
+    VecId x,f;
+
+    MechanicalPropagateXAndResetForceVisitor(VecId x, VecId f, sofa::helper::set<unsigned int> tags=sofa::helper::set<unsigned int>()) : x(x), f(f)
+    {
+        subsetsToManage = tags;
+    }
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalPropagateXAndResetForceVisitor"; }
+
+    /// Specify whether this action can be parallelized.
+    virtual bool isThreadSafe() const
+    {
+        return true;
+    }
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addWriteVector(x);
+        addWriteVector(f);
+    }
+#endif
+};
+
 
 
 class SOFA_SIMULATION_COMMON_API MechanicalPropagateAndAddDxVisitor : public MechanicalVisitor
@@ -798,8 +864,10 @@ class SOFA_SIMULATION_COMMON_API MechanicalResetForceVisitor : public Mechanical
 public:
     VecId res;
     bool onlyMapped;
-    MechanicalResetForceVisitor(VecId res, bool onlyMapped = false) : res(res), onlyMapped(onlyMapped)
+
+    MechanicalResetForceVisitor(VecId res, bool onlyMapped = false, sofa::helper::set<unsigned int> tags=sofa::helper::set<unsigned int>()) : res(res), onlyMapped(onlyMapped)
     {
+        subsetsToManage = tags;
 #ifdef DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
@@ -838,8 +906,10 @@ class SOFA_SIMULATION_COMMON_API MechanicalComputeForceVisitor : public Mechanic
 public:
     VecId res;
     bool accumulate; ///< Accumulate everything back to the DOFs through the mappings
-    MechanicalComputeForceVisitor(VecId res, bool accumulate = true) : res(res), accumulate(accumulate)
+
+    MechanicalComputeForceVisitor(VecId res, bool accumulate = true, sofa::helper::set<unsigned int> tags=sofa::helper::set<unsigned int>()) : res(res), accumulate(accumulate)
     {
+        subsetsToManage = tags;
 #ifdef DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
@@ -855,7 +925,7 @@ public:
     virtual const char* getClassName() const {return "MechanicalComputeForceVisitor";}
     virtual const char* getInfos() const
     {
-        std::string name="["+res.getName()+"]";
+        std::string name=std::string("[")+res.getName()+std::string("]");
         if (accumulate) name+= " Accumulating";
         else            name+= " Not Accumulating";
         return name.c_str();

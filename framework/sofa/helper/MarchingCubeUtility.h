@@ -31,9 +31,10 @@
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
+#include <sofa/helper/set.h>
 #include <sofa/helper/io/Mesh.h>
 #include <map>
-#include <set>
+
 
 
 namespace sofa
@@ -44,7 +45,7 @@ namespace helper
 using sofa::defaulttype::Vec;
 using sofa::defaulttype::Vector3;
 using sofa::helper::vector;
-using std::set;
+using sofa::helper::set;
 
 class SOFA_HELPER_API MarchingCubeUtility
 {
@@ -92,7 +93,7 @@ public:
     }
 
     /// Set the border to localy remesh from real coords
-    void setBordersFromRealCoords ( const vector<set<Vector3> >& borders );
+    void setBordersFromRealCoords ( const vector<sofa::helper::set<Vector3> >& borders );
 
 
     /// given a set of data (size of the data and size of the marching cube beeing defined previously),
@@ -170,7 +171,7 @@ private:
             const vector<float>& data, const float isolevel,
             sofa::helper::vector< PointID >& triangles,
             sofa::helper::vector< Vector3 >& vertices,
-            std::set<Vec3i>& generatedCubes,
+            sofa::helper::set<Vec3i>& generatedCubes,
             helper::vector< helper::vector<unsigned int> >* triangleIndexInRegularGrid = NULL ) const;
 
 private:

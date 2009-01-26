@@ -29,7 +29,9 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/componentmodel/topology/Topology.h>
+#include <sofa/helper/TagFactory.h>
 #include <iostream>
+
 using std::cerr;
 using std::endl;
 
@@ -46,6 +48,7 @@ BaseObject::BaseObject()
     : Base()
     , f_listening(initData( &f_listening, false, "listening", "if true, handle the events, otherwise ignore the events"))
     , f_printLog(initData( &f_printLog, false, "printLog", "if true, print logs at run-time"))
+    , f_tagNames(initData( &f_tagNames, "tags", "list of the subsets the objet belongs to"))
     , context_(NULL)
 /*        , m_isListening(false)
         , m_printLog(false)*/
@@ -74,14 +77,17 @@ BaseContext* BaseObject::getContext()
 }
 
 void BaseObject::init()
-{ }
+{ updateTagList();}
 
 void BaseObject::bwdInit()
 { }
 
 /// Update method called when variables used in precomputation are modified.
 void BaseObject::reinit()
-{ sout<<"WARNING: the reinit method of the object "<<this->getName()<<" does nothing."<<sendl;}
+{
+    updateTagList();
+    //sout<<"WARNING: the reinit method of the object "<<this->getName()<<" does nothing."<<sendl;
+}
 
 /// Save the initial state for later uses in reset()
 void BaseObject::storeResetState()
@@ -155,6 +161,48 @@ double BaseObject::getTime() const
     return getContext()->getTime();
 }
 
+
+bool BaseObject::hasTag( std::string name)
+{
+    return (f_tagIds.find( sofa::helper::TagFactory::getID(name) ) != f_tagIds.end() );
+}
+
+
+bool BaseObject::hasTag( unsigned int id)
+{
+    return ( ( f_tagIds.find(id) ) != f_tagIds.end() );
+}
+
+
+void BaseObject::addTag(std::string sub)
+{
+    unsigned int id = sofa::helper::TagFactory::getID(sub);
+    f_tagIds.insert(id);
+    f_tagNames.beginEdit()->push_back(sub);
+    f_tagNames.endEdit();
+}
+
+void BaseObject::removeTag(std::string sub)
+{
+    unsigned int id = sofa::helper::TagFactory::getID(sub);
+    f_tagIds.erase(id);
+    for (sofa::helper::vector<std::string>::const_iterator it = f_tagNames.getValue().begin(); it!=f_tagNames.getValue().end(); it++)
+    {
+        if((*it) ==sub)
+        {
+            f_tagNames.beginEdit()->erase(it);
+            f_tagNames.endEdit();
+            return;
+        }
+    }
+}
+
+void BaseObject::updateTagList()
+{
+    f_tagIds.clear();
+    for (sofa::helper::vector<std::string>::const_iterator it = f_tagNames.getValue().begin(); it!=f_tagNames.getValue().end(); it++)
+        f_tagIds.insert(sofa::helper::TagFactory::getID(*it));
+}
 
 } // namespace objectmodel
 

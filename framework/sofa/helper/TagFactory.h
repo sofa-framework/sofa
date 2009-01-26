@@ -16,50 +16,64 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                              SOFA :: Framework                              *
 *                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/common/InitVisitor.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
-//#include "MechanicalIntegration.h"
+#ifndef SOFA_HELPER_TAGFACTORY_H
+#define SOFA_HELPER_TAGFACTORY_H
+
+#include <vector>
+#include <string>
+
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {
 
-namespace simulation
+namespace helper
 {
 
+/**
+the TagFactory class class manage the tags list shared all the components and visitors.
+It allows to define subsets to process by specific visitors
+The user only gives strings to define the subsets, and an id is given back and is used to do the tests of belonging
+The id is the index of the string in the "tagsList" vector
+*/
 
-Visitor::Result InitVisitor::processNodeTopDown(simulation::Node* node)
+class SOFA_HELPER_API TagFactory
 {
-    node->initialize();
+protected:
 
-    for(unsigned int i=0; i<node->object.size(); ++i)
-    {
-        node->object[i]->init();
-        node->object[i]->updateTagList();
-    }
-
-    return RESULT_CONTINUE;
-}
-
-void InitVisitor::processNodeBottomUp(simulation::Node* node)
-{
-    // init all the components in reverse order
-    node->setDefaultVisualContextValue();
-
-    for(unsigned int i=0; i<node->object.size(); ++i)
-    {
-        node->object[i]->bwdInit();
-    }
-}
+    /// the list of the tag names. the Ids are the indices in the vector
+    std::vector<std::string> tagsList;
 
 
+public:
 
-} // namespace simulation
+    /**
+    @return : the Id corresponding to the name of the tag given in parameter
+    If the name isn't found in the list, it is added to it and return the new id.
+    */
+    static unsigned int getID(std::string name);
+
+    /// return the name corresponding to the id in parameter
+    static std::string getName(unsigned int id);
+
+    /// return the instance of the factory. Creates it if doesn't exist yet.
+    static TagFactory* getInstance();
+};
+
+
+
+} // namespace helper
 
 } // namespace sofa
+
+#endif
+
 

@@ -16,50 +16,60 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                              SOFA :: Framework                              *
 *                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/common/InitVisitor.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
-//#include "MechanicalIntegration.h"
+#include <sofa/helper/TagFactory.h>
 
 namespace sofa
 {
 
-namespace simulation
+namespace helper
 {
 
 
-Visitor::Result InitVisitor::processNodeTopDown(simulation::Node* node)
+/*SOFA_HELPER_API*/ unsigned int TagFactory::getID(std::string name)
 {
-    node->initialize();
+    TagFactory * tagfac = TagFactory::getInstance();
+    std::vector<std::string>::iterator it = tagfac->tagsList.begin();
+    unsigned int i=0;
 
-    for(unsigned int i=0; i<node->object.size(); ++i)
+    while(it != tagfac->tagsList.end() && (*it)!= name)
     {
-        node->object[i]->init();
-        node->object[i]->updateTagList();
+        it++;
+        i++;
     }
 
-    return RESULT_CONTINUE;
-}
-
-void InitVisitor::processNodeBottomUp(simulation::Node* node)
-{
-    // init all the components in reverse order
-    node->setDefaultVisualContextValue();
-
-    for(unsigned int i=0; i<node->object.size(); ++i)
+    if (it!=tagfac->tagsList.end())
+        return i;
+    else
     {
-        node->object[i]->bwdInit();
+        tagfac->tagsList.push_back(name);
+        return i;
     }
 }
 
+/*SOFA_HELPER_API*/ std::string TagFactory::getName(unsigned int id)
+{
+    if( id < getInstance()->tagsList.size() )
+        return getInstance()->tagsList[id];
+    else
+        return "";
+}
+
+/*SOFA_HELPER_API*/ TagFactory* TagFactory::getInstance()
+{
+    static TagFactory instance;
+    return &instance;
+}
 
 
-} // namespace simulation
+} // namespace helper
 
 } // namespace sofa
 

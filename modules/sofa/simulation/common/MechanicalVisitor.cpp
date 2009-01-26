@@ -45,10 +45,14 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node)
         }*/
     for (unsigned i=0; i<node->solver.size() && res!=RESULT_PRUNE; i++ )
     {
-        debug_write_state_before(node->solver[i]);
-        res = this->fwdOdeSolver(node, node->solver[i]);
-        debug_write_state_after(node->solver[i]);
+        if(testTags(node->solver[i]))
+        {
+            debug_write_state_before(node->solver[i]);
+            res = this->fwdOdeSolver(node, node->solver[i]);
+            debug_write_state_after(node->solver[i]);
+        }
     }
+
     if (res != RESULT_PRUNE)
     {
         if (node->mechanicalState != NULL)
@@ -62,13 +66,19 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node)
                     return RESULT_PRUNE;
                 }
                 Result res2;
-                debug_write_state_before(node->mechanicalMapping);
-                res = this->fwdMechanicalMapping(node, node->mechanicalMapping);
-                debug_write_state_after(node->mechanicalMapping);
+                if(testTags(node->mechanicalMapping))
+                {
+                    debug_write_state_before(node->mechanicalMapping);
+                    res = this->fwdMechanicalMapping(node, node->mechanicalMapping);
+                    debug_write_state_after(node->mechanicalMapping);
+                }
 
-                debug_write_state_before(node->mechanicalState);
-                res2 = this->fwdMappedMechanicalState(node, node->mechanicalState);
-                debug_write_state_after(node->mechanicalState);
+                if(testTags(node->mechanicalState))
+                {
+                    debug_write_state_before(node->mechanicalState);
+                    res2 = this->fwdMappedMechanicalState(node, node->mechanicalState);
+                    debug_write_state_after(node->mechanicalState);
+                }
 
 
                 if (res2 == RESULT_PRUNE)
@@ -76,10 +86,13 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node)
             }
             else
             {
-                //cerr<<"MechanicalVisitor::processNodeTopDown, node "<<node->getName()<<" is a no-map model"<<endl;
-                debug_write_state_before(node->mechanicalState);
-                res = this->fwdMechanicalState(node, node->mechanicalState);
-                debug_write_state_after(node->mechanicalState);
+                if(testTags(node->mechanicalState))
+                {
+                    //cerr<<"MechanicalVisitor::processNodeTopDown, node "<<node->getName()<<" is a no-map model"<<endl;
+                    debug_write_state_before(node->mechanicalState);
+                    res = this->fwdMechanicalState(node, node->mechanicalState);
+                    debug_write_state_after(node->mechanicalState);
+                }
             }
         }
     }
@@ -87,9 +100,12 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node)
     {
         if (node->mass != NULL)
         {
-            debug_write_state_before(node->mass);
-            res = this->fwdMass(node, node->mass);
-            debug_write_state_after(node->mass);
+            if(testTags(node->mass))
+            {
+                debug_write_state_before(node->mass);
+                res = this->fwdMass(node, node->mass);
+                debug_write_state_after(node->mass);
+            }
         }
     }
     if (res != RESULT_PRUNE)
@@ -120,13 +136,17 @@ void MechanicalVisitor::processNodeBottomUp(simulation::Node* node)
         {
             if (node->mechanicalMapping->isMechanical())
             {
-                this->bwdMappedMechanicalState(node, node->mechanicalState);
-                this->bwdMechanicalMapping(node, node->mechanicalMapping);
+                if(testTags(node->mechanicalState))
+                {
+                    this->bwdMappedMechanicalState(node, node->mechanicalState);
+                    this->bwdMechanicalMapping(node, node->mechanicalMapping);
+                }
             }
         }
         else
         {
-            this->bwdMechanicalState(node, node->mechanicalState);
+            if(testTags(node->mechanicalState))
+                this->bwdMechanicalState(node, node->mechanicalState);
         }
 
     }
@@ -137,7 +157,8 @@ void MechanicalVisitor::processNodeBottomUp(simulation::Node* node)
         }*/
     for (unsigned i=0; i<node->solver.size(); i++ )
     {
-        this->bwdOdeSolver(node, node->solver[i]);
+        if(testTags(node->solver[i]))
+            this->bwdOdeSolver(node, node->solver[i]);
     }
 }
 #ifdef DUMP_VISITOR_INFO
@@ -437,6 +458,46 @@ Visitor::Result MechanicalPropagateDxAndResetForceVisitor::fwdMappedMechanicalSt
     endProcess(node, mm, t0);
     return RESULT_CONTINUE;
 }
+
+Visitor::Result MechanicalPropagateXVisitor::fwdMechanicalState(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalState* mm)
+{
+    ctime_t t0 = beginProcess(node, mm);
+    mm->setX(x);
+    endProcess(node, mm, t0);
+    return RESULT_CONTINUE;
+}
+Visitor::Result MechanicalPropagateXVisitor::fwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map)
+{
+    ctime_t t0 = beginProcess(node, map);
+    map->propagateX();
+    endProcess(node, map, t0);
+    return RESULT_CONTINUE;
+}
+
+Visitor::Result MechanicalPropagateXAndResetForceVisitor::fwdMechanicalState(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalState* mm)
+{
+    ctime_t t0 = beginProcess(node, mm);
+    mm->setX(x);
+    mm->setF(f);
+    mm->resetForce();
+    endProcess(node, mm, t0);
+    return RESULT_CONTINUE;
+}
+Visitor::Result MechanicalPropagateXAndResetForceVisitor::fwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map)
+{
+    ctime_t t0 = beginProcess(node, map);
+    map->propagateX();
+    endProcess(node, map, t0);
+    return RESULT_CONTINUE;
+}
+Visitor::Result MechanicalPropagateXAndResetForceVisitor::fwdMappedMechanicalState(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalState* mm)
+{
+    ctime_t t0 = beginProcess(node, mm);
+    mm->resetForce();
+    endProcess(node, mm, t0);
+    return RESULT_CONTINUE;
+}
+
 
 Visitor::Result MechanicalPropagateAndAddDxVisitor::fwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map)
 {

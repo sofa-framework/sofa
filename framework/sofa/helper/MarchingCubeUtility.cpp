@@ -567,7 +567,7 @@ void MarchingCubeUtility::propagateFrom ( const Vec3i coord,
         const float isolevel,
         sofa::helper::vector< PointID >& mesh,
         sofa::helper::vector< Vector3 >& vertices,
-        std::set<Vec3i>& generatedCubes,
+        sofa::helper::set<Vec3i>& generatedCubes,
         helper::vector< helper::vector<unsigned int> >* triangleIndexInRegularGrid
                                         ) const
 {
@@ -632,7 +632,7 @@ void MarchingCubeUtility::run ( const unsigned char *_data, const sofa::helper::
         helper::vector< helper::vector<unsigned int> >*triangleIndexInRegularGrid ) const
 {
     Vec3i gridSize = Vec3i ( dataResolution[0]/cubeStep, dataResolution[1]/cubeStep, dataResolution[2]/cubeStep );
-    std::set<Vec3i> generatedCubes;
+    sofa::helper::set<Vec3i> generatedCubes;
 
     vector< float > data ( dataResolution[0]*dataResolution[1]*dataResolution[2] );
     if ( data.size() == 0 )
@@ -777,7 +777,7 @@ void MarchingCubeUtility::setBordersFromRealCoords ( const vector<set<Vector3> >
 void MarchingCubeUtility::findSeeds ( vector<Vec3i>& seeds, const unsigned char *_data )
 {
     vector< float > data ( dataResolution[0]*dataResolution[1]*dataResolution[2] );
-    std::set<Vec3i> parsedVoxels;
+    sofa::helper::set<Vec3i> parsedVoxels;
     if ( data.size() == 0 )
         return;
 
@@ -860,7 +860,7 @@ void MarchingCubeUtility::updateTriangleInRegularGridVector ( helper::vector< he
 
 
 
-void MarchingCubeUtility::findConnectedVoxels ( std::set<Vec3i>& connectedVoxels, const Vec3i& from, const vector<float>& data )
+void MarchingCubeUtility::findConnectedVoxels ( sofa::helper::set<Vec3i>& connectedVoxels, const Vec3i& from, const vector<float>& data )
 {
     if ( connectedVoxels.find ( from ) != connectedVoxels.end() ) return;
     Vec3i bboxMin = Vec3i ( bbox.min / cubeStep );
