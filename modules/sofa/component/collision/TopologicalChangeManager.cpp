@@ -102,14 +102,29 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::col
                 //ind_curr = topoMap->getFromIndex(ind_glob);
                 std::set< unsigned int > loc_items = items;
                 items.clear();
-                for (std::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
+                if( topoMap->isTheOutputTopologySubdividingTheInputOne())
                 {
-                    unsigned int ind_glob = topoMap->getGlobIndex(*it);
-                    unsigned int ind = topoMap->getFromIndex(ind_glob);
-                    //sout << *it << " -> "<<ind_glob << " -> "<<ind<<sendl;
-                    items.insert(ind);
+                    for (std::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
+                    {
+                        unsigned int ind_glob = topoMap->getGlobIndex(*it);
+                        unsigned int ind = topoMap->getFromIndex(ind_glob);
+                        //sout << *it << " -> "<<ind_glob << " -> "<<ind<<sendl;
+                        items.insert(ind);
+                    }
                 }
-
+                else
+                {
+                    for (std::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
+                    {
+                        vector<unsigned int> indices;
+                        topoMap->getFromIndex( indices, *it);
+                        for( vector<unsigned int>::const_iterator itIndices = indices.begin(); itIndices != indices.end(); itIndices++)
+                        {
+                            std::cout << *it << " -> " << *itIndices << std::endl;
+                            items.insert( *itIndices );
+                        }
+                    }
+                }
                 topo_curr = topoMap->getFrom()->getContext()->getMeshTopology();
                 node_curr = dynamic_cast<simulation::tree::GNode*>(topo_curr->getContext());
 
@@ -161,14 +176,29 @@ void TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::colli
                 is_topoMap = true;
                 std::set< unsigned int > loc_items = items;
                 items.clear();
-                for (std::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
+                if( topoMap->isTheOutputTopologySubdividingTheInputOne())
                 {
-                    unsigned int ind_glob = topoMap->getGlobIndex(*it);
-                    unsigned int ind = topoMap->getFromIndex(ind_glob);
-                    //sout << *it << " -> "<<ind_glob << " -> "<<ind<<sendl;
-                    items.insert(ind);
+                    for (std::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
+                    {
+                        unsigned int ind_glob = topoMap->getGlobIndex(*it);
+                        unsigned int ind = topoMap->getFromIndex(ind_glob);
+                        //sout << *it << " -> "<<ind_glob << " -> "<<ind<<sendl;
+                        items.insert(ind);
+                    }
                 }
-
+                else
+                {
+                    for (std::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
+                    {
+                        vector<unsigned int> indices;
+                        topoMap->getFromIndex( indices, *it);
+                        for( vector<unsigned int>::const_iterator itIndices = indices.begin(); itIndices != indices.end(); itIndices++)
+                        {
+                            //std::cout << *it << " -> " << *itIndices << std::endl;
+                            items.insert( *itIndices );
+                        }
+                    }
+                }
                 topo_curr = topoMap->getFrom()->getContext()->getMeshTopology();
                 node_curr = dynamic_cast<simulation::tree::GNode*>(topo_curr->getContext());
 
