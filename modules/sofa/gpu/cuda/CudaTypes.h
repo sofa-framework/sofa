@@ -523,7 +523,7 @@ public:
 
         if (s > hostAllocSize)
         {
-            hostAllocSize = ( s>2*hostAllocSize ) ? s : 2*hostAllocSize;
+            hostAllocSize = ( s>2*hostAllocSize || s > 1024*1024 ) ? s : 2*hostAllocSize;
             // always allocate multiples of BSIZE values
             //hostAllocSize = ( hostAllocSize+WARP_SIZE-1 )/WARP_SIZE * WARP_SIZE;
             T* prevHostPointer = hostPointer;
@@ -544,7 +544,7 @@ public:
 
         if ( ypitch*pitch > deviceAllocSize )
         {
-            if (ypitch < 2 * ((deviceAllocSize+pitch-1) / pitch))
+            if (ypitch < 2 * ((deviceAllocSize+pitch-1) / pitch) && ypitch < 1024)
             {
                 ypitch = 2 * ((deviceAllocSize+pitch-1) / pitch);
             }
