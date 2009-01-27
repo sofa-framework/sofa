@@ -406,7 +406,7 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-class RigidDistanceGridCollisionModel;
+class SOFA_COMPONENT_COLLISION_API RigidDistanceGridCollisionModel;
 
 class RigidDistanceGridCollisionElement : public core::TCollisionElementIterator<RigidDistanceGridCollisionModel>
 {
