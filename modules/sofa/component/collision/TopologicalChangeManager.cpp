@@ -120,7 +120,7 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::col
                         topoMap->getFromIndex( indices, *it);
                         for( vector<unsigned int>::const_iterator itIndices = indices.begin(); itIndices != indices.end(); itIndices++)
                         {
-                            std::cout << *it << " -> " << *itIndices << std::endl;
+                            //std::cout << *it << " -> " << *itIndices << std::endl;
                             items.insert( *itIndices );
                         }
                     }
