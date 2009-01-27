@@ -97,6 +97,9 @@ public:
     /// Return true if this mapping is able to propagate topological changes from output to input model
     virtual bool propagateFromOutputToInputModel() { return false; }
 
+    /// return true if the output topology subdivide the input one. (the topological uses the Loc2GlobVec/Glob2LocMap/In2OutMap structs and share the same DOFs)
+    virtual bool isTheOutputTopologySubdividingTheInputOne() { return true;}
+
     /// Accessor to index maps :
     const std::map<unsigned int, unsigned int>& getGlob2LocMap() { return Glob2LocMap;}
     const sofa::helper::vector<unsigned int>& getLoc2GlobVec() { return Loc2GlobVec;}
@@ -117,6 +120,11 @@ public:
     {
         return 0;
     }
+
+    /** return all the from indices in the 'In' topology corresponding to the index in the 'Out' topology.
+    *   This function is used instead of  the previous one when the function isTheOutputTopologySubdividingTheInputOne() returns false.
+    */
+    virtual void getFromIndex( vector<unsigned int>& /*fromIndices*/, const unsigned int /*toIndex*/) const {}
 
     const std::map<unsigned int, sofa::helper::vector<unsigned int> >& getIn2OutMap() { return In2OutMap;}
 
