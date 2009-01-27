@@ -59,11 +59,11 @@ using namespace sofa::defaulttype;
 
 /// This class will be specialized to whatever mapper is required
 template < class TCollisionModel, class DataTypes = typename TCollisionModel::DataTypes >
-class ContactMapper;
+class SOFA_COMPONENT_COLLISION_API ContactMapper;
 
 /// Base class common to all mappers able to provide a MechanicalState of a given type
 template <class TDataTypes>
-class BaseContactMapper
+class SOFA_COMPONENT_COLLISION_API BaseContactMapper
 {
 public:
     typedef TDataTypes DataTypes;
@@ -97,7 +97,7 @@ public:
 
 /// Base class for all mappers using BarycentricMapping
 template < class TCollisionModel, class DataTypes >
-class BarycentricContactMapper : public BaseContactMapper<DataTypes>
+class SOFA_COMPONENT_COLLISION_API BarycentricContactMapper : public BaseContactMapper<DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -148,7 +148,7 @@ public:
 
 /// Mapper for LineModel
 template<class DataTypes>
-class ContactMapper<LineModel, DataTypes> : public BarycentricContactMapper<LineModel, DataTypes>
+class SOFA_COMPONENT_COLLISION_API ContactMapper<LineModel, DataTypes> : public BarycentricContactMapper<LineModel, DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -162,7 +162,7 @@ public:
 
 /// Mapper for TriangleModel
 template<class DataTypes>
-class ContactMapper<TriangleModel, DataTypes> : public BarycentricContactMapper<TriangleModel, DataTypes>
+class SOFA_COMPONENT_COLLISION_API ContactMapper<TriangleModel, DataTypes> : public BarycentricContactMapper<TriangleModel, DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -190,7 +190,7 @@ public:
 
 /// Mapper for TetrahedronModel
 template<class DataTypes>
-class ContactMapper<TetrahedronModel, DataTypes> : public BarycentricContactMapper<TetrahedronModel, DataTypes>
+class SOFA_COMPONENT_COLLISION_API ContactMapper<TetrahedronModel, DataTypes> : public BarycentricContactMapper<TetrahedronModel, DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -205,7 +205,7 @@ public:
 
 /// Base class for IdentityMapping based mappers
 template<class TCollisionModel, class DataTypes>
-class IdentityContactMapper : public BaseContactMapper<DataTypes>
+class SOFA_COMPONENT_COLLISION_API IdentityContactMapper : public BaseContactMapper<DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -253,7 +253,7 @@ public:
 
 /// Specialization of IdentityContactMapper when mapping to the same DataTypes, as no mapping is required in this case
 template<class TCollisionModel>
-class IdentityContactMapper<TCollisionModel, typename TCollisionModel::InDataTypes> : public BaseContactMapper<typename TCollisionModel::InDataTypes>
+class SOFA_COMPONENT_COLLISION_API IdentityContactMapper<TCollisionModel, typename TCollisionModel::InDataTypes> : public BaseContactMapper<typename TCollisionModel::InDataTypes>
 {
 public:
     typedef TCollisionModel MCollisionModel;
@@ -301,14 +301,14 @@ public:
 
 /// Mapper for PointModel
 template<class DataTypes>
-class ContactMapper<PointModel, DataTypes> : public IdentityContactMapper<PointModel, DataTypes>
+class SOFA_COMPONENT_COLLISION_API ContactMapper<PointModel, DataTypes> : public IdentityContactMapper<PointModel, DataTypes>
 {
 public:
 };
 
 /// Mapper for SphereModel
 template<class DataTypes>
-class ContactMapper<SphereModel, DataTypes> : public IdentityContactMapper<SphereModel, DataTypes>
+class SOFA_COMPONENT_COLLISION_API ContactMapper<SphereModel, DataTypes> : public IdentityContactMapper<SphereModel, DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -323,7 +323,7 @@ public:
 
 /// Mapper for SphereTreeModel
 template<class DataTypes>
-class ContactMapper<SphereTreeModel, DataTypes> : public IdentityContactMapper<SphereTreeModel, DataTypes>
+class SOFA_COMPONENT_COLLISION_API ContactMapper<SphereTreeModel, DataTypes> : public IdentityContactMapper<SphereTreeModel, DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -338,7 +338,7 @@ public:
 
 /// Base class for all mappers using RigidMapping
 template < class TCollisionModel, class DataTypes >
-class RigidContactMapper : public BaseContactMapper<DataTypes>
+class SOFA_COMPONENT_COLLISION_API RigidContactMapper : public BaseContactMapper<DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -406,7 +406,7 @@ public:
 
 /// Mapper for RigidDistanceGridCollisionModel
 template <class DataTypes>
-class ContactMapper<RigidDistanceGridCollisionModel,DataTypes> : public RigidContactMapper<RigidDistanceGridCollisionModel,DataTypes>
+class SOFA_COMPONENT_COLLISION_API ContactMapper<RigidDistanceGridCollisionModel,DataTypes> : public RigidContactMapper<RigidDistanceGridCollisionModel,DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -461,7 +461,7 @@ public:
 
 /// Mapper for FFDDistanceGridCollisionModel
 template <class DataTypes>
-class ContactMapper<FFDDistanceGridCollisionModel,DataTypes> : public BarycentricContactMapper<FFDDistanceGridCollisionModel,DataTypes>
+class SOFA_COMPONENT_COLLISION_API ContactMapper<FFDDistanceGridCollisionModel,DataTypes> : public BarycentricContactMapper<FFDDistanceGridCollisionModel,DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -482,7 +482,7 @@ public:
 
 /// Base class for all mappers using SubsetMapping
 template < class TCollisionModel, class DataTypes >
-class SubsetContactMapper : public BaseContactMapper<DataTypes>
+class SOFA_COMPONENT_COLLISION_API SubsetContactMapper : public BaseContactMapper<DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -560,7 +560,7 @@ public:
 };
 
 template < class Mapper >
-class ContactMapperCreator : public helper::Creator < typename Mapper::ContactMapperFactory, Mapper >
+class SOFA_COMPONENT_COLLISION_API ContactMapperCreator : public helper::Creator < typename Mapper::ContactMapperFactory, Mapper >
 {
 public:
     typedef helper::Creator < typename Mapper::ContactMapperFactory, Mapper > Inherit;

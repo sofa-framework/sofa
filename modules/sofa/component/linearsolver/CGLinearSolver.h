@@ -42,7 +42,7 @@ namespace linearsolver
 
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
-class CGLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>, public virtual sofa::core::objectmodel::BaseObject
+class SOFA_COMPONENT_LINEARSOLVER_API CGLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>, public virtual sofa::core::objectmodel::BaseObject
 {
 public:
     typedef TMatrix Matrix;
