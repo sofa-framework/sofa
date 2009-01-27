@@ -65,6 +65,7 @@ BruteForceDetection::BruteForceDetection()
 
 void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
 {
+    //sout<<"--------- add Collision Model : "<<cm->getLast()->getName()<<" -------"<<sendl;
     if (cm->empty())
         return;
     if (cm->isSimulated() && cm->getLast()->canCollideWith(cm->getLast()))
@@ -79,16 +80,33 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
                 //sout << "Broad phase Self "<<cm->getLast()->getName()<<sendl;
                 cmPairs.push_back(std::make_pair(cm, cm));
             }
+
     }
     for (sofa::helper::vector<core::CollisionModel*>::iterator it = collisionModels.begin(); it != collisionModels.end(); ++it)
     {
+
         core::CollisionModel* cm2 = *it;
+
+        //sout<<"make pair with Collision Model ? :"<<cm2->getLast()->getName();
+
         if (!cm->isSimulated() && !cm2->isSimulated())
+        {
+            //sout<<" - No : case 1"<<sendl;
             continue;
+        }
+        /*
         if (!cm->canCollideWith(cm2))
-            continue;
+        {
+        	sout<<" - No : case 2"<<sendl;
+        	continue;
+        }
+        */
         if (!cm->getLast()->canCollideWith(cm2->getLast()))
+        {
+            //sout<<" - No : case 3"<<sendl;
             continue;
+        }
+        //sout<<" - Yes !"<<sendl;
         bool swapModels = false;
         core::componentmodel::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, cm2, swapModels);
         if (intersector == NULL)

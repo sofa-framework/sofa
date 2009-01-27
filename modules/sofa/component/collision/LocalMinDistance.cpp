@@ -166,6 +166,8 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
+    // E1 => A-->B
+    // E2 => C-->D
     const Vector3 AB = e1.p2()-e1.p1();
     const Vector3 CD = e2.p2()-e2.p1();
     const Vector3 AC = e2.p1()-e1.p1();
@@ -190,6 +192,14 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
             beta  < 0.000001 || beta  > 0.999999 )
             return 0;
     }
+    else
+    {
+        // several possibilities :
+        // -one point in common (auto-collision) => return false !
+        // -no point in common but line are // => we can continue to test
+
+        //std::cout<<"WARNING det is null"<<std::endl;
+    }
 
     Vector3 P,Q,PQ;
     P = e1.p1() + AB * alpha;
@@ -208,6 +218,8 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
     if (!testValidity(e2, QP))
         return 0;
 // end filter
+
+    //std::cout<<" contact line line detected with alpha ="<<alpha<<" and beta ="<<beta<<std::endl;
 
 #ifdef DETECTIONOUTPUT_FREEMOTION
 
@@ -412,7 +424,14 @@ bool LocalMinDistance::testIntersection(Line& e2, Point& e1)
             return false;
 
         Vector3 QP = -PQ;
-        return testValidity(e2, QP);
+        if ( testValidity(e2, QP) )
+        {
+            //std::cout<<"intersection line / point active"<<std::endl;
+            return true;
+        }
+        else
+            return false;
+
         // end filter
     }
     else
@@ -447,6 +466,13 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
 
+    ///// debug
+    //BaseMeshTopology* topology = e2.getCollisionModel()->getMeshTopology();
+    //const sofa::helper::vector<unsigned int>& triangleEdgeShell = topology->getTriangleEdgeShell(e2.getIndex());
+    //if (triangleEdgeShell.size() == 0)
+    //	std::cout<<"intersection line / point active while triangle Edge Shell = 0"<<std::endl;
+    //// end debug
+
 
     // filter for LMD
     if (!testValidity(e1, PQ))
@@ -456,6 +482,9 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
 
     if (!testValidity(e2, QP))
         return 0;
+
+
+
     // end filter
 
 #ifdef DETECTIONOUTPUT_FREEMOTION
@@ -837,6 +866,8 @@ int LocalMinDistance::computeIntersection(Ray &t1, Triangle &t2, OutputVector* c
 
 bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ)
 {
+    //return true;
+
     Vector3 pt = p.p();
 
     sofa::simulation::tree::GNode* node = dynamic_cast<sofa::simulation::tree::GNode*>(p.getCollisionModel()->getContext());
@@ -889,6 +920,8 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ)
 
     if (nMean.norm()> 0.0000000001)
         nMean.normalize();
+    else
+        std::cerr<<"WARNING nMean is null"<<std::endl;
 
 
     for (unsigned int i=0; i<edgeVertexShell.size(); i++)
@@ -910,6 +943,7 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ)
 
 bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
 {
+    //return true;
     Vector3 nMean;
     Vector3 n1, n2;
     Vector3 t1, t2;
@@ -922,7 +956,6 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
 
     BaseMeshTopology* topology = l.getCollisionModel()->getMeshTopology();
     helper::vector<Vector3>& x = *(l.getCollisionModel()->getMechanicalState()->getX());
-
     const sofa::helper::vector<unsigned int>& triangleEdgeShell = topology->getTriangleEdgeShell(l.getIndex());
     /*
     	std::cout << "LocalMinDistance::testValidity(Point &p, const Vector3 &PQ) : " << std::endl;
@@ -977,6 +1010,16 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
             return false;
 
     }
+    else
+    {
+        n1 = PQ;
+        n1.normalize();
+        if (fabs(dot(AB,n1)) > angleCone.getValue() + 0.001)		// auto-collision case between
+        {
+            //std::cout<<"bad case detected  -  abs(dot(AB,n1)) ="<<fabs(dot(AB,n1))<<std::endl;
+            return false;
+        }
+    }
     //sout<<"triangleEdgeShell.size()"<<triangleEdgeShell.size()<<sendl;
     return true;
 
@@ -999,6 +1042,10 @@ void LocalMinDistance::draw()
 {
     if (!getContext()->getShowCollisionModels())
         return;
+
+
+
+
 }
 
 
