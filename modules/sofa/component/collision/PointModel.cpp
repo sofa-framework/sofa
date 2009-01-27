@@ -149,6 +149,7 @@ void PointModel::draw()
 
 bool PointModel::canCollideWithElement(int index, CollisionModel* model2, int index2)
 {
+    //sout<<"PointModel("<<this->getName()<<") :: canCollideWithElement("<<model2->getName()<<") is called"<<sendl;
     if (!this->bSelfCollision.getValue()) return true;
     if (this->getContext() != model2->getContext()) return true;
     if (model2 == this)
