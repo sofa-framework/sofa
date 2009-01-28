@@ -218,11 +218,12 @@ typedef QApplication QSOFAApplication;
 SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& options, sofa::simulation::Node* node, const char* filename )
 {
     {
-        int argc=1;
+        int  *argc = new int;
         char **argv=new char*[2];
+        *argc = 1;
         argv[0] = strdup ( SofaGUI::GetProgramName() );
         argv[1]=NULL;
-        application = new QSOFAApplication ( argc,argv );
+        application = new QSOFAApplication ( *argc,argv );
     }
     // create interface
     gui = new RealGUI ( name, options );
