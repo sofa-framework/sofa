@@ -639,7 +639,7 @@ void CudaLCP_FullKernel_V13f(int dim,int itMax,float tol,const void * m,int mP,c
 {
 
     dim3 threads(V13_BSIZE,V13_BSIZE);
-    dim3 grid(1,V12_NBPROC);
+    dim3 grid(1,V13_NBPROC);
     int dim_n = (dim+V13_BSIZE-1)/V13_BSIZE * V13_BSIZE;
 
     CudaLCP_FullKernel_V13_kernel<<< grid, threads,0>>>(dim,dim_n,dim_n*itMax,tol,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share);
