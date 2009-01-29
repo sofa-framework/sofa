@@ -81,7 +81,7 @@ SlicedVolumetricModel::SlicedVolumetricModel() //const std::string &name, std::s
 SlicedVolumetricModel::~SlicedVolumetricModel()
 {
     if(texture_data != NULL)
-        free(texture_data);
+        delete [] texture_data;
 }
 
 void SlicedVolumetricModel::init()
@@ -201,7 +201,7 @@ void SlicedVolumetricModel::drawTransparent()
 
 
 
-        free(texture_data);
+        delete [] texture_data;
         texture_data = NULL;
         return;
     }
