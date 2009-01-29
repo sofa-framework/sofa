@@ -49,6 +49,8 @@ using namespace sofa::defaulttype;
 
 void TriangleSetTopologyModifier::init()
 {
+    std::cout << " TriangleSetTopologyModifier::init() " << std::endl;
+
     EdgeSetTopologyModifier::init();
     this->getContext()->get(m_container);
 }
@@ -56,6 +58,7 @@ void TriangleSetTopologyModifier::init()
 
 void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
 {
+    std::cout << " TriangleSetTopologyModifier::addTriangleProcess() " << std::endl;
 #ifndef NDEBUG
     // check if the 3 vertices are different
     if((t[0]==t[1]) || (t[0]==t[2]) || (t[1]==t[2]) )
@@ -131,6 +134,7 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
 
 void TriangleSetTopologyModifier::addTrianglesProcess(const sofa::helper::vector< Triangle > &triangles)
 {
+    std::cout << " TriangleSetTopologyModifier::addTrianglesProcess() " << std::endl;
     m_container->m_triangle.reserve(m_container->m_triangle.size() + triangles.size());
 
     for(unsigned int i=0; i<triangles.size(); ++i)
@@ -144,6 +148,7 @@ void TriangleSetTopologyModifier::addTrianglesWarning(const unsigned int nTriang
         const sofa::helper::vector< Triangle >& trianglesList,
         const sofa::helper::vector< unsigned int >& trianglesIndexList)
 {
+    std::cout << " TriangleSetTopologyModifier::addTrianglesWarning() " << std::endl;
     // Warning that quads just got created
     TrianglesAdded *e = new TrianglesAdded(nTriangles, trianglesList, trianglesIndexList);
     addTopologyChange(e);
@@ -156,16 +161,114 @@ void TriangleSetTopologyModifier::addTrianglesWarning(const unsigned int nTriang
         const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
         const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
 {
+    std::cout << " TriangleSetTopologyModifier::addTrianglesWarning() " << std::endl;
     // Warning that triangles just got created
     TrianglesAdded *e=new TrianglesAdded(nTriangles, trianglesList,trianglesIndexList,ancestors,baryCoefs);
     addTopologyChange(e);
 }
 
 
+void TriangleSetTopologyModifier::addPointsProcess(const unsigned int nPoints)
+{
+    std::cout << " TriangleSetTopologyModifier::addPointsProcess() " << std::endl;
+    // start by calling the parent's method.
+    EdgeSetTopologyModifier::addPointsProcess( nPoints );
+
+    // now update the local container structures.
+    if(m_container->hasTriangleVertexShell())
+        m_container->m_triangleVertexShell.resize( m_container->getNbPoints() );
+}
+
+void TriangleSetTopologyModifier::addEdgesProcess(const sofa::helper::vector< Edge > &edges)
+{
+    std::cout << " TriangleSetTopologyModifier::addEdgesProcess() " << std::endl;
+    if(!m_container->hasEdges())
+    {
+        m_container->createEdgeSetArray();
+    }
+
+    // start by calling the parent's method.
+    EdgeSetTopologyModifier::addEdgesProcess( edges );
+
+    if(m_container->hasTriangleEdgeShell())
+        m_container->m_triangleEdgeShell.resize( m_container->m_triangleEdgeShell.size() + edges.size() );
+}
+
+
+
+
+
+
+
+
+//***************************************************************************************************************
+//***************************************************************************************************************
+//                              PARTIE REMOVE
+//***************************************************************************************************************
+//***************************************************************************************************************
+
+
+
+void TriangleSetTopologyModifier::removeItems(sofa::helper::vector< unsigned int >& items)
+{
+    std::cout << " TriangleSetTopologyModifier::removeItems() " << std::endl;
+
+    std::cout << "items: " << items << std::endl;
+
+    if (removePrecondition(items))
+    {
+        removeTriangles(items, true, true);
+    }
+    else
+    {
+        std::cout << " TriangleSetTopologyModifier::removeItems(), preconditions for removal are not fullfil. " << std::endl;
+    }
+
+}
+
+
+void TriangleSetTopologyModifier::removeTriangles(sofa::helper::vector< unsigned int >& triangles,
+        const bool removeIsolatedEdges,
+        const bool removeIsolatedPoints)
+{
+    std::cout << " TriangleSetTopologyModifier::removeTriangles() " << std::endl;
+    std::cout << "- inputs: " << std::endl;
+    std::cout << "isolatededge: " << removeIsolatedEdges << std::endl;
+    std::cout << "isolatedPoints: " << removeIsolatedPoints << std::endl;
+    for (unsigned int i = 0; i < triangles.size(); i++)
+        std::cout<< triangles[i] <<std::endl;
+
+
+
+    /// add the topological changes in the queue
+    removeTrianglesWarning(triangles);
+    // inform other objects that the triangles are going to be removed
+    propagateTopologicalChanges();
+    // now destroy the old triangles.
+    removeTrianglesProcess(  triangles ,removeIsolatedEdges, removeIsolatedPoints);
+
+    removePostProcessing();
+
+    m_container->checkTopology();
+}
+
+
 void TriangleSetTopologyModifier::removeTrianglesWarning( sofa::helper::vector<unsigned int> &triangles)
 {
+    std::cout << " TriangleSetTopologyModifier::removeTrianglesWarning() " << std::endl;
+
+    for (unsigned int i=0; i<triangles.size(); i++)
+        std::cout << triangles[i] << std::endl;
+
+
+    std::cout << "Sorting! " << std::endl;
+
     /// sort vertices to remove in a descendent order
     std::sort( triangles.begin(), triangles.end(), std::greater<unsigned int>() );
+
+    for (unsigned int i=0; i<triangles.size(); i++)
+        std::cout << triangles[i] << std::endl;
+
 
     // Warning that these triangles will be deleted
     TrianglesRemoved *e=new TrianglesRemoved(triangles);
@@ -177,6 +280,7 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
         const bool removeIsolatedEdges,
         const bool removeIsolatedPoints)
 {
+    std::cout << " TriangleSetTopologyModifier::removeTrianglesProcess() " << std::endl;
     if(!m_container->hasTriangles()) // this method should only be called when triangles exist
     {
 #ifndef NDEBUG
@@ -282,33 +386,53 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
     }
 }
 
-void TriangleSetTopologyModifier::addPointsProcess(const unsigned int nPoints)
-{
-    // start by calling the parent's method.
-    EdgeSetTopologyModifier::addPointsProcess( nPoints );
 
-    // now update the local container structures.
-    if(m_container->hasTriangleVertexShell())
-        m_container->m_triangleVertexShell.resize( m_container->getNbPoints() );
-}
 
-void TriangleSetTopologyModifier::addEdgesProcess(const sofa::helper::vector< Edge > &edges)
+
+
+
+
+
+void TriangleSetTopologyModifier::removeEdgesProcess( const sofa::helper::vector<unsigned int> &indices,
+        const bool removeIsolatedItems)
 {
-    if(!m_container->hasEdges())
+    std::cout << " TriangleSetTopologyModifier::removeEdgesProcess() " << std::endl;
+    // Note: this does not check if an edge is removed from an existing triangle (it should never happen)
+
+    if(m_container->hasTriangleEdges()) // this method should only be called when edges exist
     {
-        m_container->createEdgeSetArray();
+        if(!m_container->hasTriangleEdgeShell())
+            m_container->createTriangleEdgeShellArray();
+
+        unsigned int lastEdge = m_container->getNumberOfEdges() - 1;
+        for(unsigned int i = 0; i < indices.size(); ++i, --lastEdge)
+        {
+            // updating the triangles connected to the edge replacing the removed one:
+            // for all triangles connected to the last point
+            for(sofa::helper::vector<unsigned int>::iterator itt = m_container->m_triangleEdgeShell[lastEdge].begin();
+                itt != m_container->m_triangleEdgeShell[lastEdge].end(); ++itt)
+            {
+                unsigned int edgeIndex = m_container->getEdgeIndexInTriangle(m_container->m_triangleEdge[(*itt)], lastEdge);
+                m_container->m_triangleEdge[(*itt)][edgeIndex] = indices[i];
+            }
+
+            // updating the edge shell itself (change the old index for the new one)
+            m_container->m_triangleEdgeShell[ indices[i] ] = m_container->m_triangleEdgeShell[ lastEdge ];
+        }
+
+        m_container->m_triangleEdgeShell.resize( m_container->m_triangleEdgeShell.size() - indices.size() );
     }
 
-    // start by calling the parent's method.
-    EdgeSetTopologyModifier::addEdgesProcess( edges );
-
-    if(m_container->hasTriangleEdgeShell())
-        m_container->m_triangleEdgeShell.resize( m_container->m_triangleEdgeShell.size() + edges.size() );
+    // call the parent's method.
+    EdgeSetTopologyModifier::removeEdgesProcess(indices, removeIsolatedItems);
 }
+
+
 
 void TriangleSetTopologyModifier::removePointsProcess( sofa::helper::vector<unsigned int> &indices,
         const bool removeDOF)
 {
+    std::cout << " TriangleSetTopologyModifier::removePointsProcess() " << std::endl;
     if(m_container->hasTriangles())
     {
         if(!m_container->hasTriangleVertexShell())
@@ -343,43 +467,21 @@ void TriangleSetTopologyModifier::removePointsProcess( sofa::helper::vector<unsi
     EdgeSetTopologyModifier::removePointsProcess( indices, removeDOF );
 }
 
-void TriangleSetTopologyModifier::removeEdgesProcess( const sofa::helper::vector<unsigned int> &indices,
-        const bool removeIsolatedItems)
-{
-    // Note: this does not check if an edge is removed from an existing triangle (it should never happen)
 
-    if(m_container->hasTriangleEdges()) // this method should only be called when edges exist
-    {
-        if(!m_container->hasTriangleEdgeShell())
-            m_container->createTriangleEdgeShellArray();
 
-        unsigned int lastEdge = m_container->getNumberOfEdges() - 1;
-        for(unsigned int i = 0; i < indices.size(); ++i, --lastEdge)
-        {
-            // updating the triangles connected to the edge replacing the removed one:
-            // for all triangles connected to the last point
-            for(sofa::helper::vector<unsigned int>::iterator itt = m_container->m_triangleEdgeShell[lastEdge].begin();
-                itt != m_container->m_triangleEdgeShell[lastEdge].end(); ++itt)
-            {
-                unsigned int edgeIndex = m_container->getEdgeIndexInTriangle(m_container->m_triangleEdge[(*itt)], lastEdge);
-                m_container->m_triangleEdge[(*itt)][edgeIndex] = indices[i];
-            }
 
-            // updating the edge shell itself (change the old index for the new one)
-            m_container->m_triangleEdgeShell[ indices[i] ] = m_container->m_triangleEdgeShell[ lastEdge ];
-        }
 
-        m_container->m_triangleEdgeShell.resize( m_container->m_triangleEdgeShell.size() - indices.size() );
-    }
 
-    // call the parent's method.
-    EdgeSetTopologyModifier::removeEdgesProcess(indices, removeIsolatedItems);
-}
+
+
+
+
 
 void TriangleSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector<unsigned int> &index,
         const sofa::helper::vector<unsigned int> &inv_index,
         const bool renumberDOF)
 {
+    std::cout << " TriangleSetTopologyModifier::renumberPointsProcess() " << std::endl;
     if(m_container->hasTriangles())
     {
         if(m_container->hasTriangleVertexShell())
@@ -403,28 +505,14 @@ void TriangleSetTopologyModifier::renumberPointsProcess( const sofa::helper::vec
     EdgeSetTopologyModifier::renumberPointsProcess( index, inv_index, renumberDOF );
 }
 
-void TriangleSetTopologyModifier::removeTriangles(sofa::helper::vector< unsigned int >& triangles,
-        const bool removeIsolatedEdges,
-        const bool removeIsolatedPoints)
-{
-    /// add the topological changes in the queue
-    removeTrianglesWarning(triangles);
-    // inform other objects that the triangles are going to be removed
-    propagateTopologicalChanges();
-    // now destroy the old triangles.
-    removeTrianglesProcess(  triangles ,removeIsolatedEdges, removeIsolatedPoints);
 
-    m_container->checkTopology();
-}
 
-void TriangleSetTopologyModifier::removeItems(sofa::helper::vector< unsigned int >& items)
-{
-    removeTriangles(items, true, true);
-}
+
 
 void TriangleSetTopologyModifier::renumberPoints( const sofa::helper::vector<unsigned int> &index,
         const sofa::helper::vector<unsigned int> &inv_index)
 {
+    std::cout << " TriangleSetTopologyModifier::renumberPoints() " << std::endl;
     /// add the topological changes in the queue
     renumberPointsWarning(index, inv_index);
     // inform other objects that the triangles are going to be removed
@@ -435,6 +523,14 @@ void TriangleSetTopologyModifier::renumberPoints( const sofa::helper::vector<uns
     m_container->checkTopology();
 }
 
+bool TriangleSetTopologyModifier::removePrecondition(sofa::helper::vector< unsigned int >& items)
+{
+#ifndef NDEBUG
+    std::cout << "Items passed: " << items << std::endl;
+#endif
+
+    return true;
+}
 
 } // namespace topology
 
