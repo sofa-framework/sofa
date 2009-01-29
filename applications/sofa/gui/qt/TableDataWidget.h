@@ -560,10 +560,39 @@ class vector_data_trait < sofa::helper::vector<T> > : public vector_data_trait< 
 {
 };
 
-template<class T>
-class vector_data_trait < sofa::component::topology::PointData<T> > : public vector_data_trait < sofa::helper::vector<T> >
-{
-};
+// template<class T>
+// class vector_data_trait < sofa::component::topology::PointData<T> > //: public vector_data_trait < sofa::helper::vector<T> >
+// {
+// public:
+//     typedef sofa::component::topology::PointData<T> data_type;
+//     typedef T value_type;
+//     enum { NDIM = 1 };
+//
+//     static int size(const data_type& d) { return d.getValue().size(); }
+//     static const char* header(const data_type& /*d*/, int /*i*/ = 0)
+//     {
+// 	return NULL;
+//     }
+//     static const value_type* get(const data_type& d, int i = 0)
+//     {
+// 	return ((unsigned)i < (unsigned)size(d.getValue())) ? &(d.getValue()[i]) : NULL;
+//     }
+//     static void set( const value_type& v, data_type& d, int i = 0)
+//     {
+// 	if ((unsigned)i < (unsigned)size(d.getValue()))
+// 	{
+// 	    sofa::helper::vector<T>& d_data = *(d.beginEdit());
+// 	    d_data[i] = v;
+// 	    d.endEdit();
+// 	}
+//     }
+//     static void resize( int s, data_type& d)
+//     {
+//         sofa::helper::vector<T>& d_data = *(d.beginEdit());
+// 	d_data.resize(s);
+// 	d.endEdit();
+//     }
+// };
 
 ////////////////////////////////////////////////////////////////
 /// sofa::defaulttype::ExtVector support

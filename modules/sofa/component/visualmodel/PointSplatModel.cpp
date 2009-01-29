@@ -95,8 +95,9 @@ void PointSplatModel::init()
         {
             const unsigned char *imageData = loader->getData();
 
+            helper::vector<unsigned char>* pData = pointData.beginEdit();
             for(unsigned int i=0; i<nbPoints; ++i)
-                pointData.push_back(imageData[idxInRegularGrid[i]]);
+                (*pData).push_back(imageData[idxInRegularGrid[i]]);
         }
     }
 
@@ -135,6 +136,8 @@ void PointSplatModel::reinit()
 void PointSplatModel::drawTransparent()
 {
     if(!getContext()->getShowVisualModels()) return;
+
+    const helper::vector<unsigned char>& pData = pointData.getValue();
 
     glPushAttrib(GL_ENABLE_BIT);
 
@@ -217,9 +220,9 @@ void PointSplatModel::drawTransparent()
         // TODO: modulate color by data
         float m = 1.0f;
 
-        if(!pointData.empty())
+        if(!pData.empty())
         {
-            m = 0.5f + 2.0f * pointData[i] / 255.0f;
+            m = 0.5f + 2.0f * pData[i] / 255.0f;
         }
 
         glColor4f (m*r, m*g, m*b, a);

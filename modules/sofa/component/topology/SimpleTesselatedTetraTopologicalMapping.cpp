@@ -73,6 +73,9 @@ void SimpleTesselatedTetraTopologicalMapping::init()
         fromModel->getContext()->get(from_tstc);
         if(toModel)
         {
+            helper::vector<int> *pointSourceData = pointSource.beginEdit();
+            helper::vector<int> *pointMappedFromPointData = pointMappedFromPoint.beginEdit();
+
             TetrahedronSetTopologyContainer *to_tstc;
             toModel->getContext()->get(to_tstc);
             to_tstc->clear();
@@ -85,7 +88,7 @@ void SimpleTesselatedTetraTopologicalMapping::init()
 
             //sout << from_tstc->getNbPoints() << sendl;
 
-            pointSource.resize(from_tstc->getNbPoints()+from_tstc->getNbEdges());
+            (*pointSourceData).resize(from_tstc->getNbPoints()+from_tstc->getNbEdges());
 
 
             for (int i=0; i<from_tstc->getNbPoints(); i++)
@@ -93,8 +96,8 @@ void SimpleTesselatedTetraTopologicalMapping::init()
                 to_tstc->addPoint(from_tstc->getPX(i), from_tstc->getPY(i), from_tstc->getPZ(i));
                 //sout << from_tstc->getPX(i) << " " << from_tstc->getPY(i) << " " << from_tstc->getPZ(i) << sendl;
 
-                pointMappedFromPoint.push_back(i);
-                pointSource[i] = i+1;
+                (*pointMappedFromPointData).push_back(i);
+                (*pointSourceData)[i] = i+1;
             }
 
             int newPointIndex = to_tstc->getNbPoints();
@@ -110,7 +113,7 @@ void SimpleTesselatedTetraTopologicalMapping::init()
                 );
 
                 pointMappedFromEdge.push_back(newPointIndex);
-                pointSource[newPointIndex] = -(i+1);
+                (*pointSourceData)[newPointIndex] = -(i+1);
                 newPointIndex++;
             }
 
@@ -150,6 +153,8 @@ void SimpleTesselatedTetraTopologicalMapping::init()
                 tetrasMappedFromTetra.push_back(newTetrasIndices);
             }
             toModel->init();
+            pointSource.endEdit();
+            pointMappedFromPoint.endEdit();
         }
     }
 }
@@ -216,9 +221,9 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingBottomUp()
             }
             case core::componentmodel::topology::ENDING_EVENT:
             {
-                //sout << "pointMappedFromPoint = " << pointMappedFromPoint<<sendl;
+                //sout << "(*pointMappedFromPointData) = " << (*pointMappedFromPointData)<<sendl;
                 //sout << "pointMappedFromEdge = " << pointMappedFromEdge<<sendl;
-                //sout << "pointSource = " << pointMappedFromEdge<<sendl;
+                //sout << "(*pointSourceData) = " << pointMappedFromEdge<<sendl;
                 if (from_tstm != NULL && !tetrasToRemove.empty())
                 {
                     sofa::helper::vector<unsigned int> vitems;
@@ -249,26 +254,32 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingBottomUp()
 
 void SimpleTesselatedTetraTopologicalMapping::swapOutputPoints(int i1, int i2)
 {
-    // first update pointSource
-    int i1Source = pointSource[i1];
-    int i2Source = pointSource[i2];
+    helper::vector<int> *pointSourceData = pointSource.beginEdit();
+    // first update (*pointSourceData)
+    int i1Source = (*pointSourceData)[i1];
+    int i2Source = (*pointSourceData)[i2];
 //    sout << "swap output points "<<i1 << " " << i2 << " from source " << i1Source << " " << i2Source << sendl;
     setPointSource(i1, i2Source);
     setPointSource(i2, i1Source);
+
+    pointSource.endEdit();
 }
 
 void SimpleTesselatedTetraTopologicalMapping::removeOutputPoints( const sofa::helper::vector<unsigned int>& index )
 {
-    unsigned int last = pointSource.size() -1;
+    helper::vector<int> *pointSourceData = pointSource.beginEdit();
+    helper::vector<int> *pointMappedFromPointData = pointMappedFromPoint.beginEdit();
+
+    unsigned int last = (*pointSourceData).size() -1;
 
     for (unsigned int i = 0; i < index.size(); ++i)
     {
         swapOutputPoints( index[i], last );
-        int source = pointSource[last];
+        int source = (*pointSourceData)[last];
 //			sout << "remove output point " << last << " from source " << source << sendl;
         if (source > 0)
         {
-            pointMappedFromPoint[source-1] = -1;
+            (*pointMappedFromPointData)[source-1] = -1;
         }
         else if (source < 0)
         {
@@ -277,12 +288,17 @@ void SimpleTesselatedTetraTopologicalMapping::removeOutputPoints( const sofa::he
         --last;
     }
 
-    pointSource.resize( pointSource.size() - index.size() );
+    (*pointSourceData).resize( (*pointSourceData).size() - index.size() );
+
+    pointSource.endEdit();
+    pointMappedFromPoint.endEdit();
 }
 
 void SimpleTesselatedTetraTopologicalMapping::renumberOutputPoints( const sofa::helper::vector<unsigned int>& index )
 {
-    helper::vector<int> copy = pointSource;
+    const helper::vector<int>& pointSourceData = pointSource.getValue();
+
+    helper::vector<int> copy = pointSourceData;
     for (unsigned int i = 0; i < index.size(); ++i)
     {
         setPointSource(i, copy[ index[i] ]);
@@ -292,7 +308,7 @@ void SimpleTesselatedTetraTopologicalMapping::renumberOutputPoints( const sofa::
 
 void SimpleTesselatedTetraTopologicalMapping::swapOutputTetras(int i1, int i2)
 {
-    // first update pointSource
+    // first update (*pointSourceData)
     int i1Source = tetraSource[i1];
     int i2Source = tetraSource[i2];
     tetraSource[i1] = i2Source;
@@ -423,9 +439,9 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingTopDown()
             }
             case core::componentmodel::topology::ENDING_EVENT:
             {
-                //sout << "pointMappedFromPoint = " << pointMappedFromPoint<<sendl;
+                //sout << "(*pointMappedFromPointData) = " << (*pointMappedFromPointData)<<sendl;
                 //sout << "pointMappedFromEdge = " << pointMappedFromEdge<<sendl;
-                //sout << "pointSource = " << pointMappedFromEdge<<sendl;
+                //sout << "(*pointSourceData) = " << pointMappedFromEdge<<sendl;
                 break;
             }
             default: break;
@@ -438,54 +454,79 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingTopDown()
 
 void SimpleTesselatedTetraTopologicalMapping::swapInputPoints(int i1, int i2)
 {
-    int i1Map = pointMappedFromPoint[i1];
-    int i2Map = pointMappedFromPoint[i2];
-    pointMappedFromPoint[i1] = i2Map;
-    if (i2Map != -1) pointSource[i2Map] = i1+1;
-    pointMappedFromPoint[i2] = i1Map;
-    if (i1Map != -1) pointSource[i1Map] = i2+1;
+    helper::vector<int> *pointSourceData = pointSource.beginEdit();
+    helper::vector<int> *pointMappedFromPointData = pointMappedFromPoint.beginEdit();
+
+    int i1Map = (*pointMappedFromPointData)[i1];
+    int i2Map = (*pointMappedFromPointData)[i2];
+    (*pointMappedFromPointData)[i1] = i2Map;
+    if (i2Map != -1) (*pointSourceData)[i2Map] = i1+1;
+    (*pointMappedFromPointData)[i2] = i1Map;
+    if (i1Map != -1) (*pointSourceData)[i1Map] = i2+1;
+
+    pointSource.endEdit();
+    pointMappedFromPoint.endEdit();
 }
 
 void SimpleTesselatedTetraTopologicalMapping::removeInputPoints( const sofa::helper::vector<unsigned int>& index )
 {
-    unsigned int last = pointMappedFromPoint.size() -1;
+    helper::vector<int> *pointSourceData = pointSource.beginEdit();
+    helper::vector<int> *pointMappedFromPointData = pointMappedFromPoint.beginEdit();
+
+    unsigned int last = (*pointMappedFromPointData).size() -1;
 
     for (unsigned int i = 0; i < index.size(); ++i)
     {
         swapInputPoints( index[i], last );
-        int map = pointMappedFromPoint[last];
+        int map = (*pointMappedFromPointData)[last];
         if (map != -1)
-            pointSource[map] = 0;
+            (*pointSourceData)[map] = 0;
         --last;
     }
 
-    pointMappedFromPoint.resize( last + 1 );
+    (*pointMappedFromPointData).resize( last + 1 );
+
+    pointSource.endEdit();
+    pointMappedFromPoint.endEdit();
 }
 
 void SimpleTesselatedTetraTopologicalMapping::renumberInputPoints( const sofa::helper::vector<unsigned int>& index )
 {
-    helper::vector<int> copy = pointMappedFromPoint;
+    helper::vector<int> *pointSourceData = pointSource.beginEdit();
+    helper::vector<int> *pointMappedFromPointData = pointMappedFromPoint.beginEdit();
+
+    helper::vector<int> copy = (*pointMappedFromPointData);
     for (unsigned int i = 0; i < index.size(); ++i)
     {
         int map = copy[index[i]];
-        pointMappedFromPoint[i] = map;
+        (*pointMappedFromPointData)[i] = map;
         if (map != -1)
-            pointSource[map] = i+1;
+            (*pointSourceData)[map] = i+1;
     }
+
+    pointSource.endEdit();
+    pointMappedFromPoint.endEdit();
 }
 
 void SimpleTesselatedTetraTopologicalMapping::swapInputEdges(int i1, int i2)
 {
+    helper::vector<int> *pointSourceData = pointSource.beginEdit();
+
     int i1Map = pointMappedFromEdge[i1];
     int i2Map = pointMappedFromEdge[i2];
     pointMappedFromEdge[i1] = i2Map;
-    if (i2Map != -1) pointSource[i2Map] = -1-i1;
+    if (i2Map != -1) (*pointSourceData)[i2Map] = -1-i1;
     pointMappedFromEdge[i2] = i1Map;
-    if (i1Map != -1) pointSource[i1Map] = -1-i2;
+    if (i1Map != -1) (*pointSourceData)[i1Map] = -1-i2;
+
+    pointSource.endEdit();
 }
 
 void SimpleTesselatedTetraTopologicalMapping::removeInputEdges( const sofa::helper::vector<unsigned int>& index )
 {
+
+    helper::vector<int> *pointSourceData = pointSource.beginEdit();
+
     unsigned int last = pointMappedFromEdge.size() -1;
 
     for (unsigned int i = 0; i < index.size(); ++i)
@@ -493,11 +534,13 @@ void SimpleTesselatedTetraTopologicalMapping::removeInputEdges( const sofa::help
         swapInputEdges( index[i], last );
         int map = pointMappedFromEdge[last];
         if (map != -1)
-            pointSource[map] = 0;
+            (*pointSourceData)[map] = 0;
         --last;
     }
 
     pointMappedFromEdge.resize( last + 1 );
+
+    pointSource.endEdit();
 }
 
 
