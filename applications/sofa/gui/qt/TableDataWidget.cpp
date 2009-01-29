@@ -50,10 +50,10 @@ Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<float>, TABLE_H
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<double>, TABLE_HORIZONTAL > > DWClass_vectord("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<std::string> > > DWClass_vectorstring("default",true);
 
-Creator<DataWidgetFactory, TableDataWidget< sofa::component::topology::PointData<int>, TABLE_HORIZONTAL > > DWClass_Pointi("default",true);
-Creator<DataWidgetFactory, TableDataWidget< sofa::component::topology::PointData<unsigned int>, TABLE_HORIZONTAL > > DWClass_Pointu("default",true);
-Creator<DataWidgetFactory, TableDataWidget< sofa::component::topology::PointData<float>, TABLE_HORIZONTAL > > DWClass_Pointf("default",true);
-Creator<DataWidgetFactory, TableDataWidget< sofa::component::topology::PointData<double>, TABLE_HORIZONTAL > > DWClass_Pointd("default",true);
+//Creator<DataWidgetFactory, TableDataWidget< sofa::component::topology::PointData<int>, TABLE_HORIZONTAL > > DWClass_Pointi("default",true);
+//Creator<DataWidgetFactory, TableDataWidget< sofa::component::topology::PointData<unsigned int>, TABLE_HORIZONTAL > > DWClass_Pointu("default",true);
+//Creator<DataWidgetFactory, TableDataWidget< sofa::component::topology::PointData<float>, TABLE_HORIZONTAL > > DWClass_Pointf("default",true);
+//Creator<DataWidgetFactory, TableDataWidget< sofa::component::topology::PointData<double>, TABLE_HORIZONTAL > > DWClass_Pointd("default",true);
 
 Creator<DataWidgetFactory, TableDataWidget< sofa::component::topology::PointSubset, TABLE_HORIZONTAL > > DWClass_PointSubset("default",true);
 

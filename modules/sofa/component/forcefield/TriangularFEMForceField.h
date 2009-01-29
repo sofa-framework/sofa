@@ -136,6 +136,17 @@ protected:
 
         Coord meanStrainDirection;
         double sumEigenValues;
+
+        /// Output stream
+        inline friend std::ostream& operator<< ( std::ostream& os, const VertexInformation& /*vi*/)
+        {
+            return os;
+        }
+        /// Input stream
+        inline friend std::istream& operator>> ( std::istream& in, VertexInformation& /*vi*/)
+        {
+            return in;
+        }
     };
 
     TriangleData<TriangleInformation> triangleInfo;

@@ -199,16 +199,23 @@ protected:
 
     void setPointSource(int i, int source)
     {
+        helper::vector<int> *pointSourceData = pointSource.beginEdit();
+        helper::vector<int> *pointMappedFromPointData = pointMappedFromPoint.beginEdit();
+//		helper::vector<int> *pointMappedFromEdgeData = pointMappedFromEdge.beginEdit();
+
         if (i != -1)
-            pointSource[i] = source;
+            (*pointSourceData)[i] = source;
         if (source > 0)
         {
-            pointMappedFromPoint[source-1] = i;
+            (*pointMappedFromPointData)[source-1] = i;
         }
         else if (source < 0)
         {
             pointMappedFromEdge[-source-1] = i;
         }
+        pointSource.endEdit();
+        pointMappedFromPoint.endEdit();
+//		pointMappedFromEdge.endEdit();
     }
     std::set<unsigned int> tetrasToRemove;
 

@@ -80,7 +80,7 @@ public:
         TOPOLOGY_HEXAHEDRONSET=5
     } TopologyType;
 
-    Data< VecMass > f_mass;
+    VecMass f_mass;
     /// the mass density used to compute the mass from a mesh topology and geometry
     Data< Real > m_massDensity;
 

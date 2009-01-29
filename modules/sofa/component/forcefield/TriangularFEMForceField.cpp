@@ -239,7 +239,9 @@ template <class DataTypes>void TriangularFEMForceField<DataTypes>::reinit()
     /// prepare to store info in the edge array
     edgeInfo.resize(_topology->getNbEdges());
     unsigned int nbPoints = _topology->getNbPoints();
-    vertexInfo.resize(nbPoints);
+    helper::vector<VertexInformation>& vi = *(vertexInfo.beginEdit());
+    vi.resize(nbPoints);
+    vertexInfo.endEdit();
     // set initial position of the nodes
     _initialPoints = this->mstate->getX0();
 

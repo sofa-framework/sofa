@@ -270,7 +270,7 @@ DiagonalMass<DataTypes, MassType>::~DiagonalMass()
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::clear()
 {
-    VecMass& masses = *f_mass.beginEdit();
+    MassVector& masses = *f_mass.beginEdit();
     masses.clear();
     f_mass.endEdit();
 }
@@ -278,7 +278,7 @@ void DiagonalMass<DataTypes, MassType>::clear()
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::addMass(const MassType& m)
 {
-    VecMass& masses = *f_mass.beginEdit();
+    MassVector& masses = *f_mass.beginEdit();
     masses.push_back(m);
     f_mass.endEdit();
 }
@@ -286,7 +286,7 @@ void DiagonalMass<DataTypes, MassType>::addMass(const MassType& m)
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::resize(int vsize)
 {
-    VecMass& masses = *f_mass.beginEdit();
+    MassVector& masses = *f_mass.beginEdit();
     masses.resize(vsize);
     f_mass.endEdit();
 }
@@ -379,9 +379,9 @@ void DiagonalMass<DataTypes, MassType>::handleTopologyChange()
     std::list<const TopologyChange *>::const_iterator itEnd=_topology->lastChange();
     std::list<const TopologyChange *>::const_iterator it;
 
-    VecMass& masses = *f_mass.beginEdit();
-    masses.handleTopologyEvents(itBegin,itEnd);
-    f_mass.endEdit();
+//	VecMass& masses = *f_mass.beginEdit();
+    f_mass.handleTopologyEvents(itBegin,itEnd);
+//	f_mass.endEdit();
 }
 
 
@@ -393,7 +393,7 @@ void DiagonalMass<DataTypes, MassType>::reinit()
         if (_topology->getNbTetras()>0 && tetraGeo)
         {
 
-            VecMass& masses = *f_mass.beginEdit();
+            MassVector& masses = *f_mass.beginEdit();
             topologyType=TOPOLOGY_TETRAHEDRONSET;
 
             // resize array
@@ -423,7 +423,7 @@ void DiagonalMass<DataTypes, MassType>::reinit()
         }
         else if (_topology->getNbTriangles()>0 && triangleGeo)
         {
-            VecMass& masses = *f_mass.beginEdit();
+            MassVector& masses = *f_mass.beginEdit();
             topologyType=TOPOLOGY_TRIANGLESET;
 
             // resize array
@@ -464,7 +464,7 @@ void DiagonalMass<DataTypes, MassType>::reinit()
         else if (_topology->getNbEdges()>0 && edgeGeo)
         {
 
-            VecMass& masses = *f_mass.beginEdit();
+            MassVector& masses = *f_mass.beginEdit();
             topologyType=TOPOLOGY_EDGESET;
 
             // resize array
@@ -533,18 +533,18 @@ void DiagonalMass<DataTypes, MassType>::init()
 
     // add the functions to handle topology changes.
 
-    VecMass& masses = *f_mass.beginEdit();
-    masses.setCreateFunction(MassPointCreationFunction<MassType>);
-    masses.setCreateEdgeFunction(MassEdgeCreationFunction<DataTypes,MassType>);
-    masses.setDestroyEdgeFunction(MassEdgeDestroyFunction<DataTypes,MassType>);
-    masses.setCreateTriangleFunction(MassTriangleCreationFunction<DataTypes,MassType>);
-    masses.setDestroyTriangleFunction(MassTriangleDestroyFunction<DataTypes,MassType>);
-    masses.setCreateTetrahedronFunction(MassTetrahedronCreationFunction<DataTypes,MassType>);
-    masses.setDestroyTetrahedronFunction(MassTetrahedronDestroyFunction<DataTypes,MassType>);
+//	VecMass& masses = *f_mass.beginEdit();
+    f_mass.setCreateFunction(MassPointCreationFunction<MassType>);
+    f_mass.setCreateEdgeFunction(MassEdgeCreationFunction<DataTypes,MassType>);
+    f_mass.setDestroyEdgeFunction(MassEdgeDestroyFunction<DataTypes,MassType>);
+    f_mass.setCreateTriangleFunction(MassTriangleCreationFunction<DataTypes,MassType>);
+    f_mass.setDestroyTriangleFunction(MassTriangleDestroyFunction<DataTypes,MassType>);
+    f_mass.setCreateTetrahedronFunction(MassTetrahedronCreationFunction<DataTypes,MassType>);
+    f_mass.setDestroyTetrahedronFunction(MassTetrahedronDestroyFunction<DataTypes,MassType>);
 
-    masses.setCreateParameter( (void *) this );
-    masses.setDestroyParameter( (void *) this );
-    f_mass.endEdit();
+    f_mass.setCreateParameter( (void *) this );
+    f_mass.setDestroyParameter( (void *) this );
+//    f_mass.endEdit();
 
     if ((f_mass.getValue().size()==0) && (_topology!=0))
     {

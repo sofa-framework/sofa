@@ -66,14 +66,14 @@ void SimpleTesselatedTetraMechanicalMapping<BaseMapping>::apply( typename Out::V
     if (!topoMap) return;
     const topology::PointData<int>& pointMap = topoMap->getPointMappedFromPoint();
     const topology::EdgeData<int>& edgeMap = topoMap->getPointMappedFromEdge();
-    if (pointMap.empty() && edgeMap.empty()) return;
+    if (pointMap.getValue().empty() && edgeMap.empty()) return;
     const core::componentmodel::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
 
     out.resize(outputTopo->getNbPoints());
-    for(unsigned int i = 0; i < pointMap.size(); ++i)
+    for(unsigned int i = 0; i < pointMap.getValue().size(); ++i)
     {
-        if (pointMap[i] != -1)
-            out[pointMap[i]] = in[i];
+        if (pointMap.getValue()[i] != -1)
+            out[pointMap.getValue()[i]] = in[i];
     }
     for(unsigned int i = 0; i < edgeMap.size(); ++i)
     {
@@ -88,14 +88,14 @@ void SimpleTesselatedTetraMechanicalMapping<BaseMapping>::applyJ( typename Out::
     if (!topoMap) return;
     const topology::PointData<int>& pointMap = topoMap->getPointMappedFromPoint();
     const topology::EdgeData<int>& edgeMap = topoMap->getPointMappedFromEdge();
-    if (pointMap.empty() && edgeMap.empty()) return;
+    if (pointMap.getValue().empty() && edgeMap.empty()) return;
     const core::componentmodel::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
 
     out.resize(outputTopo->getNbPoints());
-    for(unsigned int i = 0; i < pointMap.size(); ++i)
+    for(unsigned int i = 0; i < pointMap.getValue().size(); ++i)
     {
-        if (pointMap[i] != -1)
-            out[pointMap[i]] = in[i];
+        if (pointMap.getValue()[i] != -1)
+            out[pointMap.getValue()[i]] = in[i];
     }
     for(unsigned int i = 0; i < edgeMap.size(); ++i)
     {
@@ -110,14 +110,14 @@ void SimpleTesselatedTetraMechanicalMapping<BaseMapping>::applyJT( typename In::
     if (!topoMap) return;
     const topology::PointData<int>& pointMap = topoMap->getPointMappedFromPoint();
     const topology::EdgeData<int>& edgeMap = topoMap->getPointMappedFromEdge();
-    if (pointMap.empty() && edgeMap.empty()) return;
+    if (pointMap.getValue().empty() && edgeMap.empty()) return;
     const core::componentmodel::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
 
     out.resize(inputTopo->getNbPoints());
-    for(unsigned int i = 0; i < pointMap.size(); ++i)
+    for(unsigned int i = 0; i < pointMap.getValue().size(); ++i)
     {
-        if (pointMap[i] != -1)
-            out[i] += in[pointMap[i]];
+        if (pointMap.getValue()[i] != -1)
+            out[i] += in[pointMap.getValue()[i]];
     }
     for(unsigned int i = 0; i < edgeMap.size(); ++i)
     {
@@ -135,7 +135,7 @@ void SimpleTesselatedTetraMechanicalMapping<BaseMapping>::applyJT( typename In::
 
     if (!topoMap) return;
     const topology::PointData<int>& pointSource = topoMap->getPointSource();
-    if (pointSource.empty()) return;
+    if (pointSource.getValue().empty()) return;
     const core::componentmodel::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
 
     int offset = out.size();
@@ -146,7 +146,7 @@ void SimpleTesselatedTetraMechanicalMapping<BaseMapping>::applyJT( typename In::
         for(unsigned int j=0; j<in[c].size(); j++)
         {
             const typename Out::SparseDeriv cIn = in[c][j];
-            int source = pointSource[cIn.index];
+            int source = pointSource.getValue()[cIn.index];
             if (source > 0)
             {
                 out[c+offset].push_back(typename In::SparseDeriv( source-1 , (typename In::Deriv) cIn.data ));
