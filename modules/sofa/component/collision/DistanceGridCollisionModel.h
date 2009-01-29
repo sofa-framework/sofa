@@ -63,6 +63,7 @@ protected:
 public:
     /// Load a distance grid
     static DistanceGrid* load(const std::string& filename, double scale=1.0, int nx=64, int ny=64, int nz=64, Coord pmin = Coord(), Coord pmax = Coord());
+    static DistanceGrid* loadVTKFile(const std::string& filename, double scale=1.0);
 
     /// Load or reuse a distance grid
     static DistanceGrid* loadShared(const std::string& filename, double scale=1.0, int nx=64, int ny=64, int nz=64, Coord pmin = Coord(), Coord pmax = Coord());

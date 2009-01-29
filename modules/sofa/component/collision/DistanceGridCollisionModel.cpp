@@ -32,6 +32,10 @@
 //#ifdef SOFA_HAVE_FLOWVR
 #include <flowvr/render/mesh.h>
 //#endif
+
+#include <fstream>
+#include <sstream>
+
 namespace sofa
 {
 
@@ -299,22 +303,33 @@ void RigidDistanceGridCollisionModel::draw(int index)
 
     if (grid->meshPts.empty())
     {
+        int dnz = (grid->getNz() < 128) ? grid->getNz() : 128;
+        int dny = (grid->getNy() < 128) ? grid->getNy() : 128;
+        int dnx = (grid->getNx() < 128) ? grid->getNx() : 128;
         glBegin(GL_POINTS);
+        if (dnx >= 2 && dny >= 2 && dnz >= 2)
         {
-            for (int z=0, ind=0; z<grid->getNz(); z++)
-                for (int y=0; y<grid->getNy(); y++)
-                    for (int x=0; x<grid->getNx(); x++, ind++)
+            for (int iz=0; iz<dnz; ++iz)
+            {
+                int z = (iz*(grid->getNz()-1))/(dnz-1);
+                for (int iy=0; iy<dny; ++iy)
+                {
+                    int y = (iy*(grid->getNy()-1))/(dny-1);
+                    for (int ix=0; ix<dnx; ++ix)
                     {
+                        int x = (ix*(grid->getNx()-1))/(dnx-1);
                         DistanceGrid::Coord p = grid->coord(x,y,z);
-                        SReal d = (*grid)[ind];
+                        SReal d = (*grid)[grid->index(x,y,z)];
                         if (d < mindist || d > maxdist) continue;
                         d /= maxdist;
                         if (d<0)
                             glColor3d(1+d*0.25, 0, 1+d);
                         else
-                            glColor3d(0, 1-d*0.25, 1-d);
+                            continue; //glColor3d(0, 1-d*0.25, 1-d);
                         helper::gl::glVertexT(p);
                     }
+                }
+            }
         }
         glEnd();
     }
@@ -779,6 +794,10 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, int 
         grid->computeBBox();
         return grid;
     }
+    else if (filename.length()>4 && filename.substr(filename.length()-4) == ".vtk")
+    {
+        return loadVTKFile(filename, scale);
+    }
 //#ifdef SOFA_HAVE_FLOWVR
     else if (filename.length()>6 && filename.substr(filename.length()-6) == ".fmesh")
     {
@@ -910,6 +929,186 @@ bool DistanceGrid::save(const std::string& filename)
         return false;
     }
     return true;
+}
+
+
+template<class T> bool readData(std::istream& in, int dataSize, bool binary, DistanceGrid::VecSReal& data, double scale)
+{
+    if (binary)
+    {
+        T* buffer = new T[dataSize];
+        in.read((char*)buffer, dataSize * sizeof(T));
+        if (in.eof() || in.bad())
+        {
+            delete[] buffer;
+            return false;
+        }
+        else
+        {
+            for (int i=0; i<dataSize; ++i)
+                data[i] = (SReal)(buffer[i]*scale);
+        }
+        delete[] buffer;
+        return true;
+    }
+    else
+    {
+        int i = 0;
+        std::string line;
+        T buffer;
+        while(i < dataSize && !in.eof() && !in.bad())
+        {
+            std::getline(in, line);
+            std::istringstream ln(line);
+            while (i < dataSize && ln >> buffer)
+            {
+                data[i] = (SReal)(buffer*scale);
+                ++i;
+            }
+        }
+        return (i == dataSize);
+    }
+}
+
+DistanceGrid* DistanceGrid::loadVTKFile(const std::string& filename, double scale)
+{
+    // Format doc: http://www.vtk.org/pdf/file-formats.pdf
+    // http://www.cacr.caltech.edu/~slombey/asci/vtk/vtk_formats.simple.html
+
+    std::ifstream inVTKFile(filename.c_str(), std::ifstream::in & std::ifstream::binary);
+    if( !inVTKFile.is_open() )
+    {
+        return NULL;
+    }
+    std::string line;
+
+    // Part 1
+    std::getline(inVTKFile, line);
+    if (std::string(line,0,23) != "# vtk DataFile Version ") return NULL;
+    std::string version(line,23);
+
+    // Part 2
+    std::string header;
+    std::getline(inVTKFile, header);
+
+    // Part 3
+    std::getline(inVTKFile, line);
+
+    bool binary;
+    if (line == "BINARY") binary = true;
+    else if (line == "ASCII") binary = false;
+    else return NULL;
+
+    // Part 4
+    std::getline(inVTKFile, line);
+    if (line != "DATASET STRUCTURED_POINTS")
+    {
+        return NULL;
+    }
+
+    std::cout << (binary ? "Binary" : "Text") << " VTK File " << filename << " (version " << version << "): " << header << std::endl;
+    enum { Header, CellData, PointData } section = Header;
+    int dataSize = 0;
+    int nx = 0, ny = 0, nz = 0;
+    Coord origin, spacing(1.0f,1.0f,1.0f);
+    while(!inVTKFile.eof())
+    {
+        std::getline(inVTKFile, line);
+        std::istringstream ln(line);
+        std::string kw;
+        ln >> kw;
+        if (kw == "DIMENSIONS")
+        {
+            ln >> nx >> ny >> nz;
+        }
+        else if (kw == "SPACING")
+        {
+            ln >> spacing[0] >> spacing[1] >> spacing[2];
+            spacing *= scale;
+        }
+        else if (kw == "ORIGIN")
+        {
+            ln >> origin[0] >> origin[1] >> origin[2];
+            origin *= scale;
+        }
+        else if (kw == "CELL_DATA")
+        {
+            section = CellData;
+            ln >> dataSize;
+        }
+        else if (kw == "POINT_DATA")
+        {
+            section = PointData;
+            ln >> dataSize;
+        }
+        else if (kw == "SCALARS")
+        {
+            std::string name, typestr;
+            ln >> name >> typestr;
+            std::cout << "Found " << typestr << " data: " << name << std::endl;
+            std::getline(inVTKFile, line); // lookup_table, ignore
+            std::cout << "Loading " << nx<<"x"<<ny<<"x"<<nz << " volume..." << std::endl;
+            DistanceGrid* grid = new DistanceGrid(nx, ny, nz, origin, origin + Coord(spacing[0] * nx, spacing[1] * ny, spacing[2]*nz));
+            bool ok = true;
+            if (typestr == "char") ok = readData<char>(inVTKFile, dataSize, binary, grid->dists, scale);
+            else if (typestr == "unsigned_char") ok = readData<unsigned char>(inVTKFile, dataSize, binary, grid->dists, scale);
+            else if (typestr == "short") ok = readData<short>(inVTKFile, dataSize, binary, grid->dists, scale);
+            else if (typestr == "unsigned_short") ok = readData<unsigned short>(inVTKFile, dataSize, binary, grid->dists, scale);
+            else if (typestr == "int") ok = readData<int>(inVTKFile, dataSize, binary, grid->dists, scale);
+            else if (typestr == "unsigned_int") ok = readData<unsigned int>(inVTKFile, dataSize, binary, grid->dists, scale);
+            else if (typestr == "long") ok = readData<long long>(inVTKFile, dataSize, binary, grid->dists, scale);
+            else if (typestr == "unsigned_long") ok = readData<unsigned long long>(inVTKFile, dataSize, binary, grid->dists, scale);
+            else if (typestr == "float") ok = readData<float>(inVTKFile, dataSize, binary, grid->dists, scale);
+            else if (typestr == "double") ok = readData<double>(inVTKFile, dataSize, binary, grid->dists, scale);
+            else
+            {
+                std::cerr << "Invalid type " << typestr << std::endl;
+                ok = false;
+            }
+            if (!ok)
+            {
+                delete grid;
+                return NULL;
+            }
+            std::cout << "Volume data loading OK." << std::endl;
+            grid->computeBBox();
+            return grid; // we read one scalar field, stop here.
+        }
+    }
+    return NULL;
+}
+
+template<class T>
+void * readData(std::istream& in, int dataSize, bool binary)
+{
+    T* buffer = new T[dataSize];
+    if (binary)
+    {
+        in.read((char*)buffer, dataSize * sizeof(T));
+        if (in.eof() || in.bad())
+        {
+            delete[] buffer;
+            return NULL;
+        }
+    }
+    else
+    {
+        int i = 0;
+        std::string line;
+        while(i < dataSize && !in.eof() && !in.bad())
+        {
+            std::getline(in, line);
+            std::istringstream ln(line);
+            while (i < dataSize && ln >> buffer[i])
+                ++i;
+        }
+        if (i < dataSize)
+        {
+            delete[] buffer;
+            return NULL;
+        }
+    }
+    return buffer;
 }
 
 
