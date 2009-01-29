@@ -5,6 +5,7 @@ varying vec3 viewVec;
 varying vec4 vPosition, vPositionW;
 
 uniform vec2 scaleTexture;
+uniform float showDebug;
 
 varying vec4 diffuse, ambient, specular;
 varying vec3 lightDir, normalView, halfVector;
@@ -21,17 +22,25 @@ void main()
 	vec3 unitNormalVec = normalize(normalVec);
 	vec3 unitViewVec = normalize(viewVec);
 
+	vec3 coefs = abs(unitNormalVec)-vec3(0.2,0.2,0.2);
+	coefs *= 7;
+	coefs = pow(coefs,3.0);
+	coefs = max(vec3(0.0,0.0,0.0),coefs);
+	coefs /= dot(coefs,vec3(1.0,1.0,1.0)); // make sum = 1
+
 	// Write the final pixel.
 	//gl_FragColor = texture2D(planarTexture,gl_TexCoord[0].st);
 	//XY -> Z
 	//color.g = pos.y;
-	color += abs(texture2D(planarTextureZ,vec2(pos.x/scaleTexture.x,pos.y/scaleTexture.y) ) * unitNormalVec.z);
+	color += texture2D(planarTextureZ,vec2(pos.x/scaleTexture.x,pos.y/scaleTexture.y) ) * coefs.z;
 	//XZ -> Y
 	//color.r = pos.x;
-	color += abs(texture2D(planarTextureY,vec2(pos.x/scaleTexture.x,pos.z/scaleTexture.y) ) * unitNormalVec.y);
+	color += texture2D(planarTextureY,vec2(pos.x/scaleTexture.x,pos.z/scaleTexture.y) ) * coefs.y;
 	//YZ -> X
 	//color.b = pos.z;
-	color += abs(texture2D(planarTextureX,vec2(pos.y/scaleTexture.x,pos.z/scaleTexture.y) ) * unitNormalVec.x);
+	color += texture2D(planarTextureX,vec2(pos.y/scaleTexture.x,pos.z/scaleTexture.y) ) * coefs.x;
+
+	color.rgb = showDebug * (vec3(1.0,1.0,1.0)-coefs) + (1.0-showDebug)*color.rgb;
 
 	color.a = 1.0;
 	
