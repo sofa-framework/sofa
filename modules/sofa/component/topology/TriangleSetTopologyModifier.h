@@ -44,8 +44,8 @@ typedef BaseMeshTopology::EdgeTriangles EdgeTriangles;
 typedef BaseMeshTopology::TriangleEdges TriangleEdges;
 
 /**
-* A class that modifies the topology by adding and removing triangles
-*/
+ * A class that modifies the topology by adding and removing triangles
+ */
 class SOFA_COMPONENT_CONTAINER_API TriangleSetTopologyModifier : public EdgeSetTopologyModifier
 {
 public:
@@ -80,35 +80,21 @@ public:
     void addTriangleProcess(Triangle e);
 
     /** \brief Actually Add some triangles to this topology.
-    *
-    * \sa addTrianglesWarning
-    */
+     *
+     * \sa addTrianglesWarning
+     */
     virtual void addTrianglesProcess(const sofa::helper::vector< Triangle > &triangles);
 
-    /** \brief Sends a message to warn that some triangles are about to be deleted.
-    *
-    * \sa removeTrianglesProcess
-    *
-    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
-    */
-    virtual void removeTrianglesWarning( sofa::helper::vector<unsigned int> &triangles);
-
-    /** \brief Remove a subset of  triangles. Eventually remove isolated edges and vertices
-    *
-    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
-    * \sa removeTrianglesWarning
-    *
-    * @param removeIsolatedEdges if true isolated edges are also removed
-    * @param removeIsolatedPoints if true isolated vertices are also removed
-    */
-    virtual void removeTrianglesProcess( const sofa::helper::vector<unsigned int> &indices,
-            const bool removeIsolatedEdges=false,
-            const bool removeIsolatedPoints=false);
+    /** \brief Add some points to this topology.
+     *
+     * \sa addPointsWarning
+     */
+    virtual void addPointsProcess(const unsigned int nPoints);
 
     /** \brief Sends a message to warn that some edges were added in this topology.
-    *
-    * \sa addEdgesProcess
-    */
+     *
+     * \sa addEdgesProcess
+     */
     void addEdgesWarning(const unsigned int nEdges,
             const sofa::helper::vector< Edge >& edgesList,
             const sofa::helper::vector< unsigned int >& edgesIndexList)
@@ -117,9 +103,9 @@ public:
     }
 
     /** \brief Sends a message to warn that some edges were added in this topology.
-    *
-    * \sa addEdgesProcess
-    */
+     *
+     * \sa addEdgesProcess
+     */
     void addEdgesWarning(const unsigned int nEdges,
             const sofa::helper::vector< Edge >& edgesList,
             const sofa::helper::vector< unsigned int >& edgesIndexList,
@@ -135,22 +121,62 @@ public:
      */
     void addEdgesProcess(const sofa::helper::vector< Edge > &edges);
 
+
+
+
+
+    /** \brief Generic method to remove a list of items.
+     */
+    virtual void removeItems(sofa::helper::vector< unsigned int >& items);
+
+    /** \brief Remove a set  of triangles
+        @param triangles an array of triangle indices to be removed (note that the array is not const since it needs to be sorted)
+        *
+        @param removeIsolatedEdges if true isolated edges are also removed
+        @param removeIsolatedPoints if true isolated vertices are also removed
+        *
+        */
+    virtual void removeTriangles(sofa::helper::vector< unsigned int >& triangles,
+            const bool removeIsolatedEdges,
+            const bool removeIsolatedPoints);
+
+
+    /** \brief Sends a message to warn that some triangles are about to be deleted.
+     *
+     * \sa removeTrianglesProcess
+     *
+     * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
+     */
+    virtual void removeTrianglesWarning( sofa::helper::vector<unsigned int> &triangles);
+
+
+    /** \brief Remove a subset of  triangles. Eventually remove isolated edges and vertices
+     *
+     * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
+     * \sa removeTrianglesWarning
+     *
+     * @param removeIsolatedEdges if true isolated edges are also removed
+     * @param removeIsolatedPoints if true isolated vertices are also removed
+     */
+    virtual void removeTrianglesProcess( const sofa::helper::vector<unsigned int> &indices,
+            const bool removeIsolatedEdges=false,
+            const bool removeIsolatedPoints=false);
+
+
+
+
+
     /** \brief Remove a subset of edges
-    *
-    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
-    * \sa removeEdgesWarning
-    *
-    * @param removeIsolatedItems if true isolated vertices are also removed
-    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
-    */
+     *
+     * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
+     * \sa removeEdgesWarning
+     *
+     * @param removeIsolatedItems if true isolated vertices are also removed
+     * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
+     */
     virtual void removeEdgesProcess( const sofa::helper::vector<unsigned int> &indices,
             const bool removeIsolatedItems=false);
 
-    /** \brief Add some points to this topology.
-    *
-    * \sa addPointsWarning
-    */
-    virtual void addPointsProcess(const unsigned int nPoints);
 
     /** \brief Remove a subset of points
      *
@@ -163,6 +189,14 @@ public:
     virtual void removePointsProcess(sofa::helper::vector<unsigned int> &indices,
             const bool removeDOF = true);
 
+
+
+
+
+
+
+
+
     /** \brief Reorder this topology.
      *
      * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
@@ -172,25 +206,21 @@ public:
             const sofa::helper::vector<unsigned int> &inv_index,
             const bool renumberDOF = true);
 
-    /** \brief Remove a set  of triangles
-    @param triangles an array of triangle indices to be removed (note that the array is not const since it needs to be sorted)
-    *
-    @param removeIsolatedEdges if true isolated edges are also removed
-    @param removeIsolatedPoints if true isolated vertices are also removed
-    *
-    */
-    virtual void removeTriangles(sofa::helper::vector< unsigned int >& triangles,
-            const bool removeIsolatedEdges,
-            const bool removeIsolatedPoints);
 
-    /** \brief Generic method to remove a list of items.
-     */
-    virtual void removeItems(sofa::helper::vector< unsigned int >& items);
 
     /** \brief Generic method for points renumbering
-      */
+     */
     virtual void renumberPoints( const sofa::helper::vector<unsigned int> &index,
             const sofa::helper::vector<unsigned int> &inv_index);
+
+    /** \brief precondition to fulfill before removing triangles
+     */
+    virtual bool removePrecondition(sofa::helper::vector< unsigned int >& items);
+
+    /**\brief: return true if postprocessing to apply to the topology have been done succesfully.
+     */
+    virtual void removePostProcessing() {};
+
 
 
 private:
