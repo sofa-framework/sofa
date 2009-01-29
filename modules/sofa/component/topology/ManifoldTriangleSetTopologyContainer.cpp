@@ -23,10 +23,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/topology/ManifoldTriangleSetTopologyContainer.h>
-
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/component/container/MechanicalObject.inl>
+//#include <sofa/defaulttype/VecTypes.h>
 
 #include <sofa/component/container/MeshLoader.h>
+//#include <sofa/helper/gl/template.h>
+#include <sofa/helper/gl/glText.inl>
 
 namespace sofa
 {
@@ -61,8 +64,9 @@ ManifoldTriangleSetTopologyContainer::ManifoldTriangleSetTopologyContainer(const
 
 
 
-bool ManifoldTriangleSetTopologyContainer::checkTopology()// const
+bool ManifoldTriangleSetTopologyContainer::checkTopology() const
 {
+    std::cout<<"ManifoldTriangleSetTopologyContainer::checkTopology()" << std::endl;
 #ifndef NDEBUG
 
     bool ret = true;
@@ -88,7 +92,8 @@ bool ManifoldTriangleSetTopologyContainer::checkTopology()// const
         //Fill temporary an other TriangleVertexShellarray
         for (unsigned int triangleIndex = 0; triangleIndex < nbrTriangles; ++triangleIndex)
         {
-            vertexTriangle = getTriangleArray()[triangleIndex];
+
+            vertexTriangle = m_triangle[triangleIndex];
 
             for (unsigned int i=0; i<3; ++i)
             {
@@ -120,17 +125,17 @@ bool ManifoldTriangleSetTopologyContainer::checkTopology()// const
                 ret = false;
             }
 
-            vertexTriangle = getTriangleArray()[ m_triangleVertexShell[vertexIndex][0] ];
+            vertexTriangle = m_triangle[ m_triangleVertexShell[vertexIndex][0] ];
             firstVertex = vertexTriangle[ ( getVertexIndexInTriangle(vertexTriangle, vertexIndex)+1 )%3 ];
 
             //For each vertex, test if the triangle adjacent are fill in the right contiguous way.
             //Triangles should be adjacent one to the next other in counterclockwise direction.
             for (unsigned int triangleIndex = 0; triangleIndex < m_triangleVertexShell[vertexIndex].size()-1; ++triangleIndex)
             {
-                vertexTriangle = getTriangleArray()[ m_triangleVertexShell[vertexIndex][triangleIndex] ];
+                vertexTriangle = m_triangle[ m_triangleVertexShell[vertexIndex][triangleIndex] ];
                 vertex = vertexTriangle[ ( getVertexIndexInTriangle(vertexTriangle, vertexIndex)+2 )%3 ];
 
-                vertexTriangle = getTriangleArray()[ m_triangleVertexShell[vertexIndex][triangleIndex+1] ];
+                vertexTriangle = m_triangle[ m_triangleVertexShell[vertexIndex][triangleIndex+1] ];
                 vertexNext = vertexTriangle[ ( getVertexIndexInTriangle(vertexTriangle, vertexIndex)+1 )%3 ];
 
                 if (vertex != vertexNext)
@@ -197,7 +202,7 @@ bool ManifoldTriangleSetTopologyContainer::checkTopology()// const
             */
             if (nbrTriangleEdge > 0)
             {
-                vertexTriangle = getTriangleArray()[ m_triangleEdgeShell[indexEdge][0] ];
+                vertexTriangle = m_triangle[ m_triangleEdgeShell[indexEdge][0] ];
                 vertexInTriangle = getVertexIndexInTriangle(vertexTriangle, m_edge[indexEdge][0] );
 
                 if ( m_edge[indexEdge][1] != vertexTriangle[ (vertexInTriangle+1)%3 ])
@@ -218,7 +223,7 @@ bool ManifoldTriangleSetTopologyContainer::checkTopology()// const
 
             if (nbrTriangleEdge == 2)
             {
-                vertexTriangle = getTriangleArray()[ m_triangleEdgeShell[indexEdge][1] ];
+                vertexTriangle = m_triangle[ m_triangleEdgeShell[indexEdge][1] ];
                 vertexInTriangle = getVertexIndexInTriangle(vertexTriangle, m_edge[indexEdge][0] );
 
                 if ( m_edge[indexEdge][1] != vertexTriangle[ (vertexInTriangle+2)%3 ])
@@ -259,6 +264,7 @@ void ManifoldTriangleSetTopologyContainer::init()
 {
     TriangleSetTopologyContainer::init();
 }
+
 
 
 void ManifoldTriangleSetTopologyContainer::createEdgeSetArray()
@@ -1134,6 +1140,79 @@ sofa::helper::vector <EdgeID> ManifoldTriangleSetTopologyContainer::getEdgesBord
     }
 
     return edgesBorder;
+}
+
+
+
+sofa::helper::vector <PointID> ManifoldTriangleSetTopologyContainer::getPointsBorder()
+{
+
+    if(!hasTriangleEdgeShell())	// this method should only be called when the shell array exists
+    {
+#ifndef NDEBUG
+        std::cout << "Warning. [ManifoldTriangleSetTopologyContainer::getEdgesBorder] Triangle edge shell array is empty." << std::endl;
+#endif
+
+        createTriangleEdgeShellArray();
+    }
+
+    const unsigned int nbrEdges = getNumberOfEdges();
+    sofa::helper::vector <PointID> pointsBorder;
+
+    for (unsigned int i = 0; i < nbrEdges; ++i)
+    {
+        if (m_triangleEdgeShell[i].size() == 1)
+        {
+            pointsBorder.push_back (m_edge[i][0]);
+        }
+    }
+
+    return pointsBorder;
+}
+
+
+
+
+sofa::helper::vector< unsigned int > &ManifoldTriangleSetTopologyContainer::getTriangleEdgeShellForModification(const unsigned int i)
+{
+    if(!hasTriangleEdgeShell())	// this method should only be called when the shell array exists
+    {
+#ifndef NDEBUG
+        sout << "Warning. [TriangleSetTopologyContainer::getTriangleEdgeShellForModification] triangle edge shell array is empty." << endl;
+#endif
+        createTriangleEdgeShellArray();
+    }
+
+    if( i >= m_triangleEdgeShell.size())
+    {
+#ifndef NDEBUG
+        sout << "Error. [TriangleSetTopologyContainer::getTriangleEdgeShellForModification] index out of bounds." << endl;
+#endif
+        createTriangleEdgeShellArray();
+    }
+
+    return m_triangleEdgeShell[i];
+}
+
+sofa::helper::vector< unsigned int > &ManifoldTriangleSetTopologyContainer::getTriangleVertexShellForModification(const unsigned int i)
+{
+    if(!hasTriangleVertexShell())	// this method should only be called when the shell array exists
+    {
+#ifndef NDEBUG
+        sout << "Warning. [TriangleSetTopologyContainer::getTriangleVertexShellForModification] triangle vertex shell array is empty." << endl;
+#endif
+        createTriangleVertexShellArray();
+    }
+
+    if( i >= m_triangleVertexShell.size())
+    {
+#ifndef NDEBUG
+        sout << "Error. [TriangleSetTopologyContainer::getTriangleVertexShellForModification] index out of bounds." << endl;
+#endif
+        createTriangleVertexShellArray();
+    }
+
+    return m_triangleVertexShell[i];
 }
 
 
