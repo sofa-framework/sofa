@@ -50,6 +50,7 @@ int InputEventReaderClass = core::RegisterObject("Read events from file")
 
 InputEventReader::InputEventReader()
     : filename( initData(&filename, std::string("/dev/input/mouse2"), "filename", "input events file name"))
+    , inverseSense(initData(&inverseSense, false, "inverseSense", "inverse the sense of the mouvement"))
 //, timeout( initData(&timeout, 0, "timeout", "time out to get an event from file" ))
     , fd(-1)
     , deplX(0), deplY(0)
@@ -89,8 +90,24 @@ void InputEventReader::getInputEvents()
         {
             switch (ev.code)
             {
-            case REL_X: deplX += ev.value; break;
-            case REL_Y: deplY += ev.value; break;
+            case REL_X:
+                if (inverseSense.getValue())
+                {
+                    deplX -= ev.value; break;
+                }
+                else
+                {
+                    deplX += ev.value; break;
+                }
+            case REL_Y:
+                if (inverseSense.getValue())
+                {
+                    deplY -= ev.value; break;
+                }
+                else
+                {
+                    deplY += ev.value; break;
+                }
             }
         }
     }
