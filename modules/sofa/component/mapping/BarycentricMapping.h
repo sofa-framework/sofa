@@ -461,20 +461,23 @@ public:
         unsigned int size_vec;
 
         in >> size_vec;
-        b.map.clear();
+        sofa::helper::vector<MappingData> m = *(b.map.beginEdit());
+        m.clear();
+
         MappingData value;
         for (unsigned int i=0; i<size_vec; i++)
         {
             in >> value;
-            b.map.push_back(value);
+            m.push_back(value);
         }
+        b.map.endEdit();
         return in;
     }
 
     inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperEdgeSetTopology<In, Out> & b )
     {
 
-        out << b.map.size();
+        out << b.map.getValue().size();
         out << " " ;
         out << b.map;
 
@@ -533,20 +536,23 @@ public:
         unsigned int size_vec;
 
         in >> size_vec;
-        b.map.clear();
+
+        sofa::helper::vector<MappingData> m = *(b.map.beginEdit());
+        m.clear();
         MappingData value;
         for (unsigned int i=0; i<size_vec; i++)
         {
             in >> value;
-            b.map.push_back(value);
+            m.push_back(value);
         }
+        b.map.endEdit();
         return in;
     }
 
     inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperTriangleSetTopology<In, Out> & b )
     {
 
-        out << b.map.size();
+        out << b.map.getValue().size();
         out << " " ;
         out << b.map;
 
@@ -605,20 +611,22 @@ public:
         unsigned int size_vec;
 
         in >> size_vec;
-        b.map.clear();
+        sofa::helper::vector<MappingData> m = *(b.map.beginEdit());
+        m.clear();
         MappingData value;
         for (unsigned int i=0; i<size_vec; i++)
         {
             in >> value;
-            b.map.push_back(value);
+            m.push_back(value);
         }
+        b.map.endEdit();
         return in;
     }
 
     inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperQuadSetTopology<In, Out> & b )
     {
 
-        out << b.map.size();
+        out << b.map.getValue().size();
         out << " " ;
         out << b.map;
 
@@ -674,20 +682,22 @@ public:
         unsigned int size_vec;
 
         in >> size_vec;
-        b.map.clear();
+        sofa::helper::vector<MappingData> m = *(b.map.beginEdit());
+        m.clear();
         MappingData value;
         for (unsigned int i=0; i<size_vec; i++)
         {
             in >> value;
-            b.map.push_back(value);
+            m.push_back(value);
         }
+        b.map.endEdit();
         return in;
     }
 
     inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperTetrahedronSetTopology<In, Out> & b )
     {
 
-        out << b.map.size();
+        out << b.map.getValue().size();
         out << " " ;
         out << b.map;
 
@@ -747,20 +757,22 @@ public:
         unsigned int size_vec;
 
         in >> size_vec;
-        b.map.clear();
+        sofa::helper::vector<MappingData> m = *(b.map.beginEdit());
+        m.clear();
         MappingData value;
         for (unsigned int i=0; i<size_vec; i++)
         {
             in >> value;
-            b.map.push_back(value);
+            m.push_back(value);
         }
+        b.map.endEdit();
         return in;
     }
 
     inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperHexahedronSetTopology<In, Out> & b )
     {
 
-        out << b.map.size();
+        out << b.map.getValue().size();
         out << " " ;
         out << b.map;
 
