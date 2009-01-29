@@ -147,6 +147,11 @@ void OglTexture2D::parse(core::objectmodel::BaseObjectDescription* arg)
     {
         textureUnit.setValue( atoi(arg->getAttribute("textureUnit") ) );
     }
+
+    if (arg->getAttribute("repeat"))
+    {
+        repeat.setValue( arg->getAttribute("repeat")  );
+    }
 }
 
 void OglTexture2D::initVisual()
@@ -166,17 +171,18 @@ void OglTexture2D::initVisual()
 
     bind();
 
-    if (!repeat.getValue())
-    {
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP );
-    }
-    else
+    if (repeat.getValue())
     {
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_REPEAT );
+
+    }
+    else
+    {
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP );
     }
 
     unbind();
