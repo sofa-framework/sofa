@@ -75,7 +75,6 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::VecConst VecConst;
     typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
-    typedef typename DataTypes::SparseDeriv SparseDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;

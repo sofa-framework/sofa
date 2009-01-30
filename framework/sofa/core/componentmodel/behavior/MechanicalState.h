@@ -53,7 +53,6 @@ namespace behavior
  *  \li \code VecReal \endcode : container of scalar values with the same API as sofa::helper::vector.
  *  \li \code VecCoord \endcode : container of Coord values with the same API as sofa::helper::vector.
  *  \li \code VecDeriv \endcode : container of Deriv values with the same API as sofa::helper::vector.
- *  \li \code SparseDeriv \endcode : index + Deriv value (entry of a sparse vector).
  *  \li \code SparseVecDeriv \endcode : sparse vector of Deriv values (defining coefficient of a constraint).
  *  \li \code VecConst \endcode : vector of constraints (i.e. of SparseVecDeriv).
  *
@@ -82,8 +81,6 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     /// Container of Deriv values with the same API as sofa::helper::vector.
     typedef typename DataTypes::VecDeriv VecDeriv;
-    /// Index + Deriv value (entry of a sparse vector).
-    typedef typename DataTypes::SparseDeriv SparseDeriv;
     /// Sparse vector of Deriv values (defining coefficient of a constraint).
     typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
     /// Vector of constraints (i.e. of SparseVecDeriv).

@@ -185,12 +185,14 @@ void SubsetMapping<BaseMapping>::applyJT( typename In::VecConst& out, const type
     out.resize(offset+in.size());
 
     const IndexArray& indices = f_indices.getValue();
-    for(unsigned int c = 0; c < in.size(); ++c)
+    for(unsigned int i = 0; i < in.size(); ++i)
     {
-        for(unsigned int j=0; j<in[c].size(); j++)
+        OutConstraintIterator itOut;
+        for (itOut=in[i].getData().begin(); itOut!=in[i].getData().end(); itOut++)
         {
-            const typename Out::SparseDeriv cIn = in[c][j];
-            out[c+offset].push_back(typename In::SparseDeriv( indices[cIn.index] , (typename In::Deriv) cIn.data ));
+            unsigned int indexIn = itOut->first;
+            OutDeriv data = (OutDeriv) itOut->second;
+            out[i+offset].insert( indices[indexIn] , data );
         }
     }
 

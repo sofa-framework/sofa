@@ -62,10 +62,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::VecConst VecConst;
     typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
-    typedef typename DataTypes::SparseDeriv SparseDeriv;
     typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
-
-
 
     typedef typename sofa::core::componentmodel::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef typename sofa::core::componentmodel::topology::BaseMeshTopology::Edge Edge;

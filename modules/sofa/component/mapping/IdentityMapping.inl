@@ -204,16 +204,12 @@ void IdentityMapping<BaseMapping>::applyJT( typename In::VecConst& out, const ty
     for(unsigned int i=0; i<in.size(); i++)
     {
         typename In::SparseVecDeriv& o = out[i+outSize];
-        o.reserve(in[i].size());
-        for(unsigned int j=0; j<in[i].size(); j++)
+        OutConstraintIterator itOut;
+        for (itOut=in[i].getData().begin(); itOut!=in[i].getData().end(); itOut++)
         {
-            const typename Out::SparseDeriv& cIn = in[i][j];
-            InDeriv value;
-            //for (unsigned int k=0;k<N;++k)
-            //    value[k] = (Real) cIn.data[k];
-            eq(value, cIn.data);
-            //sout << "n= "<<cIn.data<<" -> "<<value<<sendl;
-            o.push_back( typename In::SparseDeriv(cIn.index, value) );
+            unsigned int indexIn = itOut->first;
+            InDeriv data; eq(data, itOut->second);
+            o.insert( indexIn, data);
         }
     }
 }

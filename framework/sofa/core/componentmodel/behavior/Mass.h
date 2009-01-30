@@ -63,7 +63,6 @@ public:
     //Constraint typedef
     typedef typename DataTypes::VecConst VecConst;
     typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
-    typedef typename DataTypes::SparseDeriv SparseDeriv;
 
     Mass(MechanicalState<DataTypes> *mm = NULL);
 

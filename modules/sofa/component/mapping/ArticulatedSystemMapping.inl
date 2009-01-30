@@ -499,11 +499,11 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out
 
     for(unsigned int i=0; i<in.size(); i++)
     {
-        for (unsigned int j=0; j<in[i].size(); j++)
+        OutConstraintIterator itOut;
+        for (itOut=in[i].getData().begin(); itOut!=in[i].getData().end(); itOut++)
         {
-            const OutSparseDeriv cIn = in[i][j];
-            int childIndex = cIn.index;
-            const OutDeriv valueConst = (OutDeriv) cIn.data;
+            int childIndex = itOut->first;
+            const OutDeriv valueConst = (OutDeriv) itOut->second;
             Vec<3,OutReal> C = xto[childIndex].getCenter();
             vector<ArticulatedHierarchyContainer::ArticulationCenter*> ACList = ahc->getAcendantList(childIndex);
 
@@ -524,9 +524,7 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out
                 for (; a != aEnd; a++)
                 {
                     int ind=	(*a)->articulationIndex.getValue();
-                    InSparseDeriv constArt;
-                    constArt.index =ind ;
-
+                    InDeriv data;
 
                     Vec<3,OutReal> axis = ArticulationAxis[ind]; // xto[parent].getOrientation().rotate((*a)->axis.getValue());
                     Vec<3,Real> A = ArticulationPos[ind] ; // Vec<3,OutReal> posAc = (*ac)->globalPosition.getValue();
@@ -538,14 +536,14 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out
 
                     if ((*a)->rotation.getValue())
                     {
-                        constArt.data = (Real)dot(axis, T.getVOrientation());
+                        data = (Real)dot(axis, T.getVOrientation());
                     }
                     if ((*a)->translation.getValue())
                     {
-                        constArt.data = (Real)dot(axis, T.getVCenter());
+                        data = (Real)dot(axis, T.getVCenter());
                         //printf("\n weightedNormalArticulation : %f", constArt.data);
                     }
-                    out[i].push_back(constArt);
+                    out[i].insert(ind,data);
                     ii++;
                 }
             }
@@ -558,9 +556,7 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out
                 T.getVCenter() = valueConst.getVCenter();
                 T.getVOrientation() = valueConst.getVOrientation() + cross(C - posRoot, valueConst.getVCenter());
 
-                OutSparseDeriv constraintT(indexT, T);
-
-                (*outRoot)[sizeOutRoot+i].push_back(constraintT);
+                (*outRoot)[sizeOutRoot+i].insert(indexT,T);
                 //sout<< "constraintT = data : "<< T << "index : "<< indexT<<sendl;
                 //(*outRoot)[i].push_back(constraintT);
                 //	sout<< "constraintT = data : "<< T << "index : "<< indexT<<sendl;

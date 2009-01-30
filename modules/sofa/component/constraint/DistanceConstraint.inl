@@ -139,12 +139,12 @@ void DistanceConstraint<DataTypes>::writeConstraintEquations()
         //index where the direction will be found
         const unsigned int idxInVecConst[2]= {c1.size(), c2.size()};
         SparseVecDeriv V1;
-        V1.push_back(SparseDeriv(idx1,V12)); c1.push_back(V1);
+        V1.insert(idx1,V12); c1.push_back(V1);
 
         if (this->object1 != this->object2)
         {
             SparseVecDeriv V2;
-            V2.push_back(SparseDeriv(idx2,V12)); c2.push_back(V2);
+            V2.insert(idx2,V12); c2.push_back(V2);
         }
 
         //BaseLMConstraint interface

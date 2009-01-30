@@ -2010,13 +2010,13 @@ void MechanicalObject<DataTypes>::buildConstraintMatrix(const sofa::helper::vect
     unsigned int dimension=DataTypeInfo< Deriv >::size();
     if (m.colSize()!=this->getSize()*dimension) m.resize(numConstraint, this->getSize()*dimension);
 
-
+    typename std::map< unsigned int, Deriv>::const_iterator it;
     for (unsigned int i=0; i<constraintId.size(); ++i)
     {
-        for (unsigned int j=0; j<c[ constraintId[i] ].size(); ++j)
+        for (it=c[ constraintId[i] ].getData().begin(); it!=c[ constraintId[i] ].getData().end(); it++)
         {
-            unsigned int dof=c[ constraintId[i] ][j].index;
-            Deriv v=c[ constraintId[i] ][j].data;
+            unsigned int dof=it->first;
+            Deriv v=it->second;
             for (unsigned int d=0; d<dimension; ++d)  m.add(i+offset,dimension*dof+d, factor*v[d]);
         }
     }
@@ -2030,13 +2030,14 @@ void MechanicalObject<DataTypes>::computeConstraintProjection(const sofa::helper
     if (Id==VecId::velocity())
     {
         const VecDeriv& v   = *getV();
+        typename std::map< unsigned int, Deriv>::const_iterator it;
         for (unsigned int i=0; i<constraintId.size(); ++i)
         {
             double value=0;
-            for (unsigned int j=0; j<c[ constraintId[i] ].size(); ++j)
+            for (it=c[ constraintId[i] ].getData().begin(); it!=c[ constraintId[i] ].getData().end(); it++)
             {
-                unsigned int dof=c[ constraintId[i] ][j].index;
-                Deriv direction=c[ constraintId[i] ][j].data;
+                unsigned int dof=it->first;
+                Deriv direction=it->second;
                 value+=v[dof]*direction;
             }
             vec.add(i+offset,value);
@@ -2045,13 +2046,14 @@ void MechanicalObject<DataTypes>::computeConstraintProjection(const sofa::helper
     else if (Id==VecId::dx())
     {
         const VecDeriv& acc = *getDx();
+        typename std::map< unsigned int, Deriv>::const_iterator it;
         for (unsigned int i=0; i<constraintId.size(); ++i)
         {
             double value=0;
-            for (unsigned int j=0; j<c[ constraintId[i] ].size(); ++j)
+            for (it=c[ constraintId[i] ].getData().begin(); it!=c[ constraintId[i] ].getData().end(); it++)
             {
-                unsigned int dof=c[ constraintId[i] ][j].index;
-                Deriv direction=c[ constraintId[i] ][j].data;
+                unsigned int dof=it->first;
+                Deriv direction=it->second;
                 value+=acc[dof]*direction;
             }
             vec.add(i+offset,value);

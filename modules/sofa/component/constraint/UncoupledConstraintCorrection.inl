@@ -112,17 +112,20 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
 
     for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
     {
-        int sizeCurRowConst = constraints[curRowConst].size();
         int indexCurRowConst = mstate->getConstraintId()[curRowConst];
 
         //sout<<"constraint["<<curRowConst<<"] : ";
 
 
 
-        for(int i = 0; i < sizeCurRowConst; i++)
+        ConstraintIterator itConstraint;
+        for (itConstraint=constraints[curRowConst].getData().begin(); itConstraint!=constraints[curRowConst].getData().end(); itConstraint++)
         {
-            weighedNormal.getVCenter() = constraints[curRowConst][i].data.getVCenter(); // weighed normal
-            weighedNormal.getVOrientation() = constraints[curRowConst][i].data.getVOrientation();
+            unsigned int dof = itConstraint->first;
+            Deriv n = itConstraint->second;
+
+            weighedNormal.getVCenter() = n.getVCenter(); // weighed normal
+            weighedNormal.getVOrientation() = n.getVOrientation();
 
             //sout<<" - "<<weighedNormal;
 
@@ -133,16 +136,18 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
 
             for(unsigned int curColConst = curRowConst; curColConst < numConstraints; curColConst++)
             {
-                int sizeCurColConst = constraints[curColConst].size();
                 indexCurColConst = mstate->getConstraintId()[curColConst];
 
-                for(int j = 0; j < sizeCurColConst; j++)
+                ConstraintIterator itConstraint2;
+                for (itConstraint2=constraints[curColConst].getData().begin(); itConstraint2!=constraints[curColConst].getData().end(); itConstraint2++)
                 {
+                    unsigned int dof2 = itConstraint2->first;
+                    Deriv n2 = itConstraint2->second;
                     //W[indexCurRowConst][indexCurColConst] +=  constraints[curColConst][j].data * InvM_wN;
 
-                    if (constraints[curRowConst][i].index == constraints[curColConst][j].index)
+                    if (dof == dof2)
                     {
-                        double w =  constraints[curColConst][j].data * InvM_wN;
+                        double w =  n2 * InvM_wN;
                         W->add(indexCurRowConst, indexCurColConst, w);
                         if (indexCurRowConst != indexCurColConst)
                             W->add(indexCurColConst, indexCurRowConst, w);
@@ -202,12 +207,13 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::applyContactForce(
 
         if (fC1 != 0.0)
         {
-            int sizeC1 = constraints[c1].size();
-            for(int i = 0; i < sizeC1; i++)
+            ConstraintIterator itConstraint;
+            for (itConstraint=constraints[c1].getData().begin(); itConstraint!=constraints[c1].getData().end(); itConstraint++)
             {
-                weighedNormal = constraints[c1][i].data; // weighted normal
-                force[constraints[c1][i].index].getVCenter() += weighedNormal.getVCenter() * fC1;
-                force[constraints[c1][i].index].getVOrientation() += weighedNormal.getVOrientation() * fC1;
+                unsigned int dof = itConstraint->first;
+                weighedNormal = itConstraint->second; // weighted normal
+                force[dof].getVCenter() += weighedNormal.getVCenter() * fC1;
+                force[dof].getVOrientation() += weighedNormal.getVOrientation() * fC1;
             }
         }
     }
@@ -257,27 +263,32 @@ void UncoupledConstraintCorrection<defaulttype::Vec1dTypes>::getCompliance(defau
 
     for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
     {
-        int sizeCurRowConst = constraints[curRowConst].size();
+
         int indexCurRowConst = mstate->getConstraintId()[curRowConst];
         //sout<<"constraint["<<curRowConst<<"] : ";
-        for(int i = 0; i < sizeCurRowConst; i++)
+        ConstraintIterator itConstraint;
+        for (itConstraint=constraints[curRowConst].getData().begin(); itConstraint!=constraints[curRowConst].getData().end(); itConstraint++)
         {
+            unsigned int dof = itConstraint->first;
+            Deriv n = itConstraint->second;
+
             int indexCurColConst;
             //  sout<<" : "<<constraints[curRowConst][i].data.x();
 
             for(unsigned int curColConst = curRowConst; curColConst < numConstraints; curColConst++)
             {
 
-
-                int sizeCurColConst = constraints[curColConst].size();
                 indexCurColConst = mstate->getConstraintId()[curColConst];
 
-                for(int j = 0; j < sizeCurColConst; j++)
+                ConstraintIterator itConstraint2;
+                for (itConstraint2=constraints[curColConst].getData().begin(); itConstraint2!=constraints[curColConst].getData().end(); itConstraint2++)
                 {
-                    if (constraints[curRowConst][i].index == constraints[curColConst][j].index)
+                    unsigned int dof2 = itConstraint->first;
+                    Deriv n2 = itConstraint2->second;
+                    if (dof == dof2)
                     {
                         //W[indexCurRowConst][indexCurColConst] += (1.0/10000.0) * constraints[curRowConst][i].data.x() * constraints[curColConst][j].data.x();
-                        double w = compliance.getValue()[constraints[curRowConst][i].index] * constraints[curRowConst][i].data.x() * constraints[curColConst][j].data.x();
+                        double w = compliance.getValue()[dof] * n.x() * n2.x();
                         W->add(indexCurRowConst, indexCurColConst, w);
                         if (indexCurRowConst != indexCurColConst)
                             W->add(indexCurColConst, indexCurRowConst, w);
@@ -327,10 +338,12 @@ void UncoupledConstraintCorrection<defaulttype::Vec1dTypes>::applyContactForce(c
         double fC1 = f->element(indexC1);
         if (fC1 != 0.0)
         {
-            int sizeC1 = constraints[c1].size();
-            for(int i = 0; i < sizeC1; i++)
+            ConstraintIterator itConstraint;
+            for (itConstraint=constraints[c1].getData().begin(); itConstraint!=constraints[c1].getData().end(); itConstraint++)
             {
-                force[constraints[c1][i].index] += constraints[c1][i].data * fC1;
+                unsigned int dof = itConstraint->first;
+                Deriv n = itConstraint->second;
+                force[dof] += n * fC1;
             }
         }
     }
@@ -388,13 +401,16 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3fTypes>::getCompliance(def
 
     for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
     {
-        int sizeCurRowConst = constraints[curRowConst].size();
         int indexCurRowConst = mstate->getConstraintId()[curRowConst];
 
-        for(int i = 0; i < sizeCurRowConst; i++)
+        ConstraintIterator itConstraint;
+        for (itConstraint=constraints[curRowConst].getData().begin(); itConstraint!=constraints[curRowConst].getData().end(); itConstraint++)
         {
-            weighedNormal.getVCenter() = constraints[curRowConst][i].data.getVCenter(); // weighed normal
-            weighedNormal.getVOrientation() = constraints[curRowConst][i].data.getVOrientation();
+//         unsigned int dof = itConstraint->first;
+            Deriv n = itConstraint->second;
+
+            weighedNormal.getVCenter() = n.getVCenter(); // weighed normal
+            weighedNormal.getVOrientation() = n.getVOrientation();
 
             InvM_wN = weighedNormal / (*massValue);
             InvM_wN *= dt*dt;
@@ -403,24 +419,26 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3fTypes>::getCompliance(def
 
             for(unsigned int curColConst = curRowConst; curColConst < numConstraints; curColConst++)
             {
-                int sizeCurColConst = constraints[curColConst].size();
                 indexCurColConst = mstate->getConstraintId()[curColConst];
 
-                for(int j = 0; j < sizeCurColConst; j++)
+                ConstraintIterator itConstraint2;
+                for (itConstraint2=constraints[curColConst].getData().begin(); itConstraint2!=constraints[curColConst].getData().end(); itConstraint2++)
                 {
+//                 unsigned int dof2 = itConstraint->first;
+                    Deriv n2 = itConstraint2->second;
                     //W[indexCurRowConst][indexCurColConst] +=  constraints[curColConst][j].data * InvM_wN;
-                    double w =  constraints[curColConst][j].data * InvM_wN;
+                    double w =  n2 * InvM_wN;
                     W->add(indexCurRowConst, indexCurColConst, w);
                     if (indexCurRowConst != indexCurColConst)
                         W->add(indexCurColConst, indexCurRowConst, w);
                 }
             }
             /*
-                  for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
-                  {
-                  indexCurColConst = mstate->getConstraintId()[curColConst];
-                  W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
-                }
+            for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
+            {
+            indexCurColConst = mstate->getConstraintId()[curColConst];
+            W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
+            }
             */
         }
     }
@@ -465,10 +483,12 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3fTypes>::applyContactForce
 
         if (fC1 != 0.0)
         {
-            int sizeC1 = constraints[c1].size();
-            for(int i = 0; i < sizeC1; i++)
+            ConstraintIterator itConstraint;
+            for (itConstraint=constraints[c1].getData().begin(); itConstraint!=constraints[c1].getData().end(); itConstraint++)
             {
-                weighedNormal = constraints[c1][i].data; // weighted normal
+//           unsigned int dof = itConstraint->first;
+                Deriv n = itConstraint->second;
+                weighedNormal = n; // weighted normal
                 force[0].getVCenter() += weighedNormal.getVCenter() * fC1;
                 force[0].getVOrientation() += weighedNormal.getVOrientation() * fC1;
             }
@@ -507,24 +527,28 @@ void UncoupledConstraintCorrection<defaulttype::Vec1fTypes>::getCompliance(defau
 
     for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
     {
-        int sizeCurRowConst = constraints[curRowConst].size();
         int indexCurRowConst = mstate->getConstraintId()[curRowConst];
 
-        for(int i = 0; i < sizeCurRowConst; i++)
+        ConstraintIterator itConstraint;
+        for (itConstraint=constraints[curRowConst].getData().begin(); itConstraint!=constraints[curRowConst].getData().end(); itConstraint++)
         {
+            unsigned int dof = itConstraint->first;
+            Deriv n = itConstraint->second;
             int indexCurColConst;
 
             for(unsigned int curColConst = curRowConst; curColConst < numConstraints; curColConst++)
             {
-                int sizeCurColConst = constraints[curColConst].size();
                 indexCurColConst = mstate->getConstraintId()[curColConst];
 
-                for(int j = 0; j < sizeCurColConst; j++)
+                ConstraintIterator itConstraint2;
+                for (itConstraint2=constraints[curColConst].getData().begin(); itConstraint2!=constraints[curColConst].getData().end(); itConstraint2++)
                 {
-                    if (constraints[curRowConst][i].index == constraints[curColConst][j].index)
+                    unsigned int dof2 = itConstraint->first;
+                    Deriv n2 = itConstraint2->second;
+                    if (dof == dof2)
                     {
                         //W[indexCurRowConst][indexCurColConst] += (1.0/10000.0) * constraints[curRowConst][i].data.x() * constraints[curColConst][j].data.x();
-                        double w = (1.0/10000.0) * constraints[curRowConst][i].data.x() * constraints[curColConst][j].data.x();
+                        double w = (1.0/10000.0) * n.x() * n2.x();
                         W->add(indexCurRowConst, indexCurColConst, w);
                         if (indexCurRowConst != indexCurColConst)
                             W->add(indexCurColConst, indexCurRowConst, w);
@@ -532,11 +556,11 @@ void UncoupledConstraintCorrection<defaulttype::Vec1fTypes>::getCompliance(defau
                 }
             }
             /*
-                  for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
-                  {
-                  indexCurColConst = mstate->getConstraintId()[curColConst];
-                  W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
-                }
+            for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
+            {
+            indexCurColConst = mstate->getConstraintId()[curColConst];
+            W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
+            }
             */
         }
     }
@@ -574,10 +598,12 @@ void UncoupledConstraintCorrection<defaulttype::Vec1fTypes>::applyContactForce(c
         double fC1 = f->element(indexC1);
         if (fC1 != 0.0)
         {
-            int sizeC1 = constraints[c1].size();
-            for(int i = 0; i < sizeC1; i++)
+            ConstraintIterator itConstraint;
+            for (itConstraint=constraints[c1].getData().begin(); itConstraint!=constraints[c1].getData().end(); itConstraint++)
             {
-                force[constraints[c1][i].index] += constraints[c1][i].data * fC1;
+                unsigned int dof = itConstraint->first;
+                Deriv n = itConstraint->second;
+                force[dof] += n * fC1;
             }
         }
     }

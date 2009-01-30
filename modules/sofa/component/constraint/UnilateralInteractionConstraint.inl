@@ -225,30 +225,30 @@ void UnilateralInteractionConstraint<DataTypes>::applyConstraint(unsigned int &c
         SparseVecDeriv svd2;
 
         this->object1->setConstraintId(c.id);
-        svd1.push_back(SparseDeriv(c.m1, -c.norm));
+        svd1.insert(c.m1, -c.norm);
         c1.push_back(svd1);
 
         this->object2->setConstraintId(c.id);
-        svd2.push_back(SparseDeriv(c.m2, c.norm));
+        svd2.insert(c.m2, c.norm);
         c2.push_back(svd2);
 
         if (c.mu > 0.0)
         {
             contactId += 2;
             this->object1->setConstraintId(c.id+1);
-            svd1[0] = SparseDeriv(c.m1, -c.t);
+            svd1.set(c.m1, -c.t);
             c1.push_back(svd1);
 
             this->object1->setConstraintId(c.id+2);
-            svd1[0] = SparseDeriv(c.m1, -c.s);
+            svd1.set(c.m1, -c.s);
             c1.push_back(svd1);
 
             this->object2->setConstraintId(c.id+1);
-            svd2[0] = SparseDeriv(c.m2, c.t);
+            svd2.set(c.m2, c.t);
             c2.push_back(svd2);
 
             this->object2->setConstraintId(c.id+2);
-            svd2[0] = SparseDeriv(c.m2, c.s);
+            svd2.set(c.m2, c.s);
             c2.push_back(svd2);
         }
     }
