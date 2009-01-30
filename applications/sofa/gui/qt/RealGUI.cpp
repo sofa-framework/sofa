@@ -378,7 +378,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
 
     QLabel *timeRecord = new QLabel("T=",statusBar());
     loadRecordTime = new QLineEdit(statusBar());
-    loadRecordTime->setMaximumSize(QSize(50, 100));
+    loadRecordTime->setMaximumSize(QSize(75, 100));
 
 
     statusBar()->addWidget ( fpsLabel );

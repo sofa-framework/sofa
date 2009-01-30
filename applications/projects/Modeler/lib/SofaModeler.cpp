@@ -389,6 +389,7 @@ void SofaModeler::closeEvent( QCloseEvent *e)
 {
     const int numTab=sceneTab->count();
     for (int i=0; i<numTab; ++i) closeTab();
+
     e->accept();
 }
 
@@ -906,11 +907,14 @@ void SofaModeler::sofaExited()
 void SofaModeler::removeTemporaryFiles(Q3Process *p)
 {
     std::string filename(p->name());
+    std::string copyBuffer(presetPath+"copyBuffer.scn");
     //Delete Temporary file
     ::remove(filename.c_str());
     filename += ".view";
     //Remove eventual .view file
     ::remove(filename.c_str());
+    //Remove eventual copy buffer
+    ::remove(copyBuffer.c_str());
 }
 
 
