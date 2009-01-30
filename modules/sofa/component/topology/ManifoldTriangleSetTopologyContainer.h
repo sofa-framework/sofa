@@ -68,8 +68,6 @@ public:
 
     virtual void clear();
 
-    //		virtual void draw();
-
     /** \brief Checks if the topology is coherent
      *
      * The function TriangleSetTopologyContainer::CheckTopology() Check if the shell arrays are coherent

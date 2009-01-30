@@ -66,15 +66,12 @@ ManifoldTriangleSetTopologyContainer::ManifoldTriangleSetTopologyContainer(const
 
 bool ManifoldTriangleSetTopologyContainer::checkTopology() const
 {
-    std::cout<<"ManifoldTriangleSetTopologyContainer::checkTopology()" << std::endl;
 #ifndef NDEBUG
-
     bool ret = true;
 
     //Test the shell m_triangleVertexShell
     if(hasTriangleVertexShell())
     {
-
         //Number of different elements needed for this function
         const unsigned int nbrVertices = getNbPoints();
         const unsigned int nbrTriangles = getNumberOfTriangles();
@@ -1178,7 +1175,7 @@ sofa::helper::vector< unsigned int > &ManifoldTriangleSetTopologyContainer::getT
     if(!hasTriangleEdgeShell())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::getTriangleEdgeShellForModification] triangle edge shell array is empty." << endl;
+        sout << "Warning. [ManifoldTriangleSetTopologyContainer::getTriangleEdgeShellForModification] triangle edge shell array is empty." << endl;
 #endif
         createTriangleEdgeShellArray();
     }
@@ -1186,7 +1183,7 @@ sofa::helper::vector< unsigned int > &ManifoldTriangleSetTopologyContainer::getT
     if( i >= m_triangleEdgeShell.size())
     {
 #ifndef NDEBUG
-        sout << "Error. [TriangleSetTopologyContainer::getTriangleEdgeShellForModification] index out of bounds." << endl;
+        sout << "Error. [ManifoldTriangleSetTopologyContainer::getTriangleEdgeShellForModification] index out of bounds." << endl;
 #endif
         createTriangleEdgeShellArray();
     }
@@ -1199,7 +1196,7 @@ sofa::helper::vector< unsigned int > &ManifoldTriangleSetTopologyContainer::getT
     if(!hasTriangleVertexShell())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
-        sout << "Warning. [TriangleSetTopologyContainer::getTriangleVertexShellForModification] triangle vertex shell array is empty." << endl;
+        sout << "Warning. [ManifoldTriangleSetTopologyContainer::getTriangleVertexShellForModification] triangle vertex shell array is empty." << endl;
 #endif
         createTriangleVertexShellArray();
     }
@@ -1207,7 +1204,7 @@ sofa::helper::vector< unsigned int > &ManifoldTriangleSetTopologyContainer::getT
     if( i >= m_triangleVertexShell.size())
     {
 #ifndef NDEBUG
-        sout << "Error. [TriangleSetTopologyContainer::getTriangleVertexShellForModification] index out of bounds." << endl;
+        sout << "Error. [ManifoldTriangleSetTopologyContainer::getTriangleVertexShellForModification] index out of bounds." << endl;
 #endif
         createTriangleVertexShellArray();
     }

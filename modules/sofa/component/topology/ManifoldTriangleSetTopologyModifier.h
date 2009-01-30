@@ -57,10 +57,26 @@ public:
 
     virtual void init();
 
+    /**\brief PreCondition to fulfill before removing triangles. In this class topology should stay manifold.
+    * This function call private functions to test the topology: createFutureModifications(), testRemoveModifications().
+    */
     virtual bool removePrecondition(sofa::helper::vector< unsigned int >& items);
 
+    /**\brief Postprocessing to apply to the triangle topology. In this class topology should stay manifold.
+    * This function reorder the triangles around each vertex where triangles have been deleted.
+    * In order that only one connexe composante stay.
+    */
     virtual void removePostProcessing();
 
+    /** \brief Remove a subset of points
+     *
+     * Elements corresponding to these points are removed from the mechanical object's state vectors.
+     *
+     * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
+     * \sa removePointsWarning
+     * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
+     * In this class the point is also deleted from the m_modifications map.
+     */
     virtual void removePointsProcess(sofa::helper::vector<unsigned int> &indices, const bool removeDOF = true);
 
 private:
