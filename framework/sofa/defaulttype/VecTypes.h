@@ -76,8 +76,13 @@ public:
         {
             data[index] = value;
         }
-        T& getDataAt(unsigned int index) {return data[index];};
-        const T& getDataAt(unsigned int index) const {return data[index];};
+        T& getDataAt(unsigned int index)
+        {
+            typename std::map< unsigned int, T >::iterator it = data.find(index);
+            static T zeroValue=T();
+            if (it != data.end()) return it->second;
+            else return zeroValue;
+        };
 
         std::map< unsigned int, T > &getData() {return data;};
         const std::map< unsigned int, T > &getData() const {return data;};
@@ -335,8 +340,14 @@ public:
         {
             data[index] = value;
         }
-        const T& getDataAt(unsigned int index) const {return data[index];};
-        T& getDataAt(unsigned int index) {return data[index];};
+        T& getDataAt(unsigned int index)
+        {
+            typename std::map< unsigned int, T >::iterator it = data.find(index);
+            static T zeroValue=T();
+            if (it != data.end()) return it->second;
+            else return zeroValue;
+        };
+
         const std::map< unsigned int, T > &getData() const {return data;};
         std::map< unsigned int, T > &getData() {return data;};
     protected:
