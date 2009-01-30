@@ -31,7 +31,7 @@ void main()
 
 	vec3 coefs = abs(unitNormalVec)-vec3(0.2,0.2,0.2);
 	coefs *= 7.0;
-	coefs = pow(coefs,3.0);
+	coefs = coefs*coefs*coefs ;//pow(coefs,3.0);
 	coefs = max(vec3(0.0,0.0,0.0),coefs);
 	coefs /= dot(coefs,vec3(1.0,1.0,1.0)); // make sum = 1
 
@@ -51,18 +51,18 @@ void main()
 
 	color.a = 1.0;
 	
-	vec3 bump = vec4(0.0,0.0,0.0,0.0);// = normalize( texture2D(normalMap, vec2(pos.x/scaleTexture.x,pos.y/scaleTexture.y) ).xyz * 2.0 - 1.0);
+	vec3 bump = vec3(0.0,0.0,0.0);// = normalize( texture2D(normalMap, vec2(pos.x/scaleTexture.x,pos.y/scaleTexture.y) ).xyz * 2.0 - 1.0);
 	
 	// Write the final pixel.
 	//XY -> Z
 	//color.g = pos.y;
-	bump += texture2D(normalMap,vec2(pos.x/scaleTexture.x,pos.y/scaleTexture.y) ) * coefs.z;
+	bump += texture2D(normalMap,vec2(pos.x/scaleTexture.x,pos.y/scaleTexture.y) ).xyz * coefs.z;
 	//XZ -> Y
 	//color.r = pos.x;
-	bump += texture2D(normalMap,vec2(pos.x/scaleTexture.x,pos.z/scaleTexture.y) ) * coefs.y;
+	bump += texture2D(normalMap,vec2(pos.x/scaleTexture.x,pos.z/scaleTexture.y) ).xyz * coefs.y;
 	//YZ -> X
 	//color.b = pos.z;
-	bump += texture2D(normalMap,vec2(pos.y/scaleTexture.x,pos.z/scaleTexture.y) ) * coefs.x;
+	bump += texture2D(normalMap,vec2(pos.y/scaleTexture.x,pos.z/scaleTexture.y) ).xyz * coefs.x;
 	
 	//Phong
 	vec3 n,halfV;
