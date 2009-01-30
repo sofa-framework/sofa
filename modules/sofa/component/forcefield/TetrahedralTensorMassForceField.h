@@ -94,6 +94,17 @@ protected:
         EdgeRestInformation()
         {
         }
+        /// Output stream
+        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeRestInformation& /*eri*/ )
+        {
+            return os;
+        }
+
+        /// Input stream
+        inline friend std::istream& operator>> ( std::istream& in, EdgeRestInformation& /*eri*/ )
+        {
+            return in;
+        }
     };
 
     EdgeData<EdgeRestInformation> edgeInfo;

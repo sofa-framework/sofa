@@ -92,12 +92,14 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleCreationFunc
         typename DataTypes::Real lambda=ff->getLambda();
         typename DataTypes::Real mu=ff->getMu();
 
+        helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+
         /// describe the jth edge index of triangle no i
         const TriangleEdges &te= ff->_topology->getEdgeTriangleShell(triangleIndex);
         // store square rest length
         for(j=0; j<3; ++j)
         {
-            restSquareLength[j]=edgeInfo[te[j]].restSquareLength;
+            restSquareLength[j]=edgeInf[te[j]].restSquareLength;
         }
         // compute rest area based on Heron's formula
         area=0;
@@ -122,9 +124,9 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleCreationFunc
             l=(j+2)%3;
             tinfo.gamma[j]=(2*cotangent[k]*cotangent[l]*(lambda+mu)-mu)/(16*area);
             tinfo.stiffness[j]=(2*cotangent[j]*cotangent[j]*(lambda+mu)+mu)/(16*area);
-            edgeInfo[te[j]].stiffness+=tinfo.stiffness[j];
+            edgeInf[te[j]].stiffness+=tinfo.stiffness[j];
         }
-
+        edgeInfo.endEdit();
     }
 
 }
@@ -141,12 +143,14 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleDestroyFunct
 
         EdgeData<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation> &edgeInfo=ff->getEdgeInfo();
 
+        helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+
         /// describe the jth edge index of triangle no i
         const TriangleEdges &te= ff->_topology->getEdgeTriangleShell(triangleIndex);
         // store square rest length
         for(j=0; j<3; ++j)
         {
-            edgeInfo[te[j]].stiffness -= tinfo.stiffness[j];
+            edgeInf[te[j]].stiffness -= tinfo.stiffness[j];
         }
 
     }
@@ -194,7 +198,9 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
     /// prepare to store info in the triangle array
     triangleInfo.resize(_topology->getNbTriangles());
     /// prepare to store info in the edge array
-    edgeInfo.resize(_topology->getNbEdges());
+    helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+
+    edgeInf.resize(_topology->getNbEdges());
 
     // get restPosition
     if (_initialPoints.getValue().size() == 0)
@@ -205,7 +211,7 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
     int i;
     for (i=0; i<_topology->getNbEdges(); ++i)
     {
-        TRBSEdgeCreationFunction(i, (void*) this, edgeInfo[i],
+        TRBSEdgeCreationFunction(i, (void*) this, edgeInf[i],
                 _topology->getEdge(i),  (const sofa::helper::vector< unsigned int > )0,
                 (const sofa::helper::vector< double >)0);
     }
@@ -224,6 +230,7 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
     triangleInfo.setCreateParameter( (void *) this );
     triangleInfo.setDestroyParameter( (void *) this );
 
+    edgeInfo.endEdit();
 }
 
 
@@ -244,6 +251,8 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(VecDeriv& f, co
     TriangleRestInformation *tinfo;
     EdgeRestInformation *einfo;
 
+    helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+
     assert(this->mstate);
 
     Deriv force;
@@ -253,7 +262,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(VecDeriv& f, co
 
     for(int i=0; i<nbEdges; i++ )
     {
-        einfo=&edgeInfo[i];
+        einfo=&edgeInf[i];
         v0=_topology->getEdge(i)[0];
         v1=_topology->getEdge(i)[1];
         dp=x[v0]-x[v1];
@@ -282,7 +291,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(VecDeriv& f, co
                 k=(j+1)%3;
                 l=(j+2)%3;
                 force=(x[ta[k]] - x[ta[l]])*
-                        (edgeInfo[tea[k]].deltaL2 * tinfo->gamma[l] +edgeInfo[tea[l]].deltaL2 * tinfo->gamma[k]);
+                        (edgeInf[tea[k]].deltaL2 * tinfo->gamma[l] +edgeInf[tea[l]].deltaL2 * tinfo->gamma[k]);
                 f[ta[l]]+=force;
                 f[ta[k]]-=force;
             }
@@ -290,7 +299,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(VecDeriv& f, co
         //	serr << "tinfo->gamma[0] "<<tinfo->gamma[0]<<sendl;
 
     }
-
+    edgeInfo.endEdit();
     updateMatrix=true;
 }
 
@@ -311,6 +320,9 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, 
 
 
     Deriv deltax,res;
+
+    helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+
 
     if (updateMatrix)
     {
@@ -338,7 +350,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, 
 
                 if (f_useAngularSprings.getValue()==false)
                 {
-                    val1 = -tinfo->stiffness[k]*edgeInfo[tea[k]].deltaL2;
+                    val1 = -tinfo->stiffness[k]*edgeInf[tea[k]].deltaL2;
 
                     val2= -2*tinfo->stiffness[k];
 
@@ -357,9 +369,9 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, 
                     dpj = x[ta[i]]- x[ta[k]];
                     dpi = x[ta[j]]- x[ta[k]];
 
-                    val1 = -(tinfo->stiffness[k]*edgeInfo[tea[k]].deltaL2+
-                            tinfo->gamma[i]*edgeInfo[tea[j]].deltaL2+
-                            tinfo->gamma[j]*edgeInfo[tea[i]].deltaL2);
+                    val1 = -(tinfo->stiffness[k]*edgeInf[tea[k]].deltaL2+
+                            tinfo->gamma[i]*edgeInf[tea[j]].deltaL2+
+                            tinfo->gamma[j]*edgeInf[tea[i]].deltaL2);
 
                     val2= -2*tinfo->stiffness[k];
                     valk=2*tinfo->gamma[k];
@@ -402,6 +414,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, 
             df[ta[j]]-= tinfo->DfDx[k].transposeMultiply(deltax);
         }
     }
+    edgeInfo.endEdit();
 }
 
 

@@ -129,6 +129,17 @@ protected:
             : m1(m1), m2(m2), /* ks(ks), kd(kd), */ restlength(restlength), is_activated(is_activated), is_initialized(is_initialized)
         {
         }
+        /// Output stream
+        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeInformation& /*ei*/ )
+        {
+            return os;
+        }
+
+        /// Input stream
+        inline friend std::istream& operator>> ( std::istream& in, EdgeInformation& /*ei*/ )
+        {
+            return in;
+        }
     };
 
     EdgeData<EdgeInformation> edgeInfo;

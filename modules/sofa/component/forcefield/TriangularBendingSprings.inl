@@ -330,6 +330,8 @@ template <class DataTypes> void TriangularBendingSprings<DataTypes>::handleTopol
     std::list<const TopologyChange *>::const_iterator itBegin=_topology->firstChange();
     std::list<const TopologyChange *>::const_iterator itEnd=_topology->lastChange();
 
+    helper::vector<EdgeInformation> edgeInf = *(edgeInfo.beginEdit());
+
     edgeInfo.handleTopologyEvents(itBegin,itEnd);
 
     while( itBegin != itEnd )
@@ -382,16 +384,16 @@ template <class DataTypes> void TriangularBendingSprings<DataTypes>::handleTopol
 
                     unsigned int ind_j = tej[vertexIndex];
 
-                    if (edgeInfo[ind_j].m1 == (int) last)
+                    if (edgeInf[ind_j].m1 == (int) last)
                     {
-                        edgeInfo[ind_j].m1=(int) tab[i];
+                        edgeInf[ind_j].m1=(int) tab[i];
                         //sout << "INFO_print : OK m1 for ind_j =" << ind_j << sendl;
                     }
                     else
                     {
-                        if (edgeInfo[ind_j].m2 == (int) last)
+                        if (edgeInf[ind_j].m2 == (int) last)
                         {
-                            edgeInfo[ind_j].m2=(int) tab[i];
+                            edgeInf[ind_j].m2=(int) tab[i];
                             //sout << "INFO_print : OK m2 for ind_j =" << ind_j << sendl;
                         }
                     }
@@ -400,22 +402,22 @@ template <class DataTypes> void TriangularBendingSprings<DataTypes>::handleTopol
                 if(debug_mode)
                 {
 
-                    for (unsigned int j_loc=0; j_loc<edgeInfo.size(); ++j_loc)
+                    for (unsigned int j_loc=0; j_loc<edgeInf.size(); ++j_loc)
                     {
 
                         bool is_forgotten = false;
-                        if (edgeInfo[j_loc].m1 == (int) last)
+                        if (edgeInf[j_loc].m1 == (int) last)
                         {
-                            edgeInfo[j_loc].m1 =(int) tab[i];
+                            edgeInf[j_loc].m1 =(int) tab[i];
                             is_forgotten=true;
                             //sout << "INFO_print : TriangularBendingSprings - MISS m1 for j_loc =" << j_loc << sendl;
 
                         }
                         else
                         {
-                            if (edgeInfo[j_loc].m2 ==(int) last)
+                            if (edgeInf[j_loc].m2 ==(int) last)
                             {
-                                edgeInfo[j_loc].m2 =(int) tab[i];
+                                edgeInf[j_loc].m2 =(int) tab[i];
                                 is_forgotten=true;
                                 //sout << "INFO_print : TriangularBendingSprings - MISS m2 for j_loc =" << j_loc << sendl;
 
@@ -440,10 +442,10 @@ template <class DataTypes> void TriangularBendingSprings<DataTypes>::handleTopol
 
                 for (int i = 0; i < _topology->getNbEdges(); ++i)
                 {
-                    if(edgeInfo[i].is_activated)
+                    if(edgeInf[i].is_activated)
                     {
-                        edgeInfo[i].m1  = tab[edgeInfo[i].m1];
-                        edgeInfo[i].m2  = tab[edgeInfo[i].m2];
+                        edgeInf[i].m1  = tab[edgeInf[i].m1];
+                        edgeInf[i].m2  = tab[edgeInf[i].m2];
                     }
                 }
             }
@@ -451,6 +453,7 @@ template <class DataTypes> void TriangularBendingSprings<DataTypes>::handleTopol
 
         ++itBegin;
     }
+    edgeInfo.endEdit();
 }
 
 
@@ -469,14 +472,15 @@ void TriangularBendingSprings<DataTypes>::init()
     }
 
     /// prepare to store info in the edge array
-    edgeInfo.resize(_topology->getNbEdges());
+    helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
+    edgeInf.resize(_topology->getNbEdges());
 
     int i;
     // set edge tensor to 0
     for (i=0; i<_topology->getNbEdges(); ++i)
     {
 
-        TriangularBSEdgeCreationFunction(i, (void*) this, edgeInfo[i],
+        TriangularBSEdgeCreationFunction(i, (void*) this, edgeInf[i],
                 _topology->getEdge(i),  (const sofa::helper::vector< unsigned int > )0,
                 (const sofa::helper::vector< double >)0);
     }
@@ -488,7 +492,7 @@ void TriangularBendingSprings<DataTypes>::init()
         triangleAdded.push_back(i);
     }
     TriangularBSTriangleCreationFunction(triangleAdded,(void*) this,
-            edgeInfo);
+            edgeInf);
 
     edgeInfo.setCreateFunction(TriangularBSEdgeCreationFunction);
     edgeInfo.setCreateTriangleFunction(TriangularBSTriangleCreationFunction);
@@ -496,6 +500,7 @@ void TriangularBendingSprings<DataTypes>::init()
     edgeInfo.setCreateParameter( (void *) this );
     edgeInfo.setDestroyParameter( (void *) this );
 
+    edgeInfo.endEdit();
 }
 
 template <class DataTypes>
@@ -513,6 +518,8 @@ void TriangularBendingSprings<DataTypes>::addForce(VecDeriv& f, const VecCoord& 
 
     EdgeInformation *einfo;
 
+    helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
+
     //const helper::vector<Spring>& m_springs= this->springs.getValue();
     //this->dfdx.resize(nbEdges); //m_springs.size()
     f.resize(x.size());
@@ -525,7 +532,7 @@ void TriangularBendingSprings<DataTypes>::addForce(VecDeriv& f, const VecCoord& 
 
     for(int i=0; i<nbEdges; i++ )
     {
-        einfo=&edgeInfo[i];
+        einfo=&edgeInf[i];
 
         // safety check
 #if 0
@@ -616,7 +623,7 @@ void TriangularBendingSprings<DataTypes>::addForce(VecDeriv& f, const VecCoord& 
         }
     }
 
-
+    edgeInfo.endEdit();
     //for (unsigned int i=0; i<springs.size(); i++)
     //{
     /*            serr<<"TriangularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2<<sendl;*/
@@ -631,6 +638,8 @@ void TriangularBendingSprings<DataTypes>::addDForce(VecDeriv& df, const VecDeriv
 
     EdgeInformation *einfo;
 
+    helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
+
     df.resize(dx.size());
     //serr<<"TriangularBendingSprings<DataTypes>::addDForce, dx1 = "<<dx1<<sendl;
     //serr<<"TriangularBendingSprings<DataTypes>::addDForce, df1 before = "<<f1<<sendl;
@@ -638,7 +647,7 @@ void TriangularBendingSprings<DataTypes>::addDForce(VecDeriv& df, const VecDeriv
 
     for(int i=0; i<nbEdges; i++ )
     {
-        einfo=&edgeInfo[i];
+        einfo=&edgeInf[i];
 
         /*            serr<<"TriangularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2<<sendl;*/
 
@@ -662,6 +671,7 @@ void TriangularBendingSprings<DataTypes>::addDForce(VecDeriv& df, const VecDeriv
         }
     }
 
+    edgeInfo.endEdit();
     //for (unsigned int i=0; i<springs.size(); i++)
     //{
     //    this->addSpringDForce(df,dx, i, springs[i]);
@@ -716,25 +726,27 @@ void TriangularBendingSprings<DataTypes>::draw()
     */
     unsigned int nb_to_draw = 0;
 
+    helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
+
     glBegin(GL_LINES);
-    for(i=0; i<edgeInfo.size(); ++i)
+    for(i=0; i<edgeInf.size(); ++i)
     {
-        if(edgeInfo[i].is_activated)
+        if(edgeInf[i].is_activated)
         {
 
 
             bool external=true;
-            Real d = (x[edgeInfo[i].m2]-x[edgeInfo[i].m1]).norm();
+            Real d = (x[edgeInf[i].m2]-x[edgeInf[i].m1]).norm();
             if (external)
             {
-                if (d<edgeInfo[i].restlength*0.9999)
+                if (d<edgeInf[i].restlength*0.9999)
                     glColor4f(1,0,0,1);
                 else
                     glColor4f(0,1,0,1);
             }
             else
             {
-                if (d<edgeInfo[i].restlength*0.9999)
+                if (d<edgeInf[i].restlength*0.9999)
                     glColor4f(1,0.5f,0,1);
                 else
                     glColor4f(0,1,0.5f,1);
@@ -744,13 +756,14 @@ void TriangularBendingSprings<DataTypes>::draw()
             nb_to_draw+=1;
 
             //glColor4f(0,1,0,1);
-            helper::gl::glVertexT(x[edgeInfo[i].m1]);
-            helper::gl::glVertexT(x[edgeInfo[i].m2]);
+            helper::gl::glVertexT(x[edgeInf[i].m1]);
+            helper::gl::glVertexT(x[edgeInf[i].m2]);
 
         }
     }
     glEnd();
 
+    edgeInfo.endEdit();
 
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

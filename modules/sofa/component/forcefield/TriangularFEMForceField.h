@@ -126,6 +126,18 @@ protected:
             :fracturable(false) {};
 
         bool fracturable;
+
+        /// Output stream
+        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeInformation& /*ei*/ )
+        {
+            return os;
+        }
+
+        /// Input stream
+        inline friend std::istream& operator>> ( std::istream& in, EdgeInformation& /*ei*/ )
+        {
+            return in;
+        }
     };
 
     class VertexInformation

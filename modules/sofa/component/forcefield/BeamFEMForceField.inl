@@ -158,7 +158,7 @@ void BeamFEMForceField<DataTypes>::BeamFEMEdgeCreationFunction(int edgeIndex, vo
     BeamFEMForceField<DataTypes>* p = static_cast<BeamFEMForceField<DataTypes>*>(param);
     // p->beamsData.resize(edgeIndex+1);
     static_cast<BeamFEMForceField<DataTypes>*>(param)->reinitBeam(edgeIndex);
-    ei = p->beamsData[edgeIndex];
+    ei = p->beamsData.getValue()[edgeIndex];
     // p->beamsData.resize(edgeIndex);
 }
 
@@ -237,16 +237,16 @@ template<class DataTypes>
 void BeamFEMForceField<DataTypes>::computeStiffness(int i, Index , Index )
 {
     Real   phiy, phiz;
-    Real _L = (Real)beamsData[i]._L;
-    Real _A = (Real)beamsData[i]._A;
-    Real _nu = (Real)beamsData[i]._nu;
-    Real _E = (Real)beamsData[i]._E;
-    Real _Iy = (Real)beamsData[i]._Iy;
-    Real _Iz = (Real)beamsData[i]._Iz;
-    Real _Asy = (Real)beamsData[i]._Asy;
-    Real _Asz = (Real)beamsData[i]._Asz;
-    Real _G = (Real)beamsData[i]._G;
-    Real _J = (Real)beamsData[i]._J;
+    Real _L = (Real)beamsData.getValue()[i]._L;
+    Real _A = (Real)beamsData.getValue()[i]._A;
+    Real _nu = (Real)beamsData.getValue()[i]._nu;
+    Real _E = (Real)beamsData.getValue()[i]._E;
+    Real _Iy = (Real)beamsData.getValue()[i]._Iy;
+    Real _Iz = (Real)beamsData.getValue()[i]._Iz;
+    Real _Asy = (Real)beamsData.getValue()[i]._Asy;
+    Real _Asz = (Real)beamsData.getValue()[i]._Asz;
+    Real _G = (Real)beamsData.getValue()[i]._G;
+    Real _J = (Real)beamsData.getValue()[i]._J;
     Real L2 = (Real) (_L * _L);
     Real L3 = (Real) (L2 * _L);
     Real EIy = (Real)(_E * _Iy);
@@ -265,7 +265,8 @@ void BeamFEMForceField<DataTypes>::computeStiffness(int i, Index , Index )
     else
         phiz = (Real)(24.0*(1.0+_nu)*_Iy/(_Asz*L2));
 
-    StiffnessMatrix& k_loc = beamsData[i]._k_loc;
+    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+    StiffnessMatrix& k_loc = bd[i]._k_loc;
 
     // Define stiffness matrix 'k' in local coordinates
     k_loc.clear();
@@ -294,6 +295,8 @@ void BeamFEMForceField<DataTypes>::computeStiffness(int i, Index , Index )
     for (int i=0; i<=10; i++)
         for (int j=i+1; j<12; j++)
             k_loc[i][j] = k_loc[j][i];
+
+    beamsData.endEdit();
 }
 
 inline Quat qDiff(Quat a, const Quat& b)
@@ -340,6 +343,7 @@ void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
     else
         beamQuat(i)= quatA;
 
+    beamsData.endEdit();
 }
 
 template<class DataTypes>
@@ -348,6 +352,7 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
     const VecCoord& x0 = *this->mstate->getX0();
 
     beamQuat(i)= x[a].getOrientation();
+    beamsData.endEdit();
 
     Vec<3,Real> u, P1P2, P1P2_0;
     // local displacement
@@ -376,7 +381,7 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
     depl[9] = u[0]; depl[10]= u[1]; depl[11]= u[2];
 
     // this computation can be optimised: (we know that half of "depl" is null)
-    Displacement force = beamsData[i]._k_loc * depl;
+    Displacement force = beamsData.getValue()[i]._k_loc * depl;
 
 
     // Apply lambda transpose (we use the rotation value of point a for the beam)
@@ -423,7 +428,7 @@ void BeamFEMForceField<DataTypes>::applyStiffnessLarge( VecDeriv& df, const VecD
     local_depl[10] = u[1];
     local_depl[11] = u[2];
 
-    Displacement local_force = beamsData[i]._k_loc * local_depl;
+    Displacement local_force = beamsData.getValue()[i]._k_loc * local_depl;
 
     Vec3d fa1 = q.rotate(Vec3d(local_force[0],local_force[1] ,local_force[2] ));
     Vec3d fa2 = q.rotate(Vec3d(local_force[3],local_force[4] ,local_force[5] ));
@@ -453,7 +458,7 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *m
         Transformation R,Rt;
         q.toMatrix(R);
         Rt.transpose(R);
-        const StiffnessMatrix& K0 = beamsData[i]._k_loc;
+        const StiffnessMatrix& K0 = beamsData.getValue()[i]._k_loc;
         StiffnessMatrix K;
         for (int x1=0; x1<12; x1+=3)
             for (int y1=0; y1<12; y1+=3)
@@ -495,18 +500,18 @@ void BeamFEMForceField<DataTypes>::draw()
         //sout << "edge " << i << " : "<<a<<" "<<b<<" = "<<x[a].getCenter()<<"  -  "<<x[b].getCenter()<<" = "<<beamsData[i]._L<<sendl;
         Vec3d p; p = (x[a].getCenter()+x[b].getCenter())*0.5;
         Vec3d beamVec;
-        beamVec[0]=beamsData[i]._L*0.5; beamVec[1] = 0.0; beamVec[2] = 0.0;
+        beamVec[0]=beamsData.getValue()[i]._L*0.5; beamVec[1] = 0.0; beamVec[2] = 0.0;
 
         const Quat& q = beamQuat(i);
         // axis X
         points[0].push_back(p - q.rotate(beamVec) );
         points[0].push_back(p + q.rotate(beamVec) );
         // axis Y
-        beamVec[0]=0.0; beamVec[1] = beamsData[i]._L*0.5;
+        beamVec[0]=0.0; beamVec[1] = beamsData.getValue()[i]._L*0.5;
         points[1].push_back(p );
         points[1].push_back(p + q.rotate(beamVec) );
         // axis Z
-        beamVec[1]=0.0; beamVec[2] = beamsData[i]._L*0.5;
+        beamVec[1]=0.0; beamVec[2] = beamsData.getValue()[i]._L*0.5;
         points[2].push_back(p);
         points[2].push_back(p + q.rotate(beamVec) );
     }
@@ -519,13 +524,17 @@ void BeamFEMForceField<DataTypes>::draw()
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::initBeams(unsigned int size)
 {
-    beamsData.resize(size);
+    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+    bd.resize(size);
+    beamsData.endEdit();
 }
 
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::setBeam(unsigned int i, double E, double L, double nu, double r)
 {
-    beamsData[i].init(E,L,nu,r);
+    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+    bd[i].init(E,L,nu,r);
+    beamsData.endEdit();
     //_indexedElements = &_topology->getEdges();
 }
 

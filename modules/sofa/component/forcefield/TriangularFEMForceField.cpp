@@ -234,10 +234,12 @@ template <class DataTypes>void TriangularFEMForceField<DataTypes>::reinit()
     else if (f_method.getValue() == "large")
         method = LARGE;
 
+    helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
+
     /// prepare to store info in the triangle array
     triangleInfo.resize(_topology->getNbTriangles());
     /// prepare to store info in the edge array
-    edgeInfo.resize(_topology->getNbEdges());
+    edgeInf.resize(_topology->getNbEdges());
     unsigned int nbPoints = _topology->getNbPoints();
     helper::vector<VertexInformation>& vi = *(vertexInfo.beginEdit());
     vi.resize(nbPoints);
@@ -251,6 +253,8 @@ template <class DataTypes>void TriangularFEMForceField<DataTypes>::reinit()
     triangleInfo.setCreateFunction(TRQSTriangleCreationFunction);
     triangleInfo.setCreateParameter( (void *) this );
     triangleInfo.setDestroyParameter( (void *) this );
+
+    edgeInfo.endEdit();
 }
 
 
@@ -1273,18 +1277,22 @@ void TriangularFEMForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv&
 template<class DataTypes>
 int TriangularFEMForceField<DataTypes>::getFracturedEdge()
 {
+    helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
+
     if (f_fracturable.getValue())
     {
         int nbEdges = _topology->getNbEdges();
 
         for( int i=0; i<nbEdges; i++ )
         {
-            if (edgeInfo[i].fracturable)
+            if (edgeInf[i].fracturable)
             {
                 return i;
             }
         }
     }
+
+    edgeInfo.endEdit();
 
     return -1;
 }

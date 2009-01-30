@@ -290,8 +290,10 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
     }
     updateLameCoefficients();
 
+    helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+
     /// prepare to store info in the edge array
-    edgeInfo.resize(_topology->getNbEdges());
+    edgeInf.resize(_topology->getNbEdges());
 
     if (_initialPoints.size() == 0)
     {
@@ -304,7 +306,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
     // set edge tensor to 0
     for (i=0; i<_topology->getNbEdges(); ++i)
     {
-        TriangularTMEdgeCreationFunction(i, (void*) this, edgeInfo[i],
+        TriangularTMEdgeCreationFunction(i, (void*) this, edgeInf[i],
                 _topology->getEdge(i),  (const sofa::helper::vector< unsigned int > )0,
                 (const sofa::helper::vector< double >)0);
     }
@@ -313,7 +315,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
     for (i=0; i<_topology->getNbTriangles(); ++i)
         triangleAdded.push_back(i);
     TriangularTMTriangleCreationFunction(triangleAdded,(void*) this,
-            edgeInfo);
+            edgeInf);
 
 
     edgeInfo.setCreateFunction(TriangularTMEdgeCreationFunction);
@@ -322,6 +324,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
     edgeInfo.setCreateParameter( (void *) this );
     edgeInfo.setDestroyParameter( (void *) this );
 
+    edgeInfo.endEdit();
 }
 
 
@@ -339,13 +342,15 @@ void TriangularTensorMassForceField<DataTypes>::addForce(VecDeriv& f, const VecC
 
     EdgeRestInformation *einfo;
 
+    helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+
     Deriv force;
     Coord dp0,dp1,dp;
 
 
     for(i=0; i<nbEdges; i++ )
     {
-        einfo=&edgeInfo[i];
+        einfo=&edgeInf[i];
         v0=_topology->getEdge(i)[0];
         v1=_topology->getEdge(i)[1];
         dp0=x[v0]-_initialPoints[v0];
@@ -356,6 +361,7 @@ void TriangularTensorMassForceField<DataTypes>::addForce(VecDeriv& f, const VecC
         f[v0]-=einfo->DfDx.transposeMultiply(dp);
     }
 
+    edgeInfo.endEdit();
 }
 
 
@@ -367,13 +373,14 @@ void TriangularTensorMassForceField<DataTypes>::addDForce(VecDeriv& df, const Ve
 
     EdgeRestInformation *einfo;
 
+    helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
     Deriv force;
     Coord dp0,dp1,dp;
 
     for(int i=0; i<nbEdges; i++ )
     {
-        einfo=&edgeInfo[i];
+        einfo=&edgeInf[i];
         v0=_topology->getEdge(i)[0];
         v1=_topology->getEdge(i)[1];
         dp0=dx[v0];
@@ -384,6 +391,7 @@ void TriangularTensorMassForceField<DataTypes>::addDForce(VecDeriv& df, const Ve
         df[v0]-=einfo->DfDx.transposeMultiply(dp);
     }
 
+    edgeInfo.endEdit();
 }
 
 
