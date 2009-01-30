@@ -213,11 +213,13 @@ public:
     virtual void renumberPoints( const sofa::helper::vector<unsigned int> &index,
             const sofa::helper::vector<unsigned int> &inv_index);
 
-    /** \brief precondition to fulfill before removing triangles
+    /** \brief Precondition to fulfill before removing triangles. No preconditions are needed in this class. This function should be inplemented in children classes.
+    *
      */
     virtual bool removePrecondition(sofa::helper::vector< unsigned int >& items);
 
-    /**\brief: return true if postprocessing to apply to the topology have been done succesfully.
+    /**\brief: Postprocessing to apply to the triangle topology. Nothing is needed in this class. This function should be inplemented in children classes.
+    *
      */
     virtual void removePostProcessing() {};
 

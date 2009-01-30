@@ -24,8 +24,8 @@
 ******************************************************************************/
 #include <sofa/component/topology/ManifoldTriangleSetTopologyModifier.h>
 //#include <sofa/component/topology/TriangleSetTopologyChange.h>
-#include <sofa/component/topology/ManifoldTriangleSetTopologyContainer.h> //besoin de lui?
-#include <sofa/component/topology/TriangleSetTopologyContainer.h> //besoin de lui?
+#include <sofa/component/topology/ManifoldTriangleSetTopologyContainer.h>
+#include <sofa/component/topology/TriangleSetTopologyContainer.h>
 #include <algorithm>
 //#include <functional>
 #include <iostream>
@@ -50,7 +50,6 @@ using namespace sofa::defaulttype;
 
 void ManifoldTriangleSetTopologyModifier::init()
 {
-    std::cout << " ManifoldTriangleSetTopologyModifier::init() " << std::endl;
 
     TriangleSetTopologyModifier::init();
     this->getContext()->get(m_container);
@@ -61,7 +60,6 @@ void ManifoldTriangleSetTopologyModifier::init()
 
 void ManifoldTriangleSetTopologyModifier::createFutureModifications(sofa::helper::vector< unsigned int >& items)
 {
-    std::cout << "ManifoldTriangleSetTopologyModifier::createFutureModifications() " << std::endl;
 
     Triangle vertexTriangle;
     sofa::helper::vector<unsigned int> triangleVertexShell;
@@ -111,7 +109,6 @@ void ManifoldTriangleSetTopologyModifier::createFutureModifications(sofa::helper
 
 bool ManifoldTriangleSetTopologyModifier::testRemoveModifications()
 {
-    std::cout << "Manifoldtrianglesettopologymodifier::testRemoveModifications()" << std::endl;
 
     std::map< unsigned int, sofa::helper::vector<unsigned int> >::iterator it;
     sofa::helper::vector <PointID> border = m_container->getPointsBorder();
@@ -155,9 +152,6 @@ bool ManifoldTriangleSetTopologyModifier::testRemoveModifications()
             connexite++;
         }
 
-
-        std::cout << "vertex: " << (*it).first << " modifs: " << (*it).second << std::endl;
-
         if (bord)
         {
             m_modifications[(*it).first].erase(m_modifications[(*it).first].end()-1);
@@ -180,7 +174,6 @@ bool ManifoldTriangleSetTopologyModifier::testRemoveModifications()
 
 bool ManifoldTriangleSetTopologyModifier::removePrecondition(sofa::helper::vector< unsigned int >& items)
 {
-    std::cout << "ManifoldTriangleSetTopologyModifier::removePrecondition()" << std::endl;
 
     createFutureModifications(items);
 
@@ -190,7 +183,6 @@ bool ManifoldTriangleSetTopologyModifier::removePrecondition(sofa::helper::vecto
 
 void ManifoldTriangleSetTopologyModifier::removePostProcessing()
 {
-    std::cout << " ManifoldTriangleSetTopologyModifier::removePostProcessing()" << std::endl;
 
     std::map< unsigned int, sofa::helper::vector<unsigned int> >::iterator it;
     sofa::helper::vector<unsigned int> vertexshell;
@@ -234,7 +226,6 @@ void ManifoldTriangleSetTopologyModifier::removePostProcessing()
 
 void ManifoldTriangleSetTopologyModifier::removePointsProcess(sofa::helper::vector<unsigned int> &indices, const bool removeDOF)
 {
-    std::cout << " ManifoldTriangleSetTopologyModifier::removePostProcessing()" << std::endl;
 
     for(unsigned int i = 0; i< indices.size(); i++)
     {
