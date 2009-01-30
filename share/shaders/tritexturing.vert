@@ -6,7 +6,7 @@ varying vec4 diffuse, ambient, ambientGlobal, specular;
 varying vec3 lightDir, normalView, halfVector;
 varying float dist;
 
-attribute vec3 vTangent;
+//attribute vec3 vTangent;
 varying vec3 lightVec; 
 varying vec3 eyeVec;
 varying vec3 spotDir;
@@ -51,7 +51,7 @@ void main()
 	specular = gl_FrontMaterial.specular * gl_LightSource[0].specular;
 	
 	vec3 n = normalize(gl_NormalMatrix * gl_Normal);
-	vec3 t = normalize(gl_NormalMatrix * vTangent);
+	vec3 t = normalize(gl_NormalMatrix * vec3(1,1,1)); //vTangent);
 	vec3 b = normalize(cross(n, t));
 	t = cross(b,n);
 	
