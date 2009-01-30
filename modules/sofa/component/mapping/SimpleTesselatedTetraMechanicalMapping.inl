@@ -141,23 +141,25 @@ void SimpleTesselatedTetraMechanicalMapping<BaseMapping>::applyJT( typename In::
     int offset = out.size();
     out.resize(offset+in.size());
 
-    for(unsigned int c = 0; c < in.size(); ++c)
+    for(unsigned int i = 0; i < in.size(); ++i)
     {
-        for(unsigned int j=0; j<in[c].size(); j++)
+        OutConstraintIterator itOut;
+        for (itOut=in[i].getData().begin(); itOut!=in[i].getData().end(); itOut++)
         {
-            const typename Out::SparseDeriv cIn = in[c][j];
-            int source = pointSource.getValue()[cIn.index];
+            unsigned int indexIn = itOut->first;
+            OutDeriv data = (OutDeriv) itOut->second;
+            int source = pointSource.getValue()[indexIn];
             if (source > 0)
             {
-                out[c+offset].push_back(typename In::SparseDeriv( source-1 , (typename In::Deriv) cIn.data ));
+                out[i+offset].insert(source-1 , data);
             }
             else if (source < 0)
             {
                 core::componentmodel::topology::BaseMeshTopology::Edge e = edges[-source-1];
-                typename In::Deriv f = (typename In::Deriv) cIn.data;
+                InDeriv f =  data;
                 f*=0.5f;
-                out[c+offset].push_back(typename In::SparseDeriv( e[0] , f ));
-                out[c+offset].push_back(typename In::SparseDeriv( e[1] , f ));
+                out[i+offset].insert( e[0] , f );
+                out[i+offset].insert( e[1] , f );
             }
         }
     }

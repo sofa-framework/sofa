@@ -69,24 +69,24 @@ void SlidingConstraint<DataTypes>::applyConstraint(unsigned int &constraintId)
     SparseVecDeriv svd2;
 
     this->object1->setConstraintId(cid);
-    svd1.push_back(SparseDeriv(tm1, dir1));
+    svd1.insert(tm1, dir1);
     c1.push_back(svd1);
 
     this->object2->setConstraintId(cid);
-    svd2.push_back(SparseDeriv(tm2a, -dir1 * (1-r2)));
-    svd2.push_back(SparseDeriv(tm2b, -dir1 * r2));
+    svd2.insert(tm2a, -dir1 * (1-r2));
+    svd2.insert(tm2b, -dir1 * r2);
     c2.push_back(svd2);
-    svd2.clear();
+    svd2.getData().clear();
 
     this->object1->setConstraintId(cid+1);
-    svd1[0] = SparseDeriv(tm1, dir2);
+    svd1.set(tm1, dir2);
     c1.push_back(svd1);
 
     this->object2->setConstraintId(cid+1);
-    svd2.push_back(SparseDeriv(tm2a, -dir2 * (1-r2)));
-    svd2.push_back(SparseDeriv(tm2b, -dir2 * r2));
+    svd2.insert(tm2a, -dir2 * (1-r2));
+    svd2.insert(tm2b, -dir2 * r2);
     c2.push_back(svd2);
-    svd2.clear();
+    svd2.getData().clear();
 
     thirdConstraint = 0;
     if(r<0)
@@ -95,11 +95,11 @@ void SlidingConstraint<DataTypes>::applyConstraint(unsigned int &constraintId)
         constraintId++;
 
         this->object1->setConstraintId(cid+2);
-        svd1[0] = SparseDeriv(tm1, uniAB);
+        svd1.set(tm1, uniAB);
         c1.push_back(svd1);
 
         this->object2->setConstraintId(cid+2);
-        svd2.push_back(SparseDeriv(tm2a, -uniAB));
+        svd2.insert(tm2a, -uniAB);
         c2.push_back(svd2);
     }
     else if(r>ab)
@@ -108,11 +108,11 @@ void SlidingConstraint<DataTypes>::applyConstraint(unsigned int &constraintId)
         constraintId++;
 
         this->object1->setConstraintId(cid+2);
-        svd1[0] = SparseDeriv(tm1, -uniAB);
+        svd1.set(tm1, -uniAB);
         c1.push_back(svd1);
 
         this->object2->setConstraintId(cid+2);
-        svd2.push_back(SparseDeriv(tm2b, uniAB));
+        svd2.insert(tm2b, uniAB);
         c2.push_back(svd2);
     }
 }

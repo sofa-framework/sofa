@@ -132,71 +132,55 @@ template<class DataTypes>
 void Mass<DataTypes>::buildSystemMatrix(defaulttype::BaseMatrix &invM_Jtrans , defaulttype::BaseMatrix & A ,
         const sofa::helper::vector< sofa::helper::vector<unsigned int>  >& constraintId ,
         const sofa::helper::vector< double >  factor ,
-        const sofa::helper::vector< unsigned int >  offset,
+        const sofa::helper::vector< unsigned int > offset,
         const defaulttype::BaseVector &FixedPoints)
 {
 
+    //constraintId is a vector of vector, as the first dimension corresponds to the cosntraint components, and the second, the indices of the line of the VecConst
     const unsigned int dimension=defaulttype::DataTypeInfo< Deriv >::size();
     const unsigned int numDofs=this->mstate->getSize();
-    const unsigned int numConstraints=A.rowSize();
+    const VecConst& c = *this->mstate->getC();
+
 
     if (invM_Jtrans.rowSize()*invM_Jtrans.colSize() == 0)
         invM_Jtrans.resize(numDofs*dimension,A.rowSize());
 
-    const VecConst& unordered_c = *this->mstate->getC();
-
-    //Pre-process the Vec Const to order them, and remove duplication
-    sofa::helper::vector< std::map< unsigned int, Deriv > > c; c.resize(numConstraints);
+    typedef typename std::map< unsigned int, Deriv>::const_iterator constraintIterator;
+    //Filling the sparse matrices
+    //For all the constraint components found in the scene graph
     for (unsigned int system=0; system<constraintId.size(); ++system)
     {
-        for (unsigned int i=0; i<constraintId[system].size(); ++i)
+        //For all the equations written by these constraints
+        for (unsigned int n1=0; n1<constraintId[system].size(); ++n1)
         {
-            std::map< unsigned int, Deriv > &orderedConstraint=c[i+offset[system]];
-            //typename std::map< unsigned int, Deriv >::iterator it;
-
-            const SparseVecDeriv &V=unordered_c[ constraintId[system][i] ];
-            for (unsigned int j=0; j<V.size(); ++j)
+            //We read the non null entries of the SparseVector
+            SparseVecDeriv sc1 = c[constraintId[system][n1]];
+            for (constraintIterator it1=sc1.getData().begin(); it1!=sc1.getData().end(); it1++)
             {
-                unsigned int dof=V[j].index;
-                orderedConstraint[ dof ]+=V[j].data*factor[system];
-            }
-        }
-    }
+                unsigned int dof=it1->first;
+                Deriv v=it1->second;
+                double invMassElement=1.0/this->getElementMass(dof);
 
 
+                //Building M^-1.J^T
+                //For the moment, M is considered as diagonal. Null term corresponds to FixedPoints
+                for (unsigned int d=0; d<dimension; ++d)
+                {
+                    invM_Jtrans.add(dof*dimension+d,
+                            offset[system]+n1,
+                            v[d]*factor[system]*FixedPoints.element(dof)*invMassElement);
+                }
 
-//     for (unsigned int n1=0;n1<c.size();++n1)
-//       {
-//      typename std::map< unsigned int, Deriv >::iterator itdebug;
-//      sout << "Constraint " << n1 << ":" << sendl;
-//      for (itdebug=c[n1].begin();itdebug!=c[n1].end();itdebug++)
-//        {
-//          sout << "\t[Dof=" << itdebug->first << ",Direction=" << itdebug->second << "] " << sendl;
-//        }
-//      sout << "" << sendl;
-//       }
-    //In c, we have ordered the contraints.
-    //Filling the sparse matrices
-    for (unsigned int n1=0; n1<c.size(); ++n1)
-    {
-        typename std::map< unsigned int, Deriv >::iterator it1;
-        for (it1=c[n1].begin(); it1!=c[n1].end(); it1++)
-        {
-            unsigned int dof=it1->first;
-            double invMassElement=1.0/this->getElementMass(dof);
-            //Building M^-1.J^T
-            Deriv v=it1->second;
-            for (unsigned int d=0; d<dimension; ++d)
-            {
-                invM_Jtrans.add(dimension*dof+d,
-                        n1,
-                        v[d]*FixedPoints.element(dof)*invMassElement);
-            }
-
-            //Accumulating A=J.M^-1.J^T
-            for (unsigned int n2=0; n2<c.size(); ++n2)
-            {
-                A.add(n1,n2,c[n1][dof]*c[n2][dof]*FixedPoints.element(dof)*invMassElement);
+                //Accumulating A=J.M^-1.J^T
+                for (unsigned int system2=0; system2<constraintId.size(); ++system2)
+                {
+                    for (unsigned int n2=0; n2<constraintId[system2].size(); ++n2)
+                    {
+                        SparseVecDeriv sc2 = c[constraintId[system2][n2]];
+                        SReal value=sc1.getDataAt(dof)*sc2.getDataAt(dof)*factor[system]*factor[system2]*FixedPoints.element(dof)*invMassElement;
+                        A.add(n1+offset[system],n2+offset[system2],value);
+                    }
+                }
             }
         }
     }

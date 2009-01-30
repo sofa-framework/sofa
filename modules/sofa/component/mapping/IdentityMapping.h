@@ -59,9 +59,9 @@ public:
 
     typedef typename Out::VecCoord VecCoord;
     typedef typename Out::VecDeriv VecDeriv;
-    typedef typename Out::SparseDeriv OutSparseDeriv;
     typedef typename Out::Coord Coord;
     typedef typename Out::Deriv Deriv;
+    typedef typename std::map<unsigned int, Deriv>::const_iterator OutConstraintIterator;
     typedef typename Out::DataTypes OutDataTypes;
     typedef typename OutDataTypes::Real OutReal;
     typedef typename OutDataTypes::VecCoord OutVecCoord;

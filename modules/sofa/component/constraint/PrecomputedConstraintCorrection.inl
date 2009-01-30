@@ -352,8 +352,12 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::Base
     std::list<int> activeDof;
     for(unsigned int c1 = 0; c1 < numConstraints; c1++)
     {
-        for(unsigned int i = 0; i < constraints[c1].size(); i++)
-            activeDof.push_back(constraints[c1][i].index);
+        ConstraintIterator itConstraint;
+        for (itConstraint=constraints[c1].getData().begin(); itConstraint!=constraints[c1].getData().end(); itConstraint++)
+        {
+            unsigned int dof = itConstraint->first;
+            activeDof.push_back(dof);
+        }
     }
     //unsigned int numNodes1 = activeDof.size();
     //sout<< "numNodes : avant = "<<numNodes1;
@@ -365,7 +369,7 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::Base
 
     ////////////////////////////////////////////////////////////
     unsigned int offset, offset2;
-    unsigned int i,j,ii,jj, curRowConst, curColConst, sizeCurColConst, sizeCurRowConst, it;
+    unsigned int ii,jj, curRowConst, curColConst, it;
     Deriv Vbuf;
     int indexCurColConst, indexCurRowConst;
     it=0;
@@ -379,16 +383,16 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::Base
         _indexNodeSparseCompliance[NodeIdx]=it;
         for(curColConst = 0; curColConst < numConstraints; curColConst++)
         {
-            sizeCurColConst = constraints[curColConst].size();
             indexCurColConst = mstate->getConstraintId()[curColConst];
 
-            const Const& c2 = constraints[curColConst];
-
             Vbuf.clear();
-            for(j = 0; j < sizeCurColConst; j++)
+            ConstraintIterator itConstraint;
+            for (itConstraint=constraints[curColConst].getData().begin(); itConstraint!=constraints[curColConst].getData().end(); itConstraint++)
             {
-                const Deriv& n2 = c2[j].data;
-                offset = dof_on_node*(NodeIdx * nbCols +  c2[j].index);
+                unsigned int dof = itConstraint->first;
+                Deriv n = itConstraint->second;
+                const Deriv& n2 = n;
+                offset = dof_on_node*(NodeIdx * nbCols +  dof);
 
                 for (ii=0; ii<dof_on_node; ii++)
                 {
@@ -407,22 +411,23 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::Base
 
     for(curRowConst = 0; curRowConst < numConstraints; curRowConst++)
     {
-        sizeCurRowConst = constraints[curRowConst].size(); //number of nodes in constraint
         indexCurRowConst = mstate->getConstraintId()[curRowConst];//global index of constraint
 
-        const Const& c1 = constraints[curRowConst];
-        for(i = 0; i < sizeCurRowConst; i++)
+        ConstraintIterator itConstraint;
+        for (itConstraint=constraints[curRowConst].getData().begin(); itConstraint!=constraints[curRowConst].getData().end(); itConstraint++)
         {
+            unsigned int dof = itConstraint->first;
+            Deriv n = itConstraint->second;
 
-            const int NodeIdx  = c1[i].index;
-            const Deriv& n1 = c1[i].data;
+            const int NodeIdx  = dof;
+            const Deriv& n1 = n;
 
-            unsigned int toto =(unsigned int) _indexNodeSparseCompliance[NodeIdx];
+            unsigned int temp =(unsigned int) _indexNodeSparseCompliance[NodeIdx];
 
             for(curColConst = curRowConst; curColConst < numConstraints; curColConst++)
             {
                 indexCurColConst = mstate->getConstraintId()[curColConst];
-                double w = _sparseCompliance[toto + curColConst]*n1;
+                double w = _sparseCompliance[temp + curColConst]*n1;
                 //W[indexCurRowConst][indexCurColConst] += w;
                 //sout << "W("<<indexCurRowConst<<","<<indexCurColConst<<") = "<<w<<sendl;
                 W->add(indexCurRowConst, indexCurColConst, w);
@@ -440,6 +445,7 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::Base
         */
     }
 }
+
 
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const defaulttype::BaseVector *f)
@@ -477,14 +483,16 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
         if (fC1 != 0.0)
         {
 
-            const int sizeC1 = constraints[c1].size();
-            for(int i = 0; i < sizeC1; i++)
+            ConstraintIterator itConstraint;
+            for (itConstraint=constraints[c1].getData().begin(); itConstraint!=constraints[c1].getData().end(); itConstraint++)
             {
+                unsigned int dof = itConstraint->first;
+                Deriv n = itConstraint->second;
                 //on ne fait pas passer les forces du repere courant a celui initial ?
                 // <-non, car elles ont deja ete tournees car on utilise une reference dans getCompliance !!!
-                const Deriv& toto =  constraints[c1][i].data * fC1;
-                force[constraints[c1][i].index] += toto;
-                activeDof.push_back(constraints[c1][i].index);
+                const Deriv& temp =  n * fC1;
+                force[dof] += temp;
+                activeDof.push_back(dof);
             }
         }
     }
@@ -706,20 +714,20 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints
     // on fait tourner les normales (en les ramenant dans le "pseudo" repere initial) //
     for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
     {
-        int sizeCurRowConst = constraints[curRowConst].size(); //number of nodes in constraint
-
-        //Rmk : theres is one constraint for each contact direction, i.e. normal, tangent1, tangent2.
-        for(int i = 0; i < sizeCurRowConst; i++)
+        ConstraintIterator itConstraint;
+        for (itConstraint=constraints[curRowConst].getData().begin(); itConstraint!=constraints[curRowConst].getData().end(); itConstraint++)
         {
-            const int localRowNodeIdx = constraints[curRowConst][i].index;
+            unsigned int dof = itConstraint->first;
+            Deriv n = itConstraint->second;
+            const int localRowNodeIdx = dof;
             Transformation Ri;
             forceField->getRotation(Ri, localRowNodeIdx);
             Ri.transpose();
             // on passe les normales du repere global au repere local
-            const Deriv& n_i = Ri * constraints[curRowConst][i].data;
-            constraints[curRowConst][i].data.x() =  n_i.x();
-            constraints[curRowConst][i].data.y() =  n_i.y();
-            constraints[curRowConst][i].data.z() =  n_i.z();
+            const Deriv& n_i = Ri * n;
+            n.x() =  n_i.x();
+            n.y() =  n_i.y();
+            n.z() =  n_i.z();
         }
         /*
         // test pour voir si on peut reduire le nombre de contrainte
@@ -746,11 +754,12 @@ void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateConstrain
     // on fait tourner les normales (en les ramenant dans le "pseudo" repere initial) //
     for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
     {
-        int sizeCurRowConst = constraints[curRowConst].size(); //number of nodes in constraint
-
-        for(int i = 0; i < sizeCurRowConst; i++)
+        ConstraintIterator itConstraint;
+        for (itConstraint=constraints[curRowConst].getData().begin(); itConstraint!=constraints[curRowConst].getData().end(); itConstraint++)
         {
-            const int localRowNodeIdx = constraints[curRowConst][i].index;
+            unsigned int dof = itConstraint->first;
+            Deriv n = itConstraint->second;
+            const int localRowNodeIdx = dof;
             Quat q;
             if (_restRotations)
                 q = x[localRowNodeIdx].getOrientation() * x0[localRowNodeIdx].getOrientation().inverse();
@@ -758,12 +767,12 @@ void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateConstrain
                 q = x[localRowNodeIdx].getOrientation();
 
 
-            Vec3d n_i = q.inverseRotate(constraints[curRowConst][i].data.getVCenter());
-            Vec3d wn_i= q.inverseRotate(constraints[curRowConst][i].data.getVOrientation());
+            Vec3d n_i = q.inverseRotate(n.getVCenter());
+            Vec3d wn_i= q.inverseRotate(n.getVOrientation());
 
             // on passe les normales du repere global au repere local
-            constraints[curRowConst][i].data.getVCenter() = n_i;
-            constraints[curRowConst][i].data.getVOrientation() = wn_i;
+            n.getVCenter() = n_i;
+            n.getVOrientation() = wn_i;
 
         }
     }
@@ -799,8 +808,8 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateResponse()
         Transformation Rj;
         forceField->getRotation(Rj, j);
         // on passe les deplacements du repere local au repere global
-        const Deriv& toto = Rj * dx[j];
-        dx[j] = toto;
+        const Deriv& temp = Rj * dx[j];
+        dx[j] = temp;
     }
 }
 
@@ -816,16 +825,16 @@ void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateResponse(
     for(unsigned int j = 0; j < dx.size(); j++)
     {
         // on passe les deplacements du repere local (au repos) au repere global
-        Deriv toto ;
+        Deriv temp ;
         Quat q;
         if (_restRotations)
             q = x[j].getOrientation() * x0[j].getOrientation().inverse();
         else
             q = x[j].getOrientation();
 
-        toto.getVCenter()		= q.rotate(dx[j].getVCenter());
-        toto.getVOrientation()  = q.rotate(dx[j].getVOrientation());
-        dx[j] = toto;
+        temp.getVCenter()		= q.rotate(dx[j].getVCenter());
+        temp.getVOrientation()  = q.rotate(dx[j].getVOrientation());
+        dx[j] = temp;
     }
 }
 
@@ -862,20 +871,20 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateConstraints
     // on fait tourner les normales (en les ramenant dans le "pseudo" repere initial) //
     for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
     {
-        int sizeCurRowConst = constraints[curRowConst].size(); //number of nodes in constraint
-
-        //Rmk : theres is one constraint for each contact direction, i.e. normal, tangent1, tangent2.
-        for(int i = 0; i < sizeCurRowConst; i++)
+        ConstraintIterator itConstraint;
+        for (itConstraint=constraints[curRowConst].getData().begin(); itConstraint!=constraints[curRowConst].getData().end(); itConstraint++)
         {
-            const int localRowNodeIdx = constraints[curRowConst][i].index;
+            unsigned int dof = itConstraint->first;
+            Deriv n = itConstraint->second;
+            const int localRowNodeIdx = dof;
             Transformation Ri;
             forceField->getRotation(Ri, localRowNodeIdx);
             Ri.transpose();
             // on passe les normales du repere global au repere local
-            const Deriv& n_i = Ri * constraints[curRowConst][i].data;
-            constraints[curRowConst][i].data.x() =  n_i.x();
-            constraints[curRowConst][i].data.y() =  n_i.y();
-            constraints[curRowConst][i].data.z() =  n_i.z();
+            const Deriv& n_i = Ri * n;
+            n.x() =  n_i.x();
+            n.y() =  n_i.y();
+            n.z() =  n_i.z();
         }
         /*
         // test pour voir si on peut reduire le nombre de contrainte
@@ -901,11 +910,12 @@ void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateConstrain
     // on fait tourner les normales (en les ramenant dans le "pseudo" repere initial) //
     for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
     {
-        int sizeCurRowConst = constraints[curRowConst].size(); //number of nodes in constraint
-
-        for(int i = 0; i < sizeCurRowConst; i++)
+        ConstraintIterator itConstraint;
+        for (itConstraint=constraints[curRowConst].getData().begin(); itConstraint!=constraints[curRowConst].getData().end(); itConstraint++)
         {
-            const int localRowNodeIdx = constraints[curRowConst][i].index;
+            unsigned int dof = itConstraint->first;
+            Deriv n = itConstraint->second;
+            const int localRowNodeIdx = dof;
             Quat q;
             if (_restRotations)
                 q = x[localRowNodeIdx].getOrientation() * x0[localRowNodeIdx].getOrientation().inverse();
@@ -913,12 +923,12 @@ void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateConstrain
                 q = x[localRowNodeIdx].getOrientation();
 
 
-            Vec3d n_i = q.inverseRotate(constraints[curRowConst][i].data.getVCenter());
-            Vec3d wn_i= q.inverseRotate(constraints[curRowConst][i].data.getVOrientation());
+            Vec3d n_i = n.getVCenter();
+            Vec3d wn_i= n.getVOrientation();
 
             // on passe les normales du repere global au repere local
-            constraints[curRowConst][i].data.getVCenter() = n_i;
-            constraints[curRowConst][i].data.getVOrientation() = wn_i;
+            n.getVCenter() = n_i;
+            n.getVOrientation() = wn_i;
 
         }
     }
@@ -952,8 +962,8 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateResponse()
         Transformation Rj;
         forceField->getRotation(Rj, j);
         // on passe les deplacements du repere local au repere global
-        const Deriv& toto = Rj * dx[j];
-        dx[j] = toto;
+        const Deriv& temp = Rj * dx[j];
+        dx[j] = temp;
     }
 }
 
@@ -968,16 +978,16 @@ void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateResponse(
     for(unsigned int j = 0; j < dx.size(); j++)
     {
         // on passe les deplacements du repere local (au repos) au repere global
-        Deriv toto ;
+        Deriv temp ;
         Quat q;
         if (_restRotations)
             q = x[j].getOrientation() * x0[j].getOrientation().inverse();
         else
             q = x[j].getOrientation();
 
-        toto.getVCenter()		= q.rotate(dx[j].getVCenter());
-        toto.getVOrientation()  = q.rotate(dx[j].getVOrientation());
-        dx[j] = toto;
+        temp.getVCenter()		= q.rotate(dx[j].getVCenter());
+        temp.getVOrientation()  = q.rotate(dx[j].getVOrientation());
+        dx[j] = temp;
     }
 }
 

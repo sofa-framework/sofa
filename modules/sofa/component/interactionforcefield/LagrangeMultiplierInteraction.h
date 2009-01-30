@@ -70,7 +70,6 @@ public:
     typedef typename DataTypes2::Coord Coord2;
     typedef typename DataTypes2::Deriv Deriv2;
     typedef typename DataTypes2::SparseVecDeriv SparseVecDeriv2;
-    typedef typename DataTypes2::SparseDeriv SparseDeriv2;
     typedef typename Coord2::value_type Real2;
 
     Data < std::string > f_constraint;

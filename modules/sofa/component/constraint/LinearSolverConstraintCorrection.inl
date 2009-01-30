@@ -158,10 +158,11 @@ void LinearSolverConstraintCorrection<DataTypes>::getCompliance(defaulttype::Bas
     for(unsigned int c1 = 0; c1 < numConstraints; c1++)
     {
         int cid = mstate->getConstraintId()[c1];
-        for(unsigned int i = 0; i < constraints[c1].size(); i++)
+        ConstraintIterator itConstraint;
+        for (itConstraint=constraints[c1].getData().begin(); itConstraint!=constraints[c1].getData().end(); itConstraint++)
         {
-            int dof = constraints[c1][i].index;
-            Deriv n = constraints[c1][i].data;
+            unsigned int dof = itConstraint->first;
+            Deriv n = itConstraint->second;
             for (unsigned int r=0; r<N; ++r)
                 J.add(cid, dof*N+r, n[r]);
         }
@@ -226,11 +227,14 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
         //sout << "fC("<<indexC1<<")="<<fC1<<sendl;
         if (fC1 != 0.0)
         {
-            int sizeC1 = constraints[c1].size();
-            for(int i = 0; i < sizeC1; i++)
+            ConstraintIterator itConstraint;
+            for (itConstraint=constraints[c1].getData().begin(); itConstraint!=constraints[c1].getData().end(); itConstraint++)
             {
+                unsigned int dof = itConstraint->first;
+                Deriv n = itConstraint->second;
+
                 //sout << "f("<<constraints[c1][i].index<<") += "<< (constraints[c1][i].data * fC1) << sendl;
-                force[constraints[c1][i].index] += constraints[c1][i].data * fC1;
+                force[dof] += n * fC1;
             }
         }
     }

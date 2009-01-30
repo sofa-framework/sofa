@@ -46,6 +46,7 @@
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
 #include <iostream>
+#include <map>
 
 namespace sofa
 {
@@ -333,20 +334,31 @@ public:
     //         typedef std::vector<SpatialVector> VecDeriv;
 
 
+    /// Data Structure to store lines of the matrix L.
     template <class T>
-    class SparseData
+    class SparseConstraint
     {
     public:
-        SparseData(unsigned int _index, T& _data): index(_index), data(_data) {};
-        unsigned int index;
-        T data;
+        SparseConstraint() {};
+        void insert( unsigned int index, const T &value)
+        {
+            data[index] += value;
+        }
+        void set( unsigned int index, const T &value)
+        {
+            data[index] = value;
+        }
+        T& getDataAt(unsigned int index) {return data[index];};
+        const T& getDataAt(unsigned int index) const {return data[index];};
+
+        std::map< unsigned int, T > &getData() {return data;};
+        const std::map< unsigned int, T > &getData() const {return data;};
+    protected:
+        std::map< unsigned int, T > data;
     };
 
-    typedef SparseData<Coord> SparseCoord;
-    typedef SparseData<Deriv> SparseDeriv;
-
-    typedef helper::vector<SparseCoord> SparseVecCoord;
-    typedef helper::vector<SparseDeriv> SparseVecDeriv;
+    typedef SparseConstraint<Coord> SparseVecCoord;
+    typedef SparseConstraint<Deriv> SparseVecDeriv;
 
     //! All the Constraints applied to a state Vector
     typedef	helper::vector<SparseVecDeriv> VecConst;

@@ -289,11 +289,13 @@ void LineSetSkinningMapping<BasicMapping>::applyJT( typename In::VecConst& out, 
 
     for(unsigned int i=0; i<in.size(); i++)
     {
-        for (unsigned int j=0; j<in[i].size(); j++)
+        OutConstraintIterator itOut;
+        for (itOut=in[i].getData().begin(); itOut!=in[i].getData().end(); itOut++)
         {
-            const OutSparseDeriv cIn = in[i][j];
-            int verticeIndex = cIn.index;
-            const OutDeriv d = (OutDeriv) cIn.data;
+            unsigned int indexIn = itOut->first;
+            OutDeriv data = (OutDeriv) itOut->second;
+            int verticeIndex = indexIn;
+            const OutDeriv d = data;
             //printf(" normale : %f %f %f",d.x(), d.y(), d.z());
             for(unsigned int lineInfluencedIndex=0; lineInfluencedIndex<linesInfluencedByVertice[verticeIndex].size(); lineInfluencedIndex++)
             {
@@ -303,7 +305,7 @@ void LineSetSkinningMapping<BasicMapping>::applyJT( typename In::VecConst& out, 
                 direction.getVCenter() = d * iline.weight;
                 //printf("\n Weighted normale : %f %f %f",direction.getVCenter().x(), direction.getVCenter().y(), direction.getVCenter().z());
                 direction.getVOrientation() = IP.cross(d) * iline.weight;
-                out[i].push_back(InSparseDeriv(t->getLine(iline.lineIndex)[0], direction));
+                out[i].insert(t->getLine(iline.lineIndex)[0], direction);
             }
         }
     }

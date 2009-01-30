@@ -467,30 +467,31 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecConst& out, const 
     sofa::helper::vector<bool> flags;
     int outSize = out.size();
     out.resize ( in.size() + outSize ); // we can accumulate in "out" constraints from several mappings
-    for ( unsigned int j=0; j<in.size(); j++ )
+    for ( unsigned int i=0; i<in.size(); i++ )
     {
         v.clear();
         v.resize ( nbi );
         flags.clear();
         flags.resize ( nbi );
-        for ( unsigned int id=0; id<in[0].size(); ++id )
+        OutConstraintIterator itOut;
+        for (itOut=in[i].getData().begin(); itOut!=in[i].getData().end(); itOut++)
         {
-            unsigned int i = in[0][id].index;
-            Deriv f = in[0][id].data;
+            unsigned int indexIn = itOut->first;
+            Deriv data = (Deriv) itOut->second;
+            Deriv f = data;
             for ( unsigned int m=0 ; m<nbr; m++ )
             {
-                omega = cross ( rotatedPoints[nbr*i+m],f );
-                flags[m_reps[nbr*i+m] ] = true;
-                v[m_reps[nbr*i+m] ].getVCenter() += f * m_coefs[nbr*i+m];
-                v[m_reps[nbr*i+m] ].getVOrientation() += omega * m_coefs[nbr*i+m];
+                omega = cross ( rotatedPoints[nbr*indexIn+m],f );
+                flags[m_reps[nbr*indexIn+m] ] = true;
+                v[m_reps[nbr*indexIn+m] ].getVCenter() += f * m_coefs[nbr*indexIn+m];
+                v[m_reps[nbr*indexIn+m] ].getVOrientation() += omega * m_coefs[nbr*indexIn+m];
             }
         }
-        out[outSize+j].reserve ( nbi );
-        for ( unsigned int i=0 ; i<nbi; i++ )
+        for ( unsigned int j=0 ; j<nbi; j++ )
         {
             //if (!(v[i] == typename In::Deriv()))
-            if ( flags[i] )
-                out[outSize+j].push_back ( typename In::SparseDeriv ( i,v[i] ) );
+            if ( flags[j] )
+                out[outSize+i].insert (j,v[j] );
         }
     }
 }

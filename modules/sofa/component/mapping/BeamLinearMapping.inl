@@ -192,28 +192,31 @@ void BeamLinearMapping<BasicMapping>::applyJT( typename In::VecConst& out, const
     {
         // computation of (Jt.n) //
         // in[i].size() = num node involved in the constraint
-        for (unsigned int j=0; j<in[i].size(); j++)
+
+        OutConstraintIterator itOut;
+        for (itOut=in[i].getData().begin(); itOut!=in[i].getData().end(); itOut++)
         {
-            int index = in[i][j].index;	// index of the node
+            unsigned int indexIn = itOut->first;
+            Deriv data = (Deriv) itOut->second;
             // interpolation//////////
-            defaulttype::Vec<N, typename In::Real> inpos = points[index];
+            defaulttype::Vec<N, typename In::Real> inpos = points[indexIn];
             int in0 = helper::rfloor(inpos[0]);
             if (in0<0) in0 = 0; else if (in0 > (int)x.size()-2) in0 = x.size()-2;
             inpos[0] -= in0;
             Real fact = (Real)inpos[0];
             fact = 3*(fact*fact)-2*(fact*fact*fact);
             /////////////////////////
-            Deriv w_n = (Deriv) in[i][j].data;	// weighted value of the constraint direction
+            Deriv w_n = data;	// weighted value of the constraint direction
 
             // Compute the mapped Constraint on the beam nodes ///
             InDeriv direction0;
             direction0.getVCenter() = w_n * (1-fact);
-            direction0.getVOrientation() = cross(rotatedPoints0[index], w_n) * (1-fact);
+            direction0.getVOrientation() = cross(rotatedPoints0[indexIn], w_n) * (1-fact);
             InDeriv direction1;
             direction1.getVCenter() = w_n * (fact);
-            direction1.getVOrientation() = cross(rotatedPoints1[index], w_n) * (fact);
-            out[outSize+i].push_back(InSparseDeriv(in0, direction0));
-            out[outSize+i].push_back(InSparseDeriv(in0+1, direction1));
+            direction1.getVOrientation() = cross(rotatedPoints1[indexIn], w_n) * (fact);
+            out[outSize+i].insert(in0, direction0);
+            out[outSize+i].insert(in0+1, direction1);
         }
 
     }

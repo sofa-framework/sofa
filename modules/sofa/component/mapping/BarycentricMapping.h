@@ -97,6 +97,14 @@ public:
     typedef typename In::Real Real;
     typedef typename Out::Real OutReal;
 
+    typedef typename In::VecDeriv InVecDeriv;
+    typedef typename In::Deriv InDeriv;
+    typedef typename std::map<unsigned int, InDeriv>::const_iterator InConstraintIterator;
+
+    typedef typename Out::VecDeriv OutVecDeriv;
+    typedef typename Out::Deriv OutDeriv;
+    typedef typename std::map<unsigned int, OutDeriv>::const_iterator OutConstraintIterator;
+
 protected:
     template< int NC,  int NP>
     class MappingData
@@ -201,6 +209,10 @@ public:
     typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
+    typedef typename Inherit::OutConstraintIterator OutConstraintIterator;
+    typedef typename Inherit::OutDeriv  OutDeriv;
+    typedef typename Inherit::InConstraintIterator  InConstraintIterator;
+    typedef typename Inherit::InDeriv  InDeriv;
     typedef typename Inherit::MappingData1D MappingData1D;
     typedef typename Inherit::MappingData2D MappingData2D;
     typedef typename Inherit::MappingData3D MappingData3D;
@@ -305,6 +317,10 @@ public:
     typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
+    typedef typename Inherit::OutConstraintIterator OutConstraintIterator;
+    typedef typename Inherit::OutDeriv  OutDeriv;
+    typedef typename Inherit::InConstraintIterator  InConstraintIterator;
+    typedef typename Inherit::InDeriv  InDeriv;
     typedef typename Inherit::CubeData CubeData;
 protected:
     sofa::helper::vector<CubeData> map;
@@ -355,6 +371,11 @@ public:
     typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
+    typedef typename Inherit::OutConstraintIterator OutConstraintIterator;
+    typedef typename Inherit::OutDeriv  OutDeriv;
+    typedef typename Inherit::InConstraintIterator  InConstraintIterator;
+    typedef typename Inherit::InDeriv  InDeriv;
+
     typedef typename Inherit::CubeData CubeData;
 protected:
     sofa::helper::vector<CubeData> map;
@@ -421,6 +442,10 @@ public:
     typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
+    typedef typename Inherit::OutConstraintIterator OutConstraintIterator;
+    typedef typename Inherit::OutDeriv  OutDeriv;
+    typedef typename Inherit::InConstraintIterator  InConstraintIterator;
+    typedef typename Inherit::InDeriv  InDeriv;
     typedef typename Inherit::MappingData1D MappingData;
 
 protected:
@@ -497,6 +522,10 @@ public:
     typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
+    typedef typename Inherit::OutConstraintIterator OutConstraintIterator;
+    typedef typename Inherit::OutDeriv  OutDeriv;
+    typedef typename Inherit::InConstraintIterator  InConstraintIterator;
+    typedef typename Inherit::InDeriv  InDeriv;
     typedef typename Inherit::MappingData2D MappingData;
 protected:
     topology::PointData< MappingData >		map;
@@ -572,6 +601,10 @@ public:
     typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
+    typedef typename Inherit::OutConstraintIterator OutConstraintIterator;
+    typedef typename Inherit::OutDeriv  OutDeriv;
+    typedef typename Inherit::InConstraintIterator  InConstraintIterator;
+    typedef typename Inherit::InDeriv  InDeriv;
     typedef typename Inherit::MappingData2D MappingData;
 protected:
     topology::PointData< MappingData >  map;
@@ -644,6 +677,10 @@ public:
     typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
+    typedef typename Inherit::OutConstraintIterator OutConstraintIterator;
+    typedef typename Inherit::OutDeriv  OutDeriv;
+    typedef typename Inherit::InConstraintIterator  InConstraintIterator;
+    typedef typename Inherit::InDeriv  InDeriv;
     typedef typename Inherit::MappingData3D MappingData;
 protected:
     topology::PointData< MappingData >  map;
@@ -715,6 +752,10 @@ public:
     typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
+    typedef typename Inherit::OutConstraintIterator OutConstraintIterator;
+    typedef typename Inherit::OutDeriv  OutDeriv;
+    typedef typename Inherit::InConstraintIterator  InConstraintIterator;
+    typedef typename Inherit::InDeriv  InDeriv;
     typedef typename Inherit::MappingData3D MappingData;
 
 
@@ -793,7 +834,6 @@ public:
     typedef typename InDataTypes::Coord InCoord;
     typedef typename InDataTypes::Deriv InDeriv;
     typedef typename InDataTypes::SparseVecDeriv InSparseVecDeriv;
-    typedef typename InDataTypes::SparseDeriv InSparseDeriv;
     typedef typename InDataTypes::Real Real;
     typedef typename Out::DataTypes OutDataTypes;
     typedef typename OutDataTypes::VecCoord OutVecCoord;
@@ -801,7 +841,6 @@ public:
     typedef typename OutDataTypes::Coord OutCoord;
     typedef typename OutDataTypes::Deriv OutDeriv;
     typedef typename OutDataTypes::SparseVecDeriv OutSparseVecDeriv;
-    typedef typename OutDataTypes::SparseDeriv OutSparseDeriv;
     typedef typename OutDataTypes::Real OutReal;
 
     typedef core::componentmodel::topology::BaseMeshTopology BaseMeshTopology;

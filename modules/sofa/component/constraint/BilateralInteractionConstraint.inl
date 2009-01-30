@@ -43,27 +43,27 @@ void BilateralInteractionConstraint<DataTypes>::applyConstraint(unsigned int &co
     SparseVecDeriv svd2;
 
     this->object1->setConstraintId(cid);
-    svd1.push_back(SparseDeriv(tm1, -cx));
+    svd1.insert(tm1, -cx);
     c1.push_back(svd1);
 
     this->object2->setConstraintId(cid);
-    svd2.push_back(SparseDeriv(tm2, cx));
+    svd2.insert(tm2, cx);
     c2.push_back(svd2);
 
     this->object1->setConstraintId(cid+1);
-    svd1[0] = SparseDeriv(tm1, -cy);
+    svd1.set(tm1, -cy);
     c1.push_back(svd1);
 
     this->object2->setConstraintId(cid+1);
-    svd2[0] = SparseDeriv(tm2, cy);
+    svd2.set(tm2, cy);
     c2.push_back(svd2);
 
     this->object1->setConstraintId(cid+2);
-    svd1[0] = SparseDeriv(tm1, -cz);
+    svd1.set(tm1, -cz);
     c1.push_back(svd1);
 
     this->object2->setConstraintId(cid+2);
-    svd2[0] = SparseDeriv(tm2, cz);
+    svd2.set(tm2, cz);
     c2.push_back(svd2);
 
 

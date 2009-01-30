@@ -708,20 +708,31 @@ public:
     static const DPos& getDPos(const Deriv& d) { return d; }
     static void setDPos(Deriv& d, const DPos& v) { d = v; }
 
+    /// Data Structure to store lines of the matrix L.
     template <class T>
-    class SparseData
+    class SparseConstraint
     {
     public:
-        SparseData ( unsigned int _index, const T& _data ) : index ( _index ), data ( _data ) {};
-        unsigned int index;
-        T data;
+        SparseConstraint() {};
+        void insert( unsigned int index, const T &value)
+        {
+            data[index] += value;
+        }
+        void set( unsigned int index, const T &value)
+        {
+            data[index] = value;
+        }
+        T& getDataAt(unsigned int index) {return data[index];};
+        const T& getDataAt(unsigned int index) const {return data[index];};
+
+        std::map< unsigned int, T > &getData() {return data;};
+        const std::map< unsigned int, T > &getData() const {return data;};
+    protected:
+        std::map< unsigned int, T > data;
     };
 
-    typedef SparseData<Coord> SparseCoord;
-    typedef SparseData<Deriv> SparseDeriv;
-
-    typedef CudaVector<SparseCoord> SparseVecCoord;
-    typedef CudaVector<SparseDeriv> SparseVecDeriv;
+    typedef SparseConstraint<Coord> SparseVecCoord;
+    typedef SparseConstraint<Deriv> SparseVecDeriv;
 
     //! All the Constraints applied to a state Vector
     typedef    sofa::helper::vector<SparseVecDeriv> VecConst;
@@ -1035,20 +1046,32 @@ public:
     static const DRot& getDRot(const Deriv& d) { return d.getVOrientation(); }
     static void setDRot(Deriv& d, const DRot& v) { d.getVOrientation() = v; }
 
+    /// Data Structure to store lines of the matrix L.
     template <class T>
-    class SparseData
+    class SparseConstraint
     {
     public:
-        SparseData ( unsigned int _index, const T& _data ) : index ( _index ), data ( _data ) {};
-        unsigned int index;
-        T data;
+        SparseConstraint() {};
+        void insert( unsigned int index, const T &value)
+        {
+            data[index] += value;
+        }
+        void set( unsigned int index, const T &value)
+        {
+            data[index] = value;
+        }
+        T& getDataAt(unsigned int index) {return data[index];};
+        const T& getDataAt(unsigned int index) const {return data[index];};
+
+        std::map< unsigned int, T > &getData() {return data;};
+        const std::map< unsigned int, T > &getData() const {return data;};
+    protected:
+        std::map< unsigned int, T > data;
     };
 
-    typedef SparseData<Coord> SparseCoord;
-    typedef SparseData<Deriv> SparseDeriv;
+    typedef SparseConstraint<Coord> SparseVecCoord;
+    typedef SparseConstraint<Deriv> SparseVecDeriv;
 
-    typedef CudaVector<SparseCoord> SparseVecCoord;
-    typedef CudaVector<SparseDeriv> SparseVecDeriv;
 
     //! All the Constraints applied to a state Vector
     typedef    sofa::helper::vector<SparseVecDeriv> VecConst;

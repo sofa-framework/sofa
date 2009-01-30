@@ -499,14 +499,16 @@ void RigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typen
 
         typename Out::Deriv w_n;
 
-        // in[i].size() = num node involved in the constraint
-        for (unsigned int j=0; j<in[i].size(); j++)
+        OutConstraintIterator itOut;
+        for (itOut=in[i].getData().begin(); itOut!=in[i].getData().end(); itOut++)
         {
-            int index = in[i][j].index;	// index of the node
-            w_n = (Deriv) in[i][j].data;	// weighted value of the constraint direction
+            unsigned int indexIn = itOut->first;// index of the node
+            Deriv data=(Deriv) itOut->second;
+
+            w_n = (Deriv) data;	// weighted value of the constraint direction
             double w = w_n.norm();	// computation of the weight
             // the application point (on the child model) is computed using barycentric values //
-            ApplicationPoint += rotatedPoints[index]*w;
+            ApplicationPoint += rotatedPoints[indexIn]*w;
             // we add the contribution of each weighted direction
             n += w_n ;
         }
@@ -528,11 +530,11 @@ void RigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typen
         // for rigid model, there's only the center of mass as application point (so only one vector for each constraint)
         if (indexFromEnd.getValue())
         {
-            out[outSize+i].push_back(InSparseDeriv(out.size() - 1 - index.getValue(), direction)); // 0 = index of the center of mass
+            out[outSize+i].insert(out.size() - 1 - index.getValue(), direction); // 0 = index of the center of mass
         }
         else
         {
-            out[outSize+i].push_back(InSparseDeriv(index.getValue(), direction)); // 0 = index of the center of mass
+            out[outSize+i].insert(index.getValue(), direction); // 0 = index of the center of mass
         }
     }
 }
