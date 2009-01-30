@@ -127,6 +127,17 @@ protected:
 
         //void localStiffness();
         void init(double E, double L, double nu, double r);
+        /// Output stream
+        inline friend std::ostream& operator<< ( std::ostream& os, const BeamInfo& /*bi*/ )
+        {
+            return os;
+        }
+
+        /// Input stream
+        inline friend std::istream& operator>> ( std::istream& in, BeamInfo& /*bi*/ )
+        {
+            return in;
+        }
     };
 
     //just for draw forces
@@ -149,8 +160,11 @@ protected:
     PoissonContainer* poissonContainer;
     RadiusContainer* radiusContainer;
 
-    Quat& beamQuat(int i) { return beamsData[i].quat; }
-
+    Quat& beamQuat(int i)
+    {
+        helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+        return bd[i].quat;
+    }
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 
 public:

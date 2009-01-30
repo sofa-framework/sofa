@@ -76,6 +76,18 @@ public:
         Spring() : ks(1.0), kd(1.0)
         {
         }
+
+        /// Output stream
+        inline friend std::ostream& operator<< ( std::ostream& os, const Spring& /*s*/ )
+        {
+            return os;
+        }
+
+        /// Input stream
+        inline friend std::istream& operator>> ( std::istream& in, Spring& /*s*/ )
+        {
+            return in;
+        }
     };
 protected:
 
@@ -154,8 +166,10 @@ public:
 
     void clear(int reserve=0)
     {
-        springArray.clear();
-        if (reserve) springArray.reserve(reserve);
+        helper::vector<Spring> springArrayData = *(springArray.beginEdit());
+        springArrayData.clear();
+        if (reserve) springArrayData.reserve(reserve);
+        springArray.endEdit();
     }
 
     void addSpring(int m1, int m2, SReal ks, SReal kd, Coord restVector);

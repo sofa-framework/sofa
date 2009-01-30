@@ -201,7 +201,7 @@ protected:
     {
         helper::vector<int> *pointSourceData = pointSource.beginEdit();
         helper::vector<int> *pointMappedFromPointData = pointMappedFromPoint.beginEdit();
-//		helper::vector<int> *pointMappedFromEdgeData = pointMappedFromEdge.beginEdit();
+        helper::vector<int>& pointMappedFromEdgeData = *(pointMappedFromEdge.beginEdit());
 
         if (i != -1)
             (*pointSourceData)[i] = source;
@@ -211,11 +211,11 @@ protected:
         }
         else if (source < 0)
         {
-            pointMappedFromEdge[-source-1] = i;
+            pointMappedFromEdgeData[-source-1] = i;
         }
         pointSource.endEdit();
         pointMappedFromPoint.endEdit();
-//		pointMappedFromEdge.endEdit();
+        pointMappedFromEdge.endEdit();
     }
     std::set<unsigned int> tetrasToRemove;
 
