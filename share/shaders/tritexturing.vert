@@ -52,7 +52,8 @@ void main()
 	
 	vec3 n = normalize(gl_NormalMatrix * gl_Normal);
 	vec3 t = normalize(gl_NormalMatrix * vTangent);
-	vec3 b = cross(n, t);
+	vec3 b = normalize(cross(n, t));
+	t = cross(b,n);
 	
 	vec3 vVertex = vec3(gl_ModelViewMatrix * gl_Vertex);
 	vec3 tmpVec = gl_LightSource[0].position.xyz - vVertex;
