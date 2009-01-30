@@ -147,12 +147,16 @@ void DistanceConstraint<DataTypes>::writeConstraintEquations()
             V2.insert(idx2,V12); c2.push_back(V2);
         }
 
+        core::componentmodel::behavior::BaseLMConstraint::constraintGroup *constraintAcc = addGroupConstraint(this->ACC);
+        core::componentmodel::behavior::BaseLMConstraint::constraintGroup *constraintVel = addGroupConstraint(this->VEL);
+        core::componentmodel::behavior::BaseLMConstraint::constraintGroup *constraintPos = addGroupConstraint(this->POS);
+
         //BaseLMConstraint interface
-        addSingleConstraint(this->ACC, idxInVecConst[0], idxInVecConst[1],
+        constraintAcc->addConstraint(idxInVecConst[0], idxInVecConst[1],
                 0, this->FINAL); //0 in acceleration along V12
-        addSingleConstraint(this->VEL, idxInVecConst[0], idxInVecConst[1],
+        constraintVel->addConstraint( idxInVecConst[0], idxInVecConst[1],
                 0, this->FINAL); //0 in velocity along V12
-        addSingleConstraint(this->POS, idxInVecConst[0], idxInVecConst[1],
+        constraintPos->addConstraint( idxInVecConst[0], idxInVecConst[1],
                 restLength-length, this->CORRECTION); //we apply a constraint to correct the current length to the rest length
 
     }
