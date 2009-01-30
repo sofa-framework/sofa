@@ -1033,8 +1033,9 @@ bool GraphModeler::editCut(std::string path)
     {
         editCopy(path);
         deleteComponent(selectedItem(), true);
+        return true;
     }
-    return selectedItem();
+    return false;
 }
 bool GraphModeler::editCopy(std::string path)
 {
@@ -1050,8 +1051,9 @@ bool GraphModeler::editCopy(std::string path)
         {
             saveComponent(object,path);
         }
+        return true;
     }
-    return selectedItem();
+    return false;
 }
 bool GraphModeler::editPaste(std::string path)
 {
