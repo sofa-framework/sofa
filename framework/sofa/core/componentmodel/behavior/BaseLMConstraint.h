@@ -62,14 +62,14 @@ public:
 
     /**
      * \brief Intern storage of the constraints.
-     *         a groupConstraint is a list of constraint that will be solved together.
+     *         a constraintGroup is a list of constraint that will be solved together.
      *
      *  They are defined by a ConstId(position, velocity or acceleration), indices corresponding of the entries in the VecConst vector, value needed to compute the right hand term
      **/
-    class groupConstraint
+    class constraintGroup
     {
     public:
-        groupConstraint( ConstId typeConstraint):Id(typeConstraint) {}
+        constraintGroup( ConstId typeConstraint):Id(typeConstraint) {}
         /**
          * Method to add a constraint to the group
          *
@@ -145,26 +145,17 @@ public:
 
     ~BaseLMConstraint() {};
 
-    /// Called by MechanicalAccumulateLMConstaint: The Object will compute the constraints present in the current state, and create the groupConstraint related.
+    /// Called by MechanicalAccumulateLMConstaint: The Object will compute the constraints present in the current state, and create the constraintGroup related.
     virtual void writeConstraintEquations()=0;
 
-    /** Interface to add a constraint that will be solved individually
-     * @param Id nature of the constraint
-     * @param i0 index in the VecConst of the first Object
-     * @param i1 index in the VecConst of the second Object
-     * @param value term to compute the right hand term of the matrix
-     * @param t the way of computing the right hand term
-     * @see ConstId
-     **/
-    virtual void addSingleConstraint( ConstId Id, unsigned int i0, unsigned int i1, double expectedValue, ValueId t);
     /// Interface to construct a group of constraint: Giving the nature of these constraints, it returns a pointer to the structure
-    /// @see groupConstraint
-    virtual groupConstraint* addGroupConstraint( ConstId Id);
+    /// @see constraintGroup
+    virtual constraintGroup* addGroupConstraint( ConstId Id);
 
     /// Get the internal structure: return all the constraint stored by their nature in a map
-    virtual void getConstraints(std::map< ConstId, std::vector< groupConstraint > >  &i) { i=constraintId;}
+    virtual void getConstraints(std::map< ConstId, std::vector< constraintGroup > >  &i) { i=constraintId;}
     /// Get all the constraints stored of a given nature
-    virtual void getConstraintsId(ConstId Id, std::vector< groupConstraint > &i ) { i=constraintId[Id];}
+    virtual void getConstraintsId(ConstId Id, std::vector< constraintGroup > &i ) { i=constraintId[Id];}
 
 
     virtual void getIndicesUsed(ConstId Id, std::vector< unsigned int > &used0,std::vector< unsigned int > &used1);
@@ -184,8 +175,8 @@ protected:
     Data<std::string> pathObject2;
 
     /// Constraints stored depending on their nature
-    /// @see groupConstraint
-    std::map< ConstId, std::vector< groupConstraint > > constraintId;
+    /// @see constraintGroup
+    std::map< ConstId, std::vector< constraintGroup > > constraintId;
 };
 }
 }

@@ -44,7 +44,7 @@ BaseLMConstraint::BaseLMConstraint():
 unsigned int BaseLMConstraint::getNumConstraint(ConstId Id)
 {
     unsigned int result=0;
-    std::vector< groupConstraint > &vec = constraintId[Id];
+    std::vector< constraintGroup > &vec = constraintId[Id];
     for (unsigned int i=0; i<vec.size(); ++i)
     {
         result+=vec[i].getNumConstraint();
@@ -52,22 +52,16 @@ unsigned int BaseLMConstraint::getNumConstraint(ConstId Id)
     return result;
 }
 
-void BaseLMConstraint::addSingleConstraint( ConstId Id, unsigned int i0, unsigned int i1, double expectedValue, ValueId t)
+BaseLMConstraint::constraintGroup* BaseLMConstraint::addGroupConstraint( ConstId Id)
 {
-    groupConstraint *g = addGroupConstraint(Id);
-    g->addConstraint(i0,i1,expectedValue, t);
-}
-
-BaseLMConstraint::groupConstraint* BaseLMConstraint::addGroupConstraint( ConstId Id)
-{
-    constraintId[Id].push_back(groupConstraint(Id));
+    constraintId[Id].push_back(constraintGroup(Id));
     return &(constraintId[Id][constraintId[Id].size()-1]);
 }
 
 void BaseLMConstraint::getIndicesUsed(ConstId Id, std::vector< unsigned int > &used0,std::vector< unsigned int > &used1)
 {
 
-    std::vector< BaseLMConstraint::groupConstraint > &constraints=constraintId[Id];
+    std::vector< BaseLMConstraint::constraintGroup > &constraints=constraintId[Id];
     for (unsigned int idxGroupConstraint=0; idxGroupConstraint<constraints.size(); ++idxGroupConstraint)
     {
         const std::vector< unsigned int > &iUsed0= constraints[idxGroupConstraint].getIndicesUsed0();
@@ -79,7 +73,7 @@ void BaseLMConstraint::getIndicesUsed(ConstId Id, std::vector< unsigned int > &u
 }
 void BaseLMConstraint::getExpectedValues(ConstId Id, std::vector< double > &expected)
 {
-    std::vector< BaseLMConstraint::groupConstraint > &constraints=constraintId[Id];
+    std::vector< BaseLMConstraint::constraintGroup > &constraints=constraintId[Id];
     for (unsigned int idxGroupConstraint=0; idxGroupConstraint<constraints.size(); ++idxGroupConstraint)
     {
         const std::vector< double> &val= constraints[idxGroupConstraint].getExpectedValues();
@@ -89,7 +83,7 @@ void BaseLMConstraint::getExpectedValues(ConstId Id, std::vector< double > &expe
 
 void BaseLMConstraint::getExpectedValuesType(ConstId Id, std::vector< ValueId > &t)
 {
-    std::vector< BaseLMConstraint::groupConstraint > &constraints=constraintId[Id];
+    std::vector< BaseLMConstraint::constraintGroup > &constraints=constraintId[Id];
     for (unsigned int idxGroupConstraint=0; idxGroupConstraint<constraints.size(); ++idxGroupConstraint)
     {
         const std::vector< ValueId> &val= constraints[idxGroupConstraint].getExpectedValuesType();
