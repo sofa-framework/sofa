@@ -6,6 +6,7 @@ varying vec4 vPosition, vPositionW;
 
 uniform vec2 scaleTexture;
 uniform float showDebug;
+uniform float bumpFactor;
 
 varying vec4 diffuse, ambient, specular;
 varying vec3 lightDir, normalView, halfVector;
@@ -71,7 +72,7 @@ void main()
 	
 	/* a fragment shader can't write a verying variable, hence we need
 	a new variable to store the normalized interpolated normal */
-	n = normalize(bump);
+	n = normalize(bumpFactor*bump + vec3(0,0,1.0-bumpFactor));
 	
 	/* compute the dot product between normal and ldir */
 	NdotL = max(dot(n,normalize(lightDir)),0.0);
