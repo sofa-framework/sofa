@@ -100,7 +100,7 @@ public:
     /// Load a scene from a file.
     virtual Node* load(const char* /* filename */)=0;
     /// Unload a scene from a Node.
-    virtual void unload(Node */* root */)=0;
+    virtual void unload(Node * /* root */)=0;
 
 
     /// Create a new Node of the simulation
@@ -118,12 +118,12 @@ public:
 };
 
 /// Set the (unique) simulation which controls the scene
-void setSimulation(Simulation* s);
+SOFA_SIMULATION_COMMON_API void setSimulation(Simulation* s);
 
 /** Get the (unique) simulation which controls the scene.
 Automatically creates one if no Simulation has been set.
 */
-Simulation* getSimulation();
+SOFA_SIMULATION_COMMON_API Simulation* getSimulation();
 
 } // namespace simulation
 
