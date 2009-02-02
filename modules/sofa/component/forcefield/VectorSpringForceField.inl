@@ -117,7 +117,7 @@ bool VectorSpringForceField<DataTypes>::load(const char *filename)
 template <class DataTypes>
 void VectorSpringForceField<DataTypes>::resizeArray(unsigned int n)
 {
-    helper::vector<Spring> springArrayData = *(springArray.beginEdit());
+    helper::vector<Spring>& springArrayData = *(springArray.beginEdit());
     springArrayData.resize(n);
     springArray.endEdit();
 }
@@ -125,7 +125,7 @@ void VectorSpringForceField<DataTypes>::resizeArray(unsigned int n)
 template <class DataTypes>
 void VectorSpringForceField<DataTypes>::addSpring(int m1, int m2, SReal ks, SReal kd, Coord restVector)
 {
-    helper::vector<Spring> springArrayData = *(springArray.beginEdit());
+    helper::vector<Spring>& springArrayData = *(springArray.beginEdit());
 
     if (useTopology && _topology)
     {
@@ -173,7 +173,7 @@ void VectorSpringForceField<DataTypes>::init()
 
     this->Inherit::init();
 
-    helper::vector<Spring> springArrayData = *(springArray.beginEdit());
+    helper::vector<Spring>& springArrayData = *(springArray.beginEdit());
 
     if (springArrayData.empty())
     {
@@ -214,7 +214,7 @@ void VectorSpringForceField<DataTypes>::createDefaultSprings()
 {
     sout << "Creating "<< _topology->getNbEdges() <<" Vector Springs from EdgeSetTopology"<<sendl;
 
-    helper::vector<Spring> springArrayData = *(springArray.beginEdit());
+    helper::vector<Spring>& springArrayData = *(springArray.beginEdit());
 
     springArrayData.resize(_topology->getNbEdges());
     //EdgeLengthArrayInterface<Real,DataTypes> elai(springArray);
@@ -277,7 +277,7 @@ void VectorSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, con
     f1.resize(x1.size());
     f2.resize(x2.size());
 
-    helper::vector<Spring> springArrayData = *(springArray.beginEdit());
+    helper::vector<Spring>& springArrayData = *(springArray.beginEdit());
 
     if(useTopology)
     {
@@ -328,7 +328,7 @@ void VectorSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, 
     df1.resize(dx1.size());
     df2.resize(dx2.size());
 
-    helper::vector<Spring> springArrayData = *(springArray.beginEdit());
+    helper::vector<Spring>& springArrayData = *(springArray.beginEdit());
 
     if(useTopology)
     {

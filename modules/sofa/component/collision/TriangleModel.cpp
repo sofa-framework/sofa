@@ -72,7 +72,9 @@ TriangleModel::TriangleModel()
 void TriangleModel::resize(int size)
 {
     this->core::CollisionModel::resize(size);
-    elems.resize(size);
+    helper::vector<TriangleInfo>& e = *(elems.beginEdit());
+    e.resize(size);
+    elems.endEdit();
 }
 
 void TriangleModel::init()

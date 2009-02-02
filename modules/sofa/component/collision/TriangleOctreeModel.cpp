@@ -233,7 +233,7 @@ void TriangleOctreeModel::buildOctree ()
     octreeRoot = new TriangleOctree (this);
 
     /*for each triangle add it to the octree*/
-    for (size_t i = 0; i < elems.size (); i++)
+    for (size_t i = 0; i < elems.getValue().size (); i++)
     {
 
         fillOctree (i);

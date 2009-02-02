@@ -104,6 +104,18 @@ protected:
         //int i1,i2,i3;
         //int flags;
         Vector3 normal;
+
+        /// Output stream
+        inline friend std::ostream& operator<< ( std::ostream& os, const TriangleInfo& /*ti*/ )
+        {
+            return os;
+        }
+
+        /// Input stream
+        inline friend std::istream& operator>> ( std::istream& in, TriangleInfo& /*ti*/ )
+        {
+            return in;
+        }
     };
 
     topology::TriangleData<TriangleInfo> elems;
@@ -172,8 +184,8 @@ inline const Vector3& Triangle::v1() const { return (*model->mstate->getV())[(*(
 inline const Vector3& Triangle::v2() const { return (*model->mstate->getV())[(*(model->triangles))[index][1]]; }
 inline const Vector3& Triangle::v3() const { return (*model->mstate->getV())[(*(model->triangles))[index][2]]; }
 
-inline const Vector3& Triangle::n() const { return model->elems[index].normal; }
-inline       Vector3& Triangle::n()       { return model->elems[index].normal; }
+inline const Vector3& Triangle::n() const { return model->elems.getValue()[index].normal; }
+inline       Vector3& Triangle::n()       { return (*model->elems.beginEdit())[index].normal; }
 
 inline int            Triangle::flags() const { return model->getTriangleFlags(index); }
 
