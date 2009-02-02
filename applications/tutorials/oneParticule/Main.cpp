@@ -25,7 +25,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/ArgumentParser.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/component/contextobject/Gravity.h>
 #include <sofa/component/contextobject/CoordinateSystem.h>
 #include <sofa/component/odesolver/EulerSolver.h>
@@ -62,9 +63,7 @@ int main(int argc, char** argv)
     groot->addObject(solver);
 
     // One node to define the particle
-    GNode* particule_node = new GNode;
-    particule_node->setName("particle_node");
-    groot->addChild( particule_node );
+    GNode* particule_node = new GNode("particle_node", groot);
 
     // The particule, i.e, its degrees of freedom : a point with a velocity
     MechanicalObject3* particle = new MechanicalObject3;

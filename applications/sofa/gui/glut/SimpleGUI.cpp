@@ -27,7 +27,7 @@
 #include "SimpleGUI.h"
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
@@ -71,7 +71,7 @@ using std::cout;
 using std::endl;
 using namespace sofa::defaulttype;
 using namespace sofa::helper::gl;
-using sofa::simulation::tree::getSimulation;
+using sofa::simulation::getSimulation;
 
 
 SimpleGUI* SimpleGUI::instance = NULL;
@@ -1059,7 +1059,7 @@ void SimpleGUI::DisplayOBJs(bool shadowPass)
     {
 //         std::cout << "-----------------------------------> initTexturesDone\n";
         //---------------------------------------------------
-        simulation::tree::getSimulation()->initTextures(groot);
+        simulation::getSimulation()->initTextures(groot);
         //---------------------------------------------------
         initTexturesDone = true;
     }

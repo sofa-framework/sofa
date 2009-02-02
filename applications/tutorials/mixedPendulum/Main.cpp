@@ -26,7 +26,7 @@
 ******************************************************************************/
 /** A sample program. Laure Heigeas, Francois Faure, 2007. */
 // scene data structure
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/component/contextobject/Gravity.h>
 #include <sofa/component/odesolver/CGImplicitSolver.h>
 #include <sofa/component/odesolver/EulerSolver.h>
@@ -60,9 +60,7 @@ int main(int, char** argv)
     solver->setName("S");
 
     //-------------------- Deformable body
-    GNode* deformableBody = new GNode;
-    groot->addChild(deformableBody);
-    deformableBody->setName( "deformableBody" );
+    GNode* deformableBody = new GNode("deformableBody", groot);
 
     // degrees of freedom
     MechanicalObject3* DOF = new MechanicalObject3;
@@ -95,9 +93,7 @@ int main(int, char** argv)
 
 
     //-------------------- Rigid body
-    GNode* rigidBody = new GNode;
-    groot->addChild(rigidBody);
-    rigidBody->setName( "rigidBody" );
+    GNode* rigidBody = new GNode("rigidBody",groot);
 
     // degrees of freedom
     MechanicalObjectRigid3* rigidDOF = new MechanicalObjectRigid3;
@@ -126,9 +122,7 @@ int main(int, char** argv)
 
 
     //-------------------- the particles attached to the rigid body
-    GNode* rigidParticles = new GNode;
-    rigidParticles->setName( "rigidParticles" );
-    rigidBody->addChild(rigidParticles);
+    GNode* rigidParticles = new GNode("rigidParticles",groot);
 
     // degrees of freedom of the skin
     MechanicalObject3* rigidParticleDOF = new MechanicalObject3;

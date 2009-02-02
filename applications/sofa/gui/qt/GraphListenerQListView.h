@@ -53,7 +53,7 @@
 #endif
 
 
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/tree/MutationListener.h>
 
 #include "WFloatLineEdit.h"
@@ -68,7 +68,7 @@ namespace gui
 namespace qt
 {
 using sofa::simulation::tree::GNode;
-using sofa::simulation::tree::Simulation;
+using sofa::simulation::Simulation;
 using sofa::simulation::tree::MutationListener;
 
 #ifdef SOFA_QT4

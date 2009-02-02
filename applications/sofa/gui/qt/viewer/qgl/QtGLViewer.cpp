@@ -28,7 +28,7 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
@@ -92,7 +92,7 @@ using std::cout;
 using std::endl;
 using namespace sofa::defaulttype;
 using namespace sofa::helper::gl;
-using sofa::simulation::tree::getSimulation;
+using sofa::simulation::getSimulation;
 #ifdef SOFA_DEV
 
 using namespace sofa::simulation::automatescheduler;
@@ -751,7 +751,7 @@ void QtGLViewer::DisplayOBJs()
     {
 //		std::cout << "-----------------------------------> initTexturesDone\n";
         //---------------------------------------------------
-        getSimulation()->initTextures(groot);
+        simulation::getSimulation()->initTextures(groot);
         //---------------------------------------------------
         initTexturesDone = true;
     }
@@ -760,8 +760,7 @@ void QtGLViewer::DisplayOBJs()
     if (!groot->getMultiThreadSimulation())
 #endif // SOFA_DEV
     {
-
-        getSimulation()->draw(groot, &visualParameters);
+        simulation::getSimulation()->draw(groot, &visualParameters);
         if (_axis)
         {
             DrawAxis(0.0, 0.0, 0.0, 10.0);

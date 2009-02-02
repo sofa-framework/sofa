@@ -25,7 +25,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "BatchGUI.h"
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 
 namespace sofa
 {
@@ -49,7 +49,7 @@ int BatchGUI::mainLoop()
         std::cout << "Computing "<<nbIter<<" iterations." << std::endl;
         for (int i=0; i<nbIter; i++)
         {
-            sofa::simulation::tree::getSimulation()->animate(groot);
+            sofa::simulation::getSimulation()->animate(groot);
         }
         std::cout <<nbIter<<" iterations done." << std::endl;
     }

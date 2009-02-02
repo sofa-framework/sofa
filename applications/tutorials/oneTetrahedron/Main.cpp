@@ -28,7 +28,7 @@
 #include <fstream>
 
 #include <sofa/helper/ArgumentParser.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/component/contextobject/Gravity.h>
 #include <sofa/component/contextobject/CoordinateSystem.h>
 #include <sofa/core/objectmodel/Context.h>
@@ -41,6 +41,7 @@
 #include <sofa/helper/system/glut.h>
 
 using namespace sofa::simulation::tree;
+using sofa::simulation::Node;
 using sofa::component::odesolver::CGImplicitSolver;
 using sofa::component::topology::MeshTopology;
 using sofa::component::visualmodel::OglModel;
@@ -105,9 +106,8 @@ int main(int argc, char** argv)
     fem->setYoungModulus(6);
 
     // Tetrahedron skin
-    GNode* skin = new GNode;
-    skin->setName( "skin" );
-    groot->addChild(skin);
+    GNode* skin = new GNode("skin",groot);;
+
     // The visual model
     OglModel* visual = new OglModel();
     visual->setName( "visual" );

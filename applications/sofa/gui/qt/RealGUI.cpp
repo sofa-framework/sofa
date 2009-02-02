@@ -38,7 +38,6 @@
 #include <sofa/gui/qt/viewer/qgl/QtGLViewer.h>
 #endif
 
-#include <sofa/simulation/tree/Simulation.h>
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/DesactivatedNodeVisitor.h>
 
@@ -131,7 +130,7 @@ using sofa::core::objectmodel::BaseObject;
 using sofa::simulation::tree::GNode;
 using namespace sofa::helper::system::thread;
 using namespace sofa::simulation;
-using namespace sofa::simulation::tree;
+//       using namespace sofa::simulation::tree;
 
 #ifdef SOFA_DEV
 using namespace sofa::simulation::automatescheduler;
@@ -227,13 +226,11 @@ SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& 
     }
     // create interface
     gui = new RealGUI ( name, options );
-    GNode *groot = dynamic_cast< GNode* >(node);
-    if ( groot )
-        gui->setScene ( groot, filename );
+    Node *groot = dynamic_cast< Node* >(node);
+    if ( !groot )
+        groot = new GNode;
 
-
-    else
-        return NULL;
+    gui->setScene ( groot, filename );
 
     //gui->viewer->resetView();
 
@@ -799,7 +796,7 @@ bool RealGUI::setViewer ( const char* name )
 
     if ( viewer->getScene() !=NULL )
     {
-        getSimulation()->unload ( viewer->getScene() );
+        simulation::getSimulation()->unload ( viewer->getScene() );
         if ( graphListener!=NULL )
         {
             delete graphListener;
@@ -907,7 +904,7 @@ void RealGUI::fileOpen ( std::string filename )
 
     if ( viewer->getScene() !=NULL )
     {
-        getSimulation()->unload ( viewer->getScene() );
+        simulation::getSimulation()->unload ( viewer->getScene() );
         if ( graphListener!=NULL )
         {
             delete graphListener;
@@ -920,7 +917,7 @@ void RealGUI::fileOpen ( std::string filename )
     current_Id_modifyDialog=0;
     map_modifyDialogOpened.clear();
 
-    simulation::Node* groot = getSimulation()->load ( filename.c_str() );
+    simulation::Node* groot = simulation::getSimulation()->load ( filename.c_str() );
 
     if ( groot == NULL )
     {
@@ -932,7 +929,7 @@ void RealGUI::fileOpen ( std::string filename )
     setScene ( groot, filename.c_str() );
     //need to create again the output streams !!
 
-    getSimulation()->gnuplotDirectory.setValue(gnuplot_directory);
+    simulation::getSimulation()->gnuplotDirectory.setValue(gnuplot_directory);
     setExportGnuplot(exportGnuplotFilesCheckbox->isChecked());
 
     displayComputationTime(m_displayComputationTime);
@@ -950,7 +947,7 @@ void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
     }
     if ( viewer->getScene() !=NULL )
     {
-        getSimulation()->unload ( viewer->getScene() );
+        simulation::getSimulation()->unload ( viewer->getScene() );
         if ( graphListener!=NULL )
         {
             delete graphListener;
@@ -958,7 +955,7 @@ void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
         }
         graphView->clear();
     }
-    GNode *simuNode = dynamic_cast< GNode *> (getSimulation()->load ( scene.c_str() ));
+    GNode *simuNode = dynamic_cast< GNode *> (simulation::getSimulation()->load ( scene.c_str() ));
     if ( simuNode )
     {
         if ( !pmlreader ) pmlreader = new PMLReader;
@@ -977,7 +974,7 @@ void RealGUI::lmlOpen ( const char* filename )
         lmlreader->BuildStructure ( filename, pmlreader );
 
         groot = viewer->getScene();
-        getSimulation()->init ( groot );
+        simulation::getSimulation()->init ( groot );
 
     }
     else
@@ -992,7 +989,7 @@ void RealGUI::initDesactivatedNode()
 
     for (graph_iterator = graphListener->items.begin(); graph_iterator != graphListener->items.end(); graph_iterator++)
     {
-        node_clicked = dynamic_cast< GNode* >(graph_iterator->first);
+        node_clicked = dynamic_cast< Node* >(graph_iterator->first);
         if (node_clicked!=NULL )
         {
             if (!node_clicked->isActive() )
@@ -1022,9 +1019,9 @@ void RealGUI::setScene ( Node* groot, const char* filename )
 
 
     graphView->clear();
-    viewer->setScene ( dynamic_cast< GNode *>(groot), filename );
+    viewer->setScene ( groot, filename );
     viewer->resetView();
-    initial_time = groot->getTime();
+    initial_time = (groot != NULL)?groot->getTime():0;
 
     record_simulation = false;
     clearRecord();
@@ -1034,21 +1031,24 @@ void RealGUI::setScene ( Node* groot, const char* filename )
 
     eventNewTime();
 
-    // set state of display flags
-    displayFlag->setFlag(DisplayFlagWidget::VISUAL,groot->getContext()->getShowVisualModels());
-    displayFlag->setFlag(DisplayFlagWidget::BEHAVIOR,groot->getContext()->getShowBehaviorModels());
-    displayFlag->setFlag(DisplayFlagWidget::COLLISION,groot->getContext()->getShowCollisionModels());
-    displayFlag->setFlag(DisplayFlagWidget::BOUNDING,groot->getContext()->getShowBoundingCollisionModels());
-    displayFlag->setFlag(DisplayFlagWidget::MAPPING,groot->getContext()->getShowMappings());
-    displayFlag->setFlag(DisplayFlagWidget::MECHANICALMAPPING,groot->getContext()->getShowMechanicalMappings());
-    displayFlag->setFlag(DisplayFlagWidget::FORCEFIELD,groot->getContext()->getShowForceFields());
-    displayFlag->setFlag(DisplayFlagWidget::INTERACTION,groot->getContext()->getShowInteractionForceFields());
-    displayFlag->setFlag(DisplayFlagWidget::WIREFRAME,groot->getContext()->getShowWireFrame());
-    displayFlag->setFlag(DisplayFlagWidget::NORMALS,groot->getContext()->getShowNormals());
+    if (groot)
+    {
+        // set state of display flags
+        displayFlag->setFlag(DisplayFlagWidget::VISUAL,groot->getContext()->getShowVisualModels());
+        displayFlag->setFlag(DisplayFlagWidget::BEHAVIOR,groot->getContext()->getShowBehaviorModels());
+        displayFlag->setFlag(DisplayFlagWidget::COLLISION,groot->getContext()->getShowCollisionModels());
+        displayFlag->setFlag(DisplayFlagWidget::BOUNDING,groot->getContext()->getShowBoundingCollisionModels());
+        displayFlag->setFlag(DisplayFlagWidget::MAPPING,groot->getContext()->getShowMappings());
+        displayFlag->setFlag(DisplayFlagWidget::MECHANICALMAPPING,groot->getContext()->getShowMechanicalMappings());
+        displayFlag->setFlag(DisplayFlagWidget::FORCEFIELD,groot->getContext()->getShowForceFields());
+        displayFlag->setFlag(DisplayFlagWidget::INTERACTION,groot->getContext()->getShowInteractionForceFields());
+        displayFlag->setFlag(DisplayFlagWidget::WIREFRAME,groot->getContext()->getShowWireFrame());
+        displayFlag->setFlag(DisplayFlagWidget::NORMALS,groot->getContext()->getShowNormals());
 
-    //getSimulation()->updateVisualContext ( groot );
-    startButton->setOn ( groot->getContext()->getAnimate() );
-    dtEdit->setText ( QString::number ( groot->getDt() ) );
+        //simulation::getSimulation()->updateVisualContext ( groot );
+        startButton->setOn ( groot->getContext()->getAnimate() );
+        dtEdit->setText ( QString::number ( groot->getDt() ) );
+    }
     record->setOn(false);
 
 #ifdef SOFA_HAVE_CHAI3D
@@ -1069,11 +1069,11 @@ void RealGUI::setScene ( Node* groot, const char* filename )
 void RealGUI::changeInstrument(int id)
 {
     std::cout << "Activation instrument "<<id<<std::endl;
-    Simulation *s = getSimulation();
+    simulation::Simulation *s = simulation::getSimulation();
     if (s->instrumentInUse.getValue() >= 0 && s->instrumentInUse.getValue() < (int)s->instruments.size())
         s->instruments[s->instrumentInUse.getValue()]->setActive(false);
 
-    getSimulation()->instrumentInUse.setValue(id-1);
+    simulation::getSimulation()->instrumentInUse.setValue(id-1);
     if (s->instrumentInUse.getValue() >= 0 && s->instrumentInUse.getValue() < (int)s->instruments.size())
         s->instruments[s->instrumentInUse.getValue()]->setActive(true);
     viewer->getQWidget()->update();
@@ -1229,7 +1229,7 @@ void RealGUI::fileReload()
 
 void RealGUI::fileSave()
 {
-    GNode *node = viewer->getScene();
+    Node *node = viewer->getScene();
     std::string filename = viewer->getSceneFileName();
     fileSaveAs ( node,filename.c_str() );
 }
@@ -1259,7 +1259,7 @@ void RealGUI::fileSaveAs(Node *node)
 
 void RealGUI::fileSaveAs ( Node *node, const char* filename )
 {
-    getSimulation()->printXML ( node, filename );
+    simulation::getSimulation()->printXML ( node, filename );
 }
 
 void RealGUI::fileExit()
@@ -1272,7 +1272,7 @@ void RealGUI::fileExit()
 
 void RealGUI::saveXML()
 {
-    getSimulation()->printXML ( viewer->getScene(), "scene.scn" );
+    simulation::getSimulation()->printXML ( viewer->getScene(), "scene.scn" );
 }
 
 void RealGUI::editRecordDirectory()
@@ -1301,7 +1301,7 @@ void RealGUI::editGnuplotDirectory()
         gnuplot_directory = s.ascii();
         if (gnuplot_directory.at(gnuplot_directory.size()-1) != '/') gnuplot_directory+="/";
 
-        getSimulation()->gnuplotDirectory.setValue(gnuplot_directory);
+        simulation::getSimulation()->gnuplotDirectory.setValue(gnuplot_directory);
         setExportGnuplot(exportGnuplotFilesCheckbox->isChecked());
     }
 }
@@ -1372,7 +1372,7 @@ void RealGUI::setGUI ( void )
 void RealGUI::startDumpVisitor()
 {
 #ifdef DUMP_VISITOR_INFO
-    GNode* groot = viewer->getScene();
+    Node* groot = viewer->getScene();
     if (groot && this->exportVisitorCheckbox->isOn())
     {
         m_dumpVisitorStream = new std::ofstream(pathDumpVisitor.c_str());
@@ -1399,7 +1399,7 @@ void RealGUI::stopDumpVisitor()
 
 void RealGUI::step()
 {
-    GNode* groot = viewer->getScene();
+    Node* groot = viewer->getScene();
     if ( groot == NULL ) return;
 
     startDumpVisitor();
@@ -1422,7 +1422,7 @@ void RealGUI::step()
     }
     else
 
-#endif // SOFA_DEV 
+#endif // SOFA_DEV
 
     {
         if ( viewer->ready() ) return;
@@ -1430,13 +1430,12 @@ void RealGUI::step()
 
 
         //groot->setLogTime(true);
-
-        getSimulation()->animate ( groot );
+        simulation::getSimulation()->animate ( groot );
 
         if ( m_dumpState )
-            getSimulation()->dumpState ( groot, *m_dumpStateStream );
+            simulation::getSimulation()->dumpState ( groot, *m_dumpStateStream );
         if ( m_exportGnuplot )
-            getSimulation()->exportGnuplot ( groot, groot->getTime() );
+            simulation::getSimulation()->exportGnuplot ( groot, groot->getTime() );
 
         viewer->wait();
 
@@ -1595,7 +1594,8 @@ void RealGUI::setDt ( const QString& value )
 // Reset the simulation to t=0
 void RealGUI::resetScene()
 {
-    GNode* groot = getScene();
+    Node* groot = getScene();
+    GNode* gnodeRoot = dynamic_cast<GNode*>(groot);
 
     //Hide the dialog to add a new object in the graph
     if ( dialog != NULL ) dialog->hide();
@@ -1611,7 +1611,7 @@ void RealGUI::resetScene()
     //**************************************************************
     //GRAPH MANAGER
     bool isFrozen = graphListener->frozen;
-    graphListener->unfreeze ( groot );
+    if (gnodeRoot) graphListener->unfreeze ( gnodeRoot );
     std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator graph_iterator;
 
 
@@ -1650,8 +1650,8 @@ void RealGUI::resetScene()
             if ( ( *it_initial ) == ( *it ) )
             {
                 it_initial++; //points to the parent of the node
-                ( *it_initial )->addChild ( ( *it ) );
-                graphListener->addObject ( dynamic_cast<GNode *> ( *it_initial ), ( core::objectmodel::BaseObject* ) ( *it ) );
+                ( *it_initial )->addChild ( (Node*)( *it ) );
+                graphListener->addObject (  ( *it_initial ), ( core::objectmodel::BaseObject* ) ( *it ) );
                 continue;
             }
             //We have to increment 2 times the iterator: le list_object_initial contains first the node, then its father
@@ -1664,12 +1664,12 @@ void RealGUI::resetScene()
 
 
 
-    if ( isFrozen ) graphListener->freeze ( groot );
+    if ( gnodeRoot && isFrozen ) graphListener->freeze ( gnodeRoot );
 
     //Reset the scene
     if ( groot )
     {
-        getSimulation()->reset ( groot );
+        simulation::getSimulation()->reset ( groot );
         groot->setTime(initial_time);
         eventNewTime();
 
@@ -1688,7 +1688,7 @@ void RealGUI::exportGraph()
 }
 
 
-void RealGUI::exportGraph ( sofa::simulation::tree::GNode* root )
+void RealGUI::exportGraph ( sofa::simulation::Node* root )
 {
 
     if ( root == NULL ) return;
@@ -1717,12 +1717,12 @@ void RealGUI::displayComputationTime ( bool value )
 //
 void RealGUI::setExportGnuplot ( bool exp )
 {
-    GNode* groot = getScene();
+    Node* groot = getScene();
     m_exportGnuplot = exp;
     if ( m_exportGnuplot && groot )
     {
-        getSimulation()->initGnuplot ( groot );
-        getSimulation()->exportGnuplot ( groot, groot->getTime() );
+        simulation::getSimulation()->initGnuplot ( groot );
+        simulation::getSimulation()->exportGnuplot ( groot, groot->getTime() );
     }
 }
 
@@ -1765,7 +1765,7 @@ void RealGUI::dumpState ( bool value )
 //
 void RealGUI::exportOBJ ( bool exportMTL )
 {
-    GNode* groot = getScene();
+    Node* groot = getScene();
     if ( !groot ) return;
     std::string sceneFileName = viewer->getSceneFileName();
     std::ostringstream ofilename;
@@ -1788,7 +1788,7 @@ void RealGUI::exportOBJ ( bool exportMTL )
     ofilename << ".obj";
     std::string filename = ofilename.str();
     std::cout << "Exporting OBJ Scene "<<filename<<std::endl;
-    getSimulation()->exportOBJ ( groot, filename.c_str(),exportMTL );
+    simulation::getSimulation()->exportOBJ ( groot, filename.c_str(),exportMTL );
 }
 
 
@@ -1872,16 +1872,17 @@ void RealGUI::loadObject ( std::string path, double dx, double dy, double dz,  d
         {
             if ( ( *it ).second->itemPos() == 0 ) //Root node position
             {
-                node_clicked = dynamic_cast< sofa::simulation::tree::GNode *> ( ( *it ).first );
+                node_clicked = dynamic_cast< sofa::simulation::Node *> ( ( *it ).first );
                 break;
             }
         }
         if ( node_clicked == NULL ) return;
     }
 
+    GNode *gnode_clicked=dynamic_cast<GNode*>(node_clicked);
     //We allow unlock the graph to make all the changes now
     if ( currentTab != TabGraph )
-        graphListener->unfreeze ( node_clicked );
+        graphListener->unfreeze ( gnode_clicked );
 
     //Loading of the xml file
     xml::BaseElement* xml = xml::loadFromFile ( path.c_str() );
@@ -1896,7 +1897,8 @@ void RealGUI::loadObject ( std::string path, double dx, double dy, double dz,  d
         std::cerr << "Objects initialization failed."<<std::endl;
     }
 
-    GNode* new_node = dynamic_cast<GNode*> ( xml->getObject() );
+    Node* new_node = dynamic_cast<Node*> ( xml->getObject() );
+    GNode *new_gnode=dynamic_cast<GNode*>(new_node);
     if ( new_node == NULL )
     {
         std::cerr << "Objects initialization failed."<<std::endl;
@@ -1906,22 +1908,24 @@ void RealGUI::loadObject ( std::string path, double dx, double dy, double dz,  d
 
     //std::cout << "Initializing simulation "<<new_node->getName() <<std::endl;
     new_node->execute<InitVisitor>();
-
-    if ( node_clicked->child.begin() ==  node_clicked->child.end() &&  node_clicked->object.begin() == node_clicked->object.end() )
+    if (gnode_clicked && new_gnode)
     {
-        //Temporary Root : the current graph is empty, and has only a single node "Root"
-        viewer->setScene ( new_node, path.c_str() );
-        graphListener->removeChild ( NULL, node_clicked );
-        graphListener->addChild ( NULL, new_node );
-    }
-    else
-    {
-        node_clicked->addChild ( new_node );
-        graphListener->addObject ( node_clicked, ( core::objectmodel::BaseObject* ) new_node );
+        if ( gnode_clicked->child.begin() ==  gnode_clicked->child.end() &&  gnode_clicked->object.begin() == gnode_clicked->object.end() )
+        {
+            //Temporary Root : the current graph is empty, and has only a single node "Root"
+            viewer->setScene ( new_gnode, path.c_str() );
+            graphListener->removeChild ( NULL, gnode_clicked );
+            graphListener->addChild ( NULL, new_gnode );
+        }
+        else
+        {
+            gnode_clicked->addChild ( (Node*)new_gnode );
+            graphListener->addObject ( gnode_clicked, ( core::objectmodel::BaseObject* ) new_gnode );
 
-        list_object_added.push_back ( new_node );
-    }
+            list_object_added.push_back ( new_gnode );
 
+        }
+    }
     //update the stats graph
     graphCreateStats(viewer->getScene());
     //Apply the Transformation
@@ -1933,7 +1937,7 @@ void RealGUI::loadObject ( std::string path, double dx, double dy, double dz,  d
 
     //freeze the graph if needed and animate
     if ( currentTab != TabGraph )
-        graphListener->freeze ( node_clicked );
+        graphListener->freeze ( gnode_clicked );
 
     node_clicked = NULL;
     item_clicked = NULL;
@@ -2008,7 +2012,7 @@ void RealGUI::showhideElements(int FILTER, bool value)
         case  DisplayFlagWidget::WIREFRAME:         groot->getContext()->setShowWireFrame ( value ); break;
         case  DisplayFlagWidget::NORMALS:           groot->getContext()->setShowNormals ( value ); break;
         }
-        sofa::simulation::tree::getSimulation()->updateVisualContext ( groot, FILTER );
+        sofa::simulation::getSimulation()->updateVisualContext ( groot, FILTER );
     }
     viewer->getQWidget()->update();
 }

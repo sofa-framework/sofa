@@ -27,7 +27,7 @@
 #include "viewer/qt/QtViewer.h"
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/ObjectFactory.h>
@@ -92,7 +92,7 @@ using namespace sofa::simulation::automatescheduler;
 
 #endif // SOFA_DEV
 
-using sofa::simulation::tree::getSimulation;
+using sofa::simulation::getSimulation;
 
 //extern UserInterface*	GUI;
 //extern OBJmodel*		cubeModel;
@@ -1836,7 +1836,7 @@ void QtViewer::saveView()
 
 
 
-void QtViewer::setScene(sofa::simulation::tree::GNode* scene, const char* filename, bool keepParams)
+void QtViewer::setScene(sofa::simulation::Node* scene, const char* filename, bool keepParams)
 {
 
     bool newScene = (scene != groot);

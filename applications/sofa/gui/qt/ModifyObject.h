@@ -186,7 +186,9 @@ protected:
     std::set< Q3Table* >                                               setResize;
     WFloatLineEdit* transformation[7]; //Data added to manage transformation of a whole node
 
+    QWidget *warningTab;
     Q3TextEdit *logWarningEdit;
+    QWidget *outputTab;
     Q3TextEdit *logOutputEdit;
 
     typedef std::map<core::objectmodel::BaseData*, DataWidget*> DataWidgetMap;

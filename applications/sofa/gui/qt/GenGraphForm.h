@@ -57,7 +57,7 @@ class GenGraphForm : public BaseGenGraphForm
 public:
     GenGraphForm();
 
-    void setScene(sofa::simulation::tree::GNode* scene);
+    void setScene(sofa::simulation::Node* scene);
 
 public slots:
     virtual void change();
@@ -71,7 +71,7 @@ public slots:
 
 protected:
     QString exportedFile;
-    sofa::simulation::tree::GNode* graph;
+    sofa::simulation::Node* graph;
     std::list<QStringList> tasks;
     QProcess* currentTask;
 
