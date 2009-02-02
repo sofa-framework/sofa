@@ -1,190 +1,183 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 3      *
-*                (c) 2006-2008 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
-*                                                                             *
-* This program is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
-*                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
-*******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
-
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 3      *
+ *                (c) 2006-2008 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This program is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU General Public License as published by the Free  *
+ * Software Foundation; either version 2 of the License, or (at your option)   *
+ * any later version.                                                          *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+ * more details.                                                               *
+ *                                                                             *
+ * You should have received a copy of the GNU General Public License along     *
+ * with this program; if not, write to the Free Software Foundation, Inc., 51  *
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
+ *******************************************************************************
+ *                            SOFA :: Applications                             *
+ *                                                                             *
+ * Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+ * H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+ * M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
+#include <iostream>
+#include <fstream>
+#include <sofa/helper/ArgumentParser.h>
+#include <sofa/simulation/tree/xml/initXml.h>
+#include "../lib/BglSimulation.h"
+#include "../lib/BglNode.h"
+#include <sofa/component/init.h>
+#include <sofa/helper/Factory.h>
+#include <sofa/helper/BackTrace.h>
+#include <sofa/helper/system/FileRepository.h>
+#include <sofa/gui/SofaGUI.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
+#include <sofa/helper/system/atomic.h>
 
-#include "traqueboule.h"
-#include <sofa/helper/ArgumentParser.h>
-#include "BglModeler.h"
-#include "../lib/BglNode.h"
-#include <iostream>
-using std::cerr;
-using std::endl;
-
-
-typedef sofa::simulation::bgl::BglScene Scene;
-typedef sofa::simulation::bgl::BglNode Node;
-typedef BglModeler MyModeler;
-
-Scene scene;
-
-bool animating = false;
-bool step_by_step = true;
-
-
-// Actions d'affichage
-void display(void);
-void display(void)
+#ifndef WIN32
+#include <dlfcn.h>
+bool loadPlugin(const char* filename)
 {
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-
-    GLfloat l0_position[] = {0,0,0,1};
-    GLfloat l0_ambient[] = {0.1,0.1,0.1};
-    GLfloat l0_diffuse[] = {0.8,0.8,0.8};
-    GLfloat l0_specular[] = {0.5,0.5,0.5};
-
-    // lumiere 0
-    glLightfv( GL_LIGHT0, GL_AMBIENT,   l0_ambient );
-    glLightfv( GL_LIGHT0, GL_DIFFUSE,   l0_diffuse );
-    glLightfv( GL_LIGHT0, GL_SPECULAR,  l0_specular );
-
-
-    // Details sur le mode de tracé
-    glEnable( GL_DEPTH_TEST );            // effectuer le test de profondeur
-
-    // Effacer tout
-    glClearColor (0.0, 0.0, 0.0, 0.0);
-    glClear( GL_COLOR_BUFFER_BIT  | GL_DEPTH_BUFFER_BIT); // la couleur et le z
-
-    glLoadIdentity();  // repere camera
-
-    glLightfv( GL_LIGHT0, GL_POSITION,  l0_position ); // source liee a l'observateur
-
-    tbVisuTransform(); // origine et orientation de la scene
-
-    scene.glDraw();
-
-    //glColor3f(1,1,1);
-    //glutWireCube( 10 );
-
-
-    glutSwapBuffers();
-}
-
-// pour changement de taille ou desiconification
-void reshape(int w, int h)
-{
-    glViewport(0, 0, (GLsizei) w, (GLsizei) h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    //glOrtho (-1.1, 1.1, -1.1,1.1, -1000.0, 1000.0);
-    gluPerspective (50, (float)w/h, 1, 100);
-    glMatrixMode(GL_MODELVIEW);
-}
-
-// prise en compte du clavier
-void keyboard(unsigned char key, int /*x*/, int /*y*/)
-{
-    switch (key)
+    void *handle;
+    handle=dlopen(filename, RTLD_LAZY);
+    if (!handle)
     {
-    case 27:     // touche ESC
-        exit(0);
-    case 32:     // touche SPACE
-        animating = !animating;
-        break;
-    case 's':
-        step_by_step = !step_by_step;
-        break;
+        std::cerr<<"Error loading plugin "<<filename<<": "<<dlerror()<<std::endl;
+        return false;
     }
+    std::cerr<<"Plugin "<<filename<<" loaded."<<std::endl;
+    return true;
 }
-
-void animate();
-void animate()
+#else
+bool loadPlugin(const char* /*filename*/)
 {
-    if ( animating )
-    {
-        //cerr<<"-----one step ------"<<endl;
-        scene.animate(0.04);
-        glutPostRedisplay();
-        if ( step_by_step )
-            animating = false;
-    }
+    std::cerr << "Plugin loading not supported on this platform.\n";
+    return false;
 }
+#endif
 
-
-// programme principal
+// ---------------------------------------------------------------------
+// ---
+// ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
+    std::cout << "Using " << sofa::helper::system::atomic<int>::getImplName()<<" atomics." << std::endl;
+
+    sofa::helper::BackTrace::autodump();
 
 
-    int W_fen = 600;  // largeur fenetre
-    int H_fen = 600;  // hauteur fenetre
 
-    sofa::helper::parse("Basic simulation ")
-    .option(&W_fen,'L',"Largeur","largeur de la fenêtre en pixels")
-    .option(&H_fen,'H',"Hauteur","hauteur de la fenêtre en pixels")
+    sofa::gui::SofaGUI::SetProgramName(argv[0]);
+    std::string fileName ;
+    bool        startAnim = false;
+    bool        printFactory = false;
+    bool        loadRecent = false;
+    std::string gui = sofa::gui::SofaGUI::GetGUIName();
+    std::vector<std::string> plugins;
+    std::vector<std::string> files;
+
+    std::string gui_help = "choose the UI (";
+    gui_help += sofa::gui::SofaGUI::ListSupportedGUI('|');
+    gui_help += ")";
+
+    sofa::helper::parse(&files, "This is a SOFA application. Here are the command line arguments")
+    .option(&startAnim,'s',"start","start the animation loop")
+    .option(&printFactory,'p',"factory","print factory logs")
+    .option(&gui,'g',"gui",gui_help.c_str())
+    .option(&plugins,'l',"load","load given plugins")
+    .option(&loadRecent,'r',"recent","load most recently opened file")
     (argc,argv);
 
-    tbHelp();                      // affiche l'aide sur la traqueboule
-    cout<<endl<<"Press SPACE to animate. Press S to toggle step-by-step mode"<<endl;
+    if(gui!="batch")
+        glutInit(&argc,argv);
+    sofa::component::init();
+    sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation);
+    sofa::simulation::tree::xml::initXml();
 
-    glutInit(&argc, argv);
+    if (!files.empty()) fileName = files[0];
+
+    for (unsigned int i=0; i<plugins.size(); i++)
+        loadPlugin(plugins[i].c_str());
+
+    if (printFactory)
+    {
+        std::cout << "////////// FACTORY //////////" << std::endl;
+        sofa::helper::printFactoryLog();
+        std::cout << "//////// END FACTORY ////////" << std::endl;
+    }
+
+    if (int err=sofa::gui::SofaGUI::Init(argv[0],gui.c_str()))
+        return err;
+
+    sofa::simulation::bgl::BglNode* groot = NULL;
+
+    if (fileName.empty())
+    {
+        fileName = "Demos/liver.scn";
+        if (loadRecent) // try to reload the latest scene
+        {
+            std::string scenes = "config/Sofa.ini";
+            sofa::helper::system::DataRepository.findFile( scenes );
+            std::ifstream mrulist(scenes.c_str());
+            std::getline(mrulist,fileName);
+            mrulist.close();
+        }
+        sofa::helper::system::DataRepository.findFile(fileName);
+    }
+//   if (groot==NULL)
+//     {
+//       groot = new sofa::simulation::bgl::BglNode;
+//       //return 1;
+//     }
+
+    if (int err=sofa::gui::SofaGUI::createGUI(groot,fileName.c_str()))
+        return err;
+    std::string in_filename(fileName);
+    if (in_filename.rfind(".simu") == std::string::npos)
+    {
+        sofa::simulation::getSimulation()->unload ( groot);
+
+        groot = dynamic_cast<sofa::simulation::bgl::BglNode*>( sofa::simulation::getSimulation()->load(fileName.c_str()));
+
+        if(sofa::gui::SofaGUI::CurrentGUI())
+            sofa::gui::SofaGUI::CurrentGUI()->setScene(groot,fileName.c_str());
+    }
+
+    if (startAnim)
+        groot->setAnimate(true);
 
 
-    MyModeler modeler(&scene);
-    /*    modeler.buildOneTetrahedron();
-        modeler.buildMixedPendulum();*/
-    modeler.buildSceneWithInitDependencies();
-    //scene.load("chain2.xml");
-    scene.init();
-    scene.setShowBehaviorModels(true);
-    scene.setShowVisualModels(false);
-    scene.setShowCollisionModels(true);
-    //scene.setShowMappings(true);
-    //scene.setShowMechanicalMappings(true);
-    scene.setShowNormals(false);
 
-    // couches du framebuffer utilisees par l'application
-    glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH );
+    //=======================================
+    // Run the main loop
 
-    // position et taille de la fenetre
-    glutInitWindowPosition(200, 100);
-    glutInitWindowSize(W_fen,H_fen);
-    glutCreateWindow(argv[0]);
+    if (gui=="none")
+    {
+        if (groot==NULL)
+        {
+            std::cerr<<"Could not load file "<<fileName<<std::endl;
+            return 1;
+        }
+        std::cout << "Computing 1000 iterations." << std::endl;
+        for (int i=0; i<1000; i++)
+        {
+            sofa::simulation::bgl::getSimulation()->animate(groot);
+        }
+        std::cout << "1000 iterations done." << std::endl;
+    }
+    else
+    {
+        if (int err=sofa::gui::SofaGUI::MainLoop(groot,fileName.c_str()))
+            return err;
+        groot = dynamic_cast<sofa::simulation::bgl::BglNode*>( sofa::gui::SofaGUI::CurrentSimulation() );
+    }
 
-
-    // Initialisation du point de vue
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef(0,0,-20);
-    tbInitTransform();     // initialisation du point de vue
-
-    // cablage des callback
-    glutReshapeFunc(reshape);
-    glutKeyboardFunc(keyboard);
-    glutDisplayFunc(display);
-    glutMouseFunc(tbMouseFunc);    // traqueboule utilise la souris
-    glutMotionFunc(tbMotionFunc);  // traqueboule utilise la souris
-    glutIdleFunc( animate );
-
-    // lancement de la boucle principale
-    glutMainLoop();
-    return 0;  // instruction jamais exécutée
+    if (groot!=NULL)
+        sofa::simulation::bgl::getSimulation()->unload(groot);
+    return 0;
 }
-

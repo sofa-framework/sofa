@@ -31,7 +31,7 @@
 
 #include <sofa/gpu/cuda/mycuda.h>
 
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/component/init.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>

@@ -31,6 +31,7 @@
 
 #include "AddPreset.h"
 
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -97,7 +98,7 @@ public:
     ~GraphModeler()
     {
         for (unsigned int i=0; i<historyOperation.size(); ++i) editUndo();
-        getSimulation()->unload(getRoot());
+        simulation::getSimulation()->unload(getRoot());
 
         delete graphListener;
         if (DialogAdd) delete DialogAdd;
@@ -152,7 +153,7 @@ public:
     /// Delete a componnent
     void deleteComponent(Q3ListViewItem *item, bool saveHistory=true);
     /// Construct a node from a BaseElement, by passing the factory
-    GNode *buildNodeFromBaseElement(GNode *node,xml::BaseElement *elem);
+    GNode *buildNodeFromBaseElement(GNode *node,xml::BaseElement *elem, bool saveHistory=false);
     void configureElement(Base* b, xml::BaseElement *elem);
 signals:
     void fileOpen(const QString&);
@@ -303,6 +304,7 @@ public:
         REINIT_FLAG = false;
         //remove the qwt graphes
         energy_curve[0]=energy_curve[1]=energy_curve[2]=NULL;
+        outputTab = warningTab = NULL;
         logWarningEdit=NULL; logOutputEdit=NULL;
         graphEnergy=NULL;
         //Initialization of the Widget

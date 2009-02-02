@@ -28,7 +28,7 @@
 #include <fstream>
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/tree/xml/initXml.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/component/init.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
@@ -95,6 +95,7 @@ int main(int argc, char** argv)
     if(gui!="batch")
         glutInit(&argc,argv);
     sofa::component::init();
+    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
     sofa::simulation::tree::xml::initXml();
 
     if (!files.empty()) fileName = files[0];

@@ -27,7 +27,7 @@
 #include <iostream>
 #include <fstream>
 #include <sofa/helper/ArgumentParser.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -51,7 +51,7 @@ void apply(std::vector< std::string> &files, unsigned int iterations, bool reini
     //Launch the comparison for each scenes
     for (unsigned int i=0; i<files.size(); ++i)
     {
-        groot = dynamic_cast< sofa::simulation::tree::GNode* >( sofa::simulation::tree::getSimulation()->load(files[i].c_str()));
+        groot = dynamic_cast< sofa::simulation::tree::GNode* >( sofa::simulation::getSimulation()->load(files[i].c_str()));
         if (groot == NULL)
         {
             std::cerr << "CANNOT open " << files[i] << " !\n";
@@ -92,7 +92,7 @@ void apply(std::vector< std::string> &files, unsigned int iterations, bool reini
 
         //Do as many iterations as specified in entry of the program. At each step, the compare state will compare the computed states to the recorded states
         std::cout << "Computing " <<  iterations << " for " << files[i] <<  std::endl;
-        for (unsigned int i=0; i<iterations; i++) sofa::simulation::tree::getSimulation()->animate(groot);
+        for (unsigned int i=0; i<iterations; i++) sofa::simulation::getSimulation()->animate(groot);
         double t = (clock() - curtime)/((double)CLOCKS_PER_SEC);
 
         std::cout <<"ITERATIONS " <<  iterations << " TIME " << t  << " seconds" <<std::endl;
@@ -107,7 +107,7 @@ void apply(std::vector< std::string> &files, unsigned int iterations, bool reini
             std::cout << "ERRORBYDOF " << result.getErrorByDof()/(double)result.getNumCompareState() << "\n";
         }
         //Clear and prepare for next scene
-        sofa::simulation::tree::getSimulation()->unload(groot);
+        sofa::simulation::getSimulation()->unload(groot);
     }
 }
 

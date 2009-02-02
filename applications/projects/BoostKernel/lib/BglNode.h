@@ -40,7 +40,8 @@
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Visitor.h>
-#include "BglScene.h"
+#include <sofa/core/objectmodel/BaseNode.h>
+#include "BglSimulation.h"
 #include <sofa/core/objectmodel/ClassInfo.h>
 
 
@@ -53,6 +54,7 @@ namespace bgl
 
 using sofa::core::objectmodel::BaseObject;
 
+using sofa::simulation::Node;
 /**
 sofa::simulation::Node as a node of a BGL scene graph.
 
@@ -68,7 +70,7 @@ public:
     \param sg the SOFA scene containing a bgl graph
     \param n the node of the bgl graph corresponding to this
     */
-    BglNode(BglScene* sg, BglScene::Hgraph* g,  BglScene::Hvertex n, const std::string& name="" );
+    BglNode(BglSimulation* sg, BglSimulation::Hgraph* g,  BglSimulation::Hvertex n, const std::string& name="" );
     ~BglNode();
 
     /** Perform a scene graph traversal with the given Visitor, starting from this node.
@@ -80,16 +82,42 @@ public:
     // to move to simulation::Node
     void clearInteractionForceFields();
 
+
+    /// Generic object access, possibly searching up or down from the current context
+    ///
+    /// Note that the template wrapper method should generally be used to have the correct return type,
+    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, SearchDirection dir = SearchUp) const;
+
+    /// Generic object access, given a path from the current context
+    ///
+    /// Note that the template wrapper method should generally be used to have the correct return type,
+    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const;
+
+
     /// Generic list of objects access, possibly searching up or down from the current context
-    /// @todo Would better be a member of BglScene
+    /// @todo Would better be a member of BglSimulation
     virtual void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, SearchDirection dir = SearchUp) const;
 
 
+    /// Add a child node
+    void addChild(Node* node);
+
+    /// Remove a child node
+    void removeChild(Node* node);
+
+    /// Move a node from another node
+    void moveChild(Node* obj);
+
+    /// return the mechanical graph of the scene it belongs to
+    BglSimulation::Hgraph &getGraph() { return *graph;};
+
+    /// return the id of the node in the mechanical graph
+    BglSimulation::Hvertex getVertexId() { return vertexId;};
 
 protected:
-    BglScene* scene;              ///< the scene the node belongs to
-    BglScene::Hgraph* graph;      ///< the mechanical graph of the scene it belongs to
-    BglScene::Hvertex vertexId;  ///< its id in the mechanical graph
+    BglSimulation* scene;              ///< the scene the node belongs to
+    BglSimulation::Hgraph* graph;      ///< the mechanical graph of the scene it belongs to
+    BglSimulation::Hvertex vertexId;  ///< its id in the mechanical graph
 
 };
 

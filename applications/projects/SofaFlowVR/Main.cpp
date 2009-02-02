@@ -32,7 +32,7 @@
 #include <flowvr/render/chunkwriter.h>
 //#include <flowvr/interact/chunkwriter.h>
 
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -1832,7 +1832,7 @@ int main(int argc, char** argv)
 
     sofa::core::ObjectFactory::ClassEntry* classVisualModel;
     sofa::core::ObjectFactory::AddAlias("VisualModel", "FlowVRRenderMesh", true, &classVisualModel);
-    groot = sofa::simulation::tree::getSimulation()->load(fileName.c_str());
+    groot = sofa::simulation::getSimulation()->load(fileName.c_str());
 
     if (groot==NULL)
     {
@@ -1857,7 +1857,7 @@ int main(int argc, char** argv)
         }
         for (int i=0; true; i++)
         {
-            sofa::simulation::tree::getSimulation()->animate(groot);
+            sofa::simulation::getSimulation()->animate(groot);
         }
         std::cout << "FlowVR has sent stop" << std::endl;
     }
@@ -1869,6 +1869,6 @@ int main(int argc, char** argv)
     }
 
     if (groot!=NULL)
-        sofa::simulation::tree::getSimulation()->unload(groot);
+        sofa::simulation::getSimulation()->unload(groot);
     return 0;
 }
