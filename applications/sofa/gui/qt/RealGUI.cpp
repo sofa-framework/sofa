@@ -1544,7 +1544,7 @@ void RealGUI::eventNewTime()
 
         double time = groot->getTime();
         char buf[100];
-        sprintf ( buf, "Time: %.3e s", time );
+        sprintf ( buf, "Time: %.3g s", time );
         timeLabel->setText ( buf );
 
         if (record_simulation)
