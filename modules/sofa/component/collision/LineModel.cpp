@@ -29,11 +29,11 @@
 #include <sofa/core/ObjectFactory.h>
 #include <vector>
 #include <sofa/helper/gl/template.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/component/topology/PointSetTopologyChange.h>
 #include <sofa/component/topology/EdgeSetTopologyChange.h>
 
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 
 namespace sofa
 {
@@ -369,7 +369,7 @@ void LineModel::draw()
     if (getContext()->getShowCollisionModels())
     {
         if (getContext()->getShowWireFrame())
-            simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,true);
+            simulation::getSimulation()->DrawUtility.setPolygonMode(0,true);
 
         for (int i=0; i<size; i++) //elems.size()
         {
@@ -386,10 +386,10 @@ void LineModel::draw()
             points.push_back(t.p2());
         }
 
-        simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(getColor4f()));
+        simulation::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(getColor4f()));
 
         if (getContext()->getShowWireFrame())
-            simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,false);
+            simulation::getSimulation()->DrawUtility.setPolygonMode(0,false);
     }
     if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
         getPrevious()->draw();

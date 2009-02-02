@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/component/contextobject/Gravity.h>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
 

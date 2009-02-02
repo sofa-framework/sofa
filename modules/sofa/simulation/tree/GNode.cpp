@@ -47,7 +47,7 @@ GNode::GNode(const std::string& name, GNode* parent)
     : simulation::Node(name)
 {
     if( parent )
-        parent->addChild(this);
+        parent->addChild((Node*)this);
 }
 
 GNode::~GNode()
@@ -68,44 +68,48 @@ void GNode::doRemoveChild(GNode* node)
 }
 
 /// Add a child node
-void GNode::addChild(GNode* node)
+void GNode::addChild(Node* node)
 {
-    notifyAddChild(node);
-    doAddChild(node);
+    GNode *gnode = dynamic_cast<GNode*>(node);
+    notifyAddChild(gnode);
+    doAddChild(gnode);
 }
 
 /// Remove a child
-void GNode::removeChild(GNode* node)
+void GNode::removeChild(Node* node)
 {
-    notifyRemoveChild(node);
-    doRemoveChild(node);
+    GNode *gnode = dynamic_cast<GNode*>(node);
+    notifyRemoveChild(gnode);
+    doRemoveChild(gnode);
 }
 
 /// Add a child node
 void GNode::addChild(core::objectmodel::BaseNode* node)
 {
-    this->addChild(dynamic_cast<GNode*>(node));
+    this->addChild(dynamic_cast<Node*>(node));
 }
 
 /// Remove a child node
 void GNode::removeChild(core::objectmodel::BaseNode* node)
 {
-    this->removeChild(dynamic_cast<GNode*>(node));
+    this->removeChild(dynamic_cast<Node*>(node));
 }
 
 /// Move a node from another node
-void GNode::moveChild(GNode* node)
+void GNode::moveChild(Node* node)
 {
-    GNode* prev = node->parent;
+    GNode* gnode=dynamic_cast<GNode*>(node);
+    if (!gnode) return;
+    GNode* prev = gnode->parent;
     if (prev==NULL)
     {
         addChild(node);
     }
     else
     {
-        notifyMoveChild(node,prev);
-        prev->doRemoveChild(node);
-        doAddChild(node);
+        notifyMoveChild(gnode,prev);
+        prev->doRemoveChild(gnode);
+        doAddChild(gnode);
     }
 }
 

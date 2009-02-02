@@ -28,7 +28,7 @@
 #include <sofa/component/collision/SphereModel.h>
 
 #include <sofa/component/container/MechanicalObject.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 
 #include <sofa/core/componentmodel/topology/TopologicalMapping.h>
 
@@ -73,7 +73,7 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::col
 
     std::set< unsigned int > items;
 
-    simulation::tree::GNode *node_curr = dynamic_cast<simulation::tree::GNode*>(topo_curr->getContext());
+    simulation::Node *node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
 
     if (topo_curr->getNbTetras() > 0)
     {
@@ -92,9 +92,11 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::col
     while(is_topoMap)
     {
         is_topoMap = false;
-        for(simulation::tree::GNode::ObjectIterator it = node_curr->object.begin(); it != node_curr->object.end(); ++it)
+        std::vector< core::objectmodel::BaseObject * > listObject;
+        node_curr->get<core::objectmodel::BaseObject>(&listObject, core::objectmodel::BaseContext::Local);
+        for(unsigned int i=0; i<listObject.size(); ++i)
         {
-            sofa::core::componentmodel::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping *>(*it);
+            sofa::core::componentmodel::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping *>(listObject[i]);
             if(topoMap != NULL && !topoMap->propagateFromOutputToInputModel())
             {
                 is_topoMap = true;
@@ -126,7 +128,7 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::col
                     }
                 }
                 topo_curr = topoMap->getFrom()->getContext()->getMeshTopology();
-                node_curr = dynamic_cast<simulation::tree::GNode*>(topo_curr->getContext());
+                node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
 
                 break;
             }
@@ -158,7 +160,7 @@ void TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::colli
 
     std::set< unsigned int > items;
 
-    simulation::tree::GNode *node_curr = dynamic_cast<simulation::tree::GNode*>(topo_curr->getContext());
+    simulation::Node *node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
 
     for (unsigned int i=0; i<indices.size(); ++i)
         items.insert(indices[i]);
@@ -168,9 +170,12 @@ void TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::colli
     while(is_topoMap)
     {
         is_topoMap = false;
-        for(simulation::tree::GNode::ObjectIterator it = node_curr->object.begin(); it != node_curr->object.end(); ++it)
+
+        std::vector< core::objectmodel::BaseObject * > listObject;
+        node_curr->get<core::objectmodel::BaseObject>(&listObject, core::objectmodel::BaseContext::Local);
+        for(unsigned int i=0; i<listObject.size(); ++i)
         {
-            sofa::core::componentmodel::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping *>(*it);
+            sofa::core::componentmodel::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping *>(listObject[i]);
             if(topoMap != NULL && !topoMap->propagateFromOutputToInputModel())
             {
                 is_topoMap = true;
@@ -200,7 +205,7 @@ void TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::colli
                     }
                 }
                 topo_curr = topoMap->getFrom()->getContext()->getMeshTopology();
-                node_curr = dynamic_cast<simulation::tree::GNode*>(topo_curr->getContext());
+                node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
 
                 break;
             }
@@ -313,13 +318,15 @@ bool TopologicalChangeManager::incisionTriangleModel(sofa::core::CollisionElemen
     sofa::core::componentmodel::topology::BaseMeshTopology* topo_curr;
     topo_curr = elem2.getCollisionModel()->getContext()->getMeshTopology();
 
-    simulation::tree::GNode* parent2 = dynamic_cast<simulation::tree::GNode*>(model2->getContext());
+    simulation::Node* parent2 = dynamic_cast<simulation::Node*>(model2->getContext());
 
-    for (simulation::tree::GNode::ObjectIterator it = parent2->object.begin(); it != parent2->object.end(); ++it)
+    std::vector< core::objectmodel::BaseObject * > listObject;
+    parent2->get<core::objectmodel::BaseObject>(&listObject, core::objectmodel::BaseContext::Local);
+    for(unsigned int i=0; i<listObject.size(); ++i)
     {
-        //sout << "INFO : name of GNode = " << (*it)->getName() <<  sendl;
+        //sout << "INFO : name of Node = " << (listObject[i])->getName() <<  sendl;
 
-        if (dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping *>(*it)!= NULL)
+        if (dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping *>(listObject[i])!= NULL)
         {
             is_TopologicalMapping=true;
         }

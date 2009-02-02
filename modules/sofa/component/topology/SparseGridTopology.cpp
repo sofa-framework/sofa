@@ -26,7 +26,7 @@
 #include <string>
 
 #include <sofa/component/container/MechanicalObject.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/component/topology/SparseGridTopology.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/core/ObjectFactory.h>
@@ -515,7 +515,7 @@ void SparseGridTopology::updateMesh()
     _max.setValue( voxelSize.getValue().linearProduct(dataResolution.getValue())*(1));
 
     //Creating if needed collision models and visual models
-    using sofa::simulation::tree::GNode;
+// 	    using sofa::simulation::Node;
 
     sofa::helper::vector< sofa::core::componentmodel::topology::BaseMeshTopology * > list_meshf;
     sofa::helper::vector< sofa::helper::vector< Vec3f >* > list_Xf;

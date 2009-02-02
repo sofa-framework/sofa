@@ -22,43 +22,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONTROLLER_ENSLAVEMENTFORCEFEEDBACK_H
-#define SOFA_COMPONENT_CONTROLLER_ENSLAVEMENTFORCEFEEDBACK_H
+#ifndef SOFA_SIMULATION_COMMON_CLEANUPVISITOR_H
+#define SOFA_SIMULATION_COMMON_CLEANUPVISITOR_H
 
-#include <sofa/component/controller/ForceFeedback.h>
-#include <sofa/component/controller/OmniDriver.h>
-#include <sofa/core/CollisionModel.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/common/Visitor.h>
 
 namespace sofa
 {
 
-namespace component
+namespace simulation
 {
 
-namespace controller
-{
-using namespace std;
 
-/**
-* Omni driver force field
-*/
-class EnslavementForceFeedback : public sofa::component::controller::ForceFeedback
+class SOFA_SIMULATION_COMMON_API CleanupVisitor : public Visitor
 {
-
 public:
-    void init();
+    CleanupVisitor() {}
 
-    virtual void computeForce(double x, double y, double z, double u, double v, double w, double q, double& fx, double& fy, double& fz);
-
-protected:
-    core::componentmodel::behavior::MechanicalState<Rigid3dTypes> *mState; ///< The omni try to follow this mechanical state.
-    sofa::helper::vector<core::CollisionModel*> collisionModels;
+    virtual Result processNodeTopDown(Node* node);
+    virtual void processNodeBottomUp(Node* node);
+    virtual const char* getClassName() const { return "CleanupVisitor"; }
 };
 
-} // namespace controller
 
-} // namespace component
+} // namespace simulation
 
 } // namespace sofa
 

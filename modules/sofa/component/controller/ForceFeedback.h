@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_CONTROLLER_FORCEFEEDBACK_H
 #define SOFA_COMPONENT_CONTROLLER_FORCEFEEDBACK_H
 
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/core/componentmodel/behavior/BaseController.h>
 
 namespace sofa
@@ -47,14 +47,14 @@ public:
 
     Data<bool> f_activate;
 
-    simulation::tree::GNode *context;
+    simulation::Node *context;
 
     ForceFeedback():
         f_activate(initData(&f_activate, false, "activate", "boolean to activate or desactivate the forcefeedback"))
     {
     }
 
-    virtual void init() {context = dynamic_cast<simulation::tree::GNode *>(this->getContext());};
+    virtual void init() {context = dynamic_cast<simulation::Node *>(this->getContext());};
     virtual void computeForce(double x, double y, double z, double u, double v, double w, double q, double& fx, double& fy, double& fz) = 0;
 };
 

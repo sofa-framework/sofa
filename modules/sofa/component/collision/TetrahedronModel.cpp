@@ -25,7 +25,7 @@
 #include <sofa/component/collision/TetrahedronModel.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/ObjectFactory.h>

@@ -44,7 +44,7 @@ namespace collision
 class SOFA_COMPONENT_COLLISION_API DefaultCollisionGroupManager : public core::componentmodel::collision::CollisionGroupManager
 {
 public:
-    typedef std::set<simulation::tree::GNode*> GroupSet;
+    typedef std::set<simulation::Node*> GroupSet;
     GroupSet groupSet;
 public:
     DefaultCollisionGroupManager();
@@ -59,7 +59,7 @@ public:
     Otherwise, an empty Node is returned.
     The OdeSolver is added afterwards.
     */
-    virtual simulation::tree::GNode* buildCollisionGroup();
+    virtual simulation::Node* buildCollisionGroup();
 
 protected:
     virtual simulation::tree::GNode* getIntegrationNode(core::CollisionModel* model);

@@ -28,7 +28,7 @@
 #include <sofa/core/componentmodel/behavior/ForceField.inl>
 #include <sofa/component/forcefield/TetrahedralCorotationalFEMForceField.h>
 #include <sofa/component/topology/GridTopology.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/PolarDecompose.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/component/topology/TetrahedronData.inl>
@@ -1027,7 +1027,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw()
     const VecCoord& x = *this->mstate->getX();
 
     if (getContext()->getShowWireFrame())
-        simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,true);
+        simulation::getSimulation()->DrawUtility.setPolygonMode(0,true);
 
 
     std::vector< Vector3 > points[4];
@@ -1066,13 +1066,13 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw()
         points[3].push_back(pb);
     }
 
-    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[0], Vec<4,float>(0.0,0.0,1.0,1.0));
-    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[1], Vec<4,float>(0.0,0.5,1.0,1.0));
-    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[2], Vec<4,float>(0.0,1.0,1.0,1.0));
-    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[3], Vec<4,float>(0.5,1.0,1.0,1.0));
+    simulation::getSimulation()->DrawUtility.drawTriangles(points[0], Vec<4,float>(0.0,0.0,1.0,1.0));
+    simulation::getSimulation()->DrawUtility.drawTriangles(points[1], Vec<4,float>(0.0,0.5,1.0,1.0));
+    simulation::getSimulation()->DrawUtility.drawTriangles(points[2], Vec<4,float>(0.0,1.0,1.0,1.0));
+    simulation::getSimulation()->DrawUtility.drawTriangles(points[3], Vec<4,float>(0.5,1.0,1.0,1.0));
 
     if (getContext()->getShowWireFrame())
-        simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,false);
+        simulation::getSimulation()->DrawUtility.setPolygonMode(0,false);
 }
 
 

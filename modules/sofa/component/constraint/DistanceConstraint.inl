@@ -28,7 +28,7 @@
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/core/componentmodel/behavior/BaseLMConstraint.h>
 #include <sofa/component/constraint/DistanceConstraint.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -213,7 +213,7 @@ void DistanceConstraint<DataTypes>::draw()
             points.push_back(x1[edges[i][0]]);
             points.push_back(x2[edges[i][1]]);
         }
-        simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0.0,1.0,0.0f,1.0f));
+        simulation::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(0.0,1.0,0.0f,1.0f));
     }
 }
 

@@ -22,62 +22,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_CONSTRAINT_ATTACHCONSTRAINT_CPP
-#include <sofa/component/constraint/AttachConstraint.inl>
-#include <sofa/core/componentmodel/behavior/PairInteractionConstraint.inl>
-#include <sofa/core/ObjectFactory.h>
-
+#include <sofa/simulation/common/CleanupVisitor.h>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/component/mass/UniformMass.h>
 
 namespace sofa
 {
 
-namespace component
+namespace simulation
 {
 
-namespace constraint
+
+simulation::Visitor::Result CleanupVisitor::processNodeTopDown(Node* node)
 {
+    // some object will modify the graph during cleanup (removing other nodes or objects)
+    // so we cannot assume that the list of object will stay constant
 
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
+    std::set<sofa::core::objectmodel::BaseObject*> done; // list of objects we already processed
+    bool stop = false;
+    while (!stop)
+    {
+        stop = true;
+        std::vector< core::objectmodel::BaseObject* > listObject;
+        node->get<core::objectmodel::BaseObject>(&listObject, core::objectmodel::BaseContext::Local);
 
-SOFA_DECL_CLASS(AttachConstraint)
+        for (unsigned int i=0; i<listObject.size(); ++i)
+        {
+            if (done.insert(listObject[i]).second)
+            {
+                listObject[i]->cleanup();
+                stop = false;
+                break; // we have to restart as objects could have been removed anywhere
+            }
+        }
+    }
+    return RESULT_CONTINUE;
+}
 
-int AttachConstraintClass = core::RegisterObject("Attach given pair of particles, projecting the positions of the second particles to the first ones")
-#ifndef SOFA_FLOAT
-        .add< AttachConstraint<Vec3dTypes> >()
-        .add< AttachConstraint<Vec2dTypes> >()
-        .add< AttachConstraint<Vec1dTypes> >()
-        .add< AttachConstraint<Rigid3dTypes> >()
-        .add< AttachConstraint<Rigid2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< AttachConstraint<Vec3fTypes> >()
-        .add< AttachConstraint<Vec2fTypes> >()
-        .add< AttachConstraint<Vec1fTypes> >()
-        .add< AttachConstraint<Rigid3fTypes> >()
-        .add< AttachConstraint<Rigid2fTypes> >()
-#endif
-        ;
+void CleanupVisitor::processNodeBottomUp(Node* /*node*/)
+{
+}
 
-#ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Vec3dTypes>;
-template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Vec2dTypes>;
-template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Vec1dTypes>;
-template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Rigid3dTypes>;
-template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Vec3fTypes>;
-template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Vec2fTypes>;
-template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Vec1fTypes>;
-template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Rigid3fTypes>;
-template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Rigid2fTypes>;
-#endif
-} // namespace constraint
-
-} // namespace component
+} // namespace simulation
 
 } // namespace sofa
 

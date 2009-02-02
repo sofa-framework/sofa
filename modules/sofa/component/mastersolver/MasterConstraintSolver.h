@@ -3,7 +3,7 @@
 
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
 #include <sofa/simulation/common/MasterSolverImpl.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>

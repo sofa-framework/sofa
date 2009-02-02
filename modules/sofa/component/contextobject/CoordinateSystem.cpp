@@ -28,7 +28,7 @@
 
 #include <sofa/component/contextobject/CoordinateSystem.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <iostream>
 #include <sofa/helper/system/gl.h>
 

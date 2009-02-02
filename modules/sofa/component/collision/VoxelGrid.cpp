@@ -216,7 +216,7 @@ void VoxelGrid::add(CollisionModel *cm, int phase)
 
 void VoxelGrid::addCollisionPair(const std::pair<CollisionModel*, CollisionModel*>& cmPair)
 {
-    timeLogger = dynamic_cast<simulation::tree::GNode*>(getContext());
+    timeLogger = dynamic_cast<simulation::Node*>(getContext());
     if (timeLogger && !timeLogger->getLogTime()) timeLogger=NULL;
     timeInter = 0;
 
@@ -324,7 +324,7 @@ void GridCell::add(VoxelGrid* grid, CollisionElementIterator collisionElem, sofa
     minBBox1 = collisionElem.getBBoxMin();
     maxBBox1 = collisionElem.getBBoxMax();
 
-    simulation::tree::GNode::ctime_t t0 = 0;
+    simulation::Node::ctime_t t0 = 0;
 
     {
         sofa::helper::vector < CollisionElementIterator >	::iterator it	 = collisElems.begin();

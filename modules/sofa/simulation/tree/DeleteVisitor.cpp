@@ -34,31 +34,6 @@ namespace simulation
 namespace tree
 {
 
-simulation::Visitor::Result CleanupVisitor::processNodeTopDown(GNode* node)
-{
-    // some object will modify the graph during cleanup (removing other nodes or objects)
-    // so we cannot assume that the list of object will stay constant
-
-    std::set<sofa::core::objectmodel::BaseObject*> done; // list of objects we already processed
-    bool stop = false;
-    while (!stop)
-    {
-        stop = true;
-        for (GNode::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
-            if (done.insert(*it).second)
-            {
-                (*it)->cleanup();
-                stop = false;
-                break; // we have to restart as objects could have been removed anywhere
-            }
-    }
-    return RESULT_CONTINUE;
-}
-
-void CleanupVisitor::processNodeBottomUp(GNode* /*node*/)
-{
-}
-
 simulation::Visitor::Result DeleteVisitor::processNodeTopDown(GNode* /*node*/)
 {
     return RESULT_CONTINUE;
@@ -69,7 +44,7 @@ void DeleteVisitor::processNodeBottomUp(GNode* node)
     while (!node->child.empty())
     {
         GNode* child = *node->child.begin();
-        node->removeChild(child);
+        node->removeChild((Node*)child);
         delete child;
     }
     while (!node->object.empty())

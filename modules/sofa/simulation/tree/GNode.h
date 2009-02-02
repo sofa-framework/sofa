@@ -64,19 +64,20 @@ public:
     void reinit();
 
     /// Add a child node
-    virtual void addChild(GNode* node);
+    virtual void addChild(Node* node);
 
     /// Remove a child
-    virtual void removeChild(GNode* node);
+    virtual void removeChild(Node* node);
 
+    /// Move a node from another node
+    virtual void moveChild(Node* obj);
+
+    //Pure Virtual method from BaseNode
     /// Add a child node
     virtual void addChild(BaseNode* node);
 
     /// Remove a child node
     virtual void removeChild(BaseNode* node);
-
-    /// Move a node from another node
-    virtual void moveChild(GNode* obj);
 
 
     /// @name Visitors and graph traversal

@@ -45,7 +45,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 
 #include <cctype>
 
@@ -81,7 +81,7 @@ void ArticulatedHierarchyController::init()
     activeArticulations.resize(bindingKeys.getValue().size());
     propagationChain = false;
 
-    sofa::simulation::tree::GNode* curNode = dynamic_cast<sofa::simulation::tree::GNode*>(this->getContext());
+    sofa::simulation::Node* curNode = dynamic_cast<sofa::simulation::Node*>(this->getContext());
     if (curNode)
         curNode->getTreeObjects<ArticulatedHierarchyContainer::ArticulationCenter, ArtCenterVec >(&m_artCenterVec);
 
@@ -375,7 +375,7 @@ void ArticulatedHierarchyController::applyController(void)
                         {
                             std::vector< MechanicalState<sofa::defaulttype::Vec1dTypes>* > articulatedObjects;
 
-                            sofa::simulation::tree::GNode* curNode = dynamic_cast<sofa::simulation::tree::GNode*>(this->getContext());
+                            sofa::simulation::Node* curNode = dynamic_cast<sofa::simulation::Node*>(this->getContext());
                             if (curNode)
                                 curNode->getTreeObjects<MechanicalState<sofa::defaulttype::Vec1dTypes>, std::vector< MechanicalState<sofa::defaulttype::Vec1dTypes>* > >(&articulatedObjects);
 
@@ -407,8 +407,8 @@ void ArticulatedHierarchyController::applyController(void)
                     articulationIndex = articulationPropagationChain[j];
             }
 
-            static_cast<sofa::simulation::tree::GNode*>(this->getContext())->execute<sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor>();
-            static_cast<sofa::simulation::tree::GNode*>(this->getContext())->execute<sofa::simulation::UpdateMappingVisitor>();
+            static_cast<sofa::simulation::Node*>(this->getContext())->execute<sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor>();
+            static_cast<sofa::simulation::Node*>(this->getContext())->execute<sofa::simulation::UpdateMappingVisitor>();
         }
     }
 }

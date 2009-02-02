@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/collision/CubeModel.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/core/ObjectFactory.h>
 #include <algorithm>
 #include <math.h>
@@ -232,7 +232,7 @@ void CubeModel::draw()
         points.push_back(Vector3(vmax[0], vmax[1], vmax[2]));
     }
 
-    simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(c));
+    simulation::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(c));
 
 
     if (getPrevious()!=NULL)

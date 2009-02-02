@@ -35,7 +35,7 @@ namespace collision
 
 using namespace defaulttype;
 using namespace sofa::helper;
-using simulation::tree::GNode;
+using simulation::Node;
 
 unsigned int Identifier::cpt=0;
 std::list<unsigned int> Identifier::availableId;

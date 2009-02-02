@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_HomogenizedMAPPING_INL
 
 #include <sofa/component/mapping/HomogenizedMapping.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
@@ -415,7 +415,7 @@ void HomogenizedMapping<BasicMapping>::draw()
     }
 
 
-    simulation::tree::getSimulation()->DrawUtility.drawPoints(points, 7, Vec<4,float>(0.2f,1.0f,0.0f,1.0f));
+    simulation::getSimulation()->DrawUtility.drawPoints(points, 7, Vec<4,float>(0.2f,1.0f,0.0f,1.0f));
 }
 
 

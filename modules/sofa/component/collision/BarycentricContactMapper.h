@@ -32,8 +32,8 @@
 #include <sofa/component/mapping/RigidMapping.h>
 #include <sofa/component/mapping/SubsetMapping.h>
 #include <sofa/component/container/MechanicalObject.h>
-#include <sofa/simulation/tree/GNode.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/collision/SphereTreeModel.h>
 #include <sofa/component/collision/TriangleModel.h>
@@ -350,7 +350,7 @@ public:
     typedef component::MechanicalObject<typename RigidContactMapper::DataTypes> MMechanicalObject;
     typedef mapping::RigidMapping< core::componentmodel::behavior::MechanicalMapping< InMechanicalState, MMechanicalState > > MMapping;
     MCollisionModel* model;
-    simulation::tree::GNode* child;
+    simulation::Node* child;
     MMapping* mapping;
     MMechanicalState* outmodel;
     int nbp;
@@ -494,7 +494,7 @@ public:
     typedef component::MechanicalObject<typename SubsetContactMapper::DataTypes> MMechanicalObject;
     typedef mapping::SubsetMapping< core::componentmodel::behavior::MechanicalMapping< InMechanicalState, MMechanicalState > > MMapping;
     MCollisionModel* model;
-    simulation::tree::GNode* child;
+    simulation::Node* child;
     MMapping* mapping;
     MMechanicalState* outmodel;
     int nbp;

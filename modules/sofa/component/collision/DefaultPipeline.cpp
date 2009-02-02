@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/component/collision/DefaultPipeline.h>
 #include <sofa/core/CollisionModel.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/helper/system/gl.h>
@@ -59,12 +59,12 @@ DefaultPipeline::DefaultPipeline()
 {
 }
 
-typedef simulation::tree::GNode::ctime_t ctime_t;
+typedef simulation::Node::ctime_t ctime_t;
 
 void DefaultPipeline::doCollisionReset()
 {
     core::objectmodel::BaseContext* scene = getContext();
-    simulation::tree::GNode* node = dynamic_cast<simulation::tree::GNode*>(scene);
+    simulation::Node* node = dynamic_cast<simulation::Node*>(scene);
     if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
     ctime_t t0 = 0;
     const std::string category = "collision";
@@ -153,7 +153,7 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
 void DefaultPipeline::doCollisionResponse()
 {
     core::objectmodel::BaseContext* scene = getContext();
-    simulation::tree::GNode* node = dynamic_cast<simulation::tree::GNode*>(scene);
+    simulation::Node* node = dynamic_cast<simulation::Node*>(scene);
     if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
     ctime_t t0 = 0;
     const std::string category = "collision";

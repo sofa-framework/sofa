@@ -43,7 +43,7 @@
 
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 
 namespace sofa
 {
@@ -115,7 +115,7 @@ void PointModel::draw()
     if (getContext()->getShowCollisionModels())
     {
         if (getContext()->getShowWireFrame())
-            simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,true);
+            simulation::getSimulation()->DrawUtility.setPolygonMode(0,true);
 
 
         // Check topological modifications
@@ -137,11 +137,11 @@ void PointModel::draw()
                 pointsL.push_back(t.p()+normals[i]*0.1f);
             }
         }
-        simulation::tree::getSimulation()->DrawUtility.drawPoints(pointsP, 3, Vec<4,float>(getColor4f()));
-        simulation::tree::getSimulation()->DrawUtility.drawLines(pointsL, 1, Vec<4,float>(getColor4f()));
+        simulation::getSimulation()->DrawUtility.drawPoints(pointsP, 3, Vec<4,float>(getColor4f()));
+        simulation::getSimulation()->DrawUtility.drawLines(pointsL, 1, Vec<4,float>(getColor4f()));
 
         if (getContext()->getShowWireFrame())
-            simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,false);
+            simulation::getSimulation()->DrawUtility.setPolygonMode(0,false);
     }
     if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
         getPrevious()->draw();

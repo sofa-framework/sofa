@@ -40,7 +40,7 @@
 // #include <sofa/core/componentmodel/behavior/State.h>
 // #include <sofa/component/visualmodel/VisualModelImpl.h>
 
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <iomanip>
 
 #include <sofa/helper/gl/BasicShapes.h>
@@ -2639,27 +2639,27 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::draw()
 
     if( _drawType.getValue() == 0 )
     {
-        sofa::simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
+        sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(true);
 
         for( SparseGridTopology::SeqEdges::const_iterator it = this->_sparseGrid->getEdges().begin() ; it != this->_sparseGrid->getEdges().end(); ++it)
         {
-            sofa::simulation::tree::getSimulation()->DrawUtility.drawCylinder( x[(*it)[0]], x[(*it)[1]], _drawSize.getValue(), colour );
+            sofa::simulation::getSimulation()->DrawUtility.drawCylinder( x[(*it)[0]], x[(*it)[1]], _drawSize.getValue(), colour );
         }
 
-        sofa::simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+        sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(false);
     }
     else
     {
         std::vector< Vector3 > points;
 
-        sofa::simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+        sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(false);
 
         for( SparseGridTopology::SeqEdges::const_iterator it = this->_sparseGrid->getEdges().begin() ; it != this->_sparseGrid->getEdges().end(); ++it)
         {
             points.push_back( x[(*it)[0]] );
             points.push_back( x[(*it)[1]] );
         }
-        simulation::tree::getSimulation()->DrawUtility.drawLines(points, _drawSize.getValue(),colour);
+        simulation::getSimulation()->DrawUtility.drawLines(points, _drawSize.getValue(),colour);
     }
 
 
@@ -2679,7 +2679,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::draw()
 
         std::vector< Vector3 > points;
         for(unsigned i=0; i<x.size(); ++i) points.push_back( x[i] );
-        simulation::tree::getSimulation()->DrawUtility.drawSpheres(points, _drawSize.getValue()*1.5f,colour);
+        simulation::getSimulation()->DrawUtility.drawSpheres(points, _drawSize.getValue()*1.5f,colour);
     }
 
 
@@ -2801,7 +2801,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::draw()
             points.push_back(pf);
 
         }
-        simulation::tree::getSimulation()->DrawUtility.drawTriangles(points, colour);
+        simulation::getSimulation()->DrawUtility.drawTriangles(points, colour);
     }
 
 }

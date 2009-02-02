@@ -35,7 +35,7 @@
 #include <algorithm>
 #include <sofa/helper/gl/template.h>
 
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 
 #define DYNAMIC_CONE_ANGLE_COMPUTATION
 
@@ -870,7 +870,7 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ)
 
     Vector3 pt = p.p();
 
-    sofa::simulation::tree::GNode* node = dynamic_cast<sofa::simulation::tree::GNode*>(p.getCollisionModel()->getContext());
+    sofa::simulation::Node* node = dynamic_cast<sofa::simulation::Node*>(p.getCollisionModel()->getContext());
     if ( !(node->get< LineModel >()) )
         return true;
 

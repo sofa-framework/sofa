@@ -27,7 +27,7 @@
 #define SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_INL
 
 #include <sofa/component/mapping/ArticulatedSystemMapping.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/helper/gl/template.h>
 
@@ -678,8 +678,8 @@ void ArticulatedSystemMapping<BasicMapping>::draw()
         }
     }
 
-    simulation::tree::getSimulation()->DrawUtility.drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
-    simulation::tree::getSimulation()->DrawUtility.drawLines(pointsLine, 1, Vec<4,float>(0,0,1,1));
+    simulation::getSimulation()->DrawUtility.drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+    simulation::getSimulation()->DrawUtility.drawLines(pointsLine, 1, Vec<4,float>(0,0,1,1));
 
 
 

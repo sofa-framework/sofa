@@ -28,7 +28,7 @@
 #include <sofa/core/componentmodel/behavior/ForceField.inl>
 #include <sofa/component/forcefield/TetrahedronFEMForceField.h>
 #include <sofa/component/topology/GridTopology.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/PolarDecompose.h>
 #include <sofa/helper/gl/template.h>
 #include <assert.h>
@@ -1339,7 +1339,7 @@ void TetrahedronFEMForceField<DataTypes>::draw()
     const VecCoord& x = *this->mstate->getX();
 
     if (getContext()->getShowWireFrame())
-        simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,true);
+        simulation::getSimulation()->DrawUtility.setPolygonMode(0,true);
 
 
     std::vector< Vector3 > points[4];
@@ -1381,13 +1381,13 @@ void TetrahedronFEMForceField<DataTypes>::draw()
         points[3].push_back(pb);
     }
 
-    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[0], Vec<4,float>(0.0,0.0,1.0,1.0));
-    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[1], Vec<4,float>(0.0,0.5,1.0,1.0));
-    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[2], Vec<4,float>(0.0,1.0,1.0,1.0));
-    simulation::tree::getSimulation()->DrawUtility.drawTriangles(points[3], Vec<4,float>(0.5,1.0,1.0,1.0));
+    simulation::getSimulation()->DrawUtility.drawTriangles(points[0], Vec<4,float>(0.0,0.0,1.0,1.0));
+    simulation::getSimulation()->DrawUtility.drawTriangles(points[1], Vec<4,float>(0.0,0.5,1.0,1.0));
+    simulation::getSimulation()->DrawUtility.drawTriangles(points[2], Vec<4,float>(0.0,1.0,1.0,1.0));
+    simulation::getSimulation()->DrawUtility.drawTriangles(points[3], Vec<4,float>(0.5,1.0,1.0,1.0));
 
     if (getContext()->getShowWireFrame())
-        simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,false);
+        simulation::getSimulation()->DrawUtility.setPolygonMode(0,false);
 
     ////////////// AFFICHAGE DES ROTATIONS ////////////////////////
     if (getContext()->getShowNormals())
@@ -1422,9 +1422,9 @@ void TetrahedronFEMForceField<DataTypes>::draw()
             points[2].push_back(b);
         }
 
-        simulation::tree::getSimulation()->DrawUtility.drawLines(points[0], 5, Vec<4,float>(1,0,0,1));
-        simulation::tree::getSimulation()->DrawUtility.drawLines(points[1], 5, Vec<4,float>(0,1,0,1));
-        simulation::tree::getSimulation()->DrawUtility.drawLines(points[2], 5, Vec<4,float>(0,0,1,1));
+        simulation::getSimulation()->DrawUtility.drawLines(points[0], 5, Vec<4,float>(1,0,0,1));
+        simulation::getSimulation()->DrawUtility.drawLines(points[1], 5, Vec<4,float>(0,1,0,1));
+        simulation::getSimulation()->DrawUtility.drawLines(points[2], 5, Vec<4,float>(0,0,1,1));
 
     }
 }

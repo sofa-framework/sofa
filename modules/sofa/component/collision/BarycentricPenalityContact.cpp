@@ -34,7 +34,7 @@ namespace collision
 {
 
 using namespace defaulttype;
-using simulation::tree::GNode;
+using simulation::Node;
 
 SOFA_DECL_CLASS(BarycentricPenalityContact)
 

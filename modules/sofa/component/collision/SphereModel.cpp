@@ -39,7 +39,7 @@
 #include <sofa/helper/system/glut.h>
 
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 
 namespace sofa
 {
@@ -153,9 +153,9 @@ void SphereModel::draw()
             radius.push_back(t.r());
         }
 
-        sofa::simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true); //Enable lightning
-        simulation::tree::getSimulation()->DrawUtility.drawSpheres(points, radius, Vec<4,float>(getColor4f()));
-        sofa::simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false); //Disable lightning
+        sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(true); //Enable lightning
+        simulation::getSimulation()->DrawUtility.drawSpheres(points, radius, Vec<4,float>(getColor4f()));
+        sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(false); //Disable lightning
 
         glDisable(GL_LIGHTING);
         glDisable(GL_COLOR_MATERIAL);

@@ -28,6 +28,7 @@
 
 #include <sofa/component/container/ArticulatedHierarchyContainer.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/simulation/common/Simulation.h>
 
 namespace sofa
 {
@@ -92,7 +93,7 @@ ArticulatedHierarchyContainer::ArticulatedHierarchyContainer():
 }
 
 
-void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::io::bvh::BVHJoint* bvhjoint, int id_buf, const char* name, simulation::tree::GNode* node)
+void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::io::bvh::BVHJoint* bvhjoint, int id_buf, const char* name, simulation::Node* node)
 {
     std::vector<sofa::helper::io::bvh::BVHJoint*> jointChildren = bvhjoint->getChildren();
     if (jointChildren.size()==0)
@@ -102,7 +103,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
     str.append("/");
     str.append(bvhjoint->getName());
 
-    simulation::tree::GNode* nodeOfArticulationCenters = new simulation::tree::GNode(str);
+    simulation::Node* nodeOfArticulationCenters = simulation::getSimulation()->newNode(str);
     node->addChild(nodeOfArticulationCenters);
 
     ArticulationCenter* ac = new ArticulationCenter();
@@ -114,7 +115,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
     ac->parentIndex.setValue(id_buf);
     ac->childIndex.setValue(bvhjoint->getId()+1);
 
-    simulation::tree::GNode* nodeOfArticulations = new simulation::tree::GNode("articulations");
+    simulation::Node* nodeOfArticulations = simulation::getSimulation()->newNode("articulations");
     nodeOfArticulationCenters->addChild(nodeOfArticulations);
 
     sofa::helper::io::bvh::BVHChannels* channels = bvhjoint->getChannels();
@@ -220,7 +221,7 @@ void ArticulatedHierarchyContainer::init ()
 
     if (joint != NULL)
     {
-        simulation::tree::GNode* articulationCenters = new simulation::tree::GNode("ArticulationCenters");
+        simulation::Node* articulationCenters = simulation::getSimulation()->newNode("ArticulationCenters");
         context->addChild(articulationCenters);
 
         buildCenterArticulationsTree(joint, 0, "Root", articulationCenters);

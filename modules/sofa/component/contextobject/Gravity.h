@@ -34,10 +34,7 @@ namespace sofa
 
 namespace simulation
 {
-namespace tree
-{
-class GNode;
-}
+class Node;
 }
 
 namespace component
@@ -56,7 +53,7 @@ public:
 
     Data<Vector3> f_gravity; ///< Gravity in the world coordinate system
 
-    /// Modify the context of the GNode
+    /// Modify the context of the Node
     void apply();
 };
 

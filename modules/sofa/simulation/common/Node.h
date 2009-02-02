@@ -328,6 +328,15 @@ public:
     /// @{
 
 
+    /// Add a child node
+    virtual void addChild(Node* node);
+
+    /// Remove a child node
+    virtual void removeChild(Node* node);
+
+    /// Move a node from another node
+    virtual void moveChild(Node* obj);
+
     /// Add an object and return this. Detect the implemented interfaces and add the object to the corresponding lists.
     virtual bool addObject(core::objectmodel::BaseObject* obj);
 

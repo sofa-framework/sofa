@@ -28,7 +28,7 @@
 #include <sofa/core/componentmodel/collision/BroadPhaseDetection.h>
 #include <sofa/component/collision/NarrowPhaseDetection.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <vector>
 
 
@@ -74,8 +74,8 @@ private:
     bool bDraw;
     Vector3 minVect, maxVect, step;
     void posToIdx (const Vector3& pos, Vector3 &indices);
-    simulation::tree::GNode* timeLogger;
-    simulation::tree::GNode::ctime_t timeInter;
+    simulation::Node* timeLogger;
+    simulation::Node::ctime_t timeInter;
     friend class GridCell;
 public:
     VoxelGrid (Vector3 minVect = Vector3(-20.0, -20.0, -20.0), Vector3 maxVect = Vector3(-20.0, -20.0, -20.0), Vector3 nbSubdivision = Vector3(5.0, 5.0, 5.0), bool draw=false)

@@ -29,7 +29,7 @@
 #include <sofa/core/componentmodel/behavior/Constraint.inl>
 #include <sofa/component/constraint/FixedConstraint.h>
 #include <sofa/component/topology/PointSubset.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
@@ -253,7 +253,7 @@ void FixedConstraint<DataTypes>::draw()
                 for (unsigned int s=0; s<sizePoints; ++s) point[s] = x[*it][s];
                 points.push_back(point);
             }
-        simulation::tree::getSimulation()->DrawUtility.drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+        simulation::getSimulation()->DrawUtility.drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
     }
     else // new drawing by spheres
     {
@@ -275,7 +275,7 @@ void FixedConstraint<DataTypes>::draw()
                 for (unsigned int s=0; s<sizePoints; ++s) point[s] = x[*it][s];
                 points.push_back(point);
             }
-        simulation::tree::getSimulation()->DrawUtility.drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
+        simulation::getSimulation()->DrawUtility.drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
 
     }
 

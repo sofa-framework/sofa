@@ -36,7 +36,7 @@
 #include <sofa/component/linearsolver/CGLinearSolver.h>
 // #include <string.h>
 #include <sofa/simulation/tree/GNode.h>
-
+#include <sofa/simulation/common/Simulation.h>
 
 namespace sofa
 {
@@ -81,38 +81,37 @@ DefaultCollisionGroupManager::~DefaultCollisionGroupManager()
 {
 }
 
-simulation::tree::GNode* DefaultCollisionGroupManager::buildCollisionGroup()
+simulation::Node* DefaultCollisionGroupManager::buildCollisionGroup()
 {
-    return new simulation::tree::GNode;
+    return simulation::getSimulation()->newNode("CollisionGroup");
 }
 
 void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<Contact*>& contacts)
 {
     int groupIndex = 1;
-    simulation::tree::GNode* groot = dynamic_cast<simulation::tree::GNode*>(scene);
-    if (groot==NULL)
+    simulation::Node* node = dynamic_cast<simulation::Node*>(scene);
+    if (node==NULL)
     {
         serr << "DefaultCollisionGroupManager only support graph-based scenes."<<sendl;
         return;
     }
 
-    simulation::tree::GNode* node = groot;
     if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
-    simulation::tree::GNode::ctime_t t0 = 0;
+    simulation::Node::ctime_t t0 = 0;
 
     if (node) t0 = node->startTime();
 
     // Map storing group merging history
-    std::map<simulation::tree::GNode*, simulation::tree::GNode*> mergedGroups;
-    sofa::helper::vector<simulation::tree::GNode*> contactGroup;
-    sofa::helper::vector<simulation::tree::GNode*> removedGroup;
+    std::map<simulation::Node*, simulation::Node*> mergedGroups;
+    sofa::helper::vector<simulation::Node*> contactGroup;
+    sofa::helper::vector<simulation::Node*> removedGroup;
     contactGroup.reserve(contacts.size());
     for(sofa::helper::vector<Contact*>::const_iterator cit = contacts.begin(); cit != contacts.end(); cit++)
     {
         Contact* contact = *cit;
         simulation::tree::GNode* group1 = getIntegrationNode(contact->getCollisionModels().first);
         simulation::tree::GNode* group2 = getIntegrationNode(contact->getCollisionModels().second);
-        simulation::tree::GNode* group = NULL;
+        simulation::Node* group = NULL;
         if (group1==NULL || group2==NULL)
         {
         }
@@ -144,8 +143,8 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                     group->copyVisualContext( (*current_context));
 
                     group->updateSimulationContext();
-                    group->moveChild(group1);
-                    group->moveChild(group2);
+                    group->moveChild((simulation::Node*)group1);
+                    group->moveChild((simulation::Node*)group2);
                     groupSet.insert(group);
                 }
                 else if (group1IsColl)
@@ -173,7 +172,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                             group->moveObject(*group2->object.begin());
                         while(!group2->child.empty())
                             group->moveChild(*group2->child.begin());
-                        parent->removeChild(group2);
+                        parent->removeChild((simulation::Node*)group2);
                         groupSet.erase(group2);
                         mergedGroups[group2] = group;
                         delete solver2.first;
@@ -215,7 +214,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     for(unsigned int i=0; i<contacts.size(); i++)
     {
         Contact* contact = contacts[i];
-        simulation::tree::GNode* group = contactGroup[i];
+        simulation::Node* group = contactGroup[i];
         while (group!=NULL && mergedGroups.find(group)!=mergedGroups.end())
             group = mergedGroups[group];
         if (group!=NULL)
@@ -227,13 +226,13 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     if (node) t0 = node->endTime(t0, "collision/contacts", this);
 
     // delete removed groups
-    for (sofa::helper::vector<simulation::tree::GNode*>::iterator it = removedGroup.begin(); it!=removedGroup.end(); ++it)
+    for (sofa::helper::vector<simulation::Node*>::iterator it = removedGroup.begin(); it!=removedGroup.end(); ++it)
         delete *it;
     removedGroup.clear();
 
     // finally recreate group vector
     groups.clear();
-    for (std::set<simulation::tree::GNode*>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
+    for (std::set<simulation::Node*>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
         groups.push_back(*it);
     //if (!groups.empty())
     //	sout << groups.size()<<" collision groups created."<<sendl;
@@ -241,20 +240,23 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
 
 void DefaultCollisionGroupManager::clearGroups(core::objectmodel::BaseContext* /*scene*/)
 {
-    for (std::set<simulation::tree::GNode*>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
+    for (std::set<simulation::Node*>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
     {
-        simulation::tree::GNode* group = *it;
-        simulation::tree::GNode* parent = group->parent;
-        while(!group->child.empty())
-            parent->moveChild(*group->child.begin());
-        while(!group->object.empty())
+        simulation::tree::GNode* group = dynamic_cast<simulation::tree::GNode*>(*it);
+        if (group)
         {
-            core::objectmodel::BaseObject* obj = *group->object.begin();
-            group->removeObject(obj);
-            delete obj;
+            simulation::tree::GNode* parent = group->parent;
+            while(!group->child.empty())
+                parent->moveChild(*group->child.begin());
+            while(!group->object.empty())
+            {
+                core::objectmodel::BaseObject* obj = *group->object.begin();
+                group->removeObject(obj);
+                delete obj;
+            }
+            parent->removeChild((simulation::Node*)group);
+            delete group;
         }
-        parent->removeChild(group);
-        delete group;
     }
 
     groupSet.clear();

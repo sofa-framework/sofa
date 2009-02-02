@@ -34,7 +34,7 @@
 #include <sofa/component/topology/PointData.inl>
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/component/mass/AddMToMatrixFunctor.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 
 namespace sofa
 {
@@ -623,7 +623,7 @@ void DiagonalMass<DataTypes, MassType>::draw()
         gravityCenter += x[i]*masses[i];
         totalMass += masses[i];
     }
-    simulation::tree::getSimulation()->DrawUtility.drawPoints(points, 2, Vec<4,float>(1,1,1,1));
+    simulation::getSimulation()->DrawUtility.drawPoints(points, 2, Vec<4,float>(1,1,1,1));
 
     if(showCenterOfGravity.getValue())
     {

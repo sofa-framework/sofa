@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_CENTEROFMASSMAPPING_INL
 
 #include <sofa/component/mapping/CenterOfMassMapping.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/gl/template.h>
@@ -153,7 +153,7 @@ void CenterOfMassMapping<BasicMapping>::draw()
         points.push_back(point1);
         points.push_back(point2);
     }
-    simulation::tree::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(1,1,0,1));
+    simulation::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(1,1,0,1));
 
 }
 

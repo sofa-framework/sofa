@@ -22,62 +22,60 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_CONSTRAINT_ATTACHCONSTRAINT_CPP
-#include <sofa/component/constraint/AttachConstraint.inl>
-#include <sofa/core/componentmodel/behavior/PairInteractionConstraint.inl>
-#include <sofa/core/ObjectFactory.h>
+#ifndef SOFA_SIMULATION_TREE_TREESIMULATION_H
+#define SOFA_SIMULATION_TREE_TREESIMULATION_H
 
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/component/mass/UniformMass.h>
+#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/tree/xml/XML.h>
 
 namespace sofa
 {
 
-namespace component
+namespace simulation
 {
 
-namespace constraint
+namespace tree
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
+/** Main controller of the scene.
+Defines how the scene is inited at the beginning, and updated at each time step.
+Derives from BaseObject in order to model the parameters as Datas, which makes their edition easy in the GUI.
+*/
+class SOFA_SIMULATION_TREE_API TreeSimulation: public sofa::simulation::Simulation
+{
+private:
+    ///load a scene from memory (typically : an xml into a string)
+    static Node* loadFromMemory ( const char *filename, const char *data, unsigned int size );
+    ///load a scene from a file
+    static Node* loadFromFile ( const char *filename );
+    ///generic function to process xml tree (after loading the xml structure from the 2 previous functions)
+    static Node* processXML(xml::BaseElement* xml, const char *filename);
+public:
+    /** Load a scene from a file.
+    This file can be a xml file or a script file which will generate a xml tree.
+    */
 
-SOFA_DECL_CLASS(AttachConstraint)
+    Node* load(const char* filename);
 
-int AttachConstraintClass = core::RegisterObject("Attach given pair of particles, projecting the positions of the second particles to the first ones")
-#ifndef SOFA_FLOAT
-        .add< AttachConstraint<Vec3dTypes> >()
-        .add< AttachConstraint<Vec2dTypes> >()
-        .add< AttachConstraint<Vec1dTypes> >()
-        .add< AttachConstraint<Rigid3dTypes> >()
-        .add< AttachConstraint<Rigid2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< AttachConstraint<Vec3fTypes> >()
-        .add< AttachConstraint<Vec2fTypes> >()
-        .add< AttachConstraint<Vec1fTypes> >()
-        .add< AttachConstraint<Rigid3fTypes> >()
-        .add< AttachConstraint<Rigid2fTypes> >()
-#endif
-        ;
+    /// Delete a scene from memory. After this call the pointer is invalid
+    void unload(Node* root);
 
-#ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Vec3dTypes>;
-template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Vec2dTypes>;
-template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Vec1dTypes>;
-template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Rigid3dTypes>;
-template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Vec3fTypes>;
-template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Vec2fTypes>;
-template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Vec1fTypes>;
-template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Rigid3fTypes>;
-template class SOFA_COMPONENT_CONSTRAINT_API AttachConstraint<Rigid2fTypes>;
-#endif
-} // namespace constraint
+    /// Create a new Node of the simulation
+    Node* newNode(const std::string& name);
 
-} // namespace component
+
+};
+
+/** Get the (unique) simulation which controls the scene.
+Automatically creates one if no Simulation has been set.
+*/
+SOFA_SIMULATION_TREE_API Simulation* getSimulation();
+} // namespace tree
+
+} // namespace simulation
 
 } // namespace sofa
 
+#endif

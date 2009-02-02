@@ -36,7 +36,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/Mapping.h>
 #include <sofa/core/componentmodel/behavior/MappedModel.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <string.h>
 #include <iostream>
 
@@ -618,7 +618,7 @@ void RigidMapping<BasicMapping>::draw()
         for (unsigned int s=0; s<sizePoints; ++s) point[s] = x[i][s];
         points.push_back(point);
     }
-    simulation::tree::getSimulation()->DrawUtility.drawPoints(points, 7, Vec<4,float>(1,1,0,1));
+    simulation::getSimulation()->DrawUtility.drawPoints(points, 7, Vec<4,float>(1,1,0,1));
 }
 
 } // namespace mapping

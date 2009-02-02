@@ -49,10 +49,10 @@ namespace behavior
 class SOFA_CORE_API BaseLMConstraint: public virtual core::objectmodel::BaseObject
 {
 public:
-    ///Description of the nature of the constraint
+    /// Description of the nature of the constraint
     enum ConstId {POS,VEL,ACC};
 
-    ///Right hand term creation.
+    /// Right hand term creation.
     enum ValueId
     {
         FINAL      ///Desired value of the constraint
@@ -102,11 +102,11 @@ public:
             t     = typeValue[i];
         }
 
-        ///Retrieves only the indices in the VecConst for a given constraint of the group
+        /// Retrieves only the indices in the VecConst for a given constraint of the group
         void   getIndices          (const unsigned int entry, unsigned int &i0, unsigned int &i1) const {i0=index[0][entry]; i1=index[1][entry];}
-        ///Retrieves only the value needed to compute the right hand term for a specific constraint of the group
+        /// Retrieves only the value needed to compute the right hand term for a specific constraint of the group
         double getExpectedValue    (const unsigned int entry) const {return expectedValue[entry];}
-        ///Retrieves only the way to compute the right hand term for a specific cosntraint of the group
+        /// Retrieves only the way to compute the right hand term for a specific cosntraint of the group
         double getExpectedValueType(const unsigned int entry) const {return typeValue[entry];}
 
         ///Retrieves all the indices in the VecConst for the first object

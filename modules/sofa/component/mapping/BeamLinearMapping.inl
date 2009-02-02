@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_INL
 
 #include <sofa/component/mapping/BeamLinearMapping.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/io/MassSpringLoader.h>
@@ -236,7 +236,7 @@ void BeamLinearMapping<BasicMapping>::draw()
         for (unsigned int s=0; s<sizePoints; ++s) point[s] = x[i][s];
         points.push_back(point);
     }
-    simulation::tree::getSimulation()->DrawUtility.drawPoints(points, 7, Vec<4,float>(1,1,0,1));
+    simulation::getSimulation()->DrawUtility.drawPoints(points, 7, Vec<4,float>(1,1,0,1));
 
 }
 

@@ -173,7 +173,7 @@ void MechanicalStateController<Vec1dTypes>::applyController()
 
 
 
-    //	//sofa::simulation::tree::GNode *node = static_cast<sofa::simulation::tree::GNode*> (this->getContext());
+    //	//sofa::simulation::Node *node = static_cast<sofa::simulation::Node*> (this->getContext());
     //	//sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
     //	//sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
     //}
@@ -267,7 +267,7 @@ void MechanicalStateController<Vec1fTypes>::applyController()
 
 
 
-    //	//sofa::simulation::tree::GNode *node = static_cast<sofa::simulation::tree::GNode*> (this->getContext());
+    //	//sofa::simulation::Node *node = static_cast<sofa::simulation::Node*> (this->getContext());
     //	//sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
     //	//sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
     //}

@@ -5,6 +5,7 @@
 #include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/SolveVisitor.h>
+#include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
 
 #include <sofa/helper/LCPcalc.h>
 
@@ -65,7 +66,7 @@ void MasterConstraintSolver::step ( double dt )
     bool debug =this->f_printLog.getValue();
     if (debug)
         serr<<"MasterConstraintSolver::step is called"<<sendl;
-    simulation::tree::GNode *context = dynamic_cast<simulation::tree::GNode *>(this->getContext()); // access to current node
+    simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
 
 
     if (doCollisionsFirst.getValue())
@@ -86,23 +87,13 @@ void MasterConstraintSolver::step ( double dt )
 
     // Update the BehaviorModels
     // Required to allow the RayPickInteractor interaction
-    for (simulation::tree::GNode::ChildIterator it = context->child.begin(); it != context->child.end(); ++it)
-    {
-        for (unsigned i=0; i<(*it)->behaviorModel.size(); i++)
-            (*it)->behaviorModel[i]->updatePosition(dt);
-    }
+    simulation::BehaviorUpdatePositionVisitor(dt).execute(context);
     if (debug)
         serr<<"Free Motion is called"<<sendl;
 
     ///////////////////////////////////////////// FREE MOTION /////////////////////////////////////////////////////////////
-    simulation::MechanicalBeginIntegrationVisitor beginVisitor(dt);
-    context->execute(&beginVisitor);
-    for (simulation::tree::GNode::ChildIterator it = context->child.begin(); it != context->child.end(); ++it)
-    {
-        for (unsigned i=0; i<(*it)->solver.size(); i++)
-            (*it)->solver[i]->solve(dt, core::componentmodel::behavior::BaseMechanicalState::VecId::freePosition(), core::componentmodel::behavior::BaseMechanicalState::VecId::freeVelocity());
-    }
-
+    simulation::MechanicalBeginIntegrationVisitor(dt).execute(context);
+    simulation::SolveVisitor(dt, true).execute(context);
     simulation::MechanicalPropagateFreePositionVisitor().execute(context);
 
     core::componentmodel::behavior::BaseMechanicalState::VecId dx_id = core::componentmodel::behavior::BaseMechanicalState::VecId::dx();

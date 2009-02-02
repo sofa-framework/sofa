@@ -171,6 +171,7 @@ void Mass<DataTypes>::buildSystemMatrix(defaulttype::BaseMatrix &invM_Jtrans , d
                             v[d]*factor[system]*FixedPoints.element(dof)*invMassElement);
                 }
 
+
                 //Accumulating A=J.M^-1.J^T
                 for (unsigned int system2=0; system2<constraintId.size(); ++system2)
                 {

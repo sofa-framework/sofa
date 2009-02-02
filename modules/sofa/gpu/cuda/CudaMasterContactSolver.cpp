@@ -262,7 +262,7 @@ template<class real>
 void CudaMasterContactSolver<real>::step(double dt)
 {
 
-    context = dynamic_cast<simulation::tree::GNode *>(this->getContext()); // access to current node
+    context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
 #ifdef DISPLAY_TIME
     CTime *timer;
     double time = 0.0;
