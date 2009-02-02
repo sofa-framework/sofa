@@ -196,7 +196,9 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
     updateLameCoefficients();
 
     /// prepare to store info in the triangle array
-    triangleInfo.resize(_topology->getNbTriangles());
+    helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::TriangleRestInformation>& triangleInf = *(triangleInfo.beginEdit());
+
+    triangleInf.resize(_topology->getNbTriangles());
     /// prepare to store info in the edge array
     helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
@@ -217,7 +219,7 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
     }
     for (i=0; i<_topology->getNbTriangles(); ++i)
     {
-        TRBSTriangleCreationFunction(i, (void*) this, triangleInfo[i],
+        TRBSTriangleCreationFunction(i, (void*) this, triangleInf[i],
                 _topology->getTriangle(i),  (const sofa::helper::vector< unsigned int > )0,
                 (const sofa::helper::vector< double >)0);
     }
@@ -231,6 +233,7 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
     triangleInfo.setDestroyParameter( (void *) this );
 
     edgeInfo.endEdit();
+    triangleInfo.endEdit();
 }
 
 
@@ -250,6 +253,8 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(VecDeriv& f, co
     Real val,L;
     TriangleRestInformation *tinfo;
     EdgeRestInformation *einfo;
+
+    helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::TriangleRestInformation>& triangleInf = *(triangleInfo.beginEdit());
 
     helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
@@ -279,7 +284,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(VecDeriv& f, co
     {
         for(int i=0; i<nbTriangles; i++ )
         {
-            tinfo=&triangleInfo[i];
+            tinfo=&triangleInf[i];
             /// describe the jth edge index of triangle no i
             const TriangleEdges &tea= _topology->getEdgeTriangleShell(i);
             /// describe the jth vertex index of triangle no i
@@ -300,6 +305,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(VecDeriv& f, co
 
     }
     edgeInfo.endEdit();
+    triangleInfo.endEdit();
     updateMatrix=true;
 }
 
@@ -321,6 +327,8 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, 
 
     Deriv deltax,res;
 
+    helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::TriangleRestInformation>& triangleInf = *(triangleInfo.beginEdit());
+
     helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
 
@@ -334,7 +342,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, 
         updateMatrix=false;
         for(int l=0; l<nbTriangles; l++ )
         {
-            tinfo=&triangleInfo[l];
+            tinfo=&triangleInf[l];
             /// describe the jth edge index of triangle no i
             const TriangleEdges &tea= _topology->getEdgeTriangleShell(l);
             /// describe the jth vertex index of triangle no i
@@ -399,7 +407,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, 
 
     for(int l=0; l<nbTriangles; l++ )
     {
-        tinfo=&triangleInfo[l];
+        tinfo=&triangleInf[l];
         /// describe the jth vertex index of triangle no l
         const Triangle &ta= _topology->getTriangle(l);
 
@@ -415,6 +423,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, 
         }
     }
     edgeInfo.endEdit();
+    triangleInfo.endEdit();
 }
 
 

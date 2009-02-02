@@ -117,6 +117,18 @@ protected:
         Coord principalStrainDirection;
         Real maxStrain;
         TriangleInformation() { }
+
+        /// Output stream
+        inline friend std::ostream& operator<< ( std::ostream& os, const TriangleInformation& /*ti*/ )
+        {
+            return os;
+        }
+
+        /// Input stream
+        inline friend std::istream& operator>> ( std::istream& in, TriangleInformation& /*ti*/ )
+        {
+            return in;
+        }
     };
 
     class EdgeInformation

@@ -116,6 +116,17 @@ protected:
         TriangleRestInformation()
         {
         }
+        /// Output stream
+        inline friend std::ostream& operator<< ( std::ostream& os, const TriangleRestInformation& /*tri*/ )
+        {
+            return os;
+        }
+
+        /// Input stream
+        inline friend std::istream& operator>> ( std::istream& in, TriangleRestInformation& /*vec*/ )
+        {
+            return in;
+        }
     };
 
     TriangleData<TriangleRestInformation> triangleInfo;

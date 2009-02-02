@@ -66,9 +66,8 @@ void Mesh2PointMechanicalMapping<BaseMapping>::apply( typename Out::VecCoord& ou
     if (!topoMap) return;
 
     const topology::PointData< sofa::helper::vector<int> >& pointMap = topoMap->getPointsMappedFromPoint();
-//	const topology::EdgeData< sofa::helper::vector<int> >& edgeMap = topoMap->getPointsMappedFromEdge();
     const sofa::helper::vector< sofa::helper::vector<int> >& edgeMap = topoMap->getPointsMappedFromEdge();
-    const topology::TriangleData< sofa::helper::vector<int> >& triangleMap = topoMap->getPointsMappedFromTriangle();
+    const sofa::helper::vector< sofa::helper::vector<int> >& triangleMap = topoMap->getPointsMappedFromTriangle();
     const topology::QuadData< sofa::helper::vector<int> >& quadMap = topoMap->getPointsMappedFromQuad();
     const topology::TetrahedronData< sofa::helper::vector<int> >& tetraMap = topoMap->getPointsMappedFromTetra();
     const topology::HexahedronData< sofa::helper::vector<int> >& hexaMap = topoMap->getPointsMappedFromHexa();
@@ -171,7 +170,7 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJ( typename Out::VecDeriv& o
 
     const topology::PointData< sofa::helper::vector<int> >& pointMap = topoMap->getPointsMappedFromPoint();
     const sofa::helper::vector< sofa::helper::vector<int> >& edgeMap = topoMap->getPointsMappedFromEdge();
-    const topology::TriangleData< sofa::helper::vector<int> >& triangleMap = topoMap->getPointsMappedFromTriangle();
+    const sofa::helper::vector< sofa::helper::vector<int> >& triangleMap = topoMap->getPointsMappedFromTriangle();
     const topology::QuadData< sofa::helper::vector<int> >& quadMap = topoMap->getPointsMappedFromQuad();
     const topology::TetrahedronData< sofa::helper::vector<int> >& tetraMap = topoMap->getPointsMappedFromTetra();
     const topology::HexahedronData< sofa::helper::vector<int> >& hexaMap = topoMap->getPointsMappedFromHexa();
@@ -274,7 +273,7 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecDeriv& o
 
     const topology::PointData< sofa::helper::vector<int> >& pointMap = topoMap->getPointsMappedFromPoint();
     const sofa::helper::vector< sofa::helper::vector<int> >& edgeMap = topoMap->getPointsMappedFromEdge();
-    const topology::TriangleData< sofa::helper::vector<int> >& triangleMap = topoMap->getPointsMappedFromTriangle();
+    const sofa::helper::vector< sofa::helper::vector<int> >& triangleMap = topoMap->getPointsMappedFromTriangle();
     const topology::QuadData< sofa::helper::vector<int> >& quadMap = topoMap->getPointsMappedFromQuad();
     const topology::TetrahedronData< sofa::helper::vector<int> >& tetraMap = topoMap->getPointsMappedFromTetra();
     const topology::HexahedronData< sofa::helper::vector<int> >& hexaMap = topoMap->getPointsMappedFromHexa();

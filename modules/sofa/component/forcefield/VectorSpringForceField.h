@@ -166,7 +166,7 @@ public:
 
     void clear(int reserve=0)
     {
-        helper::vector<Spring> springArrayData = *(springArray.beginEdit());
+        helper::vector<Spring>& springArrayData = *(springArray.beginEdit());
         springArrayData.clear();
         if (reserve) springArrayData.reserve(reserve);
         springArray.endEdit();
