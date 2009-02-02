@@ -22,15 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_SIMULATION_H
-#define SOFA_SIMULATION_TREE_SIMULATION_H
+#ifndef SOFA_SIMULATION_COMMON_SIMULATION_H
+#define SOFA_SIMULATION_COMMON_SIMULATION_H
 
 #include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/tree/GNode.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/simulation/tree/xml/XML.h>
 #include <sofa/helper/gl/DrawManager.h>
 #include <sofa/helper/gl/VisualParameters.h>
 
@@ -40,30 +35,14 @@ namespace sofa
 namespace simulation
 {
 
-namespace tree
-{
 
 /** Main controller of the scene.
 Defines how the scene is inited at the beginning, and updated at each time step.
 Derives from BaseObject in order to model the parameters as Datas, which makes their edition easy in the GUI.
 */
-class SOFA_SIMULATION_TREE_API Simulation: public virtual sofa::core::objectmodel::BaseObject
+class SOFA_SIMULATION_COMMON_API Simulation: public virtual sofa::core::objectmodel::BaseObject
 {
-private:
-    ///load a scene from memory (typically : an xml into a string)
-    static GNode* loadFromMemory ( const char *filename, const char *data, unsigned int size );
-    ///load a scene from a file
-    static GNode* loadFromFile ( const char *filename );
-    ///generic function to process xml tree (after loading the xml structure from the 2 previous functions)
-    static GNode* processXML(xml::BaseElement* xml, const char *filename);
 public:
-    /** Load a scene from a file.
-    Static method because at this point, the Simulation component is not yet created.
-    If a Simulation component is found in the graph, then it is used.
-    Otherwise, a default Simulation will be created at the first call to method getSimulation()
-    This file can be a xml file or a script file which will generate a xml tree.
-    */
-    static GNode* load(const char* filename);
 
     Simulation();
     virtual ~Simulation();
@@ -104,9 +83,6 @@ public:
     /// Render the scene - Shadows pass
     virtual void drawShadows(Node* root);
 
-    /// Delete a scene from memory. After this call the pointer is invalid
-    virtual void unload(GNode* root);
-
     /// Export a scene to an OBJ 3D Scene
     virtual void exportOBJ(Node* root, const char* filename, bool exportMTL = true);
 
@@ -121,6 +97,15 @@ public:
     /// Dump the current state in gnuplot files
     virtual void exportGnuplot( Node* root, double time );
 
+    /// Load a scene from a file.
+    virtual Node* load(const char* /* filename */)=0;
+    /// Unload a scene from a Node.
+    virtual void unload(Node */* root */)=0;
+
+
+    /// Create a new Node of the simulation
+    virtual Node* newNode(const std::string& name)=0;
+
     /// Number of mechanical steps within an animation step
     Data<unsigned> numMechSteps;
     Data<std::string> gnuplotDirectory;
@@ -129,16 +114,16 @@ public:
     Data< int > instrumentInUse;
 
     sofa::helper::gl::DrawManager DrawUtility;
+    static  Simulation* theSimulation;
 };
 
 /// Set the (unique) simulation which controls the scene
-void SOFA_SIMULATION_TREE_API setSimulation(Simulation*);
+void setSimulation(Simulation* s);
 
 /** Get the (unique) simulation which controls the scene.
 Automatically creates one if no Simulation has been set.
 */
-SOFA_SIMULATION_TREE_API Simulation* getSimulation();
-} // namespace tree
+Simulation* getSimulation();
 
 } // namespace simulation
 

@@ -49,10 +49,7 @@ class Topology;
 }
 namespace simulation
 {
-namespace tree
-{
-class GNode;
-}
+class Node;
 }
 
 namespace component

@@ -26,7 +26,7 @@
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/component/collision/Triangle.h>
 #include <sofa/component/topology/TriangleData.inl>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/ObjectFactory.h>
@@ -37,7 +37,7 @@
 #include <sofa/component/topology/PointSetTopologyChange.h>
 #include <sofa/component/topology/TriangleSetTopologyChange.h>
 
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 
 
 
@@ -559,7 +559,7 @@ void TriangleModel::draw()
     if (getContext()->getShowCollisionModels())
     {
         if (getContext()->getShowWireFrame())
-            simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,true);
+            simulation::getSimulation()->DrawUtility.setPolygonMode(0,true);
 
         std::vector< Vector3 > points;
         std::vector< Vec<3,int> > indices;
@@ -576,11 +576,11 @@ void TriangleModel::draw()
             index+=3;
         }
 
-        sofa::simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(true);
-        simulation::tree::getSimulation()->DrawUtility.drawTriangles(points, indices, normals, Vec<4,float>(getColor4f()));
-        sofa::simulation::tree::getSimulation()->DrawUtility.setLightingEnabled(false);
+        sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(true);
+        simulation::getSimulation()->DrawUtility.drawTriangles(points, indices, normals, Vec<4,float>(getColor4f()));
+        sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(false);
         if (getContext()->getShowWireFrame())
-            simulation::tree::getSimulation()->DrawUtility.setPolygonMode(0,false);
+            simulation::getSimulation()->DrawUtility.setPolygonMode(0,false);
     }
     if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
         getPrevious()->draw();

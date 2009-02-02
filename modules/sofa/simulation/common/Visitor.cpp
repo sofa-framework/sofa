@@ -27,7 +27,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 
 #ifdef DUMP_VISITOR_INFO
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #endif
 namespace sofa
 {

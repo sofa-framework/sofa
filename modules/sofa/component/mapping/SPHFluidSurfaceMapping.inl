@@ -27,10 +27,10 @@
 
 #include <sofa/component/mapping/SPHFluidSurfaceMapping.h>
 #include <sofa/component/container/SpatialGridContainer.inl>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/core/Mapping.inl>
 #include <sofa/helper/rmath.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/helper/gl/template.h>
 #include <map>
 #include <list>
@@ -53,7 +53,7 @@ template <class In, class Out>
 void SPHFluidSurfaceMapping<In,Out>::init()
 {
     this->Inherit::init();
-    simulation::tree::GNode* node = dynamic_cast<simulation::tree::GNode*>(this->getFrom()->getContext());
+    simulation::Node* node = dynamic_cast<simulation::Node*>(this->getFrom()->getContext());
     if (node)
     {
         //the following line produces a compilation error with GCC 3.3 :(
@@ -382,7 +382,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw()
             }
         }
     }
-    simulation::tree::getSimulation()->DrawUtility.drawPoints(points1, 3, Vec<4,float>(1,1,1,1));
+    simulation::getSimulation()->DrawUtility.drawPoints(points1, 3, Vec<4,float>(1,1,1,1));
 
 
     std::vector< Vector3 > points2;
@@ -391,7 +391,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw()
     {
         points2.push_back(out[i]);
     }
-    simulation::tree::getSimulation()->DrawUtility.drawPoints(points2, 5, Vec<4,float>(0.5,1,0.5,1));
+    simulation::getSimulation()->DrawUtility.drawPoints(points2, 5, Vec<4,float>(0.5,1,0.5,1));
 
 
     std::vector< Vector3 > points3;
@@ -430,7 +430,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw()
             }
         }
     }
-    simulation::tree::getSimulation()->DrawUtility.drawLines(points3, 1, Vec<4,float>(0,1,0,1));
+    simulation::getSimulation()->DrawUtility.drawLines(points3, 1, Vec<4,float>(0,1,0,1));
 }
 
 } // namespace mapping

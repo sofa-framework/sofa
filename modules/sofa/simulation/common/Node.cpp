@@ -54,6 +54,7 @@ namespace sofa
 
 namespace simulation
 {
+using core::objectmodel::BaseNode;
 using core::objectmodel::BaseObject;
 using helper::system::thread::CTime;
 
@@ -107,7 +108,20 @@ void Node::glDraw()
 
 
 
+void Node::addChild(Node* )
+{
+    serr << "addChild NOT IMPLEMENTED\n";
+}
 
+void Node::removeChild(Node* )
+{
+    serr << "removeChild NOT IMPLEMENTED\n";
+}
+
+void Node::moveChild(Node* )
+{
+    serr << "moveChild NOT IMPLEMENTED\n";
+}
 
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
 bool Node::addObject(BaseObject* obj)

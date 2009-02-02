@@ -26,8 +26,8 @@
 #define SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_INL
 
 #include <sofa/component/collision/BarycentricContactMapper.h>
-#include <sofa/simulation/tree/GNode.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <iostream>
 
 namespace sofa
@@ -44,10 +44,10 @@ void BarycentricContactMapper<TCollisionModel,DataTypes>::cleanup()
 {
     if (mapping!=NULL)
     {
-        simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getContext());
+        simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
         if (parent!=NULL)
         {
-            simulation::tree::GNode* child = dynamic_cast<simulation::tree::GNode*>(mapping->getContext());
+            simulation::Node* child = dynamic_cast<simulation::Node*>(mapping->getContext());
             child->removeObject(mapping->getTo());
             child->removeObject(mapping);
             parent->removeChild(child);
@@ -63,13 +63,14 @@ template < class TCollisionModel, class DataTypes >
 typename BarycentricContactMapper<TCollisionModel,DataTypes>::MMechanicalState* BarycentricContactMapper<TCollisionModel,DataTypes>::createMapping(const char* name)
 {
     if (model==NULL) return NULL;
-    simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getContext());
+    simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
     if (parent==NULL)
     {
         std::cerr << "ERROR: BarycentricContactMapper only works for scenegraph scenes.\n";
         return NULL;
     }
-    simulation::tree::GNode* child = new simulation::tree::GNode(name); parent->addChild(child); child->updateSimulationContext();
+    simulation::Node* child = simulation::getSimulation()->newNode(name);
+    parent->addChild(child); child->updateSimulationContext();
     MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
     //mapping = new MMapping(model->getMechanicalState(), mstate, model->getMeshTopology());
     //mapper = mapping->getMapper();
@@ -84,10 +85,10 @@ void IdentityContactMapper<TCollisionModel,DataTypes>::cleanup()
 {
     if (mapping!=NULL)
     {
-        simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getContext());
+        simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
         if (parent!=NULL)
         {
-            simulation::tree::GNode* child = dynamic_cast<simulation::tree::GNode*>(mapping->getContext());
+            simulation::Node* child = dynamic_cast<simulation::Node*>(mapping->getContext());
             child->removeObject(mapping->getTo());
             child->removeObject(mapping);
             parent->removeChild(child);
@@ -102,13 +103,14 @@ template < class TCollisionModel, class DataTypes >
 typename IdentityContactMapper<TCollisionModel,DataTypes>::MMechanicalState* IdentityContactMapper<TCollisionModel,DataTypes>::createMapping(const char* name)
 {
     if (model==NULL) return NULL;
-    simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getContext());
+    simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
     if (parent==NULL)
     {
         std::cerr << "ERROR: IdentityContactMapper only works for scenegraph scenes.\n";
         return NULL;
     }
-    simulation::tree::GNode* child = new simulation::tree::GNode(name); parent->addChild(child); child->updateSimulationContext();
+    simulation::Node* child = simulation::getSimulation()->newNode(name);
+    parent->addChild(child); child->updateSimulationContext();
     MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
     mapping = new MMapping(model->getMechanicalState(), mstate); child->addObject(mapping);
     return mstate;
@@ -119,7 +121,7 @@ void RigidContactMapper<TCollisionModel,DataTypes>::cleanup()
 {
     if (child!=NULL)
     {
-        simulation::tree::getSimulation()->unload(child);
+        simulation::getSimulation()->unload(child);
         child = NULL;
     }
 }
@@ -131,25 +133,27 @@ typename RigidContactMapper<TCollisionModel,DataTypes>::MMechanicalState* RigidC
     InMechanicalState* instate = model->getMechanicalState();
     if (instate!=NULL)
     {
-        simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(instate->getContext());
+        simulation::Node* parent = dynamic_cast<simulation::Node*>(instate->getContext());
         if (parent==NULL)
         {
             std::cerr << "ERROR: RigidContactMapper only works for scenegraph scenes.\n";
             return NULL;
         }
-        child = new simulation::tree::GNode(name); parent->addChild(child); child->updateSimulationContext();
+        child = simulation::getSimulation()->newNode(name);
+        parent->addChild(child); child->updateSimulationContext();
         outmodel = new MMechanicalObject; child->addObject(outmodel);
         mapping = new MMapping(instate, outmodel); child->addObject(mapping);
     }
     else
     {
-        simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getContext());
+        simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
         if (parent==NULL)
         {
             std::cerr << "ERROR: RigidContactMapper only works for scenegraph scenes.\n";
             return NULL;
         }
-        child = new simulation::tree::GNode(name); parent->addChild(child); child->updateSimulationContext();
+        child = simulation::getSimulation()->newNode(name);
+        parent->addChild(child); child->updateSimulationContext();
         outmodel = new MMechanicalObject; child->addObject(outmodel);
         mapping = NULL;
     }
@@ -161,7 +165,7 @@ void SubsetContactMapper<TCollisionModel,DataTypes>::cleanup()
 {
     if (child!=NULL)
     {
-        simulation::tree::getSimulation()->unload(child);
+        simulation::getSimulation()->unload(child);
         child = NULL;
     }
 }
@@ -173,25 +177,27 @@ typename SubsetContactMapper<TCollisionModel,DataTypes>::MMechanicalState* Subse
     InMechanicalState* instate = model->getMechanicalState();
     if (instate!=NULL)
     {
-        simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(instate->getContext());
+        simulation::Node* parent = dynamic_cast<simulation::Node*>(instate->getContext());
         if (parent==NULL)
         {
             std::cerr << "ERROR: SubsetContactMapper only works for scenegraph scenes.\n";
             return NULL;
         }
-        child = new simulation::tree::GNode(name); parent->addChild(child); child->updateSimulationContext();
+        child = simulation::getSimulation()->newNode(name);
+        parent->addChild(child); child->updateSimulationContext();
         outmodel = new MMechanicalObject; child->addObject(outmodel);
         mapping = new MMapping(instate, outmodel); child->addObject(mapping);
     }
     else
     {
-        simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getContext());
+        simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
         if (parent==NULL)
         {
             std::cerr << "ERROR: SubsetContactMapper only works for scenegraph scenes.\n";
             return NULL;
         }
-        child = new simulation::tree::GNode(name); parent->addChild(child); child->updateSimulationContext();
+        child = simulation::getSimulation()->newNode(name);
+        parent->addChild(child); child->updateSimulationContext();
         outmodel = new MMechanicalObject; child->addObject(outmodel);
         mapping = NULL;
     }

@@ -27,7 +27,7 @@
 
 #include "PrecomputedConstraintCorrection.h"
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/component/mass/UniformMass.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 
@@ -693,7 +693,7 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints
     VecConst& constraints = *mstate->getC();
     unsigned int numConstraints = constraints.size();
 
-    simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
+    simulation::Node *node = dynamic_cast<simulation::Node *>(getContext());
 
     sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3dTypes>* forceField = NULL;
     if (node != NULL)
@@ -789,7 +789,7 @@ void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateConstraints
 template<>
 void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateResponse()
 {
-    simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
+    simulation::Node *node = dynamic_cast<simulation::Node *>(getContext());
 
     sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3dTypes>* forceField = NULL;
     if (node != NULL)
@@ -850,7 +850,7 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateConstraints
     VecConst& constraints = *mstate->getC();
     unsigned int numConstraints = constraints.size();
 
-    simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
+    simulation::Node *node = dynamic_cast<simulation::Node *>(getContext());
 
     sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes>* forceField = NULL;
     if (node != NULL)
@@ -943,7 +943,7 @@ void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateConstraints
 template<>
 void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateResponse()
 {
-    simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
+    simulation::Node *node = dynamic_cast<simulation::Node *>(getContext());
 
     sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes>* forceField = NULL;
     if (node != NULL)

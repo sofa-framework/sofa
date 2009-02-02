@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_CONTAINER_IMPLICITSURFACECONTAINER_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/component/component.h>
 
 
@@ -40,7 +40,7 @@ namespace container
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::simulation::tree;
+
 
 ////////////////// ///////////////
 

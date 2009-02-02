@@ -10,7 +10,7 @@ HEADERS += tree.h \
            GNodeVisitor.h \
            MutationListener.h \
            ParallelVisitorScheduler.h \
-           Simulation.h \
+           TreeSimulation.h \
            xml/BaseElement.h \
            xml/Element.h \
            xml/Element.inl \
@@ -27,7 +27,7 @@ SOURCES += DeleteVisitor.cpp \
            GNodeVisitor.cpp \
            MutationListener.cpp \
            ParallelVisitorScheduler.cpp \
-           Simulation.cpp \
+           TreeSimulation.cpp \
            xml/BaseElement.cpp \
 		   xml/initXml.cpp \
            xml/NodeElement.cpp \

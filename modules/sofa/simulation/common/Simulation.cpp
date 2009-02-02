@@ -22,9 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/tree/Simulation.h>
-#include <sofa/helper/system/SetDirectory.h>
-#include <sofa/helper/system/FileRepository.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/PrintVisitor.h>
 #include <sofa/simulation/common/FindByTypeVisitor.h>
 #include <sofa/simulation/common/ExportGnuplotVisitor.h>
@@ -32,12 +30,12 @@
 #include <sofa/simulation/common/InstrumentVisitor.h>
 #include <sofa/simulation/common/AnimateVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/CleanupVisitor.h>
 #include <sofa/simulation/common/CollisionVisitor.h>
 #include <sofa/simulation/common/UpdateContextVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 #include <sofa/simulation/common/ResetVisitor.h>
 #include <sofa/simulation/common/VisualVisitor.h>
-#include <sofa/simulation/tree/DeleteVisitor.h>
 #include <sofa/simulation/common/ExportOBJVisitor.h>
 #include <sofa/simulation/common/WriteStateVisitor.h>
 #include <sofa/simulation/common/XMLPrintVisitor.h>
@@ -47,171 +45,16 @@
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/simulation/common/UpdateMappingEndEvent.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/PipeProcess.h>
-
 #include <fstream>
 #include <string.h>
-#ifndef WIN32
-#include <locale.h>
-#endif
-
 namespace sofa
 {
 
 namespace simulation
 {
 
-namespace tree
-{
 
 using namespace sofa::defaulttype;
-
-/// The (unique) simulation which controls the scene
-Simulation* theSimulation = NULL;
-
-void setSimulation ( Simulation* s )
-{
-    theSimulation = s;
-}
-
-Simulation* getSimulation()
-{
-    if ( theSimulation==NULL )
-        theSimulation = new Simulation;
-    return theSimulation;
-}
-
-/// Load a scene from a file
-GNode* Simulation::processXML(xml::BaseElement* xml, const char *filename)
-{
-    if ( xml==NULL )
-    {
-        return NULL;
-    }
-
-    // We go the the current file's directory so that all relative path are correct
-    helper::system::SetDirectory chdir ( filename );
-
-#ifndef WIN32
-    // Reset local settings to make sure that floating-point values are interpreted correctly
-    setlocale(LC_ALL,"C");
-    setlocale(LC_NUMERIC,"C");
-#endif
-
-// 				std::cout << "Initializing objects"<<std::endl;
-    if ( !xml->init() )
-    {
-        std::cerr << "Objects initialization failed."<<std::endl;
-    }
-
-    GNode* root = dynamic_cast<GNode*> ( xml->getObject() );
-    if ( root == NULL )
-    {
-        std::cerr << "Objects initialization failed."<<std::endl;
-        delete xml;
-        return NULL;
-    }
-
-// 				std::cout << "Initializing simulation "<<root->getName() <<std::endl;
-
-    // Find the Simulation component in the scene
-    FindByTypeVisitor<Simulation> findSimu;
-    findSimu.execute(root);
-    if( !findSimu.found.empty() )
-        setSimulation( findSimu.found[0] );
-    // if no Simulation is found, getSimulation() will automatically create one, of the default type.
-
-    getSimulation()->init ( root );
-
-    // As mappings might be initialized after visual models, it is necessary to update them
-    // BUGFIX (Jeremie A.): disabled as initTexture was not called yet, and the GUI might not even be up yet
-    //root->execute<VisualUpdateVisitor>();
-
-    return root;
-}
-
-/// Load from a string in memory
-GNode* Simulation::loadFromMemory ( const char *filename, const char *data, unsigned int size )
-{
-    //::sofa::simulation::init();
-// 				std::cerr << "Loading simulation XML file "<<filename<<std::endl;
-    xml::BaseElement* xml = xml::loadFromMemory (filename, data, size );
-
-    GNode* root = processXML(xml, filename);
-
-// 				std::cout << "load done."<<std::endl;
-    delete xml;
-
-    return root;
-}
-
-
-/// Load a scene from a file
-GNode* Simulation::loadFromFile ( const char *filename )
-{
-    //::sofa::simulation::init();
-// 				std::cerr << "Loading simulation XML file "<<filename<<std::endl;
-    xml::BaseElement* xml = xml::loadFromFile ( filename );
-
-    GNode* root = processXML(xml, filename);
-
-// 				std::cout << "load done."<<std::endl;
-    delete xml;
-
-    return root;
-}
-
-/// Load a scene
-GNode* Simulation::load ( const char *filename )
-{
-    std::string ext = sofa::helper::system::SetDirectory::GetExtension(filename);
-    if (ext == "php" || ext == "pscn")
-    {
-        std::string out="",error="";
-        std::vector<std::string> args;
-
-
-        //TODO : replace when PipeProcess will get file as stdin
-        //at the moment, the filename is given as an argument
-        args.push_back(std::string("-f" + std::string(filename)));
-        //args.push_back("-w");
-        std::string newFilename="";
-        //std::string newFilename=filename;
-
-        helper::system::FileRepository fp("PATH", ".");
-#ifdef WIN32
-        std::string command = "php.exe";
-#else
-        std::string command = "php";
-#endif
-        if (!fp.findFile(command,""))
-        {
-            std::cerr << "Simulation : Error : php not found in your PATH environment" << std::endl;
-            return NULL;
-        }
-
-        sofa::helper::system::PipeProcess::executeProcess(command.c_str(), args,  newFilename, out, error);
-
-        if(error != "")
-        {
-            std::cerr << "Simulation : load : "<< error << std::endl;
-            if (out == "")
-                return NULL;
-        }
-
-        return loadFromMemory(filename, out.c_str(), out.size());
-    }
-
-    if (ext == "scn" || ext == "xml")
-    {
-        return loadFromFile(filename);
-    }
-
-    std::cerr << "Simulation : Error : extension not handled" << std::endl;
-    return NULL;
-
-}
-
 Simulation::Simulation()
     : numMechSteps( initData(&numMechSteps,(unsigned) 1,"numMechSteps","Number of mechanical steps within one update step. If the update time step is dt, the mechanical time step is dt/numMechSteps.") ),
       gnuplotDirectory( initData(&gnuplotDirectory,std::string(""),"gnuplotDirectory","Directory where the gnuplot files will be saved")),
@@ -220,7 +63,20 @@ Simulation::Simulation()
 
 Simulation::~Simulation()
 {
-    setSimulation( NULL );
+    if (Simulation::theSimulation == this) setSimulation( NULL );
+}
+
+/// The (unique) simulation which controls the scene
+Simulation* Simulation::theSimulation = NULL;
+
+void setSimulation ( Simulation* s )
+{
+    Simulation::theSimulation = s;
+}
+
+Simulation* getSimulation()
+{
+    return Simulation::theSimulation;
 }
 
 /// Print all object in the graph
@@ -421,20 +277,6 @@ void Simulation::drawShadows ( Node* root )
     //VisualDrawVisitor act ( core::VisualModel::Shadow );
     //root->execute ( &act );
 }
-
-/// Delete a scene from memory. After this call the pointer is invalid
-void Simulation::unload ( GNode* root )
-{
-    if ( !root ) return;
-    instruments.clear();
-    instrumentInUse.setValue(-1);
-    root->execute<CleanupVisitor>();
-    root->execute<DeleteVisitor>();
-    if ( root->getParent() !=NULL )
-        root->getParent()->removeChild ( root );
-    delete root;
-}
-
 /// Export a scene to an OBJ 3D Scene
 void Simulation::exportOBJ ( Node* root, const char* filename, bool exportMTL )
 {
@@ -502,16 +344,6 @@ void Simulation::exportGnuplot ( Node* root, double time )
     root->execute ( expg );
 }
 
-
-SOFA_DECL_CLASS ( Simulation );
-// Register in the Factory
-int SimulationClass = core::RegisterObject ( "Main simulation algorithm" )
-        .add< Simulation >()
-        ;
-
-
-
-} // namespace tree
 
 } // namespace simulation
 

@@ -40,7 +40,7 @@ namespace collision
 
 using namespace sofa::defaulttype;
 using namespace core::componentmodel::collision;
-using simulation::tree::GNode;
+using simulation::Node;
 
 
 

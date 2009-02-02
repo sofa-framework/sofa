@@ -27,7 +27,7 @@
 #include <sofa/core/componentmodel/behavior/Constraint.inl>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/component/mass/UniformMass.h>
 
 namespace sofa

@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MISC_WRITESTATE_INL
 
 #include <sofa/component/misc/WriteState.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 
 #include <fstream>
 
@@ -128,7 +128,7 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                 {
                     if (time > timeToTestEnergyIncrease)
                     {
-                        simulation::tree::GNode *gnode = dynamic_cast<simulation::tree::GNode *>(this->getContext());
+                        simulation::Node *gnode = dynamic_cast<simulation::Node *>(this->getContext());
                         if (!gnode->mass)
                         {
                             // Error: the mechanical model has no mass

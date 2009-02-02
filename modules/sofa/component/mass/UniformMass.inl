@@ -32,7 +32,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/component/mass/AddMToMatrixFunctor.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/DrawManager.h>
 #include <iostream>
 #include <string.h>
@@ -361,7 +361,7 @@ void UniformMass<DataTypes, MassType>::draw()
         points.push_back(p);
         gravityCenter += x[i];
     }
-    simulation::tree::getSimulation()->DrawUtility.drawPoints(points, 2, Vec<4,float>(1,1,1,1));
+    simulation::getSimulation()->DrawUtility.drawPoints(points, 2, Vec<4,float>(1,1,1,1));
     if(showCenterOfGravity.getValue())
     {
         points.clear();

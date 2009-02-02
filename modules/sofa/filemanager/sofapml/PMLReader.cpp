@@ -48,7 +48,8 @@
 #include "sofa/component/collision/DefaultCollisionGroupManager.h"
 #include "sofa/component/collision/BruteForceDetection.h"
 #include "sofa/simulation/common/VisualVisitor.h"
-#include "sofa/simulation/tree/Simulation.h"
+#include "sofa/simulation/common/Simulation.h"
+#include "sofa/simulation/common/Node.h"
 
 using namespace sofa::component::collision;
 using namespace sofa::simulation::tree;
@@ -159,7 +160,7 @@ void PMLReader::BuildStructure(GNode* root)
     //if there is 2 bodies with the same type and some nodes in common, we merge them
     processFusions(root);
 
-    sofa::simulation::tree::getSimulation()->init(root);
+    sofa::simulation::getSimulation()->init(root);
 }
 
 //create the body structure
@@ -173,17 +174,17 @@ PMLBody* PMLReader::createBody(StructuralComponent* SC, GNode * root)
 
     if (type == "rigid" )
     {
-        root->addChild(child);
+        root->addChild((simulation::Node*)child);
         return new PMLRigidBody(SC, child);
     }
     if (type == "FEM" )
     {
-        root->addChild(child);
+        root->addChild((simulation::Node*)child);
         return new PMLFemForceField(SC, child);
     }
     if (type == "stiffSpring" )
     {
-        root->addChild(child);
+        root->addChild((simulation::Node*)child);
         return new PMLStiffSpringForceField(SC, child);
     }
     if (type == "interaction" )
@@ -219,7 +220,7 @@ PMLBody* PMLReader::createBody(StructuralComponent* SC, GNode * root)
         }
         if (body1)
         {
-            body1->parentNode->addChild(child);
+            body1->parentNode->addChild((simulation::Node*)child);
             return new PMLMappedBody(SC, body1, child);
         }
         else
@@ -255,7 +256,7 @@ void PMLReader::processFusions(GNode * root)
                             std::vector<PMLBody *>::iterator tmp = it2;
                             tmp--;
                             (*it1)->parentNode->setName((*it1)->parentNode->getName() + " & "+ (*it2)->parentNode->getName() );
-                            root->removeChild( (*it2)->parentNode );
+                            root->removeChild( (simulation::Node*)(*it2)->parentNode );
                             bodiesList.erase(it2);
                             it2 = tmp;
                         }

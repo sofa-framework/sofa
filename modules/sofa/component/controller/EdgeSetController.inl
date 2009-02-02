@@ -45,7 +45,7 @@
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
@@ -394,7 +394,7 @@ void EdgeSetController<DataTypes>::applyController()
             }
         }
 
-        sofa::simulation::tree::GNode *node = static_cast<sofa::simulation::tree::GNode*> (this->getContext());
+        sofa::simulation::Node *node = static_cast<sofa::simulation::Node*> (this->getContext());
         sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
         sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
 

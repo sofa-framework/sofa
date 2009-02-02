@@ -37,16 +37,6 @@ namespace simulation
 namespace tree
 {
 
-class SOFA_SIMULATION_TREE_API CleanupVisitor : public GNodeVisitor
-{
-public:
-    CleanupVisitor() {}
-
-    virtual Result processNodeTopDown(GNode* node);
-    virtual void processNodeBottomUp(GNode* node);
-    virtual const char* getClassName() const { return "CleanupVisitor"; }
-};
-
 class SOFA_SIMULATION_TREE_API DeleteVisitor : public GNodeVisitor
 {
 public:

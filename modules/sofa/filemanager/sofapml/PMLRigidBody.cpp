@@ -280,7 +280,7 @@ void PMLRigidBody::createTopology(StructuralComponent* body)
 void PMLRigidBody::createVisualModel(StructuralComponent* body)
 {
     VisualNode = new GNode("points");
-    parentNode->addChild(VisualNode);
+    parentNode->addChild((simulation::Node*)VisualNode);
     //create mechanical object
     mmodel = new MechanicalObject<Vec3Types>;
     //create visual model

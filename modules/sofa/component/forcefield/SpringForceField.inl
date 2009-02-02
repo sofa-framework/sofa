@@ -32,7 +32,7 @@
 #include <sofa/core/componentmodel/behavior/PairInteractionForceField.inl>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/PointSetTopologyChange.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/config.h>
@@ -226,10 +226,10 @@ void SpringForceField<DataTypes>::draw()
     }
 
 
-    simulation::tree::getSimulation()->DrawUtility.drawLines(points[0], 1, Vec<4,float>(1,0,0,1));
-    simulation::tree::getSimulation()->DrawUtility.drawLines(points[1], 1, Vec<4,float>(0,1,0,1));
-    simulation::tree::getSimulation()->DrawUtility.drawLines(points[2], 1, Vec<4,float>(1,0.5,0,1));
-    simulation::tree::getSimulation()->DrawUtility.drawLines(points[3], 1, Vec<4,float>(0,1,0.5,1));
+    simulation::getSimulation()->DrawUtility.drawLines(points[0], 1, Vec<4,float>(1,0,0,1));
+    simulation::getSimulation()->DrawUtility.drawLines(points[1], 1, Vec<4,float>(0,1,0,1));
+    simulation::getSimulation()->DrawUtility.drawLines(points[2], 1, Vec<4,float>(1,0.5,0,1));
+    simulation::getSimulation()->DrawUtility.drawLines(points[3], 1, Vec<4,float>(0,1,0.5,1));
 
 }
 

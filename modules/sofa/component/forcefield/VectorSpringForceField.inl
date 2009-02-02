@@ -32,7 +32,7 @@
 #include <sofa/component/topology/TopologyChangedEvent.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/gl.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <assert.h>
 #include <iostream>
 
@@ -395,7 +395,7 @@ void VectorSpringForceField<DataTypes>::draw()
             points.push_back(Vector3(x2[e[1]]));
         }
     }
-    simulation::tree::getSimulation()->DrawUtility.drawLines(points, 3, Vec<4,float>(0,1,1,1));
+    simulation::getSimulation()->DrawUtility.drawLines(points, 3, Vec<4,float>(0,1,1,1));
 }
 
 } // namespace forcefield

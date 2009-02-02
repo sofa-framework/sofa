@@ -38,8 +38,8 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/helper/system/glut.h>
-#include <sofa/simulation/tree/GNode.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/common/Simulation.h>
 
 #include <assert.h>
 #include <iostream>
@@ -2104,13 +2104,13 @@ void MechanicalObject<DataTypes>::draw()
 {
     Mat<4,4, GLfloat> modelviewM;
     Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
-    sofa::simulation::tree::GNode* context;
+    sofa::simulation::Node* context;
     if (debugViewIndices.getValue())
     {
-        context = dynamic_cast<sofa::simulation::tree::GNode*>(this->getContext());
+        context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
         glColor3f(1.0,1.0,1.0);
         glDisable(GL_LIGHTING);
-        sofa::simulation::tree::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
         float scale = (sceneMaxBBox - sceneMinBBox).norm() * debugViewIndicesScale.getValue();
 
         for (int i=0 ; i< vsize ; i++)

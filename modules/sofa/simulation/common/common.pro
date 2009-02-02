@@ -11,6 +11,7 @@ HEADERS += common.h \
            BehaviorUpdatePositionVisitor.h \
            CactusStackStorage.h \  
            ClassSystem.h \  
+           CleanupVisitor.h \
            CollisionVisitor.h \  
            Colors.h \
            ConstraintVisitor.h \
@@ -30,6 +31,7 @@ HEADERS += common.h \
            PrintVisitor.h \
            PropagateEventVisitor.h \
            ResetVisitor.h \
+           Simulation.h \
            SolveVisitor.h \
            SolverImpl.h \
            StateChangeVisitor.h \
@@ -51,6 +53,7 @@ SOURCES += Node.cpp \
            AnimateVisitor.cpp \
            BehaviorUpdatePositionVisitor.cpp \
            CactusStackStorage.cpp \
+           CleanupVisitor.cpp \
            ConstraintVisitor.cpp \
            CollisionVisitor.cpp \
            DesactivatedNodeVisitor.cpp \
@@ -66,7 +69,8 @@ SOURCES += Node.cpp \
            PipelineImpl.cpp \
            PrintVisitor.cpp \
            PropagateEventVisitor.cpp \
-           ResetVisitor.cpp \     
+           ResetVisitor.cpp \
+           Simulation.cpp \  
            SolveVisitor.cpp \
            SolverImpl.cpp \
            TopologyChangeVisitor.cpp \

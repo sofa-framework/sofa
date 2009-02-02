@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_INL
 
 #include <sofa/component/forcefield/LennardJonesForceField.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/gl/template.h>
 #include <math.h>
@@ -163,8 +163,8 @@ void LennardJonesForceField<DataTypes>::draw()
             points[1].push_back(p1[df.b]);
         }
     }
-    simulation::tree::getSimulation()->DrawUtility.drawLines(points[0], 1, defaulttype::Vec<4,float>(1,1,1,1));
-    simulation::tree::getSimulation()->DrawUtility.drawLines(points[1], 1, defaulttype::Vec<4,float>(0,0,1,1));
+    simulation::getSimulation()->DrawUtility.drawLines(points[0], 1, defaulttype::Vec<4,float>(1,1,1,1));
+    simulation::getSimulation()->DrawUtility.drawLines(points[1], 1, defaulttype::Vec<4,float>(0,0,1,1));
 
 }
 

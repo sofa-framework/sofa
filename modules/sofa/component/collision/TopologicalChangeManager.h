@@ -38,7 +38,7 @@
 #include <sofa/defaulttype/Vec3Types.h>
 
 #include <sofa/component/container/MechanicalObject.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 
 /** a class to manage the handling of topological changes which have been requested from the Collision Model */
 

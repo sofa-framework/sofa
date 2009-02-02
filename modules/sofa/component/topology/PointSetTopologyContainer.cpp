@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/component/topology/PointSetTopologyContainer.h>
 
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/component/container/MeshLoader.h>
 
 #include <sofa/core/ObjectFactory.h>

@@ -49,7 +49,7 @@
 #include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/FindByTypeVisitor.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 
 #include <sofa/component/linearsolver/FullVector.h>
 using namespace sofa::component::linearsolver;
@@ -190,13 +190,13 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addDForce(VecDeriv1&
     //sout<<"addDForce : dLambda "<< dLambda << " -  dx2:" << dx2 <<sendl;
 
 
-    sofa::simulation::tree::GNode *context = dynamic_cast<sofa::simulation::tree::GNode *>(this->getContext()); // access to current node (which is supposed to be the root)
+    sofa::simulation::Node *context = dynamic_cast<sofa::simulation::Node *>(this->getContext()); // access to current node (which is supposed to be the root)
     sofa::simulation::MechanicalResetConstraintVisitor().execute(context);
 
     VecConst2& c2= *this->mstate2->getC();
     //sout<<" constraint size :"<<c2.size()<<sendl;
-
     typename std::map< unsigned int, Deriv2>::const_iterator it;
+
 
     for (unsigned int i=0; i< c2.size(); i++)
     {

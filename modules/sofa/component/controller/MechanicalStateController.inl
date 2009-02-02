@@ -43,7 +43,7 @@
 #include <sofa/core/objectmodel/OmniEvent.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 
@@ -71,7 +71,6 @@ MechanicalStateController<DataTypes>::MechanicalStateController()
 template <class DataTypes>
 void MechanicalStateController<DataTypes>::init()
 {
-    using sofa::simulation::tree::GNode;
     using core::componentmodel::behavior::MechanicalState;
     mainDirectionPtr.beginEdit();
     mState = dynamic_cast<MechanicalState<DataTypes> *> (this->getContext()->getMechanicalState());
@@ -200,7 +199,7 @@ void MechanicalStateController<DataTypes>::applyController()
     }
 
 
-    sofa::simulation::tree::GNode *node = static_cast<sofa::simulation::tree::GNode*> (this->getContext());
+    sofa::simulation::Node *node = static_cast<sofa::simulation::Node*> (this->getContext());
     sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
     sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
 };
