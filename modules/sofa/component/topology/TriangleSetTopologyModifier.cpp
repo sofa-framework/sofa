@@ -482,9 +482,7 @@ void TriangleSetTopologyModifier::renumberPoints( const sofa::helper::vector<uns
 
 bool TriangleSetTopologyModifier::removePrecondition(sofa::helper::vector< unsigned int >& items)
 {
-#ifndef NDEBUG
-    std::cout << "Items passed: " << items << std::endl;
-#endif
+    (void)items;
 
     return true;
 }
