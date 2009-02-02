@@ -1885,7 +1885,7 @@ void RealGUI::loadObject ( std::string path, double dx, double dy, double dz,  d
         graphListener->unfreeze ( gnode_clicked );
 
     //Loading of the xml file
-    xml::BaseElement* xml = xml::loadFromFile ( path.c_str() );
+    simulation::tree::xml::BaseElement* xml = simulation::tree::xml::loadFromFile ( path.c_str() );
     if ( xml == NULL ) return;
 
 

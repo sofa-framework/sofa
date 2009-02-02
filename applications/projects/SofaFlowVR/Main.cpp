@@ -1822,7 +1822,7 @@ int main(int argc, char** argv)
     if (int err=sofa::gui::SofaGUI::Init(argv[0],gui.c_str()))
         return err;
 
-    sofa::simulation::tree::GNode* groot = NULL;
+    sofa::simulation::Node* groot = NULL;
 
     if (fileName.empty())
     {
