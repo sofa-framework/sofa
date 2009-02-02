@@ -486,7 +486,7 @@ public:
         unsigned int size_vec;
 
         in >> size_vec;
-        sofa::helper::vector<MappingData> m = *(b.map.beginEdit());
+        sofa::helper::vector<MappingData>& m = *(b.map.beginEdit());
         m.clear();
 
         MappingData value;
@@ -566,7 +566,7 @@ public:
 
         in >> size_vec;
 
-        sofa::helper::vector<MappingData> m = *(b.map.beginEdit());
+        sofa::helper::vector<MappingData>& m = *(b.map.beginEdit());
         m.clear();
         MappingData value;
         for (unsigned int i=0; i<size_vec; i++)
@@ -644,7 +644,7 @@ public:
         unsigned int size_vec;
 
         in >> size_vec;
-        sofa::helper::vector<MappingData> m = *(b.map.beginEdit());
+        sofa::helper::vector<MappingData>& m = *(b.map.beginEdit());
         m.clear();
         MappingData value;
         for (unsigned int i=0; i<size_vec; i++)
@@ -719,7 +719,7 @@ public:
         unsigned int size_vec;
 
         in >> size_vec;
-        sofa::helper::vector<MappingData> m = *(b.map.beginEdit());
+        sofa::helper::vector<MappingData>& m = *(b.map.beginEdit());
         m.clear();
         MappingData value;
         for (unsigned int i=0; i<size_vec; i++)
@@ -798,7 +798,7 @@ public:
         unsigned int size_vec;
 
         in >> size_vec;
-        sofa::helper::vector<MappingData> m = *(b.map.beginEdit());
+        sofa::helper::vector<MappingData>& m = *(b.map.beginEdit());
         m.clear();
         MappingData value;
         for (unsigned int i=0; i<size_vec; i++)
