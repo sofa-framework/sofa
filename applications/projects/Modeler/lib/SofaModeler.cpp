@@ -27,7 +27,7 @@
 #include "SofaModeler.h"
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-
+#include <sofa/simulation/tree/TreeSimulation.h>
 
 #define MAX_RECENTLY_OPENED 10
 
@@ -80,6 +80,7 @@ typedef QTextDrag Q3TextDrag;
 
 SofaModeler::SofaModeler()
 {
+
     count='0';
     displayComponents=0;
     isPasteReady=false;
@@ -597,7 +598,7 @@ void SofaModeler::fileSave()
 
 void SofaModeler::fileSave(std::string filename)
 {
-    getSimulation()->printXML(graph->getRoot(), filename.c_str());
+    simulation::tree::getSimulation()->printXML(graph->getRoot(), filename.c_str());
 }
 
 
@@ -831,7 +832,7 @@ void SofaModeler::runInSofa()
     else path = sofa::helper::system::SetDirectory::GetParentDir(graph->getFilename().c_str())+std::string("/");
 
     std::string filename=path + std::string("temp") + (count++) + std::string(".scn");
-    getSimulation()->printXML(root,filename.c_str());
+    simulation::tree::getSimulation()->printXML(root,filename.c_str());
 
 
     if (count > '9') count = '0';

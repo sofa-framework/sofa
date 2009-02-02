@@ -27,7 +27,7 @@
 #include "GraphModeler.h"
 #include "AddPreset.h"
 
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/gui/qt/FileManagement.h> //static functions to manage opening/ saving of files
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -35,6 +35,7 @@
 #include <sofa/simulation/tree/xml/ObjectElement.h>
 #include <sofa/simulation/tree/xml/AttributeElement.h>
 #include <sofa/simulation/tree/xml/DataElement.h>
+#include <sofa/simulation/tree/xml/XML.h>
 #include <sofa/simulation/common/XMLPrintVisitor.h>
 
 #ifdef SOFA_QT4
@@ -75,7 +76,7 @@ GNode *GraphModeler::addGNode(GNode *parent, GNode *child, bool saveHistory)
 
     if (parent != NULL)
     {
-        parent->addChild(child);
+        parent->addChild((Node*)child);
 
         if (saveHistory)
         {
@@ -145,9 +146,9 @@ BaseObject *GraphModeler::addComponent(GNode *parent, ClassInfo* entry, std::str
 
         if (displayWarning)
         {
-            if (!reference)
+            if (entry->className.find("Mapping") == std::string::npos)
             {
-                if (entry->className.find("Mapping") == std::string::npos)
+                if (!reference)
                 {
                     //we accept the mappings as no initialization of the object has been done
                     const QString caption("Creation Impossible");
@@ -155,16 +156,16 @@ BaseObject *GraphModeler::addComponent(GNode *parent, ClassInfo* entry, std::str
                     if ( QMessageBox::warning ( this, caption,warning, QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape, QMessageBox::Ignore ) == QMessageBox::Cancel )
                         return object;
                 }
-            }
-            else
-            {
-                const QString caption("Creation Impossible");
-                const QString warning=
-                    QString("Your component won't be created: \n \t * <")
-                    + QString(reference->getTemplateName().c_str()) + QString("> DOFs are used in the Node ") + QString(parent->getName().c_str()) + QString("\n\t * <")
-                    + QString(templateName.c_str()) + QString("> is the type of your ") + QString(entry->className.c_str());
-                if ( QMessageBox::warning ( this, caption,warning, QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape, QMessageBox::Ignore ) == QMessageBox::Cancel )
-                    return object;
+                else
+                {
+                    const QString caption("Creation Impossible");
+                    const QString warning=
+                        QString("Your component won't be created: \n \t * <")
+                        + QString(reference->getTemplateName().c_str()) + QString("> DOFs are used in the Node ") + QString(parent->getName().c_str()) + QString("\n\t * <")
+                        + QString(templateName.c_str()) + QString("> is the type of your ") + QString(entry->className.c_str());
+                    if ( QMessageBox::warning ( this, caption,warning, QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape, QMessageBox::Ignore ) == QMessageBox::Cancel )
+                        return object;
+                }
             }
         }
         object = c->createInstance(parent->getContext(), NULL);
@@ -447,23 +448,35 @@ GNode *GraphModeler::loadNode(Q3ListViewItem* item, std::string filename)
 
 
 
-GNode *GraphModeler::buildNodeFromBaseElement(GNode *node,xml::BaseElement *elem)
+GNode *GraphModeler::buildNodeFromBaseElement(GNode *node,xml::BaseElement *elem, bool saveHistory)
 {
+    const bool displayWarning=true;
     GNode *newNode = new GNode();
-    if (node)
-    {
-        //Add as a child
-        node->addChild(newNode);
-    }
     //Configure the new Node
     configureElement(newNode, elem);
+
+    if (newNode->getName() == "Group")
+    {
+        //We can't use the parent node, as it is null
+        if (!node) return NULL;
+        newNode = node;
+    }
+    else
+    {
+        if (node)
+        {
+            //Add as a child
+            addGNode(node,newNode,saveHistory);
+        }
+    }
+
 
     typedef xml::BaseElement::child_iterator<> elem_iterator;
     for (elem_iterator it=elem->begin(); it != elem->end(); ++it)
     {
         if (std::string(it->getClass()) == std::string("Node"))
         {
-            buildNodeFromBaseElement(newNode, it);
+            buildNodeFromBaseElement(newNode, it,false); //Desactivate saving history
         }
         else
         {
@@ -471,8 +484,17 @@ GNode *GraphModeler::buildNodeFromBaseElement(GNode *node,xml::BaseElement *elem
             std::string templatename; std::string templateAttribute("template");
             templatename = it->getAttribute(templateAttribute, "");
             ClassInfo *info = getCreatorComponent(it->getType());
-            BaseObject *newComponent=addComponent(newNode, info, templatename, false,true);
+            BaseObject *newComponent=addComponent(newNode, info, templatename, saveHistory,displayWarning);
             configureElement(newComponent, it);
+            Q3ListViewItem* itemGraph = graphListener->items[newComponent];
+
+            std::string name=itemGraph->text(0).ascii();
+            std::string::size_type pos = name.find(' ');
+            if (pos != std::string::npos)  name.resize(pos);
+            name += "  ";
+
+            name+=newComponent->getName();
+            itemGraph->setText(0,name.c_str());
         }
     }
     newNode->sendl.clearWarnings();
@@ -526,41 +548,9 @@ GNode* GraphModeler::loadNode(GNode *node, std::string path)
 
     //-----------------------------------------------------------------
     //Add the content of a xml file
-    GNode *newNode = buildNodeFromBaseElement(NULL, newXML);
+    GNode *newNode = buildNodeFromBaseElement(node, newXML, true);
     //-----------------------------------------------------------------
 
-
-//   	if (!newXML->init()) std::cerr<< "Objects initialization failed.\n";
-
-// 	GNode *newNode = dynamic_cast<GNode*> ( newXML->getObject() );
-    if (newNode)
-    {
-        if (newNode->getName() == "Group") //Special Node: means that we load the content directly inside the current node
-        {
-            std::vector< core::objectmodel::BaseObject *> listObject;
-            newNode->get< core::objectmodel::BaseObject> (&listObject, core::objectmodel::BaseContext::Local);
-            for (unsigned int i=0; i<listObject.size(); ++i)
-            {
-                node->addObject(listObject[i]);
-
-                Operation adding(listObject[i], Operation::ADD_OBJECT);
-                adding.info=std::string("Adding Object ") + listObject[i]->getClassName();
-                storeHistory(adding);
-            }
-
-            std::vector< core::objectmodel::BaseNode *> listNode;
-            listNode = newNode->getChildren();
-            for (unsigned int i=0; i<listNode.size(); ++i)
-            {
-                addGNode(node, static_cast< GNode *>(listNode[i]), true);
-            }
-            newNode=node;
-        }
-        else
-        {
-            addGNode(node,newNode);
-        }
-    }
     return newNode;
 }
 
@@ -708,7 +698,7 @@ void GraphModeler::saveNode(Q3ListViewItem* item)
 
 void GraphModeler::saveNode(GNode* node, std::string file)
 {
-    getSimulation()->printXML(node, file.c_str());
+    simulation::getSimulation()->printXML(node, file.c_str());
 }
 
 void GraphModeler::saveComponent(BaseObject* object, std::string file)
@@ -761,7 +751,7 @@ void GraphModeler::deleteComponent(Q3ListViewItem* item, bool saveHistory)
         if (!parent)
             graphListener->removeChild(parent, node);
         else
-            parent->removeChild(node);
+            parent->removeChild((Node*)node);
         if (!parent && childCount() == 0) addGNode(NULL);
     }
 
@@ -830,7 +820,7 @@ void GraphModeler::processUndo(Operation &o)
         o.ID = Operation::ADD_OBJECT;
         break;
     case Operation::DELETE_GNODE:
-        o.parent->addChild(dynamic_cast<GNode*>(o.sofaComponent));
+        o.parent->addChild(dynamic_cast<Node*>(o.sofaComponent));
         //If the node is not alone below another parent node
         moveItem(graphListener->items[o.sofaComponent],graphListener->items[o.above]);
 
@@ -847,7 +837,7 @@ void GraphModeler::processUndo(Operation &o)
     case Operation::ADD_GNODE:
         o.parent=getGNode(graphListener->items[o.sofaComponent]->parent());
         o.above=getComponentAbove(graphListener->items[o.sofaComponent]);
-        o.parent->removeChild(dynamic_cast<GNode*>(o.sofaComponent));
+        o.parent->removeChild(dynamic_cast<Node*>(o.sofaComponent));
         o.ID = Operation::DELETE_GNODE;
         break;
     }
@@ -1080,7 +1070,7 @@ void GraphModeler::clearHistory()
         if (historyOperation[i].ID == Operation::DELETE_OBJECT)
             delete historyOperation[i].sofaComponent;
         else if (historyOperation[i].ID == Operation::DELETE_GNODE)
-            getSimulation()->unload(dynamic_cast<GNode*>(historyOperation[i].sofaComponent));
+            simulation::getSimulation()->unload(dynamic_cast<GNode*>(historyOperation[i].sofaComponent));
     }
     historyOperation.clear();
     emit( undo(false) );
@@ -1093,7 +1083,7 @@ void GraphModeler::clearHistoryUndo()
         if (historyUndoOperation[i].ID == Operation::DELETE_OBJECT)
             delete historyUndoOperation[i].sofaComponent;
         else if (historyUndoOperation[i].ID == Operation::DELETE_GNODE)
-            getSimulation()->unload(dynamic_cast<GNode*>(historyUndoOperation[i].sofaComponent));
+            simulation::getSimulation()->unload(dynamic_cast<GNode*>(historyUndoOperation[i].sofaComponent));
     }
     historyUndoOperation.clear();
     emit( redo(false) );

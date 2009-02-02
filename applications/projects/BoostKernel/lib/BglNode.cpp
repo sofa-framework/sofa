@@ -1,29 +1,29 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 3      *
-*                (c) 2006-2008 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
-*                                                                             *
-* This program is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
-*                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
-*******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 3      *
+ *                (c) 2006-2008 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This program is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU General Public License as published by the Free  *
+ * Software Foundation; either version 2 of the License, or (at your option)   *
+ * any later version.                                                          *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+ * more details.                                                               *
+ *                                                                             *
+ * You should have received a copy of the GNU General Public License along     *
+ * with this program; if not, write to the Free Software Foundation, Inc., 51  *
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
+ *******************************************************************************
+ *                            SOFA :: Applications                             *
+ *                                                                             *
+ * Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+ * H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+ * M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 //
 // C++ Implementation: BglNode
 //
@@ -36,7 +36,8 @@
 //
 //
 #include "BglNode.h"
-#include "BglScene.h"
+#include "BglSimulation.h"
+#include "GetObjectsVisitor.h"
 #include <sofa/core/objectmodel/BaseContext.h>
 //#include "bfs_adapter.h"
 #include "dfv_adapter.h"
@@ -57,7 +58,7 @@ namespace simulation
 namespace bgl
 {
 
-BglNode::BglNode(BglScene* s, BglScene::Hgraph *g,  BglScene::Hvertex n, const std::string& name)
+BglNode::BglNode(BglSimulation* s, BglSimulation::Hgraph *g,  BglSimulation::Hvertex n, const std::string& name)
     : sofa::simulation::Node(name), scene(s), graph(g), vertexId(n)
 {
 }
@@ -68,20 +69,52 @@ BglNode::~BglNode()
 }
 
 
+void BglNode::addChild(Node* c)
+{
+    scene->addHedge( vertexId, scene->h_node_vertex_map[c] );
+    scene->addRedge( scene->h_node_vertex_map[c], vertexId );
+}
+
+void BglNode::removeChild(Node* c)
+{
+    scene->removeHedge( vertexId, scene->h_node_vertex_map[c] );
+    scene->removeRedge( scene->h_node_vertex_map[c], vertexId );
+}
+void BglNode::moveChild(Node* c)
+{
+    //We have to remove all the in-edges pointing to the node "c", and add c as a child of this current node
+    if (BglNode *bglNode = dynamic_cast< BglNode* >(c))
+    {
+        BglSimulation::Hvertex childId=bglNode->getVertexId();
+        BglSimulation::Hgraph::in_edge_iterator in_i, in_end;
+        BglSimulation::Hgraph &g=bglNode->getGraph();
+        //Find all in-edges from the graph
+        for (tie(in_i, in_end) = boost::in_edges(childId, g); in_i != in_end; ++in_i)
+        {
+            BglSimulation::Hedge e=*in_i;
+            BglSimulation::Hvertex src=source(e, g);
+            //Remove previous edges
+            scene->removeHedge(src,childId);
+            scene->removeRedge(childId,src);
+        }
+
+        scene->addHedge(vertexId, childId);
+    }
+}
 void BglNode::doExecuteVisitor( Visitor* vis )
 {
     //cerr<<"BglNode::doExecuteVisitor( simulation::tree::Visitor* action)"<<endl;
 
     boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(*graph) );
-    //boost::queue<BglScene::Hvertex> queue;
+    //boost::queue<BglSimulation::Hvertex> queue;
 
     /*    boost::breadth_first_search(
-            graph,
-            boost::vertex(this->vertexId, *graph),
-            queue,
-            bfs_adapter(vis,scene->h_vertex_node_map),
-            colors
-        );*/
+          graph,
+          boost::vertex(this->vertexId, *graph),
+          queue,
+          bfs_adapter(vis,scene->h_vertex_node_map),
+          colors
+          );*/
     dfv_adapter dfv(vis,scene->h_vertex_node_map);
     boost::depth_first_visit(
         *graph,
@@ -97,38 +130,81 @@ void BglNode::clearInteractionForceFields()
     interactionForceField.clear();
 }
 
-namespace
+
+
+/// Generic object access, possibly searching up or down from the current context
+///
+/// Note that the template wrapper method should generally be used to have the correct return type,
+void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, SearchDirection dir) const
 {
-struct GetObjectsVisitor: public Visitor
-{
-    typedef sofa::core::objectmodel::ClassInfo ClassInfo;
-    typedef sofa::core::objectmodel::BaseContext::GetObjectsCallBack GetObjectsCallBack;
-
-    const ClassInfo& class_info;
-    GetObjectsCallBack& container;
-
-    GetObjectsVisitor(const ClassInfo& class_inf, GetObjectsCallBack& cont)
-        : class_info(class_inf), container(cont)
-    {}
-
-    Result processNodeTopDown( simulation::Node* node )
+    GetObjectVisitor getobj(class_info);
+    if ( dir == SearchDown )
     {
-        for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+        std::cerr << "Search Down ";
+        boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(scene->hgraph) );
+        dfv_adapter dfv( &getobj, scene->h_vertex_node_map );
+        boost::depth_first_visit(
+            scene->hgraph,
+            boost::vertex(this->vertexId, scene->hgraph),
+            dfv,
+            colors,
+            dfv
+        );
+    }
+    else if (dir== SearchUp )
+    {
+        std::cerr << "Search Up ";
+        boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(scene->rgraph) );
+        dfv_adapter dfv( &getobj, scene->r_vertex_node_map );
+        BglSimulation::Rvertex thisvertex = scene->r_node_vertex_map[scene->h_vertex_node_map[this->vertexId]];
+        boost::depth_first_visit(
+            scene->rgraph,
+            boost::vertex(thisvertex, scene->rgraph),
+            dfv,
+            colors,
+            dfv
+        );
+    }
+    else if (dir== SearchRoot )
+    {
+        std::cerr << "Search Root ";
+        scene->dfv( scene->masterVertex, getobj );
+    }
+    else    // Local
+    {
+        std::cerr << "Search Local ";
+        for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
         {
             void* result = class_info.dynamicCast(*it);
             if (result != NULL)
-                container(result);
+            {
+                std::cerr << "Single Search : " << sofa::helper::gettypename((class_info)) << " result : " << result << "\n";
+                return result;
+            }
         }
-        return RESULT_CONTINUE;
     }
-};
-
+    std::cerr << "Single Search : " << sofa::helper::gettypename(class_info) << " result : " << getobj.getObject() << "\n";
+    return getobj.getObject();
 }
+
+
+/// Generic object access, given a path from the current context
+///
+/// Note that the template wrapper method should generally be used to have the correct return type,
+void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const
+{
+    std::cerr << "Single Search with path NOT IMPLEMENTED for " << sofa::helper::gettypename(class_info) << "\n";
+    return NULL;
+}
+
+
+
 /// Generic object access, possibly searching up or down from the current context
 ///
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void BglNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, SearchDirection dir) const
 {
+    std::cerr << "Search for " << sofa::helper::gettypename(class_info) << "\n";
     GetObjectsVisitor getobjs(class_info, container);
     if ( dir == SearchDown )
     {
@@ -146,7 +222,7 @@ void BglNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
     {
         boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(scene->rgraph) );
         dfv_adapter dfv( &getobjs, scene->r_vertex_node_map );
-        BglScene::Rvertex thisvertex = scene->r_node_vertex_map[scene->h_vertex_node_map[this->vertexId]];
+        BglSimulation::Rvertex thisvertex = scene->r_node_vertex_map[scene->h_vertex_node_map[this->vertexId]];
         boost::depth_first_visit(
             scene->rgraph,
             boost::vertex(thisvertex, scene->rgraph),
