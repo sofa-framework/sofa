@@ -100,12 +100,11 @@ void LCPForceFeedback::computeForce(double x, double y, double z, double /*u*/, 
         {
             int indexC1 = mState->getConstraintId()[c1];
             id_buf.push_back(indexC1);
-            int sizeC1 = (*mState->getC())[c1].size();
             RigidTypes::SparseVecDeriv v;
-            for(int i = 0; i < sizeC1; i++)
+            std::map<unsigned int, RigidTypes::Deriv>::const_iterator itConstraint;
+            for(itConstraint=(*mState->getC())[c1].getData().begin(); itConstraint!=(*mState->getC())[c1].getData().end(); itConstraint++)
             {
-                RigidTypes::SparseDeriv d((*mState->getC())[c1][i].index, (*mState->getC())[c1][i].data);
-                v.push_back(d);
+                v.insert(itConstraint->first, itConstraint->second);
             }
             c.push_back(v);
         }
@@ -162,13 +161,13 @@ void LCPForceFeedback::computeForce(double x, double y, double z, double /*u*/, 
             for(unsigned int c1 = 0; c1 < numConstraints; c1++)
             {
                 int indexC1 = id_buf[c1];
-                int sizeC1 = (*constraints)[c1].size();
-                for(int i = 0; i < sizeC1; i++)
+                std::map<unsigned int, RigidTypes::Deriv>::const_iterator itConstraint;
+                for(itConstraint=(*constraints)[c1].getData().begin(); itConstraint!=(*constraints)[c1].getData().end(); itConstraint++)
                 {
                     //sout << "constraint ID :  " << indexC1 << endl;
-                    (lcp)->getDfree()[indexC1] += (*constraints)[c1][i].data[0] * dx;
-                    (lcp)->getDfree()[indexC1] += (*constraints)[c1][i].data[1] * dy;
-                    (lcp)->getDfree()[indexC1] += (*constraints)[c1][i].data[2] * dz;
+                    (lcp)->getDfree()[indexC1] += itConstraint->second[0] * dx;
+                    (lcp)->getDfree()[indexC1] += itConstraint->second[1] * dy;
+                    (lcp)->getDfree()[indexC1] += itConstraint->second[2] * dz;
                     //sout << "data : " << constraints[c1][i].data[0] << " " << constraints[c1][i].data[1] << " " << constraints[c1][i].data[2] << endl;
                 }
             }
@@ -189,12 +188,12 @@ void LCPForceFeedback::computeForce(double x, double y, double z, double /*u*/, 
             for(unsigned int c1 = 0; c1 < numConstraints; c1++)
             {
                 int indexC1 = id_buf[c1];
-                int sizeC1 = (*constraints)[c1].size();
-                for(int i = 0; i < sizeC1; i++)
+                std::map<unsigned int, RigidTypes::Deriv>::const_iterator itConstraint;
+                for(itConstraint=(*constraints)[c1].getData().begin(); itConstraint!=(*constraints)[c1].getData().end(); itConstraint++)
                 {
-                    (lcp)->getDfree()[indexC1] -= (*constraints)[c1][i].data[0] * dx;
-                    (lcp)->getDfree()[indexC1] -= (*constraints)[c1][i].data[1] * dy;
-                    (lcp)->getDfree()[indexC1] -= (*constraints)[c1][i].data[2] * dz;
+                    (lcp)->getDfree()[indexC1] -= itConstraint->second[0] * dx;
+                    (lcp)->getDfree()[indexC1] -= itConstraint->second[1] * dy;
+                    (lcp)->getDfree()[indexC1] -= itConstraint->second[2] * dz;
                 }
             }
 
@@ -205,11 +204,11 @@ void LCPForceFeedback::computeForce(double x, double y, double z, double /*u*/, 
                 int indexC1 = id_buf[c1];
                 if ((lcp)->getF()[indexC1] != 0.0)
                 {
-                    int sizeC1 = (*constraints)[c1].size();
+                    std::map<unsigned int, RigidTypes::Deriv>::const_iterator itConstraint;
 
-                    for(int i = 0; i < sizeC1; i++)
+                    for(itConstraint=(*constraints)[c1].getData().begin(); itConstraint!=(*constraints)[c1].getData().end(); itConstraint++)
                     {
-                        force[0] += (*constraints)[c1][i].data * (lcp)->getF()[indexC1];
+                        force[0] += itConstraint->second * (lcp)->getF()[indexC1];
                     }
                 }
             }
