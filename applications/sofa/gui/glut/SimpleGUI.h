@@ -77,7 +77,7 @@ public:
     void redraw();
     int closeGUI();
 
-    sofa::simulation::tree::GNode* currentSimulation()
+    sofa::simulation::Node* currentSimulation()
     {
         return getScene();
     }
@@ -132,7 +132,7 @@ private:
     enum { MINMOVE = 10 };
 
 
-    sofa::simulation::tree::GNode* groot;
+    sofa::simulation::Node* groot;
     std::string sceneFileName;
 
     int				_W, _H;
@@ -228,7 +228,7 @@ protected:
 
 public:
     void setScene(sofa::simulation::Node* scene, const char* filename=NULL);
-    sofa::simulation::tree::GNode* getScene()
+    sofa::simulation::Node* getScene()
     {
         return groot;
     }
