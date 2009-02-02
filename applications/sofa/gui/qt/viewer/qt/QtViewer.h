@@ -192,8 +192,8 @@ protected:
     void resizeGL( int w, int h );
 
 public:
-    void setScene(sofa::simulation::tree::GNode* scene, const char* filename=NULL, bool keepParams=false);
-    sofa::simulation::tree::GNode* getScene()
+    void setScene(sofa::simulation::Node* scene, const char* filename=NULL, bool keepParams=false);
+    sofa::simulation::Node* getScene()
     {
         return groot;
     }

@@ -205,7 +205,7 @@ public slots:
 
 
     void exportGraph();
-    void exportGraph(sofa::simulation::tree::GNode*);
+    void exportGraph(sofa::simulation::Node*);
     void exportOBJ(bool exportMTL=true);
     void dumpState(bool);
     void displayComputationTime(bool);
@@ -252,7 +252,7 @@ protected:
 
     GraphListenerQListView* graphListener;
     QListViewItem *item_clicked;
-    GNode *node_clicked;
+    Node *node_clicked;
     QTimer* timerStep;
     QTimer* timerRecordStep;
     QLabel* fpsLabel;
@@ -295,7 +295,7 @@ protected:
 
 
 
-    sofa::simulation::tree::GNode* getScene() { if (viewer) return viewer->getScene(); else return NULL; }
+    sofa::simulation::Node* getScene() { if (viewer) return viewer->getScene(); else return NULL; }
 
     void sleep(float seconds, float init_time)
     {

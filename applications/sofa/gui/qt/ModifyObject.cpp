@@ -91,6 +91,7 @@ ModifyObject::ModifyObject(void *Id_, core::objectmodel::Base* node_clicked, Q3L
     RESIZABLE_FLAG = false;
     REINIT_FLAG = true;
 
+    outputTab = warningTab = NULL;
     energy_curve[0]=NULL;	        energy_curve[1]=NULL;	        energy_curve[2]=NULL;
 
     logWarningEdit=NULL; logOutputEdit=NULL;
@@ -499,6 +500,8 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             tabLayout->addStretch();
 
             updateConsole();
+            if (outputTab)  dialogTab->addTab(outputTab,  QString("Outputs"));
+            if (warningTab) dialogTab->addTab(warningTab, QString("Warnings"));
         }
 
         //Adding buttons at the bottom of the dialog
@@ -546,18 +549,17 @@ void ModifyObject::updateConsole()
     {
         if (!logWarningEdit)
         {
-            QWidget* tab = new QWidget();
-            QVBoxLayout* tabLayout = new QVBoxLayout( tab, 0, 1, QString("tabWarningLayout"));
+            warningTab = new QWidget();
+            QVBoxLayout* tabLayout = new QVBoxLayout( warningTab, 0, 1, QString("tabWarningLayout"));
 
-            QPushButton *buttonClearWarnings = new QPushButton(tab, "buttonClearWarnings");
+            QPushButton *buttonClearWarnings = new QPushButton(warningTab, "buttonClearWarnings");
             tabLayout->addWidget(buttonClearWarnings);
             buttonClearWarnings->setText( tr("&Clear"));
             connect( buttonClearWarnings, SIGNAL( clicked()), this, SLOT( clearWarnings()));
 
-            logWarningEdit = new Q3TextEdit( tab, QString("WarningEdit"));
+            logWarningEdit = new Q3TextEdit( warningTab, QString("WarningEdit"));
             tabLayout->addWidget( logWarningEdit );
 
-            dialogTab->addTab(tab, QString("Warnings"));
             logWarningEdit->setReadOnly(true);
         }
 
@@ -571,19 +573,17 @@ void ModifyObject::updateConsole()
     {
         if (!logOutputEdit)
         {
-            QWidget* tab = new QWidget();
-            QVBoxLayout* tabLayout = new QVBoxLayout( tab, 0, 1, QString("tabOutputLayout"));
+            outputTab = new QWidget();
+            QVBoxLayout* tabLayout = new QVBoxLayout( outputTab, 0, 1, QString("tabOutputLayout"));
 
-            QPushButton *buttonClearOutputs = new QPushButton(tab, "buttonClearOutputs");
+            QPushButton *buttonClearOutputs = new QPushButton(outputTab, "buttonClearOutputs");
             tabLayout->addWidget(buttonClearOutputs);
             buttonClearOutputs->setText( tr("&Clear"));
             connect( buttonClearOutputs, SIGNAL( clicked()), this, SLOT( clearOutputs()));
 
-            logOutputEdit = new Q3TextEdit( tab, QString("OutputEdit"));
+            logOutputEdit = new Q3TextEdit( outputTab, QString("OutputEdit"));
             tabLayout->addWidget( logOutputEdit );
 
-
-            dialogTab->addTab(tab, QString("Outputs"));
             logOutputEdit->setReadOnly(true);
         }
 

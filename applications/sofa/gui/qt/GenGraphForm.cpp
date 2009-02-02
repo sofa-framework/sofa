@@ -379,7 +379,7 @@ void GenGraphForm::doClose()
     this->close();
 }
 
-void GenGraphForm::setScene(sofa::simulation::tree::GNode* scene)
+void GenGraphForm::setScene(sofa::simulation::Node* scene)
 {
     graph = scene;
 }

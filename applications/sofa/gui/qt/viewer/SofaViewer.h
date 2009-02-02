@@ -63,7 +63,7 @@
 //#include <sofa/simulation/common/GrabVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
-#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 #ifdef SOFA_QT4
 #include <QEvent>
 #include <QMouseEvent>
@@ -112,20 +112,23 @@ public:
 
     virtual QWidget* getQWidget()=0;
 
-    virtual sofa::simulation::tree::GNode* getScene()        {  return groot;}
+    virtual sofa::simulation::Node* getScene()        {  return groot;}
     virtual const std::string&             getSceneFileName() {  return sceneFileName;}
     virtual void                           setSceneFileName(const std::string &f) {sceneFileName = f;};
 
     virtual void setup() {}
-    virtual void setScene(sofa::simulation::tree::GNode* scene, const char* filename=NULL, bool /*keepParams*/=false)
+    virtual void setScene(sofa::simulation::Node* scene, const char* filename=NULL, bool /*keepParams*/=false)
     {
 //               if (interactor != NULL) delete interactor;
         //interactor = NULL;
-        scene->getContext()->get( interactor);
-        std::string file=sofa::helper::system::SetDirectory::GetFileName(filename);
+
+        if (scene) scene->getContext()->get( interactor);
+        std::string file;
+        if (filename)
+            file=sofa::helper::system::SetDirectory::GetFileName(filename);
         std::string screenshotPrefix=sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/share/screenshots/" ) + file + std::string("_");
         capture.setPrefix(screenshotPrefix);
-        sceneFileName=filename;
+        sceneFileName=file;
         groot = scene;
         initTexturesDone = false;
         sceneBBoxIsValid = true;
@@ -291,8 +294,9 @@ protected:
                 interactor->setName("mouse");
                 if (groot)
                 {
-                    simulation::tree::GNode* child = new simulation::tree::GNode("mouse");
+                    simulation::Node* child = simulation::getSimulation()->newNode("mouse");
                     groot->addChild(child);
+
                     child->addObject(interactor);
                 }
                 interactor->init();
@@ -331,10 +335,10 @@ protected:
 
     void moveLaparoscopic( QMouseEvent *e)
     {
-        int index_instrument = simulation::tree::getSimulation()->instrumentInUse.getValue();
-        if (index_instrument < 0 || index_instrument > (int)simulation::tree::getSimulation()->instruments.size()) return;
+        int index_instrument = simulation::getSimulation()->instrumentInUse.getValue();
+        if (index_instrument < 0 || index_instrument > (int)simulation::getSimulation()->instruments.size()) return;
 
-        simulation::Node *instrument = simulation::tree::getSimulation()->instruments[index_instrument];
+        simulation::Node *instrument = simulation::getSimulation()->instruments[index_instrument];
         if (instrument == NULL) return;
 
         int eventX = e->x();
@@ -402,7 +406,7 @@ protected:
                     if (_mouseInteractorMoving)
                     {
                         _mouseInteractorMoving = false;
-                        //static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::GrabVisitor>();
+                        //static_cast<sofa::simulation::Node*>(instrument->getContext())->execute<sofa::simulation::GrabVisitor>();
                     }
                 }
                 break;
@@ -445,8 +449,8 @@ protected:
                 }
             }
 
-            static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor>();
-            static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::UpdateMappingVisitor>();
+            static_cast<sofa::simulation::Node*>(instrument->getContext())->execute<sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor>();
+            static_cast<sofa::simulation::Node*>(instrument->getContext())->execute<sofa::simulation::UpdateMappingVisitor>();
             getQWidget()->update();
         }
         else
@@ -528,10 +532,10 @@ protected:
 
     void moveLaparoscopic(QWheelEvent *e)
     {
-        int index_instrument = simulation::tree::getSimulation()->instrumentInUse.getValue();
-        if (index_instrument < 0 || index_instrument > (int)simulation::tree::getSimulation()->instruments.size()) return;
+        int index_instrument = simulation::getSimulation()->instrumentInUse.getValue();
+        if (index_instrument < 0 || index_instrument > (int)simulation::getSimulation()->instruments.size()) return;
 
-        simulation::Node *instrument = simulation::tree::getSimulation()->instruments[index_instrument];
+        simulation::Node *instrument = simulation::getSimulation()->instruments[index_instrument];
         if (instrument == NULL) return;
 
         std::vector< component::controller::Controller* > bc;
@@ -549,7 +553,7 @@ protected:
     virtual void moveRayPickInteractor(int , int ) {};
 
     sofa::helper::gl::Capture capture;
-    sofa::simulation::tree::GNode* groot;
+    sofa::simulation::Node* groot;
     std::string sceneFileName;
 
     bool m_isControlPressed;
