@@ -65,14 +65,14 @@ void Mesh2PointMechanicalMapping<BaseMapping>::apply( typename Out::VecCoord& ou
 {
     if (!topoMap) return;
 
-    const topology::PointData< sofa::helper::vector<int> >& pointMap = topoMap->getPointsMappedFromPoint();
+    const sofa::helper::vector< sofa::helper::vector<int> >& pointMap = topoMap->getPointsMappedFromPoint();
     const sofa::helper::vector< sofa::helper::vector<int> >& edgeMap = topoMap->getPointsMappedFromEdge();
     const sofa::helper::vector< sofa::helper::vector<int> >& triangleMap = topoMap->getPointsMappedFromTriangle();
-    const topology::QuadData< sofa::helper::vector<int> >& quadMap = topoMap->getPointsMappedFromQuad();
-    const topology::TetrahedronData< sofa::helper::vector<int> >& tetraMap = topoMap->getPointsMappedFromTetra();
-    const topology::HexahedronData< sofa::helper::vector<int> >& hexaMap = topoMap->getPointsMappedFromHexa();
+    const sofa::helper::vector< sofa::helper::vector<int> >& quadMap = topoMap->getPointsMappedFromQuad();
+    const sofa::helper::vector< sofa::helper::vector<int> >& tetraMap = topoMap->getPointsMappedFromTetra();
+    const sofa::helper::vector< sofa::helper::vector<int> >& hexaMap = topoMap->getPointsMappedFromHexa();
 
-    if (pointMap.getValue().empty() && edgeMap.empty() && triangleMap.empty() && quadMap.empty() && tetraMap.empty() && hexaMap.empty()) return;
+    if (pointMap.empty() && edgeMap.empty() && triangleMap.empty() && quadMap.empty() && tetraMap.empty() && hexaMap.empty()) return;
 
     const core::componentmodel::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
     const core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = inputTopo->getTriangles();
@@ -81,12 +81,12 @@ void Mesh2PointMechanicalMapping<BaseMapping>::apply( typename Out::VecCoord& ou
     const core::componentmodel::topology::BaseMeshTopology::SeqHexas& hexas = inputTopo->getHexas();
 
     out.resize(outputTopo->getNbPoints());
-    for(unsigned int i = 0; i < pointMap.getValue().size(); ++i)
+    for(unsigned int i = 0; i < pointMap.size(); ++i)
     {
-        for(unsigned int j = 0; j < pointMap.getValue()[i].size(); ++j)
+        for(unsigned int j = 0; j < pointMap[i].size(); ++j)
         {
-            if (pointMap.getValue()[i][j] == -1) continue;
-            out[pointMap.getValue()[i][j]] = in[i]+topoMap->getPointBaryCoords()[j];
+            if (pointMap[i][j] == -1) continue;
+            out[pointMap[i][j]] = in[i]+topoMap->getPointBaryCoords()[j];
         }
     }
 
@@ -168,14 +168,14 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJ( typename Out::VecDeriv& o
 {
     if (!topoMap) return;
 
-    const topology::PointData< sofa::helper::vector<int> >& pointMap = topoMap->getPointsMappedFromPoint();
+    const sofa::helper::vector< sofa::helper::vector<int> >& pointMap = topoMap->getPointsMappedFromPoint();
     const sofa::helper::vector< sofa::helper::vector<int> >& edgeMap = topoMap->getPointsMappedFromEdge();
     const sofa::helper::vector< sofa::helper::vector<int> >& triangleMap = topoMap->getPointsMappedFromTriangle();
-    const topology::QuadData< sofa::helper::vector<int> >& quadMap = topoMap->getPointsMappedFromQuad();
-    const topology::TetrahedronData< sofa::helper::vector<int> >& tetraMap = topoMap->getPointsMappedFromTetra();
-    const topology::HexahedronData< sofa::helper::vector<int> >& hexaMap = topoMap->getPointsMappedFromHexa();
+    const sofa::helper::vector< sofa::helper::vector<int> >& quadMap = topoMap->getPointsMappedFromQuad();
+    const sofa::helper::vector< sofa::helper::vector<int> >& tetraMap = topoMap->getPointsMappedFromTetra();
+    const sofa::helper::vector< sofa::helper::vector<int> >& hexaMap = topoMap->getPointsMappedFromHexa();
 
-    if (pointMap.getValue().empty() && edgeMap.empty() && triangleMap.empty() && quadMap.empty() && tetraMap.empty() && hexaMap.empty()) return;
+    if (pointMap.empty() && edgeMap.empty() && triangleMap.empty() && quadMap.empty() && tetraMap.empty() && hexaMap.empty()) return;
 
     const core::componentmodel::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
     const core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = inputTopo->getTriangles();
@@ -184,12 +184,12 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJ( typename Out::VecDeriv& o
     const core::componentmodel::topology::BaseMeshTopology::SeqHexas& hexas = inputTopo->getHexas();
 
     out.resize(outputTopo->getNbPoints());
-    for(unsigned int i = 0; i < pointMap.getValue().size(); ++i)
+    for(unsigned int i = 0; i < pointMap.size(); ++i)
     {
-        for(unsigned int j = 0; j < pointMap.getValue()[i].size(); ++j)
+        for(unsigned int j = 0; j < pointMap[i].size(); ++j)
         {
-            if (pointMap.getValue()[i][j] == -1) continue;
-            out[pointMap.getValue()[i][j]] = in[i]+topoMap->getPointBaryCoords()[j];
+            if (pointMap[i][j] == -1) continue;
+            out[pointMap[i][j]] = in[i]+topoMap->getPointBaryCoords()[j];
         }
     }
 
@@ -271,14 +271,14 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecDeriv& o
 {
     if (!topoMap) return;
 
-    const topology::PointData< sofa::helper::vector<int> >& pointMap = topoMap->getPointsMappedFromPoint();
+    const sofa::helper::vector< sofa::helper::vector<int> >& pointMap = topoMap->getPointsMappedFromPoint();
     const sofa::helper::vector< sofa::helper::vector<int> >& edgeMap = topoMap->getPointsMappedFromEdge();
     const sofa::helper::vector< sofa::helper::vector<int> >& triangleMap = topoMap->getPointsMappedFromTriangle();
-    const topology::QuadData< sofa::helper::vector<int> >& quadMap = topoMap->getPointsMappedFromQuad();
-    const topology::TetrahedronData< sofa::helper::vector<int> >& tetraMap = topoMap->getPointsMappedFromTetra();
-    const topology::HexahedronData< sofa::helper::vector<int> >& hexaMap = topoMap->getPointsMappedFromHexa();
+    const sofa::helper::vector< sofa::helper::vector<int> >& quadMap = topoMap->getPointsMappedFromQuad();
+    const sofa::helper::vector< sofa::helper::vector<int> >& tetraMap = topoMap->getPointsMappedFromTetra();
+    const sofa::helper::vector< sofa::helper::vector<int> >& hexaMap = topoMap->getPointsMappedFromHexa();
 
-    if (pointMap.getValue().empty() && edgeMap.empty() && triangleMap.empty() && quadMap.empty() && tetraMap.empty() && hexaMap.empty()) return;
+    if (pointMap.empty() && edgeMap.empty() && triangleMap.empty() && quadMap.empty() && tetraMap.empty() && hexaMap.empty()) return;
 
     const core::componentmodel::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
     const core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = inputTopo->getTriangles();
@@ -287,12 +287,12 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecDeriv& o
     const core::componentmodel::topology::BaseMeshTopology::SeqHexas& hexas = inputTopo->getHexas();
 
     out.resize(inputTopo->getNbPoints());
-    for(unsigned int i = 0; i < pointMap.getValue().size(); ++i)
+    for(unsigned int i = 0; i < pointMap.size(); ++i)
     {
-        for(unsigned int j = 0; j < pointMap.getValue()[i].size(); ++j)
+        for(unsigned int j = 0; j < pointMap[i].size(); ++j)
         {
-            if (pointMap.getValue()[i][j] == -1) continue;
-            out[i] += in[pointMap.getValue()[i][j]];
+            if (pointMap[i][j] == -1) continue;
+            out[i] += in[pointMap[i][j]];
         }
     }
 

@@ -131,6 +131,18 @@ protected:
         HexahedronInformation()
         {
         }
+
+        /// Output stream
+        inline friend std::ostream& operator<< ( std::ostream& os, const HexahedronInformation& /*hi*/ )
+        {
+            return os;
+        }
+
+        /// Input stream
+        inline friend std::istream& operator>> ( std::istream& in, HexahedronInformation& /*hi*/ )
+        {
+            return in;
+        }
     };
     /// container that stotes all requires information for each hexahedron
     HexahedronData<HexahedronInformation> hexahedronInfo;
