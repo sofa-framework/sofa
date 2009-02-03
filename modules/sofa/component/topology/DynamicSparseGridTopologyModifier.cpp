@@ -96,8 +96,10 @@ void DynamicSparseGridTopologyModifier::removeHexahedraWarning ( sofa::helper::v
 {
     HexahedronSetTopologyModifier::removeHexahedraWarning( hexahedra );
 
+    helper::vector<BaseMeshTopology::HexaID>& iirg = *(m_container->idxInRegularGrid.beginEdit());
+
     // Update the data
-    unsigned int nbElt = m_container->idxInRegularGrid.size();
+    unsigned int nbElt = iirg.size();
     sofa::helper::vector<unsigned int> vecHexaRemoved = hexahedra; // Is indices ever sorted?
     sort ( vecHexaRemoved.begin(), vecHexaRemoved.end() );
     for ( sofa::helper::vector<unsigned int>::const_reverse_iterator it ( vecHexaRemoved.end() ); it != sofa::helper::vector<unsigned int>::const_reverse_iterator ( vecHexaRemoved.begin() ); it++ )
@@ -105,13 +107,13 @@ void DynamicSparseGridTopologyModifier::removeHexahedraWarning ( sofa::helper::v
         nbElt--;
 
         // Update the voxels value
-        unsigned int idHexa = m_container->idxInRegularGrid[*it];
+        unsigned int idHexa = iirg[*it];
         m_container->valuesIndexedInRegularGrid[idHexa] = 0;
 
         // Update the indices
-        m_container->idxInRegularGrid[*it] = m_container->idxInRegularGrid[ nbElt ];
+        iirg[*it] = iirg[ nbElt ];
     }
-    m_container->idxInRegularGrid.resize ( nbElt );
+    iirg.resize ( nbElt );
 }
 
 } // namespace topology

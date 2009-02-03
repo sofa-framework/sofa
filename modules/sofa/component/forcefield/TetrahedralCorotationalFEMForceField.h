@@ -119,6 +119,18 @@ protected:
         TetrahedronInformation()
         {
         }
+
+        /// Output stream
+        inline friend std::ostream& operator<< ( std::ostream& os, const TetrahedronInformation& /*tri*/ )
+        {
+            return os;
+        }
+
+        /// Input stream
+        inline friend std::istream& operator>> ( std::istream& in, TetrahedronInformation& /*tri*/ )
+        {
+            return in;
+        }
     };
     /// container that stotes all requires information for each tetrahedron
     TetrahedronData<TetrahedronInformation> tetrahedronInfo;
