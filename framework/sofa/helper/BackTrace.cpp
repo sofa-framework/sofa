@@ -90,7 +90,7 @@ void BackTrace::dump()
                             free(name);
                             name = realname;
                         }
-                        fprintf(stderr,"-> %.*s%s%s\n",beginmangled-symbol,symbol,name,endmangled);
+                        fprintf(stderr,"-> %.*s%s%s\n",(int)(beginmangled-symbol),symbol,name,endmangled);
                         free(name);
                     }
                     else
