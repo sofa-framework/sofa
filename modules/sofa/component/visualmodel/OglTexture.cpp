@@ -150,7 +150,7 @@ void OglTexture2D::parse(core::objectmodel::BaseObjectDescription* arg)
 
     if (arg->getAttribute("repeat"))
     {
-        repeat.setValue( arg->getAttribute("repeat")  );
+        repeat.setValue( ( arg->getAttribute("repeat") != NULL ) );
     }
 }
 
