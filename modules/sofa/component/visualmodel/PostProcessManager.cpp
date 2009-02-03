@@ -147,8 +147,8 @@ bool PostProcessManager::drawScene(helper::gl::VisualParameters* vp)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE);
 
         float pixelSize[2];
-        pixelSize[0] = 1.0/vp->viewport[2];
-        pixelSize[1] = 1.0/vp->viewport[3];
+        pixelSize[0] = (float)1.0/vp->viewport[2];
+        pixelSize[1] = (float)1.0/vp->viewport[3];
 
         //dofShader->setInt(0, "colorTexture", 0);
         //dofShader->setInt(0, "depthTexture", 1);
