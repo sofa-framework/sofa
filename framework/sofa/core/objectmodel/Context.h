@@ -241,6 +241,9 @@ public:
     /// Copy the context variables of visualization from the given instance
     void copyVisualContext(const Context& c);
 
+    /// Fusion the context variables of visualization from the given instance with the current instance
+    void fusionVisualContext(const Context& c);
+
 
 
 
