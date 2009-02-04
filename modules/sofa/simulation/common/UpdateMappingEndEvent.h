@@ -57,7 +57,7 @@ public:
     ~UpdateMappingEndEvent();
 
     double getDt() const { return dt; }
-
+    virtual const char* getClassName() const { return "UpdateMappingEndEvent"; }
 protected:
     double dt;
 };

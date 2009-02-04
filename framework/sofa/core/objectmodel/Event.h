@@ -58,6 +58,7 @@ public:
     /// Returns true of the event has been handled
     bool isHandled() const;
 
+    virtual const char* getClassName() const { return "Event"; }
 protected:
     bool m_handled;
 };
