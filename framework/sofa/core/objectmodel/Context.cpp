@@ -438,6 +438,20 @@ void Context::copyVisualContext(const Context& c)
 }
 
 
+void Context::fusionVisualContext(const Context& c)
+{
+    showCollisionModels_.setValue(showCollisionModels_.getValue() || c.showCollisionModels_.getValue());
+    showBoundingCollisionModels_.setValue(showBoundingCollisionModels_.getValue() || c.showBoundingCollisionModels_.getValue());
+    showBehaviorModels_.setValue(showBehaviorModels_.getValue() || c.showBehaviorModels_.getValue());
+    showVisualModels_.setValue(showVisualModels_.getValue() || c.showVisualModels_.getValue());
+    showMappings_.setValue(showMappings_.getValue() || c.showMappings_.getValue());
+    showMechanicalMappings_.setValue(showMechanicalMappings_.getValue() || c.showMechanicalMappings_.getValue());
+    showForceFields_.setValue(showForceFields_.getValue() || c.showForceFields_.getValue());
+    showInteractionForceFields_.setValue(showInteractionForceFields_.getValue() || c.showInteractionForceFields_.getValue());
+    showWireFrame_.setValue(showWireFrame_.getValue() || c.showWireFrame_.getValue());
+    showNormals_.setValue(showNormals_.getValue() || c.showNormals_.getValue());
+}
+
 
 
 
