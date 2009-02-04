@@ -35,6 +35,7 @@
 //
 #include "Node.h"
 #include <sofa/simulation/common/PropagateEventVisitor.h>
+#include <sofa/simulation/common/UpdateMappingEndEvent.h>
 #include <sofa/simulation/common/AnimateVisitor.h>
 #include <sofa/simulation/common/DesactivatedNodeVisitor.h>
 #include <sofa/simulation/common/InitVisitor.h>
@@ -97,7 +98,13 @@ void Node::animate( double dt )
     //cerr<<"Node::animate, start execute"<<endl;
     execute(vis);
     //cerr<<"Node::animate, end execute"<<endl;
+
     execute<simulation::UpdateMappingVisitor>();
+    {
+        simulation::UpdateMappingEndEvent ev ( dt );
+        PropagateEventVisitor act ( &ev );
+        this->execute ( act );
+    }
 }
 
 void Node::glDraw()
