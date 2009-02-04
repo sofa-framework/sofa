@@ -43,6 +43,7 @@
 #include <sofa/core/objectmodel/BaseNode.h>
 #include "BglSimulation.h"
 #include <sofa/core/objectmodel/ClassInfo.h>
+#include <sofa/helper/vector.h>
 
 
 namespace sofa
@@ -99,6 +100,7 @@ public:
     virtual void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, SearchDirection dir = SearchUp) const;
 
 
+
     /// Add a child node
     void addChild(Node* node);
 
@@ -108,11 +110,29 @@ public:
     /// Move a node from another node
     void moveChild(Node* obj);
 
+    /// Find all the Nodes pointing
+    helper::vector< BglNode* > getParents();
+
     /// return the mechanical graph of the scene it belongs to
     BglSimulation::Hgraph &getGraph() { return *graph;};
 
     /// return the id of the node in the mechanical graph
     BglSimulation::Hvertex getVertexId() { return vertexId;};
+
+
+    /// Called during initialization to corectly propagate the visual context to the children
+    virtual void initVisualContext();
+
+    /// Update the whole context values, based on parent and local ContextObjects
+    virtual void updateContext();
+
+    /// Update the visual context values, based on parent and local ContextObjects
+    virtual void updateVisualContext(int FILTER=0);
+
+    /// Update the simulation context values(gravity, time...), based on parent and local ContextObjects
+    virtual void updateSimulationContext();
+
+
 
 protected:
     BglSimulation* scene;              ///< the scene the node belongs to
