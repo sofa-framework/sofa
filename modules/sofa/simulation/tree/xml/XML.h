@@ -26,7 +26,15 @@
 #define SOFA_SIMULATION_TREE_XML_XML_H
 
 #include <sofa/simulation/tree/xml/Element.h>
+
+//a changer
+#ifdef SOFA_XML_PARSER_TINYXML
+#include <tinyxml/tinyxml.h>
+#else
 #include <libxml/parser.h>
+#include <libxml/tree.h>
+#endif
+
 
 namespace sofa
 {
@@ -40,7 +48,11 @@ namespace tree
 namespace xml
 {
 
+#ifdef SOFA_XML_PARSER_TINYXML
+SOFA_SIMULATION_TREE_API BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc);
+#else
 SOFA_SIMULATION_TREE_API BaseElement* processXMLLoading(const char *filename, const xmlDocPtr &doc);
+#endif
 
 SOFA_SIMULATION_TREE_API BaseElement* loadFromFile(const char *filename);
 
