@@ -1126,13 +1126,27 @@ sofa::helper::vector <EdgeID> ManifoldTriangleSetTopologyContainer::getEdgesBord
 
     const unsigned int nbrEdges = getNumberOfEdges();
     sofa::helper::vector <EdgeID> edgesBorder;
+    bool test = true;
 
     for (unsigned int i = 0; i < nbrEdges; ++i)
     {
 
         if (m_triangleEdgeShell[i].size() == 1)
         {
-            edgesBorder.push_back (i);
+            for(unsigned int j = 0; j< edgesBorder.size(); j++)
+            {
+                if (edgesBorder[j] == i)
+                {
+                    test = false;
+                    break;
+                }
+            }
+
+            if(test)
+            {
+                edgesBorder.push_back (i);
+            }
+            test = true;
         }
     }
 
@@ -1155,12 +1169,27 @@ sofa::helper::vector <PointID> ManifoldTriangleSetTopologyContainer::getPointsBo
 
     const unsigned int nbrEdges = getNumberOfEdges();
     sofa::helper::vector <PointID> pointsBorder;
+    bool test = true;
+
 
     for (unsigned int i = 0; i < nbrEdges; ++i)
     {
         if (m_triangleEdgeShell[i].size() == 1)
         {
-            pointsBorder.push_back (m_edge[i][0]);
+            for(unsigned int j = 0; j< pointsBorder.size(); j++)
+            {
+                if (pointsBorder[j] == m_edge[i][0])
+                {
+                    test = false;
+                    break;
+                }
+            }
+
+            if(test)
+            {
+                pointsBorder.push_back (m_edge[i][0]);
+            }
+            test = true;
         }
     }
 
