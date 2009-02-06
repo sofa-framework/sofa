@@ -35,6 +35,8 @@
 #include <iostream>
 #include <typeinfo>
 #include <sofa/core/core.h>
+#include <sofa/core/objectmodel/DDGNode.h>
+
 namespace sofa
 {
 
@@ -48,7 +50,7 @@ namespace objectmodel
  *  \brief Abstract base class for all fields, independently of their type.
  *
  */
-class SOFA_CORE_API BaseData
+class SOFA_CORE_API BaseData : public DDGNode
 {
 public:
     /** Constructor
@@ -114,6 +116,29 @@ public:
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
     int getCounter() const { return m_counter; }
+
+    /// Set the writer of the Data
+    void setWriter(DDGNode* wrt) { writer = wrt; }
+
+    /// Add a reader for this Data
+    void addReader(DDGNode* rdr) { readers.push_back(rdr); }
+
+    /// Delete a reader for this Data
+    void delReader(DDGNode* rdr) { readers.remove(rdr); }
+
+    /// Update the value of this Data
+    void update()
+    {
+        if (dirty)
+        {
+            writer->update();
+            dirty = false;
+        }
+    }
+
+    /// Set to dirty this Data and all his readers -> Data has been modified
+    void setDirty() { DDGNode::setDirty(readers); }
+
 protected:
 
     /// Help message
@@ -128,6 +153,10 @@ protected:
     bool m_isDisplayed;
     /// True if the Data will be readable only in the GUI
     bool m_isReadOnly;
+
+    DDGNode* writer;
+
+    DDGNodeList readers;
 
     /// Helper method to decode the type name to a more readable form if possible
     static std::string decodeTypeName(const std::type_info& t);

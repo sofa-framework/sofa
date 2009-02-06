@@ -72,6 +72,8 @@ HEADERS += \
           objectmodel/Context.h \
           objectmodel/ContextObject.h \
           objectmodel/Data.h \
+          objectmodel/DataEngine.h \
+	  objectmodel/DDGNode.h \
           objectmodel/DetachNodeEvent.h \
           objectmodel/Event.h \
           objectmodel/DataPtr.h \
