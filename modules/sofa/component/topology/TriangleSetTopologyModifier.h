@@ -221,8 +221,11 @@ public:
     /**\brief: Postprocessing to apply to the triangle topology. Nothing is needed in this class. This function should be inplemented in children classes.
     *
      */
-    virtual void removePostProcessing() {};
+    virtual void removePostProcessing(const sofa::helper::vector< unsigned int >& edgeToBeRemoved, const sofa::helper::vector< unsigned int >& vertexToBeRemoved )
+    {(void)vertexToBeRemoved; (void)edgeToBeRemoved;};
 
+
+    virtual void Debug() {}; // TO BE REMOVED WHEN MANIFOLD MODIFIER IS SURE.
 
 
 private:
