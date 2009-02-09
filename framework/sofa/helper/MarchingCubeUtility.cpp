@@ -587,7 +587,6 @@ void MarchingCubeUtility::propagateFrom ( const Vec3i coord,
     stack<Vec3i> cubesToGenerate; // Stack of cubes to generate.
     cubesToGenerate.push ( coord ); // Adds the first non-trivial cube.
 
-    PointID counter_triangles=0;
     int cubeConf;
     while ( !cubesToGenerate.empty() )
     {
@@ -608,7 +607,6 @@ void MarchingCubeUtility::propagateFrom ( const Vec3i coord,
 
         int numvert = polygonise ( cell, cubeConf, isolevel, mesh, map_vertices, vertices );
 
-        counter_triangles += numvert/3;
         if ( triangleIndexInRegularGrid ) updateTriangleInRegularGridVector ( *triangleIndexInRegularGrid, cubeCoord, cell, gridSize, numvert / 3 );
 
         // Propagate
@@ -697,7 +695,6 @@ void MarchingCubeUtility::run ( const unsigned char *_data, const float isolevel
 
     Vec3i dataGridStep ( dataResolution[0]/gridSize[0],dataResolution[1]/gridSize[1],dataResolution[2]/gridSize[2] );
 
-    PointID counter_triangles=0;
     int cubeConf;
     for ( int k=bboxMin[2]; k<bboxMax[2]-1; k++ )
         for ( int j=bboxMin[1]; j<bboxMax[1]-1; j++ )
@@ -707,7 +704,6 @@ void MarchingCubeUtility::run ( const unsigned char *_data, const float isolevel
                 initCell ( cell, Vec3i ( i, j, k ), data, gridStep, dataGridStep );
 
                 int numvert = polygonise ( cell, cubeConf, isolevel, mesh, map_vertices, vertices );
-                counter_triangles += numvert/3;
 
                 if ( triangleIndexInRegularGrid ) updateTriangleInRegularGridVector ( *triangleIndexInRegularGrid, Vec3i ( i, j, k ), cell, gridSize, numvert / 3 );
             }
