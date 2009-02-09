@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_CPP
 #include <sofa/component/collision/BarycentricContactMapper.inl>
 #include <sofa/helper/Factory.inl>
 
@@ -46,6 +47,15 @@ ContactMapperCreator< ContactMapper<TriangleModel> > TriangleContactMapperClass(
 ContactMapperCreator< ContactMapper<TetrahedronModel> > TetrahedronContactMapperClass("default",true);
 ContactMapperCreator< ContactMapper<RigidDistanceGridCollisionModel> > DistanceGridContactMapperClass("default", true);
 ContactMapperCreator< ContactMapper<FFDDistanceGridCollisionModel> > FFDDistanceGridContactMapperClass("default", true);
+
+template class SOFA_COMPONENT_COLLISION_API ContactMapper<SphereModel>;
+template class SOFA_COMPONENT_COLLISION_API ContactMapper<SphereTreeModel>;
+template class SOFA_COMPONENT_COLLISION_API ContactMapper<PointModel>;
+template class SOFA_COMPONENT_COLLISION_API ContactMapper<LineModel>;
+template class SOFA_COMPONENT_COLLISION_API ContactMapper<TriangleModel>;
+template class SOFA_COMPONENT_COLLISION_API ContactMapper<TetrahedronModel>;
+template class SOFA_COMPONENT_COLLISION_API ContactMapper<RigidDistanceGridCollisionModel>;
+template class SOFA_COMPONENT_COLLISION_API ContactMapper<FFDDistanceGridCollisionModel>;
 
 } // namespace collision
 
