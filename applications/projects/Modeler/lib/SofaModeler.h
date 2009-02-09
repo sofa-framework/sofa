@@ -194,6 +194,12 @@ public slots:
     //When the window is closed: we close all the Sofa launched, and remove temporary files
     void closeEvent ( QCloseEvent * e );
 
+    ///display the plugin manager window, to add/remove some external dynamic libraries
+    void showPluginManager();
+
+    ///update the list of components available in Sofa
+    void updateComponentList();
+
 protected:
     /// Widget containing all the graphs
     QTabWidget *sceneTab;
@@ -211,6 +217,9 @@ protected:
     std::map< std::string, std::string > mapPreset;
     /// Is ready to do a paste operation?
     bool isPasteReady;
+
+    /// plugin manager window
+    SofaPluginManager* pluginManager;
 
 
     /// Main Sofa Ressources: contains all the component, with many info, and creators

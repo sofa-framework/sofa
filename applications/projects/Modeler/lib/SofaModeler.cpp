@@ -97,6 +97,12 @@ SofaModeler::SofaModeler()
 #endif
     connect(GNodeButton, SIGNAL(pressed()), this, SLOT( releaseButton()));
 
+    //----------------------------------------------------------------------
+    //Add plugin manager window. ->load external libs
+    pluginManager = new SofaPluginManager;
+    pluginManager->hide();
+    this->connect(pluginManager->buttonClose, SIGNAL(clicked() ),  this, SLOT( updateComponentList() ));
+
     int menuIndex=4;
     //----------------------------------------------------------------------
     //Add menu runSofa
@@ -200,155 +206,7 @@ SofaModeler::SofaModeler()
 
 
     //Construction of the left part of the GUI: list of all objects sorted by base class
-    std::set< std::string > setType;
-    std::multimap< std::string, ClassInfo* > inventory;
-    std::vector< ClassInfo* > entries;
-    sofa::core::ObjectFactory::getInstance()->getAllEntries(entries);
-
-    for (unsigned int i=0; i<entries.size(); ++i)
-    {
-#ifdef	    TEST_CREATION_COMPONENT
-        sofa::core::objectmodel::BaseObject *object;
-        std::cout << "Creating " << entries[i]->className << "\n";
-        if (entries[i]->creatorMap.find(entries[i]->defaultTemplate) != entries[i]->creatorMap.end())
-        {
-            object = entries[i]->creatorMap.find(entries[i]->defaultTemplate)->second->createInstance(NULL, NULL);
-        }
-        else
-        {
-            object = entries[i]->creatorList.begin()->second->createInstance(NULL, NULL);
-        }
-        std::cout << "Deleting " << entries[i]->className << "\n";
-        delete object;
-#endif
-        std::set< std::string >::iterator it;
-        for (it = entries[i]->baseClasses.begin(); it!= entries[i]->baseClasses.end(); it++)
-        {
-            setType.insert((*it));
-            inventory.insert(std::make_pair((*it), entries[i]));
-        }
-        if (entries[i]->baseClasses.size() == 0)
-        {
-            setType.insert("_Miscellaneous");
-            inventory.insert(std::make_pair("_Miscellaneous", entries[i]));
-        }
-
-    }
-
-    std::set< std::string >::iterator it;
-    std::multimap< std::string,ClassInfo* >::iterator itMap;
-
-    for (it = setType.begin(); it != setType.end(); it++)
-    {
-
-
-        itMap = inventory.find( (*it) );
-        unsigned int numRows = inventory.count( (*it) );
-        QString s=QString(it->c_str());
-
-
-        std::multimap< QWidget*, std::pair< QPushButton*, QComboBox*> > pageMap;
-        QWidget* gridWidget = new QWidget(SofaComponents, s);
-
-        QGridLayout* gridLayout = new QGridLayout( gridWidget, numRows+1,1);
-
-        //Insert all the components belonging to the same family
-        SofaComponents->addItem( gridWidget ,it->c_str() );
-        unsigned int counterElem=1;
-        for (unsigned int i=0; i< inventory.count( (*it) ); ++i)
-        {
-            ClassInfo* entry = itMap->second;
-            //We must remove the mass from the ForceField list
-            if ( *it == "ForceField")
-            {
-                std::set< std::string >::iterator baseClassIt;
-                bool isMass=false;
-                for (baseClassIt = entry->baseClasses.begin(); baseClassIt!= entry->baseClasses.end() && !isMass; baseClassIt++)
-                {
-                    isMass= (*baseClassIt == "Mass");
-                }
-                if (isMass) { itMap++; continue;}
-            }
-
-            //We must remove the topological container from the Topology
-            if ( *it == "Topology")
-            {
-                std::set< std::string >::iterator baseClassIt;
-                bool isMass=false;
-                for (baseClassIt = entry->baseClasses.begin(); baseClassIt!= entry->baseClasses.end() && !isMass; baseClassIt++)
-                {
-                    isMass= (*baseClassIt == "TopologyObject");
-                }
-                if (isMass) { itMap++; continue;}
-            }
-
-
-
-            //Count the number of template usable: Mapping and MechanicalMapping must be separated
-            std::vector< std::string > templateCombo;
-            {
-                std::list< std::pair< std::string, ClassCreator*> >::iterator itTemplate;
-                for (itTemplate=entry->creatorList.begin(); itTemplate!= entry->creatorList.end(); itTemplate++)
-                {
-                    if (*it == "Mapping")
-                    {
-                        std::string mechanical = itTemplate->first;
-                        mechanical.resize(10+7);
-                        if (mechanical == "MechanicalMapping") continue;
-                    }
-                    else if ( *it == "MechanicalMapping")
-                    {
-                        std::string nonmechanical = itTemplate->first;
-                        nonmechanical.resize(7);
-                        if (nonmechanical == "Mapping") continue;
-                    }
-                    templateCombo.push_back(itTemplate->first);
-                }
-            }
-            if (templateCombo.size() == 0 && entry->creatorList.size() > 1)
-            { itMap++; continue;}
-
-            displayComponents++;
-            QPushButton *button = new QPushButton(gridWidget, QString(entry->className.c_str()));
-            connect(button, SIGNAL(pressed()), this, SLOT( newComponent()));
-            connect(button, SIGNAL(pressed()), this, SLOT( releaseButton()));
-            gridLayout->addWidget(button, counterElem,0);
-            button->setFlat(false);
-
-            //Template: Add in a combo box the list of the templates
-            QComboBox *combo=NULL;
-            if ( entry->creatorList.size() > 1 )
-            {
-                combo = new QComboBox(gridWidget);
-
-                for (unsigned int t=0; t<templateCombo.size(); ++t)
-                    combo->insertItem(QString(templateCombo[t].c_str()));
-
-                gridLayout->addWidget(combo, counterElem,1);
-            }
-            else
-            {
-                if (!entry->creatorList.begin()->first.empty())
-                {
-                    combo = new QComboBox(gridWidget);
-                    combo->insertItem(QString(entry->creatorList.begin()->first.c_str()));
-                    gridLayout->addWidget(combo, counterElem,1);
-                }
-            }
-            button->setText(QString(entry->className.c_str()));
-
-            mapComponents.insert(std::make_pair(button, std::make_pair(entry, combo)));
-            pageMap.insert(std::make_pair(gridWidget,std::make_pair(button, combo)));
-            itMap++;
-
-            //connect(button, SIGNAL(pressed() ), this, SLOT( newComponent() ));
-            counterElem++;
-        }
-        gridLayout->addItem(new QSpacerItem(1,1,QSizePolicy::Minimum, QSizePolicy::Expanding ), counterElem,0);
-
-        pages.push_back(pageMap);
-
-    }
+    updateComponentList();
 
     connect( this->infoItem, SIGNAL(linkClicked( const QString &)), this, SLOT(fileOpen(const QString &)));
 
@@ -1070,6 +928,187 @@ void SofaModeler::editPaste()
     {
         graph->editPaste(presetPath+"copyBuffer.scn");
     }
+}
+
+void SofaModeler::showPluginManager()
+{
+    pluginManager->show();
+}
+
+
+void SofaModeler::updateComponentList()
+{
+    //clear the current component list
+    for (int p=0; p<(int)pages.size(); ++p)
+    {
+        QWidget* page=pages[p].begin()->first;
+        int idx=SofaComponents->indexOf(page);
+        //Hide the page
+        if (idx >= 0)
+        {
+#ifdef SOFA_QT4
+            SofaComponents->removeItem(idx);
+#else
+            SofaComponents->removeItem(page);
+#endif
+        }
+    }
+
+
+    //create the new one
+    std::set< std::string > setType;
+    std::multimap< std::string, ClassInfo* > inventory;
+    std::vector< ClassInfo* > entries;
+    sofa::core::ObjectFactory::getInstance()->getAllEntries(entries);
+
+    for (unsigned int i=0; i<entries.size(); ++i)
+    {
+#ifdef	    TEST_CREATION_COMPONENT
+        sofa::core::objectmodel::BaseObject *object;
+        std::cout << "Creating " << entries[i]->className << "\n";
+        if (entries[i]->creatorMap.find(entries[i]->defaultTemplate) != entries[i]->creatorMap.end())
+        {
+            object = entries[i]->creatorMap.find(entries[i]->defaultTemplate)->second->createInstance(NULL, NULL);
+        }
+        else
+        {
+            object = entries[i]->creatorList.begin()->second->createInstance(NULL, NULL);
+        }
+        std::cout << "Deleting " << entries[i]->className << "\n";
+        delete object;
+#endif
+        std::set< std::string >::iterator it;
+        for (it = entries[i]->baseClasses.begin(); it!= entries[i]->baseClasses.end(); it++)
+        {
+            setType.insert((*it));
+            inventory.insert(std::make_pair((*it), entries[i]));
+        }
+        if (entries[i]->baseClasses.size() == 0)
+        {
+            setType.insert("_Miscellaneous");
+            inventory.insert(std::make_pair("_Miscellaneous", entries[i]));
+        }
+    }
+
+
+    std::set< std::string >::iterator it;
+    std::multimap< std::string,ClassInfo* >::iterator itMap;
+
+    for (it = setType.begin(); it != setType.end(); it++)
+    {
+        itMap = inventory.find( (*it) );
+        unsigned int numRows = inventory.count( (*it) );
+        QString s=QString(it->c_str());
+
+
+        std::multimap< QWidget*, std::pair< QPushButton*, QComboBox*> > pageMap;
+        QWidget* gridWidget = new QWidget(SofaComponents, s);
+
+        QGridLayout* gridLayout = new QGridLayout( gridWidget, numRows+1,1);
+
+        //Insert all the components belonging to the same family
+        SofaComponents->addItem( gridWidget ,it->c_str() );
+        unsigned int counterElem=1;
+        for (unsigned int i=0; i< inventory.count( (*it) ); ++i)
+        {
+            ClassInfo* entry = itMap->second;
+            //We must remove the mass from the ForceField list
+            if ( *it == "ForceField")
+            {
+                std::set< std::string >::iterator baseClassIt;
+                bool isMass=false;
+                for (baseClassIt = entry->baseClasses.begin(); baseClassIt!= entry->baseClasses.end() && !isMass; baseClassIt++)
+                {
+                    isMass= (*baseClassIt == "Mass");
+                }
+                if (isMass) { itMap++; continue;}
+            }
+
+            //We must remove the topological container from the Topology
+            if ( *it == "Topology")
+            {
+                std::set< std::string >::iterator baseClassIt;
+                bool isMass=false;
+                for (baseClassIt = entry->baseClasses.begin(); baseClassIt!= entry->baseClasses.end() && !isMass; baseClassIt++)
+                {
+                    isMass= (*baseClassIt == "TopologyObject");
+                }
+                if (isMass) { itMap++; continue;}
+            }
+
+
+
+            //Count the number of template usable: Mapping and MechanicalMapping must be separated
+            std::vector< std::string > templateCombo;
+            {
+                std::list< std::pair< std::string, ClassCreator*> >::iterator itTemplate;
+                for (itTemplate=entry->creatorList.begin(); itTemplate!= entry->creatorList.end(); itTemplate++)
+                {
+                    if (*it == "Mapping")
+                    {
+                        std::string mechanical = itTemplate->first;
+                        mechanical.resize(10+7);
+                        if (mechanical == "MechanicalMapping") continue;
+                    }
+                    else if ( *it == "MechanicalMapping")
+                    {
+                        std::string nonmechanical = itTemplate->first;
+                        nonmechanical.resize(7);
+                        if (nonmechanical == "Mapping") continue;
+                    }
+                    templateCombo.push_back(itTemplate->first);
+                }
+            }
+
+            if (templateCombo.size() == 0 && entry->creatorList.size() > 1)
+            { itMap++; continue;}
+
+            displayComponents++;
+            QPushButton *button = new QPushButton(gridWidget, QString(entry->className.c_str()));
+            connect(button, SIGNAL(pressed()), this, SLOT( newComponent()));
+            connect(button, SIGNAL(pressed()), this, SLOT( releaseButton()));
+            gridLayout->addWidget(button, counterElem,0);
+            button->setFlat(false);
+
+            //Template: Add in a combo box the list of the templates
+            QComboBox *combo=NULL;
+            if ( entry->creatorList.size() > 1 )
+            {
+                combo = new QComboBox(gridWidget);
+
+                for (unsigned int t=0; t<templateCombo.size(); ++t)
+                    combo->insertItem(QString(templateCombo[t].c_str()));
+
+                gridLayout->addWidget(combo, counterElem,1);
+            }
+            else
+            {
+                if (!entry->creatorList.begin()->first.empty())
+                {
+                    combo = new QComboBox(gridWidget);
+                    combo->insertItem(QString(entry->creatorList.begin()->first.c_str()));
+                    gridLayout->addWidget(combo, counterElem,1);
+                }
+            }
+
+            button->setText(QString(entry->className.c_str()));
+
+            mapComponents.insert(std::make_pair(button, std::make_pair(entry, combo)));
+            pageMap.insert(std::make_pair(gridWidget,std::make_pair(button, combo)));
+            itMap++;
+
+            //connect(button, SIGNAL(pressed() ), this, SLOT( newComponent() ));
+            counterElem++;
+        }
+        gridLayout->addItem(new QSpacerItem(1,1,QSizePolicy::Minimum, QSizePolicy::Expanding ), counterElem,0);
+
+        pages.push_back(pageMap);
+    }
+
+    //update the graph library
+    std::map<  const QWidget*, GraphModeler*>::iterator itgraph;
+    for (itgraph = mapGraph.begin(); itgraph!=mapGraph.end() ; itgraph++)
+        itgraph->second->setLibrary(mapComponents);
 }
 
 }
