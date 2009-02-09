@@ -140,6 +140,9 @@ public:
     void setFloatVector3(const unsigned int index, const char* name, int count, const float* f);
     void setFloatVector4(const unsigned int index, const char* name, int count, const float* f);
 
+    GLint getAttribute(const unsigned int index, const char* name);
+    GLint getUniform(const unsigned int index, const char* name);
+
     GLint getGeometryInputType(const unsigned int index) ;
     void  setGeometryInputType(const unsigned int index, GLint v) ;
 

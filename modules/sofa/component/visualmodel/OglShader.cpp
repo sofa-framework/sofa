@@ -440,6 +440,24 @@ void OglShader::setFloatVector4(const unsigned int index, const char* name, int 
 }
 
 
+GLint OglShader::getAttribute(const unsigned int index, const char* name)
+{
+    start();
+    GLint res = shaderVector[index]->GetAttributeVariable(name);
+    stop();
+
+    return res;
+}
+
+GLint OglShader::getUniform(const unsigned int index, const char* name)
+{
+    start();
+    GLint res = shaderVector[index]->GetVariable(name);
+    stop();
+
+    return res;
+}
+
 GLint OglShader::getGeometryInputType(const unsigned int index)
 {
     return shaderVector[index]->GetGeometryInputType();
