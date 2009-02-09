@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDGEOMETRYALGORITHMS_H
 
 #include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/DynamicSparseGridTopologyContainer.h>
 
 namespace sofa
 {
@@ -50,12 +51,12 @@ public:
 
     virtual ~DynamicSparseGridGeometryAlgorithms() {}
 
-    /// finds a hexahedron which is nearest to a given point. Computes barycentric coordinates and a distance measure.
-    virtual int findNearestElement ( const Coord& pos, defaulttype::Vector3& baryC, Real& distance ) const;
+    virtual void init();
 
-    /// given a vector of points, find the nearest hexa for each point. Computes barycentric coordinates and a distance measure.
-    virtual void findNearestElements ( const VecCoord& pos, helper::vector<int>& elem,
-            helper::vector<defaulttype::Vector3>& baryC, helper::vector<Real>& dist ) const;
+    unsigned int getTopoIndexFromRegularGridIndex ( unsigned int index );
+
+protected:
+    DynamicSparseGridTopologyContainer* topoContainer;
 };
 
 } // namespace topology

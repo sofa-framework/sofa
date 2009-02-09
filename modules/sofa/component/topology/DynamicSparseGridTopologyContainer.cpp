@@ -57,23 +57,20 @@ DynamicSparseGridTopologyContainer::DynamicSparseGridTopologyContainer ( const s
 
 void DynamicSparseGridTopologyContainer::loadFromMeshLoader ( sofa::component::MeshLoader* loader )
 {
+    HexahedronSetTopologyContainer::loadFromMeshLoader( loader);
     sofa::component::VoxelGridLoader* voxelGridLoader = dynamic_cast< sofa::component::VoxelGridLoader*> ( loader );
     if ( !voxelGridLoader )
     {
         cerr << "DynamicSparseGridTopologyContainer::loadFromMeshLoader(): The loader used is not a VoxelGridLoader ! You must use it for this topology." << endl;
-        return;
+        exit(0);
     }
-
-    // load points
-    PointSetTopologyContainer::loadFromMeshLoader ( voxelGridLoader );
-    d_hexahedron.beginEdit();
 
     helper::vector<BaseMeshTopology::HexaID>& iirg = *(idxInRegularGrid.beginEdit());
 
     voxelGridLoader->getIndicesInRegularGrid( iirg);
     for( unsigned int i = 0; i < iirg.size(); i++)
     {
-        idInRegularGrid2Hexa.insert( make_pair( iirg[i], i ));
+        idInRegularGrid2IndexInTopo.insert( make_pair( iirg[i], i ));
     }
 
     idxInRegularGrid.endEdit();
@@ -92,9 +89,6 @@ void DynamicSparseGridTopologyContainer::loadFromMeshLoader ( sofa::component::M
     }
 
     valuesIndexedInTopology.endEdit();
-
-    voxelGridLoader->getHexas( m_hexahedron);
-    d_hexahedron.endEdit();
 
     Vec3i& res = *resolution.beginEdit();
     voxelGridLoader->getResolution ( res );

@@ -49,13 +49,21 @@ public:
 
     virtual void init();
 
+    /** \brief Actually Add some hexahedra to this topology. Wrong way to add some hexas for the moment !
+    *
+    * TEMPORARY BUT THIS METHOD MUST NOT BE USED !!
+    *
+    * \sa addHexahedraWarning
+    */
+    virtual void addHexahedraProcess ( const sofa::helper::vector< Hexahedron > &hexahedra );
+
     /** \brief Actually Add some hexahedra to this topology.
     *
     * This overloaded function updates relation between hexahedra indices in the topology and hexahedra indices in the regular grid.
     *
     * \sa addHexahedraWarning
     */
-    virtual void addHexahedraProcess ( const sofa::helper::vector< Hexahedron > &hexahedra );
+    virtual void addHexahedraProcess ( const sofa::helper::vector< Hexahedron > &hexahedra, const sofa::helper::vector< unsigned int> &indices );
 
     /** \brief Remove a subset of hexahedra
     *
@@ -76,7 +84,7 @@ public:
     virtual void removeHexahedraWarning ( sofa::helper::vector<unsigned int> &hexahedra );
 
 private:
-    DynamicSparseGridTopologyContainer* m_container;
+    DynamicSparseGridTopologyContainer* m_DynContainer;
 };
 
 } // namespace topology
