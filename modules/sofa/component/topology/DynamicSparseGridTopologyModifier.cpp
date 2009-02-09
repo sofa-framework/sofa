@@ -45,8 +45,8 @@ int DynamicSparseGridTopologyModifierClass = core::RegisterObject ( "Hexahedron 
 void DynamicSparseGridTopologyModifier::init()
 {
     HexahedronSetTopologyModifier::init();
-    this->getContext()->get ( m_container );
-    if ( ! m_container )
+    this->getContext()->get ( m_DynContainer );
+    if ( ! m_DynContainer )
     {
         std::cerr << "ERROR in DynamicSparseGridTopologyModifier::init(): DynamicSparseGridTopologyContainer was not found !" << std::endl;
     }
@@ -54,49 +54,47 @@ void DynamicSparseGridTopologyModifier::init()
 
 
 
+//TODO// find a solution for this case !!!! Modifier can not access to the DOF and can not compute the indices of the added hexas.
+// We have to find a way to automaticaly compute the indices of the added hexas to update the map 'm_m_DynContainer->idInRegularGrid2Hexa'
 void DynamicSparseGridTopologyModifier::addHexahedraProcess ( const sofa::helper::vector< Hexahedron > &hexahedra )
 {
-//        unsigned int hexaSize = m_container->getNumberOfHexahedra(); // Get the size before adding elements
     HexahedronSetTopologyModifier::addHexahedraProcess ( hexahedra );
-    /*
-            for ( unsigned int i = 0; i < hexahedra.size(); i++ )  // For each element
-            {
-              // Compute the center
-              const Hexahedron &t = m_container->getHexa( hexaSize + i);
-              const typename DataTypes::VecCoord& p = *(this->object->getX());
+    serr << "DynamicSparseGridTopologyModifier::addHexahedraProcess( const sofa::helper::vector< Hexahedron > &hexahedra ). You must not use this method. To add some voxels to the topology, you must use addHexahedraProcess ( const sofa::helper::vector< Hexahedron > &hexahedra, const sofa::helper::vector< unsigned int> &indices ) because, for the moment, indices maps can not be updated !" << sendl;
+}
 
-              DataTypes::Coord coord = (p[t[0]] + p[t[1]] + p[t[2]] + p[t[3]] + p[t[4]] + p[t[5]] + p[t[6]] + p[t[7]]) * (Real) 0.125;
 
-              // Check if the hexa is in the boundary.
-              assert( true); // assert dans les limites definies.
+void DynamicSparseGridTopologyModifier::addHexahedraProcess ( const sofa::helper::vector< Hexahedron > &hexahedra, const sofa::helper::vector< unsigned int> &indices )
+{
+    assert( hexahedra.size() == indices.size());
 
-              // Compute the index
-              unsigned int index = 0; //TODO// coord * sizeDim
+    unsigned int hexaSize = m_DynContainer->getNumberOfHexahedra(); // Get the size before adding elements
+    HexahedronSetTopologyModifier::addHexahedraProcess ( hexahedra );
+    helper::vector<BaseMeshTopology::HexaID>& iirg = *(m_DynContainer->idxInRegularGrid.beginEdit());
 
-              // update the map idInRegularGrid2Hexa.
-              m_container->idInRegularGrid2Hexa.insert ( std::make_pair ( index, hexaSize + i ) );
-            }*/
+    for ( unsigned int i = 0; i < hexahedra.size(); i++ )  // For each element
+    {
+        iirg[hexaSize + i] = indices[i];
+        m_DynContainer->idInRegularGrid2IndexInTopo.insert( std::make_pair ( indices[i], hexaSize + i ) );
+    }
+    m_DynContainer->idxInRegularGrid.endEdit();
 }
 
 void DynamicSparseGridTopologyModifier::removeHexahedraProcess ( const sofa::helper::vector<unsigned int> &indices, const bool removeIsolatedItems )
 {
     HexahedronSetTopologyModifier::removeHexahedraProcess ( indices, removeIsolatedItems );
 
-    /*
-            //TODO// Update the map idInRegularGrid2Hexa.
-            for ( unsigned int i = 0; i < indices.size(); i++ )  // For each element
-            {
-    //TODO// verifier s'il y a pas un erase( iterator = find()) pour eviter les surprises.
-              m_container->idInRegularGrid2Hexa.erase( indices[i]);
-            }
-    */
+    // Update the map idInRegularGrid2Hexa.
+    for ( unsigned int i = 0; i < indices.size(); i++ )  // For each element
+    {
+        m_DynContainer->idInRegularGrid2IndexInTopo.erase ( indices[i] );
+//TODO// ca suffit pas. il faut gerer le renumbering.
+    }
 }
 
 void DynamicSparseGridTopologyModifier::removeHexahedraWarning ( sofa::helper::vector<unsigned int> &hexahedra )
 {
-    HexahedronSetTopologyModifier::removeHexahedraWarning( hexahedra );
-
-    helper::vector<BaseMeshTopology::HexaID>& iirg = *(m_container->idxInRegularGrid.beginEdit());
+    HexahedronSetTopologyModifier::removeHexahedraWarning ( hexahedra );
+    const helper::vector<BaseMeshTopology::HexaID>& iirg = *(m_DynContainer->idxInRegularGrid.beginEdit());
 
     // Update the data
     unsigned int nbElt = iirg.size();
@@ -108,12 +106,13 @@ void DynamicSparseGridTopologyModifier::removeHexahedraWarning ( sofa::helper::v
 
         // Update the voxels value
         unsigned int idHexa = iirg[*it];
-        m_container->valuesIndexedInRegularGrid[idHexa] = 0;
+        m_DynContainer->valuesIndexedInRegularGrid[idHexa] = 0;
 
         // Update the indices
-        iirg[*it] = iirg[ nbElt ];
+        //iirg[*it] = iirg[ nbElt ];
     }
-    iirg.resize ( nbElt );
+    //iirg.resize ( nbElt );
+    m_DynContainer->idxInRegularGrid.endEdit();
 }
 
 } // namespace topology

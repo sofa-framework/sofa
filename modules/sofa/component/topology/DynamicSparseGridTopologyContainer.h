@@ -53,7 +53,7 @@ public:
     HexahedronData<unsigned char> valuesIndexedInTopology;
 
     HexahedronData<BaseMeshTopology::HexaID> idxInRegularGrid;
-    std::map< unsigned int, BaseMeshTopology::HexaID> idInRegularGrid2Hexa;
+    std::map< unsigned int, BaseMeshTopology::HexaID> idInRegularGrid2IndexInTopo;
     defaulttype::Vector3 voxelSize;
 
     DynamicSparseGridTopologyContainer();
@@ -62,7 +62,6 @@ public:
 
 protected:
     virtual void loadFromMeshLoader ( sofa::component::MeshLoader* loader );
-
 };
 
 } // namespace topology

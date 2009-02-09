@@ -37,19 +37,27 @@ namespace component
 namespace topology
 {
 
-/// finds a hexahedron which is nearest to a given point. Computes barycentric coordinates and a distance measure.
 template < class DataTypes >
-int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElement ( const Coord& pos, defaulttype::Vector3& baryC, Real& distance ) const
+void DynamicSparseGridGeometryAlgorithms<DataTypes>::init()
 {
-    return HexahedronSetGeometryAlgorithms<DataTypes>::findNearestElement ( pos, baryC, distance );
+    HexahedronSetGeometryAlgorithms<DataTypes>::init();
+    this->getContext()->get ( topoContainer );
+    if ( !topoContainer )
+    {
+        cerr << "Hexa2TriangleTopologicalMapping::buildTriangleMesh(). Error: can't find the mapping on the triangular topology." << endl;
+        exit(0);
+    }
 }
 
-/// given a vector of points, find the nearest hexa for each point. Computes barycentric coordinates and a distance measure.
 template < class DataTypes >
-void DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElements ( const VecCoord& pos, helper::vector<int>& elem,
-        helper::vector<defaulttype::Vector3>& baryC, helper::vector<Real>& dist ) const
+unsigned int DynamicSparseGridGeometryAlgorithms<DataTypes>::getTopoIndexFromRegularGridIndex ( unsigned int index )
 {
-    HexahedronSetGeometryAlgorithms<DataTypes>::findNearestElements ( pos, elem, baryC, dist );
+    std::map< unsigned int, BaseMeshTopology::HexaID>::iterator it = topoContainer->idInRegularGrid2IndexInTopo.find( index);
+    if( it == topoContainer->idInRegularGrid2IndexInTopo.end())
+    {
+        cerr << "DynamicSparseGridGeometryAlgorithms<DataTypes>::getTopoIndexFromRegularGridIndex(): Warning ! unexisting index given !" << endl;
+    }
+    return it->second;
 }
 
 } // namespace topology
