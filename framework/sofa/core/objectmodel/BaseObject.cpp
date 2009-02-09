@@ -59,6 +59,61 @@ BaseObject::BaseObject()
 BaseObject::~BaseObject()
 {}
 
+void BaseObject::parse( BaseObjectDescription* arg )
+{
+    std::vector< std::string > attributeList;
+    arg->getAttributeList(attributeList);
+    for (unsigned int i=0; i<attributeList.size(); ++i)
+    {
+        std::vector< BaseData* > dataModif = findGlobalField(attributeList[i]);
+        for (unsigned int d=0; d<dataModif.size(); ++d)
+        {
+            const char* val = arg->getAttribute(attributeList[i]);
+            if (val)
+            {
+                std::string valueString(val);
+
+                if (valueString[0] == '@')
+                {
+                    std::string objectName;
+                    for(unsigned int j=1; valueString[j] != '.'; ++j)
+                    {
+                        objectName.push_back(valueString[j]);
+                    }
+                    BaseObject* obj = getContext()->get<BaseObject>(objectName);
+
+                    if (obj == NULL)
+                    {
+                        serr<<"could not find object for option "<< attributeList[i] <<": " << objectName << sendl;
+                        break;
+                    }
+
+                    std::string dataName;
+                    for(unsigned int j = objectName.length()+2; valueString[j] != '\0'; ++j)
+                    {
+                        dataName.push_back(valueString[j]);
+                    }
+
+                    BaseData* parentData = obj->findField(dataName);
+
+                    if (parentData == NULL)
+                    {
+                        serr<<"could not read value for option "<< attributeList[i] <<": " << val << sendl;
+                        break;
+                    }
+
+                    parentData->addChild(dataModif[d]);
+                    dataModif[d]->setParent(parentData);
+
+                    valueString = parentData->getValueString();
+                }
+
+                if( !(dataModif[d]->read( valueString ))) serr<<"could not read value for option "<< attributeList[i] <<": " << val << sendl;
+            }
+        }
+    }
+}
+
 void BaseObject::setContext(BaseContext* n)
 {
     context_ = n;

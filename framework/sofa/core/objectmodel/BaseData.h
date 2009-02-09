@@ -60,11 +60,17 @@ public:
      */
     BaseData( const char* h, bool isDisplayed=true, bool isReadOnly=false )
         : help(h), group(""), widget("")
-        , m_counter(0), m_isDisplayed(isDisplayed), m_isReadOnly(isReadOnly)
+        , m_counter(0), m_isDisplayed(isDisplayed), m_isReadOnly(isReadOnly), parent(NULL)
     {}
 
-    /// Base destructor: does nothing.
-    virtual ~BaseData() {}
+    /// Base destructor
+    virtual ~BaseData()
+    {
+        if (parent)
+            parent->delChild(this);
+        for(std::list<BaseData*>::iterator it=children.begin(); it!=children.end(); ++it)
+            (*it)->parent = NULL;
+    }
 
     /// Read the command line
     virtual bool read( std::string& str ) = 0;
@@ -139,6 +145,15 @@ public:
     /// Set to dirty this Data and all his readers -> Data has been modified
     void setDirty() { DDGNode::setDirty(readers); }
 
+    /// Set the parent of the Data
+    void setParent(BaseData* bd) { parent = bd; }
+
+    /// Add a child for this Data
+    void addChild(BaseData* bd) { children.push_back(bd); }
+
+    /// Delete a child for this Data
+    void delChild(BaseData* bd) { children.remove(bd); }
+
 protected:
 
     /// Help message
@@ -154,9 +169,17 @@ protected:
     /// True if the Data will be readable only in the GUI
     bool m_isReadOnly;
 
+    /// Pointer to the engine that write the Data
     DDGNode* writer;
 
+    /// List of pointers to the engines that read the Data
     DDGNodeList readers;
+
+    /// Pointer to the parent Data
+    BaseData* parent;
+
+    /// List of children of this Data
+    std::list<BaseData*> children;
 
     /// Helper method to decode the type name to a more readable form if possible
     static std::string decodeTypeName(const std::type_info& t);
