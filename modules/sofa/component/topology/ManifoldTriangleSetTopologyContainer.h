@@ -200,6 +200,20 @@ protected:
      *
      */
     sofa::helper::vector< unsigned int > &getTriangleEdgeShellForModification(const unsigned int edgeIndex);
+
+    /** \brief Returns a non-const edge vertex shell given the index of an vertex for subsequent modification
+     *
+     */
+    sofa::helper::vector< unsigned int > &getEdgeVertexShellForModification(const unsigned int vertexIndex);
+
+
+    /** \brief: Reorder the vertex in the array of a given edge. In order to be in the oriented in the right direction
+     * regarding the first triangle of m_triangleEdgeShellArray[ edgeIndex ].
+     *
+     */
+    void reorderingEdge(const unsigned int edgeIndex);
+
+
 };
 
 } // namespace topology
