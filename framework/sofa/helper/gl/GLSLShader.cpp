@@ -263,6 +263,17 @@ GLint GLSLShader::GetVariable(std::string strVariable)
     return glGetUniformLocationARB(m_hProgramObject, strVariable.c_str());
 }
 
+GLint GLSLShader::GetAttributeVariable(std::string strVariable)
+{
+    // If we don't have an active program object, let's return -1
+    if(!m_hProgramObject)
+        return -1;
+
+    // This returns the variable ID for a variable that is used to find
+    // the address of that variable in memory.
+    return glGetAttribLocationARB(m_hProgramObject, strVariable.c_str());
+}
+
 
 ///	This function frees all of our shader data
 void GLSLShader::Release()
