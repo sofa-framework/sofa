@@ -7,9 +7,12 @@ varying vec4 diffuse, ambient, ambientGlobal, specular;
 varying vec3 lightDir, normalView, halfVector;
 varying float dist;
 varying vec3 spotDir;
+varying vec3 restPositionW;
+
+attribute vec3 restPosition; 
 
 void main()
-{
+{	
 	gl_Position = ftransform();
 	gl_FrontColor = gl_FrontMaterial.diffuse;
 	gl_BackColor = gl_BackMaterial.diffuse;
@@ -19,6 +22,7 @@ void main()
 	// Compute position and normal in world space
 	vec3 positionW = gl_Vertex.xyz;
 	vec3 normalW = normalize(gl_NormalMatrix * gl_Normal);
+	restPositionW = restPosition;
 	
 	vec3 eyePositionW = gl_ModelViewMatrixInverse[3].xyz;
 	
