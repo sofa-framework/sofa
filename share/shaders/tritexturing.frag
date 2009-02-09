@@ -15,6 +15,8 @@ varying float dist;
 
 varying vec3 spotDir;
 
+varying vec3 restPositionW;
+
 uniform sampler2D normalMap;
 
 void main()
@@ -24,7 +26,7 @@ void main()
 	//XZ = 0 1 0
 	//YZ = 0 0 1
 	vec4 color = vec4(0.0,0.0,0.0,0.0);//gl_Color;
-	vec4 pos0 = (vPositionW);
+	vec3 pos0 = (restPositionW);
 	vec3 n0 = normalize(vNormalW);
 
 	vec3 coefs = abs(n0)-vec3(0.2,0.2,0.2);
