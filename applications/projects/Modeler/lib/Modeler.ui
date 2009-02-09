@@ -189,6 +189,7 @@
       <action name="editCutAction"/>
       <action name="editCopyAction"/>
       <action name="editPasteAction"/>
+      <action name="PluginManagerAction"/>
     </item>
   </menubar>
   <toolbars>
@@ -446,6 +447,17 @@
     </action>
     <action>
       <property name="name">
+        <cstring>PluginManagerAction</cstring>
+      </property>
+      <property name="text">
+        <string>Plugin Manager...</string>
+      </property>
+      <property name="menuText">
+        <string>Plugin Manager...</string>
+      </property>
+    </action>
+    <action>
+      <property name="name">
         <cstring>editFindAction</cstring>
       </property>
       <property name="enabled">
@@ -599,6 +611,12 @@
       <slot>editPaste()</slot>
     </connection>
     <connection>
+      <sender>PluginManagerAction</sender>
+      <signal>activated()</signal>
+      <receiver>Modeler</receiver>
+      <slot>showPluginManager()</slot>
+    </connection>
+    <connection>
       <sender>editFindAction</sender>
       <signal>activated()</signal>
       <receiver>Modeler</receiver>
@@ -631,6 +649,7 @@
     <slot>editCut()</slot>
     <slot>editCopy()</slot>
     <slot>editPaste()</slot>
+    <slot>showPluginManager()</slot>
     <slot>editFind()</slot>
     <slot>saveXML()</slot>
     <slot>newGNode()</slot>
