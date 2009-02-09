@@ -15,7 +15,7 @@ varying float dist;
 
 varying vec3 spotDir;
 
-varying vec3 restPositionW;
+varying vec3 restPositionW, restNormalW;
 
 uniform sampler2D normalMap;
 
@@ -27,7 +27,8 @@ void main()
 	//YZ = 0 0 1
 	vec4 color = vec4(0.0,0.0,0.0,0.0);//gl_Color;
 	vec3 pos0 = (restPositionW);
-	vec3 n0 = normalize(vNormalW);
+	//vec3 n0 = normalize(vNormalW);
+	vec3 n0 = normalize(restNormalW);
 
 	vec3 coefs = abs(n0)-vec3(0.2,0.2,0.2);
 	coefs *= 7.0;
@@ -104,5 +105,5 @@ void main()
 	}
 	
 	gl_FragColor = phong_color;
-	//gl_FragColor = vec4(NdotL,NdotL,NdotL,1.0);
+	//gl_FragColor = vec4(restNormalW,1.0);
 }

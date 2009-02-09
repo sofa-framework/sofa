@@ -42,11 +42,18 @@ void OglShaderVisualModel::init()
     shader = context->core::objectmodel::BaseContext::get<OglShader>();
 
     vrestpositions.resize(vertices.size());
+    vrestnormals.resize(vnormals.size());
 
     for (unsigned int i = 0; i < vertices.size(); i++)
     {
         vrestpositions[i] = vertices[i];
     }
+
+    for (unsigned int i = 0; i < vnormals.size(); i++)
+    {
+        vrestnormals[i] = vnormals[i];
+    }
+
 }
 
 
@@ -55,30 +62,42 @@ void OglShaderVisualModel::initVisual()
     OglModel::initVisual();
 
     //Store other attributes
-    //Rest Positions
     if(shader)
     {
-        GLuint abotemp;
-        glGenBuffers(1, &abotemp);
+        unsigned int restPositionsSize = vrestpositions.size() * sizeof(vrestpositions[0]);
+        unsigned int restNormalsSize = vrestnormals.size() * sizeof(vrestnormals[0]);
+        unsigned int totalSize = restPositionsSize + restNormalsSize;
 
-        glBindBuffer(GL_ARRAY_BUFFER, abotemp);
+        glGenBuffers(1, &abo);
+
+        glBindBuffer(GL_ARRAY_BUFFER, abo);
 
         glBufferData(GL_ARRAY_BUFFER,
-                vrestpositions.size() * sizeof(vrestpositions[0]),
+                totalSize,
                 NULL,
                 GL_DYNAMIC_DRAW);
 
+        //Rest Positions
         glBufferSubData(GL_ARRAY_BUFFER,
                 0,
-                vrestpositions.size()*sizeof(vrestpositions[0]),
+                restPositionsSize,
                 vrestpositions.getData());
-
-        //for (unsigned int i=0 ; i<vrestpositions.size() ; i++)
-        //	std::cout << vrestpositions[i] << std::endl;
 
         glEnableVertexAttribArray(shader->getAttribute(0, "restPosition"));
         glVertexAttribPointer(shader->getAttribute(0, "restPosition"), 3, GL_FLOAT, GL_FALSE, 0, (char*)NULL + 0);
+
+        //Rest Normals
+        glBufferSubData(GL_ARRAY_BUFFER,
+                restPositionsSize,
+                restNormalsSize,
+                vrestnormals.getData());
+
+        glEnableVertexAttribArray(shader->getAttribute(0, "restNormal"));
+        glVertexAttribPointer(shader->getAttribute(0, "restNormal"), 3, GL_FLOAT, GL_FALSE, 0, (char*)NULL + 0 + restPositionsSize);
+
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
     }
 }
 

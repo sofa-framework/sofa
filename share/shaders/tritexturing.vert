@@ -7,9 +7,9 @@ varying vec4 diffuse, ambient, ambientGlobal, specular;
 varying vec3 lightDir, normalView, halfVector;
 varying float dist;
 varying vec3 spotDir;
-varying vec3 restPositionW;
+varying vec3 restPositionW, restNormalW;
 
-attribute vec3 restPosition; 
+attribute vec3 restPosition, restNormal; 
 
 void main()
 {	
@@ -23,6 +23,7 @@ void main()
 	vec3 positionW = gl_Vertex.xyz;
 	vec3 normalW = normalize(gl_NormalMatrix * gl_Normal);
 	restPositionW = restPosition;
+	restNormalW = restNormal;
 	
 	vec3 eyePositionW = gl_ModelViewMatrixInverse[3].xyz;
 	

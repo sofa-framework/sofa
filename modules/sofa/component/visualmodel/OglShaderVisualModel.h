@@ -30,6 +30,7 @@ protected:
     OglShader* shader;
 
     ResizableExtVector<Coord> vrestpositions;
+    ResizableExtVector<Coord> vrestnormals;
 
 public:
     OglShaderVisualModel();
