@@ -66,26 +66,29 @@ public:
     * This function reorder the triangles around each vertex where triangles have been deleted.
     * In order that only one connexe composante stay.
     */
-    virtual void removePostProcessing();
+    virtual void removePostProcessing(const sofa::helper::vector< unsigned int >& edgeToBeRemoved, const sofa::helper::vector< unsigned int >& vertexToBeRemoved );
 
-    /** \brief Remove a subset of points
-     *
-     * Elements corresponding to these points are removed from the mechanical object's state vectors.
-     *
-     * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
-     * \sa removePointsWarning
-     * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
-     * In this class the point is also deleted from the m_modifications map.
-     */
-    virtual void removePointsProcess(sofa::helper::vector<unsigned int> &indices, const bool removeDOF = true);
+
+    virtual void Debug(); // TO BE REMOVED WHEN CLASS IS SURE.
 
 private:
 
     ManifoldTriangleSetTopologyContainer* m_container;
 
-    /** \brief This vector store all the modifications to apply to the topology.
+    /** \brief This map store all the modifications (for the triangles) to apply to the topology.
      */
     std::map< unsigned int, sofa::helper::vector <unsigned int> > m_modifications;
+
+
+    /** \brief iterator for the m_modification map.
+     */
+    std::map< unsigned int, sofa::helper::vector<unsigned int> >::iterator it_modif;
+
+
+    /** \brief This vector store all the modifications (for the edges) to apply to the topology.
+     */
+    sofa::helper::vector< unsigned int> m_modificationsEdge;
+
 
     /** Create the vector m_modifications which store the modifications to apply to the topology.
      * Thus, tests can be done before any triangle(s) removal, in order to keep the topology Manifold.
@@ -94,10 +97,47 @@ private:
      */
     void createFutureModifications(sofa::helper::vector< unsigned int >& items);
 
+
     /** Test the modifications to apply around one vertex. After removing triangles, only one connexe composante
      * should stay.
+     *
      */
     bool testRemoveModifications();
+
+
+    /** If isolate edges or vertices have to be removed during the operation. This function update the information in the container:
+     * m_modification and m_modificationEdge
+     *
+     */
+    void updateModifications (const sofa::helper::vector< unsigned int >& edgeToBeRemoved, const sofa::helper::vector< unsigned int >& vertexToBeRemoved);
+
+
+    /** Fill the vector m_modificationEdge with the 3 edges of each triangle to be removed (without duplications).
+     * This is needed,if orientations of edges have to be changed (always oriented in the right direction regarding the
+     * first or the only one triangle of m_TriangleEdgeShellArray[ the_edge ]);
+
+     */
+    void createFutureModificationsEdge (const sofa::helper::vector <unsigned int> items);
+
+
+    /** For each edge of m_modificationEdge, this function call ManifoldTriangleSetTopologyContainer::reorderingEdge() to
+     * change the orientation of the edge if needed.
+     *
+     */
+    void reorderEdgeForRemoving();
+
+
+    /** According to m_modification map, reorder the m_triangleVertexShellArray.
+     *
+     */
+    void removePostProcessingTriangles();
+
+
+    /** According to m_modificationEdge vector, reorder the m_EdgeVertexShellArray.
+     *
+     */
+    void removePostProcessingEdges();
+
 
 };
 

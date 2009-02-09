@@ -467,7 +467,6 @@ void ManifoldTriangleSetTopologyContainer::createTriangleVertexShellArray ()
         clearTriangleVertexShell();
     }
 
-
     //Number of different elements needed for this function
     const unsigned int nbrVertices = getNbPoints();
     const unsigned int nbrTriangles = getNumberOfTriangles();
@@ -485,12 +484,10 @@ void ManifoldTriangleSetTopologyContainer::createTriangleVertexShellArray ()
     std::map<unsigned int, unsigned int>::iterator it1;
     std::map<unsigned int, unsigned int>::iterator it2;
 
-
     m_triangleVertexShell.resize(nbrVertices);
     map_Triangles.resize(nbrVertices);
     map_NextVertex.resize(nbrVertices);
     map_PreviousVertex.resize(nbrVertices);
-
 
     /*	Creation of the differents maps: For each vertex i of each triangles:
       - map_Triangles: key = vertex i+1, value = index triangle
@@ -508,6 +505,7 @@ void ManifoldTriangleSetTopologyContainer::createTriangleVertexShellArray ()
             map_PreviousVertex[vertexTriangle[i]].insert(std::pair<unsigned int,unsigned int> (vertexTriangle[(i+2)%3], vertexTriangle[(i+1)%3]));
         }
     }
+
 
     for (unsigned int vertexIndex = 0; vertexIndex < nbrVertices; ++vertexIndex)
     {
@@ -554,6 +552,7 @@ void ManifoldTriangleSetTopologyContainer::createTriangleVertexShellArray ()
     map_Triangles.clear();
     map_NextVertex.clear();
     map_PreviousVertex.clear();
+
 }
 
 
@@ -1198,9 +1197,9 @@ sofa::helper::vector <PointID> ManifoldTriangleSetTopologyContainer::getPointsBo
 
 
 
-
 sofa::helper::vector< unsigned int > &ManifoldTriangleSetTopologyContainer::getTriangleEdgeShellForModification(const unsigned int i)
 {
+
     if(!hasTriangleEdgeShell())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
@@ -1220,12 +1219,15 @@ sofa::helper::vector< unsigned int > &ManifoldTriangleSetTopologyContainer::getT
     return m_triangleEdgeShell[i];
 }
 
+
+
 sofa::helper::vector< unsigned int > &ManifoldTriangleSetTopologyContainer::getTriangleVertexShellForModification(const unsigned int i)
 {
+
     if(!hasTriangleVertexShell())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
-        sout << "Warning. [ManifoldTriangleSetTopologyContainer::getTriangleVertexShellForModification] triangle vertex shell array is empty." << endl;
+        std::cout << "Warning. [ManifoldTriangleSetTopologyContainer::getTriangleVertexShellForModification] triangle vertex shell array is empty." << endl;
 #endif
         createTriangleVertexShellArray();
     }
@@ -1233,13 +1235,79 @@ sofa::helper::vector< unsigned int > &ManifoldTriangleSetTopologyContainer::getT
     if( i >= m_triangleVertexShell.size())
     {
 #ifndef NDEBUG
-        sout << "Error. [ManifoldTriangleSetTopologyContainer::getTriangleVertexShellForModification] index out of bounds." << endl;
+        std::cout << "Error. [ManifoldTriangleSetTopologyContainer::getTriangleVertexShellForModification] index out of bounds." << std::endl;
 #endif
         createTriangleVertexShellArray();
     }
 
     return m_triangleVertexShell[i];
 }
+
+
+
+sofa::helper::vector< unsigned int > &ManifoldTriangleSetTopologyContainer::getEdgeVertexShellForModification(const unsigned int i)
+{
+
+    if(!hasEdgeVertexShell())	// this method should only be called when the shell array exists
+    {
+#ifndef NDEBUG
+        sout << "Warning. [ManifoldTriangleSetTopologyContainer::getEdgeVertexShellForModification] triangle vertex shell array is empty." << endl;
+#endif
+        createEdgeVertexShellArray();
+    }
+
+    if( i >= m_edgeVertexShell.size())
+    {
+#ifndef NDEBUG
+        sout << "Error. [ManifoldTriangleSetTopologyContainer::getEdgeVertexShellForModification] index out of bounds." << endl;
+#endif
+        createEdgeVertexShellArray();
+    }
+
+    return m_edgeVertexShell[i];
+}
+
+
+
+
+
+void ManifoldTriangleSetTopologyContainer::reorderingEdge(const unsigned int edgeIndex)
+{
+
+    if(hasEdges() && hasTriangleEdgeShell())
+    {
+        Edge the_edge = m_edge[edgeIndex];
+        unsigned int triangleIndex, edgeIndexInTriangle;
+        TriangleEdges TriangleEdgeArray;
+        Triangle TriangleVertexArray;
+
+        if (m_triangleEdgeShell[edgeIndex].empty())
+        {
+#ifndef NDEBUG
+            std::cout << "Warning. [ManifoldTriangleSetTopologyContainer::reorderingEdge]: shells required have not beeen created " << std::endl;
+            return;
+#endif
+        }
+
+        triangleIndex = m_triangleEdgeShell[edgeIndex][0];
+        TriangleEdgeArray = getTriangleEdge( triangleIndex);
+        TriangleVertexArray = m_triangle[triangleIndex];
+
+        edgeIndexInTriangle = getEdgeIndexInTriangle(TriangleEdgeArray, edgeIndex);
+
+        m_edge[edgeIndex][0] = TriangleVertexArray[ (edgeIndexInTriangle+1)%3 ];
+        m_edge[edgeIndex][1] = TriangleVertexArray[ (edgeIndexInTriangle+2)%3 ];
+
+    }
+    else
+    {
+#ifndef NDEBUG
+        std::cout << "Warning. [ManifoldTriangleSetTopologyContainer::reorderingEdge]: shells required have not beeen created " << std::endl;
+#endif
+    }
+
+}
+
 
 
 
