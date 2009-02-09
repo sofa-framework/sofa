@@ -34,7 +34,7 @@
 #include <string.h>
 
 #include <sofa/helper/helper.h>
-
+#include <vector>
 
 namespace sofa
 {
@@ -79,6 +79,9 @@ public:
     /// This returns an ID for a variable in our shader
     GLint GetVariable(std::string strVariable);
 
+    /// This returns an ID for an attribute variable in our shader
+    GLint GetAttributeVariable(std::string strVariable);
+
     /// These are our basic get functions for our private data
     /// @{
     GLhandleARB GetProgram()	{	return m_hProgramObject; }
@@ -114,6 +117,7 @@ public:
     void SetFloatVector3(GLint variable, GLsizei count, const float *value);
     void SetFloatVector4(GLint variable, GLsizei count, const float *value);
     /// @}
+
 
     /// These 2 functions turn on and off our shader
     /// @{
