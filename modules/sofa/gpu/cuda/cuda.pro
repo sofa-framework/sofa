@@ -76,11 +76,9 @@ HEADERS += mycuda.h \
            CudaSpatialGridContainer.inl \
            CudaVisualModel.h \
            CudaVisualModel.inl \
+           CudaTestForceField.cu \
            CudaTetrahedralVisualModel.h \
-           CudaTetrahedralVisualModel.inl \
-           CudaTestForceField.h \
-           CudaTetrahedronTLEDForceField.h \
-           CudaHexahedronTLEDForceField.h
+           CudaTetrahedralVisualModel.inl
 
 SOURCES += mycuda.cpp \
            CudaMechanicalObject.cpp \
@@ -121,8 +119,8 @@ CUDA_SOURCES += mycuda.cu \
            CudaCollisionDetection.cu \
            CudaContactMapper.cu \
            CudaPenalityContactForceField.cu \
-           CudaVisualModel.cu \
-           CudaTestForceField.cu
+           CudaTestForceField.cu \
+           CudaVisualModel.cu
 
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
@@ -135,6 +133,7 @@ HEADERS += \
 	  	CudaPrecomputedConstraintCorrection.h \
         CudaTetrahedronTLEDForceField.h \
        	CudaHexahedronTLEDForceField.h \
+	CudaTetrahedronSuperTLEDForceField.h \
        	CudaUncoupledConstraintCorrection.h
 
 SOURCES += \
@@ -147,6 +146,7 @@ SOURCES += \
 	  	CudaPrecomputedConstraintCorrection.cpp \
      	CudaTetrahedronTLEDForceField.cpp \
        	CudaHexahedronTLEDForceField.cpp \
+	CudaTetrahedronSuperTLEDForceField.cpp \
        	CudaUncoupledConstraintCorrection.cpp
 
 CUDA_SOURCES += \
@@ -154,7 +154,8 @@ CUDA_SOURCES += \
 	   	CudaLCP.cu \
        	CudaSpatialGridContainer.cu \
        	CudaTetrahedronTLEDForceField.cu \
-       	CudaHexahedronTLEDForceField.cu
+       	CudaHexahedronTLEDForceField.cu \
+	CudaTetrahedronSuperTLEDForceField.cu
 
 HEADERS += radixsort.cuh radixsort_kernel.cu
 CUDA_SOURCES += radixsort.cu
