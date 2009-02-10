@@ -90,7 +90,7 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
         if (outputsIt!=outputsMap.end() && (contactIt == contactMap.end() || outputsIt->first < contactIt->first))
         {
             // new contact
-            //sout << "Creation new "<<contacttype<<" contact"<<sendl;
+//                   serr << "Creation new "<<" contact"<<sendl;
             core::CollisionModel* model1 = outputsIt->first.first;
             core::CollisionModel* model2 = outputsIt->first.second;
             std::string responseUsed = getContactResponse(model1, model2);
@@ -110,7 +110,7 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
         else if (contactIt!=contactMap.end() && (outputsIt == outputsMap.end() || contactIt->first < outputsIt->first))
         {
             // inactive contact
-            //sout << "Deleting inactive "<<contacttype<<" contact"<<sendl;
+// 			serr << "Deleting inactive "<<" contact"<<sendl;
             if (contactIt->second->keepAlive())
             {
                 contactIt->second->setDetectionOutputs(NULL);
