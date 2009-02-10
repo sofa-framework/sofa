@@ -50,7 +50,6 @@ using std::cerr;
 using std::endl;
 
 
-
 namespace sofa
 {
 namespace simulation
@@ -58,9 +57,16 @@ namespace simulation
 namespace bgl
 {
 
+BglNode::BglNode(BglSimulation* s,const std::string& name)
+    : sofa::simulation::Node(name), scene(s), graph(NULL)
+{
+
+}
+
 BglNode::BglNode(BglSimulation* s, BglSimulation::Hgraph *g,  BglSimulation::Hvertex n, const std::string& name)
     : sofa::simulation::Node(name), scene(s), graph(g), vertexId(n)
 {
+
 }
 
 
@@ -68,24 +74,26 @@ BglNode::~BglNode()
 {
 }
 
-
 void BglNode::addChild(Node* c)
 {
-    scene->addHedge( vertexId, scene->h_node_vertex_map[c] );
-    scene->addRedge( scene->h_node_vertex_map[c], vertexId );
+//         std::cerr << "addChild : of "<< this->getName() << "@" << this << " and " <<  c->getName() << "@" << c << "\n";
+    scene->addNode(this,dynamic_cast<BglNode*>(c));
 }
 
 void BglNode::removeChild(Node* c)
 {
-    scene->removeHedge( vertexId, scene->h_node_vertex_map[c] );
-    scene->removeRedge( scene->h_node_vertex_map[c], vertexId );
+//         std::cerr << "deleteChild : of "<< this->getName() << "@" << this << " and " <<  c->getName() << "@" << c << "\n";
+    scene->deleteNode(c);
 }
+
 void BglNode::moveChild(Node* c)
 {
+    std::cerr << "moveChild : " << c << "\n";
     //We have to remove all the in-edges pointing to the node "c", and add c as a child of this current node
     if (BglNode *bglNode = dynamic_cast< BglNode* >(c))
     {
-        BglSimulation::Hvertex childId=bglNode->getVertexId();
+        BglSimulation::Hvertex childId =bglNode->getVertexId();
+        BglSimulation::Rvertex childIdR=scene->r_node_vertex_map[bglNode];
         BglSimulation::Hgraph::in_edge_iterator in_i, in_end;
         BglSimulation::Hgraph &g=bglNode->getGraph();
         //Find all in-edges from the graph
@@ -94,8 +102,11 @@ void BglNode::moveChild(Node* c)
             BglSimulation::Hedge e=*in_i;
             BglSimulation::Hvertex src=source(e, g);
             //Remove previous edges
-            scene->removeHedge(src,childId);
-            scene->removeRedge(childId,src);
+            boost::clear_vertex(childId, scene->hgraph);
+            boost::remove_vertex(childId, scene->hgraph);
+
+            boost::clear_vertex(childIdR, scene->rgraph);
+            boost::remove_vertex(childIdR, scene->rgraph);
         }
 
         scene->addHedge(vertexId, childId);
@@ -107,7 +118,7 @@ void BglNode::moveChild(Node* c)
 helper::vector< BglNode* > BglNode::getParents()
 {
     helper::vector< BglNode* > p;
-
+    if (!graph) return p;
     BglSimulation::Hgraph::in_edge_iterator in_i, in_end;
     //Find all in-edges from the graph
     for (tie(in_i, in_end) = boost::in_edges(vertexId, *graph); in_i != in_end; ++in_i)
@@ -124,10 +135,6 @@ void BglNode::doExecuteVisitor( Visitor* vis )
 {
     //cerr<<"BglNode::doExecuteVisitor( simulation::tree::Visitor* action)"<<endl;
 
-#ifdef DUMP_VISITOR_INFO
-    vis->setNode(this);
-    vis->printInfo(getContext(), true);
-#endif
     boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(*graph) );
     //boost::queue<BglSimulation::Hvertex> queue;
 
@@ -138,6 +145,7 @@ void BglNode::doExecuteVisitor( Visitor* vis )
           bfs_adapter(vis,scene->h_vertex_node_map),
           colors
           );*/
+
     dfv_adapter dfv(vis,scene->h_vertex_node_map);
     boost::depth_first_visit(
         *graph,
@@ -146,14 +154,12 @@ void BglNode::doExecuteVisitor( Visitor* vis )
         colors,
         dfv
     );
-
-#ifdef DUMP_VISITOR_INFO
-    vis->printInfo(getContext(), false);
-#endif
 }
 
 void BglNode::clearInteractionForceFields()
 {
+    for (unsigned int i=0; i<interactionForceField.size(); ++i)
+        scene->removeInteraction(interactionForceField[i]);
     interactionForceField.clear();
 }
 
@@ -368,7 +374,6 @@ void BglNode::updateSimulationContext()
 void BglNode::updateVisualContext(int FILTER)
 {
     helper::vector< BglNode* > parents=getParents();
-
     if (parents.size())
     {
         if (FILTER==10)
@@ -384,61 +389,51 @@ void BglNode::updateVisualContext(int FILTER)
                 showVisualModels_.setValue(0);
                 for (unsigned int i=0; i<parents.size(); ++i)
                     showVisualModels_.setValue(showVisualModels_.getValue() || parents[i]->showVisualModels_.getValue());
-                scene->setShowVisualModels(showVisualModels_.getValue());
                 break;
             case 1:
                 showBehaviorModels_.setValue(0);
                 for (unsigned int i=0; i<parents.size(); ++i)
                     showBehaviorModels_.setValue(showBehaviorModels_.getValue() || parents[i]->showBehaviorModels_.getValue());
-                scene->setShowBehaviorModels(showBehaviorModels_.getValue());
                 break;
             case 2:
                 showCollisionModels_.setValue(0);
                 for (unsigned int i=0; i<parents.size(); ++i)
                     showCollisionModels_.setValue(showCollisionModels_.getValue() || parents[i]->showCollisionModels_.getValue());
-                scene->setShowCollisionModels(showCollisionModels_.getValue());
                 break;
             case 3:
                 showBoundingCollisionModels_.setValue(0);
                 for (unsigned int i=0; i<parents.size(); ++i)
                     showBoundingCollisionModels_.setValue(showBoundingCollisionModels_.getValue() || parents[i]->showBoundingCollisionModels_.getValue());
-                scene->setShowBoundingCollisionModels(showBoundingCollisionModels_.getValue());
                 break;
             case 4:
                 showMappings_.setValue(0);
                 for (unsigned int i=0; i<parents.size(); ++i)
                     showMappings_.setValue(showMappings_.getValue() || parents[i]->showMappings_.getValue());
-                scene->setShowMappings(showMappings_.getValue());
                 break;
             case 5:
                 showMechanicalMappings_.setValue(0);
                 for (unsigned int i=0; i<parents.size(); ++i)
                     showMechanicalMappings_.setValue(showMechanicalMappings_.getValue() || parents[i]->showMechanicalMappings_.getValue());
-                scene->setShowMechanicalMappings(showMechanicalMappings_.getValue());
                 break;
             case 6:
                 showForceFields_.setValue(0);
                 for (unsigned int i=0; i<parents.size(); ++i)
                     showForceFields_.setValue(showForceFields_.getValue() || parents[i]->showForceFields_.getValue());
-                scene->setShowForceFields(showForceFields_.getValue());
                 break;
             case 7:
                 showInteractionForceFields_.setValue(0);
                 for (unsigned int i=0; i<parents.size(); ++i)
                     showInteractionForceFields_.setValue(showInteractionForceFields_.getValue() || parents[i]->showInteractionForceFields_.getValue());
-                scene->setShowInteractionForceFields(showInteractionForceFields_.getValue());
                 break;
             case 8:
                 showWireFrame_.setValue(0);
                 for (unsigned int i=0; i<parents.size(); ++i)
                     showWireFrame_.setValue(showWireFrame_.getValue() || parents[i]->showWireFrame_.getValue());
-                scene->setShowWireFrame(showWireFrame_.getValue());
                 break;
             case 9:
                 showNormals_.setValue(0);
                 for (unsigned int i=0; i<parents.size(); ++i)
                     showNormals_.setValue(showNormals_.getValue() || parents[i]->showNormals_.getValue());
-                scene->setShowNormals(showNormals_.getValue());
                 break;
             }
         }

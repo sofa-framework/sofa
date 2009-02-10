@@ -67,11 +67,12 @@ class BglNode : public sofa::simulation::Node
 public:
     typedef sofa::simulation::Visitor Visitor;
 
+    BglNode(BglSimulation* s,const std::string& name);
     /**
     \param sg the SOFA scene containing a bgl graph
     \param n the node of the bgl graph corresponding to this
     */
-    BglNode(BglSimulation* sg, BglSimulation::Hgraph* g,  BglSimulation::Hvertex n, const std::string& name="" );
+    BglNode(BglSimulation* s, BglSimulation::Hgraph* g,  BglSimulation::Hvertex n, const std::string& name="" );
     ~BglNode();
 
     /** Perform a scene graph traversal with the given Visitor, starting from this node.
@@ -134,7 +135,6 @@ public:
 
 
 
-protected:
     BglSimulation* scene;              ///< the scene the node belongs to
     BglSimulation::Hgraph* graph;      ///< the mechanical graph of the scene it belongs to
     BglSimulation::Hvertex vertexId;  ///< its id in the mechanical graph

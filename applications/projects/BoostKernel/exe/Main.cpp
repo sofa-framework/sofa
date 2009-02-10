@@ -35,9 +35,12 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/gui/SofaGUI.h>
+
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
 #include <sofa/helper/system/atomic.h>
+
+#include <sofa/core/ObjectFactory.h>
 
 #ifndef WIN32
 #include <dlfcn.h>
@@ -97,6 +100,19 @@ int main(int argc, char** argv)
         glutInit(&argc,argv);
     sofa::component::init();
     sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation);
+
+    sofa::core::ObjectFactory::ClassEntry* classDefaultCollisionGroupManager;
+    sofa::core::ObjectFactory::ClassEntry* classCollisionGroup;
+
+    sofa::core::ObjectFactory::AddAlias("DefaultCollisionGroupManager",
+            "BglCollisionGroupManager", true, &classDefaultCollisionGroupManager);
+
+    sofa::core::ObjectFactory::AddAlias("CollisionGroup",
+            "BglCollisionGroupManager", true, &classCollisionGroup);
+
+
+
+
     sofa::simulation::tree::xml::initXml();
 
     if (!files.empty()) fileName = files[0];
@@ -129,11 +145,6 @@ int main(int argc, char** argv)
         }
         sofa::helper::system::DataRepository.findFile(fileName);
     }
-//   if (groot==NULL)
-//     {
-//       groot = new sofa::simulation::bgl::BglNode;
-//       //return 1;
-//     }
 
     if (int err=sofa::gui::SofaGUI::createGUI(groot,fileName.c_str()))
         return err;
