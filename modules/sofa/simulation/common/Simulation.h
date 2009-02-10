@@ -28,6 +28,7 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/gl/DrawManager.h>
 #include <sofa/helper/gl/VisualParameters.h>
+#include <sofa/core/componentmodel/behavior/BaseMechanicalMapping.h>
 
 namespace sofa
 {
@@ -105,6 +106,21 @@ public:
 
     /// Create a new Node of the simulation
     virtual Node* newNode(const std::string& name)=0;
+
+    /// Create a new Node of the simulation
+    virtual void deleteNode(Node *);
+
+    /// Method called when a MechanicalMapping is created.
+    virtual void setMechanicalMapping(Node *child, core::componentmodel::behavior::BaseMechanicalMapping *m);
+    /// Method called when a MechanicalMapping is destroyed.
+    virtual void resetMechanicalMapping(Node *child, core::componentmodel::behavior::BaseMechanicalMapping *m);
+
+    /// Method called when a MechanicalMapping is created.
+    virtual void setContactResponse(Node * parent, core::objectmodel::BaseObject* response);
+
+    /// Method called when a MechanicalMapping is destroyed.
+    virtual void resetContactResponse(Node * parent, core::objectmodel::BaseObject* response);
+
 
     /// Number of mechanical steps within an animation step
     Data<unsigned> numMechSteps;
