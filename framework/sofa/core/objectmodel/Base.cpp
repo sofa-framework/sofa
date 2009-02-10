@@ -450,7 +450,7 @@ void Base::xmlWriteNodeDatas (std::ostream& out, unsigned level )
         {
             for (unsigned l=0; i!=0 && l<level; l++)
                 out << "\t";
-            out << m_fieldVec[ i ].first << "=\""<< field->getValueString() << "\" ";
+            out << m_fieldVec[ i ].first << "=\""<< field->getValueString() << "\" \n";
         }
     }
 }
