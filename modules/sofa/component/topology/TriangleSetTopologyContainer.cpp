@@ -25,8 +25,6 @@
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/container/MechanicalObject.inl>
-#include <sofa/helper/gl/glText.inl>
 
 #include <sofa/component/container/MeshLoader.h>
 
@@ -270,7 +268,7 @@ const sofa::helper::vector<Triangle> & TriangleSetTopologyContainer::getTriangle
 #ifndef NDEBUG
         sout << "[TriangleSetTopologyContainer::getTriangleArray] creating triangle array." << endl;
 #endif
-        //			createTriangleSetArray();
+        createTriangleSetArray();
     }
 
     return m_triangle;
@@ -475,7 +473,6 @@ sofa::helper::vector< unsigned int > &TriangleSetTopologyContainer::getTriangleV
 
 bool TriangleSetTopologyContainer::checkTopology() const
 {
-    std::cout <<"TriangleSetTopologyContainer::checkTopology()" << std::endl;
 
 #ifndef NDEBUG
     bool ret = true;
