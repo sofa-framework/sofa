@@ -22,67 +22,61 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_BGL_GETOBJECTSVISITOR_H
-#define SOFA_SIMULATION_BGL_GETOBJECTSVISITOR_H
+#ifndef SOFA_COMPONENT_COLLISION_BGLCOLLISIONGROUPMANAGER_H
+#define SOFA_COMPONENT_COLLISION_BGLCOLLISIONGROUPMANAGER_H
 
-#include <sofa/simulation/common/Visitor.h>
-#include "BglSimulation.h"
+#include <sofa/core/componentmodel/collision/CollisionGroupManager.h>
+#include "BglNode.h"
+#include <sofa/component/component.h>
+#include <set>
+
+
 namespace sofa
 {
 
-namespace simulation
+namespace component
 {
 
-namespace bgl
+namespace collision
 {
 
-
-class GetObjectsVisitor : public Visitor
-{
-public:
-    typedef sofa::core::objectmodel::ClassInfo ClassInfo;
-    typedef sofa::core::objectmodel::BaseContext::GetObjectsCallBack GetObjectsCallBack;
-
-    GetObjectsVisitor(const ClassInfo& class_inf, GetObjectsCallBack& cont)
-        : class_info(class_inf), container(cont)
-    {}
-
-    Result processNodeTopDown( simulation::Node* node );
-
-    virtual const char* getClassName() const { return "GetObjectsVisitor"; }
-    virtual const char* getInfos() const { std::string name="["+sofa::helper::gettypename(class_info)+"]"; return name.c_str();}
-
-
-protected:
-
-    const ClassInfo& class_info;
-    GetObjectsCallBack& container;
-};
-
-
-class GetObjectVisitor : public Visitor
+class BglCollisionGroupManager : public core::componentmodel::collision::CollisionGroupManager
 {
 public:
-    typedef sofa::core::objectmodel::ClassInfo ClassInfo;
-    typedef sofa::core::objectmodel::BaseContext::GetObjectsCallBack GetObjectsCallBack;
-    typedef sofa::core::objectmodel::BaseContext::SearchDirection SearchDirection;
-    GetObjectVisitor(const ClassInfo& class_inf)
-        : class_info(class_inf), result(NULL)
-    {}
+    typedef std::map<simulation::Node*,simulation::Node**> GroupSet;
+    GroupSet groupSet;
+public:
+    BglCollisionGroupManager();
 
-    Result processNodeTopDown( simulation::Node* node );
-    void *getObject() {return result;}
-    virtual const char* getClassName() const { return "GetObjectVisitor"; }
-    virtual const char* getInfos() const { std::string name="["+sofa::helper::gettypename(class_info)+"]"; return name.c_str();}
+    virtual ~BglCollisionGroupManager();
+
+    virtual void createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<core::componentmodel::collision::Contact*>& contacts);
+
+    virtual void clearGroups(core::objectmodel::BaseContext* scene);
+
+    /** Overload this if yo want to design your collision group, e.g. with a MasterSolver.
+    Otherwise, an empty Node is returned.
+    The OdeSolver is added afterwards.
+    */
+    virtual simulation::Node* buildCollisionGroup();
+
 protected:
+    virtual simulation::Node* getIntegrationNode(core::CollisionModel* model);
 
-    const ClassInfo& class_info;
-    void *result;
+    std::map<Instance,GroupSet> storedGroupSet;
+
+    virtual void changeInstance(Instance inst)
+    {
+        core::componentmodel::collision::CollisionGroupManager::changeInstance(inst);
+        storedGroupSet[instance].swap(groupSet);
+        groupSet.swap(storedGroupSet[inst]);
+    }
+
 };
 
-} // namespace bgl
+} // namespace collision
 
-} // namespace simulation
+} // namespace component
 
 } // namespace sofa
 

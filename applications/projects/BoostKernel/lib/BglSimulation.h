@@ -41,13 +41,13 @@
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/core/componentmodel/behavior/BaseMechanicalMapping.h>
 #include <sofa/core/componentmodel/behavior/InteractionForceField.h>
+#include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
 #include <sofa/core/componentmodel/collision/Pipeline.h>
 
 
 #include <sofa/core/componentmodel/behavior/MasterSolver.h>
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
-
 
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/VisualModel.h>
@@ -81,8 +81,8 @@ class BglSimulation : public sofa::simulation::Simulation
 {
 public:
     /* 	typedef BglNode Node;     ///< sofa simulation node */
-    typedef sofa::core::componentmodel::behavior::BaseMechanicalMapping MechanicalMapping;
     typedef sofa::core::componentmodel::behavior::InteractionForceField InteractionForceField;
+    typedef sofa::core::componentmodel::behavior::InteractionConstraint InteractionConstraint;
     typedef sofa::core::componentmodel::collision::Pipeline CollisionPipeline;
     typedef sofa::core::BaseMapping Mapping;
     typedef sofa::core::VisualModel VisualModel;
@@ -146,7 +146,7 @@ public:
     R_vertex_node_map r_vertex_node_map;  ///< rvertex->sofa node
 
     Redge addRedge(Rvertex parent, Rvertex child);
-    void  removeRedge(Hvertex parent, Hvertex child);
+    void  removeRedge(Rvertex parent, Rvertex child);
     /// @}
 
 
@@ -159,6 +159,7 @@ public:
 
     VisualVector visualModels;
     /// @}
+
 
 
     /** @name interaction graph
@@ -199,6 +200,14 @@ public:
         Each object is represented by its root in the hierarchical graph.
     */
     ///@{
+    struct InteractionData
+    {
+        Node *n1;
+        Node *n2;
+        InteractionForceField* iff;
+        InteractionData( Node *r1, Node *r2, InteractionForceField* i ) : n1(r1), n2(r2), iff(i) {}
+    };
+
     struct Interaction
     {
         Hvertex v1;
@@ -217,18 +226,40 @@ public:
      */
     void computeInteractionGraphAndConnectedComponents();
 
+    /** Compute the collision graph
+     */
+    void computeCollisionGraph();
+
+    /** Compute the Roots of the hgraph
+     */
+    void computeHroots();
+
     ///@}
 
+    /// If a Collision Group is created with a new solver responsible for the animation, we need to update the "node_solver_map"
+    void setSolverOfCollisionGroup(Node* solverNode, Node* solverOfCollisionGroup);
+
+    /// Make the correspondance between a node in the mechanical graph and the solver nodes.
+    std::map< Node*, Node*> solver_colisionGroup_map;
     /// Make the correspondance between a node in the mechanical graph and the solver nodes.
     std::map< Node*, Node*> node_solver_map;
-
 
     /// @name High-level interface
     /// @{
     BglSimulation();
 
-    /// Create a graph edge, parent to child, and attach the MechanicalMapping to the child
-    void setMechanicalMapping(BglNode* parent, BglNode* child, MechanicalMapping* );
+    /// Method called when a MechanicalMapping is created.
+    void setMechanicalMapping(Node *child, core::componentmodel::behavior::BaseMechanicalMapping *m);
+    /// Method called when a MechanicalMapping is destroyed.
+    void resetMechanicalMapping(Node *child, core::componentmodel::behavior::BaseMechanicalMapping *m);
+
+    /// Method called when a MechanicalMapping is created.
+    void setContactResponse(Node * parent, core::objectmodel::BaseObject* response);
+    /// Method called when a MechanicalMapping is destroyed.
+    void resetContactResponse(Node * parent, core::objectmodel::BaseObject* response);
+
+
+
 
     /// Add a visual model to the scene, attached by a Mapping.
     /// They are not inserted in a scene graph, but in a separated container.
@@ -237,8 +268,12 @@ public:
 
     /// Add an interaction
     void addInteraction( Node* n1, Node* n2, InteractionForceField* );
+
+    /// Add an interaction
+    void addInteractionNow( InteractionData &i);
+
     /// Remove an interaction
-    //void removeInteraction( InteractionForceField* );
+    void removeInteraction( InteractionForceField* );
 
     /// Load a file
     Node* load(const char* filename);
@@ -246,11 +281,44 @@ public:
     /// Load a file
     void unload(Node* root);
 
-    /// Create a graph node and attach a new Node to it, then return the Node
+    /// Delayed Creation of a graph node and attach a new Node to it, then return the Node
     Node* newNode(const std::string& name="");
+
+    /// Insert a node previously created, into the graph
+    void insertNewNode(Node *n);
+
+    /// Create a graph node and attach a new Node to it, then return the Node
+    Node* newNodeNow(const std::string& name="");
+
+    void initNewNode();
+
+    void reset ( Node* root );
+
+    /// Add a node to as the child of another
+    void addNode(BglNode* parent, BglNode* child);
+
+    /// Add a node to as the child of another
+    void addNodeNow(BglNode* parent, BglNode* child);
+
+
+    /// Delete a graph node and all the edges, and entries in map
+    void deleteNode( Node* n);
+
+    /// Delete a graph node and all the edges, and entries in map
+    void deleteNodeNow( Node* n);
+
+    /// Update the graph with all the operation stored in memory: add/delete node, add interactions...
+    void updateGraph();
+
+    /// Find out if an interaction forcefield is located in one of the children of a node
+    bool isIFFinNode(Rvertex iff, Rvertex n);
+
+    /// During init phase, we need to find the roots. We must discard the masterNode, collisionNode, and all the solverNode
+    bool isUsableRoot(Node* n);
 
     /// Initialize all the nodes and edges depth-first
     void init();
+
 
     /// Animate all the nodes depth-first
     void animate(Node* root, double dt=0.0);
@@ -311,18 +379,54 @@ public:
     Hvertex masterVertex;
     CollisionPipeline* collisionPipeline;
 
-    /*
-       ///The collision models belong to the hgraph because they are mechanically bound to the objects.
-       ///Additionally, they are referenced in an auxiliary data structure to ease the collision detection.
 
-       Hgraph cgraph; ///< Hierarchical graph which contains all the nodes which have a collision model, organized in a flat hierarchy.
-       Node* collisionNode;
-       Hvertex collisionVertex; ///< Root of the collision graph. Contains the collision detection and response components
-       H_vertex_node_map  c_vertex_node_map; ///< access the nodes of the collision graph
-       CollisionPipeline* collisionPipeline;
+    ///The collision models belong to the hgraph because they are mechanically bound to the objects.
+    ///Additionally, they are referenced in an auxiliary data structure to ease the collision detection.
 
-    */
+    /*        Hgraph cgraph; ///< Hierarchical graph which contains all the nodes which have a collision model, organized in a flat hierarchy. */
+    Node* collisionNode;
+    Hvertex collisionVertex; ///< Root of the collision graph. Contains the collision detection and response components */
+
+    Hvertex addCvertex( Node *n);
+    Hedge addCedge(Hvertex parent, Hvertex child);
+    void  removeCedge(Hvertex parent, Hvertex child);
+
     /// @}
+    Node* mouseNode;
+
+    std::set< Node* >                           nodeToDelete;
+    std::vector< BglNode* >                     nodeToAdd;
+    std::vector< std::pair<BglNode*,BglNode*> > edgeToAdd;
+    std::vector< InteractionData >              interactionToAdd;
+
+    /// Methods to handle collision group:
+    /// We create default solvers, that will eventually be used when two groups containing a solver will have to be managed at the same time
+    Node* getSolverEulerEuler();
+    Node* getSolverRungeKutta4RungeKutta4();
+    Node* getSolverCGImplicitCGImplicit();
+    Node* getSolverEulerImplicitEulerImplicit();
+    Node* getSolverStaticSolver();
+    Node* getSolverRungeKutta4Euler();
+    Node* getSolverCGImplicitEuler();
+    Node* getSolverCGImplicitRungeKutta4();
+    Node* getSolverEulerImplicitEuler();
+    Node* getSolverEulerImplicitRungeKutta4();
+    Node* getSolverEulerImplicitCGImplicit();
+
+
+protected:
+    Node* solverEulerEuler;
+    Node* solverRungeKutta4RungeKutta4;
+    Node* solverCGImplicitCGImplicit;
+    Node* solverEulerImplicitEulerImplicit;
+    Node* solverStaticSolver;
+    Node* solverRungeKutta4Euler;
+    Node* solverCGImplicitEuler;
+    Node* solverCGImplicitRungeKutta4;
+    Node* solverEulerImplicitEuler;
+    Node* solverEulerImplicitRungeKutta4;
+    Node* solverEulerImplicitCGImplicit;
+
 
 
 };
