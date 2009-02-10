@@ -203,6 +203,14 @@ public:
             (*this)[i] += (Real)a[i];
     }
 
+    /// v -= a
+    template<typename Real2>
+    void operator-=(const FullVector<Real2>& a)
+    {
+        for(int i=0; i<cursize; ++i)
+            (*this)[i] -= (Real)a[i];
+    }
+
     /// v += a*f
     template<typename Real2,typename Real3>
     void peq(const FullVector<Real2>& a, Real3 f)
