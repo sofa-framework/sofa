@@ -179,6 +179,30 @@ void Simulation::animate ( Node* root, double dt )
 #endif
 }
 
+void Simulation::deleteNode(Node *n)
+{
+    delete n;
+}
+
+void Simulation::setMechanicalMapping(Node *child, core::componentmodel::behavior::BaseMechanicalMapping *m)
+{
+    child->addObject(m);
+}
+void Simulation::resetMechanicalMapping(Node *child, core::componentmodel::behavior::BaseMechanicalMapping *mapping)
+{
+    child->removeObject(mapping);
+}
+
+void Simulation::setContactResponse(Node * parent, core::objectmodel::BaseObject* response)
+{
+    parent->addObject(response);
+}
+
+void Simulation::resetContactResponse(Node * parent, core::objectmodel::BaseObject* response)
+{
+    parent->removeObject(response);
+}
+
 /// Reset to initial state
 void Simulation::reset ( Node* root )
 {

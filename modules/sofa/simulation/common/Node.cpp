@@ -247,6 +247,8 @@ void Node::doRemoveObject(BaseObject* obj)
     collisionPipeline.remove(dynamic_cast< core::componentmodel::collision::Pipeline* >(obj));
 
     actionScheduler.remove(dynamic_cast< VisitorScheduler* >(obj));
+
+    unsorted.remove(obj);
     // Remove references to this object in time log tables
     if (!objectTime.empty())
     {
