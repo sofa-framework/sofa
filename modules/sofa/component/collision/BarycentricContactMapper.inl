@@ -49,11 +49,12 @@ void BarycentricContactMapper<TCollisionModel,DataTypes>::cleanup()
         {
             simulation::Node* child = dynamic_cast<simulation::Node*>(mapping->getContext());
             child->removeObject(mapping->getTo());
-            child->removeObject(mapping);
+            simulation::getSimulation()->resetMechanicalMapping(child, mapping);
             parent->removeChild(child);
+            simulation::getSimulation()->deleteNode(child);
             delete mapping->getTo();
             delete mapping;
-            delete child;
+
             mapping = NULL;
         }
     }
@@ -69,6 +70,7 @@ typename BarycentricContactMapper<TCollisionModel,DataTypes>::MMechanicalState* 
         std::cerr << "ERROR: BarycentricContactMapper only works for scenegraph scenes.\n";
         return NULL;
     }
+
     simulation::Node* child = simulation::getSimulation()->newNode(name);
     parent->addChild(child); child->updateSimulationContext();
     MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
@@ -76,7 +78,7 @@ typename BarycentricContactMapper<TCollisionModel,DataTypes>::MMechanicalState* 
     //mapper = mapping->getMapper();
     mapper = new mapping::BarycentricMapperMeshTopology<InDataTypes, typename BarycentricContactMapper::DataTypes>(model->getMeshTopology());
     mapping = new MMapping(model->getMechanicalState(), mstate, mapper);
-    child->addObject(mapping);
+    simulation::getSimulation()->setMechanicalMapping(child, mapping);
     return mstate;
 }
 
@@ -90,11 +92,11 @@ void IdentityContactMapper<TCollisionModel,DataTypes>::cleanup()
         {
             simulation::Node* child = dynamic_cast<simulation::Node*>(mapping->getContext());
             child->removeObject(mapping->getTo());
-            child->removeObject(mapping);
+            simulation::getSimulation()->resetMechanicalMapping(child, mapping);
             parent->removeChild(child);
+            simulation::getSimulation()->deleteNode(child);
             delete mapping->getTo();
             delete mapping;
-            delete child;
             mapping = NULL;
         }
     }
@@ -112,7 +114,8 @@ typename IdentityContactMapper<TCollisionModel,DataTypes>::MMechanicalState* Ide
     simulation::Node* child = simulation::getSimulation()->newNode(name);
     parent->addChild(child); child->updateSimulationContext();
     MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
-    mapping = new MMapping(model->getMechanicalState(), mstate); child->addObject(mapping);
+    mapping = new MMapping(model->getMechanicalState(), mstate);
+    simulation::getSimulation()->setMechanicalMapping(child, mapping);
     return mstate;
 }
 
@@ -142,7 +145,8 @@ typename RigidContactMapper<TCollisionModel,DataTypes>::MMechanicalState* RigidC
         child = simulation::getSimulation()->newNode(name);
         parent->addChild(child); child->updateSimulationContext();
         outmodel = new MMechanicalObject; child->addObject(outmodel);
-        mapping = new MMapping(instate, outmodel); child->addObject(mapping);
+        mapping = new MMapping(instate, outmodel);
+        simulation::getSimulation()->setMechanicalMapping(child, mapping);
     }
     else
     {
@@ -186,7 +190,8 @@ typename SubsetContactMapper<TCollisionModel,DataTypes>::MMechanicalState* Subse
         child = simulation::getSimulation()->newNode(name);
         parent->addChild(child); child->updateSimulationContext();
         outmodel = new MMechanicalObject; child->addObject(outmodel);
-        mapping = new MMapping(instate, outmodel); child->addObject(mapping);
+        mapping = new MMapping(instate, outmodel);
+        simulation::getSimulation()->setMechanicalMapping(child, mapping);
     }
     else
     {
@@ -216,6 +221,7 @@ typename ContactMapper<RigidDistanceGridCollisionModel,DataTypes>::MMechanicalSt
         visu->useAlpha.setValue(true);
         visu->vscale.setValue(this->model->getContext()->getDt());
         sofa::component::mapping::IdentityMapping< core::Mapping< core::componentmodel::behavior::State<DataTypes>, core::componentmodel::behavior::MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > > >* map = new sofa::component::mapping::IdentityMapping< core::Mapping< core::componentmodel::behavior::State<DataTypes> , core::componentmodel::behavior::MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > > > ( outmodel, visu );
+
         this->child->addObject(map);
         visu->init();
         map->init();
