@@ -28,6 +28,8 @@
 #include <fstream>
 
 #include <qapplication.h>
+#include <sofa/simulation/tree/TreeSimulation.h>
+
 #include "../lib/SofaModeler.h"
 #include <sofa/helper/system/glut.h>
 // ---------------------------------------------------------------------
@@ -38,6 +40,8 @@ int main(int argc, char** argv)
 {
     glutInit(&argc,argv);
     QApplication* application = new QApplication(argc, argv);
+
+    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
     sofa::gui::qt::SofaModeler* sofaModeler = new sofa::gui::qt::SofaModeler();
     application->setMainWidget(sofaModeler);
