@@ -66,6 +66,8 @@ class dfv_adapter : public boost::dfs_visitor<>
 public:
     sofa::simulation::Visitor* visitor;
 
+    BglSimulation *scene;
+
     typedef BglSimulation::Hgraph Graph; ///< BGL graph to traverse
     typedef Graph::vertex_descriptor Vertex;
 

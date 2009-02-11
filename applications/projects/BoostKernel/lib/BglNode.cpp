@@ -45,6 +45,8 @@
 #include <sofa/core/componentmodel/behavior/InteractionForceField.h>
 #include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
 
+#include <sofa/simulation/common/AnimateVisitor.h>
+
 
 //#include "bfs_adapter.h"
 #include "dfv_adapter.h"
@@ -76,9 +78,20 @@ BglNode::BglNode(BglSimulation* s, BglSimulation::Hgraph *g,  BglSimulation::Hve
 
 }
 
-
 BglNode::~BglNode()
 {
+//         std::cerr << "Node this : " << this->getName() << " ; " << scene->h_node_vertex_map[this] << " DELETED\n";
+//         scene->deleteNode(this);
+}
+
+
+/// Do one step forward in time
+void BglNode::animate( double dt )
+{
+    simulation::AnimateVisitor vis(dt);
+    //cerr<<"Node::animate, start execute"<<endl;
+    doExecuteVisitor(&vis);
+    //cerr<<"Node::animate, end execute"<<endl;
 }
 
 bool BglNode::addObject(BaseObject* obj)
@@ -86,17 +99,18 @@ bool BglNode::addObject(BaseObject* obj)
     if (sofa::core::componentmodel::behavior::BaseMechanicalMapping* mm = dynamic_cast<sofa::core::componentmodel::behavior::BaseMechanicalMapping*>(obj))
     {
         scene->setMechanicalMapping(this,mm);
+        Node::addObject(obj);
         return true;
     }
     else if (sofa::core::componentmodel::behavior::InteractionForceField* iff = dynamic_cast<sofa::core::componentmodel::behavior::InteractionForceField*>(obj))
     {
         scene->setContactResponse(this,iff);
-        return true;
+//             return true;
     }
     else if (sofa::core::componentmodel::behavior::InteractionConstraint* ic = dynamic_cast<sofa::core::componentmodel::behavior::InteractionConstraint*>(obj))
     {
         scene->setContactResponse(this,ic);
-        return true;
+//             return true;
     }
     return Node::addObject(obj);
 }
@@ -106,17 +120,16 @@ bool BglNode::removeObject(core::objectmodel::BaseObject* obj)
     if (sofa::core::componentmodel::behavior::BaseMechanicalMapping* mm = dynamic_cast<sofa::core::componentmodel::behavior::BaseMechanicalMapping*>(obj))
     {
         scene->resetMechanicalMapping(this,mm);
+        Node::removeObject(obj);
         return true;
     }
     else if (sofa::core::componentmodel::behavior::InteractionForceField* iff = dynamic_cast<sofa::core::componentmodel::behavior::InteractionForceField*>(obj))
     {
         scene->resetContactResponse(this,iff);
-        return true;
     }
     else if (sofa::core::componentmodel::behavior::InteractionConstraint* ic = dynamic_cast<sofa::core::componentmodel::behavior::InteractionConstraint*>(obj))
     {
         scene->resetContactResponse(this,ic);
-        return true;
     }
     return Node::removeObject(obj);
 }
@@ -203,13 +216,6 @@ void BglNode::doExecuteVisitor( Visitor* vis )
     );
 }
 
-void BglNode::clearInteractionForceFields()
-{
-    for (unsigned int i=0; i<interactionForceField.size(); ++i)
-        scene->removeInteraction(interactionForceField[i]);
-    interactionForceField.clear();
-}
-
 
 
 /// Generic object access, possibly searching up or down from the current context
@@ -222,7 +228,7 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, S
     {
 //             std::cerr << "Search Down ";
         boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(scene->hgraph) );
-        dfv_adapter dfv( &getobj, scene->h_vertex_node_map );
+        dfv_adapter dfv( &getobj,  scene->h_vertex_node_map );
         boost::depth_first_visit(
             scene->hgraph,
             boost::vertex(this->vertexId, scene->hgraph),
