@@ -60,6 +60,7 @@
 
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/simulation/common/UpdateMappingEndEvent.h>
 
 
 #include <sofa/helper/system/FileRepository.h>
@@ -126,8 +127,49 @@ BglSimulation::BglSimulation():
 //      return node;
 // }
 
+BglSimulation::Rvertex BglSimulation::convertHvertex2Rvertex(Hvertex v)
+{
+    return r_node_vertex_map[ h_vertex_node_map[ v ] ];
+}
+BglSimulation::Hvertex BglSimulation::convertRvertex2Hvertex(Rvertex v)
+{
+    return h_node_vertex_map[ r_vertex_node_map[ v ] ];
+}
+void BglSimulation::addEdge( Hvertex p, Hvertex c )
+{
+    if (p == c) return;
+//         std::cerr << "#####addEdge : " << h_vertex_node_map[p]->getName() << " : "
+//                   <<  h_vertex_node_map[c]->getName() << "@"<< h_vertex_node_map[c]  << "\n";
+    addHedge(p,c);
+    addRedge(convertHvertex2Rvertex(c),convertHvertex2Rvertex(p));
+}
+void BglSimulation::removeEdge( Hvertex p, Hvertex c )
+{
+    if (p == c) return;
+//         std::cerr << "#####removeEdge : " << h_vertex_node_map[p]->getName() << " : "
+//                   <<  h_vertex_node_map[c]->getName() << "@"<< h_vertex_node_map[c] << "\n";
+    removeHedge(p,c);
+    removeRedge(convertHvertex2Rvertex(c),convertHvertex2Rvertex(p));
+}
+
+void BglSimulation::deleteVertex( Hvertex v)
+{
+//         std::cerr << "#####removeEdge : "
+//                   << h_vertex_node_map[v]->getName() << "@"<< h_vertex_node_map[v]<< "\n";
+    deleteHvertex(v);
+    deleteRvertex(convertHvertex2Rvertex(v));
+}
+
+void BglSimulation::clearVertex( Hvertex v )
+{
+    clear_vertex(v,hgraph);
+    clear_vertex(convertHvertex2Rvertex(v),rgraph);
+}
+
+
 BglSimulation::Hedge BglSimulation::addHedge( Hvertex p, Hvertex c )
 {
+//         std::cerr << "addHedge : " << h_vertex_node_map[p]->getName() << " : " <<  h_vertex_node_map[c]->getName() << "\n";
     std::pair<Hedge, bool> e =  add_edge(  p,c,hgraph);
     assert(e.second);
     return e.first;
@@ -135,42 +177,25 @@ BglSimulation::Hedge BglSimulation::addHedge( Hvertex p, Hvertex c )
 
 BglSimulation::Redge BglSimulation::addRedge( Rvertex p, Rvertex c )
 {
+//         std::cerr << "addRedge : " << r_vertex_node_map[p]->getName() << " : " <<  r_vertex_node_map[c]->getName() << "\n";
     std::pair<Redge, bool> e =  add_edge(  p,c,rgraph);
     assert(e.second);
     return e.first;
 }
 
-BglSimulation::Hedge BglSimulation::addCedge( Hvertex p, Hvertex c )
-{
-    std::pair<Hedge, bool> e =  add_edge(  p,c,hgraph);
-    assert(e.second);
-    return e.first;
-}
-
-BglSimulation::Hvertex BglSimulation::addCvertex(Node *n)
-{
-    Hvertex v = add_vertex( hgraph);
-    h_vertex_node_map[v] = n;
-    h_node_vertex_map[n] = v;
-
-    addCedge(collisionVertex, v);
-    return v;
-}
 
 void BglSimulation::removeHedge( Hvertex p, Hvertex c )
 {
+//         std::cerr << "removeHedge : " << h_vertex_node_map[p]->getName() << " : " <<  h_vertex_node_map[c]->getName() << "\n";
     remove_edge(  p,c,hgraph);
 }
 
 void BglSimulation::removeRedge( Rvertex p, Rvertex c )
 {
+//         std::cerr << "removeRedge : " << r_vertex_node_map[p]->getName() << " : " <<  r_vertex_node_map[c]->getName() << "\n";
     remove_edge(  p,c,rgraph);
 }
 
-void BglSimulation::removeCedge( Hvertex p, Hvertex c )
-{
-    remove_edge(  p,c,hgraph);
-}
 
 
 /// Create a graph node and attach a new Node to it, then return the Node
@@ -189,11 +214,11 @@ void BglSimulation::insertNewNode(Node *n)
     BglNode *bglN = static_cast<BglNode*>(n);
     //Effectively create a vertex in the graph
     Hvertex hnode=add_vertex(hgraph);
-    h_vertex_node_map[ hnode ] = bglN;
-    h_node_vertex_map[ bglN ] = hnode;
+    h_vertex_node_map[hnode] = bglN;
+    h_node_vertex_map[bglN] = hnode;
 
     //Reverse graph
-    Rvertex rnode = add_vertex( rgraph );
+    Rvertex rnode = add_vertex(rgraph);
     r_vertex_node_map[rnode] = bglN;
     r_node_vertex_map[bglN] = rnode;
 
@@ -205,7 +230,7 @@ void BglSimulation::insertNewNode(Node *n)
 
 Node* BglSimulation::newNodeNow(const std::string& name)
 {
-//         std::cerr << "new Node : " << name << "\n";
+//          std::cerr << "new Node : " << name << "\n";
     // Each BglNode needs a vertex in hgraph
     Hvertex hnode =  add_vertex( hgraph);
     BglNode* s  = new BglNode(this,&hgraph,hnode,name);
@@ -224,54 +249,58 @@ Node* BglSimulation::newNodeNow(const std::string& name)
 void BglSimulation::addNode(BglNode* parent, BglNode* child)
 {
 //           std::cerr << "ADD Node " << parent->getName() << "-->" << child->getName() << " : \n";
-    if (parent != masterNode)
-        edgeToAdd.push_back(std::make_pair(parent,child));
+//           if (parent != masterNode)
+
+//           std::cerr << "Add Node : push an edge " << parent->getName() << "-->" << child->getName() << " : \n";
+    edgeToAdd.insert(std::make_pair(parent,child));
 }
-
-/// Add a node to as the child of another
-void BglSimulation::addNodeNow(BglNode* parent, BglNode* child)
-{
-//           std::cerr << "ADD Node NOW " << parent->getName() << "-->" << child->getName() << " : \n";
-    addHedge( h_node_vertex_map[parent], h_node_vertex_map[child] );
-    addRedge( r_node_vertex_map[child], r_node_vertex_map[parent] );
-}
-
-
 void BglSimulation::deleteNode( Node* n)
 {
 //         std::cerr << "Delete Node " << n << " : \n";
-    nodeToDelete.insert(n);
+    vertexToDelete.insert(h_node_vertex_map[n]);
 }
 
-void BglSimulation::deleteNodeNow( Node* n)
+
+void BglSimulation::deleteHvertex( Hvertex vH)
 {
 //         std::cerr << "Delete Now Node " << n << " : \n";
 //         std::cerr << n->getName() << " : " << h_node_vertex_map[n] << "\n";
-    Hvertex vH=h_node_vertex_map[n];
+    Node *node = h_vertex_node_map[vH];
     clear_vertex(vH, hgraph);
-    //         remove_vertex(vH, hgraph);
-    h_node_vertex_map.erase(n);
+    h_node_vertex_map.erase(node);
 
-    Rvertex vR=r_node_vertex_map[n];
+    //Cannot remove vertex: it changes all the vertices of the graph !!!
+//         remove_vertex(vH, hgraph);
+}
+
+
+void BglSimulation::deleteRvertex( Rvertex vR)
+{
+//         std::cerr << "Delete Now Node " << n << " : \n";
+//         std::cerr << n->getName() << " : " << h_node_vertex_map[n] << "\n";
+    Node *node = r_vertex_node_map[vR];
     clear_vertex(vR, rgraph);
-    //         remove_vertex(vR, rgraph);
-    r_node_vertex_map.erase(n);
+    r_node_vertex_map.erase(node);
+
+    //Cannot remove vertex: it changes all the vertices of the graph !!!
+//         remove_vertex(vR, rgraph);
 }
 
 
 
 /// Method called when a MechanicalMapping is created.
-void BglSimulation::setMechanicalMapping(Node* c, core::componentmodel::behavior::BaseMechanicalMapping* m )
+void BglSimulation::setMechanicalMapping(Node* , core::componentmodel::behavior::BaseMechanicalMapping* m )
 {
     Node *from=(Node*)m->getMechFrom()->getContext();
     Node *to=(Node*)m->getMechTo()->getContext();
-//         std::cerr << "Set Mechanical !!!!!!!!!!! :"  << from->getName() << " and " << to->getName() << " with " << m->getName() << "\n";
-    addHedge( h_node_vertex_map[from], h_node_vertex_map[to] );
-    addRedge( r_node_vertex_map[to], r_node_vertex_map[from] );
-    c->moveObject(m);
+
+//         std::cerr << "push an Edge Set Mechanical !!!!!!!!!!! :"  << from->getName() << " and " << to->getName() << " with " << m->getName() << "\n";
+    edgeToAdd.insert(std::make_pair(from, to));
+//         addHedge( h_node_vertex_map[from], h_node_vertex_map[to] );
+// 	addRedge( r_node_vertex_map[to], r_node_vertex_map[from] );
 }
 /// Method called when a MechanicalMapping is destroyed.
-void BglSimulation::resetMechanicalMapping(Node* c, core::componentmodel::behavior::BaseMechanicalMapping* m )
+void BglSimulation::resetMechanicalMapping(Node* , core::componentmodel::behavior::BaseMechanicalMapping* m )
 {
 
     Node *from=(Node*)m->getMechFrom()->getContext();
@@ -279,16 +308,14 @@ void BglSimulation::resetMechanicalMapping(Node* c, core::componentmodel::behavi
 //         std::cerr << "Reset Mechanical !!!!!!!!!!! :"  << from->getName() << " and " << to->getName() << " with " << m->getName() << "\n";
     removeHedge( h_node_vertex_map[from], h_node_vertex_map[to] );
     removeRedge( r_node_vertex_map[to], r_node_vertex_map[from] );
-    c->removeObject(m);
 }
 
 /// Method called when a MechanicalMapping is created.
 void BglSimulation::setContactResponse(Node * parent, core::objectmodel::BaseObject* response)
 {
-    std::cerr << "Set Contact\n";
     if (InteractionForceField *iff = dynamic_cast<InteractionForceField*>(response))
     {
-        std::cerr << "ADD CONTACT RESPONSE " << parent->getName() << "   : " << response->getName() << "\n";
+//             std::cerr << "ADD CONTACT RESPONSE " << parent->getName() << "   : " << response->getName() << "\n";
         addInteraction( (Node*)iff->getMechModel1()->getContext(),
                 (Node*)iff->getMechModel2()->getContext(),
                 iff);
@@ -298,11 +325,6 @@ void BglSimulation::setContactResponse(Node * parent, core::objectmodel::BaseObj
     {
         std::cerr << "setContactResponse Not IMPLEMENTED YET for InteractionConstraint\n";
     }
-    else
-    {
-        parent->moveObject(response);
-        //               std::cerr << "Add Object " << response->getName() << "\n";
-    }
 }
 /// Method called when a MechanicalMapping is destroyed.
 void BglSimulation::resetContactResponse(Node * parent, core::objectmodel::BaseObject* response)
@@ -310,19 +332,14 @@ void BglSimulation::resetContactResponse(Node * parent, core::objectmodel::BaseO
     if (InteractionForceField *iff = dynamic_cast<InteractionForceField*>(response))
     {
 
-        //               std::cerr << "ReSet ContactResponse : " << iff->getMechModel1()->getContext()->getName() << "->"<< iff->getMechModel1()->getName() << " : "
-        //                         << iff->getMechModel2()->getContext()->getName() << "->" <<iff->getMechModel2()->getName() << "\n";
+//             std::cerr << "ReSet ContactResponse : " << iff->getMechModel1()->getContext()->getName() << "->"<< iff->getMechModel2()->getName() << " : "
+//                       << iff->getMechModel2()->getContext()->getName() << "->" <<iff->getMechModel2()->getName() << "\n";
         removeInteraction(iff);
     }
     else if (// InteractionConstraint *ic =
         dynamic_cast<InteractionConstraint*>(response))
     {
         std::cerr << "setContactResponse Not IMPLEMENTED YET for InteractionConstraint\n";
-    }
-    else
-    {
-        //               std::cerr << "Remove Object " << response->getName() << " from " << parent->getName() << " and " << response->getContext()->getName() << " " << dynamic_cast<BglNode*>(parent) << "\n";
-        parent->removeObject(response);
     }
 }
 
@@ -335,6 +352,7 @@ void BglSimulation::addInteraction( Node* n1, Node* n2, InteractionForceField* i
 void BglSimulation::addInteractionNow( InteractionData &i )
 {
     interactions.push_back( Interaction(h_node_vertex_map[i.n1], h_node_vertex_map[i.n2],i.iff));
+    needUpdateInteraction=true;
 }
 
 void BglSimulation::removeInteraction( InteractionForceField* iff )
@@ -344,10 +362,22 @@ void BglSimulation::removeInteraction( InteractionForceField* iff )
     {
         if (it->iff == iff)
         {
-            ((Node*)(iff->getContext()))->removeObject(iff);
-            interactions.erase(it); return;
+//                 ((Node*)(iff->getContext()))->removeObject(iff);
+            interactions.erase(it);
+            needUpdateInteraction=true;
+            return;
         }
     }
+    InteractionsData::iterator itData;
+    for (itData=interactionToAdd.begin(); itData!=interactionToAdd.end(); itData++)
+    {
+        if (itData->iff == iff)
+        {
+            interactionToAdd.erase(itData);
+            return;
+        }
+    }
+//         std::cerr << iff << "@" << iff->getName() << " : ########################################## NO REMOVAL\n";
 }
 
 namespace
@@ -415,22 +445,25 @@ void BglSimulation::computeInteractionGraphAndConnectedComponents()
         boost::breadth_first_search( rgraph, boost::vertex(v1, rgraph), queue, visit, colors );
         boost::breadth_first_search( rgraph, boost::vertex(v2, rgraph), queue, visit, colors );
 
-        cerr<<"the roots are: "<<endl;
-        for( unsigned j=0; j<leaves.size(); j++ )
-        {
-            cerr<<r_vertex_node_map[visit.leaves[j]]->getName()<<", ";
-        }
-        cerr<<endl;
+//             cerr<<"the roots are: "<<endl;
+//             for( unsigned j=0; j<leaves.size(); j++ ){
+//               cerr<<r_vertex_node_map[visit.leaves[j]]->getName()<<", ";
+//             }
+//             cerr<<endl;
 
         // associate the interaction with one of its roots, no matter which one because it will then be associated to the whole interaction group.
         assert( visit.leaves.size()>0 );
         rootInteractions[*visit.leaves.begin()].push_back( *i );
 
+//             Rvertex collisionRvertex = convertHvertex2Rvertex(collisionVertex);
         // add edges between all the pairs of roots
         for ( find_leaves::Rleaves::iterator l=visit.leaves.begin(), lend=visit.leaves.end(); l!=lend; l++ )
         {
+//                 if (*l == collisionRvertex) continue;
             for ( find_leaves::Rleaves::iterator m=l++; m!=lend; m++ )
             {
+//                     if (*m == collisionRvertex) continue
+                ;
                 if ( *l != *m )
                 {
                     std::pair<Iedge,bool> e = add_edge( i_node_vertex_map[r_vertex_node_map[*l]],i_node_vertex_map[r_vertex_node_map[*m]], igraph );
@@ -483,7 +516,7 @@ void BglSimulation::computeInteractionGraphAndConnectedComponents()
 //             //               }
 //             cerr<<endl;
 //           }
-
+    needUpdateInteraction=false;
 }
 
 void BglSimulation::computeCollisionGraph()
@@ -494,7 +527,7 @@ void BglSimulation::computeCollisionGraph()
         if (h_vertex_node_map[*iter.first]->collisionModel.size())
         {
 //                 cerr<<"Node "<<h_vertex_node_map[*iter.first]->getName()<<" is a collision Node"<<endl;
-            addCvertex(h_vertex_node_map[*iter.first]);
+            addHedge(collisionVertex,*iter.first );
         }
     }
 }
@@ -504,20 +537,7 @@ void BglSimulation::setSolverOfCollisionGroup(Node* solverNode, Node* solverOfCo
     solver_colisionGroup_map[solverNode] = solverOfCollisionGroup;
 }
 
-bool BglSimulation::isIFFinNode(Rvertex IFFNode, Rvertex n)
-{
-    Rgraph::out_edge_iterator out_i, out_end;
-//         std::cerr << "processing : " << r_vertex_node_map[IFFNode]->getName()
-//                   << ":" << r_vertex_node_map[n]->getName() << "\n";
-    if (IFFNode == n) return true;
-    for (tie(out_i, out_end) = out_edges(IFFNode, rgraph); out_i!=out_end; ++out_i)
-    {
-        Redge e=*out_i;
-        Rvertex v= target(e,rgraph);
-        if (isIFFinNode(v,n)) return true;
-    }
-    return false;
-}
+
 
 bool BglSimulation::isUsableRoot(Node* n)
 {
@@ -546,10 +566,11 @@ void BglSimulation::init()
     {
         h_vertex_node_map[*i]->init(); // init the root and its subgraph
         //Link all the nodes to the MasterNode, in ordre to propagate the Context
-        addHedge( masterVertex, *i); // add nodes
+        addEdge( masterVertex, *i); // add nodes
     }
 
-    masterNode->init(); // not in hroots
+    masterNode->init();
+
     /// compute the interaction groups
     computeInteractionGraphAndConnectedComponents();
 
@@ -558,45 +579,12 @@ void BglSimulation::init()
     /// initialize the visual models and their mappings
     for ( VisualVector::iterator i=visualModels.begin(), iend=visualModels.end(); i!=iend; i++ )
     {
-        //cerr<<"init visual model, mapped from "<<(*i).second->getFrom()->getName()<<" to "<<(*i).second->getTo()->getName()<<endl;
-        (*i).first->init();
-        (*i).second->init();
+        (*i)->init();
     }
-
-
-
-
-    /// Put the collision models in the collision graph
-    /*      for( Hvpair v = vertices(hgraph); v.first!=v.second; v.first++ )
-    	{
-                BglNode* node = h_vertex_node_map[*v.first];
-                if( !node->collisionModel.empty() )
-                {
-    	// insert the node in the collision graph
-    	Hvertex cvertex = add_vertex( cgraph );
-    	c_vertex_node_map[cvertex] = node;
-    	cerr<<"add "<<node->getName()<<" to the collision graph"<<endl;
-                }
-    	}*/
-
-
-
-    //cerr<<"end BglSimulation::init()"<<endl;
-
-    // debug
-    //      cerr<<"there are "<<num_vertices(hgraph)<<" hvertices:"<<endl;
-    //      for( Hvpair i=vertices(hgraph); i.first!=i.second; i.first++ )
-    //      {
-    //              cerr<<h_vertex_node_map[*i.first]->getName()<<", ";
-    //      }
-    //      cerr<<endl;
-    //      cerr<<"there are "<<num_vertices(rgraph)<<" rvertices:"<<endl;
-    //      for( Rvpair i=vertices(rgraph); i.first!=i.second; i.first++ )
-    //      {
-    //              cerr<<r_vertex_node_map[*i.first]->getName()<<", ";
-    //      }
-    //      cerr<<endl;
-
+    for ( MappingVector::iterator i=visualMappings.begin(), iend=visualMappings.end(); i!=iend; i++ )
+    {
+        (*i)->init();
+    }
 }
 
 /** Data: interaction groups
@@ -607,14 +595,14 @@ void BglSimulation::mechanicalStep(Node* root, double dt)
 {
     /** Put everyone in the graph to apply collision detection */
 //         cerr<<"BglSimulation::animate, start collision detection"<<endl;
-//           print(masterNode);
-    clear_vertex( masterVertex, hgraph );
-    masterNode->clearInteractionForceFields();
+//         print(masterNode);
+    clearVertex( masterVertex );
+//         masterNode->clearInteractionForceFields();
 
     if (collisionPipeline)
     {
         masterNode->moveObject( collisionPipeline );
-        addHedge(masterVertex,collisionVertex);
+        addEdge(masterVertex,collisionVertex);
 
 
 //             std::cerr << "\n\nStatus before Collision Detection:\n";
@@ -623,43 +611,31 @@ void BglSimulation::mechanicalStep(Node* root, double dt)
         CollisionVisitor act;
         masterNode->doExecuteVisitor(&act);
 
-        removeHedge( masterVertex, collisionVertex);
+        removeEdge( masterVertex, collisionVertex);
         masterNode->removeObject( collisionPipeline );
     }
 
     updateGraph();
 
-//                   std::cerr << "\n\nStatus After Update:\n";
-//                   print(masterNode);
+//         std::cerr << "\n\nStatus After Update:\n";
+//         print(masterNode);
 
-    /** Update each interaction group independently.
-        The master node is used to process all of them sequentially, but several copies of the master node would allow paralle processing.
-    */
-//          std::cerr << interactionGroups.size() << " interactions \n";
-
-    if (interactions.size())
-        computeInteractionGraphAndConnectedComponents();
-
-
-//         std::cerr << "\n\n\n\n";
     for ( unsigned i=0; i<interactionGroups.size(); i++ )
     {
-//             std::cerr << "\n\nInteraction " << i << "\n";
         // remove previous children and interactions
 
-        clear_vertex( masterVertex, hgraph );
-        masterNode->clearInteractionForceFields();
+        clearVertex( masterVertex );
 
         // add the vertices and the interactions
         InteractionGroup& group = interactionGroups[i];
 
         //Find Dynamic Objects: objects with solver
-        std::multimap< Node*, Hvertex>                solverNode_dynamicObject_map;
-        std::set< Node* > solverUsed;
-        std::vector< Hedge > staticObjectAdded;
+        std::multimap< Node*, Hvertex>  solverNode_dynamicObject_map;
+        std::set< Hvertex > staticObjectAdded;
+        std::set< Hvertex > solverUsed;
         //Find Static  Objects: objects without solver
 
-
+        std::string staticObjectName;
         for ( unsigned j=0; j<group.first.size(); j++ )
         {
             Hvertex currentVertex = group.first[j];
@@ -670,9 +646,9 @@ void BglSimulation::mechanicalStep(Node* root, double dt)
             //No solver Found: we link it to the masterNode
             if (node_solver_map.find( currentNode ) == node_solver_map.end())
             {
-//                     std::cerr <<"#############################Static Object: " << currentNode->getName() << "\n";
-                BglSimulation::Hedge eH=addHedge( masterVertex, currentVertex); // add static object
-                staticObjectAdded.push_back(eH);
+                addEdge( masterVertex, currentVertex); // add static object
+                staticObjectAdded.insert(currentVertex);
+                staticObjectName += currentNode->getName() + " ";
             }
             else
             {
@@ -681,32 +657,22 @@ void BglSimulation::mechanicalStep(Node* root, double dt)
                 if (solver_colisionGroup_map.find(sUsed) != solver_colisionGroup_map.end())
                     sUsed = solver_colisionGroup_map[sUsed];
 
-
-//                     std::cerr  <<"#############################Dynamic: " << currentNode->getName() << " : " << sUsed->getName() <<  "\n";
                 //Add the main solver, and link it to the vertex describing the dynamic object
                 solverNode_dynamicObject_map.insert(std::make_pair(sUsed, currentVertex) );
-                solverUsed.insert(sUsed);
-
+                solverUsed.insert(h_node_vertex_map[sUsed]);
             }
         }
 
 
-
-
-
         //We deal with all the solvers one by one
-        std::set< Node* >::iterator it;
+        std::set< Hvertex >::iterator it;
         for (it=solverUsed.begin(); it != solverUsed.end(); it++)
         {
-
-            Node* currentSolver=*it;
-
-            static_cast<BglNode*>(currentSolver)->clearInteractionForceFields();
-
             std::string animationName;
-            std::set< InteractionForceField* > IFFAdded;
-
+            Hvertex solverVertex =*it;
+            Node* currentSolver=h_vertex_node_map[solverVertex];
 //                 std::cerr << "Solving with " << (*it)->getName() << "\n";
+
             typedef std::multimap< Node*,Hvertex>::iterator dynamicObjectIterator;
             std::pair<dynamicObjectIterator,dynamicObjectIterator> rangeSolver;
             rangeSolver = solverNode_dynamicObject_map.equal_range( currentSolver );
@@ -715,76 +681,43 @@ void BglSimulation::mechanicalStep(Node* root, double dt)
             if (rangeSolver.first == rangeSolver.second) continue; //No dynamic object, so no need to animate
 
             //Link the solver to the master Node
-            Hvertex solverVertex =h_node_vertex_map[currentSolver];
-            addHedge( masterVertex,solverVertex);
+            addEdge( masterVertex,solverVertex);
             //Add all the dynamic object depending of the current solver
             for (dynamicObjectIterator itDynObj=rangeSolver.first; itDynObj!=rangeSolver.second; itDynObj++)
             {
 //                     std::cerr << "\tAdding " << h_vertex_node_map[itDynObj->second]->getName() << "\n";
                 animationName += h_vertex_node_map[itDynObj->second]->getName() + " " ;
-                BglSimulation::Hedge eH=addHedge( solverVertex,itDynObj->second ); // add nodes
-
-
-                Rvertex objR= r_node_vertex_map[ h_vertex_node_map[ itDynObj->second ] ];
-                for (unsigned int IFFIndex=0; IFFIndex<group.second.size(); ++IFFIndex)
-                {
-//                         std::cerr << "Interaction ; "
-//                                   << h_vertex_node_map[group.second[IFFIndex].v1]->getName() << " and "
-//                                   << h_vertex_node_map[group.second[IFFIndex].v2]->getName() << "\n";
-                    Rvertex ir1 = r_node_vertex_map[ h_vertex_node_map[ group.second[IFFIndex].v1 ] ];
-                    Rvertex ir2 = r_node_vertex_map[ h_vertex_node_map[ group.second[IFFIndex].v2 ] ];
-                    if (IFFAdded.find(group.second[IFFIndex].iff) == IFFAdded.end() &&
-                        (isIFFinNode(ir1,objR) || isIFFinNode(ir2,objR)) )
-                    {
-//                             std::cerr << " %%%%%%%%%%%%%%%%%%%%%%%%% ADDING INTERACTION\n";
-                        currentSolver->moveObject(group.second[IFFIndex].iff);
-                        IFFAdded.insert(group.second[IFFIndex].iff);
-                    }
-                }
+                addEdge( solverVertex,itDynObj->second ); // add nodes
             }
 
 
-//                   std::cerr << "\n\nStatus before Animating:\n";
-//                    print(masterNode);
+//                 std::cerr << "\n\nStatus before Animating:\n";
+//                 print(masterNode);
 #ifdef DUMP_VISITOR_INFO
-            simulation::Visitor::printComment(std::string("Animate ") + animationName );
+            simulation::Visitor::printComment(std::string("Animate ") + staticObjectName + animationName );
 #endif
             // animate this interaction group
             masterNode->animate(dt);
 
-            //Remove the Interaction ForceFields
-            std::set<InteractionForceField*>::iterator IFF_iterator;
-            for (IFF_iterator=IFFAdded.begin(); IFF_iterator!=IFFAdded.end(); IFF_iterator++) currentSolver->removeObject(*IFF_iterator);
-
             //Remove the link between all the vertices connected to the solver
-            removeHedge( masterVertex, solverVertex);
+            removeEdge( masterVertex, solverVertex);
             //Clear the solverVertex from all the dynamic objects
-            clear_vertex(solverVertex, hgraph);
+            clearVertex(solverVertex);
         }
-        for (unsigned int i=0; i<staticObjectAdded.size(); ++i) remove_edge(staticObjectAdded[i],hgraph);
 
+        for (std::set<Hvertex>::iterator it=staticObjectAdded.begin(); it!=staticObjectAdded.end(); it++) removeEdge(masterVertex,*it);
 
 //             std::cerr << "\n\nFinal Status:\n\n\n";
 //             clear_vertex(masterVertex, hgraph);
 //             print(masterNode);
     }
 
-
-
     //TODO: add the interactions to the graph
-    for ( HvertexVector::iterator i=hroots.begin(), iend=hroots.end(); i!=iend; i++ ) addHedge( masterVertex,*i);
-
-
-    for ( unsigned i=0; i<interactionGroups.size(); i++ )
+    for ( HvertexVector::iterator i=hroots.begin(), iend=hroots.end(); i!=iend; i++ )
     {
-        // add the vertices and the interactions
-        InteractionGroup& group = interactionGroups[i];
-        for (unsigned int IFFIndex=0; IFFIndex<group.second.size(); ++IFFIndex)
-        {
-            masterNode->moveObject(group.second[IFFIndex].iff);
-        }
+//             std::cerr << h_vertex_node_map[*i]->getName() << " : root !! \n";
+        addEdge( masterVertex,*i);
     }
-
 }
 
 
@@ -794,7 +727,7 @@ void BglSimulation::animate(Node* root, double dt)
 {
     dt = root->getContext()->getDt();
 
-    clear_vertex( masterVertex, hgraph );
+    clearVertex( masterVertex );
 
 #ifdef DUMP_VISITOR_INFO
     simulation::Visitor::printComment(std::string("Begin Step"));
@@ -818,6 +751,20 @@ void BglSimulation::animate(Node* root, double dt)
         masterNode->setTime ( startTime + (step+1)* mechanicalDt );
     }
 
+    //Update Visual Mapping
+
+    for ( MappingVector::iterator i=visualMappings.begin(), iend=visualMappings.end(); i!=iend; i++ )
+    {
+        //cerr<<"init mapping model, mapped from "<<(*i).second->getFrom()->getName()<<" to "<<(*i).second->getTo()->getName()<<endl;
+        (*i)->updateMapping();
+    }
+    //Update Mapping End Event
+    {
+        simulation::UpdateMappingEndEvent ev ( dt );
+        PropagateEventVisitor act ( &ev );
+        masterNode->doExecuteVisitor( &act );
+    }
+
     {
         AnimateEndEvent ev ( dt );
         PropagateEventVisitor act ( &ev );
@@ -827,7 +774,6 @@ void BglSimulation::animate(Node* root, double dt)
     simulation::Visitor::printComment(std::string("End Step"));
 #endif
 
-
 }
 
 void BglSimulation::computeHroots()
@@ -836,8 +782,8 @@ void BglSimulation::computeHroots()
     hroots.clear();
     for ( Hvpair iter=boost::vertices(hgraph); iter.first!=iter.second; iter.first++)
     {
-        std::cerr << h_vertex_node_map[*iter.first]->getName() << " " << in_degree (*iter.first,hgraph) << "\n";
-        if ( isUsableRoot(h_vertex_node_map[*iter.first]) && in_degree (*iter.first,hgraph)==0 )
+//                 std::cerr << isUsableRoot(h_vertex_node_map[*iter.first]) << "-->usable? : " << h_vertex_node_map[*iter.first]->getName() << " " << in_degree (*iter.first,hgraph) << "\n";
+        if ( isUsableRoot(h_vertex_node_map[*iter.first]) && in_degree (*iter.first,hgraph)==0)
         {
             hroots.push_back(*iter.first);
             //                   cerr<<"node "<<h_vertex_node_map[*iter.first]->getName()<<" is a root"<<endl;
@@ -848,23 +794,22 @@ void BglSimulation::computeHroots()
 // after the collision detection, modification to the graph can have occured. We update the graph
 void BglSimulation::updateGraph()
 {
+//         std::cerr << "node:" <<nodeToAdd.size() << " : edge:" << edgeToAdd.size() << " : interaction:" << interactionToAdd.size() << "\n";
+    for (std::set<Hvertex>::iterator it=vertexToDelete.begin(); it!=vertexToDelete.end(); it++) deleteVertex(*it);
+    for (unsigned int i=0; i<nodeToAdd.size() ; i++)               insertNewNode(nodeToAdd[i]);
+    std::set< std::pair< Node*, Node*> >::iterator itEdge;
+    for (itEdge=edgeToAdd.begin(); itEdge!=edgeToAdd.end(); itEdge++) addEdge(h_node_vertex_map[ itEdge->first],h_node_vertex_map[ itEdge->second]);
+    for (unsigned int i=0; i<interactionToAdd.size(); i++)         addInteractionNow(interactionToAdd[i]);
 
-    std::set<Node*>::iterator it;
-    for (it=nodeToDelete.begin(); it!=nodeToDelete.end(); it++) deleteNodeNow(*it);
-    for (unsigned int i=0; i<nodeToAdd.size(); i++)             insertNewNode(nodeToAdd[i]);
-    for (unsigned int i=0; i<edgeToAdd.size(); i++)             addNodeNow(edgeToAdd[i].first,edgeToAdd[i].second);
-    for (unsigned int i=0; i<interactionToAdd.size(); i++)      addInteractionNow(interactionToAdd[i]);
+    if (vertexToDelete.size() || nodeToAdd.size()) computeHroots();
 
-    if (nodeToDelete.size() || nodeToAdd.size())
-    {
-        computeHroots();
-        computeInteractionGraphAndConnectedComponents();
-    }
-
-    nodeToDelete.clear();
+    vertexToDelete.clear();
     nodeToAdd.clear();
     edgeToAdd.clear();
     interactionToAdd.clear();
+
+    if (needUpdateInteraction)   computeInteractionGraphAndConnectedComponents();
+
 }
 
 
@@ -874,81 +819,17 @@ void BglSimulation::computeBBox(Node* root, SReal* minBBox, SReal* maxBBox)
 
     for ( VisualVector::iterator i=visualModels.begin(), iend=visualModels.end(); i!=iend; i++ )
     {
-        (*i).first->addBBox(minBBox,maxBBox);
+        (*i)->addBBox(minBBox,maxBBox);
     }
 }
 
-/// Toggle the showBehaviorModel flag of all systems
-void BglSimulation::setShowBehaviorModels( bool b )
+void BglSimulation::setVisualModel( VisualModel* v)
 {
-    for ( Hvpair iter=boost::vertices(hgraph); iter.first!=iter.second; iter.first++)
-        h_vertex_node_map[*iter.first]->setShowBehaviorModels(b);
+    visualModels.push_back( v );
 }
-/// Toggle the showVisualModel flag of all systems
-void BglSimulation::setShowVisualModels( bool b )
+void BglSimulation::setVisualMapping( Mapping* m)
 {
-    for ( Hvpair iter=boost::vertices(hgraph); iter.first!=iter.second; iter.first++)
-        h_vertex_node_map[*iter.first]->setShowVisualModels(b);
-}
-/// Toggle the showNormals flag of all systems
-void BglSimulation::setShowNormals( bool b )
-{
-    for ( Hvpair iter=boost::vertices(hgraph); iter.first!=iter.second; iter.first++)
-        h_vertex_node_map[*iter.first]->setShowNormals(b);
-}
-
-/// Display flags: Collision Models
-void BglSimulation::setShowCollisionModels(bool val)
-{
-    for ( Hvpair iter=boost::vertices(hgraph); iter.first!=iter.second; iter.first++)
-        h_vertex_node_map[*iter.first]->setShowCollisionModels(val);
-}
-
-/// Display flags: Bounding Collision Models
-void BglSimulation::setShowBoundingCollisionModels(bool val)
-{
-    for ( Hvpair iter=boost::vertices(hgraph); iter.first!=iter.second; iter.first++)
-        h_vertex_node_map[*iter.first]->setShowBoundingCollisionModels(val);
-}
-
-/// Display flags: Mappings
-void BglSimulation::setShowMappings(bool val)
-{
-    for ( Hvpair iter=boost::vertices(hgraph); iter.first!=iter.second; iter.first++)
-        h_vertex_node_map[*iter.first]->setShowMappings(val);
-}
-
-/// Display flags: Mechanical Mappings
-void BglSimulation::setShowMechanicalMappings(bool val)
-{
-    for ( Hvpair iter=boost::vertices(hgraph); iter.first!=iter.second; iter.first++)
-        h_vertex_node_map[*iter.first]->setShowMechanicalMappings(val);
-}
-
-/// Display flags: ForceFields
-void BglSimulation::setShowForceFields(bool val)
-{
-    for ( Hvpair iter=boost::vertices(hgraph); iter.first!=iter.second; iter.first++)
-        h_vertex_node_map[*iter.first]->setShowForceFields(val);
-}
-
-/// Display flags: InteractionForceFields
-void BglSimulation::setShowInteractionForceFields(bool val)
-{
-    for ( Hvpair iter=boost::vertices(hgraph); iter.first!=iter.second; iter.first++)
-        h_vertex_node_map[*iter.first]->setShowInteractionForceFields(val);
-}
-
-/// Display flags: WireFrame
-void BglSimulation::setShowWireFrame(bool val)
-{
-    for ( Hvpair iter=boost::vertices(hgraph); iter.first!=iter.second; iter.first++)
-        h_vertex_node_map[*iter.first]->setShowWireFrame(val);
-}
-
-void BglSimulation::setVisualModel( VisualModel* v, Mapping* m)
-{
-    visualModels.push_back( std::make_pair(v,m) );
+    visualMappings.push_back( m );
 }
 
 void BglSimulation::draw(Node* , helper::gl::VisualParameters*)
@@ -957,17 +838,16 @@ void BglSimulation::draw(Node* , helper::gl::VisualParameters*)
     // 	cerr<<"begin BglSimulation::glDraw()"<<endl;
     masterNode->glDraw();
 
-    for (HvertexVector::iterator i=hroots.begin(), iend=hroots.end(); i!=iend; i++ )
-    {
-        h_vertex_node_map[*i]->glDraw();
-    }
 
     for ( VisualVector::iterator i=visualModels.begin(), iend=visualModels.end(); i!=iend; i++ )
     {
-        //cerr<<"draw visual model, mapped from "<<(*i).second->getFrom()->getName()<<" to "<<(*i).second->getTo()->getName()<<endl;
-        (*i).second->updateMapping();
-        (*i).first->drawVisual();
+        (*i)->drawVisual();
     }
+    for ( MappingVector::iterator i=visualMappings.begin(), iend=visualMappings.end(); i!=iend; i++ )
+    {
+        (*i)->draw();
+    }
+
     // 	cerr<<"end BglSimulation::glDraw()"<<endl;
 }
 
@@ -1056,7 +936,9 @@ void BglSimulation::reset(Node* root)
 
 void BglSimulation::unload(Node* root)
 {
+
     if (!root) return;
+
     for ( unsigned i=0; i<interactionGroups.size(); i++ )
     {
         interactionGroups[i].second.clear();
@@ -1069,12 +951,24 @@ void BglSimulation::unload(Node* root)
     BglDeleteVisitor deleteGraph(this);
     masterNode->doExecuteVisitor(&deleteGraph);
 
-    for (unsigned int i=0; i<visualModels.size(); ++i)
+
+
+    for ( VisualVector::iterator i=visualModels.begin(), iend=visualModels.end(); i!=iend; i++ )
     {
-        delete visualModels[i].first;
-        delete visualModels[i].second;
+        delete (*i);
+    }
+    for ( MappingVector::iterator i=visualMappings.begin(), iend=visualMappings.end(); i!=iend; i++ )
+    {
+        delete (*i);
     }
     visualModels.clear();
+    visualMappings.clear();
+
+
+    vertexToDelete.clear();
+    nodeToAdd.clear();
+    edgeToAdd.clear();
+    interactionToAdd.clear();
 
 
     hgraph.clear();

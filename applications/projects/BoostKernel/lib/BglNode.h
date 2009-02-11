@@ -80,10 +80,8 @@ public:
     */
     void doExecuteVisitor( Visitor* action);
 
-
-    // to move to simulation::Node
-    void clearInteractionForceFields();
-
+    /// Do one step forward in time
+    void animate( double dt );
 
     /// Generic object access, possibly searching up or down from the current context
     ///

@@ -125,7 +125,6 @@ public:
     //Hvertex addHvertex( sofa::simulation::Node* );
     Hedge addHedge(Hvertex parent, Hvertex child);
     void  removeHedge(Hvertex parent, Hvertex child);
-
     /// depth search in the whole scene
     void dfs( Visitor& );
     /// depth visit starting from the given vertex
@@ -147,17 +146,25 @@ public:
 
     Redge addRedge(Rvertex parent, Rvertex child);
     void  removeRedge(Rvertex parent, Rvertex child);
+    void  deleteVertex(Hvertex v);
+    void  clearVertex(Hvertex v);
     /// @}
 
+    Rvertex convertHvertex2Rvertex(Hvertex v);
+    Hvertex convertRvertex2Hvertex(Rvertex v);
+    void    addEdge(Hvertex p, Hvertex c);
+    void    removeEdge(Hvertex p, Hvertex c);
+    void    removeVertex(Hvertex p);
 
     /** @name visual models
         The sofa visual models and their mappings are separated from the mechanical mapping hierarchy.
         This makes the hierarchy graph more homogeneous and hopefully easier to process.
     */
     /// @{
-    typedef vector<std::pair<VisualModel*,Mapping*> > VisualVector;
-
+    typedef vector<VisualModel*> VisualVector;
     VisualVector visualModels;
+    typedef vector<Mapping*> MappingVector;
+    MappingVector visualMappings;
     /// @}
 
 
@@ -216,12 +223,13 @@ public:
         Interaction( Hvertex r1, Hvertex r2, InteractionForceField* i ) : v1(r1), v2(r2), iff(i) {}
     };
     typedef vector<Interaction> Interactions;
+    typedef vector<InteractionData> InteractionsData;
     typedef std::pair< HvertexVector, vector<Interaction> > InteractionGroup; ///< maximum set of nodes which interact together, along with the interactions between them
     typedef vector<InteractionGroup> InteractionGroups;
 
     Interactions interactions;            ///< interactions between nodes at at any hierarchical levels
     InteractionGroups interactionGroups;  ///< all the objects and interactions, in independent groups which can be processed separately
-
+    bool needUpdateInteraction;
     /** Compute the interaction graph and the connected components, based on interactions and hroots
      */
     void computeInteractionGraphAndConnectedComponents();
@@ -264,7 +272,8 @@ public:
     /// Add a visual model to the scene, attached by a Mapping.
     /// They are not inserted in a scene graph, but in a separated container.
     /// The Mapping needs not be attached to a Node.
-    void setVisualModel( VisualModel*, Mapping* );
+    void setVisualModel( VisualModel* );
+    void setVisualMapping( Mapping* );
 
     /// Add an interaction
     void addInteraction( Node* n1, Node* n2, InteractionForceField* );
@@ -294,18 +303,20 @@ public:
 
     void reset ( Node* root );
 
+    // Node dynamical access
     /// Add a node to as the child of another
     void addNode(BglNode* parent, BglNode* child);
-
-    /// Add a node to as the child of another
-    void addNodeNow(BglNode* parent, BglNode* child);
-
 
     /// Delete a graph node and all the edges, and entries in map
     void deleteNode( Node* n);
 
-    /// Delete a graph node and all the edges, and entries in map
-    void deleteNodeNow( Node* n);
+
+
+    /// Delete the hgraph node and all the edges, and entries in map
+    void deleteHvertex( Hvertex n);
+    /// Delete the rgraph node and all the edges, and entries in map
+    void deleteRvertex( Rvertex n);
+
 
     /// Update the graph with all the operation stored in memory: add/delete node, add interactions...
     void updateGraph();
@@ -333,36 +344,6 @@ public:
     void draw(Node* root, helper::gl::VisualParameters* params = NULL);
 
 
-    /// Toggle the showBehaviorModel flag of all systems
-    void setShowBehaviorModels( bool );
-
-    /// Toggle the showVisualModel flag of all systems
-    void setShowVisualModels( bool );
-
-    /// Toggle the showNormals flag of all systems
-    void setShowNormals( bool );
-
-    /// Display flags: Collision Models
-    void setShowCollisionModels(bool val);
-
-    /// Display flags: Bounding Collision Models
-    void setShowBoundingCollisionModels(bool val);
-
-    /// Display flags: Mappings
-    void setShowMappings(bool val);
-
-    /// Display flags: Mechanical Mappings
-    void setShowMechanicalMappings(bool val);
-
-    /// Display flags: ForceFields
-    void setShowForceFields(bool val);
-
-    /// Display flags: InteractionForceFields
-    void setShowInteractionForceFields(bool val);
-
-    /// Display flags: WireFrame
-    void setShowWireFrame(bool val);
-
     /// Add a Solver working inside a given Node
     void addSolver(BaseObject*,Node* n);
     /// @}
@@ -387,17 +368,14 @@ public:
     Node* collisionNode;
     Hvertex collisionVertex; ///< Root of the collision graph. Contains the collision detection and response components */
 
-    Hvertex addCvertex( Node *n);
-    Hedge addCedge(Hvertex parent, Hvertex child);
-    void  removeCedge(Hvertex parent, Hvertex child);
 
     /// @}
     Node* mouseNode;
 
-    std::set< Node* >                           nodeToDelete;
-    std::vector< BglNode* >                     nodeToAdd;
-    std::vector< std::pair<BglNode*,BglNode*> > edgeToAdd;
-    std::vector< InteractionData >              interactionToAdd;
+    std::set   < Hvertex >                     vertexToDelete;
+    std::vector< Node*   >                     nodeToAdd;
+    std::set< std::pair<Node*,Node*> >         edgeToAdd;
+    std::vector< InteractionData >             interactionToAdd;
 
     /// Methods to handle collision group:
     /// We create default solvers, that will eventually be used when two groups containing a solver will have to be managed at the same time
