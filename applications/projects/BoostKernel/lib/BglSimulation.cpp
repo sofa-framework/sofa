@@ -744,9 +744,6 @@ void BglSimulation::mechanicalStep(Node* root, double dt)
             }
 
 
-
-
-
 //                   std::cerr << "\n\nStatus before Animating:\n";
 //                    print(masterNode);
 #ifdef DUMP_VISITOR_INFO

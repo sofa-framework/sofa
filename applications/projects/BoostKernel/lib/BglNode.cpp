@@ -38,7 +38,14 @@
 #include "BglNode.h"
 #include "BglSimulation.h"
 #include "GetObjectsVisitor.h"
+
+
 #include <sofa/core/objectmodel/BaseContext.h>
+#include <sofa/core/componentmodel/behavior/BaseMechanicalMapping.h>
+#include <sofa/core/componentmodel/behavior/InteractionForceField.h>
+#include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
+
+
 //#include "bfs_adapter.h"
 #include "dfv_adapter.h"
 #include <boost/graph/depth_first_search.hpp>
@@ -72,6 +79,46 @@ BglNode::BglNode(BglSimulation* s, BglSimulation::Hgraph *g,  BglSimulation::Hve
 
 BglNode::~BglNode()
 {
+}
+
+bool BglNode::addObject(BaseObject* obj)
+{
+    if (sofa::core::componentmodel::behavior::BaseMechanicalMapping* mm = dynamic_cast<sofa::core::componentmodel::behavior::BaseMechanicalMapping*>(obj))
+    {
+        scene->setMechanicalMapping(this,mm);
+        return true;
+    }
+    else if (sofa::core::componentmodel::behavior::InteractionForceField* iff = dynamic_cast<sofa::core::componentmodel::behavior::InteractionForceField*>(obj))
+    {
+        scene->setContactResponse(this,iff);
+        return true;
+    }
+    else if (sofa::core::componentmodel::behavior::InteractionConstraint* ic = dynamic_cast<sofa::core::componentmodel::behavior::InteractionConstraint*>(obj))
+    {
+        scene->setContactResponse(this,ic);
+        return true;
+    }
+    return Node::addObject(obj);
+}
+
+bool BglNode::removeObject(core::objectmodel::BaseObject* obj)
+{
+    if (sofa::core::componentmodel::behavior::BaseMechanicalMapping* mm = dynamic_cast<sofa::core::componentmodel::behavior::BaseMechanicalMapping*>(obj))
+    {
+        scene->resetMechanicalMapping(this,mm);
+        return true;
+    }
+    else if (sofa::core::componentmodel::behavior::InteractionForceField* iff = dynamic_cast<sofa::core::componentmodel::behavior::InteractionForceField*>(obj))
+    {
+        scene->resetContactResponse(this,iff);
+        return true;
+    }
+    else if (sofa::core::componentmodel::behavior::InteractionConstraint* ic = dynamic_cast<sofa::core::componentmodel::behavior::InteractionConstraint*>(obj))
+    {
+        scene->resetContactResponse(this,ic);
+        return true;
+    }
+    return Node::removeObject(obj);
 }
 
 void BglNode::addChild(Node* c)
