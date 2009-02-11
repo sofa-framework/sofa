@@ -101,6 +101,8 @@ public:
     virtual void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, SearchDirection dir = SearchUp) const;
 
 
+    bool addObject(BaseObject* obj);
+    bool removeObject(BaseObject* obj);
 
     /// Add a child node
     void addChild(Node* node);
