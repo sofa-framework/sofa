@@ -59,8 +59,7 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
     if (ff!=NULL)
     {
         ff->cleanup();
-        if (parent!=NULL)
-            simulation::getSimulation()->resetContactResponse((simulation::Node*)parent,ff);
+        if (parent!=NULL) parent->removeObject(ff);
         delete ff;
         parent = NULL;
         ff = NULL;
@@ -202,15 +201,15 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
     {
         if (parent!=NULL)
         {
-            simulation::getSimulation()->resetContactResponse((simulation::Node*)parent,this);
-            simulation::getSimulation()->resetContactResponse((simulation::Node*)parent,ff);
+            parent->removeObject(this);
+            parent->removeObject(ff);
         }
         parent = group;
         if (parent!=NULL)
         {
             //sout << "Attaching contact response to "<<parent->getName()<<sendl;
-            simulation::getSimulation()->setContactResponse((simulation::Node*)parent,this);
-            simulation::getSimulation()->setContactResponse((simulation::Node*)parent,ff);
+            parent->addObject(this);
+            parent->addObject(ff);
         }
     }
 }
@@ -223,8 +222,8 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
         if (parent!=NULL)
         {
             //sout << "Removing contact response from "<<parent->getName()<<sendl;
-            simulation::getSimulation()->resetContactResponse((simulation::Node*)parent,this);
-            simulation::getSimulation()->resetContactResponse((simulation::Node*)parent,ff);
+            parent->removeObject(this);
+            parent->removeObject(ff);
         }
         parent = NULL;
     }
