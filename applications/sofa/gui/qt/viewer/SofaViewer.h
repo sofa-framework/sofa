@@ -123,12 +123,10 @@ public:
         //interactor = NULL;
 
         if (scene) scene->getContext()->get( interactor);
-        std::string file;
-        if (filename)
-            file=sofa::helper::system::SetDirectory::GetFileName(filename);
+        std::string file = sofa::helper::system::SetDirectory::GetFileName(filename);
         std::string screenshotPrefix=sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/share/screenshots/" ) + file + std::string("_");
         capture.setPrefix(screenshotPrefix);
-        sceneFileName=file;
+        sceneFileName=filename;
         groot = scene;
         initTexturesDone = false;
         sceneBBoxIsValid = true;
