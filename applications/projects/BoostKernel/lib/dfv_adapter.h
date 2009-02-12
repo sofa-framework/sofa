@@ -73,7 +73,7 @@ public:
 
     BglSimulation::H_vertex_node_map& systemMap;      ///< access the System*
 
-    dfv_adapter( sofa::simulation::Visitor* v, BglSimulation::H_vertex_node_map& s );
+    dfv_adapter( sofa::simulation::Visitor* v, BglSimulation *simu,  BglSimulation::H_vertex_node_map& s );
 
     ~dfv_adapter();
 

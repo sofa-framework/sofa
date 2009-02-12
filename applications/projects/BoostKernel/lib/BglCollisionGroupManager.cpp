@@ -152,12 +152,11 @@ simulation::Node* BglCollisionGroupManager::getIntegrationNode(core::CollisionMo
     simulation::bgl::BglSimulation *currentSimulation = dynamic_cast<simulation::bgl::BglSimulation*>(simulation::getSimulation());
     assert(currentSimulation);
 
-    std::map< simulation::Node*, simulation::Node* > &node_solver_map = currentSimulation->node_solver_map;
+    std::set< simulation::Node*> &nodeSolvers = currentSimulation->nodeSolvers;
     while (true)
     {
-        simulation::Node *solverNode = node_solver_map[currentNode];
         //Verify is the current node contains at least a solver
-        if (solverNode) return solverNode;
+        if (nodeSolvers.find(currentNode) != nodeSolvers.end()) return currentNode;
         else
         {
             //We look at an eventual mechanical mapping to goes up in the hierarchy
