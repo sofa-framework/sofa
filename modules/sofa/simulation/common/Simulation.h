@@ -107,9 +107,6 @@ public:
     /// Create a new Node of the simulation
     virtual Node* newNode(const std::string& name)=0;
 
-    /// Delete a Node of the simulation
-    virtual void deleteNode(Node *);
-
     /// Number of mechanical steps within an animation step
     Data<unsigned> numMechSteps;
     Data<std::string> gnuplotDirectory;
