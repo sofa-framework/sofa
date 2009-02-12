@@ -37,24 +37,17 @@ using namespace sofa::defaulttype;
 SOFA_DECL_CLASS(UncoupledConstraintCorrection)
 
 int UncoupledConstraintCorrectionClass = core::RegisterObject("")
-#ifndef SOFA_FLOAT
-        .add< UncoupledConstraintCorrection<Vec1dTypes> >()
-        .add< UncoupledConstraintCorrection<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< UncoupledConstraintCorrection<Vec1fTypes> >()
-        .add< UncoupledConstraintCorrection<Rigid3fTypes> >()
-#endif
+
+        .add< UncoupledConstraintCorrection<Vec1Types> >()
+        .add< UncoupledConstraintCorrection<Rigid3Types> >()
         ;
 
-#ifndef SOFA_FLOAT
-template class UncoupledConstraintCorrection<Vec1dTypes>;
-template class UncoupledConstraintCorrection<Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class UncoupledConstraintCorrection<Vec1fTypes>;
-template class UncoupledConstraintCorrection<Rigid3fTypes>;
-#endif
+
+template class UncoupledConstraintCorrection<Vec1Types>;
+template class UncoupledConstraintCorrection<Rigid3Types>;
+
+
+
 
 
 } // namespace constraint
