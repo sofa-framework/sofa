@@ -80,8 +80,8 @@ BglNode::BglNode(BglSimulation* s, BglSimulation::Hgraph *g,  BglSimulation::Hve
 
 BglNode::~BglNode()
 {
-//         std::cerr << "Node this : " << this->getName() << " ; " << scene->h_node_vertex_map[this] << " DELETED\n";
-//         scene->deleteNode(this);
+//          std::cerr << "Node this : " << this->getName() << " ; " << scene->h_node_vertex_map[this] << " DELETED\n";
+    scene->externalDeleteNode(this);
 }
 
 
@@ -206,7 +206,7 @@ void BglNode::doExecuteVisitor( Visitor* vis )
           colors
           );*/
 
-    dfv_adapter dfv(vis,scene->h_vertex_node_map);
+    dfv_adapter dfv(vis,scene, scene->h_vertex_node_map);
     boost::depth_first_visit(
         *graph,
         boost::vertex(this->vertexId, *graph),
@@ -228,7 +228,7 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, S
     {
 //             std::cerr << "Search Down ";
         boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(scene->hgraph) );
-        dfv_adapter dfv( &getobj,  scene->h_vertex_node_map );
+        dfv_adapter dfv( &getobj,  scene, scene->h_vertex_node_map );
         boost::depth_first_visit(
             scene->hgraph,
             boost::vertex(this->vertexId, scene->hgraph),
@@ -241,7 +241,7 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, S
     {
 //             std::cerr << "Search Up ";
         boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(scene->rgraph) );
-        dfv_adapter dfv( &getobj, scene->r_vertex_node_map );
+        dfv_adapter dfv( &getobj, scene, scene->r_vertex_node_map );
         BglSimulation::Rvertex thisvertex = scene->r_node_vertex_map[scene->h_vertex_node_map[this->vertexId]];
         boost::depth_first_visit(
             scene->rgraph,
@@ -295,7 +295,7 @@ void BglNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
     if ( dir == SearchDown )
     {
         boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(scene->hgraph) );
-        dfv_adapter dfv( &getobjs, scene->h_vertex_node_map );
+        dfv_adapter dfv( &getobjs, scene, scene->h_vertex_node_map );
         boost::depth_first_visit(
             scene->hgraph,
             boost::vertex(this->vertexId, scene->hgraph),
@@ -307,7 +307,7 @@ void BglNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
     else if (dir== SearchUp )
     {
         boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(scene->rgraph) );
-        dfv_adapter dfv( &getobjs, scene->r_vertex_node_map );
+        dfv_adapter dfv( &getobjs, scene, scene->r_vertex_node_map );
         BglSimulation::Rvertex thisvertex = scene->r_node_vertex_map[scene->h_vertex_node_map[this->vertexId]];
         boost::depth_first_visit(
             scene->rgraph,

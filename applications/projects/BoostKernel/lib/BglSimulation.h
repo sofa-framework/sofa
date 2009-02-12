@@ -228,11 +228,15 @@ public:
     typedef vector<InteractionGroup> InteractionGroups;
 
     Interactions interactions;            ///< interactions between nodes at at any hierarchical levels
+    Interactions previousInteractions;    ///< interactions between nodes at at any hierarchical levels at the previous time step
     InteractionGroups interactionGroups;  ///< all the objects and interactions, in independent groups which can be processed separately
-    bool needUpdateInteraction;
     /** Compute the interaction graph and the connected components, based on interactions and hroots
      */
     void computeInteractionGraphAndConnectedComponents();
+
+    /** Determine if we have to recompute the interaction graph
+     */
+    bool needToComputeInteractions();
 
     /** Compute the collision graph
      */
@@ -250,7 +254,8 @@ public:
     /// Make the correspondance between a node in the mechanical graph and the solver nodes.
     std::map< Node*, Node*> solver_colisionGroup_map;
     /// Make the correspondance between a node in the mechanical graph and the solver nodes.
-    std::map< Node*, Node*> node_solver_map;
+    std::set< Node*> nodeSolvers;
+    std::set< Node*> nodeGroupSolvers;
 
     /// @name High-level interface
     /// @{
@@ -266,7 +271,7 @@ public:
     /// Method called when a MechanicalMapping is destroyed.
     void resetContactResponse(Node * parent, core::objectmodel::BaseObject* response);
 
-
+    void clear();
 
 
     /// Add a visual model to the scene, attached by a Mapping.
@@ -310,7 +315,8 @@ public:
     /// Delete a graph node and all the edges, and entries in map
     void deleteNode( Node* n);
 
-
+    /// Component has deleted a node
+    void externalDeleteNode( Node *n);
 
     /// Delete the hgraph node and all the edges, and entries in map
     void deleteHvertex( Hvertex n);
@@ -321,11 +327,8 @@ public:
     /// Update the graph with all the operation stored in memory: add/delete node, add interactions...
     void updateGraph();
 
-    /// Find out if an interaction forcefield is located in one of the children of a node
-    bool isIFFinNode(Rvertex iff, Rvertex n);
-
     /// During init phase, we need to find the roots. We must discard the masterNode, collisionNode, and all the solverNode
-    bool isUsableRoot(Node* n);
+    bool isRootUsable(Node* n);
 
     /// Initialize all the nodes and edges depth-first
     void init();
@@ -373,6 +376,7 @@ public:
     Node* mouseNode;
 
     std::set   < Hvertex >                     vertexToDelete;
+    std::set   < Node*   >                     externalDelete;
     std::vector< Node*   >                     nodeToAdd;
     std::set< std::pair<Node*,Node*> >         edgeToAdd;
     std::vector< InteractionData >             interactionToAdd;
