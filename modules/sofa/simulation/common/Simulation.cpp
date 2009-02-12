@@ -179,11 +179,6 @@ void Simulation::animate ( Node* root, double dt )
 #endif
 }
 
-void Simulation::deleteNode(Node *n)
-{
-    delete n;
-}
-
 
 /// Reset to initial state
 void Simulation::reset ( Node* root )
