@@ -55,6 +55,8 @@ public:
 
     virtual void getCompliance(defaulttype::BaseMatrix* W) = 0;
 
+
+
     virtual void CudaGetCompliance(defaulttype::BaseMatrix* W)
     {
         sout << "warning : CudaGetCompliance(defaulttype::BaseMatrix* W) is not implemented in " << this->getTypeName() << sendl;
@@ -64,6 +66,21 @@ public:
     virtual void applyContactForce(const defaulttype::BaseVector *f) = 0;
 
     virtual void resetContactForce() = 0;
+
+    // NEW : for non building the constraint system during solving/////////////////
+    virtual bool hasConstraintNumber(int /*index*/) {return true;}
+
+    virtual void resetConstraintForce(double * /*f*/) {}
+
+    virtual void addConstraintDisplacement(double * /*d*/, int /*begin*/,int /*end*/) { }
+
+    virtual void setConstraintDForce(double * /*df*/, int /*begin*/,int /*end*/) { }	  // f += df
+
+    virtual void getBlockDiagonalCompliance(defaulttype::BaseMatrix* /*W*/, int /*begin*/,int /*end*/)
+    {
+        sout << "warning : getBlockDiagonalCompliance(defaulttype::BaseMatrix* W) is not implemented in " << this->getTypeName() << sendl;
+    }
+    /////////////////////////////////////////////////////////////////////////////////
 
 };
 

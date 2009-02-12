@@ -119,8 +119,14 @@ public:
     void stickState(double &dn, double &dt, double &ds, double &fn, double &ft, double &fs);
     void slipState(double &mu, double &dn, double &dt, double &ds, double &fn, double &ft, double &fs);
 
-    // computation of a new state using a simple gauss-seidel loop
+    // computation of a new state using a simple gauss-seidel loop // pseudo-potential
     void GS_State(double &mu, double &dn, double &dt, double &ds, double &fn, double &ft, double &fs);
+
+    // computation of a new state using a simple gauss-seidel loop // pseudo-potential (new: dn, dt, ds already take into account current value of fn, ft and fs)
+    void New_GS_State(double &mu, double &dn, double &dt, double &ds, double &fn, double &ft, double &fs);
+
+    // computation of a new state using biPotential approach
+    void BiPotential(double &mu, double &dn, double &dt, double &ds, double &fn, double &ft, double &fs);
 
     void setPreviousForce(double &fn, double &ft, double &fs) {f_1[0]=fn; f_1[1]=ft; f_1[2]=fs;}
 
