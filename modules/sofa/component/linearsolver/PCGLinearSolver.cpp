@@ -75,8 +75,14 @@ void PCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double b
 {
     Inherit::setSystemMBKMatrix(mFact,bFact,kFact);
 
+#ifdef DISPLAY_TIME
+    CTime * timer;
+    time3 = (double) timer->getTime();
+#endif
+
     if (iteration<=0)
     {
+        printf("PCGLinearSolver::setSystemMBKMatrix() : update_matrix\n");
         for (unsigned int i=0; i<this->preconditioners.size(); ++i)
         {
             preconditioners[i]->setSystemMBKMatrix(mFact,bFact,kFact);
@@ -87,6 +93,11 @@ void PCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double b
     {
         iteration--;
     }
+
+#ifdef DISPLAY_TIME
+    time3 = ((double) timer->getTime() - time3) / (double)CTime::getRefTicksPerSec();
+#endif
+
 }
 
 /*
@@ -108,8 +119,6 @@ void PCGLinearSolver<TMatrix,TVector>::setSystemLHVector(VecId v) {
 	}
 }
 */
-
-using sofa::helper::system::thread::CTime;
 
 template<class TMatrix, class TVector>
 void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
@@ -144,17 +153,21 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
     graph_error.push_back(1);
     unsigned nb_iter;
     const char* endcond = "iterations";
+
+#ifdef DISPLAY_TIME
+    CTime * timer;
+    time1 = (double) timer->getTime();
+    time2 = 0.0;
+#endif
+
     for( nb_iter=1; nb_iter<=f_maxIter.getValue(); nb_iter++ )
     {
-
-        //double time1= CTime::getRefTime();
 
 #ifdef DUMP_VISITOR_INFO
         std::ostringstream comment;
         comment << "Iteration : " << nb_iter;
         simulation::Visitor::printComment(comment.str());
 #endif
-        // 		printWithElapsedTime( x, helper::system::thread::CTime::getTime()-time0,std::cout );
 
         if (this->preconditioners.size()==0)
         {
@@ -162,19 +175,21 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
         }
         else
         {
+#ifdef DISPLAY_TIME
+            double tmp = (double) timer->getTime();
+#endif
+
             for (unsigned int i=0; i<this->preconditioners.size(); i++)
             {
-                //r = M * xi
-                //Solve P * z = r
-
-
                 preconditioners[i]->setSystemLHVector(z);
                 preconditioners[i]->setSystemRHVector(r);
                 preconditioners[i]->solveSystem();
-
-
-                //z = M * A * xi
             }
+
+#ifdef DISPLAY_TIME
+            time2 += ((double) timer->getTime() - tmp);
+#endif
+
         }
 
         rho = r.dot(z);
@@ -243,7 +258,11 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
         //printf("%f\n",(CTime::getRefTime() - time1)  / (double)CTime::getRefTicksPerSec());
     }
 
-
+#ifdef DISPLAY_TIME
+    time1 = ((double) timer->getTime() - time1 - time2) / (double)CTime::getRefTicksPerSec();
+    time2 = time2 / (double)CTime::getRefTicksPerSec();
+    cerr<<"PCGLinearSolver::solve, CG = "<<time1<<" preconditioner = "<<time2<<" invert = "<<time3<<endl;
+#endif
 
     f_graph.endEdit();
     // x is the solution of the system
@@ -258,6 +277,7 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
     this->deleteVector(&p);
     this->deleteVector(&q);
     this->deleteVector(&r);
+    this->deleteVector(&z);
 
 }
 

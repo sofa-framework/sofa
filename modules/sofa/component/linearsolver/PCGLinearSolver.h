@@ -41,6 +41,8 @@ namespace component
 namespace linearsolver
 {
 
+//#define DISPLAY_TIME
+
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
 class PCGLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>, public virtual sofa::core::objectmodel::BaseObject
@@ -69,6 +71,9 @@ public:
         f_graph.setWidget("graph");
         f_graph.setReadOnly(true);
         iteration = 0;
+#ifdef DISPLAY_TIME
+        timeStamp = 1.0 / (double)CTime::getRefTicksPerSec();
+#endif
     }
 
     void solve (Matrix& M, Vector& x, Vector& b);
@@ -78,7 +83,12 @@ public:
     //void setSystemLHVector(VecId v);
 private :
     int iteration;
-
+#ifdef DISPLAY_TIME
+    double time1;
+    double time2;
+    double time3;
+    double timeStamp;
+#endif
 protected:
     /// This method is separated from the rest to be able to use custom/optimized versions depending on the types of vectors.
     /// It computes: p = p*beta + r
