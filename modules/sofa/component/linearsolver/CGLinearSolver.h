@@ -40,6 +40,8 @@ namespace component
 namespace linearsolver
 {
 
+//#define DISPLAY_TIME
+
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
 class SOFA_COMPONENT_LINEARSOLVER_API CGLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>, public virtual sofa::core::objectmodel::BaseObject
@@ -52,6 +54,10 @@ public:
     Data<double> f_smallDenominatorThreshold;
     Data<bool> f_verbose;
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
+#ifdef DISPLAY_TIME
+    double time1;
+    double timeStamp;
+#endif
 
     CGLinearSolver()
         : f_maxIter( initData(&f_maxIter,(unsigned)25,"iterations","maximum number of iterations of the Conjugate Gradient solution") )
@@ -62,6 +68,10 @@ public:
     {
         f_graph.setWidget("graph");
         f_graph.setReadOnly(true);
+#ifdef DISPLAY_TIME
+        timeStamp = 1.0 / (double)CTime::getRefTicksPerSec();
+#endif
+
     }
 protected:
     /// This method is separated from the rest to be able to use custom/optimized versions depending on the types of vectors.
@@ -104,6 +114,12 @@ public:
         graph_error.push_back(1);
         unsigned nb_iter;
         const char* endcond = "iterations";
+
+#ifdef DISPLAY_TIME
+        CTime * timer;
+        time1 = (double) timer->getTime();
+#endif
+
         for( nb_iter=1; nb_iter<=f_maxIter.getValue(); nb_iter++ )
         {
 #ifdef DUMP_VISITOR_INFO
@@ -177,6 +193,12 @@ public:
 
             rho_1 = rho;
         }
+
+#ifdef DISPLAY_TIME
+        time1 = ((double) timer->getTime() - time1 - time2) / (double)CTime::getRefTicksPerSec();
+        cerr<<"CGLinearSolver::solve, CG = "<<time1<<endl;
+#endif
+
         f_graph.endEdit();
         // x is the solution of the system
         if( printLog )
@@ -191,6 +213,8 @@ public:
         this->deleteVector(&q);
         this->deleteVector(&r);
     }
+
+
 };
 
 template<class TMatrix, class TVector>
