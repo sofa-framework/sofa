@@ -123,36 +123,42 @@ public:
     /// This can be used to efficiently detect changes
     int getCounter() const { return m_counter; }
 
-    /// Set the writer of the Data
-    void setWriter(DDGNode* wrt) { writer = wrt; }
+    /// Add a child for this DDGNode
+    void addChild(BaseData* child)
+    {
+        child->parent = this;
+        children.push_back(child);
+    }
 
-    /// Add a reader for this Data
-    void addReader(DDGNode* rdr) { readers.push_back(rdr); }
+    /// Delete a child for this DDGNode
+    void delChild(BaseData* child)
+    {
+        child->parent = NULL;
+        children.remove(child);
+    }
 
-    /// Delete a reader for this Data
-    void delReader(DDGNode* rdr) { readers.remove(rdr); }
+    void setDirty()
+    {
+        if (!dirty)
+        {
+            dirty = true;
+            for(std::list<BaseData*>::iterator it=children.begin(); it!=children.end(); ++it)
+            {
+                (*it)->setDirty();
+            }
+        }
+    }
 
     /// Update the value of this Data
     void update()
     {
-        if (dirty)
+        dirty = false;
+        if (parent)
         {
-            writer->update();
-            dirty = false;
+            std::string valueString(parent->getValueString());
+            read(valueString);
         }
     }
-
-    /// Set to dirty this Data and all his readers -> Data has been modified
-    void setDirty() { DDGNode::setDirty(readers); }
-
-    /// Set the parent of the Data
-    void setParent(BaseData* bd) { parent = bd; }
-
-    /// Add a child for this Data
-    void addChild(BaseData* bd) { children.push_back(bd); }
-
-    /// Delete a child for this Data
-    void delChild(BaseData* bd) { children.remove(bd); }
 
 protected:
 
@@ -168,16 +174,8 @@ protected:
     bool m_isDisplayed;
     /// True if the Data will be readable only in the GUI
     bool m_isReadOnly;
-
-    /// Pointer to the engine that write the Data
-    DDGNode* writer;
-
-    /// List of pointers to the engines that read the Data
-    DDGNodeList readers;
-
     /// Pointer to the parent Data
     BaseData* parent;
-
     /// List of children of this Data
     std::list<BaseData*> children;
 

@@ -73,6 +73,11 @@ public:
 
     const T& virtualGetValue() const
     {
+        if (this->dirty)
+        {
+            TData* data = const_cast <TData*> (this);
+            data->update();
+        }
         return value();
     }
 
@@ -80,6 +85,7 @@ public:
     {
         ++this->m_counter;
         value() = v;
+        BaseData::setDirty();
     }
 
     /** Try to read argument value from an input stream.
@@ -99,6 +105,7 @@ public:
         else
         {
             ++this->m_counter;
+            BaseData::setDirty();
             return true;
         }
     }
@@ -141,11 +148,18 @@ public:
 
     inline T* beginEdit()
     {
+        if (this->dirty)
+        {
+            Data* data = const_cast <Data*> (this);
+            data->update();
+        }
         ++this->m_counter;
         return &m_value;
     }
     inline void endEdit()
-    {}
+    {
+        BaseData::setDirty();
+    }
     inline void setValue(const T& value )
     {
         *beginEdit()=value;
@@ -153,6 +167,11 @@ public:
     }
     inline const T& getValue() const
     {
+        if (this->dirty)
+        {
+            Data* data = const_cast <Data*> (this);
+            data->update();
+        }
         return m_value;
     }
 
@@ -177,10 +196,30 @@ public:
         this->setValue(value);
     }
 protected:
+
     /// Value
     T m_value;
-    const T& value() const { return m_value; }
-    T& value() { return m_value; }
+    const T& value() const
+    {
+        if (this->dirty)
+        {
+            Data* data = const_cast <Data*> (this);
+            data->update();
+        }
+
+        return m_value;
+    }
+
+    T& value()
+    {
+        if (this->dirty)
+        {
+            Data* data = const_cast <Data*> (this);
+            data->update();
+        }
+
+        return m_value;
+    }
 };
 
 /// Specialization for reading strings
@@ -190,6 +229,7 @@ bool TData<std::string>::read( std::string& str )
 {
     value() = str;
     ++m_counter;
+    BaseData::setDirty();
     return true;
 }
 
@@ -200,14 +240,18 @@ bool TData<bool>::read( std::string& str )
 {
     if (str.empty())
         return false;
+
     if (str[0] == 'T' || str[0] == 't')
         value() = true;
     else if (str[0] == 'F' || str[0] == 'f')
         value() = false;
     else if ((str[0] >= '0' && str[0] <= '9') || str[0] == '-')
         value() = (atoi(str.c_str()) != 0);
-    else return false;
+    else
+        return false;
+
     ++m_counter;
+    BaseData::setDirty();
     return true;
 }
 
