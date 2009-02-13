@@ -73,25 +73,40 @@ void BaseObject::parse( BaseObjectDescription* arg )
             {
                 std::string valueString(val);
 
+                /* test if data is a link */
                 if (valueString[0] == '@')
                 {
                     std::string objectName;
-                    for(unsigned int j=1; valueString[j] != '.'; ++j)
+                    unsigned int j;
+                    /* the format of the link after character '@' is objectName.dataName */
+                    for(j=1; valueString[j] != '.' && valueString[j] != '\0'; ++j)
                     {
                         objectName.push_back(valueString[j]);
                     }
-                    BaseObject* obj = getContext()->get<BaseObject>(objectName);
 
-                    if (obj == NULL)
-                    {
-                        serr<<"could not find object for option "<< attributeList[i] <<": " << objectName << sendl;
-                        break;
-                    }
-
+                    BaseObject* obj;
                     std::string dataName;
-                    for(unsigned int j = objectName.length()+2; valueString[j] != '\0'; ++j)
+
+                    /* if '.' not found, try to find the data in the current object */
+                    if (valueString[j] == '\0')
                     {
-                        dataName.push_back(valueString[j]);
+                        obj = this;
+                        dataName = objectName;
+                    }
+                    else
+                    {
+                        obj = getContext()->get<BaseObject>(objectName);
+
+                        if (obj == NULL)
+                        {
+                            serr<<"could not find object for option "<< attributeList[i] <<": " << objectName << sendl;
+                            break;
+                        }
+
+                        for(unsigned int j = objectName.length()+2; valueString[j] != '\0'; ++j)
+                        {
+                            dataName.push_back(valueString[j]);
+                        }
                     }
 
                     BaseData* parentData = obj->findField(dataName);
@@ -103,9 +118,10 @@ void BaseObject::parse( BaseObjectDescription* arg )
                     }
 
                     parentData->addChild(dataModif[d]);
-                    dataModif[d]->setParent(parentData);
-
+                    /* set parent value to the child */
                     valueString = parentData->getValueString();
+                    /* children Data can be modified changing the parent Data value */
+                    dataModif[d]->setReadOnly(true);
                 }
 
                 if( !(dataModif[d]->read( valueString ))) serr<<"could not read value for option "<< attributeList[i] <<": " << val << sendl;

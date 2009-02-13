@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_DDGNODE_H
-#define SOFA_SIMULATION_TREE_DDGNODE_H
+#ifndef SOFA_CORE_OBJECTMODEL_DDGNODE_H
+#define SOFA_CORE_OBJECTMODEL_DDGNODE_H
 
 namespace sofa
 {
@@ -42,8 +42,6 @@ class SOFA_CORE_API DDGNode
 {
 public:
 
-    typedef std::list<DDGNode*> DDGNodeList;
-
     /// Constructor
     DDGNode():dirty(false) {};
 
@@ -57,18 +55,6 @@ public:
     virtual void setDirty() = 0;
 
 protected:
-
-    void setDirty(DDGNodeList& list)
-    {
-        if (!dirty)
-        {
-            dirty = true;
-            for(DDGNodeList::iterator it=list.begin(); it!=list.end(); ++it)
-            {
-                (*it)->setDirty();
-            }
-        }
-    }
 
     bool dirty;
 };
