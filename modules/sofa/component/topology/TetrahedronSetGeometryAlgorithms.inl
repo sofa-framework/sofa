@@ -60,6 +60,52 @@ typename DataTypes::Coord TetrahedronSetGeometryAlgorithms<DataTypes>::computeTe
     return (p[t[0]] + p[t[1]] + p[t[2]] + p[t[3]]) * (Real) 0.25;
 }
 
+template<class DataTypes>
+typename DataTypes::Coord TetrahedronSetGeometryAlgorithms<DataTypes>::computeTetrahedronCircumcenter(const TetraID i) const
+{
+    const Tetrahedron &t = this->m_topology->getTetra(i);
+    const typename DataTypes::VecCoord& p = *(this->object->getX());
+
+    Coord center = p[t[0]];
+    Coord t1 = p[t[1]] - p[t[0]];
+    Coord t2 = p[t[2]] - p[t[0]];
+    Coord t3 = p[t[3]] - p[t[0]];
+    Vec<3,Real> a(t1[0], t1[1], t1[2]);
+    Vec<3,Real> b(t2[0], t2[1], t2[2]);
+    Vec<3,Real> c(t3[0], t3[1], t3[2]);
+
+//		using namespace sofa::defaulttype;
+    Vec<3,Real> d = (cross(b, c) * a.norm2() + cross(c, a) * b.norm2() + cross(a, b) * c.norm2()) / (12* computeTetrahedronVolume(i));
+
+    center[0] += d[0];
+    center[1] += d[1];
+    center[2] += d[2];
+
+    return center;
+}
+
+template< class DataTypes>
+bool TetrahedronSetGeometryAlgorithms< DataTypes >::isPointInTetrahedron(const TetraID ind_t, const Vec<3,Real>& pTest) const
+{
+    const double ZERO = 1e-12;
+
+    const Tetrahedron &t = this->m_topology->getTetra(ind_t);
+    const typename DataTypes::VecCoord& p = *(this->object->getX());
+
+    const Vec<3,Real> t0(p[t[0]][0], p[t[0]][1], p[t[0]][2]);
+    const Vec<3,Real> t1(p[t[1]][0], p[t[1]][1], p[t[1]][2]);
+    const Vec<3,Real> t2(p[t[2]][0], p[t[2]][1], p[t[2]][2]);
+    const Vec<3,Real> t3(p[t[3]][0], p[t[3]][1], p[t[3]][2]);
+
+    double volume = tripleProduct(t1-t0, t2-t0, t3-t0);
+    double v0 = tripleProduct(t1-pTest, t2-pTest, t3-pTest);
+    double v1 = tripleProduct(pTest-t0, t2-t0, t3-t0);
+    double v2 = tripleProduct(t1-t0, pTest-t0, t3-t0);
+    double v3 = tripleProduct(t1-t0, t2-t0, pTest-t0);
+
+    return (v0 * volume > ZERO) && (v1 * volume > ZERO) && (v2 * volume > ZERO) && (v3 * volume > ZERO);
+}
+
 template< class DataTypes>
 void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetrahedronVertexCoordinates(const TetraID i, Coord pnt[4]) const
 {

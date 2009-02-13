@@ -70,6 +70,10 @@ public:
 
     Coord computeTetrahedronCenter(const TetraID i) const;
 
+    Coord computeTetrahedronCircumcenter(const TetraID i) const;
+
+    bool isPointInTetrahedron(const TetraID i, const Vec<3,Real>& p) const;
+
     void getTetrahedronVertexCoordinates(const TetraID i, Coord[4]) const;
 
     void getRestTetrahedronVertexCoordinates(const TetraID i, Coord[4]) const;
