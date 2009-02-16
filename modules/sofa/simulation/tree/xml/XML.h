@@ -27,10 +27,10 @@
 
 #include <sofa/simulation/tree/xml/Element.h>
 
-//a changer
 #ifdef SOFA_XML_PARSER_TINYXML
-#include <tinyxml/tinyxml.h>
-#else
+#include <tinyxml.h>
+#endif
+#ifdef SOFA_XML_PARSER_LIBXML
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #endif
@@ -50,7 +50,8 @@ namespace xml
 
 #ifdef SOFA_XML_PARSER_TINYXML
 SOFA_SIMULATION_TREE_API BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc);
-#else
+#endif
+#ifdef SOFA_XML_PARSER_LIBXML
 SOFA_SIMULATION_TREE_API BaseElement* processXMLLoading(const char *filename, const xmlDocPtr &doc);
 #endif
 

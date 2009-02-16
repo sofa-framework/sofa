@@ -1,7 +1,5 @@
 //varying vec3 normalVec;
 //varying vec3 viewVec;
-varying vec4 vPositionW;
-varying vec3 vNormalW;
 
 varying vec4 diffuse, ambient, ambientGlobal, specular;
 varying vec3 lightDir, normalView, halfVector;
@@ -33,13 +31,6 @@ void main()
 	//normalVec = normalW;
 	//viewVec = I;
 	//vPosition = gl_ModelViewMatrix * gl_Vertex;
-	vPositionW = gl_Vertex;
-	vNormalW = normalize(gl_Normal);
-	
-	vPositionW.x = 0.5 * (1.0 + vPositionW.x);
-	vPositionW.y = 0.5 * (1.0 + vPositionW.y);
-	vPositionW.z = 0.5 * (1.0 + vPositionW.z);
-	vPositionW.w = 1.0;
 	
 	normalView = gl_NormalMatrix * gl_Normal;
 	vec4 ecPos = gl_ModelViewMatrix * gl_Vertex;
@@ -49,8 +40,7 @@ void main()
 
 	
 	diffuse = gl_FrontMaterial.diffuse * gl_LightSource[0].diffuse;
-	ambient = gl_FrontMaterial.ambient * gl_LightSource[0].ambient;
-	ambientGlobal = gl_LightModel.ambient * gl_FrontMaterial.ambient;
+	ambient = gl_FrontMaterial.ambient * (gl_LightModel.ambient + gl_LightSource[0].ambient);
 	specular = gl_FrontMaterial.specular * gl_LightSource[0].specular;
 	
 	//eyeVec = -vec3(ecPos);

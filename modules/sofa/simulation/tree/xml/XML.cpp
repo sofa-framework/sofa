@@ -30,13 +30,6 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <string.h>
 
-#ifdef SOFA_XML_PARSER_TINYXML
-#include <tinyxml.cpp>
-#include <tinyxmlerror.cpp>
-#include <tinystr.cpp>
-#include <tinyxmlparser.cpp>
-#endif
-
 /* For loading the scene */
 
 
@@ -341,7 +334,9 @@ BaseElement* includeNode(TiXmlNode* root,const char *basefilename)
     //xmlFreeDoc(doc);
     return result;
 }
-#else
+#endif // SOFA_XML_PARSER_TINYXML
+
+#ifdef SOFA_XML_PARSER_LIBXML
 BaseElement* includeNode  (xmlNodePtr root,const char *basefilename);
 BaseElement* attributeNode(xmlNodePtr root,const char *basefilename);
 
@@ -605,7 +600,7 @@ BaseElement* includeNode(xmlNodePtr root,const char *basefilename)
     return result;
 }
 
-#endif //libxml
+#endif //SOFA_XML_PARSER_LIBXML
 
 
 } // namespace xml

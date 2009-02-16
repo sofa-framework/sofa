@@ -2,8 +2,6 @@ uniform sampler2D planarTextureX, planarTextureY, planarTextureZ;
 
 //varying vec3 normalVec;
 //varying vec3 viewVec;
-varying vec4 vPositionW;
-varying vec3 vNormalW;
 
 uniform vec2 scaleTexture;
 uniform float showDebug;
@@ -99,7 +97,7 @@ void main()
 			
 			halfV = normalize(halfVector);
 			NdotHV = max(dot(n,halfV),0.0);
-			phong_color += att * gl_FrontMaterial.specular * gl_LightSource[0].specular * pow(NdotHV,gl_FrontMaterial.shininess);
+			phong_color += att * specular * pow(NdotHV,gl_FrontMaterial.shininess);
 			
 		}
 	}

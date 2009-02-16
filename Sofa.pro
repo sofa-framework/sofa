@@ -11,6 +11,10 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 SUBDIRS += extlibs/qwt
 
+contains(DEFINES,SOFA_XML_PARSER_TINYXML){
+  SUBDIRS += extlibs/tinyxml
+}
+
 # FlowVR
 	SUBDIRS += extlibs/miniFlowVR
 contains(DEFINES,SOFA_HAVE_FLOWVR){
@@ -86,6 +90,27 @@ contains(DEFINES,SOFA_RDTSC) {
 }
 else {
   message( "|  RDTSC timer: DISABLED")
+}
+
+contains(DEFINES,SOFA_HAVE_BOOST) {
+  message( "|  BOOST libraries: ENABLED")
+}
+else {
+  message( "|  BOOST libraries: DISABLED")
+}
+
+contains(DEFINES,SOFA_XML_PARSER_TINYXML) {
+  message( "|  TinyXML parser: ENABLED")
+}
+else {
+  message( "|  TinyXML parser: DISABLED")
+}
+
+contains(DEFINES,SOFA_XML_PARSER_LIBXML) {
+  message( "|  LibXML parser: ENABLED")
+}
+else {
+  message( "|  LibXML parser: DISABLED")
 }
 
 contains(DEFINES,SOFA_HAVE_PNG) {
