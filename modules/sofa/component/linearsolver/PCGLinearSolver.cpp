@@ -82,7 +82,6 @@ void PCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double b
 
     if (iteration<=0)
     {
-        printf("PCGLinearSolver::setSystemMBKMatrix() : update_matrix\n");
         for (unsigned int i=0; i<this->preconditioners.size(); ++i)
         {
             preconditioners[i]->setSystemMBKMatrix(mFact,bFact,kFact);

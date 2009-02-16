@@ -31,6 +31,7 @@
 #include <sofa/helper/map.h>
 #include <math.h>
 
+
 namespace sofa
 {
 
@@ -42,6 +43,12 @@ namespace linearsolver
 
 //#define DISPLAY_TIME
 
+#ifdef DISPLAY_TIME
+#include <sofa/helper/system/thread/CTime.h>
+using sofa::helper::system::thread::CTime;
+#endif
+
+
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
 class SOFA_COMPONENT_LINEARSOLVER_API CGLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>, public virtual sofa::core::objectmodel::BaseObject
@@ -49,6 +56,7 @@ class SOFA_COMPONENT_LINEARSOLVER_API CGLinearSolver : public sofa::component::l
 public:
     typedef TMatrix Matrix;
     typedef TVector Vector;
+    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
     Data<unsigned> f_maxIter;
     Data<double> f_tolerance;
     Data<double> f_smallDenominatorThreshold;
@@ -56,6 +64,7 @@ public:
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
 #ifdef DISPLAY_TIME
     double time1;
+    double time2;
     double timeStamp;
 #endif
 
@@ -195,8 +204,8 @@ public:
         }
 
 #ifdef DISPLAY_TIME
-        time1 = ((double) timer->getTime() - time1 - time2) / (double)CTime::getRefTicksPerSec();
-        cerr<<"CGLinearSolver::solve, CG = "<<time1<<endl;
+        time1 = ((double) timer->getTime() - time1) * timeStamp;
+        cerr<<"CGLinearSolver::solve, CG = "<<time1<<" invert = "<<time2<<endl;
 #endif
 
         f_graph.endEdit();
@@ -213,8 +222,18 @@ public:
         this->deleteVector(&q);
         this->deleteVector(&r);
     }
-
-
+    /*
+        void setSystemMBKMatrix(double mFact, double bFact, double kFact) {
+        #ifdef DISPLAY_TIME
+        		CTime * timer;
+        		time2 = (double) timer->getTime();
+        #endif
+        	Inherit::setSystemMBKMatrix(mFact,bFact,kFact);
+    	#ifdef DISPLAY_TIME
+    			time2 = ((double) timer->getTime() - time2)  * timeStamp;
+    	#endif
+        }
+    */
 };
 
 template<class TMatrix, class TVector>
