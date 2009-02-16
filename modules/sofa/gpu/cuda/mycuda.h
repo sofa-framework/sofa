@@ -57,7 +57,7 @@ extern "C" {
     extern void mycudaGLMapBufferObject(void** ptr, int id);
     extern void mycudaGLUnmapBufferObject(int id);
 
-    extern void mycudaLogError(int err, const char* src);
+    extern void mycudaLogError(const char* err, const char* src);
     extern int myprintf(const char* fmt, ...);
     extern const char* mygetenv(const char* name);
 

@@ -128,7 +128,7 @@ bool cudaCheck(cudaError_t err, const char* src="?")
 {
     if (err == cudaSuccess) return true;
     //fprintf(stderr, "CUDA: Error %d returned from %s.\n",(int)err,src);
-    mycudaLogError(err, src);
+    mycudaLogError(cudaGetErrorString(err), src);
     sofa::helper::BackTrace::dump();
     return false;
 }
