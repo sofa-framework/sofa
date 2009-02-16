@@ -79,6 +79,8 @@ public:
      */
     void addTriangleProcess(Triangle e);
 
+    void addSingleTriangleProcess (Triangle t);
+
     /** \brief Actually Add some triangles to this topology.
      *
      * \sa addTrianglesWarning
@@ -226,6 +228,16 @@ public:
 
 
     virtual void Debug() {}; // TO BE REMOVED WHEN MANIFOLD MODIFIER IS SURE.
+
+
+    virtual bool addPrecondition (const sofa::helper::vector <Triangle> &triangles)
+    {
+        (void)triangles;
+        return true;
+    };
+
+    virtual void addPostProcessing() {};
+
 
 
 private:

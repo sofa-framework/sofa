@@ -1,27 +1,27 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 3      *
-*                (c) 2006-2008 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 3      *
+ *                (c) 2006-2008 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #include <sofa/component/topology/TriangleSetTopologyModifier.h>
 #include <sofa/component/topology/TriangleSetTopologyChange.h>
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
@@ -57,13 +57,47 @@ void TriangleSetTopologyModifier::init()
 
 void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
 {
+    sofa::helper::vector <Triangle> triangles;
+    triangles.push_back(t);
+
+    if (addPrecondition(triangles))
+    {
+        addSingleTriangleProcess(t);
+    }
+    else
+    {
+        std::cout << " TriangleSetTopologyModifier::addTriangleProcess(), preconditions for adding this triangle are not fullfil. " << std::endl;
+    }
+}
+
+
+void TriangleSetTopologyModifier::addTrianglesProcess(const sofa::helper::vector< Triangle > &triangles)
+{
+    if (addPrecondition(triangles))
+    {
+        m_container->m_triangle.reserve(m_container->m_triangle.size() + triangles.size());
+
+        for(unsigned int i=0; i<triangles.size(); ++i)
+        {
+            addSingleTriangleProcess(triangles[i]);
+        }
+    }
+    else
+    {
+        std::cout << " TriangleSetTopologyModifier::addTrianglesProcess(), preconditions for adding these triangles are not fullfil. " << std::endl;
+    }
+}
+
+
+void TriangleSetTopologyModifier::addSingleTriangleProcess(Triangle t)
+{
+
 #ifndef NDEBUG
     // check if the 3 vertices are different
     if((t[0]==t[1]) || (t[0]==t[2]) || (t[1]==t[2]) )
     {
         sout << "Error: [TriangleSetTopologyModifier::addTriangle] : invalid quad: "
                 << t[0] << ", " << t[1] << ", " << t[2] <<  endl;
-
         return;
     }
 
@@ -127,17 +161,6 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
     }
 
     m_container->m_triangle.push_back(t);
-}
-
-
-void TriangleSetTopologyModifier::addTrianglesProcess(const sofa::helper::vector< Triangle > &triangles)
-{
-    m_container->m_triangle.reserve(m_container->m_triangle.size() + triangles.size());
-
-    for(unsigned int i=0; i<triangles.size(); ++i)
-    {
-        addTriangleProcess(triangles[i]);
-    }
 }
 
 
@@ -365,11 +388,6 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
 
 
 
-
-
-
-
-
 void TriangleSetTopologyModifier::removeEdgesProcess( const sofa::helper::vector<unsigned int> &indices,
         const bool removeIsolatedItems)
 {
@@ -445,15 +463,6 @@ void TriangleSetTopologyModifier::removePointsProcess( sofa::helper::vector<unsi
 }
 
 
-
-
-
-
-
-
-
-
-
 void TriangleSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector<unsigned int> &index,
         const sofa::helper::vector<unsigned int> &inv_index,
         const bool renumberDOF)
@@ -481,7 +490,6 @@ void TriangleSetTopologyModifier::renumberPointsProcess( const sofa::helper::vec
     // call the parent's method
     EdgeSetTopologyModifier::renumberPointsProcess( index, inv_index, renumberDOF );
 }
-
 
 
 
