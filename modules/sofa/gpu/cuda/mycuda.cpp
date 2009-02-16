@@ -77,9 +77,9 @@ extern "C"
 //MycudaVerboseLevel mycudaVerboseLevel = LOG_TRACE;
 }
 
-void mycudaLogError(int err, const char* src)
+void mycudaLogError(const char* err, const char* src)
 {
-    std::cerr << "CUDA: Error "<<err<<" returned from "<<src<<".\n";
+    std::cerr << "CUDA error: "<< err <<" returned from "<< src <<".\n";
     exit(1);
 }
 
