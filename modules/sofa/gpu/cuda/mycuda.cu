@@ -139,18 +139,27 @@ int mycudaInit(int device)
 {
     int deviceCount = 0;
     cudaInitCalled = true;
-    cudaCheck(cudaGetDeviceCount(&deviceCount));
+    cudaCheck(cudaGetDeviceCount(&deviceCount),"cudaGetDeviceCount");
     myprintf("CUDA: %d device(s) found.\n", deviceCount);
     for (int i=0; i<deviceCount; i++)
     {
-        cudaDeviceProp dev;
+        cudaDeviceProp dev
+#ifdef cudaDevicePropDontCare
+            = cudaDevicePropDontCare
+#endif
+                    ;
         //memset(&dev,0,sizeof(dev));
         //dev.name=NULL;
         //dev.bytes=0;
         //dev.major=0;
         //dev.minor=0;
-        cudaCheck(cudaGetDeviceProperties(&dev,i));
-#if CUDA_VERSION >= 2000
+        cudaCheck(cudaGetDeviceProperties(&dev,i),"cudaGetDeviceProperties");
+#if CUDA_VERSION >= 2010
+        myprintf("CUDA:  %d : \"%s\", %d MB, %d cores at %.3f GHz, revision %d.%d",i,dev.name, dev.totalGlobalMem/(1024*1024), dev.multiProcessorCount*8, dev.clockRate * 1e-6f, dev.major, dev.minor);
+        if (dev.kernelExecTimeoutEnabled)
+            myprintf(" timeout %d s", dev.kernelExecTimeoutEnabled);
+        myprintf("\n");
+#elif CUDA_VERSION >= 2000
         myprintf("CUDA:  %d : \"%s\", %d MB, %d cores at %.3f GHz, revision %d.%d\n",i,dev.name, dev.totalGlobalMem/(1024*1024), dev.multiProcessorCount*8, dev.clockRate * 1e-6f, dev.major, dev.minor);
 #else //if CUDA_VERSION >= 1000
         myprintf("CUDA:  %d : \"%s\", %d MB, cores at %.3f GHz, revision %d.%d\n",i,dev.name, dev.totalGlobalMem/(1024*1024), dev.clockRate * 1e-6f, dev.major, dev.minor);
