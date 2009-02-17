@@ -50,7 +50,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef helper::vector<unsigned> VecIndex;
+    typedef helper::vector<unsigned int> VecIndex;
     typedef helper::vector<Real>	 VecReal;
 public:
 
@@ -58,6 +58,8 @@ public:
     Data< VecReal > stiffness;
 
     RestShapeSpringsForceField();
+    ///
+    void init();
 
     /// Add the forces
     virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
