@@ -53,6 +53,35 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
 
 
 template<class DataTypes>
+void RestShapeSpringsForceField<DataTypes>::init()
+{
+
+    core::componentmodel::behavior::ForceField<DataTypes>::init();
+
+    if (points.getValue().size()==0)
+    {
+        VecIndex indices; // = points.getValue();
+        std::cout<<"in RestShapeSpringsForceField no point is defined, default case: points = all points "<<std::endl;
+
+        for (unsigned int i=0; i<(unsigned)this->mstate->getSize(); i++)
+        {
+            //int &toto = i;
+            indices.push_back(i);
+        }
+        points.setValue(indices);
+
+    }
+    if(stiffness.getValue()s.size() == 0)
+    {
+        VecReal stiffs;
+        stiffs.push_back(100.0);
+        std::cout<<"in RestShapeSpringsForceField no stiffness is defined, assuming equal stiffness on each node, k = 100.0 "<<std::endl;
+        stiffness.setValue(stiffs);
+    }
+
+}
+
+template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& p, const VecDeriv& )
 {
     const VecCoord& p_0 = *this->mstate->getX0();

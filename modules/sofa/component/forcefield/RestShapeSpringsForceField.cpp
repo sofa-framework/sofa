@@ -41,7 +41,7 @@ SOFA_DECL_CLASS(RestShapeSpringsForceField)
 
 int RestShapeSpringsForceFieldClass = core::RegisterObject("Simple elastic springs applied to given degrees of freedom between their current and rest shape position")
 #ifndef SOFA_FLOAT
-//.add< RestShapeSpringsForceField<Vec3dTypes> >()
+        .add< RestShapeSpringsForceField<Vec3dTypes> >()
 //.add< RestShapeSpringsForceField<Vec2dTypes> >()
         .add< RestShapeSpringsForceField<Vec1dTypes> >()
 //.add< RestShapeSpringsForceField<Vec6dTypes> >()
@@ -49,7 +49,7 @@ int RestShapeSpringsForceFieldClass = core::RegisterObject("Simple elastic sprin
 //.add< RestShapeSpringsForceField<Rigid2dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-//.add< RestShapeSpringsForceField<Vec3fTypes> >()
+        .add< RestShapeSpringsForceField<Vec3fTypes> >()
 //.add< RestShapeSpringsForceField<Vec2fTypes> >()
         .add< RestShapeSpringsForceField<Vec1fTypes> >()
 //.add< RestShapeSpringsForceField<Vec6fTypes> >()
@@ -58,7 +58,7 @@ int RestShapeSpringsForceFieldClass = core::RegisterObject("Simple elastic sprin
 #endif
         ;
 #ifndef SOFA_FLOAT
-//template class RestShapeSpringsForceField<Vec3dTypes>;
+template class RestShapeSpringsForceField<Vec3dTypes>;
 //template class RestShapeSpringsForceField<Vec2dTypes>;
 template class RestShapeSpringsForceField<Vec1dTypes>;
 //template class RestShapeSpringsForceField<Vec6dTypes>;
@@ -66,7 +66,7 @@ template class RestShapeSpringsForceField<Vec1dTypes>;
 //template class RestShapeSpringsForceField<Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-//template class RestShapeSpringsForceField<Vec3fTypes>;
+template class RestShapeSpringsForceField<Vec3fTypes>;
 //template class RestShapeSpringsForceField<Vec2fTypes>;
 template class RestShapeSpringsForceField<Vec1fTypes>;
 //template class RestShapeSpringsForceField<Vec6fTypes>;
