@@ -71,7 +71,7 @@ void RestShapeSpringsForceField<DataTypes>::init()
         points.setValue(indices);
 
     }
-    if(stiffness.getValue()s.size() == 0)
+    if(stiffness.getValue().size() == 0)
     {
         VecReal stiffs;
         stiffs.push_back(100.0);
