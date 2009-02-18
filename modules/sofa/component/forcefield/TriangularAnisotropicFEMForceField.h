@@ -37,8 +37,8 @@
 #include <sofa/component/topology/TriangleData.h>
 #include <sofa/component/topology/EdgeData.h>
 #include <sofa/component/topology/PointData.h>
-#include <src/newmat.h>
-#include <src/newmatap.h>
+#include <newmat/newmat.h>
+#include <newmat/newmatap.h>
 
 
 
