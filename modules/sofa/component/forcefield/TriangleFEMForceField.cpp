@@ -30,7 +30,7 @@
 #include <iostream> //for debugging
 #include <vector>
 #include <sofa/defaulttype/Vec3Types.h>
-
+#include <sofa/component/component.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -698,10 +698,10 @@ int TriangleFEMForceFieldClass = core::RegisterObject("Triangular finite element
         ;
 
 #ifndef SOFA_FLOAT
-template class TriangleFEMForceField<Vec3dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API TriangleFEMForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class TriangleFEMForceField<Vec3fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API TriangleFEMForceField<Vec3fTypes>;
 #endif
 
 } // namespace forcefield
