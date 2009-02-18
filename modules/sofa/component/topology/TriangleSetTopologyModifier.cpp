@@ -63,6 +63,7 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
     if (addPrecondition(triangles))
     {
         addSingleTriangleProcess(t);
+        addPostProcessing(triangles);
     }
     else
     {
@@ -81,6 +82,8 @@ void TriangleSetTopologyModifier::addTrianglesProcess(const sofa::helper::vector
         {
             addSingleTriangleProcess(triangles[i]);
         }
+
+        addPostProcessing(triangles);
     }
     else
     {
