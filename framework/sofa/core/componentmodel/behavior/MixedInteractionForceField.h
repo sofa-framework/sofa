@@ -29,7 +29,10 @@
 
 #include <sofa/core/componentmodel/behavior/InteractionForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/core.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -50,7 +53,7 @@ namespace behavior
  *  between a pair of bodies using a given type of DOFs.
  */
 template<class TDataTypes1, class TDataTypes2>
-class SOFA_CORE_API MixedInteractionForceField : public InteractionForceField
+class MixedInteractionForceField : public InteractionForceField
 {
 public:
     typedef TDataTypes1 DataTypes1;
@@ -226,6 +229,82 @@ protected:
     MechanicalState<DataTypes1> *mstate1;
     MechanicalState<DataTypes2> *mstate2;
 };
+
+using sofa::defaulttype::Vec1dTypes;
+using sofa::defaulttype::Vec1fTypes;
+using sofa::defaulttype::Vec2dTypes;
+using sofa::defaulttype::Vec2fTypes;
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::ExtVec2fTypes;
+using sofa::defaulttype::ExtVec3fTypes;
+using sofa::defaulttype::Rigid2dTypes;
+using sofa::defaulttype::Rigid2fTypes;
+using sofa::defaulttype::Rigid3dTypes;
+using sofa::defaulttype::Rigid3fTypes;
+
+#if defined(WIN32) && !defined(SOFA_CORE_COMPONENTMODEL_MIXEDINTERACTIONFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec1dTypes, Vec3dTypes>;
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec1dTypes, Rigid3dTypes>;
+
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec3dTypes, Vec3dTypes>;
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec2dTypes, Vec2dTypes>;
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec1dTypes, Vec1dTypes>;
+extern template class SOFA_CORE_API MixedInteractionForceField<Rigid3dTypes, Rigid3dTypes> ;
+extern template class SOFA_CORE_API MixedInteractionForceField<Rigid2dTypes, Rigid2dTypes> ;
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec3dTypes, Rigid3dTypes> ;
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec2dTypes, Rigid2dTypes> ;
+extern template class SOFA_CORE_API MixedInteractionForceField<Rigid3dTypes, Vec3dTypes> ;
+extern template class SOFA_CORE_API MixedInteractionForceField<Rigid2dTypes, Vec2dTypes> ;
+#endif
+
+#ifndef SOFA_DOUBLE
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec1fTypes, Vec3fTypes>;
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec1fTypes, Rigid3fTypes>;
+
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec3fTypes, Vec3fTypes>;
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec2fTypes, Vec2fTypes>;
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec1fTypes, Vec1fTypes>;
+extern template class SOFA_CORE_API MixedInteractionForceField<Rigid3fTypes, Rigid3fTypes> ;
+extern template class SOFA_CORE_API MixedInteractionForceField<Rigid2fTypes, Rigid2fTypes> ;
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec3fTypes, Rigid3fTypes> ;
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec2fTypes, Rigid2fTypes> ;
+extern template class SOFA_CORE_API MixedInteractionForceField<Rigid3fTypes, Vec3fTypes> ;
+extern template class SOFA_CORE_API MixedInteractionForceField<Rigid2fTypes, Vec2fTypes> ;
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec1dTypes, Vec3fTypes>;
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec1fTypes, Vec3dTypes>;
+
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec1dTypes, Rigid3fTypes>;
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec1fTypes, Rigid3dTypes>;
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec3dTypes, Vec3fTypes>;
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec2dTypes, Vec2fTypes>;
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec1dTypes, Vec1fTypes>;
+extern template class SOFA_CORE_API MixedInteractionForceField<Rigid3dTypes, Rigid3fTypes> ;
+extern template class SOFA_CORE_API MixedInteractionForceField<Rigid2dTypes, Rigid2fTypes> ;
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec3dTypes, Rigid3fTypes> ;
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec2dTypes, Rigid2fTypes> ;
+extern template class SOFA_CORE_API MixedInteractionForceField<Rigid3dTypes, Vec3fTypes> ;
+extern template class SOFA_CORE_API MixedInteractionForceField<Rigid2dTypes, Vec2fTypes> ;
+
+
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec3fTypes, Vec3dTypes>;
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec2fTypes, Vec2dTypes>;
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec1fTypes, Vec1dTypes>;
+extern template class SOFA_CORE_API MixedInteractionForceField<Rigid3fTypes, Rigid3dTypes> ;
+extern template class SOFA_CORE_API MixedInteractionForceField<Rigid2fTypes, Rigid2dTypes> ;
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec3fTypes, Rigid3dTypes> ;
+extern template class SOFA_CORE_API MixedInteractionForceField<Vec2fTypes, Rigid2dTypes> ;
+extern template class SOFA_CORE_API MixedInteractionForceField<Rigid3fTypes, Vec3dTypes> ;
+extern template class SOFA_CORE_API MixedInteractionForceField<Rigid2fTypes, Vec2dTypes> ;
+#endif
+#endif
+#endif
 
 } // namespace behavior
 
