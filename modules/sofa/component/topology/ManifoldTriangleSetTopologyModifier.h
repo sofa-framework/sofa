@@ -69,6 +69,14 @@ public:
     virtual void removePostProcessing(const sofa::helper::vector< unsigned int >& edgeToBeRemoved, const sofa::helper::vector< unsigned int >& vertexToBeRemoved );
 
 
+
+    virtual bool addPrecondition (const sofa::helper::vector <Triangle> &triangles);
+
+
+    virtual void addPostProcessing(const sofa::helper::vector <Triangle> &triangles);
+
+
+
     virtual void Debug(); // TO BE REMOVED WHEN CLASS IS SURE.
 
 private:
@@ -79,10 +87,15 @@ private:
      */
     std::map< unsigned int, sofa::helper::vector <unsigned int> > m_modifications;
 
+    /** \brief This map store all the modifications (for the triangles) to apply to the topology.
+     */
+    std::map< unsigned int, sofa::helper::vector <int> > m_Addmodifications;
 
     /** \brief iterator for the m_modification map.
      */
     std::map< unsigned int, sofa::helper::vector<unsigned int> >::iterator it_modif;
+
+    std::map< unsigned int, sofa::helper::vector<int> >::iterator it_add;
 
 
     /** \brief This vector store all the modifications (for the edges) to apply to the topology.
@@ -137,7 +150,6 @@ private:
      *
      */
     void removePostProcessingEdges();
-
 
 };
 
