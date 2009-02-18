@@ -25,8 +25,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/componentmodel/behavior/PairInteractionForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -42,17 +40,17 @@ namespace behavior
 
 using namespace sofa::defaulttype;
 
-template class PairInteractionForceField<Vec3dTypes>;
-template class PairInteractionForceField<Vec2dTypes>;
-template class PairInteractionForceField<Vec1dTypes>;
-template class PairInteractionForceField<Rigid3dTypes>;
-template class PairInteractionForceField<Rigid2dTypes>;
+template class SOFA_CORE_API PairInteractionForceField<Vec3dTypes>;
+template class SOFA_CORE_API PairInteractionForceField<Vec2dTypes>;
+template class SOFA_CORE_API PairInteractionForceField<Vec1dTypes>;
+template class SOFA_CORE_API PairInteractionForceField<Rigid3dTypes>;
+template class SOFA_CORE_API PairInteractionForceField<Rigid2dTypes>;
 
-template class PairInteractionForceField<Vec3fTypes>;
-template class PairInteractionForceField<Vec2fTypes>;
-template class PairInteractionForceField<Vec1fTypes>;
-template class PairInteractionForceField<Rigid3fTypes>;
-template class PairInteractionForceField<Rigid2fTypes>;
+template class SOFA_CORE_API PairInteractionForceField<Vec3fTypes>;
+template class SOFA_CORE_API PairInteractionForceField<Vec2fTypes>;
+template class SOFA_CORE_API PairInteractionForceField<Vec1fTypes>;
+template class SOFA_CORE_API PairInteractionForceField<Rigid3fTypes>;
+template class SOFA_CORE_API PairInteractionForceField<Rigid2fTypes>;
 
 
 

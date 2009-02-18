@@ -25,8 +25,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/componentmodel/behavior/Constraint.inl>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -42,19 +40,17 @@ namespace behavior
 
 using namespace sofa::defaulttype;
 
-template class Constraint<Vec3dTypes>;
-template class Constraint<Vec2dTypes>;
-template class Constraint<Vec1dTypes>;
-template class Constraint<Rigid3dTypes>;
-template class Constraint<Rigid2dTypes>;
+template class SOFA_CORE_API Constraint<Vec3dTypes>;
+template class SOFA_CORE_API Constraint<Vec2dTypes>;
+template class SOFA_CORE_API Constraint<Vec1dTypes>;
+template class SOFA_CORE_API Constraint<Rigid3dTypes>;
+template class SOFA_CORE_API Constraint<Rigid2dTypes>;
 
-template class Constraint<Vec3fTypes>;
-template class Constraint<Vec2fTypes>;
-template class Constraint<Vec1fTypes>;
-template class Constraint<Rigid3fTypes>;
-template class Constraint<Rigid2fTypes>;
-
-
+template class SOFA_CORE_API Constraint<Vec3fTypes>;
+template class SOFA_CORE_API Constraint<Vec2fTypes>;
+template class SOFA_CORE_API Constraint<Vec1fTypes>;
+template class SOFA_CORE_API Constraint<Rigid3fTypes>;
+template class SOFA_CORE_API Constraint<Rigid2fTypes>;
 
 } // namespace behavior
 

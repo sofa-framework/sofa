@@ -43,25 +43,25 @@ namespace behavior
 using namespace sofa::defaulttype;
 
 
-template class MixedInteractionConstraint<Vec3dTypes, Vec3dTypes>;
-template class MixedInteractionConstraint<Vec2dTypes, Vec2dTypes>;
-template class MixedInteractionConstraint<Vec1dTypes, Vec1dTypes>;
-template class MixedInteractionConstraint<Rigid3dTypes, Rigid3dTypes> ;
-template class MixedInteractionConstraint<Rigid2dTypes, Rigid2dTypes> ;
-template class MixedInteractionConstraint<Vec3dTypes, Rigid3dTypes> ;
-template class MixedInteractionConstraint<Vec2dTypes, Rigid2dTypes> ;
-template class MixedInteractionConstraint<Rigid3dTypes, Vec3dTypes> ;
-template class MixedInteractionConstraint<Rigid2dTypes, Vec2dTypes> ;
+template class SOFA_CORE_API MixedInteractionConstraint<Vec3dTypes, Vec3dTypes>;
+template class SOFA_CORE_API MixedInteractionConstraint<Vec2dTypes, Vec2dTypes>;
+template class SOFA_CORE_API MixedInteractionConstraint<Vec1dTypes, Vec1dTypes>;
+template class SOFA_CORE_API MixedInteractionConstraint<Rigid3dTypes, Rigid3dTypes> ;
+template class SOFA_CORE_API MixedInteractionConstraint<Rigid2dTypes, Rigid2dTypes> ;
+template class SOFA_CORE_API MixedInteractionConstraint<Vec3dTypes, Rigid3dTypes> ;
+template class SOFA_CORE_API MixedInteractionConstraint<Vec2dTypes, Rigid2dTypes> ;
+template class SOFA_CORE_API MixedInteractionConstraint<Rigid3dTypes, Vec3dTypes> ;
+template class SOFA_CORE_API MixedInteractionConstraint<Rigid2dTypes, Vec2dTypes> ;
 
-template class MixedInteractionConstraint<Vec3fTypes, Vec3fTypes>;
-template class MixedInteractionConstraint<Vec2fTypes, Vec2fTypes>;
-template class MixedInteractionConstraint<Vec1fTypes, Vec1fTypes>;
-template class MixedInteractionConstraint<Rigid3fTypes, Rigid3fTypes> ;
-template class MixedInteractionConstraint<Rigid2fTypes, Rigid2fTypes> ;
-template class MixedInteractionConstraint<Vec3fTypes, Rigid3fTypes> ;
-template class MixedInteractionConstraint<Vec2fTypes, Rigid2fTypes> ;
-template class MixedInteractionConstraint<Rigid3fTypes, Vec3fTypes> ;
-template class MixedInteractionConstraint<Rigid2fTypes, Vec2fTypes> ;
+template class SOFA_CORE_API MixedInteractionConstraint<Vec3fTypes, Vec3fTypes>;
+template class SOFA_CORE_API MixedInteractionConstraint<Vec2fTypes, Vec2fTypes>;
+template class SOFA_CORE_API MixedInteractionConstraint<Vec1fTypes, Vec1fTypes>;
+template class SOFA_CORE_API MixedInteractionConstraint<Rigid3fTypes, Rigid3fTypes> ;
+template class SOFA_CORE_API MixedInteractionConstraint<Rigid2fTypes, Rigid2fTypes> ;
+template class SOFA_CORE_API MixedInteractionConstraint<Vec3fTypes, Rigid3fTypes> ;
+template class SOFA_CORE_API MixedInteractionConstraint<Vec2fTypes, Rigid2fTypes> ;
+template class SOFA_CORE_API MixedInteractionConstraint<Rigid3fTypes, Vec3fTypes> ;
+template class SOFA_CORE_API MixedInteractionConstraint<Rigid2fTypes, Vec2fTypes> ;
 
 
 

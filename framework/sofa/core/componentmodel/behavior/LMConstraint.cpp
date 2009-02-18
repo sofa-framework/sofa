@@ -42,72 +42,68 @@ namespace behavior
 
 using namespace sofa::defaulttype;
 
-template class LMConstraint<Vec3dTypes,Vec3dTypes>;
-template class LMConstraint<Vec3dTypes,Vec2dTypes>;
-template class LMConstraint<Vec3dTypes,Vec1dTypes>;
-template class LMConstraint<Vec3dTypes,Rigid3dTypes>;
-template class LMConstraint<Vec3dTypes,Rigid2dTypes>;
+template class SOFA_CORE_API LMConstraint<Vec3dTypes,Vec3dTypes>;
+template class SOFA_CORE_API LMConstraint<Vec3dTypes,Vec2dTypes>;
+template class SOFA_CORE_API LMConstraint<Vec3dTypes,Vec1dTypes>;
+template class SOFA_CORE_API LMConstraint<Vec3dTypes,Rigid3dTypes>;
+template class SOFA_CORE_API LMConstraint<Vec3dTypes,Rigid2dTypes>;
 
-template class LMConstraint<Vec2dTypes,Vec3dTypes>;
-template class LMConstraint<Vec2dTypes,Vec2dTypes>;
-template class LMConstraint<Vec2dTypes,Vec1dTypes>;
-template class LMConstraint<Vec2dTypes,Rigid3dTypes>;
-template class LMConstraint<Vec2dTypes,Rigid2dTypes>;
+template class SOFA_CORE_API LMConstraint<Vec2dTypes,Vec3dTypes>;
+template class SOFA_CORE_API LMConstraint<Vec2dTypes,Vec2dTypes>;
+template class SOFA_CORE_API LMConstraint<Vec2dTypes,Vec1dTypes>;
+template class SOFA_CORE_API LMConstraint<Vec2dTypes,Rigid3dTypes>;
+template class SOFA_CORE_API LMConstraint<Vec2dTypes,Rigid2dTypes>;
 
-template class LMConstraint<Vec1dTypes,Vec3dTypes>;
-template class LMConstraint<Vec1dTypes,Vec2dTypes>;
-template class LMConstraint<Vec1dTypes,Vec1dTypes>;
-template class LMConstraint<Vec1dTypes,Rigid3dTypes>;
-template class LMConstraint<Vec1dTypes,Rigid2dTypes>;
+template class SOFA_CORE_API LMConstraint<Vec1dTypes,Vec3dTypes>;
+template class SOFA_CORE_API LMConstraint<Vec1dTypes,Vec2dTypes>;
+template class SOFA_CORE_API LMConstraint<Vec1dTypes,Vec1dTypes>;
+template class SOFA_CORE_API LMConstraint<Vec1dTypes,Rigid3dTypes>;
+template class SOFA_CORE_API LMConstraint<Vec1dTypes,Rigid2dTypes>;
 
-template class LMConstraint<Rigid3dTypes,Vec3dTypes>;
-template class LMConstraint<Rigid3dTypes,Vec2dTypes>;
-template class LMConstraint<Rigid3dTypes,Vec1dTypes>;
-template class LMConstraint<Rigid3dTypes,Rigid3dTypes>;
-template class LMConstraint<Rigid3dTypes,Rigid2dTypes>;
+template class SOFA_CORE_API LMConstraint<Rigid3dTypes,Vec3dTypes>;
+template class SOFA_CORE_API LMConstraint<Rigid3dTypes,Vec2dTypes>;
+template class SOFA_CORE_API LMConstraint<Rigid3dTypes,Vec1dTypes>;
+template class SOFA_CORE_API LMConstraint<Rigid3dTypes,Rigid3dTypes>;
+template class SOFA_CORE_API LMConstraint<Rigid3dTypes,Rigid2dTypes>;
 
-template class LMConstraint<Rigid2dTypes,Vec3dTypes>;
-template class LMConstraint<Rigid2dTypes,Vec2dTypes>;
-template class LMConstraint<Rigid2dTypes,Vec1dTypes>;
-template class LMConstraint<Rigid2dTypes,Rigid3dTypes>;
-template class LMConstraint<Rigid2dTypes,Rigid2dTypes>;
+template class SOFA_CORE_API LMConstraint<Rigid2dTypes,Vec3dTypes>;
+template class SOFA_CORE_API LMConstraint<Rigid2dTypes,Vec2dTypes>;
+template class SOFA_CORE_API LMConstraint<Rigid2dTypes,Vec1dTypes>;
+template class SOFA_CORE_API LMConstraint<Rigid2dTypes,Rigid3dTypes>;
+template class SOFA_CORE_API LMConstraint<Rigid2dTypes,Rigid2dTypes>;
 
+template class SOFA_CORE_API LMConstraint<Vec3fTypes,Vec3fTypes>;
+template class SOFA_CORE_API LMConstraint<Vec3fTypes,Vec2fTypes>;
+template class SOFA_CORE_API LMConstraint<Vec3fTypes,Vec1fTypes>;
+template class SOFA_CORE_API LMConstraint<Vec3fTypes,Rigid3fTypes>;
+template class SOFA_CORE_API LMConstraint<Vec3fTypes,Rigid2fTypes>;
 
+template class SOFA_CORE_API LMConstraint<Vec2fTypes,Vec3fTypes>;
+template class SOFA_CORE_API LMConstraint<Vec2fTypes,Vec2fTypes>;
+template class SOFA_CORE_API LMConstraint<Vec2fTypes,Vec1fTypes>;
+template class SOFA_CORE_API LMConstraint<Vec2fTypes,Rigid3fTypes>;
+template class SOFA_CORE_API LMConstraint<Vec2fTypes,Rigid2fTypes>;
 
+template class SOFA_CORE_API LMConstraint<Vec1fTypes,Vec3fTypes>;
+template class SOFA_CORE_API LMConstraint<Vec1fTypes,Vec2fTypes>;
+template class SOFA_CORE_API LMConstraint<Vec1fTypes,Vec1fTypes>;
+template class SOFA_CORE_API LMConstraint<Vec1fTypes,Rigid3fTypes>;
+template class SOFA_CORE_API LMConstraint<Vec1fTypes,Rigid2fTypes>;
 
-template class LMConstraint<Vec3fTypes,Vec3fTypes>;
-template class LMConstraint<Vec3fTypes,Vec2fTypes>;
-template class LMConstraint<Vec3fTypes,Vec1fTypes>;
-template class LMConstraint<Vec3fTypes,Rigid3fTypes>;
-template class LMConstraint<Vec3fTypes,Rigid2fTypes>;
+template class SOFA_CORE_API LMConstraint<Rigid3fTypes,Vec3fTypes>;
+template class SOFA_CORE_API LMConstraint<Rigid3fTypes,Vec2fTypes>;
+template class SOFA_CORE_API LMConstraint<Rigid3fTypes,Vec1fTypes>;
+template class SOFA_CORE_API LMConstraint<Rigid3fTypes,Rigid3fTypes>;
+template class SOFA_CORE_API LMConstraint<Rigid3fTypes,Rigid2fTypes>;
 
-template class LMConstraint<Vec2fTypes,Vec3fTypes>;
-template class LMConstraint<Vec2fTypes,Vec2fTypes>;
-template class LMConstraint<Vec2fTypes,Vec1fTypes>;
-template class LMConstraint<Vec2fTypes,Rigid3fTypes>;
-template class LMConstraint<Vec2fTypes,Rigid2fTypes>;
-
-template class LMConstraint<Vec1fTypes,Vec3fTypes>;
-template class LMConstraint<Vec1fTypes,Vec2fTypes>;
-template class LMConstraint<Vec1fTypes,Vec1fTypes>;
-template class LMConstraint<Vec1fTypes,Rigid3fTypes>;
-template class LMConstraint<Vec1fTypes,Rigid2fTypes>;
-
-template class LMConstraint<Rigid3fTypes,Vec3fTypes>;
-template class LMConstraint<Rigid3fTypes,Vec2fTypes>;
-template class LMConstraint<Rigid3fTypes,Vec1fTypes>;
-template class LMConstraint<Rigid3fTypes,Rigid3fTypes>;
-template class LMConstraint<Rigid3fTypes,Rigid2fTypes>;
-
-template class LMConstraint<Rigid2fTypes,Vec3fTypes>;
-template class LMConstraint<Rigid2fTypes,Vec2fTypes>;
-template class LMConstraint<Rigid2fTypes,Vec1fTypes>;
-template class LMConstraint<Rigid2fTypes,Rigid3fTypes>;
-template class LMConstraint<Rigid2fTypes,Rigid2fTypes>;
+template class SOFA_CORE_API LMConstraint<Rigid2fTypes,Vec3fTypes>;
+template class SOFA_CORE_API LMConstraint<Rigid2fTypes,Vec2fTypes>;
+template class SOFA_CORE_API LMConstraint<Rigid2fTypes,Vec1fTypes>;
+template class SOFA_CORE_API LMConstraint<Rigid2fTypes,Rigid3fTypes>;
+template class SOFA_CORE_API LMConstraint<Rigid2fTypes,Rigid2fTypes>;
 
 
 //Need the combinations
-
 
 } // namespace behavior
 

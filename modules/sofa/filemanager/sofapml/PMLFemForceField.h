@@ -50,6 +50,7 @@
 #include "sofa/component/collision/TriangleModel.h"
 //#include "sofa/component/collision/LineModel.h"
 //#include "sofa/component/collision/PointModel.h"
+#include "sofapml.h"
 
 
 
@@ -68,7 +69,7 @@ using namespace sofa::core::componentmodel::topology;
 using namespace sofa::component::collision;
 using namespace std;
 
-class PMLFemForceField: public PMLBody
+class SOFA_BUILD_FILEMANAGER_PML_API PMLFemForceField: public PMLBody
 {
 public :
 

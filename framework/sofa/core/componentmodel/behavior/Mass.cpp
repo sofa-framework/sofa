@@ -25,8 +25,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/componentmodel/behavior/Mass.inl>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -42,19 +40,17 @@ namespace behavior
 
 using namespace sofa::defaulttype;
 
-template class Mass<Vec3dTypes>;
-template class Mass<Vec2dTypes>;
-template class Mass<Vec1dTypes>;
-template class Mass<Rigid3dTypes>;
-template class Mass<Rigid2dTypes>;
+template class SOFA_CORE_API Mass<Vec3dTypes>;
+template class SOFA_CORE_API Mass<Vec2dTypes>;
+template class SOFA_CORE_API Mass<Vec1dTypes>;
+template class SOFA_CORE_API Mass<Rigid3dTypes>;
+template class SOFA_CORE_API Mass<Rigid2dTypes>;
 
-template class Mass<Vec3fTypes>;
-template class Mass<Vec2fTypes>;
-template class Mass<Vec1fTypes>;
-template class Mass<Rigid3fTypes>;
-template class Mass<Rigid2fTypes>;
-
-
+template class SOFA_CORE_API Mass<Vec3fTypes>;
+template class SOFA_CORE_API Mass<Vec2fTypes>;
+template class SOFA_CORE_API Mass<Vec1fTypes>;
+template class SOFA_CORE_API Mass<Rigid3fTypes>;
+template class SOFA_CORE_API Mass<Rigid2fTypes>;
 
 } // namespace behavior
 

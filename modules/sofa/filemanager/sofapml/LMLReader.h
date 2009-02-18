@@ -48,6 +48,7 @@
 #include "sofa/core/componentmodel/behavior/MechanicalState.h"
 #include "sofa/defaulttype/Vec3Types.h"
 #include <sofa/simulation/tree/GNode.h>
+#include "sofapml.h"
 
 namespace sofa
 {
@@ -64,7 +65,7 @@ using namespace sofa::simulation::tree;
 class PMLReader;
 
 
-class LMLReader
+class SOFA_BUILD_FILEMANAGER_PML_API LMLReader
 {
 public :
     LMLReader(char* filename=NULL);

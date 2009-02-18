@@ -25,8 +25,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "PairInteractionConstraint.inl"
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -42,17 +40,17 @@ namespace behavior
 
 using namespace sofa::defaulttype;
 
-template class PairInteractionConstraint<Vec3dTypes>;
-template class PairInteractionConstraint<Vec2dTypes>;
-template class PairInteractionConstraint<Vec1dTypes>;
-template class PairInteractionConstraint<Rigid3dTypes>;
-template class PairInteractionConstraint<Rigid2dTypes>;
+template class SOFA_CORE_API PairInteractionConstraint<Vec3dTypes>;
+template class SOFA_CORE_API PairInteractionConstraint<Vec2dTypes>;
+template class SOFA_CORE_API PairInteractionConstraint<Vec1dTypes>;
+template class SOFA_CORE_API PairInteractionConstraint<Rigid3dTypes>;
+template class SOFA_CORE_API PairInteractionConstraint<Rigid2dTypes>;
 
-template class PairInteractionConstraint<Vec3fTypes>;
-template class PairInteractionConstraint<Vec2fTypes>;
-template class PairInteractionConstraint<Vec1fTypes>;
-template class PairInteractionConstraint<Rigid3fTypes>;
-template class PairInteractionConstraint<Rigid2fTypes>;
+template class SOFA_CORE_API PairInteractionConstraint<Vec3fTypes>;
+template class SOFA_CORE_API PairInteractionConstraint<Vec2fTypes>;
+template class SOFA_CORE_API PairInteractionConstraint<Vec1fTypes>;
+template class SOFA_CORE_API PairInteractionConstraint<Rigid3fTypes>;
+template class SOFA_CORE_API PairInteractionConstraint<Rigid2fTypes>;
 
 
 

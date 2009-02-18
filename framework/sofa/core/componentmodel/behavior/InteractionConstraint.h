@@ -48,7 +48,7 @@ namespace behavior
  *  bodies given their current positions and velocities.
  *
  */
-class InteractionConstraint : public BaseConstraint
+class SOFA_CORE_API InteractionConstraint : public BaseConstraint
 {
 public:
 

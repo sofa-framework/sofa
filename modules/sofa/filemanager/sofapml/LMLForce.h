@@ -44,9 +44,10 @@
 
 #include <Loads.h>
 
-#include "sofa/core/componentmodel/behavior/ForceField.h"
-#include "sofa/core/componentmodel/behavior/MechanicalState.h"
-#include "sofa/core/VisualModel.h"
+#include <sofa/core/componentmodel/behavior/ForceField.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/VisualModel.h>
+#include "sofapml.h"
 
 #include <map>
 
@@ -113,6 +114,10 @@ protected:
     map<unsigned int, unsigned int> atomToDOFIndexes;
 
 };
+
+#if defined(WIN32) && !defined(SOFA_BUILD_FILEMANAGER_PML)
+extern template class SOFA_BUILD_FILEMANAGER_PML_API LMLForce<Vec3Types>;
+#endif
 
 }
 }

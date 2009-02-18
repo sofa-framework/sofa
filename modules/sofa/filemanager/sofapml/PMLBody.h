@@ -55,6 +55,7 @@
 
 #include "sofa/defaulttype/Vec3Types.h"
 #include <sofa/simulation/tree/GNode.h>
+#include "sofapml.h"
 
 //#include "sofa/component/StiffSpringForceField.h"
 
@@ -79,7 +80,7 @@ using namespace sofa::simulation::tree;
 using namespace std;
 
 
-class PMLBody
+class SOFA_BUILD_FILEMANAGER_PML_API PMLBody
 {
 public :
 

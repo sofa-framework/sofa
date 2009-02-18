@@ -58,20 +58,20 @@ int ConstantForceFieldClass = core::RegisterObject("Constant forces applied to g
 #endif
         ;
 #ifndef SOFA_FLOAT
-template class ConstantForceField<Vec3dTypes>;
-template class ConstantForceField<Vec2dTypes>;
-template class ConstantForceField<Vec1dTypes>;
-template class ConstantForceField<Vec6dTypes>;
-template class ConstantForceField<Rigid3dTypes>;
-template class ConstantForceField<Rigid2dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Vec3dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Vec2dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Vec1dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Vec6dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Rigid3dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class ConstantForceField<Vec3fTypes>;
-template class ConstantForceField<Vec2fTypes>;
-template class ConstantForceField<Vec1fTypes>;
-template class ConstantForceField<Vec6fTypes>;
-template class ConstantForceField<Rigid3fTypes>;
-template class ConstantForceField<Rigid2fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Vec3fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Vec2fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Vec1fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Vec6fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Rigid3fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Rigid2fTypes>;
 #endif
 
 #ifndef SOFA_FLOAT

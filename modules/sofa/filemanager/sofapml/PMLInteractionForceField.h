@@ -46,6 +46,7 @@
 
 #include "PMLBody.h"
 #include "sofa/component/forcefield/StiffSpringForceField.h"
+#include "sofapml.h"
 
 #include <map>
 
@@ -62,7 +63,7 @@ namespace pml
 using namespace sofa::component::forcefield;
 using namespace std;
 
-class PMLInteractionForceField: public PMLBody
+class SOFA_BUILD_FILEMANAGER_PML_API PMLInteractionForceField: public PMLBody
 {
 public :
 

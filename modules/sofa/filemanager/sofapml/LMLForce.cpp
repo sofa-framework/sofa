@@ -47,12 +47,13 @@ namespace filemanager
 
 namespace pml
 {
+
 using namespace core::componentmodel::behavior;
 
 SOFA_DECL_CLASS(LMLForce)
 
+template class SOFA_BUILD_FILEMANAGER_PML_API LMLForce<Vec3Types>;
 
-template class LMLForce<Vec3Types>;
 }
 }
 }

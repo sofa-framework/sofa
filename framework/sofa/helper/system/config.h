@@ -74,6 +74,9 @@ typedef double SReal;
 #else
 #	define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
 #   define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
+#   ifdef _MSC_VER
+#       pragma warning(disable : 4231)
+#   endif
 #endif
 
 #endif

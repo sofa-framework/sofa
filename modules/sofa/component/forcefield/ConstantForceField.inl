@@ -25,7 +25,6 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_ConstantForceField_INL
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_ConstantForceField_INL
 
-#include <sofa/core/componentmodel/behavior/ForceField.inl>
 #include "ConstantForceField.h"
 #include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/VecTypes.h>
