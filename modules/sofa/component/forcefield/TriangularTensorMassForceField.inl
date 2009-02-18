@@ -28,7 +28,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/component/topology/TriangleData.inl>
 #include <sofa/component/topology/EdgeData.inl>
-
+#include <sofa/core/componentmodel/behavior/ForceField.inl>
 
 namespace sofa
 {

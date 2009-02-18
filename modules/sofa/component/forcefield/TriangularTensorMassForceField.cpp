@@ -65,10 +65,10 @@ int TriangularTensorMassForceFieldClass = core::RegisterObject("Linear Elastic M
         ;
 
 #ifndef SOFA_FLOAT
-template class TriangularTensorMassForceField<Vec3dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API TriangularTensorMassForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class TriangularTensorMassForceField<Vec3fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API TriangularTensorMassForceField<Vec3fTypes>;
 #endif
 
 
