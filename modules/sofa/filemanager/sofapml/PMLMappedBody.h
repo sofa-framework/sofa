@@ -42,6 +42,7 @@
 #define PMLMAPPEDBODY_H
 
 #include "PMLBody.h"
+#include "sofapml.h"
 
 #include <map>
 
@@ -56,7 +57,7 @@ namespace pml
 {
 using namespace std;
 
-class PMLMappedBody: public PMLBody
+class SOFA_BUILD_FILEMANAGER_PML_API PMLMappedBody: public PMLBody
 {
 public :
 

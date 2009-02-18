@@ -44,6 +44,7 @@
 #define PMLSTIFFSPRINGFORCEFIELD_H
 
 #include "PMLBody.h"
+#include "sofapml.h"
 
 #include <StructuralComponent.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
@@ -69,7 +70,7 @@ using namespace sofa::component::collision;
 using namespace sofa::component::forcefield;
 using namespace std;
 
-class PMLStiffSpringForceField: public PMLBody
+class SOFA_BUILD_FILEMANAGER_PML_API PMLStiffSpringForceField: public PMLBody
 {
 public :
 

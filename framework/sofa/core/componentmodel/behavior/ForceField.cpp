@@ -25,8 +25,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/componentmodel/behavior/ForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -42,21 +40,19 @@ namespace behavior
 
 using namespace sofa::defaulttype;
 
-template class ForceField<Vec3dTypes>;
-template class ForceField<Vec2dTypes>;
-template class ForceField<Vec1dTypes>;
-template class ForceField<Vec6dTypes>;
-template class ForceField<Rigid3dTypes>;
-template class ForceField<Rigid2dTypes>;
+template class SOFA_CORE_API ForceField<Vec3dTypes>;
+template class SOFA_CORE_API ForceField<Vec2dTypes>;
+template class SOFA_CORE_API ForceField<Vec1dTypes>;
+template class SOFA_CORE_API ForceField<Vec6dTypes>;
+template class SOFA_CORE_API ForceField<Rigid3dTypes>;
+template class SOFA_CORE_API ForceField<Rigid2dTypes>;
 
-template class ForceField<Vec3fTypes>;
-template class ForceField<Vec2fTypes>;
-template class ForceField<Vec1fTypes>;
-template class ForceField<Vec6fTypes>;
-template class ForceField<Rigid3fTypes>;
-template class ForceField<Rigid2fTypes>;
-
-
+template class SOFA_CORE_API ForceField<Vec3fTypes>;
+template class SOFA_CORE_API ForceField<Vec2fTypes>;
+template class SOFA_CORE_API ForceField<Vec1fTypes>;
+template class SOFA_CORE_API ForceField<Vec6fTypes>;
+template class SOFA_CORE_API ForceField<Rigid3fTypes>;
+template class SOFA_CORE_API ForceField<Rigid2fTypes>;
 
 } // namespace behavior
 

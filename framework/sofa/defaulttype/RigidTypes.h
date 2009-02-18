@@ -31,7 +31,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/componentmodel/behavior/Mass.h>
+//#include <sofa/core/componentmodel/behavior/Mass.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
 #include <iostream>

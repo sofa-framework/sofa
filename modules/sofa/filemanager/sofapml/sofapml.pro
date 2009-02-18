@@ -5,12 +5,19 @@ include($${SOFA_DIR}/sofa.cfg)
 TARGET = sofapml$$LIBSUFFIX
 
 CONFIG += $$CONFIGLIBRARIES
+
+CONFIG -= staticlib
+CONFIG += dll
+
+DEFINES += SOFA_BUILD_FILEMANAGER_PML
+
 LIBS += $$SOFA_FRAMEWORK_LIBS
 LIBS += $$SOFA_EXT_LIBS
 LIBS += $$SOFA_MODULES_LIBS
 LIBS -= -lsofapml$$LIBSUFFIX
 
-HEADERS += PMLBody.h \
+HEADERS += sofapml.h \
+           PMLBody.h \
            PMLRigidBody.h \
            PMLFemForceField.h \
            PMLStiffSpringForceField.h \
@@ -24,7 +31,7 @@ HEADERS += PMLBody.h \
            LMLReader.h
 
 
-SOURCES = 	PMLBody.cpp \
+SOURCES += PMLBody.cpp \
            PMLRigidBody.cpp \
            PMLFemForceField.cpp \
            PMLStiffSpringForceField.cpp \

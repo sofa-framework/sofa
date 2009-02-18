@@ -44,6 +44,7 @@
 #define PMLRIGIDBODY_H
 
 #include "PMLBody.h"
+#include "sofapml.h"
 
 #include <StructuralComponent.h>
 
@@ -67,7 +68,7 @@ namespace pml
 using namespace sofa::defaulttype;
 using namespace std;
 
-class PMLRigidBody: public PMLBody
+class SOFA_BUILD_FILEMANAGER_PML_API PMLRigidBody: public PMLBody
 {
 public :
 

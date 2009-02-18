@@ -29,6 +29,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/vector.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {

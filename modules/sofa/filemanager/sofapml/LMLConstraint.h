@@ -46,6 +46,7 @@
 #include "sofa/core/componentmodel/behavior/Constraint.h"
 #include "sofa/core/componentmodel/behavior/MechanicalState.h"
 #include "sofa/core/VisualModel.h"
+#include "sofapml.h"
 
 #include <vector>
 #include <map>
@@ -119,6 +120,10 @@ private:
     ///link between PML object indexes and sofa Dofs Indexes
     map<unsigned int, unsigned int> atomToDOFIndexes;
 };
+
+#if defined(WIN32) && !defined(SOFA_BUILD_FILEMANAGER_PML)
+extern template class SOFA_BUILD_FILEMANAGER_PML_API LMLConstraint<Vec3Types>;
+#endif
 
 }
 }

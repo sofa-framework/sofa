@@ -27,8 +27,11 @@
 #ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_CONSTRAINT_H
 #define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_CONSTRAINT_H
 
+#include <sofa/core/core.h>
 #include <sofa/core/componentmodel/behavior/BaseConstraint.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -160,6 +163,20 @@ public:
 protected:
     MechanicalState<DataTypes> *mstate;
 };
+
+#if defined(WIN32) && !defined(SOFA_BUILD_CORE)
+extern template class SOFA_CORE_API Constraint<defaulttype::Vec3dTypes>;
+extern template class SOFA_CORE_API Constraint<defaulttype::Vec2dTypes>;
+extern template class SOFA_CORE_API Constraint<defaulttype::Vec1dTypes>;
+extern template class SOFA_CORE_API Constraint<defaulttype::Rigid3dTypes>;
+extern template class SOFA_CORE_API Constraint<defaulttype::Rigid2dTypes>;
+
+extern template class SOFA_CORE_API Constraint<defaulttype::Vec3fTypes>;
+extern template class SOFA_CORE_API Constraint<defaulttype::Vec2fTypes>;
+extern template class SOFA_CORE_API Constraint<defaulttype::Vec1fTypes>;
+extern template class SOFA_CORE_API Constraint<defaulttype::Rigid3fTypes>;
+extern template class SOFA_CORE_API Constraint<defaulttype::Rigid2fTypes>;
+#endif
 
 } // namespace behavior
 

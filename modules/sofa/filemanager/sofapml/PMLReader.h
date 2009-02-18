@@ -46,6 +46,7 @@
 #include <PhysicalModel.h>
 #include <StructuralComponent.h>
 #include "PMLBody.h"
+#include "sofapml.h"
 
 #include <sofa/simulation/tree/GNode.h>
 using namespace sofa::simulation::tree;
@@ -60,7 +61,7 @@ namespace pml
 {
 
 
-class PMLReader
+class SOFA_BUILD_FILEMANAGER_PML_API PMLReader
 {
 public :
     PMLReader() {pm = NULL;}

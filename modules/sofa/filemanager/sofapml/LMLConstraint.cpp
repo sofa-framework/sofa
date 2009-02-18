@@ -52,7 +52,7 @@ using namespace core::componentmodel::behavior;
 SOFA_DECL_CLASS(LMLConstraint)
 
 
-template class LMLConstraint<Vec3Types>;
+template class SOFA_BUILD_FILEMANAGER_PML_API LMLConstraint<Vec3Types>;
 
 
 

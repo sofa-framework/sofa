@@ -27,10 +27,14 @@
 #ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_MASS_H
 #define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_MASS_H
 
+#include <sofa/core/core.h>
 #include <sofa/core/componentmodel/behavior/BaseMass.h>
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+
 namespace sofa
 {
 
@@ -183,6 +187,20 @@ Deriv inertiaForce( const SV& /*sv*/, const Vec& /*a*/, const M& /*m*/, const Co
     //const Deriv& omega=sv.getAngularVelocity();
     //return -( a + omega.cross( omega.cross(x) + v*2 ))*m;
 }
+
+#if defined(WIN32) && !defined(SOFA_BUILD_CORE)
+extern template class SOFA_CORE_API Mass<defaulttype::Vec3dTypes>;
+extern template class SOFA_CORE_API Mass<defaulttype::Vec2dTypes>;
+extern template class SOFA_CORE_API Mass<defaulttype::Vec1dTypes>;
+extern template class SOFA_CORE_API Mass<defaulttype::Rigid3dTypes>;
+extern template class SOFA_CORE_API Mass<defaulttype::Rigid2dTypes>;
+
+extern template class SOFA_CORE_API Mass<defaulttype::Vec3fTypes>;
+extern template class SOFA_CORE_API Mass<defaulttype::Vec2fTypes>;
+extern template class SOFA_CORE_API Mass<defaulttype::Vec1fTypes>;
+extern template class SOFA_CORE_API Mass<defaulttype::Rigid3fTypes>;
+extern template class SOFA_CORE_API Mass<defaulttype::Rigid2fTypes>;
+#endif
 
 } // namespace behavior
 

@@ -25,9 +25,9 @@
 #ifndef LMLFORCE_INL
 #define LMLFORCE_INL
 
-//#include "sofa/core/ForceField.inl"
 #include "LMLForce.h"
-#include "sofa/helper/gl/template.h"
+#include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/helper/gl/template.h>
 using namespace sofa::helper::gl;
 
 

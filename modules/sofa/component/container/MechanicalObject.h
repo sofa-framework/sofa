@@ -362,7 +362,6 @@ protected:
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP)
-#pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
 extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Vec3dTypes>;
 extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Vec2dTypes>;
