@@ -68,7 +68,6 @@ EdgeSetController<DataTypes>::EdgeSetController()
     , speed(initData(&speed,(Real)0.0,"speed","continuous beam length increase/decrease"))
     , reversed(initData(&reversed,false,"reversed","Extend or retract edgeSet from end"))
     , startingIndex(initData(&startingIndex,0,"startingIndex","index of the edge where a topological change occurs"))
-
     , depl(0.0)
 {
 
@@ -201,6 +200,7 @@ void EdgeSetController<DataTypes>::onKeyPressedEvent(core::objectmodel::Keypress
         this->mouseMode = Inherit::Wheel;
         depl -= 2*step.getValue();
         break;
+
     case '*':
         this->mouseMode = Inherit::Wheel;
         speed.setValue(speed.getValue() + 10*step.getValue());
@@ -210,6 +210,7 @@ void EdgeSetController<DataTypes>::onKeyPressedEvent(core::objectmodel::Keypress
         this->mouseMode = Inherit::Wheel;
         speed.setValue(speed.getValue() - 10*step.getValue());
         break;
+
     case '0':
         this->mouseMode = Inherit::None;
         speed.setValue(0);
@@ -230,12 +231,10 @@ void EdgeSetController<DataTypes>::onBeginAnimationStep()
 template <class DataTypes>
 void EdgeSetController<DataTypes>::applyController()
 {
-
-    //serr<<"applyController called"<<sendl;
     using sofa::defaulttype::Quat;
     using sofa::defaulttype::Vec;
 
-    if (depl != 0 || speed.getValue() != 0) //this->mouseMode == Inherit::Wheel)
+    if (depl != 0 || speed.getValue() != 0)
     {
         depl += (Real)(speed.getValue() * this->getContext()->getDt());
         this->mouseMode = Inherit::None;
@@ -244,35 +243,19 @@ void EdgeSetController<DataTypes>::applyController()
         {
             if (!reversed.getValue())
             {
-
-
-                /*
-                				Coord& pos = (*this->mState->getX0())[0];
-                				pos = getNewRestPos(pos, vertexT[0], depl);
-                				vertexT[0] -= depl;
-                				depl = 0;
-                */
-
-                if(startingIndex.getValue()!=0)
+                if (startingIndex.getValue() != 0)
                 {
-
-                    for(int index_it = 0; index_it<=startingIndex.getValue(); index_it++)
+                    for(int index_it = 0; index_it <= startingIndex.getValue(); index_it++)
                     {
                         Coord& pos = (*this->mState->getX0())[index_it];
 
-
-                        pos =  getNewRestPos(pos, vertexT[index_it], depl);
+                        pos =  getNewRestPos(pos, vertexT[index_it], -depl);
                         vertexT[index_it] -= depl;
-
                     }
                     depl = 0;
                 }
                 else
                 {
-
-
-
-
                     Coord& pos = (*this->mState->getX0())[0];
                     Real d;
 
@@ -287,7 +270,7 @@ void EdgeSetController<DataTypes>::applyController()
                         depl -= d; //?
                     }
 
-                    Real endT = vertexT[vertexT.size()-1];
+                    Real endT = vertexT[vertexT.size() - 1];
                     Real newT = vertexT[0];
                     Real sign = (endT > newT) ? 1.0f : -1.0f;
                     newT -= d;
@@ -308,7 +291,7 @@ void EdgeSetController<DataTypes>::applyController()
 
                     if (newT != vertexT[0])							// if no displacement (d=0) then newT == vertexT[0]
                     {
-                        pos = getNewRestPos(pos, vertexT[0], (Real)d);
+                        pos = getNewRestPos(pos, vertexT[0], (Real)-d);
                         vertexT[0] = (Real)newT;
                     }
                     else
@@ -321,33 +304,8 @@ void EdgeSetController<DataTypes>::applyController()
             }
             else // reversed  !
             {
-                /*
                 int n = this->mState->getSize();
-                if (n > 0)
-                {
-                	Coord& pos = (*this->mState->getX0())[n-1];
-                	pos = getNewRestPos(pos, vertexT[n-1], depl);
-                	vertexT[n-1] -= depl;
-                	depl = 0;
-                }
-                */
 
-                /*
-                int n = this->mState->getSize();
-                if (n==0)
-                	return;
-
-                for(int index_it = 0; index_it<=startingIndex.getValue(); index_it++)
-                {
-                	Coord& pos = (*this->mState->getX0())[n-1-index_it];
-                	pos =  getNewRestPos(pos, vertexT[n-1-index_it], depl);
-                	vertexT[n-1-index_it] -= depl;
-
-                }
-                depl = 0;
-                */
-
-                int n = this->mState->getSize();
                 if (n > 0)
                 {
                     Coord& pos = (*this->mState->getX0())[n-1];
@@ -383,7 +341,7 @@ void EdgeSetController<DataTypes>::applyController()
 
                     if (newT != vertexT[n-1])
                     {
-                        pos = getNewRestPos(pos, vertexT[n-1], (Real)d);
+                        pos = getNewRestPos(pos, vertexT[n-1], (Real)-d);
                         vertexT[n-1] = (Real)newT;
                     }
                     else
@@ -414,25 +372,18 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
 
     if (!reversed.getValue())
     {
-
-
-
-
         sofa::helper::vector< unsigned int > baseEdge(0);
         baseEdge = _topology->getEdgeVertexShell(startingIndex.getValue());
         /// if the startingIndex is not on the base or on the tip of the wire, then we choose the second edge shared by the starting point.
-        if (baseEdge.size()==2)
+        if (baseEdge.size() == 2)
         {
             unsigned int startingEdge = baseEdge[1];
             baseEdge.pop_back();
             baseEdge[0] = startingEdge;
         }
-        //std::cout<<" \n\n\n\n\n\n\n baseEdge.size() : "<<baseEdge.size()<<" [0] "<<baseEdge[0]<<std::endl;
 
         if (baseEdge.size() == 1)
         {
-            //std::cout<<"longueur :" <<fabs(vertexT[startingIndex.getValue()+1] - vertexT[startingIndex.getValue()])<<"edgeTLength :"<<edgeTLength <<std::endl;
-
             if (fabs(vertexT[startingIndex.getValue()+1] - vertexT[startingIndex.getValue()]) > ( 2 * edgeTLength ))
             {
                 // First Edge makes 2
@@ -441,16 +392,20 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
 
                 edgeMod->splitEdges(indices);
                 // pos = pos of the last point of the wire
-                Coord& pos = (*this->mState->getX0())[this->mState->getSize()-1];
+                Coord& pos = (*this->mState->getX0())[this->mState->getSize() - 1];
+
                 // point placed in the middle of the edge
-                pos = getNewRestPos((*this->mState->getX0())[startingIndex.getValue()], vertexT[startingIndex.getValue()], (vertexT[startingIndex.getValue()+1] - vertexT[startingIndex.getValue()])/static_cast<Real>(2.0));
+                pos = getNewRestPos((	*this->mState->getX0())[startingIndex.getValue()],
+                        vertexT[startingIndex.getValue()],
+                        (vertexT[startingIndex.getValue() + 1] - vertexT[startingIndex.getValue()]) / static_cast<Real>(2.0));
 
                 // Update vertexT
-                vertexT.insert(vertexT.begin()+ startingIndex.getValue() + 1, (vertexT[startingIndex.getValue()] + vertexT[startingIndex.getValue()+1])/static_cast<Real>(2.0));
+                vertexT.insert(	vertexT.begin()+ startingIndex.getValue() + 1,
+                        (vertexT[startingIndex.getValue()] + vertexT[startingIndex.getValue() + 1]) / static_cast<Real>(2.0));
+
                 // Renumber vertices
                 int numPoints = _topology->getNbPoints();
 
-                //std::cerr<<"point insert"<<std::endl;
                 // Last created vertex must come on the startingIndex.getValue() + 1 position of the position vector.
                 sofa::helper::vector<unsigned int> permutations(numPoints);
                 for (int i = 0 ; i <= startingIndex.getValue(); i++)
@@ -461,20 +416,11 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
                 for ( int i = startingIndex.getValue()+1; i < numPoints - 1; i++)
                     permutations[i] = i + 1;
 
-
-
                 sofa::helper::vector<unsigned int> inverse_permutations(numPoints);
                 for ( int i = 0; i < numPoints; i++)
                     inverse_permutations[permutations[i]] = i;
-                /*
-                std::cerr<<"permutation tables ok :"<<std::endl;
-                for ( int i = 0; i < numPoints; i++)
-                	std::cerr<<"permutations["<<i<<"]="<<permutations[i]<<std::endl;
-                */
-
 
                 edgeMod->renumberPoints((const sofa::helper::vector<unsigned int> &) inverse_permutations, (const sofa::helper::vector<unsigned int> &) permutations);
-                //std::cerr<<"renumberPoints  ok :"<<std::endl;
             }
         }
     }

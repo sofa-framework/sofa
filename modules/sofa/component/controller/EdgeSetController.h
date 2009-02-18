@@ -166,7 +166,7 @@ protected:
     {
         sofa::defaulttype::Vec<3,Real> vectrans(dt * this->mainDirection[0], dt * this->mainDirection[1], dt * this->mainDirection[2]);
         vectrans = pos.getOrientation().rotate(vectrans);
-        return Coord(pos.getCenter() - vectrans, pos.getOrientation());
+        return Coord(pos.getCenter() + vectrans, pos.getOrientation());
     }
 
     Real edgeTLength;
