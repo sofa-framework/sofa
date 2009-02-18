@@ -183,9 +183,60 @@ void DefaultContactManager::draw()
     }
 }
 
+
+void DefaultContactManager::removeContacts(const ContactVector &c)
+{
+    ContactVector::const_iterator remove_it = c.begin();
+    ContactVector::const_iterator remove_itEnd = c.end();
+
+    ContactVector::iterator it;
+    ContactVector::iterator itEnd;
+
+    ContactMap::iterator map_it;
+    ContactMap::iterator map_itEnd;
+
+    while (remove_it != remove_itEnd)
+    {
+        // Whole scene contacts
+        it = contacts.begin();
+        itEnd = contacts.end();
+
+        while (it != itEnd)
+        {
+            if (*it == *remove_it)
+            {
+                contacts.erase(it);
+                break;
+            }
+
+            ++it;
+        }
+
+        // Stored contacts (keeping alive)
+        map_it = contactMap.begin();
+        map_itEnd = contactMap.end();
+
+        while (map_it != map_itEnd)
+        {
+            if (map_it->second == *remove_it)
+            {
+                ContactMap::iterator erase_it = map_it;
+                ++map_it;
+                contactMap.erase(erase_it);
+            }
+            else
+            {
+                ++map_it;
+            }
+        }
+
+        ++remove_it;
+    }
+
+}
+
 } // namespace collision
 
 } // namespace component
 
 } // namespace sofa
-
