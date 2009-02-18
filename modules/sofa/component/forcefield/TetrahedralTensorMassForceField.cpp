@@ -65,10 +65,10 @@ int TetrahedralTensorMassForceFieldClass = core::RegisterObject("Linear Elastic 
         ;
 
 #ifndef SOFA_FLOAT
-template class TetrahedralTensorMassForceField<Vec3dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API TetrahedralTensorMassForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class TetrahedralTensorMassForceField<Vec3fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API TetrahedralTensorMassForceField<Vec3fTypes>;
 #endif
 
 

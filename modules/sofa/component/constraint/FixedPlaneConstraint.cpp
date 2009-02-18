@@ -50,10 +50,10 @@ int FixedPlaneConstraintClass = core::RegisterObject("Project particles on a giv
 #endif
         ;
 #ifndef SOFA_FLOAT
-template class FixedPlaneConstraint<Vec3dTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API FixedPlaneConstraint<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class FixedPlaneConstraint<Vec3fTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API FixedPlaneConstraint<Vec3fTypes>;
 #endif
 } // namespace constraint
 
