@@ -236,7 +236,7 @@ public:
         return true;
     };
 
-    virtual void addPostProcessing() {};
+    virtual void addPostProcessing(const sofa::helper::vector <Triangle> &triangles) {(void)triangles;};
 
 
 
