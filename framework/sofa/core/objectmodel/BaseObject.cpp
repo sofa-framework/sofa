@@ -120,6 +120,9 @@ void BaseObject::parse( BaseObjectDescription* arg )
                     parentData->addChild(dataModif[d]);
                     /* set parent value to the child */
                     valueString = parentData->getValueString();
+                    if (valueString.empty())
+                        break;
+
                     /* children Data can be modified changing the parent Data value */
                     dataModif[d]->setReadOnly(true);
                 }
