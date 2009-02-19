@@ -253,6 +253,9 @@ void TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::Collisi
 // Intermediate method to handle cutting
 bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::componentmodel::topology::BaseMeshTopology* _topology)
 {
+
+
+
     const Vec<3,double>& a= incision.a_init;
     const Vec<3,double>& b= incision.b_init;
 
@@ -314,6 +317,8 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
         triangleMod->propagateTopologicalChanges();
 
         incision.is_first_cut = false;
+
+        initiateIncision(); //reinitiate values for next cutting TO DO: change this
 
         return false; //is_fully_cut;
     }
@@ -438,6 +443,13 @@ bool TopologicalChangeManager::incisionTriangleModel(sofa::core::CollisionElemen
     return false;
 }
 
+void TopologicalChangeManager::initiateIncision()
+{
+    incision.a_last_init = (unsigned int)-1;
+    incision.b_last_init = (unsigned int)-1;
+    incision.ind_ta_init = (unsigned int)-1;
+    incision.ind_tb_init = (unsigned int)-1;
+}
 
 } // namespace collision
 
