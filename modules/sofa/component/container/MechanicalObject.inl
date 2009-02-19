@@ -990,6 +990,7 @@ void MechanicalObject<DataTypes>::init()
 
     initialized = true;
 
+    f_X0->endEdit();
 }
 
 
