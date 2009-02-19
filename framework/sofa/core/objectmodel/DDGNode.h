@@ -54,6 +54,12 @@ public:
     /// True if the Data has been modified
     virtual void setDirty() = 0;
 
+    /// Returns true if the DDGNode has been modified. Otherwise returns false
+    bool isDirty()
+    {
+        return dirty;
+    }
+
 protected:
 
     bool dirty;
