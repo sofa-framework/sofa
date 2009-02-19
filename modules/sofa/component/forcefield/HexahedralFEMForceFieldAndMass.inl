@@ -48,11 +48,11 @@ HexahedralFEMForceFieldAndMass<DataTypes>::HexahedralFEMForceFieldAndMass()
     : MassT()
     , HexahedralFEMForceFieldT()
     , _density(initData(&_density,(Real)1.0,"density","density == volumetric mass in english (kg.m-3)"))
-    , _useLumpedMass(initData(&_useLumpedMass, false, "lumpedMass", "Does it use lumped masses?"))
 //	, _elementMasses(initData(&_elementMasses,"massMatrices", "Mass matrices per element (M_i)"))
 //	, _particleMasses(initData(&_particleMasses, "particleMasses", "Mass per particle"))
 //	, _lumpedMasses(initData(&_lumpedMasses, "lumpedMasses", "Lumped masses"))
 {
+    _useLumpedMass = this->initData(&_useLumpedMass, false, "lumpedMass", "Does it use lumped masses?");
 }
 
 
@@ -61,9 +61,9 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::init( )
 {
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
 
-    getContext()->get(_topology);
+    this->getContext()->get(this->_topology);
 
-    if(_topology == NULL)
+    if(this->_topology == NULL)
     {
         serr << "ERROR(HexahedralFEMForceField): object must have a HexahedronSetTopology."<<sendl;
         return;
@@ -87,13 +87,13 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::reinit( )
 template <class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::handleTopologyChange(core::componentmodel::topology::Topology* t)
 {
-    if(t != _topology)
+    if(t != this->_topology)
         return;
 
     HexahedralFEMForceFieldT::handleTopologyChange();
 
-    std::list<const TopologyChange *>::const_iterator itBegin=_topology->firstChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=_topology->lastChange();
+    std::list<const TopologyChange *>::const_iterator itBegin=this->_topology->firstChange();
+    std::list<const TopologyChange *>::const_iterator itEnd=this->_topology->lastChange();
 
     // handle point events
     _particleMasses.handleTopologyEvents(itBegin,itEnd);
@@ -115,7 +115,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::handleTopologyChange(core::compo
             // add particle masses and lumped masses of adjacent particles
         case HEXAHEDRAADDED:
         {
-            const VecElement& hexas = _topology->getHexas();
+            const VecElement& hexas = this->_topology->getHexas();
             const sofa::helper::vector<unsigned int> &hexaModif = (static_cast< const HexahedraAdded *> (*iter))->hexahedronIndexArray;
 
             VecCoord& initialPoints = *this->mstate->getX0();
@@ -188,7 +188,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::handleTopologyChange(core::compo
         // subttract particle masses and lumped masses of adjacent particles
         case HEXAHEDRAREMOVED:
         {
-            const VecElement& hexas = _topology->getHexas();
+            const VecElement& hexas = this->_topology->getHexas();
             const sofa::helper::vector<unsigned int> &hexaModif = (static_cast< const HexahedraRemoved *> (*iter))->getArray();
 
             helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
@@ -238,8 +238,8 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::handleTopologyChange(core::compo
 template<class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::computeParticleMasses(  )
 {
-    unsigned int numPoints = _topology->getNbPoints();
-    const VecElement& hexas = _topology->getHexas();
+    unsigned int numPoints = this->_topology->getNbPoints();
+    const VecElement& hexas = this->_topology->getHexas();
 
     helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
 
@@ -262,8 +262,8 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::computeParticleMasses(  )
 template<class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::computeLumpedMasses(  )
 {
-    unsigned int numPoints = _topology->getNbPoints();
-    const VecElement& hexas = _topology->getHexas();
+    unsigned int numPoints = this->_topology->getNbPoints();
+    const VecElement& hexas = this->_topology->getHexas();
 
     if( _useLumpedMass.getValue() )
     {
@@ -296,7 +296,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
 {
     VecCoord& initialPoints = *this->mstate->getX0();
 
-    const VecElement& hexas = _topology->getHexas();
+    const VecElement& hexas = this->_topology->getHexas();
 
     helper::vector<ElementMass>& elementMasses = *this->_elementMasses.beginEdit();
     helper::vector<Real>& elementTotalMass = *this->_elementTotalMass.beginEdit();
@@ -385,7 +385,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMDx(VecDeriv& f, const VecDer
 {
     if( ! _useLumpedMass.getValue() )
     {
-        const VecElement& hexas = _topology->getHexas();
+        const VecElement& hexas = this->_topology->getHexas();
         for(unsigned int i=0; i<hexas.size(); ++i)
         {
             Vec<24, Real> actualDx, actualF;
@@ -419,7 +419,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMToMatrix(defaulttype::BaseMa
     int i, j, n1, n2;
     int node1, node2;
 
-    const VecElement& hexas = _topology->getHexas();
+    const VecElement& hexas = this->_topology->getHexas();
 
     for(unsigned int e=0; e<hexas.size(); ++e)
     {
