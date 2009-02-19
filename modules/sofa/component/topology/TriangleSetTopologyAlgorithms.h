@@ -75,21 +75,6 @@ public:
     */
     bool Suture2Points(unsigned int ind_ta, unsigned int ind_tb, unsigned int &ind1, unsigned int &ind2);
 
-    /** \brief  Incises along the list of points (ind_edge,coord) intersected by the vector from point a to point b and the triangular mesh
-             // Point a belongs to the triangle indexed by ind_ta.
-             // Point b belongs to the triangle indexed by ind_tb, unless it is (unsigned)-1, in which case it is automatically computed
-    */
-    bool InciseAlongPointsList(bool is_first_cut,
-            const sofa::defaulttype::Vec<3,double>& a,
-            const sofa::defaulttype::Vec<3,double>& b,
-            const unsigned int ind_ta, unsigned int& ind_tb,
-            unsigned int& a_last, sofa::helper::vector< unsigned int > &a_p12_last,
-            sofa::helper::vector< unsigned int > &a_i123_last,
-            unsigned int& b_last, sofa::helper::vector< unsigned int > &b_p12_last,
-            sofa::helper::vector< unsigned int > &b_i123_last,
-            sofa::helper::vector< unsigned int > &new_points,
-            sofa::helper::vector< unsigned int > &closest_vertices);
-
     /** \brief Removes triangles along the list of points (ind_edge,coord) intersected by the vector from point a to point b and the triangular mesh
     */
     void RemoveAlongTrianglesList(const sofa::defaulttype::Vec<3,double>& a,
