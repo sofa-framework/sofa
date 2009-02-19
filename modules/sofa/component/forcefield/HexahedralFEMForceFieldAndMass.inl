@@ -231,6 +231,8 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::handleTopologyChange(core::compo
             }
         }
         break;
+        default:
+            break;
         }
     }
 }
