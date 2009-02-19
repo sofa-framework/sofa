@@ -57,6 +57,10 @@ using namespace sofa::component::topology;
 
 TopologicalChangeManager::TopologicalChangeManager()
 {
+    incision.a_last_init = (unsigned int)-1;
+    incision.b_last_init = (unsigned int)-1;
+    incision.ind_ta_init = (unsigned int)-1;
+    incision.ind_tb_init = (unsigned int)-1;
 }
 
 TopologicalChangeManager::~TopologicalChangeManager()
@@ -256,19 +260,14 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
     unsigned int &ind_tb = incision.ind_tb_init;
 
     unsigned int& a_last = incision.a_last_init;
-    sofa::helper::vector< unsigned int >& a_p12_last = incision.a_p12_last_init;
-    sofa::helper::vector< unsigned int >& a_i123_last = incision.a_i123_last_init;
 
     unsigned int& b_last = incision.b_last_init;
-    sofa::helper::vector< unsigned int >& b_p12_last = incision.b_p12_last_init;
-    sofa::helper::vector< unsigned int >& b_i123_last = incision.b_i123_last_init;
 
     bool is_prepared=!((a[0]==b[0] && a[1]==b[1] && a[2]==b[2]) || (incision.ind_ta_init == incision.ind_tb_init));
 
     if(is_prepared)
     {
-        sofa::helper::vector<unsigned int> new_points;
-        sofa::helper::vector<unsigned int> closest_vertices;
+
 
         sofa::component::topology::TriangleSetTopologyModifier* triangleMod;
         _topology->getContext()->get(triangleMod);
@@ -276,7 +275,38 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
         sofa::component::topology::TriangleSetTopologyAlgorithms<Vec3Types>* triangleAlg;
         _topology->getContext()->get(triangleAlg);
 
-        bool is_fully_cut = triangleAlg->InciseAlongPointsList(incision.is_first_cut, a, b, ind_ta, ind_tb, a_last, a_p12_last, a_i123_last, b_last, b_p12_last, b_i123_last, new_points, closest_vertices);
+        sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
+        _topology->getContext()->get(triangleGeo);
+
+        sofa::helper::vector<unsigned int> triangles_list;
+        sofa::helper::vector<unsigned int> edges_list;
+        sofa::helper::vector< double > coords_list;
+        bool is_on_boundary = false;
+        bool ok = triangleGeo->computeIntersectedPointsList(a, b, ind_ta, ind_tb, triangles_list, edges_list, coords_list, is_on_boundary);
+        std::cout << "intersected triangles: " << triangles_list << std::endl;
+        std::cout << "intersected edges :"; // << edges_list << std::endl;
+        for (unsigned int i=0; i<edges_list.size(); ++i)
+        {
+            std::cout << " " << edges_list[i] << " ( " << _topology->getEdge(edges_list[i]) << " )";
+        }
+        std::cout << std::endl;
+        std::cout << "intersection coords : " << coords_list << std::endl;
+        std::cout << "last triangle: " << ind_tb << std::endl;
+        triangles_list.push_back(ind_tb);
+        if (!ok)
+        {
+            std::cerr << "ERROR in computeIntersectedPointsList" << std::endl;
+            return true;
+        }
+        sofa::helper::vector< unsigned int > new_edges;
+        triangleAlg->SplitAlongPath(a_last, a, b_last, b, triangles_list, edges_list, coords_list, new_edges);
+        std::cout << "new edges : " << new_edges << std::endl;
+        sofa::helper::vector<unsigned int> new_points;
+        sofa::helper::vector<unsigned int> end_points;
+        triangleAlg->InciseAlongEdgeList(new_edges, new_points, end_points);
+        a_last = end_points.back();
+
+        triangleMod->propagateTopologicalChanges();
 
         // notify the end for the current sequence of topological change events
         triangleMod->notifyEndingEvent();
@@ -285,7 +315,7 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
 
         incision.is_first_cut = false;
 
-        return is_fully_cut;
+        return false; //is_fully_cut;
     }
     else
     {
