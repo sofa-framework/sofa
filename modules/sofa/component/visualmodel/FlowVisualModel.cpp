@@ -25,20 +25,20 @@ SOFA_DECL_CLASS(FlowVisualModel)
 int FlowVisualModelClass = core::RegisterObject("FlowVisualModel")
 #ifndef SOFA_FLOAT
         .add< FlowVisualModel<Vec3dTypes> >()
-        .add< FlowVisualModel<Vec2dTypes> >()
+//.add< FlowVisualModel<Vec2dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< FlowVisualModel<Vec3fTypes> >()
-        .add< FlowVisualModel<Vec2fTypes> >()
+//.add< FlowVisualModel<Vec3fTypes> >()
+//.add< FlowVisualModel<Vec2fTypes> >()
 #endif
         ;
 #ifndef SOFA_FLOAT
 template class FlowVisualModel<defaulttype::Vec3dTypes>;
-template class FlowVisualModel<defaulttype::Vec2dTypes>;
+//template class FlowVisualModel<defaulttype::Vec2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class FlowVisualModel<defaulttype::Vec3fTypes>;
-template class FlowVisualModel<defaulttype::Vec2fTypes>;
+//template class FlowVisualModel<defaulttype::Vec3fTypes>;
+//template class FlowVisualModel<defaulttype::Vec2fTypes>;
 #endif
 
 
