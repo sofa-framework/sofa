@@ -78,16 +78,13 @@ void HexahedralFEMForceField<DataTypes>::FHexahedronCreationFunction (int hexahe
     HexahedralFEMForceField<DataTypes> *ff= (HexahedralFEMForceField<DataTypes> *)param;
     if (ff)
     {
-
         switch(ff->method)
         {
         case LARGE :
-            ff->computeMaterialStiffness(hexahedronIndex);
             ff->initLarge(hexahedronIndex);
 
             break;
         case POLAR :
-            ff->computeMaterialStiffness(hexahedronIndex);
             ff->initPolar(hexahedronIndex);
             break;
         }
@@ -360,25 +357,19 @@ typename HexahedralFEMForceField<DataTypes>::Mat33 HexahedralFEMForceField<DataT
 }
 
 
-
 template<class DataTypes>
-void HexahedralFEMForceField<DataTypes>::computeMaterialStiffness(int i)
+void HexahedralFEMForceField<DataTypes>::computeMaterialStiffness(MaterialStiffness &m, double youngModulus, double poissonRatio)
 {
-    helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = *(hexahedronInfo.beginEdit());
-
-    hexahedronInf[i].materialMatrix[0][0] = hexahedronInf[i].materialMatrix[1][1] = hexahedronInf[i].materialMatrix[2][2] = 1;
-    hexahedronInf[i].materialMatrix[0][1] = hexahedronInf[i].materialMatrix[0][2] = hexahedronInf[i].materialMatrix[1][0]
-            = hexahedronInf[i].materialMatrix[1][2] = hexahedronInf[i].materialMatrix[2][0] = hexahedronInf[i].materialMatrix[2][1] = f_poissonRatio.getValue()/(1-f_poissonRatio.getValue());
-    hexahedronInf[i].materialMatrix[0][3] = hexahedronInf[i].materialMatrix[0][4] =	hexahedronInf[i].materialMatrix[0][5] = 0;
-    hexahedronInf[i].materialMatrix[1][3] = hexahedronInf[i].materialMatrix[1][4] =	hexahedronInf[i].materialMatrix[1][5] = 0;
-    hexahedronInf[i].materialMatrix[2][3] = hexahedronInf[i].materialMatrix[2][4] =	hexahedronInf[i].materialMatrix[2][5] = 0;
-    hexahedronInf[i].materialMatrix[3][0] = hexahedronInf[i].materialMatrix[3][1] = hexahedronInf[i].materialMatrix[3][2] = hexahedronInf[i].materialMatrix[3][4] =	hexahedronInf[i].materialMatrix[3][5] = 0;
-    hexahedronInf[i].materialMatrix[4][0] = hexahedronInf[i].materialMatrix[4][1] = hexahedronInf[i].materialMatrix[4][2] = hexahedronInf[i].materialMatrix[4][3] =	hexahedronInf[i].materialMatrix[4][5] = 0;
-    hexahedronInf[i].materialMatrix[5][0] = hexahedronInf[i].materialMatrix[5][1] = hexahedronInf[i].materialMatrix[5][2] = hexahedronInf[i].materialMatrix[5][3] =	hexahedronInf[i].materialMatrix[5][4] = 0;
-    hexahedronInf[i].materialMatrix[3][3] = hexahedronInf[i].materialMatrix[4][4] = hexahedronInf[i].materialMatrix[5][5] = (1-2*f_poissonRatio.getValue())/(2*(1-f_poissonRatio.getValue()));
-    hexahedronInf[i].materialMatrix *= (f_youngModulus.getValue()*(1-f_poissonRatio.getValue()))/((1+f_poissonRatio.getValue())*(1-2*f_poissonRatio.getValue()));
-
-    hexahedronInfo.endEdit();
+    m[0][0] = m[1][1] = m[2][2] = 1;
+    m[0][1] = m[0][2] = m[1][0]= m[1][2] = m[2][0] =  m[2][1] = (Real)(poissonRatio/(1-poissonRatio));
+    m[0][3] = m[0][4] =	m[0][5] = 0;
+    m[1][3] = m[1][4] =	m[1][5] = 0;
+    m[2][3] = m[2][4] =	m[2][5] = 0;
+    m[3][0] = m[3][1] = m[3][2] = m[3][4] =	m[3][5] = 0;
+    m[4][0] = m[4][1] = m[4][2] = m[4][3] =	m[4][5] = 0;
+    m[5][0] = m[5][1] = m[5][2] = m[5][3] =	m[5][4] = 0;
+    m[3][3] = m[4][4] = m[5][5] = (Real)((1-2*poissonRatio)/(2*(1-poissonRatio)));
+    m *= (Real)((youngModulus*(1-poissonRatio))/((1+poissonRatio)*(1-2*poissonRatio)));
 }
 
 template<class DataTypes>
@@ -395,7 +386,7 @@ void HexahedralFEMForceField<DataTypes>::computeForce( Displacement &F, const Di
 
 
 template<class DataTypes>
-void HexahedralFEMForceField<DataTypes>::initLarge(int i)
+void HexahedralFEMForceField<DataTypes>::initLarge(const int i)
 {
     // Rotation matrix (initial Hexahedre/world)
     // first vector on first edge
@@ -420,10 +411,10 @@ void HexahedralFEMForceField<DataTypes>::initLarge(int i)
     helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = *(hexahedronInfo.beginEdit());
 
     for(int w=0; w<8; ++w)
-        hexahedronInf[i].rotatedInitialElements[w] = R_0_1*(*X0)[_topology->getHexa(i)[w]];
+        hexahedronInf[i].rotatedInitialElements[w] = R_0_1*nodes[w];
 
-
-    computeElementStiffness( hexahedronInf[i].stiffness, hexahedronInf[i].materialMatrix, nodes, i );//computeElementStiffness( hexahedronInf[i].stiffness, hexahedronInf[i].materialMatrix, nodes, i );
+    computeMaterialStiffness( hexahedronInf[i].materialMatrix, f_youngModulus.getValue(), f_poissonRatio.getValue() );
+    computeElementStiffness( hexahedronInf[i].stiffness, hexahedronInf[i].materialMatrix, nodes, i );
 
     hexahedronInfo.endEdit();
 }
@@ -452,21 +443,10 @@ void HexahedralFEMForceField<DataTypes>::computeRotationLarge( Transformation &r
     r[2][0] = edgez[0];
     r[2][1] = edgez[1];
     r[2][2] = edgez[2];
-
-
-    // 	r[0][0] = 1;
-    // 	r[0][1] = 0;
-    // 	r[0][2] = 0;
-    // 	r[1][0] = 0;
-    // 	r[1][1] = 1;
-    // 	r[1][2] = 0;
-    // 	r[2][0] = 0;
-    // 	r[2][1] = 0;
-    // 	r[2][2] = 1;
 }
 
 template<class DataTypes>
-void HexahedralFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const Vector & p, int i)
+void HexahedralFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const Vector & p, const int i)
 {
     Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
@@ -517,7 +497,7 @@ void HexahedralFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const 
 
 
 template<class DataTypes>
-void HexahedralFEMForceField<DataTypes>::initPolar(int i)
+void HexahedralFEMForceField<DataTypes>::initPolar(const int i)
 {
     const VecCoord *X0=this->mstate->getX0();
 
@@ -536,6 +516,7 @@ void HexahedralFEMForceField<DataTypes>::initPolar(int i)
         hexahedronInf[i].rotatedInitialElements[j] = R_0_1 * nodes[j];
     }
 
+    computeMaterialStiffness( hexahedronInf[i].materialMatrix, f_youngModulus.getValue(), f_poissonRatio.getValue() );
     computeElementStiffness( hexahedronInf[i].stiffness, hexahedronInf[i].materialMatrix, nodes, i );
 
     hexahedronInfo.endEdit();
@@ -570,7 +551,7 @@ void HexahedralFEMForceField<DataTypes>::computeRotationPolar( Transformation &r
 
 
 template<class DataTypes>
-void HexahedralFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const Vector & p, int i)
+void HexahedralFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const Vector & p, const int i)
 {
     Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)

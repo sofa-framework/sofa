@@ -194,20 +194,21 @@ protected:
     virtual void computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const Vec<8,Coord> &nodes, const int elementIndice);
     Mat33 integrateStiffness( int signx0, int signy0, int signz0, int signx1, int signy1, int signz1, const Real u, const Real v, const Real w, const Mat33& J_1  );
 
-    void computeMaterialStiffness(int i);
+    /// compute the hookean material matrix
+    void computeMaterialStiffness(MaterialStiffness &m, double youngModulus, double poissonRatio);
 
     void computeForce( Displacement &F, const Displacement &Depl, const ElementStiffness &K );
 
 
     ////////////// large displacements method
-    void initLarge(int i);
+    void initLarge(const int i);
     void computeRotationLarge( Transformation &r, Coord &edgex, Coord &edgey);
-    virtual void accumulateForceLarge( Vector& f, const Vector & p, int i);
+    virtual void accumulateForceLarge( Vector& f, const Vector & p, const int i);
 
     ////////////// polar decomposition method
-    void initPolar(int i);
+    void initPolar(const int i);
     void computeRotationPolar( Transformation &r, Vec<8,Coord> &nodes);
-    virtual void accumulateForcePolar( Vector& f, const Vector & p, int i);
+    virtual void accumulateForcePolar( Vector& f, const Vector & p, const int i);
 
     /// the callback function called when a hexahedron is created
     static void FHexahedronCreationFunction (int , void* ,
@@ -230,6 +231,16 @@ protected:
 
     Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix
 };
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API HexahedralFEMForceField<defaulttype::Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API HexahedralFEMForceField<defaulttype::Vec3fTypes>;
+#endif
+#endif
 
 } // namespace forcefield
 

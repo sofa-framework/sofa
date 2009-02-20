@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_INL
 
 
-#include "HexahedralFEMForceFieldAndMass.h"
+#include <sofa/component/forcefield/HexahedralFEMForceFieldAndMass.h>
 #include <sofa/component/forcefield/HexahedralFEMForceField.inl>
 
 #include <sofa/component/topology/PointData.inl>
@@ -103,7 +103,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::handleTopologyChange(core::compo
 
     // handle hexa events
     _elementMasses.handleTopologyEvents(itBegin,itEnd);
-
+    _elementTotalMass.handleTopologyEvents(itBegin,itEnd);
 
     for(std::list<const TopologyChange *>::const_iterator iter = itBegin;
         iter != itEnd; ++iter)
@@ -111,7 +111,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::handleTopologyChange(core::compo
         switch((*iter)->getChangeType())
         {
             // for added elements:
-            // computeElementMass
+            // compute ElementMasses and TotalMass
             // add particle masses and lumped masses of adjacent particles
         case HEXAHEDRAADDED:
         {
@@ -122,9 +122,6 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::handleTopologyChange(core::compo
 
             helper::vector<ElementMass>& elementMasses = *this->_elementMasses.beginEdit();
             helper::vector<Real>& elementTotalMass = *this->_elementTotalMass.beginEdit();
-
-            elementMasses.resize( hexas.size() );
-            elementTotalMass.resize( hexas.size() );
 
             for(unsigned int i=0; i<hexaModif.size(); ++i)
             {
@@ -148,10 +145,8 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::handleTopologyChange(core::compo
             {
                 const unsigned int hexaId = hexaModif[i];
 
-                // mass of a particle...
                 Real mass = _elementTotalMass.getValue()[hexaId] * (Real) 0.125;
 
-                // ... is added to each particle of the element
                 for(int w=0; w<8; ++w)
                     particleMasses[ hexas[hexaId][w] ] += mass;
             }
@@ -197,10 +192,8 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::handleTopologyChange(core::compo
             {
                 const unsigned int hexaId = hexaModif[i];
 
-                // mass of a particle...
                 Real mass = _elementTotalMass.getValue()[hexaId] * (Real) 0.125;
 
-                // ... is added to each particle of the element
                 for(int w=0; w<8; ++w)
                     particleMasses[ hexas[hexaId][w] ] -= mass;
             }
