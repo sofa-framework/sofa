@@ -187,7 +187,7 @@ void Hexa2TetraTopologicalMapping::init()
     }
 }
 
-unsigned int Hexa2TetraTopologicalMapping::getFromIndex(unsigned int ind)
+unsigned int Hexa2TetraTopologicalMapping::getFromIndex(unsigned int /*ind*/)
 {
 
     return 0;
