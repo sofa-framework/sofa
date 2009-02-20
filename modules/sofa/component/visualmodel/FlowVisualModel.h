@@ -26,7 +26,7 @@ namespace component
 namespace visualmodel
 {
 
-static unsigned int COLORMAP_SIZE=64;
+/*static unsigned int COLORMAP_SIZE=64;*/
 
 static defaulttype::Vec3d ColorMap[64] =
 {
