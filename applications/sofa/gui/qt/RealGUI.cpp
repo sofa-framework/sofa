@@ -25,6 +25,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/gui/qt/RealGUI.h>
+#include <sofa/gui/qt/ImageQt.h>
 
 #ifdef SOFA_GUI_QTOGREVIEWER
 #include <sofa/gui/qt/viewer/qtogre/QtOgreViewer.h>
@@ -118,6 +119,8 @@ namespace gui
 namespace qt
 {
 
+SOFA_LINK_CLASS(ImageQt);
+
 #ifdef SOFA_QT4
 typedef Q3ListView QListView;
 typedef Q3DockWindow QDockWindow;
@@ -157,6 +160,7 @@ int QtOGREGUIClass = SofaGUI::RegisterGUI ( "ogre", &RealGUI::CreateGUI, &RealGU
 
 int RealGUI::InitGUI ( const char* name, const std::vector<std::string>& /* options */ )
 {
+    ImageQt::Init();
 #ifdef SOFA_GUI_QGLVIEWER
     if ( !name[0] || !strcmp ( name,"qglviewer" ) )
     {

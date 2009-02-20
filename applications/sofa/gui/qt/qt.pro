@@ -53,8 +53,8 @@ HEADERS += viewer/SofaViewer.h \
            WFloatLineEdit.h \ 
            WindowVisitor.h \
            FileManagement.h \
-           SofaPluginManager.h
-
+           SofaPluginManager.h \
+           ImageQt.h
 
 SOURCES += Main.cpp \
            GraphListenerQListView.cpp \
@@ -73,8 +73,8 @@ SOURCES += Main.cpp \
            WFloatLineEdit.cpp \
            WindowVisitor.cpp \
            FileManagement.cpp \
-           SofaPluginManager.cpp
-
+           SofaPluginManager.cpp \
+           ImageQt.cpp
 
 
 contains( DEFINES, SOFA_GUI_QTVIEWER){
