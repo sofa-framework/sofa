@@ -26,7 +26,7 @@ namespace component
 namespace visualmodel
 {
 
-/*static unsigned int COLORMAP_SIZE=64;*/
+//static unsigned int COLORMAP_SIZE;
 
 static defaulttype::Vec3d ColorMap[64] =
 {
@@ -112,6 +112,8 @@ protected:
 
 public:
     Data<double> viewVelocityFactor;
+    Data<double> velocityMin;
+    Data<double> velocityMax;
     FlowVisualModel();
     virtual ~FlowVisualModel();
 

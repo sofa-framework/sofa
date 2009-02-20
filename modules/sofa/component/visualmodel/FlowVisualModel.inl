@@ -9,7 +9,7 @@
 #define FLOWVISUALMODEL_INL_
 
 #include "FlowVisualModel.h"
-//#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/helper/system/glut.h>
 
 namespace sofa
 {
@@ -20,9 +20,13 @@ namespace component
 namespace visualmodel
 {
 
+using namespace sofa::defaulttype;
+
 template <class DataTypes>
 FlowVisualModel<DataTypes>::FlowVisualModel()
     :viewVelocityFactor(initData(&viewVelocityFactor, double(0.001), "viewVelocityFactor", "Set factor for velocity arrows"))
+    ,velocityMin(initData(&velocityMin, double(-1.0), "velocityMin", "Set the minimum value of velocity for drawing,"))
+    ,velocityMax(initData(&velocityMax, double(1.0), "velocityMax", "Set the maximum value of velocity for drawing,"))
 {
 
 }
@@ -66,23 +70,35 @@ template <class DataTypes>
 void FlowVisualModel<DataTypes>::draw()
 {
     if (!getContext()->getShowVisualModels()) return;
+
     glDisable(GL_LIGHTING);
     const VecDeriv& v = *this->fstate->getV();
     //VecCoord& y = *this->fstate->getX();
 
     VecDeriv vnorm;
-    double vmax = v[0].norm();
+    double vmax2 = v[0].norm2();
     double vmin = v[0].norm();
 
     //search vmax
     for (unsigned int i=1 ; i<v.size() ; i++)
     {
-        if (v[i].norm() > vmax)
-            vmax=v[i].norm();
-        if (v[i].norm() < vmin)
-            vmin=v[i].norm();
-
+        if (v[i].norm2() > vmax2)
+            vmax2=v[i].norm2();
     }
+
+    double vmax = (velocityMax.getValue() < sqrt(vmax2)) ? sqrt(vmax2) : velocityMax.getValue();
+
+    if (velocityMin.getValue() < 0.0)
+    {
+        //search vmin
+        for (unsigned int i=1 ; i<v.size() ; i++)
+        {
+            if (v[i].norm() < vmin)
+                vmin=v[i].norm();
+        }
+    }
+    else vmin = velocityMin.getValue();
+
     //normalize v
     for (unsigned int i=0 ; i<v.size() ; i++)
     {
@@ -159,6 +175,66 @@ void FlowVisualModel<DataTypes>::draw()
     }
     glEnd();
 
+    //Draw color scale
+
+    double xMargin = 50.0;
+    double yMargin = 20.0;
+    GLint currentViewport[4];
+    glGetIntegerv(GL_VIEWPORT, currentViewport);
+    Vec2d scaleSize = Vec2d(20, 200);
+    Vec2d scalePosition = Vec2d(currentViewport[2] - xMargin - scaleSize[0], currentViewport[3] - yMargin - scaleSize[1]);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(0,currentViewport[2],0,currentViewport[3]);
+    glDisable(GL_DEPTH_TEST);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glPushMatrix();
+    double step = scaleSize[1]/64;
+    glBegin(GL_QUADS);
+    for (unsigned int i=0 ; i<63 ; i++)
+    {
+        glColor3dv(ColorMap[i].ptr());
+        glVertex2d(scalePosition[0], scalePosition[1] + i*step);
+        glVertex2d(scalePosition[0] + scaleSize[0], scalePosition[1] + i*step);
+        glColor3dv(ColorMap[i+1].ptr());
+        glVertex2d(scalePosition[0] + scaleSize[0], scalePosition[1] + (i+1)*step);
+        glVertex2d(scalePosition[0], scalePosition[1] + (i+1)*step);
+    }
+    glEnd();
+    glPopMatrix();
+
+    //Draw color scale values
+    unsigned int NUMBER_OF_VALUES = 10;
+    glColor3f(1.0,1.0,1.0);
+    step = scaleSize[1]/(NUMBER_OF_VALUES - 1);
+    double stepValue = (vmax-vmin)/(NUMBER_OF_VALUES - 1);
+    double textScaleSize = 0.06;
+    double xMarginWithScale = 5;
+
+    for (unsigned int i=0 ; i<NUMBER_OF_VALUES  ; i++)
+    {
+        glPushMatrix();
+        glTranslatef(scalePosition[0] + scaleSize[0] + xMarginWithScale, scalePosition[1] + i*step, 0);
+        glScalef(textScaleSize, textScaleSize, textScaleSize);
+        double intpart;
+        double decpart = modf((vmin + i*stepValue), &intpart);
+        std::ostringstream oss;
+        oss << intpart << "." << (ceil(decpart*100));
+        std::string tmp = oss.str();
+
+
+        const char* s = tmp.c_str();
+        while(*s)
+        {
+            glutStrokeCharacter(GLUT_STROKE_ROMAN, *s);
+            s++;
+        }
+        glPopMatrix();
+    }
+    glPopMatrix();
 }
 
 
