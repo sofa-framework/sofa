@@ -75,6 +75,10 @@ public:
 
 } // namespace io
 
+#if defined(WIN32) && !defined(SOFA_BUILD_HELPER)
+extern template class SOFA_HELPER_API Factory<std::string, io::Image, std::string>;
+#endif
+
 } // namespace helper
 
 } // namespace sofa

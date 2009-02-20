@@ -30,6 +30,7 @@
 
 #ifdef SOFA_QT4
 #include <QImage>
+#include <QList>
 #include <QImageReader>
 #else
 #include <qimage.h>
