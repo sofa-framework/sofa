@@ -322,37 +322,6 @@ private:
     */
     void createTetrahedronTriangleArray();
 
-    /** \brief Creates the Tetrahedron Vertex Shell Array
-    *
-    * This function is only called if the TetrahedronVertexShell array is required.
-    * m_tetrahedronVertexShell[i] contains the indices of all tetrahedra adjacent to the ith vertex
-    */
-    void createTetrahedronVertexShellArray();
-
-    /** \brief Creates the Tetrahedron Edge Shell Array
-    *
-    * This function is only called if the TetrahedronEdheShell array is required.
-    * m_tetrahedronEdgeShell[i] contains the indices of all tetrahedra adjacent to the ith edge
-    */
-    void createTetrahedronEdgeShellArray();
-
-    /** \brief Creates the Tetrahedron Triangle Shell Array
-    *
-    * This function is only called if the TetrahedronTriangleShell array is required.
-    * m_tetrahedronTriangleShell[i] contains the indices of all tetrahedra adjacent to the ith edge
-    */
-    void createTetrahedronTriangleShellArray();
-
-    /** \brief Returns a non-const tetrahedron vertex shell given a vertex index for subsequent modification
-    *
-    */
-    sofa::helper::vector< unsigned int > &getTetrahedronVertexShellForModification(const unsigned int vertexIndex);
-
-    /** \brief Returns a non-const tetrahedron edge shell given the index of an edge for subsequent modification
-    *
-    */
-    sofa::helper::vector< unsigned int > &getTetrahedronEdgeShellForModification(const unsigned int edgeIndex);
-
 protected:
     /// provides the set of tetrahedra
     sofa::helper::vector<Tetrahedron> m_tetrahedron;
@@ -372,6 +341,39 @@ protected:
     virtual void loadFromMeshLoader(sofa::component::MeshLoader* loader);
 
     Data< bool > _draw;
+
+    /** \brief Creates the Tetrahedron Vertex Shell Array
+    *
+    * This function is only called if the TetrahedronVertexShell array is required.
+    * m_tetrahedronVertexShell[i] contains the indices of all tetrahedra adjacent to the ith vertex
+    */
+    virtual void createTetrahedronVertexShellArray();
+
+    /** \brief Creates the Tetrahedron Edge Shell Array
+    *
+    * This function is only called if the TetrahedronEdheShell array is required.
+    * m_tetrahedronEdgeShell[i] contains the indices of all tetrahedra adjacent to the ith edge
+    */
+    virtual void createTetrahedronEdgeShellArray();
+
+    /** \brief Creates the Tetrahedron Triangle Shell Array
+    *
+    * This function is only called if the TetrahedronTriangleShell array is required.
+    * m_tetrahedronTriangleShell[i] contains the indices of all tetrahedra adjacent to the ith edge
+    */
+    virtual void createTetrahedronTriangleShellArray();
+
+    /** \brief Returns a non-const tetrahedron vertex shell given a vertex index for subsequent modification
+    *
+    */
+    sofa::helper::vector< unsigned int > &getTetrahedronVertexShellForModification(const unsigned int vertexIndex);
+
+    /** \brief Returns a non-const tetrahedron edge shell given the index of an edge for subsequent modification
+    *
+    */
+    sofa::helper::vector< unsigned int > &getTetrahedronEdgeShellForModification(const unsigned int edgeIndex);
+
+
 };
 
 } // namespace topology
