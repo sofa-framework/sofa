@@ -219,7 +219,7 @@ double HexahedralFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 
 
 template<class DataTypes>
-void HexahedralFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const Vec<8,Coord> &nodes, const int /* elementIndice */)
+void HexahedralFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const Vec<8,Coord> &nodes)
 {
     Mat33 J_1; // only accurate for orthogonal regular hexa
     J_1.fill( 0.0 );
@@ -414,7 +414,7 @@ void HexahedralFEMForceField<DataTypes>::initLarge(const int i)
         hexahedronInf[i].rotatedInitialElements[w] = R_0_1*nodes[w];
 
     computeMaterialStiffness( hexahedronInf[i].materialMatrix, f_youngModulus.getValue(), f_poissonRatio.getValue() );
-    computeElementStiffness( hexahedronInf[i].stiffness, hexahedronInf[i].materialMatrix, nodes, i );
+    computeElementStiffness( hexahedronInf[i].stiffness, hexahedronInf[i].materialMatrix, nodes);
 
     hexahedronInfo.endEdit();
 }
@@ -517,7 +517,7 @@ void HexahedralFEMForceField<DataTypes>::initPolar(const int i)
     }
 
     computeMaterialStiffness( hexahedronInf[i].materialMatrix, f_youngModulus.getValue(), f_poissonRatio.getValue() );
-    computeElementStiffness( hexahedronInf[i].stiffness, hexahedronInf[i].materialMatrix, nodes, i );
+    computeElementStiffness( hexahedronInf[i].stiffness, hexahedronInf[i].materialMatrix, nodes );
 
     hexahedronInfo.endEdit();
 }
