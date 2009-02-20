@@ -76,6 +76,7 @@ void ManifoldTetrahedronSetTopologyContainer::createTetrahedronVertexShellArray 
 {
 
     // TO be implemented
+    // see late: for the topology, only one connexe composante around one vertex.
 
     TetrahedronSetTopologyContainer::createTetrahedronVertexShellArray();
 
@@ -84,7 +85,16 @@ void ManifoldTetrahedronSetTopologyContainer::createTetrahedronVertexShellArray 
 void ManifoldTetrahedronSetTopologyContainer::createTetrahedronEdgeShellArray ()
 {
 
-    // To be implemented
+    // To be implemented :
+    /*
+      Tetrahedraons have to be oriented around each edges.
+      Same algo as in 2d:
+
+      - take the edge, third point find the next point in good order
+      - use function getTetrahedronOrientation
+      - loop
+      - when map is done, order shell.
+    */
 
     TetrahedronSetTopologyContainer::createTetrahedronEdgeShellArray();
 
@@ -93,6 +103,8 @@ void ManifoldTetrahedronSetTopologyContainer::createTetrahedronEdgeShellArray ()
 void ManifoldTetrahedronSetTopologyContainer::createTetrahedronTriangleShellArray ()
 {
     // To be implemented
+    // at most 2 tetrahedrons adjacent to one triangle.
+
 
     TetrahedronSetTopologyContainer::createTetrahedronTriangleShellArray();
 }
@@ -103,7 +115,7 @@ bool ManifoldTetrahedronSetTopologyContainer::checkTopology() const
 #ifndef NDEBUG
     bool ret = true;
 
-    // To be implemented
+    // To be implemented later later....
 
     return ret && TetrahedronSetTopologyContainer::checkTopology();
 #else
@@ -116,6 +128,79 @@ void ManifoldTetrahedronSetTopologyContainer::clear()
     //To be completed if necessary
 
     TetrahedronSetTopologyContainer::clear();
+}
+
+
+bool ManifoldTetrahedronSetTopologyContainer::getTetrahedronOrientation (const Tetrahedron &t, const Tetrahedron &t_test )
+{
+    //To be implemented
+    /*
+
+      First tetra is in one orientation. We know the 4 points
+      we search the orientation of a second tetra.
+
+      - First confirm it is the same 4 points
+      - look how many permutation needed to fin the same tetra.
+      - if nbr permuation is pair, same orientation
+
+      => idea use 0 1 map to make bit a bit tests
+
+     */
+    //no warnings:
+    (void) t;
+    (void) t_test;
+
+    return true;
+
+}
+
+int ManifoldTetrahedronSetTopologyContainer::getTriangleTetrahedronOrientation (const Tetrahedron &t, const Triangle &tri )
+{
+    //To be implemented
+
+    /*
+
+    - equivalent to TriangleEdgeShell [i]
+    - first triangle of the tetrahedron should be in positive orientation
+    - This first triangle is the one on the border if tetrahedron is on border.
+    - return either negatif or positive orientation in the tetrahedron or -1 if error.
+
+    => should be used in createTetrahedronTriangleShellArray
+
+
+
+      for(TetraID i = 0; i < m_nbTetras; ++i)
+    {
+        const Tetra& t = m_topo->getTetra(i);
+        const TetraTriangles& tFaces = m_topo->getTriangleTetraShell(i);
+        for(int l = 0; l < 4; ++l)
+        {
+            int sign = 1;
+            const Triangle& f = m_topo->getTriangle(tFaces[l]);
+
+            int m = 0;
+            while(t[m] == f[0] || t[m] == f[1] || t[m] == f[2])
+                ++m;
+            if(m%2 == 1)
+                sign *= -1;
+
+             int n = 0;
+             while(f[0] != t[n])
+                ++n;
+
+            if((n+1)%4 == m && f[2] == t[(n+2)%4])
+                sign *= -1;
+            if((n+1)%4 != m && f[2] == t[(n+1)%4])
+                sign *= -1;
+        }
+    }
+    */
+
+    //no warnings:
+    (void) t;
+    (void) tri;
+
+    return 0;
 }
 
 
