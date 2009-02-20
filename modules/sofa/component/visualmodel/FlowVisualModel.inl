@@ -106,7 +106,7 @@ void FlowVisualModel<DataTypes>::draw()
         {
             int indColor;
             if(vmax > 0.0)
-                indColor = (int)64*((v[i].norm()-vmin)/(vmax-vmin));
+                indColor = (int)(64*((v[i].norm()-vmin)/(vmax-vmin)));
             else indColor = 0;
 
             colors[t[j]]+= ColorMap[indColor];
@@ -134,11 +134,11 @@ void FlowVisualModel<DataTypes>::draw()
         x.push_back(pb);
 
         glColor3dv((colors[t[0]]/weight[t[0]]).ptr() );
-        glVertex3f(p0[0], p0[1], p0[2]);
+        glVertex3f((GLfloat)p0[0], (GLfloat)p0[1], (GLfloat)p0[2]);
         glColor3dv((colors[t[1]]/weight[t[1]]).ptr() );
-        glVertex3f(p1[0], p1[1], p1[2]);
+        glVertex3f((GLfloat)p1[0], (GLfloat)p1[1], (GLfloat)p1[2]);
         glColor3dv((colors[t[2]]/weight[t[2]]).ptr() );
-        glVertex3f(p2[0], p2[1], p2[2]);
+        glVertex3f((GLfloat)p2[0], (GLfloat)p2[1], (GLfloat)p2[2]);
     }
     glEnd();
 
@@ -152,9 +152,9 @@ void FlowVisualModel<DataTypes>::draw()
             Coord p1 = x[i] + vnorm[i]*viewVelocityFactor.getValue();
 
             glColor3f(1.0,1.0,1.0);
-            glVertex3f(p0[0], p0[1], p0[2]);
+            glVertex3f((GLfloat)p0[0], (GLfloat)p0[1], (GLfloat)p0[2]);
             glColor3f(1.0,1.0,1.0);
-            glVertex3f(p1[0], p1[1], p1[2]);
+            glVertex3f((GLfloat)p1[0], (GLfloat)p1[1], (GLfloat)p1[2]);
         }
     }
     glEnd();
