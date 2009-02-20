@@ -50,26 +50,33 @@ enum TopologyChangeType
 {
     BASE,               ///< For TopologyChange class, should never be used.
     ENDING_EVENT,       ///< To notify the end for the current sequence of topological change events
+
     POINTSINDICESSWAP,  ///< For PointsIndicesSwap class.
     POINTSADDED,        ///< For PointsAdded class.
     POINTSREMOVED,      ///< For PointsRemoved class.
     POINTSRENUMBERING,  ///< For PointsRenumbering class.
+
     EDGESADDED,         ///< For EdgesAdded class.
     EDGESREMOVED,       ///< For EdgesRemoved class.
     EDGESRENUMBERING,    ///< For EdgesRenumbering class.
+
     TRIANGLESADDED,     ///< For TrianglesAdded class.
     TRIANGLESREMOVED,   ///< For TrianglesRemoved class.
     TRIANGLESRENUMBERING, ///< For TrianglesRenumbering class.
+
     TETRAHEDRAADDED,     ///< For TrianglesAdded class.
     TETRAHEDRAREMOVED,   ///< For TrianglesRemoved class.
     TETRAHEDRARENUMBERING, ///< For TrianglesRenumbering class.
 
-    QUADSADDED,     ///< For QuadsAdded class.
-    QUADSREMOVED,   ///< For QuadsRemoved class.
-    QUADSRENUMBERING, ///< For QuadsRenumbering class.
-    HEXAHEDRAADDED,     ///< For TrianglesAdded class.
-    HEXAHEDRAREMOVED,   ///< For TrianglesRemoved class.
-    HEXAHEDRARENUMBERING ///< For TrianglesRenumbering class.
+    QUADSADDED,          ///< For QuadsAdded class.
+    QUADSREMOVED,        ///< For QuadsRemoved class.
+    QUADSRENUMBERING,    ///< For QuadsRenumbering class.
+
+    HEXAHEDRAADDED,      ///< For TrianglesAdded class.
+    HEXAHEDRAREMOVED,    ///< For TrianglesRemoved class.
+    HEXAHEDRARENUMBERING, ///< For TrianglesRenumbering class.
+
+    TOPOLOGYCHANGE_LASTID ///< user defined topology changes can start here
 };
 
 
