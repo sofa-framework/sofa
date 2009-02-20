@@ -255,17 +255,12 @@ public:
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_LINEARSOLVER_FULLVECTOR_CPP)
 #pragma warning(disable : 4231)
-extern template class SOFA_COMPONENT_LINEARSOLVER_API FullVector<bool>;
+//extern template class SOFA_COMPONENT_LINEARSOLVER_API FullVector<bool>;
 #endif
 
-template<> SOFA_COMPONENT_LINEARSOLVER_API FullVector<bool>::FullVector();
-
 template<> SOFA_COMPONENT_LINEARSOLVER_API void FullVector<bool>::set(int i, SReal v);
-
 template<> SOFA_COMPONENT_LINEARSOLVER_API void FullVector<bool>::add(int i, SReal v);
-
 template<> SOFA_COMPONENT_LINEARSOLVER_API bool FullVector<bool>::dot(const FullVector<Real>& a) const;
-
 template<> SOFA_COMPONENT_LINEARSOLVER_API double FullVector<bool>::norm() const;
 
 } // namespace linearsolver
