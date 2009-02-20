@@ -118,8 +118,20 @@ protected:
      */
     virtual void createTetrahedronTriangleShellArray();
 
+    /** \brief return if the tetrahedron is ine the same orientation as the one of reference
+     *
+     */
+    bool getTetrahedronOrientation(const Tetrahedron &t, const Tetrahedron &t_test );
+
+    /** \brief return the orientation of a triangle relatively to one tetrahedron
+     * 0 if good orientation
+     * 1 if other orientation
+     * -1 if triangle does'nt belongs to this tetrahedron
+     */
+    int getTriangleTetrahedronOrientation(const Tetrahedron &t, const Triangle &tri );
 
 private:
+
 
 
 
