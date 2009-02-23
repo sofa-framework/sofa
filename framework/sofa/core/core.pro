@@ -72,7 +72,6 @@ HEADERS += \
           objectmodel/Context.h \
           objectmodel/ContextObject.h \
           objectmodel/Data.h \
-          objectmodel/DataEngine.h \
 	  objectmodel/DDGNode.h \
           objectmodel/DetachNodeEvent.h \
           objectmodel/Event.h \
@@ -97,6 +96,7 @@ SOURCES +=  \
           objectmodel/BaseObjectDescription.cpp \
           objectmodel/ClassInfo.cpp \
           objectmodel/Context.cpp \
+	  objectmodel/DDGNode.cpp \
           objectmodel/DetachNodeEvent.cpp \
           objectmodel/Event.cpp \
           objectmodel/DataPtr.cpp \

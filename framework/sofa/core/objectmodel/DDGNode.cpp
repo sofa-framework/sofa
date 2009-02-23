@@ -22,15 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_DDGNODE_H
-#define SOFA_CORE_OBJECTMODEL_DDGNODE_H
-
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
-#include <sofa/core/core.h>
-#include <list>
+#include <sofa/core/objectmodel/DDGNode.h>
 
 namespace sofa
 {
@@ -41,55 +33,62 @@ namespace core
 namespace objectmodel
 {
 
-/**
- *  \brief Abstract base to manage data dependencies. BaseData and DataEngine inherites from this class
- *
- */
-class SOFA_CORE_API DDGNode
+DDGNode::~DDGNode()
 {
-public:
+    for(std::list< DDGNode* >::iterator it=inputs.begin(); it!=inputs.end(); ++it)
+        (*it)->outputs.remove(this);
+    for(std::list< DDGNode* >::iterator it=outputs.begin(); it!=outputs.end(); ++it)
+        (*it)->inputs.remove(this);
+}
 
-    /// Constructor
-    DDGNode():dirty(false) {}
+void DDGNode::setDirty()
+{
+    if (!dirty)
+    {
+        dirty = true;
+        for(std::list<DDGNode*>::iterator it=outputs.begin(); it!=outputs.end(); ++it)
+        {
+            (*it)->setDirty();
+        }
+    }
+}
 
-    /// Destructor. Do nothing
-    virtual ~DDGNode();
+void DDGNode::cleanDirty()
+{
+    dirty = false;
+}
 
-    /// Update the value of Datas
-    virtual void update() = 0;
+bool DDGNode::isDirty()
+{
+    return dirty;
+}
 
-    /// True if the Data has been modified
-    virtual void setDirty();
+void DDGNode::addInput(DDGNode* n)
+{
+    inputs.push_back(n);
+    n->outputs.push_back(this);
+}
 
-    /// Set dirty flag to false
-    void cleanDirty();
+void DDGNode::delInput(DDGNode* n)
+{
+    inputs.remove(n);
+    n->outputs.remove(this);
+}
 
-    /// Returns true if the DDGNode has been modified. Otherwise returns false
-    bool isDirty();
+void DDGNode::addOutput(DDGNode* n)
+{
+    outputs.push_back(n);
+    n->inputs.push_back(this);
+}
 
-    /// Add a new input to this node
-    virtual void addInput(DDGNode* n);
-
-    /// Remove an input from this node
-    virtual void delInput(DDGNode* n);
-
-    /// Add a new output to this node
-    virtual void addOutput(DDGNode* n);
-
-    /// Remove an output from this node
-    virtual void delOutput(DDGNode* n);
-
-protected:
-
-    std::list<DDGNode*> inputs;
-    std::list<DDGNode*> outputs;
-    bool dirty;
-};
+void DDGNode::delOutput(DDGNode* n)
+{
+    outputs.remove(n);
+    n->inputs.remove(this);
+}
 
 } // namespace objectmodel
 
 } // namespace core
 
 } // namespace sofa
-
-#endif
