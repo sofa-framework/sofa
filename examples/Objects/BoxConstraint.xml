@@ -1,0 +1,4 @@
+<Node name="BoxConstraint">
+	<Object type="BoxROI" name="box_roi" box="-5 0 -1 -2 1 2" /> 
+	<Object type="FixedConstraint" name="fixed_constraint" indices="@box_roi.indices" />
+</Node>
