@@ -117,14 +117,16 @@ void BaseObject::parse( BaseObjectDescription* arg )
                         break;
                     }
 
-                    parentData->addChild(dataModif[d]);
                     /* set parent value to the child */
-                    valueString = parentData->getValueString();
-                    if (valueString.empty())
+                    if (!dataModif[d]->setParentValue(parentData))
+                    {
+                        serr<<"could not copy value from parent Data "<< valueString << ". Incompatible Data types" << sendl;
                         break;
-
+                    }
+                    parentData->addOutput(dataModif[d]);
                     /* children Data can be modified changing the parent Data value */
                     dataModif[d]->setReadOnly(true);
+                    break;
                 }
 
                 if( !(dataModif[d]->read( valueString ))) serr<<"could not read value for option "<< attributeList[i] <<": " << val << sendl;

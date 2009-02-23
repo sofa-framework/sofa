@@ -71,6 +71,18 @@ public:
     inline std::string getValueString() const;
     inline std::string getValueTypeString() const; // { return std::string(typeid(m_value).name()); }
 
+    inline bool setParentValue(BaseData* parent)
+    {
+        TData<T>* tData = dynamic_cast< TData<T>* >(parent);
+        if (tData)
+        {
+            value() = tData->value();
+            BaseData::setDirty();
+            return true;
+        }
+        return false;
+    }
+
     const T& virtualGetValue() const
     {
         if (this->dirty)

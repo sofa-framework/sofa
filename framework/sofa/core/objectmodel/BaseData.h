@@ -60,16 +60,12 @@ public:
      */
     BaseData( const char* h, bool isDisplayed=true, bool isReadOnly=false )
         : help(h), group(""), widget("")
-        , m_counter(0), m_isDisplayed(isDisplayed), m_isReadOnly(isReadOnly), parent(NULL), writer(NULL)
+        , m_counter(0), m_isDisplayed(isDisplayed), m_isReadOnly(isReadOnly)/*, parent(NULL), writer(NULL)*/
     {}
 
     /// Base destructor
     virtual ~BaseData()
     {
-        if (parent)
-            parent->delChild(this);
-        for(std::list<BaseData*>::iterator it=children.begin(); it!=children.end(); ++it)
-            (*it)->parent = NULL;
     }
 
     /// Read the command line
@@ -123,67 +119,24 @@ public:
     /// This can be used to efficiently detect changes
     int getCounter() const { return m_counter; }
 
-    /// Add a child for this DDGNode
-    void addChild(BaseData* child)
-    {
-        child->parent = this;
-        children.push_back(child);
-    }
-
-    /// Delete a child for this DDGNode
-    void delChild(BaseData* child)
-    {
-        child->parent = NULL;
-        children.remove(child);
-    }
-
-    /// Set dirty the children and readers of a Data
-    void setDirty()
-    {
-        if (!dirty)
-        {
-            dirty = true;
-            for(std::list<BaseData*>::iterator it=children.begin(); it!=children.end(); ++it)
-            {
-                (*it)->setDirty();
-            }
-            for(std::list<DDGNode*>::iterator it=readers.begin(); it!=readers.end(); ++it)
-            {
-                (*it)->setDirty();
-            }
-        }
-    }
-
     /// Update the value of this Data
     void update()
     {
         dirty = false;
-        if (parent)
+        for(std::list<DDGNode*>::iterator it=inputs.begin(); it!=inputs.end(); ++it)
         {
-            std::string valueString(parent->getValueString());
-            read(valueString);
+            if (setParentValue(dynamic_cast<BaseData*>(*it)))
+                break;
+            if ((*it)->isDirty())
+            {
+                (*it)->update();
+                (*it)->cleanDirty();
+            }
         }
-        if (writer)
-            writer->update();
     }
 
-    /// Set the engine that write the Data
-    void setWriter(DDGNode* w)
-    {
-        writer = w;
-    }
-
-    /// Add a engine that read the Data
-    void addReader(DDGNode* reader)
-    {
-        readers.push_back(reader);
-    }
-
-    /// Delete a engine that read the Data
-    void delReader(DDGNode* reader)
-    {
-        readers.remove(reader);
-    }
+    /// Set for this Data the value of its parent value
+    virtual bool setParentValue(BaseData* parent) = 0;
 
 protected:
 
@@ -199,14 +152,6 @@ protected:
     bool m_isDisplayed;
     /// True if the Data will be readable only in the GUI
     bool m_isReadOnly;
-    /// Pointer to the parent Data
-    BaseData* parent;
-    /// List of children of this Data
-    std::list<BaseData*> children;
-    /// Engine that write the Data
-    DDGNode* writer;
-    /// Engines that read the Data
-    std::list<DDGNode*> readers;
 
     /// Helper method to decode the type name to a more readable form if possible
     static std::string decodeTypeName(const std::type_info& t);
