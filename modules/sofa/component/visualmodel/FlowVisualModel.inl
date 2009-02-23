@@ -26,7 +26,10 @@ template <class DataTypes>
 FlowVisualModel<DataTypes>::FlowVisualModel()
     :viewVelocityFactor(initData(&viewVelocityFactor, double(0.001), "viewVelocityFactor", "Set factor for velocity arrows"))
     ,velocityMin(initData(&velocityMin, double(-1.0), "velocityMin", "Set the minimum value of velocity for drawing,"))
-    ,velocityMax(initData(&velocityMax, double(1.0), "velocityMax", "Set the maximum value of velocity for drawing,"))
+    ,velocityMax(initData(&velocityMax, double(1.0), "velocityMax", "Set the maximum value of velocity for drawing"))
+    ,seeds(initData(&seeds, helper::vector<Coord>(), "seeds", "Set seeds for Stream Lines"))
+    ,streamLineMaxNumberOfPoints(initData(&streamLineMaxNumberOfPoints, (unsigned int) 50 , "streamLineMaxNumberOfPoints", "Set the maximum number of points for each stream line"))
+
 {
 
 }
@@ -67,6 +70,93 @@ void FlowVisualModel<DataTypes>::initVisual()
 }
 
 template <class DataTypes>
+bool FlowVisualModel<DataTypes>::isInDomain(typename DataTypes::Coord p, unsigned int  &indexTriangle)
+{
+    const VecCoord& x = *this->fstate->getX();
+
+    //test if seed is in the mesh
+    //1-find closest point from seed to mesh
+    bool found = false;
+    if (x.size() > 0)
+    {
+        unsigned int indexClosestPoint = 0;
+        double dist = (p - x[0]).norm();
+        for (unsigned int i=1 ; i<x.size() ; i++)
+        {
+            double d = (p - x[i]).norm();
+            if (d < dist)
+            {
+                indexClosestPoint = i;
+                dist = d;
+            }
+        }
+        //2-get its TriangleShell
+        helper::vector<unsigned int> triangles = m_triTopo->getTriangleVertexShell(indexClosestPoint);
+        //3-check if the seed is in one of these triangles
+
+        unsigned int indTest;
+        for (unsigned int i=0 ; i<triangles.size() && !found ; i++)
+        {
+            found = m_triGeo->isPointInsideTriangle(triangles[i], false, p, indTest);
+            indexTriangle = triangles[i];
+        }
+    }
+
+    return found;
+}
+
+template <class DataTypes>
+typename DataTypes::Coord FlowVisualModel<DataTypes>::interpolateVelocity(Coord p)
+{
+    const VecCoord& v = *this->fstate->getV();
+    unsigned int indexTriangle;
+    if (!isInDomain(p, indexTriangle))
+        return Coord();
+
+
+    //compute the velocity at "currentPos" position
+    /*Coord p0 = m_triGeo->getPointPosition(t[0]);
+    Coord p1 = m_triGeo->getPointPosition(t[1]);
+    Coord p2 = m_triGeo->getPointPosition(t[2]);
+    double coeff0 = (p0-currentPos).norm();
+    double coeff1 = (p1-currentPos).norm();
+    double coeff2 = (p2-currentPos).norm();*/
+
+    //Coord velocitySeed = (v[t[0]]*coeff0 + v[t[1]]*coeff1 + v[t[2]]*coeff2)/(coeff0 + coeff1+ coeff2) ;
+    Coord velocitySeed = v[indexTriangle];
+    std::cout << indexTriangle << std::endl;
+
+    return velocitySeed;
+}
+
+template <class DataTypes>
+helper::vector<typename DataTypes::Coord> FlowVisualModel<DataTypes>::computeStreamLine(typename DataTypes::Coord seed, unsigned int maxNbPoints, double dt)
+{
+    helper::vector<Coord> streamLine;
+
+
+    core::componentmodel::topology::BaseMeshTopology::Triangle t;
+    Coord currentPos = seed;
+
+    while(streamLine.size() < maxNbPoints)
+    {
+        streamLine.push_back(currentPos);
+        //p'k  	=  	pk  	+  	(1)/(2)hv(pk)
+        //pk+1 	= 	pk 	+ 	hv(p'k)
+
+        Coord v1 =	interpolateVelocity(currentPos);
+
+        Coord nextPositionPrime = currentPos + v1*dt*0.5;
+        Coord v2 =	interpolateVelocity(nextPositionPrime);
+
+        Coord nextPosition = currentPos + v2*dt;
+        currentPos = nextPosition;
+    }
+
+    return streamLine;
+}
+
+template <class DataTypes>
 void FlowVisualModel<DataTypes>::draw()
 {
     if (!getContext()->getShowVisualModels()) return;
@@ -75,7 +165,6 @@ void FlowVisualModel<DataTypes>::draw()
     const VecDeriv& v = *this->fstate->getV();
     //VecCoord& y = *this->fstate->getX();
 
-    VecDeriv vnorm;
     double vmax2 = v[0].norm2();
     double vmin = v[0].norm();
 
@@ -99,18 +188,12 @@ void FlowVisualModel<DataTypes>::draw()
     }
     else vmin = velocityMin.getValue();
 
-    //normalize v
-    for (unsigned int i=0 ; i<v.size() ; i++)
-    {
-        if (vmax > 0.0)
-            vnorm.push_back(v[i]/vmax);
-        else vnorm.push_back(v[i]);
-    }
-
     core::componentmodel::topology::BaseMeshTopology::SeqTriangles triangles =  m_triTopo->getTriangles();
     unsigned int nbPoints =  m_triTopo->getNbPoints();
+
     VecCoord colors;
     helper::vector<unsigned int> weight;
+
     colors.resize(nbPoints);
     weight.resize(nbPoints);
     std::fill( weight.begin(), weight.end(), 0 );
@@ -120,9 +203,9 @@ void FlowVisualModel<DataTypes>::draw()
         core::componentmodel::topology::BaseMeshTopology::Triangle t = (triangles[i]);
         for(unsigned int j=0 ; j<3 ; j++)
         {
-            int indColor;
-            if(vmax > 0.0)
-                indColor = (int)(64*((v[i].norm()-vmin)/(vmax-vmin)));
+            unsigned int indColor = 0;
+            if((vmax-vmin) > 0.0 && i < v.size())
+                indColor = (unsigned int)(64* ((v[i].norm()-vmin)/(vmax-vmin)));
             else indColor = 0;
 
             colors[t[j]]+= ColorMap[indColor];
@@ -130,7 +213,8 @@ void FlowVisualModel<DataTypes>::draw()
         }
     }
     //VecCoord& x = *this->fstate->getX();
-    VecCoord x;
+    x.clear();
+    x.resize(0);
 
     //Show un truc
     glBegin(GL_TRIANGLES);
@@ -160,12 +244,12 @@ void FlowVisualModel<DataTypes>::draw()
 
     //Show Velocity
     glBegin(GL_LINES);
-    for(unsigned int i=0 ; i<x.size() ; i++)
+    for(unsigned int i=0 ; i<v.size() ; i++)
     {
-        if (v[i].norm() > 0.0)
+        if (v[i].norm() > 0.0 && vmax > 0.0)
         {
             Coord p0 = x[i];
-            Coord p1 = x[i] + vnorm[i]*viewVelocityFactor.getValue();
+            Coord p1 = x[i] + v[i]/vmax*viewVelocityFactor.getValue();
 
             glColor3f(1.0,1.0,1.0);
             glVertex3f((GLfloat)p0[0], (GLfloat)p0[1], (GLfloat)p0[2]);
@@ -175,8 +259,25 @@ void FlowVisualModel<DataTypes>::draw()
     }
     glEnd();
 
-    //Draw color scale
+    //Draw StreamLines
+    helper::vector<Coord> streamLines = seeds.getValue();
+    for (unsigned int i=0 ; i<streamLines.size() ; i++)
+    {
+        Coord seedtest = streamLines[i];
+        double dtStreamLine = 0.01;
+        helper::vector<Coord>  streamLine = computeStreamLine(streamLines[i],streamLineMaxNumberOfPoints.getValue(), dtStreamLine) ;
+        glLineWidth(2);
+        glBegin(GL_LINE_STRIP);
+        for(unsigned int i=0 ; i<streamLine.size() ; i++)
+        {
+            glColor3f(1.0,1.0,1.0);
+            glVertex3dv(streamLine[i].ptr());
+        }
+        glEnd();
+    }
 
+
+    //Draw color scale
     double xMargin = 50.0;
     double yMargin = 20.0;
     GLint currentViewport[4];
@@ -235,6 +336,7 @@ void FlowVisualModel<DataTypes>::draw()
         glPopMatrix();
     }
     glPopMatrix();
+
 }
 
 

@@ -109,17 +109,25 @@ protected:
     FluidState* fstate;
     topology::ManifoldTriangleSetTopologyContainer* m_triTopo;
     topology::TriangleSetGeometryAlgorithms<DataTypes>* m_triGeo;
+    VecCoord x;
+
+    bool isInDomain(Coord p, unsigned int  &triangleFound);
+    Coord interpolateVelocity(Coord p);
 
 public:
     Data<double> viewVelocityFactor;
     Data<double> velocityMin;
     Data<double> velocityMax;
+    Data<helper::vector<Coord> > seeds;
+    Data<unsigned int> streamLineMaxNumberOfPoints;
     FlowVisualModel();
     virtual ~FlowVisualModel();
 
     void init();
     void initVisual();
     void draw();
+    helper::vector<Coord> computeStreamLine(Coord seed, unsigned int maxNbPoints, double dt);
+
 };
 /*
 #if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_FLUIDSOLIDINTERACTIONFORCEFIELD_CPP)
