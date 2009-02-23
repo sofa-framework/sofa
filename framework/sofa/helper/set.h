@@ -70,9 +70,9 @@ public:
     /// Basic constructor
     set() {}
     /// Constructor
-    set(const std::set<T, Alloc>& x): std::set<T,Compare,Alloc>(x) {}
+    set(const std::set<T, Compare, Alloc>& x): std::set<T,Compare,Alloc>(x) {}
     /// Constructor
-    set<T, Alloc>& operator=(const std::set<T, Alloc>& x)
+    set<T, Compare, Alloc>& operator=(const std::set<T, Compare, Alloc>& x)
     {
         std::set<T,Compare,Alloc>::operator = (x);
         return (*this);
@@ -249,5 +249,3 @@ inline std::istream& set<unsigned int, std::less<unsigned int>, std::allocator<u
 } // namespace sofa
 
 #endif
-
-
