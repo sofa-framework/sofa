@@ -118,18 +118,18 @@ void GNode::moveChild(Node* node)
 /// Generic object access, possibly searching up or down from the current context
 ///
 /// Note that the template wrapper method should generally be used to have the correct return type,
-void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, SearchDirection dir) const
+void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
 {
     if (dir == SearchRoot)
     {
-        if (parent != NULL) return parent->getObject(class_info, dir);
+        if (parent != NULL) return parent->getObject(class_info, tags, dir);
         else dir = SearchDown; // we are the root, search down from here.
     }
     void *result = NULL;
     for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
     {
         result = class_info.dynamicCast(*it);
-        if (result != NULL) break;
+        if (result != NULL && (tags.empty() || (*it)->getTags().includes(tags))) break;
     }
     if (result == NULL)
     {
@@ -138,12 +138,12 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, Sea
         case Local:
             break;
         case SearchUp:
-            if (parent) result = parent->getObject(class_info, dir);
+            if (parent) result = parent->getObject(class_info, tags, dir);
             break;
         case SearchDown:
             for(ChildIterator it = child.begin(); it != child.end(); ++it)
             {
-                result = (*it)->getObject(class_info, dir);
+                result = (*it)->getObject(class_info, tags, dir);
                 if (result != NULL) break;
             }
             break;
@@ -230,7 +230,7 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
 /// Generic list of objects access, possibly searching up or down from the current context
 ///
 /// Note that the template wrapper method should generally be used to have the correct return type,
-void GNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, SearchDirection dir) const
+void GNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
 {
     if (dir == SearchRoot)
     {
@@ -238,7 +238,7 @@ void GNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, Get
         {
             if (parent->isActive())
             {
-                parent->getObjects(class_info, container, dir);
+                parent->getObjects(class_info, container, tags, dir);
                 return;
             }
             else return;
@@ -248,7 +248,7 @@ void GNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, Get
     for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
     {
         void* result = class_info.dynamicCast(*it);
-        if (result != NULL)
+        if (result != NULL && (tags.empty() || (*it)->getTags().includes(tags)))
             container(result);
     }
 
@@ -258,13 +258,13 @@ void GNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, Get
         case Local:
             break;
         case SearchUp:
-            if (parent) parent->getObjects(class_info, container, dir);
+            if (parent) parent->getObjects(class_info, container, tags, dir);
             break;
         case SearchDown:
             for(ChildIterator it = child.begin(); it != child.end(); ++it)
             {
                 if ((*it)->isActive())
-                    (*it)->getObjects(class_info, container, dir);
+                    (*it)->getObjects(class_info, container, tags, dir);
             }
             break;
         case SearchRoot:

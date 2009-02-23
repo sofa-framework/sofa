@@ -24,57 +24,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_TAGFACTORY_H
-#define SOFA_HELPER_TAGFACTORY_H
-
-#include <vector>
-#include <string>
-
-#include <sofa/helper/helper.h>
+#include <sofa/helper/TagFactory.h>
+#include <sofa/core/objectmodel/Tag.h>
+#include <algorithm> // for std::includes
 
 namespace sofa
 {
 
-namespace helper
+namespace core
 {
 
-/**
-the TagFactory class class manage the tags list shared all the components and visitors.
-It allows to define subsets to process by specific visitors
-The user only gives strings to define the subsets, and an id is given back and is used to do the tests of belonging
-The id is the index of the string in the "tagsList" vector
-*/
-
-class SOFA_HELPER_API TagFactory
+namespace objectmodel
 {
-protected:
 
-    /// the list of the tag names. the Ids are the indices in the vector
-    std::vector<std::string> tagsList;
+Tag::Tag(const std::string& s)
+    : id(0)
+{
+    if (!s.empty())
+    {
+        id = helper::TagFactory::getID(s);
+    }
+}
 
-    TagFactory();
+Tag::operator std::string() const
+{
+    if (id == 0) return std::string("0");
+    else return helper::TagFactory::getName(id);
+}
 
-public:
+bool TagSet::includes(const TagSet& t) const
+{
+    return std::includes(t.begin(), t.end(), this->begin(), this->end());
+}
 
-    /**
-    @return : the Id corresponding to the name of the tag given in parameter
-    If the name isn't found in the list, it is added to it and return the new id.
-    */
-    static unsigned int getID(std::string name);
+} // namespace objectmodel
 
-    /// return the name corresponding to the id in parameter
-    static std::string getName(unsigned int id);
-
-    /// return the instance of the factory. Creates it if doesn't exist yet.
-    static TagFactory* getInstance();
-};
-
-/// TODO: Rename to TagRegistry, as this is closer to a registry than a factory
-
-} // namespace helper
+} // namespace core
 
 } // namespace sofa
-
-#endif
-
-

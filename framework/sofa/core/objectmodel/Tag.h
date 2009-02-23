@@ -24,57 +24,87 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_TAGFACTORY_H
-#define SOFA_HELPER_TAGFACTORY_H
+#ifndef SOFA_CORE_OBJECTMODEL_TAG_H
+#define SOFA_CORE_OBJECTMODEL_TAG_H
 
-#include <vector>
+#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
+#pragma once
+#endif
+
+#include <sofa/helper/set.h>
+#include <sofa/core/core.h>
+#include <iostream>
 #include <string>
-
-#include <sofa/helper/helper.h>
 
 namespace sofa
 {
 
-namespace helper
+namespace core
+{
+
+namespace objectmodel
 {
 
 /**
-the TagFactory class class manage the tags list shared all the components and visitors.
-It allows to define subsets to process by specific visitors
-The user only gives strings to define the subsets, and an id is given back and is used to do the tests of belonging
-The id is the index of the string in the "tagsList" vector
-*/
-
-class SOFA_HELPER_API TagFactory
+ *  \brief A Tag is a string (internally converted to an integer), attached to objects in order to define subsets to process by specific visitors.
+ *
+ */
+class SOFA_CORE_API Tag
 {
-protected:
-
-    /// the list of the tag names. the Ids are the indices in the vector
-    std::vector<std::string> tagsList;
-
-    TagFactory();
-
 public:
 
-    /**
-    @return : the Id corresponding to the name of the tag given in parameter
-    If the name isn't found in the list, it is added to it and return the new id.
-    */
-    static unsigned int getID(std::string name);
+    Tag() : id(0) {}
 
-    /// return the name corresponding to the id in parameter
-    static std::string getName(unsigned int id);
+    /// A can is constructed from a string and appears like one after, without actually storing a string
+    Tag(const std::string& s);
 
-    /// return the instance of the factory. Creates it if doesn't exist yet.
-    static TagFactory* getInstance();
+    /// This constructor should be used only if really necessary
+    Tag(unsigned int id) : id(id) {}
+
+    /// Any operation requiring a string can be used on a tag using this conversion
+    operator std::string() const;
+
+    bool operator==(const Tag& t) const { return id == t.id; }
+    bool operator!=(const Tag& t) const { return id != t.id; }
+    bool operator<(const Tag& t) const { return id < t.id; }
+    bool operator>(const Tag& t) const { return id > t.id; }
+    bool operator<=(const Tag& t) const { return id <= t.id; }
+    bool operator>=(const Tag& t) const { return id >= t.id; }
+    bool operator!() const { return !id; }
+
+    friend std::ostream& operator<<(std::ostream& o, const Tag& t)
+    {
+        return o << (std::string)t;
+    }
+
+    friend std::istream& operator>>(std::istream& i, Tag& t)
+    {
+        std::string s;
+        i >> s;
+        t = Tag(s);
+        return i;
+    }
+
+protected:
+    unsigned int id;
 };
 
-/// TODO: Rename to TagRegistry, as this is closer to a registry than a factory
+class SOFA_CORE_API TagSet : public sofa::helper::set<Tag>
+{
+public:
+    TagSet() {}
+    /// Automatic conversion between a tag and a tagset composed of this tag
+    TagSet(const Tag& t) { this->insert(t); }
+    /// Returns true if this TagSet contains specified tag
+    bool includes(const Tag& t) const { return this->count(t) > 0; }
+    /// Returns true if this TagSet contains all specified tags
+    bool includes(const TagSet& t) const;
+};
 
-} // namespace helper
+} // namespace objectmodel
+
+} // namespace core
 
 } // namespace sofa
 
 #endif
-
-
