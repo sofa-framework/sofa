@@ -40,7 +40,6 @@ Visitor::Result InitVisitor::processNodeTopDown(simulation::Node* node)
     for(unsigned int i=0; i<node->object.size(); ++i)
     {
         node->object[i]->init();
-        node->object[i]->updateTagList();
     }
 
     return RESULT_CONTINUE;

@@ -34,6 +34,7 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
+#include <sofa/core/objectmodel/Tag.h>
 
 #include <sofa/helper/set.h>
 
@@ -177,24 +178,22 @@ public:
 
     /// @}
 
-    /// @name events
+    /// @name tags
     ///   Methods related to subsets belonging
     /// @{
 
     /// Represents the subsets the object belongs to
-    sofa::helper::set< unsigned int> f_tagIds;
-    Data< sofa::helper::vector< std::string> > f_tagNames;
+    Data< sofa::core::objectmodel::TagSet > f_tags;
+
+    const sofa::core::objectmodel::TagSet& getTags() const { return f_tags.getValue(); }
 
     /// Return true if the object belong to the given subset
-    bool hasTag( std::string name );
-    bool hasTag( unsigned int id );
+    bool hasTag( Tag t ) const;
 
     /// Add a subset qualification to the object
-    void addTag(std::string sub);
+    void addTag(Tag t);
     /// Remove a subset qualification to the object
-    void removeTag(std::string sub);
-
-    void updateTagList();
+    void removeTag(Tag t);
 
     /// @}
 

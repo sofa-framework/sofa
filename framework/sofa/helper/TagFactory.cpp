@@ -25,16 +25,21 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/TagFactory.h>
-
+#include <iostream>
 namespace sofa
 {
 
 namespace helper
 {
 
+TagFactory::TagFactory()
+{
+    tagsList.push_back(std::string("0")); // ID 0 == "0" or empty string
+}
 
 /*SOFA_HELPER_API*/ unsigned int TagFactory::getID(std::string name)
 {
+    if (name.empty()) return 0;
     TagFactory * tagfac = TagFactory::getInstance();
     std::vector<std::string>::iterator it = tagfac->tagsList.begin();
     unsigned int i=0;
@@ -49,6 +54,7 @@ namespace helper
         return i;
     else
     {
+        std::cout << "TagFactory: creating new tag "<<i<<": "<<name<<std::endl;
         tagfac->tagsList.push_back(name);
         return i;
     }

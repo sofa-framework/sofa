@@ -124,7 +124,7 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
         ops[1].second.push_back(std::make_pair((VecId)pos,1.0));
         ops[1].second.push_back(std::make_pair((VecId)newVel,h));
         simulation::MechanicalVMultiOpVisitor vmop(ops);
-
+        vmop.setTags(this->getTags());
         vmop.execute(this->getContext());
     }
 #endif

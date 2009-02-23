@@ -219,6 +219,14 @@ void* BaseContext::getObject(const ClassInfo& /*class_info*/, SearchDirection /*
     return NULL;
 }
 
+/// Generic object access, given a set of required tags, possibly searching up or down from the current context
+///
+/// Note that the template wrapper method should generally be used to have the correct return type,
+void* BaseContext::getObject(const ClassInfo& /*class_info*/, const TagSet& /*tags*/, SearchDirection /*dir*/) const
+{
+    return NULL;
+}
+
 /// Generic object access, given a path from the current context
 ///
 /// Note that the template wrapper method should generally be used to have the correct return type,
@@ -231,6 +239,13 @@ void* BaseContext::getObject(const ClassInfo& /*class_info*/, const std::string&
 ///
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void BaseContext::getObjects(const ClassInfo& /*class_info*/, GetObjectsCallBack& /*container*/, SearchDirection /*dir*/) const
+{
+}
+
+/// Generic list of objects access, given a set of required tags, possibly searching up or down from the current context
+///
+/// Note that the template wrapper method should generally be used to have the correct return type,
+void BaseContext::getObjects(const ClassInfo& /*class_info*/, GetObjectsCallBack& /*container*/, const TagSet& /*tags*/, SearchDirection /*dir*/) const
 {
 }
 

@@ -84,6 +84,7 @@ HEADERS += \
 	  objectmodel/OmniEvent.h \
 	  objectmodel/GLInitializedEvent.h \
           objectmodel/VDataPtr.h \
+          objectmodel/Tag.h \
           objectmodel/XDataPtr.h \
           VisualModel.h \
           VisualManager.h \
@@ -105,6 +106,7 @@ SOURCES +=  \
           objectmodel/KeyreleasedEvent.cpp \
 	  objectmodel/MouseEvent.cpp \
   	  objectmodel/OmniEvent.cpp \
+          objectmodel/Tag.cpp \
           ObjectFactory.cpp \
           Mapping.cpp \	   
           CollisionModel.cpp \

@@ -550,10 +550,8 @@ class SOFA_SIMULATION_COMMON_API MechanicalPropagateXVisitor : public Mechanical
 public:
     VecId x;
 
-    MechanicalPropagateXVisitor(VecId x, sofa::helper::set<unsigned int> tags=sofa::helper::set<unsigned int>()) : x(x)
-    {
-        subsetsToManage = tags;
-    }
+    MechanicalPropagateXVisitor(VecId x) : x(x)
+    {}
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
 
@@ -582,10 +580,8 @@ class SOFA_SIMULATION_COMMON_API MechanicalPropagateXAndResetForceVisitor : publ
 public:
     VecId x,f;
 
-    MechanicalPropagateXAndResetForceVisitor(VecId x, VecId f, sofa::helper::set<unsigned int> tags=sofa::helper::set<unsigned int>()) : x(x), f(f)
-    {
-        subsetsToManage = tags;
-    }
+    MechanicalPropagateXAndResetForceVisitor(VecId x, VecId f) : x(x), f(f)
+    {}
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
@@ -865,9 +861,8 @@ public:
     VecId res;
     bool onlyMapped;
 
-    MechanicalResetForceVisitor(VecId res, bool onlyMapped = false, sofa::helper::set<unsigned int> tags=sofa::helper::set<unsigned int>()) : res(res), onlyMapped(onlyMapped)
+    MechanicalResetForceVisitor(VecId res, bool onlyMapped = false) : res(res), onlyMapped(onlyMapped)
     {
-        subsetsToManage = tags;
 #ifdef DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
@@ -907,9 +902,8 @@ public:
     VecId res;
     bool accumulate; ///< Accumulate everything back to the DOFs through the mappings
 
-    MechanicalComputeForceVisitor(VecId res, bool accumulate = true, sofa::helper::set<unsigned int> tags=sofa::helper::set<unsigned int>()) : res(res), accumulate(accumulate)
+    MechanicalComputeForceVisitor(VecId res, bool accumulate = true) : res(res), accumulate(accumulate)
     {
-        subsetsToManage = tags;
 #ifdef DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif

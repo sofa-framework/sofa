@@ -34,8 +34,6 @@
 #include <sofa/helper/set.h>
 #include <iostream>
 
-
-
 namespace sofa
 {
 
@@ -157,7 +155,7 @@ public:
 
 
     //method to compare the tags of the objet with the ones of the visitor
-    // return true if the object ahs at least one tag in common with the visitor
+    // return true if the object has all the tags of the visitor
     // or if no tag is set to the visitor
     bool testTags(core::objectmodel::BaseObject* obj)
     {
@@ -165,9 +163,11 @@ public:
             return true;
         else
         {
-            for ( sofa::helper::set<unsigned int>::iterator it=subsetsToManage.begin() ; it!=subsetsToManage.end() ; it++)
-                if(obj->hasTag(*it))
-                    return true;
+            //for ( sofa::helper::set<unsigned int>::iterator it=subsetsToManage.begin() ; it!=subsetsToManage.end() ; it++)
+            //	if(obj->hasTag(*it))
+            //		return true;
+            if (obj->getTags().includes(subsetsToManage)) // all tags in subsetsToManage must be included in the list of tags of the object
+                return true;
         }
         return false;
     }
@@ -237,10 +237,15 @@ public:
     /// This version is offered a LocalStorage to store temporary data
     virtual void processNodeBottomUp(simulation::Node* node, LocalStorage*) { processNodeBottomUp(node); }
 
-
 public:
+    typedef sofa::core::objectmodel::Tag Tag;
+    typedef sofa::core::objectmodel::TagSet TagSet;
     /// list of the subsets
-    sofa::helper::set<unsigned int>  subsetsToManage;
+    TagSet subsetsToManage;
+
+    Visitor& setTags(const TagSet& t) { subsetsToManage = t; return *this; }
+    Visitor& addTag(Tag t) { subsetsToManage.insert(t); return *this; }
+    Visitor& removeTag(Tag t) { subsetsToManage.erase(t); return *this; }
 
 #ifdef DUMP_VISITOR_INFO
     //DEBUG Purposes
