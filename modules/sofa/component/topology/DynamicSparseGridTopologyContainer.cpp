@@ -65,31 +65,34 @@ void DynamicSparseGridTopologyContainer::loadFromMeshLoader ( sofa::component::M
         exit(0);
     }
 
+    // Init regular/topo mapping
     helper::vector<BaseMeshTopology::HexaID>& iirg = *(idxInRegularGrid.beginEdit());
-
     voxelGridLoader->getIndicesInRegularGrid( iirg);
     for( unsigned int i = 0; i < iirg.size(); i++)
     {
         idInRegularGrid2IndexInTopo.insert( make_pair( iirg[i], i ));
     }
-
     idxInRegularGrid.endEdit();
 
+    // Init values
     int dataSize = voxelGridLoader->getDataSize();
     unsigned char* data = voxelGridLoader->getData();
+
+    // init values in regular grid. (dense).
     valuesIndexedInRegularGrid.resize( dataSize);
-
-    helper::vector<unsigned char>& viit = *(valuesIndexedInTopology.beginEdit());
-
-    viit.resize( dataSize);
     for( int i = 0; i < dataSize; i++)
-    {
         valuesIndexedInRegularGrid[i] = data[i];
-        viit[i] = data[i];
-    }
 
+    // init values in topo. (pas dense).
+    helper::vector<unsigned char>& viit = *(valuesIndexedInTopology.beginEdit());
+    viit.resize( iirg.size());
+    for( int i = 0; i < iirg.size(); i++)
+    {
+        viit[i] = data[iirg[i]];
+    }
     valuesIndexedInTopology.endEdit();
 
+    // init resolution & voxelSize.
     Vec3i& res = *resolution.beginEdit();
     voxelGridLoader->getResolution ( res );
     resolution.endEdit();

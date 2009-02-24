@@ -831,7 +831,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::init ( const typename Out::
     coord.resize ( out.size() );
     for ( unsigned int i=0; i<out.size(); ++i ) coord[i] = out[i];
 
-    _geomAlgo->findNearestElements ( coord, elements, coefs, distances );
+    _geomAlgo->findNearestElementsInRestPos ( coord, elements, coefs, distances );
 
     for ( unsigned int i=0; i<elements.size(); ++i )
     {
@@ -2955,7 +2955,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
                     // find nearest cell and barycentric coords
                     // TODO: avoid searching in all Hexa for each point
                     Real distance = 1e10;
-                    int index = _geomAlgo->findNearestElement ( pos, coefs, distance );
+                    int index = _geomAlgo->findNearestElementInRestPos ( pos, coefs, distance );
 
                     if ( index != -1 )
                     {
@@ -3007,13 +3007,13 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
                         coefs[1] = map.getValue()[j].baryCoords[1];
                         coefs[2] = map.getValue()[j].baryCoords[2];
 
-                        typename In::Coord pos = _geomAlgo->getPointPositionInHexahedron ( cubeId, coefs );
+                        typename In::Coord restPos = _geomAlgo->getRestPointPositionInHexahedron ( cubeId, coefs );
 
                         helper::vector<MappingData>& vectorData = *(map.beginEdit());
                         vectorData[j].in_index = -1;
-                        vectorData[j].baryCoords[0] = pos[0];
-                        vectorData[j].baryCoords[1] = pos[1];
-                        vectorData[j].baryCoords[2] = pos[2];
+                        vectorData[j].baryCoords[0] = restPos[0];
+                        vectorData[j].baryCoords[1] = restPos[1];
+                        vectorData[j].baryCoords[2] = restPos[2];
                         map.endEdit();
                     }
                 }

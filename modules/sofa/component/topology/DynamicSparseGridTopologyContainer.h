@@ -49,8 +49,8 @@ public:
 
     Data< Vec3i> resolution;
 
-    sofa::helper::vector<unsigned char> valuesIndexedInRegularGrid;
-    HexahedronData<unsigned char> valuesIndexedInTopology;
+    sofa::helper::vector<unsigned char> valuesIndexedInRegularGrid; // dense. valeurs dans toute la grille.
+    HexahedronData<unsigned char> valuesIndexedInTopology; // pas dense. uniquement la ou il y a des hexas.
 
     HexahedronData<BaseMeshTopology::HexaID> idxInRegularGrid;
     std::map< unsigned int, BaseMeshTopology::HexaID> idInRegularGrid2IndexInTopo;

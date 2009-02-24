@@ -97,6 +97,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     rotation=this->initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs");
     scale=this->initData(&scale, (SReal)1.0, "scale", "Scale of the DOFs");
     filename=this->initData(&filename, std::string(""), "filename", "File corresponding to the Mechanical Object", false);
+    ignoreLoader=this->initData(&ignoreLoader, (bool) false, "ignoreLoader", "Is the Mechanical Object do not use a loader");
     debugViewIndices=this->initData(&debugViewIndices, (bool) false, "debugViewIndices", "Debug : view indices");
     debugViewIndicesScale=this->initData(&debugViewIndicesScale, (float) 0.0001, "debugViewIndicesScale", "Debug : scale for view indices");
 
@@ -932,38 +933,45 @@ void MechanicalObject<DataTypes>::init()
     }
     else if (getX()->size() <= 1)
     {
-        sofa::component::MeshLoader* m_loader;
-        this->getContext()->get(m_loader);
-
-        if(m_loader && m_loader->getFillMState())
+        if( ignoreLoader.getValue())
         {
-
-            int nbp = m_loader->getNbPoints();
-
-            //std::cout<<"Setting "<<nbp<<" points from MeshLoader. " <<std::endl;
-
-            this->resize(nbp);
-            for (int i=0; i<nbp; i++)
-            {
-                (*getX())[i] = Coord();
-                DataTypes::set((*getX())[i], m_loader->getPX(i), m_loader->getPY(i), m_loader->getPZ(i));
-            }
-
+            this->resize(0);
         }
         else
         {
+            sofa::component::MeshLoader* m_loader;
+            this->getContext()->get(m_loader);
 
-            if (_topology!=NULL && _topology->hasPos() && _topology->getContext() == this->getContext())
+            if(m_loader && m_loader->getFillMState())
             {
-                int nbp = _topology->getNbPoints();
-                //std::cout<<"Setting "<<nbp<<" points from topology. " << this->getName() << " topo : " << _topology->getName() <<std::endl;
+
+                int nbp = m_loader->getNbPoints();
+
+                //std::cout<<"Setting "<<nbp<<" points from MeshLoader. " <<std::endl;
+
                 this->resize(nbp);
                 for (int i=0; i<nbp; i++)
                 {
                     (*getX())[i] = Coord();
-                    DataTypes::set((*getX())[i], _topology->getPX(i), _topology->getPY(i), _topology->getPZ(i));
+                    DataTypes::set((*getX())[i], m_loader->getPX(i), m_loader->getPY(i), m_loader->getPZ(i));
                 }
 
+            }
+            else
+            {
+
+                if (_topology!=NULL && _topology->hasPos() && _topology->getContext() == this->getContext())
+                {
+                    int nbp = _topology->getNbPoints();
+                    //std::cout<<"Setting "<<nbp<<" points from topology. " << this->getName() << " topo : " << _topology->getName() <<std::endl;
+                    this->resize(nbp);
+                    for (int i=0; i<nbp; i++)
+                    {
+                        (*getX())[i] = Coord();
+                        DataTypes::set((*getX())[i], _topology->getPX(i), _topology->getPY(i), _topology->getPZ(i));
+                    }
+
+                }
             }
         }
     }
