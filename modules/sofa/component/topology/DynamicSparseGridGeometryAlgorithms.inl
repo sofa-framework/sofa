@@ -68,7 +68,7 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
     distance = 1e10;
 
     Vec3i resolution = topoContainer->resolution.getValue();
-    Vec3i tmp = Vec3i( pos[0] / topoContainer->voxelSize[0], pos[1] / topoContainer->voxelSize[1], pos[2] / topoContainer->voxelSize[2]);
+    Vec3i tmp = Vec3i( (int)(pos[0] / topoContainer->voxelSize[0]), (int)(pos[1] / topoContainer->voxelSize[1]), (int)(pos[2] / topoContainer->voxelSize[2]));
 
     // Projection sur la bbox si l'element est en dehors.
     if( tmp[0] < 0) tmp[0] = 0;
