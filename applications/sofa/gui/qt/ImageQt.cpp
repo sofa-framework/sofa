@@ -66,10 +66,7 @@ public:
         {
 #endif
             // ignore if format already supported
-            sofa::helper::io::Image::FactoryImage::const_iterator fit = sofa::helper::io::Image::FactoryImage::getInstance()->begin(), fitend = sofa::helper::io::Image::FactoryImage::getInstance()->end();
-            for (; fit != fitend; ++fit)
-                if (fit->first == format) break;
-            if (fit != fitend) continue; // ignore
+            if (sofa::helper::io::Image::FactoryImage::HasKey(format)) continue;
             //std::cout << "ImageQt: supporting format "<<format<<std::endl;
             creators.push_back(new sofa::helper::Creator<sofa::helper::io::Image::FactoryImage, ImageQt>(format));
         }

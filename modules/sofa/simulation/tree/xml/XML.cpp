@@ -28,6 +28,7 @@
 #include <sofa/simulation/tree/xml/XML.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <string.h>
 
 /* For loading the scene */
@@ -123,17 +124,31 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename, bool isRoot =
     {
         type = "default";
     }
-    BaseElement* node = BaseElement::Create(classType,name,type);
-    if (node == NULL)
+    if (!BaseElement::NodeFactory::HasKey(classType) && type == "default")
     {
         type=classType;
         classType="Object";
-        node = BaseElement::Create(classType,name,type);
-        if (node==NULL)
+    }
+    if (classType == "Object" && !sofa::core::ObjectFactory::HasCreator(type))
+    {
+        // look if we have a replacement XML for this type
+        std::string filename = "Objects/";
+        filename += type;
+        filename += ".xml";
+
+        if (sofa::helper::system::DataRepository.findFileFromFile(filename, basefilename))
         {
-            std::cerr << "Node "<<element->Value()<<" name "<<name<<" type "<<type<<" creation failed.\n";
-            return NULL;
+            // we found a replacement xml
+            element->SetAttribute("href",filename);
+            element->RemoveAttribute("type");
+            return includeNode(root, basefilename);
         }
+    }
+    BaseElement* node = BaseElement::Create(classType,name,type);
+    if (node==NULL)
+    {
+        std::cerr << "Node "<<element->Value()<<" name "<<name<<" type "<<type<<" creation failed.\n";
+        return NULL;
     }
 
     if (isRoot)

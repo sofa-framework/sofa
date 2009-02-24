@@ -87,6 +87,13 @@ TObject* Factory<TKey, TObject, TArgument>::createAnyObject(Argument arg)
     return NULL;
 }
 
+
+template <typename TKey, class TObject, typename TArgument>
+bool Factory<TKey, TObject, TArgument>::hasKey(Key key)
+{
+    return (this->registry.find(key) != this->registry.end());
+}
+
 template <typename TKey, class TObject, typename TArgument>
 Factory<TKey, TObject, TArgument>* Factory<TKey, TObject, TArgument>::getInstance()
 {

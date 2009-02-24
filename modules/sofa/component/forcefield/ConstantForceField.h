@@ -30,6 +30,8 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/vector.h>
 #include <sofa/component/component.h>
+#include <sofa/component/topology/PointSubset.h>
+
 
 namespace sofa
 {
@@ -51,11 +53,12 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef helper::vector<unsigned> VecIndex;
+    typedef topology::PointSubset VecIndex;
 public:
 
     Data< VecIndex > points;
     Data< VecDeriv > forces;
+    Data< Deriv > force;
     Data< double > arrowSizeCoef; // for drawing. The sign changes the direction, 0 doesn't draw arrow
 
     ConstantForceField();
