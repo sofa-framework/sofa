@@ -75,7 +75,7 @@ public:
     typedef fixed_array<PointID,8> Hexa;
 
     typedef vector<Edge>		SeqEdges;
-    typedef vector<Triangle>	SeqTriangles;
+    typedef vector<Triangle>		SeqTriangles;
     typedef vector<Quad>		SeqQuads;
     typedef vector<Tetra>		SeqTetras;
     typedef vector<Hexa>		SeqHexas;
@@ -96,7 +96,7 @@ public:
     /// @{
     typedef fixed_array<EdgeID,3>		TriangleEdges;
     typedef fixed_array<EdgeID,4>		QuadEdges;
-    typedef fixed_array<TriangleID,4>	TetraTriangles;
+    typedef fixed_array<TriangleID,4>		TetraTriangles;
     typedef fixed_array<EdgeID,6>		TetraEdges;
     typedef fixed_array<QuadID,6>		HexaQuads;
     typedef fixed_array<EdgeID,12>		HexaEdges;
@@ -105,7 +105,7 @@ public:
     /// dynamic-size neighbors arrays
     /// @{
     typedef vector<EdgeID>			VertexEdges;
-    typedef vector<TriangleID>		VertexTriangles;
+    typedef vector<TriangleID>			VertexTriangles;
     typedef vector<QuadID>			VertexQuads;
     typedef vector<TetraID>			VertexTetras;
     typedef vector<HexaID>			VertexHexas;
@@ -294,6 +294,11 @@ public:
     virtual std::list<const TopologyChange *>::const_iterator lastStateChange() const;
 
     /// @}
+
+
+    virtual sofa::helper::vector <EdgeID> getEdgesBorder() { return sofa::helper::vector<EdgeID>();}
+
+    virtual sofa::helper::vector <TriangleID> getTrianglesBorder() { return sofa::helper::vector<TriangleID>();}
 
 
 protected:
