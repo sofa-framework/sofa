@@ -97,6 +97,7 @@ protected:
     Data< Vector3> rotation;
     Data< SReal > scale;
     Data< std::string > filename;
+    Data< bool> ignoreLoader;
 
     /// @name Integration-related data
     /// @{

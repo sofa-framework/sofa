@@ -51,6 +51,9 @@ public:
 
     virtual ~DynamicSparseGridGeometryAlgorithms() {}
 
+    /// finds a hexahedron, in its rest position, which is nearest to a given point. Computes barycentric coordinates and a distance measure.
+    virtual int findNearestElementInRestPos(const Coord& pos, defaulttype::Vector3& baryC, Real& distance) const;
+
     virtual void init();
 
     unsigned int getTopoIndexFromRegularGridIndex ( unsigned int index );

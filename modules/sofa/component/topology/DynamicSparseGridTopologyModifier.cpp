@@ -77,6 +77,7 @@ void DynamicSparseGridTopologyModifier::addHexahedraProcess ( const sofa::helper
         m_DynContainer->idInRegularGrid2IndexInTopo.insert( std::make_pair ( indices[i], hexaSize + i ) );
     }
     m_DynContainer->idxInRegularGrid.endEdit();
+//TODO// ca suffit pas. il faut gerer le renumbering pour le vector et la map du container ! A refaire !
 }
 
 void DynamicSparseGridTopologyModifier::removeHexahedraProcess ( const sofa::helper::vector<unsigned int> &indices, const bool removeIsolatedItems )
@@ -87,7 +88,7 @@ void DynamicSparseGridTopologyModifier::removeHexahedraProcess ( const sofa::hel
     for ( unsigned int i = 0; i < indices.size(); i++ )  // For each element
     {
         m_DynContainer->idInRegularGrid2IndexInTopo.erase ( indices[i] );
-//TODO// ca suffit pas. il faut gerer le renumbering.
+//TODO// ca suffit pas. il faut gerer le renumbering pour le vector et la map du container ! A refaire !
     }
 }
 
@@ -113,6 +114,7 @@ void DynamicSparseGridTopologyModifier::removeHexahedraWarning ( sofa::helper::v
     }
     //iirg.resize ( nbElt );
     m_DynContainer->idxInRegularGrid.endEdit();
+//TODO// ca suffit pas. il faut gerer le renumbering pour le vector et la map du container ! A refaire !
 }
 
 } // namespace topology
