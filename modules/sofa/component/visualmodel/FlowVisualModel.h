@@ -105,28 +105,44 @@ class SOFA_COMPONENT_VISUALMODEL_API FlowVisualModel : public core::VisualModel
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+
+    struct StreamLine
+    {
+        helper::vector<Coord> positions;
+        core::componentmodel::topology::BaseMeshTopology::TriangleID currentTriangleID;
+    };
+
 protected:
     FluidState* fstate;
     topology::ManifoldTriangleSetTopologyContainer* m_triTopo;
     topology::TriangleSetGeometryAlgorithms<DataTypes>* m_triGeo;
     VecCoord x;
+    helper::vector<StreamLine> streamLines;
+    double meanEdgeLength;
 
-    bool isInDomain(Coord p, unsigned int  &triangleFound);
-    Coord interpolateVelocity(Coord p);
+    bool isInDomain(unsigned int index,Coord p);
+    Coord interpolateVelocity(unsigned int index, Coord p, bool &atEnd);
 
 public:
+    static const double STREAMLINE_NUMBER_OF_POINTS_BY_TRIANGLE;
+
+    Data<bool> showVelocityLines;
     Data<double> viewVelocityFactor;
     Data<double> velocityMin;
     Data<double> velocityMax;
+    Data<bool> showStreamLines;
     Data<helper::vector<Coord> > streamlineSeeds;
     Data<unsigned int> streamlineMaxNumberOfPoints;
+    Data<double> streamlineDtNumberOfPointsPerTriangle;
+    Data<bool> showColorScale;
     FlowVisualModel();
     virtual ~FlowVisualModel();
 
     void init();
+    void reinit();
     void initVisual();
     void draw();
-    helper::vector<Coord> computeStreamLine(Coord seed, unsigned int maxNbPoints, double dt);
+    void computeStreamLine(unsigned int index, unsigned int maxNbPoints, double dt);
 
 };
 /*
