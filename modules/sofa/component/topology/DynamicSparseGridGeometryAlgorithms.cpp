@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#define SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDGEOMETRYALGORITHMS_CPP
 #include <sofa/component/topology/DynamicSparseGridGeometryAlgorithms.h>
 #include <sofa/component/topology/DynamicSparseGridGeometryAlgorithms.inl>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -62,9 +62,9 @@ int DynamicSparseGridGeometryAlgorithms<Vec2dTypes>::findNearestElementInRestPos
 template <>
 int DynamicSparseGridGeometryAlgorithms<Vec1dTypes>::findNearestElementInRestPos(const Coord& pos, Vector3& baryC, Real& distance) const { return HexahedronSetGeometryAlgorithms<Vec1dTypes>::findNearestElementInRestPos(pos, baryC, distance);}
 
-template class DynamicSparseGridGeometryAlgorithms<Vec3dTypes>;
-template class DynamicSparseGridGeometryAlgorithms<Vec2dTypes>;
-template class DynamicSparseGridGeometryAlgorithms<Vec1dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<Vec3dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<Vec2dTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<Vec1dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
@@ -73,9 +73,9 @@ int DynamicSparseGridGeometryAlgorithms<Vec2fTypes>::findNearestElementInRestPos
 template <>
 int DynamicSparseGridGeometryAlgorithms<Vec1fTypes>::findNearestElementInRestPos(const Coord& pos, Vector3& baryC, Real& distance) const { return HexahedronSetGeometryAlgorithms<Vec1fTypes>::findNearestElementInRestPos( pos, baryC, distance);}
 
-template class DynamicSparseGridGeometryAlgorithms<Vec3fTypes>;
-template class DynamicSparseGridGeometryAlgorithms<Vec2fTypes>;
-template class DynamicSparseGridGeometryAlgorithms<Vec1fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<Vec3fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<Vec2fTypes>;
+template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<Vec1fTypes>;
 #endif
 
 } // namespace topology
