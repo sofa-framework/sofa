@@ -86,7 +86,7 @@ void DynamicSparseGridTopologyContainer::loadFromMeshLoader ( sofa::component::M
     // init values in topo. (pas dense).
     helper::vector<unsigned char>& viit = *(valuesIndexedInTopology.beginEdit());
     viit.resize( iirg.size());
-    for( int i = 0; i < iirg.size(); i++)
+    for(unsigned int i = 0; i < iirg.size(); i++)
     {
         viit[i] = data[iirg[i]];
     }
