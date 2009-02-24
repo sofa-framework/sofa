@@ -27,8 +27,8 @@ FlowVisualModel<DataTypes>::FlowVisualModel()
     :viewVelocityFactor(initData(&viewVelocityFactor, double(0.001), "viewVelocityFactor", "Set factor for velocity arrows"))
     ,velocityMin(initData(&velocityMin, double(-1.0), "velocityMin", "Set the minimum value of velocity for drawing,"))
     ,velocityMax(initData(&velocityMax, double(1.0), "velocityMax", "Set the maximum value of velocity for drawing"))
-    ,seeds(initData(&seeds, helper::vector<Coord>(), "seeds", "Set seeds for Stream Lines"))
-    ,streamLineMaxNumberOfPoints(initData(&streamLineMaxNumberOfPoints, (unsigned int) 50 , "streamLineMaxNumberOfPoints", "Set the maximum number of points for each stream line"))
+    ,streamlineSeeds(initData(&streamlineSeeds, helper::vector<Coord>(), "streamlineSeeds", "Set streamlineSeeds for Stream Lines"))
+    ,streamlineMaxNumberOfPoints(initData(&streamlineMaxNumberOfPoints, (unsigned int) 50 , "streamlineMaxNumberOfPoints", "Set the maximum number of points for each stream line"))
 
 {
 
@@ -92,8 +92,8 @@ bool FlowVisualModel<DataTypes>::isInDomain(typename DataTypes::Coord p, unsigne
         }
         //2-get its TriangleShell
         helper::vector<unsigned int> triangles = m_triTopo->getTriangleVertexShell(indexClosestPoint);
-        //3-check if the seed is in one of these triangles
 
+        //3-check if the seed is in one of these triangles
         unsigned int indTest;
         for (unsigned int i=0 ; i<triangles.size() && !found ; i++)
         {
@@ -124,7 +124,6 @@ typename DataTypes::Coord FlowVisualModel<DataTypes>::interpolateVelocity(Coord 
 
     //Coord velocitySeed = (v[t[0]]*coeff0 + v[t[1]]*coeff1 + v[t[2]]*coeff2)/(coeff0 + coeff1+ coeff2) ;
     Coord velocitySeed = v[indexTriangle];
-    std::cout << indexTriangle << std::endl;
 
     return velocitySeed;
 }
@@ -133,7 +132,6 @@ template <class DataTypes>
 helper::vector<typename DataTypes::Coord> FlowVisualModel<DataTypes>::computeStreamLine(typename DataTypes::Coord seed, unsigned int maxNbPoints, double dt)
 {
     helper::vector<Coord> streamLine;
-
 
     core::componentmodel::topology::BaseMeshTopology::Triangle t;
     Coord currentPos = seed;
@@ -145,10 +143,8 @@ helper::vector<typename DataTypes::Coord> FlowVisualModel<DataTypes>::computeStr
         //pk+1 	= 	pk 	+ 	hv(p'k)
 
         Coord v1 =	interpolateVelocity(currentPos);
-
         Coord nextPositionPrime = currentPos + v1*dt*0.5;
         Coord v2 =	interpolateVelocity(nextPositionPrime);
-
         Coord nextPosition = currentPos + v2*dt;
         currentPos = nextPosition;
     }
@@ -162,7 +158,7 @@ void FlowVisualModel<DataTypes>::draw()
     if (!getContext()->getShowVisualModels()) return;
 
     glDisable(GL_LIGHTING);
-    const VecDeriv& v = *this->fstate->getV();
+    VecDeriv& v = *this->fstate->getV();
     //VecCoord& y = *this->fstate->getX();
 
     double vmax2 = v[0].norm2();
@@ -188,7 +184,9 @@ void FlowVisualModel<DataTypes>::draw()
     }
     else vmin = velocityMin.getValue();
 
+
     core::componentmodel::topology::BaseMeshTopology::SeqTriangles triangles =  m_triTopo->getTriangles();
+
     unsigned int nbPoints =  m_triTopo->getNbPoints();
 
     VecCoord colors;
@@ -197,6 +195,7 @@ void FlowVisualModel<DataTypes>::draw()
     colors.resize(nbPoints);
     weight.resize(nbPoints);
     std::fill( weight.begin(), weight.end(), 0 );
+
     //accumulate v/colors
     for(unsigned int i=0 ; i<triangles.size() ; i++)
     {
@@ -248,6 +247,8 @@ void FlowVisualModel<DataTypes>::draw()
     {
         if (v[i].norm() > 0.0 && vmax > 0.0)
         {
+            Deriv vel;
+
             Coord p0 = x[i];
             Coord p1 = x[i] + v[i]/vmax*viewVelocityFactor.getValue();
 
@@ -260,12 +261,12 @@ void FlowVisualModel<DataTypes>::draw()
     glEnd();
 
     //Draw StreamLines
-    helper::vector<Coord> streamLines = seeds.getValue();
+    helper::vector<Coord> streamLines = streamlineSeeds.getValue();
     for (unsigned int i=0 ; i<streamLines.size() ; i++)
     {
         Coord seedtest = streamLines[i];
         double dtStreamLine = 0.01;
-        helper::vector<Coord>  streamLine = computeStreamLine(streamLines[i],streamLineMaxNumberOfPoints.getValue(), dtStreamLine) ;
+        helper::vector<Coord>  streamLine = computeStreamLine(streamLines[i],streamlineMaxNumberOfPoints.getValue(), dtStreamLine) ;
         glLineWidth(2);
         glBegin(GL_LINE_STRIP);
         for(unsigned int i=0 ; i<streamLine.size() ; i++)
@@ -286,13 +287,14 @@ void FlowVisualModel<DataTypes>::draw()
     Vec2d scalePosition = Vec2d(currentViewport[2] - xMargin - scaleSize[0], currentViewport[3] - yMargin - scaleSize[1]);
 
     glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
     glLoadIdentity();
     gluOrtho2D(0,currentViewport[2],0,currentViewport[3]);
     glDisable(GL_DEPTH_TEST);
     glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
     glLoadIdentity();
 
-    glPushMatrix();
     double step = scaleSize[1]/64;
     glBegin(GL_QUADS);
     for (unsigned int i=0 ; i<63 ; i++)
@@ -305,7 +307,6 @@ void FlowVisualModel<DataTypes>::draw()
         glVertex2d(scalePosition[0], scalePosition[1] + (i+1)*step);
     }
     glEnd();
-    glPopMatrix();
 
     //Draw color scale values
     unsigned int NUMBER_OF_VALUES = 10;
@@ -314,7 +315,7 @@ void FlowVisualModel<DataTypes>::draw()
     double stepValue = (vmax-vmin)/(NUMBER_OF_VALUES - 1);
     double textScaleSize = 0.06;
     double xMarginWithScale = 5;
-
+    glPushMatrix();
     for (unsigned int i=0 ; i<NUMBER_OF_VALUES  ; i++)
     {
         glPushMatrix();
@@ -337,6 +338,10 @@ void FlowVisualModel<DataTypes>::draw()
     }
     glPopMatrix();
 
+
+//	glPopMatrix();
+//	glMatrixMode(GL_PROJECTION);
+//	glPopMatrix();
 }
 
 

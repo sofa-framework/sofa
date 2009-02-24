@@ -118,8 +118,8 @@ public:
     Data<double> viewVelocityFactor;
     Data<double> velocityMin;
     Data<double> velocityMax;
-    Data<helper::vector<Coord> > seeds;
-    Data<unsigned int> streamLineMaxNumberOfPoints;
+    Data<helper::vector<Coord> > streamlineSeeds;
+    Data<unsigned int> streamlineMaxNumberOfPoints;
     FlowVisualModel();
     virtual ~FlowVisualModel();
 
