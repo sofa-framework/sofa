@@ -121,6 +121,9 @@ public:
     /// Get an entry given a class name (or alias)
     ClassEntry* getEntry(std::string classname);
 
+    /// Test if a creator exists for a given classname
+    bool hasCreator(std::string classname);
+
     /// Fill the given vector with all the registered classes
     void getAllEntries(std::vector<ClassEntry*>& result);
 
@@ -160,6 +163,12 @@ public:
     static void ResetAlias(std::string name, ClassEntry* previous)
     {
         getInstance()->resetAlias(name, previous);
+    }
+
+    /// \copydoc hasCreator
+    static bool HasCreator(std::string classname)
+    {
+        return getInstance()->hasCreator(classname);
     }
 
     /// Dump the content of the factory to a text stream.

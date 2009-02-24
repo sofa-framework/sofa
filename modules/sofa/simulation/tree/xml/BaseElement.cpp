@@ -26,8 +26,14 @@
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/system/SetDirectory.h>
 #include <string.h>
+
 namespace sofa
 {
+
+namespace helper
+{
+template class Factory< std::string, simulation::tree::xml::BaseElement, std::pair<std::string, std::string> >;
+}
 
 namespace simulation
 {

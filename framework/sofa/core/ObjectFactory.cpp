@@ -47,6 +47,15 @@ ObjectFactory::ClassEntry* ObjectFactory::getEntry(std::string classname)
     return p;
 }
 
+/// Test if a creator exists for a given classname
+bool ObjectFactory::hasCreator(std::string classname)
+{
+    std::map<std::string, ClassEntry*>::iterator it = registry.find(classname);
+    if (it == registry.end()) return false;
+    ClassEntry* entry = it->second;
+    return (!entry->creatorMap.empty());
+}
+
 bool ObjectFactory::addAlias(std::string name, std::string result, bool force, ClassEntry** previous)
 {
     ClassEntry*& p = registry[name];
