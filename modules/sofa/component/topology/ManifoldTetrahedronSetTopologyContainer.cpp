@@ -31,6 +31,9 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>
 
+#include <sofa/helper/gl/glText.inl>
+#include <sofa/component/container/MechanicalObject.inl>
+
 namespace sofa
 {
 
@@ -53,8 +56,11 @@ const unsigned int tetrahedronEdgeArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,
 ManifoldTetrahedronSetTopologyContainer::ManifoldTetrahedronSetTopologyContainer()
     : TetrahedronSetTopologyContainer()// draw to be restored
     //, d_tetrahedron(initDataPtr(&d_tetrahedron, &m_tetrahedron, "tetras", "List of tetrahedron indices"))
-    //, _draw(initData(&_draw, false, "drawTetras","if true, draw the tetrahedrons in the topology"))
+    //, _draw(initData(&_draw, false, "drawTetras","if true, draw the tetr46ahedrons in the topology"))
 {
+    debugViewIndices=this->initData(&debugViewIndices, (bool) false, "debugViewTriangleIndices", "Debug : view triangles indices");
+    debugViewIndicesTetra=this->initData(&debugViewIndicesTetra, (bool) false, "debugViewTetraIndices", "Debug : view tetra indices");
+    shellDisplay=this->initData(&shellDisplay, (bool) false, "debugViewShells", "Debug : view shells tetra");
 }
 
 ManifoldTetrahedronSetTopologyContainer::ManifoldTetrahedronSetTopologyContainer(const sofa::helper::vector< Tetrahedron >& tetrahedra )
@@ -201,6 +207,427 @@ int ManifoldTetrahedronSetTopologyContainer::getTriangleTetrahedronOrientation (
     (void) tri;
 
     return 0;
+}
+
+
+void ManifoldTetrahedronSetTopologyContainer::draw()
+{
+
+    if (debugViewIndicesTetra.getValue())
+    {
+        static int  dof_list;
+        static int  tetra_list;
+        static int  edges_list;
+        static int  tetraEdge_list;
+
+        Vector3 position;
+        string text;
+        double scale = 0.0005;
+
+        // *** DOFS ***
+        sofa::component::MechanicalObject<Vec3Types>* dofs;
+        this->getContext()->get(dofs);
+
+        // Creating dofs
+        if ( !dofs )
+        {
+
+            cerr << "Hexa2TriangleTopologicalMapping::buildTriangleMesh(). Error: can't find the DOFs on the hexahedron topology." << endl;
+            return;
+        }
+        sofa::component::MechanicalObject<Vec3Types>::VecCoord& coords = *dofs->getX();
+
+        glColor4f ( 1,1,1,0 );
+        // Drawing dofs
+        dof_list = glGenLists(1);
+        glNewList(dof_list, GL_COMPILE);
+
+        for (unsigned int i = 0; i< coords.size(); i++)
+        {
+            sofa::helper::gl::GlText::draw ( i, coords[i], scale );
+        }
+
+        glEndList();
+
+
+
+        // Creating tetra
+        if (!hasTetrahedronVertexShell())
+        {
+            std::cout << "creating TriangleVertexShellArray()" << std::endl;
+            createTetrahedronVertexShellArray();
+        }
+
+        //recupere les coord bary de chaque tri -> code surement existant deja, mais pas le temps:
+        sofa::helper::vector< sofa::helper::vector<double> > bary_coord;
+        sofa::helper::vector< sofa::helper::vector<double> > bary_coord2;
+
+        Tetrahedron triVertex;
+        float bary_x, bary_y, bary_z;
+        bary_coord.resize(m_tetrahedron.size());
+
+        // Creating barycentrique coord
+        for (unsigned int tri =0; tri< m_tetrahedron.size(); tri++)
+        {
+            triVertex = m_tetrahedron[tri];
+
+            bary_x=0;
+            bary_y=0;
+            bary_z=0;
+
+            for (unsigned int i=0; i<4; i++)
+            {
+                bary_x = bary_x + coords[ triVertex[i] ][0];
+                bary_y = bary_y + coords[ triVertex[i] ][1];
+                bary_z = bary_z + coords[ triVertex[i] ][2];
+            }
+
+            bary_coord[tri].push_back(bary_x/4);
+            bary_coord[tri].push_back(bary_y/4);
+            bary_coord[tri].push_back(bary_z/4);
+        }
+
+
+        // Creating list for index drawing
+
+
+        tetra_list = glGenLists(1);
+        glNewList(tetra_list, GL_COMPILE);
+        scale = 0.0005;
+        glColor4f ( 1,1,1,0 );
+        // Drawing triangles index
+        for (unsigned int tri =0; tri< m_tetrahedron.size(); tri++)
+        {
+            position[0]=bary_coord[tri][0];
+            position[1]=bary_coord[tri][1];
+            position[2]=bary_coord[tri][2];
+            sofa::helper::gl::GlText::draw ( tri, position , scale );
+        }
+
+        glEndList();
+
+
+
+        // Display edge composition:
+        if (!hasEdges())
+            createEdgeSetArray();
+
+
+        Edge the_edge;
+        bary_coord2.resize(m_edge.size());
+
+        for(unsigned int edge = 0; edge< m_edge.size(); edge++)
+        {
+            the_edge = getEdgeArray()[edge];
+
+            bary_x=0;
+            bary_y=0;
+            bary_z=0;
+
+            for (unsigned int i = 0; i<2; i++)
+            {
+                bary_x = bary_x + coords[ the_edge[i] ][0];
+                bary_y = bary_y + coords[ the_edge[i] ][1];
+                bary_z = bary_z + coords[ the_edge[i] ][2];
+            }
+
+            bary_coord2[edge].push_back(bary_x/2);
+            bary_coord2[edge].push_back(bary_y/2);
+            bary_coord2[edge].push_back(bary_z/2);
+        }
+
+
+        edges_list = glGenLists(1);
+        glNewList(edges_list, GL_COMPILE);
+        glColor4f ( 1,1,0,1 );
+        // Drawing edges index
+        scale = 0.0002;
+        for (unsigned int edge =0; edge< m_edge.size(); edge++)
+        {
+            position[0]=bary_coord2[edge][0];
+            position[1]=bary_coord2[edge][1];
+            position[2]=bary_coord2[edge][2];
+            sofa::helper::gl::GlText::draw ( edge, position , scale );
+        }
+        glEndList();
+
+
+        // Display tetraEdgeShell positions:
+        if (!hasTetrahedronEdgeShell())
+            createTetrahedronEdgeShellArray();
+
+        tetraEdge_list = glGenLists(1);
+        glNewList(tetraEdge_list, GL_COMPILE);
+        glColor4f ( 1,0,0,1 );
+        scale = 0.0002;
+
+        for (unsigned int i = 0; i < m_edge.size(); i++)
+        {
+            for (unsigned int j =0; j< m_tetrahedronEdgeShell[i].size(); j++)
+            {
+                position[0] = ( bary_coord[m_tetrahedronEdgeShell[i][j]][0] + bary_coord2[i][0]*9)/10;
+                position[1] = ( bary_coord[m_tetrahedronEdgeShell[i][j]][1] + bary_coord2[i][1]*9)/10;
+                position[2] = ( bary_coord[m_tetrahedronEdgeShell[i][j]][2] + bary_coord2[i][2]*9)/10;
+
+                sofa::helper::gl::GlText::draw ( j, position , scale );
+            }
+        }
+        glEndList();
+
+
+
+        glCallList (dof_list);
+        //  glCallList (tetra_list);
+        glCallList (edges_list);
+        glCallList (tetraEdge_list);
+
+    }
+
+
+
+    if (shellDisplay.getValue())
+    {
+
+        // Display edge composition:
+        if (!hasEdges())
+            createEdgeSetArray();
+
+        for (unsigned int i = 0; i < m_edge.size(); i++)
+        {
+            std::cout <<"Edge: " << i << " vertex: " << m_edge[i] << std::endl;
+        }
+
+        /*
+        // Display tetraEdgeShell positions:
+        if (!hasTetrahedronEdgeShell())
+        createTetrahedronEdgeShellArray();
+
+        for (unsigned int i = 0; i < m_edge.size(); i++)
+        {
+        std::cout <<"Edge: " << i << " Shell: ";
+        for (unsigned int j = 0; j < m_tetrahedronEdgeShell[i].size();j++)
+        {
+        std::cout << m_tetrahedronEdgeShell[i][j] << " ";
+        }
+
+        std::cout << std::endl;
+        }*/
+    }
+
+
+
+
+
+
+    if (debugViewIndices.getValue())
+    {
+        static bool indexes_dirty = true;
+
+
+        static int  dof_list;
+        static int  triangles_list;
+        static int  edges_list;
+        //      static int  trishell_list;
+        //      static int  edgeshell_list;
+
+        indexes_dirty=true;
+
+        if(indexes_dirty)
+        {
+            //	  std::cout << " passe la! " << std::endl;
+
+            Vector3 position;
+            string text;
+            double scale = 0.0001;
+
+            // *** DOFS ***
+            sofa::component::MechanicalObject<Vec3Types>* dofs;
+            this->getContext()->get(dofs);
+
+            // Creating dofs
+            if ( !dofs )
+            {
+
+                cerr << "Hexa2TriangleTopologicalMapping::buildTriangleMesh(). Error: can't find the DOFs on the hexahedron topology." << endl;
+                return;
+            }
+            sofa::component::MechanicalObject<Vec3Types>::VecCoord& coords = *dofs->getX();
+
+
+            // Drawing dofs
+            dof_list = glGenLists(1);
+            glNewList(dof_list, GL_COMPILE);
+
+            for (unsigned int i = 0; i< coords.size(); i++)
+            {
+                sofa::helper::gl::GlText::draw ( i, coords[i], scale );
+            }
+
+            glEndList();
+
+
+            //	const unsigned int nbrVertices = getNbPoints();
+            const unsigned int nbrTriangles = getNumberOfTriangles();
+            const unsigned int nbrEdges = getNumberOfEdges();
+
+            // Creating triangles
+            if (!hasTriangleVertexShell())
+            {
+                std::cout << "creating TriangleVertexShellArray()" << std::endl;
+                createTriangleVertexShellArray();
+            }
+
+
+            //recupere les coord bary de chaque tri -> code surement existant deja, mais pas le temps:
+            sofa::helper::vector< sofa::helper::vector<double> > bary_coord;
+
+
+            Triangle triVertex;
+            float bary_x, bary_y, bary_z;
+            bary_coord.resize(nbrTriangles);
+
+            // Creating barycentrique coord
+            for (unsigned int tri =0; tri< nbrTriangles; tri++)
+            {
+                triVertex = getTriangleArray()[tri];
+
+                bary_x=0;
+                bary_y=0;
+                bary_z=0;
+
+                for (unsigned int i=0; i<3; i++)
+                {
+                    bary_x = bary_x + coords[ triVertex[i] ][0];
+                    bary_y = bary_y + coords[ triVertex[i] ][1];
+                    bary_z = bary_z + coords[ triVertex[i] ][2];
+                }
+
+                bary_coord[tri].push_back(bary_x/3);
+                bary_coord[tri].push_back(bary_y/3);
+                bary_coord[tri].push_back(bary_z/3);
+            }
+
+
+            // Creating list for index drawing
+
+
+            triangles_list = glGenLists(1);
+            glNewList(triangles_list, GL_COMPILE);
+            scale = 0.00005;
+
+            // Drawing triangles index
+            for (unsigned int tri =0; tri< nbrTriangles; tri++)
+            {
+                position[0]=bary_coord[tri][0];
+                position[1]=bary_coord[tri][1];
+                position[2]=bary_coord[tri][2];
+                sofa::helper::gl::GlText::draw ( tri, position , scale );
+            }
+
+            glEndList();
+
+            /*
+              trishell_list = glGenLists(1);
+              glNewList(trishell_list, GL_COMPILE);
+
+              // Drawing triangleVertexSHell positions around each vertex
+              scale = 0.0008;
+              for (unsigned int vert = 0; vert <nbrVertices; vert++)
+              {
+
+              for (unsigned int tri = 0; tri < m_triangleVertexShell[vert].size(); tri++)
+              {
+              position[0] = (coords[ vert ][0] * 1.5 + bary_coord[ m_triangleVertexShell[vert][tri] ][0])/2.5;
+              position[1] = (coords[ vert ][1] * 1.5 + bary_coord[ m_triangleVertexShell[vert][tri] ][1])/2.5;
+              position[2] = (coords[ vert ][2] * 1.5 + bary_coord[ m_triangleVertexShell[vert][tri] ][2])/2.5;
+
+
+              sofa::helper::gl::GlText::draw ( tri, position , scale );
+              }
+              }
+            	  glEndList();
+
+
+              // Creatring edges
+              if (!hasEdgeVertexShell())
+              {
+              std::cout << "creating createEdgeVertexShellArray()" << std::endl;
+
+              createEdgeVertexShellArray();
+              }
+
+            */
+            bary_coord.clear();
+            Edge the_edge;
+            bary_coord.resize(nbrEdges);
+
+            for(unsigned int edge = 0; edge< nbrEdges; edge++)
+            {
+                the_edge = getEdgeArray()[edge];
+
+                bary_x=0;
+                bary_y=0;
+                bary_z=0;
+
+                for (unsigned int i = 0; i<2; i++)
+                {
+                    bary_x = bary_x + coords[ the_edge[i] ][0];
+                    bary_y = bary_y + coords[ the_edge[i] ][1];
+                    bary_z = bary_z + coords[ the_edge[i] ][2];
+                }
+
+                bary_coord[edge].push_back(bary_x/2);
+                bary_coord[edge].push_back(bary_y/2);
+                bary_coord[edge].push_back(bary_z/2);
+            }
+
+
+            edges_list = glGenLists(1);
+            glNewList(edges_list, GL_COMPILE);
+
+            // Drawing edges index
+            scale = 0.00005;
+            for (unsigned int edge =0; edge< nbrEdges; edge++)
+            {
+                position[0]=bary_coord[edge][0];
+                position[1]=bary_coord[edge][1];
+                position[2]=bary_coord[edge][2];
+                sofa::helper::gl::GlText::draw ( edge, position , scale );
+            }
+            glEndList();
+
+            /*
+              edgeshell_list = glGenLists(1);
+              glNewList(edgeshell_list, GL_COMPILE);
+
+              // Drawing edgeVertexSHell positions around each vertex
+              scale = 0.0004;
+              for (unsigned int vert = 0; vert <nbrVertices; vert++)
+              {
+
+              for (unsigned int edge = 0; edge < m_edgeVertexShell[vert].size(); edge++)
+              {
+              position[0] = (coords[ vert ][0] * 1.5 + bary_coord[ m_edgeVertexShell[vert][edge] ][0])/2.5;
+              position[1] = (coords[ vert ][1] * 1.5 + bary_coord[ m_edgeVertexShell[vert][edge] ][1])/2.5;
+              position[2] = (coords[ vert ][2] * 1.5 + bary_coord[ m_edgeVertexShell[vert][edge] ][2])/2.5;
+
+
+              sofa::helper::gl::GlText::draw ( edge, position , scale );
+              }
+              }
+
+              glEndList();
+            */
+            indexes_dirty = false;
+        }
+
+        glCallList (dof_list);
+        glCallList (triangles_list);
+        glCallList (edges_list);
+        //glCallList (trishell_list);
+        //glCallList (edgeshell_list);
+    }
+
 }
 
 
