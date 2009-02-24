@@ -84,24 +84,22 @@ int numDefault=0;
 BaseElement* createNode(TiXmlNode* root, const char *basefilename, bool isRoot = false)
 {
     //if (!xmlStrcmp(root->name,(const xmlChar*)"text")) return NULL;
-    //if (root->Type != TiXmlNode::NodeType::ELEMENT) return NULL;
+    if (root->Type() != TiXmlNode::ELEMENT) return NULL;
     TiXmlElement* element = root->ToElement();
-
-    if (!element) return NULL;
+    if (!element || !element->Value() || !element->Value()[0]) return NULL;
 
     // handle special 'preprocessor' tags
 
-    if (!strcmp(element->Value(),"include"))
+    if (std::string(element->Value())=="include")
     {
         return includeNode(root, basefilename);
     }
 
     std::string classType,name, type;
 
-    const char* pname = element->Attribute("name");
-    const char* ptype = element->Attribute("type");
-
     classType = element->Value();
+
+    const char* pname = element->Attribute("name");
 
     if (pname != NULL)
     {
@@ -116,6 +114,9 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename, bool isRoot =
         ++numDefault;
         name += buf;
     }
+
+    const char* ptype = element->Attribute("type");
+
     if (ptype != NULL)
     {
         type = ptype;
@@ -139,7 +140,7 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename, bool isRoot =
         if (sofa::helper::system::DataRepository.findFileFromFile(filename, basefilename))
         {
             // we found a replacement xml
-            element->SetAttribute("href",filename);
+            element->SetAttribute("href",filename.c_str());
             element->RemoveAttribute("type");
             return includeNode(root, basefilename);
         }
