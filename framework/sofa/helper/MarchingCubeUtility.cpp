@@ -770,15 +770,22 @@ void MarchingCubeUtility::setBordersFromRealCoords ( const vector<set<Vector3> >
 
 
 // A priori, il n'y a pas de données sur les bords (tout du moins sur le premier voxel)
-void MarchingCubeUtility::findSeeds ( vector<Vec3i>& seeds, const unsigned char *_data )
+void MarchingCubeUtility::findSeeds ( vector<Vec3i>& seeds, const float isoValue, const unsigned char *_data )
 {
+    std::cout << "MarchingCubeUtility::findSeeds(). Begining." << std::endl;
     vector< float > data ( dataResolution[0]*dataResolution[1]*dataResolution[2] );
-    sofa::helper::set<Vec3i> parsedVoxels;
+    sofa::helper::set<unsigned int> parsedVoxels;
     if ( data.size() == 0 )
         return;
 
+    //float min=999999, max=0;
     for ( unsigned int i=0; i<data.size(); ++i )
+    {
         data[i] = ( float ) _data[i];
+        //if( data[i] < min) min = data[i];
+        //if( data[i] > max) max = data[i];
+    }
+    //std::cout << "MCube. minValue: " << min << ", maxValue: " << max << std::endl;
 
     if ( convolutionSize != 0 )
         smoothData ( &data[0] );
@@ -789,8 +796,6 @@ void MarchingCubeUtility::findSeeds ( vector<Vec3i>& seeds, const unsigned char 
     Vec3i bboxMax = Vec3i ( bbox.max / cubeStep );
     Vec3i gridSize = Vec3i ( dataResolution /cubeStep );
 
-    Vector3 gridStep = Vector3 ( 2.0f/ ( ( float ) gridSize[0] ), 2.0f/ ( ( float ) gridSize[1] ), 2.0f/ ( ( float ) gridSize[2] ) );
-
     Vec3i dataGridStep ( dataResolution[0]/gridSize[0],dataResolution[1]/gridSize[1],dataResolution[2]/gridSize[2] );
 
     unsigned int index;
@@ -799,17 +804,19 @@ void MarchingCubeUtility::findSeeds ( vector<Vec3i>& seeds, const unsigned char 
             for ( int i=bboxMin[0]; i<bboxMax[0]-1; i++ )
             {
                 index = i + j*gridSize[0] + k*gridSize[0]*gridSize[1];
-                if ( data[index] )
+
+                if ( data[index] >= isoValue)
                 {
                     Vec3i currentCube ( i, j , k );
-                    if ( parsedVoxels.find ( currentCube ) == parsedVoxels.end() )
+                    if ( parsedVoxels.find ( index ) == parsedVoxels.end() )
                     {
                         seeds.push_back ( currentCube - Vector3 ( 1,0,0 ) );
                         // propager sur les autres voxels et les incrire ds parsedVoxels.
-                        findConnectedVoxels ( parsedVoxels, currentCube, data );
+                        findConnectedVoxels ( parsedVoxels, isoValue, currentCube, data );
                     }
                 }
             }
+    std::cout << "MarchingCubeUtility::findSeeds(). Ending. Seeds: " << seeds << std::endl;
 }
 
 
@@ -856,27 +863,41 @@ void MarchingCubeUtility::updateTriangleInRegularGridVector ( helper::vector< he
 
 
 
-void MarchingCubeUtility::findConnectedVoxels ( sofa::helper::set<Vec3i>& connectedVoxels, const Vec3i& from, const vector<float>& data )
+void MarchingCubeUtility::findConnectedVoxels ( sofa::helper::set<unsigned int>& connectedVoxels, const float isoValue, const Vec3i& from, const vector<float>& data )
 {
-    if ( connectedVoxels.find ( from ) != connectedVoxels.end() ) return;
     Vec3i bboxMin = Vec3i ( bbox.min / cubeStep );
     Vec3i bboxMax = Vec3i ( bbox.max / cubeStep );
-    Vec3i gridSize = Vec3i ( bbox.max /cubeStep );
+    int minX = bboxMin[0];
+    int minY = bboxMin[1];
+    int minZ = bboxMin[2];
+    int maxX = bboxMax[0]-1;
+    int maxY = bboxMax[1]-1;
+    int maxZ = bboxMax[2]-1;
+    Vec3i gridSize = Vec3i ( dataResolution /cubeStep );
 
-    Vector3 gridStep = Vector3 ( 2.0f/ ( ( float ) gridSize[0] ), 2.0f/ ( ( float ) gridSize[1] ), 2.0f/ ( ( float ) gridSize[2] ) );
+    std::stack<Vec3i> voxelsToTest;
+    voxelsToTest.push( from);
 
-    unsigned int index = from[0] + from[1]*gridSize[0] + from[2]*gridSize[0]*gridSize[1];
+    while (! voxelsToTest.empty())
+    {
+        Vec3i coord = voxelsToTest.top();
+        voxelsToTest.pop();
 
-    if ( !data[index] ) return;
+        unsigned int index = coord[0] + coord[1]*gridSize[0] + coord[2]*gridSize[0]*gridSize[1];
 
-    connectedVoxels.insert ( from );
+        if ( connectedVoxels.find ( index ) != connectedVoxels.end() ) continue;
 
-    if ( from[0] > bboxMin[0] ) findConnectedVoxels ( connectedVoxels, from + Vec3i ( -1, 0, 0 ), data );
-    if ( from[0] < bboxMax[0]-1 ) findConnectedVoxels ( connectedVoxels, from + Vec3i ( 1, 0, 0 ), data );
-    if ( from[1] > bboxMin[1] ) findConnectedVoxels ( connectedVoxels, from + Vec3i ( 0,-1, 0 ), data );
-    if ( from[1] < bboxMax[1]-1 ) findConnectedVoxels ( connectedVoxels, from + Vec3i ( 0, 1, 0 ), data );
-    if ( from[2] > bboxMin[2] ) findConnectedVoxels ( connectedVoxels, from + Vec3i ( 0, 0,-1 ), data );
-    if ( from[2] < bboxMax[2]-1 ) findConnectedVoxels ( connectedVoxels, from + Vec3i ( 0, 0, 1 ), data );
+        if ( data[index] < isoValue ) continue;
+
+        connectedVoxels.insert ( index );
+
+        if ( coord[0] > minX ) voxelsToTest.push( coord + Vec3i (-1, 0, 0 ));
+        if ( coord[0] < maxX ) voxelsToTest.push( coord + Vec3i ( 1, 0, 0 ));
+        if ( coord[1] > minY ) voxelsToTest.push( coord + Vec3i ( 0,-1, 0 ));
+        if ( coord[1] < maxY ) voxelsToTest.push( coord + Vec3i ( 0, 1, 0 ));
+        if ( coord[2] > minZ ) voxelsToTest.push( coord + Vec3i ( 0, 0,-1 ));
+        if ( coord[2] < maxZ ) voxelsToTest.push( coord + Vec3i ( 0, 0, 1 ));
+    }
 }
 
 
