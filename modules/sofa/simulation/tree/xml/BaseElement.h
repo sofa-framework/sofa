@@ -68,7 +68,7 @@ public:
     virtual const char* getClass() const = 0;
 
     /// Get the associated object
-    //virtual core::objectmodel::Base* getBaseObject() = 0;
+    virtual core::objectmodel::Base* getObject() = 0;
 
     /// Get the node instance name
     std::string getName()
