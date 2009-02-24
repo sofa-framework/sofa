@@ -52,6 +52,7 @@ class SOFA_HELPER_API MarchingCubeUtility
 public:
     typedef unsigned int PointID;
     typedef Vec<3, int> Vec3i;
+    typedef Vec<6, int> Vec6i;
 
 public:
     MarchingCubeUtility();
@@ -80,10 +81,18 @@ public:
     }
 
     /// Set the bounding box (in the data space) to apply mCube localy.
-    void setBoundingBox ( const Vec3i& min, const Vec3i& size )
+    void setBoundingBox ( const Vec6i& roi )
+    {
+        Vec3i min( roi[0], roi[1], roi[2]);
+        Vec3i max( roi[3], roi[4], roi[5]);
+        setBoundingBox( min, max);
+    }
+
+    /// Set the bounding box (in the data space) to apply mCube localy.
+    void setBoundingBox ( const Vec3i& min, const Vec3i& max )
     {
         this->bbox.min = min;
-        this->bbox.max = min + size;
+        this->bbox.max = max;
         assert ( bbox.min[0] >= 0 );
         assert ( bbox.min[1] >= 0 );
         assert ( bbox.min[2] >= 0 );
@@ -118,7 +127,7 @@ public:
     void run ( const unsigned char *data,  const float isolevel, sofa::helper::io::Mesh &m ) const;
 
     /// given a set of data, find seeds to run quickly.
-    void findSeeds ( vector<Vec3i>& seeds, const unsigned char *_data );
+    void findSeeds ( vector<Vec3i>& seeds, const float isoValue, const unsigned char *_data );
 
     /// Given coords in the scene, find seeds coords.
     void findSeedsFromRealCoords ( vector<Vec3i>& mCubeCoords, const vector<Vector3>& realCoords ) const;
@@ -155,7 +164,7 @@ private:
         return ( ( dataVoxels[index>>3]& ( ( int ) ( pow ( 2.0f, i ) ) ) ) >> i ) == 1;
     }
 
-    void findConnectedVoxels ( set<Vec3i>& connectedVoxels, const Vec3i& from, const vector<float>& data );
+    void findConnectedVoxels ( set<unsigned int>& connectedVoxels, const float isoValue, const Vec3i& from, const vector<float>& data );
 
     void createGaussianConvolutionKernel ( vector< float >  &convolutionKernel ) const;
 
