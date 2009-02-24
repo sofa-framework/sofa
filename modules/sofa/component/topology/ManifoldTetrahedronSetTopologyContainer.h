@@ -95,7 +95,14 @@ public:
      *
      */
 
+    virtual void draw();
+
+
 protected:
+
+    Data<bool> debugViewIndices;
+    Data<bool> debugViewIndicesTetra;
+    Data<bool> shellDisplay;
 
     /** \brief Creates the Tetrahedron Vertex Shell Array
      *
