@@ -30,6 +30,7 @@
 #include <iostream>
 #include <sofa/core/ObjectFactory.h>
 
+
 namespace sofa
 {
 
@@ -49,7 +50,7 @@ using namespace sofa::defaulttype;
 
 TriangleSetTopologyModifier::TriangleSetTopologyModifier(): EdgeSetTopologyModifier()
 {
-    m_listTriRemove=this->initData(&m_listTriRemove,  "Remove triangles by index", "Debug : remove a triangle or a list of triangles by using their indices.");
+    m_listTriRemove=this->initData(&m_listTriRemove,  "Remove triangles by index", "Debug : remove a triangle or a list of triangles by using their indices (only while animate).");
     //	m_listTriAdd=this->initData(&m_listTriAdd,  "Add triangles by index", "Debug : remove a triangle or a list of triangles by using their indices.");
 }
 
@@ -65,12 +66,9 @@ void TriangleSetTopologyModifier::init()
 
 void TriangleSetTopologyModifier::reinit()
 {
-    if (!(m_listTriRemove.getValue () ).empty())
+    if (!(m_listTriRemove.getValue () ).empty() && this->getContext()->getAnimate())
     {
-        std::cout << " removing triangles: " << m_listTriRemove.getValue ()<<std::endl;
         sofa::helper::vector< unsigned int > items = m_listTriRemove.getValue ();
-        //animate_.getValue();
-
         removeItems(items);
 
         items.clear();
