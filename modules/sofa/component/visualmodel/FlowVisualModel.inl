@@ -326,7 +326,7 @@ void FlowVisualModel<DataTypes>::draw()
             for(unsigned int j=0 ; j<streamLines[i].positions.size() ; j++)
             {
                 glColor3f(1.0,1.0,1.0);
-                glVertex3dv(streamLines[i].positions[j].ptr());
+                glVertex3f((GLfloat) streamLines[i].positions[j][0], (GLfloat) streamLines[i].positions[j][1], (GLfloat) streamLines[i].positions[j][2]);
             }
             glEnd();
         }
