@@ -62,7 +62,7 @@ public:
     void processObject(simulation::Node*, core::objectmodel::BaseObject* obj);
 
     virtual const char* getClassName() const { return "PropagateEventVisitor"; }
-    virtual const char* getInfos() const { return m_event->getClassName();  }
+    virtual std::string getInfos() const { return std::string(m_event->getClassName());  }
 protected:
     sofa::core::objectmodel::Event* m_event;
 };

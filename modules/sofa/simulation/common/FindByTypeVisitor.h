@@ -62,7 +62,7 @@ public:
         return RESULT_CONTINUE;
     }
     virtual const char* getClassName() const { return "FindByTypeVisitor"; }
-    virtual const char* getInfos() const { std::string name="["+sofa::helper::gettypename(typeid(T))+"]"; return name.c_str(); }
+    virtual std::string getInfos() const { std::string name="["+sofa::helper::gettypename(typeid(T))+"]"; return name; }
 
 };
 

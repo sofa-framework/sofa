@@ -222,7 +222,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalVAvailVisitor"; }
-    virtual const char* getInfos() const { std::string name="[" + v.getName() + "]"; return name.c_str();  }
+    virtual std::string getInfos() const { std::string name="[" + v.getName() + "]"; return name;  }
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
@@ -253,7 +253,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalVAllocVisitor"; }
-    virtual const char* getInfos() const {std::string name="[" + v.getName() + "]"; return name.c_str();}
+    virtual std::string getInfos() const {std::string name="[" + v.getName() + "]"; return name;}
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
@@ -283,7 +283,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalVFreeVisitor"; }
-    virtual const char* getInfos() const {std::string name="[" + v.getName() + "]"; return name.c_str();}
+    virtual std::string getInfos() const {std::string name="[" + v.getName() + "]"; return name;}
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
@@ -317,7 +317,7 @@ public:
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/);
 
     virtual const char* getClassName() const { return "MechanicalVOpVisitor";}
-    virtual const char* getInfos() const
+    virtual std::string getInfos() const
     {
         std::string info="v=";
         std::string aLabel;
@@ -351,7 +351,7 @@ public:
             }
         }
         info += " : with v[" + v.getName() + "] " + aLabel + bLabel + fLabel;
-        return info.c_str();
+        return info;
     }
     //virtual void processNodeBottomUp(simulation::Node* node);
 
@@ -444,11 +444,11 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalVDotVisitor";}
-    virtual const char* getInfos() const
+    virtual std::string getInfos() const
     {
-        std::string name("v=a*b with a[");
+        std::string name("v= a*b with a[");
         name += a.getName() + "] and b[" + b.getName() + "]";
-        return name.c_str();
+        return name;
     }
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -491,9 +491,9 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalPropagateDxVisitor"; }
-    virtual const char* getInfos() const
+    virtual std::string getInfos() const
     {
-        std::string name="["+dx.getName()+"]"; return name.c_str();
+        std::string name="["+dx.getName()+"]"; return name;
     }
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -528,7 +528,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalPropagateDxAndResetForceVisitor";}
-    virtual const char* getInfos() const { std::string name= "dx["+dx.getName()+"] f["+f.getName()+"]"; return name.c_str();}
+    virtual std::string getInfos() const { std::string name= "dx["+dx.getName()+"] f["+f.getName()+"]"; return name;}
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -620,7 +620,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalPropagateAndAddDxVisitor"; }
-    virtual const char* getInfos() const { std::string name= "["+dx.getName()+"]"; return name.c_str(); }
+    virtual std::string getInfos() const { std::string name= "["+dx.getName()+"]"; return name; }
 
 
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
@@ -663,7 +663,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalAddMDxVisitor"; }
-    virtual const char* getInfos() const { std::string name="dx["+dx.getName()+"] in res[" + res.getName()+"]"; return name.c_str(); }
+    virtual std::string getInfos() const { std::string name="dx["+dx.getName()+"] in res[" + res.getName()+"]"; return name; }
 
 #ifdef SOFA_SUPPORT_MAPPED_MASS
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
@@ -713,7 +713,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalAccFromFVisitor"; }
-    virtual const char* getInfos() const { std::string name="a["+a.getName()+"] f["+f.getName()+"]"; return name.c_str(); }
+    virtual std::string getInfos() const { std::string name="a["+a.getName()+"] f["+f.getName()+"]"; return name; }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -750,7 +750,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalPropagatePositionVisitor";}
-    virtual const char* getInfos() const { std::string name="x["+x.getName()+"]"; return name.c_str(); }
+    virtual std::string getInfos() const { std::string name="x["+x.getName()+"]"; return name; }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -793,7 +793,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalPropagatePositionAndVelocityVisitor";}
-    virtual const char* getInfos() const { std::string name="x["+x.getName()+"] v["+v.getName()+"]"; return name.c_str(); }
+    virtual std::string getInfos() const { std::string name="x["+x.getName()+"] v["+v.getName()+"]"; return name; }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -835,7 +835,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalPropagateFreePositionVisitor";}
-    virtual const char* getInfos() const { std::string name="x["+x.getName()+"] v["+v.getName()+"]"; return name.c_str(); }
+    virtual std::string getInfos() const { std::string name="x["+x.getName()+"] v["+v.getName()+"]"; return name; }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -873,11 +873,11 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const {  return "MechanicalResetForceVisitor";}
-    virtual const char* getInfos() const
+    virtual std::string getInfos() const
     {
         std::string name="["+res.getName()+"]";
         if (onlyMapped) name+= " Only Mapped";
-        return name.c_str();
+        return name;
     }
 
     /// Specify whether this action can be parallelized.
@@ -917,12 +917,12 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const {return "MechanicalComputeForceVisitor";}
-    virtual const char* getInfos() const
+    virtual std::string getInfos() const
     {
         std::string name=std::string("[")+res.getName()+std::string("]");
         if (accumulate) name+= " Accumulating";
         else            name+= " Not Accumulating";
-        return name.c_str();
+        return name;
     }
 
     /// Specify whether this action can be parallelized.
@@ -961,14 +961,14 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const {return "MechanicalComputeDfVisitor";}
-    virtual const char* getInfos() const
+    virtual std::string getInfos() const
     {
         std::string name="["+res.getName()+"]";
         if (useV) name+= " Using V";
         else      name+= " Not Using V";
         if (accumulate) name+= " Accumulating";
         else            name+= " Not Accumulating";
-        return name.c_str();
+        return name;
     }
 
     /// Specify whether this action can be parallelized.
@@ -1014,7 +1014,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalAddMBKdxVisitor"; }
-    virtual const char* getInfos() const { std::string name= "["+res.getName()+"]"; return name.c_str(); }
+    virtual std::string getInfos() const { std::string name= "["+res.getName()+"]"; return name; }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -1160,7 +1160,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalApplyConstraintsVisitor"; }
-    virtual const char* getInfos() const { std::string name= "["+res.getName()+"]"; return name.c_str(); }
+    virtual std::string getInfos() const { std::string name= "["+res.getName()+"]"; return name; }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -1358,7 +1358,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalAddSeparateGravityVisitor"; }
-    virtual const char* getInfos() const { std::string name= "["+res.getName()+"]"; return name.c_str(); }
+    virtual std::string getInfos() const { std::string name= "["+res.getName()+"]"; return name; }
 #ifdef DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
