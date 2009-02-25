@@ -41,7 +41,7 @@ namespace component
 namespace linearsolver
 {
 
-//#define DISPLAY_TIME
+#define DISPLAY_TIME
 
 #ifdef DISPLAY_TIME
 #include <sofa/helper/system/thread/CTime.h>
@@ -204,14 +204,16 @@ public:
         }
 
 #ifdef DISPLAY_TIME
-        time1 = ((double) timer->getTime() - time1) * timeStamp;
-        cerr<<"CGLinearSolver::solve, CG = "<<time1<<" invert = "<<time2<<endl;
+        time1 = (double)(((double) timer->getTime() - time1) * timeStamp / (nb_iter-1));
 #endif
 
         f_graph.endEdit();
         // x is the solution of the system
         if( printLog )
         {
+#ifdef DISPLAY_TIME
+            cerr<<"CGLinearSolver::solve, CG = "<<time1<<" bluid = "<<time2<<endl;
+#endif
             serr<<"CGLinearSolver::solve, nbiter = "<<nb_iter<<" stop because of "<<endcond<<sendl;
         }
         if( verbose )
@@ -222,18 +224,20 @@ public:
         this->deleteVector(&q);
         this->deleteVector(&r);
     }
-    /*
-        void setSystemMBKMatrix(double mFact, double bFact, double kFact) {
-        #ifdef DISPLAY_TIME
-        		CTime * timer;
-        		time2 = (double) timer->getTime();
-        #endif
-        	Inherit::setSystemMBKMatrix(mFact,bFact,kFact);
-    	#ifdef DISPLAY_TIME
-    			time2 = ((double) timer->getTime() - time2)  * timeStamp;
-    	#endif
-        }
-    */
+
+#ifdef DISPLAY_TIME
+
+    void setSystemMBKMatrix(double mFact, double bFact, double kFact)
+    {
+        CTime * timer;
+        time2 = (double) timer->getTime();
+
+        Inherit::setSystemMBKMatrix(mFact,bFact,kFact);
+
+        time2 = ((double) timer->getTime() - time2)  * timeStamp;
+    }
+
+#endif
 };
 
 template<class TMatrix, class TVector>
