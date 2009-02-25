@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_CONSTRAINT_BOXROI_CPP
+#define SOFA_COMPONENT_ENGINE_BOXROI_CPP
 #include <sofa/component/engine/BoxROI.inl>
 #include <sofa/core/componentmodel/behavior/Constraint.inl>
 #include <sofa/core/ObjectFactory.h>
@@ -35,7 +35,7 @@ namespace sofa
 namespace component
 {
 
-namespace constraint
+namespace engine
 {
 
 SOFA_DECL_CLASS(BoxROI)
@@ -50,10 +50,10 @@ int BoxROIClass = core::RegisterObject("Keep fixed the points inside a given box
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_CONSTRAINT_API BoxROI<Vec3dTypes>;
+template class SOFA_COMPONENT_ENGINE_API BoxROI<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_CONSTRAINT_API BoxROI<Vec3fTypes>;
+template class SOFA_COMPONENT_ENGINE_API BoxROI<Vec3fTypes>;
 #endif
 
 

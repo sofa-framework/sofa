@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINT_BOXROI_INL
-#define SOFA_COMPONENT_CONSTRAINT_BOXROI_INL
+#ifndef SOFA_COMPONENT_ENGINE_BOXROI_INL
+#define SOFA_COMPONENT_ENGINE_BOXROI_INL
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
@@ -39,11 +39,12 @@ namespace sofa
 namespace component
 {
 
-namespace constraint
+namespace engine
 {
 
 using namespace sofa::helper;
 using namespace sofa::defaulttype;
+using namespace core::objectmodel;
 
 template <class DataTypes>
 BoxROI<DataTypes>::BoxROI()
@@ -211,7 +212,7 @@ bool BoxROI<DataTypes>::addBBox(double* minBBox, double* maxBBox)
     return true;
 }
 
-} // namespace constraint
+} // namespace engine
 
 } // namespace component
 
