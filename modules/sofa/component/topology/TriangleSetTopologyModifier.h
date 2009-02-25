@@ -49,13 +49,16 @@ typedef BaseMeshTopology::TriangleEdges TriangleEdges;
 class SOFA_COMPONENT_CONTAINER_API TriangleSetTopologyModifier : public EdgeSetTopologyModifier
 {
 public:
-    TriangleSetTopologyModifier()
-        : EdgeSetTopologyModifier()
-    { }
+    TriangleSetTopologyModifier();
+
+
 
     virtual ~TriangleSetTopologyModifier() {}
 
     virtual void init();
+
+    virtual void reinit();
+
 
     /** \brief Sends a message to warn that some triangles were added in this topology.
      *
@@ -149,7 +152,7 @@ public:
      *
      * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
      */
-    virtual void removeTrianglesWarning( sofa::helper::vector<unsigned int> &triangles);
+    virtual void removeTrianglesWarning(sofa::helper::vector<unsigned int> &triangles);
 
 
     /** \brief Remove a subset of  triangles. Eventually remove isolated edges and vertices
@@ -238,7 +241,9 @@ public:
 
     virtual void addPostProcessing(const sofa::helper::vector <Triangle> &triangles) {(void)triangles;};
 
-
+protected:
+    Data< sofa::helper::vector< unsigned int> > m_listTriRemove;
+    Data< sofa::helper::vector< unsigned int> > m_listTriAdd;
 
 private:
     TriangleSetTopologyContainer*	m_container;
