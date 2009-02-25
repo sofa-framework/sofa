@@ -47,12 +47,38 @@ using namespace std;
 using namespace sofa::defaulttype;
 
 
+TriangleSetTopologyModifier::TriangleSetTopologyModifier(): EdgeSetTopologyModifier()
+{
+    m_listTriRemove=this->initData(&m_listTriRemove,  "Remove triangles by index", "Debug : remove a triangle or a list of triangles by using their indices.");
+    //	m_listTriAdd=this->initData(&m_listTriAdd,  "Add triangles by index", "Debug : remove a triangle or a list of triangles by using their indices.");
+}
+
+
+
 void TriangleSetTopologyModifier::init()
 {
 
     EdgeSetTopologyModifier::init();
     this->getContext()->get(m_container);
 }
+
+
+void TriangleSetTopologyModifier::reinit()
+{
+    if (!(m_listTriRemove.getValue () ).empty())
+    {
+        std::cout << " removing triangles: " << m_listTriRemove.getValue ()<<std::endl;
+        sofa::helper::vector< unsigned int > items = m_listTriRemove.getValue ();
+        //animate_.getValue();
+
+        removeItems(items);
+
+        items.clear();
+    }
+
+
+}
+
 
 
 void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
@@ -218,6 +244,15 @@ void TriangleSetTopologyModifier::addEdgesProcess(const sofa::helper::vector< Ed
 
 void TriangleSetTopologyModifier::removeItems(sofa::helper::vector< unsigned int >& items)
 {
+    for (unsigned int i = 0; i < items.size(); i++)
+    {
+        if( items[i] >= m_container->m_triangle.size())
+        {
+            std::cout << "Error: TriangleSetTopologyModifier::removeTriangles: Triangle: "<< items[i] <<" is out of bound" << std::endl;
+            return;
+        }
+    }
+
     if (removePrecondition(items))
     {
         removeTriangles(items, true, true);
@@ -242,13 +277,11 @@ void TriangleSetTopologyModifier::removeTriangles(sofa::helper::vector< unsigned
     // now destroy the old triangles.
     removeTrianglesProcess(  triangles ,removeIsolatedEdges, removeIsolatedPoints);
 
-
-
     m_container->checkTopology();
 }
 
 
-void TriangleSetTopologyModifier::removeTrianglesWarning( sofa::helper::vector<unsigned int> &triangles)
+void TriangleSetTopologyModifier::removeTrianglesWarning(sofa::helper::vector<unsigned int> &triangles)
 {
 
     for (unsigned int i=0; i<triangles.size(); i++)
@@ -275,6 +308,7 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
 #endif
         return;
     }
+
 
     if(m_container->hasEdges() && removeIsolatedEdges)
     {
@@ -526,4 +560,5 @@ bool TriangleSetTopologyModifier::removePrecondition(sofa::helper::vector< unsig
 } // namespace component
 
 } // namespace sofa
+
 
