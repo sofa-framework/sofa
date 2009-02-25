@@ -69,7 +69,7 @@ public:
 
     /// Return eventual information on the behavior of the visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getInfos() const { return ""; }
+    virtual std::string getInfos() const { return ""; }
 
 #ifdef SOFA_VERBOSE_TRAVERSAL
     void debug_write_state_before( core::objectmodel::BaseObject* obj ) ;
