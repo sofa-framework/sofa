@@ -37,7 +37,7 @@ template class FlowVisualModel<defaulttype::Vec3dTypes>;
 //template class FlowVisualModel<defaulttype::Vec2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-//template class FlowVisualModel<defaulttype::Vec3fTypes>;
+template class FlowVisualModel<defaulttype::Vec3fTypes>;
 //template class FlowVisualModel<defaulttype::Vec2fTypes>;
 #endif
 
