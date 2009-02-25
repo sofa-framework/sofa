@@ -128,6 +128,7 @@ void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::solveSystem(
     this->solve(*systemMatrix, *systemLHVector, *systemRHVector);
 }
 
+
 template<>
 GraphScatteredMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::createMatrix()
 {

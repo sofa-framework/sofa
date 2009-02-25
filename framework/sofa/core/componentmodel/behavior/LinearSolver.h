@@ -75,6 +75,9 @@ public:
     /// Solve the system as constructed using the previous methods
     virtual void solveSystem() = 0;
 
+    ///
+    virtual void partial_solve(std::list<int>& /*I_last_Disp*/, std::list<int>& /*I_last_Dforce*/, bool /*NewIn*/) {std::cerr<<"WARNING : partial_solve is not implemented yet"<<std::endl; }
+
     /// Multiply the inverse of the system matrix by the transpose of the given matrix J
     ///
     /// @param result the variable where the result will be added

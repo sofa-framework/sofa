@@ -79,11 +79,11 @@ public:
 
     virtual bool hasConstraintNumber(int index) ;  // virtual ???
 
-    virtual void resetConstraintForce(double * f)  ;
+    virtual void resetForUnbuiltResolution(double * f, std::list<int>& /*renumbering*/)  ;
 
     virtual void addConstraintDisplacement(double *d, int begin,int end) ;
 
-    virtual void setConstraintDForce(double *df, int begin, int end) ;
+    virtual void setConstraintDForce(double *df, int begin, int end, bool update) ;
 
     virtual void getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end) ;
     /////////////////////////////////////////////////////////////////////////////////

@@ -122,6 +122,7 @@ protected:
     Real Fbuf[6], DXbuf;
 
 
+
     /* optimization : buf of result = Compliance * VecConst on a sparse structure
     	typedef struct {
     		Deriv Cn;

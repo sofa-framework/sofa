@@ -1081,6 +1081,16 @@ void LocalBlock33::New_GS_State(double &mu, double &dn, double &dt, double &ds, 
     if (fn < 0)
     {
         fn=0; ft=0; fs=0;
+        // if the force was previously not null -> update the state
+        if (f_1[0]>0)
+        {
+            double df[3];
+            df[0] = fn-f_1[0];  df[1] = ft-f_1[1];  df[2] = fs-f_1[2];
+
+            dn += w[0]*df[0] + w[1]*df[1] + w[2]*df[2];
+            dt += w[1]*df[0] + w[3]*df[1] + w[4]*df[2];
+            ds += w[2]*df[0] + w[4]*df[1] + w[5]*df[2];
+        }
         return;
     }
 
@@ -1330,7 +1340,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
 
         }
 
-        if (error < tol)
+        if (error < tol*(numContacts+1))
         {
             free(d);
             for (int i = 0; i < numContacts; i++)
@@ -1346,7 +1356,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
         delete W33[i];
     free(W33);
 
-    //printf("\n No convergence in nlcp_gaussseidel function : error =%f after %d iterations", error, it);
+    std::cerr<<"\n No convergence in  nlcp_gaussseidel function : error ="<<error <<" after"<< it<<" iterations"<<std::endl;
     //afficheLCP(dfree,W,f,dim);
     return 0;
 
