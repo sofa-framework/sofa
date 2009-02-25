@@ -41,9 +41,15 @@
 
 
 #include <sofa/core/objectmodel/BaseContext.h>
+//Components of the core to detect during the addition of objects in a node
 #include <sofa/core/componentmodel/behavior/BaseMechanicalMapping.h>
+#include <sofa/core/BaseMapping.h>
+#include <sofa/core/VisualModel.h>
 #include <sofa/core/componentmodel/behavior/InteractionForceField.h>
 #include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
+#include <sofa/core/componentmodel/behavior/MasterSolver.h>
+#include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/core/componentmodel/behavior/LinearSolver.h>
 
 #include <sofa/simulation/common/AnimateVisitor.h>
 
@@ -80,8 +86,8 @@ BglNode::BglNode(BglSimulation* s, BglSimulation::Hgraph *g,  BglSimulation::Hve
 
 BglNode::~BglNode()
 {
-//          std::cerr << "Node this : " << this->getName() << " ; " << scene->h_node_vertex_map[this] << " DELETED\n";
-    scene->externalDeleteNode(this);
+    //std::cerr << "Destruction of Node this : " << this->getName() << " ; " << scene->h_node_vertex_map[this] << " DELETED\n";
+    scene->deleteNode(this);
 }
 
 
@@ -99,18 +105,30 @@ bool BglNode::addObject(BaseObject* obj)
     if (sofa::core::componentmodel::behavior::BaseMechanicalMapping* mm = dynamic_cast<sofa::core::componentmodel::behavior::BaseMechanicalMapping*>(obj))
     {
         scene->setMechanicalMapping(this,mm);
-        Node::addObject(obj);
-        return true;
     }
     else if (sofa::core::componentmodel::behavior::InteractionForceField* iff = dynamic_cast<sofa::core::componentmodel::behavior::InteractionForceField*>(obj))
     {
         scene->setContactResponse(this,iff);
-//             return true;
     }
     else if (sofa::core::componentmodel::behavior::InteractionConstraint* ic = dynamic_cast<sofa::core::componentmodel::behavior::InteractionConstraint*>(obj))
     {
         scene->setContactResponse(this,ic);
-//             return true;
+    }
+    else if (sofa::core::componentmodel::behavior::MasterSolver* ms = dynamic_cast<sofa::core::componentmodel::behavior::MasterSolver*>(obj))
+    {
+        scene->addSolver(ms,this);
+    }
+    else if (sofa::core::componentmodel::behavior::OdeSolver* odes = dynamic_cast<sofa::core::componentmodel::behavior::OdeSolver*>(obj))
+    {
+        scene->addSolver(odes,this);
+    }
+    else if (sofa::core::BaseMapping* vm = dynamic_cast<sofa::core::BaseMapping*>(obj))
+    {
+        scene->setVisualMapping(this,vm);
+    }
+    else if (sofa::core::VisualModel* vm = dynamic_cast<sofa::core::VisualModel*>(obj))
+    {
+        scene->setVisualModel(this,vm);
     }
     return Node::addObject(obj);
 }
@@ -221,9 +239,10 @@ void BglNode::doExecuteVisitor( Visitor* vis )
 /// Generic object access, possibly searching up or down from the current context
 ///
 /// Note that the template wrapper method should generally be used to have the correct return type,
-void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, SearchDirection dir) const
+void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
 {
     GetObjectVisitor getobj(class_info);
+    getobj.setTags(tags);
     if ( dir == SearchDown )
     {
 //             std::cerr << "Search Down ";
@@ -262,7 +281,7 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, S
         for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
         {
             void* result = class_info.dynamicCast(*it);
-            if (result != NULL)
+            if (result != NULL && (tags.empty() || (*it)->getTags().includes(tags)))
             {
 //                     std::cerr << "Single Search : " << sofa::helper::gettypename((class_info)) << " result : " << result << "\n";
                 return result;
@@ -288,10 +307,11 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
 /// Generic object access, possibly searching up or down from the current context
 ///
 /// Note that the template wrapper method should generally be used to have the correct return type,
-void BglNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, SearchDirection dir) const
+void BglNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
 {
 //         std::cerr << "Search for " << sofa::helper::gettypename(class_info) << "\n";
     GetObjectsVisitor getobjs(class_info, container);
+    getobjs.setTags(tags);
     if ( dir == SearchDown )
     {
         boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(scene->hgraph) );
@@ -326,7 +346,7 @@ void BglNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
         for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
         {
             void* result = class_info.dynamicCast(*it);
-            if (result != NULL)
+            if (result != NULL && (tags.empty() || (*it)->getTags().includes(tags)))
                 container(result);
         }
     }
@@ -432,7 +452,9 @@ void BglNode::updateVisualContext(int FILTER)
         if (FILTER==10)
         {
             for (unsigned int i=0; i<parents.size(); ++i)
+            {
                 fusionVisualContext(*parents[i]);
+            }
         }
         else
         {

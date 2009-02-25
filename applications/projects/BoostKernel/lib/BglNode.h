@@ -83,21 +83,37 @@ public:
     /// Do one step forward in time
     void animate( double dt );
 
+
+    /// Generic object access, given a set of required tags, possibly searching up or down from the current context
+    ///
+    /// Note that the template wrapper method should generally be used to have the correct return type,
+    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const;
+
     /// Generic object access, possibly searching up or down from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, SearchDirection dir = SearchUp) const;
+    void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, SearchDirection dir = SearchUp) const
+    {
+        return getObject(class_info, sofa::core::objectmodel::TagSet(), dir);
+    }
 
     /// Generic object access, given a path from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
     virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const;
 
+    /// Generic list of objects access, given a set of required tags, possibly searching up or down from the current context
+    ///
+    /// Note that the template wrapper method should generally be used to have the correct return type,
+    virtual void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const;
 
     /// Generic list of objects access, possibly searching up or down from the current context
-    /// @todo Would better be a member of BglSimulation
-    virtual void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, SearchDirection dir = SearchUp) const;
-
+    ///
+    /// Note that the template wrapper method should generally be used to have the correct return type,
+    void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, SearchDirection dir = SearchUp) const
+    {
+        getObjects(class_info, container, sofa::core::objectmodel::TagSet(), dir);
+    }
 
     bool addObject(BaseObject* obj);
     bool removeObject(BaseObject* obj);
