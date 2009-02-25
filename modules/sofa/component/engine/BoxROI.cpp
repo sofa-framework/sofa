@@ -22,28 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-
-#include <sofa/component/behaviormodel/initBehaviorModel.h>
-#include <sofa/component/collision/initCollision.h>
-#include <sofa/component/constraint/initConstraint.h>
-#include <sofa/component/container/initContainer.h>
-#include <sofa/component/contextobject/initContextObject.h>
-#include <sofa/component/controller/initController.h>
-#include <sofa/component/engine/initEngine.h>
-#include <sofa/component/fem/initFEM.h>
-#include <sofa/component/forcefield/initForceField.h>
-#include <sofa/component/interactionforcefield/initInteractionForceField.h>
-#include <sofa/component/linearsolver/initLinearSolver.h>
-#include <sofa/component/mapping/initMapping.h>
-#include <sofa/component/mass/initMass.h>
-#include <sofa/component/mastersolver/initMasterSolver.h>
-#include <sofa/component/misc/initMisc.h>
-#include <sofa/component/odesolver/initOdeSolver.h>
-#include <sofa/component/topology/initTopology.h>
-#include <sofa/component/visualmodel/initVisualModel.h>
-#include <sofa/component/init.h>
-
+#define SOFA_COMPONENT_CONSTRAINT_BOXROI_CPP
+#include <sofa/component/engine/BoxROI.inl>
+#include <sofa/core/componentmodel/behavior/Constraint.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -51,34 +35,31 @@ namespace sofa
 namespace component
 {
 
-
-void init()
+namespace constraint
 {
-    static bool first = true;
-    if (first)
-    {
-        initBehaviorModel();
-        initCollision();
-        initConstraint();
-        initContainer();
-        initContextObject();
-        initController();
-        initEngine();
-        initFEM();
-        initForceField();
-        initInteractionForceField();
-        initLinearSolver();
-        initMapping();
-        initMass();
-        initMasterSolver();
-        initMisc();
-        initOdeSolver();
-        initTopology();
-        initVisualModel();
-        first = false;
-    }
-}
+
+SOFA_DECL_CLASS(BoxROI)
+
+int BoxROIClass = core::RegisterObject("Keep fixed the points inside a given box")
+#ifndef SOFA_FLOAT
+        .add< BoxROI<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< BoxROI<Vec3fTypes> >()
+#endif
+        ;
+
+#ifndef SOFA_FLOAT
+template class SOFA_COMPONENT_CONSTRAINT_API BoxROI<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_COMPONENT_CONSTRAINT_API BoxROI<Vec3fTypes>;
+#endif
+
+
+} // namespace constraint
 
 } // namespace component
 
 } // namespace sofa
+
