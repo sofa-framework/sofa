@@ -84,24 +84,28 @@ template <class DataTypes>
 void BoxROI<DataTypes>::update()
 {
     helper::vector<Vec6>& vb = *(boxes.beginEdit());
-    SetIndex& indices = *(f_indices.beginEdit());
 
     for (unsigned int bi=0; bi<vb.size(); ++bi)
     {
         if (vb[bi][0] > vb[bi][3]) std::swap(vb[bi][0],vb[bi][3]);
         if (vb[bi][1] > vb[bi][4]) std::swap(vb[bi][1],vb[bi][4]);
         if (vb[bi][2] > vb[bi][5]) std::swap(vb[bi][2],vb[bi][5]);
+    }
 
-        const Vec6& b=vb[bi];
-        indices.clear();
+    SetIndex& indices = *(f_indices.beginEdit());
 
-        for( unsigned i=0; i<x0->size(); ++i )
+    indices.clear();
+    for( unsigned i=0; i<x0->size(); ++i )
+    {
+        Real x=0.0,y=0.0,z=0.0;
+        DataTypes::get(x,y,z,(*x0)[i]);
+        for (unsigned int bi=0; bi<vb.size(); ++bi)
         {
-            Real x=0.0,y=0.0,z=0.0;
-            DataTypes::get(x,y,z,(*x0)[i]);
+            const Vec6& b=vb[bi];
             if( x >= b[0] && x <= b[3] && y >= b[1] && y <= b[4] && z >= b[2] && z <= b[5] )
             {
                 indices.push_back(i);
+                break;
             }
         }
     }
