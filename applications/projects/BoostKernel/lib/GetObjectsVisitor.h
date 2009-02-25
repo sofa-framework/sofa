@@ -47,6 +47,8 @@ public:
         : class_info(class_inf), container(cont)
     {}
 
+    void setTags(const sofa::core::objectmodel::TagSet& t) {tags=t;}
+
     Result processNodeTopDown( simulation::Node* node );
 
     virtual const char* getClassName() const { return "GetObjectsVisitor"; }
@@ -57,6 +59,7 @@ protected:
 
     const ClassInfo& class_info;
     GetObjectsCallBack& container;
+    sofa::core::objectmodel::TagSet tags;
 };
 
 
@@ -70,6 +73,8 @@ public:
         : class_info(class_inf), result(NULL)
     {}
 
+    void setTags(const sofa::core::objectmodel::TagSet& t) {tags=t;}
+
     Result processNodeTopDown( simulation::Node* node );
     void *getObject() {return result;}
     virtual const char* getClassName() const { return "GetObjectVisitor"; }
@@ -77,6 +82,7 @@ public:
 protected:
 
     const ClassInfo& class_info;
+    sofa::core::objectmodel::TagSet tags;
     void *result;
 };
 

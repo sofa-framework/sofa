@@ -117,7 +117,9 @@ public:
     typedef std::map<Node*, Hvertex> H_node_vertex_map;                    //  sofa node->hvertex
 
     Hgraph hgraph;             ///< the directed acyclic graph representing system dependencies (edges correspond to mappings)
-    HvertexVector hroots;      ///< the roots of the forest
+    HvertexVector hroots;           ///< the roots of the forest
+    HvertexVector visualroots;      ///< the roots of the visual graph
+    HvertexVector collisionroots;   ///< the roots of the collision graph
     H_vertex_node_map h_vertex_node_map;           ///< hvertex->sofa node
     //H_vertex_node_const_map h_vertex_node_const_map;           ///< hvertex->sofa node
     H_node_vertex_map h_node_vertex_map;     ///< sofa node->hvertex
@@ -155,18 +157,6 @@ public:
     void    addEdge(Hvertex p, Hvertex c);
     void    removeEdge(Hvertex p, Hvertex c);
     void    removeVertex(Hvertex p);
-
-    /** @name visual models
-        The sofa visual models and their mappings are separated from the mechanical mapping hierarchy.
-        This makes the hierarchy graph more homogeneous and hopefully easier to process.
-    */
-    /// @{
-    typedef vector<VisualModel*> VisualVector;
-    VisualVector visualModels;
-    typedef vector<Mapping*> MappingVector;
-    MappingVector visualMappings;
-    /// @}
-
 
 
     /** @name interaction graph
@@ -238,13 +228,9 @@ public:
      */
     bool needToComputeInteractions();
 
-    /** Compute the collision graph
+    /** Compute the Roots of the graphs
      */
-    void computeCollisionGraph();
-
-    /** Compute the Roots of the hgraph
-     */
-    void computeHroots();
+    void computeRoots();
 
     ///@}
 
@@ -277,8 +263,8 @@ public:
     /// Add a visual model to the scene, attached by a Mapping.
     /// They are not inserted in a scene graph, but in a separated container.
     /// The Mapping needs not be attached to a Node.
-    void setVisualModel( VisualModel* );
-    void setVisualMapping( Mapping* );
+    void setVisualModel( Node*,VisualModel* );
+    void setVisualMapping( Node*,Mapping* );
 
     /// Add an interaction
     void addInteraction( Node* n1, Node* n2, InteractionForceField* );
@@ -315,9 +301,6 @@ public:
     /// Delete a graph node and all the edges, and entries in map
     void deleteNode( Node* n);
 
-    /// Component has deleted a node
-    void externalDeleteNode( Node *n);
-
     /// Delete the hgraph node and all the edges, and entries in map
     void deleteHvertex( Hvertex n);
     /// Delete the rgraph node and all the edges, and entries in map
@@ -329,6 +312,10 @@ public:
 
     /// During init phase, we need to find the roots. We must discard the masterNode, collisionNode, and all the solverNode
     bool isRootUsable(Node* n);
+
+    bool isVisualRoot(Node* n);
+
+    bool isCollisionRoot(Node* n);
 
     /// Initialize all the nodes and edges depth-first
     void init();
@@ -371,6 +358,8 @@ public:
     Node* collisionNode;
     Hvertex collisionVertex; ///< Root of the collision graph. Contains the collision detection and response components */
 
+    Node* visualNode;
+    Hvertex visualVertex; ///< Root of the visual graph. Contains the visual models and mappings */
 
     /// @}
     Node* mouseNode;

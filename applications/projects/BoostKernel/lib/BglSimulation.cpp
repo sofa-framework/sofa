@@ -54,8 +54,10 @@
 #include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/common/CollisionVisitor.h>
 #include <sofa/simulation/common/CleanupVisitor.h>
+#include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/PrintVisitor.h>
 #include <sofa/simulation/common/PropagateEventVisitor.h>
+#include <sofa/simulation/common/UpdateMappingVisitor.h>
 #include <sofa/simulation/common/VisualVisitor.h>
 
 #include <sofa/simulation/common/AnimateBeginEvent.h>
@@ -111,6 +113,10 @@ BglSimulation::BglSimulation():
     // The collision Node
     collisionNode= static_cast<BglNode*>(newNodeNow("collisionNode"));
     collisionVertex = h_node_vertex_map[collisionNode];
+
+    // The visual Node
+    visualNode= static_cast<BglNode*>(newNodeNow("visualNode"));
+    visualVertex = h_node_vertex_map[visualNode];
 
 }
 
@@ -260,12 +266,6 @@ void BglSimulation::deleteNode( Node* n)
     vertexToDelete.insert(h_node_vertex_map[n]);
 }
 
-void BglSimulation::externalDeleteNode( Node* n)
-{
-//         std::cerr << "Delete Node " << n << " : \n";
-    externalDelete.insert(n);
-}
-
 void BglSimulation::deleteHvertex( Hvertex vH)
 {
 //         std::cerr << "Delete Now Node " << n << " : \n";
@@ -273,7 +273,7 @@ void BglSimulation::deleteHvertex( Hvertex vH)
     Node *node = h_vertex_node_map[vH];
     clear_vertex(vH, hgraph);
     h_node_vertex_map.erase(node);
-
+    h_vertex_node_map[vH]=NULL;
     //Cannot remove vertex: it changes all the vertices of the graph !!!
 //         remove_vertex(vH, hgraph);
 }
@@ -286,6 +286,7 @@ void BglSimulation::deleteRvertex( Rvertex vR)
     Node *node = r_vertex_node_map[vR];
     clear_vertex(vR, rgraph);
     r_node_vertex_map.erase(node);
+    r_vertex_node_map[vR]=NULL;
 
     //Cannot remove vertex: it changes all the vertices of the graph !!!
 //         remove_vertex(vR, rgraph);
@@ -416,7 +417,6 @@ void BglSimulation::computeInteractionGraphAndConnectedComponents()
     igraph.clear();
     for ( HvertexVector::iterator i=hroots.begin(), iend=hroots.end(); i!=iend; i++ )
     {
-
         Ivertex iv = add_vertex( igraph );
         Node* n = h_vertex_node_map[*i];
 //             std::cerr << "hroots: " << n->getName() << "\n";
@@ -521,19 +521,6 @@ void BglSimulation::computeInteractionGraphAndConnectedComponents()
 //           }
 }
 
-void BglSimulation::computeCollisionGraph()
-{
-
-    for ( Hvpair iter=boost::vertices(hgraph); iter.first!=iter.second; iter.first++)
-    {
-        if (h_vertex_node_map[*iter.first]->collisionModel.size())
-        {
-//                 cerr<<"Node "<<h_vertex_node_map[*iter.first]->getName()<<" is a collision Node"<<endl;
-            addHedge(collisionVertex,*iter.first );
-        }
-    }
-}
-
 void BglSimulation::setSolverOfCollisionGroup(Node* solverNode, Node* solverOfCollisionGroup)
 {
     solver_colisionGroup_map[solverNode] = solverOfCollisionGroup;
@@ -544,11 +531,22 @@ void BglSimulation::setSolverOfCollisionGroup(Node* solverNode, Node* solverOfCo
 
 bool BglSimulation::isRootUsable(Node* n)
 {
-    if (n==masterNode || n == collisionNode) return false;
-    std::map< Node*, Node*>::iterator it;
-//         for (it=solver_colisionGroup_map.begin();it!=solver_colisionGroup_map.end();it++)
-//           if (it->second == n) return false;
+    if (!n ||
+        n==masterNode || n == collisionNode || n == visualNode ||
+        n->mechanicalState.empty()) return false;
     return true;
+}
+bool BglSimulation::isVisualRoot(Node* n)
+{
+    if (!n ||
+        !n->visualModel.empty()) return true;
+    return false;
+}
+bool BglSimulation::isCollisionRoot(Node* n)
+{
+    if (!n ||
+        !n->collisionModel.empty()) return true;
+    return false;
 }
 
 /**
@@ -560,34 +558,33 @@ void BglSimulation::init()
     cerr<<"begin BglSimulation::init()"<<endl;
 
     /// find the roots in hgraph
-    computeHroots();
+    computeRoots();
 
     /// Initialize all the nodes using a depth-first visit
     for (HvertexVector::iterator i=hroots.begin(), iend=hroots.end(); i!=iend; i++ )
     {
-        h_vertex_node_map[*i]->init(); // init the root and its subgraph
         //Link all the nodes to the MasterNode, in ordre to propagate the Context
         addEdge( masterVertex, *i); // add nodes
     }
-
-    /// initialize the visual models and their mappings
-    for ( VisualVector::iterator i=visualModels.begin(), iend=visualModels.end(); i!=iend; i++ )
+    for (HvertexVector::iterator i=visualroots.begin(), iend=visualroots.end(); i!=iend; i++ )
     {
-        (*i)->setContext(masterNode);
-        (*i)->init();
+        //Link all the nodes to the MasterNode, in ordre to propagate the Context
+        addEdge( visualVertex, *i); // add nodes
     }
-    for ( MappingVector::iterator i=visualMappings.begin(), iend=visualMappings.end(); i!=iend; i++ )
+    for (HvertexVector::iterator i=collisionroots.begin(), iend=collisionroots.end(); i!=iend; i++ )
     {
-        (*i)->setContext(masterNode);
-        (*i)->init();
+        //Link all the nodes to the MasterNode, in ordre to propagate the Context
+        addEdge( collisionVertex, *i); // add nodes
     }
 
-    masterNode->init();
+    addHedge(masterVertex, visualVertex);
+
+    InitVisitor act;
+    masterNode->doExecuteVisitor(&act);
+
 
     /// compute the interaction groups
     computeInteractionGraphAndConnectedComponents();
-
-    computeCollisionGraph();
 
 }
 
@@ -627,7 +624,11 @@ void BglSimulation::mechanicalStep(Node* root, double dt)
         masterNode->moveObject( collisionPipeline );
         addEdge(masterVertex,collisionVertex);
 
+//             std::cerr << "Collision Part\n";
+//             print(masterNode);
+
         CollisionVisitor act;
+//             collisionNode->doExecuteVisitor(&act);
         masterNode->doExecuteVisitor(&act);
 
         removeEdge( masterVertex, collisionVertex);
@@ -698,17 +699,18 @@ void BglSimulation::mechanicalStep(Node* root, double dt)
 //                 std::cerr << "Solving with " << currentSolver->getName() << "\n";
 
             //Link the solver to the master Node
-            addHedge( masterVertex,solverVertex);
+//                  addHedge( masterVertex,solverVertex);
 
-//                  std::cerr << "\n\nStatus before Animating:\n";
-//                  print(masterNode);
+//                 std::cerr << "Animation Part\n";
+//                 print(masterNode);
 #ifdef DUMP_VISITOR_INFO
             simulation::Visitor::printComment(std::string("Animate ") + staticObjectName + currentSolver->getName() );
 #endif
             // animate this interaction group
-            masterNode->animate(dt);
+            currentSolver->animate(dt);
+//                 masterNode->animate(dt);
 
-            removeHedge( masterVertex, solverVertex);
+//                  removeHedge( masterVertex, solverVertex);
             //Clear the solverVertex from all the animated objects
             for (std::set<Hvertex>::iterator it=animatedObjectAdded.begin(); it!=animatedObjectAdded.end(); it++) removeHedge(solverVertex,*it);
         }
@@ -717,6 +719,9 @@ void BglSimulation::mechanicalStep(Node* root, double dt)
 
     for ( HvertexVector::iterator i=hroots.begin(), iend=hroots.end(); i!=iend; i++ ) addEdge( masterVertex,*i);
 
+#ifdef DUMP_VISITOR_INFO
+    simulation::Visitor::printComment(std::string("End Animate"));
+#endif
 }
 
 
@@ -750,38 +755,38 @@ void BglSimulation::animate(Node* root, double dt)
         masterNode->setTime ( startTime + (step+1)* mechanicalDt );
     }
 
-    //Update Visual Mapping
-    for ( MappingVector::iterator i=visualMappings.begin(), iend=visualMappings.end(); i!=iend; i++ )
-    {
-        //cerr<<"init mapping model, mapped from "<<(*i).second->getFrom()->getName()<<" to "<<(*i).second->getTo()->getName()<<endl;
-        (*i)->updateMapping();
-    }
-    //Update Mapping End Event
-    {
-        simulation::UpdateMappingEndEvent ev ( dt );
-        PropagateEventVisitor act ( &ev );
-        masterNode->doExecuteVisitor( &act );
-    }
-
     {
         AnimateEndEvent ev ( dt );
         PropagateEventVisitor act ( &ev );
         masterNode->doExecuteVisitor( &act );
     }
+    addHedge(masterVertex, visualVertex);
+    //Update Mapping
+    {
+        UpdateMappingVisitor actMapping;
+        visualNode->doExecuteVisitor( &actMapping );
+        simulation::UpdateMappingEndEvent ev ( dt );
+        PropagateEventVisitor act ( &ev );
+        masterNode->doExecuteVisitor( &act );
+    }
+
 #ifdef DUMP_VISITOR_INFO
     simulation::Visitor::printComment(std::string("End Step"));
 #endif
 
 }
 
-void BglSimulation::computeHroots()
+void BglSimulation::computeRoots()
 {
     /// find the roots in hgraph
     hroots.clear();
+    visualroots.clear();
+    collisionroots.clear();
     for ( Hvpair iter=boost::vertices(hgraph); iter.first!=iter.second; iter.first++)
     {
         //                std::cerr << isRootUsable(h_vertex_node_map[*iter.first]) << "-->usable? : " << h_vertex_node_map[*iter.first]->getName() << " " << in_degree (*iter.first,hgraph) << "\n";
-        if ( isRootUsable(h_vertex_node_map[*iter.first]) )
+        Node *vNode=h_vertex_node_map[*iter.first];
+        if ( isRootUsable(vNode) )
         {
             unsigned int degree = in_degree (*iter.first,hgraph);
             if (degree==0)
@@ -800,6 +805,8 @@ void BglSimulation::computeHroots()
                     hroots.push_back(*iter.first);
             }
         }
+        if (isVisualRoot(vNode)) visualroots.push_back(*iter.first);
+        if (isCollisionRoot(vNode)) collisionroots.push_back(*iter.first);
     }
 }
 
@@ -813,7 +820,7 @@ void BglSimulation::updateGraph()
     for (itEdge=edgeToAdd.begin(); itEdge!=edgeToAdd.end(); itEdge++) addEdge(h_node_vertex_map[ itEdge->first],h_node_vertex_map[ itEdge->second]);
     for (unsigned int i=0; i<interactionToAdd.size(); i++)         addInteractionNow(interactionToAdd[i]);
 
-    if (vertexToDelete.size() || nodeToAdd.size()) computeHroots();
+    if (vertexToDelete.size() || nodeToAdd.size()) computeRoots();
 
     vertexToDelete.clear();
     nodeToAdd.clear();
@@ -826,20 +833,17 @@ void BglSimulation::updateGraph()
 void BglSimulation::computeBBox(Node* root, SReal* minBBox, SReal* maxBBox)
 {
     sofa::simulation::Simulation::computeBBox(root,minBBox,maxBBox);
-
-    for ( VisualVector::iterator i=visualModels.begin(), iend=visualModels.end(); i!=iend; i++ )
-    {
-        (*i)->addBBox(minBBox,maxBBox);
-    }
+    sofa::simulation::Simulation::computeBBox(visualNode,minBBox,maxBBox);
 }
 
-void BglSimulation::setVisualModel( VisualModel* v)
+void BglSimulation::setVisualModel( Node* n, VisualModel* v)
 {
-    visualModels.push_back( v );
+    std::cerr << v->getName() << " Set Visual Model in " << n->getName() << "\n";
+    addHedge(visualVertex, h_node_vertex_map[n]);
 }
-void BglSimulation::setVisualMapping( Mapping* m)
+void BglSimulation::setVisualMapping( Node* n, Mapping* m)
 {
-    visualMappings.push_back( m );
+    addHedge(visualVertex, h_node_vertex_map[n]);
 }
 
 void BglSimulation::draw(Node* , helper::gl::VisualParameters*)
@@ -848,16 +852,7 @@ void BglSimulation::draw(Node* , helper::gl::VisualParameters*)
     // 	cerr<<"begin BglSimulation::glDraw()"<<endl;
     masterNode->glDraw();
 
-
-    for ( VisualVector::iterator i=visualModels.begin(), iend=visualModels.end(); i!=iend; i++ )
-    {
-        (*i)->drawVisual();
-    }
-    for ( MappingVector::iterator i=visualMappings.begin(), iend=visualMappings.end(); i!=iend; i++ )
-    {
-        (*i)->draw();
-    }
-
+    visualNode->glDraw();
     // 	cerr<<"end BglSimulation::glDraw()"<<endl;
 }
 
@@ -889,8 +884,8 @@ Node* BglSimulation::load(const char* f)
     }
     //else cerr<<"BglSimulation::loaded file "<<fileName<<endl;
 
-    //      cerr<<"GNode loaded: "<<endl;
-    //      groot->execute<PrintVisitor>();
+// 	     cerr<<"GNode loaded: "<<endl;
+// 	     groot->execute<PrintVisitor>();
     //      cerr<<"==========================="<<endl;
     std::map<simulation::Node*,BglNode*> gnode_bnode_map;
     BuildNodesFromGNodeVisitor b1(this);
@@ -900,12 +895,11 @@ Node* BglSimulation::load(const char* f)
     b2.setGNodeBNodeMap(gnode_bnode_map);
     groot->execute(b2);
 
-
     const sofa::core::objectmodel::Context &c = *( (sofa::core::objectmodel::Context*)groot->getContext());
     masterNode->copyContext(c);
 
     init();
-
+    std::cerr << "End Init \n";
     return masterNode;
 
     /*    cerr<<"loaded graph has "<<num_vertices(hgraph)<<" vertices and "<<num_edges(hgraph)<<" edges:"<<endl;
@@ -915,12 +909,12 @@ Node* BglSimulation::load(const char* f)
 /// Add an OdeSolver working inside a given Node
 void BglSimulation::addSolver(BaseObject* s,Node* n)
 {
-    if (!n) masterNode->moveObject(s);
-    else
-    {
-        n->moveObject(s);
-        nodeSolvers.insert(n);
-    }
+//         if (!n) masterNode->moveObject(s);
+//         else
+//           {
+//             n->moveObject(s);
+    nodeSolvers.insert(n);
+//           }
 }
 
 void BglSimulation::clear()
@@ -935,8 +929,6 @@ void BglSimulation::clear()
     instruments.clear();
     instrumentInUse.setValue(-1);
 
-
-//         externalDelete.clear();
     vertexToDelete.clear();
     nodeToAdd.clear();
     edgeToAdd.clear();
@@ -946,12 +938,7 @@ void BglSimulation::clear()
 void BglSimulation::reset(Node* root)
 {
     sofa::simulation::Simulation::reset(root);
-
-    for ( MappingVector::iterator i=visualMappings.begin(), iend=visualMappings.end(); i!=iend; i++ )
-    {
-        //cerr<<"init mapping model, mapped from "<<(*i).second->getFrom()->getName()<<" to "<<(*i).second->getTo()->getName()<<endl;
-        (*i)->updateMapping();
-    }
+    sofa::simulation::Simulation::reset(visualNode);
 
     updateGraph();
     clear();
@@ -965,21 +952,11 @@ void BglSimulation::unload(Node* root)
     root->execute<CleanupVisitor>();
     BglDeleteVisitor deleteGraph(this);
     masterNode->doExecuteVisitor(&deleteGraph);
+    visualNode->doExecuteVisitor(&deleteGraph);
 
     solver_colisionGroup_map.clear();
     nodeSolvers.clear();
     nodeGroupSolvers.clear();
-
-    for ( VisualVector::iterator i=visualModels.begin(), iend=visualModels.end(); i!=iend; i++ )
-    {
-        delete (*i);
-    }
-    for ( MappingVector::iterator i=visualMappings.begin(), iend=visualMappings.end(); i!=iend; i++ )
-    {
-        delete (*i);
-    }
-    visualModels.clear();
-    visualMappings.clear();
 
     clear();
 
@@ -1004,6 +981,9 @@ void BglSimulation::unload(Node* root)
     collisionNode= static_cast<BglNode*>(newNodeNow("collisionNode"));
     collisionVertex = h_node_vertex_map[collisionNode];
 
+    // The visual Node
+    visualNode= static_cast<BglNode*>(newNodeNow("visualNode"));
+    visualVertex = h_node_vertex_map[visualNode];
 
 }
 
