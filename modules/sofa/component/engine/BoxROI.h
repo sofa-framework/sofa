@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINT_BOXROI_H
-#define SOFA_COMPONENT_CONSTRAINT_BOXROI_H
+#ifndef SOFA_COMPONENT_ENGINE_BOXROI_H
+#define SOFA_COMPONENT_ENGINE_BOXROI_H
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
@@ -33,9 +33,8 @@
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/componentmodel/behavior/BaseConstraint.h>
-#include <sofa/component/constraint/FixedConstraint.h>
 #include <sofa/core/objectmodel/XDataPtr.h>
+#include <sofa/component/topology/PointSubset.h>
 
 namespace sofa
 {
@@ -43,10 +42,11 @@ namespace sofa
 namespace component
 {
 
-namespace constraint
+namespace engine
 {
 
 using namespace core::componentmodel::behavior;
+using namespace core::objectmodel;
 
 /** Keep fixed all the particles located inside a given box.
 */
@@ -106,17 +106,17 @@ public:
     MechanicalState<DataTypes>* mstate;
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINT_BOXROI_CPP)
+#if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_CONSTRAINT_API BoxROI<Vec3dTypes>;
+template class SOFA_COMPONENT_ENGINE_API BoxROI<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_CONSTRAINT_API BoxROI<Vec3fTypes>;
+template class SOFA_COMPONENT_ENGINE_API BoxROI<Vec3fTypes>;
 #endif
 #endif
 
-} // namespace constraint
+} // namespace engine
 
 } // namespace component
 
