@@ -72,7 +72,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::computeTriangleCircumcenterBaryCo
 {
     const Triangle &t = this->m_topology->getTriangle(i);
     const typename DataTypes::VecCoord& p = *(this->object->getX());
-    Real a2, b2, c2; // square legths of the 3 edges
+    Real a2, b2, c2; // square lengths of the 3 edges
     a2 = (p[t[1]]-p[t[0]]).norm2();
     b2 = (p[t[2]]-p[t[1]]).norm2();
     c2 = (p[t[0]]-p[t[2]]).norm2();
