@@ -70,11 +70,11 @@ public:
     // NEW : for non building the constraint system during solving/////////////////
     virtual bool hasConstraintNumber(int /*index*/) {return true;}
 
-    virtual void resetConstraintForce(double * /*f*/) {}
+    virtual void resetForUnbuiltResolution(double * /*f*/, std::list<int>& /*renumbering*/) {}
 
     virtual void addConstraintDisplacement(double * /*d*/, int /*begin*/,int /*end*/) { }
 
-    virtual void setConstraintDForce(double * /*df*/, int /*begin*/,int /*end*/) { }	  // f += df
+    virtual void setConstraintDForce(double * /*df*/, int /*begin*/,int /*end*/, bool /*update*/) { }	  // f += df
 
     virtual void getBlockDiagonalCompliance(defaulttype::BaseMatrix* /*W*/, int /*begin*/,int /*end*/)
     {

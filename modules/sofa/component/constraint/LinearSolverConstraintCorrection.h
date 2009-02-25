@@ -73,9 +73,11 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::VecConst VecConst;
+    typedef typename DataTypes::VecConst::iterator VecConstIt;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename std::map<unsigned int, Deriv>::const_iterator ConstraintIterator;
+    typedef std::list<int> ListIndex;
 
     typedef typename DataTypes::SparseVecDeriv Const;
 
@@ -92,6 +94,23 @@ public:
 
     virtual void applyContactForce(const defaulttype::BaseVector *f);
     virtual void resetContactForce();
+
+    // new API for non building the constraint system during solving process //
+    Data< bool > wire_optimization;
+
+    void verify_constraints();
+
+    virtual bool hasConstraintNumber(int index) ;  // virtual ???
+
+    virtual void resetForUnbuiltResolution(double * f, std::list<int>& renumbering);
+
+    virtual void addConstraintDisplacement(double *d, int begin,int end) ;
+
+    virtual void setConstraintDForce(double *df, int begin, int end, bool update) ;
+
+    virtual void getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end) ;
+    /////////////////////////////////////////////////////////////////////////////////
+
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -131,6 +150,29 @@ protected:
     linearsolver::SparseMatrix<SReal> J; ///< constraint matrix
     linearsolver::FullVector<SReal> F; ///< forces computed from the constraints
     linearsolver::FullMatrix<SReal> refMinv; ///< reference inverse matrix
+
+
+
+
+private:
+    // new :  for non building the constraint system during solving process //
+    VecDeriv constraint_disp, constraint_force;
+    std::list<int> constraint_dofs;		// list of indices of each point which is involve with constraint // TODO : verify if useful !!
+    std::vector<int> id_to_localIndex;	// table that gives the local index of a constraint given its id
+    defaulttype::BaseMatrix* systemMatrix_buf;
+    defaulttype::BaseVector* systemRHVector_buf;
+    defaulttype::BaseVector* systemLHVector_buf;
+    // remplacer ces listes (construite à chaque fois)
+    std::list<int> I_last_Dforce;
+    std::list<int> I_last_Disp;
+
+    // par un vecteur de listes précaclulés pour chaque contrainte
+    std::vector< ListIndex > Vec_I_list_dof;   // vecteur donnant la liste des indices par block de contrainte
+    int last_force, last_disp;
+    bool _new_force;
+    // et un indice permettant de pointer dans le vecteur
+
+
 };
 
 

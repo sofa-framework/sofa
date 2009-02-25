@@ -52,6 +52,7 @@ class SOFA_EXPORT_DYNAMIC_LIBRARY MatrixLinearSolver : public sofa::core::compon
 {
 public:
     typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
+    typedef  std::list<int> ListIndex;
 
     MatrixLinearSolver();
     virtual ~MatrixLinearSolver();
@@ -97,6 +98,7 @@ public:
     /// Solve the system as constructed using the previous methods
     virtual void solveSystem();
 
+
     virtual std::string getTemplateName() const
     {
         return templateName(this);
@@ -113,6 +115,9 @@ protected:
     virtual void invert(Matrix& /*M*/) {}
 
     virtual void solve(Matrix& M, Vector& solution, Vector& rh) = 0;
+
+    /// newPartially solve the system
+    virtual void partial_solve(Matrix& /*M*/, Vector& /*partial_solution*/, Vector& /*sparse_rh*/, ListIndex& /* indices_solution*/, ListIndex& /* indices input */) {}
 
     Vector* createVector();
     void deleteVector(Vector* v);
@@ -215,6 +220,31 @@ void MatrixLinearSolver<Matrix,Vector>::solveSystem()
         multiVectorPeqBaseVector(solutionVecId, systemLHVector, offset);
     }
 }
+
+/*
+
+template<class Matrix, class Vector>
+void MatrixLinearSolver<Matrix,Vector>::partialSolveSystem(VecIndex&  Iout, VecIndex&  Iin)
+{
+    if (needInvert)
+    {
+        this->invert(*systemMatrix);
+        needInvert = false;
+    }
+    this->partial_solve(*systemMatrix, *systemLHVector, *systemRHVector, Iout, Iin);
+
+
+	if (!solutionVecId.isNull())
+    {
+        unsigned int offset = 0;
+        //MechanicalBaseVector2MultiVectorVisitor(systemLHVector, solutionVecId, offset).execute( getContext() );
+        //MechanicalVOpVisitor(solutionVecId).execute( getContext() ); // clear solutionVecId
+        //MechanicalMultiVectorPeqBaseVectorVisitor(solutionVecId, systemLHVector, offset).execute( getContext() );
+        v_clear(solutionVecId);
+        multiVectorPeqBaseVector(solutionVecId, systemLHVector, offset);
+    }
+}
+*/
 
 template<class Matrix, class Vector>
 Vector* MatrixLinearSolver<Matrix,Vector>::createVector()

@@ -467,7 +467,7 @@ bool UncoupledConstraintCorrection<DataTypes>::hasConstraintNumber(int index)
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::resetConstraintForce(double * f)
+void UncoupledConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, std::list<int>& /*renumbering*/)
 {
 
 
@@ -558,10 +558,12 @@ void UncoupledConstraintCorrection<DataTypes>::addConstraintDisplacement(double 
 
 
 template<>
-void UncoupledConstraintCorrection<defaulttype::Vec1Types>::setConstraintDForce(double * df, int begin, int end)
+void UncoupledConstraintCorrection<defaulttype::Vec1Types>::setConstraintDForce(double * df, int begin, int end, bool update)
 {
     const VecConst& constraints = *mstate->getC();
 
+    if (!update)
+        return;
     // debug
     //if (end<6)
     //	std::cout<<"addDf - df["<<begin<<" to "<<end<<"] ="<< df[begin] << " " << df[begin+1] << " "<< df[begin+2] << std::endl;
@@ -588,10 +590,11 @@ void UncoupledConstraintCorrection<defaulttype::Vec1Types>::setConstraintDForce(
 }
 
 template<>
-void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::setConstraintDForce(double * df, int begin, int end)
+void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::setConstraintDForce(double * df, int begin, int end, bool update)
 {
     const VecConst& constraints = *mstate->getC();
-
+    if (!update)
+        return;
     // debug
     //if (end<6)
     //	std::cout<<"addDf - df["<<begin<<" to "<<end<<"] ="<< df[begin] << " " << df[begin+1] << " "<< df[begin+2] << std::endl;
