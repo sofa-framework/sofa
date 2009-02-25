@@ -41,7 +41,7 @@ namespace component
 namespace linearsolver
 {
 
-#define DISPLAY_TIME
+//#define DISPLAY_TIME
 
 #ifdef DISPLAY_TIME
 #include <sofa/helper/system/thread/CTime.h>
