@@ -54,6 +54,7 @@ public:
     Data < std::string > f_filename;
     Data < double > f_interval;
     Data < double > f_shift;
+    Data < bool > f_loop;
 
 protected:
     core::componentmodel::behavior::BaseMechanicalState* mmodel;
