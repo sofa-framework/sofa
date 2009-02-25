@@ -30,6 +30,8 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/helper/map.h>
 
+#define DISPLAY_TIME
+
 #include <math.h>
 
 namespace sofa
@@ -41,7 +43,11 @@ namespace component
 namespace linearsolver
 {
 
-//#define DISPLAY_TIME
+#ifdef DISPLAY_TIME
+#include <sofa/helper/system/thread/CTime.h>
+using sofa::helper::system::thread::CTime;
+#endif
+
 
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
@@ -87,6 +93,7 @@ private :
     double time1;
     double time2;
     double time3;
+    double time4;
     double timeStamp;
 #endif
 protected:

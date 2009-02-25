@@ -98,6 +98,8 @@ public:
     /// Solve the system as constructed using the previous methods
     virtual void solveSystem();
 
+    /// Invert the system, this method is optional because it's call when solveSystem() is called for the first time
+    virtual void invertSystem() {}
 
     virtual std::string getTemplateName() const
     {

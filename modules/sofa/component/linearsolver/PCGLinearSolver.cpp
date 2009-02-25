@@ -155,8 +155,9 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
 
 #ifdef DISPLAY_TIME
     CTime * timer;
-    time1 = (double) timer->getTime();
+    time1 = 0.0;
     time2 = 0.0;
+    time4 = 0.0;
 #endif
 
     for( nb_iter=1; nb_iter<=f_maxIter.getValue(); nb_iter++ )
@@ -167,30 +168,40 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
         comment << "Iteration : " << nb_iter;
         simulation::Visitor::printComment(comment.str());
 #endif
-
+#ifdef DISPLAY_TIME
+        double tmp;
+#endif
         if (this->preconditioners.size()==0)
         {
             z = r;
         }
         else
         {
-#ifdef DISPLAY_TIME
-            double tmp = (double) timer->getTime();
-#endif
-
             for (unsigned int i=0; i<this->preconditioners.size(); i++)
             {
+#ifdef DISPLAY_TIME
+                tmp = (double) timer->getTime();
+#endif
                 preconditioners[i]->setSystemLHVector(z);
                 preconditioners[i]->setSystemRHVector(r);
-                preconditioners[i]->solveSystem();
-            }
-
 #ifdef DISPLAY_TIME
-            time2 += ((double) timer->getTime() - tmp);
+                time2 += ((double) timer->getTime() - tmp);
+                tmp = (double) timer->getTime();
 #endif
-
+                preconditioners[i]->invertSystem();
+#ifdef DISPLAY_TIME
+                time4 += ((double) timer->getTime() - tmp);
+                tmp = (double) timer->getTime();
+#endif
+                preconditioners[i]->solveSystem();
+#ifdef DISPLAY_TIME
+                time2 += ((double) timer->getTime() - tmp);
+#endif
+            }
         }
-
+#ifdef DISPLAY_TIME
+        tmp = (double) timer->getTime();
+#endif
         rho = r.dot(z);
 
         if (nb_iter>1)
@@ -254,19 +265,26 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
 
         rho_1 = rho;
 
+#ifdef DISPLAY_TIME
+        time1 += ((double) timer->getTime() - tmp);
+#endif
         //printf("%f\n",(CTime::getRefTime() - time1)  / (double)CTime::getRefTicksPerSec());
+
     }
 
 #ifdef DISPLAY_TIME
-    time1 = ((double) timer->getTime() - time1 - time2) / (double)CTime::getRefTicksPerSec();
-    time2 = time2 / (double)CTime::getRefTicksPerSec();
-    cerr<<"PCGLinearSolver::solve, CG = "<<time1<<" preconditioner = "<<time2<<" invert = "<<time3<<endl;
+    time1 = time1 / (double)((double)CTime::getRefTicksPerSec() * (nb_iter-1));
+    time2 = time2 / (double)((double)CTime::getRefTicksPerSec() * (nb_iter-1));
+    time4 = time4 / (double)((double)CTime::getRefTicksPerSec());
 #endif
 
     f_graph.endEdit();
     // x is the solution of the system
     if( printLog )
     {
+#ifdef DISPLAY_TIME
+        cerr<<"PCGLinearSolver::solve, CG = "<<time1<<" preconditioner = "<<time2<<" build = "<<time3<<" invert = "<<time4<<endl;
+#endif
         cerr<<"PCGLinearSolver::solve, nbiter = "<<nb_iter<<" stop because of "<<endcond<<endl;
     }
     if( verbose )
