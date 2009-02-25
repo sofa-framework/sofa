@@ -44,6 +44,7 @@ ReadState::ReadState()
     : f_filename( initData(&f_filename, "filename", "output file name"))
     , f_interval( initData(&f_interval, 0.0, "interval", "time duration between inputs"))
     , f_shift( initData(&f_shift, 0.0, "shift", "shift between times in the file and times when they will be read"))
+    , f_loop( initData(&f_loop, false, "loop", "set to 'true' to re-read the file when reaching the end"))
     , mmodel(NULL)
     , infile(NULL)
     , nextTime(0)
@@ -90,6 +91,7 @@ void ReadState::handleEvent(sofa::core::objectmodel::Event* event)
     }
     if (/* simulation::AnimateEndEvent* ev = */ dynamic_cast<simulation::AnimateEndEvent*>(event))
     {
+
     }
 }
 
@@ -109,6 +111,7 @@ void ReadState::processReadState(double time)
 
 void ReadState::processReadState()
 {
+    static double totalTime = 0.0;
     bool updated = false;
 
     if (infile && mmodel)
@@ -126,10 +129,13 @@ void ReadState::processReadState()
             if (cmd == "T=")
             {
                 str >> nextTime;
-                if (nextTime <= time) validLines.clear();
+                nextTime += totalTime;
+                if (nextTime <= time)
+                    validLines.clear();
             }
 
-            if (nextTime <= time) validLines.push_back(line);
+            if (nextTime <= time)
+                validLines.push_back(line);
         }
 
         for (std::vector<std::string>::iterator it=validLines.begin(); it!=validLines.end(); ++it)
@@ -149,6 +155,14 @@ void ReadState::processReadState()
             }
         }
     }
+
+    if (f_loop.getValue() && infile->eof())
+    {
+        infile->clear();
+        infile->seekg(0);
+        totalTime = nextTime;
+    }
+
     if (updated)
     {
         //sout<<"update from file"<<sendl;
