@@ -1,13 +1,15 @@
 #!/bin/bash
+if [ "$1" != "--force" ]; then
 echo "WARNING: This script will delete part of the files in the current directory."
 echo "Make sure that you don't have any local changes not copied somewhere else."
 echo "Press Enter to continue, or Ctrl-C to cancel."
 read || exit 0
+fi
 
 shopt -s nullglob
 
 DIR0=$PWD
-cd ${0%/*}
+cd "${0%/*}"
 SCRIPTS=$PWD
 echo $SCRIPTS
 
@@ -23,7 +25,7 @@ echo "STEP 1: Filter project files and remove referenced files"
 echo
 
 function qmake_process_dir {
-    cd $1
+    cd "$1"
     echo "Entering $PWD"
     for f in *.pro *.pri *.cfg; do
 	echo "Processing qmake project file $f"
@@ -47,14 +49,14 @@ function qmake_process_dir {
     done
     for f in *; do
 	if [ -d "$f" ]; then
-	    qmake_process_dir $f
+	    qmake_process_dir "$f"
 	fi
     done
     echo "Leaving  $PWD"
     cd ..
 }
 
-qmake_process_dir $DIR0
+qmake_process_dir "$DIR0"
 
 
 echo
@@ -62,7 +64,7 @@ echo "STEP 2: Remove files listed in private.txt files"
 echo
 
 function private_process_dir {
-    cd $1
+    cd "$1"
     echo "Entering $PWD"
     if [ -f "private.txt" ]; then
 	echo "Processing private.txt"
@@ -83,21 +85,21 @@ function private_process_dir {
     fi
     for f in *; do
 	if [ -d "$f" ]; then
-	    private_process_dir $f
+	    private_process_dir "$f"
 	fi
     done
     echo "Leaving  $PWD"
     cd ..
 }
 
-private_process_dir $DIR0
+private_process_dir "$DIR0"
 
 echo
 echo "STEP 3: Filter source code files"
 echo
 
 function code_process_dir {
-    cd $1
+    cd "$1"
     echo "Entering $PWD"
     for f in *.h *.hpp *.hxx *.inl *.cpp *.c *.cu *.cxx; do
 	let nsrc+=1
@@ -113,14 +115,14 @@ function code_process_dir {
     done
     for f in *; do
 	if [ -d "$f" ]; then
-	    code_process_dir $f
+	    code_process_dir "$f"
 	fi
     done
     echo "Leaving  $PWD"
     cd ..
 }
 
-code_process_dir $DIR0
+code_process_dir "$DIR0"
 
 echo
 echo "Filtering complete."
