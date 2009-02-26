@@ -110,16 +110,9 @@ public:
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
 template class SOFA_COMPONENT_ENGINE_API BoxROI<Vec3dTypes>;
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API BoxROI<CudaVec3dTypes>;
-#endif //SOFA_GPU_CUDA_DOUBLE
 #endif //SOFA_FLOAT
-
 #ifndef SOFA_DOUBLE
 template class SOFA_COMPONENT_ENGINE_API BoxROI<Vec3fTypes>;
-#ifdef SOFA_GPU_CUDA
-template class SOFA_COMPONENT_ENGINE_API BoxROI<CudaVec3fTypes>;
-#endif //SOFA_GPU_CUDA
 #endif //SOFA_DOUBLE
 #endif
 
