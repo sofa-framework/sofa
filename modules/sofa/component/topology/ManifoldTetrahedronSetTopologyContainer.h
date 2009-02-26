@@ -81,6 +81,8 @@ public:
 
     virtual void init();
 
+    virtual void reinit();
+
     /// BaseMeshTopology API
     /// @{
 
@@ -126,13 +128,15 @@ protected:
     virtual void createTetrahedronTriangleShellArray();
 
     /** \brief return if the tetrahedron is ine the same orientation as the one of reference
-     *
+     * 1 if tetrahedrons have same orientation
+     * 0 if tetrahedrons don't have same orientation
+     * -1 if tetrahedrons don't share the same 4 vertices
      */
-    bool getTetrahedronOrientation(const Tetrahedron &t, const Tetrahedron &t_test );
+    int getTetrahedronOrientation(const Tetrahedron &t, const Tetrahedron &t_test );
 
     /** \brief return the orientation of a triangle relatively to one tetrahedron
-     * 0 if good orientation
-     * 1 if other orientation
+     * 1 if good orientation
+     * 0 if other orientation
      * -1 if triangle does'nt belongs to this tetrahedron
      */
     int getTriangleTetrahedronOrientation(const Tetrahedron &t, const Triangle &tri );

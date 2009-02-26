@@ -1,27 +1,27 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 3      *
-*                (c) 2006-2008 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 3      *
+ *                (c) 2006-2008 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 
 #include <sofa/component/topology/ManifoldTetrahedronSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
@@ -72,6 +72,24 @@ ManifoldTetrahedronSetTopologyContainer::ManifoldTetrahedronSetTopologyContainer
 }
 
 
+void ManifoldTetrahedronSetTopologyContainer::reinit()
+{
+    std::cout << "Starting functions tests: " << std::endl;
+    int test;
+
+    Tetrahedron tetra_test=Tetrahedron(m_tetrahedron[1][0], m_tetrahedron[1][3], m_tetrahedron[1][2], m_tetrahedron[1][1]);
+    test = getTetrahedronOrientation(m_tetrahedron[1], tetra_test);
+    std::cout << "res: " << test<< std::endl;
+
+    Tetrahedron tetra_test2=Tetrahedron(m_tetrahedron[1][2], m_tetrahedron[1][3], m_tetrahedron[1][0], m_tetrahedron[1][1]);
+    test = getTetrahedronOrientation(m_tetrahedron[1], tetra_test2);
+    std::cout << "res: " << test<< std::endl;
+
+
+    //createTetrahedronEdgeShellArray();
+}
+
+
 void ManifoldTetrahedronSetTopologyContainer::init()
 {
     TetrahedronSetTopologyContainer::init();
@@ -80,6 +98,7 @@ void ManifoldTetrahedronSetTopologyContainer::init()
 
 void ManifoldTetrahedronSetTopologyContainer::createTetrahedronVertexShellArray ()
 {
+    std::cout << "ManifoldTetrahedronSetTopologyContainer::createTetrahedronVertexShellArray ()"<<std::endl;
 
     // TO be implemented
     // see late: for the topology, only one connexe composante around one vertex.
@@ -90,24 +109,171 @@ void ManifoldTetrahedronSetTopologyContainer::createTetrahedronVertexShellArray 
 
 void ManifoldTetrahedronSetTopologyContainer::createTetrahedronEdgeShellArray ()
 {
+    std::cout << "ManifoldTetrahedronSetTopologyContainer::createTetrahedronEdgeShellArray ()"<<std::endl;
 
-    // To be implemented :
-    /*
-      Tetrahedraons have to be oriented around each edges.
-      Same algo as in 2d:
+    // Get edge array
+    sofa::helper::vector<Edge> edges = getEdgeArray();
 
-      - take the edge, third point find the next point in good order
-      - use function getTetrahedronOrientation
-      - loop
-      - when map is done, order shell.
-    */
-
+    // Creating Tetrahedrons edges shell unordered
     TetrahedronSetTopologyContainer::createTetrahedronEdgeShellArray();
 
+    /*
+    for (unsigned int i = 0; i < 3; i++)
+    {
+      std::cout <<"Edge: " << i << " vertex: " << m_edge[i] << std::endl;
+    }
+
+
+    for (unsigned int i = 0; i < 3; i++)
+    {
+      std::cout <<"Edge: " << i << " Shell: ";
+      for (unsigned int j = 0; j < m_tetrahedronEdgeShell[i].size();j++)
+      {
+        std::cout << m_tetrahedronEdgeShell[i][j] << " ";
+      }
+
+      std::cout << std::endl;
+    }
+
+    for (unsigned int i = 0; i < 3; i++)
+    {
+      for (unsigned int j = 0; j < m_tetrahedronEdgeShell[i].size();j++)
+      {
+        std::cout << m_tetrahedronEdgeShell[i][j] 	<< " detail: " << m_tetrahedron[m_tetrahedronEdgeShell[i][j]]<< std::endl;
+      }
+    }
+
+    */
+
+    for (unsigned int edgeIndex =0; edgeIndex<edges.size(); edgeIndex++)
+    {
+
+        sofa::helper::vector <unsigned int> shell = getTetrahedronEdgeShellForModification (edgeIndex);
+        sofa::helper::vector <unsigned int>::iterator it;
+        sofa::helper::vector < sofa::helper::vector <unsigned int> > vertexTofind;
+        sofa::helper::vector <unsigned int> goodShell;
+        unsigned int firstVertex =0;
+        unsigned int secondVertex =0;
+        unsigned int cpt = 0;
+
+        goodShell.resize(shell.size());
+        vertexTofind.resize (shell.size());
+
+
+        // Path to follow creation
+        for (unsigned int tetraIndex = 0; tetraIndex < shell.size(); tetraIndex++)
+        {
+            cpt = 0;
+
+            for (unsigned int vertex = 0; vertex < 4; vertex++)
+            {
+                if(m_tetrahedron[shell[ tetraIndex]][vertex] != edges[edgeIndex][0] && m_tetrahedron[shell[ tetraIndex]][vertex] != edges[edgeIndex][1] )
+                {
+                    vertexTofind[tetraIndex].push_back (m_tetrahedron[shell[ tetraIndex]][vertex]);
+                    cpt++;
+                }
+
+                if (cpt == 2)
+                    break;
+            }
+        }
+
+        Tetrahedron tetra_first = Tetrahedron(edges[edgeIndex][0], edges[edgeIndex][1], vertexTofind[0][0], vertexTofind[0][1]);
+
+        int good = getTetrahedronOrientation (m_tetrahedron[shell[ 0]], tetra_first);
+
+        if (good == 1) //then tetra is in good order, initialisation.
+        {
+            firstVertex = vertexTofind[0][0];
+            secondVertex = vertexTofind[0][1];
+        }
+        else if (good == 0)
+        {
+            firstVertex = vertexTofind[0][1];
+            secondVertex = vertexTofind[0][0];
+        }
+        else
+        {
+            std::cout << "Error: createTetrahedronEdgeShellArray: Houston there is a probleme." <<std::endl;
+        }
+
+        goodShell.push_back(shell[0]);
+
+        bool testFind = false;
+        bool reverse = false;
+        cpt = 0;
+
+
+        // Start following path
+        for (unsigned int i = 1; i < shell.size(); i++)
+        {
+            for (unsigned int j = 1; j < shell.size(); j++)
+            {
+                if (vertexTofind[j][0] == secondVertex) //find next tetra, in one or the other order.
+                {
+                    goodShell.push_back(shell[j]);
+                    secondVertex = vertexTofind[j][1];
+                    testFind = true;
+                    break;
+                }
+                else if(vertexTofind[j][1] == secondVertex)
+                {
+                    goodShell.push_back(shell[j]);
+                    secondVertex = vertexTofind[j][0];
+                    testFind = true;
+                    break;
+                }
+            }
+
+            if (!testFind) //tetra has not be found, this mean we reach a border, we reverse the method
+            {
+                reverse = true;
+                break;
+            }
+
+            cpt++;
+            testFind =false;
+        }
+
+
+        // Reverse path following methode
+        if(reverse)
+        {
+            std::cout << "Edge on border" << std::endl;
+
+            for (unsigned int i = cpt+1; i<shell.size(); i++)
+            {
+                for (unsigned int j = cpt+1; j<shell.size(); j++)
+                {
+                    if (vertexTofind[j][0] == firstVertex) //find next tetra, in one or the other order.
+                    {
+                        goodShell.insert (goodShell.begin(),shell[j]);
+                        firstVertex = vertexTofind[j][1];
+                        testFind = true;
+                        break;
+                    }
+                    else if(vertexTofind[j][1] == firstVertex)
+                    {
+                        goodShell.insert (goodShell.begin(),shell[j]);
+                        firstVertex = vertexTofind[j][0];
+                        testFind = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        shell = goodShell;
+        goodShell.clear();
+        vertexTofind.clear();
+    }
 }
+
 
 void ManifoldTetrahedronSetTopologyContainer::createTetrahedronTriangleShellArray ()
 {
+    std::cout << "ManifoldTetrahedronSetTopologyContainer::createTetrahedronTriangleShellArray ()"<<std::endl;
     // To be implemented
     // at most 2 tetrahedrons adjacent to one triangle.
 
@@ -118,6 +284,7 @@ void ManifoldTetrahedronSetTopologyContainer::createTetrahedronTriangleShellArra
 
 bool ManifoldTetrahedronSetTopologyContainer::checkTopology() const
 {
+    std::cout << "ManifoldTetrahedronSetTopologyContainer::checkTopology ()"<<std::endl;
 #ifndef NDEBUG
     bool ret = true;
 
@@ -131,75 +298,108 @@ bool ManifoldTetrahedronSetTopologyContainer::checkTopology() const
 
 void ManifoldTetrahedronSetTopologyContainer::clear()
 {
+    std::cout << "ManifoldTetrahedronSetTopologyContainer::clear ()"<<std::endl;
     //To be completed if necessary
 
     TetrahedronSetTopologyContainer::clear();
 }
 
 
-bool ManifoldTetrahedronSetTopologyContainer::getTetrahedronOrientation (const Tetrahedron &t, const Tetrahedron &t_test )
+int ManifoldTetrahedronSetTopologyContainer::getTetrahedronOrientation (const Tetrahedron &t_ref, const Tetrahedron &t_test )
 {
-    //To be implemented
-    /*
+    std::cout << "ManifoldTetrahedronSetTopologyContainer::getTetrahedronOrientation ()"<<std::endl;
 
-      First tetra is in one orientation. We know the 4 points
-      we search the orientation of a second tetra.
+    std::cout << "Tetra de ref: " << t_ref << std::endl;
+    std::cout << "Tetra a tester: " << t_test << std::endl;
 
-      - First confirm it is the same 4 points
-      - look how many permutation needed to fin the same tetra.
-      - if nbr permuation is pair, same orientation
+    std::map<unsigned int, unsigned int> mapPosition;
+    unsigned int positionsChange[4];
+    std::map<unsigned int, unsigned int>::iterator it;
 
-      => idea use 0 1 map to make bit a bit tests
+    unsigned int permutation=0;
+    unsigned int buffer;
 
-     */
-    //no warnings:
-    (void) t;
-    (void) t_test;
+    for (unsigned int i = 0; i< 4; i++)
+    {
+        mapPosition[t_ref[i]] = i;
+    }
 
-    return true;
+    for (unsigned int i= 0; i <4; i++)
+    {
+        it = mapPosition.find (t_test[i]);
+        positionsChange[(*it).second] = i;
+        if (it == mapPosition.end())
+        {
+            std::cout <<"Error: getTetrahedronOrientation: reference and testing tetrahedrons are not composed by the same vertices."<<std::endl;
+            return -1;
+        }
+    }
 
+    for (unsigned int i = 0; i <4; i++)
+    {
+        if( positionsChange[i] != i)
+        {
+            for (unsigned int j= i; j<4; j++)
+            {
+                if(positionsChange[j]==i)
+                {
+                    buffer = positionsChange[i];
+                    positionsChange[i] = positionsChange[j];
+                    positionsChange[j] = buffer;
+                    permutation++;
+                    break;
+                }
+            }
+        }
+    }
+
+    if( permutation%2 == 0)
+        return 1;
+    else
+        return 0;
 }
 
 int ManifoldTetrahedronSetTopologyContainer::getTriangleTetrahedronOrientation (const Tetrahedron &t, const Triangle &tri )
 {
+    std::cout << "ManifoldTetrahedronSetTopologyContainer::getTriangleTetrahedronOrientation ()"<<std::endl;
     //To be implemented
 
     /*
 
-    - equivalent to TriangleEdgeShell [i]
-    - first triangle of the tetrahedron should be in positive orientation
-    - This first triangle is the one on the border if tetrahedron is on border.
-    - return either negatif or positive orientation in the tetrahedron or -1 if error.
+      - equivalent to TriangleEdgeShell [i]
+      - first triangle of the tetrahedron should be in positive orientation
+      - This first triangle is the one on the border if tetrahedron is on border.
+      - return either negatif or positive orientation in the tetrahedron or -1 if error.
 
-    => should be used in createTetrahedronTriangleShellArray
+      => should be used in createTetrahedronTriangleShellArray
 
 
 
       for(TetraID i = 0; i < m_nbTetras; ++i)
-    {
-        const Tetra& t = m_topo->getTetra(i);
-        const TetraTriangles& tFaces = m_topo->getTriangleTetraShell(i);
-        for(int l = 0; l < 4; ++l)
-        {
-            int sign = 1;
-            const Triangle& f = m_topo->getTriangle(tFaces[l]);
+      {
+      const Tetra& t = m_topo->getTetra(i);
+      const TetraTriangles& tFaces = m_topo->getTriangleTetraShell(i);
+      for(int l = 0; l < 4; ++l)
+      {
+      int sign = 1;
+      const Triangle& f = m_topo->getTriangle(tFaces[l]);
 
-            int m = 0;
-            while(t[m] == f[0] || t[m] == f[1] || t[m] == f[2])
-                ++m;
-            if(m%2 == 1)
-                sign *= -1;
+      int m = 0;
+      while(t[m] == f[0] || t[m] == f[1] || t[m] == f[2])
+      ++m;
+      if(m%2 == 1)
+      sign *= -1;
 
-             int n = 0;
-             while(f[0] != t[n])
-                ++n;
+      int n = 0;
+      while(f[0] != t[n])
+      ++n;
 
-            if((n+1)%4 == m && f[2] == t[(n+2)%4])
-                sign *= -1;
-            if((n+1)%4 != m && f[2] == t[(n+1)%4])
-                sign *= -1;
-        }
-    }
+      if((n+1)%4 == m && f[2] == t[(n+2)%4])
+      sign *= -1;
+      if((n+1)%4 != m && f[2] == t[(n+1)%4])
+      sign *= -1;
+      }
+      }
     */
 
     //no warnings:
@@ -212,6 +412,9 @@ int ManifoldTetrahedronSetTopologyContainer::getTriangleTetrahedronOrientation (
 
 void ManifoldTetrahedronSetTopologyContainer::draw()
 {
+
+    TetrahedronSetTopologyContainer::draw();
+
 
     if (debugViewIndicesTetra.getValue())
     {
@@ -545,7 +748,7 @@ void ManifoldTetrahedronSetTopologyContainer::draw()
               sofa::helper::gl::GlText::draw ( tri, position , scale );
               }
               }
-            	  glEndList();
+              glEndList();
 
 
               // Creatring edges
