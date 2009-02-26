@@ -28,6 +28,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
 
 namespace sofa
 {
@@ -38,23 +39,39 @@ namespace component
 namespace engine
 {
 
+using namespace sofa::gpu::cuda;
+
 SOFA_DECL_CLASS(BoxROI)
 
 int BoxROIClass = core::RegisterObject("Keep fixed the points inside a given box")
 #ifndef SOFA_FLOAT
         .add< BoxROI<Vec3dTypes> >()
-#endif
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< BoxROI<CudaVec3dTypes> >()
+#endif //SOFA_GPU_CUDA_DOUBLE
+#endif //SOFA_FLOAT
+
 #ifndef SOFA_DOUBLE
         .add< BoxROI<Vec3fTypes> >()
-#endif
+#ifdef SOFA_GPU_CUDA
+        .add< BoxROI<CudaVec3fTypes> >()
+#endif //SOFA_GPU_CUDA
+#endif //SOFA_DOUBLE
         ;
 
 #ifndef SOFA_FLOAT
 template class SOFA_COMPONENT_ENGINE_API BoxROI<Vec3dTypes>;
-#endif
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_COMPONENT_ENGINE_API BoxROI<CudaVec3dTypes>;
+#endif //SOFA_GPU_CUDA_DOUBLE
+#endif //SOFA_FLOAT
+
 #ifndef SOFA_DOUBLE
 template class SOFA_COMPONENT_ENGINE_API BoxROI<Vec3fTypes>;
-#endif
+#ifdef SOFA_GPU_CUDA
+template class SOFA_COMPONENT_ENGINE_API BoxROI<CudaVec3fTypes>;
+#endif //SOFA_GPU_CUDA
+#endif //SOFA_DOUBLE
 
 
 } // namespace constraint
