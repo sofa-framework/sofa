@@ -33,7 +33,8 @@ namespace sofa
 
 namespace simulation
 {
-
+//Max size for vector to be allowed to be dumped
+#define DUMP_VISITOR_MAX_SIZE_VECTOR 20
 
 Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node)
 {
@@ -174,8 +175,14 @@ void MechanicalVisitor::printReadVectors(core::componentmodel::behavior::BaseMec
     {
         std::ostringstream infoStream;
         for (unsigned int j=0; j<Visitor::depthLevel+1; ++j) info += "\t";
-        mm->printDOF(readVector[i], infoStream);
-        info += "<Vector name=\"" + readVector[i].getName() + "\" value=\"" + infoStream.str() + "\"/>\n";
+
+        info += "<Vector name=\"" + readVector[i].getName() + "\"";
+        if (mm->getSize() < DUMP_VISITOR_MAX_SIZE_VECTOR)
+        {
+            mm->printDOF(readVector[i], infoStream);
+            info += "value=\"" + infoStream.str() + "\"";
+        }
+        info += "/>\n";
     }
 
     for (unsigned int i=0; i<Visitor::depthLevel; ++i) info += "\t";
@@ -193,8 +200,14 @@ void MechanicalVisitor::printWriteVectors(core::componentmodel::behavior::BaseMe
     {
         std::ostringstream infoStream;
         for (unsigned int j=0; j<Visitor::depthLevel+1; ++j) info += "\t";
-        mm->printDOF(writeVector[i], infoStream);
-        info += "<Vector name=\"" + writeVector[i].getName() + "\" value=\"" + infoStream.str() + "\"/>\n";
+        info += "<Vector name=\"" + writeVector[i].getName() + "\"";
+
+        if (mm->getSize() < DUMP_VISITOR_MAX_SIZE_VECTOR)
+        {
+            mm->printDOF(writeVector[i], infoStream);
+            info += "value=\"" + infoStream.str() + "\"";
+        }
+        info += "/>\n";
     }
 
     for (unsigned int i=0; i<Visitor::depthLevel; ++i) info += "\t";

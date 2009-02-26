@@ -96,9 +96,6 @@ Node* TreeSimulation::processXML(xml::BaseElement* xml, const char *filename)
     findSimu.execute(root);
     if( !findSimu.found.empty() )
         setSimulation( findSimu.found[0] );
-    // if no Simulation is found, getSimulation() will automatically create one, of the default type.
-
-    getSimulation()->init ( root );
 
     // As mappings might be initialized after visual models, it is necessary to update them
     // BUGFIX (Jeremie A.): disabled as initTexture was not called yet, and the GUI might not even be up yet

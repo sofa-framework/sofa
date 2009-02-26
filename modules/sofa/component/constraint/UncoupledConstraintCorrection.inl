@@ -27,7 +27,7 @@
 
 #include "UncoupledConstraintCorrection.h"
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/component/mass/UniformMass.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 
@@ -119,7 +119,7 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::init()
     mstate = dynamic_cast< behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
     const sofa::defaulttype::Rigid3Mass* massValue;
 
-    simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
+    simulation::Node *node = dynamic_cast<simulation::Node *>(getContext());
 
     if (node != NULL)
     {
@@ -160,7 +160,7 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
 
     const sofa::defaulttype::Rigid3Mass* massValue;
 
-    simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
+    simulation::Node *node = dynamic_cast<simulation::Node *>(getContext());
 
     if (node != NULL)
     {
@@ -245,7 +245,7 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::applyContactForce(
 
     const sofa::defaulttype::Rigid3Mass* massValue;
 
-    simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
+    simulation::Node *node = dynamic_cast<simulation::Node *>(getContext());
 
     if (node != NULL)
     {

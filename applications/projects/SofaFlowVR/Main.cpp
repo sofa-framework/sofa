@@ -1833,6 +1833,7 @@ int main(int argc, char** argv)
     sofa::core::ObjectFactory::ClassEntry* classVisualModel;
     sofa::core::ObjectFactory::AddAlias("VisualModel", "FlowVRRenderMesh", true, &classVisualModel);
     groot = sofa::simulation::getSimulation()->load(fileName.c_str());
+    sofa::simulation::tree::getSimulation()->init(groot);
 
     if (groot==NULL)
     {

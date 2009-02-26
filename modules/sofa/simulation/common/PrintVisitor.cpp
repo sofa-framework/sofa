@@ -66,6 +66,7 @@ Visitor::Result PrintVisitor::processNodeTopDown(simulation::Node* node)
     processObjects(node->mechanicalState,"MechanicalState");
     processObjects(node->mechanicalMapping,"MechanicalMapping");
     processObjects(node->solver,"Solver");
+    processObjects(node->linearSolver,"LinearSolver");
     processObjects(node->mass,"Mass");
     processObjects(node->topology,"Topology");
     processObjects(node->forceField,"ForceField");
