@@ -580,14 +580,6 @@ Result: nodes updated
 */
 void BglSimulation::mechanicalStep(Node* root, double dt)
 {
-    if (collisionPipeline)
-    {
-        masterNode->moveObject( collisionPipeline );
-        CollisionVisitor act;
-        masterNode->doExecuteVisitor(&act);
-        masterNode->removeObject( collisionPipeline );
-    }
-
     clearVertex(masterVertex);
     updateGraph();
 
@@ -700,6 +692,15 @@ void BglSimulation::animate(Node* root, double dt)
 
     for( unsigned step=0; step<numMechSteps.getValue(); step++ )
     {
+
+        if (collisionPipeline)
+        {
+            masterNode->moveObject( collisionPipeline );
+            CollisionVisitor act;
+            masterNode->doExecuteVisitor(&act);
+            masterNode->removeObject( collisionPipeline );
+        }
+
         mechanicalStep(root,dt);
         clearVertex(masterVertex);
         insertHierarchicalGraph();
@@ -707,17 +708,15 @@ void BglSimulation::animate(Node* root, double dt)
         masterNode->setTime ( startTime + (step+1)* mechanicalDt );
     }
 
-
-
     {
         AnimateEndEvent ev ( dt );
         PropagateEventVisitor act ( &ev );
         masterNode->doExecuteVisitor( &act );
     }
+
     //Update Mapping
     {
         UpdateMappingVisitor actMapping;
-//           visualNode->doExecuteVisitor( &actMapping );
         masterNode->doExecuteVisitor( &actMapping );
         simulation::UpdateMappingEndEvent ev ( dt );
         PropagateEventVisitor act ( &ev );
@@ -828,16 +827,6 @@ void BglSimulation::resetContactResponse(Node * parent, core::objectmodel::BaseO
     }
 }
 
-void BglSimulation::setVisualModel( Node* n, VisualModel* v)
-{
-//         std::cerr << v->getName() << " Set Visual Model in " << n->getName() << "\n";
-//         edgeToAdd.insert(std::make_pair(visualNode, n));
-}
-void BglSimulation::setVisualMapping( Node* n, Mapping* m)
-{
-//         std::cerr << m->getName() << " Set Visual Mapping in " << n->getName() << "\n";
-//         edgeToAdd.insert(std::make_pair(visualNode, n));
-}
 
 void BglSimulation::draw(Node* , helper::gl::VisualParameters*)
 {
