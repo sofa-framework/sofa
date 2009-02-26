@@ -267,7 +267,6 @@ void TriangleSetTopologyModifier::removeTriangles(sofa::helper::vector< unsigned
         const bool removeIsolatedEdges,
         const bool removeIsolatedPoints)
 {
-
     /// add the topological changes in the queue
     removeTrianglesWarning(triangles);
     // inform other objects that the triangles are going to be removed
@@ -281,10 +280,6 @@ void TriangleSetTopologyModifier::removeTriangles(sofa::helper::vector< unsigned
 
 void TriangleSetTopologyModifier::removeTrianglesWarning(sofa::helper::vector<unsigned int> &triangles)
 {
-
-    for (unsigned int i=0; i<triangles.size(); i++)
-        std::cout << triangles[i] << std::endl;
-
     /// sort vertices to remove in a descendent order
     std::sort( triangles.begin(), triangles.end(), std::greater<unsigned int>() );
 
