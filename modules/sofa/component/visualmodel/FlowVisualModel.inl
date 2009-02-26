@@ -21,6 +21,7 @@ namespace visualmodel
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::core::componentmodel::topology;
 
 template <class DataTypes>
 const double FlowVisualModel<DataTypes>::STREAMLINE_NUMBER_OF_POINTS_BY_TRIANGLE = 5.0;
@@ -98,14 +99,14 @@ bool FlowVisualModel<DataTypes>::isInDomain(unsigned int index, typename DataTyp
     //test if p is in the mesh
     //1-find closest point from seed to mesh
     bool found = false;
-
-    helper::vector<unsigned int> triangles;
+    BaseMeshTopology::TriangleID triangleID = BaseMeshTopology::InvalidID;
+    helper::vector<BaseMeshTopology::TriangleID> triangles;
     unsigned int indTest;
 
     if (x.size() > 0)
     {
         //if a triangle was not already found, test all the points
-        if (streamLines[index].currentTriangleID == sofa::core::componentmodel::topology::BaseMeshTopology::InvalidID)
+        if (streamLines[index].currentTriangleID == BaseMeshTopology::InvalidID)
         {
             unsigned int indexClosestPoint = 0;
             double dist = (p - x[0]).norm();
@@ -122,28 +123,55 @@ bool FlowVisualModel<DataTypes>::isInDomain(unsigned int index, typename DataTyp
             //2-get its TriangleShell
             triangles = m_triTopo->getTriangleVertexShell(indexClosestPoint);
             //3-check if the seed is in one of these triangles
-
-            for (unsigned int i=0 ; i<triangles.size() && !found ; i++)
+            streamLines[index].trianglesAroundLastPoint.clear();
+            for (unsigned int i=0 ; i<triangles.size() ; i++)
             {
-                found = m_triGeo->isPointInsideTriangle(triangles[i], false, p, indTest);
-                streamLines[index].currentTriangleID = triangles[i];
+                if (!found)
+                {
+                    if ( (found = m_triGeo->isPointInsideTriangle(triangles[i], false, p, indTest)) )
+                    {
+                        triangleID = triangles[i];
+                    }
+                }
+
+                //fill the set of triangles
+                streamLines[index].trianglesAroundLastPoint.insert(triangles[i]);
             }
         }
         else
         {
-            const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& currentTriangle = m_triTopo->getTriangle(streamLines[index].currentTriangleID);
-            for (unsigned int i=0 ; i<3 && !found; i++)
+            //test if the new point is still in the current triangle
+            if((found = m_triGeo->isPointInsideTriangle(streamLines[index].currentTriangleID, false, p, indTest)) )
             {
-                triangles = m_triTopo->getTriangleVertexShell(currentTriangle[i]);
-                for (unsigned int i=0 ; i<triangles.size() && !found ; i++)
+                triangleID = streamLines[index].currentTriangleID;
+            }
+            //find the new triangle (if any) and compute the new triangles set
+            else
+            {
+                streamLines[index].trianglesAroundLastPoint.clear();
+                const BaseMeshTopology::Triangle& currentTriangle = m_triTopo->getTriangle(streamLines[index].currentTriangleID);
+
+                for (unsigned int i=0 ; i<3; i++)
                 {
-                    found = m_triGeo->isPointInsideTriangle(triangles[i], false, p, indTest);
-                    streamLines[index].currentTriangleID = triangles[i];
+                    triangles = m_triTopo->getTriangleVertexShell(currentTriangle[i]);
+                    for (unsigned int i=0 ; i<triangles.size() ; i++)
+                    {
+                        if (!found)
+                        {
+                            if ( (found = m_triGeo->isPointInsideTriangle(triangles[i], false, p, indTest)) )
+                            {
+                                triangleID = triangles[i];
+                            }
+                        }
+                        streamLines[index].trianglesAroundLastPoint.insert(triangles[i]);
+                    }
                 }
             }
-
         }
     }
+    if (found)
+        streamLines[index].currentTriangleID = triangleID;
+
 
     return found;
 }
@@ -159,17 +187,25 @@ typename DataTypes::Coord FlowVisualModel<DataTypes>::interpolateVelocity(unsign
         return Coord();
     }
 
+    helper::vector<BaseMeshTopology::TriangleID> triangles;
+    double distCoeff=0.0;
+    double sumDistCoeff=0.0;
+    Coord velocitySeed;
 
-    //compute the velocity at "currentPos" position
-    /*Coord p0 = m_triGeo->getPointPosition(t[0]);
-    Coord p1 = m_triGeo->getPointPosition(t[1]);
-    Coord p2 = m_triGeo->getPointPosition(t[2]);
-    double coeff0 = (p0-currentPos).norm();
-    double coeff1 = (p1-currentPos).norm();
-    double coeff2 = (p2-currentPos).norm();*/
+    for(helper::set<BaseMeshTopology::TriangleID>::iterator it = streamLines[index].trianglesAroundLastPoint.begin() ; it != streamLines[index].trianglesAroundLastPoint.end() ; it++)
+    {
+        unsigned int ind = (*it);
+        distCoeff = 1/(p-x[ind]).norm2();
+        velocitySeed += v[ind]*distCoeff;
+        sumDistCoeff += distCoeff;
+    }
+    velocitySeed /= sumDistCoeff;
 
+    //velocitySeed = Coord(0.0,0.0,0.0);
     //Coord velocitySeed = (v[t[0]]*coeff0 + v[t[1]]*coeff1 + v[t[2]]*coeff2)/(coeff0 + coeff1+ coeff2) ;
-    Coord velocitySeed = v[streamLines[index].currentTriangleID];
+    //Coord velocitySeed2 = v[streamLines[index].currentTriangleID];
+
+    //std::cout << velocitySeed << " " << velocitySeed2 << std::endl;
 
     return velocitySeed;
 }
@@ -295,7 +331,6 @@ void FlowVisualModel<DataTypes>::draw()
         {
             if (v[i].norm() > 0.0 && vmax > 0.0)
             {
-
                 Coord p0 = x[i];
                 Coord p1 = x[i] + v[i]/vmax*viewVelocityFactor.getValue();
 
@@ -319,7 +354,7 @@ void FlowVisualModel<DataTypes>::draw()
         for (unsigned int i=0 ; i<seedsSize ; i++)
         {
             double dtStreamLine = (meanEdgeLength / vmax) * (1.0/streamlineDtNumberOfPointsPerTriangle.getValue());
-            streamLines[i].currentTriangleID = sofa::core::componentmodel::topology::BaseMeshTopology::InvalidID;
+            streamLines[i].currentTriangleID = BaseMeshTopology::InvalidID;
             computeStreamLine(i,streamlineMaxNumberOfPoints.getValue(), dtStreamLine) ;
             glLineWidth(2);
             glBegin(GL_LINE_STRIP);
@@ -329,6 +364,7 @@ void FlowVisualModel<DataTypes>::draw()
                 glVertex3f((GLfloat) streamLines[i].positions[j][0], (GLfloat) streamLines[i].positions[j][1], (GLfloat) streamLines[i].positions[j][2]);
             }
             glEnd();
+
         }
     }
 

@@ -110,6 +110,7 @@ class SOFA_COMPONENT_VISUALMODEL_API FlowVisualModel : public core::VisualModel
     {
         helper::vector<Coord> positions;
         core::componentmodel::topology::BaseMeshTopology::TriangleID currentTriangleID;
+        helper::set<core::componentmodel::topology::BaseMeshTopology::TriangleID> trianglesAroundLastPoint;
     };
 
 protected:
