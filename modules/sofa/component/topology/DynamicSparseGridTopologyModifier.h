@@ -65,16 +65,6 @@ public:
     */
     virtual void addHexahedraProcess ( const sofa::helper::vector< Hexahedron > &hexahedra, const sofa::helper::vector< unsigned int> &indices );
 
-    /** \brief Remove a subset of hexahedra
-    *
-    * Elements corresponding to these points are removed form the mechanical object's state vectors.
-    *
-    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
-    * \sa removeHexahedraWarning
-    * @param removeIsolatedItems if true remove isolated quads, edges and vertices
-    */
-    virtual void removeHexahedraProcess ( const sofa::helper::vector<unsigned int>&indices, const bool removeIsolatedItems = false );
-
     /** \brief Sends a message to warn that some hexahedra are about to be deleted.
     *
     * \sa removeHexahedraProcess

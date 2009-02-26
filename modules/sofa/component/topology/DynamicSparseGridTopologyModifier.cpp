@@ -69,52 +69,52 @@ void DynamicSparseGridTopologyModifier::addHexahedraProcess ( const sofa::helper
 
     unsigned int hexaSize = m_DynContainer->getNumberOfHexahedra(); // Get the size before adding elements
     HexahedronSetTopologyModifier::addHexahedraProcess ( hexahedra );
-    helper::vector<BaseMeshTopology::HexaID>& iirg = *(m_DynContainer->idxInRegularGrid.beginEdit());
+    helper::vector<BaseMeshTopology::HexaID>& iirg = m_DynContainer->idxInRegularGrid;
 
     for ( unsigned int i = 0; i < hexahedra.size(); i++ )  // For each element
     {
         iirg[hexaSize + i] = indices[i];
         m_DynContainer->idInRegularGrid2IndexInTopo.insert( std::make_pair ( indices[i], hexaSize + i ) );
-    }
-    m_DynContainer->idxInRegularGrid.endEdit();
-//TODO// ca suffit pas. il faut gerer le renumbering pour le vector et la map du container ! A refaire !
-}
 
-void DynamicSparseGridTopologyModifier::removeHexahedraProcess ( const sofa::helper::vector<unsigned int> &indices, const bool removeIsolatedItems )
-{
-    HexahedronSetTopologyModifier::removeHexahedraProcess ( indices, removeIsolatedItems );
-
-    // Update the map idInRegularGrid2Hexa.
-    for ( unsigned int i = 0; i < indices.size(); i++ )  // For each element
-    {
-        m_DynContainer->idInRegularGrid2IndexInTopo.erase ( indices[i] );
-//TODO// ca suffit pas. il faut gerer le renumbering pour le vector et la map du container ! A refaire !
+        //TODO// init the values too ...
     }
 }
 
 void DynamicSparseGridTopologyModifier::removeHexahedraWarning ( sofa::helper::vector<unsigned int> &hexahedra )
 {
-    HexahedronSetTopologyModifier::removeHexahedraWarning ( hexahedra );
-    const helper::vector<BaseMeshTopology::HexaID>& iirg = *(m_DynContainer->idxInRegularGrid.beginEdit());
+    helper::vector<BaseMeshTopology::HexaID>& iirg = m_DynContainer->idxInRegularGrid;
 
     // Update the data
     unsigned int nbElt = iirg.size();
-    sofa::helper::vector<unsigned int> vecHexaRemoved = hexahedra; // Is indices ever sorted?
-    sort ( vecHexaRemoved.begin(), vecHexaRemoved.end() );
-    for ( sofa::helper::vector<unsigned int>::const_reverse_iterator it ( vecHexaRemoved.end() ); it != sofa::helper::vector<unsigned int>::const_reverse_iterator ( vecHexaRemoved.begin() ); it++ )
+    for ( sofa::helper::vector<unsigned int>::const_iterator it = hexahedra.begin(); it != hexahedra.end(); it++ )
     {
         nbElt--;
 
         // Update the voxels value
-        unsigned int idHexa = iirg[*it];
-        m_DynContainer->valuesIndexedInRegularGrid[idHexa] = 0;
+        unsigned int idHexaInRegularGrid = iirg[*it];
+        m_DynContainer->valuesIndexedInRegularGrid[idHexaInRegularGrid] = 0;
 
-        // Update the indices
-        //iirg[*it] = iirg[ nbElt ];
+        // Renumbering the map.
+        // We delete the reference of the delete elt.
+        std::map< unsigned int, BaseMeshTopology::HexaID>& regularG2Topo = m_DynContainer->idInRegularGrid2IndexInTopo;
+        std::map< unsigned int, BaseMeshTopology::HexaID>::iterator itMap = regularG2Topo.find( idHexaInRegularGrid);
+        if( itMap != regularG2Topo.end())
+        {
+            regularG2Topo.erase( itMap);
+        }
+        // Then, we change the id of the last elt moved in the topology.
+        itMap = regularG2Topo.find( iirg[nbElt]);// Index in the regular grid of the last elt in the topology
+        if( itMap != regularG2Topo.end())
+        {
+            itMap->second = *it;
+        }
+
+        // renumber iirg
+        iirg[*it] = iirg[nbElt];
     }
-    //iirg.resize ( nbElt );
-    m_DynContainer->idxInRegularGrid.endEdit();
-//TODO// ca suffit pas. il faut gerer le renumbering pour le vector et la map du container ! A refaire !
+    iirg.resize( nbElt);
+
+    HexahedronSetTopologyModifier::removeHexahedraWarning ( hexahedra );
 }
 
 } // namespace topology
