@@ -122,14 +122,6 @@ bool BglNode::addObject(BaseObject* obj)
     {
         scene->addSolver(odes,this);
     }
-    else if (sofa::core::BaseMapping* vm = dynamic_cast<sofa::core::BaseMapping*>(obj))
-    {
-        scene->setVisualMapping(this,vm);
-    }
-    else if (sofa::core::VisualModel* vm = dynamic_cast<sofa::core::VisualModel*>(obj))
-    {
-        scene->setVisualModel(this,vm);
-    }
     return Node::addObject(obj);
 }
 
@@ -291,6 +283,7 @@ void BglNode::doExecuteVisitor( Visitor* vis )
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
 {
+    if (std::find(scene->nodeToAdd.begin(),scene->nodeToAdd.end(),this) != scene->nodeToAdd.end()) return NULL;//std::cerr << "ERROR !!!!!\n";
     GetObjectVisitor getobj(class_info);
     getobj.setTags(tags);
     if ( dir == SearchDown )
@@ -311,7 +304,7 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
 //              std::cerr << "Search Up ";
         boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(scene->rgraph) );
         dfv_adapter dfv( &getobj, scene, scene->r_vertex_node_map );
-        BglSimulation::Rvertex thisvertex = scene->r_node_vertex_map[scene->h_vertex_node_map[this->vertexId]];
+        BglSimulation::Rvertex thisvertex = scene->convertHvertex2Rvertex(this->vertexId);
         boost::depth_first_visit(
             scene->rgraph,
             boost::vertex(thisvertex, scene->rgraph),

@@ -264,11 +264,6 @@ public:
     void clear();
 
 
-    /// Add a visual model to the scene, attached by a Mapping.
-    /// They are not inserted in a scene graph, but in a separated container.
-    /// The Mapping needs not be attached to a Node.
-    void setVisualModel( Node*,VisualModel* );
-    void setVisualMapping( Node*,Mapping* );
 
     /// Add an interaction
     void addInteraction( Node* n1, Node* n2, BaseObject* );
@@ -314,9 +309,6 @@ public:
     /// Update the graph with all the operation stored in memory: add/delete node, add interactions...
     void updateGraph();
 
-    /*         /// During init phase, we need to find the roots. We must discard the masterNode, collisionNode, and all the solverNode */
-    /*         bool isRootUsable(Node* n); */
-
     bool isVisualRoot(Node* n);
 
     bool isCollisionRoot(Node* n);
@@ -355,26 +347,13 @@ public:
     CollisionPipeline* collisionPipeline;
     bool hasCollisionGroupManager;
 
-    ///The collision models belong to the hgraph because they are mechanically bound to the objects.
-    ///Additionally, they are referenced in an auxiliary data structure to ease the collision detection.
-
-    /*        Hgraph cgraph; ///< Hierarchical graph which contains all the nodes which have a collision model, organized in a flat hierarchy. */
-    /*        Node* collisionNode;  */
-    /*        Hvertex collisionVertex; ///< Root of the collision graph. Contains the collision detection and response components *\/ */
-
-    /*        Node* visualNode;  */
-    /*        Hvertex visualVertex; ///< Root of the visual graph. Contains the visual models and mappings *\/ */
-
-    /// @}
-    /*        Node* mouseNode; */
-
 
     std::set   < Hvertex >                     vertexToDelete;
     std::set   < Node*   >                     externalDelete;
     std::vector< Node*   >                     nodeToAdd;
     std::set< std::pair<Node*,Node*> >         edgeToAdd;
     std::vector< InteractionData >             interactionToAdd;
-
+    /// @}
     /// Methods to handle collision group:
     /// We create default solvers, that will eventually be used when two groups containing a solver will have to be managed at the same time
     Node* getSolverEulerEuler();
