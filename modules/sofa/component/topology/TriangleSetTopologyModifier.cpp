@@ -48,33 +48,11 @@ using namespace std;
 using namespace sofa::defaulttype;
 
 
-TriangleSetTopologyModifier::TriangleSetTopologyModifier(): EdgeSetTopologyModifier()
-{
-    m_listTriRemove=this->initData(&m_listTriRemove,  "Remove triangles by index", "Debug : remove a triangle or a list of triangles by using their indices (only while animate).");
-    //	m_listTriAdd=this->initData(&m_listTriAdd,  "Add triangles by index", "Debug : remove a triangle or a list of triangles by using their indices.");
-}
-
-
-
 void TriangleSetTopologyModifier::init()
 {
 
     EdgeSetTopologyModifier::init();
     this->getContext()->get(m_container);
-}
-
-
-void TriangleSetTopologyModifier::reinit()
-{
-    if (!(m_listTriRemove.getValue () ).empty() && this->getContext()->getAnimate())
-    {
-        sofa::helper::vector< unsigned int > items = m_listTriRemove.getValue ();
-        removeItems(items);
-
-        items.clear();
-    }
-
-
 }
 
 

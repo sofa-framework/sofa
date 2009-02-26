@@ -63,13 +63,18 @@ public:
     using core::componentmodel::topology::TopologyAlgorithms::serr;
     using core::componentmodel::topology::TopologyAlgorithms::sendl;
 
-    TriangleSetTopologyAlgorithms()
-        :EdgeSetTopologyAlgorithms<DataTypes>()
-    {}
+    TriangleSetTopologyAlgorithms():EdgeSetTopologyAlgorithms<DataTypes>()
+    {
+        m_listTriRemove=this->initData(&m_listTriRemove,  "Remove triangles by index", "Debug : Remove a triangle or a list of triangles by using their indices (only while animate).");
+        m_listTriAdd=this->initData(&m_listTriAdd,  "Add triangles by index", "Debug : Add a triangle or a list of triangles by using their indices (only while animate).");
+    }
+
 
     virtual ~TriangleSetTopologyAlgorithms() {}
 
     virtual void init();
+
+    virtual void reinit();
 
     /** \brief  Moves and fixes the two closest points of two triangles to their median point
     */
@@ -112,9 +117,13 @@ public:
         else return t[2];
     }
 
+protected:
+    Data< sofa::helper::vector< unsigned int> > m_listTriRemove;
+    Data< sofa::helper::vector< Triangle> > m_listTriAdd;
+
 private:
-    TriangleSetTopologyContainer*					m_container;
-    TriangleSetTopologyModifier*					m_modifier;
+    TriangleSetTopologyContainer*				m_container;
+    TriangleSetTopologyModifier*				m_modifier;
     TriangleSetGeometryAlgorithms< DataTypes >*		m_geometryAlgorithms;
 };
 
