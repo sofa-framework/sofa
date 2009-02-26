@@ -171,7 +171,7 @@ public:
     {
         typedef ::boost::edge_property_tag kind;
     };
-    typedef boost::property<interaction_t, InteractionForceField*> IEdgeProperty;
+    typedef boost::property<interaction_t, BaseObject*> IEdgeProperty;
     // Graph
     typedef ::boost::adjacency_list < ::boost::vecS, ::boost::vecS, ::boost::undirectedS, VertexProperty, IEdgeProperty > Igraph;
     typedef Igraph::vertex_descriptor Ivertex;
@@ -181,7 +181,7 @@ public:
     typedef ::boost::property_map<Igraph, bglnode_t>::type  I_vertex_node_map;           // ivertex->sofa node
     typedef std::map<Node*, Ivertex>     I_node_vertex_map;                              // sofa node -> ivertex
     typedef ::boost::property_map<Igraph, interaction_t>::type  I_edge_interaction_map;  // iedge->sofa interaction force field
-    typedef std::map<InteractionForceField*, Iedge> I_interaction_edge_map;              // sofa interaction force field->iedge
+    typedef std::map<BaseObject*, Iedge> I_interaction_edge_map;              // sofa interaction force field->iedge
 
     Igraph igraph;                           ///< the interaction graph
     I_vertex_node_map      i_vertex_node_map;
@@ -201,16 +201,16 @@ public:
     {
         Node *n1;
         Node *n2;
-        InteractionForceField* iff;
-        InteractionData( Node *r1, Node *r2, InteractionForceField* i ) : n1(r1), n2(r2), iff(i) {}
+        BaseObject* iff;
+        InteractionData( Node *r1, Node *r2, BaseObject* i ) : n1(r1), n2(r2), iff(i) {}
     };
 
     struct Interaction
     {
         Hvertex v1;
         Hvertex v2;
-        InteractionForceField* iff;
-        Interaction( Hvertex r1, Hvertex r2, InteractionForceField* i ) : v1(r1), v2(r2), iff(i) {}
+        BaseObject* iff;
+        Interaction( Hvertex r1, Hvertex r2, BaseObject* i ) : v1(r1), v2(r2), iff(i) {}
     };
     typedef vector<Interaction> Interactions;
     typedef vector<InteractionData> InteractionsData;
@@ -231,6 +231,10 @@ public:
     /** Compute the Roots of the graphs
      */
     void computeRoots();
+
+    void insertHierarchicalGraph();
+    void insertVisualGraph();
+    void insertCollisionGraph();
 
     ///@}
 
@@ -267,13 +271,13 @@ public:
     void setVisualMapping( Node*,Mapping* );
 
     /// Add an interaction
-    void addInteraction( Node* n1, Node* n2, InteractionForceField* );
+    void addInteraction( Node* n1, Node* n2, BaseObject* );
 
     /// Add an interaction
     void addInteractionNow( InteractionData &i);
 
     /// Remove an interaction
-    void removeInteraction( InteractionForceField* );
+    void removeInteraction( BaseObject* );
 
     /// Load a file
     Node* load(const char* filename);
@@ -310,8 +314,8 @@ public:
     /// Update the graph with all the operation stored in memory: add/delete node, add interactions...
     void updateGraph();
 
-    /// During init phase, we need to find the roots. We must discard the masterNode, collisionNode, and all the solverNode
-    bool isRootUsable(Node* n);
+    /*         /// During init phase, we need to find the roots. We must discard the masterNode, collisionNode, and all the solverNode */
+    /*         bool isRootUsable(Node* n); */
 
     bool isVisualRoot(Node* n);
 
@@ -349,20 +353,21 @@ public:
     BglNode* masterNode;
     Hvertex masterVertex;
     CollisionPipeline* collisionPipeline;
-
+    bool hasCollisionGroupManager;
 
     ///The collision models belong to the hgraph because they are mechanically bound to the objects.
     ///Additionally, they are referenced in an auxiliary data structure to ease the collision detection.
 
     /*        Hgraph cgraph; ///< Hierarchical graph which contains all the nodes which have a collision model, organized in a flat hierarchy. */
-    Node* collisionNode;
-    Hvertex collisionVertex; ///< Root of the collision graph. Contains the collision detection and response components */
+    /*        Node* collisionNode;  */
+    /*        Hvertex collisionVertex; ///< Root of the collision graph. Contains the collision detection and response components *\/ */
 
-    Node* visualNode;
-    Hvertex visualVertex; ///< Root of the visual graph. Contains the visual models and mappings */
+    /*        Node* visualNode;  */
+    /*        Hvertex visualVertex; ///< Root of the visual graph. Contains the visual models and mappings *\/ */
 
     /// @}
-    Node* mouseNode;
+    /*        Node* mouseNode; */
+
 
     std::set   < Hvertex >                     vertexToDelete;
     std::set   < Node*   >                     externalDelete;

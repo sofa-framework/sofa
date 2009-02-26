@@ -52,7 +52,7 @@ public:
     Result processNodeTopDown( simulation::Node* node );
 
     virtual const char* getClassName() const { return "GetObjectsVisitor"; }
-    virtual const char* getInfos() const { std::string name="["+sofa::helper::gettypename(class_info)+"]"; return name.c_str();}
+    virtual std::string getInfos() const { return std::string("["+sofa::helper::gettypename(class_info)+"]");}
 
 
 protected:
@@ -78,7 +78,7 @@ public:
     Result processNodeTopDown( simulation::Node* node );
     void *getObject() {return result;}
     virtual const char* getClassName() const { return "GetObjectVisitor"; }
-    virtual const char* getInfos() const { std::string name="["+sofa::helper::gettypename(class_info)+"]"; return name.c_str();}
+    virtual std::string getInfos() const { return std::string("["+sofa::helper::gettypename(class_info)+"]"); }
 protected:
 
     const ClassInfo& class_info;

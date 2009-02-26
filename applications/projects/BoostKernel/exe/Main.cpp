@@ -155,6 +155,7 @@ int main(int argc, char** argv)
 
         groot = dynamic_cast<sofa::simulation::bgl::BglNode*>( sofa::simulation::getSimulation()->load(fileName.c_str()));
 
+
         if(sofa::gui::SofaGUI::CurrentGUI())
             sofa::gui::SofaGUI::CurrentGUI()->setScene(groot,fileName.c_str());
     }
