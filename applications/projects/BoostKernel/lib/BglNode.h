@@ -130,6 +130,22 @@ public:
     /// Find all the Nodes pointing
     helper::vector< BglNode* > getParents();
 
+
+
+    /// Mechanical Degrees-of-Freedom
+    virtual core::objectmodel::BaseObject* getMechanicalState() const;
+
+    /// Topology
+    virtual core::componentmodel::topology::Topology* getTopology() const;
+
+    /// Mesh Topology (unified interface for both static and dynamic topologies)
+    virtual core::componentmodel::topology::BaseMeshTopology* getMeshTopology() const;
+
+    /// Shader
+    virtual core::objectmodel::BaseObject* getShader() const;
+
+
+
     /// return the mechanical graph of the scene it belongs to
     BglSimulation::Hgraph &getGraph() { return *graph;};
 

@@ -115,6 +115,8 @@ void BglCollisionGroupManager::createGroups(core::objectmodel::BaseContext* scen
             groupSet[group2] = psolver[i];
             contactGroup[contact] = group1;
         }
+
+
     }
 
     ///Setting in the BglSimulation the solver
@@ -135,7 +137,7 @@ void BglCollisionGroupManager::createGroups(core::objectmodel::BaseContext* scen
         else
             contact->createResponse(scene);
     }
-
+    for (unsigned int i=0; i<psolver.size(); ++i) delete psolver[i];
 }
 
 void BglCollisionGroupManager::clearGroups(core::objectmodel::BaseContext* /*scene*/)

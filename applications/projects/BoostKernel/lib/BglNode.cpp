@@ -209,6 +209,56 @@ helper::vector< BglNode* > BglNode::getParents()
 }
 
 
+
+/// Topology
+core::componentmodel::topology::Topology* BglNode::getTopology() const
+{
+    // return this->topology;
+    if (this->topology)
+        return this->topology;
+    else
+        return get<core::componentmodel::topology::Topology>();
+}
+
+/// Mesh Topology (unified interface for both static and dynamic topologies)
+core::componentmodel::topology::BaseMeshTopology* BglNode::getMeshTopology() const
+{
+    if (this->meshTopology)
+        return this->meshTopology;
+    else
+        return get<core::componentmodel::topology::BaseMeshTopology>();
+}
+
+/// Shader
+core::objectmodel::BaseObject* BglNode::getShader() const
+{
+    if (shader)
+        return shader;
+    else
+        return get<core::Shader>();
+}
+
+/// Mechanical Degrees-of-Freedom
+core::objectmodel::BaseObject* BglNode::getMechanicalState() const
+{
+    // return this->mechanicalModel;
+    if (this->mechanicalState)
+        return this->mechanicalState;
+    else
+        return get<core::componentmodel::behavior::BaseMechanicalState>();
+}
+
+
+
+
+
+
+
+
+
+
+
+
 void BglNode::doExecuteVisitor( Visitor* vis )
 {
     //cerr<<"BglNode::doExecuteVisitor( simulation::tree::Visitor* action)"<<endl;
@@ -245,7 +295,7 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
     getobj.setTags(tags);
     if ( dir == SearchDown )
     {
-//             std::cerr << "Search Down ";
+//              std::cerr << "Search Down ";
         boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(scene->hgraph) );
         dfv_adapter dfv( &getobj,  scene, scene->h_vertex_node_map );
         boost::depth_first_visit(
@@ -258,7 +308,7 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
     }
     else if (dir== SearchUp )
     {
-//             std::cerr << "Search Up ";
+//              std::cerr << "Search Up ";
         boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(scene->rgraph) );
         dfv_adapter dfv( &getobj, scene, scene->r_vertex_node_map );
         BglSimulation::Rvertex thisvertex = scene->r_node_vertex_map[scene->h_vertex_node_map[this->vertexId]];
@@ -272,12 +322,12 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
     }
     else if (dir== SearchRoot )
     {
-//             std::cerr << "Search Root ";
+//              std::cerr << "Search Root ";
         scene->dfv( scene->masterVertex, getobj );
     }
     else    // Local
     {
-//             std::cerr << "Search Local ";
+//              std::cerr << "Search Local ";
         for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
         {
             void* result = class_info.dynamicCast(*it);
@@ -288,7 +338,7 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
             }
         }
     }
-//         std::cerr << "Single Search : " << sofa::helper::gettypename(class_info) << " result : " << getobj.getObject() << "\n";
+//          std::cerr << "Single Search : " << sofa::helper::gettypename(class_info) << " result : " << getobj.getObject() << "\n";
     return getobj.getObject();
 }
 
