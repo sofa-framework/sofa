@@ -2,8 +2,8 @@
 
 SVN="svn --non-interactive"
 
-if [ $# -ne 5 ]; then
-echo USAGE: $# $0 source_url source_rev0 source_rev1 source_dir dest_dir
+if [ $# -ne 6 ]; then
+echo USAGE: $# $0 source_url source_rev0 source_rev1 source_dir dest_dir tmp_dir
 exit 1
 fi
 echo "WARNING: This script will delete part of the files in the $4 and $5 directories."
@@ -29,6 +29,9 @@ cd -
 cd $5 || exit 1
 DEST=$PWD
 echo "DEST:" $DEST
+cd -
+cd $6 || exit 1
+TMPD=$PWD
 cd -
 
 #exit 0
@@ -102,6 +105,8 @@ function svncopy_process_dir {
 	    if [ -f "$f" ]; then
 		if [ "${f##*.}" == "bak" ]; then
 		    true # ignore backup files
+		elif [ "$f" == "private.txt" ]; then
+		    true # ignore private.txt files
 		elif [ -d "$DEST/$2$f" ]; then
 		    echo "ERROR: File $2$f conflicts with existing directory." >&2
 		    echo "The directory will be removed, but the file will only be created in a later commit." >&2
@@ -148,6 +153,10 @@ function svnrm_process_dir {
 			echo Removing file "$DEST/$2$f"
 			$SVN rm --force "$DEST/$2$f" || exit 1
 			rm -f "$DEST/$2$f"
+		    elif [ "$f" == "private.txt" ]; then
+			echo Removing file "$DEST/$2$f"
+			$SVN rm --force "$DEST/$2$f" || exit 1
+			rm -f "$DEST/$2$f"
 		    else
 			DEL=`LC_ALL=C svn info "$SOURCE/$2$f" | grep -c '^Schedule: delete$'`
 			if [ $DEL -gt 0 ]; then
@@ -171,7 +180,7 @@ function svnrm_process_dir {
 svnrm_process_dir "" ""
 
 echo
-echo ========== COPY all files ==========
+echo ========== COPY all files content and properties ==========
 echo
 
 function cp_process_dir {
@@ -184,6 +193,34 @@ function cp_process_dir {
 		if [ -f "$f" ]; then
 		    if [ -f "$SOURCE/$2$f" ]; then
 			cp -pf "$SOURCE/$2$f" "$DEST/$2$f" || exit 1
+			$SVN pl "$SOURCE/$2$f" | tail +2 | colrm 1 2 > "$TMPD/.source.plist"
+			$SVN pl "$DEST/$2$f" | tail +2 | colrm 1 2 > "$TMPD/.dest.plist"
+			for p in `cat "$TMPD/.source.plist"`; do
+			    $SVN pg $p --strict "$SOURCE/$2$f" > "$TMPD/.source.prop"
+			    if grep -q '^'$p'$' "$TMPD/.dest.plist"; then
+				$SVN pg $p --strict "$DEST/$2$f" > "$TMPD/.dest.prop"
+				if cmp -s "$TMPD/.source.prop" "$TMPD/.dest.prop"; then
+				    true
+				else
+				    echo "Change property $p to $2$f";
+				    $SVN ps $p --file "$TMPD/.source.prop" "$DEST/$2$f"
+				fi
+				rm -f "$TMPD/.dest.prop"
+			    else
+				echo "Adding property $p to $2$f";
+				$SVN ps $p --file "$TMPD/.source.prop" "$DEST/$2$f"
+			    fi
+			    rm -f "$TMPD/.source.prop"
+			done
+			for p in `cat "$TMPD/.dest.plist"`; do
+			    if grep -q '^'$p'$' "$TMPD/.source.plist"; then
+				true
+			    else
+				echo "Removing property $p to $2$f";
+				$SVN pd $p "$DEST/$2$f"
+			    fi
+			done
+			rm -f "$TMPD/.dest.plist" "$TMPD/.source.plist"
 		    fi
 		fi
 	    done
@@ -206,3 +243,12 @@ echo
 # Check concistency
 
 diff -qwrU3 -x '.svn' -x '*.bak' $SOURCE $DEST
+
+echo
+echo "After verifications, the following commands can be used to commit the merge :"
+echo
+
+echo cd $5
+echo svn propset sofa:merged-rev $SVN_REVB .
+echo svn commit -m '"'"SCRIPT: Merging trunk revisions r$SVN_REVA:$SVN_REVB to /branches/Sofa-nodev"'"'
+echo cd -
