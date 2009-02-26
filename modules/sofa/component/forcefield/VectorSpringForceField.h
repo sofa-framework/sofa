@@ -132,6 +132,7 @@ public:
     core::componentmodel::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }
 
     virtual void init();
+    virtual void bwdInit();
 
     void createDefaultSprings();
 

@@ -1,4 +1,3 @@
-<!-- Mechanical MassSpring Group Basic Example -->
 <Node name="root" dt="0.02" showBehaviorModels="1" showCollisionModels="1" showMappings="0" showForceFields="1">
         <CollisionPipeline verbose="0" name="CollisionPipeline"/>
         <BruteForceDetection name="N2" />

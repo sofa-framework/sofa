@@ -172,7 +172,12 @@ void VectorSpringForceField<DataTypes>::init()
     this->getContext()->get(edgeMod);
 
     this->Inherit::init();
+}
 
+template <class DataTypes>
+void VectorSpringForceField<DataTypes>::bwdInit()
+{
+    this->Inherit::bwdInit();
     helper::vector<Spring>& springArrayData = *(springArray.beginEdit());
 
     if (springArrayData.empty())
@@ -194,6 +199,7 @@ void VectorSpringForceField<DataTypes>::init()
         else
         {
             int n = this->mstate1->getSize();
+            sout << "VectorSpringForceField: linking "<<n<<" pairs of points." << sendl;
             springArrayData.resize(n);
             edgeArray.resize(n);
             for (int i=0; i<n; ++i)
