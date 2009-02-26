@@ -420,7 +420,6 @@ void BglSimulation::computeInteractionGraphAndConnectedComponents()
             }
         }
     }
-//         std::cerr << "!!!!!!!!!!!!!!!!\n";
     // compute the connected components of the interaction graph, represented by integers associated with vertices
     vector<int> component(num_vertices(igraph));
     int num = boost::connected_components(igraph, &component[0]);
@@ -638,7 +637,7 @@ void BglSimulation::mechanicalStep(Node* root, double dt)
             }
         }
         //No object to animate
-        if (animatedObjectAdded.size() == 0 ) continue;
+        if (staticObjectAdded.empty() && animatedObjectAdded.empty() ) continue;
 
 
         //We deal with all the solvers one by one
@@ -653,17 +652,17 @@ void BglSimulation::mechanicalStep(Node* root, double dt)
             addHedge( masterVertex,solverVertex);
             if (hasCollisionGroupManager)
             {
-                masterNode->animate(dt);
-                removeHedge( masterVertex, solverVertex);
 #ifdef DUMP_VISITOR_INFO
                 simulation::Visitor::printComment(std::string("Animate ") + staticObjectName + currentSolver->getName() );
 #endif
+                masterNode->animate(dt);
+                removeHedge( masterVertex, solverVertex);
             }
             else staticObjectName += currentSolver->getName() + std::string(" ");
         }
-        if (!hasCollisionGroupManager)
-        {
 
+        if (animatedObjectAdded.empty() || !hasCollisionGroupManager)
+        {
 #ifdef DUMP_VISITOR_INFO
             simulation::Visitor::printComment(std::string("Animate ") + staticObjectName );
 #endif
