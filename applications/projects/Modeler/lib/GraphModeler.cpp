@@ -543,7 +543,6 @@ GNode* GraphModeler::loadNode(GNode *node, std::string path)
     xml::BaseElement* newXML=NULL;
 
     newXML = xml::loadFromFile (path.c_str() );
-
     if (newXML == NULL) return NULL;
 
     //-----------------------------------------------------------------

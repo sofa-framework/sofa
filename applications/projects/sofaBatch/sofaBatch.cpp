@@ -53,6 +53,7 @@ void apply(std::string &input, unsigned int nbsteps, std::string &output)
     sofa::simulation::tree::GNode* groot = NULL;
 
     groot = dynamic_cast< sofa::simulation::tree::GNode* >( sofa::simulation::tree::getSimulation()->load(input.c_str()));
+    sofa::simulation::tree::getSimulation()->init(groot);
     if (groot == NULL)
     {
         std::cerr << "CANNOT open " << input << " !\n";

@@ -1887,6 +1887,7 @@ void SimpleGUI::keyPressEvent ( int k )
                 Quaternion q = _newQuat;
                 Transformation t = _sceneTransform;
                 simulation::Node* newroot = getSimulation()->load(filename.c_str());
+                getSimulation()->init(newroot);
                 if (newroot == NULL)
                 {
                     std::cerr << "Failed to load "<<filename<<std::endl;

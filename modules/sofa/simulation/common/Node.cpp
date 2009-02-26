@@ -98,13 +98,6 @@ void Node::animate( double dt )
     //cerr<<"Node::animate, start execute"<<endl;
     execute(vis);
     //cerr<<"Node::animate, end execute"<<endl;
-
-    execute<simulation::UpdateMappingVisitor>();
-    {
-        simulation::UpdateMappingEndEvent ev ( dt );
-        PropagateEventVisitor act ( &ev );
-        this->execute ( act );
-    }
 }
 
 void Node::glDraw()
@@ -117,17 +110,17 @@ void Node::glDraw()
 
 void Node::addChild(Node* )
 {
-    serr << "addChild NOT IMPLEMENTED\n";
+    serr << "addChild NOT IMPLEMENTED" << sendl;
 }
 
 void Node::removeChild(Node* )
 {
-    serr << "removeChild NOT IMPLEMENTED\n";
+    serr << "removeChild NOT IMPLEMENTED" << sendl;
 }
 
 void Node::moveChild(Node* )
 {
-    serr << "moveChild NOT IMPLEMENTED\n";
+    serr << "moveChild NOT IMPLEMENTED" << sendl;
 }
 
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.

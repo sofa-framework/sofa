@@ -922,7 +922,7 @@ void RealGUI::fileOpen ( std::string filename )
     map_modifyDialogOpened.clear();
 
     simulation::Node* groot = simulation::getSimulation()->load ( filename.c_str() );
-
+    simulation::getSimulation()->init ( groot );
     if ( groot == NULL )
     {
         qFatal ( "Failed to load %s",filename.c_str() );
@@ -960,6 +960,7 @@ void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
         graphView->clear();
     }
     GNode *simuNode = dynamic_cast< GNode *> (simulation::getSimulation()->load ( scene.c_str() ));
+    getSimulation()->init(simuNode);
     if ( simuNode )
     {
         if ( !pmlreader ) pmlreader = new PMLReader;

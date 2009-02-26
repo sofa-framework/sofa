@@ -115,20 +115,20 @@ int main(int argc, char** argv)
 
     sofa::simulation::tree::GNode* groot = NULL;
 
+
     if (fileName.empty())
     {
         fileName = "Demos/liver.scn";
         if (loadRecent) // try to reload the latest scene
         {
             std::string scenes = "config/Sofa.ini";
-            sofa::helper::system::DataRepository.findFile( scenes );
+            sofa::helper::system::DataRepository.getFile( scenes );
             std::ifstream mrulist(scenes.c_str());
             std::getline(mrulist,fileName);
             mrulist.close();
         }
-        sofa::helper::system::DataRepository.findFile(fileName);
+        fileName = sofa::helper::system::DataRepository.getFile(fileName);
     }
-
     if (groot==NULL)
     {
         groot = new sofa::simulation::tree::GNode;
@@ -143,6 +143,7 @@ int main(int argc, char** argv)
     {
         sofa::simulation::tree::getSimulation()->unload ( groot);
         groot = dynamic_cast<sofa::simulation::tree::GNode*>( sofa::simulation::tree::getSimulation()->load(fileName.c_str()));
+        sofa::simulation::tree::getSimulation()->init(groot);
         if(sofa::gui::SofaGUI::CurrentGUI())
             sofa::gui::SofaGUI::CurrentGUI()->setScene(groot,fileName.c_str());
     }

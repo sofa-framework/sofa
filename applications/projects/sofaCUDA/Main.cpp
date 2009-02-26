@@ -86,6 +86,7 @@ int main(int argc, char** argv)
     if (!fileName.empty())
     {
         groot = dynamic_cast< GNode* >(getSimulation()->load(fileName.c_str()));
+        sofa::simulation::tree::getSimulation()->init(groot);
     }
 
     if (groot==NULL)
