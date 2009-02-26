@@ -1,27 +1,27 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 3      *
-*                (c) 2006-2008 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 3      *
+ *                (c) 2006-2008 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_INL
 #define SOFA_COMPONENT_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_INL
 
@@ -44,6 +44,7 @@ namespace topology
 
 using namespace sofa::defaulttype;
 
+
 template<class DataTypes>
 void TriangleSetTopologyAlgorithms< DataTypes >::init()
 {
@@ -52,6 +53,36 @@ void TriangleSetTopologyAlgorithms< DataTypes >::init()
     this->getContext()->get(m_modifier);
     this->getContext()->get(m_geometryAlgorithms);
 }
+
+template<class DataTypes>
+void TriangleSetTopologyAlgorithms< DataTypes >::reinit()
+{
+    if (!(m_listTriRemove.getValue () ).empty() && this->getContext()->getAnimate())
+    {
+        sofa::helper::vector< unsigned int > items = m_listTriRemove.getValue ();
+        m_modifier->removeItems(items);
+
+        m_modifier->propagateTopologicalChanges();
+        items.clear();
+    }
+
+    if (!(m_listTriAdd.getValue () ).empty() && this->getContext()->getAnimate())
+    {
+
+        m_modifier->addTrianglesProcess(m_listTriAdd.getValue ());
+        sofa::helper::vector< TriangleID > new_triangles_id;
+
+        for (unsigned int i = 0; i < (m_listTriAdd.getValue ()).size(); i++)
+            new_triangles_id.push_back (m_container->getNbTriangles()+i);
+
+        m_modifier->addTrianglesWarning((m_listTriAdd.getValue ()).size(), m_listTriAdd.getValue (), new_triangles_id);
+        m_modifier->propagateTopologicalChanges();
+        std::cout << m_container->getNbPoints() << std::endl;
+    }
+
+}
+
+
 
 // Move and fix the two closest points of two triangles to their median point
 template<class DataTypes>
@@ -88,6 +119,8 @@ void TriangleSetTopologyAlgorithms< DataTypes >::RemoveAlongTrianglesList(const 
         const unsigned int ind_ta,
         const unsigned int ind_tb)
 {
+    std::cout << "TriangleSetTopologyAlgorithms< DataTypes >::RemoveAlongTrianglesList" << std::endl;
+
     sofa::helper::vector< unsigned int > triangles_list;
     sofa::helper::vector< unsigned int > edges_list;
     sofa::helper::vector< double > coords_list;
@@ -210,12 +243,12 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
     double is_snapping_b = is_snap_b0 || is_snap_b1 || is_snap_b2;
 
     /*
-    if(is_snapping_a){
-    this->sout << "INFO_print : is_snapping_a" <<  this->sendl;
-    }
-    if(is_snapping_b){
-    this->sout << "INFO_print : is_snapping_b" <<  this->sendl;
-    }
+      if(is_snapping_a){
+      this->sout << "INFO_print : is_snapping_a" <<  this->sendl;
+      }
+      if(is_snapping_b){
+      this->sout << "INFO_print : is_snapping_b" <<  this->sendl;
+      }
     */
 
     if(is_validated) // intersection successfull
@@ -711,6 +744,8 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, co
         const sofa::helper::vector<TriangleID>& triangles_list, const sofa::helper::vector<EdgeID>& edges_list,
         const sofa::helper::vector<double>& coords_list, sofa::helper::vector<EdgeID>& new_edges)
 {
+    std::cout << "TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath" << std::endl;
+
     unsigned int nb_edges = edges_list.size();
     sofa::helper::vector< sofa::helper::vector< PointID > > p_ancestors; p_ancestors.reserve(nb_edges+2);
     sofa::helper::vector< sofa::helper::vector< double > > p_baryCoefs; p_baryCoefs.reserve(nb_edges+2);
