@@ -66,13 +66,12 @@ void DynamicSparseGridTopologyContainer::loadFromMeshLoader ( sofa::component::M
     }
 
     // Init regular/topo mapping
-    helper::vector<BaseMeshTopology::HexaID>& iirg = *(idxInRegularGrid.beginEdit());
+    helper::vector<BaseMeshTopology::HexaID>& iirg = idxInRegularGrid;
     voxelGridLoader->getIndicesInRegularGrid( iirg);
     for( unsigned int i = 0; i < iirg.size(); i++)
     {
         idInRegularGrid2IndexInTopo.insert( make_pair( iirg[i], i ));
     }
-    idxInRegularGrid.endEdit();
 
     // Init values
     int dataSize = voxelGridLoader->getDataSize();

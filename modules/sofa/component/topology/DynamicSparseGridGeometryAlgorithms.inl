@@ -81,7 +81,7 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
     const std::map< unsigned int, BaseMeshTopology::HexaID>& regular2topo = topoContainer->idInRegularGrid2IndexInTopo;
     unsigned int regularGridIndex;
     std::map< unsigned int, BaseMeshTopology::HexaID>::const_iterator it;
-    for( int k = 0; k < 3; k++) // TODO on peut meme passer de 3 a 2 en enlevant les -1 dans les formules en dessous. A tester qd ca marchera.
+    for( int k = 0; k < 3; k++)
     {
         if((((int)tmp[2])-1+k < 0) || (tmp[2]-1+k > resolution[2])) continue;
         for( int j = 0; j < 3; j++)
