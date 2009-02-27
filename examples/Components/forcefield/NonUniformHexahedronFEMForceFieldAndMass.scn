@@ -15,16 +15,16 @@
 	showWireFrame="0"
 	time="0.0"
 >
-	<Object type="CollisionPipeline" depth="6" verbose="0" draw="0"/>
+	<Object type="CollisionPipeline" verbose="0" draw="0"/>
 	<Object type="BruteForceDetection" name="N2" />
-	<Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
+	<Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
 	<Object type="CollisionResponse" name="Response" response="default" />
-	<Object type="CollisionGroup" name="Group" />
+
 	
 	
  	
-	<include name="Salad Bowl 1"         href="Objects/SaladBowl.xml"  contactStiffness="10000" color=".1 .6 .6 .5"  dy="-10" dz="-20"  scale="100"/>
-	<include name="Salad Bowl 2"         href="Objects/SaladBowl.xml"  contactStiffness="10000" color=".1 .6 .6 .5"  dx="70"  dy="-10" dz="-20"  scale="100"/> 
+	<include name="Salad Bowl 1"         href="Objects/SaladBowl.xml"  contactStiffness="10000" dy="-10" dz="-20"  scale="100"/>
+	<include name="Salad Bowl 2"         href="Objects/SaladBowl.xml"  contactStiffness="10000" dx="70"  dy="-10" dz="-20"  scale="100"/> 
 
 	
 	<Node name="uniform" showInteractionForceFields="0">
@@ -49,6 +49,8 @@
 			<Object type="Mesh" />
 			<Object type="MechanicalObject" />
 			<Object type="Triangle" contactStiffness="1"/> 
+			<Object type="Line" contactStiffness="1"/> 
+			<Object type="Point" contactStiffness="1"/> 
 			<Object type="BarycentricMapping" />
 		</Node>
 		
@@ -79,6 +81,8 @@
 			<Object type="Mesh" />
 			<Object type="MechanicalObject" />
 			<Object type="Triangle" contactStiffness="1" /> 
+			<Object type="Line" contactStiffness="1"/> 
+			<Object type="Point" contactStiffness="1"/> 
 			<Object type="BarycentricMapping" />
 		</Node>
 		
