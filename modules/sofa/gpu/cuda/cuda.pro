@@ -26,6 +26,7 @@ LIBS += -lsofacomponentlinearsolver$$LIBSUFFIX
 LIBS += -lsofacomponentodesolver$$LIBSUFFIX
 LIBS += -lsofacomponentbase$$LIBSUFFIX
 LIBS += -lsofacomponentcontroller$$LIBSUFFIX
+LIBS += -lsofacomponentengine$$LIBSUFFIX
 LIBS += -lsofacomponentvisualmodel$$LIBSUFFIX
 LIBS += -lsofacomponentmass$$LIBSUFFIX
 LIBS += -lsofacomponentforcefield$$LIBSUFFIX
