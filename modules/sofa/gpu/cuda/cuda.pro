@@ -137,7 +137,8 @@ HEADERS += \
        	CudaUncoupledConstraintCorrection.h
 
 SOURCES += \
-	   	CudaBTDLinearSolver.cpp  \
+                CudaBoxROI.cpp  \
+                CudaBTDLinearSolver.cpp  \
 	   	CudaLCP.cpp \
        	CudaMasterContactSolver.cpp \
        	CudaSpatialGridContainer.cpp \
