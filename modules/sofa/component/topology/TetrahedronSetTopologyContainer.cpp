@@ -57,6 +57,7 @@ TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer()
 {
 }
 
+
 TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer(const sofa::helper::vector< Tetrahedron >& tetrahedra )
     : TriangleSetTopologyContainer()
     , m_tetrahedron( tetrahedra )
@@ -96,7 +97,9 @@ void TetrahedronSetTopologyContainer::draw()
             glEnd();
         }
     }
+
 }
+
 
 void TetrahedronSetTopologyContainer::addTetra( int a, int b, int c, int d )
 {
@@ -554,6 +557,17 @@ sofa::helper::vector< unsigned int > &TetrahedronSetTopologyContainer::getTetrah
 
     return m_tetrahedronVertexShell[i];
 }
+
+sofa::helper::vector< unsigned int > &TetrahedronSetTopologyContainer::getTetrahedronTriangleShellForModification(const unsigned int i)
+{
+    if (!hasTetrahedronTriangleShell())
+        createTetrahedronTriangleShellArray();
+
+    assert(i < m_tetrahedronTriangleShell.size());
+
+    return m_tetrahedronTriangleShell[i];
+}
+
 
 bool TetrahedronSetTopologyContainer::checkTopology() const
 {
