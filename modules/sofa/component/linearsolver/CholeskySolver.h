@@ -60,8 +60,6 @@ public:
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);
 
-
-
 private :
     FullMatrix<double> L;
     //Vector s;

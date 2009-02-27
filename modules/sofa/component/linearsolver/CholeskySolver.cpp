@@ -100,31 +100,6 @@ void CholeskySolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& z, Vector& r
     }
 }
 
-//cholesky(A,L,tol,n)
-//double A[N][N],L[N][N],tol;
-//int n;
-//{
-//  double s[N],ss;
-//  int i,j,k;
-//  for (j=0; j<n; j++){
-//    if (j==0) {
-//      for (i=j; i<n; i++){ s[i]=A[i][j]; }
-//    }
-//    if (j!=0) {
-//      for (i=j; i<n; i++){
-//        ss=0.;
-//        for (k=0; k<=j-1; k++){ ss+=L[i][k]*L[j][k];}
-//        s[i]=A[i][j]-ss; }
-//    }
-//    if (fabs(s[j])<tol) {
-//      printf("Too small pivot\n"); return;
-//	  }
-//    for (i=j; i<n; i++){ L[i][j]=s[i]/sqrt(s[j]); }
-//  }
-//  return;
-//}
-
-
 template<class TMatrix, class TVector>
 void CholeskySolver<TMatrix,TVector>::invert(Matrix& M)
 {
@@ -155,10 +130,6 @@ void CholeskySolver<TMatrix,TVector>::invert(Matrix& M)
         }
     }
 }
-
-
-
-
 
 //1. void Cholesky(int n, float A[N][N], float L[N][N], float Lt[N][N])
 //2. {
