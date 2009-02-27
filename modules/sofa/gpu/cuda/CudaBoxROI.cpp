@@ -22,82 +22,55 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <iostream>
-#include <fstream>
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-#include "mycuda.h"
+#include "CudaTypes.h"
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/component/engine/BoxROI.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
+
+namespace component
+{
+
+namespace engine
+{
+
+template class BoxROI<gpu::cuda::CudaVec3fTypes>;
+template class BoxROI<gpu::cuda::CudaVec3f1Types>;
+#ifdef SOFA_DEV
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class BoxROI<gpu::cuda::CudaVec3dTypes>;
+template class BoxROI<gpu::cuda::CudaVec3d1Types>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+#endif // SOFA_DEV
+
+} // namespace engine
+
+} // namespace component
+
 namespace gpu
 {
+
 namespace cuda
 {
 
-SOFA_LINK_CLASS(CudaBoxROI)
-SOFA_LINK_CLASS(CudaFixedConstraint)
-SOFA_LINK_CLASS(CudaMechanicalObject)
-SOFA_LINK_CLASS(CudaSpringForceField)
-SOFA_LINK_CLASS(CudaUniformMass)
-SOFA_LINK_CLASS(CudaPlaneForceField)
-SOFA_LINK_CLASS(CudaSphereForceField)
-SOFA_LINK_CLASS(CudaEllipsoidForceField)
-SOFA_LINK_CLASS(CudaIdentityMapping)
-SOFA_LINK_CLASS(CudaBarycentricMapping)
-SOFA_LINK_CLASS(CudaRigidMapping)
-SOFA_LINK_CLASS(CudaSubsetMapping)
-SOFA_LINK_CLASS(CudaDistanceGridCollisionModel)
-SOFA_LINK_CLASS(CudaTetrahedronFEMForceField)
-SOFA_LINK_CLASS(CudaCollision)
-SOFA_LINK_CLASS(CudaCollisionDetection)
-SOFA_LINK_CLASS(CudaPointModel)
-SOFA_LINK_CLASS(CudaSphereModel)
-SOFA_LINK_CLASS(CudaTestForceField)
-SOFA_LINK_CLASS(CudaTetrahedronTLEDForceField)
-SOFA_LINK_CLASS(CudaHexahedronTLEDForceField)
-SOFA_LINK_CLASS(CudaTetrahedronSuperTLEDForceField)
-SOFA_LINK_CLASS(CudaSetTopology)
-SOFA_LINK_CLASS(CudaVisualModel)
-SOFA_LINK_CLASS(CudaOglTetrahedralModel)
+SOFA_DECL_CLASS(CudaBoxROI)
 
+int BoxROICudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< component::engine::BoxROI<CudaVec3fTypes> >()
+        .add< component::engine::BoxROI<CudaVec3f1Types> >()
 #ifdef SOFA_DEV
-
-SOFA_LINK_CLASS(CudaMasterContactSolver)
-SOFA_LINK_CLASS(CudaSpatialGridContainer)
-
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< component::engine::BoxROI<CudaVec3dTypes> >()
+        .add< component::engine::BoxROI<CudaVec3d1Types> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
 #endif // SOFA_DEV
-
-extern "C"
-{
-//MycudaVerboseLevel mycudaVerboseLevel = LOG_ERR;
-    MycudaVerboseLevel mycudaVerboseLevel = LOG_INFO;
-//MycudaVerboseLevel mycudaVerboseLevel = LOG_TRACE;
-}
-
-void mycudaLogError(const char* err, const char* src)
-{
-    std::cerr << "CUDA error: "<< err <<" returned from "<< src <<".\n";
-    exit(1);
-}
-
-int myprintf(const char* fmt, ...)
-{
-    va_list args;
-    va_start( args, fmt );
-    int r = vfprintf( stderr, fmt, args );
-    va_end( args );
-    return r;
-}
-
-const char* mygetenv(const char* name)
-{
-    return getenv(name);
-}
+        ;
 
 } // namespace cuda
+
 } // namespace gpu
+
 } // namespace sofa
