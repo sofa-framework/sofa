@@ -163,6 +163,8 @@ SOFA_DECL_CLASS(EulerImplicitSolver)
 int EulerImplicitSolverClass = core::RegisterObject("Implicit time integrator using backward Euler scheme")
         .add< EulerImplicitSolver >()
         .addAlias("EulerImplicit");
+.addAlias("ImplicitEulerSolver");
+.addAlias("ImplicitEuler");
 ;
 
 } // namespace odesolver

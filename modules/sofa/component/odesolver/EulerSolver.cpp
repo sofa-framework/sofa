@@ -50,6 +50,10 @@ using namespace core::componentmodel::behavior;
 int EulerSolverClass = core::RegisterObject("A simple explicit time integrator")
         .add< EulerSolver >()
         .addAlias("Euler")
+        .addAlias("EulerExplicit")
+        .addAlias("ExplicitEuler")
+        .addAlias("EulerExplicitSolver")
+        .addAlias("ExplicitEulerSolver")
         ;
 
 SOFA_DECL_CLASS(Euler);
