@@ -99,7 +99,14 @@ public:
     virtual void solveSystem();
 
     /// Invert the system, this method is optional because it's call when solveSystem() is called for the first time
-    virtual void invertSystem() {}
+    virtual void invertSystem()
+    {
+        if (needInvert)
+        {
+            this->invert(*systemMatrix);
+            needInvert = false;
+        }
+    }
 
     virtual std::string getTemplateName() const
     {
