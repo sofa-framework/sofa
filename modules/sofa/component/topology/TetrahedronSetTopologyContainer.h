@@ -67,6 +67,7 @@ public:
     typedef TetraEdges		TetrahedronEdges;
     typedef TetraTriangles	TetrahedronTriangles;
 
+
     TetrahedronSetTopologyContainer();
 
     TetrahedronSetTopologyContainer(const sofa::helper::vector< Tetrahedron >& tetrahedra );
@@ -372,6 +373,9 @@ protected:
     *
     */
     sofa::helper::vector< unsigned int > &getTetrahedronEdgeShellForModification(const unsigned int edgeIndex);
+
+
+    sofa::helper::vector< unsigned int > &getTetrahedronTriangleShellForModification(const unsigned int triangleIndex);
 
 
 };
