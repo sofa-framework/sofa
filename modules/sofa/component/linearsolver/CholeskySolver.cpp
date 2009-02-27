@@ -194,7 +194,7 @@ int CholeskySolverClass = core::RegisterObject("Linear system solver using the c
         .add< CholeskySolver<NewMatSymmetricMatrix,NewMatVector> >()
 //.add< CholeskySolver<NewMatSymmetricBandMatrix,NewMatVector> >()
         .add< CholeskySolver< FullMatrix<double>, FullVector<double> > >()
-        .addAlias("CholeskySolver")
+        .addAlias("CholeskySolverAlias")
         ;
 
 } // namespace linearsolver
