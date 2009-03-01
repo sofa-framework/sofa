@@ -248,7 +248,9 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(VecDeriv& f, const VecDer
 
         for(it=this->_indexedElements->begin(); it!=this->_indexedElements->end(); ++it,++i)
         {
+#ifdef SOFA_DEV
             if (this->_trimgrid && !this->_trimgrid->isCubeActive(i/6)) continue;
+#endif
 
             Vec<24, Real> actualDx, actualF;
 
