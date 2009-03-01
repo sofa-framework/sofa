@@ -289,8 +289,8 @@ void ManifoldTetrahedronSetTopologyContainer::createTetrahedronTriangleShellArra
         if (shell.size() == 1)
         {
             //on fait rien pour le moment mais il faudrait verifier que le triangle est bien dans le bon sens:
-            int test = getTriangleTetrahedronOrientation (m_tetrahedron[ shell[0] ], m_triangle[ triangleIndex ]);
 #ifndef NDEBUG
+            int test = getTriangleTetrahedronOrientation (m_tetrahedron[ shell[0] ], m_triangle[ triangleIndex ]);
             std::cout << "Border test: " << test << std::endl;
 #endif
         }
