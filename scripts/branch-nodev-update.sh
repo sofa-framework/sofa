@@ -71,14 +71,14 @@ echo
 echo ========== Update Branch Directory ==========
 echo
 
-$SVN update || exit 1
+$SVN update || read -p "Press Enter to continue, or Ctrl-C to cancel." || exit 1
 $SVN status --no-ignore | grep '^?' | colrm 1 7 | xargs -d '\n' rm -rf
 
 echo
 echo ========== Merge r$SVN_REVA:$SVN_REVB, ignoring conflicts ==========
 echo
 
-$SVN merge --accept theirs-full -r $SVN_REVA:$SVN_REVB $SVN_URL || exit 1
+$SVN merge --accept theirs-full -r $SVN_REVA:$SVN_REVB $SVN_URL || read -p "Press Enter to continue, or Ctrl-C to cancel." || exit 1
 
 echo
 echo ========== SVN copy all missing directories and files ==========
@@ -92,13 +92,13 @@ function svncopy_process_dir {
     elif [ -f "$DEST/$1" ]; then
         echo "ERROR: Directory $1 conflicts with existing file." >&2
         echo "The file will be removed, but the directory will only be created in a later commit." >&2
-        $SVN rm --force "$DEST/$1" || exit 1
+        $SVN rm --force "$DEST/$1" || read -p "Press Enter to continue, or Ctrl-C to cancel." || exit 1
 	rm -rf "$DEST/$1"
     elif [ ! -d "$DEST/$1" ]; then
         C_URL=`LC_ALL=C $SVN info $SOURCE/$1 | awk '$1=="URL:" { print $2 }'`
         C_REV=`LC_ACC=C $SVN info $SOURCE/$1 | awk '$1=="Last" && $2=="Changed" && $3=="Rev:" { print $4 }'`
         echo Copy directory $1 '@' $C_REV
-        $SVN cp $C_URL'@'$C_REV "$DEST/$1" || exit 1
+        $SVN cp $C_URL'@'$C_REV "$DEST/$1" || read -p "Press Enter to continue, or Ctrl-C to cancel." || exit 1
     else
 	cd "$SOURCE/$1"
 	for f in *; do
@@ -110,12 +110,12 @@ function svncopy_process_dir {
 		elif [ -d "$DEST/$2$f" ]; then
 		    echo "ERROR: File $2$f conflicts with existing directory." >&2
 		    echo "The directory will be removed, but the file will only be created in a later commit." >&2
-		    $SVN rm --force "$DEST/$2$f" || exit 1
+		    $SVN rm --force "$DEST/$2$f" || read -p "Press Enter to continue, or Ctrl-C to cancel." || exit 1
 		elif [ ! -f "$DEST/$2$f" ]; then
 		    C_URL=`LC_ALL=C $SVN info $SOURCE/$1 | awk '$1=="URL:" { print $2 }'`
 		    C_REV=`LC_ALL=C $SVN info $SOURCE/$1 | awk '$1=="Last" && $2=="Changed" && $3=="Rev:" { print $4 }'`
 		    echo Copy file $1 '@' $C_REV
-		    $SVN cp $C_URL'@'$C_REV "$DEST/$2$f" || exit 1
+		    $SVN cp $C_URL'@'$C_REV "$DEST/$2$f" || read -p "Press Enter to continue, or Ctrl-C to cancel." || exit 1
 		fi
 	    fi
 	done
@@ -139,29 +139,29 @@ function svnrm_process_dir {
     CUR="$1"
     if [ ! -d "$SOURCE/$1" ]; then
         echo Removing directory $1
-        $SVN rm --force "$DEST/$1" || exit 1
+        $SVN rm --force "$DEST/$1" || read -p "Press Enter to continue, or Ctrl-C to cancel." || exit 1
     else
 	DEL=`LC_ALL=C svn info "$SOURCE/$1" | grep -c '^Schedule: delete$'`
 	if [ $DEL -gt 0 ]; then
             echo Removing directory $1
-            $SVN rm --force "$DEST/$1" || exit 1
+            $SVN rm --force "$DEST/$1" || read -p "Press Enter to continue, or Ctrl-C to cancel." || exit 1
 	else
 	    cd "$DEST/$1"
 	    for f in *; do
 		if [ -f "$f" ]; then
 		    if [ ! -f "$SOURCE/$2$f" ]; then
 			echo Removing file "$DEST/$2$f"
-			$SVN rm --force "$DEST/$2$f" || exit 1
+			$SVN rm --force "$DEST/$2$f" || read -p "Press Enter to continue, or Ctrl-C to cancel." || exit 1
 			rm -f "$DEST/$2$f"
 		    elif [ "$f" == "private.txt" ]; then
 			echo Removing file "$DEST/$2$f"
-			$SVN rm --force "$DEST/$2$f" || exit 1
+			$SVN rm --force "$DEST/$2$f" || read -p "Press Enter to continue, or Ctrl-C to cancel." || exit 1
 			rm -f "$DEST/$2$f"
 		    else
 			DEL=`LC_ALL=C svn info "$SOURCE/$2$f" | grep -c '^Schedule: delete$'`
 			if [ $DEL -gt 0 ]; then
 			    echo Removing file "$DEST/$2$f"
-			    $SVN rm --force "$DEST/$2$f" || exit 1
+			    $SVN rm --force "$DEST/$2$f" || read -p "Press Enter to continue, or Ctrl-C to cancel." || exit 1
 			    rm -f "$DEST/$2$f"
 			fi
 		    fi
@@ -192,7 +192,7 @@ function cp_process_dir {
 	    for f in *; do
 		if [ -f "$f" ]; then
 		    if [ -f "$SOURCE/$2$f" ]; then
-			cp -pf "$SOURCE/$2$f" "$DEST/$2$f" || exit 1
+			cp -pf "$SOURCE/$2$f" "$DEST/$2$f" || read -p "Press Enter to continue, or Ctrl-C to cancel." || exit 1
 			$SVN pl "$SOURCE/$2$f" | tail +2 | colrm 1 2 > "$TMPD/.source.plist"
 			$SVN pl "$DEST/$2$f" | tail +2 | colrm 1 2 > "$TMPD/.dest.plist"
 			for p in `cat "$TMPD/.source.plist"`; do

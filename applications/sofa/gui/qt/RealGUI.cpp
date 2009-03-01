@@ -1699,6 +1699,12 @@ void RealGUI::exportGraph ( sofa::simulation::Node* root )
     if ( root == NULL ) return;
     sofa::gui::qt::GenGraphForm* form = new sofa::gui::qt::GenGraphForm;
     form->setScene ( root );
+    std::string gname = viewer->getSceneFileName();
+    std::size_t gpath = gname.find_last_of("/\\");
+    std::size_t gext = gname.rfind('.');
+    if (gext != std::string::npos && (gpath == std::string::npos || gext > gpath))
+        gname = gname.substr(0,gext);
+    form->filename->setText(gname.c_str());
     form->show();
 }
 
