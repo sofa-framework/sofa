@@ -71,6 +71,7 @@ public:
     Data<Real> damping;
     Data<defaulttype::Vec3f> color;
     Data<bool> bDraw;
+    Data<Real> drawSize;
 
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
     Data< defaulttype::Vec<2,int> > localRange;
@@ -82,6 +83,7 @@ public:
         , damping(initData(&damping, (Real)5, "damping", "force damping"))
         , color(initData(&color, defaulttype::Vec3f(0.0f,.5f,.2f), "color", "plane color"))
         , bDraw(initData(&bDraw, false, "draw", "enable/disable drawing of plane"))
+        , drawSize(initData(&drawSize, (Real)10.0f, "drawSize", "plane display size if draw is enabled"))
         , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
     {
         Deriv n;
@@ -121,7 +123,7 @@ public:
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *, SReal, unsigned int &);
 
     void draw();
-    void drawPlane(float size=1000.0f);
+    void drawPlane(float size=0.0f);
     bool addBBox(double* minBBox, double* maxBBox);
 
 };

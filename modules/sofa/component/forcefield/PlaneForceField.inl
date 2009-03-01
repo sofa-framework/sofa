@@ -168,6 +168,8 @@ void PlaneForceField<DataTypes>::draw()
 template<class DataTypes>
 void PlaneForceField<DataTypes>::drawPlane(float size)
 {
+    if (size == 0.0f) size = (float)drawSize.getValue();
+
     const VecCoord& p1 = *this->mstate->getX();
 
     defaulttype::Vec3d normal; normal = planeNormal.getValue();
@@ -207,7 +209,7 @@ void PlaneForceField<DataTypes>::drawPlane(float size)
 
     simulation::getSimulation()->DrawUtility.setPolygonMode(2,false); //Cull Front face
 
-    simulation::getSimulation()->DrawUtility.drawTriangles(points, defaulttype::Vec<4,float>(color.getValue()[0],color.getValue()[1],color.getValue()[2],1.0));
+    simulation::getSimulation()->DrawUtility.drawTriangles(points, defaulttype::Vec<4,float>(color.getValue()[0],color.getValue()[1],color.getValue()[2],0.5));
     simulation::getSimulation()->DrawUtility.setPolygonMode(0,false); //No Culling
     glDisable(GL_CULL_FACE);
 
