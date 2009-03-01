@@ -479,8 +479,8 @@ bool ManifoldTriangleSetTopologyModifier::addPrecondition( const sofa::helper::v
 
     if (trianglesList.size() != 0 )
     {
-        return false;
         m_Addmodifications.clear();
+        return false;
     }
 
 
