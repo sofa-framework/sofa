@@ -121,6 +121,8 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
     sofa::helper::io::bvh::BVHChannels* channels = bvhjoint->getChannels();
     sofa::helper::io::bvh::BVHMotion* motion = bvhjoint->getMotion();
 
+    std::cerr<<"num Frames found in BVH ="<<motion->frameCount<<std::endl;
+
     ArticulationCenter::Articulation* a;
 
     for (unsigned int j=0; j<channels->channels.size(); j++)
@@ -246,9 +248,22 @@ void ArticulatedHierarchyContainer::init ()
                 GNode* n = *it;
                 n->getTreeObjects<ArticulationCenter::Articulation>(&(*ac)->articulations);
             }
+
+            // for Arboris Mapping, init the transformation for each articulation center
+            Quat q; // TODO: add a rotation component to the positionning on the ArticulatedHierarchyContainer
+            (*ac)->H_p_pLc.set((*ac)->posOnParent.getValue(),q);
+            (*ac)->H_c_cLp.set((*ac)->posOnChild.getValue(), q);
+            (*ac)->H_pLc_cLp.identity();
+
+
+
+
         }
     }
 }
+
+
+
 
 } // namespace container
 
