@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_TRIANGLEOCTREEMDEL_H
-#define SOFA_COMPONENT_COLLISION_TRIANGLEOCTREEMDEL_H
+#ifndef SOFA_COMPONENT_COLLISION_TRIANGLEOCTREEMODEL_H
+#define SOFA_COMPONENT_COLLISION_TRIANGLEOCTREEMODEL_H
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/component/container/MechanicalObject.h>
@@ -44,56 +44,30 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-class TriangleOctree;
-class TriangleModel;
-
-class SOFA_COMPONENT_COLLISION_API TriangleOctreeModel:public  TriangleModel
+class SOFA_COMPONENT_COLLISION_API TriangleOctreeModel : public  TriangleModel, public TriangleOctreeRoot
 {
 public:
     TriangleOctreeModel();
-    /*the triangles assiciated to a point*/
+
+#if 0
+    /// the triangles associated to a point
     vector<vector<int> > pTri;
-    /*the normals for each point*/
+#endif
+
+    /// the normals for each point
     vector<Vector3> pNorms;
-    /*the size of the octree cube*/
-    int cubeSize;
-    /*the first node of the octree*/
-    TriangleOctree *octreeRoot;
     //vector < Vector4 > octreeVec;
-    void	draw();
+    void draw();
     virtual void computeBoundingTree(int maxDepth=0);
     virtual void computeContinuousBoundingTree(double dt, int maxDepth=0);
-    /*init the octree creation*/
+    /// init the octree creation
     void buildOctree ();
-protected:
-    /*used to add a triangle  to the octree*/
-    int fillOctree (int t, int d = 0, Vector3 v = Vector3 (0, 0, 0));
-};
-/*class used to manage the Bounding Box for each triangle*/
-class TriangleAABB
-{
-
-
-
-    double bb[6];
-
-    double m_size;
-public:
-    double *getAABB ()
-    {
-        return bb;
-    }
-    double size ()
-    {
-        return m_size;
-    }
-    TriangleAABB (Triangle & t);
 };
 
-}				// namespace collision
+} // namespace collision
 
-}				// namespace component
+} // namespace component
 
-}				// namespace sofa
+} // namespace sofa
 
 #endif

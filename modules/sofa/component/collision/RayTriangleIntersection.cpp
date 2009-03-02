@@ -37,17 +37,17 @@ namespace collision
 RayTriangleIntersection::RayTriangleIntersection()
 {
 }
+
 RayTriangleIntersection::~RayTriangleIntersection()
 {
 }
-bool
-RayTriangleIntersection::NewComputation(Triangle *triP, const Vector3 &origin, const Vector3 &direction,   double &t,  double &u, double &v)
 
+bool RayTriangleIntersection::NewComputation(const sofa::defaulttype::Vector3 &p1, const sofa::defaulttype::Vector3 &p2, const sofa::defaulttype::Vector3 &p3, const Vector3 &origin, const Vector3 &direction,   double &t,  double &u, double &v)
 {
     t = 0; u = 0; v = 0;
 
-    Vector3 edge1 = triP->p2() - triP->p1();
-    Vector3 edge2 = triP->p3() - triP->p1();
+    Vector3 edge1 = p2 - p1;
+    Vector3 edge2 = p3 - p1;
 
     Vector3 tvec, pvec, qvec;
     double det, inv_det;
@@ -57,36 +57,33 @@ RayTriangleIntersection::NewComputation(Triangle *triP, const Vector3 &origin, c
     det = dot(edge1, pvec);
     if(det==0.0)
     {
-
         return false;
-
     }
-// 	    if (fabs(triP->n()*direction) < 0.0000)
-//                 return false;
 
     inv_det = 1.0 / det;
 
-    tvec = origin - triP->p1();
+    tvec = origin - p1;
 
     u = dot(tvec, pvec) * inv_det;
-    if (u < 0.000001||u >0.999999900000)
+    if (u < -0.00001 || u > 1.00001)
         return false;
 
     qvec = tvec.cross(edge1);
 
     v = dot(direction, qvec) * inv_det;
-    if (v < 0.00001|| (u +v) > 0.999999900000)
+    if (v < -0.00001 || (u + v) > 1.00001)
         return false;
 
     t = dot(edge2, qvec) * inv_det;
 
-    if (t <=0.000001||t!=t||v!=v||u!=u)
+    if (t < 0.00001 || t!=t || v!=v || u!=u)
         return false;
 
     return true;
 }
 
-}
-}
-}
+} // namespace collision
 
+} // namespace component
+
+} // namespace sofa

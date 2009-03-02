@@ -68,7 +68,7 @@ SOFA_DECL_CLASS (RayTraceDetection)
 int RayTraceDetectionClass =
     core::
     RegisterObject
-    ("Collision detection using extensive pair-wise tests").add <
+    ("Collision detection using TriangleOctreeModel").add <
     RayTraceDetection > ();
 
 using namespace core::objectmodel;
@@ -159,21 +159,21 @@ void RayTraceDetection::findPairsVolume (CubeModel * cm1, CubeModel * cm2)
         /*test if this triangle was tested before */
 
         /*set the triangle as tested */
-
+        int flags = tri1.flags();
 
         /*test only the points related to this triangle */
-        if (tri1.flags () & TriangleModel::FLAG_P1)
+        if (flags & TriangleModel::FLAG_P1)
         {
             normau[nPoints] = tm1->pNorms[tri1.p1Index ()];
             trianglePoints[nPoints++] = tri1.p1 ();
 
         }
-        if (tri1.flags () & TriangleModel::FLAG_P2)
+        if (flags & TriangleModel::FLAG_P2)
         {
             normau[nPoints] = tm1->pNorms[tri1.p2Index ()];
             trianglePoints[nPoints++] = tri1.p2 ();
         }
-        if (tri1.flags () & TriangleModel::FLAG_P3)
+        if (flags & TriangleModel::FLAG_P3)
         {
             normau[nPoints] = tm1->pNorms[tri1.p3Index ()];
             trianglePoints[nPoints++] = tri1.p3 ();
