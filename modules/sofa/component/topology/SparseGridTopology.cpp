@@ -575,17 +575,23 @@ void SparseGridTopology::updateMesh()
 void SparseGridTopology::getMesh(sofa::helper::io::Mesh &m)
 {
     if (!dataVoxels.getValue().empty())
-        marchingCubes.run(&dataVoxels.getValue()[0], 0.5f, m);
+    {
+        helper::vector<unsigned char> * datas = dataVoxels.beginEdit();
+        marchingCubes.run(&(*datas)[0], 0.5f, m);
+        dataVoxels.endEdit();
+    }
 }
 
 template< class T >
 void SparseGridTopology::constructCollisionModels(const sofa::helper::vector< sofa::core::componentmodel::topology::BaseMeshTopology * > &list_mesh,
-        const sofa::helper::vector< sofa::helper::vector< Vec<3,T> >* > &list_X) const
+        const sofa::helper::vector< sofa::helper::vector< Vec<3,T> >* > &list_X)
 {
     sofa::helper::vector< unsigned int>	triangles;
     vector< Vector3 >		vertices;
 
-    marchingCubes.run(&dataVoxels.getValue()[0], 0.5f, triangles, vertices);
+    helper::vector<unsigned char> * datas = dataVoxels.beginEdit();
+    marchingCubes.run(&(*datas)[0], 0.5f, triangles, vertices);
+    dataVoxels.endEdit();
 
     for (unsigned int i=0; i<list_mesh.size(); ++i)
     {

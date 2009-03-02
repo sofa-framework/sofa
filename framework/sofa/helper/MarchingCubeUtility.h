@@ -109,14 +109,14 @@ public:
     /// we construct the surface.
     /// mesh is a vector containing the triangles defined as a sequence of three indices
     /// map_indices gives the correspondance between an indice and a 3d position in space
-    void run ( const unsigned char *data, const float isolevel,
+    void run ( unsigned char *data, const float isolevel,
             sofa::helper::vector< PointID > &triangles,
             sofa::helper::vector< Vector3>  &vertices,
             helper::vector< helper::vector<unsigned int> > *triangleIndexInRegularGrid = NULL ) const;
 
     /// Same as the previous function but the surfaces are constructed by propagating from seeds.
     /// Faster than previous but it need the precomputation of the seeds.
-    void run ( const unsigned char *data, const vector<Vec3i>& seeds,
+    void run ( unsigned char *data, const vector<Vec3i>& seeds,
             const float isolevel,
             sofa::helper::vector< PointID > &triangles,
             sofa::helper::vector< Vector3>  &vertices,
@@ -124,10 +124,10 @@ public:
 
     /// given a set of data (size of the data and size of the marching cube beeing defined previously),
     /// we construct a Sofa mesh.
-    void run ( const unsigned char *data,  const float isolevel, sofa::helper::io::Mesh &m ) const;
+    void run ( unsigned char *data,  const float isolevel, sofa::helper::io::Mesh &m ) const;
 
     /// given a set of data, find seeds to run quickly.
-    void findSeeds ( vector<Vec3i>& seeds, const float isoValue, const unsigned char *_data );
+    void findSeeds ( vector<Vec3i>& seeds, const float isoValue, unsigned char *_data );
 
     /// Given coords in the scene, find seeds coords.
     void findSeedsFromRealCoords ( vector<Vec3i>& mCubeCoords, const vector<Vector3>& realCoords ) const;
@@ -145,7 +145,7 @@ private:
         Vec3i max;
     };
 
-    inline void initCell ( GridCell& cell, const Vec3i& coord, const vector< float >& data, const Vector3& gridStep, const Vec3i& dataGridStep ) const;
+    inline void initCell ( GridCell& cell, const Vec3i& coord, const unsigned char* data, const Vector3& gridStep, const Vec3i& dataGridStep ) const;
 
     inline void vertexInterp ( Vector3 &p, const float isolevel, const Vector3 &p1, const Vector3 &p2, const float valp1, const float valp2 ) const ;
 
@@ -164,20 +164,20 @@ private:
         return ( ( dataVoxels[index>>3]& ( ( int ) ( pow ( 2.0f, i ) ) ) ) >> i ) == 1;
     }
 
-    void findConnectedVoxels ( set<unsigned int>& connectedVoxels, const float isoValue, const Vec3i& from, const vector<float>& data );
+    void findConnectedVoxels ( set<unsigned int>& connectedVoxels, const float isoValue, const Vec3i& from, unsigned char* data );
 
     void createGaussianConvolutionKernel ( vector< float >  &convolutionKernel ) const;
 
     void applyConvolution ( const float* convolutionKernel,
             unsigned int x, unsigned int y, unsigned int z,
-            const float *input_data,
-            float *output_data ) const;
+            const unsigned char *input_data,
+            unsigned char *output_data ) const;
 
-    void smoothData ( float *data ) const;
+    void smoothData ( unsigned char *data ) const;
 
     /// Propagate the triangulation surface creation from a cell.
     void propagateFrom ( const Vec3i coord,
-            const vector<float>& data, const float isolevel,
+            unsigned char* data, const float isolevel,
             sofa::helper::vector< PointID >& triangles,
             sofa::helper::vector< Vector3 >& vertices,
             sofa::helper::set<Vec3i>& generatedCubes,
