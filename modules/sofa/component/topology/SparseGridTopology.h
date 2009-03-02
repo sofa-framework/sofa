@@ -257,7 +257,7 @@ protected:
 
     template< class T>
     void constructCollisionModels(const sofa::helper::vector< sofa::core::componentmodel::topology::BaseMeshTopology * > &list_mesh,
-            const sofa::helper::vector< sofa::helper::vector< Vec<3,T> >* >            &list_X) const;
+            const sofa::helper::vector< sofa::helper::vector< Vec<3,T> >* >            &list_X) ;
 
     SparseGridTopology* _finerSparseGrid; ///< an eventual finer sparse grid that can be used to built this coarser sparse grid
     SparseGridTopology* _coarserSparseGrid; ///< an eventual coarser sparse grid
