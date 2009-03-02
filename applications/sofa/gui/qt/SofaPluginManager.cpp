@@ -81,7 +81,7 @@ SofaPluginManager::SofaPluginManager()
 
     listPlugins->clear();
     typedef void (*componentLoader)();
-    typedef char* (*componentStr)();
+    typedef const char* (*componentStr)();
 
     for (int i=1 ; i<=size; i++)
     {
@@ -128,7 +128,7 @@ void SofaPluginManager::addLibrary()
 
     //get the functions
     typedef void (*componentLoader)();
-    typedef char* (*componentStr)();
+    typedef const char* (*componentStr)();
     componentLoader componentLoaderFunc = (componentLoader) lib.resolve("initExternalModule");
     componentStr componentNameFunc = (componentStr) lib.resolve("getModuleName");
 
@@ -199,7 +199,7 @@ void SofaPluginManager::updateComponentList(Q3ListViewItem* curItem)
     listComponents->clear();
     QString location = curItem->text(1); //get the location value
     QLibrary lib(location);
-    typedef char* (*componentStr)();
+    typedef const char* (*componentStr)();
     componentStr componentListFunc = (componentStr) lib.resolve("getModuleComponentList");
     if(componentListFunc)
     {
@@ -216,7 +216,7 @@ void SofaPluginManager::updateDescription(Q3ListViewItem* curItem)
     description->clear();
     QString location = curItem->text(1); //get the location value
     QLibrary lib(location);
-    typedef char* (*componentStr)();
+    typedef const char* (*componentStr)();
     componentStr componentDescFunc = (componentStr) lib.resolve("getModuleDescription");
     if(componentDescFunc)
     {
