@@ -106,15 +106,15 @@ protected:
         Vector3 normal;
 
         /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const TriangleInfo& /*ti*/ )
+        inline friend std::ostream& operator<< ( std::ostream& os, const TriangleInfo& ti )
         {
-            return os;
+            return os << ti.normal;
         }
 
         /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, TriangleInfo& /*ti*/ )
+        inline friend std::istream& operator>> ( std::istream& in, TriangleInfo& ti )
         {
-            return in;
+            return in >> ti.normal;
         }
     };
 
@@ -156,8 +156,10 @@ public:
     virtual void handleTopologyChange();
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
+    const core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() const { return mstate; }
 
-    void buildOctree();
+    const VecCoord& getX() const { return *(getMechanicalState()->getX()); }
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles& getTriangles() const { return *triangles; }
 };
 
 inline Triangle::Triangle(TriangleModel* model, int index)

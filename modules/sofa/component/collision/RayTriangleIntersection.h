@@ -37,11 +37,7 @@ namespace collision
 {
 
 
-//-----------------------------------------------------------------------------
-//--IntersectionRayTriangle--
-//------------------
-// this class computes if a Triangle P intersects a line segment
-//-----------------------------------------------------------------------------
+/// this class computes if a Triangle P intersects a line segment
 
 class SOFA_COMPONENT_COLLISION_API RayTriangleIntersection
 {
@@ -49,23 +45,17 @@ public:
     RayTriangleIntersection(); // start a Proximity solver
     ~RayTriangleIntersection();
 
-    // init the solver with the new coordinates of the triangle & the segment
-    // solve the lcp
-    bool NewComputation( Triangle *triP, const sofa::defaulttype::Vector3 &origin, const sofa::defaulttype::Vector3 &direction,  double &t,  double &u, double &v);
-
-    //double getAlphaP(){return _result[6];}
-    //double getBetaP(){return _result[7];}
-    //double getAlphaQ(){return _result[8];}
-    //double getBetaQ(){return _result[9];}
-
-
-private:
-    //double **_A;
-    //double *_b;
-    //double *_result;
+    bool NewComputation( const sofa::defaulttype::Vector3 &p1, const sofa::defaulttype::Vector3 &p2, const sofa::defaulttype::Vector3 &p3, const sofa::defaulttype::Vector3 &origin, const sofa::defaulttype::Vector3 &direction,  double &t,  double &u, double &v);
+    bool NewComputation( Triangle *triP, const sofa::defaulttype::Vector3 &origin, const sofa::defaulttype::Vector3 &direction,  double &t,  double &u, double &v)
+    {
+        return NewComputation( triP->p1(), triP->p2(), triP->p3(), origin, direction, t, u, v);
+    }
 };
 
-}
-}
-}
+} // namespace collision
+
+} // namespace component
+
+} // namespace sofa
+
 #endif

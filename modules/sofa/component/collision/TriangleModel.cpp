@@ -741,26 +741,6 @@ void TriangleModel::computeContinuousBoundingTree(double dt, int maxDepth)
 }
 
 
-void TriangleModel::buildOctree()
-{
-    /*
-    	serr<<"TriangleModel::buildOctree(), coords = "<<*mstate->getX()<<sendl;
-    	const int ntris = mesh->getNbTriangles();
-    	const int nquads = mesh->getNbQuads();
-    	for (int i=0; i<ntris; i++)
-    	{
-    		topology::MeshTopology::Triangle idx = mesh->getTriangle(i);
-    		serr<<"  triangle "<< idx[0] <<", "<<idx[1]<<", "<<idx[2]<<sendl;;
-    	}
-    	for (int i=0; i<nquads; i++)
-    	{
-    		topology::MeshTopology::Quad idx = mesh->getQuad(i);
-    		serr<<"  triangle "<< idx[0] <<", "<<idx[1]<<", "<<idx[2]<<sendl;;
-    		serr<<"  triangle "<< idx[0] <<", "<<idx[2]<<", "<<idx[3]<<sendl;;
-    	}
-    */
-}
-
 } // namespace collision
 
 } // namespace component
