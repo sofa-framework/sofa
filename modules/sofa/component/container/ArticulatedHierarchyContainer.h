@@ -31,6 +31,7 @@
 #include <sofa/helper/io/bvh/BVHLoader.h>
 #include <sofa/component/component.h>
 #include <sofa/component/container/MechanicalObject.h>
+#include <sofa/defaulttype/SolidTypes.h>
 
 namespace sofa
 {
@@ -52,6 +53,8 @@ using namespace sofa::simulation::tree;
 class SOFA_COMPONENT_CONTAINER_API ArticulatedHierarchyContainer : public virtual core::objectmodel::BaseObject
 {
 public:
+
+    typedef SolidTypes<double>::Transform Transform;
 
     /**
     *	This class defines an articulation center.	This contains a set of articulations.
@@ -107,6 +110,12 @@ public:
             Data<int> articulationIndex;
 
             std::vector<double> motion;
+
+            /**
+             *	For Arboris Mapping H_pLc_a : transformation accumulates the successive transformation provided by articulations on the
+             *  same articulation center
+             */
+            Transform H_pLc_a;
         };
 
         /**
@@ -154,6 +163,15 @@ public:
         *   2 - (Attach on Child ) the axis of the articulations are linked to the child (estimate position from the previous time step) - rotations are treated by successive increases -
         */
         Data<int> articulationProcess;
+
+        /**
+        *   for ARBORIS Mapping
+        *	Store information about the transformation induced by the articulation center (joint)
+        *   H_p_pLc and H_c_cLp redefine posOnParent, posOnChild (a local rotation between the center of the articualtion and the parent/child bodies can be defined)
+        *   H_pLc_cLp is transformation induced by the articulations of the articulation center (joint)
+        			  it is updated during "apply" function of the Mapping
+        */
+        Transform H_p_pLc, H_c_cLp, H_pLc_cLp;
 
 
         vector<Articulation*> articulations;
