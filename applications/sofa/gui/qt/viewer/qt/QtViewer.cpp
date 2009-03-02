@@ -909,11 +909,11 @@ void QtViewer::calcProjection()
         getSimulation()->computeBBox(groot, visualParameters.minBBox.ptr(), visualParameters.maxBBox.ptr());
         sceneBBoxIsValid = true;
     }
-    if (visualParameters.maxBBox==Vector3() && visualParameters.minBBox==Vector3())_zoomSpeed = _panSpeed = 2;
+    if (!sceneBBoxIsValid || visualParameters.maxBBox[0] > visualParameters.minBBox[0] || (visualParameters.maxBBox==Vector3() && visualParameters.minBBox==Vector3()))_zoomSpeed = _panSpeed = 2;
 
     if (!sceneBBoxIsValid || visualParameters.minBBox[0] > visualParameters.maxBBox[0])
     {
-        visualParameters.zNear = 1.0;
+        visualParameters.zNear = 0.1;
         visualParameters.zFar = 1000.0;
     }
     else
@@ -1147,7 +1147,7 @@ void QtViewer::ApplyMouseInteractorTransformation(int x, int y)
 {
     // Mouse Interaction
     double coeffDeplacement = 0.025;
-    if (sceneBBoxIsValid)
+    if (sceneBBoxIsValid && visualParameters.maxBBox[0] > visualParameters.minBBox[0])
         coeffDeplacement *= 0.001*(visualParameters.maxBBox-visualParameters.minBBox).norm();
     Quaternion conjQuat, resQuat, _newQuatBckUp;
 
@@ -1747,7 +1747,7 @@ void QtViewer::resetView()
     }
     visualParameters.sceneTransform.translation[0] = 0.0;
     visualParameters.sceneTransform.translation[1] = 0.0;
-    if (sceneBBoxIsValid)
+    if (sceneBBoxIsValid && visualParameters.maxBBox[0] > visualParameters.minBBox[0])
         visualParameters.sceneTransform.translation[2] = -(visualParameters.maxBBox-visualParameters.minBBox).norm();
     else
         visualParameters.sceneTransform.translation[2] = -50.0;
@@ -1844,8 +1844,11 @@ void QtViewer::setScene(sofa::simulation::Node* scene, const char* filename, boo
     if (newScene)
     {
         getSimulation()->computeBBox(groot, visualParameters.minBBox.ptr(), visualParameters.maxBBox.ptr());
-        _panSpeed = (visualParameters.maxBBox-visualParameters.minBBox).norm()*0.5;
-        _zoomSpeed = (visualParameters.maxBBox-visualParameters.minBBox).norm();
+        if (visualParameters.maxBBox[0] > visualParameters.minBBox[0])
+        {
+            _panSpeed = (visualParameters.maxBBox-visualParameters.minBBox).norm()*0.5;
+            _zoomSpeed = (visualParameters.maxBBox-visualParameters.minBBox).norm();
+        }
     }
 }
 

@@ -129,7 +129,7 @@ public:
         sceneFileName=filename;
         groot = scene;
         initTexturesDone = false;
-        sceneBBoxIsValid = true;
+        sceneBBoxIsValid = false;
         //if (!keepParams) resetView();
     }
 
