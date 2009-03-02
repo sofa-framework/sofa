@@ -571,8 +571,7 @@ public:
 };
 
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_CPP)
-#pragma warning(disable : 4231)
+#if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_COLLISION)
 extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<SphereModel>;
 extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<SphereTreeModel>;
 extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<PointModel>;

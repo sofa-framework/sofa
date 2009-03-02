@@ -76,8 +76,7 @@ void PCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double b
     Inherit::setSystemMBKMatrix(mFact,bFact,kFact);
 
 #ifdef DISPLAY_TIME
-    CTime * timer;
-    time3 = (double) timer->getTime();
+    time3 = (double) CTime::getTime();
 #endif
 
     if (iteration<=0)
@@ -94,7 +93,7 @@ void PCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double b
     }
 
 #ifdef DISPLAY_TIME
-    time3 = ((double) timer->getTime() - time3) / (double)CTime::getRefTicksPerSec();
+    time3 = ((double) CTime::getTime() - time3) / (double)CTime::getRefTicksPerSec();
 #endif
 
 }
@@ -154,7 +153,6 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
     const char* endcond = "iterations";
 
 #ifdef DISPLAY_TIME
-    CTime * timer;
     time1 = 0.0;
     time2 = 0.0;
     time4 = 0.0;
@@ -180,27 +178,27 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
             for (unsigned int i=0; i<this->preconditioners.size(); i++)
             {
 #ifdef DISPLAY_TIME
-                tmp = (double) timer->getTime();
+                tmp = (double) CTime::getTime();
 #endif
                 preconditioners[i]->setSystemLHVector(z);
                 preconditioners[i]->setSystemRHVector(r);
 #ifdef DISPLAY_TIME
-                time2 += ((double) timer->getTime() - tmp);
-                tmp = (double) timer->getTime();
+                time2 += ((double) CTime::getTime() - tmp);
+                tmp = (double) CTime::getTime();
 #endif
                 preconditioners[i]->invertSystem();
 #ifdef DISPLAY_TIME
-                time4 += ((double) timer->getTime() - tmp);
-                tmp = (double) timer->getTime();
+                time4 += ((double) CTime::getTime() - tmp);
+                tmp = (double) CTime::getTime();
 #endif
                 preconditioners[i]->solveSystem();
 #ifdef DISPLAY_TIME
-                time2 += ((double) timer->getTime() - tmp);
+                time2 += ((double) CTime::getTime() - tmp);
 #endif
             }
         }
 #ifdef DISPLAY_TIME
-        tmp = (double) timer->getTime();
+        tmp = (double) CTime::getTime();
 #endif
         rho = r.dot(z);
 
@@ -266,7 +264,7 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
         rho_1 = rho;
 
 #ifdef DISPLAY_TIME
-        time1 += ((double) timer->getTime() - tmp);
+        time1 += ((double) CTime::getTime() - tmp);
 #endif
         //printf("%f\n",(CTime::getRefTime() - time1)  / (double)CTime::getRefTicksPerSec());
 
