@@ -656,7 +656,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
 
             for(unsigned int j=0; j<derivDim; j++)
             {
-                Disp[j] = systemLHVector_buf->element(dof*derivDim + j) * odesolver->getPositionIntegrationFactor();
+                Disp[j] = (Real)systemLHVector_buf->element(dof*derivDim + j) * odesolver->getPositionIntegrationFactor();
             }
             d[id_] += n*Disp;
 

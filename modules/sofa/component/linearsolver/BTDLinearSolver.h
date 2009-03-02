@@ -965,4 +965,3 @@ public:
 } // namespace sofa
 
 #endif
-
