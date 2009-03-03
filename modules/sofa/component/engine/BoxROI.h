@@ -97,6 +97,15 @@ public:
         }
     }
 
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const BoxROI<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
 
     VecCoord* x0;
     Data< helper::vector<Vec6> > boxes;

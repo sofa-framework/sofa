@@ -82,6 +82,15 @@ public:
         }
     }
 
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const DevMonitor<TDataTypes>* = NULL)
+    {
+        return TDataTypes::Name();
+    }
 protected:
     double lastTime;
     double timestamp;
