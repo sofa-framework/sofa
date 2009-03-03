@@ -343,11 +343,35 @@ void MeshTopology::createEdgeVertexShellArray ()
     const SeqEdges& edges = getEdges();
     m_edgeVertexShell.clear();
     m_edgeVertexShell.resize( nbPoints );
-    for (unsigned int i = 0; i < edges.size(); ++i)
+    /*....
+        if (getNbTetras() || getNbHexas())
+        { // Unordered shells if the mesh is volumic
+            for (unsigned int i = 0; i < edges.size(); ++i)
+            {
+                // adding edge i in the edge shell of both points
+                m_edgeVertexShell[ edges[i][0] ].push_back( i );
+                m_edgeVertexShell[ edges[i][1] ].push_back( i );
+            }
+        }
+        else if (getNbTriangles() || getNbQuads())
+        { // order edges in consistent order if possible (i.e. on manifold meshes)
+            bool createdTriangleShell = getNbTriangles() && m_edgeTriangleShell.empty();
+            bool createdQuadShell = getNbQuads() && m_edgeQuadShell.empty();
+            if (createdTriangleShell) createTriangleVertexShellArray();
+            if (createdQuadShell) createQuadVertexShellArray();
+            const SeqTriangles& triangles = getTriangles();
+            const SeqQuads& quads = getQuads();
+
+        }
+        else*/
     {
-        // adding edge i in the edge shell of both points
-        m_edgeVertexShell[ edges[i][0] ].push_back( i );
-        m_edgeVertexShell[ edges[i][1] ].push_back( i );
+        // 1D mesh : put inbound edges before outbound edges
+        for (unsigned int i = 0; i < edges.size(); ++i)
+        {
+            // adding edge i in the edge shell of both points
+            m_edgeVertexShell[ edges[i][0] ].push_back( i );
+            m_edgeVertexShell[ edges[i][1] ].insert( m_edgeVertexShell[ edges[i][1] ].begin(), i );
+        }
     }
 }
 
@@ -1973,4 +1997,3 @@ void MeshTopology::draw()
 } // namespace component
 
 } // namespace sofa
-
