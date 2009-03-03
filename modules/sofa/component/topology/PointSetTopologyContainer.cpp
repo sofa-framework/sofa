@@ -47,6 +47,7 @@ int PointSetTopologyContainerClass = core::RegisterObject("Point set topology co
 PointSetTopologyContainer::PointSetTopologyContainer(int npoints)
     : nbPoints(npoints)
     , d_nbPoints(initDataPtr(&d_nbPoints, &nbPoints, "nbPoints", "Number of points"))
+    , d_initPoints(initDataPtr(&d_initPoints, &initPoints, "points", "Initial position of points"))
 {
 }
 
@@ -105,6 +106,10 @@ double PointSetTopologyContainer::getPZ(int i) const
 void PointSetTopologyContainer::init()
 {
     core::componentmodel::topology::TopologyContainer::init();
+
+    d_initPoints.getValue(); // make sure initPoints is up to date
+    if (nbPoints == 0 && !initPoints.empty())
+        nbPoints = initPoints.size();
 
     if(nbPoints == 0)
     {

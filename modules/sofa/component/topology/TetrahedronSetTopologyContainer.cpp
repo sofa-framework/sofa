@@ -114,6 +114,18 @@ void TetrahedronSetTopologyContainer::addTetra( int a, int b, int c, int d )
 
 void TetrahedronSetTopologyContainer::init()
 {
+    d_tetrahedron.getValue(); // make sure m_tetrahedron is up to date
+    if (!m_tetrahedron.empty())
+    {
+        for (unsigned int i=0; i<m_tetrahedron.size(); ++i)
+        {
+            for(unsigned int j=0; j<4; ++j)
+            {
+                int a = m_tetrahedron[i][j];
+                if (a >= (int)nbPoints) nbPoints = a+1;
+            }
+        }
+    }
     TriangleSetTopologyContainer::init();
 }
 
@@ -644,6 +656,7 @@ bool TetrahedronSetTopologyContainer::checkTopology() const
 
 bool TetrahedronSetTopologyContainer::hasTetrahedra() const
 {
+    d_tetrahedron.getValue(); // make sure m_tetrahedron is valid
     return !m_tetrahedron.empty();
 }
 
