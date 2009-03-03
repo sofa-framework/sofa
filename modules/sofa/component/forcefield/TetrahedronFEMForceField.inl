@@ -997,10 +997,15 @@ void TetrahedronFEMForceField<DataTypes>::init()
 
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
     _mesh = this->getContext()->getMeshTopology();
+    if (_mesh==NULL)
+    {
+        serr << "ERROR(TetrahedronFEMForceField): object must have a BaseMeshTopology."<<sendl;
+        return;
+    }
 #ifdef SOFA_NEW_HEXA
-    if (_mesh==NULL || (_mesh->getTetras().empty() && _mesh->getNbHexas()<=0))
+    if (_mesh==NULL || (_mesh->getNbTetras()<=0 && _mesh->getNbHexas()<=0))
 #else
-    if (_mesh==NULL || (_mesh->getTetras().empty() && _mesh->getNbCubes()<=0))
+    if (_mesh==NULL || (_mesh->getNbTetras()<=0 && _mesh->getNbCubes()<=0))
 #endif
     {
         serr << "ERROR(TetrahedronFEMForceField): object must have a tetrahedric BaseMeshTopology."<<sendl;
@@ -1341,7 +1346,7 @@ void TetrahedronFEMForceField<DataTypes>::draw()
     if (getContext()->getShowWireFrame())
         simulation::getSimulation()->DrawUtility.setPolygonMode(0,true);
 
-
+    simulation::getSimulation()->DrawUtility.setLightingEnabled(false);
     std::vector< Vector3 > points[4];
     typename VecElement::const_iterator it;
     int i;
@@ -1427,6 +1432,7 @@ void TetrahedronFEMForceField<DataTypes>::draw()
         simulation::getSimulation()->DrawUtility.drawLines(points[2], 5, Vec<4,float>(0,0,1,1));
 
     }
+    simulation::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 
