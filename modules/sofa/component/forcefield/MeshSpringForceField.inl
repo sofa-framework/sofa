@@ -91,7 +91,6 @@ void MeshSpringForceField<DataTypes>::init()
     {
         sofa::core::componentmodel::topology::BaseMeshTopology* topology = this->mstate1->getContext()->getMeshTopology();
 
-
         if (topology != NULL)
         {
             std::set< std::pair<int,int> > sset;
@@ -183,13 +182,6 @@ void MeshSpringForceField<DataTypes>::init()
     this->StiffSpringForceField<DataTypes>::init();
 }
 
-template<class DataTypes>
-void MeshSpringForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
-{
-    this->StiffSpringForceField<DataTypes>::parse(arg);
-    if (arg->getAttribute("stiffness"))          this->setStiffness         ((Real)atof(arg->getAttribute("stiffness")));
-    if (arg->getAttribute("damping"))            this->setDamping           ((Real)atof(arg->getAttribute("damping")));
-}
 
 } // namespace forcefield
 
