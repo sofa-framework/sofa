@@ -38,13 +38,6 @@ namespace component
 namespace forcefield
 {
 
-template<class DataTypes>
-void SparseGridSpringForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
-{
-    this->Inherit::parse(arg);
-    if (arg->getAttribute("stiffness")) this->setStiffness((Real)atof(arg->getAttribute("stiffness")));
-    if (arg->getAttribute("damping")) this->setDamping((Real)atof(arg->getAttribute("damping")));
-}
 
 using std::cout;
 using std::cerr;
