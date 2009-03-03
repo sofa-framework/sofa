@@ -78,14 +78,18 @@ void TriangleSetTopologyModifier::addTrianglesProcess(const sofa::helper::vector
 {
     if (addPrecondition(triangles))
     {
+        //	   std::cout << " prepare ajout" << std::endl;
         m_container->m_triangle.reserve(m_container->m_triangle.size() + triangles.size());
 
         for(unsigned int i=0; i<triangles.size(); ++i)
         {
+            // std::cout << " ajout du triangle n : "<< i << std::endl;
             addSingleTriangleProcess(triangles[i]);
         }
 
+        //	  std::cout << " avant post processing" << std::endl;
         addPostProcessing(triangles);
+        //	  std::cout << " apres post processing" << std::endl;
     }
     else
     {
