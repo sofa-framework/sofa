@@ -382,6 +382,7 @@ bool ManifoldTriangleSetTopologyModifier::addPrecondition( const sofa::helper::v
 
     bool allDone = true;
     bool oneDone = true;
+    std::cout << triangles [0] << std::endl;
 
     // Copy the triangles vector with this positions as key:
     for (unsigned int i = 0; i < triangles.size(); i++)
@@ -390,7 +391,7 @@ bool ManifoldTriangleSetTopologyModifier::addPrecondition( const sofa::helper::v
     }
 
 
-    while ( trianglesList.size() != 0 || allDone == true)
+    while ( trianglesList.size() != 0 && allDone == true)
     {
         //initialisation
         allDone = false;
@@ -398,11 +399,13 @@ bool ManifoldTriangleSetTopologyModifier::addPrecondition( const sofa::helper::v
         // horrible loop
         for ( it = trianglesList.begin(); it != trianglesList.end(); it++)
         {
+            //	    std::cout << "it triangle: " << (*it).first << std::endl;
+
             oneDone = true;
 
             for (unsigned int vertexIndex = 0; vertexIndex <3; vertexIndex++)
             {
-
+                //	      std::cout << "vertexIndex: " << vertexIndex << " real index: " <<(*it).second[vertexIndex] << std::endl;
                 it_add = m_Addmodifications.find( (*it).second[vertexIndex]);
 
                 //Fill map of extremes triangles and map m_addmodifications:
@@ -416,20 +419,24 @@ bool ManifoldTriangleSetTopologyModifier::addPrecondition( const sofa::helper::v
                     extremes[(*it).second[vertexIndex]].push_back( m_container->getTriangleArray()[triangleVertexShell[0]] );
                     extremes[(*it).second[vertexIndex]].push_back( m_container->getTriangleArray()[triangleVertexShell[ triangleVertexShell.size()-1 ]] );
 
+                    //		std::cout << " extremes[(*it).second[vertexIndex]] " << extremes[(*it).second[vertexIndex]] << std::endl;
                     for (unsigned int i=0; i<triangleVertexShell.size(); i++)
                     {
                         m_Addmodifications[ (*it).second[vertexIndex] ].push_back(-1);
                     }
                 }
 
-
+                int vertexInTriangle0 = m_container->getVertexIndexInTriangle(extremes[(*it).second[vertexIndex]][0], (*it).second[vertexIndex]);
+                int vertexInTriangle1 = m_container->getVertexIndexInTriangle(extremes[(*it).second[vertexIndex]][1], (*it).second[vertexIndex]);
+                //	      std::cout << " (*it).second[ (vertexIndex+1)%3 ] " << (*it).second[ (vertexIndex+1)%3 ] << " extremes[(*it).second[vertexIndex]][1][(vertexInTriangle0+2)%3] " << extremes[(*it).second[vertexIndex]][1][(vertexInTriangle1+2)%3] << std::endl;
+                //	      std::cout << " (*it).second[ (vertexIndex+2)%3 ] " << (*it).second[ (vertexIndex+2)%3 ] << " extremes[(*it).second[vertexIndex]][0][(vertexInTriangle1+1)%3] " << extremes[(*it).second[vertexIndex]][0][(vertexInTriangle0+1)%3] << std::endl;
                 //Tests where the triangle could be in the shell: i.e to which extreme triangle it is adjacent ATTENTION extrems could not be similar to shell
-                if ( (*it).second[ (vertexIndex+1)%3 ] == extremes[(*it).second[vertexIndex]][1][(vertexIndex+2)%3] )
+                if ( (*it).second[ (vertexIndex+1)%3 ] == extremes[(*it).second[vertexIndex]][1][(vertexInTriangle1+2)%3] )
                 {
                     //Should be added to the end of the shell
                     position[vertexIndex] = 1;
                 }
-                else if ( (*it).second[ (vertexIndex+2)%3 ] == extremes[(*it).second[vertexIndex]][0][(vertexIndex+1)%3] )
+                else if ( (*it).second[ (vertexIndex+2)%3 ] == extremes[(*it).second[vertexIndex]][0][(vertexInTriangle0+1)%3] )
                 {
                     //Should be added to the begining of the shell
                     position[vertexIndex] = 0;
@@ -477,8 +484,20 @@ bool ManifoldTriangleSetTopologyModifier::addPrecondition( const sofa::helper::v
         // - allDone = true , list.size() == 0 => They all have been added. Congreatulation, leave while.
     }
 
+
+    //debug party:
+    //	for (it_add = m_Addmodifications.begin(); it_add!=m_Addmodifications.end(); it_add++)
+    //	{
+    //	  std::cout << "vertex: " << (*it_add).first << " => " << (*it_add).second << std::endl;
+    //	}
+
+
+
+
     if (trianglesList.size() != 0 )
     {
+        //	  std::cout << " passe false" << std::endl;
+
         m_Addmodifications.clear();
         return false;
     }
@@ -510,7 +529,7 @@ bool ManifoldTriangleSetTopologyModifier::addPrecondition( const sofa::helper::v
         m_container->createEdgeVertexShellArray();
     }
 
-
+    //	std::cout << " passe true" << std::endl;
     return true;
 }
 
@@ -522,15 +541,24 @@ void ManifoldTriangleSetTopologyModifier::addPostProcessing(const sofa::helper::
     // for each vertex, reorder shells:
     for (it_add = m_Addmodifications.begin(); it_add != m_Addmodifications.end(); it_add++)
     {
+        //	  std::cout << " -------------------- " << std::endl;
+        //	  std::cout << "it vertex: " << (*it_add).first << std::endl;
         sofa::helper::vector <unsigned int> &triangleVertexShell = m_container->getTriangleVertexShellForModification((*it_add).first);
         sofa::helper::vector <unsigned int> &edgeVertexShell = m_container->getEdgeVertexShellForModification((*it_add).first);
 
-        sofa::helper::vector <unsigned int> triShellTmp = triangleVertexShell;
-        sofa::helper::vector <unsigned int> edgeShellTmp = edgeVertexShell;
+        //	  std::cout << "triangleVertexShell: " <<  triangleVertexShell << std::endl;
+        //	  std::cout << "edgeVertexShell: " <<  edgeVertexShell << std::endl;
+        sofa::helper::vector <unsigned int> triShellTmp;
+        sofa::helper::vector <unsigned int> edgeShellTmp;
+
+        triShellTmp.resize(triangleVertexShell.size());
+        edgeShellTmp.resize(triangleVertexShell.size());
 
         bool before = true;
         unsigned int bord = 0;
         unsigned int bord2 = 0;
+        unsigned int cpt = 0;
+
 
         if ( triShellTmp.size() != ((*it_add).second).size())
             std::cout << " Error: ManifoldTriangleSetTopologyModifier::addPostProcessing: Size of shells differ. " << std::endl;
@@ -541,7 +569,7 @@ void ManifoldTriangleSetTopologyModifier::addPostProcessing(const sofa::helper::
 
             if ( (*it_add).second[i] == -1)
             {
-                triShellTmp[i] = triangleVertexShell[i];
+                triShellTmp[i] = triangleVertexShell[i-cpt];
             }
             else
             {
@@ -550,17 +578,21 @@ void ManifoldTriangleSetTopologyModifier::addPostProcessing(const sofa::helper::
                 int indexTriangle = m_container->getTriangleIndex(tri[0],tri[1],tri[2]);
 
                 triShellTmp[i] = indexTriangle;
+                cpt++;
             }
         }
 
+        //	  std::cout << "triShellTmp: " << triShellTmp << std::endl;
         triangleVertexShell = triShellTmp;
 
-        for (unsigned int i = 0; i <((*it_add).second).size(); i++)
+        cpt =0;
+
+        for (unsigned int i = 0; i <triShellTmp.size(); i++)
         {
 
             if ( (*it_add).second[i] == -1)
             {
-                edgeShellTmp[i] = edgeVertexShell[i];
+                edgeShellTmp[i] = edgeVertexShell[i-cpt];
                 before = false;
                 bord2=i;
                 bord++;
@@ -568,42 +600,65 @@ void ManifoldTriangleSetTopologyModifier::addPostProcessing(const sofa::helper::
             else
             {
                 const Triangle &tri = triangles[(*it_add).second[i]];
+                //	      std::cout << " Le tri: " << tri << std::endl;
 
                 int vertexInTriangle = m_container->getVertexIndexInTriangle(tri, (*it_add).first);
+                //	      std::cout << " le vertex dedans: " << vertexInTriangle << std::endl;
+
 
                 if (before)
                 {
-                    if ( tri[ vertexInTriangle ] < tri[ (vertexInTriangle+1)%3 ] )
+                    //		std::cout << "passe before: "<< std::endl;
+                    //		std::cout << "on cherche: " << tri[ vertexInTriangle ] << " " << tri[ (vertexInTriangle+1)%3 ]<< std::endl;
+
+                    if ( tri[ vertexInTriangle ] < tri[ (vertexInTriangle+1)%3 ] ) // order vertex in edge
                         edgeShellTmp[i] = m_container->getEdgeIndex(tri[ vertexInTriangle ], tri[ (vertexInTriangle+1)%3 ]);
                     else
                         edgeShellTmp[i] = m_container->getEdgeIndex(tri[ (vertexInTriangle+1)%3 ], tri[ vertexInTriangle ]);
 
+                    cpt++;
+                    //		std::cout << "edgeShellTmp[i]: "<< edgeShellTmp[i] << std::endl;
                     //m_triangleEdgeShell:
-                    sofa::helper::vector <unsigned int> &triangleEdgeShell = m_container->getTriangleEdgeShellForModification(edgeShellTmp[i]);
-                    unsigned int tmp = triangleEdgeShell[0];
-                    triangleEdgeShell[0] = triangleEdgeShell[1];
-                    triangleEdgeShell[1] = tmp;
+                    //	sofa::helper::vector <unsigned int> &triangleEdgeShell = m_container->getTriangleEdgeShellForModification(edgeShellTmp[i]);
+                    //	unsigned int tmp = triangleEdgeShell[0];
+                    //	triangleEdgeShell[0] = triangleEdgeShell[1];
+                    //	triangleEdgeShell[1] = tmp;
                 }
                 else
                 {
-                    if ( tri[ vertexInTriangle ] < tri[ (vertexInTriangle+2)%3 ] )
-                        edgeShellTmp[i] = m_container->getEdgeIndex(tri[ vertexInTriangle ], tri[ (vertexInTriangle+2)%3 ]);
+                    //		std::cout << "passe after: "<< std::endl;
+                    //		std::cout << "on cherche: " << tri[ vertexInTriangle ] << " " << tri[ (vertexInTriangle+1)%3 ]<< std::endl;
+                    if ( tri[ vertexInTriangle ] < tri[ (vertexInTriangle+1)%3 ] )
+                        edgeShellTmp[i] = m_container->getEdgeIndex(tri[ vertexInTriangle ], tri[ (vertexInTriangle+1)%3 ]);
                     else
-                        edgeShellTmp[i] = m_container->getEdgeIndex(tri[ (vertexInTriangle+2)%3 ], tri[ vertexInTriangle ]);
+                        edgeShellTmp[i] = m_container->getEdgeIndex(tri[ (vertexInTriangle+1)%3 ], tri[ vertexInTriangle ]);
+                    //		std::cout << "edgeShellTmp[i]: "<< edgeShellTmp[i] << std::endl;
+                    bord2=i;
+                    bord++;
+
                 }
             }
         }
+        //	  std::cout << "edgeShellTmp: " << edgeShellTmp << std::endl;
 
-        if ( ((*it_add).second).size() != edgeShellTmp.size()) // we are on the border, one edge is missing
+        if ( ((*it_add).second).size() != edgeVertexShell.size()) // we are on the border, one edge is missing
         {
+            //	    std::cout << "passe bord: "<< std::endl;
+            //	    std::cout << "bord: " << bord << std::endl;
+            //	    std::cout << "bord2: " << bord2 << std::endl;
             sofa::helper::vector <unsigned int>::iterator it;
             it = edgeShellTmp.begin();
-            edgeShellTmp.insert (it+bord2+1, edgeVertexShell[bord+1]);
+            //	    edgeShellTmp.insert (it+bord2+1, edgeVertexShell[bord]);
+            edgeShellTmp.push_back (edgeVertexShell[bord]);
         }
 
+        //	  std::cout << "edgeShellTmp again: " << edgeShellTmp << std::endl;
         edgeVertexShell = edgeShellTmp;
 
     }
+
+
+    m_Addmodifications.clear();
 
 }
 
