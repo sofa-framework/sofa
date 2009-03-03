@@ -74,6 +74,11 @@ public :
         return m[i][j];
     }
 
+    const T* operator[] ( int i ) const
+    {
+        return m[i];
+    }
+
     void clear()
     {
         for (unsigned j=0; j<m.getSizeX(); j++)
@@ -107,6 +112,11 @@ public :
         }
 #endif
         m[j][i] += (T)v;
+    }
+
+    static std::string Name()
+    {
+        return "CudaBaseMatrix";
     }
 
 private :
@@ -166,6 +176,11 @@ public :
     void add(int i, SReal val)
     {
         v[i] += (T)val;
+    }
+
+    static std::string Name()
+    {
+        return "CudaBaseVector";
     }
 
 private :
