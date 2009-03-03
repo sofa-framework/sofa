@@ -253,7 +253,7 @@ void MeshTetraStuffing::init()
                         int p3 = hshell[i];
                         int p4 = hshell[(i+1)%4];
                         if (pInside[p]>0 || pInside[p2]>0 || pInside[p3]>0 || pInside[p4]>0)
-                            outT.push_back(Tetra(p,p2,p3,p4));
+                            outT.push_back(Tetra(p2,p,p3,p4));
                     }
                 }
                 if (y > 0)
@@ -266,7 +266,7 @@ void MeshTetraStuffing::init()
                         int p3 = hshell[i];
                         int p4 = hshell[(i+1)%4];
                         if (pInside[p]>0 || pInside[p2]>0 || pInside[p3]>0 || pInside[p4]>0)
-                            outT.push_back(Tetra(p,p2,p3,p4));
+                            outT.push_back(Tetra(p2,p,p3,p4));
                     }
                 }
                 if (z > 0)
@@ -279,7 +279,7 @@ void MeshTetraStuffing::init()
                         int p3 = hshell[i];
                         int p4 = hshell[(i+1)%4];
                         if (pInside[p]>0 || pInside[p2]>0 || pInside[p3]>0 || pInside[p4]>0)
-                            outT.push_back(Tetra(p,p2,p3,p4));
+                            outT.push_back(Tetra(p2,p,p3,p4));
                     }
                 }
             }
@@ -311,6 +311,22 @@ void MeshTetraStuffing::init()
     for (unsigned int t=0; t<outT.size(); ++t)
         for (int i=0; i<4; ++i)
             outT[t][i] = newPid[outT[t][i]];
+
+    // Check if all tetrahedra volumes are positive
+    for (unsigned int t=0; t<outT.size(); ++t)
+    {
+        Point a = outP[outT[t][1]] - outP[outT[t][0]];
+        Point b = outP[outT[t][2]] - outP[outT[t][0]];
+        Point c = outP[outT[t][3]] - outP[outT[t][0]];
+        Real vol6 = a*(b.cross(c));
+        if (vol6 < 0)
+        {
+            sout << "WARNING: tetra " << t << " is inverted." << sendl;
+            int tmp = outT[t][2]; outT[t][2] = outT[t][3]; outT[t][3] = tmp;
+        }
+    }
+
+    sout << "Final mesh: " << outP.size() << " points, "<<outT.size() << " tetras." << sendl;
 
     outputPoints.endEdit();
     outputTetras.endEdit();
@@ -411,10 +427,10 @@ MeshTetraStuffing::Point MeshTetraStuffing::getEdgeDir(int e)
 
 void MeshTetraStuffing::draw()
 {
-    const SeqPoints& inP = inputPoints.getValue();
-    const SeqTriangles& inT = inputTriangles.getValue();
+    //const SeqPoints& inP = inputPoints.getValue();
+    //const SeqTriangles& inT = inputTriangles.getValue();
     const SeqPoints& outP = outputPoints.getValue();
-    const SeqTetras& outT = outputTetras.getValue();
+    //const SeqTetras& outT = outputTetras.getValue();
 
     //simulation::getSimulation()->DrawUtility.drawPoints(inP, 1, Vec<4,float>(1,0,0,1));
     simulation::getSimulation()->DrawUtility.drawPoints(intersections, 2, Vec<4,float>(1,0,0,1));
