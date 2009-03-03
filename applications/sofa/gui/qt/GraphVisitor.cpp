@@ -27,6 +27,7 @@
 #include "GraphVisitor.h"
 #include "WindowVisitor.h"
 
+#include <sstream>
 
 #include <tinyxml.cpp>
 #include <tinyxmlerror.cpp>
@@ -60,6 +61,8 @@ bool GraphVisitor::load(std::string &file)
     // should always have a valid root but handle gracefully if it does
     if (!pElem) return false;
 
+    totalTime = getTotalTime(pElem);
+
     openNode( pElem, NULL, NULL);
     return true;
 }
@@ -79,6 +82,36 @@ void GraphVisitor::openAttribute      ( TiXmlElement* element, Q3ListViewItem* i
     }
 
 }
+void GraphVisitor::openTime      ( TiXmlElement* element, Q3ListViewItem* item)
+{
+    if (!element) return;
+    TiXmlAttribute* attribute=element->FirstAttribute();
+    std::string valueOfAttribute(attribute->Value());
+    double time = 100.0*atof(valueOfAttribute.c_str())/totalTime;
+    std::ostringstream s;
+    s.setf(std::ios::fixed, std::ios::floatfield);
+    s.precision(3);
+
+    s << time << "%";
+    addTime(item,  s.str());
+}
+
+double GraphVisitor::getTotalTime(TiXmlNode* node)
+{
+
+    for ( TiXmlNode* child = node->FirstChild(); child != 0; child = child->NextSibling())
+    {
+        std::string nameOfNode=child->Value();
+        if (nameOfNode == "TotalTime")
+        {
+            TiXmlAttribute* attribute=child->ToElement()->FirstAttribute();
+            std::string valueOfAttribute(attribute->Value());
+            return atof(valueOfAttribute.c_str());
+        }
+    }
+    return 1;
+}
+
 Q3ListViewItem* GraphVisitor::openNode( TiXmlNode* node, Q3ListViewItem* parent, Q3ListViewItem* elementAbove)
 {
     if (!node) return NULL;
@@ -92,8 +125,15 @@ Q3ListViewItem* GraphVisitor::openNode( TiXmlNode* node, Q3ListViewItem* parent,
         break;
 
     case TiXmlNode::ELEMENT:
-        graphNode = addNode(parent, elementAbove, nameOfNode);
-        openAttribute( node->ToElement(), graphNode);
+        if (nameOfNode == "Time")
+        {
+            openTime( node->ToElement(), parent);
+        }
+        else
+        {
+            graphNode = addNode(parent, elementAbove, nameOfNode);
+            openAttribute( node->ToElement(), graphNode);
+        }
         break;
 
     case TiXmlNode::COMMENT:
@@ -146,6 +186,12 @@ Q3ListViewItem *GraphVisitor::addNode(Q3ListViewItem *parent, Q3ListViewItem *el
     return item;
 }
 
+void GraphVisitor::addTime(Q3ListViewItem *element, std::string info)
+{
+    if (!element) return;
+    element->setText(1, QString( info.c_str()));
+}
+
 void GraphVisitor::addInformation(Q3ListViewItem *element, std::string name, std::string info)
 {
     if (!element) return;
@@ -155,18 +201,18 @@ void GraphVisitor::addInformation(Q3ListViewItem *element, std::string name, std
         element->setText(0, QString(info.c_str()));
     else
     {
-        if (element->text(1).isEmpty())
+        if (element->text(2).isEmpty())
         {
-            element->setText(1, QString( name.c_str()));
-            element->setText(2, QString( info.c_str()));
+            element->setText(2, QString( name.c_str()));
+            element->setText(3, QString( info.c_str()));
         }
         else
         {
-            QString nameQt = element->text(1) + QString("\n") + QString( name.c_str());
-            QString infoQt = element->text(2) + QString("\n") + QString( info.c_str());
+            QString nameQt = element->text(2) + QString("\n") + QString( name.c_str());
+            QString infoQt = element->text(3) + QString("\n") + QString( info.c_str());
 
-            element->setText(1, nameQt);
-            element->setText(2, infoQt);
+            element->setText(2, nameQt);
+            element->setText(3, infoQt);
         }
     }
 }

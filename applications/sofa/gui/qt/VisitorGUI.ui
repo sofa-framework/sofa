@@ -33,6 +33,17 @@
             </column>
             <column>
                 <property name="text">
+                    <string>Time</string>
+                </property>
+                <property name="clickable">
+                    <bool>false</bool>
+                </property>
+                <property name="resizable">
+                    <bool>false</bool>
+                </property>
+            </column>
+            <column>
+                <property name="text">
                     <string>Type</string>
                 </property>
                 <property name="clickable">
