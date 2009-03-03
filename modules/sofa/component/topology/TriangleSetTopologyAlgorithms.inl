@@ -68,16 +68,28 @@ void TriangleSetTopologyAlgorithms< DataTypes >::reinit()
 
     if (!(m_listTriAdd.getValue () ).empty() && this->getContext()->getAnimate())
     {
+        int nbrBefore = m_container->getNbTriangles();
 
         m_modifier->addTrianglesProcess(m_listTriAdd.getValue ());
+
         sofa::helper::vector< TriangleID > new_triangles_id;
 
         for (unsigned int i = 0; i < (m_listTriAdd.getValue ()).size(); i++)
-            new_triangles_id.push_back (m_container->getNbTriangles()+i);
+            new_triangles_id.push_back (m_container->getNbTriangles()-(m_listTriAdd.getValue ()).size()+i);
 
-        m_modifier->addTrianglesWarning((m_listTriAdd.getValue ()).size(), m_listTriAdd.getValue (), new_triangles_id);
-        m_modifier->propagateTopologicalChanges();
-        std::cout << m_container->getNbPoints() << std::endl;
+        //	  std::cout << "new tri ID: "<< new_triangles_id<<std::endl;
+        //	  std::cout << "params: " << (m_listTriAdd.getValue ()).size()<< m_listTriAdd.getValue () <<  new_triangles_id << std::endl;
+
+        if (nbrBefore != m_container->getNbTriangles()) // Triangles have been added
+        {
+            m_modifier->addTrianglesWarning((m_listTriAdd.getValue ()).size(), m_listTriAdd.getValue (), new_triangles_id);
+            m_modifier->propagateTopologicalChanges();
+        }
+        else
+        {
+            std::cout << " Nothing added " << std::endl;
+        }
+
     }
 
 }
