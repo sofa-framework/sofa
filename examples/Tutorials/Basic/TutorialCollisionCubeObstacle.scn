@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!-- See http://wiki.sofa-framework.org/mediawiki/index.php/TutorialCollisionCubeObstacle.scn -->
 <Node name="root" dt="0.01" gravity="0 -9.81 0" showCollision="1">
-<!-- Basic Components to perform the collision detection -->
+  <!-- Basic Components to perform the collision detection -->
   <CollisionPipeline/>
   <BruteForceDetection/>
   <DefaultContactManager/>
