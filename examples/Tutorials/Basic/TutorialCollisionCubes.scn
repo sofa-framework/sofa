@@ -7,7 +7,25 @@
   <DefaultContactManager/>
   <MinProximityIntersection/>
 
-  <Node name="Cube">
+  <!-- Using a deformable cube using collision spheres  -->
+  <Node name="Cube1">
+    <EulerImplicitSolver name="EulerImplicit" />
+    <CGLinearSolver name="CG Solver" />
+    
+    <MechanicalObject name="Particles" template="Vec3d"
+                      position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" 
+                      translation="0.5 2 0"/>
+    <MeshTopology name="Topology" hexas="0 4 6 2 1 5 7 3" />
+    
+    <UniformMass name="Mass" totalmass="1" />
+    <MeshSpringForceField name="Springs" stiffness="100" damping="1" />
+
+    <!-- Collision Models -->
+    <SphereModel   name="SpheresForCollision" radius="0.2"/>
+  </Node>
+
+  <!-- Using a deformable cube using collision triangles, lines and points  -->
+  <Node name="Cube2">
     <EulerImplicitSolver name="EulerImplicit" />
     <CGLinearSolver name="CG Solver" />
     
@@ -23,5 +41,6 @@
     <LineModel     name="LinesForCollision"/>
     <PointModel    name="PointsForCollision"/>
   </Node>
+
   <include href="Objects/Fixed.xml" filename="mesh/floor.obj" name="floor"/>
 </Node>
