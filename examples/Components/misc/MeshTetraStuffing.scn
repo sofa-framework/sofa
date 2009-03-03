@@ -5,7 +5,7 @@
 <MeshTetraStuffing name="stuffing" inputPoints="@surface.points" size="-10" inputTriangles="@surface.triangles" />
 </Node>
 <Node name="output">
-<Mesh name="volume" points="@../input/stuffing.outputPoints" tetras="@../input/stuffing.outputTetras"/>
+<ManifoldTetrahedronSetTopologyContainer name="volume" points="@../input/stuffing.outputPoints" tetras="@../input/stuffing.outputTetras"/>
 <MechanicalObject/>
 <TetrahedronFEMForceField/>
 </Node>
