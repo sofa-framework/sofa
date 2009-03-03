@@ -55,7 +55,7 @@ bool RayTriangleIntersection::NewComputation(const sofa::defaulttype::Vector3 &p
     pvec = direction.cross(edge2);
 
     det = dot(edge1, pvec);
-    if(det==0.0)
+    if(det<=1.0e-20 && det >=-1.0e-20)
     {
         return false;
     }
@@ -65,18 +65,18 @@ bool RayTriangleIntersection::NewComputation(const sofa::defaulttype::Vector3 &p
     tvec = origin - p1;
 
     u = dot(tvec, pvec) * inv_det;
-    if (u < -0.00001 || u > 1.00001)
+    if (u < -0.0000001 || u > 1.0000001)
         return false;
 
     qvec = tvec.cross(edge1);
 
     v = dot(direction, qvec) * inv_det;
-    if (v < -0.00001 || (u + v) > 1.00001)
+    if (v < -0.0000001 || (u + v) > 1.0000001)
         return false;
 
     t = dot(edge2, qvec) * inv_det;
 
-    if (t < 0.00001 || t!=t || v!=v || u!=u)
+    if (t < 0.0000001 || t!=t || v!=v || u!=u)
         return false;
 
     return true;

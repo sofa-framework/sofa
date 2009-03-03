@@ -55,6 +55,7 @@ MeshTetraStuffing::MeshTetraStuffing()
     , inputTriangles(initData(&inputTriangles,"inputTriangles","Input surface mesh triangles"))
     , outputPoints(initData(&outputPoints,"outputPoints","Output volume mesh points"))
     , outputTetras(initData(&outputTetras,"outputTetras","Output volume mesh tetras"))
+    , bDraw(initData(&bDraw,false,"draw","Activate rendering of internal datasets"))
 {
 }
 
@@ -93,7 +94,8 @@ void MeshTetraStuffing::init()
     helper::fixed_array<Point,2>& bb = *bbox.beginEdit();
     if (bb[0][0] >= bb[1][0])
     {
-        bb = inputBBox;
+        bb[0] = inputBBox[0] - (inputBBox[1]-inputBBox[0])*0.01;
+        bb[1] = inputBBox[1] + (inputBBox[1]-inputBBox[0])*0.01;
     }
     bbox.endEdit();
 
@@ -121,8 +123,8 @@ void MeshTetraStuffing::init()
     int c0[3], c1[3];
     for (int c=0; c<3; ++c)
     {
-        c0[c] = - (int((p0[c] - bb[0][c]) / cellsize) + 1);
-        c1[c] =   (int((bb[1][c] - p0[c]) / cellsize) + 1);
+        c0[c] = - (int((p0[c] - bb[0][c]) / cellsize) + 2);
+        c1[c] =   (int((bb[1][c] - p0[c]) / cellsize) + 2);
         gsize[c] = c1[c]-c0[c]+1;
         g0[c] = p0[c] + c0[c]*cellsize;
         hsize[c] = gsize[c]+1;
@@ -427,6 +429,7 @@ MeshTetraStuffing::Point MeshTetraStuffing::getEdgeDir(int e)
 
 void MeshTetraStuffing::draw()
 {
+    if (!bDraw.getValue()) return;
     //const SeqPoints& inP = inputPoints.getValue();
     //const SeqTriangles& inT = inputTriangles.getValue();
     const SeqPoints& outP = outputPoints.getValue();
@@ -435,7 +438,7 @@ void MeshTetraStuffing::draw()
     //simulation::getSimulation()->DrawUtility.drawPoints(inP, 1, Vec<4,float>(1,0,0,1));
     simulation::getSimulation()->DrawUtility.drawPoints(intersections, 2, Vec<4,float>(1,0,0,1));
     //simulation::getSimulation()->DrawUtility.drawPoints(insides, 1, Vec<4,float>(0,1,0,1));
-    //simulation::getSimulation()->DrawUtility.drawLines(rays, 1, Vec<4,float>(1,1,0,1));
+    simulation::getSimulation()->DrawUtility.drawLines(rays, 1, Vec<4,float>(1,1,0,1));
     simulation::getSimulation()->DrawUtility.drawPoints(outP, 1, Vec<4,float>(0,1,0,1));
 }
 

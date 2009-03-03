@@ -67,6 +67,7 @@ public:
     Data<SeqTriangles> inputTriangles;
     Data<SeqPoints> outputPoints;
     Data<SeqTetras> outputTetras;
+    Data< bool > bDraw;
 
     Real cellsize;
     int gsize[3];
