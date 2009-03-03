@@ -174,15 +174,15 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
         std::string newpath = std::string(path, 2);
         while (!newpath.empty() && path[0] == '/')
             newpath.erase(0);
-        return simulation::Node::getObject(newpath);
+        return getObject(class_info,newpath);
     }
     else if (std::string(path,0,3)==std::string("../"))
     {
         std::string newpath = std::string(path, 3);
         while (!newpath.empty() && path[0] == '/')
             newpath.erase(0);
-        if (parent) return parent->simulation::Node::getObject(newpath);
-        else return simulation::Node::getObject(newpath);
+        if (parent) return parent->getObject(class_info,newpath);
+        else return getObject(class_info,newpath);
     }
     else
     {
