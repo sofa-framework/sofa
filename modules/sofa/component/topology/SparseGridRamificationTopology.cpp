@@ -369,7 +369,7 @@ void SparseGridRamificationTopology::buildRamifiedFinestLevel()
         }
     }
 
-    seqPoints.clear();
+    helper::vector<defaulttype::Vec<3,SReal> >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
     nbPoints=0;
     for(unsigned i=0; i<hexasConnectedToThePoint.size(); ++i)
     {
@@ -388,6 +388,7 @@ void SparseGridRamificationTopology::buildRamifiedFinestLevel()
         }
     }
 
+    this->seqPoints.endEdit();
     seqHexas.endEdit();
 
 }
@@ -763,7 +764,7 @@ void SparseGridRamificationTopology::buildFromFiner()
 // 				serr<<seqPoints.size()<<" "<<hexas.size()<<sendl;
 
 
-    seqPoints.clear();
+    helper::vector<defaulttype::Vec<3,SReal> >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
     nbPoints=0;
     for(unsigned i=0; i<hexasConnectedToThePoint.size(); ++i)
     {
@@ -792,6 +793,7 @@ void SparseGridRamificationTopology::buildFromFiner()
     }
 
 
+    this->seqPoints.endEdit();
     seqHexas.endEdit();
 
 

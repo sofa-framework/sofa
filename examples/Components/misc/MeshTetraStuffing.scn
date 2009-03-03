@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<Node>
+<Node name="input">
+<Mesh name="surface" filename="mesh/liver-smooth.obj"/>
+<MeshTetraStuffing name="stuffing" inputPoints="@surface.points" size="-10" inputTriangles="@surface.triangles" />
+</Node>
+</Node>

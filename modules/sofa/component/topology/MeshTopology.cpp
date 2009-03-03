@@ -53,6 +53,7 @@ int MeshTopologyClass = core::RegisterObject("Generic mesh topology")
 
 MeshTopology::MeshTopology()
     : nbPoints(0)
+    , seqPoints(initData(&seqPoints,"points","List of point positions"))
     , seqEdges(initData(&seqEdges,"edges","List of edge indices")), validEdges(false)
     , seqTriangles(initData(&seqTriangles,"triangles","List of triangle indices")), validTriangles(false)
     , seqQuads(initData(&seqQuads,"quads","List of quad indices")), validQuads(false)
@@ -137,7 +138,13 @@ void MeshTopology::init()
 void MeshTopology::loadFromMeshLoader(sofa::component::MeshLoader* loader)
 {
     nbPoints = loader->getNbPoints();
-    loader->getPoints(seqPoints);
+    //loader->getPoints(*seqPoints.beginEdit());
+    vector<helper::fixed_array<SReal,3> > points;
+    loader->getPoints(points);
+    vector< defaulttype::Vec<3,SReal> >& opoints = *seqPoints.beginEdit();
+    opoints.resize(points.size());
+    for (unsigned int i=0; i<points.size(); ++i) opoints[i] = defaulttype::Vec<3,SReal>(points[i].data());
+    seqPoints.endEdit();
     loader->getEdges(*seqEdges.beginEdit()); seqEdges.endEdit();
     loader->getTriangles(*seqTriangles.beginEdit()); seqTriangles.endEdit();
     loader->getQuads(*seqQuads.beginEdit()); seqQuads.endEdit();
@@ -148,6 +155,7 @@ void MeshTopology::loadFromMeshLoader(sofa::component::MeshLoader* loader)
 void MeshTopology::clear()
 {
     nbPoints = 0;
+    seqPoints.beginEdit()->clear(); seqPoints.endEdit();
     seqEdges.beginEdit()->clear(); seqEdges.endEdit();
     seqTriangles.beginEdit()->clear(); seqTriangles.endEdit();
     seqQuads.beginEdit()->clear(); seqQuads.endEdit();
@@ -159,9 +167,10 @@ void MeshTopology::clear()
 
 void MeshTopology::addPoint(double px, double py, double pz)
 {
-    seqPoints.push_back(helper::make_array((SReal)px, (SReal)py, (SReal)pz));
-    if (seqPoints.size() > (unsigned)nbPoints)
-        nbPoints = seqPoints.size();
+    seqPoints.beginEdit()->push_back(defaulttype::Vec<3,SReal>((SReal)px, (SReal)py, (SReal)pz));
+    seqPoints.endEdit();
+    if (seqPoints.getValue().size() > (unsigned)nbPoints)
+        nbPoints = seqPoints.getValue().size();
 }
 
 void MeshTopology::addEdge( int a, int b )
@@ -1456,21 +1465,21 @@ int MeshTopology::computeRelativeOrientationInQuad(const unsigned int ind_p0, co
 
 bool MeshTopology::hasPos() const
 {
-    return !seqPoints.empty();
+    return !seqPoints.getValue().empty();
 }
 double MeshTopology::getPX(int i) const
 {
-    return ((unsigned)i<seqPoints.size()?seqPoints[i][0]:0.0);
+    return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][0]:0.0);
 }
 
 double MeshTopology::getPY(int i) const
 {
-    return ((unsigned)i<seqPoints.size()?seqPoints[i][1]:0.0);
+    return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][1]:0.0);
 }
 
 double MeshTopology::getPZ(int i) const
 {
-    return ((unsigned)i<seqPoints.size()?seqPoints[i][2]:0.0);
+    return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][2]:0.0);
 }
 
 void MeshTopology::invalidate()
