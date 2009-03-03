@@ -95,6 +95,12 @@ public:
         traceResult():tid(-1),t(0),u(0),v(0) {}
         int tid;
         double t,u,v;
+        bool operator == (const traceResult& r) const { return tid == r.tid && t == r.t && u == r.u && v == r.v; }
+        bool operator != (const traceResult& r) const { return tid != r.tid || t != r.t || u != r.u || v != r.v; }
+        bool operator < (const traceResult& r) const { return t < r.t; }
+        bool operator <= (const traceResult& r) const { return t <= r.t; }
+        bool operator > (const traceResult& r) const { return t > r.t; }
+        bool operator >= (const traceResult& r) const { return t >= r.t; }
     };
 
     double x, y, z;

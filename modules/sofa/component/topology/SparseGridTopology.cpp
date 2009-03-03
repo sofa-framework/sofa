@@ -151,8 +151,8 @@ void SparseGridTopology::init()
     else
         buildAsFinest();
 
-    _nodeAdjacency.resize(seqPoints.size() );
-    for(unsigned i=0; i<seqPoints.size(); ++i)
+    _nodeAdjacency.resize(seqPoints.getValue().size() );
+    for(unsigned i=0; i<seqPoints.getValue().size(); ++i)
         _nodeAdjacency[i].assign(-1);
 
     for(unsigned i=0; i<seqHexas.getValue().size(); ++i)
@@ -192,7 +192,7 @@ void SparseGridTopology::init()
 
 
 // 		  _nodeCubesAdjacency.clear();
-    _nodeCubesAdjacency.resize(seqPoints.size() );
+    _nodeCubesAdjacency.resize(seqPoints.getValue().size() );
     for(unsigned i=0; i<seqHexas.getValue().size(); ++i)
     {
         for(int j=0; j<8; ++j)
@@ -818,6 +818,7 @@ void SparseGridTopology::buildFromRegularGridTypes(RegularGridTopology& regularG
             cubeCorners.push_back(corners);
         }
 
+    helper::vector<defaulttype::Vec<3,SReal> >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
     // compute corner indices
     int cornerCounter=0;
     for(MapBetweenCornerPositionAndIndice::iterator it = cubeCornerPositionIndiceMap.begin();
@@ -826,6 +827,7 @@ void SparseGridTopology::buildFromRegularGridTypes(RegularGridTopology& regularG
         (*it).second = cornerCounter;
         seqPoints.push_back( (*it).first );
     }
+    this->seqPoints.beginEdit();
     nbPoints = cubeCornerPositionIndiceMap.size();
 
     SeqHexas& hexas = *seqHexas.beginEdit();
@@ -972,11 +974,13 @@ void SparseGridTopology::buildFromFiner(  )
 
     // compute corner indices
     int cornerCounter=0;
+    helper::vector<defaulttype::Vec<3,SReal> >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
     for(MapBetweenCornerPositionAndIndice::iterator it=cubeCornerPositionIndiceMap.begin(); it!=cubeCornerPositionIndiceMap.end(); ++it,++cornerCounter)
     {
         (*it).second = cornerCounter;
         seqPoints.push_back( (*it).first );
     }
+    this->seqPoints.endEdit();
     nbPoints = cubeCornerPositionIndiceMap.size();
 
     SeqHexas& hexas = *seqHexas.beginEdit();
@@ -992,10 +996,10 @@ void SparseGridTopology::buildFromFiner(  )
 
 
     // for interpolation and restriction
-    _hierarchicalPointMap.resize(seqPoints.size());
-    _finerSparseGrid->_inverseHierarchicalPointMap.resize(_finerSparseGrid->seqPoints.size());
-    _finerSparseGrid->_inversePointMap.resize(_finerSparseGrid->seqPoints.size()); _finerSparseGrid->_inversePointMap.fill(-1);
-    _pointMap.resize(seqPoints.size()); _pointMap.fill(-1);
+    _hierarchicalPointMap.resize(this->seqPoints.getValue().size());
+    _finerSparseGrid->_inverseHierarchicalPointMap.resize(_finerSparseGrid->seqPoints.getValue().size());
+    _finerSparseGrid->_inversePointMap.resize(_finerSparseGrid->seqPoints.getValue().size()); _finerSparseGrid->_inversePointMap.fill(-1);
+    _pointMap.resize(this->seqPoints.getValue().size()); _pointMap.fill(-1);
     for( unsigned w=0; w<seqHexas.getValue().size(); ++w)
     {
         const fixed_array<int, 8>& child = _hierarchicalCubeMap[w];

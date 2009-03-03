@@ -178,7 +178,7 @@ public:
 
 protected:
     int nbPoints;
-    vector< fixed_array<SReal,3> > seqPoints;
+    Data< vector< defaulttype::Vec<3,SReal> > > seqPoints;
 
     Data<SeqEdges> seqEdges;
     bool validEdges;

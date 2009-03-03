@@ -174,7 +174,7 @@ public:
     vector< int > _indicesOfRegularCubeInSparseGrid; ///< to redirect an indice of a cube in the regular grid to its indice in the sparse grid
     vector< int > _indicesOfCubeinRegularGrid; ///< to redirect an indice of a cube in the sparse grid to its indice in the regular grid
 
-    Vector3 getPointPos( int i ) { return Vector3( seqPoints[i][0],seqPoints[i][1],seqPoints[i][2] ); }
+    Vector3 getPointPos( int i ) { return Vector3( seqPoints.getValue()[i][0],seqPoints.getValue()[i][1],seqPoints.getValue()[i][2] ); }
 
     void getMesh( sofa::helper::io::Mesh &m);
 
