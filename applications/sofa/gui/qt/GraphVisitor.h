@@ -68,16 +68,22 @@ public:
     Q3ListViewItem *addNode(Q3ListViewItem *parent,Q3ListViewItem *elementAbove, std::string info);
     Q3ListViewItem *addComment(Q3ListViewItem *element, Q3ListViewItem *elementAbove, std::string comment);
     void addInformation(Q3ListViewItem *element, std::string name, std::string info);
+    void addTime(Q3ListViewItem *element, std::string info);
 
     bool load(std::string &file);
 
     void setGraph(Q3ListView* g) {graph = g;}
     void clear() {graph->clear();}
+
+    double getTotalTime(TiXmlNode* node);
+
 protected:
+    void openTime           ( TiXmlElement* element, Q3ListViewItem* item);
     void openAttribute      ( TiXmlElement* element, Q3ListViewItem* item);
     Q3ListViewItem* openNode( TiXmlNode* node, Q3ListViewItem* parent, Q3ListViewItem* elementAbove);
 
     Q3ListView *graph;
+    double totalTime;
 };
 }
 }

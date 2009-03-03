@@ -43,6 +43,7 @@ void Visitor::execute(sofa::core::objectmodel::BaseContext* c)
 }
 #ifdef DUMP_VISITOR_INFO
 unsigned int Visitor::depthLevel=0;
+simulation::Node::ctime_t Visitor::initDumpTime;
 bool Visitor::printActivated=false;
 std::ostream *Visitor::outputVisitor=NULL;
 
@@ -82,6 +83,7 @@ void Visitor::printInfo(const core::objectmodel::BaseContext* context, bool dirD
         std::string NodeName;
         if (enteringBase) NodeName=enteringBase->getName();
 
+        initVisitTime = CTime::getRefTime();
 
         for (unsigned int i=0; i<Visitor::depthLevel; ++i) info+= "\t";
         info +="<" + std::string(this->getClassName());
@@ -102,17 +104,23 @@ void Visitor::printInfo(const core::objectmodel::BaseContext* context, bool dirD
         //Ending the traversal: The visitor has finished its work
         if (this->infoPrinted)
         {
-            std::string info;
+            std::ostringstream s;
             if (enteringBase)
             {
                 Visitor::depthLevel--;
-                for (unsigned int i=0; i<Visitor::depthLevel; ++i) info+="\t";
-                info += "</Node>\n";
+                for (unsigned int i=0; i<Visitor::depthLevel; ++i) s << "\t";
+                s << "</Node>\n";
             }
             Visitor::depthLevel--;
-            for (unsigned int i=0; i<Visitor::depthLevel; ++i) info+= "\t";
-            info +="</" + std::string(this->getClassName()) + ">\n";
-            dumpInfo(info);
+
+
+
+            for (unsigned int i=0; i<Visitor::depthLevel; ++i) s<< "\t";
+            s << "<Time value=\"" << getTimeSpent(initVisitTime,CTime::getRefTime()) << "\" />\n";
+
+            for (unsigned int i=0; i<Visitor::depthLevel; ++i) s<< "\t";
+            s << "</" + std::string(this->getClassName()) + ">\n";
+            dumpInfo(s.str());
         }
         //Reinit the Visitor debug variables
         enteringBase=NULL;
@@ -133,6 +141,50 @@ void Visitor::printComment(const std::string &s)
     }
 }
 #endif
+/// Optional helper method to call before handling an object if not using the for_each method.
+/// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
+simulation::Node::ctime_t Visitor::begin(simulation::Node* node, core::objectmodel::BaseObject*
+#ifdef DUMP_VISITOR_INFO
+        obj
+#endif
+                                        )
+{
+#ifdef DUMP_VISITOR_INFO
+    if (printActivated)
+    {
+        std::string info;
+        for (unsigned int i=0; i<depthLevel; ++i) info += "\t";
+        info+= "<Component type=\"" + obj->getClassName() + "\" name=\"" + obj->getName() + "\">\n";
+        dumpInfo(info);
+        Visitor::depthLevel++;
+        initComponentTime = CTime::getRefTime();
+    }
+#endif
+    return node->startTime();
+}
+
+/// Optional helper method to call after handling an object if not using the for_each method.
+/// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
+void Visitor::end(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t t0)
+{
+    node->endTime(t0, getCategoryName(), obj);
+#ifdef DUMP_VISITOR_INFO
+    if (printActivated)
+    {
+        Visitor::depthLevel--;
+        std::string info;
+
+        std::ostringstream s;
+        for (unsigned int i=0; i<depthLevel; ++i) info += "\t";
+        s << "<Time value=\"" << getTimeSpent(initComponentTime,CTime::getRefTime()) << "\" />\n";
+        info += s.str();
+        for (unsigned int i=0; i<depthLevel; ++i) info += "\t";
+        info += "</Component>\n";
+        dumpInfo(info);
+    }
+#endif
+}
+
 #ifdef SOFA_VERBOSE_TRAVERSAL
 void Visitor::debug_write_state_before( core::objectmodel::BaseObject* obj )
 {

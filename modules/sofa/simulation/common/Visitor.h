@@ -34,6 +34,10 @@
 #include <sofa/helper/set.h>
 #include <iostream>
 
+#ifdef DUMP_VISITOR_INFO
+#include <sofa/helper/system/thread/CTime.h>
+#endif
+
 namespace sofa
 {
 
@@ -47,9 +51,12 @@ class SOFA_SIMULATION_COMMON_API Visitor
 {
 public:
 #ifdef DUMP_VISITOR_INFO
+    typedef sofa::helper::system::thread::CTime CTime;
+
     Visitor() {enteringBase=NULL; infoPrinted=false; }
 #endif
     virtual ~Visitor() {}
+    typedef simulation::Node::ctime_t ctime_t;
 
     enum Result { RESULT_CONTINUE, RESULT_PRUNE };
 
@@ -182,48 +189,15 @@ public:
     //	}
     //}
 
-    typedef simulation::Node::ctime_t ctime_t;
 
-    /// Optional helper method to call before handling an object if not using the for_each method.
-    /// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
+    /// Alias for context->executeVisitor(this)
+    void execute(core::objectmodel::BaseContext*);
     ctime_t begin(simulation::Node* node, core::objectmodel::BaseObject*
 #ifdef DUMP_VISITOR_INFO
             obj
 #endif
-                 )
-    {
-#ifdef DUMP_VISITOR_INFO
-        if (printActivated)
-        {
-            std::string info;
-            for (unsigned int i=0; i<depthLevel; ++i) info += "\t";
-            info+= "<Component type=\"" + obj->getClassName() + "\" name=\"" + obj->getName() + "\">\n";
-            dumpInfo(info);
-            Visitor::depthLevel++;
-        }
-#endif
-        return node->startTime();
-    }
-
-    /// Optional helper method to call after handling an object if not using the for_each method.
-    /// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
-    void end(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t t0)
-    {
-        node->endTime(t0, getCategoryName(), obj);
-#ifdef DUMP_VISITOR_INFO
-        if (printActivated)
-        {
-            Visitor::depthLevel--;
-            std::string info;
-            for (unsigned int i=0; i<depthLevel; ++i) info += "\t";
-            info += "</Component>\n";
-            dumpInfo(info);
-        }
-#endif
-    }
-
-    /// Alias for context->executeVisitor(this)
-    void execute(core::objectmodel::BaseContext*);
+                 );
+    void end(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t t0);
 
 
     /// Specify whether this visitor can be parallelized.
@@ -249,18 +223,28 @@ public:
 
 #ifdef DUMP_VISITOR_INFO
     //DEBUG Purposes
-
+    static double getTimeSpent(ctime_t initTime, ctime_t endTime)
+    {
+        return 1000.0*(endTime-initTime)/((double)CTime::getTicksPerSec());
+    }
 protected:
+
     static std::ostream *outputVisitor;  //Ouput stream to dump the info
     static bool printActivated;          //bool to know if the stream is opened or not
     static unsigned int depthLevel;      //Level in the hierarchy
+    static ctime_t initDumpTime;
 
     core::objectmodel::Base* enteringBase;
     bool infoPrinted;
+
+    ctime_t initVisitTime;
+    ctime_t initComponentTime;
+    /*         std::list<ctime_t> initComponentTime; */
 public:
     static void startDumpVisitor(std::ostream *s, double time)
     {
         depthLevel=0;
+        initDumpTime = sofa::helper::system::thread::CTime::getRefTime();
         printActivated=true; outputVisitor=s;
         std::string initDump;
         std::ostringstream ff; ff << "<TraceVisitor time=\"" << time << "\">\n";
@@ -268,8 +252,10 @@ public:
     };
     static void stopDumpVisitor()
     {
-        std::string endDump("</TraceVisitor>\n");
-        depthLevel--;  dumpInfo(endDump);
+        std::ostringstream s;
+        s << "<TotalTime value=\"" << getTimeSpent(initDumpTime, sofa::helper::system::thread::CTime::getRefTime()) << "\" />\n";
+        s << "</TraceVisitor>\n";
+        depthLevel--;  dumpInfo(s.str());
         printActivated=false;
         depthLevel=0;
     };
