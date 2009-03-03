@@ -232,8 +232,85 @@ void MeshTetraStuffing::init()
 
     for (int p=0; p<nbp; ++p)
     {
+        if (pInside[p] == 0) --pInside[p]; // by default uncertain points are outside
         if (pInside[p] > 0) insides.push_back(outP[p]);
     }
+
+    // Create tetrahedra inside or crossing the mesh
+    const int gsize01 = gsize[0]*gsize[1];
+    const int hsize01 = hsize[0]*hsize[1];
+    for (int p=0, ph=ph0, z=0; z<gsize[2]; ++z,ph+=hsize[0])
+        for (int y=0; y<gsize[1]; ++y,++ph)
+            for (int x=0; x<gsize[0]; ++x,++p,++ph)
+            {
+                if (x > 0)
+                {
+                    // edge in X axis
+                    int p2 = p - 1;
+                    int hshell[4] = {ph, ph + hsize[0], ph + hsize[0] + hsize01, ph + hsize01};
+                    for (int i=0; i<4; ++i)
+                    {
+                        int p3 = hshell[i];
+                        int p4 = hshell[(i+1)%4];
+                        if (pInside[p]>0 || pInside[p2]>0 || pInside[p3]>0 || pInside[p4]>0)
+                            outT.push_back(Tetra(p,p2,p3,p4));
+                    }
+                }
+                if (y > 0)
+                {
+                    // edge in Y axis
+                    int p2 = p - gsize[0];
+                    int hshell[4] = {ph, ph + hsize01, ph + 1 + hsize01, ph + 1};
+                    for (int i=0; i<4; ++i)
+                    {
+                        int p3 = hshell[i];
+                        int p4 = hshell[(i+1)%4];
+                        if (pInside[p]>0 || pInside[p2]>0 || pInside[p3]>0 || pInside[p4]>0)
+                            outT.push_back(Tetra(p,p2,p3,p4));
+                    }
+                }
+                if (z > 0)
+                {
+                    // edge in X axis
+                    int p2 = p - gsize01;
+                    int hshell[4] = {ph, ph + 1, ph + 1 + hsize[0], ph + hsize[0]};
+                    for (int i=0; i<4; ++i)
+                    {
+                        int p3 = hshell[i];
+                        int p4 = hshell[(i+1)%4];
+                        if (pInside[p]>0 || pInside[p2]>0 || pInside[p3]>0 || pInside[p4]>0)
+                            outT.push_back(Tetra(p,p2,p3,p4));
+                    }
+                }
+            }
+
+    // compress output points to remove unused ones
+    vector<int> newPid;
+    newPid.resize(outP.size());
+    for (unsigned int t=0; t<outT.size(); ++t)
+        for (int i=0; i<4; ++i)
+            newPid[outT[t][i]] = 1;
+    nbp = 0;
+    for (unsigned int p=0; p<newPid.size(); ++p)
+    {
+        if (newPid[p] == 0) newPid[p] = -1;
+        else
+        {
+            newPid[p] = nbp++;
+            if (newPid[p] != (int)p)
+            {
+                outP[newPid[p]] = outP[p];
+                pInside[newPid[p]] = pInside[p];
+            }
+        }
+    }
+    outP.resize(nbp);
+    pInside.resize(nbp);
+    eBDist.clear();
+
+    for (unsigned int t=0; t<outT.size(); ++t)
+        for (int i=0; i<4; ++i)
+            outT[t][i] = newPid[outT[t][i]];
 
     outputPoints.endEdit();
     outputTetras.endEdit();
@@ -341,8 +418,9 @@ void MeshTetraStuffing::draw()
 
     //simulation::getSimulation()->DrawUtility.drawPoints(inP, 1, Vec<4,float>(1,0,0,1));
     simulation::getSimulation()->DrawUtility.drawPoints(intersections, 2, Vec<4,float>(1,0,0,1));
-    simulation::getSimulation()->DrawUtility.drawPoints(insides, 1, Vec<4,float>(0,1,0,1));
-    simulation::getSimulation()->DrawUtility.drawLines(rays, 1, Vec<4,float>(1,1,0,1));
+    //simulation::getSimulation()->DrawUtility.drawPoints(insides, 1, Vec<4,float>(0,1,0,1));
+    //simulation::getSimulation()->DrawUtility.drawLines(rays, 1, Vec<4,float>(1,1,0,1));
+    simulation::getSimulation()->DrawUtility.drawPoints(outP, 1, Vec<4,float>(0,1,0,1));
 }
 
 } // namespace component
