@@ -47,14 +47,13 @@ public:
     typedef core::componentmodel::behavior::OdeSolver Inherited;
 
     BiCGStabImplicitSolver();
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
     void solve (double dt);
-    BiCGStabImplicitSolver* setMaxIter( int maxiter );
+//     BiCGStabImplicitSolver* setMaxIter( int maxiter );
 
-    unsigned int maxCGIter;
-    double smallDenominatorThreshold;
-    double tolerance;
-    double rayleighStiffness;
+    Data<unsigned int> maxCGIter;
+    Data<double> smallDenominatorThreshold;
+    Data<double> tolerance;
+    Data<double> rayleighStiffness;
 
     bool getDebug()
     {

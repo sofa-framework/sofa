@@ -45,19 +45,19 @@ namespace odesolver
 using namespace sofa::defaulttype;
 using namespace core::componentmodel::behavior;
 
-BiCGStabImplicitSolver::BiCGStabImplicitSolver()
+BiCGStabImplicitSolver::BiCGStabImplicitSolver():
+    maxCGIter(initData(&maxCGIter,(unsigned int)25,"iterations","Max number of iteration in the Conjugate Gradient")),
+    smallDenominatorThreshold(initData(&smallDenominatorThreshold,1e-5,"threshold","Small Denominator Threshold")),
+    tolerance(initData(&tolerance,1e-5,"tolerance", "tolerance for the CG")),
+    rayleighStiffness(initData(&rayleighStiffness,0.1,"stiffness","Rayleigh Stiffness"))
 {
-    maxCGIter = 25;
-    smallDenominatorThreshold = 1e-5;
-    tolerance = 1e-5;
-    rayleighStiffness = 0.1;
 }
-
+/*
 BiCGStabImplicitSolver* BiCGStabImplicitSolver::setMaxIter( int n )
 {
     maxCGIter = n;
     return this;
-}
+}*/
 
 void BiCGStabImplicitSolver::solve(double dt)
 {
@@ -111,7 +111,7 @@ void BiCGStabImplicitSolver::solve(double dt)
 
     unsigned nb_iter;
     const char* endcond = "iterations";
-    for( nb_iter=1; nb_iter<=maxCGIter; nb_iter++ )
+    for( nb_iter=1; nb_iter<=maxCGIter.getValue(); nb_iter++ )
     {
         //z = r; // no precond
         rho_1 = rtilde.dot(r);
@@ -129,13 +129,13 @@ void BiCGStabImplicitSolver::solve(double dt)
         // matrix-vector product v = A * p
         group->propagateDx(p);          // dx = p
         group->computeDf(v);            // v = df/dx p
-        v *= -h*(h+rayleighStiffness);  // v = -h(h+r) df/dx p
+        v *= -h*(h+rayleighStiffness.getValue());  // v = -h(h+r) df/dx p
         group->addMdx( v, p);           // v = Mp -h(h+r) df/dx p
         // filter the product to take the constraints into account
         group->projectResponse(v);     // v is projected to the constrained space
 
         double den = rtilde.dot(v);
-        if( fabs(den)<smallDenominatorThreshold )
+        if( fabs(den)<smallDenominatorThreshold.getValue() )
         {
             endcond = "threshold1";
             break;
@@ -146,7 +146,7 @@ void BiCGStabImplicitSolver::solve(double dt)
         x.peq(p,alpha);                 // x = x + alpha p
 
         double norms = sqrt(s.dot(s));
-        if (norms / normb <= tolerance)
+        if (norms / normb <= tolerance.getValue())
         {
             endcond = "tolerance1";
             break;
@@ -155,13 +155,13 @@ void BiCGStabImplicitSolver::solve(double dt)
         // matrix-vector product t = A * s
         group->propagateDx(s);          // dx = s
         group->computeDf(t);            // t = df/dx s
-        t *= -h*(h+rayleighStiffness);  // t = -h(h+r) df/dx s
+        t *= -h*(h+rayleighStiffness.getValue());  // t = -h(h+r) df/dx s
         group->addMdx( t, s);           // t = Ms -h(h+r) df/dx s
         // filter the product to take the constraints into account
         group->projectResponse(t);     // v is projected to the constrained space
 
         den = t.dot(t);
-        if( fabs(den)<smallDenominatorThreshold )
+        if( fabs(den)<smallDenominatorThreshold.getValue() )
         {
             endcond = "threshold2";
             break;
@@ -173,7 +173,7 @@ void BiCGStabImplicitSolver::solve(double dt)
         x.peq(s,omega);                 // x = x + omega s
 
         double normr = sqrt(r.dot(r));
-        if (normr / normb <= tolerance)
+        if (normr / normb <= tolerance.getValue())
         {
             endcond = "tolerance2";
             break;
@@ -205,21 +205,6 @@ void BiCGStabImplicitSolver::solve(double dt)
         serr<<"BiCGStabImplicitSolver, final x = "<< pos <<sendl;
         serr<<"BiCGStabImplicitSolver, final v = "<< vel <<sendl;
     }
-}
-
-void BiCGStabImplicitSolver::parse(core::objectmodel::BaseObjectDescription* arg)
-{
-    Inherited::parse(arg);
-    if (arg->getAttribute("iterations"))
-        this->setMaxIter( atoi(arg->getAttribute("iterations")) );
-    if (arg->getAttribute("threshold"))
-        this->smallDenominatorThreshold = atof(arg->getAttribute("threshold"));
-    if (arg->getAttribute("tolerance"))
-        this->tolerance = atof(arg->getAttribute("tolerance"));
-    if (arg->getAttribute("stiffness"))
-        this->rayleighStiffness = atof(arg->getAttribute("stiffness"));
-    //if (arg->getAttribute("debug"))
-    //    this->setDebug( atoi(arg->getAttribute("debug"))!=0 );
 }
 
 SOFA_DECL_CLASS(BiCGStabImplicit)

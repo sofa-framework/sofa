@@ -39,14 +39,6 @@ namespace forcefield
 {
 
 template<class DataTypes>
-void RegularGridSpringForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
-{
-    this->Inherit::parse(arg);
-    if (arg->getAttribute("stiffness")) this->setStiffness((Real)atof(arg->getAttribute("stiffness")));
-    if (arg->getAttribute("damping")) this->setDamping((Real)atof(arg->getAttribute("damping")));
-}
-
-template<class DataTypes>
 void RegularGridSpringForceField<DataTypes>::init()
 {
     //this->StiffSpringForceField<DataTypes>::init();
