@@ -76,36 +76,39 @@ void BaseObject::parse( BaseObjectDescription* arg )
                 /* test if data is a link */
                 if (valueString[0] == '@')
                 {
+                    std::size_t posPath = valueString.rfind('/');
+                    if (posPath == std::string::npos) posPath = 0;
+                    std::size_t posDot = valueString.rfind('.');
                     std::string objectName;
-                    unsigned int j;
-                    /* the format of the link after character '@' is objectName.dataName */
-                    for(j=1; valueString[j] != '.' && valueString[j] != '\0'; ++j)
-                    {
-                        objectName.push_back(valueString[j]);
-                    }
-
-                    BaseObject* obj;
                     std::string dataName;
 
+                    BaseObject* obj;
+
                     /* if '.' not found, try to find the data in the current object */
-                    if (valueString[j] == '\0')
+                    if (posPath == 0 && posDot == std::string::npos)
                     {
                         obj = this;
-                        dataName = objectName;
+                        objectName = this->getName();
+                        dataName = valueString;
                     }
                     else
                     {
+                        if (posDot == std::string::npos) // no data specified, look for one with the same name
+                        {
+                            objectName = valueString;
+                            dataName = attributeList[i];
+                        }
+                        else
+                        {
+                            objectName = valueString.substr(1,posDot-1);
+                            dataName = valueString.substr(posDot+1);
+                        }
                         obj = getContext()->get<BaseObject>(objectName);
 
                         if (obj == NULL)
                         {
                             serr<<"could not find object for option "<< attributeList[i] <<": " << objectName << sendl;
                             break;
-                        }
-
-                        for(unsigned int j = objectName.length()+2; valueString[j] != '\0'; ++j)
-                        {
-                            dataName.push_back(valueString[j]);
                         }
                     }
 
