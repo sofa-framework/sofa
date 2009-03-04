@@ -30,10 +30,12 @@ protected:
 
     GLuint abo;
     OglShader* shader;
+
+public:
+    // These attributes are public due to dynamic topologies updates.
     OglFloat3Attribute vrestpositions;
     OglFloat3Attribute vrestnormals;
 
-public:
     OglShaderVisualModel();
     virtual ~OglShaderVisualModel();
 
