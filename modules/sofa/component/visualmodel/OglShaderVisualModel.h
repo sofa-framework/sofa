@@ -10,6 +10,8 @@
 
 #include <sofa/component/visualmodel/OglModel.h>
 #include <sofa/component/visualmodel/OglShader.h>
+#include <sofa/component/visualmodel/OglAttribute.inl>
+
 
 namespace sofa
 {
@@ -28,9 +30,8 @@ protected:
 
     GLuint abo;
     OglShader* shader;
-
-    ResizableExtVector<Coord> vrestpositions;
-    ResizableExtVector<Coord> vrestnormals;
+    OglFloat3Attribute vrestpositions;
+    OglFloat3Attribute vrestnormals;
 
 public:
     OglShaderVisualModel();
