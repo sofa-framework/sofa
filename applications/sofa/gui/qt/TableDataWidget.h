@@ -486,8 +486,9 @@ public:
             if (newRows > rows)
             {
                 // initialize new rows
+
                 data_type d = data_type();
-                row_type r = row_type();
+                /* 		row_type r = row_type(); */
                 for (int y=rows; y<newRows; ++y)
                 {
                     const char* h = rhelper::header(d,y);
@@ -499,8 +500,11 @@ public:
                         o << y;
                         setRowHeader(y,o.str());
                     }
+
                     for (int x=0; x<cols; ++x)
-                        setCell(y, x, *vhelper::get(r,x));
+                    {
+                        setCell(y, x, value_type());
+                    }
                 }
             }
             rows = newRows;
