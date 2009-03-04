@@ -1,3 +1,6 @@
+#ifndef _OGL_ATTRIBUTE_INL_
+#define _OGL_ATTRIBUTE_INL_
+
 #include <sofa/component/visualmodel/OglAttribute.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -143,3 +146,5 @@ void OglAttribute< size, type, DataTypes>::reinit()
 }
 
 }
+
+#endif
