@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<!-- See http://wiki.sofa-framework.org/mediawiki/TutorialMappingDragonRigid -->
+<Node name="root" dt="0.01" gravity="0 0 -9.81" showBehavior="1">
+
+  <EulerImplicitSolver name="EulerImplicit" />
+  <CGLinearSolver name="CG Solver" />
+
+  <Object type="MechanicalObject" name="RigidDOF" template="Rigid" dz="1"/>
+
+  <UniformMass name="Mass" totalmass="1" />
+
+  <Node name="DragonVisual">
+
+    <OglModel name="DragonVisualParticles" fileMesh="mesh/dragon.obj" scale="0.1" />
+
+    <RigidMapping name="RigidMapping1" object1="../../RigidDOF" object2="DragonVisualParticles" />
+
+  </Node>
+
+  <Node name="Dragon">
+
+    <MeshLoader name="MeshLoader" filename="mesh/dragon.obj" />
+    <Object type="MechanicalObject" name="DragonParticles" scale="0.1"/>
+
+    <PlaneForceField name="Floor" normal="0 0.2 1" stiffness="100" damping="1" draw="1" />
+    <PlaneForceField name="Wall" normal="0 -1 0" d="-4" stiffness="100" damping="1" draw="1" color="1 1 1" />
+
+    <RigidMapping name="RigidMapping2" object1="../../RigidDOF" object2="DragonParticles" />
+
+  </Node>
+
+  <Node name="Cube">
+
+    <MechanicalObject name="CubeParticles" template="Vec3d"
+		    position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" />
+    <MeshTopology name="Topology" hexas="0 4 6 2 1 5 7 3" />
+  
+    <MeshSpringForceField name="Springs" stiffness="100" damping="1" />
+
+    <PlaneForceField name="Floor" normal="0 0.2 1" stiffness="100" damping="1" draw="1" />
+    <PlaneForceField name="Wall" normal="0 -1 0" d="-4" stiffness="100" damping="1" draw="1" color="1 1 1" />
+
+    <RigidMapping name="RigidMapping3" object1="../../RigidDOF" object2="CubeParticles" />
+
+  </Node>
+
+</Node>
