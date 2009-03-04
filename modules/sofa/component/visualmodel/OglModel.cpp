@@ -54,7 +54,7 @@ int OglModelClass = core::RegisterObject("Generic visual model for OpenGL displa
 
 OglModel::OglModel()
     : premultipliedAlpha(initData(&premultipliedAlpha, (bool) false, "premultipliedAlpha", "is alpha premultiplied ?"))
-    , useVBO(initData(&useVBO, (bool) false, "useVBO", "Use VBO for rendering"))
+    , useVBO(initData(&useVBO, (bool) true, "useVBO", "Use VBO for rendering"))
     , writeZTransparent(initData(&writeZTransparent, (bool) false, "writeZTransparent", "Write into Z Buffer for Transparent Object"))
     , tex(NULL), canUseVBO(false), VBOGenDone(false), initDone(false), useTriangles(false), useQuads(false)
     , oldTrianglesSize(0), oldQuadsSize(0)
@@ -362,8 +362,6 @@ void OglModel::initVertexBuffer()
     }
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-
 }
 
 
@@ -468,7 +466,10 @@ void OglModel::updateBuffers()
             //Update VBO & IBO
             else
             {
-                updateVertexBuffer();
+                if(oldVerticesSize != vertices.size())
+                    initVertexBuffer();
+                else
+                    updateVertexBuffer();
                 //Indices
                 //Triangles
                 if(useTriangles)
@@ -488,6 +489,7 @@ void OglModel::updateBuffers()
                 else if (quads.size() > 0)
                     createQuadsIndicesBuffer();
             }
+            oldVerticesSize = vertices.size();
             oldTrianglesSize = triangles.size();
             oldQuadsSize = quads.size();
         }

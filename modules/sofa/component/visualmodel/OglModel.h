@@ -60,12 +60,12 @@ namespace visualmodel
 
 class SOFA_COMPONENT_VISUALMODEL_API OglModel : public VisualModelImpl
 {
-private:
+protected:
     Data<bool> premultipliedAlpha, useVBO, writeZTransparent;
     helper::gl::Texture *tex;
     GLuint vbo, iboTriangles, iboQuads;
     bool canUseVBO, VBOGenDone, initDone, useTriangles, useQuads;
-    unsigned int oldTrianglesSize, oldQuadsSize;
+    unsigned int oldVerticesSize, oldTrianglesSize, oldQuadsSize;
     void internalDraw();
 
 public:
@@ -81,7 +81,7 @@ public:
 
     virtual void init() { VisualModelImpl::init(); };
 
-    void updateBuffers();
+    virtual void updateBuffers();
     void createVertexBuffer();
     void createTrianglesIndicesBuffer();
     void createQuadsIndicesBuffer();
