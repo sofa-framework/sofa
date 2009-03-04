@@ -210,10 +210,10 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet0(float Lamb
         float4 Dh2 = tex1Dfetch(texDhC2, index);
 
         int4 NodesPerElement = tex1Dfetch(texNodesPerElement, index);
-        CudaVec3f Node1Disp = getX0(NodesPerElement.x) - getX(NodesPerElement.x);
-        CudaVec3f Node2Disp = getX0(NodesPerElement.y) - getX(NodesPerElement.y);
-        CudaVec3f Node3Disp = getX0(NodesPerElement.z) - getX(NodesPerElement.z);
-        CudaVec3f Node4Disp = getX0(NodesPerElement.w) - getX(NodesPerElement.w);
+        CudaVec3f Node1Disp = getX(NodesPerElement.x) - getX0(NodesPerElement.x);
+        CudaVec3f Node2Disp = getX(NodesPerElement.y) - getX0(NodesPerElement.y);
+        CudaVec3f Node3Disp = getX(NodesPerElement.z) - getX0(NodesPerElement.z);
+        CudaVec3f Node4Disp = getX(NodesPerElement.w) - getX0(NodesPerElement.w);
 
         /**
         * Computes the transpose of deformation gradient
@@ -343,10 +343,10 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet1(float Lamb
         float4 Dh2 = tex1Dfetch(texDhC2, index);
 
         int4 NodesPerElement = tex1Dfetch(texNodesPerElement, index);
-        CudaVec3f Node1Disp = getX0(NodesPerElement.x) - getX(NodesPerElement.x);
-        CudaVec3f Node2Disp = getX0(NodesPerElement.y) - getX(NodesPerElement.y);
-        CudaVec3f Node3Disp = getX0(NodesPerElement.z) - getX(NodesPerElement.z);
-        CudaVec3f Node4Disp = getX0(NodesPerElement.w) - getX(NodesPerElement.w);
+        CudaVec3f Node1Disp = getX(NodesPerElement.x) - getX0(NodesPerElement.x);
+        CudaVec3f Node2Disp = getX(NodesPerElement.y) - getX0(NodesPerElement.y);
+        CudaVec3f Node3Disp = getX(NodesPerElement.z) - getX0(NodesPerElement.z);
+        CudaVec3f Node4Disp = getX(NodesPerElement.w) - getX0(NodesPerElement.w);
 
         /**
         * Computes the transpose of deformation gradient
@@ -481,10 +481,10 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet2(float Lamb
         float4 Dh2 = tex1Dfetch(texDhC2, index);
 
         int4 NodesPerElement = tex1Dfetch(texNodesPerElement, index);
-        CudaVec3f Node1Disp = getX0(NodesPerElement.x) - getX(NodesPerElement.x);
-        CudaVec3f Node2Disp = getX0(NodesPerElement.y) - getX(NodesPerElement.y);
-        CudaVec3f Node3Disp = getX0(NodesPerElement.z) - getX(NodesPerElement.z);
-        CudaVec3f Node4Disp = getX0(NodesPerElement.w) - getX(NodesPerElement.w);
+        CudaVec3f Node1Disp = getX(NodesPerElement.x) - getX0(NodesPerElement.x);
+        CudaVec3f Node2Disp = getX(NodesPerElement.y) - getX0(NodesPerElement.y);
+        CudaVec3f Node3Disp = getX(NodesPerElement.z) - getX0(NodesPerElement.z);
+        CudaVec3f Node4Disp = getX(NodesPerElement.w) - getX0(NodesPerElement.w);
 
         /**
         * Computes the transpose of deformation gradient
@@ -660,10 +660,10 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet3(float Lamb
         float4 Dh2 = tex1Dfetch(texDhC2, index);
 
         int4 NodesPerElement = tex1Dfetch(texNodesPerElement, index);
-        CudaVec3f Node1Disp = getX0(NodesPerElement.x) - getX(NodesPerElement.x);
-        CudaVec3f Node2Disp = getX0(NodesPerElement.y) - getX(NodesPerElement.y);
-        CudaVec3f Node3Disp = getX0(NodesPerElement.z) - getX(NodesPerElement.z);
-        CudaVec3f Node4Disp = getX0(NodesPerElement.w) - getX(NodesPerElement.w);
+        CudaVec3f Node1Disp = getX(NodesPerElement.x) - getX0(NodesPerElement.x);
+        CudaVec3f Node2Disp = getX(NodesPerElement.y) - getX0(NodesPerElement.y);
+        CudaVec3f Node3Disp = getX(NodesPerElement.z) - getX0(NodesPerElement.z);
+        CudaVec3f Node4Disp = getX(NodesPerElement.w) - getX0(NodesPerElement.w);
 
         /**
         * Computes the transpose of deformation gradient
@@ -986,9 +986,9 @@ __global__ void CudaTetrahedronTLEDForceField3f_addForce_kernel(int nbVertex, un
 
     __syncthreads();
 
-    f[iext        ] += temp[index1        ];
-    f[iext+  BSIZE] += temp[index1+  BSIZE];
-    f[iext+2*BSIZE] += temp[index1+2*BSIZE];
+    f[iext        ] -= temp[index1        ];
+    f[iext+  BSIZE] -= temp[index1+  BSIZE];
+    f[iext+2*BSIZE] -= temp[index1+2*BSIZE];
 
 }
 

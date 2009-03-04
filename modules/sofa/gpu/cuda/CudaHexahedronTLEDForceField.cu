@@ -243,16 +243,16 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel0(float Lambda, f
         float4 Dh2_b = tex1Dfetch(texDhC2, 2*index+1);
 
         int4 NodesPerElement = tex1Dfetch(texNodesPerElement, 2*index);
-        CudaVec3f Node1Disp = getX0(NodesPerElement.x) - getX(NodesPerElement.x);
-        CudaVec3f Node2Disp = getX0(NodesPerElement.y) - getX(NodesPerElement.y);
-        CudaVec3f Node3Disp = getX0(NodesPerElement.z) - getX(NodesPerElement.z);
-        CudaVec3f Node4Disp = getX0(NodesPerElement.w) - getX(NodesPerElement.w);
+        CudaVec3f Node1Disp = getX(NodesPerElement.x) - getX0(NodesPerElement.x);
+        CudaVec3f Node2Disp = getX(NodesPerElement.y) - getX0(NodesPerElement.y);
+        CudaVec3f Node3Disp = getX(NodesPerElement.z) - getX0(NodesPerElement.z);
+        CudaVec3f Node4Disp = getX(NodesPerElement.w) - getX0(NodesPerElement.w);
 
         NodesPerElement = tex1Dfetch(texNodesPerElement, 2*index+1);
-        CudaVec3f Node5Disp = getX0(NodesPerElement.x) - getX(NodesPerElement.x);
-        CudaVec3f Node6Disp = getX0(NodesPerElement.y) - getX(NodesPerElement.y);
-        CudaVec3f Node7Disp = getX0(NodesPerElement.z) - getX(NodesPerElement.z);
-        CudaVec3f Node8Disp = getX0(NodesPerElement.w) - getX(NodesPerElement.w);
+        CudaVec3f Node5Disp = getX(NodesPerElement.x) - getX0(NodesPerElement.x);
+        CudaVec3f Node6Disp = getX(NodesPerElement.y) - getX0(NodesPerElement.y);
+        CudaVec3f Node7Disp = getX(NodesPerElement.z) - getX0(NodesPerElement.z);
+        CudaVec3f Node8Disp = getX(NodesPerElement.w) - getX0(NodesPerElement.w);
 
 //         float4 Node1Disp = tex1Dfetch(texDisp, NodesPerElement.x);
 //         float4 Node2Disp = tex1Dfetch(texDisp, NodesPerElement.y);
@@ -425,16 +425,16 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel1(float Lambda, f
         float4 Dh2_b = tex1Dfetch(texDhC2, 2*index+1);
 
         int4 NodesPerElement = tex1Dfetch(texNodesPerElement, 2*index);
-        CudaVec3f Node1Disp = getX0(NodesPerElement.x) - getX(NodesPerElement.x);
-        CudaVec3f Node2Disp = getX0(NodesPerElement.y) - getX(NodesPerElement.y);
-        CudaVec3f Node3Disp = getX0(NodesPerElement.z) - getX(NodesPerElement.z);
-        CudaVec3f Node4Disp = getX0(NodesPerElement.w) - getX(NodesPerElement.w);
+        CudaVec3f Node1Disp = getX(NodesPerElement.x) - getX0(NodesPerElement.x);
+        CudaVec3f Node2Disp = getX(NodesPerElement.y) - getX0(NodesPerElement.y);
+        CudaVec3f Node3Disp = getX(NodesPerElement.z) - getX0(NodesPerElement.z);
+        CudaVec3f Node4Disp = getX(NodesPerElement.w) - getX0(NodesPerElement.w);
 
         NodesPerElement = tex1Dfetch(texNodesPerElement, 2*index+1);
-        CudaVec3f Node5Disp = getX0(NodesPerElement.x) - getX(NodesPerElement.x);
-        CudaVec3f Node6Disp = getX0(NodesPerElement.y) - getX(NodesPerElement.y);
-        CudaVec3f Node7Disp = getX0(NodesPerElement.z) - getX(NodesPerElement.z);
-        CudaVec3f Node8Disp = getX0(NodesPerElement.w) - getX(NodesPerElement.w);
+        CudaVec3f Node5Disp = getX(NodesPerElement.x) - getX0(NodesPerElement.x);
+        CudaVec3f Node6Disp = getX(NodesPerElement.y) - getX0(NodesPerElement.y);
+        CudaVec3f Node7Disp = getX(NodesPerElement.z) - getX0(NodesPerElement.z);
+        CudaVec3f Node8Disp = getX(NodesPerElement.w) - getX0(NodesPerElement.w);
 
 //         float4 Node1Disp = tex1Dfetch(texDisp, NodesPerElement.x);
 //         float4 Node2Disp = tex1Dfetch(texDisp, NodesPerElement.y);
@@ -609,16 +609,16 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel2(float Lambda, f
         float4 Dh2_b = tex1Dfetch(texDhC2, 2*index+1);
 
         int4 NodesPerElement = tex1Dfetch(texNodesPerElement, 2*index);
-        CudaVec3f Node1Disp = getX0(NodesPerElement.x) - getX(NodesPerElement.x);
-        CudaVec3f Node2Disp = getX0(NodesPerElement.y) - getX(NodesPerElement.y);
-        CudaVec3f Node3Disp = getX0(NodesPerElement.z) - getX(NodesPerElement.z);
-        CudaVec3f Node4Disp = getX0(NodesPerElement.w) - getX(NodesPerElement.w);
+        CudaVec3f Node1Disp = getX(NodesPerElement.x) - getX0(NodesPerElement.x);
+        CudaVec3f Node2Disp = getX(NodesPerElement.y) - getX0(NodesPerElement.y);
+        CudaVec3f Node3Disp = getX(NodesPerElement.z) - getX0(NodesPerElement.z);
+        CudaVec3f Node4Disp = getX(NodesPerElement.w) - getX0(NodesPerElement.w);
 
         NodesPerElement = tex1Dfetch(texNodesPerElement, 2*index+1);
-        CudaVec3f Node5Disp = getX0(NodesPerElement.x) - getX(NodesPerElement.x);
-        CudaVec3f Node6Disp = getX0(NodesPerElement.y) - getX(NodesPerElement.y);
-        CudaVec3f Node7Disp = getX0(NodesPerElement.z) - getX(NodesPerElement.z);
-        CudaVec3f Node8Disp = getX0(NodesPerElement.w) - getX(NodesPerElement.w);
+        CudaVec3f Node5Disp = getX(NodesPerElement.x) - getX0(NodesPerElement.x);
+        CudaVec3f Node6Disp = getX(NodesPerElement.y) - getX0(NodesPerElement.y);
+        CudaVec3f Node7Disp = getX(NodesPerElement.z) - getX0(NodesPerElement.z);
+        CudaVec3f Node8Disp = getX(NodesPerElement.w) - getX0(NodesPerElement.w);
 
 //         float4 Node1Disp = tex1Dfetch(texDisp, NodesPerElement.x);
 //         float4 Node2Disp = tex1Dfetch(texDisp, NodesPerElement.y);
@@ -835,16 +835,16 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel3(float Lambda, f
         float4 Dh2_b = tex1Dfetch(texDhC2, 2*index+1);
 
         int4 NodesPerElement = tex1Dfetch(texNodesPerElement, 2*index);
-        CudaVec3f Node1Disp = getX0(NodesPerElement.x) - getX(NodesPerElement.x);
-        CudaVec3f Node2Disp = getX0(NodesPerElement.y) - getX(NodesPerElement.y);
-        CudaVec3f Node3Disp = getX0(NodesPerElement.z) - getX(NodesPerElement.z);
-        CudaVec3f Node4Disp = getX0(NodesPerElement.w) - getX(NodesPerElement.w);
+        CudaVec3f Node1Disp = getX(NodesPerElement.x) - getX0(NodesPerElement.x);
+        CudaVec3f Node2Disp = getX(NodesPerElement.y) - getX0(NodesPerElement.y);
+        CudaVec3f Node3Disp = getX(NodesPerElement.z) - getX0(NodesPerElement.z);
+        CudaVec3f Node4Disp = getX(NodesPerElement.w) - getX0(NodesPerElement.w);
 
         NodesPerElement = tex1Dfetch(texNodesPerElement, 2*index+1);
-        CudaVec3f Node5Disp = getX0(NodesPerElement.x) - getX(NodesPerElement.x);
-        CudaVec3f Node6Disp = getX0(NodesPerElement.y) - getX(NodesPerElement.y);
-        CudaVec3f Node7Disp = getX0(NodesPerElement.z) - getX(NodesPerElement.z);
-        CudaVec3f Node8Disp = getX0(NodesPerElement.w) - getX(NodesPerElement.w);
+        CudaVec3f Node5Disp = getX(NodesPerElement.x) - getX0(NodesPerElement.x);
+        CudaVec3f Node6Disp = getX(NodesPerElement.y) - getX0(NodesPerElement.y);
+        CudaVec3f Node7Disp = getX(NodesPerElement.z) - getX0(NodesPerElement.z);
+        CudaVec3f Node8Disp = getX(NodesPerElement.w) - getX0(NodesPerElement.w);
 
 //         float4 Node1Disp = tex1Dfetch(texDisp, NodesPerElement.x);
 //         float4 Node2Disp = tex1Dfetch(texDisp, NodesPerElement.y);
@@ -1300,9 +1300,9 @@ __global__ void CudaHexahedronTLEDForceField3f_addForce_kernel(int nbVertex, uns
 
     __syncthreads();
 
-    f[iext        ] += temp[index1        ];
-    f[iext+  BSIZE] += temp[index1+  BSIZE];
-    f[iext+2*BSIZE] += temp[index1+2*BSIZE];
+    f[iext        ] -= temp[index1        ];
+    f[iext+  BSIZE] -= temp[index1+  BSIZE];
+    f[iext+2*BSIZE] -= temp[index1+2*BSIZE];
 
 }
 

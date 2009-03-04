@@ -136,9 +136,11 @@ void CentralDifferenceSolver::solve(double dt)
         typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         ops.resize(2);
+        // vel += dx * dt
         ops[0].first = (VecId)vel;
         ops[0].second.push_back(std::make_pair((VecId)vel,(1/dt - r/2)/(1/dt + r/2)));
         ops[0].second.push_back(std::make_pair((VecId)dx,1/(1/dt + r/2)));
+        // pos += vel * dt
         ops[1].first = (VecId)pos;
         ops[1].second.push_back(std::make_pair((VecId)pos,1.0));
         ops[1].second.push_back(std::make_pair((VecId)vel,dt));
