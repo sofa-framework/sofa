@@ -356,6 +356,12 @@ public:
     // handle state changes
     virtual void handleStateChange();
 
+    /// Find mechanical particles hit by the given ray.
+    /// A mechanical particle is defined as a 2D or 3D, position or rigid DOF
+    /// Returns false if this object does not support picking
+    virtual bool pickParticles(double rayOx, double rayOy, double rayOz, double rayDx, double rayDy, double rayDz, double radius0, double dRadius,
+            std::multimap< double, std::pair<sofa::core::componentmodel::behavior::BaseMechanicalState*, int> >& particles);
+
 protected:
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 

@@ -2164,6 +2164,37 @@ void MechanicalObject<DataTypes>::draw()
 }
 
 
+/// Find mechanical particles hit by the given ray.
+/// A mechanical particle is defined as a 2D or 3D, position or rigid DOF
+/// Returns false if this object does not support picking
+template <class DataTypes>
+bool MechanicalObject<DataTypes>::pickParticles(double rayOx, double rayOy, double rayOz, double rayDx, double rayDy, double rayDz, double radius0, double dRadius,
+        std::multimap< double, std::pair<sofa::core::componentmodel::behavior::BaseMechanicalState*, int> >& particles)
+{
+    if (DataTypeInfo<Coord>::size() == 2 || DataTypeInfo<Coord>::size() == 3
+        || (DataTypeInfo<Coord>::size() == 7 && DataTypeInfo<Deriv>::size() == 6))
+    {
+        // seems to be valid DOFs
+        const VecCoord& x = *this->getX();
+        Vec<3,Real> origin(rayOx, rayOy, rayOz);
+        Vec<3,Real> direction(rayDx, rayDy, rayDz);
+        for (int i=0; i< vsize; ++i)
+        {
+            Vec<3,Real> pos;
+            DataTypes::get(pos[0],pos[1],pos[2],x[i]);
+            double dist = dot(pos-origin, direction);
+            if (dist < 0) continue;
+            double maxr = radius0 + dRadius*dist;
+            double r2 = (pos-origin-direction*dist).norm2();
+            if (r2 <= maxr*maxr)
+                particles.insert(std::make_pair(dist,std::make_pair(this,i)));
+        }
+        return true;
+    }
+    else
+        return false;
+}
+
 //
 // Template specializations
 
